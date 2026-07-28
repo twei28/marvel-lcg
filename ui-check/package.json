@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "captures": "playwright test tests/captures.spec.ts",
-    "captures:comparer": "playwright test tests/captures.spec.ts; node scripts/comparer.mjs",
+    "captures:comparer": "node scripts/comparer.mjs",
     "captures:valider": "node scripts/valider.mjs",
     "fixtures": "playwright test tests/fixtures.spec.ts",
     "bascule": "playwright test tests/bascule.spec.ts",

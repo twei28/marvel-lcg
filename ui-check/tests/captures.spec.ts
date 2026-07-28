@@ -28,6 +28,34 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     Math.random = () => 0.42;
   });
+
+  // Mode demonstration : provoque volontairement une difference visible, pour
+  // montrer a quoi ressemble une regression detectee (page de comparaison
+  // avant/apres). Sans la variable d'environnement UI_CHECK_DEMO, rien ne change.
+  //
+  // On passe par addInitScript et non addStyleTag : ce beforeEach s'execute
+  // AVANT le goto du test, il n'y a donc pas encore de page ou injecter le style.
+  if (process.env.UI_CHECK_DEMO) {
+    await page.addInitScript(() => {
+      const poserLeStyle = () => {
+        const style = document.createElement('style');
+        style.setAttribute('data-ui-check-demo', '1');
+        // Une simple teinte (hue-rotate) ne bouge PAS assez de pixels sur les
+        // ecrans a fond tres sombre : la difference passe sous le seuil de
+        // tolerance et la demonstration ne montre rien. L'inversion de
+        // luminosite en conservant les teintes (le classique "mode sombre
+        // automatique") change tous les ecrans de facon nette et lisible.
+        style.textContent =
+          'html { filter: invert(1) hue-rotate(180deg) !important; background: #fff !important; }';
+        (document.head ?? document.documentElement).appendChild(style);
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', poserLeStyle);
+      } else {
+        poserLeStyle();
+      }
+    });
+  }
 });
 
 for (const ecran of ECRANS) {
