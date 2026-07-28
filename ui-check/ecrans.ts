@@ -11,6 +11,11 @@
 //               on risquerait de figer 18 fois la meme page d'avertissement.
 //   masques   : zones a neutraliser parce qu'elles changent a chaque chargement
 //               (un numero tire au hasard, une date...). Elles sont peintes en rose.
+//   etape     : numero du panneau du wizard a ouvrir avant la photo (0 a 3).
+//               Sans lui, seul le panneau affiche au chargement est photographie.
+//   preuves   : elements qui doivent etre visibles une fois l'etape ouverte. Ils
+//               prouvent que le CONTENU du panneau est bien dans la photo, et
+//               pas seulement son entete.
 
 export type Ecran = {
   cle: string;
@@ -18,6 +23,8 @@ export type Ecran = {
   url: string;
   marqueur: string;
   masques?: string[];
+  etape?: number;
+  preuves?: string[];
 };
 
 export const ECRANS: Ecran[] = [
@@ -38,6 +45,41 @@ export const ECRANS: Ecran[] = [
     // Il est aujourd'hui dans une etape masquee, mais on garde le masque en
     // filet : il redeviendra utile si l'etape s'ouvre par defaut un jour.
     masques: ['#seed_div'],
+  },
+  // Les 3 entrees suivantes existent parce que scene.html n'affiche QU'UN SEUL
+  // de ses 4 panneaux au chargement (l'entree 'preparation' ci-dessus couvre le
+  // panneau 0, Scenario). Or la majorite des declarations !important de
+  // css/menu/wizard.css agit sur les panneaux 1, 2 et 3 : environ 45 sur 105.
+  // Sans ces photos, la purge de ces !important se ferait a l'aveugle et un
+  // "npm run captures" vert apres la purge ne prouverait rien.
+  {
+    cle: 'preparation-rencontre',
+    titre: 'Preparation ancienne - etape 2 Rencontre',
+    url: '/scene.html',
+    marqueur: '#w-stepper',
+    masques: ['#seed_div'],
+    etape: 1,
+    preuves: ['#encounter-sets'],
+  },
+  {
+    cle: 'preparation-heros',
+    titre: 'Preparation ancienne - etape 3 Heros',
+    url: '/scene.html',
+    marqueur: '#w-stepper',
+    masques: ['#seed_div'],
+    etape: 2,
+    preuves: ['.w-step-panel[data-panel="2"] legend'],
+  },
+  {
+    cle: 'preparation-lancement',
+    titre: 'Preparation ancienne - etape 4 Lancement',
+    url: '/scene.html',
+    marqueur: '#w-stepper',
+    // Le champ "seed" est DANS ce panneau : sans le masque, chaque photo
+    // differerait de la precedente.
+    masques: ['#seed_div'],
+    etape: 3,
+    preuves: ['#play-buttons', '#game-start'],
   },
   {
     cle: 'preparation-nouvelle',

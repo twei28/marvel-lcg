@@ -76,6 +76,32 @@ for (const ecran of ECRANS) {
         `ce n'est probablement pas la bonne page.`
     ).toBeVisible();
 
+    // Garde-fou 3 : quand l'ecran vise un panneau masque du wizard, on l'ouvre
+    // et on prouve que son contenu est bien a l'ecran avant de photographier.
+    if (ecran.etape !== undefined) {
+      // On passe par wizardShow(i) et NON par un clic sur .w-step : dans
+      // scene.html, le clic est conditionne par canPass[cur]() et ne fait
+      // rien tant que l'etape courante n'est pas valide.
+      await page.evaluate((i) => {
+        (window as unknown as { wizardShow: (n: number) => void }).wizardShow(i);
+      }, ecran.etape);
+
+      await expect(
+        page.locator(`.w-step-panel[data-panel="${ecran.etape}"]`),
+        `Le panneau ${ecran.etape} ne s'est pas ouvert : wizardShow est-il toujours expose par scene.html ?`
+      ).toHaveClass(/(^|\s)on(\s|$)/);
+
+      for (const preuve of ecran.preuves ?? []) {
+        await expect(
+          page.locator(preuve).first(),
+          `"${preuve}" n'est pas visible : la photo ne montrerait pas le contenu du panneau.`
+        ).toBeVisible();
+      }
+
+      // Le wizard fait un scrollTo en 'smooth' : on laisse le defilement finir.
+      await page.waitForTimeout(500);
+    }
+
     await expect(page).toHaveScreenshot(`${ecran.cle}.png`, {
       fullPage: true,
       mask: (ecran.masques ?? []).map((selecteur) => page.locator(selecteur)),
