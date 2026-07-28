@@ -57,6 +57,7 @@ remplacer "$P/js/prepare/app.js"   'api\.js'       "$P/js/prepare/api.js"
 remplacer "$P/js/prepare/app.js"   'launcher\.js'  "$P/js/prepare/launcher.js"
 
 remplacer "$P/scene.html"          'wizard\.css'   "$P/css/menu/wizard.css"
+remplacer "$P/scene.html"          'scene-inline\.css' "$P/css/menu/scene-inline.css"
 remplacer "$P/prepare.html"        'prepare\.css'  "$P/css/prepare/prepare.css"
 remplacer "$P/prepare.html"        'app\.js'       "$P/js/prepare/app.js"
 
