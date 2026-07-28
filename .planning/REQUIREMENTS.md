@@ -82,4 +82,41 @@ Scopé le 2026-07-28 avec l'utilisateur, à partir de `.planning/research/FEATUR
 
 ## Traceability
 
-(Rempli par la roadmap)
+| Requirement | Phase | Statut |
+|-------------|-------|--------|
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 2 | Pending |
+| FOUND-03 | Phase 2 | Pending |
+| FOUND-04 | Phase 3 | Pending |
+| SHELL-01 | Phase 3 | Pending |
+| SHELL-02 | Phase 3 | Pending |
+| SHELL-03 | Phase 3 | Pending |
+| PREP-01 | Phase 4 | Pending |
+| PREP-02 | Phase 4 | Pending |
+| PREP-03 | Phase 4 | Pending |
+| PREP-04 | Phase 4 | Pending |
+| PREP-05 | Phase 4 | Pending |
+| PREP-06 | Phase 4 | Pending |
+| BOARD-01 | Phase 5 | Pending |
+| BOARD-02 | Phase 5 | Pending |
+| BOARD-03 | Phase 5 | Pending |
+| BOARD-04 | Phase 5 | Pending |
+| BOARD-05 | Phase 7 | Pending |
+| BOARD-06 | Phase 7 | Pending |
+| BOARD-07 | Phase 7 | Pending |
+| BOARD-08 | Phase 7 | Pending |
+| BOARD-09 | Phase 7 | Pending |
+| BOARD-10 | Phase 7 | Pending |
+| BOARD-11 | Phase 6 | Pending |
+| BOARD-12 | Phase 6 | Pending |
+| BOARD-13 | Phase 5 | Pending |
+| MOB-01 | Phase 6 | Pending |
+| MOB-02 | Phase 6 | Pending |
+| MOB-03 | Phase 6 | Pending |
+| ACC-01 | Phase 2 | Pending |
+| ACC-02 | Phase 2 | Pending |
+| ACC-03 | Phase 7 | Pending |
+
+**Couverture : 32 / 32 requirements v1 mappés** — aucun orphelin, aucun doublon.
+
+Note : la Phase 1 étend FOUND-01 d'un test automatisé du contrat de lancement (`/new?data=` → plateau), gelé avant toute refonte de la préparation.
