@@ -67,4 +67,30 @@ for page in scene.html prepare.html cards.html deck.html replay.html; do
   remplacer "$P/$page" 'tokens\.css' "$P/css/tokens.css"
 done
 
+# --- Garde-fou de cascade (plan 02-04) --------------------------------------
+# wizard.css a compte jusqu'a 105 declarations !important, qui rendaient toute
+# tokenisation impossible : une couche @layer posee au-dessus perdrait contre
+# elles. La purge a laisse 2 exceptions, documentees dans le fichier, face a des
+# styles poses en ligne par le JavaScript de scene.html.
+# Ce compte ne doit pas remonter par accident. S'il doit changer, que ce soit un
+# geste conscient : on modifie ce chiffre dans le meme commit, en expliquant
+# pourquoi la cascade ne suffisait pas.
+IMPORTANTS_ATTENDUS=2
+WIZARD="$P/css/menu/wizard.css"
+if [ -f "$WIZARD" ]; then
+  # Les commentaires du fichier parlent de !important : on les retire avant de compter.
+  importants=$(python3 -c "
+import re, sys
+css = open(sys.argv[1], encoding='utf-8').read()
+print(len(re.findall(r'!important', re.sub(r'/\*.*?\*/', '', css, flags=re.S))))
+" "$WIZARD")
+  if [ "$importants" -ne "$IMPORTANTS_ATTENDUS" ]; then
+    echo "ECHEC : wizard.css contient $importants declarations !important, $IMPORTANTS_ATTENDUS attendues." >&2
+    echo "La cascade de l'ancienne preparation a ete purgee au plan 02-04. Si une" >&2
+    echo "declaration importante est vraiment necessaire, commente-la dans le fichier" >&2
+    echo "et mets IMPORTANTS_ATTENDUS a jour ici, dans le meme commit." >&2
+    exit 1
+  fi
+fi
+
 echo "Deploye. Recharge la page dans le navigateur."
