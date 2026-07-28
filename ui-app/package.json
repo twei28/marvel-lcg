@@ -1,0 +1,27 @@
+{
+  "name": "ui-app",
+  "version": "1.0.0",
+  "description": "Sources de la nouvelle UI (React 19 + TypeScript 6 + Vite 8). Jamais dans le livrable.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "verifier-sortie": "node outils/verifier-sortie.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.5",
+    "vite-plugin-checker": "^0.14.5"
+  }
+}
