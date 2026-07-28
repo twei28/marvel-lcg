@@ -53,7 +53,19 @@ Plans:
   4. Chaque aspect (justice / leadership / agression / protection) reste identifiable sans la couleur (icône + libellé), et les contrastes du texte de règles et des compteurs passent le seuil défini par les tokens.
   5. Un simple rechargement sert toujours la dernière version des assets : plus de `?v=N` à incrémenter à la main.
 **Séquence obligatoire** (piège documenté) : captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens. Poser `@layer` avant la purge inverse l'ordre des couches et aggrave la situation. Contrainte serveur : routage par extension en liste blanche stricte, tout asset de build doit s'y conformer sous peine d'échec silencieux.
-**Plans** : TBD
+**Plans** : 10 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Filet étendu aux 3 panneaux cachés du wizard (9 références de plus)
+- [ ] 02-02-PLAN.md — Projet Vite 8 + React 19 + TS 6, vitrine minimale, garde-fou d'extensions
+- [ ] 02-03-PLAN.md — Déploiement vers le jeu, service prouvé par le serveur Python, fin des `?v=N`
+- [ ] 02-04-PLAN.md — Purge des 105 `!important` de `wizard.css`, styles en ligne extraits
+- [ ] 02-05-PLAN.md — `@layer` posé, `tokens.css` lié en premier, tout l'existant dans `legacy`
+- [ ] 02-06-PLAN.md — `tokens.css` complet (2 thèmes, aspects), contrôle de contraste, `menu/style.css` tokenisé
+- [ ] 02-07-PLAN.md — `wizard.css` et `prepare.css` tokenisés, critère 2 mesuré
+- [ ] 02-08-PLAN.md — Aspects partagés (icône + libellé), palette unique, ACC-01
+- [ ] 02-09-PLAN.md — Vitrine finale, bascule de thème, vitrine sous surveillance, axe contraste
+- [ ] 02-10-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble
 
 ### Phase 3 : Pilotes — composant Carte et coquille/menu
 **Objectif** : Le composant le plus important du projet est forgé sur deux écrans réels, et l'utilisateur entre dans l'app par un hub clair.
@@ -168,7 +180,7 @@ Plans:
 | Phase | Plans terminés | Statut | Terminée le |
 |-------|----------------|--------|-------------|
 | 1. Filet de sécurité | 6/6 | Complete | 2026-07-28 |
-| 2. Fondations (stack + design system) | 0/TBD | Not started | - |
+| 2. Fondations (stack + design system) | 0/10 | Not started | - |
 | 3. Pilotes (Carte + coquille) | 0/TBD | Not started | - |
 | 4. Préparation de partie | 0/TBD | Not started | - |
 | 5. Plateau A — restylage | 0/TBD | Not started | - |
