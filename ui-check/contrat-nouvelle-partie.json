@@ -1,0 +1,71 @@
+{
+  "_lisez_moi": [
+    "Ce fichier fige le CONTRAT DE LANCEMENT D'UNE PARTIE.",
+    "",
+    "Le seul point de contact entre l'ecran de preparation et le moteur est :",
+    "    GET /new?data=<encodeURIComponent(JSON.stringify(descripteur))>",
+    "    -> 200 {\"result\": \"New game created\"}",
+    "puis le client navigue vers /?hot_seat.",
+    "",
+    "Cote moteur, ce descripteur est desserialise en NewGameDescriptor",
+    "(src/engine/device/web/server/server_new_game.py, methode new_game).",
+    "Ce contrat n'est documente nulle part ailleurs : ce fichier EST la",
+    "documentation, et tests/lancement-partie.spec.ts la fait respecter.",
+    "",
+    "On fige les CLES et le TYPE de chacune, jamais les valeurs : un deck ou",
+    "un scenario differe d'une partie a l'autre, le contrat non.",
+    "",
+    "Ne pas modifier ce fichier pour faire passer un test rouge. Un test rouge",
+    "veut dire qu'une refonte de la preparation a change ce qu'elle envoie au",
+    "moteur : soit c'est un accident (corriger le code), soit c'est voulu et",
+    "mesure (mettre ce fichier a jour EN MEME TEMPS, dans le meme commit)."
+  ],
+
+  "mesure_le": "2026-07-28",
+  "mesure_sur": "prepare.html (nouvelle preparation) -> js/prepare/launcher.js, partie Solo / Spider-Man / Rhino / Standard",
+
+  "requete": {
+    "methode": "GET",
+    "chemin": "/new",
+    "parametre": "data",
+    "encodage": "encodeURIComponent(JSON.stringify(descripteur))"
+  },
+
+  "cles": {
+    "campaign_json": "string",
+    "campaign_log": "object",
+    "challenges": "any[]",
+    "encounter_set_names": "string[]",
+    "hero_json": "string[]",
+    "rules": "string[]",
+    "seed": "number",
+    "timeout": "number"
+  },
+
+  "commentaires_cles": {
+    "campaign_json": "Le JSON du scenario, SERIALISE EN CHAINE (pas un objet).",
+    "campaign_log": "Journal de campagne, {} hors campagne.",
+    "challenges": "raw.challenges du scenario, [] quand il n'y en a pas.",
+    "encounter_set_names": "encounter_sets du scenario + sets modulaires choisis, dedupliques.",
+    "hero_json": "Un JSON de deck SERIALISE EN CHAINE par joueur (1 a 4 entrees).",
+    "rules": "Drapeaux de regles ; voir regles_attendues et regles_partie_standard.",
+    "seed": "Graine aleatoire ; -1 = le moteur en tire une.",
+    "timeout": "0 = pas de limite de temps."
+  },
+
+  "regles_attendues": ["v16_all"],
+
+  "regles_partie_standard": [
+    "v16_all",
+    "no_crisis_of_infinite_deadpools",
+    "no_encounter_cards_ignore_crisis"
+  ],
+
+  "regles_optionnelles_connues": {
+    "mode_skirmish": "Partie raccourcie (Escarmouche).",
+    "mode_campaign": "Mode campagne.",
+    "mode_heroic_<n>": "Niveau heroique 1 a 8."
+  },
+
+  "reponse_attendue": { "result": "New game created" }
+}
