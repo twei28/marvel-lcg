@@ -8,9 +8,12 @@
 //     clair en francais qu'une serie de captures fausses.
 import { chromium, type FullConfig } from '@playwright/test';
 import fs from 'node:fs';
+import { ADRESSE_JEU } from './playwright.config';
 
 export default async function globalSetup(_config: FullConfig) {
-  const base = 'http://127.0.0.1:2345';
+  // Meme adresse que les tests : par defaut 127.0.0.1:2345, surchargeable par
+  // UI_CHECK_BASE quand une partie multijoueur occupe deja ce port.
+  const base = ADRESSE_JEU;
   const browser = await chromium.launch();
   const ctx = await browser.newContext();
   const page = await ctx.newPage();

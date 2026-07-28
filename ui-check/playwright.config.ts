@@ -10,6 +10,13 @@
 // dans ecrans.ts.
 import { defineConfig } from '@playwright/test';
 
+// Adresse du jeu. Par defaut le port habituel du serveur de developpement.
+// UI_CHECK_BASE permet de viser un second serveur quand le port 2345 est pris
+// par une partie multijoueur (voir scripts/serveur-dev.py). Depuis WSL, npm
+// passe par cmd.exe : la variable doit etre relayee par WSLENV.
+//   export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE
+export const ADRESSE_JEU = process.env.UI_CHECK_BASE || 'http://127.0.0.1:2345';
+
 // Les 3 formats d'ecran captures pour chaque page.
 const GABARITS = {
   pc: { width: 1920, height: 1080 }, // Ordinateur
@@ -37,7 +44,7 @@ export default defineConfig({
   snapshotPathTemplate: '{testDir}/../references/{arg}/{projectName}{ext}',
 
   use: {
-    baseURL: 'http://127.0.0.1:2345',
+    baseURL: ADRESSE_JEU,
     storageState: './.auth/state.json', // cookie app_version pose par global-setup
     deviceScaleFactor: 1, // sinon les PNG pesent 4x plus lourd pour rien
     reducedMotion: 'reduce',
