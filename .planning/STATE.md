@@ -10,11 +10,11 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 1 sur 7 (Filet de sécurité et boucle de dev)
-Plan : 01-01 à 01-05 terminés (5 sur 6 dans la phase courante)
-Statut : En cours
-Dernière activité : 2026-07-28 — 01-05-PLAN.md terminé (contrat `/new?data=` gelé, arrivée au plateau prouvée, `npm run lancement` vert deux fois de suite)
+Plan : 01-01 à 01-05 terminés ; 01-06 livré, en attente de validation utilisateur
+Statut : Checkpoint bloquant ouvert (vérification humaine du filet complet)
+Dernière activité : 2026-07-28 — 01-06 tâche 1 : autoplay 0 traceback sur 2 couples, zip `Fusion/` regénéré (5 749 fichiers, +37 ajouts de la phase, −1 sauvegarde morte), 4 commandes du filet vertes après relance du serveur
 
-Progression phase 1 : [████████░░] 83% (5/6 plans)
+Progression phase 1 : [████████░░] 83% (5/6 plans terminés, le 6e en attente de validation)
 Progression projet : [█░░░░░░░░░] ~10% (plans des phases 2 à 7 non encore découpés)
 
 ## Métriques
@@ -31,6 +31,8 @@ Progression projet : [█░░░░░░░░░] ~10% (plans des phases 2 �
 | 1 — Filet de sécurité | 5/6 | 118 min | 24 min |
 
 **Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-05 en 14 min (2 tâches, 2 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces. Les plans sans checkpoint tiennent en 12 à 14 min.
+
+**01-06 (en cours) :** tâche 1 exécutée en 8 min (2 déviations), checkpoint de validation ouvert.
 
 *Mis à jour après chaque plan terminé*
 
@@ -66,6 +68,14 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [01-05] **Prouvé par mesure** : `NewGame` remet le monde à zéro (`render_id = 0`) et le moteur répond **après**. Sonder `/get_world` sans attendre la réponse de `/new` lit donc l'état de la partie précédente — piège corrigé, à ne pas réintroduire.
 - [01-05] Parcours de test figé sur la boîte de base (Solo / Spider-Man / Rhino / Standard) et sélecteurs par **rôle et libellé** : ce contenu ne disparaîtra jamais, et les libellés survivront mieux que le DOM à la refonte de la phase 4.
 
+**Les quatre acquis de structure de la phase 1**, à connaître avant toute phase suivante :
+
+- **`ui-check/` est le harnais**, il vit dans le dépôt Desktop et n'entre jamais dans le livrable (contrôlé au re-zip : 0 entrée `ui-check` dans le zip).
+- **`launcher_fast.py` est le serveur de développement** (port 2345) : lui seul sert à chaud les fichiers ajoutés dans `public/`. Toute relance coupe la partie en cours et exige d'attendre la libération effective du port.
+- **Les fixtures vivent dans `public/js/fixtures/`** (34 états + `index.js`), au format module `.js`, et sont rejouées par `public/fixtures.html` sans qu'aucune partie ne tourne.
+- **La bascule vers l'ancienne version est mémorisée dans `localStorage` (clé `ui`)**, jamais dans l'adresse ni dans un cookie : c'est ce qui la fait survivre au lancement d'une partie.
+- [01-06] **Le zip de `Fusion/` n'a pas de préfixe de dossier** : ses entrées sont à la racine de l'archive (`src/`, `public/`, `launcher.py`…). Exclusions du livrable : `.game/`, `__pycache__/`, `originals_pyc/`. Tout re-zip doit calquer cette structure, sinon le livrable change de forme sans prévenir.
+
 ### Todos en attente
 
 Aucun.
@@ -79,10 +89,12 @@ Aucun.
 - **Séquence CSS obligatoire** en Phase 2 : captures de référence → purge des `!important` de `wizard.css` (67 sur 165) → `@layer` → tokens. Inverser aggrave la cascade.
 - **Routage serveur par extension** en liste blanche stricte : tout asset de build hors liste échoue silencieusement (200 OK, contenu vide).
 - **Recherche approfondie à prévoir** avant planification : Phase 4 (contrat `/new?data=` et campaign logs des 4 formats), Phase 6 (table de zones par palier, géométrie 4 joueurs mobile), Phase 7 (vocabulaire `select_rule` / `ability_type` / `event_name`).
-- **Livraison** : chaque étape livrée = re-zip vers `Fusion/` + relance serveur + non-régression (autoplay 0 traceback). Codebase vivant = `~/marvel-work/fusion/marvel-lcg-src`.
+- **Livraison** : chaque étape livrée = re-zip vers `Fusion/` + relance serveur + non-régression (autoplay 0 traceback). Codebase vivant = `~/marvel-work/fusion/marvel-lcg-src`. Rituel exécuté le 2026-07-28 pour la phase 1 ; sauvegarde du zip précédent en `marvel-lcg-src-fusion.zip.bak-avant-phase1`.
+- **`zip` et `unzip` ne sont pas installés** dans cet environnement : le re-zip et son inspection passent par le module `zipfile` de Python 3.10 (`~/marvel-work/python/bin/python3.10`). Ne pas partir du principe que les commandes du plan existent.
+- **`test_autoplay.py` a besoin d'un `winsound`** que le dossier compilé `.game` n'embarque pas (le lanceur l'injecte en mémoire). Le fournir par `PYTHONPATH` vers un dossier contenant une copie de `~/marvel-work/boot/winsound.py`, jamais en écrivant dans le dossier du jeu. Le dossier de jeu à passer au bot est `.game`, pas `marvel-lcg-src`.
 - **Sans préférence, une page migrée doit rester identique au pixel près.** Toute modification future de `ui-switch.js` se termine par un `npm run captures` vert sur les écrans anciens, sinon on fait bouger des références pour rien.
 - **Quand la nouvelle version reprendra le nom de l'ancienne** (`marvel.html`, phase 5) : déposer d'abord une copie VERBATIM de l'ancienne page dans `public/legacy/<page>.html`, ne plus jamais la retoucher, et faire pointer `data-ancienne` dessus. Convention écrite en tête de `ui-switch.js`.
-- **`public/scene.html.bak-avant-ui` traîne dans le codebase** (sauvegarde antérieure à la surcouche wizard). Intouché, mais à écarter avant le re-zip du plan 01-06.
+- ✓ **`public/scene.html.bak-avant-ui` écarté** (01-06) : déplacé dans `~/marvel-work/scratch/ecartes-01-06/`, absent du nouveau zip, et toujours présent dans `marvel-lcg-src-fusion.zip.bak-avant-phase1` si besoin.
 - **`node --check` ne lit pas un chemin WSL** (Node est le binaire Windows) : utiliser la forme `//wsl.localhost/Ubuntu/home/arnau/...` pour tout contrôle statique sur un fichier du jeu.
 - **`ui-switch.js`, `prepare.html` et `scene.html` vivent hors du dépôt git**, comme les fixtures : le re-zip vers `Fusion/` est leur seule sauvegarde. `ui-switch.js` étant la sortie de secours elle-même, sa perte serait coûteuse.
 - **Les fixtures et `fixtures.html` vivent hors du dépôt** (`~/marvel-work/fusion/marvel-lcg-src/public/`), donc hors sauvegarde git : un re-zip vers `Fusion/` les emporte, mais une reconstruction du codebase les perdrait. Régénération : `~/marvel-work/tools/run_dump.sh <port> <scenario> <heros>` (documenté en tête de `public/js/fixtures/index.js`).
@@ -99,6 +111,6 @@ Aucun.
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : 01-05-PLAN.md terminé (voir .planning/phases/01-filet-de-securite/01-05-SUMMARY.md) — contrat de lancement gelé, arrivée au plateau prouvée, `npm run captures` toujours 18/18
+Arrêté à : 01-06-PLAN.md tâche 1 terminée — livraison faite (autoplay 0 traceback, zip `Fusion/` regénéré, 4 commandes du filet vertes après relance du serveur). **Checkpoint bloquant ouvert** : l'utilisateur doit constater de ses yeux `fixtures.html`, `?ui=old`, une vraie partie inchangée et `npm run captures` vert.
 Fichier de reprise : aucun
-Prochain plan : 01-06-PLAN.md — livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble. Les 4 outils du filet sont verts : `captures`, `fixtures`, `bascule`, `lancement`. Penser à écarter `public/scene.html.bak-avant-ui` du zip.
+Après validation : créer `01-06-SUMMARY.md`, cocher 01-06 et la phase 1 dans ROADMAP.md, puis passer à `/gsd:plan-phase 2` (fondations : stack React/TS/Vite + design system tokenisé). Rappel de séquence pour la phase 2 : captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens.
