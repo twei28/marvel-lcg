@@ -1,0 +1,23 @@
+/* Source unique des tokens. Deux destinations :
+   - importee par le bundle Vite (nouvelle UI) ;
+   - copiee telle quelle vers public/css/tokens.css par deployer.sh,
+     servie brute aux pages anciennes par le serveur Python.
+   Ne jamais editer la copie : editer ce fichier. */
+
+/* La declaration d'ordre doit etre vue AVANT toute utilisation de couche. */
+@layer socle, legacy, base, composants, utilitaires;
+
+@layer socle {
+  :root {
+    color-scheme: dark;
+    /* Tous les tokens sont prefixes --mc- : les feuilles anciennes definissent
+       deja --color, --font-size, --card--width, --z-index-*. Aucune collision. */
+    --mc-fond: #0b0c10;
+    --mc-texte: #e7eaf0;
+    --mc-espace-3: 1rem;
+  }
+}
+
+@layer base {
+  body { background: var(--mc-fond); color: var(--mc-texte); margin: var(--mc-espace-3); }
+}
