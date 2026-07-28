@@ -10,27 +10,27 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 1 sur 7 (Filet de sécurité et boucle de dev)
-Plan : 1 sur 6 dans la phase courante
+Plan : 01-01 et 01-03 terminés (2 sur 6 dans la phase courante ; 01-02 en cours en parallèle)
 Statut : En cours
-Dernière activité : 2026-07-28 — 01-01-PLAN.md terminé (harnais de captures opérationnel, 18 références figées)
+Dernière activité : 2026-07-28 — 01-03-PLAN.md terminé (34 états de jeu rejouables hors partie, /fixtures.html)
 
-Progression phase 1 : [██░░░░░░░░] 17% (1/6 plans)
-Progression projet : [█░░░░░░░░░] ~3% (plans des phases 2 à 7 non encore découpés)
+Progression phase 1 : [███░░░░░░░] 33% (2/6 plans)
+Progression projet : [█░░░░░░░░░] ~5% (plans des phases 2 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 1
-- Durée moyenne : 12 min
-- Temps d'exécution total : 12 min
+- Plans terminés : 2
+- Durée moyenne : 13 min
+- Temps d'exécution total : 26 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
-| 1 — Filet de sécurité | 1/6 | 12 min | 12 min |
+| 1 — Filet de sécurité | 2/6 | 26 min | 13 min |
 
-**Tendance récente :** 01-01 exécuté en 12 min, 3 tâches, 3 déviations auto-corrigées
+**Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations auto-corrigées)
 
 *Mis à jour après chaque plan terminé*
 
@@ -49,6 +49,10 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [01-01] Garde-fou anti `clean_cache.html` par le titre de page (`Version Mismatch`), indépendant du marqueur de chaque écran.
 - [01-01] `prepare.html` inclus comme 6e écran surveillé (`preparation-nouvelle`).
 - [01-01] Les scripts npm des plans 01-02 à 01-05 sont déjà déclarés dans `ui-check/package.json` pour éviter que plusieurs plans se disputent ce fichier.
+- [01-03] **Prouvé par mesure** : `game.world.render.descriptor` lu pendant un ask est bit à bit ce que renvoie `/get_world` (36 138 octets comparés). Le principe « le nouveau code est une fonction pure de `get_world` » n'est plus une hypothèse.
+- [01-03] Les fixtures sont des modules `.js` (`export default {...}`) et jamais `.json` : `.json` n'est pas dans la liste blanche de routage du serveur (200 + image JPEG).
+- [01-03] Le bot d'autoplay tourne sur `marvel-lcg-src/.game` (dossier compilé par `launcher_fast.py`), seul dossier importable et strictement identique au code servi ; `test_autoplay.py` reste intouché, `dump_get_world.py` en est une copie.
+- [01-03] `public/fixtures.html` monte aujourd'hui un rendu texte ; en phase 5 le composant React prendra sa place **sans changer le contrat** (import d'une fixture → props).
 
 ### Todos en attente
 
@@ -64,10 +68,14 @@ Aucun.
 - **Routage serveur par extension** en liste blanche stricte : tout asset de build hors liste échoue silencieusement (200 OK, contenu vide).
 - **Recherche approfondie à prévoir** avant planification : Phase 4 (contrat `/new?data=` et campaign logs des 4 formats), Phase 6 (table de zones par palier, géométrie 4 joueurs mobile), Phase 7 (vocabulaire `select_rule` / `ability_type` / `event_name`).
 - **Livraison** : chaque étape livrée = re-zip vers `Fusion/` + relance serveur + non-régression (autoplay 0 traceback). Codebase vivant = `~/marvel-work/fusion/marvel-lcg-src`.
+- **Les fixtures et `fixtures.html` vivent hors du dépôt** (`~/marvel-work/fusion/marvel-lcg-src/public/`), donc hors sauvegarde git : un re-zip vers `Fusion/` les emporte, mais une reconstruction du codebase les perdrait. Régénération : `~/marvel-work/tools/run_dump.sh <port> <scenario> <heros>` (documenté en tête de `public/js/fixtures/index.js`).
+- **Ne jamais éditer une fixture à la main** (l'en-tête de chaque fichier le rappelle) ; `index.js` est tenu à la main et doit suivre toute régénération, sinon `npm run fixtures` devient rouge — comportement voulu.
+- **Node est le binaire Windows** (`node.exe` via `~/.local/bin/node`) : il ne lit pas les chemins WSL. Pour importer un fichier du jeu depuis Node, passer par `file://wsl.localhost/Ubuntu/...`.
+- **Cas de jeu encore absents des fixtures** : `zone-victoire`, `deck-rencontre-vide`, `stade-3` (les 5 parties se sont soldées par une défaite). Le dumper sait les capturer ; à relancer si le plateau en a besoin.
 
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : 01-01-PLAN.md terminé (voir .planning/phases/01-filet-de-securite/01-01-SUMMARY.md)
+Arrêté à : 01-03-PLAN.md terminé (voir .planning/phases/01-filet-de-securite/01-03-SUMMARY.md)
 Fichier de reprise : aucun
-Prochain plan : 01-02-PLAN.md — page de comparaison avant/après et validation explicite des références
+Prochain plan : 01-04-PLAN.md — bascule `?ui=old` (01-02 exécuté en parallèle)
