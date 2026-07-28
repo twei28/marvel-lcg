@@ -8,6 +8,8 @@ Tests **live outside the repo** in `/home/arnau/marvel-work/tools/`. The main ga
 
 **Key Principle:** Tests modify the game at runtime (patch DeviceManager, mock auth) rather than using external frameworks like pytest or unittest. All tests run in-process with full game initialization.
 
+**Since phase 01-01, a second, independent harness exists** for the UI redesign: `ui-check/` in the planning repo (`C:\Users\arnau\Desktop\Marvel LCG last try\ui-check`, a Windows-native path — `node` is Windows `node.exe`). It is Playwright-based visual regression testing against the running server on `http://127.0.0.1:2345`. It never touches the game codebase and is deliberately kept out of `marvel-lcg-src/` so it does not end up in the delivery zip. Entry point: `cd ui-check && npm run captures`. Screens are declared in `ui-check/ecrans.ts`; baselines live in `ui-check/references/<screen>/<viewport>.png` (versioned).
+
 ## Test Framework & Tools
 
 **No External Framework:**
