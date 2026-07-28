@@ -1,0 +1,6 @@
+node_modules/
+ui-check/node_modules/
+ui-check/comparaison/
+ui-check/test-results/
+ui-check/playwright-report/
+ui-check/.auth/

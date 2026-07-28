@@ -57,6 +57,8 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 - **Supports**: PC, tablette et mobile — responsive et interactions tactiles à prévoir dès la conception
 - **Environnement**: app servie en local par le serveur Python embarqué — pas de CDN, tout doit être self-contained dans `public/` (ou un build statique copié dedans)
 - **Livraison**: chaque étape livrée = re-zip vers `Fusion/` + relance du serveur + tests de non-régression (autoplay 0 traceback)
+- **Runtime de partie**: `public/js/marvel/` (7318 lignes de TS compilé, sources perdues) a le MÊME statut d'intouchabilité que le moteur : jamais lu, jamais modifié, jamais importé. Tout nouveau code d'affichage est une fonction pure du descripteur `get_world`, écrit à côté.
+- **Boucle de dev**: le serveur de développement est `launcher_fast.py` (symlink de `public/` → édition à chaud). `launcher.py` COPIE `public/` dans `.game/` : tout fichier ajouté après le démarrage est en 404 silencieux.
 
 ## Key Decisions
 
@@ -68,6 +70,7 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 | Plateau découpé en 3 sous-phases de risque croissant (restylage → layout responsive → interactions asks), jamais en dernier ni en bloc | Runtime = sources perdues, protocole non documenté ; bascule ?ui=old permanente | — Pending |
 | Cible PC + tablette + mobile | L'utilisateur veut jouer partout | — Pending |
 | Moteur de règles intouchable | Acquis validé (3766/0), tout le risque serait en pure perte | ✓ Good |
+| Runtime `public/js/marvel/` intouchable au même titre que le moteur | Sources perdues, protocole interne non documenté ; le nouveau code doit être une fonction pure de `get_world` | ✓ Good |
 
 ---
-*Last updated: 2026-07-28 after initialization*
+*Last updated: 2026-07-28 after phase 01 plan 01 (filet de sécurité : contraintes d'environnement actées)*
