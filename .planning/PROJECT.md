@@ -37,7 +37,7 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 ### Out of Scope
 
 - Modification des règles du moteur — contrainte absolue du projet, le moteur est fidèle et validé
-- Multijoueur en ligne / réseau — hors sujet de la refonte, le jeu est local
+- Multijoueur en ligne / réseau en v1 — souhaité pour PLUS TARD (v2+) : ne rien construire qui le bloque (l'architecture client/serveur HTTP+WS s'y prête), mais rien de réseau dans cette refonte
 - Nouveau contenu de jeu (cartes, scénarios) — tout le contenu officiel est déjà intégré, projet séparé
 - Refonte du backend Python (hors endpoints strictement nécessaires à l'UI) — le serveur fonctionne, risque inutile
 
@@ -63,8 +63,9 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Périmètre = toute l'app, plateau inclus | La douleur est globale, pas localisée | — Pending |
-| Techno frontend tranchée après recherche | Comparer modernisation vanilla vs React+TS+Vite sur faits | — Pending |
-| Direction visuelle proposée par la recherche | 2-3 pistes argumentées (comic Marvel vs premium sobre vs autres) | — Pending |
+| Stack = React 19 + TS 6 + Vite 8, build multi-pages dans public/app/, migration page par page | Recherche : coexistence gratuite (serveur route par extension), CSS existant sans valeur mobile, js/prepare réinvente React à la main | — Pending |
+| Direction visuelle = squelette clair « instrument de jeu » + personnalité comic KAPOW + thème sombre en option tokens | Recommandation recherche : réversible par tokens, lisibilité d'abord (échec documenté Gwent sur le tout-sombre) | — Pending |
+| Plateau découpé en 3 sous-phases de risque croissant (restylage → layout responsive → interactions asks), jamais en dernier ni en bloc | Runtime = sources perdues, protocole non documenté ; bascule ?ui=old permanente | — Pending |
 | Cible PC + tablette + mobile | L'utilisateur veut jouer partout | — Pending |
 | Moteur de règles intouchable | Acquis validé (3766/0), tout le risque serait en pure perte | ✓ Good |
 
