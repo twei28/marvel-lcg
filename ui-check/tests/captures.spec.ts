@@ -91,6 +91,15 @@ for (const ecran of ECRANS) {
         `Le panneau ${ecran.etape} ne s'est pas ouvert : wizardShow est-il toujours expose par scene.html ?`
       ).toHaveClass(/(^|\s)on(\s|$)/);
 
+      // Deplier ce que la page replie par defaut, sinon une partie du panneau
+      // n'entre jamais dans la photo et echappe a la surveillance.
+      for (const depliage of ecran.depliages ?? []) {
+        await page
+          .locator(depliage)
+          .first()
+          .click({ timeout: 5000 });
+      }
+
       for (const preuve of ecran.preuves ?? []) {
         await expect(
           page.locator(preuve).first(),

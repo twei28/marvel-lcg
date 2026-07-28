@@ -13,6 +13,9 @@
 //               (un numero tire au hasard, une date...). Elles sont peintes en rose.
 //   etape     : numero du panneau du wizard a ouvrir avant la photo (0 a 3).
 //               Sans lui, seul le panneau affiche au chargement est photographie.
+//   depliages : boutons a cliquer avant la photo, pour montrer un contenu que la
+//               page replie par defaut. Sans eux, une partie du panneau reste
+//               invisible et donc hors surveillance.
 //   preuves   : elements qui doivent etre visibles une fois l'etape ouverte. Ils
 //               prouvent que le CONTENU du panneau est bien dans la photo, et
 //               pas seulement son entete.
@@ -24,6 +27,7 @@ export type Ecran = {
   marqueur: string;
   masques?: string[];
   etape?: number;
+  depliages?: string[];
   preuves?: string[];
 };
 
@@ -59,7 +63,14 @@ export const ECRANS: Ecran[] = [
     marqueur: '#w-stepper',
     masques: ['#seed_div'],
     etape: 1,
-    preuves: ['#encounter-sets'],
+    // Les sets modulaires sont replies au chargement : le conteneur porte la
+    // classe 'hide-not-click', qui masque tout set non selectionne. Sans ce
+    // clic, la photo ne montrerait AUCUN set modulaire, alors que la moitie des
+    // !important de ce panneau visent "#modular-sets button" et
+    // "#modular-sets img". On vise le bouton par son comportement (son onclick)
+    // et non par son libelle, qui pourrait etre traduit.
+    depliages: ['button[onclick*="hide-not-click"]'],
+    preuves: ['#encounter-sets button', '#modular-sets button'],
   },
   {
     cle: 'preparation-heros',
