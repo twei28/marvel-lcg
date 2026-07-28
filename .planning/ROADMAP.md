@@ -57,9 +57,9 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Filet étendu aux 3 panneaux cachés du wizard (9 références de plus) — terminé le 2026-07-28
-- [ ] 02-02-PLAN.md — Projet Vite 8 + React 19 + TS 6, vitrine minimale, garde-fou d'extensions
-- [ ] 02-03-PLAN.md — Déploiement vers le jeu, service prouvé par le serveur Python, fin des `?v=N`
-- [ ] 02-04-PLAN.md — Purge des 105 `!important` de `wizard.css`, styles en ligne extraits
+- [x] 02-02-PLAN.md — Projet Vite 8 + React 19 + TS 6, vitrine minimale, garde-fou d'extensions — terminé le 2026-07-28
+- [x] 02-03-PLAN.md — Déploiement vers le jeu, service prouvé par le serveur Python, fin des `?v=N` — terminé le 2026-07-28
+- [x] 02-04-PLAN.md — Purge des 105 `!important` de `wizard.css`, styles en ligne extraits — terminé le 2026-07-28 (2 exceptions documentées, 0 différence de style calculé)
 - [ ] 02-05-PLAN.md — `@layer` posé, `tokens.css` lié en premier, tout l'existant dans `legacy`
 - [ ] 02-06-PLAN.md — `tokens.css` complet (2 thèmes, aspects), contrôle de contraste, `menu/style.css` tokenisé
 - [ ] 02-07-PLAN.md — `wizard.css` et `prepare.css` tokenisés, critère 2 mesuré

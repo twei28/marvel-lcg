@@ -10,31 +10,33 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 2 sur 7 (Fondations — stack et design system tokenisé) — **en cours**
-Plan : 02-01, 02-02 et 02-03 terminés (10 plans dans la phase)
-Statut : En cours — la chaîne de build existe et **arrive jusqu'au jeu** : le serveur Python sert `/app/vitrine.html` sans avoir été touché, et le filet visuel couvre les panneaux où vivent les `!important` à purger
-Dernière activité : 2026-07-28 — 02-03-PLAN.md terminé (`bash ui-app/deployer.sh` = build + garde-fou + `rsync` vers `public/app/` + copie de `tokens.css` + recalcul des 5 empreintes de contenu ; critères 1 et 5 de la phase démontrés sur pièce, 27 références toujours vertes)
+Plan : 02-01, 02-02, 02-03 et 02-04 terminés (10 plans dans la phase)
+Statut : En cours — la chaîne de build arrive jusqu'au jeu **et la cascade CSS de l'ancienne préparation est saine** : `wizard.css` est passé de 105 `!important` à 2 exceptions documentées, sans qu'un seul style calculé ne bouge
+Dernière activité : 2026-07-28 — 02-04-PLAN.md terminé (styles en ligne de `scene.html` extraits vers `css/menu/scene-inline.css` chargé AVANT `wizard.css`, purge des 105 `!important`, 6 régressions mesurées et corrigées par ordre de source puis spécificité ; 27 références vertes, 0 différence de style calculé sur les 4 panneaux et 10 états de survol/sélection)
 
 Progression phase 1 : [██████████] 100% (6/6 plans)
-Progression phase 2 : [███░░░░░░░] 3/10 plans (02-01, 02-02, 02-03)
-Progression projet : [██░░░░░░░░] ~18% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
+Progression phase 2 : [████░░░░░░] 4/10 plans (02-01, 02-02, 02-03, 02-04)
+Progression projet : [██░░░░░░░░] ~20% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 9
-- Durée moyenne : 18 min
-- Temps d'exécution total : 165 min
+- Plans terminés : 10
+- Durée moyenne : 25 min
+- Temps d'exécution total : 305 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
 | 1 — Filet de sécurité | 6/6 | 142 min | 24 min |
-| 2 — Fondations | 3/10 | 23 min | 8 min |
+| 2 — Fondations | 4/10 | 163 min | 41 min |
 
 **Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-05 en 14 min (2 tâches, 2 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces. Les plans sans checkpoint tiennent en 12 à 14 min.
 
 **01-06 en 24 min** (2 tâches dont 1 checkpoint validé, 3 déviations) : 8 min d'exécution, ~14 min d'attente au checkpoint. **Bilan de la phase : 6 plans, 142 min, 24 déviations toutes auto-corrigées, 3 checkpoints tous validés sans réserve.** Les déviations sont massivement des pièges d'environnement (WSL/Node Windows, ports en TIME_WAIT, outils absents), pas des erreurs de conception — c'est le coût d'entrée dans ce codebase, il devrait baisser.
+
+**02-04 en 2h20** (2 tâches + 1 checkpoint, 5 déviations) : ~57 min d'exécution, ~80 min d'attente au checkpoint. Le plan le plus long jusqu'ici, pour deux raisons dont aucune n'est le CSS lui-même : le port 2345 était occupé par une partie multi servie depuis un codebase périmé (déblocage complet à construire), et la purge exigeait une preuve que les captures ne savent pas donner (mesure des styles calculés). Le coût d'entrée n'a donc pas encore baissé : il s'est déplacé du harnais vers l'environnement d'exécution.
 
 *Mis à jour après chaque plan terminé*
 
@@ -88,6 +90,12 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [02-03] **Aucun fichier du jeu n'est réécrit si son contenu ne change pas** (garde `grep` + comparaison, écriture par redirection et jamais par `mv` : inode, droits et bit d'exécution conservés). Ces fichiers vivent hors du dépôt git, les remuer pour rien est un risque gratuit.
 - [02-03] **Le franchissement Windows → WSL se fait par `rsync` en bash, jamais par Node** (Node est le binaire Windows). Corollaire mesuré : `node /mnt/c/...` échoue même pour son propre script d'entrée, il faut un chemin relatif.
 - [02-03] **Le serveur n'a pas besoin d'être relancé pour un déploiement** : `public/` est vu par `.game/public` via un lien symbolique, les fichiers déposés sont servis à chaud. C'est ce qui permet de déployer sans couper une partie.
+- [02-04] **Un `!important` se remplace par l'ordre de source d'abord, par la spécificité ensuite, jamais par un autre `!important`.** Les 105 de `wizard.css` visaient presque tous des règles écrites plus bas dans le document (les blocs `<style>` de `scene.html`) ou plus haut dans son propre fichier. Déplacer, ou calquer le sélecteur concurrent d'un cran plus spécifique, suffit.
+- [02-04] **Seule exception légitime : un style posé en ligne par JavaScript.** Les 2 `!important` restants visent les vignettes de la galerie de héros, à qui le script de `scene.html` pose un attribut `style` (`border-radius:5px`, puis `borderColor='#c00'` au survol). Aucune feuille ne bat un style en ligne. Les deux sont commentés dans le fichier, avec la condition de leur disparition.
+- [02-04] **`deployer.sh` compte les `!important` de `wizard.css` hors commentaires** et refuse le déploiement si le nombre diffère de `IMPORTANTS_ATTENDUS` (2 aujourd'hui). Éprouvé par un vrai négatif. Le modifier est un geste conscient, dans le même commit.
+- [02-04] **Les captures ne prouvent pas que la cascade est intacte.** Elles ne montrent que le chargement. 3 des 6 régressions de la purge (contour rouge des cartes sélectionnées, ombre blanche au survol, grisage des paquets indisponibles) n'apparaissaient dans aucune des 27 références. La preuve se fait sur les **styles calculés** : `node ui-check/scripts/releve-styles.mjs relever|comparer`.
+- [02-04] **`UI_CHECK_BASE` déplace l'adresse du jeu pour le harnais**, défaut inchangé `http://127.0.0.1:2345`. Depuis WSL : `export UI_CHECK_BASE=... WSLENV=UI_CHECK_BASE`.
+- [02-04] **Tout correctif sur un fichier du jeu doit être rejouable par script tant que des mesures avant/après sont en cours** : la restauration de l'état « avant » écrase les éditions manuelles, et ces fichiers vivent hors du dépôt git.
 
 **Les quatre acquis de structure de la phase 1**, à connaître avant toute phase suivante :
 
@@ -108,7 +116,16 @@ Aucun.
 - **Le serveur doit tourner sous `launcher_fast.py`** pour tous les plans suivants : les fixtures (01-03) et la bascule `?ui=old` (01-04) ajoutent des fichiers dans `public/`, invisibles sous `launcher.py`. Relance = coupure de la partie en cours. Piège connu : le port 2345 reste en TIME_WAIT quelques dizaines de secondes après un arrêt, attendre avant de relancer.
 - **Montée de version de Playwright = re-validation des 18 références** (le Chromium embarqué change le rendu). Version épinglée `1.62.0` sans `^`.
 - **Référence de l'écran Replays quasi vide** tant qu'aucun replay n'est enregistré : à régénérer le jour où il y en aura.
-- **Séquence CSS obligatoire** en Phase 2 : captures de référence → purge des `!important` de `wizard.css` (67 sur 165) → `@layer` → tokens. Inverser aggrave la cascade. ✓ **Étape zéro faite (02-01)** : 27 références couvrent les 4 panneaux du wizard, la purge peut commencer.
+- **Séquence CSS obligatoire** en Phase 2 : captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens. Inverser aggrave la cascade. ✓ **Étape zéro faite (02-01)** ; ✓ **purge faite (02-04)** : 105 → 2 exceptions documentées. `@layer` (02-05) peut être posé sans être renversé.
+- ⚠️ **`Fusion/marvel-lcg-src` est un codebase de DISTRIBUTION périmé**, et c'est lui que sert `JOUER-EN-MULTI.bat` sur le port 2345, avec mot de passe (`launch.online.json`) et tunnel Cloudflare public. Le codebase de TRAVAIL, seul alimenté par `deployer.sh`, est `~/marvel-work/fusion/marvel-lcg-src`. Ne jamais couper ce serveur ni écrire dans `Fusion/` : une partie peut être en cours avec d'autres joueurs.
+- ⚠️ **Un `200 OK` sur `/main.html` ne prouve pas que le jeu est servi** : la page d'authentification et la page d'avertissement de cache répondent toutes deux 200. Contrôler le CONTENU (titre contenant `Marvel`), comme le fait `global-setup.ts`.
+- **Serveur de développement local sur le port 2346**, à laisser allumé pour les plans 02-05 à 02-09 (il ne survit pas à un redémarrage du poste) :
+  `~/marvel-work/python/bin/python3.10 "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check/scripts/serveur-dev.py" --port 2346`
+  Puis, pour le harnais : `export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE`.
+- **`RELEASE=1` doit être posé avant tout import du moteur** dans un lanceur maison : sans elle, le moteur démarre en mode debug (`0.5.9.200d`) et importe `editor.editor`, absent de la distribution. Les références ont été prises en mode release (`0.5.9.200r`).
+- **`ui-check/test-results/` est vidé à chaque exécution de Playwright** : n'y déposer que du jetable. Les outils vivent dans `ui-check/scripts/`.
+- **`scene-inline.css` est un fichier de transition**, sans intention de design : c'est l'ancien CSS en ligne de `scene.html`, rangé. Il partira avec `scene.html` en phase 5, en même temps que les 3 écrans `preparation-rencontre|heros|lancement` du harnais.
+- **La validation visuelle humaine du 02-04 n'a pas eu lieu** (utilisateur à distance sur téléphone ; option « les mesures tiennent lieu de validation » choisie explicitement). État de départ conservé dans `~/marvel-work/scratch/02-04/` si un détail se révélait plus tard.
 - **Le filet dépend maintenant de deux détails internes de `scene.html`** : `window.wizardShow` doit rester exposé, et le bouton de dépliage des sets modulaires doit garder un `onclick` contenant `hide-not-click`. Les deux ont un message d'erreur en français qui le dit. Quand `scene.html` sera remplacé (phase 5), les 3 écrans `preparation-rencontre|heros|lancement` seront à revoir ou à retirer.
 - **Autres contenus repliés de `scene.html` non couverts** : les `<details>` `#rules` et `#challenge` de l'étape 4 sont fermés par défaut. Si la purge touche leurs styles internes, les ajouter aux `depliages`. Les sets modulaires sont dans un conteneur à défilement (`max-height:44vh`) : la photo n'en montre que la première partie.
 - **Routage serveur par extension** en liste blanche stricte : tout asset de build hors liste échoue silencieusement (200 OK, contenu vide).
@@ -143,6 +160,6 @@ Aucun.
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : **02-01, 02-02 et 02-03 terminés** — la chaîne de build de la nouvelle UI existe et arrive jusqu'au jeu. `bash ui-app/deployer.sh` construit, contrôle et dépose ; le serveur Python sert `/app/vitrine.html` en 200 `text/html` avec React monté dedans, sans qu'une ligne de backend ait bougé ; les 5 `?v=N` sont des empreintes de contenu. `npm run captures` vérifie 27 images, toutes vertes. Critères 1 et 5 de la phase démontrés sur pièce.
+Arrêté à : **02-01 à 02-04 terminés** — la chaîne de build arrive jusqu'au jeu et la cascade de l'ancienne préparation est assainie. `wizard.css` est passé de 105 `!important` à 2 exceptions commentées (styles posés en ligne par le JavaScript de `scene.html`) ; les 361 lignes de CSS jadis en ligne vivent dans `css/menu/scene-inline.css`, chargé avant `wizard.css`. 27 références vertes, 0 différence de style calculé sur les 4 panneaux et sur 10 états de survol et de sélection.
 Fichier de reprise : aucun
-Prochaine étape : plan 02-04 (purge des `!important` de `wizard.css` : sortir les 9 blocs `<style>` de `scene.html` vers `css/menu/scene-inline.css`, les placer avant `wizard.css` dans la cascade, puis retirer les `!important` devenus inutiles). Rappels pour la suite de la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` → `@layer` → tokens), routage serveur en liste blanche stricte par extension, et tout passage vers le jeu par `deployer.sh`.
+Prochaine étape : plan 02-05 (pose des `@layer`). **Avant de commencer** : vérifier que le serveur de dev tourne sur 2346 (commande dans les points de vigilance) et exporter `UI_CHECK_BASE` + `WSLENV`. Méthode de preuve désormais disponible et attendue : `node ui-check/scripts/releve-styles.mjs relever` avant, puis après, puis `comparer` — la sortie doit dire « Aucun style calculé n'a changé ». Rappels : séquence CSS obligatoire (✓ captures, ✓ purge, → `@layer`, → tokens), routage serveur en liste blanche stricte par extension, tout passage vers le jeu par `deployer.sh`.
