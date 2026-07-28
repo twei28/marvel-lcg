@@ -6,7 +6,7 @@ Scopé le 2026-07-28 avec l'utilisateur, à partir de `.planning/research/FEATUR
 
 ### Fondations (FOUND)
 
-- [ ] **FOUND-01**: Filet de sécurité en place avant toute modification visuelle : captures Playwright de référence des 5 écrans actuels, fixtures `get_world` extraites des runs autoplay, bascule `?ui=old` disponible pendant toute la migration
+- [x] **FOUND-01**: Filet de sécurité en place avant toute modification visuelle : captures Playwright de référence des 6 écrans actuels, fixtures `get_world` extraites des runs autoplay, bascule `?ui=old` disponible pendant toute la migration
 - [ ] **FOUND-02**: Design system tokenisé (couleurs, typo, espacement, iconographie) : squelette clair « instrument de jeu », personnalité comic (halftone/KAPOW dosée), thème sombre commutable prévu par les tokens
 - [ ] **FOUND-03**: Stack nouvelle UI opérationnelle : React 19 + TypeScript 6 + Vite 8, build multi-pages statique dans `public/app/`, servi par le serveur Python existant sans modification backend, pages anciennes et nouvelles coexistent
 - [ ] **FOUND-04**: Composant Carte à double représentation : tuile lisible (nom, coût, stats, icônes, statuts, art recadré) + lecteur HTML du texte réel de la carte + scan complet à l'inspection — réutilisé par toutes les surfaces
@@ -84,7 +84,7 @@ Scopé le 2026-07-28 avec l'utilisateur, à partir de `.planning/research/FEATUR
 
 | Requirement | Phase | Statut |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 2 | Pending |
 | FOUND-03 | Phase 2 | Pending |
 | FOUND-04 | Phase 3 | Pending |

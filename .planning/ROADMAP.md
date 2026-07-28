@@ -27,7 +27,7 @@ La refonte se fait **surface par surface, en étranglement**, sans jamais touche
 **Dépend de** : Rien (première phase, bloquante pour toutes les autres)
 **Requirements** : FOUND-01
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Une commande unique capture les écrans actuels (5 écrans × 3 gabarits PC/tablette/mobile) et, à la relance, signale toute différence visuelle.
+  1. Une commande unique capture les écrans actuels (6 écrans × 3 gabarits PC/tablette/mobile) et, à la relance, signale toute différence visuelle.
   2. 20 à 40 fixtures `get_world` issues de l'autoplay sont rejouables hors partie : on peut afficher un état de plateau sans lancer une partie réelle.
   3. Sur toute page en cours de migration, l'utilisateur revient à l'ancienne version par `?ui=old` et le jeu reste jouable de bout en bout.
   4. Un test automatisé vérifie qu'une partie se lance depuis l'écran de préparation actuel et atteint le plateau (contrat `/new?data=` gelé avant d'y toucher).
