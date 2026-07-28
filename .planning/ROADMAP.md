@@ -56,7 +56,7 @@ Plans:
 **Plans** : 10 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Filet étendu aux 3 panneaux cachés du wizard (9 références de plus)
+- [x] 02-01-PLAN.md — Filet étendu aux 3 panneaux cachés du wizard (9 références de plus) — terminé le 2026-07-28
 - [ ] 02-02-PLAN.md — Projet Vite 8 + React 19 + TS 6, vitrine minimale, garde-fou d'extensions
 - [ ] 02-03-PLAN.md — Déploiement vers le jeu, service prouvé par le serveur Python, fin des `?v=N`
 - [ ] 02-04-PLAN.md — Purge des 105 `!important` de `wizard.css`, styles en ligne extraits

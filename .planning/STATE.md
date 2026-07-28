@@ -10,12 +10,12 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 2 sur 7 (Fondations — stack et design system tokenisé) — **en cours**
-Plan : 02-02 terminé (10 plans dans la phase)
-Statut : En cours — la chaîne de build existe et est contrainte par le serveur qui la servira
-Dernière activité : 2026-07-28 — 02-02-PLAN.md terminé (projet `ui-app/` en React 19.2.8 + TS 6.0.3 + Vite 8.1.5, build `dist/vitrine.html` sous `base: '/app/'`, garde-fou d'extensions vert sur le build réel et rouge sur un `.png` fabriqué, erreur de type prouvée bloquante)
+Plan : 02-01 et 02-02 terminés (10 plans dans la phase)
+Statut : En cours — la chaîne de build existe, et le filet visuel couvre enfin les panneaux où vivent les `!important` à purger
+Dernière activité : 2026-07-28 — 02-01-PLAN.md terminé (3 panneaux masqués de `scene.html` sous surveillance via `window.wizardShow`, 9 références de plus, `npm run captures` vérifie 27 images ; sets modulaires dépliés avant la photo, sinon la moitié des `!important` du panneau restait hors champ)
 
 Progression phase 1 : [██████████] 100% (6/6 plans)
-Progression phase 2 : [█░░░░░░░░░] 02-02 livré (10 plans découpés)
+Progression phase 2 : [██░░░░░░░░] 02-01 et 02-02 livrés (10 plans découpés)
 Progression projet : [██░░░░░░░░] ~15% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
 
 ## Métriques
@@ -76,6 +76,11 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [02-02] **`vite-plugin-checker` fait réellement échouer le build sur erreur de type** (vérifié en injectant une erreur volontaire, exit 2 + `TS2322`). Le repli prévu (script `typecheck` enchaîné dans `deployer.sh`) n'est pas nécessaire.
 - [02-02] **`ui-app/styles/tokens.css` est la source unique des tokens**, avec la déclaration `@layer socle, legacy, base, composants, utilitaires;` en tête. Deux destinations : le bundle Vite et une copie vers `public/css/tokens.css`. Ne jamais éditer la copie.
 - [02-02] **Pas d'aiguillage `ui-switch.js` sur `vitrine.html`** : cette page n'a pas d'ancienne version, il n'y a rien vers quoi revenir. La recette de bascule redevient obligatoire en phase 3.
+- [02-01] **Un panneau masqué du wizard s'ouvre par `window.wizardShow(i)`, jamais par un clic sur `.w-step`** : le gestionnaire de clic de `scene.html` est gardé par `canPass[cur]()` et ne fait rien tant que l'étape courante n'est pas valide.
+- [02-01] **Un écran de `ecrans.ts` peut décrire une interaction** (`etape`, `depliages`) et plus seulement une URL. Il doit alors déclarer des `preuves` : sans elles, une photo d'en-tête vide passerait pour une référence valide.
+- [02-01] **Ce que la page replie par défaut échappe à la surveillance.** Mesuré : `#modular-sets` porte `hide-not-click` au chargement, la première photo de l'étape 2 ne montrait aucun set modulaire alors que l'essentiel des `!important` de ce panneau les vise. Tout contenu replié doit être déplié avant la photo.
+- [02-01] **Un bouton se vise par son `onclick`, pas par son libellé** (`button[onclick*="hide-not-click"]`) : le libellé peut être traduit, le comportement non.
+- [02-01] **Une nouvelle référence se contrôle sur son CONTENU** (lecture de l'image), jamais sur sa seule existence. Une image montrant le mauvais panneau serait figée sans bruit.
 
 **Les quatre acquis de structure de la phase 1**, à connaître avant toute phase suivante :
 
@@ -96,7 +101,9 @@ Aucun.
 - **Le serveur doit tourner sous `launcher_fast.py`** pour tous les plans suivants : les fixtures (01-03) et la bascule `?ui=old` (01-04) ajoutent des fichiers dans `public/`, invisibles sous `launcher.py`. Relance = coupure de la partie en cours. Piège connu : le port 2345 reste en TIME_WAIT quelques dizaines de secondes après un arrêt, attendre avant de relancer.
 - **Montée de version de Playwright = re-validation des 18 références** (le Chromium embarqué change le rendu). Version épinglée `1.62.0` sans `^`.
 - **Référence de l'écran Replays quasi vide** tant qu'aucun replay n'est enregistré : à régénérer le jour où il y en aura.
-- **Séquence CSS obligatoire** en Phase 2 : captures de référence → purge des `!important` de `wizard.css` (67 sur 165) → `@layer` → tokens. Inverser aggrave la cascade.
+- **Séquence CSS obligatoire** en Phase 2 : captures de référence → purge des `!important` de `wizard.css` (67 sur 165) → `@layer` → tokens. Inverser aggrave la cascade. ✓ **Étape zéro faite (02-01)** : 27 références couvrent les 4 panneaux du wizard, la purge peut commencer.
+- **Le filet dépend maintenant de deux détails internes de `scene.html`** : `window.wizardShow` doit rester exposé, et le bouton de dépliage des sets modulaires doit garder un `onclick` contenant `hide-not-click`. Les deux ont un message d'erreur en français qui le dit. Quand `scene.html` sera remplacé (phase 5), les 3 écrans `preparation-rencontre|heros|lancement` seront à revoir ou à retirer.
+- **Autres contenus repliés de `scene.html` non couverts** : les `<details>` `#rules` et `#challenge` de l'étape 4 sont fermés par défaut. Si la purge touche leurs styles internes, les ajouter aux `depliages`. Les sets modulaires sont dans un conteneur à défilement (`max-height:44vh`) : la photo n'en montre que la première partie.
 - **Routage serveur par extension** en liste blanche stricte : tout asset de build hors liste échoue silencieusement (200 OK, contenu vide).
 - **Recherche approfondie à prévoir** avant planification : Phase 4 (contrat `/new?data=` et campaign logs des 4 formats), Phase 6 (table de zones par palier, géométrie 4 joueurs mobile), Phase 7 (vocabulaire `select_rule` / `ability_type` / `event_name`).
 - **Livraison** : chaque étape livrée = re-zip vers `Fusion/` + relance serveur + non-régression (autoplay 0 traceback). Codebase vivant = `~/marvel-work/fusion/marvel-lcg-src`. Rituel exécuté le 2026-07-28 pour la phase 1 ; sauvegarde du zip précédent en `marvel-lcg-src-fusion.zip.bak-avant-phase1`.
@@ -126,6 +133,6 @@ Aucun.
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : **02-02 terminé** — la chaîne de build de la nouvelle UI existe (voir .planning/phases/02-fondations-design-system/02-02-SUMMARY.md). `npm run build` dans `ui-app/` produit `dist/vitrine.html` + un `.js` et un `.css` hachés sous `/app/`, le garde-fou d'extensions refuse tout intrus, une erreur de type arrête le build.
+Arrêté à : **02-01 et 02-02 terminés** — la chaîne de build de la nouvelle UI existe (02-02-SUMMARY.md) et le filet visuel couvre les 4 panneaux du wizard (02-01-SUMMARY.md). `npm run captures` vérifie 27 images ; `npm run build` dans `ui-app/` produit `dist/vitrine.html` + un `.js` et un `.css` hachés sous `/app/`, le garde-fou d'extensions refuse tout intrus, une erreur de type arrête le build.
 Fichier de reprise : aucun
 Prochaine étape : plan 02-03 (`deployer.sh` : build + garde-fou + `rsync` vers `public/app/` + copie de `tokens.css` vers `public/css/`). Rappels pour la suite de la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens) et routage serveur en liste blanche stricte par extension (tout asset de build hors liste échoue silencieusement).
