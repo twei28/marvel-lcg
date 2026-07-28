@@ -14,40 +14,27 @@
 // Aucune dependance : Node tout seul suffit.
 import fs from 'node:fs';
 import path from 'node:path';
-import url from 'node:url';
 import { spawnSync } from 'node:child_process';
+import {
+  RACINE,
+  DOSSIER_REFERENCES,
+  DOSSIER_SORTIE,
+  PAGE_DE_COMPARAISON as PAGE,
+  GABARITS,
+  MODE_DEMONSTRATION,
+  cheminDeLOutilDeCaptures,
+  lireLesEcrans,
+  lireLesNouvellesCaptures,
+} from './commun.mjs';
 
-const ICI = path.dirname(url.fileURLToPath(import.meta.url));
-const RACINE = path.resolve(ICI, '..');
-const DOSSIER_REFERENCES = path.join(RACINE, 'references');
-const DOSSIER_RESULTATS = path.join(RACINE, 'test-results');
-const DOSSIER_SORTIE = path.join(RACINE, 'comparaison');
 const DOSSIER_IMAGES = path.join(DOSSIER_SORTIE, 'images');
-const PAGE = path.join(DOSSIER_SORTIE, 'index.html');
-
-// Les 3 formats d'ecran, avec le nom qu'on affiche a l'utilisateur.
-// L'ordre de cette liste est l'ordre d'affichage dans la page.
-const GABARITS = [
-  { cle: 'pc', titre: 'Ordinateur' },
-  { cle: 'tablette', titre: 'Tablette' },
-  { cle: 'mobile', titre: 'Téléphone' },
-];
-
-const MODE_DEMONSTRATION = Boolean(process.env.UI_CHECK_DEMO);
 
 // ---------------------------------------------------------------------------
 // 1. Relancer la verification des ecrans
 // ---------------------------------------------------------------------------
 
 function relancerLesCaptures() {
-  const cli = path.join(RACINE, 'node_modules', '@playwright', 'test', 'cli.js');
-  if (!fs.existsSync(cli)) {
-    console.error(
-      "L'outil de captures n'est pas installé.\n" +
-        'Ouvre un terminal dans le dossier ui-check et tape : npm install'
-    );
-    process.exit(1);
-  }
+  const cli = cheminDeLOutilDeCaptures();
   console.log('Vérification des écrans en cours (une petite minute)...\n');
   const resultat = spawnSync(process.execPath, [cli, 'test', 'tests/captures.spec.ts'], {
     cwd: RACINE,
@@ -59,84 +46,7 @@ function relancerLesCaptures() {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Lire la liste des ecrans (ecrans.ts est le fichier de reference)
-// ---------------------------------------------------------------------------
-
-async function lireLesEcrans() {
-  const chemin = path.join(RACINE, 'ecrans.ts');
-  if (!fs.existsSync(chemin)) {
-    console.error(`Fichier introuvable : ${chemin}`);
-    process.exit(1);
-  }
-
-  // Node sait lire le TypeScript directement depuis la version 22.18.
-  try {
-    const module = await import(url.pathToFileURL(chemin).href);
-    if (Array.isArray(module.ECRANS) && module.ECRANS.length > 0) {
-      return module.ECRANS.map((ecran) => ({ cle: ecran.cle, titre: ecran.titre }));
-    }
-  } catch {
-    // Version de Node plus ancienne : on retombe sur une lecture du fichier.
-  }
-
-  const source = fs.readFileSync(chemin, 'utf8');
-  const motif = /\bcle:\s*'([^']+)'\s*,\s*titre:\s*'([^']+)'/g;
-  const ecrans = [];
-  let trouve;
-  while ((trouve = motif.exec(source)) !== null) {
-    ecrans.push({ cle: trouve[1], titre: trouve[2] });
-  }
-  if (ecrans.length === 0) {
-    console.error(`Impossible de lire la liste des écrans dans ${chemin}.`);
-    process.exit(1);
-  }
-  return ecrans;
-}
-
-// ---------------------------------------------------------------------------
-// 3. Retrouver les nouvelles captures produites par la verification
-// ---------------------------------------------------------------------------
-
-function* fichiersRecursifs(dossier) {
-  if (!fs.existsSync(dossier)) return;
-  for (const entree of fs.readdirSync(dossier, { withFileTypes: true })) {
-    const complet = path.join(dossier, entree.name);
-    if (entree.isDirectory()) yield* fichiersRecursifs(complet);
-    else yield complet;
-  }
-}
-
-// Playwright range ses fichiers dans test-results/<titre-du-test>-<gabarit>/.
-// On repere donc le gabarit par la FIN du nom de dossier, pas par un chemin exact.
-function gabaritDuDossier(nomDeDossier) {
-  const trouve = GABARITS.find((gabarit) => nomDeDossier.endsWith(`-${gabarit.cle}`));
-  return trouve ? trouve.cle : null;
-}
-
-// Renvoie une table : "<ecran>/<gabarit>" -> { apres, difference }
-function lireLesNouvellesCaptures() {
-  const captures = new Map();
-  for (const fichier of fichiersRecursifs(DOSSIER_RESULTATS)) {
-    const nom = path.basename(fichier);
-    let suffixe = null;
-    if (nom.endsWith('-actual.png')) suffixe = 'apres';
-    else if (nom.endsWith('-diff.png')) suffixe = 'difference';
-    else continue;
-
-    const gabarit = gabaritDuDossier(path.basename(path.dirname(fichier)));
-    if (!gabarit) continue;
-
-    const cle = nom.replace(/-(actual|diff)\.png$/, '');
-    const identifiant = `${cle}/${gabarit}`;
-    const entree = captures.get(identifiant) ?? {};
-    entree[suffixe] = fichier;
-    captures.set(identifiant, entree);
-  }
-  return captures;
-}
-
-// ---------------------------------------------------------------------------
-// 4. Construire le modele de la page
+// 2. Construire le modele de la page
 // ---------------------------------------------------------------------------
 
 function copierImage(source, nomDeDestination) {
@@ -180,7 +90,7 @@ function construireLeModele(ecrans, captures) {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Ecrire la page
+// 3. Ecrire la page
 // ---------------------------------------------------------------------------
 
 function echapper(texte) {
