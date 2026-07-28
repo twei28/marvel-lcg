@@ -128,7 +128,7 @@ Purge seche des 105 `!important`, sans autre changement : **2787 differences de 
 - **Le compte de `!important` se verifie hors commentaires.** Les commentaires du fichier parlent de `!important` : un `grep` brut en trouve 8 la ou il y a 2 declarations. Le garde-fou de `deployer.sh` retire les commentaires avant de compter.
 - **Le garde-fou vit dans `deployer.sh` et non dans un test.** C'est le seul chemin vers le jeu : tout changement de `wizard.css` y passe. Un test Playwright aurait du lire un chemin WSL depuis Node, qui est le binaire Windows.
 - **Le correctif de cascade est rejoue par script** (`corriger-wizard.py`, dans `~/marvel-work/scratch/02-04/`). Les editions manuelles avaient ete ecrasees par une restauration de l'etat « avant » pendant une mesure : un fichier hors depot git ne pardonne pas.
-- **Validation visuelle : l'utilisateur a choisi de s'en remettre aux mesures** (option B), etant a distance sur telephone au moment du checkpoint. Ce qui tient lieu de preuve : 27 references vertes sans revalidation, 0 difference de style calcule sur les 4 panneaux, 0 difference sur 10 etats de selection et de survol.
+- **Validation visuelle : NON EFFECTUEE, elle reste DUE.** Le plan a ete cloture sur les seules mesures automatiques, sans reponse de l'utilisateur : 27 references vertes sans revalidation, 0 difference de style calcule sur les 4 panneaux, 0 difference sur 10 etats de selection et de survol. Ces mesures sont solides mais ne remplacent pas le coup d'oeil humain prevu par le plan (`gate="blocking"`). A faire avant 02-05, qui posera `@layer` par-dessus.
 
 ## Deviations from Plan
 
@@ -217,7 +217,7 @@ Points de vigilance a transmettre :
 - **Deux `!important` subsistent**, et le garde-fou de `deployer.sh` les compte. Le jour ou le JavaScript de `scene.html` cessera de poser `border-radius:5px` et `borderColor='#c00'` sur les vignettes de la galerie (phase 5, quand `scene.html` sera remplace), les deux exceptions disparaissent et `IMPORTANTS_ATTENDUS` passe a 0.
 - **`scene-inline.css` est un fichier de transition.** Il ne represente aucune intention de design : c'est l'ancien contenu en ligne, range. Quand `scene.html` sera remplace en phase 5, il partira avec, et les 3 ecrans `preparation-rencontre|heros|lancement` du harnais avec lui.
 - **`releve-styles.mjs` est l'outil de preuve des plans 02-05 et 02-06.** Relever avant, appliquer, relever apres, comparer : la sortie doit dire « Aucun style calcule n a change ». Ses fichiers pesent ~200 Mo et doivent aller dans `test-results/`, qui est ignore par git.
-- **La validation visuelle humaine des 4 etapes n'a pas eu lieu** (utilisateur a distance sur telephone ; option « les mesures tiennent lieu de validation » choisie explicitement). Si un detail se revele plus tard, le point de depart est `~/marvel-work/scratch/02-04/` : `scene.html` et `wizard.css` d'origine, `apres-purge/` et `wizard-corrige.css`.
+- **La validation visuelle humaine des 4 etapes n'a pas eu lieu et reste DUE.** Le checkpoint `gate="blocking"` a ete franchi sans reponse de l'utilisateur. A faire sur `http://127.0.0.1:2346/scene.html` avant 02-05. Si un detail se revele plus tard, le point de depart est `~/marvel-work/scratch/02-04/` : `scene.html` et `wizard.css` d'origine, `apres-purge/` et `wizard-corrige.css`.
 
 ---
 *Phase: 02-fondations-design-system*
