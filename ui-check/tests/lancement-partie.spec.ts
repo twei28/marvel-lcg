@@ -8,13 +8,16 @@
 //
 // Deux verifications, volontairement independantes :
 //
-//   1. « Depuis l'ecran » — on joue le parcours complet dans le navigateur,
-//      on intercepte la vraie requete et on compare son descripteur au contrat
-//      fige (ui-check/contrat-nouvelle-partie.json).
-//   2. « Sans l'ecran » — on rejoue le contrat directement sur /new, sans
-//      navigateur. Cette seconde verification reste valable meme quand la
-//      preparation est en chantier : elle dit si c'est l'ECRAN ou le CONTRAT
-//      qui a casse.
+//   1. « Sans l'ecran » — on rejoue le contrat directement sur /new, sans
+//      navigateur. Elle reste valable meme quand la preparation est en
+//      chantier, et elle passe en premier parce qu'elle coute 20 ms : si elle
+//      est rouge, le probleme est dans le CONTRAT, pas dans l'ECRAN.
+//   2. « Depuis l'ecran » — on joue le parcours complet dans le navigateur,
+//      on intercepte la vraie requete, on compare son descripteur au contrat
+//      fige (ui-check/contrat-nouvelle-partie.json), puis on prouve qu'on
+//      atteint le plateau en interrogeant le moteur (/get_world). Elle passe
+//      en dernier pour laisser le serveur sur une partie reellement mise en
+//      place, et non sur une partie creee que personne n'a affichee.
 //
 //   npm run lancement
 //
@@ -155,7 +158,45 @@ test.beforeAll(() => {
 });
 
 test.describe("Lancement d'une partie", () => {
-  test("Depuis l'ecran de preparation : le contrat est respecte", async ({ page }) => {
+  test("Sans l'ecran : le contrat seul suffit a creer une partie", async ({ request }) => {
+    // Meme charge utile que celle de launcher.js, reconstruite ici a partir
+    // des donnees du serveur. Aucun navigateur : si ce test passe alors que
+    // le suivant echoue, c'est l'ECRAN qui a casse, pas le CONTRAT.
+    const scenario = await (await request.get('/get_scenario_json?rhino')).json();
+    const deck = await (await request.get('/get_hero_json?spider_man')).json();
+
+    const charge: Record<string, unknown> = {
+      campaign_json: JSON.stringify(scenario),
+      campaign_log: {},
+      challenges: scenario.challenges ?? [],
+      encounter_set_names: [
+        ...new Set([...(scenario.encounter_sets ?? []), ...(scenario.modular_sets ?? [])]),
+      ],
+      hero_json: [JSON.stringify(deck)],
+      rules: contrat.regles_partie_standard,
+      seed: 1234,
+      timeout: 0,
+    };
+
+    // La charge construite doit elle-meme respecter le contrat, sinon on
+    // testerait le moteur avec quelque chose que l'ecran n'envoie jamais.
+    const ecarts = ecartsAuContrat(charge);
+    expect(ecarts, messageDEcart('charge reconstruite depuis le contrat', ecarts)).toEqual([]);
+
+    const reponse = await request.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)));
+
+    expect(
+      reponse.status(),
+      `Le moteur a refuse une partie construite selon le contrat fige (HTTP ${reponse.status()}). ` +
+        `Le contrat de ui-check/contrat-nouvelle-partie.json ne correspond plus a ce qu'attend /new.`
+    ).toBe(200);
+
+    expect(await reponse.json()).toEqual(contrat.reponse_attendue);
+  });
+
+  test("Depuis l'ecran de preparation : le contrat est respecte et le plateau repond", async ({
+    page,
+  }) => {
     // ?ui=new : on veut explicitement la NOUVELLE preparation, quelle que soit
     // la preference eventuellement rangee dans le stockage local (cf. bascule).
     await page.goto('/prepare.html?ui=new', { waitUntil: 'load' });
@@ -190,7 +231,12 @@ test.describe("Lancement d'une partie", () => {
       "Le bouton de lancement n'est pas utilisable : l'assistant considere la partie comme incomplete."
     ).toBeEnabled();
 
-    // On attrape la vraie requete au vol, avant toute navigation.
+    // On attrape la vraie requete au vol, avant toute navigation. On attend
+    // aussi sa REPONSE : c'est ce qui rend la suite honnete. Le moteur appelle
+    // NewGame() avant de repondre, et NewGame remet le monde a zero
+    // (render_id = 0, mesure). Sans cette attente, le sondage ci-dessous
+    // pourrait lire le monde de la partie PRECEDENTE et se declarer satisfait
+    // sans rien avoir prouve.
     const [requete, reponseNew] = await Promise.all([
       page.waitForRequest(/\/new\?data=/),
       page.waitForResponse(/\/new\?data=/),
@@ -207,41 +253,41 @@ test.describe("Lancement d'une partie", () => {
       reponseNew.status(),
       `Le moteur a refuse la partie envoyee par l'ecran de preparation (HTTP ${reponseNew.status()}).`
     ).toBe(200);
-  });
 
-  test("Sans l'ecran : le contrat seul suffit a creer une partie", async ({ request }) => {
-    // Meme charge utile que celle de launcher.js, reconstruite ici a partir
-    // des donnees du serveur. Aucun navigateur : si ce test passe alors que
-    // le premier echoue, c'est l'ECRAN qui a casse, pas le CONTRAT.
-    const scenario = await (await request.get('/get_scenario_json?rhino')).json();
-    const deck = await (await request.get('/get_hero_json?spider_man')).json();
-
-    const charge: Record<string, unknown> = {
-      campaign_json: JSON.stringify(scenario),
-      campaign_log: {},
-      challenges: scenario.challenges ?? [],
-      encounter_set_names: [
-        ...new Set([...(scenario.encounter_sets ?? []), ...(scenario.modular_sets ?? [])]),
-      ],
-      hero_json: [JSON.stringify(deck)],
-      rules: contrat.regles_partie_standard,
-      seed: 1234,
-      timeout: 0,
-    };
-
-    // La charge construite doit elle-meme respecter le contrat, sinon on
-    // testerait le moteur avec quelque chose que l'ecran n'envoie jamais.
-    const ecarts = ecartsAuContrat(charge);
-    expect(ecarts, messageDEcart('charge reconstruite depuis le contrat', ecarts)).toEqual([]);
-
-    const reponse = await request.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)));
-
+    // Le monde est donc bien celui de la partie qu'on vient de creer.
+    const mondeNeuf = await (await page.request.get('/get_world?p=0')).json();
     expect(
-      reponse.status(),
-      `Le moteur a refuse une partie construite selon le contrat fige (HTTP ${reponse.status()}). ` +
-        `Le contrat de ui-check/contrat-nouvelle-partie.json ne correspond plus a ce qu'attend /new.`
-    ).toBe(200);
+      mondeNeuf.render_id,
+      'Le monde n\'a pas ete remis a zero par /new : le sondage qui suit lirait la partie precedente.'
+    ).toBe(0);
 
-    expect(await reponse.json()).toEqual(contrat.reponse_attendue);
+    // Le contrat respecte ne prouve pas que la partie demarre : le client
+    // navigue ensuite vers /?hot_seat et le moteur met la scene en place.
+    // On interroge le moteur plutot qu'un selecteur du plateau actuel : ce
+    // runtime est intouchable, et son DOM ne nous regarde pas.
+    // page.request decompresse le gzip renvoye par /get_world ; un fetch brut
+    // cote page, non.
+    await expect
+      .poll(
+        async () => {
+          const reponse = await page.request.get('/get_world?p=0');
+          const monde = await reponse.json();
+          return monde.render_id;
+        },
+        {
+          timeout: 60_000,
+          intervals: [1000],
+          message:
+            "La partie a ete creee mais le plateau n'a jamais repondu : le moteur n'a pas fini la mise en place en 60 secondes.",
+        }
+      )
+      .toBeGreaterThan(0);
+
+    const monde = await (await page.request.get('/get_world?p=0')).json();
+    expect(
+      typeof monde.phase === 'string' && monde.phase.length > 0,
+      `Le moteur a rendu un monde mais sans phase de jeu (recu : ${JSON.stringify(monde.phase)}). ` +
+        `La mise en place ne s'est pas deroulee normalement.`
+    ).toBe(true);
   });
 });
