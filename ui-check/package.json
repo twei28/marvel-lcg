@@ -8,7 +8,7 @@
     "captures:comparer": "node scripts/comparer.mjs",
     "captures:valider": "node scripts/valider.mjs",
     "fixtures": "playwright test tests/fixtures.spec.ts",
-    "bascule": "playwright test tests/bascule.spec.ts",
+    "bascule": "playwright test tests/bascule.spec.ts --project=pc",
     "lancement": "playwright test tests/lancement-partie.spec.ts"
   },
   "devDependencies": {
