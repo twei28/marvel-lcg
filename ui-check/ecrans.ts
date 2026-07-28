@@ -31,8 +31,12 @@ export const ECRANS: Ecran[] = [
     cle: 'preparation',
     titre: 'Preparation (ancienne)',
     url: '/scene.html',
-    marqueur: '#mode',
+    // La barre d'etapes du wizard : c'est le seul repere visible au chargement.
+    // Les panneaux d'etapes (#mode, #rules...) sont masques tant qu'on n'y est pas.
+    marqueur: '#w-stepper',
     // Le numero de "seed" est tire au hasard a chaque ouverture de la page.
+    // Il est aujourd'hui dans une etape masquee, mais on garde le masque en
+    // filet : il redeviendra utile si l'etape s'ouvre par defaut un jour.
     masques: ['#seed_div'],
   },
   {
@@ -57,10 +61,10 @@ export const ECRANS: Ecran[] = [
     cle: 'replay',
     titre: 'Replays',
     url: '/replay.html',
-    // Les deux blocs de la page sont masques tant que le serveur n'a pas
-    // repondu : on se contente de la page elle-meme, le garde-fou contre la
-    // page d'avertissement de cache est fait autrement (voir captures.spec.ts).
-    marqueur: 'body',
+    // Le bloc "Game Replay" n'apparait qu'une fois la liste chargee : c'est
+    // donc une bonne preuve que la page a vraiment fini de s'afficher.
+    // Note : cet ecran est presque vide tant qu'aucune partie n'a ete enregistree.
+    marqueur: '#replay-items',
   },
 ];
 
