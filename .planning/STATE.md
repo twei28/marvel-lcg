@@ -10,27 +10,27 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 1 sur 7 (Filet de sécurité et boucle de dev)
-Plan : 01-01 et 01-03 terminés (2 sur 6 dans la phase courante ; 01-02 en cours en parallèle)
+Plan : 01-01, 01-02 et 01-03 terminés (3 sur 6 dans la phase courante)
 Statut : En cours
-Dernière activité : 2026-07-28 — 01-03-PLAN.md terminé (34 états de jeu rejouables hors partie, /fixtures.html)
+Dernière activité : 2026-07-28 — 01-02-PLAN.md terminé (page de comparaison avant/après en français, validation derrière un OUI explicite)
 
-Progression phase 1 : [███░░░░░░░] 33% (2/6 plans)
-Progression projet : [█░░░░░░░░░] ~5% (plans des phases 2 à 7 non encore découpés)
+Progression phase 1 : [█████░░░░░] 50% (3/6 plans)
+Progression projet : [█░░░░░░░░░] ~7% (plans des phases 2 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 2
-- Durée moyenne : 13 min
-- Temps d'exécution total : 26 min
+- Plans terminés : 3
+- Durée moyenne : 21 min
+- Temps d'exécution total : 63 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
-| 1 — Filet de sécurité | 2/6 | 26 min | 13 min |
+| 1 — Filet de sécurité | 3/6 | 63 min | 21 min |
 
-**Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations auto-corrigées)
+**Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations auto-corrigées)
 
 *Mis à jour après chaque plan terminé*
 
@@ -53,6 +53,10 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [01-03] Les fixtures sont des modules `.js` (`export default {...}`) et jamais `.json` : `.json` n'est pas dans la liste blanche de routage du serveur (200 + image JPEG).
 - [01-03] Le bot d'autoplay tourne sur `marvel-lcg-src/.game` (dossier compilé par `launcher_fast.py`), seul dossier importable et strictement identique au code servi ; `test_autoplay.py` reste intouché, `dump_get_world.py` en est une copie.
 - [01-03] `public/fixtures.html` monte aujourd'hui un rendu texte ; en phase 5 le composant React prendra sa place **sans changer le contrat** (import d'une fixture → props).
+- [01-02] **`npm run captures:valider` est le seul chemin autorisé vers `references/`** : aucun plan futur ne doit appeler `--update-snapshots` directement ni ajouter un drapeau de contournement (`--yes`, `--force`). Le contrôle : `grep -rn "update-snapshots" ui-check/` ne doit remonter que `valider.mjs`.
+- [01-02] La validation visuelle passe par une page HTML maison (`comparaison/index.html`), pas par le rapport natif de Playwright : celui-ci n'affiche que les échecs, en anglais. La page montre **tous** les écrans, y compris les inchangés.
+- [01-02] Mode démonstration `UI_CHECK_DEMO` = inversion de luminosité à teintes conservées, et non un `hue-rotate` : mesuré, un `hue-rotate` ne dépasse pas le seuil de tolérance sur les écrans sombres (4 à 7 écrans détectés sur 18 au lieu de 18).
+- [01-02] Entrée fermée sans réponse = refus. Dans le doute, on ne touche pas aux références.
 
 ### Todos en attente
 
@@ -71,11 +75,13 @@ Aucun.
 - **Les fixtures et `fixtures.html` vivent hors du dépôt** (`~/marvel-work/fusion/marvel-lcg-src/public/`), donc hors sauvegarde git : un re-zip vers `Fusion/` les emporte, mais une reconstruction du codebase les perdrait. Régénération : `~/marvel-work/tools/run_dump.sh <port> <scenario> <heros>` (documenté en tête de `public/js/fixtures/index.js`).
 - **Ne jamais éditer une fixture à la main** (l'en-tête de chaque fichier le rappelle) ; `index.js` est tenu à la main et doit suivre toute régénération, sinon `npm run fixtures` devient rouge — comportement voulu.
 - **Node est le binaire Windows** (`node.exe` via `~/.local/bin/node`) : il ne lit pas les chemins WSL. Pour importer un fichier du jeu depuis Node, passer par `file://wsl.localhost/Ubuntu/...`.
+- **npm exécute ses scripts via `cmd.exe`** (conséquence du point précédent : `process.platform === 'win32'`). Donc : `;` et `&&` POSIX ne fonctionnent pas dans `package.json` (tout script npm doit rester **une commande unique**) ; une variable d'environnement passée en préfixe depuis WSL n'atteint pas le processus (il faut `WSLENV=NOM`) ; une entrée redirigée (`printf ... | npm run ...`) n'est pas transmise au script (appeler `node scripts/xxx.mjs` directement dans les tests).
+- **Titres d'écrans de `ecrans.ts` sans accents** : ils servent aussi de titres de tests Playwright, donc de noms de dossiers dans `test-results/`. À accentuer en une ligne le jour où `ecrans.ts` sera rouvert (cosmétique, la page de comparaison est accentuée partout ailleurs).
 - **Cas de jeu encore absents des fixtures** : `zone-victoire`, `deck-rencontre-vide`, `stade-3` (les 5 parties se sont soldées par une défaite). Le dumper sait les capturer ; à relancer si le plateau en a besoin.
 
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : 01-03-PLAN.md terminé (voir .planning/phases/01-filet-de-securite/01-03-SUMMARY.md)
+Arrêté à : 01-02-PLAN.md terminé et validé au checkpoint (voir .planning/phases/01-filet-de-securite/01-02-SUMMARY.md) ; 01-03 terminé en parallèle
 Fichier de reprise : aucun
-Prochain plan : 01-04-PLAN.md — bascule `?ui=old` (01-02 exécuté en parallèle)
+Prochain plan : 01-04-PLAN.md — bascule `?ui=old` mémorisée, démontrée sur l'écran de préparation
