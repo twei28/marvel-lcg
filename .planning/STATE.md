@@ -5,17 +5,18 @@
 Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 
 **Valeur centrale :** Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mobile, sans jamais toucher aux règles du moteur.
-**Focus actuel :** Phase 1 terminée et validée — prêt à planifier la phase 2 (fondations : stack + design system tokenisé)
+**Focus actuel :** Phase 2 en cours (fondations : stack React/TS/Vite servie par le serveur existant + design system tokenisé)
 
 ## Position actuelle
 
-Phase : 1 sur 7 (Filet de sécurité et boucle de dev) — **TERMINÉE**
-Plan : 6 sur 6 dans la phase courante
-Statut : Phase terminée, validée par l'utilisateur au checkpoint du plan 01-06
-Dernière activité : 2026-07-28 — 01-06-PLAN.md terminé (autoplay 0 traceback sur 2 couples, zip `Fusion/` regénéré à 5 749 fichiers avec les 3 ajouts de la phase, 4 commandes du filet vertes après relance du serveur, filet vérifié à la main)
+Phase : 2 sur 7 (Fondations — stack et design system tokenisé) — **en cours**
+Plan : 02-02 terminé (10 plans dans la phase)
+Statut : En cours — la chaîne de build existe et est contrainte par le serveur qui la servira
+Dernière activité : 2026-07-28 — 02-02-PLAN.md terminé (projet `ui-app/` en React 19.2.8 + TS 6.0.3 + Vite 8.1.5, build `dist/vitrine.html` sous `base: '/app/'`, garde-fou d'extensions vert sur le build réel et rouge sur un `.png` fabriqué, erreur de type prouvée bloquante)
 
 Progression phase 1 : [██████████] 100% (6/6 plans)
-Progression projet : [██░░░░░░░░] ~14% (1 phase sur 7 ; plans des phases 2 à 7 non encore découpés)
+Progression phase 2 : [█░░░░░░░░░] 02-02 livré (10 plans découpés)
+Progression projet : [██░░░░░░░░] ~15% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
 
 ## Métriques
 
@@ -67,6 +68,14 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [01-05] Le test de lancement pilote **`prepare.html` (la nouvelle préparation)**, pas `scene.html` : les deux envoient le même descripteur, mais seul le nouvel écran sera refait en phase 4 — un test sur l'ancien resterait vert pendant que la refonte casse le lancement.
 - [01-05] **Prouvé par mesure** : `NewGame` remet le monde à zéro (`render_id = 0`) et le moteur répond **après**. Sonder `/get_world` sans attendre la réponse de `/new` lit donc l'état de la partie précédente — piège corrigé, à ne pas réintroduire.
 - [01-05] Parcours de test figé sur la boîte de base (Solo / Spider-Man / Rhino / Standard) et sélecteurs par **rôle et libellé** : ce contenu ne disparaîtra jamais, et les libellés survivront mieux que le DOM à la refonte de la phase 4.
+- [02-02] **`ui-app/` est le projet de la nouvelle UI** : React 19.2.8 + TypeScript 6.0.3 + Vite 8.1.5, dans le dépôt Desktop à côté de `ui-check/` (chemin Windows natif obligatoire, Node est le binaire Windows). Il n'entre jamais dans le livrable ; `dist/` et `node_modules/` sont ignorés par git.
+- [02-02] **TypeScript reste en 6.0.3, jamais 7.x** : la 7 est `latest` sur npm mais expédiée sans API compilateur publique. Ne pas « mettre à jour » sans vérifier que l'API est revenue.
+- [02-02] **`build.rolldownOptions` et non `rollupOptions`** (renommé en Vite 8) : vérifié, aucun avertissement de dépréciation au build. Tout exemple multi-pages antérieur à mars 2026 est à corriger.
+- [02-02] **`assetsInlineLimit: () => true`** : tout asset importé est inliné, donc le build ne peut produire que du `.html`, du `.js` et du `.css`. C'est la traduction en configuration de la liste blanche du serveur.
+- [02-02] **`node outils/verifier-sortie.mjs` est le garde-fou d'extensions** : liste blanche `.html`/`.js`/`.css`, `exit 1` sur intrus, sur dossier absent et sur dossier vide. Testé par un vrai négatif (un `.png` déposé dans `dist/`). À lancer après chaque build, avant toute recopie vers le jeu.
+- [02-02] **`vite-plugin-checker` fait réellement échouer le build sur erreur de type** (vérifié en injectant une erreur volontaire, exit 2 + `TS2322`). Le repli prévu (script `typecheck` enchaîné dans `deployer.sh`) n'est pas nécessaire.
+- [02-02] **`ui-app/styles/tokens.css` est la source unique des tokens**, avec la déclaration `@layer socle, legacy, base, composants, utilitaires;` en tête. Deux destinations : le bundle Vite et une copie vers `public/css/tokens.css`. Ne jamais éditer la copie.
+- [02-02] **Pas d'aiguillage `ui-switch.js` sur `vitrine.html`** : cette page n'a pas d'ancienne version, il n'y a rien vers quoi revenir. La recette de bascule redevient obligatoire en phase 3.
 
 **Les quatre acquis de structure de la phase 1**, à connaître avant toute phase suivante :
 
@@ -109,10 +118,14 @@ Aucun.
 - **Le contrat gelé ne se modifie jamais pour faire passer un test rouge.** Un rouge = la préparation a changé ce qu'elle envoie au moteur : soit accident à corriger, soit changement voulu et mesuré, et alors le golden se met à jour **dans le même commit**. La règle est écrite en tête du fichier.
 - **`npm run lancement` est le critère d'acceptation de la phase 4.** Il pilote `prepare.html` par libellés (« Continuer », « Lancer la partie », « Rhino », « Spider-Man ») : si la refonte change ces libellés, les mettre à jour dans le test est un geste conscient, pas une régression.
 - **Le contrat couvre les clés et les types, pas la sémantique** (`campaign_log` de campagne, `challenges` non vide). La recherche approfondie prévue pour la phase 4 (contrat `/new?data=` et campaign logs des 4 formats) reste nécessaire.
+- **`ui-app/dist/` est ignoré par git** : la sortie de build n'est jamais versionnée. Tout déploiement enchaîne build → garde-fou → recopie, jamais une recopie d'un `dist/` supposé présent.
+- **Le garde-fou affiche des chemins au séparateur Windows** (`dist\assets\faux.png`) puisque Node est le binaire Windows. Ne pas les confondre avec des chemins WSL dans un message d'erreur.
+- **`vitrine.html` n'est pas encore dans `ui-check/ecrans.ts`** : à ajouter avec le marqueur `#vitrine` quand la page sera servie, pour bénéficier du garde-fou anti `clean_cache.html` et des captures.
+- **La vitrine est un squelette** (titre, une phrase, la version de React) : palette, typo, pastilles d'aspect et bascule de thème sont le périmètre du plan 02-09, pas un manque du 02-02.
 
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : **Phase 1 terminée** — 01-06-PLAN.md livré et validé au checkpoint (voir .planning/phases/01-filet-de-securite/01-06-SUMMARY.md). Le filet est complet, vert, livré dans le zip et vérifié à la main : rien ne bougera visuellement sans qu'une commande le détecte.
+Arrêté à : **02-02 terminé** — la chaîne de build de la nouvelle UI existe (voir .planning/phases/02-fondations-design-system/02-02-SUMMARY.md). `npm run build` dans `ui-app/` produit `dist/vitrine.html` + un `.js` et un `.css` hachés sous `/app/`, le garde-fou d'extensions refuse tout intrus, une erreur de type arrête le build.
 Fichier de reprise : aucun
-Prochaine étape : `/gsd:verify-work 1` si une recette de phase est souhaitée, puis `/gsd:plan-phase 2` (fondations : stack React/TS/Vite servie par le serveur existant + design system tokenisé). Rappels pour la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens) et routage serveur en liste blanche stricte par extension (tout asset de build hors liste échoue silencieusement).
+Prochaine étape : plan 02-03 (`deployer.sh` : build + garde-fou + `rsync` vers `public/app/` + copie de `tokens.css` vers `public/css/`). Rappels pour la suite de la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens) et routage serveur en liste blanche stricte par extension (tout asset de build hors liste échoue silencieusement).
