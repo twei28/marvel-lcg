@@ -10,26 +10,27 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 2 sur 7 (Fondations — stack et design system tokenisé) — **en cours**
-Plan : 02-01 et 02-02 terminés (10 plans dans la phase)
-Statut : En cours — la chaîne de build existe, et le filet visuel couvre enfin les panneaux où vivent les `!important` à purger
-Dernière activité : 2026-07-28 — 02-01-PLAN.md terminé (3 panneaux masqués de `scene.html` sous surveillance via `window.wizardShow`, 9 références de plus, `npm run captures` vérifie 27 images ; sets modulaires dépliés avant la photo, sinon la moitié des `!important` du panneau restait hors champ)
+Plan : 02-01, 02-02 et 02-03 terminés (10 plans dans la phase)
+Statut : En cours — la chaîne de build existe et **arrive jusqu'au jeu** : le serveur Python sert `/app/vitrine.html` sans avoir été touché, et le filet visuel couvre les panneaux où vivent les `!important` à purger
+Dernière activité : 2026-07-28 — 02-03-PLAN.md terminé (`bash ui-app/deployer.sh` = build + garde-fou + `rsync` vers `public/app/` + copie de `tokens.css` + recalcul des 5 empreintes de contenu ; critères 1 et 5 de la phase démontrés sur pièce, 27 références toujours vertes)
 
 Progression phase 1 : [██████████] 100% (6/6 plans)
-Progression phase 2 : [██░░░░░░░░] 02-01 et 02-02 livrés (10 plans découpés)
-Progression projet : [██░░░░░░░░] ~15% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
+Progression phase 2 : [███░░░░░░░] 3/10 plans (02-01, 02-02, 02-03)
+Progression projet : [██░░░░░░░░] ~18% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 6
-- Durée moyenne : 24 min
-- Temps d'exécution total : 142 min
+- Plans terminés : 9
+- Durée moyenne : 18 min
+- Temps d'exécution total : 165 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
 | 1 — Filet de sécurité | 6/6 | 142 min | 24 min |
+| 2 — Fondations | 3/10 | 23 min | 8 min |
 
 **Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-05 en 14 min (2 tâches, 2 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces. Les plans sans checkpoint tiennent en 12 à 14 min.
 
@@ -81,6 +82,12 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [02-01] **Ce que la page replie par défaut échappe à la surveillance.** Mesuré : `#modular-sets` porte `hide-not-click` au chargement, la première photo de l'étape 2 ne montrait aucun set modulaire alors que l'essentiel des `!important` de ce panneau les vise. Tout contenu replié doit être déplié avant la photo.
 - [02-01] **Un bouton se vise par son `onclick`, pas par son libellé** (`button[onclick*="hide-not-click"]`) : le libellé peut être traduit, le comportement non.
 - [02-01] **Une nouvelle référence se contrôle sur son CONTENU** (lecture de l'image), jamais sur sa seule existence. Une image montrant le mauvais panneau serait figée sans bruit.
+- [02-03] **`bash ui-app/deployer.sh` est le seul chemin vers le jeu** : build → garde-fou d'extensions → `rsync -a --delete` vers `public/app/` → copie de `tokens.css` → recalcul des empreintes. Jamais de recopie de `dist/` à la main, jamais d'édition de `public/css/tokens.css` (c'est une copie).
+- [02-03] **Cache-busting par empreinte de contenu** (8 premiers caractères du `sha256`), recalculée à chaque déploiement. Les 5 `?v=N` tenus à la main sont morts ; critère 5 de la phase démontré en 4 temps (modification → empreinte changée → retour → empreinte revenue).
+- [02-03] **Ordre de réécriture du plus profond vers le plus superficiel** : les imports de `app.js` avant l'empreinte de `app.js` dans `prepare.html`, sinon deux déploiements sont nécessaires pour converger.
+- [02-03] **Aucun fichier du jeu n'est réécrit si son contenu ne change pas** (garde `grep` + comparaison, écriture par redirection et jamais par `mv` : inode, droits et bit d'exécution conservés). Ces fichiers vivent hors du dépôt git, les remuer pour rien est un risque gratuit.
+- [02-03] **Le franchissement Windows → WSL se fait par `rsync` en bash, jamais par Node** (Node est le binaire Windows). Corollaire mesuré : `node /mnt/c/...` échoue même pour son propre script d'entrée, il faut un chemin relatif.
+- [02-03] **Le serveur n'a pas besoin d'être relancé pour un déploiement** : `public/` est vu par `.game/public` via un lien symbolique, les fichiers déposés sont servis à chaud. C'est ce qui permet de déployer sans couper une partie.
 
 **Les quatre acquis de structure de la phase 1**, à connaître avant toute phase suivante :
 
@@ -129,10 +136,13 @@ Aucun.
 - **Le garde-fou affiche des chemins au séparateur Windows** (`dist\assets\faux.png`) puisque Node est le binaire Windows. Ne pas les confondre avec des chemins WSL dans un message d'erreur.
 - **`vitrine.html` n'est pas encore dans `ui-check/ecrans.ts`** : à ajouter avec le marqueur `#vitrine` quand la page sera servie, pour bénéficier du garde-fou anti `clean_cache.html` et des captures.
 - **La vitrine est un squelette** (titre, une phrase, la version de React) : palette, typo, pastilles d'aspect et bascule de thème sont le périmètre du plan 02-09, pas un manque du 02-02.
+- **Toute nouvelle référence `?v=` doit être déclarée dans `deployer.sh`**, sinon elle reste tenue à la main et se désynchronise — exactement le bug fermé par le 02-03. Une ligne `remplacer` par couple (page, fichier référencé), en respectant l'ordre du plus profond vers le plus superficiel.
+- **`public/app/` est nouveau dans l'arborescence du jeu** : le prochain re-zip vers `Fusion/` doit l'emporter (c'est du livrable), au contraire de `ui-app/` et `ui-check/` qui restent dehors. À vérifier au rituel de livraison du 02-10.
+- **`public/css/tokens.css` est déjà servie en 200 `text/css`** et les lignes qui recalculeront son empreinte sont déjà dans `deployer.sh` : le plan 02-05 n'a plus qu'à ajouter la balise `<link>`.
 
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : **02-01 et 02-02 terminés** — la chaîne de build de la nouvelle UI existe (02-02-SUMMARY.md) et le filet visuel couvre les 4 panneaux du wizard (02-01-SUMMARY.md). `npm run captures` vérifie 27 images ; `npm run build` dans `ui-app/` produit `dist/vitrine.html` + un `.js` et un `.css` hachés sous `/app/`, le garde-fou d'extensions refuse tout intrus, une erreur de type arrête le build.
+Arrêté à : **02-01, 02-02 et 02-03 terminés** — la chaîne de build de la nouvelle UI existe et arrive jusqu'au jeu. `bash ui-app/deployer.sh` construit, contrôle et dépose ; le serveur Python sert `/app/vitrine.html` en 200 `text/html` avec React monté dedans, sans qu'une ligne de backend ait bougé ; les 5 `?v=N` sont des empreintes de contenu. `npm run captures` vérifie 27 images, toutes vertes. Critères 1 et 5 de la phase démontrés sur pièce.
 Fichier de reprise : aucun
-Prochaine étape : plan 02-03 (`deployer.sh` : build + garde-fou + `rsync` vers `public/app/` + copie de `tokens.css` vers `public/css/`). Rappels pour la suite de la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens) et routage serveur en liste blanche stricte par extension (tout asset de build hors liste échoue silencieusement).
+Prochaine étape : plan 02-04 (purge des `!important` de `wizard.css` : sortir les 9 blocs `<style>` de `scene.html` vers `css/menu/scene-inline.css`, les placer avant `wizard.css` dans la cascade, puis retirer les `!important` devenus inutiles). Rappels pour la suite de la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` → `@layer` → tokens), routage serveur en liste blanche stricte par extension, et tout passage vers le jeu par `deployer.sh`.
