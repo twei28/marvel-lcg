@@ -10,27 +10,27 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Phase : 1 sur 7 (Filet de sécurité et boucle de dev)
-Plan : 01-01 à 01-04 terminés (4 sur 6 dans la phase courante)
+Plan : 01-01 à 01-05 terminés (5 sur 6 dans la phase courante)
 Statut : En cours
-Dernière activité : 2026-07-28 — 01-04-PLAN.md terminé et validé au checkpoint (bascule vers l'ancienne version, mémorisée, partie jouable depuis l'ancien écran)
+Dernière activité : 2026-07-28 — 01-05-PLAN.md terminé (contrat `/new?data=` gelé, arrivée au plateau prouvée, `npm run lancement` vert deux fois de suite)
 
-Progression phase 1 : [███████░░░] 67% (4/6 plans)
+Progression phase 1 : [████████░░] 83% (5/6 plans)
 Progression projet : [█░░░░░░░░░] ~10% (plans des phases 2 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 4
-- Durée moyenne : 26 min
-- Temps d'exécution total : 104 min
+- Plans terminés : 5
+- Durée moyenne : 24 min
+- Temps d'exécution total : 118 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
-| 1 — Filet de sécurité | 4/6 | 104 min | 26 min |
+| 1 — Filet de sécurité | 5/6 | 118 min | 24 min |
 
-**Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces.
+**Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-05 en 14 min (2 tâches, 2 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces. Les plans sans checkpoint tiennent en 12 à 14 min.
 
 *Mis à jour après chaque plan terminé*
 
@@ -61,6 +61,10 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - [01-04] **Recette de câblage d'une page migrée** : aiguillage inline en TOUT PREMIER dans le `<head>` de la nouvelle page (un script externe se télécharge, la nouvelle UI clignoterait), plus une balise `ui-switch.js` en fin de `<body>` des deux versions. Rien d'autre.
 - [01-04] Bandeau et lien de bascule **en tête du flux du document**, jamais en flottant : mesuré dans les 3 gabarits, toute position flottante recouvre un bouton (étapes 5 et 6 de l'assistant en haut, barre de boutons fixe en bas).
 - [01-04] Les tests de mécanique (navigation, contrat) tournent sur le **seul gabarit `pc`** (`--project=pc`) ; l'apparence est le métier de `npm run captures`.
+- [01-05] **Le contrat `/new?data=` est gelé dans `ui-check/contrat-nouvelle-partie.json`** : 8 clés typées (`campaign_json`, `campaign_log`, `challenges`, `encounter_set_names`, `hero_json`, `rules`, `seed`, `timeout`), jamais les valeurs. C'est la seule documentation écrite de ce contrat.
+- [01-05] Le test de lancement pilote **`prepare.html` (la nouvelle préparation)**, pas `scene.html` : les deux envoient le même descripteur, mais seul le nouvel écran sera refait en phase 4 — un test sur l'ancien resterait vert pendant que la refonte casse le lancement.
+- [01-05] **Prouvé par mesure** : `NewGame` remet le monde à zéro (`render_id = 0`) et le moteur répond **après**. Sonder `/get_world` sans attendre la réponse de `/new` lit donc l'état de la partie précédente — piège corrigé, à ne pas réintroduire.
+- [01-05] Parcours de test figé sur la boîte de base (Solo / Spider-Man / Rhino / Standard) et sélecteurs par **rôle et libellé** : ce contenu ne disparaîtra jamais, et les libellés survivront mieux que le DOM à la refonte de la phase 4.
 
 ### Todos en attente
 
@@ -87,10 +91,14 @@ Aucun.
 - **npm exécute ses scripts via `cmd.exe`** (conséquence du point précédent : `process.platform === 'win32'`). Donc : `;` et `&&` POSIX ne fonctionnent pas dans `package.json` (tout script npm doit rester **une commande unique**) ; une variable d'environnement passée en préfixe depuis WSL n'atteint pas le processus (il faut `WSLENV=NOM`) ; une entrée redirigée (`printf ... | npm run ...`) n'est pas transmise au script (appeler `node scripts/xxx.mjs` directement dans les tests).
 - **Titres d'écrans de `ecrans.ts` sans accents** : ils servent aussi de titres de tests Playwright, donc de noms de dossiers dans `test-results/`. À accentuer en une ligne le jour où `ecrans.ts` sera rouvert (cosmétique, la page de comparaison est accentuée partout ailleurs).
 - **Cas de jeu encore absents des fixtures** : `zone-victoire`, `deck-rencontre-vide`, `stade-3` (les 5 parties se sont soldées par une défaite). Le dumper sait les capturer ; à relancer si le plateau en a besoin.
+- **`npm run lancement` détruit la partie en cours** (il appelle `/new`). Il reste une commande à part, jamais enchaînée à `npm run captures` qui est en lecture seule. L'avertissement s'affiche en français au démarrage du test.
+- **Le contrat gelé ne se modifie jamais pour faire passer un test rouge.** Un rouge = la préparation a changé ce qu'elle envoie au moteur : soit accident à corriger, soit changement voulu et mesuré, et alors le golden se met à jour **dans le même commit**. La règle est écrite en tête du fichier.
+- **`npm run lancement` est le critère d'acceptation de la phase 4.** Il pilote `prepare.html` par libellés (« Continuer », « Lancer la partie », « Rhino », « Spider-Man ») : si la refonte change ces libellés, les mettre à jour dans le test est un geste conscient, pas une régression.
+- **Le contrat couvre les clés et les types, pas la sémantique** (`campaign_log` de campagne, `challenges` non vide). La recherche approfondie prévue pour la phase 4 (contrat `/new?data=` et campaign logs des 4 formats) reste nécessaire.
 
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : 01-04-PLAN.md terminé et validé au checkpoint sans réserve (voir .planning/phases/01-filet-de-securite/01-04-SUMMARY.md) — va-et-vient prouvé, partie jouée depuis l'ancienne version
+Arrêté à : 01-05-PLAN.md terminé (voir .planning/phases/01-filet-de-securite/01-05-SUMMARY.md) — contrat de lancement gelé, arrivée au plateau prouvée, `npm run captures` toujours 18/18
 Fichier de reprise : aucun
-Prochain plan : 01-05-PLAN.md — contrat `/new?data=` gelé et arrivée au plateau vérifiée automatiquement (script `lancement` déjà déclaré dans `ui-check/package.json`, reste à écrire `tests/lancement-partie.spec.ts`)
+Prochain plan : 01-06-PLAN.md — livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble. Les 4 outils du filet sont verts : `captures`, `fixtures`, `bascule`, `lancement`. Penser à écarter `public/scene.html.bak-avant-ui` du zip.
