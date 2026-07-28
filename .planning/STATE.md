@@ -5,34 +5,34 @@
 Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 
 **Valeur centrale :** Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mobile, sans jamais toucher aux règles du moteur.
-**Focus actuel :** Phase 1 — Filet de sécurité et boucle de dev (bloquante)
+**Focus actuel :** Phase 1 terminée et validée — prêt à planifier la phase 2 (fondations : stack + design system tokenisé)
 
 ## Position actuelle
 
-Phase : 1 sur 7 (Filet de sécurité et boucle de dev)
-Plan : 01-01 à 01-05 terminés ; 01-06 livré, en attente de validation utilisateur
-Statut : Checkpoint bloquant ouvert (vérification humaine du filet complet)
-Dernière activité : 2026-07-28 — 01-06 tâche 1 : autoplay 0 traceback sur 2 couples, zip `Fusion/` regénéré (5 749 fichiers, +37 ajouts de la phase, −1 sauvegarde morte), 4 commandes du filet vertes après relance du serveur
+Phase : 1 sur 7 (Filet de sécurité et boucle de dev) — **TERMINÉE**
+Plan : 6 sur 6 dans la phase courante
+Statut : Phase terminée, validée par l'utilisateur au checkpoint du plan 01-06
+Dernière activité : 2026-07-28 — 01-06-PLAN.md terminé (autoplay 0 traceback sur 2 couples, zip `Fusion/` regénéré à 5 749 fichiers avec les 3 ajouts de la phase, 4 commandes du filet vertes après relance du serveur, filet vérifié à la main)
 
-Progression phase 1 : [████████░░] 83% (5/6 plans terminés, le 6e en attente de validation)
-Progression projet : [█░░░░░░░░░] ~10% (plans des phases 2 à 7 non encore découpés)
+Progression phase 1 : [██████████] 100% (6/6 plans)
+Progression projet : [██░░░░░░░░] ~14% (1 phase sur 7 ; plans des phases 2 à 7 non encore découpés)
 
 ## Métriques
 
 **Vélocité :**
-- Plans terminés : 5
+- Plans terminés : 6
 - Durée moyenne : 24 min
-- Temps d'exécution total : 118 min
+- Temps d'exécution total : 142 min
 
 **Par phase :**
 
 | Phase | Plans | Total | Moy./plan |
 |-------|-------|-------|-----------|
-| 1 — Filet de sécurité | 5/6 | 118 min | 24 min |
+| 1 — Filet de sécurité | 6/6 | 142 min | 24 min |
 
 **Tendance récente :** 01-01 en 12 min (3 tâches, 3 déviations), 01-03 en 14 min (3 tâches, 6 déviations), 01-05 en 14 min (2 tâches, 2 déviations), 01-02 en 37 min (3 tâches dont 1 checkpoint validé, 6 déviations), 01-04 en 41 min (3 tâches dont 1 checkpoint validé sans réserve, 4 déviations). Les plans à checkpoint coûtent ~10 min d'attente : c'est le prix de la validation sur pièces. Les plans sans checkpoint tiennent en 12 à 14 min.
 
-**01-06 (en cours) :** tâche 1 exécutée en 8 min (2 déviations), checkpoint de validation ouvert.
+**01-06 en 24 min** (2 tâches dont 1 checkpoint validé, 3 déviations) : 8 min d'exécution, ~14 min d'attente au checkpoint. **Bilan de la phase : 6 plans, 142 min, 24 déviations toutes auto-corrigées, 3 checkpoints tous validés sans réserve.** Les déviations sont massivement des pièges d'environnement (WSL/Node Windows, ports en TIME_WAIT, outils absents), pas des erreurs de conception — c'est le coût d'entrée dans ce codebase, il devrait baisser.
 
 *Mis à jour après chaque plan terminé*
 
@@ -75,6 +75,7 @@ Journal complet dans PROJECT.md (Key Decisions). Décisions structurantes pour l
 - **Les fixtures vivent dans `public/js/fixtures/`** (34 états + `index.js`), au format module `.js`, et sont rejouées par `public/fixtures.html` sans qu'aucune partie ne tourne.
 - **La bascule vers l'ancienne version est mémorisée dans `localStorage` (clé `ui`)**, jamais dans l'adresse ni dans un cookie : c'est ce qui la fait survivre au lancement d'une partie.
 - [01-06] **Le zip de `Fusion/` n'a pas de préfixe de dossier** : ses entrées sont à la racine de l'archive (`src/`, `public/`, `launcher.py`…). Exclusions du livrable : `.game/`, `__pycache__/`, `originals_pyc/`. Tout re-zip doit calquer cette structure, sinon le livrable change de forme sans prévenir.
+- [01-06] **Un livrable se contrôle comme un test** : diff des listes ancien/nouveau zip, puis assertions nommées (les ajouts attendus présents, le harnais et les caches absents). Le zip précédent est sauvegardé en `.bak-avant-<étape>` avant remplacement.
 
 ### Todos en attente
 
@@ -103,6 +104,7 @@ Aucun.
 - **npm exécute ses scripts via `cmd.exe`** (conséquence du point précédent : `process.platform === 'win32'`). Donc : `;` et `&&` POSIX ne fonctionnent pas dans `package.json` (tout script npm doit rester **une commande unique**) ; une variable d'environnement passée en préfixe depuis WSL n'atteint pas le processus (il faut `WSLENV=NOM`) ; une entrée redirigée (`printf ... | npm run ...`) n'est pas transmise au script (appeler `node scripts/xxx.mjs` directement dans les tests).
 - **Titres d'écrans de `ecrans.ts` sans accents** : ils servent aussi de titres de tests Playwright, donc de noms de dossiers dans `test-results/`. À accentuer en une ligne le jour où `ecrans.ts` sera rouvert (cosmétique, la page de comparaison est accentuée partout ailleurs).
 - **Cas de jeu encore absents des fixtures** : `zone-victoire`, `deck-rencontre-vide`, `stade-3` (les 5 parties se sont soldées par une défaite). Le dumper sait les capturer ; à relancer si le plateau en a besoin.
+- **Signal UX relevé au checkpoint 01-06** : `fixtures.html` a été pris pour un écran de jeu (« ça sert à lancer une partie ? »). La page ne dit pas ce qu'elle est. Quand elle accueillera le composant React du plateau (phase 5), lui donner un titre et une phrase explicites : visionneuse d'états enregistrés, aucune partie en cours.
 - **`npm run lancement` détruit la partie en cours** (il appelle `/new`). Il reste une commande à part, jamais enchaînée à `npm run captures` qui est en lecture seule. L'avertissement s'affiche en français au démarrage du test.
 - **Le contrat gelé ne se modifie jamais pour faire passer un test rouge.** Un rouge = la préparation a changé ce qu'elle envoie au moteur : soit accident à corriger, soit changement voulu et mesuré, et alors le golden se met à jour **dans le même commit**. La règle est écrite en tête du fichier.
 - **`npm run lancement` est le critère d'acceptation de la phase 4.** Il pilote `prepare.html` par libellés (« Continuer », « Lancer la partie », « Rhino », « Spider-Man ») : si la refonte change ces libellés, les mettre à jour dans le test est un geste conscient, pas une régression.
@@ -111,6 +113,6 @@ Aucun.
 ## Continuité de session
 
 Dernière session : 2026-07-28
-Arrêté à : 01-06-PLAN.md tâche 1 terminée — livraison faite (autoplay 0 traceback, zip `Fusion/` regénéré, 4 commandes du filet vertes après relance du serveur). **Checkpoint bloquant ouvert** : l'utilisateur doit constater de ses yeux `fixtures.html`, `?ui=old`, une vraie partie inchangée et `npm run captures` vert.
+Arrêté à : **Phase 1 terminée** — 01-06-PLAN.md livré et validé au checkpoint (voir .planning/phases/01-filet-de-securite/01-06-SUMMARY.md). Le filet est complet, vert, livré dans le zip et vérifié à la main : rien ne bougera visuellement sans qu'une commande le détecte.
 Fichier de reprise : aucun
-Après validation : créer `01-06-SUMMARY.md`, cocher 01-06 et la phase 1 dans ROADMAP.md, puis passer à `/gsd:plan-phase 2` (fondations : stack React/TS/Vite + design system tokenisé). Rappel de séquence pour la phase 2 : captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens.
+Prochaine étape : `/gsd:verify-work 1` si une recette de phase est souhaitée, puis `/gsd:plan-phase 2` (fondations : stack React/TS/Vite servie par le serveur existant + design system tokenisé). Rappels pour la phase 2 : séquence CSS obligatoire (captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens) et routage serveur en liste blanche stricte par extension (tout asset de build hors liste échoue silencieusement).

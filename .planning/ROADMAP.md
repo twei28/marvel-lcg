@@ -12,7 +12,7 @@ La refonte se fait **surface par surface, en étranglement**, sans jamais touche
 - Phases entières (1, 2, 3) : travail planifié du jalon
 - Phases décimales (2.1, 2.2) : insertions urgentes (marquées INSERTED)
 
-- [ ] **Phase 1 : Filet de sécurité et boucle de dev** (BLOQUANTE, en cours — 5/6 plans) - Rien ne bouge visuellement avant d'avoir de quoi détecter une régression
+- [x] **Phase 1 : Filet de sécurité et boucle de dev** (BLOQUANTE, terminée le 2026-07-28 — 6/6 plans) - Rien ne bouge visuellement avant d'avoir de quoi détecter une régression
 - [ ] **Phase 2 : Fondations — stack et design system tokenisé** - React/TS/Vite servi par le serveur existant + tokens partagés ancien/nouveau
 - [ ] **Phase 3 : Pilotes — composant Carte et coquille/menu** - Le composant pivot forgé sur deux écrans réels, primitives extraites derrière
 - [ ] **Phase 4 : Préparation de partie** - Wizard 6 étapes, validation explicite, aide sur les campaign logs
@@ -40,7 +40,7 @@ Plans:
 - [x] 01-03-PLAN.md — 34 fixtures `get_world` issues de 5 parties autoplay + `/fixtures.html` (terminé le 2026-07-28)
 - [x] 01-04-PLAN.md — Bascule `?ui=old` mémorisée, démontrée sur l'écran de préparation (terminé le 2026-07-28)
 - [x] 01-05-PLAN.md — Contrat `/new?data=` gelé (8 clés typées) et arrivée au plateau vérifiée automatiquement (terminé le 2026-07-28)
-- [ ] 01-06-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble
+- [x] 01-06-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble validée par l'utilisateur (terminé le 2026-07-28)
 
 ### Phase 2 : Fondations — stack et design system tokenisé
 **Objectif** : Une base technique et visuelle unique alimente simultanément les écrans anciens et les nouveaux, pour un coût payé une seule fois.
@@ -167,7 +167,7 @@ Plans:
 
 | Phase | Plans terminés | Statut | Terminée le |
 |-------|----------------|--------|-------------|
-| 1. Filet de sécurité | 2/6 | In progress | - |
+| 1. Filet de sécurité | 6/6 | Complete | 2026-07-28 |
 | 2. Fondations (stack + design system) | 0/TBD | Not started | - |
 | 3. Pilotes (Carte + coquille) | 0/TBD | Not started | - |
 | 4. Préparation de partie | 0/TBD | Not started | - |

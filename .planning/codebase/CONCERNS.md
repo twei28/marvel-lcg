@@ -57,7 +57,7 @@
 **Current State:**
 - 2251 lines of HTML with inline styles and scripts
 - Recently refactored into 4-step wizard with splash screens
-- Backup: `public/scene.html.bak-avant-ui` (~2100 lines) shows previous iteration
+- Backup: `scene.html.bak-avant-ui` (~2100 lines) shows previous iteration — moved out of `public/` in plan 01-06 (now `~/marvel-work/scratch/ecartes-01-06/`, also inside `Fusion/marvel-lcg-src-fusion.zip.bak-avant-phase1`); excluded from the delivered zip
 - CSS overlay: `public/css/menu/wizard.css` (surcouche premium)
 
 **Known Issues:**
