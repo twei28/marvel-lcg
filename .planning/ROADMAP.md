@@ -32,7 +32,15 @@ La refonte se fait **surface par surface, en étranglement**, sans jamais touche
   3. Sur toute page en cours de migration, l'utilisateur revient à l'ancienne version par `?ui=old` et le jeu reste jouable de bout en bout.
   4. Un test automatisé vérifie qu'une partie se lance depuis l'écran de préparation actuel et atteint le plateau (contrat `/new?data=` gelé avant d'y toucher).
 **Note** : la contrainte d'intouchabilité du moteur est étendue explicitement au runtime `public/js/marvel/` dans PROJECT.md. Le nouveau code est une fonction pure de `get_world`, écrit à côté, sans lire le JS existant.
-**Plans** : TBD
+**Plans** : 6 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Contraintes actées, harnais Playwright installé, 18 images de référence figées
+- [ ] 01-02-PLAN.md — Page de comparaison avant/après en français et validation explicite des références
+- [ ] 01-03-PLAN.md — 20-40 fixtures `get_world` dumpées de l'autoplay + page de relecture hors partie
+- [ ] 01-04-PLAN.md — Bascule `?ui=old` mémorisée, démontrée sur l'écran de préparation
+- [ ] 01-05-PLAN.md — Contrat `/new?data=` gelé et arrivée au plateau vérifiée automatiquement
+- [ ] 01-06-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble
 
 ### Phase 2 : Fondations — stack et design system tokenisé
 **Objectif** : Une base technique et visuelle unique alimente simultanément les écrans anciens et les nouveaux, pour un coût payé une seule fois.
@@ -159,7 +167,7 @@ La refonte se fait **surface par surface, en étranglement**, sans jamais touche
 
 | Phase | Plans terminés | Statut | Terminée le |
 |-------|----------------|--------|-------------|
-| 1. Filet de sécurité | 0/TBD | Not started | - |
+| 1. Filet de sécurité | 0/6 | Planned | - |
 | 2. Fondations (stack + design system) | 0/TBD | Not started | - |
 | 3. Pilotes (Carte + coquille) | 0/TBD | Not started | - |
 | 4. Préparation de partie | 0/TBD | Not started | - |
