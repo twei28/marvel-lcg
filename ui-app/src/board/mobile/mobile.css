@@ -8,6 +8,10 @@
   /* --- Tuile condensee ---------------------------------------------------- */
 
   .tuile {
+    /* Sans ca, padding et border s'ajoutent a width/height au lieu d'etre
+       preleves dedans : le rendu deborderait des tailles que condensation.ts
+       a calculees (140x96 / 96x64), sans qu'aucun test jsdom ne le voie. */
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 8px;

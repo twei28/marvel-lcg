@@ -44,5 +44,7 @@ describe('TuileCondensee', () => {
     )
     expect(screen.queryByText('Rhino')).not.toBeInTheDocument()
     expect(screen.queryByText('12/22')).not.toBeInTheDocument()
+    expect(screen.queryByText('Tough 1')).not.toBeInTheDocument()
+    expect(document.querySelector('.tuile-vignette img')).toBeNull()
   })
 })
