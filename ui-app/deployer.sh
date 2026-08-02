@@ -7,43 +7,78 @@
 # ou l'enchainement de commandes POSIX de ce fichier ne fonctionne pas.
 set -euo pipefail
 
-RACINE_APP="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-app"
-JEU="$HOME/marvel-work/fusion/marvel-lcg-src"   # codebase vivant. Fusion/marvel-lcg-src est perime.
+# Deduit du fichier lui-meme, jamais ecrit en dur : il existe plusieurs copies de
+# ce depot sur le disque (Desktop/"Marvel LCG last try"/ui-app et
+# .../Jeu Marvel Champions/ui-app). Un chemin absolu deployait la copie perimee
+# tout en laissant croire que le build venait des sources en cours d'edition.
+RACINE_APP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# DEUX installations du jeu, et il faut servir les deux :
+#   - Fusion/marvel-lcg-src, a cote de ce depot : c'est celle que lance
+#     JOUER-EN-MULTI.bat, donc celle sur laquelle l'utilisateur joue vraiment ;
+#   - ~/marvel-work/fusion/marvel-lcg-src : la copie WSL, celle que sert le
+#     serveur de developpement du port 2346 et que teste le harnais ui-check.
+# Le brief du projet dit que la premiere est perimee. C'est faux, et l'avoir cru
+# a fait deployer trois fois de suite dans un jeu auquel personne ne jouait.
+JEUX=(
+  "$(cd "$RACINE_APP/.." && pwd)/Fusion/marvel-lcg-src"
+  "$HOME/marvel-work/fusion/marvel-lcg-src"
+)
 
 cd "$RACINE_APP"
 npm run build
-node outils/verifier-sortie.mjs
+npm run verifier-sortie
 
-mkdir -p "$JEU/public/app" "$JEU/public/css"
+deployer_vers() {
+  local JEU="$1"
+    mkdir -p "$JEU/public/app" "$JEU/public/css"
 
-# .game/public est un lien symbolique vers public/ sous launcher_fast.py : la copie
-# est visible immediatement, sans relance du serveur, sans partie perdue.
-rsync -a --delete dist/ "$JEU/public/app/"
+  # .game/public est un lien symbolique vers public/ sous launcher_fast.py : la copie
+  # est visible immediatement, sans relance du serveur, sans partie perdue.
+  rsync -a --delete dist/ "$JEU/public/app/"
 
-# tokens.css : une seule source, deux destinations.
-# Recopie seulement si le contenu differe : un deploiement qui ne change rien
-# ne doit laisser aucune trace dans l'arborescence du jeu.
-cmp -s styles/tokens.css "$JEU/public/css/tokens.css" \
-  || cp styles/tokens.css "$JEU/public/css/tokens.css"
+  # tokens.css : une seule source, deux destinations.
+  # Recopie seulement si le contenu differe : un deploiement qui ne change rien
+  # ne doit laisser aucune trace dans l'arborescence du jeu.
+  cmp -s styles/tokens.css "$JEU/public/css/tokens.css" \
+    || cp styles/tokens.css "$JEU/public/css/tokens.css"
 
-# --- Empreintes de contenu : remplace les ?v=N tenus a la main ---------------
-# Le serveur ignore la query string : ?v= n'est qu'une cle de cache navigateur.
-# On la recalcule depuis le contenu, a chaque deploiement.
-empreinte() { sha256sum "$1" | cut -c1-8; }
+  # Habillage de l'ANCIEN plateau : fond de table et pastilles, en CSS seulement.
+  # Il doit etre charge en DERNIER par marvel.html pour gagner a poids egal.
+  mkdir -p "$JEU/public/css/marvel"
+  cmp -s styles/plateau-habillage.css "$JEU/public/css/marvel/plateau-habillage.css" \
+    || cp styles/plateau-habillage.css "$JEU/public/css/marvel/plateau-habillage.css"
 
-remplacer() {           # $1 fichier a editer  $2 nom de fichier reference  $3 fichier source
-  local cible="$1" nom="$2" source="$3"
-  [ -f "$cible" ] && [ -f "$source" ] || return 0
-  # Rien a remplacer = on ne touche pas au fichier. `sed -i` reecrit sa cible
-  # meme sans substitution : sans cette garde, chaque deploiement remuerait des
-  # pages du jeu qui vivent HORS du depot git, pour rien.
-  grep -qE "(${nom})\?v=" "$cible" || return 0
-  local tmp; tmp="$(mktemp)"
-  sed -E "s|(${nom})\?v=[A-Za-z0-9.]+|\1?v=$(empreinte "$source")|g" "$cible" > "$tmp"
-  # Ecriture uniquement si le contenu change, et par redirection (jamais `mv`) :
-  # l'inode, les droits et le bit d'execution des fichiers du jeu sont conserves.
-  cmp -s "$tmp" "$cible" || cat "$tmp" > "$cible"
-  rm -f "$tmp"
+  # La balise est posee une seule fois, juste avant </head>. Sans cette garde, un
+  # second deploiement en empilerait une deuxieme.
+  MARVEL="$JEU/public/marvel.html"
+  if [ -f "$MARVEL" ] && ! grep -q 'plateau-habillage\.css' "$MARVEL"; then
+    tmp="$(mktemp)"
+    sed 's#</head>#    <link rel="stylesheet" href="/public/css/marvel/plateau-habillage.css?v=0">\n</head>#' \
+      "$MARVEL" > "$tmp"
+    cat "$tmp" > "$MARVEL"
+    rm -f "$tmp"
+    echo "marvel.html : balise d'habillage ajoutee."
+  fi
+
+  # --- Empreintes de contenu : remplace les ?v=N tenus a la main ---------------
+  # Le serveur ignore la query string : ?v= n'est qu'une cle de cache navigateur.
+  # On la recalcule depuis le contenu, a chaque deploiement.
+  empreinte() { sha256sum "$1" | cut -c1-8; }
+
+  remplacer() {           # $1 fichier a editer  $2 nom de fichier reference  $3 fichier source
+    local cible="$1" nom="$2" source="$3"
+    [ -f "$cible" ] && [ -f "$source" ] || return 0
+    # Rien a remplacer = on ne touche pas au fichier. `sed -i` reecrit sa cible
+    # meme sans substitution : sans cette garde, chaque deploiement remuerait des
+    # pages du jeu qui vivent HORS du depot git, pour rien.
+    grep -qE "(${nom})\?v=" "$cible" || return 0
+    local tmp; tmp="$(mktemp)"
+    sed -E "s|(${nom})\?v=[A-Za-z0-9.]+|\1?v=$(empreinte "$source")|g" "$cible" > "$tmp"
+    # Ecriture uniquement si le contenu change, et par redirection (jamais `mv`) :
+    # l'inode, les droits et le bit d'execution des fichiers du jeu sont conserves.
+    cmp -s "$tmp" "$cible" || cat "$tmp" > "$cible"
+    rm -f "$tmp"
 }
 
 P="$JEU/public"
@@ -66,6 +101,8 @@ remplacer "$P/prepare.html"        'app\.js'       "$P/js/prepare/app.js"
 for page in scene.html prepare.html cards.html deck.html replay.html; do
   remplacer "$P/$page" 'tokens\.css' "$P/css/tokens.css"
 done
+
+remplacer "$P/marvel.html" 'plateau-habillage\.css' "$P/css/marvel/plateau-habillage.css"
 
 # --- Garde-fou de cascade (plan 02-04) --------------------------------------
 # wizard.css a compte jusqu'a 105 declarations !important, qui rendaient toute
@@ -93,4 +130,22 @@ print(len(re.findall(r'!important', re.sub(r'/\*.*?\*/', '', css, flags=re.S))))
   fi
 fi
 
-echo "Deploye. Recharge la page dans le navigateur."
+}
+
+deploye=0
+for jeu in "${JEUX[@]}"; do
+  if [ -d "$jeu/public" ]; then
+    echo "--- $jeu"
+    deployer_vers "$jeu"
+    deploye=$((deploye + 1))
+  else
+    echo "Ignore (introuvable) : $jeu" >&2
+  fi
+done
+
+if [ "$deploye" -eq 0 ]; then
+  echo "ECHEC : aucune installation du jeu trouvee." >&2
+  exit 1
+fi
+
+echo "Deploye dans $deploye installation(s). Recharge la page dans le navigateur."

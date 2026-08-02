@@ -1,0 +1,253 @@
+// Ce que le moteur demande au joueur, et comment on lui repond.
+//
+// Contrat releve sur le moteur (src/game/render/descriptor/effect.py) et sur le
+// runtime historique qui le consomme (public/js/marvel/data.js) :
+//
+//   GET  /get_ask?p=<joueur>   -> { options_json, prompt_text, event_name,
+//                                   show_cancel, ability_type, ... }
+//   POST /post?p=<joueur>      <- {"id":<option>,"targets":[...],"resources":[...]}
+//                                 ou {} pour annuler / passer
+//
+// Une OPTION est une capacite proposee : jouer une carte, activer un pouvoir,
+// terminer son tour. Elle est portee par une carte (bind_id), demande entre
+// target_num_range[0] et [1] cibles parmi all_legal_targets, et peut couter des
+// ressources (target_payment).
+
+/** Un moyen de payer : un effet de ressource, et le type qu'il fournit. */
+export type MoyenDePaiement = {
+  effect_id: number
+  res_text: string
+}
+
+/** Le cout d'une cible donnee, et de quoi le payer. */
+export type Paiement = {
+  /** Cout imprime, tel quel. Souvent un nombre, parfois vide. */
+  cost: string
+  payment: MoyenDePaiement[]
+  /** « UpTo », « SameType », « DifferentType »... */
+  rule: string[]
+}
+
+export type Option = {
+  id: number
+  name: string
+  /** Carte porteuse de l'option, 0 si aucune. */
+  bind_id: number
+  bind_player_id: number
+  /** Cibles legales, par identifiant d'objet. Les doublons signalent un X. */
+  all_legal_targets: number[]
+  /** [minimum, maximum] de cibles a choisir. */
+  target_num_range: [number, number]
+  /** Cout par cible. La cle 0 est le cout quand il n'y a pas de cible. */
+  target_payment: Partial<Record<number, Paiement>>
+  select_rule: string
+  target_must_include_traits: string[]
+  /** Renseigne par le moteur quand l'option n'est pas jouable. */
+  failure_reason: string
+  is_search: boolean
+}
+
+export type Demande = {
+  options: Option[]
+  prompt_text: string
+  event_name: string
+  show_cancel: boolean
+  ability_type: string
+}
+
+/** Reponse a poster au moteur. */
+export type Reponse = {
+  id: number
+  targets: number[]
+  resources: number[]
+}
+
+function nombre(valeur: unknown, defaut: number): number {
+  return typeof valeur === 'number' && Number.isFinite(valeur) ? valeur : defaut
+}
+
+function texte(valeur: unknown): string {
+  return typeof valeur === 'string' ? valeur : ''
+}
+
+/**
+ * Les moyens de paiement arrivent sous deux formes selon la version du moteur :
+ * soit { effect_id, res_text }, soit un objet a une seule cle { "<id>": "<type>" }.
+ * Le runtime historique gere les deux, on fait pareil.
+ */
+function lireMoyen(brut: unknown): MoyenDePaiement | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const objet = brut as Record<string, unknown>
+
+  if (typeof objet.effect_id === 'number') {
+    return { effect_id: objet.effect_id, res_text: texte(objet.res_text) }
+  }
+
+  const cles = Object.keys(objet)
+  if (cles.length !== 1) return undefined
+  const id = Number(cles[0])
+  return Number.isFinite(id) ? { effect_id: id, res_text: texte(objet[cles[0]!]) } : undefined
+}
+
+function lirePaiement(brut: unknown): Paiement {
+  const objet = (typeof brut === 'object' && brut !== null ? brut : {}) as Record<string, unknown>
+  const moyens = Array.isArray(objet.payment) ? objet.payment : []
+  return {
+    cost: texte(objet.cost),
+    payment: moyens.map(lireMoyen).filter((m): m is MoyenDePaiement => m !== undefined),
+    rule: Array.isArray(objet.rule) ? objet.rule.filter((r): r is string => typeof r === 'string') : [],
+  }
+}
+
+function lireOption(brut: unknown): Option | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const o = brut as Record<string, unknown>
+  if (typeof o.id !== 'number') return undefined
+
+  const cibles = Array.isArray(o.all_legal_targets)
+    ? o.all_legal_targets.filter((x): x is number => typeof x === 'number')
+    : []
+  const plage = Array.isArray(o.target_num_range) ? o.target_num_range : []
+  const min = nombre(plage[0], 0)
+  const max = nombre(plage[1], 0)
+
+  const paiements: Partial<Record<number, Paiement>> = {}
+  const brutPaiements = (typeof o.target_payment === 'object' && o.target_payment !== null
+    ? o.target_payment
+    : {}) as Record<string, unknown>
+  for (const [cle, valeur] of Object.entries(brutPaiements)) {
+    const id = Number(cle)
+    if (Number.isFinite(id)) paiements[id] = lirePaiement(valeur)
+  }
+
+  return {
+    id: o.id,
+    name: texte(o.name),
+    bind_id: nombre(o.bind_id, 0),
+    bind_player_id: nombre(o.bind_player_id, 0),
+    // Un maximum de zero cible veut dire « aucune cible a choisir », meme si le
+    // moteur en a liste : le runtime historique fait le meme menage.
+    all_legal_targets: max === 0 ? [] : cibles,
+    target_num_range: [min, max],
+    target_payment: paiements,
+    select_rule: texte(o.select_rule),
+    target_must_include_traits: Array.isArray(o.target_must_include_traits)
+      ? o.target_must_include_traits.filter((t): t is string => typeof t === 'string')
+      : [],
+    failure_reason: texte(o.failure_reason),
+    is_search: o.is_search === true,
+  }
+}
+
+/** Lit la reponse de /get_ask. Renvoie undefined quand le moteur ne demande rien. */
+export function lireDemande(brut: unknown): Demande | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const o = brut as Record<string, unknown>
+  if (typeof o.options_json !== 'string') return undefined
+
+  let brutOptions: unknown
+  try {
+    brutOptions = JSON.parse(o.options_json)
+  } catch {
+    return undefined
+  }
+  if (!Array.isArray(brutOptions)) return undefined
+
+  const options = brutOptions.map(lireOption).filter((x): x is Option => x !== undefined)
+  if (options.length === 0) return undefined
+
+  return {
+    options,
+    prompt_text: texte(o.prompt_text),
+    event_name: texte(o.event_name),
+    show_cancel: o.show_cancel === true,
+    ability_type: texte(o.ability_type),
+  }
+}
+
+/**
+ * Le cout a payer pour l'option, compte tenu des cibles deja choisies.
+ * Reprend getN()/getCost() du runtime : le cout est indexe par la PREMIERE cible
+ * choisie, ou par 0 quand l'option n'a pas de cible.
+ */
+export function paiementCourant(option: Option, cibles: number[]): Paiement | undefined {
+  const premiere = cibles[0] ?? option.all_legal_targets[0] ?? 0
+  return option.target_payment[premiere] ?? option.target_payment[0]
+}
+
+/** Nombre de ressources a depenser. undefined = le moteur en jugera. */
+export function nombreDeRessources(paiement: Paiement | undefined): number | undefined {
+  if (!paiement) return undefined
+  const n = Number(paiement.cost)
+  return Number.isInteger(n) && n >= 0 ? n : undefined
+}
+
+/** « UpTo » : on peut payer moins que le cout imprime. */
+export function paiementFacultatif(paiement: Paiement | undefined): boolean {
+  return paiement?.rule.includes('UpTo') === true
+}
+
+/**
+ * Combien de fois un meme effet de ressource peut etre depense.
+ * Le moteur repete l'effet dans `payment` autant de fois qu'il est disponible.
+ */
+export function foisDisponible(paiement: Paiement | undefined, effectId: number): number {
+  if (!paiement) return 0
+  return paiement.payment.filter((moyen) => moyen.effect_id === effectId).length
+}
+
+/**
+ * Combien de ressources fournit UN moyen de paiement.
+ *
+ * Le moteur encode une carte a double (ou triple) ressource comme un seul effet
+ * dont le `res_text` porte plusieurs icones : « BB » = 2 mentales, « RRR » = 3
+ * physiques, « G » = 1 joker. Le texte est deja nettoye cote moteur
+ * (Symbol.Clean), il ne reste que les lettres de couleur R/B/Y/G. La valeur est
+ * donc le nombre de ces lettres. Un effet sans lettre lisible vaut 1 (au moins
+ * une ressource, comme l'ancien comptage).
+ */
+export function valeurMoyen(resText: string): number {
+  const icones = (resText.match(/[rbyg]/gi) ?? []).length
+  return icones > 0 ? icones : 1
+}
+
+/**
+ * Total REELLEMENT paye par les ressources choisies : la SOMME des valeurs des
+ * effets, pas leur nombre. Sans cela une carte double compte pour 1 et « Valider »
+ * reste bloque a 1/2.
+ */
+export function valeurPayee(paiement: Paiement | undefined, ressources: number[]): number {
+  if (!paiement) return 0
+  const texteParEffet = new Map<number, string>()
+  for (const moyen of paiement.payment) {
+    if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+  }
+  return ressources.reduce((total, id) => total + valeurMoyen(texteParEffet.get(id) ?? ''), 0)
+}
+
+/** L'option est-elle prete a etre envoyee au moteur ? */
+export function reponsePrete(
+  option: Option,
+  cibles: number[],
+  ressources: number[]
+): { prete: boolean; raison: string } {
+  const [min, max] = option.target_num_range
+  if (cibles.length < min) {
+    return { prete: false, raison: `Choose ${min - cibles.length} more target(s)` }
+  }
+  if (cibles.length > max) {
+    return { prete: false, raison: `Remove ${cibles.length - max} target(s)` }
+  }
+
+  const paiement = paiementCourant(option, cibles)
+  const requis = nombreDeRessources(paiement)
+  const paye = valeurPayee(paiement, ressources)
+  if (requis !== undefined && !paiementFacultatif(paiement) && paye < requis) {
+    return {
+      prete: false,
+      raison: `Pay ${requis - paye} more resource(s)`,
+    }
+  }
+
+  return { prete: true, raison: '' }
+}

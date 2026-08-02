@@ -1,0 +1,156 @@
+/* Habillage de l'ANCIEN plateau.
+   ============================================================================
+   Ce fichier ne fait que reteinter l'existant. Il ne deplace aucune zone, ne
+   touche a aucun comportement, et surtout ne touche pas au runtime : tout ce
+   qu'il y a ici est du CSS pose PAR-DESSUS les feuilles du jeu.
+
+   Deux choses seulement :
+     1. le fond de table du nouveau plateau ;
+     2. ses pastilles de PV et de menace.
+
+   Charge en DERNIER dans marvel.html : a poids de selecteur egal, c'est ce
+   fichier qui gagne. Quand un selecteur du jeu est plus precis que le mien, je
+   reprends le sien tel quel plutot que de sortir un !important : la cascade de
+   ce projet a deja ete purgee de 105 d'entre eux, on n'en remet pas.
+
+   Pour revenir en arriere : supprimer la balise <link> de marvel.html. Rien
+   d'autre n'a ete modifie.
+   ============================================================================ */
+
+/* --- 1. Le fond ----------------------------------------------------------- */
+
+/* Autour de la table. Le jeu met un radial-gradient gris ; on reprend le fond
+   sombre du nouveau plateau, avec ses deux lueurs rouge et bleue. */
+html,
+body {
+  background:
+    linear-gradient(135deg, rgba(230, 36, 41, 0.16), transparent 28%),
+    linear-gradient(315deg, rgba(53, 167, 255, 0.12), transparent 30%),
+    #0b0c10;
+}
+
+/* La table elle-meme : quadrillage fin sur un degrade sombre, et un
+   assombrissement des bords qui recentre le regard. */
+#scene {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(23, 31, 41, 0.96), rgba(10, 12, 16, 0.98));
+  background-size: 32px 32px, 32px 32px, auto;
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
+}
+
+/* La bande de couleur sous la zone de chaque joueur est conservee : elle dit ou
+   commence « ta zone », et ca c'est une information de jeu, pas de la deco.
+   Elle devient seulement translucide, pour laisser voir le quadrillage. Le trait
+   du haut redonne la limite franche que l'opacite d'origine dessinait toute
+   seule : sans lui, la separation se perd. */
+.player-background {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.player-background.player-0 {
+  background: radial-gradient(rgba(45, 51, 94, 0.8), transparent 78%);
+}
+
+.player-background.player-1 {
+  background: radial-gradient(rgba(99, 49, 49, 0.8), transparent 78%);
+}
+
+.player-background.player-2 {
+  background: radial-gradient(rgba(86, 99, 49, 0.8), transparent 78%);
+}
+
+.player-background.player-3 {
+  background: radial-gradient(rgba(49, 99, 52, 0.8), transparent 78%);
+}
+
+/* --- 2. La pastille de PV ------------------------------------------------- */
+
+/* Le jeu la dessine deja : un rond rouge degrade, colle au milieu du bord droit.
+   On la remonte dans le coin, on l'aplatit en rouge franc cercle de sang, on lui
+   met un anneau blanc et on ecrit HP dessous. Les libelles sont ceux du jeu :
+   HP est imprime sur les cartes, et THR se range avec les ATK / THW / SCH / DEF
+   que le plateau affiche deja.
+   Le rouge vient du moteur lui-meme (src/game/render/symbol.py : health est en
+   rouge clair), comme le jaune de la menace plus bas.
+
+   `:not(:has(> .guard))` : un sbire Gardien a une pastille blanche, propre au
+   jeu. Elle reste telle quelle, ce selecteur la laisse tranquille. */
+.card .face .info:not(:has(> .infinite_health)):not(:has(> .guard)) .health {
+  top: calc(var(--card-height) * 0.035);
+  right: calc(var(--card-width) * 0.04);
+
+  width: calc(1.75 * var(--font-size));
+  height: calc(1.5 * var(--font-size));
+
+  flex-direction: column;
+  line-height: 1;
+  font-style: normal;
+
+  color: #ffffff;
+  background: #d21f2b;
+  border-color: rgba(255, 255, 255, 0.82);
+  border-width: calc(0.055 * var(--font-size));
+  box-shadow: 0 calc(0.08 * var(--font-size)) calc(0.3 * var(--font-size)) rgba(0, 0, 0, 0.45);
+}
+
+.card .face .info:not(:has(> .infinite_health)):not(:has(> .guard)) .health::after {
+  content: 'HP';
+  font-size: calc(0.42 * var(--font-size));
+  font-weight: 900;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* --- 3. La pastille de menace --------------------------------------------- */
+
+/* Meme traitement pour les complots : le jeu ecrit la menace en blanc sur noir
+   en bas de la carte. On la passe en jaune, dans le coin haut droit, avec son
+   libelle. Le jaune est celui du moteur (Symbol.threat). */
+#area-schemes-side .card:not(.facedown).type-player-side-scheme .face .info::after,
+#area-schemes-side .card:not(.facedown).type-encounter-side-scheme .face .info::after,
+#area-schemes-main .card:not(.facedown).type-main-scheme .face .info::after {
+  left: auto;
+  bottom: auto;
+  top: 5%;
+  right: 4%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.15 * var(--font-size));
+
+  padding: calc(0.12 * var(--font-size)) calc(0.35 * var(--font-size));
+  font-size: calc(1.1 * var(--font-size));
+  font-style: normal;
+  letter-spacing: 0;
+
+  color: #17130a;
+  background: #ffd24a;
+  border: calc(0.055 * var(--font-size)) solid rgba(48, 39, 10, 0.55);
+  border-radius: 999px;
+  box-shadow: 0 calc(0.08 * var(--font-size)) calc(0.3 * var(--font-size)) rgba(0, 0, 0, 0.45);
+  text-shadow: none;
+}
+
+/* Le texte de la pastille est produit par le jeu (attr(data-threat)). On le
+   reprend a l'identique en lui ajoutant son libelle : ces trois regles sont
+   celles de game.css, au caractere pres, plus le suffixe. Elles sont plus
+   precises que la regle ci-dessus, il faut donc les redeclarer ici pour que la
+   couleur de fond ne revienne pas au noir. */
+#area-schemes-main .card.type-main-scheme .face .info:has(> .target_threat):has(> .threat)::after {
+  content: attr(data-threat) "/" attr(data-target_threat) " THR";
+  background-color: #ffd24a;
+}
+
+#area-schemes-main .card.type-main-scheme .face .info:has(> .threat)::after {
+  content: attr(data-threat) " THR";
+  background-color: #ffd24a;
+}
+
+#area-schemes-side .card.type-player-side-scheme .face .info:has(> .threat)::after,
+#area-schemes-side .card.type-encounter-side-scheme .face .info:has(> .threat)::after {
+  content: attr(data-threat) " THR";
+  background-color: #ffd24a;
+}

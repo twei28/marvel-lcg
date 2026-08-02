@@ -1,0 +1,3605 @@
+/* La table.
+   Le decor et la disposition seulement : l'apparence des cartes est dans
+   components/ScanCard.css.
+
+   PRINCIPE, repris de l'ancien plateau (public/js/marvel/scene.js) :
+   la table a une taille FIXE en pixels de scene, et c'est la table entiere qui
+   est mise a l'echelle de la fenetre. Rien ne defile, jamais. On voit tout.
+
+   Consequence a ne pas perdre de vue : a l'interieur de la scene, les tailles
+   sont des constantes, pas des valeurs responsives. Les media queries de
+   ScanCard.css sont donc neutralisees ici (voir la couche utilitaires) : elles
+   reagissent a la fenetre reelle et deformeraient la table. */
+
+@layer base {
+  body {
+    margin: 0;
+    height: 100dvh;
+    /* Aucun defilement : c'est tout l'enjeu de cette page. */
+    overflow: hidden;
+    color: var(--mc-texte);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    background:
+      linear-gradient(135deg, rgba(230, 36, 41, 0.16), transparent 28%),
+      linear-gradient(315deg, rgba(53, 167, 255, 0.12), transparent 30%),
+      #0b0c10;
+  }
+}
+
+@layer composants {
+  .plateau {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* --- Barre du haut : une seule ligne, aussi fine que possible -------------
+     Chaque pixel pris ici est un pixel de moins pour la table. */
+
+  .plateau-barre {
+    display: flex;
+    align-items: center;
+    /* Enroule plutot que deborder : en fenetre etroite, mieux vaut deux lignes
+       de barre qu'un outil coupe. */
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    color: #f8fafc;
+    background: rgba(10, 12, 16, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .plateau-etat {
+    min-width: 0;
+    display: grid;
+    line-height: 1.2;
+  }
+
+  .plateau-etat strong {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .plateau-eyebrow {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffd45a;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .plateau-compte {
+    margin-left: auto;
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    color: #9fb0c4;
+    white-space: nowrap;
+  }
+
+  .plateau-outils {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .plateau-outils select,
+  .plateau-outils input {
+    font: inherit;
+    font-size: 0.8rem;
+    min-height: 30px;
+    max-width: 30ch;
+    padding: 0 6px;
+    color: #e8e9ee;
+    background: #232733;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+  }
+
+  .plateau-outils input[type='number'] {
+    width: 5ch;
+  }
+
+  .plateau-outils a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f8fafc;
+    text-decoration: none;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* --- Le cadre et la scene ------------------------------------------------- */
+
+  .plateau-cadre {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    /* Volontairement visible : une carte agrandie doit pouvoir depasser de la
+       scene. Le non-defilement est garanti par overflow:hidden sur le body. */
+    overflow: visible;
+  }
+
+  /* Table de taille fixe, centree et mise a l'echelle.
+     Lecture voulue : vilain + main scheme + deck rencontre en haut, combat au
+     milieu, side schemes sur le cote, main du joueur en bas. */
+  .plateau-scene {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(var(--echelle, 1));
+    transform-origin: center;
+    /* La largeur et la hauteur posees par React sont celles de la SCENE, marge
+       comprise : sans border-box la scene mesurerait 1952x972 et l'echelle
+       calculee ne la ferait plus tenir. */
+    box-sizing: border-box;
+
+    display: grid;
+    /* Gauche = zones joueur/annexes, centre = cartes actives, droite =
+       rencontre et side schemes. La colonne de gauche tient exactement DEUX
+       cartes (2 x 127 + gap = 264) : au-dela on aurait l'illusion d'en loger
+       trois (424 en tenait 401). */
+    grid-template-columns: 300px minmax(0, 1fr) 384px;
+    /* Hauteur de rangee : la carte (jusqu'a ~246 avec l'etiquette) PLUS une marge
+       pour que le cadre et son halo tiennent dans la zone sans deborder. 216
+       etait calibre pour des cartes plus petites ; elles ont grandi, pas les
+       rangees, d'ou le debordement en bas. */
+    grid-template-rows: repeat(4, minmax(216px, 1fr));
+    /* Disposition « tabletop structure » :
+       - rangee 1 = BANDE MENACE : piles rencontre | vilain | complots, cote a
+         cote, pour lire la relation vilain <-> menace d'un coup ;
+       - rangees 2-3 = AIRE JOUEUR en deux rangees : ligne de combat (allies +
+         sbires engages) puis le reste (soutiens/permanents/environnement) ;
+       - rangee 4 = la main. Piles joueur a gauche, identite a droite. */
+    grid-template-areas:
+      "piles-rencontre rencontre       complot-principal"
+      "nemesis         terrain-combat  complots-secondaires"
+      "piles-joueur    terrain-soutien complots-secondaires"
+      "annexes         main            main";
+    /* Zones rapprochees : moins d'espace perdu entre elles. */
+    gap: 7px;
+    padding: 10px;
+
+    border-radius: 10px;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(23, 31, 41, 0.96), rgba(10, 12, 16, 0.98));
+    background-size: 32px 32px, 32px 32px, auto;
+    box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
+  }
+
+  /* --- Un emplacement ------------------------------------------------------- */
+
+  .plateau-emplacement {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    /* Les rangees sont plus hautes que les cartes des que la fenetre est large :
+       les cartes se placent au milieu de leur emplacement, pas contre un bord. */
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.022);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+  }
+
+  /* L'etiquette de zone ne coute aucune place : elle flotte dans le coin. */
+  .plateau-emplacement-titre {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    margin: 0;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(159, 176, 196, 0.75);
+    pointer-events: none;
+  }
+
+  .plateau-cartes {
+    box-sizing: border-box;
+    /* Largeur de la zone, pour que le passage a la ligne se calcule dessus. */
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    /* 16 en haut : la place de l'etiquette de zone, qui flotte au-dessus. */
+    padding: 16px 4px 4px;
+    gap: 12px;
+  }
+
+  .plateau-groupe {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  /* --- Cartes regardees dans une pile --------------------------------------
+     Quand le moteur donne le droit de regarder plusieurs cartes du dessus d'un
+     deck, elles restent physiquement dans la pile. La table compacte cette pile
+     en une seule carte ; ce dialogue montre donc le lot complet, sans changer
+     l'etat du jeu. */
+
+  .plateau-regardees-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: grid;
+    place-items: center;
+    padding: 54px 24px 86px;
+    background: rgba(2, 6, 12, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  .plateau-cibles-menu-voile {
+    z-index: 120;
+  }
+
+  .plateau-regardees {
+    width: min(980px, calc(100vw - 48px));
+    max-height: min(74dvh, 720px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border: 1px solid rgba(255, 210, 74, 0.48);
+    border-radius: 8px;
+    background: rgba(8, 10, 14, 0.98);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.68);
+  }
+
+  .plateau-regardees-entete {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .plateau-regardees-entete strong {
+    display: block;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+
+  .plateau-regardees-entete button {
+    margin-left: auto;
+    min-height: 34px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #f8fafc;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .plateau-regardees-corps {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 14px 14px;
+  }
+
+  .plateau-regardees-groupe {
+    display: grid;
+    gap: 10px;
+  }
+
+  .plateau-regardees-groupe + .plateau-regardees-groupe {
+    margin-top: 16px;
+  }
+
+  .plateau-regardees-groupe h2 {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .plateau-regardees-cartes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .plateau-cibles-menu {
+    width: fit-content;
+    max-width: calc(100vw - 48px);
+    max-height: none;
+  }
+
+  .plateau-cibles-menu .plateau-regardees-corps {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .plateau-cibles-menu .plateau-regardees-cartes {
+    justify-content: center;
+  }
+
+  /* --- Selecteur de cibles hors table --------------------------------------
+     Le seul panneau qui se pose SUR la table, et seulement le temps d'un choix :
+     une capacite de recherche cible les cartes d'un deck, dont la table ne montre
+     que le dessus. Il n'y a pas d'autre endroit pour les designer. */
+
+  .plateau-selecteur {
+    position: fixed;
+    z-index: 60;
+    /* Modale CENTREE plutot qu'un bandeau colle en bas qui recouvrait la main. */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(1100px, calc(100vw - 32px));
+    max-height: 74dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 210, 74, 0.55);
+    border-radius: 12px;
+    background: rgba(8, 10, 14, 0.98);
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.6),
+      0 24px 60px rgba(0, 0, 0, 0.7);
+  }
+
+  .plateau-selecteur-entete {
+    flex: 0 0 auto;
+    line-height: 1.2;
+  }
+
+  .plateau-selecteur-entete strong {
+    font-size: 0.9rem;
+    color: #ffffff;
+  }
+
+  .plateau-selecteur-cartes {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 12px;
+    /* Un deck peut compter 40 cartes : ici le defilement est legitime, c'est une
+       liste de choix, pas la table. */
+    overflow-y: auto;
+    padding: 4px;
+  }
+
+  /* --- Menu d'actions d'une carte ------------------------------------------
+     Menu volontairement non modal : le plateau reste normal, et la barre du bas
+     reste utilisable. */
+
+  .menu-actions-carte {
+    position: fixed;
+    z-index: 90;
+    top: 50%;
+    left: 50%;
+    width: min(450px, calc(100vw - 28px));
+    height: auto;
+    max-height: none;
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    color: #f8fafc;
+    background: rgba(8, 10, 14, 0.88);
+    border: 1px solid rgba(141, 223, 242, 0.34);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 18px 48px rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(10px);
+    transform: translate(-50%, -50%);
+    transition:
+      left 140ms ease,
+      width 140ms ease,
+      transform 140ms ease;
+    overflow: visible;
+  }
+
+  .menu-actions-carte.mode-cible-focus {
+    border-color: rgba(255, 210, 74, 0.44);
+  }
+
+  @media (min-width: 861px) and (pointer: fine) {
+    .menu-actions-carte.mode-cibles {
+      left: 14px;
+      right: auto;
+      width: min(360px, calc(100vw - 28px));
+      transform: translateY(-50%);
+    }
+  }
+
+  .ma-entete {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .ma-entete div {
+    min-width: 0;
+  }
+
+  .ma-entete strong {
+    display: block;
+    color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .ma-fermer {
+    margin-left: auto;
+    width: 30px;
+    height: 30px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #101317;
+    background: #ffd45a;
+    border: 1px solid #fff1ad;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .ma-vide {
+    margin: 0;
+    padding: 8px 2px 2px;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  /* Verdict de ciblage : quand on clique un complot ou un ennemi, peut-on le
+     contrer / l'attaquer maintenant, et sinon pourquoi. */
+  .ma-ciblage {
+    display: grid;
+    gap: 3px;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+  }
+
+  .ma-ciblage-titre {
+    font-size: 0.86rem;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+  }
+
+  .ma-ciblage-raison {
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #e2e8f0;
+  }
+
+  .ma-ciblage.est-bloque {
+    background: rgba(190, 60, 42, 0.16);
+    border-color: rgba(255, 120, 96, 0.4);
+  }
+
+  .ma-ciblage.est-bloque .ma-ciblage-titre {
+    color: #ffb4a8;
+  }
+
+  .ma-ciblage.est-possible {
+    background: rgba(52, 160, 96, 0.16);
+    border-color: rgba(96, 220, 150, 0.4);
+  }
+
+  .ma-ciblage.est-possible .ma-ciblage-titre {
+    color: #9ff0c0;
+  }
+
+  .ma-actions {
+    display: grid;
+    gap: 8px;
+  }
+
+  .ma-groupe {
+    display: grid;
+    gap: 6px;
+  }
+
+  .ma-groupe + .ma-groupe {
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .ma-groupe-titre {
+    color: #8ddff2;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ma-action {
+    width: 100%;
+    display: grid;
+    gap: 4px;
+    padding: 9px 10px;
+    font: inherit;
+    text-align: left;
+    color: #f8fafc;
+    background: rgba(31, 41, 55, 0.78);
+    border: 1px solid rgba(141, 223, 242, 0.32);
+    border-radius: 8px;
+    box-shadow: inset 4px 0 0 #47dc8b;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .ma-action:hover,
+  .ma-action:focus-visible {
+    outline: none;
+    border-color: rgba(255, 210, 74, 0.86);
+    box-shadow:
+      inset 4px 0 0 #ffd45a,
+      0 0 0 2px rgba(255, 210, 74, 0.22);
+  }
+
+  .ma-action.est-indisponible {
+    color: #9fb0c4;
+    background: rgba(20, 25, 34, 0.9);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 4px 0 0 #8a94a3;
+    cursor: help;
+  }
+
+  .ma-action-principal,
+  .ma-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ma-action-principal b {
+    min-width: 0;
+    color: inherit;
+    font-size: 0.95rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .ma-details {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    color: #cbd5e1;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .ma-details span + span::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    margin: 0 8px 1px 0;
+    border-radius: 50%;
+    background: #ffd45a;
+  }
+
+  .ma-cibles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding-top: 2px;
+  }
+
+  .ma-cible {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    padding: 3px 7px;
+    color: #e8f7ff;
+    background: rgba(8, 16, 26, 0.82);
+    border: 1px solid rgba(141, 223, 242, 0.34);
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1.15;
+    cursor: default;
+  }
+
+  .ma-cible-texte {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+  }
+
+  .ma-cible-nom {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ma-cible-meta,
+  .ma-cible-raison {
+    min-width: 0;
+    overflow: hidden;
+    color: #9fb0c4;
+    font-size: 0.65rem;
+    font-weight: 800;
+    line-height: 1.18;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ma-cible-raison {
+    color: #ffb4a8;
+  }
+
+  button.ma-cible {
+    cursor: pointer;
+  }
+
+  .ma-cible.est-hors-table {
+    border-color: rgba(255, 210, 74, 0.56);
+  }
+
+  .ma-cibles-verrouillees {
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .ma-cibles-libelle {
+    flex: 0 0 auto;
+    color: #8a94a3;
+    font-size: 0.64rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ma-cible.est-non-legale {
+    align-items: flex-start;
+    color: #8a94a3;
+    background: rgba(18, 24, 32, 0.72);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .ma-cible.est-hors-table:hover,
+  .ma-cible.est-hors-table:focus-visible {
+    outline: none;
+    color: #101317;
+    background: #fff1ad;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255, 210, 74, 0.22);
+  }
+
+  .ma-action.a-cibles-actives .ma-cible {
+    color: #101317;
+    background: #ffd45a;
+    border-color: #fff1ad;
+    box-shadow: 0 0 16px rgba(255, 210, 74, 0.42);
+  }
+
+  .ma-action.a-cibles-actives .ma-cible.est-non-legale {
+    color: #8a94a3;
+    background: rgba(18, 24, 32, 0.72);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: none;
+  }
+
+  .ma-action.a-cibles-actives .ma-cible b {
+    color: #ffffff;
+    background: #101317;
+  }
+
+  .ma-cible span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ma-cible .ma-cible-meta,
+  .ma-cible .ma-cible-raison {
+    white-space: nowrap;
+  }
+
+  .ma-cible b {
+    flex: 0 0 auto;
+    min-width: 22px;
+    padding: 1px 4px;
+    color: #101317;
+    text-align: center;
+    background: #ffd45a;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ma-cout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 26px;
+    padding: 2px 6px;
+    color: #101317;
+    background: #ffd45a;
+    border: 1px solid #fff1ad;
+    border-radius: 6px;
+  }
+
+  .mode-actions {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+  }
+
+  .mode-actions button {
+    min-height: 24px;
+    padding: 0 9px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #cbd5e1;
+    background: transparent;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .mode-actions button.est-actif {
+    color: #111827;
+    background: #ffd45a;
+  }
+
+  .ma-cout-pips {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .ma-cout-pips span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #101317;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.42);
+  }
+
+  .ma-cout-zero,
+  .ma-cout-texte {
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .ma-action-raison {
+    display: none;
+    padding-top: 3px;
+    color: #ffb4a8;
+    font-size: 0.74rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .ma-action.est-indisponible:hover .ma-action-raison,
+  .ma-action.est-indisponible:focus-visible .ma-action-raison,
+  .ma-action.est-indisponible.a-raison-visible .ma-action-raison {
+    display: block;
+  }
+
+  /* Mode simple : pas de modale, seulement des boutons flottants. */
+  .actions-flottantes {
+    position: fixed;
+    z-index: 90;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+    width: min(620px, calc(100vw - 28px));
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    pointer-events: none;
+  }
+
+  .demande-centrale {
+    position: fixed;
+    z-index: 92;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    width: min(660px, calc(100vw - 28px));
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .evenement-centrale {
+    position: fixed;
+    z-index: 91;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    width: min(660px, calc(100vw - 28px));
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    padding: 11px 16px 13px;
+    color: #f8fafc;
+    text-align: center;
+    background: rgba(8, 10, 14, 0.86);
+    border: 1px solid rgba(255, 210, 74, 0.58);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.68),
+      0 16px 34px rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+    animation: evenement-centrale-apparait 180ms ease-out;
+  }
+
+  .evenement-centrale strong {
+    color: #ffffff;
+    font-size: 1.04rem;
+    font-weight: 900;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .dc-continue {
+    /* Le panneau parent est en pointer-events:none (il laisse passer la souris
+       vers la table) : le bouton doit REACTIVER les clics, sinon il est
+       inclickable a la vraie souris. */
+    pointer-events: auto;
+    min-width: 132px;
+    min-height: 42px;
+    margin-top: 5px;
+    padding: 8px 18px;
+    color: #17130a;
+    font-family: Impact, Haettenschweiler, "Arial Black", ui-sans-serif, sans-serif;
+    font-size: 1.04rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    background: #ffd24a;
+    border: 2px solid #fff1ad;
+    border-radius: 7px;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.68), 0 6px 16px rgba(0, 0, 0, 0.42);
+    cursor: pointer;
+  }
+
+  .dc-continue:hover,
+  .dc-continue:focus-visible {
+    outline: none;
+    background: #ffe488;
+    transform: translateY(-2px);
+  }
+
+  @keyframes evenement-centrale-apparait {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 6px));
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .dc-texte {
+    max-width: min(560px, calc(100vw - 34px));
+    display: grid;
+    gap: 3px;
+    padding: 9px 13px 10px;
+    color: #f8fafc;
+    text-align: center;
+    background: rgba(8, 10, 14, 0.84);
+    border: 1px solid rgba(255, 210, 74, 0.52);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.68),
+      0 16px 34px rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(8px);
+  }
+
+  .dc-texte strong {
+    color: #ffffff;
+    font-size: 0.98rem;
+    font-weight: 900;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+
+  .dc-boutons {
+    max-width: min(640px, calc(100vw - 28px));
+  }
+
+  .af-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: auto;
+  }
+
+  .af-action-wrap {
+    position: relative;
+    display: inline-grid;
+    justify-items: center;
+    gap: 4px;
+  }
+
+  .af-action,
+  .assistant-simple-action {
+    max-width: 240px;
+    min-height: 48px;
+    padding: 9px 19px;
+    color: #ffffff;
+    font-family: Impact, Haettenschweiler, "Arial Black", ui-sans-serif, sans-serif;
+    font-size: 1.14rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    text-align: center;
+    overflow-wrap: anywhere;
+    background: var(--action-bg, #303746);
+    border: 2px solid var(--action-border, rgba(255, 255, 255, 0.78));
+    border-radius: 7px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.7),
+      4px 5px 0 rgba(0, 0, 0, 0.58),
+      0 12px 26px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+  }
+
+  .af-action small {
+    display: block;
+    max-width: 100%;
+    margin-top: 3px;
+    color: currentColor;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.58rem;
+    font-weight: 900;
+    line-height: 1.05;
+    opacity: 0.82;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* « A qui je le fais » : les cibles possibles de l'option, sous son nom. */
+  .af-action .af-cibles {
+    font-size: 0.62rem;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.95;
+  }
+
+  .af-action:hover,
+  .af-action:focus-visible {
+    outline: none;
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+  }
+
+  .af-action.est-indisponible {
+    color: #cbd5e1;
+    background: rgba(48, 55, 70, 0.78);
+    border-color: rgba(255, 255, 255, 0.28);
+    filter: grayscale(0.45);
+    cursor: help;
+  }
+
+  @media (max-width: 560px) {
+    .af-action,
+    .assistant-simple-action {
+      max-width: min(280px, calc(100vw - 36px));
+      min-height: 46px;
+      padding-inline: 16px;
+      font-size: 1.06rem;
+    }
+  }
+
+  .af-raison {
+    max-width: min(300px, calc(100vw - 36px));
+    padding: 6px 8px;
+    color: #ffd8d0;
+    font-size: 0.74rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+    background: rgba(42, 18, 18, 0.92);
+    border: 1px solid rgba(255, 154, 138, 0.44);
+    border-radius: 7px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.42);
+  }
+
+  .af-vide {
+    padding: 7px 12px;
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    font-weight: 900;
+    background: rgba(8, 10, 14, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 7px;
+  }
+
+  .af-fermer {
+    pointer-events: auto;
+    width: 28px;
+    height: 28px;
+    display: inline-grid;
+    place-items: center;
+    color: #101317;
+    background: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    border-radius: 50%;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
+  }
+
+  .dc-pass {
+    min-width: 92px;
+  }
+
+  .tonalite-attack {
+    --action-bg: #d93632;
+    --action-border: #ffb0a8;
+  }
+
+  .tonalite-thwart {
+    --action-bg: #2477d8;
+    --action-border: #a9d5ff;
+  }
+
+  .tonalite-recover {
+    --action-bg: #2f9d62;
+    --action-border: #a8f0c4;
+  }
+
+  .tonalite-defense {
+    --action-bg: #168f9f;
+    --action-border: #a6f1f7;
+  }
+
+  .tonalite-play {
+    --action-bg: #ffd45a;
+    --action-border: #fff1ad;
+    color: #14100a;
+  }
+
+  .tonalite-change {
+    --action-bg: #f8fafc;
+    --action-border: #ffffff;
+    color: #111827;
+  }
+
+  .tonalite-play .assistant-simple-action,
+  .tonalite-change .assistant-simple-action {
+    color: #111827;
+  }
+
+  .tonalite-ability {
+    --action-bg: #7c4fd6;
+    --action-border: #d9c6ff;
+  }
+
+  .tonalite-general {
+    --action-bg: #374151;
+    --action-border: #cbd5e1;
+  }
+
+  /* --- Barre d'action ------------------------------------------------------
+     Hors de la scene, a taille reelle : un texte mis a l'echelle deviendrait
+     illisible, et un panneau flottant sur la table recouvrirait la main. */
+
+  .plateau-action {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    flex: 0 0 auto;
+    min-height: 58px;
+    padding: 8px 12px;
+    color: #f8fafc;
+    background: rgba(10, 12, 16, 0.94);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .plateau-action-secondaire {
+    min-height: 46px;
+    padding: 6px 10px;
+    gap: 6px 12px;
+    background: rgba(8, 10, 14, 0.86);
+  }
+
+  .plateau-action-secondaire .plateau-action-texte strong {
+    font-size: 0.84rem;
+  }
+
+  .plateau-action-secondaire .plateau-action-options {
+    gap: 5px;
+  }
+
+  .plateau-action-secondaire .plateau-action-options button,
+  .plateau-action-secondaire .plateau-action-boutons button {
+    min-height: 32px;
+    padding: 3px 10px;
+    border-radius: 7px;
+    font-size: 0.76rem;
+  }
+
+  .plateau-action-secondaire.a-action-en-cours .pa-legende {
+    opacity: 0.72;
+  }
+
+  .plateau-action-attente {
+    color: #9fb0c4;
+    font-size: 0.86rem;
+  }
+
+  .plateau-action-attente strong {
+    color: #cbd5e1;
+  }
+
+  .plateau-action-texte {
+    min-width: 0;
+    display: grid;
+    line-height: 1.2;
+  }
+
+  .plateau-action-texte strong {
+    font-size: 0.92rem;
+    color: #ffffff;
+  }
+
+  .plateau-action-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .plateau-action-encours {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+
+  .plateau-action-nom {
+    font-weight: 800;
+    color: #ffd45a;
+  }
+
+  .plateau-action-detail {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+  }
+
+  .plateau-action-raison {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ff9a8a;
+  }
+
+  /* Legende des contours colores (memes couleurs que les halos des cartes). */
+  .pa-legende {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+  }
+
+  .pa-leg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    white-space: nowrap;
+  }
+
+  .pa-leg::before {
+    content: '';
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+  }
+
+  .pa-leg-play::before {
+    background: #47dc8b;
+  }
+
+  .pa-leg-target::before {
+    background: #ffd24a;
+  }
+
+  .pa-leg-chosen::before {
+    background: #43b4ff;
+  }
+
+  /* L'etape en cours : dis clairement quoi faire maintenant. */
+  .pa-etape {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #8ddff2;
+  }
+
+  /* Compteurs cibles / cout, chiffres bien lisibles. */
+  .pa-compteur {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #9fb0c4;
+  }
+
+  .pa-compteur em {
+    font-style: normal;
+    text-transform: uppercase;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .pa-compteur b {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pa-compteur i {
+    font-style: normal;
+    font-size: 0.68rem;
+    color: #9fb0c4;
+  }
+
+  .pa-cost b {
+    color: #ffd24a;
+  }
+
+  .plateau-action-boutons {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .plateau-action button {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 42px;
+    padding: 4px 14px;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: #f8fafc;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .plateau-action button em {
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-style: normal;
+    color: #9fb0c4;
+  }
+
+  .plateau-action button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .plateau-action button.primaire {
+    color: #1b1300;
+    background: #ffd45a;
+    border-color: #fff1ad;
+  }
+
+  .plateau-action button.primaire:disabled {
+    color: #f8fafc;
+    background: #1f2937;
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  .plateau-message {
+    margin: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 154, 138, 0.5);
+    background: rgba(60, 20, 18, 0.7);
+    color: #ffd8d0;
+  }
+
+  /* --- Assistant pas-a-pas -------------------------------------------------
+     Court, central et inerte : il dit quoi faire maintenant, mais ne vole jamais
+     le clic des cartes cible ou ressource. */
+
+  .assistant-action {
+    position: fixed;
+    z-index: 86;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    min-width: min(420px, calc(100vw - 28px));
+    max-width: min(560px, calc(100vw - 28px));
+    display: grid;
+    gap: 5px;
+    padding: 10px 14px;
+    color: #f8fafc;
+    text-align: center;
+    background: rgba(8, 10, 14, 0.9);
+    border: 1px solid rgba(255, 210, 74, 0.66);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 18px 48px rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+  }
+
+  .assistant-action.mode-simple {
+    top: 48%;
+    min-width: 0;
+    max-width: min(560px, calc(100vw - 28px));
+    justify-items: center;
+    gap: 8px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .assistant-action.mode-simple .assistant-simple-action {
+    display: inline-grid;
+    place-items: center;
+    cursor: default;
+  }
+
+  .assistant-simple-indication,
+  .assistant-simple-resume {
+    max-width: min(430px, calc(100vw - 34px));
+    padding: 5px 9px;
+    color: #f8fafc;
+    font-size: 0.82rem;
+    font-weight: 900;
+    line-height: 1.2;
+    text-align: center;
+    background: rgba(8, 10, 14, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 7px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+  }
+
+  .assistant-simple-indication {
+    color: #ffd45a;
+  }
+
+  .assistant-action.mode-simple .assistant-boutons {
+    margin-top: 0;
+  }
+
+  .assistant-action.mode-simple .assistant-boutons button {
+    min-height: 34px;
+    padding: 5px 14px;
+    font-family: Impact, Haettenschweiler, "Arial Black", ui-sans-serif, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1;
+    text-transform: uppercase;
+    border-width: 2px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.7),
+      3px 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .assistant-eyebrow {
+    color: #8ddff2;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .assistant-action strong {
+    color: #ffffff;
+    font-size: 1.08rem;
+    line-height: 1.1;
+  }
+
+  .assistant-detail,
+  .assistant-resume {
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .assistant-resume {
+    color: #ffd45a;
+  }
+
+  /* Aide des actions reparties : une meme carte se clique plusieurs fois.
+     Discrete mais lisible, elle n'apparait que quand c'est le cas. */
+  .assistant-indice {
+    color: #8ddff2;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+    font-style: italic;
+  }
+
+  /* Le panneau est en pointer-events:none (simple guide). On REACTIVE les clics
+     sur la barre de boutons pour pouvoir confirmer/annuler ici, au centre. */
+  .assistant-boutons {
+    pointer-events: auto;
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .assistant-boutons button {
+    font: inherit;
+    font-weight: 900;
+    padding: 7px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  .assistant-annuler {
+    color: #ffffff;
+    background: #c62828;
+    border-color: #ffb4b4;
+  }
+
+  .assistant-annuler:hover {
+    background: #e53935;
+  }
+
+  .assistant-confirmer {
+    color: #101317;
+    background: #ffd45a;
+    border-color: #fff1ad;
+  }
+
+  .assistant-confirmer:hover:not(:disabled) {
+    background: #ffe488;
+  }
+
+  .assistant-confirmer:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .assistant-cout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .assistant-slot {
+    width: 30px;
+    height: 30px;
+    display: inline-grid;
+    place-items: center;
+    color: #8a94a3;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px dashed rgba(255, 255, 255, 0.32);
+    border-radius: 50%;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .assistant-slot.est-rempli {
+    color: #101317;
+    background: #ffd45a;
+    border-style: solid;
+    border-color: #fff1ad;
+  }
+
+  .assistant-slot.est-r {
+    background: #f85f5f;
+    color: #ffffff;
+  }
+
+  .assistant-slot.est-b {
+    background: #5f96ff;
+    color: #ffffff;
+  }
+
+  .assistant-slot.est-y {
+    background: #ffd45a;
+    color: #101317;
+  }
+
+  .assistant-slot.est-g {
+    background: #8ddf8f;
+    color: #101317;
+  }
+
+  .assistant-regles {
+    color: #9fb0c4;
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+    .menu-actions-carte:not(.mode-cibles) {
+      animation: menu-actions-entre 130ms ease-out;
+    }
+
+    .menu-actions-carte.mode-cibles {
+      animation: menu-actions-cibles-entre 130ms ease-out;
+    }
+  }
+
+  @keyframes menu-actions-entre {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes menu-actions-cibles-entre {
+    from {
+      opacity: 0;
+      transform: translateY(-48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
+  @media (max-width: 860px), (pointer: coarse) {
+    .menu-actions-carte {
+      top: auto;
+      left: 10px;
+      right: 10px;
+      bottom: 74px;
+      width: auto;
+      max-height: none;
+      gap: 8px;
+      padding: 10px;
+      transform: none;
+      box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.7),
+        0 -8px 0 rgba(230, 36, 41, 0.34),
+        0 -18px 44px rgba(0, 0, 0, 0.58);
+    }
+
+    .menu-actions-carte.mode-cibles {
+      left: 10px;
+      right: 10px;
+      width: auto;
+      transform: none;
+    }
+
+    .ma-action {
+      padding: 8px 10px;
+    }
+
+    .ma-entete strong {
+      font-size: 0.94rem;
+    }
+  }
+}
+
+@layer utilitaires {
+  /* --- Tailles figees dans la scene ----------------------------------------
+     Les media queries de ScanCard.css font varier --card-w selon la fenetre.
+     Dans une scene a l'echelle, cela deformerait la table : on fige les valeurs
+     de reference du jeu (127x176, mesurees dans public/css/marvel/card.css).
+     Ces regles sont dans la couche utilitaires, APRES celles du composant. */
+  .plateau-scene .scan-card {
+    --card-w: 127px;
+  }
+
+  .plateau-scene .scan-card.is-landscape {
+    --card-w: 176px;
+  }
+
+  /* Les piles (deck, defausse, invocation...) sont dessinees comme UNE carte
+     porteuse de leur hauteur : a la demande de l'utilisateur, elles gardent la
+     MEME taille que toutes les autres cartes de la table (pas de reduction).
+     Elles heritent donc de --card-w et de l'agrandissement des cartes normales.
+     Note : un scenario a beaucoup de piles (Hercule, decks supplementaires) peut
+     les faire deborder ; a surveiller et gerer par chevauchement si besoin. */
+
+  /* Les cartes du selecteur sont hors scene : elles ne suivent pas l'echelle de
+     la table, donc leur taille et leur agrandissement se reglent ici. */
+  /* Cartes du selecteur : taille lisible, PAS d'agrandissement en place (il
+     ballonnait dans la modale). Le survol montre la carte dans l'apercu lateral,
+     comme pour la table. */
+  .plateau-selecteur .scan-card {
+    --card-w: 132px;
+    --inspect-scale: 1;
+  }
+
+  .plateau-selecteur .scan-card.is-landscape {
+    --card-w: 190px;
+    --inspect-scale: 1;
+  }
+
+  .plateau-regardees .scan-card {
+    --card-w: 132px;
+    --inspect-scale: 1.7;
+    --mc-zoom-origine: center;
+  }
+
+  .plateau-regardees .scan-card.is-landscape {
+    --card-w: 182px;
+    --inspect-scale: 1.6;
+  }
+
+  .plateau-regardees .scan-card:hover .scan-visuel,
+  .plateau-regardees .scan-card:focus-visible .scan-visuel {
+    transform: none;
+  }
+
+  .plateau-regardees .scan-card:hover,
+  .plateau-regardees .scan-card:focus-visible {
+    --state-glow: rgba(120, 200, 255, 0.6);
+  }
+
+  /* Une UNITE = un porteur et ses upgrades glissees derriere lui. L'unite garde
+     la largeur du porteur ; les upgrades debordent en absolu vers le bas-droite
+     sans pousser les voisines. --attach-step-* = le cran d'une upgrade a la
+     suivante (42 ~ 1/3 d'une carte de 127 de large). */
+  .plateau-unite {
+    position: relative;
+    display: flex;
+    /* Cran d'une upgrade a la suivante : 63 ~ la MOITIE d'une carte de 127 de
+       large. Pas de descente : les upgrades restent a la meme hauteur, glissees
+       vers la droite derriere le porteur. */
+    --attach-step-x: 63px;
+    --attach-step-y: 0px;
+    /* Reserve a droite le debord de la DERNIERE upgrade (la plus a droite), pour
+       que le groupe suivant demarre APRES elle et ne soit pas recouvert. --nb =
+       nombre d'upgrades ; leur debord total = nb * cran. Sans upgrade, zero. */
+    padding-right: calc(var(--nb, 0) * var(--attach-step-x));
+  }
+
+  /* Survol n'importe ou dans l'unite : elle passe au-dessus de ses voisines,
+     pour qu'une upgrade agrandie ne soit pas coupee par la carte d'a cote. */
+  .plateau-unite:hover {
+    z-index: 100;
+  }
+
+  /* Le porteur, toujours AU-DESSUS de ses propres upgrades. */
+  .plateau-unite > .scan-card {
+    position: relative;
+    z-index: 30;
+  }
+
+  /* --- Phases A VENIR (vilain / complot) -----------------------------------
+     Un petit tas DERRIERE la carte actuelle (decalage haut-droite), en retrait,
+     purement decoratif. Le bouton loupe ouvre la vue de toutes les phases. */
+  .stage-arriere {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: calc(28 - var(--i, 1));
+    transform: translate(calc(var(--i, 1) * 9px), calc(var(--i, 1) * -9px));
+    pointer-events: none;
+    filter: brightness(0.72) saturate(0.85);
+  }
+
+  .stages-bouton {
+    position: absolute;
+    bottom: 7px;
+    right: 7px;
+    z-index: 36;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #fff;
+    background: rgba(10, 12, 16, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .stages-bouton b {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stages-bouton:hover {
+    background: rgba(34, 46, 62, 0.96);
+    border-color: #8ddff2;
+  }
+
+  /* --- Marqueurs de STATUT (Stunned / Confused / Tough) ---------------------
+     Pas des ameliorations : de petites mini-cartes posees en bas du personnage,
+     chevauchant le bord inferieur, cote a cote. Au-dessus du porteur pour rester
+     lisibles. */
+  .statuts {
+    position: absolute;
+    /* Centre sur le PORTEUR, pas sur l'unite : l'unite reserve a droite la place
+       des upgrades (padding-right), ce qui decalait les statuts vers la droite.
+       On retranche la moitie de ce debord pour retomber au centre de la carte. */
+    left: calc(50% - var(--nb, 0) * var(--attach-step-x, 63px) / 2);
+    top: 100%;
+    transform: translate(-50%, -46%);
+    display: flex;
+    gap: 4px;
+    z-index: 40;
+  }
+
+  /* Taille du mini-statut SUR LA TABLE (~40 % d'une carte). L'aperçu agrandi, lui,
+     les montre plus gros (voir .carte-apercu plus bas). */
+  .plateau-scene .est-statut .scan-card {
+    --card-w: 50px;
+  }
+
+  .plateau-scene .est-statut .scan-card.is-landscape {
+    --card-w: 74px;
+  }
+
+  /* Format d'une carte de statut : imprimee en PAYSAGE. Son image (« stunned »...)
+     fait 95x149, soit 149x95 une fois tournee (ratio ~1.57), DIFFERENT d'une carte
+     standard (176/127). On cale le cadre ET la rotation sur CE ratio, pour un
+     rendu au format d'origine, sans bande ni ecrasement. NON scope a .plateau-scene :
+     ces regles valent aussi dans l'aperçu agrandi. */
+  .est-statut .scan-card.is-landscape .scan-frame {
+    aspect-ratio: 149 / 95;
+  }
+
+  .est-statut .scan-card.is-landscape.scan-a-tourner .scan-frame img {
+    width: calc(var(--card-w) * 95 / 149);
+    height: var(--card-w);
+    object-fit: fill;
+  }
+
+  /* Trop petit pour l'etiquette de type : on ne garde que le scan. */
+  .est-statut .top-strip {
+    display: none;
+  }
+
+  /* Statuts dans l'APERÇU agrandi : plus gros que sur la table, poses au bas de la
+     grande carte, centres. */
+  .carte-apercu .est-statut .scan-card {
+    --card-w: 120px;
+  }
+
+  .carte-apercu .est-statut .scan-card.is-landscape {
+    --card-w: 178px;
+  }
+
+  /* Dans l'aperçu, le statut est ENTIEREMENT sous la carte (pas a cheval comme sur
+     la table) : on annule la remontee, on le pose juste sous le bord bas. */
+  .carte-apercu .statuts {
+    transform: translate(-50%, 6px);
+  }
+
+  /* Chaque upgrade : DERRIERE le porteur, decalee d'un cran en bas-droite. La
+     premiere (i=0) au-dessus des suivantes, qui s'enfoncent vers le bas-droite. */
+  .plateau-scene .est-attachee {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(
+      calc((var(--i, 0) + 1) * var(--attach-step-x)),
+      calc((var(--i, 0) + 1) * var(--attach-step-y))
+    );
+    z-index: calc(20 - var(--i, 0));
+  }
+
+  /* Survol d'une upgrade : elle ressort DEVANT tout (le grandissement vient de
+     .scan-card:hover .scan-visuel, deja en place). */
+  .plateau-scene .est-attachee:hover {
+    z-index: 60;
+  }
+
+  /* Les cartes attachees gardent la MEME taille que les autres cartes en jeu :
+     une amelioration reste une carte. */
+  .plateau-scene .est-attachee .scan-card {
+    --card-w: 127px;
+  }
+
+  .plateau-scene .est-attachee .scan-card.is-landscape {
+    --card-w: 176px;
+  }
+
+  .plateau-scene .est-attachee .kind-pill {
+    font-size: 9px;
+  }
+
+  /* --- Agrandissement au survol --------------------------------------------
+     La scene est deja reduite : un facteur fixe donnerait une carte survolee de
+     plus en plus petite a mesure que la fenetre rapetisse. On vise donc une
+     taille REELLE constante, celle validee sur la vitrine (300px de large en
+     portrait, 370px en paysage). */
+  .plateau-scene .scan-card {
+    --inspect-scale: calc(2.36 / var(--echelle, 1));
+  }
+
+  .plateau-scene .scan-card.is-landscape {
+    --inspect-scale: calc(2.1 / var(--echelle, 1));
+  }
+
+  .plateau-scene .est-attachee .scan-card {
+    --inspect-scale: calc(3.4 / var(--echelle, 1));
+  }
+
+  .plateau-scene .est-attachee .scan-card.is-landscape {
+    --inspect-scale: calc(3 / var(--echelle, 1));
+  }
+
+  /* --- Survol sur le PLATEAU : leger surlignage, PAS le gros zoom -----------
+     Le detail se lit dans l'apercu fixe (CarteApercu, ci-dessous) : ici la
+     carte pointee ne fait que se rehausser un peu et prendre un halo, sans
+     couvrir ses voisines. On surcharge donc le zoom herite de la vitrine, qui
+     reste intact pour la vitrine elle-meme (hors .plateau-scene). */
+  .plateau-scene .scan-card:hover .scan-visuel,
+  .plateau-scene .scan-card:focus-visible .scan-visuel {
+    transform: scale(1.06);
+  }
+
+  .plateau-scene .scan-card:hover {
+    --state-glow: rgba(120, 200, 255, 0.6);
+  }
+
+  /* --- Apercu au survol : grand, fixe, sur le cote droit --------------------
+     Toujours au meme endroit, par-dessus le plateau (qui, lui, ne bouge pas).
+     Ne capte pas la souris pour ne pas se re-survoler. */
+  .carte-apercu {
+    position: fixed;
+    /* Decale vers la gauche (~2,5 cm) par rapport au bord droit, a la demande. */
+    right: 120px;
+    top: 52%;
+    transform: translateY(-50%);
+    z-index: 400;
+    pointer-events: none;
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.62));
+    animation: carte-apercu-entre 130ms ease-out;
+  }
+
+  .carte-apercu .scan-card {
+    /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). */
+    --card-w: 345px;
+    cursor: default;
+  }
+
+  .carte-apercu .scan-card.is-landscape {
+    --card-w: 506px;
+  }
+
+  /* Chaque face de l'apercu : conteneur positionne pour ancrer les .statuts. */
+  .apercu-face {
+    position: relative;
+  }
+
+  /* Carte multi-faces : toutes les faces cote a cote, reduites selon le nombre
+     (2 faces = recto-verso, 3 faces = Ant-Man Ant-Man/Giant-Man/Scott Lang). */
+  .carte-apercu.a-plusieurs-faces {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  /* Le texte des cartes doit rester LISIBLE meme a trois faces : a 208px les
+     identites multi-formes (Amadeus Cho, Ant-Man) etaient illisibles. On
+     agrandit, en bornant a la largeur de fenetre pour ne pas deborder sur les
+     ecrans etroits (le panneau est ancre a droite). */
+  .carte-apercu.a-faces-2 .scan-card {
+    --card-w: min(315px, 30vw);
+  }
+
+  .carte-apercu.a-faces-2 .scan-card.is-landscape {
+    --card-w: min(460px, 42vw);
+  }
+
+  .carte-apercu.a-faces-3 .scan-card {
+    --card-w: min(272px, 21vw);
+  }
+
+  .carte-apercu.a-faces-3 .scan-card.is-landscape {
+    --card-w: min(398px, 30vw);
+  }
+
+  /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
+     qui appartiennent a la face visible, pas a celle-ci. */
+  .apercu-face-autre .top-strip,
+  .apercu-face-autre .scan-stats-calee,
+  .apercu-face-autre .scan-stat,
+  .apercu-face-autre .scheme-threat-badge,
+  .apercu-face-autre .ally-hp-badge {
+    display: none;
+  }
+
+  .apercu-face-label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Dans l'apercu, aucun zoom au survol : il est deja grand et inerte. */
+  .carte-apercu .scan-card:hover .scan-visuel {
+    transform: none;
+  }
+
+  @keyframes carte-apercu-entre {
+    from {
+      opacity: 0;
+      transform: translateY(-50%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
+  /* --- Largeur utile et ancrage du zoom, emplacement par emplacement --------
+     --place doit suivre grid-template-columns. L'ancrage evite qu'une carte de
+     bord grandisse hors de l'ecran : une carte de gauche grandit vers la droite,
+     une carte du haut vers le bas. */
+
+  /* --- Chevauchement des lignes chargees -----------------------------------
+     Seules les zones LARGES du centre peuvent se remplir au point de deborder.
+     Plutot que rapetisser les cartes ou faire defiler, elles se chevauchent,
+     comme une vraie main. --n vient de React (nombre de cartes de la ligne),
+     --place est la largeur utile de la zone, declaree avec chaque zone.
+     Le calcul ne fait que RETIRER de la place : tant que la ligne tient, la
+     marge vaut 0 et c'est le `gap` qui espace. 139 = 127 de carte + 12 de gap. */
+  .zone-rencontre .plateau-groupe > * + *,
+  .zone-terrain-combat .plateau-groupe > * + *,
+  .zone-terrain-soutien .plateau-groupe > * + *,
+  .zone-main .plateau-groupe > * + * {
+    margin-left: max(
+      -92px,
+      min(0px, calc((var(--place, 1164px) - var(--n, 1) * 139px) / max(1, var(--n, 1) - 1)))
+    );
+  }
+
+  /* --- Largeur utile et ancrage du zoom, zone par zone ----------------------
+     --place doit suivre grid-template-columns. L'ancrage evite qu'une carte de
+     bord grandisse hors de l'ecran : une carte de gauche grandit vers la droite,
+     une carte du haut vers le bas.
+     Les colonnes etroites passent a la ligne au lieu de se chevaucher : deux
+     rangees de grille leur sont reservees, autant s'en servir. */
+
+  .zone-piles-rencontre {
+    grid-area: piles-rencontre;
+    --mc-zoom-origine: center top;
+    align-items: flex-start;
+  }
+
+  /* « Your piles » (deck + defausse) et « Other zones » ont chacune leur propre
+     rangee dans la colonne de gauche : Other zones EST SOUS Your piles, en taille
+     normale. La main occupe le centre-droite de la derniere rangee. */
+  .zone-piles-joueur {
+    grid-area: piles-joueur;
+    --mc-zoom-origine: center bottom;
+    align-items: flex-start;
+  }
+
+  .zone-annexes {
+    grid-area: annexes;
+    --mc-zoom-origine: left bottom;
+    align-items: flex-start;
+  }
+
+  /* Les piles d'une meme zone forment UN groupe : c'est donc le groupe qui doit
+     passer a la ligne, pas seulement la zone. */
+  .zone-piles-rencontre .plateau-cartes,
+  .zone-piles-joueur .plateau-cartes,
+  .zone-annexes .plateau-cartes,
+  .zone-complot-principal .plateau-cartes,
+  .zone-complots-secondaires .plateau-cartes,
+  .zone-nemesis .plateau-cartes,
+  .zone-piles-rencontre .plateau-groupe,
+  .zone-piles-joueur .plateau-groupe,
+  .zone-annexes .plateau-groupe,
+  .zone-complot-principal .plateau-groupe,
+  .zone-complots-secondaires .plateau-groupe,
+  .zone-nemesis .plateau-groupe {
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 10px;
+  }
+
+  .zone-piles-rencontre .plateau-groupe,
+  .zone-piles-joueur .plateau-groupe,
+  .zone-annexes .plateau-groupe,
+  .zone-complot-principal .plateau-groupe,
+  .zone-complots-secondaires .plateau-groupe,
+  .zone-nemesis .plateau-groupe {
+    min-width: 0;
+  }
+
+  .zone-piles-rencontre .plateau-cartes,
+  .zone-piles-joueur .plateau-cartes,
+  .zone-annexes .plateau-cartes {
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    padding: 20px 0 4px;
+  }
+
+  .zone-piles-rencontre .plateau-emplacement-titre,
+  .zone-piles-joueur .plateau-emplacement-titre,
+  .zone-annexes .plateau-emplacement-titre {
+    left: 4px;
+  }
+
+  .zone-rencontre {
+    grid-area: rencontre;
+    --place: 1078px;
+    --mc-zoom-origine: center top;
+    /* Accent « menace » : le vilain fait partie du camp adverse. */
+    border-color: rgba(230, 36, 41, 0.28);
+  }
+
+  /* Aire joueur, rangee haute : la ligne de combat, teintee comme la menace
+     puisqu'elle lui fait face (allies + sbires engages). */
+  .zone-terrain-combat {
+    grid-area: terrain-combat;
+    --place: 1078px;
+    --mc-zoom-origine: center bottom;
+    border-color: rgba(230, 36, 41, 0.24);
+    background: rgba(230, 36, 41, 0.045);
+  }
+
+  /* Aire joueur, rangee basse : soutiens, permanents, ameliorations. */
+  .zone-terrain-soutien {
+    grid-area: terrain-soutien;
+    --place: 1078px;
+    --mc-zoom-origine: center bottom;
+  }
+
+  /* La case « terrain-soutien » est partagee : le DECK SPECIAL a sa zone dediee a
+     GAUCHE, le heros et ses soutiens occupent le reste a droite. */
+  .colonne-terrain-soutien {
+    grid-area: terrain-soutien;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .colonne-terrain-soutien > .zone-deck-special {
+    flex: 0 0 auto;
+  }
+
+  .colonne-terrain-soutien > .zone-terrain-soutien {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Zone du deck special : accent violet, comme ses cartes. */
+  .zone-deck-special {
+    --mc-zoom-origine: center bottom;
+    /* Cartes calees EN HAUT (comme « Your piles ») : elles demarrent SOUS le
+       titre et debordent vers le bas au lieu de remonter sur le titre. */
+    align-items: flex-start;
+    border-color: rgba(150, 90, 255, 0.35);
+    background: rgba(120, 82, 200, 0.06);
+  }
+
+  .zone-deck-special .plateau-cartes {
+    align-items: flex-start;
+    padding-top: 22px;
+  }
+
+  .zone-deck-special .plateau-emplacement-titre {
+    color: rgba(201, 166, 255, 0.9);
+  }
+
+  /* Identite + upgrades attaches = un bloc de lecture. On garde ce bloc serre,
+     puis on marque une respiration avant les supports et cartes suivantes. */
+  .zone-terrain-soutien .plateau-cartes > .plateau-groupe:first-child {
+    margin-right: 28px;
+  }
+
+  .zone-complot-principal {
+    grid-area: complot-principal;
+    --mc-zoom-origine: right top;
+    /* Accent « menace » : la menace sur le complot principal = defaite. */
+    border-color: rgba(242, 167, 53, 0.28);
+  }
+
+  .zone-complot-principal .plateau-cartes {
+    justify-content: flex-end;
+    padding-right: 0;
+  }
+
+  .zone-complots-secondaires {
+    grid-area: complots-secondaires;
+    --mc-zoom-origine: right center;
+    align-items: flex-start;
+    border-color: rgba(242, 167, 53, 0.22);
+    background: rgba(242, 167, 53, 0.035);
+  }
+
+  .zone-complots-secondaires .plateau-cartes {
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-end;
+    padding: 32px 0 4px 4px;
+  }
+
+  .zone-complot-principal .plateau-emplacement-titre,
+  .zone-complots-secondaires .plateau-emplacement-titre {
+    right: 4px;
+    left: auto;
+  }
+
+  .zone-nemesis .plateau-cartes {
+    justify-content: center;
+  }
+
+  .zone-nemesis {
+    grid-area: nemesis;
+    --mc-zoom-origine: left center;
+    /* Menace personnelle en attente : accent rouge sombre, comme le camp adverse. */
+    border-color: rgba(230, 36, 41, 0.3);
+    background: rgba(230, 36, 41, 0.05);
+  }
+
+  .zone-main {
+    grid-area: main;
+    /* La main s'etend sur toute la largeur du bas, centree. */
+    --place: 1850px;
+    --mc-zoom-origine: center bottom;
+    /* La main occupe les colonnes 2-3 : son centre est donc decale vers la droite
+       de la moitie de la colonne de gauche (300 + gap 7). On recentre la zone
+       ENTIERE sur l'ecran (la boite de rognage se deplace avec les cartes, donc
+       pas de rognage horizontal parasite). */
+    transform: translateX(calc((300px + 7px) / -2));
+    /* La main se tient contre le bord du plateau, comme une vraie main. */
+    align-items: flex-end;
+    /* Revelee, la main passe au-dessus du reste. */
+    position: relative;
+    z-index: 3;
+    /* Ta main n'est pas une zone de table : pas de cadre, pas de fond, pas
+       d'etiquette. Juste tes cartes tenues au bord. */
+    background: none;
+    border: none;
+    /* Au repos, on ROGNE la moitie basse des cartes : c'est ce rognage (et pas
+       un simple decalage) qui cache reellement la main. Au survol on libere le
+       rognage pour tout revoir et permettre l'agrandissement. */
+    overflow: hidden;
+  }
+
+  .zone-main .plateau-emplacement-titre {
+    display: none;
+  }
+
+  .zone-main:hover,
+  .zone-main:focus-within,
+  .plateau.main-visible-forcee .zone-main {
+    z-index: 20;
+    overflow: visible;
+  }
+
+  /* Cachee a moitie au repos (decalee vers le bas, la partie basse etant rognee
+     par overflow:hidden ci-dessus). Au survol/focus, elle remonte entierement.
+     Mouvement neutralise en reduced-motion (regle plus bas). */
+  .zone-main .plateau-cartes {
+    transform: translateY(50%);
+    transition: transform 180ms ease;
+  }
+
+  .zone-main:hover .plateau-cartes,
+  .zone-main:focus-within .plateau-cartes,
+  .plateau.main-visible-forcee .zone-main .plateau-cartes {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zone-main .plateau-cartes {
+      transition: none;
+    }
+  }
+
+  /* Carte de la MAIN choisie (mulligan, defausse de fin de tour) : elle se
+     souleve nettement avec un petit halo bleu, pour lire le choix d'un coup
+     d'oeil. Limite a .zone-main : les cibles sur la table ne bougent pas. */
+  .zone-main .scan-card.state-selected {
+    transform: translateY(-22px);
+    z-index: 6;
+  }
+
+  .zone-main .scan-card.state-selected .scan-frame {
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(67, 180, 255, 0.9),
+      0 0 20px 5px rgba(67, 180, 255, 0.55),
+      0 16px 26px rgba(0, 0, 0, 0.55);
+  }
+
+  /* --- Actions de partie DANS la barre du haut ------------------------------
+     Undo / Save / Menu, integres a la vraie barre (.plateau-barre), pas
+     superposes au-dessus de la scene. */
+  .board-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .bh-bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 30px;
+    padding: 0 11px;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #e8edf3;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      background 120ms ease,
+      border-color 120ms ease;
+  }
+
+  .bh-bouton:hover {
+    background: rgba(46, 57, 70, 0.9);
+    border-color: rgba(255, 255, 255, 0.34);
+  }
+
+  .historique-partie {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .bh-history.est-ouvert {
+    color: #101317;
+    background: #ffd45a;
+    border-color: #fff1ad;
+  }
+
+  .bh-history em {
+    min-width: 18px;
+    padding: 1px 5px;
+    color: #101317;
+    font-size: 0.68rem;
+    font-style: normal;
+    font-weight: 900;
+    text-align: center;
+    background: #ffd45a;
+    border-radius: 999px;
+  }
+
+  .bh-history.est-ouvert em {
+    color: #f8fafc;
+    background: #111827;
+  }
+
+  .historique-panneau {
+    position: absolute;
+    z-index: 520;
+    top: calc(100% + 8px);
+    left: 0;
+    width: min(520px, calc(100vw - 24px));
+    max-height: min(68dvh, 560px);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    color: #f8fafc;
+    background: rgba(8, 10, 14, 0.96);
+    border: 1px solid rgba(255, 210, 74, 0.48);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 24px 58px rgba(0, 0, 0, 0.64);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+
+  .hp-entete {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .hp-entete div {
+    min-width: 0;
+  }
+
+  .hp-entete strong {
+    display: block;
+    color: #ffffff;
+    font-size: 0.88rem;
+    line-height: 1.18;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hp-entete button {
+    margin-left: auto;
+    min-height: 30px;
+    padding: 0 10px;
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 900;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .hp-entete button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .hp-vide {
+    margin: 0;
+    padding: 14px 12px;
+    color: #9fb0c4;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .hp-liste {
+    min-height: 0;
+    margin: 0;
+    padding: 8px;
+    display: grid;
+    gap: 6px;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .hp-entree {
+    display: grid;
+    grid-template-columns: 38px 68px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    padding: 8px;
+    background: rgba(31, 41, 55, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    box-shadow: inset 3px 0 0 var(--hp-accent, #8ddff2);
+  }
+
+  .hp-round,
+  .hp-type {
+    min-height: 22px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0 5px;
+    color: #cbd5e1;
+    background: rgba(8, 10, 14, 0.6);
+    border-radius: 5px;
+    font-size: 0.64rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .hp-type {
+    color: #101317;
+    background: var(--hp-accent, #8ddff2);
+  }
+
+  .hp-texte {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+
+  .hp-texte b {
+    color: #ffffff;
+    font-size: 0.8rem;
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+  }
+
+  .hp-texte small {
+    color: #9fb0c4;
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .hp-entree.type-card {
+    --hp-accent: #ffd45a;
+  }
+
+  .hp-entree.type-damage {
+    --hp-accent: #ef5b53;
+  }
+
+  .hp-entree.type-heal {
+    --hp-accent: #47dc8b;
+  }
+
+  .hp-entree.type-threat {
+    --hp-accent: #7cc6ff;
+  }
+
+  .hp-entree.type-phase {
+    --hp-accent: #d9c6ff;
+  }
+
+  .bh-bouton span {
+    font-size: 1.02rem;
+    line-height: 1;
+  }
+
+  .bh-menu {
+    color: #cbd5e1;
+  }
+
+  .bh-save.est-ok {
+    color: #9ff0c0;
+    background: rgba(52, 160, 96, 0.28);
+    border-color: rgba(96, 220, 150, 0.5);
+  }
+
+  .bh-save.est-erreur {
+    color: #ffb4a8;
+    background: rgba(190, 60, 42, 0.28);
+    border-color: rgba(255, 120, 96, 0.5);
+  }
+
+  .bh-anim.est-actif {
+    color: #ffd45a;
+    border-color: rgba(255, 212, 90, 0.4);
+  }
+
+  /* Selecteur de VUE (hot-seat) : Auto suit le joueur qui doit agir ; un bouton
+     par heros force la vue (regarder la main de l'autre). */
+  .bh-vue {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: 8px;
+    margin-left: 2px;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .bh-vue-label {
+    font-size: 0.64rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #9fb0c4;
+  }
+
+  .bh-vue .bh-bouton.est-actif {
+    color: #ffd45a;
+    border-color: rgba(255, 212, 90, 0.5);
+    background: rgba(255, 212, 90, 0.12);
+  }
+
+  /* Point vert : le heros dont c'est le tour d'agir, meme si la vue est forcee
+     ailleurs — on sait toujours qui la partie attend. */
+  .bh-vue .bh-bouton.est-joueur-actif::after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 5px;
+    border-radius: 50%;
+    background: #55e08a;
+    box-shadow: 0 0 6px rgba(85, 224, 138, 0.8);
+  }
+
+  .bh-anim:not(.est-actif) {
+    opacity: 0.7;
+  }
+
+  /* --- Animations de deplacement (cartes fantomes) -------------------------
+     Couche fixe au-dessus de tout, non interactive : des images de cartes qui
+     glissent d'une zone a l'autre. Mouvement direct opaque, easing avec un
+     leger depassement pour le « calage » a l'arrivee. */
+  .couche-animations {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .vol-carte {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    object-fit: cover;
+    border-radius: 9px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.5);
+    /* Deceleration douce SANS depassement : le « clac »/rebond precedent rendait
+       l'arrivee groupee de plusieurs cartes fouillis. Arret net et propre. */
+    transition: transform 250ms cubic-bezier(0.22, 0.75, 0.3, 1);
+    will-change: transform;
+  }
+
+  /* --- Charge d'attaque / thwart (CoucheCharge) ----------------------------
+     La carte agissante fonce sur sa cible puis revient. Le fantome porte un
+     voile colore pendant le trajet : rouge = attaque, bleu = thwart/scheme,
+     comme le client original (card-effects.css). */
+  .charge-carte {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 50% 50%;
+    border-radius: 9px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+    /* Depart vif, arrivee amortie : une charge, pas un glissement. */
+    transition: transform 320ms cubic-bezier(0.3, 0.1, 0.25, 1);
+    will-change: transform;
+    z-index: 2;
+  }
+
+  .charge-carte img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
+  .charge-carte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--teinte-charge, transparent);
+    pointer-events: none;
+  }
+
+  .charge-attaque {
+    --teinte-charge: rgba(255, 0, 0, 0.3);
+    --couleur-ligne: rgba(255, 0, 0, 0.42);
+  }
+
+  .charge-thwart,
+  .charge-scheme {
+    --teinte-charge: rgba(0, 42, 255, 0.28);
+    --couleur-ligne: rgba(0, 42, 255, 0.42);
+  }
+
+  /* Ligne de visee : du centre de l'agissante au centre de la cible, comme le
+     target-arrow du client original — trait fin raye qui defile, halo colore.
+     La largeur s'anime de 0 a la distance (deploiement), puis retombe a 0. */
+  .ligne-cible {
+    position: absolute;
+    height: 4px;
+    border-radius: 1rem;
+    overflow: hidden;
+    transform-origin: 0 50%;
+    background-color: var(--couleur-ligne, rgba(255, 255, 255, 0.4));
+    box-shadow: inset 0 0 5px #fff;
+    background-image: linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.35) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.35) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 50px 50px;
+    animation: ligne-cible-defile 900ms linear infinite;
+    transition: width 320ms cubic-bezier(0.3, 0.1, 0.25, 1);
+    will-change: width;
+    z-index: 1;
+  }
+
+  @keyframes ligne-cible-defile {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 50px 50px;
+    }
+  }
+
+  /* --- Mots-cles dans l'apercu (CarteApercu) ------------------------------ */
+  .apercu-mots-cles {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(12, 14, 22, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .apercu-mots-cles > div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .apercu-mots-cles dt {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #f3c623;
+    white-space: nowrap;
+  }
+
+  .apercu-mots-cles dd {
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  /* Bouton de fin de tour SUGGERE : plus rien d'autre n'est jouable. */
+  .bouton-fin-tour.est-suggere {
+    background: #1f9d55;
+    border-color: #2ecc71;
+    animation: fin-tour-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes fin-tour-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.55);
+    }
+    50% {
+      box-shadow: 0 0 0 9px rgba(46, 204, 113, 0);
+    }
+  }
+
+  /* --- Popover de sauvegardes (PopoverSauvegardes) ------------------------ */
+  .popover-sauvegardes-ancre {
+    position: relative;
+    display: inline-block;
+  }
+
+  .popover-sauvegardes {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 300;
+    min-width: 300px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(18, 21, 30, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ligne-sauvegarde {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ligne-sauvegarde .slot-titre {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    color: #fff;
+  }
+
+  .ligne-sauvegarde .slot-titre small {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.72rem;
+  }
+
+  .ligne-sauvegarde button {
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .ligne-sauvegarde button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .ligne-sauvegarde button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  /* --- Barre de relecture (BarreRevoir) ----------------------------------- */
+  .barre-revoir {
+    position: fixed;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 320;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: rgba(18, 21, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+    color: #fff;
+  }
+
+  .barre-revoir .revoir-titre {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .barre-revoir button {
+    padding: 4px 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .barre-revoir button:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .barre-revoir input[type='range'] {
+    width: 260px;
+    accent-color: #d02733;
+  }
+
+  .barre-revoir .revoir-position {
+    min-width: 64px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* --- Bandeau de reconnexion (BandeauConnexion) -------------------------- */
+  .bandeau-connexion {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    background: rgba(140, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+  }
+
+  .bandeau-connexion button {
+    padding: 5px 12px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.14);
+    color: inherit;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .bandeau-connexion button:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  /* --- Halo de statut (halo-statut.ts) -----------------------------------
+     Pulse colore quand une carte gagne/perd solide, etourdi ou confus.
+     Teintes reprises de card-effects.css du client original. */
+  .scan-card.halo-statut .scan-frame {
+    animation: halo-statut-pulse 1000ms ease-out;
+    --halo-statut: rgba(255, 166, 0, 0.85);
+  }
+
+  .scan-card.halo-tough .scan-frame {
+    --halo-statut: rgba(196, 169, 81, 0.95);
+  }
+
+  .scan-card.halo-stun .scan-frame {
+    --halo-statut: rgba(226, 140, 29, 0.95);
+  }
+
+  .scan-card.halo-confuse .scan-frame {
+    --halo-statut: rgba(146, 84, 152, 0.95);
+  }
+
+  .scan-card.halo-perte .scan-frame {
+    --halo-statut: rgba(200, 200, 200, 0.8);
+  }
+
+  @keyframes halo-statut-pulse {
+    0% {
+      box-shadow: 0 0 0 0 var(--halo-statut);
+    }
+    45% {
+      box-shadow: 0 0 22px 7px var(--halo-statut);
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  body.plateau-sans-animations .scan-card.halo-statut .scan-frame {
+    animation: none;
+  }
+
+  /* --- Revelation au centre (CoucheRevelation.tsx) ------------------------
+     Cartes revelees / boost montrees en grand, en pile horizontale sous la
+     barre. Purement informatif : clic = fermer. */
+  .couche-revelation {
+    position: fixed;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 420;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    pointer-events: none;
+  }
+
+  .revelation {
+    margin: 0;
+    pointer-events: auto;
+    cursor: pointer;
+    text-align: center;
+    animation: revelation-entre 260ms ease-out both;
+    filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.65));
+  }
+
+  .revelation img {
+    display: block;
+    width: 216px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+  }
+
+  .revelation.est-paysage img {
+    width: 300px;
+  }
+
+  .revelation figcaption {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: rgba(12, 14, 22, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @keyframes revelation-entre {
+    0% {
+      opacity: 0;
+      transform: translateY(-14px) scale(0.92);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .revelation {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .couche-animations {
+      display: none;
+    }
+  }
+
+  /* Mode simple : bouton flottant pour finir son tour, la barre du bas ayant
+     disparu. Discret, en bas au centre, hors de la scene mise a l'echelle. */
+  .bouton-fin-tour {
+    position: fixed;
+    z-index: 90;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 28px;
+    font: inherit;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    color: #101317;
+    background: #ffd45a;
+    border: 1px solid #fff1ad;
+    border-radius: 9px;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  }
+
+  .bouton-fin-tour:hover {
+    filter: brightness(1.08);
+  }
+
+  /* --- Choix des arts alternatifs (promos FFG) ------------------------------ */
+  .arts-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 620;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(4, 6, 10, 0.82);
+    backdrop-filter: blur(5px);
+  }
+
+  .arts-modale {
+    width: min(940px, calc(100vw - 40px));
+    max-height: 86dvh;
+    overflow-y: auto;
+    display: grid;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(22, 27, 35, 0.99), rgba(10, 12, 16, 0.99));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.6), 0 26px 70px rgba(0, 0, 0, 0.7);
+  }
+
+  .arts-entete {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .arts-entete strong {
+    font-size: 1.1rem;
+    color: #ffffff;
+  }
+
+  .arts-note {
+    margin: 0;
+    color: #9fb0c4;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .arts-ligne {
+    display: grid;
+    gap: 7px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .arts-titre {
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffd45a;
+  }
+
+  .arts-choix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .arts-option {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    width: 88px;
+    padding: 5px;
+    font: inherit;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9px;
+    cursor: pointer;
+  }
+
+  .arts-option img {
+    width: 100%;
+    border-radius: 5px;
+    display: block;
+  }
+
+  .arts-option:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .arts-option.est-actif {
+    color: #ffd45a;
+    border-color: #ffd45a;
+    background: rgba(255, 212, 90, 0.14);
+  }
+
+  /* --- Ecran de fin de partie ---------------------------------------------- */
+  .fin-partie {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(4, 6, 10, 0.82);
+    backdrop-filter: blur(6px);
+    animation: fin-partie-fond 200ms ease-out;
+  }
+
+  .fin-partie-carte {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    max-width: min(460px, calc(100vw - 40px));
+    padding: 34px 40px;
+    text-align: center;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(22, 27, 35, 0.98), rgba(10, 12, 16, 0.98));
+    border: 2px solid var(--fin-accent, #ffd45a);
+    box-shadow:
+      0 0 0 4px rgba(0, 0, 0, 0.5),
+      0 30px 80px rgba(0, 0, 0, 0.6),
+      0 0 60px -10px var(--fin-accent, #ffd45a);
+    animation: fin-partie-entre 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+
+  .fin-partie.est-victoire {
+    --fin-accent: #ffd45a;
+  }
+
+  .fin-partie.est-defaite {
+    --fin-accent: #e0484a;
+  }
+
+  .fin-partie-eyebrow {
+    color: var(--fin-accent);
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .fin-partie-titre {
+    color: #ffffff;
+    font-size: 1.7rem;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .fin-partie-raison {
+    color: #b9c4d0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .fin-partie-menu {
+    margin-top: 12px;
+    padding: 11px 26px;
+    font: inherit;
+    font-weight: 900;
+    color: #101317;
+    background: var(--fin-accent);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+  }
+
+  .fin-partie-menu:hover {
+    filter: brightness(1.1);
+  }
+
+  @keyframes fin-partie-fond {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fin-partie-entre {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.94);
+    }
+  }
+}
+
+@layer utilitaires {
+  /* --- Météo de Storm (iframe d'effets, derrière tout le plateau) ---------- */
+  .couche-meteo {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  .plateau {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* --- Confettis de victoire (coupés avec les animations) ------------------ */
+  .fin-partie-confettis {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .fin-partie-confettis span {
+    position: absolute;
+    top: -20px;
+    left: calc((100% / 24) * var(--i));
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    background: hsl(calc(var(--i) * 47deg), 85%, 62%);
+    opacity: 0.9;
+    transform: rotate(calc(var(--i) * 33deg));
+    animation: confetti-chute calc(2.6s + var(--i) * 0.13s) linear calc(var(--i) * 0.09s) infinite;
+  }
+
+  @keyframes confetti-chute {
+    to {
+      transform: translateY(105vh) rotate(720deg);
+    }
+  }
+
+  body.plateau-sans-animations .fin-partie-confettis {
+    display: none;
+  }
+
+  .fin-partie-detail {
+    color: #8fa0b2;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  /* --- Tablette / mobile : le plateau reste utilisable au doigt ------------ */
+  @media (max-width: 1100px), (pointer: coarse) {
+    .board-actions {
+      flex-wrap: wrap;
+      row-gap: 6px;
+    }
+
+    .bh-bouton {
+      min-height: 38px;
+      padding-inline: 12px;
+    }
+
+    .plateau-barre {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .plateau-outils {
+      order: 10;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .plateau-etat,
+    .plateau-compte {
+      font-size: 0.78rem;
+    }
+
+    .fin-partie-carte {
+      padding: 24px 20px;
+    }
+  }
+}
+
+@layer utilitaires {
+  /* --- Panneau d'options (⚙) ---------------------------------------------- */
+  .popover-options {
+    display: grid;
+    gap: 4px;
+    min-width: 250px;
+    padding: 8px;
+  }
+
+  .ligne-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    padding: 9px 11px;
+    font: inherit;
+    font-weight: 700;
+    color: #dbe3ec;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .ligne-option:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .ligne-option-etat {
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: #8fa0b2;
+  }
+
+  .ligne-option.est-actif .ligne-option-etat {
+    color: #7fd77f;
+  }
+}
+
+@layer utilitaires {
+  .options-raccourcis {
+    margin: 4px 2px 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #8fa0b2;
+  }
+}
+
+@layer utilitaires {
+  /* --- Curseurs des autres joueurs (multi) --------------------------------- */
+  .couche-curseurs {
+    position: fixed;
+    inset: 0;
+    z-index: 550;
+    pointer-events: none;
+  }
+
+  .curseur-joueur {
+    position: fixed;
+    transform: translate(-4px, -4px);
+    transition: left 300ms linear, top 300ms linear;
+  }
+
+  .curseur-pointe {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50% 50% 50% 0;
+    background: var(--couleur, #4da3ff);
+    transform: rotate(-45deg);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .curseur-nom {
+    display: inline-block;
+    margin: 2px 0 0 8px;
+    padding: 1px 7px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    color: #0d1116;
+    background: var(--couleur, #4da3ff);
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+}
+
+@layer utilitaires {
+  /* --- Pont marvelcdb ------------------------------------------------------ */
+  .ma-lien-cdb {
+    display: block;
+    margin-top: 6px;
+    padding: 6px 2px 2px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #7fb3e8;
+    text-decoration: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .ma-lien-cdb:hover {
+    color: #a9d0f5;
+    text-decoration: underline;
+  }
+
+  .apercu-cdb {
+    margin-top: 8px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: #cdd7e1;
+    background: rgba(10, 14, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+  }
+
+  .apercu-cdb-source {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7fb3e8;
+  }
+
+  .apercu-cdb p {
+    margin: 0;
+  }
+}
+
+@layer utilitaires {
+  /* --- Bannière de succès -------------------------------------------------- */
+  .banniere-succes {
+    position: fixed;
+    top: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 620;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    font-weight: 900;
+    color: #ffd45a;
+    background: linear-gradient(180deg, rgba(30, 26, 8, 0.97), rgba(16, 13, 4, 0.97));
+    border: 1px solid #ffd45a;
+    border-radius: 99px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px #ffd45a;
+    animation: succes-entre 300ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  }
+
+  .banniere-succes-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #b99b3f;
+  }
+
+  @keyframes succes-entre {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-14px);
+    }
+  }
+}
+
+@layer composants {
+  /* --- Splash « a qui le tour » ---------------------------------------------
+     Purement informatif : pointer-events: none, la table reste cliquable
+     pendant les deux secondes d'affichage. Un splash plein ecran qui avale les
+     clics coute plus cher qu'il ne rapporte.
+     z-index sous .fin-partie (600) : la fin de partie doit toujours gagner. */
+  .splash-tour {
+    position: fixed;
+    inset: 0;
+    z-index: 550;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(4, 6, 10, 0.74),
+      rgba(4, 6, 10, 0.34) 58%,
+      transparent 78%
+    );
+    animation: splash-tour-fond 2200ms ease-out both;
+  }
+
+  .splash-tour.est-heros {
+    --splash-accent: #ffd45a;
+    --splash-lueur: rgba(255, 212, 90, 0.42);
+  }
+
+  .splash-tour.est-mechant {
+    --splash-accent: #e5484d;
+    --splash-lueur: rgba(229, 72, 77, 0.42);
+  }
+
+  .splash-tour-carte {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 30px clamp(36px, 8vw, 90px);
+    text-align: center;
+    border-top: 2px solid var(--splash-accent, #ffd45a);
+    border-bottom: 2px solid var(--splash-accent, #ffd45a);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(10, 12, 16, 0.94) 16%,
+      rgba(10, 12, 16, 0.94) 84%,
+      transparent
+    );
+    animation: splash-tour-entre 2200ms cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+
+  .splash-tour-surtitre {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--splash-accent, #ffd45a);
+  }
+
+  .splash-tour-titre {
+    font-size: clamp(2.3rem, 6vw, 4.4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 0 28px var(--splash-lueur, rgba(255, 212, 90, 0.42));
+  }
+
+  .splash-tour-soustitre {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  @keyframes splash-tour-fond {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    76% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes splash-tour-entre {
+    0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+    14% { opacity: 1; transform: none; }
+    76% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translateY(-10px) scale(1.02); }
+  }
+
+  /* Animations coupees : le splash reste affiche, simplement sans mouvement.
+     `animation: none` suffit — les valeurs de base sont deja les valeurs finales. */
+  .plateau-sans-animations .splash-tour,
+  .plateau-sans-animations .splash-tour-carte {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splash-tour,
+    .splash-tour-carte {
+      animation: none;
+    }
+  }
+}
+
+@layer composants {
+  /* --- Hauts faits (game/achievements.py) ----------------------------------
+     La bannière reprend la forme de .banniere-succes — celle des séries de K.O.
+     du moteur — mais en cyan : deux systèmes distincts, deux couleurs, pour
+     qu'on sache d'un coup d'oeil lequel vient de se déclencher. */
+  .banniere-succes.est-haut-fait {
+    color: #7fe3ff;
+    background: linear-gradient(180deg, rgba(8, 26, 32, 0.97), rgba(4, 14, 18, 0.97));
+    border-color: #7fe3ff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px #7fe3ff;
+  }
+
+  .banniere-succes.est-haut-fait .banniere-succes-eyebrow {
+    color: #3f8fa3;
+  }
+
+  /* Récapitulatif de l'écran de fin de partie. */
+  .fin-partie-hauts-faits {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .fin-partie-hauts-faits ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /* Une longue série ne doit pas pousser le bouton « Retour au menu »
+       hors de l'écran. */
+    max-height: 34vh;
+    overflow-y: auto;
+  }
+
+  .fin-partie-hauts-faits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-weight: 700;
+    color: #7fe3ff;
+    background: rgba(127, 227, 255, 0.08);
+    border: 1px solid rgba(127, 227, 255, 0.3);
+    border-radius: 99px;
+  }
+}

@@ -1,0 +1,886 @@
+/* Apparence de la carte du plateau.
+   Extrait de vitrine.css sans changer une valeur : les tailles, le ratio, le
+   facteur d'agrandissement et les pastilles sont ceux valides avec
+   l'utilisateur sur la vitrine.
+
+   Ce que la page hote decide, et pas ce fichier :
+     --mc-zoom-origine   point d'ancrage de l'agrandissement (une carte de la
+                         rangee du haut doit grandir vers le bas, sinon elle
+                         sort de l'ecran).
+   Les couleurs suivent le moteur (src/game/render/symbol.py) :
+     health = rouge clair, threat = jaune, scheme = cyan. */
+
+@layer composants {
+  .scan-card {
+    --card-w: 116px;
+    --inspect-scale: 2.5;
+    --accent: #eef3f8;
+    --label-bg: rgba(7, 10, 14, 0.9);
+    --label-text: #ffffff;
+    --state-glow: rgba(255, 255, 255, 0.12);
+    position: relative;
+    width: var(--card-w);
+    padding: 0;
+    border-radius: 8px;
+    isolation: isolate;
+    transition: filter 180ms ease;
+    cursor: zoom-in;
+  }
+
+  /* La couche visuelle porte l'agrandissement, la carte garde sa taille.
+     Elle ne recoit AUCUN evenement : une carte agrandie deborde largement sur
+     ses voisines, et si elle captait le pointeur elle leur volerait leurs clics.
+     La zone sensible reste donc le rectangle normal de la carte, ce qui rend le
+     paiement d'un cout praticable : on clique plusieurs cartes voisines a la
+     suite sans avoir a s'eloigner entre deux. */
+  .scan-visuel {
+    display: grid;
+    grid-template-columns: var(--card-w);
+    grid-template-areas:
+      "top"
+      "scan";
+    gap: 5px;
+    width: var(--card-w);
+    /* .scan-frame prend son arrondi de son parent (border-radius: inherit).
+       Sans ce relais, l'insertion de cette couche carrerait les coins du cadre,
+       et avec eux la forme du halo. */
+    border-radius: inherit;
+    pointer-events: none;
+    transform: translateY(0);
+    transform-origin: var(--mc-zoom-origine, center);
+    transition: transform 180ms ease;
+  }
+
+  .scan-card,
+  .scan-card * {
+    box-sizing: border-box;
+  }
+
+  .scan-card:hover,
+  .scan-card:focus-visible {
+    z-index: 40;
+    filter: brightness(1.06);
+    outline: none;
+  }
+
+  .scan-card:hover .scan-visuel,
+  .scan-card:focus-visible .scan-visuel {
+    transform: scale(var(--inspect-scale));
+  }
+
+  /* --- Familles de couleurs -------------------------------------------------
+     Cartes joueur : accent blanc/acier. Cartes rencontre : accent cyan sur
+     noir, comme les cadres des scans rencontre. */
+
+  .scan-card.kind-hero,
+  .scan-card.kind-alter-ego {
+    --accent: #f1f4f7;
+    --label-bg: #101317;
+  }
+
+  .scan-card.kind-ally,
+  .scan-card.kind-support,
+  .scan-card.kind-upgrade,
+  .scan-card.kind-event,
+  .scan-card.kind-resource {
+    --accent: #dfe6ee;
+    --label-bg: #101317;
+  }
+
+  .scan-card.kind-villain,
+  .scan-card.kind-minion,
+  .scan-card.kind-main-scheme,
+  .scan-card.kind-side-scheme,
+  .scan-card.kind-attachment,
+  .scan-card.kind-treachery,
+  .scan-card.kind-environment,
+  .scan-card.kind-obligation,
+  .scan-card.kind-status {
+    --accent: #8ddff2;
+    --label-bg: #071820;
+    --label-text: #effcff;
+  }
+
+  .scan-card.kind-unknown {
+    --accent: #8a94a3;
+    --label-bg: #0d1116;
+    --label-text: #dbe3ec;
+  }
+
+  /* --- Format ---------------------------------------------------------------
+     Les complots se posent en paysage.
+
+     Le serveur du jeu sert TOUS les scans en portrait : il redresse lui-meme les
+     images paysage avant de les envoyer (mesure : 21180a fait 1046x725 sur le
+     disque et arrive en 725x1046). Un cadre paysage doit donc tourner son image
+     de 90 degres, exactement comme l'ancien runtime
+     (public/css/marvel/card-image.css). Une image deja en paysage, elle, ne doit
+     PAS tourner : d'ou le drapeau scanIsPortrait plutot qu'une rotation
+     systematique. */
+
+  .scan-card.is-landscape {
+    --card-w: 170px;
+    --inspect-scale: 2.1;
+  }
+
+  .scan-card.is-landscape .scan-frame {
+    aspect-ratio: 176 / 127;
+  }
+
+  .scan-card.is-landscape.scan-a-tourner .scan-frame img {
+    /* Boite transposee : tournee de 90 degres, sa largeur devient la hauteur du
+       cadre et sa hauteur la largeur du cadre. */
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--card-w) * 127 / 176);
+    height: var(--card-w);
+    transform: translate(-50%, -50%) rotate(90deg);
+    /* Comme le runtime historique (background-size: 100% 100%) : on remplit le
+       cadre exactement plutot que de rogner les bords de la carte. */
+    object-fit: fill;
+  }
+
+  /* --- Etats ---------------------------------------------------------------- */
+
+  .scan-card.state-selected {
+    --state-glow: rgba(67, 180, 255, 0.56);
+  }
+
+  .scan-card.state-source {
+    --state-glow: rgba(255, 90, 216, 0.62);
+  }
+
+  .scan-card.state-source .scan-frame {
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(255, 255, 255, 0.1),
+      0 0 0 8px var(--camp-ring, transparent),
+      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 11px rgba(255, 90, 216, 0.62),
+      0 0 30px rgba(255, 210, 74, 0.5),
+      0 18px 32px rgba(0, 0, 0, 0.52);
+  }
+
+  .scan-card.state-targetable {
+    --state-glow: rgba(255, 210, 74, 0.52);
+  }
+
+  .scan-card.state-playable {
+    --state-glow: rgba(71, 220, 139, 0.48);
+  }
+
+  .scan-card.state-disabled {
+    filter: grayscale(0.55) brightness(0.82);
+  }
+
+  .scan-card.state-exhausted .scan-frame,
+  .scan-card.est-epuise .scan-frame {
+    transform: rotate(8deg);
+  }
+
+  /* Citee par l'evenement en cours. Se cumule avec state-exhausted, d'ou une
+     classe separee plutot qu'un etat de plus. */
+  .scan-card.is-highlighted {
+    --state-glow: rgba(67, 180, 255, 0.62);
+  }
+
+  .scan-card.state-hidden {
+    opacity: 0.42;
+  }
+
+  /* --- Le scan -------------------------------------------------------------- */
+
+  .scan-frame {
+    grid-area: scan;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 127 / 176;
+    overflow: hidden;
+    border-radius: inherit;
+    background: #111827;
+    border: 2px solid var(--accent);
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(255, 255, 255, 0.1),
+      /* Anneau + halo de CAMP (vert joueur / rouge mechant). Transparents par
+         defaut : une carte sans camp n'a aucun halo. */
+      0 0 0 8px var(--camp-ring, transparent),
+      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 24px var(--state-glow),
+      0 18px 32px rgba(0, 0, 0, 0.52);
+  }
+
+  /* Halo de camp : on distingue d'un coup d'oeil les cartes du joueur de celles
+     du mechant, surtout dans la zone qui melange allies / sbires / environnement
+     / treacheries, et pour les complots (joueur vs mechant). */
+  .scan-card.camp-player {
+    --camp-ring: rgba(60, 205, 120, 0.85);
+    --camp-glow: rgba(60, 205, 120, 0.5);
+  }
+
+  .scan-card.camp-encounter {
+    --camp-ring: rgba(228, 66, 66, 0.85);
+    --camp-glow: rgba(228, 66, 66, 0.5);
+  }
+
+  .state-playable .scan-frame {
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(255, 255, 255, 0.1),
+      0 0 0 8px var(--camp-ring, transparent),
+      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 26px rgba(71, 220, 139, 0.48),
+      0 18px 32px rgba(0, 0, 0, 0.52);
+  }
+
+  .state-targetable .scan-frame {
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(255, 255, 255, 0.1),
+      0 0 0 8px var(--camp-ring, transparent),
+      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 28px rgba(255, 210, 74, 0.58),
+      0 18px 32px rgba(0, 0, 0, 0.52);
+  }
+
+  .scan-card.is-target-pulse .scan-frame {
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 0 0 5px rgba(255, 255, 255, 0.1),
+      0 0 0 8px var(--camp-ring, transparent),
+      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 13px rgba(255, 210, 74, 0.86),
+      0 0 42px 12px rgba(255, 210, 74, 0.62),
+      0 18px 32px rgba(0, 0, 0, 0.52);
+    animation: cible-pulse 760ms ease-in-out infinite;
+  }
+
+  @keyframes cible-pulse {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.72),
+        0 0 0 5px rgba(255, 255, 255, 0.1),
+        0 0 0 8px var(--camp-ring, transparent),
+        0 0 22px 4px var(--camp-glow, transparent),
+        0 0 0 11px rgba(255, 210, 74, 0.72),
+        0 0 28px 8px rgba(255, 210, 74, 0.45),
+        0 18px 32px rgba(0, 0, 0, 0.52);
+    }
+    50% {
+      box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.72),
+        0 0 0 5px rgba(255, 255, 255, 0.1),
+        0 0 0 8px var(--camp-ring, transparent),
+        0 0 22px 4px var(--camp-glow, transparent),
+        0 0 0 15px rgba(255, 210, 74, 0.98),
+        0 0 54px 16px rgba(255, 210, 74, 0.78),
+        0 18px 32px rgba(0, 0, 0, 0.52);
+    }
+  }
+
+  /* Posee face cachee sur la table mais visible par nous : le cadre en
+     pointilles le dit, sans rien poser sur le scan. */
+  .scan-card.is-peeking .scan-frame {
+    border-style: dashed;
+  }
+
+  .scan-frame img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+
+  .scan-frame img[data-missing='true'] {
+    display: none;
+  }
+
+  .scan-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-weight: 900;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.16), transparent 32%),
+      linear-gradient(315deg, rgba(0, 0, 0, 0.2), transparent 36%),
+      var(--accent);
+  }
+
+  .scan-fallback span {
+    padding: 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.54);
+  }
+
+  /* --- Etiquette et pastilles ---------------------------------------------- */
+
+  .top-strip {
+    grid-area: top;
+    display: flex;
+    min-height: 24px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  /* Une carte agissante se distingue au curseur : elle repond au clic, elle ne
+     sert pas seulement a etre lue. */
+  .scan-card.est-agissante {
+    cursor: pointer;
+  }
+
+  /* Vilain(s) EN ATTENTE dans un scenario multi-vilains : scan grise + pastille
+     « Waiting », pour qu'on voie d'un coup que ces menaces n'agissent pas encore. */
+  .scan-card.est-inactif .scan-frame {
+    filter: grayscale(0.75) brightness(0.62);
+  }
+
+  .pastille-inactif {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #17130a;
+    background: linear-gradient(180deg, #e8c85a, #c9a227);
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Heros du joueur ACTIF (hot-seat) : badge vert, meme gabarit que Waiting. */
+  .pastille-actif {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #07120a;
+    background: linear-gradient(180deg, #6fe89a, #2fae5e);
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(85, 224, 138, 0.45);
+  }
+
+  .kind-pill,
+  .ally-hp-badge,
+  .scheme-threat-badge,
+  .pile-count-badge,
+  .spent-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    border-radius: 6px;
+    color: var(--label-text);
+    background: var(--label-bg);
+    border: 1px solid var(--accent);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+  }
+
+  .kind-pill {
+    padding: 0 8px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    /* Une etiquette longue ne doit jamais elargir la carte. */
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* Le set nemesis : etiquette distincte, rouge menace, plutot que le type. */
+  .scan-card.est-nemesis .kind-pill {
+    background: linear-gradient(180deg, #7c1322, #460913);
+    border-color: #ff5a6e;
+    color: #ffe3e7;
+    letter-spacing: 0.09em;
+  }
+
+  /* Deck SPECIAL du heros (Invocation...) : accent + halo violet mystique, et une
+     etiquette « Special deck ». Le halo passe par les memes variables que le camp,
+     surchargees en violet (sinon la carte, cote joueur, aurait un halo vert). */
+  .scan-card.est-deck-special {
+    --accent: #bd93ff;
+    --camp-ring: rgba(167, 110, 255, 0.9);
+    --camp-glow: rgba(150, 90, 255, 0.55);
+  }
+
+  .scan-card.est-deck-special .kind-pill {
+    background: linear-gradient(180deg, #7a52c8, #45287f);
+    border-color: #c9a6ff;
+    color: #f3ecff;
+    letter-spacing: 0.06em;
+  }
+
+  /* Badge « Discard » : ruban vertical sur le bord gauche de la pile, pour
+     distinguer d'un coup d'oeil la defausse de son deck. */
+  .pastille-discard {
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    z-index: 3;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%) rotate(180deg);
+    padding: 6px 2px;
+    font-size: 0.55rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #f3ecff;
+    background: linear-gradient(180deg, #7a52c8, #45287f);
+    border: 1px solid #c9a6ff;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+
+  .ally-hp-badge,
+  .scheme-threat-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+    min-width: 34px;
+    height: 28px;
+    display: grid;
+    gap: 0;
+    padding: 2px 5px;
+    border-radius: 50%;
+    line-height: 1;
+    pointer-events: none;
+    background: #d21f2b;
+    border-color: rgba(255, 255, 255, 0.82);
+  }
+
+  .scheme-threat-badge {
+    color: #17130a;
+    background: #ffd24a;
+    border-color: rgba(48, 39, 10, 0.55);
+    text-shadow: none;
+  }
+
+  .ally-hp-badge b,
+  .scheme-threat-badge b {
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .scheme-threat-badge b {
+    color: #17130a;
+  }
+
+  .ally-hp-badge span,
+  .scheme-threat-badge span {
+    font-size: 0.48rem;
+    line-height: 1;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .scheme-threat-badge span {
+    color: rgba(23, 19, 10, 0.8);
+  }
+
+  /* Compteurs poses sur la carte (supply, pym...). En bas-gauche du cadre, en
+     violet pour ne se confondre ni avec les PV (rouge) ni la menace (jaune). */
+  .counter-badges {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    pointer-events: none;
+  }
+
+  .counter-badge {
+    display: grid;
+    justify-items: center;
+    gap: 0;
+    min-width: 30px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    line-height: 1;
+    color: #ffffff;
+    background: #6d3fb0;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.32);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+  }
+
+  .counter-badge b {
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .counter-badge span {
+    font-size: 0.44rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  /* Heros PROPRIETAIRE (multi) : petit bandeau en bas de la carte, pour lire
+     d'un coup d'oeil a qui appartient l'allie / avec qui le sbire est engage. */
+  .proprio-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    max-width: calc(100% - 12px);
+    padding: 2px 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 0.52rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #e8edf3;
+    background: rgba(10, 13, 18, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+  }
+
+  .card-effect-delta {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    z-index: 7;
+    min-width: 42px;
+    padding: 5px 8px;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255, 255, 255, 0.92);
+    border-radius: 7px;
+    color: #ffffff;
+    font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+    font-size: 1.45rem;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.55), 0 5px 14px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    animation: card-effect-delta 1500ms ease-out both;
+  }
+
+  .card-effect-damage {
+    background: #d62828;
+  }
+
+  /* --- Secousse et flash a l'impact --------------------------------------
+     Portes par la meme classe de cycle de vie que le badge +N/-N :
+     degats = la carte tremble + voile rouge ; soin = lueur verte ;
+     menace = pulsation ambre. Debrayables globalement (animations off)
+     via body.plateau-sans-animations, et par prefers-reduced-motion. */
+  .scan-card.a-delta-damage .scan-frame {
+    animation: secousse-impact 450ms ease-out;
+  }
+
+  .scan-card.a-delta-damage .scan-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-radius: inherit;
+    background: rgba(255, 0, 0, 0.32);
+    pointer-events: none;
+    animation: voile-impact 900ms ease-out both;
+  }
+
+  .scan-card.a-delta-heal .scan-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-radius: inherit;
+    background: rgba(46, 204, 113, 0.28);
+    pointer-events: none;
+    animation: voile-impact 900ms ease-out both;
+  }
+
+  .scan-card.a-delta-threat .scan-frame {
+    animation: pulsation-menace 700ms ease-out;
+  }
+
+  @keyframes secousse-impact {
+    0%, 100% {
+      translate: 0 0;
+    }
+    15% {
+      translate: -5px 2px;
+    }
+    30% {
+      translate: 5px -2px;
+    }
+    45% {
+      translate: -4px -2px;
+    }
+    60% {
+      translate: 4px 2px;
+    }
+    75% {
+      translate: -2px 0;
+    }
+  }
+
+  @keyframes voile-impact {
+    0% {
+      opacity: 0;
+    }
+    18% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulsation-menace {
+    0%, 100% {
+      scale: 1;
+    }
+    35% {
+      scale: 1.05;
+    }
+  }
+
+  body.plateau-sans-animations .scan-card.a-delta-damage .scan-frame,
+  body.plateau-sans-animations .scan-card.a-delta-threat .scan-frame {
+    animation: none;
+  }
+
+  body.plateau-sans-animations .scan-card.a-delta-damage .scan-frame::after,
+  body.plateau-sans-animations .scan-card.a-delta-heal .scan-frame::after {
+    animation: none;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scan-card.a-delta-damage .scan-frame,
+    .scan-card.a-delta-threat .scan-frame {
+      animation: none;
+    }
+
+    .scan-card.a-delta-damage .scan-frame::after,
+    .scan-card.a-delta-heal .scan-frame::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+
+  .card-effect-heal {
+    background: #1f9d55;
+  }
+
+  .card-effect-threat {
+    color: #17130a;
+    background: #f3c623;
+    border-color: #fff2a6;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65);
+  }
+
+  @keyframes card-effect-delta {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -35%) scale(0.78);
+    }
+    16% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+    72% {
+      opacity: 1;
+      transform: translate(-50%, -58%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -76%) scale(0.94);
+    }
+  }
+
+  /* Les deux chiffres qu'on surveille a chaque tour meritent de ressortir plus
+     que sur un allie : les PV du VILAIN et la menace du COMPLOT PRINCIPAL. */
+  .scan-card.kind-villain .ally-hp-badge {
+    top: 8px;
+    right: 8px;
+    min-width: 48px;
+    height: 44px;
+    border-width: 2px;
+  }
+
+  .scan-card.kind-villain .ally-hp-badge b {
+    font-size: 1.15rem;
+  }
+
+  .scan-card.kind-villain .ally-hp-badge span {
+    font-size: 0.56rem;
+  }
+
+  .scan-card.kind-main-scheme .scheme-threat-badge {
+    top: 8px;
+    right: 8px;
+    min-width: 52px;
+    height: 44px;
+    border-radius: 22px;
+    border-width: 2px;
+  }
+
+  .scan-card.kind-main-scheme .scheme-threat-badge b {
+    font-size: 1.1rem;
+  }
+
+  .scan-card.kind-main-scheme .scheme-threat-badge span {
+    font-size: 0.54rem;
+  }
+
+  /* Hauteur de pile : coin oppose aux compteurs de jeu, teinte acier neutre.
+     Ce n'est pas une donnee de la carte, c'est le nombre de cartes empilees. */
+  .pile-count-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 2;
+    min-width: 26px;
+    height: 24px;
+    padding: 0 5px;
+    line-height: 1;
+    pointer-events: none;
+    background: rgba(9, 12, 17, 0.92);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+  }
+
+  .pile-count-badge b {
+    font-size: 0.72rem;
+    font-weight: 900;
+  }
+
+  /* Depensee pour payer : vert, coin bas gauche, la ou rien d'autre ne va. */
+  .spent-badge {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    z-index: 2;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 5px;
+    line-height: 1;
+    pointer-events: none;
+    color: #052d17;
+    background: #47dc8b;
+    border-color: rgba(5, 45, 23, 0.55);
+    text-shadow: none;
+  }
+
+  .spent-badge b {
+    font-size: 0.72rem;
+    font-weight: 900;
+  }
+
+  /* --- Stats de personnage : remplacement des bulles imprimees --------------
+     Le conteneur recouvre exactement le cadre (donc la carte) ; chaque badge est
+     place en absolu par des fractions de la carte (style inline). Les barres
+     noires THW/ATK/DEF/REC/SCH imprimees sous les bulles restent visibles. */
+  .scan-stats-calee {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .scan-stat.a-calee {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 0;
+    line-height: 1;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    filter: none;
+  }
+
+  /* Chiffre dimensionne depuis la largeur de carte : il suit les changements de
+     --card-w et grossit avec toute la couche visuelle au survol. */
+  .scan-stat.a-calee b {
+    font-size: calc(var(--card-w) * 0.075);
+    font-weight: 900;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+    transform: none;
+    text-shadow:
+      0 0 2px #000,
+      0 0 3px #000,
+      0 1px 2px rgba(0, 0, 0, 0.95);
+  }
+}
+
+@layer utilitaires {
+  @media (min-width: 1180px) {
+    .scan-card {
+      --card-w: 120px;
+    }
+
+    .scan-card.is-landscape {
+      --card-w: 176px;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .scan-card {
+      --card-w: 112px;
+    }
+
+    .scan-card.is-landscape {
+      --card-w: 170px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .scan-card {
+      --card-w: 108px;
+    }
+
+    .scan-card.is-landscape {
+      --card-w: 164px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scan-card,
+    .scan-visuel {
+      transition: none;
+    }
+
+    .scan-card.is-target-pulse .scan-frame {
+      animation: none;
+    }
+  }
+}
