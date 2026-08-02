@@ -67,6 +67,13 @@ export type EmplacementAffiche = {
   groupes: UniteAffichee[][]
   /** Nombre d'elements dessines sur la ligne : sert au chevauchement en CSS. */
   nombreSurLaLigne: number
+  /**
+   * Identifiant du joueur proprietaire de chaque groupe, meme longueur que
+   * `groupes`. Renseigne pour `terrain-soutien` seulement, ou les aires de tous
+   * les joueurs sont aplaties. Le rendu PC l'ignore : c'est le mode mobile qui
+   * s'en sert pour ne deplier qu'un joueur a la fois.
+   */
+  proprietaires?: number[]
 }
 
 export type Plateau = {
@@ -356,15 +363,29 @@ function airesVilains(world: World, rendu: Rendu): UniteAffichee[] {
 function emplacement(
   cle: CleEmplacement,
   titre: string,
-  groupes: UniteAffichee[][]
+  groupes: UniteAffichee[][],
+  // Proprietaire de chaque groupe, meme longueur et meme ordre que `groupes`.
+  // Seul terrain-soutien le fournit (voir plus bas) : c'est ce que lit le mode
+  // mobile pour recoudre les groupes par joueur (mobile/joueurs.ts).
+  proprietaires?: number[]
 ): EmplacementAffiche | undefined {
-  const pleins = groupes.filter((groupe) => groupe.length > 0)
-  if (pleins.length === 0) return undefined
+  // Les groupes vides sont retires ; on filtre les proprietaires du meme geste,
+  // pour que les deux tableaux restent alignes apres coup.
+  const gardes = groupes
+    .map((groupe, index) => ({ groupe, proprietaire: proprietaires?.[index] }))
+    .filter((garde) => garde.groupe.length > 0)
+  if (gardes.length === 0) return undefined
   // On ne compte que les UNITES posees sur la rangee. Les upgrades ne prennent
   // plus de place en largeur : elles sont glissees derriere leur porteur (voir
   // .plateau-unite dans board.css), donc les inclure ici surcomprimerait la ligne.
-  const nombreSurLaLigne = pleins.reduce((total, groupe) => total + groupe.length, 0)
-  return { cle, titre, groupes: pleins, nombreSurLaLigne }
+  const nombreSurLaLigne = gardes.reduce((total, garde) => total + garde.groupe.length, 0)
+  return {
+    cle,
+    titre,
+    groupes: gardes.map((garde) => garde.groupe),
+    nombreSurLaLigne,
+    ...(proprietaires ? { proprietaires: gardes.map((garde) => garde.proprietaire as number) } : {}),
+  }
 }
 
 export function construirePlateau(world: World, options: Options): Plateau {
@@ -509,18 +530,36 @@ export function construirePlateau(world: World, options: Options): Plateau {
       ),
     ]),
 
-    emplacement('terrain-soutien', t('Héros et soutiens'), [
-      posees(notre?.area_hero, rendu),
-      posees(notre?.supports, rendu),
-      posees(notre?.obligations_area, rendu),
-      ...autres.flatMap((joueur, index) => [
-        piles(`soutien-autre-${index}`, [
-          { cle: 'deck-special', cartes: joueur.additional_deck },
-        ], rendu),
-        posees(joueur.area_hero, rendu),
-        posees(joueur.supports, rendu),
-      ]),
-    ]),
+    // Chaque groupe est appairee a son proprietaire au moment ou elle est
+    // construite (pas dans un tableau separe recompte a la main) : si un jour
+    // un joueur gagne ou perd un groupe ici, le proprietaire suit sans qu'on
+    // ait besoin de resynchroniser deux listes.
+    ((): EmplacementAffiche | undefined => {
+      const groupesEtProprietaires: Array<[UniteAffichee[], number]> = [
+        [posees(notre?.area_hero, rendu), options.playerId],
+        [posees(notre?.supports, rendu), options.playerId],
+        [posees(notre?.obligations_area, rendu), options.playerId],
+        ...autres.flatMap((joueur, index): Array<[UniteAffichee[], number]> => {
+          const idJoueur = joueurs.indexOf(joueur)
+          return [
+            [
+              piles(`soutien-autre-${index}`, [
+                { cle: 'deck-special', cartes: joueur.additional_deck },
+              ], rendu),
+              idJoueur,
+            ],
+            [posees(joueur.area_hero, rendu), idJoueur],
+            [posees(joueur.supports, rendu), idJoueur],
+          ]
+        }),
+      ]
+      return emplacement(
+        'terrain-soutien',
+        t('Héros et soutiens'),
+        groupesEtProprietaires.map(([groupe]) => groupe),
+        groupesEtProprietaires.map(([, idJoueur]) => idJoueur)
+      )
+    })(),
 
     // « Your piles » : UNIQUEMENT le deck et la defausse du joueur, cote a cote.
     emplacement('piles-joueur', t('Deck du héros'), [
