@@ -1,0 +1,92 @@
+/* Le plateau au doigt. Deux niveaux : la vue d'etat (qui ne defile jamais) et
+   la zone en focus (ou l'on agit, cartes a 149 px).
+
+   Les tailles ici sont des pixels CSS reels, pas des pixels de scene : ce rendu
+   n'est PAS mis a l'echelle, contrairement a board.css. */
+
+@layer composants {
+  /* --- Tuile condensee ---------------------------------------------------- */
+
+  .tuile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* 44 px est le plancher tactile ; 64 est le plancher de LISIBILITE, seul
+       celui-ci nous limite. */
+    min-height: 64px;
+    padding: 6px 8px;
+    font: inherit;
+    text-align: left;
+    color: #e8e9ee;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .tuile-confort {
+    width: 140px;
+    height: 96px;
+  }
+
+  .tuile-plancher {
+    width: 96px;
+    height: 64px;
+  }
+
+  .tuile-vignette {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 47px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .tuile-vignette img {
+    width: 100%;
+    height: 100%;
+    /* Le haut du scan porte l'art et le nom : c'est ce qu'on garde en cadrant. */
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .tuile-texte {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .tuile-nom {
+    overflow: hidden;
+    font-size: 0.8rem;
+    font-weight: 800;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .tuile-plancher .tuile-nom {
+    font-size: 0.72rem;
+  }
+
+  .tuile-compteurs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 900;
+  }
+
+  .tuile-pv {
+    color: #ff8a8a;
+  }
+
+  .tuile-menace {
+    color: #ffd45a;
+  }
+
+  .tuile-pile,
+  .tuile-compteur {
+    color: #9fb0c4;
+  }
+}
