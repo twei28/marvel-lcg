@@ -27,7 +27,14 @@ export function BandeMobile({
 
   return (
     <section className="bande" aria-label={bande.titre}>
-      <h2 className="bande-titre">{bande.titre}</h2>
+      <button
+        type="button"
+        className="bande-titre"
+        onClick={onOuvrirBande}
+        data-tactile="titre-bande"
+      >
+        {bande.titre}
+      </button>
       <div className="bande-tuiles">
         {tuiles.map((unite) => (
           <TuileCondensee

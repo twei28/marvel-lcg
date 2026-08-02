@@ -106,10 +106,16 @@
 
   .bande-titre {
     margin: 0;
+    min-height: 44px;
+    font: inherit;
     font-size: 0.66rem;
     font-weight: 800;
+    text-align: left;
     text-transform: uppercase;
     color: #ffd45a;
+    background: none;
+    border: 0;
+    cursor: pointer;
   }
 
   .bande-tuiles {
@@ -197,6 +203,77 @@
     gap: 6px;
     padding: 10px;
     overflow-y: auto;
+  }
+
+  /* --- Vue d'etat (niveau 1) ----------------------------------------------- */
+
+  .plateau-mobile {
+    /* Sans ca, padding-top s'ajouterait a height: 100dvh au lieu d'etre
+       preleve dedans : sur un ecran a encoche (safe-area-inset-top > 0), la
+       boite deborderait de la fenetre et ferait defiler la PAGE entiere,
+       exactement ce que ce niveau doit interdire. */
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    /* 100dvh et non 100vh : sur Chrome mobile la barre d'URL apparait et
+       disparait, et 100vh laisserait le bas du plateau sous elle. */
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    /* La vue d'etat ne defile JAMAIS. Si quelque chose deborde, c'est un bug de
+       condensation, pas une raison d'ajouter une barre de defilement. */
+    overflow: hidden;
+  }
+
+  .pm-hud {
+    /* Meme raison que .plateau-mobile : min-height plus padding plus border
+       ne doivent pas s'additionner au-dela du plancher voulu. */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 6px 10px;
+    background: rgba(10, 12, 16, 0.94);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .pm-etat {
+    display: grid;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .pm-etat strong {
+    overflow: hidden;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .pm-tour {
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffd45a;
+  }
+
+  .pm-outils {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .pm-bandes {
+    display: grid;
+    align-content: start;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .pm-barre-action {
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 12, 16, 0.96);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
   }
 }
 
