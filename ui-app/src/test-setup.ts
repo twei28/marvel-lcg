@@ -1,6 +1,5 @@
 // Charge les matchers DOM (toBeInTheDocument, toHaveClass...) pour tous les tests.
 import '@testing-library/jest-dom/vitest'
-import { afterEach, vi } from 'vitest'
 
 // jsdom n'implemente pas window.matchMedia. useModeMobile s'en sert pour savoir
 // si l'ecran est etroit ou le pointeur grossier : sans ce bouchon, tout rendu de
@@ -19,32 +18,29 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
   })) as typeof window.matchMedia
 }
 
-// localStorage.clear() manque dans jsdom 26.1.0 en mode test
-const ensureLocalStorageHasClear = () => {
-  if (typeof window !== 'undefined' && typeof window.localStorage.clear !== 'function') {
-    const data = new Map<string, string>()
-    const storage = window.localStorage
-    for (let i = 0; i < storage.length; i++) {
-      const cle = storage.key(i)
-      if (cle) data.set(cle, storage.getItem(cle)!)
-    }
-    const mockStorage: Storage = {
-      getItem: (key: string) => data.get(key) ?? null,
-      setItem: (key: string, value: string) => data.set(key, value),
-      removeItem: (key: string) => data.delete(key),
-      clear: () => data.clear(),
-      length: 0,
-      key: (index: number) => Array.from(data.keys())[index] ?? null,
-    }
-    Object.defineProperty(mockStorage, 'length', {
-      get: () => data.size,
-    })
-    vi.stubGlobal('localStorage', mockStorage)
+// Node 25 expose un localStorage NATIF global dont clear() est absent, et vitest
+// ne le remplace pas par celui de jsdom (localStorage n'est pas dans sa liste de
+// globales figee). Mesure : node -e "typeof globalThis.localStorage.clear" donne
+// undefined. On pose donc un stockage memoire complet.
+// Object.defineProperty et NON vi.stubGlobal : un stub serait efface par le
+// vi.unstubAllGlobals() d'un test, et il faudrait le reposer apres chaque test.
+if (typeof window !== 'undefined' && typeof window.localStorage?.clear !== 'function') {
+  const donnees = new Map<string, string>()
+  const memoire: Storage = {
+    get length() {
+      return donnees.size
+    },
+    key: (index: number) => Array.from(donnees.keys())[index] ?? null,
+    getItem: (cle: string) => donnees.get(cle) ?? null,
+    setItem: (cle: string, valeur: string) => {
+      donnees.set(cle, String(valeur))
+    },
+    removeItem: (cle: string) => {
+      donnees.delete(cle)
+    },
+    clear: () => {
+      donnees.clear()
+    },
   }
+  Object.defineProperty(window, 'localStorage', { value: memoire, configurable: true })
 }
-
-ensureLocalStorageHasClear()
-
-afterEach(() => {
-  ensureLocalStorageHasClear()
-})
