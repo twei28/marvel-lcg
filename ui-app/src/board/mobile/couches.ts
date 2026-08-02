@@ -57,6 +57,12 @@ export function useCouches(): {
 } {
   const [pile, setPile] = useState<Couche[]>([])
 
+  // Limite connue : ouvrir lit "pile" depuis la fermeture de useCallback. Deux
+  // appels synchrones dans le meme tick (avant le prochain rendu) liraient
+  // tous les deux la meme valeur pre-mise-a-jour, et le second calculerait son
+  // pushState contre un etat perime. Aucun appelant actuel ne fait deux
+  // ouvertures dans le meme tick ; qui branche ce hook (taches 7 et 8) doit
+  // garder un seul appel par interaction utilisateur.
   const ouvrir = useCallback(
     (couche: Couche) => {
       const suivante = empiler(pile, couche)
@@ -74,8 +80,16 @@ export function useCouches(): {
     window.history.back()
   }, [])
 
+  // toutFermer vide la pile TOUT DE SUITE, en synchrone, plutot que d'attendre
+  // les popstate qui suivront le history.go(-n). Un saut de n crans ne
+  // declenche pas forcement n evenements popstate (souvent un seul, coalesce
+  // par le navigateur) : si on comptait dessus pour depiler un cran a la
+  // fois, la pile resterait a moitie pleine. depiler sur une pile deja vide
+  // est un no-op, donc un popstate tardif et isole reste sans danger.
   const toutFermer = useCallback(() => {
-    if (pile.length > 0) window.history.go(-pile.length)
+    if (pile.length === 0) return
+    window.history.go(-pile.length)
+    setPile([])
   }, [pile])
 
   useEffect(() => {

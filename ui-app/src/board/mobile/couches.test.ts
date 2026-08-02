@@ -93,6 +93,28 @@ describe('useCouches relie a l\'historique du navigateur', () => {
     expect(go).toHaveBeenCalledExactlyOnceWith(-2)
   })
 
+  it('vide la pile immediatement au toutFermer, sans attendre les popstate', () => {
+    // history.go(-n) ne declenche PAS forcement n popstate : jsdom (et des
+    // navigateurs reels) coalescent un saut de plusieurs crans en un seul
+    // evenement. Si la pile ne se videait qu'au fil des popstate, elle
+    // resterait a moitie pleine ici : c'est le bug que ce test verrouille.
+    vi.spyOn(window.history, 'go').mockImplementation(() => {})
+    const { result } = renderHook(() => useCouches(), { wrapper: enveloppeStrict })
+
+    act(() => {
+      result.current.ouvrir(FOCUS)
+    })
+    act(() => {
+      result.current.ouvrir(CARTE)
+    })
+
+    act(() => {
+      result.current.toutFermer()
+    })
+
+    expect(result.current.pile).toEqual([])
+  })
+
   it('ferme via history.back(), jamais en retirant la couche directement', () => {
     const back = vi.spyOn(window.history, 'back').mockImplementation(() => {})
     const { result } = renderHook(() => useCouches(), { wrapper: enveloppeStrict })
