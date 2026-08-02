@@ -1,66 +1,50 @@
 // Charge les matchers DOM (toBeInTheDocument, toHaveClass...) pour tous les tests.
 import '@testing-library/jest-dom/vitest'
-import { vi } from 'vitest'
+import { afterEach, vi } from 'vitest'
 
-// jsdom n'implemente pas window.matchMedia. useModeMobile s'en sert pour
-// ecouter les changements de media query. On fournit un stub en tant que
-// Map de queries => listeners, pour que les tests fonctionnent.
+// jsdom n'implemente pas window.matchMedia. useModeMobile s'en sert pour savoir
+// si l'ecran est etroit ou le pointeur grossier : sans ce bouchon, tout rendu de
+// composant appelant le hook leverait une TypeError. Un test qui a besoin de
+// piloter la valeur pose son propre bouchon avec vi.stubGlobal.
 if (typeof window !== 'undefined' && !window.matchMedia) {
-  const mediaQueryListeners = new Map<string, Set<(e: MediaQueryListEvent) => void>>()
+  window.matchMedia = ((media: string) => ({
+    media,
+    matches: false,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  })) as typeof window.matchMedia
+}
 
-  vi.stubGlobal('matchMedia', (query: string) => {
-    if (!mediaQueryListeners.has(query)) {
-      mediaQueryListeners.set(query, new Set())
+// localStorage.clear() manque dans jsdom 26.1.0 en mode test
+const ensureLocalStorageHasClear = () => {
+  if (typeof window !== 'undefined' && typeof window.localStorage.clear !== 'function') {
+    const data = new Map<string, string>()
+    const storage = window.localStorage
+    for (let i = 0; i < storage.length; i++) {
+      const cle = storage.key(i)
+      if (cle) data.set(cle, storage.getItem(cle)!)
     }
-
-    return {
-      media: query,
-      matches: false,
-      onchange: null,
-      addEventListener: (event: string, listener: (e: MediaQueryListEvent) => void) => {
-        if (event === 'change') {
-          mediaQueryListeners.get(query)?.add(listener)
-        }
-      },
-      removeEventListener: (event: string, listener: (e: MediaQueryListEvent) => void) => {
-        if (event === 'change') {
-          mediaQueryListeners.get(query)?.delete(listener)
-        }
-      },
-      dispatchEvent: () => true,
-      addListener: () => {},
-      removeListener: () => {},
-    } as MediaQueryList
-  })
+    const mockStorage: Storage = {
+      getItem: (key: string) => data.get(key) ?? null,
+      setItem: (key: string, value: string) => data.set(key, value),
+      removeItem: (key: string) => data.delete(key),
+      clear: () => data.clear(),
+      length: 0,
+      key: (index: number) => Array.from(data.keys())[index] ?? null,
+    }
+    Object.defineProperty(mockStorage, 'length', {
+      get: () => data.size,
+    })
+    vi.stubGlobal('localStorage', mockStorage)
+  }
 }
 
-// Polyfill localStorage.clear si manquant (jsdom ne le fournit pas).
-if (typeof window !== 'undefined' && window.localStorage && !window.localStorage.clear) {
-  const originalStorage = window.localStorage
-  const data = new Map<string, string>()
+ensureLocalStorageHasClear()
 
-  for (let i = 0; i < originalStorage.length; i++) {
-    const cle = originalStorage.key(i)
-    if (cle) data.set(cle, originalStorage.getItem(cle)!)
-  }
-
-  const mockStorage: Storage = {
-    getItem: (key: string) => data.get(key) ?? null,
-    setItem: (key: string, value: string) => {
-      data.set(key, value)
-    },
-    removeItem: (key: string) => data.delete(key),
-    clear: () => data.clear(),
-    length: 0,
-    key: (index: number) => {
-      const keys = Array.from(data.keys())
-      return keys[index] ?? null
-    },
-  }
-
-  Object.defineProperty(mockStorage, 'length', {
-    get: () => data.size,
-  })
-
-  vi.stubGlobal('localStorage', mockStorage)
-}
+afterEach(() => {
+  ensureLocalStorageHasClear()
+})

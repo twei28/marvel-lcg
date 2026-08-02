@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { renderHook } from '@testing-library/react'
 import { CLE_MODE, ecrireReglage, lireReglage, modeEffectif, useModeMobile } from './useModeMobile'
 
 describe('modeEffectif', () => {
@@ -33,28 +33,46 @@ describe('reglage memorise', () => {
   })
 })
 
-describe('useModeMobile hook', () => {
-  beforeEach(() => window.localStorage.clear())
+describe('useModeMobile', () => {
+  const ecouteurs = new Set<(evenement: MediaQueryListEvent) => void>()
+  let retraits = 0
 
-  it('retourne mode, reglage et changer', () => {
-    const { result } = renderHook(() => useModeMobile())
-    expect(result.current).toHaveProperty('mode')
-    expect(result.current).toHaveProperty('reglage')
-    expect(result.current).toHaveProperty('changer')
+  beforeEach(() => {
+    ecouteurs.clear()
+    retraits = 0
+    window.localStorage.clear()
+    // Bouchon pilotable : celui de test-setup.ts repond toujours matches: false.
+    vi.stubGlobal('matchMedia', (media: string) => ({
+      media,
+      matches: true,
+      addEventListener: (_: string, ecouteur: (evenement: MediaQueryListEvent) => void) => {
+        ecouteurs.add(ecouteur)
+      },
+      removeEventListener: () => {
+        retraits += 1
+      },
+    }))
   })
 
-  it('initialise le reglage depuis localStorage', () => {
-    ecrireReglage('mobile')
-    const { result } = renderHook(() => useModeMobile())
-    expect(result.current.reglage).toBe('mobile')
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
-  it('change le reglage et le memorise', () => {
+  it('rend le mode mobile quand la media query correspond', () => {
     const { result } = renderHook(() => useModeMobile())
-    act(() => {
-      result.current.changer('pc')
-    })
-    expect(result.current.reglage).toBe('pc')
-    expect(lireReglage()).toBe('pc')
+    expect(result.current.mode).toBe('mobile')
+  })
+
+  it('laisse le reglage force gagner sur la media query', () => {
+    ecrireReglage('pc')
+    const { result } = renderHook(() => useModeMobile())
+    expect(result.current.mode).toBe('pc')
+  })
+
+  it('retire son ecouteur au demontage', () => {
+    const { unmount } = renderHook(() => useModeMobile())
+    expect(ecouteurs.size).toBe(1)
+    unmount()
+    expect(retraits).toBe(1)
   })
 })
