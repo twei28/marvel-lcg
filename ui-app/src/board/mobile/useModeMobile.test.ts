@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { CLE_MODE, ecrireReglage, lireReglage, modeEffectif } from './useModeMobile'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
+import { CLE_MODE, ecrireReglage, lireReglage, modeEffectif, useModeMobile } from './useModeMobile'
 
 describe('modeEffectif', () => {
   it('suit la media query en mode auto', () => {
@@ -29,5 +30,31 @@ describe('reglage memorise', () => {
   it('retombe sur auto devant une valeur inconnue', () => {
     window.localStorage.setItem(CLE_MODE, 'tablette')
     expect(lireReglage()).toBe('auto')
+  })
+})
+
+describe('useModeMobile hook', () => {
+  beforeEach(() => window.localStorage.clear())
+
+  it('retourne mode, reglage et changer', () => {
+    const { result } = renderHook(() => useModeMobile())
+    expect(result.current).toHaveProperty('mode')
+    expect(result.current).toHaveProperty('reglage')
+    expect(result.current).toHaveProperty('changer')
+  })
+
+  it('initialise le reglage depuis localStorage', () => {
+    ecrireReglage('mobile')
+    const { result } = renderHook(() => useModeMobile())
+    expect(result.current.reglage).toBe('mobile')
+  })
+
+  it('change le reglage et le memorise', () => {
+    const { result } = renderHook(() => useModeMobile())
+    act(() => {
+      result.current.changer('pc')
+    })
+    expect(result.current.reglage).toBe('pc')
+    expect(lireReglage()).toBe('pc')
   })
 })
