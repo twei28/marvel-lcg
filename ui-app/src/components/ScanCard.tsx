@@ -370,14 +370,20 @@ export function ScanCard({
         </div>
 
         <div className="scan-frame">
-          <img
-            src={imageUrl}
-            alt=""
-            draggable="false"
-            onError={(event) => {
-              event.currentTarget.dataset.missing = 'true'
-            }}
-          />
+          {/* Sans imageUrl, un <img src=""> fait recharger la PAGE au
+              navigateur et fait crier React. Le rendu ne change pas pour
+              autant : l'image vide etait de toute facon masquee par
+              data-missing, et .scan-fallback reste dessous. */}
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt=""
+              draggable="false"
+              onError={(event) => {
+                event.currentTarget.dataset.missing = 'true'
+              }}
+            />
+          ) : null}
           <div className="scan-fallback" aria-hidden="true">
             <span>{facedown ? '?' : name}</span>
           </div>
