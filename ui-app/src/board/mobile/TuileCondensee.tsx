@@ -28,12 +28,20 @@ export function TuileCondensee({ carte, taille, onOuvrir }: TuileCondenseeProps)
       className={`tuile ${taille === 'plancher' ? 'tuile-plancher' : 'tuile-confort'}`}
       onClick={onOuvrir}
       data-tactile="tuile"
+      // Etat pose par l'interaction en cours (jouable, ciblable, choisie...).
+      // Sans lui, aucune carte n'etait signalee comme agissante sur mobile.
+      data-etat={carte.state}
     >
       <span className="tuile-vignette" aria-hidden="true">
         {!cachee && carte.imageUrl ? <img src={carte.imageUrl} alt="" loading="lazy" /> : null}
       </span>
       <span className="tuile-texte">
-        <span className="tuile-nom">{nom}</span>
+        <span className="tuile-nom">
+          {nom}
+          {carte.estActif && !cachee ? (
+            <span className="tuile-actif">{t('Actif')}</span>
+          ) : null}
+        </span>
         {cachee ? null : (
           <span className="tuile-compteurs">
             {carte.allyHp ? <span className="tuile-pv">{carte.allyHp}</span> : null}
@@ -46,6 +54,11 @@ export function TuileCondensee({ carte, taille, onOuvrir }: TuileCondenseeProps)
                 {compteur.label} {compteur.value}
               </span>
             ))}
+            {carte.effectDelta ? (
+              <span className={`tuile-delta tuile-delta-${carte.effectDelta.kind}`}>
+                {carte.effectDelta.value > 0 ? `+${carte.effectDelta.value}` : carte.effectDelta.value}
+              </span>
+            ) : null}
           </span>
         )}
       </span>

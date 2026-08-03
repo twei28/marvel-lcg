@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { BandeMobile } from './BandeMobile'
+import { BandeMobile, BandeResume } from './BandeMobile'
 import type { BandeAffichee } from './bandes'
 import type { ScanCardProps } from '../../components/ScanCard'
 
@@ -72,5 +72,42 @@ describe('BandeMobile', () => {
     screen.getByRole('button', { name: /Allié 1/ }).click()
     expect(ouvrirCarte).toHaveBeenCalledOnce()
     expect(ouvrirBande).not.toHaveBeenCalled()
+  })
+
+  it('affiche le compte de cibles pendant un ciblage', () => {
+    render(
+      <BandeMobile
+        bande={bande(2)}
+        budget={{ largeur: 464, hauteur: 200 }}
+        cibles={3}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Terrain/ })).toHaveTextContent('3')
+  })
+})
+
+describe('BandeResume : la bande degradee', () => {
+  it('ne rend AUCUNE tuile, donc rien qui puisse etre coupe', () => {
+    const { container } = render(
+      <BandeResume bande={bande(30)} onOuvrirBande={() => {}} />
+    )
+    expect(container.querySelector('.bande-tuiles')).toBeNull()
+    expect(container.querySelectorAll('[data-tactile="tuile"]')).toHaveLength(0)
+  })
+
+  it('reste une cible tactile qui ouvre la bande en focus', () => {
+    const ouvrir = vi.fn()
+    render(<BandeResume bande={bande(30)} onOuvrirBande={ouvrir} />)
+    const ligne = screen.getByRole('button', { name: /Terrain/ })
+    expect(ligne).toHaveAttribute('data-tactile', 'titre-bande')
+    ligne.click()
+    expect(ouvrir).toHaveBeenCalledOnce()
+  })
+
+  it('dit combien de cartes la bande contient', () => {
+    render(<BandeResume bande={bande(30)} onOuvrirBande={() => {}} />)
+    expect(screen.getByRole('button', { name: /Terrain/ })).toHaveTextContent('30')
   })
 })

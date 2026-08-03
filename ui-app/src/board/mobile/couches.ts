@@ -5,7 +5,7 @@
 // La partie pure est ici et testee ; le hook ci-dessous la relie a l'historique
 // du navigateur.
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CleBande } from './bandes'
 
 export type Couche =
@@ -99,4 +99,62 @@ export function useCouches(): {
   }, [])
 
   return { pile, ouvrir, fermer, toutFermer }
+}
+
+export type Couches = ReturnType<typeof useCouches>
+
+/**
+ * Relie le MENU D'ACTIONS D'UNE CARTE a la pile de couches.
+ *
+ * Ce menu n'appartient pas a l'arbre mobile : c'est board.tsx qui le dessine,
+ * a partir de son etat d'interaction. Sans ce pont, seule la feuille de focus
+ * etait empilee, et le Retour d'Android sur un menu de carte sortait de la
+ * partie, c'est-a-dire exactement ce que cette pile existe pour empecher.
+ *
+ * Le pont marche dans les deux sens :
+ *  - le menu s'ouvre (carteFocalisee devient definie) -> on empile ;
+ *  - le Retour retire la couche -> on demande a board.tsx de fermer le menu ;
+ *  - board.tsx ferme le menu autrement (bouton Fermer, action jouee) -> on
+ *    depile, pour que l'historique reste aligne sur ce qui est affiche.
+ *
+ * `dejaOuverte` retient l'identifiant deja empile : sans lui, une seconde
+ * invocation de l'effet avec la meme pile (StrictMode, ou deux rendus avant
+ * que setPile ne soit applique) pousserait deux entrees d'historique pour une
+ * seule ouverture, et il faudrait deux Retour pour fermer un seul menu.
+ */
+export function useCoucheCarte(
+  carteFocalisee: number | undefined,
+  couches: Couches,
+  onFermerCarte?: () => void
+): void {
+  const { pile, ouvrir, fermer } = couches
+  const empilee = pile.some((couche) => couche.sorte === 'carte')
+  const etaitEmpilee = useRef(false)
+  const dejaOuverte = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    const avant = etaitEmpilee.current
+    etaitEmpilee.current = empilee
+
+    if (carteFocalisee === undefined) {
+      dejaOuverte.current = undefined
+      if (empilee) fermer()
+      return
+    }
+
+    const id = String(carteFocalisee)
+    if (empilee) return
+
+    // La couche vient de disparaitre alors que le menu est encore ouvert :
+    // c'est le Retour d'Android. C'est lui qui ferme le menu, pas nous.
+    if (avant) {
+      dejaOuverte.current = undefined
+      onFermerCarte?.()
+      return
+    }
+
+    if (dejaOuverte.current === id) return
+    dejaOuverte.current = id
+    ouvrir({ sorte: 'carte', id })
+  }, [carteFocalisee, empilee, ouvrir, fermer, onFermerCarte])
 }

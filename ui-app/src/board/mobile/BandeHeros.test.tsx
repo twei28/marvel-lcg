@@ -148,4 +148,104 @@ describe('BandeHeros', () => {
     const bandeau = screen.getByRole('button', { name: /Iron Man/ })
     expect(bandeau).toHaveTextContent('8/9')
   })
+
+  it('suit playerId quand le siege change, sans remontage (passage de tour)', () => {
+    // La cle du composant est stable : il n'est JAMAIS remonte. Un
+    // useState(playerId) ne relirait donc son argument qu'au montage, et la
+    // bande melangerait le terrain-soutien de l'ancien joueur aux piles du
+    // nouveau. Spec S7 : le passage de tour deplie le heros actif.
+    const { rerender } = render(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={0}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Captain Marvel/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+
+    rerender(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={1}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /Iron Man/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+    expect(screen.getByText('War Machine')).toBeInTheDocument()
+    expect(screen.queryByText('Nick Fury')).not.toBeInTheDocument()
+  })
+
+  it('un choix explicite gagne sur playerId, jusqu\'au prochain changement de siege', () => {
+    const { rerender } = render(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={0}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+
+    // Choix explicite : deplier le joueur 1 alors que le siege regarde est 0.
+    fireEvent.click(screen.getByRole('button', { name: /Iron Man/ }))
+    expect(screen.getByRole('button', { name: /Iron Man/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+
+    // Un rendu de plus au MEME siege ne doit pas effacer ce choix.
+    rerender(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={0}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Iron Man/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+
+    // Le siege change : le choix est caduc, le nouveau siege est deplie.
+    rerender(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={1}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Iron Man/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+
+    rerender(
+      <BandeHeros
+        bande={bandeDeuxJoueurs()}
+        budget={BUDGET}
+        playerId={0}
+        onOuvrirBande={() => {}}
+        onOuvrirCarte={() => {}}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Captain Marvel/ })).toHaveAttribute(
+      'data-tactile',
+      'tuile'
+    )
+  })
 })

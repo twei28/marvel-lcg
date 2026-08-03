@@ -427,4 +427,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Automatique': 'Automatic',
   'Mobile': 'Mobile',
   'Ordinateur': 'Desktop',
+
+  // ---- board/mobile : vue d'etat degradee et marquage des cibles ----
+  // ('cartes' et 'Actif' sont deja definis plus haut)
+  'cibles ici': 'targets here',
 }

@@ -94,6 +94,61 @@
     color: #9fb0c4;
   }
 
+  /* Variation de compteur montree un court instant (memes props que sur la
+     table : effectDelta). */
+  .tuile-delta {
+    font-weight: 900;
+  }
+
+  .tuile-delta-damage {
+    color: #ff6b6b;
+  }
+
+  .tuile-delta-heal {
+    color: #7ee787;
+  }
+
+  .tuile-delta-threat {
+    color: #ffd45a;
+  }
+
+  .tuile-actif {
+    margin-left: 6px;
+    padding: 0 4px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #0a0c10;
+    background: #7ee787;
+    border-radius: 4px;
+  }
+
+  /* L'interaction en cours, sur la tuile. Les couleurs sont celles de
+     ScanCard.css : jaune = jouable, vert = ciblable, bleu = source. */
+  .tuile[data-etat='playable'] {
+    border-color: #ffd45a;
+    box-shadow: inset 0 0 0 1px rgba(255, 212, 90, 0.6);
+  }
+
+  .tuile[data-etat='targetable'] {
+    border-color: #7ee787;
+    box-shadow: inset 0 0 0 1px rgba(126, 231, 135, 0.6);
+  }
+
+  .tuile[data-etat='selected'] {
+    border-color: #7ee787;
+    box-shadow: inset 0 0 0 2px #7ee787;
+  }
+
+  .tuile[data-etat='source'] {
+    border-color: #6bb8ff;
+    box-shadow: inset 0 0 0 2px rgba(107, 184, 255, 0.7);
+  }
+
+  .tuile[data-etat='disabled'] {
+    opacity: 0.45;
+  }
+
   /* --- Bande de la vue d'etat --------------------------------------------- */
 
   .bande {
@@ -105,8 +160,16 @@
   }
 
   .bande-titre {
+    /* Le titre est une LIGNE : le nom, puis les chiffres de la bande quand
+       elle est reduite a son resume, puis le compte de cibles. Sa hauteur ne
+       depend jamais de ce qu'on y pose, elle vaut le min-height. */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0;
     min-height: 44px;
+    overflow: hidden;
     font: inherit;
     font-size: 0.66rem;
     font-weight: 800;
@@ -116,6 +179,53 @@
     background: none;
     border: 0;
     cursor: pointer;
+  }
+
+  .bande-titre-nom {
+    /* Le nom absorbe toute la place libre : les chiffres du resume et le
+       compte de cibles se rangent donc a droite sans marge automatique. */
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Pendant un ciblage : combien de cibles legales dorment dans cette bande. */
+  .bande-cibles {
+    flex: 0 0 auto;
+    min-width: 20px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #0a0c10;
+    text-align: center;
+    background: #7ee787;
+    border-radius: 999px;
+  }
+
+  /* --- Bande reduite a sa ligne de resume (degradation) -------------------- */
+
+  /* Aucune tuile ici : la bande ne peut donc rien couper. Le padding vertical
+     tombe, la ligne vaut exactement le titre (44px) plus la bordure (1px),
+     ce que coutResume() dans degradation.ts calcule. */
+  .bande-reduite {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .bande-resume-nombre {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #e8e9ee;
+  }
+
+  .bande-resume-chiffre {
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #9fb0c4;
   }
 
   .bande-tuiles {
@@ -243,12 +353,27 @@
     cursor: pointer;
   }
 
+  /* C'est le CORPS qui defile, pas chaque grille de cartes : la bande Heros y
+     empile une section par joueur (spec S7), elles doivent defiler ensemble. */
+  .focus-corps {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .focus-section-titre {
+    margin: 0;
+    padding: 8px 12px 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffd45a;
+  }
+
   .focus-cartes {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     padding: 10px;
-    overflow-y: auto;
   }
 
   /* --- Vue d'etat (niveau 1) ----------------------------------------------- */
@@ -259,6 +384,8 @@
        boite deborderait de la fenetre et ferait defiler la PAGE entiere,
        exactement ce que ce niveau doit interdire. */
     box-sizing: border-box;
+    /* Repere de la sonde de mesure (.pm-sonde), qui est hors flux. */
+    position: relative;
     display: grid;
     grid-template-rows: auto 1fr auto;
     /* 100dvh et non 100vh : sur Chrome mobile la barre d'URL apparait et
@@ -309,11 +436,33 @@
     margin-left: auto;
   }
 
+  /* Sonde de mesure : une vraie .bande, hors flux et invisible, dont
+     PlateauMobile releve les hauteurs reelles (titre, padding, bordure, ecart)
+     au lieu de les recopier dans une constante. Hors flux, elle ne cree
+     aucune rangee de grille et ne coute donc rien a la mise en page. */
+  .pm-sonde {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .pm-bandes {
     display: grid;
+    grid-template-columns: 1fr;
     align-content: start;
     min-height: 0;
     overflow: hidden;
+  }
+
+  /* Dernier recours : meme les lignes de resume ne tiennent pas empilees
+     (paysage tres bas). Deux par rangee divise le besoin par deux, et chaque
+     ligne reste une cible tactile de 44 px. Voir planifier() dans
+     degradation.ts, qui decide seul de ce basculement. */
+  .pm-bandes-deux {
+    grid-template-columns: 1fr 1fr;
   }
 
   .pm-barre-action {

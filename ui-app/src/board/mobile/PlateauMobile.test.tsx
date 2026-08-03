@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { PlateauMobile } from './PlateauMobile'
+import type { EtatInteractif } from '../interaction'
+import type { CardEffectDelta } from '../../components/ScanCard'
 import type { Plateau } from '../zones'
 import type { World } from '../world'
 
@@ -67,5 +69,86 @@ describe('PlateauMobile', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: /Méchant/ }))
     expect(screen.getByRole('dialog', { name: 'Méchant' })).toBeInTheDocument()
+  })
+
+  it('marque les cartes rendues agissantes par l\'interaction', () => {
+    const agir = vi.fn()
+    const interactifs = new Map<number, EtatInteractif>([
+      [1, { role: 'porteur', choisie: false, agir }],
+    ])
+    render(
+      <PlateauMobile
+        world={MONDE}
+        playerId={0}
+        plateau={PLATEAU}
+        source="test"
+        interactifs={interactifs}
+      />
+    )
+
+    const tuile = screen.getByRole('button', { name: /Rhino/ })
+    expect(tuile).toHaveAttribute('data-etat', 'playable')
+
+    // Le clic passe par l'action du moteur, pas par onCardClick : c'est la
+    // branche `if (carte.onSelect)` de ouvrirCarte, qui etait du code mort.
+    fireEvent.click(tuile)
+    expect(agir).toHaveBeenCalledOnce()
+  })
+
+  it('compte les cibles legales sur le titre de la bande (spec S5)', () => {
+    const interactifs = new Map<number, EtatInteractif>([
+      [1, { role: 'cible', choisie: false, agir: () => {} }],
+    ])
+    render(
+      <PlateauMobile
+        world={MONDE}
+        playerId={0}
+        plateau={PLATEAU}
+        source="test"
+        interactifs={interactifs}
+      />
+    )
+
+    const titre = screen.getByRole('button', { name: /Méchant/ })
+    expect(titre).toHaveTextContent('1')
+    expect(screen.getByRole('button', { name: /Rhino/ })).toHaveAttribute(
+      'data-etat',
+      'targetable'
+    )
+  })
+
+  it('montre la variation de compteur et le badge du heros actif', () => {
+    const effets = new Map<number, CardEffectDelta>([[1, { value: -3, kind: 'damage' }]])
+    // Comme sur le plateau PC, effectDelta ne rejoint la carte qu'a travers
+    // avecInteraction : il faut donc que la carte soit dans l'interaction.
+    const interactifs = new Map<number, EtatInteractif>([[1, { role: 'cible', choisie: false, agir: () => {} }]])
+    render(
+      <PlateauMobile
+        world={MONDE}
+        playerId={0}
+        plateau={PLATEAU}
+        source="test"
+        interactifs={interactifs}
+        effets={effets}
+        heroActifId={1}
+      />
+    )
+    expect(screen.getByText('-3')).toBeInTheDocument()
+    expect(screen.getByText('Actif')).toBeInTheDocument()
+  })
+
+  it('sans interaction, un clic retombe sur onCardClick', () => {
+    const onCardClick = vi.fn()
+    render(
+      <PlateauMobile
+        world={MONDE}
+        playerId={0}
+        plateau={PLATEAU}
+        source="test"
+        onCardClick={onCardClick}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Rhino/ }))
+    expect(onCardClick).toHaveBeenCalledOnce()
   })
 })

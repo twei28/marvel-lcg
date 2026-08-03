@@ -1836,6 +1836,11 @@ function PagePartie({
         plateau={plateau}
         effets={effets}
         heroActifId={heroActifId}
+        // Meme condition que le rendu de MenuActionsCarte ci-dessus : le rendu
+        // mobile empile une couche tant que ce menu est affiche, pour que le
+        // Retour d'Android le ferme au lieu de sortir de la partie.
+        carteFocalisee={carteMenu && !interaction.option ? idMenu : undefined}
+        onFermerCarte={interaction.defocaliser}
         journal={
           <JournalHeros
             entrees={historique.entrees}

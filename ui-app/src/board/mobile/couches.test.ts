@@ -1,7 +1,14 @@
 import { StrictMode, createElement, type ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { depiler, empiler, sommet, useCouches, type Couche } from './couches'
+import {
+  depiler,
+  empiler,
+  sommet,
+  useCoucheCarte,
+  useCouches,
+  type Couche,
+} from './couches'
 
 const FOCUS: Couche = { sorte: 'focus', bande: 'heros' }
 const CARTE: Couche = { sorte: 'carte', id: '42' }
@@ -146,5 +153,98 @@ describe('useCouches relie a l\'historique du navigateur', () => {
     })
 
     expect(result.current.pile).toEqual([FOCUS])
+  })
+})
+
+describe('useCoucheCarte : le menu d\'actions dans la pile', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  /**
+   * Le menu appartient a board.tsx : on simule sa prop `carteFocalisee` et le
+   * `defocaliser` qu'il fournit, exactement comme le fait PlateauMobile.
+   */
+  function monter() {
+    const fermerMenu = vi.fn()
+    const { result, rerender } = renderHook(
+      ({ carte }: { carte: number | undefined }) => {
+        const couches = useCouches()
+        useCoucheCarte(carte, couches, fermerMenu)
+        return couches
+      },
+      { wrapper: enveloppeStrict, initialProps: { carte: undefined as number | undefined } }
+    )
+    return { result, rerender, fermerMenu }
+  }
+
+  it('empile une couche « carte » a l\'ouverture du menu, une seule fois', () => {
+    const pushState = vi.spyOn(window.history, 'pushState')
+    const { result, rerender } = monter()
+
+    act(() => {
+      rerender({ carte: 42 })
+    })
+
+    expect(result.current.pile).toEqual([{ sorte: 'carte', id: '42' }])
+    expect(pushState).toHaveBeenCalledOnce()
+  })
+
+  it('le Retour depile la couche ET demande la fermeture du menu', () => {
+    const { result, rerender, fermerMenu } = monter()
+
+    act(() => {
+      rerender({ carte: 42 })
+    })
+    act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+
+    expect(result.current.pile).toEqual([])
+    expect(fermerMenu).toHaveBeenCalledOnce()
+  })
+
+  it('ne rouvre pas la couche apres un Retour, meme si le menu tarde a se fermer', () => {
+    const { result, rerender } = monter()
+
+    act(() => {
+      rerender({ carte: 42 })
+    })
+    act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    // Le menu est encore ouvert cote board.tsx : rien ne doit se reempiler.
+    act(() => {
+      rerender({ carte: 42 })
+    })
+
+    expect(result.current.pile).toEqual([])
+  })
+
+  it('depile quand board.tsx ferme le menu de lui-meme', () => {
+    const back = vi.spyOn(window.history, 'back')
+    const { rerender } = monter()
+
+    act(() => {
+      rerender({ carte: 42 })
+    })
+    act(() => {
+      rerender({ carte: undefined })
+    })
+
+    expect(back).toHaveBeenCalledOnce()
+  })
+
+  it('laisse la feuille de focus sous le menu de carte', () => {
+    const { result, rerender } = monter()
+
+    act(() => {
+      result.current.ouvrir(FOCUS)
+    })
+    act(() => {
+      rerender({ carte: 42 })
+    })
+
+    expect(result.current.pile).toEqual([FOCUS, { sorte: 'carte', id: '42' }])
   })
 })

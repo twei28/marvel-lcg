@@ -124,8 +124,12 @@ const ETAT_PAR_ROLE = {
 /**
  * Superpose l'interaction en cours aux props de la carte. Une carte choisie
  * passe en `selected` : c'est un contour, jamais un panneau sur le scan.
+ *
+ * Exportee, et NON recopiee, parce que le rendu mobile l'applique aussi : deux
+ * copies divergeraient, et c'est deja arrive (le mobile ne marquait aucune
+ * carte comme jouable, faute d'appeler cette fonction).
  */
-function avecInteraction(
+export function avecInteraction(
   props: ScanCardProps,
   interactifs: Map<number, EtatInteractif>,
   effets: Map<number, CardEffectDelta>
@@ -408,6 +412,15 @@ export type BoardProps = {
   onCardClick?: (carte: ScanCardProps) => void
   /** Identite du joueur ACTIF (hot-seat) : badge « Active » sur sa carte. */
   heroActifId?: number
+  /**
+   * Carte dont le MENU D'ACTIONS est ouvert. Le menu appartient a la page, pas
+   * au plateau ; le rendu mobile a seulement besoin de savoir qu'il est la pour
+   * l'inscrire dans sa pile de couches (le Retour d'Android doit le fermer, pas
+   * quitter la partie). Le rendu PC l'ignore.
+   */
+  carteFocalisee?: number
+  /** Ferme ce menu. Appele par le rendu mobile quand le Retour retire sa couche. */
+  onFermerCarte?: () => void
   /**
    * Journal du héros affiché. Il occupe une case de la grille de la scène
    * (rangée du bas, colonne de droite) : ce n'est pas un emplacement de cartes,
