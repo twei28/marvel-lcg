@@ -17,11 +17,15 @@ import { defineConfig } from '@playwright/test';
 //   export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE
 export const ADRESSE_JEU = process.env.UI_CHECK_BASE || 'http://127.0.0.1:2345';
 
-// Les 3 formats d'ecran captures pour chaque page.
+// Les 3 formats d'ecran captures pour chaque page, plus s24 (voir plus bas :
+// il ne participe pas aux captures de reference, seulement au filet du
+// plateau mobile).
 const GABARITS = {
   pc: { width: 1920, height: 1080 }, // Ordinateur
   tablette: { width: 1180, height: 820 }, // iPad Air, paysage
   mobile: { width: 390, height: 844 }, // iPhone 12/13/14
+  // Samsung S24 Ultra en portrait, l'appareil de reference du plateau mobile.
+  s24: { width: 480, height: 1050 },
 };
 
 export default defineConfig({
@@ -59,8 +63,31 @@ export default defineConfig({
     },
   },
 
-  projects: Object.entries(GABARITS).map(([name, viewport]) => ({
-    name,
-    use: { viewport },
-  })),
+  projects: [
+    // pc / tablette / mobile : gabarits "souris", sans emulation tactile.
+    // s24 est exclu de cette generation automatique pour ne pas produire deux
+    // projets nommes "s24" (un simple, un tactile) : il a son propre projet
+    // juste apres, avec les options que son test teste vraiment.
+    ...Object.entries(GABARITS)
+      .filter(([name]) => name !== 's24')
+      .map(([name, viewport]) => ({
+        name,
+        use: { viewport },
+      })),
+    {
+      name: 's24',
+      // Sans ce filtre, "npm run captures" (aucun --project) essaierait AUSSI
+      // de prendre chaque ecran de ecrans.ts en s24, contre des references
+      // qui n'existent pas (references/<ecran>/s24.png). Ce ne serait pas une
+      // regression detectee (aucune reference existante ne bouge), mais ca
+      // ferait echouer la commande pour une raison hors sujet.
+      testMatch: /plateau-mobile\.spec\.ts$/,
+      use: {
+        viewport: GABARITS.s24,
+        hasTouch: true,
+        isMobile: true,
+        deviceScaleFactor: 1,
+      },
+    },
+  ],
 });

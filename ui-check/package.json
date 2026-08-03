@@ -8,6 +8,7 @@
     "captures:comparer": "node scripts/comparer.mjs",
     "captures:valider": "node scripts/valider.mjs",
     "fixtures": "playwright test tests/fixtures.spec.ts",
+    "plateau-mobile": "playwright test tests/plateau-mobile.spec.ts --project=s24",
     "bascule": "playwright test tests/bascule.spec.ts --project=pc",
     "lancement": "playwright test tests/lancement-partie.spec.ts --project=pc"
   },
