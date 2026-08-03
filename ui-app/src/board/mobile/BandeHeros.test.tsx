@@ -26,11 +26,21 @@ function bandeDeuxJoueurs(): BandeAffichee {
               carte: carte(0, { name: 'Captain Marvel', kind: 'hero', allyHp: '10/10' }),
               attachees: [],
             },
+            {
+              cle: 'a0',
+              carte: carte(10, { name: 'Nick Fury', kind: 'ally' }),
+              attachees: [],
+            },
           ],
           [
             {
               cle: 'h1',
               carte: carte(1, { name: 'Iron Man', kind: 'hero', allyHp: '8/9' }),
+              attachees: [],
+            },
+            {
+              cle: 'a1',
+              carte: carte(11, { name: 'War Machine', kind: 'ally' }),
               attachees: [],
             },
           ],
@@ -81,6 +91,11 @@ describe('BandeHeros', () => {
     const nomsIronMan = screen.getAllByText('Iron Man')
     expect(nomsIronMan).toHaveLength(1)
     expect(nomsIronMan[0].closest('[data-tactile="joueur-replie"]')).not.toBeNull()
+
+    // Le joueur replie a plusieurs unites posees (identite + allie) : les
+    // DEUX doivent disparaitre, pas seulement celle qui sert de titre au
+    // bandeau.
+    expect(screen.queryByText('War Machine')).not.toBeInTheDocument()
   })
 
   it('un appui sur le bandeau replie deplie l\'autre joueur et replie playerId', () => {

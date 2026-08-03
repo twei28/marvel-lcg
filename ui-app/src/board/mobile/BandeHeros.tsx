@@ -15,6 +15,17 @@ import { groupesParJoueur, ordreDAffichage } from './joueurs'
 import { TuileCondensee } from './TuileCondensee'
 import './mobile.css'
 
+/**
+ * Hauteur reelle d'un bandeau replie, en pixels CSS. Vaut le min-height de
+ * .bandeau-joueur dans mobile.css (44px) : box-sizing: border-box y absorbe
+ * deja le padding vertical (6px * 2) et la bordure (1px * 2), ils ne
+ * s'ajoutent donc pas par-dessus ces 44px.
+ */
+const HAUTEUR_BANDEAU_REPLIE = 44
+
+/** L'ecart de grille de .bande (gap: 4px), ajoute une fois par bandeau empile. */
+const ECART_GRILLE_BANDE = 4
+
 export type BandeHerosProps = {
   bande: BandeAffichee
   budget: BudgetBande
@@ -55,7 +66,18 @@ export function BandeHeros({ bande, budget, playerId, onOuvrirBande, onOuvrirCar
     .flatMap((emplacement) => emplacement.groupes.flat())
   const unites = [...unitesTerrainSoutien, ...unitesAutresEmplacements]
 
-  const { tuiles, restantes, taille } = condenser(unites, budget)
+  // Chaque bandeau replie occupe une vraie place dans la grille de .bande, en
+  // plus des tuiles : sans cette soustraction, condenser() croit disposer de
+  // toute la hauteur du budget et le surplus reel deborde silencieusement
+  // sous l'overflow: hidden de .pm-bandes, au lieu d'etre replie dans le +N.
+  const hauteurReserveeBandeaux =
+    autresJoueurs.length * (HAUTEUR_BANDEAU_REPLIE + ECART_GRILLE_BANDE)
+  const budgetTuiles = {
+    largeur: budget.largeur,
+    hauteur: Math.max(0, budget.hauteur - hauteurReserveeBandeaux),
+  }
+
+  const { tuiles, restantes, taille } = condenser(unites, budgetTuiles)
 
   return (
     <section className="bande" aria-label={bande.titre}>
