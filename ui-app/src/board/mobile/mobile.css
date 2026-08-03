@@ -471,6 +471,18 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  /* Le plancher du plancher : meme les lignes de resume sur deux colonnes ne
+     tiennent plus (moins de 135 px pour six bandes). Il ne reste rien a
+     condenser, le choix n'est donc plus « defiler ou condenser » mais
+     « defiler ou perdre des bandes en silence ». On defile. planifier() est
+     seul a decider de ce basculement (defilement dans PlanBandes).
+     overscroll-behavior : sans lui, le geste continuerait dans la page et
+     declencherait le tirer-pour-rafraichir d'Android. */
+  .pm-bandes-defilantes {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   .pm-barre-action {
     padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
     background: rgba(10, 12, 16, 0.96);

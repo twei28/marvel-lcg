@@ -112,18 +112,25 @@ describe('planifier', () => {
 
   it('tient l\'invariant : le rendu ne depasse jamais la hauteur mesuree', () => {
     const bandes = exigences()
-    for (let disponible = 140; disponible <= 1100; disponible += 1) {
+    // Le balayage part de 0 et non de 140 : c'est EN DESSOUS que l'invariant
+    // se joue. Il n'y a que deux issues admises, jamais un rognage muet : ou
+    // bien le rendu tient, ou bien le plan annonce le defilement.
+    for (let disponible = 0; disponible <= 1100; disponible += 1) {
       const plan = planifier(bandes, disponible, MESURES)
+      const rendu = hauteurRendue(bandes, plan, MESURES)
       expect(
-        hauteurRendue(bandes, plan, MESURES),
-        `hauteur disponible ${disponible}`
-      ).toBeLessThanOrEqual(disponible)
+        rendu <= disponible || plan.defilement,
+        `hauteur disponible ${disponible} : rendu ${rendu}, defilement ${plan.defilement}`
+      ).toBe(true)
+      // Et le drapeau ne ment pas dans l'autre sens : pas de barre de
+      // defilement la ou tout tient.
+      expect(plan.defilement, `hauteur disponible ${disponible}`).toBe(rendu > disponible)
     }
   })
 
   it('ne donne jamais a une bande a tuiles moins que son plancher', () => {
     const bandes = exigences()
-    for (let disponible = 140; disponible <= 1100; disponible += 1) {
+    for (let disponible = 0; disponible <= 1100; disponible += 1) {
       const plan = planifier(bandes, disponible, MESURES)
       for (const bande of bandes) {
         if (plan.modes.get(bande.cle) !== 'tuiles') continue
@@ -158,6 +165,23 @@ describe('planifier', () => {
   it('reste a une colonne des que les resumes tiennent empiles', () => {
     const plan = planifier(exigences(), 270, MESURES)
     expect(plan.colonnes).toBe(1)
+    expect(plan.defilement).toBe(false)
+  })
+
+  it('fait defiler quand meme les resumes en deux colonnes ne tiennent pas', () => {
+    const bandes = exigences()
+    // 6 bandes en 2 colonnes = 3 rangees de 45 = 135 px. A 135 tout tient
+    // encore ; a 134, la rangee du bas etait rognee en silence.
+    const juste = planifier(bandes, 135, MESURES)
+    expect(juste.colonnes).toBe(2)
+    expect(juste.defilement).toBe(false)
+
+    const trop = planifier(bandes, 134, MESURES)
+    expect(trop.colonnes).toBe(2)
+    expect(trop.defilement).toBe(true)
+    // Aucune bande n'est sacrifiee : elles sont toutes rendues, toutes
+    // atteignables, et c'est le defilement qui donne acces au bas.
+    for (const cle of TOUTES) expect(trop.modes.get(cle)).toBe('resume')
   })
 
   it('n\'exige rien d\'une bande sans unite et ne lui donne aucune hauteur', () => {
@@ -174,6 +198,7 @@ describe('planifier', () => {
     const plan = planifier(exigences(), 0, MESURES)
     for (const cle of TOUTES) expect(plan.modes.get(cle)).toBe('resume')
     expect(plan.colonnes).toBe(2)
+    expect(plan.defilement).toBe(true)
   })
 
   it('ignore une bande absente de la liste dans l\'ordre de degradation', () => {

@@ -123,6 +123,24 @@ export type PlanBandes = {
    * bas) ; sinon toujours 1.
    */
   colonnes: 1 | 2
+  /**
+   * Vrai quand MEME les lignes de resume sur deux colonnes ne tiennent pas :
+   * six bandes en deux colonnes demandent 3 * 45 = 135 px, et rien n'existait
+   * en dessous. La rangee du bas etait alors rognee par l'overflow:hidden de
+   * .pm-bandes, sans aucune route vers elle : le meme perte silencieuse que ce
+   * module supprime partout ailleurs, un cran plus bas.
+   *
+   * Le comportement defini, a ce plancher-la : la vue d'etat DEFILE. C'est une
+   * exception assumee au « le niveau 1 ne defile jamais », et elle ne
+   * l'affaiblit pas : cette regle existe pour que la condensation soit le
+   * mecanisme plutot qu'une barre de defilement, or ici il ne reste RIEN a
+   * condenser (toutes les bandes sont deja reduites a une ligne, sur deux
+   * colonnes). Le choix n'est plus « defiler ou condenser » mais « defiler ou
+   * perdre des bandes ». Sous ~135 px de zone de bandes, aucune mise en page
+   * ne rend six lignes de 44 px lisibles ; le defilement garde au moins toutes
+   * les bandes ATTEIGNABLES, et un appui ouvre toujours la feuille de focus.
+   */
+  defilement: boolean
 }
 
 /** Le plancher de tuiles d'une bande non vide : la pastille « +N » et rien de moins. */
@@ -135,11 +153,11 @@ export function plancherTuiles(supplement = 0): number {
  * tuiles et combien de hauteur chacune recoit.
  *
  * INVARIANT tenu par cette fonction : la somme de ce qui sera rendu
- * (coutFixeTuiles + hauteur pour une bande en tuiles, coutResume pour une
- * bande en resume) ne depasse jamais `disponible`, sauf dans le cas extreme ou
- * meme toutes les lignes de resume ne tiennent pas, signale alors par
- * colonnes === 2. Comme .bande-tuiles n'existe QUE en mode tuiles, il ne peut
- * pas etre coupe.
+ * (coutFixeTuiles + hauteur pour une bande en tuiles, coutResume par rangee de
+ * resumes) ne depasse jamais `disponible` — ou, quand aucune mise en page ne le
+ * permet plus, le plan le DIT avec defilement === true et le rendu ouvre une
+ * barre de defilement. Rien n'est jamais coupe en silence : comme
+ * .bande-tuiles n'existe QUE en mode tuiles, il ne peut pas etre rogne.
  */
 export function planifier(
   bandes: ExigenceBande[],
@@ -200,7 +218,14 @@ export function planifier(
     hauteurs.set(bande.cle, bande.plancher + part)
   }
 
-  return { modes, hauteurs, colonnes }
+  // Ce que le rendu prendra REELLEMENT avec ce plan. Tant qu'une bande garde
+  // ses tuiles, la boucle de degradation garantit que ca tient ; le seul cas
+  // qui deborde encore est celui ou tout est deja en resume, sur deux
+  // colonnes, et ou la hauteur ne suffit meme plus a ca.
+  let rendu = Math.ceil(nombreResumes / colonnes) * resume
+  for (const bande of restantes) rendu += fixe + (hauteurs.get(bande.cle) ?? 0)
+
+  return { modes, hauteurs, colonnes, defilement: rendu > disponible }
 }
 
 /**
