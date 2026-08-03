@@ -141,6 +141,52 @@
     cursor: pointer;
   }
 
+  /* --- Bandeau joueur replie (bande Heros seulement) ---------------------- */
+
+  .bandeau-joueur {
+    /* Meme raison que .tuile : min-height plus padding plus bordure ne
+       doivent pas s'additionner au-dela des 44 px de plancher tactile. Ce
+       n'est pas une tuile : le plancher de lisibilite de 64 px ne s'applique
+       pas ici. */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    overflow: hidden;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #e8e9ee;
+    text-align: left;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .bandeau-joueur-nom {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bandeau-joueur-pv {
+    flex: 0 0 auto;
+    color: #ff8a8a;
+    font-weight: 900;
+  }
+
+  .bandeau-joueur-compteur {
+    flex: 0 0 auto;
+    color: #9fb0c4;
+    font-weight: 900;
+  }
+
   /* --- Zone en focus (niveau 2) ------------------------------------------- */
 
   .focus-voile {

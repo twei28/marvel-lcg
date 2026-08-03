@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { phaseAffichee, type BoardProps } from '../Board'
 import { t } from '../langue'
 import type { ScanCardProps } from '../../components/ScanCard'
+import { BandeHeros } from './BandeHeros'
 import { BandeMobile } from './BandeMobile'
 import { repartir, type CleBande } from './bandes'
 import { useCouches } from './couches'
@@ -60,6 +61,7 @@ function useLargeurCadre(cadre: React.RefObject<HTMLDivElement | null>) {
 
 export function PlateauMobile({
   world,
+  playerId,
   plateau,
   outils,
   actionsPartie,
@@ -97,18 +99,32 @@ export function PlateauMobile({
       </header>
 
       <div className="pm-bandes">
-        {bandes.map((bande) => (
-          <BandeMobile
-            key={bande.cle}
-            bande={bande}
-            budget={{
-              largeur: Math.max(0, largeur - MARGES_LATERALES),
-              hauteur: BUDGETS[bande.cle],
-            }}
-            onOuvrirBande={() => ouvrir({ sorte: 'focus', bande: bande.cle })}
-            onOuvrirCarte={ouvrirCarte}
-          />
-        ))}
+        {bandes.map((bande) => {
+          const budget = {
+            largeur: Math.max(0, largeur - MARGES_LATERALES),
+            hauteur: BUDGETS[bande.cle],
+          }
+          const onOuvrirBande = () => ouvrir({ sorte: 'focus', bande: bande.cle })
+
+          return bande.cle === 'heros' ? (
+            <BandeHeros
+              key={bande.cle}
+              bande={bande}
+              budget={budget}
+              playerId={playerId}
+              onOuvrirBande={onOuvrirBande}
+              onOuvrirCarte={ouvrirCarte}
+            />
+          ) : (
+            <BandeMobile
+              key={bande.cle}
+              bande={bande}
+              budget={budget}
+              onOuvrirBande={onOuvrirBande}
+              onOuvrirCarte={ouvrirCarte}
+            />
+          )
+        })}
       </div>
 
       {bas ? <div className="pm-barre-action">{bas}</div> : null}
