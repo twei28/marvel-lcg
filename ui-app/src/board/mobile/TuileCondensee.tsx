@@ -30,7 +30,7 @@ export function TuileCondensee({ carte, taille, onOuvrir }: TuileCondenseeProps)
       data-tactile="tuile"
     >
       <span className="tuile-vignette" aria-hidden="true">
-        {cachee ? null : <img src={carte.imageUrl} alt="" loading="lazy" />}
+        {!cachee && carte.imageUrl ? <img src={carte.imageUrl} alt="" loading="lazy" /> : null}
       </span>
       <span className="tuile-texte">
         <span className="tuile-nom">{nom}</span>

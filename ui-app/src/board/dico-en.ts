@@ -8,6 +8,7 @@
 
 export const DICO_EN_BASE: Record<string, string> = {
   // ---- Partagé (boutons, libellés courts) ----
+  'autres': 'others',
   'Fermer': 'Close',
   'Annuler': 'Cancel',
   'Confirmer': 'Confirm',

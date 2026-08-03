@@ -47,4 +47,12 @@ describe('TuileCondensee', () => {
     expect(screen.queryByText('Tough 1')).not.toBeInTheDocument()
     expect(document.querySelector('.tuile-vignette img')).toBeNull()
   })
+
+  it('ne rend pas d\'img si imageUrl est vide', () => {
+    render(
+      <TuileCondensee carte={{ ...RHINO, imageUrl: '' }} taille="confort" onOuvrir={() => {}} />
+    )
+    expect(document.querySelector('.tuile-vignette img')).toBeNull()
+    expect(document.querySelector('.tuile-vignette')).toBeInTheDocument()
+  })
 })
