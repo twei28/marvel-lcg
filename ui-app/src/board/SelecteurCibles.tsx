@@ -38,6 +38,8 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
             className="plateau-selecteur-carte"
             onMouseEnter={() => survoler?.(cible.props)}
             onMouseLeave={() => survoler?.(undefined)}
+            onFocus={() => survoler?.(cible.props)}
+            onBlur={() => survoler?.(undefined)}
           >
             <ScanCard
               {...cible.props}
