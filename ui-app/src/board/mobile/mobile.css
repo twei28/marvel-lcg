@@ -239,6 +239,12 @@
   }
 
   .bande-surplus {
+    /* Meme raison que .tuile : sans ca la bordure s'ajoute au min-height et la
+       pastille mesure 66 px la ou plancherTuiles() n'en reserve que 64. Les
+       2 px de trop tombaient dans l'overflow:hidden de .bande-tuiles : c'est
+       exactement le rognage silencieux que le modele de degradation existe
+       pour supprimer. */
+    box-sizing: border-box;
     min-width: 64px;
     min-height: 64px;
     font: inherit;
