@@ -2,3 +2,4 @@ node_modules/
 dist/
 .cache/
 .tmp-verif-libelles/
+.tmp-verif-lecons/

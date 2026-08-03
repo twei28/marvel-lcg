@@ -184,6 +184,48 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Manigances pas légales maintenant': 'Schemes not legal right now',
   'Pas légal maintenant': 'Not legal right now',
 
+  // ---- board/CoucheCoach.tsx + lecons.ts : mode Découverte ----
+  'Coach': 'Coach',
+  'Leçon': 'Lesson',
+  'Bien joué !': 'Well done!',
+  'Replier': 'Collapse',
+  'Passer cette leçon': 'Skip this lesson',
+  'J’ai compris': 'Got it',
+  'Quitter le tutoriel': 'Quit the tutorial',
+  'Deviens Spider-Man': 'Become Spider-Man',
+  'Tu commences en Peter Parker, ton identité civile. En civil on récupère et on prépare, mais on ne se bat pas. Clique sur ta carte d’identité, puis choisis de changer de forme.':
+    'You start as Peter Parker, your civilian identity. In alter-ego you recover and prepare, but you do not fight. Click your identity card, then choose to change form.',
+  'Joue ta première carte': 'Play your first card',
+  'Joue « Coup de pied volant ». Pour la payer, tu défausses d’autres cartes de ta main : chaque carte vaut une ressource, quelle qu’elle soit. Tout se paie comme ça dans ce jeu.':
+    'Play "Swinging Web Kick". To pay for it you discard other cards from your hand: every card is worth one resource, whichever it is. Everything is paid for that way in this game.',
+  'Frappe Rhino': 'Hit Rhino',
+  'Ton héros peut attaquer une fois par tour. Clique sur Spider-Man, choisis Attaque, puis Rhino. Ta carte s’incline : c’est le signe qu’elle a déjà servi ce tour-ci.':
+    'Your hero can attack once per turn. Click Spider-Man, choose Attack, then Rhino. Your card exhausts: that is the sign it has already been used this turn.',
+  'Retire 2 menaces': 'Remove 2 threat',
+  'La manigance principale monte à chaque tour. Si elle se remplit, la partie est perdue, même si Rhino est au plus mal. Contre-la pour faire redescendre la menace.':
+    'The main scheme rises every turn. If it fills up the game is lost, even if Rhino is nearly beaten. Thwart it to bring the threat back down.',
+  'Termine ton tour': 'End your turn',
+  'Regarde bien ce qui suit : Rhino t’attaque, la manigance monte, et une carte Rencontre t’est distribuée. C’est la phase du méchant, et elle arrive à chaque tour.':
+    'Watch what follows: Rhino attacks you, the scheme rises, and an encounter card is dealt to you. That is the villain phase, and it comes every turn.',
+  'Appelle un allié': 'Call an ally',
+  'Les alliés attaquent et contrent à ta place, sans t’incliner. Ils encaissent un dégât chaque fois qu’ils agissent : ils sont là pour être dépensés, pas pour être gardés.':
+    'Allies attack and thwart in your place, without exhausting you. They take a damage each time they act: they are there to be spent, not saved.',
+  'Reprends ton souffle': 'Catch your breath',
+  'Repasse en Peter Parker et récupère des points de vie. Tu ne pourras plus attaquer ce tour-ci, mais Rhino ne t’attaquera pas non plus : il ira comploter à la place.':
+    'Switch back to Peter Parker and recover hit points. You will not be able to attack this turn, but Rhino will not attack you either: he will scheme instead.',
+  'Lis une carte': 'Read a card',
+  'Survole n’importe quelle carte : elle s’agrandit sur le côté, avec ses mots-clés expliqués. Garde, Renfort, Déferlement : tout y est défini, tu n’as rien à retenir par cœur.':
+    'Hover any card: it grows on the side, with its keywords explained. Guard, Surge, Overkill: everything is defined there, you have nothing to memorise.',
+  'Le panneau ⚙': 'The ⚙ panel',
+  'En haut à droite : animations, sons, musique, météo, succès. Tout est débrayable, rien ne t’est imposé.':
+    'Top right: animations, sounds, music, weather, achievements. Everything can be turned off, nothing is forced on you.',
+  'Annuler une erreur': 'Undo a mistake',
+  'La touche U annule le dernier coup. Tu peux essayer sans crainte : rien n’est définitif tant que tu n’as pas terminé ton tour.':
+    'The U key undoes the last move. You can experiment freely: nothing is final until you end your turn.',
+  'L’historique': 'The history',
+  'En bas, tout ce qui s’est passé est rejoué ligne à ligne. Quand tu ne comprends pas pourquoi quelque chose est arrivé, la réponse est là.':
+    'At the bottom, everything that happened is replayed line by line. When you do not understand why something happened, the answer is there.',
+
   // ---- board/interaction.ts : assistant pas-à-pas ----
   'Choisir une action': 'Choose an action',
   'Choisir les cartes du mulligan': 'Choose the mulligan cards',

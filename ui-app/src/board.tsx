@@ -44,6 +44,7 @@ import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { SplashTour } from './board/SplashTour'
+import { CoucheCoach } from './board/CoucheCoach'
 import {
   CLE_AUTO_CIBLE,
   CLE_VALIDATION_COURTE,
@@ -1745,6 +1746,8 @@ function PagePartie({
       ) : null}
 
       <SplashTour monde={etat.monde} />
+
+      <CoucheCoach monde={etat.monde} />
 
       <SelecteurCibles
         cibles={interaction.ciblesHorsTable}

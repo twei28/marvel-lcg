@@ -1465,6 +1465,61 @@
     color: #ffd45a;
   }
 
+  /* ---- Coach du mode Découverte -----------------------------------------
+     Ne prend jamais le pointeur, sauf ses boutons : même règle que SplashTour.
+     Un tutoriel qui empêche de cliquer est un tutoriel qui se coince. */
+  .coach {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 40;
+    max-width: 340px;
+    display: grid;
+    gap: 4px;
+    padding: 12px 14px;
+    background: rgba(16, 18, 25, 0.94);
+    border: 1px solid #2c313c;
+    border-left: 3px solid #8ddff2;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+  .coach-eyebrow {
+    color: #8ddff2;
+    font-size: 0.66rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .coach strong { color: #ffffff; font-size: 1rem; line-height: 1.15; }
+  .coach p { margin: 2px 0 0; color: #cbd5e1; font-size: 0.82rem; line-height: 1.35; }
+  .coach-bravo { color: #ffd45a; font-weight: 900; font-size: 0.82rem; }
+  .coach-boutons { pointer-events: auto; display: flex; gap: 6px; margin-top: 8px; }
+  .coach-boutons button {
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #f2f4f8;
+    background: #1e2128;
+    border: 1px solid #2c313c;
+    border-radius: 7px;
+    padding: 4px 9px;
+    cursor: pointer;
+  }
+  .coach-boutons .coach-quitter { color: #97a0b0; }
+  .coach-replie { padding: 0; border: none; background: none; }
+  .coach-replie button {
+    pointer-events: auto;
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 900;
+    color: #0a0c10;
+    background: #8ddff2;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 11px;
+    cursor: pointer;
+  }
+
   /* Aide des actions reparties : une meme carte se clique plusieurs fois.
      Discrete mais lisible, elle n'apparait que quand c'est le cas. */
   .assistant-indice {
