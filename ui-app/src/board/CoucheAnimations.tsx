@@ -52,6 +52,13 @@ function zoneDe(el: Element): string {
   return [...z.classList].find((c) => c.startsWith('zone-')) ?? ''
 }
 
+/**
+ * L'URL du scan de la carte, ou '' quand elle n'en a pas : ScanCard ne pose
+ * plus d'<img> du tout dans ce cas (un src vide fait recharger la PAGE).
+ *
+ * '' veut donc dire « pas d'image a faire voler », PAS « pas une carte » : le
+ * mouvement s'anime quand meme, c'est le fantome qui s'adapte (voir VolCarte).
+ */
 function imageDe(el: Element): string {
   const img = el.querySelector('img')
   return img instanceof HTMLImageElement ? img.src : ''
@@ -82,19 +89,19 @@ function VolCarte({ vol }: { vol: Vol }) {
   // On dimensionne le fantome a la taille d'ARRIVEE et on met le depart a
   // l'echelle : le mouvement direct opaque « physique » demande, sans fondu.
   const echelle = vol.arrivee.w > 0 ? b.w / vol.arrivee.w : 1
-  return (
-    <img
-      className="vol-carte"
-      src={vol.src}
-      alt=""
-      style={{
-        width: `${vol.arrivee.w}px`,
-        height: `${vol.arrivee.h}px`,
-        transform: `translate(${b.x}px, ${b.y}px) scale(${echelle})`,
-        transitionDelay: `${vol.delai}ms`,
-      }}
-    />
-  )
+  const style = {
+    width: `${vol.arrivee.w}px`,
+    height: `${vol.arrivee.h}px`,
+    transform: `translate(${b.x}px, ${b.y}px) scale(${echelle})`,
+    transitionDelay: `${vol.delai}ms`,
+  }
+
+  // Carte sans scan : c'est sa BOITE qui vole, pas une image. Un <img src="">
+  // ferait recharger la page (meme raison que la garde de ScanCard), et une
+  // image cassee ne montrait de toute facon rien de plus qu'un rectangle.
+  if (!vol.src) return <div className="vol-carte" style={style} />
+
+  return <img className="vol-carte" src={vol.src} alt="" style={style} />
 }
 
 export function CoucheAnimations({ renderId, actif }: { renderId: number; actif: boolean }) {
@@ -149,8 +156,10 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
       for (const [id, m] of courant) {
         const avant = prev.get(id)
         if (!avant) {
-          // Carte APPARUE dans la main = pioche.
-          if (m.zone === 'zone-main' && m.src && deckJoueur) {
+          // Carte APPARUE dans la main = pioche. On ne conditionne PAS a la
+          // presence d'une image : une carte sans scan se deplace comme les
+          // autres, elle vole juste sans visuel.
+          if (m.zone === 'zone-main' && deckJoueur) {
             brouillons.push({ groupe: GROUPE_PIOCHE, src: m.src, depart: deckJoueur, arrivee: m.rect, el: m.el })
           }
         } else if (avant.zone === 'zone-main' && m.zone !== 'zone-main') {
@@ -161,7 +170,7 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
 
       // Carte qui QUITTE la main et disparait (event joue, defausse fin de tour).
       for (const [id, avant] of prev) {
-        if (courant.has(id) || !avant.src) continue
+        if (courant.has(id)) continue
         if (avant.zone === 'zone-main' && defausseJoueur) {
           brouillons.push({ groupe: GROUPE_DEFAUSSE, src: avant.src, depart: avant.rect, arrivee: defausseJoueur })
         }
