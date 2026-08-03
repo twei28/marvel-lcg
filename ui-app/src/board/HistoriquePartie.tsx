@@ -21,7 +21,16 @@ export type EntreeHistorique = {
   phase: string
   titre: string
   detail?: string
+  /** Carte concernée. Sert au journal par héros à savoir de qui on parle. */
+  cibleId?: number
+  /** Joueur dans les zones duquel la carte se trouve, s'il y en a un. */
+  joueur?: number
+  /** Auteur du fait, tiré de la causalité (le « par X » du détail). */
+  acteur?: string
 }
+
+/** Ce qu'on sait d'une entrée en plus de son texte, pour la filtrer ensuite. */
+type Rattachement = Pick<EntreeHistorique, 'cibleId' | 'joueur' | 'acteur'>
 
 type CarteObservee = {
   id: number
@@ -33,7 +42,20 @@ type CarteObservee = {
   menace?: number
 }
 
-const MAX_ENTREES = 80
+/**
+ * Profondeur du journal, TOUS TYPES CONFONDUS.
+ *
+ * Le plafond était de 80, ce qui suffisait au panneau « H » : on y lit surtout
+ * les dernières lignes. Mais le journal par héros puise dans le MÊME tampon en
+ * n'en retenant qu'une petite part (ni les lignes de narration brute, ni ce qui
+ * concerne les autres joueurs). Le moteur émettant une entrée de narration à
+ * chaque rendu, 80 entrées couvraient à peine une poignée de tours : la colonne
+ * du héros se retrouvait avec trois lignes et rien au-dessus à remonter.
+ *
+ * 400 entrées représentent quelques dizaines de kilo-octets en sessionStorage,
+ * ce qui est sans conséquence, et couvrent une partie entière.
+ */
+const MAX_ENTREES = 400
 const UNIT_TYPES = new Set(['Ally', 'Minion', 'EncounterVillain', 'Hero', 'AlterEgo'])
 const SCHEME_TYPES = new Set(['MainScheme', 'EncounterSideScheme', 'PlayerSideScheme'])
 
@@ -64,7 +86,8 @@ function entree(
   type: TypeHistorique,
   titre: string,
   detail?: string,
-  cleDetail = detail ?? ''
+  cleDetail = detail ?? '',
+  rattachement: Rattachement = {}
 ): EntreeHistorique {
   return {
     cle: `${monde.render_id}:${type}:${titre}:${cleDetail}`,
@@ -74,6 +97,7 @@ function entree(
     phase: monde.phase,
     titre,
     detail,
+    ...rattachement,
   }
 }
 
@@ -138,12 +162,13 @@ function indexerMonde(monde: World): Map<number, CarteObservee> {
 
 function entreeCarteJouee(monde: World, avant: CarteObservee, apres: CarteObservee): EntreeHistorique | undefined {
   if (avant.zone !== 'hand') return undefined
+  const rattachement = { cibleId: apres.id, joueur: apres.joueur }
   if (apres.zone === 'player-play') {
-    return entree(monde, 'card', `${apres.nom} ${t('joué')}`, `P${(apres.joueur ?? 0) + 1}`, `${apres.id}:play`)
+    return entree(monde, 'card', `${apres.nom} ${t('joué')}`, `P${(apres.joueur ?? 0) + 1}`, `${apres.id}:play`, rattachement)
   }
   if (apres.zone === 'player-discard') {
     const verbe = apres.type === 'Resource' ? t('payé') : apres.type === 'Event' ? t('joué') : t('défaussé')
-    return entree(monde, 'card', `${apres.nom} ${verbe}`, `P${(apres.joueur ?? 0) + 1}`, `${apres.id}:discard`)
+    return entree(monde, 'card', `${apres.nom} ${verbe}`, `P${(apres.joueur ?? 0) + 1}`, `${apres.id}:discard`, rattachement)
   }
   return undefined
 }
@@ -159,9 +184,10 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
 
   for (const [id, courante] of courantes) {
     const precedente = precedentes.get(id)
+    const rattachement = { cibleId: id, joueur: courante.joueur }
     if (!precedente) {
       if (courante.zone === 'encounter-play') {
-        sorties.push(entree(apres, 'card', `${courante.nom} ${t('révélée')}`, undefined, `${id}:revealed`))
+        sorties.push(entree(apres, 'card', `${courante.nom} ${t('révélée')}`, undefined, `${id}:revealed`, rattachement))
       }
       continue
     }
@@ -170,7 +196,7 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
     if (jouee) sorties.push(jouee)
 
     if (precedente.zone === 'encounter-deck' && courante.zone !== 'encounter-deck') {
-      sorties.push(entree(apres, 'card', `${courante.nom} ${t('révélée')}`, undefined, `${id}:revealed`))
+      sorties.push(entree(apres, 'card', `${courante.nom} ${t('révélée')}`, undefined, `${id}:revealed`, rattachement))
     }
 
     if (precedente.vie !== undefined && courante.vie !== undefined && precedente.vie !== courante.vie) {
@@ -178,19 +204,18 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
       // Les soins ne sont pas attribues : le moteur ne narre pas de gabarit
       // « soigne X via Y », et reutiliser la cause des degats designerait
       // l'attaquant precedent comme soigneur.
+      const cause = lireCause(causes, 'degats', courante.nom, apres.render_id)
       sorties.push(
         ecart < 0
           ? entree(
               apres,
               'damage',
               `${courante.nom} ${t('subit')} ${Math.abs(ecart)} ${t('dégât(s)')}`,
-              detailAvecCause(
-                `${courante.vie} ${t('PV restants')}`,
-                lireCause(causes, 'degats', courante.nom, apres.render_id)
-              ),
-              `${id}:hp:${courante.vie}`
+              detailAvecCause(`${courante.vie} ${t('PV restants')}`, cause),
+              `${id}:hp:${courante.vie}`,
+              { ...rattachement, acteur: cause?.source }
             )
-          : entree(apres, 'heal', `${courante.nom} ${t('soigne')} ${ecart}`, `${courante.vie} ${t('PV')}`, `${id}:hp:${courante.vie}`)
+          : entree(apres, 'heal', `${courante.nom} ${t('soigne')} ${ecart}`, `${courante.vie} ${t('PV')}`, `${id}:hp:${courante.vie}`, rattachement)
       )
     }
 
@@ -201,10 +226,11 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
     ) {
       const ecart = courante.menace - precedente.menace
       const cause = lireCause(causes, 'menace', courante.nom, apres.render_id)
+      const attache = { ...rattachement, acteur: cause?.source }
       sorties.push(
         ecart < 0
-          ? entree(apres, 'threat', `${Math.abs(ecart)} ${t('menace retirée de')} ${courante.nom}`, detailAvecCause(`${courante.menace} ${t('menace restante')}`, cause), `${id}:threat:${courante.menace}`)
-          : entree(apres, 'threat', `${courante.nom} ${t('gagne')} ${ecart} ${t('menace')}`, detailAvecCause(`${courante.menace} ${t('menace')}`, cause), `${id}:threat:${courante.menace}`)
+          ? entree(apres, 'threat', `${Math.abs(ecart)} ${t('menace retirée de')} ${courante.nom}`, detailAvecCause(`${courante.menace} ${t('menace restante')}`, cause), `${id}:threat:${courante.menace}`, attache)
+          : entree(apres, 'threat', `${courante.nom} ${t('gagne')} ${ecart} ${t('menace')}`, detailAvecCause(`${courante.menace} ${t('menace')}`, cause), `${id}:threat:${courante.menace}`, attache)
       )
     }
   }
@@ -258,10 +284,32 @@ function persisterHistorique(entrees: EntreeHistorique[]): void {
   }
 }
 
-export function useHistoriquePartie(monde: World | undefined, demande: Demande | undefined) {
+export function useHistoriquePartie(
+  monde: World | undefined,
+  demande: Demande | undefined,
+  partieId?: number
+) {
   const [entrees, setEntrees] = useState<EntreeHistorique[]>(lireHistoriquePersiste)
   const precedent = useRef<World | undefined>(undefined)
   const causes = useRef<MemoireCauses>(creerMemoireCauses())
+  const partieNotee = useRef<number | undefined>(undefined)
+
+  // Remise à zéro sur NOUVELLE PARTIE seulement.
+  //
+  // Le critère était « le round est reparti en arrière ». C'était faux : le
+  // bouton « Annuler la dernière action » fait reculer le monde, et un seul
+  // undo effaçait tout le journal, plusieurs rounds compris. Le game_id du
+  // moteur, lui, ne change qu'à une vraie nouvelle partie.
+  useEffect(() => {
+    if (partieId === undefined) return
+    const premiere = partieNotee.current === undefined
+    partieNotee.current = partieId
+    // Au tout premier rendu on ADOPTE la partie en cours sans rien effacer :
+    // sinon un simple F5 jetterait l'historique restauré depuis sessionStorage.
+    if (premiere) return
+    setEntrees([])
+    persisterHistorique([])
+  }, [partieId])
 
   useEffect(() => {
     if (!monde) return
@@ -278,11 +326,7 @@ export function useHistoriquePartie(monde: World | undefined, demande: Demande |
       ...narrations.map((texte) => entree(monde, 'text', texte, undefined, `text:${texte}`)),
     ]
     setEntrees((courantes) => {
-      // Nouvelle partie detectee : le round repart en dessous du dernier note.
-      const dernierRound = courantes[0]?.round
-      const base =
-        dernierRound !== undefined && monde.round_id < dernierRound ? [] : courantes
-      const suivantes = ajouterNouvellesEntrees(base, nouvelles)
+      const suivantes = ajouterNouvellesEntrees(courantes, nouvelles)
       persisterHistorique(suivantes)
       return suivantes
     })

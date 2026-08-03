@@ -266,6 +266,22 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',
 
+  // ---- board/JournalHeros.tsx ----
+  'Journal': 'Log',
+  'Journal du héros': 'Hero log',
+  'Rien encore.': 'Nothing yet.',
+
+  // ---- board/RecapPhaseMechant.tsx et mode rapide ----
+  // (« Révélé » est déjà défini plus haut, pour le réglage de présentation.)
+  'Bilan de la phase du méchant': 'Villain phase summary',
+  'Phase du méchant rapide': 'Fast villain phase',
+  'Enchaîne la phase sans « Continue », puis affiche un bilan':
+    'Runs the phase without "Continue", then shows a summary',
+  'Validation courte': 'Short confirm',
+  'Supprime le « Valider » quand la cible est unique et le coût couvert':
+    'Drops "Confirm" when the target is the only one and the cost is covered',
+  'Entrées retenues sur le total du journal': 'Entries kept out of the whole log',
+
   // ---- board/CoucheHautsFaits.tsx et récapitulatif de fin de partie ----
   'Haut fait': 'Achievement',
   'Hauts faits débloqués': 'Achievements unlocked',

@@ -39,8 +39,17 @@ import {
   demandeDoitApparaitreAuCentre,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { JournalHeros } from './board/JournalHeros'
+import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { SplashTour } from './board/SplashTour'
-import { CLE_AUTO_CIBLE, lireAutoCible, useInteraction, type EtatInteractif } from './board/interaction'
+import {
+  CLE_AUTO_CIBLE,
+  CLE_VALIDATION_COURTE,
+  lireAutoCible,
+  lireValidationCourte,
+  useInteraction,
+  type EtatInteractif,
+} from './board/interaction'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
@@ -49,7 +58,13 @@ import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/Couche
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
-import { Moteur, evenementNarreImportant, type EtatMoteur } from './board/moteur'
+import {
+  CLE_PHASE_RAPIDE,
+  Moteur,
+  evenementNarreImportant,
+  lirePhaseRapide,
+  type EtatMoteur,
+} from './board/moteur'
 import { SelecteurCibles } from './board/SelecteurCibles'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
@@ -773,6 +788,7 @@ function usePartieEnCours(playerId: number) {
     repondre,
     continuer: () => moteur.continuer(),
     reconnecter: () => moteur.reconnecterMaintenant(),
+    reglerPhaseRapide: (actif: boolean) => moteur.setPhaseRapide(actif),
   }
 }
 
@@ -1078,6 +1094,10 @@ function PanneauOptions({
   basculerTextesCdb,
   succes,
   basculerSucces,
+  phaseRapide,
+  basculerPhaseRapide,
+  validationCourte,
+  basculerValidationCourte,
 }: {
   animations: boolean
   basculerAnimations: () => void
@@ -1097,6 +1117,10 @@ function PanneauOptions({
   basculerTextesCdb: () => void
   succes: boolean
   basculerSucces: () => void
+  phaseRapide: boolean
+  basculerPhaseRapide: () => void
+  validationCourte: boolean
+  basculerValidationCourte: () => void
 }) {
   const [ouvert, setOuvert] = useState(false)
   return (
@@ -1153,6 +1177,18 @@ function PanneauOptions({
             detail={t('Sélectionne d\u2019office la cible quand une seule est légale')}
             actif={autoCible}
             onBascule={basculerAutoCible}
+          />
+          <LigneOption
+            libelle={t('Phase du méchant rapide')}
+            detail={t('Enchaîne la phase sans « Continue », puis affiche un bilan')}
+            actif={phaseRapide}
+            onBascule={basculerPhaseRapide}
+          />
+          <LigneOption
+            libelle={t('Validation courte')}
+            detail={t('Supprime le « Valider » quand la cible est unique et le coût couvert')}
+            actif={validationCourte}
+            onBascule={basculerValidationCourte}
           />
           <LigneOption
             libelle={t('Météo')}
@@ -1261,7 +1297,7 @@ function PagePartie({
   outils: React.ReactNode
   modeActions: ModeActions
 }) {
-  const { etat, repondre, continuer, reconnecter } = usePartieEnCours(playerId)
+  const { etat, repondre, continuer, reconnecter, reglerPhaseRapide } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
   // devient vert et pulse — jamais d'auto-pass, le joueur garde la main.
@@ -1403,7 +1439,7 @@ function PagePartie({
       return nouveau
     })
   }, [])
-  const historique = useHistoriquePartie(etat.monde, etat.demande)
+  const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId)
 
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
@@ -1482,6 +1518,38 @@ function PagePartie({
       return nouveau
     })
   }, [])
+
+  const [validationCourte, setValidationCourte] = useState(lireValidationCourte)
+  const basculerValidationCourte = useCallback(() => {
+    setValidationCourte((v) => {
+      const nouveau = !v
+      try {
+        window.localStorage.setItem(CLE_VALIDATION_COURTE, nouveau ? 'on' : 'off')
+      } catch {
+        /* preference non critique */
+      }
+      return nouveau
+    })
+  }, [])
+
+  const [phaseRapide, setPhaseRapide] = useState(lirePhaseRapide)
+  const basculerPhaseRapide = useCallback(() => {
+    setPhaseRapide((p) => {
+      const nouveau = !p
+      try {
+        window.localStorage.setItem(CLE_PHASE_RAPIDE, nouveau ? 'on' : 'off')
+      } catch {
+        /* preference non critique */
+      }
+      return nouveau
+    })
+  }, [])
+
+  // Le reglage vit dans le composant, mais c'est le Moteur qui retient (ou non)
+  // l'accuse de reception : il faut le lui redire a chaque changement.
+  useEffect(() => {
+    reglerPhaseRapide(phaseRapide)
+  }, [phaseRapide, reglerPhaseRapide])
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
@@ -1722,6 +1790,7 @@ function PagePartie({
       <CoucheMeteo world={etat.monde} active={meteo} />
       <CoucheSucces monde={etat.monde} demande={etat.demande} actif={succes} />
       <CoucheHautsFaits hautsFaits={etat.hautsFaits} />
+      <RecapPhaseMechant entrees={historique.entrees} monde={etat.monde} actif={phaseRapide} />
       <CoucheCurseurs
         actif={curseurs && (etat.monde?.players?.length ?? 0) > 1}
         monJoueur={playerId}
@@ -1736,6 +1805,14 @@ function PagePartie({
         plateau={plateau}
         effets={effets}
         heroActifId={heroActifId}
+        journal={
+          <JournalHeros
+            entrees={historique.entrees}
+            monde={etat.monde}
+            joueur={joueurActif}
+            nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+          />
+        }
         source={t('Partie en cours')}
         outils={outils}
         actionsPartie={
@@ -1770,6 +1847,10 @@ function PagePartie({
               basculerTextesCdb={basculerTextesCdb}
               succes={succes}
               basculerSucces={basculerSucces}
+              phaseRapide={phaseRapide}
+              basculerPhaseRapide={basculerPhaseRapide}
+              validationCourte={validationCourte}
+              basculerValidationCourte={basculerValidationCourte}
             />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>

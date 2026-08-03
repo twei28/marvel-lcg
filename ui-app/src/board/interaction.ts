@@ -44,6 +44,17 @@ export function lireAutoCible(): boolean {
   }
 }
 
+/** Validation courte : l'etape « valider » saute quand plus rien n'est a decider. */
+export const CLE_VALIDATION_COURTE = 'marvel-board-validation-courte'
+
+export function lireValidationCourte(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_VALIDATION_COURTE) !== 'off'
+  } catch {
+    return true
+  }
+}
+
 export type RoleCarte =
   | 'porteur'
   | 'cible'
@@ -648,6 +659,38 @@ export function useInteraction(
       option.bind_player_id
     )
   }, [option, cibles, ressources, repondre])
+
+  // --- Validation courte -----------------------------------------------------
+  // L'etape « valider » ne sert a rien quand il ne reste RIEN a decider. Quatre
+  // garde-fous, sans lesquels on volerait un choix au joueur :
+  //   - cible unique : s'il y avait plusieurs cibles legales, il vient de
+  //     choisir, et un dernier regard avant de lancer a de la valeur ;
+  //   - aucune cible facultative a ajouter, et pas d'action « repartie » ;
+  //   - paiement non facultatif (« UpTo » : c'est LUI qui decide combien) ;
+  //   - carte non surpayable : Ant-Man et consorts se jouent justement en
+  //     ajoutant des ressources APRES que le cout est couvert.
+  const validationEvidente =
+    option !== undefined &&
+    etape === 'confirm' &&
+    ciblePossibles <= 1 &&
+    !cibleRepetable &&
+    !cibleSupplementairePossible &&
+    !surpaiementRecompense &&
+    !paiementFacultatif(paiement)
+
+  const dejaValidee = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    if (!lireValidationCourte()) return
+    if (!validationEvidente || !option) {
+      if (!option) dejaValidee.current = undefined
+      return
+    }
+    // Une option ne se valide qu'une fois : sans ce verrou, le temps que le
+    // moteur reponde, un nouveau rendu relancerait la meme validation.
+    if (dejaValidee.current === option.id) return
+    dejaValidee.current = option.id
+    valider()
+  }, [validationEvidente, option, valider])
 
   const annuler = useCallback(() => {
     // Une option en cours de composition s'abandonne cote client ; sans option,

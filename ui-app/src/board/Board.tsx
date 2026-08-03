@@ -408,6 +408,12 @@ export type BoardProps = {
   onCardClick?: (carte: ScanCardProps) => void
   /** Identite du joueur ACTIF (hot-seat) : badge « Active » sur sa carte. */
   heroActifId?: number
+  /**
+   * Journal du héros affiché. Il occupe une case de la grille de la scène
+   * (rangée du bas, colonne de droite) : ce n'est pas un emplacement de cartes,
+   * il ne passe donc pas par zones.ts.
+   */
+  journal?: ReactNode
   /** Pendant l'assistant pas-a-pas, seules les cartes de l'etape active agissent. */
   bloquerActionsPassives?: boolean
   /** Force la main a rester deployee pendant une selection/paiement. */
@@ -430,6 +436,7 @@ export function Board({
   bloquerActionsPassives = false,
   mainVisibleForcee = false,
   heroActifId,
+  journal,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
@@ -598,6 +605,7 @@ export function Board({
               />
             )
           })}
+          {journal}
         </div>
       </div>
 

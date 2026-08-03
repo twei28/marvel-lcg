@@ -19,6 +19,17 @@ import { lireDemande, type Demande, type Reponse } from './ask'
 import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
 
+/** Phase du mechant acceleree : plus de « Continue » a chaque activation. */
+export const CLE_PHASE_RAPIDE = 'marvel-board-phase-rapide'
+
+export function lirePhaseRapide(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_PHASE_RAPIDE) !== 'off'
+  } catch {
+    return true
+  }
+}
+
 /**
  * Une notification poussee par le moteur (Notify.Show, cote Python). Elle arrive
  * dans `notify_texts`, chaque entree etant un objet DEJA serialise en JSON.
@@ -165,6 +176,12 @@ export type EtatMoteur = {
   tentatives: number
   /** Titres des hauts faits débloqués depuis l'ouverture de la page. */
   hautsFaits: string[]
+  /**
+   * Partie en cours, telle que le moteur la numérote. Change à chaque NOUVELLE
+   * partie, mais PAS sur un retour en arrière — c'est ce qui permet à
+   * l'historique de survivre à un « Annuler ».
+   */
+  partieId?: number
 }
 
 type Ecouteur = (etat: EtatMoteur) => void
@@ -205,6 +222,23 @@ export class Moteur {
    */
   private minuteurAutoContinue: number | undefined
 
+  /**
+   * Phase du mechant acceleree : on n'attend plus le bouton « Continue ».
+   *
+   * C'est aussi ce qui SUPPRIME le risque de blocage a plusieurs clients : le
+   * moteur attend l'accuse de CHAQUE client connecte, donc un seul onglet qui
+   * ne clique jamais gelait la phase pour tout le monde. En accusant tout de
+   * suite, plus personne ne retient personne.
+   */
+  private phaseRapide = false
+
+  setPhaseRapide(actif: boolean) {
+    this.phaseRapide = actif
+    // Un accuse deja retenu ne doit pas rester en attente d'un clic qui
+    // n'arrivera plus : on le libere immediatement.
+    if (actif && this.trameEnAttente) void this.continuer()
+  }
+
   constructor(private readonly playerId: number) {}
 
   ecouter(ecouteur: Ecouteur): () => void {
@@ -240,9 +274,8 @@ export class Moteur {
   private oublierSiNouvellePartie(gameId: number) {
     if (this.partieDesHautsFaits === gameId) return
     this.partieDesHautsFaits = gameId
-    if (this.hautsFaits.length === 0) return
     this.hautsFaits = []
-    this.publier({ hautsFaits: this.hautsFaits })
+    this.publier({ hautsFaits: this.hautsFaits, partieId: gameId })
   }
 
   private enregistrerHautsFaits(notifications: Notification[]) {
@@ -358,7 +391,12 @@ export class Moteur {
       // MAIS seulement pour les evenements IMPORTANTS (activation/attaque, boost,
       // degats, menace). Les etapes de detail (deplacements, exhaust, melanges,
       // effets, marqueurs) sont accusees tout de suite -> passees sans Continue.
-      if (this.trame && monde?.phase === 'Enemy Activation' && evenementNarreImportant(monde)) {
+      if (
+        this.trame &&
+        !this.phaseRapide &&
+        monde?.phase === 'Enemy Activation' &&
+        evenementNarreImportant(monde)
+      ) {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true })
         // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
