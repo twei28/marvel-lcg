@@ -419,4 +419,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Triple K.O.': 'Triple kill',
   'Quadruple K.O.': 'Ultra kill',
   'Déchaînement': 'Rampage',
+
+  // ---- board/mobile : reglage de disposition (vague 12) ----
+  'Disposition': 'Layout',
+  'Choix du rendu du plateau : automatique selon l’appareil, ou force mobile/ordinateur':
+    'Board rendering choice: automatic based on the device, or forced to mobile/desktop',
+  'Automatique': 'Automatic',
+  'Mobile': 'Mobile',
+  'Ordinateur': 'Desktop',
 }

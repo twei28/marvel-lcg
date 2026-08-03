@@ -26,6 +26,8 @@ import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components
 import { AssistantAction } from './board/AssistantAction'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu } from './board/Board'
+import { PlateauMobile } from './board/mobile/PlateauMobile'
+import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
@@ -1017,6 +1019,7 @@ function PageEtat({
     () => (monde ? construirePlateau(monde, { playerId, catalogue }) : undefined),
     [monde, playerId, catalogue]
   )
+  const { mode } = useModeMobile()
 
   if (!monde || !plateau) {
     return (
@@ -1026,8 +1029,9 @@ function PageEtat({
     )
   }
 
+  const Rendu = mode === 'mobile' ? PlateauMobile : Board
   return (
-    <Board
+    <Rendu
       world={monde}
       playerId={playerId}
       plateau={plateau}
@@ -1098,6 +1102,8 @@ function PanneauOptions({
   basculerPhaseRapide,
   validationCourte,
   basculerValidationCourte,
+  reglageMode,
+  cyclerReglageMode,
 }: {
   animations: boolean
   basculerAnimations: () => void
@@ -1121,6 +1127,8 @@ function PanneauOptions({
   basculerPhaseRapide: () => void
   validationCourte: boolean
   basculerValidationCourte: () => void
+  reglageMode: ReglageMode
+  cyclerReglageMode: () => void
 }) {
   const [ouvert, setOuvert] = useState(false)
   return (
@@ -1205,6 +1213,21 @@ function PanneauOptions({
             <span className="ligne-option-libelle">{t('Cartes révélées')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
               {revelation === 'off' ? t('Non') : revelation === 'court' ? t('2,6 s') : t('5 s')}
+            </span>
+          </button>
+          <button
+            type="button"
+            className="ligne-option"
+            onClick={cyclerReglageMode}
+            title={t('Choix du rendu du plateau : automatique selon l’appareil, ou force mobile/ordinateur')}
+          >
+            <span className="ligne-option-libelle">{t('Disposition')}</span>
+            <span className="ligne-option-etat" aria-hidden="true">
+              {reglageMode === 'auto'
+                ? t('Automatique')
+                : reglageMode === 'mobile'
+                  ? t('Mobile')
+                  : t('Ordinateur')}
             </span>
           </button>
           <p className="options-raccourcis">
@@ -1426,6 +1449,13 @@ function PagePartie({
   useEffect(() => {
     if (!selecteurOuvert) setApercuSelecteur(undefined)
   }, [selecteurOuvert])
+
+  const { mode: modePlateau, reglage: reglageMode, changer: changerReglageMode } = useModeMobile()
+  const cyclerReglageMode = useCallback(() => {
+    changerReglageMode(
+      reglageMode === 'auto' ? 'mobile' : reglageMode === 'mobile' ? 'pc' : 'auto'
+    )
+  }, [reglageMode, changerReglageMode])
 
   const [animations, setAnimations] = useState(lireAnimations)
   const basculerAnimations = useCallback(() => {
@@ -1704,6 +1734,7 @@ function PagePartie({
     if (afficherFinTourSimple) interaction.annuler()
   }
 
+  const RenduPartie = modePlateau === 'mobile' ? PlateauMobile : Board
 
   return (
     <>
@@ -1799,7 +1830,7 @@ function PagePartie({
         )}
       />
 
-      <Board
+      <RenduPartie
         world={etat.monde}
         playerId={joueurActif}
         plateau={plateau}
@@ -1851,6 +1882,8 @@ function PagePartie({
               basculerPhaseRapide={basculerPhaseRapide}
               validationCourte={validationCourte}
               basculerValidationCourte={basculerValidationCourte}
+              reglageMode={reglageMode}
+              cyclerReglageMode={cyclerReglageMode}
             />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
