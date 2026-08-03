@@ -15,7 +15,7 @@ import { BandeHeros, hauteurBandeauxReplies } from './BandeHeros'
 import { BandeMobile, BandeResume } from './BandeMobile'
 import { repartir, type BandeAffichee, type CleBande } from './bandes'
 import { TUILE_PLANCHER } from './condensation'
-import { useCouches, useCoucheCarte } from './couches'
+import { useCouches, useCouchesBoard } from './couches'
 import { groupesParJoueur } from './joueurs'
 import {
   MESURES_PAR_DEFAUT,
@@ -209,6 +209,8 @@ export function PlateauMobile({
   heroActifId,
   carteFocalisee,
   onFermerCarte,
+  selecteurOuvert = false,
+  onFermerSelecteur,
   onCardClick,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
@@ -219,10 +221,10 @@ export function PlateauMobile({
   const mesures = useMesuresBande(sonde)
   const couches = useCouches()
   const { pile, ouvrir, fermer } = couches
-  // Le menu d'actions d'une carte vit dans board.tsx : ce pont l'inscrit tout
-  // de meme dans la pile, pour que le Retour d'Android le ferme au lieu de
-  // sortir de la partie (spec S6).
-  useCoucheCarte(carteFocalisee, couches, onFermerCarte)
+  // Le menu d'actions d'une carte et le selecteur de cibles vivent dans
+  // board.tsx : ce pont les inscrit tout de meme dans la pile, pour que le
+  // Retour d'Android les ferme au lieu de sortir de la partie (spec S6).
+  useCouchesBoard(carteFocalisee, selecteurOuvert, couches, onFermerCarte, onFermerSelecteur)
 
   // Les memes props d'interaction que sur le plateau PC : sans cela, aucune
   // carte jouable, aucune cible, aucun badge « Actif » et aucune variation de
@@ -322,7 +324,9 @@ export function PlateauMobile({
       </header>
 
       <div
-        className={`pm-bandes${plan.colonnes === 2 ? ' pm-bandes-deux' : ''}`}
+        className={`pm-bandes${plan.colonnes === 2 ? ' pm-bandes-deux' : ''}${
+          plan.defilement ? ' pm-bandes-defilantes' : ''
+        }`}
         ref={cadreBandes}
       >
         {bandes.map((bande) => {

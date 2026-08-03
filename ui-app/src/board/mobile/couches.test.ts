@@ -4,14 +4,17 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   depiler,
   empiler,
+  remplacerSommet,
   sommet,
   useCoucheCarte,
   useCouches,
+  useCouchesBoard,
   type Couche,
 } from './couches'
 
 const FOCUS: Couche = { sorte: 'focus', bande: 'heros' }
 const CARTE: Couche = { sorte: 'carte', id: '42' }
+const SELECTEUR: Couche = { sorte: 'selecteur' }
 
 describe('pile des couches', () => {
   it('est vide au depart', () => {
@@ -35,7 +38,19 @@ describe('pile des couches', () => {
     const depart: Couche[] = [FOCUS]
     empiler(depart, CARTE)
     depiler(depart)
+    remplacerSommet(depart, CARTE)
     expect(depart).toEqual([FOCUS])
+  })
+
+  it('echange la couche du sommet sans changer la profondeur', () => {
+    const pile = remplacerSommet([FOCUS, CARTE], SELECTEUR)
+    expect(pile).toEqual([FOCUS, SELECTEUR])
+  })
+
+  it('ne remplace rien sur une pile vide, ni par la couche deja au sommet', () => {
+    expect(remplacerSommet([], SELECTEUR)).toEqual([])
+    const pile: Couche[] = [FOCUS, CARTE]
+    expect(remplacerSommet(pile, CARTE)).toBe(pile)
   })
 })
 
@@ -246,5 +261,129 @@ describe('useCoucheCarte : le menu d\'actions dans la pile', () => {
     })
 
     expect(result.current.pile).toEqual([FOCUS, { sorte: 'carte', id: '42' }])
+  })
+})
+
+describe('useCouchesBoard : le selecteur de cibles dans la pile', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  type Etat = { carte: number | undefined; selecteur: boolean }
+
+  /**
+   * Les deux panneaux appartiennent a board.tsx : on simule ses deux props et
+   * les deux fermetures qu'il fournit, exactement comme le fait PlateauMobile.
+   */
+  function monter() {
+    const fermerMenu = vi.fn()
+    const fermerSelecteur = vi.fn()
+    const { result, rerender } = renderHook(
+      ({ carte, selecteur }: Etat) => {
+        const couches = useCouches()
+        useCouchesBoard(carte, selecteur, couches, fermerMenu, fermerSelecteur)
+        return couches
+      },
+      {
+        wrapper: enveloppeStrict,
+        initialProps: { carte: undefined, selecteur: false } as Etat,
+      }
+    )
+    return { result, rerender, fermerMenu, fermerSelecteur }
+  }
+
+  it('empile une couche « selecteur » quand le ciblage hors table s\'ouvre', () => {
+    const pushState = vi.spyOn(window.history, 'pushState')
+    const { result, rerender } = monter()
+
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+
+    expect(result.current.pile).toEqual([SELECTEUR])
+    expect(pushState).toHaveBeenCalledOnce()
+  })
+
+  it('remplace le menu par le selecteur sans pousser de seconde entree', () => {
+    const back = vi.spyOn(window.history, 'back').mockImplementation(() => {})
+    const pushState = vi.spyOn(window.history, 'pushState')
+    const { result, rerender } = monter()
+
+    act(() => {
+      rerender({ carte: 42, selecteur: false })
+    })
+    // Choisir une capacite a cibles : board.tsx cache le menu et montre le
+    // selecteur dans le MEME rendu. Une seule couche est visible, donc une
+    // seule entree d'historique, et surtout aucun back() qui croiserait un
+    // pushState dans le meme tick.
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+
+    expect(result.current.pile).toEqual([SELECTEUR])
+    expect(pushState).toHaveBeenCalledOnce()
+    expect(back).not.toHaveBeenCalled()
+  })
+
+  it('le Retour sur le selecteur abandonne le ciblage au lieu de quitter la partie', () => {
+    const { result, rerender, fermerMenu, fermerSelecteur } = monter()
+
+    act(() => {
+      rerender({ carte: 42, selecteur: false })
+    })
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+    act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+
+    expect(result.current.pile).toEqual([])
+    expect(fermerSelecteur).toHaveBeenCalledOnce()
+    expect(fermerMenu).not.toHaveBeenCalled()
+  })
+
+  it('rend la couche au menu quand le ciblage est abandonne', () => {
+    const back = vi.spyOn(window.history, 'back').mockImplementation(() => {})
+    const pushState = vi.spyOn(window.history, 'pushState')
+    const { result, rerender } = monter()
+
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+    act(() => {
+      rerender({ carte: 42, selecteur: false })
+    })
+
+    expect(result.current.pile).toEqual([CARTE])
+    expect(pushState).toHaveBeenCalledOnce()
+    expect(back).not.toHaveBeenCalled()
+  })
+
+  it('depile quand board.tsx ferme le selecteur de lui-meme', () => {
+    const back = vi.spyOn(window.history, 'back')
+    const { rerender } = monter()
+
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+    act(() => {
+      rerender({ carte: undefined, selecteur: false })
+    })
+
+    expect(back).toHaveBeenCalledOnce()
+  })
+
+  it('laisse la feuille de focus sous le selecteur', () => {
+    const { result, rerender } = monter()
+
+    act(() => {
+      result.current.ouvrir(FOCUS)
+    })
+    act(() => {
+      rerender({ carte: undefined, selecteur: true })
+    })
+
+    expect(result.current.pile).toEqual([FOCUS, SELECTEUR])
   })
 })

@@ -1841,6 +1841,12 @@ function PagePartie({
         // Retour d'Android le ferme au lieu de sortir de la partie.
         carteFocalisee={carteMenu && !interaction.option ? idMenu : undefined}
         onFermerCarte={interaction.defocaliser}
+        // Meme condition que le rendu de SelecteurCibles ci-dessus (il ne
+        // dessine rien sans cible). Le Retour abandonne l'option en cours de
+        // composition : le menu de la carte revient, on n'a pas quitte la
+        // partie au milieu d'un ciblage.
+        selecteurOuvert={interaction.ciblesHorsTable.length > 0}
+        onFermerSelecteur={interaction.abandonnerOption}
         journal={
           <JournalHeros
             entrees={historique.entrees}

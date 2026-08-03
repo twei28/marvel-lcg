@@ -422,6 +422,15 @@ export type BoardProps = {
   /** Ferme ce menu. Appele par le rendu mobile quand le Retour retire sa couche. */
   onFermerCarte?: () => void
   /**
+   * Vrai quand le SELECTEUR DE CIBLES hors table est affiche. Meme raison que
+   * carteFocalisee : il appartient a la page, mais le rendu mobile doit
+   * l'inscrire dans sa pile de couches, sinon le Retour d'Android quitte la
+   * partie en plein ciblage. Le rendu PC l'ignore.
+   */
+  selecteurOuvert?: boolean
+  /** Abandonne le ciblage en cours. Appele quand le Retour retire cette couche. */
+  onFermerSelecteur?: () => void
+  /**
    * Journal du héros affiché. Il occupe une case de la grille de la scène
    * (rangée du bas, colonne de droite) : ce n'est pas un emplacement de cartes,
    * il ne passe donc pas par zones.ts.

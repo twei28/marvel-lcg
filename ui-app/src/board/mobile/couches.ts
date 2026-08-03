@@ -5,18 +5,34 @@
 // La partie pure est ici et testee ; le hook ci-dessous la relie a l'historique
 // du navigateur.
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CleBande } from './bandes'
 
 export type Couche =
   | { sorte: 'focus'; bande: CleBande }
   | { sorte: 'carte'; id: string }
+  | { sorte: 'selecteur' }
 
 function memeCouche(a: Couche, b: Couche): boolean {
-  if (a.sorte !== b.sorte) return false
-  if (a.sorte === 'focus' && b.sorte === 'focus') return a.bande === b.bande
-  if (a.sorte === 'carte' && b.sorte === 'carte') return a.id === b.id
-  return false
+  return cleCouche(a) === cleCouche(b)
+}
+
+/** Identite d'une couche, en une chaine : deux couches de meme cle sont la meme. */
+export function cleCouche(couche: Couche): string {
+  if (couche.sorte === 'focus') return `focus:${couche.bande}`
+  if (couche.sorte === 'carte') return `carte:${couche.id}`
+  return 'selecteur'
+}
+
+/**
+ * Les couches que board.tsx dessine lui-meme (le menu d'actions d'une carte et
+ * le selecteur de cibles hors table), par opposition a la feuille de focus qui
+ * appartient a l'arbre mobile. Il n'y en a JAMAIS deux a la fois : le menu se
+ * cache des qu'une option est en cours de ciblage, et c'est justement le
+ * selecteur qui prend sa place.
+ */
+function estExterne(couche: Couche): boolean {
+  return couche.sorte === 'carte' || couche.sorte === 'selecteur'
 }
 
 export function sommet(pile: Couche[]): Couche | undefined {
@@ -32,6 +48,20 @@ export function empiler(pile: Couche[], couche: Couche): Couche[] {
 
 export function depiler(pile: Couche[]): Couche[] {
   return pile.slice(0, -1)
+}
+
+/**
+ * Echange la couche du sommet contre une autre, SANS toucher a l'historique :
+ * la profondeur ne bouge pas, donc l'entree deja poussee reste la bonne. C'est
+ * ce qu'il faut quand une couche laisse la place a une autre sans que les deux
+ * soient visibles ensemble (le menu d'une carte -> le selecteur de cibles) :
+ * empiler donnerait deux entrees pour une seule feuille a l'ecran, et il
+ * faudrait deux Retour pour la fermer.
+ */
+export function remplacerSommet(pile: Couche[], couche: Couche): Couche[] {
+  const haut = sommet(pile)
+  if (!haut || memeCouche(haut, couche)) return pile
+  return [...pile.slice(0, -1), couche]
 }
 
 /**
@@ -52,6 +82,7 @@ export function depiler(pile: Couche[]): Couche[] {
 export function useCouches(): {
   pile: Couche[]
   ouvrir: (couche: Couche) => void
+  remplacer: (couche: Couche) => void
   fermer: () => void
   toutFermer: () => void
 } {
@@ -68,6 +99,18 @@ export function useCouches(): {
       const suivante = empiler(pile, couche)
       if (suivante === pile) return
       window.history.pushState({ couche: suivante.length }, '')
+      setPile(suivante)
+    },
+    [pile]
+  )
+
+  // Aucun effet de bord sur l'historique ici, et c'est voulu : la profondeur
+  // de la pile ne change pas, l'entree deja poussee vaut pour la nouvelle
+  // couche comme elle valait pour l'ancienne.
+  const remplacer = useCallback(
+    (couche: Couche) => {
+      const suivante = remplacerSommet(pile, couche)
+      if (suivante === pile) return
       setPile(suivante)
     },
     [pile]
@@ -98,63 +141,123 @@ export function useCouches(): {
     return () => window.removeEventListener('popstate', surRetour)
   }, [])
 
-  return { pile, ouvrir, fermer, toutFermer }
+  return { pile, ouvrir, remplacer, fermer, toutFermer }
 }
 
 export type Couches = ReturnType<typeof useCouches>
 
 /**
- * Relie le MENU D'ACTIONS D'UNE CARTE a la pile de couches.
+ * Relie a la pile les couches que board.tsx dessine LUI-MEME : le menu
+ * d'actions d'une carte, et le selecteur de cibles hors table.
  *
- * Ce menu n'appartient pas a l'arbre mobile : c'est board.tsx qui le dessine,
- * a partir de son etat d'interaction. Sans ce pont, seule la feuille de focus
- * etait empilee, et le Retour d'Android sur un menu de carte sortait de la
- * partie, c'est-a-dire exactement ce que cette pile existe pour empecher.
+ * Ces deux panneaux n'appartiennent pas a l'arbre mobile ; ils naissent de
+ * l'etat d'interaction de board.tsx. Sans ce pont, seule la feuille de focus
+ * etait empilee, et le Retour d'Android sur un menu de carte ou en plein
+ * ciblage sortait de la partie, c'est-a-dire exactement ce que cette pile
+ * existe pour empecher (spec S6 : « les couches empilees (focus, menu
+ * d'actions, selecteur) sont gerees par history.pushState, une entree par
+ * couche »).
+ *
+ * UN SEUL pont pour les deux, et non un hook par panneau : ils se relaient
+ * (choisir une capacite a cibles ferme le menu et ouvre le selecteur dans le
+ * MEME rendu). Deux ponts independants auraient fait un history.back() et un
+ * pushState dans le meme tick, or back() est asynchrone : la pile et
+ * l'historique se seraient croises et le popstate suivant aurait ferme la
+ * mauvaise couche. Ici la transition menu -> selecteur est un REMPLACEMENT sur
+ * place : une seule couche est visible, donc une seule entree d'historique.
+ * Le Retour abandonne alors le ciblage, board.tsx redonne le menu, qui pousse
+ * sa propre entree : le compte reste juste a chaque etape.
  *
  * Le pont marche dans les deux sens :
- *  - le menu s'ouvre (carteFocalisee devient definie) -> on empile ;
- *  - le Retour retire la couche -> on demande a board.tsx de fermer le menu ;
- *  - board.tsx ferme le menu autrement (bouton Fermer, action jouee) -> on
- *    depile, pour que l'historique reste aligne sur ce qui est affiche.
+ *  - un panneau s'ouvre -> on empile ;
+ *  - le Retour retire la couche -> on demande a board.tsx de le fermer ;
+ *  - board.tsx le ferme autrement (bouton Fermer, action jouee) -> on depile,
+ *    pour que l'historique reste aligne sur ce qui est affiche.
  *
  * `dejaOuverte` retient l'identifiant deja empile : sans lui, une seconde
  * invocation de l'effet avec la meme pile (StrictMode, ou deux rendus avant
  * que setPile ne soit applique) pousserait deux entrees d'historique pour une
  * seule ouverture, et il faudrait deux Retour pour fermer un seul menu.
  */
+export function useCouchesBoard(
+  carteFocalisee: number | undefined,
+  selecteurOuvert: boolean,
+  couches: Couches,
+  onFermerCarte?: () => void,
+  onFermerSelecteur?: () => void
+): void {
+  const { pile, ouvrir, remplacer, fermer } = couches
+
+  // Ce que board.tsx affiche en ce moment. Le selecteur passe devant : quand
+  // il est la, board.tsx a deja cache le menu. useMemo pour que l'objet garde
+  // son identite d'un rendu a l'autre, sinon l'effet repartirait a chaque fois.
+  const coucheVoulue = useMemo<Couche | undefined>(() => {
+    if (selecteurOuvert) return { sorte: 'selecteur' }
+    if (carteFocalisee === undefined) return undefined
+    return { sorte: 'carte', id: String(carteFocalisee) }
+  }, [selecteurOuvert, carteFocalisee])
+  const cleVoulue = coucheVoulue ? cleCouche(coucheVoulue) : undefined
+
+  const externe = pile.filter(estExterne)
+  const cleEmpilee = externe.length > 0 ? cleCouche(externe[externe.length - 1]) : undefined
+  const auSommet = externe.length > 0 && externe[externe.length - 1] === sommet(pile)
+  const etaitEmpilee = useRef<string | undefined>(undefined)
+  const dejaOuverte = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    const avant = etaitEmpilee.current
+    etaitEmpilee.current = cleEmpilee
+
+    if (coucheVoulue === undefined || cleVoulue === undefined) {
+      dejaOuverte.current = undefined
+      if (cleEmpilee !== undefined) fermer()
+      return
+    }
+
+    if (cleEmpilee === undefined) {
+      // La couche vient de disparaitre alors que le panneau est encore
+      // ouvert : c'est le Retour d'Android. C'est lui qui ferme, pas nous.
+      if (avant !== undefined) {
+        dejaOuverte.current = undefined
+        if (avant === 'selecteur') onFermerSelecteur?.()
+        else onFermerCarte?.()
+        return
+      }
+
+      if (dejaOuverte.current === cleVoulue) return
+      dejaOuverte.current = cleVoulue
+      ouvrir(coucheVoulue)
+      return
+    }
+
+    // Une couche externe est empilee, mais ce n'est plus celle qui est a
+    // l'ecran : un panneau a laisse la place a l'autre. On echange en place.
+    // Si elle n'est pas au sommet (cas qui ne se produit pas : ces panneaux
+    // couvrent l'ecran, on ne peut pas ouvrir une feuille de focus par-dessus),
+    // on ne touche a rien : une couche mal nommee vaut mieux qu'un historique
+    // desynchronise.
+    if (cleEmpilee !== cleVoulue && auSommet) {
+      dejaOuverte.current = cleVoulue
+      remplacer(coucheVoulue)
+    }
+  }, [
+    coucheVoulue,
+    cleVoulue,
+    cleEmpilee,
+    auSommet,
+    ouvrir,
+    remplacer,
+    fermer,
+    onFermerCarte,
+    onFermerSelecteur,
+  ])
+}
+
+/** Le pont ci-dessus quand seul le menu d'actions existe (aucun selecteur). */
 export function useCoucheCarte(
   carteFocalisee: number | undefined,
   couches: Couches,
   onFermerCarte?: () => void
 ): void {
-  const { pile, ouvrir, fermer } = couches
-  const empilee = pile.some((couche) => couche.sorte === 'carte')
-  const etaitEmpilee = useRef(false)
-  const dejaOuverte = useRef<string | undefined>(undefined)
-
-  useEffect(() => {
-    const avant = etaitEmpilee.current
-    etaitEmpilee.current = empilee
-
-    if (carteFocalisee === undefined) {
-      dejaOuverte.current = undefined
-      if (empilee) fermer()
-      return
-    }
-
-    const id = String(carteFocalisee)
-    if (empilee) return
-
-    // La couche vient de disparaitre alors que le menu est encore ouvert :
-    // c'est le Retour d'Android. C'est lui qui ferme le menu, pas nous.
-    if (avant) {
-      dejaOuverte.current = undefined
-      onFermerCarte?.()
-      return
-    }
-
-    if (dejaOuverte.current === id) return
-    dejaOuverte.current = id
-    ouvrir({ sorte: 'carte', id })
-  }, [carteFocalisee, empilee, ouvrir, fermer, onFermerCarte])
+  useCouchesBoard(carteFocalisee, false, couches, onFermerCarte)
 }
