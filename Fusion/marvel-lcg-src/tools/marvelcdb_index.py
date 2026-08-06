@@ -183,7 +183,7 @@ def aspirer(dates, recuperer, ids_connus, table):
             except Exception as exc:           # reseau, JSON, 404 : meme traitement
                 if essai == 2:
                     en_erreur.append(date)
-                    print(f"  ! {date} saute apres 2 essais : {exc}")
+                    print(f"  ! {date} saute apres 2 essais : {exc}", flush=True)
         if bruts is None:
             continue
         du_jour, ecartes_jour = regrouper(bruts, ids_connus, table)
@@ -192,7 +192,7 @@ def aspirer(dates, recuperer, ids_connus, table):
             cible = paquets.setdefault(code, {**paquet, "decks": []})
             cible["decks"].extend(paquet["decks"])
         if i % 100 == 0:
-            print(f"  {date} ({i + 1}/{len(dates)})")
+            print(f"  {date} ({i + 1}/{len(dates)})", flush=True)
     return paquets, en_erreur, ecartes
 
 
@@ -223,6 +223,27 @@ def ecrire_index(racine, paquets):
             "decks": fusionner(anciennes, paquet["decks"]),
         }, open(chemin, "w", encoding="utf-8"), ensure_ascii=False)
     return len(paquets)
+
+
+def tranches(dates, taille):
+    """Decoupe les jours a aspirer en paquets ecrits au fur et a mesure.
+
+    Sans ca, un passage de 2500 jours n'ecrit qu'a la toute fin : une coupure
+    a la 33e minute perd tout, alors que le script se pretend rejouable.
+    """
+    return [dates[i:i + taille] for i in range(0, len(dates), taille)]
+
+
+def ecrire_meta(racine, derniere_date, jours_en_erreur):
+    """Marqueur de reprise, reecrit apres CHAQUE tranche."""
+    chemin = os.path.join(racine, "data", "marvelcdb", "_meta.json")
+    os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    json.dump({
+        "derniere_date": derniere_date,
+        "genere_le": datetime.date.today().isoformat(),
+        "total_decks": compter_index(racine),
+        "jours_en_erreur": sorted(set(jours_en_erreur)),
+    }, open(chemin, "w", encoding="utf-8"), ensure_ascii=False)
 
 
 def publier_vers_game(racine):
@@ -320,7 +341,7 @@ if __name__ == "__main__":
         return args[args.index(nom) + 1] if nom in args else None
 
     ids_connus = charger_ids_cartes(racine)
-    print(f"{len(ids_connus)} cartes connues du jeu.")
+    print(f"{len(ids_connus)} cartes connues du jeu.", flush=True)
 
     if "--recalculer" in args:
         change = _recalculer(racine, ids_connus)
@@ -339,26 +360,36 @@ if __name__ == "__main__":
         print("Deja a jour, rien a aspirer.")
         raise SystemExit(0)
 
-    print(f"{len(dates)} jour(s) a aspirer, du {dates[0]} au {dates[-1]}.")
+    print(f"{len(dates)} jour(s) a aspirer, du {dates[0]} au {dates[-1]}.", flush=True)
 
     def recuperer_ralenti(date):
         time.sleep(DELAI)
         return recuperer_jour(date)
 
     table = table_deck_starter(racine)
-    paquets, en_erreur, ecartes = aspirer(dates, recuperer_ralenti, ids_connus, table)
-    total = sum(len(p["decks"]) for p in paquets.values())
-    ecrire_index(racine, paquets)
 
-    json.dump({
-        "derniere_date": max(dates[-1], _meta(racine).get("derniere_date", "")),
-        "genere_le": datetime.date.today().isoformat(),
-        "total_decks": compter_index(racine),
-        "jours_en_erreur": en_erreur,
-    }, open(os.path.join(racine, "data", "marvelcdb", "_meta.json"), "w",
-            encoding="utf-8"), ensure_ascii=False)
+    # Ecriture par tranches : chacune est ecrite ET marquee dans _meta avant de
+    # passer a la suivante. Une coupure ne coute donc au pire qu'une tranche.
+    # Sur un passage explicite (--depuis), le marqueur repart de zero pour
+    # rester monotone : il ne doit jamais reculer en cours de route.
+    TAILLE_TRANCHE = 100
+    derniere_ecrite = "" if option("--depuis") else meta.get("derniere_date", "")
+    en_erreur_total, ecartes_total, total, heros = [], 0, 0, set()
 
-    print(f"{total} deck(s) indexes sur {len(paquets)} heros, "
-          f"{ecartes} ecarte(s) (heros absent du jeu), "
-          f"{len(en_erreur)} jour(s) en erreur.")
-    print("Publication :", publier_vers_game(racine))
+    paquets_tranches = tranches(dates, TAILLE_TRANCHE)
+    for numero, tranche in enumerate(paquets_tranches, start=1):
+        paquets, en_erreur, ecartes = aspirer(tranche, recuperer_ralenti, ids_connus, table)
+        ecrire_index(racine, paquets)
+        en_erreur_total += en_erreur
+        ecartes_total += ecartes
+        total += sum(len(p["decks"]) for p in paquets.values())
+        heros |= set(paquets)
+        derniere_ecrite = max(derniere_ecrite, tranche[-1])
+        ecrire_meta(racine, derniere_ecrite, en_erreur_total)
+        print(f"[tranche {numero}/{len(paquets_tranches)}] jusqu'au {tranche[-1]} : "
+              f"{total} decks cumules, {len(heros)} heros", flush=True)
+
+    print(f"{total} deck(s) indexes sur {len(heros)} heros, "
+          f"{ecartes_total} ecarte(s) (heros absent du jeu), "
+          f"{len(en_erreur_total)} jour(s) en erreur.", flush=True)
+    print("Publication :", publier_vers_game(racine), flush=True)

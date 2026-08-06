@@ -149,6 +149,25 @@ with tempfile.TemporaryDirectory() as tmp:
     verifier("_meta.json n'est pas compte comme un heros",
              idx.compter_index(tmp), 3)
 
+# --- Tranches : l'ecriture doit etre PERIODIQUE, pas finale -----------------
+# Une aspiration de 2500 jours ecrite en un seul bloc final perd tout si on
+# l'interrompt, alors que la spec promet une reprise au jour suivant le
+# dernier ecrit. On decoupe donc en tranches.
+verifier("decoupage exact", idx.tranches(["a", "b", "c", "d"], 2), [["a", "b"], ["c", "d"]])
+verifier("derniere tranche incomplete",
+         idx.tranches(["a", "b", "c"], 2), [["a", "b"], ["c"]])
+verifier("liste plus courte qu'une tranche", idx.tranches(["a"], 100), [["a"]])
+verifier("liste vide", idx.tranches([], 100), [])
+
+with tempfile.TemporaryDirectory() as tmp:
+    os.makedirs(os.path.join(tmp, "data", "marvelcdb"))
+    idx.ecrire_meta(tmp, "2020-01-08", ["2019-12-25"])
+    meta = json.load(open(os.path.join(tmp, "data", "marvelcdb", "_meta.json"),
+                          encoding="utf-8"))
+    verifier("meta ecrite apres chaque tranche : la reprise est possible",
+             (meta["derniere_date"], meta["jours_en_erreur"], meta["total_decks"]),
+             ("2020-01-08", ["2019-12-25"], 0))
+
 # --- Publication vers .game -------------------------------------------------
 with tempfile.TemporaryDirectory() as tmp:
     os.makedirs(os.path.join(tmp, "data", "marvelcdb"))
