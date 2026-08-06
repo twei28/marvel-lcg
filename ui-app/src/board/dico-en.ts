@@ -456,6 +456,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Texte officiel FR sous l’aperçu des cartes, via fr.marvelcdb.com':
     'Official card text under the preview, from marvelcdb.com',
   'Voir sur marvelcdb': 'View on marvelcdb',
+  'français': 'French',
   'Succès': 'Achievements',
   'Bannière quand un exploit est réalisé (Premier sang, Double K.O. ...)':
     'Banner when a feat is accomplished (First blood, Double kill...)',
