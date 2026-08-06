@@ -1,20 +1,20 @@
-// textes-fr-fanmade.ts — texte francais des cartes des packs fan-made.
+// textes-fr-fanmade.ts — texte francais des cartes sans scan francais.
 //
 // ECRIT A LA MAIN, ne pas confondre avec textes-fr.ts qui est GENERE depuis
-// marvelcdb : ces cartes n'existent que dans ce projet, aucune source en ligne
-// ne les connait et aucun scan francais n'existera jamais pour elles. C'est
-// donc le seul francais que le joueur verra sur ces cartes.
+// marvelcdb : ces cartes n'ont aucune source en ligne et n'auront jamais de
+// scan francais. C'est donc le seul francais que le joueur verra dessus.
 //
-// Conventions suivies, alignees sur la traduction officielle FFG/Asmodee :
-//  - les mots-cles suivent mots-cles.ts (Renfort, Deferlement, Robuste...) ;
-//  - les statistiques s'ecrivent ATQ, CTR, DEF, REC, MNG ;
-//  - les NOMS PROPRES restent en anglais (cartes, personnages, traits [[...]]),
-//    parce que le joueur a la carte anglaise sous les yeux et doit s'y
-//    retrouver ;
-//  - les jetons de jeu ([mental], [star], [per_hero]...) sont recopies tels
-//    quels : ce sont des icones, pas du texte.
+// PIEGE : le catalogue du jeu tient en DEUX fichiers, data/cards.json ET
+// data/cards_custom.json. Rescue, Hulk (Rainy) et Stan Lee ne vivent que dans
+// le second : ne lire que le premier les laisse muettes, sans que rien ne le
+// signale.
 //
-// Une carte absente d'ici n'affiche rien, ce qui est le comportement normal.
+// Conventions, alignees sur la traduction officielle FFG/Asmodee :
+//  - mots-cles de mots-cles.ts (Renfort, Deferlement, Robuste, Coup Rapide) ;
+//  - statistiques ATQ, CTR, DEF, REC, MNG ;
+//  - NOMS PROPRES et traits [[...]] laisses en anglais : le joueur a la carte
+//    anglaise sous les yeux et doit s'y retrouver ;
+//  - jetons de jeu ([mental], [star], [per_hero]...) recopies tels quels.
 export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Thor (Hero)
   '61001a': "Digne — <b>Action</b> : cherchez l'amélioration Mjolnir dans votre deck et votre pile de défausse, et ajoutez-la à votre main. Mélangez votre deck. (Limite d'une fois par round.)",
@@ -598,4 +598,50 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '75021': "<b>Une fois révélée</b> : défaussez 2 alliés [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, placez 2 menaces sur Discord in the Branches. Si cette manigance n'est pas en jeu, placez plutôt ces menaces sur la manigance principale.\n[star] <b>Boost</b> : après la fin de cette activation, inclinez 1 allié [[SQUIRREL]] que vous contrôlez.",
   // squirrel_girl — Ratatoskr's Whispers (Attachment)
   '75022': "Attachez-la à votre carte d'identité.\nVous ne pouvez pas dépenser d'alliés [[SQUIRREL]].\n<b>Action d'identité civile</b> : inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → défaussez Ratatoskr's Whispers.\n[star] <b>Boost</b> : défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, cette activation gagne +1 ATQ et +1 MNG.",
+  // rainy — The Other Guy (Support)
+  '90110': "<b>Réponse d'identité civile</b> <i>(contre)</i> : après avoir changé de forme, retirez 1 menace d'une manigance. <i>(Limite d'une fois par phase.)</i>\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 1 dégât à un ennemi. <i>(Limite d'une fois par phase.)</i>",
+  // rainy — Intimidating Roar (Upgrade)
+  '90111': "<b>Réponse de héros</b> <i>(contre)</i> : après que Hulk a subi des dégâts d'une attaque, inclinez Intimidating Roar → retirez 1 menace d'une manigance (2 menaces à la place si vous avez subi 3 dégâts ou plus).",
+  // rainy — Limitless Endurance (Upgrade)
+  '90112': "Vous gagnez +3 points de vie et Bruce Banner gagne +1 REC.\n<b>Action de héros</b> : inclinez Limitless Endurance → soignez 1 dégât de Hulk.",
+  // rainy — Limitless Strength (Upgrade)
+  '90113': "Hulk gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Limitless Strength → générez une ressource [physical].",
+  // rainy — Rescue (Hero)
+  '90114a': "Intervention rapide — [star] <b>Réponse</b> : après avoir utilisé votre DEF de base, faites un contre ou une attaque de base sans incliner Rescue.",
+  // rainy — Pepper Potts (AlterEgo)
+  '90114b': "Cadre dirigeante — <b>Action</b> : chaque joueur peut défausser 1 carte de sa main pour chercher une amélioration [[TECH]] dans son deck et l'ajouter à sa main. <i>(Limite d'une fois par round.)</i>",
+  // rainy — Iron Man (Ally)
+  '90115': "[star] <b>Interruption</b> : quand Iron Man utilise un pouvoir de base, dépensez 1 ressource de n'importe quel type → Iron Man gagne +2 à ce pouvoir de base pour cette utilisation.",
+  // rainy — Magnetic Restraints (Event)
+  '90116': "<b>Action de héros</b> : choisissez l'un ou l'autre :\n• Sonnez un ennemi.\n• Choisissez un attachement dont le texte contient \"Action de héros\" ou \"Réponse de héros\" et défaussez-le.",
+  // rainy — Repulsor Blasts (Event)
+  '90117': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Cette attaque gagne à distance. Dépensez X ressources [energy] (maximum 3) → répétez cette attaque X fois contre les cibles de votre choix.",
+  // rainy — Responsive (Event)
+  '90118': "<b>Réponse de héros</b> : après avoir utilisé un pouvoir de base, redressez Rescue. Vous gagnez +1 à un pouvoir de base de votre choix <i>(CTR, ATQ ou DEF)</i> jusqu'à la fin du round.",
+  // rainy — Search and Rescue (Event)
+  '90119': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. S'il y a une icône de crise en jeu, retirez 2 menaces supplémentaires de cette manigance et ce contre ignore l'icône de crise.",
+  // rainy — Stark Resilient (Support)
+  '90120': "<b>Ressource</b> : inclinez Stark Resilient → générez une ressource [wild] pour n'importe quel joueur.",
+  // rainy — First Responder (Upgrade)
+  '90121': "Utilisations (3 compteurs médicaux).\n<b>Réponse de héros</b> : après qu'un autre personnage a subi des dégâts, inclinez cette carte et retirez-lui 1 compteur médical → soignez 1 dégât de ce personnage (2 dégâts à la place s'il s'agit d'une identité).",
+  // rainy — Magnetic Deflector (Upgrade)
+  '90122': "<b>Interruption de héros</b> <i>(défense)</i> : quand un ennemi initie une attaque, défaussez la carte du dessus de votre deck → cet ennemi subit -1 ATQ pour cette attaque. <i>(Limite de deux fois par round.)</i>",
+  // rainy — Model V Chassis (Upgrade)
+  '90123': "Vous gagnez +3 points de vie.\n<b>Réponse de héros</b> : après vous être défendu sans subir de dégâts, inclinez Model V Chassis et dépensez 1 ressource de n'importe quel type → donnez une carte d'état Tenace à Rescue.",
+  // rainy — Model V Helmet (Upgrade)
+  '90124': "Rescue gagne +1 CTR et ignore le mot-clé patrouille.\n<b>Réponse de héros</b> <i>(contre)</i> : après qu'une manigance annexe est entrée en jeu, inclinez Model V Helmet → retirez 1 menace de cette manigance (2 menaces à la place s'il y a une icône de crise en jeu).",
+  // rainy — Repulsor Gauntlets (Upgrade)
+  '90125': "Rescue gagne +1 ATQ.\n<b>Interruption de héros</b> : quand Rescue fait une attaque de base, inclinez Repulsor Gauntlets → cette attaque gagne à distance.",
+  // rainy — Board Meeting (Obligation)
+  '90126': "<b><i>Donnez-la au joueur Pepper Potts.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Pepper Potts → retirez Board Meeting de la partie.\n• Défaussez 1 amélioration [[TECH]] que vous contrôlez. Si aucune amélioration n'a été défaussée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // rainy — Helicopter Crash (SideScheme)
+  '90127': "Un hélicoptère de presse s'est écrasé dans une zone très peuplée et des civils sont en danger ! Évacuez-les avant que l'appareil n'explose et que d'autres vies ne soient perdues.",
+  // rainy — Burning Building (Environment)
+  '90128': "<b>Réponse Obligatoire</b> : après le début de la phase du méchant, infligez 1 dégât indirect à chaque joueur.\n<b>Action de héros</b> : inclinez votre héros et dépensez une ressource [physical] → défaussez Burning Building.",
+  // rainy — Wounded Civilians (Obligation)
+  '90129': "Utilisations (1 [per_player] compteurs de civil).\n<b>Interruption</b> : quand un joueur devrait soigner des dégâts d'un personnage, retirez plutôt 1 compteur de civil d'ici.",
+  // rainy — Catastrophic Collision (Treachery)
+  '90130': "Péril.\n<b>Une fois révélée</b> : choisissez l'une des options suivantes :\n• Infligez 2 [per_player] dégâts indirects aux joueurs. Ces dégâts gagnent perçant.\n• Attribuez à chaque joueur 1 carte rencontre face cachée.\n• Chaque joueur défausse de sa main la carte au coût le plus élevé.",
+  // rainy — Innocent Bystander (Attachment)
+  '90131': "Attachez-la à votre identité.\nVous subissez -1 en taille de main.\n<b>Action de héros</b> : inclinez votre héros → défaussez cette carte et retirez 1 menace d'une manigance.\n[star] <b>Boost</b> : placez 2 menaces sur la manigance principale.",
 }

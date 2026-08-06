@@ -15,7 +15,12 @@ const IMAGES = resolve('Fusion/marvel-lcg-src/assets/pics-fr')
 const LISTE = resolve('ui-app/src/board/scans-fr-liste.ts')
 const TEXTES = resolve('ui-app/src/board/textes-fr.ts')
 const TEXTES_FANMADE = resolve('ui-app/src/board/textes-fr-fanmade.ts')
-const CARTES = resolve('Fusion/marvel-lcg-src/data/cards.json')
+// Le catalogue tient en DEUX fichiers : ne lire que le premier laissait Rescue,
+// Hulk (Rainy) et Stan Lee hors de tout controle, sans que rien ne le signale.
+const CARTES = [
+  resolve('Fusion/marvel-lcg-src/data/cards.json'),
+  resolve('Fusion/marvel-lcg-src/data/cards_custom.json'),
+]
 
 let echecs = 0
 const verifier = (nom, condition, detail) => {
@@ -40,11 +45,12 @@ const fichiers = new Set(
     .map((nom) => nom.slice(3, -4))
 )
 
-const catalogue = JSON.parse(readFileSync(CARTES, 'utf8'))
 const picIds = new Set()
-for (const cartes of Object.values(catalogue)) {
-  if (!Array.isArray(cartes)) continue
-  for (const carte of cartes) picIds.add(carte.pic_id ?? carte.card_id)
+for (const chemin of CARTES) {
+  for (const cartes of Object.values(JSON.parse(readFileSync(chemin, 'utf8')))) {
+    if (!Array.isArray(cartes)) continue
+    for (const carte of cartes) picIds.add(carte.pic_id ?? carte.card_id)
+  }
 }
 
 const sansFichier = [...listes].filter((code) => !fichiers.has(code))
@@ -91,19 +97,26 @@ verifier(
   `${fanmadeDoublons.length} en trop, ex. ${fanmadeDoublons.slice(0, 5).join(', ')}`
 )
 
-const manquants = [...picIds].filter(
-  (code) => /^\d{5}[a-z]?$/.test(code) && !listes.has(code)
-)
-// Les codes fan-made de ce projet vont de 61xxx a 75xxx. Au-dela (le set
-// Ronan officiel, 90001-90005, notamment) le prefixe redevient officiel :
-// une comparaison ">= 61" seule les comptait a tort comme fan-made.
-const estFanMade = (code) => {
-  const prefixe = Number(code.slice(0, 2))
-  return prefixe >= 61 && prefixe <= 75
+// Classer par prefixe de code (« 61 a 75 = fan-made ») s'est revele faux : les
+// packs vivent aussi en 90xxx et dans cards_custom.json. La seule question qui
+// compte pour le joueur est ailleurs : cette carte lui parle-t-elle francais,
+// par son scan ou par son texte ? On compte donc ca, et rien d'autre.
+const avecTexte = new Set()
+for (const chemin of CARTES) {
+  for (const cartes of Object.values(JSON.parse(readFileSync(chemin, 'utf8')))) {
+    if (!Array.isArray(cartes)) continue
+    for (const carte of cartes) {
+      if (carte.text) avecTexte.add(carte.pic_id ?? carte.card_id)
+    }
+  }
 }
-const officielles = manquants.filter((code) => !estFanMade(code))
-const fan = manquants.filter((code) => estFanMade(code))
-console.log(`INFO  couverture : ${listes.size} cartes en francais`)
-console.log(`INFO  sans scan FR : ${officielles.length} officielles, ${fan.length} fan-made`)
+const muettes = [...avecTexte].filter(
+  (code) => !listes.has(code) && !textes.has(code) && !fanmade.has(code)
+)
+console.log(`INFO  scans francais : ${listes.size} cartes`)
+console.log(`INFO  textes francais : ${textes.size} officiels + ${fanmade.size} ecrits a la main`)
+console.log(`INFO  cartes encore muettes : ${muettes.length}${
+  muettes.length ? ` (ex. ${muettes.slice(0, 5).join(', ')})` : ''
+}`)
 
 process.exit(echecs === 0 ? 0 : 1)
