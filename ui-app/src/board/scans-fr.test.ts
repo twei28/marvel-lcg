@@ -5,7 +5,7 @@
 //    demande une image qui n'existe pas ;
 //  - les arts alternatifs (01088_dh_drax) n'existent pas en francais, et c'est
 //    l'absence de la liste qui les protege, sans regle dediee.
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CLE_SCANS_FR, picIdFr, scansFrActifs } from './scans-fr'
 import { CODES_SCAN_FR } from './scans-fr-liste'
 
@@ -28,6 +28,17 @@ describe('scansFrActifs', () => {
     expect(scansFrActifs()).toBe(false)
     window.localStorage.setItem(CLE_SCANS_FR, 'on')
     expect(scansFrActifs()).toBe(true)
+  })
+
+  it('vaut vrai quand localStorage leve une exception (mode prive, iframe sandbox)', () => {
+    const spy = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => {
+      throw new Error('localStorage access denied')
+    })
+    try {
+      expect(scansFrActifs()).toBe(true)
+    } finally {
+      spy.mockRestore()
+    }
   })
 })
 
