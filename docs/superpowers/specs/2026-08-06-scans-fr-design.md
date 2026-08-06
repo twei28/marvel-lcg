@@ -14,6 +14,21 @@ Un pack d'images officielles françaises a été déposé dans `Fusion/marvel-lc
 
 Ces images ne sont pas utilisables telles quelles. Elles sont nommées par **GUID OCTGN** (`00c2957b-8a7e-40f9-9f52-62f4c3c175e9.jpg`), alors que le jeu résout ses images par code de carte (`01001a`). Aucun nom de carte ne figure dans les archives, et ni `data/cards.json` ni `data/translate_fr.json` ne contiennent de GUID OCTGN. La correspondance doit venir de l'extérieur.
 
+### Couverture attendue, mesurée avant écriture du plan
+
+L'extraction a été simulée en entier, sans rien écrire sur le disque, contre le catalogue réel du jeu.
+
+| Mesure | Valeur |
+|---|---|
+| Images dans le pack | 4 003, pour 3 643 GUID distincts |
+| GUID inconnus de marvelcdb | 80, soit 2 % |
+| Cartes du jeu couvertes en français | 4 210 sur 4 670, soit 90 % |
+| Cartes officielles sans scan français | 77 |
+| Cartes fan-made sans scan français | 353 |
+| Poids après extraction | 456 Mo |
+
+Ces nombres sont la référence : l'outil de vérification doit les retrouver après l'extraction réelle. Un écart signifie que le script a fait autre chose que ce qui était prévu.
+
 ## 2. Périmètre
 
 **Dans le périmètre :** l'affichage des scans de cartes, l'option qui le commande, et le texte français de repli sous l'aperçu.
@@ -32,7 +47,7 @@ Ces images ne sont pas utilisables telles quelles. Elles sont nommées par **GUI
 |---|---|
 | Déclencheur | Option ⚙ dédiée, indépendante du bouton 🌐 FR/EN. On peut jouer en interface anglaise avec des scans français, et l'inverse |
 | Valeur par défaut | ON |
-| Source du mapping GUID vers code | marvelcdb (`octgn_id`) et le module OCTGN officiel, croisés |
+| Source du mapping GUID vers code | marvelcdb (`octgn_id`) fait foi ; le module OCTGN sert d'audit et ne décide de rien |
 | Stockage | Extraction en JPEG renommés sur le disque, pas de lecture des archives à la volée |
 | Carte sans scan FR | Le scan anglais reste affiché, complété par le texte français sous l'aperçu |
 | Source du texte de repli | Dictionnaire pré-généré, figé dans le dépôt, aucun réseau en partie |
@@ -73,13 +88,21 @@ Le principe directeur : **tout le travail est fait une fois, hors partie**. En j
 
 `Fusion/marvel-lcg-src/tools/importer_scans_fr.py`, exécuté à la main, jamais pendant une partie.
 
-**Étape 1, la table de correspondance.** Le script interroge l'API marvelcdb, qui expose `octgn_id` pour chaque carte (vérifié : `01001a` donne `18ae183c-de26-4369-8a41-424d58f01631`). Il récupère en parallèle les `set.xml` du module OCTGN officiel, qui associent le même GUID à un numéro de carte. Les deux sources sont croisées :
+**Étape 1, la table de correspondance.** Le script interroge `https://fr.marvelcdb.com/api/public/cards/?encounter=1`, une seule requête de 7,6 Mo qui rend 4 375 cartes, dont 4 373 avec leur `octgn_id` et leur texte français. C'est la source de vérité.
 
-- GUID présent dans les deux et concordant : retenu ;
-- GUID présent dans une seule : retenu, mentionné dans le rapport ;
-- GUID présent dans les deux mais divergent : **écarté**, listé dans le rapport pour arbitrage humain. Un scan attribué à la mauvaise carte est pire qu'un scan manquant.
+Un point mesuré, contre-intuitif et structurant : **la correspondance GUID vers code n'est pas biunivoque**. Une carte de rencontre réimprimée d'une boîte à l'autre garde un seul GUID OCTGN mais reçoit un code marvelcdb par boîte. L'obligation `01088` compte ainsi 47 codes pour une seule image. À l'inverse, une carte à deux faces partage un GUID entre `01001a` et `01001b`, que seul le suffixe du nom de fichier distingue.
 
-Si le module OCTGN est inaccessible, le script continue sur marvelcdb seul et l'écrit en tête du rapport, pour qu'une couverture obtenue sans recoupement ne soit jamais prise pour une couverture vérifiée.
+La règle d'attribution est donc :
+
+- fichier `<GUID>.jpg` : tous les codes du GUID dont le suffixe de face est vide ou `a` ;
+- fichier `<GUID>.b.jpg` : les codes en `b` ; `<GUID>.c.jpg` : les codes en `c` ;
+- et, dans tous les cas, **filtrage sur le catalogue du jeu** : un code absent de `cards.json` n'est pas écrit. C'est ce filtre qui empêche les réimpressions d'inonder le dossier.
+
+Une même carte peut recevoir une image depuis plusieurs archives (24 cas mesurés). Le script retient le fichier le plus lourd, choix déterministe qui privilégie la meilleure définition.
+
+**Le module OCTGN sert d'audit, pas d'arbitre.** Le dépôt [twistedsistem/OCTGN-Marvel-Champions](https://github.com/twistedsistem/OCTGN-Marvel-Champions) porte le même identifiant de jeu que les archives (`055c536f-adba-4bc2-acbf-9aefb9756046`) et associe GUID et `CardNumber` dans ses `set.xml`. Mesure faite : il ne couvre que 33 sets sur 61 et ne rattrape qu'un seul des 80 GUID inconnus de marvelcdb. Il reste utile pour une seule chose, signaler les désaccords : sur 1 609 GUID connus des deux sources, 5 divergent, dont `24031` et `24032` qui sont **inversés** entre elles. Le script pose quand même le scan selon marvelcdb et écrit ces cas dans le rapport, à vérifier à l'œil.
+
+Si le module est inaccessible, le script continue sans lui et l'écrit en tête du rapport : une extraction non auditée ne doit jamais passer pour une extraction vérifiée.
 
 **Étape 2, l'extraction.** Pour chaque `.o8c`, chaque entrée `<GUID>[.b|.c].jpg` est traduite en code de carte. Le suffixe de face est reporté sur le code : `GUID.jpg` donne `01001a` quand la carte a deux faces, `01003` quand elle n'en a qu'une, et `GUID.b.jpg` donne `01001b`. Les faces sont celles déclarées par marvelcdb, jamais devinées. Le fichier est écrit tel quel, sans réencodage, sous `assets/pics-fr/fr_<code>.jpg`. Les entrées non-image (`Thumbs.db`) sont ignorées.
 
@@ -146,7 +169,8 @@ Il affiche par ailleurs la couverture, cartes officielles et cartes fan-made sé
 | Fichier effacé à la main après génération | La liste le croit présent, le serveur ne le trouve pas et l'image manque. C'est précisément ce que `verifier-scans-fr.mjs` détecte |
 | Carte fan-made | Scan anglais, pas de texte de repli. Silencieux, comme aujourd'hui |
 | Carte officielle trop récente pour le pack OCTGN | Scan anglais, texte français de repli si marvelcdb la connaissait à la génération |
-| GUID divergent entre les deux sources | Écarté, la carte reste en anglais, la divergence est listée dans le rapport |
+| GUID divergent entre les deux sources | marvelcdb l'emporte, le scan est posé, la divergence est listée dans le rapport pour arbitrage à l'œil |
+| GUID inconnu de marvelcdb | Image non extraite, GUID listé dans le rapport. Mesuré : 80 sur 3 643 |
 | Option coupée en cours de partie | Le choix se fait au rendu, l'affichage suit au rafraîchissement suivant sans rechargement |
 | Multijoueur, langues différentes | Chaque client choisit ses URL, le serveur sert les deux collections, les caches ne se croisent pas |
 
