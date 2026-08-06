@@ -8,6 +8,7 @@ import type { Catalogue } from './catalogue'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
+import { picIdFr } from './scans-fr'
 
 /**
  * card_type du moteur -> famille visuelle.
@@ -98,9 +99,12 @@ export function isLandscapeType(card: WorldCard, visible: boolean): boolean {
  * Le prefixe /scan/ ne veut donc rien dire pour le serveur : il est la pour que
  * le serveur de developpement de Vite puisse relayer ces requetes au jeu
  * (voir server.proxy dans vite.config.ts) sans intercepter toute la page.
+ *
+ * Le nom demande passe par picIdFr() : une carte disponible en francais est
+ * servie depuis assets/pics-fr sous le nom « fr_<code> ». Voir scans-fr.ts.
  */
 export function scanUrl(picId: string): string {
-  return `/scan/${picId}`
+  return `/scan/${picIdFr(picId)}`
 }
 
 /** Vide et 0 sont deux choses differentes : 0 PV se voit, 0 menace aussi. */

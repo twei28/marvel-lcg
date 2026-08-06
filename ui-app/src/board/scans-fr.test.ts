@@ -66,3 +66,15 @@ describe('picIdFr', () => {
     expect(picIdFr('01088_dh_drax')).toBe('01088_dh_drax')
   })
 })
+
+describe('scanUrl', () => {
+  it('demande le fichier francais pour une carte couverte', async () => {
+    const { scanUrl } = await import('./card-model')
+    expect(scanUrl(AVEC_SCAN)).toBe('/scan/fr_01001a')
+  })
+
+  it('demande le fichier anglais pour une carte non couverte', async () => {
+    const { scanUrl } = await import('./card-model')
+    expect(scanUrl('75001a')).toBe('/scan/75001a')
+  })
+})
