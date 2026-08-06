@@ -364,8 +364,11 @@ export function CarteApercu({
       aria-hidden="true"
     >
       {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
-          pastilles), juste beaucoup plus grand. Jamais agissant. */}
-      <div className="apercu-face">
+          pastilles), juste beaucoup plus grand. Jamais agissant.
+          `est-paysage` sert au CSS a caler les blocs de texte sous la carte sur
+          la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
+          elle-meme, qui est leur soeur, pas leur ancetre. */}
+      <div className={`apercu-face${carteAgrandie.isLandscape ? ' est-paysage' : ''}`}>
         <ScanCard {...carteAgrandie} onSelect={undefined} highlight={false} />
         {statuts && statuts.length > 0 ? (
           <div className="statuts">

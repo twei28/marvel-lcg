@@ -1972,14 +1972,24 @@
     animation: carte-apercu-entre 130ms ease-out;
   }
 
-  .carte-apercu .scan-card {
+  /* Les deux largeurs de carte de l'apercu vivent ICI, sur le conteneur, et non
+     sur .scan-card : les blocs de texte poses SOUS la carte (mots-cles, texte
+     francais) doivent s'y caler, et ils ne peuvent pas lire une variable definie
+     sur leur soeur. Une seule source par largeur, donc aucun risque de voir le
+     texte et la carte diverger. */
+  .carte-apercu {
     /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). */
-    --card-w: 345px;
+    --largeur-face: 345px;
+    --largeur-face-paysage: 506px;
+  }
+
+  .carte-apercu .scan-card {
+    --card-w: var(--largeur-face);
     cursor: default;
   }
 
   .carte-apercu .scan-card.is-landscape {
-    --card-w: 506px;
+    --card-w: var(--largeur-face-paysage);
   }
 
   /* Chaque face de l'apercu : conteneur positionne pour ancrer les .statuts. */
@@ -1999,20 +2009,14 @@
      identites multi-formes (Amadeus Cho, Ant-Man) etaient illisibles. On
      agrandit, en bornant a la largeur de fenetre pour ne pas deborder sur les
      ecrans etroits (le panneau est ancre a droite). */
-  .carte-apercu.a-faces-2 .scan-card {
-    --card-w: min(315px, 30vw);
+  .carte-apercu.a-faces-2 {
+    --largeur-face: min(315px, 30vw);
+    --largeur-face-paysage: min(460px, 42vw);
   }
 
-  .carte-apercu.a-faces-2 .scan-card.is-landscape {
-    --card-w: min(460px, 42vw);
-  }
-
-  .carte-apercu.a-faces-3 .scan-card {
-    --card-w: min(272px, 21vw);
-  }
-
-  .carte-apercu.a-faces-3 .scan-card.is-landscape {
-    --card-w: min(398px, 30vw);
+  .carte-apercu.a-faces-3 {
+    --largeur-face: min(272px, 21vw);
+    --largeur-face-paysage: min(398px, 30vw);
   }
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
@@ -2595,6 +2599,25 @@
     color: #ffd45a;
     border-color: rgba(255, 212, 90, 0.5);
     background: rgba(255, 212, 90, 0.12);
+  }
+
+  /* Coupe-son du header. L'etat MUET est le plus important a lire d'un coup
+     d'oeil : c'est celui qu'on veut pouvoir defaire. Il reste donc visible,
+     simplement eteint, au lieu de se fondre dans la barre. */
+  .bh-musique {
+    padding-inline: 8px;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .bh-musique.est-actif {
+    color: #ffd45a;
+    border-color: rgba(255, 212, 90, 0.5);
+    background: rgba(255, 212, 90, 0.12);
+  }
+
+  .bh-musique:not(.est-actif) {
+    opacity: 0.55;
   }
 
   /* Point vert : le heros dont c'est le tour d'agir, meme si la vue est forcee
@@ -3451,6 +3474,22 @@
     border-radius: 8px;
   }
 
+  /* Les blocs poses sous la carte prennent EXACTEMENT sa largeur : sans cela le
+     texte etirait le panneau bien au-dela de la carte, et le bloc flottait en
+     porte-a-faux. box-sizing parce que la largeur annoncee doit inclure le
+     padding et la bordure, sinon on deborde de la carte de 21 px. */
+  .apercu-cdb,
+  .apercu-mots-cles {
+    box-sizing: border-box;
+    width: var(--largeur-face);
+    max-width: none;
+  }
+
+  .apercu-face.est-paysage .apercu-cdb,
+  .apercu-face.est-paysage .apercu-mots-cles {
+    width: var(--largeur-face-paysage);
+  }
+
   .apercu-cdb-source {
     display: block;
     margin-bottom: 3px;
@@ -3853,4 +3892,214 @@
   .recap-mechant-ok:hover {
     filter: brightness(1.1);
   }
+}
+
+@layer composants {
+  /* Bandeau « untel est deconnecte ». Il ne parait QUE quand le moteur
+     interroge un siege abandonne : le reste du temps la partie avance. */
+  .bandeau-absent {
+    position: fixed;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 630;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: min(560px, calc(100vw - 24px));
+    padding: 10px 16px;
+    border: 1px solid #e5a33a;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(38, 28, 10, 0.98), rgba(20, 15, 6, 0.98));
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  }
+
+  .bandeau-absent-texte { color: #f4d08a; font-size: 0.9rem; }
+  .bandeau-absent-texte b { color: #ffd45a; }
+  .bandeau-absent-detail { color: rgba(255, 255, 255, 0.5); font-size: 0.74rem; }
+
+  .bandeau-absent-agir {
+    flex: none;
+    padding: 6px 14px;
+    font-weight: 800;
+    color: #0d0f13;
+    background: #ffd45a;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+  }
+
+  .bandeau-absent-agir:hover { filter: brightness(1.1); }
+}
+
+/* --- Mode Bac a sable ------------------------------------------------------
+   Le bandeau reste visible en permanence : on ne doit jamais se demander,
+   apres coup, si une partie etait truquee. Il est volontairement discret mais
+   jamais masque. */
+@layer composants {
+  .bandeau-triche {
+    position: fixed;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(24, 18, 4, 0.92);
+    border: 1px solid rgba(255, 196, 60, 0.55);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    font-size: 12px;
+  }
+
+  .bandeau-triche-marque {
+    color: #ffc43c;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .bandeau-triche-aide { color: rgba(255, 255, 255, 0.6); }
+
+  /* Le menu contextuel, pose au curseur. */
+  .menu-triche {
+    position: fixed;
+    z-index: 1000;
+    min-width: 224px;
+    padding: 6px;
+    border-radius: 10px;
+    background: rgba(16, 18, 26, 0.98);
+    border: 1px solid rgba(255, 196, 60, 0.45);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+    color: #e8e8ea;
+  }
+
+  .menu-triche-titre {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 4px 8px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+  }
+
+  .menu-triche-marque {
+    color: #ffc43c;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .menu-triche-liste { list-style: none; margin: 6px 0 0; padding: 0 }
+
+  .menu-triche-liste button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .menu-triche-liste button:hover { background: rgba(255, 196, 60, 0.16) }
+  .menu-triche-liste button.est-danger:hover { background: rgba(220, 60, 60, 0.22) }
+  .menu-triche-suite { opacity: 0.45 }
+
+  .menu-triche-saisie { padding: 10px 8px }
+  .menu-triche-saisie label { display: flex; flex-direction: column; gap: 6px; font-size: 13px }
+  .menu-triche-saisie input {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    color: inherit;
+    font: inherit;
+  }
+  .menu-triche-boutons { display: flex; gap: 8px; margin-top: 10px }
+  .menu-triche-boutons button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .menu-triche-boutons button:last-child {
+    border-color: rgba(255, 196, 60, 0.5);
+    background: rgba(255, 196, 60, 0.16);
+  }
+
+  /* La consultation d'une pile. */
+  .pile-triche-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.72);
+  }
+
+  .pile-triche {
+    width: min(1100px, 92vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    background: #12141c;
+    border: 1px solid rgba(255, 196, 60, 0.35);
+  }
+
+  .pile-triche-entete {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .pile-triche-entete h2 { margin: 0; font-size: 16px }
+  .pile-triche-entete small { opacity: 0.55; font-weight: 400 }
+  .pile-triche-aide { flex: 1; font-size: 12px; opacity: 0.6 }
+  .pile-triche-entete button {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .pile-triche-cartes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .pile-triche-carte { display: flex; flex-direction: column; gap: 6px; width: 132px }
+  .pile-triche-carte img { width: 100%; border-radius: 6px; display: block }
+  .pile-triche-actions { display: flex; gap: 4px }
+  .pile-triche-actions button {
+    flex: 1;
+    padding: 4px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 196, 60, 0.4);
+    background: rgba(255, 196, 60, 0.12);
+    color: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .pile-triche-actions button:hover { background: rgba(255, 196, 60, 0.26) }
+  .pile-triche-vide { opacity: 0.5; padding: 24px }
 }
