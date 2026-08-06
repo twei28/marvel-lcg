@@ -154,12 +154,9 @@ with tempfile.TemporaryDirectory() as tmp:
 # jour-la) tandis que le 2019-10-02 rend 200 avec un deck. Traiter ce 500
 # comme une panne remplirait jours_en_erreur de centaines de jours creux, tous
 # reessayes a chaque passage, pour toujours.
-import urllib.error
-faux_500 = urllib.error.HTTPError("u", 500, "Internal Server Error", {}, None)
-faux_503 = urllib.error.HTTPError("u", 503, "Service Unavailable", {}, None)
-verifier("500 = jour sans deck", idx.est_jour_creux(faux_500), True)
-verifier("503 = vraie panne", idx.est_jour_creux(faux_503), False)
-verifier("erreur reseau = vraie panne", idx.est_jour_creux(OSError("timeout")), False)
+verifier("500 = jour sans deck", idx.est_jour_creux(500), True)
+verifier("503 = vraie panne", idx.est_jour_creux(503), False)
+verifier("200 n'est pas un jour creux", idx.est_jour_creux(200), False)
 
 # Un jour creux compte comme creux, pas comme erreur, et n'interrompt rien.
 def recuperer_avec_creux(date):

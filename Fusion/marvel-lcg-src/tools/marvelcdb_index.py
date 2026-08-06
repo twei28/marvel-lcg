@@ -20,8 +20,7 @@ import os
 import shutil
 import sys
 import time
-import urllib.error
-import urllib.request
+import http.client
 
 DEBUT_HISTORIQUE = "2019-10-01"   # premiere publication sur marvelcdb
 
@@ -127,7 +126,8 @@ def regrouper(bruts, ids_connus, table):
     return paquets, ecartes
 
 
-URL_JOUR = "https://marvelcdb.com/api/public/decklists/by_date/{}.json"
+HOTE = "marvelcdb.com"
+CHEMIN_JOUR = "/api/public/decklists/by_date/{}.json"
 AGENT = "marvel-lcg-local/1.0 (index de decks hors ligne, usage personnel)"
 DELAI = 0.2          # seconde entre deux requetes : on ne martele pas le site
 
@@ -161,31 +161,63 @@ def jours_a_traiter(derniere_date, aujourdhui, jusqu_a=None):
     return jours
 
 
-def est_jour_creux(exc):
+def est_jour_creux(statut):
     """Un jour SANS AUCUN deck publie rend HTTP 500, pas une liste vide.
 
     Mesure le 6/8/2026 : by_date/2019-10-01 -> 500 avec un corps
     {"error":{"code":500,...}}, by_date/2019-10-02 -> 200 avec un deck. Sur
-    les debuts du site, la moitie des jours sont dans ce cas. Les compter
-    comme des pannes remplirait `jours_en_erreur` de centaines de dates
-    reessayees a chaque passage, sans jamais rien rapporter.
+    les debuts du site, un jour sur trois est dans ce cas. Les compter comme
+    des pannes remplirait `jours_en_erreur` de centaines de dates reessayees
+    a chaque passage, sans jamais rien rapporter.
 
     On ne retient QUE le 500. Une vraie indisponibilite (502, 503, coupure
     reseau) reste une erreur, donc un jour a reprendre.
     """
-    return isinstance(exc, urllib.error.HTTPError) and exc.code == 500
+    return statut == 500
+
+
+# UNE seule connexion, gardee ouverte pour tout le passage.
+#
+# Mesure depuis WSL le 6/8/2026, sur 5 jours : 21,2 s en rouvrant une
+# connexion a chaque requete (urllib ne sait pas faire autrement), contre
+# 1,6 s en reutilisant la meme. La poignee de main TLS coute treize fois le
+# prix de la requete. Sur 2500 jours, c'est deux heures contre vingt minutes.
+_connexion = None
+
+
+def _fermer_connexion():
+    global _connexion
+    if _connexion is not None:
+        try:
+            _connexion.close()
+        except Exception:
+            pass
+        _connexion = None
 
 
 def recuperer_jour(date):
     """Une journee de by_date, ou [] si aucun deck n'a ete publie ce jour-la."""
-    requete = urllib.request.Request(URL_JOUR.format(date), headers={"User-Agent": AGENT})
-    try:
-        with urllib.request.urlopen(requete, timeout=30) as reponse:
-            return json.loads(reponse.read().decode("utf-8"))
-    except Exception as exc:
-        if est_jour_creux(exc):
-            return []
-        raise
+    global _connexion
+    for essai in (1, 2):
+        try:
+            if _connexion is None:
+                _connexion = http.client.HTTPSConnection(HOTE, timeout=30)
+            _connexion.request("GET", CHEMIN_JOUR.format(date),
+                               headers={"User-Agent": AGENT})
+            reponse = _connexion.getresponse()
+            corps = reponse.read()      # a lire TOUJOURS, sinon la connexion
+                                        # reste inutilisable pour la suivante
+            if est_jour_creux(reponse.status):
+                return []
+            if reponse.status != 200:
+                raise OSError(f"HTTP {reponse.status} {reponse.reason}")
+            return json.loads(corps.decode("utf-8"))
+        except (http.client.HTTPException, OSError) as exc:
+            # Le serveur ferme les connexions inactives : tomber dessus est
+            # normal, pas une panne. On en rouvre une et on rejoue UNE fois.
+            _fermer_connexion()
+            if essai == 2:
+                raise exc
 
 
 def aspirer(dates, recuperer, ids_connus, table):
