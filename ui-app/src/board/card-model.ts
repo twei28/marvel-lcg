@@ -128,7 +128,13 @@ function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
   const courants = nombre(card.info.health)
   if (courants === undefined) return undefined
 
-  const max = catalogue.pvMax(card.card_id)
+  // Le maximum COURANT du moteur d'abord : il suit les ameliorations qui
+  // relevent le plafond (« +2 points de vie »). Le catalogue ne connait que le
+  // PV imprime sur la carte, qui ne bouge jamais : un allie ainsi renforce
+  // s'affichait « 5/3 ». Zero n'est pas un maximum : le moteur l'envoie pour les
+  // PV infinis, traites juste au-dessus.
+  const duMoteur = nombre(card.info.max_health)
+  const max = duMoteur !== undefined && duMoteur > 0 ? duMoteur : catalogue.pvMax(card.card_id)
   // Pas de maximum fiable (PV variables selon le nombre de joueurs, ou carte
   // absente du catalogue) : on montre le courant seul plutot qu'un faux rapport.
   return max === undefined ? `${courants}` : `${courants}/${max}`
