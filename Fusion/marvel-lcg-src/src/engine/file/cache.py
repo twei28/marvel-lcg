@@ -73,6 +73,21 @@ class Cache:
             if image_data:
                 return image_data
 
+        # Repli "fr_" vers l'anglais. La liste scans-fr-liste.ts est versionnee
+        # dans git, mais les 456 Mo d'images de assets/pics-fr/ ne le sont pas :
+        # toute copie du depot, toute reinstallation du moteur, se retrouve avec
+        # une liste pleine et zero image. Sans ce repli, chaque carte "fr_xxxxx"
+        # tomberait en silence sur le telechargement en ligne ou sur une image
+        # vide generee, alors que le scan anglais est deja present sur le
+        # disque. On retente donc avec le nom prive du prefixe avant toute
+        # autre strategie de secours, ce qui rend le systeme sur meme sur une
+        # installation ou le pack FR n'a jamais ete importe.
+        if file_name.startswith("fr_"):
+            image_data = Cache.LoadImage(file_name[len("fr_"):])
+            if image_data:
+                Cache.SetCache(file_name, image_data)
+                return image_data
+
         def check_is_card_id(s: str):
             import re
             # Pattern to match: four digits followed by a lowercase letter

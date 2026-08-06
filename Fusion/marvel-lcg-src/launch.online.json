@@ -1,0 +1,39 @@
+{
+  "server_addresses": [
+    "127.0.0.1:2347"
+  ],
+  "password": "",
+  "translate_file": "./data/translate_fr.json",
+  "game_statistics_file": "../statistics.json",
+  "statistics": true,
+  "show_image_text": true,
+  "check_for_new_version_on_startup": false,
+  "image_servers": [
+    "https://cerebrodatastorage.blob.core.windows.net/cerebro-cards/official/{card_id:U}.jpg",
+    "https://marvelcdb.com/bundles/cards/{card_id}.jpg"
+  ],
+  "image_folders": [
+    "./assets/pics/",
+    "./assets/pics-fr/",
+    "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeux original/assets/pics/"
+  ],
+  "sound_folders": [
+    "./assets/sounds/"
+  ],
+  "replay_folders": [
+    "../replays/"
+  ],
+  "starter_deck_folder": "./deck/starter/",
+  "cards_json_custom_file": "./data/cards_custom.json",
+  "deck_folders": [
+    "./deck/custom/"
+  ],
+  "cache_max_age": 86400,
+  "seat_passwords": [
+    "gant-de-thanos-1",
+    "cape-de-strange-2",
+    "bouclier-de-cap-3",
+    "marteau-de-thor-4"
+  ],
+  "games_history_file": "../games_history.json"
+}

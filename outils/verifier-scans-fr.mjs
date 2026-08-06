@@ -76,8 +76,15 @@ verifier(
 const manquants = [...picIds].filter(
   (code) => /^\d{5}[a-z]?$/.test(code) && !listes.has(code)
 )
-const officielles = manquants.filter((code) => Number(code.slice(0, 2)) < 61)
-const fan = manquants.filter((code) => Number(code.slice(0, 2)) >= 61)
+// Les codes fan-made de ce projet vont de 61xxx a 75xxx. Au-dela (le set
+// Ronan officiel, 90001-90005, notamment) le prefixe redevient officiel :
+// une comparaison ">= 61" seule les comptait a tort comme fan-made.
+const estFanMade = (code) => {
+  const prefixe = Number(code.slice(0, 2))
+  return prefixe >= 61 && prefixe <= 75
+}
+const officielles = manquants.filter((code) => !estFanMade(code))
+const fan = manquants.filter((code) => estFanMade(code))
 console.log(`INFO  couverture : ${listes.size} cartes en francais`)
 console.log(`INFO  sans scan FR : ${officielles.length} officielles, ${fan.length} fan-made`)
 

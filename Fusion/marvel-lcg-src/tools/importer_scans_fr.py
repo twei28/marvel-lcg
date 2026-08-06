@@ -46,6 +46,7 @@ SORTIE_TS = RACINE / "ui-app" / "src" / "board"
 RAPPORT = RACINE / "RAPPORT-SCANS-FR.md"
 
 URL_CDB = "https://fr.marvelcdb.com/api/public/cards/?encounter=1"
+URL_CDB_EN = "https://marvelcdb.com/api/public/cards/?encounter=1"
 URL_OCTGN = (
     "https://codeload.github.com/twistedsistem/OCTGN-Marvel-Champions/"
     "tar.gz/refs/heads/master"
@@ -70,6 +71,25 @@ def charger_marvelcdb():
         if carte.get("text"):
             textes[carte["code"]] = BALISES_GARDEES.sub("", carte["text"])
     return par_guid, textes
+
+
+def charger_marvelcdb_anglais():
+    """Code vers texte anglais, sur le modele de charger_marvelcdb().
+
+    fr.marvelcdb.com renvoie le texte anglais tel quel pour les cartes qu'il
+    n'a pas traduites : mesure, 60 des 73 entrees candidates au dictionnaire
+    sont identiques caractere pour caractere a leur texte anglais, dont toute
+    la gamme Daredevil 60xxx. Sans ce catalogue de comparaison, ces entrees
+    s'affichaient en jeu sous un bloc titre « francais » alors qu'elles ne le
+    sont pas : un mensonge a l'ecran.
+    """
+    with urllib.request.urlopen(URL_CDB_EN, timeout=60) as reponse:
+        cartes = json.load(reponse)
+    return {
+        carte["code"]: BALISES_GARDEES.sub("", carte["text"])
+        for carte in cartes
+        if carte.get("text")
+    }
 
 
 def charger_octgn():
@@ -162,9 +182,20 @@ def desaccords(par_guid_cdb, par_guid_octgn, guids_du_pack):
     return trouves
 
 
+def est_fan_made(code):
+    """Les codes fan-made de ce projet vont de 61xxx a 75xxx.
+
+    Au-dela, le prefixe redevient officiel : le set Ronan (90001-90005),
+    notamment, a des scans francais et n'a rien de fan-made. Une comparaison
+    ">= 61" seule les comptait a tort.
+    """
+    prefixe = int(code[:2])
+    return 61 <= prefixe <= 75
+
+
 def ecrire_rapport(mesures, inconnus, ecarts, manquants, audite):
-    officielles = [c for c in manquants if int(c[:2]) < 61]
-    fan = [c for c in manquants if int(c[:2]) >= 61]
+    officielles = [c for c in manquants if not est_fan_made(c)]
+    fan = [c for c in manquants if est_fan_made(c)]
     lignes = ["# Rapport d'import des scans FR", ""]
     if not audite:
         lignes += [
@@ -204,7 +235,7 @@ def extraire(attributions):
     return ecrites
 
 
-def ecrire_modules(attributions, textes, ids_jeu):
+def ecrire_modules(attributions, textes, textes_en, ids_jeu):
     """Les deux modules TypeScript consommes par le plateau.
 
     Le dictionnaire est restreint aux cartes SANS scan francais ET presentes
@@ -213,6 +244,13 @@ def ecrire_modules(attributions, textes, ids_jeu):
     non implementees ici) ; sans le filtre sur ids_jeu ces cartes inutiles
     s'ajoutaient au dictionnaire. Complet il pesait 914 Ko, restreint il en
     pese 13.
+
+    Deuxieme filtre : une entree est ecartee quand son texte francais est
+    identique, caractere pour caractere, au texte anglais (textes_en). C'est
+    le cas quand fr.marvelcdb.com n'a pas traduit la carte et renvoie
+    l'anglais tel quel ; l'afficher sous un bloc titre « francais » serait
+    un mensonge a l'ecran. Mesure : 60 des 73 entrees candidates tombent
+    dans ce cas.
     """
     codes = sorted(attributions)
     liste = SORTIE_TS / "scans-fr-liste.ts"
@@ -227,8 +265,13 @@ def ecrire_modules(attributions, textes, ids_jeu):
         encoding="utf-8",
     )
 
-    sans_scan = {code: texte for code, texte in sorted(textes.items())
-                 if code not in attributions and code in ids_jeu}
+    sans_scan = {
+        code: texte
+        for code, texte in sorted(textes.items())
+        if code not in attributions
+        and code in ids_jeu
+        and texte != textes_en.get(code)
+    }
     corps = "".join(
         f"  '{code}': {json.dumps(texte, ensure_ascii=False)},\n"
         for code, texte in sans_scan.items()
@@ -296,7 +339,8 @@ def main():
         return 0
 
     ecrites = extraire(attributions)
-    nb_codes, nb_textes = ecrire_modules(attributions, textes, ids_jeu)
+    textes_en = charger_marvelcdb_anglais()
+    nb_codes, nb_textes = ecrire_modules(attributions, textes, textes_en, ids_jeu)
     print(f"{'Images ecrites':34} {ecrites}")
     print(f"{'Codes dans scans-fr-liste.ts':34} {nb_codes}")
     print(f"{'Entrees dans textes-fr.ts':34} {nb_textes}")

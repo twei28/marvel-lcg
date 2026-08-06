@@ -1357,6 +1357,10 @@ function PagePartie({
   const [vueForcee, setVueForcee] = useState<number | null>(null)
   const joueurActif = vueForcee ?? etat.joueurDemande ?? playerId
   const effets = useEffetsCartes(etat.monde)
+  // Declare AVANT le useMemo de `plateau` : il en est une dependance, pour
+  // que decocher l'option en pleine partie rafraichisse l'affichage sans
+  // attendre le prochain evenement du moteur.
+  const [scansFr, setScansFr] = useState(scansFrActifs)
 
   // La table est decoupee AVANT l'interaction : celle-ci a besoin de savoir
   // quelles cartes sont reellement dessinees pour ne rendre cliquable que ce qui
@@ -1366,7 +1370,7 @@ function PagePartie({
       etat.monde
         ? construirePlateau(etat.monde, { playerId: joueurActif, catalogue })
         : undefined,
-    [etat.monde, joueurActif, catalogue]
+    [etat.monde, joueurActif, catalogue, scansFr]
   )
   const interaction = useInteraction(
     etat.monde,
@@ -1535,7 +1539,6 @@ function PagePartie({
     })
   }, [])
 
-  const [scansFr, setScansFr] = useState(scansFrActifs)
   const basculerScansFr = useCallback(() => {
     setScansFr((v) => {
       const nouveau = !v
