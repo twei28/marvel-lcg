@@ -110,8 +110,12 @@ for (const chemin of CARTES) {
     }
   }
 }
+// Les cartes de defi portent un identifiant qui n'a pas le format d'un code de
+// carte (« 2401_the_ground_is_lava ») : le plateau ne les affiche jamais, les
+// compter comme muettes ferait crier l'outil sur un probleme qui n'existe pas.
 const muettes = [...avecTexte].filter(
-  (code) => !listes.has(code) && !textes.has(code) && !fanmade.has(code)
+  (code) =>
+    /^\d{5}[a-z]?$/.test(code) && !listes.has(code) && !textes.has(code) && !fanmade.has(code)
 )
 console.log(`INFO  scans francais : ${listes.size} cartes`)
 console.log(`INFO  textes francais : ${textes.size} officiels + ${fanmade.size} ecrits a la main`)
