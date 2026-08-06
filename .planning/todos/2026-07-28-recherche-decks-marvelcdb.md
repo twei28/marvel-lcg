@@ -1,9 +1,16 @@
 # TODO / SPEC — Rechercher et jouer des decks MarvelCDB
 
-**Statut :** conçu, non planifié, non implémenté
+**Statut :** **IMPLÉMENTÉ le 2026-08-06.** Index de 52 249 decks sur 67 héros en place dans les deux installations. Reste UNE chose : jouer une vraie partie avec un deck MarvelCDB, du lancement jusqu'à un tour complet (tâche 6 étape 6 du plan). Le panneau a été piloté dans un navigateur, mais aucune partie n'a été menée jusqu'au plateau avec un de ces decks.
+**Plan d'implémentation :** `docs/superpowers/plans/2026-08-06-recherche-decks-marvelcdb.md`, dont la section « Ce que l'exécution a appris » liste les quatre pièges trouvés en route.
 **Date de conception :** 2026-07-28
 **Origine :** demande utilisateur (« quand on clique sur un héros, pouvoir chercher des decks de ce perso sur MarvelCDB »)
 **Rapport à la roadmap :** hors des 7 phases de la refonte UI. À insérer quand la phase 4 (préparation de partie) sera abordée, ou avant si l'envie prime.
+
+**Écarts à la spec, constatés à l'implémentation :**
+- L'import par lien existait déjà (livré avec la refonte de l'écran de préparation) : `lien.js` n'a pas été écrit, sa règle de conversion a été extraite dans `conversion.js` et l'import existant rebranché dessus.
+- La conversion ne passe pas par `/get_hero_json` : l'écran tient déjà le deck de départ en mémoire (`hero.deck`).
+- La vue n'est pas l'ancien `prepare.html` du §5 mais une fenêtre modale dans l'application de modules ES qui l'a remplacé.
+- Le §13 est en partie périmé : le choix du deck par siège existe depuis le salon multijoueur. Le panneau reste réservé à l'hôte ; le porter dans `salon.html` est un chantier à part.
 
 ---
 
