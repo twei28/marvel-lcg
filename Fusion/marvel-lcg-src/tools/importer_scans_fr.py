@@ -188,6 +188,68 @@ def ecrire_rapport(mesures, inconnus, ecarts, manquants, audite):
     RAPPORT.write_text("\n".join(lignes) + "\n", encoding="utf-8")
 
 
+def extraire(attributions):
+    """Ecrit une image par code couvert. Ne relit pas une archive deux fois."""
+    SORTIE_IMAGES.mkdir(parents=True, exist_ok=True)
+    par_archive = collections.defaultdict(list)
+    for code, (nom_archive, entree, _) in attributions.items():
+        par_archive[nom_archive].append((code, entree))
+    ecrites = 0
+    for nom_archive in sorted(par_archive):
+        with zipfile.ZipFile(PACK / nom_archive) as archive:
+            for code, entree in par_archive[nom_archive]:
+                cible = SORTIE_IMAGES / f"{PREFIXE}{code}.jpg"
+                cible.write_bytes(archive.read(entree))
+                ecrites += 1
+    return ecrites
+
+
+def ecrire_modules(attributions, textes, ids_jeu):
+    """Les deux modules TypeScript consommes par le plateau.
+
+    Le dictionnaire est restreint aux cartes SANS scan francais ET presentes
+    dans le catalogue du jeu (ids_jeu) : c'est le seul endroit ou il sert.
+    marvelcdb renvoie du texte pour des cartes hors catalogue (autres boites,
+    non implementees ici) ; sans le filtre sur ids_jeu ces cartes inutiles
+    s'ajoutaient au dictionnaire. Complet il pesait 914 Ko, restreint il en
+    pese 13.
+    """
+    codes = sorted(attributions)
+    liste = SORTIE_TS / "scans-fr-liste.ts"
+    liste.write_text(
+        "// Genere par tools/importer_scans_fr.py — NE PAS EDITER A LA MAIN.\n"
+        "//\n"
+        "// Codes de carte qui disposent d'un scan francais dans assets/pics-fr.\n"
+        "// Liste vide = pack FR non importe : le plateau reste integralement en anglais.\n"
+        "export const CODES_SCAN_FR: ReadonlySet<string> = new Set([\n"
+        + "".join(f"  '{code}',\n" for code in codes)
+        + "])\n",
+        encoding="utf-8",
+    )
+
+    sans_scan = {code: texte for code, texte in sorted(textes.items())
+                 if code not in attributions and code in ids_jeu}
+    corps = "".join(
+        f"  '{code}': {json.dumps(texte, ensure_ascii=False)},\n"
+        for code, texte in sans_scan.items()
+    )
+    (SORTIE_TS / "textes-fr.ts").write_text(
+        "// Genere par tools/importer_scans_fr.py — NE PAS EDITER A LA MAIN.\n"
+        "//\n"
+        "// Texte francais des cartes qui n'ont PAS de scan francais : c'est le seul\n"
+        "// cas ou le plateau l'affiche, sous l'apercu. Les cartes fan-made n'y sont\n"
+        "// pas, marvelcdb ne les connait pas.\n"
+        "//\n"
+        "// Le type dit « string | undefined » parce que la plupart des codes sont\n"
+        "// ABSENTS : sans cela le plateau croirait tenir un texte pour chaque carte.\n"
+        "export const TEXTES_FR: Readonly<Record<string, string | undefined>> = {\n"
+        + corps
+        + "}\n",
+        encoding="utf-8",
+    )
+    return len(codes), len(sans_scan)
+
+
 def main():
     analyse = argparse.ArgumentParser(description=__doc__)
     analyse.add_argument("--rapport-seul", action="store_true",
@@ -229,8 +291,15 @@ def main():
         print(f"{nom:34} {valeur}")
     print(f"rapport ecrit dans {RAPPORT}")
 
-    # L'extraction est branchee a la tache suivante. Tant qu'elle ne l'est pas,
-    # le script s'arrete ici quelle que soit l'option.
+    if options.rapport_seul:
+        print("mode rapport : aucune image ni module ecrit")
+        return 0
+
+    ecrites = extraire(attributions)
+    nb_codes, nb_textes = ecrire_modules(attributions, textes, ids_jeu)
+    print(f"{'Images ecrites':34} {ecrites}")
+    print(f"{'Codes dans scans-fr-liste.ts':34} {nb_codes}")
+    print(f"{'Entrees dans textes-fr.ts':34} {nb_textes}")
     return 0
 
 
