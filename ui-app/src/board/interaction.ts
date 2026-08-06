@@ -12,10 +12,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  coutParType,
   foisDisponible,
   paiementCourant,
   paiementFacultatif,
   nombreDeRessources,
+  typesManquants,
   valeurMoyen,
   valeurPayee,
   reponsePrete,
@@ -304,23 +306,46 @@ export function useInteraction(
     requis !== undefined &&
     !paiementFacultatif(paiement) &&
     paye < requis
+  // Cout ecrit en TYPES (« BY » pour Energy Shield, sur Crossbones) : le nombre
+  // de ressources ne veut rien dire, il faut une ressource de chaque type
+  // demande. Tant qu'il en manque, on reste au paiement.
+  const typesRequis =
+    option !== undefined &&
+    paiement !== undefined &&
+    !paiementFacultatif(paiement) &&
+    Object.keys(typesManquants(paiement, ressources)).length > 0
   const coutInconnuRequis =
     option !== undefined &&
     paiement !== undefined &&
     requis === undefined &&
+    coutParType(paiement.cost) === undefined &&
     paiement.payment.length > 0 &&
     ressources.length === 0
+  // Combien de designations la table peut encore offrir : une carte repetable
+  // en vaut plusieurs. Sans ce plafond reel, une action « jusqu'a 3 cibles » ne
+  // disposant que d'UNE carte legale resterait indefiniment a l'etape des
+  // cibles, a reclamer un choix impossible.
+  const capaciteCibles = [...occurrences.values()].reduce((somme, n) => somme + n, 0)
   const cibleSupplementairePossible =
-    aDesCibles && cibles.length >= cibleMinimum && cibles.length < cibleMaximum
+    aDesCibles &&
+    cibles.length >= cibleMinimum &&
+    cibles.length < cibleMaximum &&
+    cibles.length < capaciteCibles
+  // L'annonce suit ce que le joueur a ete invite a faire. Le paiement passait
+  // devant les cibles restantes : une action « jusqu'a 3 cibles » basculait sur
+  // « Paie 0/1 » des la premiere designee, et les deux autres paraissaient
+  // perdues. Les cibles encore prenables sont donc annoncees d'abord ; le
+  // paiement reste possible pendant ce temps (voir `peutDepenser`), si bien
+  // qu'aucun ordre n'est impose au joueur.
   const etape: EtapeInteraction = !option
     ? 'action'
     : cibleRequise || (ciblesOptionnelles && cibles.length === 0)
       ? 'target'
-    : coutRequis || coutInconnuRequis
-      ? 'payment'
-      : cibleSupplementairePossible && (!paiement || requis === undefined || requis === 0 || paye >= requis)
+      : cibleSupplementairePossible
         ? 'target'
-      : 'confirm'
+        : coutRequis || coutInconnuRequis || typesRequis
+          ? 'payment'
+          : 'confirm'
 
   const choisirOption = useCallback((choisie: Option, ciblesInitiales: number[] = []) => {
     const max = choisie.target_num_range[1]
@@ -492,19 +517,31 @@ export function useInteraction(
       return etats
     }
 
-    const [, max] = option.target_num_range
+    const [minCibles, max] = option.target_num_range
+    // Le ciblage est-il satisfait ? Sert au cas ou une meme carte est A LA FOIS
+    // la cible et le payeur : tant qu'il manque des cibles son clic vise, une
+    // fois le compte atteint il paie (voir le bloc des payeurs plus bas).
+    const ciblageSatisfait = cibles.length >= minCibles
     for (const [cible, maxParCible] of ciblesParOccurrence(option)) {
       // Une cible que la table ne dessine pas ne peut pas etre cliquee dessus :
       // elle passe par le selecteur (voir ciblesHorsTable).
       if (!idsAffiches.has(cible)) continue
       const fois = nombreDeFois(cibles, cible)
-      if (etape !== 'target' && fois === 0) continue
+      // Le droit de viser depend du MAXIMUM restant, jamais de l'etape en
+      // cours. Les deux etaient lies, et une action « jusqu'a 3 cibles » dont
+      // le cout devenait du apres la premiere designation rendait les deux
+      // suivantes non cliquables : le joueur voyait « 1/3 » sans plus pouvoir
+      // completer. Une cible deja prise reste toujours cliquable, pour la
+      // retirer.
+      const peutViser = cibles.length < max
+      if (!peutViser && fois === 0) continue
       etats.set(cible, {
         role: 'cible',
         choisie: fois > 0,
         fois: maxParCible > 1 ? fois : undefined,
         pulse: etape === 'target' && fois === 0,
-        agir: etape === 'target' ? () => basculerCible(cible, max, maxParCible) : undefined,
+        agir:
+          peutViser || fois > 0 ? () => basculerCible(cible, max, maxParCible) : undefined,
       })
     }
 
@@ -515,11 +552,32 @@ export function useInteraction(
       })
     }
 
-    // Les cartes qui peuvent payer. Une cible peut aussi etre une ressource :
-    // dans ce cas le role de cible passe devant, il vient plus tot.
+    // Les cartes qui peuvent payer.
+    //
+    // Une meme carte peut etre A LA FOIS la cible et le payeur : c'est le cas
+    // de toute AMELIORATION posee sur une identite qui genere elle-meme des
+    // ressources — Venom recoit le Sonic Rifle et le finance avec « Symbiotic
+    // Bond ». Le role de cible passait devant et confisquait le clic : une
+    // fois Venom designe, le cliquer ne faisait plus que le DE-cibler, et sa
+    // ressource restait inatteignable.
+    // Depuis, tant qu'il manque des cibles le clic vise ; des que le compte
+    // est atteint, il paie. La carte garde son apparence de cible choisie.
     if (paiement && paiement.payment.length > 0) {
       for (const [id, carte] of index) {
-        if (etats.has(id)) continue
+        const dejaPose = etats.get(id)
+        // Une carte deja marquee peut tres bien etre AUSSI un payeur. On ne la
+        // saute que si son premier role a encore besoin du clic, c'est-a-dire
+        // tant qu'il reste des cibles a designer. Deux familles la concernent :
+        //   - la CIBLE qui recoit l'amelioration (Venom et son Sonic Rifle) ;
+        //   - la carte SOURCE, qui porte l'action et la finance elle-meme.
+        // Une carte jouee depuis la main n'est jamais proposee comme payeuse
+        // d'elle-meme par le moteur : elle ressort donc plus bas sur
+        // `peutPayer`, sans traitement particulier ici.
+        const roleLibere =
+          dejaPose === undefined ||
+          dejaPose.role === 'source' ||
+          (dejaPose.role === 'cible' && ciblageSatisfait)
+        if (!roleLibere) continue
         if (!idsAffiches.has(id)) continue
         const fois = carte.resources.filter((effectId) => ressources.includes(effectId)).length
         const selectionnee = fois > 0
@@ -530,7 +588,16 @@ export function useInteraction(
         // (overpay). Sans ca, une carte a cout 0 surpayable (ex. l'allie Ant-Man)
         // n'offrait jamais de payer, puisque le cout requis etant 0 on sautait
         // directement a 'confirm'.
-        const peutDepenser = etape === 'payment' || etape === 'confirm'
+        // Symetrique du bloc des cibles : depenser depend du COUT, pas de
+        // l'etape. Puisque les cibles restantes sont desormais annoncees en
+        // premier, s'en tenir a l'etape aurait juste deplace le blocage sur le
+        // paiement. Aucun ordre n'est impose : viser puis payer, ou l'inverse.
+        const peutDepenser =
+          etape === 'payment' ||
+          etape === 'confirm' ||
+          coutRequis ||
+          coutInconnuRequis ||
+          typesRequis
         if (!peutDepenser && fois === 0) continue
         // Le pulse signale le paiement REQUIS. On l'allume aussi a la
         // confirmation, mais seulement pour les cartes qui recompensent le
@@ -539,11 +606,16 @@ export function useInteraction(
         // payer. Le limiter a ces cartes evite de harceler a chaque
         // confirmation ordinaire.
         etats.set(id, {
-          role: 'ressource',
-          choisie: selectionnee,
+          // Une carte qui est aussi la cible garde son role : le joueur doit
+          // continuer a voir OU part son amelioration.
+          role: dejaPose?.role ?? 'ressource',
+          choisie: (dejaPose?.choisie ?? false) || selectionnee,
           fois,
           pulse: (etape === 'payment' || surpaiementRecompense) && !selectionnee,
-          agir: peutDepenser || selectionnee ? () => basculerRessource(carte) : undefined,
+          agir:
+            peutDepenser || selectionnee
+              ? () => basculerRessource(carte)
+              : dejaPose?.agir,
         })
       }
     }
@@ -556,6 +628,8 @@ export function useInteraction(
     ressources,
     paiement,
     etape,
+    coutRequis,
+    coutInconnuRequis,
     surpaiementRecompense,
     index,
     idsAffiches,

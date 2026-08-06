@@ -182,6 +182,82 @@ export function nombreDeRessources(paiement: Paiement | undefined): number | und
   return Number.isInteger(n) && n >= 0 ? n : undefined
 }
 
+/** Nom lisible d'un type de ressource, pour dire au joueur ce qui manque. */
+const NOM_TYPE: Record<string, string> = {
+  R: 'physical',
+  B: 'energy',
+  Y: 'mental',
+  G: 'wild',
+}
+
+/**
+ * Cout exprime en TYPES de ressources, et non en nombre.
+ *
+ * « Energy Shield » (04073, sur Crossbones) coute [energy][mental] : le moteur
+ * l'ecrit « BY ». Deux ressources quelconques ne le paient pas, il en faut une
+ * de chaque. Un cout ordinaire est un nombre (« 2 ») et ne rend rien ici.
+ */
+export function coutParType(cost: string): Record<string, number> | undefined {
+  const lettres = cost.match(/[rbyg]/gi)
+  if (!lettres) return undefined
+  const exige: Record<string, number> = {}
+  for (const lettre of lettres) {
+    const type = lettre.toUpperCase()
+    exige[type] = (exige[type] ?? 0) + 1
+  }
+  return exige
+}
+
+/**
+ * Ce qui manque encore, type par type, pour honorer un cout par types.
+ *
+ * Les jokers [wild] bouchent n'importe quel trou : on les garde pour la fin,
+ * sans quoi un joker depense sur un type deja couvert laisserait croire a un
+ * manque ailleurs.
+ */
+export function typesManquants(
+  paiement: Paiement | undefined,
+  ressources: number[]
+): Record<string, number> {
+  const exige = paiement && coutParType(paiement.cost)
+  if (!paiement || !exige) return {}
+
+  const texteParEffet = new Map<number, string>()
+  for (const moyen of paiement.payment) {
+    if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+  }
+
+  const fourni: Record<string, number> = {}
+  for (const id of ressources) {
+    for (const lettre of (texteParEffet.get(id) ?? '').match(/[rbyg]/gi) ?? []) {
+      const type = lettre.toUpperCase()
+      fourni[type] = (fourni[type] ?? 0) + 1
+    }
+  }
+
+  const manquants: Record<string, number> = {}
+  let jokers = fourni.G ?? 0
+  for (const [type, nombre] of Object.entries(exige)) {
+    // Un [wild] EXIGE se paie avec n'importe quoi : il est traite en dernier,
+    // avec ce qui reste.
+    if (type === 'G') continue
+    const manque = Math.max(0, nombre - (fourni[type] ?? 0))
+    const comble = Math.min(manque, jokers)
+    jokers -= comble
+    if (manque - comble > 0) manquants[type] = manque - comble
+  }
+
+  const jokersExiges = exige.G ?? 0
+  if (jokersExiges > 0) {
+    const surplus =
+      Object.entries(fourni)
+        .filter(([type]) => type !== 'G')
+        .reduce((total, [type, n]) => total + Math.max(0, n - (exige[type] ?? 0)), 0) + jokers
+    if (surplus < jokersExiges) manquants.G = jokersExiges - surplus
+  }
+  return manquants
+}
+
 /** « UpTo » : on peut payer moins que le cout imprime. */
 export function paiementFacultatif(paiement: Paiement | undefined): boolean {
   return paiement?.rule.includes('UpTo') === true
@@ -246,6 +322,19 @@ export function reponsePrete(
     return {
       prete: false,
       raison: `Pay ${requis - paye} more resource(s)`,
+    }
+  }
+
+  // Cout exprime en types (« BY ») : le compte de ressources ne dit rien, seuls
+  // les types comblent. Sans ce controle, l'action se disait prete des la
+  // premiere ressource et le moteur la refusait sans explication.
+  if (!paiementFacultatif(paiement)) {
+    const manquants = Object.entries(typesManquants(paiement, ressources))
+    if (manquants.length > 0) {
+      const detail = manquants
+        .map(([type, nombre]) => `${nombre} ${NOM_TYPE[type] ?? type}`)
+        .join(' and ')
+      return { prete: false, raison: `Pay ${detail} resource(s)` }
     }
   }
 
