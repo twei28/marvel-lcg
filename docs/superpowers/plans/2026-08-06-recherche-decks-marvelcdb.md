@@ -1446,6 +1446,21 @@ git commit -m "docs(marvelcdb): recherche de decks livree, todo mis a jour"
 3. **La vue n'est plus l'ancien `prepare.html`** décrit au §5 de la spec : cet écran est aujourd'hui une application de modules ES (`js/prepare/app.js`). Le panneau s'y insère comme une fenêtre modale, sur les styles `.deck-modal` déjà présents.
 4. **Le §13 « hors périmètre » est en partie périmé** : le choix du deck par chaque joueur depuis son siège existe depuis le salon multijoueur (3/8/2026). Le panneau reste néanmoins réservé à l'hôte dans ce plan : le brancher dans `salon.html` est un chantier distinct, à décider après usage.
 
+## Ce que l'exécution a appris, le 6/8/2026
+
+Quatre choses que ni la spec ni les tests n'avaient vues, toutes trouvées en lançant le vrai passage. Elles sont corrigées et commitées ; elles sont notées ici pour que le plan ne mente pas sur ce qu'il a coûté.
+
+1. **Le premier passage complet demande `--depuis 2019-10-01`.** L'essai à trois jours de la tâche 2 écrit un `_meta.json`, et le passage suivant se croit à jour. La tâche 6 étape 3, telle qu'écrite, n'aspirait que deux jours.
+2. **`total_decks` dérivait.** Il s'additionnait d'un passage à l'autre, alors que les passages se recouvrent. Il se compte désormais sur les fichiers (`compter_index`).
+3. **Un jour sans aucun deck publié rend HTTP 500, pas une liste vide.** Mesuré : `by_date/2019-10-01` → 500, `by_date/2019-10-02` → 200 avec un deck. Un jour sur trois est dans ce cas sur les débuts du site. Les traiter en pannes remplissait `jours_en_erreur` de dates réessayées à chaque passage, pour toujours. Seul le 500 est lu ainsi ; 502, 503 et coupure réseau restent des erreurs, et le nombre de jours creux s'affiche en garde-fou.
+4. **La poignée de main TLS coûte treize fois le prix de la requête, depuis WSL.** Mesuré sur 5 jours : 21,2 s en rouvrant une connexion à chaque fois (ce que fait `urllib`), contre 1,6 s en réutilisant la même. Le passage sur `http.client` avec une connexion de module ramène l'historique complet de deux heures à une vingtaine de minutes.
+
+Et un défaut de conception du plan lui-même : **l'index n'était écrit qu'à la toute fin.** La spec promettait qu'une interruption reprenne au jour suivant le dernier écrit ; c'était faux, et une coupure à la 33e minute a bien tout perdu. L'écriture se fait maintenant par tranches de 100 jours, avec le marqueur de reprise posé après chacune. La leçon générale : un traitement long doit écrire au fur et à mesure ET montrer où il en est, sinon on ne peut ni l'interrompre ni le diagnostiquer.
+
+## Ce qui était déjà rouge avant ce chantier
+
+`npm run captures` (19 écrans) et le test « depuis l'écran » de `npm run lancement` échouent, et ce n'est pas de ce plan que ça vient : l'étape 1 de l'assistant fusionne désormais mode et héros, si bien que le bouton « Continuer » reste inactif tant qu'aucun héros n'est choisi. Les références et le parcours du test datent d'avant cette refonte. La capture `preparation-nouvelle` ne photographie que l'étape 1, où le bouton « Decks MarvelCDB » n'existe pas, et elle attend une page 45 px plus haute que celle servie. Le test « sans l'écran », qui vérifie le contrat `/new`, est vert.
+
 ## Question ouverte, à trancher avec l'utilisateur
 
 Les fichiers créés côté jeu (`tools/marvelcdb_index.py`, `public/js/marvelcdb/*`) vivent **hors du dépôt git**, comme tout le moteur. Leur seule sauvegarde est la copie miroir ②. Trois options : les laisser hors versionnement (pratique actuelle), forcer leur ajout depuis le miroir (`git add -f Fusion/marvel-lcg-src/public/js/marvelcdb/`), ou n'y toucher qu'au moment du prochain re-zip. Le plan suit la pratique actuelle tant que rien n'est décidé.
