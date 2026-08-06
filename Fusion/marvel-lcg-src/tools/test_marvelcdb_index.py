@@ -114,7 +114,7 @@ def faux_recuperer(date):
     return [DECK_NOVA] if date == "2026-08-01" else [DECK_WASP]
 
 
-paquets3, en_erreur, ecartes3 = idx.aspirer(
+paquets3, en_erreur, ecartes3, _vides = idx.aspirer(
     ["2026-08-01", "2026-08-02", "2026-08-03"], faux_recuperer, IDS_CONNUS, TABLE)
 verifier("un jour en erreur n'interrompt rien", sorted(paquets3), ["13001a", "28001a"])
 verifier("le jour en erreur est journalise", en_erreur, ["2026-08-02"])
@@ -148,6 +148,30 @@ with tempfile.TemporaryDirectory() as tmp:
                    encoding="utf-8"))
     verifier("_meta.json n'est pas compte comme un heros",
              idx.compter_index(tmp), 3)
+
+# --- Jour creux : marvelcdb repond 500, pas une liste vide ------------------
+# Mesure le 6/8/2026 : by_date/2019-10-01 rend HTTP 500 (aucun deck publie ce
+# jour-la) tandis que le 2019-10-02 rend 200 avec un deck. Traiter ce 500
+# comme une panne remplirait jours_en_erreur de centaines de jours creux, tous
+# reessayes a chaque passage, pour toujours.
+import urllib.error
+faux_500 = urllib.error.HTTPError("u", 500, "Internal Server Error", {}, None)
+faux_503 = urllib.error.HTTPError("u", 503, "Service Unavailable", {}, None)
+verifier("500 = jour sans deck", idx.est_jour_creux(faux_500), True)
+verifier("503 = vraie panne", idx.est_jour_creux(faux_503), False)
+verifier("erreur reseau = vraie panne", idx.est_jour_creux(OSError("timeout")), False)
+
+# Un jour creux compte comme creux, pas comme erreur, et n'interrompt rien.
+def recuperer_avec_creux(date):
+    if date == "2026-08-02":
+        return []
+    return [DECK_NOVA] if date == "2026-08-01" else [DECK_WASP]
+
+
+p4, err4, ec4, vides4 = idx.aspirer(
+    ["2026-08-01", "2026-08-02", "2026-08-03"], recuperer_avec_creux, IDS_CONNUS, TABLE)
+verifier("jour creux compte a part", (vides4, err4), (1, []))
+verifier("les autres jours sont bien indexes", sorted(p4), ["13001a", "28001a"])
 
 # --- Tranches : l'ecriture doit etre PERIODIQUE, pas finale -----------------
 # Une aspiration de 2500 jours ecrite en un seul bloc final perd tout si on

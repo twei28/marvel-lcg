@@ -20,6 +20,7 @@ import os
 import shutil
 import sys
 import time
+import urllib.error
 import urllib.request
 
 DEBUT_HISTORIQUE = "2019-10-01"   # premiere publication sur marvelcdb
@@ -160,20 +161,45 @@ def jours_a_traiter(derniere_date, aujourdhui, jusqu_a=None):
     return jours
 
 
+def est_jour_creux(exc):
+    """Un jour SANS AUCUN deck publie rend HTTP 500, pas une liste vide.
+
+    Mesure le 6/8/2026 : by_date/2019-10-01 -> 500 avec un corps
+    {"error":{"code":500,...}}, by_date/2019-10-02 -> 200 avec un deck. Sur
+    les debuts du site, la moitie des jours sont dans ce cas. Les compter
+    comme des pannes remplirait `jours_en_erreur` de centaines de dates
+    reessayees a chaque passage, sans jamais rien rapporter.
+
+    On ne retient QUE le 500. Une vraie indisponibilite (502, 503, coupure
+    reseau) reste une erreur, donc un jour a reprendre.
+    """
+    return isinstance(exc, urllib.error.HTTPError) and exc.code == 500
+
+
 def recuperer_jour(date):
-    """Une journee de by_date. Leve en cas d'echec, l'appelant decide."""
+    """Une journee de by_date, ou [] si aucun deck n'a ete publie ce jour-la."""
     requete = urllib.request.Request(URL_JOUR.format(date), headers={"User-Agent": AGENT})
-    with urllib.request.urlopen(requete, timeout=30) as reponse:
-        return json.loads(reponse.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(requete, timeout=30) as reponse:
+            return json.loads(reponse.read().decode("utf-8"))
+    except Exception as exc:
+        if est_jour_creux(exc):
+            return []
+        raise
 
 
 def aspirer(dates, recuperer, ids_connus, table):
     """Aspire chaque jour et regroupe. `recuperer` est injecte (testable).
 
-    Un jour en erreur est reessaye UNE fois, puis journalise et saute : une
-    coupure reseau au 900e jour ne doit pas perdre les 899 precedents.
+    Rend (paquets, jours en erreur, decks ecartes, jours creux). Un jour en
+    erreur est reessaye UNE fois, puis journalise et saute : une coupure
+    reseau au 900e jour ne doit pas perdre les 899 precedents.
+
+    Le compte de jours creux est un garde-fou : si marvelcdb tombe et rend 500
+    partout, il vaut le nombre de jours demandes. Un passage qui annonce
+    « 2500 jours creux » ment sur la realite et doit etre rejoue.
     """
-    paquets, en_erreur, ecartes = {}, [], 0
+    paquets, en_erreur, ecartes, vides = {}, [], 0, 0
     for i, date in enumerate(dates):
         bruts = None
         for essai in (1, 2):
@@ -186,6 +212,9 @@ def aspirer(dates, recuperer, ids_connus, table):
                     print(f"  ! {date} saute apres 2 essais : {exc}", flush=True)
         if bruts is None:
             continue
+        if not bruts:
+            vides += 1
+            continue
         du_jour, ecartes_jour = regrouper(bruts, ids_connus, table)
         ecartes += ecartes_jour
         for code, paquet in du_jour.items():
@@ -193,7 +222,7 @@ def aspirer(dates, recuperer, ids_connus, table):
             cible["decks"].extend(paquet["decks"])
         if i % 100 == 0:
             print(f"  {date} ({i + 1}/{len(dates)})", flush=True)
-    return paquets, en_erreur, ecartes
+    return paquets, en_erreur, ecartes, vides
 
 
 def fusionner(anciennes, nouvelles):
@@ -374,22 +403,24 @@ if __name__ == "__main__":
     # rester monotone : il ne doit jamais reculer en cours de route.
     TAILLE_TRANCHE = 100
     derniere_ecrite = "" if option("--depuis") else meta.get("derniere_date", "")
-    en_erreur_total, ecartes_total, total, heros = [], 0, 0, set()
+    en_erreur_total, ecartes_total, total, heros, vides_total = [], 0, 0, set(), 0
 
     paquets_tranches = tranches(dates, TAILLE_TRANCHE)
     for numero, tranche in enumerate(paquets_tranches, start=1):
-        paquets, en_erreur, ecartes = aspirer(tranche, recuperer_ralenti, ids_connus, table)
+        paquets, en_erreur, ecartes, vides = aspirer(tranche, recuperer_ralenti, ids_connus, table)
         ecrire_index(racine, paquets)
         en_erreur_total += en_erreur
         ecartes_total += ecartes
+        vides_total += vides
         total += sum(len(p["decks"]) for p in paquets.values())
         heros |= set(paquets)
         derniere_ecrite = max(derniere_ecrite, tranche[-1])
         ecrire_meta(racine, derniere_ecrite, en_erreur_total)
         print(f"[tranche {numero}/{len(paquets_tranches)}] jusqu'au {tranche[-1]} : "
-              f"{total} decks cumules, {len(heros)} heros", flush=True)
+              f"{total} decks cumules, {len(heros)} heros, {vides_total} jours creux", flush=True)
 
     print(f"{total} deck(s) indexes sur {len(heros)} heros, "
           f"{ecartes_total} ecarte(s) (heros absent du jeu), "
-          f"{len(en_erreur_total)} jour(s) en erreur.", flush=True)
+          f"{len(en_erreur_total)} jour(s) en erreur, "
+          f"{vides_total} jour(s) sans aucun deck publie.", flush=True)
     print("Publication :", publier_vers_game(racine), flush=True)
