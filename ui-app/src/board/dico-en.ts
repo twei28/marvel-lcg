@@ -449,6 +449,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Carte de héros': 'Hero card',
   'Art alternatif — mêmes valeurs de jeu': 'Alternate art \u2014 same game values',
   'En multijoueur, montre où pointent les autres': 'In multiplayer, shows where the others are pointing',
+  'Scans en français': 'French card scans',
+  'Images des cartes en français quand elles existent':
+    'French card images where available',
   'Textes marvelcdb (réseau)': 'marvelcdb texts (network)',
   'Texte officiel FR sous l’aperçu des cartes, via fr.marvelcdb.com':
     'Official card text under the preview, from marvelcdb.com',

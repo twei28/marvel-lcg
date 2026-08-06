@@ -56,6 +56,7 @@ import {
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
+import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import { CoucheMeteo, CLE_METEO, lireMeteoActive } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
@@ -1097,6 +1098,8 @@ function PanneauOptions({
   basculerCurseurs,
   textesCdb,
   basculerTextesCdb,
+  scansFr,
+  basculerScansFr,
   succes,
   basculerSucces,
   phaseRapide,
@@ -1122,6 +1125,8 @@ function PanneauOptions({
   basculerCurseurs: () => void
   textesCdb: boolean
   basculerTextesCdb: () => void
+  scansFr: boolean
+  basculerScansFr: () => void
   succes: boolean
   basculerSucces: () => void
   phaseRapide: boolean
@@ -1168,6 +1173,12 @@ function PanneauOptions({
             detail={t('Bannière quand un exploit est réalisé (Premier sang, Double K.O. ...)')}
             actif={succes}
             onBascule={basculerSucces}
+          />
+          <LigneOption
+            libelle={t('Scans en français')}
+            detail={t('Images des cartes en français quand elles existent')}
+            actif={scansFr}
+            onBascule={basculerScansFr}
           />
           <LigneOption
             libelle={t('Textes marvelcdb (réseau)')}
@@ -1517,6 +1528,19 @@ function PagePartie({
       const nouveau = !v
       try {
         window.localStorage.setItem(CLE_TEXTES_CDB, nouveau ? 'on' : 'off')
+      } catch {
+        /* preference non critique */
+      }
+      return nouveau
+    })
+  }, [])
+
+  const [scansFr, setScansFr] = useState(scansFrActifs)
+  const basculerScansFr = useCallback(() => {
+    setScansFr((v) => {
+      const nouveau = !v
+      try {
+        window.localStorage.setItem(CLE_SCANS_FR, nouveau ? 'on' : 'off')
       } catch {
         /* preference non critique */
       }
@@ -1890,6 +1914,8 @@ function PagePartie({
               basculerCurseurs={basculerCurseurs}
               textesCdb={textesCdb}
               basculerTextesCdb={basculerTextesCdb}
+              scansFr={scansFr}
+              basculerScansFr={basculerScansFr}
               succes={succes}
               basculerSucces={basculerSucces}
               phaseRapide={phaseRapide}
