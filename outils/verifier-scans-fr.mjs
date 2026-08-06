@@ -14,6 +14,7 @@ import { resolve } from 'node:path'
 const IMAGES = resolve('Fusion/marvel-lcg-src/assets/pics-fr')
 const LISTE = resolve('ui-app/src/board/scans-fr-liste.ts')
 const TEXTES = resolve('ui-app/src/board/textes-fr.ts')
+const TEXTES_FANMADE = resolve('ui-app/src/board/textes-fr-fanmade.ts')
 const CARTES = resolve('Fusion/marvel-lcg-src/data/cards.json')
 
 let echecs = 0
@@ -31,6 +32,7 @@ function codesDe(chemin, motif) {
 
 const listes = codesDe(LISTE, /^\s*'([^']+)',$/gm)
 const textes = codesDe(TEXTES, /^\s*'([^']+)':/gm)
+const fanmade = codesDe(TEXTES_FANMADE, /^\s*'([^']+)':/gm)
 
 const fichiers = new Set(
   readdirSync(IMAGES)
@@ -71,6 +73,22 @@ verifier(
   'le dictionnaire ne double aucun scan francais',
   doublons.length === 0,
   `${doublons.length} en trop, ex. ${doublons.slice(0, 5).join(', ')}`
+)
+
+// Le dictionnaire fan-made est ecrit a la main : rien ne le regenere, donc rien
+// ne le corrige tout seul si une carte est renommee ou retiree d'un pack.
+const fanmadeInconnus = [...fanmade].filter((code) => !picIds.has(code))
+verifier(
+  'chaque carte fan-made traduite existe dans le catalogue',
+  fanmadeInconnus.length === 0,
+  `${fanmadeInconnus.length} inconnus, ex. ${fanmadeInconnus.slice(0, 5).join(', ')}`
+)
+
+const fanmadeDoublons = [...fanmade].filter((code) => listes.has(code) || textes.has(code))
+verifier(
+  'aucune carte fan-made traduite deux fois',
+  fanmadeDoublons.length === 0,
+  `${fanmadeDoublons.length} en trop, ex. ${fanmadeDoublons.slice(0, 5).join(', ')}`
 )
 
 const manquants = [...picIds].filter(

@@ -24,6 +24,7 @@ import { langueActuelle, t } from './langue'
 import { codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
+import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 import type { EmplacementAffiche, Plateau, UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
@@ -296,16 +297,23 @@ function Emplacement({
  * les voisines. Le panneau ne capte pas la souris (pointer-events: none en CSS)
  * pour ne pas se re-survoler lui-meme.
  */
-/** Texte officiel FR de la carte, de deux sources qui ne se marchent pas dessus.
+/** Texte officiel FR de la carte, de trois sources qui ne se marchent pas dessus.
  *
- *  1. Le dictionnaire HORS LIGNE, prioritaire, mais seulement pour les cartes
- *     qui n'ont pas de scan francais : la ou le scan est en francais, le texte
- *     ferait doublon avec l'image.
- *  2. A defaut, le comportement historique : marvelcdb par reseau, sur option,
+ *  1. Le dictionnaire HORS LIGNE des cartes officielles, mais seulement pour
+ *     celles qui n'ont pas de scan francais : la ou le scan est en francais, le
+ *     texte ferait doublon avec l'image.
+ *  2. Le dictionnaire des packs FAN-MADE, traduit a la main. Ces cartes
+ *     n'auront JAMAIS de scan francais ni de page marvelcdb : ce texte est le
+ *     seul francais que le joueur verra dessus, et c'est pour elles que ce bloc
+ *     compte le plus.
+ *  3. A defaut, le comportement historique : marvelcdb par reseau, sur option,
  *     coupee par defaut. */
 export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
   const code = codeMarvelcdb(codeCarte)
-  const repli = code && scansFrActifs() && !aScanFr(code) ? TEXTES_FR[code] : undefined
+  const repli =
+    code && scansFrActifs() && !aScanFr(code)
+      ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code])
+      : undefined
   const [texte, setTexte] = useState<TexteCdb | null>(null)
   useEffect(() => {
     setTexte(null)
@@ -323,7 +331,15 @@ export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
   return (
     <div className="apercu-cdb">
       <span className="apercu-cdb-source">{repli ? t('français') : 'marvelcdb'}</span>
-      <p dangerouslySetInnerHTML={{ __html: contenu.replace(/<(?!\/?(b|i|em|strong|br)\b)[^>]*>/g, '') }} />
+      {/* Les sauts de ligne portent la structure de la carte : une capacite par
+          ligne. Sans cette conversion, tout se colle en un pave illisible. Ils
+          deviennent des <br> APRES le nettoyage, sinon le nettoyage les
+          effacerait avec le reste. */}
+      <p
+        dangerouslySetInnerHTML={{
+          __html: contenu.replace(/<(?!\/?(b|i|em|strong|br)\b)[^>]*>/g, '').replace(/\n/g, '<br />'),
+        }}
+      />
     </div>
   )
 }
