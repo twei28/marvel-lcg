@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Game</title>
+    <link rel="stylesheet" href="/public/css/menu/style.css">
+    <link rel="stylesheet" href="/public/css/font-awesome.css">
+    <link rel="stylesheet" href="/public/css/menu/scene-inline.css?v=9a7d7c61">
+    <link rel="stylesheet" href="/public/css/menu/wizard.css?v=ed17c506">
+
+</head>
+<body>
+    <div class="w-topbar">
+        <a class="w-back" href="main">&larr; Menu</a>
+        <div class="w-wordmark mvl">MARVEL <span>CHAMPIONS</span></div>
+    </div>
+
+    <div class="w-stepbar">
+        <div class="w-stepper" id="w-stepper">
+            <button class="w-step" data-step="0"><span class="num">1</span><span class="lbl"><span class="t">Step 1</span><span class="s mvl">SCENARIO</span></span></button>
+            <span class="w-sep"></span>
+            <button class="w-step" data-step="1"><span class="num">2</span><span class="lbl"><span class="t">Step 2</span><span class="s mvl">ENCOUNTER</span></span></button>
+            <span class="w-sep"></span>
+            <button class="w-step" data-step="2"><span class="num">3</span><span class="lbl"><span class="t">Step 3</span><span class="s mvl">HEROES</span></span></button>
+            <span class="w-sep"></span>
+            <button class="w-step" data-step="3"><span class="num">4</span><span class="lbl"><span class="t">Step 4</span><span class="s mvl">LAUNCH</span></span></button>
+        </div>
+    </div>
+
+    <section class="w-step-panel on" data-panel="0">
+    <div class="w-step-h"><div class="kicker mvl"><span class="accent">SCENARIO</span></div><p>Pick a box, then the villain version to face.</p></div>
+
+    <div id="w-splash" class="empty">
+        <div class="w-splash-bg" id="w-splash-bg"></div>
+        <div class="w-splash-card"><img id="w-splash-img" alt=""></div>
+        <div class="w-splash-info">
+            <div class="kapow"><span class="w-splash-name mvl" id="w-splash-name">Pick a box, then a villain</span></div>
+            <div class="w-splash-stats" id="w-splash-stats"></div>
+        </div>
+    </div>
+
+    <fieldset style="flex-direction: column;">
+        <legend>Scenario</legend>
+
+        <div id="set-images"></div>
+
+        <div id="set-content">
+            <label for="scenario-1" style="width: fit-content;">
+                <input id="scenario-1" type="file" name="scenario" accept=".json" onclick="Reset(this)" onchange="Load(this)" />
+                <img id="img-scenario">
+            </label>
+        </div>
+
+        <div style="display: none;">
+            Encounter Sets: <span id="default-encounter-sets"></span><hr/>
+            Modular Sets: <span id="default-modular-sets"></span><hr/>
+            Expert: <span id="is-expert"></span><hr/>
+            Encounter Size: <span id="encounter-size"></span>
+        </div>
+        </div>
+    </fieldset>
+    </section>
+
+<script>
+
+class SetInfo{
+    constructor(obj = null) {
+        if (obj) {
+            /** @type {string} */
+            this.name = obj['name'];
+            /** @type {string[]} */
+            this.scenarios = obj['scenarios'];
+            /** @type {string[]} */
+            this.heroes = obj['heroes'];
+            /** @type {string[]} */
+            this.encounters = obj['encounters'];
+        }
+    }
+}
+
+/** @type{Object.<string, SetInfo>} */
+let sets_json = {}
+
+var last_current_package = ""
+
+/** @param {string} path */
+function getFileName(path) {
+    // return path.split('/').pop();
+    // return path.replace(/^.*[\\/]/, '')
+    // path = path.toLowerCase().replaceAll(" ", "_")
+    return path.replace(/^.*[\\/]/, '').replace(/\.[^/.]+$/, "")
+}
+
+async function createScenarios() {
+    const response_set = await fetch(`get_sets_json?`);
+    if (!response_set.ok) {
+        throw new Error('Network response was not ok: ' + response_set.statusText);
+    }
+    set_raw_json = await response_set.json();
+    for( let key in set_raw_json ) {
+        sets_json[key] = new SetInfo(set_raw_json[key])
+    }
+    const response_custom = await fetch(`get_sets_custom_scenario?`);
+    if (!response_custom.ok) {
+        throw new Error('Network response was not ok: ' + response_set.statusText);
+    }
+
+    const jsonResponse = await response_custom.json();
+    const fileNames = jsonResponse.map((x) => getFileName(x));
+    sets_json['Custom'] = new SetInfo({
+        name: "Custom",
+        scenarios: fileNames,
+        heroes: [],
+        encounters: []
+    })
+
+    const response = await fetch(`list_scenarios?`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    /** @type {string[]} */
+    const data = await response.json();
+    /** @type {string[]} */
+    let file_names = []
+    let file_names_no_expert = []
+
+    for( let key of data ) {
+        let file_name = getFileName(key)
+        file_names.push(file_name)
+        if( !file_name.endsWith('_expert') ) {
+            file_names_no_expert.push(file_name)
+        }
+    }
+
+    var select = document.querySelector("#set-images");
+    for( let key in sets_json ) {
+        if( sets_json[key].scenarios.length == 0 ) {
+            continue
+        }
+
+        function createDetailsButton() {
+            const summary = document.createElement("div");
+            const img = document.createElement("img");
+            img.style.pointerEvents = "none"
+            img.src = "/sets/" + key
+            summary.dataset.total = sets_json[key].scenarios.length * 2
+            // summary.innerHTML = key
+            summary.appendChild(img)
+            summary.classList.add("set")
+    
+            const details = document.createElement("div");
+            summary.appendChild(details)
+            const match = key.match(/^([\w\d]+)\./);
+            summary.setAttribute('data-title', match ? match[1] : key);
+            details.classList.add("details")
+            details.style.display = "none"
+            summary.dataset.package = key
+            if( key == "Weekly Challenges" ) {
+                summary.dataset.total = sets_json[key].scenarios.length
+                for( let text of sets_json[key].scenarios ) {
+                    if( file_names.includes(text) ) {
+                        document.getElementById(text).parentElement.style.display = ""
+                    }
+                }
+            }
+            if( key == "Custom" ) {
+                summary.dataset.total = sets_json[key].scenarios.length
+            }
+            return [summary, details]
+        }
+
+        const [summary, details] = createDetailsButton()
+
+        async function createButtons(text) {
+            var option = document.createElement("button");
+            option.value = text;
+            if( !file_names.includes(text) ) {
+                option.disabled = true
+                option.textContent = getFileName(text);
+                option.style.display = "none"
+            }
+            else {
+                let img = document.createElement("img");
+                let data = await getScenario(option.value)
+                let scheme = data["villain"][0]
+                let image_name = ""
+                if( 'challenges' in data ) {
+                    image_name = `${data['challenges'][0]}`
+                    img.classList.add('challenge')
+                } else if( scheme ) {
+                    image_name = get_name(scheme)
+                } else {
+                    image_name = get_name(data["schemes"][0])
+                }
+                option.setAttribute('data-text', data['encounters'].length)
+
+                img.src = image_name
+                option.appendChild(img)
+            }
+
+            return option
+        }
+
+        for( let text of sets_json[key].scenarios ) {
+            details.appendChild(await createButtons(text))
+            if( key != "Weekly Challenges" && key != 'Custom' ) {
+                details.appendChild(await createButtons(`${text}_expert`))
+            }
+        }
+
+        summary.onclick = (e0) =>{
+            let details = e0.target.querySelector(".details")
+            let details2 = details.cloneNode(true)
+            details2.style.display = "flex"
+            details2.querySelectorAll("button").forEach(e => {
+                e.onclick = () => {
+                    e.parentNode.querySelectorAll("button").forEach(e2 => {
+                        e2.classList.remove('click')
+                    })
+                    loadScenario(e.value)
+                    generateInputs(e0.target.dataset.package)
+                    e.classList.add('click')
+                }
+            })
+            document.querySelectorAll('#set-images>div').forEach(e => {
+                e.classList.remove('click')
+            })
+            e0.target.classList.add('click')
+
+            document.querySelector("#set-content").replaceChildren()
+            document.querySelector("#set-content").appendChild(details2)
+        }
+
+        select.appendChild(summary)
+    }
+
+    document.querySelectorAll("#set-images>div.set").forEach(
+        e => {
+            let length = Array.from(e.querySelectorAll('div button:not(:disabled)')).length
+            let total = e.dataset.total
+            let text = ` (${length}/${total})`
+            if( length == total ) {
+                e.classList.add('full')
+            }
+            e.setAttribute('data-text', text)
+
+            if( length == 0 ) {
+                e.onclick = () => {return false}
+                // e.style.display = "none"
+                e.classList.add('disable')
+            }
+        }
+    )
+}
+
+</script>
+
+<section class="w-step-panel" data-panel="1">
+<div class="w-step-h"><div class="kicker mvl">THE <span class="accent">ENCOUNTER</span></div><p>Pick the standard level and add modular sets to vary the difficulty.</p></div>
+<fieldset style="flex-direction: column; position: relative;">
+    <legend>Standard Sets</legend>
+
+    <fieldset style="gap: 0; padding: 0; border: none">
+        <div>
+            <div id="encounter-sets">
+            </div>
+        </div>
+    </fieldset>
+</fieldset>
+
+<fieldset style="flex-direction: column; position: relative;">
+    <legend>Modular Sets</legend>
+    <div>
+        <button onclick="document.querySelector(`#modular-sets`).classList.toggle('hide-not-click')">Expand</button>
+        <button onclick="random_modular()">Random</button>
+        <button onclick="document.querySelectorAll(`#modular-sets .nemesis`).forEach(e=>e.classList.toggle('hide'))">Nemesis</button>
+        <button onclick="document.querySelector(`#modular-sets`).classList.toggle('show-set-name')">Name</button>
+    </div>
+
+    <fieldset style="gap: 0; padding: 0; border: none">
+        <div>
+            <div id="modular-sets" class="expend-view hide-not-click">
+            </div>
+        </div>
+    </fieldset>
+
+</fieldset>
+</section>
+
+<script>
+
+async function createSets() {
+    const response = await fetch(`list_encounter_sets?`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    /** @type {string[]} */
+    const data = await response.json();
+    /** @type {string[]} */
+    let file_names = []
+
+    for( let key of data ) {
+        file_names.push(getFileName(key))
+    }
+
+    var encounter_select = document.querySelector("#encounter-sets");
+    var modular_select = document.querySelector("#modular-sets");
+
+    async function createButtons(text, nemesis=false) {
+        const response = await fetch(`get_encounter_set_json?${text}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        /** @type {string[]} */
+        const j = await response.json();
+
+        var div = document.createElement("button");
+        var img = document.createElement("img");
+        img.src = `${get_name(j['encounters'][0])}`;
+        div.setAttribute('data-text', j['encounters'].length)
+        div.setAttribute('data-name', text)
+        div.setAttribute('data-display', `${j['encounters'][0]} ${text}`)
+        div.appendChild(img)
+        div.onclick = () => {
+            div.classList.toggle('click')
+            for( let name of ['standard', 'expert'] ) {
+                if( div.classList.contains('click') && div.dataset.name.startsWith(name) ) {
+                    div.parentElement.querySelectorAll('button[data-name]').forEach(e => {
+                        if( e != div && e.dataset.name.startsWith(name)) {
+                            e.classList.remove('click')
+                        }
+                    })
+                }
+            }
+        }
+        if( nemesis ) {
+            div.classList.add('nemesis')
+            div.classList.add('hide')
+        }
+        div.oncontextmenu = (event) => {
+            // document.querySelectorAll('.right-clicked').forEach(
+            //     e => e.classList.remove('right-clicked')
+            // )
+            div.classList.toggle('right-clicked')
+            event.stopPropagation()
+            return false
+        }
+        return div
+    }
+
+    for( let key in sets_json ) {
+        for( let text of sets_json[key].encounters ) {
+            if( file_names.includes(text) ) {
+                let btn = await createButtons(text)
+                if( text.startsWith("standard") || text.startsWith("expert") ) {
+                    encounter_select.appendChild(btn)
+                }
+                else {
+                    modular_select.appendChild(btn)
+                }
+            }
+        }
+    }
+    for( let text of file_names ) {
+        if( text.endsWith("_nemesis") ) {
+            let btn = await createButtons(text, true)
+            modular_select.appendChild(btn)
+        }
+    }
+}
+
+(async () => {
+    await createScenarios()
+    await createSets()
+})()
+
+</script>
+
+<section class="w-step-panel" data-panel="2">
+    <div class="w-step-h"><div class="kicker mvl">YOUR <span class="accent">HEROES</span></div><p>From 1 to 4 players. Load a deck from "deck/starter" or pick one from the gallery below.</p></div>
+    <fieldset style="flex-wrap: wrap; flex-direction: column;">
+        <legend>Heroes</legend>
+        <div style="display: flex; flex-direction: row; gap:5px">
+            <label for="heroes-1">
+            <input id="heroes-1" type="file" name="heroes" accept=".json" onclick="Reset(this)" onchange="Load(this)"/>
+            <img id="img-heroes-1">
+            </label>
+            <label for="heroes-2">
+            <input id="heroes-2" type="file" name="heroes" accept=".json" onclick="Reset(this)" onchange="Load(this)"/>
+            <img id="img-heroes-2">
+            </label>
+            <label for="heroes-3">
+            <input id="heroes-3" type="file" name="heroes" accept=".json" onclick="Reset(this)" onchange="Load(this)"/>
+            <img id="img-heroes-3">
+            </label>
+            <label for="heroes-4">
+            <input id="heroes-4" type="file" name="heroes" accept=".json" onclick="Reset(this)" onchange="Load(this)"/>
+            <img id="img-heroes-4">
+            </label>
+        </div>
+
+        <script>
+            async function importDeck(text="") {
+                for( let i of [1,2,3,4] ) {
+                    if( !document.querySelector(`#img-heroes-${i}`).src ) {
+                        if( text == "" ) {
+                            text = prompt()
+                        }
+                        if( text ) {
+                            hero_data = JSON.parse(text)
+                            SetHero(hero_data, i)
+                        }
+                        break
+                    }
+                }
+            }
+        </script>
+        <div id="starter-gallery-wrap" style="display:none; margin-top:8px;">
+            <div style="font-weight:bold; margin-bottom:4px;">Choose a hero (click to add):</div>
+            <input id="starter-filter" type="text" placeholder="Filter..." style="margin-bottom:6px; width:200px;">
+            <div id="starter-gallery" style="display:flex; flex-wrap:wrap; gap:8px; max-height:300px; overflow-y:auto;"></div>
+        </div>
+        <p>
+        Default hero JSON files are located in folder "./deck/starter". You can also <button onclick="importDeck()">Import</button> the data from your clipboard, or <a href="./deck">edit the deck</a>.
+        </p>
+
+    </fieldset>
+    </section>
+<section class="w-step-panel" data-panel="3">
+    <div class="w-step-h"><div class="kicker mvl">INTO <span class="accent">BATTLE</span></div><p>Adjust the last options, then start the game.</p></div>
+    <fieldset id="game-start">
+        <legend>Game Start</legend>
+        <div class="slidecontainer">
+            <p>Timeout: <span id="timeout_text"></span></p>
+            <input class="slider" type="range" min="0" max="300" value="120" step="5" oninput="timeout_update()" id="timeout_slider" style="max-width: 300px;" disabled>
+        </div>
+        <div>
+            <p style="padding-right: .5rem;">Seed</p><input type="text" id="seed_div" value="" placeholder="keep empty for random">
+            <button id="seed_button" onclick="random_seed()">Random</button>
+        </div>
+
+        <script>
+            function timeout_update(off=false) {
+                value = document.querySelector("#timeout_slider").value
+                if( value == 0 || off ) {
+                    document.querySelector("#timeout_text").innerHTML = "<span style='color: palegreen'>Off</span>"
+                } else {
+                    document.querySelector("#timeout_text").innerHTML = value
+                }
+            }
+            timeout_update(true)
+
+            function random_seed() {
+                let seed = Math.floor(Math.random() * (2**31 - 2) + 1);
+                document.querySelector("#seed_div").value = seed
+            }
+            random_seed()
+        </script>
+
+        <details id="mode" open>
+            <summary> Modes of Play</summary>
+            <div class="slidecontainer">
+                <p>Heroic: <span id="mode_heroic_text"></span>
+                <input class="slider" type="range" min="0" max="8" value="0" step="1" oninput="mode_heroic_update()" id="mode_heroic_slider" style="max-width: 200px;"></p>
+                <script>
+                    function mode_heroic_update() {
+                        value = document.querySelector("#mode_heroic_slider").value
+                        if( value == 0 ) {
+                            document.querySelector("#mode_heroic_text").innerHTML = "<span style='color: palegreen'>Off</span>"
+                        } else {
+                            document.querySelector("#mode_heroic_text").innerHTML = value
+                        }
+                    }
+                    mode_heroic_update()
+                </script>
+            </div>
+
+            <label>
+                <input type="checkbox" id="mode_skirmish"> Skirmish
+                <span class="tooltip">
+                    Skirmish mode (also sometimes called Rookie Mode) is a modification of standard mode that allows players to shorten the length of the game.
+
+<ul><li>To play a standard game modified by skirmish mode, before the game begins, the player group chooses any one version of the villain. During step eight of game setup (Select Scenario), put only the chosen version of the villain into play and remove each other version in the villain deck from the game.</li><li>Skirmish mode can also be combined with expert mode, heroic mode, and/or campaign mode.</li></ul></span>
+            </label>
+
+            <label id="mode_campaign_container" class="hide">
+                <input type="checkbox" id="mode_campaign"> Campaign (Experimental)
+                <!-- <span class="tooltip">Only for "The Rise of Red Skull"</span> -->
+                <!-- <span class="tooltip">(Experimental) This feature is still under development and may not function correctly. It is not recommended to enable it at this time. Please refrain from reporting any bugs if you choose to enable it.</span> -->
+            </label>
+
+
+            <script>
+                document.querySelector("#mode_campaign_container").onclick = (e) => {
+                    const campaign_log = document.querySelector("#campaign_log")
+                    if( e.target.checked ) {
+                        campaign_log.classList.remove('hide')
+                        generateInputs("")
+                    } else {
+                        campaign_log.classList.add('hide')
+                    }
+                }
+            </script>
+        </details>
+
+        <details id="rules">
+            <summary> Rule </summary>
+            <script>
+                data = {
+                    "v16_all": "All v16 rules",
+                    "v16_player_elimination": "When a player is eliminated, <b>place each card owned by the eliminated player in the eliminated player's discard pile</b>.",
+                    "v16_reveal": "During step four of the villain phase, each player reveals and resolves all facedown encounter cards that have been dealt to them, one card at a time <b>in the order in which they were dealt</b>.",
+                    "v16_teamwork": "After a minion with teamwork enters play and engages a player, if there is at least one other minion that shares the specified trait in play, <b>the minion that just entered play</b> activates against the player it is engaged with. ",
+                    "v16_referential_ability": "<b>If an ability refers to a title shared by multiple cards in the game, that ability refers only to the card(s) that match the criteria highest in this list:<ol><li>The card on which the referential ability is printed.</li><li>Cards that belong to the same identity or encounter set.</li><li>All other cards.</li></ol></b>",
+                    "v16_confuse_stun": "A confused character can attempt to thwart or use a thwart ability even if <b>it has no valid target</b>.<br/>A stunned character can attempt to attack or use an attack ability even if <b>it has no valid target</b>.",
+                    "encounter_cards_ignore_crisis": "Environment cards and encounter cards are not affected by crisis icons in play.",
+                    "crisis_of_infinite_deadpools": "When setting up a game in which at least one player is using the 'Pool aspect, shuffle 1 copy of the Crisis of Infinite Deadpools treachery card into the encounter deck.",
+                    // "fix_surge": "Complete the process of resolving the original card, <b>as well as any response abilities that are triggered by that card being revealed</b>, before revealing the additional card.",
+                    // "fix_treachery": "After resolving the effects of a treachery card (or the effects are canceled), place the card in the encounter discard pile."
+                }
+
+                // Function to generate checkbox elements
+                const container = document.querySelector('#rules')
+                function generateCheckboxes(data) {
+
+                    for (const [id, text] of Object.entries(data)) {
+                        // Create a label element
+                        const label = document.createElement('label');
+
+                        // Create an input element
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = "rule";
+                        if( id.startsWith("v16") && id != "v16_all" ) {
+                            checkbox.classList.add('rule_v16')
+                        }
+                        checkbox.id = id;
+
+                        // Create a text node for the label
+                        const textNode = document.createElement('p');
+                        textNode.innerText = id
+                        textNode.setAttribute('data-tooltip', text)
+
+                        const tooltip = document.createElement('span')
+                        tooltip.className = 'tooltip';
+                        tooltip.innerHTML = text
+
+                        label.appendChild(checkbox);
+                        label.appendChild(textNode)
+                        label.appendChild(tooltip)
+                        container.appendChild(label);
+                    }
+                }
+                generateCheckboxes(data)
+
+                document.querySelector('#v16_all').onchange = (e) => {
+                    if( e.target.checked ) {
+                        document.querySelectorAll('.rule_v16').forEach(e => {
+                            e.checked = true
+                        })
+                    }
+                    else {
+                        document.querySelectorAll('.rule_v16').forEach(e => {
+                            e.checked = false
+                        })
+                    }
+                }
+                document.querySelectorAll('.rule_v16').forEach(
+                    e => e.onchange = (e) => {
+                        const elements = document.querySelectorAll('.rule_v16');
+                        const allChecked = Array.from(elements).every(e => e.checked);
+                        if( allChecked ) {
+                            document.querySelector('#v16_all').checked = true
+                        } else {
+                            document.querySelector('#v16_all').checked = false
+                        }
+                    }
+                )
+                document.querySelectorAll('.rule').forEach(e => {
+                    e.checked = true
+                })
+            </script>
+
+        </details>
+
+        <details id="challenge">
+            <summary>Challenges</summary>
+        </details>
+
+
+        <script type="module">
+            import { CardStatistics } from '/public/js/module/card_statistics.js';
+            const cardStatistics = new CardStatistics();
+            await cardStatistics.loadAllCards(false, true);
+
+            let challenge_names = cardStatistics.sets_json["Weekly Challenges"].scenarios
+            let challenges = {}
+
+            for( name of challenge_names ) {
+                if( name in cardStatistics.const_card_dict ) {
+                    let card = cardStatistics.const_card_dict[name]
+                    challenges[name] = card
+                }
+            }
+
+            // let hide_challenges = ["2402", "2404", "2405", "2406", "2408", "2409", "2410", "2413", "2414", "2418", "2420"]
+            let hide_challenges = []
+
+            function createChallengeList() {
+                const challengeDiv = document.getElementById('challenge');
+                for( const div_id in challenges ) {
+                    const card = challenges[div_id]
+
+                    const firstFour = card.card_id.substring(0, 4);
+                    let name = card.name
+                    if (/^\d{4}$/.test(firstFour)) {
+                        if( hide_challenges.includes(firstFour) ) {
+                            continue
+                        }
+                        name = `(${firstFour}) ${name}`
+                    }
+
+                    // Create a label element
+                    const label = document.createElement('label');
+                    label.style.display = "none"
+
+                    // Create a checkbox input
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = div_id
+
+                    const div = document.createElement('p');
+                    div.innerText = name
+                    div.setAttribute('data-tooltip', card.text)
+
+                    const tooltip = document.createElement('span')
+                    tooltip.className = 'tooltip';
+                    tooltip.innerHTML = card.text
+
+                    // Append the checkbox and challenge text to the label
+                    label.appendChild(checkbox);
+                    label.appendChild(div);
+                    label.appendChild(tooltip);
+
+                    // Append the label to the challenge div
+                    challengeDiv.appendChild(label);
+                };
+            }
+
+            // Call the function to create the list
+            createChallengeList();
+
+        </script>
+
+        <script>
+            function DisableShuffle(e) {
+                if( e.checked ) {
+                    document.querySelector("#seed_div").disabled = true
+                    document.querySelector("#seed_button").disabled = true
+                } else {
+                    document.querySelector("#seed_div").disabled = false
+                    document.querySelector("#seed_button").disabled = false
+                }
+            }
+        </script>
+
+
+        <details id="campaign_log" class="hide" open>
+            <summary>Campaign Log</summary>
+
+
+            <table>
+                <tbody id="campaign_log_container"></tbody>
+            </table>
+
+            <script>
+                function generateInputs(current_package) {
+                    if( current_package ) {
+                        last_current_package = current_package
+                    } else {
+                        current_package = last_current_package
+                    }
+                    const playerStrings = {
+                        '4. The Rise of Red Skull':
+                        [
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Player 1 Obligations", type: "checkbox", options: ["04163", "04164", "04165", "04166"] },
+                            { description: "Player 2 Obligations", type: "checkbox", options: ["04163", "04164", "04165", "04166"] },
+                            { description: "Player 3 Obligations", type: "checkbox", options: ["04163", "04164", "04165", "04166"] },
+                            { description: "Player 4 Obligations", type: "checkbox", options: ["04163", "04164", "04165", "04166"] },
+
+                            { description: "Player 1 Tech Upgrade", type: "select", options: ["04155", "04156", "04157", "04158"] },
+                            { description: "Player 2 Tech Upgrade", type: "select", options: ["04155", "04156", "04157", "04158"] },
+                            { description: "Player 3 Tech Upgrade", type: "select", options: ["04155", "04156", "04157", "04158"] },
+                            { description: "Player 4 Tech Upgrade", type: "select", options: ["04155", "04156", "04157", "04158"] },
+
+                            { description: "Player 1 Basic Upgrade", type: "select", options: ["04159a", "04159b", "04160a", "04160b", "04161a", "04161b", "04162a", "04162b"] },
+                            { description: "Player 2 Basic Upgrade", type: "select", options: ["04159a", "04159b", "04160a", "04160b", "04161a", "04161b", "04162a", "04162b"] },
+                            { description: "Player 3 Basic Upgrade", type: "select", options: ["04159a", "04159b", "04160a", "04160b", "04161a", "04161b", "04162a", "04162b"] },
+                            { description: "Player 4 Basic Upgrade", type: "select", options: ["04159a", "04159b", "04160a", "04160b", "04161a", "04161b", "04162a", "04162b"] },
+
+                            { description: "Player 1 Rescued Allies", type: "checkbox", options: ["04097", "04098", "04099", "04100"] },
+                            { description: "Player 2 Rescued Allies", type: "checkbox", options: ["04097", "04098", "04099", "04100"] },
+                            { description: "Player 3 Rescued Allies", type: "checkbox", options: ["04097", "04098", "04099", "04100"] },
+                            { description: "Player 4 Rescued Allies", type: "checkbox", options: ["04097", "04098", "04099", "04100"] },
+
+                            { description: "Experimental Weapons added to encounter deck", type: "checkbox", options: ["04072", "04073", "04074", "04075"] },
+                            { description: "Number of delay counters on main scheme", type: "number" },
+                            { description: "Players engaged with minions", type: "checkbox", options: ["0", "1", "2", "3"]},
+                            { description: "Allies removed from the campaign", type: "list" },
+
+                            // {
+                            //     description: "01003",
+                            //     type: "checkbox"
+                            // }
+                        ],
+                        '27. Sinister Motives':
+                        [
+                            { description: "Reputation Track", type: "number" },
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Community Service: Victory for Scenarios #1-4", type: "checkbox", options: ["27176", "27177", "27178", "27179", "27180"] },
+                            { description: "Waking Nightmare: Victory for Scenario #3 - Mysterio", type: "number" },
+                            { description: "Last Ones Standing: Victory for Scenario #4 - The Sinister Six", type: "checkbox", options: ["27099", "27094", "27095", "27096", "27097", "27098"] },
+                            { description: "Final Reputation Score: Victory for Scenario #5 - Venom Goblin", type: "number" },
+                            { description: "S.H.I.E.L.D. Tech: Reputation Track Reward P1", type: "select", options: ["27182a,27182b", "27183a,27183b", "27184a,27184b", "27185a,27185b", "27186a,27186b", "27187a,27187b", "27188a,27188b", "27189a,27189b"]},
+                            { description: "S.H.I.E.L.D. Tech: Reputation Track Reward P2", type: "select", options: ["27182a,27182b", "27183a,27183b", "27184a,27184b", "27185a,27185b", "27186a,27186b", "27187a,27187b", "27188a,27188b", "27189a,27189b"]},
+                            { description: "S.H.I.E.L.D. Tech: Reputation Track Reward P3", type: "select", options: ["27182a,27182b", "27183a,27183b", "27184a,27184b", "27185a,27185b", "27186a,27186b", "27187a,27187b", "27188a,27188b", "27189a,27189b"]},
+                            { description: "S.H.I.E.L.D. Tech: Reputation Track Reward P4", type: "select", options: ["27182a,27182b", "27183a,27183b", "27184a,27184b", "27185a,27185b", "27186a,27186b", "27187a,27187b", "27188a,27188b", "27189a,27189b"]},
+                            { description: "Aspect Advantage: Reputation Track Reward P1", type: "list", tooltip: "e.g. 05015;05015;05015" },
+                            { description: "Aspect Advantage: Reputation Track Reward P2", type: "list" },
+                            { description: "Aspect Advantage: Reputation Track Reward P3", type: "list" },
+                            { description: "Aspect Advantage: Reputation Track Reward P4", type: "list" },
+                            { description: "Planning Ahead: Reputation Track Reward P1", type: "card" },
+                            { description: "Planning Ahead: Reputation Track Reward P2", type: "card" },
+                            { description: "Planning Ahead: Reputation Track Reward P3", type: "card" },
+                            { description: "Planning Ahead: Reputation Track Reward P4", type: "card" },
+                            { description: "Osborn Tech: Reputation Track Penalty", type: "checkbox", options: ["27147", "27148", "27149", "27150", "27151", "27152"] },
+                        ],
+                        "21. The Mad Titan's Shadow":
+                        [
+                            { description: "Player 1 Identity", type: "text" },
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Identity", type: "text" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Identity", type: "text" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Identity", type: "text" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Campaign Pool: Cosmo", type: "flag" },
+                            { description: "Campaign Pool: Security Breach", type: "flag" },
+                            { description: "Campaign Pool: Shawarma", type: "flag" },
+                            { description: "Campaign Pool: Black Swan", type: "flag" },
+                            { description: "Avengers Tower Damaged", type: "flag" },
+                            { description: "Campaign Pool: System Shock", type: "flag" },
+                            { description: "The Infinity Stones 1B completed", type: "flag" },
+                            { description: "Campaign Pool: Norn Stone", type: "flag" },
+                            { description: "Campaign Pool: Odin", type: "flag" },
+                        ],
+                        '32. Mutant Genesis':
+                        [
+                            { description: "Player 1 Identity", type: "text" },
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Identity", type: "text" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Identity", type: "text" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Identity", type: "text" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Player 1 Role", type: "select", options: ["Brawler", "Commander", "Defender", "Peacekeeper"] },
+                            { description: "Player 2 Role", type: "select", options: ["Brawler", "Commander", "Defender", "Peacekeeper"] },
+                            { description: "Player 3 Role", type: "select", options: ["Brawler", "Commander", "Defender", "Peacekeeper"] },
+                            { description: "Player 4 Role", type: "select", options: ["Brawler", "Commander", "Defender", "Peacekeeper"] },
+                            { description: "Frightened Police Defeated", type: "flag" },
+                            { description: "Enemy of My Enemy Defeated", type: "flag" },
+                            { description: "Find the Prisoners Defeated", type: "flag" },
+                            { description: "Surprise Attack Defeated", type: "flag" },
+                            { description: "Campaign Pool: Jubilee", type: "flag" },
+                            { description: "Jubilee removed", type: "flag" },
+                            { description: "Player 1 Role Upgrades Removed", type: "list", tooltip: "ex. 32177;32180" },
+                            { description: "Player 2 Role Upgrades Removed", type: "list", tooltip: "ex. 32177;32180" },
+                            { description: "Player 3 Role Upgrades Removed", type: "list", tooltip: "ex. 32177;32180" },
+                            { description: "Player 4 Role Upgrades Removed", type: "list", tooltip: "ex. 32177;32180" },
+                            { description: "Captive Allies", type: "list", tooltip: "Allies under Rescue Captives / Find the Prisoners, ex. 32172b" },
+                            { description: "Future Past in Victory Display", type: "list", tooltip: "manual note (Future Past deck not simulated)" },
+                            { description: "Future Past in Encounter Deck", type: "list", tooltip: "manual note (Future Past deck not simulated)" },
+                        ],
+                        '40. NeXt Evolution':
+                        [
+                            { description: "Player 1 Identity", type: "text" },
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Identity", type: "text" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Identity", type: "text" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Identity", type: "text" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Marauders Defeated", type: "list", tooltip: "names of the villains defeated in scenario 1, e.g. Arclight;Harpoon" },
+                            { description: "Morlocks Saved", type: "number" },
+                            { description: "Hope Summers's Damage Scenario 3", type: "number" },
+                            { description: "Hope Summers's Damage Scenario 4", type: "number" },
+                            { description: "Chose: Assemble the Team", type: "flag" },
+                            { description: "Removed: Assemble the Team", type: "flag" },
+                            { description: "Campaign Pool: Team Assembled", type: "flag" },
+                            { description: "Chose: Establish Safehouse", type: "flag" },
+                            { description: "Removed: Establish Safehouse", type: "flag" },
+                            { description: "Campaign Pool: Safehouse Established", type: "flag" },
+                            { description: "Chose: Gear Up", type: "flag" },
+                            { description: "Removed: Gear Up", type: "flag" },
+                            { description: "Campaign Pool: Geared Up", type: "flag" },
+                            { description: "Chose: Mission Prep", type: "flag" },
+                            { description: "Removed: Mission Prep", type: "flag" },
+                            { description: "Campaign Pool: Mission Prepped", type: "flag" },
+                            { description: "Chose: Practice Maneuvers", type: "flag" },
+                            { description: "Removed: Practice Maneuvers", type: "flag" },
+                            { description: "Campaign Pool: Practiced Maneuvers", type: "flag" },
+                            { description: "Chose: Prepare Defenses", type: "flag" },
+                            { description: "Removed: Prepare Defenses", type: "flag" },
+                            { description: "Campaign Pool: Prepared Defenses", type: "flag" },
+                        ],
+                        '45. Age of Apocalypse':
+                        [
+                            { description: "Player 1 Identity", type: "text" },
+                            { description: "Player 1 Remaining hit points", type: "number" },
+                            { description: "Player 2 Identity", type: "text" },
+                            { description: "Player 2 Remaining hit points", type: "number" },
+                            { description: "Player 3 Identity", type: "text" },
+                            { description: "Player 3 Remaining hit points", type: "number" },
+                            { description: "Player 4 Identity", type: "text" },
+                            { description: "Player 4 Remaining hit points", type: "number" },
+                            { description: "Mission Done: Liberate the Seattle Core", type: "flag" },
+                            { description: "Mission Done: Evacuate Survivors", type: "flag" },
+                            { description: "Mission Done: Sabotage the Sea Wall", type: "flag" },
+                            { description: "Mission Done: Find Lost Mutants", type: "flag" },
+                            { description: "Mission Done: Protect the Professor", type: "flag" },
+                            { description: "Overseer Defeated: Mister Sinister", type: "flag" },
+                            { description: "Overseer Defeated: The Shadow King", type: "flag" },
+                            { description: "Overseer Defeated: Abyss", type: "flag" },
+                            { description: "Overseer Defeated: Sugar Man", type: "flag" },
+                            { description: "Overseer Defeated: Mikhail Rasputin", type: "flag" },
+                            { description: "Campaign Pool: Desperate Measures", type: "flag" },
+                            { description: "Campaign Pool: Panicked Refugees", type: "flag" },
+                            { description: "Campaign Pool: North American Sea Wall", type: "flag" },
+                            { description: "Player 1 Campaign Ally", type: "card" },
+                            { description: "Player 2 Campaign Ally", type: "card" },
+                            { description: "Player 3 Campaign Ally", type: "card" },
+                            { description: "Player 4 Campaign Ally", type: "card" },
+                        ]
+
+                    }
+
+                    if( Object.prototype.hasOwnProperty.call(playerStrings, current_package) ) {
+                        document.querySelector('#mode_campaign_container').classList.remove('hide')
+                    } else {
+                        document.querySelector('#mode_campaign_container').classList.add('hide')
+                        document.querySelector('#mode_campaign').checked = false
+                        document.querySelector("#campaign_log").classList.add('hide')
+                        return
+                    }
+
+                    const container = document.getElementById('campaign_log_container');
+                    container.replaceChildren()
+
+                    let length_of_heroes = 0
+                    for( key in heroes ) {
+                        if( heroes[key] ) {
+                            length_of_heroes += 1
+                        }
+                    }
+
+                    playerStrings[current_package].forEach(item => {
+                        const row = document.createElement('tr');
+
+                        if( length_of_heroes < 2 && (item.description.startsWith("Player 2") || item.description.endsWith("P2")) ) {
+                            return
+                        }
+                        if( length_of_heroes < 3 && (item.description.startsWith("Player 3") || item.description.endsWith("P3")) ) {
+                            return
+                        }
+                        if( length_of_heroes < 4 && (item.description.startsWith("Player 4") || item.description.endsWith("P4")) ) {
+                            return
+                        }
+                        // const playerNumber = parseInt(item.description.match(/Player (\d+)/)?.[1]); // Extract player number from description
+                        // if (playerNumber && Object.keys(heroes).length < playerNumber ) {
+                        //     return; // Skip if there are not enough heroes for the player
+                        // }
+
+                        row.innerHTML = `<td>${item.description}</td>`;
+                        
+                        if (item.type === "select") {
+                            let html = `<input type="hidden" data-key="${item.description}">`;
+                            item.options.forEach(option => {
+                                let option0 = option.split(",")[0]
+                                if( option.length >= 5 && option.length <= 6 ) {
+                                    tooltip = `<span class="tooltip"><img src="${option}"></img></span>`
+                                } if( option0.length >= 5 && option0.length <= 6 ) {
+                                    tooltip = `<span class="tooltip"><img src="${option0}"></img></span>`
+                                } else {
+                                    tooltip = ""
+                                }
+                                html += `<label><input type="radio" data-key="${option}" name="${item.description}">${option}${tooltip}</label>`;
+                            });
+
+                            row.innerHTML += `<td>${html}</td>`
+                        } else if (item.type === "number") {
+                            row.innerHTML += `<td><input type="number" data-key="${item.description}" step="1" min="0"></td>`;
+                        } else if (item.type === "checkbox") {
+
+                            let html = `<input type="hidden" data-key="${item.description}">`;
+                            item.options.forEach(option => {
+                                if( option.length >= 5 && option.length <= 6 ) {
+                                    tooltip = `<span class="tooltip"><img src="${option}"></img></span>`
+                                } else {
+                                    tooltip = ""
+                                }
+                                html += `<label><input type="checkbox" data-key="${option}">${option}${tooltip}</label>`;
+                            });
+                            row.innerHTML += `<td>${html}</td>`
+
+                        } else if (item.type === "flag") {
+                            row.innerHTML += `<td><input type="checkbox" class="flag" data-key="${item.description}"></td>`;
+                        } else if (item.type === "list") {
+                            tooltip = item.tooltip ? item.tooltip : "use ';' as the delimiter"
+                            row.innerHTML += `<td><input type="text" data-key="${item.description}" placeholder="${tooltip}"></td>`;
+                        } else if (item.type === "card") {
+                            row.innerHTML += `<td><input type="text" data-key="${item.description}" placeholder="use 'card_id'"></td>`;
+                        } else {
+                            row.innerHTML += `<td><input type="text" data-key="${item.description}"></td>`;
+                        }
+
+                        container.appendChild(row);
+                    });
+                    // Passe par /get_carnet_suggere (respecte campaign_log_last_file,
+                    // configurable par place de serveur) plutot que de lire
+                    // campaign_log_last.json en dur : sur les places 2 a 4 d'un
+                    // serveur multi, le nom en dur lisait toujours le carnet de la
+                    // place 1 (repertoire courant partage entre les quatre places).
+                    // La route rend {players_won, scenario, suggestions}, pas le
+                    // fichier brut.
+                    fetch('get_carnet_suggere', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(js => {
+                        if (!js || !js.suggestions) return
+                        for (const [key, value] of Object.entries(js.suggestions)) {
+                            const esc = CSS.escape(key)
+                            const input = container.querySelector(`input[type="text"][data-key="${esc}"], input[type="number"][data-key="${esc}"]`)
+                            if (input) { input.value = value; continue }
+                            const flag = container.querySelector(`input.flag[data-key="${esc}"]`)
+                            if (flag) { flag.checked = true; continue }
+                            const hidden = container.querySelector(`input[type="hidden"][data-key="${esc}"]`)
+                            if (hidden) {
+                                String(value).split(';').forEach(v => {
+                                    const box = hidden.parentElement.querySelector(`input[data-key="${CSS.escape(v)}"]`)
+                                    if (box) box.checked = true
+                                })
+                            }
+                        }
+                    }).catch(() => {})
+                }
+            </script>
+        </details>
+
+        <details id="settings_other" open="">
+        <summary>Other</summary>
+        <label><input type="checkbox" id="hide_bug_report">Hide Error Message</label>
+        <label><input type="checkbox" id="show_achievement">Show Achievements</label>
+        <div style="display: flex;">
+            <p>Statistics Notification: </p>
+            <select id="statistics_notification">
+                <option value="0">Off</option>
+                <option selected="selected" value="1">First time</option>
+                <option value="2">All</option>
+            </select>
+        </div>
+
+        <label>
+            <input type="checkbox" id="scene_3d">3D Render
+            <span class="tooltip">The 3D render mode may not function correctly in non-Chromium-based browsers.</span>
+        </label>
+        </details>
+
+        <button type="button" id="clearCacheButton">Reset to default</button>
+
+
+        <script>
+            (async () => {
+                const response_rate = await fetch(`get_completion_rate?`);
+                    if (!response_rate.ok) {
+                        throw new Error('Network response was not ok: ' + response_rate.statusText);
+                    }
+                    completion_rate = await response_rate.text();
+                    completion_rate = parseFloat(completion_rate)
+
+                    document.querySelectorAll('.debug-only-option').forEach( e => {
+                        if( completion_rate >= parseFloat(e.dataset.rate) ) {
+                            e.classList.remove('debug-only-option')
+                        }
+                    })
+            })()
+        </script>
+
+        <hr style="width: 100%;"/>
+
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="doCreateNewGame('')">Create Scene</button>
+            <!-- <button onclick="OpenToLAN(this)">Create Scene (LAN)</button> -->
+            <button onclick="doCreateNewGame('hot_seat')">Create Scene & Play (Hot Seat)</button>
+            <!-- <button onclick="NewGameOnline(this)">Create Scene (Online)</button> -->
+        </div>
+
+        <hr style="width: 100%;"/>
+
+
+        <div style="display: flex; gap: 1rem;" id="play-buttons">
+            <button><a target="_blank" href="">Join as player 1</a></button>
+            <button><a target="_blank" href="">Join as player 2</a></button>
+            <button><a target="_blank" href="">Join as player 3</a></button>
+            <button><a target="_blank" href="">Join as player 4</a></button>
+        </div>
+    </fieldset>
+    </section>
+
+    <script>
+        var scenario = ""
+        var heroes = {}
+
+        function get_this_type(e) {
+            if( e.parentNode.htmlFor.startsWith('encounter-sets') ) {
+                return 'encounter'
+            }
+            if( e.parentNode.htmlFor.startsWith('heroes') ) {
+                return 'player'
+            }
+            if( e.parentNode.htmlFor.startsWith('scenario') ) {
+                return 'villain'
+            }
+        }
+
+        function to_string(j) {
+            return `"${JSON.stringify(j).replaceAll('"', '\\\"')}"`
+        }
+        function get_id(e) {
+            return e.id.split('-')[e.id.split('-').length-1]
+        }
+        function get_name(x) {
+            return x.split(",")[0]
+        }
+
+
+        async function LoadJson(e) {
+            const file = e.files[0]
+            if( file == undefined ) {
+                return {}
+            }
+            const text = await file.text();
+            // console.log(text)
+            let j = JSON.parse(text)
+            return j
+        }
+
+        function random_modular() {
+
+            function getRandomElements(arr, x) {
+                let result = [];
+                let len = arr.length;
+                let taken = new Array(len);
+
+                if (x > len) {
+                    throw new RangeError("getRandomElements: more elements taken than available");
+                }
+
+                while (x--) {
+                    let randomIndex = Math.floor(Math.random() * len);
+                    result[x] = arr[randomIndex in taken ? taken[randomIndex] : randomIndex];
+                    taken[randomIndex] = --len in taken ? taken[len] : len;
+                }
+
+                return result;
+            }
+
+            let names = []
+            let size = 0
+            function click_encounter_set(e) {
+                if( !e.classList.contains('lock') ) {
+                    names.push(e)
+                    if( e.classList.contains('click') ) {
+                        e.classList.remove('click')
+                        size += 1
+                    }
+                }
+                
+            }
+            document.querySelectorAll("#modular-sets button:not(.nemesis)").forEach(click_encounter_set)
+            let randomElements = getRandomElements(names, size);
+            randomElements.forEach(e => {e.classList.add("click")})
+        }
+
+        function SetScenario(j) {
+            let image
+            try {
+                if( j['villain'].length > 0 ) {
+                    image = `${get_name(j['villain'][0])}`
+                } else {
+                    image = `${get_name(j['schemes'][0])}`
+                }
+                document.querySelector('#default-encounter-sets').innerHTML = "<br/>" + j['encounter_sets'].join("<br/>")
+                document.querySelector('#encounter-size').innerHTML = j['encounters'].length
+
+                document.querySelector('#default-modular-sets').innerHTML = "<br/>" + j['modular_sets'].join("<br/>")
+
+                let div = document.querySelector('#is-expert')
+                div.innerHTML = j['expert']
+                if( div.innerHTML == 'true' ) {
+                    div.classList.add('expert')
+                } else {
+                    div.classList.remove('expert')
+                }
+                // scenario = to_string(j)
+                scenario = j
+
+                document.querySelectorAll('input[id^="encounter-sets-"]').forEach(
+                    e => Reset(e)
+                )
+                document.querySelectorAll('input[id^="modular-sets-"]').forEach(
+                    e => Reset(e)
+                )
+
+                function click_encounter_set(e) {
+                    if( j['modular_sets'].includes(e.dataset.name) ||
+                        j['encounter_sets'].includes(e.dataset.name)) {
+                        if( j['encounter_sets'].includes(e.dataset.name) ) {
+                            e.classList.add('lock')
+                        } else {
+                            e.classList.remove('lock')
+                        }
+                        e.classList.add('click')
+                    } else {
+                        e.classList.remove('click')
+                        e.classList.remove('lock')
+                    }
+                }
+
+                document.querySelectorAll("#encounter-sets button").forEach(click_encounter_set)
+                document.querySelectorAll("#modular-sets button").forEach(click_encounter_set)
+                document.querySelector("#modular-sets").classList.add('hide-not-click')
+                document.querySelectorAll(`#modular-sets .nemesis`).forEach(e=>e.classList.remove('hide'))
+
+                if( 'challenges' in j ) {
+                    const challengeDiv = document.getElementById('challenge');
+                    challengeDiv.open = true
+                    const checkboxes = challengeDiv.querySelectorAll('input[type="checkbox"]:checked');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false
+                    });
+                    for( let challenge of j['challenges'] ) {
+                        let option = document.getElementById(challenge)
+                        if( option ) {
+                            option.checked = true
+                        }
+                    }
+                }
+            }
+            catch (err) {
+                image = ""
+                scenario = ""
+                console.log(err.message)
+            }
+            let scenario_div = document.querySelector('#img-scenario')
+            if( scenario_div ) {
+                scenario_div.src = image
+            }
+        }
+        function SetHero(j, i) {
+            e = document.querySelector(`#img-heroes-${i}`)
+            try {
+                image = `${get_name(j['hero'][0])}`
+                // heroes[i] = to_string(j)
+                heroes[i] = j
+                size = j['player_deck'].length.toString()
+                e.src = image
+                e.parentNode.setAttribute('data-text', size)
+            }
+            catch (err) {
+                image = ""
+                heroes[i] = ""
+                size = ''
+                console.log(err.message)
+                e.removeAttribute('src')
+            }
+            let select_size = 0
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`img-heroes-${i}`);
+                if( input.src != '' ) {
+                    select_size += 1
+                }
+            }
+            let input = document.querySelector('#timeout_slider')
+            if( select_size > 1 ) {
+                input.disabled = false
+                timeout_update(false)
+            } else {
+                input.disabled = true
+                timeout_update(true)
+            }
+        }
+
+        async function Load(e) {
+            let j = await LoadJson(e)
+            let i = get_id(e)
+            if( get_this_type(e) == 'player' ) {
+                SetHero(j, i)
+            }
+            else
+            if( get_this_type(e) == 'villain' ) {
+                SetScenario(j)
+            }
+        }
+
+        function Reset(e) {
+            e.value = ''
+            let j = {}
+            let i = get_id(e)
+            if( get_this_type(e) == 'player' ) {
+                SetHero(j, i)
+            }
+            else
+            if( get_this_type(e) == 'villain' ) {
+                SetScenario(j)
+            }
+        }
+
+        var currentProtocol = window.location.protocol
+        var currentHost = window.location.host
+
+        async function OpenToLAN() {
+            const port = window.location.port;
+            const response = await fetch(`new_game_lan?port=${port}`);
+            const data = await response.text()
+            currentHost = data
+            doCreateNewGame()
+        }
+
+        function enableFirstJoinButtons(size) {
+            const playButtons = document.querySelectorAll('#play-buttons button');
+            if( size == 0 ) {
+                playButtons.forEach((button) => {
+                    button.disabled = true;
+                })
+            } else {
+                playButtons.forEach((button, index) => {
+                    if (index < size) {
+                        button.disabled = false; // Enable the button
+                    } else {
+                        button.disabled = true; // Disable the button
+                    }
+                })
+            }
+            const playButtonsA = document.querySelectorAll('#play-buttons button a');
+            playButtonsA.forEach((button, index) => {
+                button.href = getJoinGameUrl(index)
+            })
+        }
+
+        async function doCreateNewGame(mode) {
+            enableFirstJoinButtons(0)
+
+            let encounter_sets_names = []
+            const divs = document.querySelectorAll('#encounter-sets button');
+            for (const e of divs) {
+                if( e.classList.contains('click') ) {
+                    encounter_sets_names.push(e.dataset.name)
+                }
+            }
+            const div2 = document.querySelectorAll('#modular-sets button');
+            for (const e of div2) {
+                if( e.classList.contains('click') ) {
+                    encounter_sets_names.push(e.dataset.name)
+                }
+            }
+            let heroes_jsons = []
+
+            for( key in heroes ) {
+                if( heroes[key] ) {
+                    heroes_jsons.push(heroes[key])
+                }
+            }
+            if( heroes_jsons.length == 0 ) {
+                alert('Please select Hero(es)')
+                return
+            }
+            if( scenario == '' ) {
+                alert('Please select Scenario')
+                return
+            }
+            class NewGame {
+                /** @type {string} */
+                campaign_json
+                /** @type {string[]} */
+                encounter_set_names
+                /** @type {string[]} */
+                hero_json
+                /** @type {number} */
+                seed
+                /** @type {number} */
+                timeout
+                /** @type {string[]} */
+                challenges
+                /** @type {string[]} */
+                rules
+                /** @type {Record<string, string>} */
+                campaign_log
+            }
+
+            new_game = new NewGame()
+            new_game.campaign_json = JSON.stringify(scenario)
+            new_game.encounter_set_names = encounter_sets_names
+            new_game.hero_json = []
+
+            function read_campaign_log() {
+                if( !document.querySelector('#mode_campaign').checked ) {
+                    return {}
+                }
+                const jsonData = {};
+                const inputs = document.querySelector('#campaign_log_container').querySelectorAll('input[type="text"], input[type="number"], select');
+                inputs.forEach(input => {
+                    const inputValue = input.value.trim();
+                    const key = input.getAttribute('data-key');
+                    if (inputValue) {
+                        jsonData[key] = inputValue;
+                    }
+                });
+
+                const input_hidden = document.querySelector('#campaign_log_container').querySelectorAll('input[type="hidden"]');
+                input_hidden.forEach(input => {
+                    const input_checkboxes = input.parentElement.querySelectorAll('input[type="checkbox"], input[type="radio"]')
+                    let checked_list = []
+                    input_checkboxes.forEach(i => {
+                        if( i.checked ) {
+                            checked_list.push(i.getAttribute('data-key'))
+                        }
+                    })
+                    const key = input.getAttribute('data-key');
+                    if (checked_list.length > 0) {
+                        jsonData[key] = checked_list.join(";");
+                    }
+                })
+                const flag_inputs = document.querySelector('#campaign_log_container').querySelectorAll('input.flag');
+                flag_inputs.forEach(input => {
+                    if (input.checked) {
+                        jsonData[input.getAttribute('data-key')] = '1';
+                    }
+                });
+                return jsonData
+            }
+            new_game.campaign_log = read_campaign_log()
+
+            for(let heroes_json of heroes_jsons ) {
+                new_game.hero_json.push(JSON.stringify(heroes_json))
+            }
+            let timeout = 0
+            if( mode == "hot_seat" ) {
+                timeout = 0
+            } else if( !document.querySelector("#timeout_slider").disabled ) {
+                timeout = parseInt(document.querySelector("#timeout_slider").value)
+            }
+            new_game.timeout = timeout
+            seed_value = document.querySelector("#seed_div").value
+            if( seed_value == '' ) {
+                seed_value = -1
+            } else {
+                seed_value = parseInt(seed_value)
+            }
+
+            function getCheckedChallenges() {
+                const checkedChallenges = [];
+                const challengeDiv = document.getElementById('challenge');
+                const checkboxes = challengeDiv.querySelectorAll('input[type="checkbox"]:checked');
+
+                checkboxes.forEach(checkbox => {
+                    // Get the text node that follows the checkbox
+                    const label = checkbox.parentNode;
+                    // const challengeText = label.childNodes[1].nodeValue.trim(); // Get the text content
+                    const challengeText = label.childNodes[0].id; // Get the text content
+                    checkedChallenges.push(challengeText);
+                });
+
+                return checkedChallenges;
+            }
+
+
+            new_game.challenges = getCheckedChallenges()
+            new_game.seed = seed_value
+
+            new_game.rules = []
+            if( document.querySelector('#mode_skirmish').checked ) {
+                new_game.rules.push("mode_skirmish")
+            }
+            if( document.querySelector('#mode_campaign').checked ) {
+                new_game.rules.push("mode_campaign")
+            }
+            const mode_heroic = parseInt(document.querySelector('#mode_heroic_slider').value)
+            if( mode_heroic ) {
+                new_game.rules.push(`mode_heroic_${mode_heroic}`)
+            }
+            if( document.querySelector('#v16_all').checked ) {
+                new_game.rules.push(`v16_all`)
+            }
+            else {
+                document.querySelectorAll('.rule_v16').forEach(e => {
+                    if( e.checked ) {
+                        new_game.rules.push(e.id)
+                    }
+                })
+            }
+
+            document.querySelectorAll('.rule:not(.rule_v16)').forEach(e => {
+                if( e.checked ) {
+                    new_game.rules.push(e.id)
+                }
+            })
+
+            if( !new_game.rules.includes('crisis_of_infinite_deadpools') ) {
+                new_game.rules.push('no_crisis_of_infinite_deadpools')
+            }
+
+            if( !new_game.rules.includes('encounter_cards_ignore_crisis') ) {
+                new_game.rules.push('no_encounter_cards_ignore_crisis')
+            }
+
+            let cmd = JSON.stringify(new_game)
+            let encoded = encodeURIComponent(cmd);
+            console.log(encoded)
+            var ajax = new XMLHttpRequest();
+            ajax.open("GET", `new?data=${encoded}`, true);
+            ajax.onreadystatechange = function () {
+                if( this.readyState == 4 ) {
+                    const length = heroes_jsons.length
+                    enableFirstJoinButtons(length)
+
+                    if( mode ) {
+                        doJoinGame(mode)
+                    }
+                    else
+                    if( length == 1 ) {
+                       doJoinGame(0)
+                    }
+                }
+            }
+            ajax.send();
+        }
+
+        function getJoinGameUrl(player_id) {
+            function getOption(selector, value){
+                let option = document.querySelector(selector)
+                if( option ) {
+                    return option.checked ? value : ''
+                } else {
+                    return ''
+                }
+            };
+
+            const options = [
+                getOption('#show_achievement', '&show_achievement'),
+                getOption('#hide_bug_report', '&hide_bug_report'),
+                document.querySelector('#statistics_notification').value == '1' ? `` : `&notification=${document.querySelector('#statistics_notification').value}`,
+                getOption('#scene_3d', '&3d_scene'),
+            ].join('');
+
+            const newUrl = `${currentProtocol}//${currentHost}`;
+
+            if( player_id == "hot_seat" ) {
+                return `${newUrl}/?hot_seat${options}`
+            } else {
+                return `${newUrl}?p=${player_id}${options}`
+            }
+        }
+
+        function doJoinGame(player_id) {
+            const newUrl = getJoinGameUrl(player_id)
+            window.open(newUrl)
+        }
+
+        async function getScenario(name) {
+            if( name ) {
+                const response = await fetch(`get_scenario_json?${name}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                const data = await response.json();
+                return data
+            }
+        }
+
+        async function loadScenario(name) {
+            if( name ) {
+                const data = await getScenario(name)
+                SetScenario(data)
+            }
+        }
+
+        document.querySelectorAll("div#set-images input[type='button']").forEach(e => {
+            e.onclick = () => {loadScenario(e.value)}
+        })
+    </script>
+
+<script>
+    const search_params = new URLSearchParams(window.location.search);
+    if( search_params.has('deck') ) {
+        const text = search_params.get('deck')
+        const json = atob(text)
+        importDeck(json)
+    }
+</script>
+
+<script>
+    (async () => {
+        const response_get_gamers = await fetch(`get_gamers?`);
+        const num = parseInt(await response_get_gamers.text())
+        enableFirstJoinButtons(num)
+    })();
+</script>
+
+
+<script>
+    // Define the key for caching the form data object
+    const CACHE_KEY = 'form_cache_data';
+    cache_ids = ['v16_all', 'v16_player_elimination', 'v16_reveal', 'v16_teamwork', 'v16_referential_ability', 'v16_confuse_stun', 'encounter_cards_ignore_crisis', 'crisis_of_infinite_deadpools',
+        'hide_bug_report', 'show_achievement', 'scene_3d', 'statistics_notification', 'mode_heroic_slider', 'mode_skirmish',
+        'mode', 'rules', 'challenge', 'settings_other',
+        'timeout_slider',
+    ]
+
+    // --- 1. Saving Form State (Caching) ---
+
+    /**
+     * Collects data from the form's relevant inputs and saves it to localStorage as a JSON string.
+     */
+    function saveFormState() {
+        // debugger
+        // console.log(JSON.parse(localStorage.getItem(CACHE_KEY))["scene_3d"])
+
+        const formData = {};
+
+        for( const id of cache_ids ) {
+            const element = document.getElementById(id)
+            if( !element ) {
+                continue
+            }
+            const type = element.type;
+            const name = element.name;
+
+            if (type === 'checkbox') {
+                formData[id] = element.checked;
+            } else if (type === 'radio') {
+                // For radio buttons, we only save the value of the currently checked one
+                if (element.checked) {
+                    // Use the 'name' for radio buttons as they belong to a group
+                    formData[name] = element.value; 
+                }
+            } else if (element.tagName === 'SELECT') {
+                // For dropdowns, save the selected value
+                formData[id || name] = element.value;
+            } else if (element.tagName === 'TEXTAREA' || type === 'text' || type === 'email' || type === 'password' || type === 'range') {
+                // Standard text inputs and textareas
+                formData[id || name] = element.value;
+            }
+            // Handle Details element (New)
+            else if (element.tagName === 'DETAILS') {
+                // Cache the 'open' state (true or false)
+                formData[id] = element.open;
+            }
+        };
+
+        // Save the formData object to localStorage after converting it to a JSON string
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(formData));
+        } catch (error) {
+            console.error("Error saving data to localStorage:", error);
+        }
+    }
+
+    // --- 2. Restoring Form State (Loading from Cache) ---
+
+    /**
+     * Retrieves the cached form data and populates the form fields.
+     */
+    function loadFormState() {
+        try {
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            
+            if (cachedData) {
+                const formData = JSON.parse(cachedData);
+                
+                // Iterate over the cached data and apply it to the form elements
+                for (const key in formData) {
+                    const value = formData[key];
+
+                    // if( key == "scene_3d" ) {
+                    //     debugger
+                    // }
+
+                    // Attempt to find element by ID first (works for most inputs/textareas/selects)
+                    let element = document.getElementById(key);
+
+                    if (element) {
+                        // Handle Text, Textarea, Select
+                        if (element.tagName === 'TEXTAREA' || element.type === 'text' || element.type === 'email' || element.type === 'password' || element.tagName === 'SELECT' || element.type === 'range') {
+                            // 1. Restore the value
+                            element.value = value;
+                            // 2. IMPORTANT: Manually dispatch 'input' event to trigger 'oninput' handlers (like mode_heroic_update)
+                            //    This is crucial for range inputs and text inputs that have visual feedback dependent on 'oninput'.
+                            element.dispatchEvent(new Event('input', { bubbles: true }));
+                        } 
+                        // Handle Checkbox
+                        else if (element.type === 'checkbox') {
+                            element.checked = value;
+                        } // Handle Details element (New)
+                        else if (element.tagName === 'DETAILS') {
+                            // Restore the 'open' state based on the cached boolean value
+                            element.open = value;
+                        }
+                    } 
+                    
+                    // Handle Radio Buttons (which are stored by their 'name' in the cache)
+                    else {
+                        // Find the radio button with the matching name AND value from the cache
+                        // We use `document.querySelector` to find the specific radio input based on the name and the cached value
+                        const radioInput = document.querySelector(`input[name="${key}"][value="${value}"]`);
+                        if (radioInput) {
+                            radioInput.checked = true;
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error loading data from localStorage:", error);
+            // If parsing fails (e.g., corrupted data), clear the invalid cache.
+            localStorage.removeItem(CACHE_KEY);
+        }
+    }
+
+    // --- Event Listeners ---
+
+    // Listen for input and change events on the form.
+    function setupDetailsListeners() {
+        // 'input' covers text fields, 'change' covers checkboxes, radio, and select.
+        document.addEventListener('input', saveFormState);
+        document.addEventListener('change', saveFormState);
+        // Find all details elements within the form or container
+        const detailsElements = document.querySelectorAll('details');
+
+        detailsElements.forEach(details => {
+            // Only attach the listener if the details element's ID is in the whitelist
+            if (details.id && cache_ids.includes(details.id)) {
+                // Attach the 'toggle' listener directly to the element
+                details.addEventListener('toggle', saveFormState);
+                // details.addEventListener('input', saveFormState);
+                // details.addEventListener('change', saveFormState);
+                // details.addEventListener('click', saveFormState);
+                // debugger
+            }
+        });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        loadFormState();
+        setupDetailsListeners();
+    });
+
+    // Optional: Clear Cache functionality
+    const clearCacheBtn = document.getElementById('clearCacheButton');
+    if (clearCacheBtn) {
+        clearCacheBtn.addEventListener('click', () => {
+            localStorage.removeItem(CACHE_KEY);
+            // Reload the page to show a clean form
+            window.location.reload(); 
+        });
+    }
+</script>
+<script>
+(async () => {
+    try {
+        const resp = await fetch('list_starter_deck?')
+        if (!resp.ok) return
+        const names = await resp.json()
+        if (!names || !names.length) return
+        const wrap = document.querySelector('#starter-gallery-wrap')
+        const gallery = document.querySelector('#starter-gallery')
+        const results = await Promise.all(names.map(async n => {
+            try {
+                const r = await fetch(`get_hero_json?${encodeURIComponent(n)}`)
+                if (!r.ok) return null
+                return await r.json()
+            } catch (e) { return null }
+        }))
+        const decks = results.filter(d => d && d.hero && d.hero.length)
+        decks.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+        for (const deck of decks) {
+            const img_id = deck.hero[0].split(',')[0]
+            const div = document.createElement('div')
+            div.className = 'starter-hero'
+            div.style.cssText = 'cursor:pointer; text-align:center; width:84px;'
+            const img = document.createElement('img')
+            img.src = img_id
+            img.loading = 'lazy'
+            img.style.cssText = 'width:84px; height:118px; object-fit:cover; border-radius:5px; border:2px solid transparent;'
+            img.title = deck.name || ''
+            img.onmouseenter = () => img.style.borderColor = '#c00'
+            img.onmouseleave = () => img.style.borderColor = 'transparent'
+            const label = document.createElement('div')
+            label.textContent = deck.name || ''
+            label.style.cssText = 'font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'
+            div.appendChild(img)
+            div.appendChild(label)
+            div.onclick = () => {
+                for (let i = 1; i <= 4; i++) {
+                    const e = document.querySelector(`#img-heroes-${i}`)
+                    if (!e.getAttribute('src')) {
+                        SetHero(deck, i)
+                        break
+                    }
+                }
+            }
+            gallery.appendChild(div)
+        }
+        if (gallery.children.length) {
+            wrap.style.display = 'block'
+            const filter = document.querySelector('#starter-filter')
+            filter.addEventListener('input', () => {
+                const q = filter.value.toLowerCase()
+                for (const child of gallery.children) {
+                    child.style.display = child.textContent.toLowerCase().includes(q) ? '' : 'none'
+                }
+            })
+        }
+    } catch (e) { console.log('starter gallery:', e) }
+})()
+</script>
+
+<!-- ===================== WIZARD NAV ===================== -->
+<footer class="w-foot">
+    <div class="w-summary">
+        <span class="w-pill"><span class="pk">Villain</span><b id="w-villain">—</b></span>
+        <span class="w-pill"><b id="w-players">0</b> heroes</span>
+        <span class="w-pill"><b id="w-mods">0</b> modules</span>
+    </div>
+    <div class="w-spacer"></div>
+    <button type="button" class="w-nav w-back-btn" id="w-back" onclick="wizardGo(-1)" style="visibility:hidden">&larr; Back</button>
+    <button type="button" class="w-nav w-next" id="w-next" onclick="wizardGo(1)">Next &rarr;</button>
+    <button type="button" class="w-nav w-create" id="w-create" onclick="doCreateNewGame('hot_seat')" style="display:none">Create &amp; Play</button>
+</footer>
+
+<script>
+(function(){
+    var cur = 0, N = 4;
+
+    function heroCount(){
+        try { return Object.keys(heroes).filter(function(k){ return heroes[k]; }).length; }
+        catch(e){ return 0; }
+    }
+    function scenarioChosen(){
+        try { return !!scenario && typeof scenario === 'object' && Object.keys(scenario).length > 0; }
+        catch(e){ return false; }
+    }
+    var canPass = [ scenarioChosen, function(){ return true; }, function(){ return heroCount() > 0; }, function(){ return true; } ];
+
+    function prettyVillain(){
+        var b = document.querySelector('#set-content button.click');
+        var name = (b && b.value) ? b.value : '';
+        if(!name){ return scenarioChosen() ? 'Scenario loaded' : '—'; }
+        name = name.replace(/_expert$/, ' (Expert)').replace(/_/g, ' ');
+        return name.replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    }
+
+    function updateSummary(){
+        document.getElementById('w-villain').textContent = prettyVillain();
+        document.getElementById('w-players').textContent = heroCount();
+        document.getElementById('w-mods').textContent = document.querySelectorAll('#modular-sets button.click').length;
+        updateSplash();
+    }
+
+    function updateSplash(){
+        var splash = document.getElementById('w-splash');
+        if (!splash) return;
+        var name = document.getElementById('w-splash-name');
+        var stats = document.getElementById('w-splash-stats');
+        var btn = document.querySelector('#set-content button.click');
+        var btnImg = btn ? btn.querySelector('img') : null;
+        var scImg = document.querySelector('#img-scenario');
+        var src = btnImg ? btnImg.getAttribute('src')
+                 : (scImg && scImg.getAttribute('src') ? scImg.getAttribute('src') : '');
+
+        if (!scenarioChosen() || !src) {
+            splash.classList.add('empty');
+            splash.classList.remove('pop');
+            splash.dataset.last = '';
+            name.textContent = 'Pick a box, then a villain';
+            stats.innerHTML = '';
+            return;
+        }
+        splash.classList.remove('empty');
+        document.getElementById('w-splash-img').src = src;
+        document.getElementById('w-splash-bg').style.backgroundImage = "url('" + src + "')";
+        var pretty = prettyVillain();
+        name.textContent = pretty;
+
+        var enc = (scenario.encounters || []).length;
+        var mods = (scenario.modular_sets || []).length;
+        var expert = !!scenario.expert;
+        stats.innerHTML =
+            '<div class="st ' + (expert ? 'expert' : '') + '"><b>' + (expert ? 'Expert' : 'Standard') + '</b><span>Difficulty</span></div>' +
+            '<div class="st"><b>' + enc + '</b><span>Cartes rencontre</span></div>' +
+            '<div class="st"><b>' + mods + '</b><span>Sets modulaires</span></div>';
+
+        // Rejoue l'animation « KAPOW » seulement quand le villain change
+        if (splash.dataset.last !== (pretty + '|' + src)) {
+            splash.dataset.last = pretty + '|' + src;
+            splash.classList.remove('pop');
+            void splash.offsetWidth;      // force reflow pour redémarrer l'animation
+            splash.classList.add('pop');
+        }
+    }
+
+    function updateStepUI(){
+        document.querySelectorAll('.w-step').forEach(function(el, i){
+            el.classList.toggle('active', i === cur);
+            el.classList.toggle('done', i < cur && canPass[i]());
+        });
+        document.querySelectorAll('.w-sep').forEach(function(el, i){ el.classList.toggle('done', i < cur); });
+        document.getElementById('w-next').disabled = !canPass[cur]();
+    }
+
+    window.wizardShow = function(i){
+        if(i < 0 || i >= N){ return; }
+        cur = i;
+        document.querySelectorAll('.w-step-panel').forEach(function(p){ p.classList.toggle('on', +p.dataset.panel === i); });
+        document.getElementById('w-back').style.visibility = (i === 0) ? 'hidden' : 'visible';
+        document.getElementById('w-next').style.display = (i === N - 1) ? 'none' : 'inline-flex';
+        document.getElementById('w-create').style.display = (i === N - 1) ? 'inline-flex' : 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateSummary(); updateStepUI();
+    };
+
+    window.wizardGo = function(d){
+        if(d > 0 && !canPass[cur]()){ return; }
+        window.wizardShow(cur + d);
+    };
+
+    document.querySelectorAll('.w-step').forEach(function(el){
+        el.addEventListener('click', function(){
+            var t = +el.dataset.step;
+            if(t <= cur || canPass[cur]()){ window.wizardShow(t); }
+        });
+    });
+
+    // Recompute after the game's own click/change handlers have run.
+    document.addEventListener('click', function(){ setTimeout(function(){ updateSummary(); updateStepUI(); }, 0); });
+    document.addEventListener('change', function(){ updateSummary(); updateStepUI(); });
+
+    // Le chargement d'un scénario/héros est asynchrone : on rejoue le récap+splash
+    // au moment exact où l'état est appliqué (SetScenario / SetHero).
+    if (typeof SetScenario === 'function') {
+        var _origSetScenario = SetScenario;
+        window.SetScenario = function(){ var r = _origSetScenario.apply(this, arguments); try { updateSummary(); updateStepUI(); } catch (e) {} return r; };
+    }
+    if (typeof SetHero === 'function') {
+        var _origSetHero = SetHero;
+        window.SetHero = function(){ var r = _origSetHero.apply(this, arguments); try { updateSummary(); updateStepUI(); } catch (e) {} return r; };
+    }
+
+    window.wizardShow(0);
+})();
+</script>
+<script src="/public/js/ui-switch.js" data-role="ancienne" data-nouvelle="/prepare.html" defer></script>
+</body>
+</html>
