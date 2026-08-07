@@ -93,11 +93,18 @@ Routes : `/list_campagnes_definies`, `/get_campagne_definition?<code>`,
 
 `/get_carnet_suggere` rend le contenu de `campaign_log_last.json` : ce que le
 moteur a lui-même relevé à la toute dernière fin de partie de campagne sur
-cette place (le fichier est cloisonné par place, voir §8). La route ne dit
-en revanche pas de quelle PARTIE ce carnet vient : si deux parties de
-campagne se sont enchaînées sur la même place entre deux consultations, c'est
-la plus récente qui répond, sans distinction. Fichier absent ou illisible :
-réponse 200 avec un carnet vide, jamais une erreur.
+cette place (le fichier est cloisonné par place, voir §8), plus `scenario`,
+l'estampille du scénario qui a produit ces suggestions (dérivée du `set_name`
+de la manigance principale active, voir `WriteCampaignLogAtGameOver` dans
+`campaign.py`). Rien n'efface jamais ce fichier : si deux parties de
+campagne, de deux boîtes différentes, s'enchaînent sur la même place, c'est
+toujours la plus récente qui répond. `scenario` sert précisément à ça :
+`preRemplir` (`ui-app/src/board/campagne/preremplissage.ts`) compare cette
+estampille au scénario du contexte de campagne en cours et ignore les
+suggestions EN BLOC si elles ne correspondent pas, plutôt que de les
+présenter comme relevées par le jeu pour la mauvaise partie. Fichier absent
+ou illisible : réponse 200 avec un carnet vide et `scenario: null`, jamais
+une erreur.
 
 ### Écran des campagnes (JS non compilé)
 
@@ -539,6 +546,27 @@ wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marv
 Si les compteurs `compilés` restent obstinément bas alors qu'un fichier vient
 d'être modifié, c'est le signe que sa date ne suffit plus à déclencher sa
 recompilation.
+
+**`updates[cle] = None` efface une entrée du carnet côté moteur, mais le
+plateau ne distingue pas « clé absente » de « clé effacée » et ressuscite
+l'ancienne valeur.** `WriteCampaignLogAtGameOver` (`campaign.py`) retire bien
+la clé de `out` quand `collect_fn` rend `None`, mais `chargerCarnetSuggere`
+ne transmet que ce qui reste dans `suggestions` : une clé absente du JSON est
+indiscernable, côté plateau, d'une clé jamais écrite, donc `preRemplir`
+retombe sur `carnet?.[cle]`, c'est-à-dire l'ancienne valeur. Sans effet
+aujourd'hui, `CollectMTS` (`mts`) ne rendant jamais `None`, mais `mut_gen`,
+`next_evol` et `aoa` l'utilisent déjà pour lever des pénalités : à régler
+avant d'écrire leurs fichiers de campagne (§9), sans quoi une pénalité comme
+`Panicked Refugees` (`aoa`), une fois posée, ne pourra plus jamais être levée.
+
+**L'écriture de `campaign_log_last.json` n'est pas atomique.** `open(chemin,
+'w')` puis `json.dump` écrit directement dans le fichier final ; une lecture
+concurrente (une autre place, une requête `/get_carnet_suggere` qui arrive
+pendant l'écriture) peut tomber sur du JSON tronqué. La route avale l'erreur
+de parsing et rend un carnet vide, silencieusement. Pour `mts`, dont aucun
+champ de `mts.json` n'a de `detection` de secours (§5 : les neuf clés sont
+des drapeaux moteur purs), un carnet vide ainsi rendu perd la récompense sans
+le moindre message, ni pour le joueur ni dans les journaux.
 
 **La sonde efface `campaign_log_last.json` par son nom en dur.** Le carnet
 sortant décrit au §3 est cloisonné par place de serveur via la clé de
