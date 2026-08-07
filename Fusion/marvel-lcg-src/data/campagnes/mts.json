@@ -1,0 +1,138 @@
+{
+  "version": "1.0",
+  "code": "mts",
+  "cle_extension": "21. The Mad Titan's Shadow",
+  "nom": "L'Ombre du Titan Fou",
+  "nom_en": "The Mad Titan's Shadow",
+  "resume": "Thanos cherche les Pierres d'Infinité, et chaque victoire vous laisse un allié, une dette ou une cicatrice que le scénario suivant vous réclamera.",
+  "resume_en": "Thanos hunts the Infinity Stones, and every victory leaves behind an ally, a debt or a scar the next scenario will come to collect.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "scenarios": [
+    {
+      "id": "ebony_maw",
+      "numero": 1,
+      "nom": "Ebony Maw",
+      "nom_fr": "Ebony Maw",
+      "resume": "L'émissaire de Thanos s'infiltre dans la Tour des Vengeurs et y retourne vos propres défenses. Rien n'explose, rien ne hurle : il se contente de parler, et les portes s'ouvrent.",
+      "enjeu": "Ce que Maw laisse derrière lui vous suit. Une brèche de sécurité non refermée reviendra hanter le deck de rencontre du scénario suivant ; Cosmo, s'il est encore là, se battra à vos côtés.",
+      "victoire": [
+        {
+          "cle": "Campaign Pool: Cosmo",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Cosmo rallié",
+          "aide": "Cosmo entre en jeu sous votre contrôle au scénario 3 s'il est noté ici."
+        },
+        {
+          "cle": "Campaign Pool: Security Breach",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Brèche de sécurité laissée ouverte",
+          "aide": "La carte Security Breach sera mélangée au deck de rencontre des scénarios suivants."
+        }
+      ]
+    },
+    {
+      "id": "the_tower_defense",
+      "numero": 2,
+      "nom": "Tower Defense",
+      "nom_fr": "La Défense de la Tour",
+      "resume": "Proxima Midnight et Corvus Glaive attaquent la Tour ensemble. Deux vilains, un seul bâtiment, et personne pour vous relever.",
+      "enjeu": "La Tour peut sortir debout ou éventrée de cette nuit. Ce qu'elle perd ici, aucun scénario suivant ne le lui rendra.",
+      "victoire": [
+        {
+          "cle": "Campaign Pool: Shawarma",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Shawarma partagé",
+          "aide": "Chaque joueur mélangera une copie de Shawarma dans son deck aux scénarios suivants."
+        },
+        {
+          "cle": "Campaign Pool: Black Swan",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Black Swan en fuite",
+          "aide": "Non vaincue, elle revient en jeu au scénario 3."
+        },
+        {
+          "cle": "Avengers Tower Damaged",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Tour des Vengeurs endommagée",
+          "aide": "Pénalité appliquée à la mise en place des scénarios suivants."
+        }
+      ]
+    },
+    {
+      "id": "thanos",
+      "numero": 3,
+      "nom": "Thanos",
+      "nom_fr": "Thanos",
+      "resume": "Le Titan descend lui-même. Il ne vient pas gagner, il vient prendre, et il a déjà compté combien de temps cela lui prendrait.",
+      "enjeu": "Ce que Thanos emporte des Pierres d'Infinité décide de la puissance qu'il aura contre Hela, puis contre Loki.",
+      "victoire": [
+        {
+          "cle": "Campaign Pool: System Shock",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Choc systémique subi",
+          "aide": "Chaque joueur mélangera une copie de System Shock dans son deck aux scénarios suivants."
+        },
+        {
+          "cle": "The Infinity Stones 1B completed",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Les Pierres d'Infinité rassemblées par Thanos",
+          "aide": "Pénalité appliquée à la mise en place des scénarios 4 et 5."
+        }
+      ]
+    },
+    {
+      "id": "hela",
+      "numero": 4,
+      "nom": "Hela",
+      "nom_fr": "Hela",
+      "resume": "Le royaume des morts n'est plus un lieu de passage. Hela y retient Odin, et Garm garde la porte que vous devrez franchir dans les deux sens.",
+      "enjeu": "Odin délivré vous suivra jusqu'à Asgard. Laissé derrière, il n'y sera pas.",
+      "victoire": [
+        {
+          "cle": "Campaign Pool: Norn Stone",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Pierre de Norn récupérée",
+          "aide": "Chaque joueur en reçoit une copie au scénario 5."
+        },
+        {
+          "cle": "Campaign Pool: Odin",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Odin délivré",
+          "aide": "Odin entre en jeu sous votre contrôle au scénario 5 s'il est noté ici."
+        }
+      ]
+    },
+    {
+      "id": "loki",
+      "numero": 5,
+      "nom": "Loki",
+      "nom_fr": "Loki",
+      "resume": "Loki règne sur Asgard et rien de ce que vous voyez n'est sûr d'exister. La campagne se termine ici, avec tout ce que vous y avez traîné.",
+      "enjeu": "Rien à reporter : c'est le dernier scénario.",
+      "final": true,
+      "victoire": []
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "Points de vie restants",
+      "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
+    }
+  ]
+}
