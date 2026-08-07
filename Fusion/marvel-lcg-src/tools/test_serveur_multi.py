@@ -74,23 +74,25 @@ def nettoyer_temoins():
             os.remove(chemin)
 
 
-# --- Preparation : les configurations, puis les fichiers temoins ---
-subprocess.run([sys.executable, os.path.join(RACINE, "tools", "config_serveur.py"), "2"],
-               cwd=RACINE, check=True, capture_output=True)
-nettoyer_temoins()
-os.makedirs(os.path.dirname(TEMOIN_SAUVEGARDE), exist_ok=True)
-with open(TEMOIN_SAUVEGARDE, "w", encoding="utf-8") as f:
-    json.dump({"temoin": "partie de la place 1"}, f)
-with open(TEMOIN_DECK_HOTE, "w", encoding="utf-8") as f:
-    json.dump({"name": "temoin de l'hote", "hero": "Spider-Man"}, f)
-
-# Le Popen est DANS le try, pas avant : s'il leve (bash introuvable, limite de
-# ressources...), le script doit quand meme atteindre nettoyer_temoins() dans
-# le finally. "serveur = None" avant le try est le garde qui protege le
-# finally si l'echec survient avant meme que l'affectation n'ait lieu.
+# Le Popen n'est pas la seule chose deplacee dans le try : la preparation des
+# temoins ECRIT dans le vrai deck/custom/ de l'utilisateur (TEMOIN_DECK_HOTE).
+# Si elle restait avant le try et qu'une interruption survenait entre les
+# deux, le fichier resterait sur place, hors de portee du finally. "serveur
+# = None" avant le try est le garde qui protege le finally si l'echec
+# survient avant meme que l'affectation n'ait lieu.
 serveur = None
 
 try:
+    # --- Preparation : les configurations, puis les fichiers temoins ---
+    subprocess.run([sys.executable, os.path.join(RACINE, "tools", "config_serveur.py"), "2"],
+                   cwd=RACINE, check=True, capture_output=True)
+    nettoyer_temoins()
+    os.makedirs(os.path.dirname(TEMOIN_SAUVEGARDE), exist_ok=True)
+    with open(TEMOIN_SAUVEGARDE, "w", encoding="utf-8") as f:
+        json.dump({"temoin": "partie de la place 1"}, f)
+    with open(TEMOIN_DECK_HOTE, "w", encoding="utf-8") as f:
+        json.dump({"name": "temoin de l'hote", "hero": "Spider-Man"}, f)
+
     serveur = subprocess.Popen(
         ["bash", "./launcher-serveur.sh", "2"],
         cwd=RACINE,

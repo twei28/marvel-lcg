@@ -16,3 +16,5 @@ Fusion/marvel-lcg-src/deck/serveur-*/
 Fusion/marvel-lcg-src/replays/serveur-*/
 Fusion/marvel-lcg-src/games_history-serveur-*.json
 Fusion/marvel-lcg-src/statistics-serveur-*.json
+Fusion/marvel-lcg-src/campagnes-serveur-*/
+Fusion/marvel-lcg-src/achievements-serveur-*.json

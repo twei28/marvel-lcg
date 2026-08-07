@@ -45,6 +45,12 @@ for place in (1, 2, 3, 4):
     verifier(f"place {place} : ecrit ses decks chez lui, lit ceux de l'hote",
              cfg["deck_folders"] == [f"./deck/serveur-{place}/", "./deck/custom/"],
              cfg["deck_folders"])
+    verifier(f"place {place} : campagnes en cours separees",
+             cfg["campagne_folder"] == f"../campagnes-serveur-{place}/",
+             cfg["campagne_folder"])
+    verifier(f"place {place} : hauts faits separes",
+             cfg["achievements_file"] == f"../achievements-serveur-{place}.json",
+             cfg["achievements_file"])
     verifier(f"place {place} : aucun mot de passe d'entree",
              cfg["password"] == "", cfg["password"])
     verifier(f"place {place} : aucun siege reserve",
@@ -87,6 +93,8 @@ try:
              os.path.isdir(os.path.join(bac, ".game", "deck", "serveur-1")))
     verifier("dossier de sauvegardes de la place 2 cree",
              os.path.isdir(os.path.join(bac, "replays", "serveur-2")))
+    verifier("dossier de campagnes de la place 1 cree",
+             os.path.isdir(os.path.join(bac, "campagnes-serveur-1")))
     verifier("place 3 non demandee, donc non creee",
              not os.path.exists(os.path.join(bac, ".serveur", "launch-3.json")))
     try:

@@ -4,9 +4,11 @@ Le moteur est mono-partie : une place egale un processus, donc un port et des
 dossiers a lui. Tout ce qui distingue les places est ICI, nulle part ailleurs.
 
 Ce qui est SEPARE par place : le port, les sauvegardes, l'historique, les
-statistiques, et le dossier ou l'ami enregistre ses decks.
+statistiques, le dossier ou l'ami enregistre ses decks, ses campagnes en
+cours et ses hauts faits.
 Ce qui reste COMMUN : les images, les sons, le catalogue de cartes, les decks
-de depart, et les decks de l'hote (lus, jamais ecrits).
+de depart, les decks de l'hote (lus, jamais ecrits), et les definitions de
+campagnes (boites livrees, en lecture seule).
 
 Usage: python3.10 tools/config_serveur.py <nb_places>
 """
@@ -26,6 +28,11 @@ def construire_config(base: dict, place: int) -> dict:
     cfg["replay_folders"] = [f"../replays/serveur-{place}/"]
     cfg["games_history_file"] = f"../games_history-serveur-{place}.json"
     cfg["game_statistics_file"] = f"../statistics-serveur-{place}.json"
+    # Sans separation, les quatre places partagent le meme dossier que la
+    # partie solo de l'hote (campagne_definitions_folder reste commun : ce
+    # sont des boites livrees, en lecture seule).
+    cfg["campagne_folder"] = f"../campagnes-serveur-{place}/"
+    cfg["achievements_file"] = f"../achievements-serveur-{place}.json"
     # L'ordre compte : le moteur ECRIT dans deck_folders[0] et LIT toute la
     # liste (server_get.py, save_deck et list_deck). L'ami construit donc ses
     # decks chez lui et voit ceux de l'hote, sans pouvoir les abimer.
@@ -46,7 +53,7 @@ def ecrire_configs(racine: str, nb_places: int) -> list:
         cfg = construire_config(base, place)
         # Les chemins de la configuration sont relatifs a .game/, pas a la
         # racine : le moteur fait os.chdir(.game) avant de les resoudre.
-        for relatif in cfg["replay_folders"] + [cfg["deck_folders"][0]]:
+        for relatif in cfg["replay_folders"] + [cfg["deck_folders"][0], cfg["campagne_folder"]]:
             os.makedirs(os.path.normpath(os.path.join(racine, ".game", relatif)), exist_ok=True)
         chemin = os.path.join(dossier_configs, f"launch-{place}.json")
         with open(chemin, "w", encoding="utf-8") as f:

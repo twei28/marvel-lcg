@@ -59,6 +59,21 @@ trap nettoyer EXIT INT TERM
 for place in $(seq 1 "$NB_PLACES"); do
   port=$((PORT_BASE + place))
   journal_jeu="/tmp/marvel-serveur-$place.log"
+
+  # Un curl qui repond ICI prouve seulement que QUELQUE CHOSE ecoute deja sur
+  # ce port, pas que c'est NOTRE moteur : un lancement precedent encore en
+  # vie (ou mal arrete) tiendrait la place, le nouveau moteur mourrait faute
+  # de pouvoir se lier au port, et le tunnel s'ouvrirait quand meme sur
+  # l'ANCIEN moteur. On arrete tout le lanceur plutot que de sauter cette
+  # place : un port deja pris signale un conflit qui touche probablement
+  # aussi d'autres places (meme processus precedent), et le risque n'est pas
+  # juste un lien en moins mais un ami qui atterrit dans la partie de
+  # quelqu'un d'autre en le croyant fraiche.
+  if curl -s -o /dev/null "http://127.0.0.1:$port/"; then
+    echo "Place $place : le port $port est deja pris, un serveur tourne peut-etre deja." >&2
+    exit 1
+  fi
+
   echo "Place $place : demarrage du moteur sur le port $port..."
   # PYTHONUNBUFFERED : sans lui, Python tamponne sa sortie des qu'elle n'est
   # plus un terminal, et le journal reste vide au moment ou l'on en a besoin.
@@ -75,6 +90,12 @@ for place in $(seq 1 "$NB_PLACES"); do
   done
   if [ "$pret" != "1" ]; then
     echo "Place $place : le moteur n'a pas demarre. Voir $journal_jeu" >&2
+    # Le process vit peut-etre encore (attente juste expiree). Le laisser
+    # vivant est dangereux : l'iteration suivante ecrit .game/launch.json
+    # (partage), et si ce moteur n'a pas encore atteint
+    # ConfigVariables.Initialize(), il lira la configuration de la place
+    # SUIVANTE (meme port, memes dossiers) au lieu de la sienne.
+    kill "$pid_jeu" 2>/dev/null
     continue
   fi
 
