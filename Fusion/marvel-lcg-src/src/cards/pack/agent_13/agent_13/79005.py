@@ -17,9 +17,15 @@ from . import *
 # comme Aerial Agility (42004), autre Hero Interrupt (attack/defense) en
 # Event.
 #
-# Modele pour « cette attaque gagne distance » : `message.GainRanged(effect)`
-# sur le `WhenUnitWouldAttack` en cours (Paladin's Pistol 56118, Lockheed
-# 78022, et notre propre Burst Fire 79003).
+# Modele pour « cette attaque gagne distance » : « this attack » designe
+# l'attaque de Parting Shots (les 2 degats infliges), pas l'attaque entrante
+# de l'ennemi -- donc PAS `message.GainRanged(effect)` sur le
+# `WhenUnitWouldAttack` (ce message porte l'attaque de l'ennemi : y poser
+# ranged fait ignorer la riposte du defenseur par l'ennemi, l'inverse du
+# texte). Le bon montage est `property=AttackProperty(ranged=True)` passe a
+# `DealDamage`, comme notre propre Burst Fire (79003) qui traite mot pour mot
+# la meme formule imprimee « This attack gains ranged » sur une attaque
+# infligee par la carte elle-meme.
 #
 # Modele pour « bascule optionnelle en alter-ego » : le helper du projet
 # `YouMayFlipToYourAlterEgoForm` (src/cards/pack/__init__.py:132), utilise
@@ -51,8 +57,7 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Event)
         cible = message.attacker
 
-        this.DealDamage([cible], 2, effect)
-        message.GainRanged(effect)
+        this.DealDamage([cible], 2, effect, property=AttackProperty(ranged=True))
 
         joueur = effect.GetInitiator()
 
