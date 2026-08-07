@@ -86,9 +86,9 @@ pas les decks les uns des autres, ce qui écarte tout risque de collision de nom
    copie le message dans le presse-papier via `clip.exe`.
 7. `trap` sur EXIT, INT et TERM : tue les moteurs et les tunnels, et le dit.
 
-**Dégradation choisie** : si un moteur ou un tunnel ne monte pas, le lanceur le signale et
-continue avec les autres. Trois liens valent mieux que zéro. Le lanceur ne s'arrête que si
-**aucune** place n'a pu être ouverte.
+**Dégradation choisie** : deux cas distincts.
+- Moteur ou tunnel qui échoue à monter une fois le port libre : le lanceur le signale et continue. Trois liens valent mieux que zéro.
+- Port déjà occupé au démarrage : le lanceur refuse tout et s'arrête. Un port pris signale un moteur d'une session antérieure toujours vivant, et le risque n'est pas juste un lien en moins, mais un ami atterrissant sur la mauvaise partie.
 
 `JOUER-SERVEUR.bat` à la racine appelle ce script dans WSL, sur le modèle exact de
 `JOUER-EN-MULTI.bat`.
