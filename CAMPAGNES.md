@@ -16,13 +16,22 @@ qu'on gagne dans un scénario (améliorations, alliés, compteurs) est enregistr
 dans un **carnet de campagne** et rejoue automatiquement à la mise en place du
 scénario suivant.
 
-**Deux boîtes sur sept fonctionnent aujourd'hui**, vérifiées en jouant :
+**Le moteur est câblé pour les six boîtes à récompenses**, mesuré par sonde
+scénario par scénario (détail au §6). **Trois ont en plus leur fichier
+`data/campagnes/*.json` et sont jouables depuis l'écran** :
 
 - L'Avènement de Crâne Rouge (`trors`)
 - Intentions Sinistres (`sm`)
+- The Mad Titan's Shadow (`mts`)
 
-**Quatre autres sont bloquées** par un défaut du moteur, pas par des données
-manquantes. C'est le travail décrit au §6, et c'est par là qu'il faut commencer.
+**Trois autres sont câblées côté moteur mais n'ont pas encore de fichier de
+définition**, donc invisibles sur `/campagne.html` : Mutant Genesis
+(`mut_gen`), NeXt Evolution (`next_evol`) et Age of Apocalypse (`aoa`).
+C'est le travail décrit au §9, sur le modèle de `mts.json`.
+
+La septième boîte, Galaxy's Most Wanted (`gmw`), n'a aucune récompense codée
+côté moteur : elle se joue en séquence pure, sans carnet. Rien à câbler pour
+elle.
 
 ---
 
@@ -70,16 +79,22 @@ Les fichiers Python du moteur, eux, exigent un redémarrage.
 
 | Chemin | Rôle |
 |---|---|
-| `Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py` | Les six routes HTTP de campagne |
+| `Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py` | Les sept routes HTTP de campagne |
 | `Fusion/marvel-lcg-src/src/engine/device/web/server/server.py` | Y déclare `GameServerCampagne` dans la chaîne d'héritage |
 | `Fusion/marvel-lcg-src/data/campagnes/*.json` | Une boîte-campagne décrite en données |
 | `Fusion/marvel-lcg-src/campagnes/*.json` | Les campagnes du joueur (créé à la volée) |
 | `Fusion/marvel-lcg-src/src/cards/pack/<code>/campaign.py` | Les récompenses, côté moteur |
 | `Fusion/marvel-lcg-src/src/game/operate/campaign_logs.py` | Comment le moteur relit le carnet |
+| `Fusion/marvel-lcg-src/.game/campaign_log_last.json` | Carnet SORTANT calculé par le moteur, écrasé à chaque fin de partie de campagne (clé de config `campaign_log_last_file`, voir §8) |
 
 Routes : `/list_campagnes_definies`, `/get_campagne_definition?<code>`,
-`/list_campagnes`, `/get_campagne?<id>`, `/save_campagne` (POST),
-`/delete_campagne` (POST).
+`/get_carnet_suggere`, `/list_campagnes`, `/get_campagne?<id>`,
+`/save_campagne` (POST), `/delete_campagne` (POST).
+
+`/get_carnet_suggere` rend le contenu de `campaign_log_last.json` : ce que le
+moteur a lui-même relevé à la toute dernière fin de partie de campagne, toutes
+places confondues sur ce serveur. Fichier absent ou illisible : réponse 200
+avec un carnet vide, jamais une erreur.
 
 ### Écran des campagnes (JS non compilé)
 
@@ -99,6 +114,7 @@ Routes : `/list_campagnes_definies`, `/get_campagne_definition?<code>`,
 | `ui-app/src/board/campagne/detecteurs.ts` | Ce que le moteur sait déduire tout seul |
 | `ui-app/src/board/campagne/detecteurs.test.ts` | 40 tests, bâtis sur des descripteurs capturés |
 | `ui-app/src/board/campagne/contexte.ts` | Le plateau apprend qu'il joue une campagne |
+| `ui-app/src/board/campagne/preremplissage.ts` | D'où vient chaque valeur pré-remplie |
 | `ui-app/src/board/campagne/PanneauRecompenses.tsx` | Le panneau de fin de scénario |
 | `ui-app/src/board/board.css` | Style du panneau, en fin de fichier |
 
@@ -117,8 +133,11 @@ Routes : `/list_campagnes_definies`, `/get_campagne_definition?<code>`,
    sets modulaires du fichier de scénario, et `campaign_log = carnet`.
 4. Le moteur applique le carnet à la mise en place (`Message.WhenCampaignSetup`).
 5. À la victoire, `PanneauRecompenses` lit la clé, charge la campagne et sa
-   définition, pré-remplit ce qu'il détecte, laisse choisir le reste, puis écrit
-   `carnet` et `termines` et efface la clé.
+   définition, puis pré-remplit chaque champ dans l'ordre du §5 : d'abord ce
+   que le moteur a lui-même relevé sur `/get_carnet_suggere`, puis ce que les
+   détecteurs déduisent du descripteur de monde, puis la valeur déjà présente
+   au carnet. Le joueur choisit le reste, et l'écran écrit `carnet` et
+   `termines` puis efface la clé.
 6. Retour à `/campagne.html`, qui affiche le scénario suivant.
 
 Une **défaite** n'écrit rien : le livret dit qu'on rejoue sans pénalité.
@@ -164,7 +183,7 @@ Un **champ de victoire** :
   "type": "auto",              // "auto" = relevé par le jeu | "choix" = décision du joueur
   "format": "liste",           // "liste" (ids joints par « ; ») | "int"
   "obligatoire": true,         // choix : bloque la validation tant qu'il manque
-  "detection": "cartes_en_jeu",
+  "detection": "cartes_en_jeu",  // facultatif, voir plus bas
   "parametres": { "compteur": "delay" },
   "condition": "complot_absent",
   "libelle": "Amélioration technologique",
@@ -176,6 +195,14 @@ Un **champ de victoire** :
 Les clés **doivent** être copiées depuis `src/game/operate/campaign_logs.py` et
 depuis le `campaign.py` du pack. Une clé approximative ne lève aucune erreur :
 le moteur lit simplement une valeur vide, et la récompense disparaît en silence.
+
+`detection` est **facultatif pour les boîtes dotées d'un collecteur côté
+moteur** (`mts`, `mut_gen`, `next_evol`, `aoa` : voir `WriteCampaignLogAtGameOver`
+au §6). Ces boîtes relèvent elles-mêmes leur carnet sortant à la fin de partie
+et l'exposent sur `/get_carnet_suggere` ; le panneau le prend en source
+prioritaire (§3, §4) et n'a besoin d'un détecteur que pour les clés que le
+moteur ne fournit pas. `trors` et `sm`, qui n'ont pas ce collecteur, restent
+entièrement dépendantes de `detection`.
 
 ### Les détecteurs disponibles
 
@@ -212,32 +239,18 @@ Faits mesurés, à ne pas re-deviner :
 
 ---
 
-## 6. LA TÂCHE : câbler le moteur
+## 6. Le câblage moteur, fait et mesuré
 
-### Le problème
+### Le mécanisme
 
 Les récompenses de campagne d'un pack ne se déclenchent que si la **carte de
 manigance principale 1A** du scénario appelle `CampaignSetup(niveau)` dans son
 `GetAbilities()`. Sans cet appel, `Message.WhenCampaignSetup` n'a aucun
-auditeur et le carnet est ignoré, en silence.
+auditeur et le carnet est ignoré, en silence. Le module à importer est
+`cards.pack.<code>.campaign` pour `mts`, `mut_gen` et `next_evol`, sauf `aoa`,
+où c'est `cards.pack.aoa.campaign_setup`.
 
-Pour trois boîtes, le module `campaign.py` est écrit, complet — et **aucune
-carte ne l'appelle**. Mesuré par sonde, un scénario par boîte, carnet
-pré-rempli :
-
-| Boîte | Scénarios câblés | Constat |
-|---|---|---|
-| `trors` | 5 / 5 | ✅ récompenses appliquées |
-| `sm` | 5 / 5 | ✅ récompenses appliquées |
-| `mts` | 2 / 5 | ⚠️ Hela et Loki n'appliquent rien |
-| `mut_gen` | 0 / 5 | ❌ rien |
-| `next_evol` | 0 / 5 | ❌ rien |
-| `aoa` | 0 / 5 | ❌ rien |
-| `gmw` | — | aucune récompense codée, séquence pure |
-
-### Le geste
-
-Voici un fichier **déjà câblé**, `src/cards/pack/mts/ebony_maw/21074a.py` :
+Voici un fichier câblé, `src/cards/pack/mts/ebony_maw/21074a.py` :
 
 ```python
 from . import *
@@ -260,55 +273,91 @@ from cards.pack.mts.campaign import CampaignSetup
     ]
 ```
 
-Le `niveau` est le **numéro du scénario dans la campagne**, de 1 à 5.
+Le `niveau` est le **numéro du scénario dans la campagne**, de 1 à 5. Les
+dix-huit scénarios qui manquaient cet appel (3 de `mts`, 5 de `mut_gen`, 5 de
+`next_evol`, 5 de `aoa`) sont maintenant tous câblés, en plus des douze qui
+l'étaient déjà (`trors` et `sm` en entier, `ebony_maw` et `thanos` pour `mts`).
+`gmw` reste hors de ce mécanisme : elle n'a pas de `campaign.py` à appeler.
 
-### Les dix-huit fichiers
+### Le défaut trouvé en route : le carnet sortant ne s'écrivait jamais
 
-Tous existent. Le module à importer est
-`cards.pack.<code>.campaign` — sauf `aoa`, où c'est
-`cards.pack.aoa.campaign_setup`.
+`WriteCampaignLogAtGameOver`, la fonction commune aux quatre boîtes, appelait
+`player.GetHero()` pour lire le nom du héros à consigner dans le carnet. Cette
+méthode lève une `AssertionError` (au lieu de rendre `None`) dès que le joueur
+est en forme Alter Ego, ce qui est l'état normal d'un joueur en fin de partie, puisque
+la victoire ou la défaite ne force pas la forme Héros. L'assertion coupait
+alors l'écriture du carnet en entier, silencieusement : en jeu réel comme sous
+la sonde, `RELEASE=1` avale l'exception (`launcher_fast.py`), et rien ne
+signalait que le carnet sortant restait vide. Les quatre boîtes câblées ce
+jour-là étaient concernées.
 
-**`mts` — Mad Titan's Shadow** (`CampaignSetup(level)` gère 1 à 5)
+Le correctif (commit `1cdcbba`) lit `identity.GetHeroFace()` à la place, qui
+retrouve la face héros quelle que soit la forme active du joueur, avec son
+propre garde puisqu'elle lève aussi si la carte n'a vraiment aucune face
+héros. Une identité illisible ne coûte plus que sa propre clé, jamais le
+fichier entier.
 
-| # | Scénario | Fichier | État |
-|---|---|---|---|
-| 1 | ebony_maw | `src/cards/pack/mts/ebony_maw/21074a.py` | déjà câblé |
-| 2 | the_tower_defense | `src/cards/pack/mts/the_tower_defense/21098a.py` | à câbler |
-| 3 | thanos | `src/cards/pack/mts/thanos/21114a.py` | déjà câblé |
-| 4 | hela | `src/cards/pack/mts/hela/21138a.py` | à câbler |
-| 5 | loki | `src/cards/pack/mts/loki/21165a.py` | à câbler |
+### Les mesures
 
-**`mut_gen` — Mutant Genesis** (`CampaignSetup(level)` gère 1 à 5)
+Table complète, sonde `FIN_DE_PARTIE=1` (voir plus bas), un scénario par
+niveau et par boîte :
 
-| # | Scénario | Fichier |
-|---|---|---|
-| 1 | sabretooth | `src/cards/pack/mut_gen/sabretooth/32063a.py` |
-| 2 | project_wideawake | `src/cards/pack/mut_gen/project_wideawake/32087a.py` |
-| 3 | master_mold | `src/cards/pack/mut_gen/master_mold/32112a.py` |
-| 4 | mansion_attack | `src/cards/pack/mut_gen/mansion_attack/32125a.py` |
-| 5 | magneto | `src/cards/pack/mut_gen/magneto/32141a.py` |
+| Boîte | Niv. | Scénario | Carnet entrant appliqué | Carnet sortant écrit |
+|---|---|---|---|---|
+| mts | 2 | the_tower_defense | oui (21181) | oui |
+| mts | 4 | hela | oui (21188, 21185) | oui |
+| mts | 5 | loki | oui (21139) | oui |
+| mut_gen | 1 | sabretooth | minimal (Player 1 Role, pas d'erreur) | oui |
+| mut_gen | 2 | project_wideawake | minimal (Player 1 Role, pas d'erreur) | oui |
+| mut_gen | 3 | master_mold | oui (32089) | oui |
+| mut_gen | 4 | mansion_attack | minimal (Player 1 Role, pas d'erreur) | oui |
+| mut_gen | 5 | magneto | minimal (Player 1 Role, pas d'erreur) | oui |
+| next_evol | 1 | morlock_siege | minimal (pas d'erreur) | oui |
+| next_evol | 2 | on_the_run | oui (Campaign Pool: Team Assembled) | oui |
+| next_evol | 3 | juggernaut | oui (Team Assembled, Geared Up) | oui |
+| next_evol | 4 | mister_sinister | oui (Team Assembled) | oui |
+| next_evol | 5 | stryfe | oui (Team Assembled) | oui |
+| aoa | 1 | unus | minimal (pas d'erreur) | oui |
+| aoa | 2 | four_horsemen | oui (Panicked Refugees) | oui |
+| aoa | 3 | apocalypse | minimal (pas d'erreur) | oui |
+| aoa | 4 | dark_beast | minimal (pas d'erreur) | oui |
+| aoa | 5 | en_sabah_nur | minimal (pas d'erreur) | oui |
 
-**`next_evol` — NeXt Evolution** (`CampaignSetup(level)` gère 2 à 5 ; le
-niveau 1 n'ajoute que la partie commune)
+Le critère minimal (pas d'erreur, carnet sortant présent) distingue câblé de
+non câblé, mais pas bon niveau de mauvais niveau : `WriteCampaignLogAtGameOver`
+tourne à tous les niveaux d'une même boîte. Pour `mts` et `mut_gen`, la lecture
+directe de `campaign.py` confirme que le bon bloc `if (level == N)` s'exécute
+à chaque niveau. Pour `next_evol` et `aoa`, la sonde a en plus prouvé un effet
+**propre** au niveau, visible dans le descripteur de monde :
 
-| # | Scénario | Fichier |
-|---|---|---|
-| 1 | morlock_siege | `src/cards/pack/next_evol/morlock_siege/40077a.py` |
-| 2 | on_the_run | `src/cards/pack/next_evol/on_the_run/40103a.py` |
-| 3 | juggernaut | `src/cards/pack/next_evol/juggernaut/40121a.py` |
-| 4 | mister_sinister | `src/cards/pack/next_evol/mister_sinister/40139a.py` |
-| 5 | stryfe | `src/cards/pack/next_evol/stryfe/40166a.py` |
-
-**`aoa` — Age of Apocalypse** (importer depuis
-`cards.pack.aoa.campaign_setup`)
-
-| # | Scénario | Fichier |
-|---|---|---|
-| 1 | unus | `src/cards/pack/aoa/unus/45062a.py` |
-| 2 | four_horsemen | `src/cards/pack/aoa/four_horsemen/45085a.py` |
-| 3 | apocalypse | `src/cards/pack/aoa/apocalypse/45103a.py` |
-| 4 | dark_beast | `src/cards/pack/aoa/dark_beast/45121a.py` |
-| 5 | en_sabah_nur | `src/cards/pack/aoa/en_sabah_nur/45147a.py` |
+- `next_evol` niveau 2 (`on_the_run`) : le statut Tough apparaît sur le vilain
+  seulement avec un environnement au carnet (`GiveEnemiesToughIfEnvEarned`).
+- `next_evol` niveau 3 (`juggernaut`) : `c_momentum` sur Juggernaut passe de 1
+  (base carte) à 3 avec deux environnements en carnet, delta exact
+  (`JuggernautMomentumCounters`).
+- `next_evol` niveaux 4 et 5 : le seuil de menace de la manigance côté joueur
+  augmente de 1 par environnement × joueur, conforme à
+  `TeleportedAwaySetup` / `StryfesGraspThreat`.
+- `next_evol` niveau 1 est câblé, mais **sa partie commune ne contient pas de
+  bloc `if (level == 1)`** : `CampaignSetup(1)` exécute seulement
+  `PutEarnedEnvironmentsIntoPlay`, `ChooseCampaignPlayerSideScheme` et
+  l'écriture du carnet sortant, qui tournent à tous les niveaux. C'est
+  l'inverse de ce que ce document affirmait avant ce chantier : le niveau 1
+  n'était pas dispensé de câblage, il devait l'être comme les autres, il n'a
+  simplement aucun effet qui lui soit propre à mesurer.
+- `aoa` niveau 5 (`en_sabah_nur`) : la mission est forcée sur « Protect the
+  Professor » (carte 45170a en jeu), au lieu d'un tirage aléatoire.
+- `aoa` a aussi une branche `if (level >= 2)`, gardée par `Worlds.IsExpert`,
+  qui n'est active qu'en campagne experte. Elle a été mesurée sur la variante
+  `four_horsemen_expert` : avec `Player 1 Remaining hit points` au carnet, les
+  PV de fin de mise en place remontent de 5 à 11 (delta +6), un écart absent
+  des deux témoins (même scénario sans carnet, et variante standard avec
+  carnet). La preuve directe est brouillée par une capacité compagnon de la
+  même branche, qui offre un soin optionnel que le pilote automatique de la
+  sonde accepte toujours ; l'écart entre témoins reste la preuve que le carnet
+  est bien lu et appliqué. Les niveaux `apocalypse`, `dark_beast` et
+  `en_sabah_nur` partagent le même code que `four_horsemen_expert` pour cette
+  branche, par lecture directe, sans mesure indépendante par scénario.
 
 ### Vérifier — sans quoi ça ne compte pas
 
@@ -341,13 +390,23 @@ for i,p in enumerate(m.get('players',[])):
 
 Variables acceptées : `CAMPAIGN_LOG`, `RULES` (défaut `["mode_campaign"]`),
 `PUZZLE` (liste de commandes `Puzzle.*` exécutées après la mise en place),
-`RAPPORT`.
+`RAPPORT`, et `FIN_DE_PARTIE` (si mise à `1`, la sonde force la fin de partie
+après la mise en place via `SetGameOverByRule`, ce qui déclenche
+`WriteCampaignLogAtGameOver`, et range le carnet sortant lu depuis
+`campaign_log_last.json` sous la clé `carnet_sortant` du rapport). Sans cette
+variable, comportement identique à avant : la sonde s'arrête à la mise en
+place et ne mesure que le carnet entrant.
 
 Le critère : la carte du carnet doit apparaître dans une zone du joueur ou du
-monde. Tant qu'elle n'y est pas, le scénario n'est pas câblé, quoi que dise le
-code.
+monde, et, depuis `FIN_DE_PARTIE=1`, la clé attendue doit apparaître dans
+`carnet_sortant`. Tant que ce n'est pas le cas, le scénario n'est pas câblé,
+quoi que dise le code.
 
 ### Ensuite seulement, les fichiers de campagne
+
+`mts.json` a été écrit sur ce modèle (commit `063172a`) : ses 9 clés viennent
+de `CollectMTS`, vérifiées une par une contre `campaign.py`. `mut_gen.json`,
+`next_evol.json` et `aoa.json` restent à écrire, voir §9.
 
 Une fois une boîte câblée et vérifiée, écrire son `data/campagnes/<code>.json` :
 
@@ -427,22 +486,77 @@ propre terminal.
 `Fusion/marvel-lcg-src/campagnes/`, à côté de `replays/` — `.game` est
 reconstruit à chaque lancement.
 
+**La copie WSL peut écraser `src/`, pas seulement `public/`.** Une autre
+session, sur ce même dépôt, entretient un outillage qui repasse la copie
+`~/marvel-work/fusion/marvel-lcg-src` par-dessus la copie Windows. Ce chantier
+a vu son câblage de `mts` et `mut_gen`, ainsi que la réparation du carnet,
+effacés deux fois dans `src/cards/pack/` par ce mécanisme, alors qu'il ne
+touchait pas `public/`. `src/cards/` n'est pas suivi par git, ce qui rend la
+perte invisible tant qu'on ne compare pas les deux copies. Le remède est le
+même que pour `public/js` : pousser toute modification de `src/` vers la
+copie WSL après chaque commit, tant qu'une autre session peut tourner en
+parallèle sur ce dépôt :
+
+```bash
+wsl.exe -e bash -lc "rsync -a '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/src/' \$HOME/marvel-work/fusion/marvel-lcg-src/src/"
+```
+
+**Le moteur exécute `.game`, pas `src/`.** `launcher_fast.py` compile
+`src/*.py` en `.game/*.pyc`, mais seulement si la source est plus récente que
+le binaire compilé. Si la date d'un fichier de `src/` recule (restauration
+depuis une sauvegarde, copie qui ne préserve pas les mtimes, horloge d'une
+machine différente), la recompilation ne se déclenche plus jamais et le jeu
+tourne indéfiniment sur l'ancien bytecode, sans le moindre message d'erreur.
+Ce chantier a trouvé douze cartes dans ce cas, restées sur du code périmé
+pendant plusieurs jours. Pour le détecter, recompiler chaque source en
+mémoire et comparer au bytecode réellement chargé, plutôt que de se fier aux
+dates de fichiers :
+
+```bash
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py --build-only"
+```
+
+Si les compteurs `compilés` restent obstinément bas alors qu'un fichier vient
+d'être modifié, c'est le signe que sa date ne suffit plus à déclencher sa
+recompilation.
+
+**La sonde efface `campaign_log_last.json` par son nom en dur.** Le carnet
+sortant décrit au §3 est cloisonné par place de serveur via la clé de
+configuration `campaign_log_last_file` (commit `89a1193`, comme le sont déjà
+`campagne_folder` et `achievements_file`), mais `tools/sonde_campagne.py`
+continue de lire et d'effacer le nom de fichier par défaut, sans passer par
+cette clé. Avec la configuration par défaut les deux chemins coïncident et
+rien ne se voit. Sur une
+configuration de place (place 2, 3 ou 4 d'un serveur multi), la sonde
+effacerait puis relirait le mauvais fichier, ce qui rendrait un faux positif
+ou un faux négatif selon ce que la partie précédente y a laissé. C'est une
+dette connue, à corriger avant toute mesure de sonde faite sur une
+configuration de place.
+
 ---
 
 ## 9. Après le câblage
 
 Par ordre d'intérêt :
 
-1. **Identité verrouillée, deck modifiable** entre deux scénarios. Aujourd'hui
+1. **Écrire `mut_gen.json`, `next_evol.json` et `aoa.json`**, sur le modèle de
+   `mts.json` (§6) : relever les clés exactes dans le `campaign.py` de chaque
+   pack, récupérer l'ordre des scénarios dans `data/sets_info.json`, écrire
+   résumés et enjeux en français. C'est ce qui manque pour que ces trois
+   boîtes, déjà câblées côté moteur, deviennent jouables depuis l'écran.
+2. **Corriger la sonde pour lire `campaign_log_last_file`** au lieu du nom en
+   dur `campaign_log_last.json` (§8), avant toute mesure faite sur une
+   configuration de place.
+3. **Identité verrouillée, deck modifiable** entre deux scénarios. Aujourd'hui
    le deck est figé tel qu'il a été choisi à la création de la campagne. Le
    livret autorise à changer d'aspect et de cartes entre les scénarios, mais
    jamais de héros, et interdit de retirer les cartes gagnées en campagne.
-2. **Haut fait** de fin de campagne, et la défaite finale en campagne experte
+4. **Haut fait** de fin de campagne, et la défaite finale en campagne experte
    qui perd la campagne (règle codée côté données mais pas côté écran).
-3. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés
+5. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés
    unitairement sur des formes mesurées, mais n'ont jamais été vus dans une
    vraie fin de scénario Zola ni en campagne experte. C'est exactement le
    contexte où le bug des armes expérimentales s'était glissé — un détecteur
    plausible qui relevait quatre cartes au lieu d'une.
-4. **`gmw`** : jouable en séquence, sans récompense codée. À décider si on
+6. **`gmw`** : jouable en séquence, sans récompense codée. À décider si on
    l'expose comme campagne ou pas.
