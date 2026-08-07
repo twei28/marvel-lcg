@@ -70194,8 +70194,8 @@
             "desc": {
                 "Cost": "3",
                 "HP": "5",
-                "THW": "2*",
-                "ATK": "2*",
+                "THW": "2**",
+                "ATK": "2**",
                 "RES": "R",
                 "Retaliate": "1",
                 "Class": "Hero"

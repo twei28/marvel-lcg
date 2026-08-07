@@ -38,7 +38,9 @@ scans 2 et 3 de Burst Fire.
 
 Textes imprimés :
 
-- **Captain America** (unique, 2 THW / 2 ATK / 5 PV) : Retaliate 1. **Interrupt** :
+- **Captain America** (unique, 2** THW / 2** ATK / 5 PV — deux étoiles sous
+  chaque icône THW et ATK, soit 2 dégâts consécutifs par attaque/contre) :
+  Retaliate 1. **Interrupt** :
   When Captain America defends against an attack and would take damage, reduce
   that damage by 2 (to a minimum of 1).
 - **Burst Fire** : **Hero Action** : Make the following two attacks :
