@@ -92,9 +92,12 @@ Routes : `/list_campagnes_definies`, `/get_campagne_definition?<code>`,
 `/save_campagne` (POST), `/delete_campagne` (POST).
 
 `/get_carnet_suggere` rend le contenu de `campaign_log_last.json` : ce que le
-moteur a lui-même relevé à la toute dernière fin de partie de campagne, toutes
-places confondues sur ce serveur. Fichier absent ou illisible : réponse 200
-avec un carnet vide, jamais une erreur.
+moteur a lui-même relevé à la toute dernière fin de partie de campagne sur
+cette place (le fichier est cloisonné par place, voir §8). La route ne dit
+en revanche pas de quelle PARTIE ce carnet vient : si deux parties de
+campagne se sont enchaînées sur la même place entre deux consultations, c'est
+la plus récente qui répond, sans distinction. Fichier absent ou illisible :
+réponse 200 avec un carnet vide, jamais une erreur.
 
 ### Écran des campagnes (JS non compilé)
 
@@ -275,8 +278,10 @@ from cards.pack.mts.campaign import CampaignSetup
 
 Le `niveau` est le **numéro du scénario dans la campagne**, de 1 à 5. Les
 dix-huit scénarios qui manquaient cet appel (3 de `mts`, 5 de `mut_gen`, 5 de
-`next_evol`, 5 de `aoa`) sont maintenant tous câblés, en plus des douze qui
-l'étaient déjà (`trors` et `sm` en entier, `ebony_maw` et `thanos` pour `mts`).
+`next_evol`, 5 de `aoa`) sont maintenant tous câblés, en plus des onze qui
+l'étaient déjà (`sm` en entier, `trors` aux niveaux 2 à 5, `ebony_maw` et
+`thanos` pour `mts`). `crossbones`, le scénario 1 de `trors`, n'appelle pas
+`CampaignSetup` : voir plus bas pourquoi c'est volontaire, pas un oubli.
 `gmw` reste hors de ce mécanisme : elle n'a pas de `campaign.py` à appeler.
 
 ### Le défaut trouvé en route : le carnet sortant ne s'écrivait jamais
@@ -358,6 +363,21 @@ directe de `campaign.py` confirme que le bon bloc `if (level == N)` s'exécute
   est bien lu et appliqué. Les niveaux `apocalypse`, `dark_beast` et
   `en_sabah_nur` partagent le même code que `four_horsemen_expert` pour cette
   branche, par lecture directe, sans mesure indépendante par scénario.
+
+**Pourquoi `next_evol` niveau 1 est câblé et `trors` niveau 1 ne l'est pas.**
+Les deux cas se ressemblent : dans les deux boîtes, le premier scénario d'une
+campagne ne peut par nature avoir aucun carnet entrant à appliquer, puisque
+rien n'a encore été gagné. La différence tient à ce que fait la partie commune
+de `CampaignSetup` en dehors de la lecture du carnet entrant. Chez `next_evol`,
+elle écrit aussi le carnet **sortant** (`WriteCampaignLogAtGameOver`, voir plus
+haut), et ce carnet doit exister dès la fin du scénario 1 pour que le scénario
+2 ait quelque chose à lire : câbler le niveau 1 est donc nécessaire, même sans
+rien à appliquer en entrée. Chez `trors`, `CampaignSetup` (`src/cards/pack/trors/campaign.py`) n'a pas de
+collecteur de ce genre (c'est une boîte à détecteurs, pas à collecteur, comme
+le rappelle le §5), et toutes ses branches sont gardées par `if level >= 2`
+ou `if level >= 4` : au niveau 1, l'appel ne produirait strictement aucune
+capacité. `crossbones` n'appelle donc pas `CampaignSetup`,
+et c'est correct, pas un oubli.
 
 ### Vérifier — sans quoi ça ne compte pas
 
