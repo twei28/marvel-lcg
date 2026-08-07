@@ -79,7 +79,13 @@ change.
 
 - **Assassination Plot** : **When Revealed** : Discard the ally you control with
   the highest remaining hit points. If you cannot, place 2 threat on this
-  scheme. Porte deux icônes en pied à confirmer au moment de l'écrire.
+  scheme. Porte deux icônes en pied : à gauche l'éclat avec point
+  d'exclamation, à droite le fanion à croix blanche. Comparaison avec les
+  scans FR officiels `assets/pics-fr/fr_01107.jpg` (Breakin' & Takin',
+  Hazard seul → fanion à croix), `fr_01108.jpg` (Crowd Control, Crisis seul →
+  éclat avec point d'exclamation) et `fr_27155.jpg` (Paradis des Fous, les
+  deux ensemble) : l'éclat est bien **Crisis**, le fanion à croix est bien
+  **Hazard**. C'est l'inverse de ce que la relecture globale avait conclu.
 - **Doctor Faustus** (GENIUS. HYDRA. PSYCHIATRIST.) : Doctor Faustus cannot take
   damage while you are engaged with another minion. ★ **Forced Interrupt** :
   When Doctor Faustus would attack you while you control an ally, that ally
