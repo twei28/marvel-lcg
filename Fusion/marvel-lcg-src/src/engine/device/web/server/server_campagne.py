@@ -24,6 +24,10 @@ CATEGORY_NAME = "CAMPAGNE"
 
 DEFINITIONS_FOLDER = ConfigVariables.Folder('campagne_definitions_folder', "./data/campagnes/")
 CAMPAGNES_FOLDER = ConfigVariables.Folder('campagne_folder', "../campagnes/")
+# Carnet SORTANT, ecrit par WriteCampaignLogAtGameOver a la fin de chaque
+# partie de campagne (voir src/cards/pack/mts/campaign.py). Chemin relatif au
+# repertoire courant du serveur, soit .game, comme les deux dossiers ci-dessus.
+CARNET_SUGGERE_FILE = ConfigVariables.File('campaign_log_last_file', "./campaign_log_last.json")
 
 
 def _nom_de_fichier(brut: str) -> str:
@@ -76,6 +80,36 @@ class GameServerCampagne(GameServerBase):
             return web.json_response({'error': f'campagne inconnue : {code}'}, status=404)
         with open(chemin, encoding='utf-8') as f:
             return web.json_response(json_lib.load(f))
+
+    async def get_carnet_suggere(self, request: web.Request) -> web.Response:
+        """Le carnet que le MOTEUR a calcule a la derniere fin de partie.
+
+        Les quatre boites cablees en 2026 (mts, mut_gen, next_evol, aoa)
+        relevent elles-memes leur carnet a `WhenGameOver` : le plateau n'a
+        aucune raison de le redeviner depuis le descripteur. Il pre-remplit
+        d'abord avec ces valeurs, et ne retombe sur ses detecteurs que pour les
+        cles absentes — ce qui est le cas de toutes celles de trors et sm, qui
+        n'ont pas de collecteur cote moteur.
+
+        Fichier absent : reponse vide et 200, pas 404. Une partie hors campagne
+        ou une boite sans collecteur n'est pas une erreur.
+        """
+        import json as json_lib
+        import os
+
+        chemin = CARNET_SUGGERE_FILE.value
+        if not os.path.isfile(chemin):
+            return web.json_response({'players_won': False, 'suggestions': {}})
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                brut = json_lib.load(f)
+        except Exception:
+            return web.json_response({'players_won': False, 'suggestions': {}})
+        suggestions = brut.get('suggestions') or {}
+        return web.json_response({
+            'players_won': bool(brut.get('players_won')),
+            'suggestions': {str(k): str(v) for k, v in suggestions.items() if v is not None},
+        })
 
     # -------------------------------------------------------- campagnes en cours --
     async def list_campagnes(self, request: web.Request) -> web.Response:
@@ -169,6 +203,7 @@ class GameServerCampagne(GameServerBase):
         super().__init__()
         self.AddAwaitGetSecurity('/list_campagnes_definies', self.list_campagnes_definies)
         self.AddAwaitGetSecurity('/get_campagne_definition', self.get_campagne_definition)
+        self.AddAwaitGetSecurity('/get_carnet_suggere', self.get_carnet_suggere)
         self.AddAwaitGetSecurity('/list_campagnes', self.list_campagnes)
         self.AddAwaitGetSecurity('/get_campagne', self.get_campagne)
         self.AddPostSecurity('/save_campagne', self.save_campagne)
