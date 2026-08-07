@@ -80,12 +80,21 @@ change.
 - **Assassination Plot** : **When Revealed** : Discard the ally you control with
   the highest remaining hit points. If you cannot, place 2 threat on this
   scheme. Porte deux icônes en pied : à gauche l'éclat avec point
-  d'exclamation, à droite le fanion à croix blanche. Comparaison avec les
-  scans FR officiels `assets/pics-fr/fr_01107.jpg` (Breakin' & Takin',
-  Hazard seul → fanion à croix), `fr_01108.jpg` (Crowd Control, Crisis seul →
-  éclat avec point d'exclamation) et `fr_27155.jpg` (Paradis des Fous, les
-  deux ensemble) : l'éclat est bien **Crisis**, le fanion à croix est bien
-  **Hazard**. C'est l'inverse de ce que la relecture globale avait conclu.
+  d'exclamation, à droite une pointe en haut à droite avec croix blanche et
+  barre horizontale détachée en dessous. Comparaison avec les scans FR
+  officiels `assets/pics-fr/fr_01107.jpg` (Breakin' & Takin', Hazard seul →
+  forme arrondie pleine à croix blanche, **sans** barre en dessous),
+  `fr_01108.jpg` (Crowd Control, Crisis seul → éclat avec point
+  d'exclamation) et `fr_01109.jpg` (Bomb Scare, Acceleration seul → pointe en
+  haut à droite, croix blanche, barre horizontale détachée en dessous) :
+  l'éclat est bien **Crisis**, le second icône est superposable à
+  l'Acceleration de `01109`, pas à l'Hazard de `01107`. C'est donc
+  **Acceleration**, pas Hazard.
+  `fr_27155.jpg` (Fool's Paradise) a servi de repère lors de la relecture du
+  6/8, mais cette carte porte en réalité **trois** icônes (Hazard, Crisis et
+  Acceleration), pas deux : le recadrage utilisé à l'époque n'en montrait que
+  deux et a fait passer l'Acceleration pour l'Hazard manquant, d'où
+  l'identification erronée corrigée ici le 8/8.
 - **Doctor Faustus** (GENIUS. HYDRA. PSYCHIATRIST.) : Doctor Faustus cannot take
   damage while you are engaged with another minion. ★ **Forced Interrupt** :
   When Doctor Faustus would attack you while you control an ally, that ally

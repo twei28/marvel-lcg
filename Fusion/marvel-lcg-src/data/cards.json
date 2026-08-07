@@ -70360,7 +70360,7 @@
             "desc": {
                 "StartingThreat": "2*",
                 "Boost": "3",
-                "Hazard": "1",
+                "Acceleration": "1",
                 "Crisis": "1"
             },
             "traits": [],
@@ -70431,5 +70431,5 @@
             "text": "Give to the Sharon Carter player.\nYou may flip to alter-ego form. Choose:\n- Remove the Captain America ally from the game → remove Sleeper Agent from the game.\n- Discard 1 card from hand and place 2 threat on the main scheme. Discard this obligation."
         }
     ],
-    "checksum": "e0632ecd4e4c5b85f1e64a6754920e819990804240de281ea366ff97bf78badc"
+    "checksum": "d28673b1ef40bc8d031ada648c80cb07f6103063c4f9d36d092dc348f40424e5"
 }

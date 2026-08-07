@@ -7620,7 +7620,7 @@ def executer_un_cas(game_dir, port, index):
 def main():
     game_dir = os.path.expanduser(sys.argv[1])
     port = int(sys.argv[2])
-    rapport = sys.argv[3] if len(sys.argv) > 3 else "/tmp/test_capacites.json"
+    rapport = sys.argv[3] if len(sys.argv) > 3 else f"/tmp/test_capacites_{os.environ.get('CAS_PREFIX', '')}.json"
 
     if os.environ.get("CAS_INDEX"):
         executer_un_cas(game_dir, port, int(os.environ["CAS_INDEX"]))
