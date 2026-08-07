@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aoa.campaign_setup import CampaignSetup
 
 # Hunting Gene Traitors
 
@@ -17,6 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
             Players.ForEachPlayer(effect, action)
 
     return [
+        *CampaignSetup(1),
         AbilityFactory.WhenCardSetup(
             "This",
             hunting_gene_traitors

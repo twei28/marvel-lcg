@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aoa.campaign_setup import CampaignSetup
 
 # The Horsemen of Apocalypse
 
@@ -29,6 +30,7 @@ def GetAbilities() -> Sequence['Ability']:
         Players.ForEachPlayer(effect, action)
 
     return [
+        *CampaignSetup(2),
         AbilityFactory.WhenCardSetup(
             "This",
             the_horsemen_of_apocalypse

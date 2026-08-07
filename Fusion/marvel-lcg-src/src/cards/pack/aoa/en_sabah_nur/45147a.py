@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aoa.campaign_setup import CampaignSetup
 
 # En Sabah Nur's Pyramid
 
@@ -14,6 +15,7 @@ def GetAbilities() -> Sequence['Ability']:
         Players.ForEachPlayer(effect, action)
 
     return [
+        *CampaignSetup(5),
         AbilityFactory.WhenCardSetup(
             "This",
             en_sabah_nurs_pyramid

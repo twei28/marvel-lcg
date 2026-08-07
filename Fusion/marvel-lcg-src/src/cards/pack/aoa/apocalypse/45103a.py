@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aoa.campaign_setup import CampaignSetup
 
 # The Age of Apocalypse
 
@@ -24,6 +25,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.WhenCardSetup(
             "This",
             the_age_of_apocalypse
