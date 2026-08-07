@@ -84,9 +84,20 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
             identity = player.GetIdentity()
             hp = (identity.health if identity else 0)
             out[f'Player {(player.player_id + 1)} Remaining hit points'] = str(max(0, hp))
-            hero = player.GetHero()
-            if hero:
-                out[f'Player {(player.player_id + 1)} Identity'] = hero.paper.name.lstrip('* ')
+            # player.GetHero() leve une AssertionError (pas None) des que le
+            # joueur est cote Alter Ego, ce qui est l'etat normal en fin de
+            # partie. On lit donc la face heros via GetHeroFace(), qui la
+            # retrouve quelle que soit la forme active du joueur ; elle aussi
+            # leve si la carte n'a vraiment aucune face heros, d'ou le garde.
+            # Une identite illisible ne doit couter que sa propre cle, pas
+            # faire perdre le reste du carnet.
+            if identity:
+                try:
+                    hero_face = identity.GetHeroFace()
+                except AssertionError:
+                    hero_face = None
+                if hero_face:
+                    out[f'Player {(player.player_id + 1)} Identity'] = hero_face.paper.name.lstrip('* ')
         updates = collect_fn(effect)
         for key, value in updates.items():
             if (value == None):
