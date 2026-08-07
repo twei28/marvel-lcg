@@ -1064,8 +1064,8 @@ export const HEROS_INFO = {
     },
 
     "79001a": {
-        bio: "Sharon Carter, alias Agent 13, est une espionne d'élite du S.H.I.E.L.D. et la petite-nièce de Peggy Carter. Formée par Nick Fury aux techniques d'infiltration et de combat rapproché, elle enchaîne les missions sous couverture aux quatre coins du monde. Elle est l'une des rares personnes que Captain America considère comme son égale sur le terrain, et les deux partagent une relation amoureuse aussi discrète qu'intermittente au fil des années.",
-        bioEn: "Sharon Carter, codenamed Agent 13, is an elite S.H.I.E.L.D. spy and the grandniece of Peggy Carter. Trained by Nick Fury in infiltration and close combat, she runs undercover missions around the world. She is one of the few people Captain America considers his equal in the field, and the two share an on-and-off romance across the years.",
+        bio: "Sharon Carter, alias Agent 13, est une espionne d'élite du S.H.I.E.L.D. et la petite-nièce de Peggy Carter. Sous les ordres de Nick Fury, elle enchaîne les missions d'infiltration sous couverture aux quatre coins du monde. Elle est l'une des rares personnes que Captain America considère comme son égale sur le terrain, et les deux partagent une relation amoureuse aussi discrète qu'intermittente au fil des années.",
+        bioEn: "Sharon Carter, codenamed Agent 13, is an elite S.H.I.E.L.D. spy and the grandniece of Peggy Carter. Serving under Nick Fury's command, she runs undercover infiltration missions around the world. She is one of the few people Captain America considers his equal in the field, and the two share an on-and-off romance across the years.",
         civil: "Sharon Carter",
         equipes: "S.H.I.E.L.D.",
         apparition: "Tales of Suspense #75 (1966)",

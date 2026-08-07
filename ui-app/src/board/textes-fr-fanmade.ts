@@ -1002,7 +1002,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Hallucination (Attachment)
   '79013': "<b>Une fois révélée</b> : défaussez des cartes du deck rencontre jusqu'à défausser un sbire. Révélez ce sbire et attachez cette carte à lui. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption Obligatoire</b> : quand le sbire attaché devrait subir des dégâts, quel qu'en soit le nombre, défaussez-le et placez 3 menaces sur la manigance principale.",
   // rainy — Hypnotic Suggestion (Treachery)
-  '79014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre MNG.",
+  '79014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre CTR.",
   // rainy — Sleeper Agent (Obligation)
-  '79015': "Donnez-la au joueur Sharon Carter.\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
+  '79015': "<b><i>Donnez-la au joueur Sharon Carter.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
 }
