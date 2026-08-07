@@ -5432,6 +5432,61 @@ CAS = [
                     "menace_min": [["01097b", 1]], "hors_jeu": ["79005"]},
     },
     {
+        "nom": "79005 Parting Shots — « this attack gains ranged » porte sur L'ATTAQUE DE "
+               "PARTING SHOTS, pas sur celle de l'ennemi",
+        "pourquoi": ("CORRECTIF du 7/8/2026 (relecture globale) : `message.GainRanged(effect)` "
+                     "posait a tort le ranged sur le `WhenUnitWouldAttack` DE L'ENNEMI (l'attaque "
+                     "entrante), pas sur les 2 degats infliges par Parting Shots lui-meme. Le cas "
+                     "precedent ne peut PAS attraper ce defaut : il ne mesure que 2 degats, la "
+                     "forme et la menace, tous identiques dans les deux montages. Ici l'attaquant "
+                     "n'est PAS Rhino mais Macrobots (11017, Retaliate 1 IMPRIME, aucune capacite "
+                     "custom) : ses 2 PV de dommage encaisses depuis Parting Shots sont un ATTACK "
+                     "en soi (`attack_in_event=True` dans `DealDamage`), qui attribue l'attaquant "
+                     "a l'identite du joueur (verifie au journal : « [Agent 13] va attaquer "
+                     "[Macrobots] »). Si CES degats-la (ceux de Parting Shots) ne sont PAS ranged "
+                     "(montage fautif, ranged pose a tort sur l'attaque ENTRANTE de Macrobots), "
+                     "Macrobots riposte pour 1 contre l'identite. Si SEULE l'attaque de Parting "
+                     "Shots est ranged (montage correct), la riposte de Macrobots est ignoree "
+                     "(journal : « [Agent 13] ignores Retaliate on [Macrobots] »). Ce declenchement "
+                     "resout AVANT le choix optionnel de bascule, donc son resultat ne depend pas "
+                     "de ce choix. "
+                     "SURPRISE EMPIRIQUE (sonde faite en 2 lancers, cas 432 rejoue sans "
+                     "`accepter_choix`, meme resultat `ok` qu'avec) : contrairement au commentaire "
+                     "§8 du guide, le pilote n'a PAS decline `MayChooseOneAbility` ici -- la "
+                     "bascule a TOUJOURS lieu, `accepter_choix` sur le cas voisin (432) n'y est "
+                     "pour rien. L'attaque de l'ennemi finit donc TOUJOURS convertie en manigance "
+                     "(`DoSchemeInstead`), jamais en degats reels sur l'identite ou un defenseur. "
+                     "RESERVE : la piste « le DEFENSEUR (Captain America, Retaliate 1) perd sa "
+                     "riposte si l'attaque entrante est a tort ranged » reste non testee, pour "
+                     "deux raisons cumulatives : (1) `Puzzle.Attack(carte, defender=...)` arme une "
+                     "capacite temporaire qui capte le PROCHAIN `WhenUnitWouldAttack` quel qu'il "
+                     "soit, et l'attaque EN EVENEMENT de Parting Shots contre le meme ennemi en "
+                     "envoie un AVANT l'attaque reelle -- le defenseur declare capte donc "
+                     "l'attaque de Parting Shots elle-meme et redirige ses degats sur lui "
+                     "(constate au journal, AssertionError a la cle sur `defense_messages == []`) ; "
+                     "(2) meme sans ce piege, l'attaque de l'ennemi ne va de toute facon jamais "
+                     "a son terme puisque la bascule optionnelle la remplace systematiquement par "
+                     "une manigance. Limitation du harnais `Puzzle.Attack` + de la mecanique "
+                     "« vous pouvez basculer » elle-meme dans ce pilote, pas un defaut de la carte."),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        # Un seul ChangeForm bascule de l'alter-ego de depart vers le heros
+        # (voir le commentaire du cas 79001a sur `ChangeToOtherIdentityForm`).
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')", "Puzzle.PutIntoPlay('79005')",
+                          "Puzzle.PutIntoPlay('11017')"],
+        "declencher": ["Puzzle.Attack('11017')"],
+        "verifier": "etat_attendu",
+        # 2 degats (Parting Shots) sur Macrobots dans les deux montages ; seule
+        # la riposte de Macrobots contre l'identite (1 point, Retaliate 1
+        # imprime) distingue le montage correct (ignoree, ranged sur la bonne
+        # attaque -> 0) du montage fautif (declenchee, ranged sur la mauvaise
+        # attaque -> 1). La bascule a toujours lieu (voir "pourquoi") : forme
+        # AlterEgo et manigance +1 sur le complot principal dans les deux cas,
+        # ca ne distingue rien, seule la riposte compte ici.
+        "attendu": {"degats": [["11017", 2]], "degats_identite": 0, "forme": "AlterEgo",
+                    "hors_jeu": ["79005"]},
+    },
+    {
         "nom": "79008 Agent 13's Pistol — Response apres attaque : degats NON NULS egaux aux icones defaussees",
         "pourquoi": ("le nombre d'icones EST le nombre de degats ; deck Rencontre truque a 1 "
                      "icone (Stampede 01106). Total attendu au moins 3 : 1 ATK (attaque "
