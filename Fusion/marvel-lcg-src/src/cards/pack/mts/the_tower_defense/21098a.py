@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mts.campaign import CampaignSetup
 
 # Under Siege
 
@@ -29,6 +30,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(2),
         AbilityFactory.WhenGameBeginSetup(
             under_siege_game_start
         ),
