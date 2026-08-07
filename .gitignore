@@ -4,3 +4,6 @@ ui-check/comparaison/
 ui-check/test-results/
 ui-check/playwright-report/
 ui-check/.auth/
+# Fichier derive, recopie depuis launch.json a chaque lancement du moteur :
+# le suivre salissait le depot a chaque partie (solo, multi, ou serveur).
+Fusion/marvel-lcg-src/.game/launch.json

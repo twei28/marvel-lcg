@@ -19,11 +19,22 @@ case "$NB_PLACES" in
 esac
 
 [ -x "$PYTHON" ] || { echo "Introuvable ou non executable : $PYTHON" >&2; exit 1; }
+command -v curl >/dev/null 2>&1 || { echo "Introuvable : curl" >&2; exit 1; }
 if [ "$SANS_TUNNEL" != "1" ]; then
   [ -x "$CLOUDFLARED" ] || { echo "Introuvable ou non executable : $CLOUDFLARED" >&2; exit 1; }
 fi
 
 cd "$RACINE"
+# Construction AVANT la generation des configurations. Sans ca, au tout
+# premier lancement (ou apres --clean), .game/deck n'est pas encore un lien
+# symbolique : config_serveur.py y creerait de vrais dossiers, que
+# launcher_fast.py detruirait ensuite en posant le lien par-dessus. Le
+# --build-only ne demarre aucun moteur, il ne fait que compiler et lier.
+echo "Construction du moteur (compilation, liens)..."
+JOURNAL_BUILD="/tmp/marvel-serveur-build.log"
+"$PYTHON" launcher_fast.py --build-only >"$JOURNAL_BUILD" 2>&1 || {
+  echo "Construction du moteur impossible. Voir $JOURNAL_BUILD" >&2; exit 1; }
+
 "$PYTHON" tools/config_serveur.py "$NB_PLACES" >/dev/null || {
   echo "Generation des configurations impossible." >&2; exit 1; }
 
@@ -76,15 +87,18 @@ for place in $(seq 1 "$NB_PLACES"); do
   JOURNAUX_TUNNEL+=("$journal_tunnel")
   "$CLOUDFLARED" tunnel --url "http://127.0.0.1:$port" --no-autoupdate \
     >"$journal_tunnel" 2>&1 &
-  PIDS+=("$!")
+  pid_tunnel=$!
+  PIDS+=("$pid_tunnel")
   url=""
   for _ in $(seq 1 60); do
     url="$(grep -oE 'https://[-a-z0-9]+\.trycloudflare\.com' "$journal_tunnel" | head -1)"
     [ -n "$url" ] && break
+    kill -0 "$pid_tunnel" 2>/dev/null || break
     sleep 1
   done
   if [ -z "$url" ]; then
     echo "Place $place : tunnel non etabli, cette place restera locale." >&2
+    LIENS+=("Place $place : http://127.0.0.1:$port/prepare.html (LOCAL, tunnel echoue)")
     continue
   fi
   LIENS+=("Place $place : $url/prepare.html")

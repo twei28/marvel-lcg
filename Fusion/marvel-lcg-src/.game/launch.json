@@ -1,10 +1,10 @@
 {
   "server_addresses": [
-    "127.0.0.1:2345"
+    "127.0.0.1:2351"
   ],
   "password": "",
   "translate_file": "./data/translate_fr.json",
-  "game_statistics_file": "../statistics.json",
+  "game_statistics_file": "../statistics-serveur-1.json",
   "statistics": true,
   "show_image_text": true,
   "check_for_new_version_on_startup": false,
@@ -21,13 +21,15 @@
     "./assets/sounds/"
   ],
   "replay_folders": [
-    "../replays/"
+    "../replays/serveur-1/"
   ],
   "starter_deck_folder": "./deck/starter/",
   "cache_max_age": 60,
-  "games_history_file": "../games_history.json",
+  "games_history_file": "../games_history-serveur-1.json",
   "cards_json_custom_file": "./data/cards_custom.json",
   "deck_folders": [
+    "./deck/serveur-1/",
     "./deck/custom/"
-  ]
+  ],
+  "seat_passwords": []
 }
