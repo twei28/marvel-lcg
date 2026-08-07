@@ -711,3 +711,34 @@ git commit -m "feat(serveur): entree Windows et depot propre"
 - Aucune adresse fixe : les liens changent à chaque lancement.
 - Aucun garde-fou contre deux personnes sur le même lien. C'est une convention, pas une contrainte technique.
 - Aucun mode d'emploi écrit : le lanceur affiche tout à l'écran.
+
+---
+
+## Amendement du 2026-08-07 : le moteur n'écoutait pas `--config`
+
+Découvert pendant la Task 2, et validé avec l'utilisateur.
+
+`launcher_fast.py` copie **toujours** `launch.json` dans `.game/`, puis démarre depuis `.game/`. L'option `--config` n'existe pas : elle est avalée sans effet, le moteur attendant `-config_files` (un seul tiret). Le mode multi souffre du même défaut depuis toujours : `launcher-multi.sh` attend le port 2347 alors que le moteur démarre sur 2345.
+
+Deux conséquences pour ce plan, qui remplacent ce qui est écrit plus haut.
+
+### 1. `launcher_fast.py` apprend deux options
+
+Modifier `Fusion/marvel-lcg-src/launcher_fast.py` (hors `src/`, donc autorisé) :
+
+- `--config <fichier>` : copier CE fichier vers `.game/launch.json` au lieu de `launch.json`. Chemin relatif à la racine du jeu. Fichier absent égale erreur claire et arrêt.
+- `--no-browser` : ne pas lancer le fil qui ouvre le navigateur. Sans lui, chaque moteur ouvrirait une fenêtre, soit quatre fenêtres pour quatre places.
+
+Ces deux options sont inertes quand elles ne sont pas passées : le mode solo et le mode multi gardent exactement leur comportement actuel. Le mode solo doit être vérifié après la modification.
+
+### 2. Les chemins relatifs se résolvent depuis `.game/`, pas depuis la racine
+
+Le moteur fait `os.chdir(.game)` avant de démarrer. Un `"../replays/serveur-1/"` dans la configuration désigne donc `Fusion/marvel-lcg-src/replays/serveur-1/`, et non `Fusion/replays/serveur-1/`. C'est d'ailleurs pour cela que `Fusion/marvel-lcg-src/replays/` existe et que `Fusion/replays/` n'existe pas.
+
+Les valeurs écrites dans les configurations ne changent pas. Ce qui change, c'est `ecrire_configs` dans `tools/config_serveur.py` : les dossiers doivent être créés sous `<racine>/.game/`, pas sous `<racine>/`. Le test `tools/test_config_serveur.py` doit être corrigé en conséquence, et la Global Constraint « les chemins relatifs se résolvent depuis la racine du jeu » est remplacée par « depuis `<racine>/.game/` ».
+
+Les dossiers `Fusion/replays/serveur-*/` créés au mauvais endroit pendant la Task 1 sont à supprimer.
+
+### Ce que le plan ne fait toujours pas
+
+`launcher-multi.sh` n'est pas réparé ici, mais la correction de `launcher_fast.py` lui rend l'option `--config` fonctionnelle. Il faudra le vérifier lors d'une prochaine partie multi.
