@@ -16,7 +16,6 @@ import {
   cleCarnet,
   conditionRemplie,
   deListe,
-  detecter,
   enListe,
   joueurElimine,
   type ChampVictoire,
@@ -24,6 +23,7 @@ import {
 import {
   champsDuScenario,
   chargerCampagne,
+  chargerCarnetSuggere,
   chargerDefinition,
   effacerContexte,
   enregistrerCampagne,
@@ -32,6 +32,7 @@ import {
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
+import { preRemplir } from './preremplissage'
 
 type Etat =
   | { phase: 'chargement' }
@@ -43,6 +44,7 @@ type Etat =
       definition: DefinitionCampagne
       scenario: ScenarioCampagne
       champs: ChampVictoire[]
+      suggestions: Record<string, string>
     }
 
 /** Nombre de héros de la campagne : les clés « Player N » en dépendent. */
@@ -75,11 +77,12 @@ export function PanneauRecompenses({
       try {
         const campagne = await chargerCampagne(contexte.id)
         const definition = await chargerDefinition(campagne.code)
+        const suggestions = await chargerCarnetSuggere()
         const scenario = definition.scenarios.find((s) => s.id === contexte.scenario)
         if (!scenario) throw new Error(`scénario inconnu : ${contexte.scenario}`)
         if (annule) return
         const champs = champsDuScenario(definition, scenario, campagne.difficulte)
-        setEtat({ phase: 'pret', campagne, definition, scenario, champs })
+        setEtat({ phase: 'pret', campagne, definition, scenario, champs, suggestions })
       } catch (e) {
         if (!annule) setEtat({ phase: 'erreur', message: (e as Error).message })
       }
@@ -93,23 +96,13 @@ export function PanneauRecompenses({
   // ses corrections — un nouveau rendu du monde ne doit pas les écraser.
   const preRemplissage = useMemo(() => {
     if (etat.phase !== 'pret' || !monde) return {}
-    const sortie: Record<string, string> = {}
-    const total = nbJoueurs(etat.campagne, monde)
-    for (const champ of etat.champs) {
-      if (!conditionRemplie(champ, monde)) continue
-      const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
-      for (const joueurId of joueurs) {
-        // Un héros éliminé ne participe à AUCUNE étape de victoire (livret p17).
-        if (champ.parJoueur && joueurElimine(monde, joueurId)) continue
-        const cle = cleCarnet(champ, joueurId)
-        const detectee = champ.type === 'auto' ? detecter(champ, monde, joueurId) : undefined
-        // Le carnet est cumulatif : ce qui était déjà noté ne se perd pas.
-        const ancienne = etat.campagne.carnet?.[cle]
-        const valeur = detectee ?? ancienne
-        if (valeur !== undefined) sortie[cle] = valeur
-      }
-    }
-    return sortie
+    return preRemplir({
+      champs: etat.champs,
+      monde,
+      carnet: etat.campagne.carnet,
+      suggestions: etat.suggestions,
+      total: nbJoueurs(etat.campagne, monde),
+    })
   }, [etat, monde])
 
   useEffect(() => {

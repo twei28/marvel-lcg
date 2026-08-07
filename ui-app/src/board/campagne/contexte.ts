@@ -98,6 +98,23 @@ export const chargerCampagne = (id: string): Promise<Campagne> =>
 export const chargerDefinition = (code: string): Promise<DefinitionCampagne> =>
   lireJson<DefinitionCampagne>(`/get_campagne_definition?${encodeURIComponent(code)}`)
 
+/**
+ * Le carnet que le MOTEUR a relevé à la dernière fin de partie.
+ *
+ * Vide pour trors et sm, qui n'ont pas de collecteur côté moteur : le panneau
+ * retombe alors sur ses détecteurs, exactement comme avant cette route.
+ */
+export const chargerCarnetSuggere = async (): Promise<Record<string, string>> => {
+  try {
+    const brut = await lireJson<{ suggestions?: Record<string, string> }>('/get_carnet_suggere')
+    return brut.suggestions ?? {}
+  } catch {
+    // Une route indisponible ne doit pas empêcher de valider ses récompenses :
+    // sans suggestion, les détecteurs reprennent la main.
+    return {}
+  }
+}
+
 export const enregistrerCampagne = (campagne: Campagne): Promise<{ campagne: Campagne }> =>
   posterJson<{ campagne: Campagne }>('/save_campagne', { campagne })
 
