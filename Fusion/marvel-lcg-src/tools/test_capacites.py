@@ -32,6 +32,11 @@ import sys
 # (ex. 64009 Radiate, evenement a deux capacites « Play »).
 os.environ.setdefault("RELEASE", "1")
 
+# Prefixe des fichiers /tmp (voir CAS_PREFIX plus bas) : par defaut le PID de
+# CE processus, pour qu'une session parallele qui lance le meme harnais sans
+# fixer CAS_PREFIX n'ecrive jamais dans les memes fichiers /tmp qu'une autre.
+os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
+
 # ---------------------------------------------------------------- les cas --
 # 'mise_en_place' et 'declencher' sont des commandes Puzzle.* (voir
 # src/game/puzzle/puzzle.py). 'verifier' recoit des aides et rend (ok, message).
