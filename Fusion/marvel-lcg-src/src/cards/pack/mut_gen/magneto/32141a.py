@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mut_gen.campaign import CampaignSetup
 
 # Asteroid M A
 
@@ -15,6 +16,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
+        *CampaignSetup(5),
         AbilityFactory.WhenCardSetup(
             "This",
             asteroid_m

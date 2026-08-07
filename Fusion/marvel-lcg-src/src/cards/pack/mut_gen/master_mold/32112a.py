@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mut_gen.campaign import CampaignSetup
 
 # The Sentinel Factory A
 
@@ -19,6 +20,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.WhenCardSetup(
             "This",
             the_sentinel_factory
