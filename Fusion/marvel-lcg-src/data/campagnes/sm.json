@@ -1,0 +1,171 @@
+{
+    "version": "1.0",
+    "code": "sm",
+    "cle_extension": "27. Sinister Motives",
+    "nom": "Intentions Sinistres",
+    "nom_en": "Sinister Motives",
+    "resume": "Cinq scénarios reliés par une piste de Réputation : ce que la ville pense de vous décide de vos alliés comme de vos ennuis, d'un scénario au suivant.",
+    "resume_en": "Five linked scenarios driven by a Reputation track: what the city thinks of you decides both your rewards and your troubles, from one scenario to the next.",
+    "pages_regles": ["00-campagne-regles-1.jpg"],
+
+    "expert": {
+        "pv_persistants": true,
+        "defaite_finale_perd_la_campagne": true,
+        "note": "Les PV restants sont reportés d'un scénario au suivant. Perdre Venom Goblin en campagne experte perd la campagne."
+    },
+
+    "scenarios": [
+        {
+            "id": "sandman",
+            "numero": 1,
+            "nom": "Sandman",
+            "nom_fr": "L'Homme-Sable",
+            "resume": "L'Homme-Sable déchaîne un déluge de poussière sur l'Upper East Side : le sable gifle les façades et engloutit des rues entières. Les habitants tentent de fuir, mais les vagues montent plus vite qu'eux. Des civils sont piégés, et personne d'autre ne viendra les chercher.",
+            "enjeu": "Ce n'est pas le sable qui compte, c'est ce que la ville retiendra. Chaque manigance de service à la population déjouée fait monter votre Réputation — et la Réputation, dans cette campagne, décide de tout.",
+            "pages": {
+                "intro": ["01-sandman-intro-1.jpg"],
+                "regles": ["01-sandman-regles-1.jpg"],
+                "epilogue": ["01-sandman-epilogue-1.jpg"]
+            },
+            "victoire": []
+        },
+        {
+            "id": "venom",
+            "numero": 2,
+            "nom": "Venom",
+            "nom_fr": "Venom",
+            "resume": "Aveuglé par la rage, Venom vous charge en hurlant qu'on ne le reprendra pas. Chaque coup encaissé l'enrage davantage et sa fureur commence à vous submerger. Mais du haut d'Oscorp, vous repérez un vieux clocher : si vous l'attirez jusque-là, les vibrations sonores de la cloche pourraient renverser le rapport de force.",
+            "enjeu": "Toujours la Réputation. Aux paliers atteints, la piste vous ouvre du matériel S.H.I.E.L.D. — et vous attire les représailles d'Oscorp.",
+            "pages": {
+                "intro": ["01-sandman-epilogue-1.jpg"],
+                "regles": ["02-venom-regles-1.jpg"],
+                "epilogue": ["02-venom-epilogue-1.jpg"]
+            },
+            "victoire": []
+        },
+        {
+            "id": "mysterio",
+            "numero": 3,
+            "nom": "Mysterio",
+            "nom_fr": "Mysterio",
+            "resume": "Plus profond dans Oscorp, un labyrinthe de miroirs et de phobies fantômes brouille votre chemin. Les illusions déforment votre perception du réel et effacent la frontière entre votre conscience et un torrent souterrain de peurs primaires.",
+            "enjeu": "Les illusions que vous ramenez dans vos decks ne s'évanouissent pas avec Mysterio : elles deviendront la menace posée sur « Light at the End » au scénario suivant.",
+            "pages": {
+                "intro": ["02-venom-epilogue-1.jpg"],
+                "regles": ["03-mysterio-regles-1.jpg"],
+                "epilogue": ["03-mysterio-epilogue-1.jpg"]
+            },
+            "victoire": [
+                {
+                    "cle": "Waking Nightmare: Victory for Scenario #3 - Mysterio",
+                    "type": "auto",
+                    "format": "int",
+                    "detection": "compter_trait",
+                    "parametres": { "trait": "ILLUSION" },
+                    "libelle": "Cartes ILLUSION restées dans les decks",
+                    "aide": "Ce total deviendra la menace posée sur « Light at the End » au scénario des Sinistres Six."
+                }
+            ]
+        },
+        {
+            "id": "sinister_six",
+            "numero": 4,
+            "nom": "The Sinister Six",
+            "nom_fr": "Les Sinistres Six",
+            "resume": "Mysterio disparaît dans un nuage de fumée : il vous a menés dans un silo souterrain. Le silence se rompt d'un coup et chaque membre des Sinistres Six surgit de l'obscurité. Ils ne vous attaqueront pas tous à la fois — mais ils ne vous laisseront pas non plus reprendre votre souffle.",
+            "enjeu": "On gagne ici en achevant la manigance, pas forcément en abattant les six. Ceux qui tiennent encore debout à la fin vous suivront jusqu'au dernier scénario, sous forme de sbires.",
+            "pages": {
+                "intro": ["03-mysterio-epilogue-1.jpg"],
+                "regles": ["04-sinister_six-regles-1.jpg"]
+            },
+            "victoire": [
+                {
+                    "cle": "Last Ones Standing: Victory for Scenario #4 - The Sinister Six",
+                    "type": "auto",
+                    "format": "liste",
+                    "detection": "cartes_dans_zone",
+                    "parametres": { "zone": "area_villain" },
+                    "libelle": "Vilains encore debout à la fin",
+                    "aide": "PÉNALITÉ : chacun d'eux sera mélangé au deck de rencontre de Venom Goblin sous forme de sbire.",
+                    "options": ["27094", "27095", "27096", "27097", "27098", "27099"]
+                }
+            ]
+        },
+        {
+            "id": "venom_goblin",
+            "numero": 5,
+            "nom": "Venom Goblin",
+            "nom_fr": "Venom Goblin",
+            "resume": "Grâce à un appareil achevé pendant votre traversée d'Oscorp, Norman Osborn a plié le symbiote Venom à sa volonté. Ce triumvirat de terreur prend les airs au-dessus de New York et déverse sa fange symbiotique sur des passants sans défense, pour se donner enfin l'armée qu'on lui avait refusée.",
+            "enjeu": "Dernier affrontement. Le battre, c'est gagner la campagne. En campagne experte, le perdre, c'est la perdre.",
+            "final": true,
+            "pages": {
+                "intro": ["05-venom_goblin-intro-1.jpg"],
+                "regles": ["05-venom_goblin-regles-1.jpg"],
+                "epilogue": ["05-venom_goblin-epilogue-1.jpg"]
+            },
+            "victoire": []
+        }
+    ],
+
+    "victoire_commune": [
+        {
+            "cle": "Community Service: Victory for Scenarios #1-4",
+            "type": "auto",
+            "format": "liste",
+            "detection": "cartes_en_pile_victoire",
+            "libelle": "Service à la population accompli",
+            "aide": "Cumulatif sur toute la campagne. Une manigance déjà accomplie ne sera plus tirée dans les scénarios suivants.",
+            "options": ["27176", "27177", "27178", "27179", "27180"]
+        },
+        {
+            "cle": "Reputation Track",
+            "type": "choix",
+            "format": "int",
+            "libelle": "Piste de Réputation (total cumulé)",
+            "aide": "À calculer sur ta piste papier, section « Conditions », puis à reporter ici. C'est elle qui déclenche récompenses ET pénalités : matériel S.H.I.E.L.D. dès 1, mulligan supplémentaire à 5, carte d'aspect à 9, version améliorée à 13, carte de départ en main à 17, Helicarrier à 21, Symbiote Suit à 25."
+        },
+        {
+            "cle": "S.H.I.E.L.D. Tech: Reputation Track Reward",
+            "parJoueur": true,
+            "type": "choix",
+            "libelle": "Récompense Réputation 1 — matériel S.H.I.E.L.D.",
+            "aide": "À choisir une fois, quand la piste atteint 1. La carte démarre en jeu à chaque scénario suivant, et passe sur sa face ENHANCED dès que la piste atteint 13.",
+            "options": ["27182a", "27183a", "27184a", "27185a", "27186a", "27187a", "27188a", "27189a"]
+        },
+        {
+            "cle": "Aspect Advantage: Reputation Track Reward",
+            "parJoueur": true,
+            "type": "choix",
+            "format": "liste",
+            "libelle": "Récompense Réputation 9 — carte(s) d'aspect",
+            "aide": "À saisir quand la piste atteint 9 : les identifiants des cartes choisies dans ta collection, séparés par « ; ». Elles seront mélangées à ton deck à chaque scénario suivant."
+        },
+        {
+            "cle": "Planning Ahead: Reputation Track Reward",
+            "parJoueur": true,
+            "type": "choix",
+            "libelle": "Récompense Réputation 17 — carte de départ en main",
+            "aide": "À saisir quand la piste atteint 17 : l'identifiant de la carte de ton deck que tu veux avoir en main dès la mise en place."
+        },
+        {
+            "cle": "Osborn Tech: Reputation Track Penalty",
+            "type": "choix",
+            "format": "liste",
+            "libelle": "Pénalité Réputation 1 — matériel Osborn",
+            "aide": "Les identifiants des cartes Osborn Tech à mélanger au deck de rencontre, séparés par « ; »."
+        }
+    ],
+
+    "victoire_commune_expert": [
+        {
+            "cle": "Remaining hit points",
+            "parJoueur": true,
+            "type": "auto",
+            "format": "int",
+            "detection": "pv_restants",
+            "libelle": "PV restants",
+            "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
+        }
+    ]
+}
