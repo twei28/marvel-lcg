@@ -614,23 +614,42 @@ Attendu par scénario : aucune erreur, `carnet` non `ABSENT`.
 
 - [ ] **Étape 3 : mesurer le carnet ENTRANT sur `juggernaut`, niveau 3**
 
-Le niveau 3 pose des compteurs d'élan
-(`JuggernautMomentumCounters()`) à partir du carnet. C'est la moitié entrante,
-que le test précédent ne couvre pas.
+Deux effets s'enchaînent, et le second prouve le premier.
+`PutEarnedEnvironmentsIntoPlay()` met en jeu une carte d'environnement par clé
+`Campaign Pool: <nom>` présente au carnet (`ENVIRONMENTS`, `campaign.py:11-18`),
+puis `JuggernautMomentumCounters()` pose sur chaque vilain autant de compteurs
+`momentum` qu'il y a d'environnements en jeu. Un carnet à deux environnements
+doit donc donner deux cartes `4019xb` en jeu ET `c_momentum: 2` sur le vilain.
 
 ```bash
 wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
-  ~/marvel-work/python/bin/python3.10 -c \"
-import re
-src=open('src/cards/pack/next_evol/campaign.py').read()
-for m in re.finditer(r\\\"CampaignLog\\.Get\\w+\\(\\s*'([^']+)'\\\", src): print(m.group(1))
-\" | sort -u"
+  RAPPORT=/tmp/s-jugg.json FIN_DE_PARTIE=1 \
+  CAMPAIGN_LOG='{\"Campaign Pool: Team Assembled\":\"1\",\"Campaign Pool: Geared Up\":\"1\"}' \
+  ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . juggernaut captain_america 4801"
+wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
+import json; d=json.load(open('/tmp/s-jugg.json'))
+m=d.get('monde') or {}
+def tout():
+    for z,v in m.items():
+        if isinstance(v,list):
+            for c in (v if not v or isinstance(v[0],dict) else [x for s in v for x in s]):
+                if isinstance(c,dict): yield c
+    for p in m.get('players',[]):
+        for z,v in p.items():
+            if isinstance(v,list):
+                for c in (v if not v or isinstance(v[0],dict) else [x for s in v for x in s]):
+                    if isinstance(c,dict): yield c
+envs=[c['card_id'] for c in tout() if str(c.get('card_id','')) in ('40190b','40192b')]
+mom=[(c.get('card_id'), (c.get('info') or {}).get('c_momentum'))
+     for c in tout() if (c.get('info') or {}).get('c_momentum')]
+print('environnements en jeu :', envs)
+print('compteurs momentum :', mom)
+print('erreurs :', d['erreurs'][:2])
+\""
 ```
 
-Prendre dans la sortie une clé lue au niveau 3, la poser en `CAMPAIGN_LOG`, et
-relancer la sonde sur `juggernaut` pour constater son effet dans le descripteur
-(compteur sur la manigance, ou carte supplémentaire en jeu). Consigner la clé
-utilisée et l'effet observé dans le tableau de mesures.
+Attendu : `environnements en jeu : ['40190b', '40192b']` et un vilain portant
+`c_momentum` égal à 2. Consigner les deux dans le tableau de mesures.
 
 - [ ] **Étape 4 : compléter le tableau et commit**
 
@@ -1105,10 +1124,10 @@ export const chargerCarnetSuggere = async (): Promise<Record<string, string>> =>
 Dans `ui-app/src/board/campagne/PanneauRecompenses.tsx` :
 
 Ajouter `chargerCarnetSuggere` à l'import depuis `./contexte`, ajouter
-`preRemplir` en import depuis `./preremplissage`, et retirer de l'import
-`./detecteurs` les noms devenus inutilisés dans ce fichier (`conditionRemplie`
-et `joueurElimine` restent utilisés plus bas, `detecter` et `cleCarnet` sont à
-vérifier avant retrait ; `npx tsc --noEmit` tranchera).
+`preRemplir` en import depuis `./preremplissage`, et retirer `detecter` de
+l'import `./detecteurs`. C'est le SEUL nom qui devient inutilisé : `cleCarnet`,
+`conditionRemplie`, `joueurElimine`, `deListe` et `enListe` servent encore dans
+le rendu, plus bas dans le fichier. `npx tsc --noEmit` le confirme à l'étape 7.
 
 Ajouter `suggestions` à la branche `pret` du type `Etat` :
 
@@ -1220,10 +1239,23 @@ Dans `tools/config_serveur.py`, sous `cfg["achievements_file"] = ...` :
 
 - [ ] **Étape 3 : couvrir la clé dans le test existant**
 
-Ouvrir `tools/test_config_serveur.py`, trouver l'assertion qui vérifie
-`achievements_file`, et lui ajouter la même vérification pour
-`campaign_log_last_file` : la valeur doit contenir le numéro de place, et deux
-places différentes doivent produire deux chemins différents.
+Dans `tools/test_config_serveur.py`, le couple de lignes 52-53 vérifie
+`achievements_file` :
+
+```python
+             cfg["achievements_file"] == f"../achievements-serveur-{place}.json",
+             cfg["achievements_file"])
+```
+
+Ajouter juste après, dans la même structure, la vérification jumelle :
+
+```python
+             cfg["campaign_log_last_file"] == f"./campaign-log-last-serveur-{place}.json",
+             cfg["campaign_log_last_file"])
+```
+
+Reprendre exactement la forme du bloc voisin, y compris son libellé d'échec :
+c'est le style du fichier, pas un modèle à réinventer.
 
 - [ ] **Étape 4 : lancer le test**
 
