@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.next_evol.campaign import CampaignSetup
 
 # The Unstoppable Juggernaut
 
@@ -36,6 +37,7 @@ def GetAbilities() -> Sequence['Ability']:
             )
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.WhenCardSetup(
             "This",
             the_unstoppable_juggernaut

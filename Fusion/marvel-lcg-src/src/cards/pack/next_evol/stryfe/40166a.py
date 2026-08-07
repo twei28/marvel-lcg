@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.next_evol.campaign import CampaignSetup
 
 # Uncontrollable Power
 
@@ -26,6 +27,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
+        *CampaignSetup(5),
         AbilityFactory.WhenCardSetup(
             "This",
             uncontrollable_power

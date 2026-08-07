@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.next_evol.campaign import CampaignSetup
 
 # Gotta Get Away
 
@@ -21,6 +22,7 @@ def GetAbilities() -> Sequence['Ability']:
             face.AttachTo2(villain, effect)
 
     return [
+        *CampaignSetup(2),
         AbilityFactory.WhenCardSetup(
             "This",
             gotta_get_away

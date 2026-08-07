@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.next_evol.campaign import CampaignSetup
 
 # Knock, Knock
 
@@ -26,6 +27,7 @@ def GetAbilities() -> Sequence['Ability']:
         villain.PutIntoPlay("FirstPlayer", effect)
 
     return [
+        *CampaignSetup(1),
         AbilityFactory.WhenCardSetup(
             "This",
             knock_knock,
