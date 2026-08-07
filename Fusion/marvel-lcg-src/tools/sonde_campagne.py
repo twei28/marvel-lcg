@@ -9,6 +9,8 @@ deduire du code du moteur.
 Usage : python3.10 sonde_descripteur.py <racine> <scenario> <heros> [port]
   PUZZLE   : liste JSON de commandes Puzzle a executer apres la mise en place
   RAPPORT  : chemin du descripteur rendu (defaut /tmp/descripteur.json)
+  FIN_DE_PARTIE : "1" pour declencher WhenGameOver apres la mise en place et
+                  capturer le carnet SORTANT dans la cle `carnet_sortant`
 """
 import json
 import os
@@ -24,10 +26,19 @@ CAMPAIGN_LOG = json.loads(os.environ.get("CAMPAIGN_LOG", "{}"))
 RULES = json.loads(os.environ.get("RULES", '["mode_campaign"]'))
 PUZZLE = json.loads(os.environ.get("PUZZLE", "[]"))
 RAPPORT = os.environ.get("RAPPORT", "/tmp/descripteur.json")
+FIN_DE_PARTIE = os.environ.get("FIN_DE_PARTIE", "") == "1"
+
+# Le moteur ecrit toujours dans le repertoire courant, soit .game. On efface
+# le temoin AVANT la partie : sans cela on relirait le rapport de l'execution
+# precedente et on croirait le scenario cable alors qu'il ne l'est pas.
+CARNET_SORTANT = "campaign_log_last.json"
 
 GAME = os.path.join(ROOT, ".game")
 os.chdir(GAME)
 sys.path.insert(0, GAME)
+
+if FIN_DE_PARTIE and os.path.exists(CARNET_SORTANT):
+    os.remove(CARNET_SORTANT)
 
 try:
     import winsound  # noqa: F401
@@ -115,6 +126,25 @@ if PUZZLE:
                 sortie["erreurs"].append(f"{commande} : {type(exc).__name__}: {exc}")
     except BaseException as exc:
         sortie["erreurs"].append(f"puzzle indisponible : {type(exc).__name__}: {exc}")
+
+# Fin de partie : c'est le seul moment ou WriteCampaignLogAtGameOver s'execute.
+# On passe par SetGameOverByRule, qui construit lui-meme l'Effect a partir de
+# la manigance principale : rien a fabriquer a la main.
+if FIN_DE_PARTIE:
+    try:
+        Engine.game.world.game_over.SetGameOverByRule(
+            "The Final Stage of the Villain was Defeated"
+        )
+    except BaseException as exc:
+        sortie["erreurs"].append(f"fin de partie : {type(exc).__name__}: {exc}")
+    if os.path.exists(CARNET_SORTANT):
+        try:
+            with open(CARNET_SORTANT, encoding="utf-8") as f:
+                sortie["carnet_sortant"] = json.load(f)
+        except BaseException as exc:
+            sortie["erreurs"].append(f"carnet sortant : {type(exc).__name__}: {exc}")
+    else:
+        sortie["carnet_sortant"] = None
 
 try:
     from game.render.to_descriptor import ToDescriptor
