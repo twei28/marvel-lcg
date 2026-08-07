@@ -105,7 +105,9 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
             else:
                 out[key] = value
         try:
-            with open('campaign_log_last.json', 'w') as file:
+            from engine.config import ConfigVariables
+            chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
+            with open(chemin, 'w') as file:
                 json.dump({'players_won': message.players_won, 'suggestions': out}, file, indent=1, ensure_ascii=False)
         except OSError:
             pass

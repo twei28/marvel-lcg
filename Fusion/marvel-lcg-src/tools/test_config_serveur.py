@@ -51,6 +51,9 @@ for place in (1, 2, 3, 4):
     verifier(f"place {place} : hauts faits separes",
              cfg["achievements_file"] == f"../achievements-serveur-{place}.json",
              cfg["achievements_file"])
+    verifier(f"place {place} : carnet de fin de partie separe",
+             cfg["campaign_log_last_file"] == f"./campaign-log-last-serveur-{place}.json",
+             cfg["campaign_log_last_file"])
     verifier(f"place {place} : aucun mot de passe d'entree",
              cfg["password"] == "", cfg["password"])
     verifier(f"place {place} : aucun siege reserve",

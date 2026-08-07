@@ -33,6 +33,7 @@ def construire_config(base: dict, place: int) -> dict:
     # sont des boites livrees, en lecture seule).
     cfg["campagne_folder"] = f"../campagnes-serveur-{place}/"
     cfg["achievements_file"] = f"../achievements-serveur-{place}.json"
+    cfg["campaign_log_last_file"] = f"./campaign-log-last-serveur-{place}.json"
     # L'ordre compte : le moteur ECRIT dans deck_folders[0] et LIT toute la
     # liste (server_get.py, save_deck et list_deck). L'ami construit donc ses
     # decks chez lui et voit ceux de l'hote, sans pouvoir les abimer.
