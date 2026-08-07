@@ -22,12 +22,19 @@ from . import *
 # message -- meme fonction que celle citee par le brief.
 #
 # Brief : « La premiere option ne doit etre proposee que si cet allie est en
-# jeu. » Recherche par nom via `Worlds.FindCardOnField`, comme Batroc
-# (aos/batroc/50096.py) qui cherche l'allie cible d'une redirection par nom
-# imprime plutot que par possession -- Captain America n'a ici qu'un seul
-# exemplaire possible en jeu. Absent, l'option disparait du menu
-# (`condition=captain_america is not None`) : le joueur n'a alors plus que la
-# seconde option, comme un « Choose » a une seule branche legale.
+# jeu. » CORRECTIF (7/8/2026, apres relecture) : la premiere version cherchait
+# par nom sans filtre de controleur (`Worlds.FindCardOnField`, comme Batroc
+# 50096 cherche Mysterio), ce qui rend a deux joueurs jouant tous deux
+# Agent 13 le PREMIER Captain America trouve dans l'ordre du champ, peut-etre
+# celui de l'autre joueur -- `CardFinder` n'expose aucun parametre de
+# controleur utilisable (celui de `checker.py`/`finder.py` est commente,
+# desactive). Corrige avec le meme patron qu'Assassination Plot (79011, ce
+# meme pack) : `Worlds.FindCardsOnField` (au pluriel) puis filtre manuel sur
+# `GetControlByPlayer() == player` -- le joueur qui RECOIT l'obligation, pas
+# n'importe quel joueur. Absent (ou controle par un autre joueur), l'option
+# disparait du menu (`condition=captain_america is not None`) : le joueur
+# n'a alors plus que la seconde option, comme un « Choose » a une seule
+# branche legale.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -37,7 +44,11 @@ def GetAbilities() -> Sequence['Ability']:
 
         YouMayFlipToYourAlterEgoForm(player, effect)
 
-        captain_america = Worlds.FindCardOnField(effect, name="Captain America", card_type=Ally)
+        captain_americas = [
+            x for x in Worlds.FindCardsOnField(effect, name="Captain America", card_type=Ally)
+            if x.GetControlByPlayer() == player
+        ]
+        captain_america = captain_americas[0] if captain_americas else None
 
         def retirer_captain_america(targets: Sequence['CardFace']) -> None:
             Unused(targets)
