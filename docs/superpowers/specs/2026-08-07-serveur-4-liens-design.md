@@ -96,8 +96,11 @@ continue avec les autres. Trois liens valent mieux que zéro. Le lanceur ne s'ar
 ## Limites assumées
 
 - **Sans mot de passe, quiconque a le lien entre.** Le lien est aléatoire et change à chaque
-  lancement, ce qui borne la casse. Le réglage `password` reste dans la configuration si l'hôte
-  change d'avis.
+  lancement, ce qui borne la casse. Remplir le réglage `password` n'aurait aucun effet : dans
+  l'état actuel du code, `launcher_fast.py` fait
+  `WebServer.IsAuthenticate = lambda self, request=None: True`, ce qui court-circuite
+  systématiquement le contrôle du mot de passe (`src/engine/network/web_server.py`). Un vrai mot
+  de passe demanderait donc de revoir `launcher_fast.py`, ce qui est un autre chantier.
 - **Deux personnes sur le même lien tombent sur la même partie** et se marchent dessus. La
   convention est un lien par personne. Rien ne l'impose techniquement.
 - **Le PC hôte fait tourner quatre jeux plus quatre tunnels.** La consommation réelle sera

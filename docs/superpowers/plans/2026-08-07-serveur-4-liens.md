@@ -707,7 +707,7 @@ git commit -m "feat(serveur): entree Windows et depot propre"
 
 ## Ce que le plan ne fait pas
 
-- Aucun mot de passe, c'est la décision de la spec. Le champ `password` reste dans la configuration engendrée si l'utilisateur change d'avis : il suffira de le remplir dans `config_serveur.py`.
+- Aucun mot de passe, c'est la décision de la spec. Remplir le champ `password` dans `config_serveur.py` n'aurait de toute façon aucun effet : `launcher_fast.py` fait `WebServer.IsAuthenticate = lambda self, request=None: True`, qui court-circuite le contrôle du mot de passe (`src/engine/network/web_server.py`). Rendre un mot de passe possible demanderait de revoir `launcher_fast.py`, un autre chantier.
 - Aucune adresse fixe : les liens changent à chaque lancement.
 - Aucun garde-fou contre deux personnes sur le même lien. C'est une convention, pas une contrainte technique.
 - Aucun mode d'emploi écrit : le lanceur affiche tout à l'écran.
