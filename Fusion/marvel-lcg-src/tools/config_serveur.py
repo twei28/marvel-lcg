@@ -44,10 +44,10 @@ def ecrire_configs(racine: str, nb_places: int) -> list:
     chemins = []
     for place in range(1, nb_places + 1):
         cfg = construire_config(base, place)
-        # Les chemins de la configuration sont relatifs a la racine du jeu :
-        # c'est de la que le moteur tourne.
+        # Les chemins de la configuration sont relatifs a .game/, pas a la
+        # racine : le moteur fait os.chdir(.game) avant de les resoudre.
         for relatif in cfg["replay_folders"] + [cfg["deck_folders"][0]]:
-            os.makedirs(os.path.normpath(os.path.join(racine, relatif)), exist_ok=True)
+            os.makedirs(os.path.normpath(os.path.join(racine, ".game", relatif)), exist_ok=True)
         chemin = os.path.join(dossier_configs, f"launch-{place}.json")
         with open(chemin, "w", encoding="utf-8") as f:
             json.dump(cfg, f, ensure_ascii=False, indent=2)

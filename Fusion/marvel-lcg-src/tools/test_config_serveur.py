@@ -84,9 +84,9 @@ try:
     verifier("configuration relisible",
              json.load(open(chemins[1], encoding="utf-8"))["server_addresses"] == ["127.0.0.1:2352"])
     verifier("dossier de decks de la place 1 cree",
-             os.path.isdir(os.path.join(bac, "deck", "serveur-1")))
+             os.path.isdir(os.path.join(bac, ".game", "deck", "serveur-1")))
     verifier("dossier de sauvegardes de la place 2 cree",
-             os.path.isdir(os.path.join(bac, "..", "replays", "serveur-2")))
+             os.path.isdir(os.path.join(bac, "replays", "serveur-2")))
     verifier("place 3 non demandee, donc non creee",
              not os.path.exists(os.path.join(bac, ".serveur", "launch-3.json")))
     try:
@@ -95,9 +95,9 @@ try:
     except ValueError:
         verifier("nb_places 9 refuse", True)
 finally:
+    # Tout est desormais cree sous bac/ (bac/.game/... ou bac/replays/...) :
+    # ce seul rmtree suffit, plus besoin de nettoyer hors du bac a sable.
     shutil.rmtree(bac, ignore_errors=True)
-    shutil.rmtree(os.path.join(os.path.dirname(bac), "replays", "serveur-1"), ignore_errors=True)
-    shutil.rmtree(os.path.join(os.path.dirname(bac), "replays", "serveur-2"), ignore_errors=True)
 
 echecs = [r for r in resultats if not r[1]]
 for nom, ok, detail in resultats:

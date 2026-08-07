@@ -51,7 +51,7 @@ for place in $(seq 1 "$NB_PLACES"); do
   echo "Place $place : demarrage du moteur sur le port $port..."
   # PYTHONUNBUFFERED : sans lui, Python tamponne sa sortie des qu'elle n'est
   # plus un terminal, et le journal reste vide au moment ou l'on en a besoin.
-  PYTHONUNBUFFERED=1 "$PYTHON" -u launcher_fast.py --config ".serveur/launch-$place.json" \
+  PYTHONUNBUFFERED=1 "$PYTHON" -u launcher_fast.py --config ".serveur/launch-$place.json" --no-browser \
     >"$journal_jeu" 2>&1 &
   pid_jeu=$!
   PIDS+=("$pid_jeu")
