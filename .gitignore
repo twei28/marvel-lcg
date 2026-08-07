@@ -7,3 +7,12 @@ ui-check/.auth/
 # Fichier derive, recopie depuis launch.json a chaque lancement du moteur :
 # le suivre salissait le depot a chaque partie (solo, multi, ou serveur).
 Fusion/marvel-lcg-src/.game/launch.json
+# Mode serveur : configurations par place et donnees qu'elles engendrent.
+# Les chemins relatifs des configurations se resolvent depuis .game/ (le
+# moteur y fait chdir), donc "../replays/serveur-N/" designe bien
+# Fusion/marvel-lcg-src/replays/serveur-N/ et non Fusion/replays/serveur-N/.
+Fusion/marvel-lcg-src/.serveur/
+Fusion/marvel-lcg-src/deck/serveur-*/
+Fusion/marvel-lcg-src/replays/serveur-*/
+Fusion/marvel-lcg-src/games_history-serveur-*.json
+Fusion/marvel-lcg-src/statistics-serveur-*.json
