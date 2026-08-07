@@ -104,11 +104,26 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
                 out.pop(key, None)
             else:
                 out[key] = value
+        # Estampille du scenario : sans elle, ce carnet reste au fichier apres
+        # la fin de partie et une AUTRE boite, jouee plus tard sur la meme
+        # place, le lirait comme sien (voir preremplissage.ts, qui compare
+        # cette valeur au scenario du contexte de campagne avant d'utiliser
+        # quoi que ce soit d'ici). Derivee du set_name de la manigance
+        # principale active, deja la facon etablie d'identifier « quel
+        # scenario » dans ce fichier (voir ActiveMainSchemeStartswith
+        # ci-dessus) : 'Ebony Maw' -> 'ebony_maw', ce qui correspond
+        # exactement a l'id de scenario dans data/campagnes/mts.json.
+        schemes = Worlds.GetAllMainSchemes(effect.world)
+        scenario_id = None
+        if schemes:
+            set_name = schemes[0].paper.set_name
+            if set_name:
+                scenario_id = set_name.lower().replace(' ', '_')
         try:
             from engine.config import ConfigVariables
             chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
             with open(chemin, 'w') as file:
-                json.dump({'players_won': message.players_won, 'suggestions': out}, file, indent=1, ensure_ascii=False)
+                json.dump({'players_won': message.players_won, 'scenario': scenario_id, 'suggestions': out}, file, indent=1, ensure_ascii=False)
         except OSError:
             pass
         Message.TextRender('\n--- Campaign Log (suggestions) ---', world)

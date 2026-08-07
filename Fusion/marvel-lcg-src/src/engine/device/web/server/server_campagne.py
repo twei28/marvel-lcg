@@ -91,6 +91,13 @@ class GameServerCampagne(GameServerBase):
         cles absentes — ce qui est le cas de toutes celles de trors et sm, qui
         n'ont pas de collecteur cote moteur.
 
+        Rien n'efface jamais ce fichier : il reste au disque, inchange, entre
+        la fin d'une partie et la consultation suivante, meme si une AUTRE
+        boite (sans collecteur, comme trors ou sm) a ete jouee entre-temps.
+        `scenario` porte donc l'estampille du scenario qui a ECRIT ces
+        suggestions ; c'est au plateau de la comparer a son scenario en cours
+        avant de s'en servir (voir preremplissage.ts).
+
         Fichier absent : reponse vide et 200, pas 404. Une partie hors campagne
         ou une boite sans collecteur n'est pas une erreur.
         """
@@ -99,15 +106,17 @@ class GameServerCampagne(GameServerBase):
 
         chemin = CARNET_SUGGERE_FILE.value
         if not os.path.isfile(chemin):
-            return web.json_response({'players_won': False, 'suggestions': {}})
+            return web.json_response({'players_won': False, 'scenario': None, 'suggestions': {}})
         try:
             with open(chemin, encoding='utf-8') as f:
                 brut = json_lib.load(f)
         except Exception:
-            return web.json_response({'players_won': False, 'suggestions': {}})
+            return web.json_response({'players_won': False, 'scenario': None, 'suggestions': {}})
         suggestions = brut.get('suggestions') or {}
+        scenario = brut.get('scenario')
         return web.json_response({
             'players_won': bool(brut.get('players_won')),
+            'scenario': (str(scenario) if scenario else None),
             'suggestions': {str(k): str(v) for k, v in suggestions.items() if v is not None},
         })
 

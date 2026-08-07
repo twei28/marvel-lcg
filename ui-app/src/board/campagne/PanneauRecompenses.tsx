@@ -45,6 +45,8 @@ type Etat =
       scenario: ScenarioCampagne
       champs: ChampVictoire[]
       suggestions: Record<string, string>
+      /** Scénario qui a produit `suggestions` côté moteur — voir preremplissage.ts. */
+      scenarioSuggestions: string | null
     }
 
 /** Nombre de héros de la campagne : les clés « Player N » en dépendent. */
@@ -77,12 +79,20 @@ export function PanneauRecompenses({
       try {
         const campagne = await chargerCampagne(contexte.id)
         const definition = await chargerDefinition(campagne.code)
-        const suggestions = await chargerCarnetSuggere()
+        const carnetSuggere = await chargerCarnetSuggere()
         const scenario = definition.scenarios.find((s) => s.id === contexte.scenario)
         if (!scenario) throw new Error(`scénario inconnu : ${contexte.scenario}`)
         if (annule) return
         const champs = champsDuScenario(definition, scenario, campagne.difficulte)
-        setEtat({ phase: 'pret', campagne, definition, scenario, champs, suggestions })
+        setEtat({
+          phase: 'pret',
+          campagne,
+          definition,
+          scenario,
+          champs,
+          suggestions: carnetSuggere.suggestions,
+          scenarioSuggestions: carnetSuggere.scenario,
+        })
       } catch (e) {
         if (!annule) setEtat({ phase: 'erreur', message: (e as Error).message })
       }
@@ -101,6 +111,8 @@ export function PanneauRecompenses({
       monde,
       carnet: etat.campagne.carnet,
       suggestions: etat.suggestions,
+      scenarioSuggestions: etat.scenarioSuggestions,
+      scenarioActuel: etat.scenario.id,
       total: nbJoueurs(etat.campagne, monde),
     })
   }, [etat, monde])
