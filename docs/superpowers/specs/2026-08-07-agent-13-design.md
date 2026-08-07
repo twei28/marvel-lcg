@@ -62,9 +62,11 @@ Traits communs : S.H.I.E.L.D. SPY.
 | `79014` | Hypnotic Suggestion | 2 | Treachery |
 | `79015` | Sleeper Agent | 1 | Obligation |
 
-Les textes imprimés de chaque carte sont relevés dans le scratchpad de session,
-fichier `agent13/releve-cartes.md`, et doivent être recopiés dans `cards.json`
-depuis ce relevé, jamais de mémoire.
+Les textes imprimés de chaque carte sont relevés dans
+[`2026-08-07-agent-13-releve-cartes.md`](2026-08-07-agent-13-releve-cartes.md),
+à côté de cette spec, et doivent être recopiés dans `cards.json` depuis ce
+relevé, jamais de mémoire. Le relevé vient des 23 scans, lus un par un ; le
+refaire coûterait autant que de l'écrire.
 
 ## 4. Les sept cartes techniques
 
