@@ -70197,6 +70197,7 @@
                 "THW": "2*",
                 "ATK": "2*",
                 "RES": "R",
+                "Retaliate": "1",
                 "Class": "Hero"
             },
             "traits": [
@@ -70373,7 +70374,7 @@
             "desc": {
                 "HP": "3",
                 "SCH": "3",
-                "ATK": "1",
+                "ATK": "1*",
                 "Boost": "2",
                 "Nemesis": "Sharon Carter"
             },
@@ -70428,5 +70429,5 @@
             "text": "Give to the Sharon Carter player.\nYou may flip to alter-ego form. Choose:\n- Remove the Captain America ally from the game → remove Sleeper Agent from the game.\n- Discard 1 card from hand and place 2 threat on the main scheme. Discard this obligation."
         }
     ],
-    "checksum": "339f7e890f2d752a525e6d57242a9faa69e169bd43ed6233ddd8e28732c19cd4"
+    "checksum": "e0632ecd4e4c5b85f1e64a6754920e819990804240de281ea366ff97bf78badc"
 }
