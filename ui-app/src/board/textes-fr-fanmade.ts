@@ -791,6 +791,58 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '76023': "Lié (Ghost Rider).\n<b>Action de héros</b> : inclinez The Hell Charger et retirez-lui 1 compteur de charge → votre prochaine attaque de cette phase gagne +2 ATQ, perçant et déferlement.",
   // moon_knight — The Iron Fist (Upgrade)
   '76024': "Lié (Iron Fist).\n<b>Interruption de héros</b> : quand vous attaquez un ennemi, inclinez The Iron Fist et retirez-lui 1 compteur mystique → sonnez cet ennemi et infligez-lui 1 dégât supplémentaire.",
+  // brawn — Brawn (Hero)
+  '77001a': "<i>The Complete Package</i> — tant que Brawn est incliné, il gagne : « <b>Ressource</b> : générez une ressource [mental]. <i>(Limite d'une fois par phase.)</i> »",
+  // brawn — Amadeus Cho (AlterEgo)
+  '77001b': "Amadeus Cho commence la partie avec une réserve. <i>(Votre réserve est une zone hors-jeu qui contient au maximum 3 cartes. Vous pouvez jouer une carte de votre réserve en payant son coût, ou défausser une carte de votre réserve pour générer ses ressources. Les ressources générées depuis votre main ne peuvent pas payer une carte de votre réserve, et celles générées depuis votre réserve ne peuvent pas payer une carte de votre main.)</i>\n<i>Mastermind Excello</i> — <b>Action</b> : regardez les 2 cartes du dessus de votre deck. Placez l'une d'elles dans votre réserve et l'autre sur le dessus ou le dessous de votre deck. <i>(Limite d'une fois par round.)</i>",
+  // brawn — Silk (Ally)
+  '77002': "<b>Action</b> : renvoyez Silk dans votre réserve → sonnez un sbire et infligez-lui 2 dégâts.\n<b>Réponse</b> : après avoir joué Silk depuis votre main, cherchez une traîtrise dans le deck rencontre et défaussez-la.",
+  // brawn — Ironheart (Ally, alternative a Silk)
+  '77003': "Multivers.\n[star] <b>Interruption</b> : quand Ironheart utilise un pouvoir de base, le joueur Amadeus Cho place la carte du dessus de son deck dans sa réserve.",
+  // brawn — Calculated Defense (Event)
+  '77004': "<b>Interruption de héros</b> : quand Brawn se défend contre une attaque, redressez Brawn et piochez 1 carte <i>(2 cartes à la place si Brawn ne s'est pas redressé de cette façon)</i>. Si vous avez joué cette carte depuis votre main en utilisant une ressource [mental], placez cette carte dans votre réserve.",
+  // brawn — Calculated Defense (Event)
+  '77005': "<b>Interruption de héros</b> : quand Brawn se défend contre une attaque, redressez Brawn et piochez 1 carte <i>(2 cartes à la place si Brawn ne s'est pas redressé de cette façon)</i>. Si vous avez joué cette carte depuis votre main en utilisant une ressource [mental], placez cette carte dans votre réserve.",
+  // brawn — Gamma Strike (Event)
+  '77006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si vous avez payé cette carte uniquement avec des ressources [physical], cette attaque inflige 3 dégâts supplémentaires et gagne déferlement. Si vous avez payé cette carte uniquement avec des ressources [mental] et que vous l'avez jouée depuis votre main, placez-la dans votre réserve.",
+  // brawn — Gamma Strike (Event)
+  '77007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si vous avez payé cette carte uniquement avec des ressources [physical], cette attaque inflige 3 dégâts supplémentaires et gagne déferlement. Si vous avez payé cette carte uniquement avec des ressources [mental] et que vous l'avez jouée depuis votre main, placez-la dans votre réserve.",
+  // brawn — Heavy Lifting (Event)
+  '77008': "<b>Action de héros</b> <i>(contre)</i> : pour chaque ressource [physical] utilisée pour payer cette carte, votre héros gagne +1 ATQ jusqu'à la fin du round. Retirez d'une manigance un nombre de menaces égal à votre ATQ.",
+  // brawn — Heavy Lifting (Event)
+  '77009': "<b>Action de héros</b> <i>(contre)</i> : pour chaque ressource [physical] utilisée pour payer cette carte, votre héros gagne +1 ATQ jusqu'à la fin du round. Retirez d'une manigance un nombre de menaces égal à votre ATQ.",
+  // brawn — Shockwave (Event)
+  '77010': "<b>Action de héros</b> : défaussez les X cartes du dessus de votre deck <i>(maximum 5)</i>. Pour chaque ressource [physical] défaussée de cette façon, infligez 2 dégâts à chaque ennemi. Pour chaque ressource [mental] défaussée de cette façon, retirez 2 menaces de chaque manigance.",
+  // brawn — Shockwave (Event)
+  '77011': "<b>Action de héros</b> : défaussez les X cartes du dessus de votre deck <i>(maximum 5)</i>. Pour chaque ressource [physical] défaussée de cette façon, infligez 2 dégâts à chaque ennemi. Pour chaque ressource [mental] défaussée de cette façon, retirez 2 menaces de chaque manigance.",
+  // brawn — Cho's Lab (Support)
+  '77012': "<b>Réponse de héros</b> : après avoir changé de forme, inclinez Cho's Lab → placez la carte du dessous de votre deck dans votre réserve.\n<b>Action d'identité civile</b> : inclinez Cho's Lab → mélangez une carte Brawn de votre pile de défausse dans votre deck.",
+  // brawn — Brawn's Suit (Upgrade)
+  '77013': "Vous gagnez +2 points de vie.\n<b>Réponse de héros</b> : après avoir joué une carte depuis votre réserve, infligez 1 dégât à un ennemi.",
+  // brawn — Forward-Thinking (Upgrade)
+  '77014': "<b>Réponse</b> : après avoir joué une carte depuis votre réserve, redressez votre identité.",
+  // brawn — Hulk Out (Upgrade)
+  '77015': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption Obligatoire</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
+  // brawn — Hulk Out (Upgrade)
+  '77016': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption Obligatoire</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
+  // brawn — Totally Awesome (Upgrade)
+  '77017': "<b>Réponse de héros</b> : après avoir joué une carte depuis votre réserve, retirez 1 menace d'une manigance.",
+  // brawn — Analysis Paralysis (Obligation)
+  '77018': "<b><i>Donnez-la au joueur Amadeus Cho.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Amadeus Cho → retirez Analysis Paralysis de la partie.\n• Vous êtes sonné et désorienté. Si vous étiez déjà sonné et désorienté, cette carte gagne renfort. Défaussez cette obligation.",
+  // brawn — Rising Tide (SideScheme)
+  '77019': "<i>Outré par le mépris des habitants de la surface pour l'océan, Namor invoque un raz-de-marée colossal pour balayer l'œuvre des hommes.</i>\nEntrave 2[per_hero].\n<b>Une fois révélée</b> : placez 1 jeton d'accélération ici.\n<b>Interruption Obligatoire</b> : quand la phase du Méchant commence, placez 1 jeton d'accélération ici.",
+  // brawn — Namor (Minion)
+  '77020': "Patrouille. Ténacité.\n[star] Namor gagne +X ATQ et +X MNG, où X est égal au nombre de jetons d'accélération en jeu.\n<b>Interruption Obligatoire</b> : quand Namor manigance, placez cette menace sur Rising Tide à la place.",
+  // brawn — Imperius Rex! (Treachery)
+  '77021': "<b>Une fois révélée</b> : Namor s'active contre vous. S'il n'est pas en jeu, cherchez Namor, mettez-le en jeu engagé avec vous et donnez-lui 1 carte de boost face cachée.\n<hr />\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
+  // brawn — Tidal Surge (Treachery)
+  '77022': "Renfort.\n<b>Une fois révélée</b> : placez 1 jeton d'accélération sur Rising Tide. Si Namor est en jeu, donnez-lui une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez à l'ennemi qui s'active 1 carte de boost supplémentaire.",
+  // brawn — Tidal Surge (Treachery)
+  '77023': "Renfort.\n<b>Une fois révélée</b> : placez 1 jeton d'accélération sur Rising Tide. Si Namor est en jeu, donnez-lui une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez à l'ennemi qui s'active 1 carte de boost supplémentaire.",
+  // brawn — Strong as Silk (Event, Team-Up)
+  '77024': "Team-Up (Brawn et Silk). Maximum 1 par deck.\n<b>Action de héros</b> : Brawn et Silk gagnent +1 ATQ jusqu'à la fin du round. Brawn et Silk peuvent chacun effectuer une attaque de base sans s'incliner.",
+  // brawn — Brains and Brawn (Event, Team-Up)
+  '77025': "Team-Up (Brawn et Ironheart). Maximum 1 par deck.\n<b>Action de héros</b> : pour chaque ressource imprimée dans votre main et votre réserve, si c'est une :\n[physical] - infligez 1 dégât à un ennemi.\n[mental] - retirez 1 menace d'une manigance.",
   // lockjaw — Lockjaw (Hero)
   '78001a': "<i>Rapporte !</i> — <b>Action</b> : inclinez Lockjaw et dépensez une ressource [wild] → choisissez une carte qui n'est pas une ressource dans la pile de défausse de n'importe quel joueur et ajoutez-la à la main de son propriétaire. <i>(Limite d'une fois par round.)</i>",
   // lockjaw — Lockjaw (AlterEgo)
@@ -921,4 +973,36 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '90130': "Péril.\n<b>Une fois révélée</b> : choisissez l'une des options suivantes :\n• Infligez 2 [per_player] dégâts indirects aux joueurs. Ces dégâts gagnent perçant.\n• Attribuez à chaque joueur 1 carte rencontre face cachée.\n• Chaque joueur défausse de sa main la carte au coût le plus élevé.",
   // rainy — Innocent Bystander (Attachment)
   '90131': "Attachez-la à votre identité.\nVous subissez -1 en taille de main.\n<b>Action de héros</b> : inclinez votre héros → défaussez cette carte et retirez 1 menace d'une manigance.\n[star] <b>Boost</b> : placez 2 menaces sur la manigance principale.",
+  // rainy — Agent 13 (Hero)
+  '79001a': "<i>Hand-to-Hand Specialist</i> — <b>Réponse</b> : après qu'Agent 13 utilise un pouvoir de base, redressez Agent 13 et faites une attaque de base contre un ennemi. <i>(Limite d'une fois par round.)</i>",
+  // rainy — Sharon Carter (AlterEgo)
+  '79001b': "<i>Super Spy</i> — <b>Action</b> : choisissez une carte de la pile de défausse rencontre et placez-la sur le dessus du deck rencontre. Puis, retirez d'une manigance un nombre de menaces égal au nombre d'icônes de boost sur cette carte. <i>(Limite d'une fois par round.)</i>",
+  // rainy — Captain America (Steve Rogers) (Ally)
+  '79002': "Riposte 1.\n<b>Interruption</b> : quand Captain America se défend contre une attaque et devrait subir des dégâts, réduisez ces dégâts de 2 (jusqu'à un minimum de 1).",
+  // rainy — Burst Fire (Event)
+  '79003': "<b>Action de héros</b> : faites les 2 attaques suivantes :\n- Infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.\n- Infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // rainy — Infiltrate (Event)
+  '79004': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Regardez la carte du dessus du deck rencontre et retirez 1 menace supplémentaire par icône de boost sur cette carte. Puis, vous pouvez défausser cette carte de rencontre.",
+  // rainy — Parting Shots (Event)
+  '79005': "<b>Interruption de héros</b> <i>(attaque)</i> : quand un ennemi devrait initier une attaque contre vous, infligez 2 dégâts à cet ennemi. Cette attaque gagne à distance. Vous pouvez passer en forme d'identité civile → cet ennemi manigance à la place.",
+  // rainy — Takedown (Event)
+  '79006': "<b>Réponse de héros</b> <i>(attaque)</i> : après avoir attaqué un ennemi, infligez 2 dégâts à un ennemi. Si cet ennemi est mis K.O. par cette attaque, piochez 1 carte.",
+  // rainy — Briefing Room (Support)
+  '79007': "<b>Réponse de héros</b> : après qu'un sbire ou une manigance annexe est révélé, inclinez Briefing Room → chaque joueur en forme de héros pioche 1 carte.",
+  // rainy — Agent 13's Pistol (Upgrade)
+  '79008': "Restreint.\n<b>Réponse de héros</b> : après qu'Agent 13 attaque, inclinez Agent 13's Pistol et défaussez la carte du dessus du deck rencontre → infligez 1 dégât à un ennemi par icône de boost défaussée de cette façon.",
+  // rainy — Physical Training (Upgrade)
+  '79009': "Vous gagnez +2 points de vie.\nAgent 13 gagne +1 ATQ.",
+  // rainy — Secret Agent (Upgrade)
+  '79010': "<b>Ressource de héros</b> : inclinez Secret Agent → générez une ressource [wild].",
+  // rainy — Assassination Plot (SideScheme)
+  '79011': "<b>Une fois révélée</b> : défaussez l'allié que vous contrôlez ayant le plus de points de vie restants. Si vous ne pouvez pas, placez 2 menaces sur cette manigance.",
+  // rainy — Doctor Faustus (Minion)
+  '79012': "Doctor Faustus ne peut pas subir de dégâts tant que vous êtes engagé avec un autre sbire.\n[star] <b>Interruption Obligatoire</b> : quand Doctor Faustus devrait vous attaquer alors que vous contrôlez un allié, cet allié vous inflige des dégâts égaux à son ATQ à la place.",
+  // rainy — Hallucination (Attachment)
+  '79013': "<b>Une fois révélée</b> : défaussez des cartes du deck rencontre jusqu'à défausser un sbire. Révélez ce sbire et attachez cette carte à lui. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption Obligatoire</b> : quand le sbire attaché devrait subir des dégâts, quel qu'en soit le nombre, défaussez-le et placez 3 menaces sur la manigance principale.",
+  // rainy — Hypnotic Suggestion (Treachery)
+  '79014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre MNG.",
+  // rainy — Sleeper Agent (Obligation)
+  '79015': "Donnez-la au joueur Sharon Carter.\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
 }
