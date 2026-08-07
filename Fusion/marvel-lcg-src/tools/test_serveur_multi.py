@@ -84,46 +84,70 @@ with open(TEMOIN_SAUVEGARDE, "w", encoding="utf-8") as f:
 with open(TEMOIN_DECK_HOTE, "w", encoding="utf-8") as f:
     json.dump({"name": "temoin de l'hote", "hero": "Spider-Man"}, f)
 
-serveur = subprocess.Popen(
-    ["bash", "./launcher-serveur.sh", "2"],
-    cwd=RACINE,
-    env=dict(os.environ, SANS_TUNNEL="1"),
-    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-    preexec_fn=os.setsid)
+# Le Popen est DANS le try, pas avant : s'il leve (bash introuvable, limite de
+# ressources...), le script doit quand meme atteindre nettoyer_temoins() dans
+# le finally. "serveur = None" avant le try est le garde qui protege le
+# finally si l'echec survient avant meme que l'affectation n'ait lieu.
+serveur = None
 
 try:
+    serveur = subprocess.Popen(
+        ["bash", "./launcher-serveur.sh", "2"],
+        cwd=RACINE,
+        env=dict(os.environ, SANS_TUNNEL="1"),
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        preexec_fn=os.setsid)
+
     # 1. Les deux moteurs repondent (launcher_fast.py --build-only tourne
     # d'abord : prevoir large avant que les ports repondent).
     for place, port in PORTS.items():
         verifier(f"place {place} : le moteur repond sur {port}", attendre(port))
 
     if all(ok for _, ok, _ in resultats):
-        # 2. Sauvegardes cloisonnees
-        sauvegardes_1 = lire(PORTS[1], "/list_replay_files")
-        sauvegardes_2 = lire(PORTS[2], "/list_replay_files")
-        verifier("la place 1 voit sa sauvegarde",
-                 any("zzz-temoin-partie" in c for c in sauvegardes_1), sauvegardes_1)
-        verifier("la place 2 ne voit PAS la sauvegarde de la place 1",
-                 not any("zzz-temoin-partie" in c for c in sauvegardes_2), sauvegardes_2)
+        # 2. Sauvegardes cloisonnees. Une HTTPError devient une ligne ECHEC
+        # nommee, pas une trace brute qui masquerait laquelle des garanties a lache.
+        try:
+            sauvegardes_1 = lire(PORTS[1], "/list_replay_files")
+            sauvegardes_2 = lire(PORTS[2], "/list_replay_files")
+            verifier("la place 1 voit sa sauvegarde",
+                     any("zzz-temoin-partie" in c for c in sauvegardes_1), sauvegardes_1)
+            verifier("la place 2 ne voit PAS la sauvegarde de la place 1",
+                     not any("zzz-temoin-partie" in c for c in sauvegardes_2), sauvegardes_2)
+        except urllib.error.HTTPError as erreur:
+            detail = f"HTTP {erreur.code} sur {erreur.url}"
+            verifier("la place 1 voit sa sauvegarde", False, detail)
+            verifier("la place 2 ne voit PAS la sauvegarde de la place 1", False, detail)
 
         # 3. Decks de l'hote partages en lecture
-        decks_1 = lire(PORTS[1], "/list_deck")
-        decks_2 = lire(PORTS[2], "/list_deck")
-        verifier("la place 1 voit les decks de l'hote",
-                 any("zzz-temoin-hote" in c for c in decks_1), decks_1)
-        verifier("la place 2 voit les decks de l'hote",
-                 any("zzz-temoin-hote" in c for c in decks_2), decks_2)
+        try:
+            decks_1 = lire(PORTS[1], "/list_deck")
+            decks_2 = lire(PORTS[2], "/list_deck")
+            verifier("la place 1 voit les decks de l'hote",
+                     any("zzz-temoin-hote" in c for c in decks_1), decks_1)
+            verifier("la place 2 voit les decks de l'hote",
+                     any("zzz-temoin-hote" in c for c in decks_2), decks_2)
+        except urllib.error.HTTPError as erreur:
+            detail = f"HTTP {erreur.code} sur {erreur.url}"
+            verifier("la place 1 voit les decks de l'hote", False, detail)
+            verifier("la place 2 voit les decks de l'hote", False, detail)
 
         # 4. Ecriture confinee au dossier de la place
-        statut, reponse = poster(PORTS[1], "/save_deck", {
-            "file_name": "zzz-temoin-ecriture",
-            "deck": {"name": "temoin ecriture", "hero": "Spider-Man"}})
-        verifier("la place 1 peut enregistrer un deck", statut == 200, reponse)
+        try:
+            statut, reponse = poster(PORTS[1], "/save_deck", {
+                "file_name": "zzz-temoin-ecriture",
+                "deck": {"name": "temoin ecriture", "hero": "Spider-Man"}})
+            verifier("la place 1 peut enregistrer un deck", statut == 200, reponse)
+        except urllib.error.HTTPError as erreur:
+            verifier("la place 1 peut enregistrer un deck", False, f"HTTP {erreur.code} sur {erreur.url}")
         verifier("le deck atterrit chez la place 1", os.path.exists(DECK_ECRIT))
         verifier("le deck n'atterrit PAS chez l'hote", not os.path.exists(DECK_ECRIT_CHEZ_HOTE))
 finally:
-    os.killpg(os.getpgid(serveur.pid), signal.SIGTERM)
-    serveur.wait(timeout=30)
+    if serveur is not None:
+        try:
+            os.killpg(os.getpgid(serveur.pid), signal.SIGTERM)
+            serveur.wait(timeout=30)
+        except Exception:
+            pass
     nettoyer_temoins()
 
 echecs = [r for r in resultats if not r[1]]
