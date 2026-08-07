@@ -73,3 +73,37 @@ export function preRemplir({
   }
   return sortie
 }
+
+/**
+ * Nettoie le carnet juste avant enregistrement (défaut : une correction à 0
+ * réactivait la récompense).
+ *
+ * Un champ `auto`, de format `int`, SANS détecteur (`detection` absent), est
+ * un DRAPEAU côté moteur : il ne vaut jamais que `'1'` ou rien (voir les
+ * neuf clés de `data/campagnes/mts.json` et `InPool`/`LogSet` dans
+ * `campaign.py`, qui testent `!= ''`). Si le joueur corrige un tel champ à 0
+ * dans le formulaire numérique, la chaîne `"0"` reste non vide : le moteur la
+ * relirait comme vraie et appliquerait la récompense que le joueur vient de
+ * refuser. On retire donc ces entrées-là (0 ou vide) avant d'écrire le carnet.
+ *
+ * Les champs `int` qui ONT un détecteur (`pv_restants`, `compteur_manigance`,
+ * `compter_trait`) sont de VRAIS compteurs où 0 est une valeur mesurée
+ * légitime — aucun pion retard, 0 PV restants après une partie difficile — et
+ * ne sont jamais touchés ici.
+ */
+export function assainirCarnet(
+  champs: ChampVictoire[],
+  valeurs: Record<string, string>,
+  total: number
+): Record<string, string> {
+  const sortie = { ...valeurs }
+  for (const champ of champs) {
+    if (champ.type !== 'auto' || champ.format !== 'int' || champ.detection) continue
+    const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
+    for (const joueurId of joueurs) {
+      const cle = cleCarnet(champ, joueurId)
+      if (sortie[cle] === '0' || sortie[cle] === '') delete sortie[cle]
+    }
+  }
+  return sortie
+}

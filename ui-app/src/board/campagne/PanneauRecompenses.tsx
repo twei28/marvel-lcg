@@ -32,7 +32,7 @@ import {
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
-import { preRemplir } from './preremplissage'
+import { assainirCarnet, preRemplir } from './preremplissage'
 
 type Etat =
   | { phase: 'chargement' }
@@ -169,7 +169,7 @@ export function PanneauRecompenses({
     try {
       const suivante: Campagne = {
         ...campagne,
-        carnet: { ...(campagne.carnet ?? {}), ...valeurs },
+        carnet: { ...(campagne.carnet ?? {}), ...assainirCarnet(champs, valeurs, total) },
         termines: [...new Set([...(campagne.termines ?? []), scenario.id])],
         partieEnCours: null,
       }
