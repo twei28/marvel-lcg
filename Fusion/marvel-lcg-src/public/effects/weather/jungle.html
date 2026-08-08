@@ -16,9 +16,12 @@
         left: 0;
         right: 0;
         bottom: 0;
-        height: 42vh;
+        /* La moiteur monte aux trois quarts de l'ecran : cantonnee au bas,
+           elle se lisait comme une ombre de plus au lieu d'une atmosphere. */
+        height: 78vh;
         background: linear-gradient(to top,
-            rgba(86, 156, 84, 0.17) 0%,
+            rgba(74, 168, 62, 0.30) 0%,
+            rgba(78, 164, 70, 0.16) 45%,
             rgba(86, 156, 84, 0) 100%);
     }
 
@@ -27,7 +30,7 @@
         border-radius: 50%;
         /* Franchement vert-dore, pas creme : en pale, les spores se
            confondaient avec le champ d'etoiles de stars.html. */
-        background: rgba(184, 226, 124, 0.9);
+        background: rgba(158, 224, 82, 0.92);
         animation-name: derive;
         animation-timing-function: ease-in-out;
         animation-iteration-count: infinite;
@@ -52,8 +55,8 @@
     @keyframes derive {
         0%   { transform: translate(0, 0); opacity: 0; }
         18%  { opacity: 0.75; }
-        50%  { transform: translate(var(--derive), -18vh); opacity: 0.6; }
-        100% { transform: translate(calc(var(--derive) * -1), -38vh); opacity: 0; }
+        50%  { transform: translate(var(--derive), -30vh); opacity: 0.6; }
+        100% { transform: translate(calc(var(--derive) * -1), -66vh); opacity: 0; }
     }
 
     @keyframes pulse {
@@ -80,7 +83,7 @@
         s.style.width = taille.toFixed(2) + 'px';
         s.style.height = taille.toFixed(2) + 'px';
         s.style.left = hasard(0, 100).toFixed(2) + 'vw';
-        s.style.top = hasard(10, 110).toFixed(2) + 'vh';
+        s.style.top = hasard(40, 135).toFixed(2) + 'vh';
         s.style.setProperty('--derive', hasard(-12, 12).toFixed(1) + 'vw');
         var d = hasard(12, 30);
         s.style.animationDuration = d.toFixed(2) + 's';

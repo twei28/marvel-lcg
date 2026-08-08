@@ -18,7 +18,7 @@ import type { World, WorldCard } from './world'
 /** Les effets qu'on sait afficher, pour le sélecteur d'aperçu. */
 export const EFFETS_METEO = [
   'rain', 'storm', 'snow', 'fog', 'stars', 'embers',
-  'dust', 'neon', 'symbiote', 'jungle', 'wind',
+  'dust', 'neon', 'jungle',
 ] as const
 export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
@@ -33,9 +33,24 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   embers: 'Braises',
   dust: 'Poussière',
   neon: 'Néons',
-  symbiote: 'Symbiote',
   jungle: 'Jungle',
-  wind: 'Vent',
+}
+
+/** L'apercu a deux etats en plus des effets, et ils ne disent pas la meme
+ *  chose. '' rend la main au jeu : ce sont les cartes qui decident, c'est le
+ *  mode normal. AUCUN_EFFET impose le vide, meme si une carte en jeu
+ *  declencherait quelque chose. Sans cette distinction, « Aucun » signifiait
+ *  en realite « Auto » et il n'existait aucun moyen de couper temporairement
+ *  l'ambiance sans toucher au reglage Meteo. */
+export const AUCUN_EFFET = 'none'
+
+/** Les valeurs par lesquelles passe le selecteur, dans l'ordre. */
+export const CYCLE_APERCU = ['', AUCUN_EFFET, ...EFFETS_METEO] as const
+
+export function libelleApercu(valeur: string): string {
+  if (valeur === '') return 'Auto'
+  if (valeur === AUCUN_EFFET) return 'Aucun'
+  return LIBELLE_EFFET[valeur as EffetMeteo] ?? valeur
 }
 
 /** La table est typée sur les effets connus : une faute de frappe ici
@@ -75,15 +90,12 @@ const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   '24063': 'neon', // Warehouse District, The Hood
   '27065': 'neon', // City Streets, Sinister Motives
   '31037': 'neon', // Surge in Crime, SP//dr
-  // Manhattan infeste
-  '27117b': 'symbiote', // Lower Manhattan
-  '27118b': 'symbiote', // Midtown Manhattan
-  '27119b': 'symbiote', // Upper Manhattan
   // Vegetation
   '45127': 'jungle', // The Savage Land, Age of Apocalypse
   '45133': 'jungle', // Genosha, Age of Apocalypse
-  // Ciel
-  '27116b': 'wind', // Skies Over New York, Sinister Motives
+  // Sans ambiance, par choix : les trois Manhattan infestes (27117b, 27118b,
+  // 27119b) et Skies Over New York (27116b). Leurs effets ont ete ecrits puis
+  // retires, ils ne rendaient pas ce qu'ils devaient rendre.
 }
 
 /** Les zones où une carte est réellement EN JEU, et elles seules. */
@@ -130,14 +142,15 @@ export function CoucheMeteo({
 }: {
   world: World | undefined
   active: boolean
-  /** Force un effet, quelles que soient les cartes. '' rend la main au jeu. */
+  /** Force un effet, quelles que soient les cartes. '' rend la main au jeu,
+   *  AUCUN_EFFET impose le vide. */
   apercu?: string
 }) {
   const duJeu = useMemo(() => meteoDuMonde(world), [world])
   // L'apercu est une demande EXPLICITE : il passe outre l'interrupteur. Sans
   // ca, choisir un apercu alors que la meteo est coupee n'affiche rien et
   // l'outil parait casse. L'interrupteur ne commande que la meteo du jeu.
-  const meteo = apercu || (active ? duJeu : '')
+  const meteo = apercu === AUCUN_EFFET ? '' : apercu || (active ? duJeu : '')
   if (!meteo) return null
   return (
     <iframe

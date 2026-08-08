@@ -59,8 +59,7 @@ import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJe
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
-import { CoucheMeteo, CLE_METEO, EFFETS_METEO, LIBELLE_EFFET, lireMeteoActive } from './board/CoucheMeteo'
-import type { EffetMeteo } from './board/CoucheMeteo'
+import { CoucheMeteo, CLE_METEO, CYCLE_APERCU, libelleApercu, lireMeteoActive } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -1226,7 +1225,7 @@ function PanneauOptions({
           >
             <span className="ligne-option-libelle">{t('Aperçu météo')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
-              {apercuMeteo === '' ? t('Aucun') : t(LIBELLE_EFFET[apercuMeteo as EffetMeteo])}
+              {t(libelleApercu(apercuMeteo))}
             </span>
           </button>
           <button
@@ -1600,8 +1599,8 @@ function PagePartie({
   const [apercuMeteo, setApercuMeteo] = useState('')
   const cyclerApercuMeteo = useCallback(() => {
     setApercuMeteo((a) => {
-      const i = EFFETS_METEO.indexOf(a as (typeof EFFETS_METEO)[number])
-      return i < 0 ? EFFETS_METEO[0] : i + 1 >= EFFETS_METEO.length ? '' : EFFETS_METEO[i + 1]
+      const i = CYCLE_APERCU.indexOf(a as (typeof CYCLE_APERCU)[number])
+      return CYCLE_APERCU[(i + 1) % CYCLE_APERCU.length]
     })
   }, [])
 

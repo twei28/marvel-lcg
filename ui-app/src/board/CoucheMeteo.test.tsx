@@ -11,7 +11,15 @@ import type { World } from './world'
 import { existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { CoucheMeteo, EFFETS_METEO, LIBELLE_EFFET, meteoDuMonde } from './CoucheMeteo'
+import {
+  AUCUN_EFFET,
+  CoucheMeteo,
+  CYCLE_APERCU,
+  EFFETS_METEO,
+  LIBELLE_EFFET,
+  libelleApercu,
+  meteoDuMonde,
+} from './CoucheMeteo'
 
 const carte = (cardId: string) => ({
   id: 1,
@@ -123,12 +131,8 @@ describe('les familles de lieux', () => {
     ['24063', 'neon', 'Warehouse District'],
     ['27065', 'neon', 'City Streets'],
     ['31037', 'neon', 'Surge in Crime'],
-    ['27117b', 'symbiote', 'Lower Manhattan'],
-    ['27118b', 'symbiote', 'Midtown Manhattan'],
-    ['27119b', 'symbiote', 'Upper Manhattan'],
     ['45127', 'jungle', 'The Savage Land'],
     ['45133', 'jungle', 'Genosha'],
-    ['27116b', 'wind', 'Skies Over New York'],
   ]
 
   it.each(attendus)('%s (%s) : %s', (id, effet) => {
@@ -137,6 +141,15 @@ describe('les familles de lieux', () => {
 
   it('Rubblestorm est de la poussiere, pas du feu', () => {
     expect(meteoDuMonde(monde({}, { area_environment: [carte('21079')] }))).toBe('dust')
+  })
+
+  it('les lieux dont l ambiance a ete retiree ne declenchent plus rien', () => {
+    // Les trois Manhattan infestes et Skies Over New York : leurs effets ont
+    // ete ecrits, juges mauvais, puis retires. Ce cas garde la trace du choix
+    // et evite qu'un fichier ressuscite sans qu'on le decide.
+    for (const id of ['27117b', '27118b', '27119b', '27116b']) {
+      expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe('')
+    }
   })
 
   it('une carte sans ambiance prevue ne declenche rien', () => {
@@ -161,5 +174,40 @@ describe('chaque effet a bien son fichier', () => {
 
   it('chaque effet a un nom affichable', () => {
     for (const effet of EFFETS_METEO) expect(LIBELLE_EFFET[effet]).toBeTruthy()
+  })
+})
+
+// Auto et Aucun ne disent pas la meme chose, et c'est precisement la confusion
+// que ces cas empechent de revenir : avant le 8/8/2026 le selecteur affichait
+// « Aucun » pour ce qui etait en fait « Auto », et rien ne permettait de
+// couper l'ambiance sans toucher au reglage Meteo.
+describe('les etats Auto et Aucun de l apercu', () => {
+  const src = (c: HTMLElement | null) => c?.querySelector('iframe')?.getAttribute('src') ?? null
+  const avecCarte = () => monde({ supports: [carte('36005')] })
+
+  it('Auto laisse la carte en jeu decider', () => {
+    const { container } = render(
+      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: '' })
+    )
+    expect(src(container)).toBe('/effects/weather/snow.html')
+  })
+
+  it('Aucun n affiche rien, meme si une carte en jeu declencherait un effet', () => {
+    const { container } = render(
+      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: AUCUN_EFFET })
+    )
+    expect(container.querySelector('iframe')).toBeNull()
+  })
+
+  it('le cycle part d Auto, passe par Aucun, puis parcourt les effets', () => {
+    expect(CYCLE_APERCU[0]).toBe('')
+    expect(CYCLE_APERCU[1]).toBe(AUCUN_EFFET)
+    expect(CYCLE_APERCU.slice(2)).toEqual([...EFFETS_METEO])
+  })
+
+  it('chaque valeur du cycle a un nom affichable', () => {
+    for (const v of CYCLE_APERCU) expect(libelleApercu(v)).toBeTruthy()
+    expect(libelleApercu('')).toBe('Auto')
+    expect(libelleApercu(AUCUN_EFFET)).toBe('Aucun')
   })
 })
