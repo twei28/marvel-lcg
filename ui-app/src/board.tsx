@@ -31,6 +31,7 @@ import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
+import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
@@ -41,10 +42,10 @@ import {
   demandeDoitApparaitreAuCentre,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { SplashTour } from './board/SplashTour'
-import { CoucheCoach } from './board/CoucheCoach'
 import {
   CLE_AUTO_CIBLE,
   CLE_VALIDATION_COURTE,
@@ -54,12 +55,14 @@ import {
   type EtatInteractif,
 } from './board/interaction'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
+import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
-import { CoucheMeteo, CLE_METEO, lireMeteoActive } from './board/CoucheMeteo'
+import { CoucheMeteo, CLE_METEO, EFFETS_METEO, lireMeteoActive } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
+import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
@@ -74,14 +77,11 @@ import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
 import type { Demande, Option, Reponse } from './board/ask'
 import {
-  chargerCatalogueEtats,
   chargerEtat,
-  type EntreeCatalogue,
 } from './board/sources'
 import { isScheme, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** L'ancien plateau. Le serveur sert marvel.html des que l'adresse a une query. */
-const ANCIEN_PLATEAU = '/?p='
 
 /** Table pas encore decoupee : aucune carte dessinee. */
 const AUCUN_ID: Set<number> = new Set()
@@ -452,14 +452,15 @@ function cartesRegardees(
         contexte
       )
     )
-    groupes.push(
-      cartesRegardeesDansPile(
-        `joueur-${index}-suppl`,
-        index === playerId ? 'Your additional deck' : `Player ${index + 1} additional deck`,
-        joueur.additional_deck,
-        contexte
-      )
-    )
+    // PAS le deck supplementaire. Cette fenetre annonce une revelation
+    // PASSAGERE — « tu regardes les 2 premieres cartes ». Or un deck
+    // supplementaire est une zone PERMANENTE dont le proprietaire connait le
+    // contenu : les ecureuils de Squirrel Girl sont visibles pour elle tout en
+    // restant face cachee, ce qui remplissait la condition en permanence. La
+    // fenetre etait donc perpetuellement due, et se rouvrait des qu'un ecureuil
+    // etait depense ou rendu, puisqu'elle ne retient que le lot exact qu'on
+    // vient de fermer. On consulte ce deck en cliquant la pile, comme les
+    // autres.
     groupes.push(
       cartesRegardeesDansPile(
         `joueur-${index}-mise-de-cote`,
@@ -664,75 +665,62 @@ function ModaleCiblesMenu({
 }
 
 /**
- * Outils de la barre du haut : source affichee, joueur regarde, retour a
- * l'ancien plateau. Tout tient sur une ligne : la table a besoin de la hauteur.
+ * Outils de la barre du haut : le mode d'affichage des actions, et rien de plus.
+ *
+ * Trois autres commandes y vivaient et en sont parties : le selecteur d'etats
+ * enregistres, le champ « joueur affiche » et le lien vers l'ancien plateau.
+ * Toutes occupaient une place permanente en haut de l'ecran — celle qui manque
+ * a la table — pour des usages rares ou deja couverts ailleurs.
+ *
+ * AUCUNE FONCTION N'A DISPARU, seulement les raccourcis :
+ *  - un etat enregistre se charge par `?etat=<fichier>` ;
+ *  - le siege regarde se choisit par `?p=<joueur>`, et en hot-seat la vue suit
+ *    de toute facon le joueur que le moteur interroge ;
+ *  - l'ancien plateau reste servi a la racine, `/?p=<joueur>`.
+ * Les trois passent par parametres(), qui lit l'adresse et n'a pas bouge.
  */
 function Outils({
-  etat,
-  playerId,
-  catalogueEtats,
   modeActions,
   changerModeActions,
 }: {
-  etat: string | null
-  playerId: number
-  catalogueEtats: EntreeCatalogue[]
   modeActions: ModeActions
   changerModeActions: (mode: ModeActions) => void
 }) {
-  const aller = (nouveau: { etat?: string | null; p?: number }) => {
-    const url = new URLSearchParams()
-    const prochainEtat = nouveau.etat === undefined ? etat : nouveau.etat
-    const prochainJoueur = nouveau.p === undefined ? playerId : nouveau.p
-    if (prochainEtat) url.set('etat', prochainEtat)
-    if (prochainJoueur !== 0) url.set('p', String(prochainJoueur))
-    const requete = url.toString()
-    window.location.search = requete ? `?${requete}` : ''
-  }
+  return <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
+}
 
+/**
+ * Le choix Simple / Detaille.
+ *
+ * Compose a part parce qu'il se pose a DEUX endroits selon la vue : dans le
+ * groupe des reglages de la barre en partie, et seul dans la barre de la vue
+ * « etat enregistre », qui n'a pas d'actions de partie. Une seule definition,
+ * deux placements.
+ */
+function ModeActionsBoutons({
+  modeActions,
+  changerModeActions,
+}: {
+  modeActions: ModeActions
+  changerModeActions: (mode: ModeActions) => void
+}) {
   return (
-    <>
-      <select
-        aria-label={t('État affiché')}
-        value={etat ?? ''}
-        onChange={(evenement) => aller({ etat: evenement.target.value || null })}
+    <div className="mode-actions" role="group" aria-label={t('Mode d’affichage des actions')}>
+      <button
+        type="button"
+        className={modeActions === 'simple' ? 'est-actif' : ''}
+        onClick={() => changerModeActions('simple')}
       >
-        <option value="">{t('Partie en cours')}</option>
-        {catalogueEtats.map((entree) => (
-          <option value={entree.fichier} key={entree.fichier}>
-            {entree.titre}
-          </option>
-        ))}
-      </select>
-
-      <input
-        aria-label={t('Joueur affiché')}
-        type="number"
-        min={0}
-        max={3}
-        value={playerId}
-        onChange={(evenement) => aller({ p: Number(evenement.target.value) })}
-      />
-
-      <div className="mode-actions" role="group" aria-label={t('Mode d’affichage des actions')}>
-        <button
-          type="button"
-          className={modeActions === 'simple' ? 'est-actif' : ''}
-          onClick={() => changerModeActions('simple')}
-        >
-          Simple
-        </button>
-        <button
-          type="button"
-          className={modeActions === 'detailed' ? 'est-actif' : ''}
-          onClick={() => changerModeActions('detailed')}
-        >
-          {t('Détaillé')}
-        </button>
-      </div>
-
-      <a href={`${ANCIEN_PLATEAU}${playerId}`}>{t('Ancien plateau')}</a>
-    </>
+        Simple
+      </button>
+      <button
+        type="button"
+        className={modeActions === 'detailed' ? 'est-actif' : ''}
+        onClick={() => changerModeActions('detailed')}
+      >
+        {t('Détaillé')}
+      </button>
+    </div>
   )
 }
 
@@ -765,6 +753,7 @@ function usePartieEnCours(playerId: number) {
   const [moteur] = useState(() => new Moteur(playerId))
   const [etat, setEtat] = useState<EtatMoteur>({
     hautsFaits: [],
+    siegesAbsents: [],
     aNous: false,
     connecte: false,
     validationRequise: false,
@@ -816,6 +805,7 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * Les fichiers vivent dans replays/ (hors .game : ils survivent aux rebuilds).
  */
 function PopoverSauvegardes() {
+  const confirmer = useConfirmation()
   const [ouvert, setOuvert] = useState(false)
   const [metas, setMetas] = useState<Record<number, MetaSauvegarde | undefined>>({})
   const [occupe, setOccupe] = useState<string | undefined>(undefined)
@@ -848,8 +838,14 @@ function PopoverSauvegardes() {
     [rafraichir]
   )
 
-  const chargerSlot = useCallback((slot: number) => {
-    if (!window.confirm(`${t('Charger la sauvegarde')} ${slot} ? ${t('La partie en cours sera remplacée.')}`)) return
+  const chargerSlot = useCallback(async (slot: number) => {
+    const accepte = await confirmer({
+      titre: `${t('Charger la sauvegarde')} ${slot} ?`,
+      texte: t('La partie en cours sera remplacée.'),
+      confirmer: t('Charger'),
+      ton: 'danger',
+    })
+    if (!accepte) return
     setOccupe(`load-${slot}`)
     // `:-1` = reprendre au DERNIER pas enregistre (semantique du client original).
     fetch(`/debug?/load ../replays/save_${slot}.json:-1`)
@@ -857,7 +853,7 @@ function PopoverSauvegardes() {
         window.location.href = '/app/board.html?p=0'
       })
       .catch(() => setOccupe(undefined))
-  }, [])
+  }, [confirmer])
 
   const exporter = useCallback(() => {
     setOccupe('export')
@@ -1037,13 +1033,12 @@ function PageEtat({
       world={monde}
       playerId={playerId}
       plateau={plateau}
-      source="Saved state, read only"
       outils={outils}
       bas={
         <footer className="plateau-action plateau-action-attente" role="status">
           <strong>Saved state.</strong>
           <span>
-            {t('Aucune partie derrière cette vue : rien à jouer. Choisis « Partie en cours » pour agir.')}
+            {t('Aucune partie derrière cette vue : rien à jouer. Retire « ?etat= » de l’adresse pour revenir à la partie.')}
           </span>
         </footer>
       }
@@ -1090,16 +1085,18 @@ function PanneauOptions({
   basculerMusique,
   meteo,
   basculerMeteo,
+  apercuMeteo,
+  cyclerApercuMeteo,
   revelation,
   cyclerRevelation,
   autoCible,
   basculerAutoCible,
   curseurs,
   basculerCurseurs,
-  textesCdb,
-  basculerTextesCdb,
   scansFr,
   basculerScansFr,
+  textesCdb,
+  basculerTextesCdb,
   succes,
   basculerSucces,
   phaseRapide,
@@ -1108,6 +1105,7 @@ function PanneauOptions({
   basculerValidationCourte,
   reglageMode,
   cyclerReglageMode,
+  montrerDisposition,
 }: {
   animations: boolean
   basculerAnimations: () => void
@@ -1116,6 +1114,8 @@ function PanneauOptions({
   musique: boolean
   basculerMusique: () => void
   meteo: boolean
+  apercuMeteo: string
+  cyclerApercuMeteo: () => void
   basculerMeteo: () => void
   revelation: ModeRevelation
   cyclerRevelation: () => void
@@ -1123,10 +1123,10 @@ function PanneauOptions({
   basculerAutoCible: () => void
   curseurs: boolean
   basculerCurseurs: () => void
-  textesCdb: boolean
-  basculerTextesCdb: () => void
   scansFr: boolean
   basculerScansFr: () => void
+  textesCdb: boolean
+  basculerTextesCdb: () => void
   succes: boolean
   basculerSucces: () => void
   phaseRapide: boolean
@@ -1135,6 +1135,7 @@ function PanneauOptions({
   basculerValidationCourte: () => void
   reglageMode: ReglageMode
   cyclerReglageMode: () => void
+  montrerDisposition: boolean
 }) {
   const [ouvert, setOuvert] = useState(false)
   return (
@@ -1212,10 +1213,21 @@ function PanneauOptions({
           />
           <LigneOption
             libelle={t('Météo')}
-            detail={t('Pluie, orage ou neige quand un Soutien météo de Storm est en jeu')}
+            detail={t('Pluie, orage ou neige selon les cartes en jeu')}
             actif={meteo}
             onBascule={basculerMeteo}
           />
+          <button
+            type="button"
+            className="ligne-option"
+            onClick={cyclerApercuMeteo}
+            title={t('Force un effet à l écran pour le voir, sans partie ni carte')}
+          >
+            <span className="ligne-option-libelle">{t('Aperçu météo')}</span>
+            <span className="ligne-option-etat" aria-hidden="true">
+              {apercuMeteo === '' ? t('Aucun') : apercuMeteo === 'rain' ? t('Pluie') : apercuMeteo === 'storm' ? t('Orage') : t('Neige')}
+            </span>
+          </button>
           <button
             type="button"
             className="ligne-option"
@@ -1227,21 +1239,22 @@ function PanneauOptions({
               {revelation === 'off' ? t('Non') : revelation === 'court' ? t('2,6 s') : t('5 s')}
             </span>
           </button>
-          <button
-            type="button"
-            className="ligne-option"
-            onClick={cyclerReglageMode}
-            title={t('Choix du rendu du plateau : automatique selon l’appareil, ou force mobile/ordinateur')}
-          >
-            <span className="ligne-option-libelle">{t('Disposition')}</span>
-            <span className="ligne-option-etat" aria-hidden="true">
-              {reglageMode === 'auto'
-                ? t('Automatique')
-                : reglageMode === 'mobile'
-                  ? t('Mobile')
-                  : t('Ordinateur')}
-            </span>
-          </button>
+          {/* Reglage montre UNIQUEMENT sur un appareil mobile : sur un PC le
+              plateau est de toute facon rendu en mode PC, l'option n'aurait
+              aucun effet et c'est elle qui a enferme l'utilisateur. */}
+          {montrerDisposition ? (
+            <button
+              type="button"
+              className="ligne-option"
+              onClick={cyclerReglageMode}
+              title={t('Rendu du plateau : automatique selon l’appareil, ou forcer la table complète')}
+            >
+              <span className="ligne-option-libelle">{t('Disposition')}</span>
+              <span className="ligne-option-etat" aria-hidden="true">
+                {reglageMode === 'pc' ? t('Ordinateur') : t('Automatique')}
+              </span>
+            </button>
+          ) : null}
           <p className="options-raccourcis">
             {t('Raccourcis : E = fin du tour, U = annuler')}
           </p>
@@ -1313,6 +1326,17 @@ function EcranFinPartie({
             </ul>
           </section>
         ) : null}
+        {/* Campagne : ce que le scenario vient de rapporter. Ne s'affiche qu'a
+            la VICTOIRE d'une partie lancee depuis l'ecran des campagnes — le
+            livret veut qu'une defaite se rejoue sans rien reporter. */}
+        <PanneauRecompenses
+          monde={monde}
+          gagne={gagne}
+          onTermine={(retourCampagne) => {
+            if (retourCampagne) window.location.href = '/campagne.html'
+            else onMenu()
+          }}
+        />
         <button type="button" className="fin-partie-menu" onClick={onMenu}>
           {t('Retour au menu')}
         </button>
@@ -1321,17 +1345,25 @@ function EcranFinPartie({
   )
 }
 
+/**
+ * Ce qu'un passage de main doit durer pour meriter un changement de vue.
+ * Mesure sur le cas signale : les allers-retours du moteur durent environ une
+ * demi-seconde.
+ */
+const DELAI_SUIVI_VUE = 800
+
 function PagePartie({
   playerId,
   catalogue,
-  outils,
   modeActions,
+  changerModeActions,
 }: {
   playerId: number
   catalogue: Catalogue
-  outils: React.ReactNode
   modeActions: ModeActions
+  changerModeActions: (mode: ModeActions) => void
 }) {
+  const confirmer = useConfirmation()
   const { etat, repondre, continuer, reconnecter, reglerPhaseRapide } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
@@ -1355,7 +1387,42 @@ function PagePartie({
   // ...sauf si le joueur FORCE la vue sur un heros precis (regarder la main de
   // l'autre). Auto = null.
   const [vueForcee, setVueForcee] = useState<number | null>(null)
-  const joueurActif = vueForcee ?? etat.joueurDemande ?? playerId
+
+  // La vue ne suit pas TOUS les passages de main.
+  //
+  // Entre deux cartes jouees, le moteur interroge brievement l'autre joueur —
+  // fenetre de reponse ou d'interruption ou il n'a rien de jouable — puis
+  // revient. La vue basculait a chaque fois : « entre chaque carte jouee il me
+  // remet une demi-seconde sur l'autre perso », signale en jeu a deux heros.
+  //
+  // Regle : on suit TOUT DE SUITE si le joueur interroge a au moins une option
+  // reellement jouable (c'est son tour, il attend la table). Sinon on attend
+  // DELAI_SUIVI_VUE : si le moteur repart avant, la bascule n'aura jamais eu
+  // lieu. Rien de jouable n'est retarde — la REPONSE part toujours pour le
+  // joueur du moteur (`option.bind_player_id`), independamment de la vue.
+  // Une vue FORCEE sur un joueur qui vient d'etre elimine ne mene plus nulle
+  // part : sa table a disparu. On repasse en Auto plutot que de laisser
+  // l'ecran vide avec un bouton qui n'existe plus dans la barre.
+  useEffect(() => {
+    if (vueForcee === null) return
+    if (etat.monde?.players?.[vueForcee]?.is_eliminated) setVueForcee(null)
+  }, [vueForcee, etat.monde])
+
+  const [joueurSuivi, setJoueurSuivi] = useState<number | undefined>(undefined)
+  const demandeJouable = etat.demande?.options.some((o) => o.failure_reason === '') ?? false
+
+  useEffect(() => {
+    const cible = etat.joueurDemande
+    if (cible === undefined || cible === joueurSuivi) return
+    if (joueurSuivi === undefined || demandeJouable) {
+      setJoueurSuivi(cible)
+      return
+    }
+    const attente = window.setTimeout(() => setJoueurSuivi(cible), DELAI_SUIVI_VUE)
+    return () => window.clearTimeout(attente)
+  }, [etat.joueurDemande, joueurSuivi, demandeJouable])
+
+  const joueurActif = vueForcee ?? joueurSuivi ?? etat.joueurDemande ?? playerId
   const effets = useEffetsCartes(etat.monde)
   // Declare AVANT le useMemo de `plateau` : il en est une dependance, pour
   // que decocher l'option en pleine partie rafraichisse l'affichage sans
@@ -1466,11 +1533,17 @@ function PagePartie({
     if (!selecteurOuvert) setApercuSelecteur(undefined)
   }, [selecteurOuvert])
 
-  const { mode: modePlateau, reglage: reglageMode, changer: changerReglageMode } = useModeMobile()
+  const {
+    mode: modePlateau,
+    reglage: reglageMode,
+    surAppareilMobile,
+    changer: changerReglageMode,
+  } = useModeMobile()
+  // Deux etats seulement : automatique, ou forcer le plateau PC. Forcer le mode
+  // MOBILE a disparu du cycle — c'est ce choix-la qui enfermait, puisqu'il
+  // rendait ensuite l'option elle-meme inatteignable (voir modeEffectif).
   const cyclerReglageMode = useCallback(() => {
-    changerReglageMode(
-      reglageMode === 'auto' ? 'mobile' : reglageMode === 'mobile' ? 'pc' : 'auto'
-    )
+    changerReglageMode(reglageMode === 'pc' ? 'auto' : 'pc')
   }, [reglageMode, changerReglageMode])
 
   const [animations, setAnimations] = useState(lireAnimations)
@@ -1486,6 +1559,12 @@ function PagePartie({
     })
   }, [])
   const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId)
+
+  // Mode Bac à sable. Inerte hors de ce mode : le crochet n'installe aucune
+  // écoute et la couche ne rend rien, donc une partie normale n'en porte
+  // aucune trace. Déclaré APRÈS l'historique, dont il consomme la porte
+  // d'entrée pour y inscrire chaque intervention.
+  const triche = useTriche(etat.monde, joueurActif, historique.ajouterTriche)
 
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
@@ -1510,6 +1589,18 @@ function PagePartie({
         /* preference non critique */
       }
       return nouveau
+    })
+  }, [])
+
+  // Apercu meteo : force un effet a l'ecran sans partie ni carte. Sert a
+  // concevoir de nouveaux effets sans monter une situation de jeu a chaque
+  // essai. Volontairement NON persiste : c'est un outil, pas une preference,
+  // et le retrouver actif au lancement suivant serait deroutant.
+  const [apercuMeteo, setApercuMeteo] = useState('')
+  const cyclerApercuMeteo = useCallback(() => {
+    setApercuMeteo((a) => {
+      const i = EFFETS_METEO.indexOf(a as (typeof EFFETS_METEO)[number])
+      return i < 0 ? EFFETS_METEO[0] : i + 1 >= EFFETS_METEO.length ? '' : EFFETS_METEO[i + 1]
     })
   }, [])
 
@@ -1680,11 +1771,15 @@ function PagePartie({
     window.location.href = '/prepare.html'
   }, [])
 
-  const retourMenuPrincipal = useCallback(() => {
-    if (window.confirm('Return to the main menu? Save first if you want to keep this game.')) {
-      window.location.href = '/prepare.html'
-    }
-  }, [])
+  const retourMenuPrincipal = useCallback(async () => {
+    const accepte = await confirmer({
+      titre: t('Revenir au menu principal ?'),
+      texte: t('La partie en cours sera perdue si tu ne l’as pas sauvegardée.'),
+      confirmer: t('Quitter'),
+      ton: 'danger',
+    })
+    if (accepte) window.location.href = '/prepare.html'
+  }, [confirmer])
 
   const effetCentrale = useMemo(() => {
     const premier = effets.entries().next().value as [number, CardEffectDelta] | undefined
@@ -1693,17 +1788,19 @@ function PagePartie({
     const carte = cartesMondeParId.get(id)
     if (!carte) return undefined
     const valeur = Math.abs(effet.value)
-    if (effet.kind === 'damage') return `${carte.name} takes ${valeur} damage`
-    if (effet.kind === 'heal') return `${carte.name} heals ${valeur}`
+    // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
+    // la langue du client comme le reste du plateau.
+    if (effet.kind === 'damage') return `${carte.name} ${t('subit')} ${valeur} ${t('dégâts')}`
+    if (effet.kind === 'heal') return `${carte.name} ${t('récupère')} ${valeur} ${t('PV')}`
     return effet.value > 0
-      ? `${carte.name} gains ${valeur} threat`
-      : `${carte.name} loses ${valeur} threat`
+      ? `${carte.name} ${t('gagne')} ${valeur} ${t('menace')}`
+      : `${carte.name} ${t('perd')} ${valeur} ${t('menace')}`
   }, [effets, cartesMondeParId])
 
   if (!etat.monde || !plateau) {
     return (
       <p className="plateau-message" role={etat.erreur ? 'alert' : undefined}>
-        {etat.erreur ?? 'Connecting to the game...'}
+        {etat.erreur ?? t('Connexion à la partie…')}
       </p>
     )
   }
@@ -1723,10 +1820,13 @@ function PagePartie({
     carteMenu !== undefined &&
     identiteJoueurId !== undefined &&
     Number(carteMenu.id) === identiteJoueurId
+  // Deux libelles ecrits en dur en ANGLAIS, au milieu d'une interface
+  // francaise. Ils datent du portage et personne ne les avait vus : ce bouton
+  // n'apparait que sur le menu d'une carte, jamais dans la barre.
   const libelleAnnulationMenu =
     etat.demande?.event_name === 'WhenPlayerInTurn' && etat.demande.ability_type === 'Normal'
-      ? 'End Turn'
-      : 'Pass'
+      ? t('Fin du tour')
+      : t('Passer')
   const afficherDemandeCentrale =
     etat.aNous &&
     etat.connecte &&
@@ -1774,7 +1874,6 @@ function PagePartie({
 
       <SplashTour monde={etat.monde} />
 
-      <CoucheCoach monde={etat.monde} />
 
       <SelecteurCibles
         cibles={interaction.ciblesHorsTable}
@@ -1812,6 +1911,9 @@ function PagePartie({
           message={effetCentrale}
           validationRequise={etat.validationRequise}
           continuer={continuer}
+          // Les cartes citees par l'evenement en cours : le bandeau raconte ce
+          // qui leur arrive, il ne doit surtout pas les cacher.
+          cartes={etat.monde.active_card_ids}
         />
       ) : null}
 
@@ -1848,8 +1950,19 @@ function PagePartie({
         affichage={modeActions}
       />
 
-      <CoucheMeteo world={etat.monde} active={meteo} />
+      <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
       <CoucheSucces monde={etat.monde} demande={etat.demande} actif={succes} />
+      {etat.joueurDemande !== undefined &&
+      etat.siegesAbsents.includes(etat.joueurDemande) ? (
+        <BandeauAbsent
+          numero={etat.joueurDemande + 1}
+          nom={etat.monde?.players?.[etat.joueurDemande]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+          // Le siege est deja ouvert cote serveur (voir allowed_seats) : il
+          // suffit de regarder ce joueur pour repondre a sa place.
+          onReprendre={() => setVueForcee(etat.joueurDemande ?? null)}
+        />
+      ) : null}
+
       <CoucheHautsFaits hautsFaits={etat.hautsFaits} />
       <RecapPhaseMechant entrees={historique.entrees} monde={etat.monde} actif={phaseRapide} />
       <CoucheCurseurs
@@ -1885,9 +1998,18 @@ function PagePartie({
             nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
           />
         }
-        source={t('Partie en cours')}
-        outils={outils}
         actionsPartie={
+          /* ORDRE : par intention, et il se lit comme une phrase —
+              ce que je FAIS, ce que je REGARDE, comment c'est REGLE, je PARS.
+
+              Avant, les reglages etaient eclates en trois endroits : le panneau
+              Options, la paire Musique/Langue, et le mode d'affichage exile a
+              l'autre bout de la barre. Options, lui, s'etait intercale entre les
+              deux actions de partie et les deux boutons de consultation.
+
+              Musique et Langue restent HORS du panneau Options, deliberement :
+              couper le son ou changer de langue doit se faire d'un geste (voir
+              le commentaire du bouton musique). */
           <div className="board-actions">
             <button
               type="button"
@@ -1900,34 +2022,10 @@ function PagePartie({
               <span aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
             </button>
             <PopoverSauvegardes />
-            <PanneauOptions
-              animations={animations}
-              basculerAnimations={basculerAnimations}
-              sons={sons}
-              basculerSons={basculerSons}
-              musique={musique}
-              basculerMusique={basculerMusique}
-              meteo={meteo}
-              basculerMeteo={basculerMeteo}
-              revelation={revelation}
-              cyclerRevelation={cyclerRevelation}
-              autoCible={autoCible}
-              basculerAutoCible={basculerAutoCible}
-              curseurs={curseurs}
-              basculerCurseurs={basculerCurseurs}
-              textesCdb={textesCdb}
-              basculerTextesCdb={basculerTextesCdb}
-              scansFr={scansFr}
-              basculerScansFr={basculerScansFr}
-              succes={succes}
-              basculerSucces={basculerSucces}
-              phaseRapide={phaseRapide}
-              basculerPhaseRapide={basculerPhaseRapide}
-              validationCourte={validationCourte}
-              basculerValidationCourte={basculerValidationCourte}
-              reglageMode={reglageMode}
-              cyclerReglageMode={cyclerReglageMode}
-            />
+
+            <span className="bh-separateur" aria-hidden="true" />
+
+            <HistoriquePartie entrees={historique.entrees} effacer={historique.effacer} />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
@@ -1939,20 +2037,45 @@ function PagePartie({
                 >
                   Auto
                 </button>
-                {etat.monde!.players.map((joueur, i) => (
-                  <button
-                    type="button"
-                    key={i}
-                    className={`bh-bouton${vueForcee === i ? ' est-actif' : ''}${joueurActif === i ? ' est-joueur-actif' : ''}`}
-                    title={joueur.area_hero?.[0]?.name ?? `${t('Joueur')} ${i}`}
-                    onClick={() => setVueForcee(i)}
-                  >
-                    {joueur.area_hero?.[0]?.name?.replace(/^\W*/, '').split(' ')[0] ?? `P${i}`}
-                  </button>
-                ))}
+                {/* Un joueur elimine n'est plus une vue possible : sa table a
+                    disparu (voir zones.ts), il n'y aurait rien a regarder. */}
+                {etat.monde!.players.map((joueur, i) =>
+                  joueur.is_eliminated ? null : (
+                    <button
+                      type="button"
+                      key={i}
+                      className={`bh-bouton${vueForcee === i ? ' est-actif' : ''}${joueurActif === i ? ' est-joueur-actif' : ''}`}
+                      title={joueur.area_hero?.[0]?.name ?? `${t('Joueur')} ${i}`}
+                      onClick={() => setVueForcee(i)}
+                    >
+                      {joueur.area_hero?.[0]?.name?.replace(/^\W*/, '').split(' ')[0] ?? `P${i}`}
+                    </button>
+                  )
+                )}
               </span>
             ) : null}
-            <HistoriquePartie entrees={historique.entrees} effacer={historique.effacer} />
+
+            <span className="bh-separateur" aria-hidden="true" />
+
+            <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
+            {/* Couper la musique doit se faire d'UN geste, sans ouvrir les
+                réglages : c'est ce qu'on cherche quand quelqu'un entre dans la
+                pièce. Le bouton sert aussi à la lancer — un navigateur refuse
+                l'autoplay tant que la page n'a pas été cliquée, et ce clic-là
+                fait justement office de geste. */}
+            <button
+              type="button"
+              className={`bh-bouton bh-musique${musique ? ' est-actif' : ''}`}
+              onClick={basculerMusique}
+              aria-pressed={musique}
+              title={
+                musique
+                  ? t('Couper la musique')
+                  : t('Remettre la musique (nécessite un fichier dans assets/sounds)')
+              }
+            >
+              <span aria-hidden="true">{musique ? '🔊' : '🔇'}</span>
+            </button>
             <button
               type="button"
               className="bh-bouton bh-langue"
@@ -1965,6 +2088,40 @@ function PagePartie({
             >
               <span aria-hidden="true">🌐</span> {langueActuelle() === 'fr' ? 'FR' : 'EN'}
             </button>
+            <PanneauOptions
+              animations={animations}
+              basculerAnimations={basculerAnimations}
+              sons={sons}
+              basculerSons={basculerSons}
+              musique={musique}
+              basculerMusique={basculerMusique}
+              meteo={meteo}
+              apercuMeteo={apercuMeteo}
+              cyclerApercuMeteo={cyclerApercuMeteo}
+              basculerMeteo={basculerMeteo}
+              revelation={revelation}
+              cyclerRevelation={cyclerRevelation}
+              autoCible={autoCible}
+              basculerAutoCible={basculerAutoCible}
+              curseurs={curseurs}
+              basculerCurseurs={basculerCurseurs}
+              scansFr={scansFr}
+              basculerScansFr={basculerScansFr}
+              textesCdb={textesCdb}
+              basculerTextesCdb={basculerTextesCdb}
+              succes={succes}
+              basculerSucces={basculerSucces}
+              phaseRapide={phaseRapide}
+              basculerPhaseRapide={basculerPhaseRapide}
+              validationCourte={validationCourte}
+              basculerValidationCourte={basculerValidationCourte}
+              reglageMode={reglageMode}
+              cyclerReglageMode={cyclerReglageMode}
+              montrerDisposition={surAppareilMobile}
+            />
+
+            <span className="bh-separateur" aria-hidden="true" />
+
             <button
               type="button"
               className="bh-bouton bh-menu"
@@ -2045,6 +2202,7 @@ function PagePartie({
       <BandeauConnexion etat={etat} reconnecter={reconnecter} />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
       <CoucheAnimations renderId={etat.monde.render_id} actif={animations} />
+      <CoucheTriche actif={triche.actif} couche={triche.couche} />
       <CoucheRevelation
         monde={etat.monde}
         duree={DUREES_REVELATION[revelation]}
@@ -2075,12 +2233,10 @@ function Page() {
   // Le catalogue ne fait que completer les pastilles PV (« 1/3 » au lieu de
   // « 1 ») : le plateau ne l'attend pas pour s'afficher.
   const [catalogue, setCatalogue] = useState<Catalogue>(catalogueVide)
-  const [catalogueEtats, setCatalogueEtats] = useState<EntreeCatalogue[]>([])
   const [modeActions, setModeActions] = useState<ModeActions>(() => lireModeActions())
 
   useEffect(() => {
     chargerCatalogue().then(setCatalogue).catch(() => undefined)
-    chargerCatalogueEtats().then(setCatalogueEtats).catch(() => setCatalogueEtats([]))
   }, [])
 
   const changerModeActions = useCallback((mode: ModeActions) => {
@@ -2094,19 +2250,24 @@ function Page() {
   }, [])
 
   const outils = (
-    <Outils
-      etat={etat}
-      playerId={playerId}
-      catalogueEtats={catalogueEtats}
-      modeActions={modeActions}
-      changerModeActions={changerModeActions}
-    />
+    <Outils modeActions={modeActions} changerModeActions={changerModeActions} />
   )
 
-  return etat ? (
-    <PageEtat fichier={etat} playerId={playerId} catalogue={catalogue} outils={outils} />
-  ) : (
-    <PagePartie playerId={playerId} catalogue={catalogue} outils={outils} modeActions={modeActions} />
+  // Le fournisseur enveloppe TOUT : les deux ecrans posent des questions
+  // bloquantes, et le dialogue doit exister avant qu'on la pose.
+  return (
+    <FournisseurConfirmation>
+      {etat ? (
+        <PageEtat fichier={etat} playerId={playerId} catalogue={catalogue} outils={outils} />
+      ) : (
+        <PagePartie
+          playerId={playerId}
+          catalogue={catalogue}
+          modeActions={modeActions}
+          changerModeActions={changerModeActions}
+        />
+      )}
+    </FournisseurConfirmation>
   )
 }
 

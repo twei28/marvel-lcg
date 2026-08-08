@@ -14,6 +14,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Confirmer': 'Confirm',
   'Passer': 'Pass',
   'Retour': 'Back',
+  'Abandonner': 'Cancel',
   'Continuer': 'Continue',
   'Carte': 'Card',
   'carte': 'card',
@@ -34,12 +35,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cartes regardées': 'Cards being looked at',
   'Cibles possibles': 'Possible targets',
   'Cibles possibles :': 'Possible targets:',
-  'État affiché': 'Displayed state',
-  'Partie en cours': 'Live game',
-  'Joueur affiché': 'Displayed player',
   'Mode d’affichage des actions': 'Action display mode',
   'Détaillé': 'Detailed',
-  'Ancien plateau': 'Legacy board',
   'Emplacements de sauvegarde, chargement, export': 'Save slots, loading, export',
   'Charger la sauvegarde': 'Load save',
   'La partie en cours sera remplacée.': 'The current game will be replaced.',
@@ -55,8 +52,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'essai': 'attempt',
   'Reconnecter maintenant': 'Reconnect now',
   'Chargement...': 'Loading...',
-  'Aucune partie derrière cette vue : rien à jouer. Choisis « Partie en cours » pour agir.':
-    'No game behind this view: nothing to play. Pick "Live game" to act.',
+  'Aucune partie derrière cette vue : rien à jouer. Retire « ?etat= » de l’adresse pour revenir à la partie.':
+    'Nothing is being played behind this view. Remove « ?etat= » from the address to go back to the game.',
   'Victoire': 'Victory',
   'Défaite': 'Defeat',
   'Les héros l’emportent !': 'The heroes win!',
@@ -106,6 +103,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retirées de la partie': 'Removed from the game',
   'Némésis': 'Nemesis',
   'Ta main': 'Your hand',
+  'Ta réserve': 'Your reserve',
   'Deck spécial': 'Special deck',
   'Stades du Méchant': 'Villain stages',
   'Méchants à venir': 'Upcoming villains',
@@ -192,6 +190,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Passer cette leçon': 'Skip this lesson',
   'J’ai compris': 'Got it',
   'Quitter le tutoriel': 'Quit the tutorial',
+  'Garde ta main de départ': 'Keep your opening hand',
+  'Le jeu commence par un « mulligan » : tu peux défausser autant de cartes que tu veux de ta main, et en repiocher le même nombre. Pour cette partie guidée, garde tout, et surtout « Coup de pied volant » : c’est la carte que le tutoriel te fera jouer. Valide sans rien sélectionner.':
+    'The game opens with a "mulligan": you may discard as many cards from your hand as you like, then draw back the same number. For this guided game, keep everything, and above all "Swinging Web Kick": that is the card the tutorial will have you play. Confirm without selecting anything.',
   'Deviens Spider-Man': 'Become Spider-Man',
   'Tu commences en Peter Parker, ton identité civile. En civil on récupère et on prépare, mais on ne se bat pas. Clique sur ta carte d’identité, puis choisis de changer de forme.':
     'You start as Peter Parker, your civilian identity. In alter-ego you recover and prepare, but you do not fight. Click your identity card, then choose to change form.',
@@ -229,6 +230,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/interaction.ts : assistant pas-à-pas ----
   'Choisir une action': 'Choose an action',
   'Choisir les cartes du mulligan': 'Choose the mulligan cards',
+  'à défausser puis repiocher · tu peux n’en choisir aucune': 'to discard then redraw · you may pick none',
   'Choisir la seule cible': 'Choose the only target',
   'Choisir la cible': 'Choose the target',
   'Payer le coût': 'Pay the cost',
@@ -258,8 +260,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'En attente du jeu.': 'Waiting for the game.',
   'Rien à décider pour le moment.': 'Nothing to decide right now.',
   'Étape 1 - choisis la cible': 'Step 1 - choose the target',
-  'Étape 2 - paie avec des cartes de ta main ou des générateurs de ressources':
-    'Step 2 - pay with cards from your hand or resource generators',
+  'Étape 2 - paie en cliquant les cartes surlignées ou un générateur de ressources':
+    'Step 2 - pay by clicking the highlighted cards or a resource generator',
   'Dernière étape - confirme': 'Last step - confirm',
   'Cette carte': 'This card',
   'aucune action': 'no action',
@@ -308,6 +310,52 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Historique': 'History',
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',
+
+  'Payer': 'Pay',
+  'Main': 'Hand',
+
+  // ---- board/mobile/CarteOuverte.tsx ----
+  'Utiliser cette carte': 'Use this card',
+
+  // ---- Mode Bac a sable ----
+  'Bac à sable': 'Sandbox',
+  'Triche': 'Cheat',
+  'Clic droit sur une carte ou une pile': 'Right-click a card or a pile',
+  'Soigner': 'Heal',
+  'Infliger des dégâts': 'Deal damage',
+  'Poser de la menace': 'Place threat',
+  'Retirer de la menace': 'Remove threat',
+  'Fixer la menace à': 'Set threat to',
+  'Redresser': 'Ready',
+  'Incliner': 'Exhaust',
+  'Rendre désorienté': 'Confuse',
+  'Rendre sonné': 'Stun',
+  'Rendre coriace': 'Make tough',
+  'Ajouter des compteurs': 'Add counters',
+  'Défausser': 'Discard',
+  'Retirer de la partie': 'Remove from game',
+  'Appliquer': 'Apply',
+  'refusé': 'refused',
+  'En main': 'To hand',
+  'Mettre en jeu': 'Put into play',
+  'Révéler': 'Reveal',
+  'Ajoutée à la main': 'Added to hand',
+  'Mise en jeu': 'Put into play',
+  // « Révélée » est déjà traduit plus bas : ne pas le redéclarer ici.
+  'Cette pile est vide': 'This pile is empty',
+  'Choisis une carte pour l’ajouter à ta main': 'Pick a card to add it to your hand',
+  'Choisis une carte pour la mettre en jeu': 'Pick a card to put it into play',
+  'Couper la musique': 'Mute the music',
+  'Remettre la musique (nécessite un fichier dans assets/sounds)':
+    'Unmute the music (needs a file in assets/sounds)',
+  'Maintenir pour jouer': 'Hold to play',
+  'Maintenir pour utiliser': 'Hold to use',
+
+  // ---- board/BandeauAbsent.tsx ----
+  'est déconnecté': 'is disconnected',
+  'Sa reprise dure jusqu’à la fin de son tour.':
+    'The takeover lasts until the end of their turn.',
+  'Jouer pour lui': 'Play for them',
 
   // ---- board/JournalHeros.tsx ----
   'Journal': 'Log',
@@ -415,6 +463,12 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // --- Météo, musique, écran de fin (vague 8) ---
   'Météo': 'Weather',
+  'Aperçu météo': 'Weather preview',
+  'Force un effet à l écran pour le voir, sans partie ni carte': 'Forces an effect on screen so you can see it, with no game and no card',
+  'Aucun': 'None',
+  'Pluie': 'Rain',
+  'Orage': 'Storm',
+  'Neige': 'Snow',
   'Météo de Storm affichée : cliquer pour la couper': 'Storm weather shown: click to turn it off',
   'Météo coupée : cliquer pour afficher pluie/orage/neige': 'Weather off: click to show rain/storm/snow',
   'Musique': 'Music',
@@ -437,7 +491,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Déplacements de cartes, secousse d’impact, halo de statut':
     'Card movement, impact shake, status halo',
   'Effets sonores du moteur': 'Engine sound effects',
-  'Pluie, orage ou neige quand un Soutien météo de Storm est en jeu':
+  'Pluie, orage ou neige selon les cartes en jeu':
     'Rain, storm or snow while one of Storm\'s weather supports is in play',
   'Présentation au centre des cartes révélées par la Rencontre':
     'Center presentation of cards revealed from the encounter deck',
@@ -468,11 +522,27 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- board/mobile : reglage de disposition (vague 12) ----
   'Disposition': 'Layout',
-  'Choix du rendu du plateau : automatique selon l’appareil, ou force mobile/ordinateur':
-    'Board rendering choice: automatic based on the device, or forced to mobile/desktop',
+  'Rendu du plateau : automatique selon l’appareil, ou forcer la table complète':
+    'Board rendering: automatic based on the device, or force the full table',
   'Automatique': 'Automatic',
   'Mobile': 'Mobile',
   'Ordinateur': 'Desktop',
+
+  // ---- board : narration centrale des effets (ecrite par le client) ----
+  // ('subit', 'PV', 'gagne' et 'menace' sont deja definis plus haut)
+  'dégâts': 'damage',
+  'récupère': 'heals',
+  'perd': 'loses',
+  'Connexion à la partie…': 'Connecting to the game…',
+
+  // ---- board : fenetre de confirmation du jeu (remplace window.confirm) ----
+  // ('Annuler', 'Confirmer', 'Charger' et 'La partie en cours sera remplacée.'
+  //  sont deja definis plus haut)
+  'Confirmation': 'Confirmation',
+  'Quitter': 'Quit',
+  'Revenir au menu principal ?': 'Back to the main menu?',
+  'La partie en cours sera perdue si tu ne l’as pas sauvegardée.':
+    'The current game will be lost if you have not saved it.',
 
   // ---- board/mobile : vue d'etat degradee et marquage des cibles ----
   // ('cartes' et 'Actif' sont deja definis plus haut)

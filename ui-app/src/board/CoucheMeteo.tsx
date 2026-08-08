@@ -1,23 +1,40 @@
-// CoucheMeteo — la météo de Storm sur le nouveau plateau.
+// CoucheMeteo — la météo du plateau.
 //
-// Transposé de l'ancien client (js/marvel/cards.js + ui.js) : les Soutiens
-// météo de Storm changent le fond de la table via une iframe plein écran
-// (effets HTML autonomes déjà présents dans public/effects/weather/).
-//   36002 Clear Skies -> rien, 36003 Hurricane -> pluie,
-//   36004 Thunderstorm -> orage, 36005 Blizzard -> neige.
-// Ici on ne dépend pas d'un événement de rendu : on regarde ce qui est EN JEU
-// à chaque monde reçu, donc la météo survit à un rechargement de page.
-// Activable au choix (localStorage marvel-board-meteo, actif par défaut).
+// Un effet HTML autonome (public/effects/weather/) est superposé en iframe
+// plein écran. À l'origine il ne servait qu'aux Soutiens météo de Storm ;
+// il lit désormais aussi les cartes d'Environnement, qui vivent ailleurs.
+//
+// ON NE LIT QUE CE QUI EST EN JEU, par zones nommées. Le code d'origine
+// parcourait tout l'objet joueur, main et decks compris : or Storm joue avec
+// un DECK météo (`additional_deck`) qui contient ses trois autres cartes. Il
+// ne s'en sortait que parce que `supports` précède `additional_deck` dans
+// l'ordre des clés du descripteur, ce qui est un accident, pas une garantie.
+//
+// L'aperçu (sélecteur des réglages) prime sur les cartes tant qu'il est actif :
+// c'est un outil de conception, il doit pouvoir montrer un effet sans partie.
 import { useMemo } from 'react'
 import type { World, WorldCard } from './world'
 
 const METEO_PAR_CARTE: Record<string, string> = {
-  '36003': 'rain',
-  '36004': 'storm',
-  '36005': 'snow',
+  // Storm — deck météo. 36002 Clear Skies n'a volontairement aucun visuel.
+  '36003': 'rain', // Hurricane
+  '36004': 'storm', // Thunderstorm
+  '36005': 'snow', // Blizzard
+  // Environnements
+  '04081': 'snow', // Snowy Hillside, Absorbing Man
+  '29039': 'storm', // Air Static, Zzzax
+  '50131a': 'storm', // Justice, Like Lightning, Thunderbolts
 }
 
+/** Les zones où une carte est réellement EN JEU, et elles seules. */
+const ZONES_JOUEUR = ['supports', 'environment_area'] as const
+const ZONES_MONDE = ['area_environment'] as const
+
 export const CLE_METEO = 'marvel-board-meteo'
+
+/** Les effets qu'on sait afficher, pour le sélecteur d'aperçu. */
+export const EFFETS_METEO = ['rain', 'storm', 'snow'] as const
+export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
 export function lireMeteoActive(): boolean {
   try {
@@ -27,30 +44,41 @@ export function lireMeteoActive(): boolean {
   }
 }
 
-/** La météo dictée par les cartes en jeu (zones des joueurs), ou ''. */
-function meteoDuMonde(world: World | undefined): string {
-  if (!world) return ''
-  let trouvee = ''
-  const parcourir = (valeur: unknown) => {
-    if (trouvee) return
-    if (Array.isArray(valeur)) {
-      for (const element of valeur) parcourir(element)
-      return
-    }
-    if (typeof valeur !== 'object' || valeur === null) return
-    const carte = valeur as Partial<WorldCard>
-    if (typeof carte.card_id === 'string' && METEO_PAR_CARTE[carte.card_id]) {
-      trouvee = METEO_PAR_CARTE[carte.card_id]
-      return
-    }
-    for (const enfant of Object.values(carte)) parcourir(enfant)
+function cartesDe(source: unknown, zones: readonly string[]): WorldCard[] {
+  if (typeof source !== 'object' || source === null) return []
+  const sortie: WorldCard[] = []
+  for (const zone of zones) {
+    const valeur = (source as Record<string, unknown>)[zone]
+    // Certaines zones sont des listes de listes (decks multiples) : on aplatit.
+    if (Array.isArray(valeur)) sortie.push(...(valeur.flat() as WorldCard[]))
   }
-  for (const joueur of world.players ?? []) parcourir(joueur)
-  return trouvee
+  return sortie
 }
 
-export function CoucheMeteo({ world, active }: { world: World | undefined; active: boolean }) {
-  const meteo = useMemo(() => meteoDuMonde(world), [world])
+/** La météo dictée par les cartes en jeu, ou '' si aucune ne s'applique. */
+export function meteoDuMonde(world: World | undefined): string {
+  if (!world) return ''
+  const enJeu: WorldCard[] = [...cartesDe(world, ZONES_MONDE)]
+  for (const joueur of world.players ?? []) enJeu.push(...cartesDe(joueur, ZONES_JOUEUR))
+  for (const carte of enJeu) {
+    const effet = carte && typeof carte.card_id === 'string' ? METEO_PAR_CARTE[carte.card_id] : undefined
+    if (effet) return effet
+  }
+  return ''
+}
+
+export function CoucheMeteo({
+  world,
+  active,
+  apercu,
+}: {
+  world: World | undefined
+  active: boolean
+  /** Force un effet, quelles que soient les cartes. '' rend la main au jeu. */
+  apercu?: string
+}) {
+  const duJeu = useMemo(() => meteoDuMonde(world), [world])
+  const meteo = apercu || duJeu
   if (!active || !meteo) return null
   return (
     <iframe
