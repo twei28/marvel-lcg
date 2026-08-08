@@ -3352,11 +3352,13 @@
     filter: grayscale(1);
   }
 
-  /* `outline` et non `box-shadow` : les cartes portent deja des ombres pour
-     leurs halos de statut, et on ne veut pas les ecraser. */
+  /* Le lisere entoure la carte, il ne mord pas dessus : un decalage NEGATIF
+     le posait a l'interieur du bord, ou il rognait l'illustration. `outline`
+     et non `box-shadow` : les cartes portent deja des ombres pour leurs halos
+     de statut, et on ne veut pas les ecraser. */
   .plateau.est-delave .scan-card[class*='aspect-'] {
     outline: 4px solid var(--lisere-aspect);
-    outline-offset: -4px;
+    outline-offset: 3px;
     border-radius: inherit;
   }
 
