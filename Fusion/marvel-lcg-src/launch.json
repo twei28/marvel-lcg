@@ -14,8 +14,7 @@
   ],
   "image_folders": [
     "./assets/pics/",
-    "./assets/pics-fr/",
-    "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeux original/assets/pics/"
+    "./assets/pics-fr/"
   ],
   "sound_folders": [
     "./assets/sounds/"

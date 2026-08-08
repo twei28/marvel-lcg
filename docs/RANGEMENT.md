@@ -17,7 +17,7 @@ doublons partiels d'un même travail.
 |---|---|---|
 | `Jeu Marvel Champions/` | 2,5 Go | **la copie vivante**, celle que lancent les `.bat` |
 | `Jeu Marvel Champions Arnaud/` | 909 Mo | **installation complète** du 6/8, mais sans les scans FR ni Agent 13 |
-| `Jeux original/` | 486 Mo | le jeu distribué d'origine, référence de la reconstruction |
+| `Jeux original/` | 486 Mo | le jeu d'origine, mais surtout **3876 images de cartes que le jeu lisait vraiment** |
 | `Fusion/` | 294 Mo | doublon partiel : 9846 fichiers contre 22125 dans la copie vivante |
 | `ui-app/` | 68 Mo | 13 fichiers contre 1221 dans la copie vivante |
 | `ui-check/` | 37 Mo | 73 fichiers contre 108 |
@@ -64,12 +64,12 @@ Marvel LCG last try/
 │   ├── ui-check/                  les captures de contrôle
 │   ├── outils/                    les scripts d'entretien
 │   └── JOUER-*.bat, JOUER-*.command
-├── Jeux original/                 la référence, intouchée
 ├── JOUER-SOLO.bat                 les trois lanceurs, a portee de main
 ├── JOUER-EN-MULTI.bat
 ├── JOUER-SERVEUR.bat
 ├── _archive-2026-08-08/           tout le périmé, rien de supprimé
 │   ├── copie-Arnaud/
+│   ├── jeu-original/
 │   ├── racine-Fusion/
 │   ├── reconstruction-source/     Chatgpt, Claude, cartes-multiple-man
 │   └── depot-racine/              .planning, ui-app, ui-check et leur .git
@@ -206,10 +206,35 @@ rmdir _archive-2026-08-08/{reconstruction-source,depot-racine} _archive-2026-08-
 
 ---
 
-## 6. Ce qu'on n'a pas touché, et pourquoi
+## 6. Le cas `Jeux original`, et la dépendance cachée
 
-**`Jeux original/`** est la référence de la reconstruction du source. Elle ne
-bouge pas et ne se supprime pas.
+Ce dossier paraissait n'être qu'une archive : le jeu distribué d'origine, gardé
+comme référence d'une reconstruction du source abandonnée depuis.
+
+**Il ne l'était pas.** Le `launch.json` du moteur déclarait trois dossiers
+d'images, dont un chemin ABSOLU vers
+`Marvel LCG last try/Jeux original/assets/pics/`. **3876 images de cartes
+n'existaient que là.** L'archiver tel quel aurait privé la majorité des cartes
+de leur visuel, sans erreur ni message.
+
+Ce qui a été fait le 08/08 :
+
+1. les 3876 images manquantes ont été déplacées dans
+   `Fusion/marvel-lcg-src/assets/pics/`, qui passe de 935 à 4811 fichiers.
+   Les 387 déjà présentes n'ont PAS été écrasées, et ont été vérifiées
+   identiques octet pour octet sur un échantillon ;
+2. le chemin absolu a été retiré de `launch.json` et des cinq configurations
+   `.serveur/` qui le reprenaient ;
+3. le reste de `Jeux original` est parti dans l'archive.
+
+**La preuve du rapatriement** : le nombre de cartes du catalogue sans aucune
+image est de 26, avec ou sans `Jeux original`. Le dossier n'apporte donc plus
+rien. Les 26 restantes ne sont pas des cartes mais des pseudo-entrées, `wild`,
+`confused`, `stunned`, `tough`, `minion`, `rule_a`, qui n'ont jamais eu
+d'image.
+
+**Le jeu est désormais autonome.** Plus aucun chemin absolu vers l'extérieur du
+dossier : il se déplace et se copie sans perdre ses visuels.
 
 **L'intérieur de `Fusion/marvel-lcg-src/`** est le moteur. Son organisation
 répond à ses propres contraintes, décrites au paragraphe 1 de
