@@ -65,12 +65,14 @@ Marvel LCG last try/
 │   ├── outils/                    les scripts d'entretien
 │   └── JOUER-*.bat, JOUER-*.command
 ├── Jeux original/                 la référence, intouchée
+├── JOUER-SOLO.bat                 les trois lanceurs, a portee de main
+├── JOUER-EN-MULTI.bat
+├── JOUER-SERVEUR.bat
 ├── _archive-2026-08-08/           tout le périmé, rien de supprimé
 │   ├── copie-Arnaud/
 │   ├── racine-Fusion/
 │   ├── reconstruction-source/     Chatgpt, Claude, cartes-multiple-man
 │   └── depot-racine/              .planning, ui-app, ui-check et leur .git
-└── JOUER-EN-MULTI.bat
 ```
 
 **Principe** : une seule copie vivante, une seule référence, et tout le reste
@@ -114,6 +116,21 @@ binaires lourds qui n'ont rien à faire dans l'historique.
 
 **Vérifié** : une partie complète d'Agent 13 jouée après le rangement, sept
 rounds, fin normale. Le jeu n'a pas bougé.
+
+### Les lanceurs de la racine
+
+Les trois `.bat` de la racine sont des copies de ceux de la copie vivante, et
+pointent tous sur `Jeu Marvel Champions/Fusion/marvel-lcg-src`.
+
+**Un piège découvert en les vérifiant** : l'ancien `JOUER-EN-MULTI.bat` de la
+racine, le seul qui s'y trouvait, ne lançait PAS le jeu courant. Il pointait sur
+`Marvel LCG last try/Fusion/marvel-lcg-src`, un moteur obsolète de 4547 fichiers
+source contre 10684, sans même de `cards.json`. Il démarrait donc une vieille
+version. Il est conservé dans l'archive sous
+`JOUER-EN-MULTI.bat.casse-pointait-sur-vieux-moteur`.
+
+Ces trois fichiers sont des copies : si un jour un chemin change, les six
+exemplaires, trois à la racine et trois dans la copie vivante, doivent suivre.
 
 ### Deux écarts à connaître
 
