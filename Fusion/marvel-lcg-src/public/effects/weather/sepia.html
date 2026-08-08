@@ -43,15 +43,6 @@
         animation-iteration-count: infinite;
     }
 
-    /* La poussiere du desert, portee par le vent. */
-    .grain {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(222, 190, 140, 0.75);
-        animation-name: souffle;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-    }
 
     /* La lampe du projecteur n'est jamais parfaitement stable. */
     @keyframes papillote {
@@ -69,11 +60,6 @@
         100% { opacity: 0; transform: translateX(4px); }
     }
 
-    @keyframes souffle {
-        0%   { transform: translate(0, 0); opacity: 0; }
-        14%  { opacity: 0.85; }
-        100% { transform: translate(112vw, var(--montee)); opacity: 0; }
-    }
 </style>
 
 <section class="desert"></section>
@@ -81,7 +67,10 @@
 
 <script>
     var nbRayure = 7;
-    var nbGrain = 120;
+    // Il n'y a plus de poussiere ici. Des particules qui traversaient
+    // l'ecran de gauche a droite donnaient l'impression d'un vent, alors que
+    // le sujet de cet effet est la PELLICULE, pas le desert : les deux
+    // langages se contredisaient. La poussiere reste dans dust.html.
 
     function hasard(min, max) { return Math.random() * (max - min) + min; }
 
@@ -98,19 +87,4 @@
         desert.appendChild(r);
     }
 
-    for (var j = 0; j < nbGrain; j++) {
-        var g = document.createElement('div');
-        g.className = 'grain';
-        var t = hasard(1.2, 3.4);
-        g.style.width = t.toFixed(2) + 'px';
-        g.style.height = t.toFixed(2) + 'px';
-        // Tout part du bord gauche : le vent du desert souffle dans un sens.
-        g.style.left = hasard(-12, 0).toFixed(1) + 'vw';
-        g.style.top = hasard(0, 100).toFixed(1) + 'vh';
-        g.style.setProperty('--montee', hasard(-14, 6).toFixed(1) + 'vh');
-        var d = hasard(6, 17);
-        g.style.animationDuration = d.toFixed(2) + 's';
-        g.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
-        desert.appendChild(g);
-    }
 </script>

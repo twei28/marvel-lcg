@@ -1,5 +1,5 @@
-<!-- Polar : ombres de stores venitiens et grain de pellicule, pour le decor
-     d'enquete criminelle du Mojoverse. -->
+<!-- Vieille tele : image delavee, lignes de balayage, barre de synchro qui
+     descend et sauts d'image, pour le decor d'enquete criminelle du Mojoverse. -->
 <style>
     /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
        declare color-scheme: dark. Sans ces deux lignes, la couche pose une
@@ -9,54 +9,126 @@
 
     body { margin: 0; height: 100vh; overflow: hidden; }
 
-    /* Le store. Il est plus large que l'ecran et penche : une bande droite
-       ressemblerait a un defaut d'affichage, pas a de la lumiere filtree. */
-    .store {
-        position: absolute;
-        left: -30vw;
-        top: -40vh;
-        width: 160vw;
-        height: 180vh;
-        transform: rotate(-9deg);
-        /* Le rai de lumiere est le motif, l'ombre n'est qu'un liseré. Une
-           barre noire de 62 % rendait les cartes du dessous illisibles et,
-           sur un fond deja noir, ne se voyait meme pas. */
+    /* Une iframe ne peut pas desaturer le plateau qui est DESSOUS : aucun
+       filtre ne traverse. Le noir et blanc est donc IMITE par un voile gris
+       qui delave les couleurs, et non obtenu par un grayscale(). */
+    .verre {
+        position: fixed;
+        inset: 0;
+        background:
+            linear-gradient(rgba(176, 178, 182, 0.20), rgba(176, 178, 182, 0.20)),
+            radial-gradient(ellipse 78% 74% at 50% 50%,
+                rgba(0, 0, 0, 0) 58%,
+                rgba(0, 0, 0, 0.40) 88%,
+                rgba(0, 0, 0, 0.72) 100%);
+    }
+
+    /* Les lignes de balayage. Elles sautent d'un cran par a-coups : c'est ce
+       saut, plus que les lignes elles-memes, qui dit « vieux tube ». */
+    .lignes {
+        position: fixed;
+        inset: -6vh 0;
         background: repeating-linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.22) 0px,
-            rgba(0, 0, 0, 0.22) 15px,
-            rgba(255, 248, 228, 0.17) 18px,
-            rgba(255, 248, 228, 0.17) 25px,
-            rgba(0, 0, 0, 0.22) 28px,
-            rgba(0, 0, 0, 0.22) 46px);
-        animation: glisse 34s ease-in-out infinite;
+            rgba(0, 0, 0, 0.34) 0px,
+            rgba(0, 0, 0, 0.34) 1px,
+            rgba(255, 255, 255, 0.03) 2px,
+            rgba(255, 255, 255, 0.03) 3px,
+            rgba(0, 0, 0, 0) 4px,
+            rgba(0, 0, 0, 0) 5px);
+        animation: saute 6.5s steps(1, end) infinite;
     }
 
-    /* Le grain, fait d'un bruit SVG en ligne : pas de fichier externe, la
-       page doit rester autonome. Il saute d'une position a l'autre, comme
-       une pellicule qui defile. */
-    .grain {
-        position: absolute;
+    /* La barre de synchro : un liseré clair suivi d'une couture sombre, qui
+       descend lentement. C'est le defaut de reglage vertical d'un poste. */
+    .roulement {
+        position: fixed;
+        left: 0;
+        right: 0;
+        height: 22vh;
+        background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.07) 42%,
+            rgba(255, 255, 255, 0.13) 52%,
+            rgba(0, 0, 0, 0.5) 62%,
+            rgba(0, 0, 0, 0) 100%);
+        animation: descend 7.5s linear infinite;
+    }
+
+    /* La neige, faite d'un bruit SVG en ligne : pas de fichier externe, la
+       page doit rester autonome. */
+    .neige {
+        position: fixed;
         inset: -40%;
-        opacity: 0.5;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23b)' opacity='0.55'/%3E%3C/svg%3E");
-        animation: saute 0.5s steps(1, end) infinite;
+        opacity: 0.34;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23b)' opacity='0.6'/%3E%3C/svg%3E");
+        animation: grouille 0.45s steps(1, end) infinite;
     }
 
-    @keyframes glisse {
-        0%, 100% { transform: rotate(-9deg) translateY(0); }
-        50%      { transform: rotate(-9deg) translateY(26px); }
+    /* Les dechirures : de fines bandes qui apparaissent une fraction de
+       seconde, comme un signal qui accroche. */
+    .dechirure {
+        position: fixed;
+        left: 0;
+        right: 0;
+        background: rgba(232, 236, 240, 0.16);
+        animation-name: accroche;
+        animation-timing-function: steps(1, end);
+        animation-iteration-count: infinite;
     }
 
     @keyframes saute {
+        0%, 46%, 100% { transform: translateY(0); }
+        48%           { transform: translateY(-9px); }
+        50%           { transform: translateY(6px); }
+        52%           { transform: translateY(-3px); }
+        86%           { transform: translateY(11px); }
+        88%           { transform: translateY(-5px); }
+    }
+
+    @keyframes descend {
+        from { top: -24vh; }
+        to   { top: 102vh; }
+    }
+
+    @keyframes grouille {
         0%   { transform: translate(0, 0); }
-        25%  { transform: translate(-3%, 2%); }
-        50%  { transform: translate(2%, -3%); }
+        25%  { transform: translate(-4%, 3%); }
+        50%  { transform: translate(3%, -4%); }
         75%  { transform: translate(-2%, -2%); }
-        100% { transform: translate(3%, 1%); }
+        100% { transform: translate(4%, 2%); }
+    }
+
+    @keyframes accroche {
+        0%, 92%, 100% { opacity: 0; }
+        93%           { opacity: 1; transform: translateX(0); }
+        95%           { opacity: 1; transform: translateX(-7px); }
+        97%           { opacity: 0; }
     }
 </style>
 
-<section class="plateau-noir">
-    <div class="store"></div>
-    <div class="grain"></div>
-</section>
+<div class="verre"></div>
+<div class="lignes"></div>
+<div class="roulement"></div>
+<section class="signal"></section>
+<div class="neige"></div>
+
+<script>
+    var nbDechirure = 5;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var signal = document.querySelector('.signal');
+    for (var i = 0; i < nbDechirure; i++) {
+        var d = document.createElement('div');
+        d.className = 'dechirure';
+        d.style.top = hasard(2, 94).toFixed(1) + 'vh';
+        d.style.height = hasard(2, 9).toFixed(1) + 'px';
+        // Chaque bande a son propre rythme, sinon elles accrocheraient toutes
+        // au meme instant et cela ferait un clignotement, pas un mauvais
+        // signal.
+        var duree = hasard(3.5, 11);
+        d.style.animationDuration = duree.toFixed(2) + 's';
+        d.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        signal.appendChild(d);
+    }
+</script>

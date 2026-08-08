@@ -476,7 +476,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Poussière': 'Dust',
   'Néons': 'Neon',
   'Jungle': 'Jungle',
-  'Polar': 'Noir',
+  'Vieille télé': 'Old TV',
   'Horreur': 'Horror',
   'Cyber': 'Cyber',
   'Sitcom': 'Sitcom',

@@ -35,7 +35,7 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   dust: 'Poussière',
   neon: 'Néons',
   jungle: 'Jungle',
-  noir: 'Polar',
+  noir: 'Vieille télé',
   horror: 'Horreur',
   cyber: 'Cyber',
   sitcom: 'Sitcom',
@@ -114,7 +114,7 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // au titre mais aux figurants qui l'accompagnent dans le paquet : Dragnet et
   // Law & Order d'un cote, Dragon et Troll de l'autre, Vampire et Loup-garou,
   // des PROGRAMMES nommes Magneto 2.6, un Gunslinger.
-  '39035': 'noir', // Dial M for Mojo, enquete criminelle
+  '39035': 'noir', // Dial M for Mojo : le polar rendu en vieille tele
   '39041': 'embers', // A Game of Mojo's, fantasy : le souffle du Dragon
   '39047': 'horror', // The Mojo Files, vampires et loups-garous
   '39053': 'cyber', // Mojo Runner, ennemis PROGRAMME
