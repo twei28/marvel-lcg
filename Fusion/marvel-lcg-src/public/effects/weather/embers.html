@@ -16,9 +16,12 @@
         left: 0;
         right: 0;
         bottom: 0;
-        height: 34vh;
+        /* La lueur monte a mi-hauteur : cantonnee au bas de l'ecran, elle se
+           lisait comme un lisere plutot que comme un incendie. */
+        height: 58vh;
         background: linear-gradient(to top,
-            rgba(255, 108, 28, 0.2) 0%,
+            rgba(255, 108, 28, 0.24) 0%,
+            rgba(255, 122, 34, 0.11) 45%,
             rgba(255, 108, 28, 0) 100%);
     }
 

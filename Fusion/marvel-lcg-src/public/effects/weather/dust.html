@@ -29,6 +29,30 @@
         animation-timing-function: linear;
     }
 
+    /* Des nuees qui tombent, derriere les grains. Les grains seuls donnaient
+       une poussiere en suspension ; ce sont ces nuees qui font l'ecroulement,
+       la poussiere qui RETOMBE apres que quelque chose s'est effondre. */
+    .nuee {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center,
+            rgba(198, 180, 152, 0.24) 0%,
+            rgba(198, 180, 152, 0.11) 45%,
+            rgba(198, 180, 152, 0) 76%);
+        filter: blur(30px);
+        animation-name: tombe;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    @keyframes tombe {
+        0%   { transform: translate(0, -45vh); opacity: 0; }
+        18%  { opacity: 1; }
+        78%  { opacity: 0.85; }
+        100% { transform: translate(var(--derive), 120vh); opacity: 0; }
+    }
+
     @keyframes flotte {
         0%   { transform: translate(0, 0); opacity: 0; }
         15%  { opacity: 0.85; }
@@ -48,10 +72,27 @@
 
 <script>
     var nbGrain = 150;
+    var nbNuee = 9;
 
     function hasard(min, max) { return Math.random() * (max - min) + min; }
 
     var poussiere = document.querySelector('.poussiere');
+
+    // Les nuees d'abord : posees en premier, elles restent DERRIERE les
+    // grains, qui doivent se detacher dessus.
+    for (var k = 0; k < nbNuee; k++) {
+        var n = document.createElement('div');
+        n.className = 'nuee';
+        n.style.width = hasard(28, 62).toFixed(1) + 'vw';
+        n.style.height = hasard(12, 28).toFixed(1) + 'vh';
+        n.style.left = hasard(-14, 92).toFixed(1) + 'vw';
+        n.style.setProperty('--derive', hasard(-14, 14).toFixed(1) + 'vw');
+        var dn = hasard(17, 38);
+        n.style.animationDuration = dn.toFixed(1) + 's';
+        n.style.animationDelay = '-' + hasard(0, dn).toFixed(1) + 's';
+        poussiere.appendChild(n);
+    }
+
     for (var i = 0; i < nbGrain; i++) {
         var g = document.createElement('div');
         var eclat = i % 11 === 0;
