@@ -28,6 +28,46 @@
         0%, 100% { opacity: var(--bas); }
         50%      { opacity: var(--haut); }
     }
+
+    /* Quelques etoiles BRILLENT : elles lancent par instants un eclat en
+       croix. Elles ne respirent pas comme les autres, elles gardent une
+       clarte fixe : superposer les deux animations donnerait un eclat
+       assombri au hasard du cycle d'opacite du parent. */
+    .etoile.brille {
+        animation: none;
+        opacity: 0.95;
+    }
+
+    /* Les deux branches partagent le meme cycle et le meme retard, sinon la
+       croix se disloquerait en deux barres qui clignotent chacune de son
+       cote. Cycle et retard sont des variables portees par l'etoile : elles
+       descendent jusqu'aux pseudo-elements, ce qui evite d'injecter une
+       regle CSS par etoile. */
+    .etoile.brille:before,
+    .etoile.brille:after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 26px;
+        height: 1px;
+        background: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.9) 50%,
+            rgba(255, 255, 255, 0) 100%);
+        animation: eclat var(--cycle) ease-in-out infinite;
+        animation-delay: var(--retard);
+    }
+
+    .etoile.brille:before { --angle: 0deg; }
+    .etoile.brille:after { --angle: 90deg; }
+
+    /* L'eclat reste eteint la plupart du temps : c'est sa rarete qui le fait
+       remarquer. Les deux branches croisees s'ouvrent puis se referment. */
+    @keyframes eclat {
+        0%, 82%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(var(--angle)); }
+        90%           { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(var(--angle)); }
+    }
 </style>
 
 <section class="ciel"></section>
@@ -40,9 +80,11 @@
     var ciel = document.querySelector('.ciel');
     for (var i = 0; i < nbEtoile; i++) {
         var e = document.createElement('div');
-        // Une sur huit est une etoile vive, avec halo et un peu plus grosse.
+        // Une sur huit est une etoile vive, avec halo et un peu plus grosse ;
+        // une sur treize brille en plus, d'un eclat en croix.
         var vive = i % 8 === 0;
-        e.className = vive ? 'etoile vive' : 'etoile';
+        var brille = i % 13 === 0;
+        e.className = 'etoile' + (vive ? ' vive' : '') + (brille ? ' brille' : '');
         var taille = vive ? hasard(2.2, 3.4) : hasard(1, 2.1);
         e.style.width = taille.toFixed(2) + 'px';
         e.style.height = taille.toFixed(2) + 'px';
@@ -57,6 +99,13 @@
         var duree = hasard(2.4, 7.5);
         e.style.animationDuration = duree.toFixed(2) + 's';
         e.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        if (brille) {
+            // Chaque etoile brillante a son propre rythme, sans quoi toutes
+            // les croix s'allumeraient ensemble et le ciel clignoterait.
+            var cycle = hasard(6, 14);
+            e.style.setProperty('--cycle', cycle.toFixed(2) + 's');
+            e.style.setProperty('--retard', '-' + hasard(0, cycle).toFixed(2) + 's');
+        }
         ciel.appendChild(e);
     }
 </script>

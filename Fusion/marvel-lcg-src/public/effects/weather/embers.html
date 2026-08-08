@@ -18,7 +18,7 @@
         bottom: 0;
         height: 34vh;
         background: linear-gradient(to top,
-            rgba(255, 108, 28, 0.14) 0%,
+            rgba(255, 108, 28, 0.2) 0%,
             rgba(255, 108, 28, 0) 100%);
     }
 
@@ -49,7 +49,7 @@
 <section class="foyer"></section>
 
 <script>
-    var nbBraise = 90;
+    var nbBraise = 130;
 
     function hasard(min, max) { return Math.random() * (max - min) + min; }
 
@@ -57,7 +57,7 @@
     for (var i = 0; i < nbBraise; i++) {
         var b = document.createElement('div');
         b.className = 'braise';
-        var taille = hasard(2, 5.5);
+        var taille = hasard(2.6, 7);
         b.style.width = taille.toFixed(2) + 'px';
         b.style.height = taille.toFixed(2) + 'px';
         b.style.left = hasard(0, 100).toFixed(2) + 'vw';
