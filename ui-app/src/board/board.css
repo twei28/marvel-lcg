@@ -3288,8 +3288,10 @@
      rgb(145,146,150) sur le fond du plateau : la pluie, faite de traits de
      2 px, y etait invisible a l'oeil alors qu'elle tombait bien (mesure du
      8/8/2026 : 1,7 % des pixels touches, le plus clair a 130). La neige et
-     l'orage, eux, couvrent de larges surfaces et restent lisibles a 0,55. */
-  .couche-meteo--rain {
+     l'orage a le meme probleme : ses eclairs sont des traits fins. La neige,
+     elle, couvre de larges surfaces et reste lisible a 0,55. */
+  .couche-meteo--rain,
+  .couche-meteo--storm {
     opacity: 0.9;
   }
 
