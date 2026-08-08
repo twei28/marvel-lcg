@@ -85,7 +85,7 @@ export function CoucheMeteo({
   if (!meteo) return null
   return (
     <iframe
-      className="couche-meteo"
+      className={`couche-meteo couche-meteo--${meteo}`}
       src={`/effects/weather/${meteo}.html`}
       title=""
       aria-hidden="true"

@@ -3271,13 +3271,26 @@
   .couche-meteo {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    /* La couche etait a 0, donc DERRIERE la scene, qui la masquait
+       entierement. La scene de jeu occupe les etages 0 a 6 et l'interface
+       commence a 20 : a 10, la meteo passe devant les cartes, comme une
+       atmosphere, et reste derriere les bandeaux, menus et fenetres. */
+    z-index: 10;
     width: 100%;
     height: 100%;
     border: none;
     user-select: none;
     pointer-events: none;
     opacity: 0.55;
+  }
+
+  /* L'opacite se regle PAR EFFET. A 0,55, du blanc pur plafonne vers
+     rgb(145,146,150) sur le fond du plateau : la pluie, faite de traits de
+     2 px, y etait invisible a l'oeil alors qu'elle tombait bien (mesure du
+     8/8/2026 : 1,7 % des pixels touches, le plus clair a 130). La neige et
+     l'orage, eux, couvrent de larges surfaces et restent lisibles a 0,55. */
+  .couche-meteo--rain {
+    opacity: 0.9;
   }
 
   .plateau {
