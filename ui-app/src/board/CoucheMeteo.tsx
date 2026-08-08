@@ -78,8 +78,11 @@ export function CoucheMeteo({
   apercu?: string
 }) {
   const duJeu = useMemo(() => meteoDuMonde(world), [world])
-  const meteo = apercu || duJeu
-  if (!active || !meteo) return null
+  // L'apercu est une demande EXPLICITE : il passe outre l'interrupteur. Sans
+  // ca, choisir un apercu alors que la meteo est coupee n'affiche rien et
+  // l'outil parait casse. L'interrupteur ne commande que la meteo du jeu.
+  const meteo = apercu || (active ? duJeu : '')
+  if (!meteo) return null
   return (
     <iframe
       className="couche-meteo"

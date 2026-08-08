@@ -5,8 +5,10 @@
 // l'objet joueur, main et decks compris, et ne s'en sortait que parce que
 // `supports` précède `additional_deck` dans l'ordre des clés du descripteur.
 import { describe, expect, it } from 'vitest'
+import { render } from '@testing-library/react'
+import { createElement } from 'react'
 import type { World } from './world'
-import { meteoDuMonde } from './CoucheMeteo'
+import { CoucheMeteo, meteoDuMonde } from './CoucheMeteo'
 
 const carte = (cardId: string) => ({
   id: 1,
@@ -56,5 +58,38 @@ describe('meteoDuMonde', () => {
 
   it('Clear Skies ne déclenche aucun effet, il n a pas de visuel', () => {
     expect(meteoDuMonde(monde({ supports: [carte('36002')] }))).toBe('')
+  })
+})
+
+// L'apercu est un OUTIL : il doit montrer l'effet meme quand le joueur a coupe
+// la meteo dans ses reglages. Sans ces cas, la dependance a l'interrupteur
+// reviendrait en silence et l'outil paraitrait casse, ce qui est exactement ce
+// qui s'est produit le 8/8/2026.
+describe('CoucheMeteo, apercu et interrupteur', () => {
+  const src = (c: HTMLElement | null) => c?.querySelector('iframe')?.getAttribute('src') ?? null
+
+  it('affiche l apercu meme quand la meteo est coupee', () => {
+    const { container } = render(
+      createElement(CoucheMeteo, { world: undefined, active: false, apercu: 'rain' })
+    )
+    expect(src(container)).toBe('/effects/weather/rain.html')
+  })
+
+  it('l apercu prime sur la meteo dictee par les cartes', () => {
+    const m = monde({ supports: [carte('36005')] })
+    const { container } = render(createElement(CoucheMeteo, { world: m, active: true, apercu: 'storm' }))
+    expect(src(container)).toBe('/effects/weather/storm.html')
+  })
+
+  it('sans apercu, l interrupteur coupe bien la meteo du jeu', () => {
+    const m = monde({ supports: [carte('36005')] })
+    const { container } = render(createElement(CoucheMeteo, { world: m, active: false }))
+    expect(container.querySelector('iframe')).toBeNull()
+  })
+
+  it('sans apercu et interrupteur allume, la carte en jeu decide', () => {
+    const m = monde({ supports: [carte('36005')] })
+    const { container } = render(createElement(CoucheMeteo, { world: m, active: true }))
+    expect(src(container)).toBe('/effects/weather/snow.html')
   })
 })
