@@ -1,0 +1,62 @@
+<!-- Polar : ombres de stores venitiens et grain de pellicule, pour le decor
+     d'enquete criminelle du Mojoverse. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Le store. Il est plus large que l'ecran et penche : une bande droite
+       ressemblerait a un defaut d'affichage, pas a de la lumiere filtree. */
+    .store {
+        position: absolute;
+        left: -30vw;
+        top: -40vh;
+        width: 160vw;
+        height: 180vh;
+        transform: rotate(-9deg);
+        /* Le rai de lumiere est le motif, l'ombre n'est qu'un liseré. Une
+           barre noire de 62 % rendait les cartes du dessous illisibles et,
+           sur un fond deja noir, ne se voyait meme pas. */
+        background: repeating-linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.22) 0px,
+            rgba(0, 0, 0, 0.22) 15px,
+            rgba(255, 248, 228, 0.17) 18px,
+            rgba(255, 248, 228, 0.17) 25px,
+            rgba(0, 0, 0, 0.22) 28px,
+            rgba(0, 0, 0, 0.22) 46px);
+        animation: glisse 34s ease-in-out infinite;
+    }
+
+    /* Le grain, fait d'un bruit SVG en ligne : pas de fichier externe, la
+       page doit rester autonome. Il saute d'une position a l'autre, comme
+       une pellicule qui defile. */
+    .grain {
+        position: absolute;
+        inset: -40%;
+        opacity: 0.5;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23b)' opacity='0.55'/%3E%3C/svg%3E");
+        animation: saute 0.5s steps(1, end) infinite;
+    }
+
+    @keyframes glisse {
+        0%, 100% { transform: rotate(-9deg) translateY(0); }
+        50%      { transform: rotate(-9deg) translateY(26px); }
+    }
+
+    @keyframes saute {
+        0%   { transform: translate(0, 0); }
+        25%  { transform: translate(-3%, 2%); }
+        50%  { transform: translate(2%, -3%); }
+        75%  { transform: translate(-2%, -2%); }
+        100% { transform: translate(3%, 1%); }
+    }
+</style>
+
+<section class="plateau-noir">
+    <div class="store"></div>
+    <div class="grain"></div>
+</section>

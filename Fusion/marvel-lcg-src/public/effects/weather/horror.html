@@ -1,0 +1,76 @@
+<!-- Horreur : brume verdatre au ras du sol et lumiere qui lache, pour le
+     decor de vampires et de loups-garous du Mojoverse. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* La lumiere qui lache : elle assombrit tout par a-coups, puis revient.
+       C'est ce clignotement, pas la brume, qui met mal a l'aise. */
+    .lampe {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse 85% 80% at 50% 45%,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(2, 8, 4, 0.30) 70%,
+            rgba(1, 5, 2, 0.58) 100%);
+        animation: lache 9s steps(1, end) infinite;
+    }
+
+    /* Les bancs sont bas et lourds : une brume d'horreur rampe, elle ne
+       flotte pas a hauteur d'oeil comme celle des sous-sols. */
+    .banc {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center,
+            rgba(126, 214, 138, 0.42) 0%,
+            rgba(100, 182, 114, 0.20) 45%,
+            rgba(90, 160, 104, 0) 80%);
+        filter: blur(30px);
+        animation-name: rampe;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes lache {
+        0%, 76%, 100% { opacity: 1; }
+        78%           { opacity: 0.25; }
+        80%           { opacity: 1; }
+        83%           { opacity: 0.4; }
+        85%           { opacity: 1; }
+    }
+
+    @keyframes rampe {
+        from { transform: translateX(-70vw); }
+        to   { transform: translateX(170vw); }
+    }
+</style>
+
+<section class="crypte"></section>
+<div class="lampe"></div>
+
+<script>
+    var nbBanc = 11;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var crypte = document.querySelector('.crypte');
+    for (var i = 0; i < nbBanc; i++) {
+        var b = document.createElement('div');
+        b.className = 'banc';
+        var largeur = hasard(34, 70);
+        b.style.width = largeur + 'vw';
+        b.style.height = hasard(10, 22) + 'vh';
+        // Au ras du sol, dans le tiers bas de l'ecran.
+        b.style.top = hasard(56, 96) + 'vh';
+        b.style.opacity = hasard(0.5, 1).toFixed(2);
+        var d = hasard(45, 95) + largeur;
+        b.style.animationDuration = d.toFixed(1) + 's';
+        b.style.animationDelay = '-' + hasard(0, d).toFixed(1) + 's';
+        crypte.appendChild(b);
+    }
+</script>

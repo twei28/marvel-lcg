@@ -3308,6 +3308,19 @@
     opacity: 0.75;
   }
 
+  /* Le cyber est fait de traits fins, comme la pluie. Le polar et l'horreur
+     jouent sur des aplats, mais tous deux assombrissent une partie de
+     l'ecran : a 0,55 il ne restait respectivement qu'un moire et un voile
+     verdatre sans relief. */
+  .couche-meteo--cyber {
+    opacity: 0.9;
+  }
+
+  .couche-meteo--noir,
+  .couche-meteo--horror {
+    opacity: 0.8;
+  }
+
   /* La brume tient un etage intermediaire : a 0,55 elle ne voilait que 17 %
      de la surface et son point le plus clair montait a peine a 40, donc on
      ne la voyait pas ; a 0,9 elle noierait le plateau, car contrairement aux

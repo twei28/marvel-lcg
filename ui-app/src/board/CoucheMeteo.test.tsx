@@ -134,6 +134,12 @@ describe('les familles de lieux', () => {
     ['31037', 'neon', 'Surge in Crime'],
     ['45127', 'jungle', 'The Savage Land'],
     ['45133', 'jungle', 'Genosha'],
+    // Mojoverse : le genre se lit aux figurants du paquet, pas au titre
+    ['39035', 'noir', 'Dial M for Mojo'],
+    ['39041', 'embers', "A Game of Mojo's"],
+    ['39047', 'horror', 'The Mojo Files'],
+    ['39053', 'cyber', 'Mojo Runner'],
+    ['39066', 'dust', 'Wild Wild Mojo'],
   ]
 
   it.each(attendus)('%s (%s) : %s', (id, effet) => {
@@ -151,6 +157,20 @@ describe('les familles de lieux', () => {
     for (const id of ['27117b', '27118b', '27119b', '27116b']) {
       expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe('')
     }
+  })
+
+  it('la Roue des genres et la foule restent muettes', () => {
+    // Elles sont en jeu EN MEME TEMPS que le decor : leur donner un effet
+    // reviendrait a le disputer au genre, puisque la couche n'en montre qu'un.
+    for (const id of ['39026a', '39026b', '39003a', '39003b', '39004a', '39004b']) {
+      expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe('')
+    }
+  })
+
+  it('la sitcom reste sans ambiance', () => {
+    // Sa marque est une lumiere plate et sans atmosphere : deux essais n'ont
+    // donne qu'un voile chaud informe, et rien vaut mieux qu'illisible.
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('39060')] }))).toBe('')
   })
 
   it('une carte sans ambiance prevue ne declenche rien', () => {

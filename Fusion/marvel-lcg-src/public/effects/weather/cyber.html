@@ -1,0 +1,80 @@
+<!-- Cyber : grille en fuite et chute de code, pour le decor ou les ennemis
+     sont des PROGRAMMES nommes Magneto 2.6. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; perspective: 320px; }
+
+    /* Le sol en fuite. La perspective est portee par le body, la grille
+       n'est qu'un plan couche : c'est ce qui lui donne l'horizon. */
+    .sol {
+        position: absolute;
+        left: -60vw;
+        right: -60vw;
+        bottom: -30vh;
+        height: 120vh;
+        transform: rotateX(74deg);
+        transform-origin: bottom center;
+        background:
+            repeating-linear-gradient(to right,
+                rgba(64, 232, 226, 0.42) 0 1px, rgba(0, 0, 0, 0) 1px 62px),
+            repeating-linear-gradient(to bottom,
+                rgba(64, 232, 226, 0.42) 0 1px, rgba(0, 0, 0, 0) 1px 62px);
+        animation: avance 2.6s linear infinite;
+    }
+
+    /* Le code qui tombe : des traits courts et nets, pas un degrade. Une
+       colonne de donnees clignote par blocs, elle ne coule pas. */
+    .code {
+        position: absolute;
+        width: 2px;
+        background: linear-gradient(to bottom,
+            rgba(120, 255, 210, 0) 0%,
+            rgba(120, 255, 210, 0.85) 60%,
+            rgba(220, 255, 240, 1) 100%);
+        animation-name: chute;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes avance {
+        from { background-position: 0 0, 0 0; }
+        to   { background-position: 0 0, 0 62px; }
+    }
+
+    @keyframes chute {
+        0%   { transform: translateY(-40vh); opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { transform: translateY(115vh); opacity: 0; }
+    }
+</style>
+
+<!-- Le sol est un enfant DIRECT du body : la perspective declaree sur le body
+     ne s'applique qu'a ses enfants directs, et depuis la section il restait
+     desesperement plat. -->
+<div class="sol"></div>
+<section class="reseau"></section>
+
+<script>
+    var nbCode = 70;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var reseau = document.querySelector('.reseau');
+    for (var i = 0; i < nbCode; i++) {
+        var c = document.createElement('div');
+        c.className = 'code';
+        c.style.height = hasard(30, 130).toFixed(0) + 'px';
+        c.style.left = hasard(0, 100).toFixed(2) + 'vw';
+        c.style.opacity = hasard(0.35, 1).toFixed(2);
+        var d = hasard(1.8, 5.5);
+        c.style.animationDuration = d.toFixed(2) + 's';
+        c.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        reseau.appendChild(c);
+    }
+</script>
