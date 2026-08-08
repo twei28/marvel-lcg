@@ -29,6 +29,15 @@ from . import *
 # l'abilite elle-meme -- afin que cette garde empeche tout prompt, y compris
 # le choix de manigance, plutot que de forcer un choix pour un retrait de
 # menace qui n'aurait pas lieu.
+#
+# Meme garde pour le cas "0 icone" (ex: "I'm Tough" 01105, qui n'a aucune
+# icone imprimee) : ne poser le choix de manigance que si `icones > 0`, sinon
+# ne rien faire, comme Hex Bolt (15004) qui ne branche JAMAIS sur
+# RemoveThreatFromSchemes avec une valeur derivee de 0 -- son cas 0-icone part
+# sur DealDamage, pas sur un ciblage de manigance force. Sans cette garde, un
+# choix force (`target_num_range` minimum 1) qui ne retirerait aucune menace
+# etait pose quand meme, et ce choix ne se resolvait jamais : voir
+# `.superpowers/sdd/2026-08-07-agent-13/enquete-boucle.md`.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -53,6 +62,9 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.MoveAllToDeck([choisie], deck, "Top", effect)
 
         icones = FacesCounter.CountTotalBoostIcons([choisie])
+        if icones <= 0:
+            return
+
         joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility(
