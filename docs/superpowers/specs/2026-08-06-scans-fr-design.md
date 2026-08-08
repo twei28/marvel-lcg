@@ -108,7 +108,9 @@ Si le module est inaccessible, le script continue sans lui et l'écrit en tête 
 
 Les `.o8c` d'origine ne sont pas supprimés. Ils restent la source, et une réexécution du script est toujours possible.
 
-**Étape 3, le dictionnaire de textes.** Le script relève le texte français de chaque carte sur marvelcdb et écrit `ui-app/src/board/textes-fr.ts`. Seul le champ de texte de règles est retenu, nettoyé des balises autres que `b`, `i`, `em`, `strong`, `br`, comme le fait déjà `ApercuMarvelcdb`.
+**Étape 3, le dictionnaire de textes.** Le script écrit `ui-app/src/board/textes-fr.ts`, **restreint aux cartes qui n'ont pas de scan français**. Puisque le texte de repli ne s'affiche que là, embarquer les 4 700 cartes serait payer 914 Ko pour n'en servir que quelques dizaines. Le dictionnaire restreint pèse **13 Ko et couvre 73 cartes** : les 430 cartes sans scan moins les 353 fan-made, que marvelcdb ne connaît pas. À cette taille, le module est importé normalement, sans découpage ni chargement différé.
+
+Seul le champ de texte de règles est retenu, nettoyé des balises autres que `b`, `i`, `em`, `strong`, `br`, comme le fait déjà `ApercuMarvelcdb`.
 
 **Étape 4, les sorties.** Le script écrit `ui-app/src/board/scans-fr-liste.ts` (le tableau des codes disponibles en français) et `RAPPORT-SCANS-FR.md` à la racine : nombre d'images placées, GUID non résolus, GUID divergents, et la liste des cartes du catalogue sans scan français, séparées en cartes officielles et cartes fan-made.
 
@@ -147,7 +149,7 @@ Note d'implémentation : `pic_id` et `card_id` coïncident sauf pour 19 entrées
 1. si l'option scans FR est active **et** que la carte n'a pas de scan français, le texte vient du dictionnaire hors ligne ;
 2. sinon, le comportement actuel est conservé à l'identique, y compris l'option réseau marvelcdb, qui reste OFF par défaut.
 
-Le dictionnaire pèse environ 1 Mo. Il est chargé par `import()` dynamique, donc Vite en fait un morceau séparé, téléchargé seulement à la première carte concernée. Le plateau ne s'alourdit pas au démarrage.
+Le dictionnaire pèse 13 Ko, il est importé statiquement. Une carte qui n'y figure pas n'affiche rien, ce qui est le cas de toutes les cartes fan-made.
 
 **L'option ⚙** est ajoutée à côté de « Textes marvelcdb (réseau) » dans `board.tsx`, avec sa traduction dans `dico-en.ts`. Libellé : « Scans en français », détail : « Images des cartes en français quand elles existent ».
 

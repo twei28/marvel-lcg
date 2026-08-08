@@ -1,7 +1,7 @@
 # Câbler les quatre boîtes-campagne restantes
 
 Spec écrite le 07/08/2026. Elle prolonge
-[`CAMPAGNES.md`](../../../CAMPAGNES.md) et son document de conception
+[`CAMPAGNES.md`](../../CAMPAGNES.md) et son document de conception
 [`2026-08-07-mode-campagne-design.md`](2026-08-07-mode-campagne-design.md).
 
 ## 1. Le problème

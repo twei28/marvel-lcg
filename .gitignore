@@ -18,3 +18,7 @@ Fusion/marvel-lcg-src/games_history-serveur-*.json
 Fusion/marvel-lcg-src/statistics-serveur-*.json
 Fusion/marvel-lcg-src/campagnes-serveur-*/
 Fusion/marvel-lcg-src/achievements-serveur-*.json
+
+# Rangement du 8/8/2026 : gros binaires et paquets fournis, hors depot.
+medias/
+paquets-cartes/
