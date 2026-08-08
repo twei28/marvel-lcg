@@ -1,0 +1,71 @@
+<!-- Poussiere : des particules qui flottent et retombent, pour la pierre, le
+     metal et les gravats. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    .grain {
+        position: absolute;
+        border-radius: 50%;
+        /* Un beige gris, pas du blanc : du blanc donnerait de la neige. */
+        background: rgba(214, 200, 178, 0.9);
+        animation-name: flotte;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    /* Les plus gros grains sont des eclats, pas de la poussiere : ils tombent
+       droit et vite au lieu de flotter. */
+    .grain.eclat {
+        border-radius: 1px;
+        background: rgba(198, 182, 160, 0.95);
+        animation-name: chute;
+        animation-timing-function: linear;
+    }
+
+    @keyframes flotte {
+        0%   { transform: translate(0, 0); opacity: 0; }
+        15%  { opacity: 0.85; }
+        50%  { transform: translate(var(--derive), 22vh); opacity: 0.7; }
+        85%  { opacity: 0.6; }
+        100% { transform: translate(calc(var(--derive) * 2), 46vh); opacity: 0; }
+    }
+
+    @keyframes chute {
+        0%   { transform: translate(0, -12vh) rotate(0deg); opacity: 0; }
+        10%  { opacity: 0.9; }
+        100% { transform: translate(var(--derive), 112vh) rotate(240deg); opacity: 0; }
+    }
+</style>
+
+<section class="poussiere"></section>
+
+<script>
+    var nbGrain = 150;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var poussiere = document.querySelector('.poussiere');
+    for (var i = 0; i < nbGrain; i++) {
+        var g = document.createElement('div');
+        var eclat = i % 11 === 0;
+        g.className = eclat ? 'grain eclat' : 'grain';
+        var taille = eclat ? hasard(2.5, 5) : hasard(1, 2.6);
+        g.style.width = taille.toFixed(2) + 'px';
+        g.style.height = (eclat ? taille * hasard(1.2, 2.2) : taille).toFixed(2) + 'px';
+        g.style.left = hasard(0, 100).toFixed(2) + 'vw';
+        g.style.top = eclat ? '0' : hasard(-10, 80).toFixed(2) + 'vh';
+        g.style.setProperty('--derive', hasard(-9, 9).toFixed(1) + 'vw');
+        var duree = eclat ? hasard(4, 9) : hasard(11, 26);
+        g.style.animationDuration = duree.toFixed(2) + 's';
+        // Delai negatif : la poussiere est deja en suspension au chargement.
+        g.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        poussiere.appendChild(g);
+    }
+</script>

@@ -1,0 +1,101 @@
+<!-- Jungle : spores en suspension et lucioles, pour la Terre Sauvage. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Une moiteur verte, tres discrete, qui monte du bas. Sans elle les
+       spores flottent dans le noir et rien ne dit qu'on est sous la canopee. */
+    body:after {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 42vh;
+        background: linear-gradient(to top,
+            rgba(86, 156, 84, 0.17) 0%,
+            rgba(86, 156, 84, 0) 100%);
+    }
+
+    .spore {
+        position: absolute;
+        border-radius: 50%;
+        /* Franchement vert-dore, pas creme : en pale, les spores se
+           confondaient avec le champ d'etoiles de stars.html. */
+        background: rgba(184, 226, 124, 0.9);
+        animation-name: derive;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    /* Les lucioles ne derivent pas : elles s'allument sur place, s'eteignent,
+       et se rallument ailleurs dans le cycle. */
+    .luciole {
+        position: absolute;
+        width: 3.5px;
+        height: 3.5px;
+        border-radius: 50%;
+        background: #d8ff9b;
+        box-shadow: 0 0 8px 2px rgba(180, 255, 120, 0.75);
+        animation-name: pulse;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: opacity;
+    }
+
+    @keyframes derive {
+        0%   { transform: translate(0, 0); opacity: 0; }
+        18%  { opacity: 0.75; }
+        50%  { transform: translate(var(--derive), -18vh); opacity: 0.6; }
+        100% { transform: translate(calc(var(--derive) * -1), -38vh); opacity: 0; }
+    }
+
+    @keyframes pulse {
+        0%, 70%, 100% { opacity: 0; }
+        80%           { opacity: 1; }
+        90%           { opacity: 0.25; }
+    }
+</style>
+
+<section class="canopee"></section>
+
+<script>
+    var nbSpore = 110;
+    var nbLuciole = 16;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var canopee = document.querySelector('.canopee');
+
+    for (var i = 0; i < nbSpore; i++) {
+        var s = document.createElement('div');
+        s.className = 'spore';
+        var taille = hasard(1.4, 4);
+        s.style.width = taille.toFixed(2) + 'px';
+        s.style.height = taille.toFixed(2) + 'px';
+        s.style.left = hasard(0, 100).toFixed(2) + 'vw';
+        s.style.top = hasard(10, 110).toFixed(2) + 'vh';
+        s.style.setProperty('--derive', hasard(-12, 12).toFixed(1) + 'vw');
+        var d = hasard(12, 30);
+        s.style.animationDuration = d.toFixed(2) + 's';
+        s.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        canopee.appendChild(s);
+    }
+
+    for (var j = 0; j < nbLuciole; j++) {
+        var l = document.createElement('div');
+        l.className = 'luciole';
+        l.style.left = hasard(2, 98).toFixed(2) + 'vw';
+        l.style.top = hasard(4, 96).toFixed(2) + 'vh';
+        var dl = hasard(4, 11);
+        l.style.animationDuration = dl.toFixed(2) + 's';
+        l.style.animationDelay = '-' + hasard(0, dl).toFixed(2) + 's';
+        canopee.appendChild(l);
+    }
+</script>

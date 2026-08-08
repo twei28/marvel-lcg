@@ -1,0 +1,80 @@
+<!-- Voile symbiote : l'encre gagne les bords et des filaments ondulent, pour
+     le Manhattan infeste. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Du noir sur un plateau noir ne se voit pas. Ce qui rend le symbiote
+       lisible, ce n'est pas l'encre elle-meme mais ce qu'elle FAIT : elle
+       assombrit les bords, et ses filaments portent un reflet violet pale.
+       Sans ce reflet, l'effet serait litteralement invisible. */
+    body:before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse 78% 72% at 50% 50%,
+            rgba(4, 2, 8, 0) 0%,
+            rgba(4, 2, 8, 0.45) 62%,
+            rgba(4, 2, 8, 0.92) 100%);
+        animation: gagne 11s ease-in-out infinite;
+    }
+
+    .filament {
+        position: absolute;
+        border-radius: 50%;
+        /* Corps d'encre, pointe qui accroche la lumiere. */
+        background: linear-gradient(to bottom,
+            rgba(18, 6, 28, 0) 0%,
+            rgba(18, 6, 28, 0.95) 38%,
+            rgba(163, 122, 224, 0.55) 100%);
+        animation-name: ondule;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    @keyframes gagne {
+        0%, 100% { transform: scale(1.06); opacity: 0.8; }
+        50%      { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes ondule {
+        0%   { transform: rotate(var(--angle)) translateY(0) scaleY(0.7); opacity: 0; }
+        20%  { opacity: 0.9; }
+        50%  { transform: rotate(calc(var(--angle) + 14deg)) translateY(-3vh) scaleY(1); }
+        80%  { opacity: 0.8; }
+        100% { transform: rotate(var(--angle)) translateY(0) scaleY(0.7); opacity: 0; }
+    }
+</style>
+
+<section class="infestation"></section>
+
+<script>
+    var nbFilament = 34;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var inf = document.querySelector('.infestation');
+    for (var i = 0; i < nbFilament; i++) {
+        var f = document.createElement('div');
+        f.className = 'filament';
+        f.style.width = hasard(3, 7).toFixed(1) + 'px';
+        f.style.height = hasard(60, 190).toFixed(0) + 'px';
+        // Les filaments naissent des BORDS : c'est de la que l'encre vient.
+        var bord = i % 4;
+        if (bord === 0)      { f.style.left = hasard(-2, 16).toFixed(1) + 'vw';  f.style.top = hasard(-5, 95).toFixed(1) + 'vh'; }
+        else if (bord === 1) { f.style.left = hasard(84, 102).toFixed(1) + 'vw'; f.style.top = hasard(-5, 95).toFixed(1) + 'vh'; }
+        else if (bord === 2) { f.style.left = hasard(0, 100).toFixed(1) + 'vw';  f.style.top = hasard(-8, 10).toFixed(1) + 'vh'; }
+        else                 { f.style.left = hasard(0, 100).toFixed(1) + 'vw';  f.style.top = hasard(82, 100).toFixed(1) + 'vh'; }
+        f.style.setProperty('--angle', hasard(-70, 70).toFixed(0) + 'deg');
+        var d = hasard(7, 18);
+        f.style.animationDuration = d.toFixed(2) + 's';
+        f.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        inf.appendChild(f);
+    }
+</script>

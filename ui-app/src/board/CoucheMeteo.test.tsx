@@ -117,14 +117,33 @@ describe('les familles de lieux', () => {
     ['45139', 'stars', 'Blue Area of the Moon'],
     ['21076', 'embers', 'Fireball'],
     ['90128', 'embers', 'Burning Building'],
+    ['04082', 'dust', 'Rocky Outcrop'],
+    ['04083', 'dust', 'Abandoned Facility'],
+    ['21079', 'dust', 'Rubblestorm'],
+    ['24063', 'neon', 'Warehouse District'],
+    ['27065', 'neon', 'City Streets'],
+    ['31037', 'neon', 'Surge in Crime'],
+    ['27117b', 'symbiote', 'Lower Manhattan'],
+    ['27118b', 'symbiote', 'Midtown Manhattan'],
+    ['27119b', 'symbiote', 'Upper Manhattan'],
+    ['45127', 'jungle', 'The Savage Land'],
+    ['45133', 'jungle', 'Genosha'],
+    ['27116b', 'wind', 'Skies Over New York'],
   ]
 
   it.each(attendus)('%s (%s) : %s', (id, effet) => {
     expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe(effet)
   })
 
-  it('Rubblestorm reste sans effet : ce sont des gravats, pas du feu', () => {
-    expect(meteoDuMonde(monde({}, { area_environment: [carte('21079')] }))).toBe('')
+  it('Rubblestorm est de la poussiere, pas du feu', () => {
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('21079')] }))).toBe('dust')
+  })
+
+  it('une carte sans ambiance prevue ne declenche rien', () => {
+    // 21077 Manipulation et 21078 Pacification sont les deux autres sorts du
+    // meme cycle que Rubblestorm : rien ne les rattache a un lieu.
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('21077')] }))).toBe('')
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('21078')] }))).toBe('')
   })
 })
 

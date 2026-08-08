@@ -1,0 +1,79 @@
+<!-- Neons urbains : des halos colores qui pulsent, pour la rue la nuit. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    .halo {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        animation-name: respire;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: opacity;
+    }
+
+    /* Un neon sur trois est defectueux : il grelotte au lieu de respirer.
+       C'est ce defaut qui fait la rue mal famee plutot que la vitrine. */
+    .halo.casse {
+        animation-name: grelotte;
+        animation-timing-function: steps(1, end);
+    }
+
+    @keyframes respire {
+        0%, 100% { opacity: var(--bas); }
+        50%      { opacity: var(--haut); }
+    }
+
+    @keyframes grelotte {
+        0%, 61%, 66%, 74%, 100% { opacity: var(--haut); }
+        62%, 68%, 71%           { opacity: 0.05; }
+    }
+</style>
+
+<section class="rue"></section>
+
+<script>
+    // Les couleurs d'enseigne : magenta, cyan, ambre, vert acide, rouge.
+    var TEINTES = [
+        '255, 61, 160',
+        '58, 224, 255',
+        '255, 176, 46',
+        '150, 255, 106',
+        '255, 74, 74'
+    ];
+
+    var nbHalo = 11;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var rue = document.querySelector('.rue');
+    for (var i = 0; i < nbHalo; i++) {
+        var h = document.createElement('div');
+        var casse = i % 3 === 0;
+        h.className = casse ? 'halo casse' : 'halo';
+        var teinte = TEINTES[i % TEINTES.length];
+        h.style.background = 'radial-gradient(circle at center,'
+            + ' rgba(' + teinte + ', 0.55) 0%,'
+            + ' rgba(' + teinte + ', 0.22) 45%,'
+            + ' rgba(' + teinte + ', 0) 75%)';
+        h.style.width = hasard(18, 40) + 'vw';
+        h.style.height = hasard(14, 34) + 'vh';
+        // Les enseignes vivent sur les bords, pas au milieu de la table : on
+        // les repousse vers la peripherie pour ne pas noyer le centre du jeu.
+        h.style.left = (i % 2 ? hasard(-8, 22) : hasard(62, 92)).toFixed(1) + 'vw';
+        h.style.top = hasard(-10, 88).toFixed(1) + 'vh';
+        var bas = hasard(0.2, 0.45);
+        h.style.setProperty('--bas', bas.toFixed(2));
+        h.style.setProperty('--haut', hasard(bas + 0.3, 1).toFixed(2));
+        var d = hasard(4, 12);
+        h.style.animationDuration = d.toFixed(2) + 's';
+        h.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        rue.appendChild(h);
+    }
+</script>

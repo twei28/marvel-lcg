@@ -3295,8 +3295,18 @@
   .couche-meteo--rain,
   .couche-meteo--storm,
   .couche-meteo--stars,
-  .couche-meteo--embers {
+  .couche-meteo--embers,
+  .couche-meteo--dust,
+  .couche-meteo--jungle,
+  .couche-meteo--wind {
     opacity: 0.9;
+  }
+
+  /* Les neons sont des aplats colores, comme la brume, mais la couleur se
+     dilue plus vite que le blanc sur un fond sombre : a 0,55 les teintes
+     viraient au gris. */
+  .couche-meteo--neon {
+    opacity: 0.75;
   }
 
   /* La brume tient un etage intermediaire : a 0,55 elle ne voilait que 17 %

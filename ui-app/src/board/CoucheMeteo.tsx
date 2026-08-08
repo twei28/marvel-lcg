@@ -16,7 +16,10 @@ import { useMemo } from 'react'
 import type { World, WorldCard } from './world'
 
 /** Les effets qu'on sait afficher, pour le sélecteur d'aperçu. */
-export const EFFETS_METEO = ['rain', 'storm', 'snow', 'fog', 'stars', 'embers'] as const
+export const EFFETS_METEO = [
+  'rain', 'storm', 'snow', 'fog', 'stars', 'embers',
+  'dust', 'neon', 'symbiote', 'jungle', 'wind',
+] as const
 export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
 /** Le nom affiché de chaque effet. Une table, et non une suite de ternaires :
@@ -28,6 +31,11 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   fog: 'Brume',
   stars: 'Étoiles',
   embers: 'Braises',
+  dust: 'Poussière',
+  neon: 'Néons',
+  symbiote: 'Symbiote',
+  jungle: 'Jungle',
+  wind: 'Vent',
 }
 
 /** La table est typée sur les effets connus : une faute de frappe ici
@@ -59,8 +67,23 @@ const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // Feu
   '21076': 'embers', // Fireball, The Mad Titan's Shadow
   '90128': 'embers', // Burning Building, Rainy
-  // 21079 Rubblestorm reste volontairement de cote : ce sont des gravats qui
-  // volent, pas du feu, et l'effet qui lui irait n'existe pas encore.
+  // Pierre, metal et gravats
+  '04082': 'dust', // Rocky Outcrop, Tourist Trap
+  '04083': 'dust', // Abandoned Facility, Tourist Trap
+  '21079': 'dust', // Rubblestorm, The Mad Titan's Shadow
+  // La rue la nuit
+  '24063': 'neon', // Warehouse District, The Hood
+  '27065': 'neon', // City Streets, Sinister Motives
+  '31037': 'neon', // Surge in Crime, SP//dr
+  // Manhattan infeste
+  '27117b': 'symbiote', // Lower Manhattan
+  '27118b': 'symbiote', // Midtown Manhattan
+  '27119b': 'symbiote', // Upper Manhattan
+  // Vegetation
+  '45127': 'jungle', // The Savage Land, Age of Apocalypse
+  '45133': 'jungle', // Genosha, Age of Apocalypse
+  // Ciel
+  '27116b': 'wind', // Skies Over New York, Sinister Motives
 }
 
 /** Les zones où une carte est réellement EN JEU, et elles seules. */
