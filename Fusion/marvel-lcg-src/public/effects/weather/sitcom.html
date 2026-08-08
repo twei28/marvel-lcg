@@ -15,11 +15,15 @@
     .halo {
         position: fixed;
         inset: 0;
-        background: radial-gradient(ellipse 76% 72% at 50% 50%,
-            rgba(255, 104, 176, 0) 52%,
-            rgba(255, 104, 176, 0.16) 74%,
-            rgba(255, 88, 166, 0.38) 90%,
-            rgba(255, 74, 158, 0.58) 100%);
+        /* Le rose commence plus tot et monte plus haut : le halo doit se
+           voir comme une couleur, pas comme un simple assombrissement teinte
+           des coins. Le centre reste franc, c'est la que se jouent les
+           cartes. */
+        background: radial-gradient(ellipse 72% 68% at 50% 50%,
+            rgba(255, 96, 178, 0) 40%,
+            rgba(255, 92, 176, 0.30) 62%,
+            rgba(255, 72, 166, 0.60) 82%,
+            rgba(255, 52, 158, 0.85) 100%);
         animation: bat 6s ease-in-out infinite;
     }
 
@@ -29,9 +33,9 @@
         inset: 0;
         background:
             radial-gradient(ellipse 70% 80% at 18% -14%,
-                rgba(255, 224, 168, 0.30) 0%, rgba(255, 224, 168, 0) 70%),
+                rgba(255, 224, 168, 0.20) 0%, rgba(255, 224, 168, 0) 70%),
             radial-gradient(ellipse 70% 80% at 82% -14%,
-                rgba(255, 230, 180, 0.28) 0%, rgba(255, 230, 180, 0) 70%);
+                rgba(255, 230, 180, 0.19) 0%, rgba(255, 230, 180, 0) 70%);
         animation: chauffe 7s ease-in-out infinite;
     }
 
