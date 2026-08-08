@@ -8,7 +8,10 @@ import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { createElement } from 'react'
 import type { World } from './world'
-import { CoucheMeteo, meteoDuMonde } from './CoucheMeteo'
+import { existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { CoucheMeteo, EFFETS_METEO, LIBELLE_EFFET, meteoDuMonde } from './CoucheMeteo'
 
 const carte = (cardId: string) => ({
   id: 1,
@@ -91,5 +94,53 @@ describe('CoucheMeteo, apercu et interrupteur', () => {
     const m = monde({ supports: [carte('36005')] })
     const { container } = render(createElement(CoucheMeteo, { world: m, active: true }))
     expect(src(container)).toBe('/effects/weather/snow.html')
+  })
+})
+
+// Les familles de lieux ajoutees le 8/8/2026. Une carte oubliee ou rangee dans
+// la mauvaise famille ne casse rien : elle n'affiche simplement rien, ou la
+// mauvaise ambiance. Personne ne le verrait sans ces cas.
+describe('les familles de lieux', () => {
+  const attendus: Array<[string, string, string]> = [
+    ['04080', 'fog', 'Dense Forest'],
+    ['16085a', 'fog', 'Library Labyrinth'],
+    ['24060', 'fog', 'Back-Alley Enclave'],
+    ['24061', 'fog', 'Secret Lair'],
+    ['24062', 'fog', 'Sewer Tunnels'],
+    ['27077a', 'fog', 'Bell Tower silencieux'],
+    ['27077b', 'fog', 'Bell Tower qui sonne'],
+    ['16063', 'stars', 'Badoon Ship'],
+    ['16085b', 'stars', 'Museum Ship'],
+    ['16093', 'stars', "Nebula's Ship"],
+    ['16108', 'stars', 'Kree Command Ship'],
+    ['16143', 'stars', 'Rogue Vessel'],
+    ['45139', 'stars', 'Blue Area of the Moon'],
+    ['21076', 'embers', 'Fireball'],
+    ['90128', 'embers', 'Burning Building'],
+  ]
+
+  it.each(attendus)('%s (%s) : %s', (id, effet) => {
+    expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe(effet)
+  })
+
+  it('Rubblestorm reste sans effet : ce sont des gravats, pas du feu', () => {
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('21079')] }))).toBe('')
+  })
+})
+
+// Le piege du 8/8/2026 : un effet peut etre parfaitement cable cote React et
+// n'avoir aucun fichier derriere. L'iframe se cree, la page reste vide, et
+// aucun test ne bronche. Le compilateur, lui, ne sait rien des fichiers.
+describe('chaque effet a bien son fichier', () => {
+  it.each(EFFETS_METEO)('%s.html existe', (effet) => {
+    // Chemin construit a la main : `new URL(..., import.meta.url)` serait
+    // intercepte par Vite, qui tenterait d'importer le HTML comme un asset.
+    const ici = dirname(fileURLToPath(import.meta.url))
+    const chemin = join(ici, '../../../Fusion/marvel-lcg-src/public/effects/weather', `${effet}.html`)
+    expect(existsSync(chemin)).toBe(true)
+  })
+
+  it('chaque effet a un nom affichable', () => {
+    for (const effet of EFFETS_METEO) expect(LIBELLE_EFFET[effet]).toBeTruthy()
   })
 })

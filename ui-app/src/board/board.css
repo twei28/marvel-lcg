@@ -3284,14 +3284,18 @@
     opacity: 0.55;
   }
 
-  /* L'opacite se regle PAR EFFET. A 0,55, du blanc pur plafonne vers
-     rgb(145,146,150) sur le fond du plateau : la pluie, faite de traits de
-     2 px, y etait invisible a l'oeil alors qu'elle tombait bien (mesure du
-     8/8/2026 : 1,7 % des pixels touches, le plus clair a 130). La neige et
-     l'orage a le meme probleme : ses eclairs sont des traits fins. La neige,
-     elle, couvre de larges surfaces et reste lisible a 0,55. */
+  /* L'opacite se regle PAR EFFET, et le depart se joue sur la FINESSE de ce
+     que l'effet dessine. A 0,55, du blanc pur plafonne vers rgb(145,146,150)
+     sur le fond du plateau : tout ce qui est fait de points ou de traits de
+     quelques pixels s'y noie. La pluie y etait invisible alors qu'elle
+     tombait bien (mesure du 8/8/2026 : 1,7 % des pixels touches, le plus
+     clair a 130) ; il en va de meme des eclairs de l'orage, des etoiles et
+     des braises. La neige et la brume, elles, couvrent de larges surfaces et
+     restent lisibles a 0,55. */
   .couche-meteo--rain,
-  .couche-meteo--storm {
+  .couche-meteo--storm,
+  .couche-meteo--stars,
+  .couche-meteo--embers {
     opacity: 0.9;
   }
 

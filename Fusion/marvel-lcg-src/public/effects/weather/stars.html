@@ -1,0 +1,62 @@
+<!-- Etoiles : un champ d'etoiles qui scintille, pour les vaisseaux et l'espace. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    .etoile {
+        position: absolute;
+        border-radius: 50%;
+        background: #fff;
+        animation-name: scintille;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+        will-change: opacity;
+    }
+
+    /* Les plus grosses recoivent un halo. Sans lui elles restent des points
+       de 2 px et le ciel parait plat. */
+    .etoile.vive {
+        box-shadow: 0 0 7px 1px rgba(255, 255, 255, 0.75);
+    }
+
+    @keyframes scintille {
+        0%, 100% { opacity: var(--bas); }
+        50%      { opacity: var(--haut); }
+    }
+</style>
+
+<section class="ciel"></section>
+
+<script>
+    var nbEtoile = 180;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var ciel = document.querySelector('.ciel');
+    for (var i = 0; i < nbEtoile; i++) {
+        var e = document.createElement('div');
+        // Une sur huit est une etoile vive, avec halo et un peu plus grosse.
+        var vive = i % 8 === 0;
+        e.className = vive ? 'etoile vive' : 'etoile';
+        var taille = vive ? hasard(2.2, 3.4) : hasard(1, 2.1);
+        e.style.width = taille.toFixed(2) + 'px';
+        e.style.height = taille.toFixed(2) + 'px';
+        e.style.left = hasard(0, 100).toFixed(2) + 'vw';
+        e.style.top = hasard(0, 100).toFixed(2) + 'vh';
+        // Chaque etoile respire entre deux opacites qui lui sont propres :
+        // un scintillement identique partout se voit tout de suite comme un
+        // clignotement mecanique.
+        var bas = hasard(0.15, 0.5);
+        e.style.setProperty('--bas', bas.toFixed(2));
+        e.style.setProperty('--haut', hasard(bas + 0.3, 1).toFixed(2));
+        var duree = hasard(2.4, 7.5);
+        e.style.animationDuration = duree.toFixed(2) + 's';
+        e.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        ciel.appendChild(e);
+    }
+</script>

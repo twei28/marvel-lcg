@@ -1,0 +1,63 @@
+<!-- Brume : des bancs flous qui derivent lateralement, pour les lieux clos,
+     souterrains ou boises. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    .banc {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center,
+            rgba(206, 220, 236, 0.34) 0%,
+            rgba(206, 220, 236, 0.16) 45%,
+            rgba(206, 220, 236, 0) 72%);
+        filter: blur(26px);
+        will-change: transform;
+    }
+
+    @keyframes derive-droite {
+        from { transform: translateX(-60vw); }
+        to   { transform: translateX(160vw); }
+    }
+
+    @keyframes derive-gauche {
+        from { transform: translateX(160vw); }
+        to   { transform: translateX(-60vw); }
+    }
+</style>
+
+<section class="brume"></section>
+
+<script>
+    // Peu de bancs, mais larges et flous : c'est ce qui fait une brume plutot
+    // qu'un nuage de taches. Chacun coute un flou, on reste donc sobre.
+    var nbBanc = 10;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var brume = document.querySelector('.brume');
+    for (var i = 0; i < nbBanc; i++) {
+        var banc = document.createElement('div');
+        banc.className = 'banc';
+        var largeur = hasard(28, 62);
+        banc.style.width = largeur + 'vw';
+        banc.style.height = hasard(10, 24) + 'vh';
+        banc.style.top = hasard(-8, 92) + 'vh';
+        banc.style.opacity = hasard(0.45, 1).toFixed(2);
+        // Les bancs les plus larges derivent le plus lentement : c'est ce
+        // decalage qui donne la profondeur. Un banc proche passe vite, un
+        // banc lointain traine.
+        var duree = hasard(40, 70) + largeur;
+        banc.style.animation = (i % 3 === 0 ? 'derive-gauche' : 'derive-droite')
+            + ' ' + duree.toFixed(1) + 's linear infinite';
+        // Delai negatif : au chargement la brume est deja en place, elle
+        // n'entre pas par le bord sous les yeux du joueur.
+        banc.style.animationDelay = '-' + hasard(0, duree).toFixed(1) + 's';
+        brume.appendChild(banc);
+    }
+</script>

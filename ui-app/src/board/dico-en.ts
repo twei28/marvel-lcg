@@ -469,6 +469,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Pluie': 'Rain',
   'Orage': 'Storm',
   'Neige': 'Snow',
+  'Brume': 'Fog',
+  'Étoiles': 'Stars',
+  'Braises': 'Embers',
   'Météo de Storm affichée : cliquer pour la couper': 'Storm weather shown: click to turn it off',
   'Météo coupée : cliquer pour afficher pluie/orage/neige': 'Weather off: click to show rain/storm/snow',
   'Musique': 'Music',
@@ -491,8 +494,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Déplacements de cartes, secousse d’impact, halo de statut':
     'Card movement, impact shake, status halo',
   'Effets sonores du moteur': 'Engine sound effects',
-  'Pluie, orage ou neige selon les cartes en jeu':
-    'Rain, storm or snow while one of Storm\'s weather supports is in play',
+  'Ambiance du lieu ou de la météo, selon les cartes en jeu':
+    'Location or weather ambience, driven by the cards in play',
   'Présentation au centre des cartes révélées par la Rencontre':
     'Center presentation of cards revealed from the encounter deck',
   'Raccourcis : E = fin du tour, U = annuler': 'Shortcuts: E = end turn, U = undo',

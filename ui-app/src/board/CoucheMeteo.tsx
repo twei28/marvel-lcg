@@ -15,7 +15,24 @@
 import { useMemo } from 'react'
 import type { World, WorldCard } from './world'
 
-const METEO_PAR_CARTE: Record<string, string> = {
+/** Les effets qu'on sait afficher, pour le sélecteur d'aperçu. */
+export const EFFETS_METEO = ['rain', 'storm', 'snow', 'fog', 'stars', 'embers'] as const
+export type EffetMeteo = (typeof EFFETS_METEO)[number]
+
+/** Le nom affiché de chaque effet. Une table, et non une suite de ternaires :
+ *  le sélecteur en compte six et en comptera davantage. */
+export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
+  rain: 'Pluie',
+  storm: 'Orage',
+  snow: 'Neige',
+  fog: 'Brume',
+  stars: 'Étoiles',
+  embers: 'Braises',
+}
+
+/** La table est typée sur les effets connus : une faute de frappe ici
+ *  demanderait un fichier HTML inexistant, et l'écran resterait vide. */
+const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // Storm — deck météo. 36002 Clear Skies n'a volontairement aucun visuel.
   '36003': 'rain', // Hurricane
   '36004': 'storm', // Thunderstorm
@@ -24,6 +41,26 @@ const METEO_PAR_CARTE: Record<string, string> = {
   '04081': 'snow', // Snowy Hillside, Absorbing Man
   '29039': 'storm', // Air Static, Zzzax
   '50131a': 'storm', // Justice, Like Lightning, Thunderbolts
+  // Lieux clos, souterrains ou boises
+  '04080': 'fog', // Dense Forest, Tourist Trap
+  '16085a': 'fog', // Library Labyrinth, Galaxy's Most Wanted
+  '24060': 'fog', // Back-Alley Enclave, The Hood
+  '24061': 'fog', // Secret Lair, The Hood
+  '24062': 'fog', // Sewer Tunnels, The Hood
+  '27077a': 'fog', // Bell Tower silencieux, Sinister Motives
+  '27077b': 'fog', // Bell Tower qui sonne, Sinister Motives
+  // Vaisseaux et espace
+  '16063': 'stars', // Badoon Ship
+  '16085b': 'stars', // Museum Ship
+  '16093': 'stars', // Nebula's Ship
+  '16108': 'stars', // Kree Command Ship
+  '16143': 'stars', // Rogue Vessel
+  '45139': 'stars', // Blue Area of the Moon, Age of Apocalypse
+  // Feu
+  '21076': 'embers', // Fireball, The Mad Titan's Shadow
+  '90128': 'embers', // Burning Building, Rainy
+  // 21079 Rubblestorm reste volontairement de cote : ce sont des gravats qui
+  // volent, pas du feu, et l'effet qui lui irait n'existe pas encore.
 }
 
 /** Les zones où une carte est réellement EN JEU, et elles seules. */
@@ -31,10 +68,6 @@ const ZONES_JOUEUR = ['supports', 'environment_area'] as const
 const ZONES_MONDE = ['area_environment'] as const
 
 export const CLE_METEO = 'marvel-board-meteo'
-
-/** Les effets qu'on sait afficher, pour le sélecteur d'aperçu. */
-export const EFFETS_METEO = ['rain', 'storm', 'snow'] as const
-export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
 export function lireMeteoActive(): boolean {
   try {

@@ -1,0 +1,72 @@
+<!-- Braises : des escarbilles qui montent, pour les incendies. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* La lueur du foyer, en bas. Ce sont les braises qui portent l'effet,
+       mais sans cette lueur elles semblent monter de nulle part. */
+    body:after {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 34vh;
+        background: linear-gradient(to top,
+            rgba(255, 108, 28, 0.14) 0%,
+            rgba(255, 108, 28, 0) 100%);
+    }
+
+    .braise {
+        position: absolute;
+        bottom: -4vh;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 50%,
+            #fff3c4 0%,
+            #ffb733 35%,
+            #ff6a1a 70%,
+            rgba(255, 90, 20, 0) 100%);
+        animation-name: monte;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    @keyframes monte {
+        0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+        12%  { opacity: 1; }
+        70%  { opacity: 0.85; }
+        /* L'escarbille refroidit en montant : elle retrecit et s'eteint. */
+        100% { transform: translate(var(--derive), -108vh) scale(0.3); opacity: 0; }
+    }
+</style>
+
+<section class="foyer"></section>
+
+<script>
+    var nbBraise = 90;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var foyer = document.querySelector('.foyer');
+    for (var i = 0; i < nbBraise; i++) {
+        var b = document.createElement('div');
+        b.className = 'braise';
+        var taille = hasard(2, 5.5);
+        b.style.width = taille.toFixed(2) + 'px';
+        b.style.height = taille.toFixed(2) + 'px';
+        b.style.left = hasard(0, 100).toFixed(2) + 'vw';
+        // Chaque escarbille part de travers : une montee strictement verticale
+        // ressemble a une pluie inversee, pas a un feu.
+        b.style.setProperty('--derive', hasard(-16, 16).toFixed(1) + 'vw');
+        var duree = hasard(5, 13);
+        b.style.animationDuration = duree.toFixed(2) + 's';
+        b.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        foyer.appendChild(b);
+    }
+</script>

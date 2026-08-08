@@ -59,7 +59,8 @@ import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJe
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
-import { CoucheMeteo, CLE_METEO, EFFETS_METEO, lireMeteoActive } from './board/CoucheMeteo'
+import { CoucheMeteo, CLE_METEO, EFFETS_METEO, LIBELLE_EFFET, lireMeteoActive } from './board/CoucheMeteo'
+import type { EffetMeteo } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -1213,7 +1214,7 @@ function PanneauOptions({
           />
           <LigneOption
             libelle={t('Météo')}
-            detail={t('Pluie, orage ou neige selon les cartes en jeu')}
+            detail={t('Ambiance du lieu ou de la météo, selon les cartes en jeu')}
             actif={meteo}
             onBascule={basculerMeteo}
           />
@@ -1225,7 +1226,7 @@ function PanneauOptions({
           >
             <span className="ligne-option-libelle">{t('Aperçu météo')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
-              {apercuMeteo === '' ? t('Aucun') : apercuMeteo === 'rain' ? t('Pluie') : apercuMeteo === 'storm' ? t('Orage') : t('Neige')}
+              {apercuMeteo === '' ? t('Aucun') : t(LIBELLE_EFFET[apercuMeteo as EffetMeteo])}
             </span>
           </button>
           <button
