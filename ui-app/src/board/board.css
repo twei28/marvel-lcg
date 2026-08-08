@@ -3299,6 +3299,14 @@
     opacity: 0.9;
   }
 
+  /* La brume tient un etage intermediaire : a 0,55 elle ne voilait que 17 %
+     de la surface et son point le plus clair montait a peine a 40, donc on
+     ne la voyait pas ; a 0,9 elle noierait le plateau, car contrairement aux
+     autres effets elle couvre en aplat et non en points. */
+  .couche-meteo--fog {
+    opacity: 0.8;
+  }
+
   .plateau {
     position: relative;
     z-index: 1;

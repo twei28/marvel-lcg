@@ -13,9 +13,9 @@
         position: absolute;
         border-radius: 50%;
         background: radial-gradient(ellipse at center,
-            rgba(206, 220, 236, 0.34) 0%,
-            rgba(206, 220, 236, 0.16) 45%,
-            rgba(206, 220, 236, 0) 72%);
+            rgba(206, 220, 236, 0.46) 0%,
+            rgba(206, 220, 236, 0.26) 45%,
+            rgba(206, 220, 236, 0) 82%);
         filter: blur(26px);
         will-change: transform;
     }
@@ -36,7 +36,7 @@
 <script>
     // Peu de bancs, mais larges et flous : c'est ce qui fait une brume plutot
     // qu'un nuage de taches. Chacun coute un flou, on reste donc sobre.
-    var nbBanc = 10;
+    var nbBanc = 14;
 
     function hasard(min, max) { return Math.random() * (max - min) + min; }
 
@@ -44,9 +44,9 @@
     for (var i = 0; i < nbBanc; i++) {
         var banc = document.createElement('div');
         banc.className = 'banc';
-        var largeur = hasard(28, 62);
+        var largeur = hasard(34, 74);
         banc.style.width = largeur + 'vw';
-        banc.style.height = hasard(10, 24) + 'vh';
+        banc.style.height = hasard(14, 32) + 'vh';
         banc.style.top = hasard(-8, 92) + 'vh';
         banc.style.opacity = hasard(0.45, 1).toFixed(2);
         // Les bancs les plus larges derivent le plus lentement : c'est ce
