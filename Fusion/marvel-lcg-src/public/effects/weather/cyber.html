@@ -1,5 +1,5 @@
-<!-- Cyber : grille en fuite et chute de code, pour le decor ou les ennemis
-     sont des PROGRAMMES nommes Magneto 2.6. -->
+<!-- Cyber : la pluie de caracteres, pour le decor ou les ennemis sont des
+     PROGRAMMES nommes Magneto 2.6. -->
 <style>
     /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
        declare color-scheme: dark. Sans ces deux lignes, la couche pose une
@@ -7,74 +7,81 @@
     html { color-scheme: dark; }
     html, body { background: transparent; }
 
-    body { margin: 0; height: 100vh; overflow: hidden; perspective: 320px; }
+    body { margin: 0; height: 100vh; overflow: hidden; }
 
-    /* Le sol en fuite. La perspective est portee par le body, la grille
-       n'est qu'un plan couche : c'est ce qui lui donne l'horizon. */
-    .sol {
+    .colonne {
         position: absolute;
-        left: -60vw;
-        right: -60vw;
-        bottom: -30vh;
-        height: 120vh;
-        transform: rotateX(74deg);
-        transform-origin: bottom center;
-        background:
-            repeating-linear-gradient(to right,
-                rgba(64, 232, 226, 0.42) 0 1px, rgba(0, 0, 0, 0) 1px 62px),
-            repeating-linear-gradient(to bottom,
-                rgba(64, 232, 226, 0.42) 0 1px, rgba(0, 0, 0, 0) 1px 62px);
-        animation: avance 2.6s linear infinite;
-    }
-
-    /* Le code qui tombe : des traits courts et nets, pas un degrade. Une
-       colonne de donnees clignote par blocs, elle ne coule pas. */
-    .code {
-        position: absolute;
-        width: 2px;
-        background: linear-gradient(to bottom,
-            rgba(120, 255, 210, 0) 0%,
-            rgba(120, 255, 210, 0.85) 60%,
-            rgba(220, 255, 240, 1) 100%);
-        animation-name: chute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "MS Gothic", "Yu Gothic", monospace;
+        font-size: 17px;
+        line-height: 1.06;
+        color: rgba(64, 226, 120, 0.85);
+        /* La colonne s'efface vers le HAUT : la trainee doit mourir derriere
+           la tete, sinon on voit une bande de texte qui glisse. */
+        -webkit-mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 25%, rgba(0, 0, 0, 1) 100%);
+        mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 25%, rgba(0, 0, 0, 1) 100%);
+        animation-name: descend;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
+        will-change: transform;
     }
 
-    @keyframes avance {
-        from { background-position: 0 0, 0 0; }
-        to   { background-position: 0 0, 0 62px; }
+    /* Le dernier caractere est la TETE de la colonne : presque blanc et
+       auréolé. C'est lui qu'on suit des yeux, le reste n'est que sa trace. */
+    .colonne span:last-child {
+        color: #dcffe8;
+        text-shadow: 0 0 8px rgba(150, 255, 190, 0.9);
     }
 
-    @keyframes chute {
-        0%   { transform: translateY(-40vh); opacity: 0; }
-        10%  { opacity: 1; }
-        90%  { opacity: 1; }
-        100% { transform: translateY(115vh); opacity: 0; }
+    @keyframes descend {
+        from { transform: translateY(-100%); }
+        to   { transform: translateY(100vh); }
     }
 </style>
 
-<!-- Le sol est un enfant DIRECT du body : la perspective declaree sur le body
-     ne s'applique qu'a ses enfants directs, et depuis la section il restait
-     desesperement plat. -->
-<div class="sol"></div>
-<section class="reseau"></section>
+<section class="pluie"></section>
 
 <script>
-    var nbCode = 70;
+    // Katakana, chiffres et quelques signes : l'alphabet de la pluie.
+    var SIGNES = 'ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789:.=*+-<>';
 
     function hasard(min, max) { return Math.random() * (max - min) + min; }
+    function signe() { return SIGNES[Math.floor(Math.random() * SIGNES.length)]; }
 
-    var reseau = document.querySelector('.reseau');
-    for (var i = 0; i < nbCode; i++) {
-        var c = document.createElement('div');
-        c.className = 'code';
-        c.style.height = hasard(30, 130).toFixed(0) + 'px';
-        c.style.left = hasard(0, 100).toFixed(2) + 'vw';
-        c.style.opacity = hasard(0.35, 1).toFixed(2);
-        var d = hasard(1.8, 5.5);
-        c.style.animationDuration = d.toFixed(2) + 's';
-        c.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
-        reseau.appendChild(c);
+    var pluie = document.querySelector('.pluie');
+    var largeurColonne = 18;
+    var nbColonne = Math.ceil(window.innerWidth / largeurColonne);
+    var tous = [];
+
+    for (var i = 0; i < nbColonne; i++) {
+        var col = document.createElement('div');
+        col.className = 'colonne';
+        col.style.left = (i * largeurColonne) + 'px';
+        col.style.opacity = hasard(0.35, 1).toFixed(2);
+        var longueur = Math.round(hasard(8, 26));
+        for (var j = 0; j < longueur; j++) {
+            var s = document.createElement('span');
+            s.textContent = signe();
+            col.appendChild(s);
+            tous.push(s);
+        }
+        var duree = hasard(4, 14);
+        col.style.animationDuration = duree.toFixed(2) + 's';
+        col.style.animationDelay = '-' + hasard(0, duree).toFixed(2) + 's';
+        pluie.appendChild(col);
     }
+
+    // Les caracteres changent en cours de chute. On n'en remue qu'une poignee
+    // a la fois : tout redessiner a chaque image couterait cher pour un
+    // resultat qu'on ne verrait pas mieux.
+    setInterval(function () {
+        for (var k = 0; k < 14; k++) {
+            tous[Math.floor(Math.random() * tous.length)].textContent = signe();
+        }
+    }, 110);
 </script>

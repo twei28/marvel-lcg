@@ -19,7 +19,7 @@ import type { World, WorldCard } from './world'
 export const EFFETS_METEO = [
   'rain', 'storm', 'snow', 'fog', 'stars', 'embers',
   'dust', 'neon', 'jungle',
-  'noir', 'horror', 'cyber',
+  'noir', 'horror', 'cyber', 'sitcom', 'sepia',
 ] as const
 export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
@@ -38,6 +38,8 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   noir: 'Polar',
   horror: 'Horreur',
   cyber: 'Cyber',
+  sitcom: 'Sitcom',
+  sepia: 'Sépia',
 }
 
 /** L'apercu a deux etats en plus des effets, et ils ne disent pas la meme
@@ -116,19 +118,17 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   '39041': 'embers', // A Game of Mojo's, fantasy : le souffle du Dragon
   '39047': 'horror', // The Mojo Files, vampires et loups-garous
   '39053': 'cyber', // Mojo Runner, ennemis PROGRAMME
-  '39066': 'dust', // Wild Wild Mojo, western
+  '39060': 'sitcom', // Mojo in the Middle, comedie familiale
+  '39066': 'sepia', // Wild Wild Mojo, western
 
   // Sans ambiance, par choix : les trois Manhattan infestes (27117b, 27118b,
   // 27119b) et Skies Over New York (27116b). Leurs effets ont ete ecrits puis
   // retires, ils ne rendaient pas ce qu'ils devaient rendre.
   //
-  // Sans ambiance egalement : 39060 Mojo in the Middle, la sitcom. Sa marque
-  // est une lumiere plate, vive et sans atmosphere, soit precisement ce
-  // qu'une couche posee sur un plateau sombre ne sait pas exprimer ; deux
-  // essais n'ont donne qu'un voile chaud informe. Et la Roue des genres
-  // (39026a/b) comme les faces de foule (39003a/b, 39004a/b) restent muettes
-  // a dessein : elles sont en jeu EN MEME TEMPS que le decor, et lui
-  // disputeraient l'affichage puisque la couche ne montre qu'un effet.
+  // Sans ambiance egalement : la Roue des genres (39026a/b) et les faces de
+  // foule (39003a/b, 39004a/b) restent muettes a dessein, car elles sont en
+  // jeu EN MEME TEMPS que le decor et lui disputeraient l'affichage puisque
+  // la couche ne montre qu'un effet.
 }
 
 /** Les zones où une carte est réellement EN JEU, et elles seules. */

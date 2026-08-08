@@ -479,6 +479,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Polar': 'Noir',
   'Horreur': 'Horror',
   'Cyber': 'Cyber',
+  'Sitcom': 'Sitcom',
+  'Sépia': 'Sepia',
   'Météo de Storm affichée : cliquer pour la couper': 'Storm weather shown: click to turn it off',
   'Météo coupée : cliquer pour afficher pluie/orage/neige': 'Weather off: click to show rain/storm/snow',
   'Musique': 'Music',

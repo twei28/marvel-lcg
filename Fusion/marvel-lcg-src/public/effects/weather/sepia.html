@@ -1,0 +1,116 @@
+<!-- Sepia : la vieille pellicule, pour le western du Mojoverse. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Une iframe ne peut pas desaturer le plateau qui est DESSOUS : il n'y a
+       pas de filtre qui traverse. Le sepia se fabrique donc par addition,
+       une nappe brune et un vignettage, pas par un filter: sepia(). */
+    .nappe {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 80% 74% at 50% 46%,
+                rgba(196, 142, 74, 0.16) 0%,
+                rgba(150, 102, 50, 0.10) 60%,
+                rgba(92, 58, 26, 0.34) 100%),
+            linear-gradient(to bottom,
+                rgba(210, 158, 88, 0.10) 0%,
+                rgba(150, 104, 52, 0.06) 100%);
+        animation: papillote 0.9s steps(1, end) infinite;
+    }
+
+    /* Les rayures de pellicule : des traits verticaux clairs qui sautent
+       d'une position a l'autre. C'est le detail qui dit « vieux film »
+       plutot que « filtre orange ». */
+    .rayure {
+        position: absolute;
+        top: -5vh;
+        height: 110vh;
+        width: 1px;
+        background: linear-gradient(to bottom,
+            rgba(255, 236, 200, 0) 0%,
+            rgba(255, 236, 200, 0.5) 20%,
+            rgba(255, 236, 200, 0.28) 70%,
+            rgba(255, 236, 200, 0) 100%);
+        animation-name: saute;
+        animation-timing-function: steps(1, end);
+        animation-iteration-count: infinite;
+    }
+
+    /* La poussiere du desert, portee par le vent. */
+    .grain {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(222, 190, 140, 0.75);
+        animation-name: souffle;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
+    /* La lampe du projecteur n'est jamais parfaitement stable. */
+    @keyframes papillote {
+        0%, 100% { opacity: 1; }
+        35%      { opacity: 0.88; }
+        70%      { opacity: 0.95; }
+    }
+
+    @keyframes saute {
+        0%   { opacity: 0; transform: translateX(0); }
+        10%  { opacity: 1; }
+        40%  { opacity: 1; transform: translateX(9px); }
+        45%  { opacity: 0; }
+        70%  { opacity: 0.8; transform: translateX(-14px); }
+        100% { opacity: 0; transform: translateX(4px); }
+    }
+
+    @keyframes souffle {
+        0%   { transform: translate(0, 0); opacity: 0; }
+        14%  { opacity: 0.85; }
+        100% { transform: translate(112vw, var(--montee)); opacity: 0; }
+    }
+</style>
+
+<section class="desert"></section>
+<div class="nappe"></div>
+
+<script>
+    var nbRayure = 7;
+    var nbGrain = 120;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var desert = document.querySelector('.desert');
+
+    for (var i = 0; i < nbRayure; i++) {
+        var r = document.createElement('div');
+        r.className = 'rayure';
+        r.style.left = hasard(2, 98).toFixed(1) + 'vw';
+        r.style.opacity = hasard(0.3, 1).toFixed(2);
+        var dr = hasard(1.6, 6);
+        r.style.animationDuration = dr.toFixed(2) + 's';
+        r.style.animationDelay = '-' + hasard(0, dr).toFixed(2) + 's';
+        desert.appendChild(r);
+    }
+
+    for (var j = 0; j < nbGrain; j++) {
+        var g = document.createElement('div');
+        g.className = 'grain';
+        var t = hasard(1.2, 3.4);
+        g.style.width = t.toFixed(2) + 'px';
+        g.style.height = t.toFixed(2) + 'px';
+        // Tout part du bord gauche : le vent du desert souffle dans un sens.
+        g.style.left = hasard(-12, 0).toFixed(1) + 'vw';
+        g.style.top = hasard(0, 100).toFixed(1) + 'vh';
+        g.style.setProperty('--montee', hasard(-14, 6).toFixed(1) + 'vh');
+        var d = hasard(6, 17);
+        g.style.animationDuration = d.toFixed(2) + 's';
+        g.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        desert.appendChild(g);
+    }
+</script>

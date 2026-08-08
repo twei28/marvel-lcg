@@ -1,0 +1,50 @@
+<!-- Sitcom : un halo rose tout autour de l'ecran et une lumiere de plateau,
+     pour le decor dont les ennemis sont des Obligations de comedie familiale. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Le halo. Une premiere version se contentait d'un voile chaud diffus :
+       on voyait que quelque chose changeait sans pouvoir dire quoi. Un halo
+       qui BORDE l'ecran a une forme, donc il se lit. */
+    .halo {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse 76% 72% at 50% 50%,
+            rgba(255, 104, 176, 0) 52%,
+            rgba(255, 104, 176, 0.16) 74%,
+            rgba(255, 88, 166, 0.38) 90%,
+            rgba(255, 74, 158, 0.58) 100%);
+        animation: bat 6s ease-in-out infinite;
+    }
+
+    /* Les projecteurs de plateau, en haut, chauds et sans ombre. */
+    .studio {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 70% 80% at 18% -14%,
+                rgba(255, 224, 168, 0.30) 0%, rgba(255, 224, 168, 0) 70%),
+            radial-gradient(ellipse 70% 80% at 82% -14%,
+                rgba(255, 230, 180, 0.28) 0%, rgba(255, 230, 180, 0) 70%);
+        animation: chauffe 7s ease-in-out infinite;
+    }
+
+    @keyframes bat {
+        0%, 100% { opacity: 0.82; }
+        50%      { opacity: 1; }
+    }
+
+    @keyframes chauffe {
+        0%, 100% { opacity: 0.85; }
+        50%      { opacity: 1; }
+    }
+</style>
+
+<div class="studio"></div>
+<div class="halo"></div>

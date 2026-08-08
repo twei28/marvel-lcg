@@ -3317,8 +3317,15 @@
   }
 
   .couche-meteo--noir,
-  .couche-meteo--horror {
+  .couche-meteo--horror,
+  .couche-meteo--sitcom {
     opacity: 0.8;
+  }
+
+  /* Le sepia doit teinter, pas suggerer : c'est le seul effet dont le sujet
+     est la couleur de l'image elle-meme. */
+  .couche-meteo--sepia {
+    opacity: 0.85;
   }
 
   /* La brume tient un etage intermediaire : a 0,55 elle ne voilait que 17 %
