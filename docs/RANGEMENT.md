@@ -117,11 +117,21 @@ rounds, fin normale. Le jeu n'a pas bougé.
 
 ### Deux écarts à connaître
 
-**`Fusion/` à la racine n'a PAS pu être déplacé.** Un processus Windows tient ce
-dossier : le renommage est refusé alors que l'écriture à l'intérieur fonctionne,
-qu'aucun processus ne l'a pour répertoire courant, et que tous les autres
-dossiers se déplacent sans problème. À refaire quand la machine est calme, avec
-la commande du paragraphe 5.
+**`Fusion/` à la racine : contenu déplacé, coquille vide restante.** Le dossier
+lui-même est verrouillé par un processus Windows, probablement une fenêtre de
+l'explorateur restée ouverte dessus. Établi par élimination : le renommer sur
+place échoue, mais renommer chacun de ses sous-dossiers réussit, aucun processus
+WSL n'y a de fichier ouvert, et `mv`, `cmd /c move` et PowerShell `Move-Item`
+échouent tous les trois de la même façon.
+
+Contournement appliqué : ses 14 entrées, 9846 fichiers et 294 Mo, ont été
+déplacées une par une dans `_archive-2026-08-08/racine-Fusion/`. Il ne reste
+qu'un dossier vide. Pour le faire disparaître, fermer les fenêtres de
+l'explorateur puis :
+
+```bash
+rmdir "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Fusion"
+```
 
 **La copie Arnaud avait été mal jugée.** Un premier examen l'avait déclarée vide
 de ses données ; c'était un chemin de test erroné. Elle est complète. Ce qui
@@ -148,8 +158,13 @@ mv .git .gitignore .planning ui-app ui-check _archive-2026-08-08/depot-racine/
 # 2. Le faux depot git, un dossier vide
 rmdir "Jeu Marvel Champions/Fusion/.git"
 
-# Note : `Fusion/` a la racine a resiste le 8/8 (verrou Windows).
-# Reessayer simplement : mv Fusion _archive-2026-08-08/racine-Fusion
+# Note : le dossier `Fusion/` lui-meme peut etre verrouille par Windows.
+# Dans ce cas, deplacer son CONTENU plutot que le dossier :
+#   mkdir -p _archive-2026-08-08/racine-Fusion
+#   for e in $(ls -1a Fusion | grep -v '^\.$\|^\.\.$'); do
+#       mv "Fusion/$e" _archive-2026-08-08/racine-Fusion/
+#   done
+#   rmdir Fusion   # une fois le verrou leve
 
 # 3. L'interieur de la copie vivante
 cd "Jeu Marvel Champions"
