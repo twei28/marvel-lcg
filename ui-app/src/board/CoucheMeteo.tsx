@@ -169,6 +169,22 @@ export function meteoDuMonde(world: World | undefined): string {
   return ''
 }
 
+/** Les effets qui EFFACENT la couleur du plateau. Sous eux, la couleur du
+ *  cadre d'une carte ne dit plus son aspect, et le plateau doit la redonner
+ *  autrement. Seul le noir et blanc en fait partie : le sepia teinte mais
+ *  laisse les teintes distinctes les unes des autres. */
+export const EFFETS_DELAVANTS: readonly string[] = ['noir']
+
+/** L'effet réellement affiché, aperçu et interrupteur compris. */
+export function effetAffiche(
+  world: World | undefined,
+  active: boolean,
+  apercu?: string
+): string {
+  if (apercu === AUCUN_EFFET) return ''
+  return apercu || (active ? meteoDuMonde(world) : '')
+}
+
 export function CoucheMeteo({
   world,
   active,
@@ -181,6 +197,7 @@ export function CoucheMeteo({
   apercu?: string
 }) {
   const duJeu = useMemo(() => meteoDuMonde(world), [world])
+  // Meme regle que effetAffiche(), gardee ici pour ne pas recalculer le monde.
   // L'apercu est une demande EXPLICITE : il passe outre l'interrupteur. Sans
   // ca, choisir un apercu alors que la meteo est coupee n'affiche rien et
   // l'outil parait casse. L'interrupteur ne commande que la meteo du jeu.

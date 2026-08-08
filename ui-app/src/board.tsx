@@ -59,7 +59,15 @@ import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJe
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
-import { CoucheMeteo, CLE_METEO, CYCLE_APERCU, libelleApercu, lireMeteoActive } from './board/CoucheMeteo'
+import {
+  CoucheMeteo,
+  CLE_METEO,
+  CYCLE_APERCU,
+  EFFETS_DELAVANTS,
+  effetAffiche,
+  libelleApercu,
+  lireMeteoActive,
+} from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { CoucheHautsFaits } from './board/CoucheHautsFaits'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -2138,6 +2146,7 @@ function PagePartie({
           interaction.option !== undefined &&
           (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment')
         }
+        delave={EFFETS_DELAVANTS.includes(effetAffiche(etat.monde, meteo, apercuMeteo))}
         onCardClick={
           etat.aNous && etat.connecte && !interaction.option
             ? (carte) => {

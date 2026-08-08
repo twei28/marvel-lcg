@@ -3321,22 +3321,55 @@
     opacity: 0.8;
   }
 
-  /* Le noir et blanc ne s'imite pas, il se FAIT : `backdrop-filter` filtre
-     tout ce qui est peint derriere l'iframe, c'est-a-dire le plateau lui-meme.
-     C'est la seule facon d'y arriver, une iframe ne pouvant rien desaturer
-     depuis l'interieur. L'opacite doit rester a 1 : en dessous, le fond
-     filtre se melangerait au fond d'origine et la couleur reviendrait a
-     moitie. Le fichier noir.html n'apporte que le grain et le vignettage. */
+  /* Le noir et blanc ne se fait PLUS ici. Il a d'abord ete obtenu par un
+     `backdrop-filter: grayscale(1)` pose sur cette iframe, ce qui marchait
+     parfaitement mais grisait TOUT ce qui se trouve dessous, y compris ce que
+     le plateau dessine lui-meme. Or la couleur du cadre est ce qui dit
+     l'aspect d'une carte, et un lisere de remplacement, dessine sous la
+     couche, aurait ete grise avec le reste. La desaturation est donc
+     desormais appliquee aux SCANS eux-memes (voir `.est-delave`), ce qui
+     laisse le lisere en couleur. Ce fichier n'apporte que le grain et le
+     vignettage. */
   .couche-meteo--noir {
     opacity: 1;
-    -webkit-backdrop-filter: grayscale(1);
-    backdrop-filter: grayscale(1);
   }
 
   /* La tempete de sable est faite de grains fins, comme la pluie. */
   .couche-meteo--sandstorm {
     opacity: 0.9;
   }
+
+  /* --- Plateau delave : le lisere d'aspect ---------------------------------
+     Sous le noir et blanc, la couleur du cadre d'une carte disparait. Or
+     c'est elle qui dit si la carte est basique, d'aspect ou de heros : sans
+     elle on ne sait plus ce qu'on a en main. On desature donc l'IMAGE seule,
+     et on rend l'information par un lisere dessine autour de la carte, hors
+     de l'image, qui reste donc en couleur.
+
+     L'aspect vient de `desc.Class` du catalogue : le moteur ne l'envoie pas
+     dans /get_world. Voir catalogue.ts. */
+  .plateau.est-delave .scan-visuel {
+    filter: grayscale(1);
+  }
+
+  /* `outline` et non `box-shadow` : les cartes portent deja des ombres pour
+     leurs halos de statut, et on ne veut pas les ecraser. */
+  .plateau.est-delave .scan-card[class*='aspect-'] {
+    outline: 4px solid var(--lisere-aspect);
+    outline-offset: -4px;
+    border-radius: inherit;
+  }
+
+  .plateau.est-delave .scan-card.aspect-aggression { --lisere-aspect: #d1382c; }
+  .plateau.est-delave .scan-card.aspect-justice { --lisere-aspect: #e6be3c; }
+  .plateau.est-delave .scan-card.aspect-leadership { --lisere-aspect: #3f86e0; }
+  .plateau.est-delave .scan-card.aspect-protection { --lisere-aspect: #34ae61; }
+  .plateau.est-delave .scan-card.aspect-pool { --lisere-aspect: #ef67b0; }
+  /* Les quatre aspects et 'Pool ont leurs couleurs officielles. Celles du
+     heros et du basique sont un CHOIX : le jeu ne leur en donne pas, il faut
+     juste qu'elles ne se confondent avec aucune des cinq autres. */
+  .plateau.est-delave .scan-card.aspect-hero { --lisere-aspect: #a878e8; }
+  .plateau.est-delave .scan-card.aspect-basic { --lisere-aspect: #aab3bd; }
 
   /* Le sepia doit teinter, pas suggerer : c'est le seul effet dont le sujet
      est la couleur de l'image elle-meme. */

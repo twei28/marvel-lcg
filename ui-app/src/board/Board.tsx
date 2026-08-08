@@ -468,6 +468,12 @@ export type BoardProps = {
   bloquerActionsPassives?: boolean
   /** Force la main a rester deployee pendant une selection/paiement. */
   mainVisibleForcee?: boolean
+  /**
+   * Un effet d'ambiance efface les couleurs (le noir et blanc). Le plateau
+   * desature alors les SCANS et rend l'aspect par un lisere colore, qui, lui,
+   * n'est pas desature parce qu'il est dessine hors de l'image.
+   */
+  delave?: boolean
 }
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
@@ -485,6 +491,7 @@ export function Board({
   onCardClick,
   bloquerActionsPassives = false,
   mainVisibleForcee = false,
+  delave = false,
   heroActifId,
   journal,
 }: BoardProps) {
@@ -580,7 +587,9 @@ export function Board({
   )
 
   return (
-    <main className={`plateau${mainVisibleForcee ? ' main-visible-forcee' : ''}`}>
+    <main
+      className={`plateau${mainVisibleForcee ? ' main-visible-forcee' : ''}${delave ? ' est-delave' : ''}`}
+    >
       <header className="plateau-barre">
         {actionsPartie}
         <div className="plateau-etat">

@@ -22,6 +22,44 @@ type CartePapier = {
   text?: string
 }
 
+/**
+ * L'aspect d'une carte de deck de joueur. C'est ce que la COULEUR du cadre
+ * dit au joueur d'un coup d'oeil, et c'est precisement ce qu'un effet qui
+ * desature efface. Le plateau ne le recoit pas du moteur : `/get_world`
+ * n'envoie ni aspect ni set_name. Mais le catalogue, lui, porte `desc.Class`.
+ */
+export type Aspect =
+  | 'aggression'
+  | 'justice'
+  | 'leadership'
+  | 'protection'
+  | 'pool'
+  | 'hero'
+  | 'basic'
+
+/**
+ * `desc.Class` vaut « Aggression », « Hero », « Basic », « 'Pool »... et
+ * parfois plusieurs valeurs separees par un point-virgule (« Hero;Aggression »,
+ * « Campaign;Basic »). Un aspect l'emporte sur Hero, qui l'emporte sur Basic :
+ * c'est l'information la plus discriminante qui doit gagner. Campaign et
+ * Encounter ne disent rien de la couleur du cadre et sont ignores.
+ */
+export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
+  if (!brut) return undefined
+  const parts = brut.split(';').map((p) => p.trim())
+  const table: Record<string, Aspect> = {
+    Aggression: 'aggression',
+    Justice: 'justice',
+    Leadership: 'leadership',
+    Protection: 'protection',
+    "'Pool": 'pool',
+  }
+  for (const p of parts) if (table[p]) return table[p]
+  if (parts.includes('Hero')) return 'hero'
+  if (parts.includes('Basic')) return 'basic'
+  return undefined
+}
+
 export type Catalogue = {
   /** PV imprimes, ou undefined si la carte n'en a pas de valeur fixe. */
   pvMax(cardId: string): number | undefined
@@ -39,6 +77,8 @@ export type Catalogue = {
    * vieillirait mal a chaque carte fan-made ajoutee.
    */
   surpayable(cardId: string): boolean
+  /** L'aspect de la carte, ou undefined si elle n'est pas une carte de joueur. */
+  aspect(cardId: string): Aspect | undefined
 }
 
 /** Catalogue absent : le plateau s'affiche quand meme, sans les PV maximum. */
@@ -47,6 +87,7 @@ export const catalogueVide: Catalogue = {
   statImprimee: () => undefined,
   motsCles: () => [],
   surpayable: () => false,
+  aspect: () => undefined,
 }
 
 /**
@@ -73,6 +114,7 @@ function construire(donnees: unknown): Catalogue {
   const statsParCarte = new Map<string, Partial<Record<string, number>>>()
   const motsClesParCarte = new Map<string, MotCle[]>()
   const surpayables = new Set<string>()
+  const aspects = new Map<string, Aspect>()
 
   // cards.json = { "<nom de paquet>": [cartes...], "checksum": "<hexa>" }.
   for (const paquet of Object.values(donnees as Record<string, unknown>)) {
@@ -94,6 +136,8 @@ function construire(donnees: unknown): Catalogue {
       // sur les trois cartes concernees. On accepte aussi la forme francaise au
       // cas ou les donnees seraient traduites un jour.
       if (/overpaid|overpay|surpay/i.test(carte.text ?? '')) surpayables.add(id)
+      const aspect = aspectDeClasse(carte.desc?.Class)
+      if (aspect) aspects.set(id, aspect)
     }
   }
 
@@ -102,6 +146,7 @@ function construire(donnees: unknown): Catalogue {
     statImprimee: (cardId, label) => statsParCarte.get(cardId)?.[label],
     motsCles: (cardId) => motsClesParCarte.get(cardId) ?? [],
     surpayable: (cardId) => surpayables.has(cardId),
+    aspect: (cardId) => aspects.get(cardId),
   }
 }
 

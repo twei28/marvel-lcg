@@ -228,6 +228,13 @@ export type ScanCardProps = {
   keywords?: Array<{ nom: string; definition: string }>
   /** Identifiant catalogue (ex. 01001a) : liens et textes marvelcdb. */
   codeCarte?: string
+  /**
+   * Aspect de la carte, pose en classe pour que le CSS puisse en tirer un
+   * lisere. Il ne sert QUE lorsqu'un effet d'ambiance desature le plateau :
+   * la couleur du cadre disparait alors du scan, et c'est le lisere qui la
+   * remplace. Voir `.est-delave` dans board.css.
+   */
+  aspect?: string
   /** Variation temporaire d'un compteur, affichee directement sur la carte. */
   effectDelta?: CardEffectDelta
 }
@@ -262,6 +269,7 @@ export function ScanCard({
   inactif = false,
   estActif = false,
   deckSpecial = false,
+  aspect,
   discard = false,
   labelType,
   state = 'ready',
@@ -325,6 +333,8 @@ export function ScanCard({
     !facedown && estNemesis ? 'est-nemesis' : '',
     inactif ? 'est-inactif' : '',
     !facedown && deckSpecial ? 'est-deck-special' : '',
+    // Jamais sur une carte face cachee : son aspect n'est pas connu du joueur.
+    !facedown && aspect ? `aspect-${aspect}` : '',
   ]
     .filter(Boolean)
     .join(' ')
