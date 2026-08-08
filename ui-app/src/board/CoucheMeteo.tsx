@@ -53,9 +53,19 @@ export function libelleApercu(valeur: string): string {
   return LIBELLE_EFFET[valeur as EffetMeteo] ?? valeur
 }
 
-/** La table est typée sur les effets connus : une faute de frappe ici
+/** L'ambiance appartient au SCÉNARIO et aux modules, jamais aux cartes que le
+ *  joueur monte dans son deck. Un lieu joué par un héros est sa base, une
+ *  carte de sa main : il n'a pas à repeindre la table pour tout le monde.
+ *  Seize Soutiens de héros ont été câblés le 8/8/2026 puis retirés pour cette
+ *  raison ; un cas de test refuse désormais toute carte de deck de joueur.
+ *
+ *  La seule exception est le deck météo de Storm, et elle se justifie : son
+ *  sujet EST la météo, changer le temps est sa capacité, et c'est pour ces
+ *  trois cartes que la couche a été écrite.
+ *
+ *  La table est typée sur les effets connus : une faute de frappe ici
  *  demanderait un fichier HTML inexistant, et l'écran resterait vide. */
-const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
+export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // Storm — deck météo. 36002 Clear Skies n'a volontairement aucun visuel.
   '36003': 'rain', // Hurricane
   '36004': 'storm', // Thunderstorm

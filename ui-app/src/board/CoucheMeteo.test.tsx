@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { createElement } from 'react'
 import type { World } from './world'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -17,6 +17,7 @@ import {
   CYCLE_APERCU,
   EFFETS_METEO,
   LIBELLE_EFFET,
+  METEO_PAR_CARTE,
   libelleApercu,
   meteoDuMonde,
 } from './CoucheMeteo'
@@ -209,5 +210,49 @@ describe('les etats Auto et Aucun de l apercu', () => {
     for (const v of CYCLE_APERCU) expect(libelleApercu(v)).toBeTruthy()
     expect(libelleApercu('')).toBe('Auto')
     expect(libelleApercu(AUCUN_EFFET)).toBe('Aucun')
+  })
+})
+
+// Le garde-fou qui manquait. Le 8/8/2026, seize Soutiens de heros ont ete
+// cables : la couche marchait, les 298 cas etaient verts, et pourtant c'etait
+// faux. Rien dans le code ne disait que l'ambiance appartient au scenario.
+describe('l ambiance vient du scenario, pas du deck du joueur', () => {
+  const TYPES_JOUEUR = new Set(['Support', 'Event', 'Upgrade', 'Ally', 'Resource'])
+  // Storm est la seule exception, et son sujet est la meteo elle-meme.
+  const METEO_DE_STORM = new Set(['36003', '36004', '36005'])
+
+  const catalogue = (() => {
+    const ici = dirname(fileURLToPath(import.meta.url))
+    const base = join(ici, '../../../Fusion/marvel-lcg-src/data')
+    const par_id = new Map<string, { type?: string; name?: string }>()
+    for (const nom of ['cards.json', 'cards_custom.json']) {
+      const brut = JSON.parse(readFileSync(join(base, nom), 'utf-8')) as Record<string, unknown[]>
+      for (const liste of Object.values(brut)) {
+        for (const c of liste) {
+          if (c && typeof c === 'object' && 'card_id' in c) {
+            par_id.set(String((c as { card_id: unknown }).card_id), c as { type?: string })
+          }
+        }
+      }
+    }
+    return par_id
+  })()
+
+  it('le catalogue de test a bien ete charge', () => {
+    // Sans ce cas, un chemin casse rendrait les deux suivants verts a vide.
+    expect(catalogue.size).toBeGreaterThan(4000)
+  })
+
+  it('chaque carte citee existe au catalogue', () => {
+    const inconnues = Object.keys(METEO_PAR_CARTE).filter((id) => !catalogue.has(id))
+    expect(inconnues).toEqual([])
+  })
+
+  it('aucune carte de deck de joueur, hors la météo de Storm', () => {
+    const fautives = Object.keys(METEO_PAR_CARTE).filter((id) => {
+      if (METEO_DE_STORM.has(id)) return false
+      return TYPES_JOUEUR.has(catalogue.get(id)?.type ?? '')
+    })
+    expect(fautives).toEqual([])
   })
 })
