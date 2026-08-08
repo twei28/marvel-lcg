@@ -133,23 +133,6 @@ describe('les familles de lieux', () => {
     ['31037', 'neon', 'Surge in Crime'],
     ['45127', 'jungle', 'The Savage Land'],
     ['45133', 'jungle', 'Genosha'],
-    // Soutiens de heros, rattaches aux effets existants
-    ['01063', 'fog', 'Interrogation Room'],
-    ['08005', 'fog', 'Safe House #29'],
-    ['18008', 'fog', 'Conditioning Room'],
-    ['35022', 'fog', 'Weapon X'],
-    ['50041', 'fog', 'Safe House #221'],
-    ['54007', 'fog', 'Safe House #30'],
-    ['56043', 'fog', 'Hidden Base'],
-    ['16007', 'jungle', 'Fertile Ground'],
-    ['36008', 'jungle', "Ororo's Garden"],
-    ['75011', 'jungle', 'Central Park, Squirrel Girl'],
-    ['78030', 'jungle', 'Central Park, Lockjaw'],
-    ['31009', 'neon', 'SP//dr Command'],
-    ['44008', 'neon', 'Chimichanga Truck'],
-    ['60042', 'neon', 'The Rez'],
-    ['17022', 'stars', 'Knowhere'],
-    ['49002', 'stars', 'Asteroid M'],
   ]
 
   it.each(attendus)('%s (%s) : %s', (id, effet) => {
@@ -166,19 +149,6 @@ describe('les familles de lieux', () => {
     // et evite qu'un fichier ressuscite sans qu'on le decide.
     for (const id of ['27117b', '27118b', '27119b', '27116b']) {
       expect(meteoDuMonde(monde({}, { area_environment: [carte(id)] }))).toBe('')
-    }
-  })
-
-  it('un Soutien LOCATION joue par un JOUEUR declenche bien l ambiance', () => {
-    // Les environnements de scenario vivent au niveau du monde, mais ces
-    // cartes-la sont posees devant un joueur, dans sa zone de soutiens.
-    expect(meteoDuMonde(monde({ supports: [carte('17022')] }))).toBe('stars')
-  })
-
-  it('un lieu ecarte volontairement reste sans ambiance', () => {
-    // Un cabinet d'avocats et un commissariat ne sont pas une rue au neon.
-    for (const id of ['60015', '56003', '01026']) {
-      expect(meteoDuMonde(monde({ supports: [carte(id)] }))).toBe('')
     }
   })
 

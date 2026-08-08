@@ -93,34 +93,6 @@ const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // Vegetation
   '45127': 'jungle', // The Savage Land, Age of Apocalypse
   '45133': 'jungle', // Genosha, Age of Apocalypse
-
-  // --- Soutiens de heros a trait LOCATION -----------------------------------
-  // Ces cartes-la ne sont pas le champ de bataille mais la BASE du heros. On
-  // ne leur donne une ambiance que lorsque le lieu la porte de lui-meme, et
-  // seulement en reemployant les effets existants. Un cabinet d'avocats ou un
-  // commissariat n'est pas une rue au neon : ces cartes restent sans effet.
-
-  // Lieux clos, caches ou souterrains
-  '01063': 'fog', // Interrogation Room, Core Set
-  '08005': 'fog', // Safe House #29, Black Widow
-  '18008': 'fog', // Conditioning Room, Gamora
-  '35022': 'fog', // Weapon X, Wolverine
-  '50041': 'fog', // Safe House #221, Agents of S.H.I.E.L.D.
-  '54007': 'fog', // Safe House #30, Winter Soldier
-  '56043': 'fog', // Hidden Base, Civil War
-  // Verdure
-  '16007': 'jungle', // Fertile Ground, Groot
-  '36008': 'jungle', // Ororo's Garden, Storm
-  '75011': 'jungle', // Central Park, Squirrel Girl
-  '78030': 'jungle', // Central Park, Lockjaw
-  // La rue la nuit
-  '31009': 'neon', // SP//dr Command, SP//dr
-  '44008': 'neon', // Chimichanga Truck, Deadpool
-  '60042': 'neon', // The Rez, Daredevil
-  // Espace
-  '17022': 'stars', // Knowhere, Star-Lord
-  '49002': 'stars', // Asteroid M, Magneto
-
   // Sans ambiance, par choix : les trois Manhattan infestes (27117b, 27118b,
   // 27119b) et Skies Over New York (27116b). Leurs effets ont ete ecrits puis
   // retires, ils ne rendaient pas ce qu'ils devaient rendre.
