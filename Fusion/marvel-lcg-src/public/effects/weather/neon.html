@@ -11,7 +11,11 @@
     .halo {
         position: absolute;
         border-radius: 50%;
-        filter: blur(40px);
+        /* Douceur par MASQUE plutot que par `filter: blur()`. Voir fog.html. */
+        -webkit-mask-image: url("/public/effects/weather/tache.png");
+        mask-image: url("/public/effects/weather/tache.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
         animation-name: respire;
         animation-timing-function: ease-in-out;
         animation-iteration-count: infinite;
@@ -58,10 +62,8 @@
         var casse = i % 3 === 0;
         h.className = casse ? 'halo casse' : 'halo';
         var teinte = TEINTES[i % TEINTES.length];
-        h.style.background = 'radial-gradient(circle at center,'
-            + ' rgba(' + teinte + ', 0.55) 0%,'
-            + ' rgba(' + teinte + ', 0.22) 45%,'
-            + ' rgba(' + teinte + ', 0) 75%)';
+        // Aplat uni : c'est le masque qui donne la forme et la douceur.
+        h.style.backgroundColor = 'rgba(' + teinte + ', 0.5)';
         h.style.width = hasard(18, 40) + 'vw';
         h.style.height = hasard(14, 34) + 'vh';
         // Les enseignes vivent sur les bords, pas au milieu de la table : on

@@ -49,11 +49,14 @@
     .banc {
         position: absolute;
         border-radius: 50%;
-        background: radial-gradient(ellipse at center,
-            rgba(128, 218, 140, 0.44) 0%,
-            rgba(102, 186, 116, 0.22) 45%,
-            rgba(90, 160, 104, 0) 80%);
-        filter: blur(30px);
+        background-color: rgba(128, 218, 140, 0.34);
+        /* Douceur par MASQUE plutot que par `filter: blur()` : le flou est
+           cuit dans tache.png et la carte graphique n'a plus qu'un composite
+           a faire. Voir fog.html pour la mesure. */
+        -webkit-mask-image: url("/public/effects/weather/tache.png");
+        mask-image: url("/public/effects/weather/tache.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
         animation-name: rampe;
         animation-timing-function: linear;
         animation-iteration-count: infinite;

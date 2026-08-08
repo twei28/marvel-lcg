@@ -12,12 +12,17 @@
     .banc {
         position: absolute;
         border-radius: 50%;
-        background: radial-gradient(ellipse at center,
-            rgba(206, 220, 236, 0.46) 0%,
-            rgba(206, 220, 236, 0.26) 45%,
-            rgba(206, 220, 236, 0) 82%);
-        filter: blur(26px);
-        will-change: transform;
+        /* Le flou est CUIT dans tache.png, il n'est pas recalcule a chaque
+           image. Un `filter: blur()` sur quatorze bancs coutait la moitie des
+           images par seconde ; sans lui, les degrades laissaient voir leurs
+           bords la ou deux bancs se chevauchent, et la brume ressemblait a
+           des galets. Le masque donne la douceur pour un simple composite,
+           et la couleur reste reglable en CSS. */
+        background-color: rgba(206, 220, 236, 0.34);
+        -webkit-mask-image: url("/public/effects/weather/tache.png");
+        mask-image: url("/public/effects/weather/tache.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
     }
 
     @keyframes derive-droite {

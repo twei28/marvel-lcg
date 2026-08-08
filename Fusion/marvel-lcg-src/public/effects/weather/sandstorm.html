@@ -25,11 +25,14 @@
     .nappe {
         position: absolute;
         border-radius: 50%;
-        background: radial-gradient(ellipse at center,
-            rgba(216, 174, 108, 0.34) 0%,
-            rgba(198, 152, 84, 0.16) 45%,
-            rgba(186, 138, 72, 0) 78%);
-        filter: blur(24px);
+        background-color: rgba(212, 170, 104, 0.30);
+        /* Douceur par MASQUE plutot que par `filter: blur()` : le flou est
+           cuit dans tache.png et la carte graphique n'a plus qu'un composite
+           a faire. Voir fog.html pour la mesure. */
+        -webkit-mask-image: url("/public/effects/weather/tache.png");
+        mask-image: url("/public/effects/weather/tache.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
         animation-name: traverse;
         animation-timing-function: linear;
         animation-iteration-count: infinite;

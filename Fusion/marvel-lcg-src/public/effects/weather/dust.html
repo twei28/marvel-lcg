@@ -35,11 +35,14 @@
     .nuee {
         position: absolute;
         border-radius: 50%;
-        background: radial-gradient(ellipse at center,
-            rgba(198, 180, 152, 0.24) 0%,
-            rgba(198, 180, 152, 0.11) 45%,
-            rgba(198, 180, 152, 0) 76%);
-        filter: blur(30px);
+        background-color: rgba(198, 180, 152, 0.26);
+        /* Douceur par MASQUE plutot que par `filter: blur()` : le flou est
+           cuit dans tache.png et la carte graphique n'a plus qu'un composite
+           a faire. Voir fog.html pour la mesure. */
+        -webkit-mask-image: url("/public/effects/weather/tache.png");
+        mask-image: url("/public/effects/weather/tache.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
         animation-name: tombe;
         animation-timing-function: linear;
         animation-iteration-count: infinite;

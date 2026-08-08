@@ -64,7 +64,7 @@ import {
   CLE_METEO,
   CYCLE_APERCU,
   EFFETS_DELAVANTS,
-  effetAffiche,
+  effetsAffiches,
   libelleApercu,
   lireMeteoActive,
 } from './board/CoucheMeteo'
@@ -2146,7 +2146,7 @@ function PagePartie({
           interaction.option !== undefined &&
           (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment')
         }
-        delave={EFFETS_DELAVANTS.includes(effetAffiche(etat.monde, meteo, apercuMeteo))}
+        delave={effetsAffiches(etat.monde, meteo, apercuMeteo).some((e) => EFFETS_DELAVANTS.includes(e))}
         onCardClick={
           etat.aNous && etat.connecte && !interaction.option
             ? (carte) => {

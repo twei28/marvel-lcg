@@ -20,6 +20,7 @@ import {
   METEO_PAR_CARTE,
   libelleApercu,
   meteoDuMonde,
+  meteosDuMonde,
 } from './CoucheMeteo'
 
 const carte = (cardId: string) => ({
@@ -269,5 +270,42 @@ describe('l ambiance vient du scenario, pas du deck du joueur', () => {
       return TYPES_JOUEUR.has(catalogue.get(id)?.type ?? '')
     })
     expect(fautives).toEqual([])
+  })
+})
+
+// La superposition, decidee le 8/8/2026 : deux cartes d'ambiance en jeu ne se
+// disputent plus l'affichage, elles s'empilent. Avant, la premiere trouvee
+// gagnait, et l'ordre venait du moteur : l'ambiance pouvait donc basculer sans
+// raison visible quand une carte quittait le jeu.
+describe('plusieurs ambiances a la fois', () => {
+  it('empile le decor du scenario ET la carte du joueur', () => {
+    const m = monde({ supports: [carte('36003')] }, { area_environment: [carte('04081')] })
+    // Le scenario d'abord : il est peint EN DESSOUS.
+    expect(meteosDuMonde(m)).toEqual(['snow', 'rain'])
+  })
+
+  it('ne repete pas deux fois le meme effet', () => {
+    // Deux lieux du Hood, tous deux en brume.
+    const m = monde({}, { area_environment: [carte('24060'), carte('24062')] })
+    expect(meteosDuMonde(m)).toEqual(['fog'])
+  })
+
+  it('respecte l ordre des sieges entre joueurs', () => {
+    const m = {
+      players: [{ supports: [carte('36003')] }, { supports: [carte('36005')] }],
+    } as unknown as World
+    expect(meteosDuMonde(m)).toEqual(['rain', 'snow'])
+  })
+
+  it('l ambiance dominante reste la premiere peinte', () => {
+    const m = monde({ supports: [carte('36003')] }, { area_environment: [carte('04081')] })
+    expect(meteoDuMonde(m)).toBe('snow')
+  })
+
+  it('affiche autant d iframes que d ambiances', () => {
+    const m = monde({ supports: [carte('36003')] }, { area_environment: [carte('04081')] })
+    const { container } = render(createElement(CoucheMeteo, { world: m, active: true }))
+    const sources = [...container.querySelectorAll('iframe')].map((f) => f.getAttribute('src'))
+    expect(sources).toEqual(['/effects/weather/snow.html', '/effects/weather/rain.html'])
   })
 })

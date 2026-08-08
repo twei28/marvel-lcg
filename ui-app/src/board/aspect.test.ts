@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { aspectDeClasse } from './catalogue'
-import { EFFETS_DELAVANTS, effetAffiche } from './CoucheMeteo'
+import { EFFETS_DELAVANTS, effetsAffiches } from './CoucheMeteo'
 import type { World } from './world'
 
 describe('aspectDeClasse', () => {
@@ -81,19 +81,31 @@ describe('le catalogue reel', () => {
   })
 })
 
-describe('effetAffiche', () => {
-  const monde = (cardId: string): World =>
-    ({ area_environment: [{ id: 1, card_id: cardId, card_type: 'Support', name: cardId, bind_object_id: 0 }] }) as unknown as World
+describe('effetsAffiches', () => {
+  const monde = (...cardIds: string[]): World =>
+    ({
+      area_environment: cardIds.map((cardId, i) => ({
+        id: i + 1,
+        card_id: cardId,
+        card_type: 'Support',
+        name: cardId,
+        bind_object_id: 0,
+      })),
+    }) as unknown as World
 
   it('rend l effet des cartes quand la meteo est allumee', () => {
     // 01034 Stark Tower n'a aucune ambiance : c'est un Soutien de heros.
-    expect(effetAffiche(monde('01034'), true)).toBe('')
-    expect(effetAffiche(monde('04081'), true)).toBe('snow')
+    expect(effetsAffiches(monde('01034'), true)).toEqual([])
+    expect(effetsAffiches(monde('04081'), true)).toEqual(['snow'])
   })
 
   it('l apercu prime, et « aucun » impose le vide', () => {
-    expect(effetAffiche(monde('04081'), true, 'noir')).toBe('noir')
-    expect(effetAffiche(monde('04081'), true, 'none')).toBe('')
+    expect(effetsAffiches(monde('04081'), true, 'noir')).toEqual(['noir'])
+    expect(effetsAffiches(monde('04081'), true, 'none')).toEqual([])
+  })
+
+  it('l apercu ne montre qu un effet, meme si plusieurs cartes sont en jeu', () => {
+    expect(effetsAffiches(monde('04081', '21076'), true, 'rain')).toEqual(['rain'])
   })
 
   it('le noir et blanc est le seul effet qui delave', () => {

@@ -157,16 +157,32 @@ function cartesDe(source: unknown, zones: readonly string[]): WorldCard[] {
   return sortie
 }
 
-/** La météo dictée par les cartes en jeu, ou '' si aucune ne s'applique. */
-export function meteoDuMonde(world: World | undefined): string {
-  if (!world) return ''
+/**
+ * TOUTES les ambiances dictées par les cartes en jeu, sans doublon.
+ *
+ * Elles se superposent au lieu de se disputer l'affichage. Le choix n'est pas
+ * gratuit : mesuré le 8/8/2026, empiler trois effets ne coûte pas une image
+ * par seconde. Ce qui coûtait, c'était le `filter: blur()` de cinq d'entre
+ * eux, remplacé depuis par un masque.
+ *
+ * L'ordre est l'ordre de PEINTURE : le décor du scénario d'abord, donc en
+ * dessous, puis les cartes des joueurs par-dessus, siège par siège.
+ */
+export function meteosDuMonde(world: World | undefined): string[] {
+  if (!world) return []
   const enJeu: WorldCard[] = [...cartesDe(world, ZONES_MONDE)]
   for (const joueur of world.players ?? []) enJeu.push(...cartesDe(joueur, ZONES_JOUEUR))
+  const sortie: string[] = []
   for (const carte of enJeu) {
     const effet = carte && typeof carte.card_id === 'string' ? METEO_PAR_CARTE[carte.card_id] : undefined
-    if (effet) return effet
+    if (effet && !sortie.includes(effet)) sortie.push(effet)
   }
-  return ''
+  return sortie
+}
+
+/** L'ambiance DOMINANTE, celle peinte en premier. */
+export function meteoDuMonde(world: World | undefined): string {
+  return meteosDuMonde(world)[0] ?? ''
 }
 
 /** Les effets qui EFFACENT la couleur du plateau. Sous eux, la couleur du
@@ -175,14 +191,15 @@ export function meteoDuMonde(world: World | undefined): string {
  *  laisse les teintes distinctes les unes des autres. */
 export const EFFETS_DELAVANTS: readonly string[] = ['noir']
 
-/** L'effet réellement affiché, aperçu et interrupteur compris. */
-export function effetAffiche(
+/** Les effets réellement affichés, aperçu et interrupteur compris. */
+export function effetsAffiches(
   world: World | undefined,
   active: boolean,
   apercu?: string
-): string {
-  if (apercu === AUCUN_EFFET) return ''
-  return apercu || (active ? meteoDuMonde(world) : '')
+): string[] {
+  if (apercu === AUCUN_EFFET) return []
+  if (apercu) return [apercu]
+  return active ? meteosDuMonde(world) : []
 }
 
 export function CoucheMeteo({
@@ -196,20 +213,25 @@ export function CoucheMeteo({
    *  AUCUN_EFFET impose le vide. */
   apercu?: string
 }) {
-  const duJeu = useMemo(() => meteoDuMonde(world), [world])
-  // Meme regle que effetAffiche(), gardee ici pour ne pas recalculer le monde.
+  const duJeu = useMemo(() => meteosDuMonde(world), [world])
   // L'apercu est une demande EXPLICITE : il passe outre l'interrupteur. Sans
   // ca, choisir un apercu alors que la meteo est coupee n'affiche rien et
   // l'outil parait casse. L'interrupteur ne commande que la meteo du jeu.
-  const meteo = apercu === AUCUN_EFFET ? '' : apercu || (active ? duJeu : '')
-  if (!meteo) return null
+  // Il ne montre qu'UN effet a la fois : c'est un outil de conception.
+  const meteos = apercu === AUCUN_EFFET ? [] : apercu ? [apercu] : active ? duJeu : []
+  if (meteos.length === 0) return null
   return (
-    <iframe
-      className={`couche-meteo couche-meteo--${meteo}`}
-      src={`/effects/weather/${meteo}.html`}
-      title=""
-      aria-hidden="true"
-      tabIndex={-1}
-    />
+    <>
+      {meteos.map((meteo) => (
+        <iframe
+          key={meteo}
+          className={`couche-meteo couche-meteo--${meteo}`}
+          src={`/effects/weather/${meteo}.html`}
+          title=""
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      ))}
+    </>
   )
 }
