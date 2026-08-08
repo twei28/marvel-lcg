@@ -23,10 +23,9 @@
 
     .b1 { top: -6vh; left: -6vw; width: 46vw; }
     .b4 { top: -8vh; right: -6vw; width: 48vw; transform: scaleX(-1); animation-delay: -5s; }
-    /* Les deux suivantes sont plus petites et plus pales : elles creusent la
-       profondeur derriere les deux premieres. */
-    .b2 { top: 8vh; left: 14vw; width: 34vw; opacity: 0.55; animation-delay: -9s; }
-    .b3 { top: 6vh; right: 12vw; width: 32vw; opacity: 0.5; transform: scaleX(-1); animation-delay: -3s; }
+    /* Deux branches, pas quatre. Deux autres, placees plus bas et plus au
+       centre pour creuser la profondeur, semblaient flotter en l'air : rien
+       ne les rattachait a un bord, donc rien ne disait d'ou elles venaient. */
 
     @keyframes balance {
         0%, 100% { rotate: -0.7deg; }
@@ -77,11 +76,14 @@
 <!-- Branches fournies par l'utilisateur (silhouettes PNG de vhv.rs,
      telechargees en local : pointer vers le site casserait l'effet des que le
      jeu tourne hors ligne). Elles pendent depuis le haut, la ou elles ne
-     genent pas la lecture des cartes. -->
-<img class="branche b1" src="img/arbre1.png" alt="" aria-hidden="true">
-<img class="branche b4" src="img/arbre4.png" alt="" aria-hidden="true">
-<img class="branche b2" src="img/arbre2.png" alt="" aria-hidden="true">
-<img class="branche b3" src="img/arbre3.png" alt="" aria-hidden="true">
+     genent pas la lecture des cartes.
+
+     Le chemin doit commencer par /public/ : les .html, .css et .js sont
+     servis par des handlers qui prefixent eux-memes ce dossier, mais le
+     handler des images lit le chemin TEL QUEL. Un src="arbre1.png" relatif
+     repond donc 404, alors que le fichier est bien la, a cote. -->
+<img class="branche b1" src="/public/effects/weather/arbre1.png" alt="" aria-hidden="true">
+<img class="branche b4" src="/public/effects/weather/arbre4.png" alt="" aria-hidden="true">
 
 <section class="crypte"></section>
 <div class="lampe"></div>

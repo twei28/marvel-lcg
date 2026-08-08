@@ -19,7 +19,7 @@ import type { World, WorldCard } from './world'
 export const EFFETS_METEO = [
   'rain', 'storm', 'snow', 'fog', 'stars', 'embers',
   'dust', 'neon', 'jungle',
-  'noir', 'horror', 'cyber', 'sitcom', 'sepia',
+  'noir', 'horror', 'cyber', 'sitcom', 'sepia', 'sandstorm',
 ] as const
 export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
@@ -35,11 +35,12 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   dust: 'Poussière',
   neon: 'Néons',
   jungle: 'Jungle',
-  noir: 'Vieille télé',
+  noir: 'Noir et blanc',
   horror: 'Horreur',
   cyber: 'Cyber',
   sitcom: 'Sitcom',
   sepia: 'Sépia',
+  sandstorm: 'Tempête de sable',
 }
 
 /** L'apercu a deux etats en plus des effets, et ils ne disent pas la meme
@@ -104,7 +105,7 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   '21079': 'dust', // Rubblestorm, The Mad Titan's Shadow
   // La rue la nuit
   '24063': 'neon', // Warehouse District, The Hood
-  '27065': 'neon', // City Streets, Sinister Motives
+  '27065': 'sandstorm', // City Streets : la rue de Sandman, dans son scenario
   '31037': 'neon', // Surge in Crime, SP//dr
   // Vegetation
   '45127': 'jungle', // The Savage Land, Age of Apocalypse
@@ -114,7 +115,7 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // au titre mais aux figurants qui l'accompagnent dans le paquet : Dragnet et
   // Law & Order d'un cote, Dragon et Troll de l'autre, Vampire et Loup-garou,
   // des PROGRAMMES nommes Magneto 2.6, un Gunslinger.
-  '39035': 'noir', // Dial M for Mojo : le polar rendu en vieille tele
+  '39035': 'noir', // Dial M for Mojo : le polar rendu en noir et blanc
   '39041': 'embers', // A Game of Mojo's, fantasy : le souffle du Dragon
   '39047': 'horror', // The Mojo Files, vampires et loups-garous
   '39053': 'cyber', // Mojo Runner, ennemis PROGRAMME

@@ -130,7 +130,7 @@ describe('les familles de lieux', () => {
     ['04083', 'dust', 'Abandoned Facility'],
     ['21079', 'dust', 'Rubblestorm'],
     ['24063', 'neon', 'Warehouse District'],
-    ['27065', 'neon', 'City Streets'],
+    ['27065', 'sandstorm', 'City Streets, la rue de Sandman'],
     ['31037', 'neon', 'Surge in Crime'],
     ['45127', 'jungle', 'The Savage Land'],
     ['45133', 'jungle', 'Genosha'],

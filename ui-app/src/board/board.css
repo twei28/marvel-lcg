@@ -3316,10 +3316,26 @@
     opacity: 0.9;
   }
 
-  .couche-meteo--noir,
   .couche-meteo--horror,
   .couche-meteo--sitcom {
     opacity: 0.8;
+  }
+
+  /* Le noir et blanc ne s'imite pas, il se FAIT : `backdrop-filter` filtre
+     tout ce qui est peint derriere l'iframe, c'est-a-dire le plateau lui-meme.
+     C'est la seule facon d'y arriver, une iframe ne pouvant rien desaturer
+     depuis l'interieur. L'opacite doit rester a 1 : en dessous, le fond
+     filtre se melangerait au fond d'origine et la couleur reviendrait a
+     moitie. Le fichier noir.html n'apporte que le grain et le vignettage. */
+  .couche-meteo--noir {
+    opacity: 1;
+    -webkit-backdrop-filter: grayscale(1);
+    backdrop-filter: grayscale(1);
+  }
+
+  /* La tempete de sable est faite de grains fins, comme la pluie. */
+  .couche-meteo--sandstorm {
+    opacity: 0.9;
   }
 
   /* Le sepia doit teinter, pas suggerer : c'est le seul effet dont le sujet

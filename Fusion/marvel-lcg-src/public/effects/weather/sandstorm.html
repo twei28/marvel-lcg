@@ -1,0 +1,107 @@
+<!-- Tempete de sable : du sable pousse a l'horizontale, pour Sandman. -->
+<style>
+    /* Une iframe peint un canevas BLANC OPAQUE par defaut, et le plateau
+       declare color-scheme: dark. Sans ces deux lignes, la couche pose une
+       feuille opaque sur le jeu au lieu de le laisser voir. Voir rain.html. */
+    html { color-scheme: dark; }
+    html, body { background: transparent; }
+
+    body { margin: 0; height: 100vh; overflow: hidden; }
+
+    /* Le voile ocre. Une tempete, ce n'est pas seulement des grains : c'est
+       d'abord de l'air charge, qui mange le fond. */
+    .voile {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(to bottom,
+            rgba(198, 152, 84, 0.10) 0%,
+            rgba(186, 138, 72, 0.20) 55%,
+            rgba(158, 112, 54, 0.28) 100%);
+        animation: rafale 5.5s ease-in-out infinite;
+    }
+
+    /* Les nappes : de larges bandes floues qui traversent vite. Ce sont
+       elles qui donnent la VIOLENCE, les grains seuls font une poussiere. */
+    .nappe {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center,
+            rgba(216, 174, 108, 0.34) 0%,
+            rgba(198, 152, 84, 0.16) 45%,
+            rgba(186, 138, 72, 0) 78%);
+        filter: blur(24px);
+        animation-name: traverse;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        will-change: transform;
+    }
+
+    /* Le grain de sable file presque a plat : c'est l'horizontale qui
+       distingue une tempete d'une simple poussiere en suspension. */
+    .grain {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(236, 206, 156, 0.9);
+        animation-name: file;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
+    }
+
+    @keyframes rafale {
+        0%, 100% { opacity: 0.78; }
+        45%      { opacity: 1; }
+    }
+
+    @keyframes traverse {
+        from { transform: translateX(-80vw); }
+        to   { transform: translateX(180vw); }
+    }
+
+    @keyframes file {
+        0%   { transform: translate(0, 0); opacity: 0; }
+        8%   { opacity: 1; }
+        88%  { opacity: 0.9; }
+        100% { transform: translate(126vw, var(--devers)); opacity: 0; }
+    }
+</style>
+
+<section class="tempete"></section>
+<div class="voile"></div>
+
+<script>
+    var nbNappe = 9;
+    var nbGrain = 260;
+
+    function hasard(min, max) { return Math.random() * (max - min) + min; }
+
+    var tempete = document.querySelector('.tempete');
+
+    for (var i = 0; i < nbNappe; i++) {
+        var n = document.createElement('div');
+        n.className = 'nappe';
+        n.style.width = hasard(34, 72) + 'vw';
+        n.style.height = hasard(12, 30) + 'vh';
+        n.style.top = hasard(-8, 92) + 'vh';
+        var dn = hasard(3.5, 9);
+        n.style.animationDuration = dn.toFixed(2) + 's';
+        n.style.animationDelay = '-' + hasard(0, dn).toFixed(2) + 's';
+        tempete.appendChild(n);
+    }
+
+    for (var j = 0; j < nbGrain; j++) {
+        var g = document.createElement('div');
+        g.className = 'grain';
+        var t = hasard(1.2, 3.6);
+        g.style.width = t.toFixed(2) + 'px';
+        g.style.height = t.toFixed(2) + 'px';
+        g.style.left = hasard(-14, 0).toFixed(1) + 'vw';
+        g.style.top = hasard(-4, 104).toFixed(1) + 'vh';
+        // Le devers reste faible : le vent porte, il ne souleve pas.
+        g.style.setProperty('--devers', hasard(-9, 5).toFixed(1) + 'vh');
+        var d = hasard(1.1, 3.6);
+        g.style.animationDuration = d.toFixed(2) + 's';
+        g.style.animationDelay = '-' + hasard(0, d).toFixed(2) + 's';
+        tempete.appendChild(g);
+    }
+</script>
