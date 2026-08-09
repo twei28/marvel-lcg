@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "The Grim Hunt Nemesis",
+    "encounters": [
+        "69017",
+        "69018",
+        "69021",
+        "69020",
+        "69019"
+    ]
+}

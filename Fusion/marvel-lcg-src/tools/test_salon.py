@@ -1,0 +1,232 @@
+"""Teste les routes du SALON multijoueur (choix de heros/deck par siege).
+
+Le serveur web repond des `Engine.Initialize()`, sans boucle de jeu : ce test
+n'a donc pas besoin de creer une partie. Il tape les routes en HTTP, comme le
+ferait un navigateur.
+
+Il ACTIVE temporairement la protection des sieges (`seat_passwords`) dans le
+launch.json du dossier de jeu, puis le REMET COMME AVANT en sortant : sans
+cela, tous les tests suivants tourneraient avec des sieges proteges.
+
+Usage: python3.10 tools/test_salon.py <game_dir> <port> [solo]
+Avec « solo », la protection des sieges reste COUPEE : on verifie alors que le
+salon se declare hors multi, ce qui rend tout le bloc salon du wizard inerte.
+Viser .game-src, jamais .game (voir GUIDE-CREATION-CONTENU.md §8).
+"""
+import hashlib
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+os.environ.setdefault("RELEASE", "1")
+
+GAME_DIR = os.path.expanduser(sys.argv[1])
+PORT = int(sys.argv[2])
+BASE = f"http://127.0.0.1:{PORT}"
+
+CONFIG = os.path.join(GAME_DIR, "launch.json")
+CONFIG_ORIGINE = open(CONFIG, encoding="utf-8").read()
+
+MOTS_DE_PASSE = ["h0", "j1", "j2", "j3"]
+MODE_SOLO = len(sys.argv) > 3 and sys.argv[3] == "solo"
+
+
+def restaurer_config():
+    with open(CONFIG, "w", encoding="utf-8") as f:
+        f.write(CONFIG_ORIGINE)
+
+
+os.chdir(GAME_DIR)
+sys.path.insert(0, GAME_DIR)
+
+cfg = json.loads(CONFIG_ORIGINE)
+cfg["server_addresses"] = [f"127.0.0.1:{PORT}"]
+cfg["seat_passwords"] = [] if MODE_SOLO else MOTS_DE_PASSE
+json.dump(cfg, open(CONFIG, "w", encoding="utf-8"), indent=2)
+
+# Le moteur est bavard : on l'envoie dans un journal et on garde la sortie
+# standard pour le compte rendu.
+SORTIE = sys.stdout
+sys.stdout = open("/tmp/test_salon_moteur.log", "w", buffering=1)
+sys.stderr = sys.stdout
+
+resultats = []
+
+
+def verifier(nom, ok, detail=""):
+    resultats.append((nom, bool(ok), detail))
+
+
+def poster(corps, cookie=None):
+    entetes = {"Content-Type": "application/json"}
+    if cookie:
+        entetes["Cookie"] = cookie
+    requete = urllib.request.Request(
+        BASE + "/set_choix_siege", data=json.dumps(corps).encode(), headers=entetes)
+    try:
+        with urllib.request.urlopen(requete, timeout=5) as reponse:
+            return reponse.status, json.load(reponse)
+    except urllib.error.HTTPError as erreur:
+        return erreur.code, {}
+
+
+def lire():
+    # Tolerante par construction : tant que la route n'existe pas, le serveur
+    # repond autre chose que du JSON (il retombe sur son routage de fichiers).
+    # Rendre {} laisse alors les verifications echouer proprement, au lieu de
+    # faire exploser le script avant son compte rendu.
+    try:
+        with urllib.request.urlopen(BASE + "/get_choix_sieges", timeout=5) as reponse:
+            return json.loads(reponse.read().decode("utf-8"))
+    except Exception:
+        return {}
+
+
+def creer_partie():
+    # Un VRAI descripteur, sur le modele de ce que construit le wizard
+    # (public/js/prepare/launcher.js, buildDescriptor). Un descripteur invalide
+    # ne conviendrait pas : /new echoue alors AVANT le vidage du salon, et c'est
+    # voulu — on ne veut pas perdre les choix de tout le monde sur une requete
+    # malformee.
+    scenario = json.load(open("data/scenarios/rhino.json", encoding="utf-8"))
+    deck = json.load(open("deck/starter/madame_web.json", encoding="utf-8"))
+    descripteur = {
+        "campaign_json": json.dumps(scenario),
+        "encounter_set_names": scenario.get("encounter_sets", []),
+        "hero_json": [json.dumps(deck)],
+        "seed": 42,
+        "timeout": 0,
+        "challenges": [],
+        "rules": [],
+        "campaign_log": {},
+    }
+    url = BASE + "/new?data=" + urllib.parse.quote(json.dumps(descripteur))
+    try:
+        urllib.request.urlopen(url, timeout=30)
+    except Exception:
+        pass
+
+
+try:
+    from engine.network.web_server import WebServer
+    WebServer.IsAuthenticate = lambda self, request=None: True
+    WebServer.IsVersionMatch = lambda self, request=None: True
+    from engine import Engine
+    Engine.Initialize()
+    time.sleep(3)
+
+
+    if MODE_SOLO:
+        # Sans mot de passe de siege, le salon doit se declarer HORS multi :
+        # c'est ce drapeau qui neutralise tout le bloc salon du wizard, et donc
+        # qui garantit que le chemin SOLO n'a pas bouge.
+        etat = lire()
+        verifier("solo : le salon se declare hors multi",
+                 etat.get("multi") is False, str(etat.get("multi")))
+        code, _ = poster({"p": 1, "hero_card_id": "69001a", "deck_id": "madame_web"})
+        verifier("solo : aucune protection de siege, l'ecriture passe",
+                 code == 200, f"code={code}")
+        raise SystemExit
+
+    jeton_j1 = hashlib.md5(b"j1").hexdigest()
+    cookie_j1 = f"seat_token_1={jeton_j1}"
+    choix = {"p": 1, "hero_card_id": "69001a", "deck_id": "madame_web",
+             "deck_source": "base"}
+
+    code, _ = poster(choix)
+    verifier("sans jeton de siege -> 403", code == 403, f"code={code}")
+
+    code, _ = poster(choix, cookie=f"seat_token_1={hashlib.md5(b'faux').hexdigest()}")
+    verifier("avec un mauvais jeton -> 403", code == 403, f"code={code}")
+
+    code, _ = poster(choix, cookie=cookie_j1)
+    verifier("avec le bon jeton -> 200", code == 200, f"code={code}")
+
+    etat = lire()
+    verifier("multi detecte", etat.get("multi") is True, str(etat.get("multi")))
+    siege1 = etat.get("sieges", {}).get("1", {})
+    verifier("choix relu", siege1.get("hero_card_id") == "69001a",
+             json.dumps(etat.get("sieges")))
+    verifier("deck relu", siege1.get("deck_id") == "madame_web",
+             json.dumps(etat.get("sieges")))
+
+    code, _ = poster({"p": 1, "hero_card_id": "", "deck_id": ""}, cookie=cookie_j1)
+    verifier("choix incomplet -> 400", code == 400, f"code={code}")
+
+    code, _ = poster({"p": 2, "hero_card_id": "69001a", "deck_id": "madame_web"},
+                     cookie=cookie_j1)
+    verifier("le jeton du siege 1 ne vaut pas pour le siege 2 -> 403",
+             code == 403, f"code={code}")
+
+    # Changement d'avis : le dernier choix ecrase le precedent.
+    poster({"p": 1, "hero_card_id": "01001a", "deck_id": "spider_man",
+            "deck_source": "base"}, cookie=cookie_j1)
+    verifier("changement d'avis pris en compte",
+             lire().get("sieges", {}).get("1", {}).get("hero_card_id") == "01001a",
+             json.dumps(lire().get("sieges")))
+
+    # --- La page du salon est-elle servie, et le lien y mene-t-il ? ---------
+    # Le RENDU (grille de heros, liste de decks) demande un navigateur : il est
+    # couvert par le test a deux de la tache 5. Ici on verifie seulement que le
+    # routage et le service des fichiers sont en place.
+    def texte(chemin):
+        try:
+            with urllib.request.urlopen(BASE + chemin, timeout=5) as reponse:
+                return reponse.status, reponse.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as erreur:
+            return erreur.code, ""
+
+    code, page = texte("/salon.html")
+    verifier("/salon.html est servie", code == 200 and "salon-choix" in page,
+             f"code={code}")
+
+    code, script = texte("/public/js/salon/app.js")
+    verifier("le script du salon est servi",
+             code == 200 and "set_choix_siege" in script, f"code={code}")
+
+    # public/js/prepare/app.js IMPORTE ce module : s'il n'est pas servi, c'est
+    # TOUT le wizard qui casse, y compris en solo. C'est le risque le plus
+    # serieux de ce chantier, il merite sa verification.
+    code, module = texte("/public/js/prepare/salon-etat.js")
+    verifier("le module de decision est servi au wizard",
+             code == 200 and "export function etatSalon" in module, f"code={code}")
+
+    class SansRedirection(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *args, **kwargs):
+            return None
+
+    ouvreur = urllib.request.build_opener(SansRedirection)
+    try:
+        ouvreur.open(BASE + "/claim_seat?p=1&key=j1&to=salon", timeout=5)
+        code, cible = 0, ""
+    except urllib.error.HTTPError as erreur:
+        code, cible = erreur.code, erreur.headers.get("Location", "")
+    verifier("le lien invite mene au salon",
+             code == 302 and cible == "/salon.html?p=1", f"code={code} -> {cible}")
+
+    creer_partie()
+    verifier("le salon est vide apres /new", lire().get("sieges") == {},
+             json.dumps(lire().get("sieges")))
+
+except SystemExit:
+    pass
+except Exception as exc:
+    import traceback
+    traceback.print_exc()
+    verifier("le test lui-meme a plante", False, f"{type(exc).__name__}: {exc}")
+finally:
+    restaurer_config()
+
+for nom, ok, detail in resultats:
+    print(("OK    " if ok else "ECHEC ") + nom + ("" if ok else f"   [{detail}]"),
+          file=SORTIE)
+rates = [nom for nom, ok, _ in resultats if not ok]
+print(("\nTOUT PASSE" if not rates else f"\n{len(rates)} ECHEC(S)"), file=SORTIE)
+SORTIE.flush()
+# os._exit et pas sys.exit : le serveur web laisse des threads vivants, un
+# arret propre attendrait indefiniment.
+os._exit(0 if not rates else 1)

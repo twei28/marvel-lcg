@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Marvel Champions — choisis ton héros</title>
+    <style>
+        /* Reprise de la palette de rejoindre.html : meme soiree, meme identite
+           visuelle, sans creer de feuille partagee pour deux pages. */
+        :root {
+            --fond: #14161c;
+            --carte: #1e2128;
+            --bord: #2c313c;
+            --texte: #f2f4f8;
+            --sourdine: #97a0b0;
+            --rouge: #e23744;
+            --or: #f0b429;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 24px 16px 64px;
+            background-color: var(--fond);
+            color: var(--texte);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+        main { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 1.4rem; margin: 0 0 4px; }
+        h2 { font-size: 1.05rem; margin: 28px 0 10px; }
+        #salon-entete { color: var(--or); font-weight: 800; }
+        #salon-statut {
+            margin: 14px 0 0;
+            padding: 10px 12px;
+            background-color: var(--carte);
+            border: 1px solid var(--bord);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+        #salon-statut.est-erreur { border-color: var(--rouge); color: #ffb9be; }
+        /* Le bandeau d'attente : une fois héros ET deck choisis, l'invité n'a
+           plus rien à faire. Sans ce signal franc, il reste devant la grille à
+           se demander s'il a oublié une étape. */
+        #salon-attente {
+            display: none;
+            margin: 14px 0 0;
+            padding: 14px 16px;
+            background-color: rgba(240, 180, 41, 0.09);
+            border: 1px solid var(--or);
+            border-radius: 10px;
+        }
+        #salon-attente.est-visible { display: block; }
+        #salon-attente b {
+            display: block;
+            font-size: 1.05rem;
+            color: var(--or);
+            margin-bottom: 3px;
+        }
+        #salon-attente span { font-size: 0.85rem; color: var(--sourdine); }
+        #salon-attente .points::after {
+            content: "";
+            animation: salon-points 1.4s steps(4, end) infinite;
+        }
+        @keyframes salon-points {
+            0% { content: ""; }
+            25% { content: "."; }
+            50% { content: ".."; }
+            75% { content: "..."; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #salon-attente .points::after { animation: none; content: "..."; }
+        }
+        .salon-grille {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .salon-hero, .salon-deck {
+            font: inherit;
+            color: var(--texte);
+            background-color: var(--carte);
+            border: 1px solid var(--bord);
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+            text-align: left;
+        }
+        .salon-hero img { width: 100%; display: block; aspect-ratio: 1 / 1; object-fit: cover; object-position: top center; }
+        .salon-hero span { display: block; padding: 6px 8px; font-size: 0.8rem; font-weight: 700; }
+        .salon-hero.est-choisi, .salon-deck.est-choisi { border-color: var(--or); }
+        .salon-hero:hover, .salon-deck:hover { border-color: var(--rouge); }
+        .salon-deck { padding: 10px 12px; display: block; width: 100%; margin-bottom: 8px; }
+        .salon-deck b { display: block; font-size: 0.95rem; }
+        .salon-deck span { color: var(--sourdine); font-size: 0.78rem; }
+        .salon-langue {
+            font: inherit; font-size: 0.78rem; color: var(--sourdine);
+            background-color: var(--carte); border: 1px solid var(--bord);
+            border-radius: 6px; padding: 2px 7px; cursor: pointer; margin-left: 6px;
+        }
+        .salon-retour {
+            font: inherit; color: var(--sourdine); background: none;
+            border: none; cursor: pointer; padding: 0; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Marvel Champions</h1>
+        <p id="salon-entete"></p>
+        <p id="salon-statut"></p>
+        <div id="salon-attente">
+            <b>Tu es prêt<span class="points"></span></b>
+            <span id="salon-attente-detail">En attente du lancement de la partie par l’hôte.</span>
+        </div>
+        <div id="salon-choix"></div>
+    </main>
+    <script type="module" src="/public/js/salon/app.js"></script>
+</body>
+</html>

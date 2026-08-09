@@ -1,0 +1,449 @@
+/* ============================================================
+   Marvel Champions — New Game Wizard (premium dark redesign)
+   Layered on top of menu/style.css. Only presentation:
+   all functional ids/classes/behaviour are preserved.
+   ============================================================ */
+
+@font-face{
+    font-family:'MarvelFan';
+    src:url('/public/fonts/MarvelRegular-Dj83.ttf') format('truetype');
+    font-display:swap;
+}
+
+:root{
+    --w-bg-0:#0b0c10; --w-bg-1:#111319;
+    --w-panel:#171a22; --w-panel-2:#1d212b;
+    --w-line:#2a2f3a; --w-line-soft:#232833;
+    --w-txt:#e7eaf0; --w-txt-dim:#9aa2b1; --w-txt-mute:#6b7280;
+    --w-red:#e62429; --w-red-2:#ff3b3f; --w-red-deep:#8f1418;
+    --w-gold:#f2a900; --w-green:#37b24d;
+    --w-radius:14px; --w-radius-sm:10px;
+}
+
+.mvl{font-family:'MarvelFan','Arial Narrow',sans-serif;letter-spacing:.5px;font-weight:400}
+
+/* ---------- base ---------- */
+body{
+    padding:0;
+    font-family:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    color:var(--w-txt);
+    background:radial-gradient(1100px 560px at 50% -12%,rgba(230,36,41,.12),transparent 60%),
+               linear-gradient(180deg,var(--w-bg-1),var(--w-bg-0));
+    background-attachment:fixed;
+    min-height:100vh;
+    padding-bottom:80px; /* room for fixed footer */
+    /* cartes plus compactes (surcharge les vars de scene.html pour limiter le scroll) */
+    --card--width:86px;
+    --card--height:120px;
+}
+/* paquets en bande horizontale (au lieu d'un pavé qui s'empile) */
+#set-images{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:6px}
+/* contenir le mur de sets modulaires : scroll interne, la page ne s'allonge pas */
+#modular-sets{max-height:44vh;overflow-y:auto;align-content:flex-start}
+
+/* Le bloc « panneaux resserrés » est descendu plus bas dans ce fichier, apres
+   les regles qu'il corrige : il les precedait, et ne gagnait que par
+   !important. Voir « panneaux resserrés » apres la section fieldset. */
+
+/* ---------- top bar (wordmark placeholder) ---------- */
+.w-topbar{position:relative;display:flex;align-items:center;gap:16px;height:60px;padding:0 22px;
+    background:linear-gradient(180deg,#15070a,#0e0f14);border-bottom:1px solid var(--w-line-soft)}
+.w-topbar .w-back{line-height:1;color:var(--w-txt-dim);text-decoration:none;font-size:14px;font-weight:600;
+    padding:8px 12px;border-radius:10px;border:1px solid transparent;transition:.15s}
+.w-topbar .w-back:hover{color:#fff;background:rgba(255,255,255,.06);border-color:var(--w-line)}
+.w-wordmark{font-size:30px;line-height:1;color:#fff;letter-spacing:1px;user-select:none}
+.w-wordmark span{color:var(--w-red-2)}
+
+/* ---------- stepper ---------- */
+.w-stepbar{position:sticky;top:0;z-index:40;display:flex;justify-content:center;
+    padding:14px 26px;background:rgba(11,12,16,.85);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--w-line-soft)}
+.w-stepper{display:flex;align-items:center;gap:6px}
+.w-step{display:flex;align-items:center;gap:10px;cursor:pointer;opacity:.55;transition:.2s;background:none;border:none;padding:0}
+.w-step.active,.w-step.done{opacity:1}
+.w-step .num{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;
+    font-size:13px;font-weight:800;border:1.5px solid var(--w-line);color:var(--w-txt-dim);
+    background:var(--w-panel-2);transition:.2s}
+.w-step.active .num{border-color:var(--w-red-2);color:#fff;
+    background:linear-gradient(160deg,var(--w-red),var(--w-red-deep));box-shadow:0 0 16px rgba(230,36,41,.5)}
+.w-step.done .num{border-color:var(--w-green);color:var(--w-green);background:rgba(55,178,77,.12)}
+.w-step .lbl{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.w-step .lbl .t{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--w-txt-mute)}
+.w-step .lbl .s{font-size:14px;font-weight:700;color:var(--w-txt)}
+.w-sep{width:34px;height:2px;background:var(--w-line);border-radius:2px}
+.w-sep.done{background:var(--w-green)}
+@media(max-width:900px){.w-step .lbl{display:none}.w-sep{width:16px}}
+
+/* ---------- panels / steps ---------- */
+.w-step-panel{display:none;width:100%;max-width:1180px;margin:0 auto;padding:26px 26px 40px;animation:wfade .3s ease}
+.w-step-panel.on{display:block}
+@keyframes wfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.w-step-h{margin-bottom:22px}
+.w-step-h .kicker{font-size:46px;line-height:1;color:#fff;text-transform:uppercase;display:inline-block;padding:2px 0}
+.w-step-h .kicker .accent{color:var(--w-red-2)}
+.w-step-h p{color:var(--w-txt-dim);font-size:14px;margin-top:10px;max-width:640px}
+
+/* ---------- fieldset -> group card ---------- */
+.w-step-panel fieldset{
+    border:1px solid var(--w-line-soft);
+    border-radius:var(--w-radius);
+    background:linear-gradient(180deg,var(--w-panel),rgba(23,26,34,.6));
+    padding:14px 18px 18px;
+    margin-bottom:20px;
+}
+.w-step-panel fieldset fieldset{border:none;background:none;padding:0;margin:0}
+.w-step-panel legend{
+    font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--w-txt-mute);
+    font-weight:700;padding:0 0 2px;
+}
+
+/* ---------- panneaux resserrés ---------- */
+/* Ces regles resserrent ce que les sections ci-dessus viennent de definir.
+   Elles etaient ecrites AVANT elles, tout en haut du fichier, et ne gagnaient
+   que par !important. Descendues ici, l'ordre de source suffit. */
+.w-step-panel{padding:18px 26px 30px}
+.w-step-h{margin-bottom:14px}
+.w-step-h .kicker{font-size:34px}
+.w-step-h p{margin-top:6px;font-size:13px}
+/* Le second selecteur vise les fieldsets imbriques : `.w-step-panel fieldset
+   fieldset{margin:0}` plus haut est plus specifique que `.w-step-panel
+   fieldset`, et reprenait la main des que le !important tombait.
+   Le `padding:12px 16px 14px` qui accompagnait ce margin-bottom n'est PAS
+   recopie : il etait deja perdant avant la purge (deux regles importantes, la
+   plus basse gagnait). Le remonter ici changerait le rendu. */
+.w-step-panel fieldset,
+.w-step-panel fieldset fieldset{margin-bottom:14px}
+
+/* ---------- generic toolbar buttons ---------- */
+.w-step-panel button:not(:has(img)):not(.w-nav){
+    /* small utility buttons (Expand / Random / Nemesis / Name / Import / seed…) */
+}
+.w-step-panel details button,
+.w-step-panel fieldset > div > button,
+.w-toolbtn{
+    font-size:12.5px;color:var(--w-txt-dim);background:var(--w-panel-2);
+    border:1px solid var(--w-line);border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s}
+.w-step-panel details button:hover,
+.w-step-panel fieldset > div > button:hover,
+.w-toolbtn:hover{color:var(--w-txt);border-color:#3a4150;background:#232a36}
+
+/* ---------- inputs ---------- */
+.w-step-panel input[type="text"],
+.w-step-panel input[type="number"]{
+    background:var(--w-bg-0);border:1px solid var(--w-line);color:var(--w-txt);
+    border-radius:9px;padding:8px 11px;font-size:13px;outline:none;transition:.15s}
+.w-step-panel input[type="text"]:focus,
+.w-step-panel input[type="number"]:focus{border-color:var(--w-red);box-shadow:0 0 0 3px rgba(230,36,41,.15)}
+.w-step-panel .slider,
+.w-step-panel input[type="range"]{accent-color:var(--w-red)}
+
+/* ---------- cards: hover lift + red glow on select ---------- */
+#set-images div,
+#set-content button,
+#modular-sets button,
+#encounter-sets button{
+    transition:transform .16s cubic-bezier(.2,.7,.3,1),box-shadow .16s,border-color .16s;
+}
+#set-images div:hover,
+#set-content button:hover,
+#modular-sets button:hover,
+#encounter-sets button:hover{
+    transform:translateY(-4px) scale(1.03);
+    z-index:5;
+}
+#set-images div.click,
+#set-content button.click,
+#modular-sets button.click:not(.lock),
+#encounter-sets button.click{
+    box-shadow:0 0 0 2px var(--w-red-2),0 0 20px rgba(230,36,41,.55),0 8px 22px rgba(0,0,0,.6);
+}
+#modular-sets button.lock.click{
+    box-shadow:0 0 0 2px var(--w-gold),0 0 18px rgba(242,169,0,.5),0 8px 22px rgba(0,0,0,.6);
+}
+
+/* hero slots look a touch more premium */
+img[id^="img-heroes"]{
+    box-shadow:0 4px 14px rgba(0,0,0,.5);
+    transition:transform .16s,box-shadow .16s;
+}
+label:has(img[id^="img-heroes"]):hover img{transform:translateY(-3px) scale(1.02)}
+
+/* starter gallery hero cards */
+#starter-gallery .starter-hero img{transition:transform .16s,border-color .16s}
+#starter-gallery .starter-hero:hover img{transform:translateY(-3px) scale(1.03)}
+
+/* details (Modes/Rules/Challenges/Campaign/Other) restyle */
+.w-step-panel details{
+    border:1px solid var(--w-line-soft);border-radius:12px;
+    background:var(--w-panel);min-width:0}
+.w-step-panel details summary{color:var(--w-txt);font-weight:600}
+/* scene-inline.css donne une couleur de bordure a chaque bloc d'options
+   (#mode vert, #rules cramoisi, #challenge magenta…) avec un selecteur d'id :
+   aucune combinaison de classes ne passe devant un id. Il en faut un ici
+   aussi. C'est le travail que faisait le !important de la regle ci-dessus. */
+.w-step-panel details#mode,
+.w-step-panel details#rules,
+.w-step-panel details#challenge,
+.w-step-panel details#settings_other,
+.w-step-panel details#campaign_log{border-color:var(--w-line-soft)}
+
+/* ---------- footer nav ---------- */
+.w-foot{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:16px;
+    padding:12px 26px;background:rgba(11,12,16,.9);backdrop-filter:blur(14px);border-top:1px solid var(--w-line-soft)}
+.w-foot .w-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.w-foot .w-pill{display:flex;align-items:center;gap:8px;background:var(--w-panel);border:1px solid var(--w-line);
+    border-radius:999px;padding:7px 14px;color:var(--w-txt-dim);font-size:13px}
+.w-foot .w-pill b{color:var(--w-txt)}
+.w-foot .w-pill .pk{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--w-txt-mute);font-weight:700}
+.w-foot .w-spacer{flex:1}
+.w-nav{display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;
+    padding:12px 22px;border-radius:11px;font-size:14px;font-weight:700;transition:.15s;min-height:0}
+.w-nav.w-back-btn{background:var(--w-panel-2);color:var(--w-txt-dim);border:1px solid var(--w-line)}
+.w-nav.w-back-btn:hover{color:var(--w-txt);border-color:#3a4150}
+.w-nav.w-next{background:linear-gradient(160deg,var(--w-red-2),var(--w-red-deep));color:#fff;box-shadow:0 6px 20px rgba(230,36,41,.4)}
+.w-nav.w-next:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(230,36,41,.55)}
+.w-nav.w-next:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.6);transform:none;box-shadow:none}
+.w-nav.w-create{background:linear-gradient(160deg,var(--w-green),#1f7a32);color:#fff;box-shadow:0 6px 20px rgba(55,178,77,.4)}
+.w-nav.w-create:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(55,178,77,.55)}
+
+/* ---------- splash comic « KAPOW » du villain sélectionné ---------- */
+:root{
+    --burst:polygon(50% 0%,61% 20%,85% 8%,78% 33%,100% 35%,82% 50%,100% 65%,78% 67%,85% 92%,61% 80%,50% 100%,39% 80%,15% 92%,22% 67%,0% 65%,18% 50%,0% 35%,22% 33%,15% 8%,39% 20%);
+}
+#w-splash{
+    position:relative;display:flex;align-items:center;gap:30px;
+    min-height:196px;border-radius:16px;overflow:hidden;margin-bottom:16px;
+    border:1px solid var(--w-line-soft);background:#0c0d12;padding:16px 30px;
+}
+/* fond flouté du villain */
+#w-splash .w-splash-bg{position:absolute;inset:0;background-size:cover;background-position:center 22%;
+    filter:blur(30px) saturate(1.2) brightness(.4);transform:scale(1.3);transition:background-image .35s}
+/* halftone (points Ben-Day) + lignes de vitesse */
+#w-splash::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+    background:
+      repeating-conic-gradient(from 0deg at 62% 50%, rgba(255,255,255,.045) 0deg 4deg, transparent 4deg 9deg),
+      radial-gradient(circle at 62% 50%, transparent 30%, rgba(11,12,16,.35) 75%),
+      radial-gradient(rgba(255,255,255,.10) 1.3px, transparent 1.4px) 0 0/8px 8px}
+#w-splash::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,12,16,.9) 0%,rgba(11,12,16,.35) 50%,rgba(11,12,16,.7) 100%)}
+
+/* carte du villain, bordée comme une case de BD, inclinée */
+#w-splash .w-splash-card{position:relative;z-index:3;flex:none;width:120px;height:168px;border-radius:4px;overflow:hidden;
+    border:3px solid #0b0c10;box-shadow:0 0 0 3px #fff,6px 12px 26px rgba(0,0,0,.7);transform:rotate(-4deg)}
+#w-splash .w-splash-card img{width:100%;height:100%;object-fit:cover;display:block}
+
+#w-splash .w-splash-info{position:relative;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+
+/* l'éclat KAPOW */
+.kapow{position:relative;display:inline-flex;align-items:center;justify-content:center;
+    padding:30px 46px;background:#ffd23f;clip-path:var(--burst);transform:rotate(-4deg);
+    filter:drop-shadow(3px 4px 0 rgba(0,0,0,.55))}
+.kapow::before{content:"";position:absolute;inset:-7px;background:#0b0c10;clip-path:var(--burst);z-index:-1}
+.w-splash-name{font-size:46px;line-height:.9;color:#12151c;text-transform:uppercase;letter-spacing:1px;
+    text-align:center;text-shadow:2px 2px 0 #fff,-1px -1px 0 rgba(255,255,255,.6);word-break:break-word;max-width:9ch}
+
+/* stats en petites pastilles comic */
+.w-splash-stats{display:flex;gap:10px;flex-wrap:wrap}
+.w-splash-stats .st{display:flex;align-items:baseline;gap:6px;background:rgba(12,13,18,.75);border:2px solid #fff;
+    border-radius:9px;padding:5px 11px}
+.w-splash-stats .st b{font-size:16px;font-weight:800;color:#fff}
+.w-splash-stats .st span{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--w-txt-dim)}
+.w-splash-stats .st.expert{border-color:var(--w-red-2)}
+.w-splash-stats .st.expert b{color:var(--w-red-2)}
+
+/* animation d'apparition (pop) */
+@keyframes kapow-in{0%{transform:rotate(-4deg) scale(0)}62%{transform:rotate(-1deg) scale(1.14)}100%{transform:rotate(-4deg) scale(1)}}
+@keyframes card-in{0%{transform:rotate(-4deg) translateX(-26px);opacity:0}100%{transform:rotate(-4deg) translateX(0);opacity:1}}
+@keyframes stats-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+#w-splash.pop .kapow{animation:kapow-in .42s cubic-bezier(.2,1.35,.4,1)}
+#w-splash.pop .w-splash-card{animation:card-in .42s ease}
+#w-splash.pop .w-splash-stats{animation:stats-in .35s ease .12s both}
+
+/* état vide */
+#w-splash.empty{min-height:104px;justify-content:center;text-align:center;gap:0}
+#w-splash.empty .w-splash-card,#w-splash.empty .w-splash-stats,#w-splash.empty .w-splash-bg{display:none}
+#w-splash.empty .kapow{background:none;clip-path:none;padding:0;transform:none;filter:none}
+#w-splash.empty .kapow::before{display:none}
+#w-splash.empty .w-splash-name{font-size:15px;color:var(--w-txt-mute);text-transform:none;font-weight:600;text-shadow:none;letter-spacing:0;max-width:none}
+
+/* ============================================================
+   MODERNISATION — réécrit le vieux menu/style.css (page scene only)
+   ============================================================ */
+
+/* --- images de cartes : coins arrondis, bordure fine, plus d'outline "outset" --- */
+img[id^="img-heroes"],
+#set-content img,
+#modular-sets img,
+#encounter-sets img,
+#starter-gallery img{
+    outline:none;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    box-shadow:0 4px 14px rgba(0,0,0,.45);
+}
+/* Une carte selectionnee reprend l'outline rouge (orange si verrouillee) de
+   menu/style.css : `.click img` y est plus specifique que `#modular-sets img`.
+   Le halo rouge moderne est rendu par box-shadow, pas par outline. */
+#set-content .click img,
+#modular-sets .click img,
+#encounter-sets .click img,
+#modular-sets .lock.click img{outline:none}
+/* Et au survol d'une carte selectionnee, menu/style.css repose une bordure
+   noire. Le selecteur doit etre calque sur le sien, `button` compris : sans ce
+   `button`, la specificite est plus faible d'un cran et la bordure revient. */
+#set-content button.click:hover img,
+#modular-sets button.click:hover img,
+#encounter-sets button.click:hover img{border-color:rgba(255,255,255,.10)}
+/* on retire les grosses ombres de texte "gravées" façon rétro */
+#set-content button,#modular-sets button,#encounter-sets button,
+#set-images div::before,#set-images div::after,
+#modular-sets button::before,#modular-sets button::after,
+#encounter-sets button::after,#set-content button::after{
+    text-shadow:none;
+    font-family:inherit;
+}
+/* la fine ombre portée dure -> ombre douce */
+#set-images div,#set-content button,#modular-sets button,#encounter-sets button{
+    filter:none;
+}
+/* Deux etats de menu/style.css rallument un filter et sont plus specifiques
+   que la regle ci-dessus : le survol (drop-shadow blanc) et les paquets
+   indisponibles (grayscale). Les repasser ici, a specificite egale et plus
+   bas, remplace le !important. */
+#set-images div:hover,#set-content button:hover,
+#modular-sets button:hover,#encounter-sets button:hover{filter:none}
+#set-images div.disable{filter:none}
+
+/* --- tuiles de paquet (Scénario) --- */
+#set-images div.set{
+    background:var(--w-panel-2);
+    border:1px solid var(--w-line);
+    border-radius:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.4);
+    transition:transform .16s cubic-bezier(.2,.7,.3,1),box-shadow .16s,border-color .16s;
+}
+#set-images div.set:hover{border-color:#3a4150;transform:translateY(-3px) scale(1.02)}
+#set-images div.set.click{border-color:var(--w-red-2);box-shadow:0 0 0 2px var(--w-red-2),0 0 18px rgba(230,36,41,.5)}
+#set-images div img{border:none;border-radius:8px;box-shadow:none}
+/* meme piege que pour les cartes de set : `#set-images div.click:hover img`
+   de menu/style.css repose une bordure noire au survol d'un paquet choisi */
+#set-images div.click:hover img{border:none}
+/* pastille titre (haut-gauche) + compteur (bas-droite) */
+#set-images div::before{
+    top:8px;left:8px;
+    background:rgba(0,0,0,.62);color:#fff;
+    font-size:10px;font-weight:700;letter-spacing:.5px;
+    padding:2px 7px;border-radius:999px;backdrop-filter:blur(4px);
+}
+#set-images div::after{
+    bottom:8px;right:8px;
+    background:rgba(0,0,0,.62);color:#fff;
+    font-size:10px;font-weight:700;
+    padding:2px 7px;border-radius:999px;backdrop-filter:blur(4px);
+}
+#set-images div.full::after{background:rgba(55,178,77,.85);color:#04140a}
+
+/* --- badge compteur sur les cartes set/villain : petit, propre --- */
+#set-content button::after,
+#modular-sets button::after,
+#encounter-sets button::after{
+    content:attr(data-text);
+    font-size:11px;font-weight:800;line-height:1.2;
+    right:5px;bottom:5px;top:auto;left:auto;
+    background:rgba(0,0,0,.6);color:#fff;
+    padding:1px 6px;border-radius:999px;backdrop-filter:blur(3px);
+}
+#set-content div button.click::after,
+#modular-sets button.click::after,
+#encounter-sets button.click::after{color:#fff;background:var(--w-red)}
+#modular-sets button.lock.click::after{background:var(--w-gold);color:#221800}
+/* on masque le compteur au survol (comme avant) proprement */
+#set-content div button:hover::after,
+#modular-sets button:hover::after,
+#encounter-sets button:hover::after{opacity:0}
+
+/* --- nom du set modulaire (affiché via "Afficher noms") --- */
+#modular-sets.show-set-name button::before{
+    top:4px;left:4px;right:4px;
+    background:rgba(0,0,0,.66);color:#fff;
+    font-size:9px;font-weight:700;letter-spacing:0;
+    line-height:1.15;padding:2px 5px;border-radius:6px;
+    word-spacing:normal;backdrop-filter:blur(3px);
+}
+
+/* --- SLOTS DE HÉROS : cadres modernes + état vide "+ Ajouter" --- */
+label:has(#img-heroes-1),label:has(#img-heroes-2),
+label:has(#img-heroes-3),label:has(#img-heroes-4){
+    border-radius:10px;border:1.5px dashed var(--w-line);background:var(--w-panel-2);
+    position:relative;transition:border-color .15s,transform .15s;overflow:hidden;
+}
+label:has(#img-heroes-1):hover,label:has(#img-heroes-2):hover,
+label:has(#img-heroes-3):hover,label:has(#img-heroes-4):hover{border-color:var(--w-red);transform:translateY(-2px)}
+/* le "+" quand le slot est vide */
+label:has(img[id^="img-heroes"]:not([src]))::after,
+label:has(img[id^="img-heroes"][src=""])::after{
+    content:"+";position:absolute;inset:0;display:grid;place-items:center;
+    font-size:30px;color:var(--w-txt-mute);pointer-events:none;
+}
+/* le champ fichier "blanc" par-dessus -> invisible */
+input[type="file"][name="heroes"],
+input[type="file"][name="scenario"]{
+    opacity:0;background:transparent;color:transparent;
+    width:100%;height:100%;left:0;top:0;cursor:pointer;
+}
+/* quand rempli : bordure pleine */
+label:has(img[id^="img-heroes"][src]:not([src=""])){border-style:solid;border-color:var(--w-line)}
+img[id^="img-heroes"]{border-radius:9px}
+
+/* --- galerie de héros de départ --- */
+#starter-gallery-wrap>div:first-child{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--w-txt-mute);font-weight:700}
+/* LES DEUX SEULS !important DE CE FICHIER — exception documentee (plan 02-04).
+   Les vignettes de la galerie sont fabriquees par le script de scene.html, qui
+   leur pose un ATTRIBUT style : `border-radius:5px` a la construction (vers la
+   ligne 1700), puis `borderColor = '#c00'` au survol. Un style en ligne bat
+   toute feuille : ni l'ordre de source ni la specificite n'y peuvent quoi que
+   ce soit. Le jour ou ces deux valeurs quitteront le JavaScript, ces deux
+   !important disparaitront avec elles. */
+#starter-gallery .starter-hero img{border-radius:9px !important;border:2px solid transparent;transition:transform .15s,border-color .15s}
+#starter-gallery .starter-hero:hover img{transform:translateY(-3px) scale(1.03);border-color:var(--w-red) !important}
+#starter-gallery .starter-hero div{color:var(--w-txt-dim)}
+
+/* --- cases à cocher / radios / sliders modernes --- */
+.w-step-panel input[type="checkbox"],
+.w-step-panel input[type="radio"]{
+    width:18px;height:18px;min-width:18px;min-height:18px;
+    accent-color:var(--w-red);margin:.3rem;cursor:pointer;
+}
+.w-step-panel input[type="range"]{accent-color:var(--w-red);height:5px;cursor:pointer}
+.w-step-panel select{
+    background:var(--w-bg-0);color:var(--w-txt);border:1px solid var(--w-line);
+    border-radius:8px;padding:6px 10px;font-size:13px;outline:none;
+}
+
+/* --- labels d'options plus lisibles --- */
+#mode label,#rules label,#challenge label,#settings_other label{
+    color:var(--w-txt);font-size:13px;border-radius:8px;padding:2px 4px;transition:background .12s;
+}
+#mode label:hover,#rules label:hover,#settings_other label:hover{background:rgba(255,255,255,.04)}
+
+/* --- scrollbars fines et sombres --- */
+#modular-sets::-webkit-scrollbar,#set-images::-webkit-scrollbar,
+.w-step-panel ::-webkit-scrollbar{height:9px;width:9px}
+#modular-sets::-webkit-scrollbar-thumb,#set-images::-webkit-scrollbar-thumb,
+.w-step-panel ::-webkit-scrollbar-thumb{background:#2f3644;border-radius:999px}
+#modular-sets::-webkit-scrollbar-track,#set-images::-webkit-scrollbar-track,
+.w-step-panel ::-webkit-scrollbar-track{background:transparent}
+
+/* --- boutons "Create / Join" en bas de l'étape 4 : plus modernes --- */
+#play-buttons button,
+#game-start>div>button{
+    background:var(--w-panel-2);border:1px solid var(--w-line);
+    border-radius:10px;color:var(--w-txt);padding:9px 16px;
+    font-size:13px;transition:.15s;
+}
+#play-buttons button:hover,#game-start>div>button:hover{border-color:#3a4150;background:#232a36}
+#play-buttons a{color:inherit;text-decoration:none}
+#clearCacheButton{
+    background:transparent;border:1px solid var(--w-line);color:var(--w-txt-mute);
+    border-radius:9px;font-size:12px;padding:6px 12px;
+}

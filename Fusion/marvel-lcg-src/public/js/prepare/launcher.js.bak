@@ -1,0 +1,60 @@
+// launcher.js — construit le NewGameDescriptor et lance la partie.
+// IMPORTANT : reproduit à l'identique le contrat /new?data= de l'ancien scene.html.
+"use strict";
+import { catalog } from "/public/js/prepare/catalog.js";
+
+const uniq = (arr) => [...new Set(arr)];
+
+/** Résout le JSON de scénario à envoyer au moteur (variante Expert si demandée). */
+async function resolveScenarioRaw(state) {
+    const sc = state.scenario;
+    if (state.difficulty.base === "expert" && sc.hasExpertVariant) {
+        const ev = await catalog.expertVariant(sc.id.replace(/_expert$/, ""));
+        if (ev) return ev.rawJson;
+    }
+    return sc.rawJson;
+}
+
+function buildRules(state) {
+    const rules = [];
+    if (state.difficulty.skirmish) rules.push("mode_skirmish");
+    if (state.mode.id === "campaign") rules.push("mode_campaign");
+    const h = state.difficulty.heroic | 0;
+    if (h > 0) rules.push("mode_heroic_" + h);
+    rules.push("v16_all");
+    rules.push("no_crisis_of_infinite_deadpools");
+    rules.push("no_encounter_cards_ignore_crisis");
+    return rules;
+}
+
+export async function buildDescriptor(state) {
+    const raw = await resolveScenarioRaw(state);
+    const modular = state.difficulty.selectedModularSets || [];
+    const encounter_set_names = uniq([...(raw.encounter_sets || []), ...modular]);
+    const hero_json = state.players
+        .slice(0, state.playerCount)
+        .filter((p) => p && p.deck)
+        .map((p) => JSON.stringify(p.deck));
+    return {
+        campaign_json: JSON.stringify(raw),
+        encounter_set_names,
+        hero_json,
+        seed: state.seed == null ? -1 : state.seed,
+        timeout: 0,
+        challenges: raw.challenges || [],
+        rules: buildRules(state),
+        campaign_log: (state.mode && state.mode.id === "campaign" && state.campaignLog) ? state.campaignLog : {},
+    };
+}
+
+/** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local). */
+export async function launch(state) {
+    const descriptor = await buildDescriptor(state);
+    const cmd = encodeURIComponent(JSON.stringify(descriptor));
+    const res = await fetch("new?data=" + cmd);
+    if (!res.ok) throw new Error("Failed to create the game (HTTP " + res.status + ")");
+    // Rejoint la partie : la racine "/?hot_seat" sert le jeu (marvel.html),
+    // pas "?hot_seat" qui resterait sur /prepare.html.
+    window.location.href = "/?hot_seat";
+    return descriptor;
+}

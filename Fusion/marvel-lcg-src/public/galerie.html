@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie de cartes · Marvel Champions</title>
+    <link rel="stylesheet" href="/public/css/galerie.css?v=1">
+</head>
+<body>
+    <header class="g-entete">
+        <a class="g-retour" id="lien-retour" href="/prepare.html">←</a>
+        <h1 id="titre-page">Galerie de cartes</h1>
+        <span id="zone-langue"></span>
+    </header>
+
+    <section class="g-filtres" id="filtres" hidden>
+        <input type="search" id="champ-recherche" autocomplete="off">
+        <select id="select-type"></select>
+        <select id="select-set"></select>
+        <label class="g-interrupteur" id="label-fanmade">
+            <input type="checkbox" id="toggle-fanmade">
+            <span>Fan-made</span>
+        </label>
+    </section>
+
+    <p class="g-compteur" id="compteur"></p>
+
+    <main class="g-grille" id="grille" aria-live="polite">
+        <p class="g-chargement" id="chargement">Chargement…</p>
+    </main>
+    <p class="g-vide" id="vide" hidden></p>
+
+    <!-- Sentinelle du rendu incrémental : observée par IntersectionObserver,
+         le bouton sert de secours si l'observation est indisponible. -->
+    <div class="g-sentinelle" id="sentinelle" hidden>
+        <button type="button" id="btn-plus"></button>
+    </div>
+
+    <script type="module" src="/public/js/galerie/app.js?v=1"></script>
+</body>
+</html>

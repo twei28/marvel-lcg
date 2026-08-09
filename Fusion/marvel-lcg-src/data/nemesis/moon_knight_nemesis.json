@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Moon Knight Nemesis",
+    "encounters": [
+        "76013",
+        "76014",
+        "76015",
+        "76015",
+        "76016"
+    ]
+}

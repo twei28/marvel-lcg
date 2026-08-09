@@ -1,0 +1,586 @@
+{
+ "": [
+  {
+   "card_id": "example_event",
+   "pic_id": "player",
+   "type": "Event",
+   "name": "Example Event",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "",
+   "text": ""
+  }
+ ],
+ "stanlee": [
+  {
+   "card_id": "90101a",
+   "type": "Hero",
+   "name": "* Stan Lee",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "TRUE BELIEVER"
+   ],
+   "set_name": "Stan Lee",
+   "text": "Stan Lee has the text boxes of each hero used with the <i>Marvelous</i> ability."
+  },
+  {
+   "card_id": "90101b",
+   "type": "AlterEgo",
+   "name": "* Stan Lee",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Stan Lee",
+   "text": "Stan Lee has the text boxes of each alter-ego used with the <i>Marvelous</i> ability.\r\n<i>Marvelous</i> — During deck-building, your deck must include 15 hero-specific cards from among other hero sets in your collection."
+  }
+ ],
+ "rainy": [
+  {
+   "card_id": "90102a",
+   "type": "Hero",
+   "name": "* Hulk",
+   "subtitle": "",
+   "desc": {
+    "HP": "15",
+    "ATK": "2",
+    "THW": "0",
+    "DEF": "3",
+    "HS": "4"
+   },
+   "traits": [
+    "AVENGER",
+    "GAMMA"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "Anger — <b>Response</b>: After Hulk takes damage, deal 1 damage to an enemy."
+  },
+  {
+   "card_id": "90102b",
+   "type": "AlterEgo",
+   "name": "* Bruce Banner",
+   "subtitle": "",
+   "desc": {
+    "HP": "15",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "GENIUS",
+    "SCIENTIST"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "Bring Out The Big Guy — <b>Interrupt</b>: When an enemy would scheme, spend a [physical] resource → change to your hero form. That enemy attacks you instead."
+  },
+  {
+   "card_id": "90103",
+   "type": "Ally",
+   "name": "* Black Widow",
+   "subtitle": "Natasha Romanoff",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AVENGER",
+    "S.H.I.E.L.D.",
+    "SPY"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "[star] <b>Response</b>: After Black Widow thwarts, remove 1 threat from another scheme.\n<b>Hero Action</b>: Exhaust Black Widow → flip to your alter-ego form."
+  },
+  {
+   "card_id": "90104",
+   "type": "Event",
+   "name": "Brilliant Mind",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Alter-Ego Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you paid for this card using only [mental] resources, choose to either remove 2 additional threat from that scheme or confuse an enemy."
+  },
+  {
+   "card_id": "90105",
+   "type": "Event",
+   "name": "Hulk Smash",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Hero Action</b>: Make the following attacks against the same target:\n• <i>(attack)</i>: Deal 3 damage.\n• <i>(attack)</i>: Deal 3 damage.\n• <i>(attack)</i>: Deal 3 damage."
+  },
+  {
+   "card_id": "90106",
+   "type": "Event",
+   "name": "Interception",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Hero Interrupt</b>: When a treachery is revealed, take 2 damage → cancel all of its effects and discard it. If you overpaid for this card with a [energy] or [physical] resource, remove 2 threat from a scheme."
+  },
+  {
+   "card_id": "90107",
+   "type": "Event",
+   "name": "Reckless Charge",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to Hulk → deal 3 damage to an enemy. If you paid for this card using a [physical] resource, this attack gains overkill."
+  },
+  {
+   "card_id": "90108",
+   "type": "Resource",
+   "name": "Natural Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Hulk (Rainy)",
+   "text": "Spend this card only in alter-ego form."
+  },
+  {
+   "card_id": "90109",
+   "type": "Resource",
+   "name": "Unnatural Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Hulk (Rainy)",
+   "text": "Spend this card only in hero form."
+  },
+  {
+   "card_id": "90110",
+   "type": "Support",
+   "name": "The Other Guy",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "GAMMA",
+    "PERSONA"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Alter-Ego Response</b> <i>(thwart)</i>: After you change form, remove 1 threat from a scheme. <i>(Limit once per phase.)</i>\n<b>Hero Response</b> <i>(attack)</i>: After you change form, deal 1 damage to an enemy. <i>(Limit once per phase.)</i>"
+  },
+  {
+   "card_id": "90111",
+   "type": "Upgrade",
+   "name": "Intimidating Roar",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "SUPERPOWER"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "<b>Hero Response</b> <i>(thwart)</i>: After Hulk takes damage from an attack, exhaust Intimidating Roar → remove 1 threat from a scheme (2 threat instead if you took 3 or more damage)."
+  },
+  {
+   "card_id": "90112",
+   "type": "Upgrade",
+   "name": "Limitless Endurance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "GAMMA",
+    "SUPERPOWER"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "You get +3 hit points and Bruce Banner gets +1 REC.\n<b>Hero Action</b>: Exhaust Limitless Endurance → heal 1 damage from Hulk."
+  },
+  {
+   "card_id": "90113",
+   "type": "Upgrade",
+   "name": "Limitless Strength",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "GAMMA",
+    "SUPERPOWER"
+   ],
+   "set_name": "Hulk (Rainy)",
+   "text": "Hulk gets +1 ATK.\n<b>Hero Resource</b>: Exhaust Limitless Strength → generate a [physical] resource."
+  },
+  {
+   "card_id": "90114a",
+   "type": "Hero",
+   "name": "* Rescue",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "Rapid Responder — [star] <b>Response</b>: After you use your basic DEF, make a basic thwart or attack without exhausting Rescue."
+  },
+  {
+   "card_id": "90114b",
+   "type": "AlterEgo",
+   "name": "* Pepper Potts",
+   "subtitle": "Executive",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "Executive — <b>Action</b>: Each player may discard 1 card from their hand to search their deck for a [[TECH]] upgrade and add it to their hand. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "90115",
+   "type": "Ally",
+   "name": "* Iron Man",
+   "subtitle": "Tony Stark",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "[star] <b>Interrupt</b>: When Iron Man uses a basic power, spend 1 resource of any type → Iron Man gets +2 to that basic power for that use."
+  },
+  {
+   "card_id": "90116",
+   "type": "Event",
+   "name": "Magnetic Restraints",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Hero Action</b>: Choose one:\n• Stun an enemy.\n• Choose an attachment with the text \"Hero Action\" or \"Hero Response\" and discard it."
+  },
+  {
+   "card_id": "90117",
+   "type": "Event",
+   "name": "Repulsor Blasts",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. This attack gains ranged. Spend X [energy] resources (to a maximum of 3) → repeat this attack X times against targets of your choosing."
+  },
+  {
+   "card_id": "90118",
+   "type": "Event",
+   "name": "Responsive",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Hero Response</b>: After you use a basic power, ready Rescue. You get +1 to a basic power of your choice <i>(THW, ATK or DEF)</i> until the end of the round."
+  },
+  {
+   "card_id": "90119",
+   "type": "Event",
+   "name": "Search and Rescue",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC",
+    "THWART"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If there is a crisis icon in play, remove 2 additional threat from that scheme and this thwart ignores the crisis icon."
+  },
+  {
+   "card_id": "90120",
+   "type": "Support",
+   "name": "* Stark Resilient",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BUSINESS",
+    "LOCATION"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Resource</b>: Exhaust Stark Resilient → generate a [wild] resource for any player."
+  },
+  {
+   "card_id": "90121",
+   "type": "Upgrade",
+   "name": "First Responder",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "3,medical",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL",
+    "TITLE"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "Uses (3 medical counters).\n<b>Hero Response</b>: After another character takes damage, exhaust this card and remove 1 medical counter from it → heal 1 damage from that character (2 damage instead if they are an identity)."
+  },
+  {
+   "card_id": "90122",
+   "type": "Upgrade",
+   "name": "Magnetic Deflector",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy initiates an attack, discard the top card of your deck → that enemy gets -1 ATK for that attack. <i>(Limit twice per round.)</i>"
+  },
+  {
+   "card_id": "90123",
+   "type": "Upgrade",
+   "name": "* Model V Chassis",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "You get +3 hit points.\n<b>Hero Response</b>: After you defend and take no damage, exhaust Model V Chassis and spend 1 resource of any type → give Rescue a tough status card."
+  },
+  {
+   "card_id": "90124",
+   "type": "Upgrade",
+   "name": "* Model V Helmet",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "Rescue gets +1 THW and ignores the patrol keyword.\n<b>Hero Response</b> <i>(thwart)</i>: After a side scheme enters play, exhaust Model V Helmet → remove 1 threat from that scheme (2 threat instead if a crisis icon is in play)."
+  },
+  {
+   "card_id": "90125",
+   "type": "Upgrade",
+   "name": "Repulsor Gauntlets",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Rescue (Rainy)",
+   "text": "Rescue gets +1 ATK.\n<b>Hero Interrupt</b>: When Rescue makes a basic attack, exhaust Repulsor Gauntlets → that attack gains ranged."
+  },
+  {
+   "card_id": "90126",
+   "type": "Obligation",
+   "name": "Board Meeting",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Pepper Potts"
+   },
+   "traits": [],
+   "set_name": "Rescue (Rainy)",
+   "text": "<b><i>Give to the Pepper Potts player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Pepper Potts → remove Board Meeting from the game.\n• Discard 1 [[TECH]] upgrade you control. If no upgrade was discarded this way, this card gains surge. Discard this obligation."
+  },
+  {
+   "card_id": "90127",
+   "type": "SideScheme",
+   "name": "Helicopter Crash",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Crisis": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Rescue (Rainy) Nemesis",
+   "text": "A news helicopter has crashed in a heavily populated area and civilians are in danger! Evacuate them before the chopper explodes and any more lives are lost."
+  },
+  {
+   "card_id": "90128",
+   "type": "Environment",
+   "name": "Burning Building",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "DISASTER",
+    "LOCATION"
+   ],
+   "set_name": "Rescue (Rainy) Nemesis",
+   "text": "<b>Forced Response</b>: After the villain phase begins, deal 1 indirect damage to each player.\n<b>Hero Action</b>: Exhaust your hero and spend a [physical] resource → discard Burning Building."
+  },
+  {
+   "card_id": "90129",
+   "type": "Obligation",
+   "name": "Wounded Civilians",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "GiveTo": "Pepper Potts",
+    "Uses": "1*,bystander"
+   },
+   "traits": [],
+   "set_name": "Rescue (Rainy) Nemesis",
+   "text": "Uses (1 [per_player] civilian counters).\n<b>Interrupt</b>: When a player would heal damage from a character, remove 1 civilian counter from here instead."
+  },
+  {
+   "card_id": "90130",
+   "type": "Treachery",
+   "name": "Catastrophic Collision",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "Peril": "1"
+   },
+   "traits": [],
+   "set_name": "Rescue (Rainy) Nemesis",
+   "text": "Peril.\n<b>When Revealed</b>: Choose one:\n• Deal 2 [per_player] indirect damage to the players. This damage gains piercing.\n• Deal each player 1 facedown encounter card.\n• Each player discards the highest-cost card from their hand."
+  },
+  {
+   "card_id": "90131",
+   "type": "Attachment",
+   "name": "Innocent Bystander",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CIVILIAN",
+    "PERSONA"
+   ],
+   "set_name": "Rescue (Rainy) Nemesis",
+   "text": "Attach to your identity.\nYou get -1 hand size.\n<b>Hero Action</b>: Exhaust your hero → discard this card and remove 1 threat from a scheme.\n[star] <b>Boost</b>: Place 2 threat on the main scheme."
+  }
+ ]
+}

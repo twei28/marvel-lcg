@@ -1,0 +1,6 @@
+#scene.no-new .badge-new::before
+{
+    content: "";
+    display: none;
+}
+

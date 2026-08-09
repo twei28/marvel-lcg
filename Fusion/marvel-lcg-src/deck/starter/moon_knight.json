@@ -1,0 +1,69 @@
+{
+    "version": "0.5.8",
+    "name": "Moon Knight",
+    "metadata": {
+        "url": "https://drive.google.com/drive/folders/1n1H19t4hpvy8TJhKdzdkXeHzZH-Q4Pza",
+        "author": "DesignHacker",
+        "note": "Decklist officielle du scan MK_starter-deck.png. Regle Cheap Shots : tous les aspects, aucune carte de cout imprime >= 3, au moins 4 cartes de chaque aspect (les evenements signature bi-classes comptent pour leur aspect)."
+    },
+    "hero": [
+        "76001a,76001b,76001c,76001d,76001e"
+    ],
+    "hero_deck": [
+        "76002",
+        "76003",
+        "76004",
+        "76005",
+        "76006",
+        "76007",
+        "76007",
+        "76008",
+        "76008",
+        "76009",
+        "76009",
+        "76010",
+        "76010",
+        "76011",
+        "76011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "76012"
+    ],
+    "nemesis_set": [
+        "76013",
+        "76014",
+        "76015",
+        "76015",
+        "76016"
+    ],
+    "player_deck": [
+        "12031",
+        "12031",
+        "04049",
+        "04049",
+        "01065",
+        "01065",
+        "06031",
+        "06031",
+        "12016",
+        "12016",
+        "12011",
+        "01067",
+        "13014",
+        "13014",
+        "14029",
+        "01057",
+        "01050",
+        "13017",
+        "13017",
+        "04043",
+        "04043",
+        "13033",
+        "13033",
+        "01081",
+        "10031",
+        "09019",
+        "09020"
+    ]
+}

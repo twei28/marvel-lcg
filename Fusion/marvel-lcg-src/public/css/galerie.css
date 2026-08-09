@@ -1,0 +1,276 @@
+/* galerie.css — galerie de cartes (page autonome).
+   Palette et esprit repris de css/prepare/prepare.css (mêmes variables),
+   en plus sobre : fond uni sombre, pas d'habillage animé. */
+
+:root{
+  --ink:#07080c;
+  --ink2:#101219;
+  --steel:#181c26;
+  --steel2:#202635;
+  --steel3:#2b3346;
+  --line:#384154;
+  --soft:#252c3b;
+  --txt:#f4f6fb;
+  --dim:#a8afbd;
+  --mute:#727b8c;
+  --red:#e62429;
+  --red2:#ff4048;
+  --blue:#2e8cff;
+  --cyan:#54d6ff;
+  --gold:#f2c94c;
+  --green:#31b56a;
+  --dur:.18s;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  min-height:100vh;
+  color:var(--txt);
+  font-family:"Segoe UI",system-ui,sans-serif;
+  background:linear-gradient(180deg,#151821 0,#08090e 52%,#050608 100%);
+  -webkit-font-smoothing:antialiased;
+  padding:0 clamp(12px,3vw,36px) 48px;
+}
+
+/* ------------------------------------------------------------- entête -- */
+.g-entete{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px 0 14px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:14px;
+}
+.g-retour{
+  color:var(--dim);
+  text-decoration:none;
+  font-weight:700;
+  font-size:.95rem;
+  padding:7px 13px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--steel);
+  transition:background var(--dur),color var(--dur);
+  white-space:nowrap;
+}
+.g-retour:hover{background:var(--steel2);color:var(--txt)}
+.g-entete h1{
+  flex:1;
+  font-size:clamp(1.1rem,2.4vw,1.5rem);
+  letter-spacing:.02em;
+  color:var(--txt);
+}
+.btn-langue{
+  padding:7px 13px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--steel);
+  color:var(--dim);
+  font-weight:700;
+  font-size:.85rem;
+  cursor:pointer;
+  transition:background var(--dur),color var(--dur);
+}
+.btn-langue:hover{background:var(--steel2);color:var(--txt)}
+
+/* ------------------------------------------------------------- filtres -- */
+.g-filtres{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+}
+.g-filtres input[type="search"],
+.g-filtres select{
+  background:var(--steel);
+  color:var(--txt);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px 11px;
+  font-size:.9rem;
+  font-family:inherit;
+}
+.g-filtres input[type="search"]{flex:1 1 220px;min-width:180px}
+.g-filtres input[type="search"]:focus,
+.g-filtres select:focus{outline:none;border-color:var(--blue)}
+.g-filtres select{max-width:260px}
+.g-interrupteur{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--dim);
+  font-size:.88rem;
+  cursor:pointer;
+  user-select:none;
+  padding:8px 11px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--steel);
+}
+.g-interrupteur:hover{color:var(--txt)}
+.g-interrupteur input{accent-color:var(--red);cursor:pointer}
+
+.g-compteur{color:var(--mute);font-size:.82rem;margin:2px 2px 12px}
+
+/* -------------------------------------------------------------- grille -- */
+.g-grille{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:14px;
+}
+.g-chargement{color:var(--mute);padding:40px 6px;grid-column:1/-1}
+.g-vide{color:var(--mute);padding:40px 6px;font-size:.95rem}
+
+.g-carte{
+  position:relative;
+  border-radius:9px;
+  overflow:hidden;
+  cursor:pointer;
+  background:var(--steel);
+  border:1px solid var(--soft);
+  aspect-ratio:63/88;               /* ratio d'une carte Marvel Champions */
+  transition:transform var(--dur),border-color var(--dur),box-shadow var(--dur);
+}
+.g-carte:hover,
+.g-carte:focus-visible{
+  transform:translateY(-3px);
+  border-color:var(--blue);
+  box-shadow:0 8px 22px rgba(0,0,0,.55);
+  outline:none;
+  z-index:1;
+}
+.g-carte img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.g-carte figcaption{
+  position:absolute;
+  inset:auto 0 0 0;
+  padding:18px 8px 7px;
+  font-size:.78rem;
+  font-weight:600;
+  color:var(--txt);
+  background:linear-gradient(180deg,transparent,rgba(5,6,8,.92) 55%);
+  opacity:0;
+  transition:opacity var(--dur);
+  pointer-events:none;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.g-carte:hover figcaption,
+.g-carte:focus-visible figcaption{opacity:1}
+
+/* ---------------------------------------------------------- sentinelle -- */
+.g-sentinelle{display:flex;justify-content:center;padding:22px 0 8px}
+.g-sentinelle button{
+  padding:9px 22px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--steel2);
+  color:var(--dim);
+  font-weight:700;
+  font-size:.88rem;
+  cursor:pointer;
+}
+.g-sentinelle button:hover{background:var(--steel3);color:var(--txt)}
+
+/* ------------------------------------------------------------- aperçu -- */
+.g-voile{
+  position:fixed;
+  inset:0;
+  z-index:950;
+  background:rgba(0,0,0,.72);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:5vh 16px;
+  overflow:auto;
+}
+.g-apercu{
+  display:flex;
+  gap:22px;
+  width:100%;
+  max-width:840px;
+  background:var(--ink2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:20px 22px;
+}
+.g-apercu img{
+  width:min(320px,42vw);
+  border-radius:12px;
+  align-self:flex-start;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+.g-apercu .infos{flex:1;min-width:0}
+.g-apercu h2{
+  font-size:1.25rem;
+  margin:0 0 2px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.g-apercu h2 button{
+  background:none;
+  border:none;
+  color:var(--mute);
+  font-size:1.5rem;
+  line-height:1;
+  cursor:pointer;
+}
+.g-apercu h2 button:hover{color:var(--txt)}
+.g-apercu .sous-titre{color:var(--dim);font-style:italic;margin-bottom:8px}
+.g-apercu .meta{color:var(--mute);font-size:.82rem;margin-bottom:10px}
+.g-apercu .traits{
+  color:var(--gold);
+  font-size:.85rem;
+  font-weight:600;
+  margin-bottom:10px;
+  text-transform:capitalize;
+}
+.g-stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+.g-stats span{
+  background:var(--steel2);
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:4px 9px;
+  font-size:.8rem;
+  color:var(--txt);
+}
+.g-stats b{color:var(--cyan);margin-left:5px}
+.g-apercu .texte{
+  color:var(--txt);
+  font-size:.9rem;
+  line-height:1.45;
+  margin-bottom:14px;
+  white-space:pre-line;
+}
+.g-apercu .lien-cdb{
+  display:inline-block;
+  color:var(--cyan);
+  text-decoration:none;
+  font-size:.85rem;
+  font-weight:600;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:7px 12px;
+  background:var(--steel);
+}
+.g-apercu .lien-cdb:hover{background:var(--steel2)}
+
+@media (max-width:640px){
+  .g-apercu{flex-direction:column;align-items:center}
+  .g-apercu img{width:min(320px,80vw)}
+  .g-apercu .infos{width:100%}
+}

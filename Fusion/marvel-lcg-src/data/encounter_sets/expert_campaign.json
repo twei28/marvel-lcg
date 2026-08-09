@@ -1,0 +1,10 @@
+{
+    "version": "0.5.8",
+    "name": "Expert Campaign",
+    "encounters": [
+        "04163",
+        "04164",
+        "04165",
+        "04166"
+    ]
+}

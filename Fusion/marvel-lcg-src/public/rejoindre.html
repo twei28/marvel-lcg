@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejoindre la partie</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+            font-family: system-ui, sans-serif;
+            background-color: rgb(43, 43, 43);
+            color: rgb(198, 198, 198);
+        }
+        .boite {
+            width: 100%;
+            max-width: 440px;
+            background-color: rgb(60, 60, 60);
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 1.75rem;
+            text-align: center;
+        }
+        h1 { margin: 0 0 .25rem; font-size: 1.35rem; color: rgb(230, 230, 230); }
+        p.sous_titre { margin: 0 0 1.5rem; font-size: .9rem; color: rgb(150, 150, 150); }
+        button.siege {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: .6rem;
+            background-color: #b3202b;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button.siege:hover { background-color: #d02733; }
+        .cle {
+            display: none;
+            margin: .35rem 0 1rem;
+        }
+        .cle.visible { display: flex; gap: .5rem; }
+        .cle input {
+            flex: 1;
+            padding: .7rem;
+            border-radius: 6px;
+            border: 1px solid #777;
+            background: rgb(43, 43, 43);
+            color: #fff;
+            font-size: 1rem;
+        }
+        .cle button {
+            padding: .7rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background: #2e7d32;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        a.spectateur {
+            display: block;
+            margin-top: 1.25rem;
+            font-size: .9rem;
+            color: rgb(150, 150, 150);
+        }
+        p.aide { font-size: .8rem; color: rgb(140, 140, 140); margin-top: 1.2rem; }
+    </style>
+</head>
+<body>
+    <div class="boite">
+        <h1>Rejoindre la partie</h1>
+        <p class="sous_titre">Choisis ton si&egrave;ge, puis entre le mot de passe de TON si&egrave;ge
+            (re&ccedil;u avec le lien).</p>
+
+        <div id="sieges"></div>
+
+        <a class="spectateur" href="/app/board.html?p=0">Juste regarder la partie</a>
+        <p class="aide">Si aucun mot de passe de si&egrave;ge ne t'a &eacute;t&eacute; donn&eacute;,
+            laisse le champ vide et valide.</p>
+    </div>
+
+    <script>
+        // 4 sieges maximum (limite du moteur). Un clic ouvre le champ du mot de
+        // passe de CE siege ; valider part vers /claim_seat, qui pose le cookie
+        // du siege et redirige vers le plateau. Sans protection configuree,
+        // /claim_seat redirige simplement.
+        const conteneur = document.getElementById('sieges');
+        for (let siege = 0; siege < 4; siege++) {
+            const bouton = document.createElement('button');
+            bouton.className = 'siege';
+            bouton.textContent = 'Joueur ' + (siege + 1);
+            const ligne = document.createElement('div');
+            ligne.className = 'cle';
+            const champ = document.createElement('input');
+            champ.type = 'password';
+            champ.placeholder = 'Mot de passe du siège';
+            const ok = document.createElement('button');
+            ok.textContent = 'GO';
+            const partir = () => {
+                window.location.href = '/claim_seat?p=' + siege +
+                    '&key=' + encodeURIComponent(champ.value);
+            };
+            ok.addEventListener('click', partir);
+            champ.addEventListener('keydown', (e) => { if (e.key === 'Enter') partir(); });
+            bouton.addEventListener('click', () => {
+                for (const autre of conteneur.querySelectorAll('.cle')) autre.classList.remove('visible');
+                ligne.classList.add('visible');
+                champ.focus();
+            });
+            ligne.append(champ, ok);
+            conteneur.append(bouton, ligne);
+        }
+    </script>
+</body>
+</html>

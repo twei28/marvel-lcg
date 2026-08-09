@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Human Torch Nemesis",
+    "encounters": [
+        "64012",
+        "64013",
+        "64014",
+        "64014",
+        "64014"
+    ]
+}

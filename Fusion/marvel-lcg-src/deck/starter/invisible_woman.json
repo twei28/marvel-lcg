@@ -1,0 +1,45 @@
+{
+ "version": "0.5.8",
+ "name": "Invisible Woman",
+ "metadata": {
+  "url": "https://drive.google.com/drive/folders/1xPjfCIyqN5MY1AJpFWvUdW79rc-9S7So",
+  "note": "Deck officiel du pack (DesignHacker). 4 cartes de base de la liste d'origine ne sont pas dans notre collection (Human Torch - Johnny Storm, Powerhouse - Franklin Richards, Better Together, Flaming Force) : elles sont remplacees par des cartes de base equivalentes, marquees SUBSTITUTION."
+ },
+ "hero": [
+  "66001a,66001b,66001c"
+ ],
+ "hero_deck": [
+  "66002", "66003", "66004", "66005", "66006", "66007", "66008",
+  "66009", "66009",
+  "66010",
+  "66011", "66011",
+  "66012", "66012", "66012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "66013"
+ ],
+ "nemesis_set": [
+  "66014", "66015", "66016", "66017", "66018"
+ ],
+ "player_deck": [
+  "08011",
+  "08012",
+  "12031", "12031", "12031",
+  "08013", "08013", "08013",
+  "01062", "01062",
+  "01063",
+  "08017", "08017", "08017",
+  "01065",
+  "01083",
+  "01084",
+  "01088",
+  "01089",
+  "01090",
+  "01092",
+  "01087",
+  "12024",
+  "01091",
+  "01086"
+ ]
+}

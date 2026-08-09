@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Running Interference",
+    "encounters": [
+        "02046",
+        "02047",
+        "02048",
+        "02049",
+        "02049"
+    ]
+}

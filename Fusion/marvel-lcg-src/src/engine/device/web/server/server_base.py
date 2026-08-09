@@ -1,0 +1,128 @@
+from core import *
+from engine.network import WebServer
+from aiohttp import web
+from engine.device.manager.web.manager import WebDeviceManager
+from engine.controller import *
+from engine.config import ConfigVariables
+
+# Ajout local : PROTECTION DES SIEGES en multijoueur distant.
+# `seat_passwords` (launch.online.json) donne un mot de passe par joueur
+# (liste de 4 chaines ; chaine vide = siege libre). Vide ou absent = aucun
+# controle, comportement d'origine (JOUER-SOLO et hot-seat local intacts).
+# Un client prouve son siege via le cookie seat_token_<n> pose par /claim_seat.
+SEAT_PASSWORDS = ConfigVariables.ListStr('seat_passwords', [])
+
+class GameServerBase(WebServer):
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def SetManager(self, manager: 'WebDeviceManager'):
+        self.device_manager = manager
+
+    def seat_hash(self, seat_password: str) -> str:
+        import hashlib
+        return hashlib.md5(seat_password.encode()).hexdigest()
+
+    def seats_reprises(self) -> 'Dict[int, str]':
+        """Sieges repris par un remplacant : siege -> phase de la prise.
+
+        La reprise DURE jusqu'a la fin du tour ou elle a ete accordee. Sans
+        cette memoire, le siege redeviendrait celui de son proprietaire des sa
+        reconnexion — donc potentiellement en plein paiement du remplacant, a
+        qui on couperait la main au milieu d'un geste.
+        """
+        if not hasattr(self, '_seats_reprises'):
+            self._seats_reprises: Dict[int, str] = {}
+        return self._seats_reprises
+
+    def phase_courante(self) -> str:
+        try:
+            world = self.game.world
+            return world.GetPhaseText() if world else ''
+        except Exception:
+            return ''
+
+    def seat_orphelin(self, seat: int) -> bool:
+        """Ce siege n'a plus aucun client connecte."""
+        try:
+            return not self.device_manager.client_manager.GetClients(seat)
+        except Exception:
+            return False
+
+    def allowed_seats(self, request: web.Request) -> 'Set[int]|None':
+        """Sieges que CE client a le droit d'occuper. None = protection coupee."""
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return None
+        allowed: Set[int] = set()
+        for seat, password in enumerate(passwords):
+            if not password:
+                allowed.add(seat)
+                continue
+            token = request.cookies.get(f'seat_token_{seat}')
+            if token and token == self.seat_hash(password):
+                allowed.add(seat)
+
+        # REPRISE D'UN SIEGE ABANDONNE.
+        #
+        # Un siege dont plus personne ne tient la place bloquait la partie : le
+        # moteur l'interrogeait, personne ne pouvait repondre. On l'ouvre donc a
+        # tout client deja authentifie — et on RETIENT la prise, pour qu'elle
+        # survive au retour du proprietaire jusqu'a la fin du tour en cours.
+        reprises = self.seats_reprises()
+        phase = self.phase_courante()
+        for seat, phase_de_prise in list(reprises.items()):
+            if phase_de_prise != phase:
+                # Le tour a change : le siege revient a son proprietaire.
+                del reprises[seat]
+            else:
+                allowed.add(seat)
+
+        for seat in range(len(passwords)):
+            if seat not in allowed and self.seat_orphelin(seat):
+                reprises[seat] = phase
+                allowed.add(seat)
+
+        return allowed
+
+    def get_player_ids(self, request: web.Request) -> List[int]:
+        is_hot_seat = 'hot_seat' in request.rel_url.query
+        if is_hot_seat:
+            manager = self.controller_manager
+            player_ids = list(range(manager.total_players))
+        else:
+            p = request.query.get('p', '0')
+            if p == '':
+                player_ids = [0]
+            else:
+                parts = p.split(',')
+                player_ids = [int(id) for id in parts] if parts else [0]
+
+        allowed = self.allowed_seats(request)
+        if allowed is not None:
+            player_ids = [id for id in player_ids if id in allowed]
+        return player_ids
+
+    def get_first_controller(self, request: web.Request) -> 'Controller':
+        player_ids = self.get_player_ids(request)
+        # Sieges filtres par la protection : la LECTURE du monde reste permise
+        # (plateau public), seule l'ACTION est un privilege du siege.
+        player_id = player_ids[0] if player_ids else 0
+        controllers = self.device_manager.controllers
+        # Siege inexistant (« ?p=1 » en solo, lien de multi recycle...) : on
+        # retombe sur le premier plutot que de renvoyer un 500 qui laisse le
+        # plateau vide. La lecture est publique, seul l'agir est un privilege.
+        if player_id >= len(controllers):
+            player_id = 0
+        return controllers[player_id]
+
+    @property
+    def controller_manager(self):
+        controller = self.device_manager.controllers[0]
+        return controller.manager
+
+    @property
+    def game(self):
+        controller = self.device_manager.controllers[0]
+        return controller.game

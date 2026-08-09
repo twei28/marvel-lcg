@@ -1,0 +1,67 @@
+{
+    "version": "0.5.8",
+    "name": "Lockjaw",
+    "metadata": {
+        "url": "https://drive.google.com/drive/folders/1kG_qSxUH4rf0wgXxoLr0HPcLtOqEqtAN",
+        "author": "Nugget",
+        "note": "Decklist officielle du scan StarterDeck-Lockjaw.png (aspect Protection). Le pack fournit aussi 13 cartes d'aspect « Lockjaw and the Pet Avengers » (78018-78030), dont Zabu / Throg / Redwing qui ne sont pas dans ce deck mais restent disponibles au deck-builder."
+    },
+    "hero": [
+        "78001a,78001b"
+    ],
+    "hero_deck": [
+        "78002",
+        "78003",
+        "78004",
+        "78005",
+        "78006",
+        "78007",
+        "78008",
+        "78008",
+        "78009",
+        "78009",
+        "78010",
+        "78010",
+        "78011",
+        "78011",
+        "78012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "78013"
+    ],
+    "nemesis_set": [
+        "78014",
+        "78015",
+        "78016",
+        "78016",
+        "78017"
+    ],
+    "player_deck": [
+        "78021",
+        "78022",
+        "09012",
+        "09014",
+        "01079",
+        "01079",
+        "09019",
+        "78023",
+        "78023",
+        "78023",
+        "78024",
+        "78024",
+        "78026",
+        "78025",
+        "78029",
+        "78027",
+        "78028",
+        "78028",
+        "01088",
+        "01089",
+        "01090",
+        "78030",
+        "01091",
+        "01092",
+        "05033"
+    ]
+}

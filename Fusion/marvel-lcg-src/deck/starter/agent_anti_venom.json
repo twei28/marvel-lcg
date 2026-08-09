@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Agent Anti-Venom",
+    "metadata": {
+        "url": "https://drive.google.com/drive/folders/1bMXBIgzLGQzn7-xB97IxpsaTjwX9kMwC",
+        "aspect_note": "Aucune decklist d'aspect n'est fournie par l'auteur (pas de carte d'insert dans les dossiers Drive). Deck Protection du Core Set retenu : le kit du heros tourne autour du soin, de retaliate et de la defense."
+    },
+    "hero": [
+        "74001a,74001b"
+    ],
+    "hero_deck": [
+        "74002",
+        "74003",
+        "74003",
+        "74004",
+        "74004",
+        "74005",
+        "74005",
+        "74005",
+        "74006",
+        "74006",
+        "74007",
+        "74008",
+        "74009",
+        "74010",
+        "74011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "74012"
+    ],
+    "nemesis_set": [
+        "74013",
+        "74014",
+        "74015",
+        "74016",
+        "74016"
+    ],
+    "player_deck": [
+        "01075",
+        "01076",
+        "01077",
+        "01077",
+        "01078",
+        "01078",
+        "01079",
+        "01079",
+        "01080",
+        "01080",
+        "01081",
+        "01081",
+        "01082",
+        "01082",
+        "01083",
+        "01084",
+        "01085",
+        "01086",
+        "01087",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "01092",
+        "01093"
+    ]
+}

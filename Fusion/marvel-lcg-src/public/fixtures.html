@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>États de jeu enregistrés</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 1.2rem 1.4rem 3rem;
+         font: 15px/1.5 system-ui, "Segoe UI", Roboto, sans-serif;
+         background: #14161c; color: #e8e9ee; }
+  h1 { font-size: 1.5rem; margin: 0 0 .3rem; }
+  .explication { max-width: 62ch; color: #a9adba; margin: 0 0 1rem; }
+  .barre { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: .6rem; }
+  select { font: inherit; padding: .35rem .5rem; background: #232733; color: #e8e9ee;
+           border: 1px solid #39405280; border-radius: 6px; max-width: 100%; }
+  #description { color: #a9adba; margin: 0 0 1rem; }
+  #erreur { color: #ff9a8a; font-weight: 600; }
+  .entete { display: flex; flex-wrap: wrap; gap: 1.2rem; padding: .7rem .9rem; margin-bottom: 1rem;
+            background: #1b1f28; border: 1px solid #39405280; border-radius: 8px; }
+  .entete b { display: block; font-size: .75rem; text-transform: uppercase;
+              letter-spacing: .04em; color: #7f8698; font-weight: 600; }
+  #total-cartes { font-weight: 700; }
+  .zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .9rem; }
+  .zone { background: #1b1f28; border: 1px solid #39405280; border-radius: 8px; padding: .6rem .8rem; }
+  .zone h3 { font-size: .95rem; margin: 0 0 .4rem; color: #cdd2e0; }
+  .zone h3 span { color: #7f8698; font-weight: 400; }
+  .joueur { margin-top: 1.4rem; }
+  .joueur > h2 { font-size: 1.1rem; margin: 0 0 .6rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li.carte { padding: .12rem 0; border-bottom: 1px dotted #2c3140; }
+  li.carte:last-child { border-bottom: 0; }
+  .nom { font-weight: 600; }
+  .type { color: #7f8698; font-size: .85em; }
+  .val { color: #9fd2ff; font-size: .85em; margin-left: .35rem; }
+  .epuise { color: #ffc48a; font-size: .85em; margin-left: .35rem; }
+  .cachee { color: #7f8698; font-size: .85em; margin-left: .35rem; }
+  details summary { cursor: pointer; color: #a9adba; }
+  .prompt { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: .85em; }
+</style>
+</head>
+<body>
+
+<h1>États de jeu enregistrés</h1>
+<p class="explication">
+  Ces états viennent de vraies parties jouées automatiquement. Ils servent à travailler
+  l'affichage du plateau sans avoir à lancer une partie.
+</p>
+
+<div class="barre">
+  <label for="choix">Choisir un état :</label>
+  <select id="choix"></select>
+</div>
+<p id="description"></p>
+<p id="erreur" hidden></p>
+
+<div id="plateau"></div>
+
+<script type="module">
+import { FIXTURES } from '/public/js/fixtures/index.js';
+
+// Zones communes à la table. Les champs absents d'un état sont ignorés.
+const ZONES_TABLE = [
+  ['area_villain',              'Vilain et sbires'],
+  ['area_schemes_main',         'Complot principal'],
+  ['area_schemes_side',         'Complots annexes'],
+  ['area_status_cards',         'Cartes de statut'],
+  ['area_boost',                'Cartes de renfort'],
+  ['area_environment',          'Environnement'],
+  ['area_evidence',             'Indices'],
+  ['area_rule',                 'Règles en jeu'],
+  ['area_processing',           'En cours de résolution'],
+  ['area_revealing',            'En cours de révélation'],
+  ['area_resources',            'Ressources sur la table'],
+  ['area_set_aside',            'Cartes mises de côté'],
+  ['victory_display',           'Zone de victoire'],
+  ['area_removed',              'Cartes retirées du jeu'],
+  ['area_insert',               'Cartes insérées'],
+  ['encounter_deck',            'Deck de rencontre'],
+  ['encounter_discard_pile',    'Défausse de rencontre'],
+  ['villain_deck',              'Deck du vilain'],
+  ['main_schemes_deck',         'Deck des complots principaux'],
+];
+
+const ZONES_JOUEUR = [
+  ['area_hero',                 'Identité'],
+  ['allies',                    'Alliés'],
+  ['supports',                  'Soutiens et améliorations'],
+  ['hand_cards',                'Main'],
+  ['engaged_enemies',           'Ennemis engagés'],
+  ['dealt_encounter_cards',     'Cartes rencontre distribuées'],
+  ['obligations_area',          'Obligations'],
+  ['environment_area',          'Environnement du joueur'],
+  ['player_deck',               'Deck du joueur'],
+  ['player_discard_pile',       'Défausse du joueur'],
+  ['set_aside_deck',            'Cartes mises de côté'],
+  ['set_aside_nemesis_sets',    'Set némésis mis de côté'],
+  ['additional_deck',           'Deck supplémentaire'],
+  ['additional_discard_pile',   'Défausse supplémentaire'],
+];
+
+// Zones volumineuses : repliées par défaut (le contenu reste dans la page).
+const REPLIEES = new Set([
+  'encounter_deck', 'villain_deck', 'main_schemes_deck', 'player_deck',
+  'player_discard_pile', 'encounter_discard_pile', 'additional_deck',
+  'additional_discard_pile', 'set_aside_nemesis_sets',
+]);
+
+let compteurCartes = 0;
+
+const el = (balise, classe, texte) => {
+  const n = document.createElement(balise);
+  if (classe) n.className = classe;
+  if (texte !== undefined) n.textContent = texte;
+  return n;
+};
+
+/** Une carte = un <li class="carte">. Tout champ absent est simplement ignoré. */
+function ligneCarte(carte) {
+  const li = el('li', 'carte');
+  li.appendChild(el('span', 'nom', carte.name || '(carte sans nom)'));
+  if (carte.card_type) li.appendChild(el('span', 'type', ' · ' + carte.card_type));
+
+  const info = carte.info || {};
+  const ajoute = (txt) => li.appendChild(el('span', 'val', txt));
+
+  if (info.is_infinite_health) ajoute('PV ∞');
+  else if (typeof info.health === 'number' && info.health > 0) ajoute('PV ' + info.health);
+  if (typeof info.attack === 'number' && info.attack > 0) ajoute('ATQ ' + info.attack);
+  if (typeof info.scheme === 'number' && info.scheme > 0) ajoute('COMP ' + info.scheme);
+  if (typeof info.recover === 'number' && info.recover > 0) ajoute('REC ' + info.recover);
+  if (typeof info.k_threat === 'number' && info.k_threat > 0) {
+    ajoute('menace ' + info.k_threat +
+           (typeof info.target_threat === 'number' && info.target_threat > 0 ? '/' + info.target_threat : ''));
+  }
+  if (typeof carte.cost === 'number' && carte.cost > 0) ajoute('coût ' + carte.cost);
+  if (info.printed_stage > 1) ajoute('stade ' + info.printed_stage);
+
+  // Autres jetons posés sur la carte (préfixe k_ dans le descripteur).
+  for (const [cle, valeur] of Object.entries(info)) {
+    if (cle === 'k_threat' || !cle.startsWith('k_') || !valeur) continue;
+    ajoute(cle.slice(2).replace(/_/g, ' ') + ' ' + valeur);
+  }
+
+  if (carte.is_ready === false) li.appendChild(el('span', 'epuise', '· épuisée'));
+  if (carte.is_face_up === false) li.appendChild(el('span', 'cachee', '· face cachée'));
+  if (carte.bind_object_id) li.appendChild(el('span', 'cachee', '· attachée à #' + carte.bind_object_id));
+
+  compteurCartes++;
+  return li;
+}
+
+function bloczone(titre, cartes, replie) {
+  if (!Array.isArray(cartes) || cartes.length === 0) return null;
+  const zone = el('div', 'zone');
+  const liste = el('ul');
+  for (const carte of cartes) liste.appendChild(ligneCarte(carte));
+
+  if (replie) {
+    const d = el('details');
+    const s = el('summary');
+    s.appendChild(el('span', null, titre + ' — ' + cartes.length + ' carte(s)'));
+    d.appendChild(s);
+    d.appendChild(liste);
+    zone.appendChild(d);
+  } else {
+    const h = el('h3', null, titre + ' ');
+    h.appendChild(el('span', null, '(' + cartes.length + ')'));
+    zone.appendChild(h);
+    zone.appendChild(liste);
+  }
+  return zone;
+}
+
+function affiche(monde, entree) {
+  compteurCartes = 0;
+  const plateau = document.getElementById('plateau');
+  plateau.textContent = '';
+
+  // ---- Zones de la table (rendues d'abord pour compter les cartes)
+  const zonesTable = el('div', 'zones');
+  for (const [champ, titre] of ZONES_TABLE) {
+    const bloc = bloczone(titre, monde[champ], REPLIEES.has(champ));
+    if (bloc) zonesTable.appendChild(bloc);
+  }
+  // Decks et défausses supplémentaires du scénario (listes de listes).
+  const supplementaires = [
+    ['additional_decks', 'Deck supplémentaire du scénario'],
+    ['additional_discard_piles', 'Défausse supplémentaire du scénario'],
+  ];
+  for (const [champ, titre] of supplementaires) {
+    const groupes = monde[champ];
+    if (!Array.isArray(groupes)) continue;
+    groupes.forEach((cartes, i) => {
+      const bloc = bloczone(titre + ' ' + (i + 1), cartes, true);
+      if (bloc) zonesTable.appendChild(bloc);
+    });
+  }
+
+  // ---- Joueurs
+  const joueurs = document.createDocumentFragment();
+  (monde.players || []).forEach((joueur, i) => {
+    const section = el('section', 'joueur');
+    const nom = (joueur.area_hero && joueur.area_hero[0] && joueur.area_hero[0].name) || 'sans identité';
+    let entete = 'Joueur ' + (i + 1) + ' — ' + nom;
+    if (joueur.resources) entete += ' — ressources : ' + joueur.resources;
+    if (joueur.is_eliminated) entete += ' — éliminé';
+    section.appendChild(el('h2', null, entete));
+    const zones = el('div', 'zones');
+    for (const [champ, titre] of ZONES_JOUEUR) {
+      const bloc = bloczone(titre, joueur[champ], REPLIEES.has(champ));
+      if (bloc) zones.appendChild(bloc);
+    }
+    section.appendChild(zones);
+    joueurs.appendChild(section);
+  });
+
+  // ---- Entête (a besoin du compteur, donc construit en dernier, inséré en premier)
+  const entete = el('div', 'entete');
+  const champ = (libelle, valeur) => {
+    const d = el('div');
+    d.appendChild(el('b', null, libelle));
+    d.appendChild(el('span', null, valeur));
+    return d;
+  };
+  entete.appendChild(champ('État', entree.titre));
+  entete.appendChild(champ('Phase', monde.phase || '—'));
+  entete.appendChild(champ('Tour', String(monde.round_id ?? '—')));
+  entete.appendChild(champ('Rendu n°', String(monde.render_id ?? '—')));
+  const total = el('div');
+  total.appendChild(el('b', null, 'Cartes'));
+  const compte = el('span', null, compteurCartes + ' cartes dans cet état');
+  compte.id = 'total-cartes';
+  total.appendChild(compte);
+  entete.appendChild(total);
+
+  const dernier = el('div');
+  dernier.appendChild(el('b', null, 'Dernier message'));
+  dernier.appendChild(el('span', 'prompt', (monde.prompt_last_text || '').trim() || '—'));
+  entete.appendChild(dernier);
+
+  plateau.appendChild(entete);
+  plateau.appendChild(zonesTable);
+  plateau.appendChild(joueurs);
+}
+
+async function charge(entree) {
+  const erreur = document.getElementById('erreur');
+  erreur.hidden = true;
+  document.getElementById('description').textContent = entree.description || '';
+  try {
+    const module = await import('/public/js/fixtures/' + entree.fichier);
+    affiche(module.default, entree);
+    document.body.dataset.etat = entree.fichier;   // repère pour les tests
+  } catch (e) {
+    document.getElementById('plateau').textContent = '';
+    erreur.hidden = false;
+    erreur.textContent = "Impossible de charger cet état (" + entree.fichier + ") : " + e.message;
+  }
+}
+
+// ---- Mise en route
+// Le catalogue est exposé pour l'outillage (test automatisé du harnais ui-check),
+// qui a besoin de connaître la liste des états sans relire le disque.
+window.FIXTURES = FIXTURES;
+
+const choix = document.getElementById('choix');
+FIXTURES.forEach((f, i) => {
+  const option = document.createElement('option');
+  option.value = String(i);
+  option.textContent = f.titre;
+  choix.appendChild(option);
+});
+
+choix.addEventListener('change', () => charge(FIXTURES[Number(choix.value)]));
+
+// ?etat=<nom de fichier> permet d'ouvrir directement un état précis.
+const demande = new URLSearchParams(location.search).get('etat');
+const depart = Math.max(0, FIXTURES.findIndex((f) => f.fichier === demande));
+choix.value = String(depart);
+if (FIXTURES.length) charge(FIXTURES[depart]);
+</script>
+</body>
+</html>

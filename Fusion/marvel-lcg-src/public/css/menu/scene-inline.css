@@ -1,0 +1,398 @@
+/* ============================================================
+   scene.html — regles autrefois EN LIGNE dans la page
+   ============================================================
+   Ce fichier n'est pas une nouvelle feuille de style : c'est le contenu des
+   9 blocs <style> qui vivaient dans le corps de scene.html, reunis ici sans
+   la moindre modification, dans l'ordre du document.
+
+   POURQUOI : en ligne, ces regles etaient placees APRES menu/wizard.css et
+   gagnaient donc par simple ordre de source. wizard.css ne pouvait leur
+   repondre qu'a coups de !important — il en comptait 105. Reunies dans un
+   fichier charge AVANT wizard.css, elles se rangent normalement dans la
+   cascade, et la force n'a plus lieu d'etre.
+
+   ORDRE DE CHARGEMENT dans le <head> de scene.html, a respecter :
+     menu/style.css → font-awesome.css → menu/scene-inline.css → menu/wizard.css
+
+   Les commentaires « bloc N » ci-dessous donnent la ligne d'origine dans
+   scene.html : c'est ce qui permet de retrouver d'ou vient une regle.
+   ============================================================ */
+
+/* --- bloc 1 (ex-ligne 12 de scene.html) --- */
+    * {
+        --card--width: 100px;
+        --card--height: 140px;
+        --line-height: 1.6rem;
+    }
+
+    button {
+        min-height: var(--line-height);
+    }
+
+    p {
+        margin: auto 0;
+    }
+
+    img:not([src]) {
+        outline: none;
+        border-radius: 0;
+    }
+
+    img.challenge {
+        --card--width: var(--card--height);
+    }
+
+    #is-expert {
+        color: white;
+    }
+    #is-expert.expert {
+        color: red;
+    }
+    #default-modular-sets,
+    #default-encounter-sets {
+        color: orangered;
+    }
+
+    label {
+        position: relative;
+        display: block;
+    }
+
+    ::file-selector-button,
+    ::-webkit-file-upload-button {
+        display: none;
+    }
+    input[id^='scenario-'],
+    input[id^='modular-sets-'],
+    input[id^='encounter-sets-'] {
+        display: none;
+    }
+
+    div:has(#modular-sets),
+    div:has(#encounter-sets) {
+        flex: 0 0 100%;
+        width: 0px; /* hack */
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    #set-content .details,
+    #modular-sets,
+    #encounter-sets {
+        flex: 0 0 100%;
+        width: 100%;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        gap: .2em;
+        flex-wrap: wrap;
+        display: inline-flex;
+    }
+
+    input[type="file"] {
+        /* display: none; */
+        width: var(--card--width);
+        position: absolute;
+        color: white;
+        /* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+        /* text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF; */
+        /* https://stackoverflow.com/questions/2570972/css-font-border */
+    }
+    fieldset {
+        display: flex;
+        gap: .5rem;
+    }
+
+    details input {
+        display: block;
+        cursor: pointer;
+    }
+    details summary:hover {
+        cursor: pointer;
+    }
+    details {
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        padding: 0.5em 0.5em 0;
+        min-width: 50%;
+    }
+
+    summary {
+        height: var(--line-height);
+    }
+
+    details button {
+        display: block;
+    }
+
+    details[open] {
+        padding: 0.5em;
+    }
+
+    details[open] summary {
+        border-bottom: 1px solid #aaa;
+        margin-bottom: 0.5em;
+    }
+
+    #modular-sets div img,
+    #encounter-sets div img {
+        padding: 0;
+        margin: 0;
+    }
+
+    #modular-sets.hide-not-click button:not(.click),
+    #encounter-sets.hide-not-click button:not(.click) {
+        display: none;
+    }
+
+    #modular-sets.expend-view {
+        flex-wrap: wrap;
+        flex-direction: row;
+        height: auto;
+    }
+
+    #modular-sets button,
+    #encounter-sets button,
+    #set-content button {
+        position: relative;
+        margin: 2px;
+        padding: 0;
+        display: inline-flex;
+        border-radius: .25em;
+    }
+
+    .debug-only-option {
+        display: none;
+    }
+
+    #modular-sets button.nemesis.hide {
+        display: none;
+    }
+    
+    #modular-sets.show-set-name button::before{
+        content: attr(data-display);
+    }
+    #modular-sets button::before{
+        content: "";
+    }
+
+    /* button:hover,
+    img:hover {
+        filter: none !important;
+        outline: none;
+    }
+    button:has(img):hover {
+        scale: 1.05;
+        z-index: 999;
+    } */
+    button.right-clicked:has(img) {
+        scale: 2;
+        z-index: 999;
+    }
+
+    #challenge.debug-only-option {
+        display: none;
+    }
+
+    label:has([type=checkbox]),
+    label:has([type=radio]),
+    #mode label,
+    #rules label,
+    #challenge label {
+        display: flex;
+        align-items: center;
+    }
+    #campaign_log,
+    #settings_other,
+    #rules,
+    #mode,
+    #challenge {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 5px;
+        color: white;
+    }
+
+    #challenge {
+        background-color: #3a0f2f;   /* dark magenta base */
+        border-color: #b84d9d;
+        /* box-shadow: 0 0 10px #b84d9d; */
+    }
+
+    #rules {
+        background-color: #3a1414;   /* dark crimson base */
+        border-color: #e05c5c;
+        /* box-shadow: 0 0 10px #e05c5c; */
+    }
+
+    #mode {
+        background-color: #1f3314;   /* dark green base */
+        border-color: #7dbb55;
+        /* box-shadow: 0 0 10px #7dbb55; */
+    }
+
+    #settings_other {
+        background-color: #16232d;   /* dark blue-gray base */
+        border-color: #5d7f9a;
+        /* box-shadow: 0 0 10px #5d7f9a; */
+    }
+
+    #campaign_log {
+        background-color: #332200;   /* dark amber base */
+        border-color: #f2a900;
+        /* box-shadow: 0 0 10px #f2a900; */
+    }
+
+
+    /* details {
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    } */
+
+    label:has(#img-heroes-1),
+    label:has(#img-heroes-2),
+    label:has(#img-heroes-3),
+    label:has(#img-heroes-4) {
+        width: var(--card--width);
+        height: var(--card--height);
+        overflow: hidden;
+    }
+
+
+    /* Basic styling */
+    label:has([type=radio]),
+    label:has([type=checkbox]) {
+        cursor: pointer;
+    }
+    [type=radio],
+    [type=checkbox] {
+        accent-color: dodgerblue;
+        width: var(--line-height);
+        min-width: var(--line-height);
+        height: var(--line-height);
+        min-height: var(--line-height);
+        margin: .5rem;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        border: 1px solid black;
+        background: #eee;
+        color: black;
+        padding: .25em;
+        z-index: 9999;
+        border-radius: 4px;
+        pointer-events: none;
+        left: 40px;
+        top: 30px;
+        text-shadow: none;
+    }
+
+    .tooltip b {
+        color: red
+    }
+
+    label:hover .tooltip {
+        display: block;
+    }
+
+    [data-tooltip]:hover::after {
+        /* display: block; */
+        position: absolute;
+        /* content: attr(data-tooltip); */
+        border: 1px solid black;
+        background: #eee;
+        color: black;
+        padding: .25em;
+        z-index: 9999;
+
+        border-radius: 4px;
+        pointer-events: none;
+    }
+
+/* --- bloc 2 (ex-ligne 723 de scene.html) --- */
+#game-start {
+    flex-direction: column;
+    position: relative;
+    align-items: flex-start;
+    gap: .25rem;
+}
+#game-start > div {
+    height: var(--line-height);
+    margin: .5rem;
+    display: flex;
+}
+
+/* --- bloc 3 (ex-ligne 740 de scene.html) --- */
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    width: 100%;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+p:has(#mode_heroic_text),
+p:has(#timeout_text) {
+    width: max-content;
+    display: flex;
+    height: var(--line-height);
+    align-items: center;
+}
+#timeout_text, #mode_heroic_text {
+    width: 3rem;
+}
+
+/* --- bloc 4 (ex-ligne 826 de scene.html) --- */
+                #mode_campaign_container.hide {
+                    display: none;
+                }
+
+/* --- bloc 5 (ex-ligne 929 de scene.html) --- */
+            #challenge label .title {
+                font-size: 1rem;
+            }
+            #challenge label:has(input[type="checkbox"]:not(:checked)) {
+                display: none;
+            }
+
+/* --- bloc 6 (ex-ligne 1014 de scene.html) --- */
+            #campaign_log.hide {
+                display: none;
+            }
+
+/* --- bloc 7 (ex-ligne 1023 de scene.html) --- */
+                #campaign_log_container {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                #campaign_log_container td {
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    text-align: left;
+                }
+                #campaign_log_container td:nth-child(2) {
+                    display: flex;
+                }
+                #campaign_log_container th {
+                    background-color: #f2f2f2;
+                }
+
+/* --- bloc 8 (ex-ligne 1349 de scene.html) --- */
+            #clearCacheButton {
+                position: absolute;
+                right: 1rem;
+                top: .5rem;
+            }
+
+/* --- bloc 9 (ex-ligne 1385 de scene.html) --- */
+            #play-buttons button:disabled {
+                pointer-events: none;
+            }

@@ -22,3 +22,60 @@ Fusion/marvel-lcg-src/achievements-serveur-*.json
 # Rangement du 8/8/2026 : gros binaires et paquets fournis, hors depot.
 medias/
 paquets-cartes/
+
+# --- Moteur : le CODE est suivi, l'engendre ne l'est pas -------------------
+# Ajoute le 9/8/2026. Jusque-la, 51 fichiers .py etaient suivis sur 5152 : le
+# moteur n'etait donc pas versionne. Deux correctifs ont ete perdus la veille,
+# ecrases par une copie plus ancienne, et n'ont pu etre retrouves que parce
+# qu'ils faisaient partie de ces 51. Le reste du moteur n'aurait pas ete
+# recuperable. src/, tools/ et les donnees ecrites a la main sont desormais
+# suivis ; tout ce qui suit est engendre, telecharge ou trop lourd.
+
+# Bytecode et dossiers de travail du moteur.
+Fusion/marvel-lcg-src/.game/
+Fusion/marvel-lcg-src/.game-src*/
+__pycache__/
+*.pyc
+
+# Scans de cartes : 870 Mo, fournis a part. Les quelques images deja suivies
+# le restent : une regle d'exclusion ne desuit jamais un fichier.
+Fusion/marvel-lcg-src/assets/pics/
+Fusion/marvel-lcg-src/assets/pics-fr/
+Fusion/marvel-lcg-src/assets/cache/
+
+# Cache telecharge depuis marvelcdb : 27 Mo, reconstructible.
+Fusion/marvel-lcg-src/data/marvelcdb/
+
+# Sauvegardes datees de cards.json, faites avant chaque pack : 20 Mo.
+Fusion/marvel-lcg-src/data/*.bak-*
+
+# Sortie de build du plateau, reecrite par ui-app/deployer.sh.
+Fusion/marvel-lcg-src/public/app/
+# Scans des livrets de campagne : 6,7 Mo d'images.
+Fusion/marvel-lcg-src/public/stories/
+
+# Archives de reprise : 230 Mo.
+Fusion/*.zip
+Fusion/*.zip.bak-*
+
+# Etat d'une partie : le moteur les reecrit sans arret.
+Fusion/marvel-lcg-src/crash.json
+Fusion/marvel-lcg-src/crash.log
+Fusion/marvel-lcg-src/save_*.json
+Fusion/marvel-lcg-src/statistics.json
+Fusion/marvel-lcg-src/achievements.json
+Fusion/marvel-lcg-src/games_history*.json
+Fusion/marvel-lcg-src/campaign_log_last.json
+Fusion/marvel-lcg-src/campagnes/
+Fusion/marvel-lcg-src/replays/
+Fusion/marvel-lcg-src/.superpowers/
+
+# Restes d'une tache ponctuelle et rapports engendres.
+Fusion/marvel-lcg-src/*task8*
+Fusion/QUALITE-V2.csv
+Fusion/marvel-lcg-src/QUALITE-V2.csv
+Fusion/defectueux.json
+Fusion/marvel-lcg-src/defectueux.json
+
+# Captures engendrees par le harnais Playwright.
+ui-check/page/

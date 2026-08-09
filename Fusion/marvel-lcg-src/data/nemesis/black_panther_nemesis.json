@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Black Panther Nemesis",
+    "encounters": [
+        "01156",
+        "01157",
+        "01158",
+        "01159",
+        "01159"
+    ]
+}

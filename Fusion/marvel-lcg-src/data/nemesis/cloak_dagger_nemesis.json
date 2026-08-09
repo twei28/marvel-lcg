@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Cloak & Dagger Nemesis",
+    "encounters": [
+        "70015",
+        "70016",
+        "70017",
+        "70018",
+        "70018"
+    ]
+}

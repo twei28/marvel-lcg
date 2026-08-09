@@ -1,0 +1,37 @@
+{
+    "version": "0.5.8",
+    "name": "She-Hulk",
+    "villain": [
+        "57001",
+        "57002"
+    ],
+    "expert": false,
+    "schemes": [
+        "57005a,57005b",
+        "57006a,57006b"
+    ],
+    "set_aside": [
+        "57012"
+    ],
+    "encounters": [
+        "57007",
+        "57007",
+        "57008",
+        "57008",
+        "57009",
+        "57009",
+        "57010",
+        "57010",
+        "57011"
+    ],
+    "encounter_sets": [
+        "standard",
+        "standard_pvp"
+    ],
+    "modular_sets": [
+        "shield_ops",
+        "thunderbolts",
+        "taskmaster_pvp",
+        "deadly_duo"
+    ]
+}

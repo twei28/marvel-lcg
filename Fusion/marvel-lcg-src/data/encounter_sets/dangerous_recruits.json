@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Dangerous Recruits",
+    "encounters": [
+        "56087",
+        "56088",
+        "56089",
+        "56090",
+        "56091"
+    ]
+}

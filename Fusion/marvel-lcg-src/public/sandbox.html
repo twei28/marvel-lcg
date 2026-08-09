@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="sombre">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bac à sable — Marvel Champions</title>
+    <link rel="stylesheet" href="/public/css/sandbox.css">
+</head>
+<body>
+    <header class="sb-barre">
+        <h1>Bac à sable</h1>
+        <span class="sb-etat" id="sb-etat">connexion…</span>
+        <label class="sb-bascule">
+            <input type="checkbox" id="sb-limites"> lever les limites
+        </label>
+        <a class="sb-lien" href="/app/board.html?p=1" target="_blank">ouvrir le plateau ↗</a>
+    </header>
+
+    <main class="sb-corps">
+        <section class="sb-colonne">
+            <div class="sb-onglets" id="sb-onglets"></div>
+            <input class="sb-recherche" id="sb-recherche" type="search"
+                   placeholder="Rechercher une carte…">
+            <div class="sb-grille" id="sb-grille"></div>
+        </section>
+
+        <section class="sb-colonne sb-actions">
+            <h2>Triche</h2>
+            <div class="sb-bloc" id="sb-cibles"></div>
+            <div class="sb-bloc" id="sb-boutons"></div>
+            <h2>Trace</h2>
+            <div class="sb-trace" id="sb-trace"></div>
+        </section>
+    </main>
+
+    <script type="module" src="/public/js/sandbox/app.js"></script>
+</body>
+</html>

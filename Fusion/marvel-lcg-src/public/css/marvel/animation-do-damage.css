@@ -1,0 +1,5 @@
+.do-damage.face .image::after {
+    background-blend-mode: color-burn;
+    background-color: red;
+}
+
