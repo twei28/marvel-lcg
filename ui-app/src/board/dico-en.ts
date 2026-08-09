@@ -281,6 +281,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'confirmer': 'confirm',
   'Choisis la cible': 'Choose the target',
   'Paie': 'Pay',
+  'Dépense autant de ressources que tu veux, puis confirme':
+    'Spend as many resources as you like, then confirm',
   'Paie le coût': 'Pay the cost',
   'Coût à payer': 'Cost to pay',
 

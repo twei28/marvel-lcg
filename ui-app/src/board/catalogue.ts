@@ -107,7 +107,9 @@ function statImprimee(brut: string | undefined): number | undefined {
   return Number(brut)
 }
 
-function construire(donnees: unknown): Catalogue {
+/** Exportee pour les tests : la construire depuis un catalogue en memoire
+ *  evite de dependre du reseau et du fichier de 2,5 Mo. */
+export function construire(donnees: unknown): Catalogue {
   if (typeof donnees !== 'object' || donnees === null) return catalogueVide
 
   const parCarte = new Map<string, number>()
@@ -136,6 +138,14 @@ function construire(donnees: unknown): Catalogue {
       // sur les trois cartes concernees. On accepte aussi la forme francaise au
       // cas ou les donnees seraient traduites un jour.
       if (/overpaid|overpay|surpay/i.test(carte.text ?? '')) surpayables.add(id)
+      // Une carte a COUT X est surpayable par nature, et son texte ne dit
+      // jamais « overpay » : il dit « Deal X damage ». Sans cette ligne, les
+      // neuf cartes a cout X du catalogue n'allumaient aucun rappel au moment
+      // de confirmer. Le joueur validait sans rien depenser, X valait 0, et la
+      // carte ne faisait RIEN — signale en jeu sur Tendril Explosion (72006),
+      // mais Speed Cyclone (14006) et Lethal Intent (22010), qui sont
+      // officielles, avaient exactement le meme defaut.
+      if (carte.desc?.Cost === 'X') surpayables.add(id)
       const aspect = aspectDeClasse(carte.desc?.Class)
       if (aspect) aspects.set(id, aspect)
     }

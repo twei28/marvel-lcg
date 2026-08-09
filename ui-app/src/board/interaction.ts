@@ -147,6 +147,14 @@ export type Interaction = {
   prete: boolean
   /** Cout affichable, par exemple « 2 » ou « 1/2 ». */
   coutAffiche: string
+  /**
+   * La carte recompense un SURPAIEMENT : coût X, ou texte qui parle
+   * d'« overpay ». L'assistant doit le dire, sans quoi le joueur confirme sans
+   * rien dépenser et la carte ne fait rien. Signalé en jeu sur Tendril
+   * Explosion (72006), mais les neuf cartes à coût X du catalogue avaient le
+   * même défaut, dont deux officielles.
+   */
+  surpaiementRecompense: boolean
   assistant: AssistantInteraction
   choisirOption: (option: Option, ciblesInitiales?: number[]) => void
   abandonnerOption: () => void
@@ -857,6 +865,7 @@ export function useInteraction(
     raison: controle.raison,
     prete: controle.prete,
     coutAffiche,
+    surpaiementRecompense,
     assistant,
     choisirOption,
     abandonnerOption,

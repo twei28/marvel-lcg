@@ -63,6 +63,13 @@ function indicationSimple(interaction: Interaction): string {
     return t('Choisis la cible')
   }
   if (etape === 'payment') return interaction.coutAffiche ? `${t('Paie')} ${interaction.coutAffiche}` : t('Paie le coût')
+  // Etape de confirmation. Elle ne disait rien, ce qui convient a la plupart
+  // des cartes mais pas a celles dont le coût est X : elles n'exigent RIEN, on
+  // saute donc directement ici, et confirmer sans avoir depense laisse X a 0.
+  // La carte semble alors cassee. Signale en jeu sur Tendril Explosion.
+  if (interaction.surpaiementRecompense) {
+    return t('Dépense autant de ressources que tu veux, puis confirme')
+  }
   return ''
 }
 
