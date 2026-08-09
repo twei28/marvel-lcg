@@ -88,10 +88,13 @@ for cle, info in sets_info.items():
 # - SUJET : l'identifiant apparait dans le NOM du cas, donc le cas porte
 #   vraiment sur elle. C'est la seule mesure honnete, et l'ecart est large
 #   (spider_man_rainy passe de 77 % a 50 %).
-cites = set(re.findall(r"\b(\d{5}[a-d]?)\b", tests))
+# Le suffixe de face va de a a z, pas de a a d : Moon Knight est la premiere
+# identite a CINQ faces, et 76001e n'etait donc reconnue par aucune de ces
+# deux expressions. Son cas existait, le pack affichait quand meme 27/28.
+cites = set(re.findall(r"\b(\d{5}[a-z]?)\b", tests))
 sujets = set()
 for nom_de_cas in re.findall(r'"nom"\s*:\s*(?:\(\s*)?["\']([^"\']+)', tests):
-    sujets.update(re.findall(r"\b(\d{5}[a-d]?)\b", nom_de_cas))
+    sujets.update(re.findall(r"\b(\d{5}[a-z]?)\b", nom_de_cas))
 # Un pack contient parfois DEUX EXEMPLAIRES de la meme carte, sous deux
 # identifiants (Brawn : 77004/77005, 77006/77007...). Leurs scripts sont
 # identiques a la ligne pres. Ecrire un second cas qui ne differe que par
@@ -214,7 +217,7 @@ dossier_decks = os.path.join(RACINE, "deck", "starter")
 if os.path.isdir(dossier_decks):
     for nom in os.listdir(dossier_decks):
         if nom.endswith(".json"):
-            dans_decks.update(re.findall(r'"(\d{5}[a-d]?)"',
+            dans_decks.update(re.findall(r'"(\d{5}[a-z]?)"',
                                          open(os.path.join(dossier_decks, nom),
                                               encoding="utf-8").read()))
 sans_destinataire = [f"{c['card_id']} ({pack}) : {c.get('name', '')}"

@@ -4583,6 +4583,126 @@ CAS = [
         "verifier": "mk_reduction_protection",
     },
     {
+        "nom": "76001d Steven Grant — « CEO » : les cartes Commandement coutent 1 de moins",
+        "pourquoi": ("main reduite a la SEULE carte jouee : sans la reduction son cout 1 "
+                     "est impayable, avec elle il tombe a 0. Steven Grant est une face "
+                     "ALTER-EGO parmi les trois de Moon Knight, inatteignable par "
+                     "ChangeForm qui ne va que vers « l'autre » face : d'ou "
+                     "Puzzle.ChangeToFace, ajoutee pour ce cas"),
+        "scenario": "rhino",
+        "heros": "moon_knight",
+        "mise_en_place": ["Puzzle.ChangeToFace('76001b', '76001d')"],
+        "main_exclusive": ["01073"],
+        "declencher": [],
+        "jouer": ["01073"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01073"]},
+    },
+    {
+        "nom": "76001e Jake Lockley — « Just 'Cause » : les cartes Justice coutent 1 de moins",
+        "pourquoi": ("meme montage que Steven Grant, sur l'autre aspect : Interrogation "
+                     "Room (01063) coute 1, la main est vide de ressources, elle ne part "
+                     "que si la reduction s'applique"),
+        "scenario": "rhino",
+        "heros": "moon_knight",
+        "mise_en_place": ["Puzzle.ChangeToFace('76001b', '76001e')"],
+        "main_exclusive": ["01063"],
+        "declencher": [],
+        "jouer": ["01063"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01063"]},
+    },
+    {
+        "nom": "76001d temoin — sur la face de depart, la carte Commandement reste injouable",
+        "pourquoi": ("sans temoin, les deux cas ci-dessus passeraient meme si le moteur "
+                     "laissait jouer une carte sans la payer : c'est le temoin qui prouve "
+                     "que la reduction fait la difference"),
+        "scenario": "rhino",
+        "heros": "moon_knight",
+        "mise_en_place": [],
+        "main_exclusive": ["01073"],
+        "declencher": [],
+        "jouer": ["01073"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01073"]},
+    },
+    {
+        "nom": "72001a Venom — « Symbiotic Bond » : sa ressource lui coute 1 degat",
+        "pourquoi": ("une capacite Resource n'est jamais proposee si la carte n'est pas sous "
+                     "controle du joueur, et son cout est ici un DEGAT et non une "
+                     "inclinaison : le prouver demande de voir l'identite encaisser"),
+        "scenario": "rhino",
+        "heros": "venom_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('72001b')"],
+        "main_exclusive": ["08024"],
+        "payer_avec": ["72001a"],
+        "declencher": [],
+        "jouer": ["08024"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "en_jeu": ["08024"]},
+    },
+    {
+        "nom": "63001a Gwenpool — la manche ou le Mechant intrigue est NOTEE",
+        "pourquoi": ("capacite sans effet visible : elle remplit une ardoise que 63003 "
+                     "consulte. Elle pouvait rester muette pour toujours sans que rien ne "
+                     "le signale"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "gwenpool_manche_intrigue",
+    },
+    {
+        "nom": "63006 Endless Storylines — depensee, elle resout DEUX blancs",
+        "pourquoi": ("carte Resource dont l'effet part APRES la depense. Ses bulles sont "
+                     "ordonnees : le premier blanc retire 1 menace, le second soigne. On "
+                     "reste en alter-ego pour que l'identite n'ajoute pas sa propre bulle "
+                     "au choix. Sans `accepter_choix`, le MayChooseOneAbility est decline "
+                     "et la carte parait morte"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        # La capacite est une HERO Response : en alter-ego elle ne part pas, la
+        # carte est simplement depensee et rien ne se produit.
+        "mise_en_place": ["Puzzle.ChangeForm('63001b')", "Puzzle.SetThreat('01097b', 3)"],
+        "main_exclusive": ["63006", "08024"],
+        "payer_avec": ["63006"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["08024"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "75004 The Lookout — l'ecureuil ne compte pas dans la limite d'allies",
+        "pourquoi": ("tout son comportement tient dans le helper Ecureuil(), partage par les "
+                     "six cartes du deck ecureuil : ce cas verifie que le mot-cle atteint "
+                     "bien CELLE-CI. La limite d'allies est de trois : avec trois allies "
+                     "ordinaires deja poses, un quatrieme allie ordinaire forcerait une "
+                     "defausse, alors qu'un ecureuil doit s'ajouter sans rien deloger.\n"
+                     "\n"
+                     "L'ecureuil est APPELE par le jeu, jamais pose par PutIntoPlay : une "
+                     "carte posee d'autorite est une copie neuve, privee des regles du "
+                     "setup. Et l'appel est limite a UNE FOIS PAR MANCHE, donc impossible "
+                     "d'appeler jusqu'a tomber sur le bon : d'ou "
+                     "Puzzle.PutOnAdditionalDeckTop, ajoutee pour ce cas.\n"
+                     "\n"
+                     "Les deux autres garanties du mot-cle ne sont pas verifiables ici. "
+                     "« Ne peut pas defendre » resiste au harnais : Puzzle.Attack(defender=) "
+                     "FORCE la defense et court-circuite la regle, comme il court-circuite "
+                     "deja le cout d'inclinaison."),
+        "scenario": "rhino",
+        "heros": "squirrel_girl",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('01084', under_control=True)",
+                          "Puzzle.PutIntoPlay('04020', under_control=True)",
+                          "Puzzle.PutOnAdditionalDeckTop('75004')",
+                          "Puzzle.Action('75001b', 'AlterEgoAction')"],
+        "declencher": [],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01083", "01084", "04020", "75004"]},
+    },
+    {
         "nom": "71001a Spider-Man — « Just Like Flies » : le sbire qui s'engage est toile",
         "pourquoi": "Interrupt sur engagement, declenche par l'arrivee du sbire",
         "scenario": "rhino",
@@ -6158,6 +6278,22 @@ def brawn_calculated_defense(monde, aides):
     if main < 1:
         return False, "main vide : aucune pioche constatee"
     return True, f"jouee en defense, recyclee en reserve, main a {main} carte(s)"
+
+def gwenpool_manche_intrigue(monde, aides):
+    """63001a : la Regle note la manche ou le Mechant a intrigue.
+
+    La capacite n'a AUCUN effet visible sur la table : elle remplit une
+    ardoise posee sur le monde, que 63003 consulte plus tard pour savoir si le
+    Mechant a intrigue la manche derniere. Elle pouvait donc rester muette
+    indefiniment sans que rien ne le signale — c'est exactement le genre de
+    capacite qu'un test de construction ne voit pas.
+    """
+    Unused = aides.get("par_id")  # noqa: F841 (garde la signature homogene)
+    manches = getattr(monde, "_gwenpool_manches_intrigue", None)
+    if not manches:
+        return False, ("l'ardoise _gwenpool_manches_intrigue est vide : la manigance du "
+                       "Mechant n'a pas ete notee")
+    return True, f"manche(s) notee(s) : {sorted(manches)}"
 
 def brawn_double_defense(monde, aides):
     """Les DEUX Calculated Defense jouees sur la MEME defense.

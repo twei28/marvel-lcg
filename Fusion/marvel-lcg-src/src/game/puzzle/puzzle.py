@@ -104,6 +104,28 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, first_player.player_deck, self.world)
 
+    def PutOnAdditionalDeckTop(self, *cards: CardName):
+        """Remonte des cartes sur le DESSUS du deck annexe du joueur.
+
+        Un deck annexe — les ecureuils de Squirrel Girl, les invocations de
+        Strange — est melange au setup. Sans ce levier, on ne peut pas choisir
+        QUELLE carte en sortira, et l'action qui l'appelle est souvent limitee
+        a une fois par manche : impossible d'appeler jusqu'a tomber sur la
+        bonne. C'est ce qui rendait The Lookout (75004) intestable, alors que
+        les cinq autres ecureuils avaient leur cas (constate le 9/8/2026).
+        """
+        from game.operate.faces import Faces
+        player = self.world.GetFirstPlayer()
+        # On cherche la carte DEJA PRESENTE dans le deck annexe, on n'en cree
+        # pas une neuve : `FindCommandCards` fabriquerait un exemplaire qui n'a
+        # pas recu les regles posees au setup, et le cas testerait une copie
+        # inerte au lieu de la vraie carte.
+        for card_id in cards:
+            for face in list(player.additional_deck.Get()):
+                if getattr(face.paper, "card_id", None) == card_id:
+                    Faces.MoveAllToDeck([face], player.additional_deck, "Top", DebugRule(face))
+                    break
+
     def CreatePlayerAdditionalDeck(self, *cards: str):
         from game.card.factory import CardFactory
         first_player = self.world.GetFirstPlayer()
@@ -190,6 +212,24 @@ class RunPuzzle:
             unit.DiscardTough(DebugRule(unit), rule=1)
         else:
             Faces.GiveStatus([unit], "Tough", DebugRule(unit))
+
+    def ChangeToFace(self, card: CardName, to: str):
+        """Bascule une identite vers une face PRECISE, designee par son card_id.
+
+        `ChangeForm` ne sait aller que vers « l'autre » face : la premiere face
+        heros qui differe de l'actuelle, ou la premiere face alter-ego. Cela
+        suffit a une identite ordinaire, qui n'en a que deux. Moon Knight en a
+        CINQ, deux heros et trois alter-ego : Steven Grant (76001d) et Jake
+        Lockley (76001e) etaient donc inatteignables, et leurs reducteurs de
+        cout intestables (constate le 9/8/2026).
+
+        Comme `ChangeForm`, `card` designe la face ACTUELLEMENT EN JEU, la
+        seule que le monde connaisse a cet instant ; `to` designe la
+        destination.
+        """
+        face = self.FindOrCreateFace(card)
+        if Identity.IsType(face):
+            face.ChangeToForm(CardFinder(card_ids=[to]), self.debug_rule)
 
     def ChangeForm(self, card: CardName, rule: Literal['', 'Identity', 'Hero']=''):
         face = self.FindOrCreateFace(card)
