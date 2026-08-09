@@ -128,6 +128,7 @@ describe('les familles de lieux', () => {
     ['04082', 'dust', 'Rocky Outcrop'],
     ['04083', 'dust', 'Abandoned Facility'],
     ['21079', 'dust', 'Rubblestorm'],
+    ['21100b', 'dust', 'Avengers Tower endommagee'],
     ['24063', 'neon', 'Warehouse District'],
     ['27065', 'sandstorm', 'City Streets, la rue de Sandman'],
     ['31037', 'neon', 'Surge in Crime'],
@@ -148,6 +149,11 @@ describe('les familles de lieux', () => {
 
   it('Rubblestorm est de la poussiere, pas du feu', () => {
     expect(meteoDuMonde(monde({}, { area_environment: [carte('21079')] }))).toBe('dust')
+  })
+
+  it('la tour des Avengers INTACTE reste sans poussiere', () => {
+    // Seule la face endommagee en a une : une tour debout ne s'effrite pas.
+    expect(meteoDuMonde(monde({}, { area_environment: [carte('21100a')] }))).toBe('')
   })
 
   it('les lieux dont l ambiance a ete retiree ne declenchent plus rien', () => {

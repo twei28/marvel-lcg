@@ -109,6 +109,9 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   '04082': 'dust', // Rocky Outcrop, Tourist Trap
   '04083': 'dust', // Abandoned Facility, Tourist Trap
   '21079': 'dust', // Rubblestorm, The Mad Titan's Shadow
+  // La tour des Avengers a deux faces. Seule l'ENDOMMAGEE prend la poussiere :
+  // intacte (21100a, STRONGHOLD), elle n'a aucune raison d'en avoir.
+  '21100b': 'dust', // Avengers Tower endommagee, The Mad Titan's Shadow
   // La rue la nuit
   '24063': 'neon', // Warehouse District, The Hood
   '27065': 'sandstorm', // City Streets : la rue de Sandman, dans son scenario
