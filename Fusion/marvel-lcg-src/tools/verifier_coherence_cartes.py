@@ -92,9 +92,46 @@ cites = set(re.findall(r"\b(\d{5}[a-d]?)\b", tests))
 sujets = set()
 for nom_de_cas in re.findall(r'"nom"\s*:\s*(?:\(\s*)?["\']([^"\']+)', tests):
     sujets.update(re.findall(r"\b(\d{5}[a-d]?)\b", nom_de_cas))
+# Un pack contient parfois DEUX EXEMPLAIRES de la meme carte, sous deux
+# identifiants (Brawn : 77004/77005, 77006/77007...). Leurs scripts sont
+# identiques a la ligne pres. Ecrire un second cas qui ne differe que par
+# l'identifiant n'apprend rien : l'etape 2 du §8 prouve deja que le script se
+# construit, et l'etape 5 que ses appels d'API sont bons. Compter ces cartes
+# comme non couvertes faisait mentir le taux — Brawn affichait 76 % alors que
+# tout son code etait exerce.
+#
+# On les reconnait mecaniquement : meme code une fois les commentaires et les
+# lignes vides retires. Elles sont comptees a part, jamais fondues dans les
+# cas dedies, pour qu'on voie toujours la difference.
+def _code_normalise(chemin):
+    try:
+        lignes = open(chemin, encoding="utf-8").read().splitlines()
+    except OSError:
+        return None
+    utiles = [l.rstrip() for l in lignes
+              if l.strip() and not l.strip().startswith("#")]
+    return "\n".join(utiles) if utiles else None
+
+
+def _scripts_du_pack(pack):
+    """card_id -> code normalise, pour tous les scripts du pack."""
+    racine_pack = os.path.join(RACINE, "src", "cards", "pack", pack)
+    par_carte = {}
+    for dossier, _, fichiers in os.walk(racine_pack):
+        for f in fichiers:
+            if not f.endswith(".py") or f == "__init__.py":
+                continue
+            code = _code_normalise(os.path.join(dossier, f))
+            if code:
+                par_carte[f[:-3]] = code
+    return par_carte
+
+
 couverture = {}
 for pack in sorted(p for p in packs_custom if p in cartes):
     total, cite, sujet, manquants = 0, 0, 0, []
+    scripts = _scripts_du_pack(pack)
+    doublons = []
     for c in cartes[pack]:
         cid = c.get("card_id", "")
         if not cid or not cid[0].isdigit():
@@ -111,12 +148,22 @@ for pack in sorted(p for p in packs_custom if p in cartes):
         if cid in sujets:
             sujet += 1
         else:
-            manquants.append(f"{cid} {c.get('name', '')}".strip())
+            code = scripts.get(cid)
+            jumelle = next((autre for autre, c2 in scripts.items()
+                            if autre != cid and c2 == code and autre in sujets), None)
+            if code and jumelle:
+                doublons.append(f"{cid} {c.get('name', '')}".strip() + f" = {jumelle}")
+            else:
+                manquants.append(f"{cid} {c.get('name', '')}".strip())
     if total:
+        exerce = sujet + len(doublons)
         couverture[pack] = {
             "total": total, "cartes_citees": cite, "cartes_sujet_d_un_cas": sujet,
-            "taux": f"{100 * sujet // total} %",
+            "cartes_couvertes_par_un_doublon": len(doublons),
+            "taux": f"{100 * exerce // total} %",
+            "taux_cas_dedies": f"{100 * sujet // total} %",
             "taux_optimiste": f"{100 * cite // total} %",
+            "doublons": doublons,
             "sans_cas_dedie": manquants,
         }
 rapport["couverture_packs_custom"] = couverture
@@ -207,9 +254,15 @@ for i in sans_destinataire:
 lignes.append(f"images manquantes (packs custom) : {len(sans_image)}")
 for i in sans_image[:20]:
     lignes.append(f"    {i}")
-lignes.append("couverture des packs custom (cartes ayant un cas DEDIE, puis simplement citees) :")
+lignes.append("couverture des packs custom (cas DEDIE + doublon de code, puis simplement citees) :")
 for pack, info in sorted(couverture.items(), key=lambda kv: int(kv[1]["taux"].rstrip(" %"))):
-    lignes.append(f"    {pack:24s} {info['cartes_sujet_d_un_cas']:3d}/{info['total']:<3d} "
+    # Les doublons sont affiches A PART, jamais fondus dans les cas dedies :
+    # « 20+6/26 » se lit d'un coup d'oeil, « 26/26 » masquerait le fait que six
+    # cartes n'ont pas de cas a elles.
+    d = info["cartes_couvertes_par_un_doublon"]
+    compte = (f"{info['cartes_sujet_d_un_cas']}+{d}/{info['total']}" if d
+              else f"{info['cartes_sujet_d_un_cas']}/{info['total']}")
+    lignes.append(f"    {pack:24s} {compte:>9s} "
                   f"{info['taux']:>5s}   (citees : {info['taux_optimiste']})")
 print("\n".join(lignes))
 
