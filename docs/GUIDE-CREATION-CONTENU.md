@@ -1057,6 +1057,25 @@ tableau. À chaque synchro avec le dépôt officiel, réappliquer ce tableau
   `.SetTarget(Scheme2, range=(1, 1))` : `FindCardsOnField(card_type=...)` ne
   filtre pas les types de plan.
 - **Tests de comportement, désignation des cartes** : `Puzzle.*` cherche par NOM (`FindOrCreateFace`), pas par `card_id`. Un `card_id` d'identité fabrique une carte orpheline dans `aside_deck` et fait planter le rendu sur un `AssertionError` opaque. Écrire `Puzzle.ChangeForm('Amadeus Cho')`, pas `Puzzle.ChangeForm('68001b')`. Même chose pour le complot principal : `Puzzle.PlaceThreat('The Break-In!', 8)`. Corollaire : seul `ChangeForm` va dans `mise_en_place`, tout le reste dans `declencher`, sinon la nouvelle forme n'est pas encore active quand la commande suivante cherche son nom.
+- **Écrire un cas de comportement : trois pièges qui coûtent plus cher que le
+  cas lui-même.** `mise_en_place` ET `declencher` sont obligatoires même vides,
+  sinon le harnais lève un `KeyError` brut au lieu d'un message. Une carte qui
+  coûte quelque chose ne part pas si la main ne contient aucune ressource, et
+  le relevé dit « 0 dégât », exactement comme une carte morte : toujours mettre
+  de quoi payer. Et surtout, **un cas peut être vert en n'exerçant rien** :
+  Secret Agent ne s'épuisait pas parce que Genius (01089) fournit BB à lui seul
+  et couvrait tout le coût ; il a fallu une carte à 3 pour rendre sa ressource
+  nécessaire. Vérifier dans le journal du cas que la capacité visée est bien
+  passée.
+- **`payer_avec` ne fait que PRÉFÉRER une carte, `ne_pas_depenser` en interdit
+  une.** Le pilote choisit librement ses ressources : une source déjà en jeu
+  passe souvent avant la main. C'est ainsi que Tuning Fork, qui démarre en jeu
+  chez Lockjaw, fournissait un wild et faussait deux cas censés prouver un
+  paiement en mental. `ne_pas_depenser` prend des `card_id` et écarte leurs
+  effets payants. À réserver aux cas dont la COULEUR payée est le sujet.
+- **Un wild vaut n'importe quelle couleur.** Une main de wilds satisfait « payé
+  en [mental] » : elle ne peut donc pas servir de témoin négatif. Pour prouver
+  qu'une clause bonus ne part PAS, payer en physique ou en énergie.
 - **Actions RÉPARTIES : les doublons de `all_legal_targets` sont du sens, pas
   du bruit.** Quand un effet se répartit (43006 Regenerative Longevity, « Heal
   a total of 4 damage from your identity and Honey Badger »), le moteur répète
