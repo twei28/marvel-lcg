@@ -4,6 +4,7 @@
 // que le plateau PC les pose cote a cote. Sur un telephone, un seul joueur est
 // deplie a la fois : il faut donc pouvoir recoudre les groupes par joueur.
 
+import type { ScanCardProps } from '../../components/ScanCard'
 import type { EmplacementAffiche, UniteAffichee } from '../zones'
 
 /**
@@ -28,4 +29,20 @@ export function groupesParJoueur(
 export function ordreDAffichage(joueurs: number[], actif: number): number[] {
   if (!joueurs.includes(actif)) return joueurs
   return [actif, ...joueurs.filter((joueur) => joueur !== actif)]
+}
+
+/**
+ * La carte d'identite d'un joueur : la premiere unite de ses groupes dont le
+ * type est heros ou alter-ego. Absente si aucune ne correspond.
+ *
+ * Vivait dans BandeHeros, supprime avec le modele de condensation. ZoneFocus
+ * etiquette ses sections de joueur avec exactement cette regle.
+ */
+export function carteIdentite(groupes: UniteAffichee[][]): ScanCardProps | undefined {
+  for (const groupe of groupes) {
+    for (const unite of groupe) {
+      if (unite.carte.kind === 'hero' || unite.carte.kind === 'alter-ego') return unite.carte
+    }
+  }
+  return undefined
 }

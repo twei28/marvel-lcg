@@ -13,8 +13,8 @@ import { t } from '../langue'
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import type { UniteAffichee } from '../zones'
 import type { BandeAffichee } from './bandes'
-import { carteIdentite } from './BandeHeros'
-import { groupesParJoueur, ordreDAffichage } from './joueurs'
+
+import { carteIdentite, groupesParJoueur, ordreDAffichage } from './joueurs'
 import './mobile.css'
 
 export type ZoneFocusProps = {

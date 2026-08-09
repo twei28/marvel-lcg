@@ -233,9 +233,36 @@
     flex-wrap: wrap;
     gap: 8px;
     min-height: 0;
-    /* Le niveau 1 ne defile JAMAIS : ce qui deborde est replie par condenser(),
-       pas cache par un overflow. Le masquage est un filet, pas le mecanisme. */
     overflow: hidden;
+  }
+
+  /* La rangee de cartes d'une bande : une seule ligne, qui defile au doigt.
+     scroll-snap pose chaque carte proprement sous le pouce plutot que de la
+     laisser a moitie sortie. */
+  .bande-cartes {
+    display: flex;
+    gap: 8px;
+    min-height: 0;
+    padding-bottom: 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .bande-cartes::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bande-cartes > * {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  .bande-vide {
+    padding: 6px 2px;
+    color: rgba(255, 255, 255, 0.32);
+    font-size: 0.74rem;
   }
 
   .bande-surplus {
@@ -384,22 +411,32 @@
 
   /* --- Vue d'etat (niveau 1) ----------------------------------------------- */
 
+  /* Le conteneur du mini-plateau.
+
+     Il portait encore la grille de l'ancienne structure — trois rangees
+     « auto 1fr auto » dessinees pour un bandeau du haut, des bandes et une
+     barre d'action. Les enfants ont tous change depuis, et les rangees
+     reclamaient une zone nommee qui n'existait qu'en paysage : elles
+     atterrissaient dans des pistes implicites, et l'overflow ci-dessous coupait
+     tout ce qui depassait. C'est ce qui rendait la main invisible une fois
+     ouverte, quoi qu'on fasse a la main elle-meme.
+
+     Deux rangees suffisent maintenant : le plateau, puis la barre du bas. La
+     MAIN n'est plus dans le flux — elle flotte par-dessus (voir .main-eventail
+     dans medaillon.css), donc l'ouvrir ne reorganise plus rien. */
   .plateau-mobile {
     /* Sans ca, padding-top s'ajouterait a height: 100dvh au lieu d'etre
        preleve dedans : sur un ecran a encoche (safe-area-inset-top > 0), la
-       boite deborderait de la fenetre et ferait defiler la PAGE entiere,
-       exactement ce que ce niveau doit interdire. */
+       boite deborderait de la fenetre et ferait defiler la PAGE entiere. */
     box-sizing: border-box;
-    /* Repere de la sonde de mesure (.pm-sonde), qui est hors flux. */
+    /* Repere de la main et du tiroir, tous deux hors flux. */
     position: relative;
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: minmax(0, 1fr) auto;
     /* 100dvh et non 100vh : sur Chrome mobile la barre d'URL apparait et
        disparait, et 100vh laisserait le bas du plateau sous elle. */
     height: 100dvh;
     padding-top: env(safe-area-inset-top, 0px);
-    /* La vue d'etat ne defile JAMAIS. Si quelque chose deborde, c'est un bug de
-       condensation, pas une raison d'ajouter une barre de defilement. */
     overflow: hidden;
   }
 
@@ -455,12 +492,19 @@
     pointer-events: none;
   }
 
+  /* La pile des bandes DEFILE verticalement.
+     Auparavant elle etait en overflow:hidden : tout devait tenir a l'ecran, ce
+     qui obligeait a reduire les cartes a des vignettes de 34 px et, en paysage,
+     a replier les six bandes en lignes de titre. On a echange ce « tout voir »
+     contre « voir vraiment ».
+     overscroll-behavior : sans lui le geste remonte dans la page et declenche
+     le tirer-pour-rafraichir d'Android. */
   .pm-bandes {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-content: start;
+    display: flex;
+    flex-direction: column;
     min-height: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* Dernier recours : meme les lignes de resume ne tiennent pas empilees
@@ -501,5 +545,16 @@
 
   .focus-cartes .scan-card.is-landscape {
     --card-w: 212px;
+  }
+}
+
+@layer utilitaires {
+  /* Largeur de carte de la VUE D'ETAT. 116 px laisse voir trois cartes entieres
+     sur un ecran de 375 px, plus un bord de la quatrieme : le debut de rangee
+     suivant signale qu'il y a autre chose a droite, sans quoi personne ne
+     penserait a balayer. Le mode focus reste a 149 px, c'est la qu'on agit. */
+  .bande-cartes .scan-card {
+    --card-w: 116px;
+    --inspect-scale: 1;
   }
 }

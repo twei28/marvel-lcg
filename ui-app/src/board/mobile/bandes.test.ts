@@ -17,14 +17,26 @@ function plateau(cles: CleEmplacement[]): Plateau {
 }
 
 describe('BANDES', () => {
-  it('range les 11 emplacements sans oubli ni doublon', () => {
+  it('range les 12 emplacements sans oubli ni doublon', () => {
     const toutes: CleEmplacement[] = [
       'piles-rencontre', 'rencontre', 'complot-principal', 'complots-secondaires',
       'terrain-combat', 'terrain-soutien', 'deck-special', 'piles-joueur',
-      'nemesis', 'annexes', 'main',
+      'nemesis', 'annexes', 'reserve', 'main',
     ]
     const rangees = BANDES.flatMap((bande) => bande.emplacements)
     expect([...rangees].sort()).toEqual([...toutes].sort())
+  })
+
+  // Demande de l'utilisateur (7/8/2026) : la Réserve de Brawn doit vivre au
+  // MÊME endroit que le deck spécial d'un Doctor Strange, c'est-à-dire dans la
+  // bande du héros — et surtout pas avec la main, où elle était au départ.
+  it('range la Réserve avec le héros, à côté du deck spécial', () => {
+    const bandeHeros = BANDES.find((bande) => bande.cle === 'heros')
+    expect(bandeHeros?.emplacements).toContain('reserve')
+    expect(bandeHeros?.emplacements).toContain('deck-special')
+
+    const bandeMain = BANDES.find((bande) => bande.cle === 'main')
+    expect(bandeMain?.emplacements).not.toContain('reserve')
   })
 })
 

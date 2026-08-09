@@ -1,388 +1,291 @@
-// Le niveau 1 : la vue d'etat. Elle tient TOUJOURS a l'ecran, en entier, et ne
-// defile jamais. Ce n'est pas le plateau en petit, c'est l'etat de la partie en
-// objets condenses.
+// Le mini-plateau : la partie sur un telephone.
 //
-// Elle accepte exactement les BoardProps du plateau PC : c'est ce qui permet a
+// Ce n'est pas le plateau PC en petit, ni une liste de zones. C'est une TABLE
+// composee : chaque carte posee devient un medaillon, les rangees sont centrees,
+// et l'ensemble tient a l'ecran sans defilement global.
+//
+// Deux versions ont echoue avant celle-ci, pour des raisons opposees. La
+// premiere condensait chaque carte en une tuile de 140x96 portant une vignette
+// de 34x47 : illisible, et en paysage la degradation repliait les six bandes en
+// lignes de titre, laissant un ecran vide. La seconde rendait de VRAIES cartes
+// empilees verticalement : lisible, mais « tout l'un en dessous de l'autre »,
+// une liste et non un jeu.
+//
+// L'etat de l'art (Hearthstone, MTG Arena, Gwent) dit la meme chose : une carte
+// POSEE change de forme, le plateau reste spatial, et la main est fanee en bas.
+// C'est ce que ce fichier applique.
+//
+// Il accepte exactement les BoardProps du plateau PC : c'est ce qui permet a
 // board.tsx de choisir l'un ou l'autre sans rien adapter.
 
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { avecInteraction, phaseAffichee, type BoardProps } from '../Board'
 import { t } from '../langue'
 import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
 import type { EtatInteractif } from '../interaction'
-import type { EmplacementAffiche, UniteAffichee } from '../zones'
-import { BandeHeros, hauteurBandeauxReplies } from './BandeHeros'
-import { BandeMobile, BandeResume } from './BandeMobile'
-import { repartir, type BandeAffichee, type CleBande } from './bandes'
-import { TUILE_PLANCHER } from './condensation'
+import type { UniteAffichee } from '../zones'
+import { repartir, BANDES_PLATEAU, type BandeAffichee, type CleBande } from './bandes'
 import { useCouches, useCouchesBoard } from './couches'
-import { groupesParJoueur } from './joueurs'
-import {
-  MESURES_PAR_DEFAUT,
-  planifier,
-  plancherTuiles,
-  type MesuresBande,
-} from './degradation'
+import { MainEventail } from './MainEventail'
+import { RangeeMedaillons } from './RangeeMedaillons'
+import { BarreBas } from './BarreBas'
+import { CarteOuverte } from './CarteOuverte'
+import { TiroirPiles, type PileAffichee } from './TiroirPiles'
+import { useOrientation } from './useOrientation'
 import { ZoneFocus } from './ZoneFocus'
 import './mobile.css'
-
-/**
- * Poids RELATIFS des bandes : pas des pixels absolus. L'espace vertical
- * reellement disponible (mesure sur .pm-bandes, voir useHauteurCadre) est
- * reparti entre les bandes affichees au prorata de ces poids, une fois que
- * chacune a recu son plancher (voir degradation.ts). Ces valeurs viennent des
- * hauteurs de repos de la spec ; ce qui a change (task 11) c'est qu'elles ne
- * sont plus prises pour argent comptant, seulement pour LEURS PROPORTIONS
- * relatives.
- */
-const BUDGETS: Record<CleBande, number> = {
-  vilain: 140,
-  complots: 110,
-  terrain: 120,
-  rencontre: 64,
-  heros: 200,
-  main: 76,
-}
-
-/** Largeur utile d'une bande : la fenetre moins les marges laterales de mobile.css. */
-const MARGES_LATERALES = 20
+import './medaillon.css'
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
 const AUCUN_EFFET: Map<number, CardEffectDelta> = new Map()
 
-/**
- * Largeur reelle du cadre, tenue a jour par un ResizeObserver.
- *
- * Meme motif que useEchelle dans Board.tsx : window.resize ne voit pas les
- * changements de mise en page qui ne sont pas des redimensionnements de fenetre
- * (barre d'URL de Chrome mobile qui apparait ou disparait), donc seul un
- * ResizeObserver sur le cadre lui-meme est fiable.
- */
-function useLargeurCadre(cadre: React.RefObject<HTMLDivElement | null>) {
-  const [largeur, setLargeur] = useState(() => window.innerWidth)
-
-  // useLayoutEffect et non useEffect : la premiere image peinte doit deja
-  // etre calculee sur la mesure reelle, pas sur window.innerWidth.
-  useLayoutEffect(() => {
-    const element = cadre.current
-    if (!element) return
-
-    const recalculer = () => {
-      const { width } = element.getBoundingClientRect()
-      if (width === 0) return
-      setLargeur(width)
-    }
-
-    recalculer()
-    const observateur = new ResizeObserver(recalculer)
-    observateur.observe(element)
-    return () => observateur.disconnect()
-  }, [cadre])
-
-  return largeur
-}
-
-/**
- * Hauteur reelle de .pm-bandes (la ligne 1fr entre le HUD et la barre
- * d'action), tenue a jour par un ResizeObserver. Independante du CONTENU de
- * .pm-bandes : min-height:0 dans mobile.css la laisse epouser exactement sa
- * part de grille, quel que soit ce qui est dedans (voir le commentaire sur
- * .pm-bandes dans mobile.css). Mesurer cet element ne boucle donc pas sur
- * lui-meme.
- *
- * C'est la piece qui manquait avant task 11 : BUDGETS etait fixe, sans lien
- * avec l'espace REEL restant apres le HUD et la barre d'action (qui varient
- * avec le contenu). Une bande pouvait donc recevoir un budget que la grille
- * CSS ne lui donnait pas vraiment, et le surplus etait invisible, avale par
- * l'overflow:hidden de .bande-tuiles, sans jamais faire deborder
- * .plateau-mobile ni .pm-bandes eux-memes.
- *
- * useLayoutEffect et non useEffect : avec useEffect, la premiere image peinte
- * de chaque montage et de chaque rotation calculait ses budgets contre
- * window.innerHeight et sur-rendait visiblement pendant une image.
- */
-function useHauteurCadre(cadre: React.RefObject<HTMLDivElement | null>) {
-  const [hauteur, setHauteur] = useState(() => window.innerHeight)
-
-  useLayoutEffect(() => {
-    const element = cadre.current
-    if (!element) return
-
-    const recalculer = () => {
-      const { height } = element.getBoundingClientRect()
-      if (height === 0) return
-      setHauteur(height)
-    }
-
-    recalculer()
-    const observateur = new ResizeObserver(recalculer)
-    observateur.observe(element)
-    return () => observateur.disconnect()
-  }, [cadre])
-
-  return hauteur
-}
-
-function nombreFini(valeur: string, defaut: number): number {
-  const lu = Number.parseFloat(valeur)
-  return Number.isFinite(lu) ? lu : defaut
-}
-
-/**
- * Les hauteurs de la boite d'une bande, RELEVEES sur le DOM plutot que
- * recopiees dans une constante. La sonde est une vraie .bande contenant un
- * vrai .bande-titre, posee en absolu et invisible : elle est mesurable des la
- * premiere passe de mise en page, avant meme que les bandes soient dessinees,
- * et elle suit automatiquement mobile.css si ses valeurs changent.
- *
- * MESURES_PAR_DEFAUT ne sert que quand il n'y a rien a mesurer : avant le
- * montage, et sous jsdom qui ne fait aucune mise en page.
- */
-function useMesuresBande(sonde: React.RefObject<HTMLDivElement | null>): MesuresBande {
-  const [mesures, setMesures] = useState<MesuresBande>(MESURES_PAR_DEFAUT)
-
-  useLayoutEffect(() => {
-    const bande = sonde.current
-    const titre = bande?.querySelector('.bande-titre')
-    if (!bande || !titre) return
-
-    const relever = () => {
-      const style = window.getComputedStyle(bande)
-      const hauteurTitre = titre.getBoundingClientRect().height
-      const relevees: MesuresBande = {
-        titre: hauteurTitre > 0 ? hauteurTitre : MESURES_PAR_DEFAUT.titre,
-        remplissage:
-          nombreFini(style.paddingTop, 0) + nombreFini(style.paddingBottom, 0),
-        bordure:
-          nombreFini(style.borderTopWidth, 0) + nombreFini(style.borderBottomWidth, 0),
-        ecart: nombreFini(style.rowGap, 0),
-      }
-      setMesures((precedentes) =>
-        precedentes.titre === relevees.titre &&
-        precedentes.remplissage === relevees.remplissage &&
-        precedentes.bordure === relevees.bordure &&
-        precedentes.ecart === relevees.ecart
-          ? precedentes
-          : relevees
-      )
-    }
-
-    relever()
-    const observateur = new ResizeObserver(relever)
-    observateur.observe(bande)
-    return () => observateur.disconnect()
-  }, [sonde])
-
-  return mesures
-}
-
 /** Toutes les unites d'une bande, tous emplacements confondus. */
-function unitesDe(bande: BandeAffichee): UniteAffichee[] {
+function unitesDe(bande: BandeAffichee | undefined): UniteAffichee[] {
+  if (!bande) return []
   return bande.emplacements.flatMap((emplacement) => emplacement.groupes.flat())
-}
-
-/**
- * Combien de bandeaux joueurs REPLIES la bande Heros va empiler : ils prennent
- * de la hauteur EN PLUS des tuiles, le plancher de la bande doit donc les
- * couvrir. Un seul joueur est deplie a la fois, donc tous les autres se
- * replient ; si le siege regarde n'apparait pas parmi les proprietaires (etat
- * degenere), aucun n'est deplie et ils se replient tous.
- */
-function nombreDeBandeauxReplies(bande: BandeAffichee, playerId: number): number {
-  const soutien = bande.emplacements.find(
-    (emplacement: EmplacementAffiche) => emplacement.cle === 'terrain-soutien'
-  )
-  if (!soutien) return 0
-  const joueurs = [...groupesParJoueur(soutien).keys()]
-  return joueurs.includes(playerId) ? Math.max(0, joueurs.length - 1) : joueurs.length
 }
 
 export function PlateauMobile({
   world,
   playerId,
   plateau,
+  bas,
   outils,
   actionsPartie,
-  bas,
   interactifs = AUCUNE_INTERACTION,
   effets = AUCUN_EFFET,
-  heroActifId,
   carteFocalisee,
   onFermerCarte,
   selecteurOuvert = false,
   onFermerSelecteur,
   onCardClick,
 }: BoardProps) {
-  const cadre = useRef<HTMLDivElement>(null)
-  const cadreBandes = useRef<HTMLDivElement>(null)
-  const sonde = useRef<HTMLDivElement>(null)
-  const largeur = useLargeurCadre(cadre)
-  const hauteurBandes = useHauteurCadre(cadreBandes)
-  const mesures = useMesuresBande(sonde)
+  const orientation = useOrientation()
   const couches = useCouches()
   const { pile, ouvrir, fermer } = couches
-  // Le menu d'actions d'une carte et le selecteur de cibles vivent dans
-  // board.tsx : ce pont les inscrit tout de meme dans la pile, pour que le
-  // Retour d'Android les ferme au lieu de sortir de la partie (spec S6).
   useCouchesBoard(carteFocalisee, selecteurOuvert, couches, onFermerCarte, onFermerSelecteur)
+  const [pileRegardee, setPileRegardee] = useState<
+    { titre: string; cartes: ScanCardProps[] } | undefined
+  >(undefined)
+  /** La carte qu'on lit en grand. Un medaillon ne porte ni nom ni regles. */
+  const [carteOuverte, setCarteOuverte] = useState<ScanCardProps | undefined>(undefined)
 
-  // Les memes props d'interaction que sur le plateau PC : sans cela, aucune
-  // carte jouable, aucune cible, aucun badge « Actif » et aucune variation de
-  // compteur n'etait visible sur mobile. avecInteraction vient de Board.tsx et
-  // n'est pas recopie ici : les deux rendus ne peuvent donc pas diverger.
+  // Les etats d'interaction sont poses sur chaque carte AVANT le decoupage :
+  // le medaillon lit `state` pour savoir s'il est une cible legale.
   const bandes = useMemo(() => {
-    const brutes = repartir(plateau)
-    if (interactifs.size === 0 && effets.size === 0 && heroActifId === undefined) return brutes
-    const decorer = (carte: ScanCardProps): ScanCardProps => {
-      const avec = avecInteraction(carte, interactifs, effets)
-      return heroActifId !== undefined && Number(carte.id) === heroActifId
-        ? { ...avec, estActif: true }
-        : avec
-    }
-    return brutes.map((bande) => ({
+    const decorer = (carte: ScanCardProps) => avecInteraction(carte, interactifs, effets)
+    return repartir(plateau).map((bande) => ({
       ...bande,
       emplacements: bande.emplacements.map((emplacement) => ({
         ...emplacement,
         groupes: emplacement.groupes.map((groupe) =>
-          groupe.map((unite) => ({ ...unite, carte: decorer(unite.carte) }))
+          groupe.map((unite) => ({
+            ...unite,
+            carte: decorer(unite.carte),
+            attachees: unite.attachees.map(decorer),
+          }))
         ),
       })),
     }))
-  }, [plateau, interactifs, effets, heroActifId])
+  }, [plateau, interactifs, effets])
 
-  // Combien de cibles legales chaque bande contient, pendant un ciblage
-  // (spec S5 : le niveau 1 marque les bandes qui en portent).
+  const parCle = useMemo(() => {
+    const index = new Map<CleBande, BandeAffichee>()
+    for (const bande of bandes) index.set(bande.cle, bande)
+    return index
+  }, [bandes])
+
+  // Combien de cibles legales chaque rangee porte, pour l'afficher sur son titre.
   const ciblesParBande = useMemo(() => {
     const compte = new Map<CleBande, number>()
     for (const bande of bandes) {
-      const nombre = unitesDe(bande).filter(
-        (unite) => unite.carte.state === 'targetable'
-      ).length
-      if (nombre > 0) compte.set(bande.cle, nombre)
+      const n = unitesDe(bande).filter((unite) => {
+        const etat = interactifs.get(Number(unite.carte.id))
+        return etat?.role === 'cible' || etat?.role === 'cible-preview'
+      }).length
+      if (n > 0) compte.set(bande.cle, n)
     }
     return compte
-  }, [bandes])
+  }, [bandes, interactifs])
 
-  // Ce que chaque bande exige AU MINIMUM pour ne rien couper, et le poids avec
-  // lequel elle se partage ce qui reste. Une bande sans aucune unite n'exige
-  // rien : elle ne dessinera ni tuile ni pastille.
-  const exigences = useMemo(
+  // Un ciblage est en cours : tout ce qui n'est pas visable s'eteint.
+  const enCiblage = ciblesParBande.size > 0
+
+  // Un PAIEMENT est en cours des qu'une carte porte le role « ressource ».
+  // On reutilise exactement le traitement du ciblage : tout s'eteint sauf ce
+  // qui peut payer — cartes de la main ET generateurs deja en jeu, que le
+  // moteur marque du meme role. Le compte « 2/4 » vit dans la barre du bas,
+  // rendue par le plateau PC (voir BarreAction).
+  const paiementDemande = useMemo(
+    () => [...interactifs.values()].some((etat) => etat.role === 'ressource'),
+    [interactifs]
+  )
+
+  // Le moteur peut DEMANDER un paiement sans qu'on soit pret a s'engager.
+  // Tant qu'on n'a pas touche « Payer », le plateau reste normal : c'est ce qui
+  // laisse reculer avant de depenser quoi que ce soit.
+  const [paiementAccepte, setPaiementAccepte] = useState(false)
+  useEffect(() => {
+    if (!paiementDemande) setPaiementAccepte(false)
+  }, [paiementDemande])
+  const enPaiement = paiementDemande && paiementAccepte
+
+  const piles: PileAffichee[] = useMemo(
     () =>
-      bandes.map((bande) => {
-        const vide = unitesDe(bande).length === 0
-        const replies = bande.cle === 'heros' ? nombreDeBandeauxReplies(bande, playerId) : 0
-        const supplement = hauteurBandeauxReplies(replies, mesures.ecart)
-        return {
-          cle: bande.cle,
-          poids: vide ? 0 : BUDGETS[bande.cle],
-          plancher: vide ? 0 : plancherTuiles(supplement),
-        }
-      }),
-    [bandes, mesures.ecart, playerId]
+      unitesDe(parCle.get('piles')).map((unite) => ({
+        cle: unite.cle,
+        titre: unite.pileTitre ?? unite.carte.name,
+        unite,
+      })),
+    [parCle]
   )
 
-  const plan = useMemo(
-    () => planifier(exigences, hauteurBandes, mesures),
-    [exigences, hauteurBandes, mesures]
-  )
+  // Depuis la MAIN (appui long) ou le mode focus : on agit directement.
+  const jouerCarte = (carte: ScanCardProps) => {
+    if (carte.onSelect) carte.onSelect()
+    else onCardClick?.(carte)
+  }
 
-  // La feuille de focus la plus recente, meme si un menu de carte est empile
-  // PAR-DESSUS elle : le menu recouvre la feuille, il ne la remplace pas, et
-  // le Retour doit la retrouver telle quelle.
+  // Depuis un MEDAILLON : on ouvre d'abord, parce qu'un medaillon ne porte ni
+  // nom ni texte de regles. L'action se declenche depuis le panneau ouvert.
+  const ouvrirCarte = (carte: ScanCardProps) => setCarteOuverte(carte)
+
   const coucheFocus = [...pile].reverse().find((couche) => couche.sorte === 'focus')
   const bandeEnFocus = coucheFocus
     ? bandes.find((bande) => bande.cle === coucheFocus.bande)
     : undefined
 
-  const ouvrirCarte = (carte: ScanCardProps) => {
-    if (carte.onSelect) carte.onSelect()
-    else onCardClick?.(carte)
-  }
+  const main = unitesDe(parCle.get('main')).map((unite) => unite.carte)
 
   return (
-    <div className="plateau-mobile" ref={cadre}>
-      {/* Sonde de mesure : une vraie bande, hors flux et invisible, dont
-          useMesuresBande releve les hauteurs. Elle remplace la constante
-          OVERHEAD_BANDE, qui affirmait 60 px la ou le rendu en vaut 61. */}
-      <div className="pm-sonde" aria-hidden="true">
-        <div className="bande" ref={sonde}>
-          <span className="bande-titre" />
-        </div>
-      </div>
+    <div
+      className={
+        `plateau-mobile est-${orientation}` +
+        (enCiblage || enPaiement ? ' est-en-ciblage' : '') +
+        (enPaiement ? ' est-en-paiement' : '')
+      }
+    >
+      {/* En PAYSAGE la largeur permet une colonne de piles visible, comme sur le
+          plateau PC : le tiroir n'aurait plus de raison d'être. En portrait il
+          reste le seul moyen de les atteindre. */}
+      {orientation === 'portrait' ? (
+        <TiroirPiles
+          piles={piles}
+          onOuvrirPile={(titre, cartes) => setPileRegardee({ titre, cartes })}
+        />
+      ) : (
+        <aside className="pm-colonne-piles" aria-label={t('Piles')}>
+          <ul className="tiroir-liste">
+            {piles.map((pile) => {
+              const contenu = pile.unite.pileContenu
+              const consultable = contenu !== undefined && contenu.length > 0
+              return (
+                <li key={pile.cle}>
+                  <button
+                    type="button"
+                    className="tiroir-pile"
+                    disabled={!consultable}
+                    onClick={() => {
+                      if (consultable) {
+                        setPileRegardee({ titre: pile.unite.pileTitre ?? pile.titre, cartes: contenu })
+                      }
+                    }}
+                  >
+                    <span className="tiroir-pile-nom">{pile.titre}</span>
+                    <span className="tiroir-pile-compte">{contenu?.length ?? 0}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </aside>
+      )}
 
-      <header className="pm-hud">
-        <span className="pm-etat">
-          <strong>{phaseAffichee(world.phase)}</strong>
-          <span className="pm-tour">
-            {t('Tour')} {world.round_id}
-          </span>
-        </span>
-        <span className="pm-outils">
-          {actionsPartie}
-          {outils}
-        </span>
-      </header>
-
-      <div
-        className={`pm-bandes${plan.colonnes === 2 ? ' pm-bandes-deux' : ''}${
-          plan.defilement ? ' pm-bandes-defilantes' : ''
-        }`}
-        ref={cadreBandes}
-      >
-        {bandes.map((bande) => {
-          const onOuvrirBande = () => ouvrir({ sorte: 'focus', bande: bande.cle })
-          const cibles = ciblesParBande.get(bande.cle)
-
-          if (plan.modes.get(bande.cle) !== 'tuiles') {
-            return (
-              <BandeResume
-                key={bande.cle}
-                bande={bande}
-                cibles={cibles}
-                onOuvrirBande={onOuvrirBande}
-              />
-            )
-          }
-
-          const budget = {
-            largeur: Math.max(0, largeur - MARGES_LATERALES),
-            hauteur: plan.hauteurs.get(bande.cle) ?? TUILE_PLANCHER.hauteur,
-          }
-
-          return bande.cle === 'heros' ? (
-            <BandeHeros
-              key={bande.cle}
-              bande={bande}
-              budget={budget}
-              playerId={playerId}
-              cibles={cibles}
-              ecartGrille={mesures.ecart}
-              onOuvrirBande={onOuvrirBande}
-              onOuvrirCarte={ouvrirCarte}
-            />
-          ) : (
-            <BandeMobile
-              key={bande.cle}
-              bande={bande}
-              budget={budget}
-              cibles={cibles}
-              onOuvrirBande={onOuvrirBande}
+      <div className="pm-rangees">
+        {BANDES_PLATEAU.map((cle) => {
+          const bande = parCle.get(cle)
+          if (!bande) return null
+          return (
+            <RangeeMedaillons
+              key={cle}
+              titre={
+                cle === 'heros'
+                  ? `${bande.titre} · ${phaseAffichee(world.phase)}`
+                  : bande.titre
+              }
+              unites={unitesDe(bande)}
+              // La manigance principale decide de la defaite : meme vocabulaire,
+              // taille superieure.
+              taille={cle === 'complots' ? 'grand' : 'normal'}
+              cibles={ciblesParBande.get(cle)}
+              effets={effets}
               onOuvrirCarte={ouvrirCarte}
             />
           )
         })}
       </div>
 
-      {bas ? <div className="pm-barre-action">{bas}</div> : null}
+      {/* Plus de largeur a transmettre : les cartes ne se resserrent plus, la
+          main se balaie quand elle deborde. */}
+      <MainEventail cartes={main} modePaiement={enPaiement} onJouer={jouerCarte} />
+
+      {paiementDemande && !paiementAccepte ? (
+        <div className="pm-barre pm-barre-demande">
+          <button
+            type="button"
+            className="pm-payer"
+            onClick={() => setPaiementAccepte(true)}
+          >
+            {t('Payer')}
+          </button>
+          {bas}
+        </div>
+      ) : (
+        <BarreBas demande={bas} outils={actionsPartie} onglets={outils} />
+      )}
 
       {bandeEnFocus ? (
         <ZoneFocus
           bande={bandeEnFocus}
           playerId={playerId}
           onFermer={fermer}
-          onOuvrirCarte={ouvrirCarte}
+          onOuvrirCarte={jouerCarte}
         />
       ) : null}
+
+      {carteOuverte ? (
+        <CarteOuverte carte={carteOuverte} onFermer={() => setCarteOuverte(undefined)} />
+      ) : null}
+
+      {pileRegardee ? (
+        <div className="focus-voile" onPointerDown={() => setPileRegardee(undefined)}>
+          <section
+            className="focus"
+            role="dialog"
+            aria-label={pileRegardee.titre}
+            onPointerDown={(evenement) => evenement.stopPropagation()}
+          >
+            <header className="focus-entete">
+              <h2>{pileRegardee.titre}</h2>
+              <button type="button" className="focus-fermer" onClick={() => setPileRegardee(undefined)}>
+                {t('Fermer')}
+              </button>
+            </header>
+            <div className="focus-corps">
+              <div className="focus-cartes">
+                {pileRegardee.cartes.map((carte) => (
+                  <span key={carte.id}>
+                    <img className="pile-carte" src={carte.imageUrl} alt={carte.name} />
+                  </span>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+      ) : null}
+
+      {/* `ouvrir` reste utilise par ZoneFocus via la pile de couches. */}
+      <span hidden aria-hidden="true" onClick={() => ouvrir({ sorte: 'focus', bande: 'terrain' })} />
     </div>
   )
 }

@@ -18,10 +18,23 @@ export const CLE_MODE = 'mode-plateau'
 /** Un ecran etroit OU un pointeur grossier suffit : la virgule est un OU en CSS. */
 export const REQUETE_MOBILE = '(max-width: 900px), (pointer: coarse)'
 
+/**
+ * Sur un ORDINATEUR, on rend toujours le plateau PC — un « mobile » memorise
+ * est ignore.
+ *
+ * C'etait l'inverse, et ca enfermait : un clic de trop sur l'option posait
+ * `mobile` en localStorage, le plateau passait en bandes, et le panneau qui
+ * contenait l'option devenait inatteignable. Plus aucun moyen de revenir sans
+ * ouvrir la console du navigateur.
+ *
+ * Le reglage garde donc du sens dans un seul sens : forcer le mode PC SUR un
+ * telephone (ecran etroit mais on veut la table complete). Pour eprouver le
+ * rendu mobile depuis un PC, `?mobile` dans l'adresse le force — un outil de
+ * developpement n'a pas besoin d'un bouton permanent.
+ */
 export function modeEffectif(reglage: ReglageMode, correspond: boolean): ModeRendu {
-  if (reglage === 'mobile') return 'mobile'
-  if (reglage === 'pc') return 'pc'
-  return correspond ? 'mobile' : 'pc'
+  if (!correspond) return 'pc'
+  return reglage === 'pc' ? 'pc' : 'mobile'
 }
 
 export function lireReglage(): ReglageMode {
@@ -44,6 +57,8 @@ export function ecrireReglage(reglage: ReglageMode): void {
 export function useModeMobile(): {
   mode: ModeRendu
   reglage: ReglageMode
+  /** Vrai sur un appareil reellement mobile : conditionne l'affichage du reglage. */
+  surAppareilMobile: boolean
   changer: (reglage: ReglageMode) => void
 } {
   const [reglage, setReglage] = useState<ReglageMode>(lireReglage)
@@ -63,5 +78,16 @@ export function useModeMobile(): {
     setReglage(suivant)
   }
 
-  return { mode: modeEffectif(reglage, correspond), reglage, changer }
+  // Echappatoire de developpement : `?mobile` force le rendu telephone depuis
+  // un PC. Lue a chaque rendu, sans etat : on ne memorise rien qui puisse
+  // reenfermer quelqu'un.
+  const forceParAdresse =
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('mobile')
+
+  return {
+    mode: forceParAdresse ? 'mobile' : modeEffectif(reglage, correspond),
+    reglage,
+    surAppareilMobile: correspond,
+    changer,
+  }
 }

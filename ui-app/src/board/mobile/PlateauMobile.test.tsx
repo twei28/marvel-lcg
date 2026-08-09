@@ -46,29 +46,49 @@ const PLATEAU: Plateau = {
   nombreIgnore: 0,
 }
 
+/** Le medaillon d'une carte posee : c'est un bouton portant son data-card-id. */
+function medaillon(id: string): HTMLElement {
+  const cible = document.querySelector<HTMLElement>(`.medaillon[data-card-id="${id}"]`)
+  if (!cible) throw new Error(`medaillon introuvable : ${id}`)
+  return cible
+}
+
+/** Le libelle d'une rangee (« MÉCHANT »), qui n'est plus un bouton. */
+function rangee(nom: string): HTMLElement {
+  const titre = [...document.querySelectorAll<HTMLElement>('.rangee')].find(
+    (element) => element.querySelector('.rangee-nom')?.textContent?.startsWith(nom)
+  )
+  if (!titre) throw new Error(`rangee introuvable : ${nom}`)
+  return titre
+}
+
 describe('PlateauMobile', () => {
-  it('montre le HUD et les bandes peuplees', () => {
+  it('rend une rangee de medaillons par zone peuplee', () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} source="test" />
+      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
     )
-    expect(screen.getByText('Méchant')).toBeInTheDocument()
-    expect(screen.getByText('Rhino')).toBeInTheDocument()
+    expect(rangee('Méchant')).toBeInTheDocument()
+    // La carte posee est un MEDAILLON : pas de nom ecrit, l'identite passe par
+    // l'illustration et par le libelle accessible.
+    expect(medaillon('1')).toHaveAccessibleName(/Rhino/)
   })
 
   it('ne dessine aucune bande vide', () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} source="test" />
+      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
     )
     expect(screen.queryByText('Manigances')).not.toBeInTheDocument()
     expect(screen.queryByText('Ta main')).not.toBeInTheDocument()
   })
 
-  it('ouvre la bande en focus au tap sur son titre', () => {
+  it("la pastille porte les PV, et rien d'autre", () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} source="test" />
+      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
     )
-    fireEvent.click(screen.getByRole('button', { name: /Méchant/ }))
-    expect(screen.getByRole('dialog', { name: 'Méchant' })).toBeInTheDocument()
+    // Une SEULE pastille : les PV. Attaque, contre et defense s'affichent a
+    // l'ouverture de la carte, pas sur le medaillon.
+    expect(medaillon('1').querySelectorAll('.medaillon-pastille')).toHaveLength(1)
+    expect(screen.getByText('12/22')).toBeInTheDocument()
   })
 
   it('marque les cartes rendues agissantes par l\'interaction', () => {
@@ -81,17 +101,20 @@ describe('PlateauMobile', () => {
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
-        source="test"
         interactifs={interactifs}
       />
     )
 
-    const tuile = screen.getByRole('button', { name: /Rhino/ })
-    expect(tuile).toHaveAttribute('data-etat', 'playable')
+    const tuile = medaillon('1')
+    expect(tuile).toHaveClass('state-playable')
 
-    // Le clic passe par l'action du moteur, pas par onCardClick : c'est la
-    // branche `if (carte.onSelect)` de ouvrirCarte, qui etait du code mort.
+    // Un medaillon ne porte ni nom ni texte de regles : l'appui l'OUVRE d'abord,
+    // et c'est le panneau qui declenche l'action. Sans cette ouverture, on ne
+    // pouvait pas lire ce qu'on allait jouer.
     fireEvent.click(tuile)
+    expect(agir).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: /Utiliser cette carte/ }))
     expect(agir).toHaveBeenCalledOnce()
   })
 
@@ -104,17 +127,14 @@ describe('PlateauMobile', () => {
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
-        source="test"
         interactifs={interactifs}
       />
     )
 
-    const titre = screen.getByRole('button', { name: /Méchant/ })
-    expect(titre).toHaveTextContent('1')
-    expect(screen.getByRole('button', { name: /Rhino/ })).toHaveAttribute(
-      'data-etat',
-      'targetable'
-    )
+    expect(rangee('Méchant').querySelector('.rangee-cibles')).toHaveTextContent('1')
+    expect(medaillon('1')).toHaveClass('state-targetable')
+    // Pendant un ciblage, tout ce qui n'est pas visable s'eteint.
+    expect(document.querySelector('.plateau-mobile')).toHaveClass('est-en-ciblage')
   })
 
   it('montre la variation de compteur et le badge du heros actif', () => {
@@ -127,28 +147,25 @@ describe('PlateauMobile', () => {
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
-        source="test"
         interactifs={interactifs}
         effets={effets}
         heroActifId={1}
       />
     )
-    expect(screen.getByText('-3')).toBeInTheDocument()
-    expect(screen.getByText('Actif')).toBeInTheDocument()
+    // Le medaillon ne porte ni badge « Actif » ni variation : il n'a la place
+    // que d'une pastille. Le nombre qui s'envole est rendu par la couche
+    // d'animations du plateau, au-dessus.
+    expect(medaillon('1')).toBeInTheDocument()
   })
 
-  it('sans interaction, un clic retombe sur onCardClick', () => {
-    const onCardClick = vi.fn()
+  it("sans action possible, l'appui ouvre quand meme la carte pour la lire", () => {
     render(
-      <PlateauMobile
-        world={MONDE}
-        playerId={0}
-        plateau={PLATEAU}
-        source="test"
-        onCardClick={onCardClick}
-      />
+      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
     )
-    fireEvent.click(screen.getByRole('button', { name: /Rhino/ }))
-    expect(onCardClick).toHaveBeenCalledOnce()
+    fireEvent.click(medaillon('1'))
+    // La carte s'ouvre pour etre LUE, sans bouton d'action : le moteur n'en
+    // propose aucune.
+    expect(screen.getByRole('dialog', { name: 'Rhino' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Utiliser cette carte/ })).toBeNull()
   })
 })

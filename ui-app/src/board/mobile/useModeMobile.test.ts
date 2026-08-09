@@ -8,9 +8,17 @@ describe('modeEffectif', () => {
     expect(modeEffectif('auto', false)).toBe('pc')
   })
 
-  it('ignore la media query quand un mode est force', () => {
-    expect(modeEffectif('mobile', false)).toBe('mobile')
+  it('laisse forcer le mode PC sur un telephone', () => {
     expect(modeEffectif('pc', true)).toBe('pc')
+  })
+
+  // Le piege qu'on ferme ici : un reglage `mobile` memorise faisait basculer un
+  // PC en bandes, et le panneau qui contient le reglage devenait inatteignable.
+  // Aucun retour possible sans vider le localStorage a la main.
+  it("n'accepte JAMAIS de rendre un PC en mode telephone", () => {
+    expect(modeEffectif('mobile', false)).toBe('pc')
+    expect(modeEffectif('auto', false)).toBe('pc')
+    expect(modeEffectif('pc', false)).toBe('pc')
   })
 })
 
