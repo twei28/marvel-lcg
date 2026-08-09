@@ -218,8 +218,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Survole n’importe quelle carte : elle s’agrandit sur le côté, avec ses mots-clés expliqués. Garde, Renfort, Déferlement : tout y est défini, tu n’as rien à retenir par cœur.':
     'Hover any card: it grows on the side, with its keywords explained. Guard, Surge, Overkill: everything is defined there, you have nothing to memorise.',
   'Le panneau ⚙': 'The ⚙ panel',
-  'En haut à droite : animations, sons, musique, météo, succès. Tout est débrayable, rien ne t’est imposé.':
-    'Top right: animations, sounds, music, weather, achievements. Everything can be turned off, nothing is forced on you.',
+  'En haut à droite : animations, sons, musique, ambiance, succès. Tout est débrayable, rien ne t’est imposé.':
+    'Top right: animations, sounds, music, ambience, achievements. Everything can be turned off, nothing is forced on you.',
   'Annuler une erreur': 'Undo a mistake',
   'La touche U annule le dernier coup. Tu peux essayer sans crainte : rien n’est définitif tant que tu n’as pas terminé ton tour.':
     'The U key undoes the last move. You can experiment freely: nothing is final until you end your turn.',
@@ -462,8 +462,8 @@ export const DICO_EN_BASE: Record<string, string> = {
     'Enters play with X tokens; when the last one is spent, discard this card.',
 
   // --- Météo, musique, écran de fin (vague 8) ---
-  'Météo': 'Weather',
-  'Aperçu météo': 'Weather preview',
+  'Ambiance': 'Ambience',
+  'Aperçu d’ambiance': 'Ambience preview',
   'Force un effet à l écran pour le voir, sans partie ni carte': 'Forces an effect on screen so you can see it, with no game and no card',
   'Auto': 'Auto',
   'Aucun': 'None',
@@ -499,13 +499,13 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cartes révélées': 'Revealed cards',
   '2,6 s': '2.6 s',
   '5 s': '5 s',
-  'Tous les réglages du plateau (animations, sons, musique, météo, révélation)':
-    'All board settings (animations, sounds, music, weather, reveal)',
+  'Tous les réglages du plateau (animations, sons, musique, ambiance, révélation)':
+    'All board settings (animations, sounds, music, ambience, reveal)',
   'Déplacements de cartes, secousse d’impact, halo de statut':
     'Card movement, impact shake, status halo',
   'Effets sonores du moteur': 'Engine sound effects',
-  'Ambiance du lieu ou de la météo, selon les cartes en jeu':
-    'Location or weather ambience, driven by the cards in play',
+  'Météo, décor ou traitement de l’image, selon les cartes en jeu':
+    'Weather, setting or image treatment, driven by the cards in play',
   'Présentation au centre des cartes révélées par la Rencontre':
     'Center presentation of cards revealed from the encounter deck',
   'Raccourcis : E = fin du tour, U = annuler': 'Shortcuts: E = end turn, U = undo',

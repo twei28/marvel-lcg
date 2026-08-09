@@ -1153,7 +1153,7 @@ function PanneauOptions({
         className={`bh-bouton bh-options${ouvert ? ' est-actif' : ''}`}
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
-        title={t('Tous les réglages du plateau (animations, sons, musique, météo, révélation)')}
+        title={t('Tous les réglages du plateau (animations, sons, musique, ambiance, révélation)')}
       >
         <span aria-hidden="true">{'\u2699'}</span> {t('Options')}
       </button>
@@ -1220,8 +1220,8 @@ function PanneauOptions({
             onBascule={basculerValidationCourte}
           />
           <LigneOption
-            libelle={t('Météo')}
-            detail={t('Ambiance du lieu ou de la météo, selon les cartes en jeu')}
+            libelle={t('Ambiance')}
+            detail={t('Météo, décor ou traitement de l’image, selon les cartes en jeu')}
             actif={meteo}
             onBascule={basculerMeteo}
           />
@@ -1231,7 +1231,7 @@ function PanneauOptions({
             onClick={cyclerApercuMeteo}
             title={t('Force un effet à l écran pour le voir, sans partie ni carte')}
           >
-            <span className="ligne-option-libelle">{t('Aperçu météo')}</span>
+            <span className="ligne-option-libelle">{t('Aperçu d’ambiance')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
               {t(libelleApercu(apercuMeteo))}
             </span>

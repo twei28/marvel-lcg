@@ -136,6 +136,13 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
 const ZONES_JOUEUR = ['supports', 'environment_area'] as const
 const ZONES_MONDE = ['area_environment'] as const
 
+/**
+ * La cle de stockage garde son nom d'origine. Le reglage s'appelle desormais
+ * « Ambiance » a l'ecran, la couche ne faisant plus seulement de la meteo,
+ * mais la renommer ici remettrait l'interrupteur a zero chez qui l'avait
+ * coupe. Les noms de code suivent la meme logique : CoucheMeteo, meteoDuMonde
+ * et les autres restent tels quels, un renommage massif n'apportant rien.
+ */
 export const CLE_METEO = 'marvel-board-meteo'
 
 export function lireMeteoActive(): boolean {

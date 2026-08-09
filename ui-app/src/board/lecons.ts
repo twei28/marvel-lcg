@@ -73,6 +73,24 @@ export function prendreRepere(monde: World): Repere {
 
 export const LECONS: Lecon[] = [
   {
+    // Le mulligan est la TOUTE PREMIERE décision du jeu, avant même le premier
+    // tour : l'écran de sélection s'ouvre tout seul (optionDemarreAuto dans
+    // interaction.ts). Sans cette leçon, le coach affichait déjà « Deviens
+    // Spider-Man », consigne infaisable à ce moment-là.
+    //
+    // Enjeu réel : la leçon « jouer-carte » NOMME Coup de pied volant (01005).
+    // Un joueur qui le défausse ici rend cette leçon impossible à valider, son
+    // repère étant pris après le mulligan. D'où la consigne de tout garder.
+    //
+    // Détection : `round_id` vaut 0 pendant la mise en place et passe à 1 au
+    // début du round (world.py, start_round), donc après le mulligan. C'est un
+    // signal plus robuste que le libellé de phase, qui est du texte d'affichage.
+    id: 'mulligan',
+    titre: t('Garde ta main de départ'),
+    texte: t('Le jeu commence par un « mulligan » : tu peux défausser autant de cartes que tu veux de ta main, et en repiocher le même nombre. Pour cette partie guidée, garde tout, et surtout « Coup de pied volant » : c’est la carte que le tutoriel te fera jouer. Valide sans rien sélectionner.'),
+    accomplie: (monde) => nombre(monde?.round_id) >= 1,
+  },
+  {
     id: 'forme-heros',
     titre: t('Deviens Spider-Man'),
     texte: t('Tu commences en Peter Parker, ton identité civile. En civil on récupère et on prépare, mais on ne se bat pas. Clique sur ta carte d’identité, puis choisis de changer de forme.'),
@@ -126,7 +144,7 @@ export const LECONS: Lecon[] = [
   {
     id: 'reglages',
     titre: t('Le panneau ⚙'),
-    texte: t('En haut à droite : animations, sons, musique, météo, succès. Tout est débrayable, rien ne t’est imposé.'),
+    texte: t('En haut à droite : animations, sons, musique, ambiance, succès. Tout est débrayable, rien ne t’est imposé.'),
     manuelle: true,
     accomplie: () => false,
   },
