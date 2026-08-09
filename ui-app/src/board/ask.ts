@@ -185,8 +185,12 @@ export function nombreDeRessources(paiement: Paiement | undefined): number | und
 /** Nom lisible d'un type de ressource, pour dire au joueur ce qui manque. */
 const NOM_TYPE: Record<string, string> = {
   R: 'physical',
-  B: 'energy',
-  Y: 'mental',
+  // B et Y etaient INVERSES. Le moteur est clair (game/element/resources.py) :
+  // 'b' est mental et 'y' est energy. Le plateau annoncait donc « il te
+  // manque 1 energy » quand il manquait une mentale, et l'inverse. Un joueur
+  // qui s'y fie construit un modele faux de ses propres ressources.
+  B: 'mental',
+  Y: 'energy',
   G: 'wild',
 }
 

@@ -67,7 +67,9 @@ describe('reponsePrete face a un cout par types', () => {
   })
 
   it('refuse deux ressources du MEME type', () => {
-    // 65 et 70 fournissent tous deux [energy] : il manque le [mental].
+    // 65 et 70 fournissent tous deux « B », c'est-a-dire [mental] : il manque
+    // le [energy]. Le commentaire disait l'inverse, comme la table de noms du
+    // plateau, qui intervertissait B et Y (corrige le 9/8/2026).
     expect(reponsePrete(ENERGY_SHIELD, [], [65, 70]).prete).toBe(false)
   })
 
@@ -77,8 +79,12 @@ describe('reponsePrete face a un cout par types', () => {
   })
 
   it('dit ce qui manque, en clair', () => {
-    expect(reponsePrete(ENERGY_SHIELD, [], [62]).raison).toMatch(/energy/i)
-    expect(reponsePrete(ENERGY_SHIELD, [], [65]).raison).toMatch(/mental/i)
+    // Ces deux attentes etaient INVERSEES : elles encodaient le defaut de la
+    // table de noms du plateau, qui appelait « energy » le mental et
+    // reciproquement. 62 fournit « Y » (energy), il manque donc le mental ;
+    // 65 fournit « B » (mental), il manque donc l'energy.
+    expect(reponsePrete(ENERGY_SHIELD, [], [62]).raison).toMatch(/mental/i)
+    expect(reponsePrete(ENERGY_SHIELD, [], [65]).raison).toMatch(/energy/i)
   })
 })
 
