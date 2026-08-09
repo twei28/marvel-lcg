@@ -464,9 +464,26 @@ export const DICO_EN_BASE: Record<string, string> = {
   // --- Météo, musique, écran de fin (vague 8) ---
   'Ambiance': 'Ambience',
   'Aperçu d’ambiance': 'Ambience preview',
-  'Force un effet à l écran pour le voir, sans partie ni carte': 'Forces an effect on screen so you can see it, with no game and no card',
+  'Force ces effets à l écran pour les voir, sans partie ni carte': 'Forces these effects on screen so you can see them, with no game and no card',
   'Auto': 'Auto',
   'Aucun': 'None',
+  // Le libelle de l'apercu se construit par concatenation (« 3 effets ») :
+  // chaque compte possible a donc besoin de son entree. Il y a quinze
+  // effets, donc quatorze comptes a partir de deux.
+  '2 effets': '2 effects',
+  '3 effets': '3 effects',
+  '4 effets': '4 effects',
+  '5 effets': '5 effects',
+  '6 effets': '6 effects',
+  '7 effets': '7 effects',
+  '8 effets': '8 effects',
+  '9 effets': '9 effects',
+  '10 effets': '10 effects',
+  '11 effets': '11 effects',
+  '12 effets': '12 effects',
+  '13 effets': '13 effects',
+  '14 effets': '14 effects',
+  '15 effets': '15 effects',
   'Pluie': 'Rain',
   'Orage': 'Storm',
   'Neige': 'Snow',

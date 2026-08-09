@@ -43,21 +43,27 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   sandstorm: 'Tempête de sable',
 }
 
-/** L'apercu a deux etats en plus des effets, et ils ne disent pas la meme
- *  chose. '' rend la main au jeu : ce sont les cartes qui decident, c'est le
- *  mode normal. AUCUN_EFFET impose le vide, meme si une carte en jeu
- *  declencherait quelque chose. Sans cette distinction, « Aucun » signifiait
- *  en realite « Auto » et il n'existait aucun moyen de couper temporairement
- *  l'ambiance sans toucher au reglage Meteo. */
-export const AUCUN_EFFET = 'none'
+/**
+ * L'apercu est une LISTE d'effets, parce qu'on doit pouvoir en essayer
+ * plusieurs a la fois depuis que les ambiances se superposent en jeu.
+ *
+ * Trois etats, et ils ne disent pas la meme chose :
+ *   undefined -> Auto, ce sont les cartes qui decident, c'est le mode normal ;
+ *   []        -> Aucun, le vide impose meme si une carte declencherait
+ *                quelque chose ;
+ *   [ ... ]   -> exactement ces effets, empiles dans cet ordre.
+ *
+ * Sans la distinction entre les deux premiers, « Aucun » signifiait en
+ * realite « Auto » et il n'existait aucun moyen de couper temporairement
+ * l'ambiance sans toucher au reglage lui-meme.
+ */
+export type ApercuMeteo = readonly string[] | undefined
 
-/** Les valeurs par lesquelles passe le selecteur, dans l'ordre. */
-export const CYCLE_APERCU = ['', AUCUN_EFFET, ...EFFETS_METEO] as const
-
-export function libelleApercu(valeur: string): string {
-  if (valeur === '') return 'Auto'
-  if (valeur === AUCUN_EFFET) return 'Aucun'
-  return LIBELLE_EFFET[valeur as EffetMeteo] ?? valeur
+export function libelleApercu(apercu: ApercuMeteo): string {
+  if (apercu === undefined) return 'Auto'
+  if (apercu.length === 0) return 'Aucun'
+  if (apercu.length === 1) return LIBELLE_EFFET[apercu[0] as EffetMeteo] ?? apercu[0]
+  return `${apercu.length} effets`
 }
 
 /** L'ambiance appartient au SCÉNARIO et aux modules, jamais aux cartes que le
@@ -202,10 +208,9 @@ export const EFFETS_DELAVANTS: readonly string[] = ['noir']
 export function effetsAffiches(
   world: World | undefined,
   active: boolean,
-  apercu?: string
+  apercu?: ApercuMeteo
 ): string[] {
-  if (apercu === AUCUN_EFFET) return []
-  if (apercu) return [apercu]
+  if (apercu !== undefined) return [...apercu]
   return active ? meteosDuMonde(world) : []
 }
 
@@ -216,16 +221,14 @@ export function CoucheMeteo({
 }: {
   world: World | undefined
   active: boolean
-  /** Force un effet, quelles que soient les cartes. '' rend la main au jeu,
-   *  AUCUN_EFFET impose le vide. */
-  apercu?: string
+  /** Force ces effets, quelles que soient les cartes. Voir ApercuMeteo. */
+  apercu?: ApercuMeteo
 }) {
   const duJeu = useMemo(() => meteosDuMonde(world), [world])
   // L'apercu est une demande EXPLICITE : il passe outre l'interrupteur. Sans
-  // ca, choisir un apercu alors que la meteo est coupee n'affiche rien et
-  // l'outil parait casse. L'interrupteur ne commande que la meteo du jeu.
-  // Il ne montre qu'UN effet a la fois : c'est un outil de conception.
-  const meteos = apercu === AUCUN_EFFET ? [] : apercu ? [apercu] : active ? duJeu : []
+  // ca, choisir un apercu alors que l'ambiance est coupee n'affiche rien et
+  // l'outil parait casse. L'interrupteur ne commande que l'ambiance du jeu.
+  const meteos = apercu !== undefined ? apercu : active ? duJeu : []
   if (meteos.length === 0) return null
   return (
     <>

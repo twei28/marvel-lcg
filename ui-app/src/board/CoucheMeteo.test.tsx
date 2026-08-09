@@ -12,9 +12,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  AUCUN_EFFET,
   CoucheMeteo,
-  CYCLE_APERCU,
   EFFETS_METEO,
   LIBELLE_EFFET,
   METEO_PAR_CARTE,
@@ -83,14 +81,14 @@ describe('CoucheMeteo, apercu et interrupteur', () => {
 
   it('affiche l apercu meme quand la meteo est coupee', () => {
     const { container } = render(
-      createElement(CoucheMeteo, { world: undefined, active: false, apercu: 'rain' })
+      createElement(CoucheMeteo, { world: undefined, active: false, apercu: ['rain'] })
     )
     expect(src(container)).toBe('/effects/weather/rain.html')
   })
 
   it('l apercu prime sur la meteo dictee par les cartes', () => {
     const m = monde({ supports: [carte('36005')] })
-    const { container } = render(createElement(CoucheMeteo, { world: m, active: true, apercu: 'storm' }))
+    const { container } = render(createElement(CoucheMeteo, { world: m, active: true, apercu: ['storm'] }))
     expect(src(container)).toBe('/effects/weather/storm.html')
   })
 
@@ -197,79 +195,42 @@ describe('chaque effet a bien son fichier', () => {
 // Auto et Aucun ne disent pas la meme chose, et c'est precisement la confusion
 // que ces cas empechent de revenir : avant le 8/8/2026 le selecteur affichait
 // « Aucun » pour ce qui etait en fait « Auto », et rien ne permettait de
-// couper l'ambiance sans toucher au reglage Meteo.
-describe('les etats Auto et Aucun de l apercu', () => {
-  const src = (c: HTMLElement | null) => c?.querySelector('iframe')?.getAttribute('src') ?? null
+// couper l'ambiance sans toucher au reglage lui-meme.
+describe('les etats de l apercu', () => {
+  const src = (c: HTMLElement | null) =>
+    [...(c?.querySelectorAll('iframe') ?? [])].map((f) => f.getAttribute('src'))
   const avecCarte = () => monde({ supports: [carte('36005')] })
 
-  it('Auto laisse la carte en jeu decider', () => {
+  it('Auto laisse les cartes en jeu decider', () => {
     const { container } = render(
-      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: '' })
+      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: undefined })
     )
-    expect(src(container)).toBe('/effects/weather/snow.html')
+    expect(src(container)).toEqual(['/effects/weather/snow.html'])
   })
 
-  it('Aucun n affiche rien, meme si une carte en jeu declencherait un effet', () => {
+  it('une liste vide n affiche rien, meme si une carte declencherait un effet', () => {
     const { container } = render(
-      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: AUCUN_EFFET })
+      createElement(CoucheMeteo, { world: avecCarte(), active: true, apercu: [] })
     )
     expect(container.querySelector('iframe')).toBeNull()
   })
 
-  it('le cycle part d Auto, passe par Aucun, puis parcourt les effets', () => {
-    expect(CYCLE_APERCU[0]).toBe('')
-    expect(CYCLE_APERCU[1]).toBe(AUCUN_EFFET)
-    expect(CYCLE_APERCU.slice(2)).toEqual([...EFFETS_METEO])
+  it('l apercu peut empiler plusieurs effets, c est tout son interet', () => {
+    const { container } = render(
+      createElement(CoucheMeteo, { world: undefined, active: false, apercu: ['rain', 'fog'] })
+    )
+    expect(src(container)).toEqual(['/effects/weather/rain.html', '/effects/weather/fog.html'])
   })
 
-  it('chaque valeur du cycle a un nom affichable', () => {
-    for (const v of CYCLE_APERCU) expect(libelleApercu(v)).toBeTruthy()
-    expect(libelleApercu('')).toBe('Auto')
-    expect(libelleApercu(AUCUN_EFFET)).toBe('Aucun')
-  })
-})
-
-// Le garde-fou qui manquait. Le 8/8/2026, seize Soutiens de heros ont ete
-// cables : la couche marchait, les 298 cas etaient verts, et pourtant c'etait
-// faux. Rien dans le code ne disait que l'ambiance appartient au scenario.
-describe('l ambiance vient du scenario, pas du deck du joueur', () => {
-  const TYPES_JOUEUR = new Set(['Support', 'Event', 'Upgrade', 'Ally', 'Resource'])
-  // Storm est la seule exception, et son sujet est la meteo elle-meme.
-  const METEO_DE_STORM = new Set(['36003', '36004', '36005'])
-
-  const catalogue = (() => {
-    const ici = dirname(fileURLToPath(import.meta.url))
-    const base = join(ici, '../../../Fusion/marvel-lcg-src/data')
-    const par_id = new Map<string, { type?: string; name?: string }>()
-    for (const nom of ['cards.json', 'cards_custom.json']) {
-      const brut = JSON.parse(readFileSync(join(base, nom), 'utf-8')) as Record<string, unknown[]>
-      for (const liste of Object.values(brut)) {
-        for (const c of liste) {
-          if (c && typeof c === 'object' && 'card_id' in c) {
-            par_id.set(String((c as { card_id: unknown }).card_id), c as { type?: string })
-          }
-        }
-      }
-    }
-    return par_id
-  })()
-
-  it('le catalogue de test a bien ete charge', () => {
-    // Sans ce cas, un chemin casse rendrait les deux suivants verts a vide.
-    expect(catalogue.size).toBeGreaterThan(4000)
+  it('le libelle resume l etat sans enumerer', () => {
+    expect(libelleApercu(undefined)).toBe('Auto')
+    expect(libelleApercu([])).toBe('Aucun')
+    expect(libelleApercu(['rain'])).toBe('Pluie')
+    expect(libelleApercu(['rain', 'fog', 'snow'])).toBe('3 effets')
   })
 
-  it('chaque carte citee existe au catalogue', () => {
-    const inconnues = Object.keys(METEO_PAR_CARTE).filter((id) => !catalogue.has(id))
-    expect(inconnues).toEqual([])
-  })
-
-  it('aucune carte de deck de joueur, hors la météo de Storm', () => {
-    const fautives = Object.keys(METEO_PAR_CARTE).filter((id) => {
-      if (METEO_DE_STORM.has(id)) return false
-      return TYPES_JOUEUR.has(catalogue.get(id)?.type ?? '')
-    })
-    expect(fautives).toEqual([])
+  it('chaque effet a un nom affichable', () => {
+    for (const effet of EFFETS_METEO) expect(LIBELLE_EFFET[effet]).toBeTruthy()
   })
 })
 

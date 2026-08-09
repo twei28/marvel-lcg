@@ -100,12 +100,13 @@ describe('effetsAffiches', () => {
   })
 
   it('l apercu prime, et « aucun » impose le vide', () => {
-    expect(effetsAffiches(monde('04081'), true, 'noir')).toEqual(['noir'])
-    expect(effetsAffiches(monde('04081'), true, 'none')).toEqual([])
+    expect(effetsAffiches(monde('04081'), true, ['noir'])).toEqual(['noir'])
+    expect(effetsAffiches(monde('04081'), true, [])).toEqual([])
   })
 
-  it('l apercu ne montre qu un effet, meme si plusieurs cartes sont en jeu', () => {
-    expect(effetsAffiches(monde('04081', '21076'), true, 'rain')).toEqual(['rain'])
+  it('l apercu impose exactement sa liste, quelles que soient les cartes', () => {
+    expect(effetsAffiches(monde('04081', '21076'), true, ['rain'])).toEqual(['rain'])
+    expect(effetsAffiches(monde('04081'), true, ['rain', 'fog'])).toEqual(['rain', 'fog'])
   })
 
   it('le noir et blanc est le seul effet qui delave', () => {

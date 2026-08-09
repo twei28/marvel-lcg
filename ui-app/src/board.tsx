@@ -62,10 +62,12 @@ import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
   CLE_METEO,
-  CYCLE_APERCU,
+  EFFETS_METEO,
+  LIBELLE_EFFET,
   EFFETS_DELAVANTS,
   effetsAffiches,
   libelleApercu,
+  type ApercuMeteo,
   lireMeteoActive,
 } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
@@ -1094,7 +1096,7 @@ function PanneauOptions({
   meteo,
   basculerMeteo,
   apercuMeteo,
-  cyclerApercuMeteo,
+  reglerApercuMeteo,
   revelation,
   cyclerRevelation,
   autoCible,
@@ -1122,8 +1124,8 @@ function PanneauOptions({
   musique: boolean
   basculerMusique: () => void
   meteo: boolean
-  apercuMeteo: string
-  cyclerApercuMeteo: () => void
+  apercuMeteo: ApercuMeteo
+  reglerApercuMeteo: (valeur: ApercuMeteo) => void
   basculerMeteo: () => void
   revelation: ModeRevelation
   cyclerRevelation: () => void
@@ -1225,17 +1227,57 @@ function PanneauOptions({
             actif={meteo}
             onBascule={basculerMeteo}
           />
-          <button
-            type="button"
-            className="ligne-option"
-            onClick={cyclerApercuMeteo}
-            title={t('Force un effet à l écran pour le voir, sans partie ni carte')}
-          >
+          {/* L'apercu n'est pas un interrupteur mais un ETABLI : les ambiances
+              se superposant en jeu, il faut pouvoir en essayer plusieurs a la
+              fois. D'ou des pastilles a cocher plutot qu'un cycle, qui
+              n'aurait jamais montre qu'un effet. */}
+          <div className="ligne-option est-etabli">
             <span className="ligne-option-libelle">{t('Aperçu d’ambiance')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
               {t(libelleApercu(apercuMeteo))}
             </span>
-          </button>
+          </div>
+          <div
+            className="apercu-pastilles"
+            role="group"
+            aria-label={t('Aperçu d’ambiance')}
+            title={t('Force ces effets à l écran pour les voir, sans partie ni carte')}
+          >
+            <button
+              type="button"
+              className={`pastille${apercuMeteo === undefined ? ' est-actif' : ''}`}
+              onClick={() => reglerApercuMeteo(undefined)}
+            >
+              {t('Auto')}
+            </button>
+            <button
+              type="button"
+              className={`pastille${apercuMeteo?.length === 0 ? ' est-actif' : ''}`}
+              onClick={() => reglerApercuMeteo([])}
+            >
+              {t('Aucun')}
+            </button>
+            {EFFETS_METEO.map((effet) => {
+              const choisi = apercuMeteo?.includes(effet) ?? false
+              return (
+                <button
+                  key={effet}
+                  type="button"
+                  className={`pastille${choisi ? ' est-actif' : ''}`}
+                  aria-pressed={choisi}
+                  onClick={() =>
+                    reglerApercuMeteo(
+                      choisi
+                        ? (apercuMeteo ?? []).filter((e) => e !== effet)
+                        : [...(apercuMeteo ?? []), effet]
+                    )
+                  }
+                >
+                  {t(LIBELLE_EFFET[effet])}
+                </button>
+              )
+            })}
+          </div>
           <button
             type="button"
             className="ligne-option"
@@ -1604,13 +1646,8 @@ function PagePartie({
   // concevoir de nouveaux effets sans monter une situation de jeu a chaque
   // essai. Volontairement NON persiste : c'est un outil, pas une preference,
   // et le retrouver actif au lancement suivant serait deroutant.
-  const [apercuMeteo, setApercuMeteo] = useState('')
-  const cyclerApercuMeteo = useCallback(() => {
-    setApercuMeteo((a) => {
-      const i = CYCLE_APERCU.indexOf(a as (typeof CYCLE_APERCU)[number])
-      return CYCLE_APERCU[(i + 1) % CYCLE_APERCU.length]
-    })
-  }, [])
+  const [apercuMeteo, setApercuMeteo] = useState<ApercuMeteo>(undefined)
+  const reglerApercuMeteo = useCallback((valeur: ApercuMeteo) => setApercuMeteo(valeur), [])
 
   const [succes, setSucces] = useState(lireSuccesActifs)
   const basculerSucces = useCallback(() => {
@@ -2105,7 +2142,7 @@ function PagePartie({
               basculerMusique={basculerMusique}
               meteo={meteo}
               apercuMeteo={apercuMeteo}
-              cyclerApercuMeteo={cyclerApercuMeteo}
+              reglerApercuMeteo={reglerApercuMeteo}
               basculerMeteo={basculerMeteo}
               revelation={revelation}
               cyclerRevelation={cyclerRevelation}

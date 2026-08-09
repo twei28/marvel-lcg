@@ -3503,6 +3503,47 @@
   .ligne-option.est-actif .ligne-option-etat {
     color: #7fd77f;
   }
+
+  /* L'apercu d'ambiance n'est pas un interrupteur : c'est un etabli. Sa ligne
+     ne se clique pas, elle ne fait qu'annoncer l'etat des pastilles qui la
+     suivent. */
+  .ligne-option.est-etabli {
+    cursor: default;
+    background: transparent;
+    border-color: transparent;
+    padding-bottom: 2px;
+  }
+
+  .apercu-pastilles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 11px 6px;
+  }
+
+  .pastille {
+    padding: 4px 8px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #93a3b5;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .pastille:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #dbe3ec;
+  }
+
+  .pastille.est-actif {
+    color: #0b0c10;
+    background: #7fd77f;
+    border-color: #7fd77f;
+  }
 }
 
 @layer utilitaires {
