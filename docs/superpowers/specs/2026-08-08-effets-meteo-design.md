@@ -104,3 +104,50 @@ dès l'étape 2.
 
 **L'iframe est plein écran et sous le plateau.** Tout nouvel effet doit rester
 lisible derrière les cartes, et ne jamais capter le pointeur.
+
+
+## 8. Ce qui a réellement été construit — arrêté au 09/08/2026
+
+Cette spec prévoyait trois étapes et parlait encore de « météo ». Le chantier
+est allé beaucoup plus loin, et une bonne partie de ce qui suit contredit ce
+qui précède. Le texte d'origine est conservé tel quel ; cette section dit
+l'état réel.
+
+**Quinze effets pour trente-six cartes**, tous côté rencontre sauf les trois
+soutiens météo de Storm : pluie, orage, neige, brume, étoiles, braises,
+poussière, néons, jungle, noir et blanc, horreur, cyber, sitcom, sépia,
+tempête de sable. Les étapes 2 et 3 sont faites, Mojoverse compris.
+
+**Les trois effets d'origine n'avaient JAMAIS rien affiché.** Trois causes
+cumulées, chacune suffisante : la couche était en `z-index: 0`, donc derrière
+la scène ; les documents laissaient le canevas blanc opaque par défaut d'une
+iframe (commenter la ligne de fond ne rend pas transparent) ; et le plateau
+déclare `color-scheme: dark` alors que les effets restaient en `normal`, ce
+qui pousse Chrome à peindre un fond opaque sous l'iframe. Tout nouvel effet
+doit déclarer `html { color-scheme: dark; }` ET un fond transparent.
+
+**Les ambiances se superposent** au lieu de se disputer l'affichage : décor du
+scénario en dessous, cartes des joueurs par-dessus. Mesuré, empiler ne coûte
+rien jusqu'à trois couches. Ce qui coûtait, c'était `filter: blur()`, que cinq
+effets utilisaient et qui divisait par deux le nombre d'images par seconde,
+chacun tout seul. Le flou est désormais cuit dans `tache.png`, utilisée en
+masque.
+
+**Le réglage s'appelle « Ambiance »**, plus « Météo », et l'aperçu est une
+grille de pastilles à cocher permettant d'en essayer plusieurs à la fois.
+Trois états : Auto, Aucun, ou une liste d'effets.
+
+**L'ambiance appartient au scénario**, jamais aux cartes du deck d'un joueur.
+Seize Soutiens de héros ont été câblés puis retirés pour cette raison ; un cas
+de test refuse désormais tout type Support, Event, Upgrade, Ally ou Resource.
+Seule exception, le deck météo de Storm, dont le sujet EST la météo.
+
+**Le noir et blanc a son propre document**, `2026-08-08-cadre-aspect-noir-et-blanc-design.md`,
+qui traite du liseré d'aspect rendu nécessaire par la désaturation.
+
+**Le risque du poids, annoncé au §7, s'est vérifié** — mais pas là où on
+l'attendait. Ce n'est pas le nombre d'animations qui coûte, c'est le flou.
+
+Restent sans ambiance, par choix explicite du joueur : les trois Manhattan
+infestés `27117b`, `27118b`, `27119b`, et Skies Over New York `27116b`. Leurs
+effets ont été écrits puis jugés illisibles et supprimés.

@@ -1,6 +1,23 @@
 # Noir et blanc — le cadre de couleur autour de la carte
 
-Spécifié le 08/08/2026, par questions au joueur. **Rien n'a encore été codé.**
+Spécifié le 08/08/2026, par questions au joueur.
+
+> **Fait le 09/08/2026** (commits `c6746c7` et `55ffb45`), mais **avec trois
+> écarts** par rapport à ce qui est décidé plus bas. Ils sont listés ici plutôt
+> que corrigés en douce dans le texte : la spec dit ce qui avait été décidé,
+> cette note dit ce qui existe.
+>
+> | Point | Décidé ici | Réalisé | Pourquoi |
+> |---|---|---|---|
+> | De quel côté du bord | par-dessus le bord, vers l'intérieur, 2 px | **autour de la carte**, 4 px, `outline-offset: 3px` | Le joueur a demandé l'inverse en cours de route : « je le voulais autour de la carte ». Posé à l'intérieur, le liseré rognait l'illustration. |
+> | Cartes sans aspect | la couleur de leur camp (rouge Rencontre) | **aucun liseré** | Non fait. Les cartes de rencontre n'ont donc rien. |
+> | Pastilles et chiffres | tout devient gris | **restent en couleur** | La désaturation porte sur `.scan-visuel`, mais les PV, la menace et l'interface sont dessinés en dehors et gardent leurs couleurs. |
+>
+> Le reste est conforme : la couleur vient bien de `desc.Class` du catalogue,
+> les faces cachées n'ont pas de liseré, et l'effet ne s'applique qu'au noir et
+> blanc. Le mécanisme diffère aussi : la spec supposait un `box-shadow: inset`,
+> l'implémentation utilise `outline`, pour ne pas écraser les ombres que les
+> cartes portent déjà pour leurs halos d'état.
 Ce document complète [2026-08-08-effets-meteo-design.md](2026-08-08-effets-meteo-design.md)
 et ne concerne QUE l'effet `noir`.
 

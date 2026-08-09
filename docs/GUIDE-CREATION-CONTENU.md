@@ -479,7 +479,7 @@ la remplacer.
 Contrôle à passer après toute modification d'un deck :
 
 ```bash
-cd ~/marvel-work/fusion/marvel-lcg-src && python3 - <<'EOF'
+cd "$W" && python3 - <<'EOF'
 import json, glob, os
 d = json.load(open('data/cards.json'))
 cl = {c['card_id']: (c.get('name',''), c.get('desc',{}).get('Class',''), c.get('set_name',''))
@@ -591,21 +591,45 @@ formulaire restent à vérifier/remplir à la main.
 
 ## 8. Validation — obligatoire avant de considérer le travail fini
 
+**Viser la copie qui SERT.** Les commandes ci-dessous portaient sur
+`~/marvel-work/fusion/marvel-lcg-src`. Le 09/08/2026 cette copie était en
+retard de deux fichiers du moteur et d'une carte sur la copie Windows, qui
+est celle que le jeu exécute. On vise donc `.game-src` **côté Windows** :
+
+```bash
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+PY=$HOME/marvel-work/python/bin/python3.10
+```
+
+**Espacer les ports d'au moins 400.** Les valeurs données plus bas se
+recouvraient : l'étape 4 ouvre un port par cas, donc 440 ports à partir de sa
+base, ce qui mordait sur la base de l'étape 5. Un recouvrement tue des cas
+avec « processus mort », et ce ne sont pas des régressions.
+
+**Compter 75 minutes pour l'étape 4**, pas moins. Elle lance un processus par
+cas, séquentiellement. Si elle est interrompue, RIEN n'est perdu : chaque cas
+dépose son résultat dans `/tmp/capacites_<prefixe><index>.json`, le préfixe
+étant le PID du parent. On peut donc reprendre à l'index voulu avec
+`CAS_INDEX=<n>` au lieu de tout refaire. Attention en revanche à ne pas lire
+les fichiers d'un run précédent : filtrer par date.
+
 Depuis WSL :
 
 ```bash
 # 1. Syntaxe de tout le moteur
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 -m compileall -q src
+cd "$W" && $PY -m compileall -q src
 
-# 2. Construction des capacités de TOUTES les cartes (référence : 4122 ok / 0 err, 4/8/2026)
+# 2. Construction des capacités de TOUTES les cartes
+#    (référence : 4189 ok / 0 err, 9/8/2026 ; 4122 / 0 le 4/8)
 #    VISER .game-src, PAS .game : voir l'avertissement juste en dessous.
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
-    tools/test_cards.py ~/marvel-work/fusion/marvel-lcg-src/.game-src 24521 /tmp/rapport-cartes.json
+cd "$W" && $PY \
+    tools/test_cards.py "$W/.game-src" 24521 /tmp/rapport-cartes.json
 
-# 3. Cohérence texte imprimé <-> capacités construites (référence 4/8/2026 :
-#    0 type, 0 coût manquant, 0 texte-seul, 129 suspicions toutes expliquées)
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
-    tools/audit_cartes.py ~/marvel-work/fusion/marvel-lcg-src/.game-src 24522 /tmp/audit-cartes.json
+# 3. Cohérence texte imprimé <-> capacités construites (référence 9/8/2026 :
+#    0 type, 0 texte-seul, 0 construction impossible, 132 suspicions et
+#    2 exhaust_sans_cout (70003, 75012) ; 129 suspicions le 4/8)
+cd "$W" && $PY \
+    tools/audit_cartes.py "$W/.game-src" 24800 /tmp/audit-cartes.json
 
 # 4. Comportement réel des capacités (référence : 354 cas, 4/8/2026 au soir.
 #    Les échecs qui subsistent n'appartiennent pas à cette campagne : 20001a
@@ -638,29 +662,42 @@ cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
 #    « processus mort » + AssertionError IsPortAvailable : ce ne sont PAS des
 #    régressions. Espacer les plages de base d'au moins 200 et relancer le cas
 #    isolé (`CAS_INDEX=<n>`) avant de conclure.
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
-    tools/test_capacites.py ~/marvel-work/fusion/marvel-lcg-src/.game-src 24540 /tmp/rapport-capacites.json
+cd "$W" && $PY \
+    tools/test_capacites.py "$W/.game-src" 25600 /tmp/rapport-capacites.json
 
-# 5. API réellement appelées par les scripts de cartes (référence : 4620
-#    fichiers, 0 en faute, 4/8/2026)
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
-    tools/verifier_api_cartes.py ~/marvel-work/fusion/marvel-lcg-src/.game-src 24523 /tmp/api-cartes.json
+# 5. API réellement appelées par les scripts de cartes (référence : 4697
+#    fichiers, 0 en faute, 9/8/2026 ; 4620 le 4/8)
+cd "$W" && $PY \
+    tools/verifier_api_cartes.py "$W/.game-src" 26050 /tmp/api-cartes.json
 
 # 6. Cohérence des données, couverture des tests, collisions de noms
 #    (ne charge pas le moteur, tourne en une seconde)
-cd ~/marvel-work/fusion/marvel-lcg-src && python3 tools/verifier_coherence_cartes.py \
+cd "$W" && python3 tools/verifier_coherence_cartes.py \
     /tmp/coherence-cartes.json
 
-# 6 bis. Création de partie pour CHAQUE deck de départ (référence : 86/88 le
-#    4/8/2026 ; restent `cloak_dagger`, en cours de refonte, et `wonder_man`,
-#    défaut documenté sur la carte 58001a)
-cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 \
-    tools/verifier_tous_les_decks.py ~/marvel-work/fusion/marvel-lcg-src/.game-src \
+# 6 bis. Création de partie pour CHAQUE deck de départ (référence : 89/89 le
+#    9/8/2026. `cloak_dagger` et `wonder_man`, en échec le 4/8, passent tous
+#    les deux depuis)
+cd "$W" && $PY \
+    tools/verifier_tous_les_decks.py "$W/.game-src" \
     27000 /tmp/rapport-decks.json
 
 # 7. Création de partie
-cd ~/marvel-work && ~/marvel-work/python/bin/python3.10 tools/test_newgame.py \
-    ~/marvel-work/fusion/marvel-lcg-src/.game
+cd ~/marvel-work && $PY tools/test_newgame.py "$W/.game-src"
+
+# 8. Parties REELLEMENT jouees (ajoutee au guide le 9/8/2026)
+#    Aucun des outils ci-dessus ne voit une carte FIGER une partie : ils
+#    montent une position, declenchent, verifient, puis s'arretent. autoplay
+#    joue jusqu'au bout et compte les parties « bloquee ».
+#
+#    ⚠ Un taux de blocage absolu ne veut RIEN dire : le pilote est une
+#    heuristique, il se coince aussi tout seul. Toujours lancer un HEROS
+#    TEMOIN dans la meme fournee et comparer. Reference 9/8/2026, 8 parties
+#    contre Rhino, profil equilibre : spider_man (temoin) 1 bloquee,
+#    agent_13 1, brawn 2, spider_man_rainy 0, venom_rainy 0. A 24 parties,
+#    brawn reste a 2 et le temoin a 1 : l'ecart etait du bruit.
+cd "$W" && $PY tools/autoplay.py "$W/.game-src" --deck <nom> \
+    --vilains rhino --profils equilibre --parties 8
 ```
 
 ⚠️ **Passer un chemin ABSOLU au dossier de jeu.** Ces outils font `os.chdir(GAME_DIR)`
