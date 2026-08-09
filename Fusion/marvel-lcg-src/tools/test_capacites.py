@@ -2253,6 +2253,25 @@ CAS = [
         "attendu": {"degats": [["01094", 1]], "menace": [["01097b", 3]]},
     },
     {
+        "nom": "78010 Zooming Around — payee en mental, la forme change aussi",
+        "pourquoi": "meme clause bonus que 78009, et jamais exercee avant le 9/8/2026. La main "
+                    "ne fournit que du mental (78024 et 78028 portent RES=B) pour couvrir le "
+                    "cout de 2 ; le bonus fait passer en identite civile, l'action de heros "
+                    "ayant d'abord exige la forme de heros.",
+        "scenario": "rhino",
+        "heros": "lockjaw",
+        "mise_en_place": ["Puzzle.ChangeForm('Lockjaw')", "Puzzle.SetThreat('01097b', 4)"],
+        "main_exclusive": ["78010", "78024", "78028"],
+        # 78003 Tuning Fork demarre EN JEU et genere un wild, qui vaut n'importe
+        # quelle couleur : sans cette ligne le pilote le depense et la couleur
+        # reellement payee n'est plus celle que le cas croit exercer.
+        "ne_pas_depenser": ["78003"],
+        "declencher": [],
+        "jouer": ["78010"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "degats": [["01094", 1]], "menace": [["01097b", 3]]},
+    },
+    {
         "nom": "78028 Companionship — incline un PET AVENGER et fait piocher 2",
         "pourquoi": "cout d'inclinaison porte par une AUTRE carte, filtree par trait",
         "scenario": "rhino",
@@ -3881,28 +3900,82 @@ CAS = [
     },
     {
         "nom": "78009 Fast Travel — Action : le joueur vise change de forme",
-        "pourquoi": "evenement qui cible un JOUEUR, cas de ciblage rare",
+        "pourquoi": "evenement qui cible un JOUEUR, cas de ciblage rare. La main ne fournit ni "
+                    "mental ni wild (78018 RES=R, 78019 RES=Y), donc SEUL l'effet principal "
+                    "joue : un aller simple vers l'identite civile.",
         "scenario": "rhino",
         "heros": "lockjaw",
         "mise_en_place": ["Puzzle.ChangeForm('78001b')"],
-        "main_exclusive": ["78009", "78024", "78028"],
-        "payer_avec": ["78024"],
+        "main_exclusive": ["78009", "78018", "78019"],
+        # 78003 Tuning Fork demarre EN JEU et genere un wild, qui vaut n'importe
+        # quelle couleur : sans cette ligne le pilote le depense et la couleur
+        # reellement payee n'est plus celle que le cas croit exercer.
+        "ne_pas_depenser": ["78003"],
         "declencher": [],
         "jouer": ["78009"],
         "verifier": "etat_attendu",
         "attendu": {"forme": "AlterEgo", "defausse": ["78009"]},
     },
     {
-        "nom": "78011 Ruff Ambush — Hero Response : 5 degats apres le passage en forme heros",
-        "pourquoi": "Response sur changement de forme, l'evenement doit etre en main",
+        "nom": "78009 Fast Travel — payee en mental, la forme change DEUX fois",
+        "pourquoi": "branche bonus « si vous avez paye avec une [mental], vous pouvez changer "
+                    "de forme ». La main ne fournit que du mental (78024 RES=B), le bonus part "
+                    "et ramene en forme de heros : c'est ce retour qui le prouve, l'effet "
+                    "principal garantissant a lui seul le passage en identite civile. Cas "
+                    "temoin du precedent, ecrit apres le correctif du 9/8/2026.",
+        "scenario": "rhino",
+        "heros": "lockjaw",
+        "mise_en_place": ["Puzzle.ChangeForm('78001b')"],
+        "main_exclusive": ["78009", "78024", "78028"],
+        # 78003 Tuning Fork demarre EN JEU et genere un wild, qui vaut n'importe
+        # quelle couleur : sans cette ligne le pilote le depense et la couleur
+        # reellement payee n'est plus celle que le cas croit exercer.
+        "ne_pas_depenser": ["78003"],
+        "declencher": [],
+        "jouer": ["78009"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "defausse": ["78009"]},
+    },
+    {
+        "nom": "78011 Ruff Ambush — Hero Response : 5 degats quand on ne paie PAS en mental",
+        "pourquoi": "Response sur changement de forme, l'evenement doit etre en main. La main "
+                    "ne fournit ni mental ni wild (78018 porte RES=R, 78019 RES=Y) : la clause "
+                    "bonus ne doit pas partir. Un wild ne convient PAS pour ce cas, il compte "
+                    "comme n'importe quelle couleur et satisfait donc « paye en mental ». "
+                    "Signale en jeu le 9/8/2026 : la carte plafonnait a 5 meme payee en mental, "
+                    "parce que le pack lisait l'icone mentale comme un wild. Le cas precedent "
+                    "tenait la main en 78024+78028, deux MENTALES, et attendait « au moins 5 » : "
+                    "il passait au vert dans les deux sens.",
+        "scenario": "rhino",
+        "heros": "lockjaw",
+        "mise_en_place": [],
+        "main_exclusive": ["78011", "78018", "78019"],
+        # 78003 Tuning Fork demarre EN JEU et genere un wild, qui vaut n'importe
+        # quelle couleur : sans cette ligne le pilote le depense et la couleur
+        # reellement payee n'est plus celle que le cas croit exercer.
+        "ne_pas_depenser": ["78003"],
+        "declencher": ["Puzzle.ChangeForm('78001b')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "defausse": ["78011"]},
+    },
+    {
+        "nom": "78011 Ruff Ambush — Hero Response : 7 degats quand on paie en mental",
+        "pourquoi": "la branche bonus, jamais exercee jusqu'ici. La main ne fournit que du "
+                    "mental (78024 et 78028 portent RES=B), le cout de 2 est donc paye en "
+                    "mental et les degats passent de 5 a 7.",
         "scenario": "rhino",
         "heros": "lockjaw",
         "mise_en_place": [],
         "main_exclusive": ["78011", "78024", "78028"],
+        # 78003 Tuning Fork demarre EN JEU et genere un wild, qui vaut n'importe
+        # quelle couleur : sans cette ligne le pilote le depense et la couleur
+        # reellement payee n'est plus celle que le cas croit exercer.
+        "ne_pas_depenser": ["78003"],
         "declencher": ["Puzzle.ChangeForm('78001b')"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        "attendu": {"degats_min": [["01094", 5]], "defausse": ["78011"]},
+        "attendu": {"degats": [["01094", 7]], "defausse": ["78011"]},
     },
     {
         "nom": "67001a The Thing — Action « Give 'Er » : defausser son statut Tenace",
