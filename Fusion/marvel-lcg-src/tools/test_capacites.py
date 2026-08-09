@@ -5214,6 +5214,24 @@ CAS = [
         "verifier": "brawn_calculated_defense",
     },
     {
+        "nom": "77004+77005 Calculated Defense — les DEUX exemplaires sur la MEME defense",
+        "pourquoi": ("le seul trou reel du pack : les six cartes sans cas dedie sont des "
+                     "seconds exemplaires au code identique, mais leur INTERACTION n'etait "
+                     "pas testee, et c'est precisement la qu'une boucle infinie s'est "
+                     "produite en partie reelle le 7/8/2026. `LimitOncePerEvent` doit la "
+                     "borner SANS interdire le second exemplaire"),
+        "scenario": "rhino",
+        "heros": "brawn",
+        "mise_en_place": ["Puzzle.ChangeForm('77001b')"],
+        "main_exclusive": ["77004", "77005", "01089", "01089"],
+        # Sans cette interdiction, le pilote defausse le SECOND exemplaire pour
+        # financer le premier et le cas ne peut plus rien prouver.
+        "ne_pas_depenser": ["77004", "77005"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Defend('77001a', '01094')"],
+        "verifier": "brawn_double_defense",
+    },
+    {
         "nom": "77024 Strong as Silk — injouable sans Silk en jeu",
         "pourquoi": ("le Team-Up imprime exige Silk : la condition de jeu remplace la cle "
                      "TeamUp, qui supposerait deux IDENTITES et rendrait la carte morte"),
@@ -6140,6 +6158,35 @@ def brawn_calculated_defense(monde, aides):
     if main < 1:
         return False, "main vide : aucune pioche constatee"
     return True, f"jouee en defense, recyclee en reserve, main a {main} carte(s)"
+
+def brawn_double_defense(monde, aides):
+    """Les DEUX Calculated Defense jouees sur la MEME defense.
+
+    Le script porte `LimitOncePerEvent`, ajoute apres une boucle infinie
+    constatee en partie reelle le 7/8/2026 : payee en [mental], la carte
+    revient en RESERVE, une zone « comme en main », donc redevient jouable
+    dans la fenetre de defense encore ouverte. Le jeu la reproposait sans fin.
+
+    La limite est PAR EVENEMENT et non par carte : un SECOND exemplaire doit
+    rester jouable sur la meme defense, ce que le texte imprime autorise
+    (« 2 cards instead if Brawn did not ready this way »). Ce cas prouve les
+    deux moities a la fois. Que les deux exemplaires finissent en reserve dit
+    qu'ils ont ete joues tous les deux ; et que le cas RENDE un resultat dit
+    que la sequence se termine, une boucle non bornee epuisant le plafond de
+    questions du harnais.
+
+    Il a fallu la cle `ne_pas_depenser` pour y arriver : sans elle le pilote
+    defausse le second exemplaire comme ressource pour payer le premier.
+    """
+    reserve = [getattr(f.paper, "card_id", None)
+               for f in monde.players[0].reserve.GetAll()]
+    defausse = [getattr(f.paper, "card_id", None)
+                for f in monde.players[0].discard_pile.Get()]
+    manquants = [c for c in ("77004", "77005") if c not in reserve]
+    if manquants:
+        return False, (f"exemplaire(s) {manquants} absent(s) de la reserve "
+                       f"(reserve = {reserve}, defausse = {defausse})")
+    return True, "les deux exemplaires joues sur la meme defense, et la sequence se termine"
 
 def brawn_gamma_strike_sans_bonus(monde, aides):
     """77006 : temoin. Payee en [energy], la carte fait 7 degats, pas 10.
@@ -7628,6 +7675,30 @@ def executer_un_cas(game_dir, port, index):
             cout = str(infos.get("cost", "0"))
             besoin = int(cout) if cout.isdigit() else len(cout)
             interdits = {str(option.get("bind_id"))}
+            # « ne_pas_depenser » INTERDIT a des cartes de servir de ressource,
+            # la ou « payer_avec » se contente de les PREFERER, en gardant tout
+            # le reste en repli. La difference compte des qu'une carte de la
+            # main est elle-meme le sujet du cas : pour prouver que les DEUX
+            # Calculated Defense de Brawn partent sur la meme defense, il faut
+            # empecher le pilote de defausser la seconde pour financer la
+            # premiere — ce qu'il faisait systematiquement, rendant
+            # l'interaction intestable (constate le 9/8/2026).
+            #
+            # Les cles de `payment` sont les identifiants des EFFETS PAYANTS,
+            # pas ceux des objets carte : une carte offerte en ressource y
+            # apparait sous l'id de son effet, jamais sous le sien. Interdire
+            # l'id de l'objet ne filtrait donc rien. On remonte aux effets par
+            # `is_paying`, exactement comme le descripteur de carte remplit son
+            # champ `resources` (game/card/card.py).
+            for card_id in cas.get("ne_pas_depenser") or []:
+                for objet_id, objet in monde_courant().object_manager.card_dict.items():
+                    face = objet.face
+                    if face is None or getattr(face.paper, "card_id", None) != card_id:
+                        continue
+                    interdits.add(str(objet_id))
+                    for effet in objet.GetEffects():
+                        if getattr(effet.ability, "is_paying", False):
+                            interdits.add(str(effet.object_id))
             candidates = []
             # CORRECTIF 5/8/2026 : une carte peut fournir PLUSIEURS ressources
             # (« RR » de Nuts! 75017, « YY » d'Energy 01088). Le pilote comptait
