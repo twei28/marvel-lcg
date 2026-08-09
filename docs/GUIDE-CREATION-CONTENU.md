@@ -368,6 +368,18 @@ Ce qui déclenche une question, sans exception :
 | Mot-clé officiel inapplicable tel quel | `TeamUp` de Power Couple, qui suppose DEUX héros en jeu |
 | Contenu absent du matériel fourni | aucune decklist d'aspect livrée par l'auteur |
 | Un effet que le moteur ne peut pas rendre fidèlement | « if this attack has ranged or piercing » sur un événement |
+| Une icône imprimée qu'on ne reconnaît pas | l'icône « nœuds reliés » de Lockjaw, prise pour un os pendant cinq jours |
+
+**Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
+une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
+vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
+supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
+Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
+`RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
+os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
+promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :
+tous comparent le code au texte saisi, et le texte était faux pareillement.
+Seul un joueur l'a vu, en partie.
 
 Ce qui ne déclenche PAS de question : les choix purement techniques sans effet
 sur les règles (quelle fabrique employer, où ranger un helper, format d'image).
