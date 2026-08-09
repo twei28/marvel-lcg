@@ -68752,7 +68752,7 @@
                 "PET AVENGER"
             ],
             "set_name": "Lockjaw",
-            "text": "<i>Fetch!</i> — <b>Action</b>: Exhaust Lockjaw and spend a [wild] resource → choose a non-resource card in any players' discard pile and add it to their owner's hand. <i>(Limit once per round.)</i>",
+            "text": "<i>Fetch!</i> — <b>Action</b>: Exhaust Lockjaw and spend a [mental] resource → choose a non-resource card in any players' discard pile and add it to their owner's hand. <i>(Limit once per round.)</i>",
             "custom": "Nugget"
         },
         {
@@ -68913,7 +68913,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Lockjaw",
-            "text": "<b>Action</b>: Choose a player. That player changes form. If you paid for this card using a [wild] resource, you may change your form.",
+            "text": "<b>Action</b>: Choose a player. That player changes form. If you paid for this card using a [mental] resource, you may change your form.",
             "custom": "Nugget"
         },
         {
@@ -68931,7 +68931,7 @@
                 "SKILL"
             ],
             "set_name": "Lockjaw",
-            "text": "<b>Hero Action</b>: Choose a player. Deal 1 damage to each enemy engaged with that player. Remove 1 threat from each scheme. If you paid for this card using a [wild] resource, you may change your form.",
+            "text": "<b>Hero Action</b>: Choose a player. Deal 1 damage to each enemy engaged with that player. Remove 1 threat from each scheme. If you paid for this card using a [mental] resource, you may change your form.",
             "custom": "Nugget"
         },
         {
@@ -68949,7 +68949,7 @@
                 "ATTACK"
             ],
             "set_name": "Lockjaw",
-            "text": "<b>Hero Response</b> <i>(attack)</i>: After you change to hero form, deal 5 damage to an enemy <i>(7 damage instead if you paid for this card using a [wild] resource)</i>.",
+            "text": "<b>Hero Response</b> <i>(attack)</i>: After you change to hero form, deal 5 damage to an enemy <i>(7 damage instead if you paid for this card using a [mental] resource)</i>.",
             "custom": "Nugget"
         },
         {
@@ -70431,5 +70431,5 @@
             "text": "Give to the Sharon Carter player.\nYou may flip to alter-ego form. Choose:\n- Remove the Captain America ally from the game → remove Sleeper Agent from the game.\n- Discard 1 card from hand and place 2 threat on the main scheme. Discard this obligation."
         }
     ],
-    "checksum": "d28673b1ef40bc8d031ada648c80cb07f6103063c4f9d36d092dc348f40424e5"
+    "checksum": "12c7a6116ec2549f2c9ace1e455ac4f570c4b1abf0c6f2412b92c6f78df6619b"
 }

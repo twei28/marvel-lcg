@@ -50,7 +50,9 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.Action,
             fetch,
         ).SetName("Fetch!")
-        .SetCost(Cost("G"))
+        # CORRECTIF (9/8/2026) : l'icone du texte est une MENTALE, pas un wild.
+        # Voir PayeAvecMental pour la verification sur les scans.
+        .SetCost(Cost("B"))
         .SetCostFunc(CostFunc.Exhaust("This"))
         .LimitOncePerRound(),
     ]

@@ -1,3 +1,3 @@
 from cards.pack import *
 
-from cards.pack.lockjaw.lockjaw import Companion, PayeAvecOs
+from cards.pack.lockjaw.lockjaw import Companion, PayeAvecMental

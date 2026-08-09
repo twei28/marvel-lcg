@@ -27,9 +27,23 @@ def Companion() -> List['Ability']:
     ]
 
 
-def PayeAvecOs(effect: 'Effect') -> bool:
-    """« If you paid for this card using a [os] resource » → une [wild]."""
-    return effect.GetPaidResources().HasColor("G")
+def PayeAvecMental(effect: 'Effect') -> bool:
+    """« If you paid for this card using a [mental] resource ».
+
+    CORRECTIF (9/8/2026) — signale en jeu : « Ruff Ambush n'a fait que 5 degats
+    alors que j'ai paye en mental ». La fonction s'appelait `PayeAvecMental` et
+    testait la couleur "G", c'est-a-dire une ressource WILD. L'icone des
+    scans avait ete prise pour un os : ce sont des noeuds relies, l'icone de
+    la ressource MENTALE de ce pack. Verification faite en comparant a
+    l'icone imprimee de 78005 Kamala's Room, dont la fiche porte RES=B — meme
+    forme, sur fond bleu — et a celle de 78002 Black Bolt, RES=G, qui est une
+    ETOILE verte, tout autre.
+
+    Quatre cartes reposaient sur cette lecture : 78001a Fetch!, 78009 Fast
+    Travel, 78010 Zooming Around et 78011 Ruff Ambush. Leur clause bonus ne
+    partait jamais quand le joueur payait comme la carte le demande.
+    """
+    return effect.GetPaidResources().HasColor("B")
 
 
 # CORRECTIF 4/8/2026 : `ChangerDeForme` et `YouMayChangeForm` etaient appeles

@@ -844,7 +844,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // brawn — Brains and Brawn (Event, Team-Up)
   '77025': "Team-Up (Brawn et Ironheart). Maximum 1 par deck.\n<b>Action de héros</b> : pour chaque ressource imprimée dans votre main et votre réserve, si c'est une :\n[physical] - infligez 1 dégât à un ennemi.\n[mental] - retirez 1 menace d'une manigance.",
   // lockjaw — Lockjaw (Hero)
-  '78001a': "<i>Rapporte !</i> — <b>Action</b> : inclinez Lockjaw et dépensez une ressource [wild] → choisissez une carte qui n'est pas une ressource dans la pile de défausse de n'importe quel joueur et ajoutez-la à la main de son propriétaire. <i>(Limite d'une fois par round.)</i>",
+  '78001a': "<i>Rapporte !</i> — <b>Action</b> : inclinez Lockjaw et dépensez une ressource [mental] → choisissez une carte qui n'est pas une ressource dans la pile de défausse de n'importe quel joueur et ajoutez-la à la main de son propriétaire. <i>(Limite d'une fois par round.)</i>",
   // lockjaw — Lockjaw (AlterEgo)
   '78001b': "<b>Mise en place</b> : cherchez Tuning Fork dans votre deck, votre main et votre pile de défausse, et mettez-la en jeu.\n<i>Réconfort</i> — <b>Réponse</b> : après être passé à cette forme, redressez un personnage allié.",
   // lockjaw — Black Bolt (Ally)
@@ -862,11 +862,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lockjaw — Teleport To Safety (Event)
   '78008': "<b>Interruption</b> : quand une identité devrait subir des dégâts d'une attaque, quel qu'en soit le nombre, changez la forme de cette identité → prévenez tous ces dégâts.",
   // lockjaw — Fast Travel (Event)
-  '78009': "<b>Action</b> : choisissez un joueur. Ce joueur change de forme. Si vous avez payé cette carte avec une ressource [wild], vous pouvez changer de forme.",
+  '78009': "<b>Action</b> : choisissez un joueur. Ce joueur change de forme. Si vous avez payé cette carte avec une ressource [mental], vous pouvez changer de forme.",
   // lockjaw — Zooming Around (Event)
-  '78010': "<b>Action de héros</b> : choisissez un joueur. Infligez 1 dégât à chaque ennemi engagé avec ce joueur. Retirez 1 menace de chaque manigance. Si vous avez payé cette carte avec une ressource [wild], vous pouvez changer de forme.",
+  '78010': "<b>Action de héros</b> : choisissez un joueur. Infligez 1 dégât à chaque ennemi engagé avec ce joueur. Retirez 1 menace de chaque manigance. Si vous avez payé cette carte avec une ressource [mental], vous pouvez changer de forme.",
   // lockjaw — Ruff Ambush (Event)
-  '78011': "<b>Réponse de héros</b> <i>(attaque)</i> : après être passé en forme de héros, infligez 5 dégâts à un ennemi <i>(7 dégâts à la place si vous avez payé cette carte avec une ressource [wild])</i>.",
+  '78011': "<b>Réponse de héros</b> <i>(attaque)</i> : après être passé en forme de héros, infligez 5 dégâts à un ennemi <i>(7 dégâts à la place si vous avez payé cette carte avec une ressource [mental])</i>.",
   // lockjaw — Psionic Tracking (Event)
   '78012': "<b>Action d'identité civile</b> : choisissez un joueur. Cherchez n'importe quelle carte dans le deck de ce joueur et défaussez-la.",
   // lockjaw — Canine Urges (Obligation)

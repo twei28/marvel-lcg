@@ -29,7 +29,7 @@ def GetAbilities() -> Sequence['Ability']:
         if schemes:
             this.RemoveThreatFromSchemes(schemes, 1, effect)
 
-        if PayeAvecOs(effect):
+        if PayeAvecMental(effect):
             YouMayChangeForm(initiator, effect)
 
     return [

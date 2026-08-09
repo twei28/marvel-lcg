@@ -9,7 +9,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     def embuscade(effect: 'Effect', message: 'Message.AfterUnitChangeForm') -> None:
         this = effect.this.CastTo(Event)
-        valeur = 7 if PayeAvecOs(effect) else 5
+        valeur = 7 if PayeAvecMental(effect) else 5
         this.DealDamage(effect.targets, valeur, effect)
 
     return [

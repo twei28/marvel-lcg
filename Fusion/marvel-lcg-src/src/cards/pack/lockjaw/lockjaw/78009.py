@@ -17,7 +17,7 @@ def GetAbilities() -> Sequence['Ability']:
             if joueur is not None:
                 ChangerDeForme(joueur, effect)
 
-        if PayeAvecOs(effect):
+        if PayeAvecMental(effect):
             YouMayChangeForm(initiator, effect)
 
     return [
