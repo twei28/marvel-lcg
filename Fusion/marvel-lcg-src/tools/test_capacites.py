@@ -5581,6 +5581,142 @@ CAS = [
                        "Puzzle.Damage('01143', 5)"],
         "verifier": "agent13_hallucination",
     },
+    {
+        "nom": "79002 Captain America — Interrupt : il encaisse 2 degats de moins en defendant",
+        "pourquoi": ("l'interrupt ne part QUE s'il defend, d'ou `defender=` : sans lui le message "
+                     "WhenUnitWouldTakeDamage arrive sans while_defending et la reduction reste "
+                     "lettre morte. La reduction est bornee a 1 degat minimum"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')",
+                          "Puzzle.PutIntoPlay('79002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01094', defender='79002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["79002", 1]], "en_jeu": ["79002"]},
+    },
+    {
+        "nom": "79003 Burst Fire — DEUX attaques de 2, pas une de 4",
+        "pourquoi": ("les deux attaques passent par ForChoiceAbility, donc le pilote les decline "
+                     "sans `accepter_choix` (piege du §8) et la carte parait inerte. On attend au "
+                     "moins 4 degats : 2 + 2, plus l'attaque supplementaire que la Response de "
+                     "79001a peut ajouter, d'ou `degats_min`"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')"],
+        # Genius (01089) fournit BB, soit exactement le cout de 2 : sans une
+        # carte de ressource en main, l'evenement n'est jamais joue et la
+        # carte parait inerte.
+        "main_exclusive": ["79003", "01089"],
+        "payer_avec": ["01089"],
+        "declencher": [],
+        "accepter_choix": True,
+        "jouer": ["79003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]]},
+    },
+    {
+        "nom": "79006 Takedown — Response apres attaque : 2 degats de plus",
+        "pourquoi": ("Hero Response declenchee par l'attaque du heros, pas par le fait de jouer la "
+                     "carte : sans Puzzle.Attack la carte ne part jamais. Au moins 4 degats : "
+                     "1 ATK, 1 ATK de la Response de 79001a, et les 2 de Takedown"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')"],
+        "main_exclusive": ["79006"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('79001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]]},
+    },
+    {
+        "nom": "79007 Briefing Room — s'epuise quand un sbire est revele",
+        "pourquoi": ("le declencheur est la REVELATION d'un sbire ou d'une manigance annexe, pas "
+                     "une action du joueur : la carte peut rester inerte tout une partie sans que "
+                     "rien ne le signale. L'epuisement prouve que le cout a ete paye, donc que la "
+                     "Response est partie"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')",
+                          "Puzzle.PutIntoPlay('79007', under_control=True)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.CreateEncounterDeck('01101')", "Puzzle.Reveal('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["79007"]},
+    },
+    {
+        "nom": "79009 Physical Training — +1 ATK a Agent 13",
+        "pourquoi": ("deux GiveKeywordToAttached distincts, l'un pour les PV de la porteuse, "
+                     "l'autre pour l'attaque et reserve au nom « Agent 13 ». On verifie celui qui "
+                     "porte une condition de nom : c'est le seul des deux qui puisse se tromper "
+                     "de cible"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')"],
+        "declencher": ["Puzzle.PutIntoPlay('79009', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}},
+    },
+    {
+        "nom": "79010 Secret Agent — s'epuise pour fournir une ressource",
+        "pourquoi": ("une capacite Resource n'est jamais proposee au paiement si la carte n'est "
+                     "pas SOUS CONTROLE du joueur (piege du §8) ; l'epuisement prouve qu'elle a "
+                     "bien servi a payer"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')",
+                          "Puzzle.PutIntoPlay('79010', under_control=True)"],
+        # Captain America coute 3. Genius (01089) n'en fournit que 2 : il FAUT
+        # la ressource de Secret Agent pour completer. Avec une carte a 2, le
+        # harnais payait tout avec Genius et l'agent restait pret, sans que le
+        # cas n'apprenne quoi que ce soit.
+        "main_exclusive": ["79002", "01089"],
+        "payer_avec": ["79010", "01089"],
+        "declencher": [],
+        "accepter_choix": True,
+        "jouer": ["79002"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["79010"], "en_jeu": ["79002"]},
+    },
+    {
+        "nom": "79011 Assassination Plot — defausse l'allie qui a le PLUS de PV",
+        "pourquoi": ("la manigance a deux branches selon qu'un allie est present ou non ; avec "
+                     "Captain America en jeu, c'est lui qui doit partir, et AUCUNE menace ne doit "
+                     "etre posee sur la manigance"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')",
+                          "Puzzle.PutIntoPlay('79002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('79011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["79002"]},
+    },
+    {
+        "nom": "79014 Hypnotic Suggestion — en forme HEROS : Desoriente et menace egale au THW",
+        "pourquoi": ("la carte a deux branches selon la forme ; celle du heros pose une menace "
+                     "egale a la valeur de contre de l'identite, soit 2 pour Agent 13. Un chiffre "
+                     "en dur passerait a cote d'une erreur de lecture de l'attribut"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')", "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('79014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["79001a", "Confused"]], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "79015 Sleeper Agent — retire Captain America ET l'obligation du jeu",
+        "pourquoi": ("l'obligation offre DEUX issues ; la premiere n'existe que si Captain America "
+                     "est en jeu, et `accepter_choix` la fait prendre. Les deux cartes doivent "
+                     "quitter la partie, pas la defausse"),
+        "scenario": "rhino",
+        "heros": "agent_13",
+        "mise_en_place": ["Puzzle.ChangeForm('79001b')",
+                          "Puzzle.PutIntoPlay('79002', under_control=True)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Reveal('79015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["79002", "79015"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
