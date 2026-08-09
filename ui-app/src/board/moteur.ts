@@ -63,6 +63,8 @@ export type Trame = {
   ask_players: number[]
   total_players: number
   notifications: Notification[]
+  /** Sièges dont plus aucun client ne tient la place. */
+  siegesAbsents: number[]
 }
 
 function lireTrame(brut: unknown): Trame | undefined {
@@ -78,6 +80,9 @@ function lireTrame(brut: unknown): Trame | undefined {
       : [],
     total_players: typeof o.total_players === 'number' ? o.total_players : 1,
     notifications: lireNotifications(o.notify_texts),
+    siegesAbsents: Array.isArray(o.sieges_absents)
+      ? o.sieges_absents.filter((x): x is number => typeof x === 'number')
+      : [],
   }
 }
 
@@ -177,6 +182,11 @@ export type EtatMoteur = {
   /** Titres des hauts faits débloqués depuis l'ouverture de la page. */
   hautsFaits: string[]
   /**
+   * Sièges sans client connecté. Quand le moteur interroge l'un d'eux, la
+   * partie s'arrête sans un mot : c'est ce champ qui permet de le dire.
+   */
+  siegesAbsents: number[]
+  /**
    * Partie en cours, telle que le moteur la numérote. Change à chaque NOUVELLE
    * partie, mais PAS sur un retour en arrière — c'est ce qui permet à
    * l'historique de survivre à un « Annuler ».
@@ -205,6 +215,7 @@ export class Moteur {
     validationRequise: false,
     tentatives: 0,
     hautsFaits: [],
+    siegesAbsents: [],
   }
   private ecouteurs = new Set<Ecouteur>()
   private relance: number | undefined
@@ -279,6 +290,12 @@ export class Moteur {
   }
 
   private enregistrerHautsFaits(notifications: Notification[]) {
+    // Mode Bac a sable : rien n'est enregistre. Un haut fait obtenu en
+    // truquant la partie ne vaut rien, et le decouvrir apres coup devaluerait
+    // tous les autres. Le filtre est ici, au plus pres de la source : le
+    // moteur continue de les annoncer, on refuse simplement de les retenir.
+    if (this.etat.monde?.mode_sandbox === true) return
+
     const nouveaux: string[] = []
     for (const notification of notifications) {
       const trouve = notification.texte.match(/^Haut fait\s*:\s*(.+)$/)
@@ -337,6 +354,7 @@ export class Moteur {
       this.trame = trame
       this.oublierSiNouvellePartie(trame.game_id)
       this.enregistrerHautsFaits(trame.notifications)
+      this.publier({ siegesAbsents: trame.siegesAbsents })
       void this.lire()
     }
 

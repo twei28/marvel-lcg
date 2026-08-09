@@ -48,32 +48,36 @@ export function useMusique(world: World | undefined, active: boolean): void {
     let annule = false
     const candidats = [slug ? `/musique-${slug}.mp3` : '', '/musique-plateau.mp3'].filter(Boolean)
 
-    const essayer = async () => {
-      for (const url of candidats) {
+    // On NE teste PLUS l'existence par un fetch avant de lire. Le test envoyait
+    // `Range: bytes=0-1`, mais la route .mp3 du moteur (web_server.ReadFile)
+    // ignore les requêtes partielles : elle charge le fichier ENTIER en mémoire
+    // et le renvoie en bloc. Sur une bande son d'une heure, cela faisait
+    // télécharger le morceau complet juste pour savoir s'il était là — puis une
+    // seconde fois pour l'écouter. C'est donc l'élément <audio> lui-même qui
+    // sert de test : il se déclare en erreur si le fichier manque, et on passe
+    // alors au candidat suivant. Un seul téléchargement, quoi qu'il arrive.
+    const essayer = (index: number) => {
+      const url = candidats[index]
+      if (annule || url === undefined) return
+      if (sourceEnCours.current === url) return
+      lecteur.current?.pause()
+      const audio = new Audio(url)
+      audio.loop = true
+      audio.volume = VOLUME
+      audio.addEventListener('error', () => {
         if (annule) return
-        if (sourceEnCours.current === url) return
-        try {
-          const reponse = await fetch(url, { method: 'GET', headers: { Range: 'bytes=0-1' } })
-          if (!reponse.ok) continue
-          if (annule) return
-          lecteur.current?.pause()
-          const audio = new Audio(url)
-          audio.loop = true
-          audio.volume = VOLUME
-          lecteur.current = audio
-          sourceEnCours.current = url
-          // L'autoplay peut être refusé tant que la page n'a pas été cliquée :
-          // dans ce cas on retentera au prochain monde reçu.
-          audio.play().catch(() => {
-            sourceEnCours.current = ''
-          })
-          return
-        } catch {
-          /* fichier absent : candidat suivant */
-        }
-      }
+        sourceEnCours.current = ''
+        essayer(index + 1)
+      })
+      lecteur.current = audio
+      sourceEnCours.current = url
+      // L'autoplay peut être refusé tant que la page n'a pas été cliquée :
+      // dans ce cas on retentera au prochain monde reçu.
+      audio.play().catch(() => {
+        sourceEnCours.current = ''
+      })
     }
-    void essayer()
+    essayer(0)
     return () => {
       annule = true
     }

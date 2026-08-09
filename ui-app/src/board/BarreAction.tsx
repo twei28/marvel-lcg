@@ -7,15 +7,22 @@
 import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
+import { traduireMoteur } from './vocabulaire-moteur'
 
 /**
  * Les noms d'options arrivent avec des soulignes, et parfois prefixes de "p_"
  * quand le moteur voulait une image. On rend le texte lisible sans pretendre
  * afficher l'icone.
+ *
+ * Puis on passe par `traduireMoteur` : ces noms naissent en ANGLAIS dans le
+ * moteur Python, et s'affichaient tels quels au milieu d'une interface
+ * francaise (« RESOLVE MULLIGANS », signale en jeu). Un nom de capacite imprime
+ * sur la carte n'est pas dans la table et reste donc en anglais, comme le scan.
  */
 export function nomLisible(option: Option): string {
   const brut = option.name.startsWith('p_') ? option.name.slice(2) : option.name
-  return brut.replaceAll('_', ' ').trim() || 'Action'
+  const lisible = brut.replaceAll('_', ' ').trim()
+  return lisible ? traduireMoteur(lisible) : t('Action')
 }
 
 /**
@@ -119,15 +126,29 @@ export function BarreAction({
     ? interaction.assistant.etape === 'target'
       ? t('Étape 1 - choisis la cible')
       : interaction.assistant.etape === 'payment'
-        ? t('Étape 2 - paie avec des cartes de ta main ou des générateurs de ressources')
+        ? // Ne PAS dire « de ta main » : c'est faux pour une carte jouée depuis
+          // la réserve de Brawn, que la main n'a justement pas le droit de
+          // financer. Le libellé désigne donc les cartes surlignées, sans
+          // préjuger de leur zone.
+          t('Étape 2 - paie en cliquant les cartes surlignées ou un générateur de ressources')
         : t('Dernière étape - confirme')
     : focus !== undefined && interaction.options.length === 0
       ? `${nomFocus ?? t('Cette carte')} - ${t('aucune action')}`
       : focus !== undefined
         ? `${nomFocus ?? t('Cette carte')} - ${t('choisis une action')}`
         : t('Clique une carte pour agir, ou choisis ci-dessous')
+  // ⚠ Une option ENGAGEE doit toujours offrir une issue. Sans ce bouton, un
+  // joueur qui choisit une carte puis découvre qu'il ne peut pas la payer reste
+  // coincé : le moteur repose la même question à l'infini, et la partie a l'air
+  // de boucler. Signalé en partie réelle le 7/8/2026 avec Calculated Defense en
+  // réserve — le cloisonnement main/réserve retire des payeurs, et l'impasse
+  // devenait bien plus facile à atteindre.
   const boutonSecondaire =
-    option !== undefined ? null : focus !== undefined ? (
+    option !== undefined ? (
+      <button type="button" onClick={interaction.annuler}>
+        {t('Abandonner')}
+      </button>
+    ) : focus !== undefined ? (
       <button type="button" onClick={interaction.defocaliser}>
         {t('Retour')}
       </button>

@@ -11,7 +11,7 @@ import {
 import { t } from './langue'
 import type { World, WorldCard } from './world'
 
-type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat'
+type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche'
 
 export type EntreeHistorique = {
   cle: string
@@ -262,23 +262,44 @@ function ajouterNouvellesEntrees(
 
 // L'historique SURVIT aux rechargements de page (bascule de langue, F5,
 // reconnexion) via sessionStorage : meme onglet = meme partie en pratique.
-// Un nouveau round_id inferieur (nouvelle partie) remet le journal a zero.
+//
+// Il porte donc le `game_id` DE LA PARTIE qui l'a produit. Sans cette
+// etiquette, l'onglet gardait le journal d'une partie finie et le deroulait
+// au-dessus de la suivante : signale en jeu, « l'historique garde tout ».
+// La cause exacte est plus bas, dans l'effet de remise a zero — au premier
+// montage il adoptait la partie en cours SANS rien verifier, precisement pour
+// qu'un F5 ne jette pas le journal restaure. Il faut les deux : garder sur F5,
+// jeter sur nouvelle partie. C'est ce que l'etiquette permet de distinguer.
 const CLE_HISTORIQUE = 'marvel-historique-partie'
 
-function lireHistoriquePersiste(): EntreeHistorique[] {
+type HistoriquePersiste = { partieId?: number; entrees: EntreeHistorique[] }
+
+function lireHistoriquePersiste(): HistoriquePersiste {
   try {
     const brut = window.sessionStorage.getItem(CLE_HISTORIQUE)
-    if (!brut) return []
-    const donnees = JSON.parse(brut) as EntreeHistorique[]
-    return Array.isArray(donnees) ? donnees.slice(0, MAX_ENTREES) : []
+    if (!brut) return { entrees: [] }
+    const donnees = JSON.parse(brut) as unknown
+    // Ancien format : un simple tableau, sans etiquette de partie. On le relit
+    // pour ne pas perdre le journal d'une partie en cours au moment de la mise
+    // a jour, mais sans partieId il sera jete des que le moteur en annoncera
+    // une — on ne peut pas savoir a quelle partie il appartenait.
+    if (Array.isArray(donnees)) {
+      return { entrees: (donnees as EntreeHistorique[]).slice(0, MAX_ENTREES) }
+    }
+    const objet = donnees as Partial<HistoriquePersiste>
+    return {
+      partieId: typeof objet?.partieId === 'number' ? objet.partieId : undefined,
+      entrees: Array.isArray(objet?.entrees) ? objet.entrees.slice(0, MAX_ENTREES) : [],
+    }
   } catch {
-    return []
+    return { entrees: [] }
   }
 }
 
-function persisterHistorique(entrees: EntreeHistorique[]): void {
+function persisterHistorique(entrees: EntreeHistorique[], partieId?: number): void {
   try {
-    window.sessionStorage.setItem(CLE_HISTORIQUE, JSON.stringify(entrees))
+    const charge: HistoriquePersiste = { partieId, entrees }
+    window.sessionStorage.setItem(CLE_HISTORIQUE, JSON.stringify(charge))
   } catch {
     /* stockage plein ou indisponible : l'historique reste en memoire */
   }
@@ -289,7 +310,9 @@ export function useHistoriquePartie(
   demande: Demande | undefined,
   partieId?: number
 ) {
-  const [entrees, setEntrees] = useState<EntreeHistorique[]>(lireHistoriquePersiste)
+  // Lu UNE fois : la partie a laquelle appartient le journal restaure.
+  const restaure = useRef(lireHistoriquePersiste())
+  const [entrees, setEntrees] = useState<EntreeHistorique[]>(() => restaure.current.entrees)
   const precedent = useRef<World | undefined>(undefined)
   const causes = useRef<MemoireCauses>(creerMemoireCauses())
   const partieNotee = useRef<number | undefined>(undefined)
@@ -304,11 +327,25 @@ export function useHistoriquePartie(
     if (partieId === undefined) return
     const premiere = partieNotee.current === undefined
     partieNotee.current = partieId
-    // Au tout premier rendu on ADOPTE la partie en cours sans rien effacer :
-    // sinon un simple F5 jetterait l'historique restauré depuis sessionStorage.
-    if (premiere) return
+
+    if (premiere) {
+      // Au premier montage on ne peut pas effacer aveuglément : un simple F5
+      // jetterait le journal restauré de la partie EN COURS. On compare donc
+      // son étiquette. Égales -> c'est bien la même partie, on la reprend.
+      // Différentes, ou absente (ancien format) -> le journal vient d'une
+      // partie finie, il n'a rien à faire au-dessus de celle-ci.
+      if (restaure.current.partieId === partieId) {
+        persisterHistorique(restaure.current.entrees, partieId)
+        return
+      }
+      setEntrees([])
+      persisterHistorique([], partieId)
+      return
+    }
+
+    // Nouvelle partie sans rechargement de page : on repart de zéro.
     setEntrees([])
-    persisterHistorique([])
+    persisterHistorique([], partieId)
   }, [partieId])
 
   useEffect(() => {
@@ -327,7 +364,7 @@ export function useHistoriquePartie(
     ]
     setEntrees((courantes) => {
       const suivantes = ajouterNouvellesEntrees(courantes, nouvelles)
-      persisterHistorique(suivantes)
+      persisterHistorique(suivantes, partieNotee.current)
       return suivantes
     })
     precedent.current = monde
@@ -335,9 +372,42 @@ export function useHistoriquePartie(
 
   const effacer = useCallback(() => {
     setEntrees([])
-    persisterHistorique([])
+    persisterHistorique([], partieNotee.current)
   }, [])
-  return { entrees, effacer }
+  /**
+   * Inscrit une intervention du mode Bac à sable dans le journal.
+   *
+   * Elle se mêle aux événements du jeu, dans l'ordre où tout s'est produit,
+   * mais garde son type propre : en relisant une situation étrange, on
+   * distingue immédiatement ce qui vient d'une carte de ce qui vient du joueur.
+   * C'est exactement ce qui manquait pour diagnostiquer Kamala's Room.
+   *
+   * La clé porte un compteur : deux soins identiques au même rendu sont deux
+   * faits distincts, et sans lui React n'en afficherait qu'un.
+   */
+  const compteurTriche = useRef(0)
+  const ajouterTriche = useCallback(
+    (libelle: string) => {
+      compteurTriche.current += 1
+      const monde = precedent.current
+      const entree: EntreeHistorique = {
+        cle: `triche:${compteurTriche.current}`,
+        type: 'triche',
+        renderId: monde?.render_id ?? 0,
+        round: monde?.round_id ?? 0,
+        phase: monde?.phase ?? '',
+        titre: libelle,
+      }
+      setEntrees((liste) => {
+        const suite = [...liste, entree].slice(-MAX_ENTREES)
+        persisterHistorique(suite, partieNotee.current)
+        return suite
+      })
+    },
+    []
+  )
+
+  return { entrees, effacer, ajouterTriche }
 }
 
 function libelleType(type: TypeHistorique): string {
@@ -345,6 +415,7 @@ function libelleType(type: TypeHistorique): string {
   if (type === 'damage') return t('Dégâts')
   if (type === 'heal') return t('Soin')
   if (type === 'threat') return t('Menace')
+  if (type === 'triche') return t('Triche')
   if (type === 'phase') return 'Phase'
   return t('Événement')
 }

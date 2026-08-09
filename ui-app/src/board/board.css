@@ -191,9 +191,16 @@
     position: relative;
     min-width: 0;
     display: flex;
-    /* Les rangees sont plus hautes que les cartes des que la fenetre est large :
-       les cartes se placent au milieu de leur emplacement, pas contre un bord. */
-    align-items: center;
+    /* LIGNE DE POSE COMMUNE. Toutes les zones d'une meme rangee posent leurs
+       cartes sur le meme bas, comme des cartes sur une vraie table.
+       C'etait `center` : chaque zone centrait SON bloc dans la rangee, or les
+       blocs n'ont pas la meme hauteur (un complot est en paysage, un personnage
+       en portrait). Trois zones de la rangee du haut demarraient ainsi a 65, 78
+       et 96 px, pour une meme bande de 58 a 270 — l'aspect irregulier signale.
+       Les cartes A L'INTERIEUR d'une zone etaient deja alignees par le bas
+       (.plateau-cartes / .plateau-groupe) : il ne manquait que ce niveau-ci.
+       Le retrait bas est le meme partout (4px), c'est ce qui fait la ligne. */
+    align-items: flex-end;
     justify-content: center;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.022);
@@ -397,6 +404,7 @@
   .menu-actions-carte {
     position: fixed;
     z-index: 90;
+    /* Repli : usePlacement pose le centre reel. */
     top: 50%;
     left: 50%;
     width: min(450px, calc(100vw - 28px));
@@ -828,6 +836,7 @@
   .actions-flottantes {
     position: fixed;
     z-index: 90;
+    /* Repli : usePlacement pose le centre reel. */
     left: 50%;
     top: 48%;
     transform: translate(-50%, -50%);
@@ -841,6 +850,7 @@
   .demande-centrale {
     position: fixed;
     z-index: 92;
+    /* Repli : usePlacement pose le centre reel. */
     left: 50%;
     top: 45%;
     transform: translate(-50%, -50%);
@@ -854,6 +864,7 @@
   .evenement-centrale {
     position: fixed;
     z-index: 91;
+    /* Repli : usePlacement pose le centre reel. */
     left: 50%;
     top: 45%;
     transform: translate(-50%, -50%);
@@ -1364,6 +1375,8 @@
   .assistant-action {
     position: fixed;
     z-index: 86;
+    /* left/top sont poses par usePlacement (placement/placer.ts) : ce sont des
+       valeurs de REPLI, utilisees le temps de la premiere mesure. */
     left: 50%;
     top: 45%;
     transform: translate(-50%, -50%);
@@ -1962,10 +1975,14 @@
      Ne capte pas la souris pour ne pas se re-survoler. */
   .carte-apercu {
     position: fixed;
-    /* Decale vers la gauche (~2,5 cm) par rapport au bord droit, a la demande. */
-    right: 120px;
+    /* Repli, le temps de la premiere mesure : usePlacement pose ensuite le
+       centre reel, avec `droite` pour ancre preferee — l'apercu reste donc a
+       droite tant que la place y est libre, et ne s'ecarte que pour ne pas
+       recouvrir un panneau de decision.
+       Meme transform que les autres panneaux : le hook fournit un CENTRE. */
+    left: 50%;
     top: 52%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     z-index: 400;
     pointer-events: none;
     filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.62));
@@ -2045,14 +2062,21 @@
     transform: none;
   }
 
+  /* Le centrage HORIZONTAL fait partie du transform, et il doit donc figurer
+     dans les keyframes : une animation qui anime `transform` remplace celui de
+     la regle pendant toute sa duree. L'apercu etait ancre a droite (`right` +
+     `translateY`) ; depuis qu'il est place par usePlacement, il recoit un
+     CENTRE en left/top et a besoin des deux axes. Sans ce -50% en X il partait
+     d'une demi-largeur vers la droite — soit hors ecran sur une carte
+     recto-verso paysage, qui fait pres de 930 px de large. */
   @keyframes carte-apercu-entre {
     from {
       opacity: 0;
-      transform: translateY(-50%) scale(0.96);
+      transform: translate(-50%, -50%) scale(0.96);
     }
     to {
       opacity: 1;
-      transform: translateY(-50%) scale(1);
+      transform: translate(-50%, -50%) scale(1);
     }
   }
 
@@ -2088,7 +2112,6 @@
   .zone-piles-rencontre {
     grid-area: piles-rencontre;
     --mc-zoom-origine: center top;
-    align-items: flex-start;
   }
 
   /* « Your piles » (deck + defausse) et « Other zones » ont chacune leur propre
@@ -2097,13 +2120,11 @@
   .zone-piles-joueur {
     grid-area: piles-joueur;
     --mc-zoom-origine: center bottom;
-    align-items: flex-start;
   }
 
   .zone-annexes {
     grid-area: annexes;
     --mc-zoom-origine: left bottom;
-    align-items: flex-start;
   }
 
   /* Les piles d'une meme zone forment UN groupe : c'est donc le groupe qui doit
@@ -2134,11 +2155,14 @@
     min-width: 0;
   }
 
+  /* Les piles restent calees a GAUCHE de leur colonne (justify-content), mais
+     posent sur la meme ligne basse que le reste de la rangee. Le retrait haut
+     de 20px reserve la place de l'etiquette de zone quand la colonne est pleine. */
   .zone-piles-rencontre .plateau-cartes,
   .zone-piles-joueur .plateau-cartes,
   .zone-annexes .plateau-cartes {
-    align-items: flex-start;
-    align-content: flex-start;
+    align-items: flex-end;
+    align-content: flex-end;
     justify-content: flex-start;
     padding: 20px 0 4px;
   }
@@ -2185,7 +2209,8 @@
     gap: 8px;
   }
 
-  .colonne-terrain-soutien > .zone-deck-special {
+  .colonne-terrain-soutien > .zone-deck-special,
+  .colonne-terrain-soutien > .zone-reserve {
     flex: 0 0 auto;
   }
 
@@ -2211,6 +2236,25 @@
 
   .zone-deck-special .plateau-emplacement-titre {
     color: rgba(201, 166, 255, 0.9);
+  }
+
+  /* Zone RESERVE (pack Brawn) : meme place et meme mise en forme que le deck
+     special, accent VERT gamma pour ne pas les confondre. Ses cartes sont
+     posees une par une (jouables), pas empilees. */
+  .zone-reserve {
+    --mc-zoom-origine: center bottom;
+    align-items: flex-start;
+    border-color: rgba(90, 200, 120, 0.35);
+    background: rgba(70, 170, 100, 0.07);
+  }
+
+  .zone-reserve .plateau-cartes {
+    align-items: flex-start;
+    padding-top: 22px;
+  }
+
+  .zone-reserve .plateau-emplacement-titre {
+    color: rgba(150, 230, 175, 0.9);
   }
 
   /* Identite + upgrades attaches = un bloc de lecture. On garde ce bloc serre,
@@ -2343,6 +2387,18 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  /* Separateur de groupe. La barre est rangee par intention — agir, consulter,
+     regler, partir — et sans marque visible l'ordre ne se lit pas : on voit une
+     file de boutons, pas quatre groupes. Un simple filet, assez discret pour ne
+     pas devenir un element de plus a regarder. */
+  .bh-separateur {
+    align-self: stretch;
+    width: 1px;
+    margin: 6px 4px;
+    background: rgba(255, 255, 255, 0.14);
     flex: 0 0 auto;
   }
 
@@ -3339,28 +3395,64 @@
     opacity: 0.9;
   }
 
-  /* --- Plateau delave : le lisere d'aspect ---------------------------------
+  /* --- Plateau delave : le cadre de couleur --------------------------------
      Sous le noir et blanc, la couleur du cadre d'une carte disparait. Or
      c'est elle qui dit si la carte est basique, d'aspect ou de heros : sans
-     elle on ne sait plus ce qu'on a en main. On desature donc l'IMAGE seule,
-     et on rend l'information par un lisere dessine autour de la carte, hors
-     de l'image, qui reste donc en couleur.
+     elle on ne sait plus ce qu'on a en main. Tout est donc desature SAUF la
+     bordure de la carte, qui porte a elle seule la couleur : aspect si on le
+     connait, camp sinon, gris pour un dos de carte.
 
      L'aspect vient de `desc.Class` du catalogue : le moteur ne l'envoie pas
      dans /get_world. Voir catalogue.ts. */
-  .plateau.est-delave .scan-visuel {
+  /* Le gris couvre TOUT le contenu de la carte — illustration, pastilles,
+     chiffres, etiquette de type — SAUF le cadre de `.scan-frame`, qui devient
+     le seul point de couleur de la table.
+     D'ou le `:not(.scan-frame)` : un filtre teinte tout son sous-arbre, donc
+     desaturer `.scan-visuel` en bloc, comme on le faisait, emportait aussi
+     cette bordure et il ne restait plus rien a colorer. */
+  .plateau.est-delave .scan-visuel > *:not(.scan-frame),
+  .plateau.est-delave .scan-frame > * {
     filter: grayscale(1);
   }
 
-  /* Le lisere entoure la carte, il ne mord pas dessus : un decalage NEGATIF
-     le posait a l'interieur du bord, ou il rognait l'illustration. `outline`
-     et non `box-shadow` : les cartes portent deja des ombres pour leurs halos
-     de statut, et on ne veut pas les ecraser. */
-  .plateau.est-delave .scan-card[class*='aspect-'] {
-    outline: 4px solid var(--lisere-aspect);
-    outline-offset: 3px;
-    border-radius: inherit;
+  /* Le cadre EPOUSE la carte. C'est la bordure de 2 px que `.scan-frame` porte
+     deja : en `box-sizing: border-box` elle se pose PAR-DESSUS le bord du
+     scan, ne deborde donc sur aucune voisine dans la main et ne change pas
+     l'espacement du plateau d'un pixel. Elle suit l'arrondi de la carte.
+
+     Ce que faisait l'ancienne version, et pourquoi elle donnait « un carre » :
+     un `outline` de 4 px decale de 3 px vers l'exterieur, avec en prime un
+     `border-radius: inherit` qui prenait la valeur du PARENT (`.plateau-unite`,
+     a 0) au lieu des 8 px de la carte. La regle ecrite pour epouser les coins
+     arrondis carrait les coins des seules cartes qu'elle decorait. */
+  .plateau.est-delave .scan-frame {
+    border-color: var(--lisere-aspect);
+    /* Elargie de 2 a 4 px a l'usage : a 2 px, seule couleur d'un plateau
+       entierement gris, le trait se lisait mal sur les petites cartes de la
+       main (115 px de large, et la scene est encore mise a l'echelle de la
+       fenetre). Comme `box-sizing` vaut `border-box`, l'epaississement mord
+       vers l'INTERIEUR : la carte ne grandit pas et l'espacement du plateau
+       ne bouge toujours pas. */
+    border-width: 4px;
   }
+
+  /* Les halos de camp et d'etat s'eteignent : le cadre doit rester la SEULE
+     couleur. Ils passent par des variables, il suffit de les vider.
+     C'est aussi ici qu'on pose le repli — une carte sans aspect n'est pas
+     laissee sans couleur, elle prend celle de son camp (voir plus bas). */
+  .plateau.est-delave .scan-card {
+    --camp-ring: transparent;
+    --camp-glow: transparent;
+    --state-glow: transparent;
+    --lisere-aspect: #8a94a3;
+  }
+
+  /* L'ORDRE COMPTE : ces regles ont toutes la meme specificite, c'est donc la
+     derniere ecrite qui gagne. Camp d'abord (le repli), aspect ensuite (il est
+     plus precis quand on le connait), face cachee en dernier (elle n'a droit a
+     aucune des deux). */
+  .plateau.est-delave .scan-card.camp-player { --lisere-aspect: #3ccd78; }
+  .plateau.est-delave .scan-card.camp-encounter { --lisere-aspect: #e44242; }
 
   .plateau.est-delave .scan-card.aspect-aggression { --lisere-aspect: #d1382c; }
   .plateau.est-delave .scan-card.aspect-justice { --lisere-aspect: #e6be3c; }
@@ -3372,6 +3464,11 @@
      juste qu'elles ne se confondent avec aucune des cinq autres. */
   .plateau.est-delave .scan-card.aspect-hero { --lisere-aspect: #a878e8; }
   .plateau.est-delave .scan-card.aspect-basic { --lisere-aspect: #aab3bd; }
+
+  /* Une carte face cachee ne dit RIEN d'elle-meme, pas meme son camp : son
+     cadre reste gris comme le reste. Sans cette regle, le repli lui donnerait
+     le rouge Rencontre — soit une information que le moteur cache exprès. */
+  .plateau.est-delave .scan-card.is-facedown { --lisere-aspect: #8a94a3; }
 
   /* Le sepia doit teinter, pas suggerer : c'est le seul effet dont le sujet
      est la couleur de l'image elle-meme. */
@@ -3387,9 +3484,18 @@
     opacity: 0.8;
   }
 
+  /* PAS de z-index ici, et c'est important.
+     `position: relative; z-index: 1` faisait de .plateau un CONTEXTE
+     D'EMPILEMENT : tout ce qu'il contient etait alors plafonne a 1 face au
+     reste de la page. Les popovers de la barre (Options 300, Sauver 300,
+     Historique 520) passaient donc SOUS les panneaux de decision, qui vivent a
+     la racine avec 86-92 — leur propre z-index ne servait a rien.
+     Le z-index n'existait que pour passer devant la couche meteo. Or celle-ci
+     est deja rendue AVANT le plateau (voir board.tsx) : entre deux elements
+     positionnes sans z-index positif, c'est l'ordre du DOM qui tranche, et il
+     donne deja le bon resultat. */
   .plateau {
     position: relative;
-    z-index: 1;
   }
 
   /* --- Confettis de victoire (coupés avec les animations) ------------------ */
@@ -4250,4 +4356,363 @@
   }
   .pile-triche-actions button:hover { background: rgba(255, 196, 60, 0.26) }
   .pile-triche-vide { opacity: 0.5; padding: 24px }
+}
+
+/* --- Récompenses de campagne (écran de fin de partie) --------------------
+   Le panneau vit DANS la carte de fin de partie, sous les hauts faits. Cette
+   carte est taillée pour un message court (460 px) : dès que le panneau est
+   là, elle doit s'élargir, sinon les scans des améliorations à choisir
+   sortiraient en timbres-poste — l'erreur exacte que ce chantier corrige sur
+   l'écran de préparation. */
+@layer composants {
+  .fin-partie-carte:has(.camp-recomp) {
+    max-width: min(900px, calc(100vw - 40px));
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+  }
+
+  .camp-recomp {
+    display: grid;
+    justify-items: stretch;
+    gap: 14px;
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 16px;
+    text-align: left;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .camp-recomp-tete {
+    display: grid;
+    gap: 2px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .camp-recomp-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffd45a;
+  }
+
+  .camp-recomp-titre {
+    font-size: 22px;
+    line-height: 1.1;
+    color: #fff;
+  }
+
+  .camp-recomp-bd {
+    display: grid;
+    gap: 10px;
+  }
+
+  .camp-recomp-bd img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .camp-recomp-champs {
+    display: grid;
+    gap: 12px;
+  }
+
+  .camp-champ {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* Un relevé du moteur n'est pas une question posée au joueur : il se lit
+     comme un constat, en retrait. Un vrai choix, lui, s'assume. */
+  .camp-champ.est-choix {
+    border-color: rgba(255, 212, 90, 0.45);
+    background: rgba(255, 212, 90, 0.07);
+  }
+
+  .camp-champ-tete {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .camp-champ-libelle {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .camp-champ-marque {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #7fe3ff;
+    padding: 2px 7px;
+    border-radius: 99px;
+    border: 1px solid rgba(127, 227, 255, 0.35);
+    background: rgba(127, 227, 255, 0.1);
+  }
+
+  .camp-champ-aide {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .camp-champ-ligne {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .camp-champ-joueur {
+    flex: 0 0 130px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .camp-champ-elimine {
+    font-size: 12px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .camp-champ-int,
+  .camp-champ-texte {
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+  }
+
+  .camp-champ-int { width: 90px }
+  .camp-champ-texte { flex: 1; min-width: 140px }
+
+  .camp-cartes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Choisir une amélioration, c'est choisir une carte : on la montre en assez
+     grand pour la lire, pas en vignette. Les scans français sont servis
+     automatiquement par scanUrl(). */
+  .camp-carte {
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    line-height: 0;
+    opacity: 0.55;
+    transition: opacity 140ms, border-color 140ms, transform 140ms;
+  }
+
+  .camp-carte img {
+    width: 108px;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+  }
+
+  .camp-carte:hover { opacity: 0.85; transform: translateY(-2px) }
+
+  .camp-carte.sel {
+    opacity: 1;
+    border-color: #ffd45a;
+    box-shadow: 0 0 16px -2px rgba(255, 212, 90, 0.7);
+  }
+
+  .camp-recomp-actions {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  .camp-recomp-valider {
+    padding: 13px 26px;
+    border-radius: 8px;
+    border: 1px solid #ffd45a;
+    background: linear-gradient(160deg, rgba(255, 212, 90, 0.9), rgba(200, 150, 20, 0.9));
+    color: #14100a;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .camp-recomp-valider:hover:not(:disabled) { filter: brightness(1.1) }
+  .camp-recomp-valider:disabled { opacity: 0.45; cursor: not-allowed }
+
+  .camp-recomp-bloque,
+  .camp-recomp-rien,
+  .camp-recomp-attente {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+
+  .camp-recomp-echec {
+    font-size: 12px;
+    color: #ff9b9d;
+    text-align: center;
+  }
+}
+
+/* --- Panneaux flottants : repli quand la table est pleine -----------------
+   Le placement (board/placement/) cherche une position qui ne recouvre pas la
+   carte dont le panneau parle. Quand il n'en existe aucune — beaucoup de cibles
+   legales eparpillees sur toute la table — il prend la moins mauvaise et pose
+   cette classe. Le panneau s'efface alors partiellement pour qu'on lise la
+   carte au travers, et redevient franc des qu'on le survole : on ne peut pas le
+   deplacer, on peut au moins le rendre traversable du regard. */
+@layer utilitaires {
+  .est-genant {
+    opacity: 0.62;
+    transition: opacity 140ms ease-out;
+  }
+
+  .est-genant:hover,
+  .est-genant:focus-within {
+    opacity: 1;
+  }
+
+  /* Le mouvement rendrait le panneau illisible pendant qu'on le cherche : on
+     n'anime que l'opacite, jamais la position. */
+  @media (prefers-reduced-motion: reduce) {
+    .est-genant {
+      transition: none;
+    }
+  }
+}
+
+/* --- Fenêtre de confirmation du jeu --------------------------------------
+   Elle remplace `window.confirm`. Le dialogue natif de Chrome arrivait avec la
+   police du système et les boutons du navigateur, en plein milieu d'un plateau
+   habillé — signalé en jeu.
+
+   z-index 700 : AU-DESSUS de tout, y compris l'aperçu de carte (400) et la
+   modale des arts alternatifs (620). Une question bloquante doit être la
+   dernière chose qu'on voit ; c'est le seul panneau dont c'est vrai. */
+@layer composants {
+  .confirm-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(4, 6, 10, 0.78);
+    backdrop-filter: blur(5px);
+    animation: confirm-voile-entre 120ms ease-out;
+  }
+
+  .confirm-modale {
+    width: min(430px, calc(100vw - 40px));
+    display: grid;
+    gap: 10px;
+    padding: 18px 20px 16px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(22, 27, 35, 0.99), rgba(10, 12, 16, 0.99));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.6), 0 26px 70px rgba(0, 0, 0, 0.7);
+    animation: confirm-modale-entre 150ms ease-out;
+  }
+
+  .confirm-titre {
+    font-size: 1.02rem;
+    line-height: 1.3;
+    color: #ffffff;
+  }
+
+  .confirm-texte {
+    margin: 0;
+    color: #9fb0c4;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .confirm-boutons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .confirm-boutons button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: filter 120ms ease-out;
+  }
+
+  .confirm-boutons button:hover {
+    filter: brightness(1.15);
+  }
+
+  .confirm-non {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd7e6;
+  }
+
+  .confirm-oui {
+    border: 1px solid rgba(255, 212, 90, 0.55);
+    background: linear-gradient(180deg, #ffd45a, #e5a713);
+    color: #221a04;
+  }
+
+  /* Le contour de focus reste VISIBLE : c'est ce bouton qui a le focus à
+     l'ouverture, et la touche Entrée y répond. Le masquer laisserait croire
+     qu'aucune touche n'agit. */
+  .confirm-oui:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  /* Action perdante (quitter, écraser une partie) : le bouton cesse d'être
+     doré. La couleur porte l'avertissement que le texte énonce. */
+  .confirm-modale.est-danger .confirm-oui {
+    border-color: rgba(230, 36, 41, 0.6);
+    background: linear-gradient(180deg, #e94a4e, #b31d21);
+    color: #ffffff;
+  }
+
+  @keyframes confirm-voile-entre {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+
+  @keyframes confirm-modale-entre {
+    from { opacity: 0; transform: translateY(8px) scale(0.98) }
+    to { opacity: 1; transform: none }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .confirm-voile,
+    .confirm-modale {
+      animation: none;
+    }
+  }
 }

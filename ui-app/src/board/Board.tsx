@@ -18,10 +18,11 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from '../components/ScanCard'
-import { nettoyerNarration } from './BarreAction'
 import { langueActuelle, t } from './langue'
 import { codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
+import { usePlacement } from './placement/usePlacement'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
@@ -35,16 +36,6 @@ import './board.css'
  * 16 de marge + 4 rangees de 216 + 3 ecarts de 14 + 16 de marge = 938.
  */
 export const SCENE = { largeur: 1920, hauteur: 940 }
-
-/**
- * Le moteur ecrit ses references de carte « [(49,01094) Rhino] ». Sur un
- * plateau on veut lire « Rhino ».
- */
-export function lisiblePrompt(brut: string): string {
-  return nettoyerNarration(
-    brut.replace(/\[\((\d+),[^)]*\)\s*([^\]]*)\]/g, '$2')
-  )
-}
 
 /**
  * Libellé français d'une phase du moteur, pour l'AFFICHAGE seulement : la valeur
@@ -358,9 +349,51 @@ export function CarteApercu({
   // en portrait pour tenir dans l'eventail (voir card-model : isLandscape).
   const estComplot = carte.kind === 'main-scheme' || carte.kind === 'side-scheme'
   const carteAgrandie = estComplot ? { ...carte, isLandscape: true } : carte
-  return (
+
+  // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
+  // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
+  // large — sans cette regle il mangeait le centre de la table pendant qu'on
+  // choisissait. Il reste ancre a droite tant que la place y est libre.
+  // L'aperçu NE BOUGE PAS. Une seule position candidate, donc toujours la même
+  // place, quoi qu'il y ait dessous.
+  //
+  // C'est l'inverse de la règle des panneaux de décision, et c'est voulu. Une
+  // décision est rare et il faut lire la carte qu'elle recouvre : elle esquive.
+  // Un agrandissement, lui, s'ouvre à CHAQUE survol : s'il change de coin selon
+  // ce qui est libre, l'œil doit le rechercher à chaque fois. Essayé, et c'est
+  // franchement désagréable — la prévisibilité vaut plus ici que la place
+  // gagnée. Il passe simplement devant (z-index 400) : il est transitoire et
+  // voulu, alors que le panneau, lui, reste.
+  //
+  // On garde le hook malgré tout, pour la seule chose qu'il apporte encore ici :
+  // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
+  // images finissent de charger. Il sortait de l'écran par la droite sur une
+  // carte recto-verso paysage, qui fait près de 930 px de large.
+  const apercu = useRef<HTMLDivElement | null>(null)
+  const { style: stylePlacement } = usePlacement(apercu, {
+    preferee: 'droite',
+    candidats: ['droite'],
+    // Une carte SEULE est étroite (~345 px) : elle se range à gauche de la
+    // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
+    // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
+    // sur le panneau de décision — pour elle, mieux vaut la colonne.
+    borneDroite: nbFaces === 1 ? ['.zone-complot-principal'] : undefined,
+    signature: `${carte.id}|${nbFaces}`,
+  })
+
+  // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
+  // le fait passer DEVANT les boutons de decision.
+  //
+  // Sans ce portail il vivait a l'interieur de `.plateau`, qui est un contexte
+  // d'empilement a `z-index: 1`. Son propre `z-index: 400` ne valait alors que
+  // DANS ce contexte : compare aux panneaux, c'est le 1 du parent qui comptait,
+  // et 1 perd contre 92. La carte agrandie passait donc sous les boutons quoi
+  // qu'on ecrive comme z-index — signale en jeu, et c'est bien ce qu'on voyait.
+  return createPortal(
     <div
+      ref={apercu}
       className={`carte-apercu${nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}`}
+      style={stylePlacement}
       aria-hidden="true"
     >
       {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
@@ -411,7 +444,8 @@ export function CarteApercu({
           />
         </div>
       ))}
-    </div>
+    </div>,
+    document.body
   )
 }
 
@@ -425,8 +459,7 @@ export type BoardProps = {
    */
   plateau: Plateau
   /** Affiche d'ou vient l'etat regarde (etat enregistre ou partie en cours). */
-  source: string
-  /** Contenu libre de la barre du haut (choix de la source, retour, etc.). */
+  /** Contenu libre de la barre du haut (mode d'affichage, joueur regarde). */
   outils?: ReactNode
   /** Actions de partie dans la barre du haut : Undo / Save / Menu. */
   actionsPartie?: ReactNode
@@ -482,7 +515,6 @@ export function Board({
   world,
   playerId,
   plateau,
-  source,
   outils,
   actionsPartie,
   bas,
@@ -498,7 +530,6 @@ export function Board({
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
 
-  const prompt = lisiblePrompt(world.prompt)
 
   // Index id -> carte, pour retrouver la carte survolee (porteurs ET upgrades).
   const cartesParId = useMemo(() => {
@@ -592,17 +623,21 @@ export function Board({
     >
       <header className="plateau-barre">
         {actionsPartie}
-        <div className="plateau-etat">
-          <span className="plateau-eyebrow">{source}</span>
-          <strong>
-            Round {world.round_id} · {phaseAffichee(world.phase)}
-            {prompt ? ` · ${prompt}` : ''}
-          </strong>
-        </div>
-        <div className="plateau-compte">
-          J{playerId} · {plateau.nombreDeCartes} {t('cartes')}
-          {plateau.nombreIgnore > 0 ? ` · ${plateau.nombreIgnore} ${t('entrée(s) inattendue(s)')}` : ''}
-        </div>
+        {/* Plus d'etat de partie ni de compteur de cartes ici : le round, la
+            phase et l'evenement en cours sont deja dans le Journal, en clair et
+            avec leur historique. Les repeter en permanence prenait de la place
+            en haut de l'ecran — celle-la meme qui manque a la table.
+
+            SEULE EXCEPTION : l'avertissement ci-dessous. Il ne s'affiche que
+            si le descripteur du moteur contient des entrees que le plateau n'a
+            pas su lire ; c'est un signal d'anomalie, pas une information de
+            jeu, et le perdre reviendrait a dessiner une table incomplete sans
+            que personne ne le sache. */}
+        {plateau.nombreIgnore > 0 ? (
+          <div className="plateau-anomalie" role="status">
+            {plateau.nombreIgnore} {t('entrée(s) inattendue(s)')}
+          </div>
+        ) : null}
         {outils ? <div className="plateau-outils">{outils}</div> : null}
       </header>
 
@@ -626,14 +661,28 @@ export function Board({
           {plateau.emplacements.map((e) => {
             // Le deck special partage la case « terrain-soutien » : il occupe un
             // slot dedie a GAUCHE, le heros et les soutiens sont a sa droite.
-            if (e.cle === 'deck-special') return null
+            // La RESERVE de Brawn prend exactement la meme place : c'est la zone
+            // personnelle du personnage, comme l'Invocation de Strange. Aucun
+            // heros n'a les deux, l'autre slot est donc simplement absent.
+            if (e.cle === 'deck-special' || e.cle === 'reserve') return null
             if (e.cle === 'terrain-soutien') {
               const deckSpecial = plateau.emplacements.find((x) => x.cle === 'deck-special')
+              const reserve = plateau.emplacements.find((x) => x.cle === 'reserve')
               return (
                 <div className="colonne-terrain-soutien" key="colonne-terrain-soutien">
                   {deckSpecial ? (
                     <Emplacement
                       emplacement={deckSpecial}
+                      interactifs={interactifs}
+                      effets={effets}
+                      ouvrirPile={ouvrirPile}
+                      bloquerActionsPassives={bloquerActionsPassives}
+                      heroActifId={heroActifId}
+                    />
+                  ) : null}
+                  {reserve ? (
+                    <Emplacement
+                      emplacement={reserve}
                       interactifs={interactifs}
                       effets={effets}
                       ouvrirPile={ouvrirPile}

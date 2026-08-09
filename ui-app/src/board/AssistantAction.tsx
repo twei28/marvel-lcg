@@ -1,8 +1,10 @@
+import { useRef } from 'react'
 import type { Demande } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Interaction } from './interaction'
 import { t } from './langue'
+import { usePlacement } from './placement/usePlacement'
 import type { WorldCard } from './world'
 
 type AssistantActionProps = {
@@ -77,7 +79,20 @@ export function AssistantAction({
   cartesParId,
   affichage = 'detailed',
 }: AssistantActionProps) {
-  if (!connecte || !aNous || !demande || !interaction.option) return null
+  const utile = Boolean(connecte && aNous && demande && interaction.option)
+
+  // Les hooks se déclarent AVANT le premier retour : `actif` porte la condition,
+  // pas un `return` anticipé. Les cartes à ménager sont celle qui agit et les
+  // cibles déjà désignées — c'est sur elles que porte la consigne affichée.
+  const panneau = useRef<HTMLElement | null>(null)
+  const signature = `${interaction.option?.id ?? ''}|${interaction.assistant.etape}`
+  const { style } = usePlacement(panneau, {
+    candidats: ['centre'],
+    signature,
+    actif: utile,
+  })
+
+  if (!utile || !interaction.option) return null
 
   const assistant = interaction.assistant
   const action = resume(interaction, cartesParId)
@@ -89,7 +104,9 @@ export function AssistantAction({
     const indication = indicationSimple(interaction)
     return (
       <aside
+        ref={panneau}
         className={`assistant-action mode-simple etape-${assistant.etape} ${classeTonaliteAction(nomAction)}`}
+        style={style}
         aria-live="polite"
       >
         <span className="assistant-simple-action">{nomAction}</span>
@@ -111,7 +128,12 @@ export function AssistantAction({
   }
 
   return (
-    <aside className={`assistant-action etape-${assistant.etape}`} aria-live="polite">
+    <aside
+      ref={panneau}
+      className={`assistant-action etape-${assistant.etape}`}
+      style={style}
+      aria-live="polite"
+    >
       <span className="assistant-eyebrow">{nomLisible(interaction.option)}</span>
       <strong>{titre || assistant.titre}</strong>
       {assistant.detail ? <span className="assistant-detail">{assistant.detail}</span> : null}

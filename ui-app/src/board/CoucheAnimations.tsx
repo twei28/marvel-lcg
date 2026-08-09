@@ -12,6 +12,9 @@
 // la carte apparait directement, aucun blocage.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+// Meme mesure que le placement des panneaux : une seule definition de boite
+// d'ecran pour tout le plateau (voir placement/boites.ts).
+import { boiteDe, type Boite } from './placement/boites'
 
 const DUREE = 250
 const CASCADE = 60
@@ -31,7 +34,6 @@ const GROUPE_PIOCHE = 1
 const GROUPE_JEU = 2
 const GROUPE_DEFAUSSE = 3
 
-type Boite = { x: number; y: number; w: number; h: number }
 type Mesure = { rect: Boite; zone: string; src: string; el: HTMLElement }
 type Vol = {
   cle: string
@@ -41,10 +43,6 @@ type Vol = {
   delai: number
 }
 
-function boiteDe(el: Element): Boite {
-  const r = el.getBoundingClientRect()
-  return { x: r.left, y: r.top, w: r.width, h: r.height }
-}
 
 function zoneDe(el: Element): string {
   const z = el.closest('[class*="zone-"]')

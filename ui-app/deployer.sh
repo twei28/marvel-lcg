@@ -148,4 +148,30 @@ if [ "$deploye" -eq 0 ]; then
   exit 1
 fi
 
+# --- Frontends SERVIS TELS QUELS ---------------------------------------------
+# L'assistant de preparation, le salon et le deck-builder ne passent par aucun
+# build : ce sont des modules ES servis directement. Ils vivent donc EN DOUBLE,
+# un exemplaire par installation, et rien ne les synchronisait — deployer.sh ne
+# copiait que dist/.
+#
+# Ca s'est paye deux fois : le multijoueur a tourne sur un assistant en retard
+# de plusieurs correctifs, et il a fallu recopier salon.html, l'assistant et le
+# dictionnaire a la main. La source est l'installation WSL, celle qu'on edite.
+REFERENCE="$HOME/marvel-work/fusion/marvel-lcg-src"
+
+if [ -d "$REFERENCE/public" ]; then
+  for jeu in "${JEUX[@]}"; do
+    [ -d "$jeu/public" ] || continue
+    [ "$jeu" = "$REFERENCE" ] && continue
+    for dossier in js css; do
+      [ -d "$REFERENCE/public/$dossier" ] || continue
+      # --delete : un fichier supprime a la source doit disparaitre ici aussi,
+      # sinon un module mort continuerait d'etre servi. On EXCLUT app/ : c'est
+      # dist/, deja traite plus haut, et l'ecraser reviendrait a le vider.
+      rsync -a --delete --exclude 'app/' "$REFERENCE/public/$dossier/" "$jeu/public/$dossier/"
+    done
+    echo "Frontends non compiles synchronises vers $jeu"
+  done
+fi
+
 echo "Deploye dans $deploye installation(s). Recharge la page dans le navigateur."

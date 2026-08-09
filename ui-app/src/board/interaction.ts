@@ -283,6 +283,42 @@ export function useInteraction(
   const surpaiementRecompense =
     option !== undefined && catalogue.surpayable(index.get(option.bind_id)?.card_id ?? '')
   const identiteJoueurId = world?.players?.[playerId]?.area_hero?.[0]?.id
+
+  /**
+   * Cloisonnement main / réserve du pack Brawn.
+   *
+   * L'insert : « a player cannot generate resources by discarding cards from
+   * both their reserve and their hand; they must choose one or the other. »
+   *
+   * Le moteur applique déjà la moitié déterministe de la règle (une carte jouée
+   * depuis la main ne se finance que par la main, voir le # CORRECTIF de
+   * game/ability/factory/resources.py). Mais il dresse la liste des payeurs
+   * AVANT que le joueur ait choisi quoi que ce soit : pour un coût qui n'est ni
+   * l'un ni l'autre — capacité d'une carte en jeu, coût d'une carte de
+   * rencontre — les deux zones sont légitimement proposées, et c'est ICI, au
+   * moment du choix, que le mélange doit être fermé.
+   */
+  const zonesDePaiement = useMemo(() => {
+    const notre = world?.players?.[playerId]
+    const idsDe = (liste: readonly { id: number }[] | undefined) =>
+      new Set((liste ?? []).map((carte) => carte.id))
+    return { main: idsDe(notre?.hand_cards), reserve: idsDe(notre?.reserve) }
+  }, [world, playerId])
+
+  /**
+   * La zone déjà engagée dans le paiement en cours, s'il y en a une. On la
+   * déduit des cartes dont une ressource est posée, et non d'un état séparé :
+   * annuler un paiement rouvre donc l'autre zone tout seul.
+   */
+  const zoneEngagee = useMemo((): 'main' | 'reserve' | undefined => {
+    if (ressources.length === 0) return undefined
+    for (const [id, carte] of index) {
+      if (!carte.resources.some((effectId) => ressources.includes(effectId))) continue
+      if (zonesDePaiement.main.has(id)) return 'main'
+      if (zonesDePaiement.reserve.has(id)) return 'reserve'
+    }
+    return undefined
+  }, [ressources, index, zonesDePaiement])
   const paye = valeurPayee(paiement, ressources)
   const cibleMinimum = option?.target_num_range[0] ?? 0
   const cibleMaximum = option?.target_num_range[1] ?? 0
@@ -583,6 +619,15 @@ export function useInteraction(
         const selectionnee = fois > 0
         const peutPayer = carte.resources.some((effectId) => foisDisponible(paiement, effectId) > 0)
         if (!peutPayer && fois === 0) continue
+        // Cloisonnement main / réserve (pack Brawn) : une fois qu'une zone
+        // finance le paiement en cours, l'autre se ferme. On ne coupe QUE les
+        // cartes non encore posées, sinon on ne pourrait plus rendre une
+        // ressource déjà dépensée et le joueur resterait coincé.
+        if (zoneEngagee !== undefined && !selectionnee) {
+          const autreZone =
+            zoneEngagee === 'main' ? zonesDePaiement.reserve : zonesDePaiement.main
+          if (autreZone.has(id)) continue
+        }
         // On peut depenser des ressources pendant l'etape 'payment' (cout requis)
         // MAIS AUSSI a la confirmation : c'est la que se fait le SURPAIEMENT
         // (overpay). Sans ca, une carte a cout 0 surpayable (ex. l'allie Ant-Man)
@@ -636,6 +681,8 @@ export function useInteraction(
     carteFocus,
     cibleFocus,
     identiteJoueurId,
+    zonesDePaiement,
+    zoneEngagee,
     optionsGenerales,
     modeActions,
     choisirOption,

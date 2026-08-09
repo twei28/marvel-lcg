@@ -48,6 +48,12 @@ export type WorldPlayer = {
   player_discard_pile: WorldCard[]
   dealt_encounter_cards: WorldCard[]
   hand_cards: WorldCard[]
+  /**
+   * Zone Réserve du pack Brawn : hors jeu, 3 cartes au plus, mais jouables et
+   * dépensables comme la main. Absente des sauvegardes d'avant le pack, et vide
+   * pour tout autre héros : toujours la lire avec `?? []`.
+   */
+  reserve?: WorldCard[]
   engaged_enemies: WorldCard[]
   set_aside_nemesis_sets: WorldCard[]
   set_aside_deck: WorldCard[]
@@ -69,6 +75,13 @@ export type World = {
   prompt: string
   prompt_last_text?: string
   sound_name?: string
+  /**
+   * Mode Bac à sable. Posé par la règle `mode_sandbox` du descripteur de
+   * partie, donc conservé dans la sauvegarde : le plateau le retrouve après un
+   * rechargement de page comme après le chargement d'une sauvegarde, et l'on
+   * saura toujours si une victoire comptait.
+   */
+  mode_sandbox?: boolean
   event_name: string
   area_schemes_main: WorldCard[]
   main_schemes_deck: WorldCard[]

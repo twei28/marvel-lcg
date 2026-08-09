@@ -14,6 +14,9 @@
 // vraie est masquee, et si quoi que ce soit manque on n'anime pas.
 
 import { useEffect, useRef, useState } from 'react'
+// Meme mesure que le placement des panneaux : une seule definition de boite
+// d'ecran pour tout le plateau (voir placement/boites.ts).
+import { boiteDe, type Boite } from './placement/boites'
 
 const ALLER = 320
 const PAUSE = 220
@@ -28,7 +31,6 @@ const EVENEMENTS: Record<string, string> = {
   WhenSchemeWouldPlaceThreat: 'scheme',
 }
 
-type Boite = { x: number; y: number; w: number; h: number }
 type Charge = {
   cle: string
   type: string
@@ -42,10 +44,6 @@ type Charge = {
   ligne: { x: number; y: number; longueur: number; deg: number }
 }
 
-function boiteDe(el: Element): Boite {
-  const r = el.getBoundingClientRect()
-  return { x: r.left, y: r.top, w: r.width, h: r.height }
-}
 
 /**
  * Inclinaison de la carte pendant le trajet : elle « pique » vers la cible,

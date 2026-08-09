@@ -6,9 +6,16 @@
 // se coince. Le coach observe l'état du monde, il n'agit sur rien.
 //
 // Ne s'affiche QUE si localStorage `marvel-board-tutoriel` existe et vaut autre
-// chose que 'fini'. La clé est posée par le wizard au lancement du mode
-// Découverte (public/js/prepare/launcher.js). Une partie normale n'est donc
-// jamais concernée.
+// chose que 'fini'.
+//
+// Cette clé est un état GLOBAL : rien ici ne la rattache à la partie qui l'a
+// posée, et le plateau n'a aucun moyen de savoir s'il est bien la partie du
+// tutoriel. C'est donc au wizard de garantir l'exclusivité, et il le fait en
+// DÉSARMANT à chaque retour à la préparation (public/js/prepare/tutoriel-etat.js,
+// appelé par app.js au chargement et par launcher.js au lancement). Sans ce
+// désarmement, un tutoriel abandonné en cours de route laissait la clé sur le
+// nom d'une leçon et le coach revenait sur toutes les parties suivantes.
+// Règle vérifiée par `node outils/verifier-tutoriel-etat.mjs`.
 
 import { useEffect, useRef, useState } from 'react'
 import { LECONS, prendreRepere, type Repere } from './lecons'
@@ -17,8 +24,9 @@ import type { World } from './world'
 
 export const CLE_TUTORIEL = 'marvel-board-tutoriel'
 
-/** Identifiant de la première leçon. Le wizard écrit cette valeur au lancement. */
-export const PREMIERE_LECON = 'forme-heros'
+/** Identifiant de la première leçon. Le wizard écrit cette valeur au lancement.
+ *  À changer EN MÊME TEMPS que la valeur en dur de public/js/prepare/launcher.js. */
+export const PREMIERE_LECON = 'mulligan'
 
 export function lireLeconCourante(): string | null {
   try {

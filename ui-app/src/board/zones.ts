@@ -58,6 +58,7 @@ export type CleEmplacement =
   | 'piles-joueur'
   | 'nemesis'
   | 'annexes'
+  | 'reserve'
   | 'main'
 
 export type EmplacementAffiche = {
@@ -223,6 +224,22 @@ function piles(
     for (const contenue of contenu) {
       rendu.representantsDePile.set(contenue.id, representantId)
     }
+    // UNE PILE SE POSE EN PORTRAIT, toujours.
+    //
+    // Une manigance se pose en PAYSAGE sur la table, et une defausse montre sa
+    // carte du dessus : quand une manigance y arrivait, la pile passait de 127 a
+    // 176 px de large. Deck et defausse ne tenaient alors plus cote a cote dans
+    // les 270 px de la colonne de gauche, se repliaient l'une sous l'autre, et
+    // le groupe montait de 203 a 358 px — il debordait sur la rangee du dessous
+    // et decalait la table entiere. Mesure du 8/8/2026, signale en jeu.
+    //
+    // Une pile n'est pas une carte posee, c'est un tas : elle a l'encombrement
+    // d'une pile, pas celui de ce qui se trouve dessus. Et le redressement ne
+    // coute RIEN a l'image — le jeu sert tous ses scans en portrait et c'est le
+    // plateau qui les tourne pour les manigances (voir `scanIsPortrait`). En
+    // retirant `isLandscape`, on ne fait donc que ne pas la tourner.
+    carte.isLandscape = false
+
     if (pile.nemesis) carte.estNemesis = true
     if (pile.deckSpecial) carte.deckSpecial = true
     if (pile.discard) carte.discard = true
@@ -400,8 +417,26 @@ export function construirePlateau(world: World, options: Options): Plateau {
   }
 
   const joueurs = Array.isArray(world.players) ? world.players : []
-  const notre: WorldPlayer | undefined = joueurs[options.playerId]
-  const autres = joueurs.filter((_, index) => index !== options.playerId)
+
+  // Un joueur ELIMINE quitte la table, carte de heros comprise.
+  //
+  // Le moteur defausse tout ce qu'il controlait (allies, soutiens, main, deck,
+  // obligations) mais PAS sa carte d'identite : `Player.Eliminate` exclut
+  // explicitement le type Identity de la defausse. Un heros mort restait donc
+  // pose au milieu du terrain, seul rescape de son aire.
+  //
+  // Et il reste dans `world.players` VOLONTAIREMENT — le descripteur est
+  // construit sur `const_seat_order_players`, ce qui garde les numeros de siege
+  // stables et donc le sens de `playerId`. C'est donc a l'affichage de l'ecarter,
+  // pas au moteur.
+  const surLaTable = (joueur: WorldPlayer | undefined): boolean =>
+    joueur !== undefined && !joueur.is_eliminated
+  const notre: WorldPlayer | undefined = surLaTable(joueurs[options.playerId])
+    ? joueurs[options.playerId]
+    : undefined
+  const autres = joueurs.filter(
+    (joueur, index) => index !== options.playerId && surLaTable(joueur)
+  )
   // En multi, les allies/sbires des deux camps cohabitent dans la meme zone :
   // chaque carte porte alors le NOM de son heros proprietaire en badge.
   const multi = joueurs.length > 1
@@ -530,6 +565,21 @@ export function construirePlateau(world: World, options: Options): Plateau {
       ),
     ]),
 
+    // La RESERVE (pack Brawn) prend la meme place que le deck special : a
+    // GAUCHE du heros. C'est la zone personnelle du personnage, au meme titre
+    // que l'Invocation de Strange — et aucun heros n'a les deux, l'emplacement
+    // vide disparaissant tout seul (`emplacement()` retire les groupes vides).
+    //
+    // ⚠ En cartes POSEES et non en pile : contrairement a un deck special, on
+    // joue et on depense les cartes de la reserve une par une, il faut donc
+    // pouvoir les voir et les cliquer individuellement.
+    emplacement('reserve', t('Ta réserve'), [
+      posees(notre?.reserve, rendu, {
+        dansLaMain: true,
+        collectionRessources: notreCollection,
+      }),
+    ]),
+
     // Chaque groupe est appairee a son proprietaire au moment ou elle est
     // construite (pas dans un tableau separe recompte a la main) : si un jour
     // un joueur gagne ou perd un groupe ici, le proprietaire suit sans qu'on
@@ -587,18 +637,35 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // défausse, elle, est à côté du deck. L'ancien libellé laissait croire que
     // ces cartes étaient défaussées.
     emplacement('annexes', t('Mises de côté / autres piles'), [
-      // Les vilains mis de cote (Sinister Six) sont montres a cote du vilain
-      // actif (pile « Waiting »), pas ici : on les retire de cette zone.
-      posees(
-        (world.area_set_aside ?? []).filter((carte) => !estVilain(carte)),
-        rendu
-      ),
       posees(world.area_evidence, rendu),
       posees(world.area_rule, rendu),
       posees(world.area_resources, rendu),
       piles(
         'annexes',
         [
+          // Les mises de cote du SCENARIO : une PILE, pas des cartes posees.
+          //
+          // Elles etaient dessinees une par une, et Batroc en met QUATRE
+          // identiques (« Rescued Captive ») : dans une colonne de 300 px qui
+          // n'en tient que deux par ligne, la zone debordait sur ses voisines.
+          // Rien ne justifiait ce traitement de faveur — ce sont des cartes en
+          // attente, comme la pile de victoire ou les cartes retirees, qui sont
+          // deja des piles juste a cote.
+          //
+          // Aucune perte : une carte que la table ne dessine pas et que le
+          // moteur propose en cible passe automatiquement par le selecteur hors
+          // table (voir ciblesHorsTable dans interaction.ts, qui filtre sur
+          // idsAffiches). Elles restent donc ciblables, et la pile s'ouvre pour
+          // les regarder.
+          //
+          // Les vilains mis de cote (Sinister Six) sont montres a cote du vilain
+          // actif (pile « Waiting »), pas ici : on les retire de cette pile.
+          {
+            cle: 'set-aside-scenario',
+            cartes: (world.area_set_aside ?? []).filter((carte) => !estVilain(carte)),
+            regardable: true,
+            titre: t('Mises de côté du scénario'),
+          },
           // Le deck special (Invocation...) ET sa defausse sont poses a gauche du
           // heros (voir terrain-soutien), plus ici.
           { cle: 'mise-de-cote', cartes: notre?.set_aside_deck },

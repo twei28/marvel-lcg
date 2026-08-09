@@ -48,6 +48,8 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   dh_spectrum: ['01088_dh_spectrum', '01089_dh_spectrum', '01090_dh_spectrum'],
   dh_miles: ['01088_dh_miles', '01089_dh_miles', '01090_dh_miles'],
   dh_ghostspider: ['01088_dh_ghostspider', '01089_dh_ghostspider', '01090_dh_ghostspider'],
+  // Collection fan-made « ekAugust », livree avec le pack Jessica Jones (73xxx).
+  ekaug_jj: ['01088_ekaug_jj', '01089_ekaug_jj', '01090_ekaug_jj'],
   // Reeditions d'extension (art different, vrais codes de carte).
   // Sinister Motives (27020-22) est exclu : meme visuel que le jeu de base.
   mutant: ['32022', '32023', '32024'],

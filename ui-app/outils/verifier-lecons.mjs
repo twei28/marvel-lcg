@@ -55,18 +55,28 @@ try {
   const repere = prendreRepere(monde())
 
   // --- Structure
-  verifier('les 11 leçons sont là', LECONS.length, 11)
+  // 8 leçons de jeu (détectées sur l'état) puis 4 leçons de plateau (manuelles).
+  verifier('les 12 leçons sont là', LECONS.length, 12)
   verifier('les identifiants sont uniques',
     new Set(LECONS.map((l) => l.id)).size, LECONS.length)
   verifier('les 4 leçons du plateau sont manuelles',
-    LECONS.slice(7).every((l) => l.manuelle === true), true)
+    LECONS.slice(8).every((l) => l.manuelle === true), true)
   verifier('aucune leçon de jeu n’est manuelle',
-    LECONS.slice(0, 7).some((l) => l.manuelle === true), false)
+    LECONS.slice(0, 8).some((l) => l.manuelle === true), false)
+  verifier('le mulligan est la toute première leçon', LECONS[0].id, 'mulligan')
 
   // --- Le repère lit bien l'état de départ
   verifier('le repère retient les PV du vilain', repere.pvVilain, 14)
   verifier('le repère retient la menace', repere.menacePrincipale, 5)
   verifier('le repère retient la main', repere.cartesEnMain, ['01005', '01060'])
+
+  // --- 0 : le mulligan (round_id passe a 1 quand le round demarre, donc APRES)
+  verifier('0 mulligan : mise en place, le round n’a pas commencé',
+    lecon('mulligan').accomplie(monde({ round: 0 }), repere), false)
+  verifier('0 mulligan : le round a commencé',
+    lecon('mulligan').accomplie(monde({ round: 1 }), repere), true)
+  verifier('0 mulligan : la leçon nomme la carte de la leçon « jouer-carte »',
+    lecon('mulligan').texte.includes('Coup de pied volant'), true)
 
   // --- 1 : changer de forme
   verifier('1 forme : encore en civil',
@@ -122,7 +132,7 @@ try {
   verifier('un monde vide ne fait pas planter le repère',
     typeof prendreRepere(vide).pvVilain, 'number')
   verifier('un monde vide ne valide aucune leçon de jeu',
-    LECONS.slice(0, 7).some((l) => l.accomplie(vide, prendreRepere(vide))), false)
+    LECONS.slice(0, 8).some((l) => l.accomplie(vide, prendreRepere(vide))), false)
 
   console.log(echecs === 0 ? '\nTOUT PASSE' : `\n${echecs} ECHEC(S)`)
   code = echecs === 0 ? 0 : 1

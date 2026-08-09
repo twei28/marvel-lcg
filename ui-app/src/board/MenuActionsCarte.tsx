@@ -5,6 +5,7 @@ import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
+import { usePlacement } from './placement/usePlacement'
 import { codeMarvelcdb, urlMarvelcdb } from './marvelcdb'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 
@@ -250,6 +251,19 @@ function raisonsSchemeNonLegal(
     }
   }
 
+  // CRISE. Tant qu'une manigance annexe portant l'icone est en jeu, les joueurs
+  // ne peuvent pas retirer de menace de la manigance PRINCIPALE. Le moteur
+  // applique la regle correctement, mais sans un mot : on jouait une carte de
+  // contre, rien ne se passait, et rien n'expliquait pourquoi. On nomme donc la
+  // carte responsable — c'est elle qu'il faut vaincre pour se debloquer.
+  if (scheme.card_type === 'MainScheme') {
+    for (const source of cartesSurTable) {
+      if (source.id !== scheme.id && (nombreInfo(source, 'crisis') ?? 0) > 0) {
+        raisons.push(`${t('Bloquée par')} ${source.name} (${t('Crise')})`)
+      }
+    }
+  }
+
   return raisons.length > 0 ? raisons : [t('Pas légale dans l\'état actuel de la partie')]
 }
 
@@ -424,6 +438,13 @@ export function MenuActionsCarte({
 
   useEffect(() => () => survolerOption?.(undefined), [survolerOption])
 
+  // Fixe, comme les autres panneaux de decision : il s'ouvre toujours au meme
+  // endroit. Une carte agrandie passe devant lui, pas l'inverse.
+  const { style: stylePlacement } = usePlacement(ref, {
+    candidats: ['centre'],
+    signature: `${carte.id}|${mode}|${options.map((o) => o.id).join(',')}`,
+  })
+
   const activerOption = (option: Option) => {
     if (option.failure_reason) return
     setOptionActive(option.id)
@@ -570,6 +591,7 @@ export function MenuActionsCarte({
     return (
       <section
         className="actions-flottantes"
+        style={stylePlacement}
         ref={ref}
         role="dialog"
         aria-label={`${t('Actions de')} ${carte.name}`}
@@ -617,6 +639,7 @@ export function MenuActionsCarte({
   return (
     <section
       className={`menu-actions-carte${mode === 'target' ? ' mode-cible-focus' : ''}`}
+      style={stylePlacement}
       ref={ref}
       role="dialog"
       aria-label={`${t('Actions de')} ${carte.name}`}

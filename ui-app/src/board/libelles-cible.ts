@@ -39,8 +39,15 @@ export type EtatCible = {
 export function libellesCible(etat: EtatCible): LibellesCible {
   const { choisies, minimum, maximum, cartesCiblables, repetable } = etat
 
+  // Le mulligan est le premier écran de la partie, et « mulligan » ne veut rien
+  // dire pour un débutant : le détail dit ce que fait le bouton et rappelle
+  // qu'on a le droit de ne rien défausser. Le mode Découverte s'appuie dessus
+  // (première leçon, lecons.ts).
   if (etat.mulligan) {
-    return { titre: t('Choisir les cartes du mulligan'), detail: '' }
+    return {
+      titre: t('Choisir les cartes du mulligan'),
+      detail: `${choisies} ${t('à défausser puis repiocher · tu peux n’en choisir aucune')}`,
+    }
   }
 
   const titre =

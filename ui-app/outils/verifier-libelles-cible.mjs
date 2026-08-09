@@ -88,6 +88,10 @@ try {
     repetable: false, mulligan: true,
   })
   verifier('mulligan · titre', mulligan.titre, 'Choisir les cartes du mulligan')
+  // Le detail ne doit PAS rester vide : c'est le premier ecran de la partie et
+  // « mulligan » ne parle pas a un debutant (mode Decouverte, lecon 1).
+  verifier('mulligan · le détail explique qu’on peut ne rien défausser',
+    mulligan.detail.includes('aucune'), true)
 
   console.log(echecs === 0 ? '\nTOUT PASSE' : `\n${echecs} ECHEC(S)`)
   code = echecs === 0 ? 0 : 1

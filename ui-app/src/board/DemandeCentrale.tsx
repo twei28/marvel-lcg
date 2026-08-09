@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
+import { usePlacement } from './placement/usePlacement'
+import { traduireMoteur } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 
 type DemandeCentraleProps = {
@@ -14,16 +16,27 @@ type DemandeCentraleProps = {
   survolerOption?: (option: Option | undefined) => void
 }
 
-function texteDemande(demande: Demande): string {
+/** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
+function promptDemande(demande: Demande): string {
   const prompt = nettoyerNarration(sansIdentifiants(demande.prompt_text))
-  if (prompt) return prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')
-  if (demande.ability_type) return demande.ability_type
+  return prompt ? prompt.replace(/^---\s*/, '').replace(/\s*---$/, '') : ''
+}
+
+function texteDemande(demande: Demande): string {
+  const prompt = promptDemande(demande)
+  if (prompt) return prompt
+  if (demande.ability_type) return traduireMoteur(demande.ability_type)
   return t('Choisis une réponse')
 }
 
 function libelleTypeDemande(demande: Demande): string {
-  if (demande.ability_type) return demande.ability_type
-  return demande.event_name.replace(/^When/, '').replace(/([a-z])([A-Z])/g, '$1 $2') || t('Décision')
+  // Le surtitre du panneau vient du moteur, donc de l'anglais : on le repasse
+  // par le vocabulaire francais avant de l'afficher.
+  if (demande.ability_type) return traduireMoteur(demande.ability_type)
+  const depuisEvenement = demande.event_name
+    .replace(/^When/, '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+  return depuisEvenement ? traduireMoteur(depuisEvenement) : t('Décision')
 }
 
 function nomSource(option: Option, cartesParId: Map<number, WorldCard>): string | undefined {
@@ -54,11 +67,14 @@ function titreDepuisSource(
   options: Option[],
   cartesParId: Map<number, WorldCard>
 ): string {
-  const texte = texteDemande(demande)
-  if (texte !== demande.ability_type) return texte
+  // On teste l'ABSENCE de prompt, pas l'égalité du texte rendu avec
+  // `ability_type` : depuis que ce dernier est traduit, les deux ne peuvent
+  // plus coïncider en français, et la comparaison laissait passer « Normal »
+  // au lieu de nommer la carte.
+  if (promptDemande(demande)) return texteDemande(demande)
   const sources = [...new Set(options.map((o) => o.bind_id).filter((id) => id !== 0))]
   const nom = sources.length === 1 ? cartesParId.get(sources[0]!)?.name : undefined
-  return nom ? `${nom} — ${t('choisis une option')}` : texte
+  return nom ? `${nom} — ${t('choisis une option')}` : texteDemande(demande)
 }
 
 export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boolean {
@@ -67,13 +83,12 @@ export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boo
 }
 
 function libelleEvenement(eventName: string): string {
-  return (
-    eventName
-      .replace(/^When/, '')
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      .replace(/^After /, '')
-      .trim() || t('Événement de jeu')
-  )
+  const decoupe = eventName
+    .replace(/^When/, '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^After /, '')
+    .trim()
+  return decoupe ? traduireMoteur(decoupe) : t('Événement de jeu')
 }
 
 /** Narration courte des resolutions automatiques, au meme endroit que les choix. */
@@ -83,16 +98,28 @@ export function EvenementCentrale({
   message,
   validationRequise = false,
   continuer,
+  cartes,
 }: {
   prompt: string
   eventName: string
   message?: string
   validationRequise?: boolean
   continuer?: () => void
+  /** Cartes citées par l'événement : c'est d'elles qu'on parle, on les laisse voir. */
+  cartes?: readonly number[]
 }) {
   const [texte, setTexte] = useState('')
   const [visible, setVisible] = useState(false)
   const signature = `${eventName}|${prompt}|${message ?? ''}`
+  const panneau = useRef<HTMLElement | null>(null)
+  // Fixe, comme les autres panneaux : les quatre sont mutuellement exclusifs
+  // (voir les conditions d'affichage dans board.tsx), donc partager une ancre
+  // ne les fait jamais se recouvrir entre eux.
+  const { style } = usePlacement(panneau, {
+    candidats: ['centre'],
+    signature,
+    actif: visible,
+  })
 
   useEffect(() => {
     const propre =
@@ -109,7 +136,13 @@ export function EvenementCentrale({
 
   if (!visible || !texte) return null
   return (
-    <section className="evenement-centrale" aria-live="polite" aria-label={t('Événement de jeu')}>
+    <section
+      ref={panneau}
+      className="evenement-centrale"
+      style={style}
+      aria-live="polite"
+      aria-label={t('Événement de jeu')}
+    >
       <span className="plateau-eyebrow">{libelleEvenement(eventName)}</span>
       <strong>{texte}</strong>
       {validationRequise && continuer ? (
@@ -134,6 +167,16 @@ export function DemandeCentrale({
     () => `${demande.event_name}|${demande.ability_type}|${options.map((option) => option.id).join(',')}`,
     [demande.ability_type, demande.event_name, options]
   )
+
+  // Le panneau NE BOUGE PAS : une seule position candidate, toujours la même.
+  //
+  // Il a d'abord esquivé les cartes qu'il concerne. À l'usage c'est pire : on
+  // le voyait sauter en haut de l'écran d'une décision à l'autre, et il fallait
+  // le chercher du regard à chaque fois. Une décision doit être là où on
+  // l'attend. Quand une carte agrandie le recouvre, c'est ELLE qui passe devant
+  // (z-index 400 contre 92) — le panneau est permanent, l'agrandissement non.
+  const panneau = useRef<HTMLElement | null>(null)
+  const { style } = usePlacement(panneau, { candidats: ['centre'], signature })
 
   useEffect(() => {
     setRaisonVisible(undefined)
@@ -160,7 +203,9 @@ export function DemandeCentrale({
 
   return (
     <section
+      ref={panneau}
       className="demande-centrale"
+      style={style}
       role="dialog"
       aria-label="Game decision"
       aria-live="polite"
