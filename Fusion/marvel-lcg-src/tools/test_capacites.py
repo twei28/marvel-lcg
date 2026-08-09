@@ -3970,6 +3970,53 @@ CAS = [
         "attendu": {"taille_main": 2},
     },
     {
+        "nom": "71006 Webbed Up (defense) — l'attaque du vilain ne fait aucun degat",
+        "pourquoi": "la carte a DEUX branches et seule l'action etait couverte. La "
+                    "branche defense n'etait pas atteignable avant Puzzle.Attack, d'ou "
+                    "la note « a verifier en partie reelle » du 3/8/2026 : elle l'est ici",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "main_exclusive": ["71006"],
+        # La carte est hero_form_only : sans ce passage en forme heros, Rhino
+        # attaque Peter Parker et l'interrupt n'est meme pas propose.
+        #
+        # ChangeForm prend la face ACTUELLEMENT EN JEU et la retourne, pas la
+        # face visee. Lui passer '71001a' fabrique une face orpheline, sans
+        # proprietaire, qui plante au rendu sur un assert GetControlByPlayer.
+        "mise_en_place": ["Puzzle.ChangeForm('71001b')"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "71012 Impact Webbing — l'ennemi entoile qui ATTAQUE perd ses toiles",
+        "pourquoi": "le seul cas verifiait que la carte de regles est en jeu au setup, "
+                    "jamais son Forced Interrupt : elle pouvait etre totalement inerte "
+                    "sans que rien ne le signale",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "main_exclusive": ["71006"],
+        "mise_en_place": [],
+        "jouer": ["71006"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "web", 0]]},
+    },
+    {
+        "nom": "72009 Lethal Protector — Hero Interrupt : 2 degats a l'attaquant",
+        "pourquoi": "le cas existant ne verifiait que le +1 DEF passif, jamais "
+                    "l'interrupt qui s'incline pour frapper l'ennemi qui attaque",
+        "scenario": "rhino",
+        "heros": "venom_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('72001b')", "Puzzle.PutIntoPlay('72009')",
+                          "Puzzle.Exhaust('72001a')"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 2]], "exhausted": ["72009"]},
+    },
+    {
         "nom": "61009 Congress of Worlds — Alter-Ego Action : 2 menaces retirees du complot principal",
         "pourquoi": "action a cout mixte : inclinaison PLUS une ressource",
         "scenario": "rhino",
