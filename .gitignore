@@ -79,3 +79,11 @@ Fusion/marvel-lcg-src/defectueux.json
 
 # Captures engendrees par le harnais Playwright.
 ui-check/page/
+
+# Configuration du serveur en ligne : elle porte le mot de passe d'entree et
+# les quatre mots de passe de siege. Ils ont ete commites en clair du 6 au
+# 10/8/2026 (commit f36f71c). Le depot n'a jamais eu de remote, donc rien n'est
+# sorti de la machine, mais un secret dans l'historique ne se change plus : on
+# ne peut que le remplacer. C'est fait, et le fichier sort du suivi.
+# Le modele a cote, launch.online.exemple.json, garde la structure sans secret.
+Fusion/marvel-lcg-src/launch.online.json

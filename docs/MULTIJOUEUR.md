@@ -55,6 +55,12 @@ Pour terminer : **Ctrl+C** dans la fenêtre (ou ferme-la).
 - **Mots de passe de sièges** (un par joueur) : champ `"seat_passwords"` du même fichier (4 valeurs : Joueur 1 = toi, puis Joueurs 2-4). Ils sont intégrés aux liens personnels affichés par le lanceur : chacun ne peut agir QUE sur son siège. Une valeur vide = siège libre pour tous; liste entièrement vide = protection coupée (ancien comportement).
 - Le lanceur **affiche** tout à chaque partie (et le copie dans le presse-papier), donc tu n'as rien à retenir.
 - Pour changer un mot de passe : édite `launch.online.json` et relance.
+- **`launch.online.json` n'est plus suivi par git** (10/8/2026). Il porte des secrets, et un
+  secret commité ne se change plus : il reste dans l'historique pour toujours. Les quatre
+  mots de passe de sièges y étaient en clair depuis le 6 août ; ils ont été renouvelés, et
+  ceux de l'historique ne valent donc plus rien. Le dépôt n'a jamais eu de remote, rien
+  n'est sorti de la machine. Le fichier `launch.online.exemple.json`, lui, reste suivi :
+  même structure, aucun secret. Sur une machine neuve, le copier et remplir les deux champs.
 - Les parties solo (`JOUER-SOLO.bat`) ne sont **pas concernées** : aucun mot de passe en local.
 
 ---
