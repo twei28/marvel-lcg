@@ -465,6 +465,33 @@ carte. Une fois les six boîtes portées, tout ce bloc peut disparaître, avec
 
 ---
 
+### 6 ter. Les bonus ET les malus passent d'une mission à l'autre (10/8/2026)
+
+Le tableau ci-dessus prouve que le carnet SORT. Reste la question inverse,
+posée en jeu : est-ce que ce qu'on a gagné ou perdu **revient** au scénario
+suivant ? Mesuré à la sonde, une campagne à la fois, chaque fois en comparant
+le monde AVEC et SANS carnet. La différence est la preuve ; sans le témoin
+« sans carnet », on prendrait pour une récompense une carte qui était là de
+toute façon.
+
+| Boîte | Ce qui a été injecté | Effet constaté | Sans carnet |
+|---|---|---|---|
+| `trors` | `Player 1 Rescued Allies = 01002`, scénario 4 | l'allié entre dans `player_deck` | absent |
+| `trors` | `Experimental Weapons = 04072;04073`, scénario 2 | les deux armes entrent dans `encounter_deck` | absentes |
+| `sm` | `Reputation Track = 9` + récompense d'aspect, scénario 2 | un exemplaire de plus dans `player_deck` | 1 seul |
+| `mts` | `Campaign Pool: Cosmo = 1`, scénario 3 | Cosmo dans `players/allies` | absent |
+| `mut_gen` | rôle + `Frightened Police Defeated`, scénario 2 | amélioration du BON rôle attachée | aucune |
+| `mut_gen` | `Campaign Pool: Jubilee` + captif, scénario 3 | Jubilé alliée, captif en main | absents |
+
+Les quatre campagnes jouables appliquent donc leurs bonus, et `trors` prouve
+qu'un MALUS passe aussi : les armes expérimentales laissées derrière soi
+reviennent grossir le deck de rencontre.
+
+**Ce que ça ne prouve pas** : que chaque récompense de chaque boîte est
+branchée. Une par campagne a été éprouvée, pas les quarante. Le reste repose
+sur la lecture du `campaign.py`, et sur `tools/verifier_campagnes.py` qui
+garantit au moins que les clés déclarées existent.
+
 ### 6 bis. Ce que les livrets officiels ont appris (10/8/2026)
 
 Les PDF officiels de FFG, livrets et carnets de campagne, sont sur le Bureau à
