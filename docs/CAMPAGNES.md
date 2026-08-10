@@ -536,16 +536,25 @@ expert aux scénarios 2 à 5 — vérifié page par page, les lignes *Expert Cam
 Only* des scénarios 3 et 5 existent bien, elles sont juste imprimées après
 l'en-tête VICTORY).
 
-L'écart : « Each CAPTIVE ally recorded in the campaign log **may** be shuffled
-into **any** player's deck » (p.12, 16 et 19). Le code ne prenait aucune des
-deux libertés, il mélangeait tout, d'office, dans le deck du **premier
-joueur**. En solo l'écart est mince, encore qu'un allié de plus dilue un deck et
-que le livret laisse le refuser. À quatre joueurs, tous les alliés libérés par
-toute l'équipe s'entassaient chez le joueur 1. Le premier joueur arbitre
-désormais allié par allié, avec l'option de laisser de côté. Mesuré à la sonde
-sur `master_mold` : deck de 33 cartes sans alliés au carnet, 35 avec deux, et
-aucun traceback. La répartition entre plusieurs sièges reste structurelle, non
-mesurée : la sonde joue en solo.
+L'écart, **toujours ouvert** : « Each CAPTIVE ally recorded in the campaign log
+**may** be shuffled into **any** player's deck » (p.12, 16 et 19). Le code ne
+prend aucune des deux libertés, il mélange tout, d'office, dans le deck du
+**premier joueur**. En solo l'écart est mince, encore qu'un allié de plus dilue
+un deck et que le livret laisse le refuser. À quatre joueurs, tous les alliés
+libérés par toute l'équipe s'entassent chez le joueur 1.
+
+Un correctif par `ChooseAbilities` a été écrit puis **retiré**, faute de tenir à
+la mesure : avec lui, plus AUCUN allié n'entrait dans un deck à la sonde (33
+cartes au lieu de 35), alors que le même idiome fonctionne dans `next_evol`
+(dont le choix de manigance de campagne, lui, est bien exercé par la sonde).
+La cause du blocage est à trouver avant de réessayer. Une note le dit dans le
+fichier.
+
+**La leçon de méthode compte plus que l'écart.** La première mesure de ce
+correctif avait l'air bonne (33 → 35) parce qu'elle tournait sur du bytecode
+PÉRIMÉ : la sonde exécute `.game`, pas `src/`. Copier un `.py` ne suffit pas,
+il faut `launcher_fast.py --build-only` avant de sonder. Sans ce rappel, on
+mesure l'ancien code et on croit avoir prouvé le nouveau.
 
 **NeXt Evolution : fait. Aucun écart.** Les cinq mises en place sont
 conformes, y compris les détails qu'on rate à une lecture rapide : les
