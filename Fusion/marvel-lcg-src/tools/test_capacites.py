@@ -1445,6 +1445,34 @@ CAS = [
     # Pack « venom_rainy » : Venom (Eddie Brock, par Rainy) 72xxx
     # ------------------------------------------------------------------------
     {
+        "nom": "72001a Venom — Hunger : soigne 1 apres avoir vaincu un ennemi",
+        "pourquoi": ("DEFAUT signale dans le script depuis le 5/8/2026 et jamais mis en cas : "
+                     "« Hunger ne repond jamais ». Aucun outil ne pouvait le voir, l'audit ne "
+                     "regarde que le type declare. Venom frappe a 2 et le sbire a 3 PV : on lui "
+                     "en retire 1 d'abord pour que l'attaque de base l'acheve, sinon Venom n'est "
+                     "pas le tueur et la Response n'a aucune raison de partir."),
+        "scenario": "rhino",
+        "heros": "venom_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('72001b')", "Puzzle.PutIntoPlay('72011')",
+                          "Puzzle.Damage('72001a', 3)", "Puzzle.PutIntoPlay('01101')"],
+        # Les 3 degats de mise en place en declenchent un QUATRIEME : Symbiotic
+        # Fury (72005) est une « Hero Response: After you take damage, take 1
+        # additional damage → ready your hero ». Elle part toute seule, c'est
+        # deterministe, et c'est elle qui redresse Venom pour qu'il puisse
+        # frapper. Le total sans Hunger est donc 4, et 3 si Hunger soigne.
+        #
+        # On monte la frappe de Venom au lieu d'affaiblir la cible : Sharp
+        # Teeth (72011) lui donne +1 ATK, soit 3, juste de quoi achever les
+        # 3 PV du sbire. `Puzzle.Damage` sur un sbire ne fait RIEN, ni par
+        # card_id ni par nom, et sans le moindre message : `FindOrCreateFace`
+        # rend une face qui n'est pas `CanHealth` et la fonction sort en
+        # silence. Deux essais y sont passes.
+        "declencher": ["Puzzle.Attack('72001a')"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "hors_jeu": ["01101"]},
+    },
+    {
         "nom": "72010 Regeneration — +2 points de vie",
         "pourquoi": "GiveKeywordToInPlayWhenApplyThis(You, health=2)",
         "scenario": "rhino",

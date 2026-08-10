@@ -3,15 +3,20 @@ from . import *
 # * Venom (Eddie Brock) — custom « Rainy »
 # Hunger — Response: After you defeat an enemy, heal 1 damage from Venom.
 #
-# ⚠ DEFAUT CONNU (5/8/2026, NON corrige) : Hunger ne repond jamais. Constate en
-# achevant un sbire de 2 PV a l'attaque de base — le journal montre bien
-# « was defeated by Venom », mais aucun soin. Quatre pistes ecartees :
-#   - `GetControlBy()` remplace par `GetControlByPlayer()` : sans effet ;
-#   - bascule sur `AfterUnitDefeatedUnit`, la fabrique prevue pour « apres que
-#     VOUS ayez vaincu un ennemi », avec `who_killer` a « You » puis « This » ;
-#   - ajout du `SetTarget("This", canbe_heal=True)` du modele officiel Tigra
-#     01051, au cas ou la Response soit filtree faute de cible legale.
-# Aucune ne declenche. A verifier en partie reelle.
+# L'avertissement « DEFAUT CONNU : Hunger ne repond jamais », porte ici du
+# 5/8/2026 au 10/8/2026, etait FAUX. Hunger repond. Prouve par le cas
+# « 72001a Venom — Hunger : soigne 1 apres avoir vaincu un ennemi » de
+# tools/test_capacites.py : le journal donne « was defeated by Venom » puis
+# « Venom gains 1 ♡ », et les degats de l'identite passent de 4 a 3.
+#
+# Ce qui manquait au constat de l'epoque n'etait pas dans la carte mais dans la
+# facon de la mettre a l'epreuve. Venom frappe a 2 : contre un sbire de 3 PV son
+# attaque de base ne tue pas, donc rien ne se declenche, et le journal montre
+# quand meme une attaque. Le cas lui donne Sharp Teeth (72011) pour monter a 3.
+# Deux autres pieges rencontres en l'ecrivant, notes dans le cas lui-meme :
+# `Puzzle.Damage` sur un sbire ne fait RIEN et sans message, et `Puzzle.Attack`
+# fait attaquer la carte visee, donc `Puzzle.Attack('01101')` fait frapper le
+# SBIRE. Ne pas remettre d'avertissement ici sans un cas rouge a l'appui.
 # Symbiotic Bond — Resource: Take 1 damage -> generate a [wild] resource.
 #   (Limit once per phase.)
 
