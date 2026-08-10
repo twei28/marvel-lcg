@@ -578,7 +578,52 @@ au scénario 5. Professor X est une carte JOUEUR de Mutant Genesis (32019), pas
 une carte du set AoA ; l'interdiction porte sur le deck du joueur et n'est pas
 contrôlée. À respecter à la main si on l'a mis dans son deck.
 
-**Restent à auditer sur cette couche : mts, trors, sm.**
+**The Mad Titan's Shadow : fait. Aucun écart.** Les cinq mises en place
+correspondent, jusqu'aux faces : Cosmo est le verso de « Secure the Landing
+Pad » (21180b), Black Swan celui de « Save the Shawarma Place » (21182b), et
+Odin entre en jeu sur sa face King (`21139b,21139a`, face B en premier). Le
+soin expert est un pion accélération aux scénarios 2 à 5 (p.13, 17, 21, 25),
+ce que fait le code.
+
+**The Rise of Red Skull : fait. Aucun écart.** Les instructions communes aux
+scénarios 2 à 5 y sont, et les trois particularités du scénario 5 sont dans le
+module de sa manigance (`red_skull/04128a.py`), correctement réparties entre
+`campaigns=` et `campaigns_expert=` : la menace égale aux pions retard, avec
+multiplication par le nombre de héros en expert, va dans la liste normale ; la
+carte rencontre aux joueurs qui étaient engagés va bien dans la liste experte.
+Une nuance de forme : le livret dit « search their deck for all cards with the
+setup keyword », le code repose les améliorations Tech et Basic enregistrées au
+carnet. C'est l'intention réelle, ces cartes vivant au carnet et non dans le
+deck sauvegardé.
+
+**Sinister Motives : fait. Aucun écart, et un faux positif de ma part qui vaut
+leçon.** J'ai cru trouver un bug d'origine : `CampaignSetup` pose Public Outcry
+avec `27174a,27174b`, donc toujours la face A, alors que la face A porte
+« Standard Mode Only » (2 pions notoriété par héros) et la face B « Expert Mode
+Only » (3). J'ai corrigé, puis mesuré à la sonde **avec témoin sur l'ancien
+code** : les deux versions posent la face B en expert. Correctif annulé.
+
+La raison est un mécanisme du moteur qu'il faut connaître :
+`AbilityFactoryExpert.StandardModeOnly()` et `ExpertModeOnly()` sont des
+capacités portées par la CARTE, qui la retournent à son entrée en jeu si le
+mode ne correspond pas. C'est `sm/bad_publicity/27174a.py` et `27174b.py` qui
+les portent. **Ne jamais réimplémenter le choix de face selon le mode à la mise
+en place** : la carte s'en charge. Corollaire de méthode : mon premier `grep`
+avait conclu « aucun module pour 27174 » parce qu'il ne regardait pas les
+sous-dossiers du pack.
+
+Le reste de `sm` est conforme, y compris les deux crochets du module de
+scénario : la menace sur « Light at the End » égale au Cauchemar Éveillé
+(`sinister_six/27100a.py`) et les sbires de l'Assaut Sinistre selon les
+Derniers Debout (`venom_goblin/27116a.py`).
+
+### Bilan de l'audit texte-vs-code
+
+Six boîtes relues, **un seul vrai écart** : les alliés captifs de Mutant
+Genesis. Deux approximations assumées et documentées (Professor X au scénario 5
+d'AoA, la forme du « setup keyword » de trors), et deux faux positifs qui
+venaient de ma lecture du PDF et non du code. Le câblage des campagnes est plus
+sain que la couverture des tests ne le laissait espérer.
 
 ## 7. Les scans du livret
 
