@@ -14,7 +14,7 @@
       "id": "morlock_siege",
       "numero": 1,
       "nom": "Morlock Siege",
-      "nom_fr": "Le Siège des Morlocks",
+      "nom_fr": "Morlock Siege",
       "resume": "Les Maraudeurs descendent dans les tunnels pour y massacrer ceux qui s'y cachaient. On ne gagne pas ce scénario, on limite les pertes.",
       "enjeu": "Chaque Maraudeur abattu ne reviendra pas au scénario suivant, et chaque Morlock sauvé se retrouvera à vos côtés.",
       "victoire": [
@@ -49,7 +49,7 @@
       "id": "on_the_run",
       "numero": 2,
       "nom": "On the Run",
-      "nom_fr": "En Cavale",
+      "nom_fr": "On the Run",
       "resume": "Il faut sortir des tunnels avec les survivants, pendant que les Maraudeurs encore debout vous traquent.",
       "enjeu": "Ce que vous avez préparé se voit ici : un environnement acquis rend vos ennemis coriaces, et les Morlocks sauvés se battent avec vous.",
       "victoire": [],
@@ -69,8 +69,8 @@
       "id": "juggernaut",
       "numero": 3,
       "nom": "Juggernaut",
-      "nom_fr": "Le Fléau",
-      "resume": "Le Fléau ne s'arrête pas. Il accumule de l'élan à chaque round, et chaque round qui passe le rend plus difficile à contenir.",
+      "nom_fr": "Juggernaut",
+      "resume": "Juggernaut ne s'arrête pas. Il accumule de l'élan à chaque round, et chaque round qui passe le rend plus difficile à contenir.",
       "enjeu": "Les dégâts encaissés par Hope Summers sont notés : elle repartira blessée d'autant au scénario suivant.",
       "victoire": [
         {

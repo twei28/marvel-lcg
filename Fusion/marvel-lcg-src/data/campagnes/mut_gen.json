@@ -14,7 +14,7 @@
       "id": "sabretooth",
       "numero": 1,
       "nom": "Sabretooth",
-      "nom_fr": "Dents de Sabre",
+      "nom_fr": "Sabretooth",
       "resume": "Creed ne vient pas pour gagner, il vient pour vous connaître. Il encaisse, il compte vos coups, et il se relève en souriant. Pendant ce temps, la police du quartier décide de quel côté elle se range.",
       "enjeu": "C'est ici que vous choisissez votre rôle dans l'équipe, et il vous suivra jusqu'au bout de la campagne. Faire tomber Police Effrayée vous vaudra une amélioration de ce rôle au scénario suivant.",
       "victoire": [
@@ -49,7 +49,7 @@
       "id": "project_wideawake",
       "numero": 2,
       "nom": "Project Wideawake",
-      "nom_fr": "Projet Wideawake",
+      "nom_fr": "Project Wideawake",
       "resume": "Le programme a un nom d'employé de bureau et un fichier à votre nom. Les prisonniers qu'il détient sont des mutants comme vous ; les libérer, c'est se désigner.",
       "enjeu": "Les alliés CAPTIVE encore en jeu à la fin partent avec vous : ils seront mélangés à votre deck dès le scénario suivant. Vaincre L'Ennemi de Mon Ennemi ouvre l'amélioration de rôle du scénario 3.",
       "victoire": [
@@ -141,7 +141,7 @@
       "id": "mansion_attack",
       "numero": 4,
       "nom": "Mansion Attack",
-      "nom_fr": "L'Attaque du Manoir",
+      "nom_fr": "Mansion Attack",
       "resume": "Ils sont venus chez vous. L'école est un champ de bataille, et il faut tenir assez longtemps pour que les élèves sortent.",
       "enjeu": "Dernière amélioration de rôle de la campagne : vaincre Attaque Surprise vous la vaut à la mise en place du scénario final.",
       "victoire": [
