@@ -17,7 +17,15 @@
       "nom_fr": "Unus",
       "resume": "Unus l'Intouchable garde la route, et son champ de force ne cède à rien de ce que vous savez faire.",
       "enjeu": "La mission que vous choisissez ici décidera de ce que la campagne vous laissera pour la suite.",
-      "victoire": [],
+      "victoire": [
+        {
+          "cle": "Professor Saved",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Professeur X sauvé",
+          "aide": "La manigance annexe MISSION « Protect the Professor » a été vaincue. Sans elle, la campagne est perdue même si En Sabah Nur tombe."
+        }
+      ],
       "pages": {
         "intro": [
           "01-unus-intro-1.jpg"
@@ -99,6 +107,7 @@
       "resume": "En Sabah Nur, à la source. Tout ce que la campagne vous a laissé sert ici.",
       "enjeu": "Fin de la campagne.",
       "final": true,
+      "defaite": {"quand": "cle_absente", "cle": "Professor Saved", "texte": "Le Professeur X n'a pas été sauvé : la campagne est perdue."},
       "victoire": [],
       "pages": {
         "intro": [

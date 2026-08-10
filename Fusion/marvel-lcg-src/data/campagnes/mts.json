@@ -171,6 +171,7 @@
       "resume": "Loki règne sur Asgard et rien de ce que vous voyez n'est sûr d'exister. La campagne se termine ici, avec tout ce que vous y avez traîné.",
       "enjeu": "Rien à reporter : c'est le dernier scénario.",
       "final": true,
+      "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Loki étend son règne sur tout l'univers : la campagne est perdue."},
       "victoire": [],
       "pages": {
         "intro": [

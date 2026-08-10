@@ -188,6 +188,7 @@
       "resume": "La Forteresse de Magneto, et l'homme qui a toujours eu à moitié raison. Tout ce que la campagne vous a laissé entre les mains sert ici, et rien de plus.",
       "enjeu": "Fin de la campagne. Il n'y a plus de scénario suivant à nourrir.",
       "final": true,
+      "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Magnéto règne sur le monde d'une main de fer : la campagne est perdue."},
       "victoire": [],
       "pages": {
         "intro": [

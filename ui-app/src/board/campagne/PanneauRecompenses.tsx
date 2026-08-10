@@ -1,7 +1,9 @@
 // PanneauRecompenses — ce que le scénario de campagne vient de rapporter.
 //
-// S'ouvre sur l'écran de fin de partie, à la VICTOIRE seulement : le livret dit
-// qu'une défaite se rejoue sans pénalité, donc sans rien reporter non plus.
+// S'ouvre sur l'écran de fin de partie, à la victoire, et à la défaite dans le
+// seul cas où elle compte : celle du dernier scénario, qui peut perdre la
+// campagne (voir defaite-campagne.ts). Une défaite ailleurs se rejoue sans
+// pénalité, donc sans rien reporter non plus.
 //
 // Le principe : tout ce que le moteur sait, le panneau l'a déjà rempli et le
 // présente comme un constat (« voici ce que la partie a produit »). Il ne reste
@@ -33,6 +35,7 @@ import {
   type ScenarioCampagne,
 } from './contexte'
 import { assainirCarnet, preRemplir } from './preremplissage'
+import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 
 type Etat =
   | { phase: 'chargement' }
@@ -70,7 +73,7 @@ export function PanneauRecompenses({
 
   useEffect(() => {
     const contexte = lireContexte()
-    if (!contexte || !monde || !gagne) {
+    if (!contexte || !monde) {
       setEtat({ phase: 'absent' })
       return
     }
@@ -83,6 +86,21 @@ export function PanneauRecompenses({
         const scenario = definition.scenarios.find((s) => s.id === contexte.scenario)
         if (!scenario) throw new Error(`scénario inconnu : ${contexte.scenario}`)
         if (annule) return
+        // Une défaite n'ouvre le panneau que si elle perd la campagne. Sinon
+        // rien ne se reporte, et le joueur rejoue le scénario tel quel.
+        if (!gagne) {
+          const verdict = verdictDeCampagne({
+            final: Boolean(scenario.final),
+            regle: scenario.defaite,
+            gagne: false,
+            expert: campagne.difficulte === 'expert',
+            carnet: campagne.carnet ?? {},
+          })
+          if (!verdict.perdue) {
+            setEtat({ phase: 'absent' })
+            return
+          }
+        }
         const champs = champsDuScenario(definition, scenario, campagne.difficulte)
         setEtat({
           phase: 'pret',
@@ -154,12 +172,27 @@ export function PanneauRecompenses({
 
   const visibles = champs.filter((c) => conditionRemplie(c, monde as World))
   const manquants = visibles.filter((champ) => {
+    // Aucun champ n'est affiché à la défaite : en exiger un bloquerait le
+    // bouton sur une case que personne ne peut voir ni remplir.
+    if (!gagne) return false
     if (champ.type !== 'choix' || !champ.obligatoire) return false
     const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
     return joueurs.some(
       (i) =>
         !(champ.parJoueur && joueurElimine(monde as World, i)) && !valeurs[cleCarnet(champ, i)]
     )
+  })
+
+  // Le verdict se calcule sur le carnet TEL QU'IL SERA ENREGISTRE, corrections
+  // du joueur comprises : pour AoA, cocher « Professeur X sauvé » à la main
+  // doit sauver la campagne, exactement comme si le moteur l'avait relevé.
+  const carnetApres = { ...(campagne.carnet ?? {}), ...assainirCarnet(champs, valeurs, total) }
+  const verdict: Verdict = verdictDeCampagne({
+    final: Boolean(scenario.final),
+    regle: scenario.defaite,
+    gagne,
+    expert: campagne.difficulte === 'expert',
+    carnet: carnetApres,
   })
 
   async function valider() {
@@ -169,9 +202,14 @@ export function PanneauRecompenses({
     try {
       const suivante: Campagne = {
         ...campagne,
-        carnet: { ...(campagne.carnet ?? {}), ...assainirCarnet(champs, valeurs, total) },
-        termines: [...new Set([...(campagne.termines ?? []), scenario.id])],
+        carnet: carnetApres,
+        // Une défaite ne termine rien : le scénario reste à jouer. Ce qui se
+        // termine, c'est la campagne, et c'est `perdue` qui le dit.
+        termines: gagne
+          ? [...new Set([...(campagne.termines ?? []), scenario.id])]
+          : (campagne.termines ?? []),
         partieEnCours: null,
+        ...(verdict.perdue ? { perdue: true } : {}),
       }
       await enregistrerCampagne(suivante)
       effacerContexte()
@@ -192,11 +230,24 @@ export function PanneauRecompenses({
           {campagne.nom} · {t('Scénario')} {scenario.numero} / {definition.scenarios.length}
         </span>
         <strong className="camp-recomp-titre">
-          {estFinal ? t('La campagne est gagnée !') : t('Ce que vous gagnez')}
+          {verdict.perdue
+            ? t('La campagne est perdue')
+            : estFinal
+              ? t('La campagne est gagnée !')
+              : t('Ce que vous gagnez')}
         </strong>
       </header>
 
-      {epilogue.length ? (
+      {verdict.perdue ? (
+        <p className="camp-recomp-defaite">
+          {verdict.texte}{' '}
+          {gagne
+            ? t('Le scénario est gagné, mais la campagne s’arrête ici.')
+            : t('Ce scénario ne se rejoue pas : la campagne s’arrête ici.')}
+        </p>
+      ) : null}
+
+      {epilogue.length && gagne ? (
         <div className="camp-recomp-bd">
           {epilogue.map((fichier) => (
             <img
@@ -209,7 +260,7 @@ export function PanneauRecompenses({
         </div>
       ) : null}
 
-      {visibles.length ? (
+      {visibles.length && gagne ? (
         <div className="camp-recomp-champs">
           {visibles.map((champ) => (
             <ChampRecompense
@@ -223,13 +274,13 @@ export function PanneauRecompenses({
             />
           ))}
         </div>
-      ) : (
+      ) : gagne ? (
         <p className="camp-recomp-rien">
           {estFinal
             ? t('Hydra est vaincue. Rien de plus à reporter : tournez la page.')
             : t('Ce scénario ne rapporte rien à reporter dans le carnet.')}
         </p>
-      )}
+      ) : null}
 
       {echec ? <p className="camp-recomp-echec">{echec}</p> : null}
 
@@ -242,9 +293,11 @@ export function PanneauRecompenses({
         >
           {enregistrement
             ? t('Enregistrement…')
-            : estFinal
-              ? t('Voir la conclusion')
-              : t('Valider et continuer la campagne')}
+            : verdict.perdue
+              ? t('Consigner la fin de la campagne')
+              : estFinal
+                ? t('Voir la conclusion')
+                : t('Valider et continuer la campagne')}
         </button>
         {manquants.length ? (
           <span className="camp-recomp-bloque">

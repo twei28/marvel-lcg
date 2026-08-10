@@ -129,6 +129,7 @@
       "resume": "Stryfe tient Hope, et tout ce que la campagne vous a laissé sert ici.",
       "enjeu": "Fin de la campagne.",
       "final": true,
+      "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Stryfe s'échappe dans le passé : la campagne est perdue."},
       "victoire": [],
       "pages": {
         "intro": [

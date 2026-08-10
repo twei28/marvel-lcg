@@ -8,6 +8,7 @@
 // récompenses sont validées, pour qu'une partie hors campagne lancée ensuite
 // n'hérite pas du contexte de la précédente.
 import type { ChampVictoire } from './detecteurs'
+import type { RegleDefaite } from './defaite-campagne'
 
 /** Clé posée par public/js/campagne/app.js juste avant de lancer un scénario. */
 export const CLE_CAMPAGNE = 'mc-campagne-partie'
@@ -27,6 +28,8 @@ export type ScenarioCampagne = {
   resume?: string
   enjeu?: string
   final?: boolean
+  /** Ce qui perd la campagne sur ce scénario. Seul le scénario final en porte une. */
+  defaite?: RegleDefaite
   pages?: { intro?: string[]; regles?: string[]; epilogue?: string[] }
   victoire?: ChampVictoire[]
 }
@@ -53,6 +56,11 @@ export type Campagne = {
   carnet?: Record<string, string>
   tentatives?: Record<string, number>
   partieEnCours?: { scenario: string; depuis: string } | null
+  /**
+   * Campagne perdue au dernier scénario. Une campagne perdue ne se rejoue pas :
+   * l'écran n'offre plus que d'en relire la fin, ou d'en recommencer une autre.
+   */
+  perdue?: boolean
 }
 
 export function lireContexte(): ContexteCampagne | null {

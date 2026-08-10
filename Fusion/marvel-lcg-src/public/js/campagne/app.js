@@ -267,7 +267,11 @@ function vueCampagne() {
     const campagne = etat.campagne;
     const definition = etat.definition;
     const index = indexCourant(campagne, definition);
-    const finie = estTerminee(campagne, definition);
+    // Perdue au dernier scenario : elle est finie, elle aussi, et il ne reste
+    // rien a lancer. Le drapeau est pose par le panneau de recompenses du
+    // plateau, seul endroit qui sache si le livret la donne pour perdue.
+    const perdue = Boolean(campagne.perdue);
+    const finie = perdue || estTerminee(campagne, definition);
     const scenario = finie ? definition.scenarios[definition.scenarios.length - 1] : definition.scenarios[index];
     const duCatalogue = etat.scenarios.find((s) => s.id === scenario.id);
 
@@ -288,13 +292,14 @@ function vueCampagne() {
         el("div", { class: "cmp-barre-etape" },
             el("span", { class: "cmp-jauge" },
                 el("span", { class: "cmp-jauge-plein", style: { width: (100 * (campagne.termines || []).length / definition.scenarios.length) + "%" } })),
-            el("span", {}, finie ? t("Campagne terminée")
+            el("span", {}, perdue ? t("Campagne perdue")
+                : finie ? t("Campagne terminée")
                 : (t("Étape") + " " + (index + 1) + " / " + definition.scenarios.length)),
         ),
     );
 
     if (finie) return el("div", { class: "cmp-page-campagne" }, entete(t("Campagne")), barre,
-        el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition)));
+        el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition, perdue)));
 
     const pages = scenario.pages || {};
     const intro = (pages.intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
@@ -396,16 +401,21 @@ function vueCampagne() {
     );
 }
 
-function vueConclusion(campagne, definition) {
+function vueConclusion(campagne, definition, perdue) {
     const dernier = definition.scenarios[definition.scenarios.length - 1];
-    const epilogue = ((dernier.pages || {}).epilogue || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
+    // Pas de planche d'epilogue sur une defaite : celle du livret raconte la
+    // victoire, la montrer ici raconterait le contraire de ce qui s'est passe.
+    const epilogue = perdue ? []
+        : ((dernier.pages || {}).epilogue || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
     const totalTentatives = Object.values(campagne.tentatives || {}).reduce((a, b) => a + b, 0);
+    const defaite = (dernier.defaite || {});
 
-    return el("section", { class: "cmp-conclusion" },
+    return el("section", { class: "cmp-conclusion" + (perdue ? " perdue" : "") },
         el("div", { class: "cmp-chapo" },
-            el("span", { class: "cmp-chapo-k" }, t("Campagne terminée")),
+            el("span", { class: "cmp-chapo-k" }, perdue ? t("Campagne perdue") : t("Campagne terminée")),
             el("h1", { class: "cmp-chapo-nom mvl" }, campagne.nom),
         ),
+        perdue && defaite.texte ? el("p", { class: "cmp-resume" }, defaite.texte) : null,
         epilogue.length ? el("div", { class: "cmp-bd" }, epilogue) : null,
         el("div", { class: "cmp-bilan" },
             ligneBilan(t("Boîte"), nomBoite(definition)),

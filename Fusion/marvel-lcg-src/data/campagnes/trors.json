@@ -12,7 +12,6 @@
     "expert": {
         "pv_persistants": true,
         "obligations": ["04163", "04164", "04165", "04166"],
-        "defaite_finale_perd_la_campagne": true,
         "note": "Quatre jeux d'obligations numérotés 1 à 4 contenant les mêmes quatre cartes. Chaque joueur reçoit son numéro à la création de la campagne."
     },
 
@@ -159,6 +158,7 @@
             "resume": "Zola parle : la Gemme est entre les mains du véritable cerveau d'Hydra. Crâne Rouge s'est installé à Washington et a fait de la Maison-Blanche sa forteresse personnelle. Ses scientifiques travaillent sans relâche — quand la machine sera prête, il se servira de la Gemme de Réalité pour soumettre le monde entier.",
             "enjeu": "Dernier affrontement. Le battre, c'est gagner la campagne. En campagne experte, le perdre, c'est la perdre.",
             "final": true,
+            "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Crâne Rouge conquiert le monde : la campagne est perdue."},
             "pages": {
                 "intro": ["05-red_skull-intro-1.jpg"],
                 "regles": ["05-red_skull-regles-1.jpg"],

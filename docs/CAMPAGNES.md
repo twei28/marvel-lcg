@@ -713,8 +713,28 @@ Par ordre d'intérêt :
    gagnées en campagne n'est pas contrôlée. Et la mesure ne peut pas se faire
    sur `deck.name`, que `validerEquipeCampagne` réécrit avec le nom du héros :
    deux decks différents s'appellent pareil une fois enregistrés.
-4. **Haut fait** de fin de campagne, et la défaite finale en campagne experte
-   qui perd la campagne (règle codée côté données mais pas côté écran).
+4. ~~La défaite finale en campagne experte qui perd la campagne~~ **FAIT le
+   10/8/2026.** La règle a été relevée dans les six livrets, et AoA s'écarte des
+   cinq autres sur les DEUX points : sa condition n'est pas la défaite mais la
+   mission (« If the Protect the Professor MISSION side scheme was defeated,
+   the players saved Professor X and win the campaign! »), et elle ne porte pas
+   la mention *Expert Campaign Only*. D'où deux formes déclarées sur le
+   scénario final, dans `defaite` : `partie_perdue` (cinq boîtes, expert
+   seulement) et `cle_absente` (aoa, sur `Professor Saved`). La clé morte
+   `expert.defaite_finale_perd_la_campagne`, que trors et sm déclaraient et que
+   rien ne lisait, a disparu : une seule source de vérité.
+
+   La décision vit dans `ui-app/src/board/campagne/defaite-campagne.ts`, module
+   pur, éprouvé par neuf cas dont ceux qui ne doivent PAS perdre la campagne
+   (scénario intermédiaire, mode standard, partie gagnée, règle sans clé). Le
+   panneau de récompenses s'ouvre désormais aussi à la défaite, mais seulement
+   quand elle perd la campagne, et il n'affiche alors ni épilogue ni champ :
+   une partie perdue ne rapporte rien. Côté moteur, `CollectAoA` consigne
+   `Professor Saved`, prouvé à la sonde avec témoin (sans la clé de mission :
+   absent ; avec : `"Professor Saved": "1"`).
+
+   Reste le **haut fait** de fin de campagne : le plateau en affiche pour les
+   parties normales, aucun ne récompense une campagne menée à son terme.
 5. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés
    unitairement sur des formes mesurées, mais n'ont jamais été vus dans une
    vraie fin de scénario Zola ni en campagne experte. C'est exactement le

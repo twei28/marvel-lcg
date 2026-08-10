@@ -10,7 +10,6 @@
 
     "expert": {
         "pv_persistants": true,
-        "defaite_finale_perd_la_campagne": true,
         "note": "Les PV restants sont reportés d'un scénario au suivant. Perdre Venom Goblin en campagne experte perd la campagne."
     },
 
@@ -99,6 +98,7 @@
             "resume": "Grâce à un appareil achevé pendant votre traversée d'Oscorp, Norman Osborn a plié le symbiote Venom à sa volonté. Ce triumvirat de terreur prend les airs au-dessus de New York et déverse sa fange symbiotique sur des passants sans défense, pour se donner enfin l'armée qu'on lui avait refusée.",
             "enjeu": "Dernier affrontement. Le battre, c'est gagner la campagne. En campagne experte, le perdre, c'est la perdre.",
             "final": true,
+            "defaite": {"quand": "partie_perdue", "expert_seulement": true, "texte": "Venom Goblin prend le contrôle de New York : la campagne est perdue."},
             "pages": {
                 "intro": ["05-venom_goblin-intro-1.jpg"],
                 "regles": ["05-venom_goblin-regles-1.jpg"],

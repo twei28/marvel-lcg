@@ -103,6 +103,14 @@ def CollectAoA(level: int, effect: 'Effect') -> dict:
     accomplished = (result == 'accomplished')
     if mission:
         updates[f'Mission Done: {mission}'] = '1'
+        # Scenario 5 : la campagne se joue ici. Le livret (p.20) ne parle ni de
+        # victoire ni de defaite mais de la mission : « If the Protect the
+        # Professor MISSION side scheme was defeated, the players saved
+        # Professor X and win the campaign! » Sans cette cle, l'ecran ne
+        # pourrait pas distinguer une victoire sur En Sabah Nur qui sauve le
+        # Professeur d'une victoire qui l'abandonne.
+        if (mission == 'Protect the Professor'):
+            updates['Professor Saved'] = ('1' if accomplished else None)
         if (mission == 'Liberate the Seattle Core'):
             updates['Campaign Pool: Desperate Measures'] = ('1' if accomplished else None)
         if (mission == 'Evacuate Survivors'):

@@ -134,6 +134,7 @@ export const DICO_EN_BASE = {
 
     /* ---- Campagne : progression, histoire, carnet ---- */
     "Campagne terminée": "Campaign complete",
+    "Campagne perdue": "Campaign lost",
     "Étape": "Step",
     "Réinitialiser": "Reset",
     "Verrouillé": "Locked",
