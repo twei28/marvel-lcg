@@ -429,6 +429,8 @@ export const DICO_EN_BASE = {
     "Figé pour toute la campagne, comme les identités.":
       "Locked for the whole campaign, like the identities.",
     "Mise en place": "Setup",
+    "Règles de la campagne": "Campaign rules",
+    "Les pages du livret qui valent pour toute la campagne, mode expert compris.": "The rulebook pages that apply to the whole campaign, expert mode included.",
     "Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.":
       "Dictated by the campaign book: the game sets it up for you, including what the campaign has already added.",
     "Ce qui est en jeu": "What is at stake",

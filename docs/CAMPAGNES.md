@@ -508,8 +508,22 @@ Le fichier de campagne dit quelles pages chaque scénario affiche. Une planche
 qui sert d'épilogue à un scénario ET d'intro au suivant n'est **pas
 dupliquée** : les deux scénarios la référencent.
 
-Seules `trors` et `sm` ont des scans. Sans scans, l'écran affiche le résumé
-français seul — c'est prévu, rien ne casse.
+`trors`, `sm` et `mut_gen` ont leurs scans. Sans scans, l'écran affiche le
+résumé français seul — c'est prévu, rien ne casse.
+
+`tools/pages_livret.py` fait le découpage à partir des PDF officiels, qui sont
+sur le Bureau à la racine de `Marvel LCG last try`. Les livrets sont carrés et
+vectoriels : on REND les pages, on n'extrait pas leurs images, ce qui donne un
+traitement uniforme et la taille des scans déjà en place, 975 px. La seule
+chose à fournir pour une nouvelle boîte est la CARTE des pages, en tête de
+l'outil : quelle page joue quel rôle. C'est le vrai travail, le reste est
+mécanique.
+
+**`pages_regles` s'affiche depuis le 10/8/2026.** La clé était documentée ici
+et lue par AUCUN code : les pages de règles valables pour toute la boîte, mode
+expert compris, dormaient sur le disque. Quatre fichiers étaient concernés,
+trois pour `trors` et un pour `sm`. L'écran des campagnes les montre maintenant
+dans un bloc « Règles de la campagne ».
 
 ---
 

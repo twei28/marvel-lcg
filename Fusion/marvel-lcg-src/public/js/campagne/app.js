@@ -299,6 +299,12 @@ function vueCampagne() {
     const pages = scenario.pages || {};
     const intro = (pages.intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
     const regles = (pages.regles || []).map((f) => pageLivret(definition.code, f, "cmp-page-regles"));
+    // `pages_regles` etait documente au format des campagnes et lu par AUCUN
+    // code : les pages de regles valables pour toute la boite, mode expert
+    // compris, dormaient sur le disque. Quatre fichiers concernes avant meme
+    // qu'on en ajoute, trois pour trors et un pour sm. Constate le 10/8/2026.
+    const reglesCampagne = (definition.pages_regles || [])
+        .map((f) => pageLivret(definition.code, f, "cmp-page-regles"));
 
     const sets = duCatalogue
         ? [...(duCatalogue.rawJson.encounter_sets || []), ...(duCatalogue.rawJson.modular_sets || [])]
@@ -324,6 +330,12 @@ function vueCampagne() {
             sets.length ? el("ul", { class: "cmp-sets" }, sets.map((s) => el("li", {}, titreSet(s)))) : null,
             regles,
         ),
+        reglesCampagne.length ? el("div", { class: "cmp-bloc" },
+            el("h2", { class: "cmp-bloc-t" }, t("Règles de la campagne")),
+            el("p", { class: "cmp-bloc-aide" },
+                t("Les pages du livret qui valent pour toute la campagne, mode expert compris.")),
+            reglesCampagne,
+        ) : null,
         el("div", { class: "cmp-lancer" },
             tentatives ? el("p", { class: "cmp-tentatives" },
                 tentatives === 1 ? t("Une tentative déjà jouée sur ce scénario.")
