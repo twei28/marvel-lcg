@@ -463,10 +463,40 @@ async function lancerScenario(scenario) {
 
 /* ----------------------------------------------------------------- rendu -- */
 
+// La police Marvel (MarvelRegular-Dj83.ttf) ne contient que A-Z majuscules,
+// le point et l'espace : TRENTE caracteres, aucun accent. Un « â » n'y est donc
+// pas rendu du tout, il retombe sur Arial Narrow au milieu du mot, et
+// « L'Avenement de Crane Rouge » s'affiche moitie dans une police, moitie dans
+// l'autre. On retire les accents des seuls textes affiches en police Marvel.
+//
+// Le meme correctif existe dans prepare/app.js depuis sa refonte ; cet ecran-ci
+// utilise la meme classe `.mvl` sans jamais l'avoir applique, et c'est le nom
+// des campagnes qui l'a montre. Signale en jeu le 10/8/2026.
+//
+// On ne touche PAS aux donnees : data/campagnes/*.json garde ses accents, qui
+// restent justes partout ailleurs (resumes, infobulles, autres polices).
+function sansAccents(texte) {
+    return String(texte).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function corrigerTextesMarvel() {
+    document.querySelectorAll(".mvl").forEach((element) => {
+        const parcours = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        let noeud;
+        while ((noeud = parcours.nextNode())) {
+            const nu = sansAccents(noeud.nodeValue);
+            if (nu !== noeud.nodeValue) noeud.nodeValue = nu;
+        }
+    });
+}
+
 function rendre() {
     if (etat.vue === "campagne" && etat.campagne && etat.definition) root.replaceChildren(vueCampagne());
     else if (etat.vue === "creation") root.replaceChildren(vueCreation());
     else root.replaceChildren(vueListe());
+    // Apres CHAQUE rendu : replaceChildren remet des noeuds neufs, un passage
+    // unique au chargement ne tiendrait pas.
+    corrigerTextesMarvel();
 }
 
 (async () => {
