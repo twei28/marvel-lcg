@@ -691,12 +691,28 @@ Par ordre d'intérêt :
    au rouge exprès en désarmant la branche de modification — il a bien vu la
    seconde campagne apparaître.
 
-   Ce que ça ne fait pas encore : l'écran de préparation revient **vierge**,
-   le joueur doit re-choisir ses héros dans le même ordre (le bandeau les lui
-   rappelle) ; l'interdiction de retirer les cartes gagnées en campagne n'est
-   pas contrôlée ; et la mesure ne peut pas se faire sur `deck.name`, que
-   `validerEquipeCampagne` réécrit avec le nom du héros — deux decks
-   différents s'appellent pareil une fois enregistrés.
+   **L'équipe revient déjà en place**, dans l'ordre des sièges : le brouillon
+   emporte l'équipe enregistrée sous la clé `equipeActuelle`, et la préparation
+   la repose (héros retrouvé par sa CARTE d'identité, jamais par son nom, qui
+   est traduit à l'affichage). Le geste demandé est donc d'ajuster un deck, pas
+   de refaire une équipe, et le refus des identités devient un filet plutôt
+   qu'un passage obligé. Deux clés distinctes, et non une seule : c'est
+   l'arrivée de `equipe` qui signale au retour que la préparation a validé
+   quelque chose. Les confondre enregistrerait une modification que personne
+   n'aurait faite, au premier passage sur l'écran.
+
+   Le deck déjà joué n'appartient à aucune liste de l'écran (ni base, ni
+   sauvegardé, ni package d'aspect) : il reçoit sa propre entrée, « Deck actuel
+   de la campagne », en tête et retenue. Elle est tenue par un registre à part
+   (`DECKS_CAMPAGNE`, par siège) et non par l'état du joueur, parce que
+   re-cliquer son propre héros appelle `assignHero`, qui remet le deck de base.
+   Sans ce registre, ce clic de curiosité perdait le deck de la campagne sans
+   aucun moyen d'y revenir.
+
+   Ce que ça ne fait toujours pas : l'interdiction de retirer les cartes
+   gagnées en campagne n'est pas contrôlée. Et la mesure ne peut pas se faire
+   sur `deck.name`, que `validerEquipeCampagne` réécrit avec le nom du héros :
+   deux decks différents s'appellent pareil une fois enregistrés.
 4. **Haut fait** de fin de campagne, et la défaite finale en campagne experte
    qui perd la campagne (règle codée côté données mais pas côté écran).
 5. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés

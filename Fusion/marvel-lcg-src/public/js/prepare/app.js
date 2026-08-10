@@ -32,6 +32,13 @@ const BROUILLON_CAMPAGNE = new URLSearchParams(window.location.search).has("camp
     : null;
 const creationCampagne = () => !!BROUILLON_CAMPAGNE;
 
+// Le deck que la campagne a deja enregistre, par siege. Garde a part de
+// state.players : re-cliquer son propre heros appelle assignHero, qui remet le
+// deck de base. Sans ce registre, un clic de curiosite ferait disparaitre le
+// deck de la campagne de la liste, et il n'y aurait plus aucun moyen d'y
+// revenir sans ressortir de l'ecran.
+const DECKS_CAMPAGNE = new Map();
+
 function el(tag, props, ...kids) {
     const n = document.createElement(tag);
     if (props) for (const k in props) {
@@ -633,6 +640,43 @@ async function doLaunch() {
  * recopié en entier : c'est ce que le moteur consomme, et une campagne doit
  * survivre à la suppression du deck marvelcdb dont elle est partie.
  */
+/**
+ * Modification des decks : on remet l'equipe en place telle que la campagne
+ * l'a enregistree.
+ *
+ * Sans cela l'ecran revenait vierge, et le joueur devait re-choisir ses heros
+ * dans le meme ordre sous peine de refus au retour (le livret fige les
+ * identites). Le geste demande ici est d'AJUSTER un deck, pas de refaire une
+ * equipe : elle est donc deja la, et seule l'etape des decks attend un clic.
+ *
+ * Le heros se retrouve par sa CARTE d'identite, jamais par son nom : le nom
+ * est traduit a l'affichage, la carte non. Une identite alternative (The Thing
+ * Avenger ou Guardian) est portee par `variants`, d'ou la seconde recherche.
+ */
+async function reprendreEquipeCampagne() {
+    const membres = (BROUILLON_CAMPAGNE && BROUILLON_CAMPAGNE.modifie
+        && BROUILLON_CAMPAGNE.equipeActuelle) || [];
+    if (!membres.length) return;
+    const heroes = await catalog.heroes();
+    membres.forEach((m, i) => {
+        const p = state.players[i];
+        if (!p) return;
+        const carte = String((m.identite && m.identite[0]) || "").split(",")[0];
+        const hero = heroes.find((h) => h.heroCardId === carte)
+            || heroes.find((h) => (h.variants || []).some((v) => v.heroCardId === carte));
+        if (!hero || !m.deck) return;
+        p.hero = hero;
+        p.identity = (hero.variants || []).find((v) => v.heroCardId === carte) || null;
+        p.deck = m.deck;
+        // Source a part : ce deck ne vient d'aucune liste de l'ecran, il a ete
+        // compose puis range dans la campagne. loadDecks lui fabrique son
+        // entree, sinon il serait le seul choix impossible a re-selectionner.
+        p.deckSource = "campagne";
+        p.deckAuto = false;
+        DECKS_CAMPAGNE.set(i, m.deck);
+    });
+}
+
 function validerEquipeCampagne() {
     const brouillon = BROUILLON_CAMPAGNE;
     brouillon.equipe = activePlayers().filter((p) => p && p.deck).map((p) => {
@@ -751,11 +795,11 @@ function modeStrip() {
             el("span", { class: "mode-copy" },
                 el("b", {}, (BROUILLON_CAMPAGNE.modifie ? t("Modifier les decks") : t("Campagne"))
                     + " — " + BROUILLON_CAMPAGNE.nom),
-                // En modification, le joueur doit RETROUVER ses identites : le
-                // livret interdit d'en changer, et l'ecran des campagnes refuse
-                // le retour si elles ont bouge. Autant les lui rappeler ici.
+                // En modification, l'equipe est deja remise en place : le
+                // bandeau dit ce qui reste interdit, l'identite, et nomme
+                // celles qui sont engagees.
                 el("small", {}, BROUILLON_CAMPAGNE.modifie
-                    ? t("Reprends les mêmes identités, change ce que tu veux au deck :")
+                    ? t("Équipe déjà en place. Change ce que tu veux au deck, jamais l'identité :")
                         + " " + (BROUILLON_CAMPAGNE.identites || []).join(", ")
                     : BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · "
                         + (BROUILLON_CAMPAGNE.difficulte === "expert" ? t("Campagne experte") : t("Standard"))
@@ -1686,6 +1730,17 @@ async function loadDecks(i) {
         aspects: [...new Set((d.player_deck || []).map((id) => cards.aspectOf(id)).filter((a) => a && a !== "basic"))],
     }));
     const decks = [...catDecks, ...saved];
+    // Le deck deja joue par cette equipe n'est dans aucune de ces listes : ni
+    // deck de base, ni deck sauvegarde, ni package d'aspect. Il lui faut sa
+    // propre entree, sinon il serait le seul choix qu'un clic de curiosite
+    // ferait perdre pour de bon.
+    const deCampagne = DECKS_CAMPAGNE.get(i);
+    if (deCampagne && String((deCampagne.hero || [])[0] || "").split(",")[0] === p.hero.heroCardId) {
+        decks.unshift({
+            id: "campagne", name: t("Deck actuel de la campagne"), source: "campagne", deck: deCampagne,
+            aspects: [...new Set((deCampagne.player_deck || []).map((id) => cards.aspectOf(id)).filter((a) => a && a !== "basic"))],
+        });
+    }
     // Mémoire des choix : si le deck actuel a été posé automatiquement à
     // l'assignation du héros, on présélectionne le dernier deck utilisé pour
     // ce héros, s'il est encore disponible (base ou sauvegardé).
@@ -1710,10 +1765,17 @@ async function loadDecks(i) {
         const ecarts = verifierDeck(dk.deck);
         const etiquette = dk.source === "base" ? "Base"
             : dk.source === "aspect" ? t("Conseillé")
+            : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         return el("button", {
             class: "deck-opt cut" + (on ? " sel" : ""),
-            onclick: () => { p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false; prefs.setLastDeck(p.hero.heroCardId, dk.id); render(); },
+            onclick: () => {
+                p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
+                // « campagne » n'existe que sur cet ecran-ci : le retenir comme
+                // dernier deck du heros ne designerait plus rien demain.
+                if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
+                render();
+            },
         },
             el("div", { class: "do-name" }, dk.name),
             el("div", { class: "do-tags" },
@@ -2448,6 +2510,12 @@ function blocAvance() {
         state.extensionTab = (exts.find((e) => e.scenarios.length) || exts[0] || {}).key || null;
     } catch (e) {
         console.error("prepare init:", e);
+    }
+    // Apres cards.load() : la reprise interroge le catalogue des heros.
+    try {
+        await reprendreEquipeCampagne();
+    } catch (e) {
+        console.error("reprise equipe campagne:", e);
     }
     render();
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse

@@ -361,6 +361,14 @@ function vueCampagne() {
                         difficulte: etat.campagne.difficulte,
                         nbJoueurs: (etat.campagne.equipe || []).length || 1,
                         identites: (etat.campagne.equipe || []).map((m) => m.nomHeros || m.heros),
+                        // L'equipe part AVEC, pour que l'ecran de preparation
+                        // la remette en place au lieu de repartir d'une page
+                        // blanche. Sous une AUTRE cle que `equipe` : c'est
+                        // l'arrivee de `equipe` qui signale, au retour, que la
+                        // preparation a valide quelque chose. Les confondre
+                        // ferait enregistrer une modification que personne
+                        // n'aurait faite, au premier passage sur cet ecran.
+                        equipeActuelle: etat.campagne.equipe || [],
                     });
                     window.location.href = "/prepare.html?campagne";
                 },

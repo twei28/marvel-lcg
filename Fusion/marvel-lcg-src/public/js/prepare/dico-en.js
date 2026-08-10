@@ -430,8 +430,10 @@ export const DICO_EN_BASE = {
       "Locked for the whole campaign, like the identities.",
     "Mise en place": "Setup",
     "Modifier les decks": "Change decks",
+    "Deck actuel de la campagne": "The campaign's current deck",
+    "En cours": "In play",
     "Valider les decks": "Confirm decks",
-    "Reprends les mêmes identités, change ce que tu veux au deck :": "Keep the same identities, change whatever you like in the deck:",
+    "Équipe déjà en place. Change ce que tu veux au deck, jamais l'identité :": "Team already set. Change whatever you like in the deck, never the identity:",
     "Campagne introuvable.": "Campaign not found.",
     "Les identités ont changé : elles sont figées pour toute la campagne. Rien n'a été modifié.": "The identities changed: they are locked for the whole campaign. Nothing was modified.",
     "Règles de la campagne": "Campaign rules",
@@ -457,4 +459,4 @@ export const DICO_EN_BASE = {
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
-};
+};

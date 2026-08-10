@@ -77,6 +77,11 @@ async function ouvrirLaCampagne(page: Page) {
  */
 async function choisirHerosPuisDecks(page: Page, motif: RegExp) {
   await page.getByRole('button', { name: motif }).first().click();
+  await allerAuxDecks(page);
+}
+
+/** Passe a l'etape des decks, sans toucher au choix de l'etape 1. */
+async function allerAuxDecks(page: Page) {
   await page.getByRole('button', { name: /continuer/i }).click();
   await expect(page.locator('#db-0')).toBeVisible();
 }
@@ -158,7 +163,20 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     // preparation revenant vierge.
     await expect(page.locator('.campagne-bandeau')).toContainText(avant.equipe![0].nomHeros!);
 
-    await choisirHerosPuisDecks(page, HEROS);
+    // L'equipe revient DEJA EN PLACE : aucun clic sur un heros ici. Ce serait
+    // meme nuisible, `assignHero` remettant le deck de base au passage.
+    await expect(
+      page.locator('.hero-card.chosen'),
+      "L'equipe de la campagne n'a pas ete remise en place : l'ecran est reparti d'une page blanche."
+    ).toHaveCount(1);
+    await allerAuxDecks(page);
+
+    // Le deck deja joue a sa propre entree, en tete et retenue : sans elle, le
+    // joueur arriverait ici sans savoir lequel de ces paquets est le sien.
+    const enCours = page.locator('#db-0 .deck-opt').first();
+    await expect(enCours).toHaveClass(/\bsel\b/);
+    await expect(enCours.locator('.do-name')).toHaveText(/campagne|campaign/i);
+
     const deckChoisi = await retenirUnDeckDAspect(page, 0);
     await page.getByRole('button', { name: /valider les decks/i }).click();
 
@@ -182,6 +200,36 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
       empreinte(apres.equipe![0]),
       `Le deck « ${deckChoisi} } » a ete retenu a l ecran mais rien n a change sur le serveur.`
     ).not.toBe(empreinte(avant.equipe![0]));
+  });
+
+  test('Le deck de la campagne reste recuperable apres un clic sur son propre heros', async ({
+    page,
+    request,
+  }) => {
+    const avant = await laNotre(request);
+
+    await ouvrirLaCampagne(page);
+    await page.getByRole('button', { name: /modifier les decks/i }).click();
+
+    // Le reflexe naturel : cliquer sur son heros, deja retenu. `assignHero` y
+    // remet le deck de BASE. Le deck de la campagne doit survivre a ce clic,
+    // sinon il serait perdu pour de bon sans le moindre avertissement.
+    await choisirHerosPuisDecks(page, HEROS);
+
+    const enCours = page.locator('#db-0 .deck-opt', { hasText: /campagne|campaign/i }).first();
+    await expect(
+      enCours,
+      'Un clic sur son propre heros a fait disparaitre le deck de la campagne de la liste.'
+    ).toBeVisible();
+    await enCours.click();
+    await page.getByRole('button', { name: /valider les decks/i }).click();
+
+    await expect(page.locator('.cmp-erreur')).toHaveCount(0);
+    const apres = await laNotre(request);
+    expect(
+      empreinte(apres.equipe![0]),
+      'Reprendre le deck de la campagne a enregistre autre chose que ce deck.'
+    ).toBe(empreinte(avant.equipe![0]));
   });
 
   test('Changer d identite est refuse, et rien n est ecrit', async ({ page, request }) => {
