@@ -159,7 +159,17 @@ def CollectMG(level: int, effect: 'Effect') -> dict:
     updates['Future Past in Victory Display'] = (';'.join(sorted(in_victory)) or None)
     updates['Future Past in Encounter Deck'] = (';'.join(sorted(in_encounter)) or None)
     updates['Future Past Deck'] = None
-    if (level == 2):
+    # CORRECTIF (10/8/2026) : le carnet officiel (mc32_mutant_genesis_campaign_log.pdf)
+    # porte DEUX lignes d'allies, pas une. « Allies from Abduction Protocols »
+    # au scenario 2, et « Allies under Rescue Captives or Find the Prisoners »
+    # au scenario 3. Le moteur ne relevait que le niveau 2 : les allies liberes
+    # au scenario 3 sous Rescue Captives (32173b, qui les rend a chaque
+    # SENTINEL vaincu) etaient perdus, alors que la mise en place des scenarios
+    # 4 et 5 dit « each CAPTIVE ally recorded in the campaign log may be
+    # shuffled into any player's deck ». Les deux lignes du carnet alimentent
+    # la meme etape, une seule cle suffit donc, mais il faut la nourrir aux
+    # deux niveaux. Le set s'unit a l'existant, rien n'est ecrase.
+    if (level in (2, 3)):
         captives = set(CampaignLog.GetListInternal('Captive Allies', effect))
         for card in effect.world.object_manager.card_dict.values():
             face = card.face

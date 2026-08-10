@@ -465,6 +465,33 @@ carte. Une fois les six boîtes portées, tout ce bloc peut disparaître, avec
 
 ---
 
+### 6 bis. Ce que les livrets officiels ont appris (10/8/2026)
+
+Les PDF officiels de FFG, livrets et carnets de campagne, sont sur le Bureau à
+la racine de `Marvel LCG last try`. Ils sont **vectoriels**, donc lisibles au
+texte et rendables en image. Les avoir change deux choses sur `mut_gen`, et
+aucune n'était devinable depuis le code seul.
+
+**Le carnet officiel a DEUX lignes d'alliés**, pas une : « Allies from
+Abduction Protocols » au scénario 2, et « Allies under Rescue Captives or Find
+the Prisoners » au scénario 3. Le moteur ne collectait qu'au niveau 2, donc les
+alliés libérés au scénario 3 sous Rescue Captives (32173b, qui les rend à
+chaque SENTINEL vaincu) étaient **perdus en silence**, alors que la mise en
+place des scénarios 4 et 5 dit « each CAPTIVE ally recorded in the campaign log
+may be shuffled into any player's deck ». `CollectMG` collecte désormais aux
+niveaux 2 ET 3. Divergence assumée avec le moteur d'origine, prouvée à la
+sonde avec son témoin : le scénario 3 relève l'allié, le 4 ne le relève pas.
+
+**La colonne Jubilé s'ouvre au scénario 2**, pas au 3 : elle est libérée dans
+`project_wideawake`. Le carnet la suit sur les scénarios 2, 3 et 4, avec une
+case « retirée de la campagne » à partir du 3. Le fichier de campagne l'expose
+maintenant ainsi.
+
+**Leçon générale** : le `campaign.py` d'un pack dit ce que le moteur FAIT, le
+carnet officiel dit ce que le livret DEMANDE. Les deux ne coïncident pas
+toujours, et seul le second est l'autorité. Lire le carnet avant d'écrire une
+définition, pas après.
+
 ## 7. Les scans du livret
 
 `public/stories/<code>/`, nommés par rôle :

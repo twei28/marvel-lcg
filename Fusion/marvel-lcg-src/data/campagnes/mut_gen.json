@@ -54,7 +54,14 @@
           "type": "auto",
           "format": "liste",
           "libelle": "Alliés libérés",
-          "aide": "Les alliés portant le trait CAPTIVE, encore en jeu à la fin. Ils sont mélangés à votre deck à la mise en place des scénarios suivants."
+          "aide": "Ligne « Allies from Abduction Protocols » du carnet officiel. Les alliés CAPTIVE encore en jeu à la fin sont mélangés à votre deck aux scénarios suivants."
+        },
+        {
+          "cle": "Campaign Pool: Jubilee",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Jubilé en jeu",
+          "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants tant qu'elle n'est pas perdue."
         }
       ]
     },
@@ -74,11 +81,25 @@
           "aide": "Vaincue, chaque joueur reçoit une amélioration de rôle au scénario 4."
         },
         {
+          "cle": "Captive Allies",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Alliés libérés",
+          "aide": "Ligne « Allies under Rescue Captives or Find the Prisoners » du carnet officiel. Ils s'ajoutent à ceux du scénario 2, ils ne les remplacent pas."
+        },
+        {
           "cle": "Campaign Pool: Jubilee",
           "type": "auto",
           "format": "int",
-          "libelle": "Jubilé ralliée",
-          "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants, tant qu'elle n'est pas perdue."
+          "libelle": "Jubilé en jeu",
+          "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants tant qu'elle n'est pas perdue."
+        },
+        {
+          "cle": "Jubilee removed",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Jubilé retirée de la campagne",
+          "aide": "Notée si Jubilé était acquise et n'est plus en jeu à la fin : elle ne reviendra plus."
         }
       ]
     },
@@ -96,6 +117,20 @@
           "format": "int",
           "libelle": "Attaque Surprise vaincue",
           "aide": "Vaincue, chaque joueur reçoit une amélioration de rôle au scénario 5."
+        },
+        {
+          "cle": "Campaign Pool: Jubilee",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Jubilé en jeu",
+          "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants tant qu'elle n'est pas perdue."
+        },
+        {
+          "cle": "Jubilee removed",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Jubilé retirée de la campagne",
+          "aide": "Notée si Jubilé était acquise et n'est plus en jeu à la fin : elle ne reviendra plus."
         }
       ]
     },
