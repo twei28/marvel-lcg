@@ -1,0 +1,162 @@
+{
+  "version": "1.0",
+  "code": "mut_gen",
+  "cle_extension": "32. Mutant Genesis",
+  "nom": "La Genèse des Mutants",
+  "nom_en": "Mutant Genesis",
+  "resume": "La chasse aux mutants est ouverte. Des Sentinelles patrouillent les rues, un programme gouvernemental fiche les vôtres, et le seul allié possible est celui que vous avez juré d'arrêter. Cinq scénarios où l'X-Men que vous incarnez apprend son rôle dans l'équipe, et le paie.",
+  "resume_en": "Mutant Genesis, the five-scenario X-Men campaign.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "scenarios": [
+    {
+      "id": "sabretooth",
+      "numero": 1,
+      "nom": "Sabretooth",
+      "nom_fr": "Dents de Sabre",
+      "resume": "Creed ne vient pas pour gagner, il vient pour vous connaître. Il encaisse, il compte vos coups, et il se relève en souriant. Pendant ce temps, la police du quartier décide de quel côté elle se range.",
+      "enjeu": "C'est ici que vous choisissez votre rôle dans l'équipe, et il vous suivra jusqu'au bout de la campagne. Faire tomber Police Effrayée vous vaudra une amélioration de ce rôle au scénario suivant.",
+      "victoire": [
+        {
+          "cle": "Role",
+          "parJoueur": true,
+          "type": "auto",
+          "libelle": "Rôle choisi",
+          "aide": "Choisi en jeu à la mise en place, une fois pour toute la campagne : Brawler, Commander, Defender ou Peacekeeper. C'est lui qui décide dans quel lot vos améliorations seront tirées."
+        },
+        {
+          "cle": "Frightened Police Defeated",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Police Effrayée vaincue",
+          "aide": "La manigance de campagne du scénario 1. Vaincue, chaque joueur reçoit une amélioration de rôle à la mise en place du scénario 2."
+        }
+      ]
+    },
+    {
+      "id": "project_wideawake",
+      "numero": 2,
+      "nom": "Project Wideawake",
+      "nom_fr": "Projet Wideawake",
+      "resume": "Le programme a un nom d'employé de bureau et un fichier à votre nom. Les prisonniers qu'il détient sont des mutants comme vous ; les libérer, c'est se désigner.",
+      "enjeu": "Les alliés CAPTIVE encore en jeu à la fin partent avec vous : ils seront mélangés à votre deck dès le scénario suivant. Vaincre L'Ennemi de Mon Ennemi ouvre l'amélioration de rôle du scénario 3.",
+      "victoire": [
+        {
+          "cle": "Enemy of My Enemy Defeated",
+          "type": "auto",
+          "format": "int",
+          "libelle": "L'Ennemi de Mon Ennemi vaincue",
+          "aide": "Vaincue, chaque joueur reçoit une amélioration de rôle au scénario 3."
+        },
+        {
+          "cle": "Captive Allies",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Alliés libérés",
+          "aide": "Les alliés portant le trait CAPTIVE, encore en jeu à la fin. Ils sont mélangés à votre deck à la mise en place des scénarios suivants."
+        }
+      ]
+    },
+    {
+      "id": "master_mold",
+      "numero": 3,
+      "nom": "Master Mold",
+      "nom_fr": "Master Mold",
+      "resume": "La machine qui fabrique les machines. Master Mold ne se bat pas, elle produit, et chaque tour perdu se compte en Sentinelles de plus sur la table.",
+      "enjeu": "Jubilé rejoint la campagne si vous la sortez du centre commercial, et se battra à vos côtés jusqu'à la fin. Trouver les Prisonniers ouvre l'amélioration de rôle du scénario 4.",
+      "victoire": [
+        {
+          "cle": "Find the Prisoners Defeated",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Trouver les Prisonniers vaincue",
+          "aide": "Vaincue, chaque joueur reçoit une amélioration de rôle au scénario 4."
+        },
+        {
+          "cle": "Campaign Pool: Jubilee",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Jubilé ralliée",
+          "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants, tant qu'elle n'est pas perdue."
+        }
+      ]
+    },
+    {
+      "id": "mansion_attack",
+      "numero": 4,
+      "nom": "Mansion Attack",
+      "nom_fr": "L'Attaque du Manoir",
+      "resume": "Ils sont venus chez vous. L'école est un champ de bataille, et il faut tenir assez longtemps pour que les élèves sortent.",
+      "enjeu": "Dernière amélioration de rôle de la campagne : vaincre Attaque Surprise vous la vaut à la mise en place du scénario final.",
+      "victoire": [
+        {
+          "cle": "Surprise Attack Defeated",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Attaque Surprise vaincue",
+          "aide": "Vaincue, chaque joueur reçoit une amélioration de rôle au scénario 5."
+        }
+      ]
+    },
+    {
+      "id": "magneto",
+      "numero": 5,
+      "nom": "Magneto",
+      "nom_fr": "Magneto",
+      "resume": "La Forteresse de Magneto, et l'homme qui a toujours eu à moitié raison. Tout ce que la campagne vous a laissé entre les mains sert ici, et rien de plus.",
+      "enjeu": "Fin de la campagne. Il n'y a plus de scénario suivant à nourrir.",
+      "final": true,
+      "victoire": []
+    }
+  ],
+  "victoire_commune": [
+    {
+      "cle": "Role Upgrades Removed",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "liste",
+      "libelle": "Améliorations de rôle épuisées",
+      "aide": "Les améliorations retirées de la partie. Elles ne seront plus tirées : le lot de votre rôle s'épuise au fil de la campagne."
+    },
+    {
+      "cle": "Future Past in Victory Display",
+      "type": "auto",
+      "format": "liste",
+      "options": [
+        "32166",
+        "32167",
+        "32168",
+        "32169",
+        "32170"
+      ],
+      "libelle": "Futur Passé mises en pile de victoire",
+      "aide": "Écartées pour de bon. Elles ne reviendront dans aucun scénario."
+    },
+    {
+      "cle": "Future Past in Encounter Deck",
+      "type": "auto",
+      "format": "liste",
+      "options": [
+        "32166",
+        "32167",
+        "32168",
+        "32169",
+        "32170"
+      ],
+      "libelle": "Futur Passé restées dans le deck Rencontre",
+      "aide": "Elles reviendront mélangées au deck de rencontre des scénarios suivants."
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "Points de vie restants",
+      "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
+    }
+  ]
+}
