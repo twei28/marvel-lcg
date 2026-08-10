@@ -16,19 +16,19 @@ qu'on gagne dans un scénario (améliorations, alliés, compteurs) est enregistr
 dans un **carnet de campagne** et rejoue automatiquement à la mise en place du
 scénario suivant.
 
-**Le moteur est câblé pour les six boîtes à récompenses**, mesuré par sonde
-scénario par scénario (détail au §6). **Quatre ont en plus leur fichier
-`data/campagnes/*.json` et sont jouables depuis l'écran** :
+**Les six boîtes à récompenses sont jouables** depuis le 10/8/2026, chacune
+avec son fichier `data/campagnes/*.json` et ses planches de livret :
 
 - L'Avènement de Crâne Rouge (`trors`)
 - Intentions Sinistres (`sm`)
 - The Mad Titan's Shadow (`mts`)
-- La Genèse des Mutants (`mut_gen`), depuis le 10/8/2026
+- La Genèse des Mutants (`mut_gen`)
+- NeXt Evolution (`next_evol`)
+- L'Ère d'Apocalypse (`aoa`)
 
-**Deux autres sont câblées côté moteur mais n'ont pas encore de fichier de
-définition**, donc invisibles sur `/campagne.html` : NeXt Evolution
-(`next_evol`) et Age of Apocalypse (`aoa`). C'est le travail décrit au §9, sur
-le modèle de `mts.json` ou de `mut_gen.json`.
+Galaxy's Most Wanted, Agents of S.H.I.E.L.D. et Civil War n'ont aucune
+récompense codée côté moteur : elles se joueraient en séquence pure, sans
+carnet. Rien à câbler pour elles.
 
 **Une clé fausse ne fait aucun bruit** (§5). Depuis le 10/8/2026,
 `tools/verifier_campagnes.py` compare chaque clé déclarée aux chaînes du
@@ -661,8 +661,12 @@ configuration de place.
 
 Par ordre d'intérêt :
 
-1. **Écrire `next_evol.json` et `aoa.json`**, sur le modèle de `mts.json` ou
-   de `mut_gen.json` (§6) : relever les clés exactes dans le `campaign.py` de
+1. ~~**Écrire `next_evol.json` et `aoa.json`**~~ **FAIT le 10/8/2026.** Les
+   deux sont jouables, leurs clés vérifiées et leurs effets éprouvés à la
+   sonde : l'environnement « Équipe Rassemblée » entre en jeu pour
+   `next_evol`, et le MALUS des Réfugiés Paniqués atterrit dans le deck pour
+   `aoa`, dans les deux cas seulement avec le carnet. Méthode d'origine, sur
+   le modèle de `mts.json` ou de `mut_gen.json` (§6) : relever les clés exactes dans le `campaign.py` de
    chaque pack, récupérer l'ordre des scénarios dans `data/sets_info.json`,
    écrire résumés et enjeux en français, puis passer
    `tools/verifier_campagnes.py`. C'est ce qui manque pour que ces deux

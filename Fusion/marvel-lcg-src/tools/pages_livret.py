@@ -32,6 +32,32 @@ PDFS = os.path.abspath(os.path.join(RACINE, "..", "..", ".."))
 LARGEUR = 975
 
 CARTES = {
+    "next_evol": {
+        "pdf": "mc40_next_evolution_rulebook-web.pdf",
+        # p6 : regles du mode campagne. p7 : manigances de campagne et expert.
+        "regles_campagne": [6, 7],
+        # Mise en page melangee : tantot UNE planche entre deux scenarios (elle
+        # sert alors des deux cotes), tantot DEUX (chacune la sienne).
+        "scenarios": [
+            ("morlock_siege", 1, 8, [9], 10),
+            ("on_the_run", 2, None, [11], 12),
+            ("juggernaut", 3, 13, [14], 15),
+            ("mister_sinister", 4, None, [16], 17),
+            ("stryfe", 5, None, [18], [19, 20]),
+        ],
+    },
+    "aoa": {
+        "pdf": "mc45_age_of_apocalypse_rulebook.pdf",
+        # p4 regles du mode campagne, p5 les missions annexes, p6 les tentatives.
+        "regles_campagne": [4, 5, 6],
+        "scenarios": [
+            ("unus", 1, 7, [8], 9),
+            ("four_horsemen", 2, 10, [11, 12], 13),
+            ("apocalypse", 3, None, [14], 15),
+            ("dark_beast", 4, None, [16], 17),
+            ("en_sabah_nur", 5, 18, [19, 20], 21),
+        ],
+    },
     "mts": {
         "pdf": "mc21_the_mad_titans_shadow_rulebook-compressed.pdf",
         # page 4 : regles du mode campagne et de la campagne experte.

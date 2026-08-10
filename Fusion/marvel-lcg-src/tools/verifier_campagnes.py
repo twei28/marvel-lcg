@@ -48,6 +48,25 @@ def litteraux(chemin):
     return trouves
 
 
+def connue(cle, litteraux):
+    """La cle existe-t-elle dans le moteur, ecrite ou COMPOSEE ?
+
+    Beaucoup de cles sont fabriquees a l'execution : `f'Campaign Pool: {nom}'`,
+    ou le prefixe est un litteral et le nom vient d'une table (CAMPAIGN_SCHEMES,
+    OVERSEERS, MISSIONS...). Chercher la cle entiere ne trouve donc rien, et
+    l'outil criait au loup sur les 21 cles de next_evol et aoa alors qu'elles
+    sont toutes justes. On accepte donc aussi une cle qui se decoupe en un
+    prefixe litteral suivi d'un suffixe litteral.
+    """
+    if cle in litteraux:
+        return True
+    for prefixe in litteraux:
+        if prefixe and prefixe.endswith(" ") and cle.startswith(prefixe):
+            if cle[len(prefixe):] in litteraux:
+                return True
+    return False
+
+
 def cles_du_fichier(definition):
     for scenario in definition.get("scenarios") or []:
         for champ in scenario.get("victoire") or []:
@@ -85,7 +104,7 @@ def main():
                     connues |= litteraux(os.path.join(racine, nom))
 
         cles = list(cles_du_fichier(definition))
-        manquantes = [c for c in cles if c not in connues]
+        manquantes = [c for c in cles if not connue(c, connues)]
         total_manquantes += len(manquantes)
         etat = "OK" if not manquantes else "%d INTROUVABLE(S)" % len(manquantes)
         print("  %-10s %2d cle(s) declaree(s)  %s" % (code, len(cles), etat))

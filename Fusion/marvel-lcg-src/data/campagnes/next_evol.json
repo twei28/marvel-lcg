@@ -1,0 +1,248 @@
+{
+  "version": "1.0",
+  "code": "next_evol",
+  "cle_extension": "40. NeXt Evolution",
+  "nom": "NeXt Evolution",
+  "nom_en": "NeXt Evolution",
+  "resume": "Les Maraudeurs frappent les tunnels, et ce qui reste des Morlocks compte sur vous. Cinq scénarios où l'équipe se construit entre les missions : chaque préparatif accompli devient un avantage acquis pour la suite, et Hope Summers paie le prix de vos échecs.",
+  "resume_en": "NeXt Evolution, the five-scenario X-Force campaign.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "scenarios": [
+    {
+      "id": "morlock_siege",
+      "numero": 1,
+      "nom": "Morlock Siege",
+      "nom_fr": "Le Siège des Morlocks",
+      "resume": "Les Maraudeurs descendent dans les tunnels pour y massacrer ceux qui s'y cachaient. On ne gagne pas ce scénario, on limite les pertes.",
+      "enjeu": "Chaque Maraudeur abattu ne reviendra pas au scénario suivant, et chaque Morlock sauvé se retrouvera à vos côtés.",
+      "victoire": [
+        {
+          "cle": "Marauders Defeated",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Maraudeurs vaincus",
+          "aide": "Ils sont retirés du deck du vilain au scénario 2 : ceux que vous abattez ici, vous ne les reverrez pas."
+        },
+        {
+          "cle": "Morlocks Saved",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Morlocks sauvés",
+          "aide": "Ils viendront vous prêter main-forte au scénario 2."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "01-morlock_siege-intro-1.jpg"
+        ],
+        "regles": [
+          "01-morlock_siege-regles-1.jpg"
+        ],
+        "epilogue": [
+          "01-morlock_siege-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "on_the_run",
+      "numero": 2,
+      "nom": "On the Run",
+      "nom_fr": "En Cavale",
+      "resume": "Il faut sortir des tunnels avec les survivants, pendant que les Maraudeurs encore debout vous traquent.",
+      "enjeu": "Ce que vous avez préparé se voit ici : un environnement acquis rend vos ennemis coriaces, et les Morlocks sauvés se battent avec vous.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "01-morlock_siege-epilogue-1.jpg"
+        ],
+        "regles": [
+          "02-on_the_run-regles-1.jpg"
+        ],
+        "epilogue": [
+          "02-on_the_run-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "juggernaut",
+      "numero": 3,
+      "nom": "Juggernaut",
+      "nom_fr": "Le Fléau",
+      "resume": "Le Fléau ne s'arrête pas. Il accumule de l'élan à chaque round, et chaque round qui passe le rend plus difficile à contenir.",
+      "enjeu": "Les dégâts encaissés par Hope Summers sont notés : elle repartira blessée d'autant au scénario suivant.",
+      "victoire": [
+        {
+          "cle": "Hope Summers's Damage Scenario 3",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Dégâts subis par Hope Summers",
+          "aide": "Relevés à la fin du scénario 3. Ils la suivent au scénario 4."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "03-juggernaut-intro-1.jpg"
+        ],
+        "regles": [
+          "03-juggernaut-regles-1.jpg"
+        ],
+        "epilogue": [
+          "03-juggernaut-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "mister_sinister",
+      "numero": 4,
+      "nom": "Mister Sinister",
+      "nom_fr": "Mister Sinister",
+      "resume": "Sinister a ce qu'il voulait et le sait. Il joue avec vous en attendant que son plan se referme.",
+      "enjeu": "Comme au scénario précédent, les blessures de Hope la suivront jusqu'au dernier affrontement.",
+      "victoire": [
+        {
+          "cle": "Hope Summers's Damage Scenario 4",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Dégâts subis par Hope Summers",
+          "aide": "Relevés à la fin du scénario 4. Ils la suivent au scénario 5."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "03-juggernaut-epilogue-1.jpg"
+        ],
+        "regles": [
+          "04-mister_sinister-regles-1.jpg"
+        ],
+        "epilogue": [
+          "04-mister_sinister-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "stryfe",
+      "numero": 5,
+      "nom": "Stryfe",
+      "nom_fr": "Stryfe",
+      "resume": "Stryfe tient Hope, et tout ce que la campagne vous a laissé sert ici.",
+      "enjeu": "Fin de la campagne.",
+      "final": true,
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "04-mister_sinister-epilogue-1.jpg"
+        ],
+        "regles": [
+          "05-stryfe-regles-1.jpg"
+        ],
+        "epilogue": [
+          "05-stryfe-epilogue-1.jpg",
+          "05-stryfe-epilogue-2.jpg"
+        ]
+      }
+    }
+  ],
+  "victoire_commune": [
+    {
+      "cle": "Campaign Pool: Team Assembled",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Équipe Rassemblée : avantage acquis",
+      "aide": "Gagné en accomplissant « Rassembler l'Équipe ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Campaign Pool: Safehouse Established",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Refuge Établi : avantage acquis",
+      "aide": "Gagné en accomplissant « Établir un Refuge ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Campaign Pool: Geared Up",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Équipés : avantage acquis",
+      "aide": "Gagné en accomplissant « S'Équiper ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Campaign Pool: Mission Prepped",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mission Préparée : avantage acquis",
+      "aide": "Gagné en accomplissant « Préparer la Mission ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Campaign Pool: Practiced Maneuvers",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Manœuvres Répétées : avantage acquis",
+      "aide": "Gagné en accomplissant « Répéter les Manœuvres ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Campaign Pool: Prepared Defenses",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Défenses Prêtes : avantage acquis",
+      "aide": "Gagné en accomplissant « Préparer les Défenses ». L'environnement entre en jeu à chaque scénario suivant."
+    },
+    {
+      "cle": "Removed: Assemble the Team",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Rassembler l'Équipe : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Removed: Establish Safehouse",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Établir un Refuge : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Removed: Gear Up",
+      "type": "auto",
+      "format": "int",
+      "libelle": "S'Équiper : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Removed: Mission Prep",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Préparer la Mission : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Removed: Practice Maneuvers",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Répéter les Manœuvres : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Removed: Prepare Defenses",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Préparer les Défenses : manigance déjà tentée",
+      "aide": "Notée pour ne plus être proposée : chaque préparatif ne se tente qu'une fois dans la campagne."
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "Points de vie restants",
+      "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
+    }
+  ],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg"
+  ]
+}

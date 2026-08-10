@@ -1,0 +1,226 @@
+{
+  "version": "1.0",
+  "code": "aoa",
+  "cle_extension": "45. Age of Apocalypse",
+  "nom": "L'Ère d'Apocalypse",
+  "nom_en": "Age of Apocalypse",
+  "resume": "Apocalypse a gagné, et le monde qu'il a fait tient debout. Cinq scénarios menés non pas contre un vilain mais contre une mission : à chaque partie vous choisissez ce que vous allez sauver, et vous vivez ensuite avec ce que vous n'avez pas pu.",
+  "resume_en": "Age of Apocalypse, the five-scenario mission-driven campaign.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "scenarios": [
+    {
+      "id": "unus",
+      "numero": 1,
+      "nom": "Unus",
+      "nom_fr": "Unus",
+      "resume": "Unus l'Intouchable garde la route, et son champ de force ne cède à rien de ce que vous savez faire.",
+      "enjeu": "La mission que vous choisissez ici décidera de ce que la campagne vous laissera pour la suite.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "01-unus-intro-1.jpg"
+        ],
+        "regles": [
+          "01-unus-regles-1.jpg"
+        ],
+        "epilogue": [
+          "01-unus-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "four_horsemen",
+      "numero": 2,
+      "nom": "Four Horsemen",
+      "nom_fr": "Les Quatre Cavaliers",
+      "resume": "Les Quatre Cavaliers ne viennent pas négocier. Ils viennent rappeler qui règne.",
+      "enjeu": "Chaque mission accomplie retire une menace de la campagne ; chaque échec en ajoute une.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "02-four_horsemen-intro-1.jpg"
+        ],
+        "regles": [
+          "02-four_horsemen-regles-1.jpg",
+          "02-four_horsemen-regles-2.jpg"
+        ],
+        "epilogue": [
+          "02-four_horsemen-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "apocalypse",
+      "numero": 3,
+      "nom": "Apocalypse",
+      "nom_fr": "Apocalypse",
+      "resume": "Apocalypse en personne. Ce n'est pas un combat, c'est une démonstration.",
+      "enjeu": "Les conséquences de vos missions passées pèsent ici de tout leur poids.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "02-four_horsemen-epilogue-1.jpg"
+        ],
+        "regles": [
+          "03-apocalypse-regles-1.jpg"
+        ],
+        "epilogue": [
+          "03-apocalypse-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "dark_beast",
+      "numero": 4,
+      "nom": "Dark Beast",
+      "nom_fr": "Le Fauve Noir",
+      "resume": "Le Fauve Noir travaille dans les sous-sols, et ce qu'il y fabrique explique bien des choses.",
+      "enjeu": "Avant-dernière mission : ce que vous ne sauvez pas maintenant est perdu.",
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "03-apocalypse-epilogue-1.jpg"
+        ],
+        "regles": [
+          "04-dark_beast-regles-1.jpg"
+        ],
+        "epilogue": [
+          "04-dark_beast-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "en_sabah_nur",
+      "numero": 5,
+      "nom": "En Sabah Nur",
+      "nom_fr": "En Sabah Nur",
+      "resume": "En Sabah Nur, à la source. Tout ce que la campagne vous a laissé sert ici.",
+      "enjeu": "Fin de la campagne.",
+      "final": true,
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "05-en_sabah_nur-intro-1.jpg"
+        ],
+        "regles": [
+          "05-en_sabah_nur-regles-1.jpg",
+          "05-en_sabah_nur-regles-2.jpg"
+        ],
+        "epilogue": [
+          "05-en_sabah_nur-epilogue-1.jpg"
+        ]
+      }
+    }
+  ],
+  "victoire_commune": [
+    {
+      "cle": "Mission Done: Liberate the Seattle Core",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mission tentée : Libérer le Cœur de Seattle",
+      "aide": "Notée une fois tentée : une mission ne se joue qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Mission Done: Evacuate Survivors",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mission tentée : Évacuer les Survivants",
+      "aide": "Notée une fois tentée : une mission ne se joue qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Mission Done: Sabotage the Sea Wall",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mission tentée : Saboter la Digue",
+      "aide": "Notée une fois tentée : une mission ne se joue qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Mission Done: Find Lost Mutants",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mission tentée : Retrouver les Mutants Perdus",
+      "aide": "Notée une fois tentée : une mission ne se joue qu'une fois dans la campagne."
+    },
+    {
+      "cle": "Campaign Pool: Desperate Measures",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Mesures Désespérées disponibles",
+      "aide": "Gagnées en libérant le Cœur de Seattle. Chaque joueur peut en glisser une dans son deck à chaque partie."
+    },
+    {
+      "cle": "Campaign Pool: Panicked Refugees",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Réfugiés Paniqués imposés",
+      "aide": "MALUS. Noté si l'évacuation a échoué : chaque joueur devra en mélanger une copie dans son deck à chaque partie."
+    },
+    {
+      "cle": "Campaign Pool: North American Sea Wall",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Digue Nord-Américaine imposée",
+      "aide": "MALUS. Noté si le sabotage a échoué : elle sera mélangée au deck de rencontre à chaque mise en place."
+    },
+    {
+      "cle": "Campaign Ally",
+      "parJoueur": true,
+      "type": "auto",
+      "libelle": "Allié de campagne",
+      "aide": "Choisi en retrouvant les Mutants Perdus. Il rejoint votre deck pour le reste de la campagne. Un échec à cette mission le fait perdre."
+    },
+    {
+      "cle": "Overseer Defeated: Mister Sinister",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Surveillant vaincu : Mister Sinister",
+      "aide": "Une fois vaincu, il ne reviendra plus surveiller une mission."
+    },
+    {
+      "cle": "Overseer Defeated: The Shadow King",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Surveillant vaincu : le Roi d'Ombre",
+      "aide": "Une fois vaincu, il ne reviendra plus surveiller une mission."
+    },
+    {
+      "cle": "Overseer Defeated: Abyss",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Surveillant vaincu : Abysse",
+      "aide": "Une fois vaincu, il ne reviendra plus surveiller une mission."
+    },
+    {
+      "cle": "Overseer Defeated: Sugar Man",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Surveillant vaincu : Sugar Man",
+      "aide": "Une fois vaincu, il ne reviendra plus surveiller une mission."
+    },
+    {
+      "cle": "Overseer Defeated: Mikhail Rasputin",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Surveillant vaincu : Mikhail Raspoutine",
+      "aide": "Une fois vaincu, il ne reviendra plus surveiller une mission."
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "parJoueur": true,
+      "type": "auto",
+      "format": "int",
+      "detection": "pv_restants",
+      "libelle": "Points de vie restants",
+      "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
+    }
+  ],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg",
+    "00-campagne-regles-3.jpg"
+  ]
+}
