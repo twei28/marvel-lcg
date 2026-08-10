@@ -204,27 +204,36 @@ test.describe("Lancement d'une partie", () => {
 
     // Parcours minimal, choisi pour etre stable : tout vient de la boite de
     // base, qui ne disparaitra jamais du jeu.
-    //   Etape 1 - Mode ......... « Solo » est deja selectionne par defaut.
-    await continuer(page);
-
-    //   Etape 2 - Heros ........ Spider-Man (deux heros portent ce nom).
+    //
+    // L'assistant a ete refondu : il compte cinq etapes (Equipe, Decks,
+    // Mechant, Menace, Final) la ou ce test en parcourait six, mode et heros
+    // etant desormais reunis sur le premier ecran. Le parcours commencait donc
+    // par un « Continuer » sur un bouton que rien n'activait, et ce test etait
+    // rouge du 6 au 10/8/2026. Choisir le heros AVANT de continuer, toujours :
+    // c'est lui qui debloque l'etape.
+    //   Etape 1 - Equipe ....... mode ET heros. « Solo » est deja selectionne,
+    //                            Spider-Man reste a choisir (deux heros
+    //                            portent ce nom, d'ou le `first()`).
     await page
       .getByRole('button', { name: /^Spider-Man/ })
       .first()
       .click();
     await continuer(page);
 
-    //   Etape 3 - Decks ........ le deck de base est deja retenu.
+    //   Etape 2 - Decks ........ le deck de base est deja retenu.
     await continuer(page);
 
-    //   Etape 4 - Scenario ..... Rhino, premier scenario de la boite de base.
-    await page.getByRole('button', { name: /^Rhino$/ }).first().click();
+    //   Etape 3 - Mechant ...... Rhino, premier scenario de la boite de base.
+    //   Le nom accessible du bouton est « Rhino Rhino EXPERT » : la vignette
+    //   repete le nom et affiche le badge de difficulte. Un `/^Rhino$/` ne
+    //   matchait donc plus rien. On ancre au debut, jamais sur l'egalite.
+    await page.getByRole('button', { name: /^Rhino\b/ }).first().click();
     await continuer(page);
 
-    //   Etape 5 - Difficulte ... les reglages par defaut conviennent.
+    //   Etape 4 - Menace ....... les reglages par defaut conviennent.
     await continuer(page);
 
-    //   Etape 6 - Recapitulatif  le bouton de lancement doit etre actif.
+    //   Etape 5 - Final ........ le bouton de lancement doit etre actif.
     const lancer = page.getByRole('button', { name: /lancer la partie/i });
     await expect(
       lancer,
