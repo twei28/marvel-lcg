@@ -17,17 +17,23 @@ dans un **carnet de campagne** et rejoue automatiquement à la mise en place du
 scénario suivant.
 
 **Le moteur est câblé pour les six boîtes à récompenses**, mesuré par sonde
-scénario par scénario (détail au §6). **Trois ont en plus leur fichier
+scénario par scénario (détail au §6). **Quatre ont en plus leur fichier
 `data/campagnes/*.json` et sont jouables depuis l'écran** :
 
 - L'Avènement de Crâne Rouge (`trors`)
 - Intentions Sinistres (`sm`)
 - The Mad Titan's Shadow (`mts`)
+- La Genèse des Mutants (`mut_gen`), depuis le 10/8/2026
 
-**Trois autres sont câblées côté moteur mais n'ont pas encore de fichier de
-définition**, donc invisibles sur `/campagne.html` : Mutant Genesis
-(`mut_gen`), NeXt Evolution (`next_evol`) et Age of Apocalypse (`aoa`).
-C'est le travail décrit au §9, sur le modèle de `mts.json`.
+**Deux autres sont câblées côté moteur mais n'ont pas encore de fichier de
+définition**, donc invisibles sur `/campagne.html` : NeXt Evolution
+(`next_evol`) et Age of Apocalypse (`aoa`). C'est le travail décrit au §9, sur
+le modèle de `mts.json` ou de `mut_gen.json`.
+
+**Une clé fausse ne fait aucun bruit** (§5). Depuis le 10/8/2026,
+`tools/verifier_campagnes.py` compare chaque clé déclarée aux chaînes du
+moteur et refuse de se taire dessus. À lancer après toute écriture de
+définition.
 
 La septième boîte, Galaxy's Most Wanted (`gmw`), n'a aucune récompense codée
 côté moteur : elle se joue en séquence pure, sans carnet. Rien à câbler pour
@@ -587,11 +593,16 @@ configuration de place.
 
 Par ordre d'intérêt :
 
-1. **Écrire `mut_gen.json`, `next_evol.json` et `aoa.json`**, sur le modèle de
-   `mts.json` (§6) : relever les clés exactes dans le `campaign.py` de chaque
-   pack, récupérer l'ordre des scénarios dans `data/sets_info.json`, écrire
-   résumés et enjeux en français. C'est ce qui manque pour que ces trois
+1. **Écrire `next_evol.json` et `aoa.json`**, sur le modèle de `mts.json` ou
+   de `mut_gen.json` (§6) : relever les clés exactes dans le `campaign.py` de
+   chaque pack, récupérer l'ordre des scénarios dans `data/sets_info.json`,
+   écrire résumés et enjeux en français, puis passer
+   `tools/verifier_campagnes.py`. C'est ce qui manque pour que ces deux
    boîtes, déjà câblées côté moteur, deviennent jouables depuis l'écran.
+   `mut_gen.json` est fait, et éprouvé à la sonde sur les cinq scénarios :
+   mise en place de campagne, rôle conservé d'un scénario à l'autre, porte
+   « manigance vaincue » ouvrant l'amélioration suivante (avec son témoin
+   négatif), Jubilé ralliée, allié CAPTIVE remélangé, et carnet sortant écrit.
 2. **Corriger la sonde pour lire `campaign_log_last_file`** au lieu du nom en
    dur `campaign_log_last.json` (§8), avant toute mesure faite sur une
    configuration de place.
