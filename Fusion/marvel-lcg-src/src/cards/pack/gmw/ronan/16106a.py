@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.gmw.campaign import CampaignSetup
 
 # Interception Imminent
 
@@ -30,6 +31,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(5),
         AbilityFactory.WhenCardSetup(
             "This",
             interception_imminent,

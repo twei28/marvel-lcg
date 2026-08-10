@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.gmw.campaign import CampaignSetup
 
 # The Missing Milano
 
@@ -25,6 +26,7 @@ def GetAbilities() -> Sequence['Ability']:
         GetShipCommand(effect).PushCards(faces, effect)
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.WhenCardSetup(
             "This",
             the_missing_milano
