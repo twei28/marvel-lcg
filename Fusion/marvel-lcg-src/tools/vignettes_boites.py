@@ -29,7 +29,14 @@ HAUTEUR = 300
 
 # L'ordre dit quelle carte represente le mieux un pack. Un heros d'abord :
 # c'est lui qu'on cherche des yeux dans la grille.
-PRIORITE = ("Hero", "AlterEgo", "Villain", "Ally", "Minion")
+#
+# « Leader » vient juste apres le vilain, et pas par gout du detail : la boite
+# 57 Synthezoid Smackdown n'a NI heros NI vilain, c'est un affrontement entre
+# deux camps menes par des Leaders (She-Hulk et Vision). Sans ce type, l'outil
+# tombait sur le premier sbire venu et affichait un « S.H.I.E.L.D. Operator »
+# en guise de boite, ce qui ne dit rien a personne. Signale en jeu le
+# 10/8/2026 : « le visuel de synthezoid smackdown n'est pas le bon ».
+PRIORITE = ("Hero", "AlterEgo", "Villain", "Leader", "MainScheme", "Ally", "Minion")
 
 
 def image_de(card_id):
