@@ -37,6 +37,92 @@ def _nom_de_fichier(brut: str) -> str:
     return propre or 'campagne'
 
 
+def resume_campagnes() -> 'List[Dict[str, Any]]':
+    """Les campagnes du joueur, telles que les hauts faits les lisent.
+
+    Une campagne est GAGNEE quand tous les scenarios de sa boite sont dans
+    `termines` et qu'elle n'a pas ete perdue au dernier (voir la cle `defaite`
+    des definitions). Le nombre de scenarios vient de la definition livree,
+    jamais d'un nombre en dur : rien ne dit que toutes les boites en auront
+    cinq.
+
+    C'est ici et pas dans `game/achievements.py` : savoir ou vivent les
+    campagnes est le metier du serveur. Le module des hauts faits, lui, ne lit
+    aucun fichier et reste eprouvable sans disque.
+    """
+    import json as json_lib
+    import os
+
+    tailles: Dict[str, int] = {}
+    dossier_def = DEFINITIONS_FOLDER.value
+    if os.path.isdir(dossier_def):
+        for nom in os.listdir(dossier_def):
+            if not nom.endswith('.json'):
+                continue
+            try:
+                with open(os.path.join(dossier_def, nom), encoding='utf-8') as f:
+                    definition = json_lib.load(f)
+            except Exception:
+                continue
+            tailles[definition.get('code', nom[:-5])] = len(definition.get('scenarios') or [])
+
+    sorties: List[Dict[str, Any]] = []
+    dossier = CAMPAGNES_FOLDER.value
+    if os.path.isdir(dossier):
+        for nom in os.listdir(dossier):
+            if not nom.endswith('.json'):
+                continue
+            try:
+                with open(os.path.join(dossier, nom), encoding='utf-8') as f:
+                    campagne = json_lib.load(f)
+            except Exception:
+                continue
+            code = campagne.get('code', '')
+            total = tailles.get(code, 0)
+            faits = len(set(campagne.get('termines') or []))
+            sorties.append({
+                'code': code,
+                'difficulte': campagne.get('difficulte', 'standard'),
+                'gagnee': bool(total and (faits >= total) and not campagne.get('perdue')),
+            })
+    return sorties
+
+
+def _evaluer_hauts_faits() -> None:
+    """Debloque ce qu'une campagne qui vient de s'achever peut debloquer.
+
+    Ici, et pas a la fin de la partie : le scenario final est gagne AVANT que
+    le panneau de recompenses n'ecrive `termines`. Evalue a la fin de partie,
+    la campagne ne serait jamais terminee au bon moment, et le haut fait
+    tomberait une partie trop tard.
+    """
+    import json as json_lib
+    import os
+    try:
+        from game import achievements
+        from engine import Engine
+
+        chemin = ConfigVariables.File('games_history_file', 'games_history.json').value
+        journal = []
+        if os.path.exists(chemin):
+            try:
+                with open(chemin, encoding='utf-8') as f:
+                    charge = json_lib.load(f)
+                if isinstance(charge, list):
+                    journal = charge
+            except Exception:
+                journal = []
+        achievements.evaluer(Engine.statistics.content, journal, None, resume_campagnes())
+    except Exception as exc:
+        # Un haut fait manque n'a jamais justifie de perdre une campagne : la
+        # sauvegarde a deja abouti quand on arrive ici.
+        try:
+            from engine.log import Log
+            Log.Debug(CATEGORY_NAME, f'hauts faits non evalues : {exc}')
+        except Exception:
+            pass
+
+
 class GameServerCampagne(GameServerBase):
 
     # ------------------------------------------------------------- definitions --
@@ -192,6 +278,9 @@ class GameServerCampagne(GameServerBase):
         chemin = os.path.join(dossier, f'{identifiant}.json')
         with open(chemin, 'w', encoding='utf-8') as f:
             json_lib.dump(campagne, f, ensure_ascii=False, indent=1)
+        # Une campagne ne s'acheve qu'ici : c'est le seul endroit qui voie
+        # passer le dernier scenario reporte au carnet.
+        _evaluer_hauts_faits()
         return web.json_response({'result': 'saved', 'id': identifiant,
                                   'campagne': campagne})
 

@@ -47,16 +47,23 @@ class Definition:
 class Contexte:
     """Tout ce qu'une regle peut consulter au moment de l'evaluation.
 
-    `stats`   : les cumuls globaux (game/statistics/statistics.py)
-    `journal` : la liste des parties terminees (games_history.json)
-    `partie`  : le resume de la partie qui vient de finir (ou None)
+    `stats`     : les cumuls globaux (game/statistics/statistics.py)
+    `journal`   : la liste des parties terminees (games_history.json)
+    `partie`    : le resume de la partie qui vient de finir (ou None)
+    `campagnes` : les campagnes du joueur, resumees par l'APPELANT sous la
+                  forme {'code', 'difficulte', 'gagnee'}. Ce module ne lit
+                  aucun fichier : savoir ou vivent les campagnes et combien
+                  de scenarios compte une boite est le metier du serveur, pas
+                  le sien.
     """
 
     def __init__(self, stats: Any, journal: 'List[Dict[str, Any]]',
-                 partie: 'Dict[str, Any]|None' = None) -> None:
+                 partie: 'Dict[str, Any]|None' = None,
+                 campagnes: 'List[Dict[str, Any]]|None' = None) -> None:
         self.stats = stats
         self.journal = journal
         self.partie = partie or {}
+        self.campagnes = campagnes or []
 
     # --- raccourcis de lecture -------------------------------------------
     def s(self, nom: str) -> int:
@@ -75,6 +82,12 @@ class Contexte:
 
     def scenarios_vaincus(self) -> 'Set[str]':
         return {p.get("scenario", "") for p in self.victoires() if p.get("scenario")}
+
+    def campagnes_gagnees(self) -> 'List[Dict[str, Any]]':
+        return [c for c in self.campagnes if c.get("gagnee")]
+
+    def boites_de_campagne_gagnees(self) -> 'Set[str]':
+        return {c.get("code", "") for c in self.campagnes_gagnees() if c.get("code")}
 
 
 def definitions() -> 'List[Definition]':
@@ -104,6 +117,20 @@ def definitions() -> 'List[Definition]':
     ajouter("expert_1", "Mode expert",
             "Remporter une partie en mode expert.", "progression",
             lambda c: sum(1 for p in c.victoires() if p.get("expert")), 1)
+
+    # Campagnes menees a leur terme. Une campagne PERDUE au dernier scenario
+    # ne compte pas : c'est `gagnee` qui le dit, et l'appelant l'a calcule.
+    ajouter("campagne_1", "Chroniqueur",
+            "Mener une campagne jusqu'a son dernier scenario, et le gagner.",
+            "progression", lambda c: len(c.campagnes_gagnees()), 1)
+    ajouter("campagne_boites_3", "Chroniqueur × 3",
+            "Terminer les campagnes de 3 boites differentes.", "progression",
+            lambda c: len(c.boites_de_campagne_gagnees()), 3)
+    ajouter("campagne_experte", "Increvable",
+            "Terminer une campagne en mode expert, ou la defaite du dernier "
+            "scenario perd tout.", "defi",
+            lambda c: sum(1 for x in c.campagnes_gagnees()
+                          if x.get("difficulte") == "expert"), 1)
 
     for n in (100, 1000, 5000):
         ajouter(f"degats_{n}", f"Cogneur × {n}",
@@ -223,9 +250,10 @@ def enregistrer(data: 'Dict[str, Any]') -> None:
 
 # -------------------------------------------------------------- evaluation
 def evaluer(stats: Any, journal: 'List[Dict[str, Any]]',
-            partie: 'Dict[str, Any]|None' = None) -> 'List[Definition]':
+            partie: 'Dict[str, Any]|None' = None,
+            campagnes: 'List[Dict[str, Any]]|None' = None) -> 'List[Definition]':
     """Met a jour le fichier et renvoie les hauts faits NOUVELLEMENT debloques."""
-    ctx = Contexte(stats, journal, partie)
+    ctx = Contexte(stats, journal, partie, campagnes)
     data = charger()
     debloques = data["debloques"]
     nouveaux: List[Definition] = []
@@ -259,9 +287,10 @@ def evaluer(stats: Any, journal: 'List[Dict[str, Any]]',
     return nouveaux
 
 
-def etat_complet(stats: Any, journal: 'List[Dict[str, Any]]') -> 'Dict[str, Any]':
+def etat_complet(stats: Any, journal: 'List[Dict[str, Any]]',
+                 campagnes: 'List[Dict[str, Any]]|None' = None) -> 'Dict[str, Any]':
     """Vue pour la galerie : chaque haut fait, sa progression, sa date."""
-    ctx = Contexte(stats, journal)
+    ctx = Contexte(stats, journal, None, campagnes)
     data = charger()
     sortie: List[Dict[str, Any]] = []
     for definition in definitions():

@@ -733,8 +733,20 @@ Par ordre d'intérêt :
    `Professor Saved`, prouvé à la sonde avec témoin (sans la clé de mission :
    absent ; avec : `"Professor Saved": "1"`).
 
-   Reste le **haut fait** de fin de campagne : le plateau en affiche pour les
-   parties normales, aucun ne récompense une campagne menée à son terme.
+   **Le haut fait de fin de campagne est fait, lui aussi** (même date) : trois
+   entrées, « Chroniqueur » (terminer une campagne), « Chroniqueur × 3 » (trois
+   boîtes différentes) et « Increvable » (une campagne experte menée à son
+   terme). Le partage est net : `resume_campagnes()` côté serveur transforme
+   les fichiers du disque en `{code, difficulte, gagnee}`, et
+   `game/achievements.py` décide à partir de ce résumé sans jamais lire un
+   fichier. Une campagne perdue au dernier scénario ne compte pas, et le nombre
+   de scénarios vient de la définition livrée, jamais d'un 5 en dur.
+
+   L'évaluation se déclenche dans `/save_campagne` et pas à la fin de la
+   partie : le scénario final est gagné AVANT que le panneau de récompenses
+   n'écrive `termines`, donc à la fin de partie la campagne n'est jamais encore
+   terminée. Éprouvé par `npm run campagne-hauts-faits`, qui traverse les deux
+   moitiés par le serveur — un banc sur l'une ne prouverait rien sur l'autre.
 5. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés
    unitairement sur des formes mesurées, mais n'ont jamais été vus dans une
    vraie fin de scénario Zola ni en campagne experte. C'est exactement le

@@ -214,7 +214,10 @@ class GameServerGet(GameServerBase):
             journal = []
 
         stats = Engine.statistics.content
-        return web.json_response(achievements.etat_complet(stats, journal))
+        # La galerie montre aussi la progression des hauts faits de campagne :
+        # sans ce resume, ils s'afficheraient eternellement a zero.
+        from engine.device.web.server.server_campagne import resume_campagnes
+        return web.json_response(achievements.etat_complet(stats, journal, resume_campagnes()))
 
     async def get_games_history(self, request: web.Request) -> web.Response:
         # Ajout local : journal des parties terminees (voir game/rule/statistics.py).
