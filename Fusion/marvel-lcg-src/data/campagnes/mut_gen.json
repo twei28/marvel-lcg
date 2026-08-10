@@ -32,7 +32,18 @@
           "libelle": "Police Effrayée vaincue",
           "aide": "La manigance de campagne du scénario 1. Vaincue, chaque joueur reçoit une amélioration de rôle à la mise en place du scénario 2."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "01-sabretooth-intro-1.jpg"
+        ],
+        "regles": [
+          "01-sabretooth-regles-1.jpg"
+        ],
+        "epilogue": [
+          "01-sabretooth-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "project_wideawake",
@@ -63,7 +74,19 @@
           "libelle": "Jubilé en jeu",
           "aide": "Notée si Jubilé est en jeu à la fin de la partie. Elle entrera en jeu à la mise en place des scénarios suivants tant qu'elle n'est pas perdue."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "01-sabretooth-epilogue-1.jpg"
+        ],
+        "regles": [
+          "02-project_wideawake-regles-1.jpg",
+          "02-project_wideawake-regles-2.jpg"
+        ],
+        "epilogue": [
+          "02-project_wideawake-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "master_mold",
@@ -101,7 +124,18 @@
           "libelle": "Jubilé retirée de la campagne",
           "aide": "Notée si Jubilé était acquise et n'est plus en jeu à la fin : elle ne reviendra plus."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "02-project_wideawake-epilogue-1.jpg"
+        ],
+        "regles": [
+          "03-master_mold-regles-1.jpg"
+        ],
+        "epilogue": [
+          "03-master_mold-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "mansion_attack",
@@ -132,7 +166,19 @@
           "libelle": "Jubilé retirée de la campagne",
           "aide": "Notée si Jubilé était acquise et n'est plus en jeu à la fin : elle ne reviendra plus."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "04-mansion_attack-intro-1.jpg"
+        ],
+        "regles": [
+          "04-mansion_attack-regles-1.jpg",
+          "04-mansion_attack-regles-2.jpg"
+        ],
+        "epilogue": [
+          "04-mansion_attack-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "magneto",
@@ -142,7 +188,20 @@
       "resume": "La Forteresse de Magneto, et l'homme qui a toujours eu à moitié raison. Tout ce que la campagne vous a laissé entre les mains sert ici, et rien de plus.",
       "enjeu": "Fin de la campagne. Il n'y a plus de scénario suivant à nourrir.",
       "final": true,
-      "victoire": []
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "04-mansion_attack-epilogue-1.jpg"
+        ],
+        "regles": [
+          "05-magneto-regles-1.jpg",
+          "05-magneto-regles-2.jpg"
+        ],
+        "epilogue": [
+          "05-magneto-epilogue-1.jpg",
+          "05-magneto-epilogue-2.jpg"
+        ]
+      }
     }
   ],
   "victoire_commune": [
@@ -193,5 +252,9 @@
       "libelle": "Points de vie restants",
       "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
     }
+  ],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg"
   ]
 }
