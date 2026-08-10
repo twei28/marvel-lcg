@@ -122,8 +122,13 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
         try:
             from engine.config import ConfigVariables
             chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
-            with open(chemin, 'w') as file:
-                json.dump({'players_won': message.players_won, 'scenario': scenario_id, 'suggestions': out}, file, indent=1, ensure_ascii=False)
+            # Tout-ou-rien : une lecture concurrente de /get_carnet_suggere
+            # tombait sur du JSON tronque, la route avalait l'erreur et rendait
+            # un carnet VIDE. Pour mts, dont aucune cle n'a de detecteur de
+            # secours, la recompense etait perdue sans un mot.
+            from engine.ecriture_atomique import ecrire_json
+            ecrire_json(chemin, {'players_won': message.players_won,
+                                 'scenario': scenario_id, 'suggestions': out})
         except OSError:
             pass
         Message.TextRender('\n--- Campaign Log (suggestions) ---', world)

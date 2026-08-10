@@ -633,27 +633,29 @@ aujourd'hui, `CollectMTS` (`mts`) ne rendant jamais `None`, mais `mut_gen`,
 avant d'écrire leurs fichiers de campagne (§9), sans quoi une pénalité comme
 `Panicked Refugees` (`aoa`), une fois posée, ne pourra plus jamais être levée.
 
-**L'écriture de `campaign_log_last.json` n'est pas atomique.** `open(chemin,
-'w')` puis `json.dump` écrit directement dans le fichier final ; une lecture
-concurrente (une autre place, une requête `/get_carnet_suggere` qui arrive
-pendant l'écriture) peut tomber sur du JSON tronqué. La route avale l'erreur
-de parsing et rend un carnet vide, silencieusement. Pour `mts`, dont aucun
-champ de `mts.json` n'a de `detection` de secours (§5 : les neuf clés sont
-des drapeaux moteur purs), un carnet vide ainsi rendu perd la récompense sans
-le moindre message, ni pour le joueur ni dans les journaux.
+~~**L'écriture de `campaign_log_last.json` n'est pas atomique.**~~ **CORRIGÉ
+le 10/8/2026**, et pas seulement pour le carnet : les trois écritures qui
+comptent passent par `src/engine/ecriture_atomique.py` (fichier temporaire dans
+le dossier de destination, `fsync`, puis `os.replace`). Le carnet sortant, les
+campagnes du joueur (`/save_campagne`) et les hauts faits, ce dernier parce
+qu'il garde des déblocages pour toujours.
 
-**La sonde efface `campaign_log_last.json` par son nom en dur.** Le carnet
-sortant décrit au §3 est cloisonné par place de serveur via la clé de
-configuration `campaign_log_last_file` (commit `89a1193`, comme le sont déjà
-`campagne_folder` et `achievements_file`), mais `tools/sonde_campagne.py`
-continue de lire et d'effacer le nom de fichier par défaut, sans passer par
-cette clé. Avec la configuration par défaut les deux chemins coïncident et
-rien ne se voit. Sur une
-configuration de place (place 2, 3 ou 4 d'un serveur multi), la sonde
-effacerait puis relirait le mauvais fichier, ce qui rendrait un faux positif
-ou un faux négatif selon ce que la partie précédente y a laissé. C'est une
-dette connue, à corriger avant toute mesure de sonde faite sur une
-configuration de place.
+Ce n'était pas théorique : le 10/8/2026, l'extinction du poste en pleine partie
+a laissé `campagnes/Essai_RoleBuild.json` à 0 octet, et `list_campagnes`, qui
+saute les fichiers illisibles, faisait disparaître la campagne de l'écran sans
+un mot. `tools/test_ecriture_atomique.py` charge le module par son chemin (il
+n'a que des imports standard, donc pas besoin d'amorcer le moteur) et casse la
+sérialisation en plein milieu : l'ancien contenu doit rester intact et aucun
+temporaire ne doit survivre. Le témoin négatif a été joué sur l'ancien code :
+53 octets avant, 29 après, JSON illisible.
+
+~~**La sonde efface `campaign_log_last.json` par son nom en dur.**~~
+**CORRIGÉ le 10/8/2026.** `tools/sonde_campagne.py` lit désormais la même
+source que le moteur, la clé `campaign_log_last_file` du `launch.json` du
+dossier de jeu, que `launcher_fast.py` y recopie à chaque lancement. Éprouvé
+sur une configuration de place simulée (`./carnet_place2.json`), avec témoin :
+la sonde d'avant ne capture aucun carnet, la corrigée le capture et y relit
+`Professor Saved`.
 
 ---
 
@@ -675,9 +677,9 @@ Par ordre d'intérêt :
    mise en place de campagne, rôle conservé d'un scénario à l'autre, porte
    « manigance vaincue » ouvrant l'amélioration suivante (avec son témoin
    négatif), Jubilé ralliée, allié CAPTIVE remélangé, et carnet sortant écrit.
-2. **Corriger la sonde pour lire `campaign_log_last_file`** au lieu du nom en
-   dur `campaign_log_last.json` (§8), avant toute mesure faite sur une
-   configuration de place.
+2. ~~**Corriger la sonde pour lire `campaign_log_last_file`**~~ **FAIT le
+   10/8/2026** (§8), en même temps que l'écriture atomique des campagnes, du
+   carnet sortant et des hauts faits.
 3. ~~**Identité verrouillée, deck modifiable** entre deux scénarios~~
    **FAIT le 10/8/2026.** La fiche de scénario porte un bouton « Modifier les
    decks » (absent tant qu'un scénario est en cours), qui renvoie à l'écran de

@@ -242,8 +242,10 @@ def charger() -> 'Dict[str, Any]':
 
 def enregistrer(data: 'Dict[str, Any]') -> None:
     try:
-        with open(_chemin(), "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=1)
+        # Ce fichier garde des deblocages pour toujours : le tronquer
+        # perdrait tout ce que le joueur a accumule.
+        from engine.ecriture_atomique import ecrire_json
+        ecrire_json(_chemin(), data)
     except Exception as exc:
         Log.Debug(CATEGORY_NAME, f"ecriture impossible : {exc}")
 

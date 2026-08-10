@@ -275,9 +275,12 @@ class GameServerCampagne(GameServerBase):
         campagne['id'] = identifiant
         campagne['derniere_activite'] = datetime.datetime.now().isoformat(timespec='seconds')
 
+        # Ecriture tout-ou-rien : une coupure ici laissait un fichier vide,
+        # que list_campagnes saute en silence. La campagne disparaissait de
+        # l'ecran sans un mot (constate le 10/8/2026).
+        from engine.ecriture_atomique import ecrire_json
         chemin = os.path.join(dossier, f'{identifiant}.json')
-        with open(chemin, 'w', encoding='utf-8') as f:
-            json_lib.dump(campagne, f, ensure_ascii=False, indent=1)
+        ecrire_json(chemin, campagne)
         # Une campagne ne s'acheve qu'ici : c'est le seul endroit qui voie
         # passer le dernier scenario reporte au carnet.
         _evaluer_hauts_faits()

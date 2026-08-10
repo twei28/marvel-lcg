@@ -28,14 +28,33 @@ PUZZLE = json.loads(os.environ.get("PUZZLE", "[]"))
 RAPPORT = os.environ.get("RAPPORT", "/tmp/descripteur.json")
 FIN_DE_PARTIE = os.environ.get("FIN_DE_PARTIE", "") == "1"
 
-# Le moteur ecrit toujours dans le repertoire courant, soit .game. On efface
-# le temoin AVANT la partie : sans cela on relirait le rapport de l'execution
-# precedente et on croirait le scenario cable alors qu'il ne l'est pas.
-CARNET_SORTANT = "campaign_log_last.json"
-
 GAME = os.path.join(ROOT, ".game")
 os.chdir(GAME)
 sys.path.insert(0, GAME)
+
+# Le carnet sortant est CLOISONNE PAR PLACE depuis le commit 89a1193 : son nom
+# vient de la cle de configuration `campaign_log_last_file`, comme
+# `campagne_folder` et `achievements_file`. Le lire en dur marchait tant qu'on
+# sondait la configuration par defaut, ou les deux chemins coincident ; sur une
+# configuration de place (place 2, 3 ou 4 d'un serveur multi), la sonde
+# effacait puis relisait le fichier d'une AUTRE place, et rendait un faux
+# positif ou un faux negatif selon ce que la partie precedente y avait laisse.
+#
+# On lit la meme source que le moteur : le launch.json du dossier de jeu, que
+# `launcher_fast.py` y recopie a chaque lancement.
+def _carnet_sortant():
+    try:
+        with open(os.path.join(GAME, "launch.json"), encoding="utf-8") as f:
+            return json.load(f).get("campaign_log_last_file") or "campaign_log_last.json"
+    except Exception:
+        return "campaign_log_last.json"
+
+
+CARNET_SORTANT = _carnet_sortant()
+
+# On efface le temoin AVANT la partie : sans cela on relirait le rapport de
+# l'execution precedente et on croirait le scenario cable alors qu'il ne l'est
+# pas.
 
 if FIN_DE_PARTIE and os.path.exists(CARNET_SORTANT):
     os.remove(CARNET_SORTANT)
