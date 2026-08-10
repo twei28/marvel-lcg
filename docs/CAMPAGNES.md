@@ -547,7 +547,38 @@ sur `master_mold` : deck de 33 cartes sans alliés au carnet, 35 avec deux, et
 aucun traceback. La répartition entre plusieurs sièges reste structurelle, non
 mesurée : la sonde joue en solo.
 
-**Restent à auditer sur cette couche : trors, sm, mts, next_evol, aoa.**
+**NeXt Evolution : fait. Aucun écart.** Les cinq mises en place sont
+conformes, y compris les détails qu'on rate à une lecture rapide : les
+Maraudeurs retirés AVANT le texte « Setup » de Gotta Get Away, le tough donné
+aux ennemis au seul scénario 2, un compteur de momentum sur Juggernaut par
+environnement en jeu, Black Tom et un Saule Rampant distribués face cachée puis
+le reste remélangé, la défausse qui s'arrête sur un sbire OU un attachement
+PSIONIC suivie du remélange de la défausse rencontre. Et surtout le soin
+expert, qui **change de prix selon le scénario** : un pion accélération aux
+scénarios 2 et 4 (p.11 et p.16), une carte rencontre face cachée aux scénarios
+3 et 5 (p.14 et p.18). Le code fait exactement cette distinction.
+
+**Age of Apocalypse : fait. Aucun écart, dont un faux positif instructif.**
+Le carnet officiel donne trois colonnes par mission (Setup, Defeated, Not
+Defeated) et l'ordre des en-têtes dans le PDF ne suit pas celui des colonnes :
+il faut lire les positions pour ne pas inverser récompense et pénalité. Une
+fois remises dans l'ordre, les quatre missions correspondent.
+
+Deux directives « Setup » semblent manquer au code : « Set each campaign ally
+aside » (Find Lost Mutants) et « Set each copy of Desperate Measures upgrade
+aside » (Liberate the Seattle Core). Elles sont en réalité **inatteignables** :
+une mission n'est jamais proposée deux fois (`Mission Done` la retire du
+tirage), et le bonus qu'elle met de côté n'est écrit au carnet qu'à la FIN de
+la partie où elle est jouée. Pendant sa propre mission, il n'y a donc rien à
+mettre de côté. Propriété non évidente, écrite ici pour qu'on ne « corrige »
+pas ce qui n'est pas cassé.
+
+Une approximation assumée : « Professor X cannot enter play during this game »
+au scénario 5. Professor X est une carte JOUEUR de Mutant Genesis (32019), pas
+une carte du set AoA ; l'interdiction porte sur le deck du joueur et n'est pas
+contrôlée. À respecter à la main si on l'a mis dans son deck.
+
+**Restent à auditer sur cette couche : mts, trors, sm.**
 
 ## 7. Les scans du livret
 
