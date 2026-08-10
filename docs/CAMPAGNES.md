@@ -519,6 +519,36 @@ carnet officiel dit ce que le livret DEMANDE. Les deux ne coïncident pas
 toujours, et seul le second est l'autorité. Lire le carnet avant d'écrire une
 définition, pas après.
 
+### Audit texte-vs-code, boîte par boîte (commencé le 10/8/2026)
+
+L'outil `verifier_campagnes.py` prouve qu'une clé déclarée existe dans le
+moteur, et le contrôle inverse prouve qu'aucune clé lue par le moteur n'est
+absente des écrans. **Aucun des deux ne dit qu'une clé juste applique la bonne
+règle.** D'où cette relecture, encart SETUP du livret contre `campaign.py`,
+instruction par instruction. Même méthode que l'audit comportemental d'Hercule,
+qui avait sorti deux vrais bugs invisibles aux tests de construction.
+
+**Mutant Genesis : fait. Un écart trouvé et corrigé.** Les quatre autres
+instructions de mise en place sont conformes (constitution du deck Futur Passé,
+amélioration de rôle tirée au hasard conditionnée à la manigance vaincue,
+Jubilé face B et retirée définitivement, manigance de campagne révélée, mode
+expert aux scénarios 2 à 5 — vérifié page par page, les lignes *Expert Campaign
+Only* des scénarios 3 et 5 existent bien, elles sont juste imprimées après
+l'en-tête VICTORY).
+
+L'écart : « Each CAPTIVE ally recorded in the campaign log **may** be shuffled
+into **any** player's deck » (p.12, 16 et 19). Le code ne prenait aucune des
+deux libertés, il mélangeait tout, d'office, dans le deck du **premier
+joueur**. En solo l'écart est mince, encore qu'un allié de plus dilue un deck et
+que le livret laisse le refuser. À quatre joueurs, tous les alliés libérés par
+toute l'équipe s'entassaient chez le joueur 1. Le premier joueur arbitre
+désormais allié par allié, avec l'option de laisser de côté. Mesuré à la sonde
+sur `master_mold` : deck de 33 cartes sans alliés au carnet, 35 avec deux, et
+aucun traceback. La répartition entre plusieurs sièges reste structurelle, non
+mesurée : la sonde joue en solo.
+
+**Restent à auditer sur cette couche : trors, sm, mts, next_evol, aoa.**
+
 ## 7. Les scans du livret
 
 `public/stories/<code>/`, nommés par rôle :

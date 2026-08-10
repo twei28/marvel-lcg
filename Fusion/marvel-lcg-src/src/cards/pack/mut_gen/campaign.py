@@ -89,12 +89,42 @@ def JubileeIntoPlay() -> 'Ability':
         return (CampaignLog.GetStrInternal('Jubilee removed', effect) == '')
     return AbilityFactoryCampaign.WhenCampaignSetup(action, conditions=[InPool('Jubilee'), check_not_removed])
 def ShuffleCaptiveAlliesIntoDeck() -> 'Ability':
+    """Chaque allie CAPTIF libere rejoint le deck d'un joueur, AU CHOIX.
+
+    Livret p.12, 16 et 19, mot pour mot : « Each CAPTIVE ally recorded in the
+    campaign log MAY be shuffled into ANY player's deck. » Deux libertes, et le
+    code n'en prenait aucune : il melangeait tout, d'office, dans le deck du
+    PREMIER joueur. En solo l'ecart est mince — encore qu'un allie de plus
+    dilue un deck, et que le livret laisse le refuser. A quatre joueurs, tous
+    les allies liberes par toute l'equipe s'entassaient chez le joueur 1.
+
+    Le premier joueur arbitre, allie par allie, comme il arbitre le reste de la
+    mise en place.
+    """
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
         card_ids = CampaignLog.GetListInternal('Captive Allies', effect)
-        if card_ids:
-            player = Worlds.GetFirstPlayer(effect)
-            cards = CardFactory.GenerateCards(card_ids, player.player_deck, effect.world)
-            Faces.ShuffleAllTo([x.face for x in cards], player.player_deck, effect)
+        if not card_ids:
+            return
+        premier = Worlds.GetFirstPlayer(effect)
+        joueurs = Worlds.GetPlayers(effect)
+        for card_id in card_ids:
+            paper = CardsDB.papers.get(card_id)
+            nom = (paper.name if paper else card_id)
+            choix = []
+            for joueur in joueurs:
+                identity = joueur.GetIdentity()
+                chez = (identity.paper.name if identity else f'joueur {(joueur.player_id + 1)}')
+                def fabriquer(card_id=card_id, joueur=joueur):
+                    def prendre(targets: Sequence['CardFace']):
+                        cards = CardFactory.GenerateCards([card_id], joueur.player_deck, effect.world)
+                        Faces.ShuffleAllTo([x.face for x in cards], joueur.player_deck, effect)
+                    return prendre
+                choix.append(AbilityFactory.ForChoiceAbility(
+                    f'{nom} -> deck de {chez}', fabriquer()))
+            # « may » : le refus est une option du livret, pas un oubli.
+            choix.append(AbilityFactory.ForChoiceAbility(
+                f'Laisser {nom} de cote', lambda targets: None))
+            premier.ChooseAbilities(effect, *choix)
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 def CampaignSetup(level: int) -> List['Ability']:
     abilities = [SetupFuturePastDeck()]
