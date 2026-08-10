@@ -429,6 +429,11 @@ export const DICO_EN_BASE = {
     "Figé pour toute la campagne, comme les identités.":
       "Locked for the whole campaign, like the identities.",
     "Mise en place": "Setup",
+    "Modifier les decks": "Change decks",
+    "Valider les decks": "Confirm decks",
+    "Reprends les mêmes identités, change ce que tu veux au deck :": "Keep the same identities, change whatever you like in the deck:",
+    "Campagne introuvable.": "Campaign not found.",
+    "Les identités ont changé : elles sont figées pour toute la campagne. Rien n'a été modifié.": "The identities changed: they are locked for the whole campaign. Nothing was modified.",
     "Règles de la campagne": "Campaign rules",
     "Les pages du livret qui valent pour toute la campagne, mode expert compris.": "The rulebook pages that apply to the whole campaign, expert mode included.",
     "Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.":

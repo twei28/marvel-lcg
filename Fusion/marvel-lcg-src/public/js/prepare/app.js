@@ -588,7 +588,7 @@ function navBar() {
                     class: "btn launch",
                     disabled: !stepComplete(1) || undefined,
                     onclick: validerEquipeCampagne,
-                }, t("Valider l'équipe"))
+                }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
                 : el("button", {
                     class: "btn launch",
                     disabled: (!validate(state).ok || (enLigne() && !state.salon.prete)) || undefined,
@@ -749,10 +749,17 @@ function modeStrip() {
         strip.append(el("div", { class: "mode-pill sel campagne-bandeau" },
             el("span", { class: "mode-mark mvl" }, "C"),
             el("span", { class: "mode-copy" },
-                el("b", {}, t("Campagne") + " — " + BROUILLON_CAMPAGNE.nom),
-                el("small", {}, BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · "
-                    + (BROUILLON_CAMPAGNE.difficulte === "expert" ? t("Campagne experte") : t("Standard"))
-                    + " · " + t("identités figées pour toute la campagne")),
+                el("b", {}, (BROUILLON_CAMPAGNE.modifie ? t("Modifier les decks") : t("Campagne"))
+                    + " — " + BROUILLON_CAMPAGNE.nom),
+                // En modification, le joueur doit RETROUVER ses identites : le
+                // livret interdit d'en changer, et l'ecran des campagnes refuse
+                // le retour si elles ont bouge. Autant les lui rappeler ici.
+                el("small", {}, BROUILLON_CAMPAGNE.modifie
+                    ? t("Reprends les mêmes identités, change ce que tu veux au deck :")
+                        + " " + (BROUILLON_CAMPAGNE.identites || []).join(", ")
+                    : BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · "
+                        + (BROUILLON_CAMPAGNE.difficulte === "expert" ? t("Campagne experte") : t("Standard"))
+                        + " · " + t("identités figées pour toute la campagne")),
             ),
         ));
         return strip;

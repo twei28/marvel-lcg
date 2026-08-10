@@ -678,10 +678,25 @@ Par ordre d'intérêt :
 2. **Corriger la sonde pour lire `campaign_log_last_file`** au lieu du nom en
    dur `campaign_log_last.json` (§8), avant toute mesure faite sur une
    configuration de place.
-3. **Identité verrouillée, deck modifiable** entre deux scénarios. Aujourd'hui
-   le deck est figé tel qu'il a été choisi à la création de la campagne. Le
-   livret autorise à changer d'aspect et de cartes entre les scénarios, mais
-   jamais de héros, et interdit de retirer les cartes gagnées en campagne.
+3. ~~**Identité verrouillée, deck modifiable** entre deux scénarios~~
+   **FAIT le 10/8/2026.** La fiche de scénario porte un bouton « Modifier les
+   decks » (absent tant qu'un scénario est en cours), qui renvoie à l'écran de
+   préparation avec le brouillon marqué `modifie`. Au retour, l'écran des
+   campagnes REMPLACE l'équipe au lieu d'en créer une : c'est la seule chose
+   qui distingue les deux branches, et un `modifie` perdu fabriquerait une
+   deuxième campagne sans le moindre message. La règle du livret est tenue au
+   retour, jamais avant : si les identités ont bougé, on refuse tout et on
+   n'écrit rien. Éprouvé par `npm run campagne-decks` (trois cas : création,
+   même identité avec un autre deck, identité changée), et le test a été mis
+   au rouge exprès en désarmant la branche de modification — il a bien vu la
+   seconde campagne apparaître.
+
+   Ce que ça ne fait pas encore : l'écran de préparation revient **vierge**,
+   le joueur doit re-choisir ses héros dans le même ordre (le bandeau les lui
+   rappelle) ; l'interdiction de retirer les cartes gagnées en campagne n'est
+   pas contrôlée ; et la mesure ne peut pas se faire sur `deck.name`, que
+   `validerEquipeCampagne` réécrit avec le nom du héros — deux decks
+   différents s'appellent pareil une fois enregistrés.
 4. **Haut fait** de fin de campagne, et la défaite finale en campagne experte
    qui perd la campagne (règle codée côté données mais pas côté écran).
 5. **Éprouver `cartes_sous_complot` et `pv_restants` en jeu.** Ils sont testés

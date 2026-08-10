@@ -344,6 +344,27 @@ function vueCampagne() {
                 ? el("a", { class: "btn launch", href: "/app/board.html" }, t("Reprendre le scénario en cours"))
                 : el("button", { class: "btn launch", onclick: () => proteger(() => lancerScenario(scenario)) },
                     t("Lancer le scénario")),
+            // Le livret l'autorise a chaque scenario, et le jeu le refusait :
+            // « each player must use their chosen identity for the entire
+            // campaign, but they are free to change aspects and alter the
+            // contents of their deck between scenarios ». Mutant Genesis en
+            // fait meme un pilier, le role-building. On repasse par l'ecran de
+            // preparation, seul endroit qui sait choisir un deck, et l'identite
+            // est verifiee au retour.
+            enCours ? null : el("button", {
+                class: "btn ghost",
+                onclick: () => {
+                    ecrireBrouillon({
+                        modifie: etat.campagne.id,
+                        code: definition.code,
+                        nom: etat.campagne.nom,
+                        difficulte: etat.campagne.difficulte,
+                        nbJoueurs: (etat.campagne.equipe || []).length || 1,
+                        identites: (etat.campagne.equipe || []).map((m) => m.nomHeros || m.heros),
+                    });
+                    window.location.href = "/prepare.html?campagne";
+                },
+            }, t("Modifier les decks")),
             enCours ? el("button", {
                 class: "btn ghost",
                 onclick: () => {
@@ -523,7 +544,29 @@ function rendre() {
 
     // Retour de l'ecran de preparation avec une equipe : on finit la creation.
     const brouillon = lireBrouillon();
-    if (brouillon && brouillon.equipe && brouillon.equipe.length) {
+    // Retour d'une MODIFICATION de decks : on ne cree rien, on remplace
+    // l'equipe d'une campagne existante. L'identite ne doit pas avoir bouge —
+    // c'est la seule chose que le livret interdit de changer — et on refuse
+    // plutot que de laisser une campagne changer de heros en silence.
+    if (brouillon && brouillon.modifie && brouillon.equipe && brouillon.equipe.length) {
+        try {
+            const campagne = (etat.campagnes || []).find((c) => c.id === brouillon.modifie);
+            if (!campagne) throw new Error(t("Campagne introuvable."));
+            const avant = (campagne.equipe || []).map((m) => m.nomHeros || m.heros).join("|");
+            const apres = brouillon.equipe.map((m) => m.nomHeros || m.heros).join("|");
+            if (avant !== apres) {
+                throw new Error(t("Les identités ont changé : elles sont figées pour toute la campagne. Rien n'a été modifié."));
+            }
+            campagne.equipe = brouillon.equipe;
+            effacerBrouillon();
+            etat.campagne = await apiCampagne.enregistrer(campagne);
+            etat.campagnes = await apiCampagne.liste();
+            await ouvrirCampagne(campagne.id);
+        } catch (e) {
+            effacerBrouillon();
+            etat.erreur = e.message;
+        }
+    } else if (brouillon && brouillon.equipe && brouillon.equipe.length) {
         try {
             const campagne = await apiCampagne.enregistrer({
                 code: brouillon.code,
