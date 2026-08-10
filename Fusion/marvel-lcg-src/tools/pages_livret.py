@@ -32,6 +32,21 @@ PDFS = os.path.abspath(os.path.join(RACINE, "..", "..", ".."))
 LARGEUR = 975
 
 CARTES = {
+    "mts": {
+        "pdf": "mc21_the_mad_titans_shadow_rulebook-compressed.pdf",
+        # page 4 : regles du mode campagne et de la campagne experte.
+        "regles_campagne": [4],
+        # Deux planches entre chaque scenario, jamais une seule : l'epilogue de
+        # l'un puis l'intro du suivant, deux scenes distinctes. Rien n'est donc
+        # partage ici, contrairement a mut_gen.
+        "scenarios": [
+            ("ebony_maw", 1, 5, [6, 7], 8),
+            ("the_tower_defense", 2, 9, [10, 11, 12, 13], 14),
+            ("thanos", 3, 15, [16, 17], 18),
+            ("hela", 4, 19, [20, 21], 22),
+            ("loki", 5, 23, [24, 25], 26),
+        ],
+    },
     "mut_gen": {
         "pdf": "mc32_mutant_genesis_rulebook_v5-compressed.pdf",
         # page 4 : regles du mode campagne ; page 5 : les roles et l'expert.

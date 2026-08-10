@@ -32,7 +32,19 @@
           "libelle": "Brèche de sécurité laissée ouverte",
           "aide": "La carte Security Breach sera mélangée au deck de rencontre des scénarios suivants."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "01-ebony_maw-intro-1.jpg"
+        ],
+        "regles": [
+          "01-ebony_maw-regles-1.jpg",
+          "01-ebony_maw-regles-2.jpg"
+        ],
+        "epilogue": [
+          "01-ebony_maw-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "the_tower_defense",
@@ -63,7 +75,21 @@
           "libelle": "Tour des Vengeurs endommagée",
           "aide": "Pénalité appliquée à la mise en place des scénarios suivants."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "02-the_tower_defense-intro-1.jpg"
+        ],
+        "regles": [
+          "02-the_tower_defense-regles-1.jpg",
+          "02-the_tower_defense-regles-2.jpg",
+          "02-the_tower_defense-regles-3.jpg",
+          "02-the_tower_defense-regles-4.jpg"
+        ],
+        "epilogue": [
+          "02-the_tower_defense-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "thanos",
@@ -87,7 +113,19 @@
           "libelle": "Les Pierres d'Infinité rassemblées par Thanos",
           "aide": "Pénalité appliquée à la mise en place des scénarios 4 et 5."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "03-thanos-intro-1.jpg"
+        ],
+        "regles": [
+          "03-thanos-regles-1.jpg",
+          "03-thanos-regles-2.jpg"
+        ],
+        "epilogue": [
+          "03-thanos-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "hela",
@@ -111,7 +149,19 @@
           "libelle": "Odin délivré",
           "aide": "Odin entre en jeu sous votre contrôle au scénario 5 s'il est noté ici."
         }
-      ]
+      ],
+      "pages": {
+        "intro": [
+          "04-hela-intro-1.jpg"
+        ],
+        "regles": [
+          "04-hela-regles-1.jpg",
+          "04-hela-regles-2.jpg"
+        ],
+        "epilogue": [
+          "04-hela-epilogue-1.jpg"
+        ]
+      }
     },
     {
       "id": "loki",
@@ -121,7 +171,19 @@
       "resume": "Loki règne sur Asgard et rien de ce que vous voyez n'est sûr d'exister. La campagne se termine ici, avec tout ce que vous y avez traîné.",
       "enjeu": "Rien à reporter : c'est le dernier scénario.",
       "final": true,
-      "victoire": []
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "05-loki-intro-1.jpg"
+        ],
+        "regles": [
+          "05-loki-regles-1.jpg",
+          "05-loki-regles-2.jpg"
+        ],
+        "epilogue": [
+          "05-loki-epilogue-1.jpg"
+        ]
+      }
     }
   ],
   "victoire_commune_expert": [
@@ -134,5 +196,8 @@
       "libelle": "Points de vie restants",
       "aide": "En campagne experte, vous reprenez le scénario suivant avec ces points de vie."
     }
+  ],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg"
   ]
 }
