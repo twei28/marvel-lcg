@@ -87,3 +87,8 @@ ui-check/page/
 # ne peut que le remplacer. C'est fait, et le fichier sort du suivi.
 # Le modele a cote, launch.online.exemple.json, garde la structure sans secret.
 Fusion/marvel-lcg-src/launch.online.json
+
+# Les proxies remplaces par un vrai scan, mis de cote par
+# tools/remplacer_proxies.py. Meme nature que assets/pics/ ignore plus haut :
+# des images, pas des sources. Gardes pour pouvoir revenir en arriere.
+Fusion/marvel-lcg-src/assets/pics-proxy/
