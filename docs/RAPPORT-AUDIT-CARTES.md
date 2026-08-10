@@ -193,3 +193,53 @@ détecte pas** un effet qui fait la mauvaise chose tout en ayant le bon type
 (mauvaise cible, mauvais nombre), ni un choix de conception discutable comme
 celui de First Responder. Pour ce niveau-là, il faudra des mini-scénarios de
 jeu (le moteur sait déjà le faire via les puzzles).
+
+---
+
+## Reprise du 10 août 2026 : les 132 suspicions restantes
+
+Le compteur était remonté de 123 à 132 avec les packs ajoutés depuis. La revue
+a été refaite en entier, et elle change autant l'outil que le verdict.
+
+**61 des 132 n'étaient pas des suspicions du tout.** Une fabrique sur deux
+emballe la vraie capacité dans un `DelayAbility` :
+`AfterUnitDefeatedUnit(AbilityType.Response, …)` rend un `DelayAbility` qui,
+**à l'exécution seulement**, enregistre l'ability intérieure portant le
+Response. Hors partie, le drapeau n'existe donc nulle part, et l'audit criait
+au loup sur la moitié de son propre rapport. Le détecteur regarde désormais
+aussi les `AbilityType.X` écrits dans la source et se tait quand le script
+déclare le bon type. **Le compteur tombe de 132 à 71**, sans qu'aucune carte
+n'ait changé. Il ne vérifie pas que la fabrique en fait quelque chose : c'est
+le rôle de `tools/test_capacites.py`.
+
+**114 des 132 avaient déjà été relues** le 2 août, à l'identifiant près. Les
+**18 nouvelles**, toutes venues des packs postérieurs, ont été ouvertes une par
+une : `21117`, `65001a`, `67012`, `68002`, `68012a`, `68012b`, `68016`,
+`68017`, `69025`, `70003`, `71001a`, `72001a`, `73006`, `74014`, `75003`,
+`75012`, `78017`, `78026`. **Dix-sept faux positifs**, dans trois familles déjà
+connues : le type est déclaré mais emballé ; la capacité est rendue par une
+fabrique dédiée du moteur (`ReduceCharacterTakeDamageBy`,
+`IfThereAreAtLeastCounterHere`, `ThisGainKeyword`) ; ou le marqueur n'est que
+CITÉ, la carte annulant le « When Revealed » d'une autre.
+
+**Les 2 `exhaust_sans_cout` sont eux aussi des faux positifs**, vérifiés dans
+le code et non plus supposés. `70003` Forces Combined s'incline dans son propre
+gestionnaire, et `75012` Network of Trees dans `AppelerEcureuil`, seul point de
+passage possible faute de message moteur « quand tu appellerais un écureuil ».
+Aucun des deux ne peut passer par un `CostFunc.Exhaust`.
+
+**Le seul vrai défaut trouvé n'en était pas un, et c'est la leçon.** Le script
+de `72001a` Venom portait depuis le 5 août un avertissement « DEFAUT CONNU :
+Hunger ne répond jamais », avec quatre pistes écartées. Hunger répond. Ce qui
+manquait n'était pas dans la carte mais dans la façon de l'éprouver : Venom
+frappe à 2, et contre un sbire de 3 PV son attaque de base ne tue pas, donc
+rien ne se déclenche — tout en laissant au journal l'apparence d'une attaque
+normale. Le cas ajouté lui donne Sharp Teeth pour monter à 3, et le journal
+donne alors « was defeated by Venom » puis « Venom gains 1 ♡ ». **Un
+avertissement en commentaire n'est pas une preuve ; il coûte plus cher qu'il ne
+rapporte tant qu'aucun cas rouge ne l'accompagne.**
+
+Deux pièges de l'API Puzzle découverts en écrivant ce cas, notés au §10 du
+guide : `Puzzle.Damage` sur un sbire ne fait **rien**, ni par `card_id` ni par
+nom et sans le moindre message ; et `Puzzle.Attack(x)` fait attaquer **x**,
+donc viser le sbire le fait frapper le héros.

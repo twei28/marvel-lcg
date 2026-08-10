@@ -156,11 +156,54 @@ MARQUEURS = [
 REGEX_MARQUEUR_QUELCONQUE = re.compile(
     "|".join(m[0] for m in MARQUEURS), re.IGNORECASE)
 
-def marqueurs_sans_capacite(texte: str, abilities):
+# Le type QU'UN SCRIPT DECLARE, par marqueur du texte imprime. Une fabrique sur
+# deux emballe la vraie capacite dans un `DelayAbility` qui n'en porte pas les
+# drapeaux : `AfterUnitDefeatedUnit(AbilityType.Response, ...)` rend un
+# DelayAbility qui, A L'EXECUTION seulement, enregistre l'interieur portant le
+# Response. Vu de l'exterieur et sans partie en cours, le drapeau n'existe pas.
+#
+# Mesure du 10/8/2026 : 61 des 132 suspicions venaient de la, soit pres de la
+# moitie d'un rapport qu'un humain doit relire a la main. Le detecteur regarde
+# donc AUSSI ce que la source declare, et se tait quand elle declare le bon
+# type. Il ne verifie pas que la fabrique en fait quelque chose : c'est le role
+# de tools/test_capacites.py.
+TYPES_ADMIS = {
+    "Response":      ("Response", "ForcedResponse", "HeroResponse", "AlterEgoResponse"),
+    "Interrupt":     ("Interrupt", "ForcedInterrupt", "HeroInterrupt",
+                      "AlterEgoInterrupt", "ForcedInterruptHero", "FirstPlayerInterrupt"),
+    "Action":        ("Action", "HeroAction", "AlterEgoAction", "ForcedAction",
+                      "FirstPlayerAction"),
+    "When Revealed": ("WhenRevealed",),
+    "When Defeated": ("WhenDefeated",),
+    "Resource":      ("Resource", "HeroResource", "AlterEgoResource"),
+    "Setup":         ("Setup",),
+    "Boost":         ("Boost",),
+}
+
+def types_declares(modules) -> set:
+    """Les `AbilityType.X` ecrits en toutes lettres dans les scripts."""
+    trouves = set()
+    for m in modules:
+        chemin = getattr(m, "__file__", None)
+        if not chemin:
+            continue
+        try:
+            source = open(chemin, encoding="utf-8").read()
+        except Exception:
+            continue
+        trouves |= set(re.findall(r"AbilityType\.(\w+)", source))
+    return trouves
+
+def marqueurs_sans_capacite(texte: str, abilities, declares=frozenset()):
     manquants = []
     for regex, nom, predicat in MARQUEURS:
-        if re.search(regex, texte, re.IGNORECASE) and not predicat(abilities):
-            manquants.append(nom)
+        if not re.search(regex, texte, re.IGNORECASE):
+            continue
+        if predicat(abilities):
+            continue
+        if declares & set(TYPES_ADMIS.get(nom, ())):
+            continue
+        manquants.append(nom)
     return manquants
 
 def cout_exhaust_manquant(texte: str, nom_carte: str, abilities):
@@ -232,7 +275,8 @@ for card_id, carte in CARTES.items():
             if problemes:
                 rapport["types_arguments"][card_id] = problemes
         if abilities and texte:
-            manquants = marqueurs_sans_capacite(texte, abilities)
+            manquants = marqueurs_sans_capacite(
+                texte, abilities, types_declares(modules))
             if manquants:
                 rapport["marqueur_sans_capacite"][card_id] = {
                     "nom": nom, "manquants": manquants, "texte": texte[:220]}

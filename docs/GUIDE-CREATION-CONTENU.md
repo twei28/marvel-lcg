@@ -1057,6 +1057,16 @@ tableau. À chaque synchro avec le dépôt officiel, réappliquer ce tableau
   `.SetTarget(Scheme2, range=(1, 1))` : `FindCardsOnField(card_type=...)` ne
   filtre pas les types de plan.
 - **Tests de comportement, désignation des cartes** : `Puzzle.*` cherche par NOM (`FindOrCreateFace`), pas par `card_id`. Un `card_id` d'identité fabrique une carte orpheline dans `aside_deck` et fait planter le rendu sur un `AssertionError` opaque. Écrire `Puzzle.ChangeForm('Amadeus Cho')`, pas `Puzzle.ChangeForm('68001b')`. Même chose pour le complot principal : `Puzzle.PlaceThreat('The Break-In!', 8)`. Corollaire : seul `ChangeForm` va dans `mise_en_place`, tout le reste dans `declencher`, sinon la nouvelle forme n'est pas encore active quand la commande suivante cherche son nom.
+- **`Puzzle.Attack(x)` fait attaquer X, pas attaquer X.** Pour qu'un héros
+  frappe un sbire, on écrit `Puzzle.Attack('<identité héros>')` avec le sbire
+  dans `cibles`. Écrire `Puzzle.Attack('<sbire>')` fait activer le SBIRE, qui
+  frappe le héros : le relevé montre alors des dégâts sur l'identité et une
+  cible toujours en jeu, ce qui se lit comme une capacité qui n'a pas marché.
+- **`Puzzle.Damage` sur un sbire ne fait RIEN**, ni par `card_id` ni par nom, et
+  sans le moindre message dans le journal : `FindOrCreateFace` rend une face qui
+  n'est pas `CanHealth` et la fonction sort en silence. Pour qu'une attaque de
+  base achève une cible, monter l'ATK de l'attaquant (une amélioration en jeu)
+  plutôt que baisser les PV de la cible.
 - **Écrire un cas de comportement : trois pièges qui coûtent plus cher que le
   cas lui-même.** `mise_en_place` ET `declencher` sont obligatoires même vides,
   sinon le harnais lève un `KeyError` brut au lieu d'un message. Une carte qui
