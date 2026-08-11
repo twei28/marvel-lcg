@@ -26,6 +26,11 @@ export type ChampVictoire = {
   obligatoire?: boolean
   detection?: string
   condition?: string
+  /**
+   * Le carnet CUMULE ce champ d'un scénario à l'autre : la valeur détectée est
+   * ce que la partie vient d'ajouter, pas le total. Voir `preRemplir`.
+   */
+  cumulatif?: boolean
   parametres?: {
     compteur?: string
     complot?: string
@@ -336,6 +341,8 @@ export function detecter(
       const valeur = compterTrait(monde, parametres.trait ?? '')
       return valeur > 0 ? String(valeur) : undefined
     }
+    case 'conditions_reputation':
+      return String(conditionsReputation(monde))
     case 'pv_restants': {
       const valeur = pvRestants(monde, joueurId)
       return valeur === undefined ? undefined : String(valeur)
@@ -343,6 +350,101 @@ export function detecter(
     default:
       return undefined
   }
+}
+
+/**
+ * Zones où une carte est EN JEU, au sens des conditions de la piste de réputation.
+ *
+ * Ni les decks, ni les défausses, ni les mises de côté, ni la pile de victoire :
+ * une carte qui y dort n'est pas « in play ». Les sbires engagés avec un joueur
+ * comptent, eux, et c'est justement le cas que la seule lecture de
+ * `area_villain` raterait.
+ */
+const ZONES_EN_JEU = [
+  'area_schemes_main',
+  'area_schemes_side',
+  'area_villain',
+  'area_environment',
+  'area_status_cards',
+] as const
+
+const ZONES_EN_JEU_JOUEUR: Array<keyof WorldPlayer> = [
+  'area_hero',
+  'allies',
+  'supports',
+  'engaged_enemies',
+  'obligations_area',
+  'environment_area',
+]
+
+/** Toutes les cartes réellement EN JEU, joueurs compris. */
+function cartesEnJeuToutes(monde: World): WorldCard[] {
+  const sortie: WorldCard[] = []
+  for (const zone of ZONES_EN_JEU) sortie.push(...cartesDe(monde, zone))
+  for (const joueur of monde.players ?? []) {
+    for (const zone of ZONES_EN_JEU_JOUEUR) {
+      const valeur = joueur[zone]
+      if (Array.isArray(valeur)) sortie.push(...(valeur as WorldCard[]))
+    }
+  }
+  return sortie
+}
+
+/** Un complot ANNEXE, quelle qu'en soit l'origine (rencontre ou joueur). */
+const TYPES_ANNEXES = ['EncounterSideScheme', 'PlayerSideScheme']
+
+/**
+ * Le total de réputation gagné par la partie qui vient de s'achever (sm).
+ *
+ * Les six conditions sont imprimées sous la piste de réputation (livret sm,
+ * p.22), et le livret les fait recalculer à la fin de CHAQUE scénario :
+ *
+ *   (+X) Victory points in the victory display
+ *   (+1) No minions in play
+ *   (+1) No side schemes in play
+ *   (+1) No threat on the main scheme
+ *   (+1) Fewer than 1 acceleration tokens in play
+ *   (+1) No defeated identities
+ *
+ * Aucune n'est une décision : ce sont six lectures de la table, et le joueur les
+ * recopiait à la main dans un champ `choix`. Tout est dans le descripteur, et les
+ * clés ci-dessous sont MESURÉES sur une vraie partie de Sandman, jamais déduites :
+ * la menace de la manigance principale est `info.k_threat` (un JETON, pas un
+ * compteur), les pions accélération `info.k_acceleration_token`, et les points de
+ * victoire `info.victory` sur chaque carte de la pile de victoire.
+ *
+ * La valeur rendue est ce que CETTE partie ajoute. Le cumul sur toute la
+ * campagne est fait par `preRemplir` à partir du carnet (attribut `cumulatif`) :
+ * le détecteur ne voit pas le carnet, et un détecteur qui rendrait le total
+ * ferait dépendre son résultat de ce qu'il ignore.
+ */
+export function conditionsReputation(monde: World): number {
+  const enJeu = cartesEnJeuToutes(monde)
+
+  const pointsDeVictoire = (monde.victory_display ?? []).reduce(
+    (total, carte) => total + (carte.info?.victory ?? 0),
+    0
+  )
+  const sbires = enJeu.filter((c) => c.card_type === 'Minion').length
+  const annexes = enJeu.filter((c) => TYPES_ANNEXES.includes(c.card_type)).length
+  const menace = (monde.area_schemes_main ?? []).reduce(
+    (total, carte) => total + (carte.info?.k_threat ?? 0),
+    0
+  )
+  const acceleration = enJeu.reduce(
+    (total, carte) => total + (carte.info?.k_acceleration_token ?? 0),
+    0
+  )
+  const vaincus = (monde.players ?? []).filter((j) => j.is_eliminated).length
+
+  return (
+    pointsDeVictoire +
+    (sbires === 0 ? 1 : 0) +
+    (annexes === 0 ? 1 : 0) +
+    (menace === 0 ? 1 : 0) +
+    (acceleration < 1 ? 1 : 0) +
+    (vaincus === 0 ? 1 : 0)
+  )
 }
 
 /**

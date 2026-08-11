@@ -43,6 +43,12 @@ export type EntreePreRemplissage = {
   total: number
 }
 
+/** Un entier de carnet : une valeur absente ou illisible vaut zéro. */
+function entier(valeur: string | undefined): number {
+  const nombre = parseInt(valeur ?? '', 10)
+  return Number.isFinite(nombre) ? nombre : 0
+}
+
 export function preRemplir({
   champs,
   monde,
@@ -68,7 +74,17 @@ export function preRemplir({
       const duMoteur = champ.type === 'auto' && suggestionsUtilisables ? suggestions[cle] : undefined
       const detectee = champ.type === 'auto' ? detecter(champ, monde, joueurId) : undefined
       const valeur = duMoteur ?? detectee ?? carnet?.[cle]
-      if (valeur !== undefined) sortie[cle] = valeur
+      if (valeur === undefined) continue
+      // Un champ CUMULATIF détecté vaut ce que la partie vient d'ajouter, pas le
+      // total : la piste de réputation de sm se recalcule à chaque scénario et
+      // s'ajoute aux nœuds déjà marqués. Le détecteur ne voit pas le carnet, c'est
+      // donc ici que la somme se fait. Ce que le MOTEUR relève, en revanche, est
+      // déjà cumulé par le collecteur (`Scenarios With A Cleared Board Member` en
+      // est l'exemple) : on ne l'additionne pas une seconde fois.
+      sortie[cle] =
+        champ.cumulatif && duMoteur === undefined && detectee !== undefined
+          ? String(entier(detectee) + entier(carnet?.[cle]))
+          : valeur
     }
   }
   return sortie

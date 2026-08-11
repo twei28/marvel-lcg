@@ -13,6 +13,13 @@
         "note": "Les PV restants sont reportés d'un scénario au suivant. Perdre Venom Goblin en campagne experte perd la campagne."
     },
 
+    "bilan": {
+        "titre": "Score de réputation final",
+        "cle": "Reputation Track",
+        "aide": "Facultatif, livret p.17 : après la victoire sur Venom Goblin, l'équipe peut calculer une dernière fois la section « Conditions » de sa piste, marquer les nœuds gagnés, et noter le total. Plus il est haut, mieux vous avez joué.",
+        "libelle_ajout": "Dernier calcul des conditions",
+        "aide_ajout": "Les points de cette dernière partie, à ajouter au total cumulé de la piste. Laisser à 0 pour reporter la piste telle quelle."
+    },
     "scenarios": [
         {
             "id": "sandman",
@@ -120,10 +127,12 @@
         },
         {
             "cle": "Reputation Track",
-            "type": "choix",
+            "type": "auto",
             "format": "int",
+            "detection": "conditions_reputation",
+            "cumulatif": true,
             "libelle": "Piste de Réputation (total cumulé)",
-            "aide": "À calculer sur ta piste papier, section « Conditions », puis à reporter ici. C'est elle qui déclenche récompenses ET pénalités : matériel S.H.I.E.L.D. dès 1, mulligan supplémentaire à 5, carte d'aspect à 9, version améliorée à 13, carte de départ en main à 17, Helicarrier à 21, Symbiote Suit à 25."
+            "aide": "Relevé par le jeu : les six conditions de la piste sont comptées sur la partie qui vient de finir (points de victoire, aucun sbire, aucune manigance annexe, aucune menace sur la manigance principale, aucun pion accélération, aucune identité vaincue), puis ajoutées aux nœuds déjà marqués. Corrigeable si tu joues avec une piste papier. C'est elle qui déclenche récompenses ET pénalités : matériel S.H.I.E.L.D. dès 1, mulligan supplémentaire à 5, carte d'aspect à 9, version améliorée à 13, carte de départ en main à 17, Helicarrier à 21, Symbiote Suit à 25."
         },
         {
             "cle": "S.H.I.E.L.D. Tech: Reputation Track Reward",
@@ -144,6 +153,7 @@
         {
             "cle": "Planning Ahead: Reputation Track Reward",
             "parJoueur": true,
+            "deck": "requis",
             "type": "choix",
             "libelle": "Récompense Réputation 17 — carte de départ en main",
             "aide": "À saisir quand la piste atteint 17 : l'identifiant de la carte de ton deck que tu veux avoir en main dès la mise en place."

@@ -29,6 +29,7 @@ import {
   complotEnJeu,
   compteurManigance,
   conditionRemplie,
+  conditionsReputation,
   detecter,
   joueurElimine,
   joueursEngages,
@@ -115,6 +116,89 @@ function monde(extra: Record<string, unknown> = {}): World {
 
 const EXPERIMENTALES = ['04072', '04073', '04074', '04075']
 const CAPTIFS = ['04097', '04098', '04099', '04100']
+
+describe('conditionsReputation — les six conditions de la piste de Sinister Motives', () => {
+  // Clés mesurées sur une vraie partie de Sandman : la menace de la manigance
+  // principale est `info.k_threat` (un JETON), les pions accélération
+  // `info.k_acceleration_token`, les points de victoire `info.victory`.
+  const principale = (info: Record<string, number>) =>
+    carte(48, '27064b', { card_type: 'MainScheme', info })
+
+  it('une table parfaitement nettoyée vaut les cinq conditions à +1', () => {
+    expect(conditionsReputation(monde({ area_schemes_main: [principale({})] }))).toBe(5)
+  })
+
+  it('ajoute les points de victoire de la pile de victoire', () => {
+    const m = monde({
+      area_schemes_main: [principale({})],
+      victory_display: [
+        carte(90, '27174a', { info: { victory: 1 } }),
+        carte(91, '27100a', { info: { victory: 3 } }),
+      ],
+    })
+    expect(conditionsReputation(m)).toBe(5 + 4)
+  })
+
+  it('un sbire engagé avec un joueur fait perdre sa condition', () => {
+    // Le piège : un sbire engagé n'est PAS dans `area_villain`. Ne lire que cette
+    // zone rendrait 5 au lieu de 4, et la piste avancerait trop vite.
+    const m = monde({
+      area_schemes_main: [principale({})],
+      players: [joueur({ engaged_enemies: [carte(30, '27166', { card_type: 'Minion' })] })],
+    })
+    expect(conditionsReputation(m)).toBe(4)
+  })
+
+  it('une manigance annexe en jeu fait perdre sa condition', () => {
+    const m = monde({
+      area_schemes_main: [principale({})],
+      area_schemes_side: [carte(74, '27176', { card_type: 'EncounterSideScheme' })],
+    })
+    expect(conditionsReputation(m)).toBe(4)
+  })
+
+  it('de la menace sur la manigance principale fait perdre sa condition', () => {
+    expect(conditionsReputation(monde({ area_schemes_main: [principale({ k_threat: 2 })] }))).toBe(4)
+  })
+
+  it('un seul pion accélération, où qu il soit, fait perdre sa condition', () => {
+    const m = monde({
+      area_schemes_main: [principale({})],
+      area_environment: [carte(95, '27065', { info: { k_acceleration_token: 1 } })],
+    })
+    expect(conditionsReputation(m)).toBe(4)
+  })
+
+  it('une identité vaincue fait perdre sa condition', () => {
+    const m = monde({
+      area_schemes_main: [principale({})],
+      players: [joueur({ is_eliminated: true })],
+    })
+    expect(conditionsReputation(m)).toBe(4)
+  })
+
+  it('le pire des cas ne rend pas un total négatif', () => {
+    const m = monde({
+      area_schemes_main: [principale({ k_threat: 5, k_acceleration_token: 1 })],
+      area_schemes_side: [carte(74, '27176', { card_type: 'EncounterSideScheme' })],
+      area_villain: [carte(31, '27167', { card_type: 'Minion' })],
+      players: [joueur({ is_eliminated: true })],
+    })
+    expect(conditionsReputation(m)).toBe(0)
+  })
+
+  it('passe par detecter() sous le nom déclaré dans les données', () => {
+    const champ: ChampVictoire = {
+      cle: 'Reputation Track',
+      type: 'auto',
+      format: 'int',
+      detection: 'conditions_reputation',
+      cumulatif: true,
+      libelle: '',
+    }
+    expect(detecter(champ, monde({ area_schemes_main: [principale({})] }), 0)).toBe('5')
+  })
+})
 
 describe('cartesEnJeu — armes expérimentales de Crossbones', () => {
   it("compte une arme attachée au vilain (forme mesurée sur Crossbones)", () => {

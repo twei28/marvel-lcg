@@ -255,6 +255,88 @@ describe('preRemplir', () => {
   })
 })
 
+describe('preRemplir — un champ cumulatif (piste de réputation de sm)', () => {
+  /**
+   * La piste de sm se recalcule à la fin de CHAQUE scénario et s'AJOUTE aux
+   * nœuds déjà marqués. Le détecteur rend ce que la partie vient de gagner ; le
+   * total, lui, ne peut se faire qu'ici, où le carnet est connu.
+   */
+  const CHAMP_CUMULATIF: ChampVictoire = {
+    cle: 'Reputation Track',
+    type: 'auto',
+    format: 'int',
+    detection: 'conditions_reputation',
+    cumulatif: true,
+    libelle: 'Piste de Réputation',
+  }
+
+  it('ajoute ce que la partie a gagné aux nœuds déjà marqués', () => {
+    const sortie = preRemplir({
+      champs: [CHAMP_CUMULATIF],
+      monde: monde(),
+      carnet: { 'Reputation Track': '8' },
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+    })
+    // Le monde de ce fichier n'a ni sbire, ni annexe, ni menace, ni accélération,
+    // ni identité vaincue : cinq conditions, plus rien en pile de victoire.
+    expect(sortie['Reputation Track']).toBe('13')
+  })
+
+  it('part de zéro quand le carnet est vide', () => {
+    const sortie = preRemplir({
+      champs: [CHAMP_CUMULATIF],
+      monde: monde(),
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+    })
+    expect(sortie['Reputation Track']).toBe('5')
+  })
+
+  it("n'additionne PAS ce que le moteur relève : son collecteur cumule déjà", () => {
+    const sortie = preRemplir({
+      champs: [CHAMP_CUMULATIF],
+      monde: monde(),
+      carnet: { 'Reputation Track': '8' },
+      suggestions: { 'Reputation Track': '11' },
+      scenarioSuggestions: 'sandman',
+      scenarioActuel: 'sandman',
+      total: 1,
+    })
+    expect(sortie['Reputation Track']).toBe('11')
+  })
+
+  it('ignore un total illisible au carnet plutôt que de rendre NaN', () => {
+    const sortie = preRemplir({
+      champs: [CHAMP_CUMULATIF],
+      monde: monde(),
+      carnet: { 'Reputation Track': 'douze' },
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+    })
+    expect(sortie['Reputation Track']).toBe('5')
+  })
+
+  it('un champ NON cumulatif remplace, il n additionne pas', () => {
+    const sortie = preRemplir({
+      champs: [{ ...CHAMP_CUMULATIF, cumulatif: false }],
+      monde: monde(),
+      carnet: { 'Reputation Track': '8' },
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+    })
+    expect(sortie['Reputation Track']).toBe('5')
+  })
+})
+
 describe('assainirCarnet', () => {
   it('retire un drapeau corrigé à 0 (défaut 3 : "0" reste non vide pour InPool/LogSet)', () => {
     const sortie = assainirCarnet([CHAMP_DRAPEAU], { 'Campaign Pool: Cosmo': '0' }, 1)
