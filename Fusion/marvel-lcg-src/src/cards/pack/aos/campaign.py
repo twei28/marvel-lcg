@@ -251,6 +251,57 @@ def CampaignSetup(level: int) -> 'List[Ability]':
     return abilities
 
 
+# ------------------------------------------------------- les deux enveloppes --
+# En campagne, les enveloppes ne sont PAS des paquets de cartes.
+#
+# Le pack d'origine les monte en vraies piles (`PreparingTheEvidence`, puis
+# `Worlds.ScenarioDeck`), ce qui convient hors campagne : le secret n'y vit
+# qu'une partie. Mais `SetAsideDeck.Create` inscrit la pile dans
+# `world.additional_decks`, et `to_descriptor` rend TOUTES ces piles avec le
+# `card_id` reel de chaque carte, face cachee ou non. Mesure faite hors
+# campagne : les neuf preuves arrivent au navigateur, identifiants en clair.
+#
+# En campagne, ce serait rendre la taupe lisible depuis la console du
+# navigateur, apres deux fuites deja fermees pour la meme raison. On garde donc
+# les enveloppes ou le secret vit deja — le carnet — et on ne fabrique une
+# carte qu'au moment ou le joueur a le droit de la voir.
+
+
+def EnveloppeAim(effect: 'Effect') -> 'List[str]':
+    """Les trois preuves de la taupe. Vide si le carnet ne les porte pas."""
+    aim = _liste(CampaignLog.GetStrInternal(CLE_ENVELOPPE_AIM, effect))
+    return aim if len(aim) == 3 else []
+
+
+def EnveloppeShield(effect: 'Effect') -> 'List[str]':
+    """Ce qu'il reste a puiser : les neuf, moins la taupe, moins le deja gagne."""
+    aim = EnveloppeAim(effect)
+    if not aim:
+        return []
+    deja = _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect))
+    return [p for p in PREUVES if p not in aim and p not in deja]
+
+
+def NoterPreuveGagnee(effect: 'Effect', card_id: str) -> None:
+    """Inscrit une preuve au carnet EN COURS DE PARTIE.
+
+    Le scenario 5 est le seul ou des preuves se gagnent en jouant (Reponse de
+    l'etape 1B). Sans cette ecriture, l'enveloppe S.H.I.E.L.D. ne se viderait
+    pas et la meme preuve pourrait sortir deux fois dans la meme partie.
+    """
+    deja = _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect))
+    if card_id in deja:
+        return
+    CampaignLog.SetStr(CLE_PREUVES, SEPARATEUR.join(deja + [card_id]), effect.world)
+
+
+def PreuveEnJeu(effect: 'Effect', card_id: str) -> 'CardFace':
+    """Fabrique une preuve et la pose face visible dans l'aire des preuves."""
+    card = CardFactory.GenerateCard(card_id, None, effect.world)
+    card.face.PutIntoPlay('FirstPlayer', effect)
+    return card.face
+
+
 # ------------------------------------------------------------------ releve --
 def _preuve_gagnee(effect: 'Effect') -> 'List[str]|None':
     """Une preuve de plus, ou rien. Rend la liste COMPLETE, pas l'ajout.
@@ -320,8 +371,15 @@ def CollectAOS(level: int, effect: 'Effect') -> dict:
         if noms:
             updates['Surviving Thunderbolts'] = SEPARATEUR.join(noms)
 
-    preuves = _preuve_gagnee(effect)
-    if preuves is not None:
-        updates[CLE_PREUVES] = SEPARATEUR.join(preuves)
+    # Scenarios 1 a 4 seulement. Leurs encarts VICTORY portent tous la clause
+    # « If at least one Board Member environment in play has no secret
+    # counters on it, gain one evidence card » ; celui du scenario 5 (p.19) ne
+    # l'a pas, il n'a plus qu'une ligne : « Zemo is defeated, the mole is
+    # exposed, the heroes are exonerated ». Au 5, les preuves se gagnent EN
+    # PARTIE, par la Reponse de l'etape 1B.
+    if level <= 4:
+        preuves = _preuve_gagnee(effect)
+        if preuves is not None:
+            updates[CLE_PREUVES] = SEPARATEUR.join(preuves)
 
     return updates

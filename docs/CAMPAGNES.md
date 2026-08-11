@@ -959,10 +959,82 @@ illisible sur le fond noir. La couleur est posée sur `background`.
 Cinq cas dans `ui-check/tests/campagne-enquete.spec.ts`, dont le dernier vérifie
 qu'aucune route ne rend `secret_aim` ni `A.I.M. Envelope` à cette page.
 
+### L'accusation du scénario 5
+
+Câblée le 11/8/2026. Surprise en ouvrant le pack : **tout était déjà écrit** —
+les étapes 1B → 2A → 2B → 3A → 3B, les deux sanctions, et même la table des 27
+combinaisons dans `CalcMole`. Elle correspond exactement à ma transcription du
+carnet imprimé, faite indépendamment : deux lectures séparées de la même page,
+même résultat.
+
+Mais tout cela était **inerte en campagne**. `50167a` renonce à préparer les
+preuves en mode campagne (à raison : les membres du Conseil viennent du
+scénario précédent), donc les deux enveloppes n'étaient jamais créées et
+`CalcMole` tombait sur son `assert False`.
+
+**Les enveloppes ne sont pas des paquets de cartes en campagne.** Le pack les
+monte en vraies piles avec `SetAsideDeck`, ce qui convient hors campagne. Mais
+`SetAsideDeck.Create` inscrit la pile dans `world.additional_decks`, et
+`to_descriptor` rend TOUTES ces piles au navigateur avec le `card_id` réel de
+chaque carte, face cachée ou non — mesuré hors campagne : les neuf preuves
+arrivent au client, identifiants en clair. Monter l'enveloppe A.I.M. en pile
+aurait rendu la taupe lisible depuis la console, après deux fuites déjà fermées
+pour la même raison.
+
+En campagne, les deux enveloppes sont donc **deux lectures du carnet** :
+
+- A.I.M. = les trois identifiants de `A.I.M. Envelope` ;
+- S.H.I.E.L.D. = les neuf moins celles-là moins `Evidence Gained`.
+
+Aucune carte n'existe tant que le joueur n'a pas le droit de la voir. Une preuve
+puisée est fabriquée au moment du gain, et les trois de la taupe seulement à
+l'étape 2B, quand le livret dit « the players take the evidence cards from the
+A.I.M. envelope ». `ShieldEnvelopeHasCards`, `GainCardsFromShieldEnvelope` et
+`CalcMole` se branchent là-dessus ; hors campagne, rien ne change.
+
+**Deux correctifs de règle**, tous deux dans `50168a.py` :
+
+- L'accusé était **demandé** au joueur parmi les environnements sur la table.
+  Le livret p.19 dit qu'il **découle** de la combinaison : « Each combination is
+  listed underneath a board member. This board member is the accused. » On
+  pouvait donc accuser un membre que sa propre combinaison n'accusait pas.
+- Pire en campagne : un membre passé côté attachement n'est plus un
+  environnement de ce nom, donc n'était plus proposable. Or les secrets se
+  reportent, un membre à quatre secrets arrive **déjà retourné** et le reste
+  jusqu'à la fin (p.6). Mesuré : avec le Médecin en chef retourné à l'arrivée,
+  il était impossible de l'accuser alors qu'il était la taupe — l'accusation
+  était fausse d'office. `MembreDeLaCombinaison` rend le membre quelle que soit
+  sa face.
+
+Corrigé aussi : `CollectAOS` accordait une preuve à la victoire du scénario 5.
+Les encarts VICTORY des scénarios 1 à 4 portent cette clause, celui du 5 non
+(p.19) — au 5, les preuves se gagnent en partie, par la Réponse de l'étape 1B.
+
+29 vérifications dans `tools/test_accusation_aos.py` : puiser dans l'enveloppe,
+les trois sanctions de la page 19 (tout juste, une hypothèse ratée, tout faux),
+la taupe déjà retournée, et le non-passage du secret au descripteur. Plus deux
+cas de non-régression hors campagne. Suite complète des cartes repassée : 4189
+OK, 0 erreur.
+
 ### Ce qui n'est PAS fait
 
-**L'accusation du scénario 5** (livret p.19). Une accusation fausse ne fait pas
-perdre, elle durcit le scénario.
+**La reprise du scénario 5 après une défaite** (p.19, encart DEFEAT, campagne
+standard uniquement). Le livret fait tout recommencer : on re-prépare les
+preuves **comme au début d'une campagne** — donc une nouvelle taupe — puis on
+regagne une preuve par scénario où au moins un membre du Conseil avait fini sans
+secret. Rien ne se déclenche aujourd'hui : en standard, perdre le scénario 5 ne
+perd pas la campagne, donc le panneau de récompenses ne s'ouvre pas et rien
+n'est enregistré. Il faudrait un nouveau passage côté écran, un re-tirage de
+`secret_aim` côté serveur, et un compte qu'on ne tient pas encore
+(`Evidence Gained` mêle désormais les preuves des scénarios 1-4 et celles
+gagnées pendant le 5).
+
+**Une fuite du mode HORS campagne**, laissée telle quelle : les neuf preuves des
+deux enveloppes partent au navigateur avec leurs identifiants, via
+`world.additional_decks`. C'est le comportement d'origine du pack, et hors
+campagne le secret ne vit qu'une partie. La fermer demanderait de filtrer les
+cartes non visibles dans `Card.Render`, ce qui touche le rendu de TOUTES les
+cartes du jeu.
 
 Manquent aussi, plus petits : le soin expert propre à cette boîte (poser un
 compteur secret sur un membre du Conseil pour se soigner de sa RÉC, encore un

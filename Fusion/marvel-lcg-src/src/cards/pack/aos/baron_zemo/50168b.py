@@ -18,9 +18,18 @@ def GetAbilities() -> Sequence['Ability']:
         # ~~1. Use the cards in the A.I.M. envelope to identify the mole.~~
         mole = CalcMole(effect)
 
-        deck = Worlds.ScenarioDeck(effect, "A.I.M.Envelope")
-        faces = deck.deck.GetAll()
-        card_ids = [x.paper.card_id for x in faces]
+        # C'est ICI que l'enveloppe s'ouvre, et pas avant : le livret p.19 dit
+        # « the players take the evidence cards from the A.I.M. envelope » au
+        # moment de comparer. En campagne les trois preuves n'existaient donc
+        # pas encore comme cartes — le secret dormait au carnet, hors de portee
+        # du navigateur. On les fabrique maintenant, face visible : le joueur a
+        # desormais le droit de les voir.
+        card_ids = CartesDeLEnveloppeAim(effect)
+        if Worlds.IsCampaign(effect):
+            from cards.pack.aos.campaign import PreuveEnJeu
+            faces = [PreuveEnJeu(effect, card_id) for card_id in card_ids]
+        else:
+            faces = Worlds.ScenarioDeck(effect, "A.I.M.Envelope").deck.GetAll()
         for face in faces:
             face.CastTo(Evidence).AttachTo2(mole, effect)
 
