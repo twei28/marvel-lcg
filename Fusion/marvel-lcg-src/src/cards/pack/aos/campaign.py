@@ -10,10 +10,16 @@ precedent : c'est la seule campagne du jeu ou l'etat d'une carte se reporte
 tel quel, chiffre par chiffre, d'une partie a l'autre. Vider un membre de ses
 secrets rapporte une preuve, et les preuves demasquent la taupe.
 
-CE QUI N'EST PAS ENCORE ICI : le systeme de preuves lui-meme (les neuf cartes,
-les deux enveloppes, la grille de deduction du carnet) et l'accusation du
-scenario 5. Ils demandent de cacher une information AU JOUEUR, ce que le carnet
-ne sait pas faire aujourd'hui — le joueur le lit. Voir docs/CAMPAGNES.md.
+LES PREUVES : gagner une preuve a la fin d'un scenario est ici (voir
+`_preuve_gagnee`). La combinaison de la taupe n'est jamais dans le carnet que
+le joueur lit : le serveur la tire, la retire de tout ce qui part vers le
+navigateur et la reinjecte dans le carnet du moteur juste avant `NewGame`.
+C'est cette fonction qui la lit, et la seule.
+
+CE QUI N'EST PAS ENCORE ICI : la grille de deduction du carnet (rayer les
+combinaisons au fur et a mesure, cote ecran), la capacite « Setup » des
+preuves gagnees a poser au scenario suivant, et l'accusation du scenario 5.
+Voir docs/CAMPAGNES.md.
 """
 from . import *
 from cards.pack.mts.campaign import WriteCampaignLogAtGameOver
@@ -33,6 +39,20 @@ CAPTIF_LIBERE = '50091'
 
 SECRETS_AU_DEPART = 2
 SEPARATEUR = ';'
+
+# Les neuf preuves, dans l'ordre des trois series du livret p.5 : le moyen, le
+# mobile, l'occasion. Trois d'entre elles (une par serie) dorment dans
+# l'enveloppe A.I.M. et designent la taupe ; les six autres sont l'enveloppe
+# S.H.I.E.L.D., ou les joueurs puisent.
+PREUVES = ('50185', '50186', '50187',   # moyen    : dossiers, ecoute, scanner
+           '50188', '50189', '50190',   # mobile   : argent, chantage, ideologie
+           '50191', '50192', '50193')   # occasion : habilitation, voyages, autorite
+# Le secret n'est PAS dans le carnet que le joueur voit : le serveur le tire,
+# le retire de tout ce qui sort vers le navigateur (`_sans_secret`) et le
+# reinjecte dans le carnet du moteur juste avant `NewGame`. Voir
+# `server_campagne.py` et `server_new_game.py`.
+CLE_ENVELOPPE_AIM = 'A.I.M. Envelope'
+CLE_PREUVES = 'Evidence Gained'
 
 
 def _liste(valeur: str) -> 'List[str]':
@@ -171,6 +191,43 @@ def CampaignSetup(level: int) -> 'List[Ability]':
 
 
 # ------------------------------------------------------------------ releve --
+def _preuve_gagnee(effect: 'Effect') -> 'List[str]|None':
+    """Une preuve de plus, ou rien. Rend la liste COMPLETE, pas l'ajout.
+
+    Livret p.6 et encarts VICTORY des pages 9, 11, 13 et 15, mot pour mot :
+    « If at least one Board Member environment in play has no secret counters
+    on it, gain one evidence card from the S.H.I.E.L.D. envelope ».
+
+    Trois lectures a ne pas rater :
+
+    * « environment » : un membre passe face attachement (quatre secrets, trois
+      en expert) n'est plus un environnement, et de toute facon il en a. Le
+      filtre `card_type=Environment` suffit donc a le mettre de cote.
+    * « from the S.H.I.E.L.D. envelope » : jamais une des trois preuves de
+      l'enveloppe A.I.M., et jamais deux fois la meme. Le tirage se fait donc
+      dans les neuf moins la taupe moins ce qui est deja gagne.
+    * la carte gagnee ne rejoint aucun deck : elle ne sert qu'a rayer des
+      combinaisons du carnet, et a poser sa capacite « Setup » au scenario
+      suivant.
+    """
+    aim = _liste(CampaignLog.GetStrInternal(CLE_ENVELOPPE_AIM, effect))
+    if len(aim) != 3:
+        # Sans l'enveloppe A.I.M. on ne sait pas quelles preuves sont dans
+        # l'enveloppe S.H.I.E.L.D. En tirer une au hasard reviendrait a pouvoir
+        # remettre au joueur une carte de la taupe, ce qui rendrait la grille
+        # de deduction fausse : on prefere ne rien donner.
+        return None
+    deja = _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect))
+    restantes = [p for p in PREUVES if p not in aim and p not in deja]
+    if not restantes:
+        return None
+    bases = [card_id.split(',')[0][:-1] for _, card_id in CONSEIL]
+    membres = _sur_le_terrain(effect, bases, card_type=Environment)
+    if not any(f.GetCounters('secret') == 0 for f in membres):
+        return None
+    return deja + [str(Rand.RandomChoice(restantes, effect))]
+
+
 def CollectAOS(level: int, effect: 'Effect') -> dict:
     updates: Dict[str, Any] = {}
 
@@ -201,5 +258,9 @@ def CollectAOS(level: int, effect: 'Effect') -> dict:
                        if 'THUNDERBOLT' in [t.upper() for t in (f.paper.traits or [])]})
         if noms:
             updates['Surviving Thunderbolts'] = SEPARATEUR.join(noms)
+
+    preuves = _preuve_gagnee(effect)
+    if preuves is not None:
+        updates[CLE_PREUVES] = SEPARATEUR.join(preuves)
 
     return updates

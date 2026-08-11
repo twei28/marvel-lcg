@@ -159,6 +159,13 @@
   ],
   "victoire_commune": [
     {
+      "cle": "Evidence Gained",
+      "type": "auto",
+      "format": "liste",
+      "libelle": "Preuves obtenues",
+      "aide": "Si au moins un membre du Conseil finit sans aucun secret, une preuve de plus sort de l'enveloppe S.H.I.E.L.D. Elle raye des combinaisons de la grille."
+    },
+    {
       "cle": "Secret Counters: Chief Medical Officer",
       "type": "auto",
       "format": "int",

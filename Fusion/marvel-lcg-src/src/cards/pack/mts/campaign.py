@@ -75,11 +75,22 @@ def FaceExists(effect: 'Effect', card_id: str, *, in_play: 'bool|None' = None, i
     return False
 def ActiveMainSchemeStartswith(effect: 'Effect', prefix: str) -> bool:
     return any(s.paper.card_id.startswith(prefix) for s in Worlds.GetAllMainSchemes(effect.world))
+# Cles du carnet que le SERVEUR injecte et que le joueur ne doit jamais lire.
+# `server_new_game.py` remet la combinaison de la taupe d'Agents of S.H.I.E.L.D.
+# dans le carnet juste avant `NewGame` : elle se retrouve donc dans le store du
+# monde comme n'importe quelle autre cle. Sans ce filtre elle ressortait deux
+# fois — au fichier sortant, que l'ecran relit et propose au joueur, et au
+# journal de partie rendu plus bas — ce qui revenait a ouvrir l'enveloppe
+# A.I.M. devant lui.
+CLES_SECRETES = ('A.I.M. Envelope',)
+
+
 def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
     def action(effect: 'Effect', message: 'Message.WhenGameOver'):
         import json
         world = effect.world
-        out = {k: v for k, v in world.store.dic.items() if isinstance(v, str)}
+        out = {k: v for k, v in world.store.dic.items()
+               if isinstance(v, str) and k not in CLES_SECRETES}
         for player in Worlds.GetPlayers(effect):
             identity = player.GetIdentity()
             hp = (identity.health if identity else 0)

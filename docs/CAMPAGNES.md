@@ -801,19 +801,18 @@ aux scénarios 1 et 5, deux secrets chacun au scénario 1 comme le veut le livre
 et au scénario 5 les valeurs 1 / 0 / 2 du carnet entrant ressortent à
 l'identique.
 
-### Ce qui n'est PAS fait
+### Le secret de la taupe, et où il dort
 
-**Le système de preuves et l'accusation.** Neuf cartes preuve, trois tirées au
-hasard dans l'enveloppe A.I.M. au début de la campagne — c'est la combinaison de
-la taupe, et elle doit rester **cachée du joueur**. Les six autres vont dans
-l'enveloppe S.H.I.E.L.D., et vider un membre du Conseil de ses secrets en
-rapporte une, ce qui raye des combinaisons dans la grille du carnet.
+Neuf cartes preuve, trois tirées au hasard dans l'enveloppe A.I.M. au début de
+la campagne : c'est la combinaison de la taupe, et elle doit rester **cachée du
+joueur**. Les six autres forment l'enveloppe S.H.I.E.L.D., où les joueurs
+puisent.
 
-**Le secret de la taupe a trouvé sa place (11/8/2026).** Le carnet est un
-fichier que le joueur LIT et que l'écran affiche en entier : y ranger la
-combinaison reviendrait à ouvrir l'enveloppe devant lui. Trois options ont été
-pesées (le serveur le garde, pas de secret du tout, l'enveloppe reste en
-carton) et c'est la première qui est en place :
+**Le secret a trouvé sa place le 11/8/2026.** Le carnet est un fichier que le
+joueur LIT et que l'écran affiche en entier : y ranger la combinaison
+reviendrait à ouvrir l'enveloppe devant lui. Trois options ont été pesées (le
+serveur le garde, pas de secret du tout, l'enveloppe reste en carton) et c'est
+la première qui est en place :
 
 - **Tirage** côté serveur à la première écriture d'une campagne `aos`, une
   preuve par série, jamais depuis le client — un client qui en enverrait une se
@@ -831,12 +830,65 @@ de lancer, donc la campagne visée est celle dont la partie en cours est la plus
 récente.
 
 Mesuré : le secret est écrit au fichier (`50187;50189;50191`, une preuve par
-série) et **absent des trois routes**. L'injection, elle, est câblée mais pas
-encore observable : rien ne lit `A.I.M. Envelope` tant que le jeu de déduction
-n'existe pas. Elle se prouvera avec lui.
+série) et **absent des trois routes**. L'injection, longtemps câblée sans
+témoin, est prouvée depuis que les preuves se gagnent : voir juste en dessous.
 
-Reste donc à écrire : gagner une preuve quand un membre du Conseil est vidé de
-ses secrets, la grille de déduction du carnet, et l'accusation du scénario 5.
+### Les preuves : gagner une carte de l'enveloppe S.H.I.E.L.D.
+
+Câblé le 11/8/2026. Le livret p.6, repris mot pour mot dans les encarts
+VICTORY des pages 9, 11, 13 et 15 : « If at least one Board Member environment
+in play has no secret counters on it, gain one evidence card from the
+S.H.I.E.L.D. envelope ».
+
+Trois lectures comptent, et `_preuve_gagnee` les tient toutes les trois :
+
+- **« environment »**. Un membre passé face attachement n'est plus un
+  environnement. Le filtre `card_type=Environment` suffit à l'écarter, et de
+  toute façon il a au moins quatre secrets.
+- **« from the S.H.I.E.L.D. envelope »**. Jamais une des trois preuves de
+  l'enveloppe A.I.M., jamais deux fois la même. Le tirage se fait dans les neuf
+  moins la taupe moins ce qui est déjà gagné, avec `Rand.RandomChoice`, donc
+  dans le flux d'aléa du moteur et rejouable.
+- **la carte ne rejoint aucun deck**. Elle ne sert qu'à rayer des combinaisons
+  et à poser sa capacité « Setup » au scénario suivant.
+
+La clé du carnet est `Evidence Gained`, une liste cumulative d'identifiants,
+déclarée dans `victoire_commune` de `aos.json`. Le moteur écrit la liste
+COMPLÈTE, pas l'ajout : le carnet reste vrai même si le joueur corrige.
+
+**Une fuite a dû être fermée en même temps.** `WriteCampaignLogAtGameOver`
+recopiait tout le store dans le carnet sortant, puis le rendait au journal de
+partie. La combinaison de la taupe, que le serveur venait d'injecter, ressortait
+donc deux fois sous les yeux du joueur. `CLES_SECRETES` l'arrête, dans
+`src/cards/pack/mts/campaign.py`, avant les deux sorties.
+
+**L'injection est enfin prouvée**, et c'est ce câblage qui la prouve : à table
+identique, un membre vidé de ses secrets rapporte une preuve AVEC
+`A.I.M. Envelope` dans le carnet entrant, et rien sans lui. Sans l'enveloppe, on
+ignore quelles preuves sont dans celle du S.H.I.E.L.D. : en tirer une au hasard
+risquerait de rendre au joueur une carte de la taupe et de fausser la grille, on
+préfère donc ne rien donner.
+
+Treize vérifications dans `tools/test_preuves_aos.py`, mesurées à la sonde sur
+de vraies parties, bytecode recompilé : cas nominal, deux témoins négatifs
+(aucun membre vidé, aucun secret injecté), cumul, enveloppe épuisée, et la paire
+qui prouve le filtre — une clé bidon injectée par la même voie ressort, le
+secret non.
+
+### Ce qui n'est PAS fait
+
+**La grille de déduction.** Les neuf combinaisons du carnet officiel, et les
+lignes rayées au fur et à mesure des preuves gagnées. C'est la partie écran, et
+c'est elle qui donnera un sens visible à `Evidence Gained`, aujourd'hui une
+simple liste d'identifiants dans le panneau des récompenses.
+
+**La capacité « Setup » des preuves gagnées.** Les encarts des scénarios 2 à 5
+disent « After resolving mulligans, resolve the "Setup" ability of each evidence
+card the players have earned ». Les neuf cartes existent et portent bien leur
+capacité (`aos/executive_board_evidence/`), mais rien ne les met en place.
+
+**L'accusation du scénario 5** (livret p.19). Une accusation fausse ne fait pas
+perdre, elle durcit le scénario.
 
 Manquent aussi, plus petits : le soin expert propre à cette boîte (poser un
 compteur secret sur un membre du Conseil pour se soigner de sa RÉC, encore un
