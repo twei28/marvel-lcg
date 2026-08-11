@@ -9,6 +9,7 @@
 // n'hérite pas du contexte de la précédente.
 import type { ChampVictoire } from './detecteurs'
 import type { RegleDefaite } from './defaite-campagne'
+import type { RegleReprise } from './reprise-campagne'
 
 /** Clé posée par public/js/campagne/app.js juste avant de lancer un scénario. */
 export const CLE_CAMPAGNE = 'mc-campagne-partie'
@@ -30,6 +31,8 @@ export type ScenarioCampagne = {
   final?: boolean
   /** Ce qui perd la campagne sur ce scénario. Seul le scénario final en porte une. */
   defaite?: RegleDefaite
+  /** Ce qu'il faut re-préparer avant de rejouer ce scénario après une défaite. */
+  reprise?: RegleReprise
   pages?: { intro?: string[]; regles?: string[]; epilogue?: string[] }
   victoire?: ChampVictoire[]
 }
@@ -138,6 +141,17 @@ export const chargerCarnetSuggere = async (): Promise<CarnetSuggere> => {
 
 export const enregistrerCampagne = (campagne: Campagne): Promise<{ campagne: Campagne }> =>
   posterJson<{ campagne: Campagne }>('/save_campagne', { campagne })
+
+/**
+ * Re-prépare les preuves d'Agents of S.H.I.E.L.D. pour rejouer le scénario 5.
+ *
+ * Le client n'envoie qu'un identifiant et ne reçoit qu'un compte : la nouvelle
+ * combinaison de la taupe et le choix des preuves rendues se décident côté
+ * serveur, comme le tirage initial. Lui laisser la main reviendrait à écrire la
+ * réponse de l'enquête dans le navigateur.
+ */
+export const reinitialiserEnquete = (id: string): Promise<{ preuves_rendues: number }> =>
+  posterJson<{ preuves_rendues: number }>('/reinitialiser_enquete', { id })
 
 /**
  * Les champs à présenter pour ce scénario, dans l'ordre d'affichage.

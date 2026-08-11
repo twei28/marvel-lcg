@@ -53,6 +53,7 @@ PREUVES = ('50185', '50186', '50187',   # moyen    : dossiers, ecoute, scanner
 # `server_campagne.py` et `server_new_game.py`.
 CLE_ENVELOPPE_AIM = 'A.I.M. Envelope'
 CLE_PREUVES = 'Evidence Gained'
+CLE_SCENARIOS_VIDES = 'Scenarios With A Cleared Board Member'
 
 
 def _liste(valeur: str) -> 'List[str]':
@@ -303,6 +304,24 @@ def PreuveEnJeu(effect: 'Effect', card_id: str) -> 'CardFace':
 
 
 # ------------------------------------------------------------------ releve --
+def _un_membre_sans_secret(effect: 'Effect') -> bool:
+    """« At least one Board Member environment in play has no secret counters ».
+
+    C'est la condition qui rapporte une preuve aux scenarios 1 a 4 — mais pas
+    seulement. Le livret la reutilise mot pour mot dans l'encart DEFEAT du
+    scenario 5, pour compter combien de preuves rendre a l'equipe qui rejoue.
+    Elle est donc mesuree A PART de la recompense : l'enveloppe S.H.I.E.L.D.
+    peut etre vide alors que la condition tient, et le compte ne doit pas s'en
+    trouver fausse.
+
+    « environment » : un membre passe face attachement n'en est plus un, et de
+    toute facon il porte au moins quatre secrets.
+    """
+    bases = [card_id.split(',')[0][:-1] for _, card_id in CONSEIL]
+    membres = _sur_le_terrain(effect, bases, card_type=Environment)
+    return any(f.GetCounters('secret') == 0 for f in membres)
+
+
 def _preuve_gagnee(effect: 'Effect') -> 'List[str]|None':
     """Une preuve de plus, ou rien. Rend la liste COMPLETE, pas l'ajout.
 
@@ -333,9 +352,7 @@ def _preuve_gagnee(effect: 'Effect') -> 'List[str]|None':
     restantes = [p for p in PREUVES if p not in aim and p not in deja]
     if not restantes:
         return None
-    bases = [card_id.split(',')[0][:-1] for _, card_id in CONSEIL]
-    membres = _sur_le_terrain(effect, bases, card_type=Environment)
-    if not any(f.GetCounters('secret') == 0 for f in membres):
+    if not _un_membre_sans_secret(effect):
         return None
     return deja + [str(Rand.RandomChoice(restantes, effect))]
 
@@ -381,5 +398,13 @@ def CollectAOS(level: int, effect: 'Effect') -> dict:
         preuves = _preuve_gagnee(effect)
         if preuves is not None:
             updates[CLE_PREUVES] = SEPARATEUR.join(preuves)
+        # Le compte des scenarios ou le Conseil a ete vide, cumulatif. Le
+        # carnet imprime le garde autrement : une colonne de compteurs secrets
+        # par scenario (#1 a #4), qu'on relit a la fin pour compter. Le moteur,
+        # lui, n'ecrase qu'une valeur par membre — d'ou ce compte tenu au fil
+        # de l'eau. Il ne sert qu'a l'encart DEFEAT du scenario 5 (p.19), qui
+        # rend une preuve par scenario ainsi compte quand on rejoue.
+        if _un_membre_sans_secret(effect):
+            updates[CLE_SCENARIOS_VIDES] = str(_entier(effect, CLE_SCENARIOS_VIDES) + 1)
 
     return updates

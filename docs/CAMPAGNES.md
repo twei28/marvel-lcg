@@ -1016,18 +1016,53 @@ la taupe déjà retournée, et le non-passage du secret au descripteur. Plus deu
 cas de non-régression hors campagne. Suite complète des cartes repassée : 4189
 OK, 0 erreur.
 
-### Ce qui n'est PAS fait
+### Rejouer le scénario 5 après une défaite
 
-**La reprise du scénario 5 après une défaite** (p.19, encart DEFEAT, campagne
-standard uniquement). Le livret fait tout recommencer : on re-prépare les
-preuves **comme au début d'une campagne** — donc une nouvelle taupe — puis on
-regagne une preuve par scénario où au moins un membre du Conseil avait fini sans
-secret. Rien ne se déclenche aujourd'hui : en standard, perdre le scénario 5 ne
-perd pas la campagne, donc le panneau de récompenses ne s'ouvre pas et rien
-n'est enregistré. Il faudrait un nouveau passage côté écran, un re-tirage de
-`secret_aim` côté serveur, et un compte qu'on ne tient pas encore
-(`Evidence Gained` mêle désormais les preuves des scénarios 1-4 et celles
-gagnées pendant le 5).
+Câblé le 11/8/2026. Livret p.19, encart DEFEAT, campagne **standard**
+uniquement : « Prepare the evidence as if you are starting a new campaign. Gain
+one evidence card from the S.H.I.E.L.D. envelope for each scenario in which you
+had at least one Board Member environment with no secret counters on it. »
+
+**La taupe change.** Ce n'est pas une remise à zéro anodine : la grille de
+déduction construite pendant quatre scénarios est invalidée d'un coup. Le joueur
+doit le lire avant de cliquer, d'où un encadré ambre et un bouton qui dit ce
+qu'il fait (« Re-préparer les preuves ») plutôt qu'un simple « Valider ».
+
+**Le compte manquait.** « For each scenario in which you had at least one Board
+Member environment with no secret counters » — le carnet imprimé permet de le
+recalculer après coup, puisqu'il garde une colonne de compteurs secrets par
+scénario (#1 à #4). Le moteur, lui, n'écrase qu'une valeur par membre. On tient
+donc le compte au fil de l'eau, clé `Scenarios With A Cleared Board Member`,
+incrémentée à chaque victoire des scénarios 1 à 4.
+
+Point de détail qui compte : la condition est mesurée **à part de la
+récompense** (`_un_membre_sans_secret`). L'enveloppe S.H.I.E.L.D. peut être vide
+alors que la condition tient — le scénario ne rapporte alors aucune preuve, mais
+il compte quand même pour la reprise. Les mélanger aurait sous-compté.
+
+**Tout se décide côté serveur**, route `/reinitialiser_enquete` : nouveau tirage
+de `secret_aim`, puis N preuves tirées de la NOUVELLE enveloppe S.H.I.E.L.D. Le
+client n'envoie qu'un identifiant et ne reçoit qu'un compte. Lui laisser choisir
+les preuves rendues reviendrait à écrire la réponse de l'enquête dans le
+navigateur, puisque les six rendues sont exactement le complément de la taupe.
+
+La route **refuse en expert** : le même encart y dit l'inverse, la campagne est
+perdue, et c'est déjà la règle `defaite` de `aos.json`. Les deux ne peuvent
+jamais s'appliquer ensemble, ce que `repriseDeCampagne` traduit par
+`standard_seulement` comme `verdictDeCampagne` le fait avec `expert_seulement`.
+
+Mesuré : sur six reprises d'affilée, la combinaison est bien re-tirée à chaque
+fois, et **aucune preuve rendue n'appartient jamais à la nouvelle taupe** —
+l'invariant sans lequel la déduction repartirait fausse.
+
+6 cas vitest sur `reprise-campagne.ts` (module pur, comme `defaite-campagne.ts`)
+et 5 cas Playwright sur la route, dont le compte borné à six et le refus en
+expert. Le câblage du panneau lui-même (ouvrir à la défaite, appeler la route)
+n'est pas couvert de bout en bout : il faudrait mener une vraie partie jusqu'à
+la défaite du scénario 5. C'est la même limite que pour le reste de
+`PanneauRecompenses`, dont seules les briques pures sont éprouvées.
+
+### Ce qui n'est PAS fait
 
 **Une fuite du mode HORS campagne**, laissée telle quelle : les neuf preuves des
 deux enveloppes partent au navigateur avec leurs identifiants, via

@@ -154,6 +154,14 @@
           "05-baron_zemo-epilogue-1.jpg",
           "05-baron_zemo-epilogue-2.jpg"
         ]
+      },
+      "reprise": {
+        "quand": "partie_perdue",
+        "standard_seulement": true,
+        "cle_compte": "Scenarios With A Cleared Board Member",
+        "cle_preuves": "Evidence Gained",
+        "titre": "L'enquête repart de zéro",
+        "texte": "Vous êtes démasqués avant d'avoir pu prouver quoi que ce soit. Pour rejouer ce scénario, le livret fait re-préparer les preuves comme au début d'une campagne : une nouvelle taupe, une nouvelle enveloppe. Votre grille de déduction est donc à refaire. Vous récupérez une preuve par scénario où au moins un membre du Conseil avait fini sans secret."
       }
     }
   ],
@@ -185,6 +193,13 @@
       "format": "int",
       "libelle": "Secrets sur le Chef tactique",
       "aide": "Le nombre exact est reporté sur la carte au scénario suivant. Vider un membre de ses secrets rapporte une preuve."
+    },
+    {
+      "cle": "Scenarios With A Cleared Board Member",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Scénarios où le Conseil a été vidé",
+      "aide": "Compte cumulé des scénarios où au moins un membre a fini sans aucun secret. Il ne sert qu'en cas de défaite au dernier scénario : il dit combien de preuves vous récupérez en rejouant."
     }
   ],
   "victoire_commune_expert": [

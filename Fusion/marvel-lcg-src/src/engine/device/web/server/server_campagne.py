@@ -43,6 +43,11 @@ SETS_PREUVES = [
 # Le champ ou dort le secret, et la cle sous laquelle le moteur le lit.
 CLE_SECRET = 'secret_aim'
 CLE_CARNET_SECRET = 'A.I.M. Envelope'
+# Ecrites par le moteur (`cards/pack/aos/campaign.py`), relues ici pour la
+# reprise du dernier scenario apres une defaite.
+CLE_PREUVES_GAGNEES = 'Evidence Gained'
+CLE_COMPTE_VIDES = 'Scenarios With A Cleared Board Member'
+SEPARATEUR_PREUVES = ';'
 
 
 def _tirer_enveloppe_aim() -> str:
@@ -367,6 +372,74 @@ class GameServerCampagne(GameServerBase):
         return web.json_response({'result': 'saved', 'id': identifiant,
                                   'campagne': _sans_secret(campagne)})
 
+    async def reinitialiser_enquete(self, request: web.Request) -> web.Response:
+        """Rejouer le dernier scenario d'Agents of S.H.I.E.L.D. apres une defaite.
+
+        Livret mc50 p.19, encart DEFEAT, campagne STANDARD seulement :
+
+            To replay this scenario, do the following:
+            » Prepare the evidence as if you are starting a new campaign.
+            » Gain one evidence card from the S.H.I.E.L.D. envelope for each
+              scenario in which you had at least one Board Member environment
+              with no secret counters on it.
+
+        Autrement dit : nouvelle taupe, nouvelle enveloppe, et on rend a
+        l'equipe autant de preuves qu'elle en avait merite. Ce n'est PAS un
+        retour a l'etat d'avant la partie : la combinaison change, donc la
+        grille de deduction repart entierement.
+
+        Tout se passe ici et rien cote client, pour la meme raison que le
+        tirage initial : le navigateur ne doit connaitre ni la nouvelle
+        combinaison ni le lien entre elle et les preuves rendues. Il envoie un
+        identifiant, il recoit une campagne amputee de son secret.
+
+        En expert, l'encart dit l'inverse — la campagne est perdue — et c'est
+        deja la regle de `defaite` dans `aos.json`. La route refuse donc.
+        """
+        import datetime
+        import json as json_lib
+        import os
+        import random
+
+        donnees = await request.json()
+        identifiant = _nom_de_fichier(donnees.get('id') or '')
+        chemin = os.path.join(CAMPAGNES_FOLDER.value, f'{identifiant}.json')
+        if not os.path.isfile(chemin):
+            return web.json_response({'error': f'campagne introuvable : {identifiant}'}, status=404)
+        with open(chemin, encoding='utf-8') as f:
+            campagne = json_lib.load(f)
+        if campagne.get('code') != 'aos':
+            return web.json_response({'error': "cette campagne n'a pas d'enquete"}, status=400)
+        if campagne.get('difficulte') == 'expert':
+            return web.json_response({'error': 'en expert, la campagne est perdue'}, status=400)
+
+        carnet = dict(campagne.get('carnet') or {})
+        try:
+            merites = int(carnet.get(CLE_COMPTE_VIDES) or 0)
+        except ValueError:
+            merites = 0
+
+        secret = _tirer_enveloppe_aim()
+        taupe = set(secret.split(SEPARATEUR_PREUVES))
+        enveloppe = [p for serie in SETS_PREUVES for p in serie if p not in taupe]
+        random.shuffle(enveloppe)
+        # Bornee par l'enveloppe : six preuves, pas davantage. Le compte peut
+        # legitimement monter plus haut, rien n'empeche de vider le Conseil a
+        # chacun des scenarios.
+        rendues = sorted(enveloppe[:max(0, min(merites, len(enveloppe)))])
+
+        carnet[CLE_PREUVES_GAGNEES] = SEPARATEUR_PREUVES.join(rendues)
+        campagne['carnet'] = carnet
+        campagne[CLE_SECRET] = secret
+        campagne['partieEnCours'] = None
+        campagne['derniere_activite'] = datetime.datetime.now().isoformat(timespec='seconds')
+
+        from engine.ecriture_atomique import ecrire_json
+        ecrire_json(chemin, campagne)
+        return web.json_response({'result': 'reinitialise', 'id': identifiant,
+                                  'preuves_rendues': len(rendues),
+                                  'campagne': _sans_secret(campagne)})
+
     async def delete_campagne(self, request: web.Request) -> web.Response:
         """Supprime une campagne en cours."""
         import os
@@ -389,3 +462,4 @@ class GameServerCampagne(GameServerBase):
         self.AddAwaitGetSecurity('/get_campagne', self.get_campagne)
         self.AddPostSecurity('/save_campagne', self.save_campagne)
         self.AddPostSecurity('/delete_campagne', self.delete_campagne)
+        self.AddPostSecurity('/reinitialiser_enquete', self.reinitialiser_enquete)

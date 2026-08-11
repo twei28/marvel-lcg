@@ -4586,6 +4586,27 @@
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.85);
   }
+
+  /* Reprise apres defaite : ni une perte ni un gain, un avertissement. La
+     grille de deduction que le joueur a construite va etre invalidee, il doit
+     le lire avant de cliquer — d'ou l'ambre plutot que le rouge, et le compte
+     des preuves rendues bien detache. */
+  .camp-recomp-reprise {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 212, 90, 0.35);
+    border-left: 3px solid #ffd45a;
+    background: rgba(255, 212, 90, 0.08);
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .camp-recomp-reprise p { margin: 0; }
+  .camp-recomp-reprise-compte {
+    margin-top: 8px !important;
+    font-weight: 700;
+    color: #ffd45a;
+  }
 }
 
 /* --- Panneaux flottants : repli quand la table est pleine -----------------

@@ -30,12 +30,14 @@ import {
   effacerContexte,
   enregistrerCampagne,
   lireContexte,
+  reinitialiserEnquete,
   type Campagne,
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
 import { assainirCarnet, preRemplir } from './preremplissage'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
+import { repriseDeCampagne, type Reprise } from './reprise-campagne'
 
 type Etat =
   | { phase: 'chargement' }
@@ -86,8 +88,9 @@ export function PanneauRecompenses({
         const scenario = definition.scenarios.find((s) => s.id === contexte.scenario)
         if (!scenario) throw new Error(`scénario inconnu : ${contexte.scenario}`)
         if (annule) return
-        // Une défaite n'ouvre le panneau que si elle perd la campagne. Sinon
-        // rien ne se reporte, et le joueur rejoue le scénario tel quel.
+        // Une défaite n'ouvre le panneau que si elle perd la campagne, OU si
+        // le scénario demande de re-préparer quelque chose avant d'être
+        // rejoué. Sinon rien ne se reporte, et le joueur rejoue tel quel.
         if (!gagne) {
           const verdict = verdictDeCampagne({
             final: Boolean(scenario.final),
@@ -96,7 +99,14 @@ export function PanneauRecompenses({
             expert: campagne.difficulte === 'expert',
             carnet: campagne.carnet ?? {},
           })
-          if (!verdict.perdue) {
+          const reprise = repriseDeCampagne({
+            final: Boolean(scenario.final),
+            regle: scenario.reprise,
+            gagne: false,
+            expert: campagne.difficulte === 'expert',
+            perdue: verdict.perdue,
+          })
+          if (!verdict.perdue && !reprise.applicable) {
             setEtat({ phase: 'absent' })
             return
           }
@@ -195,11 +205,36 @@ export function PanneauRecompenses({
     carnet: carnetApres,
   })
 
+  const reprise: Reprise = repriseDeCampagne({
+    final: Boolean(scenario.final),
+    regle: scenario.reprise,
+    gagne,
+    expert: campagne.difficulte === 'expert',
+    perdue: verdict.perdue,
+  })
+  // Combien de preuves la reprise va rendre. Le compte vient du carnet ; le
+  // CHOIX des preuves, lui, se fait côté serveur et n'arrive jamais ici.
+  const preuvesRendues = Math.min(
+    6,
+    Number((reprise.applicable && scenario.reprise?.cle_compte
+      ? campagne.carnet?.[scenario.reprise.cle_compte]
+      : '0') ?? '0') || 0
+  )
+
   async function valider() {
     if (manquants.length || enregistrement) return
     setEnregistrement(true)
     setEchec('')
     try {
+      // Reprise : c'est le SERVEUR qui réécrit la campagne, parce qu'il est le
+      // seul à pouvoir retirer la taupe sans la montrer. Rien à enregistrer
+      // ici derrière, sous peine d'écraser le carnet qu'il vient de poser.
+      if (reprise.applicable) {
+        await reinitialiserEnquete(campagne.id)
+        effacerContexte()
+        onTermine(true)
+        return
+      }
       const suivante: Campagne = {
         ...campagne,
         carnet: carnetApres,
@@ -232,9 +267,11 @@ export function PanneauRecompenses({
         <strong className="camp-recomp-titre">
           {verdict.perdue
             ? t('La campagne est perdue')
-            : estFinal
-              ? t('La campagne est gagnée !')
-              : t('Ce que vous gagnez')}
+            : reprise.applicable
+              ? reprise.titre || t('Ce scénario est à re-préparer')
+              : estFinal
+                ? t('La campagne est gagnée !')
+                : t('Ce que vous gagnez')}
         </strong>
       </header>
 
@@ -245,6 +282,19 @@ export function PanneauRecompenses({
             ? t('Le scénario est gagné, mais la campagne s’arrête ici.')
             : t('Ce scénario ne se rejoue pas : la campagne s’arrête ici.')}
         </p>
+      ) : null}
+
+      {reprise.applicable ? (
+        <div className="camp-recomp-reprise">
+          <p>{reprise.texte}</p>
+          <p className="camp-recomp-reprise-compte">
+            {preuvesRendues > 0
+              ? `${preuvesRendues} ${
+                  preuvesRendues > 1 ? t('preuves vous seront rendues') : t('preuve vous sera rendue')
+                }`
+              : t('Aucune preuve ne vous sera rendue : le Conseil n’a jamais fini vidé de ses secrets.')}
+          </p>
+        </div>
       ) : null}
 
       {epilogue.length && gagne ? (
@@ -295,9 +345,11 @@ export function PanneauRecompenses({
             ? t('Enregistrement…')
             : verdict.perdue
               ? t('Consigner la fin de la campagne')
-              : estFinal
-                ? t('Voir la conclusion')
-                : t('Valider et continuer la campagne')}
+              : reprise.applicable
+                ? t('Re-préparer les preuves')
+                : estFinal
+                  ? t('Voir la conclusion')
+                  : t('Valider et continuer la campagne')}
         </button>
         {manquants.length ? (
           <span className="camp-recomp-bloque">
