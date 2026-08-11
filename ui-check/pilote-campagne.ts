@@ -32,6 +32,18 @@
 // ATTENTION : tout test qui importe ce module lance de VRAIES parties sur le
 // serveur visé. Toute partie en cours y est perdue.
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
+// Le contrat des demandes et du PAIEMENT est importe du client, pas recopie :
+// `ui-app/src/board/ask.ts` est un module pur, sans un seul import, et c'est lui
+// que le plateau utilise pour decider qu'une action est prete a partir. Le pilote
+// paie donc exactement comme un joueur, et suivra le client s'il change. Le
+// dupliquer aurait produit deux verites qui derivent en silence.
+import {
+  lireDemande as normaliserDemande,
+  paiementCourant,
+  paiementFacultatif,
+  reponsePrete,
+  type Option,
+} from '../ui-app/src/board/ask'
 
 /** Les regles d'une partie de campagne, comme les compose `launcher.js`. */
 export const REGLES_CAMPAGNE = [
@@ -54,8 +66,8 @@ export const monde = async (request: APIRequestContext): Promise<Monde> =>
  * une boucle d'attente ne saurait pas distinguer « rien a faire » de « le moteur
  * reflechit encore ».
  */
-export async function repondre(request: APIRequestContext): Promise<boolean> {
-  const brut = await (await request.get('/get_ask?p=0')).text()
+export async function repondre(request: APIRequestContext, siege = 0): Promise<boolean> {
+  const brut = await (await request.get(`/get_ask?p=${siege}`)).text()
   if (!brut.trim()) return false
   const ask = JSON.parse(brut) as { options_json?: string }
   const options = JSON.parse(ask.options_json ?? '[]') as Array<Record<string, unknown>>
@@ -68,7 +80,7 @@ export async function repondre(request: APIRequestContext): Promise<boolean> {
         targets: mini ? legales.slice(0, mini) : [],
         resources: [],
       }
-      await request.post('/post?p=0', { data: encodeURIComponent(JSON.stringify(reponse)) })
+      await request.post(`/post?p=${siege}`, { data: encodeURIComponent(JSON.stringify(reponse)) })
       return true
     }
   }
@@ -88,63 +100,264 @@ export async function repondre(request: APIRequestContext): Promise<boolean> {
  * l'etape 1B d'aos, le tour du vilain, la montee de la menace — n'arrivait jamais.
  */
 export type Demande = {
-  options: Array<Record<string, any>>
+  /** Options JOUABLES seulement : celles que le moteur refuse sont ecartees. */
+  options: Option[]
   show_cancel: boolean
   ability_type: string
 }
 
-export async function lireDemande(request: APIRequestContext): Promise<Demande | undefined> {
-  const brut = await (await request.get('/get_ask?p=0')).text()
+export async function lireDemande(
+  request: APIRequestContext,
+  siege = 0
+): Promise<Demande | undefined> {
+  const brut = await (await request.get(`/get_ask?p=${siege}`)).text()
   if (!brut.trim()) return undefined
-  const ask = JSON.parse(brut) as Record<string, unknown>
-  let options: Array<Record<string, any>> = []
+  let ask: Record<string, unknown>
   try {
-    options = JSON.parse(String(ask.options_json ?? '[]'))
+    ask = JSON.parse(brut) as Record<string, unknown>
   } catch {
     return undefined
   }
+  const normalisee = normaliserDemande(ask)
+  if (!normalisee) return undefined
   return {
-    options: options.filter((o) => o && !o.failure_reason),
-    show_cancel: ask.show_cancel === true,
-    ability_type: String(ask.ability_type ?? ''),
+    options: normalisee.options.filter((o) => o.failure_reason === ''),
+    show_cancel: normalisee.show_cancel,
+    ability_type: normalisee.ability_type,
   }
 }
 
 /** Ne rien faire, et le dire : c'est ce qui termine une phase de joueur. */
-export async function passer(request: APIRequestContext): Promise<void> {
-  await request.post('/post?p=0', { data: encodeURIComponent('{}') })
+export async function passer(request: APIRequestContext, siege = 0): Promise<void> {
+  await request.post(`/post?p=${siege}`, { data: encodeURIComponent('{}') })
 }
 
 /** Le moteur peut-il satisfaire les cibles que cette option exige ? */
-const cibleTenable = (option: Record<string, any>): boolean =>
-  Number((option.target_num_range ?? [0, 0])[0] ?? 0) <=
-  ((option.all_legal_targets as unknown[]) ?? []).length
+const cibleTenable = (option: Option): boolean =>
+  option.target_num_range[0] <= option.all_legal_targets.length
 
-/** Retient cette option, avec le minimum de cibles legales qu'elle demande. */
-export async function choisir(
-  request: APIRequestContext,
-  option: Record<string, any>
-): Promise<void> {
-  const mini = Number((option.target_num_range ?? [0, 0])[0] ?? 0)
-  const legales = ((option.all_legal_targets as unknown[]) ?? []).map(String)
-  await request.post('/post?p=0', {
-    data: encodeURIComponent(
-      JSON.stringify({
-        id: String(option.id ?? 0),
-        targets: mini ? legales.slice(0, mini) : [],
-        resources: [],
-      })
-    ),
-  })
+/**
+ * Les ressources a depenser pour cette option, ou `undefined` si le pilote ne
+ * peut pas la payer.
+ *
+ * On empile les moyens que le moteur propose (`target_payment[cible].payment`)
+ * jusqu'a ce que `reponsePrete` dise oui. C'est la MEME fonction que celle qui
+ * debloque le bouton « Valider » du plateau, donc la meme reponse : un cout
+ * exprime en types (« BY » = une energie ET une mentale) ne se satisfait pas en
+ * comptant, et un cout « UpTo » se paie a zero.
+ *
+ * Les exemplaires comptent : le moteur repete un effet dans `payment` autant de
+ * fois qu'il est disponible, et une carte a double ressource vaut 2 d'un coup.
+ */
+export function ressourcesPour(option: Option, cibles: number[]): number[] | undefined {
+  const paiement = paiementCourant(option, cibles)
+  if (reponsePrete(option, cibles, []).prete) return []
+  if (!paiement || paiementFacultatif(paiement)) return []
+
+  const choisies: number[] = []
+  for (const moyen of paiement.payment) {
+    choisies.push(moyen.effect_id)
+    if (reponsePrete(option, cibles, choisies).prete) return choisies
+  }
+  return undefined
 }
 
-/** Le nom d'option qui termine la phase du joueur. */
-const estFinDePhase = (option: Record<string, any>) => /^End[ _]Phase$/i.test(String(option.name ?? ''))
+/** Les cibles retenues pour cette option : celles voulues d'abord, sinon les premieres. */
+function ciblesPour(option: Option, voulues: readonly number[] = []): number[] {
+  const [mini, maxi] = option.target_num_range
+  if (maxi === 0) return []
+  const legales = option.all_legal_targets
+  const preferees = voulues.filter((id) => legales.includes(id))
+  const reste = legales.filter((id) => !preferees.includes(id))
+  return [...preferees, ...reste].slice(0, Math.max(mini, Math.min(1, maxi)))
+}
+
+/**
+ * Retient cette option, cibles et ressources comprises.
+ *
+ * Rend `false` sans rien envoyer si le cout n'est pas payable : c'est ce qui
+ * permet a la conduite de passer a l'option suivante plutot que d'envoyer une
+ * reponse que le moteur refusera sans explication.
+ */
+export async function choisir(
+  request: APIRequestContext,
+  option: Option,
+  voulues: readonly number[] = [],
+  siege = 0
+): Promise<boolean> {
+  const cibles = ciblesPour(option, voulues)
+  const ressources = ressourcesPour(option, cibles)
+  if (ressources === undefined) return false
+  await request.post(`/post?p=${siege}`, {
+    data: encodeURIComponent(
+      JSON.stringify({ id: String(option.id), targets: cibles.map(String), resources: ressources })
+    ),
+  })
+  return true
+}
+
+/** Les noms d'options du moteur. Mesures sur une vraie partie, jamais devines. */
+const estFinDePhase = (option: Option) => /^End[ _]Phase$/i.test(option.name)
+const estAttaque = (option: Option) => /^Attack$/i.test(option.name)
+const estDejouement = (option: Option) => /^Thwart$/i.test(option.name)
+const estDefense = (option: Option) => /^Defense$/i.test(option.name)
+const estChangementDeForme = (option: Option) => /^Change[ _]Form$/i.test(option.name)
+const estJouerUneCarte = (option: Option) => /^Play$/i.test(option.name)
+
+/** Une option utilisable : jouable, et avec de quoi cibler si elle l'exige. */
+const utilisable = (option: Option) =>
+  cibleTenable(option) && (option.target_num_range[1] > 0 || option.target_num_range[0] === 0)
 
 export type Arret = (etat: { monde: Monde; demande?: Demande }) => boolean
 
 /**
- * Fait TOURNER la partie, sans jouer une seule carte, jusqu'a `arret`.
+ * Comment le pilote se conduit pendant le tour du joueur.
+ *
+ * Sans conduite il ne fait RIEN et passe : c'est le comportement d'origine, celui
+ * qui suffit a faire tourner les phases. Avec une conduite, il joue.
+ */
+export type Conduite = {
+  /**
+   * Complots a DEJOUER en priorite, par object_id. Le pilote y consacre son
+   * activation tant qu'ils sont sur la table : c'est ainsi qu'on vainc une
+   * manigance MISSION, ce qu'aucune commande de console ne sait faire.
+   */
+  dejouer?: readonly number[]
+  /** Attaquer l'ennemi quand il n'y a rien a dejouer. */
+  attaquer?: boolean
+  /** Cibles d'attaque preferees, par object_id (le vilain plutot qu'un sbire). */
+  attaquerDAbord?: readonly number[]
+  /** Jouer les cartes de la main qu'on peut payer. Defaut : false. */
+  jouerDesCartes?: boolean
+  /**
+   * Types de cartes a jouer EN PRIORITE (« Ally », « Upgrade », « Event »…).
+   *
+   * L'option de jeu s'appelle « Play » quelle que soit la carte : c'est son
+   * `bind_id` qui dit laquelle, et on le retrouve dans la main du joueur. Sans
+   * cette preference, le pilote joue la premiere carte payable, ce qui ne suffit
+   * pas quand une regle attend un type precis — la tentative de mission d'aoa
+   * exige un ALLIE a la mission, et un allie n'arrive a la mission que joue.
+   */
+  jouerDAbord?: readonly string[]
+  /**
+   * Actions a declencher en priorite, par motif sur leur nom.
+   *
+   * C'est ainsi qu'on utilise une carte pour ce qu'elle fait, et non pour son
+   * type : « Make a mission attempt » (Mission Team, aoa) est la SEULE facon de
+   * retirer de la menace d'une manigance MISSION — la carte 45170a annule tout
+   * retrait dont la source n'est pas Mission Team, donc l'action Thwart du heros
+   * n'y fait rien du tout (mesure : menace 5/5 inchangee sur dix tours de
+   * dejouement).
+   */
+  actions?: readonly RegExp[]
+  /** Rester en forme HEROS : sans cela, un alter-ego ne peut ni attaquer ni dejouer. */
+  resterEnHeros?: boolean
+  /**
+   * Se defendre contre les attaques. Defaut : NON, et c'est important.
+   *
+   * Une defense coute l'activation du heros. En se defendant a chaque attaque, il
+   * arrive epuise a son tour et le moteur ne lui propose plus ni Attack ni Thwart :
+   * mesure sur Rhino, ou le pilote « dejouait » sans qu'aucune option Thwart ne
+   * soit jamais offerte, la menace montant jusqu'a la defaite. Encaisser est
+   * d'ailleurs le choix courant d'un joueur.
+   */
+  seDefendre?: boolean
+  /**
+   * Dejouer la manigance principale quand sa menace approche sa cible, attaquer
+   * sinon. C'est l'arbitrage que fait tout joueur, et sans lui le pilote frappe
+   * le vilain jusqu'a ce que le complot se complete : mesure sur Morlock Siege,
+   * un Maraudeur mis en deroute puis la partie perdue sur la manigance.
+   */
+  equilibrer?: boolean
+}
+
+/** Le joueur est-il en forme alter-ego ? Il ne peut alors ni attaquer ni dejouer. */
+function enAlterEgo(m: Monde, siege = 0): boolean {
+  const identite = ((m.players?.[siege]?.area_hero ?? []) as Array<Record<string, unknown>>)[0]
+  return String(identite?.card_type ?? '') === 'AlterEgo'
+}
+
+/**
+ * Une action du tour de joueur, dans l'ordre de la conduite. Rend `true` si
+ * quelque chose a ete envoye.
+ *
+ * L'ordre compte : reprendre la forme heros AVANT tout, parce qu'un alter-ego
+ * n'a ni attaque ni deviation ; puis dejouer ce qu'on a demande de dejouer ;
+ * puis attaquer ; puis jouer une carte payable ; sinon passer.
+ */
+async function agir(
+  request: APIRequestContext,
+  demande: Demande,
+  conduite: Conduite,
+  m: Monde,
+  siege = 0
+): Promise<boolean> {
+  const options = demande.options.filter(utilisable)
+
+  if (conduite.resterEnHeros && enAlterEgo(m, siege)) {
+    const forme = options.find(estChangementDeForme)
+    if (forme && (await choisir(request, forme, [], siege))) return true
+  }
+
+  for (const motif of conduite.actions ?? []) {
+    const action = options.find((o) => motif.test(o.name))
+    if (action && (await choisir(request, action, [], siege))) return true
+  }
+
+  const aDejouer = conduite.dejouer ?? []
+  if (aDejouer.length) {
+    const thwart = options.find(
+      (o) => estDejouement(o) && o.all_legal_targets.some((id) => aDejouer.includes(id))
+    )
+    if (thwart && (await choisir(request, thwart, aDejouer, siege))) return true
+  }
+
+  if (conduite.equilibrer) {
+    const principale = ((m.area_schemes_main ?? []) as Array<Record<string, any>>)[0]
+    const menace = Number(principale?.info?.k_threat ?? 0)
+    const cible = Number(principale?.info?.target_threat ?? Number.POSITIVE_INFINITY)
+    const vilain = ((m.area_villain ?? []) as Array<Record<string, any>>).find(
+      (v) => v?.card_type === 'EncounterVillain'
+    )
+    const presqueMort = Number(vilain?.info?.health ?? 99) <= 4
+    // A MI-CHEMIN, pas a deux pions de la fin : la menace saute par paliers (une
+    // manigance qui s'avance, un pion acceleration, un boost), et attendre le
+    // dernier moment fait perdre la partie sur un seul tour de vilain. Mesure sur
+    // Rhino : avec un seuil a « cible - 2 », la menace est passee de 2/7 a 7/7
+    // dans le meme bloc de tours, le vilain a 3 points de vie.
+    // Exception : un vilain presque mort se termine, sinon on dejoue pour rien
+    // pendant que la partie etait gagnable.
+    if (principale && Number.isFinite(cible) && !presqueMort && menace * 2 >= cible) {
+      const thwart = options.find(estDejouement)
+      if (thwart && (await choisir(request, thwart, [Number(principale.id)], siege))) return true
+    }
+  }
+
+  if (conduite.attaquer) {
+    const attaque = options.find(estAttaque)
+    if (attaque && (await choisir(request, attaque, conduite.attaquerDAbord ?? [], siege))) return true
+  }
+
+  if (conduite.jouerDesCartes) {
+    const main = (m.players?.[siege]?.hand_cards ?? []) as Array<Record<string, any>>
+    const typeDe = (option: Option) =>
+      String(main.find((c) => Number(c.id) === option.bind_id)?.card_type ?? '')
+    const jouables = options.filter(estJouerUneCarte)
+    const prefs = conduite.jouerDAbord ?? []
+    const ordonnees = [
+      ...prefs.flatMap((type) => jouables.filter((o) => typeDe(o) === type)),
+      ...jouables.filter((o) => !prefs.includes(typeDe(o))),
+    ]
+    for (const carte of ordonnees) {
+      if (await choisir(request, carte, [], siege)) return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Fait TOURNER la partie jusqu'a `arret`, et la JOUE si on lui donne une conduite.
  *
  * La regle de conduite, dans cet ordre :
  *
@@ -152,23 +365,33 @@ export type Arret = (etat: { monde: Monde; demande?: Demande }) => boolean
  *    du scenario (« Place 2 secret counters… », « Advance to stage 2A ») : les
  *    refuser fige l'histoire, et c'est precisement ce qu'on veut voir se
  *    declencher ;
- * 2. « End Phase » est retenu : c'est lui qui fait tourner les phases ;
- * 3. si le moteur autorise de ne rien faire (`show_cancel`), on passe. On ne joue
- *    donc jamais de carte, ce qui evite d'avoir a payer des ressources ;
- * 4. sinon la question est FORCEE (mise en place, choix impose) : on repond la
- *    premiere option dont les cibles sont tenables.
- *
- * Rend le dernier monde lu. Ne leve pas si la partie se termine : une partie
- * perdue en route est un resultat, pas une panne.
+ * 2. « Defense » est retenue : se defendre coute une activation mais evite de
+ *    perdre le heros, et un heros elimine ne touche plus aucune recompense ;
+ * 3. la conduite agit (forme heros, dejouer, attaquer, jouer) ;
+ * 4. « End Phase » est retenu : c'est lui qui fait tourner les phases ;
+ * 5. si le moteur autorise de ne rien faire (`show_cancel`), on passe ;
+ * 6. sinon la question est FORCEE : on repond la premiere option tenable.
  */
 export async function avancerLaPartie(
   page: Page,
   request: APIRequestContext,
   arret: Arret,
-  tours = 60
+  tours = 60,
+  conduite: Conduite = {}
 ): Promise<Monde> {
   for (let i = 0; i < tours; i++) {
-    const demande = await lireDemande(request)
+    // Le siege QUI PARLE : on prend le premier qui a une question. A un joueur
+    // c'est toujours 0, a plusieurs c'est celui dont c'est le tour.
+    let siege = 0
+    let demande: Demande | undefined
+    for (const candidat of await sieges(request)) {
+      const vue = await lireDemande(request, candidat)
+      if (vue) {
+        siege = candidat
+        demande = vue
+        break
+      }
+    }
     const m = await monde(request)
     // L'arret est evalue AVANT de repondre : c'est la seule facon de s'arreter
     // SUR une question, ce que demande la verification de l'interface — y
@@ -179,12 +402,20 @@ export async function avancerLaPartie(
     if (demande) {
       const tenables = demande.options.filter(cibleTenable)
       const reponse = /Response|Interrupt/i.test(demande.ability_type) ? tenables[0] : undefined
+      const defense = conduite.seDefendre ? tenables.find(estDefense) : undefined
       const finDePhase = tenables.find(estFinDePhase)
-      if (reponse) await choisir(request, reponse)
-      else if (finDePhase) await choisir(request, finDePhase)
-      else if (demande.show_cancel) await passer(request)
-      else if (tenables[0]) await choisir(request, tenables[0])
-      else await passer(request)
+      if (reponse) await choisir(request, reponse, [], siege)
+      else if (defense) await choisir(request, defense, [], siege)
+      else if (await agir(request, demande, conduite, m, siege)) {
+        /* la conduite a joue */
+      } else if (finDePhase) await choisir(request, finDePhase, [], siege)
+      else if (demande.show_cancel) await passer(request, siege)
+      else {
+        // Question FORCEE. On ecarte quand meme la defense si elle n'est pas
+        // demandee : elle est toujours facultative, et elle couterait l'activation.
+        const forcee = tenables.find((o) => conduite.seDefendre || !estDefense(o))
+        if (!forcee || !(await choisir(request, forcee, [], siege))) await passer(request, siege)
+      }
     }
     await page.waitForTimeout(300)
   }
@@ -203,20 +434,22 @@ export async function avancerJusquALaQuestion(
   page: Page,
   request: APIRequestContext,
   motif: RegExp,
-  tours = 60
+  tours = 60,
+  conduite: Conduite = {}
 ): Promise<Demande | undefined> {
   let trouvee: Demande | undefined
   await avancerLaPartie(
     page,
     request,
     ({ demande }) => {
-      if (demande && demande.options.some((o) => motif.test(String(o.name ?? '')))) {
+      if (demande && demande.options.some((o) => motif.test(o.name))) {
         trouvee = demande
         return true
       }
       return false
     },
-    tours
+    tours,
+    conduite
   )
   return trouvee
 }
@@ -266,6 +499,13 @@ export async function lancer(request: APIRequestContext, options: Lancement): Pr
   )
 }
 
+/** Les sieges de la partie, dans l'ordre. Un seul en solo. */
+export async function sieges(request: APIRequestContext): Promise<number[]> {
+  const m = await monde(request)
+  const total = ((m.players ?? []) as unknown[]).length || 1
+  return [...Array(total).keys()]
+}
+
 /**
  * Ouvre le plateau et traverse la mise en place et les mulligans.
  *
@@ -276,8 +516,12 @@ export async function ouvrirEtMettreEnPlace(page: Page, request: APIRequestConte
   await page.goto('/app/board.html', { waitUntil: 'networkidle' })
   await page.waitForTimeout(2500)
   let vuLaMiseEnPlace = false
-  for (let i = 0; i < 40; i++) {
-    await repondre(request)
+  for (let i = 0; i < 60; i++) {
+    // TOUS les sieges, pas seulement le premier : a plusieurs heros, chacun a ses
+    // propres questions de mise en place sur `/get_ask?p=<siege>`, et n'en servir
+    // qu'un fait attendre le moteur indefiniment (mesure a deux heros : la mise en
+    // place ne se terminait jamais).
+    for (const siege of await sieges(request)) await repondre(request, siege)
     const m = await monde(request)
     const phase = String(m.phase ?? '')
     const enPlace = phase.includes('Setup') || phase.includes('Mulligan') || phase.includes('Init')

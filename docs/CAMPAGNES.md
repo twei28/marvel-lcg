@@ -1644,3 +1644,97 @@ Mis au rouge exprès en désarmant le `passer` : les deux cas tombent.
 payer des ressources) et donc déjouer une manigance. C'est ce qui manque encore à
 la branche « Professeur sauvé » d'aoa, et `PlaceThreat`/`SetThreat` n'y aident pas
 (aucun effet depuis la console).
+
+## 13. Le pilote complet : il joue, il ne gagne pas (12/8/2026)
+
+Le pilote savait mener les phases (§11). Il sait maintenant faire les GESTES du
+jeu, et le geste qui débloque tous les autres est **payer**.
+
+### Il paie comme le plateau, pas comme une copie du plateau
+
+`ui-check/pilote-campagne.ts` **importe** `ui-app/src/board/ask.ts`, qui n'a pas un
+seul import et sert déjà au plateau à décider qu'une action est prête à partir.
+`ressourcesPour()` empile les moyens que le moteur propose jusqu'à ce que
+`reponsePrete()` dise oui : la même fonction que celle qui débloque le bouton
+« Valider ». Un coût exprimé en TYPES (« BY » = une énergie ET une mentale) ne se
+satisfait donc pas en comptant, un « UpTo » se paie à zéro, et une carte à double
+ressource vaut deux d'un coup — sans une ligne de règle réécrite ici. Dupliquer
+aurait produit deux vérités qui dérivent en silence.
+
+### La conduite, et pourquoi chaque défaut est ce qu'il est
+
+`avancerLaPartie(page, request, arret, tours, conduite)` :
+
+| Réglage | Ce qu'il fait |
+|---|---|
+| `dejouer` | complots à déjouer en priorité, par object_id |
+| `attaquer`, `attaquerDAbord` | attaquer, et qui viser d'abord |
+| `jouerDesCartes`, `jouerDAbord` | jouer ce qu'on peut payer, en préférant des types (`Ally`…) |
+| `actions` | déclencher une action par motif sur son nom |
+| `resterEnHeros` | reprendre la forme héros : un alter-ego n'a ni attaque ni déviation |
+| `equilibrer` | déjouer la manigance principale à mi-chemin de sa cible, attaquer sinon |
+| `seDefendre` | se défendre. **Faux par défaut**, et c'est capital |
+
+**La défense est facultative, et son défaut est NON.** Une défense coûte
+l'activation du héros. En se défendant à chaque attaque, il arrive épuisé à son
+tour et le moteur ne lui propose plus ni `Attack` ni `Thwart` : mesuré sur Rhino,
+le pilote « déjouait » sans qu'aucune option `Thwart` ne soit jamais offerte, et la
+menace montait jusqu'à la défaite. Encaisser est d'ailleurs le choix courant d'un
+joueur.
+
+**Le seuil d'`equilibrer` est à mi-chemin, pas à deux pions de la fin.** La menace
+saute par paliers (une manigance qui s'avance, un pion accélération, un boost) :
+avec un seuil à « cible - 2 », Rhino est passé de 2/7 à 7/7 dans le même bloc de
+tours, le vilain à 3 points de vie. Exception : un vilain presque mort se termine.
+
+**Tous les sièges sont servis.** Chaque joueur a ses propres questions sur
+`/get_ask?p=<siège>`. N'en servir qu'un fait attendre le moteur indéfiniment :
+mesuré à deux héros, la mise en place ne se terminait jamais.
+
+### Ce qu'il sait faire, prouvé geste par geste
+
+`ui-check/tests/campagne-pilote.spec.ts` ne vérifie aucune règle de campagne : il
+vérifie LE PILOTE, sur des faits mesurés. C'est le filet des autres tests de vraies
+parties — si le contrat de `/post` change, ça se voit ici, et pas dans un test de
+campagne qui échouerait pour une raison obscure.
+
+- il paie et pose devant lui une carte dont le coût est > 0 (compter les cartes qui
+  quittent la main ne prouverait rien : la main se recharge, et une carte gratuite
+  s'y voit comme une carte payée) ;
+- il attaque, et le vilain perd vraiment des points de vie ;
+- il déjoue, et la menace de la manigance baisse ;
+- il **vainc un stade de vilain sans aucun `/debug`** : sur Morlock Siege, un
+  Maraudeur part sous « Routed » par le seul effet du jeu ;
+- il mène une **tentative de mission** à deux héros (aoa) ;
+- il sert les deux sièges jusqu'au bout de la mise en place.
+
+### La tentative de mission, le geste le plus complet du jeu
+
+Et le seul chemin vers « Professeur sauvé ». Il enchaîne : jouer un allié (donc
+payer) → l'allié rejoint la mission (`AllyToMission` lui pose un compteur
+« mission ») → l'action nommée « Make a mission attempt » de Mission Team, qui
+exige au moins un allié à la mission → la tentative défausse des cartes du deck,
+apparie leurs icônes à celles des alliés, frappe le surveillant posté avec leur ATK
+et retire de la menace avec leur THW, puis pose un compteur d'essai.
+
+Rien de cela ne se pilote autrement : `45170a` annule tout retrait de menace dont
+la source n'est pas Mission Team, et un surveillant posté est immunisé à ce qui ne
+vient pas d'une tentative. Mesures : dix tours d'action `Thwart` laissent la mission
+à 5/5, et `Damage` par la console ne l'entame pas.
+
+### Ce que le pilote ne sait pas faire : GAGNER
+
+Il joue les gestes, il ne joue pas une stratégie. Deux mesures :
+
+- **Rhino** : le vilain descend de 14 à 3 points de vie, et la manigance se complète
+  quand même. Achever une partie reste donc l'affaire de `/debug` ;
+- **« Professeur sauvé » (aoa)** reste hors de portée, et ce n'est plus une limite
+  d'outillage. À deux héros la mission compte **10 menaces** (5 par joueur) et son
+  surveillant **10 points de vie**, pour **4 tentatives maximum** avant l'échec.
+  Le pilote joue la chaîne correctement — deux alliés à la mission, trois essais,
+  le surveillant de 10 à 6 points de vie, la menace de 10 à 8 — et le compte
+  n'arrive pas au bout avec des decks de départ. Il y faudrait des decks construits
+  pour la mission, c'est-à-dire un joueur, ou une IA de jeu : un autre chantier.
+
+C'est la dernière entrée non couverte du mode campagne, et elle est désormais
+documentée par une mesure plutôt que par une supposition.
