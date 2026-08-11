@@ -172,6 +172,62 @@ def RetourDesAdaptoids() -> 'Ability':
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 
 
+SET_DES_PREUVES = 'executive_board_evidence'
+
+
+def EcarterLesPreuvesDuScenario() -> 'Ability':
+    """Le scenario 5 apporte les NEUF preuves : en campagne, c'est de trop.
+
+    `baron_zemo.json` charge le set `executive_board_evidence` complet. Le
+    moteur resout la capacite « Setup » de toute carte Evidence qu'il trouve
+    dans un deck (voir l'etape 12 de `world.GameSetup`), si bien qu'en mode
+    campagne les neuf preuves entraient en jeu face visible — dont les TROIS
+    de l'enveloppe A.I.M., ce qui donnait la taupe au joueur sans qu'il ait a
+    enqueter. Mesure faite a la sonde avant correction : `area_evidence`
+    contenait 50185 a 50193.
+
+    On retire donc le set a la creation du deck de rencontre, et les preuves
+    gagnees sont posees plus tard, une par une, par `PoserLesPreuves`. Hors
+    campagne on ne touche a rien : le set garde son role de module.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenGameBeginSetup'):
+        message.encounter_set_names = [x for x in message.encounter_set_names
+                                       if x != SET_DES_PREUVES]
+    return AbilityFactory.WhenGameBeginSetup(
+        action,
+        conditions=[lambda effect, message: Worlds.IsCampaign(effect)],
+    )
+
+
+def PoserLesPreuves() -> 'Ability':
+    """Les preuves gagnees entrent en jeu et resolvent leur « Setup ».
+
+    Livret, encarts SETUP des scenarios 2 a 5 : « After resolving mulligans,
+    resolve the "Setup" ability of each evidence card the players have
+    earned. » D'ou l'accroche `WhenCampaignSetupAfterMulligans` plutot que
+    `WhenCampaignSetup` : ces capacites cherchent une carte dans le deck et
+    l'ajoutent A LA MAIN, ce qui n'a de sens qu'une fois la main piochee et
+    mulliganee. Elles posent aussi un compteur secret sur un membre du
+    Conseil, qui doit donc deja porter le compte reporte du scenario
+    precedent — `PoserLeConseil` s'en charge a l'etape 13, avant.
+
+    On pose la carte NOUS-MEMES avant de resoudre sa mise en place.
+    `Evidence.OnWhenCardSetup` sait entrer en jeu tout seul, mais seulement
+    depuis un vrai deck (`IsInDeck`), et la reserve n'en est pas un
+    (`DeckTypeFlags.AsideDeck.is_deck` est faux) : la generer la donnait une
+    aire des preuves vide, capacite jamais partie. `PutIntoPlay` la range dans
+    `area_evidence`, puis `Setup` fait partir la capacite.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetupAfterMulligans'):
+        for card_id in _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect)):
+            if card_id not in PREUVES:
+                continue
+            card = CardFactory.GenerateCard(card_id, None, effect.world)
+            card.face.PutIntoPlay('FirstPlayer', effect)
+            card.face.Setup(False)
+    return AbilityFactoryCampaign.WhenCampaignSetupAfterMulligans(action)
+
+
 def CampaignSetup(level: int) -> 'List[Ability]':
     abilities: List['Ability'] = [PoserLeConseil(level)]
     if level <= 4:
@@ -184,7 +240,12 @@ def CampaignSetup(level: int) -> 'List[Ability]':
         abilities.append(VerrousDeLaCellule())
     if level == 5:
         abilities.append(RetourDesAdaptoids())
+        # Seul le scenario 5 charge le set complet des preuves.
+        abilities.append(EcarterLesPreuvesDuScenario())
     if level >= 2:
+        # Le scenario 1 ne peut avoir aucune preuve : le livret ne cite cette
+        # instruction que dans les encarts des scenarios 2 a 5.
+        abilities.append(PoserLesPreuves())
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
     abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectAOS(level, effect)))
     return abilities

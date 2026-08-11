@@ -875,17 +875,56 @@ de vraies parties, bytecode recompilé : cas nominal, deux témoins négatifs
 qui prouve le filtre — une clé bidon injectée par la même voie ressort, le
 secret non.
 
+### Poser les preuves gagnées au scénario suivant
+
+Câblé le 11/8/2026. Encarts SETUP des scénarios 2 à 5 : « After resolving
+mulligans, resolve the "Setup" ability of each evidence card the players have
+earned. » Les neuf cartes existaient déjà et portaient leur capacité
+(`aos/executive_board_evidence/`) ; rien ne les mettait en place.
+
+**Le livret dit « après les mulligans », et il a une bonne raison.** Chaque
+preuve propose deux choses : poser un compteur secret sur un membre du Conseil
+pour chercher une carte dans sa collection, et poser une menace sur la
+manigance principale pour chercher une carte dans son deck et **l'ajouter à la
+main**. Résoudre cela avant l'étape 14 coûterait une carte au joueur —
+`DrawUp("Max")` compte ce qui est déjà en main — et le mulligan pourrait
+ensuite jeter la carte cherchée.
+
+Le moteur n'avait pas ce point d'accroche. Il en a un maintenant : **étape
+15 bis**, `Message.WhenCampaignSetupAfterMulligans`, envoyée dans
+`world.GameSetup` juste après les mulligans et avant les capacités de mise en
+place des identités, avec sa fabrique
+`AbilityFactoryCampaign.WhenCampaignSetupAfterMulligans`. Ajout purement
+additif : aucune autre boîte n'y écoute. Mesuré à la sonde, la main passe de 6
+à 8 avec deux preuves, ce qui ne peut arriver qu'après la pioche.
+
+Deux pièges relevés en chemin :
+
+- **`aside_deck` n'est pas un deck.** `Evidence.OnWhenCardSetup` sait entrer en
+  jeu tout seul, mais seulement `if self.IsInDeck()`, et
+  `DeckTypeFlags.AsideDeck.is_deck` est faux. Une preuve générée là restait
+  invisible, capacité jamais partie. On la pose donc soi-même avec
+  `PutIntoPlay`, puis `Setup`.
+- **Le scénario 5 apportait les neuf preuves.** `baron_zemo.json` charge le set
+  `executive_board_evidence` complet, et le moteur résout la capacité « Setup »
+  de toute carte Evidence trouvée dans un deck (étape 12). En mode campagne,
+  `area_evidence` contenait donc 50185 à 50193 — **dont les trois de
+  l'enveloppe A.I.M.**, ce qui donnait la taupe au joueur sans qu'il ait à
+  enquêter. Mesuré avant correction. `EcarterLesPreuvesDuScenario` retire le
+  set à la création du deck de rencontre, en mode campagne seulement ; hors
+  campagne le comportement est inchangé, vérifié en remettant le fichier
+  d'avant et en remesurant.
+
+Onze vérifications de plus dans `tools/test_preuves_aos.py` (24 au total), et
+la suite complète des cartes repassée après le changement de
+`world.GameSetup` : 4189 OK, 0 erreur.
+
 ### Ce qui n'est PAS fait
 
 **La grille de déduction.** Les neuf combinaisons du carnet officiel, et les
 lignes rayées au fur et à mesure des preuves gagnées. C'est la partie écran, et
 c'est elle qui donnera un sens visible à `Evidence Gained`, aujourd'hui une
 simple liste d'identifiants dans le panneau des récompenses.
-
-**La capacité « Setup » des preuves gagnées.** Les encarts des scénarios 2 à 5
-disent « After resolving mulligans, resolve the "Setup" ability of each evidence
-card the players have earned ». Les neuf cartes existent et portent bien leur
-capacité (`aos/executive_board_evidence/`), mais rien ne les met en place.
 
 **L'accusation du scénario 5** (livret p.19). Une accusation fausse ne fait pas
 perdre, elle durcit le scénario.

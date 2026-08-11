@@ -330,6 +330,18 @@ class World(WorldAction, WorldFind):
                 player.phase.ResolveMulligans(Message.WhenPlayerResolveMulligans(player))
             JobManager.Simultaneous(process_player, self.const_players)
 
+        # [x] 15 bis. Campaign Setup, la part qui attend la fin des mulligans
+        # Les encarts des scenarios 2 a 5 d'Agents of S.H.I.E.L.D. le disent
+        # mot pour mot : « After resolving mulligans, resolve the "Setup"
+        # ability of each evidence card the players have earned ». C'est le
+        # seul endroit ou une carte peut chercher dans le deck et l'ajouter a
+        # une main deja piochee et deja mulliganee.
+        campaign_message = Message.WhenCampaignSetupAfterMulligans(self)
+        campaign_message.Send()
+
+        if self.is_game_over:
+            return
+
         # [x] 16. Resolve Character Setup Abilities
         Message.TextRender("\n--- Resolve Character Setup Abilities ---", self)
         for player in self.const_players:

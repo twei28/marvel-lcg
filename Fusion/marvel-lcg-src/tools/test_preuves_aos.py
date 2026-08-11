@@ -7,10 +7,14 @@ Deux regles a tenir, et elles se contredisent presque :
 * le JOUEUR ne doit JAMAIS la lire, alors que le carnet sortant lui est
   presente tel quel a la fin de chaque partie.
 
-Chaque cas monte une partie du scenario 1, vide (ou non) le Medecin en chef de
-ses secrets par une commande Puzzle, declenche la fin de partie, et relit le
-carnet SORTANT. Cas et temoins vont par paires : la table est identique, seul
-le carnet ENTRANT change, donc l'ecart mesure ne peut venir que de lui.
+Deux volets. Le premier GAGNE les preuves : il monte une partie du scenario 1,
+vide (ou non) le Medecin en chef de ses secrets par une commande Puzzle,
+declenche la fin de partie, et relit le carnet SORTANT. Le second les POSE :
+il monte les scenarios 2 et 5 avec des preuves deja gagnees au carnet entrant,
+et regarde l'aire des preuves et la main du joueur apres la mise en place.
+
+Cas et temoins vont par paires : la table est identique, seul le carnet
+ENTRANT change, donc l'ecart mesure ne peut venir que de lui.
 
 Le cas « fuite » merite un mot : il injecte une cle bidon par la meme voie que
 le secret. Elle ressort, le secret non — c'est ce qui prouve que le filtre de
@@ -62,6 +66,30 @@ def sonder(carnet, puzzle):
     return sortie.get("erreurs") or [], carnet_sortant.get("suggestions") or {}
 
 
+def sonder_monde(scenario, carnet):
+    """Une mise en place, et le monde qu'elle produit. Pas de fin de partie."""
+    global port
+    port += 1
+    rapport = os.path.join(tempfile.gettempdir(), f"preuves_aos_{os.getpid()}_{port}.json")
+    env = dict(os.environ, RAPPORT=rapport, CAMPAIGN_LOG=json.dumps(carnet))
+    env.pop("FIN_DE_PARTIE", None)
+    env.pop("PUZZLE", None)
+    subprocess.run([sys.executable, SONDE, RACINE, scenario, "maria_hill", str(port)],
+                   env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    with open(rapport, encoding="utf-8") as f:
+        sortie = json.load(f)
+    os.remove(rapport)
+    return sortie.get("erreurs") or [], sortie.get("monde") or {}
+
+
+def en_jeu(monde):
+    return sorted(c["card_id"] for c in monde.get("area_evidence", []))
+
+
+def taille_main(monde):
+    return len(monde["players"][0].get("hand_cards", []))
+
+
 def preuves(carnet):
     valeur = carnet.get("Evidence Gained")
     return [x for x in (valeur or "").split(";") if x]
@@ -111,6 +139,54 @@ verifier("une cle injectee ressort bien au carnet",
          carnet.get("Temoin Injecte") == "visible", carnet.get("Temoin Injecte"))
 verifier("la combinaison de la taupe, elle, est filtree",
          "A.I.M. Envelope" not in carnet, carnet.get("A.I.M. Envelope"))
+
+# ---------------------------------------------------------------------------
+# Second volet : les preuves gagnees se posent au scenario suivant.
+# Livret, encarts SETUP des scenarios 2 a 5 : « After resolving mulligans,
+# resolve the "Setup" ability of each evidence card the players have earned. »
+# On prend Wiretap (50186, allie Justice) et Travel (50192, soutien Justice) :
+# deux capacites que le deck de depart de Maria Hill peut vraiment satisfaire.
+DEUX = "50186;50192"
+
+# 7. Scenario 2 sans aucune preuve : la reference.
+erreurs, monde = sonder_monde("batroc", {"A.I.M. Envelope": TAUPE})
+verifier("scenario 2 nu : la mise en place tourne sans erreur", not erreurs, erreurs)
+verifier("scenario 2 nu : aucune preuve en jeu", not en_jeu(monde), en_jeu(monde))
+main_nue = taille_main(monde)
+secrets_nus = sum(c["info"].get("c_secret", 0) for c in monde.get("area_environment", [])
+                  if c["card_id"].startswith(("50181", "50182", "50183")))
+verifier("scenario 2 nu : aucun secret sur le Conseil", secrets_nus == 0, secrets_nus)
+
+# 8. Meme scenario, deux preuves gagnees.
+erreurs, monde = sonder_monde("batroc", {"A.I.M. Envelope": TAUPE, "Evidence Gained": DEUX})
+verifier("scenario 2 : la mise en place tourne sans erreur", not erreurs, erreurs)
+verifier("les deux preuves gagnees sont en jeu, et elles seules",
+         en_jeu(monde) == ["50186", "50192"], en_jeu(monde))
+# Chaque preuve propose deux choses : poser un secret sur un membre du Conseil,
+# et ajouter une carte cherchee A LA MAIN. Le pilote de la sonde accepte tout ce
+# qui est legal, donc les deux partent. La main doit grossir d'autant, ce qui ne
+# peut arriver QU'APRES la pioche et le mulligan : c'est la preuve que l'etape
+# 15 bis est au bon endroit.
+verifier("la main grossit d'une carte par preuve, apres le mulligan",
+         taille_main(monde) == main_nue + 2, (main_nue, taille_main(monde)))
+secrets = sum(c["info"].get("c_secret", 0) for c in monde.get("area_environment", [])
+              if c["card_id"].startswith(("50181", "50182", "50183")))
+verifier("chaque preuve pose un secret sur un membre du Conseil", secrets == 2, secrets)
+
+# 9. Scenario 5 : son set apporte les NEUF preuves. Seules les gagnees doivent
+#    rester, sinon les trois de l'enveloppe A.I.M. donnaient la taupe au joueur.
+erreurs, monde = sonder_monde("baron_zemo", {"A.I.M. Envelope": TAUPE, "Evidence Gained": DEUX})
+verifier("scenario 5 : la mise en place tourne sans erreur", not erreurs, erreurs)
+verifier("scenario 5 : les neuf preuves du set ne debarquent plus",
+         en_jeu(monde) == ["50186", "50192"], en_jeu(monde))
+verifier("scenario 5 : aucune preuve de l'enveloppe A.I.M. en jeu",
+         not [p for p in en_jeu(monde) if p in TAUPE.split(";")], en_jeu(monde))
+
+# 10. Une valeur inconnue au carnet ne fait rien entrer en jeu.
+erreurs, monde = sonder_monde("batroc", {"A.I.M. Envelope": TAUPE,
+                                         "Evidence Gained": "50186;99999"})
+verifier("une preuve inconnue est ignoree sans casser la mise en place",
+         not erreurs and en_jeu(monde) == ["50186"], (erreurs, en_jeu(monde)))
 
 echecs = [r for r in resultats if not r[1]]
 for nom, ok, detail in resultats:

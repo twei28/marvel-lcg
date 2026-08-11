@@ -36,6 +36,22 @@ class SenderRound:
         def __init__(self, world: 'World') -> None:
             super().__init__(world=world)
 
+    class WhenCampaignSetupAfterMulligans(Message2):
+        """Les instructions de campagne qui attendent la fin des mulligans.
+
+        La plupart se resolvent en meme temps que le reste de la mise en place
+        (`WhenCampaignSetup`, etape 13). Quelques-unes non : les encarts des
+        scenarios 2 a 5 d'Agents of S.H.I.E.L.D. disent « After resolving
+        mulligans, resolve the "Setup" ability of each evidence card the
+        players have earned ». Et pour cause, ces capacites cherchent une carte
+        dans le deck et l'AJOUTENT A LA MAIN : les resoudre avant l'etape 14
+        ferait piocher une carte de moins (`DrawUp("Max")` compte ce qui est
+        deja en main), et le mulligan pourrait ensuite defausser la carte
+        cherchee.
+        """
+        def __init__(self, world: 'World') -> None:
+            super().__init__(world=world)
+
     class WhenGameInitialize(Message2):
         def __init__(self, world: 'World') -> None:
             super().__init__(world=world)

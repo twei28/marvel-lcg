@@ -20,6 +20,27 @@ class AbilityFactoryCampaign:
         )
 
     @staticmethod
+    def WhenCampaignSetupAfterMulligans(operation: OperationType[Message.WhenCampaignSetupAfterMulligans],
+                                        *,
+                                        conditions: ConditionsType[Message.WhenCampaignSetupAfterMulligans]=[],
+                                        ) -> 'Ability':
+        """Etape 15 bis : ce que le livret place APRES les mulligans.
+
+        Voir `Message.WhenCampaignSetupAfterMulligans` pour le pourquoi.
+        """
+        from game.operate.worlds import Worlds
+        return Ability(
+            AbilityType.Campaign,
+            Message.WhenCampaignSetupAfterMulligans,
+            [
+                lambda effect, message:
+                    Worlds.IsCampaign(effect),
+                *conditions
+            ],
+            operation
+        )
+
+    @staticmethod
     def WhenCampaignSetupExpertOnly(operation: OperationType[Message.WhenCampaignSetup],
                                     *,
                                     conditions: ConditionsType[Message.WhenCampaignSetup]=[],
