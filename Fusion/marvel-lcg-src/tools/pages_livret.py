@@ -73,6 +73,23 @@ CARTES = {
             ("loki", 5, 23, [24, 25], 26),
         ],
     },
+    "gmw": {
+        "pdf": "mc16_galaxys_most_wanted_rules_website-compressed.pdf",
+        # p4 : cartes de campagne et regles du mode. p5 : campagne experte,
+        # unites et Marche.
+        "regles_campagne": [4, 5],
+        # Les planches vont par paires ici : la campagne ouvre sur une double
+        # page (6-7), et la scene d'apres Nebula en occupe une autre (16-17).
+        # Chaque planche unique sert d'epilogue a un scenario ET d'intro au
+        # suivant, sans etre dupliquee.
+        "scenarios": [
+            ("brotherhood_of_badoon", 1, [6, 7], [8], 9),
+            ("infiltrate_the_museum", 2, None, [10], 11),
+            ("escape_the_museum", 3, None, [12], 13),
+            ("nebula", 4, None, [14, 15], [16, 17]),
+            ("ronan", 5, None, [18], 19),
+        ],
+    },
     "mut_gen": {
         "pdf": "mc32_mutant_genesis_rulebook_v5-compressed.pdf",
         # page 4 : regles du mode campagne ; page 5 : les roles et l'expert.
@@ -130,9 +147,15 @@ def main():
         # Pas d'intro propre : on reprend la planche qui a clos le scenario
         # precedent, sans la dupliquer.
         if intro is not None:
-            f = nom_fichier(numero, scenario, "intro", 1)
-            a_rendre[intro] = f
-            bloc["intro"] = [f]
+            # Une intro peut tenir sur une double page : gmw ouvre sur deux
+            # planches qui ne se lisent qu'ensemble.
+            pages_intro = intro if isinstance(intro, list) else [intro]
+            noms = []
+            for rang, page in enumerate(pages_intro, 1):
+                f = nom_fichier(numero, scenario, "intro", rang)
+                a_rendre[page] = f
+                noms.append(f)
+            bloc["intro"] = noms
         elif precedent_epilogue:
             bloc["intro"] = [precedent_epilogue]
         bloc["regles"] = []
