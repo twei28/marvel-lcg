@@ -1057,10 +1057,9 @@ l'invariant sans lequel la déduction repartirait fausse.
 
 6 cas vitest sur `reprise-campagne.ts` (module pur, comme `defaite-campagne.ts`)
 et 5 cas Playwright sur la route, dont le compte borné à six et le refus en
-expert. Le câblage du panneau lui-même (ouvrir à la défaite, appeler la route)
-n'est pas couvert de bout en bout : il faudrait mener une vraie partie jusqu'à
-la défaite du scénario 5. C'est la même limite que pour le reste de
-`PanneauRecompenses`, dont seules les briques pures sont éprouvées.
+expert. Le câblage du panneau — s'ouvrir à la défaite du scénario 5 et appeler
+la route — est couvert par `campagne-panneau.spec.ts`, sur une vraie partie
+perdue (voir §10).
 
 ### Le soin de campagne experte
 
@@ -1247,3 +1246,51 @@ Par ordre d'intérêt :
    « Dans le deck » pour la sienne, « Prise » en gris pour celle d'un
    coéquipier. Le quatrième cas de `npm run campagne-marche` le tient, avec
    témoin : remis en limite par joueur, il devient rouge.
+
+## 10. Le panneau de récompenses, de bout en bout
+
+Ajouté le 11/8/2026. C'est le point de passage **obligé** de toutes les
+campagnes — rien n'entre dans un carnet sans lui — et aucun test ne le
+traversait. Seules ses briques pures étaient éprouvées (`preremplissage`,
+`detecteurs`, `defaite-campagne`, `reprise-campagne`). Trois câblages en
+dépendaient sans preuve : qu'il s'ouvre au bon moment, qu'il enregistre ce qu'il
+affiche, et qu'il appelle `/reinitialiser_enquete` à la défaite du scénario 5.
+
+`ui-check/tests/campagne-panneau.spec.ts` mène de **vraies parties de campagne**
+jusqu'à leur fin. Trois cas : victoire au scénario 1 (le panneau s'ouvre,
+enregistre, et renvoie à l'écran des campagnes), défaite hors dernier scénario
+(le panneau ne s'ouvre pas, rien n'est reporté), défaite au scénario 5 en
+standard (le panneau s'ouvre sur la reprise et re-prépare l'enquête).
+
+### Comment une vraie partie est menée dans un test
+
+Deux contraintes qui se contredisent presque :
+
+- **le plateau doit être ouvert** : le moteur attend un client avant de poser sa
+  première question, et c'est le plateau qui affiche le panneau ;
+- **répondre en cliquant serait intenable** : la mise en place de Black Widow
+  demande déjà de choisir un sbire parmi dix, et chaque scénario a ses propres
+  questions.
+
+D'où le montage : on ouvre le plateau, mais on répond par `/get_ask` + `/post`,
+exactement comme le fait le navigateur, en prenant la **première option légale**.
+C'est le pilote de `tools/sonde_campagne.py`, transposé en HTTP. La fin de partie
+est ensuite forcée par `/debug`, la console que le joueur a sous la main :
+`Damage("Black Widow", 100)` pour une victoire, `Eliminate(0)` pour une défaite.
+
+Trois pièges relevés en montant ce test :
+
+- **Le mode fixture ne convient pas.** `/app/board.html?etat=<fichier>` affiche
+  un état enregistré en lecture seule et ne rend **jamais** l'écran de fin de
+  partie. C'est volontaire, et il faut que ça le reste : le panneau écrit dans
+  les campagnes, ouvrir une fixture ne doit pas pouvoir en modifier une.
+- **Sans navigateur, rien ne démarre.** Piloter uniquement par HTTP ne suffit
+  pas : `/get_ask` reste vide tant qu'aucun client ne s'est connecté.
+- **`addInitScript` repose la clé à chaque navigation.** On ne peut donc pas
+  vérifier que le panneau efface `mc-campagne-partie` : valider renvoie à
+  `/campagne.html`, et le script de test réécrit la clé au passage. Le signe
+  observable retenu est la navigation elle-même.
+
+⚠️ Ce test lance de **vraies parties** sur le serveur visé : toute partie en
+cours y est perdue. Même précaution que `lancement-partie.spec.ts`.
+`npm run campagne-panneau`.
