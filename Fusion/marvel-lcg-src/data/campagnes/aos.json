@@ -197,5 +197,145 @@
       "libelle": "PV restants",
       "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
     }
-  ]
+  ],
+  "enquete": {
+    "titre": "L'enquête",
+    "aide": "Un des trois membres du Conseil est une taupe. Sa combinaison — moyen, mobile, occasion — dort dans l'enveloppe A.I.M. Chaque preuve obtenue raye toutes les combinaisons qui la contiennent : ce qui reste est encore possible.",
+    "cle_preuves": "Evidence Gained",
+    "series": [
+      {
+        "cle": "moyen",
+        "libelle": "Moyen"
+      },
+      {
+        "cle": "mobile",
+        "libelle": "Mobile"
+      },
+      {
+        "cle": "occasion",
+        "libelle": "Occasion"
+      }
+    ],
+    "preuves": [
+      {
+        "id": "50185",
+        "serie": "moyen",
+        "nom": "Dossiers médicaux",
+        "nom_en": "Medical Records",
+        "court": "Dossiers",
+        "teinte": "#e8a06a"
+      },
+      {
+        "id": "50186",
+        "serie": "moyen",
+        "nom": "Écoute téléphonique",
+        "nom_en": "Wiretap",
+        "court": "Écoute",
+        "teinte": "#7cc4ea"
+      },
+      {
+        "id": "50187",
+        "serie": "moyen",
+        "nom": "Scanner de sécurité",
+        "nom_en": "Security Scanner",
+        "court": "Scanner",
+        "teinte": "#e79ab0"
+      },
+      {
+        "id": "50188",
+        "serie": "mobile",
+        "nom": "Argent",
+        "nom_en": "Money",
+        "court": "Argent",
+        "teinte": "#9ed093"
+      },
+      {
+        "id": "50189",
+        "serie": "mobile",
+        "nom": "Chantage",
+        "nom_en": "Blackmail",
+        "court": "Chantage",
+        "teinte": "#6b6b6b"
+      },
+      {
+        "id": "50190",
+        "serie": "mobile",
+        "nom": "Idéologie",
+        "nom_en": "Ideology",
+        "court": "Idéologie",
+        "teinte": "#eed473"
+      },
+      {
+        "id": "50191",
+        "serie": "occasion",
+        "nom": "Habilitation",
+        "nom_en": "Security Clearance",
+        "court": "Habilitation",
+        "teinte": "#b79ccb"
+      },
+      {
+        "id": "50192",
+        "serie": "occasion",
+        "nom": "Voyages",
+        "nom_en": "Travel",
+        "court": "Voyages",
+        "teinte": "#ea8d80"
+      },
+      {
+        "id": "50193",
+        "serie": "occasion",
+        "nom": "Autorité",
+        "nom_en": "Authority",
+        "court": "Autorité",
+        "teinte": "#8aa6d4"
+      }
+    ],
+    "membres": [
+      {
+        "cle": "Chief Medical Officer",
+        "nom": "Médecin en chef",
+        "combinaisons": [
+          "50185;50188;50191",
+          "50185;50188;50192",
+          "50185;50189;50191",
+          "50185;50189;50193",
+          "50185;50190;50192",
+          "50186;50188;50191",
+          "50186;50188;50192",
+          "50186;50189;50191",
+          "50187;50188;50191"
+        ]
+      },
+      {
+        "cle": "Chief Surveillance Officer",
+        "nom": "Chef de la surveillance",
+        "combinaisons": [
+          "50185;50189;50192",
+          "50186;50188;50193",
+          "50186;50189;50192",
+          "50186;50189;50193",
+          "50186;50190;50191",
+          "50186;50190;50192",
+          "50187;50189;50192",
+          "50187;50189;50193",
+          "50187;50190;50192"
+        ]
+      },
+      {
+        "cle": "Chief Tactical Officer",
+        "nom": "Chef tactique",
+        "combinaisons": [
+          "50185;50188;50193",
+          "50185;50190;50191",
+          "50185;50190;50193",
+          "50186;50190;50193",
+          "50187;50188;50192",
+          "50187;50188;50193",
+          "50187;50189;50191",
+          "50187;50190;50191",
+          "50187;50190;50193"
+        ]
+      }
+    ]
+  }
 }

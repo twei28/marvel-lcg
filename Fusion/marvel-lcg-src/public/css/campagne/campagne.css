@@ -281,3 +281,119 @@ button{cursor:pointer}
 
 /* Trop chère pour l'instant : grisée, mais on voit toujours son prix. */
 .cmp-marche-carte.trop-chere { opacity: 0.32; cursor: not-allowed; }
+
+
+/* ------------------------------------------------------------- L'enquête ---
+   La grille de déduction du carnet d'Agents of S.H.I.E.L.D. : trois blocs de
+   neuf combinaisons, un par membre du Conseil. Une ligne rayée est une piste
+   morte — elle contient une preuve qu'on TIENT, donc qui n'est pas dans
+   l'enveloppe A.I.M. On la garde visible : c'est le raisonnement, pas du
+   bruit. */
+.cmp-enq-bilan {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.72);
+}
+.cmp-enq-bilan strong { color: #ffd45a; }
+
+.cmp-enq-grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 18px;
+}
+
+.cmp-enq-bloc {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Plus aucune combinaison : ce membre est hors de cause, et ça doit se voir
+   d'un coup d'œil — c'est le résultat que l'enquête cherche. */
+.cmp-enq-bloc.disculpe { opacity: 0.5; border-color: rgba(53, 168, 101, 0.5); }
+
+.cmp-enq-membre { margin: 0; font-size: 18px; }
+.cmp-enq-compte {
+    margin: 2px 0 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.5);
+}
+.cmp-enq-bloc.disculpe .cmp-enq-compte { color: #6fd39b; }
+
+.cmp-enq-entetes,
+.cmp-enq-ligne {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.cmp-enq-entete {
+    font: 700 10px/1.6 system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.45);
+    text-align: center;
+}
+
+.cmp-enq-lignes { display: grid; gap: 4px; margin-top: 4px; }
+
+.cmp-enq-pastille {
+    display: block;
+    padding: 5px 4px;
+    border-radius: 5px;
+    color: #10131a;
+    font: 700 11px/1.3 system-ui, sans-serif;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Rayée : barrée ET décolorée. La barre seule se perdait sur les teintes
+   claires du carnet, la décoloration seule ne disait pas « éliminée ». */
+.cmp-enq-ligne.eliminee { opacity: 0.3; }
+.cmp-enq-pastille.eliminee { text-decoration: line-through; filter: grayscale(0.8); }
+
+.cmp-enq-legende { margin-top: 26px; }
+.cmp-enq-legende-titre { font-size: 18px; margin: 0 0 12px; }
+.cmp-enq-series {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+.cmp-enq-serie-titre {
+    margin: 0 0 8px;
+    font: 700 11px/1.4 system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.5);
+}
+.cmp-enq-cartes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+/* Les neuf cartes sont montrées en entier : elles existent toutes et le
+   joueur les connaît. Ce que l'écran ignore, c'est lesquelles dorment dans
+   l'enveloppe A.I.M. — le serveur les garde. Seule distinction utile ici :
+   celles qu'on a en main. */
+.cmp-enq-carte {
+    margin: 0;
+    opacity: 0.34;
+    filter: grayscale(0.9);
+    text-align: center;
+}
+.cmp-enq-carte img { width: 100%; display: block; border-radius: 6px; }
+.cmp-enq-carte figcaption {
+    margin-top: 4px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+}
+.cmp-enq-carte.obtenue { opacity: 1; filter: none; }
+.cmp-enq-carte.obtenue img { outline: 2px solid #ffd45a; }
+.cmp-enq-carte.obtenue figcaption { color: #ffd45a; font-weight: 700; }

@@ -379,6 +379,128 @@ function vueMarche(campagne, definition) {
     );
 }
 
+/* ----------------------------------------------------------- vue « enquete » -- */
+
+/**
+ * La grille de deduction du carnet officiel d'Agents of S.H.I.E.L.D.
+ *
+ * Livret p.5 : « The campaign log contains a list of all possible combinations
+ * of means, motive, and opportunity, with each combination implicating one of
+ * the board members. By gathering evidence cards, the players narrow down the
+ * remaining possible combinations, one of which is secreted in the A.I.M.
+ * envelope. »
+ *
+ * Vingt-sept combinaisons, neuf par membre, relevees une a une sur
+ * `mc50_agents_of_shield_campaign_log.pdf` et rangees dans `enquete` de
+ * `data/campagnes/aos.json` — c'est de la donnee imprimee, pas une regle a
+ * deviner.
+ *
+ * Le geste du livret est de RAYER : chaque preuve obtenue elimine toutes les
+ * combinaisons qui la contiennent, puisque la taupe, elle, est faite des
+ * preuves restees dans l'enveloppe A.I.M. Ici le rayage est DEDUIT du carnet
+ * (`Evidence Gained`) au lieu d'etre coche a la main : le joueur ne peut pas
+ * se tromper, et rien a enregistrer.
+ *
+ * Ce que l'ecran ne sait pas, et ne doit pas savoir : quelles preuves sont
+ * dans l'enveloppe A.I.M. Le serveur les garde (`_sans_secret`), donc meme en
+ * lisant le code de cette page on n'apprend rien.
+ */
+function preuvesObtenues(campagne, enquete) {
+    const gagnees = new Set(listeCarnet(campagne, enquete.cle_preuves));
+    return enquete.preuves.map((p) => ({ ...p, obtenue: gagnees.has(p.id) }));
+}
+
+/** Une combinaison tombe des qu'elle contient UNE preuve obtenue. */
+function combinaisonsDeMembre(membre, obtenues) {
+    return membre.combinaisons.map((brut) => {
+        const ids = brut.split(";");
+        return { ids, eliminee: ids.some((id) => obtenues.has(id)) };
+    });
+}
+
+const nomPreuve = (p) => (langueActuelle() === "en" ? (p.nom_en || p.nom) : p.nom);
+
+function pastillePreuve(preuve, eliminee) {
+    // La teinte est posee sur `background`, pas sur une propriete
+    // personnalisee : `el()` applique les styles par `Object.assign`, qui
+    // ignore silencieusement les cles `--*` (il faut `setProperty`). Avec
+    // `--teinte`, le fond restait transparent et le texte sombre du CSS
+    // devenait illisible sur le fond noir de la page.
+    return el("span", {
+        class: "cmp-enq-pastille" + (eliminee ? " eliminee" : ""),
+        style: { background: preuve ? preuve.teinte : "#8b8b8b" },
+        title: preuve ? nomPreuve(preuve) : "",
+    }, preuve ? preuve.court : "?");
+}
+
+function vueEnquete(campagne, definition) {
+    const enquete = definition.enquete;
+    const preuves = preuvesObtenues(campagne, enquete);
+    const parId = new Map(preuves.map((p) => [p.id, p]));
+    const obtenues = new Set(preuves.filter((p) => p.obtenue).map((p) => p.id));
+
+    let restantesEnTout = 0;
+
+    const blocs = enquete.membres.map((membre) => {
+        const lignes = combinaisonsDeMembre(membre, obtenues);
+        const restantes = lignes.filter((l) => !l.eliminee).length;
+        restantesEnTout += restantes;
+        return el("section", {
+            class: "cmp-enq-bloc" + (restantes === 0 ? " disculpe" : ""),
+        },
+            el("h2", { class: "cmp-enq-membre mvl" }, membre.nom),
+            el("p", { class: "cmp-enq-compte" },
+                restantes === 0
+                    ? t("Mis hors de cause")
+                    : restantes + " " + (restantes > 1 ? t("combinaisons possibles") : t("combinaison possible"))),
+            el("div", { class: "cmp-enq-entetes" },
+                enquete.series.map((serie) => el("span", { class: "cmp-enq-entete" }, t(serie.libelle)))),
+            el("div", { class: "cmp-enq-lignes" },
+                lignes.map((ligne) => el("div", {
+                    class: "cmp-enq-ligne" + (ligne.eliminee ? " eliminee" : ""),
+                }, ligne.ids.map((id) => pastillePreuve(parId.get(id), ligne.eliminee))))),
+        );
+    });
+
+    // La legende montre les neuf cartes : elles existent toutes, les connaitre
+    // ne revele rien. Ce qui compte est de distinguer celles qu'on TIENT.
+    const legende = enquete.series.map((serie) => el("div", { class: "cmp-enq-serie" },
+        el("h3", { class: "cmp-enq-serie-titre" }, t(serie.libelle)),
+        el("div", { class: "cmp-enq-cartes" },
+            preuves.filter((p) => p.serie === serie.cle).map((p) => el("figure", {
+                class: "cmp-enq-carte" + (p.obtenue ? " obtenue" : ""),
+                title: nomPreuve(p),
+            },
+                el("img", { src: cardImageUrl(p.id), alt: nomPreuve(p), loading: "lazy" }),
+                el("figcaption", {}, nomPreuve(p)),
+            ))),
+    ));
+
+    const nbObtenues = preuves.filter((p) => p.obtenue).length;
+
+    return el("div", { class: "cmp-page-campagne" },
+        entete(t("Campagne")),
+        el("main", { class: "cmp-corps" },
+            bandeauErreur(),
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, enquete.titre || t("L'enquête")),
+                el("button", { class: "btn ghost", onclick: () => { etat.vue = "campagne"; rendre(); } }, t("Retour")),
+            ),
+            el("p", { class: "cmp-champ-aide" }, enquete.aide || ""),
+            el("p", { class: "cmp-enq-bilan" },
+                nbObtenues + " " + (nbObtenues > 1 ? t("preuves obtenues") : t("preuve obtenue")),
+                " · ",
+                restantesEnTout === 1
+                    ? el("strong", {}, t("une seule combinaison tient encore : la taupe est démasquée."))
+                    : restantesEnTout + " " + t("combinaisons encore possibles")),
+            el("div", { class: "cmp-enq-grille" }, blocs),
+            el("div", { class: "cmp-enq-legende" },
+                el("h2", { class: "cmp-enq-legende-titre" }, t("Les neuf preuves")),
+                el("div", { class: "cmp-enq-series" }, legende)),
+        ),
+    );
+}
+
 /* ---------------------------------------------------------- vue « campagne » -- */
 
 function vueCampagne() {
@@ -479,6 +601,13 @@ function vueCampagne() {
                 class: "btn ghost",
                 onclick: () => { etat.vue = "marche"; rendre(); },
             }, definition.marche.titre || t("Le Marché")) : null,
+            // L'enquete, elle, reste consultable meme partie en cours : on ne
+            // touche a rien en la lisant, et c'est justement pendant qu'on
+            // joue qu'on veut savoir quelles combinaisons tiennent encore.
+            definition.enquete ? el("button", {
+                class: "btn ghost",
+                onclick: () => { etat.vue = "enquete"; rendre(); },
+            }, definition.enquete.titre || t("L'enquête")) : null,
             enCours ? null : el("button", {
                 class: "btn ghost",
                 onclick: () => {
@@ -667,6 +796,8 @@ function corrigerTextesMarvel() {
 function rendre() {
     if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
+    else if (etat.vue === "enquete" && etat.campagne && etat.definition && etat.definition.enquete)
+        root.replaceChildren(vueEnquete(etat.campagne, etat.definition));
     else if (etat.vue === "campagne" && etat.campagne && etat.definition) root.replaceChildren(vueCampagne());
     else if (etat.vue === "creation") root.replaceChildren(vueCreation());
     else root.replaceChildren(vueListe());

@@ -919,12 +919,47 @@ Onze vérifications de plus dans `tools/test_preuves_aos.py` (24 au total), et
 la suite complète des cartes repassée après le changement de
 `world.GameSetup` : 4189 OK, 0 erreur.
 
-### Ce qui n'est PAS fait
+### La grille de déduction
 
-**La grille de déduction.** Les neuf combinaisons du carnet officiel, et les
-lignes rayées au fur et à mesure des preuves gagnées. C'est la partie écran, et
-c'est elle qui donnera un sens visible à `Evidence Gained`, aujourd'hui une
-simple liste d'identifiants dans le panneau des récompenses.
+Câblée le 11/8/2026, côté écran. Livret p.5 : « The campaign log contains a
+list of all possible combinations of means, motive, and opportunity, with each
+combination implicating one of the board members. »
+
+**Vingt-sept combinaisons, neuf par membre.** Ce sont des données imprimées, pas
+une règle à déduire : relevées une à une sur
+`mc50_agents_of_shield_campaign_log.pdf` et rangées dans le bloc `enquete` de
+`data/campagnes/aos.json`, sur le modèle du `marche` de `gmw.json`. La
+transcription a été contrôlée par construction : les 27 combinaisons possibles
+(3 moyens × 3 mobiles × 3 occasions) doivent apparaître chacune exactement une
+fois, et c'est le cas. Une ligne mal recopiée aurait désigné le mauvais membre
+sans rien casser d'autre.
+
+**Le raisonnement est à l'envers de l'intuition.** Une preuve qu'on TIENT est
+une preuve qui n'est PAS dans l'enveloppe A.I.M. : toute combinaison qui la
+contient est donc morte. Se tromper de sens rayerait exactement le complément
+et accuserait le mauvais membre. C'est le premier cas du test.
+
+Le rayage n'est pas coché à la main comme sur le carnet papier : il est
+**déduit** de `Evidence Gained`. Le joueur ne peut pas se tromper, et il n'y a
+rien à enregistrer. L'écran compte les combinaisons restantes par membre, marque
+« mis hors de cause » celui qui n'en a plus, et dit quand une seule tient
+encore.
+
+Vue `vueEnquete` dans `public/js/campagne/app.js`, atteinte par un bouton de la
+vue campagne — accessible même partie en cours, puisqu'on ne touche à rien en la
+lisant. Les neuf cartes preuve sont montrées en légende, celles qu'on tient
+mises en avant : elles existent toutes et le joueur les connaît, ce que l'écran
+ignore c'est lesquelles dorment dans l'enveloppe A.I.M.
+
+**Un piège d'`el()`** : ses styles sont appliqués par `Object.assign`, qui ignore
+silencieusement les clés `--*` (il faut `setProperty`). Une teinte passée en
+`--teinte` laissait le fond transparent et le texte sombre du CSS devenait
+illisible sur le fond noir. La couleur est posée sur `background`.
+
+Cinq cas dans `ui-check/tests/campagne-enquete.spec.ts`, dont le dernier vérifie
+qu'aucune route ne rend `secret_aim` ni `A.I.M. Envelope` à cette page.
+
+### Ce qui n'est PAS fait
 
 **L'accusation du scénario 5** (livret p.19). Une accusation fausse ne fait pas
 perdre, elle durcit le scénario.
