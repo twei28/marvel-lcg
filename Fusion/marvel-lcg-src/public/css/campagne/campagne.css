@@ -206,3 +206,74 @@ button{cursor:pointer}
   .cmp-mission{position:static}
   .cmp-chapo-nom{font-size:44px}
 }
+
+
+/* ------------------------------------------------------------- Le Marché ---
+   Une colonne par héros, chacune avec son solde d'unités et les 28 cartes.
+   Le prix se lit sur la vignette : c'est la seule information qui décide. */
+.cmp-marche {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    margin-top: 18px;
+}
+
+.cmp-marche-heros { margin: 0 0 4px; font-size: 20px; }
+
+.cmp-marche-solde {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.72);
+    margin-bottom: 10px;
+}
+.cmp-marche-solde strong { font-size: 20px; color: #ffd45a; }
+.cmp-marche-compte { color: rgba(255, 255, 255, 0.5); }
+
+.cmp-marche-grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 8px;
+}
+
+.cmp-marche-carte {
+    position: relative;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    background: none;
+    cursor: pointer;
+    overflow: hidden;
+    line-height: 0;
+}
+.cmp-marche-carte img { width: 100%; display: block; }
+.cmp-marche-carte:hover:not(:disabled) { border-color: #ffd45a; }
+
+/* Le prix, toujours lisible, y compris sur une vignette sombre. */
+.cmp-marche-cout {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    min-width: 20px;
+    padding: 2px 5px;
+    border-radius: 999px;
+    background: rgba(10, 10, 14, 0.85);
+    color: #ffd45a;
+    font: 700 12px/1.2 system-ui, sans-serif;
+    text-align: center;
+}
+
+/* Déjà achetée : elle reste visible, elle n'est plus cliquable. */
+.cmp-marche-carte.achetee { border-color: #35a865; opacity: 0.95; }
+.cmp-marche-carte.achetee img { filter: saturate(0.55); }
+.cmp-marche-tag {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 3px 4px;
+    background: rgba(53, 168, 101, 0.92);
+    color: #06120b;
+    font: 700 10px/1.2 system-ui, sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* Trop chère pour l'instant : grisée, mais on voit toujours son prix. */
+.cmp-marche-carte.trop-chere { opacity: 0.32; cursor: not-allowed; }

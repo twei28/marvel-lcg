@@ -261,6 +261,99 @@ function vueCreation() {
     );
 }
 
+/* ------------------------------------------------------------ le Marche -- */
+
+// Une seule boite a un Marche, « Galaxy's Most Wanted », et c'est sa definition
+// qui le dit (bloc `marche`) : rien n'est en dur ici. Entre deux scenarios,
+// chaque heros depense les unites gagnees pour ajouter des cartes a son deck.
+// Elles y restent jusqu'a la fin de la campagne (livret p.5), et c'est le
+// moteur qui les y remet a chaque mise en place, depuis le carnet.
+
+/** Cout en unites lu sur la carte : le livret l'ecrit dans son texte. */
+function coutEnUnites(carte) {
+    const m = /Unit Cost (\d+)/i.exec((carte && carte.text) || "");
+    return m ? parseInt(m[1], 10) : null;
+}
+
+/** Les cartes du Marche, dans l'ordre des identifiants du livret. */
+function cartesDuMarche(marche) {
+    const sortie = [];
+    const de = parseInt(marche.premiere_carte, 10);
+    const a = parseInt(marche.derniere_carte, 10);
+    for (let id = de; id <= a; id++) {
+        const cle = String(id);
+        const carte = cards.get(cle);
+        const cout = coutEnUnites(carte);
+        if (carte && cout !== null) sortie.push({ id: cle, carte, cout });
+    }
+    return sortie;
+}
+
+const cleJoueur = (cle, i) => "Player " + (i + 1) + " " + cle;
+const listeCarnet = (campagne, cle) => String((campagne.carnet || {})[cle] || "").split(";").filter(Boolean);
+const entierCarnet = (campagne, cle) => parseInt((campagne.carnet || {})[cle] || "0", 10) || 0;
+
+/** Achete `entree` pour le siege `i`, puis enregistre. */
+async function acheterAuMarche(campagne, marche, i, entree) {
+    const cleU = cleJoueur(marche.cle_unites, i);
+    const cleC = cleJoueur(marche.cle_cartes, i);
+    const solde = entierCarnet(campagne, cleU);
+    const deja = listeCarnet(campagne, cleC);
+    if (entree.cout > solde) throw new Error(t("Pas assez d'unités."));
+    if (deja.includes(entree.id)) throw new Error(t("Cette carte est déjà dans le deck."));
+    campagne.carnet = { ...(campagne.carnet || {}) };
+    campagne.carnet[cleU] = String(solde - entree.cout);
+    campagne.carnet[cleC] = [...deja, entree.id].join(";");
+    etat.campagne = await apiCampagne.enregistrer(campagne);
+    etat.campagnes = await apiCampagne.liste();
+}
+
+function vueMarche(campagne, definition) {
+    const marche = definition.marche;
+    const catalogue = cartesDuMarche(marche);
+    const equipe = campagne.equipe || [];
+
+    const colonnes = equipe.map((membre, i) => {
+        const solde = entierCarnet(campagne, cleJoueur(marche.cle_unites, i));
+        const deja = listeCarnet(campagne, cleJoueur(marche.cle_cartes, i));
+        const vignettes = catalogue.map((entree) => {
+            const achetee = deja.includes(entree.id);
+            const abordable = entree.cout <= solde;
+            return el("button", {
+                class: "cmp-marche-carte" + (achetee ? " achetee" : "") + (!achetee && !abordable ? " trop-chere" : ""),
+                disabled: (achetee || !abordable) || undefined,
+                title: entree.carte.name + " — " + entree.cout + " " + t("unités"),
+                onclick: () => proteger(() => acheterAuMarche(campagne, marche, i, entree)),
+            },
+                el("img", { src: cardImageUrl(entree.id), alt: entree.carte.name, loading: "lazy" }),
+                el("span", { class: "cmp-marche-cout" }, String(entree.cout)),
+                achetee ? el("span", { class: "cmp-marche-tag" }, t("Dans le deck")) : null,
+            );
+        });
+        return el("section", { class: "cmp-marche-colonne" },
+            el("h2", { class: "cmp-marche-heros mvl" }, membre.nomHeros || membre.heros || (t("Joueur") + " " + (i + 1))),
+            el("div", { class: "cmp-marche-solde" },
+                el("strong", {}, String(solde)), " ", t("unités non dépensées"),
+                deja.length ? el("span", { class: "cmp-marche-compte" }, " · " + deja.length + " " + t("carte(s) achetée(s)")) : null),
+            el("div", { class: "cmp-marche-grille" }, vignettes),
+        );
+    });
+
+    return el("div", { class: "cmp-page-campagne" },
+        entete(t("Campagne")),
+        el("main", { class: "cmp-corps" },
+            bandeauErreur(),
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, marche.titre || t("Le Marché")),
+                el("button", { class: "btn ghost", onclick: () => { etat.vue = "campagne"; rendre(); } }, t("Retour")),
+            ),
+            el("p", { class: "cmp-champ-aide" }, marche.aide || ""),
+            colonnes.length ? el("div", { class: "cmp-marche" }, colonnes)
+                : el("p", { class: "cmp-vide" }, t("Aucune équipe : commencez la campagne d'abord.")),
+        ),
+    );
+}
+
 /* ---------------------------------------------------------- vue « campagne » -- */
 
 function vueCampagne() {
@@ -356,6 +449,11 @@ function vueCampagne() {
             // fait meme un pilier, le role-building. On repasse par l'ecran de
             // preparation, seul endroit qui sait choisir un deck, et l'identite
             // est verifiee au retour.
+            // Le Marche n'existe que pour la boite qui le declare.
+            (definition.marche && !enCours) ? el("button", {
+                class: "btn ghost",
+                onclick: () => { etat.vue = "marche"; rendre(); },
+            }, definition.marche.titre || t("Le Marché")) : null,
             enCours ? null : el("button", {
                 class: "btn ghost",
                 onclick: () => {
@@ -542,7 +640,9 @@ function corrigerTextesMarvel() {
 }
 
 function rendre() {
-    if (etat.vue === "campagne" && etat.campagne && etat.definition) root.replaceChildren(vueCampagne());
+    if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
+        root.replaceChildren(vueMarche(etat.campagne, etat.definition));
+    else if (etat.vue === "campagne" && etat.campagne && etat.definition) root.replaceChildren(vueCampagne());
     else if (etat.vue === "creation") root.replaceChildren(vueCreation());
     else root.replaceChildren(vueListe());
     // Apres CHAQUE rendu : replaceChildren remet des noeuds neufs, un passage

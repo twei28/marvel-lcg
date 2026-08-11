@@ -880,9 +880,26 @@ Par ordre d'intérêt :
    scénarios, et les cartes du Marché enregistrées au carnet rejoignent le deck
    (33 cartes sans, 35 avec deux cartes achetées).
 
-   Restent : les planches du livret à découper vers `public/stories/gmw/` (les
-   trois listes `pages` sont vides pour l'instant, l'écran n'affichera donc
-   aucune illustration), et surtout **le Marché** : dépenser ses unités entre
-   deux scénarios pour ajouter des cartes à son deck. Le moteur sait déjà les
-   remettre au deck à chaque mise en place ; c'est l'écran de dépense qui
-   manque.
+   **Les planches sont découpées** (16 pages vers `public/stories/gmw/`), et
+   `tools/pages_livret.py` a appris au passage qu'une intro peut tenir sur une
+   double page : gmw ouvre sur deux planches qui ne se lisent qu'ensemble.
+
+   **Le Marché est fait.** C'est la seule boîte du jeu où une monnaie traverse
+   les scénarios. L'écran est déclaré par les données (bloc `marche` de
+   `gmw.json` : bornes des cartes, clés du carnet, titre, aide) et non en dur :
+   aucune autre boîte n'affiche le bouton. Le prix est lu sur la carte
+   elle-même (`Unit Cost X` dans son texte), jamais recopié. Acheter soustrait
+   du solde, inscrit la carte au carnet et enregistre ; le moteur la remet au
+   deck à chaque mise en place suivante.
+
+   Éprouvé par `npm run campagne-marche`, trois cas avec témoins : avec 3
+   unités la carte à 1 est achetable et celle à 4 ne l'est pas, l'achat retire
+   bien le prix et écrit au carnet, et une carte déjà achetée reste hors de
+   portée même avec 9 unités — pendant que celle à 4, elle, redevient
+   achetable.
+
+   Un choix assumé : **une carte du Marché ne s'achète qu'une fois par joueur**.
+   Le livret ne l'interdit pas explicitement (« repeat this process as many
+   times as you wish »), mais il fait écrire le TITRE de la carte au carnet, et
+   les règles de construction limitent les exemplaires. Une seule copie par
+   titre est la lecture la plus sûre.
