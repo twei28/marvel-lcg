@@ -75,6 +75,152 @@ export async function repondre(request: APIRequestContext): Promise<boolean> {
   return false
 }
 
+/* ------------------------------------------------- jouer, pas seulement finir -- */
+
+/**
+ * Une demande du moteur, telle que `/get_ask` la rend.
+ *
+ * `show_cancel` est la clef de tout : quand il est vrai, le joueur a le DROIT de
+ * ne rien faire, et le contrat dit qu'on l'exprime en postant `{}` (voir
+ * `ui-app/src/board/moteur.ts`, `envoyerReponse(null)`). C'est ce qui manquait au
+ * pilote : sans jamais passer, il restait bloque dans le tour du joueur, aucune
+ * phase ne se terminait, et tout ce qui pend a une fin de phase — la Reponse de
+ * l'etape 1B d'aos, le tour du vilain, la montee de la menace — n'arrivait jamais.
+ */
+export type Demande = {
+  options: Array<Record<string, any>>
+  show_cancel: boolean
+  ability_type: string
+}
+
+export async function lireDemande(request: APIRequestContext): Promise<Demande | undefined> {
+  const brut = await (await request.get('/get_ask?p=0')).text()
+  if (!brut.trim()) return undefined
+  const ask = JSON.parse(brut) as Record<string, unknown>
+  let options: Array<Record<string, any>> = []
+  try {
+    options = JSON.parse(String(ask.options_json ?? '[]'))
+  } catch {
+    return undefined
+  }
+  return {
+    options: options.filter((o) => o && !o.failure_reason),
+    show_cancel: ask.show_cancel === true,
+    ability_type: String(ask.ability_type ?? ''),
+  }
+}
+
+/** Ne rien faire, et le dire : c'est ce qui termine une phase de joueur. */
+export async function passer(request: APIRequestContext): Promise<void> {
+  await request.post('/post?p=0', { data: encodeURIComponent('{}') })
+}
+
+/** Le moteur peut-il satisfaire les cibles que cette option exige ? */
+const cibleTenable = (option: Record<string, any>): boolean =>
+  Number((option.target_num_range ?? [0, 0])[0] ?? 0) <=
+  ((option.all_legal_targets as unknown[]) ?? []).length
+
+/** Retient cette option, avec le minimum de cibles legales qu'elle demande. */
+export async function choisir(
+  request: APIRequestContext,
+  option: Record<string, any>
+): Promise<void> {
+  const mini = Number((option.target_num_range ?? [0, 0])[0] ?? 0)
+  const legales = ((option.all_legal_targets as unknown[]) ?? []).map(String)
+  await request.post('/post?p=0', {
+    data: encodeURIComponent(
+      JSON.stringify({
+        id: String(option.id ?? 0),
+        targets: mini ? legales.slice(0, mini) : [],
+        resources: [],
+      })
+    ),
+  })
+}
+
+/** Le nom d'option qui termine la phase du joueur. */
+const estFinDePhase = (option: Record<string, any>) => /^End[ _]Phase$/i.test(String(option.name ?? ''))
+
+export type Arret = (etat: { monde: Monde; demande?: Demande }) => boolean
+
+/**
+ * Fait TOURNER la partie, sans jouer une seule carte, jusqu'a `arret`.
+ *
+ * La regle de conduite, dans cet ordre :
+ *
+ * 1. une REPONSE ou une INTERRUPTION proposee est acceptee. Ce sont les crochets
+ *    du scenario (« Place 2 secret counters… », « Advance to stage 2A ») : les
+ *    refuser fige l'histoire, et c'est precisement ce qu'on veut voir se
+ *    declencher ;
+ * 2. « End Phase » est retenu : c'est lui qui fait tourner les phases ;
+ * 3. si le moteur autorise de ne rien faire (`show_cancel`), on passe. On ne joue
+ *    donc jamais de carte, ce qui evite d'avoir a payer des ressources ;
+ * 4. sinon la question est FORCEE (mise en place, choix impose) : on repond la
+ *    premiere option dont les cibles sont tenables.
+ *
+ * Rend le dernier monde lu. Ne leve pas si la partie se termine : une partie
+ * perdue en route est un resultat, pas une panne.
+ */
+export async function avancerLaPartie(
+  page: Page,
+  request: APIRequestContext,
+  arret: Arret,
+  tours = 60
+): Promise<Monde> {
+  for (let i = 0; i < tours; i++) {
+    const demande = await lireDemande(request)
+    const m = await monde(request)
+    // L'arret est evalue AVANT de repondre : c'est la seule facon de s'arreter
+    // SUR une question, ce que demande la verification de l'interface — y
+    // repondre la ferait disparaitre avant que le DOM n'ait bouge.
+    if (arret({ monde: m, demande })) return m
+    if (m.game_over) return m
+
+    if (demande) {
+      const tenables = demande.options.filter(cibleTenable)
+      const reponse = /Response|Interrupt/i.test(demande.ability_type) ? tenables[0] : undefined
+      const finDePhase = tenables.find(estFinDePhase)
+      if (reponse) await choisir(request, reponse)
+      else if (finDePhase) await choisir(request, finDePhase)
+      else if (demande.show_cancel) await passer(request)
+      else if (tenables[0]) await choisir(request, tenables[0])
+      else await passer(request)
+    }
+    await page.waitForTimeout(300)
+  }
+  return await monde(request)
+}
+
+/**
+ * Avance jusqu'a ce que le moteur pose une question dont une option porte ce
+ * motif, et s'arrete SANS y repondre.
+ *
+ * `AskChoosePaper` prefixe ses options de « p_ » (player_ask.py) et le plateau les
+ * affiche comme des boutons ordinaires, texte nettoye : c'est le seul moyen de
+ * voir une question de l'accusation dans l'interface.
+ */
+export async function avancerJusquALaQuestion(
+  page: Page,
+  request: APIRequestContext,
+  motif: RegExp,
+  tours = 60
+): Promise<Demande | undefined> {
+  let trouvee: Demande | undefined
+  await avancerLaPartie(
+    page,
+    request,
+    ({ demande }) => {
+      if (demande && demande.options.some((o) => motif.test(String(o.name ?? '')))) {
+        trouvee = demande
+        return true
+      }
+      return false
+    },
+    tours
+  )
+  return trouvee
+}
+
 export type Lancement = {
   /** Identifiant de scenario, sans le suffixe `_expert`. */
   scenario: string

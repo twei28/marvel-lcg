@@ -21,7 +21,8 @@
     "campagne-cartes-imposees": "playwright test tests/campagne-cartes-imposees.spec.ts --project=pc",
     "campagne-bilan": "playwright test tests/campagne-bilan.spec.ts --project=pc",
     "campagne-releves": "playwright test tests/campagne-releves.spec.ts --project=pc",
-    "campagne-aoa": "playwright test tests/campagne-aoa.spec.ts --project=pc"
+    "campagne-aoa": "playwright test tests/campagne-aoa.spec.ts --project=pc",
+    "campagne-accusation": "playwright test tests/campagne-accusation.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"
