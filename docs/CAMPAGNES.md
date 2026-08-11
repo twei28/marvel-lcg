@@ -1115,6 +1115,44 @@ héros. Mesuré au scénario 5 expert avec trois membres à trois secrets.
 imprimés, RÉC 3) pour que les comptes soient lisibles à la main : cas nominal
 3 → 6, plafond 8 → 9, témoin standard, témoin scénario 1, et le Conseil basculé.
 
+### Les Thunderbolts survivants, et la grille tenue en double
+
+Deux points fermés le 11/8/2026.
+
+**Les Thunderbolts survivants reviennent au scénario 5.** Livret p.19 : « If you
+recorded any "Surviving Thunderbolts" in the campaign log, shuffle those minions
+**and their encounter sets**, except for Jolt's, into the encounter deck. » La
+clé `Surviving Thunderbolts` était **écrite** au scénario 4 et **relue nulle
+part** : rien ne revenait, ni les sbires ni leurs sets.
+
+Le set porte le sbire : l'ajouter au deck de rencontre ramène les deux d'un
+coup, et c'est le moteur qui mélange. On passe donc par `encounter_set_names` à
+la création du deck, comme `EcarterLesPreuvesDuScenario` — la seule étape où le
+contenu du deck se décide encore.
+
+Le « except for Jolt's » n'est pas une exception arbitraire : **Jolt appartient
+au set du scénario 4 lui-même** (`data/scenarios/thunderbolts.json`, clé
+`encounters`) et aucun fichier de `data/encounter_sets/` ne la contient. Il n'y
+a rien à rapporter avec elle, on ne remet que la carte. Mesuré : avec Moonstone
+et Jolt au carnet, le deck de rencontre grossit de sept cartes — les six de
+`gravitational_pull`, plus Jolt seule.
+
+11 vérifications dans `tools/test_thunderbolts_aos.py`, dont le témoin sans
+carnet et le témoin hors campagne.
+
+**La grille des 27 ne peut plus diverger en silence.** Elle est recopiée à deux
+endroits qui ne se parlent pas : `MembreDeLaCombinaison` (moteur, qui désigne la
+taupe et l'accusé) et le bloc `enquete` de `aos.json` (écran, qui raye). Les deux
+ont été relevées indépendamment et concordent, mais rien ne les comparait :
+modifier l'une sans l'autre ferait afficher au joueur une grille qui n'accuse pas
+le même membre que le jeu.
+
+`tools/verifier_grille_aos.py` lit le module Python en AST — sans démarrer le
+moteur — et le compare au JSON, membre par membre. Il revérifie au passage que
+les 27 combinaisons possibles sont couvertes, chacune une fois. **Mis en défaut
+exprès** en changeant une ligne du JSON : il refuse et nomme la combinaison
+fautive.
+
 ### Ce qui n'est PAS fait
 
 **Une fuite du mode HORS campagne**, laissée telle quelle : les neuf preuves des
@@ -1123,10 +1161,6 @@ deux enveloppes partent au navigateur avec leurs identifiants, via
 campagne le secret ne vit qu'une partie. La fermer demanderait de filtrer les
 cartes non visibles dans `Card.Render`, ce qui touche le rendu de TOUTES les
 cartes du jeu.
-
-**Les sets de rencontre des Thunderbolts survivants** au scénario 5. Le livret
-dit « shuffle those minions **and their encounter sets**, except for Jolt's » ;
-seuls les sbires eux-mêmes reviennent aujourd'hui.
 
 **Le Conseil entièrement basculé à la mise en place.** Livret p.18 : « If all of
 the board members join Baron Zemo, the players lose the scenario. » Mesuré : en

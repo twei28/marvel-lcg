@@ -34,6 +34,25 @@ CONSEIL = [
 INTERFERENCES = ('50184a', '50184b', '50184c')
 ADAPTOIDS = ('50109', '50110', '50111', '50112')
 ADAPTOID_MINION = '50113'
+# Les sbires THUNDERBOLT qui peuvent survivre au scenario 4, avec le set
+# modulaire qui les apporte. Le nom est la cle : c'est lui que `CollectAOS`
+# releve au carnet (`paper.name`, sans etoile — mesure faite).
+#
+# Jolt n'a PAS de set : elle appartient au set du scenario 4 lui-meme
+# (`data/scenarios/thunderbolts.json`, cle `encounters`), et aucun fichier de
+# `data/encounter_sets/` ne la contient. C'est exactement ce que dit le livret
+# p.19 par « except for Jolt's » — il n'y a rien a rapporter avec elle, on ne
+# remet que la carte.
+THUNDERBOLTS = {
+    'Jolt':            ('50133', None),
+    'Moonstone':       ('50139', 'gravitational_pull'),
+    'Songbird':        ('50143', 'hard_sound'),
+    'Black Widow':     ('50148', 'pale_little_spider'),
+    'Radioactive Man': ('50152', 'power_of_the_atom'),
+    'MACH-IV':         ('50156', 'supersonic'),
+    'Batroc':          ('50161', 'the_leaper'),
+}
+CLE_THUNDERBOLTS = 'Surviving Thunderbolts'
 ALERTE = '50090'
 CAPTIF_LIBERE = '50091'
 
@@ -173,6 +192,57 @@ def RetourDesAdaptoids() -> 'Ability':
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 
 
+def _thunderbolts_survivants(effect: 'Effect') -> 'List[Tuple[str, str|None]]':
+    """Ce que le carnet a retenu du scenario 4, traduit en cartes et en sets."""
+    survivants = []
+    for nom in _liste(CampaignLog.GetStrInternal(CLE_THUNDERBOLTS, effect)):
+        entree = THUNDERBOLTS.get(nom)
+        if entree:
+            survivants.append(entree)
+    return survivants
+
+
+def SetsDesThunderboltsSurvivants() -> 'Ability':
+    """Scenario 5 : les sets des Thunderbolts encore debout reviennent.
+
+    Livret p.19 : « If you recorded any "Surviving Thunderbolts" in the
+    campaign log, shuffle those minions AND THEIR ENCOUNTER SETS, except for
+    Jolt's, into the encounter deck. »
+
+    Le set porte le sbire : l'ajouter au deck de rencontre ramene donc les deux
+    d'un coup, et c'est le moteur qui melange. On passe par
+    `encounter_set_names` a la creation du deck plutot que par la mise en place
+    de campagne, pour la meme raison que `EcarterLesPreuvesDuScenario` : c'est
+    la seule etape ou le contenu du deck se decide encore.
+
+    Jusqu'ici la cle `Surviving Thunderbolts` etait ECRITE au scenario 4 et
+    RELUE nulle part : rien ne revenait.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenGameBeginSetup'):
+        for _, set_name in _thunderbolts_survivants(effect):
+            if set_name and set_name not in message.encounter_set_names:
+                message.encounter_set_names = message.encounter_set_names + [set_name]
+    return AbilityFactory.WhenGameBeginSetup(
+        action,
+        conditions=[lambda effect, message: Worlds.IsCampaign(effect)],
+    )
+
+
+def RetourDeJolt() -> 'Ability':
+    """Jolt seule, sans set, si elle a survecu au scenario 4.
+
+    Elle est le « except for Jolt's » du livret : son set est celui du scenario
+    4, qu'on ne rapporte pas. Elle passe donc par la mise en place de campagne,
+    carte par carte, comme les Adaptoides.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
+        for card_id, set_name in _thunderbolts_survivants(effect):
+            if set_name is None:
+                card = CardFactory.GenerateCard(card_id, None, effect.world)
+                Faces.ShuffleAllTo([card.face], 'EncounterDeck', effect)
+    return AbilityFactoryCampaign.WhenCampaignSetup(action)
+
+
 SET_DES_PREUVES = 'executive_board_evidence'
 
 
@@ -294,6 +364,8 @@ def CampaignSetup(level: int) -> 'List[Ability]':
         abilities.append(VerrousDeLaCellule())
     if level == 5:
         abilities.append(RetourDesAdaptoids())
+        abilities.append(SetsDesThunderboltsSurvivants())
+        abilities.append(RetourDeJolt())
         # Seul le scenario 5 charge le set complet des preuves.
         abilities.append(EcarterLesPreuvesDuScenario())
     if level >= 2:
@@ -443,7 +515,7 @@ def CollectAOS(level: int, effect: 'Effect') -> dict:
         noms = sorted({f.paper.name for f in Worlds.FindCardsOnField(effect, card_type=Minion)
                        if 'THUNDERBOLT' in [t.upper() for t in (f.paper.traits or [])]})
         if noms:
-            updates['Surviving Thunderbolts'] = SEPARATEUR.join(noms)
+            updates[CLE_THUNDERBOLTS] = SEPARATEUR.join(noms)
 
     # Scenarios 1 a 4 seulement. Leurs encarts VICTORY portent tous la clause
     # « If at least one Board Member environment in play has no secret
