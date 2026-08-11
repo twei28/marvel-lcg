@@ -1386,3 +1386,186 @@ Trois pièges relevés en montant ce test :
 ⚠️ Ce test lance de **vraies parties** sur le serveur visé : toute partie en
 cours y est perdue. Même précaution que `lancement-partie.spec.ts`.
 `npm run campagne-panneau`.
+
+## 11. Ce que le jeu relève tout seul (11/8/2026)
+
+Le mode campagne promet une chose simple : **le joueur ne recopie rien**. Cette
+section dit où en est cette promesse, ce qui a été corrigé pour la tenir, et ce
+qui reste — volontairement — une décision de joueur.
+
+### Deux récompenses se perdaient en silence
+
+`Marauders Defeated` et `Morlocks Saved` (NeXt Evolution, scénario 1) étaient
+**lues** au scénario 2 (`RemoveMaraudersDefeatedBeforeSetup`,
+`MorlocksSavedSearch`) et **écrites par personne**. `CollectNeXt` ne les
+produisait pas, et les champs sont déclarés `type: "auto"` : l'écran ne les
+demandait donc pas non plus. Résultat, le scénario 2 retirait zéro Maraudeur du
+deck du vilain et ne donnait aucune carte — sans un mot, à toutes les parties.
+
+Le livret (p.9) : « Record the title of each villain under Routed […] Record the
+number of Morlock allies still in play ». Les deux sont câblées dans
+`CollectNeXt`, avec les `card_id` plutôt que les titres (le lecteur du scénario 2
+accepte les deux, et un identifiant survit à la traduction).
+
+Éprouvé sur une vraie partie, et mis au rouge exprès en désarmant le collecteur :
+`ui-check/tests/campagne-releves.spec.ts`.
+
+### La piste de réputation de Sinister Motives se calcule
+
+Les six conditions imprimées sous la piste (livret sm p.22) sont **six lectures
+de la table**, pas des décisions :
+
+    (+X) Victory points in the victory display
+    (+1) No minions in play
+    (+1) No side schemes in play
+    (+1) No threat on the main scheme
+    (+1) Fewer than 1 acceleration tokens in play
+    (+1) No defeated identities
+
+Le joueur les recopiait à la main dans un champ `choix`. Elles sont désormais
+relevées par le détecteur `conditions_reputation`, et le champ est `auto` — donc
+pré-rempli, et **toujours corrigeable** (un champ `int` reste éditable dans le
+panneau, ce qui laisse la main à qui joue avec la piste papier).
+
+Clés MESURÉES sur une vraie partie de Sandman, jamais déduites : la menace de la
+manigance principale est `info.k_threat` (un JETON, pas un compteur `c_`), les
+pions accélération `info.k_acceleration_token`, les points de victoire
+`info.victory` sur chaque carte de la pile de victoire. Un sbire **engagé** n'est
+pas dans `area_villain` : ne lire que cette zone donnerait un point de trop.
+
+**Le cumul ne vit pas dans le détecteur.** La piste s'ajoute aux nœuds déjà
+marqués ; le détecteur ne voit pas le carnet et ne rend que ce que la partie vient
+de gagner. La somme est faite par `preRemplir`, via l'attribut `cumulatif` du
+champ. Ce que le MOTEUR relève n'est jamais additionné une seconde fois : son
+collecteur cumule déjà (`Scenarios With A Cleared Board Member` en est l'exemple).
+
+### Ce qui reste au joueur, et pourquoi ce n'est pas un manque
+
+Après cet audit, **aucun champ `auto` n'est sans source**. Les seuls champs qui
+attendent encore une saisie sont des DÉCISIONS que le livret confie au joueur :
+
+| Champ | Ce que dit le livret |
+|---|---|
+| `Tech Upgrade`, `Basic Upgrade` (trors) | « each player chooses » une amélioration |
+| `S.H.I.E.L.D. Tech` (sm) | trois tirées au hasard, « that player **may choose** 1 » |
+| `Aspect Advantage` (sm) | une carte de SA COLLECTION, hors du jeu |
+| `Planning Ahead` (sm) | « chooses one card from their deck » |
+| `Osborn Tech` (sm) | « Choose one at random » — un tirage, mais à des paliers de piste que le PDF ne donne pas en texte lisible |
+
+`Osborn Tech` est le seul cas discutable : c'est un pur tirage au hasard, donc
+automatisable — mais seulement si l'on sait À QUELS PALIERS il se déclenche. Le
+moteur n'en connaît qu'un (`value >= 1`) et mélange toutes les cartes notées ; la
+piste imprimée en montre trois, à des hauteurs que l'extraction texte du livret
+ne rend pas. Tirer une carte à chaque victoire ajouterait des pénalités que le
+livret ne demande pas : on préfère laisser le joueur suivre sa piste. Relever les
+trois paliers sur la planche `public/stories/sm/` fermerait cette dernière case.
+
+### Le vérificateur refuse maintenant deux silences de plus
+
+`tools/verifier_campagnes.py` comparait les clés déclarées aux chaînes du moteur.
+Il vérifie en outre, depuis le 11/8/2026 :
+
+- qu'une `detection` déclarée **existe** dans `detecteurs.ts` (les `case '<nom>'`
+  de `detecter()` sont lus dans le fichier, pas recopiés). Une detection inconnue
+  ne lève rien à l'exécution : le champ reste vide, la récompense disparaît.
+  Mis en défaut exprès sur `cartes_en_jeux` : il refuse et nomme le champ ;
+- que `deck: "requis"` porte bien `parJoueur` (sans quoi la carte imposée ne
+  désigne le deck de personne) et que sa valeur est connue.
+
+### Le pilote des vraies parties, et ses trois pièges
+
+`ui-check/pilote-campagne.ts` sort le montage du §10 de `campagne-panneau.spec.ts`
+pour le partager. `campagne-panneau` garde sa copie : c'est la référence du
+montage, et le lier au module partagé ferait qu'une retouche ici casse la preuve
+du panneau sans qu'on y pense.
+
+1. **Une commande de console se vise par OBJECT ID (`c49`), jamais par nom ni par
+   card_id.** Le nom imprimé des cartes uniques commence par une étoile
+   (« * Blockbuster »), que le descripteur retire : une commande bâtie sur le nom
+   affiché ne trouve rien, et la console ne s'en plaint pas. Pire, un card_id
+   ABSENT DU JEU fait **fabriquer** la carte (`FindOrCreateFace`) dans la zone mise
+   de côté — et `scenario.py` refuse alors la victoire, qui exige
+   `aside_deck.FindCard(card_type=Villain) == None`. Mesuré sur Sandman : les deux
+   stades vaincus, la zone du vilain vide, et la partie qui ne se terminait
+   JAMAIS ; deux doublons de Sandman I dormaient dans la zone mise de côté.
+2. **`PutIntoPlay` n'accepte qu'UN argument** côté console (`PutIntoPlay(carte)`).
+   L'appeler autrement lève, et l'erreur suivante a abattu le moteur. Un moteur
+   mort continue de répondre 200 sur `/get_world` avec l'état FIGÉ de la partie
+   précédente : toutes les commandes semblent alors n'avoir aucun effet et on
+   accuse la commande. `ouvrirEtMettreEnPlace` refuse désormais de continuer si la
+   première lecture ne montre aucune phase de mise en place.
+3. **La console n'exécute ses commandes qu'au prochain cycle du moteur.** Il faut
+   répondre (`/get_ask` + `/post`) après l'envoi, sinon on mesure l'état d'avant.
+   Corollaire : `PlaceThreat` et `SetThreat` n'ont, eux, **aucun effet** quel que
+   soit le moment — mesuré sur la manigance principale de Sandman et sur la mission
+   45170a d'aoa. Rien de ce qui dépend de la menace ne se pilote depuis un test.
+
+### La sonde ne remplace pas une vraie partie
+
+`tools/sonde_campagne.py` exécute ses commandes Puzzle « en direct, pas dans une
+file » : un `Puzzle.Damage(vilain, 100)` retire bien les points de vie, mais la
+réponse forcée « After a villain is defeated » ne part jamais. Mesuré sur Morlock
+Siege : sept vilains frappés à 100, **zéro vaincu**, rien sous « Routed ». Tout ce
+qui dépend d'une réaction en chaîne se mesure en partie, par le pilote.
+
+## 12. Les trois autres chantiers du 11/8/2026
+
+### Une carte inscrite au carnet ne sort pas du deck
+
+Livret trors p.3 : « Added cards must be included in the player's deck for the
+rest of the campaign. » Dans ce jeu, **la plupart des cartes gagnées vivent au
+carnet et non dans le deck enregistré** : le moteur les repose à chaque mise en
+place depuis leur clé (améliorations Tech de trors, matériel S.H.I.E.L.D. de sm,
+allié de campagne d'aoa, cartes du Marché de gmw). Personne ne peut donc les
+retirer d'un deck où elles n'ont jamais été, et la règle est tenue par
+construction — c'est ce qui rendait l'entrée de TODO trompeuse.
+
+**Une** récompense fait l'inverse et cherche la carte DANS le deck du joueur :
+« Planning Ahead » (sm, Réputation 17). Mesure à la sonde, avec témoin : carte
+notée présente dans le deck, elle arrive EN MAIN à la mise en place ; carte notée
+absente, **il ne se passe rien** — pas d'erreur, pas de message, la récompense
+disparaît. D'où un refus au retour de « Modifier les decks », le seul moment où
+un deck de campagne change. Déclaré par les données (`"deck": "requis"` sur le
+champ) et non en dur, comme tout le reste du format.
+
+Trois cas dans `ui-check/tests/campagne-cartes-imposees.spec.ts`, dont le témoin
+inverse (la carte est toujours là, la modification passe), et le contrôle a été
+désarmé exprès pour vérifier que le cas de refus tombe bien au rouge.
+
+### Le score de réputation final (sm)
+
+Dernière case du carnet officiel que le jeu ne demandait jamais. Livret sm p.5 et
+p.17 (encart VICTORY du scénario 5, sous « Optional ») : recalculer une dernière
+fois les Conditions, marquer les nœuds, puis noter un score égal au nombre de
+nœuds marqués.
+
+Sa place est le **bilan de fin de campagne**, pas le carnet : aucune mise en place
+ne le relit, et l'y mettre aurait exigé une clé que le moteur ne connaît pas —
+`verifier_campagnes.py` la refuserait, à juste titre. Il vit donc sous
+`scoreFinal`, dans la campagne. Le bloc est déclaré par les données (`bilan` dans
+`sm.json`) : aucune autre boîte ne l'affiche, et c'est ce que tient le troisième
+cas de `ui-check/tests/campagne-bilan.spec.ts`.
+
+### Deux fausses pistes, mesurées et refermées
+
+**Les alliés retirés de la campagne (trors) ne reviennent PAS au scénario 5.**
+Le soupçon était net : `EachPlayerAddRescuedAlliesToTheirDeck` remet tous les
+`Rescued Allies` au deck aux niveaux ≥ 4, sans regarder
+`Allies removed from the campaign`. Mesure avant de corriger quoi que ce soit :
+avec `{"Player 1 Rescued Allies": "04097;04098", "Allies removed from the
+campaign": "04098"}`, 04097 arrive dans `player_deck` et **04098 part dans
+`area_removed`**. C'est `the_rise_of_the_red_skull_remove_allies` (04128a.py) qui
+le fait, à la mise en place du scénario 5. Propriété non évidente, écrite ici pour
+qu'on ne « corrige » pas ce qui marche.
+
+**Professor X reste une approximation assumée** (aoa, scénario 5 : « Professor X
+cannot enter play during this game »). La voie évidente a été essayée et mesurée :
+`AbilityFactory.PlayersCannotPlayCardWhile("AnyPlayer", CardFinder(card_ids=
+['32019']))` posé sur la manigance 45147a n'a **aucun effet** — Professor X mis en
+main par la console, l'option « Play » reste proposée sans `failure_reason`, y
+compris sans la condition `IsCampaign` et même avec `which_card=None` (donc toutes
+les cartes). Le mécanisme ne se diffuse pas depuis une manigance principale : les
+quatre usages du moteur sont tous des cartes JOUEUR (attachement sur l'identité,
+ou l'identité elle-même). Le fichier a été rendu à l'identique. Prochaine piste
+si l'on y revient : faire porter l'interdiction par une carte du joueur, ou par
+`world.rule`, et non par le scénario.
