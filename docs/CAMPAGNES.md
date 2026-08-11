@@ -1598,22 +1598,49 @@ tant que le joueur n'a pas le droit de la voir (§8 bis). C'est cette approche-l
 ne pas fabriquer plutôt que ne pas rendre — qu'il faudra reprendre si l'on veut
 fermer le mode hors campagne.
 
-### Ce qui bloque les deux dernières entrées de couverture (mesuré)
+### Le pilote sait JOUER, et les deux derniers angles morts sont tombés
 
-Les preuves gagnées EN PARTIE au scénario 5 d'aos (Réponse de l'étape 1B, portée
-par `50167b`) et les questions de l'accusation (`50168a`) demandent toutes deux de
-**faire avancer la partie**, et c'est là que le pilote s'arrête :
+Ce qui lui manquait tenait en deux caractères : **`{}`**. Le contrat le dit depuis
+toujours (`ui-app/src/board/moteur.ts`, `envoyerReponse(null)`) — poster `{}`
+signifie « je ne fais rien », et c'est ce qui **termine une phase de joueur**. Sans
+lui, le pilote répondait la première option légale en boucle : aucune phase ne se
+terminait, la menace ne montait jamais, le vilain ne jouait pas. Tout ce qui pend à
+une fin de phase était hors de portée, et on croyait le problème ailleurs (les
+commandes de console, la menace, la sonde).
 
-- la Réponse de l'étape 1B est un `AfterPhaseEnd` : elle ne part qu'à la fin d'une
-  phase de joueur. Le pilote, qui répond « la première option légale », ne termine
-  jamais une phase — 20 tours sur Baron Zemo, aucune Réponse, aucune preuve ;
-- `Reveal("50168a")` ne pose pas les trois questions : la manigance principale
-  reste `50167b` ;
-- dans le tour du joueur, `/get_ask` ne propose qu'UNE option (`name: "Action"`,
-  `id: 1`), et y répondre laisse un traceback de `controller.py` dans le prompt du
-  monde. La phase ne change jamais.
+`avancerLaPartie()` suit quatre règles, dans cet ordre :
 
-Ce qui manque n'est donc pas un test mais un pilote capable de JOUER : comprendre
-le contrat de `/post` pour cette option unique, ou ajouter au moteur une commande
-de console qui termine la phase. C'est le vrai prochain pas, et il débloquerait du
-même coup tout ce qui dépend du tour du vilain (la menace ne monte jamais non plus).
+1. **accepter les Réponses et les Interruptions.** Ce sont les crochets du
+   scénario (« Place 2 secret counters… », « Advance to stage 2A ») : les refuser
+   fige l'histoire, et c'est précisément ce qu'on veut voir se déclencher ;
+2. **retenir « End Phase »** : c'est lui qui fait tourner les phases ;
+3. **passer si le moteur l'autorise** (`show_cancel`). On ne joue donc aucune
+   carte, et l'on n'a jamais à payer de ressources ;
+4. sinon la question est FORCÉE : répondre la première option dont les cibles sont
+   tenables.
+
+`avancerJusquALaQuestion()` s'arrête **sur** une question sans y répondre. C'est la
+seule façon de la voir à l'écran : une réponse par HTTP la fait disparaître avant
+que le DOM n'ait bougé.
+
+Les deux entrées, fermées dans `ui-check/tests/campagne-accusation.spec.ts` :
+
+- **les preuves gagnées EN PARTIE au scénario 5.** Le livret p.19 n'en donne
+  aucune à la victoire, contrairement aux scénarios 1 à 4 : elles se gagnent par la
+  Réponse de l'étape 1B (`50167b`), un `AfterPhaseEnd`. Mesuré : la preuve `50190`
+  entre en jeu, et l'invariant tient — une preuve gagnée n'appartient **jamais** à
+  la combinaison de la taupe, puisque l'enveloppe S.H.I.E.L.D. en est exactement le
+  complément ;
+- **les trois questions de l'accusation, vues dans l'interface.** La chaîne avance
+  par ses propres Réponses jusqu'à « The Accusation », qui demande un moyen, un
+  mobile, puis une occasion. Les trois choix s'affichent dans la **demande
+  centrale** (`DemandeCentrale.tsx`, qui nettoie le préfixe `p_` de
+  `AskChoosePaper`), on y répond EN CLIQUANT, et aucune question ne demande ensuite
+  un membre du Conseil : l'accusé découle de la combinaison, comme le livret le veut.
+
+Mis au rouge exprès en désarmant le `passer` : les deux cas tombent.
+
+**Ce qui reste hors de portée du pilote** : jouer une carte (il faudrait choisir et
+payer des ressources) et donc déjouer une manigance. C'est ce qui manque encore à
+la branche « Professeur sauvé » d'aoa, et `PlaceThreat`/`SetThreat` n'y aident pas
+(aucun effet depuis la console).
