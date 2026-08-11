@@ -1569,3 +1569,51 @@ quatre usages du moteur sont tous des cartes JOUEUR (attachement sur l'identité
 ou l'identité elle-même). Le fichier a été rendu à l'identique. Prochaine piste
 si l'on y revient : faire porter l'interdiction par une carte du joueur, ou par
 `world.rule`, et non par le scénario.
+
+### La fuite hors campagne est STRUCTURELLE, pas propre à aos (mesurée)
+
+Le défaut assumé disait : « les neuf preuves des deux enveloppes partent au
+navigateur avec leurs identifiants ». Mesure faite le 11/8/2026, sur une vraie
+partie de Baron Zemo lancée **hors** campagne :
+
+    deck de rencontre     : 33 cartes, 33 face cachée, 33 card_id lisibles
+    decks additionnels    : les 9 preuves, is_face_up = false,
+                            visible_for_players = [] … et card_id en clair
+
+Autrement dit, les preuves ne sont pas un cas particulier : **tout le deck de
+rencontre** part au client avec ses identifiants. `Card.Render` envoie toujours
+`card_id`, même quand `visible_for_players` est vide — le client est censé afficher
+`down_card_ids` à la place, mais rien ne l'y oblige.
+
+Deux conséquences, et c'est ce qui tranche la question :
+
+- fermer la fuite des seules preuves serait un pansement : qui lit la console
+  pour connaître la taupe lit aussi le deck de rencontre entier ;
+- le correctif propre a un critère net, déjà transmis : ne pas envoyer `card_id`
+  quand `visible_for_players` est vide. Il touche le rendu de TOUTES les cartes
+  du jeu, donc il se fait avec sa propre campagne de tests, pas en passant.
+
+En campagne, la fuite est déjà fermée à la racine : aucune carte de preuve n'existe
+tant que le joueur n'a pas le droit de la voir (§8 bis). C'est cette approche-là —
+ne pas fabriquer plutôt que ne pas rendre — qu'il faudra reprendre si l'on veut
+fermer le mode hors campagne.
+
+### Ce qui bloque les deux dernières entrées de couverture (mesuré)
+
+Les preuves gagnées EN PARTIE au scénario 5 d'aos (Réponse de l'étape 1B, portée
+par `50167b`) et les questions de l'accusation (`50168a`) demandent toutes deux de
+**faire avancer la partie**, et c'est là que le pilote s'arrête :
+
+- la Réponse de l'étape 1B est un `AfterPhaseEnd` : elle ne part qu'à la fin d'une
+  phase de joueur. Le pilote, qui répond « la première option légale », ne termine
+  jamais une phase — 20 tours sur Baron Zemo, aucune Réponse, aucune preuve ;
+- `Reveal("50168a")` ne pose pas les trois questions : la manigance principale
+  reste `50167b` ;
+- dans le tour du joueur, `/get_ask` ne propose qu'UNE option (`name: "Action"`,
+  `id: 1`), et y répondre laisse un traceback de `controller.py` dans le prompt du
+  monde. La phase ne change jamais.
+
+Ce qui manque n'est donc pas un test mais un pilote capable de JOUER : comprendre
+le contrat de `/post` pour cette option unique, ou ajouter au moteur une commande
+de console qui termine la phase. C'est le vrai prochain pas, et il débloquerait du
+même coup tout ce qui dépend du tour du vilain (la menace ne monte jamais non plus).
