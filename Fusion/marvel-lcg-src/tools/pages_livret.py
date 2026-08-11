@@ -73,6 +73,21 @@ CARTES = {
             ("loki", 5, 23, [24, 25], 26),
         ],
     },
+    "aos": {
+        "pdf": "mc50_rulebook-web.pdf",
+        # p4 : mode campagne. p5 : le Conseil et la preparation des preuves.
+        # p6 : le set modulaire, la campagne experte, la collecte des preuves.
+        "regles_campagne": [4, 5, 6],
+        # Le scenario 5 est le seul dont la description et les instructions de
+        # campagne tiennent sur deux pages (18 et 19).
+        "scenarios": [
+            ("black_widow", 1, 8, [9], 10),
+            ("batroc", 2, None, [11], 12),
+            ("modok", 3, None, [13], 14),
+            ("thunderbolts", 4, None, [15], [16, 17]),
+            ("baron_zemo", 5, None, [18, 19], [20, 21]),
+        ],
+    },
     "gmw": {
         "pdf": "mc16_galaxys_most_wanted_rules_website-compressed.pdf",
         # p4 : cartes de campagne et regles du mode. p5 : campagne experte,

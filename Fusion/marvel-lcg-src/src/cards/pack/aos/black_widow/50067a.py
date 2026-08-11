@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aos.campaign import CampaignSetup
 
 # The Widow's Web
 
@@ -24,6 +25,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
+        *CampaignSetup(1),
         AbilityFactory.WhenCardSetup(
             "This",
             the_widows_web

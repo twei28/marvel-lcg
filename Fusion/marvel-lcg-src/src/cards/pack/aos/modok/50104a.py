@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.aos.campaign import CampaignSetup
 
 # Upgrading Adaptoids
 
@@ -45,6 +46,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.WhenCardSetup(
             "This",
             upgrading_adaptoids

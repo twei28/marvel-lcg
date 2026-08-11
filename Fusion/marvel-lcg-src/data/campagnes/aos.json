@@ -1,0 +1,194 @@
+{
+  "version": "1.0",
+  "code": "aos",
+  "cle_extension": "50. Agents of S.H.I.E.L.D.",
+  "nom": "Les Agents du S.H.I.E.L.D.",
+  "nom_en": "Agents of S.H.I.E.L.D.",
+  "resume": "Cinq scénarios sous le regard du Conseil exécutif du S.H.I.E.L.D., dont l'un des trois membres est une taupe. Ce que vous laissez sur la table à la fin d'une mission vous attend au début de la suivante.",
+  "resume_en": "Five linked scenarios under the eye of the S.H.I.E.L.D. Executive Board, one of whose three members is a mole. What you leave on the table at the end of one mission is waiting for you at the start of the next.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg",
+    "00-campagne-regles-3.jpg"
+  ],
+  "scenarios": [
+    {
+      "id": "black_widow",
+      "numero": 1,
+      "nom": "Black Widow",
+      "nom_fr": "La Veuve Noire",
+      "resume": "Une spécialiste du S.H.I.E.L.D. a disparu, et son appartement contient un cocon Inhumain. L'enquête est un prétexte commode pour aller renifler du côté d'une rumeur bien plus gênante.",
+      "enjeu": "Tout ce que vous laissez debout ici relèvera le niveau d'alerte de la mission suivante.",
+      "victoire": [
+        {
+          "cle": "Minions and Side Schemes",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Sbires et manigances annexes encore en jeu",
+          "aide": "Autant de menace sur le Niveau d'Alerte au scénario 2."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "01-black_widow-intro-1.jpg"
+        ],
+        "regles": [
+          "01-black_widow-regles-1.jpg"
+        ],
+        "epilogue": [
+          "01-black_widow-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "batroc",
+      "numero": 2,
+      "nom": "Batroc",
+      "nom_fr": "Batroc",
+      "resume": "Les complices d'A.I.M. parlent : un réseau d'enlèvements alimente l'île d'A.I.M. Batroc garde l'ambassade, et les captifs sont derrière lui.",
+      "enjeu": "Chaque captif libéré ici ouvrira une serrure de la cellule au scénario suivant.",
+      "victoire": [
+        {
+          "cle": "Rescued Captives",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Captifs libérés encore en jeu",
+          "aide": "Autant de verrous en moins sur la Cellule au scénario 3."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "01-black_widow-epilogue-1.jpg"
+        ],
+        "regles": [
+          "02-batroc-regles-1.jpg"
+        ],
+        "epilogue": [
+          "02-batroc-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "modok",
+      "numero": 3,
+      "nom": "M.O.D.O.K.",
+      "nom_fr": "M.O.D.O.K.",
+      "resume": "Les captifs ont été expédiés sur l'île d'A.I.M. pour servir de modèles génétiques. M.O.D.O.K. fabrique des copies synthétiques, et il en reste toujours une de plus.",
+      "enjeu": "Les Adaptoïdes encore en jeu à la fin reviendront pour l'affrontement final.",
+      "victoire": [
+        {
+          "cle": "Adaptoid Environments",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Adaptoïdes encore en jeu",
+          "aide": "Ils seront remis en jeu au scénario 5."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "02-batroc-epilogue-1.jpg"
+        ],
+        "regles": [
+          "03-modok-regles-1.jpg"
+        ],
+        "epilogue": [
+          "03-modok-epilogue-1.jpg"
+        ]
+      }
+    },
+    {
+      "id": "thunderbolts",
+      "numero": 4,
+      "nom": "Thunderbolts",
+      "nom_fr": "Les Thunderbolts",
+      "resume": "De retour à Washington, le Conseil vous accuse d'une opération clandestine en territoire étranger et lâche les Thunderbolts à vos trousses.",
+      "enjeu": "Ceux qui tiennent encore debout à la fin rejoindront le deck rencontre de Zemo.",
+      "victoire": [
+        {
+          "cle": "Surviving Thunderbolts",
+          "type": "auto",
+          "format": "liste",
+          "libelle": "Thunderbolts encore debout",
+          "aide": "Ils seront mélangés au deck rencontre du scénario 5."
+        }
+      ],
+      "pages": {
+        "intro": [
+          "03-modok-epilogue-1.jpg"
+        ],
+        "regles": [
+          "04-thunderbolts-regles-1.jpg"
+        ],
+        "epilogue": [
+          "04-thunderbolts-epilogue-1.jpg",
+          "04-thunderbolts-epilogue-2.jpg"
+        ]
+      }
+    },
+    {
+      "id": "baron_zemo",
+      "numero": 5,
+      "nom": "Baron Zemo",
+      "nom_fr": "Le Baron Zemo",
+      "resume": "Zemo tire les fils depuis le début et achève de retourner le Conseil. Un membre à quatre secrets le rejoint ; s'ils basculent tous les trois, la partie est perdue.",
+      "enjeu": "Fin de la campagne : démasquer la taupe et laver votre nom.",
+      "final": true,
+      "defaite": {
+        "quand": "partie_perdue",
+        "expert_seulement": true,
+        "texte": "Les héros sont arrêtés par le S.H.I.E.L.D. et condamnés : la campagne est perdue."
+      },
+      "victoire": [],
+      "pages": {
+        "intro": [
+          "04-thunderbolts-epilogue-1.jpg"
+        ],
+        "regles": [
+          "05-baron_zemo-regles-1.jpg",
+          "05-baron_zemo-regles-2.jpg"
+        ],
+        "epilogue": [
+          "05-baron_zemo-epilogue-1.jpg",
+          "05-baron_zemo-epilogue-2.jpg"
+        ]
+      }
+    }
+  ],
+  "victoire_commune": [
+    {
+      "cle": "Secret Counters: Chief Medical Officer",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Secrets sur le Médecin en chef",
+      "aide": "Le nombre exact est reporté sur la carte au scénario suivant. Vider un membre de ses secrets rapporte une preuve."
+    },
+    {
+      "cle": "Secret Counters: Chief Surveillance Officer",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Secrets sur le Chef de la surveillance",
+      "aide": "Le nombre exact est reporté sur la carte au scénario suivant. Vider un membre de ses secrets rapporte une preuve."
+    },
+    {
+      "cle": "Secret Counters: Chief Tactical Officer",
+      "type": "auto",
+      "format": "int",
+      "libelle": "Secrets sur le Chef tactique",
+      "aide": "Le nombre exact est reporté sur la carte au scénario suivant. Vider un membre de ses secrets rapporte une preuve."
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "type": "auto",
+      "format": "int",
+      "parJoueur": true,
+      "detection": "pv_restants",
+      "libelle": "PV restants",
+      "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
+    }
+  ]
+}

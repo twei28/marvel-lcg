@@ -774,6 +774,51 @@ la sonde d'avant ne capture aucun carnet, la corrigée le capture et y relit
 
 ---
 
+## 8 bis. Agents of S.H.I.E.L.D., et ce qui lui manque encore
+
+La huitième et dernière boîte à carnet officiel est câblée depuis le 11/8/2026.
+Son fil est le **Conseil exécutif** : ses trois membres entrent en jeu à chaque
+scénario avec les compteurs secrets qu'ils avaient à la fin du précédent. C'est
+la seule campagne du jeu où l'état d'une carte se reporte tel quel, chiffre par
+chiffre. Le reste suit : le Niveau d'Alerte du scénario 2 monte de ce qu'on a
+laissé debout au 1, les verrous de la Cellule du 3 s'ouvrent à proportion des
+captifs libérés au 2, les Adaptoïdes du 3 et les Thunderbolts du 4 reviennent
+pour Zemo.
+
+Deux choses ont dû être corrigées dans le pack d'origine :
+
+- `baron_zemo/50167a.py` portait `assert Worlds.IsCampaign(effect) == False`,
+  qui **interdisait purement et simplement** le mode campagne. Le commentaire
+  au-dessus disait déjà quoi faire à la place ; c'est ce qui a été fait.
+  Divergence volontaire, commentée dans le fichier.
+- Le scénario de Zemo apporte **déjà** le Conseil avec son set. Poser un second
+  exemplaire donnait six membres sur la table. La mise en place ne crée
+  désormais un membre que s'il n'est pas là, et lui rend ses compteurs dans
+  tous les cas.
+
+Mesuré à la sonde, bytecode recompilé, avec témoin : trois membres exactement
+aux scénarios 1 et 5, deux secrets chacun au scénario 1 comme le veut le livret,
+et au scénario 5 les valeurs 1 / 0 / 2 du carnet entrant ressortent à
+l'identique.
+
+### Ce qui n'est PAS fait
+
+**Le système de preuves et l'accusation.** Neuf cartes preuve, trois tirées au
+hasard dans l'enveloppe A.I.M. au début de la campagne — c'est la combinaison de
+la taupe, et elle doit rester **cachée du joueur**. Les six autres vont dans
+l'enveloppe S.H.I.E.L.D., et vider un membre du Conseil de ses secrets en
+rapporte une, ce qui raye des combinaisons dans la grille du carnet.
+
+Le blocage n'est pas mécanique, il est de conception : notre carnet est un
+fichier que le joueur LIT, et l'écran l'affiche en entier. Y ranger la
+combinaison de la taupe reviendrait à la lui montrer. Il faut donc décider où
+vit ce secret et qui a le droit de le lire, avant d'écrire une ligne.
+
+Manquent aussi, plus petits : le soin expert propre à cette boîte (poser un
+compteur secret sur un membre du Conseil pour se soigner de sa RÉC, encore un
+prix différent des sept autres campagnes), et les sets de rencontre des
+Thunderbolts survivants au scénario 5 — seuls les sbires eux-mêmes reviennent.
+
 ## 9. Après le câblage
 
 Par ordre d'intérêt :
