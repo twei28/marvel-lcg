@@ -198,6 +198,28 @@ def CollectNeXt(level: int, effect: 'Effect') -> dict:
             updates[f'Campaign Pool: {env_names[a_id]}'] = '1'
         if FaceExists(effect, a_id, in_play=True):
             updates[f'Removed: {name}'] = '1'
+    # Scenario 1, encart VICTORY (p.9) : « Record the title of each villain
+    # under Routed in the campaign log under "Marauders Defeated". Record the
+    # number of Morlock allies still in play under "Morlocks Saved". »
+    #
+    # Les deux etaient LUES au scenario 2 (RemoveMaraudersDefeatedBeforeSetup et
+    # MorlocksSavedSearch) et ECRITES par personne : les deux recompenses du
+    # premier scenario se perdaient en silence, et le second retirait zero
+    # Maraudeur et ne donnait aucune carte. Les champs sont declares `type:
+    # "auto"` dans data/campagnes/next_evol.json, donc l'ecran ne les demandait
+    # pas non plus — il n'y avait aucun endroit ou le defaut se voie.
+    #
+    # On ecrit les card_id, pas les titres : le lecteur du scenario 2 accepte les
+    # deux (`f.paper.name` OU `f.paper.card_id`), et un identifiant survit a la
+    # traduction du nom, contrairement au titre.
+    if (level == 1):
+        from cards.pack.next_evol.morlock_siege import GetVillainsUnderRouted
+        routed = sorted({f.paper.card_id for f in GetVillainsUnderRouted(effect)})
+        if routed:
+            updates['Marauders Defeated'] = ';'.join(routed)
+        morlocks = Worlds.FindCardsOnField(effect, name='Morlock', card_type=Ally)
+        if morlocks:
+            updates['Morlocks Saved'] = str(len(morlocks))
     if (level in (3, 4)):
         hope = Worlds.FindCardOnField(effect, name='Hope Summers', card_type=Ally)
         if hope:

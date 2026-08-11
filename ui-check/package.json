@@ -17,7 +17,11 @@
     "campagne-marche": "playwright test tests/campagne-marche.spec.ts --project=pc",
     "campagne-enquete": "playwright test tests/campagne-enquete.spec.ts --project=pc",
     "campagne-reprise": "playwright test tests/campagne-reprise.spec.ts --project=pc",
-    "campagne-panneau": "playwright test tests/campagne-panneau.spec.ts --project=pc"
+    "campagne-panneau": "playwright test tests/campagne-panneau.spec.ts --project=pc",
+    "campagne-cartes-imposees": "playwright test tests/campagne-cartes-imposees.spec.ts --project=pc",
+    "campagne-bilan": "playwright test tests/campagne-bilan.spec.ts --project=pc",
+    "campagne-releves": "playwright test tests/campagne-releves.spec.ts --project=pc",
+    "campagne-aoa": "playwright test tests/campagne-aoa.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"
