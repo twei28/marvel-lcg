@@ -263,6 +263,10 @@ button{cursor:pointer}
 
 /* Déjà achetée : elle reste visible, elle n'est plus cliquable. */
 .cmp-marche-carte.achetee { border-color: #35a865; opacity: 0.95; }
+
+/* Prise par un coequipier : hors de portee aussi, mais ce n est pas la
+   meme information, d ou une couleur neutre. */
+.cmp-marche-tag.ailleurs { background: rgba(154, 160, 170, 0.92); color: #0d0f13; }
 .cmp-marche-carte.achetee img { filter: saturate(0.55); }
 .cmp-marche-tag {
     position: absolute;

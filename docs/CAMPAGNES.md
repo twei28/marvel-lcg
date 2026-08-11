@@ -898,8 +898,15 @@ Par ordre d'intérêt :
    portée même avec 9 unités — pendant que celle à 4, elle, redevient
    achetable.
 
-   Un choix assumé : **une carte du Marché ne s'achète qu'une fois par joueur**.
-   Le livret ne l'interdit pas explicitement (« repeat this process as many
-   times as you wish »), mais il fait écrire le TITRE de la carte au carnet, et
-   les règles de construction limitent les exemplaires. Une seule copie par
-   titre est la lecture la plus sûre.
+   **Une carte du Marché ne s'achète qu'une fois par CAMPAGNE, équipe
+   confondue.** Ce n'était pas un choix à faire : le livret le dit à la
+   dernière phrase de la section, « Only one copy of each card from The Market
+   can be used during a campaign **for the players as a group** ». La première
+   version limitait par JOUEUR, faute d'avoir lu cette phrase — mon extraction
+   du PDF la coupait. À quatre joueurs, l'écart est majeur : les 28 cartes se
+   partagent au lieu d'être offertes à chacun.
+
+   L'écran distingue les deux cas, parce que ce n'est pas la même information :
+   « Dans le deck » pour la sienne, « Prise » en gris pour celle d'un
+   coéquipier. Le quatrième cas de `npm run campagne-marche` le tient, avec
+   témoin : remis en limite par joueur, il devient rouge.

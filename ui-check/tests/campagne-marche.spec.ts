@@ -7,8 +7,15 @@
 // deck this way must be included in that player's deck for the rest of the
 // campaign. »
 //
-// Trois choses peuvent casser séparément, d'où trois cas : le prix lu sur la
-// carte, la soustraction au carnet, et l'écriture qui survit à l'enregistrement.
+// Et une limite qui ne se devine pas, écrite à la fin de la même section :
+// « Only one copy of each card from The Market can be used during a campaign
+// FOR THE PLAYERS AS A GROUP. » Une carte prise par un héros sort du Marché
+// pour toute l'équipe. À quatre joueurs, les 28 cartes se partagent au lieu
+// d'être offertes à chacun, ce qui change le Marché du tout au tout.
+//
+// Quatre choses peuvent casser séparément : le prix lu sur la carte, la
+// soustraction au carnet, l'écriture qui survit à l'enregistrement, et le
+// partage entre coéquipiers.
 // Le moteur, lui, remet ces cartes au deck à chaque mise en place ; c'est
 // éprouvé à la sonde, pas ici.
 //
@@ -105,6 +112,57 @@ test.describe.serial('Le Marché', () => {
       (apres['Player 1 Market Cards'] ?? '').split(';'),
       'La carte achetée n est pas inscrite au carnet.'
     ).toContain(PAS_CHERE)
+  })
+
+  test('Une carte prise par un coéquipier sort du Marché pour tout le monde', async ({
+    page,
+    request,
+  }) => {
+    // Équipe de deux, le siège 1 a déjà pris la carte, le siège 2 est riche.
+    await request.post('/save_campagne', {
+      data: {
+        campagne: {
+          id: identifiant,
+          code: 'gmw',
+          nom: NOM,
+          equipe: [
+            { heros: 'rocket_raccoon', nomHeros: 'Rocket Raccoon' },
+            { heros: 'groot', nomHeros: 'Groot' },
+          ],
+          carnet: {
+            'Player 1 Unspent Units': '0',
+            'Player 1 Market Cards': PAS_CHERE,
+            'Player 2 Unspent Units': '9',
+          },
+          termines: ['brotherhood_of_badoon'],
+          partieEnCours: null,
+        },
+      },
+    })
+
+    await page.goto('/campagne.html', { waitUntil: 'networkidle' })
+    await page.locator('.cmp-carte', { hasText: NOM }).locator('.cmp-carte-ouvrir').click()
+    await page.getByRole('button', { name: /marché|market/i }).click()
+
+    const colonnes = page.locator('.cmp-marche-colonne')
+    await expect(colonnes, "Le Marché n'affiche pas une colonne par héros.").toHaveCount(2)
+
+    const chezGroot = colonnes.nth(1)
+    const priseAilleurs = chezGroot
+      .locator('.cmp-marche-carte')
+      .filter({ has: page.locator(`img[src*="${PAS_CHERE}"]`) })
+
+    await expect(
+      priseAilleurs,
+      'Un coéquipier peut racheter une carte déjà prise : la limite du livret est par ÉQUIPE.'
+    ).toBeDisabled()
+    // Elle est signalée comme prise ailleurs, pas comme « dans mon deck ».
+    await expect(priseAilleurs.locator('.cmp-marche-tag')).toHaveClass(/ailleurs/)
+
+    // Témoin : avec 9 unités, tout le reste du Marché lui est ouvert.
+    await expect(
+      chezGroot.locator('.cmp-marche-carte').filter({ has: page.locator(`img[src*="${CHERE}"]`) })
+    ).toBeEnabled()
   })
 
   test('Une carte déjà achetée ne se rachète pas, même avec les unités', async ({

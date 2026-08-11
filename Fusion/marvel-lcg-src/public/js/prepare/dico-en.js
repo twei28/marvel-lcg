@@ -140,6 +140,8 @@ export const DICO_EN_BASE = {
     "unités non dépensées": "unspent units",
     "carte(s) achetée(s)": "card(s) bought",
     "Dans le deck": "In deck",
+    "Prise": "Taken",
+    "Cette carte du Marché est déjà prise par l'équipe.": "That Market card has already been taken by the team.",
     "Pas assez d'unités.": "Not enough units.",
     "Cette carte est déjà dans le deck.": "That card is already in the deck.",
     "Aucune équipe : commencez la campagne d'abord.": "No team yet: start the campaign first.",

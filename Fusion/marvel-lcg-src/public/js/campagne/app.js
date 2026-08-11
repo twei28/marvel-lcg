@@ -293,6 +293,23 @@ const cleJoueur = (cle, i) => "Player " + (i + 1) + " " + cle;
 const listeCarnet = (campagne, cle) => String((campagne.carnet || {})[cle] || "").split(";").filter(Boolean);
 const entierCarnet = (campagne, cle) => parseInt((campagne.carnet || {})[cle] || "0", 10) || 0;
 
+/**
+ * Les cartes deja prises, TOUTE L'EQUIPE CONFONDUE.
+ *
+ * Livret p.5, derniere phrase de la section : « Only one copy of each card
+ * from The Market can be used during a campaign FOR THE PLAYERS AS A GROUP. »
+ * Ce n'est donc pas une limite par joueur : si un heros prend Brainstorm,
+ * elle sort du Marche pour tous. A quatre, les 28 cartes se partagent.
+ */
+function cartesDejaPrises(campagne, marche) {
+    const prises = new Set();
+    const equipe = campagne.equipe || [];
+    for (let i = 0; i < Math.max(equipe.length, 4); i++) {
+        for (const id of listeCarnet(campagne, cleJoueur(marche.cle_cartes, i))) prises.add(id);
+    }
+    return prises;
+}
+
 /** Achete `entree` pour le siege `i`, puis enregistre. */
 async function acheterAuMarche(campagne, marche, i, entree) {
     const cleU = cleJoueur(marche.cle_unites, i);
@@ -300,7 +317,9 @@ async function acheterAuMarche(campagne, marche, i, entree) {
     const solde = entierCarnet(campagne, cleU);
     const deja = listeCarnet(campagne, cleC);
     if (entree.cout > solde) throw new Error(t("Pas assez d'unités."));
-    if (deja.includes(entree.id)) throw new Error(t("Cette carte est déjà dans le deck."));
+    if (cartesDejaPrises(campagne, marche).has(entree.id)) {
+        throw new Error(t("Cette carte du Marché est déjà prise par l'équipe."));
+    }
     campagne.carnet = { ...(campagne.carnet || {}) };
     campagne.carnet[cleU] = String(solde - entree.cout);
     campagne.carnet[cleC] = [...deja, entree.id].join(";");
@@ -313,11 +332,16 @@ function vueMarche(campagne, definition) {
     const catalogue = cartesDuMarche(marche);
     const equipe = campagne.equipe || [];
 
+    const prises = cartesDejaPrises(campagne, marche);
+
     const colonnes = equipe.map((membre, i) => {
         const solde = entierCarnet(campagne, cleJoueur(marche.cle_unites, i));
         const deja = listeCarnet(campagne, cleJoueur(marche.cle_cartes, i));
         const vignettes = catalogue.map((entree) => {
-            const achetee = deja.includes(entree.id);
+            // Prise par l'equipe : hors de portee pour tout le monde. Le
+            // libelle distingue « la mienne » de « celle d'un coequipier ».
+            const achetee = prises.has(entree.id);
+            const aMoi = deja.includes(entree.id);
             const abordable = entree.cout <= solde;
             return el("button", {
                 class: "cmp-marche-carte" + (achetee ? " achetee" : "") + (!achetee && !abordable ? " trop-chere" : ""),
@@ -327,7 +351,8 @@ function vueMarche(campagne, definition) {
             },
                 el("img", { src: cardImageUrl(entree.id), alt: entree.carte.name, loading: "lazy" }),
                 el("span", { class: "cmp-marche-cout" }, String(entree.cout)),
-                achetee ? el("span", { class: "cmp-marche-tag" }, t("Dans le deck")) : null,
+                achetee ? el("span", { class: "cmp-marche-tag" + (aMoi ? "" : " ailleurs") },
+                    aMoi ? t("Dans le deck") : t("Prise")) : null,
             );
         });
         return el("section", { class: "cmp-marche-colonne" },
