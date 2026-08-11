@@ -1,0 +1,181 @@
+{
+ "version": "1.0",
+ "code": "gmw",
+ "cle_extension": "16. Galaxy's Most Wanted",
+ "nom": "Les Plus Recherchés de la Galaxie",
+ "nom_en": "The Galaxy's Most Wanted",
+ "resume": "Cinq scénarios où les Gardiens, traqués à travers la galaxie, monnaient leurs exploits. Chaque victoire rapporte des unités, et ces unités achètent au Marché des cartes qui vous suivent jusqu'au bout.",
+ "resume_en": "Five linked scenarios in which the Guardians, hunted across the galaxy, cash in on their exploits. Every win earns units, and units buy Market cards that stay in your deck to the end.",
+ "expert": {
+  "pv_persistants": true
+ },
+ "pages_regles": [],
+ "scenarios": [
+  {
+   "id": "brotherhood_of_badoon",
+   "numero": 1,
+   "nom": "Brotherhood of Badoon",
+   "nom_fr": "La Confrérie Badoon",
+   "resume": "Les Badoon débarquent en force et la Terre n'a personne d'autre sous la main. Les Gardiens n'ont ni mandat, ni renfort, ni la moindre envie de discuter.",
+   "enjeu": "Ce premier contrat fixe votre trésorerie : tout ce que vous ne gagnez pas ici manquera au Marché.",
+   "victoire": [
+    {
+     "cle": "Headhunter Defeated: Brotherhood of Badoon",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Chasseur de têtes vaincu",
+     "aide": "Chaque fois qu'il tombe, la traque s'intensifie : le scénario suivant reçoit une carte de plus. Bien jouer coûte cher, ici."
+    }
+   ],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "infiltrate_the_museum",
+   "numero": 2,
+   "nom": "Infiltrate the Museum",
+   "nom_fr": "Infiltrer le Musée",
+   "resume": "Le Collectionneur garde ses trésors derrière des vitrines et des gardes. Entrer est simple. C'est ce qu'on vous prend en chemin qui pose problème.",
+   "enjeu": "Ce que le musée vous confisque ici sera retiré de la partie au scénario suivant : la Collection se paie plus tard.",
+   "victoire": [
+    {
+     "cle": "Headhunter Defeated: Infiltrate the Museum",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Chasseur de têtes vaincu",
+     "aide": "Chaque fois qu'il tombe, la traque s'intensifie : le scénario suivant reçoit une carte de plus. Bien jouer coûte cher, ici."
+    },
+    {
+     "cle": "Collection Cards",
+     "type": "auto",
+     "format": "liste",
+     "parJoueur": true,
+     "libelle": "Cartes restées dans La Collection",
+     "aide": "Elles seront retirées de la partie au scénario 3, deck, défausse et main comprises."
+    }
+   ],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "escape_the_museum",
+   "numero": 3,
+   "nom": "Escape the Museum",
+   "nom_fr": "Fuir le Musée",
+   "resume": "L'alarme est donnée. Il reste à sortir, et à décider de ce qu'on emporte : les artefacts galactiques valent cher, mais ils pèsent lourd sur la suite.",
+   "enjeu": "Chaque artefact laissé en pile de victoire rapporte, et revient vous chercher au scénario suivant.",
+   "victoire": [
+    {
+     "cle": "Headhunter Defeated: Escape the Museum",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Chasseur de têtes vaincu",
+     "aide": "Chaque fois qu'il tombe, la traque s'intensifie : le scénario suivant reçoit une carte de plus. Bien jouer coûte cher, ici."
+    },
+    {
+     "cle": "Galactic Artifacts in Victory Display",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Artefacts galactiques emportés",
+     "aide": "Deux artefacts rapportent une unité par joueur. Chacun a aussi une contrepartie à la mise en place de Nebula."
+    }
+   ],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "nebula",
+   "numero": 4,
+   "nom": "Nebula",
+   "nom_fr": "Nebula",
+   "resume": "Nebula ne vous lâche plus. Le vaisseau encaisse, l'écart se creuse ou se referme, et la Pierre du Pouvoir change de mains plus souvent qu'il ne faudrait.",
+   "enjeu": "Les compteurs d'esquive et le porteur de la Pierre décident du terrain sur lequel Ronan vous attendra.",
+   "victoire": [
+    {
+     "cle": "Headhunter Defeated: Nebula",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Chasseur de têtes vaincu",
+     "aide": "Chaque fois qu'il tombe, la traque s'intensifie : le scénario suivant reçoit une carte de plus. Bien jouer coûte cher, ici."
+    },
+    {
+     "cle": "Evasion Counters",
+     "type": "auto",
+     "format": "int",
+     "libelle": "Compteurs d'esquive sur le Vaisseau de Nebula",
+     "aide": "Au scénario 5, la Manœuvre en Tenaille entre en jeu avec 3 menaces MOINS ce nombre."
+    },
+    {
+     "cle": "Power Stone Control",
+     "type": "auto",
+     "format": "liste",
+     "libelle": "Identité qui détient la Pierre du Pouvoir",
+     "aide": "Ce héros commencera le scénario 5 avec « Vous êtes accusé ! » face cachée."
+    }
+   ],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "ronan",
+   "numero": 5,
+   "nom": "Ronan the Accuser",
+   "nom_fr": "Ronan l'Accusateur",
+   "resume": "Ronan juge, condamne et exécute, dans cet ordre et sans délai. Tout ce que la campagne vous a laissé sert ici.",
+   "enjeu": "Fin de la campagne.",
+   "final": true,
+   "defaite": {
+    "quand": "partie_perdue",
+    "expert_seulement": true,
+    "texte": "Ronan l'Accusateur s'empare de la Pierre du Pouvoir : la campagne est perdue."
+   },
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [],
+    "epilogue": []
+   }
+  }
+ ],
+ "victoire_commune": [
+  {
+   "cle": "Unspent Units",
+   "type": "auto",
+   "format": "int",
+   "parJoueur": true,
+   "libelle": "Unités non dépensées",
+   "aide": "Elles s'accumulent d'un scénario au suivant et s'échangent au Marché contre des cartes qui restent dans le deck jusqu'à la fin de la campagne."
+  },
+  {
+   "cle": "Market Cards",
+   "type": "auto",
+   "format": "liste",
+   "parJoueur": true,
+   "libelle": "Cartes du Marché dans le deck",
+   "aide": "Achetées entre deux scénarios. Elles restent dans le deck jusqu'à la fin de la campagne et ne comptent pas dans sa taille."
+  }
+ ],
+ "victoire_commune_expert": [
+  {
+   "cle": "Remaining hit points",
+   "type": "auto",
+   "format": "int",
+   "parJoueur": true,
+   "detection": "pv_restants",
+   "libelle": "PV restants",
+   "aide": "Ils deviennent les PV de départ du scénario suivant. Plafonnés aux PV imprimés de l'identité."
+  }
+ ]
+}

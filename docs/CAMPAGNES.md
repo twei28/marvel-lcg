@@ -869,5 +869,20 @@ Par ordre d'intérêt :
    vraie fin de scénario Zola ni en campagne experte. C'est exactement le
    contexte où le bug des armes expérimentales s'était glissé — un détecteur
    plausible qui relevait quatre cartes au lieu d'une.
-6. **`gmw`** : jouable en séquence, sans récompense codée. À décider si on
-   l'expose comme campagne ou pas.
+6. **`gmw`** : **en cours.** Le moteur de campagne est écrit et éprouvé
+   (`src/cards/pack/gmw/campaign.py`, les cinq manigances 1A appellent
+   `CampaignSetup`), et `data/campagnes/gmw.json` déclare ses 11 clés, toutes
+   reconnues par `verifier_campagnes.py`. La boîte apparaît désormais dans
+   l'écran des campagnes, qui en compte sept.
+
+   Deux mesures à la sonde, bytecode recompilé, chacune avec témoin : le
+   Chasseur de têtes et la manigance de campagne entrent bien en jeu aux cinq
+   scénarios, et les cartes du Marché enregistrées au carnet rejoignent le deck
+   (33 cartes sans, 35 avec deux cartes achetées).
+
+   Restent : les planches du livret à découper vers `public/stories/gmw/` (les
+   trois listes `pages` sont vides pour l'instant, l'écran n'affichera donc
+   aucune illustration), et surtout **le Marché** : dépenser ses unités entre
+   deux scénarios pour ajouter des cartes à son deck. Le moteur sait déjà les
+   remettre au deck à chaque mise en place ; c'est l'écran de dépense qui
+   manque.

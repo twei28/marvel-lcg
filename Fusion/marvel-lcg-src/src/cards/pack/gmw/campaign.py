@@ -166,10 +166,30 @@ def PoserLaSuiteDeRonan() -> 'Ability':
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 
 
+def EachPlayerMarketCardsIntoDeck() -> 'Ability':
+    """Ce qu'on a achete au Marche reste dans le deck pour toute la campagne.
+
+    Livret p.5 : « Cards added to a player's deck this way must be included in
+    that player's deck for the rest of the campaign and do not count toward
+    that player's minimum or maximum deck size. » Le deck sauvegarde de la
+    campagne ne les contient pas — elles vivent au carnet, comme les
+    ameliorations de role de Mutant Genesis ou l'allie de campagne d'AoA. On
+    les remet donc a chaque mise en place.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
+        for player in Worlds.GetPlayers(effect):
+            ids = _liste(CampaignLog.GetStrByPlayer('Market Cards', player.player_id, effect))
+            for card_id in ids:
+                card = CardFactory.GenerateCard(card_id, player.player_deck, effect.world)
+                Faces.ShuffleAllTo([card.face], player.player_deck, effect)
+    return AbilityFactoryCampaign.WhenCampaignSetup(action)
+
+
 def CampaignSetup(level: int) -> 'List[Ability]':
     """Ce que la manigance principale 1A du scenario `level` doit appeler."""
     abilities: List['Ability'] = [RevelerLaManiganceDeCampagne(level),
-                                  MelangerLeChasseurEtSesRenforts()]
+                                  MelangerLeChasseurEtSesRenforts(),
+                                  EachPlayerMarketCardsIntoDeck()]
     if level == 3:
         abilities.append(RetirerLesCartesDeLaCollection())
     if level == 4:
