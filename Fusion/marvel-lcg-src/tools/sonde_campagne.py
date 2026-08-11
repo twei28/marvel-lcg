@@ -7,10 +7,18 @@ cartes posees sous un complot, ou sont les allies secourus) plutot que de le
 deduire du code du moteur.
 
 Usage : python3.10 sonde_descripteur.py <racine> <scenario> <heros> [port]
+  <heros> accepte PLUSIEURS noms separes par des virgules : certaines regles ne
+  se mesurent qu'a plusieurs joueurs (« any player's deck », « each player »).
   PUZZLE   : liste JSON de commandes Puzzle a executer apres la mise en place
   RAPPORT  : chemin du descripteur rendu (defaut /tmp/descripteur.json)
   FIN_DE_PARTIE : "1" pour declencher WhenGameOver apres la mise en place et
                   capturer le carnet SORTANT dans la cle `carnet_sortant`
+  CHOIX    : index de l'option retenue a CHAQUE question, dans la liste des
+             options legales (defaut 0, la premiere). Les index negatifs
+             comptent depuis la fin, comme en Python : -1 prend la derniere.
+             Sert a prouver qu'une question offre VRAIMENT plusieurs reponses —
+             avec le seul premier choix, un menu a une branche et un menu a
+             quatre se mesurent pareil.
 """
 import json
 import os
@@ -20,12 +28,13 @@ os.environ.setdefault("RELEASE", "1")
 
 ROOT = os.path.abspath(sys.argv[1])
 SCENARIO = sys.argv[2]
-HERO = sys.argv[3]
+HEROS = [x for x in sys.argv[3].split(',') if x]
 PORT = int(sys.argv[4]) if len(sys.argv) > 4 else 4500
 CAMPAIGN_LOG = json.loads(os.environ.get("CAMPAIGN_LOG", "{}"))
 RULES = json.loads(os.environ.get("RULES", '["mode_campaign"]'))
 PUZZLE = json.loads(os.environ.get("PUZZLE", "[]"))
 RAPPORT = os.environ.get("RAPPORT", "/tmp/descripteur.json")
+CHOIX = int(os.environ.get("CHOIX", "0"))
 FIN_DE_PARTIE = os.environ.get("FIN_DE_PARTIE", "") == "1"
 
 GAME = os.path.join(ROOT, ".game")
@@ -95,13 +104,21 @@ def pilote(self, data, player_id, check):
         options = json.loads(data.options_json or "[]")
     except Exception:
         options = []
-    for o in options:
-        if isinstance(o, dict) and not o.get("failure_reason"):
-            legales = [str(x) for x in (o.get("all_legal_targets") or [])]
-            mini = (o.get("target_num_range") or [0, 0])[0]
-            return json.dumps({"id": str(o.get("id", 0)),
-                               "targets": legales[:mini] if mini else [],
-                               "resources": []})
+    legales_options = [o for o in options
+                       if isinstance(o, dict) and not o.get("failure_reason")]
+    if legales_options:
+        try:
+            o = legales_options[CHOIX]
+        except IndexError:
+            # Moins d'options que demande : on retombe sur la premiere plutot
+            # que de planter, sinon une seule question courte ferait echouer
+            # toute une mesure.
+            o = legales_options[0]
+        legales = [str(x) for x in (o.get("all_legal_targets") or [])]
+        mini = (o.get("target_num_range") or [0, 0])[0]
+        return json.dumps({"id": str(o.get("id", 0)),
+                           "targets": legales[:mini] if mini else [],
+                           "resources": []})
     return json.dumps({"id": "0", "targets": [], "resources": []})
 
 
@@ -115,20 +132,23 @@ Engine.Initialize()
 from game.scene.loader import SceneLoader
 
 campaign_json = open(os.path.join(GAME, "data", "scenarios", SCENARIO + ".json")).read()
-chemin_deck = None
-for base in ("deck/starter", "deck/custom"):
-    p = os.path.join(GAME, base, HERO + ".json")
-    if os.path.exists(p):
-        chemin_deck = p
-        break
-assert chemin_deck, f"deck introuvable : {HERO}"
+decks = []
+for heros in HEROS:
+    chemin_deck = None
+    for base in ("deck/starter", "deck/custom"):
+        p = os.path.join(GAME, base, heros + ".json")
+        if os.path.exists(p):
+            chemin_deck = p
+            break
+    assert chemin_deck, f"deck introuvable : {heros}"
+    decks.append(open(chemin_deck).read())
 
-scene = SceneLoader.NewFromJson(campaign_json, None, [open(chemin_deck).read()],
+scene = SceneLoader.NewFromJson(campaign_json, None, decks,
                                 42, RULES, CAMPAIGN_LOG)
 jeu = Engine.game
 jeu.session.SetScene(scene, "Load")
 
-sortie = {"scenario": SCENARIO, "puzzle": PUZZLE, "erreurs": []}
+sortie = {"scenario": SCENARIO, "heros": HEROS, "puzzle": PUZZLE, "erreurs": []}
 try:
     jeu.GameSetup()
 except BaseException as exc:

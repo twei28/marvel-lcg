@@ -88,21 +88,62 @@ def JubileeIntoPlay() -> 'Ability':
     def check_not_removed(effect: 'Effect', message: 'Message.WhenCampaignSetup') -> bool:
         return (CampaignLog.GetStrInternal('Jubilee removed', effect) == '')
     return AbilityFactoryCampaign.WhenCampaignSetup(action, conditions=[InPool('Jubilee'), check_not_removed])
-# NOTE (10/8/2026) : le livret dit « Each CAPTIVE ally recorded in the campaign
-# log MAY be shuffled into ANY player's deck » (p.12, 16, 19), et cette
-# fonction n'offre ni le refus ni le choix du deck : tout part chez le premier
-# joueur. Un correctif a ete ecrit puis RETIRE, faute de tenir a la mesure : la
-# repartition par ChooseAbilities ne posait plus AUCUN allie a la sonde (deck
-# de 33 cartes au lieu de 35), alors que le meme idiome fonctionne dans
-# next_evol. L'ecart reste ouvert, la cause du blocage est a trouver avant de
-# reessayer. Ne pas re-livrer sans mesure.
 def ShuffleCaptiveAlliesIntoDeck() -> 'Ability':
+    """Les allies liberes rejoignent un deck — celui qu'on veut, ou aucun.
+
+    Livret p.12, 16 et 19, mot pour mot : « Each CAPTIVE ally recorded in the
+    campaign log MAY be shuffled into ANY player's deck. »
+
+    Deux libertes, et le code n'en offrait aucune : tout partait d'office chez
+    le premier joueur. C'est le seul ecart de regle qui restait ouvert sur les
+    huit boites. A quatre joueurs il ne s'agit pas d'un detail — les quatre
+    allies du Project Wideawake se repartissent, et les entasser dans un seul
+    deck le noie autant qu'il enrichit les autres.
+
+    Un correctif avait ete ecrit puis RETIRE le 10/8/2026 : il ne posait plus
+    aucun allie a la mesure. Repris et remesure le 11/8/2026, le blocage ne se
+    reproduit pas, ni a un joueur ni a quatre. Il tenait tres probablement a la
+    facon dont la question etait posee, pas a l'idiome lui-meme.
+
+    Une carte n'est fabriquee qu'une fois le deck CHOISI : un refus ne doit
+    laisser trainer aucun exemplaire hors jeu.
+
+    ET ELLE EST FABRIQUEE HORS DECK. `Faces.ShuffleAllTo` ne melange QUE s'il a
+    deplace quelque chose (`if moved_faces: deck.Shuffle(...)`). La generer
+    directement dans `player_deck`, comme le faisait le code d'origine, ne
+    deplacait donc rien : le melange ne partait jamais et les allies restaient
+    sur le dessus. Mesure a l'appui, avant correction : les QUATRE captifs se
+    retrouvaient dans la main de depart, a un joueur comme a deux. Le livret
+    dit « shuffled into », pas « posed on top of ».
+    """
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
         card_ids = CampaignLog.GetListInternal('Captive Allies', effect)
-        if card_ids:
-            player = Worlds.GetFirstPlayer(effect)
-            cards = CardFactory.GenerateCards(card_ids, player.player_deck, effect.world)
-            Faces.ShuffleAllTo([x.face for x in cards], player.player_deck, effect)
+        if not card_ids:
+            return
+        premier = Worlds.GetFirstPlayer(effect)
+        joueurs = Worlds.GetPlayers(effect)
+
+        for card_id in card_ids:
+            papers = CardFactory.FindCardPapers(card_id)
+            nom = papers[0].name if papers else card_id
+
+            def ranger(joueur: 'Player', identifiant: str):
+                def poser(targets: 'Sequence[CardFace]'):
+                    card = CardFactory.GenerateCard(identifiant, None, effect.world)
+                    Faces.ShuffleAllTo([card.face], joueur.player_deck, effect)
+                return poser
+
+            choix = []
+            for joueur in joueurs:
+                identite = joueur.GetIdentity()
+                porteur = identite.name if identite else f'Player {joueur.player_id + 1}'
+                choix.append(AbilityFactory.ForChoiceAbility(
+                    f"Shuffle {nom} into {porteur}'s deck",
+                    ranger(joueur, card_id),
+                ))
+            # MayChooseOneAbility et non ChooseAbilities : le livret dit « may »,
+            # donc l'equipe doit pouvoir laisser un allie de cote.
+            premier.MayChooseOneAbility(effect, *choix)
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 def CampaignSetup(level: int) -> List['Ability']:
     abilities = [SetupFuturePastDeck()]

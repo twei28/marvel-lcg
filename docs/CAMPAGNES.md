@@ -481,7 +481,7 @@ toute façon.
 | `sm` | `Reputation Track = 9` + récompense d'aspect, scénario 2 | un exemplaire de plus dans `player_deck` | 1 seul |
 | `mts` | `Campaign Pool: Cosmo = 1`, scénario 3 | Cosmo dans `players/allies` | absent |
 | `mut_gen` | rôle + `Frightened Police Defeated`, scénario 2 | amélioration du BON rôle attachée | aucune |
-| `mut_gen` | `Campaign Pool: Jubilee` + captif, scénario 3 | Jubilé alliée, captif en main | absents |
+| `mut_gen` | `Campaign Pool: Jubilee` + captif, scénario 3 | Jubilé alliée, captif dans `player_deck` (choisi) | absents |
 
 Les quatre campagnes jouables appliquent donc leurs bonus, et `trors` prouve
 qu'un MALUS passe aussi : les armes expérimentales laissées derrière soi
@@ -536,19 +536,42 @@ expert aux scénarios 2 à 5 — vérifié page par page, les lignes *Expert Cam
 Only* des scénarios 3 et 5 existent bien, elles sont juste imprimées après
 l'en-tête VICTORY).
 
-L'écart, **toujours ouvert** : « Each CAPTIVE ally recorded in the campaign log
-**may** be shuffled into **any** player's deck » (p.12, 16 et 19). Le code ne
-prend aucune des deux libertés, il mélange tout, d'office, dans le deck du
-**premier joueur**. En solo l'écart est mince, encore qu'un allié de plus dilue
-un deck et que le livret laisse le refuser. À quatre joueurs, tous les alliés
-libérés par toute l'équipe s'entassent chez le joueur 1.
+L'écart, **fermé le 11/8/2026** : « Each CAPTIVE ally recorded in the campaign
+log **may** be shuffled into **any** player's deck » (p.12, 16 et 19). Le code
+ne prenait aucune des deux libertés : il mélangeait tout, d'office, dans le deck
+du **premier joueur**. En solo l'écart était mince, encore qu'un allié de plus
+dilue un deck et que le livret laisse le refuser. À quatre joueurs, tous les
+alliés libérés par toute l'équipe s'entassaient chez le joueur 1.
 
-Un correctif par `ChooseAbilities` a été écrit puis **retiré**, faute de tenir à
-la mesure : avec lui, plus AUCUN allié n'entrait dans un deck à la sonde (33
-cartes au lieu de 35), alors que le même idiome fonctionne dans `next_evol`
-(dont le choix de manigance de campagne, lui, est bien exercé par la sonde).
-La cause du blocage est à trouver avant de réessayer. Une note le dit dans le
-fichier.
+Un correctif par `ChooseAbilities` avait été écrit puis **retiré** le 10/8/2026,
+faute de tenir à la mesure : avec lui, plus aucun allié n'entrait dans un deck.
+**Repris et remesuré, le blocage ne se reproduit pas**, ni à un joueur ni à
+quatre. L'hypothèse la plus probable est que la question était alors résolue par
+son option « Cancel » — le pilote de la sonde répond la première option légale,
+et une liste où l'annulation vient en tête donne exactement zéro allié. C'est
+d'ailleurs très précisément ce que la mesure `CHOIX=-1` produit aujourd'hui.
+
+**Un second défaut, préexistant, est tombé avec.** `Faces.ShuffleAllTo` ne
+mélange que s'il a *déplacé* quelque chose (`if moved_faces: deck.Shuffle(...)`).
+Les cartes étant générées directement **dans** `player_deck`, rien ne bougeait :
+le mélange ne partait jamais et les alliés restaient sur le dessus. Mesuré avant
+correction, sur le code d'origine : les **quatre captifs se retrouvaient dans la
+main de départ**, à un joueur comme à deux. Le livret dit « shuffled into », pas
+« posé sur le dessus ». La carte est désormais générée hors deck, comme le fait
+déjà `MelangerLesInterferences` dans aos.
+
+**Comment on mesure un menu à plusieurs branches.** Le pilote de la sonde
+répondait toujours la première option légale, ce qui rend une seule branche
+observable : un menu à une branche et un menu à quatre se mesuraient pareil.
+D'où `CHOIX`, l'index de l'option retenue (négatif = depuis la fin). Piège
+associé : `CHOIX` change **aussi** les mulligans, donc la taille d'un deck ne
+veut plus rien dire d'une mesure à l'autre — on compte les cartes elles-mêmes,
+où qu'elles soient. La sonde accepte aussi plusieurs héros séparés par des
+virgules : une règle qui parle de « any player's deck » ne se mesure pas en solo.
+
+11 vérifications dans `tools/test_captifs_mut_gen.py` : les trois branches
+(premier joueur, second joueur, refus), le témoin sans carnet, l'absence de
+captif dans la main de départ, et un identifiant inconnu qui ne casse rien.
 
 **La leçon de méthode compte plus que l'écart.** La première mesure de ce
 correctif avait l'air bonne (33 → 35) parce qu'elle tournait sur du bytecode
@@ -629,10 +652,11 @@ Derniers Debout (`venom_goblin/27116a.py`).
 ### Bilan de l'audit texte-vs-code
 
 Six boîtes relues, **un seul vrai écart** : les alliés captifs de Mutant
-Genesis. Deux approximations assumées et documentées (Professor X au scénario 5
-d'AoA, la forme du « setup keyword » de trors), et deux faux positifs qui
-venaient de ma lecture du PDF et non du code. Le câblage des campagnes est plus
-sain que la couverture des tests ne le laissait espérer.
+Genesis — **fermé le 11/8/2026**, voir plus haut. Deux approximations assumées
+et documentées (Professor X au scénario 5 d'AoA, la forme du « setup keyword »
+de trors), et deux faux positifs qui venaient de ma lecture du PDF et non du
+code. Le câblage des campagnes est plus sain que la couverture des tests ne le
+laissait espérer.
 
 ## 7. Les scans du livret
 
