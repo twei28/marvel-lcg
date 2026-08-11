@@ -293,6 +293,72 @@ const cleJoueur = (cle, i) => "Player " + (i + 1) + " " + cle;
 const listeCarnet = (campagne, cle) => String((campagne.carnet || {})[cle] || "").split(";").filter(Boolean);
 const entierCarnet = (campagne, cle) => parseInt((campagne.carnet || {})[cle] || "0", 10) || 0;
 
+/* ------------------------------------------- cartes imposees par le carnet -- */
+
+/** Tous les champs de victoire d'une definition, scenarios et communs melanges. */
+function champsDeVictoire(definition) {
+    const champs = [];
+    for (const s of definition.scenarios || []) champs.push(...(s.victoire || []));
+    champs.push(...(definition.victoire_commune || []));
+    champs.push(...(definition.victoire_commune_expert || []));
+    return champs;
+}
+
+/**
+ * Les cartes que le carnet EXIGE dans un deck, et qui n'y sont plus.
+ *
+ * Une carte gagnee en campagne vit d'ordinaire AU CARNET, pas dans le deck
+ * enregistre : le moteur la repose a chaque mise en place depuis la cle du
+ * carnet (les ameliorations Tech de trors, le materiel S.H.I.E.L.D. de sm, les
+ * allies de campagne d'aoa, les cartes du Marche de gmw). Personne ne peut donc
+ * la retirer de son deck — elle n'y a jamais ete — et le livret est tenu par
+ * construction.
+ *
+ * Une seule recompense fait l'inverse et CHERCHE la carte dans le deck du
+ * joueur : « Planning Ahead » (sm, Reputation 17), ou le livret dit « Each
+ * player chooses one card from their deck », puis, au scenario suivant, « each
+ * player searches their deck and discard pile for 1 copy of the card recorded
+ * in their Planning Ahead section ». Mesure faite a la sonde, avec temoin :
+ * carte notee presente dans le deck, elle arrive EN MAIN a la mise en place ;
+ * carte notee absente, il ne se passe RIEN — aucune erreur, aucun message, la
+ * recompense de la Reputation 17 disparait en silence.
+ *
+ * D'ou ce controle, au retour de « Modifier les decks » et jamais avant : c'est
+ * le seul moment ou un deck de campagne change. Les champs concernes le disent
+ * dans les donnees (`"deck": "requis"`), comme tout le reste du format.
+ *
+ * Rend la liste des manquants : { siege, cle, libelle, carte }.
+ */
+function cartesRequisesManquantes(campagne, definition, equipe) {
+    const manquants = [];
+    for (const champ of champsDeVictoire(definition)) {
+        if (champ.deck !== "requis") continue;
+        equipe.forEach((membre, i) => {
+            // parJoueur seulement : une carte imposee designe le deck d'UN
+            // joueur. `verifier_campagnes.py` refuse la forme globale.
+            const cle = champ.parJoueur ? cleJoueur(champ.cle, i) : champ.cle;
+            const notees = champ.format === "liste"
+                ? listeCarnet(campagne, cle)
+                : [String((campagne.carnet || {})[cle] || "")].filter(Boolean);
+            if (!notees.length) return;
+            const deck = (membre && membre.deck) || {};
+            const dedans = new Set([...(deck.hero_deck || []), ...(deck.player_deck || [])]);
+            for (const carte of notees) {
+                if (!dedans.has(carte)) {
+                    manquants.push({ siege: i, cle, libelle: champ.libelle || champ.cle, carte });
+                }
+            }
+        });
+    }
+    return manquants;
+}
+
+/** « 01058 » -> « Backflip (01058) », pour que le refus soit lisible. */
+function nomDeCarte(id) {
+    const c = cards.get(id);
+    return (c && c.name ? c.name + " (" + id + ")" : id);
+}
+
 /**
  * Les cartes deja prises, TOUTE L'EQUIPE CONFONDUE.
  *
@@ -653,6 +719,65 @@ function vueCampagne() {
     );
 }
 
+/**
+ * Le score final que le livret fait noter A LA FIN, et nulle part ailleurs.
+ *
+ * Sinister Motives, p.5 et p.17 (encart VICTORY du scenario 5, sous
+ * « Optional ») : « Using the "Conditions" section of the reputation track,
+ * calculate your group's total reputation value, then mark that number of
+ * nodes. In the "Final Reputation Score" section of the campaign log, record a
+ * value equal to the number of nodes marked on the reputation track. »
+ *
+ * Sa place est donc le BILAN, pas le carnet : aucune mise en place ne le relit,
+ * et l'inscrire au carnet aurait demande une cle que le moteur ne connait pas —
+ * `verifier_campagnes.py` la refuserait, a juste titre. Il vit dans la campagne,
+ * sous `scoreFinal`.
+ *
+ * Le total de depart est la piste cumulee du carnet ; la saisie n'ajoute que le
+ * dernier calcul, celui de la partie qu'on vient de gagner. Facultatif de bout
+ * en bout : tant que rien n'est enregistre, le bilan propose, il n'exige pas.
+ *
+ * Rien de tout cela n'est en dur : une boite sans bloc `bilan` n'affiche rien.
+ */
+function blocScoreFinal(campagne, definition) {
+    const bilan = definition.bilan;
+    if (!bilan) return null;
+    const acquis = typeof campagne.scoreFinal === "number";
+    const base = entierCarnet(campagne, bilan.cle);
+
+    if (acquis) {
+        return el("div", { class: "cmp-bilan-score" },
+            el("div", { class: "cmp-bilan-score-t" }, bilan.titre),
+            el("div", { class: "cmp-bilan-score-v mvl" }, String(campagne.scoreFinal)),
+            bilan.aide ? el("p", { class: "cmp-bloc-aide" }, bilan.aide) : null,
+        );
+    }
+
+    const saisie = el("input", {
+        class: "cmp-saisie cmp-saisie-score", type: "number", min: "0", step: "1", value: "0",
+    });
+    return el("div", { class: "cmp-bilan-score" },
+        el("div", { class: "cmp-bilan-score-t" }, bilan.titre),
+        bilan.aide ? el("p", { class: "cmp-bloc-aide" }, bilan.aide) : null,
+        el("label", { class: "cmp-bilan-score-l" },
+            el("span", {}, (bilan.libelle_ajout || t("Dernier calcul")) + " : "),
+            saisie,
+        ),
+        bilan.aide_ajout ? el("p", { class: "cmp-bloc-aide" }, bilan.aide_ajout) : null,
+        el("p", { class: "cmp-bilan-score-base" },
+            t("Piste cumulée au carnet") + " : " + base),
+        el("button", {
+            class: "btn launch cmp-bilan-score-ok",
+            onclick: () => proteger(async () => {
+                const ajout = parseInt(saisie.value, 10);
+                etat.campagne.scoreFinal = base + (Number.isFinite(ajout) && ajout > 0 ? ajout : 0);
+                etat.campagne = await apiCampagne.enregistrer(etat.campagne);
+                rendre();
+            }),
+        }, t("Enregistrer le score")),
+    );
+}
+
 function vueConclusion(campagne, definition, perdue) {
     const dernier = definition.scenarios[definition.scenarios.length - 1];
     // Pas de planche d'epilogue sur une defaite : celle du livret raconte la
@@ -676,6 +801,7 @@ function vueConclusion(campagne, definition, perdue) {
             ligneBilan(t("Scénarios gagnés"), (campagne.termines || []).length + " / " + definition.scenarios.length),
             totalTentatives ? ligneBilan(t("Parties jouées en tout"), String(totalTentatives)) : null,
         ),
+        perdue ? null : blocScoreFinal(campagne, definition),
         el("div", { class: "cmp-actions" },
             el("button", { class: "btn ghost", onclick: () => proteger(async () => {
                 etat.campagne = null; etat.vue = "liste";
@@ -830,6 +956,20 @@ function rendre() {
             const apres = brouillon.equipe.map((m) => m.nomHeros || m.heros).join("|");
             if (avant !== apres) {
                 throw new Error(t("Les identités ont changé : elles sont figées pour toute la campagne. Rien n'a été modifié."));
+            }
+            // Deuxieme refus, apres celui des identites : une carte que le
+            // carnet impose au deck ne doit pas en sortir. Le livret sm la
+            // fait chercher DANS le deck au scenario suivant, et sans elle la
+            // recompense disparait sans un mot (mesure au §11 de CAMPAGNES.md).
+            const definition = await apiCampagne.definition(campagne.code);
+            const manquants = cartesRequisesManquantes(campagne, definition, brouillon.equipe);
+            if (manquants.length) {
+                const detail = manquants
+                    .map((m) => nomDeCarte(m.carte) + " — " + m.libelle
+                        + " (" + t("héros") + " " + (m.siege + 1) + ")")
+                    .join(" · ");
+                throw new Error(t("Une carte inscrite au carnet a quitté le deck : elle doit y rester pour tout le reste de la campagne. Rien n'a été modifié.")
+                    + " " + detail);
             }
             campagne.equipe = brouillon.equipe;
             effacerBrouillon();

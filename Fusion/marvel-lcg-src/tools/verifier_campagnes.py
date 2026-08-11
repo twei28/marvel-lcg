@@ -67,6 +67,15 @@ def connue(cle, litteraux):
     return False
 
 
+def champs_du_fichier(definition):
+    for scenario in definition.get("scenarios") or []:
+        for champ in scenario.get("victoire") or []:
+            yield champ
+    for nom in ("victoire_commune", "victoire_commune_expert"):
+        for champ in definition.get(nom) or []:
+            yield champ
+
+
 def cles_du_fichier(definition):
     for scenario in definition.get("scenarios") or []:
         for champ in scenario.get("victoire") or []:
@@ -76,8 +85,74 @@ def cles_du_fichier(definition):
             yield champ["cle"]
 
 
+# Valeurs acceptees pour l'attribut `deck` d'un champ de victoire.
+#
+# `requis` : le moteur CHERCHE cette carte dans le deck du joueur a la mise en
+# place du scenario suivant (« Planning Ahead » de sm). L'ecran des campagnes
+# refuse donc, au retour de « Modifier les decks », un deck qui ne la contient
+# plus. Sans `parJoueur`, la cle ne designerait le deck de personne : la forme
+# globale est refusee ici plutot que d'etre ignoree en silence a l'ecran.
+DECK_VALEURS = {"requis"}
+
+# Les detecteurs disponibles, lus dans le code qui les implemente plutot que
+# recopies ici : `detecter()` est un switch, chaque `case '<nom>'` est un
+# detecteur. Une `detection` inconnue ne leve RIEN a l'execution — le champ reste
+# vide, la recompense disparait, et c'est exactement le silence que cet outil
+# existe pour casser (meme famille que la cle mal orthographiee du §5).
+# Le depot met `ui-app` DEUX niveaux au-dessus de marvel-lcg-src
+# (« Jeu Marvel Champions/ui-app »), et la copie de travail de ~/marvel-work ne
+# l'a pas du tout. On cherche donc, et l'absence n'est pas une erreur : elle est
+# annoncee, et les `detection` ne sont simplement pas verifiees la-bas.
+CHEMINS_DETECTEURS = [
+    os.path.join(haut, "ui-app", "src", "board", "campagne", "detecteurs.ts")
+    for haut in (
+        os.path.dirname(os.path.dirname(RACINE)),
+        os.path.dirname(RACINE),
+        RACINE,
+    )
+]
+
+
+def detecteurs_connus():
+    import re
+    for chemin in CHEMINS_DETECTEURS:
+        try:
+            with open(chemin, encoding="utf-8") as f:
+                source = f.read()
+        except OSError:
+            continue
+        return set(re.findall(r"case '([a-z_]+)':", source))
+    return None
+
+
+def defauts_de_forme(definition, detecteurs=None):
+    """Les champs dont un attribut ne veut rien dire."""
+    defauts = []
+    for champ in champs_du_fichier(definition):
+        detection = champ.get("detection")
+        if detection and detecteurs is not None and detection not in detecteurs:
+            defauts.append("%r : detection=%r n'existe pas dans detecteurs.ts (champ vide, en silence)"
+                           % (champ["cle"], detection))
+        if champ.get("cumulatif") and champ.get("format") != "int":
+            defauts.append("%r : cumulatif n'a de sens que sur un format int"
+                           % champ["cle"])
+        valeur = champ.get("deck")
+        if valeur is None:
+            continue
+        if valeur not in DECK_VALEURS:
+            defauts.append("%r : deck=%r inconnu (attendu %s)"
+                           % (champ["cle"], valeur, " ou ".join(sorted(DECK_VALEURS))))
+        elif not champ.get("parJoueur"):
+            defauts.append("%r : deck=%r exige parJoueur, sinon aucun deck n'est designe"
+                           % (champ["cle"], valeur))
+    return defauts
+
+
 def main():
     total_manquantes = 0
+    detecteurs = detecteurs_connus()
+    if detecteurs is None:
+        print("  (detecteurs.ts introuvable : les `detection` ne sont pas verifiees)")
     for fichier in sorted(os.listdir(CAMPAGNES)):
         if not fichier.endswith(".json"):
             continue
@@ -110,6 +185,10 @@ def main():
         print("  %-10s %2d cle(s) declaree(s)  %s" % (code, len(cles), etat))
         for c in manquantes:
             print("      introuvable dans le moteur : %r" % c)
+
+        for d in defauts_de_forme(definition, detecteurs):
+            total_manquantes += 1
+            print("      forme refusee : %s" % d)
 
     print()
     if total_manquantes:

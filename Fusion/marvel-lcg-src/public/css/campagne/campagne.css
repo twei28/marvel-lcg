@@ -193,6 +193,16 @@ button{cursor:pointer}
 .cmp-bilan-k{flex:0 0 190px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
 .cmp-bilan-v{color:var(--txt);font-size:14px}
 
+/* Score final : le seul chiffre que le livret fasse noter APRES la campagne
+   (sm p.17, encart VICTORY, facultatif). Il n'entre pas dans le tableau du
+   bilan — il se lit d'un coup d'oeil, comme un resultat. */
+.cmp-bilan-score{margin-top:16px;border:1px solid var(--line);background:var(--steel);border-radius:10px;padding:16px 18px}
+.cmp-bilan-score-t{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.cmp-bilan-score-v{font-size:44px;line-height:1.1;color:var(--cyan);margin-top:4px}
+.cmp-bilan-score-l{display:flex;align-items:center;gap:12px;margin:10px 0 4px;font-size:14px}
+.cmp-bilan-score-l .cmp-saisie-score{max-width:120px}
+.cmp-bilan-score-base{font-size:12px;color:var(--mute);margin:6px 0 12px}
+
 /* --------------------------------------------------------------- loupe -- */
 .cmp-loupe{
   position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;
