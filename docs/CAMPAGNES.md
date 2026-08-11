@@ -1062,6 +1062,36 @@ n'est pas couvert de bout en bout : il faudrait mener une vraie partie jusqu'à
 la défaite du scénario 5. C'est la même limite que pour le reste de
 `PanneauRecompenses`, dont seules les briques pures sont éprouvées.
 
+### Le soin de campagne experte
+
+Câblé le 11/8/2026. Encarts SETUP des scénarios 2 à 5, sous « Expert Campaign
+Only » : « Each player may place one secret counter on a Board Member
+environment to heal damage from their identity equal to their REC. »
+
+Les huit boîtes font toutes payer le retour à la santé, et jamais deux fois de
+la même façon : une carte rencontre face cachée pour sm et next_evol, une
+obligation ajoutée au deck pour trors. Ici le prix se paie sur le **décor** : un
+secret de plus sur le Conseil, donc un pas de plus vers le basculement d'un
+membre du côté de Zemo. Le soin se paie en terrain perdu sur le fil de la
+campagne, pas en cartes.
+
+Deux écarts avec les sept autres, tous deux voulus par le livret : on soigne de
+sa **RÉC** et non jusqu'aux PV imprimés, et le coût ne touche pas le deck du
+joueur.
+
+L'ordre compte, et il est celui du livret : `PoserLeConseil` (sinon rien à
+viser), puis `ExpertCampaignSetPlayersHPToTheirRemainingHP` (sinon on soignerait
+des PV écrasés juste après), puis le soin.
+
+Une conséquence qui n'est pas un défaut : quand **tout le Conseil a basculé**,
+il n'y a plus un seul *environnement* Board Member sur la table, donc plus rien
+à viser et plus de soin. Laisser le Conseil tomber coûte donc aussi la santé des
+héros. Mesuré au scénario 5 expert avec trois membres à trois secrets.
+
+13 vérifications dans `tools/test_soin_expert_aos.py`, sur Maria Hill (9 PV
+imprimés, RÉC 3) pour que les comptes soient lisibles à la main : cas nominal
+3 → 6, plafond 8 → 9, témoin standard, témoin scénario 1, et le Conseil basculé.
+
 ### Ce qui n'est PAS fait
 
 **Une fuite du mode HORS campagne**, laissée telle quelle : les neuf preuves des
@@ -1071,10 +1101,15 @@ campagne le secret ne vit qu'une partie. La fermer demanderait de filtrer les
 cartes non visibles dans `Card.Render`, ce qui touche le rendu de TOUTES les
 cartes du jeu.
 
-Manquent aussi, plus petits : le soin expert propre à cette boîte (poser un
-compteur secret sur un membre du Conseil pour se soigner de sa RÉC, encore un
-prix différent des sept autres campagnes), et les sets de rencontre des
-Thunderbolts survivants au scénario 5 — seuls les sbires eux-mêmes reviennent.
+**Les sets de rencontre des Thunderbolts survivants** au scénario 5. Le livret
+dit « shuffle those minions **and their encounter sets**, except for Jolt's » ;
+seuls les sbires eux-mêmes reviennent aujourd'hui.
+
+**Le Conseil entièrement basculé à la mise en place.** Livret p.18 : « If all of
+the board members join Baron Zemo, the players lose the scenario. » Mesuré : en
+arrivant au scénario 5 expert avec trois membres à trois secrets, les trois
+basculent à la mise en place et la partie n'est pas déclarée perdue. Reste à
+vérifier si la règle vise ce moment ou seulement le cours de la partie.
 
 ## 9. Après le câblage
 

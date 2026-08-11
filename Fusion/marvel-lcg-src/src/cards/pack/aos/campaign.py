@@ -229,6 +229,59 @@ def PoserLesPreuves() -> 'Ability':
     return AbilityFactoryCampaign.WhenCampaignSetupAfterMulligans(action)
 
 
+def SoinExpertDuConseil() -> 'Ability':
+    """Le prix du soin, en campagne experte : un secret de plus sur le Conseil.
+
+    Encarts SETUP des scenarios 2 a 5, sous « Expert Campaign Only » : « Each
+    player may place one secret counter on a Board Member environment to heal
+    damage from their identity equal to their REC. »
+
+    Les huit boites-campagnes font toutes payer le retour a la sante, et
+    jamais deux fois de la meme facon : une carte rencontre face cachee pour
+    sm et next_evol, une obligation ajoutee au deck pour trors. Ici c'est un
+    secret de plus sur le Conseil, ce qui rapproche un membre du basculement —
+    donc de Zemo. Le soin se paie en terrain perdu sur le fil de la campagne,
+    pas en cartes.
+
+    Deux ecarts avec les sept autres, tous deux voulus par le livret :
+
+    * on soigne de sa REC, pas jusqu'aux PV imprimes. Une identite tres
+      abimee ne revient donc pas a neuf.
+    * le cout se pose sur une carte du DECOR, choisie par le joueur, et pas
+      dans son propre deck.
+
+    L'ordre compte : cette capacite doit passer APRES
+    `ExpertCampaignSetPlayersHPToTheirRemainingHP`, qui vient de ramener les
+    PV a leur valeur reportee, et APRES `PoserLeConseil`, sans quoi il n'y
+    aurait aucun environnement a viser.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
+        this = effect.this
+
+        def pour_ce_joueur(player: 'Player'):
+            identite = player.GetIdentity()
+            if identite is None:
+                return
+
+            def soigner(targets: 'Sequence[CardFace]'):
+                Faces.PlaceCountersOn(targets, 1, 'secret', effect)
+                # `recover` est la REC courante, buffs compris. Elle vit sur la
+                # face alter-ego, celle qui est active en debut de partie.
+                this.HealthUnits([identite], getattr(identite, 'recover', 0), effect)
+
+            player.MayChooseOneAbility(
+                effect,
+                AbilityFactory.ForChoiceAbility(
+                    "Place 1 secret counter on a [[Board Member]] environment to heal damage from your identity equal to your REC",
+                    soigner,
+                ).SetTarget(Environment, trait="BOARD MEMBER")
+            )
+
+        Players.ForEachPlayer(effect, pour_ce_joueur)
+
+    return AbilityFactoryCampaign.WhenCampaignSetupExpertOnly(action)
+
+
 def CampaignSetup(level: int) -> 'List[Ability]':
     abilities: List['Ability'] = [PoserLeConseil(level)]
     if level <= 4:
@@ -248,6 +301,10 @@ def CampaignSetup(level: int) -> 'List[Ability]':
         # instruction que dans les encarts des scenarios 2 a 5.
         abilities.append(PoserLesPreuves())
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
+        # Apres la remise des PV, jamais avant : le livret pose les deux
+        # instructions dans cet ordre, et l'inverse soignerait une identite dont
+        # les PV seraient ecrases juste apres.
+        abilities.append(SoinExpertDuConseil())
     abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectAOS(level, effect)))
     return abilities
 
