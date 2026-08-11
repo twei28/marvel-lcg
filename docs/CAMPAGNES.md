@@ -809,10 +809,34 @@ la taupe, et elle doit rester **cachée du joueur**. Les six autres vont dans
 l'enveloppe S.H.I.E.L.D., et vider un membre du Conseil de ses secrets en
 rapporte une, ce qui raye des combinaisons dans la grille du carnet.
 
-Le blocage n'est pas mécanique, il est de conception : notre carnet est un
-fichier que le joueur LIT, et l'écran l'affiche en entier. Y ranger la
-combinaison de la taupe reviendrait à la lui montrer. Il faut donc décider où
-vit ce secret et qui a le droit de le lire, avant d'écrire une ligne.
+**Le secret de la taupe a trouvé sa place (11/8/2026).** Le carnet est un
+fichier que le joueur LIT et que l'écran affiche en entier : y ranger la
+combinaison reviendrait à ouvrir l'enveloppe devant lui. Trois options ont été
+pesées (le serveur le garde, pas de secret du tout, l'enveloppe reste en
+carton) et c'est la première qui est en place :
+
+- **Tirage** côté serveur à la première écriture d'une campagne `aos`, une
+  preuve par série, jamais depuis le client — un client qui en enverrait une se
+  la ferait remplacer.
+- **Filtrage** : `_sans_secret()` passe sur les trois sorties (`list_campagnes`,
+  `get_campagne`, la réponse de `save_campagne`). Le navigateur ne le reçoit
+  jamais, donc ne peut pas l'afficher.
+- **Injection** : `new_game` remet la part secrète dans `campaign_log` juste
+  avant `NewGame`. Le moteur reçoit un carnet complet.
+
+La difficulté était d'identifier la campagne concernée : le descripteur de
+`/new` est **gelé** et ne porte pas d'identifiant. Plutôt que de toucher au
+contrat, on se sert de ce qui existe déjà : l'écran écrit `partieEnCours` AVANT
+de lancer, donc la campagne visée est celle dont la partie en cours est la plus
+récente.
+
+Mesuré : le secret est écrit au fichier (`50187;50189;50191`, une preuve par
+série) et **absent des trois routes**. L'injection, elle, est câblée mais pas
+encore observable : rien ne lit `A.I.M. Envelope` tant que le jeu de déduction
+n'existe pas. Elle se prouvera avec lui.
+
+Reste donc à écrire : gagner une preuve quand un membre du Conseil est vidé de
+ses secrets, la grille de déduction du carnet, et l'accusation du scénario 5.
 
 Manquent aussi, plus petits : le soin expert propre à cette boîte (poser un
 compteur secret sur un membre du Conseil pour se soigner de sa RÉC, encore un

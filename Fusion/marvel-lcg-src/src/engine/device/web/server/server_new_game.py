@@ -21,6 +21,17 @@ class GameServerNewGame(GameServerBase):
         # GameServer herite de GameServerGet et de GameServerNewGame :
         # `self.choix_sieges` est le meme attribut des deux cotes.
         self.choix_sieges = {}
+        # Le carnet arrive du CLIENT, donc ampute de ce qu'il n'a pas le droit
+        # de voir. Le serveur y remet ici la part secrete de la campagne — pour
+        # Agents of S.H.I.E.L.D., la combinaison de la taupe. Le moteur recoit
+        # un carnet complet, le navigateur n'en a jamais eu qu'une moitie.
+        try:
+            from engine.device.web.server.server_campagne import secret_pour_le_moteur
+            secret = secret_pour_le_moteur()
+            if secret:
+                new_game.campaign_log = {**(new_game.campaign_log or {}), **secret}
+        except Exception:
+            pass
         self.game.NewGame(new_game)
         return web.json_response({'result': "New game created"})
 

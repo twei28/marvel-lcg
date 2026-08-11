@@ -30,6 +30,69 @@ CAMPAGNES_FOLDER = ConfigVariables.Folder('campagne_folder', "../campagnes/")
 CARNET_SUGGERE_FILE = ConfigVariables.File('campaign_log_last_file', "./campaign_log_last.json")
 
 
+# --------------------------------------------------- l'enveloppe A.I.M. --
+# Les neuf cartes preuve d'Agents of S.H.I.E.L.D., en trois series de trois,
+# comme le livret les separe par leur dos (p.5) : le moyen, le mobile, et
+# l'occasion. Une de chaque part dans l'enveloppe A.I.M. au debut de la
+# campagne, et cette combinaison EST la taupe.
+SETS_PREUVES = [
+    ('50185', '50186', '50187'),   # moyen   : dossiers, ecoute, scanner
+    ('50188', '50189', '50190'),   # mobile  : argent, chantage, ideologie
+    ('50191', '50192', '50193'),   # occasion: habilitation, voyages, autorite
+]
+# Le champ ou dort le secret, et la cle sous laquelle le moteur le lit.
+CLE_SECRET = 'secret_aim'
+CLE_CARNET_SECRET = 'A.I.M. Envelope'
+
+
+def _tirer_enveloppe_aim() -> str:
+    """Une preuve par serie, au hasard. Appele une seule fois par campagne."""
+    import random
+    return ';'.join(random.choice(serie) for serie in SETS_PREUVES)
+
+
+def _sans_secret(campagne: 'Dict[str, Any]') -> 'Dict[str, Any]':
+    """La campagne telle que le CLIENT a le droit de la voir.
+
+    Tout ce qui sort par une route passe par ici. Le secret de la taupe ne doit
+    jamais atteindre le navigateur : l'ecran affiche le carnet en entier, et le
+    montrer reviendrait a ouvrir l'enveloppe devant le joueur.
+    """
+    return {k: v for k, v in campagne.items() if k != CLE_SECRET}
+
+
+def secret_pour_le_moteur() -> 'Dict[str, str]':
+    """Le secret de la campagne dont une partie vient d'etre lancee.
+
+    Le client n'envoie pas l'identifiant de campagne dans le descripteur de
+    `/new` — ce contrat est gele. Mais l'ecran des campagnes ecrit
+    `partieEnCours` AVANT de lancer : la campagne concernee est donc celle dont
+    la partie en cours est la plus recente. Rien a changer au contrat.
+    """
+    import json as json_lib
+    import os
+
+    dossier = CAMPAGNES_FOLDER.value
+    if not os.path.isdir(dossier):
+        return {}
+    meilleure = None
+    for nom in os.listdir(dossier):
+        if not nom.endswith('.json'):
+            continue
+        try:
+            with open(os.path.join(dossier, nom), encoding='utf-8') as f:
+                campagne = json_lib.load(f)
+        except Exception:
+            continue
+        secret = campagne.get(CLE_SECRET)
+        en_cours = campagne.get('partieEnCours') or {}
+        if not secret or not en_cours.get('depuis'):
+            continue
+        if (meilleure is None) or (en_cours['depuis'] > meilleure[0]):
+            meilleure = (en_cours['depuis'], secret)
+    return {CLE_CARNET_SECRET: meilleure[1]} if meilleure else {}
+
+
 def _nom_de_fichier(brut: str) -> str:
     """Identifiant de fichier sur, derive d'un nom saisi par le joueur."""
     import re
@@ -224,7 +287,7 @@ class GameServerCampagne(GameServerBase):
                 except Exception:
                     continue
                 campagne['id'] = nom[:-5]
-                sorties.append(campagne)
+                sorties.append(_sans_secret(campagne))
         sorties.sort(key=lambda c: str(c.get('derniere_activite', '')), reverse=True)
         return web.json_response(sorties)
 
@@ -240,7 +303,7 @@ class GameServerCampagne(GameServerBase):
         with open(chemin, encoding='utf-8') as f:
             campagne = json_lib.load(f)
         campagne['id'] = identifiant
-        return web.json_response(campagne)
+        return web.json_response(_sans_secret(campagne))
 
     async def save_campagne(self, request: web.Request) -> web.Response:
         """Ecrit (ou remplace) une campagne en cours.
@@ -275,6 +338,23 @@ class GameServerCampagne(GameServerBase):
         campagne['id'] = identifiant
         campagne['derniere_activite'] = datetime.datetime.now().isoformat(timespec='seconds')
 
+        # Le secret ne vient JAMAIS du client : il est tire ici a la premiere
+        # ecriture, et repris du fichier ensuite. Un client qui en enverrait un
+        # se le ferait remplacer, ce qui est le but.
+        ancien = {}
+        if os.path.isfile(chemin_existant := os.path.join(dossier, f'{identifiant}.json')):
+            try:
+                with open(chemin_existant, encoding='utf-8') as f:
+                    ancien = json_lib.load(f)
+            except Exception:
+                ancien = {}
+        if any(campagne.get('code') == c for c in ('aos',)):
+            campagne[CLE_SECRET] = ancien.get(CLE_SECRET) or _tirer_enveloppe_aim()
+        elif ancien.get(CLE_SECRET):
+            campagne[CLE_SECRET] = ancien[CLE_SECRET]
+        else:
+            campagne.pop(CLE_SECRET, None)
+
         # Ecriture tout-ou-rien : une coupure ici laissait un fichier vide,
         # que list_campagnes saute en silence. La campagne disparaissait de
         # l'ecran sans un mot (constate le 10/8/2026).
@@ -285,7 +365,7 @@ class GameServerCampagne(GameServerBase):
         # passer le dernier scenario reporte au carnet.
         _evaluer_hauts_faits()
         return web.json_response({'result': 'saved', 'id': identifiant,
-                                  'campagne': campagne})
+                                  'campagne': _sans_secret(campagne)})
 
     async def delete_campagne(self, request: web.Request) -> web.Response:
         """Supprime une campagne en cours."""
