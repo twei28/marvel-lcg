@@ -1153,6 +1153,45 @@ les 27 combinaisons possibles sont couvertes, chacune une fois. **Mis en défaut
 exprès** en changeant une ligne du JSON : il refuse et nomme la combinaison
 fautive.
 
+### Le Conseil entièrement retourné perd la partie
+
+Câblé le 11/8/2026. Les trois cartes attachement (50181b, 50182b, 50183b)
+portent toutes le même texte : « If there are 3 [[Board Member]] attachments in
+play, the players lose the game », et le livret p.18 le redit pour Zemo.
+
+Le pack le câble **en réponse à un retournement**
+(`IfThereAre3BoardMemberAttachmentsInPlayPlayersLoseTheGame`, sur
+`AfterFlipToThisFace`). Cela suffit tant que le troisième bascule en cours de
+partie. En campagne, non : les secrets se reportent, un membre à quatre secrets
+(trois en expert) arrive **déjà retourné**, et `Card.Flip` n'envoie
+`AfterCardFlip` que si `world.is_game_started` — ce qui est faux pendant la mise
+en place.
+
+Mesuré avant correction, scénario 5 expert avec les trois membres à trois
+secrets : les trois basculaient au setup, `game_over` restait faux, et comme
+**plus aucun retournement ne pouvait survenir ensuite**, la condition ne se
+déclenchait jamais. Les joueurs jouaient une partie déjà perdue, avec les trois
+attachements sur le dos.
+
+La condition est un **état**, pas un événement : elle est donc relue une fois la
+mise en place de campagne faite, à **tous** les scénarios — les trois cartes
+portent le texte, et un Conseil peut basculer avant le dernier scénario. Mesuré
+au scénario 3 standard avec quatre secrets chacun : perdu aussi.
+
+Un cas de `test_soin_expert_aos.py` **est devenu faux** et a été réécrit : il
+observait qu'un Conseil entièrement basculé ne laisse aucun environnement à
+viser pour le soin expert. C'est toujours vrai, mais la situation est désormais
+inatteignable — la partie s'arrête avant. Une mesure qui décrit un état devenu
+impossible est pire qu'absente.
+
+Et une leçon en passant : à deux secrets reportés en expert, **le prix du soin**
+(un secret de plus) fait basculer un membre. Ce n'est pas un défaut, c'est
+l'économie de la boîte, et c'est maintenant un cas de test.
+
+14 vérifications dans `tools/test_conseil_aos.py`, dont les deux seuils
+(quatre en standard, trois en expert) et le scénario 1, qui impose deux secrets
+à chacun et ne peut donc jamais commencer perdu.
+
 ### Ce qui n'est PAS fait
 
 **Une fuite du mode HORS campagne**, laissée telle quelle : les neuf preuves des
@@ -1162,11 +1201,6 @@ campagne le secret ne vit qu'une partie. La fermer demanderait de filtrer les
 cartes non visibles dans `Card.Render`, ce qui touche le rendu de TOUTES les
 cartes du jeu.
 
-**Le Conseil entièrement basculé à la mise en place.** Livret p.18 : « If all of
-the board members join Baron Zemo, the players lose the scenario. » Mesuré : en
-arrivant au scénario 5 expert avec trois membres à trois secrets, les trois
-basculent à la mise en place et la partie n'est pas déclarée perdue. Reste à
-vérifier si la règle vise ce moment ou seulement le cours de la partie.
 
 ## 9. Après le câblage
 

@@ -61,11 +61,12 @@ def sonder(scenario, carnet):
     conseil = {c["card_id"]: c["info"].get("c_secret", 0)
                for c in (monde.get("area_environment") or [])
                if c["card_id"].startswith(("50181", "50182", "50183"))}
-    return sortie.get("erreurs") or [], (pv[0] if pv else None), conseil
+    return (sortie.get("erreurs") or [], (pv[0] if pv else None), conseil,
+            bool(monde.get("game_over")))
 
 
 # 1. Le cas nominal : PV reportes bas, soin pris, prix paye.
-erreurs, pv, conseil = sonder("batroc_expert", {"A.I.M. Envelope": TAUPE,
+erreurs, pv, conseil, fini = sonder("batroc_expert", {"A.I.M. Envelope": TAUPE,
                                                 "Player 1 Remaining hit points": "3"})
 verifier("expert : la mise en place tourne sans erreur", not erreurs, erreurs)
 verifier("l'identite est soignee de sa REC, pas remise a neuf",
@@ -74,12 +75,12 @@ verifier("le soin coute UN secret, pose sur un seul membre",
          sum(conseil.values()) == 1, conseil)
 
 # 2. Le plafond : on ne depasse jamais les PV imprimes.
-erreurs, pv, conseil = sonder("batroc_expert", {"A.I.M. Envelope": TAUPE,
+erreurs, pv, conseil, fini = sonder("batroc_expert", {"A.I.M. Envelope": TAUPE,
                                                 "Player 1 Remaining hit points": "8"})
 verifier("le soin ne depasse pas les PV imprimes", pv == PV_IMPRIMES, pv)
 
 # 3. Temoin : en standard, ni report ni soin.
-erreurs, pv, conseil = sonder("batroc", {"A.I.M. Envelope": TAUPE,
+erreurs, pv, conseil, fini = sonder("batroc", {"A.I.M. Envelope": TAUPE,
                                          "Player 1 Remaining hit points": "3"})
 verifier("standard : la mise en place tourne sans erreur", not erreurs, erreurs)
 verifier("standard : aucun report de PV, donc aucun soin", pv == PV_IMPRIMES, pv)
@@ -87,18 +88,20 @@ verifier("standard : aucun secret pose en paiement",
          sum(conseil.values()) == 0, conseil)
 
 # 4. Temoin : le scenario 1 n'a pas cette instruction (rien a reporter encore).
-erreurs, pv, conseil = sonder("black_widow_expert", {"A.I.M. Envelope": TAUPE})
+erreurs, pv, conseil, fini = sonder("black_widow_expert", {"A.I.M. Envelope": TAUPE})
 verifier("scenario 1 expert : la mise en place tourne sans erreur", not erreurs, erreurs)
 verifier("scenario 1 expert : pas de soin, l'identite part entiere",
          pv == PV_IMPRIMES, pv)
 verifier("scenario 1 expert : le Conseil garde ses deux secrets de depart",
          sorted(conseil.values()) == [2, 2, 2], conseil)
 
-# 5. Le Conseil entierement bascule : plus un seul ENVIRONNEMENT a viser, donc
-#    plus de soin possible. Le livret vise bien un environnement, et un membre
-#    passe cote attachement n'en est plus un — laisser le Conseil basculer coute
-#    donc aussi la sante des heros.
-erreurs, pv, conseil = sonder("baron_zemo_expert", {
+# 5. Le Conseil entierement bascule. La question du soin ne se pose meme plus :
+#    trois attachements [[Board Member]] en jeu perdent la partie des la mise en
+#    place (voir tools/test_conseil_aos.py), qui s'arrete donc avant de reporter
+#    les PV et avant d'offrir le soin. Ce cas disait le contraire jusqu'au
+#    11/8/2026, parce que la regle des trois attachements ne s'appliquait pas
+#    encore a la mise en place.
+erreurs, pv, conseil, fini = sonder("baron_zemo_expert", {
     "A.I.M. Envelope": TAUPE,
     "Player 1 Remaining hit points": "2",
     "Secret Counters: Chief Medical Officer": "3",
@@ -107,8 +110,9 @@ erreurs, pv, conseil = sonder("baron_zemo_expert", {
 verifier("Conseil bascule : la mise en place tourne sans erreur", not erreurs, erreurs)
 verifier("Conseil bascule : plus aucun environnement [[Board Member]]",
          conseil == {}, conseil)
-verifier("Conseil bascule : le soin n'est pas propose, les PV restent bas",
-         pv == 2, pv)
+verifier("Conseil bascule : la partie est perdue des la mise en place", fini, fini)
+verifier("Conseil bascule : ni report de PV ni soin, la mise en place s'arrete",
+         pv == PV_IMPRIMES, pv)
 
 echecs = [r for r in resultats if not r[1]]
 for nom, ok, detail in resultats:

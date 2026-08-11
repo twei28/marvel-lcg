@@ -128,6 +128,39 @@ def PoserLeConseil(level: int) -> 'Ability':
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 
 
+def ConseilEntierementRetourne() -> 'Ability':
+    """Trois attachements [[Board Member]] en jeu : la partie est perdue.
+
+    Le texte est sur les trois cartes attachement (50181b, 50182b, 50183b) :
+    « If there are 3 [[Board Member]] attachments in play, the players lose the
+    game. » Le livret p.18 le redit pour Zemo : « If all of the board members
+    join Baron Zemo, the players lose the scenario. »
+
+    Le pack le cable en REPONSE A UN RETOURNEMENT
+    (`IfThereAre3BoardMemberAttachmentsInPlayPlayersLoseTheGame`, sur
+    `AfterFlipToThisFace`). Cela suffit tant que le troisieme bascule EN COURS
+    DE PARTIE. En campagne, non : les secrets se reportent, un membre a quatre
+    secrets arrive DEJA retourne, et `Card.Flip` n'envoie `AfterCardFlip` que
+    si `world.is_game_started` — ce qui est faux pendant la mise en place.
+
+    Mesure avant correction, scenario 5 expert avec les trois membres a trois
+    secrets : les trois basculent au setup, `game_over` reste faux, et comme
+    plus AUCUN retournement ne peut survenir ensuite, la condition ne se
+    declenche jamais. Les joueurs jouaient une partie qu'ils avaient perdue,
+    avec les trois attachements sur le dos.
+
+    La condition est un etat, pas un evenement : on la relit donc une fois la
+    mise en place de campagne faite. Elle vaut a TOUS les scenarios — les trois
+    cartes portent le texte, et un Conseil peut basculer avant le dernier.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
+        attachements = Worlds.FindCardsOnField(effect, trait='BOARD MEMBER',
+                                               card_type=Attachment)
+        if len(attachements) >= 3:
+            Worlds.SetGameOver(False, effect)
+    return AbilityFactoryCampaign.WhenCampaignSetup(action)
+
+
 def MelangerLesInterferences() -> 'Ability':
     """Les trois A.I.M. Interference, une par type de ressource."""
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
@@ -353,7 +386,9 @@ def SoinExpertDuConseil() -> 'Ability':
 
 
 def CampaignSetup(level: int) -> 'List[Ability]':
-    abilities: List['Ability'] = [PoserLeConseil(level)]
+    # L'ordre compte : le Conseil est pose et rechargé de ses secrets AVANT
+    # qu'on regarde s'il a entierement bascule.
+    abilities: List['Ability'] = [PoserLeConseil(level), ConseilEntierementRetourne()]
     if level <= 4:
         # Le scenario 5 ne remelange pas les interferences : le livret ne les
         # cite plus dans son encart.
