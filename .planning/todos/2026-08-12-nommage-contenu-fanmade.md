@@ -1,10 +1,10 @@
 # TODO / SPEC — Un nommage de cartes qui ne nous bloquera pas
 
-**Statut :** **MIGRATION FAITE le 2026-08-12** (`c04042f`). Les 19 packs
-fan-made sont passés à un préfixe de deux lettres. Reste : le **registre**
-(`data/prefixes_fanmade.json`) et le **vérificateur** (`tools/verifier_prefixes.py`),
-sans lesquels la règle sera oubliée comme l'ont été les trois doublons de
-`sets_info.json`.
+**Statut :** ✅ **TERMINÉ le 2026-08-12.** Les 19 packs fan-made sont passés à un
+préfixe de deux lettres (`917ef6a`), le registre et le vérificateur sont en place
+(`0cc46ac`), et les trois doublons de numéro de set sont corrigés. Reste seulement
+la vérification à la main des points 2 à 5 du §4 (deck-builder, export/import,
+galerie), que seuls les tests automatisés couvrent aujourd'hui.
 **Origine :** demande utilisateur, à l'occasion de deux ajouts de contenu
 (« il faudrait utiliser un système de nommage de carte qui ne pourra pas nous
 bloquer plus tard »)
@@ -152,11 +152,17 @@ trouvé par un test existant, pas par la relecture.
 
 ### Ce qui reste à faire
 
-- Le **registre** `data/prefixes_fanmade.json` et le **vérificateur**
-  `tools/verifier_prefixes.py`.
-- Les **trois numéros de set en double** de `sets_info.json` (108, 109, 110) n'ont
-  PAS été traités : ce sont des numéros de SET, pas des `card_id`, et rien ne les
-  lit de façon ambiguë aujourd'hui.
+- ~~Le **registre** et le **vérificateur**~~ **FAITS** (`0cc46ac`).
+  `tools/prefixes_fanmade.json` déclare les 19 préfixes et dit pourquoi des
+  lettres ; `tools/verifier_prefixes.py` refuse quatre silences (card_id en
+  double, préfixe non déclaré, fan-made qui emprunte un numéro, numéro de set en
+  double). **Les quatre ont été mis en défaut exprès** et refusent bien.
+- ~~Les **trois numéros de set en double**~~ **CORRIGÉS** : Spider-Man Rainy, Moon
+  Knight et Lockjaw prennent 115, 116, 117. Le numéro sert de rang de tri à la
+  galerie, donc deux sets au même rang s'ordonnaient au hasard. Le lien
+  fonctionnel passe par le champ `name`, rien d'autre ne bouge. Il fallait les
+  corriger avant d'écrire le vérificateur : un vérificateur qui naît rouge
+  n'apprend qu'à ignorer le rouge.
 - Les points 2 à 5 du §4 (deck-builder, export/import, galerie, repli marvelcdb)
   n'ont pas été éprouvés un par un ; seuls les tests automatisés et la génération
   de cartes les couvrent indirectement.
