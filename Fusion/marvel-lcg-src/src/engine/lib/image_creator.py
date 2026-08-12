@@ -140,6 +140,9 @@ class ImageCreator:
         "Leadership":   (93 , 156, 191),
         "Protection":   (84 , 255, 149),
         "'Pool":        (200, 102, 153),
+        # CORRECTIF : le violet du cinquieme aspect. Sans couleur, le
+        # generateur d'images n'a rien a peindre sur ses cartes.
+        "Determination": (150, 92 , 196),
         "Basic":        (171, 164, 153),
         "Encounter":    (170, 154, 139),
         "Hero":         (188, 176, 164)

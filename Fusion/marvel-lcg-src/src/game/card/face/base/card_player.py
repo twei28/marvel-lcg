@@ -21,6 +21,13 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         'Leadership',   # blue
         'Protection',   # green
         "'Pool",
+        # CORRECTIF (divergence volontaire) : le cinquieme aspect, fan-made.
+        # FFG l'avait concu puis abandonne, dispersant ses cartes dans les
+        # quatre autres ; designhacker.ca l'a repris. CARD_CLASS_LIST et
+        # ASPECT_CLASS_LIST sont DERIVEES de ces Literal (Types.LiteralToList
+        # dans game/element/utility.py), donc les declarer ici suffit a la
+        # validation, au typage et a la construction de deck.
+        'Determination',  # purple
     ]
 
     CARD_CLASS: TypeAlias = Literal[
@@ -29,6 +36,7 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         "Leadership",   # blue
         "Protection",   # green
         "'Pool",        # pink
+        "Determination",  # purple - CORRECTIF, voir ASPECT_CLASS_TYPE
         "Basic",
         "IdentitySpecific",
         "Encounter",    # e.g. "04097"
