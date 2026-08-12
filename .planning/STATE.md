@@ -213,6 +213,11 @@ Aucun.
 - **`public/app/` est nouveau dans l'arborescence du jeu** : le prochain re-zip vers `Fusion/` doit l'emporter (c'est du livrable), au contraire de `ui-app/` et `ui-check/` qui restent dehors. À vérifier au rituel de livraison du 02-10.
 - **`public/css/tokens.css` est déjà servie en 200 `text/css`** et les lignes qui recalculeront son empreinte sont déjà dans `deployer.sh` : le plan 02-05 n'a plus qu'à ajouter la balise `<link>`.
 
+- **Le livrable a été re-zippé le 12/08/2026** (7263 fichiers, 653 Mo), et le périmètre est une LISTE BLANCHE (`assets data deck public puzzle src tools` + 6 fichiers racine), reprise du zip du 28/07 par lecture de l'archive. Ne pas la retourner en liste noire : c'est elle qui garantit que `campagnes/` (les parties de l'utilisateur), `assets/cache`, `replays/`, `.game/` et tout fichier à secrets ajouté plus tard restent dehors.
+- **L'archive a été multipliée par 7,4 sans que ce soit du source** : 638 Mo sur 685 sont les 933 scans d'`assets/pics`, à 577 Ko de moyenne (jusqu'à 2,8 Mo en PNG) contre ~220 Ko pour les 387 du 28/07. Les images téléchargées depuis MarvelCDB ne sont jamais redimensionnées. Chantier possible, non ouvert : il touche les images du jeu.
+- **Le disque C: est plein à 99 %** (15 Go libres sur 952, mesuré le 12/08). Toute opération lourde doit en tenir compte.
+- **`translate_cn.json` porte encore la clé d'annulation périmée** que `translate_fr.json` vient de corriger. Le chinois garde donc le bug ; la langue n'est pas exposée par l'interface.
+
 ## Continuité de session
 
 Dernière session : **2026-08-12**
