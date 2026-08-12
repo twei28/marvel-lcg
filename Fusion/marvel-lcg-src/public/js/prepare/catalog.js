@@ -58,6 +58,28 @@ function identityVariants(deck, heroCardId, heroCard) {
     }
     return out.length > 1 ? out : [];
 }
+/** Seconde identité d'un héros qui en compte DEUX pour un seul joueur.
+ *
+ *  Le pack Cloak & Dagger est bâti ainsi : `linked_identity` porte une identité
+ *  complète (faces héros/alter-ego + son propre mini-deck), jouée en même temps
+ *  que la principale et par le même joueur. C'est la seule clé qui le dit, donc
+ *  la seule sur laquelle s'appuyer : aucun identifiant en dur ici, un futur duo
+ *  bâti pareil sera montré double sans rien toucher.
+ *
+ *  Renvoie null pour les 66 autres héros, qui gardent exactement leur rendu. */
+function identiteLiee(deck) {
+    const lie = deck.linked_identity;
+    if (!lie || !lie.hero || !lie.hero.length) return null;
+    const heroCardId = String(lie.hero[0]).split(",")[0];
+    const c = cards.get(heroCardId);
+    return {
+        hero: lie.hero,
+        heroCardId,
+        name: cleanName(c && c.name) || "",
+        hp: c ? c.hp : undefined,
+    };
+}
+
 /** Héros fan-made : soit rattaché à une extension « Custom » (ex. « 99. Custom
  *  (Rainy) » pour Thor Jane Foster), soit rattaché à aucune extension officielle
  *  (Stan Lee, Hulk (Rainy)). Rien à maintenir à la main. */
@@ -142,6 +164,11 @@ export const catalog = {
                 // ne créent PAS un second héros dans la grille : le wizard les
                 // propose comme un choix d'identité à l'étape des decks.
                 variants: identityVariants(d, heroCardId, c),
+                // Identité LIÉE : deux héros pour un seul joueur (Cloak &
+                // Dagger). Rien à voir avec `variants`, qui propose un choix :
+                // ici les deux identités arrivent ENSEMBLE, chacune avec son
+                // mini-deck. La grille doit donc les montrer toutes les deux.
+                lie: identiteLiee(d),
             };
         }).sort((a, b) => a.name.localeCompare(b.name));
         return _heroes;

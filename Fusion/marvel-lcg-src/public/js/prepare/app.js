@@ -92,6 +92,48 @@ function portrait(cardId, cls) {
     });
 }
 
+/** Portrait d'un héros qui en compte DEUX (Cloak & Dagger) : les deux visuels
+ *  se partagent la tuile en diagonale, le premier en haut à gauche, le second
+ *  en bas à droite.
+ *
+ *  Chaque moitié n'a plus que la moitié de la largeur : la garder au cadrage
+ *  commun (centre, 154 %) couperait chaque personnage en plein sur la diagonale.
+ *  On tire donc le cadrage de chacun VERS SON TRIANGLE — d'où les deux classes
+ *  `duo-a` / `duo-b`, dont les valeurs sont réglées dans prepare.css. */
+function portraitDuo(hero, cls) {
+    return el("div", { class: "portrait-duo " + (cls || "") },
+        portrait(hero.heroCardId, "duo duo-a"),
+        portrait(hero.lie.heroCardId, "duo duo-b"),
+    );
+}
+
+/** Portrait d'un héros dans la grille : double si le deck porte une identité
+ *  liée, simple sinon. Un seul point de décision pour tous les appelants. */
+function portraitHeros(hero, cls) {
+    return hero && hero.lie ? portraitDuo(hero, cls) : portrait(hero && hero.heroCardId, cls);
+}
+
+/** Nom affiché : celui du duo (le nom du deck) quand il y a deux identités,
+ *  sinon le nom du héros. « Cloak » seul mentirait sur ce qu'on voit. */
+function nomAffiche(hero) {
+    if (!hero) return "";
+    if (hero.lie) return cleanNomDeck(hero.deck && hero.deck.name) || hero.name;
+    return hero.name;
+}
+
+function cleanNomDeck(nom) {
+    return String(nom || "").replace(/^\*\s*/, "").trim();
+}
+
+/** PV affichés : les deux réserves quand il y a deux identités. Elles sont
+ *  distinctes (7 pour Cloak, 5 pour Dagger) et chacune se défausse séparément :
+ *  n'en montrer qu'une tromperait sur ce que le joueur emmène. */
+function pvAffiches(hero) {
+    if (!hero || hero.hp == null) return null;
+    if (hero.lie && hero.lie.hp != null) return hero.hp + " / " + hero.lie.hp;
+    return String(hero.hp);
+}
+
 const state = {
     step: 0,
     mode: MODES[0],
@@ -883,9 +925,9 @@ async function refreshHeroGrid(pre) {
             onmouseenter: (e) => showHeroHover(h, e.currentTarget),
             onmouseleave: scheduleHide,
         },
-            portrait(h.heroCardId),
-            el("span", { class: "hc-name mvl" }, h.name),
-            h.hp != null ? el("span", { class: "hc-hp" }, t("PV") + " " + h.hp) : null,
+            portraitHeros(h),
+            el("span", { class: "hc-name mvl" }, nomAffiche(h)),
+            pvAffiches(h) ? el("span", { class: "hc-hp" }, t("PV") + " " + pvAffiches(h)) : null,
             // Pastille discrète : ce héros a au moins un art alternatif.
             (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length
                 ? el("span", { class: "hc-art", title: t("Art alternatif disponible") }, t("ART ALT"))
@@ -969,11 +1011,28 @@ function scheduleHide() {
     }, 160);
 }
 
+/** Visuel en tête de fiche : une carte, ou les DEUX côte à côte.
+ *
+ *  Dans la fiche il y a la largeur qu'il n'y a pas sur la tuile : plutôt que de
+ *  redécouper les deux cartes en diagonale, on les montre entières, en
+ *  demi-largeur. La hauteur consommée reste celle d'une seule carte, donc la
+ *  biographie et l'état civil gardent leur place — et le panneau tient toujours
+ *  dans l'écran, comme réglé dans `.recap`. */
+function visuelFiche(h) {
+    const carteDe = (cardId, nom) =>
+        el("img", { class: "hh-card", src: cardImageUrl(picIdHeros(cardId)), alt: nom || "" });
+    if (!h.lie) return carteDe(h.heroCardId, h.name);
+    return el("div", { class: "hh-duo" },
+        carteDe(h.heroCardId, h.name),
+        carteDe(h.lie.heroCardId, h.lie.name),
+    );
+}
+
 /** Contenu de la fiche d'un héros : carte, nom, extension, bio, état civil.
  *  Servi soit dans la colonne de droite, soit dans l'infobulle. */
 function ficheHeros(h) {
     const info = HEROS_INFO[h.heroCardId];
-    const carte = el("img", { class: "hh-card", src: cardImageUrl(picIdHeros(h.heroCardId)), alt: h.name });
+    const carte = visuelFiche(h);
     if (!info) return [carte];      // héros sans biographie rédigée : visuel seul
 
     // En anglais, on prefere la version *En quand elle existe.
@@ -982,7 +1041,7 @@ function ficheHeros(h) {
 
     return [
         carte,
-        el("div", { class: "hh-name mvl" }, h.name),
+        el("div", { class: "hh-name mvl" }, nomAffiche(h)),
         el("div", { class: "hh-ext" }, (h.extension || "").replace(/^\d+\.\s*/, "")),
         el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
         info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,

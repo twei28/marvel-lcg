@@ -190,15 +190,28 @@ button{cursor:pointer}
 }
 .step-head p{margin-top:9px;color:var(--dim);font-size:14px}
 
+/* La colonne de droite tient TOUJOURS dans l'ecran, jamais un pixel de plus.
+   Sans ce plafond, une fiche longue — la biographie de Madame Web debordait de
+   six pixels — faisait apparaitre la barre de defilement de la PAGE. Et une
+   barre de page, ici, ne fait pas que defiler : elle retire sa largeur a
+   `clientWidth`, donc a la colonne `minmax(0,1fr)` de gauche, qui se retrecit
+   d'un coup. La grille de heros sautait d'une dizaine de pixels au simple
+   survol d'une carte.
+
+   `height` et pas seulement `min-height` : c'est la borne HAUTE qui manquait.
+   `overflow:hidden` scelle la promesse — rien ne peut plus pousser la page
+   depuis cette colonne. Ce qu'elle contient s'adapte a la place disponible
+   (voir `.recap-apercu` plus bas), au lieu de la reclamer. */
 .recap{
   position:sticky;
   top:70px;
   align-self:start;
-  min-height:calc(100vh - 70px);
+  height:calc(100dvh - 70px);
   padding:22px 18px 100px;
   display:flex;
   flex-direction:column;
   gap:14px;
+  overflow:hidden;
   border-left:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,rgba(16,18,25,.95),rgba(8,9,14,.78));
 }
@@ -410,6 +423,35 @@ button{cursor:pointer}
 .hero-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 12px 24px rgba(0,0,0,.42)}
 .hero-card.chosen{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 12px 24px rgba(0,0,0,.42)}
 .hero-card .portrait{position:absolute;inset:0;width:100%;height:100%;border:0;background-position:center 25%;background-size:154%}
+
+/* Deux heros pour un joueur (Cloak & Dagger) : la tuile se partage en biais.
+   Cloak occupe le triangle haut-gauche, Dagger le triangle bas-droit, decoupes
+   par la MEME diagonale a 1 px pres — `clip-path` sur des points complementaires
+   plutot que deux masques independants qui laisseraient un liseré.
+
+   Le cadrage de chaque moitie est tire VERS SON TRIANGLE (`background-position`)
+   et un peu plus zoome : au cadrage commun (centre, 154 %) chaque personnage
+   tombait a cheval sur la coupe. */
+.portrait-duo{position:absolute;inset:0}
+.hero-card .portrait-duo .portrait.duo{position:absolute;inset:0;background-size:190%}
+.hero-card .portrait-duo .duo-a{
+  background-position:30% 22%;
+  clip-path:polygon(0 0,100% 0,0 100%);
+}
+.hero-card .portrait-duo .duo-b{
+  background-position:70% 22%;
+  clip-path:polygon(100% 0,100% 100%,0 100%);
+}
+/* Le trait de separation : la lumiere de Dagger tranchant les tenebres de
+   Cloak. Purement decoratif, donc hors du flux et sans capture de clic. */
+.portrait-duo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(to bottom left,transparent calc(50% - 1px),rgba(255,255,255,.55) 50%,transparent calc(50% + 1px));
+}
+
 .hero-card::after{
   content:"";
   position:absolute;
@@ -498,8 +540,36 @@ button{cursor:pointer}
    mission le temps du survol (voir showHeroHover dans app.js). */
 .recap-apercu{display:none}
 .recap.apercu > *:not(.recap-apercu){display:none}
-.recap.apercu .recap-apercu{display:block;animation:fade .12s ease}
+
+/* La fiche se PARTAGE la hauteur disponible au lieu de l'imposer : colonne
+   flexible, hauteur bornee par celle de `.recap`. Ce qui cede en premier est le
+   visuel de la carte (`flex-shrink` fort, `object-fit:contain` : elle se reduit
+   sans se deformer) ; l'etat civil, lui, ne bouge jamais. La biographie ne
+   s'ampute qu'en dernier recours, sur une fenetre vraiment basse. */
+.recap.apercu .recap-apercu{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+  animation:fade .12s ease;
+}
 .recap-apercu .hh-card{display:block;width:auto;max-width:100%;max-height:none;margin:0 auto 12px;border-radius:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 24px rgba(0,0,0,.6)}
+.recap.apercu .recap-apercu .hh-card,
+.recap.apercu .recap-apercu .hh-duo{flex:0 40 auto;min-height:128px}
+.recap.apercu .recap-apercu .hh-name,
+.recap.apercu .recap-apercu .hh-ext,
+.recap.apercu .recap-apercu .detail-row{flex:0 0 auto}
+.recap.apercu .recap-apercu .hh-bio{flex:0 1 auto;min-height:0;overflow:hidden}
+
+/* Les DEUX cartes d'un heros qui en compte deux, entieres, en demi-largeur.
+   Ici la largeur ne manque pas — c'est la hauteur qui est comptee — donc on ne
+   redecoupe rien : chaque carte est montree en entier, et la ligne ne coute que
+   la hauteur d'une seule. `min-width:0` sur les enfants pour qu'ils acceptent
+   vraiment de se partager la largeur. */
+.hh-duo{display:flex;gap:8px;align-items:flex-start;justify-content:center;margin-bottom:12px}
+.hh-duo .hh-card{min-width:0;flex:1 1 0;height:auto;max-height:100%;margin:0}
+
 .recap-apercu .hh-name{font-size:30px;line-height:.9;text-transform:uppercase;color:#fff}
 .recap-apercu .hh-bio{font-size:12.5px}
 .hh-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
@@ -735,7 +805,9 @@ button{cursor:pointer}
 
 @media(max-width:1180px){
   .layout{grid-template-columns:1fr}
-  .recap{position:relative;top:auto;min-height:0;border-left:0;border-top:1px solid rgba(255,255,255,.08);padding-bottom:92px}
+  /* Empilee sous la grille, la colonne n'est plus collante : le plafond de
+     hauteur n'a plus lieu d'etre, et le garder rognerait la fiche de mission. */
+  .recap{position:relative;top:auto;height:auto;min-height:0;overflow:visible;border-left:0;border-top:1px solid rgba(255,255,255,.08);padding-bottom:92px}
 }
 @media(max-width:900px){
   .progress{align-items:flex-start;flex-direction:column}
