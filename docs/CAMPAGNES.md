@@ -469,9 +469,14 @@ C'est un point de départ utile, **mais il contient des erreurs avérées** :
   que le livret note les vilains **encore debout**, qui reviennent en sbires.
 
 Vérifier chaque champ contre le `campaign.py` du pack et le livret, carte par
-carte. Une fois les six boîtes portées, tout ce bloc peut disparaître, avec
+carte.
+
+**La condition de suppression est remplie depuis le 11/8/2026** : les huit boîtes sont
+portées dans `data/campagnes/`. Ce bloc de code mort peut donc disparaître, avec
 `renderCampaignPath`, `renderCampaignStory`, `renderCampaignJournal` et
-`campaignBoxes`.
+`campaignBoxes`. Il ne sert plus de point de départ à rien, et il porte des erreurs
+avérées : le garder plus longtemps, c'est risquer qu'on s'y fie un jour. Ce n'est pas
+fait — c'est un nettoyage, pas une correction, et personne ne l'a demandé.
 
 ---
 
