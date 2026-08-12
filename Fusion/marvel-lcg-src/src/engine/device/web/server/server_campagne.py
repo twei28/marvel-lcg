@@ -425,6 +425,53 @@ class GameServerCampagne(GameServerBase):
         return web.json_response({'result': 'saved', 'id': identifiant,
                                   'campagne': _sans_secret(campagne)})
 
+    async def save_carnet_partiel(self, request: web.Request) -> web.Response:
+        """Fusionne des cles de carnet, et RIEN d'autre.
+
+        `/save_campagne` remplace la campagne entiere : deux joueurs qui
+        valident se perdent l'un l'autre, en silence. Cette route-ci est
+        deliberement etroite. Elle ne peut ni terminer un scenario, ni gagner
+        une campagne, ni approcher le secret : un siege distant n'a aucune
+        raison de pouvoir faire ces trois choses, et le lui interdire PAR LA
+        FORME DE LA ROUTE coute moins cher que de le verifier partout ailleurs.
+
+        Le carnet est un dict de CHAINES, exactement celui que le moteur
+        consomme (game/operate/campaign_logs.py). Y glisser autre chose le
+        casserait au scenario suivant, loin d'ici : on refuse a l'entree.
+        """
+        import json as json_lib
+        import os
+
+        donnees = await request.json()
+        identifiant = _nom_de_fichier(donnees.get('id') or '')
+        champs = donnees.get('champs')
+        if not isinstance(champs, dict):
+            return web.json_response({'error': 'champs invalides'}, status=400)
+        for cle, valeur in champs.items():
+            if not isinstance(cle, str) or not isinstance(valeur, str):
+                return web.json_response(
+                    {'error': 'le carnet ne porte que des chaines'}, status=400)
+
+        chemin = os.path.join(CAMPAGNES_FOLDER.value, '%s.json' % identifiant)
+        if not os.path.isfile(chemin):
+            # Sans ce refus, un identifiant mal tape fabriquerait une campagne
+            # fantome, qui deviendrait la « plus recente » a la prochaine
+            # deduction.
+            return web.json_response(
+                {'error': 'campagne introuvable : %s' % identifiant}, status=404)
+        with open(chemin, encoding='utf-8', newline='') as f:
+            campagne = json_lib.load(f)
+
+        carnet = dict(campagne.get('carnet') or {})
+        carnet.update(champs)
+        campagne['carnet'] = carnet
+
+        # Meme ecriture tout-ou-rien que save_campagne : une coupure ici
+        # laissait un fichier vide, que list_campagnes saute en silence.
+        from engine.ecriture_atomique import ecrire_json
+        ecrire_json(chemin, campagne)
+        return web.json_response({'result': 'merged', 'carnet': carnet})
+
     async def reinitialiser_enquete(self, request: web.Request) -> web.Response:
         """Rejouer le dernier scenario d'Agents of S.H.I.E.L.D. apres une defaite.
 
@@ -515,5 +562,6 @@ class GameServerCampagne(GameServerBase):
         self.AddAwaitGetSecurity('/get_campagne', self.get_campagne)
         self.AddAwaitGetSecurity('/get_campagne_en_cours', self.get_campagne_en_cours)
         self.AddPostSecurity('/save_campagne', self.save_campagne)
+        self.AddPostSecurity('/save_carnet_partiel', self.save_carnet_partiel)
         self.AddPostSecurity('/delete_campagne', self.delete_campagne)
         self.AddPostSecurity('/reinitialiser_enquete', self.reinitialiser_enquete)
