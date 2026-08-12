@@ -4,7 +4,12 @@
 // (ajouterNouvellesEntrees fait un unshift). Une portee « les 20 dernieres »
 // ecrite avec slice(-20) rendrait le DEBUT de la partie, silencieusement.
 import { describe, expect, it } from 'vitest'
-import { construireRapport, entreesDeLaPortee } from './rapport-bug'
+import {
+  construireRapport,
+  entreesDeLaPortee,
+  nomFichierRapport,
+  rapportEnTexte,
+} from './rapport-bug'
 import { MAX_ENTREES, type EntreeHistorique } from './HistoriquePartie'
 import type { Demande } from './ask'
 import type { World, WorldCard, WorldPlayer } from './world'
@@ -196,5 +201,81 @@ describe('le rapport', () => {
     const fini = monde({ game_over: true, game_over_reason: 'The Final Stage of the Villain was Defeated' })
     const rapport = construireRapport(fini, undefined, [], 'recent', CONTEXTE)
     expect(rapport.contexte.fin).toBe('The Final Stage of the Villain was Defeated')
+  })
+})
+
+describe('la version texte', () => {
+  const base = () => construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
+
+  it('donne les object id, pas seulement les noms', () => {
+    const texte = rapportEnTexte(base())
+    expect(texte).toContain('c48')
+    expect(texte).toContain('None Shall Pass')
+    expect(texte).toContain('04079b')
+  })
+
+  it("rappelle qu'une commande se vise par object id", () => {
+    expect(rapportEnTexte(base())).toContain('object id')
+  })
+
+  it('AVERTIT quand le journal est tronque', () => {
+    const plein = Array.from({ length: MAX_ENTREES }, (_, i) => entree(3, `e${i}`))
+    const texte = rapportEnTexte(construireRapport(monde(), undefined, plein, 'partie', CONTEXTE))
+    expect(texte).toContain('TRONQU')
+  })
+
+  it("ne parle pas de troncature quand il n'y en a pas", () => {
+    expect(rapportEnTexte(base()).toLowerCase()).not.toContain('tronqu')
+  })
+
+  it('avertit que le rapport contient les mains de tous les sieges', () => {
+    expect(rapportEnTexte(base())).toContain('mains de tous les sièges')
+  })
+
+  it("dit quand le moteur n'attend rien", () => {
+    expect(rapportEnTexte(base())).toContain('Aucune demande en cours')
+  })
+
+  it("montre le cout et la raison d'injouabilite d'une option", () => {
+    const demande: Demande = {
+      prompt_text: 'Choisissez', event_name: 'WhenPlayerInTurn',
+      show_cancel: true, ability_type: 'Hero_Response',
+      options: [
+        {
+          id: 12, name: 'p_Play', bind_id: 57, bind_player_id: 0,
+          all_legal_targets: [48], target_num_range: [1, 1],
+          target_payment: { 0: { cost: '2', payment: [], rule: [] } },
+          select_rule: '', target_must_include_traits: [], failure_reason: '', is_search: false,
+        },
+        {
+          id: 13, name: 'p_Attack', bind_id: 0, bind_player_id: 0,
+          all_legal_targets: [], target_num_range: [0, 0], target_payment: {},
+          select_rule: '', target_must_include_traits: [],
+          failure_reason: 'not enough resources', is_search: false,
+        },
+      ],
+    }
+    const texte = rapportEnTexte(construireRapport(monde(), demande, [], 'recent', CONTEXTE))
+    expect(texte).toContain('[12] Play')
+    expect(texte).toContain('portée par c57')
+    expect(texte).toContain('coût 2')
+    expect(texte).toContain('INJOUABLE : not enough resources')
+  })
+
+  it('nomme le fichier avec le scenario et le round', () => {
+    expect(nomFichierRapport(base())).toBe('rapport-none-shall-pass-r3.json')
+  })
+
+  it('nomme le fichier sans scenario quand la table est vide', () => {
+    const vide = construireRapport(monde({ area_schemes_main: [] }), undefined, [], 'recent', CONTEXTE)
+    expect(nomFichierRapport(vide)).toBe('rapport-partie-r3.json')
+  })
+
+  it('retire les accents du nom de fichier', () => {
+    const accents = monde({
+      area_schemes_main: [carte(48, "L'Épée de Damoclès", '99999b', 'MainScheme')],
+    })
+    const rapport = construireRapport(accents, undefined, [], 'recent', CONTEXTE)
+    expect(nomFichierRapport(rapport)).toBe('rapport-l-epee-de-damocles-r3.json')
   })
 })

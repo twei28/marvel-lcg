@@ -289,3 +289,131 @@ export function construireRapport(
     tronque: portee === 'partie' && entrees.length >= MAX_ENTREES,
   }
 }
+
+/**
+ * Le rappel qui accompagne chaque rapport. Il ne coûte que trois lignes et il
+ * évite la perte de temps la mieux documentée du projet : viser une carte
+ * autrement que par son object id.
+ */
+const RAPPEL =
+  'Une commande de console se vise par object id (« c48 »). Par nom, ' +
+  "l'étoile des cartes uniques fait tout échouer en silence ; par card_id, une " +
+  'carte absente du jeu est fabriquée dans la zone mise de côté.'
+
+function ligneCarte(carte: CarteBug): string {
+  const etats = [
+    carte.vie !== undefined ? `${carte.vie} PV` : undefined,
+    carte.menace !== undefined ? `${carte.menace} menace` : undefined,
+    carte.prete ? undefined : 'engagée',
+    carte.visible ? undefined : 'face cachée',
+    carte.attacheeA ? `attachée à ${carte.attacheeA}` : undefined,
+  ].filter((e): e is string => e !== undefined)
+  const place = carte.joueur !== undefined ? ` P${carte.joueur + 1}` : ''
+  const suffixe = etats.length > 0 ? ` [${etats.join(', ')}]` : ''
+  return `  ${carte.objet} ${carte.nom} (${carte.card_id}, ${carte.type})${place}${suffixe}`
+}
+
+function ligneOption(option: OptionBug): string {
+  const morceaux = [
+    option.porteePar ? `portée par ${option.porteePar}` : undefined,
+    option.cibles.length > 0
+      ? `cibles ${option.nombreDeCibles[0]}..${option.nombreDeCibles[1]} parmi ${option.cibles.join(' ')}`
+      : undefined,
+    option.cout ? `coût ${option.cout}` : undefined,
+    option.injouable ? `INJOUABLE : ${option.injouable}` : undefined,
+  ].filter((m): m is string => m !== undefined)
+  return `  [${option.id}] ${option.nom}${morceaux.length > 0 ? ' / ' + morceaux.join(' ; ') : ''}`
+}
+
+export function rapportEnTexte(rapport: RapportBug): string {
+  const c = rapport.contexte
+  const lignes: string[] = []
+
+  lignes.push('=== RAPPORT DE BUG / Marvel Champions ===')
+  lignes.push(`Pris le ${c.horodatage}`)
+  lignes.push('')
+  lignes.push('--- CONTEXTE ---')
+  lignes.push(`Scénario : ${c.scenario ?? '?'}${c.vilain ? ` (vilain : ${c.vilain})` : ''}`)
+  lignes.push(
+    `Héros : ${c.heros.length > 0 ? c.heros.map((h, i) => `P${i + 1} ${h}`).join(', ') : 'aucun'}`
+  )
+  lignes.push(`Round ${c.round}, phase « ${c.phase} », render_id ${c.render_id}`)
+  const modes = [
+    `${c.sieges} siège(s)`,
+    c.siege !== undefined ? `rapport pris depuis P${c.siege + 1}` : undefined,
+    c.sandbox ? 'bac à sable' : undefined,
+    c.decouverte ? 'mode Découverte' : undefined,
+    c.campagne ? `campagne ${c.campagne.id}, scénario ${c.campagne.scenario}` : undefined,
+    c.fin ? `PARTIE TERMINÉE : ${c.fin}` : undefined,
+  ].filter((m): m is string => m !== undefined)
+  lignes.push(`Mode : ${modes.join(' ; ')}`)
+  if (c.url) lignes.push(`Page : ${c.url}`)
+  if (c.erreurs.length > 0) {
+    lignes.push(`Erreurs console (${c.erreurs.length}) :`)
+    for (const erreur of c.erreurs) lignes.push(`  ${erreur}`)
+  }
+
+  lignes.push('')
+  lignes.push('--- DEMANDE EN COURS ---')
+  if (rapport.demande === null) {
+    lignes.push('Aucune demande en cours : le moteur ne nous attend pas.')
+  } else {
+    const d = rapport.demande
+    lignes.push(`Intitulé : ${d.intitule || '(vide)'}`)
+    lignes.push(
+      `Type ${d.type || '?'}, événement ${d.evenement || '?'}, annulable : ${d.annulable ? 'oui' : 'non'}`
+    )
+    lignes.push(d.options.length > 0 ? 'Options :' : 'Aucune option proposée.')
+    for (const option of d.options) lignes.push(ligneOption(option))
+  }
+
+  lignes.push('')
+  lignes.push('--- TABLE ---')
+  lignes.push(
+    `Deck rencontre : ${rapport.table.encounter_deck} cartes ; défausse rencontre : ${rapport.table.encounter_discard}`
+  )
+  rapport.table.ressources.forEach((ressources, place) => {
+    lignes.push(`Ressources P${place + 1} : ${ressources || '(aucune)'}`)
+  })
+  for (const carte of rapport.table.cartes) lignes.push(ligneCarte(carte))
+
+  lignes.push('')
+  lignes.push(
+    `--- JOURNAL (${rapport.journal.length} entrées, de la plus récente à la plus ancienne) ---`
+  )
+  for (const ligne of rapport.journal) {
+    const cible = ligne.cible ? ` {${ligne.cible}}` : ''
+    const detail = ligne.detail ? ` / ${ligne.detail}` : ''
+    lignes.push(`R${ligne.round} [${ligne.type}]${cible} ${ligne.texte}${detail}`)
+  }
+  if (rapport.tronque) {
+    lignes.push('')
+    lignes.push(
+      `/!\\ Journal TRONQUÉ : le tampon est plafonné à ${MAX_ENTREES} entrées, le début de la partie a été perdu.`
+    )
+  }
+
+  lignes.push('')
+  lignes.push('--- À SAVOIR ---')
+  lignes.push(RAPPEL)
+  lignes.push(
+    'Ce rapport contient les mains de tous les sièges : il décrit la table entière, pas seulement ce que ce siège joue.'
+  )
+
+  return lignes.join('\n')
+}
+
+/**
+ * Nom du fichier téléchargé. Le scénario et le round suffisent à distinguer
+ * deux rapports pris dans la même soirée, et évitent le « rapport (3).json »
+ * du navigateur.
+ */
+export function nomFichierRapport(rapport: RapportBug): string {
+  const base = (rapport.contexte.scenario ?? 'partie')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+  return `rapport-${base || 'partie'}-r${rapport.contexte.round}.json`
+}
