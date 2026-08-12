@@ -82,7 +82,11 @@ def ActiveMainSchemeStartswith(effect: 'Effect', prefix: str) -> bool:
 # fois — au fichier sortant, que l'ecran relit et propose au joueur, et au
 # journal de partie rendu plus bas — ce qui revenait a ouvrir l'enveloppe
 # A.I.M. devant lui.
-CLES_SECRETES = ('A.I.M. Envelope',)
+# Les deux cles d'aos qui ne doivent JAMAIS sortir au carnet : la combinaison de la
+# taupe, et le compte des preuves gagnees hors campagne (une cle de travail, voir
+# `cards/pack/aos/campaign.py`). Ecrites en litteral ici pour ne pas importer aos
+# depuis mts, qui n'en sait rien par ailleurs.
+CLES_SECRETES = ('A.I.M. Envelope', 'A.I.M. Envelope Gained')
 
 
 def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':

@@ -71,6 +71,12 @@ PREUVES = ('50185', '50186', '50187',   # moyen    : dossiers, ecoute, scanner
 # reinjecte dans le carnet du moteur juste avant `NewGame`. Voir
 # `server_campagne.py` et `server_new_game.py`.
 CLE_ENVELOPPE_AIM = 'A.I.M. Envelope'
+# Les preuves gagnees HORS campagne se comptent aussi, sinon la meme ressortirait
+# deux fois dans la partie. Mais elles n'ont rien a faire au carnet : hors campagne
+# il n'y a pas de scenario suivant, et « le carnet n'est pas touche » est un invariant
+# que test_accusation_aos.py tient depuis le debut. D'ou cette cle de TRAVAIL, filtree
+# comme la combinaison (CLES_SECRETES, dans mts/campaign.py).
+CLE_PREUVES_HORS_CAMPAGNE = 'A.I.M. Envelope Gained'
 CLE_PREUVES = 'Evidence Gained'
 CLE_SCENARIOS_VIDES = 'Scenarios With A Cleared Board Member'
 
@@ -432,6 +438,11 @@ def CampaignSetup(level: int) -> 'List[Ability]':
 # carte qu'au moment ou le joueur a le droit de la voir.
 
 
+def _cle_preuves(effect: 'Effect') -> str:
+    """Ou se comptent les preuves deja gagnees : au carnet, ou hors de lui."""
+    return CLE_PREUVES if Worlds.IsCampaign(effect) else CLE_PREUVES_HORS_CAMPAGNE
+
+
 def EnveloppeAim(effect: 'Effect') -> 'List[str]':
     """Les trois preuves de la taupe. Vide si le carnet ne les porte pas."""
     aim = _liste(CampaignLog.GetStrInternal(CLE_ENVELOPPE_AIM, effect))
@@ -443,7 +454,7 @@ def EnveloppeShield(effect: 'Effect') -> 'List[str]':
     aim = EnveloppeAim(effect)
     if not aim:
         return []
-    deja = _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect))
+    deja = _liste(CampaignLog.GetStrInternal(_cle_preuves(effect), effect))
     return [p for p in PREUVES if p not in aim and p not in deja]
 
 
@@ -454,10 +465,11 @@ def NoterPreuveGagnee(effect: 'Effect', card_id: str) -> None:
     l'etape 1B). Sans cette ecriture, l'enveloppe S.H.I.E.L.D. ne se viderait
     pas et la meme preuve pourrait sortir deux fois dans la meme partie.
     """
-    deja = _liste(CampaignLog.GetStrInternal(CLE_PREUVES, effect))
+    cle = _cle_preuves(effect)
+    deja = _liste(CampaignLog.GetStrInternal(cle, effect))
     if card_id in deja:
         return
-    CampaignLog.SetStr(CLE_PREUVES, SEPARATEUR.join(deja + [card_id]), effect.world)
+    CampaignLog.SetStr(cle, SEPARATEUR.join(deja + [card_id]), effect.world)
 
 
 def PreuveEnJeu(effect: 'Effect', card_id: str) -> 'CardFace':

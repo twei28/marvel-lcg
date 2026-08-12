@@ -31,7 +31,9 @@ import {
   avancerJusquALaQuestion,
   avancerLaPartie,
   lancer,
+  monde,
   ouvrirEtMettreEnPlace,
+  REGLES_CAMPAGNE,
   type Monde,
 } from '../pilote-campagne'
 
@@ -95,6 +97,71 @@ test.describe.serial("Campagne : le scénario 5 d'Agents of S.H.I.E.L.D., joué"
     for (const preuve of gagnees) {
       expect([...MOYENS, ...MOBILES, ...OCCASIONS]).toContain(preuve)
     }
+  })
+
+  test('La répartition des preuves ne part plus au navigateur, même hors campagne', async ({
+    page,
+    request,
+  }) => {
+    // LE SECRET N'EST PAS L'EXISTENCE DES NEUF PREUVES — elle est imprimée dans le
+    // livret — C'EST LEUR RÉPARTITION : savoir lesquelles trois dorment dans
+    // l'enveloppe A.I.M., c'est connaître la taupe sans jouer.
+    //
+    // Le pack montait les deux enveloppes en piles (`SetAsideDeck`), et
+    // `to_descriptor` rend toutes ces piles au navigateur avec le `card_id` réel de
+    // chaque carte, face cachée ou non : la réponse partait au client, triée par
+    // enveloppe. La campagne fermait déjà la fuite en ne fabriquant aucune carte
+    // avant le droit de la voir ; hors campagne, les neuf preuves quittent
+    // maintenant le jeu TOUTES ENSEMBLE, et la combinaison vit dans le store, sous
+    // une clé filtrée du carnet sortant.
+    //
+    // Hors campagne EXPRÈS : c'était le dernier endroit où la fuite subsistait.
+    const definition = await (await request.get('/get_scenario_json?baron_zemo')).json()
+    const deck = await (await request.get('/get_hero_json?maria_hill')).json()
+    await request.get(
+      '/new?data=' +
+        encodeURIComponent(
+          JSON.stringify({
+            campaign_json: JSON.stringify(definition),
+            campaign_log: {},
+            challenges: definition.challenges ?? [],
+            encounter_set_names: [
+              ...new Set([...(definition.encounter_sets ?? []), ...(definition.modular_sets ?? [])]),
+            ],
+            hero_json: [JSON.stringify(deck)],
+            rules: REGLES_CAMPAGNE.filter((r) => r !== 'mode_campaign'),
+            seed: 1234,
+            timeout: 0,
+          })
+        )
+    )
+    await ouvrirEtMettreEnPlace(page, request)
+    const m = await monde(request)
+
+    const toutes = [...MOYENS, ...MOBILES, ...OCCASIONS]
+    const parZone: Record<string, string[]> = {}
+    for (const [zone, valeur] of Object.entries(m)) {
+      if (!Array.isArray(valeur)) continue
+      const ids = (valeur as unknown[])
+        .flat()
+        .filter((c): c is Record<string, unknown> => Boolean(c) && typeof c === 'object')
+        .map((c) => String(c.card_id))
+        .filter((id) => toutes.includes(id))
+      if (ids.length) parZone[zone] = ids
+    }
+
+    // Aucun deck additionnel : c'est par là que la répartition sortait.
+    expect(
+      ((m.additional_decks ?? []) as unknown[][]).flat().length,
+      'Une pile additionnelle est montée : la répartition repart au navigateur.'
+    ).toBe(0)
+    // Les neuf au même endroit, donc rien à en déduire.
+    const zones = Object.keys(parZone)
+    expect(
+      zones.length,
+      `Les preuves sont réparties sur plusieurs zones (${JSON.stringify(parZone)}) : la répartition se lit.`
+    ).toBe(1)
+    expect(parZone[zones[0]!]!.length, 'Les neuf preuves ne sont pas toutes au même endroit.').toBe(9)
   })
 
   test('Les trois questions de l’accusation s’affichent dans le plateau', async ({

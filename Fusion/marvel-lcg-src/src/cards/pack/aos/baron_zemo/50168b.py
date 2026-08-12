@@ -24,12 +24,13 @@ def GetAbilities() -> Sequence['Ability']:
         # pas encore comme cartes — le secret dormait au carnet, hors de portee
         # du navigateur. On les fabrique maintenant, face visible : le joueur a
         # desormais le droit de les voir.
+        # Campagne ou pas : les trois preuves n'existent pas encore comme cartes,
+        # elles sont fabriquees ICI. Hors campagne, ce code lisait la pile
+        # « A.I.M.Envelope » — qui n'est plus montee depuis que la repartition ne
+        # part plus au navigateur, et la chaine s'arretait la, en silence.
+        from cards.pack.aos.campaign import PreuveEnJeu
         card_ids = CartesDeLEnveloppeAim(effect)
-        if Worlds.IsCampaign(effect):
-            from cards.pack.aos.campaign import PreuveEnJeu
-            faces = [PreuveEnJeu(effect, card_id) for card_id in card_ids]
-        else:
-            faces = Worlds.ScenarioDeck(effect, "A.I.M.Envelope").deck.GetAll()
+        faces = [PreuveEnJeu(effect, card_id) for card_id in card_ids]
         for face in faces:
             face.CastTo(Evidence).AttachTo2(mole, effect)
 

@@ -1561,6 +1561,10 @@ qu'on ne « corrige » pas ce qui marche.
 **Professor X : CÂBLÉ le 12/8/2026**, après deux mesures qui disent où le
 mécanisme vit et où il ne vit pas. Voir §16.
 
+### La fuite hors campagne : FERMÉE le 12/8/2026 (voir §17)
+
+Ce qui suit reste vrai du deck de rencontre, mais plus des preuves d'aos.
+
 ### La fuite hors campagne est STRUCTURELLE, pas propre à aos (mesurée)
 
 Le défaut assumé disait : « les neuf preuves des deux enveloppes partent au
@@ -1893,3 +1897,63 @@ campagne** : sans lui, une interdiction qui déborderait sur toutes les parties
 d'En Sabah Nur passerait pour bonne, alors que l'instruction est une CAMPAIGN
 INSTRUCTION. Colossus est le héros du test parce que son deck de départ contient
 Professor X.
+
+## 17. La répartition des preuves ne part plus au navigateur (12/8/2026)
+
+Le défaut assumé disait : hors campagne, les neuf preuves d'aos partent au client
+avec leurs identifiants. Il est fermé, et ce qui a permis de le fermer sans toucher
+au rendu de toutes les cartes du jeu tient en une phrase :
+
+**Le secret n'est pas l'existence des neuf preuves — elle est imprimée dans le
+livret — c'est leur RÉPARTITION.** Savoir lesquelles trois dorment dans l'enveloppe
+A.I.M., c'est connaître la taupe sans jouer. Neuf preuves toutes au même endroit ne
+disent rien du tout.
+
+### Ce qui a changé
+
+`PreparingTheEvidence` montait deux piles avec `SetAsideDeck`, et
+`SetAsideDeck.Create` les inscrit dans `world.additional_decks`, que `to_descriptor`
+rend au navigateur avec le `card_id` réel de chaque carte, face cachée ou non. La
+réponse partait donc au client, **triée par enveloppe**.
+
+Désormais, hors campagne comme en campagne :
+
+- les neuf preuves quittent le jeu **toutes ensemble** (`RemoveAllFromGame`). Elles
+  atterrissent dans `area_removed`, que le descripteur rend — mais sans dire laquelle
+  est où ;
+- la combinaison de la taupe est écrite dans le **store**, sous `A.I.M. Envelope`,
+  déjà filtrée du carnet sortant par `CLES_SECRETES` ;
+- une preuve n'est **fabriquée** qu'au moment où le joueur a le droit de la voir
+  (`PreuveEnJeu`), qu'elle soit puisée dans l'enveloppe S.H.I.E.L.D. ou révélée à
+  l'étape 3 de l'accusation.
+
+Conséquence agréable : les trois lecteurs (`CartesDeLEnveloppeAim`,
+`ShieldEnvelopeHasCards`, `GainCardsFromShieldEnvelope`) n'ont plus qu'un seul
+chemin. La branche « hors campagne » a disparu, et avec elle le risque que les deux
+modes divergent.
+
+### Les deux régressions que la suite a attrapées
+
+Le premier jet cassait deux invariants, tous deux dans les cas hors campagne de
+`tools/test_accusation_aos.py` (27/29). Ils valaient d'être tenus :
+
+1. **« hors campagne : le carnet n'est pas touché ».** `NoterPreuveGagnee` écrivait
+   les preuves gagnées sous `Evidence Gained`, une clé qui SORT au carnet — c'est une
+   récompense de campagne. Hors campagne il n'y a pas de scénario suivant, et polluer
+   le carnet sortant n'a aucun sens. D'où une clé de TRAVAIL,
+   `A.I.M. Envelope Gained`, filtrée elle aussi.
+2. **« hors campagne : la chaîne s'arrête sur la dernière étape ».** `50168b` lisait
+   encore la pile `A.I.M.Envelope` pour attacher les preuves à la taupe. La pile
+   n'existant plus, la chaîne s'arrêtait à l'étape 3 **en silence** : aucune erreur
+   remontée, juste une manigance qui n'avance pas. Les preuves y sont maintenant
+   fabriquées depuis leurs identifiants, campagne ou pas.
+
+Mesure de fermeture, hors campagne : `additional_decks` est vide, et les neuf preuves
+sont dans une seule zone. Un cas de `campagne-accusation.spec.ts` le tient, et il
+compte les zones plutôt que les cartes — c'est la dispersion qui trahit, pas le
+nombre.
+
+**Ce qui reste ouvert**, et n'a pas changé : le deck de rencontre part toujours au
+navigateur avec ses identifiants. Y lire l'ordre des cartes est de la triche
+ordinaire, pas une déduction cassée, et le fermer demanderait de filtrer `card_id`
+dans `Card.Render` pour toutes les cartes du jeu (§12).

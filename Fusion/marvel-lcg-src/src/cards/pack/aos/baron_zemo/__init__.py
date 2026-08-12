@@ -91,36 +91,37 @@ def BaronZemoB(secret: int):
         baron_zemo
     )
 
-# En CAMPAGNE, les deux enveloppes ne sont pas des paquets de cartes mais deux
-# lectures du carnet — voir `cards/pack/aos/campaign.py` pour le pourquoi (les
-# piles de `SetAsideDeck` partent au navigateur avec leurs identifiants en
-# clair, ce qui livrerait la taupe). Hors campagne, rien ne change : le secret
-# ne vit qu'une partie et le pack d'origine s'en charge.
+# LES DEUX ENVELOPPES NE SONT JAMAIS DES PAQUETS DE CARTES, campagne ou pas.
+#
+# Le pack d'origine les montait en piles avec `SetAsideDeck`. Or `SetAsideDeck.Create`
+# inscrit la pile dans `world.additional_decks`, et `to_descriptor` rend toutes ces
+# piles au navigateur avec le `card_id` reel de chaque carte, face cachee ou non.
+# Mesure faite hors campagne : les neuf preuves arrivaient au client, identifiants en
+# clair, TRIEES PAR ENVELOPPE. Or le secret n'est pas l'existence des neuf preuves —
+# elle est imprimee dans le livret — c'est leur REPARTITION : savoir lesquelles trois
+# dorment dans l'enveloppe A.I.M., c'est connaitre la taupe sans jouer.
+#
+# La campagne fermait deja la fuite en ne fabriquant aucune carte avant que le joueur
+# n'ait le droit de la voir (voir `cards/pack/aos/campaign.py`). Hors campagne, la
+# meme approche s'applique depuis le 12/8/2026 : les neuf preuves quittent le jeu
+# TOUTES ENSEMBLE — une seule zone, donc aucune information — et la combinaison de la
+# taupe vit dans le store, sous une cle que `WriteCampaignLogAtGameOver` filtre
+# (`CLES_SECRETES`). Les lecteurs ci-dessous n'ont donc plus qu'un seul chemin.
 
 def ShieldEnvelopeHasCards(by_effect: 'Effect'):
-    if Worlds.IsCampaign(by_effect):
-        from cards.pack.aos.campaign import EnveloppeShield
-        return EnveloppeShield(by_effect) != []
-    deck = Worlds.ScenarioDeck(by_effect, "S.H.I.E.L.D.Envelope")
-    return deck.GetTopCard() != None
+    from cards.pack.aos.campaign import EnveloppeShield
+    return EnveloppeShield(by_effect) != []
 
 def GainCardsFromShieldEnvelope(size: int, by_effect: 'Effect'):
-    if Worlds.IsCampaign(by_effect):
-        from cards.pack.aos.campaign import EnveloppeShield, NoterPreuveGagnee, PreuveEnJeu
-        restantes = EnveloppeShield(by_effect)
-        for _ in range(min(size, len(restantes))):
-            card_id = str(Rand.RandomChoice(restantes, by_effect))
-            restantes.remove(card_id)
-            # Notee AVANT d'entrer en jeu : c'est l'inscription au carnet qui
-            # vide l'enveloppe, donc qui empeche la meme preuve de ressortir.
-            NoterPreuveGagnee(by_effect, card_id)
-            PreuveEnJeu(by_effect, card_id)
-        return
-    deck = Worlds.ScenarioDeck(by_effect, "S.H.I.E.L.D.Envelope")
-    faces = deck.GetTopCards(size)
-    Faces.FlipAllTo(faces, True, by_effect)
-    for face in faces:
-        face.PutIntoPlay("FirstPlayer", by_effect)
+    from cards.pack.aos.campaign import EnveloppeShield, NoterPreuveGagnee, PreuveEnJeu
+    restantes = EnveloppeShield(by_effect)
+    for _ in range(min(size, len(restantes))):
+        card_id = str(Rand.RandomChoice(restantes, by_effect))
+        restantes.remove(card_id)
+        # Notee AVANT d'entrer en jeu : c'est l'inscription qui vide l'enveloppe,
+        # donc qui empeche la meme preuve de ressortir dans la meme partie.
+        NoterPreuveGagnee(by_effect, card_id)
+        PreuveEnJeu(by_effect, card_id)
 
 """
 PREPARING THE EVIDENCE
@@ -132,51 +133,57 @@ To determine the mole at the start of the campaign, follow these steps:
     » Insert the cards facedown with the side of the envelope with the “S.H.I.E.L.D.” logo faceup so that you can later remove the cards from the envelope without seeing their faces.
 """
 def PreparingTheEvidence(effect: 'Effect'):
+    """Prepare les preuves SANS trier les cartes, pour ne rien livrer au client.
+
+    Le livret fait separer les neuf preuves par dos, en tirer une de chaque serie
+    dans l'enveloppe A.I.M. et ranger les six autres dans l'enveloppe S.H.I.E.L.D.
+    Monter ces deux piles dans le monde publiait la reponse : `additional_decks` part
+    au navigateur avec les `card_id`, donc avec la repartition.
+
+    On fait donc exactement ce que fait la campagne : les neuf preuves quittent le
+    jeu TOUTES ENSEMBLE — une seule zone, aucune information a en tirer — et la
+    combinaison de la taupe est ecrite dans le store sous `CLE_ENVELOPPE_AIM`, que
+    `WriteCampaignLogAtGameOver` filtre. Une preuve n'est fabriquee qu'au moment ou
+    le joueur a le droit de la voir (`PreuveEnJeu`).
+    """
+    from cards.pack.aos.campaign import CLE_ENVELOPPE_AIM, PREUVES, SEPARATEUR
+
     faces = Worlds.GetEncounterDeckCards(effect) + Worlds.GetEncounterDiscardPileCards(effect)
     evidences = Filter.ByType(faces, Evidence)
 
-    def select_one_of_each_type(objects: Sequence['Evidence']):
-        # Initialize a list to keep track of selected objects and a set for types
-        selected_objects: List['Evidence'] = []
-        selected_types: Set[Evidence.SUBTYPE] = set()
+    # Une preuve par SERIE, tiree au hasard. Les series sont les trois dos du
+    # livret ; le moteur les porte en `subtype` (Means, Motive, Opportunity), et
+    # l'ordre des identifiants les groupe aussi par trois.
+    par_serie: 'Dict[str, List[str]]' = {}
+    for face in evidences:
+        par_serie.setdefault(str(face.subtype), []).append(face.paper.card_id)
+    if not par_serie:
+        # Aucune preuve dans ce deck : rien a preparer, et surtout rien a inventer.
+        return
 
-        # Iterate through the list and select one of each type
-        for obj in objects:
-            obj_type = obj.subtype
-            if obj_type not in selected_types:
-                selected_objects.append(obj)
-                selected_types.add(obj_type)
+    combinaison: 'List[str]' = []
+    for serie in sorted(par_serie):
+        choix = sorted(par_serie[serie])
+        combinaison.append(str(Rand.RandomChoice(choix, effect)))
 
-            # Stop if we have selected one of each type
-            if len(selected_types) == 3:
-                break
+    CampaignLog.SetStr(CLE_ENVELOPPE_AIM, SEPARATEUR.join(combinaison), effect.world)
 
-        return selected_objects
-
-    faces = select_one_of_each_type(evidences)
-
-    villain = Worlds.FindVillain(effect)
-    assert villain
-    deck1 = Worlds.ScenarioDeck(effect, "A.I.M.Envelope")
-    deck1.Create(effect, villain)
-    deck1.PushCards(faces, effect)
-
-    deck2 = Worlds.ScenarioDeck(effect, "S.H.I.E.L.D.Envelope")
-    deck2.Create(effect, villain)
-    deck2.PushCards([x for x in evidences if x not in faces], effect)
+    # Les neuf partent ensemble. `RemoveAllFromGame` les met dans `area_removed`,
+    # que le descripteur rend — mais toutes au meme endroit, donc sans dire laquelle
+    # est ou. C'est la repartition qui etait le secret, pas la liste : les neuf
+    # identifiants sont imprimes dans le livret.
+    Faces.RemoveAllFromGame(evidences, effect)
+    Unused(PREUVES)
 
 def CartesDeLEnveloppeAim(by_effect: 'Effect') -> 'List[str]':
-    """Les trois identifiants de l'enveloppe A.I.M., d'ou qu'ils viennent.
+    """Les trois identifiants de l'enveloppe A.I.M.
 
-    Hors campagne, `PreparingTheEvidence` a monte une vraie pile au debut de la
-    partie. En campagne, ils sont dans le carnet, injectes par le serveur juste
-    avant `NewGame` et jamais rendus au navigateur.
+    Un seul chemin, campagne ou pas : le store. En campagne le serveur les y injecte
+    avant `NewGame` (et ne les rend jamais au navigateur) ; hors campagne
+    `PreparingTheEvidence` les y tire au debut de la partie.
     """
-    if Worlds.IsCampaign(by_effect):
-        from cards.pack.aos.campaign import EnveloppeAim
-        return EnveloppeAim(by_effect)
-    deck = Worlds.ScenarioDeck(by_effect, "A.I.M.Envelope")
-    return [x.paper.card_id for x in deck.deck.GetAll()]
+    from cards.pack.aos.campaign import EnveloppeAim
+    return EnveloppeAim(by_effect)
 
 
 def MembreDeLaCombinaison(card_ids: 'Sequence[str]', by_effect: 'Effect') -> 'CardFace':
