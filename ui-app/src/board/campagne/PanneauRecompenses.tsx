@@ -36,6 +36,7 @@ import {
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
+import { scenarioSuivantLance } from './attente-scenario'
 import {
   cleDUnAutreSiege,
   droitSurChamp,
@@ -224,6 +225,26 @@ export function PanneauRecompenses({
     }, 3000)
     return () => window.clearInterval(minuteur)
   }, [siege, idCampagne])
+
+  // Les distants suivent l'hôte. Lui n'attend personne : c'est lui qui relance
+  // depuis l'écran des campagnes, et il y navigue tout seul.
+  //
+  // Quatre secondes : on attend que quelqu'un lise un épilogue et relance, pas
+  // un clic. Recharger la page est brutal mais juste : une nouvelle partie a
+  // démarré, tout ce que le plateau tenait en mémoire est périmé.
+  const scenarioCourant = etat.phase === 'pret' ? etat.scenario.id : ''
+  useEffect(() => {
+    if (peutValider(siege) || !scenarioCourant) return
+    const minuteur = window.setInterval(() => {
+      void fetch('/get_campagne_en_cours', { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((lu) => {
+          if (scenarioSuivantLance(scenarioCourant, lu)) window.location.reload()
+        })
+        .catch(() => undefined)
+    }, 4000)
+    return () => window.clearInterval(minuteur)
+  }, [siege, scenarioCourant])
 
   if (etat.phase === 'absent') return null
   if (etat.phase === 'chargement') {
