@@ -1865,7 +1865,7 @@ consulte ce que porte le joueur, pas ce que porte le scénario.
 
 ### Mesure 2 : un effet temporaire est porté par la FACE, pas par la carte
 
-Deuxième tentative, sur l'identité du joueher cette fois
+Deuxième tentative, sur l'identité du joueur cette fois
 (`identity.effect.RegisterTemp(...)`) : toujours aucun effet. La cause est dans
 `RegisterTemp` lui-même — `self.face.card.RegisterEffect(ability, self.face, …)` :
 l'effet est attaché à **la face**. Or la mise en place de campagne tourne quand le
