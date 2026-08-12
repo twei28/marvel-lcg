@@ -1743,3 +1743,72 @@ documentée par une mesure plutôt que par une supposition.
 qu'il est, un outil de test qui sait faire les gestes ; la branche « Professeur
 sauvé » se vérifie à la main, en jouant. Ne pas relancer ce chantier — ce qui suit
 n'est donc pas une piste, c'est la raison de s'arrêter là.
+
+## 14. Le matériel Osborn se tire tout seul (12/8/2026)
+
+Dernière case du carnet de Sinister Motives qui ne se remplissait pas : le champ
+`Osborn Tech: Reputation Track Penalty` était un `choix` **sans options**, où le
+joueur tapait des identifiants de cartes à la main, séparés par des points-virgules.
+Or le livret ne lui demande aucune décision : « Choose one "Osborn Tech" attachment
+**at random** ». Un tirage, le jeu sait le faire.
+
+### Où étaient les paliers, et comment ils ont été lus
+
+Le code du moteur connaissait les seuils de la colonne GAUCHE de la piste (1, 5, 9,
+13, 17, 21, 25) et quatre de ceux de droite (5, 9, 17, 25), mais pas les trois
+encarts « Osborn Tech ». Le texte du PDF ne les donne pas : la piste est un dessin,
+les encarts n'y sont pas numérotés.
+
+Ils ont été relevés sur la planche elle-même (page 22 du livret, rendue en image),
+en **alignant les encarts de droite sur ceux dont le seuil est déjà connu** — la
+graduation vaut environ 33 pixels par nœud à cette échelle :
+
+| Encart | Hauteur | Palier |
+|---|---|---|
+| `Setup: Place 1 threat` (droite) | y≈284 | **5** — connu du code ✔ |
+| `Setup: search a minion` (droite) | y≈415 | **9** — connu du code ✔ |
+| `Setup: search a side scheme` (droite) | y≈682 | **17** — connu du code ✔ |
+| `Setup: deal 1 encounter card` (droite) | y≈931 | **25** — connu du code ✔ |
+| **1er « Choose one Osborn Tech »** | y≈164 | **1** (l'étoile, comme le S.H.I.E.L.D. Tech en face) |
+| **2e « Choose one Osborn Tech »** | y≈550 | **13** (à la hauteur d'ENHANCED, connu du code) |
+| **3e « Choose one Osborn Tech »** | y≈814 | **21** (à la hauteur du Helicarrier, connu du code) |
+
+Les quatre premières lignes sont le témoin : la méthode retrouve exactement les
+paliers que le moteur applique déjà. Les trois autres en découlent.
+
+### Le tirage, et ses deux propriétés qui comptent
+
+Déclaré par les données (`tirage: { cle_piste, paliers }` plus les six `options`),
+donc aucune boîte en dur. `cartesDuTirage()` est une fonction pure :
+
+- **cumulatif et irréversible** : ce qui est déjà noté reste noté, on ne complète
+  que ce qui manque. Sans cela, un scénario rejoué re-tirerait tout et les pénalités
+  du deck de rencontre changeraient entre deux tentatives ;
+- **le hasard est tiré DEHORS**, une fois, à l'ouverture du panneau
+  (`melangerLesTirages`), et passé comme un ordre figé. `preRemplir` tourne dans un
+  `useMemo` qui dépend du monde : un `Math.random()` à l'intérieur ferait changer les
+  cartes à chaque trame du moteur, sous les yeux du joueur.
+
+Le champ reste **corrigeable** : les six cartes s'affichent en vignettes cliquables
+(elles ont maintenant des `options`, ce qui manquait aussi), et qui préfère tirer
+sur sa table peut cocher les siennes.
+
+### Ce que le vérificateur refuse désormais
+
+`tools/verifier_campagnes.py` contrôle la forme d'un `tirage` : des paliers entiers,
+positifs et **croissants** ; des `options` non vides ; un `type: "auto"` ; et surtout
+une `cle_piste` **déclarée AVANT le champ**. Ce dernier point n'est pas cosmétique :
+`preRemplir` parcourt les champs dans l'ordre du fichier et lit la piste qu'il vient
+de calculer, relevé du jour compris. Une piste déclarée après ferait tirer sur le
+total de la veille. Mis en défaut exprès sur des paliers décroissants : il refuse et
+nomme le champ.
+
+Éprouvé en vraie partie (`campagne-releves.spec.ts`) : piste à 12 au carnet, le
+relevé de la partie la fait franchir 13, et **deux** cartes Osborn différentes sont
+inscrites — celles du palier 1 et du palier 13. Plus dix cas vitest sur la fonction
+pure, dont « ne re-tire jamais ce qui est déjà noté » et « ne peut pas tirer plus de
+cartes qu'il n'en existe ».
+
+**Le carnet de Sinister Motives se remplit désormais entièrement tout seul**, sauf
+les trois vraies décisions du joueur : quelle amélioration S.H.I.E.L.D. garder,
+quelle carte d'aspect ajouter, quelle carte de son deck préparer.

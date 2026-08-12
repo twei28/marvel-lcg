@@ -15,7 +15,15 @@
 // les décisions que le livret laisse au joueur, et une décision ne se détecte
 // pas. Leur valeur ancienne reste proposée, comme avant.
 import type { World } from '../world'
-import { cleCarnet, conditionRemplie, detecter, joueurElimine, type ChampVictoire } from './detecteurs'
+import {
+  cleCarnet,
+  conditionRemplie,
+  deListe,
+  detecter,
+  enListe,
+  joueurElimine,
+  type ChampVictoire,
+} from './detecteurs'
 
 export type EntreePreRemplissage = {
   champs: ChampVictoire[]
@@ -41,6 +49,42 @@ export type EntreePreRemplissage = {
   scenarioActuel: string
   /** Nombre de héros de la campagne : les clés « Player N » en dépendent. */
   total: number
+  /**
+   * Le hasard des champs à TIRAGE, par clé de champ : les options dans un ordre
+   * mélangé. Absent, on prend l'ordre déclaré — un tirage prévisible vaut mieux
+   * qu'un tirage qui change à chaque rendu.
+   */
+  ordresDeTirage?: Record<string, readonly string[]>
+}
+
+/**
+ * Les cartes qu'un champ à TIRAGE doit porter, vu l'état de sa piste.
+ *
+ * Le livret de sm fait tirer une carte « Osborn Tech » au hasard à trois paliers
+ * de la piste de réputation (1, 13 et 21 — relevés sur la planche p.22, en alignant
+ * les encarts de droite sur ceux dont le moteur connaît déjà le seuil : 5, 9, 17 et
+ * 25 à droite, ENHANCED à 13 et Helicarrier à 21 à gauche). Ce n'est pas une
+ * décision, donc le joueur n'a rien à recopier.
+ *
+ * CUMULATIF ET IRRÉVERSIBLE : ce qui est déjà noté reste noté, et l'on ne complète
+ * que ce qui manque. Sans cela, un scénario rejoué re-tirerait tout et le deck de
+ * rencontre changerait de pénalités entre deux tentatives.
+ *
+ * `ordre` est le hasard, tiré DEHORS et passé ici : la fonction reste déterministe,
+ * donc testable, et le panneau peut garantir que le tirage ne bouge plus une fois
+ * fait (un `Math.random()` appelé au rendu changerait de cartes à chaque trame).
+ */
+export function cartesDuTirage(
+  champ: ChampVictoire,
+  piste: number,
+  dejaNotees: readonly string[],
+  ordre: readonly string[]
+): string[] {
+  const paliers = champ.tirage?.paliers ?? []
+  const dues = paliers.filter((palier) => piste >= palier).length
+  if (dejaNotees.length >= dues) return [...dejaNotees]
+  const restantes = ordre.filter((id) => !dejaNotees.includes(id))
+  return [...dejaNotees, ...restantes.slice(0, dues - dejaNotees.length)]
 }
 
 /** Un entier de carnet : une valeur absente ou illisible vaut zéro. */
@@ -57,6 +101,7 @@ export function preRemplir({
   scenarioSuggestions,
   scenarioActuel,
   total,
+  ordresDeTirage,
 }: EntreePreRemplissage): Record<string, string> {
   // Une estampille absente ou différente : on ignore le carnet moteur EN
   // BLOC, comme s'il n'avait rien dit. Un carnet partiellement d'un autre
@@ -74,7 +119,9 @@ export function preRemplir({
       const duMoteur = champ.type === 'auto' && suggestionsUtilisables ? suggestions[cle] : undefined
       const detectee = champ.type === 'auto' ? detecter(champ, monde, joueurId) : undefined
       const valeur = duMoteur ?? detectee ?? carnet?.[cle]
-      if (valeur === undefined) continue
+      // Un champ à tirage part de rien la première fois : on le laisse passer avec
+      // une liste vide, sinon il n'y aurait jamais de premier tirage.
+      if (valeur === undefined && !champ.tirage) continue
       // Un champ CUMULATIF détecté vaut ce que la partie vient d'ajouter, pas le
       // total : la piste de réputation de sm se recalcule à chaque scénario et
       // s'ajoute aux nœuds déjà marqués. Le détecteur ne voit pas le carnet, c'est
@@ -84,7 +131,17 @@ export function preRemplir({
       sortie[cle] =
         champ.cumulatif && duMoteur === undefined && detectee !== undefined
           ? String(entier(detectee) + entier(carnet?.[cle]))
-          : valeur
+          : (valeur ?? '')
+
+      // Champ à tirage : on complète ce qui manque, vu la piste. La piste est lue
+      // dans `sortie` d'abord — elle vient d'être calculée, relevé compris — et le
+      // vérificateur refuse une `cle_piste` déclarée APRÈS ce champ, sans quoi on
+      // tirerait sur le total d'hier.
+      if (champ.tirage) {
+        const piste = entier(sortie[champ.tirage.cle_piste] ?? carnet?.[champ.tirage.cle_piste])
+        const ordre = ordresDeTirage?.[champ.cle] ?? champ.options ?? []
+        sortie[cle] = enListe(cartesDuTirage(champ, piste, deListe(sortie[cle]), ordre))
+      }
     }
   }
   return sortie

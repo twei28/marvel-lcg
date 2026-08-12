@@ -52,7 +52,32 @@ type Etat =
       suggestions: Record<string, string>
       /** Scénario qui a produit `suggestions` côté moteur — voir preremplissage.ts. */
       scenarioSuggestions: string | null
+      /** Le hasard des champs à tirage, figé à l'ouverture du panneau. */
+      ordresDeTirage: Record<string, readonly string[]>
     }
+
+/**
+ * Mélange les options des champs à TIRAGE, une fois pour toutes.
+ *
+ * Le livret fait tirer certaines pénalités au hasard (« Choose one Osborn Tech
+ * attachment at random »). Le hasard est donc légitime, mais il doit être tiré
+ * UNE fois : `preRemplir` tourne dans un `useMemo` qui dépend du monde, et un
+ * `Math.random()` à l'intérieur ferait changer les cartes à chaque trame du moteur,
+ * sous les yeux du joueur.
+ */
+function melangerLesTirages(champs: ChampVictoire[]): Record<string, readonly string[]> {
+  const ordres: Record<string, readonly string[]> = {}
+  for (const champ of champs) {
+    if (!champ.tirage) continue
+    const options = [...(champ.options ?? [])]
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[options[i], options[j]] = [options[j]!, options[i]!]
+    }
+    ordres[champ.cle] = options
+  }
+  return ordres
+}
 
 /** Nombre de héros de la campagne : les clés « Player N » en dépendent. */
 const nbJoueurs = (campagne: Campagne, monde: World) =>
@@ -112,12 +137,19 @@ export function PanneauRecompenses({
           }
         }
         const champs = champsDuScenario(definition, scenario, campagne.difficulte)
+        // Le hasard des champs à tirage est tiré ICI, une seule fois, et gardé :
+        // `preRemplir` tourne dans un `useMemo` qui dépend du monde, donc un
+        // `Math.random()` à l'intérieur changerait de cartes à chaque trame du
+        // moteur. Le tirage doit être fait une fois pour toutes, comme on tire une
+        // carte d'un paquet.
+        const ordresDeTirage = melangerLesTirages(champs)
         setEtat({
           phase: 'pret',
           campagne,
           definition,
           scenario,
           champs,
+          ordresDeTirage,
           suggestions: carnetSuggere.suggestions,
           scenarioSuggestions: carnetSuggere.scenario,
         })
@@ -142,6 +174,7 @@ export function PanneauRecompenses({
       scenarioSuggestions: etat.scenarioSuggestions,
       scenarioActuel: etat.scenario.id,
       total: nbJoueurs(etat.campagne, monde),
+      ordresDeTirage: etat.ordresDeTirage,
     })
   }, [etat, monde])
 

@@ -56,6 +56,8 @@ const MARAUDEURS = ['40070a', '40071a', '40072a', '40073a', '40074a', '40075a', 
 
 /** Les quatre allies CAPTIVE du set Taskmaster, ceux que Zola peut retenir. */
 const ALLIES_TASKMASTER = ['04097', '04098', '04099', '04100']
+/** Les six attachements « Osborn Tech » du set sm, ceux que la piste fait tirer. */
+const OSBORN_TECH = ['27147', '27148', '27149', '27150', '27151', '27152']
 /** L'allie Morlock du set : c'est lui que le releve compte, en jeu, a la fin. */
 const MORLOCK = '40079'
 /** La piste de reputation deja marquee avant la partie : le releve s'y ajoute. */
@@ -191,6 +193,63 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
       affiche
     )
     expect(total, 'La piste a REMPLACE le total au lieu de s y ajouter.').toBeGreaterThan(PISTE_AVANT)
+  })
+
+  test('Sinister Motives : le materiel Osborn est TIRE AU SORT par le jeu', async ({
+    page,
+    request,
+  }) => {
+    // Livret sm, piste de reputation (p.22) : « Choose one "Osborn Tech" attachment
+    // at random », a trois paliers de la piste — 1, 13 et 21, releves sur la planche
+    // en alignant les encarts de droite sur ceux dont le moteur connait deja le
+    // seuil. Ce n'est pas une decision du joueur, c'est un tirage : il n'a plus a
+    // taper des identifiants a la main, ce que le champ demandait jusqu'ici.
+    //
+    // La piste part a 12 : le releve de la partie la fera passer le palier 13, donc
+    // DEUX cartes sont dues (palier 1 et palier 13).
+    // Autonome : le cas doit pouvoir tourner seul (`-g "Osborn"`), donc il pose sa
+    // campagne et retient son identifiant au lieu d'hériter du cas précédent.
+    identifiant = await poserCampagne(request, {
+      ...(identifiant ? { id: identifiant } : {}),
+      code: 'sm',
+      nom: NOM,
+      difficulte: 'standard',
+      equipe: [{ heros: 'spider_man', nomHeros: 'Spider-Man' }],
+      termines: [],
+      carnet: { 'Reputation Track': '12' },
+      tentatives: {},
+      partieEnCours: null,
+    })
+    await page.addInitScript((id) => {
+      window.localStorage.setItem('mc-campagne-partie', JSON.stringify({ id, scenario: 'sandman' }))
+    }, identifiant)
+
+    await lancer(request, {
+      scenario: 'sandman',
+      heros: ['spider_man'],
+      carnet: { 'Reputation Track': '12' },
+    })
+    await ouvrirEtMettreEnPlace(page, request)
+    const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
+    expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
+
+    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await page.locator('.camp-recomp-valider').click()
+    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+
+    const apres = await relireCampagne(request, identifiant)
+    const piste = Number(apres.carnet?.['Reputation Track'])
+    expect(piste, 'La piste n a pas franchi le palier 13.').toBeGreaterThanOrEqual(13)
+
+    const osborn = liste(apres.carnet?.['Osborn Tech: Reputation Track Penalty'])
+    expect(
+      osborn.length,
+      'Le materiel Osborn n a pas ete tire : le joueur devrait encore taper des identifiants.'
+    ).toBe(2)
+    // Deux cartes DIFFERENTES, et parmi les six du set : un tirage qui rendrait
+    // deux fois la meme, ou une carte inventee, casserait la mise en place.
+    expect(new Set(osborn).size, 'La meme carte a ete tiree deux fois.').toBe(2)
+    for (const carte of osborn) expect(OSBORN_TECH).toContain(carte)
   })
 
   test('Campagne experte : les PV restants sont ceux de l identite blessee', async ({

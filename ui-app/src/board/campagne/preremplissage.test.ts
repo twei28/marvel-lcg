@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { World } from '../world'
 import type { ChampVictoire } from './detecteurs'
-import { assainirCarnet, preRemplir } from './preremplissage'
+import { assainirCarnet, cartesDuTirage, preRemplir } from './preremplissage'
 
 const CHAMP_AUTO: ChampVictoire = {
   cle: 'Tech Upgrade',
@@ -334,6 +334,109 @@ describe('preRemplir — un champ cumulatif (piste de réputation de sm)', () =>
       total: 1,
     })
     expect(sortie['Reputation Track']).toBe('5')
+  })
+})
+
+describe('cartesDuTirage — les pénalités Osborn Tech de la piste (sm)', () => {
+  /**
+   * Trois paliers relevés sur la planche p.22 : 1, 13 et 21. Le livret dit
+   * « Choose one "Osborn Tech" attachment at random » — un tirage, pas une
+   * décision, donc le jeu peut le faire.
+   */
+  const CHAMP: ChampVictoire = {
+    cle: 'Osborn Tech: Reputation Track Penalty',
+    type: 'auto',
+    format: 'liste',
+    tirage: { cle_piste: 'Reputation Track', paliers: [1, 13, 21] },
+    options: ['27147', '27148', '27149', '27150', '27151', '27152'],
+    libelle: 'Matériel Osborn',
+  }
+  /** L'ordre est le hasard, tiré dehors : ici on le fixe pour pouvoir mesurer. */
+  const ORDRE = ['27150', '27147', '27152', '27148', '27149', '27151']
+
+  it('ne tire rien tant que la piste n’a pas atteint le premier palier', () => {
+    expect(cartesDuTirage(CHAMP, 0, [], ORDRE)).toEqual([])
+  })
+
+  it('tire une carte au palier 1', () => {
+    expect(cartesDuTirage(CHAMP, 1, [], ORDRE)).toEqual(['27150'])
+  })
+
+  it('ne retire toujours qu’une carte entre deux paliers', () => {
+    expect(cartesDuTirage(CHAMP, 12, [], ORDRE)).toEqual(['27150'])
+  })
+
+  it('complète au palier 13, sans retirer la carte déjà notée', () => {
+    expect(cartesDuTirage(CHAMP, 13, ['27150'], ORDRE)).toEqual(['27150', '27147'])
+  })
+
+  it('rattrape plusieurs paliers d’un coup si la piste a bondi', () => {
+    expect(cartesDuTirage(CHAMP, 21, [], ORDRE)).toEqual(['27150', '27147', '27152'])
+  })
+
+  it('ne re-tire JAMAIS ce qui est déjà noté, même dans un autre ordre', () => {
+    // Un scénario rejoué ne doit pas changer les pénalités du deck de rencontre.
+    expect(cartesDuTirage(CHAMP, 13, ['27152'], ORDRE)).toEqual(['27152', '27150'])
+  })
+
+  it('respecte une correction du joueur qui a noté plus que dû', () => {
+    const dejaNotees = ['27147', '27148', '27149']
+    expect(cartesDuTirage(CHAMP, 13, dejaNotees, ORDRE)).toEqual(dejaNotees)
+  })
+
+  it('ne peut pas tirer plus de cartes qu’il n’en existe', () => {
+    const court: ChampVictoire = { ...CHAMP, options: ['27147'], tirage: { cle_piste: 'x', paliers: [1, 2, 3] } }
+    expect(cartesDuTirage(court, 99, [], ['27147'])).toEqual(['27147'])
+  })
+})
+
+describe('preRemplir — le tirage lit la piste qui vient d’être calculée', () => {
+  const PISTE: ChampVictoire = {
+    cle: 'Reputation Track',
+    type: 'auto',
+    format: 'int',
+    detection: 'conditions_reputation',
+    cumulatif: true,
+    libelle: 'Piste',
+  }
+  const OSBORN: ChampVictoire = {
+    cle: 'Osborn Tech: Reputation Track Penalty',
+    type: 'auto',
+    format: 'liste',
+    tirage: { cle_piste: 'Reputation Track', paliers: [1, 13, 21] },
+    options: ['27147', '27148'],
+    libelle: 'Matériel Osborn',
+  }
+
+  it('tire sur le total du jour, relevé de la partie compris', () => {
+    // Le monde de ce fichier vaut 5 conditions ; avec 9 déjà au carnet, la piste
+    // passe à 14, donc DEUX paliers sont franchis (1 et 13).
+    const sortie = preRemplir({
+      champs: [PISTE, OSBORN],
+      monde: monde(),
+      carnet: { 'Reputation Track': '9' },
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+      ordresDeTirage: { 'Osborn Tech: Reputation Track Penalty': ['27148', '27147'] },
+    })
+    expect(sortie['Reputation Track']).toBe('14')
+    expect(sortie['Osborn Tech: Reputation Track Penalty']).toBe('27148;27147')
+  })
+
+  it('ne tire rien quand la piste reste sous le premier palier', () => {
+    const sortie = preRemplir({
+      champs: [OSBORN],
+      monde: monde(),
+      carnet: {},
+      suggestions: {},
+      scenarioSuggestions: null,
+      scenarioActuel: 'sandman',
+      total: 1,
+      ordresDeTirage: { 'Osborn Tech: Reputation Track Penalty': ['27148', '27147'] },
+    })
+    expect(sortie['Osborn Tech: Reputation Track Penalty']).toBe('')
   })
 })
 

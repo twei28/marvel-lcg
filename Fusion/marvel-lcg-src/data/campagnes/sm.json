@@ -160,10 +160,15 @@
         },
         {
             "cle": "Osborn Tech: Reputation Track Penalty",
-            "type": "choix",
+            "type": "auto",
             "format": "liste",
-            "libelle": "Pénalité Réputation 1 — matériel Osborn",
-            "aide": "Les identifiants des cartes Osborn Tech à mélanger au deck de rencontre, séparés par « ; »."
+            "tirage": {
+                "cle_piste": "Reputation Track",
+                "paliers": [1, 13, 21]
+            },
+            "options": ["27147", "27148", "27149", "27150", "27151", "27152"],
+            "libelle": "Pénalité de réputation — matériel Osborn",
+            "aide": "Tiré au sort par le jeu, comme le livret le demande (« Choose one Osborn Tech attachment at random »), aux paliers 1, 13 et 21 de la piste. Cumulatif : une carte tirée le reste pour toute la campagne, et elle sera mélangée au deck de rencontre à chaque mise en place. Corrigeable si tu préfères tirer toi-même."
         }
     ],
 

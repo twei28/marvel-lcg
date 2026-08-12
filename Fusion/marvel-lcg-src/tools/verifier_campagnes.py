@@ -128,6 +128,33 @@ def detecteurs_connus():
 def defauts_de_forme(definition, detecteurs=None):
     """Les champs dont un attribut ne veut rien dire."""
     defauts = []
+    # Ordre de declaration : un champ a TIRAGE lit une piste qui doit avoir ete
+    # calculee AVANT lui, sinon il tire sur le total de la veille. `preRemplir`
+    # parcourt les champs dans cet ordre, sans le deviner.
+    rang = {champ["cle"]: i for i, champ in enumerate(champs_du_fichier(definition))}
+    for champ in champs_du_fichier(definition):
+        tirage = champ.get("tirage")
+        if tirage is not None:
+            paliers = tirage.get("paliers")
+            piste = tirage.get("cle_piste")
+            if not isinstance(paliers, list) or not paliers or \
+                    not all(isinstance(x, int) and x > 0 for x in paliers):
+                defauts.append("%r : tirage.paliers doit etre une liste d'entiers positifs"
+                               % champ["cle"])
+            elif paliers != sorted(paliers):
+                defauts.append("%r : tirage.paliers n'est pas croissant %r"
+                               % (champ["cle"], paliers))
+            if not champ.get("options"):
+                defauts.append("%r : tirage sans options, il n'y a rien a tirer" % champ["cle"])
+            if not piste or piste not in rang:
+                defauts.append("%r : tirage.cle_piste=%r n'est declaree nulle part"
+                               % (champ["cle"], piste))
+            elif rang[piste] >= rang[champ["cle"]]:
+                defauts.append("%r : tirage.cle_piste=%r est declaree APRES ce champ "
+                               "(il tirerait sur le total precedent)" % (champ["cle"], piste))
+            if champ.get("type") != "auto":
+                defauts.append("%r : un tirage est releve par le jeu, donc type=auto"
+                               % champ["cle"])
     for champ in champs_du_fichier(definition):
         detection = champ.get("detection")
         if detection and detecteurs is not None and detection not in detecteurs:

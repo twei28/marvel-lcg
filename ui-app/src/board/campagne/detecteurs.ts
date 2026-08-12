@@ -31,6 +31,19 @@ export type ChampVictoire = {
    * ce que la partie vient d'ajouter, pas le total. Voir `preRemplir`.
    */
   cumulatif?: boolean
+  /**
+   * Ce champ se TIRE AU SORT, aux paliers d'une piste chiffrée du carnet.
+   *
+   * Le livret de Sinister Motives (piste de réputation, p.22) dit trois fois
+   * « Choose one "Osborn Tech" attachment at random » : ce n'est pas une décision
+   * du joueur, c'est un tirage, donc le jeu peut le faire. `paliers` donne les
+   * valeurs de piste qui déclenchent chacun un tirage, et `cle_piste` la clé qui
+   * porte le total.
+   */
+  tirage?: {
+    cle_piste: string
+    paliers: number[]
+  }
   parametres?: {
     compteur?: string
     complot?: string
