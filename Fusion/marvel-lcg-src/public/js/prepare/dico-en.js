@@ -352,6 +352,13 @@ export const DICO_EN_BASE = {
     "Changer de héros": "Change hero",
     "Deck de base": "Base deck",
     "Tu es le": "You are",
+    // ---- Salon en mode campagne ----
+    "Campagne en cours": "Campaign in progress",
+    "Tu tiens": "You play",
+    "L’équipe est fixée par la campagne : il n’y a rien à choisir.":
+        "The team is set by the campaign: there is nothing to choose.",
+    "Aucun héros n’est prévu pour ce siège dans cette campagne.":
+        "No hero is assigned to this seat in this campaign.",
     "Choix envoyé": "Choice sent",
     "Ton choix actuel": "Your current choice",
     "Tu peux encore changer d’avis.": "You can still change your mind.",

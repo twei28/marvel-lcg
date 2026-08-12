@@ -140,6 +140,51 @@ function surveillerLeLancement() {
     }, 2000);
 }
 
+/* ---------------- Campagne : l'équipe est déjà composée ---------------- */
+
+/**
+ * Une campagne attend-elle ?
+ *
+ * En campagne il n'y a RIEN à choisir : l'équipe a été arrêtée à la création de
+ * la campagne, et le livret interdit d'en changer. Le siège N tient le N-ième
+ * membre, ce qui est déjà ce que fait le moteur (il reçoit `players` dans cet
+ * ordre, voir `lancerScenario` dans js/campagne/app.js).
+ *
+ * Montrer la grille des héros ici serait donc un mensonge : le choix serait
+ * écrasé au lancement, et l'invité jouerait autre chose que ce qu'il a pris.
+ */
+async function campagneEnCours() {
+    try {
+        const reponse = await fetch("get_campagne_en_cours?", { cache: "no-store" });
+        if (!reponse.ok) return null;
+        const brut = await reponse.json();
+        return brut && brut.id ? brut : null;
+    } catch (e) {
+        // Serveur d'une version anterieure, ou route indisponible : on retombe
+        // sur le salon ordinaire plutot que de bloquer l'invite.
+        return null;
+    }
+}
+
+function rendreCampagne(campagne) {
+    const membre = (campagne.equipe || [])[siege];
+    const nom = membre ? (membre.nomHeros || membre.heros) : null;
+    $("#salon-choix").replaceChildren(
+        el("h2", {}, campagne.nom || t("Campagne en cours")),
+        nom
+            ? el("p", { class: "salon-campagne-heros" },
+                el("b", {}, t("Tu tiens")), " ", nom)
+            : el("p", { class: "salon-campagne-heros" },
+                t("Aucun héros n’est prévu pour ce siège dans cette campagne.")),
+    );
+    if (nom) {
+        statut(t("L’équipe est fixée par la campagne : il n’y a rien à choisir."));
+        bandeauAttente(true);
+    } else {
+        statut(t("Aucun héros n’est prévu pour ce siège dans cette campagne."), true);
+    }
+}
+
 /* ---------------- Démarrage ---------------- */
 
 async function reprendreChoixExistant() {
@@ -172,6 +217,15 @@ async function demarrer() {
     $("#salon-entete").textContent = `${t("Tu es le")} ${t("Joueur")} ${siege + 1}`;
     // Bouton 🌐 FR/EN, comme le wizard et le plateau (guide §11).
     $("#salon-entete").append(" ", boutonLangue("salon-langue"));
+    // La campagne d'abord : s'il y en a une, il n'y a aucun choix a reprendre
+    // ni a proposer, et `reprendreChoixExistant` n'aurait rien a trouver.
+    const campagne = await campagneEnCours();
+    if (campagne) {
+        rendreCampagne(campagne);
+        surveillerLeLancement();
+        return;
+    }
+
     statut(t("Choisis ton héros, puis ton deck. L’hôte lancera quand tout le monde aura choisi."));
 
     await reprendreChoixExistant();
