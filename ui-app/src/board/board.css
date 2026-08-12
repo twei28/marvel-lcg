@@ -4750,3 +4750,32 @@
     }
   }
 }
+
+/* Rapport de bug : le sélecteur de profondeur et les deux sorties, dans
+   l'en-tête du panneau « H ». La confirmation, elle, vit dans la barre
+   d'actions : capturer au clavier sans ouvrir le panneau doit se voir. */
+.hp-entete-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hp-rapport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.hp-rapport-portee {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hp-rapport-message {
+  font-size: 12px;
+  opacity: 0.85;
+  padding-inline: 6px;
+  white-space: nowrap;
+}

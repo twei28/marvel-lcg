@@ -9,6 +9,7 @@ import {
   type MemoireCauses,
 } from './causalite'
 import { t } from './langue'
+import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 
 type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche'
@@ -441,9 +442,12 @@ function libelleType(type: TypeHistorique): string {
 export function HistoriquePartie({
   entrees,
   effacer,
+  rapport,
 }: {
   entrees: EntreeHistorique[]
   effacer: () => void
+  /** Absent hors partie : le panneau se contente alors du bouton « Effacer ». */
+  rapport?: OutilsRapport
 }) {
   const [ouvert, setOuvert] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -485,9 +489,12 @@ export function HistoriquePartie({
               <span className="plateau-eyebrow">Game history</span>
               <strong>{entrees[0]?.titre ?? t('Aucune entrée pour le moment')}</strong>
             </div>
-            <button type="button" onClick={effacer} disabled={entrees.length === 0}>
-              {t('Effacer')}
-            </button>
+            <div className="hp-entete-actions">
+              {rapport ? <BoutonsRapportBug outils={rapport} /> : null}
+              <button type="button" onClick={effacer} disabled={entrees.length === 0}>
+                {t('Effacer')}
+              </button>
+            </div>
           </header>
 
           {entrees.length === 0 ? (

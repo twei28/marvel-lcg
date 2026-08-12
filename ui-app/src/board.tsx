@@ -42,6 +42,8 @@ import {
   demandeDoitApparaitreAuCentre,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { installerCollecteErreurs } from './board/erreurs-console'
+import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -1610,6 +1612,11 @@ function PagePartie({
   }, [])
   const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId)
 
+  // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
+  // du moment, et le journal ci-dessus pour le passé. Aucun tampon d'états n'est
+  // gardé, donc une partie qui ne signale rien n'en porte aucun coût.
+  const rapport = useRapportBug(etat.monde, etat.demande, historique.entrees, etat.joueurDemande)
+
   // Mode Bac à sable. Inerte hors de ce mode : le crochet n'installe aucune
   // écoute et la couche ne rend rien, donc une partie normale n'en porte
   // aucune trace. Déclaré APRÈS l'historique, dont il consomme la porte
@@ -1789,6 +1796,9 @@ function PagePartie({
   // La cible reelle du raccourci E est assignee plus bas, une fois
   // afficherFinTourSimple connu, via ce ref.
   const finTourClavier = useRef<() => void>(() => {})
+  // Même mécanique pour B : l'écoute est installée une fois, sa cible change à
+  // chaque monde reçu. Sans le ref, l'effet se réinstallerait à chaque rendu.
+  const rapportClavier = useRef<() => void>(() => {})
   useEffect(() => {
     const surTouche = (evenement: KeyboardEvent) => {
       if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
@@ -1799,11 +1809,21 @@ function PagePartie({
         finTourClavier.current()
       } else if (touche === 'u') {
         fetch('/debug?/undo auto').catch(() => undefined)
+      } else if (touche === 'b') {
+        // « B » comme bug : copie les 20 dernières entrées SANS ouvrir le
+        // panneau, parce que le symptôme peut disparaître au rendu suivant.
+        rapportClavier.current()
       }
     }
     document.addEventListener('keydown', surTouche)
     return () => document.removeEventListener('keydown', surTouche)
   }, [])
+  rapportClavier.current = () => void rapport.copier('recent')
+
+  // Installée une fois pour la vie de la page : une erreur de rendu survenue
+  // AVANT l'ouverture du panneau doit quand même figurer au rapport.
+  useEffect(() => installerCollecteErreurs(), [])
+
   useHaloStatut(etat.monde, animations)
 
   const annulerCoup = useCallback(() => {
@@ -2070,7 +2090,12 @@ function PagePartie({
 
             <span className="bh-separateur" aria-hidden="true" />
 
-            <HistoriquePartie entrees={historique.entrees} effacer={historique.effacer} />
+            <HistoriquePartie
+              entrees={historique.entrees}
+              effacer={historique.effacer}
+              rapport={rapport}
+            />
+            <MessageRapport message={rapport.message} />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
