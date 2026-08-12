@@ -1957,3 +1957,48 @@ nombre.
 navigateur avec ses identifiants. Y lire l'ordre des cartes est de la triche
 ordinaire, pas une déduction cassée, et le fermer demanderait de filtrer `card_id`
 dans `Card.Render` pour toutes les cartes du jeu (§12).
+
+## 18. La branche gagnante d'AoA, et le piège qu'elle a révélé (12/8/2026)
+
+Sauver le Professeur **gagne** la campagne (livret p.20). La branche perdante était
+couverte depuis le 11/8 ; la gagnante ne l'était pas, et il n'était pas question
+d'écrire un bot pour vaincre la mission (§13).
+
+### Le piège : l'écran ne rejoue pas la règle
+
+La première version du test posait une campagne déjà terminée, avec
+`Professor Saved` au carnet, ouvrait l'écran et vérifiait la conclusion. **Elle
+passait avec ET sans la clé.** La raison est dans `vueConclusion` : elle lit
+`campagne.perdue`, un drapeau **posé par le panneau de récompenses**. L'écran des
+campagnes n'évalue rien — il affiche un verdict déjà rendu.
+
+Un test qui ne se met pas au rouge ne prouve rien : c'est cette vérification-là qui a
+sauvé le cas, pas la relecture du code.
+
+### Ce que le cas fait maintenant
+
+Une **vraie partie** du scénario 5, pour que le panneau évalue le verdict. La mission
+n'est pas vaincue — hors de portée — mais la clé est déjà au carnet, et elle survit :
+le collecteur d'aoa ne la fournit pas, le pré-remplissage retombe donc sur la valeur
+du carnet. C'est exactement la situation d'une équipe qui a sauvé le Professeur.
+
+Mesuré : le panneau n'annonce pas la campagne perdue, son titre dit la victoire de
+campagne, le serveur n'a pas de drapeau `perdue`, la clé est toujours au carnet, et
+l'écran conclut avec la planche d'épilogue. Désarmé exprès en retirant la clé : le cas
+tombe.
+
+**Ce qui reste hors de portée**, et c'est assumé : vaincre la mission en jouant. La
+chaîne mesurée s'arrête donc au relevé de la clé — mais tout ce qui en dépend, du
+verdict du panneau à l'épilogue de l'écran, est désormais tenu dans les deux sens.
+
+---
+
+## Les trois points assumés sont traités (12/8/2026)
+
+Récapitulatif de la série, chacun repris un par un :
+
+| Point | Décision | Résultat |
+|---|---|---|
+| Professor X, sc.5 d'AoA | interdire de le jouer | **Câblé** (§16), porté par les deux faces de l'identité |
+| Fuite du descripteur | fermer les preuves d'aos | **Fermé** (§17), la répartition ne sort plus ; le deck de rencontre reste lisible |
+| « Professeur sauvé » | vérifier ce qui restait vérifiable | **Couvert dans les deux sens** (§18), sauf vaincre la mission en jeu |
