@@ -58,6 +58,59 @@ function identityVariants(deck, heroCardId, heroCard) {
     }
     return out.length > 1 ? out : [];
 }
+/* --------------------------------------------------------------------------
+ * Les vagues de sortie
+ *
+ * REGLE : une vague s'ouvre sur une GRANDE BOITE et court jusqu'a la suivante.
+ * Le Set de base est a part — c'est le point de depart, pas une vague.
+ * L'exception est la vague 1, qui n'a pas de grande boite a son ouverture : elle
+ * regroupe tout ce qui a suivi le Set de base jusqu'a Hulk (7/8/2020), La
+ * Chute du Crane Rouge (4/9/2020) ouvrant la vague 2.
+ *
+ * La table est indexee par le NUMERO que porte la cle d'extension dans
+ * sets_info.json (« 12. Ant-Man » -> 12). Ce numero est deja l'ordre de sortie
+ * du jeu, donc la table se lit comme une frise et un nouveau paquet se range
+ * en ajoutant une seule borne.
+ *
+ * Sources : dates de sortie de marvelcdb.com/api/public/packs, et le decoupage
+ * des vagues 1 a 7 publie par la communaute. Les vagues 8 a 11 prolongent la
+ * MEME regle (Age of Apocalypse, Agents du S.H.I.E.L.D., Civil War, Fear No
+ * Evil ouvrent chacune la leur) sans qu'une liste publiee ne les confirme
+ * encore : si FFG les decoupait autrement, il suffirait de deplacer une borne.
+ *
+ * Les paquets fan-made (98 et au-dela) n'ont pas de vague : ils vivent derriere
+ * le bouton « Fan-made », qui ne les melange jamais aux officiels.
+ * ------------------------------------------------------------------------ */
+const BORNES_VAGUES = [
+    { depuis: 1,  vague: 0 },    // Set de base
+    { depuis: 2,  vague: 1 },    // Bouffon Vert -> Hulk
+    { depuis: 4,  vague: 2 },    // La Chute du Crane Rouge
+    { depuis: 5,  vague: 1 },    // (la boite 4 s'intercale dans l'ordre du jeu)
+    { depuis: 11, vague: 2 },    // Kang -> Sorciere Rouge
+    { depuis: 16, vague: 3 },    // Les Plus Recherches de la Galaxie
+    { depuis: 21, vague: 4 },    // L'Ombre du Titan Fou
+    { depuis: 27, vague: 5 },    // Mobiles Sinistres
+    { depuis: 32, vague: 6 },    // Genese Mutante
+    { depuis: 40, vague: 7 },    // NeXt Evolution
+    { depuis: 45, vague: 8 },    // Age d'Apocalypse
+    { depuis: 50, vague: 9 },    // Agents du S.H.I.E.L.D.
+    { depuis: 56, vague: 10 },   // Civil War
+    { depuis: 60, vague: 11 },   // Fear No Evil
+    { depuis: 61, vague: null }, // au-dela : hors vague (modulaires, defis)
+];
+
+/** Vague d'une extension, d'apres le numero que porte sa clé. null si aucune
+ *  (fan-made, sets modulaires, defis hebdomadaires). */
+function vagueDeLExtension(cle) {
+    const n = parseInt(String(cle || ""), 10);
+    if (!Number.isFinite(n) || n >= 90) return null;
+    let vague = null;
+    for (const borne of BORNES_VAGUES) {
+        if (n >= borne.depuis) vague = borne.vague;
+    }
+    return vague;
+}
+
 /** Seconde identité d'un héros qui en compte DEUX pour un seul joueur.
  *
  *  Le pack Cloak & Dagger est bâti ainsi : `linked_identity` porte une identité
@@ -157,6 +210,7 @@ export const catalog = {
                 traits: c ? c.traits || [] : [],
                 team: teamFromTraits(c),
                 extension,
+                vague: vagueDeLExtension(extension),
                 homebrew: isHomebrew(extension),
                 aspects: aspectsOfDeck(d),
                 // Identités alternatives : même deck, autres faces héros /

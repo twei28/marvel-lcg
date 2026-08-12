@@ -64,11 +64,6 @@ export const prefs = {
         s.has(id) ? s.delete(id) : s.add(id);
         o.favHeroes = [...s]; write(o); return s.has(id);
     },
-    recentHeroes()   { return read().recentHeroes || []; },
-    pushRecentHero(id) {
-        const o = read(); const list = (o.recentHeroes || []).filter(x => x !== id);
-        list.unshift(id); o.recentHeroes = list.slice(0, 12); write(o);
-    },
     lastDeckFor(heroId) { return (read().lastDeck || {})[heroId] || null; },
     setLastDeck(heroId, deckId) {
         const o = read(); o.lastDeck = o.lastDeck || {}; o.lastDeck[heroId] = deckId; write(o);

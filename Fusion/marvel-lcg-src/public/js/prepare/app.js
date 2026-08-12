@@ -142,7 +142,7 @@ const state = {
     activeSlot: 0,
     // homebrew : decoche = uniquement les heros officiels, coche = uniquement
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
-    heroFilters: { q: "", ext: "", team: "", fav: false, homebrew: false },
+    heroFilters: { q: "", vague: "", fav: false, homebrew: false },
     scenario: null,
     extensionTab: null,
     difficulty: {
@@ -248,7 +248,6 @@ function assignHero(slotIndex, hero) {
     // Deck posé automatiquement : l'étape Decks pourra le remplacer par le
     // dernier deck utilisé pour ce héros (mémoire des choix).
     p.deckAuto = true;
-    prefs.pushRecentHero(hero.id);
 }
 
 /* ---------------- Salon multijoueur ---------------- */
@@ -375,9 +374,9 @@ function fixMarvelText() {
  *
  * La grille des heros defile a l'interieur d'elle-meme et sa hauteur etait
  * `62vh` : une fraction de la FENETRE, qui ne sait rien de ce qui la precede
- * (titre, recherche, filtres, rangee des recents). Sur un ecran court sa boite
- * descendait sous la barre fixe du bas, et la derniere rangee de heros s'y
- * trouvait coupee en plein sur les noms — signale en jeu, en mode campagne.
+ * (titre, recherche, filtres). Sur un ecran court sa boite descendait sous la
+ * barre fixe du bas, et la derniere rangee de heros s'y trouvait coupee en
+ * plein sur les noms — signale en jeu, en mode campagne.
  *
  * On mesure avec getBoundingClientRect() + scrollY, PAS avec offsetTop :
  * offsetTop se compte depuis le premier ancetre positionne, et l'animation
@@ -385,11 +384,12 @@ function fixMarvelText() {
  * transition — la mesure valait alors 194 px au lieu de 336, et le plafond ne
  * mordait plus. La position dans le document, elle, ne ment pas.
  *
- * La mesure ne peut pas etre prise une fois pour toutes : la rangee des heros
- * recents arrive apres coup (portraits charges en differe) et pousse la grille
- * vers le bas. Mesuree trop tot, la valeur valait 194 px au lieu de 336, et le
- * plafond ne mordait pas. On observe donc la page plutot que de parier sur un
- * delai.
+ * La mesure ne peut pas etre prise une fois pour toutes : ce qui precede la
+ * grille bouge apres coup — la barre de filtres se replie sur une fenetre
+ * etroite, les listes d'equipes et d'extensions se remplissent une fois les
+ * heros charges. Mesuree trop tot, la valeur valait 194 px au lieu de 336, et
+ * le plafond ne mordait pas. On observe donc la page plutot que de parier sur
+ * un delai.
  *
  * Pas de boucle a craindre : ce qu'on ecrit change la HAUTEUR de la grille,
  * jamais sa position ; la mesure suivante rend la meme valeur et la garde
@@ -413,10 +413,10 @@ const observateurGrilles = typeof ResizeObserver === "function"
 /**
  * On surveille CE QUI POUSSE la grille vers le bas : ses freres precedents.
  *
- * Observer la seule .step ne suffisait pas — quand la rangee des recents
- * apparait (36 px), la grille se retracte d'autant et la hauteur de .step ne
- * bouge pas : aucune notification, et la mesure restait fausse de 36 px, juste
- * assez pour repasser sous la barre.
+ * Observer la seule .step ne suffisait pas — quand un frere du dessus grandit,
+ * la grille se retracte d'autant et la hauteur de .step ne bouge pas : aucune
+ * notification, et la mesure restait fausse de plusieurs dizaines de pixels,
+ * juste assez pour repasser sous la barre.
  */
 function surveillerGrilles() {
     if (!observateurGrilles) return;
@@ -826,75 +826,63 @@ function stepTeam() {
             onclick: () => { f.fav = !f.fav; refreshHeroGrid(); },
         }, t("Favoris")),
         el("select", {
-            class: "sel team-select",
-            onchange: (e) => { f.team = e.target.value; refreshHeroGrid(); },
-        }, el("option", { value: "" }, t("Toutes les équipes"))),
-        el("select", {
-            class: "sel ext-select",
-            onchange: (e) => { f.ext = e.target.value; refreshHeroGrid(); },
-        }, el("option", { value: "" }, t("Toutes les extensions"))),
+            class: "sel vague-select",
+            onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
+        }, el("option", { value: "" }, t("Toutes les vagues"))),
         el("button", {
             class: "chip" + (f.homebrew ? " on" : ""),
             title: t("Héros fan-made, hors de toute extension officielle"),
             onclick: (e) => {
                 f.homebrew = !f.homebrew;
                 e.currentTarget.classList.toggle("on", f.homebrew);
-                // Les extensions officielles et fan-made ne se melangent pas :
-                // un filtre d'extension actif n'a plus de sens ici.
-                f.ext = "";
-                const sel = document.querySelector(".ext-select");
-                if (sel) sel.value = "";
+                // Les fan-made n'appartiennent a aucune vague : garder un filtre
+                // de vague actif en passant de l'un a l'autre ne rendrait jamais
+                // rien. On le relache, et le menu se cache (voir majMenuVagues).
+                f.vague = "";
+                majMenuVagues();
                 refreshHeroGrid();
             },
         }, "Fan-made"),
     ));
-    wrap.append(el("div", { class: "recent-row", id: "recent-row" }));
     wrap.append(el("div", { class: "hero-grid full", id: "hero-grid" }, el("div", { class: "loading" }, t("Chargement des héros..."))));
     loadHeroes();
     return wrap;
 }
 
-/** Rangée « Récents » : jusqu'à 8 héros récemment joués, assignables d'un clic. */
-function remplirRecents(heroes) {
-    const row = document.getElementById("recent-row");
-    if (!row) return;
-    const parId = new Map(heroes.map((h) => [h.id, h]));
-    // Les ids inconnus (contenu retiré) sont ignorés.
-    const recents = prefs.recentHeroes().map((id) => parId.get(id)).filter(Boolean).slice(0, 8);
-    if (!recents.length) { row.remove(); ajusterGrilles(); surveillerGrilles(); return; }
-    row.replaceChildren(
-        el("span", { class: "recent-lbl" }, t("Récents :")),
-        ...recents.map((h) => el("button", {
-            class: "recent-chip",
-            onclick: () => { assignHero(state.activeSlot, h); autoAdvanceSlot(); render(); },
-            onmouseenter: (e) => showHeroHover(h, e.currentTarget),
-            onmouseleave: scheduleHide,
-        },
-            portrait(h.heroCardId, "recent"),
-            el("span", {}, h.name),
-        )),
-    );
-    // Cette rangee arrive APRES le rendu et pousse la grille de 36 px : sans
-    // cette remesure, la grille garde une hauteur calculee trop haut et sa
-    // derniere rangee repasse sous la barre du bas.
-    ajusterGrilles();
-    surveillerGrilles();
+/** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une. */
+function nomDeVague(vague) {
+    return vague === 0 ? t("Set de base") : t("Vague") + " " + vague;
 }
+
+/** Remplit le menu des vagues avec CELLES QUI EXISTENT dans la liste affichable.
+ *
+ *  On ne code pas la liste en dur : elle se deduit des heros charges, donc une
+ *  vague a venir apparaitra d'elle-meme, et une vague dont aucun heros n'est
+ *  installe ne proposera pas un filtre qui ne rendrait rien.
+ *
+ *  Cote fan-made il n'y a aucune vague : le menu se cache plutot que d'afficher
+ *  un choix unique et inerte. */
+function majMenuVagues(heroes) {
+    const sel = document.querySelector(".vague-select");
+    if (!sel) return;
+    const liste = heroes || _herosCharges;
+    if (!liste) return;
+    const f = state.heroFilters;
+    const vagues = [...new Set(liste
+        .filter((h) => !!h.homebrew === f.homebrew && h.vague != null)
+        .map((h) => h.vague))].sort((a, b) => a - b);
+    sel.replaceChildren(el("option", { value: "" }, t("Toutes les vagues")));
+    vagues.forEach((v) => sel.append(
+        el("option", { value: String(v), selected: f.vague === String(v) }, nomDeVague(v))));
+    sel.hidden = vagues.length === 0;
+}
+
+let _herosCharges = null;
 
 async function loadHeroes() {
     const heroes = await catalog.heroes();
-    const teams = [...new Set(heroes.map((h) => h.team).filter(Boolean))].sort();
-    // Les extensions fan-made ne figurent pas ici : elles ont leur propre bouton.
-    const exts = [...new Set(heroes.filter((h) => !h.homebrew).map((h) => h.extension).filter(Boolean))].sort();
-    const teamSel = document.querySelector(".team-select");
-    const extSel = document.querySelector(".ext-select");
-    if (teamSel) {
-        teams.forEach((t) => teamSel.append(el("option", { value: t, selected: state.heroFilters.team === t }, t)));
-    }
-    if (extSel) {
-        exts.forEach((x) => extSel.append(el("option", { value: x, selected: state.heroFilters.ext === x }, x.replace(/^\d+\.\s*/, ""))));
-    }
-    remplirRecents(heroes);
+    _herosCharges = heroes;
+    majMenuVagues(heroes);
     refreshHeroGrid(heroes);
 }
 
@@ -908,8 +896,7 @@ async function refreshHeroGrid(pre) {
     const favs = prefs.favHeroes();
     const list = heroes.filter((h) =>
         (!q || h.name.toLowerCase().includes(q)) &&
-        (!f.team || h.team === f.team) &&
-        (!f.ext || h.extension === f.ext) &&
+        (!f.vague || String(h.vague) === f.vague) &&
         (!f.fav || favs.includes(h.id)) &&
         // Le homebrew est masqué par défaut et s'affiche seul quand on le coche.
         (!!h.homebrew === f.homebrew));

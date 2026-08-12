@@ -14,6 +14,11 @@
 
 import { cardImageUrl } from "/public/js/prepare/api.js";
 import { t, boutonLangue, enregistrerTraductions, langueActuelle } from "/public/js/prepare/langue.js";
+import { picIdLangue } from "/public/js/prepare/scans-fr.js";
+
+/** Image d'une carte dans la langue de l'interface : le scan français quand il
+ *  existe, l'anglais sinon (repli assuré par le serveur). Voir scans-fr.js. */
+const imageCarte = (imageId) => cardImageUrl(picIdLangue(imageId));
 
 /* ------------------------------------------------------------ libellés -- */
 // Libellés propres à la galerie (clé FR source -> anglais). Enregistrés ici,
@@ -338,7 +343,7 @@ function celluleCarte(carte) {
         "aria-label": nom,
         onclick: () => ouvrirApercu(carte),
     },
-        el("img", { src: cardImageUrl(carte.imageId), alt: nom, loading: "lazy", decoding: "async" }),
+        el("img", { src: imageCarte(carte.imageId), alt: nom, loading: "lazy", decoding: "async" }),
         el("figcaption", null, nom));
     cellule.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ouvrirApercu(carte); }
@@ -434,7 +439,7 @@ function ouvrirApercu(carte) {
     }
 
     const panneau = el("div", { class: "g-apercu" },
-        el("img", { src: cardImageUrl(carte.imageId), alt: nom }),
+        el("img", { src: imageCarte(carte.imageId), alt: nom }),
         infos);
     voile = el("div", { class: "g-voile", onclick: (e) => { if (e.target === voile) fermerApercu(); } },
         panneau);

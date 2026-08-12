@@ -41,14 +41,14 @@ export const DICO_EN_BASE = {
     "Sélection prête": "Selection ready",
     "Rechercher un héros": "Search for a hero",
     "Favoris": "Favorites",
-    "Toutes les équipes": "All teams",
-    "Toutes les extensions": "All expansions",
+    "Toutes les vagues": "All waves",
+    "Vague": "Wave",
+    "Set de base": "Core Set",
     "Héros fan-made, hors de toute extension officielle": "Fan-made heroes, outside any official expansion",
     "Chargement des héros...": "Loading heroes...",
     "Aucun héros trouvé": "No hero found",
     "PV": "HP",
     "Favori": "Favorite",
-    "Récents :": "Recent:",
 
     /* ---- Survols (héros, scénarios, extensions) ---- */
     "Identité": "Identity",

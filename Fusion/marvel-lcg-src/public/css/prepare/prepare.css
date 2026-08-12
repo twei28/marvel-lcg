@@ -388,7 +388,7 @@ button{cursor:pointer}
    grille, posee par ajusterGrilles() dans js/prepare/app.js.
 
    Avant, la hauteur etait un simple 62vh — une fraction de la FENETRE, qui
-   ignore tout ce qui precede la grille (titre, recherche, filtres, recents).
+   ignore tout ce qui precede la grille (titre, recherche, filtres).
    Sur un ecran court, la boite de la grille descendait donc sous la barre fixe
    du bas, et la derniere rangee de heros s'y trouvait coupee en plein sur les
    noms. Signale en jeu, en mode campagne.
@@ -453,13 +453,21 @@ button{cursor:pointer}
   clip-path:polygon(100% 0,100% 100%,0 100%);
 }
 /* Le trait de separation : la lumiere de Dagger tranchant les tenebres de
-   Cloak. Purement decoratif, donc hors du flux et sans capture de clic. */
+   Cloak. Purement decoratif, donc hors du flux et sans capture de clic.
+
+   `to bottom right` et NON `to bottom left`, malgre les apparences : les bandes
+   de couleur d'un degrade sont PERPENDICULAIRES a son axe. `to bottom left`
+   donnait donc un trait en « \ » alors que la coupe va en « / » — les deux se
+   croisaient au lieu de coincider. Avec le mot-cle de coin, la specification
+   impose en plus que la ligne de couleur passe pile par les deux coins voisins,
+   ici haut-droit et bas-gauche : exactement l'hypotenuse des deux `clip-path`,
+   quelles que soient les proportions de la tuile. */
 .portrait-duo::after{
   content:"";
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:linear-gradient(to bottom left,transparent calc(50% - 1px),rgba(255,255,255,.55) 50%,transparent calc(50% + 1px));
+  background:linear-gradient(to bottom right,transparent calc(50% - 1px),rgba(255,255,255,.55) 50%,transparent calc(50% + 1px));
 }
 
 .hero-card::after{
@@ -990,15 +998,6 @@ button{cursor:pointer}
   white-space:nowrap;padding:7px 13px;font-size:.85rem}
 .progress .reprise-boutons{margin-left:4px}
 .progress .steps{margin-left:auto}
-
-/* --- Étape équipe : rangée des héros récents ------------------------------- */
-.recent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
-.recent-lbl{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--mute)}
-.recent-chip{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;
-  background:var(--steel);border:1px solid var(--line);color:var(--txt);
-  font-size:12px;font-weight:700;cursor:pointer;border-radius:8px}
-.recent-chip:hover{border-color:var(--gold)}
-.recent-chip .portrait{width:26px;height:26px;border-radius:6px;background-position:center 18%;background-size:cover}
 
 /* --- Étape finale : bloc « Avancé » (seed, temps, premier joueur, règles) -- */
 .avance{max-width:560px;margin-left:auto;margin-right:auto;text-align:left}
