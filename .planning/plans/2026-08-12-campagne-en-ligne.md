@@ -80,7 +80,7 @@ Le serveur sait déjà le déduire : `secret_pour_le_moteur()` retrouve la campa
 - Consomme : `CAMPAGNES_FOLDER`, `CLE_SECRET`, `CLE_CARNET_SECRET`, `_sans_secret` (déjà dans le fichier).
 - Produit : `_campagne_la_plus_recente() -> 'Optional[Dict[str, Any]]'` (le dict complet, secret compris, usage interne) et la route `GET /get_campagne_en_cours` qui rend `{"id": str, "scenario": str}` ou `{}`.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `Fusion/marvel-lcg-src/tools/test_campagne_en_cours.py` :
 
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     sys.exit(main())
 ```
 
-- [ ] **Étape 2 : lancer le test, vérifier qu'il échoue**
+- [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -173,7 +173,7 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/m
 
 Attendu : ROUGE, `AttributeError: module ... has no attribute '_campagne_la_plus_recente'`.
 
-- [ ] **Étape 3 : extraire la déduction**
+- [x] **Étape 3 : extraire la déduction**
 
 Dans `server_campagne.py`, juste AVANT `def secret_pour_le_moteur()`, ajouter :
 
@@ -218,7 +218,7 @@ def _campagne_la_plus_recente() -> 'Optional[Dict[str, Any]]':
 
 Vérifier que `Optional` est importé en tête du fichier ; sinon l'ajouter à l'import `typing` existant.
 
-- [ ] **Étape 4 : faire passer `secret_pour_le_moteur()` par la déduction extraite**
+- [x] **Étape 4 : faire passer `secret_pour_le_moteur()` par la déduction extraite**
 
 Remplacer tout le corps de `secret_pour_le_moteur()` (en gardant sa docstring) par :
 
@@ -228,7 +228,7 @@ Remplacer tout le corps de `secret_pour_le_moteur()` (en gardant sa docstring) p
     return {CLE_CARNET_SECRET: secret} if secret else {}
 ```
 
-- [ ] **Étape 5 : relancer le test**
+- [x] **Étape 5 : relancer le test**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -237,7 +237,7 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/m
 
 Attendu : `ECHECS : 0`.
 
-- [ ] **Étape 6 : exposer la route**
+- [x] **Étape 6 : exposer la route**
 
 Dans la classe du serveur, à côté de `get_campagne`, ajouter :
 
@@ -268,7 +268,7 @@ Et dans `__init__`, à côté des autres :
         self.AddAwaitGetSecurity('/get_campagne_en_cours', self.get_campagne_en_cours)
 ```
 
-- [ ] **Étape 7 : vérifier que rien n'a bougé côté campagnes**
+- [x] **Étape 7 : vérifier que rien n'a bougé côté campagnes**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -279,7 +279,7 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/m
 
 Attendu : les trois verts. `secret_pour_le_moteur()` vient d'être réécrit : si `verifier_grille_aos.py` rougit, c'est là qu'il faut chercher.
 
-- [ ] **Étape 8 : porter vers l'arborescence vivante et commit**
+- [x] **Étape 8 : porter vers l'arborescence vivante et commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -306,7 +306,7 @@ git commit -m "feat(campagne): une route dit a tous les sieges quelle campagne o
 - Consomme : `GET /get_campagne_en_cours` (tâche 1).
 - Produit : `lireContexte(): ContexteCampagne | null` **reste inchangée** (lecture locale seule), et `resoudreContexte(): Promise<ContexteCampagne | null>` s'y ajoute : localStorage d'abord, route ensuite. Garder les deux évite de rendre asynchrone le rapport de bug, qui se prend au clic et n'a pas à attendre le réseau.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `ui-app/src/board/campagne/contexte.test.ts` :
 
@@ -368,7 +368,7 @@ describe('le contexte de campagne', () => {
 })
 ```
 
-- [ ] **Étape 2 : lancer le test, vérifier qu'il échoue**
+- [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
@@ -377,7 +377,7 @@ npx vitest run src/board/campagne/contexte.test.ts
 
 Attendu : ROUGE, `resoudreContexte is not a function`.
 
-- [ ] **Étape 3 : écrire `resoudreContexte`**
+- [x] **Étape 3 : écrire `resoudreContexte`**
 
 Dans `ui-app/src/board/campagne/contexte.ts`, juste après `lireContexte`, ajouter :
 
@@ -408,7 +408,7 @@ export async function resoudreContexte(): Promise<ContexteCampagne | null> {
 }
 ```
 
-- [ ] **Étape 4 : brancher le panneau de récompenses**
+- [x] **Étape 4 : brancher le panneau de récompenses**
 
 Dans `PanneauRecompenses.tsx`, remplacer l'import `lireContexte` par `resoudreContexte`, puis dans l'effet (ligne 102) :
 
@@ -427,7 +427,7 @@ Dans `PanneauRecompenses.tsx`, remplacer l'import `lireContexte` par `resoudreCo
 
 Le `if (!contexte || !monde)` qui précédait l'`async` disparaît : il est remonté à l'intérieur. Vérifier que le `return` anticipé qui posait `phase: 'absent'` avant la fonction asynchrone a bien été retiré, sinon le panneau reste « absent » chez les distants quoi qu'il arrive.
 
-- [ ] **Étape 5 : laisser le rapport de bug tranquille**
+- [x] **Étape 5 : laisser le rapport de bug tranquille**
 
 `RapportBug.tsx:44` garde `lireContexte()`. Ajouter au-dessus de `contexteCampagne()` :
 
@@ -437,7 +437,7 @@ Le `if (!contexte || !monde)` qui précédait l'`async` disparaît : il est remo
 // au rapport ; c'est un moindre mal comparé à un bouton qui rame.
 ```
 
-- [ ] **Étape 6 : relancer**
+- [x] **Étape 6 : relancer**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
@@ -446,7 +446,7 @@ npx vitest run && npx tsc --noEmit
 
 Attendu : VERT, avec plus de cas qu'avant (408 + 6).
 
-- [ ] **Étape 7 : commit**
+- [x] **Étape 7 : commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -473,7 +473,7 @@ git commit -m "feat(campagne): le plateau demande au serveur quand il n'a pas la
 - Consomme : `_campagne_la_plus_recente` (tâche 1), `ecrire_json` (`engine.ecriture_atomique`), `_sans_secret`.
 - Produit : `POST /save_carnet_partiel` avec `{"id": str, "champs": {clé: valeur}}`, qui FUSIONNE dans `campagne['carnet']` et rend `{"result": "merged", "carnet": {...}}`.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `Fusion/marvel-lcg-src/tools/test_carnet_partiel.py` :
 
@@ -597,7 +597,7 @@ grep -n "^class" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Cham
 
 Corriger le test si le nom diffère.
 
-- [ ] **Étape 2 : lancer le test, vérifier qu'il échoue**
+- [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -606,7 +606,7 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/m
 
 Attendu : ROUGE, `AttributeError: ... has no attribute 'save_carnet_partiel'`.
 
-- [ ] **Étape 3 : écrire la route**
+- [x] **Étape 3 : écrire la route**
 
 Dans la classe, après `save_campagne` :
 
@@ -654,7 +654,7 @@ Et dans `__init__` :
         self.AddPostSecurity('/save_carnet_partiel', self.save_carnet_partiel)
 ```
 
-- [ ] **Étape 4 : relancer**
+- [x] **Étape 4 : relancer**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -665,7 +665,7 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/m
 
 Attendu : les trois verts.
 
-- [ ] **Étape 5 : porter et commit**
+- [x] **Étape 5 : porter et commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -692,7 +692,7 @@ git commit -m "feat(campagne): une route etroite pour fusionner ses champs du ca
 - Consomme : `ChampVictoire`, `cleCarnet` (`./detecteurs`).
 - Produit : `type DroitCarnet = 'saisie' | 'lecture'`, `droitSurChamp(champ: ChampVictoire, joueurId: number, siege: number, estHote: boolean): DroitCarnet`, et `peutValider(siege: number): boolean`.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `ui-app/src/board/campagne/droits-carnet.test.ts` :
 
@@ -748,7 +748,7 @@ describe('qui valide pour la table', () => {
 })
 ```
 
-- [ ] **Étape 2 : lancer le test, vérifier qu'il échoue**
+- [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
@@ -757,7 +757,7 @@ npx vitest run src/board/campagne/droits-carnet.test.ts
 
 Attendu : ROUGE, import non résolu.
 
-- [ ] **Étape 3 : écrire le module**
+- [x] **Étape 3 : écrire le module**
 
 Créer `ui-app/src/board/campagne/droits-carnet.ts` :
 
@@ -800,7 +800,7 @@ export function peutValider(siege: number): boolean {
 }
 ```
 
-- [ ] **Étape 4 : brancher le panneau**
+- [x] **Étape 4 : brancher le panneau**
 
 Dans `PanneauRecompenses.tsx` :
 
@@ -856,7 +856,7 @@ d) ajouter au dictionnaire `dico-en.ts` :
   'à remplir par': 'to be filled by',
 ```
 
-- [ ] **Étape 5 : relancer**
+- [x] **Étape 5 : relancer**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
@@ -865,7 +865,7 @@ npx vitest run && npx tsc --noEmit
 
 Attendu : VERT. Si un test existant de `PanneauRecompenses` casse faute de la nouvelle prop `siege`, lui passer `siege={0}` : l'hôte est le comportement d'avant, et le test décrit ce comportement-là.
 
-- [ ] **Étape 6 : commit**
+- [x] **Étape 6 : commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -887,7 +887,7 @@ git commit -m "feat(campagne): chacun ne saisit que ses champs, les autres en le
 - Consomme : `POST /save_carnet_partiel` (tâche 3), `droitSurChamp` (tâche 4).
 - Produit : `enregistrerCarnetPartiel(id: string, champs: Record<string, string>): Promise<{ carnet: Record<string, string> }>`.
 
-- [ ] **Étape 0 : sortir le gabarit de monde partagé**
+- [x] **Étape 0 : sortir le gabarit de monde partagé**
 
 `preremplissage.test.ts` et `detecteurs.test.ts` construisent déjà le même monde
 minimal. Créer `ui-app/src/board/campagne/world-de-test.ts` qui exporte
@@ -897,7 +897,7 @@ pires qu'un seul). Faire pointer `preremplissage.test.ts` dessus, relancer
 `npx vitest run src/board/campagne/`, et vérifier que les cas existants restent
 verts AVANT d'écrire le test ci-dessous.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `ui-app/src/board/campagne/PanneauRecompenses.multi.test.tsx` :
 
@@ -936,14 +936,14 @@ describe('le panneau à plusieurs', () => {
 
 **Note pour l'implémenteur :** ce test rend le panneau ENTIER, qui charge la campagne, sa définition et le carnet suggéré par trois appels réseau. Il faut donc bouchonner `fetch` (voir `contexte.test.ts` de la tâche 2, qui montre la forme). Si le montage se révèle trop coûteux à bouchonner, `peutValider()` est déjà couverte par `droits-carnet.test.ts` : abandonner alors ce fichier, et couvrir le rendu au jalon E en vraie partie. Consigner le choix dans le journal d'exécution plutôt que de laisser un test fragile.
 
-- [ ] **Étape 2 : lancer le test, vérifier qu'il échoue**
+- [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
 npx vitest run src/board/campagne/PanneauRecompenses.multi.test.tsx
 ```
 
-- [ ] **Étape 3 : l'appel de route**
+- [x] **Étape 3 : l'appel de route**
 
 Dans `contexte.ts`, à côté d'`enregistrerCampagne` :
 
@@ -961,7 +961,7 @@ export const enregistrerCarnetPartiel = (
   posterJson<{ carnet: Record<string, string> }>('/save_carnet_partiel', { id, champs })
 ```
 
-- [ ] **Étape 4 : le panneau, côté distant**
+- [x] **Étape 4 : le panneau, côté distant**
 
 Dans `PanneauRecompenses.tsx` :
 
@@ -1047,14 +1047,14 @@ d) ajouter au dictionnaire :
   "L'hôte valide les récompenses pour la table.": 'The host validates the rewards for the table.',
 ```
 
-- [ ] **Étape 5 : relancer**
+- [x] **Étape 5 : relancer**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
 npx vitest run && npx tsc --noEmit
 ```
 
-- [ ] **Étape 6 : commit**
+- [x] **Étape 6 : commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -1079,7 +1079,7 @@ Sans ce jalon, l'invité arrive sur « Choisis ton héros » alors que l'équipe
 - Consomme : `GET /get_campagne_en_cours` (tâche 1).
 - Produit : la route rend en plus `equipe: [{heros, nomHeros}]` ; le salon affiche « Tu tiens X » au lieu de la grille de héros.
 
-- [ ] **Étape 1 : la route rend l'équipe**
+- [x] **Étape 1 : la route rend l'équipe**
 
 Dans `get_campagne_en_cours`, remplacer le corps de la réponse par :
 
@@ -1114,7 +1114,7 @@ Dans `get_campagne_en_cours`, remplacer le corps de la réponse par :
 
 Lancer : `~/marvel-work/python/bin/python3.10 tools/test_campagne_en_cours.py`. Attendu : `ECHECS : 0`.
 
-- [ ] **Étape 2 : le salon interroge la route au démarrage**
+- [x] **Étape 2 : le salon interroge la route au démarrage**
 
 Dans `public/js/salon/app.js` (dans `~/marvel-work/...`), avant le rendu des héros :
 
@@ -1166,7 +1166,7 @@ et au démarrage, avant `rendreHeros()` :
 
 Placer ce bloc là où le salon décide aujourd'hui d'afficher la grille. Lire la fonction de démarrage en entier avant de l'insérer : `reprendreChoixExistant()` ne doit pas tourner en campagne, puisqu'il n'y a aucun choix à reprendre.
 
-- [ ] **Étape 3 : les trois chaînes au dictionnaire du salon**
+- [x] **Étape 3 : les trois chaînes au dictionnaire du salon**
 
 Dans `public/js/prepare/dico-en.js` (RÉFÉRENCE) :
 
@@ -1177,7 +1177,7 @@ Dans `public/js/prepare/dico-en.js` (RÉFÉRENCE) :
     "No hero is assigned to this seat in this campaign.",
 ```
 
-- [ ] **Étape 4 : déployer et vérifier statiquement**
+- [x] **Étape 4 : déployer et vérifier statiquement**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -1187,7 +1187,7 @@ node --check "//wsl.localhost/Ubuntu/home/arnau/marvel-work/fusion/marvel-lcg-sr
 
 Attendu : le déploiement passe, `node --check` ne dit rien. Rappel : Node est le binaire **Windows**, il ne lit pas un chemin WSL sans la forme `//wsl.localhost/`.
 
-- [ ] **Étape 5 : commit**
+- [x] **Étape 5 : commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
@@ -1216,7 +1216,7 @@ Après validation, l'hôte revient sur `/campagne.html` et lance le scénario su
 - Consomme : `GET /get_campagne_en_cours` (tâche 1).
 - Produit : `scenarioSuivantLance(scenarioCourant: string, lu: { id?: string; scenario?: string } | null): boolean`, et un effet qui recharge la page quand elle rend `true`.
 
-- [ ] **Étape 1 : écrire le test**
+- [x] **Étape 1 : écrire le test**
 
 Créer `ui-app/src/board/campagne/attente-scenario.test.ts` :
 
@@ -1253,14 +1253,14 @@ describe('le signal du scénario suivant', () => {
 })
 ```
 
-- [ ] **Étape 2 : lancer, vérifier le rouge**
+- [x] **Étape 2 : lancer, vérifier le rouge**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
 npx vitest run src/board/campagne/attente-scenario.test.ts
 ```
 
-- [ ] **Étape 3 : écrire le module**
+- [x] **Étape 3 : écrire le module**
 
 Créer `ui-app/src/board/campagne/attente-scenario.ts` :
 
@@ -1285,7 +1285,7 @@ export function scenarioSuivantLance(
 }
 ```
 
-- [ ] **Étape 4 : brancher l'attente chez les distants**
+- [x] **Étape 4 : brancher l'attente chez les distants**
 
 Dans `PanneauRecompenses.tsx`, ajouter :
 
@@ -1306,7 +1306,7 @@ Dans `PanneauRecompenses.tsx`, ajouter :
   }, [siege, etat.phase, scenario.id])
 ```
 
-- [ ] **Étape 5 : relancer et commit**
+- [x] **Étape 5 : relancer et commit**
 
 ```bash
 cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
@@ -1387,3 +1387,75 @@ git commit -m "test(campagne): une campagne menee a deux, du lancement a la vali
 - **Changer l'équipe en cours de campagne.** Interdit par le livret. Si le besoin apparaît (un joueur qui abandonne), c'est une décision de règle, pas un chantier technique.
 - **Le serveur permanent** (`.planning/todos/2026-07-28-serveur-permanent-multijoueur.md`). Ce chantier-ci marche sur le multi actuel, tunnel et mot de passe compris.
 - **Le re-zip vers `Fusion/`.** Dette antérieure, déjà signalée par le plan du rapport de bug. À solder à part.
+
+
+---
+
+## Journal d'exécution (12/08/2026)
+
+**Tâches 1 à 7 faites**, huit commits, `e596187` à `2ccd41c`. Jalons A, B, C et D
+livrés. Vérifications lancées et lues :
+
+| Vérification | Résultat |
+|---|---|
+| `npx vitest run` | **434 cas verts** (429 avant la tâche 7, 415 avant le chantier) |
+| `npx tsc --noEmit` | sans erreur |
+| `tools/test_campagne_en_cours.py` | 15 vérifications |
+| `tools/test_carnet_partiel.py` | 14 vérifications |
+| `tools/verifier_campagnes.py` | vert |
+| `tools/verifier_grille_aos.py` | 8/8 |
+| `tools/test_ecriture_atomique.py` | 8/8 |
+| `node --check` sur `salon/app.js` et `prepare/dico-en.js` | sans erreur |
+| `launcher_fast.py --build-only` | 1 compilé, 0 échec |
+| Les deux routes en **HTTP réel** sur le serveur de dev | conformes, voir ci-dessous |
+
+### Les routes éprouvées en HTTP, pas seulement en appel direct
+
+Les tests Python appellent les méthodes du serveur en direct : ils ne prouvent
+pas que les routes sont SERVIES. Sondées sur le serveur de dev (port 2346), avec
+une campagne de test créée puis supprimée :
+
+- `GET /get_campagne_en_cours` hors campagne : `200 {}`.
+- Avec une campagne : `{"id", "scenario", "nom", "equipe"}`, **sans secret ni carnet**.
+- `POST /save_carnet_partiel` : fusionne (le champ du joueur 1 survit à l'écriture du joueur 2).
+- Le même POST portant `termines` et `perdue` : ignorés. Après écriture, `termines`
+  vaut toujours `[]`, `perdue` est absent, le secret est intact.
+
+### Les pièges payés
+
+1. **Les fins de ligne, deux fois.** `server_campagne.py` et `prepare/dico-en.js`
+   sont en CRLF intégral. Une lecture `newline=''` avec des motifs en LF ne
+   correspond à rien, et l'assertion tombe sans expliquer pourquoi. La méthode
+   qui marche : lire `newline=''`, normaliser en LF, éditer, réécrire en CRLF.
+2. **Le poll de l'hôte réécrivait ses propres cases.** Le plan disait de fusionner
+   `{...carnet, ...valeurs}`. Ce n'est pas suffisant : une case que l'hôte vient
+   d'EFFACER est retirée de `valeurs` (par `poser`, qui fait `delete`), donc le
+   serveur la réinjecte trois secondes plus tard. D'où `cleDUnAutreSiege()`, qui
+   ne reprend que les clés `Player N ` d'un autre siège. Ajout non prévu au plan,
+   avec ses quatre cas de test.
+3. **Une empreinte périmée trouvée en passant.** `prepare.html` portait
+   `app.js?v=9e61a4a9` alors que le fichier vaut `e9c6f532`. Un navigateur ayant
+   l'ancien en cache ne l'aurait jamais rechargé. Corrigé par `deployer.sh` et
+   commité à part (`cf551f1`), sans rapport avec ce chantier.
+
+### Écarts par rapport au plan écrit
+
+- **`world-de-test.ts` créé sans vider `preremplissage.test.ts`.** Le plan
+  demandait d'y DÉPLACER le gabarit commun. Toucher un test vert qui couvre le
+  pré-remplissage pour un gain de forme est un risque gratuit : le nouveau
+  fichier sert au seul test neuf, et le commentaire en tête le dit.
+- **`PanneauRecompenses.multi.test.tsx` a bien été écrit.** Le plan prévoyait de
+  l'abandonner si le bouchonnage se révélait trop coûteux ; un seul stub de
+  `fetch` routant par URL a suffi. Les quatre cas ont été **vérifiés par
+  mutation** (`peutValider -> true` en fait tomber 3, `droitSurChamp -> 'saisie'`
+  en fait tomber 1) : ils passaient du premier coup, ce qui ne prouve rien tant
+  qu'on ne les a pas vus mordre.
+- **Un état `envoye`** ajouté au panneau : un distant n'a pas de « Valider », donc
+  sans retour il ne saurait pas si son envoi a pris.
+
+### Ce qui reste : la tâche 8, qui demande un navigateur
+
+Le serveur de dev tourne sur le port 2346, prêt pour l'essai. Rien n'a été mené
+en vraie partie : **le critère d'acceptation de la fiche n'est pas atteint**, et
+la prémisse notée en tête de ce plan (ce que voyait un invité au salon AVANT ce
+chantier) reste non mesurée.
