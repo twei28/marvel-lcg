@@ -178,6 +178,19 @@ export const enregistrerCampagne = (campagne: Campagne): Promise<{ campagne: Cam
  * serveur, comme le tirage initial. Lui laisser la main reviendrait à écrire la
  * réponse de l'enquête dans le navigateur.
  */
+/**
+ * Envoie SES champs du carnet, sans toucher au reste de la campagne.
+ *
+ * Le serveur FUSIONNE : deux sièges qui écrivent en même temps ne se perdent
+ * pas. C'est la seule écriture qu'un siège autre que l'hôte peut faire, et
+ * elle ne sait ni terminer un scénario ni gagner une campagne.
+ */
+export const enregistrerCarnetPartiel = (
+  id: string,
+  champs: Record<string, string>
+): Promise<{ carnet: Record<string, string> }> =>
+  posterJson<{ carnet: Record<string, string> }>('/save_carnet_partiel', { id, champs })
+
 export const reinitialiserEnquete = (id: string): Promise<{ preuves_rendues: number }> =>
   posterJson<{ preuves_rendues: number }>('/reinitialiser_enquete', { id })
 

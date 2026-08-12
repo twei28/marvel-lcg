@@ -4,7 +4,7 @@
 // nomme, tout le reste appartient à l'hôte. Sans elle, deux joueurs écrivent
 // la même case et le dernier gagne, en silence.
 import { describe, expect, it } from 'vitest'
-import { droitSurChamp, peutValider } from './droits-carnet'
+import { cleDUnAutreSiege, droitSurChamp, peutValider } from './droits-carnet'
 import type { ChampVictoire } from './detecteurs'
 
 const commun: ChampVictoire = { cle: 'Bombs Defused', type: 'choix', libelle: '' }
@@ -45,5 +45,32 @@ describe('qui valide pour la table', () => {
     // Une page ouverte sans `?p=` ne doit pas pouvoir terminer le scénario de
     // toute la table depuis un écran qu'elle n'a pas rempli.
     expect(peutValider(-1)).toBe(false)
+  })
+})
+
+// L'hôte recharge la campagne pendant que le panneau est ouvert, pour voir
+// arriver les champs des autres. Il ne doit reprendre QUE les leurs : une case
+// à lui qu'il vient d'effacer réapparaîtrait toutes les trois secondes, et il
+// se battrait contre son propre écran.
+describe('les clés qui appartiennent à un autre siège', () => {
+  it('reconnaît la clé d un autre joueur', () => {
+    expect(cleDUnAutreSiege('Player 2 Upgrade', 0)).toBe(true)
+    expect(cleDUnAutreSiege('Player 4 Upgrade', 0)).toBe(true)
+  })
+
+  it('ne reprend pas la sienne', () => {
+    // cleCarnet() écrit « Player <siège + 1> » : le siège 0 est « Player 1 ».
+    expect(cleDUnAutreSiege('Player 1 Upgrade', 0)).toBe(false)
+    expect(cleDUnAutreSiege('Player 3 Upgrade', 2)).toBe(false)
+  })
+
+  it("ne reprend pas les champs communs, qui sont à l'hôte", () => {
+    expect(cleDUnAutreSiege('Bombs Defused', 0)).toBe(false)
+    expect(cleDUnAutreSiege('A.I.M. Envelope', 0)).toBe(false)
+  })
+
+  it("ne se laisse pas prendre par une clé qui commence par « Player » sans numéro", () => {
+    expect(cleDUnAutreSiege('Players Rescued', 0)).toBe(false)
+    expect(cleDUnAutreSiege('Player X Upgrade', 0)).toBe(false)
   })
 })

@@ -34,3 +34,21 @@ export function droitSurChamp(
 export function peutValider(siege: number): boolean {
   return siege === 0
 }
+
+/**
+ * Cette clé de carnet appartient-elle à un AUTRE siège que le nôtre ?
+ *
+ * L'hôte recharge la campagne pendant que le panneau est ouvert, pour voir
+ * arriver les champs des autres. Il ne doit reprendre que les leurs : une case
+ * à lui qu'il vient d'effacer réapparaîtrait à chaque rechargement, et il se
+ * battrait contre son propre écran.
+ *
+ * La forme des clés vient de `cleCarnet()` : « Player <siège + 1> <clé> ». Un
+ * champ commun n'a pas de préfixe, et appartient donc à l'hôte. Le numéro est
+ * exigé : « Players Rescued » est un champ commun, pas le champ du joueur « s ».
+ */
+export function cleDUnAutreSiege(cle: string, siege: number): boolean {
+  const trouve = /^Player (\d+) /.exec(cle)
+  if (!trouve) return false
+  return Number(trouve[1]) !== siege + 1
+}

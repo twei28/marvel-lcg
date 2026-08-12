@@ -29,13 +29,19 @@ import {
   chargerDefinition,
   effacerContexte,
   enregistrerCampagne,
+  enregistrerCarnetPartiel,
   reinitialiserEnquete,
   resoudreContexte,
   type Campagne,
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
-import { droitSurChamp, peutValider, type DroitCarnet } from './droits-carnet'
+import {
+  cleDUnAutreSiege,
+  droitSurChamp,
+  peutValider,
+  type DroitCarnet,
+} from './droits-carnet'
 import { assainirCarnet, preRemplir } from './preremplissage'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
@@ -104,6 +110,9 @@ export function PanneauRecompenses({
   const [valeurs, setValeurs] = useState<Record<string, string>>({})
   const [enregistrement, setEnregistrement] = useState(false)
   const [echec, setEchec] = useState('')
+  // Un distant n'a pas de « Valider » : sans retour, il ne saurait pas si son
+  // envoi a pris.
+  const [envoye, setEnvoye] = useState(false)
 
   useEffect(() => {
     let annule = false
@@ -193,6 +202,29 @@ export function PanneauRecompenses({
     setValeurs(preRemplissage)
   }, [preRemplissage])
 
+  // L'hôte attend les champs des autres sièges. Trois secondes suffisent : on
+  // regarde quelqu'un remplir un formulaire, pas une animation. Le poll
+  // n'existe pas chez les distants, qui n'attendent personne, et s'arrête dès
+  // que le panneau se ferme.
+  //
+  // Il ne reprend QUE les cases des autres. Sans ce filtre, une case à l'hôte
+  // qu'il vient d'effacer réapparaîtrait toutes les trois secondes.
+  const idCampagne = etat.phase === 'pret' ? etat.campagne.id : undefined
+  useEffect(() => {
+    if (!peutValider(siege) || !idCampagne) return
+    const minuteur = window.setInterval(() => {
+      void chargerCampagne(idCampagne)
+        .then((fraiche) => {
+          const desAutres = Object.fromEntries(
+            Object.entries(fraiche.carnet ?? {}).filter(([cle]) => cleDUnAutreSiege(cle, siege))
+          )
+          setValeurs((courantes) => ({ ...courantes, ...desAutres }))
+        })
+        .catch(() => undefined)
+    }, 3000)
+    return () => window.clearInterval(minuteur)
+  }, [siege, idCampagne])
+
   if (etat.phase === 'absent') return null
   if (etat.phase === 'chargement') {
     return (
@@ -264,6 +296,37 @@ export function PanneauRecompenses({
       ? campagne.carnet?.[scenario.reprise.cle_compte]
       : '0') ?? '0') || 0
   )
+
+  /**
+   * Un siège distant envoie SES champs, et rien d'autre.
+   *
+   * On n'envoie que ce qui nous appartient : le serveur fusionne, donc envoyer
+   * le carnet entier écraserait les champs des autres avec la copie qu'on en a
+   * lue, qui peut déjà être périmée.
+   */
+  async function envoyerMesChamps() {
+    if (enregistrement) return
+    setEnregistrement(true)
+    setEchec('')
+    try {
+      const miens: Record<string, string> = {}
+      for (const champ of visibles) {
+        const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
+        for (const joueurId of joueurs) {
+          if (droitSurChamp(champ, joueurId, siege, peutValider(siege)) !== 'saisie') continue
+          const cle = cleCarnet(champ, joueurId)
+          const valeur = valeurs[cle]
+          if (valeur !== undefined) miens[cle] = valeur
+        }
+      }
+      await enregistrerCarnetPartiel(campagne.id, miens)
+      setEnvoye(true)
+    } catch (e) {
+      setEchec((e as Error).message)
+    } finally {
+      setEnregistrement(false)
+    }
+  }
 
   async function valider() {
     if (manquants.length || enregistrement) return
@@ -380,22 +443,44 @@ export function PanneauRecompenses({
       {echec ? <p className="camp-recomp-echec">{echec}</p> : null}
 
       <div className="camp-recomp-actions">
-        <button
-          type="button"
-          className="camp-recomp-valider"
-          disabled={Boolean(manquants.length) || enregistrement}
-          onClick={valider}
-        >
-          {enregistrement
-            ? t('Enregistrement…')
-            : verdict.perdue
-              ? t('Consigner la fin de la campagne')
-              : reprise.applicable
-                ? t('Re-préparer les preuves')
-                : estFinal
-                  ? t('Voir la conclusion')
-                  : t('Valider et continuer la campagne')}
-        </button>
+        {peutValider(siege) ? (
+          <button
+            type="button"
+            className="camp-recomp-valider"
+            disabled={Boolean(manquants.length) || enregistrement}
+            onClick={valider}
+          >
+            {enregistrement
+              ? t('Enregistrement…')
+              : verdict.perdue
+                ? t('Consigner la fin de la campagne')
+                : reprise.applicable
+                  ? t('Re-préparer les preuves')
+                  : estFinal
+                    ? t('Voir la conclusion')
+                    : t('Valider et continuer la campagne')}
+          </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              className="camp-recomp-valider"
+              disabled={enregistrement}
+              onClick={envoyerMesChamps}
+            >
+              {enregistrement
+                ? t('Envoi…')
+                : envoye
+                  ? t('Renvoyer mes champs')
+                  : t('Envoyer mes champs')}
+            </button>
+            <span className="camp-recomp-bloque">
+              {envoye
+                ? t("Envoyé. L'hôte valide les récompenses pour la table.")
+                : t("L'hôte valide les récompenses pour la table.")}
+            </span>
+          </>
+        )}
         {manquants.length ? (
           <span className="camp-recomp-bloque">
             {t('À choisir avant de continuer :')} {manquants.map((c) => t(c.libelle)).join(', ')}

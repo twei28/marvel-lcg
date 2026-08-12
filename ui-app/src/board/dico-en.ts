@@ -315,6 +315,11 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- Campagne a plusieurs ----
   'à remplir par': 'to be filled by',
+  'Envoyer mes champs': 'Send my fields',
+  'Renvoyer mes champs': 'Send my fields again',
+  'Envoi…': 'Sending…',
+  "L'hôte valide les récompenses pour la table.": 'The host validates the rewards for the table.',
+  "Envoyé. L'hôte valide les récompenses pour la table.": 'Sent. The host validates the rewards for the table.',
 
   // ---- Rapport de bug (panneau H) ----
   'Profondeur': 'Depth',
