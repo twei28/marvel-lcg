@@ -313,6 +313,19 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',
 
+  // ---- Rapport de bug (panneau H) ----
+  'Profondeur': 'Depth',
+  '20 dernières': 'Last 20',
+  'Ce tour': 'This round',
+  'Toute la partie': 'Whole game',
+  'Copier': 'Copy',
+  'Télécharger': 'Download',
+  'Copier un rapport de bug': 'Copy a bug report',
+  'Télécharger le rapport complet': 'Download the full report',
+  'Rapport copié': 'Report copied',
+  'Rapport téléchargé': 'Report downloaded',
+  'Copie refusée par le navigateur': 'Copy refused by the browser',
+
   'Payer': 'Pay',
   'Main': 'Hand',
 
