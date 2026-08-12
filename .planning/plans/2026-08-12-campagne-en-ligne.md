@@ -1453,7 +1453,30 @@ une campagne de test créée puis supprimée :
 - **Un état `envoye`** ajouté au panneau : un distant n'a pas de « Valider », donc
   sans retour il ne saurait pas si son envoi a pris.
 
-### Ce qui reste : la tâche 8, qui demande un navigateur
+### Ajouté après coup : la tâche 8 étape 2 est faite (`5e2f990`)
+
+`ui-check/tests/campagne-multi.spec.ts`, 2/2 verts, 26 autres cas de campagne sans
+régression. **Vérifié par mutation** : `resoudreContexte()` réduite à
+`lireContexte()` fait rougir le test sur « Le siège 1 doit voir le panneau sans
+avoir jamais eu la clé » — l'assertion centrale mord.
+
+Trois choses apprises en l'écrivant :
+
+1. **Un défaut d'interface révélé** : le panneau listait aux sièges distants
+   « À choisir avant de continuer : <champ> » pour des cases appartenant à
+   d'autres joueurs. Le message ne sert qu'à bloquer le bouton de l'hôte ; il lui
+   est désormais réservé.
+2. **Compter les boutons de tout le panneau est fragile** : la première version
+   supposait trois options par champ là où `Tech Upgrade` en porte quatre, et
+   pointait la mauvaise carte en ayant l'air juste. Le test cible maintenant le
+   champ par sa NATURE (`:has(.camp-champ-joueur)`) et les cartes DANS leur ligne.
+3. **Deux rôles ne partagent pas un sélecteur** : `.camp-recomp-bloque` servait au
+   message d'attente du distant ET à la liste des manquants. Le premier a pris sa
+   propre classe.
+
+### Ce qui reste vraiment : l'essai humain
+
+
 
 Le serveur de dev tourne sur le port 2346, prêt pour l'essai. Rien n'a été mené
 en vraie partie : **le critère d'acceptation de la fiche n'est pas atteint**, et

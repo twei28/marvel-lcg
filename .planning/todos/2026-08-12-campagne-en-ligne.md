@@ -153,7 +153,7 @@ moment du droit de la voir) tienne à quatre sièges et pas seulement à un.
 
 ### 4.6 Tests
 
-**État :** ⏳ **PARTIEL.** 434 cas vitest verts (dont 19 neufs sur ce chantier), 29 vérifications Python, et les deux routes sondées en **HTTP réel** sur le serveur de dev. Mais le test Playwright à deux navigateurs (`campagne-multi.spec.ts`) n'est pas écrit, et aucune partie n'a été menée.
+**État :** ✅ **FAIT côté automatisé** (`5e2f990`). 434 cas vitest, 29 vérifications Python, les deux routes sondées en **HTTP réel**, et `ui-check/tests/campagne-multi.spec.ts` : deux contextes de navigateur, une vraie partie à deux héros, le siège 1 qui voit le panneau **sans avoir jamais eu la clé**, les droits par champ, « Valider » réservé à l'hôte, et le carnet relu portant les deux saisies. Vérifié par mutation. Le test a révélé un défaut, corrigé : le panneau listait aux distants des cases à remplir qui ne leur appartenaient pas. ⏳ Reste l'essai humain, le salon n'étant atteint par rien d'automatisé.
 
 Le pilote de campagne sait déjà **servir tous les sièges**
 (`ui-check/pilote-campagne.ts`, §13 de `docs/CAMPAGNES.md`). C'est lui qui rend
@@ -176,13 +176,11 @@ scénario 1 à la validation des récompenses : les deux joueurs voient le panne
 chacun remplit ses champs, l'hôte valide, le carnet relu contient les deux
 saisies, et le scénario 2 lit ce que le scénario 1 a écrit.
 
-**Non atteint à ce jour.** Tout est écrit, testé et déployé, mais rien n'a été
-mené en vraie partie. Ce qu'il reste, détaillé à la tâche 8 du plan :
+**Atteint par l'automatisation, pas par un humain.** `campagne-multi.spec.ts` mène
+une vraie partie à deux sièges et relit le carnet. Ce qu'il reste :
 
-1. `ui-check/tests/campagne-multi.spec.ts` : deux contextes de navigateur, le
-   distant qui voit le panneau **sans jamais avoir posé la clé**, les droits par
-   champ, « Valider » absent chez lui, et le carnet relu contenant les deux saisies.
-   Automatisable, non écrit.
+1. ~~`ui-check/tests/campagne-multi.spec.ts`~~ **FAIT** (`5e2f990`), 2/2 verts, sans
+   régression sur les 26 autres cas de campagne.
 2. L'essai humain : le salon qui dit « Tu tiens <héros> », puis un scénario mené à
    deux, validé, et le suivant lancé pour voir le second navigateur suivre seul.
 3. Une prémisse restée **non mesurée** : ce que voyait un invité au salon quand
