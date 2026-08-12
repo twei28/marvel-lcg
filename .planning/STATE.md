@@ -33,6 +33,21 @@ scénario joué de bout en bout par un test ; les carnets se remplissent seuls (
 champs sur 98, les 6 autres étant de vraies décisions de joueur) ; 365 tests vitest,
 54 cas Playwright de campagne, `tsc --noEmit` sans erreur.
 
+**DÉCISION du 12/08/2026 : l'ancienne interface n'est plus maintenue.** La sortie de
+secours vers l'ancienne préparation était déjà cassée avant le nettoyage du code mort
+(`prepare.html` ne charge plus `ui-switch.js`, donc plus de lien « Revenir à l'ancienne
+version » ; vérifié en restaurant la version d'avant, les mêmes deux cas échouaient).
+Elle ne sera pas réparée : `ui-check/tests/bascule.spec.ts` a été retiré, avec son
+script npm. Conséquences à connaître :
+
+* `ui-switch.js` n'est plus chargé que par `scene.html`, qui reste servie mais n'est
+  plus une porte de sortie depuis la nouvelle préparation ;
+* les quatre écrans « Preparation (ancienne) » de `ui-check/ecrans.ts` surveillent
+  encore l'apparence de `scene.html` par captures. Ils ne gênent pas, mais ils ne
+  protègent plus rien d'utile : à retirer le jour où `scene.html` partira ;
+* la Definition of done des phases 5 à 7 de `ROADMAP.md` demandait « `?ui=old` reste à
+  un clic ». Ce critère est abandonné, sciemment.
+
 **Dette toujours due** (elle n'a pas bougé) : la validation visuelle humaine du plan
 02-04, franchie sur les seules mesures automatiques. Voir le point de vigilance
 correspondant dans le contexte accumulé.
