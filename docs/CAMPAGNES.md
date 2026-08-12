@@ -11,33 +11,43 @@ Ce fichier-ci est le mode d'emploi.
 
 ## 1. En deux mots
 
+> ⚠ Ce paragraphe est resté à l'état du 7 août jusqu'au 12/08/2026, où il annonçait
+> encore « six boîtes » et « rien à câbler » pour gmw et aos. Corrigé sur mesure.
+
 Le mode campagne enchaîne les scénarios d'une boîte dans l'ordre du livret. Ce
 qu'on gagne dans un scénario (améliorations, alliés, compteurs) est enregistré
 dans un **carnet de campagne** et rejoue automatiquement à la mise en place du
 scénario suivant.
 
-**Les six boîtes à récompenses sont jouables** depuis le 10/8/2026, chacune
-avec son fichier `data/campagnes/*.json` et ses planches de livret :
+**LES HUIT BOÎTES QUI ONT UN CARNET OFFICIEL SONT JOUABLES**, chacune avec son
+fichier `data/campagnes/*.json`, ses planches de livret et son mode expert :
 
-- L'Avènement de Crâne Rouge (`trors`)
-- Intentions Sinistres (`sm`)
-- The Mad Titan's Shadow (`mts`)
-- La Genèse des Mutants (`mut_gen`)
-- NeXt Evolution (`next_evol`)
-- L'Ère d'Apocalypse (`aoa`)
+| Boîte | Code | Ce qu'elle a de particulier |
+|---|---|---|
+| L'Avènement de Crâne Rouge | `trors` | 3 décisions de joueur (améliorations) |
+| Intentions Sinistres | `sm` | la piste de réputation, le score final, le matériel Osborn tiré au sort |
+| The Mad Titan's Shadow | `mts` | tout au collecteur moteur |
+| La Genèse des Mutants | `mut_gen` | le rôle, choisi en jeu, et le role-building |
+| NeXt Evolution | `next_evol` | les manigances de campagne et leurs environnements |
+| L'Ère d'Apocalypse | `aoa` | les missions, et la seule victoire qui peut perdre la campagne |
+| Galaxy's Most Wanted | `gmw` | **le Marché** : une monnaie qui traverse les scénarios |
+| Agents of S.H.I.E.L.D. | `aos` | **l'enquête** : la taupe, la grille des 27, l'accusation |
 
-Galaxy's Most Wanted, Agents of S.H.I.E.L.D. et Civil War n'ont aucune
-récompense codée côté moteur : elles se joueraient en séquence pure, sans
-carnet. Rien à câbler pour elles.
+Seule **Civil War** reste dehors, et ce n'est pas une campagne : c'est un mode
+bataille par équipes, qui demande son propre flux de préparation
+(`.planning/todos/2026-07-30-mode-bataille-civil-war.md`).
 
-**Une clé fausse ne fait aucun bruit** (§5). Depuis le 10/8/2026,
-`tools/verifier_campagnes.py` compare chaque clé déclarée aux chaînes du
-moteur et refuse de se taire dessus. À lancer après toute écriture de
-définition.
+**Le carnet se remplit tout seul** : 92 champs sur 98 sont relevés par le jeu, par le
+collecteur du moteur ou par un détecteur qui lit le descripteur de monde. Les 6 qui
+restent sont de vraies décisions du livret (« each player chooses »), voir §11.
 
-La septième boîte, Galaxy's Most Wanted (`gmw`), n'a aucune récompense codée
-côté moteur : elle se joue en séquence pure, sans carnet. Rien à câbler pour
-elle.
+**Chaque boîte a au moins un scénario joué de bout en bout par un test**, carnet écrit
+et relu (§15 pour les trois dernières).
+
+**Une clé fausse ne fait aucun bruit** (§5). `tools/verifier_campagnes.py` compare
+chaque clé déclarée aux chaînes du moteur, vérifie que chaque `detection` existe
+vraiment dans `detecteurs.ts`, et refuse un `tirage` mal formé. À lancer après toute
+écriture de définition.
 
 ---
 

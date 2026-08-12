@@ -5,18 +5,54 @@
 Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 
 **Valeur centrale :** Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mobile, sans jamais toucher aux règles du moteur.
-**Focus actuel :** Phase 2 en cours (fondations : stack React/TS/Vite servie par le serveur existant + design system tokenisé)
+**Focus actuel (12/08/2026) :** le mode campagne est sans dette connue (`docs/CAMPAGNES.md`). Hors campagne, le plus gros chantier ouvert est le mode bataille Civil War. La refonte UI est livrée autrement que prévu : lire l'encart de tête de `ROADMAP.md`.
 
 ## Position actuelle
 
-Phase : 2 sur 7 (Fondations — stack et design system tokenisé) — **en cours**
-Plan : 02-01, 02-02, 02-03 et 02-04 terminés (10 plans dans la phase)
-Statut : En cours — la chaîne de build arrive jusqu'au jeu **et la cascade CSS de l'ancienne préparation est saine** : `wizard.css` est passé de 105 `!important` à 2 exceptions documentées, sans qu'un seul style calculé ne bouge
-Dernière activité : 2026-07-28 — 02-04-PLAN.md terminé (styles en ligne de `scene.html` extraits vers `css/menu/scene-inline.css` chargé AVANT `wizard.css`, purge des 105 `!important`, 6 régressions mesurées et corrigées par ordre de source puis spécificité ; 27 références vertes, 0 différence de style calculé sur les 4 panneaux et 10 états de survol/sélection)
+> ⚠ **Ce fichier a dormi du 3 au 12 août 2026.** Ce qui suit a été mesuré le
+> 12/08/2026 ; tout ce qui parle de « phase 2 en cours » plus bas dans le contexte
+> accumulé est à lire comme un historique, pas comme un état.
 
-Progression phase 1 : [██████████] 100% (6/6 plans)
-Progression phase 2 : [████░░░░░░] 4/10 plans (02-01, 02-02, 02-03, 02-04)
-Progression projet : [██░░░░░░░░] ~20% (1 phase sur 7 terminée ; plans des phases 3 à 7 non encore découpés)
+**La refonte UI a été livrée, mais pas dans l'ordre de la roadmap** — voir l'encart
+en tête de `ROADMAP.md`. Le plateau a été réécrit en React (`ui-app/src/board/`,
+servi en `/app/board.html`), la préparation refaite en JavaScript non compilé
+(`public/js/prepare/app.js`), et la tokenisation des écrans anciens n'a jamais eu
+lieu (`tokens.css` n'est référencé par aucune page).
+
+**L'essentiel du travail depuis le 7 août n'est pas dans cette roadmap** : c'est le
+MODE CAMPAGNE, qui a sa propre documentation. Ne pas chercher son état ici.
+
+| Où | Quoi |
+|---|---|
+| `docs/CAMPAGNES.md` | le mode campagne, 18 sections, tenu à jour à chaque commit |
+| `.twei/SESSION.md` | l'état de la dernière session et la TODO vivante |
+| `ROADMAP.md` (encart de tête) | l'état réel des 7 phases de la refonte UI |
+
+État au 12/08/2026 : les huit boîtes-campagnes sont jouables et chacune a au moins un
+scénario joué de bout en bout par un test ; les carnets se remplissent seuls (92
+champs sur 98, les 6 autres étant de vraies décisions de joueur) ; 365 tests vitest,
+54 cas Playwright de campagne, `tsc --noEmit` sans erreur.
+
+**Dette toujours due** (elle n'a pas bougé) : la validation visuelle humaine du plan
+02-04, franchie sur les seules mesures automatiques. Voir le point de vigilance
+correspondant dans le contexte accumulé.
+
+**Chantiers ouverts, hors campagne** (relevés le 12/08 dans les documents du dépôt) :
+
+1. **Civil War** : les cartes existent (set « 56. Civil War », pack `cw` scripté),
+   mais aucun scénario — le mode bataille par équipes n'est pas implémenté. Spec dans
+   `.planning/todos/2026-07-30-mode-bataille-civil-war.md` ;
+2. **scans FR** : 430 cartes sans image française (136 officielles, 294 fan-made), 80
+   identifiants inconnus de marvelcdb, 5 désaccords OCTGN à vérifier à l'œil
+   (`docs/RAPPORT-SCANS-FR.md`, chiffres du 6 août) ;
+3. **serveur permanent multijoueur** : conçu, non implémenté (le mode tunnel marche) ;
+4. **trois vérifications qui demandent un humain** : une partie avec un deck
+   MarvelCDB menée jusqu'au plateau, la partie de salon à deux navigateurs, le
+   tutoriel joué de bout en bout et ses 11 leçons relues ;
+5. **l'audit des cartes ne voit pas** un effet qui fait la mauvaise chose avec le bon
+   type ; la suite prévue était des mini-scénarios de jeu ;
+6. **trois cas manquent aux fixtures** : `zone-victoire`, `deck-rencontre-vide`,
+   `stade-3`.
 
 ## Métriques
 
@@ -164,7 +200,18 @@ Aucun.
 
 ## Continuité de session
 
-Dernière session : 2026-07-28
-Arrêté à : **02-01 à 02-04 terminés** — la chaîne de build arrive jusqu'au jeu et la cascade de l'ancienne préparation est assainie. `wizard.css` est passé de 105 `!important` à 2 exceptions commentées (styles posés en ligne par le JavaScript de `scene.html`) ; les 361 lignes de CSS jadis en ligne vivent dans `css/menu/scene-inline.css`, chargé avant `wizard.css`. 27 références vertes, 0 différence de style calculé sur les 4 panneaux et sur 10 états de survol et de sélection.
-Fichier de reprise : aucun
-Prochaine étape : plan 02-05 (pose des `@layer`). **Avant de commencer** : vérifier que le serveur de dev tourne sur 2346 (commande dans les points de vigilance) et exporter `UI_CHECK_BASE` + `WSLENV`. Méthode de preuve désormais disponible et attendue : `node ui-check/scripts/releve-styles.mjs relever` avant, puis après, puis `comparer` — la sortie doit dire « Aucun style calculé n'a changé ». Rappels : séquence CSS obligatoire (✓ captures, ✓ purge, → `@layer`, → tokens), routage serveur en liste blanche stricte par extension, tout passage vers le jeu par `deployer.sh`.
+Dernière session : **2026-08-12**
+Arrêté à : **le mode campagne n'a plus de dette connue.** Les trois défauts assumés
+qui restaient ont été traités un par un (Professor X câblé, la répartition des
+preuves ne part plus au navigateur, la branche gagnante d'AoA couverte dans les deux
+sens) — §16 à §18 de `docs/CAMPAGNES.md`. Les documents de planification, périmés
+depuis le 3 août, ont été remis à l'état mesuré le même jour.
+Fichier de reprise : `.twei/SESSION.md` (lu au démarrage de session)
+Prochaine étape : **rien d'imposé.** Par ordre de valeur : le mode bataille Civil
+War, puis les scans FR manquants, puis les vérifications qui demandent un humain.
+
+⚠ Deux fichiers du moteur restent modifiés et non commités depuis le 11/08, et ils ne
+viennent pas des sessions campagne : `src/game/message/sender/sender_player.py` et
+`data/translate_fr.json` (le journal qui annonce une annulation, cartes aos). Les
+laisser tels quels ou les committer sciemment, mais ne pas les écraser.
+

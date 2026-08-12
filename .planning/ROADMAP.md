@@ -1,5 +1,33 @@
 # Roadmap : Refonte Design / UI / UX Marvel LCG
 
+> ## ⚠ État réel au 12/08/2026 : cette roadmap n'a pas été suivie dans l'ordre
+>
+> Elle datait du 28 juillet et marquait les phases 2 à 7 comme non faites. C'était
+> devenu faux et trompeur : **la refonte a été livrée, mais par un autre chemin que
+> celui prévu ici.** Relu et corrigé phase par phase le 12/08/2026, sur mesure des
+> fichiers servis et des tests qui les couvrent.
+>
+> Ce qui a changé de route :
+>
+> * **le plateau a été REÉCRIT en React** (`ui-app/src/board/`, servi en
+>   `/app/board.html`) au lieu d'être restylé par étapes. Les phases 5, 6 et 7 ont
+>   donc été traitées ensemble, dans le même composant ;
+> * **l'écran de préparation a été refait en JavaScript non compilé**
+>   (`public/js/prepare/app.js`), pas en React. La phase 4 est fonctionnellement
+>   tenue, sans passer par la stack de la phase 2 ;
+> * **la tokenisation des écrans anciens n'a jamais eu lieu** : `tokens.css` est
+>   déployé mais **référencé par aucune page** (vérifié le 12/08). Les plans 02-05
+>   à 02-10 sont donc réellement ouverts — mais leur intérêt a fondu, puisque les
+>   écrans qu'ils visaient sont remplacés ou en voie de l'être.
+>
+> **À NE PAS FAIRE** : reprendre les plans 02-05 à 02-10 tels quels, ni « finir »
+> les phases 5 à 7 comme si rien n'existait. Lire l'état par phase ci-dessous.
+>
+> L'état du mode campagne, qui a occupé l'essentiel du travail depuis, n'est pas
+> dans cette roadmap du tout : il vit dans `docs/CAMPAGNES.md` et
+> `.twei/SESSION.md`.
+
+
 ## Vue d'ensemble
 
 La refonte se fait **surface par surface, en étranglement**, sans jamais toucher au moteur Python ni au runtime `public/js/marvel/` (sources perdues, même statut de code généré). On commence par poser un filet de sécurité (captures de référence, fixtures, bascule `?ui=old`), puis les fondations partagées (stack React/TS/Vite servie par le serveur existant + design system tokenisé qui améliore aussi l'ancien), puis on forge le composant pivot (la Carte) sur deux écrans pilotes réels (coquille/menu). La préparation de partie suit. Le plateau, où l'utilisateur passe 95 % de son temps, est découpé en **trois phases de risque strictement croissant** (restylage → modèle de layout responsive/tactile → interactions et asks) : jamais en bloc, jamais en dernière minute, chaque étape réversible d'un clic.
@@ -8,17 +36,19 @@ La refonte se fait **surface par surface, en étranglement**, sans jamais touche
 
 ## Phases
 
+Marqueurs : `[x]` tenue, `[~]` partiellement tenue (le détail dit quoi), `[ ]` non faite.
+
 **Numérotation :**
 - Phases entières (1, 2, 3) : travail planifié du jalon
 - Phases décimales (2.1, 2.2) : insertions urgentes (marquées INSERTED)
 
 - [x] **Phase 1 : Filet de sécurité et boucle de dev** (BLOQUANTE, terminée le 2026-07-28 — 6/6 plans) - Rien ne bouge visuellement avant d'avoir de quoi détecter une régression
-- [ ] **Phase 2 : Fondations — stack et design system tokenisé** - React/TS/Vite servi par le serveur existant + tokens partagés ancien/nouveau
-- [ ] **Phase 3 : Pilotes — composant Carte et coquille/menu** - Le composant pivot forgé sur deux écrans réels, primitives extraites derrière
-- [ ] **Phase 4 : Préparation de partie** - Wizard 6 étapes, validation explicite, aide sur les campaign logs
-- [ ] **Phase 5 : Plateau A — restylage et lisibilité** - Tuiles lisibles, zones étiquetées, HUD, inspection non modale (risque faible)
-- [ ] **Phase 6 : Plateau B — modèle de layout, responsive et tactile** - Fin de l'homothétie 1920x1080, navigation par zone, tactile (risque moyen)
-- [ ] **Phase 7 : Plateau C — interactions, asks et animations** - Barre d'ask fixe, jouer au tap, undo, animations réglables (risque élevé)
+- [~] **Phase 2 : Fondations** — **stack LIVRÉE, tokens partagés NON.** React 19 + TS + Vite buildé dans `public/app/` et servi par le serveur Python sans toucher au backend (critères 1 et 5 tenus, plans 02-01 à 02-04). Mais `tokens.css` n'est lié par AUCUNE page : les critères 2, 3 et 4 (un token change l'ancien et le nouveau, thème sombre, aspects sans couleur) ne sont pas tenus. Plans 02-05 à 02-10 ouverts, et à réévaluer plutôt qu'à dérouler
+- [~] **Phase 3 : Pilotes** — **la Carte est faite, la coquille non.** Le composant pivot existe et sert partout dans le plateau (`card-model.ts`, tuiles lisibles, inspection au survol sans occlusion : critères 1 et 2 tenus). Il n'y a pas de hub React ni de navigation persistante : `main.html` reste la page d'accueil d'origine (critères 3 et 4 non tenus)
+- [x] **Phase 4 : Préparation de partie** — **tenue, autrement.** `public/js/prepare/app.js` (2 500 lignes, hors React) : étapes avec retour arrière sans perte, galerie de héros, decks de départ / sauvegardés / import MarvelCDB, reprise de la dernière configuration, aide sur chaque champ de carnet de campagne. Éprouvée par `npm run lancement` et par les suites de campagne
+- [x] **Phase 5 : Plateau A** — **tenue par la réécriture React.** Tuiles lisibles, zones délimitées et étiquetées, compteurs sur les tuiles, indicateur de phase. `?ui=old` reste à un clic (`js/ui-switch.js`), et aucune ligne du runtime historique n'a été modifiée
+- [x] **Phase 6 : Plateau B** — **tenue.** L'homothétie unique a disparu : le placement est un modèle de zones par palier (`ui-app/src/board/placement/`, avec ses tests `boites.test.ts` et `placer.test.ts`), et `ui-check/tests/plateau-mobile.spec.ts` le surveille sur gabarits tablette et mobile
+- [x] **Phase 7 : Plateau C** — **tenue.** Les demandes du moteur s'affichent dans la demande centrale et la barre d'action (jamais en modale surgissante), on joue au clic par `MenuActionsCarte`, `ConfirmationJeu` ne demande que l'irréversible, `CoucheAnimations` montre origine et cible, `HistoriquePartie` répond à « que vient-il de se passer ? ». Une partie complète a été menée dans cette UI par le pilote de test (`ui-check/pilote-campagne.ts`, 12/08/2026)
 
 ## Détail des phases
 

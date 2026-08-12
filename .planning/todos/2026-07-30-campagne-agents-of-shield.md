@@ -1,9 +1,49 @@
 # TODO / SPEC — Campagne Agents of S.H.I.E.L.D. (mode Campagne moteur)
 
-**Statut :** investigué en profondeur, tentative faite puis **annulée** (revert propre), non livré
-**Date :** 2026-07-30
+**Statut :** ✅ **LIVRÉ le 11/08/2026.** Ce document décrivait deux bloqueurs « durs »
+qui ont tous les deux sauté. Il est conservé comme spec de référence des règles, et
+parce que la façon dont les bloqueurs sont tombés vaut d'être lue.
+**Date de conception :** 2026-07-30 — **statut corrigé le 12/08/2026**
 **Origine :** demande « on fait aos » pendant le chantier du mode Campagne de l'écran « Préparer une partie ».
-**Rapport aux campagnes livrées :** 7 campagnes fonctionnent (`sm`, `trors`, `mts`, `mut_gen`, `next_evol`, `aoa` = codées + journal audité ; `gmw` = séquence). **AoS et Civil War sont exclus.** Ce todo ne concerne qu'AoS.
+**Rapport aux campagnes livrées :** **les HUIT boîtes fonctionnent** (`trors`, `sm`,
+`mts`, `mut_gen`, `next_evol`, `aoa`, `gmw`, `aos`), chacune avec son carnet et au
+moins un scénario joué de bout en bout par un test. Seul Civil War reste dehors, et ce
+n'est pas une campagne : voir `2026-07-30-mode-bataille-civil-war.md`.
+
+---
+
+## 0. Ce qui a fait tomber les deux bloqueurs (ajouté le 12/08/2026)
+
+**Bloqueur 1, la table des 27 combinaisons : elle n'était pas perdue, elle était déjà
+dans le code.** `CalcMole` (moteur, pack aos) la portait depuis le début. Elle a été
+transcrite indépendamment depuis le carnet officiel, et les deux lectures concordent
+exactement — c'est ce qui a permis de s'y fier. Elle vit maintenant en double, dans le
+moteur et dans `data/campagnes/aos.json` pour l'écran, et
+`tools/verifier_grille_aos.py` compare les deux en lisant le module Python en AST : si
+l'une dérive, il refuse et nomme la combinaison fautive.
+
+**Bloqueur 1 bis, le texte des 9 cartes Evidence :** il n'a pas été nécessaire. Les
+preuves ne sont jamais fabriquées comme cartes tant que le joueur n'a pas le droit de
+les voir, et leur seul rôle est d'être comparées à la combinaison de la taupe.
+
+**Bloqueur 2, « impossible à tester » : c'était vrai, et ça ne l'est plus.**
+`ui-check/scripts/serveur-dev.py` n'est plus un serveur statique : il démarre un VRAI
+moteur sur le port 2346, depuis le codebase de travail, sans toucher à la partie du
+2345. Tout le harnais de test des campagnes en dépend.
+
+**Le crash du §2 est corrigé :** l'`assert Worlds.IsCampaign(effect) == False` de
+`50167a.py` a été remplacé par un retour anticipé, avec le commentaire qui explique
+pourquoi (en campagne, les membres du Conseil viennent du scénario précédent). `aos`
+est dans les boîtes-campagnes de l'écran, et son scénario 5 se joue.
+
+**Ce qui a été livré au-delà de cette spec :** la grille de déduction à l'écran,
+l'accusation avec l'accusé qui DÉCOULE de la combinaison (correctif de règle, p.19),
+la reprise du scénario 5 après une défaite en standard, le soin de campagne experte, et
+le report des compteurs secrets. Détail complet au §8 bis de `docs/CAMPAGNES.md`.
+
+**Ce qui reste ouvert sur aos :** rien de connu. Le deck de rencontre part toujours au
+navigateur avec ses identifiants, comme pour toutes les boîtes (§17 de
+`docs/CAMPAGNES.md`).
 
 ---
 
@@ -18,7 +58,7 @@
 
 ---
 
-## 2. Le crash à connaître
+## 2. Le crash à connaître ~~(à connaître)~~ — CORRIGÉ le 11/08/2026, voir §0
 
 `src/cards/pack/aos/baron_zemo/50167a.py` (scénario 5, mise en place) contient :
 ```python
