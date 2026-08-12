@@ -1,6 +1,8 @@
 # TODO / SPEC — L'aspect « Determination » (DesignHacker)
 
-**Statut :** conçu le 2026-08-12, non planifié, non implémenté
+**Statut :** **INFRASTRUCTURE FAITE le 2026-08-12** (`e161ffe`). Le moteur accepte
+le cinquième aspect. **Aucune carte n'est encore créée** : c'est le gros du
+chantier et il reste entier.
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
@@ -110,3 +112,71 @@ Surtout pas un préfixe numérique — les 61 à 79 sont déjà pris et FFG arri
 
 Une partie menée avec un deck Determination, du wizard à la victoire, sans
 `/debug`, et `test_generate_cards` vert sur les ~140 cartes.
+
+
+---
+
+## Ce que la mesure a établi (12/08/2026)
+
+### 1. Le moteur : la question qui décidait de tout a une réponse simple
+
+`CARD_CLASS_LIST` et `ASPECT_CLASS_LIST` sont **dérivées** des `Literal` de
+`card_player.py`, par `Types.LiteralToList` (`game/element/utility.py:5-6`).
+Les déclarer là suffit donc à la validation d'exécution (`assert IsCardClass`),
+au typage et à la construction de deck. **Un seul point de modification**, pas
+une liste éparpillée comme le craignait le §2.
+
+Fait (`e161ffe`) : les deux `Literal` étendus, la couleur violette dans
+`image_creator.py`, et `tools/test_aspect_determination.py` qui verrouille les
+deux sens en 18 vérifications (Determination accepté, une classe inventée
+toujours refusée). Sans régression : `test_cards` 4189/0, `test_generate_cards`
+4764/0.
+
+**La classe générique `"Aspect"` ne suffisait PAS** : elle est ajoutée
+automatiquement aux classes d'aspect (`card_player.py:65-66`), mais l'assert
+tombe avant sur le nom de l'aspect lui-même.
+
+### 2. La source des cartes : le Drive, pas le site
+
+- Le site n'a **ni API ni JSON** : un WordPress avec une page par carte.
+- Le Drive partagé contient `DETERMINATION (3.0)/BLEED/`, soit les **images des
+  cartes** en haute définition, nommées `D-1.jpg` à `D-141.jpg` (~1,5 Mo pièce).
+- **Une image se lit et rend la carte entière.** Éprouvé sur `D-1.jpg` :
+
+  > Cable (Nathaniel Summers) — coût 3, ALLY, ressource Mental, THW 2 / ATK 2 /
+  > HP 4, traits X-FORCE. X-MEN. — *Reckless. Interrupt: When Cable attacks,
+  > discard any number of cards from your hand...* — aspect DETERMINATION, D1
+
+C'est donc la voie : lire les 141 images, pas gratter le site.
+
+### 3. Le format d'une entrée de carte
+
+Relevé sur `01002` (Black Cat) : `card_id`, `type`, `name`, `subtitle`,
+`desc{Cost, HP, ATK, THW, RES, Class}`, `traits`, `set_name`, `text`.
+
+**Le code des ressources** (`game/element/resources.py:12`) :
+`R` = physical, `B` = mental, `Y` = energy, `G` = wild. Cable porte donc
+`"RES": "B"`, et `"Class": "Determination"`.
+
+### 4. Ce qui reste, et son ordre
+
+1. **Extraire les 141 cartes** du Drive vers un JSON de travail. Mécanique,
+   une lecture d'image par carte.
+2. **Le préfixe `dt`** au registre `tools/prefixes_fanmade.json`, et
+   `sets_info.json`.
+3. **Les données** dans `cards.json`, section `dt`.
+4. **Les images** : 141 fichiers, **à redimensionner à l'import** (1,5 Mo pièce
+   ferait grossir l'archive livrable de 200 Mo à elle seule).
+5. **Les modules Python** : c'est le gros du travail, et il faudra trancher les
+   mots-clés custom. `Reckless` (« After this character enters play, place 1
+   threat on each scheme ») n'existe pas dans le moteur : chaque mot-clé de
+   l'aspect demande soit un helper partagé, soit une approximation **écrite**.
+6. **Le deck-building** : le wizard et le deck-builder doivent proposer
+   Determination. Non vérifié à ce jour.
+
+### 5. Estimation honnête
+
+Hercules (40 cartes) et Wonder Man (25) ont pris une session chacun, sans
+mot-clé neuf. Determination, c'est ~140 cartes **et** des mots-clés à inventer :
+plusieurs sessions, à découper par lots. Un premier lot « les 20 cartes qui font
+l'aspect » dirait bien plus tôt si le moteur suit.
