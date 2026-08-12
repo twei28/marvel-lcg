@@ -1,0 +1,200 @@
+// Ce que le rapport doit contenir, et ce qu'il ne doit JAMAIS taire.
+//
+// Le piege principal : le journal est stocke du PLUS RECENT AU PLUS ANCIEN
+// (ajouterNouvellesEntrees fait un unshift). Une portee « les 20 dernieres »
+// ecrite avec slice(-20) rendrait le DEBUT de la partie, silencieusement.
+import { describe, expect, it } from 'vitest'
+import { construireRapport, entreesDeLaPortee } from './rapport-bug'
+import { MAX_ENTREES, type EntreeHistorique } from './HistoriquePartie'
+import type { Demande } from './ask'
+import type { World, WorldCard, WorldPlayer } from './world'
+
+const ZONES = {
+  area_schemes_main: [], main_schemes_deck: [], area_schemes_side: [],
+  additional_decks: [], additional_discard_piles: [], area_villain: [],
+  villain_deck: [], encounter_deck: [], encounter_discard_pile: [],
+  area_boost: [], area_environment: [], area_evidence: [], area_rule: [],
+  area_processing: [], area_revealing: [], area_resources: [],
+  area_removed: [], area_insert: [], area_set_aside: [],
+  victory_display: [], area_status_cards: [], players: [],
+  active_card_ids: [],
+}
+
+function carte(
+  id: number,
+  nom: string,
+  cardId: string,
+  type: string,
+  info: Record<string, number> = {}
+): WorldCard {
+  return {
+    id, is_ready: true, is_face_up: true, visible_for_players: [0],
+    bind_object_id: 0, name: nom, info, traits: {}, buffs: {},
+    card_id: cardId, pic_id: cardId, down_card_ids: [], card_type: type,
+    cost: 0, resources: [],
+  }
+}
+
+function siege(surcharge: Partial<WorldPlayer> = {}): WorldPlayer {
+  return {
+    area_hero: [], allies: [], supports: [], player_deck: [],
+    player_discard_pile: [], dealt_encounter_cards: [], hand_cards: [],
+    engaged_enemies: [], set_aside_nemesis_sets: [], set_aside_deck: [],
+    additional_deck: [], additional_discard_pile: [], obligations_area: [],
+    environment_area: [], resources: '', is_eliminated: false, ...surcharge,
+  }
+}
+
+const CONTEXTE = { horodatage: '2026-08-12T21:00:00.000Z', siege: 0 }
+
+function monde(surcharge: Partial<World> = {}): World {
+  return {
+    render_id: 43, round_id: 3, phase: 'Player 1 Turn', prompt: '',
+    event_name: 'PlayerOnEvent_Text', ...ZONES,
+    area_schemes_main: [carte(48, 'None Shall Pass', '04079b', 'MainScheme', { k_threat: 2, target_threat: 12 })],
+    area_villain: [carte(50, 'Absorbing Man', '04077a', 'EncounterVillain', { health: 14 })],
+    ...surcharge,
+  }
+}
+
+const entree = (round: number, titre: string, reste: Partial<EntreeHistorique> = {}): EntreeHistorique => ({
+  cle: `${round}:${titre}`, type: 'text', renderId: round, round, phase: '', titre, ...reste,
+})
+
+describe('la portee', () => {
+  // Le plus recent est en TETE : « les 20 dernieres » se prend au debut.
+  const journal = [entree(3, 'c'), entree(3, 'b'), entree(2, 'a')]
+
+  it('« recent » prend les 20 premieres, qui sont les plus recentes', () => {
+    const long = Array.from({ length: 30 }, (_, i) => entree(3, `e${i}`))
+    const pris = entreesDeLaPortee(long, 'recent', 3)
+    expect(pris).toHaveLength(20)
+    expect(pris[0]?.titre).toBe('e0')
+  })
+
+  it('« tour » ne garde que le round courant', () => {
+    expect(entreesDeLaPortee(journal, 'tour', 3).map((e) => e.titre)).toEqual(['c', 'b'])
+  })
+
+  it('« partie » garde tout', () => {
+    expect(entreesDeLaPortee(journal, 'partie', 3)).toHaveLength(3)
+  })
+})
+
+describe('le rapport', () => {
+  it('dit que le journal est tronque quand le tampon est plein', () => {
+    const plein = Array.from({ length: MAX_ENTREES }, (_, i) => entree(3, `e${i}`))
+    expect(construireRapport(monde(), undefined, plein, 'partie', CONTEXTE).tronque).toBe(true)
+    expect(construireRapport(monde(), undefined, plein.slice(1), 'partie', CONTEXTE).tronque).toBe(false)
+  })
+
+  it('ne pretend jamais etre tronque sur une portee courte', () => {
+    const plein = Array.from({ length: MAX_ENTREES }, (_, i) => entree(3, `e${i}`))
+    expect(construireRapport(monde(), undefined, plein, 'recent', CONTEXTE).tronque).toBe(false)
+  })
+
+  it('donne a chaque carte son object id sous la forme visable en console', () => {
+    const rapport = construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
+    const complot = rapport.table.cartes.find((c) => c.objet === 'c48')
+    expect(complot).toMatchObject({
+      objet: 'c48', card_id: '04079b', nom: 'None Shall Pass',
+      zone: 'complot principal', menace: 2,
+    })
+  })
+
+  it('recopie les points de vie du vilain', () => {
+    const rapport = construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
+    expect(rapport.table.cartes.find((c) => c.objet === 'c50')).toMatchObject({ vie: 14, zone: 'vilain' })
+  })
+
+  it('garde le texte brut du journal, identifiants compris', () => {
+    const journal = [entree(3, 'Klaw would deal 2 damage', { brut: '[(50,01113) Klaw] would deal 2 damage' })]
+    const rapport = construireRapport(monde(), undefined, journal, 'recent', CONTEXTE)
+    expect(rapport.journal[0]?.texte).toBe('[(50,01113) Klaw] would deal 2 damage')
+  })
+
+  it("retombe sur le texte affiche quand l'entree n'a pas de brut", () => {
+    const rapport = construireRapport(monde(), undefined, [entree(3, 'Ball and Chain joue')], 'recent', CONTEXTE)
+    expect(rapport.journal[0]?.texte).toBe('Ball and Chain joue')
+  })
+
+  it('rend la cible du journal sous forme d object id', () => {
+    const journal = [entree(3, 'Klaw subit 2 degats', { type: 'damage', cibleId: 50 })]
+    const rapport = construireRapport(monde(), undefined, journal, 'recent', CONTEXTE)
+    expect(rapport.journal[0]?.cible).toBe('c50')
+  })
+
+  it('recopie la demande avec ses cibles legales et son cout', () => {
+    const demande: Demande = {
+      prompt_text: 'Choisissez une action', event_name: 'WhenPlayerInTurn',
+      show_cancel: true, ability_type: 'Hero_Response',
+      options: [{
+        id: 12, name: 'p_Play', bind_id: 57, bind_player_id: 0,
+        all_legal_targets: [48, 50], target_num_range: [1, 1],
+        target_payment: { 0: { cost: '2', payment: [{ effect_id: 91, res_text: 'physical' }], rule: [] } },
+        select_rule: '', target_must_include_traits: [], failure_reason: '', is_search: false,
+      }],
+    }
+    const rapport = construireRapport(monde(), demande, [], 'recent', CONTEXTE)
+    expect(rapport.demande).toMatchObject({
+      type: 'Hero_Response', evenement: 'WhenPlayerInTurn', annulable: true,
+    })
+    expect(rapport.demande?.options[0]).toMatchObject({
+      id: 12, nom: 'Play', porteePar: 'c57', cibles: ['c48', 'c50'],
+      nombreDeCibles: [1, 1], cout: '2', injouable: null,
+    })
+  })
+
+  it('nomme la raison quand une option est injouable', () => {
+    const demande: Demande = {
+      prompt_text: '', event_name: '', show_cancel: false, ability_type: '',
+      options: [{
+        id: 13, name: 'p_Attack', bind_id: 0, bind_player_id: 0,
+        all_legal_targets: [], target_num_range: [0, 0], target_payment: {},
+        select_rule: '', target_must_include_traits: [],
+        failure_reason: 'not enough resources', is_search: false,
+      }],
+    }
+    const rapport = construireRapport(monde(), demande, [], 'recent', CONTEXTE)
+    expect(rapport.demande?.options[0]?.injouable).toBe('not enough resources')
+  })
+
+  it("rend une demande nulle quand le moteur n'attend rien", () => {
+    expect(construireRapport(monde(), undefined, [], 'recent', CONTEXTE).demande).toBeNull()
+  })
+
+  it('nomme le mode campagne, le bac a sable et le nombre de sieges', () => {
+    const table = monde({
+      mode_sandbox: true,
+      players: [siege({ area_hero: [carte(1, 'She-Hulk', '04001a', 'Hero', { health: 20 })] })],
+    })
+    const rapport = construireRapport(table, undefined, [], 'recent', {
+      ...CONTEXTE, campagne: { id: 'trors-1', scenario: 'crossbones' },
+    })
+    expect(rapport.contexte).toMatchObject({
+      sandbox: true, sieges: 1, round: 3, phase: 'Player 1 Turn', render_id: 43,
+      campagne: { id: 'trors-1', scenario: 'crossbones' },
+      scenario: 'None Shall Pass', vilain: 'Absorbing Man',
+      heros: ['She-Hulk'],
+    })
+  })
+
+  it('decrit la main de CHAQUE siege, pas seulement celui qui rapporte', () => {
+    const table = monde({
+      players: [
+        siege({ hand_cards: [carte(60, 'Swinging Stone', '04083', 'Event')] }),
+        siege({ hand_cards: [carte(61, 'Steel Kick', '04084', 'Event')] }),
+      ],
+    })
+    const mains = construireRapport(table, undefined, [], 'recent', CONTEXTE).table.cartes.filter(
+      (c) => c.zone === 'main'
+    )
+    expect(mains.map((c) => [c.objet, c.joueur])).toEqual([['c60', 0], ['c61', 1]])
+  })
+
+  it("nomme la fin de partie quand il y en a une", () => {
+    const fini = monde({ game_over: true, game_over_reason: 'The Final Stage of the Villain was Defeated' })
+    const rapport = construireRapport(fini, undefined, [], 'recent', CONTEXTE)
+    expect(rapport.contexte.fin).toBe('The Final Stage of the Villain was Defeated')
+  })
+})
