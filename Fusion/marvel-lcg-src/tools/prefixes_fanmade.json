@@ -1,0 +1,131 @@
+{
+  "_lisez_moi": [
+    "Les prefixes de card_id du contenu FAN-MADE, un par source.",
+    "",
+    "Pourquoi des LETTRES : les sets officiels sont numerotes, et le jeu en est",
+    "a 60 (Fear No Evil). Le contenu fan-made occupait 61 a 79, c'est-a-dire la",
+    "place des prochaines sorties de FFG. Lettres et chiffres ne se rencontrent",
+    "jamais : la collision est impossible par construction, pas par vigilance.",
+    "",
+    "Tout ajout de contenu fan-made DECLARE son prefixe ici avant d'ecrire une",
+    "seule carte. tools/verifier_prefixes.py refuse ce qui n'y est pas.",
+    "",
+    "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
+  ],
+  "prefixes": {
+    "ab": {
+      "pack": "albert",
+      "libelle": "100. Custom (Albert)",
+      "cartes": 17,
+      "depuis": "2026-08-12"
+    },
+    "ag": {
+      "pack": "agent_13",
+      "libelle": "114. Custom (Agent 13)",
+      "cartes": 16,
+      "depuis": "2026-08-12"
+    },
+    "ah": {
+      "pack": "totally_awesome_hulk",
+      "libelle": "106. Custom (Totally Awesome Hulk)",
+      "cartes": 22,
+      "depuis": "2026-08-12"
+    },
+    "av": {
+      "pack": "agent_anti_venom",
+      "libelle": "111. Custom (Agent Anti-Venom)",
+      "cartes": 18,
+      "depuis": "2026-08-12"
+    },
+    "bw": {
+      "pack": "brawn",
+      "libelle": "113. Custom (Brawn)",
+      "cartes": 26,
+      "depuis": "2026-08-12"
+    },
+    "cd": {
+      "pack": "cloak_dagger",
+      "libelle": "108. Custom (Cloak & Dagger)",
+      "cartes": 20,
+      "depuis": "2026-08-12"
+    },
+    "gp": {
+      "pack": "gwenpool",
+      "libelle": "101. Custom (Gwenpool)",
+      "cartes": 18,
+      "depuis": "2026-08-12"
+    },
+    "ht": {
+      "pack": "human_torch",
+      "libelle": "102. Custom (Human Torch)",
+      "cartes": 15,
+      "depuis": "2026-08-12"
+    },
+    "iw": {
+      "pack": "invisible_woman",
+      "libelle": "104. Custom (Invisible Woman)",
+      "cartes": 20,
+      "depuis": "2026-08-12"
+    },
+    "jj": {
+      "pack": "jessica_jones",
+      "libelle": "110. Custom (Jessica Jones)",
+      "cartes": 23,
+      "depuis": "2026-08-12"
+    },
+    "lj": {
+      "pack": "lockjaw",
+      "libelle": "117. Custom (Lockjaw)",
+      "cartes": 31,
+      "depuis": "2026-08-12"
+    },
+    "mf": {
+      "pack": "mister_fantastic",
+      "libelle": "103. Custom (Mister Fantastic)",
+      "cartes": 18,
+      "depuis": "2026-08-12"
+    },
+    "mk": {
+      "pack": "moon_knight",
+      "libelle": "116. Custom (Moon Knight)",
+      "cartes": 28,
+      "depuis": "2026-08-12"
+    },
+    "mw": {
+      "pack": "madame_web",
+      "libelle": "107. Custom (Madame Web)",
+      "cartes": 31,
+      "depuis": "2026-08-12"
+    },
+    "ra": {
+      "pack": "rainy",
+      "libelle": "99. Custom (Rainy)",
+      "cartes": 20,
+      "depuis": "2026-08-12"
+    },
+    "sg": {
+      "pack": "squirrel_girl",
+      "libelle": "112. Custom (Squirrel Girl)",
+      "cartes": 23,
+      "depuis": "2026-08-12"
+    },
+    "sr": {
+      "pack": "spider_man_rainy",
+      "libelle": "115. Custom (Spider-Man Rainy)",
+      "cartes": 18,
+      "depuis": "2026-08-12"
+    },
+    "th": {
+      "pack": "the_thing",
+      "libelle": "105. Custom (The Thing)",
+      "cartes": 18,
+      "depuis": "2026-08-12"
+    },
+    "vr": {
+      "pack": "venom_rainy",
+      "libelle": "109. Custom (Venom Rainy)",
+      "cartes": 16,
+      "depuis": "2026-08-12"
+    }
+  }
+}

@@ -948,7 +948,7 @@
         "encounters": [],
         "max_id": "cd018"
     },
-    "108. Custom (Spider-Man Rainy)": {
+    "115. Custom (Spider-Man Rainy)": {
         "name": "spider_man_rainy",
         "scenarios": [],
         "heroes": [
@@ -977,7 +977,7 @@
         ],
         "max_id": "jj022"
     },
-    "109. Custom (Moon Knight)": {
+    "116. Custom (Moon Knight)": {
         "name": "moon_knight",
         "scenarios": [],
         "heroes": [
@@ -997,7 +997,7 @@
         "encounters": [],
         "max_id": "av016"
     },
-    "110. Custom (Lockjaw)": {
+    "117. Custom (Lockjaw)": {
         "name": "lockjaw",
         "scenarios": [],
         "heroes": [
@@ -1033,5 +1033,5 @@
         "encounters": [],
         "max_id": "ag015"
     },
-    "checksum": "20717e5edc0e4d1c9c3b47467359fe91c69071d079f3d45a06769d7397db2042"
+    "checksum": "c675a6bc541c59b42b308b49ab480064190e4da6930c92bf57e4e0603c5f958b"
 }
