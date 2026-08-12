@@ -16,6 +16,7 @@ consomme (voir `game/operate/campaign_logs.py`) : aucune traduction entre les
 deux, ce qui evite qu'ils divergent.
 """
 from core import *
+from typing import Optional
 from aiohttp import web
 from engine.config import ConfigVariables
 from engine.device.web.server.server_base import GameServerBase
@@ -66,6 +67,46 @@ def _sans_secret(campagne: 'Dict[str, Any]') -> 'Dict[str, Any]':
     return {k: v for k, v in campagne.items() if k != CLE_SECRET}
 
 
+def _campagne_la_plus_recente() -> 'Optional[Dict[str, Any]]':
+    """La campagne dont une partie a ete lancee en dernier, ou None.
+
+    Le client n'envoie pas l'identifiant de campagne dans le descripteur de
+    `/new` : ce contrat est gele. Mais l'ecran des campagnes ecrit
+    `partieEnCours` AVANT de lancer. La campagne concernee est donc celle dont
+    la partie en cours est la plus recente, et c'est vrai pour TOUS les sieges :
+    la deduction ne depend d'aucun navigateur. C'est ce qui permet a un joueur
+    qui rejoint de savoir qu'il joue une campagne, lui qui n'a jamais pose la
+    cle `mc-campagne-partie`.
+
+    Rend le dict COMPLET, secret compris. Tout appelant qui repond a une route
+    doit le passer par `_sans_secret()`.
+    """
+    import json as json_lib
+    import os
+
+    dossier = CAMPAGNES_FOLDER.value
+    if not os.path.isdir(dossier):
+        return None
+    meilleure = None
+    for nom in os.listdir(dossier):
+        if not nom.endswith('.json'):
+            continue
+        try:
+            with open(os.path.join(dossier, nom), encoding='utf-8', newline='') as f:
+                campagne = json_lib.load(f)
+        except Exception:
+            # Un fichier illisible ne doit pas faire tomber la deduction pour
+            # les autres : la campagne d'a cote reste jouable.
+            continue
+        en_cours = campagne.get('partieEnCours') or {}
+        if not en_cours.get('depuis'):
+            continue
+        campagne['id'] = nom[:-5]
+        if (meilleure is None) or (en_cours['depuis'] > meilleure['partieEnCours']['depuis']):
+            meilleure = campagne
+    return meilleure
+
+
 def secret_pour_le_moteur() -> 'Dict[str, str]':
     """Le secret de la campagne dont une partie vient d'etre lancee.
 
@@ -74,28 +115,9 @@ def secret_pour_le_moteur() -> 'Dict[str, str]':
     `partieEnCours` AVANT de lancer : la campagne concernee est donc celle dont
     la partie en cours est la plus recente. Rien a changer au contrat.
     """
-    import json as json_lib
-    import os
-
-    dossier = CAMPAGNES_FOLDER.value
-    if not os.path.isdir(dossier):
-        return {}
-    meilleure = None
-    for nom in os.listdir(dossier):
-        if not nom.endswith('.json'):
-            continue
-        try:
-            with open(os.path.join(dossier, nom), encoding='utf-8') as f:
-                campagne = json_lib.load(f)
-        except Exception:
-            continue
-        secret = campagne.get(CLE_SECRET)
-        en_cours = campagne.get('partieEnCours') or {}
-        if not secret or not en_cours.get('depuis'):
-            continue
-        if (meilleure is None) or (en_cours['depuis'] > meilleure[0]):
-            meilleure = (en_cours['depuis'], secret)
-    return {CLE_CARNET_SECRET: meilleure[1]} if meilleure else {}
+    campagne = _campagne_la_plus_recente()
+    secret = (campagne or {}).get(CLE_SECRET)
+    return {CLE_CARNET_SECRET: secret} if secret else {}
 
 
 def _nom_de_fichier(brut: str) -> str:
@@ -310,6 +332,37 @@ class GameServerCampagne(GameServerBase):
         campagne['id'] = identifiant
         return web.json_response(_sans_secret(campagne))
 
+    async def get_campagne_en_cours(self, request: web.Request) -> web.Response:
+        """La campagne a laquelle appartient la partie en cours, pour TOUS.
+
+        Un joueur qui rejoint n'a jamais pose la cle `mc-campagne-partie` dans
+        son navigateur : c'est l'ecran des campagnes qui l'ecrit, et il ne
+        l'ouvre pas. Sans cette route, son plateau ignore la campagne, donc pas
+        de panneau de recompenses, pas de regle de defaite, pas de carnet.
+
+        On ne rend que de quoi se situer : l'identifiant, le scenario, le nom,
+        et l'EQUIPE. Le carnet se lit par `/get_campagne`, qui filtre deja le
+        secret ; ici il n'a rien a faire, et le secret encore moins.
+
+        L'equipe voyage parce que le siege N tient `equipe[N]` : c'est deja ce
+        que fait le moteur, qui recoit `players` dans cet ordre (voir
+        `lancerScenario` dans public/js/campagne/app.js). Le salon n'a donc rien
+        a choisir, seulement a le DIRE.
+        """
+        campagne = _campagne_la_plus_recente()
+        if not campagne:
+            return web.json_response({})
+        equipe = campagne.get('equipe') or []
+        return web.json_response({
+            'id': campagne.get('id', ''),
+            'scenario': (campagne.get('partieEnCours') or {}).get('scenario', ''),
+            'nom': campagne.get('nom', ''),
+            'equipe': [
+                {'heros': m.get('heros', ''), 'nomHeros': m.get('nomHeros', '')}
+                for m in equipe
+            ],
+        })
+
     async def save_campagne(self, request: web.Request) -> web.Response:
         """Ecrit (ou remplace) une campagne en cours.
 
@@ -460,6 +513,7 @@ class GameServerCampagne(GameServerBase):
         self.AddAwaitGetSecurity('/get_carnet_suggere', self.get_carnet_suggere)
         self.AddAwaitGetSecurity('/list_campagnes', self.list_campagnes)
         self.AddAwaitGetSecurity('/get_campagne', self.get_campagne)
+        self.AddAwaitGetSecurity('/get_campagne_en_cours', self.get_campagne_en_cours)
         self.AddPostSecurity('/save_campagne', self.save_campagne)
         self.AddPostSecurity('/delete_campagne', self.delete_campagne)
         self.AddPostSecurity('/reinitialiser_enquete', self.reinitialiser_enquete)
