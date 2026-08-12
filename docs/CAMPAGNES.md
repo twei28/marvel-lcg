@@ -1738,3 +1738,8 @@ Il joue les gestes, il ne joue pas une stratégie. Deux mesures :
 
 C'est la dernière entrée non couverte du mode campagne, et elle est désormais
 documentée par une mesure plutôt que par une supposition.
+
+**DÉCISION du 12/8/2026 : on n'écrira pas de bot qui gagne.** Le pilote reste ce
+qu'il est, un outil de test qui sait faire les gestes ; la branche « Professeur
+sauvé » se vérifie à la main, en jouant. Ne pas relancer ce chantier — ce qui suit
+n'est donc pas une piste, c'est la raison de s'arrêter là.
