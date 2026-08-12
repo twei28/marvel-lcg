@@ -27,6 +27,14 @@ export type EntreeHistorique = {
   joueur?: number
   /** Auteur du fait, tiré de la causalité (le « par X » du détail). */
   acteur?: string
+  /**
+   * Le texte du moteur AVANT sansIdentifiants(), quand l'entrée vient d'une
+   * narration. C'est la seule trace des identifiants « [(50,01113) Klaw] »,
+   * que texteSignificatif() efface à la création : l'affichage lit `titre`,
+   * le rapport de bug lit `brut`. Absent sur les autres types d'entrée, qui
+   * portent déjà leur object id dans `cibleId`.
+   */
+  brut?: string
 }
 
 /** Ce qu'on sait d'une entrée en plus de son texte, pour la filtrer ensuite. */
@@ -55,7 +63,7 @@ type CarteObservee = {
  * 400 entrées représentent quelques dizaines de kilo-octets en sessionStorage,
  * ce qui est sans conséquence, et couvrent une partie entière.
  */
-const MAX_ENTREES = 400
+export const MAX_ENTREES = 400
 const UNIT_TYPES = new Set(['Ally', 'Minion', 'EncounterVillain', 'Hero', 'AlterEgo'])
 const SCHEME_TYPES = new Set(['MainScheme', 'EncounterSideScheme', 'PlayerSideScheme'])
 
@@ -238,12 +246,19 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
   return sorties
 }
 
-function narrationsDuRendu(monde: World, demande: Demande | undefined): string[] {
-  return [
-    texteSignificatif(monde.prompt),
-    texteSignificatif(monde.prompt_last_text),
-    texteSignificatif(demande?.prompt_text),
-  ].filter((texte, index, liste): texte is string => texte !== undefined && liste.indexOf(texte) === index)
+type Narration = { texte: string; brut: string }
+
+function narrationsDuRendu(monde: World, demande: Demande | undefined): Narration[] {
+  const sources = [monde.prompt, monde.prompt_last_text, demande?.prompt_text]
+  const sorties: Narration[] = []
+  const vus = new Set<string>()
+  for (const source of sources) {
+    const texte = texteSignificatif(source)
+    if (texte === undefined || vus.has(texte)) continue
+    vus.add(texte)
+    sorties.push({ texte, brut: (source ?? '').trim() })
+  }
+  return sorties
 }
 
 function ajouterNouvellesEntrees(
@@ -354,13 +369,16 @@ export function useHistoriquePartie(
     // Les causes sont relevees AVANT le diff : une attaque se narre au rendu
     // precedent (« would deal 2 damage to X »), le total de PV ne bouge qu'ici.
     const narrations = narrationsDuRendu(monde, demande)
-    for (const texte of narrations) noterCause(causes.current, texte, monde.render_id)
+    for (const { texte } of narrations) noterCause(causes.current, texte, monde.render_id)
 
     const nouvelles = [
       ...(precedent.current
         ? analyserDelta(precedent.current, monde, causes.current)
         : [entree(monde, 'phase', `Round ${monde.round_id}`, monde.phase, 'initial')]),
-      ...narrations.map((texte) => entree(monde, 'text', texte, undefined, `text:${texte}`)),
+      ...narrations.map(({ texte, brut }) => ({
+        ...entree(monde, 'text', texte, undefined, `text:${texte}`),
+        brut,
+      })),
     ]
     setEntrees((courantes) => {
       const suivantes = ajouterNouvellesEntrees(courantes, nouvelles)
