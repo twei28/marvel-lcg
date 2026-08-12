@@ -4787,6 +4787,11 @@
   opacity: 0.7;
 }
 
+.camp-recomp-attente-hote {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
 .camp-champ-proprietaire {
   font-size: 11px;
   opacity: 0.8;

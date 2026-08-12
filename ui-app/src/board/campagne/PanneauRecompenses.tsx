@@ -495,14 +495,17 @@ export function PanneauRecompenses({
                   ? t('Renvoyer mes champs')
                   : t('Envoyer mes champs')}
             </button>
-            <span className="camp-recomp-bloque">
+            <span className="camp-recomp-attente-hote">
               {envoye
                 ? t("Envoyé. L'hôte valide les récompenses pour la table.")
                 : t("L'hôte valide les récompenses pour la table.")}
             </span>
           </>
         )}
-        {manquants.length ? (
+        {/* Réservé à qui valide. Chez un siège distant, cette liste nommait des
+            cases appartenant à d'AUTRES joueurs : elle lui demandait de remplir
+            ce qu'il n'a pas le droit d'écrire. Relevé par campagne-multi. */}
+        {peutValider(siege) && manquants.length ? (
           <span className="camp-recomp-bloque">
             {t('À choisir avant de continuer :')} {manquants.map((c) => t(c.libelle)).join(', ')}
           </span>
