@@ -471,12 +471,24 @@ C'est un point de départ utile, **mais il contient des erreurs avérées** :
 Vérifier chaque champ contre le `campaign.py` du pack et le livret, carte par
 carte.
 
-**La condition de suppression est remplie depuis le 11/8/2026** : les huit boîtes sont
-portées dans `data/campagnes/`. Ce bloc de code mort peut donc disparaître, avec
-`renderCampaignPath`, `renderCampaignStory`, `renderCampaignJournal` et
-`campaignBoxes`. Il ne sert plus de point de départ à rien, et il porte des erreurs
-avérées : le garder plus longtemps, c'est risquer qu'on s'y fie un jour. Ce n'est pas
-fait — c'est un nettoyage, pas une correction, et personne ne l'a demandé.
+**FAIT le 12/08/2026** : 372 lignes retirées de `public/js/prepare/app.js`
+(`CAMPAIGN_SCHEMAS`, `CAMPAIGN_CODES`, `campaignBoxes`, `renderCampaignPath`,
+`renderCampaignStory`, `renderCampaignJournal`, les helpers « Story » et
+`_extCodeByKey`), plus les quatre méthodes de campagne devenues orphelines dans
+`prefs.js`. La campagne a son écran, et son état vit sur le SERVEUR, pas dans le
+stockage local d'un navigateur.
+
+**Comment la mort a été prouvée, parce que le commentaire mentait.** Il affirmait
+« isCampaignMode() est désormais toujours faux » : c'est FAUX, l'arrivée sur
+`/prepare.html?campagne` met bien le mode à `campaign`. Le vrai argument est ailleurs,
+et il est mesurable : dans ce mode `STEPS` vaut `["Équipe", "Decks"]`, donc
+`case 2: stepScenario()` est inatteignable, et c'est l'étape scénario qui appelait tout
+ce bloc. Vérifié en faisant LEVER les quatre fonctions (`throw`) puis en jouant les
+suites qui traversent l'écran : création d'équipe, modification des decks et lancement
+normal, 9 cas verts avec le code piégé.
+
+Une leçon de méthode : un commentaire qui déclare du code mort n'est pas une preuve,
+et celui-ci se trompait de raison tout en ayant raison sur la conclusion.
 
 ---
 

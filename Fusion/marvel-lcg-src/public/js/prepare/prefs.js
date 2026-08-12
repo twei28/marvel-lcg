@@ -90,34 +90,10 @@ export const prefs = {
         o.savedDecks.push(deck); write(o);
     },
 
-    // Progression de campagne : scénarios terminés par boîte (code : "sm", "trors"…).
-    campaignDone(boxCode) {
-        const cp = read().campaignProgress || {};
-        return (cp[boxCode] && cp[boxCode].done) || [];
-    },
-    markCampaignDone(boxCode, scenarioId) {
-        const o = read(); o.campaignProgress = o.campaignProgress || {};
-        const rec = o.campaignProgress[boxCode] || (o.campaignProgress[boxCode] = { done: [] });
-        if (!rec.done.includes(scenarioId)) rec.done.push(scenarioId);
-        write(o);
-    },
-    resetCampaign(boxCode) {
-        const o = read();
-        let changed = false;
-        if (o.campaignProgress && o.campaignProgress[boxCode]) { delete o.campaignProgress[boxCode]; changed = true; }
-        if (o.campaignLog && o.campaignLog[boxCode]) { delete o.campaignLog[boxCode]; changed = true; }
-        if (changed) write(o);
-    },
-
-    // Journal de campagne : dict {clé: valeur} passé tel quel au moteur (campaign_log).
-    campaignLog(boxCode) {
-        return (read().campaignLog || {})[boxCode] || {};
-    },
-    setCampaignLog(boxCode, obj) {
-        const o = read(); o.campaignLog = o.campaignLog || {};
-        // n'enregistre que les entrées non vides (le moteur ignore les clés absentes).
-        const clean = {};
-        for (const k in obj) { const v = obj[k]; if (v !== "" && v != null) clean[k] = String(v); }
-        o.campaignLog[boxCode] = clean; write(o);
-    },
+    // La progression et le journal de campagne ont vécu ici quand la campagne était
+    // un mode du wizard. Ils sont partis avec lui le 12/08/2026 : la campagne a son
+    // écran (`/campagne.html`), et son état est écrit SUR LE SERVEUR
+    // (`/save_campagne`), pas dans le stockage local d'un navigateur. Les anciennes
+    // entrées `campaignProgress` et `campaignLog` d'un stockage local existant sont
+    // simplement ignorées.
 };

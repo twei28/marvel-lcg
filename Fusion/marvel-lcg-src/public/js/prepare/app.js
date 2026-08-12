@@ -81,156 +81,9 @@ const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", 
 const LAST_STEP = STEPS.length - 1;
 const rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-// Campagnes officielles jouables en mode Campagne (séquence + progression).
-// Les 6 premières ont des récompenses codées (campaign.py / missions.py) et un
-// schéma de journal ; gmw se joue en séquence (pas de récompense codée).
-// Exclus : cw (mode PvP par équipes) ; aos (le scénario final Baron Zemo
-// plante en campagne côté moteur — assert IsCampaign==False — et la vraie
-// campagne enquête est trop complexe/incomplète pour être fidèlement codée ici).
-const CAMPAIGN_CODES = ["sm", "trors", "mts", "mut_gen", "next_evol", "aoa", "gmw"];
-const _extCodeByKey = {};          // key ("27. Sinister Motives") -> code ("sm")
 const isCampaignMode = () => state.mode && state.mode.id === "campaign";
 
-// PLUS APPELÉ — conservé comme SOURCE. Depuis que la campagne a son écran
-// (/campagne.html), la tuile « Campagne » redirige et plus rien ici n'est
-// atteignable : isCampaignMode() est désormais toujours faux, donc
-// renderCampaignPath, renderCampaignStory, renderCampaignJournal et
-// campaignBoxes sont morts avec lui.
-//
-// On ne les supprime PAS encore : CAMPAIGN_SCHEMAS est le seul endroit du dépôt
-// qui décrive les récompenses de campagne de sm, mut_gen, aoa, mts et
-// next_evol. Ces schémas doivent être portés en fichiers
-// data/campagnes/<code>.json (comme trors) AVANT que ce bloc disparaisse.
-// Attention en les portant : le champ « Experimental Weapons » de trors était
-// FAUX ici (il listait 04155-04158, les upgrades TECH, au lieu des
-// attachements 04072-04075) — vérifier les autres boîtes carte par carte.
-//
-// Schémas de journal de campagne : décrivent les entrées que le joueur reporte
-// entre scénarios (comme le carnet officiel). Chaque champ produit une/des clés
-// du dict campaign_log envoyé au moteur. type: int | cardpick | cardmulti ;
-// perPlayer=true => clé « Player N <key> » par joueur actif.
-const CAMPAIGN_SCHEMAS = {
-    sm: {
-        note: "Sinister Motives — reporter la piste de Réputation cumulée, les récompenses et pénalités qu’elle déclenche, et les indicateurs de victoire des scénarios 1-4. Les récompenses à saisie libre sont des cartes choisies dans ta collection (note leur card_id).",
-        fields: [
-            { key: "Reputation Track", label: "Piste de Réputation (points cumulés)", type: "int" },
-            { key: "S.H.I.E.L.D. Tech: Reputation Track Reward", label: "Récompense Rép. 1 — amélioration S.H.I.E.L.D. Tech (ENHANCED à Rép. 13)", type: "cardpick", perPlayer: true,
-                options: [["27182a", "Compact Darts"], ["27183a", "Impact-Dampening Suit"], ["27184a", "Laser Goggles"], ["27185a", "Propulsion Gauntlet"], ["27186a", "Retinal Display"], ["27187a", "Shock Knuckles"], ["27188a", "Wave Bracers"], ["27189a", "Wrist Navigators"]] },
-            { key: "Aspect Advantage: Reputation Track Reward", label: "Récompense Rép. 9 — carte(s) d’aspect (card_id, séparés par ;)", type: "cardmulti", perPlayer: true },
-            { key: "Planning Ahead: Reputation Track Reward", label: "Récompense Rép. 17 — carte de départ en main (card_id)", type: "cardpick", perPlayer: true },
-            { key: "Osborn Tech: Reputation Track Penalty", label: "Pénalité Rép. 1 — cartes Osborn Tech dans le deck de rencontre (card_id ;)", type: "cardmulti" },
-            { key: "Community Service: Victory for Scenarios #1-4", label: "Community Service — manigances annexes déjà accomplies", type: "cardmulti",
-                options: [["27176", "Back Alley Burglary"], ["27177", "Cat in a Tree"], ["27178", "Henchmen Heist"], ["27179", "Off the Rails"], ["27180", "Rubble Rescue"]] },
-            { key: "Waking Nightmare: Victory for Scenario #3 - Mysterio", label: "Victoire du scénario 3 (Mysterio)", type: "int" },
-            { key: "Last Ones Standing: Victory for Scenario #4 - The Sinister Six", label: "Victoire du scénario 4 — Sinistres Six vaincus", type: "cardmulti",
-                options: [["27094", "Doctor Octopus"], ["27095", "Electro"], ["27096", "Hobgoblin"], ["27097", "Kraven the Hunter"], ["27098", "Scorpion"], ["27099", "Vulture"]] },
-        ],
-    },
-    trors: {
-        note: "Note ici ce que l’équipe a gagné ou subi après chaque scénario, comme dans le carnet de campagne de Rise of Red Skull.",
-        fields: [
-            { key: "Rescued Allies", label: "Alliés secourus", type: "cardmulti", perPlayer: true,
-                options: [["04097", "Moon Knight"], ["04098", "Shang-Chi"], ["04099", "White Tiger"], ["04100", "Elektra"]] },
-            { key: "Tech Upgrade", label: "Amélioration technologique obtenue", type: "cardpick", perPlayer: true,
-                options: [["04155", "Adrenal Stims"], ["04156", "Tactical Scanner"], ["04157", "Emergency Teleporter"], ["04158", "Laser Cannon"]] },
-            { key: "Basic Upgrade", label: "Amélioration basique obtenue", type: "cardpick", perPlayer: true,
-                options: [["04159a", "Thwart"], ["04160a", "Attack"], ["04161a", "Defense"], ["04162a", "Recovery"],
-                    ["04159b", "Improved Thwart Upgrade"], ["04160b", "Improved Attack Upgrade"], ["04161b", "Improved Defense Upgrade"], ["04162b", "Improved Recovery Upgrade"]] },
-            { key: "Experimental Weapons added to encounter deck", label: "Armes expérimentales ajoutées au deck de rencontre", type: "cardmulti",
-                options: [["04155", "Adrenal Stims"], ["04156", "Tactical Scanner"], ["04157", "Emergency Teleporter"], ["04158", "Laser Cannon"]] },
-            { key: "Allies removed from the campaign", label: "Alliés retirés de la campagne (card_id ; — scénario final)", type: "cardmulti" },
-            { key: "Number of delay counters on main scheme", label: "Pions retard sur la manigance principale (scénario final)", type: "int" },
-            { key: "Players engaged with minions", label: "Joueurs engagés avec des sbires (0;1;2;3 — scénario final)", type: "cardmulti" },
-        ],
-    },
-    mut_gen: {
-        note: "Mutant Genesis — entrées relues à chaque mise en place de scénario (deck Future Past, rôle et améliorations retirées par joueur, alliés captifs, indicateurs de victoire).",
-        fields: [
-            { key: "Future Past in Victory Display", label: "Future Past — dans la pile de victoire", type: "cardmulti",
-                options: [["32166", "Nimrod"], ["32167", "Bastion"], ["32168", "Nimrod's Portal"], ["32169", "Bastion's Machinations"], ["32170", "Nano-Sentinel Tech"]] },
-            { key: "Future Past in Encounter Deck", label: "Future Past — mélangées au deck de rencontre", type: "cardmulti",
-                options: [["32166", "Nimrod"], ["32167", "Bastion"], ["32168", "Nimrod's Portal"], ["32169", "Bastion's Machinations"], ["32170", "Nano-Sentinel Tech"]] },
-            { key: "Role", label: "Rôle du joueur", type: "cardpick", perPlayer: true,
-                options: [["Brawler", "Brawler"], ["Commander", "Commander"], ["Defender", "Defender"], ["Peacekeeper", "Peacekeeper"]] },
-            { key: "Role Upgrades Removed", label: "Améliorations de rôle retirées", type: "cardmulti", perPlayer: true,
-                options: [["32176", "Coup de Grâce (Brawler)"], ["32177", "Swagger (Brawler)"], ["32178", "Brazen Defense (Brawler)"], ["32179", "Ferocious Attack (Brawler)"], ["32180", "War Cry (Brawler)"], ["32181", "Coup de Grâce (Commander)"], ["32182", "Compassion (Commander)"], ["32183", "Group Assault (Commander)"], ["32184", "Shock and Awe (Commander)"], ["32185", "Improvisation (Commander)"], ["32186", "Swagger (Defender)"], ["32187", "Surprise! (Defender)"], ["32188", "Heroic Intervention (Defender)"], ["32189", "Determined Defense (Defender)"], ["32190", "Bodyguard (Defender)"], ["32191", "Surprise! (Peacekeeper)"], ["32192", "Compassion (Peacekeeper)"], ["32193", "Rescue Operation (Peacekeeper)"], ["32194", "Mentorship (Peacekeeper)"], ["32195", "Fortitude (Peacekeeper)"]] },
-            { key: "Captive Allies", label: "Alliés captifs (mélangés au deck du joueur)", type: "cardmulti",
-                options: [["32089", "Rictor"], ["32090", "Boom Boom"], ["32091", "Cannonball"], ["32092", "Wolfsbane"]] },
-            { key: "Campaign Pool: Jubilee", label: "Jubilee dans le pool de campagne", type: "cardpick",
-                options: [["1", "Oui (dans le pool)"]] },
-            { key: "Jubilee removed", label: "Jubilee retirée de la campagne", type: "cardpick",
-                options: [["1", "Oui (retirée)"]] },
-        ],
-    },
-    aoa: {
-        note: "Age of Apocalypse — allié de campagne par joueur, mission et superviseur en cours, et indicateurs des missions et superviseurs déjà accomplis.",
-        fields: [
-            { key: "Campaign Ally", label: "Allié de campagne", type: "cardpick", perPlayer: true,
-                options: [["45172", "Destiny"], ["45173", "Blink"], ["45174", "Morph"], ["45175", "X-Man"]] },
-            { key: "Mission Result", label: "Résultat de la mission en cours", type: "cardpick",
-                options: [["accomplished", "Réussie"], ["failed", "Échouée"]] },
-            { key: "Mission Done: Liberate the Seattle Core", label: "Mission accomplie : Liberate the Seattle Core", type: "int" },
-            { key: "Mission Done: Evacuate Survivors", label: "Mission accomplie : Evacuate Survivors", type: "int" },
-            { key: "Mission Done: Sabotage the Sea Wall", label: "Mission accomplie : Sabotage the Sea Wall", type: "int" },
-            { key: "Mission Done: Find Lost Mutants", label: "Mission accomplie : Find Lost Mutants", type: "int" },
-            { key: "Overseer Defeated: Mister Sinister", label: "Superviseur vaincu : Mister Sinister", type: "int" },
-            { key: "Overseer Defeated: The Shadow King", label: "Superviseur vaincu : The Shadow King", type: "int" },
-            { key: "Overseer Defeated: Abyss", label: "Superviseur vaincu : Abyss", type: "int" },
-            { key: "Overseer Defeated: Sugar Man", label: "Superviseur vaincu : Sugar Man", type: "int" },
-            { key: "Overseer Defeated: Mikhail Rasputin", label: "Superviseur vaincu : Mikhail Rasputin", type: "int" },
-        ],
-    },
-    mts: {
-        note: "Mad Titan’s Shadow — chaque récompense obtenue est un indicateur du Pool (coché = présent). Deux pénalités narratives, et les PV restants par joueur (Expert).",
-        fields: [
-            { key: "Campaign Pool: Cosmo", label: "Pool — Cosmo (allié)", type: "cardpick", options: [["21180b", "Cosmo"]] },
-            { key: "Campaign Pool: Security Breach", label: "Pool — Security Breach", type: "cardpick", options: [["21181", "Security Breach"]] },
-            { key: "Campaign Pool: Shawarma", label: "Pool — Shawarma", type: "cardpick", options: [["21183", "Shawarma"]] },
-            { key: "Campaign Pool: Black Swan", label: "Pool — Black Swan (sbire)", type: "cardpick", options: [["21182b", "Black Swan"]] },
-            { key: "Campaign Pool: System Shock", label: "Pool — System Shock (obligation)", type: "cardpick", options: [["21185", "System Shock"]] },
-            { key: "Campaign Pool: Norn Stone", label: "Pool — Norn Stone (amélioration)", type: "cardpick", options: [["21187a", "Norn Stone"]] },
-            { key: "Campaign Pool: Odin", label: "Pool — Odin (allié)", type: "cardpick", options: [["21139a", "Odin"]] },
-            { key: "Avengers Tower Damaged", label: "Pénalité — Tour des Avengers endommagée", type: "int" },
-            { key: "The Infinity Stones 1B completed", label: "Pénalité — Infinity Stones (1B) accomplie", type: "int" },
-            { key: "Remaining hit points", label: "PV restants (Expert)", type: "int", perPlayer: true },
-        ],
-    },
-    next_evol: {
-        note: "NeXt Evolution — environnements obtenus (pool), missions choisies ou retirées, Maraudeurs vaincus, Morlocks sauvés, dégâts sur Hope Summers.",
-        fields: [
-            { key: "Campaign Pool: Team Assembled", label: "Pool : Équipe rassemblée", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Campaign Pool: Safehouse Established", label: "Pool : Planque établie", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Campaign Pool: Geared Up", label: "Pool : Équipement prêt", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Campaign Pool: Mission Prepped", label: "Pool : Mission préparée", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Campaign Pool: Practiced Maneuvers", label: "Pool : Manœuvres répétées", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Campaign Pool: Prepared Defenses", label: "Pool : Défenses préparées", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Assemble the Team", label: "Choisie : Rassembler l’équipe", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Establish Safehouse", label: "Choisie : Établir la planque", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Gear Up", label: "Choisie : S’équiper", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Mission Prep", label: "Choisie : Préparer la mission", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Practice Maneuvers", label: "Choisie : Répéter les manœuvres", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Chose: Prepare Defenses", label: "Choisie : Préparer les défenses", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Assemble the Team", label: "Retirée : Rassembler l’équipe", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Establish Safehouse", label: "Retirée : Établir la planque", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Gear Up", label: "Retirée : S’équiper", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Mission Prep", label: "Retirée : Préparer la mission", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Practice Maneuvers", label: "Retirée : Répéter les manœuvres", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Removed: Prepare Defenses", label: "Retirée : Préparer les défenses", type: "cardpick", options: [["1", "Oui"]] },
-            { key: "Marauders Defeated", label: "Maraudeurs vaincus (scénario 1)", type: "cardmulti",
-                options: [["Arclight", "Arclight"], ["Blockbuster", "Blockbuster"], ["Chimera", "Chimera"], ["Greycrow", "Greycrow"], ["Harpoon", "Harpoon"], ["Riptide", "Riptide"], ["Vertigo", "Vertigo"]] },
-            { key: "Morlocks Saved", label: "Morlocks sauvés (nombre)", type: "int" },
-            { key: "Hope Summers's Damage Scenario 3", label: "Dégâts sur Hope Summers (scénario 3)", type: "int" },
-            { key: "Hope Summers's Damage Scenario 4", label: "Dégâts sur Hope Summers (scénario 4)", type: "int" },
-            { key: "Remaining hit points", label: "PV restants (Expert, scénarios 2-5)", type: "int", perPlayer: true },
-        ],
-    },
-};
 const playerLogKey = (field, i) => field.perPlayer ? ("Player " + (i + 1) + " " + field.key) : field.key;
-async function campaignBoxes() {
-    const exts = await catalog.extensions();
-    exts.forEach((e) => { _extCodeByKey[e.key] = e.code; });
-    return exts.filter((e) => CAMPAIGN_CODES.includes(e.code) && e.scenarios.length);
-}
 
 function portrait(cardId, cls) {
     return el("div", {
@@ -618,15 +471,10 @@ function navStatus() {
 }
 
 async function doLaunch() {
-    // En campagne, lancer un scénario le marque comme joué : la prochaine
-    // ouverture proposera le suivant (progression mémorisée localement).
-    if (isCampaignMode() && state.scenario) {
-        const boxCode = _extCodeByKey[state.scenario.extension] || _extCodeByKey[state.extensionTab] || "";
-        state.campaignLog = boxCode ? prefs.campaignLog(boxCode) : {};
-        if (boxCode) prefs.markCampaignDone(boxCode, state.scenario.id);
-    } else {
-        state.campaignLog = {};
-    }
+    // Le carnet ne vient plus d'ici : l'ecran des campagnes le passe lui-meme a
+    // `launch()` (voir `lancerScenario` dans public/js/campagne/app.js). Cet ecran
+    // ne lance donc jamais de partie de campagne.
+    state.campaignLog = {};
     try { await launch(state); }
     catch (e) { alert(t("Erreur de lancement :") + " " + e.message); }
 }
@@ -1962,10 +1810,8 @@ async function preselectionDernierScenario() {
 
 async function loadExtTabs() {
     if (await preselectionDernierScenario()) { render(); return; }
-    const exts = isCampaignMode()
-        ? await campaignBoxes()
-        : (await catalog.extensions()).filter((e) => e.scenarios.length);
-    // En campagne, si l'onglet courant n'est pas une boîte-campagne, on le recale.
+    const exts = (await catalog.extensions()).filter((e) => e.scenarios.length);
+    // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
         state.extensionTab = exts[0] ? exts[0].key : null;
@@ -1994,7 +1840,6 @@ async function loadScnGrid() {
     const scs = await catalog.scenariosForExtension(state.extensionTab);
     grid = document.getElementById("scn-grid");
     if (!grid) return;
-    if (isCampaignMode()) { renderCampaignPath(grid, scs); return; }
     grid.replaceChildren(...scs.map((sc) => {
         const on = state.scenario && state.scenario.id === sc.id;
         return el("button", {
@@ -2012,234 +1857,8 @@ async function loadScnGrid() {
     }));
 }
 
-function renderCampaignPath(grid, scs) {
-    const boxCode = _extCodeByKey[state.extensionTab] || "";
-    const boxName = String(state.extensionTab || "").replace(/^\d+\.\s*/, "");
-    const done = new Set(prefs.campaignDone(boxCode));
-    let currentIndex = scs.findIndex((sc) => !done.has(sc.id));
-    const complete = currentIndex === -1;
-    if (complete) currentIndex = scs.length - 1;
 
-    // Pré-sélection du 1er villain non terminé si aucun scénario pertinent n'est choisi.
-    const selInBox = state.scenario && scs.some((s) => s.id === state.scenario.id);
-    if (!selInBox) { selectScenario(scs[currentIndex]); render(); return; }
 
-    const doneCount = scs.filter((s) => done.has(s.id)).length;
-    const head = el("div", { class: "camp-head" },
-        el("div", { class: "camp-id" },
-            el("span", { class: "camp-k" }, t("Campagne")),
-            el("strong", { class: "camp-name mvl" }, boxName),
-        ),
-        el("div", { class: "camp-prog" },
-            el("span", {}, complete ? t("Campagne terminée") : (t("Étape") + " " + (currentIndex + 1) + " / " + scs.length)),
-            doneCount ? el("button", {
-                class: "camp-reset",
-                onclick: () => { prefs.resetCampaign(boxCode); state.scenario = null; loadScnGrid(); },
-            }, t("Réinitialiser")) : null,
-        ),
-    );
-
-    const path = el("div", { class: "camp-path" });
-    scs.forEach((sc, i) => {
-        const isDone = done.has(sc.id);
-        const isCurrent = i === currentIndex && !complete;
-        const locked = !complete && i > currentIndex; // pas encore atteint
-        const selected = state.scenario && state.scenario.id === sc.id;
-        path.append(el("button", {
-            class: "camp-node cut" + (selected ? " sel" : "") + (isDone ? " done" : "") + (isCurrent ? " current" : "") + (locked ? " locked" : ""),
-            disabled: locked || undefined,
-            onclick: locked ? undefined : () => { selectScenario(sc); render(); },
-            onmouseenter: locked ? undefined : (e) => showScnHover(sc, e.currentTarget),
-            onmouseleave: scheduleHide,
-        },
-            el("span", { class: "cn-num mvl" }, isDone ? "✓" : String(i + 1)),
-            el("div", { class: "cn-illus", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
-            el("div", { class: "cn-name mvl" }, sc.name),
-            el("div", { class: "cn-meta" }, locked ? t("Verrouillé") : (sc.villainNames.slice(0, 2).join(", ") || t("Scénario"))),
-        ));
-    });
-    // Story du scenario SELECTIONNE, sinon du scenario courant de la campagne.
-    const scStory = (state.scenario && scs.find((s) => s.id === state.scenario.id))
-        || (complete ? null : scs[currentIndex]);
-    const story = scStory
-        ? renderCampaignStory(boxCode, scStory, scs.indexOf(scStory), scs.length)
-        : null;
-    grid.replaceChildren(...[head, path, story, renderCampaignJournal(boxCode)].filter(Boolean));
-}
-
-/* ---- Story de campagne --------------------------------------------------
-   Texte narratif PAR SCENARIO, saisi par le joueur (colle depuis son livret de
-   campagne : le contenu FFG ne peut pas etre embarque ici). Stocke en
-   localStorage. Quand le champ est vide, une courte mise en ambiance ORIGINALE
-   sert de texte par defaut. */
-const STORIES_KEY = "mc-campaign-stories";
-function storiesAll() {
-    try { return JSON.parse(window.localStorage.getItem(STORIES_KEY) || "{}"); } catch { return {}; }
-}
-function storyOf(boxCode, scId) { return (storiesAll()[boxCode] || {})[scId] || ""; }
-function setStory(boxCode, scId, texte) {
-    const s = storiesAll();
-    s[boxCode] = s[boxCode] || {};
-    if (String(texte).trim()) s[boxCode][scId] = texte; else delete s[boxCode][scId];
-    try { window.localStorage.setItem(STORIES_KEY, JSON.stringify(s)); } catch {}
-}
-// Mises en ambiance originales (pas du texte FFG), variees par position dans la
-// campagne. Textes interpolés (${v}) : t() ne convient pas, on garde donc deux
-// jeux de gabarits et on choisit selon la langue courante.
-const STORY_BLURBS = [
-    (v) => `La première alerte retentit. ${v} ouvre les hostilités : en tenue, la campagne commence ici.`,
-    (v) => `La piste s’enfonce. Derrière cette manigance se tient ${v}, qui sait que vous arrivez.`,
-    (v) => `Pas le temps de souffler : ${v} frappe pendant que l’équipe panse encore ses plaies.`,
-    (v) => `Les enjeux montent. Battez ${v} ici, ou tout ce que vous avez défendu commence à s’effondrer.`,
-    (v) => `C’est la fin de partie. ${v} vous attend : gagnez maintenant, et l’histoire se conclut à votre façon.`,
-];
-const STORY_BLURBS_EN = [
-    (v) => `The first alarm sounds. ${v} opens hostilities: suit up, the campaign starts here.`,
-    (v) => `The trail runs deeper. Behind this scheme stands ${v}, who knows you are coming.`,
-    (v) => `No time to catch your breath: ${v} strikes while the team is still licking its wounds.`,
-    (v) => `The stakes are rising. Beat ${v} here, or everything you have defended starts to crumble.`,
-    (v) => `This is the endgame. ${v} is waiting: win now, and the story ends your way.`,
-];
-function storyBlurb(sc, index, total) {
-    const v = (sc.villainNames && sc.villainNames[0]) || sc.name;
-    const slot = total <= 1 ? 4 : Math.min(4, Math.round((index / Math.max(1, total - 1)) * 4));
-    return (langueActuelle() === "en" ? STORY_BLURBS_EN : STORY_BLURBS)[slot](v);
-}
-/** Nom de fichier sur pour les scans d'un scenario. */
-function storyFileBase(boxCode, scId) {
-    const propre = (x) => String(x).replace(/[^a-zA-Z0-9_-]+/g, "_");
-    return `/public/stories/${propre(boxCode)}/${propre(scId)}`;
-}
-/**
- * Scans du livret deposes par le joueur : <base>_1.jpg, <base>_2.jpg... (ou
- * .png). Seule la PREMIERE page (l'histoire) est visible d'emblee ; les
- * suivantes (mise en place, regles) sont repliees. Un clic sur une image
- * l'ouvre en plein ecran.
- */
-function storyImages(boxCode, scId) {
-    const base = storyFileBase(boxCode, scId);
-    const faireImg = (i) => {
-        const img = el("img", { class: "cs-image", src: `${base}_${i}.jpg`, loading: "lazy", alt: "" });
-        img.onerror = () => {
-            if (!img.dataset.png) { img.dataset.png = "1"; img.src = `${base}_${i}.png`; }
-            else img.remove();
-        };
-        img.onclick = () => {
-            const overlay = el("div", { class: "cs-lightbox", onclick: () => overlay.remove() },
-                el("img", { src: img.src, alt: "" }));
-            document.body.append(overlay);
-        };
-        return img;
-    };
-    const reste = el("div", { class: "cs-images" });
-    for (let i = 2; i <= 6; i++) reste.append(faireImg(i));
-    return el("div", {},
-        el("div", { class: "cs-images" }, faireImg(1)),
-        el("details", { class: "cs-plus" },
-            el("summary", {}, t("Mise en place et pages suivantes")),
-            reste,
-        ),
-    );
-}
-
-function renderCampaignStory(boxCode, sc, index, total) {
-    if (!sc) return null;
-    const perso = storyOf(boxCode, sc.id);
-    const texte = el("p", { class: "cs-texte" + (perso ? "" : " cs-defaut") },
-        perso || storyBlurb(sc, index, total));
-    const zone = el("textarea", {
-        class: "cs-edit",
-        rows: "4",
-        placeholder: t("Colle ici le texte d’histoire de ce scénario depuis ton livret de campagne : il remplacera le texte par défaut."),
-        oninput: (e) => {
-            setStory(boxCode, sc.id, e.target.value);
-            const v = e.target.value.trim();
-            texte.textContent = v || storyBlurb(sc, index, total);
-            texte.classList.toggle("cs-defaut", !v);
-        },
-    });
-    zone.value = perso;
-    return el("details", { class: "camp-story", open: "" },
-        el("summary", {}, `${t("Histoire")} — ${sc.name}`),
-        storyImages(boxCode, sc.id),
-        texte,
-        el("details", { class: "cs-editeur" },
-            el("summary", {}, t("Modifier / coller le texte officiel")),
-            zone,
-            el("p", { class: "cs-astuce" },
-                `${t("Scans du livret : dépose des images nommées")} ${storyFileBase(boxCode, sc.id)}_1.jpg ${t("(puis _2.jpg, _3.jpg…) dans le dossier du jeu, elles s’afficheront ci-dessus automatiquement.")}`),
-        ),
-    );
-}
-
-function renderCampaignJournal(boxCode) {
-    const schema = CAMPAIGN_SCHEMAS[boxCode];
-    if (!schema) {
-        return el("details", { class: "camp-journal" },
-            el("summary", {}, t("Carnet de campagne")),
-            el("p", { class: "cj-note" }, t("Cette campagne se joue en séquence : aucune récompense à reporter entre les scénarios dans cette version.")),
-        );
-    }
-    // Dict de travail (copie du stockage) mutée par les contrôles puis sauvegardée.
-    const log = { ...prefs.campaignLog(boxCode) };
-    const save = () => prefs.setCampaignLog(boxCode, log);
-    const set = (k, v) => { if (v === "" || v == null) delete log[k]; else log[k] = String(v); save(); };
-
-    const control = (field, i) => {
-        const k = playerLogKey(field, i);
-        if (field.type === "int") {
-            return el("input", { class: "cj-int", type: "number", min: "0", value: log[k] || "",
-                oninput: (e) => set(k, e.target.value) });
-        }
-        if (field.type === "cardpick") {
-            // Sans liste d'options (carte choisie dans la collection) : saisie libre du card_id.
-            if (!field.options) {
-                return el("input", { class: "cj-sel", type: "text", placeholder: "card_id", value: log[k] || "",
-                    oninput: (e) => set(k, e.target.value.trim()) });
-            }
-            const sel = el("select", { class: "cj-sel", onchange: (e) => set(k, e.target.value) },
-                el("option", { value: "" }, t("— aucune —")),
-                ...field.options.map(([id, name]) => el("option", { value: id, selected: log[k] === id }, t(name))));
-            return sel;
-        }
-        // cardmulti sans options : saisie libre de card_id séparés par ';'.
-        if (!field.options) {
-            return el("input", { class: "cj-sel", type: "text", placeholder: "card_id;card_id", value: log[k] || "",
-                oninput: (e) => set(k, e.target.value.trim()) });
-        }
-        // cardmulti : cases à cocher, valeur = ids joints par ';'
-        const chosen = new Set((log[k] || "").split(";").filter(Boolean));
-        const box = el("div", { class: "cj-multi" });
-        field.options.forEach(([id, name]) => {
-            box.append(el("label", { class: "cj-chk" },
-                el("input", { type: "checkbox", checked: chosen.has(id) || undefined,
-                    onchange: (e) => { e.target.checked ? chosen.add(id) : chosen.delete(id); set(k, [...chosen].join(";")); } }),
-                el("span", {}, t(name))));
-        });
-        return box;
-    };
-
-    const body = el("div", { class: "cj-body" });
-    schema.fields.forEach((field) => {
-        const row = el("div", { class: "cj-field" }, el("div", { class: "cj-label" }, t(field.label)));
-        if (field.perPlayer) {
-            for (let i = 0; i < state.playerCount; i++) {
-                row.append(el("div", { class: "cj-prow" },
-                    el("span", { class: "cj-pl" }, t("Joueur") + " " + (i + 1)),
-                    control(field, i)));
-            }
-        } else {
-            row.append(control(field, 0));
-        }
-        body.append(row);
-    });
-
-    return el("details", { class: "camp-journal" },
-        el("summary", {}, "Carnet de campagne"),
-        schema.note ? el("p", { class: "cj-note" }, t(schema.note)) : null,
-        body,
-    );
-}
 function detailRow(k, v) {
     return el("div", { class: "detail-row" },
         el("span", { class: "dr-k" }, k),
