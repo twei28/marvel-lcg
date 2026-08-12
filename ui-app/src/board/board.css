@@ -4779,3 +4779,16 @@
   padding-inline: 6px;
   white-space: nowrap;
 }
+
+/* Campagne à plusieurs : une case qui appartient à un autre siège reste
+   visible (on suit le carnet se remplir) mais inerte. La griser sans le dire
+   ferait croire à une panne. */
+.camp-champ-ligne.est-lecture {
+  opacity: 0.7;
+}
+
+.camp-champ-proprietaire {
+  font-size: 11px;
+  opacity: 0.8;
+  font-style: italic;
+}

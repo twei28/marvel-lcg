@@ -1322,6 +1322,7 @@ function EcranFinPartie({
   raison,
   monde,
   hautsFaits,
+  siege,
   onMenu,
 }: {
   gagne: boolean
@@ -1329,6 +1330,12 @@ function EcranFinPartie({
   monde?: World
   /** Titres débloqués pendant cette session, accumulés par Moteur. */
   hautsFaits: string[]
+  /**
+   * Siège de CE navigateur (`?p=`), et non la vue affichée : regarder la table
+   * d'un autre ne fait pas de nous ce joueur. Le panneau de récompenses s'en
+   * sert pour savoir quelles cases nous appartiennent.
+   */
+  siege: number
   onMenu: () => void
 }) {
   const heros = (monde?.players ?? [])
@@ -1384,6 +1391,7 @@ function EcranFinPartie({
         <PanneauRecompenses
           monde={monde}
           gagne={gagne}
+          siege={siege}
           onTermine={(retourCampagne) => {
             if (retourCampagne) window.location.href = '/campagne.html'
             else onMenu()
@@ -2292,6 +2300,7 @@ function PagePartie({
           raison={etat.monde.game_over_reason}
           monde={etat.monde}
           hautsFaits={etat.hautsFaits}
+          siege={playerId}
           onMenu={retourMenu}
         />
       ) : null}

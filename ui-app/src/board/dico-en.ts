@@ -313,6 +313,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',
 
+  // ---- Campagne a plusieurs ----
+  'à remplir par': 'to be filled by',
+
   // ---- Rapport de bug (panneau H) ----
   'Profondeur': 'Depth',
   '20 dernières': 'Last 20',

@@ -35,6 +35,7 @@ import {
   type DefinitionCampagne,
   type ScenarioCampagne,
 } from './contexte'
+import { droitSurChamp, peutValider, type DroitCarnet } from './droits-carnet'
 import { assainirCarnet, preRemplir } from './preremplissage'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
@@ -86,10 +87,16 @@ const nbJoueurs = (campagne: Campagne, monde: World) =>
 export function PanneauRecompenses({
   monde,
   gagne,
+  siege,
   onTermine,
 }: {
   monde: World | undefined
   gagne: boolean
+  /**
+   * Siège de CE navigateur, tel que l'URL le donne (`?p=`). Le 0 est l'hôte.
+   * Il décide qui saisit quoi : voir `droits-carnet.ts`.
+   */
+  siege: number
   /** Appelé quand le joueur a validé : le plateau peut proposer la suite. */
   onTermine: (retourCampagne: boolean) => void
 }) {
@@ -358,6 +365,7 @@ export function PanneauRecompenses({
               valeurs={valeurs}
               poser={poser}
               nomJoueur={nomJoueur}
+              siege={siege}
             />
           ))}
         </div>
@@ -405,6 +413,7 @@ function ChampRecompense({
   valeurs,
   poser,
   nomJoueur,
+  siege,
 }: {
   champ: ChampVictoire
   total: number
@@ -412,6 +421,7 @@ function ChampRecompense({
   valeurs: Record<string, string>
   poser: (cle: string, valeur: string) => void
   nomJoueur: (i: number) => string
+  siege: number
 }) {
   const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
   const auto = champ.type === 'auto'
@@ -426,8 +436,12 @@ function ChampRecompense({
       {joueurs.map((joueurId) => {
         const elimine = champ.parJoueur && joueurElimine(monde, joueurId)
         const cle = cleCarnet(champ, joueurId)
+        // À plusieurs, une case n'appartient qu'à un siège. Les autres la
+        // voient, pour suivre le carnet se remplir, mais ne peuvent pas
+        // l'écrire : sinon le dernier à cliquer gagne, en silence.
+        const droit = droitSurChamp(champ, joueurId, siege, peutValider(siege))
         return (
-          <div className="camp-champ-ligne" key={cle}>
+          <div className={`camp-champ-ligne${droit === 'lecture' ? ' est-lecture' : ''}`} key={cle}>
             {champ.parJoueur ? (
               <span className="camp-champ-joueur">{nomJoueur(joueurId)}</span>
             ) : null}
@@ -436,8 +450,13 @@ function ChampRecompense({
                 {t('Héros vaincu : il ne participe pas aux récompenses de ce scénario.')}
               </span>
             ) : (
-              <Controle champ={champ} cle={cle} valeurs={valeurs} poser={poser} />
+              <Controle champ={champ} cle={cle} valeurs={valeurs} poser={poser} droit={droit} />
             )}
+            {droit === 'lecture' && !elimine && champ.parJoueur ? (
+              <small className="camp-champ-proprietaire">
+                {t('à remplir par')} {nomJoueur(joueurId)}
+              </small>
+            ) : null}
           </div>
         )
       })}
@@ -450,13 +469,17 @@ function Controle({
   cle,
   valeurs,
   poser,
+  droit,
 }: {
   champ: ChampVictoire
   cle: string
   valeurs: Record<string, string>
   poser: (cle: string, valeur: string) => void
+  /** `lecture` rend le contrôle inerte : la case est à quelqu'un d'autre. */
+  droit: DroitCarnet
 }) {
   const valeur = valeurs[cle] ?? ''
+  const inerte = droit === 'lecture'
 
   // Un CHOIX du livret : on montre les cartes, pas une liste déroulante. C'est
   // une décision de jeu, elle mérite qu'on voie ce qu'on prend.
@@ -469,6 +492,7 @@ function Controle({
             key={id}
             className={`camp-carte${valeur === id ? ' sel' : ''}`}
             aria-pressed={valeur === id}
+            disabled={inerte}
             onClick={() => poser(cle, valeur === id ? '' : id)}
           >
             <img src={scanUrl(id)} alt={id} loading="lazy" />
@@ -484,6 +508,7 @@ function Controle({
         className="camp-champ-int"
         type="number"
         min={0}
+        disabled={inerte}
         value={valeur}
         onChange={(e) => poser(cle, e.target.value)}
       />
@@ -501,6 +526,7 @@ function Controle({
             key={id}
             className={`camp-carte${choisies.has(id) ? ' sel' : ''}`}
             aria-pressed={choisies.has(id)}
+            disabled={inerte}
             onClick={() => {
               const suite = new Set(choisies)
               if (suite.has(id)) suite.delete(id)
@@ -521,6 +547,7 @@ function Controle({
     <input
       className="camp-champ-texte"
       type="text"
+      disabled={inerte}
       value={valeur}
       placeholder={t('rien')}
       onChange={(e) => poser(cle, e.target.value.trim())}
