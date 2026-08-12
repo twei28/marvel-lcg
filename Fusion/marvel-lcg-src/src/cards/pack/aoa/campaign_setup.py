@@ -82,6 +82,55 @@ def ExpertMayPlaceThreatToHeal() -> 'Ability':
                 identity.CastTo(CanHealth).HealHealth('All', effect)
             player.MayChooseOneAbility(effect, AbilityFactory.ForChoiceAbility('Place 3 threat on the mission side scheme to heal to full', heal))
     return AbilityFactoryCampaign.WhenCampaignSetupExpertOnly(action)
+# Professor X, carte JOUEUR de Mutant Genesis (32019). Ce n'est pas une carte du
+# set AoA : l'interdiction du scenario 5 porte sur le deck des joueurs.
+PROFESSOR_X = '32019'
+def ProfessorXCannotBePlayed() -> 'Ability':
+    """« Professor X cannot enter play during this game » (livret aoa p.20).
+
+    Instruction SETUP du scenario 5, dans le bloc CAMPAIGN INSTRUCTIONS : elle ne
+    vaut donc qu'en campagne, et WhenCampaignSetup ne part que la.
+
+    PORTEE PAR L'IDENTITE DE CHAQUE JOUEUR, et c'est le seul endroit qui marche.
+    Mesure faite le 11/8/2026 : la meme interdiction posee sur la manigance
+    principale (45147a) n'a AUCUN effet — Professor X mis en main par la console,
+    l'option « Play » reste offerte sans failure_reason, y compris avec
+    which_card=None. Les quatre usages du moteur sont tous des cartes joueur, et
+    `PlayersCannotPlayCardWhile` ne se diffuse pas depuis le scenario.
+
+    APPROXIMATION ASSUMEE : ce qui est bloque, c'est JOUER la carte, le seul chemin
+    qu'un joueur emprunte pour la poser. Une capacite qui la mettrait en jeu depuis
+    le deck ou la defausse passerait encore ; le moteur n'a aucun crochet
+    « cannot enter play » (verifie : `grep -rn "cannot enter play" src/` ne rend
+    rien), et en fabriquer un toucherait la mise en jeu de TOUTES les cartes.
+    """
+    def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
+        for player in Worlds.GetPlayers(effect):
+            identity = player.GetIdentity()
+            if identity is None:
+                continue
+            # LES DEUX FACES. Un effet enregistre par RegisterTemp est porte par la
+            # FACE, pas par la carte (`self.face.card.RegisterEffect(ability,
+            # self.face, ...)`), et la mise en place de campagne tourne quand le
+            # joueur est encore cote alter-ego : n'enregistrer que sur la face
+            # courante donnait un effet inerte des le premier passage en heros.
+            faces = [identity]
+            try:
+                heros = identity.GetHeroFace()
+            except AssertionError:
+                heros = None
+            if heros is not None and (heros is not identity):
+                faces.append(heros)
+            for face in faces:
+                face.effect.RegisterTemp(
+                    AbilityFactory.PlayersCannotPlayCardWhile(
+                        "You",
+                        CardFinder(check_face_fn=lambda f: f.paper.card_id == PROFESSOR_X),
+                    ),
+                    unregister_after_exec=False,
+                )
+    return AbilityFactoryCampaign.WhenCampaignSetup(action)
+
 def CampaignSetup(level: int) -> List['Ability']:
     abilities = [ShuffleApocalypseModularIntoEncounterDeck(),
                  SetupMissionAndOverseer(level),
@@ -91,6 +140,8 @@ def CampaignSetup(level: int) -> List['Ability']:
                  EachPlayerShufflesCopyIfPool('45178', 'Panicked Refugees'),
                  EachPlayerShufflesCopyIfPool('45176', 'Desperate Measures'),
                  ShuffleIntoEncounterIfPool('45177', 'North American Sea Wall')]
+    if (level == 5):
+        abilities.append(ProfessorXCannotBePlayed())
     if (level >= 2):
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
         abilities.append(ExpertMayPlaceThreatToHeal())

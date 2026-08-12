@@ -1558,17 +1558,8 @@ campaign": "04098"}`, 04097 arrive dans `player_deck` et **04098 part dans
 le fait, à la mise en place du scénario 5. Propriété non évidente, écrite ici pour
 qu'on ne « corrige » pas ce qui marche.
 
-**Professor X reste une approximation assumée** (aoa, scénario 5 : « Professor X
-cannot enter play during this game »). La voie évidente a été essayée et mesurée :
-`AbilityFactory.PlayersCannotPlayCardWhile("AnyPlayer", CardFinder(card_ids=
-['32019']))` posé sur la manigance 45147a n'a **aucun effet** — Professor X mis en
-main par la console, l'option « Play » reste proposée sans `failure_reason`, y
-compris sans la condition `IsCampaign` et même avec `which_card=None` (donc toutes
-les cartes). Le mécanisme ne se diffuse pas depuis une manigance principale : les
-quatre usages du moteur sont tous des cartes JOUEUR (attachement sur l'identité,
-ou l'identité elle-même). Le fichier a été rendu à l'identique. Prochaine piste
-si l'on y revient : faire porter l'interdiction par une carte du joueur, ou par
-`world.rule`, et non par le scénario.
+**Professor X : CÂBLÉ le 12/8/2026**, après deux mesures qui disent où le
+mécanisme vit et où il ne vit pas. Voir §16.
 
 ### La fuite hors campagne est STRUCTURELLE, pas propre à aos (mesurée)
 
@@ -1852,3 +1843,53 @@ test qui ne vérifie pas sa propre mise en scène mesure ce qu'il croit, pas ce 
 
 **Les huit boîtes ont désormais chacune au moins un scénario joué de bout en bout,
 carnet écrit et relu.**
+
+## 16. Professor X ne peut plus être joué au scénario 5 d'AoA (12/8/2026)
+
+Livret p.20, instructions SETUP du scénario 5 : « Professor X cannot enter play
+during this game. » Le jeu ne l'empêchait pas, et l'entrée était classée « défaut
+assumé ». Elle est fermée, et le chemin pour y arriver vaut d'être écrit : deux
+mesures ont été nécessaires, chacune éliminant une hypothèse fausse.
+
+### Mesure 1 : le mécanisme ne se diffuse pas depuis le scénario
+
+`AbilityFactory.PlayersCannotPlayCardWhile("AnyPlayer", CardFinder(card_ids=
+['32019']))` posé sur la manigance principale (45147a) n'a **aucun effet** :
+Professor X mis en main par la console, l'option « Play » reste proposée sans
+`failure_reason`. Vérifié jusqu'au bout, en retirant la condition `IsCampaign` puis
+en passant `which_card=None` — donc pour TOUTES les cartes, et rien n'était bloqué.
+
+Les quatre usages du moteur sont tous des cartes JOUEUR (un attachement sur
+l'identité, ou l'identité elle-même). Ce n'est pas un hasard : la vérification
+consulte ce que porte le joueur, pas ce que porte le scénario.
+
+### Mesure 2 : un effet temporaire est porté par la FACE, pas par la carte
+
+Deuxième tentative, sur l'identité du joueher cette fois
+(`identity.effect.RegisterTemp(...)`) : toujours aucun effet. La cause est dans
+`RegisterTemp` lui-même — `self.face.card.RegisterEffect(ability, self.face, …)` :
+l'effet est attaché à **la face**. Or la mise en place de campagne tourne quand le
+joueur est encore côté ALTER-EGO. L'effet était donc bien enregistré, sur la face
+alter-ego, et devenait inerte au premier passage en forme héros, c'est-à-dire avant
+qu'on puisse jouer quoi que ce soit.
+
+**L'interdiction est donc enregistrée sur les DEUX faces de l'identité**, la
+courante et celle du héros (`GetHeroFace()`, avec son garde `AssertionError`). C'est
+la seule forme qui tienne, et elle tient : l'option « Play » disparaît en campagne,
+et reste offerte hors campagne.
+
+### Ce qui est tenu, et ce qui reste approximatif
+
+Ce qui est bloqué, c'est **jouer** la carte : le seul chemin qu'un joueur emprunte
+pour la poser. Une capacité qui la mettrait en jeu depuis le deck ou la défausse
+passerait encore. Le moteur n'a aucun crochet « cannot enter play » (`grep -rn
+"cannot enter play" src/` ne rend rien), et en fabriquer un toucherait la mise en
+jeu de toutes les cartes du jeu. L'approximation est donc conservée, mais elle a
+changé de nature : ce n'est plus « rien n'est contrôlé », c'est « le geste du joueur
+est contrôlé ».
+
+Deux cas dans `ui-check/tests/campagne-professor-x.spec.ts`, dont **le témoin hors
+campagne** : sans lui, une interdiction qui déborderait sur toutes les parties
+d'En Sabah Nur passerait pour bonne, alors que l'instruction est une CAMPAIGN
+INSTRUCTION. Colossus est le héros du test parce que son deck de départ contient
+Professor X.
