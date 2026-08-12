@@ -2029,3 +2029,108 @@ Récapitulatif de la série, chacun repris un par un :
 | Professor X, sc.5 d'AoA | interdire de le jouer | **Câblé** (§16), porté par les deux faces de l'identité |
 | Fuite du descripteur | fermer les preuves d'aos | **Fermé** (§17), la répartition ne sort plus ; le deck de rencontre reste lisible |
 | « Professeur sauvé » | vérifier ce qui restait vérifiable | **Couvert dans les deux sens** (§18), sauf vaincre la mission en jeu |
+
+## 19. Une campagne à plusieurs, chacun sur son appareil (12/8/2026)
+
+Jusqu'ici, **seul celui qui avait lancé depuis l'écran des campagnes savait qu'il
+jouait une campagne.** Les autres avaient un plateau ordinaire : ni panneau de
+récompenses, ni règle de défaite, ni carnet, ni règle de reprise.
+
+### Ce que la fiche disait, et ce que la mesure a démenti
+
+La fiche `.planning/todos/2026-08-12-campagne-en-ligne.md` affirmait que le seul
+obstacle était la clé `localStorage` `mc-campagne-partie`, posée par
+`public/js/campagne/app.js:869` et lue par `contexte.ts`. **C'était faux, et cette
+phrase a envoyé le chantier sur une fausse piste.** Il y avait un second obstacle,
+en amont et plus dur :
+
+- **L'écran des campagnes lance la partie tout seul, sans jamais passer par le
+  salon.** `campagne/app.js:851` compose `joueurs` depuis `campagne.equipe`, pose
+  la clé, appelle `launch()`. Les mots « salon », « multi » et « en ligne »
+  n'apparaissent nulle part dans ce fichier.
+- **Le salon est réservé au hot-seat.** `prepare/app.js:707` fait
+  `if (!state.salon.multi || state.mode.id !== "hotseat") return null`, alors que la
+  campagne lance avec `mode: { id: "campaign" }`. L'écran de préparation le dit
+  lui-même ligne 474 : « Cet écran ne lance donc jamais de partie de campagne. »
+
+**Conséquence : une campagne était TOUJOURS hot-seat.** Les distants n'avaient pas
+un plateau qui ignore la campagne — rien ne les convoquait.
+
+### Les deux routes
+
+| Route | Ce qu'elle fait | Ce qu'elle ne peut PAS faire |
+|---|---|---|
+| `GET /get_campagne_en_cours` | Rend `{id, scenario, nom, equipe}` de la campagne dont `partieEnCours.depuis` est la plus récente | Rendre le carnet ou le secret. Vérifié sur la **chaîne** de réponse, pas seulement sur l'objet |
+| `POST /save_carnet_partiel` | Fusionne des clés de carnet | Terminer un scénario, gagner une campagne, toucher au secret, créer une campagne |
+
+La déduction de la première **existait déjà**, enfouie dans
+`secret_pour_le_moteur()` : elle a été extraite dans `_campagne_la_plus_recente()`
+et verrouillée par un test AVANT l'extraction. Elle ne dépend d'aucun navigateur,
+donc elle vaut pour tous les sièges.
+
+`/save_campagne` **n'a pas été modifié**. Il reste le seul à écrire `termines`,
+`perdue` et `partieEnCours`. Un siège distant ne doit pas pouvoir déclarer la
+campagne gagnée, et le lui interdire **par la forme de la route** coûte moins cher
+que de le vérifier partout ailleurs.
+
+### La règle des droits, en une phrase
+
+**Un champ `parJoueur` appartient au siège qu'il nomme, tout le reste appartient à
+l'hôte** (`droits-carnet.ts`). Deux conséquences volontaires : l'hôte ne
+s'approprie pas les champs personnels des autres, sinon deux personnes
+rempliraient la même case ; et un siège inconnu (page sans `?p=`) ne peut rien
+écrire.
+
+Le siège vient de `?p=`, **pas de la vue affichée** : regarder la table d'un autre
+ne fait pas de nous ce joueur.
+
+### La répartition des sièges : rien à écrire
+
+Le siège N tient `equipe[N]`. C'est **déjà** ce que fait le moteur, qui reçoit
+`players` dans cet ordre. L'équipe d'une campagne étant figée par le livret,
+« choisir son héros » n'a aucun sens ici : le salon se contente de dire
+« Tu tiens <héros> » (§4.7 de la fiche, jalon absent de la conception initiale).
+
+### Trois choses qui se sont révélées gratuites
+
+1. **`PanneauRecompenses` est monté sans condition de siège** (`board.tsx:1384`).
+   Sa seule garde était `lireContexte()`. Dès que le contexte atteint tous les
+   sièges, le panneau s'ouvre chez tout le monde, en direct, sans autre travail.
+2. **`lireContexte()` n'a que deux consommateurs.** Le passage à l'asynchrone,
+   redouté par la fiche, a coûté trois lignes. `lireContexte()` reste d'ailleurs
+   en place, purement locale, pour le rapport de bug qui se prend au clic et ne
+   doit pas attendre le réseau.
+3. **`parJoueur` était déjà pleinement câblé côté UI** : `cleCarnet()` préfixe en
+   `Player N <clé>` et le panneau affichait déjà une ligne par joueur. Il ne
+   restait qu'à décider qui a le droit d'y écrire.
+
+### Les pièges payés
+
+- **Le poll de l'hôte réécrivait ses propres cases.** Fusionner
+  `{...carnet, ...valeurs}` ne suffit pas : une case qu'il vient d'EFFACER est
+  retirée de `valeurs` (par `poser`, qui fait `delete`), donc le serveur la
+  réinjecte trois secondes plus tard. D'où `cleDUnAutreSiege()`, qui ne reprend que
+  les clés `Player N ` d'un autre siège.
+- **Le scénario vide entre deux parties.** Entre la validation de l'hôte et son
+  prochain lancement, `partieEnCours` vaut `null` et la route rend un scénario
+  VIDE. Recharger là renverrait les distants sur un plateau mort
+  (`scenarioSuivantLance`).
+- **« À choisir avant de continuer » mentait aux distants.** Le panneau leur
+  listait des cases appartenant à d'autres joueurs, qu'ils n'ont pas le droit de
+  remplir. Relevé par `campagne-multi.spec.ts`, corrigé : le message est réservé à
+  qui peut valider.
+- **Les fins de ligne, deux fois.** `server_campagne.py` et `prepare/dico-en.js`
+  sont en CRLF intégral : un motif en LF ne correspond à rien et l'édition échoue
+  sans dire pourquoi. Lire `newline=''`, normaliser en LF, éditer, réécrire en CRLF.
+
+### Ce qui n'est PAS fait
+
+- **Aucune partie n'a été menée à deux navigateurs par un humain.** Le critère
+  d'acceptation de la fiche n'est donc pas atteint. En particulier, le salon qui
+  dit « Tu tiens <héros> » n'a jamais été vu par des yeux : rien d'automatisé ne
+  l'atteint.
+- **Le secret d'A.I.M. à quatre sièges** (§4.5 de la fiche) reste à éprouver : que
+  la combinaison ne se déduise pas d'un carnet partagé lu par plusieurs. C'est une
+  campagne de tests à soi seule.
+- **Ce que voyait un invité au salon avant ce chantier** est déduit du code, pas
+  mesuré.

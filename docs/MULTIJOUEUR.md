@@ -85,6 +85,59 @@ Pour terminer : **Ctrl+C** dans la fenêtre (ou ferme-la).
 
 ---
 
+## Jouer une CAMPAGNE à plusieurs (depuis le 12/8/2026)
+
+Avant cette date, une campagne était **toujours** jouée depuis un seul navigateur :
+seul celui qui l'avait lancée depuis l'écran des campagnes savait qu'il jouait une
+campagne, et rien ne convoquait les autres. C'est réglé.
+
+### Comment ça se passe
+
+1. Tu lances `JOUER-EN-MULTI.bat` comme d'habitude, et tu envoies leurs liens à tes amis.
+2. Chaque invité ouvre son lien et arrive au salon. **En campagne, il n'a rien à
+   choisir** : l'équipe a été arrêtée à la création de la campagne et le livret
+   interdit d'en changer. Le salon lui dit simplement « **Tu tiens <héros>** ».
+3. Toi, tu vas sur `campagne.html`, tu ouvres ta campagne et tu lances le scénario.
+   Tes amis basculent tout seuls sur le plateau.
+4. En fin de partie, **le panneau de récompenses s'ouvre chez tout le monde**, en
+   direct. Chacun remplit ses propres cases ; celles des autres sont visibles mais
+   grisées, avec la mention « à remplir par P2 ».
+5. Chaque invité clique « **Envoyer mes champs** ». Toi seul as « **Valider et
+   continuer la campagne** », et tu vois leurs choix arriver au fur et à mesure.
+6. Tu valides, tu reviens à l'écran des campagnes et tu lances le suivant : **tes
+   amis suivent tout seuls**, sans rien avoir à faire.
+
+### Qui remplit quoi
+
+**Une case qui nomme un joueur appartient à ce joueur ; tout le reste est à
+l'hôte.** Un invité ne peut ni valider, ni terminer un scénario, ni marquer la
+campagne gagnée ou perdue : ce n'est pas une question de confiance, c'est la forme
+même des routes du serveur qui l'en empêche.
+
+### Le siège N tient le N-ième héros de l'équipe
+
+Il n'y a aucun écran de répartition : le **lien du joueur 1** donne le premier
+héros de l'équipe, le **lien du joueur 2** le deuxième, et ainsi de suite, dans
+l'ordre où l'équipe a été composée. Mettez-vous d'accord sur qui prend quel lien
+avant de commencer.
+
+### Limites connues
+
+- **Ceci n'a jamais été joué en vraie soirée.** Tout est testé automatiquement
+  (deux navigateurs pilotés, carnet relu), mais aucun humain n'a encore mené une
+  campagne à plusieurs de bout en bout. Le salon qui dit « Tu tiens <héros> » n'a
+  jamais été vu à l'écran.
+- **Agents of S.H.I.E.L.D. à plusieurs** : le secret de la taupe ne sort d'aucune
+  route, mais on n'a pas vérifié qu'il ne se déduit pas d'un carnet partagé lu par
+  quatre personnes. À jouer en connaissance de cause.
+- **L'équipe ne change pas en cours de campagne.** C'est la règle du livret. Si
+  quelqu'un abandonne, il n'y a rien de prévu.
+
+Le détail technique (les deux routes, la règle des droits, les pièges) est au §19
+de `docs/CAMPAGNES.md`.
+
+---
+
 ## Pour aller plus loin
 
 Un vrai **serveur permanent multijoueur** (lien fixe, plusieurs tables, identité par siège, secret des mains appliqué côté serveur) est spécifié dans :
