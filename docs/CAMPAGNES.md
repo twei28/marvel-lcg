@@ -1812,3 +1812,43 @@ cartes qu'il n'en existe ».
 **Le carnet de Sinister Motives se remplit désormais entièrement tout seul**, sauf
 les trois vraies décisions du joueur : quelle amélioration S.H.I.E.L.D. garder,
 quelle carte d'aspect ajouter, quelle carte de son deck préparer.
+
+## 15. Les huit boîtes ont maintenant toutes été JOUÉES (12/8/2026)
+
+Cinq boîtes avaient traversé une vraie partie. Les trois autres —  The Mad Titan's
+Shadow, La Genèse des Mutants, Galaxy's Most Wanted — n'étaient validées que par
+l'audit texte-vs-code et par la sonde : leurs mises en place avaient été relues
+encart par encart contre le livret, mais aucune partie n'avait été menée jusqu'à ce
+que le carnet s'écrive. `ui-check/tests/campagne-boites-restantes.spec.ts` comble ça.
+
+Chaque cas vise le relevé le plus caractéristique de sa boîte, et non le plus facile :
+
+| Boîte | Scénario | Ce qui est mesuré |
+|---|---|---|
+| mts | 1, Ebony Maw | `Campaign Pool: Cosmo` : l'allié (21180b) en jeu à la fin rejoint le pool |
+| mut_gen | 1, Sabretooth | `Role` **et** `Frightened Police Defeated` |
+| gmw | 1, Brotherhood of Badoon | `Unspent Units` : la monnaie du Marché, qui s'ACCUMULE |
+
+**Le cas de `Role` est le plus intéressant.** Le rôle de Mutant Genesis est choisi
+EN JEU, à la mise en place, et remonte au carnet par le **store** du moteur
+(`CampaignLog.SetStr`), pas par le collecteur de fin de partie. C'est un chemin
+d'écriture que rien n'éprouvait, et il décide de tout le role-building de la
+campagne : sans lui, les améliorations des cinq scénarios seraient tirées au hasard.
+
+**`Unspent Units` porte son propre témoin.** Le carnet part à 4 unités et le test
+exige que le total AUGMENTE : un collecteur qui remplacerait au lieu d'ajouter
+rendrait 1 à 3 unités, donc moins que 4, et le cas tomberait. Le livret est net :
+« add these to units you already have ».
+
+**Cosmo a un témoin séparé**, et il a fallu le faire. Une condition posée à la
+console (`PutIntoPlay`) prouve que la clé APPARAÎT, mais pas que le moteur la lie à
+quoi que ce soit : un collecteur qui écrirait `Campaign Pool: Cosmo` à toutes les
+parties passerait pour bon. Le témoin joue donc la même partie SANS Cosmo et lit le
+carnet sortant : le collecteur relève des clés, et pas celle-là.
+
+Ce que le désarmement a appris : retirer le `PutIntoPlay` fait tomber le premier cas
+sur sa PRÉ-CONDITION (« Cosmo n'a pas été mis en jeu »), pas sur son assertion. Un
+test qui ne vérifie pas sa propre mise en scène mesure ce qu'il croit, pas ce qui est.
+
+**Les huit boîtes ont désormais chacune au moins un scénario joué de bout en bout,
+carnet écrit et relu.**

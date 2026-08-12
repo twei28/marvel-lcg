@@ -23,7 +23,8 @@
     "campagne-releves": "playwright test tests/campagne-releves.spec.ts --project=pc",
     "campagne-aoa": "playwright test tests/campagne-aoa.spec.ts --project=pc",
     "campagne-accusation": "playwright test tests/campagne-accusation.spec.ts --project=pc",
-    "campagne-pilote": "playwright test tests/campagne-pilote.spec.ts --project=pc"
+    "campagne-pilote": "playwright test tests/campagne-pilote.spec.ts --project=pc",
+    "campagne-boites-restantes": "playwright test tests/campagne-boites-restantes.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"
