@@ -40,6 +40,10 @@ function enModeDecouverte(): boolean {
   }
 }
 
+// Lecture LOCALE seulement, à dessein : le rapport se prend au clic et ne doit
+// pas attendre le réseau. Chez un siège distant, qui n'a pas la clé, la ligne
+// « campagne » manquera au rapport ; c'est un moindre mal comparé à un bouton
+// qui rame. `resoudreContexte()` est là pour ce qui peut attendre.
 function contexteCampagne(): { id: string; scenario: string } | undefined {
   const contexte = lireContexte()
   return contexte ? { id: contexte.id, scenario: contexte.scenario } : undefined

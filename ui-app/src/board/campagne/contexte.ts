@@ -78,6 +78,34 @@ export function lireContexte(): ContexteCampagne | null {
   }
 }
 
+/**
+ * Le contexte de campagne, d'où qu'il vienne.
+ *
+ * Le localStorage d'abord : l'hôte l'a posé avant de lancer, il est juste, et
+ * il évite un aller-retour à chaque fin de partie. Le serveur ensuite, pour
+ * TOUS les autres sièges, qui n'ont jamais ouvert l'écran des campagnes et
+ * n'ont donc aucune clé. Sans ce recours, leur plateau ignore la campagne :
+ * pas de panneau de récompenses, pas de règle de défaite, pas de carnet.
+ *
+ * `lireContexte()` reste à côté, purement locale, pour ce qui ne peut pas
+ * attendre le réseau (le rapport de bug, qui se prend au clic).
+ */
+export async function resoudreContexte(): Promise<ContexteCampagne | null> {
+  const local = lireContexte()
+  if (local) return local
+  try {
+    const reponse = await fetch('/get_campagne_en_cours', { cache: 'no-store' })
+    if (!reponse.ok) return null
+    const valeur = (await reponse.json()) as Partial<ContexteCampagne>
+    if (!valeur?.id || !valeur.scenario) return null
+    return { id: valeur.id, scenario: valeur.scenario }
+  } catch {
+    // Serveur injoignable : mieux vaut un plateau sans campagne qu'un plateau
+    // qui refuse de s'afficher.
+    return null
+  }
+}
+
 export function effacerContexte(): void {
   try {
     window.localStorage.removeItem(CLE_CAMPAGNE)

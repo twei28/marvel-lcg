@@ -29,8 +29,8 @@ import {
   chargerDefinition,
   effacerContexte,
   enregistrerCampagne,
-  lireContexte,
   reinitialiserEnquete,
+  resoudreContexte,
   type Campagne,
   type DefinitionCampagne,
   type ScenarioCampagne,
@@ -99,14 +99,18 @@ export function PanneauRecompenses({
   const [echec, setEchec] = useState('')
 
   useEffect(() => {
-    const contexte = lireContexte()
-    if (!contexte || !monde) {
-      setEtat({ phase: 'absent' })
-      return
-    }
     let annule = false
     ;(async () => {
       try {
+        // Le contexte vient du localStorage chez l'hôte, du serveur chez tous
+        // les autres. La garde est DANS la fonction : dehors, elle rendrait
+        // « absent » aux sièges distants avant même d'avoir demandé.
+        const contexte = await resoudreContexte()
+        if (annule) return
+        if (!contexte || !monde) {
+          setEtat({ phase: 'absent' })
+          return
+        }
         const campagne = await chargerCampagne(contexte.id)
         const definition = await chargerDefinition(campagne.code)
         const carnetSuggere = await chargerCarnetSuggere()
