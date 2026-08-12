@@ -110,9 +110,19 @@ class SenderPlayer:
             self.Present_Activate(None, by_effect)
             self.be_cancel = True
 
+            # Le journal DIT l'annulation. Sans cette ligne il enchainait
+            # « X va jouer Y » puis « Y defaussee », sans jamais nommer le
+            # contre : la carte payee semblait simplement cassee. Constate sur
+            # All-Points Bulletin (50003), annulee par Grappling Hook (50069),
+            # qui ne laissait aucune trace du contre. Une carte rencontre
+            # annulee, elle, l'annonce depuis toujours (`WhenEffectBeCancel`) ;
+            # seule l'annulation d'une carte JOUEE restait muette.
+            text = TransText("{this}'s effects were canceled by {by_effect}",
+                             this=self.play_face, by_effect=by_effect.this)
+            self.Present(text, "negate", by_effect.this, self.play_face)
+
             if discard_it:
                 Faces.DiscardAll([self.play_face], by_effect)
-                # text = TransText("This effect was canceled by {by_effect}", by_effect=by_effect.this)
             return True
 
     class WhenPlayerPlayCard(TriggerPlayerMessage, TriggerFaceMessage, CanGainValueMessage, HasEndEventMessage):
