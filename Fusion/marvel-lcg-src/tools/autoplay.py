@@ -643,7 +643,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         L'"id" JSON d'une option est LOCAL a l'abilite qui la propose, pas
         globalement unique : une capacite en plusieurs etapes (activer,
         choisir une carte, choisir une cible) recommence souvent a 1 pour
-        chacune de ses etapes. Vu sur Super Spy (79001b) : activer la
+        chacune de ses etapes. Vu sur Super Spy (ag001b) : activer la
         capacite (id=1, aucune cible), choisir la carte en defausse (id=1,
         7 cibles) et choisir la manigance a soulager (id=1, 2 cibles)
         partagent le meme id ET la meme empreinte de plateau (rien n'est
@@ -689,12 +689,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # revient alors que le tour precedent lui avait deja envoye une
         # reponse legale (un choix reellement pris dans les options offertes,
         # pas un "0" de repli) ET que rien n'a bouge sur le plateau entre les
-        # deux -- vu sur 79001b/Super Spy avec une carte a 0 icone de bonus,
+        # deux -- vu sur ag001b/Super Spy avec une carte a 0 icone de bonus,
         # cf. .superpowers/sdd/2026-08-07-agent-13/enquete-boucle.md. Sans ce
         # garde-fou le pilote tourne en silence jusqu'au minuteur, ce qui a
         # fait passer 10 parties bloquees pour de simples lenteurs.
         #
-        # Le JSON identique SEUL ne suffit pas : Burst Fire (79003) pose deux
+        # Le JSON identique SEUL ne suffit pas : Burst Fire (ag003) pose deux
         # fois d'affilee « Deal 2 damage to an enemy. This attack gains
         # ranged. » avec les MEMES cibles legales pour ses deux attaques
         # successives -- une repetition legitime, pas un blocage. Ce qui
@@ -742,7 +742,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # AssertionError avalee en silence par effect_invoke.py s'ensuit,
             # et la MEME question revient a l'identique indefiniment.
             #
-            # Vu sur Super Spy (79001b) : ses TROIS etapes (activer la
+            # Vu sur Super Spy (ag001b) : ses TROIS etapes (activer la
             # capacite, choisir la carte en defausse, choisir la manigance)
             # partagent le meme "id" local (1) et la meme empreinte de
             # plateau (rien n'a encore ete joue entre elles) -- le garde-fou

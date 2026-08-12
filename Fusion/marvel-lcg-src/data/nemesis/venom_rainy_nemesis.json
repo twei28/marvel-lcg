@@ -2,10 +2,10 @@
     "version": "0.5.8",
     "name": "Venom (Eddie Brock) Nemesis",
     "encounters": [
-        "72013",
-        "72014",
-        "72015",
-        "72015",
-        "72015"
+        "vr013",
+        "vr014",
+        "vr015",
+        "vr015",
+        "vr015"
     ]
 }

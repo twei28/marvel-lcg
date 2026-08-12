@@ -21,7 +21,7 @@ import {
 import { createPortal } from 'react-dom'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from '../components/ScanCard'
 import { langueActuelle, t } from './langue'
-import { codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
+import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { usePlacement } from './placement/usePlacement'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
@@ -300,7 +300,12 @@ function Emplacement({
  *  3. A defaut, le comportement historique : marvelcdb par reseau, sur option,
  *     coupee par defaut. */
 export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
-  const code = codeMarvelcdb(codeCarte)
+  // Deux codes, deux rôles. `code` sert de CLÉ aux dictionnaires français et
+  // accepte le fan-made ; `codeCdb` désigne une page marvelcdb, que seules les
+  // cartes officielles possèdent. Les confondre revenait à n'afficher aucun
+  // texte français sur le contenu fan-made.
+  const code = codeCarteConnu(codeCarte)
+  const codeCdb = codeMarvelcdb(codeCarte)
   const repli =
     code && scansFrActifs() && !aScanFr(code)
       ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code])
@@ -308,15 +313,15 @@ export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
   const [texte, setTexte] = useState<TexteCdb | null>(null)
   useEffect(() => {
     setTexte(null)
-    if (!code || repli || !lireTextesCdb()) return
+    if (!codeCdb || repli || !lireTextesCdb()) return
     let annule = false
-    void texteMarvelcdb(code).then((resultat) => {
+    void texteMarvelcdb(codeCdb).then((resultat) => {
       if (!annule) setTexte(resultat)
     })
     return () => {
       annule = true
     }
-  }, [code, repli])
+  }, [codeCdb, repli])
   const contenu = repli ?? texte?.text
   if (!contenu) return null
   return (

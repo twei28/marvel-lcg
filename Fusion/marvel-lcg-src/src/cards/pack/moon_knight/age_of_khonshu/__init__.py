@@ -3,8 +3,8 @@ from cards.pack import *
 # Set modulaire custom « Age of Khonshu » (DesignHacker, pack Moon Knight).
 #
 # Quatre héros corrompus en sbires ELITE ; chacun, vaincu, donne son artefact
-# au joueur qui l'a terrassé (« Linked (X) »). Les quatre artefacts (76021 à
-# 76024) ne sont dans AUCUN deck : ils sont créés à la volée au moment du
+# au joueur qui l'a terrassé (« Linked (X) »). Les quatre artefacts (mk021 à
+# mk024) ne sont dans AUCUN deck : ils sont créés à la volée au moment du
 # When Defeated (CardFactory.GenerateCard, modèle de la campagne trors), puis
 # mis en jeu sous le contrôle du joueur.
 

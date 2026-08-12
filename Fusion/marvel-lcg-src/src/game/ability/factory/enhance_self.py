@@ -372,7 +372,7 @@ class AbilityFactoryEnhanceSelf:
                         *,
                         attack: int|None=None,
                         # CORRECTIF : `defense` manquait alors que Gain() l'accepte.
-                        # Necessaire pour Madame Web 69001a (ATK/THW/DEF = X).
+                        # Necessaire pour Madame Web mw001a (ATK/THW/DEF = X).
                         defense: int|None=None,
                         thwart: int|None=None,
                         scheme: int|None=None,

@@ -5,39 +5,39 @@
         "url": "",
         "author": "Arnaud",
         "aspect_note": "L'auteur (« Rainy ») ne fournit aucune decklist d'aspect : l'insert du pack n'en contient pas. Aspect Protection retenu avec l'utilisateur le 7/8/2026, sur le deck Protection du Set de base. Raison : « The Complete Package » ne genere une ressource que si Brawn est EPUISE, et Calculated Defense le redresse en defendant tout en piochant — defendre devient donc rentable, ce que Brawn's Suit et la riposte de Hulk Out renforcent.",
-        "team_up_note": "Les deux cartes Team-Up du pack (77024 Strong as Silk, 77025 Brains and Brawn) sont de classe Basic et restent disponibles au deck-builder. Elles ne sont pas dans ce deck de depart, qui tient deja ses 25 cartes d'aspect.",
-        "ally_note": "77003 Ironheart est l'allie signature ALTERNATIF de 77002 Silk (les deux portent le meme numero, BRAWN 1/15). Le deck de depart joue Silk ; Ironheart se substitue a elle au deck-builder, avec Brains and Brawn en team-up correspondant."
+        "team_up_note": "Les deux cartes Team-Up du pack (bw024 Strong as Silk, bw025 Brains and Brawn) sont de classe Basic et restent disponibles au deck-builder. Elles ne sont pas dans ce deck de depart, qui tient deja ses 25 cartes d'aspect.",
+        "ally_note": "bw003 Ironheart est l'allie signature ALTERNATIF de bw002 Silk (les deux portent le meme numero, BRAWN 1/15). Le deck de depart joue Silk ; Ironheart se substitue a elle au deck-builder, avec Brains and Brawn en team-up correspondant."
     },
     "hero": [
-        "77001a,77001b"
+        "bw001a,bw001b"
     ],
     "hero_deck": [
-        "77002",
-        "77004",
-        "77005",
-        "77006",
-        "77007",
-        "77008",
-        "77009",
-        "77010",
-        "77011",
-        "77012",
-        "77013",
-        "77014",
-        "77015",
-        "77016",
-        "77017"
+        "bw002",
+        "bw004",
+        "bw005",
+        "bw006",
+        "bw007",
+        "bw008",
+        "bw009",
+        "bw010",
+        "bw011",
+        "bw012",
+        "bw013",
+        "bw014",
+        "bw015",
+        "bw016",
+        "bw017"
     ],
     "set_aside": [],
     "obligations": [
-        "77018"
+        "bw018"
     ],
     "nemesis_set": [
-        "77019",
-        "77020",
-        "77021",
-        "77022",
-        "77023"
+        "bw019",
+        "bw020",
+        "bw021",
+        "bw022",
+        "bw023"
     ],
     "player_deck": [
         "01075",

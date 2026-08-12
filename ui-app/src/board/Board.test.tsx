@@ -14,7 +14,7 @@ import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 
 const AVEC_SCAN = '01001a'
 const SANS_SCAN = '01043b'
-const FANMADE = '75001a'
+const FANMADE = 'sg001a'
 /** Code au bon format, absent des deux dictionnaires : rien ne doit s'afficher. */
 const INCONNU = '99999'
 

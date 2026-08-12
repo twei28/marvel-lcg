@@ -111,7 +111,7 @@ class RunPuzzle:
         Strange — est melange au setup. Sans ce levier, on ne peut pas choisir
         QUELLE carte en sortira, et l'action qui l'appelle est souvent limitee
         a une fois par manche : impossible d'appeler jusqu'a tomber sur la
-        bonne. C'est ce qui rendait The Lookout (75004) intestable, alors que
+        bonne. C'est ce qui rendait The Lookout (sg004) intestable, alors que
         les cinq autres ecureuils avaient leur cas (constate le 9/8/2026).
         """
         from game.operate.faces import Faces
@@ -219,8 +219,8 @@ class RunPuzzle:
         `ChangeForm` ne sait aller que vers « l'autre » face : la premiere face
         heros qui differe de l'actuelle, ou la premiere face alter-ego. Cela
         suffit a une identite ordinaire, qui n'en a que deux. Moon Knight en a
-        CINQ, deux heros et trois alter-ego : Steven Grant (76001d) et Jake
-        Lockley (76001e) etaient donc inatteignables, et leurs reducteurs de
+        CINQ, deux heros et trois alter-ego : Steven Grant (mk001d) et Jake
+        Lockley (mk001e) etaient donc inatteignables, et leurs reducteurs de
         cout intestables (constate le 9/8/2026).
 
         Comme `ChangeForm`, `card` designe la face ACTUELLEMENT EN JEU, la
@@ -373,8 +373,8 @@ class RunPuzzle:
         aucune capacite de defense n'est joignable par l'API : le heros encaisse
         sans jamais declarer de defenseur, donc le message
         `WhenUnitWouldDefend` n'est jamais envoye et TOUTES les cartes
-        « Hero Interrupt (defense) » (Unbeatable! 75016, Desperate Defense
-        09015, Bulletproof 72002...) restent hors de portee des tests.
+        « Hero Interrupt (defense) » (Unbeatable! sg016, Desperate Defense
+        09015, Bulletproof vr002...) restent hors de portee des tests.
         """
         from game.card.face.base import Enemy, Friend
         from game.card.face.attribute.can_attack import AttackProperty
@@ -389,7 +389,7 @@ class RunPuzzle:
             # Une attaque ennemie est une ACTIVATION : sans le message
             # `WhenEnemyWouldActivate`, les interruptions du genre « quand un
             # sbire non-ELITE s'active, annulez son activation » (Spider-Man
-            # 74002, Jaw Lock 78004) ne sont jamais proposees. On reproduit donc
+            # av002, Jaw Lock lj004) ne sont jamais proposees. On reproduit donc
             # la branche « attaque » de `DoActivate`, sans sa bifurcation vers
             # la manigance : `Puzzle.Attack` doit toujours attaquer.
             enemy = face.CastTo(Enemy)

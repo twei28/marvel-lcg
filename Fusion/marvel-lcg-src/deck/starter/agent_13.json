@@ -7,35 +7,35 @@
         "aspect_note": "Aspect Agression retenu avec l'utilisateur le 7/8/2026 : Agent 13 est une combattante de terrain (Burst Fire, Takedown, Physical Training), le profil offensif colle mieux que Justice ou Protection a une carriere d'agent de terrain armee. Modele repris du deck de depart de Squirrel Girl (deja livre, 22 Aggression + 3 Basic), en substituant deux allies generiques par deux allies traits S.H.I.E.L.D deja presents dans le pool (Winter Soldier 53035, Spider-Woman 52033) pour coller a son identite d'agent."
     },
     "hero": [
-        "79001a,79001b"
+        "ag001a,ag001b"
     ],
     "hero_deck": [
-        "79002",
-        "79003",
-        "79003",
-        "79003",
-        "79004",
-        "79004",
-        "79004",
-        "79005",
-        "79005",
-        "79006",
-        "79006",
-        "79007",
-        "79008",
-        "79009",
-        "79010"
+        "ag002",
+        "ag003",
+        "ag003",
+        "ag003",
+        "ag004",
+        "ag004",
+        "ag004",
+        "ag005",
+        "ag005",
+        "ag006",
+        "ag006",
+        "ag007",
+        "ag008",
+        "ag009",
+        "ag010"
     ],
     "set_aside": [],
     "obligations": [
-        "79015"
+        "ag015"
     ],
     "nemesis_set": [
-        "79011",
-        "79012",
-        "79013",
-        "79014",
-        "79014"
+        "ag011",
+        "ag012",
+        "ag013",
+        "ag014",
+        "ag014"
     ],
     "player_deck": [
         "53035",

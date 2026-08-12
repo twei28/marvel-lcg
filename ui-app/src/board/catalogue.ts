@@ -142,7 +142,7 @@ export function construire(donnees: unknown): Catalogue {
       // jamais « overpay » : il dit « Deal X damage ». Sans cette ligne, les
       // neuf cartes a cout X du catalogue n'allumaient aucun rappel au moment
       // de confirmer. Le joueur validait sans rien depenser, X valait 0, et la
-      // carte ne faisait RIEN — signale en jeu sur Tendril Explosion (72006),
+      // carte ne faisait RIEN — signale en jeu sur Tendril Explosion (vr006),
       // mais Speed Cyclone (14006) et Lethal Intent (22010), qui sont
       // officielles, avaient exactement le meme defaut.
       if (carte.desc?.Cost === 'X') surpayables.add(id)

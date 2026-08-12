@@ -7,42 +7,42 @@
         "note": "Pack custom. Deck de depart Agression : trouver des vilains, les faire tomber, appeler des ecureuils. Boot Camp est volontairement absent, remplace par Martial Prowess : les ecureuils ne peuvent pas voir leurs valeurs augmentees par une carte hors du set."
     },
     "hero": [
-        "75001a,75001b"
+        "sg001a,sg001b"
     ],
     "hero_deck": [
-        "75008",
-        "75009",
-        "75010",
-        "75011",
-        "75012",
-        "75013",
-        "75013",
-        "75014",
-        "75014",
-        "75014",
-        "75015",
-        "75015",
-        "75016",
-        "75016",
-        "75017"
+        "sg008",
+        "sg009",
+        "sg010",
+        "sg011",
+        "sg012",
+        "sg013",
+        "sg013",
+        "sg014",
+        "sg014",
+        "sg014",
+        "sg015",
+        "sg015",
+        "sg016",
+        "sg016",
+        "sg017"
     ],
     "set_aside": [
-        "75002",
-        "75003",
-        "75004",
-        "75005",
-        "75006",
-        "75007"
+        "sg002",
+        "sg003",
+        "sg004",
+        "sg005",
+        "sg006",
+        "sg007"
     ],
     "obligations": [
-        "75018"
+        "sg018"
     ],
     "nemesis_set": [
-        "75019",
-        "75020",
-        "75021",
-        "75021",
-        "75022"
+        "sg019",
+        "sg020",
+        "sg021",
+        "sg021",
+        "sg022"
     ],
     "player_deck": [
         "18011",

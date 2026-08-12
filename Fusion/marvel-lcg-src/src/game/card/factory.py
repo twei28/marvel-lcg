@@ -103,12 +103,12 @@ class CardFactory:
                                                     # qui portent DEUX capacites de jeu comme 30004 et 13006.
                                                     # Sans eux, la creation de partie du heros PLANTE
                                                     # (constate le 4/8/2026 en montant les 88 decks).
-                                                    "64009",   # Radiate (human_torch)
-                                                    "61004",   # Hammer Swing (rainy)
-                                                    "71006",   # spider_man_rainy
-                                                    "76008",   # Fight or Foil (moon_knight)
-                                                    "76010",   # Where'd He Go? (moon_knight)
-                                                    "78024"]:  # Wet Slobbering Kiss (lockjaw)
+                                                    "ht009",   # Radiate (human_torch)
+                                                    "ra004",   # Hammer Swing (rainy)
+                                                    "sr006",   # spider_man_rainy
+                                                    "mk008",   # Fight or Foil (moon_knight)
+                                                    "mk010",   # Where'd He Go? (moon_knight)
+                                                    "lj024"]:  # Wet Slobbering Kiss (lockjaw)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

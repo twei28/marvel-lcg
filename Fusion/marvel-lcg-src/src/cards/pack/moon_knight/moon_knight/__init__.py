@@ -3,11 +3,11 @@ from cards.pack import *
 # Fabriques partagées du pack custom « Moon Knight » (DesignHacker, MC4 Sealed).
 #
 # L'identité a CINQ faces (« pile d'identités » de l'insert) :
-#   76001a  Moon Knight   (héros,     réduit le coût des cartes Aggression)
-#   76001b  Marc Spector  (alter-ego, face de départ, main de 7)
-#   76001c  Mr. Knight    (héros,     réduit le coût des cartes Protection)
-#   76001d  Steven Grant  (alter-ego, réduit le coût des cartes Leadership)
-#   76001e  Jake Lockley  (alter-ego, réduit le coût des cartes Justice)
+#   mk001a  Moon Knight   (héros,     réduit le coût des cartes Aggression)
+#   mk001b  Marc Spector  (alter-ego, face de départ, main de 7)
+#   mk001c  Mr. Knight    (héros,     réduit le coût des cartes Protection)
+#   mk001d  Steven Grant  (alter-ego, réduit le coût des cartes Leadership)
+#   mk001e  Jake Lockley  (alter-ego, réduit le coût des cartes Justice)
 #
 # La restriction de l'insert (interdiction de REVENIR à une identité quittée
 # avant la fin de la phase des joueurs) n'est PAS câblée : bloquer un choix du

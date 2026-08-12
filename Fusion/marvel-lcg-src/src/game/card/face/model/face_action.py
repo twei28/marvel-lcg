@@ -418,7 +418,7 @@ class ModelAction(ModelBase):
                           thwart: int|None=None,
                           # CORRECTIF 4/8/2026 : `retaliate` manquait alors que
                           # `TemporaryGain` l'accepte et que `GainUntilPhaseEnd`
-                          # l'expose deja. Guard Protocol 62003 (pack albert)
+                          # l'expose deja. Guard Protocol ab003 (pack albert)
                           # plantait sur TypeError a chaque utilisation.
                           retaliate: int|None=None,
                           ignore_flip: bool=True) -> None:

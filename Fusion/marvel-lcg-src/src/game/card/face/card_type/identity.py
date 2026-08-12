@@ -26,8 +26,8 @@ class Identity(Friend, HasHandSize, PlayerCard):
                 # `ex_operation` etait perdu ici alors que `CardPlayer` le
                 # transmet (card_player.py). Toute identite dont la capacite
                 # Resource a un second effet (« ... puis redressez cette carte »)
-                # perdait donc cette moitie en silence : Sue Storm 66001b et
-                # Reed Richards 65001b ne se redressaient jamais.
+                # perdait donc cette moitie en silence : Sue Storm iw001b et
+                # Reed Richards mf001b ne se redressaient jamais.
                 ex_operation=resources_abilities[0].generate_resources_ex_operation
             ).SetName(name))
         return abilities + super().GetAbilities()

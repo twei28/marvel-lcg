@@ -6,21 +6,21 @@
   "note": "Deck officiel du pack (DesignHacker). 4 cartes de base de la liste d'origine ne sont pas dans notre collection (Human Torch - Johnny Storm, Powerhouse - Franklin Richards, Better Together, Flaming Force) : elles sont remplacees par des cartes de base equivalentes, marquees SUBSTITUTION."
  },
  "hero": [
-  "66001a,66001b,66001c"
+  "iw001a,iw001b,iw001c"
  ],
  "hero_deck": [
-  "66002", "66003", "66004", "66005", "66006", "66007", "66008",
-  "66009", "66009",
-  "66010",
-  "66011", "66011",
-  "66012", "66012", "66012"
+  "iw002", "iw003", "iw004", "iw005", "iw006", "iw007", "iw008",
+  "iw009", "iw009",
+  "iw010",
+  "iw011", "iw011",
+  "iw012", "iw012", "iw012"
  ],
  "set_aside": [],
  "obligations": [
-  "66013"
+  "iw013"
  ],
  "nemesis_set": [
-  "66014", "66015", "66016", "66017", "66018"
+  "iw014", "iw015", "iw016", "iw017", "iw018"
  ],
  "player_deck": [
   "08011",

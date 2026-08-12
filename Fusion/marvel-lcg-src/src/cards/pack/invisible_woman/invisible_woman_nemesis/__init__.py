@@ -7,7 +7,7 @@ def RevealDiscardedInvisibleNemesisCards(effect: 'Effect', cards: Sequence['Card
         # CORRECTIF : le scan de « End of the Line » limite la revelation a
         # Microversal Maneuvers et Titanic Terror. Le helper revelait TOUTE
         # carte du set nemesis, donc aussi Psycho-Man et Emotional Masterplan.
-        if face.paper.card_id in ("66016", "66017"):
+        if face.paper.card_id in ("iw016", "iw017"):
             face.Reveal(player, effect)
             revealed = True
     return revealed

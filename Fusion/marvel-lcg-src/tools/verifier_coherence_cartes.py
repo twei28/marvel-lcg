@@ -89,14 +89,14 @@ for cle, info in sets_info.items():
 #   vraiment sur elle. C'est la seule mesure honnete, et l'ecart est large
 #   (spider_man_rainy passe de 77 % a 50 %).
 # Le suffixe de face va de a a z, pas de a a d : Moon Knight est la premiere
-# identite a CINQ faces, et 76001e n'etait donc reconnue par aucune de ces
+# identite a CINQ faces, et mk001e n'etait donc reconnue par aucune de ces
 # deux expressions. Son cas existait, le pack affichait quand meme 27/28.
 cites = set(re.findall(r"\b(\d{5}[a-z]?)\b", tests))
 sujets = set()
 for nom_de_cas in re.findall(r'"nom"\s*:\s*(?:\(\s*)?["\']([^"\']+)', tests):
     sujets.update(re.findall(r"\b(\d{5}[a-z]?)\b", nom_de_cas))
 # Un pack contient parfois DEUX EXEMPLAIRES de la meme carte, sous deux
-# identifiants (Brawn : 77004/77005, 77006/77007...). Leurs scripts sont
+# identifiants (Brawn : bw004/bw005, bw006/bw007...). Leurs scripts sont
 # identiques a la ligne pres. Ecrire un second cas qui ne differe que par
 # l'identifiant n'apprend rien : l'etape 2 du §8 prouve deja que le script se
 # construit, et l'etape 5 que ses appels d'API sont bons. Compter ces cartes
@@ -140,7 +140,7 @@ for pack in sorted(p for p in packs_custom if p in cartes):
         if not cid or not cid[0].isdigit():
             continue
         # Un `full_link` sans `type` n'est pas une carte : c'est un ALIAS vers
-        # une carte de base du jeu (63015 -> 01088). Aucun script, aucun
+        # une carte de base du jeu (gp015 -> 01088). Aucun script, aucun
         # comportement propre, donc rien a tester : le compter au denominateur
         # rendait la couverture du pack artificiellement basse.
         if "full_link" in c and "type" not in c:

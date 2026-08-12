@@ -151,7 +151,7 @@ export type Interaction = {
    * La carte recompense un SURPAIEMENT : coût X, ou texte qui parle
    * d'« overpay ». L'assistant doit le dire, sans quoi le joueur confirme sans
    * rien dépenser et la carte ne fait rien. Signalé en jeu sur Tendril
-   * Explosion (72006), mais les neuf cartes à coût X du catalogue avaient le
+   * Explosion (vr006), mais les neuf cartes à coût X du catalogue avaient le
    * même défaut, dont deux officielles.
    */
   surpaiementRecompense: boolean

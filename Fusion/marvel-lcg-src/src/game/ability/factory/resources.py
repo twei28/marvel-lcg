@@ -11,14 +11,14 @@ def CheckAnyPlayerMayHelpPay(paying_for_face) -> bool:
     if any(x.IsName('Coordinated Effort') for x in upgrades):
         return True
 
-    # CORRECTIF (5/8/2026) : Forces Combined 70003 — Cloak & Dagger sont deux
+    # CORRECTIF (5/8/2026) : Forces Combined cd003 — Cloak & Dagger sont deux
     # identites LIEES pilotees par un seul joueur (voir `linked_identity`).
     # Tant que Forces Combined est en jeu et PRET, les deux mains financent
     # indifferemment les couts de l'une ou de l'autre, ce qui est le texte de
     # la carte : « you may spend resources from both of your hands ».
     #
     # ⚠ La carte dit « exhaust Forces Combined » : l'inclinaison est portee par
-    # la capacite Resource de 70003, pas par ce controle, qui se contente
+    # la capacite Resource de cd003, pas par ce controle, qui se contente
     # d'exiger qu'elle soit prete. Ecart documente au §9.
     try:
         world = paying_for_face.card.world

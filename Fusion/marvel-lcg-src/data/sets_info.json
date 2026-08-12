@@ -874,7 +874,7 @@
             "albert"
         ],
         "encounters": [],
-        "max_id": 62016
+        "max_id": "ab016"
     },
     "101. Custom (Gwenpool)": {
         "name": "gwenpool",
@@ -883,7 +883,7 @@
             "gwenpool"
         ],
         "encounters": [],
-        "max_id": 63017
+        "max_id": "gp017"
     },
     "102. Custom (Human Torch)": {
         "name": "human_torch",
@@ -892,7 +892,7 @@
             "human_torch"
         ],
         "encounters": [],
-        "max_id": 64014
+        "max_id": "ht014"
     },
     "103. Custom (Mister Fantastic)": {
         "name": "mister_fantastic",
@@ -901,7 +901,7 @@
             "mister_fantastic"
         ],
         "encounters": [],
-        "max_id": 65017
+        "max_id": "mf017"
     },
     "104. Custom (Invisible Woman)": {
         "name": "invisible_woman",
@@ -910,7 +910,7 @@
             "invisible_woman"
         ],
         "encounters": [],
-        "max_id": 66018
+        "max_id": "iw018"
     },
     "105. Custom (The Thing)": {
         "name": "the_thing",
@@ -919,7 +919,7 @@
             "the_thing"
         ],
         "encounters": [],
-        "max_id": 67015
+        "max_id": "th015"
     },
     "106. Custom (Totally Awesome Hulk)": {
         "name": "totally_awesome_hulk",
@@ -928,7 +928,7 @@
             "totally_awesome_hulk"
         ],
         "encounters": [],
-        "max_id": 68018
+        "max_id": "ah018"
     },
     "107. Custom (Madame Web)": {
         "name": "madame_web",
@@ -937,7 +937,7 @@
             "madame_web"
         ],
         "encounters": [],
-        "max_id": 69029
+        "max_id": "mw029"
     },
     "108. Custom (Cloak & Dagger)": {
         "name": "cloak_dagger",
@@ -946,7 +946,7 @@
             "cloak_dagger"
         ],
         "encounters": [],
-        "max_id": 70018
+        "max_id": "cd018"
     },
     "108. Custom (Spider-Man Rainy)": {
         "name": "spider_man_rainy",
@@ -955,7 +955,7 @@
             "spider_man_rainy"
         ],
         "encounters": [],
-        "max_id": 71017
+        "max_id": "sr017"
     },
     "109. Custom (Venom Rainy)": {
         "name": "venom_rainy",
@@ -964,7 +964,7 @@
             "venom_rainy"
         ],
         "encounters": [],
-        "max_id": 72015
+        "max_id": "vr015"
     },
     "110. Custom (Jessica Jones)": {
         "name": "jessica_jones",
@@ -975,7 +975,7 @@
         "encounters": [
             "on_the_job"
         ],
-        "max_id": "73022"
+        "max_id": "jj022"
     },
     "109. Custom (Moon Knight)": {
         "name": "moon_knight",
@@ -986,7 +986,7 @@
         "encounters": [
             "age_of_khonshu"
         ],
-        "max_id": 76024
+        "max_id": "mk024"
     },
     "111. Custom (Agent Anti-Venom)": {
         "name": "agent_anti_venom",
@@ -995,7 +995,7 @@
             "agent_anti_venom"
         ],
         "encounters": [],
-        "max_id": "74016"
+        "max_id": "av016"
     },
     "110. Custom (Lockjaw)": {
         "name": "lockjaw",
@@ -1004,7 +1004,7 @@
             "lockjaw"
         ],
         "encounters": [],
-        "max_id": 78030
+        "max_id": "lj030"
     },
     "112. Custom (Squirrel Girl)": {
         "name": "squirrel_girl",
@@ -1013,7 +1013,7 @@
             "squirrel_girl"
         ],
         "encounters": [],
-        "max_id": "75022"
+        "max_id": "sg022"
     },
     "113. Custom (Brawn)": {
         "name": "brawn",
@@ -1022,7 +1022,7 @@
             "brawn"
         ],
         "encounters": [],
-        "max_id": "77025"
+        "max_id": "bw025"
     },
     "114. Custom (Agent 13)": {
         "name": "agent_13",
@@ -1031,7 +1031,7 @@
             "agent_13"
         ],
         "encounters": [],
-        "max_id": "79015"
+        "max_id": "ag015"
     },
-    "checksum": "311bb644f1da4e62b6fa309f80e51ed5f5a00baabc387da42b3ecefb705f925c"
+    "checksum": "20717e5edc0e4d1c9c3b47467359fe91c69071d079f3d45a06769d7397db2042"
 }

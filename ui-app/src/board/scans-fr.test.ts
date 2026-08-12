@@ -48,7 +48,7 @@ describe('picIdFr', () => {
   })
 
   it('laisse une carte non couverte inchangee', () => {
-    expect(picIdFr('75001a')).toBe('75001a')
+    expect(picIdFr('sg001a')).toBe('sg001a')
   })
 
   it('ne touche a rien quand l option est coupee', () => {
@@ -75,6 +75,6 @@ describe('scanUrl', () => {
 
   it('demande le fichier anglais pour une carte non couverte', async () => {
     const { scanUrl } = await import('./card-model')
-    expect(scanUrl('75001a')).toBe('/scan/75001a')
+    expect(scanUrl('sg001a')).toBe('/scan/sg001a')
   })
 })

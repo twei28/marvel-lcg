@@ -667,7 +667,7 @@ class CostFunc:
 
     # CORRECTIF (pack brawn) : « Return this card to your reserve » en COUT.
     # Calque de ReturnToHand ci-dessus, seule la zone d'arrivee change. Utilise
-    # par Silk 77002 (« Action: Return Silk to your reserve → ... »).
+    # par Silk bw002 (« Action: Return Silk to your reserve → ... »).
     class ReturnToReserve(Base):
         def __init__(self,
                     target: 'TARGET_TYPE|None'=None,

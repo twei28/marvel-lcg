@@ -12,13 +12,13 @@ Cinq defauts trouves ainsi le 4/8/2026, invisibles pour les deux autres
 outils, dans quatre packs differents :
 - `identity.ChangeForm(effect)` dans les obligations de jessica_jones et
   agent_anti_venom : la bonne methode est `ChangeToForm(Hero|AlterEgo, effect)` ;
-- `Worlds.RevealEncounterCard` dans le Homme-Pourpre 73019 : la bonne est
+- `Worlds.RevealEncounterCard` dans le Homme-Pourpre jj019 : la bonne est
   `RevealEncounterDeckTopCard` ;
-- `Faces.DiscardStatus` dans True Grit 67007 (the_thing) : ce sont des methodes
+- `Faces.DiscardStatus` dans True Grit th007 (the_thing) : ce sont des methodes
   de la FACE, `hero.DiscardStunned(...)` / `DiscardConfused(...)` ;
 - `Worlds.RemoveAccelerationToken` dans De-escalation 60024 (fne) : passer par
   `GetAccelerationTokenFaces` puis `Faces.RemoveTokensOn` ;
-- `Worlds.FindAttachedUnit` dans Jaw Lock 78004 (lockjaw), garde par un
+- `Worlds.FindAttachedUnit` dans Jaw Lock lj004 (lockjaw), garde par un
   `hasattr` : ne plantait pas, mais ne faisait JAMAIS rien. `GetBindFace()`.
 
 Ce dernier cas est le plus instructif : un appel inexistant protege par un
@@ -40,7 +40,7 @@ REPORT = sys.argv[3] if len(sys.argv) > 3 else "/tmp/verifier_api_cartes.json"
 
 # Appels d'instance connus pour etre faux, avec leur remplacant.
 APPELS_INTERDITS = {
-    ".ChangeForm(": "ChangeToForm(Hero|AlterEgo, effect) — voir 72012",
+    ".ChangeForm(": "ChangeToForm(Hero|AlterEgo, effect) — voir vr012",
     ".GetTarget(": "message.attacked (AfterUnitAttackUnit) ou message.attacked_targets",
     ".BeInstead(": "SetBeInstead(effect)",
     # Trouve le 4/8/2026 : quatre cartes plantaient sur cet appel, dans trois
@@ -118,7 +118,7 @@ _signer("CardFinder", CardFinder.__init__)
 # declarer. Un controle bruyant finit ignore : mieux vaut trois noms surs.
 #
 # `GainUntilRoundEnd` n'acceptait pas `retaliate` alors que `GainUntilPhaseEnd`
-# si : Guard Protocol 62003 (pack albert) plantait a chaque utilisation.
+# si : Guard Protocol ab003 (pack albert) plantait a chaque utilisation.
 METHODES_INSTANCE = {}
 from game.card.face.model.face_action import ModelAction
 for _nom in ("GainUntilRoundEnd", "GainUntilPhaseEnd", "TemporaryGain"):
@@ -193,7 +193,7 @@ for dossier, _, noms in os.walk(racine_cartes):
                 trouves.append(f"{motif.strip('.')} interdit -> {remplacant}")
 
         # 3. Gardes `hasattr` : elles ETOUFFENT l'erreur au lieu de la lever.
-        #    C'est ce qui rendait Jaw Lock 78004 definitivement inerte sans
+        #    C'est ce qui rendait Jaw Lock lj004 definitivement inerte sans
         #    qu'aucun test ne puisse s'en apercevoir.
         for m in re.finditer(r"hasattr\(\s*(\w+)\s*,\s*[\"'](\w+)[\"']\s*\)", source):
             porteur, attribut = m.group(1), m.group(2)
@@ -203,7 +203,7 @@ for dossier, _, noms in os.walk(racine_cartes):
                 # `message`, `this`, `face`... : on cherche l'attribut sur
                 # l'ensemble des classes de messages et de faces. S'il existe
                 # quelque part, la garde n'est que du bruit ; s'il n'existe
-                # nulle part, la branche est morte (cas Jaw Lock 78004).
+                # nulle part, la branche est morte (cas Jaw Lock lj004).
                 existe = attribut in ATTRIBUTS_CONNUS
             if not existe:
                 trouves.append(
@@ -212,7 +212,7 @@ for dossier, _, noms in os.walk(racine_cartes):
 
         # 4. Arguments nommes passes aux fabriques et selecteurs les plus
         #    utilises. Un nom d'argument faux leve un TypeError A L'EXECUTION
-        #    seulement : `CardFinder(has_res="B")` dans Ben's Cure 65013 faisait
+        #    seulement : `CardFinder(has_res="B")` dans Ben's Cure mf013 faisait
         #    planter l'obligation a chaque revelation depuis sa livraison, sans
         #    qu'aucun autre outil ne puisse le voir.
         for noeud in ast.walk(arbre):
@@ -244,7 +244,7 @@ for dossier, _, noms in os.walk(racine_cartes):
         # 5. Ordre SetTarget / SetLabel. `ability.py` asserte que SetLabel
         #    precede SetTarget ; dans l'autre ordre l'AssertionError part a
         #    l'execution et la carte se defausse sans rien faire (It's
-        #    Clobberin' Time! 67010, invisible jusqu'au 4/8/2026).
+        #    Clobberin' Time! th010, invisible jusqu'au 4/8/2026).
         for m in re.finditer(r"\.SetTarget\d?\([^\n]*\)\s*\.SetLabel\(", source):
             trouves.append(
                 "`.SetTarget(...).SetLabel(...)` : ordre interdit, SetLabel doit "

@@ -18,7 +18,7 @@ from cards.pack import *
 
 SET_HERO = "Squirrel Girl"
 SET_ECUREUILS = "Squirrel Deck"
-ID_ECUREUILS = ["75002", "75003", "75004", "75005", "75006", "75007"]
+ID_ECUREUILS = ["sg002", "sg003", "sg004", "sg005", "sg006", "sg007"]
 
 NOM_DISCORDE = "Discord in the Branches"
 NOM_CHUCHOTEMENTS = "Ratatoskr's Whispers"
@@ -94,7 +94,7 @@ def FinderCarteSquirrelGirl() -> 'CardFinder':
 
 
 ################################################################################
-# Discord in the Branches (75020) : capacites imprimees traitees comme blanches
+# Discord in the Branches (sg020) : capacites imprimees traitees comme blanches
 #
 # Le moteur ne sait rendre blanche qu'une face designee, pas une famille entiere
 # avec exception. La condition est donc portee par chaque capacite d'ecureuil.
@@ -163,7 +163,7 @@ def PreparerEcureuil(face: 'CardFace', joueur: 'Player') -> None:
 # Appeler un ecureuil
 #
 def _NetworkOfTrees(effect: 'Effect', joueur: 'Player') -> 'CardFace|None':
-    """Le soutien 75012, en jeu et pret, sinon None."""
+    """Le soutien sg012, en jeu et pret, sinon None."""
     face = Worlds.FindCardOnField(effect, name="Network of Trees")
     if face is None:
         return None
@@ -181,7 +181,7 @@ def AppelerEcureuil(joueur: 'Player', effect: 'Effect', *, pret: bool = False) -
     if face is None:
         return None
 
-    # Network of Trees (75012) s'interpose ici : le moteur n'ayant pas de
+    # Network of Trees (sg012) s'interpose ici : le moteur n'ayant pas de
     # message « quand tu appellerais un ecureuil », l'interruption est resolue
     # dans l'appel lui-meme, seul point de passage de tous les appels.
     reseau = _NetworkOfTrees(effect, joueur)
@@ -189,7 +189,7 @@ def AppelerEcureuil(joueur: 'Player', effect: 'Effect', *, pret: bool = False) -
         deux = list(joueur.additional_deck.Get())[-2:]
         # MayChooseFace et pas un selecteur de cible : les cartes d'un deck ne
         # sont pas en jeu, un selecteur ne les restreint pas (voir le correctif
-        # de Tippy-Toe 75002).
+        # de Tippy-Toe sg002).
         choisi = joueur.MayChooseFace(deux, effect, not_move=True)
         if choisi is not None:
             Faces.ExhaustAll([reseau], effect)
@@ -211,7 +211,7 @@ def AppelerEcureuils(joueur: 'Player', effect: 'Effect', nombre: int, *, pret: b
 # Depenser un ecureuil
 #
 def PeutDepenser(effect: 'Effect') -> bool:
-    """Ratatoskr's Whispers (75022) interdit toute depense."""
+    """Ratatoskr's Whispers (sg022) interdit toute depense."""
     joueur = effect.GetInitiator() or effect.this.GetControlByPlayer()
     if joueur is None:
         return True

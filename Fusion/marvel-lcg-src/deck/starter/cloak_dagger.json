@@ -4,33 +4,33 @@
     "metadata": {
         "url": "https://drive.google.com/drive/folders/1grxBGnXmk4YXNfKTd-RfrDCq6uZH2M6B",
         "author": "DesignHacker",
-        "note": "Pack physique : DEUX heros pour UN joueur, conformement a l'insert. Chaque identite a son mini-deck (et sa defausse) : 7 cartes signature + 13-17 cartes aspect/basic, un aspect different par mini-deck, la limite 'Max 1 per deck' se comptant par mini-deck. Cloak porte les 7 DARKFORCE et l'aspect Protection ; Dagger (identite liee) les 7 LIGHTFORCE et l'aspect Aggression. Forces Combined (70003) n'appartient a aucun des deux mini-decks : elle est posee en jeu au setup ENTRE les deux identites. Une seule obligation et un seul set nemesis pour la paire. Voir GUIDE-CREATION-CONTENU.md section 9.",
+        "note": "Pack physique : DEUX heros pour UN joueur, conformement a l'insert. Chaque identite a son mini-deck (et sa defausse) : 7 cartes signature + 13-17 cartes aspect/basic, un aspect different par mini-deck, la limite 'Max 1 per deck' se comptant par mini-deck. Cloak porte les 7 DARKFORCE et l'aspect Protection ; Dagger (identite liee) les 7 LIGHTFORCE et l'aspect Aggression. Forces Combined (cd003) n'appartient a aucun des deux mini-decks : elle est posee en jeu au setup ENTRE les deux identites. Une seule obligation et un seul set nemesis pour la paire. Voir GUIDE-CREATION-CONTENU.md section 9.",
         "insert": "As 2 heroes controlled by a single player, Cloak & Dagger each have their own separate mini deck (and associated discard pile), which must consist of all 7 hero cards and 13-17 aspect/basic cards."
     },
     "hero": [
-        "70001a,70001b"
+        "cd001a,cd001b"
     ],
     "hero_deck": [
-        "70009",
-        "70009",
-        "70010",
-        "70011",
-        "70011",
-        "70012",
-        "70013"
+        "cd009",
+        "cd009",
+        "cd010",
+        "cd011",
+        "cd011",
+        "cd012",
+        "cd013"
     ],
     "set_aside": [
-        "70003"
+        "cd003"
     ],
     "obligations": [
-        "70014"
+        "cd014"
     ],
     "nemesis_set": [
-        "70015",
-        "70016",
-        "70017",
-        "70018",
-        "70018"
+        "cd015",
+        "cd016",
+        "cd017",
+        "cd018",
+        "cd018"
     ],
     "player_deck": [
         "01081",
@@ -51,16 +51,16 @@
     ],
     "linked_identity": {
         "hero": [
-            "70002a,70002b"
+            "cd002a,cd002b"
         ],
         "hero_deck": [
-            "70004",
-            "70004",
-            "70005",
-            "70006",
-            "70006",
-            "70007",
-            "70008"
+            "cd004",
+            "cd004",
+            "cd005",
+            "cd006",
+            "cd006",
+            "cd007",
+            "cd008"
         ],
         "set_aside": [],
         "obligations": [],

@@ -7,9 +7,9 @@ from cards.pack import *
 # moteur sait le faire : le deck déclare une identité LIÉE (`linked_identity`),
 # que `SceneLoader.ExpandLinkedIdentity` développe en un second joueur, avec sa
 # propre identité, son deck, sa main et sa défausse.
-#   70001a / 70001b   Cloak  / Tyrone Johnson   (joueur 1)
-#   70002a / 70002b   Dagger / Tandy Bowen      (joueur 2, identité liée)
-#   70003             Forces Combined, soutien Setup permanent
+#   cd001a / cd001b   Cloak  / Tyrone Johnson   (joueur 1)
+#   cd002a / cd002b   Dagger / Tandy Bowen      (joueur 2, identité liée)
+#   cd003             Forces Combined, soutien Setup permanent
 # Les synergies imprimées « while X is in play » se lisent donc au pied de la
 # lettre : chaque face est une vraie identité en jeu.
 
@@ -48,7 +48,7 @@ def CompterFaceEnJeu(nom: str, type_de_face: Any):
     """Fabrique un `check_fn` pour `ThisGainKeyword` : 1 si la face est en jeu.
 
     Le second argument `ui` sert au moteur à montrer au joueur QUI accorde le
-    bonus ; on y range la face trouvée, comme Madame Web 69001a.
+    bonus ; on y range la face trouvée, comme Madame Web mw001a.
     """
     def compter(effect: 'Effect', ui: List['CardFace']) -> int:
         face = _face_en_jeu(effect, nom, type_de_face)
@@ -62,7 +62,7 @@ def CompterFaceEnJeu(nom: str, type_de_face: Any):
 def DegatsVilainCettePhase(world: 'Any', player: 'Player') -> int:
     """Compteur maison des dégâts infligés au méchant pendant la phase courante.
 
-    Alimenté et remis à zéro par Living Light (70008). Rangé sur `world` comme
+    Alimenté et remis à zéro par Living Light (cd008). Rangé sur `world` comme
     les bulles de Gwenpool, pour survivre aux allers-retours de l'upgrade.
     """
     suivi = getattr(world, "cd_degats_vilain_phase", None)

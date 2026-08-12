@@ -127,14 +127,14 @@ try:
         etat = lire()
         verifier("solo : le salon se declare hors multi",
                  etat.get("multi") is False, str(etat.get("multi")))
-        code, _ = poster({"p": 1, "hero_card_id": "69001a", "deck_id": "madame_web"})
+        code, _ = poster({"p": 1, "hero_card_id": "mw001a", "deck_id": "madame_web"})
         verifier("solo : aucune protection de siege, l'ecriture passe",
                  code == 200, f"code={code}")
         raise SystemExit
 
     jeton_j1 = hashlib.md5(b"j1").hexdigest()
     cookie_j1 = f"seat_token_1={jeton_j1}"
-    choix = {"p": 1, "hero_card_id": "69001a", "deck_id": "madame_web",
+    choix = {"p": 1, "hero_card_id": "mw001a", "deck_id": "madame_web",
              "deck_source": "base"}
 
     code, _ = poster(choix)
@@ -149,7 +149,7 @@ try:
     etat = lire()
     verifier("multi detecte", etat.get("multi") is True, str(etat.get("multi")))
     siege1 = etat.get("sieges", {}).get("1", {})
-    verifier("choix relu", siege1.get("hero_card_id") == "69001a",
+    verifier("choix relu", siege1.get("hero_card_id") == "mw001a",
              json.dumps(etat.get("sieges")))
     verifier("deck relu", siege1.get("deck_id") == "madame_web",
              json.dumps(etat.get("sieges")))
@@ -157,7 +157,7 @@ try:
     code, _ = poster({"p": 1, "hero_card_id": "", "deck_id": ""}, cookie=cookie_j1)
     verifier("choix incomplet -> 400", code == 400, f"code={code}")
 
-    code, _ = poster({"p": 2, "hero_card_id": "69001a", "deck_id": "madame_web"},
+    code, _ = poster({"p": 2, "hero_card_id": "mw001a", "deck_id": "madame_web"},
                      cookie=cookie_j1)
     verifier("le jeton du siege 1 ne vaut pas pour le siege 2 -> 403",
              code == 403, f"code={code}")

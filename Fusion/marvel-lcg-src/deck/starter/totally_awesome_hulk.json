@@ -6,37 +6,37 @@
   "note": "Deck officiel du pack (DesignHacker), aspect Agression. Toutes les cartes de la decklist d'origine existent dans notre collection."
  },
  "hero": [
-  "68001a,68001b,68001c"
+  "ah001a,ah001b,ah001c"
  ],
  "hero_deck": [
-  "68002",
-  "68003",
-  "68004",
-  "68005",
-  "68006",
-  "68007",
-  "68008",
-  "68008",
-  "68009",
-  "68009",
-  "68009",
-  "68010",
-  "68010",
-  "68011",
-  "68011"
+  "ah002",
+  "ah003",
+  "ah004",
+  "ah005",
+  "ah006",
+  "ah007",
+  "ah008",
+  "ah008",
+  "ah009",
+  "ah009",
+  "ah009",
+  "ah010",
+  "ah010",
+  "ah011",
+  "ah011"
  ],
  "set_aside": [
-  "68012a,68012b"
+  "ah012a,ah012b"
  ],
  "obligations": [
-  "68013"
+  "ah013"
  ],
  "nemesis_set": [
-  "68014",
-  "68015",
-  "68016",
-  "68017",
-  "68018"
+  "ah014",
+  "ah015",
+  "ah016",
+  "ah017",
+  "ah018"
  ],
  "player_deck": [
   "01050",

@@ -20,7 +20,7 @@ def GetAbilities() -> Sequence['Ability']:
     # rien, c'est `get_new_value` qui impose le chemin attachement.
     #
     # `ThisGainKeyword` est la fabrique prevue pour un bonus dynamique porte
-    # par la carte elle-meme (modele Madame Web 69001a et Negative Zone Prison
+    # par la carte elle-meme (modele Madame Web mw001a et Negative Zone Prison
     # 56064b). `OnEvent.TuckUnder` la fait recalculer a chaque carte glissee ou
     # retiree ; « Identity » et non « Here » parce que les cartes sont glissees
     # sous Ionic Physiology, pas sous l'identite.

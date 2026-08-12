@@ -27,7 +27,7 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (1962)",
     },
 
-    "62001a": {
+    "ab001a": {
         bio: "Réplique androïde de Wolverine assemblée par le cyborg Donald Pierce, Albert est bâti dans un seul but : traquer et tuer l'original. Bridé à une intelligence rudimentaire pour rester docile, il est reprogrammé par Elsie-Dee, l'androïde à l'apparence de fillette qui l'accompagne, et découvre le libre arbitre en même temps que la trahison de son créateur. Griffes rétractables, châssis blindé et le visage de Logan : il a tout de l'original, sauf le passé.",
         bioEn: "An android replica of Wolverine assembled by the cyborg Donald Pierce, Albert was built for one purpose: to hunt down and kill the original. Kept at a crude level of intelligence to stay obedient, he is reprogrammed by Elsie-Dee, the child-shaped android at his side, and discovers free will at the same moment he discovers his maker's betrayal. Retractable claws, an armoured chassis and Logan's face: he has everything the original has, except the past.",
         civil: "Aucune (androïde)",
@@ -38,7 +38,7 @@ export const HEROS_INFO = {
         apparition: "Wolverine (vol. 2) #37 (1991)",
     },
 
-    "63001a": {
+    "gp001a": {
         bio: "Gwendolyn Poole était une lectrice de comics parfaitement ordinaire avant de se réveiller dans l'univers Marvel. Elle n'a aucun pouvoir : son seul avantage est de savoir qu'elle vit dans une bande dessinée, d'en connaître les intrigues à l'avance et de traiter les règles du récit comme un terrain de jeu. Devenue mercenaire en costume rose, elle court après la célébrité, convaincue qu'un personnage secondaire trop discret finit tôt ou tard par être effacé.",
         bioEn: "Gwendolyn Poole was a perfectly ordinary comics reader before waking up inside the Marvel universe. She has no powers: her only edge is knowing she lives in a comic book, knowing the plots before they happen, and treating the rules of storytelling as a playground. Now a mercenary in a pink costume, she chases fame, convinced that a supporting character who stays too quiet eventually gets written out.",
         civil: "Gwendolyn Poole",
@@ -47,7 +47,7 @@ export const HEROS_INFO = {
         apparition: "Howard the Duck (vol. 6) #1 (2015)",
     },
 
-    "64001a": {
+    "ht001a": {
         bio: "Cadet des Quatre Fantastiques, Johnny Storm reçoit ses pouvoirs aux côtés de sa sœur Susan, de Reed Richards et de Ben Grimm lors d'un vol spatial expérimental noyé sous les rayons cosmiques. Il peut enflammer tout son corps, voler et projeter des jets de feu, jusqu'à la « nova » qui réduit tout en cendres autour de lui. Tête brûlée au sens propre comme au figuré, il savoure la célébrité et cherche l'approbation d'une famille qui voit encore en lui le petit dernier.",
         bioEn: "The youngest of the Fantastic Four, Johnny Storm gains his powers alongside his sister Susan, Reed Richards and Ben Grimm on an experimental space flight drenched in cosmic rays. He can set his whole body ablaze, fly, and hurl jets of fire, up to the \"nova\" blast that turns everything around him to ash. A hothead in every sense, he revels in celebrity while still seeking the approval of a family that sees him as the kid brother.",
         civil: "Johnny Storm",
@@ -762,7 +762,7 @@ export const HEROS_INFO = {
         apparition: "Journey into Mystery #83 (1962)",
     },
 
-    "61001a": {
+    "ra001a": {
         bio: "Astrophysicienne et ancienne compagne du fils d'Odin, Jane Foster apprend qu'elle a un cancer au moment où Mjolnir cherche un nouveau porteur. Chaque fois qu'elle soulève le marteau, elle devient Thor, en pleine santé et titanesque ; chaque fois qu'elle le repose, la transformation efface sa chimiothérapie et la rapproche de la mort. Elle a choisi de continuer quand même.",
         bioEn: "An astrophysicist and the Odinson's former partner, Jane Foster learns she has cancer at the moment Mjolnir goes looking for a new bearer. Every time she lifts the hammer she becomes Thor, healthy and titanic; every time she sets it down, the transformation wipes out her chemotherapy and moves her closer to death. She chose to keep going anyway.",
         civil: "Jane Foster",
@@ -894,7 +894,7 @@ export const HEROS_INFO = {
         apparition: "NYX #3 (2004)",
     },
 
-    "65001a": {
+    "mf001a": {
         bio: "Savant surdoué et chef de file des Quatre Fantastiques, Reed Richards embarque sa fiancée, son meilleur ami et le frère de celle-ci dans un vol spatial expérimental qui les expose aux rayons cosmiques. Il en ressort capable d'étirer son corps à volonté, et surtout tenu pour responsable de ce qu'il a infligé aux trois autres. Esprit le plus brillant de la Terre, il résout les crises galactiques plus facilement que les conversations avec sa propre famille.",
         bioEn: "A supremely gifted scientist and leader of the Fantastic Four, Reed Richards takes his fiancée, his best friend and her brother on an experimental space flight that exposes them to cosmic rays. He comes back able to stretch his body at will, and above all held responsible for what he did to the other three. The most brilliant mind on Earth, he solves galactic crises more easily than conversations with his own family.",
         civil: "Reed Richards",
@@ -906,7 +906,7 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #1 (1961)",
     },
 
-    "66001a": {
+    "iw001a": {
         bio: "Embarquée avec son fiancé Reed Richards, son frère Johnny et Ben Grimm dans le vol spatial qui a changé leurs quatre vies, Susan Storm en revient capable de disparaître et de plier la lumière. Longtemps réduite au rôle de la discrète de l'équipe, elle s'est révélée la plus puissante des Quatre : ses champs de force peuvent broyer un adversaire de l'intérieur ou contenir une explosion nucléaire. Mère, diplomate et dernier rempart, c'est elle qui tient la famille debout.",
         bioEn: "Aboard the space flight that changed all four of their lives, alongside her fiancé Reed Richards, her brother Johnny and Ben Grimm, Susan Storm comes back able to vanish and to bend light. Long cast as the quiet one, she turned out to be the most powerful of the four: her force fields can crush an opponent from the inside or contain a nuclear blast. Mother, diplomat and last line of defence, she is the one holding the family together.",
         civil: "Susan Storm Richards",
@@ -918,7 +918,7 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #1 (1961)",
     },
 
-    "67001a": {
+    "th001a": {
         bio: "Pilote d'essai et ancien de l'aviation, Ben Grimm accepte de convoyer l'appareil expérimental de son vieil ami Reed Richards. Les rayons cosmiques transforment les trois autres passagers ; lui, ils le changent en un colosse de roche orange dont il ne peut plus sortir. C'est le seul des Quatre Fantastiques à avoir tout perdu dans l'accident, et paradoxalement le plus chaleureux de la bande : un dur au cœur tendre qui râle en frappant.",
         bioEn: "A test pilot and air force veteran, Ben Grimm agrees to fly his old friend Reed Richards's experimental craft. The cosmic rays change the other three passengers; him they turn into a colossus of orange rock he can never step out of. He is the only member of the Fantastic Four who lost everything in the accident, and paradoxically the warmest of the bunch: a softie who grumbles while he swings.",
         civil: "Benjamin J. Grimm",
@@ -930,7 +930,7 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #1 (1961)",
     },
 
-    "68001a": {
+    "ah001a": {
         bio: "Adolescent coréen-américain crédité du huitième plus grand cerveau de la planète, Amadeus Cho calcule les trajectoires et les probabilités comme d'autres respirent. Quand les radiations gamma menacent de tuer Bruce Banner, il siphonne le Hulk dans son propre corps et devient un colosse vert enfin maître de lui : jeune, sûr de lui, et bien décidé à prouver qu'un Hulk peut être un héros joyeux. La colère de Banner, elle, n'a pas disparu, elle attend seulement son heure.",
         bioEn: "A Korean-American teenager credited with the eighth-greatest mind on the planet, Amadeus Cho works out trajectories and odds the way other people breathe. When gamma radiation threatens to kill Bruce Banner, he siphons the Hulk into his own body and becomes a green powerhouse who is finally in control: young, cocky and determined to prove a Hulk can be a joyful hero. Banner's rage has not gone anywhere, though. It is simply biding its time.",
         civil: "Amadeus Cho",
@@ -942,7 +942,7 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (2006)",
     },
 
-    "69001a": {
+    "mw001a": {
         bio: "Aveugle de naissance et clouée dans un fauteuil relié à un système de survie en forme de toile, Cassandra Webb voit ce que personne d'autre ne voit : les fils du destin qui relient entre eux tous ceux qui portent la marque de l'araignée. Médium et télépathe, elle guide les Spider-Men et les Spider-Women depuis l'ombre plutôt que de se battre elle-même. Son pouvoir tient autant de la prophétie que du réseau : elle sait qui va tomber, et qui doit être envoyé pour l'en empêcher.",
         bioEn: "Blind from birth and confined to a chair wired into a web-shaped life-support system, Cassandra Webb sees what nobody else can: the threads of fate binding together everyone who wears the mark of the spider. A psychic and a telepath, she guides the Spider-Men and Spider-Women from the shadows rather than fighting herself. Her power is as much prophecy as network: she knows who is about to fall, and who must be sent to stop it.",
         civil: "Cassandra Webb",
@@ -954,7 +954,7 @@ export const HEROS_INFO = {
         apparition: "The Amazing Spider-Man #210 (1980)",
     },
 
-    "75001a": {
+    "sg001a": {
         bio: "Doreen Green est une étudiante en informatique qui parle aux écureuils, saute d'un immeuble à l'autre grâce à une queue touffue et frappe assez fort pour inquiéter un Vengeur. Mi-humaine mi-écureuil, elle règle la plupart de ses affaires en discutant, et le reste avec une armée de rongeurs menée par sa meilleure amie Tippy-Toe. Sa réputation tient à une longue série d'adversaires que personne ne pensait pouvoir arrêter, de Fatalis à Galactus, tous vaincus par un mélange d'optimisme obstiné et de tactiques absurdes.",
         bioEn: "Doreen Green is a computer science student who talks to squirrels, leaps between rooftops with a bushy tail and hits hard enough to worry an Avenger. Half human and half squirrel, she settles most of her business by talking, and the rest with an army of rodents led by her best friend Tippy-Toe. Her reputation rests on a long list of opponents nobody thought could be stopped, from Doctor Doom to Galactus, all beaten by a mix of stubborn optimism and absurd tactics.",
         civil: "Doreen Green",
@@ -966,7 +966,7 @@ export const HEROS_INFO = {
         apparition: "Marvel Super-Heroes #8 (1991)",
     },
 
-    "77001a": {
+    "bw001a": {
         bio: "Amadeus Cho est un adolescent coréen-américain classé parmi les esprits les plus brillants de la planète, capable de résoudre en un clin d'œil des calculs qui occuperaient un supercalculateur. Après avoir aidé Hulk et Hercule dans leurs aventures, il absorbe l'énergie gamma de Bruce Banner et devient à son tour un colosse vert. Là où Banner subissait sa colère, Cho la maîtrise et garde son intelligence sous les muscles : il prend le nom de Brawn et se bat aux côtés des Champions et des Agents d'Atlas.",
         bioEn: "Amadeus Cho is a Korean-American teenager ranked among the brightest minds on the planet, able to solve in a blink what would keep a supercomputer busy. After adventuring alongside Hulk and Hercules, he absorbs Bruce Banner's gamma energy and becomes a green giant himself. Where Banner endured his rage, Cho masters it and keeps his intellect under the muscle: he takes the name Brawn and fights alongside the Champions and the Agents of Atlas.",
         civil: "Amadeus Cho",
@@ -978,7 +978,7 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (2006)",
     },
 
-    "78001a": {
+    "lj001a": {
         bio: "Lockjaw est un chien géant de la Cité des Inhumains, gros comme un poney, avec un diapason planté sur le crâne et le pouvoir de se téléporter n'importe où avec quiconque le touche. Compagnon inséparable de la famille royale inhumaine et de la jeune Kamala Khan, il sert de taxi, de garde du corps et de peluche à toute une équipe. Personne ne sait vraiment s'il est un Inhumain transformé ou simplement un très bon chien : lui-même s'en moque, du moment qu'on lui lance quelque chose à rapporter.",
         bioEn: "Lockjaw is a giant dog from the Inhuman city, the size of a pony, with a tuning fork on his skull and the power to teleport anywhere with whoever touches him. The inseparable companion of the Inhuman royal family and of young Kamala Khan, he serves as taxi, bodyguard and cuddly toy for a whole team. Nobody is quite sure whether he is a transformed Inhuman or simply a very good boy: he does not care either way, as long as somebody throws something for him to fetch.",
         civil: "Lockjaw",
@@ -990,7 +990,7 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #45 (1965)",
     },
 
-    "76001a": {
+    "mk001a": {
         bio: "Mercenaire laissé pour mort en Égypte, Marc Spector a été ramené à la vie par le dieu lunaire Khonshu, dont il est devenu le poing vengeur. Son esprit fracturé abrite plusieurs personnalités : le millionnaire Steven Grant, le chauffeur de taxi Jake Lockley, le consultant en costume blanc Mr. Knight. Chevalier de la Lune, il protège les voyageurs de la nuit avec une brutalité qui fait peur aux criminels comme à ses alliés, sans jamais savoir laquelle de ses identités a réellement les commandes.",
         bioEn: "A mercenary left for dead in Egypt, Marc Spector was brought back to life by the moon god Khonshu, becoming his avenging fist. His fractured mind hosts several personalities: millionaire Steven Grant, cab driver Jake Lockley, the white-suited consultant Mr. Knight. As Moon Knight he protects travelers of the night with a brutality that frightens criminals and allies alike, never quite knowing which of his identities is really in charge.",
         civil: "Marc Spector",
@@ -1002,7 +1002,7 @@ export const HEROS_INFO = {
         apparition: "Werewolf by Night #32 (1975)",
     },
 
-    "70001a": {
+    "cd001a": {
         bio: "Tyrone Johnson et Tandy Bowen, deux adolescents fugueurs, ont reçu leurs pouvoirs d'une drogue expérimentale testée sur eux de force. Lui est devenu Cloak, porte vivante vers la dimension des ténèbres, qui engloutit ses ennemis dans un froid dévorant ; elle est devenue Dagger, qui façonne la lumière vivante en poignards capables de purger poisons et douleurs. Inséparables, ils chassent les dealers et protègent les enfants des rues, l'ombre nourrissant la lumière et la lumière apaisant l'ombre.",
         bioEn: "Runaway teenagers Tyrone Johnson and Tandy Bowen got their powers from an experimental drug forcibly tested on them. He became Cloak, a living doorway to the darkness dimension that swallows enemies in devouring cold; she became Dagger, shaping living light into daggers that can purge poison and pain. Inseparable, they hunt drug dealers and protect street kids, the darkness feeding on the light and the light soothing the dark.",
         civil: "Tyrone Johnson & Tandy Bowen",
@@ -1014,7 +1014,7 @@ export const HEROS_INFO = {
         apparition: "Peter Parker, the Spectacular Spider-Man #64 (1982)",
     },
 
-    "71001a": {
+    "sr001a": {
         bio: "Mordu par une araignée radioactive lors d'une sortie scolaire, le lycéen Peter Parker a d'abord voulu monnayer ses pouvoirs, jusqu'à ce que son inaction coûte la vie à son oncle Ben. Depuis, il vit selon la leçon de son oncle : un grand pouvoir implique de grandes responsabilités. Force proportionnelle d'une araignée, sens de danger qui picote et lance-toiles de sa propre invention font de lui le protecteur bavard et infatigable du petit peuple de New York, quitte à rater ses payes, ses examens et ses rendez-vous.",
         bioEn: "Bitten by a radioactive spider on a school trip, high-schooler Peter Parker first tried to cash in on his powers, until his inaction cost his uncle Ben's life. He has lived by his uncle's lesson ever since: with great power comes great responsibility. The proportional strength of a spider, a tingling danger sense and web-shooters of his own invention make him the wisecracking, tireless protector of New York's little guy, even when it costs him paychecks, exams and dates.",
         civil: "Peter Parker",
@@ -1026,7 +1026,7 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (1962)",
     },
 
-    "72001a": {
+    "vr001a": {
         bio: "Journaliste déchu après un scandale, Eddie Brock ruminait sa haine de Spider-Man quand il a rencontré le symbiote alien que le héros venait de rejeter. De leur fusion est né Venom : une masse de muscles noirs, de crocs et de langue démesurée qui parle d'elle-même au pluriel. D'abord ennemi juré du Tisseur, le duo s'est mué en « protecteur létal » : il dévore les prédateurs qui s'en prennent aux innocents, avec un sens de la justice aussi vorace que discutable.",
         bioEn: "A disgraced journalist after a scandal, Eddie Brock was nursing his hatred of Spider-Man when he met the alien symbiote the hero had just rejected. Their fusion gave birth to Venom: a mass of black muscle, fangs and an outsized tongue that speaks of itself as \"we\". First the web-slinger's sworn enemy, the pair turned \"lethal protector\": it devours the predators who prey on the innocent, with a sense of justice as voracious as it is questionable.",
         civil: "Eddie Brock",
@@ -1039,7 +1039,7 @@ export const HEROS_INFO = {
         apparition: "The Amazing Spider-Man #300 (1988)",
     },
 
-    "73001a": {
+    "jj001a": {
         bio: "Adolescente, Jessica Campbell perd sa famille dans un accident de voiture qui l'expose à des produits chimiques militaires ; elle en sort dotée d'une force surhumaine et d'un vol approximatif. Sa brève carrière costumée s'achève quand l'Homme-Pourpre l'asservit mentalement pendant des mois. Elle raccroche le costume, ouvre l'agence Alias Investigations et traque la vérité pour les autres, appareil photo au poing et whisky à portée de main. Sarcastique, cabossée, elle finira par épouser Luke Cage.",
         bioEn: "As a teenager, Jessica Campbell loses her family in a car crash that exposes her to military chemicals; she comes out of it with superhuman strength and a shaky ability to fly. Her brief costumed career ends when the Purple Man enslaves her mind for months. She hangs up the costume, opens Alias Investigations and digs up the truth for other people, camera in hand and whiskey within reach. Sarcastic and battered, she eventually marries Luke Cage.",
         civil: "Jessica Campbell Jones Cage",
@@ -1051,7 +1051,7 @@ export const HEROS_INFO = {
         apparition: "Alias #1 (2001)",
     },
 
-    "74001a": {
+    "av001a": {
         bio: "Brute du lycée qui martyrisait Peter Parker tout en idolâtrant Spider-Man, Eugene « Flash » Thompson s'engage dans l'armée et y perd ses deux jambes en sauvant ses hommes. L'armée lui confie alors le symbiote Venom : rendu à ses jambes et surarmé, il devient l'Agent Venom. Après avoir été purifié, le symbiote mue en Anti-Venom, un costume blanc qui soigne au lieu de dévorer. Flash reste ce qu'il a toujours été : un soldat qui se jette devant les balles pour les autres.",
         bioEn: "A high-school bully who tormented Peter Parker while idolizing Spider-Man, Eugene \"Flash\" Thompson enlists in the army and loses both legs saving his men. The army then pairs him with the Venom symbiote: given his legs back and heavily armed, he becomes Agent Venom. After the symbiote is purified it turns into Anti-Venom, a white suit that heals instead of devouring. Flash stays what he always was: a soldier who throws himself in front of the bullets for other people.",
         civil: "Eugene \"Flash\" Thompson",
@@ -1063,7 +1063,7 @@ export const HEROS_INFO = {
         apparition: "The Amazing Spider-Man #4 (1963)",
     },
 
-    "79001a": {
+    "ag001a": {
         bio: "Sharon Carter, alias Agent 13, est une espionne d'élite du S.H.I.E.L.D. et la petite-nièce de Peggy Carter. Sous les ordres de Nick Fury, elle enchaîne les missions d'infiltration sous couverture aux quatre coins du monde. Elle est l'une des rares personnes que Captain America considère comme son égale sur le terrain, et les deux partagent une relation amoureuse aussi discrète qu'intermittente au fil des années.",
         bioEn: "Sharon Carter, codenamed Agent 13, is an elite S.H.I.E.L.D. spy and the grandniece of Peggy Carter. Serving under Nick Fury's command, she runs undercover infiltration missions around the world. She is one of the few people Captain America considers his equal in the field, and the two share an on-and-off romance across the years.",
         civil: "Sharon Carter",

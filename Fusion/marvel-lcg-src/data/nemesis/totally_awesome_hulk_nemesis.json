@@ -2,10 +2,10 @@
     "version": "0.5.8",
     "name": "Totally Awesome Hulk Nemesis",
     "encounters": [
-        "68014",
-        "68015",
-        "68016",
-        "68017",
-        "68018"
+        "ah014",
+        "ah015",
+        "ah016",
+        "ah017",
+        "ah018"
     ]
 }

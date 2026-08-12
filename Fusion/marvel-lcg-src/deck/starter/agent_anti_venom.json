@@ -6,35 +6,35 @@
         "aspect_note": "Aucune decklist d'aspect n'est fournie par l'auteur (pas de carte d'insert dans les dossiers Drive). Deck Protection du Core Set retenu : le kit du heros tourne autour du soin, de retaliate et de la defense."
     },
     "hero": [
-        "74001a,74001b"
+        "av001a,av001b"
     ],
     "hero_deck": [
-        "74002",
-        "74003",
-        "74003",
-        "74004",
-        "74004",
-        "74005",
-        "74005",
-        "74005",
-        "74006",
-        "74006",
-        "74007",
-        "74008",
-        "74009",
-        "74010",
-        "74011"
+        "av002",
+        "av003",
+        "av003",
+        "av004",
+        "av004",
+        "av005",
+        "av005",
+        "av005",
+        "av006",
+        "av006",
+        "av007",
+        "av008",
+        "av009",
+        "av010",
+        "av011"
     ],
     "set_aside": [],
     "obligations": [
-        "74012"
+        "av012"
     ],
     "nemesis_set": [
-        "74013",
-        "74014",
-        "74015",
-        "74016",
-        "74016"
+        "av013",
+        "av014",
+        "av015",
+        "av016",
+        "av016"
     ],
     "player_deck": [
         "01075",

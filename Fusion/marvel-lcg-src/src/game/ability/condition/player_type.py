@@ -100,5 +100,5 @@ class ConditionPlayerType:
         # Le piege : sans ce return, une regle non reconnue — a commencer par
         # None — faisait tomber la fonction en fin de corps, qui rendait None.
         # Faux a l'usage, mais invisible a la lecture : c'est ce qui a fait
-        # taire le declencheur d'Albert (62001a). Meme valeur qu'avant, dite.
+        # taire le declencheur d'Albert (ab001a). Meme valeur qu'avant, dite.
         return False

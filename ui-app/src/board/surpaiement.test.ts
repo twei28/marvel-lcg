@@ -1,7 +1,7 @@
 // Ce que ces cas protègent : une carte à COÛT X ne fait rien si le joueur ne
 // dépense rien pour elle. Le plateau ne le lui rappelait que si le texte
 // contenait « overpay », formule absente des neuf cartes à coût X du
-// catalogue. Signalé en jeu sur Tendril Explosion (72006) : la carte semblait
+// catalogue. Signalé en jeu sur Tendril Explosion (vr006) : la carte semblait
 // cassée alors qu'elle est correcte, et son cas de comportement passait.
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
@@ -21,16 +21,16 @@ describe('surpayable', () => {
 
   it('reconnait un COÛT X, dont le texte ne dit jamais « overpay »', () => {
     const c = catalogue([
-      { card_id: '72006', desc: { Cost: 'X' }, text: 'Hero Action: Deal X damage to each enemy.' },
+      { card_id: 'vr006', desc: { Cost: 'X' }, text: 'Hero Action: Deal X damage to each enemy.' },
     ])
-    expect(c.surpayable('72006')).toBe(true)
+    expect(c.surpayable('vr006')).toBe(true)
   })
 
   it('ne signale pas une carte à coût fixe', () => {
     const c = catalogue([
-      { card_id: '72007', desc: { Cost: '2' }, text: 'Deal 5 damage to an enemy.' },
+      { card_id: 'vr007', desc: { Cost: '2' }, text: 'Deal 5 damage to an enemy.' },
     ])
-    expect(c.surpayable('72007')).toBe(false)
+    expect(c.surpayable('vr007')).toBe(false)
   })
 })
 

@@ -2,10 +2,10 @@
     "version": "0.5.9",
     "name": "Squirrel Girl Nemesis",
     "encounters": [
-        "75019",
-        "75020",
-        "75021",
-        "75021",
-        "75022"
+        "sg019",
+        "sg020",
+        "sg021",
+        "sg021",
+        "sg022"
     ]
 }

@@ -77,7 +77,7 @@ describe('les icônes de ressource des traductions fan-made', () => {
   it('et les quatre cartes Lockjaw demandent bien une mentale', () => {
     // Elles nomment l'erreur trouvée le 9/8/2026 : le cas précédent la
     // laisserait revenir si les deux fichiers repassaient à [wild] ensemble.
-    for (const id of ['78001a', '78009', '78010', '78011']) {
+    for (const id of ['lj001a', 'lj009', 'lj010', 'lj011']) {
       expect(icones(fr[id])).toContain('mental')
       expect(icones(en[id])).toContain('mental')
     }

@@ -3,13 +3,13 @@ from cards.pack import *
 # Fabriques partagées du pack custom « Totally Awesome Hulk » (DesignHacker).
 #
 # L'identité a TROIS faces, sur le modèle d'Ant-Man / Invisible Woman :
-#   68001a  Totally Awesome Hulk  (héros, traits CHAMPION GAMMA)
-#   68001b  Amadeus Cho           (alter-ego)
-#   68001c  Uncontrollable Hulk   (héros additionnel, traits BRUTE GAMMA)
+#   ah001a  Totally Awesome Hulk  (héros, traits CHAMPION GAMMA)
+#   ah001b  Amadeus Cho           (alter-ego)
+#   ah001c  Uncontrollable Hulk   (héros additionnel, traits BRUTE GAMMA)
 #
 # Le passage d'une forme à l'autre ne se fait JAMAIS librement : il est piloté
 # par les compteurs `rage` posés sur le soutien recto-verso « The Trunk »
-# (68012a / 68012b).
+# (ah012a / ah012b).
 
 TRUNK_NAME = "\"The Trunk\""
 
@@ -35,7 +35,7 @@ def FindTrunk(effect: 'Effect', player: 'Player|None'=None) -> List['CardFace']:
 
 
 def IsHypermindActive(player: 'Player') -> bool:
-    """« Hypermind » n'est imprimé que sur la face CHAMPION (68001a).
+    """« Hypermind » n'est imprimé que sur la face CHAMPION (ah001a).
 
     En forme BRUTE ou en alter-ego, les ressources gardent leur couleur.
     """
@@ -85,7 +85,7 @@ def LosingControlGuard() -> 'Ability':
 def PaidOnlyWithWild(effect: 'Effect') -> bool:
     """« If you paid for this card using only [wild] resources ».
 
-    Hypermind (68001a) convertit déjà en [wild] les ressources générées, le
+    Hypermind (ah001a) convertit déjà en [wild] les ressources générées, le
     test sur les ressources réellement payées suffit donc dans les deux formes.
     """
     return effect.GetPaidResources().OnlyHasColor("G")

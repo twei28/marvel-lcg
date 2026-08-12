@@ -51,7 +51,7 @@ class CanPlaceCounter(CardFace):
 
         # CORRECTIF : `or` avale la valeur 0, qui est fausse en Python. Une
         # carte posant `message.maximum = 0` (« ne peut recevoir aucun
-        # compteur », cf. 64012 Hydro-Man) voyait son plafond ignore, et
+        # compteur », cf. ht012 Hydro-Man) voyait son plafond ignore, et
         # ecrasait au passage un plafond global deja en place.
         if would_message.maximum is not None:
             maximum = would_message.maximum

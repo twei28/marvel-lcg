@@ -7,35 +7,35 @@
         "note": "Decklist officielle du scan MK_starter-deck.png. Regle Cheap Shots : tous les aspects, aucune carte de cout imprime >= 3, au moins 4 cartes de chaque aspect (les evenements signature bi-classes comptent pour leur aspect)."
     },
     "hero": [
-        "76001a,76001b,76001c,76001d,76001e"
+        "mk001a,mk001b,mk001c,mk001d,mk001e"
     ],
     "hero_deck": [
-        "76002",
-        "76003",
-        "76004",
-        "76005",
-        "76006",
-        "76007",
-        "76007",
-        "76008",
-        "76008",
-        "76009",
-        "76009",
-        "76010",
-        "76010",
-        "76011",
-        "76011"
+        "mk002",
+        "mk003",
+        "mk004",
+        "mk005",
+        "mk006",
+        "mk007",
+        "mk007",
+        "mk008",
+        "mk008",
+        "mk009",
+        "mk009",
+        "mk010",
+        "mk010",
+        "mk011",
+        "mk011"
     ],
     "set_aside": [],
     "obligations": [
-        "76012"
+        "mk012"
     ],
     "nemesis_set": [
-        "76013",
-        "76014",
-        "76015",
-        "76015",
-        "76016"
+        "mk013",
+        "mk014",
+        "mk015",
+        "mk015",
+        "mk016"
     ],
     "player_deck": [
         "12031",

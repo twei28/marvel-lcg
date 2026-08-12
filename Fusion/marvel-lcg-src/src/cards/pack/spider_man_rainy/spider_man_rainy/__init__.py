@@ -4,7 +4,7 @@ from cards.pack import *
 # Mecanique des compteurs toile : « web an enemy » = poser 1 compteur 'web'
 # sur cet ennemi, plafond de 3 par ennemi. Le plafond et l'effet des compteurs
 # (retrait a l'activation, -1 SCH / -1 ATK par compteur retire) sont portes par
-# la carte de regles Impact Webbing (71012), mise en jeu des le setup.
+# la carte de regles Impact Webbing (sr012), mise en jeu des le setup.
 
 
 def Weber(cibles: Sequence['CardFace'], nombre: int, effect: 'Effect') -> None:

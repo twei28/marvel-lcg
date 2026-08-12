@@ -2,10 +2,10 @@
     "version": "0.5.8",
     "name": "Invisible Woman Nemesis",
     "encounters": [
-        "65014",
-        "65015",
-        "65016",
-        "65017",
+        "mf014",
+        "mf015",
+        "mf016",
+        "mf017",
         "65018"
     ]
 }

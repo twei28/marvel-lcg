@@ -4,14 +4,14 @@ from cards.pack import *
 # Système de bulles (speech bubbles) de Gwenpool — custom « ekAugust ».
 #
 # Chaque carte Gwenpool porte une bulle dans son illustration. Quand une
-# capacité contient « ____ », Medium Awareness (63001a) permet de remplacer le
+# capacité contient « ____ », Medium Awareness (gp001a) permet de remplacer le
 # blanc par la phrase d'une bulle disponible : la carte jouée, l'identité, une
 # carte Gwenpool en jeu, ou la carte attachée à Unbelievable Gwenpool.
 # Limite : chaque bulle une fois par phase.
 #
 # Interactions :
-# - THE END (63010) en jeu : aucune bulle utilisable, le blanc reste vide.
-# - Rules of the Universe (63011) en jeu : remplacement FORCÉ par la bulle
+# - THE END (gp010) en jeu : aucune bulle utilisable, le blanc reste vide.
+# - Rules of the Universe (gp011) en jeu : remplacement FORCÉ par la bulle
 #   d'Evil Gwenpool (« Gwenpool takes 1 damage. »), sans limite de phase.
 #
 # LENIENT : « a card you spend » (bulles des cartes défaussées en paiement)
@@ -88,17 +88,17 @@ def _bulle_ready(effect: 'Effect', player: 'Player', source: 'CardFace') -> None
 
 # card_id -> [(libellé, opération)]
 BULLES = {
-    "63001a": [("Gwenpool: “Draw 1 card.”", _bulle_draw1)],
-    "63002": [("“Here I Come!”: “Deal 2 damage to the villain.”", _bulle_deal2_villain)],
-    "63003": [("“It Can't End Like This!”: “Confuse the villain.”", _bulle_confuse_villain)],
-    "63004": [("Fun Background Noise: “Give Gwenpool a tough status card.”", _bulle_tough)],
-    "63005": [("“Sorry, Gotta Run!”: “Remove 2 threat from the main scheme.”", _bulle_remove2_main)],
-    "63006": [("Endless Storylines: “Remove 1 threat from a scheme.”", _bulle_remove1_scheme),
+    "gp001a": [("Gwenpool: “Draw 1 card.”", _bulle_draw1)],
+    "gp002": [("“Here I Come!”: “Deal 2 damage to the villain.”", _bulle_deal2_villain)],
+    "gp003": [("“It Can't End Like This!”: “Confuse the villain.”", _bulle_confuse_villain)],
+    "gp004": [("Fun Background Noise: “Give Gwenpool a tough status card.”", _bulle_tough)],
+    "gp005": [("“Sorry, Gotta Run!”: “Remove 2 threat from the main scheme.”", _bulle_remove2_main)],
+    "gp006": [("Endless Storylines: “Remove 1 threat from a scheme.”", _bulle_remove1_scheme),
               ("Endless Storylines: “Heal 1 damage from Gwenpool.”", _bulle_heal1),
               ("Endless Storylines: “Deal 1 damage to an enemy.”", _bulle_deal1_enemy)],
-    "63007": [("Gwen's Room: “Heal 1 damage from Gwenpool.”", _bulle_heal1)],
-    "63008": [("Comicbook Panels: “Look at the top card of any deck.”", _bulle_look_top)],
-    "63009": [("Unbelievable Gwenpool: “Ready Gwenpool.”", _bulle_ready)],
+    "gp007": [("Gwen's Room: “Heal 1 damage from Gwenpool.”", _bulle_heal1)],
+    "gp008": [("Comicbook Panels: “Look at the top card of any deck.”", _bulle_look_top)],
+    "gp009": [("Unbelievable Gwenpool: “Ready Gwenpool.”", _bulle_ready)],
 }
 
 
@@ -134,7 +134,7 @@ def _sources_de_bulles(effect: 'Effect', player: 'Player') -> list:
 
 
 def ResolveBlank(effect: 'Effect', count: int = 1) -> None:
-    """Résout `count` blancs « ____ » via Medium Awareness (63001a)."""
+    """Résout `count` blancs « ____ » via Medium Awareness (gp001a)."""
     player = effect.GetInitiator()
 
     for _ in range(count):
@@ -172,7 +172,7 @@ def ResolveBlank(effect: 'Effect', count: int = 1) -> None:
 
 
 ################################################################################
-# Suivi « le Méchant a intrigué la manche dernière » (pour 63003).
+# Suivi « le Méchant a intrigué la manche dernière » (pour gp003).
 
 def NoterVillainScheme(effect: 'Effect') -> None:
     w = effect.world
