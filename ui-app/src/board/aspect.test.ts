@@ -12,12 +12,13 @@ import { EFFETS_DELAVANTS, effetsAffiches } from './CoucheMeteo'
 import type { World } from './world'
 
 describe('aspectDeClasse', () => {
-  it('reconnait les quatre aspects et le Pool', () => {
+  it('reconnait les quatre aspects, le Pool et Determination', () => {
     expect(aspectDeClasse('Aggression')).toBe('aggression')
     expect(aspectDeClasse('Justice')).toBe('justice')
     expect(aspectDeClasse('Leadership')).toBe('leadership')
     expect(aspectDeClasse('Protection')).toBe('protection')
     expect(aspectDeClasse("'Pool")).toBe('pool')
+    expect(aspectDeClasse('Determination')).toBe('determination')
   })
 
   it('reconnait heros et basique', () => {

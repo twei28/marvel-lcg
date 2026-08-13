@@ -3459,6 +3459,10 @@
   .plateau.est-delave .scan-card.aspect-leadership { --lisere-aspect: #3f86e0; }
   .plateau.est-delave .scan-card.aspect-protection { --lisere-aspect: #34ae61; }
   .plateau.est-delave .scan-card.aspect-pool { --lisere-aspect: #ef67b0; }
+  /* Determination : le violet que le moteur peint sur ses cartes,
+     rgb(150, 92, 196) dans image_creator.py. Repris tel quel plutot que
+     choisi, pour que le lisere et la carte disent la meme chose. */
+  .plateau.est-delave .scan-card.aspect-determination { --lisere-aspect: #965cc4; }
   /* Les quatre aspects et 'Pool ont leurs couleurs officielles. Celles du
      heros et du basique sont un CHOIX : le jeu ne leur en donne pas, il faut
      juste qu'elles ne se confondent avec aucune des cinq autres. */

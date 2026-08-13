@@ -34,6 +34,7 @@ export type Aspect =
   | 'leadership'
   | 'protection'
   | 'pool'
+  | 'determination'
   | 'hero'
   | 'basic'
 
@@ -53,6 +54,10 @@ export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
     Leadership: 'leadership',
     Protection: 'protection',
     "'Pool": 'pool',
+    // Le cinquieme aspect, fan-made (designhacker.ca), accepte par le moteur
+    // depuis e161ffe. Sans cette ligne ses cartes n'ont aucun lisere sous un
+    // effet delavant, et le catalogue les compte comme inconnues.
+    Determination: 'determination',
   }
   for (const p of parts) if (table[p]) return table[p]
   if (parts.includes('Hero')) return 'hero'
