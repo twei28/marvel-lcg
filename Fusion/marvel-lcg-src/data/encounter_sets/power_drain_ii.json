@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "power_drain_ii",
+    "encounters": [
+        "wd020",
+        "wd021",
+        "wd022",
+        "wd023",
+        "wd024",
+        "wd025"
+    ]
+}

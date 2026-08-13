@@ -140,6 +140,13 @@
       "libelle": "109. Custom (Venom Rainy)",
       "cartes": 16,
       "depuis": "2026-08-12"
+    },
+    "wd": {
+      "pack": "web_of_deceit",
+      "libelle": "120. Custom (Web of Deceit)",
+      "cartes": 38,
+      "depuis": "2026-08-14",
+      "note": "La campagne fan-made Web of Deceit (Ripper3), 5 scenarios. Lot 1 : le scenario Shocker, les modulaires Crime Wave, Power Drain II et Bodyguard, et les cartes de mise en place de la campagne."
     }
   }
 }

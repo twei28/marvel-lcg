@@ -1,0 +1,29 @@
+{
+    "version": "0.5.8",
+    "name": "Shocker",
+    "villain": [
+        "wd001b,wd001a"
+    ],
+    "expert": true,
+    "schemes": [
+        "wd002a,wd002b",
+        "wd003a,wd003b",
+        "wd004a,wd004b"
+    ],
+    "set_aside": [
+        "wd030",
+        "wd031",
+        "wd032"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "shocker",
+        "city_in_chaos",
+        "power_drain_ii",
+        "standard_iii",
+        "bodyguard"
+    ],
+    "modular_sets": [
+        "crime_wave"
+    ]
+}

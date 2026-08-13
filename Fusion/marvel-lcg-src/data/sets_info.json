@@ -1049,5 +1049,14 @@
         "encounters": [],
         "max_id": "sp019"
     },
-    "checksum": "221ad8088a39752a44d14e4192489ff08526671d52eb1b14616978c41a99cf9d"
+    "120. Custom (Web of Deceit)": {
+        "name": "web_of_deceit",
+        "scenarios": [
+            "wd_shocker"
+        ],
+        "heroes": [],
+        "encounters": [],
+        "max_id": "wd034"
+    },
+    "checksum": "8282f76aaf2773a4eab56d74efa27b87e600e4cdd2321f1052ca8f9228f80b82"
 }

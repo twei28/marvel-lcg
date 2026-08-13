@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "crime_wave",
+    "encounters": [
+        "wd016",
+        "wd016",
+        "wd017",
+        "wd017",
+        "wd018",
+        "wd019"
+    ]
+}
