@@ -1,6 +1,7 @@
 # TODO / SPEC — Le scénario « The Spot » (fan-made, DesignHacker)
 
-**Statut :** relevé COMMENCÉ le 13/08/2026 — 7 cartes sur 25 lues.
+**Statut :** ✅ **RELEVÉ COMPLET le 13/08/2026** (§9) — 25 cartes physiques,
+**19 cartes distinctes**.
 🚧 **Le mot-clé `ThreatLevel` existe maintenant dans le moteur** (§8), sur
 décision de l'utilisateur (« pour de vrai, pas approximé »). Aucune carte du set
 n'est encore entrée dans le jeu.
@@ -185,3 +186,109 @@ toucher fait tomber `GetBuff`.
    Threat Level. C'est du texte de carte (1B), mais il lui faut deux crochets :
    une fenêtre « quand on retirerait de la menace d'ici » et une opération
    « déplacer de la menace d'une carte à une autre ».
+
+
+---
+
+## 9. LE RELEVÉ COMPLET (13/08/2026)
+
+**25 cartes physiques, 19 distinctes.** Les exemplaires multiples sont bien des
+copies : la comparaison pixel à pixel montre qu'ils ne diffèrent QUE par leur
+numéro en bas à gauche (`16 vs 17` : x 136-160, y 840-872 sur 644×900). Le
+contrôle md5 les disait tous distincts, et il avait raison sans être utile — le
+numéro est imprimé sur chaque exemplaire.
+
+### La boîte
+
+| # pack | id | Type | Nom | L'essentiel |
+|---|---|---|---|---|
+| 1A/1B | `sp001a/b` | MainScheme | Heightened Threat | 12 menaces/joueur, +1/joueur |
+| 2 | `sp002` | Villain | The Spot I | PV 12*, SCH 1, ATK 1, **TL 1**, Hinder 1, retaliate max 3 |
+| 3 | `sp003` | Villain | The Spot II | PV 15*, SCH 2, ATK 2, TL 1, Hinder 3, **Steady**, max 3 |
+| 4 | `sp004` | Villain | The Spot III | PV 18*, SCH 1, ATK 2, TL 1, Hinder 3, max 4 |
+| 5 | `sp005` | Villain | The Spot IV | PV 20*, SCH 2, ATK 3, TL 1, Hinder 5, **Stalwart**, max 4 |
+| 6A/6B | `sp006a/b` | Environment | What Goes Around… | A = standard, B = expert |
+| 7 | `sp007` | Minion | Rocket Racer | SCH 3, ATK 1, PV 4, **TL 2**, CRIMINAL. GENIUS. |
+| 8 | `sp008` | Minion | Puma | SCH 1, ATK 1*, PV 5, **TL 3**, CRIMINAL. |
+| 9 | `sp009` | SideScheme | Anywhere & Everywhere | **TL 4**, menace de départ 3/joueur |
+| 10 | `sp010` | Minion | Chameleon | SCH 1*, ATK 1, PV 7, **TL 5**, CRIMINAL. |
+| 11 | `sp011` | SideScheme | Penchant for Pilfery | **TL 6**, départ 4/joueur |
+| 12 | `sp012` | Minion | Living Laser | SCH 2, ATK 1, PV 8, **TL 7**, CRIMINAL. ELITE. |
+| 13 | `sp013` | SideScheme | Spotty Pasts | **TL 8**, départ 5/joueur |
+| 14 | `sp014` | Environment | Warp Hole | **TL 9**, Hinder 5, LOCATION. TECH. |
+| 15 | `sp015` | Attachment | The Hypernova | **TL 10**, +1 ATK, ARTIFACT. TECH. |
+| 16-18 | `sp016` ×3 | Treachery | …Comes Around! | |
+| 19-21 | `sp017` ×3 | Treachery | Distributed Presence | |
+| 22-23 | `sp018` ×2 | Treachery | Oddballs | |
+| 24-25 | `sp019` ×2 | Treachery | Target Spotted | |
+
+Le **deck rencontre** est donc : `sp007` à `sp015`, puis `sp016` ×3, `sp017` ×3,
+`sp018` ×2, `sp019` ×2 — 19 cartes. Les cartes 1 à 6 sont le complot principal,
+les quatre stades du vilain et l'environnement, tous mis en place.
+
+### Les textes qui n'étaient pas encore relevés
+
+**7 · Rocket Racer** (unique) — Threat Level 2. Gagne **patrol et guard** tant
+qu'il a 2 menaces ou plus sur lui. ★ Boost : révéler cette carte.
+
+**8 · Puma** (unique) — Threat Level 3. **+1 ATK par tranche de 2 menaces** sur
+lui. ★ Boost : révéler cette carte.
+
+**9 · Anywhere & Everywhere** — Threat Level 4. *Forced Response* : à la fin de
+la phase du vilain, s'il y a 3 menaces ou plus ici, **placer 1 menace sur chaque
+carte en jeu portant le mot-clé Threat Level**. ★ Boost : révéler.
+
+**10 · Chameleon** (unique) — Threat Level 5. **+1 SCH par tranche de 2 menaces**
+sur lui. ★ Boost : révéler.
+
+**11 · Penchant for Pilfery** — Threat Level 6. *Forced Response* : à la fin de
+la phase du vilain, s'il y a 4 menaces ou plus ici, chaque joueur **défausse une
+carte qu'il contrôle ou subit 2 dégâts**. ★ Boost : révéler.
+
+**12 · Living Laser** (unique) — Threat Level 7. **Retaliate 1 par tranche de 2
+menaces** sur lui, max 4. ★ Boost : révéler.
+
+**13 · Spotty Pasts** — Threat Level 8. *Forced Response* : à la fin de la phase
+du vilain, s'il y a 5 menaces ou plus ici, **le premier joueur cherche un sbire
+Spot et le révèle**. ★ Boost : révéler.
+
+**14 · Warp Hole** (Environment, LOCATION. TECH.) — Threat Level 9. **Hinder 5**.
+Tant qu'il y a 3 menaces ou plus ici, cette carte gagne deux icônes (à relire de
+près, l'image est petite à cet endroit). *Hero Response* : après qu'une attaque
+inflige 3 dégâts ou plus à The Spot, **retirer 2 menaces d'ici** ; si la dernière
+menace part ainsi, défausser Warp Hole.
+
+**15 · The Hypernova** (Attachment, unique, ARTIFACT. TECH., +1 ATK) — **Attacher
+à l'ennemi Spot au plus haut Threat Level.** Threat Level 10. *Forced Response* :
+après l'activation de l'ennemi attaché, défausser X cartes du dessus du deck
+rencontre, X étant la menace ici ; si un jeton d'accélération est posé ainsi,
+défausser cette carte.
+
+**16 · …Comes Around!** (Treachery, ×3) — *When Revealed* : défausser les 2
+cartes du dessus du deck rencontre. Pour chaque carte Spot défaussée ainsi, au
+choix **placer 2 menaces sur le complot principal OU la révéler**. Si aucune
+carte Spot n'a été défaussée, cette carte gagne **déferlement**. ★ Boost :
+défausser les 2 cartes du dessus du deck rencontre.
+
+**19 · Distributed Presence** (Treachery, ×3) — *When Revealed* : **répartir 5
+menaces au total entre les cartes Spot en jeu portant Threat Level, aussi
+également que possible, en commençant par le plus BAS Threat Level**. Si 5
+menaces ont été placées sur The Spot ainsi, on peut **redresser une carte qu'on
+contrôle**.
+
+**22 · Oddballs** (Treachery, ×2) — *When Revealed* : placer 1 menace sur chaque
+carte Spot dont le **Threat Level est IMPAIR**. Si 2 menaces ou moins ont été
+placées ainsi, **défausser une carte de sa main au coût imprimé impair**.
+★ Boost : placer 2 menaces sur The Spot.
+
+**24 · Target Spotted** (Treachery, ×2) — *When Revealed* : chercher **The
+Hypernova** dans les 8 cartes du dessus du deck rencontre et la révéler. Si elle
+ne l'a pas été, **chercher une carte Spot portant Threat Level et la révéler**.
+
+### Ce que le relevé complet apprend sur le moteur
+
+Le mot-clé n'est pas réservé au vilain : il est porté par des **sbires**, des
+**manigances annexes**, des **environnements** et un **attachement**. Et la
+menace se pose sur toutes ces cartes, y compris les sbires et l'attachement.
+`HasThreatLevel` doit donc descendre sur les bases communes, pas sur `Villain`
+seul comme au §8.
