@@ -118,6 +118,7 @@ from game.card.face.attribute.has_vulnerable import HasVulnerable
 from game.card.face.attribute.has_toughness import HasToughness
 from game.card.face.attribute.has_steady import HasSteady
 from game.card.face.attribute.has_stalwart import HasStalwart
+from game.card.face.attribute.has_threat_level import HasThreatLevel
 from game.card.face.attribute.can_status import CanStatus, CanNoStatus
 from game.card.face.attribute.has_peril import HasPeril
 Unused(HasHandSize)
@@ -142,6 +143,7 @@ Unused(HasMaxPer)
 Unused(HasToughness)
 Unused(HasSteady)
 Unused(HasStalwart)
+Unused(HasThreatLevel)
 Unused(HasVulnerable)
 Unused(CanStatus, CanNoStatus)
 Unused(HasPeril)

@@ -1,8 +1,9 @@
 # TODO / SPEC — Le scénario « The Spot » (fan-made, DesignHacker)
 
-**Statut :** relevé COMMENCÉ le 13/08/2026 — 7 cartes sur 25 lues, rien d'écrit
-dans le jeu. La lecture s'est arrêtée volontairement : elle a trouvé un mot-clé
-que le moteur n'a pas, et cela se tranche avant d'entrer une seule carte.
+**Statut :** relevé COMMENCÉ le 13/08/2026 — 7 cartes sur 25 lues.
+🚧 **Le mot-clé `ThreatLevel` existe maintenant dans le moteur** (§8), sur
+décision de l'utilisateur (« pour de vrai, pas approximé »). Aucune carte du set
+n'est encore entrée dans le jeu.
 **Origine :** demande utilisateur (« un scénario complet d'abord »), pour éprouver
 la chaîne d'import de contenu fan-made avant de s'attaquer à une campagne.
 **Source :** `THE SPOT (3.0)-20260813T091111Z-1-001.zip`, à la racine du dossier
@@ -139,3 +140,48 @@ Le scénario apparaît dans l'écran de préparation, ses 25 cartes se génèren
 partie est menée de bout en bout par `autoplay.py` sans réponse illégale, et la
 mécanique du Threat Level fait en jeu ce que le texte annonce — mesuré, pas
 déduit, comme pour Merc Squad.
+
+
+---
+
+## 8. LE MOT-CLÉ EXISTE (13/08/2026)
+
+Décision de l'utilisateur : **implémenté pour de vrai**, pas approximé.
+
+**Premier morceau, livré** : `HasThreatLevel`, écrit sur le patron exact de
+`HasHinder`, l'autre mot-clé chiffré du jeu. Une différence, écrite dans le
+code : `Hinder` POSE des jetons quand la carte entre en jeu, `ThreatLevel` ne
+pose rien — c'est un nombre qui sert à comparer des cartes entre elles. D'où
+`HasAttribute` seul, sans `CanPlaceToken`.
+
+`"ThreatLevel"` est déclaré parmi les clés de `desc` connues, et **`Villain` le
+porte**. ⚠️ Il n'est posé QUE sur le vilain : les 4 stades de The Spot le portent,
+c'est mesuré. Les manigances annexes le portent probablement aussi, mais elles
+n'ont pas encore été lues, **et on n'ajoute pas un attribut à une classe de base
+sur une supposition** — surtout pas à `Scheme2`, qui toucherait toutes les
+manigances du jeu.
+
+**Prouvé par substitution** (`tools/sonde_threat_level.py`) : le MÊME vilain
+officiel rend `printed_threat_level = 0` sans le mot-clé et `2` avec. Sans le
+témoin dans la même mesure, une sonde qui rend 0 partout ne se distingue pas
+d'une sonde cassée. `test_cards` reste à 4331 ok / 0 erreur, et une partie
+ordinaire rend le même résultat qu'avant.
+
+⚠️ La sonde lit la valeur **imprimée**. Le mot-clé calculé (`threat_level`)
+demande une carte EN JEU : une face fabriquée seule n'a pas de `card`, et y
+toucher fait tomber `GetBuff`.
+
+### Ce qui reste au moteur, mesuré et non deviné
+
+1. **La menace sur un vilain.** `CanHinder` n'est PAS sur `Villain`, seulement sur
+   `Scheme2` et `Obligation`. Or les 4 stades de The Spot portent `Hinder 1/3/5`,
+   et leur texte lit « 5 threat here ». Mettre `Hinder` dans le `desc` d'un vilain
+   aujourd'hui **empêcherait la carte de se générer** (la leçon du 13/08 sur les
+   attributs de `desc` réservés à certains types).
+2. **Manigancer contre un vilain.** `ThwartInternal` prend `schemes:
+   List['Scheme2']` ; un vilain n'en est pas un. « Characters may thwart against
+   The Spot » n'a donc aucun crochet.
+3. **Le déroutement de menace** du complot principal vers la carte au plus haut
+   Threat Level. C'est du texte de carte (1B), mais il lui faut deux crochets :
+   une fenêtre « quand on retirerait de la menace d'ici » et une opération
+   « déplacer de la menace d'une carte à une autre ».

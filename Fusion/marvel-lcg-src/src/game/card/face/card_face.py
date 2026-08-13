@@ -47,6 +47,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "GiveTo", "Nemesis", "Restricted",
         "MaxPerUnit", "MaxPerDeck", "TeamUp",
         "Class", "Permanent", "Steady", "Incite", "Villainous", "Patrol", "Hinder", "Stalwart",
+        "ThreatLevel",
         "Requirement", "Victory", "Alliance",
         "Setup", "Peril", "Stage",
         "Linked", "Form", "CorrespondingCard",

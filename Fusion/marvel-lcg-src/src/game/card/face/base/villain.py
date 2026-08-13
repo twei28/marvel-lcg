@@ -8,7 +8,7 @@ from game.deck import *
 from cards.paper import Paper
 from game.element.damage_property import DamageProperty
 
-class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVictory, EncounterCard):
+class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVictory, HasThreatLevel, EncounterCard):
 
     VILLAIN_SCHEME: Dict[str, str] = {
     }
