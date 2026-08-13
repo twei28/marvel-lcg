@@ -76,6 +76,11 @@ const MODES = [
     // Bac a sable : partie normale (mêmes règles, mêmes choix), mais le plateau
     // démarre garni côté vilain et le panneau de triche s'ouvre à côté.
     { id: "sandbox", label: t("Bac à sable"), desc: t("Test des cartes"), players: 1, fixed: true, mark: "T" },
+    // Bataille : le mode competitif de Civil War et Synthezoid Smackdown. Deux
+    // equipes s'affrontent, chacune face au leader prepare par l'autre. Le
+    // livret (mc56 p.14) n'en connait que deux formats, 1v1 et 2v2 : d'ou 2 ou
+    // 4 joueurs, et le camp deduit du siege plutot que demande.
+    { id: "bataille", label: t("Bataille"), desc: t("2 équipes, 1v1 ou 2v2"), players: 2, min: 2, max: 4, mark: "B" },
     // Decouverte : partie FIGEE (Spider-Man / Rhino / seed 42) doublee d'un
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
@@ -148,6 +153,9 @@ const state = {
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
     heroFilters: { q: "", vague: "", fav: false, homebrew: false },
     scenario: null,
+    // Bataille : le scenario pose devant la SECONDE equipe. Chaque equipe
+    // affronte celui apporte par l'autre (mc56 p.14, etape 4).
+    scenario2: null,
     extensionTab: null,
     difficulty: {
         base: "standard",
@@ -182,6 +190,14 @@ const state = {
  * seul : sinon une partie hot-seat lancee depuis le serveur en ligne resterait
  * bloquee a attendre un invite qui ne viendra pas.
  */
+/** Vrai en mode Bataille (competitif, deux equipes). */
+function estBataille() { return !!state.mode && state.mode.id === "bataille"; }
+
+/** Le camp d'un siege : premiere moitie contre seconde moitie.
+ *  Le livret ne connait que le 1v1 et le 2v2, donc le camp se deduit du siege
+ *  et n'a pas a etre demande. */
+function campDuSiege(index, total) { return index < Math.ceil(total / 2) ? 0 : 1; }
+
 function enLigne() {
     return state.salon.multi && state.coopEnLigne !== false;
 }
@@ -199,7 +215,7 @@ function stepComplete(step) {
         // LANCEMENT, lui, attend tout le monde (validate + salon.prete).
         case 0: return !!state.mode && (enLigne() ? !!active[0] && !!active[0].hero : active.every((p) => p.hero));
         case 1: return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
-        case 2: return !!state.scenario;
+        case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
         case 3: return true;
         case 4: return validate(state).ok;
         default: return false;
@@ -796,6 +812,8 @@ function playerCountRow() {
     if (creationCampagne()) return null;
     const row = el("div", { class: "count-row" }, el("span", { class: "lbl" }, t("Joueurs")));
     for (let n = (state.mode.min || 1); n <= (state.mode.max || 4); n++) {
+        // 1v1 ou 2v2, jamais 3 : le livret ne prevoit pas d'equipes inegales.
+        if (estBataille() && n % 2 !== 0) continue;
         row.append(el("button", {
             class: "count-btn" + (state.playerCount === n ? " sel" : ""),
             onclick: () => {
@@ -1830,12 +1848,67 @@ function stepScenario() {
         stepHead("Briefing 03", t("Identifie la cible"), t("Scénario et adversaire")),
     );
     wrap.append(targetBanner());
+    // Bataille : il faut DEUX cibles, une par table. La grille du dessus reste
+    // celle du camp 0 ; ce bloc choisit celle du camp adverse.
+    if (estBataille()) wrap.append(blocSecondeTable());
     wrap.append(
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
         el("div", { class: "scn-grid full", id: "scn-grid" }),
     );
     loadExtTabs();
     return wrap;
+}
+
+/** Les scenarios de bataille : ceux dont l'adversaire est un LEADER.
+ *  La regle se lit dans les DONNEES et non dans une liste de boites ecrite en
+ *  dur : une future boite competitive apparaitra sans toucher a ce fichier.
+ *  C'est la meme lecon que les aspects, qui etaient enumeres a trois endroits. */
+async function scenariosDeBataille() {
+    await cards.load();
+    const sortie = [];
+    for (const ext of await catalog.extensions()) {
+        let liste = [];
+        try { liste = await catalog.scenariosForExtension(ext.key); } catch (e) { continue; }
+        for (const sc of liste) {
+            const carte = cards.get((sc.villainCards || [])[0]);
+            if (carte && String(carte.type) === "Leader") sortie.push(sc);
+        }
+    }
+    return sortie;
+}
+
+function blocSecondeTable() {
+    const box = el("div", { class: "cfg-card" },
+        el("div", { class: "cfg-head" }, t("Table du camp adverse")),
+        el("small", {}, t("Chaque équipe affronte le scénario apporté par l'autre.")),
+        el("div", { id: "table2-box" }, el("div", { class: "loading" }, "...")),
+    );
+    remplirSecondeTable();
+    return box;
+}
+
+async function remplirSecondeTable() {
+    const hote = document.getElementById("table2-box");
+    if (!hote) return;
+    const liste = await scenariosDeBataille();
+    if (!liste.length) {
+        hote.replaceChildren(el("small", {}, t("Aucun scénario de bataille dans les données.")));
+        return;
+    }
+    const sel = el("select", {
+        class: "cfg-select",
+        onchange: (e) => {
+            state.scenario2 = liste.find((s) => s.id === e.target.value) || null;
+            render();
+        },
+    });
+    sel.append(el("option", { value: "" }, t("Choisir le leader d'en face")));
+    for (const sc of liste) {
+        const opt = el("option", { value: sc.id }, sc.name + " · " + (sc.extension || ""));
+        if (state.scenario2 && state.scenario2.id === sc.id) opt.selected = true;
+        sel.append(opt);
+    }
+    hote.replaceChildren(sel);
 }
 
 function targetBanner() {

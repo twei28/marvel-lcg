@@ -77,40 +77,50 @@ def main() -> int:
     from engine import Engine
     Engine.Initialize()
     from engine.file.manager import FileManager
-    from game.scene.loader import LoaderHelper
     from engine.lib import Json
-    from game.scene.replay import CampaignDescriptor, HeroDescriptor
+    from game.scene.replay import CampaignDescriptor
+    from game.game_run.game_new import NewGameDescriptor
 
-    def lire_campagne(nom: str) -> 'CampaignDescriptor':
-        chemin = FileManager.FindJsonPath("Campaign", nom)
-        assert chemin, f"scenario introuvable : {nom}"
+    def lire_json(genre: str, nom: str) -> str:
+        chemin = FileManager.FindJsonPath(genre, nom)
+        assert chemin, f"{genre} introuvable : {nom}"
         with FileManager.OpenFile(chemin, read=True) as fichier:
-            campagne = Json.LoadsAs(fichier.Read(), CampaignDescriptor)
+            return fichier.Read()
+
+    def sets_de_rencontre(texte: str) -> 'List[str]':
+        """Ce que l'ecran de preparation envoie : les sets du scenario plus ses
+        modulaires recommandes, dedupliques."""
+        campagne = Json.LoadsAs(texte, CampaignDescriptor)
         campagne.UpdateVersion()
-        # Meme regle que SceneLoader.NewFromJson quand aucun set n'est impose.
-        campagne.encounter_sets = campagne.encounter_sets + campagne.modular_sets
-        return campagne
+        vus, sortie = set(), []
+        for nom in list(campagne.encounter_sets) + list(campagne.modular_sets):
+            if nom not in vus:
+                vus.add(nom)
+                sortie.append(nom)
+        return sortie
 
-    def lire_deck(nom: str, camp: int) -> 'HeroDescriptor':
-        chemin = FileManager.FindJsonPath("Hero", nom)
-        assert chemin, f"deck introuvable : {nom}"
-        with FileManager.OpenFile(chemin, read=True) as fichier:
-            heros = Json.LoadsAs(fichier.Read(), HeroDescriptor)
-        heros.UpdateVersion()
-        heros.team = camp
-        return heros
+    camp1 = lire_json("Campaign", args.camp1)
+    camp2 = lire_json("Campaign", args.camp2)
 
-    scene = LoaderHelper.CreateScene(
-        args.graine,
-        lire_campagne(args.camp1),
-        [lire_deck(args.deck1, 0), lire_deck(args.deck2, 1)],
-        ["mode_competitive"],
+    # La sonde passe par le VRAI contrat de lancement, celui que remplit
+    # l'ecran de preparation : sans cela elle prouverait que le moteur sait
+    # monter deux tables, pas qu'on sait les lui demander.
+    descripteur = NewGameDescriptor(
+        campaign_json=camp1,
+        encounter_set_names=sets_de_rencontre(camp1),
+        hero_json=[lire_json("Hero", args.deck1), lire_json("Hero", args.deck2)],
+        seed=args.graine,
+        timeout=0,
+        challenges=[],
+        rules=["mode_competitive"],
+        campaign_log={},
+        campaign_json_2=camp2,
+        encounter_set_names_2=sets_de_rencontre(camp2),
+        teams=[0, 1],
     )
-    scene.campaign_2 = lire_campagne(args.camp2)
 
     jeu = Engine.game
-    from game.scene.loader import SceneLoader  # noqa: F401  (garde l'import du module)
-    jeu.session.SetScene(scene, "Load")
+    jeu.session.NewGame(descripteur)
     if not jeu.GameSetup():
         print("ECHEC : GameSetup a rendu faux")
         return 1

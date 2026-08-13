@@ -38,7 +38,13 @@ class GameSession:
 
     def NewGame(self, new_game: 'NewGameDescriptor') -> None:
         from game.scene.loader import SceneLoader
-        scene = SceneLoader.NewFromJson(new_game.campaign_json, new_game.encounter_set_names, new_game.hero_json, new_game.seed, new_game.rules, new_game.campaign_log)
+        scene = SceneLoader.NewFromJson(
+            new_game.campaign_json, new_game.encounter_set_names, new_game.hero_json,
+            new_game.seed, new_game.rules, new_game.campaign_log,
+            campaign_json_2=new_game.campaign_json_2,
+            encounter_set_names_2=(new_game.encounter_set_names_2 or None),
+            teams=new_game.teams,
+        )
         self.SetScene(scene, 'New')
         assert self.scene
         self.timeout = new_game.timeout

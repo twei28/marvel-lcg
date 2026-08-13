@@ -64,7 +64,31 @@
   "regles_optionnelles_connues": {
     "mode_skirmish": "Partie raccourcie (Escarmouche).",
     "mode_campaign": "Mode campagne.",
+    "mode_sandbox": "Bac a sable.",
+    "mode_competitive": "Mode Bataille : deux equipes, deux tables.",
     "mode_heroic_<n>": "Niveau heroique 1 a 8."
+  },
+
+  "_bataille": [
+    "Le mode Bataille (competitif, Civil War / Synthezoid) ajoute TROIS cles au",
+    "descripteur. Elles sont ABSENTES d'une partie ordinaire, et c'est pour cela",
+    "qu'elles ne figurent pas dans \"cles\" : ce contrat est mesure sur une partie",
+    "Solo, ou les voir apparaitre serait un vrai defaut.",
+    "",
+    "Cote moteur, elles sont des champs A DEFAUT de NewGameDescriptor : un",
+    "descripteur qui ne les porte pas se charge exactement comme avant."
+  ],
+
+  "cles_bataille": {
+    "campaign_json_2": "string",
+    "encounter_set_names_2": "string[]",
+    "teams": "number[]"
+  },
+
+  "commentaires_cles_bataille": {
+    "campaign_json_2": "Le JSON du scenario pose devant la SECONDE equipe, serialise en chaine. Chaque equipe affronte celui apporte par l'autre (mc56 p.14, etape 4).",
+    "encounter_set_names_2": "Ses sets de rencontre, meme regle que encounter_set_names.",
+    "teams": "Le camp de chaque entree de hero_json, dans le meme ordre. 0 joue en premier chaque round. Le livret ne connait que le 1v1 et le 2v2 : premiere moitie contre seconde moitie."
   },
 
   "reponse_attendue": { "result": "New game created" }

@@ -39,14 +39,13 @@ class LoaderHelper:
 class SceneLoader:
 
     @staticmethod
-    def NewFromJson(campaign_json: str, encounter_set_names: List[str]|None, hero_jsons: List[str], seed: int, rules: List[str], campaign_log: Dict[str, str]) -> 'Scene':
-        players: List[HeroDescriptor] = []
-        for hero_text in hero_jsons:
-            player = Json.LoadsAs(hero_text, HeroDescriptor)
-            player.UpdateVersion()
-            players.append(player)
-            players += SceneLoader.ExpandLinkedIdentity(player)
+    def LoadCampaign(campaign_json: str, encounter_set_names: List[str]|None) -> 'CampaignDescriptor':
+        """Un scenario, avec ses sets de rencontre.
 
+        `None` veut dire « ceux du fichier, plus ses modulaires recommandes » ;
+        une liste veut dire « exactement ceux-la », ce qu'envoie l'ecran de
+        preparation quand le joueur a choisi ses modulaires.
+        """
         campaign = Json.LoadsAs(campaign_json, CampaignDescriptor)
         campaign.UpdateVersion()
 
@@ -54,11 +53,35 @@ class SceneLoader:
             campaign.encounter_sets = encounter_set_names[:]
         else:
             campaign.encounter_sets += campaign.modular_sets
+        return campaign
+
+    @staticmethod
+    def NewFromJson(campaign_json: str, encounter_set_names: List[str]|None, hero_jsons: List[str], seed: int, rules: List[str], campaign_log: Dict[str, str],
+                    campaign_json_2: str="", encounter_set_names_2: List[str]|None=None, teams: List[int]|None=None) -> 'Scene':
+        players: List[HeroDescriptor] = []
+        for index, hero_text in enumerate(hero_jsons):
+            player = Json.LoadsAs(hero_text, HeroDescriptor)
+            player.UpdateVersion()
+            # Le camp du joueur, dans l'ordre des decks recus. Absent en partie
+            # ordinaire : tout le monde reste dans le camp 0, seule zone de jeu.
+            if teams and index < len(teams):
+                player.team = teams[index]
+            players.append(player)
+            # L'identite liee est developpee APRES : elle herite du camp de son
+            # porteur (voir ExpandLinkedIdentity).
+            players += SceneLoader.ExpandLinkedIdentity(player)
+
+        campaign = SceneLoader.LoadCampaign(campaign_json, encounter_set_names)
 
         if campaign_log:
             campaign.campaign_log |= campaign_log
 
         scene = LoaderHelper.CreateScene(seed, campaign, players, rules)
+
+        # Mode competitif : le scenario pose devant la seconde equipe.
+        if campaign_json_2:
+            scene.campaign_2 = SceneLoader.LoadCampaign(campaign_json_2, encounter_set_names_2)
+
         return scene
 
     @staticmethod

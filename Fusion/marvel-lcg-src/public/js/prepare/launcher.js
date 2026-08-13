@@ -6,15 +6,20 @@ import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 
 const uniq = (arr) => [...new Set(arr)];
 
-/** Résout le JSON de scénario à envoyer au moteur (variante Expert si demandée). */
-async function resolveScenarioRaw(state) {
-    const sc = state.scenario;
+/** Résout le JSON d'un scénario à envoyer au moteur (variante Expert si demandée). */
+async function resolveRaw(state, sc) {
+    if (!sc) return null;
     if (state.difficulty.base === "expert" && sc.hasExpertVariant) {
         const ev = await catalog.expertVariant(sc.id.replace(/_expert$/, ""));
         if (ev) return ev.rawJson;
     }
     return sc.rawJson;
 }
+
+async function resolveScenarioRaw(state) { return resolveRaw(state, state.scenario); }
+
+/** Mode Bataille : deux équipes, chacune face au scénario apporté par l'autre. */
+function estBataille(state) { return !!state.mode && state.mode.id === "bataille"; }
 
 function buildRules(state) {
     const rules = [];
@@ -28,6 +33,10 @@ function buildRules(state) {
     // `rules`, donc il est inscrit dans la scene et survit au chargement
     // d'une sauvegarde — on saura toujours si une victoire comptait.
     if (state.mode && state.mode.id === "sandbox") rules.push("mode_sandbox");
+    // Bataille : le moteur ouvre une seconde zone de jeu, y pose le second
+    // leader et enfile les phases camp par camp. Comme les autres modes, le
+    // drapeau passe par `rules` et survit donc au chargement d'une sauvegarde.
+    if (estBataille(state)) rules.push("mode_competitive");
     rules.push("no_crisis_of_infinite_deadpools");
     rules.push("no_encounter_cards_ignore_crisis");
     return rules;
@@ -56,7 +65,7 @@ export async function buildDescriptor(state) {
             hero: (p.identity && p.identity.hero) || p.deck.hero,
             name: (p.hero && p.hero.name) || p.deck.name,
         }));
-    return {
+    const descriptor = {
         campaign_json: JSON.stringify(raw),
         encounter_set_names,
         hero_json,
@@ -66,6 +75,25 @@ export async function buildDescriptor(state) {
         rules: buildRules(state),
         campaign_log: (state.mode && state.mode.id === "campaign" && state.campaignLog) ? state.campaignLog : {},
     };
+
+    // Bataille : la seconde table, et le camp de chaque siège. Le livret ne
+    // connaît que le 1v1 et le 2v2 (mc56 p.14), donc le camp se déduit du
+    // siège : première moitié contre seconde moitié. `ordre` a déjà tourné
+    // pour placer le premier joueur en tête, on lit donc les camps dessus.
+    if (estBataille(state) && state.scenario2) {
+        const raw2 = await resolveRaw(state, state.scenario2);
+        if (raw2) {
+            descriptor.campaign_json_2 = JSON.stringify(raw2);
+            descriptor.encounter_set_names_2 = uniq([
+                ...(raw2.encounter_sets || []),
+                ...(raw2.modular_sets || []),
+            ]);
+            const total = hero_json.length;
+            descriptor.teams = hero_json.map((_, i) => (i < Math.ceil(total / 2) ? 0 : 1));
+        }
+    }
+
+    return descriptor;
 }
 
 /** Identifiants de toutes les cartes des sets de rencontre du scénario.
