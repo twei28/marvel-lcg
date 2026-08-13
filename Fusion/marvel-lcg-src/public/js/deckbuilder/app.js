@@ -20,7 +20,7 @@ import { catalog } from "/public/js/prepare/catalog.js";
 import { t, synchroniserLangueServeur } from "/public/js/prepare/langue.js";
 
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
-const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool"];
+const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination"];
 // Classes non-aspect jouables : Basic, et les cartes de recompense de Campagne.
 const CLASSES_NEUTRES = ["Basic", "Campaign"];
 const TYPES_JOUEUR = ["Ally", "Event", "Support", "Upgrade", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
