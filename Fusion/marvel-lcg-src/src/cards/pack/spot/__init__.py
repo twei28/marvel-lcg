@@ -41,3 +41,37 @@ def GagneParMenacePosee(diviseur: int, *, maximum: int|None=None, **statistique)
         change_on_event=OnEvent.Token("This", 'threat'),
         **statistique
     )
+
+
+def CaracteresPeuventManigancerContreLui() -> 'Ability':
+    """« Characters may thwart against The Spot. »
+
+    Le moteur ne sait pas viser un ENNEMI avec la puissance de base Manigancer :
+    `ThisCanThwart` cible `Scheme2`, et `ThwartInternal` ne prend que des
+    manigances. Plutot que de refondre la puissance de base -- ce qui toucherait
+    toutes les cartes du jeu pour une seule --, le vilain OFFRE l'action.
+
+    Le resultat est celui du texte : un personnage que vous controlez s'epuise,
+    et retire de la menace d'ici a hauteur de sa valeur de MANIGANCE. Ce que
+    cette forme ne rend pas : les effets qui se declenchent « apres avoir
+    manigance » ne se declenchent pas, puisque ce n'est pas la puissance de base.
+    """
+    def manigancer(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
+        this = effect.this.CastTo(Villain)
+
+        epuises = effect.cost_func.Get(CostFunc.Exhaust).return_exhausted_cards
+        if not epuises:
+            return
+        valeur = epuises[0].CastTo(HasThwart).thwart
+        if valeur > 0:
+            Faces.RemoveTokensOn([this], valeur, 'threat', effect)
+
+    return AbilityFactory.WhenInYourPlayTurn(
+        AbilityType.Action,
+        manigancer,
+        conditions=[
+            # Rien a retirer, rien a proposer.
+            lambda effect, message:
+                effect.this.CastTo(CanPlaceToken).GetTokens('threat') > 0
+        ],
+    ).SetLabel('thwart').SetCostFunc(CostFunc.Exhaust("YouControlUnit"))

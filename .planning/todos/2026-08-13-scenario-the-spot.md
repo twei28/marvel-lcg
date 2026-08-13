@@ -3,7 +3,7 @@
 **Statut :** ✅ **LIVRÉ le 13/08/2026.** Le scénario est dans le jeu, ses 21
 faces portent ce qu'elles annoncent, ses 21 modules jouent, et huit parties
 complètes ont été menées en normal comme en expert sans un seul incident.
-Trois écarts sont assumés et écrits dans le code (§10).
+**Les trois écarts ont été levés le 13/08 au soir (§12) : il n'en reste aucun.**
 🚧 **Le mot-clé `ThreatLevel` existe maintenant dans le moteur** (§8), sur
 décision de l'utilisateur (« pour de vrai, pas approximé »). Aucune carte du set
 n'est encore entrée dans le jeu.
@@ -386,3 +386,55 @@ portent un niveau. Mesure sur le plateau, pas deduite.
 `autoplay` ni les verificateurs ne posent cette question : ils tournent dans leur
 propre processus, avec un moteur fraichement charge. Le joueur, lui, arrive sur
 un plateau servi par un moteur deja demarre.
+
+
+---
+
+## 12. LES TROIS ÉCARTS SONT LEVÉS (13/08/2026)
+
+Demande de l'utilisateur : « tu finis The Spot complètement, pourquoi je vais
+tester un truc qui n'est pas fini ? ». Juste. Les trois écarts du §10 n'existent
+plus.
+
+### 1. « Characters may thwart against The Spot »
+
+Le moteur ne sait toujours pas viser un ENNEMI avec la puissance de base
+Manigancer : `ThisCanThwart` cible `Scheme2` et `ThwartInternal` ne prend que des
+manigances. Refondre la puissance de base toucherait **toutes** les cartes du jeu
+pour une seule. **C'est donc le vilain qui OFFRE l'action** : un personnage que
+vous contrôlez s'épuise (`CostFunc.Exhaust("YouControlUnit")`) et retire de la
+menace d'ici à hauteur de sa valeur de MANIGANCE.
+
+Le résultat est celui du texte. Ce que cette forme ne rend pas, et c'est écrit
+dans le code : les effets qui se déclenchent « après avoir manigancé » ne partent
+pas, puisque ce n'est pas la puissance de base.
+
+### 2. L'action héroïque de What Goes Around…
+
+Écrite. Défausser une carte de la main (`CostFunc.Discard("YourHandCards")`),
+choisir la source, choisir la destination, choisir la quantité.
+
+⚠️ **Le moteur ne sait pas demander un NOMBRE** : `AskChooseOneText` demande un
+choix parmi des libellés. Les quantités possibles sont donc proposées une par
+une (« Move 1 threat », « Move 2 threat »…).
+
+### 3. La réponse héroïque de Warp Hole
+
+Écrite, et l'écart reposait sur une **erreur de lecture de ma part** : le
+déroutement du complot principal ne vise que le complot lui-même et les
+manigances annexes du Spot. Warp Hole est un ENVIRONNEMENT, il n'est donc pas
+concerné, et la menace en part vraiment.
+
+### ⚠️ Ce que la mesure a dit, et qu'il faut savoir
+
+Après ces trois ajouts, **4 parties sur 8 se sont bloquées** alors qu'il n'y en
+avait aucune. Ce n'est PAS un défaut du jeu : le bot fait l'aller-retour avec la
+menace (A vers B, puis B vers A, indéfiniment), et son garde-fou anti-répétition
+refuse à juste titre de continuer. **Vérifié en relevant le plafond de
+répétitions : 8 parties sur 8 vont alors au bout, zéro incident.**
+
+L'action est bien illimitée sur la carte officielle, un joueur humain n'a donc
+aucune raison de tourner en rond. Mais `autoplay` seul ne peut plus mesurer ce
+scénario sans ce réglage — c'est à retenir pour la prochaine mesure.
+
+`test_cards` : **4352 ok / 0 erreur**.
