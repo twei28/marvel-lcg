@@ -15,6 +15,7 @@
 import { cardImageUrl } from "/public/js/prepare/api.js";
 import { t, boutonLangue, enregistrerTraductions, langueActuelle } from "/public/js/prepare/langue.js";
 import { picIdLangue } from "/public/js/prepare/scans-fr.js";
+import { carteFr } from "/public/js/prepare/cartes-fr.js";
 
 /** Image d'une carte dans la langue de l'interface : le scan français quand il
  *  existe, l'anglais sinon (repli assuré par le serveur). Voir scans-fr.js. */
@@ -193,6 +194,12 @@ async function chargerDonnees() {
     // Passe 1 : index des cartes "pleines" (avec leurs propres données),
     // pour résoudre ensuite full_link / ability_link (réimpressions),
     // comme le fait js/module/card_statistics.js.
+    // Le francais des cartes fan-made sans scan FR (cartes-fr.js) : on traduit
+    // ICI, une fois, pour que la recherche et l'affichage voient la meme carte.
+    for (const [groupe, cartes] of Object.entries(cartesParGroupe)) {
+        cartesParGroupe[groupe] = cartes.map(carteFr);
+    }
+
     const parId = new Map();
     for (const cartes of Object.values(cartesParGroupe)) {
         for (const carte of cartes) {

@@ -18,6 +18,7 @@ import { api, cardImageUrl, fileName } from "/public/js/prepare/api.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog } from "/public/js/prepare/catalog.js";
 import { t, synchroniserLangueServeur } from "/public/js/prepare/langue.js";
+import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
 const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination"];
@@ -299,7 +300,8 @@ function passeFiltres(carte) {
     }
     if (f.texte) {
         const t = f.texte.toLowerCase();
-        const dedans = `${carte.name} ${carte.text || ""} ${(carte.traits || []).join(" ")}`.toLowerCase();
+        // On cherche dans ce que le joueur LIT : le francais quand il existe.
+        const dedans = `${nomFr(carte)} ${texteFr(carte) || ""} ${(carte.traits || []).join(" ")}`.toLowerCase();
         if (!dedans.includes(t)) return false;
     }
     return true;
@@ -325,12 +327,15 @@ async function rendreGrille() {
     remplacer(zone, 
         ...visibles.map(({ id, carte }) => {
             const n = etat.choisies.get(id) || 0;
-            return el("div", { class: `db-carte${n ? " est-choisie" : ""}` },
-                el("img", { src: cardImageUrl(id), loading: "lazy", alt: carte.name, onclick: () => ajouter(id) }),
+            // `data-carte` porte l'identifiant jusqu'au DOM : l'apercu du
+            // panneau de droite ecoute la grille entiere plutot que de poser
+            // un gestionnaire sur chacune des 400 vignettes.
+            return el("div", { class: `db-carte${n ? " est-choisie" : ""}`, "data-carte": id },
+                el("img", { src: cardImageUrl(id), loading: "lazy", alt: nomFr(carte), onclick: () => ajouter(id) }),
                 badgeCustom(carte),
                 el("div", { class: "db-carte-pied" },
                     el("span", { class: `db-aspect-point aspect-${classeCss(carte.class)}` }),
-                    el("b", {}, carte.name),
+                    el("b", {}, nomFr(carte)),
                     n ? el("span", { class: "db-count" }, `x${n}`) : null,
                 ),
                 el("div", { class: "db-carte-boutons" },
@@ -425,7 +430,7 @@ function rendreDeck() {
             v.aspects && v.aspects.length ? el("span", { class: "db-aspects" }, v.aspects.map(labelAspect).join(" + ")) : null,
         ),
         el("div", { class: "db-deck-lignes" },
-            lignes.map(({ id, n, carte }) => el("div", { class: "db-ligne", onclick: () => retirer(id) },
+            lignes.map(({ id, n, carte }) => el("div", { class: "db-ligne", "data-carte": id, onclick: () => retirer(id) },
                 el("span", { class: `db-aspect-point aspect-${classeCss(carte.class)}` }),
                 el("span", { class: "db-ligne-nom" }, carte.name),
                 badgeCustom(carte),
@@ -549,9 +554,43 @@ function traduirePageStatique() {
     if (sauver) { sauver.textContent = t("Sauvegarder dans le jeu"); sauver.title = t("Sauvegarder dans le jeu (apparaît dans la préparation)"); }
 }
 
+/** Montre en grand, dans le panneau de droite, la carte que l'on pointe.
+ *
+ *  Un SEUL ecouteur, pose sur la page : la grille se refait a chaque ajout de
+ *  carte, et des gestionnaires poses sur 400 vignettes seraient a reposer a
+ *  chaque fois. La delegation survit aux rendus sans qu'on y pense.
+ *
+ *  Il ecoute aussi les lignes du deck : survoler « Vibranium Shield » dans la
+ *  liste de droite montre la carte, ce qui evite de la rechercher dans la
+ *  grille pour verifier ce qu'elle fait.
+ *
+ *  L'apercu NE SE VIDE PAS quand on s'eloigne : la derniere carte pointee
+ *  reste. C'est ce qu'on veut en construisant un deck — on lit la carte, puis
+ *  on va cliquer ailleurs sans qu'elle disparaisse en cours de route. */
+function installerApercu() {
+    const zone = $("#db-apercu");
+    if (!zone) return;
+
+    const vider = () => remplacer(zone, el("span", { class: "db-apercu-vide" },
+        t("Survole une carte pour la voir en grand")));
+    vider();
+
+    let derniere = null;
+    document.addEventListener("mouseover", (evenement) => {
+        const cible = evenement.target.closest?.("[data-carte]");
+        if (!cible) return;
+        const id = cible.getAttribute("data-carte");
+        if (!id || id === derniere) return;
+        derniere = id;
+        const carte = cards.get(id);
+        remplacer(zone, el("img", { src: cardImageUrl(id), alt: carte ? carte.name : id }));
+    });
+}
+
 async function demarrer() {
     synchroniserLangueServeur();
     traduirePageStatique();
+    installerApercu();
     statut(t("Chargement des cartes…"));
     await cards.load();
     etat.heroes = await catalog.heroes();
