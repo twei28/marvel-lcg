@@ -129,6 +129,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'calm',  # CORRECTIF : compteur du pack custom lockjaw (Nugget)
         'illusion', 'menace',  # CORRECTIF : compteurs des packs custom spider_man_rainy / venom_rainy (Rainy)
         'evidence',  # CORRECTIF : compteur du pack custom jessica_jones (ekAugust)\n
+        # CORRECTIF : compteurs du pack custom determination (DesignHacker). Les dix
+        # sont releves dans .planning/donnees/determination-cartes.json ; sans eux,
+        # la carte qui les porte tombe a la construction.
+        'tactic', 'adrenaline', 'diversion', 'stimulant', 'spider', 'replay',
+        'ball', 'LMD', 'configuration', 'deploy',
         "blackout_y", "blackout_b", "blackout_r",
         "tic_tac_toe_1_1", "tic_tac_toe_2_1", "tic_tac_toe_3_1",
         "tic_tac_toe_1_2", "tic_tac_toe_2_2", "tic_tac_toe_3_2",
