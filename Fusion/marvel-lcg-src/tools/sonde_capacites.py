@@ -51,13 +51,48 @@ import threading
 import time
 
 
+def Origine(ability) -> str:
+    """Le module Python d'ou vient l'operation de la capacite.
+
+    C'est ce qui repond quand le NOMBRE de capacites ne repond pas : une carte
+    Resource ou Support voit son module REMPLACER la capacite que le moteur lui
+    donnait, au lieu d'en ajouter une. Le compte ne bouge pas, l'origine si.
+    """
+    fn = getattr(ability, "operation", None)
+    if fn is None:
+        return "?"
+    module = getattr(fn, "__module__", "?")
+    # Le qualname porte la fabrique qui a ecrit l'operation
+    # (`...DoubleResourcesThisGenerates.<locals>.the_power_of_leadership`) : c'est
+    # LUI qui distingue deux capacites nees du meme fichier du moteur.
+    noms = [Nom(fn)]
+    # Une fabrique du moteur enveloppe souvent l'operation VOULUE dans une
+    # operation generique : `CheckThisCanDropPay(the_power_of_leadership)` sort
+    # un `add_to_pay_list` identique pour toutes les ressources, et la fonction
+    # qui distingue dort dans sa fermeture. On descend donc d'un cran.
+    for cellule in (fn.__closure__ or ()):
+        try:
+            valeur = cellule.cell_contents
+        except ValueError:
+            continue
+        if callable(valeur) and getattr(valeur, "__qualname__", None):
+            noms.append(Nom(valeur))
+    return "%s : %s" % (module.split(".")[-1], " <- ".join(noms))
+
+
+def Nom(fn) -> str:
+    return getattr(fn, "__qualname__", getattr(fn, "__name__", "?")).replace(".<locals>.", " > ")
+
+
 def main() -> int:
-    if len(sys.argv) < 4:
+    if len([a for a in sys.argv[1:] if a != '--detail']) < 3:
         print(__doc__)
         return 2
-    game_dir = os.path.expanduser(sys.argv[1])
-    port = int(sys.argv[2])
-    cartes_voulues = sys.argv[3:]
+    args = [a for a in sys.argv[1:] if a != "--detail"]
+    detail = "--detail" in sys.argv[1:]
+    game_dir = os.path.expanduser(args[0])
+    port = int(args[1])
+    cartes_voulues = args[2:]
 
     os.chdir(game_dir)
     sys.path.insert(0, game_dir)
@@ -98,8 +133,13 @@ def main() -> int:
         for card_id in cartes_voulues:
             try:
                 carte = CardFactory.GenerateCard(card_id, world.area_removed, world)
-                nb = sum(len(f.ability.abilities) for f in carte.printed_faces)
-                lignes.append("%-8s %d capacite(s)" % (card_id, nb))
+                capacites = [a for f in carte.printed_faces for a in f.ability.abilities]
+                ligne = "%-8s %d capacite(s)" % (card_id, len(capacites))
+                if detail:
+                    ligne += "\n" + "\n".join(
+                        "             %-18s <- %s" % (a.type, Origine(a))
+                        for a in capacites)
+                lignes.append(ligne)
             except Exception as e:
                 lignes.append("%-8s ECHEC %r" % (card_id, e))
     except Exception as e:
