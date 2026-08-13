@@ -71120,7 +71120,346 @@
             ],
             "set_name": "Determination",
             "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If this is the first card you have played this round, you may take 1 damage to return this card to your hand."
+        },
+        {
+            "card_id": "dt041",
+            "type": "Upgrade",
+            "name": "Illegal Munitions",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "set_name": "Determination",
+            "text": "Restricted. This card cannot be in play while you control an ally.\nYour basic attacks gain overkill.\n<b>Response</b>: After you attack a minion and deal 2 or more excess damage with overkill, stun the villain."
+        },
+        {
+            "card_id": "dt042",
+            "type": "Upgrade",
+            "name": "I.C.E.R.",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D.",
+                "WEAPON"
+            ],
+            "set_name": "Determination",
+            "text": "Restricted. Uses (3 charge counters).\n<b>Hero Action</b>: Exhaust I.C.E.R. and remove 1 charge counter from it \u2192 deal 1 damage to a minion and stun them."
+        },
+        {
+            "card_id": "dt043",
+            "type": "Ally",
+            "name": "* The Thing",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "HP": "4",
+                "ATK": "3*",
+                "THW": "1**",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "FANTASTIC FOUR",
+                "GUARDIAN"
+            ],
+            "set_name": "Determination",
+            "text": "Toughness.\n<b>Forced Interrupt</b>: When your hero would take any amount of damage, deal that damage to The Thing instead."
+        },
+        {
+            "card_id": "dt044",
+            "type": "Event",
+            "name": "Field Dressing",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Deal yourself 1 facedown encounter card, then heal 6 damage from your identity."
+        },
+        {
+            "card_id": "dt045",
+            "type": "Event",
+            "name": "Flight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your identity has the AERIAL trait.\n<b>Hero Action</b>: Place 2 threat on the main scheme \u2192 stun and confuse the villain."
+        },
+        {
+            "card_id": "dt046",
+            "type": "Event",
+            "name": "In Harm's Way",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take any amount of damage, deal yourself a facedown encounter card \u2192 prevent up to 5 of that damage."
+        },
+        {
+            "card_id": "dt047",
+            "type": "Event",
+            "name": "Overstay Your Welcome",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Deal yourself 1 facedown encounter card, then choose:\n\u2022 Remove 5 threat from a scheme.\n\u2022 Remove 2 threat from each scheme in play."
+        },
+        {
+            "card_id": "dt048",
+            "type": "Event",
+            "name": "Pay The Piper",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Give one or more facedown encounter cards in your player area to the villain as facedown boost cards. Then, the villain attacks you. This attack gains overkill and piercing."
+        },
+        {
+            "card_id": "dt049",
+            "type": "Event",
+            "name": "Push Your Luck",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "DEFENSE",
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b> <i>(attack/defense/thwart)</i>: When an enemy activates against you, deal yourself a facedown encounter card \u2192 cancel that activation. If an attack was canceled this way, deal 3 damage to that enemy. If a scheme was canceled this way, remove 2 threat from the main scheme."
+        },
+        {
+            "card_id": "dt050",
+            "type": "Event",
+            "name": "Glutton for Punishment",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your hero's remaining hit points are less than half your hero's starting hit points.\n<b>Hero Action</b> <i>(attack)</i>: Take 2 damage. Then, deal 8 damage to the villain."
+        },
+        {
+            "card_id": "dt051",
+            "type": "Upgrade",
+            "name": "Last Resort",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b>: When a GUARDIAN character you control would take any amount of damage, place 2 threat on the main scheme and discard Last Resort \u2192 prevent 6 of that damage."
+        },
+        {
+            "card_id": "dt052",
+            "type": "Ally",
+            "name": "* Blade",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2**",
+                "THW": "1**",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "VAMPIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Response</b>: After Blade defeats a minion without dealing excess damage, heal 2 damage from him."
+        },
+        {
+            "card_id": "dt053",
+            "type": "Ally",
+            "name": "* Ghost Rider",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "5",
+                "ATK": "2**",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "[star] <b>Hero Interrupt</b>: When Ghost Rider attacks, deal up to 3 damage to your hero. Ghost Rider gets +1 ATK for this attack for each damage your hero took this way."
+        },
+        {
+            "card_id": "dt054",
+            "type": "Ally",
+            "name": "* Morbius",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D.",
+                "VAMPIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Response</b>: After Morbius enters play, deal 2 damage to your identity."
+        },
+        {
+            "card_id": "dt055",
+            "type": "Event",
+            "name": "Dark Magic",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your identity has the MYSTIC trait. Max 1 per deck.\n<b>Hero Action</b> <i>(attack)</i>: Shuffle your deck. Choose an enemy and remove up to 3 cards from the top of your deck from the game \u2192 drain 2 from that enemy for each card removed this way."
+        },
+        {
+            "card_id": "dt056",
+            "type": "Event",
+            "name": "* Oblivion",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "COSMIC ENTITY"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Action</b>: Shuffle this card into the encounter deck (without looking).\n<b>When Revealed</b>: The player who played this card chooses to either discard a card from their hand or deal 5 damage to each ally they control, the villain, and each minion engaged with them. Remove this card from the game."
+        },
+        {
+            "card_id": "dt057",
+            "type": "Resource",
+            "name": "Twice the Determination",
+            "subtitle": "",
+            "desc": {
+                "RES": "G",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Max 1 per deck.\n<b>Hero Response</b>: After you spend this card, return it to your hand. <i>(Limit once per round.)</i>"
+        },
+        {
+            "card_id": "dt058",
+            "type": "Support",
+            "name": "Heroes for Hire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TEAM"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 TEAM card per player.\nIf each of your allies has the HERO FOR HIRE trait, this card gains: \u00ab <b>Response</b>: After an ally you control defeats an enemy, draw 1 card. \u00bb"
+        },
+        {
+            "card_id": "dt059",
+            "type": "Support",
+            "name": "Weapon X Training",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per player.\nAllies you control with 1 hit point remaining get +2 ATK and take 2 additional consequential damage."
+        },
+        {
+            "card_id": "dt060",
+            "type": "Support",
+            "name": "Explosives Training",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your identity has the GUARDIAN trait. Max 1 per player.\n<b>Response</b>: After you discard an upgrade you control, exhaust Explosives Training \u2192 deal 2 damage to an enemy."
         }
     ],
-    "checksum": "d669518d3cce0901d55f413a81d7d3ba08c718371bc4244256281e1840dbb311"
+    "checksum": "c83341d4bc6d914e18f7b1d736662514d99d01c98d92eb48e3a2136cbc957d43"
 }

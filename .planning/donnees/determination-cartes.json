@@ -901,7 +901,7 @@
     {
       "_image": "D-41.jpg",
       "_drive_id": "1UtjlYOksAOkggpcoPsZKea-eOK2CxeRO",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt041",
       "type": "Upgrade",
       "name": "Illegal Munitions",
@@ -920,7 +920,7 @@
     {
       "_image": "D-42.jpg",
       "_drive_id": "18a6TolzDt2SUH5ezvjgmg6tUoLmM2iQM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt042",
       "type": "Upgrade",
       "name": "I.C.E.R.",
@@ -939,7 +939,7 @@
     {
       "_image": "D-43.jpg",
       "_drive_id": "1X3fkmUTHZAALbdlwrD0KAXqOO2cpNE4F",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt043",
       "type": "Ally",
       "name": "* The Thing",
@@ -961,7 +961,7 @@
     {
       "_image": "D-44.jpg",
       "_drive_id": "1KZS3jc1ahU1F36rWw90M7z4iCggF2btA",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt044",
       "type": "Event",
       "name": "Field Dressing",
@@ -979,7 +979,7 @@
     {
       "_image": "D-45.jpg",
       "_drive_id": "19JO7wkbHpZBc_6X7dcXyZzZ2y1xmN44g",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt045",
       "type": "Event",
       "name": "Flight",
@@ -998,7 +998,7 @@
     {
       "_image": "D-46.jpg",
       "_drive_id": "1jTV0OdjeU7s0oDL79CXNIQWIfQAXPCph",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt046",
       "type": "Event",
       "name": "In Harm's Way",
@@ -1016,7 +1016,7 @@
     {
       "_image": "D-47.jpg",
       "_drive_id": "111umfIOJTgCnsO821GAgz3tsTJ7j9kUv",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt047",
       "type": "Event",
       "name": "Overstay Your Welcome",
@@ -1034,7 +1034,7 @@
     {
       "_image": "D-48.jpg",
       "_drive_id": "1BJuKFoZlxiCb5Lc7F4T0F6cxUhYTMGTB",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt048",
       "type": "Event",
       "name": "Pay The Piper",
@@ -1052,7 +1052,7 @@
     {
       "_image": "D-49.jpg",
       "_drive_id": "1ZJPfxLPHqDBDqV9GnrSzWfchxJPdJ15y",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt049",
       "type": "Event",
       "name": "Push Your Luck",
@@ -1072,7 +1072,7 @@
     {
       "_image": "D-50.jpg",
       "_drive_id": "1DGNkCaSChKWEpbRl4g3TdRqZ5aTLgmFp",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt050",
       "type": "Event",
       "name": "Glutton for Punishment",
@@ -1090,7 +1090,7 @@
     {
       "_image": "D-51.jpg",
       "_drive_id": "1g5Wrm-a0Ej6TD1tG3_1-NfHWWeihUB2u",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt051",
       "type": "Upgrade",
       "name": "Last Resort",
@@ -1108,7 +1108,7 @@
     {
       "_image": "D-52.jpg",
       "_drive_id": "17RlBDwzjfXO6v34LltzkS-5fXCFK9wN_",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt052",
       "type": "Ally",
       "name": "* Blade",
@@ -1130,7 +1130,7 @@
     {
       "_image": "D-53.jpg",
       "_drive_id": "1Se4z2ctMXDLOCJKQKpDdU6RO6Py8ow5G",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt053",
       "type": "Ally",
       "name": "* Ghost Rider",
@@ -1152,7 +1152,7 @@
     {
       "_image": "D-54.jpg",
       "_drive_id": "1VlZeInz0Aha9r5JiEY4edzxgbsgx4Vkd",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt054",
       "type": "Ally",
       "name": "* Morbius",
@@ -1174,7 +1174,7 @@
     {
       "_image": "D-55.jpg",
       "_drive_id": "1lc6mU3GVWOu2h7osfayeNJBtjej7OB-O",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt055",
       "type": "Event",
       "name": "Dark Magic",
@@ -1193,7 +1193,7 @@
     {
       "_image": "D-56.jpg",
       "_drive_id": "1HogVvovcYwwvvUr4LeTwvnk2242eZ8dt",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt056",
       "type": "Event",
       "name": "* Oblivion",
@@ -1211,7 +1211,7 @@
     {
       "_image": "D-57.jpg",
       "_drive_id": "1q_BX0_s4Fc7VjkKmnapZf5iyluCUB1oq",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt057",
       "type": "Resource",
       "name": "Twice the Determination",
@@ -1226,7 +1226,7 @@
     {
       "_image": "D-58.jpg",
       "_drive_id": "16G4t288O_OhFV_FNsHOLQs5lrYfzz0YP",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt058",
       "type": "Support",
       "name": "Heroes for Hire",
@@ -1244,7 +1244,7 @@
     {
       "_image": "D-59.jpg",
       "_drive_id": "1mKB6UaKYWRIPjSuTDlX3sR0WxIJ5K5Lv",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt059",
       "type": "Support",
       "name": "Weapon X Training",
@@ -1262,7 +1262,7 @@
     {
       "_image": "D-60.jpg",
       "_drive_id": "1coF00SwCTVS8l2MF5U0HbctaS1YvAFeh",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt060",
       "type": "Support",
       "name": "Explosives Training",

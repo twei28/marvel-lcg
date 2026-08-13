@@ -90,3 +90,19 @@ def RepartirLeRetraitDeMenace(this: 'CardFace', initiator: 'Player', total: int,
                 this.RemoveThreatFromSchemes(targets, 1, effect)
         ).SetTarget(Scheme2, range=("Zero", total), repeat_rules="Threat")
     )
+
+
+def Drain(source: 'CardFace', cibles: Sequence['CardFace'], valeur: int,
+          effect: 'Effect') -> None:
+    """« drain X from an enemy » : X degats a l'ennemi, X soins sur votre identite.
+
+    Le mot-cle vient d'un autre pack du meme auteur (agent_anti_venom), qui le
+    definit ainsi. Ici le soin va a l'identite du joueur qui joue la carte, pas
+    a un heros nomme.
+    """
+    if not cibles or valeur <= 0:
+        return
+    source.DealDamage(cibles, valeur, effect)
+    player = effect.GetInitiator()
+    if player is not None:
+        source.HealthUnits([player.GetIdentity()], valeur, effect)
