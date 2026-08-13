@@ -1,10 +1,9 @@
 # TODO / SPEC — L'aspect « Determination » (DesignHacker)
 
-**Statut :** ✅ **LIVRÉ le 2026-08-13.** Les **142 cartes** sont dans le jeu avec
-leurs données, leurs images, leurs modules et leur **texte français**. Le défaut
-qui les rendait injouables (le moteur lit le `desc`, pas le texte) est corrigé et
-verrouillé par deux outils. **Reste une seule chose : jouer une vraie partie avec
-un deck Determination** — voir §13.
+**Statut :** ✅ **LIVRÉ ET COMPLET le 2026-08-13.** Les **142 cartes** sont dans
+le jeu avec leurs données, leurs images, leurs modules et leur **texte
+français**. **Il ne reste AUCUN écart** : les douze assumés ont tous été levés
+(§16, §17). **Reste une seule chose : jouer une vraie partie.**
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
@@ -673,3 +672,51 @@ chantier différent, et il n'est pas ouvert.
 **Jouer une vraie partie avec un deck Determination.** Les outils disent
 maintenant que chaque carte est là, se construit, porte ce qu'elle annonce et
 que ses noms existent. Aucun ne dit qu'elle fait la bonne chose.
+
+
+
+## 17. Les quatre derniers écarts levés, et l'outil qui manquait (13/08/2026)
+
+**Il ne reste aucun écart dans l'aspect.** Trois des quatre ne demandaient rien
+au moteur — il fallait chercher mieux :
+
+* **dt075 / dt117 « votre collection »** — `Search.Collection` **existe** (44009,
+  Armed to the Teeth, de Deadpool). Mieux : `card_classes="Any"` vaut exactement
+  « n'importe quel aspect SAUF Determination », ce que dt075 demande mot pour mot.
+* **dt111 Morph** — la fenêtre existe et porte ce nom :
+  `Message.WhenCardWouldTreatAsIfBlank`, envoyée AVANT que la boîte ne soit vidée.
+* **dt135 Tarantula** — un **CORRECTIF moteur d'une ligne** : `ThisGainKeyword`
+  accepte désormais `have_res_icon`, que `unit.Gain` savait déjà appliquer et que
+  `GiveKeywordToAttached` proposait déjà. Son `check_fn` rendant le NOMBRE
+  d'applications, l'icône est donnée **par jeton**, exactement.
+
+### 17.1 J'avais inventé trois appels, et rien ne le voyait
+
+`GainKeywordPermanently` **n'existe pas** — dt073 et dt111 l'appelaient. Le code
+se chargeait, la carte se construisait, `test_cards` et `test_generate_cards`
+étaient verts : **le corps d'une fonction n'est exécuté qu'en partie**.
+
+**`tools/verifier_appels_modules.py`** bouche ce trou : il charge le moteur,
+relit chaque module en AST et vérifie que chaque `X.methode(...)` existe.
+`verifier_noms_modules` ne le faisait pas et sa doc le disait — il vérifie les
+NOMS (`Faces`), pas les ATTRIBUTS (`Faces.GetAll`).
+
+Il a trouvé **deux autres inventions** : `AbilityFactory.ReduceCostToPlayCard`
+(dt066) et `Worlds.GetPhase` (dt128).
+
+⚠️ Passé sur les 85 packs, il trouve un appel inexistant **préexistant** :
+`twc/__init__.py:55`, `this.FindCorrespondingScheme()` sur un EncounterVillain.
+Cette carte planterait en partie. **Non touché** : hors de ce chantier.
+
+### 17.2 Les cinq vérificateurs de l'aspect
+
+| Outil | Ce qu'il demande |
+|---|---|
+| `test_cards` | les capacités se construisent |
+| `test_generate_cards` | la carte se construit |
+| `verifier_noms_modules` | les NOMS utilisés existent |
+| `verifier_appels_modules` | les MÉTHODES appelées existent |
+| `verifier_desc_mots_cles` | le `desc` dit ce que le texte annonce |
+| `verifier_cartes_en_jeu` | la carte PORTE ce qu'elle annonce |
+
+**Aucun ne dit qu'une capacité fait la bonne chose.** C'est ce qui reste.
