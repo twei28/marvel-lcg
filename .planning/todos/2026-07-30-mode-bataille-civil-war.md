@@ -51,3 +51,49 @@ Le descripteur de lancement actuel (`launcher.js` → `campaign_json` + `hero_js
 - Source moteur = **WSL** `~/marvel-work/fusion/marvel-lcg-src/src/` (copie Windows périmée — voir [[engine-source-of-truth]]).
 - Contrainte de test : pas de 2e instance du vrai moteur (assert port 2345, occupé par l'online). Le port 2346 = serveur **statique**, pas le moteur.
 - Ne PAS mettre `cw` dans `CAMPAIGN_CODES` (`public/js/prepare/app.js`) : ce n'est pas une campagne.
+
+
+## 6. INVESTIGATION DU 13/08/2026 : le coopératif MARCHE DÉJÀ
+
+La fiche estimait l'ampleur « moyen-gros » et supposait qu'il fallait un nouveau
+flux de préparation, un descripteur étendu et du reverse-engineering. **La mesure
+dit autre chose.**
+
+### 6.1 Ce qui a été mesuré, pas supposé
+
+* **Le moteur force le coopératif** : `Worlds.IsCompetitiveMode` retourne
+  `False` **en dur** (`-> Literal[False]`), `IsCooperativeMode` retourne `True`.
+  Il n'y a donc rien à « activer » : le mode coopératif EST le mode.
+* **Un scénario Civil War a la structure d'un scénario ordinaire**
+  (`data/scenarios/iron_man.json` : villain, schemes, encounters, modular_sets).
+  Rien de particulier à lancer.
+* **Les 4 leaders se jouent de bout en bout.** `tools/autoplay.py` a mené une
+  partie complète contre chacun — Iron Man (9 rounds), Captain America (4),
+  Captain Marvel (3), Spider-Woman (3). **Aucun plantage, aucune réponse
+  illégale.**
+* **Les 2 héros de la boîte se jouent** : Tigra et Hulkling, une partie chacun.
+* **La boîte est DÉJÀ proposée dans l'écran de préparation.** Vérifié dans un
+  vrai navigateur : `catalog.extensions()` rend « 56. Civil War » avec ses quatre
+  scénarios et ses deux héros — parce que `sets_info.json` les déclare et que le
+  catalogue lit ce fichier.
+
+### 6.2 Ce qui reste vraiment
+
+**Le coopératif est jouable aujourd'hui.** Ce qui manque :
+
+1. **Une partie menée par un humain**, du wizard à la fin — le seul juge, comme
+   toujours. Le bot ne dit pas si l'expérience tient debout (le camp est-il
+   lisible ? les sets d'équipe arrivent-ils ?).
+2. **Le mode COMPÉTITIF** (deux équipes de joueurs) : désactivé en dur dans le
+   moteur. Il dépendait du serveur permanent multijoueur, **chantier abandonné le
+   13/08**. Sans lui, le compétitif n'a pas de chemin.
+3. **Le choix explicite du camp** (Registration / Resistance) à la préparation :
+   à évaluer en jouant. En coopératif, le camp est implicitement l'opposé du
+   leader choisi, et les sets d'équipe sont déjà dans les modulaires du scénario.
+
+### 6.3 Conséquence sur l'ampleur
+
+**Ce n'est plus un chantier « moyen-gros ».** Le contenu (227 cartes, 184
+modules), les règles (dans le moteur) et le lancement (par l'écran ordinaire)
+existent. Il reste à JOUER pour voir ce qui manque — et, si le compétitif est
+voulu un jour, à rouvrir la question du serveur.
