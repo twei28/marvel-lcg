@@ -70,14 +70,22 @@ def main() -> int:
                                       encoding="utf-8").read())
 
             # Le type des variables, quand le module le declare par CastTo.
-            types_locaux = {}
+            #
+            # ⚠ UNE VARIABLE EST LOCALE A SA FONCTION. Un fichier peut nommer
+            # `this` dans dix fonctions, avec dix types differents — c'est le
+            # cas de twc/__init__.py. Retenir le dernier vu faisait conclure sur
+            # le mauvais type et signalait un appel parfaitement valide. On ne
+            # garde donc un type QUE s'il est le seul declare pour ce nom dans
+            # tout le fichier ; sinon on ne conclut pas.
+            vus = {}
             for n in ast.walk(arbre):
                 if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call) \
                         and isinstance(n.value.func, ast.Attribute) \
                         and n.value.func.attr == "CastTo" and n.value.args \
                         and isinstance(n.value.args[0], ast.Name) \
                         and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name):
-                    types_locaux[n.targets[0].id] = n.value.args[0].id
+                    vus.setdefault(n.targets[0].id, set()).add(n.value.args[0].id)
+            types_locaux = {nom: list(t)[0] for nom, t in vus.items() if len(t) == 1}
 
             for n in ast.walk(arbre):
                 if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)):

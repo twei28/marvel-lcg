@@ -42,6 +42,12 @@ TYPES_PAR_ATTRIBUT = {
     "MaxPerUnit":  {"Upgrade", "Support", "Attachment"},
     "MaxPerDeck":  {"Event", "Resource", "Upgrade", "Support", "Ally"},
     "Alliance":    {"Event"},
+    "Setup":       {"Upgrade", "Environment", "Attachment", "Support",
+                    "SideScheme", "Ally"},
+    "Toughness":   {"Minion", "Villain", "Ally"},
+    "Retaliate":   {"Minion", "Villain", "Ally", "Hero"},
+    "Victory":     {"Minion", "SideScheme", "PlayerSideScheme", "Villain",
+                    "Ally", "Attachment"},
 }
 
 REGLES = [

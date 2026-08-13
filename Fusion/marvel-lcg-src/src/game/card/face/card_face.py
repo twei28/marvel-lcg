@@ -134,6 +134,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # la carte qui les porte tombe a la construction.
         'tactic', 'adrenaline', 'diversion', 'stimulant', 'spider', 'replay',
         'ball', 'LMD', 'configuration', 'deploy',
+        'labor',  # CORRECTIF : compteur du pack custom hercules (59004)
         "blackout_y", "blackout_b", "blackout_r",
         "tic_tac_toe_1_1", "tic_tac_toe_2_1", "tic_tac_toe_3_1",
         "tic_tac_toe_1_2", "tic_tac_toe_2_2", "tic_tac_toe_3_2",

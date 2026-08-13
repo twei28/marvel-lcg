@@ -1281,6 +1281,7 @@
             "subtitle": "",
             "desc": {
                 "RES": "G",
+                "MaxPerDeck": "2",
                 "Class": "Aggression"
             },
             "traits": [],
@@ -4397,6 +4398,7 @@
                 "Cost": "1",
                 "RES": "G",
                 "Restricted": "1",
+                "MaxPerUnit": "2",
                 "Class": "Hero"
             },
             "traits": [
@@ -7946,6 +7948,7 @@
                 "Cost": "1",
                 "RES": "Y",
                 "Restricted": "1",
+                "MaxPerUnit": "2",
                 "Class": "Hero"
             },
             "traits": [
@@ -13679,8 +13682,9 @@
             "desc": {
                 "Cost": "1",
                 "RES": "G",
-                "TeamUp": "Groot;Rocket Raccoon",
-                "Class": "Basic"
+                "MaxPerDeck": "1",
+                "Class": "Basic",
+                "TeamUp": "Groot;Rocket Raccoon"
             },
             "traits": [],
             "set_name": "",
@@ -17518,6 +17522,7 @@
                 "Cost": "1",
                 "RES": "G",
                 "Restricted": "1",
+                "MaxPerUnit": "2",
                 "Class": "Hero"
             },
             "traits": [
@@ -17535,6 +17540,7 @@
                 "Cost": "1",
                 "RES": "G",
                 "Restricted": "1",
+                "MaxPerUnit": "2",
                 "Class": "Hero"
             },
             "traits": [
@@ -18544,6 +18550,7 @@
             "desc": {
                 "Cost": "3",
                 "RES": "Y",
+                "MaxPerUnit": "1",
                 "Class": "Leadership"
             },
             "traits": [
@@ -21846,6 +21853,7 @@
             "desc": {
                 "Cost": "1",
                 "RES": "Y",
+                "MaxPerUnit": "1",
                 "Class": "Aggression"
             },
             "traits": [
@@ -22354,6 +22362,7 @@
                 "RES": "B",
                 "Uses": "2,training",
                 "MaxPerUnit": "2",
+                "MaxPerDeck": "2",
                 "Class": "Justice"
             },
             "traits": [
@@ -43706,6 +43715,7 @@
             "desc": {
                 "Cost": "2",
                 "RES": "Y",
+                "MaxPerDeck": "1",
                 "Class": "'Pool"
             },
             "traits": [
@@ -43960,6 +43970,7 @@
             "desc": {
                 "Cost": "1",
                 "RES": "B",
+                "MaxPerDeck": "1",
                 "Class": "'Pool"
             },
             "traits": [],
@@ -47112,9 +47123,9 @@
             "desc": {
                 "Boost": "2",
                 "Surge": "1",
-                "StartingThreat": "2",
                 "Hinder": "2*",
-                "Victory": "1"
+                "StartingThreat": "2",
+                "Victory": "2"
             },
             "traits": [],
             "set_name": "Campaign",
@@ -49834,6 +49845,7 @@
             "desc": {
                 "Cost": "1",
                 "RES": "Y",
+                "MaxPerUnit": "1",
                 "Class": "Basic"
             },
             "traits": [],
@@ -54311,8 +54323,9 @@
             "desc": {
                 "Cost": "2",
                 "RES": "G",
-                "TeamUp": "Cindy Moon;Peter Parker",
-                "Class": "Basic"
+                "MaxPerDeck": "1",
+                "Class": "Basic",
+                "TeamUp": "Cindy Moon;Peter Parker"
             },
             "traits": [
                 "SKILL"
@@ -56530,7 +56543,8 @@
                 "HP": "10",
                 "ATK": "4",
                 "SCH": "3",
-                "Boost": "3"
+                "Boost": "3",
+                "Victory": "1"
             },
             "traits": [
                 "BRUTE",
@@ -57622,6 +57636,7 @@
                 "Cost": "1",
                 "RES": "Y",
                 "Restricted": "1",
+                "MaxPerUnit": "2",
                 "Class": "Protection"
             },
             "traits": [
@@ -61720,6 +61735,7 @@
             "desc": {
                 "Cost": "3",
                 "RES": "R",
+                "MaxPerUnit": "1",
                 "Class": "Justice"
             },
             "traits": [
@@ -61988,7 +62004,7 @@
             "name": "Protect Humanity",
             "subtitle": "",
             "desc": {
-                "Uses": "3,counter",
+                "Uses": "3,labor",
                 "Victory": "0",
                 "GiveTo": "Hercules"
             },
@@ -62881,6 +62897,7 @@
             "desc": {
                 "Cost": "1",
                 "RES": "R",
+                "Restricted": "1",
                 "Class": "Hero"
             },
             "traits": [
@@ -63058,6 +63075,7 @@
             "desc": {
                 "Cost": "2",
                 "RES": "Y",
+                "MaxPerUnit": "1",
                 "Class": "Justice",
                 "Temporary": "1"
             },
@@ -63075,6 +63093,7 @@
             "desc": {
                 "Cost": "2",
                 "RES": "R",
+                "MaxPerUnit": "1",
                 "Class": "Justice"
             },
             "traits": [
@@ -63108,6 +63127,7 @@
             "desc": {
                 "Cost": "0",
                 "RES": "R",
+                "MaxPerUnit": "1",
                 "Class": "Basic"
             },
             "traits": [
@@ -66542,6 +66562,7 @@
             "desc": {
                 "Cost": "1",
                 "RES": "Y",
+                "MaxPerUnit": "1",
                 "Class": "Leadership"
             },
             "traits": [
@@ -72931,5 +72952,5 @@
             "text": "Play under any player's control. Max 1 ETHOS card per player.\n<b>Hero Response</b>: After you attack a minion, if that attack exactly defeated that minion, each player may discard 1 card from their hand and draw 1 card."
         }
     ],
-    "checksum": "489f2b60a75fa262064c62b8805cd82637b73a621c088af912e677a651f79709"
+    "checksum": "9252cdeca125bdb32cb03128cd10e387beae0ae8cd89535d42a8e977617a16d7"
 }
