@@ -527,3 +527,52 @@ sont corrigées.
 **Un Event ou un Upgrade n'accepte qu'UNE capacité Play.** dt087 en avait deux
 et la génération l'a refusée. C'est la troisième fois que `test_generate_cards`
 attrape ce que `test_cards` laisse passer.
+
+
+## 12. L'ASPECT EST COMPLET (13/08/2026, nuit)
+
+**Les 142 cartes sont dans le jeu**, relues en pleine page, avec leur module,
+leurs données et leur image.
+
+* `test_generate_cards` préfixe `dt` : **142 générées, 0 échec**
+* `test_cards` : **4331 ok, 0 erreur**
+* `verifier_noms_modules` : propre ; `verifier_prefixes` : vert
+* dans un vrai navigateur : **142 cartes proposées** à l'éditeur de deck, images
+  servies, aucune erreur JS
+
+### 12.1 Les mots-clés de l'aspect, tous traités
+
+Quatre helpers partagés dans `src/cards/pack/determination/__init__.py` :
+`Fragile()`, `Reckless()`, `AliasReduitLeCout()`, plus `PeutRevenirEnMain()` et
+`RepartirLeRetraitDeMenace()` et `Drain()` pour les textes qui reviennent.
+
+`Toughness`, `Restricted` et `Fleeting` n'ont rien demandé : le moteur les lit
+dans le texte de la carte.
+
+### 12.2 Les écarts, tous écrits dans leur module
+
+| Carte | Ce que le moteur ne sait pas faire |
+|---|---|
+| dt013 Recon | pas d'ensemble « cartes rencontre face cachée » consultable |
+| dt030 | « 2 dégâts de plus » passe par l'ATK de l'attaque |
+| dt072 Red Dagger | une attaque en cours ne se rejoue pas X fois |
+| dt074 In the Wings | le défenseur se déclare dans sa propre fenêtre |
+| dt075, dt117 | « votre collection » n'existe pas → deck et défausse |
+| dt100/105/106/107 | `Alias` : la défausse simultanée ne s'exige pas |
+| dt101 Darkhawk | un compteur posé SUR une statistique n'existe pas |
+| dt109 Phase Shift | un mot-clé ne se donne qu'à une carte EN JEU |
+| dt111 Morph | aucune fenêtre « boîte de texte traitée comme vide » |
+| dt125 Night Thrasher | seul un retournement VERS une face nommée est publié |
+| dt135 Tarantula | « une icône PAR JETON » : ligne **non implémentée**, dite |
+| dt056 Oblivion | le joueur d'origine n'est pas retenu après le mélange |
+
+**Une seule ligne de tout l'aspect n'est pas implémentée** (l'icône par jeton de
+Tarantula), et son module le dit. Tout le reste est joué ou approximé par écrit.
+
+### 12.3 Ce qui reste, et c'est le seul juge qui manque
+
+**Une partie menée avec un deck Determination, du wizard à la victoire.** Ni la
+sonde, ni `test_generate_cards`, ni `verifier_noms_modules` ne disent qu'une
+capacité fait la bonne chose : ils disent qu'elle est là, qu'elle se construit,
+et que ses noms existent. Le §6 de cette fiche reste donc ouvert — et c'est
+maintenant la seule chose qui l'est.
