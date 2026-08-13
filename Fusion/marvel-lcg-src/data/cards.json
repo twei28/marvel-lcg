@@ -71459,7 +71459,348 @@
             ],
             "set_name": "Determination",
             "text": "Play only if your identity has the GUARDIAN trait. Max 1 per player.\n<b>Response</b>: After you discard an upgrade you control, exhaust Explosives Training \u2192 deal 2 damage to an enemy."
+        },
+        {
+            "card_id": "dt061",
+            "type": "Event",
+            "name": "Outer Space Ambush",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Alliance.\n<b>Hero Action</b> <i>(attack)</i>: Exhaust an AVENGER character and a GUARDIAN character and deal 1 damage to each of them \u2192 deal a total of 6 damage divided among enemies as you choose. If neither of these friendly characters were defeated this way, ready them."
+        },
+        {
+            "card_id": "dt062",
+            "type": "Event",
+            "name": "\"That All You Got?\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Max 1 per round.\n<b>Hero Action</b>: Search the encounter deck for an attachment. Reveal that attachment \u2192 draw 3 cards. <i>(Shuffle the encounter deck.)</i>"
+        },
+        {
+            "card_id": "dt063",
+            "type": "Ally",
+            "name": "* Human Torch",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "3**",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ANDROID",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Response</b>: After your turn begins, deal 1 damage to the villain, each minion engaged with you, your hero, and each other ally you control."
+        },
+        {
+            "card_id": "dt064",
+            "type": "Support",
+            "name": "Resistance Training",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 2 per deck. Uses (2 training counters).\n<b>Alter-Ego Action</b>: Exhaust this card and remove 1 training counter from it \u2192 choose a Determination <i>(purple)</i> event in your discard pile and shuffle it into your deck."
+        },
+        {
+            "card_id": "dt065",
+            "type": "Ally",
+            "name": "* Colleen Wing",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile.\nColleen Wing gets +1 THW while Misty Knight is in play, and gets +1 ATK while attacking enemies with the Bounty upgrade attached."
+        },
+        {
+            "card_id": "dt066",
+            "type": "Ally",
+            "name": "* Misty Knight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2**",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Action</b>: Exhaust Misty Knight and deal 1 damage to her \u2192 choose one:\n\u2022 Search your deck and discard pile for a copy of the Bounty upgrade and add it to your hand.\n\u2022 Reduce the resource cost of the next Bounty upgrade you play this turn by 1."
+        },
+        {
+            "card_id": "dt067",
+            "type": "Upgrade",
+            "name": "Bounty",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to a minion with the BRUTE, CRIMINAL, or MERCENARY trait, or to a unique (\u2726) enemy. Max 1 per enemy.\n<b>Response</b>: After attached enemy is attacked and defeated, the owner of this card draws 2 cards. If the attacker has the HERO FOR HIRE trait, heal 1 damage from them."
+        },
+        {
+            "card_id": "dt068",
+            "type": "Upgrade",
+            "name": "Duo-Gun",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to an ally. Max 1 per ally. Uses (1 ammo counter and 1 charge counter.)\n<b>Action</b>: Exhaust Duo-Gun and choose one:\n\u2022 Remove 1 ammo counter from it \u2192 attached ally's next attack gains piercing.\n\u2022 Remove 1 charge counter from it \u2192 attached ally's next attack gains overkill."
+        },
+        {
+            "card_id": "dt069",
+            "type": "Upgrade",
+            "name": "Incentivized",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b>: When attached ally attacks an enemy, it gets +X ATK for that attack, where X is the number of cards attached to that enemy."
+        },
+        {
+            "card_id": "dt070",
+            "type": "Upgrade",
+            "name": "Munitions Cache",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Enters play with 2 ammo counters and 2 charge counters. Max 1 per player.\n<b>Action</b>: Exhaust Munitions Cache \u2192 move 1 ammo counter or 1 charge counter from this card to another upgrade you control."
+        },
+        {
+            "card_id": "dt071",
+            "type": "Event",
+            "name": "Go Wild",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "G",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "Requirement ([wild][physical]). Max 2 per deck.\n<b>Hero Action</b> <i>(attack)</i>: Take 2 damage \u2192 draw 3 cards and deal X damage to an enemy, where X is the combined printed resource cost of those cards."
+        },
+        {
+            "card_id": "dt072",
+            "type": "Ally",
+            "name": "* Red Dagger",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CHAMPION"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Place 1 acceleration token on Red Dagger. <i>(Limit once per phase.)</i>\n<b>Interrupt</b>: When Red Dagger attacks, resolve this attack X times, where X is the number of acceleration tokens in play."
+        },
+        {
+            "card_id": "dt073",
+            "type": "Ally",
+            "name": "* Starling",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "CHAMPION"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile.\n<b>Hero Response</b>: After Starling takes 5 or more damage from an attack, your hero gains +1 ATK until the end of the game."
+        },
+        {
+            "card_id": "dt074",
+            "type": "Upgrade",
+            "name": "In the Wings",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "PREPARATION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 2 per deck.\n<b>Hero Interrupt</b>: When the villain attacks, if your identity has the AERIAL trait, give the villain 1 additional boost card for that activation and discard this card \u2192 put the topmost ally in your discard pile into play. Declare it the defender for that attack. Then, confuse the villain."
+        },
+        {
+            "card_id": "dt075",
+            "type": "Upgrade",
+            "name": "Multiverse Shenanigans",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Setup. Max 1 per deck.\n<b>Forced Interrupt</b>: When the game begins, choose any 3 different non-determination aspect cards from your collection and set them aside.\n<b>Action</b>: Exhaust this card and deal yourself a facedown encounter card \u2192 search the set-aside area for 1 of these chosen cards and add it to your hand."
+        },
+        {
+            "card_id": "dt076",
+            "type": "Ally",
+            "name": "* Gorilla-Man",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "HP": "4",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Gorilla-Man ignores \u00ab Max 1 per ally. \u00bb text on upgrades."
+        },
+        {
+            "card_id": "dt077",
+            "type": "Ally",
+            "name": "* Hit-Monkey",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "2***",
+                "THW": "1***",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE",
+                "S.H.I.E.L.D."
+            ],
+            "set_name": "Determination",
+            "text": "<b>Interrupt</b>: When Hit-Monkey would take any amount of consequential damage, look at the top card of the encounter deck \u2192 prevent 1 of that damage for each boost ([boost]) and star ([star]) icon looked at this way."
+        },
+        {
+            "card_id": "dt078",
+            "type": "Upgrade",
+            "name": "Cumbersome Enhancements",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your hero has a printed hand size of 4 or fewer. Max 1 per deck.\nYour hero gets +2 hand size.\n<b>Forced Interrupt</b>: When the villain phase begins, choose to discard this card or place 1 acceleration token here."
+        },
+        {
+            "card_id": "dt079",
+            "type": "Upgrade",
+            "name": "Borrowed Gear",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Attach to an ally. Max 1 per deck.\nAttached ally gets +1 hit point for each upgrade attached to them (to a maximum of +4 hit points).\n<b>Forced Response</b>: After Borrowed Gear enters play, attach an ally from your discard pile facedown here \u2192 attached ally gains that facedown ally's TRAITS."
+        },
+        {
+            "card_id": "dt080",
+            "type": "Ally",
+            "name": "* Masacre",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Response</b>: After Masacre enters play, search your deck and discard pile for a copy of the Merc Squad support and put it into play.\n<b>Hero Action</b>: Deal 1 damage to Masacre \u2192 place 1 tactic counter on each Merc Squad you control. <i>(Limit once per round.)</i>"
         }
     ],
-    "checksum": "c83341d4bc6d914e18f7b1d736662514d99d01c98d92eb48e3a2136cbc957d43"
+    "checksum": "738a36cc7576f44451ce280e6d5d81256e817a630fe8854d211e3a2ba38e2404"
 }

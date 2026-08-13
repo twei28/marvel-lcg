@@ -1280,7 +1280,7 @@
     {
       "_image": "D-61.jpg",
       "_drive_id": "1EeVF1azqkK4O2qlgl5LqjI4cDYLLeL21",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt061",
       "type": "Event",
       "name": "Outer Space Ambush",
@@ -1299,7 +1299,7 @@
     {
       "_image": "D-62.jpg",
       "_drive_id": "1M4g-2KseMGR8wqcMq5EGHBDb2a3DxQLT",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt062",
       "type": "Event",
       "name": "\"That All You Got?\"",
@@ -1315,7 +1315,7 @@
     {
       "_image": "D-63.jpg",
       "_drive_id": "1TXjcZ8eyy-zLu1Hhk7wu-N_Xs2x_lat0",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt063",
       "type": "Ally",
       "name": "* Human Torch",
@@ -1337,7 +1337,7 @@
     {
       "_image": "D-64.jpg",
       "_drive_id": "19YIJ1BvdcteoHAgB2Qykbn0RpC--FKYO",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt064",
       "type": "Support",
       "name": "Resistance Training",
@@ -1355,7 +1355,7 @@
     {
       "_image": "D-65.jpg",
       "_drive_id": "1mtXtHBaiMUfXw8oWkjrr0SpIlGyeFWq5",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt065",
       "type": "Ally",
       "name": "* Colleen Wing",
@@ -1376,7 +1376,7 @@
     {
       "_image": "D-66.jpg",
       "_drive_id": "18shkx0FlxY6IX61xzKD8KEuEmZj_Tq0s",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt066",
       "type": "Ally",
       "name": "* Misty Knight",
@@ -1397,7 +1397,7 @@
     {
       "_image": "D-67.jpg",
       "_drive_id": "1kvAMnowYLCIOIIKUaVM8HbC1TXBIUWvM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt067",
       "type": "Upgrade",
       "name": "Bounty",
@@ -1415,7 +1415,7 @@
     {
       "_image": "D-68.jpg",
       "_drive_id": "16CiVg_pMYS1VtPIagcEiWDj1Eh-Tkws0",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt068",
       "type": "Upgrade",
       "name": "Duo-Gun",
@@ -1434,7 +1434,7 @@
     {
       "_image": "D-69.jpg",
       "_drive_id": "15N3P71vEZEiR1GZS2u4JfzceXP3O3QUS",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt069",
       "type": "Upgrade",
       "name": "Incentivized",
@@ -1452,7 +1452,7 @@
     {
       "_image": "D-70.jpg",
       "_drive_id": "10WPqefm9z-4ZYBRmmw_22SksbdX8ousb",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt070",
       "type": "Upgrade",
       "name": "Munitions Cache",
@@ -1468,7 +1468,7 @@
     {
       "_image": "D-71.jpg",
       "_drive_id": "1O5QGWchOsOGBtHB3YO0jj2mn7t4TMjkp",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt071",
       "type": "Event",
       "name": "Go Wild",
@@ -1486,7 +1486,7 @@
     {
       "_image": "D-72.jpg",
       "_drive_id": "1ipg2LQk85YdNmc-3r8U9ml0OQPYURjwC",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt072",
       "type": "Ally",
       "name": "* Red Dagger",
@@ -1507,7 +1507,7 @@
     {
       "_image": "D-73.jpg",
       "_drive_id": "1Ac_iUM15uztDqEHaUiE-1LgnK5eOyZBR",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt073",
       "type": "Ally",
       "name": "* Starling",
@@ -1529,7 +1529,7 @@
     {
       "_image": "D-74.jpg",
       "_drive_id": "15X-z3lvpK0kkIcaGQqg9MDKczj8w9A9z",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt074",
       "type": "Upgrade",
       "name": "In the Wings",
@@ -1548,7 +1548,7 @@
     {
       "_image": "D-75.jpg",
       "_drive_id": "11YF4f2Ms3MCbs9W55BWezI0LtRL3u_ha",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt075",
       "type": "Upgrade",
       "name": "Multiverse Shenanigans",
@@ -1565,7 +1565,7 @@
     {
       "_image": "D-76.jpg",
       "_drive_id": "1fD-vn_pSK54wLIlyh7ki5rUkaHCdNkit",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt076",
       "type": "Ally",
       "name": "* Gorilla-Man",
@@ -1586,7 +1586,7 @@
     {
       "_image": "D-77.jpg",
       "_drive_id": "19k76A9YjjrO0cPA6QpyQoGZpcNak0CBm",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt077",
       "type": "Ally",
       "name": "* Hit-Monkey",
@@ -1608,7 +1608,7 @@
     {
       "_image": "D-78.jpg",
       "_drive_id": "1q4J291daL_GRXKsd19AApGRbKX0WdHSa",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt078",
       "type": "Upgrade",
       "name": "Cumbersome Enhancements",
@@ -1626,7 +1626,7 @@
     {
       "_image": "D-79.jpg",
       "_drive_id": "1m1Vb8a1yBpw6ssb7Uj_v4qbmaKvoZpFY",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt079",
       "type": "Upgrade",
       "name": "Borrowed Gear",
@@ -1642,7 +1642,7 @@
     {
       "_image": "D-80.jpg",
       "_drive_id": "1yQp7mVwDkhn5LHM7nxnvJPl6EzwJsXMT",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt080",
       "type": "Ally",
       "name": "* Masacre",

@@ -52,9 +52,9 @@
     "dt": {
       "pack": "determination",
       "libelle": "118. Custom (Determination)",
-      "cartes": 60,
+      "cartes": 80,
       "depuis": "2026-08-13",
-      "note": "L'aspect fan-made de designhacker.ca, 142 cartes relevees. Les 60 premieres sont dans le jeu avec leur module ; le set est declare dans sets_info.json."
+      "note": "L'aspect fan-made de designhacker.ca, 142 cartes relevees. Les 80 premieres sont dans le jeu avec leur module ; le set est declare dans sets_info.json."
     },
     "gp": {
       "pack": "gwenpool",
