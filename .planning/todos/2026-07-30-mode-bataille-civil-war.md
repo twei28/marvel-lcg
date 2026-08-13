@@ -207,6 +207,12 @@ Rien de tout cela n'est commencé. C'est la liste, par ordre de ce qui bloque le
 plus un joueur.
 
 1. ~~Aucun chemin de lancement.~~ **FAIT le 13/08** (`802f457`), voir §11.
+1 bis. **⏳ EN ATTENTE, à faire en premier : regarder ce qu'une partie de
+   Bataille DONNE À VOIR.** Le plateau React ne connaît pas les zones de jeu
+   (`grep -rn "game_area" ui-app/src` rend 0). La partie se lance ; personne n'a
+   vu son affichage. Soit le rendu du moteur est déjà filtré par zone, soit les
+   deux tables se mêlent. Une partie jouée dans un navigateur tranche, et rien
+   d'autre ne devrait être ajouté avant.
 2. **Les conditions de victoire sont encore globales.** Le premier complot
    principal complété termine TOUTE la partie. Le livret p.17 veut trois
    conditions par équipe, la règle « la partie ne s'arrête pas avant que les deux
