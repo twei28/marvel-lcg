@@ -82,6 +82,7 @@ class SceneLoader:
             obligations=list(lie.get("obligations") or []),
             nemesis_set=list(lie.get("nemesis_set") or []),
             player_deck=list(lie.get("player_deck") or []),
+            team=player.team,
         )]
 
     @staticmethod

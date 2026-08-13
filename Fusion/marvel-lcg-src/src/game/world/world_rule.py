@@ -46,6 +46,11 @@ class WorldRule:
         self.crisis_of_infinite_deadpools   = VariableBool(self, True, "crisis_of_infinite_deadpools")
         self.mode_skirmish                  = VariableBool(self, False, "mode_skirmish")
         self.mode_campaign                  = VariableBool(self, False, "mode_campaign")
+        # Mode competitif Civil War / Synthezoid : deux equipes de joueurs,
+        # chacune avec son leader, son deck rencontre et son complot principal
+        # dans sa propre zone de jeu. Pose par la liste `rules` du descripteur,
+        # donc conserve dans la sauvegarde comme mode_sandbox.
+        self.mode_competitive               = VariableBool(self, False, "mode_competitive")
         # Bac a sable : pose par la liste `rules` du descripteur, donc
         # conservee dans la sauvegarde — on saura toujours si une
         # victoire comptait.

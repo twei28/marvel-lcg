@@ -881,12 +881,18 @@ class Worlds:
         return Worlds.GetPlayerNumIcon(by_effect)
 
     @staticmethod
-    def IsCompetitiveMode(by_effect: 'Effect') -> Literal[False]:
-        return False
+    def IsCompetitiveMode(by_effect: 'Effect') -> bool:
+        # Deux equipes de joueurs, chacune face au leader prepare par l'autre
+        # (livret mc56 p.14-17). Le drapeau vient de la liste `rules` du
+        # descripteur ; hors partie competitive il est faux, et le jeu se
+        # comporte exactement comme avant.
+        return by_effect.world.rule.mode_competitive.val
 
     @staticmethod
     def IsCooperativeMode(by_effect: 'Effect') -> bool:
-        return True
+        # Les deux modes sont exclusifs : le livret n'en connait pas de
+        # troisieme. Une carte teste l'un ou l'autre, jamais les deux.
+        return not by_effect.world.rule.mode_competitive.val
 
     Enemies = Enemies
 

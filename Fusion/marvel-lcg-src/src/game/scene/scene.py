@@ -41,6 +41,12 @@ class Scene:
     rules: List[str] = field(default_factory=lambda: [])
 
     campaign: CampaignDescriptor = field(default_factory=lambda: CampaignDescriptor())
+    # SECONDE TABLE. Vide en partie ordinaire. En mode competitif, chaque
+    # equipe apporte SON scenario et affronte celui de l'autre (mc56 p.14,
+    # etape 4) : `campaign` est pose devant l'equipe 0, `campaign_2` devant
+    # l'equipe 1. Champ a defaut, donc les sauvegardes existantes se
+    # rechargent sans changer de sens.
+    campaign_2: CampaignDescriptor = field(default_factory=lambda: CampaignDescriptor())
     players: Sequence[HeroDescriptor] = field(default_factory=lambda: [])
 
     puzzle: List[str] = field(default_factory=lambda: [])
