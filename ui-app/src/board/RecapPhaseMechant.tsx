@@ -8,11 +8,16 @@
 // pendant la phase. Chaque entrée porte le round et la phase où elle est née,
 // c'est tout ce qu'il faut pour les retrouver.
 //
-// Il suit LA CARTE DE RÉFÉRENCE du jeu plutôt que ses propres catégories : une
-// étape par point de la carte, dans l'ordre où le méchant les joue. C'est ce qui
-// rend explicite « quelle carte appartient à quelle étape » — et ça ne coûte
-// rien, puisque le moteur découpe déjà sa phase de la même façon et que chaque
-// entrée sait de quel découpage elle vient.
+// DEUX RÈGLES DE LECTURE, apprises en le voyant tourner :
+//
+// 1. Il suit LA CARTE DE RÉFÉRENCE du jeu, une étape par point de la carte. Le
+//    moteur découpe déjà sa phase de la même façon et chaque entrée sait de quel
+//    découpage elle vient : on affiche son découpage, on ne re-catégorise rien.
+//
+// 2. Il RÉSUME au lieu de dérouler. Poser une menace coûte six lignes au moteur
+//    (début de phase, intention, pose du jeton, gain, fin de phase) dont une
+//    seule dit quelque chose à un joueur. Le déroulé complet reste accessible
+//    sous le repli de chaque étape — mais il ne s'impose plus.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CarteApercu } from './Board'
@@ -28,8 +33,7 @@ import type { World, WorldCard } from './world'
  *
  * Les clés sont les états que le moteur nomme lui-même (voir game/world/phase.py,
  * Phase.State) : il n'a pas d'état unique pour « phase du méchant », il la
- * découpe exactement comme la carte. On ne re-catégorise donc rien, on affiche
- * son découpage.
+ * découpe exactement comme la carte.
  *
  * Le point 5 de la carte (« passer le jeton de premier joueur ») ne produit
  * aucun fait à raconter : il n'a pas d'étape ici.
@@ -43,65 +47,213 @@ const ETAPES = [
 
 const PHASES_MECHANT = new Set<string>(ETAPES.map((e) => e.phase))
 
+/**
+ * Les seuls types qui racontent un FAIT de jeu.
+ *
+ * Tout le reste (`text`) est la narration interne du moteur — « Main scheme
+ * phase start », « Underground Distribution would place 1 », « moved to
+ * BoostCardsDeck<1> ». Elle a sa place dans le journal, où l'on vient chercher
+ * le détail ; elle n'en a pas dans un bilan qu'on lit en trois secondes.
+ */
+const TYPES_FAITS = new Set(['damage', 'heal', 'threat', 'card'])
+
+type Boost = { cle: string; nom: string; cibleId?: number }
+
+/** Une ligne du bilan : un fait, déjà mis en phrase. */
+type Ligne = {
+  cle: string
+  /** Colore et choisit le verbe. */
+  genre: 'menace' | 'attaque' | 'manigance' | 'carte'
+  titre: string
+  /** Le chiffre du fait, à droite : « +1 → 1/6 », « 3 dégâts → 8 PV ». */
+  chiffre?: string
+  /** Cartes de boost retournées pour cette activation. */
+  boosts?: Boost[]
+  /** Héros qui a reçu la carte. */
+  heros?: string
+  /** Ce que la carte a produit ensuite, dans ses propres mots. */
+  effets?: string[]
+  cibleId?: number
+}
+
 type Etape = {
   numero: number
   titre: string
-  entrees: EntreeHistorique[]
-  /** Menace posée sur l'étape, retraits déduits. 0 = rien à annoncer. */
+  lignes: Ligne[]
+  /** Le déroulé complet du moteur, pour le repli. */
+  brut: EntreeHistorique[]
+  /** Menace posée sur l'étape, retraits déduits. */
   menace: number
   /** Dégâts encaissés sur l'étape, en positif. */
   degats: number
-  /** Cartes entrées en jeu sur l'étape. */
+  /** Cartes entrées en jeu sur l'étape, boosts non compris. */
   cartes: number
 }
 
 type Bilan = { cle: string; round: number; etapes: Etape[] }
 
-/** Les faits d'une étape, et ce qu'ils totalisent. */
+/** De quoi nommer une carte et un héros sans que le bilan lise le monde. */
+export type Noms = {
+  carte: (id: number | undefined) => string | undefined
+  heros: (joueur: number | undefined) => string | undefined
+}
+
+/** « +1 → 1/6 », ou « +1 → 4 » quand la manigance n'affiche pas de seuil. */
+function chiffreMenace(entree: EntreeHistorique): string | undefined {
+  const { valeur, restant, plafond } = entree
+  if (valeur === undefined) return undefined
+  const signe = valeur > 0 ? `+${valeur}` : `${valeur}`
+  if (restant === undefined) return signe
+  return plafond ? `${signe} → ${restant}/${plafond}` : `${signe} → ${restant}`
+}
+
+/** « 3 dégâts → 8 PV ». */
+function chiffreDegats(entree: EntreeHistorique): string {
+  const subis = Math.abs(entree.valeur ?? 0)
+  const texte = `${subis} ${t('dégâts')}`
+  return entree.restant === undefined ? texte : `${texte} → ${entree.restant} ${t('PV')}`
+}
+
+/**
+ * Les lignes d'une étape, résumées.
+ *
+ * Le rattachement des boosts suit L'ORDRE DU MOTEUR, qui retourne les cartes de
+ * boost AVANT de résoudre l'attaque qu'elles gonflent : on accumule les boosts
+ * rencontrés et on les verse sur le premier fait qui suit. C'est ce que montre
+ * le déroulé réel (« Sonic Boom revealed », « T'Challa's Shadow revealed »,
+ * « Black Panther is being attacked by Klaw »), et ça n'invente aucun lien que
+ * la chronologie ne porte pas déjà.
+ *
+ * Même principe pour les cartes de rencontre, dans l'autre sens : ce qu'une
+ * carte révélée a produit la SUIT, jusqu'à la révélation suivante.
+ */
+function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
+  const lignes: Ligne[] = []
+  let boostsEnAttente: Boost[] = []
+  /** Dernière carte révélée, à qui rattacher ce qui arrive ensuite. */
+  let derniereCarte: Ligne | undefined
+
+  const verser = () => {
+    const boosts = boostsEnAttente
+    boostsEnAttente = []
+    return boosts.length > 0 ? boosts : undefined
+  }
+
+  for (const fait of faits) {
+    if (fait.type === 'card') {
+      if (fait.boost) {
+        boostsEnAttente.push({
+          cle: fait.cle,
+          nom: fait.nomCarte ?? fait.titre,
+          cibleId: fait.cibleId,
+        })
+        continue
+      }
+      derniereCarte = {
+        cle: fait.cle,
+        genre: 'carte',
+        titre: fait.nomCarte ?? fait.titre,
+        heros: noms.heros(fait.joueur),
+        cibleId: fait.cibleId,
+      }
+      lignes.push(derniereCarte)
+      continue
+    }
+
+    if (fait.type === 'damage' || fait.type === 'heal') {
+      const cible = noms.carte(fait.cibleId)
+      const chiffre = chiffreDegats(fait)
+      // Une carte révélée en cours d'étape s'attribue ses conséquences ; hors
+      // de ce cas, les dégâts sont ceux d'une activation ennemie.
+      if (derniereCarte) {
+        derniereCarte.effets = [...(derniereCarte.effets ?? []), `${cible ?? fait.titre} : ${chiffre}`]
+        continue
+      }
+      lignes.push({
+        cle: fait.cle,
+        genre: 'attaque',
+        // Sans auteur connu, on garde la phrase du moteur plutôt que d'inventer
+        // un attaquant : « untel subit 3 dégâts » reste vrai.
+        titre: fait.acteur && cible ? `${fait.acteur} ${t('attaque')} ${cible}` : fait.titre,
+        chiffre,
+        boosts: verser(),
+        cibleId: fait.cibleId,
+      })
+      continue
+    }
+
+    if (fait.type === 'threat') {
+      const cible = noms.carte(fait.cibleId)
+      const chiffre = chiffreMenace(fait)
+      if (derniereCarte) {
+        derniereCarte.effets = [
+          ...(derniereCarte.effets ?? []),
+          `${cible ?? fait.titre}${chiffre ? ` : ${chiffre}` : ''}`,
+        ]
+        continue
+      }
+      // Une menace posée PENDANT une activation est une manigance d'ennemi ;
+      // la même à l'étape 1 est la menace de phase, qui n'a pas d'auteur.
+      const manigance = fait.acteur !== undefined
+      lignes.push({
+        cle: fait.cle,
+        genre: manigance ? 'manigance' : 'menace',
+        titre:
+          manigance && cible
+            ? `${fait.acteur} ${t('manigance sur')} ${cible}`
+            : (cible ?? fait.titre),
+        chiffre,
+        boosts: verser(),
+        cibleId: fait.cibleId,
+      })
+    }
+  }
+
+  return lignes
+}
+
 function etapeDe(
   entrees: EntreeHistorique[],
-  definition: (typeof ETAPES)[number]
+  definition: (typeof ETAPES)[number],
+  noms: Noms
 ): Etape | undefined {
-  const dedans = entrees.filter((e) => e.phase === definition.phase && e.type !== 'phase')
-  if (dedans.length === 0) return undefined
+  const brut = entrees.filter((e) => e.phase === definition.phase && e.type !== 'phase')
+  if (brut.length === 0) return undefined
+
+  const faits = brut.filter((e) => TYPES_FAITS.has(e.type))
 
   let menace = 0
   let degats = 0
   let cartes = 0
-  for (const e of dedans) {
+  for (const e of faits) {
     // `valeur` est la variation signée du compteur (voir HistoriquePartie) :
     // une menace retirée se soustrait d'elle-même, sans test de sens ici.
     if (e.type === 'threat') menace += e.valeur ?? 0
     if (e.type === 'damage') degats += Math.abs(e.valeur ?? 0)
-    if (e.type === 'card') cartes += 1
+    // Une carte de boost n'est pas une carte de plus : elle appartient à
+    // l'activation, et le total la compterait deux fois.
+    if (e.type === 'card' && !e.boost) cartes += 1
   }
-  return { numero: definition.numero, titre: definition.titre, entrees: dedans, menace, degats, cartes }
+
+  const lignes = lignesDeLEtape(faits, noms)
+  // Une étape qui n'a produit QUE de la narration n'a rien à montrer, mais son
+  // déroulé reste consultable : on la garde, repliée.
+  return { numero: definition.numero, titre: definition.titre, lignes, brut, menace, degats, cartes }
 }
 
-export function bilanDeLaPhase(entrees: EntreeHistorique[], round: number): Bilan | undefined {
+export function bilanDeLaPhase(
+  entrees: EntreeHistorique[],
+  round: number,
+  noms: Noms = { carte: () => undefined, heros: () => undefined }
+): Bilan | undefined {
   const dedans = entrees.filter((e) => e.round === round && PHASES_MECHANT.has(e.phase))
   // Ordre du jeu : l'historique empile les plus récentes en tête.
   const ordonnees = [...dedans].reverse()
-  const etapes = ETAPES.map((definition) => etapeDe(ordonnees, definition)).filter(
+  const etapes = ETAPES.map((definition) => etapeDe(ordonnees, definition, noms)).filter(
     (e): e is Etape => e !== undefined
   )
   if (etapes.length === 0) return undefined
   return { cle: `${round}`, round, etapes }
-}
-
-/** « +3 → 4/12 », ou « +3 → 4 » quand la manigance n'affiche pas de seuil. */
-function menaceLisible(entree: EntreeHistorique): string | undefined {
-  const { valeur, restant, plafond } = entree
-  if (valeur === undefined || restant === undefined) return undefined
-  const signe = valeur > 0 ? `+${valeur}` : `${valeur}`
-  return plafond ? `${signe} → ${restant}/${plafond}` : `${signe} → ${restant}`
-}
-
-/** Le héros de ce siège, pour dire QUI a reçu la carte. */
-function nomDuHeros(monde: World | undefined, joueur: number | undefined): string | undefined {
-  if (joueur === undefined) return undefined
-  const heros = monde?.players?.[joueur]?.area_hero?.[0]?.name
-  return heros ? heros.replace(/^\W*/, '') : `P${joueur + 1}`
 }
 
 export function RecapPhaseMechant({
@@ -121,7 +273,25 @@ export function RecapPhaseMechant({
   playerId?: number
 }) {
   const [bilan, setBilan] = useState<Bilan | undefined>(undefined)
+  const [depliees, setDepliees] = useState<Set<number>>(() => new Set())
   const phasePrecedente = useRef<string | undefined>(undefined)
+
+  // Les noms sont lus au moment du bilan, sur le monde tel qu'il est alors. Une
+  // carte partie (toute carte de boost l'est) n'y répond plus : les entrées
+  // portent donc leur propre `nomCarte`, qui, lui, ne s'efface pas.
+  const noms: Noms = useMemo(
+    () => ({
+      carte: (id) => (id === undefined ? undefined : cartesMonde?.get(id)?.name),
+      heros: (joueur) => {
+        if (joueur === undefined) return undefined
+        const heros = monde?.players?.[joueur]?.area_hero?.[0]?.name
+        return heros ? heros.replace(/^\W*/, '') : `P${joueur + 1}`
+      },
+    }),
+    [cartesMonde, monde]
+  )
+  const nomsRef = useRef(noms)
+  nomsRef.current = noms
 
   useEffect(() => {
     const phase = monde?.phase
@@ -131,7 +301,8 @@ export function RecapPhaseMechant({
     if (!actif || phase === undefined || avant === undefined) return
     // On ne déclenche qu'à la SORTIE de la phase du méchant.
     if (!PHASES_MECHANT.has(avant) || PHASES_MECHANT.has(phase)) return
-    setBilan(bilanDeLaPhase(entrees, monde?.round_id ?? 0))
+    setDepliees(new Set())
+    setBilan(bilanDeLaPhase(entrees, monde?.round_id ?? 0, nomsRef.current))
   }, [monde?.phase, monde?.round_id, actif, entrees])
 
   // La carte survolée, montrée dans le MÊME agrandissement que sur la table.
@@ -188,34 +359,42 @@ export function RecapPhaseMechant({
     return morceaux.join(' · ')
   }
 
-  const ligne = (entree: EntreeHistorique) => {
-    const heros = entree.type === 'card' ? nomDuHeros(monde, entree.joueur) : undefined
-    const chiffres = entree.type === 'threat' ? menaceLisible(entree) : undefined
-    const survolable = entree.cibleId !== undefined
-    return (
-      <li
-        key={entree.cle}
-        className={survolable ? 'est-survolable' : undefined}
-        onMouseEnter={survolable ? () => pointer(entree.cibleId) : undefined}
-        onMouseLeave={survolable ? () => pointer(undefined) : undefined}
-        onPointerUp={
-          survolable
-            ? (evenement) => {
-                if (evenement.pointerType === 'mouse') return
-                appuyer(entree.cibleId)
-              }
-            : undefined
+  const survolProps = (cibleId: number | undefined) =>
+    cibleId === undefined
+      ? {}
+      : {
+          className: 'est-survolable',
+          onMouseEnter: () => pointer(cibleId),
+          onMouseLeave: () => pointer(undefined),
+          onPointerUp: (evenement: React.PointerEvent) => {
+            if (evenement.pointerType === 'mouse') return
+            appuyer(cibleId)
+          },
         }
-      >
-        <span className="recap-mechant-fait">
-          <b>{entree.titre}</b>
-          {heros ? <em className="recap-mechant-heros">{heros}</em> : null}
+
+  const ligne = (ligne: Ligne) => (
+    <li key={ligne.cle} className={`recap-ligne est-${ligne.genre}`}>
+      <span className="recap-mechant-fait" {...survolProps(ligne.cibleId)}>
+        <b>{ligne.titre}</b>
+        {ligne.heros ? <em className="recap-mechant-heros">{ligne.heros}</em> : null}
+      </span>
+      {ligne.chiffre ? <strong className="recap-mechant-chiffre">{ligne.chiffre}</strong> : null}
+      {ligne.boosts ? (
+        <span className="recap-mechant-boosts">
+          {t('boost')} :{' '}
+          {ligne.boosts.map((boost, index) => (
+            <span key={boost.cle}>
+              {index > 0 ? ', ' : ''}
+              <span {...survolProps(boost.cibleId)}>{boost.nom}</span>
+            </span>
+          ))}
         </span>
-        {chiffres ? <strong className="recap-mechant-chiffre">{chiffres}</strong> : null}
-        {entree.detail ? <small>{entree.detail}</small> : null}
-      </li>
-    )
-  }
+      ) : null}
+      {ligne.effets?.map((effet) => (
+        <small key={effet}>{effet}</small>
+      ))}
+    </li>
+  )
 
   return (
     <div
@@ -236,16 +415,43 @@ export function RecapPhaseMechant({
           </strong>
         </header>
 
-        {bilan.etapes.map((etape) => (
-          <section className="recap-mechant-groupe" key={etape.numero}>
-            <span className="plateau-eyebrow">
-              <i>{etape.numero}</i>
-              {t(etape.titre)}
-              {totaux(etape) ? <b className="recap-mechant-total">{totaux(etape)}</b> : null}
-            </span>
-            <ul>{etape.entrees.map(ligne)}</ul>
-          </section>
-        ))}
+        {bilan.etapes.map((etape) => {
+          const depliee = depliees.has(etape.numero)
+          return (
+            <section className="recap-mechant-groupe" key={etape.numero}>
+              <span className="plateau-eyebrow">
+                <i>{etape.numero}</i>
+                {t(etape.titre)}
+                {totaux(etape) ? <b className="recap-mechant-total">{totaux(etape)}</b> : null}
+                <button
+                  type="button"
+                  className="recap-mechant-repli"
+                  aria-expanded={depliee}
+                  title={t('Voir le déroulé complet du moteur')}
+                  onClick={() =>
+                    setDepliees((avant) => {
+                      const apres = new Set(avant)
+                      if (!apres.delete(etape.numero)) apres.add(etape.numero)
+                      return apres
+                    })
+                  }
+                >
+                  {depliee ? '▾' : '▸'}
+                </button>
+              </span>
+
+              {etape.lignes.length > 0 ? <ul>{etape.lignes.map(ligne)}</ul> : null}
+
+              {depliee ? (
+                <ul className="recap-mechant-deroule">
+                  {etape.brut.map((entree) => (
+                    <li key={entree.cle}>{entree.titre}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          )
+        })}
 
         <button
           type="button"

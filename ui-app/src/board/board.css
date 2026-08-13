@@ -1989,6 +1989,19 @@
     animation: carte-apercu-entre 130ms ease-out;
   }
 
+  /* 400 est taille pour la TABLE. Un appelant plein ecran passe au-dessus de
+     l'apercu — le bilan de la phase du mechant est a 540, et son fond floute
+     alors la carte qu'on cherchait justement a lire.
+     Cette regle DOIT rester dans `utilitaires` : c'est le dernier calque
+     (voir styles/tokens.css), et la regle ci-dessus y vit. Ecrite ailleurs,
+     meme avec une specificite plus forte, elle perdrait — le calque tranche
+     avant la specificite, et c'est exactement ce qui s'est passe la premiere
+     fois. On ne monte que d'un cran : le splash de tour (550) et la fin de
+     partie (600) gardent la priorite. */
+  .carte-apercu.au-dessus-du-bilan {
+    z-index: 545;
+  }
+
   /* Les deux largeurs de carte de l'apercu vivent ICI, sur le conteneur, et non
      sur .scan-card : les blocs de texte poses SOUS la carte (mots-cles, texte
      francais) doivent s'y caler, et ils ne peuvent pas lire une variable definie
@@ -4171,15 +4184,68 @@
     color: rgba(255, 255, 255, 0.92);
   }
 
-  /* Une ligne dont on connaît la carte s'annonce comme regardable. Le curseur
+  /* Ce qui est REGARDABLE, c'est le nom d'une carte — pas la ligne entière, dont
+     une partie (le chiffre, le héros) ne désigne aucune carte. Le curseur
      « aide » plutôt que « main » : survoler informe, ça n'agit pas. */
-  .recap-mechant-groupe li.est-survolable {
+  .est-survolable {
     cursor: help;
-    transition: background 120ms ease;
+    border-radius: 4px;
+    text-decoration: underline dotted rgba(255, 255, 255, 0.28);
+    text-underline-offset: 3px;
+    transition: background 120ms ease, text-decoration-color 120ms ease;
   }
 
-  .recap-mechant-groupe li.est-survolable:hover {
-    background: rgba(255, 255, 255, 0.12);
+  .est-survolable:hover {
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Le verbe de la ligne se lit à la couleur avant de se lire au mot : rouge
+     quand ça frappe, jaune quand ça manigance. Les deux teintes sont déjà
+     celles du jeu (menace en or, méchant en rouge). */
+  .recap-ligne.est-attaque > .recap-mechant-fait b {
+    color: #ff8a8f;
+  }
+
+  .recap-ligne.est-manigance > .recap-mechant-fait b,
+  .recap-ligne.est-menace > .recap-mechant-fait b {
+    color: #ffd45a;
+  }
+
+  /* Les boosts d'une activation, sous elle et en retrait : ils lui
+     appartiennent, ils ne sont pas des révélations de plus. */
+  .recap-mechant-boosts {
+    grid-column: 1 / -1;
+    padding-left: 12px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.72rem;
+    border-left: 2px solid rgba(255, 138, 143, 0.4);
+    margin-top: 3px;
+  }
+
+  /* Le déroulé complet du moteur : replié par défaut, et volontairement terne —
+     on vient y chercher une explication, pas une information de jeu. */
+  .recap-mechant-repli {
+    margin-left: 6px;
+    padding: 0 4px;
+    color: rgba(255, 255, 255, 0.45);
+    background: none;
+    border: none;
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+
+  .recap-mechant-repli:hover {
+    color: #fff;
+  }
+
+  .recap-mechant-deroule li {
+    display: block;
+    background: none;
+    padding: 2px 10px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.7rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .recap-mechant-heros {
@@ -4202,12 +4268,6 @@
     white-space: nowrap;
   }
 
-  /* L'aperçu vit dans <body> avec un z-index taillé pour la table (400) : il
-     passerait sous le bilan (540). On le remonte juste au-dessus, et pas plus —
-     le splash de tour (550) et la fin de partie (600) gardent la priorité. */
-  .carte-apercu.au-dessus-du-bilan {
-    z-index: 545;
-  }
 
   .recap-mechant-ok {
     justify-self: center;

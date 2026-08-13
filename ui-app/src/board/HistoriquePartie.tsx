@@ -59,6 +59,22 @@ export type EntreeHistorique = {
   restant?: number
   /** Le seuil, quand la cible en a un : la menace maximale d'une manigance. */
   plafond?: number
+  /**
+   * Le nom NU de la carte concernée, sans la phrase autour.
+   *
+   * `titre` est déjà une phrase traduite (« Sonic Boom révélée ») : un lecteur
+   * qui veut juste le nom devrait la découper, et le découpage change avec la
+   * langue. On garde donc le nom tel que le monde le donnait à l'instant du
+   * fait — ce qui le rend lisible même quand la carte a depuis quitté la table,
+   * ce qui est le cas de toute carte de boost.
+   */
+  nomCarte?: string
+  /**
+   * Carte retournée comme BOOST d'une activation ennemie. Le bilan de la phase
+   * du méchant la rattache à l'attaque qu'elle a gonflée au lieu de l'afficher
+   * comme une révélation de plus.
+   */
+  boost?: boolean
 }
 
 /**
@@ -67,14 +83,14 @@ export type EntreeHistorique = {
  */
 type Rattachement = Pick<
   EntreeHistorique,
-  'cibleId' | 'joueur' | 'acteur' | 'valeur' | 'restant' | 'plafond'
+  'cibleId' | 'joueur' | 'acteur' | 'valeur' | 'restant' | 'plafond' | 'nomCarte' | 'boost'
 >
 
 type CarteObservee = {
   id: number
   nom: string
   type: string
-  zone: 'hand' | 'player-play' | 'player-discard' | 'encounter-deck' | 'encounter-play' | 'encounter-discard' | 'other'
+  zone: 'hand' | 'player-play' | 'player-discard' | 'encounter-deck' | 'encounter-play' | 'encounter-discard' | 'boost' | 'other'
   joueur?: number
   vie?: number
   menace?: number
@@ -182,7 +198,10 @@ function indexerMonde(monde: World): Map<number, CarteObservee> {
   ajouterCartes(index, monde.area_environment, 'encounter-play')
   ajouterCartes(index, monde.area_revealing, 'encounter-play')
   ajouterCartes(index, monde.area_processing, 'encounter-play')
-  ajouterCartes(index, monde.area_boost, 'encounter-play')
+  // Zone À PART, alors qu'elle est bien « en jeu » : une carte de boost n'est
+  // pas une révélation comme les autres, elle appartient à l'activation qu'elle
+  // gonfle. La distinguer ici est ce qui permet au bilan de la rattacher.
+  ajouterCartes(index, monde.area_boost, 'boost')
   ajouterCartes(index, monde.area_removed, 'other')
   ajouterCartes(index, monde.victory_display, 'other')
   ajouterCartes(index, monde.encounter_deck, 'encounter-deck')
@@ -208,7 +227,7 @@ function indexerMonde(monde: World): Map<number, CarteObservee> {
 
 function entreeCarteJouee(monde: World, avant: CarteObservee, apres: CarteObservee): EntreeHistorique | undefined {
   if (avant.zone !== 'hand') return undefined
-  const rattachement = { cibleId: apres.id, joueur: apres.joueur }
+  const rattachement = { cibleId: apres.id, joueur: apres.joueur, nomCarte: apres.nom }
   if (apres.zone === 'player-play') {
     return entree(monde, 'card', `${apres.nom} ${t('joué')}`, `P${(apres.joueur ?? 0) + 1}`, `${apres.id}:play`, rattachement)
   }
@@ -230,9 +249,16 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
 
   for (const [id, courante] of courantes) {
     const precedente = precedentes.get(id)
-    const rattachement = { cibleId: id, joueur: courante.joueur }
+    const rattachement = {
+      cibleId: id,
+      joueur: courante.joueur,
+      nomCarte: courante.nom,
+      // Une carte de boost est reconnue à SA ZONE, pas à la phase où elle
+      // paraît : le moteur en distribue aussi hors activation (Vilenie).
+      boost: courante.zone === 'boost' || undefined,
+    }
     if (!precedente) {
-      if (courante.zone === 'encounter-play') {
+      if (courante.zone === 'encounter-play' || courante.zone === 'boost') {
         sorties.push(entree(apres, 'card', `${courante.nom} ${t('révélée')}`, undefined, `${id}:revealed`, rattachement))
       }
       continue

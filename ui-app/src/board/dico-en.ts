@@ -395,6 +395,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Activations': 'Enemy activations',
   'Cartes distribuées': 'Encounter cards dealt',
   'carte(s)': 'card(s)',
+  // Les verbes d'une activation : le jeu dit « attacks » / « schemes ».
+  'attaque': 'attacks',
+  'manigance sur': 'schemes against',
+  'boost': 'boost',
+  'Voir le déroulé complet du moteur': 'Show the engine’s full sequence',
   'Phase du méchant rapide': 'Fast villain phase',
   'Enchaîne la phase sans « Continue », puis affiche un bilan':
     'Runs the phase without "Continue", then shows a summary',
