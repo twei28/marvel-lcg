@@ -127,6 +127,20 @@ def _nom_de_fichier(brut: str) -> str:
     return propre or 'campagne'
 
 
+def _rang_de_parution(entete: 'Dict[str, Any]') -> int:
+    """Rang de sortie d'une boite, lu dans le numero de sa cle d'extension.
+
+    « 45. Age of Apocalypse » -> 45. C'est la meme convention que partout
+    ailleurs (sets_info.json, les vagues de l'ecran de preparation) : le
+    numero d'une extension EST son ordre de sortie.
+
+    Sans numero lisible, on renvoie un rang enorme plutot qu'une erreur : une
+    definition mal formee finit la liste au lieu de la faire echouer.
+    """
+    debut = str(entete.get('cle_extension', '')).split('.', 1)[0].strip()
+    return int(debut) if debut.isdigit() else 10 ** 6
+
+
 def resume_campagnes() -> 'List[Dict[str, Any]]':
     """Les campagnes du joueur, telles que les hauts faits les lisent.
 
@@ -217,7 +231,21 @@ class GameServerCampagne(GameServerBase):
 
     # ------------------------------------------------------------- definitions --
     async def list_campagnes_definies(self, request: web.Request) -> web.Response:
-        """Toutes les boites-campagnes jouables, dans l'ordre de leur code."""
+        """Toutes les boites-campagnes jouables, DANS L'ORDRE DE PARUTION.
+
+        L'ordre ne vient pas du nom de fichier — alphabetique, il faisait
+        ouvrir la liste sur la boite de 2025 et finir sur celle de 2020 — mais
+        du numero que porte `cle_extension` (« 45. Age of Apocalypse » -> 45).
+        Ce numero est deja l'ordre de sortie du jeu, donc une boite a venir se
+        range d'elle-meme et rien n'est a tenir a jour ici.
+
+        Une definition sans numero lisible passe en fin de liste, a sa place
+        alphabetique : le tri est stable, il ne fait que deplacer ce qu'il sait
+        dater.
+
+        L'ecran des campagnes preselectionne la premiere de la liste : c'est
+        donc desormais la plus ancienne, celle par laquelle on commence.
+        """
         import json as json_lib
         import os
 
@@ -243,6 +271,7 @@ class GameServerCampagne(GameServerBase):
                     'resume_en': definition.get('resume_en', ''),
                     'nb_scenarios': len(definition.get('scenarios', [])),
                 })
+        sorties.sort(key=_rang_de_parution)
         return web.json_response(sorties)
 
     async def get_campagne_definition(self, request: web.Request) -> web.Response:
