@@ -1,10 +1,14 @@
 # TODO / SPEC — Mode Bataille Civil War (PvP / co-op par équipes)
 
-**Statut :** ✅ **COOPÉRATIF TERMINÉ** le 13/08/2026, validé en jeu (voir §6-§7),
-**plus le mode expert des 4 scénarios, livré le 13/08** (§8).
-🚧 **COMPÉTITIF EN COURS** depuis le 13/08 : une partie à deux camps **se lance
-depuis l'écran de préparation** et se joue de bout en bout dans le moteur
-(§9, §11). Ce qui reste est nommé au §10.
+**Statut :** ✅ **TERMINÉ le 13/08/2026.** Coopératif validé en jeu (§6-§7),
+mode expert des 4 scénarios livré (§8), et **compétitif complet** : les sept
+chantiers du §10 sont fermés (§12). Une partie à deux camps se lance depuis
+l'écran de préparation, se joue de bout en bout et **se gagne par un camp**,
+avec les trois conditions de victoire, la règle des phases égales et les cinq
+départages du livret.
+⚠️ Ce qui n'a PAS été fait, et par décision : **personne n'a encore joué une
+partie de Bataille dans un navigateur.** Tout ce qui suit est mesuré par le
+moteur (`tools/test_competitif.py`, 7 cas), jamais vu à l'écran.
 ⚠️ Le §2 et le §4 de cette fiche disaient que le compétitif dépendait du serveur
 permanent multijoueur : **c'est faux, et mesuré comme tel** (§9.1).
 **Pas une campagne** — un mode de jeu distinct.
@@ -201,34 +205,29 @@ une partie ordinaire rend le même résultat qu'avant, et Kang mène 3 parties.
 
 ---
 
-## 10. CE QUI RESTE AU COMPÉTITIF, nommé et non deviné
+## 10. CE QUI RESTAIT AU COMPÉTITIF — LES SEPT POINTS SONT FERMÉS
 
-Rien de tout cela n'est commencé. C'est la liste, par ordre de ce qui bloque le
-plus un joueur.
+La liste était rangée par ordre de ce qui bloquait le plus un joueur. Le détail
+de chaque correctif est au §12.
 
 1. ~~Aucun chemin de lancement.~~ **FAIT le 13/08** (`802f457`), voir §11.
-1 bis. **⏳ EN ATTENTE, à faire en premier : regarder ce qu'une partie de
-   Bataille DONNE À VOIR.** Le plateau React ne connaît pas les zones de jeu
-   (`grep -rn "game_area" ui-app/src` rend 0). La partie se lance ; personne n'a
-   vu son affichage. Soit le rendu du moteur est déjà filtré par zone, soit les
-   deux tables se mêlent. Une partie jouée dans un navigateur tranche, et rien
-   d'autre ne devrait être ajouté avant.
-2. **Les conditions de victoire sont encore globales.** Le premier complot
-   principal complété termine TOUTE la partie. Le livret p.17 veut trois
-   conditions par équipe, la règle « la partie ne s'arrête pas avant que les deux
-   camps aient joué autant de phases », et cinq départages.
-3. **Les PV du leader comptent tous les joueurs.** Mesuré : Iron Man démarre à 24
-   PV pour 1 joueur en face, parce que `GetYourTeamSize` lit le nombre TOTAL de
-   joueurs. Il doit lire la taille du camp qui l'affronte.
-4. **Un seul jeton de premier joueur.** En 2v2 chaque camp a le sien (p.16).
-5. **L'étape 3 de la mise en place manque** : les 4 cartes joueur du leader mises
-   de côté, que Choosing Sides fait gagner (p.16). C'est ce qui bloque 56128b.
-6. **56158 Switching Sides** ne sait pas offrir une fenêtre de paiement à un
-   joueur d'une autre table.
-7. **L'isolement entre tables n'a pas été audité** (p.16 : « card abilities on
-   your side of the table completely ignore cards on the other side unless they
-   specifically refer to them »).
-
+1 bis. ⏳ **Regarder ce qu'une partie de Bataille DONNE À VOIR.** Toujours
+   ouvert, et c'est le seul : le plateau React ne connaît pas les zones de jeu
+   (`grep -rn "game_area" ui-app/src` rend 0). Une partie jouée dans un
+   navigateur tranchera. Le reste a été fait sans attendre, à la demande de
+   l'utilisateur (« finis Civil War complètement »).
+2. ~~Les conditions de victoire sont globales.~~ **FAIT** (§12.1) : trois
+   conditions par camp, la règle des phases égales, et les cinq départages.
+3. ~~Les PV du leader comptent tous les joueurs.~~ **FAIT** (§12.2) : Iron Man
+   démarre à 12 PV face à un joueur, 24 face à deux.
+4. ~~Un seul jeton de premier joueur.~~ **FAIT** (§12.3) : un par camp, qui
+   tourne à la fin de la phase vilain de SON camp.
+5. ~~L'étape 3 de la mise en place manque.~~ **FAIT** (§12.4) : les 4 cartes
+   joueur du leader de chaque camp sont mises de côté, et 56128b les donne.
+6. ~~56158 Switching Sides ne sait pas offrir une fenêtre de paiement à un
+   joueur d'une autre table.~~ **FAIT** (§12.5).
+7. ~~L'isolement entre tables n'a pas été audité.~~ **FAIT** (§12.6), et
+   l'audit a trouvé une vraie fuite.
 
 ---
 
@@ -268,3 +267,149 @@ jouée dans un navigateur tranchera : soit le rendu du moteur est déjà filtré
 zone et le plateau montre la bonne table sans le savoir, soit les deux tables
 s'affichent mêlées. **C'est le prochain point à mesurer, avant d'ajouter quoi
 que ce soit d'autre.**
+
+---
+
+## 12. LE COMPÉTITIF EST COMPLET (13/08/2026, soir)
+
+Sept chantiers, six correctifs et une fuite trouvée en auditant. Tout est
+mesuré par `tools/test_competitif.py` (7 cas, un processus chacun — le moteur
+ne sait monter qu'une partie par processus).
+
+### 12.1 La fin de partie se gagne PAR UN CAMP
+
+Nouveau `src/game/world/competitive.py`. Le principe tient en une phrase du
+livret : « The game does not end until both sides have played an equal number
+of phases » (p.17). Une condition atteinte n'arrête donc plus la partie, elle
+est **enregistrée** ; la partie s'arrête à la fin de la phase du camp
+resistance, qui joue en second dans le round enfilé.
+
+Les quatre portes du moteur ont été détournées, chacune en gardant son
+comportement d'avant hors mode compétitif :
+
+* `AbilityFactory.IfThisSchemeStageIsCompletedPlayersLoseTheGame` et
+  `World.AdvanceMainScheme` → `World.RecordCompetitiveDefeat` ;
+* `World.CheckIsAllPlayersEliminated` → compte **par camp**, sur
+  `const_seat_order_players` (un joueur éliminé sort de `const_players`) ;
+* `Scenario.AdvanceVillainStage` → `IsCompetitiveLeaderDefeated`, qui compte les
+  leaders **de la zone** : le test global « il ne reste que celui-ci » n'est
+  jamais vrai avec deux leaders sur la table ;
+* `Worlds.PopEncounterCards` (deck rencontre vide) → c'est le camp de CETTE
+  table qui perd, pas la partie entière.
+
+⚠️ **Le sens se lit depuis la table.** Un complot accompli ou des héros vaincus
+donnent le point au camp d'EN FACE (c'est SON leader qui a réussi) ; un leader
+vaincu donne le point au camp de sa table. C'est ce renversement qui a fait
+rendre le mauvais vainqueur au premier jet, et la sonde l'a montré tout de
+suite.
+
+Deux camps perdus = les deux perdent. Deux leaders vaincus = égalité, et les
+**cinq départages** de la p.17 tranchent, dans l'ordre : stade 1B non dépassé,
+sbires et manigances en zone, menace sur le complot, PV restants, attachements
+sur le leader.
+
+Un leader vaincu **reste en jeu** (p.17 : « it remains on the table [...] so it
+can still be targeted »). Un garde-fou empêche le moteur de le vaincre deux
+fois.
+
+Le client reçoit `winning_team` et `teams` (le camp de chaque siège) :
+`players_won` seul ne suffit pas, le MÊME descripteur sert aux deux tables.
+`ui-app` lit ça dans `board/fin-partie.ts` (4 tests), et l'écran de fin dit
+« Votre camp l'emporte » ou « Le camp adverse l'emporte » au lieu de parler des
+héros. Les quatre raisons de fin sont traduites.
+
+### 12.2 Les PV du leader se comptent sur SA table
+
+`WorldAction.GetPlayerNumIcon` rend la moitié des sièges en mode compétitif.
+Le livret ne connaît que le 1v1 et le 2v2 (p.14) et l'écran de préparation
+coupe les sièges en deux : les deux camps ont donc toujours la même taille.
+Un seul point de correction, et il porte tout ce qui se compte « par joueur » :
+PV du leader, menace de départ du complot, `GetYourTeamSize`.
+
+Mesuré : Iron Man 12 PV en 1v1 (24 avant), 24 en 2v2 ; Captain America 14 et 28.
+
+### 12.3 Un jeton de premier joueur par camp
+
+`World.PassFirstPlayerToken` tourne **les places tenues par un camp** dans
+`self.players`, l'autre camp gardant les siennes. Appelé à la fin de la phase
+vilain de chaque camp (p.16) ; la rotation globale de fin de round est coupée en
+compétitif, sinon le jeton changerait de camp. `Identity.SetActive` ne retire le
+jeton qu'aux joueurs du même camp — sans quoi les deux jetons ne pourraient pas
+coexister. La mise en place en pose un par camp.
+
+### 12.4 Les 4 cartes joueur du leader (étape 3, p.14)
+
+`Competitive.CartesDuLeader` les trouve **dans les données** : ce sont les
+cartes de type joueur du set du leader. Piège payé : le set d'un leader porte le
+nom du personnage, et ce nom est DÉJÀ celui d'un set de héros (« Iron Man »
+désigne aussi la boîte de base) — sans filtre par pack, on mettait 13 cartes de
+côté au lieu de 4.
+
+Une réserve par CAMP (`World.GetTeamSetAside`), pas par joueur : les 4 cartes
+sont celles de l'équipe, qui se les partage à deux en 2v2. `56128b Now It's
+Personal` en donne 2 à chaque joueur du camp, avec `SetOwner` — sans quoi la
+carte repartirait à la défausse du scénario. L'écart assumé du 13/08 est levé.
+
+### 12.5 56158 Switching Sides
+
+La fenêtre de paiement à un joueur d'une autre table n'était pas un manque du
+moteur : `player.AskSpendResources` s'adresse à n'importe quel joueur. L'allié
+défaussé est proposé à chaque joueur du camp d'en face, dans l'ordre des sièges,
+et entre en jeu sur SA table sous SON contrôle.
+
+⚠️ **Le déferlement change de sens, et c'est délibéré.** « If no ally left play
+this way » est l'idiome habituel du jeu (« If you cannot, this card gains
+surge », mw020) : la carte déferle quand AUCUN allié n'a été défaussé, pas quand
+personne n'a racheté. Avant ce lot elle déferlait à chaque révélation en
+compétitif, et jamais en coopératif.
+
+### 12.6 L'isolement des tables, et la fuite trouvée en l'auditant
+
+L'audit (`mesurer_isolement`, joué à la mise en place ET après une partie
+entière) compare la zone de CHAQUE carte de chaque joueur à celle de son
+identité. Il a trouvé du premier coup : **toute la main, le deck et la défausse
+du second camp naissaient sur la table du premier.**
+
+Cause : `Player.GetGameArea` rendait la PREMIÈRE zone tant que la partie n'avait
+pas commencé, et `Deck.Insert` demande sa zone au propriétaire du deck
+d'arrivée. Chaque carte piochée pendant la mise en place atterrissait donc chez
+l'adversaire. La table d'un joueur est maintenant celle de son identité dès
+qu'elle existe.
+
+C'est la même leçon qu'au lot précédent, sous un autre angle : **viser une zone
+ne suffit pas, c'est le deck d'arrivée qui tranche.**
+
+Deux autres isolements réparés au passage, tous deux en mode compétitif :
+l'élimination d'un joueur passait ses sbires et son jeton au joueur SUIVANT,
+qui est à l'autre table en 1v1 ; et le nettoyage « Fix Kang » (retirer les
+complots d'une zone vidée) effaçait la table du camp perdant, que les départages
+doivent encore mesurer.
+
+### Un défaut du PILOTE trouvé en route, et il ne vient pas d'ici
+
+La partie 2v2 ne se terminait jamais : un seul tour de Tigra mangeait le
+plafond de questions. Mesuré : le moteur reposait indéfiniment la MÊME question
+(une capacité « Ask » visant une autre identité), et un pilote qui répond
+toujours la première option la rechoisit sans fin.
+
+⚠️ **Ce n'est pas le mode compétitif** : une partie ORDINAIRE à 4 joueurs, même
+descripteur sans camps, se bloque exactement pareil. Le pilote de
+`test_competitif.py` répond donc la n-ième option à la n-ième répétition d'une
+question dans une même phase, puis DÉCLINE au bout de trois. La partie ordinaire
+à 4 joueurs va alors jusqu'à sa fin en 226 questions. `tools/autoplay.py`, qui a
+son propre garde-fou anti-boucle, ne joue que des parties en solo : personne
+n'avait encore mené une partie à 4 par le bot.
+
+### Ce que la mesure dit
+
+`tools/test_competitif.py` : **7 cas, tous verts** (préparation 1v1 et 2v2,
+verdicts, cartes du leader, switching sides, parties 1v1 et 2v2 complètes).
+La partie 1v1 finit sur « The Registration Team Won », la 2v2 sur « Both Teams
+Lost » — les deux camps ayant perdu dans la même fenêtre, ce qui exerce en vraie
+partie la branche que le livret décrit.
+Non-régression : `test_cards` 4352 ok / 0 erreur, `autoplay` mène des parties
+ordinaires sans incident, `ui-app` 461 tests + `tsc` propres.
+
+**Ce qui n'est PAS mesuré** : l'écran. Aucune partie de Bataille n'a été jouée
+dans un navigateur, et le plateau ne connaît toujours pas les zones de jeu —
+c'est le point 1 bis du §10, et il demande un humain.
