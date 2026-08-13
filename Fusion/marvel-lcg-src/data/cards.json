@@ -70512,6 +70512,38 @@
             "text": "[star] <b>Forced Response</b>: After Wolverine thwarts, heal 2 damage from him."
         },
         {
+            "card_id": "dt005",
+            "type": "Event",
+            "name": "Blast Radius",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 5 damage to your hero and choose up to 3 enemies \u2192 deal X damage to each chosen enemy, where X is the amount of damage your hero took this way."
+        },
+        {
+            "card_id": "dt006",
+            "type": "Event",
+            "name": "Human Shield",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take any amount of damage from an attack, prevent up to 3 of that damage. Then, if you took damage from that attack, ready your hero."
+        },
+        {
             "card_id": "dt007",
             "type": "Resource",
             "name": "The Power of Determination",
@@ -70589,6 +70621,22 @@
             "text": "Max 1 per player.\n<b>Interrupt</b>: When your hero would be defeated, place 1 [per_hero] threat on the main scheme and set your hit point dial to 1 instead. Then, remove this card from the game."
         },
         {
+            "card_id": "dt012",
+            "type": "Event",
+            "name": "Gone in a Flash",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your hero's remaining hit points are less than half your hero's starting hit points.\n<b>Hero Action</b>: Confuse an enemy. Then, change your form."
+        },
+        {
             "card_id": "dt013",
             "type": "Upgrade",
             "name": "Recon",
@@ -70657,6 +70705,22 @@
             "text": "<b>Forced Response</b>: After Deadpool enters play, deal yourself 1 encounter card."
         },
         {
+            "card_id": "dt017",
+            "type": "Event",
+            "name": "Masochism",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Response</b>: After you take more than 3 damage, draw X cards where X is the amount of damage you took past 3."
+        },
+        {
             "card_id": "dt018",
             "type": "Upgrade",
             "name": "Feel the Pain",
@@ -70705,5 +70769,5 @@
             "text": "Max 1 per player.\n<b>Hero Action</b>: Exhaust Soldier On and take 2 damage \u2192 if you have less than half of your maximum hit points remaining, you get +2 hand size until the end of the phase."
         }
     ],
-    "checksum": "4444c6009792e4ea07c9c5ca6d94d9e429cb744835495a7e3bed4f4d6e067750"
+    "checksum": "f38cd5cbe2c2ee85bd06c948ac33118d6f343be7556d3e6269b72101c9daa9ef"
 }
