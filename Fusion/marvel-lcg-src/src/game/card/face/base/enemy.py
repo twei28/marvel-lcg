@@ -7,7 +7,7 @@ from game.message import *
 from game.player import *
 from cards.paper import Paper
 
-class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, Unit2, CanBoost, CanPlaceCounter):
+class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLevel, Unit2, CanBoost, CanPlaceCounter):
     @override
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)

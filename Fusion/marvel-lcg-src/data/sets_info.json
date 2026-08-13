@@ -1040,5 +1040,14 @@
         "encounters": [],
         "max_id": "dt020"
     },
-    "checksum": "ff18f6307fd5028a1d77620c8a1ebdea23d9713cefd772fe5bcee0aea122323a"
+    "119. Custom (The Spot)": {
+        "name": "spot",
+        "scenarios": [
+            "the_spot"
+        ],
+        "heroes": [],
+        "encounters": [],
+        "max_id": "sp019"
+    },
+    "checksum": "221ad8088a39752a44d14e4192489ff08526671d52eb1b14616978c41a99cf9d"
 }

@@ -6,7 +6,7 @@ from game.ability import *
 from game.message import *
 from cards.paper import Paper
 
-class Scheme2(HasAmplify, HasHazard, CanHinder, CanPlaceCounter, HasAssault, HasAttribute):
+class Scheme2(HasAmplify, HasHazard, CanHinder, HasThreatLevel, CanPlaceCounter, HasAssault, HasAttribute):
     @override
     def __init__(self, paper: 'Paper') -> None:
         self.start_threat = 0

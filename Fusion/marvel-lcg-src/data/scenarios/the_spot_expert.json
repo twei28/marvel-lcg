@@ -1,0 +1,25 @@
+{
+    "version": "0.5.8",
+    "name": "The Spot",
+    "villain": [
+        "sp004",
+        "sp005"
+    ],
+    "expert": true,
+    "schemes": [
+        "sp001a,sp001b"
+    ],
+    "set_aside": [
+        "sp006a",
+        "sp006b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "the_spot",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "sinister_syndicate"
+    ]
+}

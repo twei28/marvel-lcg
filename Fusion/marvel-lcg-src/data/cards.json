@@ -72952,5 +72952,332 @@
             "text": "Play under any player's control. Max 1 ETHOS card per player.\n<b>Hero Response</b>: After you attack a minion, if that attack exactly defeated that minion, each player may discard 1 card from their hand and draw 1 card."
         }
     ],
-    "checksum": "9252cdeca125bdb32cb03128cd10e387beae0ae8cd89535d42a8e977617a16d7"
+    "spot": [
+        {
+            "card_id": "sp001a",
+            "type": "MainScheme",
+            "name": "Heightened Threat",
+            "subtitle": "",
+            "desc": {
+                "Stage": "1A"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>Contents</b>: The Spot I & II <i>(The Spot III & IV for expert mode)</i>, The Spot and Standard encounter sets. One modular encounter set <i>(recommended: Sinister Syndicate)</i>.\n<b>Setup</b>: Find the What Goes Around... environment and put side A into play <i>(side B instead for expert mode)</i>. The first player seeks a Spot card with the Threat Level keyword and reveals it. Shuffle."
+        },
+        {
+            "card_id": "sp001b",
+            "type": "MainScheme",
+            "name": "Heightened Threat",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "1*",
+                "TargetThreat": "12*",
+                "EscalationThreat": "1*",
+                "Stage": "1B"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>Forced Interrupt</b>: When you would remove any amount of threat from here or a Spot side scheme, move that threat to the card with the highest Threat Level instead. <i>(Threat Level is the number in the red icon. If the side scheme you removed threat from has the highest Threat Level number in play, remove that threat.)</i>\n<b>If this stage is completed, the players lose the game.</b>"
+        },
+        {
+            "card_id": "sp002",
+            "type": "Villain",
+            "name": "* The Spot",
+            "subtitle": "",
+            "desc": {
+                "HP": "12*",
+                "ATK": "1",
+                "SCH": "1",
+                "Stage": "I",
+                "ThreatLevel": "1",
+                "Hinder": "1"
+            },
+            "traits": [
+                "CRIMINAL",
+                "SCIENTIST"
+            ],
+            "set_name": "The Spot",
+            "text": "[star] Threat Level 1. Characters may thwart against The Spot.\nHinder 1[per_hero]. The Spot gains retaliate 1 for every 5[per_hero] threat here, to a maximum of retaliate 3."
+        },
+        {
+            "card_id": "sp003",
+            "type": "Villain",
+            "name": "* The Spot",
+            "subtitle": "",
+            "desc": {
+                "HP": "15*",
+                "ATK": "2",
+                "SCH": "2",
+                "Stage": "II",
+                "ThreatLevel": "1",
+                "Hinder": "3",
+                "Steady": "1"
+            },
+            "traits": [
+                "CRIMINAL",
+                "SCIENTIST"
+            ],
+            "set_name": "The Spot",
+            "text": "[star] Threat Level 1. Characters may thwart against The Spot.\nHinder 3[per_hero]. Steady. The Spot gains retaliate 1 for every 5[per_hero] threat here, to a maximum of retaliate 3."
+        },
+        {
+            "card_id": "sp004",
+            "type": "Villain",
+            "name": "* The Spot",
+            "subtitle": "",
+            "desc": {
+                "HP": "18*",
+                "ATK": "2",
+                "SCH": "1",
+                "Stage": "III",
+                "ThreatLevel": "1",
+                "Hinder": "3"
+            },
+            "traits": [
+                "CRIMINAL",
+                "SCIENTIST"
+            ],
+            "set_name": "The Spot",
+            "text": "[star] Threat Level 1. Characters may thwart against The Spot.\nHinder 3[per_hero]. The Spot gains retaliate 1 for every 5[per_hero] threat here, to a maximum of retaliate 4."
+        },
+        {
+            "card_id": "sp005",
+            "type": "Villain",
+            "name": "* The Spot",
+            "subtitle": "",
+            "desc": {
+                "HP": "20*",
+                "ATK": "3",
+                "SCH": "2",
+                "Stage": "IV",
+                "ThreatLevel": "1",
+                "Hinder": "5",
+                "Stalwart": "1"
+            },
+            "traits": [
+                "CRIMINAL",
+                "SCIENTIST"
+            ],
+            "set_name": "The Spot",
+            "text": "[star] Threat Level 1. Characters may thwart against The Spot.\nHinder 5[per_hero]. Stalwart. The Spot gains retaliate 1 for every 5[per_hero] threat here, to a maximum of retaliate 4."
+        },
+        {
+            "card_id": "sp006a",
+            "type": "Environment",
+            "name": "What Goes Around...",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<i>Standard Mode Only.</i>\n<b>Forced Interrupt</b>: When a card that belongs to The Spot encounter set <i>(ie. a « Spot card »)</i> is revealed, place 1 threat on the main scheme.\n<b>Hero Action</b>: Discard a card from hand → move up to 3 threat from one Spot card with the Threat Level keyword to a different Spot card with the Threat Level keyword."
+        },
+        {
+            "card_id": "sp006b",
+            "type": "Environment",
+            "name": "What Goes Around...",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<i>Expert Mode Only.</i>\n<b>Forced Interrupt</b>: When a Spot card is revealed or turned faceup as a boost card, place 1 threat on the main scheme <i>(limit 1 threat per Spot card per phase)</i>.\n<b>Hero Action</b>: Discard a card from hand → move up to 3 threat from one Spot card with the Threat Level keyword to a different Spot card with the Threat Level keyword."
+        },
+        {
+            "card_id": "sp007",
+            "type": "Minion",
+            "name": "* Rocket Racer",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "1",
+                "SCH": "3",
+                "ThreatLevel": "2"
+            },
+            "traits": [
+                "CRIMINAL",
+                "GENIUS"
+            ],
+            "set_name": "The Spot",
+            "text": "Threat Level 2. Rocket Racer gains patrol and guard while he has 2[per_hero] or more threat on him.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp008",
+            "type": "Minion",
+            "name": "* Puma",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "ATK": "1*",
+                "SCH": "1",
+                "ThreatLevel": "3"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "The Spot",
+            "text": "Threat Level 3. Puma gets +1 ATK for every 2[per_hero] threat on him.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp009",
+            "type": "SideScheme",
+            "name": "Anywhere & Everywhere",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3*",
+                "ThreatLevel": "4",
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "Threat Level 4.\n<b>Forced Response</b>: When the villain phase ends, if there is 3[per_hero] or greater threat here, place 1[per_hero] threat on each card in play with the Threat Level keyword.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp010",
+            "type": "Minion",
+            "name": "* Chameleon",
+            "subtitle": "",
+            "desc": {
+                "HP": "7",
+                "ATK": "1",
+                "SCH": "1*",
+                "ThreatLevel": "5",
+                "Boost": "1"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "The Spot",
+            "text": "Threat Level 5. Chameleon gets +1 SCH for every 2[per_hero] threat on him.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp011",
+            "type": "SideScheme",
+            "name": "Penchant for Pilfery",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "4*",
+                "ThreatLevel": "6",
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "Threat Level 6.\n<b>Forced Response</b>: When the villain phase ends, if there is 4[per_hero] or greater threat here, each player chooses to either discard a card they control or take 2 damage.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp012",
+            "type": "Minion",
+            "name": "* Living Laser",
+            "subtitle": "",
+            "desc": {
+                "HP": "8",
+                "ATK": "1",
+                "SCH": "2",
+                "ThreatLevel": "7",
+                "Boost": "2"
+            },
+            "traits": [
+                "CRIMINAL",
+                "ELITE"
+            ],
+            "set_name": "The Spot",
+            "text": "Threat Level 7. Living Laser gains retaliate 1 for every 2[per_hero] threat on him (to a maximum of retaliate 4).\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp013",
+            "type": "SideScheme",
+            "name": "Spotty Pasts",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "5*",
+                "ThreatLevel": "8",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "Threat Level 8.\n<b>Forced Response</b>: When the villain phase ends, if there is 5[per_hero] or greater threat here, the first player finds a Spot minion and reveals it.\n[star] <b>Boost</b>: Reveal this card."
+        },
+        {
+            "card_id": "sp014",
+            "type": "Environment",
+            "name": "Warp Hole",
+            "subtitle": "",
+            "desc": {
+                "ThreatLevel": "9",
+                "Hinder": "5",
+                "Boost": "3"
+            },
+            "traits": [
+                "LOCATION",
+                "TECH"
+            ],
+            "set_name": "The Spot",
+            "text": "Threat Level 9. Hinder 5. While there is 3 or more threat here, this card gains [[acceleration]] [[hazard]].\n<b>Hero Response</b>: After an attack deals 3 or more damage to The Spot, remove 2 threat from here. If the last threat is removed from here this way, discard Warp Hole."
+        },
+        {
+            "card_id": "sp015",
+            "type": "Attachment",
+            "name": "* The Hypernova",
+            "subtitle": "",
+            "desc": {
+                "ATK+": "1",
+                "ThreatLevel": "10",
+                "Boost": "3"
+            },
+            "traits": [
+                "ARTIFACT",
+                "TECH"
+            ],
+            "set_name": "The Spot",
+            "text": "Attach to the Spot enemy with the highest Threat Level.\nThreat Level 10.\n<b>Forced Response</b>: After attached enemy activates, discard X cards from the top of the encounter deck, where X is the amount of threat here. If an acceleration token was placed this way, discard this card."
+        },
+        {
+            "card_id": "sp016",
+            "type": "Treachery",
+            "name": "...Comes Around!",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>When Revealed</b>: Discard the top 2 cards of the encounter deck. For each Spot card discarded this way, choose to either place 2 threat on the main scheme or reveal it. If no Spot cards were discarded this way, this card gains surge.\n[star] <b>Boost</b>: Discard the top 2 cards of the encounter deck."
+        },
+        {
+            "card_id": "sp017",
+            "type": "Treachery",
+            "name": "Distributed Presence",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>When Revealed</b>: Place a total of 5[per_hero] threat among Spot cards in play with the Threat Level keyword as evenly as possible, starting from the lowest Threat Level number. If you placed 5 threat on The Spot this way, you may ready a card you control."
+        },
+        {
+            "card_id": "sp018",
+            "type": "Treachery",
+            "name": "Oddballs",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>When Revealed</b>: Place 1 threat on each Spot card with an odd Threat Level number. If 2 or fewer threat was placed this way, discard a card in your hand with an odd printed cost.\n[star] <b>Boost</b>: Place 2 threat on The Spot."
+        },
+        {
+            "card_id": "sp019",
+            "type": "Treachery",
+            "name": "Target Spotted",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "The Spot",
+            "text": "<b>When Revealed</b>: Search the top 8 cards of the encounter deck for The Hypernova and reveal it. If it was not revealed this way, seek a Spot card with the Threat Level keyword and reveal it."
+        }
+    ],
+    "checksum": "892c6b6e48e9c4f43226ab1a7d56522f4e17664e678cc32e81bc088d74e1fafe"
 }

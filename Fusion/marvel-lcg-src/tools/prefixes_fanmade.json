@@ -116,6 +116,13 @@
       "cartes": 23,
       "depuis": "2026-08-12"
     },
+    "sp": {
+      "pack": "spot",
+      "libelle": "119. Custom (The Spot)",
+      "cartes": 21,
+      "depuis": "2026-08-13",
+      "note": "Le scenario fan-made The Spot (DesignHacker), 25 cartes physiques et 19 distinctes ; il apporte le mot-cle ThreatLevel."
+    },
     "sr": {
       "pack": "spider_man_rainy",
       "libelle": "115. Custom (Spider-Man Rainy)",

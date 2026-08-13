@@ -4,7 +4,7 @@ from game.message import *
 from cards.paper import Paper
 
 @final
-class Attachment(Asset2, HasModify, HasAmplify, HasHazard, CanCrisis, CanAttacked, CanNoStatus, HasUses, HasAccelerationIcon, HasPermanent, HasMaxPer, HasSetup, EncounterNonVillainCard, FinalType):
+class Attachment(Asset2, HasModify, HasAmplify, HasHazard, CanCrisis, CanAttacked, CanNoStatus, HasUses, CanHinder, HasThreatLevel, HasAccelerationIcon, HasPermanent, HasMaxPer, HasSetup, EncounterNonVillainCard, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)
