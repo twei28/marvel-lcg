@@ -508,7 +508,7 @@
     {
       "_image": "D-21.jpg",
       "_drive_id": "1iAtumC1-pK8MuQd71hajg3jwMseY_7Nv",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt021",
       "type": "Upgrade",
       "name": "Spontaneity",
@@ -526,7 +526,7 @@
     {
       "_image": "D-22.jpg",
       "_drive_id": "1CR26P_stk1VBP4nb_9sa1QxcIvhZWsTc",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt022",
       "type": "Ally",
       "name": "* Cloak",
@@ -548,7 +548,7 @@
     {
       "_image": "D-23.jpg",
       "_drive_id": "159tpu6MzmkPnDyC5DDoAJvsWA7D8EYA-",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt023",
       "type": "Ally",
       "name": "* Dagger",
@@ -570,7 +570,7 @@
     {
       "_image": "D-24.jpg",
       "_drive_id": "1XDEIDFLOiqK8xkQaCVQEgBXTLe4kBp2O",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt024",
       "type": "Ally",
       "name": "* Elektra",
@@ -587,12 +587,12 @@
         "HERO FOR HIRE"
       ],
       "set_name": "Determination",
-      "text": "Fragile.\nElektra's attacks gain piercing and ranged."
+      "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nElektra's attacks gain piercing and ranged."
     },
     {
       "_image": "D-25.jpg",
       "_drive_id": "1fZmViLTgBJ5D2m_fXaRhuVUngicatMbE",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt025",
       "type": "Ally",
       "name": "* Shang-Chi",
@@ -609,12 +609,12 @@
         "HERO FOR HIRE"
       ],
       "set_name": "Determination",
-      "text": "Fragile.\n<b>Response</b>: After Shang-Chi removes the last threat from a scheme or defeats a minion, ready him."
+      "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\n<b>Response</b>: After Shang-Chi removes the last threat from a scheme or defeats a minion, ready him."
     },
     {
       "_image": "D-26.jpg",
       "_drive_id": "19lUygxjMWX4kTI03oRuYQZh6m5sw8XZu",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt026",
       "type": "Ally",
       "name": "* The Punisher",
@@ -631,12 +631,12 @@
         "HERO FOR HIRE"
       ],
       "set_name": "Determination",
-      "text": "Fragile.\nThe Punisher's attacks gain piercing and ranged."
+      "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nThe Punisher's attacks gain piercing and ranged."
     },
     {
       "_image": "D-27.jpg",
       "_drive_id": "17_LPTLtqHTEozCF9AtYfNJpe8OK8nD8d",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt027",
       "type": "Event",
       "name": "Cheap Shot",
@@ -654,7 +654,7 @@
     {
       "_image": "D-28.jpg",
       "_drive_id": "1E4MMyvLVexLC03Qg-3CMGFh5JZ8tYAEv",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt028",
       "type": "Event",
       "name": "Pay It Forward",
@@ -673,7 +673,7 @@
     {
       "_image": "D-29.jpg",
       "_drive_id": "1Ztqx6xOWAHsYKTOlE7lzIL7P5g9D4Lor",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt029",
       "type": "Event",
       "name": "Thorn in Their Side",
@@ -691,7 +691,7 @@
     {
       "_image": "D-30.jpg",
       "_drive_id": "1xZdG6Pz2xdim1v8SfrN85GKw6e0YR8Rr",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt030",
       "type": "Upgrade",
       "name": "Adrenaline Shot",
@@ -709,7 +709,7 @@
     {
       "_image": "D-31.jpg",
       "_drive_id": "1UYRwSOm756jz-KHZRYUzaA8s-wg9dU2l",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt031",
       "type": "Event",
       "name": "Act on Impulse",
@@ -727,7 +727,7 @@
     {
       "_image": "D-32.jpg",
       "_drive_id": "1Pp9WuawbRd-UK3NcMUsTHAiq9bKBjmT-",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt032",
       "type": "Event",
       "name": "Last Laugh",
@@ -745,7 +745,7 @@
     {
       "_image": "D-33.jpg",
       "_drive_id": "1YwCBUXVFgSj9ohtPr3R0FGV2gkL3nfi2",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt033",
       "type": "Event",
       "name": "Sustenance",
@@ -763,7 +763,7 @@
     {
       "_image": "D-34.jpg",
       "_drive_id": "15G2u2sPwbsD8GE-mEwWSsRqLpLqkYTWh",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt034",
       "type": "Event",
       "name": "Improvised 'Porting",
@@ -781,7 +781,7 @@
     {
       "_image": "D-35.jpg",
       "_drive_id": "1T1BII3Gd9Ayq6uVQhiH2d-wXQrRzy6Rb",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt035",
       "type": "Ally",
       "name": "* Gladiator",
@@ -803,7 +803,7 @@
     {
       "_image": "D-36.jpg",
       "_drive_id": "16pW92fk7fDkJS9XlV0Rdd4ncsJKmCRZs",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt036",
       "type": "Ally",
       "name": "* Quasar",
@@ -825,7 +825,7 @@
     {
       "_image": "D-37.jpg",
       "_drive_id": "1jPNZuZgoQ8q50HRYQcdMeq597WxRktGf",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt037",
       "type": "Ally",
       "name": "* Star-Lord",
@@ -847,7 +847,7 @@
     {
       "_image": "D-38.jpg",
       "_drive_id": "101Tk4nlOsRthkaW9IybpylzlJzYQyKqR",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt038",
       "type": "Event",
       "name": "Detonate",
@@ -865,7 +865,7 @@
     {
       "_image": "D-39.jpg",
       "_drive_id": "1esYC_ZbrAAu5Ak523nhixXwC8Jyaz4k0",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt039",
       "type": "Event",
       "name": "In and Out",
@@ -883,7 +883,7 @@
     {
       "_image": "D-40.jpg",
       "_drive_id": "1EkedsNfaxTHKrRjYqPAFJxAM2hjjaksa",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt040",
       "type": "Event",
       "name": "Suckerpunch",

@@ -70767,7 +70767,360 @@
             ],
             "set_name": "Determination",
             "text": "Max 1 per player.\n<b>Hero Action</b>: Exhaust Soldier On and take 2 damage \u2192 if you have less than half of your maximum hit points remaining, you get +2 hand size until the end of the phase."
+        },
+        {
+            "card_id": "dt021",
+            "type": "Upgrade",
+            "name": "Spontaneity",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 per player.\n<b>Resource</b>: Exhaust Spontaneity and take 1 damage \u2192 generate a [wild] resource for a Determination <i>(purple)</i> event."
+        },
+        {
+            "card_id": "dt022",
+            "type": "Ally",
+            "name": "* Cloak",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "You may play cards attached to Cloak as if they were in your hand.\n<b>Hero Action</b>: Exhaust Cloak \u2192 choose an ally or upgrade from your hand and attach it to him facedown."
+        },
+        {
+            "card_id": "dt023",
+            "type": "Ally",
+            "name": "* Dagger",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nWhile Dagger is attached to the Cloak ally, reduce the cost to play her by 2."
+        },
+        {
+            "card_id": "dt024",
+            "type": "Ally",
+            "name": "* Elektra",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "2**",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D.",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nElektra's attacks gain piercing and ranged."
+        },
+        {
+            "card_id": "dt025",
+            "type": "Ally",
+            "name": "* Shang-Chi",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\n<b>Response</b>: After Shang-Chi removes the last threat from a scheme or defeats a minion, ready him."
+        },
+        {
+            "card_id": "dt026",
+            "type": "Ally",
+            "name": "* The Punisher",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "HP": "2",
+                "ATK": "3**",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nThe Punisher's attacks gain piercing and ranged."
+        },
+        {
+            "card_id": "dt027",
+            "type": "Event",
+            "name": "Cheap Shot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy (4 damage instead if that enemy is stunned or confused). This attack gains piercing."
+        },
+        {
+            "card_id": "dt028",
+            "type": "Event",
+            "name": "Pay It Forward",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Take up to 3 damage \u2192 deal X damage to enemies divided as you choose, then remove X threat from schemes in play divided as you choose, where X is the amount of damage you took this way."
+        },
+        {
+            "card_id": "dt029",
+            "type": "Event",
+            "name": "Thorn in Their Side",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Then, you may take up to 5 damage and remove 1 threat from a scheme for each point of damage you took this way divided among schemes as you choose."
+        },
+        {
+            "card_id": "dt030",
+            "type": "Upgrade",
+            "name": "Adrenaline Shot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (2 adrenaline counters).\n<b>Action</b>: Exhaust Adrenaline Shot and remove 1 adrenaline counter from here \u2192 choose an ally. That ally's next attack deals 2 additional damage and they take 1 additional consequential damage."
+        },
+        {
+            "card_id": "dt031",
+            "type": "Event",
+            "name": "Act on Impulse",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Response</b>: After you change to hero form, give a character a status card."
+        },
+        {
+            "card_id": "dt032",
+            "type": "Event",
+            "name": "Last Laugh",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your hero's remaining hit points are less than half your hero's starting hit points.\n<b>Hero Action</b> <i>(attack)</i>: Take 1 damage and deal 6 damage to the villain. Then, change your form."
+        },
+        {
+            "card_id": "dt033",
+            "type": "Event",
+            "name": "Sustenance",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your identity has the AVENGER trait.\n<b>Hero Action</b>: Heal 1 damage from your identity. Heal X additional damage from your identity where X is equal to the villain's stage number."
+        },
+        {
+            "card_id": "dt034",
+            "type": "Event",
+            "name": "Improvised 'Porting",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Give the villain 1 facedown boost card \u2192 change your form, then ready your identity."
+        },
+        {
+            "card_id": "dt035",
+            "type": "Ally",
+            "name": "* Gladiator",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "HP": "4",
+                "ATK": "3**",
+                "THW": "3**",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "GUARDIAN"
+            ],
+            "set_name": "Determination",
+            "text": "While your remaining hit points are equal to or less than 5, reduce all consequential damage Gladiator takes by 2."
+        },
+        {
+            "card_id": "dt036",
+            "type": "Ally",
+            "name": "* Quasar",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "GUARDIAN"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Response</b>: After Quasar enters play, deal 2 damage to each enemy engaged with you."
+        },
+        {
+            "card_id": "dt037",
+            "type": "Ally",
+            "name": "* Star-Lord",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "GUARDIAN",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "[star] <b>Response</b>: After Star-Lord thwarts, deal 1 damage to an enemy."
+        },
+        {
+            "card_id": "dt038",
+            "type": "Event",
+            "name": "Detonate",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Discard an upgrade you control with counters on it, then deal X damage to the villain and each minion engaged with you, where X is the number of counters discarded this way."
+        },
+        {
+            "card_id": "dt039",
+            "type": "Event",
+            "name": "In and Out",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this is the first card you have played this round, you may take 1 damage to return this card to your hand."
+        },
+        {
+            "card_id": "dt040",
+            "type": "Event",
+            "name": "Suckerpunch",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If this is the first card you have played this round, you may take 1 damage to return this card to your hand."
         }
     ],
-    "checksum": "f38cd5cbe2c2ee85bd06c948ac33118d6f343be7556d3e6269b72101c9daa9ef"
+    "checksum": "d669518d3cce0901d55f413a81d7d3ba08c718371bc4244256281e1840dbb311"
 }
