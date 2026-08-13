@@ -70431,5 +70431,279 @@
             "text": "Give to the Sharon Carter player.\nYou may flip to alter-ego form. Choose:\n- Remove the Captain America ally from the game \u2192 remove Sleeper Agent from the game.\n- Discard 1 card from hand and place 2 threat on the main scheme. Discard this obligation."
         }
     ],
-    "checksum": "8226388827a3777efa302ec361d8a62b25b4e4f769b998545dba9386d7263d60"
+    "determination": [
+        {
+            "card_id": "dt001",
+            "type": "Ally",
+            "name": "* Cable",
+            "subtitle": "Nathaniel Summers",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "X-FORCE",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "Reckless. <i>(After this character enters play, place 1 threat on each scheme.)</i>\n[star] <b>Interrupt</b>: When Cable attacks, discard any number of cards from your hand \u2192 for each card discarded this way, Cable gets +1 ATK for this attack."
+        },
+        {
+            "card_id": "dt002",
+            "type": "Ally",
+            "name": "* Moon Knight",
+            "subtitle": "Marc Spector",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "2**",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Response</b>: After Moon Knight enters play, discard a card from your hand. If that card's printed resource includes:\n[energy] - Draw a card.\n[mental] - Confuse an enemy.\n[physical] - Stun an enemy.\n[wild] - Choose 2 of the above."
+        },
+        {
+            "card_id": "dt003",
+            "type": "Ally",
+            "name": "* Venom",
+            "subtitle": "Eddie Brock",
+            "desc": {
+                "Cost": "2",
+                "HP": "4",
+                "ATK": "2*",
+                "THW": "0*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SYMBIOTE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Response</b>: After Venom enters play, place 2 threat on the main scheme."
+        },
+        {
+            "card_id": "dt004",
+            "type": "Ally",
+            "name": "* Wolverine",
+            "subtitle": "Logan",
+            "desc": {
+                "Cost": "5",
+                "HP": "4",
+                "ATK": "3**",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "[star] <b>Forced Response</b>: After Wolverine thwarts, heal 2 damage from him."
+        },
+        {
+            "card_id": "dt007",
+            "type": "Resource",
+            "name": "The Power of Determination",
+            "subtitle": "",
+            "desc": {
+                "RES": "G",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Max 2 per deck.\nDouble the number of resources this card generates while paying for a Determination <i>(purple)</i> card."
+        },
+        {
+            "card_id": "dt008",
+            "type": "Support",
+            "name": "Merc Squad",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "MERCS FOR MONEY"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (3 tactic counters).\n<b>Action</b>: Exhaust Merc Squad and remove 1 tactic counter from it \u2192 deal 1 damage to an enemy and remove 1 threat from the main scheme."
+        },
+        {
+            "card_id": "dt009",
+            "type": "Support",
+            "name": "Savior Complex",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b>: When an ally you control would take consequential damage, exhaust Savior Complex \u2192 deal that damage to your hero instead."
+        },
+        {
+            "card_id": "dt010",
+            "type": "Upgrade",
+            "name": "Heroic Combat Vest",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ARMOR"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 per player.\n<b>Hero Action</b>: Take 1 damage \u2192 your hero gets +1 THW or +1 ATK or +1 DEF until the end of the round. <i>(Limit once per round.)</i>"
+        },
+        {
+            "card_id": "dt011",
+            "type": "Upgrade",
+            "name": "I Can Do This All Day",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per player.\n<b>Interrupt</b>: When your hero would be defeated, place 1 [per_hero] threat on the main scheme and set your hit point dial to 1 instead. Then, remove this card from the game."
+        },
+        {
+            "card_id": "dt013",
+            "type": "Upgrade",
+            "name": "Recon",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Spend a resource of any type or exhaust a friendly character you control \u2192 look at up to 3 facedown encounter cards. If a minion is looked at this way, put it into play engaged with you, and draw 2 cards. <i>(Limit once per round.)</i>"
+        },
+        {
+            "card_id": "dt014",
+            "type": "Upgrade",
+            "name": "Counterstrike",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per player.\n<b>Hero Response</b>: After an attack with overkill defeats an ally you control and damages you, discard Counterstrike \u2192 deal X damage to an enemy, where X is the total ATK of that ally and your hero."
+        },
+        {
+            "card_id": "dt015",
+            "type": "Upgrade",
+            "name": "Preparation #2",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per player.\n<b>Hero Action</b>: Deal 2 damage to your hero and discard Preparation #2 \u2192 ready your hero and deal 1 damage to each minion engaged with you."
+        },
+        {
+            "card_id": "dt016",
+            "type": "Ally",
+            "name": "* Deadpool",
+            "subtitle": "Wade Wilson",
+            "desc": {
+                "Cost": "2",
+                "HP": "4",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Response</b>: After Deadpool enters play, deal yourself 1 encounter card."
+        },
+        {
+            "card_id": "dt018",
+            "type": "Upgrade",
+            "name": "Feel the Pain",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "While your hero's remaining hit points are less than half your hero's maximum hit points, your hero gains retaliate 1."
+        },
+        {
+            "card_id": "dt019",
+            "type": "Upgrade",
+            "name": "Galvanize",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your hero's maximum hit points are 12 or greater.\n<b>Hero Action</b>: Exhaust Galvanize and take 3 damage \u2192 ready your hero or draw 1 card."
+        },
+        {
+            "card_id": "dt020",
+            "type": "Upgrade",
+            "name": "Soldier On",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per player.\n<b>Hero Action</b>: Exhaust Soldier On and take 2 damage \u2192 if you have less than half of your maximum hit points remaining, you get +2 hand size until the end of the phase."
+        }
+    ],
+    "checksum": "4444c6009792e4ea07c9c5ca6d94d9e429cb744835495a7e3bed4f4d6e067750"
 }

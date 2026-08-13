@@ -1033,5 +1033,12 @@
         "encounters": [],
         "max_id": "ag015"
     },
-    "checksum": "c675a6bc541c59b42b308b49ab480064190e4da6930c92bf57e4e0603c5f958b"
+    "118. Custom (Determination)": {
+        "name": "determination",
+        "scenarios": [],
+        "heroes": [],
+        "encounters": [],
+        "max_id": "dt020"
+    },
+    "checksum": "ff18f6307fd5028a1d77620c8a1ebdea23d9713cefd772fe5bcee0aea122323a"
 }

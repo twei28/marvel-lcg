@@ -1,10 +1,10 @@
 # TODO / SPEC — L'aspect « Determination » (DesignHacker)
 
-**Statut :** **INFRASTRUCTURE FAITE le 2026-08-12** (`e161ffe`), **PRÉFIXE `dt`
-DÉCLARÉ et LES 142 CARTES INVENTORIÉES le 2026-08-13**. Le moteur accepte le
-cinquième aspect et le contenu est relevé dans
-`.planning/donnees/determination-cartes.json`. **Aucune carte n'est encore dans
-`cards.json`, aucun module n'est écrit** : c'est le gros du chantier.
+**Statut :** infrastructure moteur faite (`e161ffe`), préfixe `dt` déclaré, les
+142 cartes inventoriées, et **les 16 premières sont DANS LE JEU depuis le
+2026-08-13** : données, set, images, et génération éprouvée carte par carte. Les
+4 événements du lot attendent leur module (voir §7). **Aucun module n'est
+écrit** : c'est le gros du chantier, et il reste entier.
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
@@ -272,3 +272,58 @@ trois homonymes de cartes déjà présentes (Moon Knight, Deadpool, The Thing).
 5. **Les images** : 142 fichiers de ~1,5 Mo. **Redimensionner à l'import** — les
    scans officiels du jeu font 300×434 pour 29 Ko.
 6. **Les modules**, lot par lot, puis `test_cards`, `test_generate_cards`, autoplay.
+
+
+## 7. Le premier lot est entré dans le jeu (13/08/2026)
+
+**16 cartes sur 20**, et la raison des 4 manquantes vaut d'être retenue.
+
+### Ce qui est fait
+
+* `data/cards.json` : un pack `determination` de 16 entrées (`dt001` à `dt020`,
+  moins les événements) ;
+* `data/sets_info.json` : `118. Custom (Determination)`, sans héros ni scénario —
+  un aspect n'en apporte pas — et les **deux checksums recalculés** avec la
+  fonction du moteur (`Types.DictChecksum`), après avoir vérifié qu'elle
+  reproduisait les checksums existants ;
+* **les images** : `tools/make_determination_pics.py`. Il télécharge le bleed du
+  Drive, **rogne les 3 mm de fond perdu** (1638×2229 = 69,5×94 mm quand une carte
+  finie fait 63,5×88), ramène à 600×840 et dépose dans les deux installations.
+  129 Ko de moyenne au lieu de 1,5 Mo : la dette mesurée le 12/08 ne se répète
+  pas. Éprouvé en régénérant `dt007` à l'octet près.
+
+### Vérifié, pas supposé
+
+* `test_generate_cards` sur le préfixe `dt` : **16 générées, 0 échec** ;
+* sur tout le jeu : 4779 générées, 1 échec — `example_event`, la carte d'exemple
+  de `data/cards_custom.json`, qui échoue pour la même raison qu'au §7.1 et
+  n'a jamais eu de module. Préexistant, sans rapport ;
+* `verifier_prefixes.py` vert, et `dt` n'est plus « déclaré mais inutilisé » ;
+* dans un vrai navigateur : le set est proposable dans la galerie, ses 16 cartes
+  s'affichent, les 16 images se chargent en 600×840, aucune erreur JS.
+
+### 7.1 La règle apprise : un Event ne va jamais sans son module
+
+`dt005`, `dt006`, `dt012`, `dt017` — les quatre événements du lot — ont d'abord
+été mis dans les données, et **les quatre ont échoué à la génération** :
+
+    factory.py:120  assert False, f"{face.paper.card_id=}"
+
+Une carte `Ally`, `Support`, `Upgrade` ou `Resource` vit sans module : elle se
+construit, s'affiche, se choisit. Un `Event`, non : `factory.py` exige qu'il porte
+**exactement une capacité `Play`**, et celle-ci ne peut venir que de son module.
+Le commentaire d'un correctif voisin le dit sans ambiguïté : sans cela, « la
+création de partie du héros PLANTE ».
+
+Ils sont donc **sortis des données** plutôt que laissés en bombe à retardement.
+Ils rentreront avec leur module. **Pour tous les lots suivants : les données et
+le module d'un événement se livrent ensemble.**
+
+### 7.2 Ce que le prochain lot doit faire
+
+1. Écrire les modules des 4 événements sortis, et les remettre dans les données.
+2. Les 9 compteurs dans `CardFace.COUNTER`, avant toute carte qui en porte
+   (`dt008` Merc Squad en a besoin dès ce lot : son `Uses (3 tactic counters)`
+   n'a aucun effet tant que `tactic` n'existe pas).
+3. Les modules des 16 cartes deja en place : elles sont dans le jeu, mais leurs
+   capacités ne font encore rien.

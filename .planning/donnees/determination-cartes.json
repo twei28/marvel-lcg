@@ -35,7 +35,14 @@
     "",
     "LE DOSSIER CONTIENT 142 CARTES, pas 141 : D-1 a D-142 sans aucun trou, plus",
     "un fichier « ~Multifaceted--Setup.jpg » qui n'est pas une carte. La fiche du",
-    "12/08 annoncait 141."
+    "12/08 annoncait 141.",
+    "",
+    "REGLE APPRISE LE 13/08, a la generation : une carte Ally, Support, Upgrade ou",
+    "Resource vit tres bien SANS module Python — elle se construit, s'affiche et se",
+    "choisit. Un EVENT, non : factory.py exige qu'il porte exactement une capacite",
+    "« Play », et celle-ci ne peut venir que de son module. Les donnees et le module",
+    "d'un evenement vont donc ENSEMBLE, sous peine de faire planter la partie de qui",
+    "le mettrait dans son deck."
   ],
   "source": {
     "drive_dossier": "DETERMINATION (3.0)/BLEED",
@@ -49,7 +56,31 @@
     "total_reel": 142,
     "relevees_en_pleine_page": 20,
     "inventoriees_sur_planche": 122,
-    "date": "2026-08-13"
+    "date": "2026-08-13",
+    "dans_le_jeu": [
+      "dt001",
+      "dt002",
+      "dt003",
+      "dt004",
+      "dt007",
+      "dt008",
+      "dt009",
+      "dt010",
+      "dt011",
+      "dt013",
+      "dt014",
+      "dt015",
+      "dt016",
+      "dt018",
+      "dt019",
+      "dt020"
+    ],
+    "en_attente_de_module": [
+      "dt005",
+      "dt006",
+      "dt012",
+      "dt017"
+    ]
   },
   "cartes": [
     {
@@ -74,7 +105,8 @@
       "set_name": "Determination",
       "text": "Reckless. <i>(After this character enters play, place 1 threat on each scheme.)</i>\n[star] <b>Interrupt</b>: When Cable attacks, discard any number of cards from your hand → for each card discarded this way, Cable gets +1 ATK for this attack.",
       "_niveau": "releve",
-      "card_id": "dt001"
+      "card_id": "dt001",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-2.jpg",
@@ -98,7 +130,8 @@
       "set_name": "Determination",
       "text": "<b>Forced Response</b>: After Moon Knight enters play, discard a card from your hand. If that card's printed resource includes:\n[energy] - Draw a card.\n[mental] - Confuse an enemy.\n[physical] - Stun an enemy.\n[wild] - Choose 2 of the above.",
       "_niveau": "releve",
-      "card_id": "dt002"
+      "card_id": "dt002",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-3.jpg",
@@ -120,7 +153,8 @@
       "set_name": "Determination",
       "text": "<b>Forced Response</b>: After Venom enters play, place 2 threat on the main scheme.",
       "_niveau": "releve",
-      "card_id": "dt003"
+      "card_id": "dt003",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-4.jpg",
@@ -143,7 +177,8 @@
       "set_name": "Determination",
       "text": "[star] <b>Forced Response</b>: After Wolverine thwarts, heal 2 damage from him.",
       "_niveau": "releve",
-      "card_id": "dt004"
+      "card_id": "dt004",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-5.jpg",
@@ -162,7 +197,8 @@
       "set_name": "Determination",
       "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 5 damage to your hero and choose up to 3 enemies → deal X damage to each chosen enemy, where X is the amount of damage your hero took this way.",
       "_niveau": "releve",
-      "card_id": "dt005"
+      "card_id": "dt005",
+      "_etat": "RETIREE des donnees : un Event sans module fait echouer sa construction (factory.py:120, un Event doit porter exactement une capacite Play). Elle rentrera avec son module."
     },
     {
       "_image": "D-6.jpg",
@@ -181,7 +217,8 @@
       "set_name": "Determination",
       "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a friendly character would take any amount of damage from an attack, prevent up to 3 of that damage. Then, if you took damage from that attack, ready your hero.",
       "_niveau": "releve",
-      "card_id": "dt006"
+      "card_id": "dt006",
+      "_etat": "RETIREE des donnees : un Event sans module fait echouer sa construction (factory.py:120, un Event doit porter exactement une capacite Play). Elle rentrera avec son module."
     },
     {
       "_image": "D-7.jpg",
@@ -198,7 +235,8 @@
       "set_name": "Determination",
       "text": "Max 2 per deck.\nDouble the number of resources this card generates while paying for a Determination <i>(purple)</i> card.",
       "_niveau": "releve",
-      "card_id": "dt007"
+      "card_id": "dt007",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-8.jpg",
@@ -218,7 +256,8 @@
       "set_name": "Determination",
       "text": "Uses (3 tactic counters).\n<b>Action</b>: Exhaust Merc Squad and remove 1 tactic counter from it → deal 1 damage to an enemy and remove 1 threat from the main scheme.",
       "_niveau": "releve",
-      "card_id": "dt008"
+      "card_id": "dt008",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-9.jpg",
@@ -237,7 +276,8 @@
       "set_name": "Determination",
       "text": "<b>Hero Interrupt</b>: When an ally you control would take consequential damage, exhaust Savior Complex → deal that damage to your hero instead.",
       "_niveau": "releve",
-      "card_id": "dt009"
+      "card_id": "dt009",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-10.jpg",
@@ -256,7 +296,8 @@
       "set_name": "Determination",
       "text": "Play under any player's control. Max 1 per player.\n<b>Hero Action</b>: Take 1 damage → your hero gets +1 THW or +1 ATK or +1 DEF until the end of the round. <i>(Limit once per round.)</i>",
       "_niveau": "releve",
-      "card_id": "dt010"
+      "card_id": "dt010",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-11.jpg",
@@ -275,7 +316,8 @@
       "set_name": "Determination",
       "text": "Max 1 per player.\n<b>Interrupt</b>: When your hero would be defeated, place 1 [per_hero] threat on the main scheme and set your hit point dial to 1 instead. Then, remove this card from the game.",
       "_niveau": "releve",
-      "card_id": "dt011"
+      "card_id": "dt011",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-12.jpg",
@@ -294,7 +336,8 @@
       "set_name": "Determination",
       "text": "Play only if your hero's remaining hit points are less than half your hero's starting hit points.\n<b>Hero Action</b>: Confuse an enemy. Then, change your form.",
       "_niveau": "releve",
-      "card_id": "dt012"
+      "card_id": "dt012",
+      "_etat": "RETIREE des donnees : un Event sans module fait echouer sa construction (factory.py:120, un Event doit porter exactement une capacite Play). Elle rentrera avec son module."
     },
     {
       "_image": "D-13.jpg",
@@ -314,7 +357,8 @@
       "set_name": "Determination",
       "text": "<b>Hero Action</b>: Spend a resource of any type or exhaust a friendly character you control → look at up to 3 facedown encounter cards. If a minion is looked at this way, put it into play engaged with you, and draw 2 cards. <i>(Limit once per round.)</i>",
       "_niveau": "releve",
-      "card_id": "dt013"
+      "card_id": "dt013",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-14.jpg",
@@ -333,7 +377,8 @@
       "set_name": "Determination",
       "text": "Max 1 per player.\n<b>Hero Response</b>: After an attack with overkill defeats an ally you control and damages you, discard Counterstrike → deal X damage to an enemy, where X is the total ATK of that ally and your hero.",
       "_niveau": "releve",
-      "card_id": "dt014"
+      "card_id": "dt014",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-15.jpg",
@@ -352,7 +397,8 @@
       "set_name": "Determination",
       "text": "Max 1 per player.\n<b>Hero Action</b>: Deal 2 damage to your hero and discard Preparation #2 → ready your hero and deal 1 damage to each minion engaged with you.",
       "_niveau": "releve",
-      "card_id": "dt015"
+      "card_id": "dt015",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-16.jpg",
@@ -376,7 +422,8 @@
       "set_name": "Determination",
       "text": "<b>Forced Response</b>: After Deadpool enters play, deal yourself 1 encounter card.",
       "_niveau": "releve",
-      "card_id": "dt016"
+      "card_id": "dt016",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-17.jpg",
@@ -395,7 +442,8 @@
       "set_name": "Determination",
       "text": "<b>Hero Response</b>: After you take more than 3 damage, draw X cards where X is the amount of damage you took past 3.",
       "_niveau": "releve",
-      "card_id": "dt017"
+      "card_id": "dt017",
+      "_etat": "RETIREE des donnees : un Event sans module fait echouer sa construction (factory.py:120, un Event doit porter exactement une capacite Play). Elle rentrera avec son module."
     },
     {
       "_image": "D-18.jpg",
@@ -414,7 +462,8 @@
       "set_name": "Determination",
       "text": "While your hero's remaining hit points are less than half your hero's maximum hit points, your hero gains retaliate 1.",
       "_niveau": "releve",
-      "card_id": "dt018"
+      "card_id": "dt018",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-19.jpg",
@@ -433,7 +482,8 @@
       "set_name": "Determination",
       "text": "Play only if your hero's maximum hit points are 12 or greater.\n<b>Hero Action</b>: Exhaust Galvanize and take 3 damage → ready your hero or draw 1 card.",
       "_niveau": "releve",
-      "card_id": "dt019"
+      "card_id": "dt019",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-20.jpg",
@@ -452,7 +502,8 @@
       "set_name": "Determination",
       "text": "Max 1 per player.\n<b>Hero Action</b>: Exhaust Soldier On and take 2 damage → if you have less than half of your maximum hit points remaining, you get +2 hand size until the end of the phase.",
       "_niveau": "releve",
-      "card_id": "dt020"
+      "card_id": "dt020",
+      "_etat": "dans cards.json, image deployee, generation eprouvee ; module a ecrire"
     },
     {
       "_image": "D-21.jpg",
