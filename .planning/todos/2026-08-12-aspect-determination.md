@@ -1,10 +1,10 @@
 # TODO / SPEC — L'aspect « Determination » (DesignHacker)
 
-**Statut :** infrastructure moteur faite (`e161ffe`), préfixe `dt` déclaré, les
-142 cartes inventoriées, et **les 16 premières sont DANS LE JEU depuis le
-2026-08-13** : données, set, images, et génération éprouvée carte par carte. Les
-4 événements du lot attendent leur module (voir §7). **Aucun module n'est
-écrit** : c'est le gros du chantier, et il reste entier.
+**Statut :** ✅ **LIVRÉ le 2026-08-13.** Les **142 cartes** sont dans le jeu avec
+leurs données, leurs images, leurs modules et leur **texte français**. Le défaut
+qui les rendait injouables (le moteur lit le `desc`, pas le texte) est corrigé et
+verrouillé par deux outils. **Reste une seule chose : jouer une vraie partie avec
+un deck Determination** — voir §13.
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
@@ -546,8 +546,8 @@ Quatre helpers partagés dans `src/cards/pack/determination/__init__.py` :
 `Fragile()`, `Reckless()`, `AliasReduitLeCout()`, plus `PeutRevenirEnMain()` et
 `RepartirLeRetraitDeMenace()` et `Drain()` pour les textes qui reviennent.
 
-`Toughness`, `Restricted` et `Fleeting` n'ont rien demandé : le moteur les lit
-dans le texte de la carte.
+⚠️ **CETTE FICHE A AFFIRMÉ ICI QUE LE MOTEUR LISAIT LE TEXTE. C'ÉTAIT FAUX**, et
+c'est ce qui a rendu 49 cartes injouables — voir §13.
 
 ### 12.2 Les écarts, tous écrits dans leur module
 
@@ -576,3 +576,59 @@ sonde, ni `test_generate_cards`, ni `verifier_noms_modules` ne disent qu'une
 capacité fait la bonne chose : ils disent qu'elle est là, qu'elle se construit,
 et que ses noms existent. Le §6 de cette fiche reste donc ouvert — et c'est
 maintenant la seule chose qui l'est.
+
+
+
+## 13. Le défaut qui rendait 49 cartes injouables (13/08/2026, corrigé)
+
+**Signalé en jouant : « Merc Squad ne fonctionne pas, je peux pas cliquer
+dessus. »** Sa capacité coûtait « retirer 1 pion tactique » et la carte entrait
+en jeu **sans un seul pion** : action grisée pour toujours.
+
+**La cause était de classe.** Cette fiche avait conclu (§12.1) que le moteur
+lisait les mots-clés dans le TEXTE, parce que Luke Cage porte « Toughness » sans
+module. **Il les lit dans le `desc`** (`RegisterAttribute`, has_uses.py) ; le
+texte n'est que de l'affichage. **49 cartes sur 142**, 54 champs manquants :
+`Uses`, `Toughness`, `Restricted`, `Retaliate`, `MaxPerDeck`, `MaxPerUnit`,
+`Setup`, `Victory`, `Alliance`, `Villainous`, `Requirement`.
+
+**Un attribut n'existe que pour certains TYPES** : `Uses` sur
+Upgrade/Support/Attachment/Obligation/Environment, `Villainous` sur Minion,
+`Restricted` sur Upgrade. Le déclarer ailleurs **empêche la carte de se générer**
+(KeyError). Spiders-Man pose donc ses pions depuis son module.
+
+### 13.1 Pourquoi aucun outil ne l'a vu, et les deux qui manquaient
+
+Les quatre outils du chantier demandaient **« la capacité existe-t-elle ? »**.
+Aucun ne demandait **« le joueur peut-il s'en servir ? »**. Deux outils neufs,
+chacun mis en défaut exprès avant d'être cru :
+
+* **`tools/verifier_desc_mots_cles.py`** — compare le texte au `desc`. Il aurait
+  attrapé les 49 d'un coup.
+* **`tools/verifier_cartes_en_jeu.py`** — génère chaque carte dans une vraie
+  partie et compare le texte à ce que la carte PORTE.
+
+⚠️ Les deux trouvent **26 écarts du même genre ailleurs dans le jeu** (fne,
+madame_web, cw, mk, sr… et un dans le contenu OFFICIEL : 01055 dit « Max 2 per
+deck » sans le champ, donc la carte retombe sur 3). **Préexistants, non touchés.**
+
+## 14. Le français (13/08/2026)
+
+Les **142 textes et noms** sont traduits, avec la terminologie du jeu
+(`translate_fr.json` : Déferlement, Perçant, À Distance ; et manigance, sbire,
+méchant, contrer, incliner, redresser du dico du plateau).
+
+**Pas dans `data/cards.json`, volontairement** : `dt133.py` compte les
+personnages dont le texte porte « Fragile. » et `scheme_main.py` reconnaît une
+manigance perdante à sa phrase anglaise. Le français vit dans
+`public/js/prepare/cartes-fr.js`, la source dans
+`.planning/donnees/determination-fr.json`.
+
+## 15. CE QUI RESTE, ET C'EST TOUT
+
+1. **Jouer une vraie partie avec un deck Determination**, du wizard à la
+   victoire. Aucun outil ne dit qu'une capacité fait la BONNE chose.
+2. **Les 12 écarts du §12.2** sont assumés et écrits ; à revoir seulement si le
+   jeu en pâtit.
+3. **Les 26 écarts `desc` ailleurs dans le jeu** (§13.1), à traiter comme un
+   chantier à part si on veut les corriger.
