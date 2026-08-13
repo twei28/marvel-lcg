@@ -10,7 +10,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         Reckless(),
-        AliasReduitLeCout(),
+        *Alias(),
         AbilityFactory.AfterUnitUseBasicPower(
             AbilityType.Response,
             CardFinder(trait="AERIAL"),

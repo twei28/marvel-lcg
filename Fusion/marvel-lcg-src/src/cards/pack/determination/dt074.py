@@ -24,11 +24,9 @@ def GetAbilities() -> Sequence['Ability']:
             # pile, c'est-a-dire le dernier defausse.
             allie = allies[-1].CastTo(Ally)
             allie.PutIntoPlay(player, effect)
-            # APPROXIMATION ECRITE : « declarez-le defenseur pour cette
-            # attaque ». Le moteur choisit son defenseur dans sa propre
-            # fenetre, plus tard, et n'expose pas de moyen de le fixer d'ici.
-            # L'allie arrive donc en jeu, pret a defendre, mais le joueur doit
-            # le declarer lui-meme au moment de la defense.
+            # « declarez-le defenseur pour cette attaque » : le message
+            # d'attaque sait le faire (sender_damage.py, DeclareDefender).
+            message.being_atk_message.DeclareDefender(allie, effect)
 
         villain = message.trigger
         Faces.GiveStatus([villain], "Confused", effect)

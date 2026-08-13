@@ -15,10 +15,19 @@ def GetAbilities() -> Sequence['Ability']:
             # l'allie et retiree des qu'elle a servi (mk023, The Hell Charger).
             def prochaine_attaque(effect2: 'Effect', message2: 'Message.WhenUnitWouldAttack',
                                   allie: 'Ally'=allie) -> None:
-                # « deals 2 additional damage » : le moteur n'a qu'un levier
-                # pour le degat d'une attaque, l'ATK de cette attaque. L'ecart
-                # ne se voit que pour un effet qui LIRAIT l'ATK entre-temps.
-                message2.GainATKForThisAttack(2, effect2)
+                # « inflige 2 degats supplementaires » : ce sont les DEGATS qu'on
+                # augmente, pas l'ATK — sinon un effet qui lit l'ATK entre-temps
+                # verrait un chiffre que la carte ne donne pas. Le moteur publie
+                # `IncreaseDamage` sur la fenetre des degats, posee ici le temps
+                # de cette attaque.
+                allie.effect.RegisterTemp(
+                    AbilityFactory.WhenFaceWouldDealDamage(
+                        AbilityType.ForcedInterrupt,
+                        "This",
+                        lambda effect3, message3: message3.IncreaseDamage(2, effect3),
+                    ),
+                    unregister_after_exec=True,
+                )
                 allie.GainForThisActive(effect2, message2, attack_consequential_damage=1)
 
             allie.effect.RegisterTemp(

@@ -4,14 +4,10 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    # APPROXIMATION, ECRITE PLUTOT QUE SILENCIEUSE.
-    #
-    # « look at up to 3 facedown encounter cards » n'a aucun crochet dans le
-    # moteur, et le releve des 142 cartes le signalait deja. Les seules cartes
-    # de rencontre face cachee qu'il sait montrer sont celles du DESSUS DE LA
-    # PILE (`LookAtDeck`) : les cartes deja distribuees face cachee devant les
-    # joueurs ne sont pas un ensemble consultable. C'est donc la pile qui est
-    # lue — la lecture la plus proche, et la seule jouable.
+    # « look at up to 3 facedown encounter cards » : ce sont bien les cartes
+    # distribuees FACE CACHEE devant les joueurs, et le moteur les tient —
+    # `player.dealt_encounter_cards` (50051, Intelligence). L'approximation
+    # « le dessus de la pile » du premier jet est donc levee.
     def cout(targets: Sequence['CardFace'], effect: 'Effect') -> bool:
         this = effect.this.CastTo(Upgrade)
         Unused(this)
@@ -36,9 +32,13 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(this)
 
         initiator = effect.GetInitiator()
-        faces = initiator.LookAtDeck("EncounterDeck", 3, effect)
+        cachees = [f for joueur in Worlds.GetPlayers(effect)
+                   for f in joueur.dealt_encounter_cards.Get()][:3]
+        if not cachees:
+            return
+        Faces.LookAt(cachees, initiator, effect)
 
-        minions = Filter.ByType(faces, Minion)
+        minions = Filter.ByType(cachees, Minion)
         for minion in minions:
             minion.CastTo(Minion).PutIntoPlay(initiator, effect)
             initiator.DrawUp(2, effect)

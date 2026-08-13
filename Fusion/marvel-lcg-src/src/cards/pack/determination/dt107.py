@@ -22,7 +22,7 @@ def GetAbilities() -> Sequence['Ability']:
             Faces.DiscardAll(cachees[:voulu], effect)
 
     return [
-        AliasReduitLeCout(),
+        *Alias(),
         AbilityFactory.WhenCardEnterPlay(
             AbilityType.Interrupt,
             "This",

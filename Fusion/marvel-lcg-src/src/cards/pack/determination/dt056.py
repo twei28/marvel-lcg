@@ -9,17 +9,18 @@ def GetAbilities() -> Sequence['Ability']:
     # est un Event, donc ce depart EST sa capacite Play.
     def melanger_dans_le_deck(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Event)
+        # On RETIENT qui l'a jouee : la carte part dans le deck de rencontre,
+        # mais elle emporte cette note avec elle.
+        this.joueur_dorigine = effect.GetInitiator()
         Faces.ShuffleAllTo([this], Worlds.GetEncounterDeck(effect), effect)
 
     def oblivion_revelee(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this.CastTo(Event)
 
-        # APPROXIMATION ECRITE. La carte dit « le joueur QUI L'A JOUEE » ;
-        # une fois melangee au deck de rencontre elle a quitte sa zone, et le
-        # moteur ne garde pas trace du joueur d'origine. C'est donc le joueur a
-        # qui elle est revelee qui choisit. En solo les deux coincident ; a
-        # plusieurs, l'ecart existe et il est ici, pas cache.
-        player = message.GetToPlayer()
+        # « le joueur QUI L'A JOUEE » : la note posee au depart. Le joueur a qui
+        # la carte est revelee ne sert que de repli, si elle arrive dans le deck
+        # par un autre chemin que son Action.
+        player = getattr(this, "joueur_dorigine", None) or message.GetToPlayer()
 
         def degats(targets: Sequence['CardFace']) -> None:
             cibles = list(player.GetAllies())

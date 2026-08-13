@@ -28,7 +28,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
-        AliasReduitLeCout(),
+        *Alias(),
         AbilityFactory.ThisGainKeyword(
             bonus_cartes_cachees,
             attack=1,

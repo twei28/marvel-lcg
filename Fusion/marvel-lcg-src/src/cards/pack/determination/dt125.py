@@ -4,24 +4,25 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def night_thrasher(effect: 'Effect', message: 'Message.AfterUnitChangeForm') -> None:
+    def night_thrasher(effect: 'Effect', message: 'Message.WhenCardFlip') -> None:
         this = effect.this.CastTo(Ally)
         Faces.ReadyAll([this], effect)
 
-    # APPROXIMATION ECRITE : la carte dit « apres que vous RETOURNEZ une carte
-    # que vous controlez ». Le moteur ne publie qu'un retournement vers une face
-    # nommee (AfterCardFlipToThisSide), pas un retournement quelconque. On garde
-    # le cas de loin le plus courant : le changement de forme de l'identite.
-    def check_a_vous(effect: 'Effect', message: 'Message.AfterUnitChangeForm') -> bool:
+    # « apres que vous retournez une carte que vous controlez » : n'importe
+    # quelle carte, pas seulement l'identite. `WhenCardFlip` publie tous les
+    # retournements (state.py:88) ; le premier jet se limitait au changement de
+    # forme faute d'avoir trouve cette fenetre.
+    def check_a_vous(effect: 'Effect', message: 'Message.WhenCardFlip') -> bool:
         this = effect.this.CastTo(Ally)
         player = this.GetControlByPlayer()
-        return player is not None and message.trigger == player.GetIdentity()
+        return player is not None \
+            and message.trigger.GetControlByPlayer() == player
 
     return [
         AbilityFactory.CardsEnterPlayExhausted("This"),
-        AbilityFactory.AfterUnitChangeForm(
+        AbilityFactory.WhenCardFlip(
             AbilityType.Response,
-            "You",
+            None,
             night_thrasher,
             conditions=[check_a_vous],
         ),

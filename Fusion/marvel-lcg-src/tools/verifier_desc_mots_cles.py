@@ -29,6 +29,21 @@ import sys
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# UN ATTRIBUT DE `desc` N'EXISTE QUE POUR CERTAINS TYPES DE CARTE, parce qu'il
+# vient d'une classe du moteur dont tous les types n'heritent pas : `Uses` est
+# sur Upgrade/Support/Attachment/Obligation/Environment, `Villainous` sur Minion.
+# Le declarer ailleurs ne fait pas que rater sa cible : la carte NE SE GENERE
+# PLUS (KeyError). Ces cas-la sont donc signales A PART : ils se traitent dans le
+# module de la carte, jamais dans son desc.
+TYPES_PAR_ATTRIBUT = {
+    "Uses":        {"Upgrade", "Support", "Attachment", "Obligation", "Environment"},
+    "Villainous":  {"Minion"},
+    "Restricted":  {"Upgrade"},
+    "MaxPerUnit":  {"Upgrade", "Support", "Attachment"},
+    "MaxPerDeck":  {"Event", "Resource", "Upgrade", "Support", "Ally"},
+    "Alliance":    {"Event"},
+}
+
 REGLES = [
     (r"Uses \((\d+) (\w+) counters?\)",     lambda m: ("Uses", "%s,%s" % (m.group(1), m.group(2)))),
     (r"(?m)^Toughness\.",                    lambda m: ("Toughness", None)),
@@ -54,6 +69,7 @@ def main() -> int:
 
     cartes = json.load(open(os.path.join(RACINE, "data", "cards.json"), encoding="utf-8"))
     ecarts = []
+    sans_porte = []
     lues = 0
     for pack in packs:
         for carte in cartes.get(pack, []):
@@ -65,6 +81,13 @@ def main() -> int:
                 if not trouve:
                     continue
                 cle, valeur = produit(trouve)
+                types = TYPES_PAR_ATTRIBUT.get(cle)
+                if types is not None and carte.get("type") not in types:
+                    sans_porte.append(
+                        "%s %-26s porte %s, que le moteur ne connait pas pour un %s"
+                        % (carte["card_id"], carte.get("name", "")[:26], cle,
+                           carte.get("type")))
+                    continue
                 if cle not in desc:
                     ecarts.append("%s %-26s le texte annonce %s, le desc ne le porte pas"
                                   % (carte["card_id"], carte.get("name", "")[:26], cle))
@@ -73,6 +96,10 @@ def main() -> int:
                                   % (carte["card_id"], carte.get("name", "")[:26],
                                      cle, desc[cle], valeur))
 
+    if sans_porte:
+        print("Sans porte dans le moteur (a assumer dans le module, pas dans le desc) :")
+        print("\n".join("  " + x for x in sans_porte))
+        print()
     if ecarts:
         print("\n".join(ecarts))
         print("\n%d ecart(s) sur %d carte(s) lue(s)." % (len(ecarts), lues))

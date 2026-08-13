@@ -18,7 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
         return effect.this == message.trigger
 
     return [
-        AliasReduitLeCout(),
+        *Alias(),
         Ability(
             AbilityType.Interrupt,
             Message.WhenAllyWouldTakeConsequentialDamage,

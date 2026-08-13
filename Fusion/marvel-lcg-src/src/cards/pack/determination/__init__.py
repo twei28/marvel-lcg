@@ -108,14 +108,15 @@ def Drain(source: 'CardFace', cibles: Sequence['CardFace'], valeur: int,
         source.HealthUnits([player.GetIdentity()], valeur, effect)
 
 
-def AliasReduitLeCout() -> 'Ability':
+def Alias() -> 'Sequence[Ability]':
     """« Alias. (Si vous controlez une carte au meme sous-titre, defaussez-la et
     jouez celle-ci gratuitement.) »
 
-    Quatre cartes de l'aspect le portent (dt100, dt105, dt106, dt107). Le moteur
-    sait reduire un cout sous condition ; c'est la defausse SIMULTANEE qu'il ne
-    sait pas exiger. APPROXIMATION, ecrite ici une fois : le cout tombe a zero
-    quand la carte homonyme est en jeu, et le joueur la defausse lui-meme.
+    Quatre cartes de l'aspect le portent (dt100, dt105, dt106, dt107). Deux
+    capacites, parce que la carte fait deux choses : le cout tombe a zero tant
+    que l'homonyme est controle, et l'homonyme est defausse a l'entree en jeu.
+    Le texte les presente comme un tout — on ne joue gratuitement QUE parce
+    qu'on defausse.
     """
     def controle_un_homonyme(effect: 'Effect', message: 'Message.WhenCalculateEffectCost') -> bool:
         this = effect.this
@@ -130,7 +131,27 @@ def AliasReduitLeCout() -> 'Ability':
                 return True
         return False
 
-    return AbilityFactory.ReduceCostToPlayThis(
-        lambda effect: effect.this.printed_cost,
-        conditions=[controle_un_homonyme]
-    )
+    def defausser_l_homonyme(effect: 'Effect', message: 'Message.AfterCardEnterPlay') -> None:
+        this = effect.this
+        initiator = effect.GetInitiator()
+        if initiator is None:
+            return
+        sous_titre = this.paper.subtitle
+        if not sous_titre:
+            return
+        homonymes = [f for f in initiator.GetControlCards()
+                     if f is not this and f.paper.subtitle == sous_titre]
+        if homonymes:
+            Faces.DiscardAll(homonymes[:1], effect)
+
+    return [
+        AbilityFactory.ReduceCostToPlayThis(
+            lambda effect: effect.this.printed_cost,
+            conditions=[controle_un_homonyme]
+        ),
+        AbilityFactory.AfterCardEnterPlay(
+            AbilityType.ForcedResponse,
+            "This",
+            defausser_l_homonyme
+        ),
+    ]
