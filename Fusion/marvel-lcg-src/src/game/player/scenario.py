@@ -88,6 +88,29 @@ class Scenario(User):
                 return villain
         return None
 
+    def IsCompetitiveLeaderDefeated(self, prev_villain: 'Villain', by_effect: 'Effect') -> bool:
+        """Le dernier stade du leader d'une table vient-il de tomber ?
+
+        Rend False hors mode competitif, ou quand ce leader a encore un stade
+        devant lui. La mesure se fait PAR ZONE : avec deux leaders sur la
+        table, le test global « il ne reste que celui-ci » n'est jamais vrai.
+        """
+        from game.card.face.base import Villain
+
+        world = self.world
+        if not world.rule.mode_competitive:
+            return False
+        if world.aside_deck.FindCard(card_type=Villain) != None:
+            return False
+        game_area = prev_villain.card.GetGameArea()
+        restants = [x for x in self.area_villain.FindCards(card_type=Villain)
+                    if x.card.GetGameArea() == game_area]
+        if restants != [prev_villain]:
+            return False
+        team = world.GetTeamOfGameArea(game_area)
+        world.competitive.EnregistrerVictoire(team, "leader adverse vaincu", by_effect)
+        return True
+
     def AdvanceVillainStage(self, prev_villain: 'Villain', by_effect: 'Effect', to_villain: 'Villain|None'=None, move_prev_villain_to: 'Deck|None'=None) -> bool:
         from game.message import Message
         from game.effect.rule import GameRule
@@ -96,6 +119,14 @@ class Scenario(User):
 
         if self.world.is_game_over:
             return False
+
+        # Un leader vaincu reste en jeu jusqu'a la fin de la partie (mc56 p.17).
+        # Sans ce garde-fou, le moindre degat de plus le ferait « vaincre » une
+        # seconde fois, et le moteur chercherait un stade suivant.
+        if self.world.rule.mode_competitive:
+            team = self.world.GetTeamOfGameArea(prev_villain.card.GetGameArea())
+            if self.world.competitive.LeaderEstVaincu(team):
+                return False
 
         # next villain will use the prev_villain card for same object_id
         def remove_prev_villain(prev_villain: 'Villain'):
@@ -198,6 +229,12 @@ class Scenario(User):
 
             advance(prev_villain, next_villain)
         else:
+            if self.IsCompetitiveLeaderDefeated(prev_villain, by_effect):
+                # « Whichever team defeats the enemy leader first wins »
+                # (mc56 p.17). Le leader vaincu NE QUITTE PAS la table : il y
+                # reste jusqu'a la fin de la phase suivante du camp d'en face,
+                # pour rester ciblable par les cartes de son propre camp.
+                return self.world.is_game_over
             if self.world.aside_deck.FindCard(card_type=Villain) == None and \
                 self.area_villain.FindCards(card_type=Villain) == [prev_villain]:
                 self.world.game_over.SetGameOverByRule("The Final Stage of the Villain was Defeated")

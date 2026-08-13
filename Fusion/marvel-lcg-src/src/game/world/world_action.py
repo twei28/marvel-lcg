@@ -62,6 +62,17 @@ class WorldAction:
     def GetPlayerNumIcon(self) -> int:
         world = self.GetWorld()
         # return len(world.const_seat_order_players)
+        if world.rule.mode_competitive:
+            # L'icone « par joueur » compte les joueurs d'UNE table : les PV du
+            # leader, la menace de depart d'un complot, la taille du camp. Un
+            # leader affronte par un seul joueur doit avoir ses PV de base, pas
+            # ceux d'une partie a deux.
+            #
+            # Le livret ne connait que le 1v1 et le 2v2 (mc56 p.14), et l'ecran
+            # de preparation deduit les camps en coupant les sieges en deux :
+            # les deux camps ont donc toujours la meme taille, et la moitie du
+            # total est la taille de chacun.
+            return max(1, world.started_player_num // 2)
         return world.started_player_num
 
     def IsThisUniqueInPlay(self, this: 'CardFace') -> bool:

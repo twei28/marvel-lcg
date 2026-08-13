@@ -384,14 +384,21 @@ class AbilityFactoryScheme:
         #     lambda effect, message:
         #         World().PlayersEndTheGame(False)
         # )
+        def scheme_completed(effect: 'Effect', message: 'Message.WhenMainSchemeStageCompleted') -> None:
+            # En competitif, le complot accompli est celui d'UNE table : son
+            # camp perd, mais la partie ne s'arrete pas avant que les deux
+            # camps aient joue autant de phases (mc56 p.17).
+            if effect.world.RecordCompetitiveDefeat(effect.this, "complot principal accompli", effect):
+                return
+            effect.world.game_over.SetGameOver("The Main Scheme was Completed", effect)
+
         return Ability(
             AbilityType.NonKeyword,
             Message.WhenMainSchemeStageCompleted,
             [
                 Condition2.ThisIsTrigger,
             ],
-            lambda effect, message:
-                effect.world.game_over.SetGameOver("The Main Scheme was Completed", effect),
+            scheme_completed,
             is_local=True
         )
 

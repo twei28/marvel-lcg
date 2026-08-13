@@ -56,6 +56,12 @@ class WorldDescriptor:
     game_over: bool = field(default=False)
     players_won: bool = field(default=False)
     game_over_reason: str = field(default='')
+    # Mode competitif : le meme ecran de fin sert aux deux tables, il faut donc
+    # dire QUI a gagne et a quel camp appartient chaque siege. -1 = pas de camp
+    # gagnant (partie ordinaire, deux camps perdants, egalite parfaite) ; la
+    # liste est vide hors mode competitif.
+    winning_team: int = field(default=-1)
+    teams: List[int] = field(default_factory=lambda: [])
     # player
     @dataclass
     class PlayerDescriptor:

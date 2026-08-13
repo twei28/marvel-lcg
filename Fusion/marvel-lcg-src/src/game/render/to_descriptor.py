@@ -89,6 +89,11 @@ class ToDescriptor:
         world_descriptor.area_insert            = deck_to_descriptors(world.area_insert)
         world_descriptor.area_set_aside         = deck_to_descriptors(world.aside_deck)
         world_descriptor.area_set_aside         += deck_to_descriptors(world.aside_modular)
+        # Mode competitif : les cartes joueur du leader de chaque camp, mises
+        # de cote a l'etape 3 (mc56 p.14). Elles se voient, c'est le livret qui
+        # le veut : les joueurs savent ce qu'ils peuvent gagner.
+        for deck in world.team_set_aside.values():
+            world_descriptor.area_set_aside     += deck_to_descriptors(deck)
         world_descriptor.victory_display        = deck_to_descriptors(world.victory_display)
         world_descriptor.area_status_cards      = deck_to_descriptors(world.area_status_cards)
         # Fin de partie exposee au client : players_won n'est defini que sur une
@@ -99,6 +104,12 @@ class ToDescriptor:
         world_descriptor.game_over = _victoire is not None
         world_descriptor.players_won = bool(_victoire) if _victoire is not None else False
         world_descriptor.game_over_reason = (world.game_over.reason or '') if _victoire is not None else ''
+        # Mode competitif : le camp gagnant, et le camp de chaque siege. Sans
+        # eux, l'ecran de fin annoncerait la meme chose aux deux tables.
+        if world.rule.mode_competitive:
+            world_descriptor.winning_team = world.competitive.camp_gagnant
+            world_descriptor.teams = [world.GetTeamOfPlayer(x)
+                                      for x in world.const_seat_order_players]
 
         for deck in world.additional_decks:
             faces = deck_to_descriptors(deck)

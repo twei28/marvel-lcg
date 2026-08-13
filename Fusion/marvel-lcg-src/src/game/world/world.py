@@ -12,6 +12,7 @@ from engine.controller import *
 from game.world.game_area import *
 from engine.lib import Json
 from game.world.game_over import GameOverReason
+from game.world.competitive import Competitive
 
 from game.world.world_action import WorldAction
 from game.world.world_find import WorldFind
@@ -88,6 +89,12 @@ class World(WorldAction, WorldFind):
         self.scene = scene
 
         self.game_over = GameOverReason(self)
+        # Fin de partie a deux camps. Inerte hors mode competitif : rien ne
+        # l'interroge, et aucune condition ne s'y enregistre.
+        self.competitive = Competitive(self)
+        # Mode competitif : les cartes joueur du leader de chaque camp, mises
+        # de cote a l'etape 3 de la mise en place (mc56 p.14). Vide ailleurs.
+        self.team_set_aside: Dict[int, 'Deck'] = {}
 
         player_num = len(scene.players)
 
@@ -164,10 +171,11 @@ class World(WorldAction, WorldFind):
     # deck rencontre. Hors mode competitif il n'existe qu'une zone, et toutes
     # ces fonctions rendent 0 / tous les joueurs / la premiere zone.
     def GetTeamOfPlayer(self, player: 'Player') -> int:
-        area = player.GetIdentity().card.GetGameArea()
-        if area in self.game_areas:
-            return self.game_areas.index(area)
-        return 0
+        # Le camp est pose une fois pour toutes par `SetupTeamGameAreas`. On ne
+        # le relit PAS depuis la zone de l'identite : un joueur elimine perd sa
+        # table, et le decompte des camps a besoin de lui jusqu'au bout
+        # (mc56 p.17, « defeats all their opponents' identities »).
+        return player.team
 
     def GetTeamPlayers(self, team: int) -> List['Player']:
         return [x for x in self.const_players if self.GetTeamOfPlayer(x) == team]
@@ -188,6 +196,32 @@ class World(WorldAction, WorldFind):
         if team is None:
             return self.const_players
         return self.GetTeamPlayers(team)
+
+    def PassFirstPlayerToken(self, team: int, by_effect: 'Effect') -> None:
+        """Fait tourner le jeton de premier joueur A L'INTERIEUR d'un camp.
+
+        « In a 2v2 game, each team has its own first player token that passes
+        at the end of their villain phase » (mc56 p.16). L'ordre des joueurs
+        vit dans une seule liste, `self.players`, dont `players[0]` est le
+        premier joueur : on ne tourne donc que les places tenues par ce camp,
+        et l'autre camp garde exactement les siennes.
+        """
+        from game.message import Message
+        from game.effect.rule import GameRule
+
+        places = [i for i, x in enumerate(self.players) if self.GetTeamOfPlayer(x) == team]
+        if len(places) > 1:
+            tournes = Types.Rotate([self.players[i] for i in places], 1)
+            for place, player in zip(places, tournes):
+                self.players[place] = player
+
+        for player in self.GetTeamPlayers(team):
+            identity = player.GetIdentity()
+            identity.SetActive(GameRule(identity))
+            break
+
+        message = Message.AfterPlayersOrderChange(self, by_effect)
+        message.Send()
 
     def GetTeamOfGameArea(self, game_area: 'GameArea') -> int:
         if game_area in self.game_areas:
@@ -214,13 +248,49 @@ class World(WorldAction, WorldFind):
         Le camp vient du descripteur (`HeroDescriptor.team`). Un joueur du
         camp 0 ne bouge pas : il est deja dans la premiere zone.
         """
-        for i, player in enumerate(self.const_players):
+        for i, player in enumerate(self.const_seat_order_players):
             if i >= len(self.scene.players):
                 continue
             team = self.scene.players[i].team
+            player.team = max(0, team)
             if team <= 0:
                 continue
             self.GetTeamGameArea(team).AddPlayer(player)
+
+    def GetTeamSetAside(self, team: int) -> 'Deck':
+        """Les cartes joueur du leader d'un camp, mises de cote (mc56 p.14).
+
+        Une zone par camp, et pas une par joueur : les 4 cartes appartiennent a
+        l'equipe, qui se les partage a deux en 2v2 (p.16)."""
+        from game.deck import Deck2, DeckType
+        from game.card.face.card_face import CardFace
+
+        if team not in self.team_set_aside:
+            self.team_set_aside[team] = Deck2(self.GetScenario(), DeckType.AsideDeck, CardFace)
+        return self.team_set_aside[team]
+
+    def SetupTeamLeaderCards(self) -> None:
+        """Etape 3 de la mise en place competitive (mc56 p.14).
+
+        « Each team finds their chosen leader's basic player cards and sets
+        them aside. » Le leader d'un camp est celui pose sur la table d'EN
+        FACE, puisque les equipes echangent leurs scenarios (p.14, etape 4) :
+        le camp 0 a apporte `campaign_2`, le camp 1 a apporte `campaign`.
+        """
+        from game.card.factory import CardFactory
+
+        apportes = {0: self.scene.campaign_2, 1: self.scene.campaign}
+        for team, campaign in apportes.items():
+            if not campaign or not campaign.villain:
+                continue
+            cartes = Competitive.CartesDuLeader(campaign.villain[0])
+            if not cartes:
+                continue
+            deck = self.GetTeamSetAside(team)
+            CardFactory.GenerateCards(cartes, deck, self)
+            Message.TextRender(
+                f"\n--- Cartes du leader mises de cote pour {Competitive.NOMS[team]} : "
+                f"{len(cartes)} ---", self)
 
     def SetupSecondTable(self, game_start_effect: 'Effect') -> 'Deck|None':
         """Monte la table du second camp : son complot, son leader, son deck.
@@ -355,6 +425,15 @@ class World(WorldAction, WorldFind):
         # deplacent et se revelent dans la bonne zone.
         if self.rule.mode_competitive:
             self.SetupTeamGameAreas()
+            # « Each team has its own first player token » (mc56 p.16) : le
+            # jeton pose plus haut est celui du camp 0, il en faut un second
+            # pour le camp 1. `SetActive` ne retire le jeton qu'aux joueurs du
+            # meme camp, les deux coexistent donc.
+            for team in (0, 1):
+                for player in self.GetTeamPlayers(team):
+                    team_identity = player.GetIdentity()
+                    team_identity.SetActive(GameRule(team_identity))
+                    break
 
         if self.rule.mode_skirmish:
             villain = [identity.GetControlByPlayer().AskChoosePaper(campaign.villain)]
@@ -428,6 +507,10 @@ class World(WorldAction, WorldFind):
         second_encounter_deck: 'Deck|None' = None
         if self.rule.mode_competitive:
             second_encounter_deck = self.SetupSecondTable(game_start_effect)
+            # Etape 3 : les 4 cartes joueur du leader de chaque camp. Elles
+            # arrivent apres les deux tables, parce qu'elles se lisent depuis
+            # le scenario APPORTE par chaque camp, celui d'en face.
+            self.SetupTeamLeaderCards()
 
         if self.is_game_over:
             return
@@ -692,8 +775,12 @@ class World(WorldAction, WorldFind):
                 # Pass the first player token clocwise to the next player.
 
                 end_round_effect = GameRule(self.const_players[0].GetIdentity())
-                self.players = Types.Rotate(self.players, 1)
-                self.UpdatePlayersOrder(end_round_effect)
+                # En competitif le jeton a deja tourne, camp par camp, a la fin
+                # de chaque phase vilain (mc56 p.16) : le faire tourner une
+                # seconde fois ici le ferait changer de camp.
+                if not self.rule.mode_competitive:
+                    self.players = Types.Rotate(self.players, 1)
+                    self.UpdatePlayersOrder(end_round_effect)
                 self.ProcessTemporary(end_round_effect)
 
                 end_message = Message.AfterRoundEnd(round_message)
@@ -755,6 +842,9 @@ class World(WorldAction, WorldFind):
                 phase_end("Player")
                 if self.is_game_over:
                     return
+                self.competitive.AFinDePhase(team)
+                if self.is_game_over:
+                    return
 
             for team in teams:
                 phase_begin("Villain")
@@ -764,6 +854,13 @@ class World(WorldAction, WorldFind):
                 if self.is_game_over:
                     return
                 phase_end("Villain")
+                if self.is_game_over:
+                    return
+                # « each team has its own first player token that passes at the
+                # end of their villain phase » (mc56 p.16).
+                if team is not None:
+                    self.PassFirstPlayerToken(team, GameRule(self.const_players[0].GetIdentity()))
+                self.competitive.AFinDePhase(team)
                 if self.is_game_over:
                     return
 
@@ -830,17 +927,60 @@ class World(WorldAction, WorldFind):
                 Faces.RemoveAllFromGame([prev_scheme], GameRule(prev_scheme))
             scheme.PlaceAccelerationToken(acceleration_token, GameRule(scheme))
             scheme.Reveal(None, by_effect)
-        elif self.area_schemes_main.GetSize() == 1:
-            self.game_over.SetGameOverByRule("The Final Stage of the Main Scheme was Completed")
+        elif self.CountMainSchemesOfSameArea(prev_scheme) == 1:
+            # En competitif, le complot accompli est celui d'UNE table : son
+            # camp perd, la partie continue jusqu'a ce que les deux camps aient
+            # joue autant de phases (mc56 p.17).
+            if not self.RecordCompetitiveDefeat(prev_scheme, "complot principal accompli", by_effect):
+                self.game_over.SetGameOverByRule("The Final Stage of the Main Scheme was Completed")
         after_message = Message.AfterMainSchemeAdvanced(message)
         after_message.Send()
 
     def CheckIsAllPlayersEliminated(self):
+        if self.rule.mode_competitive:
+            # « Whichever team's leader defeats all their opponents' identities
+            # first wins » (mc56 p.17) : c'est le camp d'en face qui marque, et
+            # chaque camp se compte a part. `const_seat_order_players` ne bouge
+            # pas, contrairement a `const_players` d'ou un joueur elimine sort.
+            fini = False
+            for team in (0, 1):
+                joueurs = [x for x in self.const_seat_order_players
+                           if self.GetTeamOfPlayer(x) == team]
+                if not joueurs:
+                    continue
+                if all(x.is_eliminated or x.GetIdentity().IsDefeated() for x in joueurs):
+                    self.competitive.EnregistrerDefaite(
+                        team, "tous les heros du camp sont vaincus", None)
+                    fini = True
+            return fini
         for player in self.const_players:
             if not player.GetIdentity().IsDefeated() and not player.is_eliminated:
                 return False
         self.game_over.SetGameOverByRule("All players were eliminated")
         return True
+
+    ################################################################################
+    # Mode competitif : les conditions de fin sont enregistrees, pas appliquees
+    def CountMainSchemesOfSameArea(self, scheme: 'MainScheme') -> int:
+        """Combien de complots principaux vivent dans la zone de ce complot.
+
+        Hors mode competitif il n'y a qu'une zone, et le compte est celui
+        d'avant : la taille de `area_schemes_main`."""
+        if not self.rule.mode_competitive:
+            return self.area_schemes_main.GetSize()
+        game_area = scheme.card.GetGameArea()
+        return len([x for x in self.area_schemes_main.Get()
+                    if x.card.GetGameArea() == game_area])
+
+    def RecordCompetitiveDefeat(self, face: 'CardFace', raison: str, by_effect: 'Effect|None') -> bool:
+        """Le camp de la table ou vit cette carte vient de perdre.
+
+        Rend False hors mode competitif : l'appelant termine alors la partie
+        comme avant."""
+        if not self.rule.mode_competitive:
+            return False
+        team = self.GetTeamOfGameArea(face.card.GetGameArea())
+        return self.competitive.EnregistrerDefaite(team, raison, by_effect)
 
     ################################################################################
     #

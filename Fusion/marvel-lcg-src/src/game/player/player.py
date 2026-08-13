@@ -105,6 +105,10 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
 
         self.is_eliminated = False
         self.hero_name = ""
+        # Le camp, en mode competitif (mc56 p.14). Pose par
+        # `World.SetupTeamGameAreas` depuis le descripteur ; 0 partout ailleurs,
+        # ou il n'existe qu'une table.
+        self.team: int = 0
 
     def Eliminate(self, by_effect: 'Effect'):
         from game.operate.faces import Faces
@@ -129,17 +133,34 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
                 rule = GameRule(hero)
 
                 next_player = Worlds.GetNextPlayer(self, by_effect)
+                if world.rule.mode_competitive:
+                    # « Card abilities on your side of the table completely
+                    # ignore cards on the other side » (mc56 p.16) : un joueur
+                    # elimine ne passe rien a la table d'en face. Le suivant est
+                    # son coequipier, ou personne s'il jouait seul.
+                    coequipiers = [x for x in world.GetTeamPlayers(world.GetTeamOfPlayer(self))
+                                   if x is not self and not x.is_eliminated]
+                    next_player = coequipiers[0] if coequipiers else None
+
                 if next_player != None:
                     # 1. If the eliminated player has the first player token, they
                     # pass it to the next clockwise player.
-                    world.UpdatePlayersOrder(by_effect)
+                    if world.rule.mode_competitive:
+                        # Chaque camp a son jeton (p.16) : il ne bouge que si
+                        # c'est bien celui-la qui vient de partir.
+                        if hero.IsActive():
+                            identity = next_player.GetIdentity()
+                            identity.SetActive(GameRule(identity))
+                    else:
+                        world.UpdatePlayersOrder(by_effect)
 
                     # 2. If there are minions engaged with the eliminated player,
                     # each of those minions engages the next clockwise
                     # player, retaining any attachments, damage, counters,
                     # and status cards on them.
                     game_area = self.GetGameArea()
-                    if next_player.GetGameArea() == world.GetFirstGameArea():
+                    if world.rule.mode_competitive or \
+                            next_player.GetGameArea() == world.GetFirstGameArea():
                         for face in self.GetEngagedMinions():
                             if next_player:
                                 face.EngagePlayer(next_player, by_effect)
@@ -253,7 +274,15 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
     #
     @override
     def GetGameArea(self) -> 'GameArea':
-        if self.world.is_game_started:
+        # La table d'un joueur est celle de son identite des qu'elle existe. Le
+        # repli sur la premiere zone ne sert qu'au tout debut de la mise en
+        # place, quand aucune identite n'a encore ete posee.
+        #
+        # Attendre `is_game_started` etait sans consequence tant qu'il n'y avait
+        # qu'une table ; en competitif, tout ce qu'un joueur du second camp
+        # pioche pendant la mise en place naissait sur la table du premier
+        # (`Deck.Insert` demande sa zone au proprietaire du deck d'arrivee).
+        if self.world.is_game_started or self.area_hero.GetSize() > 0:
             return self.GetIdentity().card.GetGameArea()
         else:
             return self.world.GetFirstGameArea()

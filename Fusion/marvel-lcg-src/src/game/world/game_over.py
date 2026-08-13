@@ -16,12 +16,23 @@ GAME_OVER_REASON_SIMPLE = Literal[
     "Players Lost",
 ]
 
+# Mode competitif (livret mc56 p.17). Une partie a deux camps ne se gagne ni ne
+# se perd « par les joueurs » : elle se gagne PAR UN CAMP. Le camp gagnant est
+# aussi expose au client (`WorldDescriptor.winning_team`), parce que le meme
+# ecran de fin sert aux deux tables.
+GAME_OVER_REASON_COMPETITIVE = Literal[
+    "The Registration Team Won",
+    "The Resistance Team Won",
+    "Both Teams Lost",
+    "The Game is a Tie",
+]
+
 GAME_OVER_REASON_EXIT = Literal[
     "Exit",
     "Undo",
 ]
 
-GAME_OVER_REASON = GAME_OVER_REASON_RULE|GAME_OVER_REASON_SIMPLE|GAME_OVER_REASON_EXIT
+GAME_OVER_REASON = GAME_OVER_REASON_RULE|GAME_OVER_REASON_SIMPLE|GAME_OVER_REASON_COMPETITIVE|GAME_OVER_REASON_EXIT
 
 GAME_OVER_REASON_MAP: Dict[GAME_OVER_REASON, bool|None] = {
     "There were no cards in either the encounter deck or the encounter discard pile": False,
@@ -31,6 +42,13 @@ GAME_OVER_REASON_MAP: Dict[GAME_OVER_REASON, bool|None] = {
     "The Main Scheme was Completed": False,
     "Players Won": True,
     "Players Lost": False,
+    # Un camp a gagne : la partie est gagnee, et `winning_team` dit par qui.
+    "The Registration Team Won": True,
+    "The Resistance Team Won": True,
+    # Les deux camps ont perdu, ou personne n'a pris l'avantage : personne ne
+    # gagne.
+    "Both Teams Lost": False,
+    "The Game is a Tie": False,
     "Exit": None,
     "Undo": None,
 }

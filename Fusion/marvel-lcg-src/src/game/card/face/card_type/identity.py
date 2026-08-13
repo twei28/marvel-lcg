@@ -102,7 +102,14 @@ class Identity(Friend, HasHandSize, PlayerCard):
         self.ChangeToForm(CardFinder(name=face), by_effect)
 
     def SetActive(self, by_effect: 'Effect'):
-        for other_player in [x.GetIdentity() for x in self.card.world.const_players]:
+        # En mode competitif chaque camp a SON jeton de premier joueur
+        # (mc56 p.16) : donner le jeton a un joueur ne le retire donc qu'aux
+        # joueurs de son propre camp. Hors competitif, `GetTeamOfPlayer` rend 0
+        # pour tout le monde et la boucle est celle d'avant.
+        world = self.card.world
+        camp = world.GetTeamOfPlayer(self.GetOwnerPlayer())
+        autres = [x for x in world.const_players if world.GetTeamOfPlayer(x) == camp]
+        for other_player in [x.GetIdentity() for x in autres]:
             if other_player != self and other_player.IsActive():
                 other_player.RemoveTokensInternal(1, 'first_player_token', by_effect)
         if not self.IsActive():

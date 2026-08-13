@@ -39,7 +39,12 @@ class Worlds:
         world = by_effect.world
 
         if encounter_deck.GetSize() + encounter_discard_pile.GetSize() < size:
-            world.game_over.SetGameOverByRule("There were no cards in either the encounter deck or the encounter discard pile")
+            # En competitif, ce deck est celui d'UNE table : c'est son camp qui
+            # perd, et la partie continue jusqu'a ce que les deux camps aient
+            # joue autant de phases (mc56 p.17).
+            if not world.RecordCompetitiveDefeat(
+                    by_effect.this, "plus aucune carte rencontre", by_effect):
+                world.game_over.SetGameOverByRule("There were no cards in either the encounter deck or the encounter discard pile")
             return []
 
         return encounter_deck.PopInternal(
@@ -956,6 +961,11 @@ class Worlds:
 
     @staticmethod
     def GetYourTeamSize(by_effect: 'Effect') -> int:
+        # « If there is more than 1 player on your team » : les joueurs de la
+        # table d'ou parle la carte, pas ceux de la partie entiere. C'est
+        # exactement ce que compte l'icone « par joueur » en mode competitif
+        # (voir `WorldAction.GetPlayerNumIcon`), et hors competitif il n'y a
+        # qu'une table, donc la valeur ne change pas.
         return Worlds.GetPlayerNumIcon(by_effect)
 
     @staticmethod
