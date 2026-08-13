@@ -42,7 +42,11 @@ export const DICO_EN_BASE = {
     "Rechercher un héros": "Search for a hero",
     "Favoris": "Favorites",
     "Toutes les vagues": "All waves",
+    // Le mot « Vague » se traduit, pas le titre de la boite qui suit : celui-ci
+    // reste en anglais dans les deux langues (« Vague 5 · Sinister Motives »),
+    // c'est le titre imprime sur la boite. Voir NOMS_VAGUES dans catalog.js.
     "Vague": "Wave",
+    "Les premiers paquets": "The first packs",
     "Set de base": "Core Set",
     "Héros fan-made, hors de toute extension officielle": "Fan-made heroes, outside any official expansion",
     "Chargement des héros...": "Loading heroes...",

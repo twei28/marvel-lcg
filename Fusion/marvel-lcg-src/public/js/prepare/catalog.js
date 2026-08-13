@@ -84,20 +84,54 @@ function identityVariants(deck, heroCardId, heroCard) {
 const BORNES_VAGUES = [
     { depuis: 1,  vague: 0 },    // Set de base
     { depuis: 2,  vague: 1 },    // Bouffon Vert -> Hulk
-    { depuis: 4,  vague: 2 },    // La Chute du Crane Rouge
+    { depuis: 4,  vague: 2 },    // The Rise of Red Skull
     { depuis: 5,  vague: 1 },    // (la boite 4 s'intercale dans l'ordre du jeu)
     { depuis: 11, vague: 2 },    // Kang -> Sorciere Rouge
-    { depuis: 16, vague: 3 },    // Les Plus Recherches de la Galaxie
-    { depuis: 21, vague: 4 },    // L'Ombre du Titan Fou
-    { depuis: 27, vague: 5 },    // Mobiles Sinistres
-    { depuis: 32, vague: 6 },    // Genese Mutante
+    { depuis: 16, vague: 3 },    // The Galaxy's Most Wanted
+    { depuis: 21, vague: 4 },    // The Mad Titan's Shadow
+    { depuis: 27, vague: 5 },    // Sinister Motives
+    { depuis: 32, vague: 6 },    // Mutant Genesis
     { depuis: 40, vague: 7 },    // NeXt Evolution
-    { depuis: 45, vague: 8 },    // Age d'Apocalypse
-    { depuis: 50, vague: 9 },    // Agents du S.H.I.E.L.D.
+    { depuis: 45, vague: 8 },    // Age of Apocalypse
+    { depuis: 50, vague: 9 },    // Agents of S.H.I.E.L.D.
     { depuis: 56, vague: 10 },   // Civil War
     { depuis: 60, vague: 11 },   // Fear No Evil
     { depuis: 61, vague: null }, // au-dela : hors vague (modulaires, defis)
 ];
+
+/* Le NOM d'une vague est celui de la grande boite qui l'ouvre — c'est la meme
+ * regle que les bornes ci-dessus, lue dans l'autre sens, donc les deux tables
+ * se completent ligne a ligne et une nouvelle vague s'ajoute aux deux endroits.
+ *
+ * Titres EN, ET EN FRANCAIS AUSSI : ils ne passent pas par le dictionnaire.
+ * C'est le titre imprime sur la boite, celui que porte la cle d'extension dans
+ * sets_info.json et celui qu'affiche l'ecran des campagnes (`nom_en` des
+ * definitions) — donc le seul sous lequel on retrouve la boite, en rayon comme
+ * dans le reste de l'appli. A revoir le jour ou on voudra les titres FR : ce
+ * sera cette table, et rien d'autre.
+ *
+ * La vague 1 n'est pas ici : sans grande boite, elle n'a pas de titre a copier.
+ * Son libelle est du texte a nous, donc traduit comme le reste (voir
+ * `nomDeVague` dans app.js). */
+const NOMS_VAGUES = {
+    2:  "The Rise of Red Skull",
+    3:  "The Galaxy's Most Wanted",
+    4:  "The Mad Titan's Shadow",
+    5:  "Sinister Motives",
+    6:  "Mutant Genesis",
+    7:  "NeXt Evolution",
+    8:  "Age of Apocalypse",
+    9:  "Agents of S.H.I.E.L.D.",
+    10: "Civil War",
+    11: "Fear No Evil",
+};
+
+/** Titre de la grande boite qui ouvre une vague. "" si la vague n'en a pas —
+ *  le Set de base (0), ou une vague future dont la table ignore encore le nom :
+ *  l'appelant retombe alors sur le seul numero, jamais sur un trou. */
+function titreDeVague(vague) {
+    return NOMS_VAGUES[vague] || "";
+}
 
 /** Vague d'une extension, d'apres le numero que porte sa clé. null si aucune
  *  (fan-made, sets modulaires, defis hebdomadaires). */
@@ -409,4 +443,4 @@ export const catalog = {
     },
 };
 
-export { titleize };
+export { titleize, titreDeVague };

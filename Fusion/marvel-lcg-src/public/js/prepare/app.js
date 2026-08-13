@@ -2,7 +2,7 @@
 "use strict";
 import { cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js?v=8b2b67ef";
 import { cards } from "/public/js/prepare/cards.js";
-import { catalog, titleize } from "/public/js/prepare/catalog.js";
+import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=1d88f584";
 import { prefs } from "/public/js/prepare/prefs.js";
@@ -849,9 +849,20 @@ function stepTeam() {
     return wrap;
 }
 
-/** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une. */
+/** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
+ *
+ *  Les autres portent le numero ET le titre de leur grande boite, parce que le
+ *  numero seul ne dit rien a qui connait le jeu par ses boites — et parce que
+ *  notre numerotation compte une vague de plus que celle qui circule dans la
+ *  communaute (elle ne compte pas les premiers paquets), donc le titre est ce
+ *  qui leve l'ambiguite. Une vague sans titre connu garde son numero seul. */
 function nomDeVague(vague) {
-    return vague === 0 ? t("Set de base") : t("Vague") + " " + vague;
+    if (vague === 0) return t("Set de base");
+    // Le titre de la boite ne passe PAS par t() : il reste en anglais dans les
+    // deux langues, comme partout ailleurs dans l'appli (voir NOMS_VAGUES).
+    // La vague 1 n'a pas de boite : son libelle est de nous, donc traduit.
+    const titre = vague === 1 ? t("Les premiers paquets") : titreDeVague(vague);
+    return t("Vague") + " " + vague + (titre ? " · " + titre : "");
 }
 
 /** Remplit le menu des vagues avec CELLES QUI EXISTENT dans la liste affichable.
