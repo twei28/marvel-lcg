@@ -1,8 +1,10 @@
 # TODO / SPEC — L'aspect « Determination » (DesignHacker)
 
-**Statut :** **INFRASTRUCTURE FAITE le 2026-08-12** (`e161ffe`). Le moteur accepte
-le cinquième aspect. **Aucune carte n'est encore créée** : c'est le gros du
-chantier et il reste entier.
+**Statut :** **INFRASTRUCTURE FAITE le 2026-08-12** (`e161ffe`), **PRÉFIXE `dt`
+DÉCLARÉ et LES 142 CARTES INVENTORIÉES le 2026-08-13**. Le moteur accepte le
+cinquième aspect et le contenu est relevé dans
+`.planning/donnees/determination-cartes.json`. **Aucune carte n'est encore dans
+`cards.json`, aucun module n'est écrit** : c'est le gros du chantier.
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
@@ -180,3 +182,93 @@ Hercules (40 cartes) et Wonder Man (25) ont pris une session chacun, sans
 mot-clé neuf. Determination, c'est ~140 cartes **et** des mots-clés à inventer :
 plusieurs sessions, à découper par lots. Un premier lot « les 20 cartes qui font
 l'aspect » dirait bien plus tôt si le moteur suit.
+
+
+---
+
+## Ce que le 13/08/2026 a établi
+
+### 1. Le préfixe est `dt`, et il est au registre
+
+La fiche se contredisait : `dh` au §3, `dt` au §4. **Tranché : `dt`**, parce que
+la convention du registre est un préfixe par CONTENU et non par auteur (`cd` =
+Cloak & Dagger, `mk` = Moon Knight, `bw` = Brawn). `dh` aurait désigné
+DesignHacker, qui publiera peut-être autre chose. Déclaré dans
+`tools/prefixes_fanmade.json` avec `cartes: 0`, avant la première carte, comme le
+veut la règle du registre ; `verifier_prefixes.py` reste vert et le signale
+seulement comme « déclaré mais inutilisé ». Le numéro de set 118 est réservé dans
+le libellé, mais **`sets_info.json` n'est pas touché** : il porte un checksum, et
+déclarer un set vide ne servirait à rien.
+
+### 2. Le dossier contient 142 cartes, pas 141
+
+`D-1.jpg` à `D-142.jpg`, **sans aucun trou**, plus un `~Multifaceted--Setup.jpg`
+qui n'est pas une carte. La recherche Drive du MCP ne renvoie que 34 des 143
+fichiers (elle n'indexe que ce qui a été ouvert) : l'énumération fiable passe par
+`https://drive.google.com/embeddedfolderview?id=<dossier>#list`, qui rend la liste
+complète en HTML, et le téléchargement par
+`https://drive.google.com/uc?export=download&id=<fichier>` (le dossier est public).
+
+### 3. Les 142 cartes sont relevées
+
+`.planning/donnees/determination-cartes.json`. **Deux niveaux de lecture, et le
+champ `_niveau` dit lequel** : les 20 premières sont lues en pleine page
+(`releve`), les 122 autres sur des planches de six à 470 px (`inventaire`) — texte
+net, mais non relu mot à mot, donc **à relire en pleine page avant d'écrire son
+module**.
+
+Répartition **mesurée** (la fiche l'estimait à ~140) :
+
+| Type | Cartes |
+|---|---|
+| Alliés | 46 |
+| Événements | 41 |
+| Améliorations | 39 |
+| Supports | 10 |
+| Ressources | 4 |
+| Manigances annexes de joueur | 2 |
+| **Total** | **142** |
+
+### 4. Trois conventions de lecture, calées sur des cartes officielles
+
+* une étoile SOUS une valeur THW/ATK = dégât conséquent, écrite en suffixe `*`
+  (Black Cat `01002` → `"THW": "1*"`) ; deux étoiles → `**` (Lockjaw `05018`) ;
+* une étoile EN EXPOSANT à côté de la valeur relie la statistique au texte. Elle
+  ne s'écrit PAS dans `desc` : c'est la capacité qui la produit ;
+* l'icône de ressource se lit à la couleur : rouge/poing = `R`, bleu/molécule =
+  `B`, doré/éclair = `Y`, vert/étoile = `G`. Vérifié sur quatre cartes officielles
+  au `RES` connu.
+
+**CORRECTION : Cable est une ressource ÉNERGIE (`Y`), pas mentale (`B`)** comme
+l'écrivait le §3 des mesures du 12/08. L'erreur venait d'une lecture sans point de
+comparaison.
+
+### 5. Ce que le moteur ne sait pas encore faire, mesuré et non deviné
+
+**Neuf compteurs manquent à `CardFace.COUNTER`** (`src/game/card/face/card_face.py:117`) :
+`tactic`, `adrenaline`, `diversion`, `stimulant`, `spider`, `replay`, `ball`,
+`LMD`, `configuration`. Cinq compteurs de packs fan-made y sont déjà, commentés
+`CORRECTIF` : le chemin est balisé. Sans eux, `test_generate_cards` tombe à la
+construction — c'est le piège connu de la méthode.
+
+**Mots-clés sans crochet moteur connu** : `Reckless` (4 cartes), `Alias` (4),
+`Alliance` (2), `Fragile` (une quinzaine), `all-purpose counter` (3). Aucun n'a
+encore été cherché dans le moteur : c'est la première mesure du prochain lot.
+
+**Cartes hors norme à traiter à part** : 2 manigances annexes de joueur
+(`dt096`, `dt102`), un coût variable `X` (`dt083`), deux coûts à étoile (`dt136`,
+`dt139`), quatre cartes **sans aucune icône de ressource imprimée** (`dt075`,
+`dt140`, `dt141`, `dt142` — constat vérifié au zoom, pas un défaut de lecture), et
+trois homonymes de cartes déjà présentes (Moon Knight, Deadpool, The Thing).
+
+### 6. Ce qui reste, dans l'ordre
+
+1. **Relire en pleine page** le lot que l'on s'apprête à coder (`_niveau:
+   inventaire` → `releve`).
+2. **Les 9 compteurs** dans `card_face.py`, commentés `CORRECTIF`.
+3. **Mesurer les mots-clés** : `Reckless`, `Alias`, `Alliance`, `Fragile`.
+4. **Les entrées `cards.json`** et le set dans `sets_info.json` (avec recalcul des
+   deux checksums).
+5. **Les images** : 142 fichiers de ~1,5 Mo. **Redimensionner à l'import** — les
+   scans officiels du jeu font 300×434 pour 29 Ko.
+6. **Les modules**, lot par lot, puis `test_cards`, `test_generate_cards`, autoplay.
