@@ -421,3 +421,63 @@ dit exactement « 2 des 3 lignes » pour le joker de Moon Knight.
 **Ce que rien de tout cela ne prouve encore** : qu'une capacité fasse la bonne
 chose en partie. Le §6 (« une partie menée avec un deck Determination, du wizard à
 la victoire ») reste entier, et c'est le seul juge qui manque.
+
+
+## 10. Le deuxième lot : dt021 à dt040 (13/08/2026, soir)
+
+**40 cartes sur 142 fonctionnent.** Le lot compte **onze événements**, entrés
+avec leur module comme l'exige le §7.1.
+
+`test_generate_cards` préfixe `dt` : **40 générées, 0 échec**. `test_cards` :
+**4229 ok, 0 erreur**. Dans un vrai navigateur : 40 cartes proposées à l'éditeur
+de deck, images servies, aucune erreur JS.
+
+### 10.1 La relecture en pleine page a confirmé le relevé
+
+Les 20 cartes ont été relues une par une avant d'écrire une ligne. **Le relevé
+fait sur planches de six était fidèle sur les vingt** : seuls trois textes
+étaient abrégés (le rappel entre parenthèses de `Fragile`). C'est une bonne
+nouvelle pour les 102 cartes restantes, mais la relecture reste obligatoire :
+c'est elle qui a donné la définition exacte de `Fragile`, sans laquelle le
+mot-clé serait resté « sans crochet connu ».
+
+### 10.2 Les mots-clés vivent dans `__init__.py`
+
+Une définition, partagée par toutes les cartes qui la portent :
+
+| Helper | Ce qu'il fait | D'où il vient |
+|---|---|---|
+| `Fragile()` | les attaques contre cette carte gagnent overkill | **crochet officiel** : 33032 Marked |
+| `Reckless()` | 1 menace sur chaque manigance à l'entrée en jeu | pas de crochet, joué tel qu'écrit |
+| `PeutRevenirEnMain()` | « première carte jouée ce round » → retour en main | 18012 Clobber |
+| `RepartirLeRetraitDeMenace()` | « remove X threat divided as you choose » | 03011 Falcon |
+
+**`Fragile` avait un crochet officiel**, contre l'attente de la fiche du 13/08.
+Il ne restait donc, des cinq mots-clés sans crochet, que `Alias` et `Alliance` à
+mesurer — plus deux réponses trouvées en chemin (§10.3).
+
+### 10.3 Deux crochets qui existaient déjà, et que le relevé croyait manquants
+
+* **`all-purpose counter`** : `GetCounters('all-purpose')` rend le total de tous
+  les compteurs d'une carte. Le moteur le connaît. dt118, dt119 et dt120
+  n'auront pas besoin d'un compteur neuf.
+* **`IsFirstCardPlayedThisRound()`** existe (18012, Clobber), et son usage
+  officiel apprend que le moteur enregistre la carte jouée **après** sa
+  résolution — sinon Clobber ne reviendrait jamais en main.
+
+### 10.4 Un outil de plus, né d'un vrai défaut
+
+`tools/verifier_noms_modules.py` comble le trou entre `test_cards` et la partie
+réelle : `test_cards` n'exécute pas le CORPS des fonctions d'un module, donc un
+nom absent y dort jusqu'à ce que la carte soit jouée. Il a trouvé son premier
+défaut en naissant (`SetTarget(Character)` dans dt031, alors que le moteur attend
+la chaîne). Passé sur **les 85 packs du jeu : zéro signalement**.
+
+### 10.5 Ce qui reste
+
+1. **102 cartes** (dt041 à dt142), même méthode, par lots de 20.
+2. Mesurer `Alias` et `Alliance` quand leur lot arrivera.
+3. Les cartes hors norme du §5 des mesures : les 2 manigances annexes de joueur,
+   le coût variable `X` (dt083), les deux coûts à étoile, les quatre cartes sans
+   icône de ressource imprimée.
+4. **Le juge qui manque toujours** : une partie menée avec un deck Determination.
