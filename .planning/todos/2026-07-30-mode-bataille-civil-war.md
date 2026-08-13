@@ -1,10 +1,11 @@
 # TODO / SPEC — Mode Bataille Civil War (PvP / co-op par équipes)
 
-**Statut :** ✅ **TERMINÉ le 13/08/2026 pour le mode COOPÉRATIF** — validé en jeu
-par l'utilisateur. Rien n'a eu à être écrit : le contenu, les règles et le
-lancement existaient déjà (voir §6). **Le mode COMPÉTITIF reste sans chemin** :
-il est désactivé en dur dans le moteur et dépendait du serveur permanent
-multijoueur, chantier abandonné le 13/08.
+**Statut :** ✅ **COOPÉRATIF TERMINÉ** le 13/08/2026, validé en jeu (voir §6-§7),
+**plus le mode expert des 4 scénarios, livré le 13/08** (§8).
+🚧 **COMPÉTITIF EN COURS** depuis le 13/08 : une partie à deux camps se prépare
+et se joue de bout en bout dans le moteur (§9). Ce qui reste est nommé au §10.
+⚠️ Le §2 et le §4 de cette fiche disaient que le compétitif dépendait du serveur
+permanent multijoueur : **c'est faux, et mesuré comme tel** (§9.1).
 **Pas une campagne** — un mode de jeu distinct.
 **Date :** 2026-07-30
 **Origine :** exclusion de Civil War du mode Campagne pendant le chantier des campagnes. Mis de côté ici pour un traitement dédié.
@@ -119,3 +120,107 @@ Ce qui reste ouvert, et seulement si le besoin s'en fait sentir :
   `Worlds.IsCompetitiveMode` ;
 * **le choix explicite du camp** (Registration / Resistance) à la préparation —
   non nécessaire en coopératif, où le camp est l'opposé du leader choisi.
+
+
+---
+
+## 8. LE MODE EXPERT MANQUAIT — livré le 13/08/2026 (`3ab6266`)
+
+Point 1 de la reprise (« le camp est-il lisible ? ») : **le camp n'est pas le
+problème, le livret le dit**. En coopératif le joueur n'a PAS de camp — « choisir
+un camp » est l'étape 1 de la *création de scénario*, et l'obligation de camps
+opposés est explicitement réservée au compétitif (mc56 p.4). Le camp est une
+propriété du leader adverse et de ses sets, et les 4 scénarios livrés
+reproduisent exactement les listes du livret (p.7-8).
+
+**Vérifié aussi, contre l'apparence** : 9 faces de complot et 8 stades de leader
+n'ont pas de module, mais aucun n'est inerte — ils passent par
+`ability_link`/`full_link` (`56141a → 56063a`). Cartes cw à texte, sans module
+et sans lien : **0**.
+
+**Ce qui manquait vraiment** : aucun fichier `*_expert.json` pour les 4 leaders.
+C'étaient, avec les 4 de Synthezoid, les 8 seuls scénarios du jeu dans ce cas,
+alors que les stades III/IV sont dans les données et déjà branchés. 8 fichiers
+écrits, générateur contrôlé en reconstruisant `rhino_expert.json` à l'octet près,
+8 parties complètes par autoplay, et la preuve par substitution via les PV de
+départ (Iron Man 12 en normal → 16 en expert = stade III).
+
+---
+
+## 9. LE COMPÉTITIF : CE QUI A ÉTÉ MESURÉ, PUIS CONSTRUIT (13/08/2026)
+
+Trois commits : `8857de3` (le drapeau et le descripteur), `de3f14d` (les deux
+tables et la famille équipe), `f14150e` (le round enfilé et les six cartes).
+
+### 9.1 Deux prémisses de cette fiche étaient fausses
+
+* **Le serveur n'était pas le verrou.** Le jeu multi-sièges existe déjà :
+  `launch.online.json` porte `seat_passwords` à 4 places, avec `JOUER-EN-MULTI.bat`
+  et `tools/test_serveur_multi.py`. Le chantier abandonné était celui d'un serveur
+  PERMANENT hébergé, pas du jeu à plusieurs.
+* **Le socle « deux tables » n'était pas à bâtir.** `World.game_areas` est une
+  LISTE avec `CreateGameArea()`, et ce n'est pas du code mort : **Kang s'en sert
+  en vrai** (`toafk/kang/__init__.py:107`). `GetMainSchemes`, `GetSideSchemes`,
+  `FindVillainByGameArea` et `GetEncounterDeck` filtrent DÉJÀ par zone, et un
+  vilain peut porter son propre deck rencontre (`Villain.SetEncounterDeck`).
+
+### 9.2 Le vrai verrou, trouvé par la sonde et non déduit
+
+La première mesure montrait les DEUX complots dans la première zone et aucun
+leader dans la seconde, **alors que le code visait explicitement la bonne zone**.
+La trace a nommé le coupable : `Deck.Insert` recalcule la zone d'une carte à
+CHAQUE insertion, depuis son propriétaire. Or les decks du scénario appartiennent
+au scénario, et `Scenario.GetGameArea()` rend la PREMIÈRE zone tant que la partie
+n'a pas commencé. Toute carte de la seconde table était ramenée à la première au
+moment même où on l'y posait.
+
+**Leçon à garder** : viser une zone ne suffit pas, c'est le deck d'arrivée qui
+tranche.
+
+### 9.3 Ce qui marche aujourd'hui, mesuré
+
+`tools/sonde_competitif.py` monte une partie à deux camps et la mène :
+
+* deux zones, un complot principal chacune, deux leaders différents, **deux decks
+  rencontre distincts** ;
+* chaque table révèle **sa propre copie de Choosing Sides** ;
+* le round suit l'ordre du livret : héros camp 0, héros camp 1, vilain camp 0,
+  vilain camp 1 ;
+* **partie complète en 5 rounds, zéro erreur fatale.**
+
+Le vocabulaire d'équipe veut enfin dire quelque chose, lu depuis la table de la
+carte : « the enemy leader » est celui posé sur VOTRE table, « your leader » est
+le vôtre et il est en face (les équipes échangent leurs scénarios, p.14 étape 4),
+« the enemy team » sont les joueurs d'en face. **En coopératif, les quatre
+fonctions rendent exactement ce qu'elles rendaient** — c'est ce que le livret p.6
+demande.
+
+Non-régression sur les trois lots : `test_cards` 4331 ok / 0 erreur (inchangé),
+une partie ordinaire rend le même résultat qu'avant, et Kang mène 3 parties.
+
+---
+
+## 10. CE QUI RESTE AU COMPÉTITIF, nommé et non deviné
+
+Rien de tout cela n'est commencé. C'est la liste, par ordre de ce qui bloque le
+plus un joueur.
+
+1. **Aucun chemin de lancement.** Seule la sonde sait démarrer une partie
+   compétitive. Il faut porter `campaign_2` et le camp de chaque joueur jusqu'au
+   `NewGameDescriptor` (`server_new_game.py`), mettre `ui-check/contrat-nouvelle-partie.json`
+   à jour dans le même commit, puis offrir le choix dans l'écran de préparation.
+2. **Les conditions de victoire sont encore globales.** Le premier complot
+   principal complété termine TOUTE la partie. Le livret p.17 veut trois
+   conditions par équipe, la règle « la partie ne s'arrête pas avant que les deux
+   camps aient joué autant de phases », et cinq départages.
+3. **Les PV du leader comptent tous les joueurs.** Mesuré : Iron Man démarre à 24
+   PV pour 1 joueur en face, parce que `GetYourTeamSize` lit le nombre TOTAL de
+   joueurs. Il doit lire la taille du camp qui l'affronte.
+4. **Un seul jeton de premier joueur.** En 2v2 chaque camp a le sien (p.16).
+5. **L'étape 3 de la mise en place manque** : les 4 cartes joueur du leader mises
+   de côté, que Choosing Sides fait gagner (p.16). C'est ce qui bloque 56128b.
+6. **56158 Switching Sides** ne sait pas offrir une fenêtre de paiement à un
+   joueur d'une autre table.
+7. **L'isolement entre tables n'a pas été audité** (p.16 : « card abilities on
+   your side of the table completely ignore cards on the other side unless they
+   specifically refer to them »).
