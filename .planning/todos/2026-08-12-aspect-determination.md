@@ -632,3 +632,44 @@ manigance perdante à sa phrase anglaise. Le français vit dans
    jeu en pâtit.
 3. **Les 26 écarts `desc` ailleurs dans le jeu** (§13.1), à traiter comme un
    chantier à part si on veut les corriger.
+
+
+
+## 16. Les écarts repris : 8 sur 12 levés (13/08/2026)
+
+Ils avaient été assumés faute d'avoir cherché assez loin. **Le moteur savait
+faire, dans huit cas sur douze.**
+
+| Carte | Ce qui a été trouvé |
+|---|---|
+| dt013 Recon | `player.dealt_encounter_cards` tient les cartes face cachée |
+| dt074 In the Wings | `DeclareDefender` sur le message d'attaque |
+| dt125 Night Thrasher | `WhenCardFlip`, la fenêtre générique de retournement |
+| dt072 Red Dagger | `AddTarget` résout l'attaque X fois pour de vrai (25013) |
+| dt030 Adrenaline Shot | `IncreaseDamage` : ce sont les dégâts, pas l'ATK |
+| dt056 Oblivion | le joueur d'origine est retenu sur la carte |
+| dt101 Darkhawk | deux gains, chacun conditionné par le pouvoir courant |
+| dt100/105/106/107 `Alias` | l'homonyme est défaussé à l'entrée en jeu |
+
+### 16.1 Les quatre qui restent, et pourquoi
+
+**Aucun n'a de porte dans le moteur — vérifié, pas supposé :**
+
+* **dt075 / dt117 « votre collection »** — aucune notion de collection dans
+  `operate/search.py`. La recherche se fait dans le deck et la défausse.
+* **dt109 Phase Shift** — un mot-clé ne se donne qu'à une carte EN JEU ; la
+  carte parle du deck et de la main.
+* **dt111 Morph** — `OnEvent.CardKeyword` ne surveille que ATK/THW/SCH : aucune
+  fenêtre « boîte de texte traitée comme vide ».
+* **dt135 Tarantula** — `have_res_icon` n'existe que pour une carte qui accorde
+  une icône à UNE AUTRE, et rien ne la donne PAR JETON. **Seule ligne non
+  implémentée de tout l'aspect**, et son module le dit.
+
+Les quatre demanderaient une modification du MOTEUR, pas d'une carte. C'est un
+chantier différent, et il n'est pas ouvert.
+
+### 16.2 Ce qui reste, toujours le même
+
+**Jouer une vraie partie avec un deck Determination.** Les outils disent
+maintenant que chaque carte est là, se construit, porte ce qu'elle annonce et
+que ses noms existent. Aucun ne dit qu'elle fait la bonne chose.
