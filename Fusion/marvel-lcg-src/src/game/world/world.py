@@ -155,6 +155,142 @@ class World(WorldAction, WorldFind):
         self.game_areas.append(GameArea(self))
         return self.game_areas[-1]
 
+    ################################################################################
+    # Camps (mode competitif, livret mc56 p.14-17)
+    #
+    # Un camp EST une zone de jeu : l'equipe 0 joue dans `game_areas[0]`,
+    # l'equipe 1 dans `game_areas[1]`. Rien d'autre n'est a retenir, le moteur
+    # filtrant deja par zone les complots, les manigances, les sbires et le
+    # deck rencontre. Hors mode competitif il n'existe qu'une zone, et toutes
+    # ces fonctions rendent 0 / tous les joueurs / la premiere zone.
+    def GetTeamOfPlayer(self, player: 'Player') -> int:
+        area = player.GetIdentity().card.GetGameArea()
+        if area in self.game_areas:
+            return self.game_areas.index(area)
+        return 0
+
+    def GetTeamPlayers(self, team: int) -> List['Player']:
+        return [x for x in self.const_players if self.GetTeamOfPlayer(x) == team]
+
+    def GetTeamGameArea(self, team: int) -> 'GameArea':
+        while len(self.game_areas) <= team:
+            self.CreateGameArea()
+        return self.game_areas[team]
+
+    def GetTeamOfGameArea(self, game_area: 'GameArea') -> int:
+        if game_area in self.game_areas:
+            return self.game_areas.index(game_area)
+        return 0
+
+    def GetOtherTeam(self, team: int) -> int:
+        """Le camp d'en face. Le livret n'en connait que deux (mc56 p.14)."""
+        return 1 - team if team in (0, 1) else 0
+
+    def CompetitiveEncounterSets(self, names: List[str]) -> List[str]:
+        """« Replace the standard set with the standard PvP set when playing
+        in competitive mode » (mc56 p.4). Le meme fichier de scenario sert aux
+        deux modes : le remplacement se fait donc au lancement, pas dans les
+        donnees, sinon une partie cooperative recevrait le set PvP.
+        """
+        if not self.rule.mode_competitive:
+            return names
+        return ["standard_pvp" if x == "standard" else x for x in names]
+
+    def SetupTeamGameAreas(self) -> None:
+        """Assied chaque joueur a la table de son camp.
+
+        Le camp vient du descripteur (`HeroDescriptor.team`). Un joueur du
+        camp 0 ne bouge pas : il est deja dans la premiere zone.
+        """
+        for i, player in enumerate(self.const_players):
+            if i >= len(self.scene.players):
+                continue
+            team = self.scene.players[i].team
+            if team <= 0:
+                continue
+            self.GetTeamGameArea(team).AddPlayer(player)
+
+    def SetupSecondTable(self, game_start_effect: 'Effect') -> 'Deck|None':
+        """Monte la table du second camp : son complot, son leader, son deck.
+
+        Chaque equipe apporte SON scenario et affronte celui de l'autre
+        (mc56 p.14, etape 4). La seconde table vit dans sa propre zone de jeu.
+
+        Rend son deck rencontre, pour que l'etape 11 de la mise en place y
+        cherche aussi les cartes qui portent le mot-cle Setup.
+        """
+        from game.card.factory import CardFactory
+        from game.message import Message
+        from game.effect.rule import GameRule
+        from game.operate.faces import Faces
+        from game.card.face.base import Villain
+
+        campaign = self.scene.campaign_2
+        assert campaign.villain, "mode competitif : le second camp n'apporte pas de leader"
+        assert campaign.schemes, "mode competitif : le second camp n'apporte pas de complot principal"
+
+        game_area = self.GetTeamGameArea(1)
+        players = self.GetTeamPlayers(1)
+        assert players, "mode competitif : le second camp n'a aucun joueur"
+        first_player = players[0]
+        scenario = self.GetScenario()
+
+        # Son complot principal.
+        scheme_cards = CardFactory.GenerateCards(campaign.schemes, self.main_schemes_deck, self)
+        assert scheme_cards
+        for card in scheme_cards:
+            game_area.AddCard(card)
+        scheme_cards[0].face.PutIntoPlay(first_player, GameRule(scheme_cards[0].face),
+                                         target_game_area=game_area)
+
+        # Son leader. Les cartes naissent dans la premiere zone (factory.py) :
+        # on les deplace avant qu'elles servent a quoi que ce soit.
+        villain_cards = CardFactory.GenerateCards(campaign.villain, scenario.villain_deck, self)
+        assert villain_cards
+        for card in villain_cards:
+            game_area.AddCard(card)
+
+        # Son deck rencontre. Le message de mise en place est renvoye pour
+        # CETTE table : une carte qui change la preparation (sets de rencontre,
+        # cartes mises de cote) doit pouvoir le faire pour la sienne.
+        message = Message.WhenGameBeginSetup(campaign, self)
+        message.Send()
+
+        deck, _ = scenario.CreateEncounterDeck()
+        scenario.extra_encounter_decks.append(deck)
+
+        if not message.skip_create_encounter_deck:
+            encounters: List[str] = campaign.encounters[:]
+            for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
+                encounters += CardFactory.LoadEncounterSet(encounter_set)
+            CardFactory.GenerateCards(encounters, deck, self)
+            Message.WhenDeckCreated_Text(deck)
+
+            # Les obligations d'un joueur vont dans le deck qu'il AFFRONTE,
+            # c'est-a-dire celui de sa propre table.
+            if not message.no_use_obligation:
+                for player in players:
+                    Faces.MoveAllToDeck([x.face for x in player.set_aside_obligations],
+                                        deck, "Top", game_start_effect)
+
+            for card in deck.GetAll():
+                if card.card.GetGameArea() != game_area:
+                    game_area.AddCard(card.card)
+
+            deck.Shuffle(game_start_effect)
+            message.CreateSetAside()
+            message.CreateSetAsideModular()
+
+        # Le leader entre en jeu APRES : `Villain.OnPutIntoPlay` lui attache le
+        # deck rencontre du scenario, on lui rend ensuite le sien.
+        if not message.skip_put_villain_into_play:
+            leader = villain_cards[0].face
+            leader.PutIntoPlay(first_player, game_start_effect, target_game_area=game_area)
+            villain = leader.CastTo(Villain)
+            villain.SetEncounterDeck(deck)
+
+        return deck
+
     def SelectScenario(self, villains: Sequence[str], schemes: Sequence[str]) -> None:
         from game.card.factory import CardFactory
         from game.effect.rule import GameRule
@@ -201,6 +337,13 @@ class World(WorldAction, WorldFind):
         # [x] 7. Collect Tokens and Status Cards
         # [x] 8. Select Scenario
         campaign = self.scene.campaign
+
+        # Mode competitif : chaque camp a sa table. On l'ouvre AVANT de monter
+        # les scenarios, pour que les cartes du second camp naissent, se
+        # deplacent et se revelent dans la bonne zone.
+        if self.rule.mode_competitive:
+            self.SetupTeamGameAreas()
+
         if self.rule.mode_skirmish:
             villain = [identity.GetControlByPlayer().AskChoosePaper(campaign.villain)]
         else:
@@ -231,14 +374,18 @@ class World(WorldAction, WorldFind):
         if not message.skip_create_encounter_deck:
             encounters: List[str] = campaign.encounters[:]
             from game.card.factory import CardFactory
-            for encounter_set in message.encounter_set_names:
+            for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
                 encounters += CardFactory.LoadEncounterSet(encounter_set)
 
             CardFactory.GenerateCards(encounters, scenario.encounter_deck, self)
             Message.WhenDeckCreated_Text(scenario.encounter_deck)
 
             if not message.no_use_obligation:
-                for player in self.const_players:
+                # Un joueur affronte le deck rencontre de SA table. En partie
+                # ordinaire il n'y en a qu'une ; en competitif, les obligations
+                # du second camp partent dans son deck a lui, monte plus bas.
+                obligation_players = self.GetTeamPlayers(0) if self.rule.mode_competitive else self.const_players
+                for player in obligation_players:
                     Faces.MoveAllToDeck([x.face for x in player.set_aside_obligations], scenario.encounter_deck, "Top", game_start_effect)
 
             if self.rule.crisis_of_infinite_deadpools:
@@ -264,6 +411,15 @@ class World(WorldAction, WorldFind):
         if self.is_game_over:
             return
 
+        # Mode competitif : la table du second camp, avec son complot
+        # principal, son leader et son propre deck rencontre.
+        second_encounter_deck: 'Deck|None' = None
+        if self.rule.mode_competitive:
+            second_encounter_deck = self.SetupSecondTable(game_start_effect)
+
+        if self.is_game_over:
+            return
+
         # Move nemesis sets
         for player in self.const_players:
             faces = [card.face for card in player.set_aside_obligations if card.face in player.set_aside_nemesis_sets.Get()]
@@ -281,6 +437,7 @@ class World(WorldAction, WorldFind):
         decks = [x.player_deck for x in self.const_players] + \
                 [x.set_aside_nemesis_sets for x in self.const_players] + \
                 [self.GetScenario().encounter_deck] + \
+                ([second_encounter_deck] if second_encounter_deck else []) + \
                 self.additional_decks
         faces = [x for y in decks for x in y.GetAll() if HasSetup.IsType(x) and x.printed_setup > 0]
         for face in faces:

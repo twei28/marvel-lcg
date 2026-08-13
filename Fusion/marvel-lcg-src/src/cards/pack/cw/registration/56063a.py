@@ -11,8 +11,19 @@ def GetAbilities() -> Sequence['Ability']:
         player = Worlds.GetFirstPlayer(effect)
 
         if Worlds.IsCompetitiveMode(effect):
-            # team = Worlds.GetEnemyTeam(effect)
-            assert False
+            # « In competitive mode, the enemy team finds the Choosing Sides
+            # side scheme and your team reveals it. »
+            #
+            # La recherche appartient a l'equipe adverse, la revelation se fait
+            # sur VOTRE table : c'est le joueur de votre camp qui recoit la
+            # manigance. Le moteur cherche dans le deck rencontre de la zone du
+            # chercheur, et les deux camps ont le leur.
+            Find.FindAndReveal(
+                effect,
+                Worlds.GetYourTeam(effect),
+                finder=CardFinder(name="Choosing Sides", card_type=EncounterSideScheme)
+            )
+            return
         if Worlds.IsCooperativeMode(effect):
             leader = Worlds.GetEnemyLeader(effect)
             if leader:

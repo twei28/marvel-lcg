@@ -116,6 +116,18 @@ class Deck2(Generic[TC], Object):
             game_area = self.bind_card.GetGameArea()
         elif self.play_area:
             game_area = self.play_area.GetIdentity().card.GetGameArea()
+        elif len(self.world.game_areas) > 1 and not self.GetOwner().IsPlayer():
+            # Les decks du SCENARIO (complots principaux, vilains, rencontre,
+            # cartes mises de cote) sont partages par TOUTES les tables : leur
+            # proprietaire n'a pas de zone a lui. `Scenario.GetGameArea()` rend
+            # d'ailleurs la premiere zone tant que la partie n'a pas commence,
+            # ce qui ramenait a la table 0 toute carte de la seconde table au
+            # moment meme ou on l'y posait. Une carte qui entre dans un tel
+            # deck garde donc SA table.
+            #
+            # Inerte hors partie a plusieurs tables : quand il n'existe qu'une
+            # zone, la branche n'est jamais prise.
+            game_area = card.GetGameArea()
         else:
             game_area = self.GetOwner().GetGameArea()
 

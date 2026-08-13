@@ -856,12 +856,54 @@ class Worlds:
             until_turn_end=turn_end
         )
 
+    ################################################################################
+    # Les deux camps (livret mc56 p.14-17)
+    #
+    # Le vocabulaire du livret se lit TOUJOURS depuis la table ou se trouve la
+    # carte qui parle :
+    #   * « the enemy leader » est le leader pose sur VOTRE table, celui que
+    #     vous combattez ;
+    #   * « your leader » est le VOTRE, et il est sur la table d'en face, parce
+    #     que les equipes echangent leurs scenarios (p.14, etape 4) ;
+    #   * « the enemy team » sont les joueurs assis a l'autre table.
+    #
+    # En cooperatif il n'existe qu'une table, et le livret p.6 dit quoi faire :
+    # « the enemy team refers to the players », « a card ability that refers to
+    # your leader cannot be resolved ». C'est exactement ce que ces fonctions
+    # rendaient avant, et ce qu'elles continuent de rendre.
     @staticmethod
-    def GetEnemyTeam(by_effect: 'Effect') -> 'Player':
+    def GetTeamOfEffect(by_effect: 'Effect') -> int:
+        world = by_effect.world
+        return world.GetTeamOfGameArea(by_effect.this.card.GetGameArea())
+
+    @staticmethod
+    def GetTeamFirstPlayer(by_effect: 'Effect', team: int) -> 'Player':
+        """Le joueur qui agit au nom d'un camp.
+
+        Les cartes disent « the enemy team searches... » : dans le moteur, une
+        recherche est faite par UN joueur. On prend le premier du camp dans
+        l'ordre des sieges.
+        """
+        world = by_effect.world
+        players = world.GetTeamPlayers(team)
+        if players:
+            return players[0]
         return Worlds.GetFirstPlayer(by_effect)
 
     @staticmethod
+    def GetEnemyTeam(by_effect: 'Effect') -> 'Player':
+        world = by_effect.world
+        if not world.rule.mode_competitive:
+            # Coop : « the enemy team refers to the players » (p.6).
+            return Worlds.GetFirstPlayer(by_effect)
+        team = Worlds.GetTeamOfEffect(by_effect)
+        return Worlds.GetTeamFirstPlayer(by_effect, world.GetOtherTeam(team))
+
+    @staticmethod
     def GetEnemyLeader(by_effect: 'Effect') -> 'Leader|None':
+        # Le leader que VOUS combattez : celui de votre propre table. Le
+        # filtrage par zone est deja dans FindCardOnField, donc la meme ligne
+        # rend le bon leader dans les deux modes.
         leader = Worlds.FindCardOnField(
             by_effect,
             card_type=Leader
@@ -870,10 +912,24 @@ class Worlds:
 
     @staticmethod
     def GetYourTeam(by_effect: 'Effect') -> 'Player':
-        return Worlds.GetFirstPlayer(by_effect)
+        world = by_effect.world
+        if not world.rule.mode_competitive:
+            return Worlds.GetFirstPlayer(by_effect)
+        return Worlds.GetTeamFirstPlayer(by_effect, Worlds.GetTeamOfEffect(by_effect))
 
     @staticmethod
     def GetYourTeamLeader(by_effect: 'Effect') -> 'Leader|None':
+        world = by_effect.world
+        if not world.rule.mode_competitive:
+            # Coop : la capacite ne peut pas se resoudre (p.6). Les cartes
+            # concernees ont toutes un effet de repli, qu'elles resolvent a la
+            # place.
+            return None
+        team = Worlds.GetTeamOfEffect(by_effect)
+        other_area = world.GetTeamGameArea(world.GetOtherTeam(team))
+        for face in Worlds.GetOnFieldCards(other_area):
+            if Leader.IsType(face):
+                return face
         return None
 
     @staticmethod

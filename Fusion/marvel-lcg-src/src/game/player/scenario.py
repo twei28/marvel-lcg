@@ -16,8 +16,29 @@ class Scenario(User):
         self.area_villain = Deck2(self, DeckType.VillainArea, Villain)
         self.villain_deck = Deck2(self, DeckType.VillainDeck, Villain)
 
-        self.encounter_deck = Deck2(self, DeckType.EncounterDeck, CardFace)
-        self.encounter_discard_pile = Deck2(self, DeckType.EncounterDiscardPile, CardFace)
+        self.encounter_deck, self.encounter_discard_pile = self.CreateEncounterDeck()
+
+        # Les decks rencontre SUPPLEMENTAIRES. Vide en partie ordinaire. En
+        # mode competitif chaque equipe affronte le leader prepare par l'autre,
+        # donc chaque table a son propre deck rencontre (mc56 p.14, etape 4).
+        # Le moteur sait deja lequel lire : `Worlds.GetEncounterDeck` passe par
+        # le vilain de la zone de jeu, et chaque vilain porte le sien
+        # (`Villain.SetEncounterDeck`).
+        self.extra_encounter_decks: List['Deck'] = []
+
+    def CreateEncounterDeck(self) -> 'Tuple[Deck, Deck]':
+        """Un deck rencontre et sa defausse, lies l'un a l'autre.
+
+        Le rappel de melange est celui du jeu : quand un deck rencontre est
+        remelange, un jeton d'acceleration est pose sur le complot principal.
+        `FindMainScheme` resout par la ZONE DE JEU de la carte qui provoque le
+        melange, donc chaque table pose son jeton sur son propre complot.
+        """
+        from game.deck import Deck2, DeckType
+        from game.card.face.card_face import CardFace
+
+        deck = Deck2(self, DeckType.EncounterDeck, CardFace)
+        discard_pile = Deck2(self, DeckType.EncounterDiscardPile, CardFace)
 
         def process_after_shuffle(deck: 'Deck', by_effect: 'Effect'):
             from game.effect.rule import GameRule
@@ -26,7 +47,8 @@ class Scenario(User):
             scheme = Worlds.FindMainScheme(by_effect)
             if scheme:
                 scheme.PlaceAccelerationToken(1, GameRule(scheme))
-        self.encounter_deck.BindDiscardPile(self.encounter_discard_pile, process_after_shuffle)
+        deck.BindDiscardPile(discard_pile, process_after_shuffle)
+        return deck, discard_pile
 
     def GetVillain(self, game_area: 'GameArea|None') -> 'Villain|None':
         if self.area_villain.GetSize() == 0:
