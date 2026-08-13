@@ -1,6 +1,11 @@
 # TODO / SPEC — Mode Bataille Civil War (PvP / co-op par équipes)
 
-**Statut :** investigué, non implémenté. **Pas une campagne** — un mode de jeu distinct.
+**Statut :** ✅ **TERMINÉ le 13/08/2026 pour le mode COOPÉRATIF** — validé en jeu
+par l'utilisateur. Rien n'a eu à être écrit : le contenu, les règles et le
+lancement existaient déjà (voir §6). **Le mode COMPÉTITIF reste sans chemin** :
+il est désactivé en dur dans le moteur et dépendait du serveur permanent
+multijoueur, chantier abandonné le 13/08.
+**Pas une campagne** — un mode de jeu distinct.
 **Date :** 2026-07-30
 **Origine :** exclusion de Civil War du mode Campagne pendant le chantier des campagnes. Mis de côté ici pour un traitement dédié.
 **Rapport aux campagnes :** aucun. Civil War n'est PAS une campagne vilain ; ne pas l'ajouter à `CAMPAIGN_CODES`. C'est un système de **bataille par équipes** qui demande son propre flux de préparation.
@@ -97,3 +102,20 @@ dit autre chose.**
 modules), les règles (dans le moteur) et le lancement (par l'écran ordinaire)
 existent. Il reste à JOUER pour voir ce qui manque — et, si le compétitif est
 voulu un jour, à rouvrir la question du serveur.
+
+
+---
+
+## 7. Validé en jeu (13/08/2026)
+
+**L'utilisateur a joué Civil War et confirme que ça fonctionne.** Le mode
+coopératif est donc clos : une équipe de héros contre un leader adverse
+automatisé, lancé depuis l'écran de préparation ordinaire.
+
+Ce qui reste ouvert, et seulement si le besoin s'en fait sentir :
+
+* **le mode compétitif** (deux équipes de joueurs humains) — il faudrait d'abord
+  rouvrir le serveur permanent multijoueur, et lever le `return False` en dur de
+  `Worlds.IsCompetitiveMode` ;
+* **le choix explicite du camp** (Registration / Resistance) à la préparation —
+  non nécessaire en coopératif, où le camp est l'opposé du leader choisi.
