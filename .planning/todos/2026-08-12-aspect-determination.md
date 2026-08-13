@@ -327,3 +327,30 @@ le module d'un événement se livrent ensemble.**
    n'a aucun effet tant que `tactic` n'existe pas).
 3. Les modules des 16 cartes deja en place : elles sont dans le jeu, mais leurs
    capacités ne font encore rien.
+
+
+## 8. Les modules commencent (13/08/2026)
+
+**Deux écrits, 18 à écrire, plus les 4 événements** (`b2e0172`). `dt003` (Venom)
+et `dt016` (Deadpool), choisis pour leur banalité : ce qui compte est la méthode.
+
+**La méthode, en trois gestes** :
+
+1. **Trouver la carte officielle qui porte le même texte** et copier sa structure.
+   `dt016` est le jumeau de `10012` (Sentry) au mot près. Rien ne s'invente tant
+   qu'un précédent existe.
+2. **Écrire le module** dans `src/cards/pack/determination/<card_id>.py`. Le pack
+   a son `__init__.py` (`from cards.pack import *`), et le moteur retombe sur
+   `cards.pack.<pack>.<card_id>` faute de sous-dossier de set.
+3. **Prouver qu'il est branché** avec `tools/sonde_capacites.py`, **toujours avec
+   un témoin** : une carte officielle à module, et une carte du même type sans
+   module. Allié sans module 7 capacités, avec module 8.
+
+**Le piège que le témoin a attrapé** : la première sonde lisait `card.faces`, qui
+n'existe pas (c'est `card.printed_faces`), et rendait 0 pour TOUTES les cartes.
+Sans témoin officiel dans la même mesure, la conclusion aurait été « mes modules
+ne sont pas branchés », et j'aurais cherché des heures du mauvais côté.
+
+**Ce qui reste hors de portée de la sonde** : qu'une capacité fasse la bonne
+chose. Hors de la file du moteur aucune réaction en chaîne ne part. Il faudra une
+vraie partie, comme pour la campagne.
