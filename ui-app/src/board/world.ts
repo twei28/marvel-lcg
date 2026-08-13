@@ -173,6 +173,13 @@ export type World = {
   players_won?: boolean
   /** Texte du moteur : « The Final Stage of the Villain was Defeated »... */
   game_over_reason?: string
+  /**
+   * Mode Bataille : le camp gagnant (-1 s'il n'y en a pas) et le camp de
+   * chaque siege. Le meme ecran de fin sert aux deux tables : sans eux, il
+   * annoncerait la meme chose au vainqueur et au vaincu. Absents hors Bataille.
+   */
+  winning_team?: number
+  teams?: number[]
 }
 
 /** Familles de types, reprises telles quelles de descriptor.js. */

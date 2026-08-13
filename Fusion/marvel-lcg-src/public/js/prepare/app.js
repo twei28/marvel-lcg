@@ -4,7 +4,7 @@ import { cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js?v=8b2
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=1d88f584";
+import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";

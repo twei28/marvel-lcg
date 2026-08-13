@@ -42,6 +42,8 @@ import {
   demandeDoitApparaitreAuCentre,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { traduireMoteur } from './board/vocabulaire-moteur'
+import { finDePartie } from './board/fin-partie'
 import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { BandeauAbsent } from './board/BandeauAbsent'
@@ -1320,6 +1322,7 @@ function PanneauOptions({
 function EcranFinPartie({
   gagne,
   raison,
+  bataille,
   monde,
   hautsFaits,
   siege,
@@ -1327,6 +1330,12 @@ function EcranFinPartie({
 }: {
   gagne: boolean
   raison?: string
+  /**
+   * Mode Bataille : la partie se gagne PAR UN CAMP, et le meme ecran sert aux
+   * deux tables. `gagne` dit alors si c'est NOTRE camp, et `nul` si personne
+   * n'a gagne (les deux camps perdus, ou egalite parfaite).
+   */
+  bataille?: { nul: boolean }
   monde?: World
   /** Titres débloqués pendant cette session, accumulés par Moteur. */
   hautsFaits: string[]
@@ -1341,6 +1350,24 @@ function EcranFinPartie({
   const heros = (monde?.players ?? [])
     .map((joueur) => joueur.area_hero?.[0]?.name?.replace(/^\W*/, ''))
     .filter((nom): nom is string => Boolean(nom))
+  const eyebrow = bataille
+    ? bataille.nul
+      ? t('Match nul')
+      : gagne
+        ? t('Victoire')
+        : t('Défaite')
+    : gagne
+      ? t('Victoire')
+      : t('Défaite')
+  const titre = bataille
+    ? bataille.nul
+      ? t('Aucun camp ne l\u2019emporte')
+      : gagne
+        ? t('Votre camp l\u2019emporte !')
+        : t('Le camp adverse l\u2019emporte')
+    : gagne
+      ? t('Les héros l\u2019emportent !')
+      : t('Les héros sont vaincus')
   const rounds = monde?.round_id
   const mechants = (monde?.area_villain ?? []).map((carte) => carte.name).filter(Boolean)
   return (
@@ -1348,7 +1375,7 @@ function EcranFinPartie({
       className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}`}
       role="dialog"
       aria-modal="true"
-      aria-label={gagne ? t('Victoire') : t('Défaite')}
+      aria-label={eyebrow}
     >
       {gagne ? (
         <div className="fin-partie-confettis" aria-hidden="true">
@@ -1358,11 +1385,11 @@ function EcranFinPartie({
         </div>
       ) : null}
       <div className="fin-partie-carte">
-        <span className="fin-partie-eyebrow">{gagne ? t('Victoire') : t('Défaite')}</span>
-        <strong className="fin-partie-titre">
-          {gagne ? t('Les héros l\u2019emportent !') : t('Les héros sont vaincus')}
-        </strong>
-        {raison ? <span className="fin-partie-raison">{raison}</span> : null}
+        <span className="fin-partie-eyebrow">{eyebrow}</span>
+        <strong className="fin-partie-titre">{titre}</strong>
+        {raison ? (
+          <span className="fin-partie-raison">{traduireMoteur(raison)}</span>
+        ) : null}
         {heros.length || mechants.length ? (
           <span className="fin-partie-detail">
             {heros.join(', ')}
@@ -2305,7 +2332,7 @@ function PagePartie({
 
       {etat.monde?.game_over ? (
         <EcranFinPartie
-          gagne={Boolean(etat.monde.players_won)}
+          {...finDePartie(etat.monde, playerId)}
           raison={etat.monde.game_over_reason}
           monde={etat.monde}
           hautsFaits={etat.hautsFaits}

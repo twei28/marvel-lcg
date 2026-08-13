@@ -123,6 +123,11 @@ const MOTEUR_FR: Record<string, string> = {
   'The Final Stage of the Main Scheme was Completed':
     'Le dernier stade de la manigance principale a été achevé',
   'The Main Scheme was Completed': 'La manigance principale a été achevée',
+  // — Fins d'une partie en mode Bataille (`src/game/world/competitive.py`) —
+  'The Registration Team Won': 'Le camp Registration l’emporte',
+  'The Resistance Team Won': 'Le camp Résistance l’emporte',
+  'Both Teams Lost': 'Les deux camps ont perdu',
+  'The Game is a Tie': 'Égalité parfaite',
 }
 
 /**
