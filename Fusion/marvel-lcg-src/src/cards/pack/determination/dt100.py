@@ -11,10 +11,6 @@ def GetAbilities() -> Sequence['Ability']:
     return [
         Reckless(),
         AliasReduitLeCout(),
-        *AbilityFactory.GiveKeywordToAttached(
-            "This",
-            retaliate=2,
-        ),
         AbilityFactory.AfterUnitUseBasicPower(
             AbilityType.Response,
             CardFinder(trait="AERIAL"),

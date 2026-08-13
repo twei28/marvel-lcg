@@ -23,6 +23,10 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         Fragile(),
+        # « Uses (5 spider counters) » : le champ `desc.Uses` n'existe QUE pour
+        # Upgrade, Support, Attachment, Obligation et Environment. Spiders-Man
+        # est un allie : ses compteurs sont poses ici.
+        AbilityFactory.ThisEnterPlayWithCounters(5, 'spider'),
         # « il ne peut pas quitter le jeu tant qu'il a des compteurs spider » :
         # le moteur sait empecher une defaite, c'est le sens jouable de la
         # phrase pour un allie a 0 PV.

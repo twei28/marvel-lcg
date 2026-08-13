@@ -1,6 +1,11 @@
 from . import *
 
 # * Paladin
+#
+# ECART ASSUME : la carte porte « Villainous. », mais `desc.Villainous` n'existe
+# que pour un Minion (aucune carte officielle ne le donne a un allie). Le
+# mot-cle n'a donc pas de porte dans le moteur pour cette carte ; le reste
+# fonctionne.
 
 def GetAbilities() -> Sequence['Ability']:
 

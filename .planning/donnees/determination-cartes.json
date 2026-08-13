@@ -229,6 +229,7 @@
       "subtitle": "",
       "desc": {
         "RES": "G",
+        "MaxPerDeck": "2",
         "Class": "Determination"
       },
       "traits": [],
@@ -248,6 +249,7 @@
       "desc": {
         "Cost": "3",
         "RES": "Y",
+        "Uses": "3,tactic",
         "Class": "Determination"
       },
       "traits": [
@@ -288,6 +290,7 @@
       "desc": {
         "Cost": "2",
         "RES": "R",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -308,6 +311,7 @@
       "desc": {
         "Cost": "2",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -369,6 +373,7 @@
       "desc": {
         "Cost": "1",
         "RES": "R",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -389,6 +394,7 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -494,6 +500,7 @@
       "desc": {
         "Cost": "2",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -515,6 +522,7 @@
       "desc": {
         "Cost": "1",
         "RES": "G",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -698,6 +706,7 @@
       "desc": {
         "Cost": "1",
         "RES": "Y",
+        "Uses": "2,adrenaline",
         "Class": "Determination"
       },
       "traits": [
@@ -908,6 +917,7 @@
       "desc": {
         "Cost": "2",
         "RES": "R",
+        "Restricted": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -927,6 +937,8 @@
       "desc": {
         "Cost": "3",
         "RES": "Y",
+        "Uses": "3,charge",
+        "Restricted": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -949,6 +961,7 @@
         "ATK": "3*",
         "THW": "1**",
         "RES": "R",
+        "Toughness": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1181,6 +1194,7 @@
       "desc": {
         "Cost": "0",
         "RES": "Y",
+        "MaxPerDeck": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1217,6 +1231,7 @@
       "name": "Twice the Determination",
       "desc": {
         "RES": "G",
+        "MaxPerDeck": "1",
         "Class": "Determination"
       },
       "traits": [],
@@ -1233,6 +1248,7 @@
       "desc": {
         "Cost": "3",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1251,6 +1267,7 @@
       "desc": {
         "Cost": "3",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1269,6 +1286,7 @@
       "desc": {
         "Cost": "2",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1287,6 +1305,7 @@
       "desc": {
         "Cost": "2",
         "RES": "R",
+        "Alliance": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1344,6 +1363,8 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "Uses": "2,training",
+        "MaxPerDeck": "2",
         "Class": "Determination"
       },
       "traits": [
@@ -1404,6 +1425,7 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1422,6 +1444,7 @@
       "desc": {
         "Cost": "0",
         "RES": "Y",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1441,6 +1464,7 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1459,6 +1483,7 @@
       "desc": {
         "Cost": "3",
         "RES": "Y",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [],
@@ -1475,6 +1500,8 @@
       "desc": {
         "Cost": "3",
         "RES": "G",
+        "MaxPerDeck": "2",
+        "Requirement": "G",
         "Class": "Determination"
       },
       "traits": [
@@ -1536,6 +1563,7 @@
       "desc": {
         "Cost": "2",
         "RES": "B",
+        "MaxPerDeck": "2",
         "Class": "Determination"
       },
       "traits": [
@@ -1555,6 +1583,8 @@
       "desc": {
         "Cost": "2",
         "RES": "?",
+        "MaxPerDeck": "1",
+        "Setup": "1",
         "Class": "Determination"
       },
       "traits": [],
@@ -1575,6 +1605,7 @@
         "ATK": "1*",
         "THW": "1*",
         "RES": "R",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1615,6 +1646,7 @@
       "desc": {
         "Cost": "1",
         "RES": "Y",
+        "MaxPerDeck": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1633,6 +1665,7 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "MaxPerDeck": "1",
         "Class": "Determination"
       },
       "traits": [],
@@ -1724,6 +1757,7 @@
       "desc": {
         "Cost": "1",
         "RES": "Y",
+        "Requirement": "G",
         "Class": "Determination"
       },
       "traits": [
@@ -1764,6 +1798,7 @@
       "desc": {
         "Cost": "1",
         "RES": "R",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1856,6 +1891,7 @@
       "name": "Determined Energy",
       "desc": {
         "RES": "G",
+        "MaxPerDeck": "2",
         "Class": "Determination"
       },
       "traits": [],
@@ -1894,6 +1930,7 @@
       "desc": {
         "Cost": "0",
         "RES": "Y",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1912,6 +1949,8 @@
       "desc": {
         "Cost": "1",
         "RES": "B",
+        "Uses": "3,diversion",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -1990,6 +2029,7 @@
         "ATK": "2**",
         "THW": "2**",
         "RES": "Y",
+        "Victory": "0",
         "Class": "Determination"
       },
       "traits": [
@@ -2033,6 +2073,7 @@
         "ATK": "2*",
         "THW": "0*",
         "RES": "R",
+        "Retaliate": "2",
         "Class": "Determination"
       },
       "traits": [
@@ -2334,6 +2375,7 @@
       "desc": {
         "Cost": "0",
         "RES": "R",
+        "Alliance": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2374,6 +2416,7 @@
       "desc": {
         "Cost": "6",
         "RES": "R",
+        "Uses": "2,deploy",
         "Class": "Determination"
       },
       "traits": [
@@ -2411,6 +2454,7 @@
       "desc": {
         "Cost": "3",
         "RES": "B",
+        "Uses": "2,stimulant",
         "Class": "Determination"
       },
       "traits": [
@@ -2513,6 +2557,7 @@
       "desc": {
         "Cost": "1",
         "RES": "Y",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2534,6 +2579,7 @@
         "ATK": "1*",
         "THW": "2*",
         "RES": "B",
+        "Retaliate": "2",
         "Class": "Determination"
       },
       "traits": [
@@ -2593,6 +2639,7 @@
       "desc": {
         "Cost": "3",
         "RES": "Y",
+        "Uses": "3,replay",
         "Class": "Determination"
       },
       "traits": [
@@ -2611,6 +2658,7 @@
       "desc": {
         "Cost": "2",
         "RES": "B",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2629,6 +2677,7 @@
       "desc": {
         "Cost": "2",
         "RES": "Y",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2822,6 +2871,7 @@
       "desc": {
         "Cost": "1",
         "RES": "?",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2841,6 +2891,7 @@
       "desc": {
         "Cost": "1",
         "RES": "?",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [
@@ -2860,6 +2911,7 @@
       "desc": {
         "Cost": "1",
         "RES": "?",
+        "MaxPerUnit": "1",
         "Class": "Determination"
       },
       "traits": [

@@ -19,10 +19,6 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         AbilityFactory.CardsEnterPlayExhausted("This"),
-        *AbilityFactory.GiveKeywordToAttached(
-            "This",
-            retaliate=2,
-        ),
         AbilityFactory.AfterUnitChangeForm(
             AbilityType.Response,
             "You",
