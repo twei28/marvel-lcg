@@ -354,3 +354,70 @@ ne sont pas branchés », et j'aurais cherché des heures du mauvais côté.
 **Ce qui reste hors de portée de la sonde** : qu'une capacité fasse la bonne
 chose. Hors de la file du moteur aucune réaction en chaîne ne part. Il faudra une
 vraie partie, comme pour la campagne.
+
+
+## 9. Le premier lot FONCTIONNE (13/08/2026, soir)
+
+**Les 20 premières cartes ont leur module.** Les 16 qui dormaient dans le jeu, et
+les 4 événements qui en étaient sortis faute de module — ils sont rentrés avec le
+leur, comme le §7.1 l'exigeait.
+
+`test_generate_cards` préfixe `dt` : **20 générées, 0 échec**. `test_cards` :
+**4209 ok, 0 erreur**. `verifier_prefixes.py` vert.
+
+### 9.1 Les compteurs sont posés, et ils étaient DIX
+
+Neuf étaient relevés le 13/08 ; la relecture des 142 textes en a sorti un dixième,
+`deploy` (dt117, The Behemoth). Les dix sont dans `CardFace.COUNTER`, commentés
+`CORRECTIF` comme les cinq compteurs fan-made qui y étaient déjà : `tactic`,
+`adrenaline`, `diversion`, `stimulant`, `spider`, `replay`, `ball`, `LMD`,
+`configuration`, `deploy`.
+
+**`all-purpose counter` n'en fait pas partie** : `counter` existe déjà dans le
+Literal et c'est très probablement lui que les trois cartes concernées (dt118,
+dt119, dt120) utiliseront. À trancher quand leur lot arrivera.
+
+### 9.2 La sonde sait maintenant répondre là où le comptage est muet
+
+Trois murs, et ce qui les a fait tomber :
+
+1. **Aucun support du jeu n'est sans module.** Le témoin négatif n'existait pas :
+   il a fallu le **fabriquer par substitution** (module déplacé, reconstruit,
+   resondé). Support sans module 3, avec module 4.
+2. **Une ressource ne change pas de compte** : `DoubleResourcesThisGenerates`
+   REMPLACE la capacité du moteur au lieu d'en ajouter une. dt007 : 2 avant, 2
+   après.
+3. **`tools/sonde_capacites.py --detail`** nomme désormais l'origine de chaque
+   capacité, en descendant dans la fermeture quand une fabrique du moteur enveloppe
+   l'opération voulue. Pour 19 des 20 cartes elle dit directement
+   `dt005 : GetAbilities > blast_radius` : plus besoin de témoin. Pour dt007 elle
+   sépare `DoubleResourcesThisGenerates > the_power_of_leadership` de
+   `CheckThisCanPayCost > action`.
+
+⚠️ **La sonde lit `.game`.** Sans `launcher_fast.py --build-only` avant, elle décrit
+l'état précédent — piège payé une fois sur dt007.
+
+### 9.3 Les écarts, écrits dans les modules
+
+| Carte | Ce que dit la carte | Ce que fait le module | Pourquoi |
+|---|---|---|---|
+| dt013 Recon | « 3 facedown encounter cards » | les 3 du dessus de la pile | seul ensemble de cartes face cachée que le moteur sait montrer |
+| dt018, dt019 | « maximum hit points » | `max_health` | le crochet officiel ne lit que l'imprimé |
+| dt014 | « attaque avec overkill » | l'identité parmi les cibles touchées | le moteur ne publie pas le drapeau, il publie son effet |
+| dt001 | `Reckless` | 4 lignes explicites | mot-clé sans crochet ; à reprendre pour les 3 autres cartes Reckless |
+
+**Une approximation redoutée s'est révélée inutile** : `choose_x_different_options`
+dit exactement « 2 des 3 lignes » pour le joker de Moon Knight.
+
+### 9.4 Le prochain lot
+
+1. **Relire en pleine page** les cartes du lot visé (`_niveau: inventaire` →
+   `releve`) : c'est la première étape, et elle n'est pas facultative.
+2. Écrire les modules par petits paquets, chacun copié sur la carte officielle qui
+   porte le même texte, chacun prouvé à la sonde APRÈS un build.
+3. Les événements ne rentrent dans `cards.json` qu'avec leur module.
+4. `make_determination_pics.py <ids>` pour les images, `test_generate_cards` après.
+
+**Ce que rien de tout cela ne prouve encore** : qu'une capacité fasse la bonne
+chose en partie. Le §6 (« une partie menée avec un deck Determination, du wizard à
+la victoire ») reste entier, et c'est le seul juge qui manque.
