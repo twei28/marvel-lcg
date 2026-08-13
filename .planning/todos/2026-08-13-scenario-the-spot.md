@@ -1,7 +1,9 @@
 # TODO / SPEC — Le scénario « The Spot » (fan-made, DesignHacker)
 
-**Statut :** ✅ **RELEVÉ COMPLET le 13/08/2026** (§9) — 25 cartes physiques,
-**19 cartes distinctes**.
+**Statut :** ✅ **LIVRÉ le 13/08/2026.** Le scénario est dans le jeu, ses 21
+faces portent ce qu'elles annoncent, ses 21 modules jouent, et huit parties
+complètes ont été menées en normal comme en expert sans un seul incident.
+Trois écarts sont assumés et écrits dans le code (§10).
 🚧 **Le mot-clé `ThreatLevel` existe maintenant dans le moteur** (§8), sur
 décision de l'utilisateur (« pour de vrai, pas approximé »). Aucune carte du set
 n'est encore entrée dans le jeu.
@@ -292,3 +294,56 @@ Le mot-clé n'est pas réservé au vilain : il est porté par des **sbires**, de
 menace se pose sur toutes ces cartes, y compris les sbires et l'attachement.
 `HasThreatLevel` doit donc descendre sur les bases communes, pas sur `Villain`
 seul comme au §8.
+
+
+---
+
+## 10. LIVRÉ (13/08/2026) — ce qui joue, et les trois écarts
+
+Trois commits : `f26bd3c` (les données, les images, les deux scénarios),
+`ab4c769` (les 21 modules et les crochets), après `b86513a` (le mot-clé).
+
+### Le moteur a gagné trois crochets, chacun sur le patron d'un existant
+
+| Ajout | Pourquoi il manquait |
+|---|---|
+| `AbilityFactory.WhenCardWouldRemovedToken` | Le pendant de `WhenCardWouldBePlacedToken`, qui existait seul. Le message existait déjà. |
+| `OnEvent.Token` | Le pendant de `OnEvent.Counter` pour les JETONS. La menace est un jeton : une statistique qui en dépend ne se rafraîchissait jamais. |
+| `ThisGainKeyword(guard=...)` | `Gain()` acceptait déjà `guard`, la fabrique ne le faisait pas suivre. Même trou que `defense`. |
+
+Plus `Worlds.GetThreatLevelFaces` et `GetHighestThreatLevelFace`.
+
+### ⚠️ Le défaut que seule une partie pouvait trouver
+
+Le complot principal déroute la menace : « move that threat to the card with the
+highest Threat Level **instead** ». J'ai lu « instead » comme « au lieu de
+retirer », donc empêché le retrait ET posé la menace ailleurs : **elle était
+dupliquée**. Les capacités se construisaient, les quatre vérificateurs étaient
+verts, et la carte mentait. C'est la MESURE qui l'a dit — le complot se
+complétait en 2,3 rounds au lieu de 4,0. « Move » veut dire que la menace part
+d'ici et arrive là-bas.
+
+C'est exactement la leçon de Merc Squad, sous une autre forme : aucun outil ne
+dit qu'une capacité fait la BONNE chose.
+
+### Les trois écarts assumés
+
+1. **« Characters may thwart against The Spot »** — manigancer contre un VILAIN
+   n'a aucun crochet : `ThwartInternal` ne prend que des `Scheme2`. Le niveau et
+   la menace, eux, sont bien portés par le vilain. Ce qui manque est uniquement
+   la manière d'en RETIRER en manigançant.
+2. **L'action héroïque de What Goes Around…** déplace une quantité CHOISIE d'une
+   carte vers une autre : pas de crochet.
+3. **La réponse héroïque de Warp Hole** retire de la menace d'une carte du Spot,
+   ce que le complot principal déroute justement. Laissée sans réponse plutôt
+   que de mentir au joueur.
+
+### Ce qui reste, si on veut aller au bout
+
+Lever l'écart 1 est le seul qui touche vraiment le jeu : il demande d'autoriser
+le maniganceage contre un ennemi. Les écarts 2 et 3 sont des commodités.
+
+Et, comme toujours : **une partie menée par un humain**. Le bot perd les huit
+parties, ce qui est plausible pour un scénario dont toute la finesse est de
+placer la menace au bon endroit plutôt que de la retirer, mais seul un joueur
+peut dire si l'expérience tient debout.
