@@ -2045,7 +2045,7 @@
     {
       "_image": "D-101.jpg",
       "_drive_id": "1VA0L-oaaJxWE3QGS7LXTB1Lu3MsPBbxM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt101",
       "type": "Ally",
       "name": "* Darkhawk",
@@ -2067,14 +2067,14 @@
     {
       "_image": "D-102.jpg",
       "_drive_id": "15iGBm-Il_Zd45ayTnhW9q2dqOMInPsnD",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt102",
       "type": "PlayerSideScheme",
       "name": "* A Dangerous Game",
       "_attention": "Manigance annexe de JOUEUR : type PlayerSideScheme, et desc a besoin de StartingThreat et Victory (la generation echoue sinon).",
       "desc": {
         "Cost": "0",
-        "StartingThreat": "3",
+        "StartingThreat": "1*",
         "Victory": "0",
         "RES": "R",
         "Class": "Determination"
@@ -2086,7 +2086,7 @@
     {
       "_image": "D-103.jpg",
       "_drive_id": "1LYecb4ePoEI0zD6DjG43blLsbT37jtZN",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt103",
       "type": "Event",
       "name": "In the Line of Fire",
@@ -2105,7 +2105,7 @@
     {
       "_image": "D-104.jpg",
       "_drive_id": "1KTWocPAQO1SdUxMHJqSkQBnFKJSgFjDj",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt104",
       "type": "Event",
       "name": "Divert Attention",
@@ -2123,7 +2123,7 @@
     {
       "_image": "D-105.jpg",
       "_drive_id": "1NRDp5fJYU6ewjNUgeUoyrgrssVu1oh6O",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt105",
       "type": "Ally",
       "name": "* Venompool",
@@ -2145,7 +2145,7 @@
     {
       "_image": "D-106.jpg",
       "_drive_id": "18CFunjy_k0CPnCBnsAJQqAv4OMta4yN1",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt106",
       "type": "Ally",
       "name": "* Captain Universe",
