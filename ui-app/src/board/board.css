@@ -4212,6 +4212,32 @@
     color: #ffd45a;
   }
 
+  /* Une activation qu'une carte a provoquée se range SOUS elle, décalée : on
+     voit d'un coup d'œil que ce coup n'est pas une activation de plus mais la
+     conséquence de la carte au-dessus. */
+  .recap-ligne.est-declenchee {
+    margin-left: 14px;
+    border-left: 2px solid rgba(255, 138, 143, 0.45);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .recap-mechant-cause {
+    margin-left: 6px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    font-style: italic;
+  }
+
+  /* La composition du coup, sous le total qu'elle explique. Discrète : on la
+     lit quand un chiffre surprend, pas à chaque ligne. */
+  .recap-mechant-calcul {
+    grid-column: 1 / -1;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
   /* Les boosts d'une activation, sous elle et en retrait : ils lui
      appartiennent, ils ne sont pas des révélations de plus. */
   .recap-mechant-boosts {

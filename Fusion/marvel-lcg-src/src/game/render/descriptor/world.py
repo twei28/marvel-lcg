@@ -41,6 +41,17 @@ class WorldDescriptor:
     area_set_aside: List[CardDescriptor] = field(default_factory=lambda: [])
     victory_display: List[CardDescriptor] = field(default_factory=lambda: [])
     area_status_cards: List[CardDescriptor] = field(default_factory=lambda: [])
+    # Activations ennemies du round en cours (ajout local, lu par ui-app).
+    #
+    # Le bilan de la phase du mechant les lit telles quelles, au lieu de les
+    # deduire en comparant deux photos du monde : une deduction voit le
+    # resultat (« 5 degats ») mais jamais sa composition (« 3 de base + 2 de
+    # boost »), et compte plusieurs fois ce que le moteur rend plusieurs fois.
+    #
+    # Dictionnaires plutot qu'une dataclasse : ce journal ne sert qu'a
+    # l'affichage, il traverse le meme JSON que le reste, et lui donner une
+    # forme figee obligerait a la maintenir des deux cotes pour rien.
+    faits_mechant: List[Dict[str, Any]] = field(default_factory=lambda: [])
     # Fin de partie exposee au client (ajout local, lu par ui-app)
     game_over: bool = field(default=False)
     players_won: bool = field(default=False)

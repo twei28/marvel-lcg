@@ -55,6 +55,10 @@ class ToDescriptor:
         world_descriptor.mode_sandbox = bool(world.rule.mode_sandbox)
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids
+        # Journal des activations ennemies du round (voir WorldStat). Copie, et
+        # pas la liste vivante : le descripteur est serialise plus tard, et le
+        # moteur peut avoir repris sa course d'ici la.
+        world_descriptor.faits_mechant = list(world.stat.faits_mechant)
 
         world_descriptor.players = []
         for player in world.const_seat_order_players:

@@ -399,6 +399,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'attaque': 'attacks',
   'manigance sur': 'schemes against',
   'boost': 'boost',
+  'de base': 'base',
+  'de boost': 'from boost',
+  'de défense': 'defended',
+  'déclenché par': 'triggered by',
   'Voir le déroulé complet du moteur': 'Show the engine’s full sequence',
   'Phase du méchant rapide': 'Fast villain phase',
   'Enchaîne la phase sans « Continue », puis affiche un bilan':

@@ -15,6 +15,21 @@ class WorldStat:
         self.this_turn_made_thwart: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         # self.played_cards_this_turn: List[Tuple['Player', 'CardFace']] = []
 
+        # --- Journal des activations ennemies (ajout local, lu par ui-app) ----
+        #
+        # Le bilan de la phase du mechant reconstituait ce qui s'etait passe en
+        # COMPARANT deux photos du monde : une perte de PV devenait « subit 3
+        # degats ». Cette methode voit le resultat mais jamais sa composition —
+        # elle ne peut pas dire « 3 d'attaque de base + 2 de boost » — et elle
+        # compte plusieurs fois ce que le moteur rend plusieurs fois autour
+        # d'une seule resolution.
+        #
+        # Ici on publie ce que le moteur SAIT, une fois, au moment ou il le
+        # calcule. Le journal ne garde que le round en cours : le bilan ne parle
+        # jamais d'un autre, et rien n'a a grossir sans fin.
+        self.faits_mechant: List[Dict[str, Any]] = []
+        self._faits_mechant_round: int = -1
+
     def OnTurnBegin(self):
         self.this_turn_made_attack = []
         self.this_turn_made_thwart = []
@@ -49,6 +64,22 @@ class WorldStat:
     def RecordEffect(self, effect: 'Effect'):
         self.once_per_round_effects.append(effect)
         self.once_per_phase_effects.append(effect)
+
+    def RecordFaitMechant(self, round_id: int, fait: 'Dict[str, Any]') -> None:
+        """Inscrit une activation ennemie au journal du round en cours.
+
+        Le changement de round vide le journal : on ne le purge pas a la fin
+        d'un round, parce que le bilan s'affiche APRES la phase et lirait alors
+        un journal vide. On attend donc le premier fait du round suivant.
+        """
+        if round_id != self._faits_mechant_round:
+            self._faits_mechant_round = round_id
+            self.faits_mechant = []
+        self.faits_mechant.append(fait)
+        # Garde-fou : une partie pathologique ne doit pas faire enfler le
+        # descripteur envoye a chaque rendu.
+        if len(self.faits_mechant) > 200:
+            del self.faits_mechant[:-200]
 
     def RecordAttack(self, end_message: 'Message.AfterUnitAttackEnd'):
         self.this_turn_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))

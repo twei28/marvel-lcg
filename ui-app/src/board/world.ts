@@ -66,6 +66,44 @@ export type WorldPlayer = {
   is_eliminated: boolean
 }
 
+/**
+ * Une activation ennemie, décomposée par le moteur au moment où il la résout.
+ *
+ * `inflige = base + boost - defense`, et `subi` peut être plus petit encore
+ * quand la cible absorbe autrement (résistance, PV insuffisants).
+ */
+export type FaitMechant = {
+  genre: 'attaque' | 'manigance'
+  /**
+   * L'étape de la phase du méchant où l'activation a eu lieu, dans les mêmes
+   * termes que `World.phase`.
+   *
+   * Un vilain ne s'active pas qu'à l'étape des activations : une carte de
+   * rencontre révélée peut le faire frapper une seconde fois. Sans cette
+   * précision, cette attaque-là se rangeait sous « activations » et il
+   * paraissait attaquer deux fois sans raison.
+   */
+  phase?: string
+  /** Carte qui a déclenché l'activation, vide quand c'est l'ennemi lui-même. */
+  cause?: string
+  auteur: string
+  auteur_id: number
+  cible: string
+  cible_id: number
+  /** Attaque (ou manigance) imprimée, avant les cartes de boost. */
+  base: number
+  /** Apport total des cartes de boost. */
+  boost: number
+  defense: number
+  /** Ce qui a été porté, défense déduite. */
+  inflige: number
+  /** Ce que la cible a réellement encaissé. */
+  subi: number
+  /** PV ou menace de la cible après coup. Absent si la cible n'en a pas. */
+  restant?: number | null
+  boosts: { nom: string; id: number; apport: number }[]
+}
+
 export type World = {
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */
   render_id: number
@@ -83,6 +121,20 @@ export type World = {
    */
   mode_sandbox?: boolean
   event_name: string
+  /**
+   * Les activations ennemies du round en cours, telles que le MOTEUR les a
+   * résolues (voir WorldStat.RecordFaitMechant côté serveur).
+   *
+   * Le bilan de la phase du méchant les lit au lieu de les déduire en comparant
+   * deux photos du monde. Une déduction voit le résultat mais jamais sa
+   * composition — elle ne peut pas dire « 5 dégâts = 3 de base + 2 de boost » —
+   * et elle compte plusieurs fois ce que le moteur rend plusieurs fois autour
+   * d'une seule résolution.
+   *
+   * Absent des sauvegardes anciennes et des moteurs non mis à jour : tout
+   * lecteur doit tenir le cas où la liste manque.
+   */
+  faits_mechant?: FaitMechant[]
   area_schemes_main: WorldCard[]
   main_schemes_deck: WorldCard[]
   area_schemes_side: WorldCard[]

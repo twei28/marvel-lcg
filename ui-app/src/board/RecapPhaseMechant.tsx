@@ -26,7 +26,7 @@ import type { Catalogue } from './catalogue'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
-import type { World, WorldCard } from './world'
+import type { FaitMechant, World, WorldCard } from './world'
 
 /**
  * Les étapes de la phase du méchant, dans l'ordre de la carte de référence.
@@ -57,7 +57,7 @@ const PHASES_MECHANT = new Set<string>(ETAPES.map((e) => e.phase))
  */
 const TYPES_FAITS = new Set(['damage', 'heal', 'threat', 'card'])
 
-type Boost = { cle: string; nom: string; cibleId?: number }
+type Boost = { cle: string; nom: string; cibleId?: number; apport?: number }
 
 /** Une ligne du bilan : un fait, déjà mis en phrase. */
 type Ligne = {
@@ -65,8 +65,6 @@ type Ligne = {
   /** Colore et choisit le verbe. */
   genre: 'menace' | 'attaque' | 'manigance' | 'carte'
   titre: string
-  /** Le chiffre du fait, à droite : « +1 → 1/6 », « 3 dégâts → 8 PV ». */
-  chiffre?: string
   /** Cartes de boost retournées pour cette activation. */
   boosts?: Boost[]
   /** Héros qui a reçu la carte. */
@@ -74,6 +72,80 @@ type Ligne = {
   /** Ce que la carte a produit ensuite, dans ses propres mots. */
   effets?: string[]
   cibleId?: number
+  /** Ce qui se fusionne quand deux faits frappent la même cible. */
+  valeur?: number
+  restant?: number
+  plafond?: number
+  /** Auteur, pour ne fusionner que ce qui vient du même ennemi. */
+  acteur?: string
+  /**
+   * La composition du coup, quand le moteur l'a publiée : « 3 de base + 2 de
+   * boost - 1 de défense ». Absente des lignes déduites, qui ne connaissent
+   * que le résultat.
+   */
+  calcul?: { base: number; boost: number; defense: number }
+  /** Carte qui a déclenché cette activation, quand ce n'est pas l'ennemi. */
+  cause?: string
+}
+
+/**
+ * Range chaque activation sous L'ÉTAPE OÙ ELLE A EU LIEU, et sous la carte qui
+ * l'a déclenchée quand il y en a une.
+ *
+ * Un vilain frappe une fois par joueur à l'étape des activations — mais une
+ * carte de rencontre révélée à l'étape 4 peut le faire frapper encore. Tout
+ * verser dans l'étape 2 donnait « Klaw attaque » deux fois de suite, sans que
+ * rien n'explique la seconde.
+ *
+ * Un moteur qui ne date pas ses activations (version antérieure, sauvegarde)
+ * les envoie sans phase : elles retournent alors à l'étape des activations,
+ * qui reste le cas de très loin le plus fréquent.
+ */
+function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
+  return faits.filter((fait) => (fait.phase ?? 'Enemy Activation') === phase)
+}
+
+/** Insère chaque activation déclenchée juste sous la carte qui l'a causée. */
+function rattacherAuxCauses(cartes: Ligne[], activations: Ligne[]): Ligne[] {
+  const sorties: Ligne[] = []
+  const orphelines = [...activations]
+
+  for (const carte of cartes) {
+    sorties.push(carte)
+    for (let i = orphelines.length - 1; i >= 0; i -= 1) {
+      if (orphelines[i].cause === carte.titre) sorties.push(...orphelines.splice(i, 1))
+    }
+  }
+  // Ce qu'aucune carte de l'étape ne réclame passe à la suite, sans se perdre.
+  return [...sorties, ...orphelines]
+}
+
+/**
+ * Deux faits qui laissent la MÊME cible dans le MÊME état sont le même fait.
+ *
+ * Le moteur rend la table plusieurs fois autour d'une seule résolution — il
+ * annonce l'intention, pose le jeton, puis constate le gain — et la comparaison
+ * de photos y voit passer la même transition à chaque rendu. En jeu, ça donnait
+ * trois lignes « Underground Distribution +1 → 1/6 » et un total de « +3 » sur
+ * une manigance qui n'en portait qu'une.
+ *
+ * L'état d'arrivée est ce qui tranche : deux poses RÉELLES sur la même
+ * manigance la laissent à 1/6 puis à 2/6, donc elles survivent toutes les deux.
+ * Seule une cible qui revient à un état déjà vu dans la même étape serait
+ * confondue — au sein d'une seule étape, ça ne s'est jamais produit.
+ */
+function signature(fait: EntreeHistorique): string {
+  return [fait.type, fait.cibleId, fait.valeur, fait.restant, fait.titre].join('|')
+}
+
+function sansDoublons(faits: EntreeHistorique[]): EntreeHistorique[] {
+  const vues = new Set<string>()
+  return faits.filter((fait) => {
+    const cle = signature(fait)
+    if (vues.has(cle)) return false
+    vues.add(cle)
+    return true
+  })
 }
 
 type Etape = {
@@ -96,22 +168,47 @@ type Bilan = { cle: string; round: number; etapes: Etape[] }
 export type Noms = {
   carte: (id: number | undefined) => string | undefined
   heros: (joueur: number | undefined) => string | undefined
+  /** Seuil de menace d'une manigance, lu sur la carte elle-même. */
+  plafond: (id: number | undefined) => number | undefined
+}
+
+/** « 3 dégâts → 8 PV ». */
+function chiffreDegats(valeur: number, restant?: number): string {
+  const texte = `${Math.abs(valeur)} ${t('dégâts')}`
+  return restant === undefined ? texte : `${texte} → ${restant} ${t('PV')}`
 }
 
 /** « +1 → 1/6 », ou « +1 → 4 » quand la manigance n'affiche pas de seuil. */
-function chiffreMenace(entree: EntreeHistorique): string | undefined {
-  const { valeur, restant, plafond } = entree
-  if (valeur === undefined) return undefined
+function chiffreMenace(valeur: number, restant?: number, plafond?: number): string {
   const signe = valeur > 0 ? `+${valeur}` : `${valeur}`
   if (restant === undefined) return signe
   return plafond ? `${signe} → ${restant}/${plafond}` : `${signe} → ${restant}`
 }
 
-/** « 3 dégâts → 8 PV ». */
-function chiffreDegats(entree: EntreeHistorique): string {
-  const subis = Math.abs(entree.valeur ?? 0)
-  const texte = `${subis} ${t('dégâts')}`
-  return entree.restant === undefined ? texte : `${texte} → ${entree.restant} ${t('PV')}`
+/**
+ * « 3 de base + 2 de boost − 1 de défense ».
+ *
+ * On n'écrit que ce qui a joué : sans boost ni défense, la composition se
+ * résume au chiffre déjà affiché à droite, et la répéter serait du bruit.
+ */
+export function detailDuCalcul(calcul: {
+  base: number
+  boost: number
+  defense: number
+}): string | undefined {
+  if (calcul.boost === 0 && calcul.defense === 0) return undefined
+  const morceaux = [`${calcul.base} ${t('de base')}`]
+  if (calcul.boost !== 0) morceaux.push(`+ ${calcul.boost} ${t('de boost')}`)
+  if (calcul.defense !== 0) morceaux.push(`− ${calcul.defense} ${t('de défense')}`)
+  return morceaux.join(' ')
+}
+
+/** Le chiffre affiché à droite d'une ligne, selon son genre. */
+function chiffreDe(ligne: Ligne): string | undefined {
+  if (ligne.valeur === undefined) return undefined
+  return ligne.genre === 'attaque'
+    ? chiffreDegats(ligne.valeur, ligne.restant)
+    : chiffreMenace(ligne.valeur, ligne.restant, ligne.plafond)
 }
 
 /**
@@ -139,6 +236,36 @@ function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
     return boosts.length > 0 ? boosts : undefined
   }
 
+  /**
+   * Empile la ligne, ou la FOND dans la précédente si c'est le même ennemi qui
+   * frappe la même cible.
+   *
+   * Une attaque gonflée par deux boosts arrive en deux temps (2 dégâts puis 1),
+   * et une manigance peut poser sa menace en plusieurs fois : ce sont des
+   * étapes de calcul, pas des faits séparés. On additionne, et on garde l'état
+   * final — « 3 dégâts → 8 PV » plutôt que deux lignes à lire l'une avec
+   * l'autre.
+   */
+  const empiler = (ligne: Ligne) => {
+    const precedente = lignes[lignes.length - 1]
+    const fusionnable =
+      precedente !== undefined &&
+      precedente.genre === ligne.genre &&
+      precedente.cibleId === ligne.cibleId &&
+      precedente.acteur === ligne.acteur &&
+      precedente.valeur !== undefined &&
+      ligne.valeur !== undefined
+    if (!fusionnable) {
+      lignes.push(ligne)
+      return ligne
+    }
+    precedente.valeur = (precedente.valeur ?? 0) + (ligne.valeur ?? 0)
+    precedente.restant = ligne.restant ?? precedente.restant
+    precedente.plafond = ligne.plafond ?? precedente.plafond
+    if (ligne.boosts) precedente.boosts = [...(precedente.boosts ?? []), ...ligne.boosts]
+    return precedente
+  }
+
   for (const fait of faits) {
     if (fait.type === 'card') {
       if (fait.boost) {
@@ -162,65 +289,108 @@ function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
 
     if (fait.type === 'damage' || fait.type === 'heal') {
       const cible = noms.carte(fait.cibleId)
-      const chiffre = chiffreDegats(fait)
       // Une carte révélée en cours d'étape s'attribue ses conséquences ; hors
       // de ce cas, les dégâts sont ceux d'une activation ennemie.
       if (derniereCarte) {
-        derniereCarte.effets = [...(derniereCarte.effets ?? []), `${cible ?? fait.titre} : ${chiffre}`]
+        derniereCarte.effets = [
+          ...(derniereCarte.effets ?? []),
+          `${cible ?? fait.titre} : ${chiffreDegats(fait.valeur ?? 0, fait.restant)}`,
+        ]
         continue
       }
-      lignes.push({
+      empiler({
         cle: fait.cle,
         genre: 'attaque',
         // Sans auteur connu, on garde la phrase du moteur plutôt que d'inventer
         // un attaquant : « untel subit 3 dégâts » reste vrai.
         titre: fait.acteur && cible ? `${fait.acteur} ${t('attaque')} ${cible}` : fait.titre,
-        chiffre,
         boosts: verser(),
         cibleId: fait.cibleId,
+        acteur: fait.acteur,
+        valeur: fait.valeur,
+        restant: fait.restant,
       })
       continue
     }
 
     if (fait.type === 'threat') {
       const cible = noms.carte(fait.cibleId)
-      const chiffre = chiffreMenace(fait)
-      if (derniereCarte) {
-        derniereCarte.effets = [
-          ...(derniereCarte.effets ?? []),
-          `${cible ?? fait.titre}${chiffre ? ` : ${chiffre}` : ''}`,
-        ]
-        continue
-      }
       // Une menace posée PENDANT une activation est une manigance d'ennemi ;
       // la même à l'étape 1 est la menace de phase, qui n'a pas d'auteur.
       const manigance = fait.acteur !== undefined
-      lignes.push({
+      const ligne: Ligne = {
         cle: fait.cle,
         genre: manigance ? 'manigance' : 'menace',
         titre:
           manigance && cible
             ? `${fait.acteur} ${t('manigance sur')} ${cible}`
             : (cible ?? fait.titre),
-        chiffre,
         boosts: verser(),
         cibleId: fait.cibleId,
-      })
+        acteur: fait.acteur,
+        valeur: fait.valeur,
+        restant: fait.restant,
+        plafond: fait.plafond,
+      }
+      if (derniereCarte) {
+        derniereCarte.effets = [
+          ...(derniereCarte.effets ?? []),
+          `${cible ?? fait.titre}${chiffreDe(ligne) ? ` : ${chiffreDe(ligne)}` : ''}`,
+        ]
+        continue
+      }
+      empiler(ligne)
     }
   }
 
   return lignes
 }
 
+/**
+ * Les activations telles que le MOTEUR les a résolues.
+ *
+ * C'est la seule source qui connaisse la composition d'un coup : la comparaison
+ * de photos voit « 5 dégâts » mais ne saura jamais que c'était 3 d'attaque et
+ * 2 de boost, et elle recompte ce que le moteur rend plusieurs fois autour
+ * d'une même résolution. Quand le journal est là, il remplace la déduction —
+ * il ne la complète pas, sinon chaque activation paraîtrait deux fois.
+ */
+function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
+  return faits.map((fait, index) => ({
+    cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
+    genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
+    cause: fait.cause || undefined,
+    titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
+    cibleId: fait.cible_id,
+    acteur: fait.auteur,
+    // Les dégâts se comptent en négatif comme partout ailleurs ici : c'est la
+    // variation du compteur de la cible (voir HistoriquePartie).
+    valeur: fait.genre === 'attaque' ? -fait.subi : fait.subi,
+    restant: fait.restant ?? undefined,
+    plafond: noms.plafond(fait.cible_id),
+    calcul: { base: fait.base, boost: fait.boost, defense: fait.defense },
+    boosts: fait.boosts.map((boost, rang) => ({
+      cle: `moteur:${index}:boost:${rang}:${boost.id}`,
+      nom: boost.nom,
+      cibleId: boost.id,
+      apport: boost.apport,
+    })),
+  }))
+}
+
 function etapeDe(
   entrees: EntreeHistorique[],
   definition: (typeof ETAPES)[number],
-  noms: Noms
+  noms: Noms,
+  faitsMoteur: FaitMechant[]
 ): Etape | undefined {
   const brut = entrees.filter((e) => e.phase === definition.phase && e.type !== 'phase')
   if (brut.length === 0) return undefined
 
-  const faits = brut.filter((e) => TYPES_FAITS.has(e.type))
+  // Le déroulé BRUT garde tout, y compris les rendus répétés du moteur : c'est
+  // la vérité de ce qui s'est passé, et on vient l'y chercher. Les faits, eux,
+  // sont dédoublonnés — un bilan qui compte deux fois ment sur le danger.
+  const faits = sansDoublons(brut.filter((e) => TYPES_FAITS.has(e.type)))
 
   let menace = 0
   let degats = 0
@@ -235,7 +405,32 @@ function etapeDe(
     if (e.type === 'card' && !e.boost) cartes += 1
   }
 
-  const lignes = lignesDeLEtape(faits, noms)
+  // Partage du travail quand le moteur a parlé : les COUPS viennent de lui,
+  // qui seul en connaît la composition et ne les compte qu'une fois ; les
+  // CARTES restent déduites, le journal ne les couvrant pas.
+  //
+  // Sans ce partage, les dégâts d'une attaque déclenchée par une carte révélée
+  // paraissaient deux fois — une fois dans le journal, une fois collés à la
+  // carte révélée juste avant, qui n'y était souvent pour rien.
+  const duMoteur = faitsDeLEtape(faitsMoteur, definition.phase)
+  const deduites = lignesDeLEtape(faits, noms)
+  const lignes =
+    duMoteur.length === 0
+      ? deduites
+      : rattacherAuxCauses(
+          deduites.filter((l) => l.genre === 'carte').map((l) => ({ ...l, effets: undefined })),
+          lignesDuMoteur(duMoteur, noms)
+        )
+
+  // Les totaux suivent CE QUI EST AFFICHÉ : un total calculé sur les entrées
+  // déduites pendant qu'on montre le journal du moteur annoncerait un autre
+  // chiffre que la somme des lignes juste en dessous.
+  if (lignes !== deduites) {
+    menace = lignes.reduce((somme, l) => somme + (l.genre === 'attaque' ? 0 : (l.valeur ?? 0)), 0)
+    degats = lignes.reduce((somme, l) => somme + (l.genre === 'attaque' ? Math.abs(l.valeur ?? 0) : 0), 0)
+    cartes = lignes.filter((l) => l.genre === 'carte').length
+  }
+
   // Une étape qui n'a produit QUE de la narration n'a rien à montrer, mais son
   // déroulé reste consultable : on la garde, repliée.
   return { numero: definition.numero, titre: definition.titre, lignes, brut, menace, degats, cartes }
@@ -244,14 +439,15 @@ function etapeDe(
 export function bilanDeLaPhase(
   entrees: EntreeHistorique[],
   round: number,
-  noms: Noms = { carte: () => undefined, heros: () => undefined }
+  noms: Noms = { carte: () => undefined, heros: () => undefined, plafond: () => undefined },
+  faitsMoteur: FaitMechant[] = []
 ): Bilan | undefined {
   const dedans = entrees.filter((e) => e.round === round && PHASES_MECHANT.has(e.phase))
   // Ordre du jeu : l'historique empile les plus récentes en tête.
   const ordonnees = [...dedans].reverse()
-  const etapes = ETAPES.map((definition) => etapeDe(ordonnees, definition, noms)).filter(
-    (e): e is Etape => e !== undefined
-  )
+  const etapes = ETAPES.map((definition) =>
+    etapeDe(ordonnees, definition, noms, faitsMoteur)
+  ).filter((e): e is Etape => e !== undefined)
   if (etapes.length === 0) return undefined
   return { cle: `${round}`, round, etapes }
 }
@@ -287,6 +483,11 @@ export function RecapPhaseMechant({
         const heros = monde?.players?.[joueur]?.area_hero?.[0]?.name
         return heros ? heros.replace(/^\W*/, '') : `P${joueur + 1}`
       },
+      plafond: (id) => {
+        if (id === undefined) return undefined
+        const cible = cartesMonde?.get(id)?.info?.target_threat
+        return typeof cible === 'number' && cible > 0 ? cible : undefined
+      },
     }),
     [cartesMonde, monde]
   )
@@ -302,8 +503,10 @@ export function RecapPhaseMechant({
     // On ne déclenche qu'à la SORTIE de la phase du méchant.
     if (!PHASES_MECHANT.has(avant) || PHASES_MECHANT.has(phase)) return
     setDepliees(new Set())
-    setBilan(bilanDeLaPhase(entrees, monde?.round_id ?? 0, nomsRef.current))
-  }, [monde?.phase, monde?.round_id, actif, entrees])
+    setBilan(
+      bilanDeLaPhase(entrees, monde?.round_id ?? 0, nomsRef.current, monde?.faits_mechant ?? [])
+    )
+  }, [monde?.phase, monde?.round_id, monde?.faits_mechant, actif, entrees])
 
   // La carte survolée, montrée dans le MÊME agrandissement que sur la table.
   //
@@ -373,19 +576,33 @@ export function RecapPhaseMechant({
         }
 
   const ligne = (ligne: Ligne) => (
-    <li key={ligne.cle} className={`recap-ligne est-${ligne.genre}`}>
+    <li
+      key={ligne.cle}
+      className={`recap-ligne est-${ligne.genre}${ligne.cause ? ' est-declenchee' : ''}`}
+    >
       <span className="recap-mechant-fait" {...survolProps(ligne.cibleId)}>
         <b>{ligne.titre}</b>
         {ligne.heros ? <em className="recap-mechant-heros">{ligne.heros}</em> : null}
+        {ligne.cause ? (
+          <em className="recap-mechant-cause">
+            {t('déclenché par')} {ligne.cause}
+          </em>
+        ) : null}
       </span>
-      {ligne.chiffre ? <strong className="recap-mechant-chiffre">{ligne.chiffre}</strong> : null}
-      {ligne.boosts ? (
+      {chiffreDe(ligne) ? (
+        <strong className="recap-mechant-chiffre">{chiffreDe(ligne)}</strong>
+      ) : null}
+      {ligne.calcul ? (
+        <span className="recap-mechant-calcul">{detailDuCalcul(ligne.calcul)}</span>
+      ) : null}
+      {ligne.boosts && ligne.boosts.length > 0 ? (
         <span className="recap-mechant-boosts">
           {t('boost')} :{' '}
           {ligne.boosts.map((boost, index) => (
             <span key={boost.cle}>
               {index > 0 ? ', ' : ''}
               <span {...survolProps(boost.cibleId)}>{boost.nom}</span>
+              {boost.apport !== undefined ? ` (+${boost.apport})` : null}
             </span>
           ))}
         </span>

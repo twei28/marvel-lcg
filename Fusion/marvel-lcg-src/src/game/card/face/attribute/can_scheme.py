@@ -97,6 +97,9 @@ class CanScheme(CardFace):
             return None
 
         boost_cards: List['CardFace'] = []
+        # Ce que chaque carte de boost a ajoute — voir can_attack.py, meme
+        # raison : le total seul ne se decompose plus apres coup.
+        boost_apports: List[Tuple[str, int, int]] = []
         if is_base_scheme:
             # assert property.base_value == this.scheme
             being_sch_message = Message.WhenSchemeBeingScheme(main_scheme, would_sch_message)
@@ -105,6 +108,7 @@ class CanScheme(CardFace):
             def gain_sch(face: CardFace, boost_value: int) -> None:
                 nonlocal boost_cards
                 boost_cards.append(face)
+                boost_apports.append((face.name, face.card.object_id, boost_value))
                 this.card.CastTo(Unit2).GainForThisActive(
                     GameRule(face),
                     would_sch_message,
@@ -134,6 +138,16 @@ class CanScheme(CardFace):
             value *= - 1
         else:
             target_scheme.PlaceThreatInternal(value, SchemeActive(this), would_sch_message)
+        # Journal du bilan de phase (ajout local, lu par ui-app), sous garde :
+        # un journal d'affichage n'a pas a pouvoir interrompre une activation.
+        try:
+            from game.card.face.attribute.can_attack import CanAttack
+            CanAttack.JournaliserManigance(
+                this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
+            )
+        except Exception:
+            pass
+
         # this.PlaceThreatOnSchemes([scheme], value, by_effect) # if we call this, the UI is strange with "01186"
         end_message = Message.AfterUnitSchemeEnd(this, value, target_scheme, boost_cards, by_effect, [would_sch_message])
         end_message.Send()

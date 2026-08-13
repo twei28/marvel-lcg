@@ -269,6 +269,10 @@ class CanAttack(CardFace):
                     continue
 
             boost_cards: List['CardFace'] = []
+            # Ce que CHAQUE carte de boost a ajoute. `boost_cards` seule ne le
+            # dit pas, et c'est pourtant la moitie de l'information : « 5 degats
+            # (3 de base + 2 de boost) » ne se reconstitue pas apres coup.
+            boost_apports: List[Tuple[str, int, int]] = []
 
             if is_base_attack:
                 # We resolve boost first to
@@ -280,6 +284,7 @@ class CanAttack(CardFace):
                         attacker = this.card.CastTo(Unit2)
                         nonlocal boost_cards
                         boost_cards.append(face)
+                        boost_apports.append((face.name, face.card.object_id, boost_value))
                         attacker.GainForThisActive(
                             GameRule(face),
                             would_atk_message,
@@ -421,6 +426,22 @@ class CanAttack(CardFace):
             else:
                 assert being_atk_message.defense_messages == []
 
+            # Journal du bilan de phase (ajout local, lu par ui-app). Il est
+            # pose ICI, ou le calcul est encore entier : plus haut il manque le
+            # resultat, plus bas les composantes ont disparu dans un total.
+            #
+            # SOUS GARDE, et sans condition : un journal d'affichage n'a aucune
+            # raison de pouvoir interrompre une resolution de combat. S'il
+            # echoue, la partie continue et il ne manque qu'une ligne de bilan.
+            try:
+                CanAttack.JournaliserActivation(
+                    this, atk_target, is_base_attack,
+                    boost_apports, defense, calculated_damage, took_damage,
+                    by_effect,
+                )
+            except Exception:
+                pass
+
             atk_end_message = Message.AfterUnitAttackUnit(this, atk_target, attacked_you, damaged_overkill_target, took_damage_targets, calculated_damage, took_damage, excess_damage, boost_cards, would_attack_unit_message, being_atk_message.defense_messages)
             if is_not_delay:
                 atk_end_message.Send()
@@ -461,6 +482,134 @@ class CanAttack(CardFace):
             # For event cards, or "08004"
             by_effect.context.AddAtkMessage(end_message)
         return end_message
+
+    @staticmethod
+    def CauseDeLActivation(auteur: 'CardFace', cible: 'CardFace',
+                           phase: str, by_effect: 'Effect|None') -> str:
+        """Ce QUI a declenche l'activation, quand ce n'est pas la regle du jeu.
+
+        Une carte de rencontre peut faire attaquer le vilain une SECONDE fois
+        (Assault : « le vilain vous attaque »). Cette attaque-la parait sortie
+        de nulle part si on ne dit pas d'ou elle vient — signale en jeu, « on
+        dirait qu'il m'attaque deux fois sans raison ».
+
+        Deux garde-fous, tous deux poses apres coup sur des mesures :
+
+        1. PENDANT l'etape des activations, un ennemi s'active parce que la
+           regle le veut : il n'y a pas de cause a nommer.
+        2. `by_effect.this` n'est PAS toujours l'origine qu'on cherche. Mesure
+           faite sur une partie reelle : pour les activations ordinaires il
+           porte le heros vise, ce qui aurait affiche « declenche par Black
+           Panther ». On refuse donc un nom qui est celui de l'attaquant ou de
+           sa cible : ce sont les deux facons connues de ne rien apprendre.
+        """
+        if phase == 'Enemy Activation':
+            return ''
+        source = getattr(by_effect, 'this', None)
+        nom = getattr(source, 'name', '')
+        if not nom or nom == auteur.name or nom == cible.name:
+            return ''
+        return nom
+
+    @staticmethod
+    def JournaliserActivation(attaquant: 'CardFace', cible: 'CardFace', is_base_attack: bool,
+                              boost_apports: 'List[Tuple[str, int, int]]',
+                              defense: int, inflige: int, subi: int,
+                              by_effect: 'Effect|None'=None) -> None:
+        """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
+
+        On ne journalise que les ennemis : ce panneau raconte la phase du
+        mechant, et y verser les attaques des heros le rendrait illisible.
+
+        Le calcul est decompose comme le joueur le refait a la main :
+
+            inflige = base + boost - defense
+
+        `base` s'en deduit plutot qu'il ne se lit — l'attaque courante de
+        l'attaquant a DEJA absorbe les boosts au moment ou on arrive ici (voir
+        `gain_att` plus haut, qui appelle GainForThisActive). La soustraction
+        est donc la seule facon juste de retrouver la valeur d'avant, et elle
+        reste exacte meme quand une autre capacite a modifie l'attaque.
+        """
+        from game.card.face.base import Enemy
+
+        if not Enemy.IsType(attaquant) or not is_base_attack:
+            return
+
+        world = attaquant.card.world
+        boost_total = sum(valeur for _, _, valeur in boost_apports)
+        # L'ETAPE ou l'activation a lieu. Sans elle, une attaque declenchee par
+        # une carte revelee se rangeait sous « activations », et le vilain
+        # semblait frapper deux fois sans raison.
+        phase = world.GetPhaseText()
+
+        world.stat.RecordFaitMechant(world.round_id, {
+            'genre': 'attaque',
+            'phase': phase,
+            'cause': CanAttack.CauseDeLActivation(attaquant, cible, phase, by_effect),
+            'auteur': attaquant.name,
+            'auteur_id': attaquant.card.object_id,
+            'cible': cible.name,
+            'cible_id': cible.card.object_id,
+            'base': inflige + defense - boost_total,
+            'boost': boost_total,
+            'defense': defense,
+            'inflige': inflige,
+            'subi': subi,
+            # Etat de la cible APRES coup. `getattr` parce que toutes les cibles
+            # n'ont pas de PV (une carte retournee en cours d'attaque) : le
+            # bilan se passe du reste plutot que de faire tomber la resolution.
+            'restant': getattr(cible, 'health', None),
+            'boosts': [
+                {'nom': nom, 'id': object_id, 'apport': valeur}
+                for nom, object_id, valeur in boost_apports
+            ],
+        })
+
+    @staticmethod
+    def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,
+                             boost_apports: 'List[Tuple[str, int, int]]', pose: int,
+                             by_effect: 'Effect|None'=None) -> None:
+        """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
+
+        Elle vit ici, a cote de son attaque, parce que les deux forment une
+        seule notion cote joueur — l'activation d'un ennemi — et qu'un lecteur
+        qui cherche « comment le bilan est-il nourri ? » doit trouver les deux
+        moities au meme endroit.
+
+        Pas de defense sur une manigance : la menace posee est deja le total,
+        d'ou `base = pose - boost`.
+        """
+        from game.card.face.base import Enemy
+
+        if not Enemy.IsType(auteur) or not is_base_scheme:
+            return
+
+        world = auteur.card.world
+        boost_total = sum(valeur for _, _, valeur in boost_apports)
+        phase = world.GetPhaseText()
+
+        world.stat.RecordFaitMechant(world.round_id, {
+            'genre': 'manigance',
+            'phase': phase,
+            'cause': CanAttack.CauseDeLActivation(auteur, manigance, phase, by_effect),
+            'auteur': auteur.name,
+            'auteur_id': auteur.card.object_id,
+            'cible': manigance.name,
+            'cible_id': manigance.card.object_id,
+            'base': pose - boost_total,
+            'boost': boost_total,
+            'defense': 0,
+            'inflige': pose,
+            'subi': pose,
+            # Menace APRES la pose. Le seuil (« /6 ») n'est pas ici : le client
+            # le lit sur la carte elle-meme, ou il figure deja.
+            'restant': getattr(manigance, 'threat', None),
+            'boosts': [
+                {'nom': nom, 'id': object_id, 'apport': valeur}
+                for nom, object_id, valeur in boost_apports
+            ],
+        })
 
     @staticmethod
     # Cannot use `Filter.FilterByType(units, Unit2)` because of ultron facedown drone
