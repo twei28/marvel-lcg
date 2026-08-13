@@ -12,7 +12,11 @@ def GetAbilities() -> Sequence['Ability']:
 
         leader = Worlds.GetYourTeamLeader(effect)
         if leader:
-            assert False
+            # « Venom attacks your leader. » Votre leader est sur la table
+            # d'en face ; c'est une attaque ordinaire de sbire, pas la
+            # procedure en quatre temps de la p.16, qui ne vaut que pour un
+            # leader attaquant un leader.
+            this.CastTo(Enemy).BasicAttack([leader], effect)
         else:
             this.DoActivate(player, effect)
 

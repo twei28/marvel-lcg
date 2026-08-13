@@ -640,7 +640,17 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         target_schemes: List['CardFace']
 
         if schemes == "YourLeaderMainScheme":
+            # Le complot principal de VOTRE leader est sur la table d'en face :
+            # les equipes echangent leurs scenarios (mc56 p.14, etape 4).
+            # En cooperatif il n'existe pas, et le livret p.6 tranche : « a card
+            # ability that refers to your leader cannot be resolved ». D'ou la
+            # liste vide, qui est le comportement d'avant.
             target_schemes = []
+            world = by_effect.world
+            if world.rule.mode_competitive:
+                team = Worlds.GetTeamOfEffect(by_effect)
+                other_area = world.GetTeamGameArea(world.GetOtherTeam(team))
+                target_schemes = list(Worlds.GetMainSchemes(other_area))
         elif schemes == "MainScheme":
             scheme = Worlds.FindMainScheme(by_effect)
             if scheme:

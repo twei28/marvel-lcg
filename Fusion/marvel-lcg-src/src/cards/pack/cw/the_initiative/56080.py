@@ -11,7 +11,15 @@ def GetAbilities() -> Sequence['Ability']:
         player = message.GetToPlayer()
 
         if Worlds.IsCompetitiveMode(effect):
-            assert False
+            # « The enemy team attaches Drafted to a minion engaged with them
+            # and that minion engages you. »
+            team = Worlds.GetEnemyTeam(effect)
+            minions = team.GetEngagedMinions()
+            if minions:
+                target = team.AskChooseFace(minions, effect)
+                if target:
+                    this.AttachTo2(target, effect)
+                    target.CastTo(Minion).EngagePlayer(player, effect)
         else:
             minion = Worlds.DiscardEncounterCardsUntil(
                 effect,

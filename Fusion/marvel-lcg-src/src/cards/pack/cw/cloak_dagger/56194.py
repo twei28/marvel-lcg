@@ -11,7 +11,9 @@ def GetAbilities() -> Sequence['Ability']:
         player = message.GetToPlayer()
         Utility.PlaceThreatOnOneScheme(player, 2, effect)
         if Worlds.IsCompetitiveMode(effect):
-            assert False
+            # « In competitive mode, remove 2 threat from your leader's main
+            # scheme. » Ce complot est celui de la table d'en face.
+            this.RemoveThreatFromSchemes("YourLeaderMainScheme", 2, effect)
 
     def cloak_boost(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:
         this = effect.this.CastTo(Minion)

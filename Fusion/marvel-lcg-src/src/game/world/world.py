@@ -177,6 +177,18 @@ class World(WorldAction, WorldFind):
             self.CreateGameArea()
         return self.game_areas[team]
 
+    def GetPhasePlayers(self, team: 'int|None') -> List['Player']:
+        """Les joueurs concernes par une phase.
+
+        `None` veut dire « tout le monde » : c'est le cas hors mode competitif,
+        ou une phase appartient a la partie entiere. En competitif, chaque camp
+        joue SA phase heros puis SA phase vilain (mc56 p.16), et une phase ne
+        concerne donc que les joueurs d'un camp.
+        """
+        if team is None:
+            return self.const_players
+        return self.GetTeamPlayers(team)
+
     def GetTeamOfGameArea(self, game_area: 'GameArea') -> int:
         if game_area in self.game_areas:
             return self.game_areas.index(game_area)
@@ -519,7 +531,7 @@ class World(WorldAction, WorldFind):
 
     ################################################################################
     # Phase
-    def PlayerPhase(self) -> None:
+    def PlayerPhase(self, team: 'int|None'=None) -> None:
 
         def turn_begin():
             self.stat.OnTurnBegin()
@@ -529,7 +541,7 @@ class World(WorldAction, WorldFind):
         self.phase.SetState(Phase.State.PlayerTurn)
 
         def get_player_phase_order():
-            players = self.const_players[:]
+            players = self.GetPhasePlayers(team)[:]
             for player in players:
                 if player.flag.Get("YOU_TAKE_THE_FIRST_TURN_DURING_THE_PLAYER_PHASE"):
                     players.remove(player)
@@ -548,17 +560,19 @@ class World(WorldAction, WorldFind):
 
         self.phase.SetState(Phase.State.PlayerTurnEnd)
 
-    def PlayersEndPhase(self) -> None:
+    def PlayersEndPhase(self, team: 'int|None'=None) -> None:
         def process_player(player: 'Player'):
             player.phase.EndPhase()
-        JobManager.Simultaneous(process_player, self.const_players)
+        JobManager.Simultaneous(process_player, self.GetPhasePlayers(team))
 
-    def VillainPhase(self) -> None:
+    def VillainPhase(self, team: 'int|None'=None) -> None:
         from game.message import Message
         from game.effect.rule import GameRule
         from game.operate.worlds import Worlds
 
-        for player in self.const_players:
+        phase_players = self.GetPhasePlayers(team)
+
+        for player in phase_players:
             player.stat.this_phase_revealed_cards = []
 
         def process_villain_phase_step(step: int, callback: Callable[[], None], phase: 'Phase.State') -> None:
@@ -580,13 +594,17 @@ class World(WorldAction, WorldFind):
             self.current_player = None
             start_message = Message.WhenMainSchemePhaseStart(self)
             start_message.Send()
-            for scheme in Worlds.GetAllMainSchemes(self):
+            # Seul le complot de la table qui joue avance : l'autre table
+            # avancera le sien pendant SA phase vilain.
+            schemes = Worlds.GetAllMainSchemes(self) if team is None \
+                else Worlds.GetMainSchemes(self.GetTeamGameArea(team))
+            for scheme in schemes:
                 scheme.Phase()
             end_message = Message.WhenMainSchemePhaseEnd(self)
             end_message.Send()
 
         def enemy_activation() -> None:
-            for player in self.const_players:
+            for player in phase_players:
                 self.current_player = player
                 effect = GameRule(player.GetIdentity())
                 Worlds.Enemies.VillainAndEngagedMinionsActivateAgainstYou(effect, player)
@@ -597,7 +615,7 @@ class World(WorldAction, WorldFind):
             num = 1 + self.rule.mode_heroic
 
             hazards: Dict[GameArea, List[HasHazard]] = {}
-            for player in self.const_players:
+            for player in phase_players:
                 game_area = player.GetGameArea()
 
                 if game_area not in hazards:
@@ -618,8 +636,8 @@ class World(WorldAction, WorldFind):
             return
 
         def reveal_encounter_cards() -> None:
-            while any(player.dealt_encounter_cards.GetSize() != 0 for player in self.const_players):
-                for player in self.const_players:
+            while any(player.dealt_encounter_cards.GetSize() != 0 for player in phase_players):
+                for player in phase_players:
                     self.current_player = player
                     player.RevealEncounterCards()
                     if self.is_game_over:
@@ -713,28 +731,41 @@ class World(WorldAction, WorldFind):
             if self.is_game_over:
                 return
 
-            phase_begin("Player")
-            if self.is_game_over:
-                return
-            self.PlayerPhase()
-            if self.is_game_over:
-                return
-            self.PlayersEndPhase()
-            if self.is_game_over:
-                return
-            phase_end("Player")
-            if self.is_game_over:
-                return
+            # L'ordre du round. Hors mode competitif, une seule phase heros et
+            # une seule phase vilain pour toute la table : `None` veut dire
+            # « tous les joueurs », et la suite est mot pour mot celle d'avant.
+            #
+            # En competitif, le round est ENFILE (mc56 p.16) : phase heros du
+            # camp 0, phase heros du camp 1, PUIS phase vilain du camp 0, puis
+            # phase vilain du camp 1. Le camp 0 (registration) joue en premier.
+            teams: List['int|None'] = [None]
+            if self.rule.mode_competitive:
+                teams = [0, 1]
 
-            phase_begin("Villain")
-            if self.is_game_over:
-                return
-            self.VillainPhase()
-            if self.is_game_over:
-                return
-            phase_end("Villain")
-            if self.is_game_over:
-                return
+            for team in teams:
+                phase_begin("Player")
+                if self.is_game_over:
+                    return
+                self.PlayerPhase(team)
+                if self.is_game_over:
+                    return
+                self.PlayersEndPhase(team)
+                if self.is_game_over:
+                    return
+                phase_end("Player")
+                if self.is_game_over:
+                    return
+
+            for team in teams:
+                phase_begin("Villain")
+                if self.is_game_over:
+                    return
+                self.VillainPhase(team)
+                if self.is_game_over:
+                    return
+                phase_end("Villain")
+                if self.is_game_over:
+                    return
 
             end_round()
 
