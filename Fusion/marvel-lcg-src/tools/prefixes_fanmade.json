@@ -49,6 +49,13 @@
       "cartes": 20,
       "depuis": "2026-08-12"
     },
+    "dt": {
+      "pack": "determination",
+      "libelle": "118. Custom (Determination)",
+      "cartes": 0,
+      "depuis": "2026-08-13",
+      "note": "L'aspect fan-made de designhacker.ca, ~141 cartes. Prefixe reserve avant la premiere carte, comme le veut la regle. Le set n'est pas encore declare dans sets_info.json."
+    },
     "gp": {
       "pack": "gwenpool",
       "libelle": "101. Custom (Gwenpool)",
