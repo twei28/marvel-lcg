@@ -2,8 +2,9 @@
 
 **Statut :** ✅ **COOPÉRATIF TERMINÉ** le 13/08/2026, validé en jeu (voir §6-§7),
 **plus le mode expert des 4 scénarios, livré le 13/08** (§8).
-🚧 **COMPÉTITIF EN COURS** depuis le 13/08 : une partie à deux camps se prépare
-et se joue de bout en bout dans le moteur (§9). Ce qui reste est nommé au §10.
+🚧 **COMPÉTITIF EN COURS** depuis le 13/08 : une partie à deux camps **se lance
+depuis l'écran de préparation** et se joue de bout en bout dans le moteur
+(§9, §11). Ce qui reste est nommé au §10.
 ⚠️ Le §2 et le §4 de cette fiche disaient que le compétitif dépendait du serveur
 permanent multijoueur : **c'est faux, et mesuré comme tel** (§9.1).
 **Pas une campagne** — un mode de jeu distinct.
@@ -205,10 +206,7 @@ une partie ordinaire rend le même résultat qu'avant, et Kang mène 3 parties.
 Rien de tout cela n'est commencé. C'est la liste, par ordre de ce qui bloque le
 plus un joueur.
 
-1. **Aucun chemin de lancement.** Seule la sonde sait démarrer une partie
-   compétitive. Il faut porter `campaign_2` et le camp de chaque joueur jusqu'au
-   `NewGameDescriptor` (`server_new_game.py`), mettre `ui-check/contrat-nouvelle-partie.json`
-   à jour dans le même commit, puis offrir le choix dans l'écran de préparation.
+1. ~~Aucun chemin de lancement.~~ **FAIT le 13/08** (`802f457`), voir §11.
 2. **Les conditions de victoire sont encore globales.** Le premier complot
    principal complété termine TOUTE la partie. Le livret p.17 veut trois
    conditions par équipe, la règle « la partie ne s'arrête pas avant que les deux
@@ -224,3 +222,43 @@ plus un joueur.
 7. **L'isolement entre tables n'a pas été audité** (p.16 : « card abilities on
    your side of the table completely ignore cards on the other side unless they
    specifically refer to them »).
+
+
+---
+
+## 11. LE CHEMIN DE LANCEMENT (13/08/2026, `802f457`)
+
+`NewGameDescriptor` gagne trois champs **à défaut** : `campaign_json_2`,
+`encounter_set_names_2`, `teams`. Un descripteur qui ne les porte pas se charge
+exactement comme avant. L'écran de préparation a une tuile **Bataille**, un
+sélecteur pour le leader d'en face, et **déduit le camp du siège** (le livret ne
+connaît que le 1v1 et le 2v2, donc première moitié contre seconde moitié).
+
+⚠️ **Le sélecteur ne tient pas une liste de boîtes en dur** : un scénario de
+bataille se reconnaît dans les DONNÉES, son adversaire étant de type `Leader`.
+C'est la leçon de l'aspect Determination. Mesuré : 8 scénarios trouvés.
+
+**Vérifié, et le test mis en défaut exprès** : `bataille-descripteur.spec.ts`
+exige les trois clés et le drapeau en Bataille, et leur ABSENCE en partie
+ordinaire. Un descripteur de bataille envoyé à `/new` rend « New game created ».
+
+### Deux pièges payés, pour la prochaine fois
+
+* **`UI_CHECK_BASE` ne traverse pas vers le node Windows sans `WSLENV`.** Sans
+  lui, Playwright visait le serveur du JOUEUR sur 2345 et le test passait en
+  mesurant le mauvais fichier. Commande juste :
+  `UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE npx playwright test ...`
+* **`/new` refuse une URL de plus de 8190 octets.** Un descripteur de bataille
+  porte deux scénarios ; il tient (**4696 octets en 1v1**) parce que le
+  navigateur envoie du JSON COMPACT. Le reconstruire à la main avec le texte
+  indenté des fichiers de scénario le fait exploser.
+
+### ⚠️ CE QUI N'A PAS ÉTÉ MESURÉ, et qui compte
+
+**Le plateau React ne connaît pas les zones de jeu** : `grep -rn "game_area"
+ui-app/src` rend **0**. Une partie de Bataille se lance, mais personne n'a
+encore regardé ce qu'elle DONNE À VOIR. Deux possibilités, et seule une partie
+jouée dans un navigateur tranchera : soit le rendu du moteur est déjà filtré par
+zone et le plateau montre la bonne table sans le savoir, soit les deux tables
+s'affichent mêlées. **C'est le prochain point à mesurer, avant d'ajouter quoi
+que ce soit d'autre.**
