@@ -36,10 +36,39 @@ export type EntreeHistorique = {
    * portent déjà leur object id dans `cibleId`.
    */
   brut?: string
+  /**
+   * Les mêmes nombres que le titre, mais en nombres.
+   *
+   * Le titre est une PHRASE (« Klaw subit 3 dégât(s) »), traduite, où le chiffre
+   * est noyé. Tout lecteur qui veut additionner — le bilan de la phase du
+   * méchant et ses totaux par étape — devrait le ré-extraire à coups
+   * d'expression régulière, dans deux langues. On le publie donc ici, à
+   * l'endroit où on le connaît déjà.
+   *
+   * `valeur` est la VARIATION SIGNÉE du compteur, une seule règle pour tous les
+   * types : -3 quand les PV tombent de 8 à 5, +2 quand la menace monte, -1
+   * quand on en retire. Un lecteur additionne sans se demander de quel côté
+   * penche la ligne, et affiche `Math.abs` quand le titre dit déjà le sens.
+   *
+   * L'ampleur seule ne suffisait pas : « menace » est le seul type qui serve
+   * les deux sens, un total en valeur absolue y compterait un retrait comme
+   * une pose.
+   */
+  valeur?: number
+  /** Ce qu'il reste après coup : PV restants, ou menace sur la manigance. */
+  restant?: number
+  /** Le seuil, quand la cible en a un : la menace maximale d'une manigance. */
+  plafond?: number
 }
 
-/** Ce qu'on sait d'une entrée en plus de son texte, pour la filtrer ensuite. */
-type Rattachement = Pick<EntreeHistorique, 'cibleId' | 'joueur' | 'acteur'>
+/**
+ * Ce qu'on sait d'une entrée en plus de son texte : de quoi la filtrer ensuite
+ * (cible, joueur, auteur) et de quoi l'additionner (les nombres du titre).
+ */
+type Rattachement = Pick<
+  EntreeHistorique,
+  'cibleId' | 'joueur' | 'acteur' | 'valeur' | 'restant' | 'plafond'
+>
 
 type CarteObservee = {
   id: number
@@ -49,6 +78,8 @@ type CarteObservee = {
   joueur?: number
   vie?: number
   menace?: number
+  /** Seuil de la manigance (`target_threat`), quand elle en affiche un. */
+  menaceCible?: number
 }
 
 /**
@@ -123,6 +154,12 @@ function observerCarte(
     joueur,
     vie: UNIT_TYPES.has(carte.card_type) ? nombreInfo(carte, 'health') : undefined,
     menace: SCHEME_TYPES.has(carte.card_type) ? nombreInfo(carte, 'k_threat') : undefined,
+    // Même source que le badge « 4/12 » des complots sur la table
+    // (card-model : menaceAffichee). Une manigance sans seuil vaut 0 : on ne
+    // retient alors rien, pour ne pas annoncer « 3/0 ».
+    menaceCible: SCHEME_TYPES.has(carte.card_type)
+      ? nombreInfo(carte, 'target_threat') || undefined
+      : undefined,
   }
 }
 
@@ -214,6 +251,7 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
       // « soigne X via Y », et reutiliser la cause des degats designerait
       // l'attaquant precedent comme soigneur.
       const cause = lireCause(causes, 'degats', courante.nom, apres.render_id)
+      const nombres = { valeur: ecart, restant: courante.vie }
       sorties.push(
         ecart < 0
           ? entree(
@@ -222,9 +260,9 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
               `${courante.nom} ${t('subit')} ${Math.abs(ecart)} ${t('dégât(s)')}`,
               detailAvecCause(`${courante.vie} ${t('PV restants')}`, cause),
               `${id}:hp:${courante.vie}`,
-              { ...rattachement, acteur: cause?.source }
+              { ...rattachement, ...nombres, acteur: cause?.source }
             )
-          : entree(apres, 'heal', `${courante.nom} ${t('soigne')} ${ecart}`, `${courante.vie} ${t('PV')}`, `${id}:hp:${courante.vie}`, rattachement)
+          : entree(apres, 'heal', `${courante.nom} ${t('soigne')} ${ecart}`, `${courante.vie} ${t('PV')}`, `${id}:hp:${courante.vie}`, { ...rattachement, ...nombres })
       )
     }
 
@@ -235,7 +273,13 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
     ) {
       const ecart = courante.menace - precedente.menace
       const cause = lireCause(causes, 'menace', courante.nom, apres.render_id)
-      const attache = { ...rattachement, acteur: cause?.source }
+      const attache = {
+        ...rattachement,
+        acteur: cause?.source,
+        valeur: ecart,
+        restant: courante.menace,
+        plafond: courante.menaceCible,
+      }
       sorties.push(
         ecart < 0
           ? entree(apres, 'threat', `${Math.abs(ecart)} ${t('menace retirée de')} ${courante.nom}`, detailAvecCause(`${courante.menace} ${t('menace restante')}`, cause), `${id}:threat:${courante.menace}`, attache)

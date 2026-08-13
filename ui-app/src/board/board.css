@@ -4106,6 +4106,36 @@
     color: #fff;
   }
 
+  /* Le titre d'étape porte trois choses sur une seule ligne : le numéro de la
+     carte de référence, le nom de l'étape, et son total poussé à droite. */
+  .recap-mechant-groupe > .plateau-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .recap-mechant-groupe > .plateau-eyebrow i {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(229, 72, 77, 0.9);
+    color: #fff;
+    font-style: normal;
+    font-size: 0.62rem;
+    font-weight: 900;
+  }
+
+  .recap-mechant-total {
+    margin-left: auto;
+    color: #ffd45a;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
   .recap-mechant-groupe ul {
     display: grid;
     gap: 5px;
@@ -4116,10 +4146,20 @@
 
   .recap-mechant-groupe li {
     display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    column-gap: 10px;
     padding: 5px 10px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.05);
     font-size: 0.82rem;
+  }
+
+  /* Le détail passe sous les deux colonnes plutôt que de se glisser entre. */
+  .recap-mechant-groupe li small {
+    grid-column: 1 / -1;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.72rem;
   }
 
   .recap-mechant-groupe li b {
@@ -4127,9 +4167,42 @@
     color: rgba(255, 255, 255, 0.92);
   }
 
-  .recap-mechant-groupe li small {
-    color: rgba(255, 255, 255, 0.5);
+  /* Une ligne dont on connaît la carte s'annonce comme regardable. Le curseur
+     « aide » plutôt que « main » : survoler informe, ça n'agit pas. */
+  .recap-mechant-groupe li.est-survolable {
+    cursor: help;
+    transition: background 120ms ease;
+  }
+
+  .recap-mechant-groupe li.est-survolable:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .recap-mechant-heros {
+    margin-left: 6px;
+    color: #54d6ff;
     font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 800;
+  }
+
+  .recap-mechant-heros::before {
+    content: '→ ';
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .recap-mechant-chiffre {
+    color: #ffd45a;
+    font-size: 0.78rem;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  /* L'aperçu vit dans <body> avec un z-index taillé pour la table (400) : il
+     passerait sous le bilan (540). On le remonte juste au-dessus, et pas plus —
+     le splash de tour (550) et la fin de partie (600) gardent la priorité. */
+  .carte-apercu.au-dessus-du-bilan {
+    z-index: 545;
   }
 
   .recap-mechant-ok {

@@ -2037,7 +2037,16 @@ function PagePartie({
       ) : null}
 
       <CoucheHautsFaits hautsFaits={etat.hautsFaits} />
-      <RecapPhaseMechant entrees={historique.entrees} monde={etat.monde} actif={phaseRapide} />
+      <RecapPhaseMechant
+        entrees={historique.entrees}
+        monde={etat.monde}
+        actif={phaseRapide}
+        // De quoi montrer la carte au survol d'une ligne : le même index et le
+        // même catalogue que la table, donc le même agrandissement qu'elle.
+        cartesMonde={cartesMondeParId}
+        catalogue={catalogue}
+        playerId={joueurActif}
+      />
       <CoucheCurseurs
         actif={curseurs && (etat.monde?.players?.length ?? 0) > 1}
         monJoueur={playerId}

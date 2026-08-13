@@ -343,10 +343,18 @@ export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
 export function CarteApercu({
   carte,
   statuts,
+  classe,
 }: {
   carte: ScanCardProps
   /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
   statuts?: ScanCardProps[]
+  /**
+   * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
+   * table : l'apercu est monte dans <body> avec un z-index taille pour passer
+   * devant le plateau (400), pas devant un panneau plein ecran. Le bilan de la
+   * phase du mechant (540) le recouvrirait sans cela.
+   */
+  classe?: string
 }) {
   const autresFaces = carte.autresFaces ?? []
   const nbFaces = 1 + autresFaces.length
@@ -397,7 +405,7 @@ export function CarteApercu({
   return createPortal(
     <div
       ref={apercu}
-      className={`carte-apercu${nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}`}
+      className={`carte-apercu${nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}`}
       style={stylePlacement}
       aria-hidden="true"
     >

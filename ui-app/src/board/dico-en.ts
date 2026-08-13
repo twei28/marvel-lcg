@@ -388,6 +388,13 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/RecapPhaseMechant.tsx et mode rapide ----
   // (« Révélé » est déjà défini plus haut, pour le réglage de présentation.)
   'Bilan de la phase du méchant': 'Villain phase summary',
+  // Les étapes du bilan reprennent les intitulés de la carte de référence du
+  // jeu : on garde ses mots plutôt qu'une traduction littérale du français.
+  // (« Cartes révélées » est déjà défini plus bas, pour le panneau d'options.)
+  'Menace sur la manigance': 'Threat on the main scheme',
+  'Activations': 'Enemy activations',
+  'Cartes distribuées': 'Encounter cards dealt',
+  'carte(s)': 'card(s)',
   'Phase du méchant rapide': 'Fast villain phase',
   'Enchaîne la phase sans « Continue », puis affiche un bilan':
     'Runs the phase without "Continue", then shows a summary',
