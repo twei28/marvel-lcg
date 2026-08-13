@@ -1,6 +1,7 @@
 # TODO / SPEC — Mode Découverte : apprendre le jeu en jouant
 
-**Statut :** **IMPLÉMENTÉ** le 2026-08-03. Reste à jouer le tutoriel de bout en bout dans le navigateur, et à relire le texte des 11 leçons avec l'utilisateur.
+**Statut :** ✅ **TERMINÉ.** Implémenté le 2026-08-03, et **joué de bout en bout :
+l'utilisateur l'a validé le 13/08/2026.** (Ancien texte : reste à jouer le tutoriel de bout en bout dans le navigateur, et à relire le texte des 11 leçons avec l'utilisateur.
 **Plan d'implémentation :** `.planning/plans/2026-08-03-tutoriel-decouverte.md`
 **Date de conception :** 2026-08-03
 **Origine :** demande utilisateur (« j'aimerais faire un tutoriel pour le jeu Marvel Champions et pour l'utilisation du programme »)

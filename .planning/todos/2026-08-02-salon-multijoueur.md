@@ -1,6 +1,7 @@
 # TODO / SPEC — Salon multijoueur : chaque invité choisit son héros et son deck
 
-**Statut :** **IMPLÉMENTÉ** le 2026-08-03. Reste une seule chose : la partie de test à deux navigateurs (tâche 5, étape 5), qui ne peut pas être automatisée.
+**Statut :** ✅ **TERMINÉ.** Implémenté le 2026-08-03, et **la partie de test à deux a été
+jouée : l'utilisateur l'a validée le 13/08/2026.** (Ancien texte : la partie de test à deux navigateurs (tâche 5, étape 5), qui ne peut pas être automatisée.
 **Plan d'implémentation :** `.planning/plans/2026-08-02-salon-multijoueur.md` (5 tâches, prêt à dérouler tel quel)
 **Date de conception :** 2026-08-02
 **Origine :** demande utilisateur (« à quel point ça serait compliqué, pour quand on lance le multi, de laisser le choix aux invités de choisir leur perso et leur deck ? »)

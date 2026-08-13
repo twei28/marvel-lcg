@@ -3,7 +3,8 @@
 **Statut :** ✅ **LIVRÉ ET COMPLET le 2026-08-13.** Les **142 cartes** sont dans
 le jeu avec leurs données, leurs images, leurs modules et leur **texte
 français**. **Il ne reste AUCUN écart** : les douze assumés ont tous été levés
-(§16, §17). **Reste une seule chose : jouer une vraie partie.**
+(§16, §17). **LA PARTIE A ÉTÉ JOUÉE** : l'utilisateur a validé l'aspect en jeu le
+13/08/2026, après correction du défaut des compteurs. **Le chantier est clos.**
 **Origine :** demande utilisateur (« créer un nouvel aspect qui vient d'ici
 https://designhacker.ca/ »)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `dh`)
