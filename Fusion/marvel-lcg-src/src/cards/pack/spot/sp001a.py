@@ -23,7 +23,7 @@ def GetAbilities() -> Sequence['Ability']:
         Find.FindAndReveal(
             effect,
             player,
-            finder=CardFinder(set_name="The Spot", card_type=EncounterCard)
+            finder=CardFinder(card_ids=CARTES_A_NIVEAU)
         )
 
     return [

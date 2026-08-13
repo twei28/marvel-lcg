@@ -347,3 +347,42 @@ Et, comme toujours : **une partie menée par un humain**. Le bot perd les huit
 parties, ce qui est plausible pour un scénario dont toute la finesse est de
 placer la menace au bon endroit plutôt que de la retirer, mais seul un joueur
 peut dire si l'expérience tient debout.
+
+
+---
+
+## 11. LE RAPPORT DE BUG DU JOUEUR (13/08/2026) — et ce qu'il a revele
+
+**« J'ai voulu lancer Spot et la partie s'arrete apres la mise en place de mon
+heros, on voit meme pas le deck de Spot. »**
+
+### La cause n'etait pas le scenario
+
+Le serveur du joueur tournait depuis **16h35**, c'est-a-dire AVANT que les cartes
+existent. Le moteur charge sa base de cartes au demarrage : `sp002` n'existait
+pas pour lui, et la mise en place s'arretait la. **Il faut relancer le jeu apres
+tout ajout de contenu.**
+
+Mesure : sur un serveur NEUF, le plateau montre The Spot 12/12 PV, Heightened
+Threat, l'environnement What Goes Around en jeu, un deck rencontre de 34 cartes,
+et zero erreur JS. Le meme piege s'est reproduit sur mon propre serveur de test
+pendant le diagnostic, ce qui l'a confirme deux fois.
+
+### ⚠️ Mais le diagnostic a trouve un VRAI defaut
+
+Le plateau proposait **20 cartes** au choix de mise en place, alors que le texte
+dit « seeks a Spot card **with the Threat Level keyword** ». Mon `CardFinder`
+filtrait sur le set, pas sur le mot-cle -- et **`CardFinder` ne sait pas filtrer
+sur un mot-cle** : il connait les noms, les traits, les types, les classes, pas
+les attributs de `desc`. La recherche se fait donc par identifiants, via la liste
+`CARTES_A_NIVEAU` du pack.
+
+Apres correction, le choix tombe a **9 cartes**, exactement celles du deck qui
+portent un niveau. Mesure sur le plateau, pas deduite.
+
+### Le test qui verrouille la lecon
+
+`ui-check/tests/spot-plateau.spec.ts` demande au PLATEAU ce qu'il montre. Ni
+`autoplay` ni les verificateurs ne posent cette question : ils tournent dans leur
+propre processus, avec un moteur fraichement charge. Le joueur, lui, arrive sur
+un plateau servi par un moteur deja demarre.
