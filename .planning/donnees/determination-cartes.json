@@ -1663,7 +1663,7 @@
     {
       "_image": "D-81.jpg",
       "_drive_id": "1aI6gD33Fp94CM8LeavhYhszuO-UXNwam",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt081",
       "type": "Upgrade",
       "name": "Sword Training",
@@ -1681,7 +1681,7 @@
     {
       "_image": "D-82.jpg",
       "_drive_id": "1MMxf5qAAdP9QB_Z5ROG1FdQjmyBf-ccC",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt082",
       "type": "Event",
       "name": "Tough Call",
@@ -1699,7 +1699,7 @@
     {
       "_image": "D-83.jpg",
       "_drive_id": "1d44KZj8ZLvbX7BhwXurHtsAwgWyLMkuk",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt083",
       "type": "Event",
       "name": "Excessive Force",
@@ -1717,7 +1717,7 @@
     {
       "_image": "D-84.jpg",
       "_drive_id": "1M26rCP0d9VbuyRLzFkdq1J3zM8Z3F5ap",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt084",
       "type": "Event",
       "name": "Off the Cuff",
@@ -1735,7 +1735,7 @@
     {
       "_image": "D-85.jpg",
       "_drive_id": "1bQdrD7vuKp8GEzg_CshEZQJrCrDRf8DM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt085",
       "type": "Ally",
       "name": "* ForgetMeNot",
@@ -1757,7 +1757,7 @@
     {
       "_image": "D-86.jpg",
       "_drive_id": "13m916r8v-sBQdoXrlh20YH8fyEEURo9D",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt086",
       "type": "Upgrade",
       "name": "Aggressively Disarmed",
@@ -1775,7 +1775,7 @@
     {
       "_image": "D-87.jpg",
       "_drive_id": "19VdPfTd2tNzjNqtvKcvX6Wum615fvPER",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt087",
       "type": "Upgrade",
       "name": "\"Get 'Em, Boom-Boom!\"",
@@ -1794,7 +1794,7 @@
     {
       "_image": "D-88.jpg",
       "_drive_id": "1LfmfdqtIvFupmTUfPidylfUfGeVuKY1H",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt088",
       "type": "Upgrade",
       "name": "False Security",
@@ -1813,7 +1813,7 @@
     {
       "_image": "D-89.jpg",
       "_drive_id": "1LSsQ7kKFeQmT4WpIK4C7VOHn7fBs2UkO",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt089",
       "type": "Upgrade",
       "name": "Concatenate",
@@ -1832,7 +1832,7 @@
     {
       "_image": "D-90.jpg",
       "_drive_id": "12oATEQQB0ASm1jHg6Ii0faNvjTVeSb3A",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt090",
       "type": "Event",
       "name": "Psychic Crowd Control",
@@ -1850,7 +1850,7 @@
     {
       "_image": "D-91.jpg",
       "_drive_id": "1u4Kpulk0PqnGnAzqe7obT25amePdqFKo",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt091",
       "type": "Resource",
       "name": "Determined Energy",
@@ -1865,7 +1865,7 @@
     {
       "_image": "D-92.jpg",
       "_drive_id": "1dWSYV1CnnE3GP_G8xoNcKKp6pmvbOZyS",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt092",
       "type": "Ally",
       "name": "* X-23",
@@ -1887,7 +1887,7 @@
     {
       "_image": "D-93.jpg",
       "_drive_id": "1l_XPfTUkA0GxToaAp_W6_wUQpjCtqLe6",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt093",
       "type": "Upgrade",
       "name": "Lightning Rod",
@@ -1905,7 +1905,7 @@
     {
       "_image": "D-94.jpg",
       "_drive_id": "1WBffQ_ot52Y4Waa6Lmhklj-eTWgOKCb2",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt094",
       "type": "Upgrade",
       "name": "Diversion Skill",
@@ -1923,7 +1923,7 @@
     {
       "_image": "D-95.jpg",
       "_drive_id": "1o_ksulsqeQLTIjqx2lhPWa2tTh-jLz9T",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt095",
       "type": "Event",
       "name": "Last Legs",
@@ -1942,13 +1942,15 @@
     {
       "_image": "D-96.jpg",
       "_drive_id": "1NtBHxqSJXMFv3Kq9zpLRk705KkJu9y6c",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt096",
-      "type": "SideScheme",
+      "type": "PlayerSideScheme",
       "name": "* Purple Peril",
-      "_attention": "Manigance annexe de joueur : PLAYER SIDE SCHEME, menace de depart 3. Le champ StartingThreat reste a poser au format du moteur.",
+      "_attention": "Manigance annexe de JOUEUR : type PlayerSideScheme, et desc a besoin de StartingThreat et Victory (la generation echoue sinon).",
       "desc": {
         "Cost": "0",
+        "StartingThreat": "3",
+        "Victory": "0",
         "RES": "B",
         "Class": "Determination"
       },
@@ -1959,7 +1961,7 @@
     {
       "_image": "D-97.jpg",
       "_drive_id": "1uOgx32GhbKavFP4_llS8swfaYbCbTUSQ",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt097",
       "type": "Event",
       "name": "Timeslide",
@@ -1978,7 +1980,7 @@
     {
       "_image": "D-98.jpg",
       "_drive_id": "1oOZMtdx75SwBoOBfblTi_A7-jfeDchfl",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt098",
       "type": "Ally",
       "name": "* Bedlam",
@@ -1999,7 +2001,7 @@
     {
       "_image": "D-99.jpg",
       "_drive_id": "19Hm-rZSY_5jQVIX4UcktCZOlFZu2CBvi",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt099",
       "type": "Ally",
       "name": "* Marrow",
@@ -2021,7 +2023,7 @@
     {
       "_image": "D-100.jpg",
       "_drive_id": "15BJxlqQNbEtHk0m1G7L0B9ECHUlPU88h",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt100",
       "type": "Ally",
       "name": "* Archangel",
@@ -2067,11 +2069,13 @@
       "_drive_id": "15iGBm-Il_Zd45ayTnhW9q2dqOMInPsnD",
       "_niveau": "inventaire",
       "card_id": "dt102",
-      "type": "SideScheme",
+      "type": "PlayerSideScheme",
       "name": "* A Dangerous Game",
-      "_attention": "Manigance annexe de joueur : PLAYER SIDE SCHEME, menace de depart 1 [per_hero]. Le champ StartingThreat reste a poser au format du moteur.",
+      "_attention": "Manigance annexe de JOUEUR : type PlayerSideScheme, et desc a besoin de StartingThreat et Victory (la generation echoue sinon).",
       "desc": {
         "Cost": "0",
+        "StartingThreat": "3",
+        "Victory": "0",
         "RES": "R",
         "Class": "Determination"
       },
