@@ -647,6 +647,31 @@ class OnEvent:
                 check_which_card
             )
 
+    class Token(TemplateTrigger):
+        """Le pendant de `Counter` pour les JETONS.
+
+        La menace est un jeton, pas un compteur (`PlaceTokensInternal`), et
+        seul `Counter` existait : une statistique qui depend de la menace posee
+        sur la carte ne se rafraichissait donc jamais. Ecrit pour le set The
+        Spot, ou Puma, Chameleon, Living Laser et Rocket Racer changent tous
+        selon la menace qu'ils portent.
+        """
+        MESSAGE_TYPE = Message.AfterCardPlacedToken|Message.AfterCardRemovedToken
+
+        def __init__(self, which_card: CardType, token_name: 'CardFace.TOKEN|None') -> None:
+            self.which_card: Final = which_card
+            self.token_name: Final = token_name
+
+            def check_which_card(effect: 'Effect', message: 'OnEvent.Token.MESSAGE_TYPE') -> bool:
+                if self.token_name and message.token_name != self.token_name:
+                    return False
+                return Condition.CheckWhichCard(self.which_card, message.trigger, effect)
+
+            super().__init__(
+                OnEvent.Token.MESSAGE_TYPE,
+                check_which_card
+            )
+
     class Trait(TemplateTrigger):
         MESSAGE_TYPE = Message.AfterCardGainTrait|Message.AfterCardLoseTrait|Message.AfterCardLeavePlay|Message.AfterCardEnterPlay
 

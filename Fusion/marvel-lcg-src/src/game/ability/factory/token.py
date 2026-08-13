@@ -78,3 +78,43 @@ class AbilityTokenFactory:
             is_local=to_where == "This"
         )
 
+    @staticmethod
+    def WhenCardWouldRemovedToken(ability_type: 'AbilityType',
+                                  from_where: CardType,
+                                  token_name: 'CardFace.TOKEN|None',
+                                  operation: OperationType[Message.WhenCardWouldRemovedToken],
+                                  *,
+                                  conditions: ConditionsType[Message.WhenCardWouldRemovedToken]=[],
+                                  ) -> 'Ability':
+        """La fenetre « quand on RETIRERAIT des jetons d'ici ».
+
+        Le pendant de `WhenCardWouldBePlacedToken`, qui existait seul. Le
+        message, lui, existait deja et porte tout ce qu'il faut : `would_remove`
+        (le nombre), `remove_all`, et `is_be_instead` pour remplacer le retrait
+        par autre chose.
+
+        Ecrit pour le complot principal de The Spot, dont le texte deroute la
+        menace au lieu de la retirer : « When you would remove any amount of
+        threat from here [...], move that threat to the card with the highest
+        Threat Level instead. »
+        """
+
+        def check_from_where(effect: 'Effect', message: Message.WhenCardWouldRemovedToken) -> bool:
+            return Condition.CheckWhichCard(from_where, message.trigger, effect)
+
+        def check_token_name(effect: 'Effect', message: Message.WhenCardWouldRemovedToken) -> bool:
+            if token_name:
+                return message.token_name == token_name
+            return True
+
+        return Ability(
+            ability_type,
+            Message.WhenCardWouldRemovedToken,
+            [
+                check_from_where,
+                check_token_name,
+                *conditions
+            ],
+            operation,
+            is_local=from_where == "This"
+        )

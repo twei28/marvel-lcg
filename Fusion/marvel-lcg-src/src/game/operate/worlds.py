@@ -674,6 +674,28 @@ class Worlds:
         world = game_area_effect.world
         return world.GetPlayerNum()
 
+    ################################################################################
+    # Threat Level (mot-cle du set fan-made The Spot)
+    @staticmethod
+    def GetThreatLevelFaces(by_effect: 'Effect') -> List['CardFace']:
+        """Les cartes EN JEU qui portent le mot-cle Threat Level.
+
+        Rendues du plus BAS niveau au plus haut : c'est l'ordre dont
+        Distributed Presence a besoin (« starting from the lowest Threat Level
+        number »), et le dernier element est donc la carte au plus haut niveau.
+        """
+        from game.card.face.attribute.has_threat_level import HasThreatLevel
+
+        faces = [x for x in Worlds.GetOnFieldCards(by_effect)
+                 if HasThreatLevel.IsType(x) and x.threat_level > 0]
+        return sorted(faces, key=lambda x: x.threat_level)
+
+    @staticmethod
+    def GetHighestThreatLevelFace(by_effect: 'Effect') -> 'CardFace|None':
+        """La carte au plus haut Threat Level en jeu, s'il y en a une."""
+        faces = Worlds.GetThreatLevelFaces(by_effect)
+        return faces[-1] if faces else None
+
     @staticmethod
     def IsExpert(by_effect: 'Effect') -> bool:
         return by_effect.world.scene.campaign.expert

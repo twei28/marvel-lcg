@@ -175,6 +175,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "Cyclops", "Flight", "Super Strength", "Telepathy", "Four Horsemen", 
         "Blue Moon", "Genosha", "Savage Land", "Magneto", "Shadow King", "Dreadpool", "Kree Fanatic", 
         "Thunderbolts", "Executive Board Evidence", "Frostbite", "Iceman", "Spider-Man - Miles Morales", 
+        "The Spot", 
     ]
 
     BASIC_POWER = Literal["ATK", "THW", "REC", "SCH", "DEF"]

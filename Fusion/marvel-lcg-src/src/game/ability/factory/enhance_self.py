@@ -386,6 +386,11 @@ class AbilityFactoryEnhanceSelf:
                         consider_as: Tuple["CardFace.TRAITS", Type['TC']]|None=None,
                         quickstrike :int|None=None,
                         stalwart: int|None=None,
+                        # CORRECTIF : `guard` manquait alors que `Gain()` l'accepte
+                        # (face_gain.py). Meme trou que `defense` plus haut.
+                        # Necessaire pour sp007 (Rocket Racer), qui gagne patrol ET
+                        # guard selon la menace posee sur lui.
+                        guard: int|None=None,
                         patrol: int|None=None,
                         amplify: int|None=None,
                         crisis: int|None=None,
@@ -421,6 +426,7 @@ class AbilityFactoryEnhanceSelf:
                 recover=recover,
                 trait=trait,
                 retaliate=retaliate,
+                guard=guard,
                 restricted=restricted,
                 # ally_limit=ally_limit,
                 hand_size=hand_size,
