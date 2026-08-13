@@ -2167,7 +2167,7 @@
     {
       "_image": "D-107.jpg",
       "_drive_id": "1gxtk_QhZ7wg9gXno69lgP6IEp_zitb7r",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt107",
       "type": "Ally",
       "name": "* Zenpool",
@@ -2186,7 +2186,7 @@
     {
       "_image": "D-108.jpg",
       "_drive_id": "1cFpW8W1mr5WMfTYuObzdoQc4xca3XEfD",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt108",
       "type": "Event",
       "name": "Defy the Future",
@@ -2205,7 +2205,7 @@
     {
       "_image": "D-109.jpg",
       "_drive_id": "1_YquAqhNSipjuuP9V3CMh-yROtrulmx3",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt109",
       "type": "Event",
       "name": "Phase Shift",
@@ -2224,7 +2224,7 @@
     {
       "_image": "D-110.jpg",
       "_drive_id": "1YUo2i50QHcWw3hnIHiMiWFyJ3-jq5BsI",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt110",
       "type": "Event",
       "name": "Temporal Bubble",
@@ -2243,7 +2243,7 @@
     {
       "_image": "D-111.jpg",
       "_drive_id": "1gUnxXIx9DgOSqtrJbKSQK6iM704N96ub",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt111",
       "type": "Ally",
       "name": "* Morph",
@@ -2265,7 +2265,7 @@
     {
       "_image": "D-112.jpg",
       "_drive_id": "1VMoiEpoSy7WRW8mm_lFODN8mAmofUsp1",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt112",
       "type": "Ally",
       "name": "* Spiral",
@@ -2287,7 +2287,7 @@
     {
       "_image": "D-113.jpg",
       "_drive_id": "1nQzKKyBaro6Z_GteJ6mdDHhUAG8A8K6a",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt113",
       "type": "Upgrade",
       "name": "* Tabula Rasa",
@@ -2305,7 +2305,7 @@
     {
       "_image": "D-114.jpg",
       "_drive_id": "1JSjyYFDdwnyvG4eKCLFkF6MO07zvA_QN",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt114",
       "type": "Ally",
       "name": "* Blink",
@@ -2327,7 +2327,7 @@
     {
       "_image": "D-115.jpg",
       "_drive_id": "1ltmY0WHjNO9XmODZiF4Y51XwnsQ8y1o4",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt115",
       "type": "Event",
       "name": "Whatever it Takes",
@@ -2346,7 +2346,7 @@
     {
       "_image": "D-116.jpg",
       "_drive_id": "1mi1lUI38XWI11oz3DEUhzTtCh0ALgZuD",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt116",
       "type": "Ally",
       "name": "* Agent Koenig",
@@ -2367,7 +2367,7 @@
     {
       "_image": "D-117.jpg",
       "_drive_id": "1Ovji89MSCTX4jxMAvuQE56j4z5rudCSo",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt117",
       "type": "Support",
       "name": "* The Behemoth",
@@ -2386,7 +2386,7 @@
     {
       "_image": "D-118.jpg",
       "_drive_id": "1oKxAW0x-adlOWTSCcKJQZLheWiD7Bs7q",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt118",
       "type": "Support",
       "name": "* The Peak",
@@ -2404,7 +2404,7 @@
     {
       "_image": "D-119.jpg",
       "_drive_id": "1Coc2R9d0nZDxhEWyrK3nfBUptDbLTr6M",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt119",
       "type": "Support",
       "name": "Tech Support",
@@ -2423,7 +2423,7 @@
     {
       "_image": "D-120.jpg",
       "_drive_id": "1plRInOWWbhjPfsQ2Xs_cG4ACwZ7y9rnb",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt120",
       "type": "Upgrade",
       "name": "Jury Rigged Tech",
@@ -2442,7 +2442,7 @@
     {
       "_image": "D-121.jpg",
       "_drive_id": "11QpHRlqNUR-ye4btBUIsgyI-UW5DxdRq",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt121",
       "type": "Upgrade",
       "name": "Radioactive Burst",
@@ -2462,7 +2462,7 @@
     {
       "_image": "D-122.jpg",
       "_drive_id": "1QS8_7l0fgUwsWlIVylqnT8G3Nl-DMXNX",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt122",
       "type": "Ally",
       "name": "* Spiders-Man",
@@ -2484,7 +2484,7 @@
     {
       "_image": "D-123.jpg",
       "_drive_id": "10Tx5LoMviV8QpcJ728oSn4g24AW3bpUM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt123",
       "type": "Ally",
       "name": "* Ralph",
@@ -2506,7 +2506,7 @@
     {
       "_image": "D-124.jpg",
       "_drive_id": "1yH5j1hKs5C6icYQxCyfuJEjI4i12fofY",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt124",
       "type": "Upgrade",
       "name": "Target Painted",
@@ -2524,7 +2524,7 @@
     {
       "_image": "D-125.jpg",
       "_drive_id": "18ioTOBz9iOpMpB1I637tcoCIe2iQVnki",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt125",
       "type": "Ally",
       "name": "* Night Thrasher",
@@ -2546,7 +2546,7 @@
     {
       "_image": "D-126.jpg",
       "_drive_id": "1A5OnBCz9xx5LqBuvqvxO1PNp99ZemnYS",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt126",
       "type": "Ally",
       "name": "* Rage",
@@ -2568,7 +2568,7 @@
     {
       "_image": "D-127.jpg",
       "_drive_id": "1Z_7nhEEtLv1ikXzM9Ucb-51ELXuq00PM",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt127",
       "type": "Event",
       "name": "Collective Breather",
@@ -2586,7 +2586,7 @@
     {
       "_image": "D-128.jpg",
       "_drive_id": "190o5LDB8MDfZLSV7geQ60IAqpG3LRKAy",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt128",
       "type": "Support",
       "name": "* MRVL Network",
@@ -2604,7 +2604,7 @@
     {
       "_image": "D-129.jpg",
       "_drive_id": "1bOGPLvNSYUyLSJSR_siMK2kYWMz5q9Qe",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt129",
       "type": "Upgrade",
       "name": "Determined Conditioning",
@@ -2622,7 +2622,7 @@
     {
       "_image": "D-130.jpg",
       "_drive_id": "1_O5L8ODgTE_b5vJ4gPuqtfmYrxmpoTjX",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt130",
       "type": "Upgrade",
       "name": "Timed Detonation",
@@ -2640,7 +2640,7 @@
     {
       "_image": "D-131.jpg",
       "_drive_id": "1MydxUe_fV_uzFpRXnz_2gNjGFiwsb_lA",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt131",
       "type": "Ally",
       "name": "* Speedball",
@@ -2662,7 +2662,7 @@
     {
       "_image": "D-132.jpg",
       "_drive_id": "1N6dq7p3r2uj5W3STOvLlC84e-Df6x84C",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt132",
       "type": "Resource",
       "name": "Enraged Energy",
@@ -2677,7 +2677,7 @@
     {
       "_image": "D-133.jpg",
       "_drive_id": "1ME7X0ejv-dhMVffnJ6rkTGccpfS6a0MO",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt133",
       "type": "Ally",
       "name": "* Orka",
@@ -2699,7 +2699,7 @@
     {
       "_image": "D-134.jpg",
       "_drive_id": "1cg0HKfVLME1ibFVBxBlq4fzSU4hcaNvf",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt134",
       "type": "Ally",
       "name": "* Paladin",
@@ -2720,7 +2720,7 @@
     {
       "_image": "D-135.jpg",
       "_drive_id": "1XZRCEAeHJNj6ygLY3D-6tHQy82j_v3B-",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt135",
       "type": "Ally",
       "name": "* Tarantula",
@@ -2742,7 +2742,7 @@
     {
       "_image": "D-136.jpg",
       "_drive_id": "1wi4DuX4XgJWztlGF4SKl4YUUVjMCDmnu",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt136",
       "type": "Event",
       "name": "Leverage Impediments",
@@ -2760,7 +2760,7 @@
     {
       "_image": "D-137.jpg",
       "_drive_id": "1BvVRvnd9IztyGoc8m88SMCaimTVBJV6I",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt137",
       "type": "Event",
       "name": "Calculated Action",
@@ -2779,7 +2779,7 @@
     {
       "_image": "D-138.jpg",
       "_drive_id": "1g_34d_piAaB5TRPhyXZMS0H6w6by1PSx",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt138",
       "type": "Upgrade",
       "name": "Assessed for Weakness",
@@ -2797,7 +2797,7 @@
     {
       "_image": "D-139.jpg",
       "_drive_id": "1-S7VpcSGvRd9LJrxNbsuGdiuKKLxPKdA",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt139",
       "type": "Upgrade",
       "name": "Flummoxed",
@@ -2815,7 +2815,7 @@
     {
       "_image": "D-140.jpg",
       "_drive_id": "1v2ZCkRYhC0uYqC-ZQhuXs7jYV1eFoDc3",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt140",
       "type": "Upgrade",
       "name": "Path of Mercy",
@@ -2834,7 +2834,7 @@
     {
       "_image": "D-141.jpg",
       "_drive_id": "1HAAJoSzeURVxIiPwX-lIhEOmbYQwUYCV",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt141",
       "type": "Upgrade",
       "name": "Path of Penance",
@@ -2853,7 +2853,7 @@
     {
       "_image": "D-142.jpg",
       "_drive_id": "1WxlsKBdgRTafvtpEUKGK1kAl5udFVknG",
-      "_niveau": "inventaire",
+      "_niveau": "releve",
       "card_id": "dt142",
       "type": "Upgrade",
       "name": "Path of Temperance",

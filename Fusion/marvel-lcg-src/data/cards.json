@@ -72141,7 +72141,743 @@
             ],
             "set_name": "Determination",
             "text": "Alias. <i>(If you control a card with a matching subtitle, discard it and play this card for free.)</i>\nReckless. Retaliate 2.\n<b>Response</b>: After an AERIAL character uses a basic power, exhaust Archangel and deal 1 damage to him \u2192 ready that character."
+        },
+        {
+            "card_id": "dt101",
+            "type": "Ally",
+            "name": "* Darkhawk",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "ANDROID"
+            ],
+            "set_name": "Determination",
+            "text": "[star] Enters play with a configuration counter on his ATK. Darkhawk gets +2 to the power with a counter on it.\n<b>Action</b>: Exhaust Darkhawk \u2192 move the configuration counter onto his other basic power."
+        },
+        {
+            "card_id": "dt102",
+            "type": "PlayerSideScheme",
+            "name": "* A Dangerous Game",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "StartingThreat": "1*",
+                "Victory": "0",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "You cannot move more than 4 threat to this card per turn.\n<b>Hero Action</b>: Take up to 4 damage \u2192 move that amount of threat from another scheme to here.\n<b>Forced Response</b>: After threat is placed here, if there is at least 16 [per_hero] threat here, deal 16 [per_hero] damage to the villain and remove this card from the game."
+        },
+        {
+            "card_id": "dt103",
+            "type": "Event",
+            "name": "In the Line of Fire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal a total of 5 damage divided among characters as you choose. Then, each player draws 1 card for each AERIAL character under their control damaged this way."
+        },
+        {
+            "card_id": "dt104",
+            "type": "Event",
+            "name": "Divert Attention",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if there is a side scheme in the victory display.\n<b>Hero Action</b>: Move up to 6 threat from a scheme onto other schemes in play divided as evenly as possible."
+        },
+        {
+            "card_id": "dt105",
+            "type": "Ally",
+            "name": "* Venompool",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SYMBIOTE",
+                "X-FORCE"
+            ],
+            "set_name": "Determination",
+            "text": "Alias. Venompool gets +1 ATK for each facedown encounter card in front of you (to a maximum of +3 ATK).\n<b>Forced Response</b>: After Venompool enters play, choose to either place 2 threat on the main scheme or deal yourself a facedown encounter card."
+        },
+        {
+            "card_id": "dt106",
+            "type": "Ally",
+            "name": "* Captain Universe",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "HP": "4",
+                "ATK": "3**",
+                "THW": "2**",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "COSMIC"
+            ],
+            "set_name": "Determination",
+            "text": "Alias.\n<b>Interrupt</b>: When Captain Universe would take any amount of consequential damage, reduce that amount by X, where X is the number of facedown encounter cards in front of you."
+        },
+        {
+            "card_id": "dt107",
+            "type": "Ally",
+            "name": "* Zenpool",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2**",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Alias.\n<b>Interrupt</b>: When Zenpool enters play, spend any number of resources. Discard 1 facedown encounter card in front of you for each resource spent this way."
+        },
+        {
+            "card_id": "dt108",
+            "type": "Event",
+            "name": "Defy the Future",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC",
+                "TEMPORAL"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Look at the top card of the encounter deck and each facedown encounter card in front of you. You may discard any number of cards looked at this way. Deal yourself 1 facedown encounter card for each card discarded this way."
+        },
+        {
+            "card_id": "dt109",
+            "type": "Event",
+            "name": "Phase Shift",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "MYSTIC",
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Choose a friendly character in any game area <i>(including the mission area)</i>, player's deck, or hand \u2192 until that character is flipped or enters a discard pile, treat them as if they have an additional printed [wild] resource and a blank text box <i>(except for TRAITS)</i>."
+        },
+        {
+            "card_id": "dt110",
+            "type": "Event",
+            "name": "Temporal Bubble",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC",
+                "TEMPORAL"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b>: Choose to either discard X cards from your hand and take X damage or deal yourself X facedown encounter cards \u2192 ready X cards you control."
+        },
+        {
+            "card_id": "dt111",
+            "type": "Ally",
+            "name": "* Morph",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "0*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PSIONIC",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Forced Interrupt</b>: When Morph's text box would be treated as blank, Morph gets +2 THW and +2 ATK until he leaves play."
+        },
+        {
+            "card_id": "dt112",
+            "type": "Ally",
+            "name": "* Spiral",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "6",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "MYSTIC",
+                "X-FORCE"
+            ],
+            "set_name": "Determination",
+            "text": "[star] Spiral gets +1 ATK for each facedown card in front of you. She cannot have greater than 6 ATK.\n<b>Forced Response</b>: After Spiral enters play, deal yourself 2 facedown encounter cards."
+        },
+        {
+            "card_id": "dt113",
+            "type": "Upgrade",
+            "name": "* Tabula Rasa",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to a friendly character with a blank text box <i>(except for TRAITS)</i>.\n<b>Hero Resource</b>: Exhaust attached character \u2192 generate their printed resources for an event."
+        },
+        {
+            "card_id": "dt114",
+            "type": "Ally",
+            "name": "* Blink",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PSIONIC",
+                "X-MEN"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Action</b>: Exhaust Blink and deal 1 damage each to her and your identity \u2192 choose to either ready a LOCATION card or change your form."
+        },
+        {
+            "card_id": "dt115",
+            "type": "Event",
+            "name": "Whatever it Takes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "Alliance.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Deal up to 3 damage to an X-MEN character and up to 3 damage to an X-FORCE character \u2192 remove X threat from among schemes in play and deal X damage among enemies in play, where X is the total amount of damage taken this way."
+        },
+        {
+            "card_id": "dt116",
+            "type": "Ally",
+            "name": "* Agent Koenig",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D."
+            ],
+            "set_name": "Determination",
+            "text": "Fragile.\n[star] Agent Koenig enters play with 1 LMD counter on him. While there are 1 or more counters on him, he gets +1 ATK.\n<b>Interrupt</b>: When Agent Koenig would be defeated, remove 1 LMD counter from him \u2192 remove all damage from him instead."
+        },
+        {
+            "card_id": "dt117",
+            "type": "Support",
+            "name": "* The Behemoth",
+            "subtitle": "",
+            "desc": {
+                "Cost": "6",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D.",
+                "VEHICLE"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (2 deploy counters).\n<b>Action</b>: Exhaust The Behemoth, remove 1 deploy counter from it, and discard an ally you control \u2192 search your collection or deck for a S.H.I.E.L.D. ally and put it into play."
+        },
+        {
+            "card_id": "dt118",
+            "type": "Support",
+            "name": "* The Peak",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.W.O.R.D."
+            ],
+            "set_name": "Determination",
+            "text": "<b>Response</b>: After you remove an all-purpose counter from a card you control, place it here (to a maximum of 6 counters here).\n<b>Action</b>: Discard The Peak and 1 card from your hand \u2192 deal 1 damage to the villain and remove 1 threat from a scheme for each counter discarded this way."
+        },
+        {
+            "card_id": "dt119",
+            "type": "Support",
+            "name": "Tech Support",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "S.H.I.E.L.D.",
+                "TECH"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (2 stimulant counters).\n<b>Response</b>: After you remove an all-purpose counter from a card you control, exhaust Tech Support and remove a stimulant counter from it \u2192 ready a S.H.I.E.L.D. character or PERSONA support."
+        },
+        {
+            "card_id": "dt120",
+            "type": "Upgrade",
+            "name": "Jury Rigged Tech",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "PREPARATION",
+                "TECH"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Interrupt</b>: When a boost card is turned faceup, discard Jury Rigged Tech and the top card of your deck \u2192 if that card's printed cost is greater than X, where X is the number of icons ([star] and [boost]) on the boost card, place a total of X all-purpose counters on cards you control. Then, discard the boost card."
+        },
+        {
+            "card_id": "dt121",
+            "type": "Upgrade",
+            "name": "Radioactive Burst",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "GAMMA",
+                "PREPARATION",
+                "TECHNIQUE"
+            ],
+            "set_name": "Determination",
+            "text": "You get -1 hit point.\n<b>Hero Response</b>: After you change form, discard Radioactive Burst \u2192 resolve this card's \u00ab <b>Special</b> \u00bb ability.\n<b>Special</b>: Deal damage to an enemy equal to your ATK. If 3 or more damage was dealt this way, stun that enemy."
+        },
+        {
+            "card_id": "dt122",
+            "type": "Ally",
+            "name": "* Spiders-Man",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "0*",
+                "ATK": "1",
+                "THW": "1",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "SPIDERS",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (5 spider counters). Fragile.\n[star] Spiders-Man cannot leave play while he has 1 or more spider counters.\n<b>Forced Interrupt</b>: When Spiders-Man uses a basic power, remove 1 or more spider counters from here \u2192 deal 1 damage to an enemy for each counter removed this way."
+        },
+        {
+            "card_id": "dt123",
+            "type": "Ally",
+            "name": "* Ralph",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AERIAL",
+                "BIRD"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Interrupt</b>: When your hero attacks an enemy, attach Ralph to that enemy and look at 2 cards from among the top of the encounter deck and encounter cards dealt to players \u2192 that attack gains piercing and deals X additional damage to both that enemy and Ralph, where X is the number of boost icons ([boost]) looked at this way."
+        },
+        {
+            "card_id": "dt124",
+            "type": "Upgrade",
+            "name": "Target Painted",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Play only if your identity has the SOLDIER trait. Attach to a minion. Max 1 per minion.\nAttacks against attached minion gain ranged and deal 1 additional damage for each card attached to that minion."
+        },
+        {
+            "card_id": "dt125",
+            "type": "Ally",
+            "name": "* Night Thrasher",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "NEW WARRIOR"
+            ],
+            "set_name": "Determination",
+            "text": "Night Thrasher enters play exhausted.\nRetaliate 2.\n<b>Response</b>: After you flip a card you control, ready Night Thrasher."
+        },
+        {
+            "card_id": "dt126",
+            "type": "Ally",
+            "name": "* Rage",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "NEW WARRIOR"
+            ],
+            "set_name": "Determination",
+            "text": "Rage enters play exhausted.\n[star] Rage gets +X ATK, where X is equal to the villain's stage number."
+        },
+        {
+            "card_id": "dt127",
+            "type": "Event",
+            "name": "Collective Breather",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Max 1 per round.\n<b>Hero Action</b>: Heal 2 damage from each damaged enemy \u2192 ready a friendly character for each enemy healed this way."
+        },
+        {
+            "card_id": "dt128",
+            "type": "Support",
+            "name": "* MRVL Network",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Determination",
+            "text": "Uses (3 replay counters).\n<b>Response</b>: After an enemy takes damage during the villain phase, remove 1 replay counter from here \u2192 ready a character you control."
+        },
+        {
+            "card_id": "dt129",
+            "type": "Upgrade",
+            "name": "Determined Conditioning",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 per player.\nYou get +3 hit points, and your hero gets -1 DEF and gains retaliate 1."
+        },
+        {
+            "card_id": "dt130",
+            "type": "Upgrade",
+            "name": "Timed Detonation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to an enemy. Max 1 per enemy.\n<b>Forced Interrupt (Hero)</b> <i>(attack)</i>: When the villain phase ends, flip to alter-ego form and remove Timed Detonation from the game \u2192 deal 6 damage to attached enemy. This attack gains ranged and overkill."
+        },
+        {
+            "card_id": "dt131",
+            "type": "Ally",
+            "name": "* Speedball",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "AVENGER",
+                "NEW WARRIOR"
+            ],
+            "set_name": "Determination",
+            "text": "Speedball enters play exhausted.\n<b>Response</b>: After you ready Speedball, place 1 ball counter on him (to a maximum of 2). Reduce the amount of damage Speedball takes from enemy attacks by 1 for each ball counter on him."
+        },
+        {
+            "card_id": "dt132",
+            "type": "Resource",
+            "name": "Enraged Energy",
+            "subtitle": "",
+            "desc": {
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [],
+            "set_name": "Determination",
+            "text": "Double the number of resources this card generates while your hero's remaining hit points are less than half your hero's starting hit points."
+        },
+        {
+            "card_id": "dt133",
+            "type": "Ally",
+            "name": "* Orka",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATLANTIS",
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Increase the cost to play this card by 1 if you do not control any HERO FOR HIRE characters.\n[star] Orka gets +1 ATK for each character with the fragile keyword you control or are engaged with."
+        },
+        {
+            "card_id": "dt134",
+            "type": "Ally",
+            "name": "* Paladin",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "0*",
+                "THW": "0*",
+                "RES": "R",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE"
+            ],
+            "set_name": "Determination",
+            "text": "Villainous.\n[star] <b>Forced Interrupt</b>: When Paladin attacks an enemy with 1 or more determination <i>(purple)</i> upgrades attached, give him 1 additional boost card for that attack."
+        },
+        {
+            "card_id": "dt135",
+            "type": "Ally",
+            "name": "* Tarantula",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "HERO FOR HIRE",
+                "MARTIAL ARTIST"
+            ],
+            "set_name": "Determination",
+            "text": "Fragile. Tarantula gains a [boost] icon for each damage token here.\n<b>Forced Response</b>: After Tarantula thwarts a side scheme or attacks a minion and does not exactly defeat it, she takes 1 additional consequential damage."
+        },
+        {
+            "card_id": "dt136",
+            "type": "Event",
+            "name": "Leverage Impediments",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2*",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Determination",
+            "text": "[star] Discount 1 (MARTIAL ARTIST).\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Deal 1 additional damage to that enemy for each card attached to it. If this attack exactly defeats that enemy, heal 2 damage from your identity."
+        },
+        {
+            "card_id": "dt137",
+            "type": "Event",
+            "name": "Calculated Action",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Determination",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal X damage to an enemy and remove Y threat from a scheme, where the total of X + Y is equal to 6. If a card was exactly defeated this way, ready your hero. Otherwise, take 1 damage."
+        },
+        {
+            "card_id": "dt138",
+            "type": "Upgrade",
+            "name": "Assessed for Weakness",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Determination",
+            "text": "Attach to a minion.\nAttached minion gains fragile.\n<b>Interrupt</b>: When you would deal any amount of damage to attached minion, choose to either increase or decrease that amount by 1."
+        },
+        {
+            "card_id": "dt139",
+            "type": "Upgrade",
+            "name": "Flummoxed",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2*",
+                "RES": "B",
+                "Class": "Determination"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Determination",
+            "text": "[star] If your remaining hit points are less than half your maximum hit points, reduce the cost of this card by 1.\nAttach to an ally or non-ELITE minion.\nTreat attached character's printed text box as blank <i>(except for TRAITS)</i>."
+        },
+        {
+            "card_id": "dt140",
+            "type": "Upgrade",
+            "name": "Path of Mercy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ETHOS"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 ETHOS card per player.\n<b>Hero Response</b>: After you attack a minion, if that minion has exactly 1 hit point remaining, draw 1 card. Then, if you are the only player in this game, discard that minion."
+        },
+        {
+            "card_id": "dt141",
+            "type": "Upgrade",
+            "name": "Path of Penance",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ETHOS"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 ETHOS card per player.\n<b>Hero Response</b>: After you attack a minion, if that attack dealt any amount of excess damage, take that amount of damage \u2192 for each damage taken this way, choose a player to draw 1 card. <i>(Limit once per player per minion.)</i>"
+        },
+        {
+            "card_id": "dt142",
+            "type": "Upgrade",
+            "name": "Path of Temperance",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "Class": "Determination"
+            },
+            "traits": [
+                "ETHOS"
+            ],
+            "set_name": "Determination",
+            "text": "Play under any player's control. Max 1 ETHOS card per player.\n<b>Hero Response</b>: After you attack a minion, if that attack exactly defeated that minion, each player may discard 1 card from their hand and draw 1 card."
         }
     ],
-    "checksum": "0aa2ab512f3d8cd5dae7aafc8cc8472e324a94442dfc9f766ee46c0ab4693e90"
+    "checksum": "65b316caa5dc075a2daaf8a1bd89a287f07be197da5521fd3bfe30912c09724c"
 }

@@ -106,3 +106,31 @@ def Drain(source: 'CardFace', cibles: Sequence['CardFace'], valeur: int,
     player = effect.GetInitiator()
     if player is not None:
         source.HealthUnits([player.GetIdentity()], valeur, effect)
+
+
+def AliasReduitLeCout() -> 'Ability':
+    """« Alias. (Si vous controlez une carte au meme sous-titre, defaussez-la et
+    jouez celle-ci gratuitement.) »
+
+    Quatre cartes de l'aspect le portent (dt100, dt105, dt106, dt107). Le moteur
+    sait reduire un cout sous condition ; c'est la defausse SIMULTANEE qu'il ne
+    sait pas exiger. APPROXIMATION, ecrite ici une fois : le cout tombe a zero
+    quand la carte homonyme est en jeu, et le joueur la defausse lui-meme.
+    """
+    def controle_un_homonyme(effect: 'Effect', message: 'Message.WhenCalculateEffectCost') -> bool:
+        this = effect.this
+        initiator = effect.GetInitiator()
+        if initiator is None:
+            return False
+        sous_titre = this.paper.subtitle
+        if not sous_titre:
+            return False
+        for face in initiator.GetControlCards():
+            if face is not this and face.paper.subtitle == sous_titre:
+                return True
+        return False
+
+    return AbilityFactory.ReduceCostToPlayThis(
+        lambda effect: effect.this.printed_cost,
+        conditions=[controle_un_homonyme]
+    )
