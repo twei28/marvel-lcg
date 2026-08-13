@@ -13,12 +13,15 @@ def GetAbilities() -> Sequence['Ability']:
 
     return [
         Fragile(),
-        # ECART ASSUME, ET NON SIMULE. « Tarantula gagne une icone [wild] par
-        # jeton de degat sur elle » : `have_res_icon` n'existe que pour une
-        # carte qui accorde une icone a UNE AUTRE (GiveKeywordToAttached), pas
-        # pour une carte qui se l'accorde a elle-meme, et rien ne donne une
-        # icone PAR JETON. La ligne n'est donc pas implementee plutot que rendue
-        # de travers : le reste de la carte fonctionne.
+        # « une icone [wild] PAR JETON de degat sur elle » : `ThisGainKeyword`
+        # accepte desormais `have_res_icon` (CORRECTIF moteur), et son
+        # `check_fn` rend le NOMBRE de fois ou le gain s'applique — donc une
+        # icone par jeton, exactement.
+        AbilityFactory.ThisGainKeyword(
+            lambda effect, ui: effect.this.CastTo(CanHealth).sustained,
+            have_res_icon="G",
+            change_on_event=OnEvent.Health("This"),
+        ),
         AbilityFactory.AfterUnitAttackUnit(
             AbilityType.ForcedResponse,
             "This",

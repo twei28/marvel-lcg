@@ -10,10 +10,10 @@ def GetAbilities() -> Sequence['Ability']:
         player = this.GetControlByPlayer()
         if player is None:
             return
-        # « jusqu'a la fin de la PARTIE » : le moteur n'a pas de duree pareille
-        # pour un gain temporaire. Un gain permanent pose sur le heros est ce
-        # qui s'en approche — il disparait avec lui, pas avant.
-        player.GetHero().GainKeywordPermanently(effect, attack=1)
+        # « jusqu'a la fin de la PARTIE » : un gain DURABLE, pose une fois et
+        # jamais repris — c'est `Gain` (precedent mw023.py:25). Les
+        # `GainUntil...End` du moteur expirent tous trop tot.
+        player.GetHero().Gain(effect, 1, attack=1)
 
     return [
         Fragile(),

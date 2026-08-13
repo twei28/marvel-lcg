@@ -8,14 +8,12 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Support)
         Unused(this)
 
-        # « votre collection OU votre deck » : le moteur ne connait pas de
-        # collection, la recherche se fait dans le deck et la defausse.
+        # « votre collection ou votre deck » : la collection d'abord, puisque
+        # `Search.Collection` la couvre entierement (elle lit la base du jeu).
         initiator = effect.GetInitiator()
-        face = Search.PlayerCard(effect, initiator,
-                                 include_player_deck=True,
-                                 include_discard_pile=True,
-                                 may=True,
-                                 finder=CardFinder(trait="S.H.I.E.L.D.", card_type=Ally))
+        face = Search.Collection(effect, initiator,
+                                 trait="S.H.I.E.L.D.", card_type=Ally,
+                                 card_classes="Any")
         if face:
             face.CastTo(Ally).PutIntoPlay(initiator, effect)
 

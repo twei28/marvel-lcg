@@ -400,6 +400,12 @@ class AbilityFactoryEnhanceSelf:
                         acceleration_icon: int|None=None,
                         hazard: int|None=None,
                         control_additional_restricted: 'CardFinder|None'=None,
+                        # CORRECTIF : une carte qui se donne a ELLE-MEME une icone de
+                        # ressource. `unit.Gain` sait deja le faire (face_gain.py:259) et
+                        # `GiveKeywordToAttached` le proposait ; seul le passage manquait
+                        # ici. Sans lui, dt135 (Tarantula, pack custom determination) ne
+                        # pouvait pas gagner son icone [wild].
+                        have_res_icon: "Resources.RBYG|None"=None,
                         change_on_event: EventType=OnEvent.NONE,
                         ) -> 'Ability':
         def process(effect: 'Effect', unit: 'CardFace', diff: int, curr: int) -> None:
@@ -436,6 +442,7 @@ class AbilityFactoryEnhanceSelf:
                 acceleration_icon=acceleration_icon,
                 hazard=hazard,
                 control_additional_restricted=control_additional_restricted,
+                have_res_icon=have_res_icon,  # CORRECTIF : voir la signature
             )
 
         from game.ability.factory.enhance_self_helper import ThisGainKeywordInternal

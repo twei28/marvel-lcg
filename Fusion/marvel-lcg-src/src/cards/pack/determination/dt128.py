@@ -11,7 +11,8 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.ReadyAll(effect.targets, effect)
 
     def check_phase_du_mechant(effect: 'Effect', message: 'Message.AfterUnitTookDamage') -> bool:
-        return Worlds.GetPhase(effect) == "Villain"
+        # La phase se lit par son objet, pas par une chaine (48014).
+        return Worlds.Phase(effect).IsVillainPhase()
 
     return [
         AbilityFactory.AfterUnitTookDamage(

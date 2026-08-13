@@ -4,14 +4,10 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    # APPROXIMATION ECRITE, et c'est la plus large de l'aspect.
-    #
-    # La carte dit « choisissez 3 cartes d'aspect non-Determination DE VOTRE
-    # COLLECTION ». Une collection n'existe pas dans le moteur : il ne connait
-    # que les cartes du deck et celles du scenario. Les trois cartes mises de
-    # cote sont donc prises DANS VOTRE DECK, ce qui garde l'esprit (piocher
-    # hors du hasard, une fois par partie) sans inventer une zone que le jeu
-    # n'a pas.
+    # `Search.Collection` cherche dans TOUTE la base de cartes du jeu (44009,
+    # Armed to the Teeth, en vit). Et `card_classes="Any"` vaut exactement
+    # « n'importe quel aspect SAUF Determination » : la liste du moteur nomme
+    # les cinq aspects officiels. C'est mot pour mot ce que demande la carte.
     def mise_en_place(effect: 'Effect', message: 'Message.WhenGameWouldBegin') -> None:
         this = effect.this.CastTo(Upgrade)
 
@@ -19,13 +15,7 @@ def GetAbilities() -> Sequence['Ability']:
         if player is None:
             return
         for _ in range(3):
-            face = Search.PlayerCard(
-                effect, player,
-                include_player_deck=True,
-                include_discard_pile=False,
-                may=True,
-                finder=CardFinder(non_card_class="Determination"),
-            )
+            face = Search.Collection(effect, player, card_classes="Any")
             if face is None:
                 break
             this.TuckCardUnderHere(face, effect)

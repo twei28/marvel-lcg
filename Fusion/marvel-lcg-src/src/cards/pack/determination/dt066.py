@@ -20,10 +20,14 @@ def GetAbilities() -> Sequence['Ability']:
                 initiator.GainCard(face, effect)
 
         def reduire_le_cout(targets: Sequence['CardFace']) -> None:
+            # « la PROCHAINE amelioration Bounty jouee ce tour » : la reduction
+            # vise une AUTRE carte que celle-ci, d'ou ReduceCostToPlayFaceWhen
+            # et non ReduceCostToPlayThis.
             initiator.effect.RegisterTemp(
-                AbilityFactory.ReduceCostToPlayCard(
-                    1,
+                AbilityFactory.ReduceCostToPlayFaceWhen(
                     CardFinder(name="Bounty"),
+                    1,
+                    "You",
                 ),
                 unregister_after_exec=True,
                 until_turn_end=True,
