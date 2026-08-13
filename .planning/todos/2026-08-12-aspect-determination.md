@@ -481,3 +481,49 @@ la chaîne). Passé sur **les 85 packs du jeu : zéro signalement**.
    le coût variable `X` (dt083), les deux coûts à étoile, les quatre cartes sans
    icône de ressource imprimée.
 4. **Le juge qui manque toujours** : une partie menée avec un deck Determination.
+
+
+## 11. Où en est le chantier (13/08/2026, fin de soirée)
+
+**100 cartes sur 142 fonctionnent.** Cinq lots livrés, chacun vérifié et commité :
+dt001-dt020, dt021-dt040, dt041-dt060, dt061-dt080, dt081-dt100.
+
+`test_generate_cards` préfixe `dt` : **100 générées, 0 échec**. `test_cards` :
+**4289 ok, 0 erreur**. Dans un vrai navigateur, les cartes sont proposées à
+l'éditeur de deck et leurs images se chargent.
+
+### 11.1 Les cinq mots-clés de l'aspect sont TOUS traités
+
+| Mot-clé | Verdict | Où |
+|---|---|---|
+| `Fragile` | **crochet officiel** (33032, Marked) | `__init__.py` |
+| `all-purpose counter` | **crochet officiel** (`GetCounters('all-purpose')`) | — |
+| `Reckless` | pas de crochet, joué tel qu'écrit | `__init__.py` |
+| `Alias` | pas de crochet, approximation écrite | dt100 |
+| `Alliance` | ne fait rien par lui-même, rien à écrire | dt061 |
+
+Deux des cinq avaient donc déjà leur crochet dans le moteur, contre l'attente du
+relevé du 13/08.
+
+### 11.2 Ce qui reste : dt101 à dt142 (42 cartes)
+
+* **dt101 à dt106 sont relues en pleine page** ; les 36 autres restent au niveau
+  `inventaire` et doivent être relues avant qu'on écrive leur module.
+* La relecture a déjà corrigé un défaut : **dt102 porte une menace de départ de
+  1 PAR JOUEUR**, ce que la planche de six ne montrait pas.
+* Répartition du reste : 16 alliés, 11 améliorations, 9 événements, 4 supports,
+  1 manigance annexe de joueur, 1 ressource.
+* Points connus dans ce tronçon : le compteur `configuration` de Darkhawk
+  (dt101), plusieurs cartes `Alias` (dt105, dt106), et les trois dernières
+  cartes sans icône de ressource imprimée (dt140, dt141, dt142).
+
+### 11.3 Ce que ce tronçon a appris, et qui vaut pour la suite
+
+**Une manigance annexe de joueur se déclare `PlayerSideScheme`**, et son `desc`
+a besoin de `StartingThreat` et `Victory` — sans quoi la génération tombe sur
+`KeyError('Cost')`. Le relevé disait `SideScheme` pour dt096 et dt102 : les deux
+sont corrigées.
+
+**Un Event ou un Upgrade n'accepte qu'UNE capacité Play.** dt087 en avait deux
+et la génération l'a refusée. C'est la troisième fois que `test_generate_cards`
+attrape ce que `test_cards` laisse passer.
