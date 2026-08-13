@@ -64,6 +64,10 @@ const ASPECTS = {
     protection: "#35a865",
     basic: "#9aa0aa",
     pool: "#a34ad9",
+    // Meme mauve que le lisere des cartes Determination sur le plateau et que
+    // sa pastille dans l'editeur de deck : un aspect, une couleur, partout.
+    // Sans cette ligne la pastille tombait sur le gris de repli (#555).
+    determination: "#965cc4",
 };
 const MODES = [
     { id: "solo", label: "Solo", desc: t("1 héros"), players: 1, fixed: true, mark: "1" },

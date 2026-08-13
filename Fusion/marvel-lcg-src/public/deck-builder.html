@@ -87,6 +87,9 @@
     .aspect-leadership { --c-aspect: #4a9de0; }
     .aspect-protection { --c-aspect: #55c069; }
     .aspect-pool { --c-aspect: #e04ac7; }
+    /* Même mauve que le liseré des cartes Détermination sur le plateau
+       (ui-app/src/board/board.css) : une seule couleur pour cet aspect. */
+    .aspect-determination { --c-aspect: #965cc4; }
     .aspect-basic { --c-aspect: #a7b2c2; }
     .aspect-campaign { --c-aspect: #b08d4a; }
     .db-chip[class*="aspect-"] { border-left: 4px solid var(--c-aspect, var(--bord)); }
@@ -107,7 +110,11 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         transition: transform 120ms ease;
     }
-    .db-carte img:hover { transform: scale(1.6); z-index: 5; position: relative; }
+    /* Le survol ne grossit plus la vignette SUR PLACE : elle recouvrait ses
+       voisines et restait trop petite pour lire un texte de carte. C'est le
+       panneau de droite qui montre la carte en grand (#db-apercu). Ici, on se
+       contente de dire laquelle est pointée. */
+    .db-carte img:hover { outline: 2px solid var(--or); }
     .db-carte.est-choisie img { outline: 3px solid var(--or); }
     .db-carte-pied { display: flex; align-items: center; gap: 5px; padding: 4px 2px 0; font-size: 0.7rem; }
     .db-carte-pied b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -125,6 +132,36 @@
         background: rgba(10, 12, 16, 0.85); border: 1px solid var(--bord); border-radius: 6px; cursor: pointer;
     }
     .db-carte-boutons button:disabled { opacity: 0.35; }
+
+    /* Aperçu de la carte pointée.
+       Il vit EN HAUT du panneau de droite et y reste collé pendant qu'on fait
+       défiler le deck : on compare une carte à la liste sans perdre l'une des
+       deux. La place est réservée en permanence (--h-apercu) pour que le
+       panneau ne saute pas à chaque survol. */
+    #db-apercu {
+        position: sticky; top: 0; z-index: 2;
+        display: grid; place-items: center;
+        /* Assez haut pour qu'une carte PORTRAIT tienne en entier a la largeur
+           du panneau (ratio 225/326), plafonne pour qu'il reste de la place a
+           la liste du deck sur un ecran bas. */
+        height: min(calc((380px - 26px) * 326 / 225), 52dvh);
+        margin: 0 0 10px;
+        background: rgba(0, 0, 0, 0.25); border: 1px solid var(--bord); border-radius: 10px;
+        overflow: hidden;
+    }
+    #db-apercu img {
+        /* `min-*: 0` D'ABORD : un élément de grille a un plancher implicite à sa
+           taille intrinsèque (min-height: auto), et sans le lever l'image
+           imposait ses 510 px de haut à une zone qui en fait 374 — mesuré.
+           `object-fit` ensuite : une manigance est en paysage, et c'est ce qui
+           la fait tenir sans la déformer ni la rogner. */
+        min-width: 0; min-height: 0;
+        width: 100%; height: 100%; object-fit: contain;
+        border-radius: 8px; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
+    }
+    #db-apercu .db-apercu-vide {
+        padding: 0 18px; font-size: 0.76rem; color: var(--sourdine); text-align: center;
+    }
 
     /* Panneau deck */
     .db-deck-tete { display: grid; gap: 2px; margin-bottom: 8px; }
@@ -190,6 +227,7 @@
         <div id="db-grille"></div>
     </section>
     <aside class="db-panneau">
+        <figure id="db-apercu"></figure>
         <div id="db-deck"></div>
     </aside>
 </main>

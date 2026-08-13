@@ -308,6 +308,7 @@ export const DICO_EN_BASE = {
     "Jouer un puzzle : position imposée à résoudre": "Play a puzzle: a set position to solve",
 
     /* ---- Deck builder (js/deckbuilder/app.js + deck-builder.html) ---- */
+    "Survole une carte pour la voir en grand": "Hover a card to see it full size",
     "Allié": "Ally",
     "Événement": "Event",
     "Soutien": "Support",
