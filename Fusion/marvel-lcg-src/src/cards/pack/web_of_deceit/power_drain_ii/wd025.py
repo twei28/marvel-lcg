@@ -14,7 +14,11 @@ def GetAbilities() -> Sequence['Ability']:
         if not cartes:
             return
         choisie = joueur.AskChooseFace(cartes, effect, prompt="Attach to Electro")
-        Faces.AttachAllTo([choisie or cartes[0]], this, effect)
+        # La carte attachee est une carte JOUEUR quelconque (celle qui porte une
+        # ressource [energy] imprimee) : elle n'est pas un `Asset2` et ne sait
+        # donc pas s'attacher. Elle est POSEE sous le sbire, la ou la capacite
+        # du dessus va la compter (`GetPlacedCardArea`).
+        this.TuckCardUnderHere(choisie or cartes[0], effect)
 
     return [
         # « Electro gets +1 hit point for each [energy] resource attached to

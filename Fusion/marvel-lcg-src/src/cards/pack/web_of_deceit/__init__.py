@@ -87,7 +87,7 @@ def MettreVoteForFiskEnJeu(effect: 'Effect') -> None:
         effect,
         joueur,
         include_set_aside=True,
-        card_id=nom,
+        card_ids=[nom],
     )
     if carte:
         carte.PutIntoPlay(joueur, effect)

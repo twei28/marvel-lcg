@@ -26,7 +26,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
         if sbire:
             sbire.PutIntoPlay(joueur, effect)
-            Faces.AttachAllTo([this], sbire, effect)
+            this.AttachTo2(sbire, effect)
 
     return [
         AbilityFactory.WhenThisRevealed(

@@ -19,7 +19,7 @@ def GetAbilities() -> Sequence['Ability']:
         sbires = sorted(sbires, key=lambda x: x.printed_health)
         sbire = sbires[-1]
         sbire.PutIntoPlay(joueur, effect)
-        Faces.AttachAllTo([this], sbire, effect)
+        this.AttachTo2(sbire, effect)
 
     def sbire_vaincu(effect: 'Effect', message: 'Message.WhenUnitWouldBeDefeated') -> None:
         # « When attached minion is defeated, shuffle it into the encounter deck

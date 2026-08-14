@@ -23,4 +23,4 @@ def RetournerShocker(effect: 'Effect', this: 'EncounterVillain', menace: int) ->
     this.ResetHealth(effect)
     this.card.Flip(effect)
     nouvelle = this.card.face.CastTo(Villain)
-    nouvelle.ResetHealth(GameRule(nouvelle))
+    nouvelle.ResetHealth(effect)
