@@ -10,9 +10,13 @@ def GetAbilities() -> Sequence['Ability']:
         effect.GetInitiator().DrawUp(1, effect)
 
     return [
-        AbilityFactory.WhenUnitMakeAttack(
+        # ⚠ « against YOU » : sans `against_player`, le Spider-Sense sonnait
+        # aussi quand le vilain frappait un AUTRE joueur. Sans effet en solo,
+        # faux des qu'on est deux.
+        AbilityFactory.WhenUnitWouldAttack(
             AbilityType.HeroInterrupt,
             Villain,
-            alerte
+            alerte,
+            against_player="You",
         ),
     ]

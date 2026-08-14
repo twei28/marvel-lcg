@@ -13,9 +13,14 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.ReadyAll([joueur.GetIdentity()], effect)
 
     return [
-        AbilityFactory.AfterUnitThwartAndRemoveLastThreat(
+        # ⚠ Le texte dit « thwarts and REMOVES THREAT », pas « removes the LAST
+        # threat » : le premier jet avait pris la fabrique du dernier pion, et la
+        # carte ne se declenchait qu'en achevant une manigance.
+        AbilityFactory.AfterUnitThwartScheme(
             AbilityType.Response,
             "YourHero",
-            fuir
+            Scheme2,
+            fuir,
+            remove_threat=True,
         ).SetPlay(),
     ]

@@ -1222,3 +1222,53 @@ compte cinq, « Vulture » trois).
 **20 parties sur les cinq scénarios, normal et expert : ZÉRO bloquée, ZÉRO
 traceback.** C'est la première fois que la campagne entière passe sans un seul
 incident.
+
+---
+
+## 27. LA REVUE DES 50 CARTES DE TALENTS — TROIS DÉFAUTS DE PLUS (14/08/2026)
+
+Même méthode que le §26, appliquée aux `wd112`–`wd161` : les textes passés au
+crible sur les mots qui portent une condition ou une portée, puis relus contre
+leur module. En prime, une comparaison automatique des **nombres** du texte et de
+ceux du code (les cinq écarts relevés étaient tous des valeurs de `desc` —
+compteurs d'utilisation, Victory — donc justes).
+
+**Quarante-sept sur cinquante sont justes.** Trois ne l'étaient pas, et **aucune
+n'aurait été trouvée par un outil** : les trois se génèrent, leurs appels
+existent, leur texte correspond à la donnée.
+
+### `wd121` Master Weaver — portée trop ÉTROITE
+
+> **Each** WEB-WARRIOR ally gets +1 hit point for each boost icon tucked under them.
+
+Le premier jet avait mis `control_by="You"`. **La différence est dans le texte** :
+Web-Warriors (`wd117`) écrit « each of **your** WEB-WARRIOR allies », Master
+Weaver écrit « **each** WEB-WARRIOR ally ». Le Tisserand tisse pour toute la
+table, pas seulement pour son porteur.
+
+### `wd133` Spider-Sense — portée trop LARGE
+
+> **Hero Interrupt**: When the villain initiates an attack **against you**, draw 1 card.
+
+`WhenUnitMakeAttack` ne porte pas la clause « contre vous » ; la carte sonnait
+aussi quand le vilain frappait un autre joueur. Sans effet en solo, **faux dès
+qu'on est deux**. C'est `WhenUnitWouldAttack(..., against_player="You")`.
+
+### `wd145` Flee the Scene — condition trop RESTRICTIVE
+
+> **Response**: After your hero thwarts and **removes threat** from a scheme…
+
+Le premier jet appelait `AfterUnitThwartAndRemoveLastThreat` : la carte ne se
+déclenchait qu'en **achevant** une manigance, là où le texte se contente d'un
+pion retiré. C'est `AfterUnitThwartScheme(..., remove_threat=True)`.
+
+### Ce que ces trois-là disent de la méthode
+
+Les deux défauts du §26 étaient des portées trop larges ; ceux-ci ajoutent une
+portée trop étroite et une condition trop stricte. **Le point commun n'est pas le
+sens de l'erreur, c'est la source** : à chaque fois, un mot du texte anglais —
+`your`, `against you`, `the last` — que le module n'a pas rendu.
+
+**Mesure** : `test_cards` 4515 ok / 0 erreur, `verifier_appels_modules` OK, les
+trois cartes portent leurs capacités, et **9 parties avec les 50 talents dans le
+deck** (Rhino, Shocker, Kingpin) — zéro incident, zéro traceback.

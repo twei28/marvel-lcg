@@ -23,9 +23,13 @@ def GetAbilities() -> Sequence['Ability']:
         return total
 
     return [
+        # ⚠ « EACH WEB-WARRIOR ally », pas « each of YOUR ». La difference est
+        # dans le texte, et elle compte : Web-Warriors (`wd117`) ecrit bien
+        # « each of your WEB-WARRIOR allies », Master Weaver non. Le premier jet
+        # avait mis `control_by="You"` sur les deux — le Tisserand ne nourrissait
+        # que ses propres allies, alors qu'il tisse pour toute la table.
         *AbilityFactory.GiveKeywordToInPlayWhenApplyThis(
             CardFinder(trait="WEB-WARRIOR", card_type=Ally),
-            control_by="You",
             get_new_value=icones_glissees,
             health=1,
             change_on_event=OnEvent.PlacedCard(None),
