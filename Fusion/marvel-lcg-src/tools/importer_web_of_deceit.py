@@ -191,6 +191,18 @@ IMAGES = {
     "wd034": "Campaign Setup Cards/expert-mode-hobgoblin-minion",
 }
 
+# Les cartes PAYSAGE dont le fichier source est stocke debout.
+#
+# ⚠ Ripper3 exporte TOUTES ses cartes en 1000x1433, y compris les complots et
+# les manigances, qui sont des cartes paysage tournees d'un quart de tour. Sans
+# cette table, `im.width > im.height` est faux et la carte entre dans le jeu en
+# 600x840 avec son texte a la verticale — c'est ce qui est arrive au lot 1.
+PAYSAGE = {
+    "wd002a", "wd002b", "wd003a", "wd003b", "wd004a", "wd004b",  # complots Shocker
+    "wd011", "wd015",                                            # manigances Shocker
+    "wd020",                                                     # Power Drain II
+}
+
 
 def ecrire_images(source: str) -> None:
     """Ecrit assets/pics/wdXXX.jpg depuis les cartes telechargees."""
@@ -207,6 +219,8 @@ def ecrire_images(source: str) -> None:
             manquants.append(carte)
             continue
         im = Image.open(origine).convert("RGB")
+        if carte in PAYSAGE:
+            im = im.rotate(90, expand=True)
         largeur, hauteur = (840, 600) if im.width > im.height else (600, 840)
         im.resize((largeur, hauteur), Image.LANCZOS).save(
             os.path.join(sortie, carte + ".jpg"), "JPEG", quality=90)

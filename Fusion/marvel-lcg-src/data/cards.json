@@ -73360,7 +73360,7 @@
             "name": "Look Who Finally Showed",
             "subtitle": "",
             "desc": {
-                "StartingThreat": "7*",
+                "StartingThreat": "1*",
                 "TargetThreat": "6*",
                 "EscalationThreat": "1*",
                 "Stage": "2B"
@@ -73846,5 +73846,5 @@
             "text": "<b>When Revealed</b>: Take 2 indirect damage. Shuffle each TECH attachment in the encounter discard pile into the encounter deck."
         }
     ],
-    "checksum": "6aff56e4a96510e6ec416dc565eb02c806849b5b5f0b96f2469356671190e738"
+    "checksum": "362b9e6e53c511285d06d402f59abdd47fcc50d4467549a6919bf6d2c0328d7c"
 }
