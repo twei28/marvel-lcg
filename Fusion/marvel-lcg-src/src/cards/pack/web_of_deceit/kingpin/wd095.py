@@ -29,7 +29,8 @@ def GetAbilities() -> Sequence['Ability']:
 
         # Le costume n'est pas une unite : ses degats sont des JETONS poses
         # dessus par sa propre interruption. On les lui retire donc un a un.
-        costume = Worlds.FindCardOnField(effect, name="Kingpin's Suit")
+        costume = Worlds.FindCardOnField(
+            effect, name="Kingpin's Suit", card_type=Attachment)
         if costume:
             Faces.RemoveCountersOn([costume], combien, 'damage', effect)
 

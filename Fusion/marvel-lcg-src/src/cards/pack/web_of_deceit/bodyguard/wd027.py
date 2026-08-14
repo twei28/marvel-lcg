@@ -9,7 +9,12 @@ def GetAbilities() -> Sequence['Ability']:
 
         joueur = message.GetToPlayer()
 
-        if Worlds.FindCardOnField(effect, name="Bodyguard"):
+        # ⚠ DEUX CARTES DE CE PACK S'APPELLENT « Bodyguard » : l'attachement
+        # (wd026) et le sbire (wd028). Sans le filtre de type, le SBIRE en jeu
+        # faisait croire que l'attachement l'etait — la traitrise deferlait au
+        # lieu de balayer les sbires et de chercher l'attachement. Le texte, lui,
+        # ne parle que de « the Bodyguard ATTACHMENT ».
+        if Worlds.FindCardOnField(effect, name="Bodyguard", card_type=Attachment):
             # « Otherwise, this card gains surge. »
             ThisCardGainSurge(effect)
             return

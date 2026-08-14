@@ -1183,3 +1183,42 @@ phase du joueur.
 texte correspond à la donnée, et une partie ne dit pas qu'une riposte s'est
 déclenchée au mauvais moment. **C'est une lecture du texte contre le code qui l'a
 sortie** — la même méthode qui avait donné les six réimpressions du lot 4.
+
+### La revue des 21 cartes « pareilles » — un second défaut, même famille
+
+La riposte inversée appelait une question : **combien d'autres cartes du pack ont
+une clause conditionnelle mal rendue ?** Les 176 cartes ont été passées au crible
+sur les mots qui trahissent une condition (`unless`, `otherwise`, `without`,
+`while`, `instead of`, `If you cannot`) : **21 cartes**, relues une à une contre
+leur module.
+
+**Dix-neuf sont justes.** `wd008` (Vulture de Shocker : ne défausse pas si
+l'identité est AERIAL), `wd041` (Grounded), `wd059`, `wd061`, `wd074`–`wd076`
+(le « cannot be attacked unless AERIAL » du scénario #4, dans le bon sens),
+`wd098`, `wd107`, `wd114`, `wd150`…
+
+**Une était fausse : `wd027` « He's Mine! »** — et c'est **le même défaut de
+portée** que la riposte.
+
+> **When Revealed**: If the **Bodyguard ATTACHMENT** is not in play, discard each
+> non-ELITE minion engaged with you… Otherwise, this card gains surge.
+
+Le module cherchait `name="Bodyguard"` **sans filtrer le type**. Or **deux cartes
+de ce pack portent ce nom** : l'attachement `wd026` et le sbire `wd028`. Quand le
+SBIRE était en jeu, la traîtrise croyait l'attachement présent et **déferlait au
+lieu d'agir** — elle ne balayait pas les sbires et ne cherchait pas
+l'attachement.
+
+Le pire : la ligne SUIVANTE du même module filtre bien
+(`ChercherEtReveler(..., card_type=Attachment)`). L'incohérence était visible à
+l'œil, invisible à tous les outils.
+
+`Kingpin's Suit` a reçu le même filtre par précaution — un seul porteur
+aujourd'hui, mais le pack a déjà prouvé qu'il aime les homonymes (« Electro » en
+compte cinq, « Vulture » trois).
+
+### Mesure après les deux corrections
+
+**20 parties sur les cinq scénarios, normal et expert : ZÉRO bloquée, ZÉRO
+traceback.** C'est la première fois que la campagne entière passe sans un seul
+incident.
