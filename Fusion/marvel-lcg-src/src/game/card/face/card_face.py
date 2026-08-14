@@ -161,6 +161,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # Les « pigeon » vivent sur le complot principal du scenario Vulture :
         # ils remplacent la menace qu'on voudrait retirer, trois pour trois.
         'formula', 'sanity', 'pigeon',
+        # Les Spider-Bots de l'arbre Web-Spinner portent leurs propres compteurs.
+        'bot',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

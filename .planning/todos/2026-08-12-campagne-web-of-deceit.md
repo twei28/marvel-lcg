@@ -779,3 +779,77 @@ sans mandat sur un outil éprouvé aurait été un refacto opportuniste.
    est tranchée depuis le §15 : le carnet de campagne.
 2. La variante **Underling** de Vulture, si on la veut (§ ci-dessus).
 3. Le désistement du pilote d'`autoplay`.
+
+---
+
+## 21. LES ARBRES DE TALENTS ET LE CARNET (14/08/2026) — LA CAMPAGNE EST COMPLÈTE
+
+**172 cartes dans le pack `wd`**, `wd001` à `wd161`.
+
+### Les 50 cartes des cinq arbres (`wd112`–`wd161`)
+
+Cinq voies de dix cartes, dans l'ordre exact des paliers du livret :
+
+| palier | quand | combien | cartes |
+|--------|-------|---------|--------|
+| 0 | avant le scénario 1 | 1 sur 1 | `wd112`, `wd122`, `wd132`, `wd142`, `wd152` |
+| 1 | après le scénario 1 | 1 sur 2 | les deux suivantes de l'arbre |
+| 2 | après le scénario 2 | 1 sur 3 | |
+| 3 | après le scénario 3 | 1 sur 3 | |
+| 4 | après le scénario 4 | 1 sur 1 | la dixième |
+
+**Six d'entre elles sont doubles** : elles portent l'aspect d'un des cinq
+classiques en plus de l'étiquette Campagne (« This card is both a Web of Deceit
+Campaign Reward card and an Aggression card »). Elles sont déclarées
+`Campaign;Aggression`, `Campaign;Justice`, `Campaign;Protection`,
+`Campaign;Leadership` et `Campaign;'Pool`, sur le modèle des `Hero;Aggression`
+officiels.
+
+Deux compteurs de plus au moteur : **`bot`** (Spider-Bots) rejoint `formula`,
+`sanity` et `pigeon`.
+
+### Le carnet — `data/campagnes/web_of_deceit.json`
+
+Écrit sur le modèle de `trors.json`, avec un `campaign.py` qui rend au deck de
+chaque joueur les paliers déjà gagnés à chaque mise en place de campagne. Les
+cinq complots 1A l'appellent.
+
+`verifier_campagnes` : **« web_of_deceit — 6 clés déclarées, OK »**, et « toutes
+les clés déclarées existent dans le moteur ». C'est l'outil qui attrape le piège
+documenté au §5 de `docs/CAMPAGNES.md` : une clé mal orthographiée ne lève rien
+du tout, la récompense ne s'applique pas, et on ne s'en aperçoit qu'après cinq
+scénarios joués pour rien.
+
+### Deux écarts, écrits
+
+* **Les cinq arbres sont proposés ensemble.** Le carnet ne retient pas quel arbre
+  le joueur a choisi : à chaque palier il voit les 5, 10 ou 15 options de tous
+  les arbres et prend celle du sien. C'est la conséquence assumée de la voie
+  tranchée au §15 — l'arbre ne s'affichera pas comme un arbre.
+* **Le palier 0 est demandé APRÈS le scénario 1.** Le carnet ne note les gains
+  qu'après une rencontre, alors que sur table le palier 0 se prend avant la
+  première partie. L'aide de l'entrée le dit en toutes lettres et invite à le
+  prendre dès la première partie.
+
+### ⚠️ CE QUI RESTE, ET C'EST ÉCRIT
+
+**Les 50 cartes de talents n'ont PAS de modules.** Elles sont dans les données,
+elles ont leurs images, elles se génèrent (`verifier_cartes_en_jeu` : « les 172
+cartes portent ce que leur texte annonce ») et le carnet les distribue — mais
+leurs capacités ne sont pas câblées. Une carte sans module se construit très
+bien et reste **inerte** : c'est exactement ce que `sonde_capacites.py` sait
+mesurer, et ce que sa doc appelle « un module mal placé ne provoque AUCUNE
+erreur ».
+
+C'est le prochain chantier, et le plus gros de ce qui reste : 50 modules.
+Plusieurs seront courts (un `Response` qui soigne, une ressource qui se dépense),
+mais certains demandent du moteur — Earth-001 change la construction de deck,
+Get it Off! compte les cartes de la pile de victoire, Master Weaver glisse des
+cartes rencontre sous les alliés.
+
+### Mesure
+
+`verifier_prefixes` OK ; `verifier_cartes_en_jeu` « les 172 cartes portent ce que
+leur texte annonce » ; `verifier_appels_modules` OK ; `verifier_campagnes` OK ;
+`test_cards` **4461 ok / 0 erreur** ; `autoplay` **30 parties** sur les cinq
+scénarios, normal et expert, **zéro traceback**.

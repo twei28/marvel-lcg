@@ -75105,7 +75105,838 @@
             ],
             "set_name": "Kraven the Hunter",
             "text": "Attach to your identity and take 1 damage.\n<b>Forced Interrupt</b>: When attached character would ready, discard this card instead.\n<hr />\n[star] <b>Boost</b>: Attach this card to your identity."
+        },
+        {
+            "card_id": "wd112",
+            "type": "Support",
+            "name": "Great Web Strand",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Campaign;Basic",
+                "Setup": "1"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup.\n<b>Hero Response</b>: After you change form, discard Great Web Strand → search your deck and discard pile for a WEB-WARRIOR ally or an ally with “Spider” in its title and add it to your hand."
+        },
+        {
+            "card_id": "wd113",
+            "type": "Ally",
+            "name": "* Spider-Girl",
+            "subtitle": "Mayday Parker",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Spider-Girl enters play or leaves play, choose:\n• Ready your hero.\n• Heal 1 damage from your alter-ego."
+        },
+        {
+            "card_id": "wd114",
+            "type": "Ally",
+            "name": "* Spider-UK",
+            "subtitle": "Billy Braddock",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Campaign;Basic",
+                "Toughness": "1"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Toughness.\n<b>Response</b>: After Spider-UK enters play, give another WEB-WARRIOR character a tough status card. If you cannot, discard cards from the top of your deck until you discard an ally and add it to your hand."
+        },
+        {
+            "card_id": "wd115",
+            "type": "Upgrade",
+            "name": "Great Web Warrior",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Campaign;Basic",
+                "Setup": "1"
+            },
+            "traits": [
+                "TITLE"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup.\nYou gain the WEB-WARRIOR trait.\nYou get +2 hit points."
+        },
+        {
+            "card_id": "wd116",
+            "type": "Support",
+            "name": "* Earth-001",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Permanent": "1"
+            },
+            "traits": [
+                "LOCATION",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup. Permanent.\nYou may include WEB-WARRIOR allies from any aspect in your deck during deckbuilding."
+        },
+        {
+            "card_id": "wd117",
+            "type": "Support",
+            "name": "Web-Warriors",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "MaxPerUnit": "1"
+            },
+            "traits": [
+                "TEAM"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Play under any player's control. Max 1 TEAM card per player.\nEach of your WEB-WARRIOR allies gets +1 hit point and +1 ATK."
+        },
+        {
+            "card_id": "wd118",
+            "type": "Ally",
+            "name": "* Spider-Man Noir",
+            "subtitle": "Peter Parker",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "R",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Spider-Man Noir leaves play, heal 4 damage from your identity."
+        },
+        {
+            "card_id": "wd119",
+            "type": "Ally",
+            "name": "* Spider-Man",
+            "subtitle": "Pavitr Prabhakar",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Spider-Man leaves play, remove 4 threat from a scheme."
+        },
+        {
+            "card_id": "wd120",
+            "type": "Ally",
+            "name": "* Arana",
+            "subtitle": "Anya Corazon",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Arana leaves play, deal 5 damage to an enemy."
+        },
+        {
+            "card_id": "wd121",
+            "type": "Support",
+            "name": "* Master Weaver",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Each WEB-WARRIOR ally gets +1 hit point for each boost icon tucked under them.\n<b>Response</b>: After a WEB-WARRIOR ally enters play, tuck the top card of the encounter deck under that ally."
+        },
+        {
+            "card_id": "wd122",
+            "type": "Support",
+            "name": "Radioactive Spider",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Campaign;Basic",
+                "Setup": "1"
+            },
+            "traits": [
+                "RADIOACTIVE",
+                "TINY"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup.\n<b>Action</b>: Discard Radioactive Spider → deal 1 damage to your identity. You get +2 hand size until the end of the phase."
+        },
+        {
+            "card_id": "wd123",
+            "type": "Event",
+            "name": "Venom Blast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Campaign;Aggression"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy.\n<i>(This card is both a Web of Deceit Campaign Reward card and an Aggression card.)</i>"
+        },
+        {
+            "card_id": "wd124",
+            "type": "Event",
+            "name": "Wallcrawl",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Justice"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If this removes the last threat from that scheme, draw 2 cards.\n<i>(This card is both a Web of Deceit Campaign Reward card and a Justice card.)</i>"
+        },
+        {
+            "card_id": "wd125",
+            "type": "Upgrade",
+            "name": "Spider-Healing Factor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Campaign;'Pool"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "You get +3 hit points.\n<b>Response</b>: After your turn begins, exhaust Spider-Healing Factor → heal 1 damage from your identity.\n<i>(This card is both a Web of Deceit Campaign Reward card and a 'Pool card.)</i>"
+        },
+        {
+            "card_id": "wd126",
+            "type": "Upgrade",
+            "name": "Proportionate Strength and Speed",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Campaign;Protection"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "You get +3 hit points and your hero gets +1 DEF and +1 ATK.\n<i>(This card is both a Web of Deceit Campaign Reward card and a Protection card.)</i>"
+        },
+        {
+            "card_id": "wd127",
+            "type": "Ally",
+            "name": "* Doppelganger",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "3*",
+                "THW": "0*",
+                "RES": "G",
+                "Class": "Campaign;Leadership"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Doppelganger leaves play, search your deck and discard pile for a SUPERPOWER card and add it to your hand.\n<i>(This card is both a Web of Deceit Campaign Reward card and a Leadership card.)</i>"
+        },
+        {
+            "card_id": "wd128",
+            "type": "Resource",
+            "name": "Radioactive Power",
+            "subtitle": "",
+            "desc": {
+                "RES": "RY",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": ""
+        },
+        {
+            "card_id": "wd129",
+            "type": "Resource",
+            "name": "Radioactive Power",
+            "subtitle": "",
+            "desc": {
+                "RES": "RY",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": ""
+        },
+        {
+            "card_id": "wd130",
+            "type": "Upgrade",
+            "name": "Dynamo",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Campaign;Basic",
+                "Uses": "3,energy"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Uses <i>(3 energy counters)</i>.\n<b>Response</b>: After you play a SUPERPOWER card, remove 1 energy counter from Dynamo → stun an enemy and deal 2 damage to it."
+        },
+        {
+            "card_id": "wd131",
+            "type": "Upgrade",
+            "name": "Camouflage",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "Uses": "3,energy"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Uses <i>(3 energy counters)</i>.\n<b>Response</b>: After you play a SUPERPOWER card, remove 1 energy counter from Camouflage → confuse an enemy and give your identity a tough status card."
+        },
+        {
+            "card_id": "wd132",
+            "type": "Upgrade",
+            "name": "Spider-Tingle",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "Setup": "1"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup.\n<b>Interrupt</b>: When you reveal a treachery, discard Spider-Tingle → cancel the “When Revealed” effects of that treachery."
+        },
+        {
+            "card_id": "wd133",
+            "type": "Upgrade",
+            "name": "Spider-Sense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Interrupt</b>: When the villain initiates an attack against you, draw 1 card."
+        },
+        {
+            "card_id": "wd134",
+            "type": "Upgrade",
+            "name": "Clairvoyant Sight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Permanent": "1"
+            },
+            "traits": [
+                "PSIONIC",
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup. Permanent.\nYou gain the PSIONIC trait."
+        },
+        {
+            "card_id": "wd135",
+            "type": "Event",
+            "name": "Sensing Trouble",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Ready your identity → remove 3 threat from a scheme."
+        },
+        {
+            "card_id": "wd136",
+            "type": "Event",
+            "name": "Team Spider-Sense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "Alliance": "1"
+            },
+            "traits": [
+                "PSIONIC",
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Alliance.\n<b>Interrupt</b>: When a treachery card is revealed from the encounter deck, cancel its “When Revealed” effects. Each player draws 1 card."
+        },
+        {
+            "card_id": "wd137",
+            "type": "Upgrade",
+            "name": "Arachno-Telepathy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "PSIONIC",
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Action</b> <i>(thwart)</i>: Exhaust Arachno-Telepathy, and discard 1 card from the encounter deck → remove 1 threat from a scheme for each icon discarded this way."
+        },
+        {
+            "card_id": "wd138",
+            "type": "Event",
+            "name": "Backflip",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "DEFENSE",
+                "SKILL"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero would take any amount of damage from an enemy attack, prevent all of that damage."
+        },
+        {
+            "card_id": "wd139",
+            "type": "Event",
+            "name": "Backflip",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "DEFENSE",
+                "SKILL"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero would take any amount of damage from an enemy attack, prevent all of that damage."
+        },
+        {
+            "card_id": "wd140",
+            "type": "PlayerSideScheme",
+            "name": "* See the Future",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "StartingThreat": "5",
+                "Victory": "0"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Victory 0.\n<b>When Defeated</b>: Each player draws 2 cards. Until the end of the round, play with the top card of the encounter deck faceup."
+        },
+        {
+            "card_id": "wd141",
+            "type": "Support",
+            "name": "* Madame Web",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "PERSONA",
+                "PSIONIC",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Each PSIONIC character you control gains the WEB-WARRIOR trait.\n<b>Alter-Ego Action</b> <i>(thwart)</i>: Exhaust Madame Web → for each WEB-WARRIOR card you control, choose a scheme and remove 1 threat from it."
+        },
+        {
+            "card_id": "wd142",
+            "type": "Upgrade",
+            "name": "* Black Suit",
+            "subtitle": "",
+            "desc": {
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Permanent": "1"
+            },
+            "traits": [
+                "SYMBIOTE"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Permanent. Setup.\nYour hero gains the SYMBIOTE trait.\n<b>Hero Resource</b>: Take 1 damage → generate a [wild] resource. <i>(Limit once per phase.)</i>"
+        },
+        {
+            "card_id": "wd143",
+            "type": "Resource",
+            "name": "Greater Power",
+            "subtitle": "",
+            "desc": {
+                "RES": "RG",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Response</b>: After you spend this card, heal 2 damage from your hero. Then, place 2 threat on a scheme."
+        },
+        {
+            "card_id": "wd144",
+            "type": "Resource",
+            "name": "Greater Responsibility",
+            "subtitle": "",
+            "desc": {
+                "RES": "YG",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Response</b>: After you spend this card, ready your hero. Then, place 2 threat on a scheme."
+        },
+        {
+            "card_id": "wd145",
+            "type": "Event",
+            "name": "Flee the Scene",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After your hero thwarts and removes threat from a scheme, take 1 damage → ready your hero."
+        },
+        {
+            "card_id": "wd146",
+            "type": "Event",
+            "name": "Not My Problem",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Interrupt</b>: When a treachery card would be revealed, cancel its “When Revealed” ability. Then, place 2 threat on a scheme."
+        },
+        {
+            "card_id": "wd147",
+            "type": "Event",
+            "name": "Out of Patience",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After your hero attacks and damages a minion, take 1 damage → ready your hero."
+        },
+        {
+            "card_id": "wd148",
+            "type": "Resource",
+            "name": "Monstrous",
+            "subtitle": "",
+            "desc": {
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Response</b>: After you spend this card, deal 3 damage to the villain. Then, place 3 threat on a scheme."
+        },
+        {
+            "card_id": "wd149",
+            "type": "Resource",
+            "name": "Monstrous",
+            "subtitle": "",
+            "desc": {
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Response</b>: After you spend this card, deal 3 damage to the villain. Then, place 3 threat on a scheme."
+        },
+        {
+            "card_id": "wd150",
+            "type": "Upgrade",
+            "name": "* Get it Off!",
+            "subtitle": "",
+            "desc": {
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Permanent": "1"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Permanent. Setup.\nWhile there are 5 Symbiosis cards in the victory display you get +1 to each of your basic powers and +1 hand size.\n<b>Hero Action</b>: Exhaust this card → find a Symbiosis card and add it to the victory display. Draw 1 card."
+        },
+        {
+            "card_id": "wd151",
+            "type": "Upgrade",
+            "name": "* Unity",
+            "subtitle": "",
+            "desc": {
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Permanent": "1"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Permanent. Setup.\nYou get +1 to each of your basic powers and +1 hand size."
+        },
+        {
+            "card_id": "wd152",
+            "type": "Upgrade",
+            "name": "Web-Shooter",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Campaign;Basic",
+                "Setup": "1",
+                "Uses": "3,web"
+            },
+            "traits": [
+                "ITEM",
+                "TECH"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Setup. Uses <i>(3 web counters)</i>.\n<b>Hero Resource</b>: Exhaust Web-Shooter and remove 1 web counter from it → generate a [wild] resource."
+        },
+        {
+            "card_id": "wd153",
+            "type": "Event",
+            "name": "Quick Reload",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b>: Choose two of the following <i>(you may choose the same option twice)</i>:\n• Ready a TECH card you control.\n• Place 1 all-purpose counter on a TECH upgrade you control."
+        },
+        {
+            "card_id": "wd154",
+            "type": "Upgrade",
+            "name": "Spider-Bots",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Campaign;Basic",
+                "Uses": "4,bot"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Uses <i>(4 bot counters)</i>.\n<b>Hero Action</b> <i>(thwart)</i>: Exhaust Spider-Bots and remove 1 bot counter from here → remove threat from a scheme equal to the total number of printed [mental] and [wild] resources in your hand."
+        },
+        {
+            "card_id": "wd155",
+            "type": "Upgrade",
+            "name": "Bag Head",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Campaign;Basic",
+                "Victory": "1"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Victory 1.\n<b>Action</b>: Add Bag Head to the victory display → change to hero form. Draw up to your hand size."
+        },
+        {
+            "card_id": "wd156",
+            "type": "Resource",
+            "name": "The Power of Web",
+            "subtitle": "",
+            "desc": {
+                "RES": "GG",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [],
+            "set_name": "Web of Deceit Rewards",
+            "text": ""
+        },
+        {
+            "card_id": "wd157",
+            "type": "Support",
+            "name": "Spider-Mobile",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "TECH",
+                "VEHICLE",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Reduce the cost to play this card by 1 for each WEB-WARRIOR card you control.\n<b>Hero Response</b>: After you defend against an attack, exhaust Spider-Mobile → ready your identity."
+        },
+        {
+            "card_id": "wd158",
+            "type": "Ally",
+            "name": "* Spider-Boy",
+            "subtitle": "Bailey Briggs",
+            "desc": {
+                "Cost": "1",
+                "HP": "1",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Response</b>: After Spider-Boy enters play or leaves play, remove 1 threat from a scheme."
+        },
+        {
+            "card_id": "wd159",
+            "type": "Event",
+            "name": "Web Swing!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b>: Ready your hero. Your identity gets +1 to each of its basic powers until the end of the round."
+        },
+        {
+            "card_id": "wd160",
+            "type": "Event",
+            "name": "Web Swing!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "<b>Hero Action</b>: Ready your hero. Your identity gets +1 to each of its basic powers until the end of the round."
+        },
+        {
+            "card_id": "wd161",
+            "type": "Upgrade",
+            "name": "Webbed",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Campaign;Basic"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Web of Deceit Rewards",
+            "text": "Attach to an enemy.\nAttached enemy loses steady and stalwart.\n<b>Forced Interrupt</b>: When an enemy would activate, discard Webbed instead."
         }
     ],
-    "checksum": "09ca8bb78598c971f2cee9c8647182b1326c6adf8768c468b1ad156e77567d86"
+    "checksum": "66d9a07c06ec141d02300e039d2d675e2a16f11c0e99689fadd4db4fbbf8ebd0"
 }

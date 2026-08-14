@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.web_of_deceit.campaign import ChaqueJoueurRetrouveSesTalents
 
 # Shadow of the Kingpin (1A)
 
@@ -28,4 +29,7 @@ def GetAbilities() -> Sequence['Ability']:
             "This",
             mise_en_place
         ),
+        # Les paliers d'arbre de talents deja gagnes reviennent dans le
+        # deck de leur proprietaire (voir `campaign.py`).
+        ChaqueJoueurRetrouveSesTalents(),
     ]
