@@ -562,6 +562,13 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         besoin = max(mini, 1) if mini else mini
         if besoin == 0:
             return []
+        # Une plage [1, 3] ne veut pas dire « 1 suffit » : Power Drain (02041)
+        # exige AUTANT de cartes que d'icones de boost defaussees, un nombre que
+        # la question n'annonce pas. Le minimum echouait donc en silence, et la
+        # meme question revenait indefiniment. `cibles_bonus`, monte d'un cran a
+        # chaque repetition sans progres, remonte la plage jusqu'a ce que ca
+        # passe.
+        besoin = min(max(maxi, besoin), besoin + etat.get("cibles_bonus", 0))
         return ordonnees[:besoin]
 
     def payer(option, cibles, ctx):
@@ -661,6 +668,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 tuple(sorted(str(t) for t in (o.get("all_legal_targets") or []))))
 
     def pilote(self, data, player_id, check):
+        self_pilote = lambda d, p, c: pilote(self, d, p, c)
         etat["asks"] += 1
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
@@ -715,6 +723,55 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         if brute and brute == etat.get("derniere_question_brute") \
                 and progres == etat.get("dernier_progres") \
                 and etat.get("derniere_reponse_legale"):
+            # LE DESISTEMENT. Avant ce garde-fou, le pilote rendait « bloquee »
+            # des la premiere repetition sans progres : il n'avait aucun moyen
+            # d'abandonner l'option fautive et de tenter les autres. Or une
+            # action de heros qui ECHOUE (cout impayable, effet sans cible
+            # utile) est reproposee a l'identique par le moteur, et le pilote la
+            # rechoisissait sans fin.
+            #
+            # Mesure : Tenacity (01093), carte joueur OFFICIELLE — « Spend a
+            # [physical] resource and discard this card → ready your hero » — et
+            # le Hero Action de Kingpin's Cane (wd100) bloquaient chacun une
+            # partie sur quatre. Ce ne sont pas des defauts de carte : le pilote
+            # ne savait pas passer a autre chose.
+            #
+            # On ecarte donc l'option qui vient d'echouer et on laisse la
+            # question etre reposee : le tour suivant la choisira autrement. Ce
+            # n'est qu'apres avoir epuise TOUTES les options qu'on rend le
+            # verdict — un vrai blocage moteur reste donc detecte, il l'est
+            # simplement une question plus tard.
+            fautive = etat.get("derniere_option")
+            plage = list(fautive[1]) if fautive and len(fautive) > 1 else []
+            mini_f = plage[0] if plage else 0
+            maxi_f = plage[1] if len(plage) > 1 else mini_f
+
+            # a) La question est FORCEE (elle exige au moins une cible) et sa
+            #    plage laisse de la marge : on retente avec une cible de plus.
+            #    Repondre « 0 » a une question forcee leve une AssertionError
+            #    dans `ChoiceOne` (controller.py:274), avalee en silence, et la
+            #    question revient a l'identique : le remede serait pire.
+            if mini_f > 0 and etat.get("cibles_bonus", 0) < maxi_f - mini_f:
+                etat["cibles_bonus"] = etat.get("cibles_bonus", 0) + 1
+                etat["derniere_question_brute"] = None
+                return self_pilote(data, player_id, check)
+
+            # b) Sinon on ecarte l'option fautive et on laisse la question etre
+            #    reposee : le tour suivant la choisira autrement.
+            desistees = etat.setdefault("desistees", set())
+            if fautive is not None and fautive not in desistees and mini_f == 0:
+                desistees.add(fautive)
+                etat["derniere_reponse_legale"] = False
+                etat["derniere_question_brute"] = brute
+                etat["dernier_progres"] = progres
+                return passer
+            # c) Une question FORCEE a plage fixe qui echoue toujours n'a pas
+            #    de remede cote pilote : le moteur propose une action qui ne
+            #    peut pas se resoudre, et aucune reponse ne la fera passer.
+            #    Mesure : Tenacity (01093), carte joueur OFFICIELLE — « Spend a
+            #    [physical] resource and discard this card → ready your hero » —
+            #    est offerte alors que le heros est deja pret. Le verdict tombe,
+            #    et il est juste : le defaut est ailleurs.
             resume = "; ".join(
                 f"{o.get('name')}(id={o.get('id')}, "
                 f"cibles_legales={o.get('all_legal_targets')}, "
@@ -725,8 +782,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                    "meme question posee a l'identique et le plateau n'a pas "
                    "bouge malgre une reponse legale au tour precedent -- "
                    f"question fautive : {resume}")
+        if progres != etat.get("dernier_progres"):
+            # La table a bouge : les desistements de la situation precedente
+            # n'ont plus lieu d'etre, une option ecartee peut redevenir jouable.
+            etat["desistees"] = set()
+            etat["cibles_bonus"] = 0
         etat["derniere_question_brute"] = brute
         etat["dernier_progres"] = progres
+
+        # Les options dont on s'est desiste ne sont plus proposees -- sauf s'il
+        # ne resterait rien, auquel cas le detecteur de boucle tranchera.
+        sans_desistees = [o for o in libres
+                          if clef_option(o) not in etat.get("desistees", set())]
+        if sans_desistees:
+            libres = sans_desistees
 
         # Ecarter ce qui a deja ete tente en vain dans la meme situation.
         cle = empreinte(ctx, libres)
@@ -850,6 +919,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                   flush=True)
 
         etat["derniere_reponse_legale"] = True
+        etat["derniere_option"] = clef_option(meilleure)
         return json.dumps({"id": str(meilleure.get("id", 0)),
                            "targets": cibles,
                            "resources": payer(meilleure, cibles, ctx)})
