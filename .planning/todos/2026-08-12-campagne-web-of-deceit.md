@@ -1114,3 +1114,34 @@ compteur d'effets résolus) à l'empreinte de `progres`.
 | Kingpin | 1 / 3 | **Tenacity (`01093`)**, carte officielle |
 | Vulture (Underling) | 3 / 3 | l'empreinte de progrès, ci-dessus |
 
+
+### L'empreinte de progrès voit maintenant les traits — et ce n'était pas la cause
+
+La piste du §25 était juste sur le fond : l'empreinte ne photographiait que les
+PV, la menace, la main et le round. Une action peut **réussir** sans toucher
+aucun des quatre — « un personnage ami gagne le trait AERIAL » n'en bouge pas un.
+Elle photographie désormais aussi **les traits des personnages amis**, la
+**taille de la défausse** et le **nombre de cartes en jeu**.
+
+**Mesure : aucune régression** (Falcon, 6 parties, 0 bloquée), **mais Underling
+bloque toujours 3 fois sur 3.** Ce n'était donc pas la cause.
+
+### ⚠️ CE QUE LE JOURNAL DIT VRAIMENT, ET QUI CHANGE LA PISTE
+
+Dans la partie bloquée, **une carte OFFICIELLE échoue au même moment** :
+
+```
+<E> (16) [(13,01005) Swinging Web Kick] (Hero Action,Play,attack) [01005] WhenPlayerInTurn failed
+<E> (67) [(51,wd165) Skies Above New York] (Hero Action) [wd165] WhenPlayerInTurn failed
+```
+
+**Swinging Web Kick** est une carte du deck de départ de Spider-Man. Deux actions
+sans rapport échouent coup sur coup, au round 1 : ce n'est pas la carte de la
+campagne, c'est **l'état du joueur** à ce moment-là (héros épuisé, ou une
+restriction posée par le scénario) qui rend toute action impossible.
+
+**La prochaine piste est là** : instrumenter ce que le moteur refuse — pourquoi
+`WhenPlayerInTurn` échoue alors que l'option est offerte — plutôt que de
+soupçonner encore une carte. Trois hypothèses ont été éliminées par la mesure :
+le payeur (§25), l'empreinte de progrès (ici), et le désistement (§25, qui a bien
+réglé les 7 blocages de Falcon).

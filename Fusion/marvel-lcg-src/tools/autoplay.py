@@ -243,6 +243,35 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             ctx["taille_main"] = nombre(getattr(joueur, "hand_size", 0))
         except Exception:
             ctx["taille_main"] = 0
+        # ⚠ CE QUE L'EMPREINTE DE PROGRES IGNORAIT.
+        # Une action peut REUSSIR sans toucher ni les PV, ni la menace, ni la
+        # main, ni le round : « un personnage ami gagne le trait AERIAL jusqu'a
+        # la fin du round » (Skies Above New York) ne bouge rien de tout cela.
+        # Le detecteur de boucle concluait alors a un blocage sur une action qui
+        # avait marche — trois parties sur trois du scenario Underling.
+        # On photographie donc aussi les TRAITS des personnages amis et la
+        # taille de la defausse, qui bouge des qu'une carte est jouee ou
+        # depensee. Chaque lecture a son propre garde, comme partout ici.
+        try:
+            amis = list(ctx["allies"])
+            try:
+                amis.append(joueur.GetIdentity())
+            except Exception:
+                pass
+            traits = []
+            for face in amis:
+                if face is None:
+                    continue
+                paper = getattr(face, "paper", None)
+                traits.append((str(getattr(paper, "card_id", face)),
+                               tuple(sorted(str(t) for t in (getattr(face, "traits", None) or [])))))
+            ctx["traits_amis"] = tuple(sorted(traits))
+        except Exception:
+            ctx["traits_amis"] = ()
+        try:
+            ctx["taille_defausse"] = len(joueur.discard_pile.Get())
+        except Exception:
+            ctx["taille_defausse"] = 0
         try:
             # Reperer l'identite par sa lignee et non par le nom exact de sa
             # classe : la face heros n'est pas forcement de classe « Hero »
@@ -719,6 +748,9 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             tuple(sorted(nombre(getattr(s, "health", 0)) for s in ctx["sbires"])),
             tuple(sorted(nombre(getattr(sc, "threat", 0))
                          for sc in ctx["schemes"] + ctx["schemes_secondaires"])),
+            ctx.get("traits_amis", ()),
+            ctx.get("taille_defausse", 0),
+            len(ctx["allies"]) + len(ctx["sbires"]) + len(ctx["schemes_secondaires"]),
         )
         if brute and brute == etat.get("derniere_question_brute") \
                 and progres == etat.get("dernier_progres") \
