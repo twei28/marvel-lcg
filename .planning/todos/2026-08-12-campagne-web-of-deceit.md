@@ -1007,3 +1007,54 @@ pointent toutes une carte qui existe**.
 des fils vivants après `Initialize` (d'où `os._exit` plutôt qu'un `SystemExit`
 qui ne rendrait jamais la main), et **`os._exit` ne vide pas les tampons** — sans
 le `flush`, l'outil sortait en silence et son rapport se perdait.
+
+---
+
+## 24. CE QU'IL RESTE À FAIRE, ET PAR QUI (14/08/2026)
+
+### 🧑 CE QU'UN HUMAIN DOIT FAIRE — rien de tout cela n'est automatisable
+
+1. **Jouer la campagne dans un navigateur.** Tout ce qui est écrit dans cette
+   fiche est mesuré par le MOTEUR : `test_cards` construit les capacités,
+   `autoplay` mène des parties sans navigateur, `verifier_scenes_campagne`
+   prouve que les scènes se créent. **Personne n'a encore vu une seule carte à
+   l'écran.** À regarder en priorité :
+   * les **images** des 176 cartes (une carte couchée ou floue ne se voit que
+     là ; trois lots en ont déjà porté) ;
+   * le **carnet entre deux scénarios** : le choix de palier s'affiche-t-il, et
+     les 5 / 10 / 15 options sont-elles lisibles côte à côte ?
+   * la **mise en place** : « Vote for Fisk », le Wingsuit distribué, les deux
+     Aerial Advantage sur le vilain, Fisk Tower.
+
+   ⚠️ Relancer le serveur d'abord : le moteur charge sa base AU DÉMARRAGE.
+
+2. **Trancher les écarts assumés**, si l'un gêne à l'usage. Ils sont tous écrits
+   avec leur raison :
+   * les **cinq arbres proposés ensemble** au lieu de celui qu'on a choisi (§21) ;
+   * le **palier 0 demandé après le scénario 1** au lieu d'avant (§21) ;
+   * les manigances **CORROMPUES** de Kingpin : la carte du dessus du deck part
+     à la défausse et un patron entre en jeu à sa place (§19) ;
+   * **Negate X** qui pioche quelle que soit la fenêtre d'annulation (§17) ;
+   * **Vulture** attaquable par une carte AERIAL mais pas par une attaque à
+     distance (§18) ;
+   * **Earth-001** et les trois autres cartes sans module (§22).
+
+3. **Décider du sort de la boîte 120.** Le pack mélange aujourd'hui la campagne
+   (176 cartes) et rien d'autre. Si les héros maison du Drive (Scarlet Spider,
+   Superior Spider-Man, Venom, Spider-Man 2099 — 148 cartes et un aspect
+   « Venomized ») doivent entrer un jour, c'est un choix de périmètre, pas une
+   tâche.
+
+### 🤖 CE QUE JE PEUX ENCORE FAIRE — dans l'ordre d'utilité
+
+1. **Le payeur du pilote d'`autoplay`.** Il ne sait pas honorer un coût en
+   ressources porté par une carte de RENCONTRE : c'est ce qui bloque les 8
+   parties du scénario Underling, et ce qui dort depuis le lot 1 sur Ionic Boots
+   (`wd010`) et Kingpin's Cane (`wd100`). **C'est le dernier vrai chantier
+   d'outil**, et il rendrait Underling vérifiable comme les cinq autres.
+2. **Élargir la couverture d'`autoplay`** à d'autres héros que Spider-Man : les
+   62 parties menées jusqu'ici l'ont toutes été avec lui ou son deck augmenté.
+   Un deck AERIAL (Falcon) éprouverait Vulture pour de bon.
+3. **Le blocage de Tenacity** (`01093`) : le moteur propose l'action alors que le
+   héros est déjà prêt. C'est une carte OFFICIELLE — donc soit son module, soit
+   le moteur. À instruire avant de toucher quoi que ce soit.

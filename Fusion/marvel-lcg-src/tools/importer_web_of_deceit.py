@@ -331,6 +331,7 @@ PAYSAGE = {
     "wd077a", "wd077b", "wd084", "wd085",                        # complot et manigances Vulture
     "wd094a", "wd094b", "wd103", "wd104", "wd106",               # complot et manigances Kingpin
     "wd107",                                                     # Kraven the Hunter
+    "wd140",                                                     # « See the Future », manigance JOUEUR
 }
 
 
