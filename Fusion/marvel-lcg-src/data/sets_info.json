@@ -1052,11 +1052,12 @@
     "120. Custom (Web of Deceit)": {
         "name": "web_of_deceit",
         "scenarios": [
-            "wd_shocker"
+            "wd_shocker",
+            "wd_electro"
         ],
         "heroes": [],
         "encounters": [],
-        "max_id": "wd034"
+        "max_id": "wd053"
     },
-    "checksum": "8282f76aaf2773a4eab56d74efa27b87e600e4cdd2321f1052ca8f9228f80b82"
+    "checksum": "e42ebccc12670fb80d0bbadf6e422c6d02a0920c237e9c568e3b53c2df1bf9b1"
 }

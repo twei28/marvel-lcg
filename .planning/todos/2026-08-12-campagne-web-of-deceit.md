@@ -390,3 +390,69 @@ pas.
 10), les entrer comme cartes joueur du pack `wd`, et écrire
 `data/campagnes/web_of_deceit.json` sur le modèle de `trors.json`, avec un champ
 de carnet par joueur et par palier.
+
+---
+
+## 16. LE SCÉNARIO #2 EST DANS LE JEU (14/08/2026)
+
+**21 faces neuves, `wd035` à `wd053`.** Le set Electro n'est pas de Ripper3 :
+c'est celui de **DesignHacker** (« ELECTRO (2.0) », 24 cartes), que la campagne
+reprend en **remplaçant le deck de complots et les deux A.I.M. Scientist**
+(livret p.17). Les quatre complots `Power Outage` / `Power Surge` et les deux
+savants de remplacement viennent du dossier `Scenarios/Electro (Web of Deceit)/`.
+
+**Ce qui n'a PAS été créé, et c'est voulu** : le complot autonome
+« Energized! » (4/24), que le mode campagne remplace, et les deux A.I.M.
+Scientist du set autonome (9/24 et 10/24), remplacés eux aussi. `A.I.M. Science`
+et `Standard III` existaient déjà.
+
+### Ce que le scénario fait, et pourquoi il tient debout
+
+* **Electricity Clones** lève la règle d'unicité pour Electro. C'est la carte qui
+  tient tout : le vilain, les deux sbires Electro du set et les deux de
+  Power Drain II portent le même nom. Sans elle, un seul tiendrait la table.
+* **Grounded** empêche le vilain d'être vaincu tant que le coût cumulé des
+  améliorations et des soutiens en jeu est inférieur à 10 par joueur. Mesuré
+  dans une vraie partie : `"WhenUnitWouldBeDefeated" est remplacé par [Grounded]`,
+  et le vilain reste à 0 PV round après round. Le scénario demande de s'équiper
+  avant de pouvoir frapper, exactement comme le livret l'annonce.
+* **L'accélération gouverne la partie** : Power Outage soigne le vilain d'un
+  point par jeton et par icône, Accelerated Plans pose 2 menaces par jeton et
+  icône, Dark Matter Conversion 1 de plus. Une seule mesure, écrite une fois
+  (`JetonsEtIconesDAcceleration`).
+
+### Un écart de forme, écrit
+
+**Power Surge (2B) porte une icône d'accélération imprimée**, et le moteur ne
+sait pas la lire sur un complot PRINCIPAL : `Acceleration` est un attribut de
+manigance secondaire, de sbire ou d'environnement, et `MainScheme` n'hérite pas
+de `HasAccelerationIcon` — la carte refusait de se générer (`KeyError`).
+
+Le stade pose donc **un jeton d'accélération sur lui-même à sa révélation**.
+L'effet est le même au pion près : l'escalade du complot principal additionne
+les jetons et les icônes (`scheme_main.py`), et le « for each acceleration token
+and icon in play » des trois autres cartes le compte aussi. Mesuré dans le
+journal : `[Power Surge] reçoit 1 pion(s) « acceleration_token »`.
+
+### Deux écarts du LOT 1, corrigés au passage (commit à part)
+
+* **Neuf images entraient dans le jeu couchées** : Ripper3 exporte tout en
+  1000x1433, complots et manigances compris, qui sont des cartes PAYSAGE
+  stockées debout. Une table `PAYSAGE` les redresse.
+* **« Look Who Finally Showed » démarrait à 7 menaces par joueur** pour un seuil
+  de 6 : le stade 2 arrivait déjà accompli à plusieurs joueurs. La carte dit 1.
+
+### Mesure
+
+`verifier_prefixes` 4951 cartes / 22 préfixes / 0 doublon ;
+`verifier_cartes_en_jeu` « les 59 cartes portent ce que leur texte annonce » ;
+`verifier_appels_modules` OK ; `test_cards` **4403 ok / 0 erreur** ;
+`sonde_capacites` : les 21 faces portent leurs capacités ;
+`autoplay` **8 parties Electro (normal et expert) sans un seul incident**,
+toutes perdues — le stade 2 est atteint et accompli, la boucle tourne.
+
+⚠️ **UN POINT OUVERT, qui n'est PAS du scénario #2** : `autoplay` bloque une
+partie de Shocker expert sur une question `When_Defeated` de **Power Drain
+(`wd020`, lié à la carte officielle `02041`)** — « chaque joueur défausse 1
+ressource par icône de boost ». Vérifié en remettant la donnée d'avant le
+correctif : **le blocage préexiste**, il ne vient pas du lot 2.

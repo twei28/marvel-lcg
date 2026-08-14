@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Electro",
+    "villain": [
+        "wd036",
+        "wd037"
+    ],
+    "expert": true,
+    "schemes": [
+        "wd038a,wd038b",
+        "wd039a,wd039b"
+    ],
+    "set_aside": [
+        "wd030",
+        "wd031",
+        "wd032"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "electro",
+        "power_drain_ii",
+        "standard_iii",
+        "bodyguard"
+    ],
+    "modular_sets": [
+        "aim_science"
+    ]
+}

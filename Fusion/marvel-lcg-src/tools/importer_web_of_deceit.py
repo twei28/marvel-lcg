@@ -189,6 +189,30 @@ IMAGES = {
     "wd032": "Campaign Setup Cards/the-great-web-env",
     "wd033": "Campaign Setup Cards/expert-mode-ii-green-goblin-minion",
     "wd034": "Campaign Setup Cards/expert-mode-hobgoblin-minion",
+    # Scenario #2 — Electro. Le set du vilain est celui de DesignHacker
+    # (« ELECTRO (2.0) »), les quatre complots et les deux A.I.M. Scientist
+    # viennent du dossier de campagne et REMPLACENT ceux du set (livret p.17).
+    "wd035": "Scenarios/ELECTRO (2.0)/ELECTRO_",
+    "wd036": "Scenarios/ELECTRO (2.0)/ELECTRO_2",
+    "wd037": "Scenarios/ELECTRO (2.0)/ELECTRO_3",
+    "wd038a": "Scenarios/Electro (Web of Deceit)/scheme-1a",
+    "wd038b": "Scenarios/Electro (Web of Deceit)/scheme-1b",
+    "wd039a": "Scenarios/Electro (Web of Deceit)/scheme-2a",
+    "wd039b": "Scenarios/Electro (Web of Deceit)/scheme-2b",
+    "wd040": "Scenarios/ELECTRO (2.0)/ELECTRO_5",
+    "wd041": "Scenarios/ELECTRO (2.0)/ELECTRO_6",
+    "wd042": "Scenarios/ELECTRO (2.0)/ELECTRO_7",
+    "wd043": "Scenarios/ELECTRO (2.0)/ELECTRO_8",
+    "wd044": "Scenarios/Electro (Web of Deceit)/aim-scientist-10",
+    "wd045": "Scenarios/ELECTRO (2.0)/ELECTRO_11",
+    "wd046": "Scenarios/ELECTRO (2.0)/ELECTRO_12",
+    "wd047": "Scenarios/ELECTRO (2.0)/ELECTRO_13",
+    "wd048": "Scenarios/ELECTRO (2.0)/ELECTRO_14",
+    "wd049": "Scenarios/ELECTRO (2.0)/ELECTRO_16",
+    "wd050": "Scenarios/ELECTRO (2.0)/ELECTRO_17",
+    "wd051": "Scenarios/ELECTRO (2.0)/ELECTRO_19",
+    "wd052": "Scenarios/ELECTRO (2.0)/ELECTRO_21",
+    "wd053": "Scenarios/ELECTRO (2.0)/ELECTRO_23",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.
@@ -197,10 +221,12 @@ IMAGES = {
 # les manigances, qui sont des cartes paysage tournees d'un quart de tour. Sans
 # cette table, `im.width > im.height` est faux et la carte entre dans le jeu en
 # 600x840 avec son texte a la verticale — c'est ce qui est arrive au lot 1.
+# Les cartes de DesignHacker, elles, sont deja dans le bon sens (1000x716).
 PAYSAGE = {
     "wd002a", "wd002b", "wd003a", "wd003b", "wd004a", "wd004b",  # complots Shocker
     "wd011", "wd015",                                            # manigances Shocker
     "wd020",                                                     # Power Drain II
+    "wd038a", "wd038b", "wd039a", "wd039b",                      # complots Electro
 }
 
 

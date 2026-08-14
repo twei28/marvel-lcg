@@ -73844,7 +73844,313 @@
             ],
             "set_name": "Web of Deceit",
             "text": "<b>When Revealed</b>: Take 2 indirect damage. Shuffle each TECH attachment in the encounter discard pile into the encounter deck."
+        },
+        {
+            "card_id": "wd035",
+            "type": "Villain",
+            "name": "* Electro",
+            "subtitle": "",
+            "desc": {
+                "HP": "14",
+                "ATK": "1",
+                "SCH": "2",
+                "Stage": "1"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Electro",
+            "text": "<b>Forced Response</b>: After Electro activates against you, discard cards from the top of the encounter deck until a treachery is discarded."
+        },
+        {
+            "card_id": "wd036",
+            "type": "Villain",
+            "name": "* Electro",
+            "subtitle": "",
+            "desc": {
+                "HP": "18",
+                "ATK": "2",
+                "SCH": "2",
+                "Stage": "2"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Electro",
+            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a copy of A.I.M. Scientist is discarded. Put it into play engaged with the first player.\n<b>Forced Response</b>: After Electro activates against you, discard cards from the top of the encounter deck until a treachery is discarded."
+        },
+        {
+            "card_id": "wd037",
+            "type": "Villain",
+            "name": "* Electro",
+            "subtitle": "",
+            "desc": {
+                "HP": "22",
+                "ATK": "3",
+                "SCH": "2",
+                "Stage": "3"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Electro",
+            "text": "<b>Forced Response</b>: After Electro activates against you, discard cards from the top of the encounter deck until a treachery with 1 or more boost icons is discarded. Then, discard an equal number of cards from the top of your deck."
+        },
+        {
+            "card_id": "wd038a",
+            "type": "MainScheme",
+            "name": "Power Outage",
+            "subtitle": "",
+            "desc": {
+                "Stage": "1A"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>Contents</b>: Electro (I) and Electro (II). <i>(Electro (II) and Electro (III) instead for expert mode.)</i> Electro, Power Drain II, and Standard encounters sets. One modular encounter set <i>(recommended A.I.M. Science)</i>.\n<b>Setup</b>: Put the Electricity Clones and Grounded environments into play."
+        },
+        {
+            "card_id": "wd038b",
+            "type": "MainScheme",
+            "name": "Power Outage",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "1*",
+                "TargetThreat": "7*",
+                "EscalationThreat": "1*",
+                "Stage": "1B"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "[star] <b>Forced Response</b>: After resolving step one of the villain phase, heal 1 damage from the villain for each acceleration token and icon ([acceleration]) in play."
+        },
+        {
+            "card_id": "wd039a",
+            "type": "MainScheme",
+            "name": "Power Surge",
+            "subtitle": "",
+            "desc": {
+                "Stage": "2A"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>When Revealed</b>: Exhaust each friendly TECH support and upgrade. Each player discards cards from the encounter deck until they discard an A.I.M. minion, then reveals that minion. Each player searches their deck and discard pile for a card with a printed [energy] resource and adds it to their hand. <i>(Shuffle.)</i>"
+        },
+        {
+            "card_id": "wd039b",
+            "type": "MainScheme",
+            "name": "Power Surge",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "0",
+                "TargetThreat": "9*",
+                "EscalationThreat": "1*",
+                "Stage": "2B"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "[star] <b>Forced Response</b>: After you resolve an Electro treachery, remove that treachery from the game.\nIf this stage is completed, the players lose the game."
+        },
+        {
+            "card_id": "wd040",
+            "type": "Environment",
+            "name": "Electricity Clones",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Electro",
+            "text": "Permanent.\nElectro ignores the unique rule. <i>(Multiple copies of Electro can be in play, but “Forced Response” abilities on a copy of Electro can still only be triggered by that particular copy.)</i>"
+        },
+        {
+            "card_id": "wd041",
+            "type": "Environment",
+            "name": "Grounded",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Electro",
+            "text": "Permanent.\nWhile the total cost of all upgrades and supports in play is less than 10[per_hero], the villain cannot be defeated.\n<b>Forced Response</b>: After the villain is defeated, remove this card from the game → each player draws 2 cards."
+        },
+        {
+            "card_id": "wd042",
+            "type": "Attachment",
+            "name": "Greased Lightning",
+            "subtitle": "",
+            "desc": {
+                "SCH+": "1",
+                "Boost": "3"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Electro",
+            "text": "Attach to the villain.\n<b>Forced Response</b>: After the villain schemes, place an acceleration token here.\n<b>Hero Action</b>: Discard each card from the encounter deck → discard this card."
+        },
+        {
+            "card_id": "wd043",
+            "type": "Attachment",
+            "name": "Lightning Speed",
+            "subtitle": "",
+            "desc": {
+                "SCH+": "1",
+                "Boost": "3"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Electro",
+            "text": "Attach to the villain.\n<b>Forced Response</b>: After a copy of Electro enters play, place an acceleration token here.\n<b>Hero Action</b>: Discard each card from the encounter deck → discard this card."
+        },
+        {
+            "card_id": "wd044",
+            "type": "Minion",
+            "name": "A.I.M. Scientist",
+            "subtitle": "",
+            "desc": {
+                "HP": "2",
+                "ATK": "1",
+                "SCH": "1",
+                "Boost": "1",
+                "Vulnerable": "1"
+            },
+            "traits": [
+                "A.I.M. SCIENTIST"
+            ],
+            "set_name": "Electro",
+            "text": "Vulnerable. <i>(Discard this character if it is stunned or confused.)</i>\n<b>When Defeated</b>: Search the encounter deck and discard pile for the Dark Matter Conversion side scheme and reveal it."
+        },
+        {
+            "card_id": "wd045",
+            "type": "Minion",
+            "name": "* Black Cat",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "2",
+                "Boost": "2"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Electro",
+            "text": "[star] <b>Forced Response</b>: After Black Cat engages you or schemes, discard the top 2 cards of the encounter deck. Deal each card with a star icon ([star]) discarded this way to yourself as a facedown encounter card."
+        },
+        {
+            "card_id": "wd046",
+            "type": "Minion",
+            "name": "* Electro",
+            "subtitle": "",
+            "desc": {
+                "HP": "8",
+                "ATK": "1",
+                "SCH": "2",
+                "Boost": "2"
+            },
+            "traits": [
+                "CRIMINAL",
+                "ELITE"
+            ],
+            "set_name": "Electro",
+            "text": "[star] <b>Forced Response</b>: After Electro attacks and damages you, discard the top 7 cards of your deck.\n<b>When Defeated</b>: Remove 4 threat from a side scheme."
+        },
+        {
+            "card_id": "wd047",
+            "type": "Minion",
+            "name": "* Electro",
+            "subtitle": "",
+            "desc": {
+                "HP": "8",
+                "ATK": "1",
+                "SCH": "2",
+                "Boost": "2"
+            },
+            "traits": [
+                "CRIMINAL",
+                "ELITE"
+            ],
+            "set_name": "Electro",
+            "text": "[star] <b>Forced Response</b>: After Electro schemes, discard the top 7 cards of the encounter deck.\n<b>When Defeated</b>: Deal 4 damage to the villain."
+        },
+        {
+            "card_id": "wd048",
+            "type": "SideScheme",
+            "name": "Accelerated Plans",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "1*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>Forced Response</b>: After this side scheme enters play, place 2 threat here for each acceleration icon and token in play."
+        },
+        {
+            "card_id": "wd049",
+            "type": "SideScheme",
+            "name": "Dark Matter Conversion",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "The villain gets +2 ATK and gains retaliate 1.\n<b>When Revealed</b>: Place 1 additional threat here for each acceleration token and icon ([acceleration]) in play."
+        },
+        {
+            "card_id": "wd050",
+            "type": "Treachery",
+            "name": "Charging",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a minion is discarded. If that minion is Electro, put it into play and it gains quickstrike. Otherwise, this card gains surge."
+        },
+        {
+            "card_id": "wd051",
+            "type": "Treachery",
+            "name": "High Voltage",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>When Revealed (Alter-Ego)</b>: Discard the top 5 cards of your deck.\n<b>When Revealed (Hero)</b>: Discard the top 5 cards of the encounter deck.\n<hr />\n[star] <b>Boost</b>: Discard the top 3 cards of the encounter deck."
+        },
+        {
+            "card_id": "wd052",
+            "type": "Treachery",
+            "name": "Recharging",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>When Revealed</b>: Heal 3 damage from each copy of Electro in play. If 3 or fewer damage was healed this way, this card gains surge."
+        },
+        {
+            "card_id": "wd053",
+            "type": "Treachery",
+            "name": "Shocked",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Electro",
+            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck equal to the number of cards in your hand. If 3 or fewer cards were discarded this way, this card gains surge."
         }
     ],
-    "checksum": "362b9e6e53c511285d06d402f59abdd47fcc50d4467549a6919bf6d2c0328d7c"
+    "checksum": "fcd612b694d2c960a690edfffc4ebcdd7bfe39572c3f29b656498606f190b673"
 }
