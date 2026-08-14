@@ -1,0 +1,11 @@
+{
+    "version": "0.5.8",
+    "name": "Kraven the Hunter",
+    "encounters": [
+        "wd107",
+        "wd108",
+        "wd109",
+        "wd110",
+        "wd111"
+    ]
+}

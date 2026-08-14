@@ -9,7 +9,7 @@ def GetAbilities() -> Sequence['Ability']:
         # threat without another copy of Controlling the Narrative attached. »
         candidates = []
         for manigance in Worlds.GetSideSchemes(effect):
-            if manigance.CastTo(HasPermanent).is_permanent:
+            if manigance.CastTo(HasPermanent).permanent:
                 continue
             if manigance.GetInventoryDeck().FindCards(name="Controlling the Narrative"):
                 continue

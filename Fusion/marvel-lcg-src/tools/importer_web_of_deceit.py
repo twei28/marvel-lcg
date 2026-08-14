@@ -250,6 +250,11 @@ IMAGES = {
     "wd101": "Scenarios/Kingpin/20", "wd102": "Scenarios/Kingpin/21",
     "wd103": "Scenarios/Kingpin/22", "wd104": "Scenarios/Kingpin/23",
     "wd105": "Scenarios/Kingpin/24", "wd106": "Scenarios/Kingpin/22",
+    # Le modulaire Kraven the Hunter, qu'aucun scenario n'impose mais qui fait
+    # partie du dossier de campagne.
+    "wd107": "Modulars/Kraven the Hunter/1", "wd108": "Modulars/Kraven the Hunter/2",
+    "wd109": "Modulars/Kraven the Hunter/3", "wd110": "Modulars/Kraven the Hunter/4",
+    "wd111": "Modulars/Kraven the Hunter/5",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.
@@ -268,6 +273,7 @@ PAYSAGE = {
     "wd069",                                                     # City Sewers
     "wd077a", "wd077b", "wd084", "wd085",                        # complot et manigances Vulture
     "wd094a", "wd094b", "wd103", "wd104", "wd106",               # complot et manigances Kingpin
+    "wd107",                                                     # Kraven the Hunter
 }
 
 

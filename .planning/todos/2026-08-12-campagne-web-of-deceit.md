@@ -700,3 +700,82 @@ leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4456 ok /
    icône (accélération, crise, danger) que la donnée ne déclare pas.
 3. Les **50 cartes des 5 arbres de talents** et
    `data/campagnes/web_of_deceit.json`.
+
+---
+
+## 20. LA PASSE DE FINITION SUR LES CINQ VILAINS (14/08/2026)
+
+**122 cartes dans le pack.** Cette passe reprend les cinq lots livrés et ferme
+ce qui restait ouvert **côté contenu**.
+
+### Le modulaire Kraven the Hunter est là (5 cartes, `wd107`–`wd111`)
+
+Aucun scénario ne l'impose — le livret recommande Crime Wave pour Kingpin — mais
+il fait partie du dossier de campagne. Prey for Mercy verrouille sa propre
+menace tant que Kraven tient la table, le Tiger perce, et Pit Trap coûte un
+redressement. Deux traits neufs déclarés au moteur : `TRAP!` et `UNDERLING`.
+
+### ⚠️ « Underling » N'EST PAS un modulaire — le §7 se trompait
+
+Le dossier `Scenarios/Vulture/Underling/` (14 cartes) n'est pas un set de
+rencontre : c'est une **variante entière du set Vulture**, numérotée
+« VULTURE (1/14) » à « (14/14) », où le vilain porte le trait **UNDERLING** et
+un texte différent — *retaliate 2 pendant la phase du joueur au lieu de ne pas
+pouvoir être attaqué*, et une mise en place qui cherche un environnement
+« Skies Over New York » absent du set principal.
+
+C'est **une deuxième façon de jouer Vulture**, pas un modulaire à ajouter à une
+rencontre. **Non livrée**, et c'est un choix : la livrer voudrait dire un
+sixième scénario, pas cinq cartes de plus.
+
+### Quatre icônes que la donnée ne déclarait pas
+
+Relevé image par image sur les manigances et les sbires des lots 1 à 3 :
+
+| carte | ce qui manquait |
+|-------|-----------------|
+| `wd011` Grand Larceny | icône de **crise** |
+| `wd044` A.I.M. Scientist | icône d'**accélération** (comme l'officielle `50083`) |
+| `wd048` Accelerated Plans | **deux** icônes d'accélération, tout le sel de la carte |
+| `wd066` Scaly Setback | `Boost` 3 alors que la carte en porte **2** (deux flèches et une étoile) |
+
+### Un dernier appel qui plantait en partie
+
+`HasPermanent` expose `permanent`, pas `is_permanent` : Controlling the
+Narrative (`wd098`) plantait au moment de choisir la manigance à attacher.
+Trouvé par une partie qui faisait tourner Kraven, pas par `test_cards`.
+
+### Mesure finale, sur les cinq scénarios
+
+`verifier_prefixes` OK ; `verifier_cartes_en_jeu` « les 122 cartes portent ce que
+leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4461 ok /
+0 erreur** ; `sonde_capacites` : toutes les faces portent leurs capacités ;
+`autoplay` **36 parties** (Shocker, Electro, The Lizard, Vulture, Kingpin, plus
+une rencontre montée avec Kraven), normal et expert, **ZÉRO traceback**.
+
+### ⚠️ Ce qui reste ouvert, et qui ne vient pas du contenu
+
+**Quatre parties sur 36 se bloquent, toutes de la même façon** : le pilote
+d'`autoplay` repose la même question et le plateau ne bouge pas. Trois causes
+identifiées, dont **deux ne sont pas de ce pack** :
+
+* **Tenacity (`01093`)**, carte joueur OFFICIELLE : « Hero Action: Spend a
+  [physical] resource and discard this card → ready your hero ». Le pilote la
+  choisit quand elle ne peut pas se résoudre et la rechoisit sans fin.
+* **Power Drain (`wd020`)**, lié à l'officielle `02041` : blocage **vérifié
+  comme préexistant** en remettant la donnée d'avant le lot 2.
+* **Kingpin's Cane (`wd100`)**, même famille : un Hero Action à coût que le
+  pilote propose sans pouvoir le payer.
+
+Le garde-fou `MAX_REPETITIONS` d'`autoplay` est fait pour une option refusée puis
+reproposée ; il ne sait pas se désister quand **l'unique** option d'une question
+échoue. **C'est l'outil qu'il faudrait reprendre, pas les cartes** — et le faire
+sans mandat sur un outil éprouvé aurait été un refacto opportuniste.
+
+### Ce qui reste à faire sur la campagne
+
+1. Les **50 cartes des 5 arbres de talents** (`Campaign - Rewards/`) et
+   `data/campagnes/web_of_deceit.json` sur le modèle de `trors.json` — la voie
+   est tranchée depuis le §15 : le carnet de campagne.
+2. La variante **Underling** de Vulture, si on la veut (§ ci-dessus).
+3. Le désistement du pilote d'`autoplay`.
