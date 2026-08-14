@@ -853,3 +853,71 @@ cartes rencontre sous les alliés.
 leur texte annonce » ; `verifier_appels_modules` OK ; `verifier_campagnes` OK ;
 `test_cards` **4461 ok / 0 erreur** ; `autoplay` **30 parties** sur les cinq
 scénarios, normal et expert, **zéro traceback**.
+
+---
+
+## 22. LES 50 MODULES DE TALENTS (14/08/2026) — LA CAMPAGNE EST FINIE
+
+**Les 50 cartes des cinq arbres portent maintenant leurs capacités.** Le pack
+`web_of_deceit` est complet : 172 cartes, toutes générables, toutes câblées sauf
+les quatre écarts écrits ci-dessous.
+
+### La vérification qui compte : un deck qui les contient toutes
+
+`test_cards` ne prouve rien sur une carte joueur — il appelle `GetAbilities()`
+sans jouer. Un **deck de test** (`deck/custom/spider_man_talents.json`, dans le
+dossier de travail seulement) ajoute les 50 cartes au deck de départ de
+Spider-Man ; le bot les pioche, les joue, et c'est là que les défauts tombent.
+
+**Six appels plausibles mais faux, tous invisibles à `test_cards` :**
+
+| appel écrit | ce qui existe vraiment |
+|-------------|------------------------|
+| `WhenCardWouldReveal` + `CancelWhenRevealedEffect` | la fenêtre est `WhenPlayerRevealCard`, avec `"WhenRevealed"` et `from_encounter=True` |
+| `Worlds.GetVictoryDisplayCards` | `Worlds.VictoryDisplay(effect).Get()` |
+| `AlterEgo.ChangeForm` | `ChangeToForm(Hero, effect)` |
+| `Deck2.GetTopCard` | `GetTop()` |
+| `CardFace.CountPrintedRes` | `printed_resource`, un compteur par couleur |
+| `ReduceCostToPlayThis(fn(effect, ui))` | la fonction ne reçoit que l'effet |
+
+### ⚠️ ET DEUX DE PLUS SUR LE LOT 1, ENCORE
+
+**`Faces.HealAll` n'existe pas.** The Getaway (`wd012`) et le Bodyguard
+(`wd028`) l'appelaient : le choix « soigner le vilain » ne soignait rien depuis
+le premier jour. C'est `this.HealthUnits([...], n, effect)`.
+
+⚠️ **`verifier_appels_modules` ne l'a PAS vu**, alors que c'est exactement ce
+qu'il cherche. Sa doc annonce qu'il vérifie les attributs des noms connus
+(`Faces`, `Worlds`) — sur ce cas il a laissé passer. **Seule la partie l'a
+attrapé, pour la troisième fois de cette campagne.**
+
+### Quatre cartes n'ont PAS de module, et c'est écrit
+
+* **`wd116` Earth-001** : « You may include WEB-WARRIOR allies from any aspect
+  during deckbuilding » est une règle de CONSTRUCTION DE DECK, appliquée avant la
+  partie. Le moteur construit les decks depuis `deck/`, hors de portée d'une
+  carte. Elle reste jouable : permanente, elle entre à la mise en place et dit au
+  joueur qu'il avait le droit de mélanger les aspects.
+* **`wd128`, `wd129` Radioactive Power** et **`wd156` The Power of Web** : des
+  ressources nues. Leurs icônes sont dans la donnée, il n'y a rien à brancher.
+
+Et un écart sur une cinquième : **`wd140` See the Future** ne rend que la pioche.
+« Until the end of the round, play with the top card of the encounter deck
+faceup » demande une fenêtre temporaire que `PlayWithTopCardOfDeckFaceup` ne sait
+pas ouvrir — elle est écrite pour une carte qui reste en jeu.
+
+### Mesure
+
+`test_cards` **4511 ok / 0 erreur** ; `verifier_cartes_en_jeu` « les 172 cartes
+portent ce que leur texte annonce » ; `verifier_appels_modules` OK ;
+`verifier_prefixes` OK ; `verifier_campagnes` OK ; **16 parties avec les 50
+cartes dans le deck** (Rhino, Klaw, Shocker, Kingpin) : **les 50 sont passées en
+jeu, ZÉRO traceback**.
+
+### Ce qui reste sur la campagne
+
+1. La variante **Underling** de Vulture (14 cartes) : une deuxième façon de jouer
+   Vulture, donc un sixième scénario — pas cinq cartes à ajouter.
+2. Le **désistement du pilote d'`autoplay`**, qui masque les vrais défauts (§20).
+3. **Jouer une partie dans un navigateur** : tout ci-dessus est mesuré par le
+   moteur, personne n'a encore vu la campagne à l'écran.

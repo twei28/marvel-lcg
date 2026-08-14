@@ -19,7 +19,7 @@ def GetAbilities() -> Sequence['Ability']:
             Faces.GiveStatus([villain], "Tough", effect)
 
         def soigner(targets: Sequence['CardFace']) -> None:
-            Faces.HealAll([villain], 4, effect)
+            this.HealthUnits([villain], 4, effect)
 
         joueur.ChooseAbilities(
             effect,

@@ -13,7 +13,7 @@ def GetAbilities() -> Sequence['Ability']:
 
         def soigner(targets: Sequence['CardFace']) -> None:
             if villain:
-                Faces.HealAll([villain], 3, effect)
+                this.HealthUnits([villain], 3, effect)
                 villain.DoSchemes(joueur, effect)
 
         def rappeler_les_gants(targets: Sequence['CardFace']) -> None:
