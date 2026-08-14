@@ -1272,3 +1272,64 @@ sens de l'erreur, c'est la source** : à chaque fois, un mot du texte anglais �
 **Mesure** : `test_cards` 4515 ok / 0 erreur, `verifier_appels_modules` OK, les
 trois cartes portent leurs capacités, et **9 parties avec les 50 talents dans le
 deck** (Rhino, Shocker, Kingpin) — zéro incident, zéro traceback.
+
+---
+
+## 28. LA REVUE TEXTE-CONTRE-CODE : CE QUI EST FAIT, CE QUI RESTE
+
+Cinq défauts trouvés en deux passes (§26, §27), **tous invisibles aux outils** :
+les cartes se génèrent, leurs appels existent, leur texte correspond à la donnée.
+Assez pour en faire une **méthode**, et pour dire précisément où elle s'est
+arrêtée.
+
+### Les cinq défauts, et leur source commune
+
+| carte | le mot du texte | ce que le module faisait |
+|-------|-----------------|--------------------------|
+| `wd162`–`wd164` Vulture sous-fifre | « **unless** the attacker … AERIAL » | ripostait **quand** il fallait ne pas riposter |
+| `wd027` "He's Mine!" | « the Bodyguard **ATTACHMENT** » | confondait avec le **sbire** du même nom |
+| `wd121` Master Weaver | « **each** WEB-WARRIOR ally » | limité à **ses** alliés (`control_by="You"`) |
+| `wd133` Spider-Sense | « an attack **against you** » | sonnait pour **tous** les joueurs |
+| `wd145` Flee the Scene | « removes **threat** » | exigeait le **dernier** pion |
+
+**La source est toujours la même** : un mot du texte anglais — `unless`,
+`ATTACHMENT`, `each`, `against you`, `the last` — que le module n'a pas rendu.
+Le sens de l'erreur, lui, varie : deux portées trop larges, une trop étroite, une
+condition inversée, une trop stricte. **Ne pas chercher un motif dans le sens,
+chercher le mot.**
+
+### ⚠️ CE QUI RESTE À PASSER AU CRIBLE — 126 cartes
+
+Les deux passes ont couvert :
+
+* **§26** : les cartes du pack ENTIER portant un mot de condition
+  (`unless`, `otherwise`, `without`, `while`, `instead of`, `If you cannot`) —
+  **21 cartes**, modulaires compris ;
+* **§27** : les **50 cartes de talents**, avec en plus une comparaison
+  automatique des NOMBRES du texte et du code.
+
+**Ce qui n'a PAS été fait** : la même revue, avec la liste de mots ÉLARGIE
+(`another`, `each`, `for each`, `equal to`, `against you`, `your`) et la
+comparaison des nombres, sur les **126 cartes hors talents** — les cinq sets de
+vilain, les modulaires (Crime Wave, Power Drain II, Bodyguard, City Sewers,
+Kraven, Underling) et la mise en place. Le compte exact :
+
+* **80** portent une clause ou une portée à vérifier ;
+* **46** n'en portent pas et peuvent être survolées.
+
+⚠️ Le §26 n'en avait vu que 21 : sa liste de mots ne contenait ni `each`, ni
+`for each`, ni `against you`, ni `your` — c'est-à-dire **précisément les mots qui
+ont livré les trois défauts du §27**. La revue des modulaires est donc à refaire
+avec la liste complète, pas seulement à compléter.
+
+### La méthode, pour qui reprend
+
+1. Extraire le texte de la carte depuis `cards.json` (pas depuis l'image : c'est
+   la donnée que le moteur lit).
+2. Relire le module **à côté**, mot à mot, en cherchant : le **sens** de la
+   condition, la **portée** (`your` / `each` / `another` / `you control`), le
+   **timing** (`when` / `after` / `instead`), et le **type** visé quand un nom est
+   partagé (« Electro » est porté par cinq cartes de ce pack, « Vulture » par
+   trois, « Bodyguard » par deux).
+3. Comparer les nombres du texte à ceux du code — en sachant que les valeurs de
+   `desc` (Uses, Victory, Boost) n'apparaissent pas dans le module.
