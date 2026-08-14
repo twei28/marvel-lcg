@@ -985,3 +985,25 @@ cette fois, pas le garde-fou.
 
 **Jouer dans un navigateur.** Tout est mesuré par le moteur ; personne n'a encore
 vu la campagne à l'écran. C'est aussi le point resté ouvert de Civil War.
+
+### `verifier_scenes_campagne.py` — ce qu'aucun autre outil ne disait
+
+Un outil neuf ferme le dernier trou de vérification. `test_cards` construit les
+capacités d'une carte, `autoplay` joue une partie, `verifier_campagnes` compare
+les clés du carnet aux littéraux du `campaign.py`. **Aucun ne vérifie qu'une
+SCÈNE se crée** — c'est pourtant la première chose que fait le moteur quand un
+joueur choisit un scénario dans le navigateur. Un `encounter_sets` mal nommé, un
+`set_aside` qui pointe une carte absente, une face B de complot manquante : rien
+ne lève d'erreur ailleurs, et le joueur voit un écran vide.
+
+Il vérifie en plus que chaque option d'arbre citée par le carnet existe dans
+`cards.json` : une option fantôme ne s'affiche simplement jamais.
+
+**Mesure : les 12 scènes de la campagne se créent** (les cinq scénarios, leurs
+variantes expertes, et les deux d'Underling), et **les 50 options du carnet
+pointent toutes une carte qui existe**.
+
+⚠️ Deux pièges payés en l'écrivant, et écrits dans son en-tête : le moteur garde
+des fils vivants après `Initialize` (d'où `os._exit` plutôt qu'un `SystemExit`
+qui ne rendrait jamais la main), et **`os._exit` ne vide pas les tampons** — sans
+le `flush`, l'outil sortait en silence et son rapport se perdait.
