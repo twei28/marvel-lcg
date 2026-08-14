@@ -1061,3 +1061,56 @@ le `flush`, l'outil sortait en silence et son rapport se perdait.
 3. **Le blocage de Tenacity** (`01093`) : le moteur propose l'action alors que le
    héros est déjà prêt. C'est une carte OFFICIELLE — donc soit son module, soit
    le moteur. À instruire avant de toucher quoi que ce soit.
+
+---
+
+## 25. LES TROIS POINTS OUVERTS N'EN FAISAIENT QU'UN (14/08/2026)
+
+Instruits ensemble, les trois derniers points se sont révélés **une seule
+cause** : le pilote d'`autoplay` abandonnait la mauvaise chose.
+
+### Ce que la mesure a montré
+
+Une action de tour se joue en **deux temps** : le menu (« Hero Action »,
+« Play ») puis le ciblage (« Select 2 cards to swap »). **C'est le ciblage qui
+boucle, mais c'est le MENU qu'il faut abandonner** — désister le ciblage ne fait
+que reproposer la même action au tour suivant. Le désistement du §23 gardait la
+dernière option choisie, c'est-à-dire le ciblage ; il garde maintenant les
+**trois derniers choix** et les écarte tous.
+
+**Mesure, avec Falcon (héros AERIAL, jamais essayé jusque-là) :**
+
+| | avant | après |
+|---|---|---|
+| Falcon vs Vulture / The Lizard, 6 parties | **7 bloquées** | **0** |
+
+⚠️ Et le blocage n'était pas de notre contenu : **Battlefield Awareness
+(`53010`)**, carte joueur OFFICIELLE de Falcon, avec sa question « Select 2 cards
+to swap ». Comme Tenacity, comme Power Drain : **le pilote, pas les cartes.**
+
+### Ce que la sonde a établi sur Underling, et qui ferme une fausse piste
+
+Le §23 accusait le **payeur** du pilote. C'est FAUX, et une sonde qui capture la
+question telle que le moteur la pose le montre :
+
+```
+Hero_Action_1 … "target_payment": {"0": {"cost": "Y", "payment": [{"10": "Y"}, {"11": "Y"}]}}
+```
+
+Le champ **est** renseigné, et `payer()` sait le lire. La piste suivante est
+ailleurs : **l'empreinte de progrès du détecteur de boucle ne voit pas un TRAIT
+accordé**. Skies Above New York donne AERIAL à un personnage — ni les PV, ni la
+menace, ni la taille de main, ni le round ne bougent. Le détecteur conclut à une
+boucle alors que l'action a peut-être réussi.
+
+**À reprendre par là**, et pas par le payeur : ajouter les traits accordés (ou un
+compteur d'effets résolus) à l'empreinte de `progres`.
+
+### État des blocages, mesuré sur 15 parties
+
+| scénario | bloquées | cause |
+|---|---|---|
+| Rhino, Klaw, Shocker | 0 | — |
+| Kingpin | 1 / 3 | **Tenacity (`01093`)**, carte officielle |
+| Vulture (Underling) | 3 / 3 | l'empreinte de progrès, ci-dessus |
+

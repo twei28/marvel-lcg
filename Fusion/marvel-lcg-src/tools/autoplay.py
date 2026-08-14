@@ -759,12 +759,16 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # b) Sinon on ecarte l'option fautive et on laisse la question etre
             #    reposee : le tour suivant la choisira autrement.
             desistees = etat.setdefault("desistees", set())
-            if fautive is not None and fautive not in desistees and mini_f == 0:
-                desistees.add(fautive)
+            recentes = [x for x in etat.get("dernieres_options", [])
+                        if x not in desistees]
+            if recentes:
+                desistees.update(recentes)
                 etat["derniere_reponse_legale"] = False
-                etat["derniere_question_brute"] = brute
+                etat["derniere_question_brute"] = None
                 etat["dernier_progres"] = progres
-                return passer
+                if mini_f == 0:
+                    return passer
+                return self_pilote(data, player_id, check)
             # c) Une question FORCEE a plage fixe qui echoue toujours n'a pas
             #    de remede cote pilote : le moteur propose une action qui ne
             #    peut pas se resoudre, et aucune reponse ne la fera passer.
@@ -787,6 +791,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # n'ont plus lieu d'etre, une option ecartee peut redevenir jouable.
             etat["desistees"] = set()
             etat["cibles_bonus"] = 0
+            etat["dernieres_options"] = []
         etat["derniere_question_brute"] = brute
         etat["dernier_progres"] = progres
 
@@ -920,6 +925,15 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
 
         etat["derniere_reponse_legale"] = True
         etat["derniere_option"] = clef_option(meilleure)
+        # ⚠ LA QUESTION QUI SE REPETE N'EST PAS CELLE QU'IL FAUT ECARTER.
+        # Une action de tour se joue en DEUX temps : le menu (« Hero Action »,
+        # « Play ») puis le ciblage (« Select 2 cards to swap »). C'est le
+        # ciblage qui boucle, mais c'est le MENU qu'il faut abandonner — desister
+        # le ciblage ne fait que reproposer la meme action au tour suivant. On
+        # garde donc les trois derniers choix, et le desistement les ecarte tous.
+        recentes = etat.setdefault("dernieres_options", [])
+        recentes.append(clef_option(meilleure))
+        del recentes[:-3]
         return json.dumps({"id": str(meilleure.get("id", 0)),
                            "targets": cibles,
                            "resources": payer(meilleure, cibles, ctx)})

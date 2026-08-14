@@ -46,6 +46,7 @@ def GetAbilities() -> Sequence['Ability']:
         ),
         # Le « OU » du texte est DEUX abilites, pas un cout a deux visages.
         action([a_une_carte_aerienne])
-        .SetCostFunc(CostFunc.Exhaust(trait="AERIAL")),
+        .SetCostFunc(CostFunc.Exhaust(trait="AERIAL"))
+        .SetCondition(only_if_you_control_trait="AERIAL"),
         action().SetCost(Cost("Y")),
     ]
