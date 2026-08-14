@@ -921,3 +921,67 @@ jeu, ZÉRO traceback**.
 2. Le **désistement du pilote d'`autoplay`**, qui masque les vrais défauts (§20).
 3. **Jouer une partie dans un navigateur** : tout ci-dessus est mesuré par le
    moteur, personne n'a encore vu la campagne à l'écran.
+
+---
+
+## 23. UNDERLING, ET LE PILOTE QUI SAIT SE DÉSISTER (14/08/2026)
+
+### Le pilote d'`autoplay` abandonne enfin une option qui échoue
+
+Le garde-fou rendait « bloquee » dès la première répétition sans progrès : il
+n'avait aucun moyen de **passer à autre chose**. Deux ajouts (commit à part) :
+
+* **le désistement** — l'option qui vient d'échouer est écartée et la question
+  reposée ; le verdict ne tombe qu'après les avoir toutes épuisées ;
+* **la montée de cibles** — une plage `[1, 3]` ne veut pas dire « 1 suffit » :
+  Power Drain (`02041`) exige autant de cartes que d'icônes de boost défaussées,
+  un nombre que la question n'annonce pas.
+
+**Mesure : de 3 parties bloquées sur 30 à 1 sur 21**, la dernière étant
+**Tenacity (`01093`), une carte joueur OFFICIELLE** que le moteur propose alors
+que le héros est déjà prêt. Aucune régression sur les scénarios officiels.
+
+### Underling : 4 cartes neuves, pas 14 (`wd162`–`wd165`)
+
+La lecture carte par carte tranche : **dix des quatorze sont celles du set
+Vulture déjà livré**, au mot près — Feather Daggers, Vulturion ×2, The Vulture's
+Plans, Sweeping Swoop, Falling ×2, Aerial Advantage, Aerial Dogfight, Highway
+Robbery. Le set de rencontre `underling` les réutilise telles quelles.
+
+**Seules quatre sont neuves** : les trois stades d'un Vulture qui porte le trait
+`UNDERLING` et **RIPOSTE** au lieu d'être intouchable (2, puis 3 au stade III,
+sauf si l'attaquant est AERIAL), et l'environnement **Skies Above New York**, qui
+donne le trait AERIAL à un personnage ami — c'est lui qui rend le vilain jouable
+au sol.
+
+⚠️ La carte du vilain écrit « Skies **Over** New York », l'environnement s'appelle
+« Skies **Above** New York ». Coquille de l'auteur, tranchée en faveur du nom de
+la carte cherchée.
+
+Un scénario `wd_vulture_underling` (et sa variante experte) le rend jouable avec
+le complot de Surveillance Pigeons.
+
+### ⚠️ CE QUI N'EST PAS VÉRIFIÉ, ET IL FAUT LE SAVOIR
+
+**Les 8 parties d'`autoplay` sur ce scénario se bloquent toutes**, sur le Hero
+Action de Skies Above New York. La cause n'est pas la carte : **le pilote ne sait
+pas payer un coût en ressources porté par une carte de RENCONTRE**. Son
+`payer()` lit le champ `target_payment` de la question, que le moteur ne
+renseigne pas pour une action offerte par une carte que le joueur ne contrôle
+pas — il envoie donc une réponse sans ressource, l'action échoue, et la question
+revient.
+
+Le même schéma existe depuis le lot 1 sur Ionic Boots (`wd010`) et Kingpin's Cane
+(`wd100`) : il n'avait jamais bloqué **par chance**, le bot ne choisissant pas
+toujours ces actions.
+
+**Ce qui EST vérifié** : `test_cards` 4515 ok / 0 erreur, les 176 cartes portent
+ce que leur texte annonce, `verifier_appels_modules` OK, `verifier_prefixes` OK,
+et les quatre faces portent leurs capacités. **Ce qui ne l'est pas** : une partie
+complète de ce scénario. C'est le pilote qu'il faudrait reprendre — le payeur,
+cette fois, pas le garde-fou.
+
+### Ce qui reste sur la campagne
+
+**Jouer dans un navigateur.** Tout est mesuré par le moteur ; personne n'a encore
+vu la campagne à l'écran. C'est aussi le point resté ouvert de Civil War.

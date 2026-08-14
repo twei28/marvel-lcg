@@ -306,6 +306,12 @@ IMAGES = {
     "wd149": "Campaign - Rewards/Symbiosis/8_-_Monstrous",
     "wd150": "Campaign - Rewards/Symbiosis/9_-_Get_it_Off",
     "wd151": "Campaign - Rewards/Symbiosis/10_-_Unity",
+    # La variante UNDERLING du set Vulture : seules quatre de ses quatorze
+    # cartes sont neuves, les dix autres sont celles du set principal.
+    "wd162": "Scenarios/Vulture/Underling/1",
+    "wd163": "Scenarios/Vulture/Underling/2",
+    "wd164": "Scenarios/Vulture/Underling/3",
+    "wd165": "Scenarios/Vulture/Underling/14",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.

@@ -75936,7 +75936,74 @@
             ],
             "set_name": "Web of Deceit Rewards",
             "text": "Attach to an enemy.\nAttached enemy loses steady and stalwart.\n<b>Forced Interrupt</b>: When an enemy would activate, discard Webbed instead."
+        },
+        {
+            "card_id": "wd162",
+            "type": "Villain",
+            "name": "* Vulture",
+            "subtitle": "",
+            "desc": {
+                "HP": "10*",
+                "ATK": "2",
+                "SCH": "1",
+                "Stage": "1"
+            },
+            "traits": [
+                "AERIAL",
+                "UNDERLING"
+            ],
+            "set_name": "Underling",
+            "text": "<b>Setup</b>: Find the Skies Above New York environment and reveal it.\nVulture gains retaliate 2 during the player phase unless the attacker or attack has the AERIAL trait."
+        },
+        {
+            "card_id": "wd163",
+            "type": "Villain",
+            "name": "* Vulture",
+            "subtitle": "",
+            "desc": {
+                "HP": "15*",
+                "ATK": "3",
+                "SCH": "1",
+                "Stage": "2"
+            },
+            "traits": [
+                "AERIAL",
+                "UNDERLING"
+            ],
+            "set_name": "Underling",
+            "text": "<b>Setup</b>: Find the Skies Above New York environment and reveal it.\nVulture gains retaliate 2 during the player phase unless the attacker or attack has the AERIAL trait."
+        },
+        {
+            "card_id": "wd164",
+            "type": "Villain",
+            "name": "* Vulture",
+            "subtitle": "",
+            "desc": {
+                "HP": "20*",
+                "ATK": "3",
+                "SCH": "2",
+                "Stage": "3"
+            },
+            "traits": [
+                "AERIAL",
+                "UNDERLING"
+            ],
+            "set_name": "Underling",
+            "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for the Feather Daggers attachment and reveal it.\nVulture gains retaliate 3 during the player phase unless the attacker or attack has the AERIAL trait."
+        },
+        {
+            "card_id": "wd165",
+            "type": "Environment",
+            "name": "Skies Above New York",
+            "subtitle": "",
+            "desc": {},
+            "traits": [
+                "LOCATION",
+                "SETTING"
+            ],
+            "set_name": "Underling",
+            "text": "<b>When Revealed</b>: Discard each other SETTING environment in play.\n<b>Hero Action</b>: Exhaust an AERIAL card you control or spend an [energy] resource → a friendly character you control gains the AERIAL trait until the end of the round."
         }
     ],
-    "checksum": "66d9a07c06ec141d02300e039d2d675e2a16f11c0e99689fadd4db4fbbf8ebd0"
+    "checksum": "729e011dd9cffe52f29bb16c43c830666a0fac021fc4b3d5dc99cb44e03a726e"
 }
