@@ -1052,9 +1052,12 @@ le `flush`, l'outil sortait en silence et son rapport se perdait.
    parties du scénario Underling, et ce qui dort depuis le lot 1 sur Ionic Boots
    (`wd010`) et Kingpin's Cane (`wd100`). **C'est le dernier vrai chantier
    d'outil**, et il rendrait Underling vérifiable comme les cinq autres.
-2. **Élargir la couverture d'`autoplay`** à d'autres héros que Spider-Man : les
-   62 parties menées jusqu'ici l'ont toutes été avec lui ou son deck augmenté.
-   Un deck AERIAL (Falcon) éprouverait Vulture pour de bon.
+2. ~~**Élargir la couverture d'`autoplay`** à d'autres héros que Spider-Man.~~
+   **FAIT** : 10 parties avec **Black Panther** sur les cinq scénarios, **zéro
+   incident, zéro traceback**. Les 72 parties de la campagne ne reposent donc
+   plus sur un seul deck. Reste utile un jour : un héros **AERIAL** (Falcon)
+   éprouverait la clause de Vulture pour de bon, et un héros **GENIUS** l'action
+   d'alter-ego de The Cure.
 3. **Le blocage de Tenacity** (`01093`) : le moteur propose l'action alors que le
    héros est déjà prêt. C'est une carte OFFICIELLE — donc soit son module, soit
    le moteur. À instruire avant de toucher quoi que ce soit.
