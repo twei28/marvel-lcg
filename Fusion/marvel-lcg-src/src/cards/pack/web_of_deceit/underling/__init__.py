@@ -18,18 +18,40 @@ def RiposteSaufContreLesAeriens(valeur: int) -> 'Ability':
     """« Vulture gains retaliate N during the player phase unless the attacker or
     attack has the AERIAL trait. »
 
-    Le meme texte porte les trois stades. La riposte est CONDITIONNELLE, ce que
-    le mot-cle `Retaliate` de la donnee ne saurait dire : elle est donnee ici, et
-    seulement quand l'attaquant n'est pas aerien.
-    """
-    def pas_aerien(effect: 'Effect') -> bool:
-        return not Worlds.FindCardOnField(
-            effect, CardFinder(trait="AERIAL", card_type=Friend))
+    Le meme texte porte les trois stades, a la valeur pres.
 
-    return AbilityFactory.ThisGainKeyword(
-        lambda effect, ui: 0 if pas_aerien(effect) else 1,
-        retaliate=valeur,
-        change_on_event=OnEvent.CardInPlay(None),
+    ⚠ CE N'EST PAS LE MOT-CLE `Retaliate`, ET LE PREMIER JET L'AVAIT INVERSE.
+    La riposte depend de QUI FRAPPE, un renseignement que le moteur ne connait
+    qu'au moment de l'attaque : un mot-cle constant ne peut pas l'exprimer. Le
+    premier jet lisait « une carte AERIAL est-elle en jeu ? » et donnait la
+    riposte quand il y en avait une — l'exact contraire du texte, qui l'enleve
+    dans ce cas.
+    """
+    def attaquant_aerien(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> bool:
+        attaquant = message.attacker
+        if attaquant is not None and attaquant.HasTrait("AERIAL"):
+            return True
+        # « or attack has the AERIAL trait » : la carte qui porte l'attaque, un
+        # evenement par exemple, compte autant que celui qui la lance.
+        source = message.by_effect.this if hasattr(message, "by_effect") else None
+        return bool(source is not None and source.HasTrait("AERIAL"))
+
+    def riposter(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
+        this = effect.this.CastTo(EncounterVillain)
+        attaquant = message.attacker
+        if attaquant is not None:
+            this.DealDamage([attaquant], valeur, effect)
+
+    return AbilityFactory.AfterUnitBeAttacked(
+        AbilityType.ForcedResponse,
+        "This",
+        riposter,
+        conditions=[
+            # « during the player phase » : la riposte ne mord que quand ce sont
+            # les heros qui frappent, pas pendant la phase du vilain.
+            lambda effect, message: Worlds.Phase(effect).IsPlayerPhase("AnyPlayer"),
+            lambda effect, message: not attaquant_aerien(effect, message),
+        ],
     )
 
 

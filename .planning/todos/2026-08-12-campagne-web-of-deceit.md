@@ -1145,3 +1145,41 @@ restriction posée par le scénario) qui rend toute action impossible.
 soupçonner encore une carte. Trois hypothèses ont été éliminées par la mesure :
 le payeur (§25), l'empreinte de progrès (ici), et le désistement (§25, qui a bien
 réglé les 7 blocages de Falcon).
+
+---
+
+## 26. LA RIPOSTE DU VULTURE SOUS-FIFRE ÉTAIT INVERSÉE (14/08/2026)
+
+La carte dit :
+
+> **AERIAL. UNDERLING.**
+> **Setup**: Find the Skies Over New York environment and reveal it.
+> **Vulture gains retaliate 2 during the player phase unless the attacker or
+> attack has the AERIAL trait.** *(retaliate 3 au stade III)*
+
+Elle riposte **sauf** contre les aériens : voler est ce qui protège.
+
+**Le premier jet faisait exactement l'inverse.** Il lisait « une carte AERIAL
+est-elle en jeu ? » et donnait la riposte quand il y en avait une :
+
+```python
+def pas_aerien(effect):
+    return not Worlds.FindCardOnField(effect, CardFinder(trait="AERIAL", card_type=Friend))
+return AbilityFactory.ThisGainKeyword(lambda effect, ui: 0 if pas_aerien(effect) else 1, retaliate=valeur)
+```
+
+Deux erreurs empilées : **le sens** (riposte quand il faudrait ne pas riposter) et
+**la portée** (une carte AERIAL quelconque en jeu, là où le texte parle de
+**l'attaquant**).
+
+⚠️ **Ce n'est pas le mot-clé `Retaliate`, et ça ne pouvait pas l'être** : la
+riposte dépend de QUI FRAPPE, un renseignement que le moteur ne connaît qu'au
+moment de l'attaque. Un mot-clé constant ne sait pas l'exprimer. C'est désormais
+une réponse à l'attaque (`AfterUnitBeAttacked`) qui vérifie le trait de
+l'attaquant **et** de la carte qui porte l'attaque, et qui ne mord que pendant la
+phase du joueur.
+
+**Aucun outil n'aurait trouvé ça** : la carte se génère, ses appels existent, son
+texte correspond à la donnée, et une partie ne dit pas qu'une riposte s'est
+déclenchée au mauvais moment. **C'est une lecture du texte contre le code qui l'a
+sortie** — la même méthode qui avait donné les six réimpressions du lot 4.
