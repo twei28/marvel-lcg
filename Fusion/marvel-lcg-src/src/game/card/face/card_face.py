@@ -158,7 +158,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # CORRECTIF : compteurs du pack custom web_of_deceit (Ripper3). The Lizard
         # gagne +1 ATK par compteur « formula », et Curt Connors ne revient au
         # Lizard que quand le dernier compteur « sanity » quitte Lizard Brain.
-        'formula', 'sanity',
+        # Les « pigeon » vivent sur le complot principal du scenario Vulture :
+        # ils remplacent la menace qu'on voudrait retirer, trois pour trois.
+        'formula', 'sanity', 'pigeon',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

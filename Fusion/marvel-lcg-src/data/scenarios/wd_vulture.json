@@ -1,0 +1,27 @@
+{
+    "version": "0.5.8",
+    "name": "Vulture",
+    "villain": [
+        "wd074",
+        "wd075"
+    ],
+    "expert": false,
+    "schemes": [
+        "wd077a,wd077b"
+    ],
+    "set_aside": [
+        "wd030",
+        "wd031",
+        "wd032",
+        "wd090"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "vulture",
+        "standard_iii",
+        "bodyguard"
+    ],
+    "modular_sets": [
+        "aim_abduction"
+    ]
+}

@@ -546,3 +546,79 @@ pas — **« Vote for Fisk » n'entrait dans AUCUN scénario de la campagne** �
 2. Les 50 cartes des 5 arbres de talents et `data/campagnes/web_of_deceit.json`.
 3. Le point ouvert de Power Drain (`wd020`), qui bloque une partie de Shocker
    expert et **préexiste** aux lots 2 et 3.
+
+---
+
+## 18. LE SCÉNARIO #4 EST DANS LE JEU (14/08/2026)
+
+**18 faces neuves, `wd074` à `wd090`.** Le scénario n'a **qu'un seul complot
+principal** (Surveillance Pigeons) et trois stades de vilain, deux joués.
+
+⚠️ Le §8 de cette fiche annonçait « Surveillance **Airship** » : c'est une
+erreur de relevé, la carte du Drive dit **Surveillance Pigeons**. Et la face 1A
+porte « KINGPIN (4/24) » en pied de carte, une coquille de l'auteur que le
+verso corrige.
+
+### Quatre réimpressions, quatre modules en moins
+
+Relevé en comparant les textes AVANT d'écrire, comme au lot 1 :
+
+| carte | officielle | ce qui est identique |
+|-------|-----------|---------------------|
+| The Vulture's Plans | `01169` | texte et boost au mot près |
+| Highway Robbery | `01166` | texte, boost, accélération, menace |
+| Aerial Dogfight | `50159` | tout, jusqu'à `Hinder 2[per_hero]` |
+| Sweeping Swoop | `01168` | le **boost** seulement |
+
+Sweeping Swoop est le cas limite : son boost est celui de la carte officielle,
+mais son « When Revealed » déferle TOUJOURS là où l'officielle ne déferle que si
+Vulture est en jeu. Pas de lien possible, mais la même fabrique
+(`BoostIfThisActivationDealsDamage`) fait le travail.
+
+### Les pigeons sont un BOUCLIER, pas une menace
+
+Le compteur `pigeon` vit sur le complot **principal**. Tant qu'il y en a trois,
+la prochaine tentative de retirer de la menace en retire **trois pigeons à la
+place** : le réseau de surveillance encaisse. Chaque Aerial Advantage détruit,
+chaque Aviator Goggles posé, chaque harnais rendu en ajoute.
+
+Mesuré dans le journal : `[Surveillance Pigeons] reçoit 1 compteur(s) « pigeon »
+([Aerial Advantage])`.
+
+**La mise en place distribue une carte JOUEUR**, le Wingsuit V2, une par joueur,
+et met les deux Aerial Advantage en jeu sur le vilain. Mesuré :
+`[Peter Parker] equipped [Wingsuit V2]`, puis `[Vulture] equipped [Aerial
+Advantage]` deux fois.
+
+### Un écart, écrit
+
+**« Vulture cannot be attacked ... unless the attack has ranged »** : `ranged`
+est une propriété de l'ATTAQUE, pas d'une carte, et la fenêtre qui décide si
+Vulture peut être ciblé (`CheckIfUnitCanBeAttackBy`) est **antérieure à la
+déclaration de l'attaque** — la portée n'y existe pas encore. Seul le trait
+AERIAL est donc vérifié, sur l'attaquant comme sur la carte qui porte l'attaque.
+C'est la voie que le scénario met en avant : le Wingsuit distribué à la mise en
+place donne justement ce trait.
+
+### Ce que ce lot a trouvé sur les précédents
+
+* **`"Attached"` n'est pas un littéral que le moteur connaît** — la liste dit
+  `AttachedMinion`, `AttachedVillain`, `AttachedIdentity`... Une chaîne inconnue
+  est traitée comme une SÉQUENCE de caractères et lève une assertion. Le
+  Bodyguard (`wd026`) plantait donc à chaque fois que son sbire était vaincu.
+* **`AfterYouResolveTreachery` exige un joueur comme initiateur**, et
+  l'initiateur d'un complot principal est le VILAIN : Power Surge (`wd039b`)
+  levait une assertion à chaque traîtrise d'Electro résolue. L'abilité est
+  reconstruite à la main, sans le filtre « you ».
+
+### Mesure
+
+`verifier_prefixes` OK ; `verifier_cartes_en_jeu` « les 100 cartes portent ce que
+leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4440 ok /
+0 erreur** ; `sonde_capacites` : les 18 faces portent leurs capacités ;
+`autoplay` **24 parties sur les quatre scénarios**, normal et expert,
+**zéro traceback**.
+
+⚠️ **Le modulaire `Underling` (14 cartes) n'est PAS livré** : il est dans le
+dossier du scénario Vulture mais le livret ne l'impose à aucune rencontre. À
+créer avec le lot Kingpin, ou séparément.

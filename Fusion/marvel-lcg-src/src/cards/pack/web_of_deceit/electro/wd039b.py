@@ -21,9 +21,8 @@ def GetAbilities() -> Sequence['Ability']:
         effect.this.CastTo(CanAccelerationToken).PlaceAccelerationToken(1, effect)
 
     def est_une_traitrise_electro(effect: 'Effect', message: 'Message.AfterCardRevealed') -> bool:
-        # La fabrique ne sait filtrer que « une traitrise », pas « une traitrise
-        # d'Electro » : le set se verifie ici.
-        return message.trigger.paper.set_name == "Electro"
+        return Treachery.IsType(message.trigger) and \
+            message.trigger.paper.set_name == "Electro"
 
     def retirer(effect: 'Effect', message: 'Message.AfterCardRevealed') -> None:
         # « [star] Forced Response: After you resolve an Electro treachery,
@@ -38,10 +37,17 @@ def GetAbilities() -> Sequence['Ability']:
             None,
             icone_dacceleration
         ),
-        AbilityFactory.AfterYouResolveTreachery(
+        # ⚠ `AfterYouResolveTreachery` compare `effect.GetInitiator()` au joueur
+        # qui revele, et cette methode EXIGE un joueur. L'initiateur du complot
+        # principal est le VILAIN : la fabrique levait une assertion a chaque
+        # traitrise resolue. L'abilite est donc construite a la main, sans le
+        # filtre « you » — sur un complot principal, tous les joueurs sont
+        # concernes de toute facon.
+        Ability(
             AbilityType.ForcedResponse,
+            Message.AfterCardRevealed,
+            [est_une_traitrise_electro],
             retirer,
-            conditions=[est_une_traitrise_electro],
         ),
         # « If this stage is completed, the players lose the game. »
         AbilityFactory.IfThisSchemeStageIsCompletedPlayersLoseTheGame(),

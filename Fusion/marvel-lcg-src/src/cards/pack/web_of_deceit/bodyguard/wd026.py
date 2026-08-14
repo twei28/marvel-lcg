@@ -46,7 +46,7 @@ def GetAbilities() -> Sequence['Ability']:
         ),
         AbilityFactory.WhenUnitBeDefeated(
             AbilityType.ForcedInterrupt,
-            "Attached",
+            "AttachedMinion",
             sbire_vaincu,
         ),
     ]

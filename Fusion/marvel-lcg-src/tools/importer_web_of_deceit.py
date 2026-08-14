@@ -226,6 +226,18 @@ IMAGES = {
     "wd069": "Modulars/City Sewers/1", "wd070": "Modulars/City Sewers/2",
     "wd071": "Modulars/City Sewers/3", "wd072": "Modulars/City Sewers/5",
     "wd073": "Modulars/City Sewers/7",
+    # Scenario #4 — Vulture. « Wingsuit-v2 » est la version a jour de la carte
+    # joueur que la mise en place distribue ; « Wingsuit » est son premier jet.
+    "wd074": "Scenarios/Vulture/1", "wd075": "Scenarios/Vulture/2",
+    "wd076": "Scenarios/Vulture/3",
+    "wd077a": "Scenarios/Vulture/4a", "wd077b": "Scenarios/Vulture/4b",
+    "wd078": "Scenarios/Vulture/5", "wd079": "Scenarios/Vulture/7",
+    "wd080": "Scenarios/Vulture/9", "wd081": "Scenarios/Vulture/12",
+    "wd082": "Scenarios/Vulture/16", "wd083": "Scenarios/Vulture/17",
+    "wd084": "Scenarios/Vulture/18", "wd085": "Scenarios/Vulture/19",
+    "wd086": "Scenarios/Vulture/20", "wd087": "Scenarios/Vulture/22",
+    "wd088": "Scenarios/Vulture/23", "wd089": "Scenarios/Vulture/24",
+    "wd090": "Scenarios/Vulture/Wingsuit-v2",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.
@@ -242,6 +254,7 @@ PAYSAGE = {
     "wd038a", "wd038b", "wd039a", "wd039b",                      # complots Electro
     "wd055a", "wd056b",                                          # complots The Lizard
     "wd069",                                                     # City Sewers
+    "wd077a", "wd077b", "wd084", "wd085",                        # complot et manigances Vulture
 }
 
 

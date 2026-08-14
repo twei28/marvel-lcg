@@ -12,7 +12,7 @@ def GetAbilities() -> Sequence['Ability']:
 
     def a_un_genie(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
         joueur = effect.GetInitiator()
-        return joueur.GetControlCards(CardFinder(trait="GENIUS", card_type=Character)) != []
+        return joueur.GetControlCards(CardFinder(trait="GENIUS", card_type=Friend)) != []
 
     def plus_de_menace(effect: 'Effect', message: 'Message.AfterSchemeRemoveThreat') -> None:
         # « If there is no threat here and the Lizard is not in play, the

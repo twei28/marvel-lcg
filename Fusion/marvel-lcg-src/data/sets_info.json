@@ -1054,11 +1054,12 @@
         "scenarios": [
             "wd_shocker",
             "wd_electro",
-            "wd_the_lizard"
+            "wd_the_lizard",
+            "wd_vulture"
         ],
         "heroes": [],
         "encounters": [],
-        "max_id": "wd073"
+        "max_id": "wd090"
     },
-    "checksum": "1ee4283e1b4a3b5c87d3824b2c583fb53f471fe2265cbbd73422d13844427821"
+    "checksum": "60a308fcaa2087902931bc3ac7c58dea6e348ec5ae02b6f9835b11f573f6d0e1"
 }
