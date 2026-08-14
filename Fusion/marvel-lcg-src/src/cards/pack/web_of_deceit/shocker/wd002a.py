@@ -15,6 +15,11 @@ def GetAbilities() -> Sequence['Ability']:
         if obligations:
             Faces.RemoveAllFromGame(obligations, effect)
 
+        # Regle commune a TOUS les scenarios de la campagne (livret p.3) :
+        # « Put the "Vote for Fisk" environment into play. » La face experte est
+        # une carte a part, pas un dos : c'est ici qu'on choisit.
+        MettreVoteForFiskEnJeu(effect)
+
     return [
         AbilityFactory.WhenCardSetup(
             "This",

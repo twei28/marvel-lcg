@@ -16,10 +16,7 @@ def GetAbilities() -> Sequence['Ability']:
             this.DealDamage([joueur.GetIdentity()], 1, effect)
 
         Players.ForEachPlayer(effect, degat)
-        RetirerMenaceDUneManigance(effect, 10)
-        this.card.Flip(effect)
-        nouvelle = this.card.face.CastTo(Villain)
-        nouvelle.ResetHealth(GameRule(nouvelle))
+        RetournerShocker(effect, this, 10)
 
     return [
         AbilityFactory.WhenUnitWouldBeDefeated(

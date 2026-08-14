@@ -73608,7 +73608,8 @@
             },
             "traits": [],
             "set_name": "Crime Wave",
-            "text": "<b>When Revealed</b>: Search the encounter deck for a CRIMINAL minion and put it into play engaged with you. <i>(Shuffle.)</i> If no minion was put into play this way, this card gains surge."
+            "text": "<b>When Revealed</b>: Search the encounter deck for a CRIMINAL minion and put it into play engaged with you. <i>(Shuffle.)</i> If no minion was put into play this way, this card gains surge.",
+            "ability_link": "24042"
         },
         {
             "card_id": "wd019",
@@ -73620,7 +73621,8 @@
             },
             "traits": [],
             "set_name": "Crime Wave",
-            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a CRIMINAL minion is discarded. Reveal that minion, then give that minion a tough status card and the villain 1 facedown boost card."
+            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a CRIMINAL minion is discarded. Reveal that minion, then give that minion a tough status card and the villain 1 facedown boost card.",
+            "ability_link": "16141"
         },
         {
             "card_id": "wd020",
@@ -73634,7 +73636,8 @@
             },
             "traits": [],
             "set_name": "Power Drain II",
-            "text": "<b>When Defeated</b>: Discard 2 cards from the encounter deck. Each player must choose and discard 1 resource of any type from their hand for each boost icon discarded this way."
+            "text": "<b>When Defeated</b>: Discard 2 cards from the encounter deck. Each player must choose and discard 1 resource of any type from their hand for each boost icon discarded this way.",
+            "ability_link": "02041"
         },
         {
             "card_id": "wd021",
@@ -73651,7 +73654,8 @@
                 "CRIMINAL"
             ],
             "set_name": "Power Drain II",
-            "text": "[star] <b>Forced Response</b>: After Electro attacks you, discard 1 card from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck."
+            "text": "[star] <b>Forced Response</b>: After Electro attacks you, discard 1 card from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck.",
+            "ability_link": "02042"
         },
         {
             "card_id": "wd022",
@@ -73675,7 +73679,8 @@
             },
             "traits": [],
             "set_name": "Power Drain II",
-            "text": "<b>When Revealed</b>: Discard 2 cards from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck."
+            "text": "<b>When Revealed</b>: Discard 2 cards from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck.",
+            "ability_link": "02044"
         },
         {
             "card_id": "wd024",
@@ -73687,7 +73692,8 @@
             },
             "traits": [],
             "set_name": "Power Drain II",
-            "text": "<b>When Revealed</b>: Discard 1[per_hero] cards from the encounter deck. The villain heals 1 damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck."
+            "text": "<b>When Revealed</b>: Discard 1[per_hero] cards from the encounter deck. The villain heals 1 damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck.",
+            "ability_link": "02045"
         },
         {
             "card_id": "wd025",
@@ -73840,5 +73846,5 @@
             "text": "<b>When Revealed</b>: Take 2 indirect damage. Shuffle each TECH attachment in the encounter discard pile into the encounter deck."
         }
     ],
-    "checksum": "dde3af1b97ca335e4fa849882d86147ec7ff14c7c272aed747ea65cceb495aca"
+    "checksum": "6aff56e4a96510e6ec416dc565eb02c806849b5b5f0b96f2469356671190e738"
 }

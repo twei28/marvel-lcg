@@ -307,3 +307,86 @@ déclarer le scénario jouable par un humain.
    cartes, une lecture par planche ; données ; images ; modules ; autoplay).
 4. Les 5 arbres de talents (50 cartes) et la définition de campagne, une fois la
    voie tranchée (§12, point 4).
+
+---
+
+## 14. LE LOT 1 EST COMPLET (14/08/2026)
+
+### La boucle de Shocker tournait à l'infini, et pourquoi
+
+Le blocage relevé au §13 n'était pas la question posée : c'était **un
+retournement sans fin**. Mesuré dans le journal, A → B → A → B sans reprendre
+la main.
+
+**Les points de vie sont portés par la CARTE, pas par la face**
+(`CardFace.components` rend `self.card.components`). Une carte retournée à 0 PV
+arrive donc sur sa nouvelle face **déjà vaincue**, et le moteur redéclenche la
+défaite pendant le retournement, avant même que la ligne suivante ne s'exécute.
+
+On rend donc ses PV à la face AVANT de retourner, puis on remet la nouvelle face
+à son propre maximum. Entre les deux, la carte n'est jamais à zéro.
+
+⚠️ **Ce bug rendait le scénario FAUX dans l'autre sens** : à 0 PV, le moindre
+dégât redéclenchait la défaite, chaque coup retirait 5 ou 10 menaces de The Long
+Night, et le bot gagnait en 3 rounds. Corrigé, il perd — ce qui est le
+comportement attendu d'un scénario où le vilain ne meurt jamais.
+
+### Six cartes n'avaient pas besoin d'un module
+
+Relevé en comparant les textes AVANT d'écrire : **Power Drain II est le set
+officiel Power Drain** (02041-02045) avec une carte de plus, et **Crime Pays**
+et **Honor Among Thieves** existent déjà (Sinister Syndicate, Space Pirates).
+Six `ability_link` plutôt que six modules, et la fidélité est celle du moteur
+officiel.
+
+Restaient à écrire : l'Electromagnetic Pulse généralisée (le set a DEUX Electro,
+la carte officielle n'en nommait qu'un), la seconde Electro, les quatre cartes
+du Bodyguard et les cinq cartes de mise en place.
+
+### Le piège qui se répète : les fabriques qui rendent une LISTE
+
+`GiveKeywordToInPlayWhenApplyThis` **et** `GiveKeywordToAttached` rendent une
+liste d'abilités. Sans dépaquetage, la carte se construit avec une liste dans sa
+liste et le moteur plante à la génération.
+
+⚠️ **`test_cards` ne le voit pas** : il appelle `GetAbilities()` sans poser le
+résultat sur une carte. Seule une vraie partie l'attrape. C'est la deuxième fois
+dans ce lot.
+
+### Trois écarts assumés, écrits
+
+* **Multiverse Recruit** cherche « votre COLLECTION » : le moteur ne sait ouvrir
+  que ce qui est dans la partie. On prend le sbire de némésis mis de côté.
+* **« gains Victory 0 »** n'est pas rendu : Victory est un attribut de données,
+  pas un mot-clé qui se donne en jeu.
+* **The Great Web** lève la règle d'unicité pour une FAMILLE de cartes
+  (WEB-WARRIOR ou « Spider » dans le titre) : `UniqueRuleNotApplyTo` ne sait
+  viser qu'une carte, d'où une abilité écrite à la main sur le même message.
+
+### Mesure
+
+`test_cards` **4382 ok / 0 erreur**, `verifier_appels_modules` OK,
+`verifier_cartes_en_jeu` « les 38 cartes portent ce que leur texte annonce »,
+et **8 parties menées sans un seul incident** (normal et expert), toutes perdues
+par les héros — le scénario est dur, et il doit l'être.
+
+## 15. LA VOIE DES SPÉCIALISATIONS EST TRANCHÉE (14/08/2026)
+
+Des trois voies du §12, c'est **le carnet de campagne** qui est retenu.
+
+**Pourquoi** : le mode campagne sait déjà poser des **cartes imposées** dans le
+deck d'un joueur entre deux scénarios (`deck: "requis"`, `parJoueur`), et c'est
+exactement ce qu'est un palier d'arbre de talents — « ces cartes restent avec le
+joueur pour le reste de la campagne et **doivent** figurer dans son deck »
+(livret p.2). Le carnet sait aussi offrir un CHOIX entre plusieurs cartes, ce
+que demandent les paliers à options.
+
+**Ce que cette voie ne rend pas, et il faut le savoir** : l'arbre ne s'affichera
+pas comme un arbre. Le joueur verra, entre deux scénarios, la liste des cartes
+que son palier lui donne. La progression est fidèle, sa mise en scène ne l'est
+pas.
+
+**Ce qui reste à faire pour les livrer** : transcrire les 50 cartes (5 arbres ×
+10), les entrer comme cartes joueur du pack `wd`, et écrire
+`data/campagnes/web_of_deceit.json` sur le modèle de `trors.json`, avec un champ
+de carnet par joueur et par palier.
