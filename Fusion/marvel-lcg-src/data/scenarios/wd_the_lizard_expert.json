@@ -1,0 +1,27 @@
+{
+    "version": "0.5.8",
+    "name": "The Lizard",
+    "villain": [
+        "wd054a,wd054b"
+    ],
+    "expert": true,
+    "schemes": [
+        "wd055a,wd055b",
+        "wd056a,wd056b"
+    ],
+    "set_aside": [
+        "wd030",
+        "wd031",
+        "wd032"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "the_lizard",
+        "standard_iii",
+        "bodyguard"
+    ],
+    "modular_sets": [
+        "city_sewers",
+        "down_to_earth"
+    ]
+}

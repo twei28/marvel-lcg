@@ -1053,11 +1053,12 @@
         "name": "web_of_deceit",
         "scenarios": [
             "wd_shocker",
-            "wd_electro"
+            "wd_electro",
+            "wd_the_lizard"
         ],
         "heroes": [],
         "encounters": [],
-        "max_id": "wd053"
+        "max_id": "wd073"
     },
-    "checksum": "e42ebccc12670fb80d0bbadf6e422c6d02a0920c237e9c568e3b53c2df1bf9b1"
+    "checksum": "1ee4283e1b4a3b5c87d3824b2c583fb53f471fe2265cbbd73422d13844427821"
 }

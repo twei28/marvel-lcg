@@ -1,0 +1,14 @@
+{
+    "version": "0.5.8",
+    "name": "City Sewers",
+    "encounters": [
+        "wd069",
+        "wd070",
+        "wd071",
+        "wd071",
+        "wd072",
+        "wd072",
+        "wd073",
+        "wd073"
+    ]
+}

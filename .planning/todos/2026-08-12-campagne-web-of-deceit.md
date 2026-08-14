@@ -456,3 +456,93 @@ partie de Shocker expert sur une question `When_Defeated` de **Power Drain
 (`wd020`, lié à la carte officielle `02041`)** — « chaque joueur défausse 1
 ressource par icône de boost ». Vérifié en remettant la donnée d'avant le
 correctif : **le blocage préexiste**, il ne vient pas du lot 2.
+
+---
+
+## 17. LE SCÉNARIO #3 EST DANS LE JEU (14/08/2026)
+
+**23 faces neuves, `wd054` à `wd073`** : le set The Lizard (18 faces) et le
+modulaire fan-made **City Sewers** (5 cartes), que ce scénario impose avec
+`down_to_earth`, déjà dans le jeu.
+
+### La boucle, et ce qu'elle a demandé au moteur
+
+The Lizard n'est **jamais vaincu** non plus, mais autrement que Shocker : le
+vaincre le retourne en **Curt Connors**, qui se bat contre son propre cerveau.
+Deux compteurs neufs portent tout le scénario, déclarés dans `CardFace.COUNTER`
+avec les autres compteurs fan-made :
+
+* **`formula`**, sur The Lizard : +1 ATK à chaque ennemi REPTILIAN par compteur.
+  La mise en place en pose 1, 2 en expert ; The Cure (2A) en ajoute un.
+* **`sanity`**, sur **Lizard Brain** : vaincre The Lizard en pose 1 par joueur.
+  Chaque activation de Connors en retire un — il **retire** de la menace au lieu
+  d'en poser, et **ne frappe pas**. Le dernier compteur retiré rend The Lizard.
+
+Mesuré dans le journal d'une vraie partie, dans l'ordre :
+
+```
+"WhenUnitWouldBeDefeated" est remplacé par [The Lizard]
+[Lizard Brain] reçoit 1 compteur(s) « sanity »
+[Curt Connors] was flipped
+"WhenUnitWouldAttack" est remplacé par [Curt Connors]
+[Lizard Brain] perd 1 compteur(s) « sanity »
+[The Lizard] was flipped
+```
+
+**Le trait REPTILIAN** a rejoint la liste des traits du moteur, avec
+`A.I.M. SCIENTIST` et `MULTIVERSE` que les lots précédents utilisaient déjà sans
+les déclarer.
+
+### Negate X, le premier des quatre mots-clés neufs
+
+« After this card is revealed or turned faceup during an enemy activation, if
+any of its effects are canceled, the revealing player draws X cards. »
+
+Le moteur **annonce déjà** l'annulation d'une carte rencontre : `CancelEffects`
+et `CancelAllEffectsInternal` envoient `WhenEffectBeCancel`, et le présentateur
+l'affiche même sous le nom « negate ». Il n'existe pas de fabrique pour ce
+message : l'abilité se construit à la main, une fois, dans
+`city_sewers/__init__.py`.
+
+⚠️ **Écart écrit** : le texte restreint le mot-clé à une annulation survenue
+PENDANT une activation d'ennemi. Le moteur ne rapporte pas ce contexte dans le
+message, la carte pioche donc quelle que soit la fenêtre d'annulation.
+
+### Deux autres écarts, écrits
+
+* **Curt Connors a « HIT POINTS ∞ »**. Les PV sont portés par la CARTE, pas par
+  la face (leçon du lot 1) : les deux faces déclarent donc les mêmes 12 par
+  joueur, et c'est une abilité « ne peut pas être vaincu » qui rend le sens
+  jouable de l'infini.
+* **Son ATK est une étoile**, pas un nombre : la donnée porte 0, et le
+  `Forced Interrupt` remplace de toute façon l'attaque entière.
+
+### Ce que la mesure dit
+
+`verifier_prefixes` OK ; `verifier_cartes_en_jeu` « les 82 cartes portent ce que
+leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4426 ok /
+0 erreur** ; `sonde_capacites` : les 23 faces portent leurs capacités ;
+`autoplay` **24 parties** sur les trois scénarios, normal et expert.
+
+### ⚠️ CE QUE CE LOT A TROUVÉ SUR LES PRÉCÉDENTS
+
+**`autoplay` écrit une traceback dans le journal de la partie et CONTINUE** : le
+compteur d'incidents ne la voit pas, et le rapport annonce « 0 incident ». Les
+huit parties du lot 1 en portaient **une chacune**. La vérification vraie, c'est
+`grep NameError|AttributeError|TypeError` dans les journaux.
+
+Cinq appels plantaient ainsi en silence (commit à part) : `GameRule` importé
+nulle part — **le mode expert de Shocker était faux, sa face B arrivait à 10 PV
+au lieu de 20** — , `Faces.AttachAllTo` et `CardFinder(card_id=)` qui n'existent
+pas — **« Vote for Fisk » n'entrait dans AUCUN scénario de la campagne** — , et
+`AttachTo2` appelé sur une carte joueur qui n'est pas un `Asset2`.
+
+**Mesure après correction : ZÉRO traceback sur 24 parties.**
+
+### Ce qui reste
+
+1. Les scénarios **#4 Vulture** (set Vulture + modulaire Underling) et
+   **#5 Kingpin** (set Kingpin + modulaire Kraven the Hunter).
+2. Les 50 cartes des 5 arbres de talents et `data/campagnes/web_of_deceit.json`.
+3. Le point ouvert de Power Drain (`wd020`), qui bloque une partie de Shocker
+   expert et **préexiste** aux lots 2 et 3.

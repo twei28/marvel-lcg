@@ -213,6 +213,19 @@ IMAGES = {
     "wd051": "Scenarios/ELECTRO (2.0)/ELECTRO_19",
     "wd052": "Scenarios/ELECTRO (2.0)/ELECTRO_21",
     "wd053": "Scenarios/ELECTRO (2.0)/ELECTRO_23",
+    # Scenario #3 — The Lizard, et le modulaire City Sewers qui l'accompagne.
+    "wd054a": "Scenarios/The Lizard/1a", "wd054b": "Scenarios/The Lizard/1b",
+    "wd055a": "Scenarios/The Lizard/2a", "wd055b": "Scenarios/The Lizard/2b",
+    "wd056a": "Scenarios/The Lizard/3a", "wd056b": "Scenarios/The Lizard/3b",
+    "wd057": "Scenarios/The Lizard/4", "wd058": "Scenarios/The Lizard/5",
+    "wd059": "Scenarios/The Lizard/6", "wd060": "Scenarios/The Lizard/8",
+    "wd061": "Scenarios/The Lizard/9", "wd062": "Scenarios/The Lizard/11",
+    "wd063": "Scenarios/The Lizard/15", "wd064": "Scenarios/The Lizard/16",
+    "wd065": "Scenarios/The Lizard/17", "wd066": "Scenarios/The Lizard/18",
+    "wd067": "Scenarios/The Lizard/19", "wd068": "Scenarios/The Lizard/21",
+    "wd069": "Modulars/City Sewers/1", "wd070": "Modulars/City Sewers/2",
+    "wd071": "Modulars/City Sewers/3", "wd072": "Modulars/City Sewers/5",
+    "wd073": "Modulars/City Sewers/7",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.
@@ -227,6 +240,8 @@ PAYSAGE = {
     "wd011", "wd015",                                            # manigances Shocker
     "wd020",                                                     # Power Drain II
     "wd038a", "wd038b", "wd039a", "wd039b",                      # complots Electro
+    "wd055a", "wd056b",                                          # complots The Lizard
+    "wd069",                                                     # City Sewers
 }
 
 
