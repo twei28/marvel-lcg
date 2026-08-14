@@ -1,0 +1,34 @@
+{
+    "version": "0.5.8",
+    "name": "Kingpin",
+    "villain": [
+        "wd092",
+        "wd093"
+    ],
+    "expert": true,
+    "schemes": [
+        "wd094a,wd094b"
+    ],
+    "set_aside": [
+        "wd030",
+        "wd031",
+        "wd032",
+        "wd106",
+        "wd106",
+        "wd106",
+        "wd106",
+        "wd106",
+        "wd106",
+        "wd106",
+        "wd106"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "kingpin",
+        "standard_iii",
+        "bodyguard"
+    ],
+    "modular_sets": [
+        "crime_wave"
+    ]
+}

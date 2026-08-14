@@ -74765,7 +74765,267 @@
             ],
             "set_name": "Vulture",
             "text": "Setup. Permanent.\n<b>Hero Action</b>: Exhaust an AERIAL card you control and spend 1 resource of any type → a friendly character you control gains the AERIAL trait until the end of the phase."
+        },
+        {
+            "card_id": "wd091",
+            "type": "Villain",
+            "name": "* Kingpin",
+            "subtitle": "",
+            "desc": {
+                "HP": "13*",
+                "ATK": "2",
+                "SCH": "1",
+                "Toughness": "1",
+                "Steady": "1",
+                "Stage": "1"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Kingpin",
+            "text": "Toughness. Steady.\n<b>When Revealed</b>: Search the encounter deck and discard pile for Kingpin's Suit and reveal it."
+        },
+        {
+            "card_id": "wd092",
+            "type": "Villain",
+            "name": "* Kingpin",
+            "subtitle": "",
+            "desc": {
+                "HP": "15*",
+                "ATK": "2",
+                "SCH": "2",
+                "Toughness": "1",
+                "Steady": "1",
+                "Stage": "2"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Kingpin",
+            "text": "Toughness. Steady.\n<b>When Revealed</b>: Search the encounter deck and discard pile for the Kingpin's Suit and Kingpin's Cane attachments and attach them to Kingpin."
+        },
+        {
+            "card_id": "wd093",
+            "type": "Villain",
+            "name": "* Kingpin",
+            "subtitle": "",
+            "desc": {
+                "HP": "17*",
+                "ATK": "3",
+                "SCH": "2",
+                "Toughness": "1",
+                "Stalwart": "1",
+                "Stage": "3"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Kingpin",
+            "text": "Toughness. Stalwart.\n<b>When Revealed</b>: Each player puts the top card of their deck into play facedown as a CORRUPT side scheme. Search the encounter deck and discard pile for Kingpin's Suit and reveal it."
+        },
+        {
+            "card_id": "wd094a",
+            "type": "MainScheme",
+            "name": "Shadow of the Kingpin",
+            "subtitle": "",
+            "desc": {
+                "Stage": "1A"
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "<b>Contents</b>: Kingpin and Standard III encounters sets. One modular encounter set <i>(recommended: Crime Wave)</i>.\n<b>Setup</b>: Find Fisk Tower and put it into play. Place 1[per_hero] counters on Pursued by the Past."
+        },
+        {
+            "card_id": "wd094b",
+            "type": "MainScheme",
+            "name": "Shadow of the Kingpin",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "1*",
+                "TargetThreat": "8*",
+                "EscalationThreat": "1*",
+                "Stage": "1B"
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "<b>Deep Pockets — Forced Response</b>: After resolving step one of the villain phase, the first player places 1 pursuit counter on Pursued by the Past.\nIf this stage is completed, the players lose the game."
+        },
+        {
+            "card_id": "wd095",
+            "type": "Environment",
+            "name": "Fisk Tower",
+            "subtitle": "",
+            "desc": {},
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Kingpin",
+            "text": "Each facedown CORRUPT side scheme has starting threat equal to the villain's stage number.\n<b>Forced Response</b>: After step one of the villain phase, heal 1 damage from Kingpin and Kingpin's Suit for each CORRUPT side scheme in play."
+        },
+        {
+            "card_id": "wd096",
+            "type": "Treachery",
+            "name": "King's Gambit",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "<b>When Revealed</b>: Put the top card of your deck into play facedown as a CORRUPT side scheme. Kingpin schemes.\n<hr />\n[star] <b>Boost</b>: Discard 1 card from the top of the encounter deck for each pursuit counter on Pursued by the Past."
+        },
+        {
+            "card_id": "wd097",
+            "type": "Treachery",
+            "name": "Long Live the King",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3"
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "<b>When Revealed</b>: Put the top card of your deck into play facedown as a CORRUPT side scheme. Place 1 pursuit counter on Pursued by the Past."
+        },
+        {
+            "card_id": "wd098",
+            "type": "Attachment",
+            "name": "Controlling the Narrative",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "Incite": "1"
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "Incite 1.\nAttach to the non-permanent side scheme with the most remaining threat without another copy of Controlling the Narrative attached. If you cannot, this card gains surge.\nAttached scheme gains the [acceleration] [crisis] icons."
+        },
+        {
+            "card_id": "wd099",
+            "type": "Attachment",
+            "name": "* Kingpin's Suit",
+            "subtitle": "",
+            "desc": {
+                "SCH+": "1",
+                "Boost": "2"
+            },
+            "traits": [
+                "ARMOR"
+            ],
+            "set_name": "Kingpin",
+            "text": "Attach to Kingpin.\n<b>Forced Interrupt</b>: When any amount of damage would be dealt to Kingpin, place it here instead. Then, if there is at least 10 damage here, discard Kingpin's Suit.\n<hr />\n[star] <b>Boost</b>: Attach Kingpin's Suit to Kingpin."
+        },
+        {
+            "card_id": "wd100",
+            "type": "Attachment",
+            "name": "* Kingpin's Cane",
+            "subtitle": "",
+            "desc": {
+                "ATK+": "1"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "set_name": "Kingpin",
+            "text": "Attach to Kingpin.\n[star] <b>Forced Interrupt</b>: When Kingpin initiates an attack against you, put the top card of your deck into play facedown as a CORRUPT side scheme.\n<b>Hero Action</b>: Spend [physical] [physical] [physical] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: After this activation, attach this card to Kingpin."
+        },
+        {
+            "card_id": "wd101",
+            "type": "Minion",
+            "name": "* Typhoid Mary",
+            "subtitle": "",
+            "desc": {
+                "HP": "3",
+                "ATK": "2",
+                "SCH": "0",
+                "Boost": "1"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Kingpin",
+            "text": "[star] Typhoid Mary's attacks deal indirect damage.\n<b>When Revealed</b>: Take 1 indirect damage for each pursuit counter on Pursued by the Past."
+        },
+        {
+            "card_id": "wd102",
+            "type": "Minion",
+            "name": "* Lady Bullseye",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "ATK": "2",
+                "SCH": "1",
+                "Boost": "3",
+                "Quickstrike": "1",
+                "Vulnerable": "1"
+            },
+            "traits": [
+                "ASSASSIN",
+                "CRIMINAL"
+            ],
+            "set_name": "Kingpin",
+            "text": "Quickstrike. Vulnerable. <i>(Discard this character if it is stunned or confused.)</i>\n<b>When Defeated</b>: Place 2 pursuit counters on Pursued by the Past."
+        },
+        {
+            "card_id": "wd103",
+            "type": "SideScheme",
+            "name": "Devil's Reign",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3*",
+                "Boost": "2",
+                "Acceleration": "2"
+            },
+            "traits": [
+                "CORRUPT"
+            ],
+            "set_name": "Kingpin",
+            "text": "<i>Wilson Fisk's hubris as mayor of New York has cast the city in the waiting arms of a cadre of dangerous and deadly super villains!</i>"
+        },
+        {
+            "card_id": "wd104",
+            "type": "SideScheme",
+            "name": "\"Legitimate Business\"",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3",
+                "Boost": "2",
+                "Hazard": "1",
+                "Hinder": "1*"
+            },
+            "traits": [
+                "CORRUPT"
+            ],
+            "set_name": "Kingpin",
+            "text": "Hinder 1[per_hero].\n<b>When Defeated</b>: The first player discards cards from the top of the encounter deck until an attachment is discarded and reveals that card."
+        },
+        {
+            "card_id": "wd105",
+            "type": "Obligation",
+            "name": "FBI Investigation",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "Acceleration": "1",
+                "GiveTo": ""
+            },
+            "traits": [],
+            "set_name": "Kingpin",
+            "text": "<b>Forced Response</b>: After a card you control defeats a side scheme, place 1 clue counter here. Then, if there are at least 3 clue counters here, discard this card and place 1 pursuit counter on Pursued by the Past."
+        },
+        {
+            "card_id": "wd106",
+            "type": "SideScheme",
+            "name": "Corrupt",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "0"
+            },
+            "traits": [
+                "CORRUPT"
+            ],
+            "set_name": "Kingpin",
+            "text": "<i>A card the Kingpin has turned against you.</i>"
         }
     ],
-    "checksum": "b4e52a1ca268e36ebb294a57210945d83b36bcf9ebe284db90448fa363921c64"
+    "checksum": "dd1bfbf931637b8a9ce7f19ab9591889db06d5d652439861e4ce5d15b03e3a59"
 }

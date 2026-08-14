@@ -238,6 +238,18 @@ IMAGES = {
     "wd086": "Scenarios/Vulture/20", "wd087": "Scenarios/Vulture/22",
     "wd088": "Scenarios/Vulture/23", "wd089": "Scenarios/Vulture/24",
     "wd090": "Scenarios/Vulture/Wingsuit-v2",
+    # Scenario #5 — Kingpin. `wd106` n'a pas d'illustration a lui : c'est le
+    # patron des manigances CORROMPUES, qui n'existe pas dans le jeu physique
+    # (voir son module). Il emprunte l'art de « Devil's Reign ».
+    "wd091": "Scenarios/Kingpin/1", "wd092": "Scenarios/Kingpin/2",
+    "wd093": "Scenarios/Kingpin/3",
+    "wd094a": "Scenarios/Kingpin/4a", "wd094b": "Scenarios/Kingpin/4b",
+    "wd095": "Scenarios/Kingpin/5", "wd096": "Scenarios/Kingpin/6",
+    "wd097": "Scenarios/Kingpin/10", "wd098": "Scenarios/Kingpin/14",
+    "wd099": "Scenarios/Kingpin/18", "wd100": "Scenarios/Kingpin/19",
+    "wd101": "Scenarios/Kingpin/20", "wd102": "Scenarios/Kingpin/21",
+    "wd103": "Scenarios/Kingpin/22", "wd104": "Scenarios/Kingpin/23",
+    "wd105": "Scenarios/Kingpin/24", "wd106": "Scenarios/Kingpin/22",
 }
 
 # Les cartes PAYSAGE dont le fichier source est stocke debout.
@@ -255,6 +267,7 @@ PAYSAGE = {
     "wd055a", "wd056b",                                          # complots The Lizard
     "wd069",                                                     # City Sewers
     "wd077a", "wd077b", "wd084", "wd085",                        # complot et manigances Vulture
+    "wd094a", "wd094b", "wd103", "wd104", "wd106",               # complot et manigances Kingpin
 }
 
 

@@ -622,3 +622,81 @@ leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4440 ok /
 ⚠️ **Le modulaire `Underling` (14 cartes) n'est PAS livré** : il est dans le
 dossier du scénario Vulture mais le livret ne l'impose à aucune rencontre. À
 créer avec le lot Kingpin, ou séparément.
+
+---
+
+## 19. LE SCÉNARIO #5 EST DANS LE JEU (14/08/2026) — LES CINQ SONT LÀ
+
+**17 faces neuves, `wd091` à `wd106`.** Un seul complot principal, trois stades
+de vilain dont deux joués. **Le trait `CORRUPT`** rejoint la liste du moteur.
+
+### Ce que le scénario fait
+
+* **Tout le set nourrit « Pursued by the Past »**, la carte de Standard III, en
+  compteurs `pursuit` : la mise en place en pose 1 par joueur, le complot 1 par
+  round, Long Live the King 1, Lady Bullseye 2 en mourant. Typhoid Mary et le
+  boost de King's Gambit s'en servent comme d'une jauge.
+* **Le costume encaisse à la place de Kingpin.** Ce n'est pas une unité : les
+  dégâts détournés sont des COMPTEURS posés dessus, et Fisk Tower les lui retire
+  un par un. Mesuré : `"WhenUnitWouldTakeDamage" est remplacé par [Kingpin's
+  Suit]`, puis `[Kingpin's Suit] reçoit 1 compteur(s) « damage »`.
+* **Fisk Tower charge les manigances corrompues** à la valeur du stade du
+  vilain. Mesuré en expert : `[Corrupt] reçoit 2 pion(s) « threat » ([Fisk
+  Tower])`.
+
+### L'écart le plus gros de toute la campagne, écrit
+
+**« Put the top card of your deck into play facedown as a CORRUPT side
+scheme. »** Le jeu physique retourne LA carte du dessus du deck du joueur et
+s'en sert comme manigance : la carte est à la fois le coût et l'obstacle.
+
+Le moteur ne sait pas faire d'une carte joueur une manigance de rencontre.
+`TreatAsMinion` échange bien une face contre une autre, mais il est écrit pour
+les alliés et les héros, et la manigance qui en sortirait ne saurait ni entrer
+dans la bonne zone ni revenir à son propriétaire.
+
+**On paie donc le coût ET on pose l'obstacle, en deux gestes** : la carte du
+dessus du deck part à la défausse, et un exemplaire de `wd106` — le patron
+« Corrupt », mis de côté à la mise en place, huit exemplaires — entre en jeu à sa
+place. Le joueur perd la même carte, la table porte la même manigance, et sa
+menace de départ vient de Fisk Tower comme le veut le texte. **Seule l'identité
+de la carte posée change, et elle était face cachée de toute façon.**
+
+`wd106` n'existe pas dans le jeu physique et emprunte l'art de Devil's Reign.
+
+### Deux autres écarts
+
+* **FBI Investigation est une obligation SANS héros.** Le moteur exige un champ
+  `GiveTo` (`assert self.printed_give_to != None`) : la donnée porte une chaîne
+  vide, ce que le moteur lit comme « au joueur qui la révèle » — exactement ce
+  que veut une obligation venue du deck rencontre.
+* **`GiveKeywordToAttached` ne nomme ni `acceleration_icon` ni `crisis`**, deux
+  mots-clés que `CardFace.Gain` sait pourtant donner. Controlling the Narrative
+  passe par `apply`, la porte que la fabrique laisse ouverte.
+
+### Mesure
+
+`verifier_prefixes` OK ; `verifier_cartes_en_jeu` « les 117 cartes portent ce que
+leur texte annonce » ; `verifier_appels_modules` OK ; `test_cards` **4456 ok /
+0 erreur** ; `sonde_capacites` : les 17 faces portent leurs capacités ;
+`autoplay` 8 parties Kingpin, **zéro traceback**.
+
+⚠️ **DEUX POINTS OUVERTS, tous deux du PILOTE et non du contenu** :
+
+1. `autoplay` boucle sur une **action de héros qui échoue** : il la rechoisit
+   sans fin au lieu de se désister. Mesuré sur **Tenacity (`01093`), une carte
+   officielle**, autant que sur le Hero Action de Kingpin's Cane. Le pilote de
+   `test_capacites` sait décliner au bout de trois répétitions ; celui
+   d'`autoplay` ne le sait pas.
+2. Le blocage de **Power Drain** (`wd020`) sur Shocker expert, relevé au §17 et
+   vérifié comme **préexistant**.
+
+### Ce qui reste, dans l'ordre
+
+1. Les modulaires **`Underling`** (14 cartes, dossier Vulture) et **`Kraven the
+   Hunter`** (5 cartes), qu'aucun scénario n'impose mais qui font partie du
+   dossier de campagne.
+2. Une passe d'**icônes** sur les lots 1 à 3 : plusieurs cartes portent une
+   icône (accélération, crise, danger) que la donnée ne déclare pas.
+3. Les **50 cartes des 5 arbres de talents** et
+   `data/campagnes/web_of_deceit.json`.

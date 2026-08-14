@@ -1055,11 +1055,12 @@
             "wd_shocker",
             "wd_electro",
             "wd_the_lizard",
-            "wd_vulture"
+            "wd_vulture",
+            "wd_kingpin"
         ],
         "heroes": [],
         "encounters": [],
-        "max_id": "wd090"
+        "max_id": "wd106"
     },
-    "checksum": "60a308fcaa2087902931bc3ac7c58dea6e348ec5ae02b6f9835b11f573f6d0e1"
+    "checksum": "87910f8747b11bf197f661e5d3fcc1fa233b49c237748fe17d051f10aed0b90f"
 }
