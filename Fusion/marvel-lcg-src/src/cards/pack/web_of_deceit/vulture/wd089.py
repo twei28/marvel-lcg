@@ -22,7 +22,15 @@ def GetAbilities() -> Sequence['Ability']:
         ),
         # « Hero Response: After you attack and damage Vulture, spend an
         # [energy] resource → discard Aviator Goggles. »
-        AbilityFactory.PlayerActionToDiscardThis(
+        #
+        # ⚠ C'EST UNE REPONSE, PAS UNE ACTION. `PlayerActionToDiscardThis` est
+        # un `WhenInYourPlayTurn` : sans declencheur, le joueur defaussait les
+        # lunettes quand il voulait pour 1 [energy], sans jamais avoir frappe
+        # Vulture. La fenetre du texte est l'attaque QUI A BLESSE.
+        AbilityFactory.AfterUnitAttackAndDamageUnit(
             AbilityType.HeroResponse,
+            "YourIdentity",
+            "AttachedVillain",
+            lambda effect, message: Faces.DiscardAll([effect.this], effect),
         ).SetCost(Cost("Y")),
     ]

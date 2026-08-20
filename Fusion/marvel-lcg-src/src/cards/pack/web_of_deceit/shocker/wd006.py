@@ -11,7 +11,12 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.DiscardAll(Search.EncounterCardsTop(effect, None, 6) or [], effect)
 
     return [
-        AbilityFactory.AfterUnitAttackAndDamageUnit(
+        # ⚠ Le texte dit « attacks », pas « attacks and damages » : une attaque
+        # entierement bloquee ou defendue a 0 declenche quand meme. C'est
+        # `AfterUnitAttackUnit` qu'il faut, comme wd064 (Princess Python) et
+        # wd088 (Feather Daggers) — pas la variante « AndDamage », qui exige
+        # des degats.
+        AbilityFactory.AfterUnitAttackUnit(
             AbilityType.ForcedResponse,
             "This",
             "Character",

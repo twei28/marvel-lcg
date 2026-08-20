@@ -32,7 +32,10 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.AlterEgoAction,
             soigner,
             conditions=[a_un_genie],
-        ).SetCost(Cost("BB")).LimitOncePerRound(),
+        # « (Limit once per round PER PLAYER.) » : `LimitOncePerRound` est
+        # globale et interdisait l'action a tous les autres joueurs des qu'un
+        # seul l'avait utilisee. Sans effet en solo, faux des deux joueurs.
+        ).SetCost(Cost("BB")).LimitOncePerRoundPerPlayer(),
         AbilityFactory.AfterSchemeRemoveThreat(
             AbilityType.ForcedResponse,
             "This",
