@@ -32,6 +32,25 @@ def GetAbilities() -> Sequence['Ability']:
         return joueur.GetControlCards(
             CardFinder(trait="AERIAL", canbe_exhaust=True)) != []
 
+    def une_cible_a_convaincre(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
+        # ⚠ LE BLOCAGE DU SCENARIO UNDERLING EST ICI, et il a resiste a trois
+        # hypotheses (payeur du pilote, empreinte de progres, desistement).
+        # Mesure : le journal repete
+        #   « [wd165] (Hero Action) WhenPlayerInTurn failed »
+        # jusqu'a l'abandon, et le verdict dit « le plateau n'a pas bouge ».
+        #
+        # La cause : donner AERIAL a un personnage QUI L'A DEJA ne change rien.
+        # Quand le seul personnage amical restant est deja aerien — ce qui
+        # arrive des que l'allie meurt et que le heros a ete servi une fois —
+        # l'action reste proposee, ne fait rien, et la partie tourne en rond.
+        #
+        # Meme remede que la garde ci-dessus : la carte se garde elle-meme.
+        joueur = effect.GetInitiator()
+        return any(
+            not cible.HasTrait("AERIAL")
+            for cible in joueur.GetControlCards(CardFinder(card_type=Friend))
+        )
+
     def action(conditions=[]) -> 'Ability':
         return AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
@@ -45,8 +64,12 @@ def GetAbilities() -> Sequence['Ability']:
             revelation
         ),
         # Le « OU » du texte est DEUX abilites, pas un cout a deux visages.
-        action([a_une_carte_aerienne])
-        .SetCostFunc(CostFunc.Exhaust(trait="AERIAL"))
+        action([a_une_carte_aerienne, une_cible_a_convaincre])
+        # ⚠ MEME DEFAUT QUE wd090, ET IL ETAIT LA DEPUIS LE LOT UNDERLING :
+        # « an AERIAL card YOU CONTROL ». Sans `from_where`, le cout pouvait
+        # epuiser le VILAIN. Aucun outil ne le voyait ; c'est le journal
+        # d'autoplay qui l'a dit.
+        .SetCostFunc(CostFunc.Exhaust(trait="AERIAL", from_where=["YouControlCards"]))
         .SetCondition(only_if_you_control_trait="AERIAL"),
-        action().SetCost(Cost("Y")),
+        action([une_cible_a_convaincre]).SetCost(Cost("Y")),
     ]
