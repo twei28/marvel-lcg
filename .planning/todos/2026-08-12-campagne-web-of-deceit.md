@@ -1048,10 +1048,12 @@ le `flush`, l'outil sortait en silence et son rapport se perdait.
 ### 🤖 CE QUE JE PEUX ENCORE FAIRE — dans l'ordre d'utilité
 
 1. **Le payeur du pilote d'`autoplay`.** Il ne sait pas honorer un coût en
-   ressources porté par une carte de RENCONTRE : c'est ce qui bloque les 8
-   parties du scénario Underling, et ce qui dort depuis le lot 1 sur Ionic Boots
-   (`wd010`) et Kingpin's Cane (`wd100`). **C'est le dernier vrai chantier
-   d'outil**, et il rendrait Underling vérifiable comme les cinq autres.
+   ressources porté par une carte de RENCONTRE : ~~c'est ce qui bloque les 8
+   parties du scénario Underling, et~~ ce qui dort depuis le lot 1 sur Ionic Boots
+   (`wd010`) et Kingpin's Cane (`wd100`).
+   ⚠️ **CORRIGÉ LE 20/08/2026 : le payeur n'était PAS la cause du blocage
+   Underling.** La cause était `wd165`, voir §29. Le chantier du payeur reste
+   ouvert, mais il ne débloque plus rien.
 2. ~~**Élargir la couverture d'`autoplay`** à d'autres héros que Spider-Man.~~
    **FAIT** : 10 parties avec **Black Panther** sur les cinq scénarios, **zéro
    incident, zéro traceback**. Les 72 parties de la campagne ne reposent donc
@@ -1277,6 +1279,9 @@ deck** (Rhino, Shocker, Kingpin) — zéro incident, zéro traceback.
 
 ## 28. LA REVUE TEXTE-CONTRE-CODE : CE QUI EST FAIT, CE QUI RESTE
 
+> ✅ **CLOS LE 20/08/2026.** Les 126 cartes annoncées ci-dessous ont été
+> passées au crible avec la liste de mots élargie. Résultats au **§29**.
+
 Cinq défauts trouvés en deux passes (§26, §27), **tous invisibles aux outils** :
 les cartes se génèrent, leurs appels existent, leur texte correspond à la donnée.
 Assez pour en faire une **méthode**, et pour dire précisément où elle s'est
@@ -1333,3 +1338,144 @@ avec la liste complète, pas seulement à compléter.
    trois, « Bodyguard » par deux).
 3. Comparer les nombres du texte à ceux du code — en sachant que les valeurs de
    `desc` (Uses, Victory, Boost) n'apparaissent pas dans le module.
+
+---
+
+## 29. LA REVUE DES 126 CARTES HORS TALENTS EST FAITE (20/08/2026)
+
+Le §28 la demandait **à refaire, pas à compléter**. C'est ce qui a été fait :
+les 126 cartes relues avec la liste de mots élargie, plus trois filets
+automatiques. **Huit écarts, sept corrigés, un écrit.** Quatre commits sur
+`master`, de `e02f021` à `8bec94a`.
+
+### Le crible, et ce qu'il a couvert
+
+Liste de mots complète : `unless`, `otherwise`, `without`, `while`, `instead of`,
+`If you cannot`, plus les six qui manquaient au §26 — `another`, `each`,
+`for each`, `equal to`, `against you`, `your` — et `you control`, `only`,
+`up to`, `may`, `cannot`, `choose`, `per`. **94 des 126 cartes** en portent au
+moins un ; les 32 autres sont des cartes à mots-clés purs, dont la valeur vit
+dans le `desc`.
+
+Chaque carte relue contre son module, plus trois passes automatiques :
+
+1. **Les NOMBRES du texte contre ceux du code**, commentaires exclus. Trois
+   signalements, dont deux faux positifs (les gobelins experts, dont le « 2 »
+   vit dans le helper partagé `GobelinExpert()`). Le troisième était réel et
+   c'est `wd077b`.
+2. **Le DÉCLENCHEUR contre la fenêtre annoncée** : un texte qui dit
+   `Response: After …` rendu par une fabrique qui n'a pas de fenêtre, et
+   `attacks` rendu par la variante `AndDamage` (ou l'inverse). Deux réels
+   (`wd089`, `wd006`), un faux positif (`wd058`, dont la clause dit bien
+   « deals damage »).
+3. **Les NOMS PARTAGÉS sans filtre de type**, le piège de « He's Mine! ». Trois
+   signalements, deux volontaires et documentés (`wd040`, `wd043`, où « Electro »
+   doit couvrir le vilain ET les sbires), un mineur (`wd003a`).
+
+### Les huit écarts
+
+| carte | le mot du texte | ce que le module faisait |
+|-------|-----------------|--------------------------|
+| `wd090` Wingsuit V2 | « Hero Action: … gains the AERIAL trait » | **aucun module**, capacité inerte |
+| `wd165` Skies Above New York | « an AERIAL card **you control** » | le coût pouvait épuiser **le vilain** |
+| `wd089` Aviator Goggles | « **Response**: After you attack and damage » | action de tour libre, sans déclencheur |
+| `wd005` Vibro-Shock Gauntlets | « **and remove** a stunned or confused status card » | la moitié du coût absente |
+| `wd028` Bodyguard (sbire) | « **If you cannot** » | testait « pas de vilain », cas impossible |
+| `wd006` Sandman | « **attacks** or engages you » | exigeait des dégâts |
+| `wd056b` The Cure | « once per round **per player** » | limite globale |
+| `wd077b` Surveillance Pigeons | second Interrupt | absent, **écart écrit** |
+
+**`wd090` était le plus grave**, et c'est le seul de toute la campagne à n'avoir
+eu *aucun* module. `NePeutEtreAttaqueQueParLesAeriens` n'accepte que le trait
+AERIAL, et le commentaire du helper dit lui-même « le Wingsuit distribué à la
+mise en place donne justement ce trait ». Sans module, aucun héros non-AERIAL ne
+pouvait frapper Vulture.
+
+### ✅ LE BLOCAGE UNDERLING, ET POURQUOI LES TROIS HYPOTHÈSES ÉTAIENT À CÔTÉ
+
+Le §25 avait éliminé par la mesure le payeur du pilote, l'empreinte de progrès et
+le désistement. La piste retenue — instrumenter l'état du joueur, puisque
+Swinging Web Kick (`01005`) échouait au même moment — n'était pas la bonne non
+plus. **Le journal d'autoplay écrivait la réponse en clair** :
+
+```
+<E> (67) [(51,wd165) Skies Above New York] (Hero Action) [wd165] WhenPlayerInTurn failed
+```
+
+L'action donne AERIAL à un personnage amical. Dès que l'allié meurt et que le
+héros a été servi une fois, la **seule cible légale l'a déjà** : l'action ne
+change rien, le moteur la repropose, le pilote la reprend, la partie tourne en
+rond. C'est exactement le défaut contre lequel `a_une_carte_aerienne` protégeait
+déjà — l'auteur avait gardé le **coût**, pas la **cible**.
+
+Mesure à graines identiques : **3 parties bloquées sur 3 avant, 0 sur 6 après**,
+et Underling gagne même une partie en expert.
+
+### ⚠️ LA LEÇON, ET ELLE PROLONGE CELLE DU 14/08
+
+**Deux des huit écarts n'étaient pas trouvables à la lecture** : la portée du coût
+de `wd165` et la cause du blocage. Les deux sont sortis du journal d'autoplay
+**lu ligne à ligne**, et il n'y avait **aucune traceback** dedans. Le grep des
+tracebacks reste nécessaire, il n'est pas suffisant : il faut aussi lire ce que la
+partie a réellement fait. `[[Vulture]] exhausted ([Wingsuit V2])` est une ligne
+parfaitement normale à l'œil d'un outil, et c'est un cadeau au joueur.
+
+### `wd077b` : la clause non rendue, et ce qu'elle coûterait
+
+> « Interrupt: When you would discard a random card from your hand, you may place
+> 2 pigeon counters here instead. »
+
+Le moteur n'a **aucune fenêtre sur une défausse aléatoire** :
+`DiscardRandomHandCards` (player_action.py) tire les cartes puis appelle
+`Faces.DiscardAll`, qui n'émet qu'un `WhenCardWouldDiscard` par carte, identique
+à celui d'une défausse **choisie**. S'y accrocher ferait esquiver aussi les
+défausses volontaires — un coût de carte, la limite de main — bien plus large que
+le texte.
+
+Le rendre demande un message moteur neuf, sur le modèle de
+`WhenPlayerWouldBeDealtEncounterCard` (sender_player.py:364) : une classe
+`CanBeInstead`, une fabrique dans `factory/player.py`, et l'appel dans
+`DiscardRandomHandCards`. **C'est le moteur partagé, que 4516 cartes
+traversent** : décision à prendre, pas tâche à faire.
+
+Conséquence en jeu, puisqu'elle n'est pas nulle : le scénario est plus dur que son
+texte. Web of Deceit défausse au hasard souvent (`wd008`, `wd078`, `wd081`,
+`wd068`), et le joueur n'a pas la soupape que la carte lui promet.
+
+### Les huit approximations relevées et NON corrigées
+
+Aucune n'est un bug franc ; toutes sont écrites ici pour qu'on n'ait pas à les
+retrouver.
+
+* **`wd001b` et `wd014`** — « Deal 1 damage to **each hero** » est rendu par
+  `Players.ForEachPlayer` + `GetIdentity()`, qui frappe aussi les joueurs en
+  alter-ego. Le moteur sait distinguer (`player.IsHero()`), et `wd079` le fait
+  déjà pour « Stun your hero ». Deux occurrences, même cause.
+* **`wd037`** — « discard an **equal number** of cards » est lu comme le nombre
+  d'icônes de boost de la traîtrise trouvée. L'autre lecture, plus naturelle en
+  anglais, est le nombre de cartes défaussées. À trancher.
+* **`wd105`** — « After **a card you control** defeats a side scheme » est rendu
+  par `"YouControlCharacter"` : un événement qui déjoue ne compte pas.
+* **`wd003a`** — cherche `name="Rhino"` sans `card_type=Minion`, alors que le
+  texte dit « the Rhino **minion** ». Sans risque réel (un vilain n'est pas dans
+  le deck rencontre), mais c'est le motif exact de « He's Mine! ».
+* **`wd026`** — « shuffle it into the encounter deck **from the encounter discard
+  pile** » est rendu par un Forced Interrupt qui mélange le sbire depuis le jeu,
+  avant sa défaite.
+* **`wd029`** — « (Limit once per minion per campaign.) » n'est pas appliqué.
+* **`wd022`** — le texte dit « **that** minion », le module met en jeu chaque
+  Electro défaussé parmi les 7. Le set en compte deux.
+* **`wd025`** — « +1 hit point for each [energy] **resource** attached » compte
+  les CARTES portant un [energy] imprimé, pas les icônes.
+
+### Mesures
+
+`test_cards` **4516 ok / 0 erreur** (4515 avant, le +1 est `wd090`) ;
+`verifier_appels_modules` OK ; `verifier_cartes_en_jeu` « les 176 cartes portent
+ce que leur texte annonce » ; `verifier_prefixes` OK ; `verifier_campagnes` OK ;
+`verifier_scenes_campagne` **12 scènes, 50 options** ; `sonde_capacites` : les
+sept cartes touchées portent leurs capacités ; **36 parties d'autoplay** sur les
+six scénarios, normal et expert, **0 traceback au grep**.
+
+Une seule partie bloquée sur 36, et c'est **Tenacity (`01093`)**, carte joueur
+OFFICIELLE et point ouvert déjà connu — hors de ce pack.
