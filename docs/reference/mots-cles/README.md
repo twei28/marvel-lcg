@@ -31,15 +31,15 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] crisis.md
 - [x] acceleration.md
 - [x] amplify.md
-- [ ] steady.md
-- [ ] stalwart.md
-- [ ] peril.md
-- [ ] incite.md
-- [ ] patrol.md
-- [ ] hinder.md
-- [ ] vulnerable.md
-- [ ] teamup.md
-- [ ] alliance.md
+- [x] steady.md
+- [x] stalwart.md
+- [x] peril.md
+- [x] incite.md
+- [x] patrol.md
+- [x] hinder.md
+- [x] vulnerable.md
+- [x] teamup.md
+- [x] alliance.md
 
 ## Maison
 
