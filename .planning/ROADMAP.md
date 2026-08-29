@@ -24,7 +24,7 @@
 > les phases 5 à 7 comme si rien n'existait. Lire l'état par phase ci-dessous.
 >
 > L'état du mode campagne, qui a occupé l'essentiel du travail depuis, n'est pas
-> dans cette roadmap du tout : il vit dans `docs/CAMPAGNES.md` et
+> dans cette roadmap du tout : il vit dans `docs/rapports/CAMPAGNES.md` et
 > `.twei/SESSION.md`.
 
 

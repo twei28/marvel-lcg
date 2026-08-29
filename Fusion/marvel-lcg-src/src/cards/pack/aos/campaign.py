@@ -19,7 +19,7 @@ C'est cette fonction qui la lit, et la seule.
 CE QUI N'EST PAS ENCORE ICI : la grille de deduction du carnet (rayer les
 combinaisons au fur et a mesure, cote ecran), la capacite « Setup » des
 preuves gagnees a poser au scenario suivant, et l'accusation du scenario 5.
-Voir docs/CAMPAGNES.md.
+Voir docs/rapports/CAMPAGNES.md.
 """
 from . import *
 from cards.pack.mts.campaign import WriteCampaignLogAtGameOver

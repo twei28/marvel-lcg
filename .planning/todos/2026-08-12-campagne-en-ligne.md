@@ -148,7 +148,7 @@ naviguer à la main. À définir avec 4.3.
 
 `_sans_secret()` protège déjà les routes. À vérifier : que la combinaison ne se
 déduise pas du carnet partagé vu par plusieurs joueurs, et que la fermeture de la
-fuite du 12/8 (§17 de `docs/CAMPAGNES.md`, une preuve n'est fabriquée qu'au
+fuite du 12/8 (§17 de `docs/rapports/CAMPAGNES.md`, une preuve n'est fabriquée qu'au
 moment du droit de la voir) tienne à quatre sièges et pas seulement à un.
 
 ### 4.6 Tests
@@ -156,7 +156,7 @@ moment du droit de la voir) tienne à quatre sièges et pas seulement à un.
 **État :** ✅ **FAIT côté automatisé** (`5e2f990`). 434 cas vitest, 29 vérifications Python, les deux routes sondées en **HTTP réel**, et `ui-check/tests/campagne-multi.spec.ts` : deux contextes de navigateur, une vraie partie à deux héros, le siège 1 qui voit le panneau **sans avoir jamais eu la clé**, les droits par champ, « Valider » réservé à l'hôte, et le carnet relu portant les deux saisies. Vérifié par mutation. Le test a révélé un défaut, corrigé : le panneau listait aux distants des cases à remplir qui ne leur appartenaient pas. ⏳ Reste l'essai humain, le salon n'étant atteint par rien d'automatisé.
 
 Le pilote de campagne sait déjà **servir tous les sièges**
-(`ui-check/pilote-campagne.ts`, §13 de `docs/CAMPAGNES.md`). C'est lui qui rend
+(`ui-check/pilote-campagne.ts`, §13 de `docs/rapports/CAMPAGNES.md`). C'est lui qui rend
 ce chantier testable en vraie partie : une campagne à deux sièges, carnet écrit
 par les deux, relu par les deux.
 

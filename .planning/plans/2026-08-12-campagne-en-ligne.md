@@ -1326,7 +1326,7 @@ C'est le critère d'acceptation de la fiche, et rien de ce qui précède ne le r
 
 **Fichiers :**
 - Créer : `ui-check/tests/campagne-multi.spec.ts`
-- Modifier : `docs/CAMPAGNES.md`, `docs/MULTIJOUEUR.md`, `.twei/SESSION.md`, `.planning/STATE.md`, `.planning/todos/2026-08-12-campagne-en-ligne.md`
+- Modifier : `docs/rapports/CAMPAGNES.md`, `docs/reference/MULTIJOUEUR.md`, `.twei/SESSION.md`, `.planning/STATE.md`, `.planning/todos/2026-08-12-campagne-en-ligne.md`
 
 - [ ] **Étape 1 : déployer l'ensemble**
 
@@ -1367,8 +1367,8 @@ Ce que le test ne couvre pas et qui demande un humain : le salon. Lancer `JOUER-
 - [ ] **Étape 4 : mettre les documents à l'état mesuré**
 
 - `.planning/todos/2026-08-12-campagne-en-ligne.md` : statut, et **corriger l'affirmation « le blocage est là et nulle part ailleurs »**, qui a envoyé ce chantier sur une fausse piste.
-- `docs/CAMPAGNES.md` : une section sur la campagne à plusieurs, les deux routes, la règle des droits.
-- `docs/MULTIJOUEUR.md` : ce qui change pour l'hôte et pour les invités.
+- `docs/rapports/CAMPAGNES.md` : une section sur la campagne à plusieurs, les deux routes, la règle des droits.
+- `docs/reference/MULTIJOUEUR.md` : ce qui change pour l'hôte et pour les invités.
 - `.twei/SESSION.md` et `.planning/STATE.md` : la continuité.
 
 - [ ] **Étape 5 : commit**
@@ -1383,7 +1383,7 @@ git commit -m "test(campagne): une campagne menee a deux, du lancement a la vali
 
 ## Ce qui reste hors de ce plan, et pourquoi
 
-- **Le secret d'A.I.M. à quatre sièges (§4.5 de la fiche).** `_sans_secret()` protège les routes, et la fermeture du 12/8 (§17 de `docs/CAMPAGNES.md`) fabrique une preuve seulement au moment du droit de la voir. La route neuve `/get_campagne_en_cours` ne rend ni carnet ni preuve. Reste à éprouver que la répartition ne se déduit pas d'un carnet partagé lu par plusieurs : c'est une campagne de tests à soi seule, et elle a besoin des jalons A à D pour exister.
+- **Le secret d'A.I.M. à quatre sièges (§4.5 de la fiche).** `_sans_secret()` protège les routes, et la fermeture du 12/8 (§17 de `docs/rapports/CAMPAGNES.md`) fabrique une preuve seulement au moment du droit de la voir. La route neuve `/get_campagne_en_cours` ne rend ni carnet ni preuve. Reste à éprouver que la répartition ne se déduit pas d'un carnet partagé lu par plusieurs : c'est une campagne de tests à soi seule, et elle a besoin des jalons A à D pour exister.
 - **Changer l'équipe en cours de campagne.** Interdit par le livret. Si le besoin apparaît (un joueur qui abandonne), c'est une décision de règle, pas un chantier technique.
 - **Le serveur permanent** (`.planning/todos/2026-07-28-serveur-permanent-multijoueur.md`). Ce chantier-ci marche sur le multi actuel, tunnel et mot de passe compris.
 - **Le re-zip vers `Fusion/`.** Dette antérieure, déjà signalée par le plan du rapport de bug. À solder à part.

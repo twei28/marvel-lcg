@@ -1,0 +1,11 @@
+# Acceleration
+
+**Texte imprimé / définition** : « Acceleration. » Rappel imprimé sur les cartes qui le portent (ex. `01109`) : « Acceleration Icon: Place +1 threat on the main scheme at the start of the villain phase. » Le compteur `Acceleration` (`1`, `2`, ...) fixe le nombre d'icônes Acceleration portées par la carte.
+
+**Mécanisme moteur** : clé `desc.Acceleration` sur la carte, lue nativement par le moteur. `HasAccelerationIcon` (`src/game/card/face/attribute/has_acceleration_icon.py`) enregistre l'attribut `Acceleration` -> `printed_acceleration_icon`, restaure la valeur à chaque `OnResetKeywords` via `GainAccelerationIcon`. `Worlds.GetIconsNum` (`src/game/operate/worlds.py`) compte les icônes Acceleration en jeu ; ce total pilote le threat posé sur le complot principal au début de la phase vilain. **Aucun script requis** pour ce mot-clé : c'est une des « bases automatiques » du guide.
+
+**Carte exemple** : `01109` : Bomb Scare (`desc` contient `"Acceleration": "1"`), lu directement depuis `desc`, aucun script requis. Un fichier `01109.py` existe dans `src/cards/pack` : ce script gère une capacité imprimée annexe (placement de threat à la révélation), pas le mot-clé Acceleration.
+
+**Pièges connus** : ne pas confondre avec Hazard, qui agit pendant la phase vilain en tirant des cartes Rencontre supplémentaires plutôt qu'en posant du threat. Les cartes Acceleration peuvent cumuler plusieurs icônes (compteur > 1), chaque icône plaçant un threat supplémentaire. Si une future carte cumule Acceleration avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Acceleration lui-même.
+
+**Variantes maison** : aucune recensée pour l'instant.

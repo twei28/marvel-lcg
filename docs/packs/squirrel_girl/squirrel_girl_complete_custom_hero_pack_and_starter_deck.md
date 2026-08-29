@@ -277,7 +277,7 @@ Spend this resource only to pay for a SQUIRREL GIRL card.
 **Printed Resource:** Mental  
 **Traits:** TACTIC.
 
-**Action:** Call 2 Squirrels. The Squirrels called by this effect enter play ready.
+**Action:** Call 2 Squirrels. 1 of them enters play ready.
 
 ---
 
@@ -627,3 +627,17 @@ The following elements should receive particular attention during playtesting:
 - Whether six Squirrels provide enough circulation without making the Squirrel deck feel repetitive.
 - Whether **Spoiling for a Fight**, **Battle Fury**, and **Squirrel Girl's Costume** create too many basic attacks in a single round.
 - Whether the restriction preventing Squirrel stat increases is sufficient to stop external ally effects from breaking the Squirrel deck.
+
+---
+
+# 15. Balance Decisions (28/08/2026)
+
+Reviewed one by one against the official card pool (`data/cards.json`) as a benchmark, rather than by feel.
+
+- **Call the Squirrels** — CHANGED. No official card lets a summoned/searched ally enter play already ready (`Get Ready` only readies a unit already in play). Both Squirrels entering ready had no precedent. Now: "Call 2 Squirrels. 1 of them enters play ready." Updated in `cards.json`, `sg013.py`, and section 5 above.
+- **Unbeatable Army (once per phase vs. once per round)** — KEPT AS IS. "Limit once per phase" is the standard official idiom (allows one trigger during the Villain Phase and one during the Player Phase); consistent with intent.
+- **Unbeatable! (extra activation via "ready Squirrel Girl")** — NON-ISSUE, no change needed. Verified in engine code (`world.py`): round order is Player Phase THEN Villain Phase. Squirrel Girl is readied at the start of every round regardless, and nothing lets her act again during the Villain Phase itself — so this ready clause has no practical effect in the standard flow.
+- **Spoiling for a Fight + Battle Fury + Squirrel Girl's Costume (multiple basic attacks per round)** — KEPT AS IS. This is the kit's intended identity (see §13), and "defeat minion → ready" is an existing official pattern (Battle Fury is a pool card FFG already balanced).
+- **Nuts! (signature resource strength)** — KEPT AS IS. Benchmarked against `Energy`/`Genius`/`Strength` (2 resources, max 1/deck, no bonus) and `Audacity` (1 resource + unconditional bonus, max 1/deck): Nuts! is a Basic Resource plus a *conditional* bonus (only when spent on a SQUIRREL GIRL card) — in line with the pool.
+- **Six Squirrels / deck repetitiveness** — DEFERRED, not decided. Not resolvable by comparison or code reading; needs real playtesting to judge the feel.
+- **Anti-boost restriction (Squirrels can't be strengthened by outside cards)** — VERIFIED CORRECT, no change needed. Implemented generically in `squirrel_girl/__init__.py` (`refuse_target_fn`/`refuse_gain_fn` set once for all six Squirrels via `PreparerEcureuil`, driven by `_EstSourceEtrangere`), not card-by-card — no gap found.
