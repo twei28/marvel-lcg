@@ -12,7 +12,6 @@
 ## Je veux jouer ou faire tourner le jeu
 
 - Lancer une partie en ligne à plusieurs : `reference/MULTIJOUEUR.md`
-- Comprendre le mode campagne : `reference/CAMPAGNES.md`
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :
   `reference/GUIDE-STRATEGIE-JEU.md`
 
@@ -22,6 +21,9 @@
 - `rapports/RAPPORT-AUDIT-CARTES.md`, `rapports/RAPPORT-SCANS-FR.md` :
   audits ponctuels, figés à leur date
 - `rapports/BRIEF-REFONTE-PLATEAU.md` : passation de la refonte du plateau
+- `rapports/CAMPAGNES.md` : état des lieux du mode campagne, figé au
+  07/08/2026 (comprendre comment ça marchait à cette date, pas une
+  référence tenue à jour)
 
 ## Packs custom avec leur propre dossier de conception
 
