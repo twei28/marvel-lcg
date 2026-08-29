@@ -1,4 +1,4 @@
-# Refonte de la documentation de création de contenu — Plan d'implémentation
+# Refonte de la documentation de création de contenu : Plan d'implémentation
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -22,10 +22,19 @@ exemples de cartes.
 
 ## Global Constraints
 
-- Dépôt git : `Jeu Marvel Champions/` (racine du repo). Toutes les commandes
-  `git` de ce plan s'exécutent depuis ce dossier.
+- **Ce plan s'exécute dans un worktree isolé**, pas dans le checkout partagé.
+  Racine de travail réelle : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu`
+  (branche `worktree-refonte-doc-creation-contenu`). Toute commande de ce
+  plan qui mentionne `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions`
+  comme racine désigne en réalité ce chemin de worktree, pas le checkout
+  partagé `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions`
+  sans suffixe (ce dernier appartient à un autre travail en cours, ne
+  jamais y écrire).
+- Dépôt git : `Jeu Marvel Champions/` (racine du repo, dans le worktree
+  ci-dessus). Toutes les commandes `git` de ce plan s'exécutent depuis ce
+  dossier.
 - Racine des docs actuelle : `Jeu Marvel Champions/docs/`. Racine du moteur
-  (copie vivante) : `Jeu Marvel Champions/Fusion/marvel-lcg-src/` — on ne
+  (copie vivante) : `Jeu Marvel Champions/Fusion/marvel-lcg-src/` : on ne
   modifie **rien** dedans dans ce plan, on ne fait QUE le lire pour retrouver
   des exemples de cartes.
 - Toute la doc est en français, sans tiret cadratin (—) utilisé comme
@@ -46,7 +55,7 @@ exemples de cartes.
 
   **Mécanisme moteur** : ...
 
-  **Carte exemple** : `<card_id>` — <nom>, extrait du `.py` correspondant
+  **Carte exemple** : `<card_id>` : <nom>, extrait du `.py` correspondant
   (ou « lu directement depuis `desc`, aucun script requis » si le moteur
   le gère nativement).
 
@@ -57,7 +66,7 @@ exemples de cartes.
 
 ---
 
-## Phase A — Structure
+## Phase A : Structure
 
 ### Task 1: Réorganiser `docs/` en trois dossiers
 
@@ -75,7 +84,7 @@ exemples de cartes.
 - [ ] **Étape 1 : vérifier l'état du dépôt avant de toucher à quoi que ce soit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git status --short -- docs/
 ```
 
@@ -87,7 +96,7 @@ s'arrêter et demander confirmation avant de continuer.
 - [ ] **Étape 2 : créer l'arborescence et déplacer les fichiers avec `git mv`**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 mkdir -p docs/reference/mots-cles docs/rapports docs/packs/squirrel_girl
 
 git mv docs/GUIDE-CREATION-CONTENU.md docs/reference/GUIDE-CREATION-CONTENU.md
@@ -138,7 +147,7 @@ git commit -m "docs: réorganiser docs/ en reference/, rapports/, packs/"
 
 **Interfaces:**
 - Consumes: chemins produits par Task 1 (`docs/reference/PROCESSUS-CARTE.md`,
-  `docs/reference/PROCESSUS-HEROS.md`, `docs/README.md`) — ces deux premiers
+  `docs/reference/PROCESSUS-HEROS.md`, `docs/README.md`) : ces deux premiers
   n'existent pas encore au moment de cette tâche (créés en Task 4/5), donc ce
   fichier référence des chemins qui seront valides après Phase B. C'est
   acceptable : ce n'est pas une tâche testée par exécution de code, seulement
@@ -150,15 +159,15 @@ git commit -m "docs: réorganiser docs/ en reference/, rapports/, packs/"
 - [ ] **Étape 1 : écrire le fichier**
 
 ```markdown
-# Marvel Champions LCG — projet custom
+# Marvel Champions LCG : projet custom
 
 Jeu Marvel Champions LCG basé sur le moteur officiel open-source
 `irefrixs/marvel-lcg`. Copie vivante du moteur :
 `Fusion/marvel-lcg-src/` (détail des deux copies et du piège associé dans
-`docs/reference/GUIDE-CREATION-CONTENU.md` §1 — ne jamais y toucher sans
+`docs/reference/GUIDE-CREATION-CONTENU.md` §1 : ne jamais y toucher sans
 avoir lu cette section en premier).
 
-## Règle impérative — création ou modification de contenu
+## Règle impérative : création ou modification de contenu
 
 - **Nouvelle carte ou modification d'une carte existante** : lire et suivre
   `docs/reference/PROCESSUS-CARTE.md` du début à la fin. Rien n'est
@@ -178,7 +187,7 @@ d'audit passés), voir `docs/README.md`.
 - [ ] **Étape 2 : vérifier que les trois chemins cités existeront (existent déjà ou seront créés dans ce plan)**
 
 ```bash
-grep -n "docs/reference" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/CLAUDE.md"
+grep -n "docs/reference" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/CLAUDE.md"
 ```
 
 Attendu : 4 chemins listés (`GUIDE-CREATION-CONTENU.md`,
@@ -188,7 +197,7 @@ une tâche de ce plan (Task 1, 4, 5, 6).
 - [ ] **Étape 3 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add CLAUDE.md
 git commit -m "docs: ajouter CLAUDE.md projet, point d'entrée auto-chargé"
 ```
@@ -221,7 +230,6 @@ git commit -m "docs: ajouter CLAUDE.md projet, point d'entrée auto-chargé"
 ## Je veux jouer ou faire tourner le jeu
 
 - Lancer une partie en ligne à plusieurs : `reference/MULTIJOUEUR.md`
-- Comprendre le mode campagne : `reference/CAMPAGNES.md`
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :
   `reference/GUIDE-STRATEGIE-JEU.md`
 
@@ -231,6 +239,9 @@ git commit -m "docs: ajouter CLAUDE.md projet, point d'entrée auto-chargé"
 - `rapports/RAPPORT-AUDIT-CARTES.md`, `rapports/RAPPORT-SCANS-FR.md` :
   audits ponctuels, figés à leur date
 - `rapports/BRIEF-REFONTE-PLATEAU.md` : passation de la refonte du plateau
+- `rapports/CAMPAGNES.md` : état des lieux du mode campagne, figé au
+  07/08/2026 (comprendre comment ça marchait à cette date, pas une
+  référence tenue à jour)
 
 ## Packs custom avec leur propre dossier de conception
 
@@ -240,29 +251,29 @@ git commit -m "docs: ajouter CLAUDE.md projet, point d'entrée auto-chargé"
 - [ ] **Étape 2 : vérifier que chaque chemin cité existe (une fois Phase B/C terminées) via un grep de contrôle**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/docs"
-for f in reference/PROCESSUS-CARTE.md reference/PROCESSUS-HEROS.md reference/GUIDE-CREATION-CONTENU.md reference/mots-cles reference/MULTIJOUEUR.md reference/CAMPAGNES.md reference/GUIDE-STRATEGIE-JEU.md rapports/RANGEMENT.md rapports/RAPPORT-AUDIT-CARTES.md rapports/RAPPORT-SCANS-FR.md rapports/BRIEF-REFONTE-PLATEAU.md packs/squirrel_girl; do
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/docs"
+for f in reference/PROCESSUS-CARTE.md reference/PROCESSUS-HEROS.md reference/GUIDE-CREATION-CONTENU.md reference/mots-cles reference/MULTIJOUEUR.md rapports/CAMPAGNES.md reference/GUIDE-STRATEGIE-JEU.md rapports/RANGEMENT.md rapports/RAPPORT-AUDIT-CARTES.md rapports/RAPPORT-SCANS-FR.md rapports/BRIEF-REFONTE-PLATEAU.md packs/squirrel_girl; do
   [ -e "$f" ] && echo "OK  $f" || echo "MANQUANT $f (normal si Phase B/C pas encore faite)"
 done
 ```
 
 Cette vérification est répétée en Task 17 une fois tout le plan exécuté ;
 ici elle sert juste à confirmer que Task 1 a bien produit les chemins déjà
-attendus (`rapports/*`, `reference/GUIDE-*`, `reference/MULTIJOUEUR.md`,
-`reference/CAMPAGNES.md`, `packs/squirrel_girl`) — `MANQUANT` est normal pour
+attendus (`rapports/*` y compris `rapports/CAMPAGNES.md`, `reference/GUIDE-*`,
+`reference/MULTIJOUEUR.md`, `packs/squirrel_girl`) : `MANQUANT` est normal pour
 `PROCESSUS-CARTE.md`, `PROCESSUS-HEROS.md` et `mots-cles` à ce stade.
 
 - [ ] **Étape 3 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/README.md
 git commit -m "docs: ajouter l'index docs/README.md"
 ```
 
 ---
 
-## Phase B — Fusion des processus (dépend de Task 1)
+## Phase B : Fusion des processus (dépend de Task 1)
 
 ### Task 4: Créer `docs/reference/PROCESSUS-CARTE.md`, supprimer `CHECKLIST-VALIDATION-CARTE.md`
 
@@ -272,7 +283,7 @@ git commit -m "docs: ajouter l'index docs/README.md"
   (retirer le §4 actuel, corriger les callouts « Où créer tout ça » de
   §4/§5/§6, ajouter un renvoi)
 - Delete: `Jeu Marvel Champions/docs/CHECKLIST-VALIDATION-CARTE.md` (déjà
-  déplacé nulle part par Task 1 — il n'a **pas** été `git mv`, il est
+  déplacé nulle part par Task 1 : il n'a **pas** été `git mv`, il est
   supprimé ici avec son contenu absorbé)
 
 **Interfaces:**
@@ -289,7 +300,7 @@ git commit -m "docs: ajouter l'index docs/README.md"
 - [ ] **Étape 1 : relire les deux sources avant fusion**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 sed -n '381,454p' docs/reference/GUIDE-CREATION-CONTENU.md   # §4 actuel + §4.1
 cat docs/CHECKLIST-VALIDATION-CARTE.md                        # 4 blocs + gabarit
 ```
@@ -297,35 +308,43 @@ cat docs/CHECKLIST-VALIDATION-CARTE.md                        # 4 blocs + gabari
 - [ ] **Étape 2 : écrire `docs/reference/PROCESSUS-CARTE.md`**
 
 Structure exacte (fusion dans l'ordre d'exécution réel, contenu des deux
-fichiers repris sans perte — le tableau des mots-pièges du Bloc 1 et la
+fichiers repris sans perte : le tableau des mots-pièges du Bloc 1 et la
 règle §4.1 « en cas de doute » se recopient **mot pour mot**, ne pas les
 paraphraser) :
 
 ```markdown
-# Processus — une carte, du début à la fin
+# Processus : une carte, du début à la fin
 
 Fichier unique : construire ET vérifier une carte, dans l'ordre réel
 d'exécution. Fusion de l'ancien §4 de `GUIDE-CREATION-CONTENU.md` et de
 l'ancien `CHECKLIST-VALIDATION-CARTE.md` (29/08/2026). Une seule carte à la
-fois (jamais un lot validé en bloc).
+fois (jamais un lot validé en bloc). Le §8 de `GUIDE-CREATION-CONTENU.md`
+donne les commandes techniques utilisées dans les blocs qui suivent
+(`test_cards`, `audit_cartes`, `verifier_api_cartes`...) : ce fichier est le
+filet qui garantit que le texte imprimé correspond vraiment au code ET que
+la carte a été testée EN JEU, pas seulement construite.
 
-## Étape 1 — Entrée dans `data/cards.json`
+## Étape 1 : Entrée dans `data/cards.json`
 
 Ajouter l'entrée dans le bon pack (tri par `card_id`). Renseigner `type`,
 `name`, `desc`, `traits`, `set_name`, `text`. Format détaillé :
 `GUIDE-CREATION-CONTENU.md` §2.
 
-## Étape 2 — Carte(s) de référence *(obligatoire, avant le script)*
+Pour une carte custom hors dépôt : voir `data/cards_custom.json` et le
+mécanisme `cards/<id>.py.txt` (guide de l'éditeur).
+
+## Étape 2 : Carte(s) de référence *(obligatoire, avant le script)*
 
 Pour CHAQUE capacité distincte de la carte : quelle carte déjà scriptée est
-comparable (même déclencheur, même genre d'effet), et pourquoi. Ne pas
-écrire une ligne de script avant d'avoir rempli ce champ.
+comparable (même déclencheur, même genre d'effet), et pourquoi. Plus de
+4 200 cartes sont déjà scriptées dans le dépôt : s'en inspirer plutôt que
+réinventer. Ne pas écrire une ligne de script avant d'avoir rempli ce champ.
 
 ```
-Capacité <nom> : carte de référence <card_id> (<nom>) — comparable parce que ...
+Capacité <nom> : carte de référence <card_id> (<nom>) : comparable parce que ...
 ```
 
-## Étape 3 — Script
+## Étape 3 : Script
 
 `src/cards/pack/<pack>/<set>/<card_id>.py`, `GetAbilities()`. Référence API :
 `GUIDE-CREATION-CONTENU.md` §3. **Pour chaque mot-clé imprimé sur la carte**,
@@ -344,7 +363,9 @@ tranche pas tout seul : on pose la question à l'utilisateur.
   légère.
 - Chaque option doit dire **ce que ça change en jeu**, pas seulement ce que ça
   change dans le code.
-- Poser la question **avant** d'écrire le script, pas après.
+- Poser la question **avant** d'écrire le script, pas après. Ce qui n'a
+  pas été demandé au bon moment doit l'être quand même : mieux vaut une
+  question tardive qu'un arbitrage silencieux.
 
 Ce qui déclenche une question, sans exception :
 
@@ -361,17 +382,33 @@ Ce qui déclenche une question, sans exception :
 
 **Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
 une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
-vaut `R` physique, `B` mental, `Y` énergie, `G` wild.
+vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
+supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
+Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
+`RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
+os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
+promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :
+tous comparent le code au texte saisi, et le texte était faux pareillement.
+Seul un joueur l'a vu, en partie.
 
 Ce qui ne déclenche PAS de question : les choix purement techniques sans effet
-sur les règles. Ceux-là se documentent au §9 de `GUIDE-CREATION-CONTENU.md`,
-ils ne se discutent pas.
+sur les règles (quelle fabrique employer, où ranger un helper, format
+d'image). Ceux-là se documentent au §9 de `GUIDE-CREATION-CONTENU.md`, ils
+ne se discutent pas.
 
-## Étape 4 — Image
+À l'inverse, les points **non tranchables** (une capacité que le harnais ne
+sait pas déclencher, un doute sur le comportement réel du moteur) ne sont
+pas des questions : ils vont dans la liste « à vérifier en partie réelle »
+du §9 de `GUIDE-CREATION-CONTENU.md`, et il faut le dire clairement en fin
+de travail.
 
-`assets/pics/<card_id>.<jpg|png|webp>` (extension obligatoire).
+## Étape 4 : Image
 
-## Étape 5 — Bloc texte-contre-code, ligne par ligne
+`assets/pics/<card_id>.<jpg|png|webp>` (l'extension est obligatoire, le
+chargeur `engine/file/cache.py` l'exige). Sans image déposée, le jeu tente
+marvelcdb puis génère un repli.
+
+## Étape 5 : Bloc texte-contre-code, ligne par ligne
 
 Lire le texte imprimé phrase par phrase, puis le script Python, et vérifier
 que chaque mot du texte a sa contrepartie exacte dans le code.
@@ -406,14 +443,14 @@ n'est nécessaire pour eux.
 Si un mot ou une tournure ne figure pas dans la liste mais laisse un doute :
 appliquer la règle « en cas de doute » ci-dessus.
 
-## Étape 6 — Bloc nombres, texte ↔ code
+## Étape 6 : Bloc nombres, texte ↔ code
 
 Relever chaque valeur numérique imprimée (coûts, seuils, PV, compteurs,
 « X fois », limites, distances) et vérifier qu'elle est identique dans
 `data/cards.json` (`desc`) ET dans le script Python. Ce seul filet a trouvé
 `wd077b` tout seul le 20/08/2026 : ne jamais le sauter.
 
-## Étape 7 — Bloc tests par capacité, preuve par substitution
+## Étape 7 : Bloc tests par capacité, preuve par substitution
 
 Pour CHAQUE capacité distincte (chaque bloc Action/Response/Interrupt/When
 Revealed... séparé sur le texte imprimé) :
@@ -431,7 +468,7 @@ Revealed... séparé sur le texte imprimé) :
 Aucune carte n'est « terminée » tant qu'il reste une capacité sans cas sujet
 et sans preuve par substitution.
 
-## Étape 8 — Bloc autoplay ciblé, grep exhaustif des erreurs
+## Étape 8 : Bloc autoplay ciblé, grep exhaustif des erreurs
 
 1. `tools/autoplay.py` sur le deck/scénario qui contient la carte, au moins
    8 parties, contre le même vilain qu'un héros TÉMOIN dans la même fournée.
@@ -457,29 +494,29 @@ outil manque.
 ## Gabarit à copier, une fois par carte
 
 ```
-### <card_id> — <nom de la carte>
+### <card_id> : <nom de la carte>
 
-- [ ] Étape 2 — carte(s) de référence : ...
-- [ ] Étape 5 — texte-contre-code : mots-pièges vérifiés (lister) : ...
+- [ ] Étape 2 : carte(s) de référence : ...
+- [ ] Étape 5 : texte-contre-code : mots-pièges vérifiés (lister) : ...
       Résultat : ...
-- [ ] Étape 6 — nombres texte ↔ code : ...
+- [ ] Étape 6 : nombres texte ↔ code : ...
       Résultat : ...
-- [ ] Étape 7 — cas test_capacites par capacité, preuve par substitution :
-      capacité 1 : cas <nom>, rouge sans module / vert avec — capacité 2 : ...
+- [ ] Étape 7 : cas test_capacites par capacité, preuve par substitution :
+      capacité 1 : cas <nom>, rouge sans module / vert avec : capacité 2 : ...
       Résultat : ...
-- [ ] Étape 8 — autoplay ciblé : N parties, témoin <héros>, grep tracebacks : 0,
+- [ ] Étape 8 : autoplay ciblé : N parties, témoin <héros>, grep tracebacks : 0,
       lecture du journal : ...
       Résultat : ...
 
-Carte terminée : OUI / NON — si NON, ce qui manque et pourquoi.
+Carte terminée : OUI / NON : si NON, ce qui manque et pourquoi.
 ```
 ```
 
 - [ ] **Étape 3 : retirer le §4 de `GUIDE-CREATION-CONTENU.md`, corriger les callouts « Où créer tout ça » et ajouter un renvoi**
 
 Dans `docs/reference/GUIDE-CREATION-CONTENU.md` :
-- Remplacer tout le contenu actuel du §4 (de `## 4. Checklist — nouvelle carte`
-  jusqu'à juste avant `## 5. Checklist — nouveau héros`) par :
+- Remplacer tout le contenu actuel du §4 (de `## 4. Checklist : nouvelle carte`
+  jusqu'à juste avant `## 5. Checklist : nouveau héros`) par :
 
   ```markdown
   ## 4. Nouvelle carte
@@ -514,7 +551,7 @@ git rm docs/CHECKLIST-VALIDATION-CARTE.md
 - [ ] **Étape 5 : vérifier qu'aucune référence morte ne subsiste vers l'ancien fichier**
 
 ```bash
-grep -rn "CHECKLIST-VALIDATION-CARTE" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" --include="*.md"
+grep -rn "CHECKLIST-VALIDATION-CARTE" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu" --include="*.md"
 ```
 
 Attendu : aucune occurrence (si une occurrence apparaît hors de
@@ -547,33 +584,33 @@ git commit -m "docs: fusionner §4 + CHECKLIST-VALIDATION-CARTE en PROCESSUS-CAR
 - [ ] **Étape 1 : relire la source avant réécriture**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 sed -n '455,613p' docs/reference/GUIDE-CREATION-CONTENU.md   # §5 complet, §5.1 à §5.3
 ```
 
 - [ ] **Étape 2 : écrire `docs/reference/PROCESSUS-HEROS.md`**
 
 ```markdown
-# Processus — un nouveau héros, du début à la fin
+# Processus : un nouveau héros, du début à la fin
 
 Étapes propres au héros. Chaque carte du pack passe en plus par
 `PROCESSUS-CARTE.md` en entier : ce fichier ne duplique pas ses 8 étapes.
 
-## Étape 1 — Cartes dans `data/cards.json`
+## Étape 1 : Cartes dans `data/cards.json`
 
 Pack du produit, `set_name` = nom du héros :
 - `XXXXXa` type `Hero` (`HP/ATK/THW/DEF/HS`) et `XXXXXb` type `AlterEgo`
-  (`HP/REC/HS`) — même carte, deux faces ;
+  (`HP/REC/HS`) : même carte, deux faces ;
 - les ~15 cartes signature ;
 - 1 obligation (`desc.GiveTo` = nom de l'alter-ego) ;
 - 5 cartes némésis (`set_name` = `"<Héros> Nemesis"`).
 
-## Étape 2 — Scripts
+## Étape 2 : Scripts
 
 Pour chaque carte à capacités, y compris les faces a/b du héros (capacités
 imprimées ; ATK/THW/DEF/REC de base sont automatiques).
 
-## Étape 3 — Deck de départ
+## Étape 3 : Deck de départ
 
 `deck/starter/<hero>.json` :
 ```json
@@ -586,19 +623,20 @@ imprimées ; ATK/THW/DEF/REC de base sont automatiques).
   "player_deck": ["...~25 cartes d'aspect..."] }
 ```
 
-## Étape 4 — `data/nemesis/<hero>_nemesis.json`
+## Étape 4 : `data/nemesis/<hero>_nemesis.json`
 
 Facultatif, pour l'UI.
 
-## Étape 5 — Référencer dans `data/sets_info.json`
+## Étape 5 : Référencer dans `data/sets_info.json`
 
 Dans `heroes` du bon pack.
 
-## Étape 6 — Images
+## Étape 6 : Images
 
-`assets/pics/<card_id>.jpg` pour toutes les cartes (extension obligatoire).
+`assets/pics/<card_id>.jpg` pour toutes les cartes (extension obligatoire,
+voir §4 de `GUIDE-CREATION-CONTENU.md`).
 
-## Étape 7 — Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
+## Étape 7 : Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
 
 Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
 `card_id` de la face héros** et jamais par le nom :
@@ -618,9 +656,12 @@ Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
 ```
 
 Règles : tout champ optionnel sauf `bio`/`bioEn` (mieux vaut omettre que
-d'inventer) ; les `*En` seulement si la traduction diffère ; viser 3-4
-phrases (panneau étroit, 314 px) ; libellés affichés via `t()` dans
-`public/js/prepare/dico-en.js`. Un héros sans entrée retombe silencieusement
+d'inventer ; un champ absent disparaît simplement de la fiche) ; les `*En`
+seulement si la traduction diffère (« New York » ou « Thanos » se passent
+de doublon, en anglais un `*En` absent affiche la version française) ;
+viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
+dans `public/js/prepare/dico-en.js` (voir §11 de `GUIDE-CREATION-CONTENU.md`).
+Un héros sans entrée retombe silencieusement
 sur l'ancien affichage : rien ne casse, mais la fiche manque, donc **preuve
 obligatoire** = confirmer au survol du héros dans le wizard que le panneau
 affiche bien le texte attendu, pas juste le grand visuel seul.
@@ -629,18 +670,18 @@ Ne pas ajouter de biographie pour une identité alternative purement
 cosmétique (voir Étape 10 ci-dessous) : le panneau s'indexe sur la face du
 deck de base, une entrée pour la variante resterait orpheline.
 
-## Étape 8 — Texte français de chaque carte *(obligatoire)*
+## Étape 8 : Texte français de chaque carte *(obligatoire)*
 
 `ui-app/src/board/textes-fr-fanmade.ts` (voir §11.1 de
 `GUIDE-CREATION-CONTENU.md`). Sans lui, les cartes du pack n'ont aucun
 tooltip français, et rien ne le signale.
 
-## Étape 9 — Validation, carte par carte
+## Étape 9 : Validation, carte par carte
 
 `PROCESSUS-CARTE.md` en entier pour **chaque** carte du pack (pas seulement
 les cartes signature), plus une partie complète jouée avec le héros.
 
-## Étape 10 — Points d'attention transverses
+## Étape 10 : Points d'attention transverses
 
 **Jamais une carte signature d'un autre héros dans un deck.** Une carte de
 classe `Hero` (`desc.Class = "Hero"`) appartient à un seul héros. Le moteur
@@ -683,7 +724,7 @@ Pas de héros à moitié validé : si une seule carte du pack manque son
 
 - [ ] **Étape 3 : retirer le §5 (hors §5.2/§5.3) de `GUIDE-CREATION-CONTENU.md`**
 
-Remplacer `## 5. Checklist — nouveau héros` jusqu'à juste avant
+Remplacer `## 5. Checklist : nouveau héros` jusqu'à juste avant
 `### 5.2 Ne jamais mettre une carte signature...` par :
 
 ```markdown
@@ -708,7 +749,7 @@ git commit -m "docs: réécrire §5 en PROCESSUS-HEROS.md avec gate finale"
 
 ---
 
-## Phase C — Catalogue de mots-clés (dépend de Task 1)
+## Phase C : Catalogue de mots-clés (dépend de Task 1)
 
 ### Task 6: Inventaire des mots-clés et index `mots-cles/README.md`
 
@@ -724,7 +765,7 @@ git commit -m "docs: réécrire §5 en PROCESSUS-HEROS.md avec gate finale"
 - [ ] **Étape 1 : confirmer la liste des mots-clés officiels présents dans les données**
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/Fusion/marvel-lcg-src"
 grep -noE "\"(Toughness|Guard|Quickstrike|Retaliate|Surge|Villainous|Hazard|Crisis|Acceleration|Amplify|Steady|Stalwart|Peril|Incite|Patrol|Hinder|Vulnerable|Restricted|TeamUp|Alliance|Permanent)\"" "$W/data/cards.json" | sort -t: -k2 -u | awk -F: '{print $2}' | sort -u
 ```
 
@@ -746,7 +787,7 @@ Gabarit à copier pour chaque nouvelle fiche :
 
 **Mécanisme moteur** : ...
 
-**Carte exemple** : \`<card_id>\` — <nom>, extrait du \`.py\` correspondant
+**Carte exemple** : \`<card_id>\` : <nom>, extrait du \`.py\` correspondant
 (ou « lu directement depuis \`desc\`, aucun script requis »).
 
 **Pièges connus** : ...
@@ -797,14 +838,14 @@ de mot-clé maison réutilisable, pour ne pas les revérifier deux fois.)
 - [ ] **Étape 3 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/README.md
 git commit -m "docs: index du catalogue de mots-clés"
 ```
 
 ---
 
-### Task 7: Fiches mots-clés officiels — lot 1 (desc automatiques)
+### Task 7: Fiches mots-clés officiels : lot 1 (desc automatiques)
 
 **Files:**
 - Create: `docs/reference/mots-cles/toughness.md`, `guard.md`,
@@ -819,7 +860,7 @@ git commit -m "docs: index du catalogue de mots-clés"
 - [ ] **Étape 1 : pour chaque mot-clé, retrouver un exemple et vérifier s'il a un script**
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/Fusion/marvel-lcg-src"
 python3 -c "
 import json
 d = json.load(open('$W/data/cards.json'))
@@ -864,14 +905,14 @@ Contenu attendu pour chacune, à partir des résultats de l'Étape 1 (le
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/toughness.md docs/reference/mots-cles/guard.md docs/reference/mots-cles/quickstrike.md docs/reference/mots-cles/retaliate.md docs/reference/mots-cles/restricted.md docs/reference/mots-cles/permanent.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiches mots-clés officiels lot 1 (Toughness, Guard, Quickstrike, Retaliate, Restricted, Permanent)"
 ```
 
 ---
 
-### Task 8: Fiches mots-clés officiels — lot 2
+### Task 8: Fiches mots-clés officiels : lot 2
 
 **Files:**
 - Create: `docs/reference/mots-cles/surge.md`, `villainous.md`, `hazard.md`,
@@ -885,7 +926,7 @@ git commit -m "docs: fiches mots-clés officiels lot 1 (Toughness, Guard, Quicks
 - [ ] **Étape 1 : même procédure de recherche que Task 7, Étape 1, avec cette liste de mots-clés**
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/Fusion/marvel-lcg-src"
 python3 -c "
 import json
 d = json.load(open('$W/data/cards.json'))
@@ -913,14 +954,14 @@ jamais le mot-clé lui-même.
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/surge.md docs/reference/mots-cles/villainous.md docs/reference/mots-cles/hazard.md docs/reference/mots-cles/crisis.md docs/reference/mots-cles/acceleration.md docs/reference/mots-cles/amplify.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiches mots-clés officiels lot 2 (Surge, Villainous, Hazard, Crisis, Acceleration, Amplify)"
 ```
 
 ---
 
-### Task 9: Fiches mots-clés officiels — lot 3
+### Task 9: Fiches mots-clés officiels : lot 3
 
 **Files:**
 - Create: `docs/reference/mots-cles/steady.md`, `stalwart.md`, `peril.md`,
@@ -935,7 +976,7 @@ git commit -m "docs: fiches mots-clés officiels lot 2 (Surge, Villainous, Hazar
 - [ ] **Étape 1 : recherche des exemples**
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/Fusion/marvel-lcg-src"
 python3 -c "
 import json
 d = json.load(open('$W/data/cards.json'))
@@ -953,18 +994,18 @@ clé `desc.<Keyword>` en compteur, mots-clés de combat/menace gérés
 nativement, même traitement que Tasks 7-8.
 
 **TeamUp** : cas particulier, déjà documenté dans le guide (§4 « en cas de
-doute », exemple Power Couple 73022) — la clé `desc.TeamUp` suppose deux
+doute », exemple Power Couple 73022) : la clé `desc.TeamUp` suppose deux
 identités héros en jeu simultanément. Reprendre l'exemple Power Couple
 comme carte exemple, et noter en « Pièges connus » : si le second héros
 nommé n'est en réalité qu'un allié signature (pas une vraie identité), le
 mot-clé natif ne suffit pas, une condition de script est nécessaire (voir
 `docs/reference/GUIDE-CREATION-CONTENU.md` §9, entrée `jessica_jones`).
 
-**Alliance** : mécanisme différent des autres — hook `CheckAnyPlayerMayHelpPay`
+**Alliance** : mécanisme différent des autres : hook `CheckAnyPlayerMayHelpPay`
 (`game/ability/factory/resources.py`), qui autorise un autre joueur à
 financer un coût. Carte exemple : Coordinated Effort (`58032`), déjà citée
 dans `GUIDE-CREATION-CONTENU.md` §3.1. Variantes maison : l'AUTORISATION de
-Forces Combined (pack `cloak_dagger`, `70003`) étend ce même hook — le
+Forces Combined (pack `cloak_dagger`, `70003`) étend ce même hook : le
 mentionner en « Variantes maison ».
 
 - [ ] **Étape 3 : cocher les 9 cases dans l'index**
@@ -972,14 +1013,14 @@ mentionner en « Variantes maison ».
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/steady.md docs/reference/mots-cles/stalwart.md docs/reference/mots-cles/peril.md docs/reference/mots-cles/incite.md docs/reference/mots-cles/patrol.md docs/reference/mots-cles/hinder.md docs/reference/mots-cles/vulnerable.md docs/reference/mots-cles/teamup.md docs/reference/mots-cles/alliance.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiches mots-clés officiels lot 3 (Steady, Stalwart, Peril, Incite, Patrol, Hinder, Vulnerable, TeamUp, Alliance)"
 ```
 
 ---
 
-### Task 10: Fiches mots-clés maison — pack `agent_anti_venom` (drain X, traitor)
+### Task 10: Fiches mots-clés maison : pack `agent_anti_venom` (drain X, traitor)
 
 **Files:**
 - Create: `docs/reference/mots-cles/drain-x.md`, `traitor.md`
@@ -993,7 +1034,7 @@ git commit -m "docs: fiches mots-clés officiels lot 3 (Steady, Stalwart, Peril,
 - [ ] **Étape 1 : relire la source**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 sed -n '1109p' docs/reference/GUIDE-CREATION-CONTENU.md
 grep -n "def Drain\|def " "Fusion/marvel-lcg-src/src/cards/pack/agent_anti_venom"/*/__init__.py
 ```
@@ -1001,14 +1042,14 @@ grep -n "def Drain\|def " "Fusion/marvel-lcg-src/src/cards/pack/agent_anti_venom
 - [ ] **Étape 2 : écrire `drain-x.md`**
 
 - Définition : « X dégâts à l'ennemi, puis X soins sur Agent Anti-Venom, et
-  sur lui seul » — lecture arrêtée avec l'utilisateur le 4/8/2026 (mot-clé
+  sur lui seul » : lecture arrêtée avec l'utilisateur le 4/8/2026 (mot-clé
   introuvable sur les scans fournis et en ligne).
 - Mécanisme : centralisé dans `Drain()` du `__init__.py` du set
   `agent_anti_venom`.
 - Carte exemple : Bear Arms et Unlikely Allies (relire les `card_id` exacts
   via `grep -n "Bear Arms\|Unlikely Allies" Fusion/marvel-lcg-src/data/cards.json`
   et reporter le script correspondant).
-- Pièges connus : mot-clé maison non défini sur les cartes fournies —
+- Pièges connus : mot-clé maison non défini sur les cartes fournies,
   déclenche systématiquement une question à l'utilisateur (voir
   `PROCESSUS-CARTE.md`, tableau « en cas de doute »).
 - Variantes maison : aucune connue au 29/08/2026.
@@ -1023,7 +1064,7 @@ grep -n "def Drain\|def " "Fusion/marvel-lcg-src/src/cards/pack/agent_anti_venom
 - Carte exemple : Infected Scorpion (retrouver le `card_id` via
   `grep -n "Infected Scorpion" Fusion/marvel-lcg-src/data/cards.json`).
 - Pièges connus : le déclenchement hors attachement est la partie non
-  standard — une implémentation naïve ne se déclenche que via
+  standard : une implémentation naïve ne se déclenche que via
   `AfterCardGainUpgrade`, ce qui rate le cas `traitor`.
 - Variantes maison : `TreatAsAlly` de Totally Awesome Hulk (`tah_hellbender_ally`,
   pack `totally_awesome_hulk`) est le même genre de montage (« traiter une
@@ -1035,14 +1076,14 @@ grep -n "def Drain\|def " "Fusion/marvel-lcg-src/src/cards/pack/agent_anti_venom
 - [ ] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/drain-x.md docs/reference/mots-cles/traitor.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiches mots-clés maison drain X et traitor (agent_anti_venom)"
 ```
 
 ---
 
-### Task 11: Fiche mot-clé maison — pack `lockjaw` (Companion)
+### Task 11: Fiche mot-clé maison : pack `lockjaw` (Companion)
 
 **Files:**
 - Create: `docs/reference/mots-cles/companion.md`
@@ -1055,9 +1096,12 @@ git commit -m "docs: fiches mots-clés maison drain X et traitor (agent_anti_ven
 - [ ] **Étape 1 : relire la source**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
-sed -n '1124p' docs/reference/GUIDE-CREATION-CONTENU.md
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
+grep -n "pack \`lockjaw\`" docs/reference/GUIDE-CREATION-CONTENU.md
 ```
+
+Le numéro de ligne exact a bougé depuis l'écriture de ce plan (les fusions des
+tâches 4 et 5 ont raccourci le guide) : chercher par motif, pas par numéro fixe.
 
 - [ ] **Étape 2 : écrire `companion.md`**
 
@@ -1070,7 +1114,7 @@ sed -n '1124p' docs/reference/GUIDE-CREATION-CONTENU.md
   ou en listant les cartes du set `lockjaw` (`78001a-78030`).
 - Pièges connus : aucun signalé au 29/08/2026.
 - Variantes maison : **Squirrel** (pack `squirrel_girl`, voir `squirrel.md`)
-  reprend exactement ce montage en y ajoutant une capacité de dépense — les
+  reprend exactement ce montage en y ajoutant une capacité de dépense : les
   deux fiches se renvoient l'une à l'autre.
 
 - [ ] **Étape 3 : cocher la case dans l'index**
@@ -1078,14 +1122,14 @@ sed -n '1124p' docs/reference/GUIDE-CREATION-CONTENU.md
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/companion.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiche mot-clé maison Companion (lockjaw)"
 ```
 
 ---
 
-### Task 12: Fiche mot-clé maison — pack `squirrel_girl` (Squirrel)
+### Task 12: Fiche mot-clé maison : pack `squirrel_girl` (Squirrel)
 
 **Files:**
 - Create: `docs/reference/mots-cles/squirrel.md`
@@ -1100,9 +1144,12 @@ git commit -m "docs: fiche mot-clé maison Companion (lockjaw)"
 - [ ] **Étape 1 : relire la source**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
-sed -n '1127p' docs/reference/GUIDE-CREATION-CONTENU.md
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
+grep -n "pack \`squirrel_girl\`" docs/reference/GUIDE-CREATION-CONTENU.md
 ```
+
+Le numéro de ligne exact a bougé depuis l'écriture de ce plan (les fusions des
+tâches 4 et 5 ont raccourci le guide) : chercher par motif, pas par numéro fixe.
 
 - [ ] **Étape 2 : écrire `squirrel.md`**
 
@@ -1131,14 +1178,14 @@ sed -n '1127p' docs/reference/GUIDE-CREATION-CONTENU.md
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/squirrel.md docs/reference/mots-cles/companion.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiche mot-clé maison Squirrel (squirrel_girl)"
 ```
 
 ---
 
-### Task 13: Fiche mot-clé maison — pack `jessica_jones` (INVESTIGATE X)
+### Task 13: Fiche mot-clé maison : pack `jessica_jones` (INVESTIGATE X)
 
 **Files:**
 - Create: `docs/reference/mots-cles/investigate-x.md`
@@ -1153,10 +1200,14 @@ git commit -m "docs: fiche mot-clé maison Squirrel (squirrel_girl)"
 - [ ] **Étape 1 : relire la source**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
-sed -n '1107p' docs/reference/GUIDE-CREATION-CONTENU.md
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
+grep -n "pack \`jessica_jones\`" docs/reference/GUIDE-CREATION-CONTENU.md
 sed -n '1,40p' "Fusion/marvel-lcg-src/src/cards/pack/jessica_jones/on_the_job/__init__.py"
 ```
+
+Le numéro de ligne exact du guide a bougé depuis l'écriture de ce plan (les
+fusions des tâches 4 et 5 l'ont raccourci) : chercher par motif, pas par
+numéro fixe.
 
 - [ ] **Étape 2 : écrire `investigate-x.md`**
 
@@ -1182,14 +1233,14 @@ sed -n '1,40p' "Fusion/marvel-lcg-src/src/cards/pack/jessica_jones/on_the_job/__
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/investigate-x.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiche mot-clé maison INVESTIGATE X (jessica_jones)"
 ```
 
 ---
 
-### Task 14: Fiches mots-clés maison — pack `dazzler` (Setlist, Showtime!)
+### Task 14: Fiches mots-clés maison : pack `dazzler` (Setlist, Showtime!)
 
 **Files:**
 - Create: `docs/reference/mots-cles/setlist.md`, `showtime.md`
@@ -1208,7 +1259,7 @@ relire, la source est uniquement le code.
 - [ ] **Étape 1 : lire le mécanisme dans le script**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 sed -n '1,270p' "Fusion/marvel-lcg-src/src/cards/pack/dazzler/dazzler/__init__.py"
 grep -n "\"Showtime\|\"Setlist\|Song" "Fusion/marvel-lcg-src/data/cards.json" | head -20
 ```
@@ -1230,7 +1281,7 @@ commit.
 - [ ] **Étape 4 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/setlist.md docs/reference/mots-cles/showtime.md docs/reference/mots-cles/README.md
 git commit -m "docs: fiches mots-clés maison Setlist et Showtime! (dazzler)"
 ```
@@ -1250,7 +1301,7 @@ git commit -m "docs: fiches mots-clés maison Setlist et Showtime! (dazzler)"
 - Consumes: le reste du §9 (`rainy`, `albert`, `gwenpool`, `human_torch`,
   `mister_fantastic`, `the_thing`, `totally_awesome_hulk`, `invisible_woman`,
   `madame_web`, `cloak_dagger`, `spider_man_rainy`, `venom_rainy`,
-  `moon_knight`, `brawn` — lignes 1084-1130 sauf celles déjà traitées) et les
+  `moon_knight`, `brawn` : lignes 1084-1130 sauf celles déjà traitées) et les
   packs absents de §9 (`wolverine_x23`, `red_guardian`, `jj`, `luke_cage`).
 - Produces: l'index complet, tenu à jour.
 
@@ -1262,24 +1313,27 @@ d'au moins une carte**, comme `Companion` ou `Squirrel` (vérifiable dans
 imprimé correspondant n'est pas un mot-clé : c'est un helper de script
 normal, il n'a pas sa place dans le catalogue.
 
-- [ ] **Étape 1 : lister les packs à vérifier avec leur ligne §9 (ou absence)**
+- [ ] **Étape 1 : lister les packs à vérifier avec leur paragraphe §9 (ou absence)**
+
+Les numéros de ligne du guide donnés lors de l'écriture de ce plan ont bougé
+(les fusions des tâches 4 et 5 l'ont raccourci) : chercher chaque paragraphe
+par le nom du pack, pas par numéro fixe.
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
-for l in 1084 1085 1091 1092 1093 1094 1095 1096 1102 1104 1105 1111 1130; do
-  sed -n "${l}p" docs/reference/GUIDE-CREATION-CONTENU.md
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
+for p in rainy albert gwenpool human_torch mister_fantastic the_thing totally_awesome_hulk invisible_woman cloak_dagger spider_man_rainy venom_rainy moon_knight brawn; do
+  grep -n "pack \`$p\`" docs/reference/GUIDE-CREATION-CONTENU.md
   echo "---"
 done
 ```
 
-(1097 = `madame_web`, 1124 = `lockjaw`, 1127 = `squirrel_girl`, 1107 =
-`jessica_jones`, 1109 = `agent_anti_venom` sont déjà traités par les Tasks
-10-13 et exclus de cette liste.)
+(`madame_web`, `lockjaw`, `squirrel_girl`, `jessica_jones`, `agent_anti_venom`
+sont déjà traités par les Tasks 10-13 et exclus de cette liste.)
 
 - [ ] **Étape 2 : pour chaque pack, chercher un texte imprimé en gras suspect de mot-clé**
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/Fusion/marvel-lcg-src"
 for pack in rainy albert gwenpool human_torch mister_fantastic the_thing totally_awesome_hulk invisible_woman cloak_dagger spider_man_rainy venom_rainy moon_knight brawn wolverine_x23 red_guardian jj luke_cage; do
   echo "== $pack =="
   python3 -c "
@@ -1297,7 +1351,7 @@ done
 
 Cette commande fait remonter tout mot en gras qui pourrait être un mot-clé
 (officiel déjà catalogué, maison à cataloguer, ou simplement un nom de
-capacité propre à une carte comme « Showtime! » vu en Task 14 — utiliser le
+capacité propre à une carte comme « Showtime! » vu en Task 14 : utiliser le
 même critère qu'en tête de cette tâche pour trancher).
 
 - [ ] **Étape 3 : pour chaque candidat retenu, écrire sa fiche sur le gabarit habituel**
@@ -1315,14 +1369,14 @@ candidat retenu.
 - [ ] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git add docs/reference/mots-cles/
 git commit -m "docs: revue des packs restants pour le catalogue de mots-clés"
 ```
 
 ---
 
-## Phase D — Nettoyage final
+## Phase D : Nettoyage final
 
 ### Task 16: Alléger le §9 de `GUIDE-CREATION-CONTENU.md`
 
@@ -1334,15 +1388,21 @@ git commit -m "docs: revue des packs restants pour le catalogue de mots-clés"
 - Produces: §9 allégé, sans duplication du mécanisme déjà décrit dans les
   fiches.
 
-- [ ] **Étape 1 : repérer, dans chaque ligne de §9 traitée en Phase C, le passage qui explique le MÉCANISME du mot-clé (par opposition à l'historique/le pourquoi du pack)**
+- [ ] **Étape 1 : repérer, dans chaque paragraphe de §9 traitée en Phase C, le passage qui explique le MÉCANISME du mot-clé (par opposition à l'historique/le pourquoi du pack)**
 
-Exemple concret sur la ligne `agent_anti_venom` (1109) : le passage
+Les numéros de ligne calculés lors de l'écriture de ce plan ont bougé (les
+fusions des tâches 4 et 5 ont raccourci le guide) : retrouver chaque
+paragraphe par le nom du pack (`grep -n "pack \`<nom>\`" docs/reference/
+GUIDE-CREATION-CONTENU.md`), pas par numéro fixe.
+
+Exemple concret sur le paragraphe `agent_anti_venom` : le passage
 « rendu par `Drain()` du `__init__.py` du set » est du mécanisme (→
 supprimer, remplacer par un renvoi) ; le passage « lecture arrêtée avec
 l'utilisateur le 4/8/2026 » est de l'historique (→ garder).
 
-- [ ] **Étape 2 : pour chaque ligne traitée (1107, 1109, 1124, 1127, et toute
-  fiche créée en Task 14/15), remplacer le passage mécanisme par un renvoi**
+- [ ] **Étape 2 : pour chaque paragraphe traité (`jessica_jones`,
+  `agent_anti_venom`, `lockjaw`, `squirrel_girl`, et toute fiche créée en
+  Task 14/15), remplacer le passage mécanisme par un renvoi**
 
 Format du renvoi : `(mécanisme détaillé dans mots-cles/<slug>.md)`, inséré
 à l'endroit où le mécanisme était expliqué, phrase gardée courte. Ne pas
@@ -1352,7 +1412,7 @@ leur paragraphe narratif reste inchangé).
 - [ ] **Étape 3 : vérifier qu'aucun mécanisme n'est resté dupliqué**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 grep -n "mots-cles/" docs/reference/GUIDE-CREATION-CONTENU.md
 ```
 
@@ -1369,7 +1429,7 @@ git commit -m "docs: alléger §9, renvoyer vers le catalogue de mots-clés au l
 
 ---
 
-### Task 17: Vérification finale — aucune référence morte
+### Task 17: Vérification finale : aucune référence morte
 
 **Files:**
 - Aucun fichier créé ; vérification pure, corrections ponctuelles si un
@@ -1382,7 +1442,7 @@ git commit -m "docs: alléger §9, renvoyer vers le catalogue de mots-clés au l
 - [ ] **Étape 1 : chercher toute référence à un ancien chemin dans tout le projet (pas seulement `docs/`)**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 grep -rln "docs/GUIDE-CREATION-CONTENU\|docs/CHECKLIST-VALIDATION-CARTE\|docs/CAMPAGNES\|docs/RANGEMENT\|docs/RAPPORT-AUDIT-CARTES\|docs/RAPPORT-SCANS-FR\|docs/BRIEF-REFONTE-PLATEAU\|docs/squirrel_girl_cartes\|docs/squirrel_girl_complete_custom_hero_pack_and_starter_deck\|docs/GUIDE-STRATEGIE-JEU\|docs/MULTIJOUEUR" -- . --include="*.md" --include="*.js" --include="*.py" --include="*.sh"
 ```
 
@@ -1394,7 +1454,7 @@ place.
 - [ ] **Étape 2 : confirmer tous les liens internes de `docs/README.md` et `CLAUDE.md`**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/docs"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu/docs"
 for f in reference/PROCESSUS-CARTE.md reference/PROCESSUS-HEROS.md reference/GUIDE-CREATION-CONTENU.md reference/mots-cles/README.md reference/MULTIJOUEUR.md reference/CAMPAGNES.md reference/GUIDE-STRATEGIE-JEU.md rapports/RANGEMENT.md rapports/RAPPORT-AUDIT-CARTES.md rapports/RAPPORT-SCANS-FR.md rapports/BRIEF-REFONTE-PLATEAU.md packs/squirrel_girl; do
   [ -e "$f" ] && echo "OK  $f" || echo "MANQUANT $f"
 done
@@ -1407,7 +1467,7 @@ maintenant exister).
 - [ ] **Étape 3 : confirmer que toutes les cases de `mots-cles/README.md` sont cochées**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 grep -n "^\- \[ \]" docs/reference/mots-cles/README.md
 ```
 
@@ -1418,7 +1478,7 @@ n'a pas été créée : y remédier avant de clore le plan.
 - [ ] **Étape 4 : `git status` final propre sur `docs/` et `CLAUDE.md`**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/.claude/worktrees/refonte-doc-creation-contenu"
 git status --short -- docs/ CLAUDE.md
 ```
 
@@ -1432,5 +1492,5 @@ git add -- docs/ CLAUDE.md
 git commit -m "docs: corriger les dernières références mortes après la refonte"
 ```
 
-(Ne pas committer si l'Étape 1 n'a rien trouvé à corriger — pas de commit
+(Ne pas committer si l'Étape 1 n'a rien trouvé à corriger : pas de commit
 vide.)
