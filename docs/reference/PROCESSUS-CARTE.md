@@ -11,11 +11,15 @@ Ajouter l'entrée dans le bon pack (tri par `card_id`). Renseigner `type`,
 `name`, `desc`, `traits`, `set_name`, `text`. Format détaillé :
 `GUIDE-CREATION-CONTENU.md` §2.
 
+Pour une carte custom hors dépôt : voir `data/cards_custom.json` et le
+mécanisme `cards/<id>.py.txt` (guide de l'éditeur).
+
 ## Étape 2 : Carte(s) de référence *(obligatoire, avant le script)*
 
 Pour CHAQUE capacité distincte de la carte : quelle carte déjà scriptée est
-comparable (même déclencheur, même genre d'effet), et pourquoi. Ne pas
-écrire une ligne de script avant d'avoir rempli ce champ.
+comparable (même déclencheur, même genre d'effet), et pourquoi. Plus de
+4 200 cartes sont déjà scriptées dans le dépôt : s'en inspirer plutôt que
+réinventer. Ne pas écrire une ligne de script avant d'avoir rempli ce champ.
 
 ```
 Capacité <nom> : carte de référence <card_id> (<nom>) : comparable parce que ...
@@ -40,7 +44,9 @@ tranche pas tout seul : on pose la question à l'utilisateur.
   légère.
 - Chaque option doit dire **ce que ça change en jeu**, pas seulement ce que ça
   change dans le code.
-- Poser la question **avant** d'écrire le script, pas après.
+- Poser la question **avant** d'écrire le script, pas après. Ce qui n'a
+  pas été demandé au bon moment doit l'être quand même : mieux vaut une
+  question tardive qu'un arbitrage silencieux.
 
 Ce qui déclenche une question, sans exception :
 
@@ -57,15 +63,31 @@ Ce qui déclenche une question, sans exception :
 
 **Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
 une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
-vaut `R` physique, `B` mental, `Y` énergie, `G` wild.
+vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
+supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
+Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
+`RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
+os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
+promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :
+tous comparent le code au texte saisi, et le texte était faux pareillement.
+Seul un joueur l'a vu, en partie.
 
 Ce qui ne déclenche PAS de question : les choix purement techniques sans effet
-sur les règles. Ceux-là se documentent au §9 de `GUIDE-CREATION-CONTENU.md`,
-ils ne se discutent pas.
+sur les règles (quelle fabrique employer, où ranger un helper, format
+d'image). Ceux-là se documentent au §9 de `GUIDE-CREATION-CONTENU.md`, ils
+ne se discutent pas.
+
+À l'inverse, les points **non tranchables** (une capacité que le harnais ne
+sait pas déclencher, un doute sur le comportement réel du moteur) ne sont
+pas des questions : ils vont dans la liste « à vérifier en partie réelle »
+du §9 de `GUIDE-CREATION-CONTENU.md`, et il faut le dire clairement en fin
+de travail.
 
 ## Étape 4 : Image
 
-`assets/pics/<card_id>.<jpg|png|webp>` (extension obligatoire).
+`assets/pics/<card_id>.<jpg|png|webp>` (l'extension est obligatoire, le
+chargeur `engine/file/cache.py` l'exige). Sans image déposée, le jeu tente
+marvelcdb puis génère un repli.
 
 ## Étape 5 : Bloc texte-contre-code, ligne par ligne
 
