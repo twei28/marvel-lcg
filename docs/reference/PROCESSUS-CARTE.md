@@ -3,7 +3,11 @@
 Fichier unique : construire ET vérifier une carte, dans l'ordre réel
 d'exécution. Fusion de l'ancien §4 de `GUIDE-CREATION-CONTENU.md` et de
 l'ancien `CHECKLIST-VALIDATION-CARTE.md` (29/08/2026). Une seule carte à la
-fois (jamais un lot validé en bloc).
+fois (jamais un lot validé en bloc). Le §8 de `GUIDE-CREATION-CONTENU.md`
+donne les commandes techniques utilisées dans les blocs qui suivent
+(`test_cards`, `audit_cartes`, `verifier_api_cartes`...) : ce fichier est le
+filet qui garantit que le texte imprimé correspond vraiment au code ET que
+la carte a été testée EN JEU, pas seulement construite.
 
 ## Étape 1 : Entrée dans `data/cards.json`
 
