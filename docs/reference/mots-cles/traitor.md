@@ -10,11 +10,20 @@ consequential damage.)* ».
 
 **Mécanisme moteur** : rendu par `TreatAsMinion`
 (`game/ability/factory/treat.py`), une fonction déjà présente dans le
-moteur (utilisée nativement par Manipulated Mind 27171 et « Lost » Child
-47027) mais que le moteur n'exposait jusque-là que depuis un attachement,
-via `AfterCardGainUpgrade`. Ici le déclencheur est une capacité de carte
-(Forced Interrupt), pas un attachement posé sur l'allié : le pack appelle
-donc directement `TreatAsMinion` hors du chemin standard. Extrait de
+moteur. Manipulated Mind (27171) et « Lost » Child (47027) n'appellent
+PAS cette fonction nue : elles utilisent
+`AbilityFactory.TreatAttachedCardAsMinion(Ally, "Minion", ...)`
+(`game/ability/factory/asset_helper.py`), un helper apparenté mais
+distinct, câblé sur l'attachement de la carte (`AttachTo2` dans leur
+`WhenThisRevealed`, converti automatiquement via
+`AfterCardGainUpgrade`). Ici le déclencheur du pack `agent_anti_venom`
+est une capacité de carte (Forced Interrupt), pas un attachement posé
+sur l'allié : `GainTraitor` appelle donc directement la fonction nue
+`TreatAsMinion`, hors du chemin `TreatAttachedCardAsMinion` /
+attachement. Ce n'est pas un cas inédit dans le dépôt : Spider-Woman :
+Veranke (`mw026.py`, pack `madame_web`) appelle elle aussi `TreatAsMinion`
+directement, sans attachement, depuis un Forced Interrupt sur
+`WhenUnitWouldBeDefeated`. Extrait de
 `Fusion/marvel-lcg-src/src/cards/pack/agent_anti_venom/agent_anti_venom_nemesis/__init__.py` :
 
 ```python
@@ -75,13 +84,17 @@ def infected_scorpion(effect: 'Effect', message: 'Message.WhenUnitWouldAttackUni
 sur l'allié au plus haut ATK imprimé de chaque joueur, après chaque
 schéma/attaque de Maniac.
 
-**Pièges connus** : le déclenchement hors attachement est la partie non
-standard du montage. Une implémentation naïve qui se contente d'écouter
-`AfterCardGainUpgrade` (le seul chemin par lequel `TreatAsMinion` était
-exposé jusque-là) rate entièrement le cas `traitor`, puisqu'ici aucun
-attachement n'est posé sur l'allié : il faut appeler `TreatAsMinion`
-directement depuis la capacité de la carte source (Forced Interrupt ou
-Forced Response), comme le fait `GainTraitor`. Piège annexe propre à
+**Pièges connus** : ne pas confondre `TreatAsMinion` (fonction nue de
+`treat.py`, appelée directement depuis une capacité) avec
+`AbilityFactory.TreatAttachedCardAsMinion` (`asset_helper.py`), le helper
+utilisé par Manipulated Mind et « Lost » Child, qui suppose lui un
+attachement posé sur l'allié et se déclenche via `AfterCardGainUpgrade`.
+Une implémentation qui chercherait `traitor` uniquement du côté
+`TreatAttachedCardAsMinion` / attachement raterait le cas `agent_anti_venom`,
+puisqu'ici aucun attachement n'est posé sur l'allié : il faut appeler la
+fonction nue `TreatAsMinion` directement depuis la capacité de la carte
+source (Forced Interrupt ou Forced Response), comme le fait `GainTraitor`
+et comme le fait aussi `mw026.py` pour Spider-Woman : Veranke. Piège annexe propre à
 Infected Scorpion : la capacité écoute `WhenUnitWouldAttackUnit`, pas
 `WhenUnitWouldAttack` (à ce dernier moment l'attaque vise encore le
 joueur, le défenseur n'est pas désigné, et `attacked_targets` ne contient
