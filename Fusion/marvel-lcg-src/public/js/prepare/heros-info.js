@@ -1071,4 +1071,16 @@ export const HEROS_INFO = {
         apparition: "Tales of Suspense #75 (1966)",
     },
 
+    "ok001a": {
+        bio: "Générale des Dora Milaje, la garde d'élite entièrement féminine du Wakanda, Okoye a juré fidélité au trône plutôt qu'à son occupant : elle a servi loyalement T'Challa, et n'a jamais hésité à s'opposer à un roi qui trahissait son peuple. Guerrière redoutable à la sagaie, elle méprise la technologie occidentale et préfère l'entraînement martial rigoureux des Dora Milaje. Meneuse née, elle rallie ses sœurs d'armes et les jeunes héros wakandais autour d'elle avec la même discipline de fer qu'elle s'impose à elle-même.",
+        bioEn: "General of the Dora Milaje, Wakanda's all-female elite guard, Okoye has sworn loyalty to the throne rather than to whoever sits on it: she has served T'Challa faithfully, and never hesitated to stand against a king who betrayed his people. A formidable spear-fighter, she scorns western technology and trusts the rigorous martial training of the Dora Milaje instead. A born leader, she rallies her sisters-in-arms and Wakanda's young heroes around her with the same iron discipline she holds herself to.",
+        civil: "Okoye",
+        base: "Wakanda",
+        equipes: "Dora Milaje, Vengeurs",
+        equipesEn: "Dora Milaje, Avengers",
+        ennemis: "Killmonger, Klaw",
+        ennemisEn: "Killmonger, Klaw",
+        apparition: "Black Panther Vol. 4 #1 (2005)",
+    },
+
 };

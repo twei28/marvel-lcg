@@ -104,6 +104,12 @@
       "cartes": 31,
       "depuis": "2026-08-12"
     },
+    "ok": {
+      "pack": "okoye",
+      "libelle": "125. Custom (Okoye)",
+      "cartes": 25,
+      "depuis": "2026-08-29"
+    },
     "ra": {
       "pack": "rainy",
       "libelle": "99. Custom (Rainy)",

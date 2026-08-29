@@ -5956,6 +5956,319 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["ag002", "ag015"]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « okoye » : ok001a-ok024
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ok001a Okoye — The Art of War reduit les degats consecutifs d'un allie DORA MILAJE officiel",
+        "pourquoi": "verifie que le crochet AfterUnitUseBasicPower cible bien tous les allies DORA MILAJE (y compris les officiels du pack bp, pas seulement les tokens du pack)",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('51022', under_control=True)"],
+        "declencher": ["Puzzle.Attack('Okoye')"],
+        "verifier": "okoye_art_of_war_reduit_degats_consecutifs",
+    },
+    {
+        "nom": "ok001b Okoye — Vanguard Leader trouve une carte REINFORCEMENTS au Setup",
+        "pourquoi": "le Setup s'execute automatiquement avant meme d'atteindre le tour du joueur",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "okoye_vanguard_leader_cherche_reinforcements",
+    },
+    {
+        "nom": "ok001b Okoye — Marshalling Forces remelange une carte REINFORCEMENTS de la defausse",
+        "pourquoi": "Action disponible dans les deux formes, distincte du Setup",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.Discard('ok004')"],
+        "declencher": ["Puzzle.Action('ok001b', 'Action', 0)"],
+        "verifier": "okoye_marshalling_forces_remet_dans_le_deck",
+    },
+    {
+        "nom": "ok002 Aneka — Response : +1 ATK aux autres allies DORA MILAJE, pas a elle-meme",
+        "pourquoi": "verifie le filtre `exclude This` calcule a la main (pas via .SetTarget)",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('ok002', under_control=True)"],
+        "verifier": "okoye_aneka_buff_atk_allies",
+    },
+    {
+        "nom": "ok003 Ayo — Response : +1 THW aux autres allies DORA MILAJE",
+        "pourquoi": "meme modele qu'Aneka, THW au lieu d'ATK",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('ok003', under_control=True)"],
+        "verifier": "okoye_ayo_buff_thw_allies",
+    },
+    {
+        "nom": "ok004 Adored Ones — branche « Create 2 Dora Milaje allies »",
+        "pourquoi": ("la carte doit reellement etre JOUEE (paiement du cout en [energy]), pas seulement "
+                     "posee, pour exercer le choix ChooseAbilities. Hero Action : la partie DEMARRE en "
+                     "forme IDENTITE CIVILE (decouvert en executant ce cas), il faut passer en forme "
+                     "heros avant de jouer une carte Hero Action"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')"],
+        "main_exclusive": ["ok004", "01088"],
+        "declencher": [],
+        "jouer": ["ok004"],
+        "verifier": "okoye_adored_ones_cree_deux_dora_milaje",
+    },
+    {
+        "nom": "ok006 Angelic Warfare — branche « Create 2 Midnight Angel allies »",
+        "pourquoi": "meme modele qu'Adored Ones, cout en [mental] (4), meme besoin de forme heros",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')"],
+        "main_exclusive": ["ok006", "01089", "01084", "01081"],
+        "declencher": [],
+        "jouer": ["ok006"],
+        "verifier": "okoye_angelic_warfare_cree_deux_midnight_angel",
+    },
+    {
+        "nom": "ok008 Spear Thrust — 4 degats de base a un ennemi",
+        "pourquoi": "preuve du degat de base garanti ; la branche bonus (exhaust jusqu'a 3 DORA MILAJE) reste hors de portee du harnais (cout OPTIONNEL a plage 0-3, le pilote decline les couts optionnels)",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')"],
+        "main_exclusive": ["ok008", "01090"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ok008"],
+        "verifier": "okoye_spear_thrust_degat_de_base",
+    },
+    {
+        "nom": "ok010 Close Ranks — Response : 1 compteur phalanx apres la defaite d'un allie DORA MILAJE",
+        "pourquoi": "verifie le declencheur AfterUnitBeDefeated et Faces.PlaceCountersOn avec plafond",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok010', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.Damage('ok017', 2)"],
+        "verifier": "okoye_close_ranks_pose_un_compteur",
+    },
+    {
+        "nom": "ok010 Close Ranks — la Resource finance un achat en consommant SEULEMENT les compteurs necessaires",
+        "pourquoi": ("preuve par substitution du correctif : l'ancien brouillon depensait TOUJOURS tous les "
+                     "compteurs disponibles ; le montage CostFunc.Counter + SetToAvailableTimesFn doit "
+                     "n'en consommer qu'un seul pour payer Vibranium Spear (cout 1)"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok010', under_control=True)",
+                          "Puzzle.Counter('ok010', 'phalanx', 2)"],
+        "main_exclusive": ["ok015"],
+        "declencher": [],
+        "jouer": ["ok015"],
+        "payer_avec": ["ok010"],
+        "verifier": "okoye_close_ranks_finance_un_achat",
+    },
+    {
+        "nom": "ok011 Upanga — chaque allie DORA MILAJE controle gagne +1 PV",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis restreint par CardFinder(trait=DORA MILAJE)",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok011', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": [],
+        "verifier": "okoye_upanga_buff_hp_allies",
+    },
+    {
+        "nom": "ok011 Upanga — Action d'identite civile remet un equipement ARMOR/TECH/WEAPON dans le deck",
+        "pourquoi": ("recherche multi-trait via check_face_fn, cout Exhaust seul (pas de ressource). "
+                     "La partie DEMARRE en forme identite civile : pas besoin de ChangeForm ici"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok011', under_control=True)",
+                          "Puzzle.Discard('ok015')"],
+        "declencher": ["Puzzle.Action('ok011', 'AlterEgoAction', 0)"],
+        "verifier": "okoye_upanga_action_remet_equipement",
+    },
+    {
+        "nom": "ok012 Midnight Angel Armor — +2 PV, trait AERIAL sur le DORA MILAJE attache",
+        "pourquoi": "GiveKeywordToAttached standard, cible CardFinder(card_type=Friend, trait=DORA MILAJE)",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('ok012', under_control=True)"],
+        "cibles": ["ok017"],
+        "verifier": "okoye_midnight_angel_armor_stats",
+    },
+    {
+        "nom": "ok017 Dora Milaje — Fragile deverse l'exces d'attaque sur l'identite (SANS armure)",
+        "pourquoi": ("preuve du mot-cle maison Fragile : ok017 a 2 PV, deja blessee a 1 PV restant ; "
+                     "Rhino (ATK 2) l'attaque en defense, l'exces (1) doit se deverser sur Okoye"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)",
+                          "Puzzle.Damage('ok017', 1)"],
+        "declencher": ["Puzzle.Attack('01094', defender='ok017')"],
+        "verifier": "okoye_fragile_donne_overkill",
+    },
+    {
+        "nom": "ok012 Midnight Angel Armor — retire le mot-cle fragile (AUCUN Deferlement)",
+        "pourquoi": ("meme mise en place que le cas Fragile seul, MAIS avec l'armure attachee : "
+                     "preuve par substitution que la condition dans Fragile() coupe bien l'overkill"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "cibles": ["ok017"],
+        "declencher": ["Puzzle.PutIntoPlay('ok012', under_control=True)",
+                       "Puzzle.Damage('ok017', 1)",
+                       "Puzzle.Attack('01094', defender='ok017')"],
+        "verifier": "okoye_armure_retire_fragile",
+    },
+    {
+        "nom": "ok017/ok018 — Legion : 2 allies Legion comptent comme 1 seul pour la limite d'allies",
+        "pourquoi": "preuve directe du pairage par ordre de creation (object_id) dans Legion()",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok018', under_control=True)",
+                          "Puzzle.PutIntoPlay('51022', under_control=True)"],
+        "declencher": [],
+        "verifier": "okoye_legion_paire_pour_la_limite",
+    },
+    {
+        "nom": "ok014 Royal Protector — +1 limite d'allies, Okoye +1 THW en forme heros",
+        "pourquoi": ("deux GiveKeywordToInPlayWhenApplyThis distincts (joueur, puis Hero nomme) ; "
+                     "la partie demarre en forme identite civile, or le bonus ne s'applique QUE sur la "
+                     "face Hero (elle doit donc etre active pour l'observer)"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')",
+                          "Puzzle.PutIntoPlay('ok014', under_control=True)"],
+        "declencher": [],
+        "verifier": "okoye_royal_protector_limite_et_thw",
+    },
+    {
+        "nom": "ok014 Royal Protector — Response : redresse Okoye apres la defaite d'un allie WAKANDA",
+        "pourquoi": ("AfterUnitBeDefeated cible ('YouControl', CardFinder(trait=WAKANDA)), cout Exhaust ; "
+                     "forme heros necessaire pour qu'exhaust/ready sur 'Okoye' portent sur la face Hero"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')",
+                          "Puzzle.PutIntoPlay('ok014', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok017', under_control=True)",
+                          "Puzzle.Exhaust('Okoye')"],
+        "declencher": ["Puzzle.Damage('ok017', 2)"],
+        "verifier": "okoye_royal_protector_redresse_apres_defaite",
+    },
+    {
+        "nom": "ok015 Vibranium Spear — +1 ATK sur un heros",
+        "pourquoi": ("get_new_value renvoie 1 (pas 2) quand la face attachee n'est pas un Ally ; "
+                     "forme heros necessaire pour lire identite.attack ensuite"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')"],
+        "declencher": ["Puzzle.PutIntoPlay('ok015', under_control=True)"],
+        "cibles": ["Okoye"],
+        "verifier": "okoye_vibranium_spear_sur_heros",
+    },
+    {
+        "nom": "ok015 Vibranium Spear — +2 ATK sur un allie",
+        "pourquoi": "get_new_value renvoie 2 quand la face attachee EST un Ally",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('ok015', under_control=True)"],
+        "cibles": ["ok017"],
+        "verifier": "okoye_vibranium_spear_sur_allie",
+    },
+    {
+        "nom": "ok019 Funeral Rites — branche « exhaust alter-ego + allies -> retirer de la partie »",
+        "pourquoi": "WhenThisObligationGiveToYou + YouMayFlipToYourAlterEgoForm + ChooseAbilities a 2 branches",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('ok019')"],
+        "verifier": "okoye_funeral_rites_branche_retrait",
+    },
+    {
+        "nom": "ok020 Malevolent Mimic — Forced Response : +2 menace apres la defaite d'un allie",
+        "pourquoi": ("cible Ally SANS restriction de controle (contrairement a Close Ranks). NE PAS "
+                     "remettre la menace a 0 : un side scheme a 0 menace est aussitot considere dejoue "
+                     "et retire du jeu (contrairement au complot principal) -- piege trouve en executant "
+                     "ce cas. Attendu = 2 (StartingThreat imprime '2*') + 2 (Response) = 4. Ce cas a "
+                     "aussi debusque un vrai bug de script : 'SideScheme' n'existe pas dans l'espace de "
+                     "noms des scripts, seul 'EncounterSideScheme' (piege documente au GUIDE §10) -- "
+                     "corrige dans ok020.py"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok020', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.Damage('ok017', 2)"],
+        "verifier": "okoye_malevolent_mimic_menace_apres_defaite",
+    },
+    {
+        "nom": "ok021 Malice — Forced Response : manigance (SCH imprime) apres la defaite d'un allie",
+        "pourquoi": "BasicSchemes hors activation normale, complot principal remis a 0 pour un chiffre exact",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok021', under_control=True)",
+                          "Puzzle.PutIntoPlay('ok017', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Damage('ok017', 2)"],
+        "verifier": "okoye_malice_manigance_apres_defaite",
+    },
+    {
+        "nom": "ok022 Mimic-27 — X = ATK du joueur en forme HEROS",
+        "pourquoi": ("ThisSetKeyword recalcule sur identite.attack, pas printed_attack ; la partie "
+                     "demarre en forme identite civile, ChangeForm est indispensable ici"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')",
+                          "Puzzle.PutIntoPlay('ok022', under_control=True)"],
+        "declencher": [],
+        "verifier": "okoye_mimic27_atk_egal_atk_heros",
+    },
+    {
+        "nom": "ok022 Mimic-27 — X = 0 en forme IDENTITE CIVILE",
+        "pourquoi": ("branche 'else' de mimic_27_atk, joueur.IsAlterEgo() ; la partie demarre DEJA en "
+                     "forme identite civile, aucun ChangeForm necessaire ici"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok022', under_control=True)"],
+        "declencher": [],
+        "verifier": "okoye_mimic27_atk_zero_en_alter_ego",
+    },
+    {
+        "nom": "ok023 War Drumming — branche HEROS : le seul sbire en jeu attaque le joueur",
+        "pourquoi": ("Malice (ATK 1, seul sbire en jeu) est designe sans MayChooseOneText et attaque ; "
+                     "branche 'villainous' (ATK<=2) non codee (ecart assume documente), seule l'attaque "
+                     "elle-meme est verifiable ici. Forme heros necessaire pour declencher la branche "
+                     "(Hero) plutot que (Alter-Ego) au Reveal. `main_exclusive` NON VIDE (piege : une "
+                     "liste VIDE est falsy en Python, `if cas.get('main_exclusive')` la traite alors "
+                     "comme absente et NE VIDE PAS la main) avec une seule carte inoffensive : le deck "
+                     "Protection provisoire (01075-01093) contient Get Behind Me! (01078), qui annule "
+                     "tout effet 'When Revealed' d'une trahison -- le pilote le jouait spontanement et "
+                     "empechait War Drumming de jamais se resoudre, decouvert en executant ce cas. Okoye "
+                     "est INCLINEE avant le Reveal : un heros incline ne defend pas (guide §8), seul "
+                     "moyen fiable de laisser l'attaque de Malice atteindre l'identite sans etre absorbee "
+                     "par sa DEF (2, superieure a l'ATK 1 de Malice) -- deuxieme piege trouve en executant "
+                     "ce cas"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')",
+                          "Puzzle.PutIntoPlay('ok021', under_control=True)",
+                          "Puzzle.Exhaust('Okoye')"],
+        "main_exclusive": ["01079"],
+        "declencher": ["Puzzle.Reveal('ok023')"],
+        "verifier": "okoye_war_drumming_branche_heros_faible_atk",
+    },
+    {
+        "nom": "ok023 War Drumming — branche IDENTITE CIVILE : gagne renfort",
+        "pourquoi": "ThisCardGainSurge, verifie indirectement par la carte Rencontre supplementaire distribuee",
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeForm('Okoye')"],
+        "declencher": ["Puzzle.Reveal('ok023')"],
+        "verifier": "okoye_war_drumming_branche_identite_civile_surge",
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -7684,6 +7997,301 @@ def agent13_hallucination(monde, aides):
         return False, (f"menace sur le complot principal = {scheme.threat} (attendu 3 : "
                        f"preuve que l'interruption a remplace le degat, ce qui exige l'attache)")
     return True, "sbire trouve, attache (seul moyen de declencher AttachedMinion), defausse au premier degat"
+
+# ------------------------------------------------------------------------
+# Pack « okoye » : ok001a-ok024
+# ------------------------------------------------------------------------
+
+def okoye_art_of_war_reduit_degats_consecutifs(monde, aides):
+    """ok001a : apres une attaque de base d'Okoye, l'allie DORA MILAJE
+    officiel 51022 (Aneka, ATK imprime "2*") doit voir son
+    attack_consequential_damage baisser de 2 a 1."""
+    face = aides["par_id"](monde, "51022")
+    if face is None:
+        return False, "Aneka (51022) introuvable en jeu"
+    valeur = face.attack_consequential_damage
+    if valeur != 1:
+        return False, (f"attack_consequential_damage d'Aneka (51022) = {valeur} "
+                       f"(imprime 2, attendu 1 apres The Art of War)")
+    return True, "The Art of War a bien reduit de 1 les degats consecutifs d'Aneka (51022) apres l'attaque de base"
+
+def okoye_vanguard_leader_cherche_reinforcements(monde, aides):
+    """ok001b : au Setup, une carte REINFORCEMENTS doit avoir rejoint la main."""
+    joueur = monde.players[0]
+    for face in joueur.hand_cards.GetAll():
+        if face.HasTrait("REINFORCEMENTS"):
+            return True, f"carte REINFORCEMENTS en main apres le Setup : {getattr(face.paper, 'card_id', '?')}"
+    return False, "aucune carte REINFORCEMENTS en main apres le Setup"
+
+def okoye_marshalling_forces_remet_dans_le_deck(monde, aides):
+    """ok001b : Marshalling Forces retire une carte REINFORCEMENTS de la defausse."""
+    joueur = monde.players[0]
+    dans_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "ok004" in dans_defausse:
+        return False, f"ok004 est encore dans la defausse (defausse = {dans_defausse})"
+    return True, "ok004 a quitte la defausse (remelange dans le deck par Marshalling Forces)"
+
+def okoye_aneka_buff_atk_allies(monde, aides):
+    """ok002 : Aneka donne +1 ATK aux autres allies DORA MILAJE, pas a elle-meme."""
+    dora = aides["par_id"](monde, "ok017")
+    if dora is None:
+        return False, "ok017 (Dora Milaje) introuvable en jeu"
+    if dora.attack != dora.printed_attack + 1:
+        return False, f"ATK d'ok017 = {dora.attack} (imprime {dora.printed_attack}, attendu +1)"
+    aneka = aides["par_id"](monde, "ok002")
+    if aneka is not None and aneka.attack != aneka.printed_attack:
+        return False, f"Aneka elle-meme a ete affectee (ATK={aneka.attack}, imprime {aneka.printed_attack})"
+    return True, "ok017 gagne +1 ATK apres l'entree en jeu d'Aneka, Aneka elle-meme non affectee"
+
+def okoye_ayo_buff_thw_allies(monde, aides):
+    """ok003 : Ayo donne +1 THW aux autres allies DORA MILAJE."""
+    dora = aides["par_id"](monde, "ok017")
+    if dora is None:
+        return False, "ok017 (Dora Milaje) introuvable en jeu"
+    if dora.thwart != dora.printed_thwart + 1:
+        return False, f"THW d'ok017 = {dora.thwart} (imprime {dora.printed_thwart}, attendu +1)"
+    return True, "ok017 gagne +1 THW apres l'entree en jeu d'Ayo"
+
+def okoye_adored_ones_cree_deux_dora_milaje(monde, aides):
+    """ok004/ok005 : la branche "Create 2 Dora Milaje allies" doit poser 2
+    allies nommes "Dora Milaje" sous le controle du joueur."""
+    joueur = monde.players[0]
+    dora = [f for f in joueur.allies.Get() if f.IsName("Dora Milaje")]
+    if len(dora) != 2:
+        return False, f"{len(dora)} allie(s) Dora Milaje en jeu (attendu 2) — branche choisie par le pilote inattendue ?"
+    return True, "2 allies Dora Milaje crees et mis en jeu par Adored Ones"
+
+def okoye_angelic_warfare_cree_deux_midnight_angel(monde, aides):
+    """ok006/ok007 : la branche "Create 2 Midnight Angel allies"."""
+    joueur = monde.players[0]
+    ma = [f for f in joueur.allies.Get() if f.IsName("Midnight Angel")]
+    if len(ma) != 2:
+        return False, f"{len(ma)} allie(s) Midnight Angel en jeu (attendu 2)"
+    return True, "2 allies Midnight Angel crees et mis en jeu par Angelic Warfare"
+
+def okoye_spear_thrust_degat_de_base(monde, aides):
+    """ok008/ok009 : 4 degats de base a un ennemi, meme sans exhausteur."""
+    villain = aides["par_id"](monde, "01094")
+    if villain is None:
+        return False, "Rhino (01094) introuvable en jeu"
+    subis = villain.max_health - villain.health
+    if subis < 4:
+        return False, f"degats sur Rhino = {subis} (attendu au moins 4)"
+    return True, f"Spear Thrust inflige bien ses 4 degats de base ({subis} au total)"
+
+def okoye_close_ranks_pose_un_compteur(monde, aides):
+    """ok010 : apres la defaite d'un allie DORA MILAJE controle, 1 compteur phalanx."""
+    face = aides["par_id"](monde, "ok010")
+    if face is None:
+        return False, "Close Ranks (ok010) introuvable en jeu"
+    n = face.CastTo(aides["CanPlaceCounter"]).GetCounters("phalanx")
+    if n != 1:
+        return False, f"compteurs phalanx sur Close Ranks = {n} (attendu 1)"
+    return True, "1 compteur phalanx pose apres la defaite de l'allie DORA MILAJE"
+
+def okoye_close_ranks_finance_un_achat(monde, aides):
+    """ok010 : la ressource de Close Ranks finance vraiment l'achat de Vibranium
+    Spear (cout 1), et ne consomme qu'UN SEUL compteur phalanx sur les 2 poses."""
+    close_ranks = aides["par_id"](monde, "ok010")
+    if close_ranks is None:
+        return False, "Close Ranks (ok010) introuvable en jeu"
+    if not close_ranks.IsExhaust():
+        return False, "Close Ranks n'est pas incline (le cout Exhaust n'a pas ete paye)"
+    n = close_ranks.CastTo(aides["CanPlaceCounter"]).GetCounters("phalanx")
+    if n != 1:
+        return False, f"compteurs phalanx restants sur Close Ranks = {n} (attendu 1 : 2 poses, 1 depense pour payer 1 [physical])"
+    spear = aides["par_id"](monde, "ok015")
+    if spear is None:
+        return False, "Vibranium Spear (ok015) n'est pas en jeu : l'achat finance par Close Ranks a echoue"
+    return True, "Close Ranks a finance Vibranium Spear en depensant exactement 1 compteur phalanx sur 2"
+
+def okoye_upanga_buff_hp_allies(monde, aides):
+    """ok011 : chaque allie DORA MILAJE controle gagne +1 point de vie."""
+    dora = aides["par_id"](monde, "ok017")
+    if dora is None:
+        return False, "ok017 (Dora Milaje) introuvable en jeu"
+    if dora.max_health != dora.printed_health + 1:
+        return False, f"PV max d'ok017 = {dora.max_health} (imprime {dora.printed_health}, attendu +1)"
+    return True, "ok017 gagne +1 PV grace a Upanga"
+
+def okoye_upanga_action_remet_equipement(monde, aides):
+    """ok011 : l'Action d'identite civile remet une carte ARMOR/TECH/WEAPON de la defausse au deck."""
+    joueur = monde.players[0]
+    dans_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "ok015" in dans_defausse:
+        return False, f"ok015 est encore dans la defausse (defausse = {dans_defausse})"
+    upanga = aides["par_id"](monde, "ok011")
+    if upanga is None or not upanga.IsExhaust():
+        return False, "Upanga n'est pas incline : le cout de l'action n'a pas ete paye"
+    return True, "ok015 a quitte la defausse (remelange par l'Action d'identite civile d'Upanga), Upanga inclinee"
+
+def okoye_midnight_angel_armor_stats(monde, aides):
+    """ok012/ok013 : +2 PV, trait AERIAL, sur le personnage DORA MILAJE attache."""
+    dora = aides["par_id"](monde, "ok017")
+    if dora is None:
+        return False, "ok017 (Dora Milaje) introuvable en jeu"
+    if dora.max_health != dora.printed_health + 2:
+        return False, f"PV max d'ok017 = {dora.max_health} (imprime {dora.printed_health}, attendu +2)"
+    if not dora.HasTrait("AERIAL"):
+        return False, "ok017 n'a pas gagne le trait AERIAL"
+    armure = aides["par_id"](monde, "ok012")
+    if armure is None:
+        return False, "Midnight Angel Armor (ok012) n'est pas en jeu"
+    return True, "ok017 gagne +2 PV et le trait AERIAL, Midnight Angel Armor bien attachee"
+
+def okoye_fragile_donne_overkill(monde, aides):
+    """ok017 : SANS armure, une attaque qui depasse les PV restants d'un allie
+    Fragile deverse l'exces sur l'identite du joueur (Deferlement)."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    subis = identite.max_health - identite.health
+    if subis < 1:
+        return False, (f"degats indirects sur l'identite = {subis} (attendu au moins 1 : "
+                       f"exces de l'attaque de Rhino (ATK 2) sur ok017, deja blesse a 1 PV restant)")
+    return True, f"Fragile a bien deverse {subis} degat(s) en exces sur l'identite (pas d'armure attachee)"
+
+def okoye_armure_retire_fragile(monde, aides):
+    """ok012 : AVEC l'armure attachee, ok017 perd Fragile : l'exces d'attaque
+    ne doit PLUS se deverser sur l'identite."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    subis = identite.max_health - identite.health
+    if subis != 0:
+        return False, (f"degats indirects sur l'identite = {subis} (attendu 0 : Midnight Angel Armor "
+                       f"retire le mot-cle fragile, donc pas de Deferlement)")
+    return True, "aucun degat indirect sur l'identite : Midnight Angel Armor supprime bien Fragile"
+
+def okoye_legion_paire_pour_la_limite(monde, aides):
+    """ok017/ok018 : 2 allies Legion (ok017 + ok018) comptent comme 1 seul pour
+    la limite d'allies ; un troisieme allie NON Legion (51022 Aneka officielle)
+    compte normalement — total attendu 2, pas 3."""
+    joueur = monde.players[0]
+    if joueur.limit_ally.curr_ally != 2:
+        return False, (f"curr_ally = {joueur.limit_ally.curr_ally} (attendu 2 : "
+                       f"ok017+ok018 Legion comptent comme 1, + 51022 Aneka normale = 2)")
+    dora = aides["par_id"](monde, "ok017")
+    ma = aides["par_id"](monde, "ok018")
+    aneka = aides["par_id"](monde, "51022")
+    if dora is None or ma is None or aneka is None:
+        return False, "un des 3 allies a ete defausse par la limite (aucun ne devrait l'etre)"
+    return True, "2 allies Legion comptes comme 1 seul, aucune defausse forcee"
+
+def okoye_royal_protector_limite_et_thw(monde, aides):
+    """ok014 : +1 limite d'allies, Okoye +1 THW en forme heros."""
+    joueur = monde.players[0]
+    if joueur.limit_ally.Get() != 4:
+        return False, f"limite d'allies = {joueur.limit_ally.Get()} (attendu 4 : 3 de base + 1)"
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.thwart != identite.printed_thwart + 1:
+        return False, f"THW d'Okoye = {identite.thwart} (imprime {identite.printed_thwart}, attendu +1)"
+    return True, "limite d'allies a 4, Okoye gagne +1 THW en forme heros"
+
+def okoye_royal_protector_redresse_apres_defaite(monde, aides):
+    """ok014 : apres la defaite d'un allie WAKANDA, exhaust Royal Protector -> ready Okoye."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.card.IsExhaust():
+        return False, "Okoye est encore inclinee : la Response n'a pas redresse l'identite"
+    protecteur = aides["par_id"](monde, "ok014")
+    if protecteur is None or not protecteur.IsExhaust():
+        return False, "Royal Protector n'est pas inclinee (son propre cout n'a pas ete paye)"
+    return True, "Okoye redressee et Royal Protector inclinee apres la defaite de l'allie WAKANDA"
+
+def okoye_vibranium_spear_sur_heros(monde, aides):
+    """ok015/ok016 : +1 ATK seulement quand attachee a un heros (pas un allie)."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.attack != identite.printed_attack + 1:
+        return False, f"ATK d'Okoye = {identite.attack} (imprime {identite.printed_attack}, attendu +1)"
+    return True, "Okoye gagne +1 ATK avec Vibranium Spear (portee par un heros)"
+
+def okoye_vibranium_spear_sur_allie(monde, aides):
+    """ok015/ok016 : +2 ATK quand attachee a un allie."""
+    dora = aides["par_id"](monde, "ok017")
+    if dora is None:
+        return False, "ok017 (Dora Milaje) introuvable en jeu"
+    if dora.attack != dora.printed_attack + 2:
+        return False, f"ATK d'ok017 = {dora.attack} (imprime {dora.printed_attack}, attendu +2)"
+    return True, "ok017 gagne +2 ATK avec Vibranium Spear (portee par un allie)"
+
+def okoye_funeral_rites_branche_retrait(monde, aides):
+    """ok019 : la branche « exhaust alter-ego + allies DORA MILAJE -> retirer
+    Funeral Rites de la partie » retire bien l'obligation du jeu."""
+    if aides["par_id"](monde, "ok019") is not None:
+        return False, "Funeral Rites (ok019) est encore en jeu"
+    return True, "Funeral Rites a bien ete retiree de la partie"
+
+def okoye_malevolent_mimic_menace_apres_defaite(monde, aides):
+    """ok020 : Forced Response, apres la defaite d'un allie (n'importe lequel), +2 menace.
+    Le side scheme demarre a 2 (StartingThreat imprime '2*', 1 joueur) : attendu 2+2=4.
+    (Ne PAS remettre la menace a 0 avant : un side scheme a 0 menace est aussitot
+    considere dejoue et quitte le jeu, contrairement au complot principal.)"""
+    face = aides["par_id"](monde, "ok020")
+    if face is None:
+        return False, "Malevolent Mimic (ok020) introuvable en jeu (dejouee/retiree ?)"
+    if face.threat != 4:
+        return False, f"menace sur Malevolent Mimic = {face.threat} (attendu 4 : 2 de depart + 2 de la Response)"
+    return True, "Malevolent Mimic gagne 2 menace apres la defaite d'un allie (2 de depart + 2 = 4)"
+
+def okoye_malice_manigance_apres_defaite(monde, aides):
+    """ok021 : Forced Response, apres la defaite d'un allie, Malice manigance
+    (action de base SCH = 3) sur le complot principal, remis a 0 avant le cas."""
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        return False, "complot principal (01097b) introuvable"
+    if scheme.threat != 3:
+        return False, (f"menace sur le complot principal = {scheme.threat} "
+                       f"(attendu 3 : SCH imprime de Malice)")
+    return True, "Malice a bien manigance pour sa valeur SCH imprimee (3) apres la defaite de l'allie"
+
+def okoye_mimic27_atk_egal_atk_heros(monde, aides):
+    """ok022 : X = ATK du joueur en forme HEROS (2, valeur imprimee d'Okoye)."""
+    face = aides["par_id"](monde, "ok022")
+    if face is None:
+        return False, "Mimic-27 (ok022) introuvable en jeu"
+    if face.attack != 2:
+        return False, f"ATK de Mimic-27 = {face.attack} (attendu 2, ATK imprime d'Okoye en forme heros)"
+    return True, "ATK de Mimic-27 = 2, egal a l'ATK d'Okoye en forme heros"
+
+def okoye_mimic27_atk_zero_en_alter_ego(monde, aides):
+    """ok022 : X = 0 en forme ALTER-EGO."""
+    face = aides["par_id"](monde, "ok022")
+    if face is None:
+        return False, "Mimic-27 (ok022) introuvable en jeu"
+    if face.attack != 0:
+        return False, f"ATK de Mimic-27 = {face.attack} (attendu 0 en forme identite civile)"
+    return True, "ATK de Mimic-27 = 0 en forme identite civile"
+
+def okoye_war_drumming_branche_heros_faible_atk(monde, aides):
+    """ok023/ok024 : en forme HEROS, un seul sbire en jeu (Malice, ATK 1 < 3) est
+    designe sans choix et attaque le joueur (branche villainous, ATK<=2, non
+    codee — seul le fait que l'attaque ait bien eu lieu est verifiable)."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, f"degats sur l'identite = {subis} (attendu 1 : ATK imprime de Malice)"
+    return True, "Malice (seul sbire en jeu) a bien attaque le joueur pour son ATK (1)"
+
+def okoye_war_drumming_branche_identite_civile_surge(monde, aides):
+    """ok023/ok024 : en forme IDENTITE CIVILE, la carte gagne renfort (1 carte
+    Rencontre supplementaire distribuee au joueur)."""
+    from game.operate.worlds import Worlds
+    joueur = monde.players[0]
+    n = len(list(joueur.discard_pile.Get())) if hasattr(joueur, "discard_pile") else 0
+    ids_defausse_rencontre = [getattr(f.paper, "card_id", None)
+                              for f in Worlds.GetEncounterDiscardPileCards(monde)]
+    if len(ids_defausse_rencontre) < 2:
+        return False, (f"defausse Rencontre = {ids_defausse_rencontre} (attendu au moins 2 : "
+                       f"War Drumming elle-meme + la carte supplementaire tiree par Renfort)")
+    return True, f"Renfort a bien distribue une carte Rencontre supplementaire (defausse Rencontre = {ids_defausse_rencontre})"
 '''
 
 

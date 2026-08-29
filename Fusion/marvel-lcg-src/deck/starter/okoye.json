@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Okoye",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist d'aspect n'est fournie par l'auteur (BLUEHG) : le dossier 'Okoye [3.0]' ne contient que les cartes signature, le nemesis set et les extras cosmetiques, aucun insert de liste. Aspect Leadership CONFIRME par l'utilisateur le 29/08/2026 (aucun aspect n'etant impose par le materiel source)."
+    },
+    "hero": [
+        "ok001a,ok001b"
+    ],
+    "hero_deck": [
+        "ok002",
+        "ok003",
+        "ok004",
+        "ok005",
+        "ok006",
+        "ok007",
+        "ok008",
+        "ok009",
+        "ok010",
+        "ok011",
+        "ok012",
+        "ok013",
+        "ok014",
+        "ok015",
+        "ok016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ok019"
+    ],
+    "nemesis_set": [
+        "ok020",
+        "ok021",
+        "ok022",
+        "ok023",
+        "ok024"
+    ],
+    "player_deck": [
+        "01066",
+        "01067",
+        "01068",
+        "01069",
+        "01069",
+        "01070",
+        "01070",
+        "01071",
+        "01071",
+        "01072",
+        "01072",
+        "01073",
+        "01074",
+        "01074",
+        "01083",
+        "01084",
+        "01085",
+        "01086",
+        "01087",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "01092",
+        "01093"
+    ]
+}
