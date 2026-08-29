@@ -20,17 +20,47 @@ Les liens utiles :
 
 ### 1.1 Les deux seuls dossiers qui comptent
 
+> ## ⚠️ CORRECTIF DU 29/08/2026 — CETTE SECTION ÉTAIT INVERSÉE
+>
+> Le guide désignait `~/marvel-work/fusion/marvel-lcg-src/` comme la copie
+> vivante et le dossier Windows comme un miroir archivé. **C'est l'inverse
+> depuis au moins le 14/08/2026.**
+>
+> **NE JAMAIS lancer le `rsync` de l'ancienne section 1.3 dans le sens
+> `~/marvel-work/fusion` → Windows.** Il effacerait cinq packs entiers
+> (`dazzler`, `red_guardian`, `wolverine_x23`, `jj`, `luke_cage`) et tous les
+> correctifs moteur postérieurs au 14/08.
+>
+> Preuves, vérifiables en une commande chacune :
+> - Les trois fichiers que l'utilisateur double-clique (`JOUER-SOLO.bat`,
+>   `JOUER-EN-MULTI.bat`, `JOUER-SERVEUR.bat`) font tous
+>   `cd '<Windows>/Fusion/marvel-lcg-src'` avant de lancer le jeu.
+> - `launcher_fast.py` pose `ROOT = dirname(__file__)`, puis `SRC = ROOT/src`
+>   et `GAME = ROOT/.game` : il compile donc le `src/` de SON dossier, et lie
+>   les `data`, `deck`, `assets` du même. Les trois `launcher*.sh` font pareil
+>   avec `RACINE="$(dirname "$0")"`.
+> - `~/marvel-work` ne fournit plus que l'INTERPRÉTEUR (`python/bin/python3.10`)
+>   et `tools/cloudflared`. Rien d'autre.
+> - `~/marvel-work/fusion/marvel-lcg-src/data/cards.json` est daté du
+>   **14/08/2026** et ne connaît aucun des cinq packs ci-dessus.
+
 Le projet vit à **deux endroits**, et un seul des deux est exécuté par le jeu.
 Toute autre copie trouvée sur la machine est un vestige (voir 1.4).
 
 | Rôle | Chemin |
 |---|---|
-| **① Copie VIVANTE (celle qui tourne, on édite ICI)** | WSL : `~/marvel-work/fusion/marvel-lcg-src/`<br>Chemin complet : `/home/arnau/marvel-work/fusion/marvel-lcg-src/` |
-| **② Dossier PROJET (la référence archivée, celle qu'on garde)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/` |
+| **① Copie VIVANTE (celle qui tourne, on édite ICI)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/` |
+| **② Copie WSL (VESTIGE, figée au 14/08/2026)** | `~/marvel-work/fusion/marvel-lcg-src/` — ne plus éditer, ne plus en resynchroniser |
 
-⚠️ La copie vivante ① est sur le **disque WSL** (`/home/...`), pas sous
-`/mnt/c/` : ce n'est PAS un lien vers le dossier Windows, c'est un dossier
-distinct. Les deux ne se synchronisent pas tout seuls, d'où le `rsync` de 1.3.
+En cas de doute sur le dossier dans lequel on se trouve, `readlink -f .` doit
+commencer par
+`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
+
+Vérification en une ligne que l'on est bien dans la copie qui tourne :
+
+```bash
+ls src/cards/pack | grep -qx dazzler && echo "copie VIVANTE" || echo "VESTIGE, ne pas editer"
+```
 
 Le dossier projet ② contient le miroir du moteur plus tout ce qui n'appartient
 qu'à nous :
@@ -46,10 +76,10 @@ C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\
 
 ### 1.2 Où créer chaque type de contenu
 
-Les chemins ci-dessous sont **relatifs à la racine du moteur**. Il faut donc les
-créer dans ① (copie vivante), puis les recopier dans ② (`Fusion\marvel-lcg-src\`)
-avec le `rsync` de 1.3. **Ne jamais créer directement dans ② :** le jeu ne le
-verrait pas, et la prochaine synchro écraserait le travail.
+Les chemins ci-dessous sont **relatifs à la racine du moteur**, c'est-à-dire à
+① (`.../Jeu Marvel Champions/Fusion/marvel-lcg-src/`). On les crée là, et
+c'est tout : depuis le 29/08/2026 il n'y a plus de recopie à faire, la copie
+qu'on édite EST celle qui tourne (voir le correctif en 1.1).
 
 | Élément | Chemin (depuis la racine du moteur) |
 |---|---|
@@ -65,38 +95,63 @@ verrait pas, et la prochaine synchro écraserait le travail.
 | Biographies des héros | `public/js/prepare/heros-info.js` (voir §5.1) |
 | Traits et compteurs du moteur | `src/game/card/face/card_face.py` (énums `TRAITS` et `COUNTER`) |
 
-Exemple concret pour un nouveau héros, pack `human_torch` :
-
-```
-~/marvel-work/fusion/marvel-lcg-src/data/cards.json                      (éditer)
-~/marvel-work/fusion/marvel-lcg-src/data/sets_info.json                  (éditer)
-~/marvel-work/fusion/marvel-lcg-src/data/nemesis/human_torch_nemesis.json
-~/marvel-work/fusion/marvel-lcg-src/deck/starter/human_torch.json
-~/marvel-work/fusion/marvel-lcg-src/src/cards/pack/human_torch/…
-~/marvel-work/fusion/marvel-lcg-src/assets/pics/64001a.jpg
-~/marvel-work/fusion/marvel-lcg-src/public/js/prepare/heros-info.js      (éditer)
-```
-
-Le client React `ui-app/`, lui, n'existe QUE dans le dossier projet ② : on
-l'édite là-bas, et `ui-app/deployer.sh` se charge de le déployer.
-
-### 1.3 Recopier vers le dossier projet (à faire à chaque fois)
+Exemple concret pour un nouveau héros, pack `human_torch`, depuis WSL. On pose
+`W` une fois pour toutes :
 
 ```bash
-S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
-
-rsync -a "$S/data/" "$M/data/"
-rsync -a "$S/deck/" "$M/deck/"
-rsync -a "$S/assets/pics/" "$M/assets/pics/"
-rsync -a --exclude __pycache__ "$S/src/" "$M/src/"
-rsync -a --delete "$S/public/" "$M/public/"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
 ```
 
-Toujours lancer d'abord avec `--dry-run` quand on ajoute `--delete`, pour voir
-ce qui serait supprimé côté Windows.
+```
+$W/data/cards.json                      (éditer)
+$W/data/sets_info.json                  (éditer)
+$W/data/nemesis/human_torch_nemesis.json
+$W/deck/starter/human_torch.json
+$W/src/cards/pack/human_torch/…
+$W/assets/pics/64001a.jpg
+$W/public/js/prepare/heros-info.js      (éditer)
+$W/tools/prefixes_fanmade.json          (éditer si le pack est fan-made)
+```
 
-⚠️ **Les fichiers de la RACINE ne sont pas couverts par ce `rsync`** :
+Après toute modification de `data/*.json`, **recalculer les checksums**, sinon
+le moteur rejette le fichier EN SILENCE :
+
+```bash
+cd "$W" && PYTHONPATH="$W/src" ~/marvel-work/python/bin/python3.10 \
+    tools/recalculer_checksums.py "$W" data/cards.json data/sets_info.json
+```
+
+Le client React `ui-app/` n'existe QUE dans le dossier projet, à côté de
+`Fusion/` : on l'édite là-bas, et `ui-app/deployer.sh` se charge de le déployer.
+
+### 1.3 Recopie — IL N'Y EN A PLUS
+
+> ## ⚠️ CORRECTIF DU 29/08/2026 — LE `rsync` DE CETTE SECTION EST DESTRUCTEUR
+>
+> Il recopiait `~/marvel-work/fusion/marvel-lcg-src` **par-dessus** la copie
+> Windows. Or c'est la copie Windows qui tourne, et la copie WSL est figée au
+> 14/08/2026. Le lancer aujourd'hui **effacerait cinq packs entiers**
+> (`dazzler`, `red_guardian`, `wolverine_x23`, `jj`, `luke_cage`), leurs images,
+> leurs decks, et tous les correctifs moteur postérieurs au 14/08.
+>
+> **Il n'y a plus rien à recopier.** On édite ① et c'est fini : le lanceur
+> compile le `src/` de ① et lie ses `data`, `deck` et `assets`.
+>
+> L'ancien bloc est conservé ci-dessous, COMMENTÉ, pour que personne ne le
+> reconstitue de mémoire en croyant bien faire.
+>
+> ```bash
+> # NE PAS EXECUTER — sens inverse, detruit le travail depuis le 14/08/2026
+> # S=~/marvel-work/fusion/marvel-lcg-src
+> # M=".../Jeu Marvel Champions/Fusion/marvel-lcg-src"
+> # rsync -a "$S/data/" "$M/data/"        ...
+> ```
+>
+> Si un jour on veut vraiment archiver ① vers la copie WSL, c'est l'autre sens
+> (`$M` → `$S`), et seulement avec `--dry-run` d'abord.
+
+⚠️ **Note historique, toujours valable** : les fichiers de la RACINE n'étaient
+pas couverts par ce `rsync` :
 `launch.json`, `launch.online.json`, `launcher.py`, `launcher_fast.py`,
 `launcher-multi.sh`, `defectueux.json`. Les deux copies évoluent donc chacune
 de leur côté, et c'est déjà arrivé de coûter cher : le `launch.json` du miroir
@@ -128,9 +183,11 @@ EOF
 | `C:\Users\arnau\Desktop\Marvel LCG last try\Fusion\` | Vieux dossier d'avant le déplacement du projet. Les liens de `.game` ont déjà pointé dessus par erreur (réparé le 1/8/2026). |
 | `~/marvel-work/boot/`, `boot_sub/`, `boot_sub2/`, `boot_sub3/`, `boot_sub4/` | Bacs à sable de la phase de reconstruction bytecode. |
 | `~/marvel-work/marvel-lcg-independent/`, `marvel-lcg-rebuilt/` | Anciennes reconstructions, abandonnées depuis l'adoption du source officiel. |
+| `~/marvel-work/fusion/marvel-lcg-src/` | **Ajouté le 29/08/2026.** Ancienne copie vivante, figée au 14/08/2026. Elle ignore `dazzler`, `red_guardian`, `wolverine_x23`, `jj` et `luke_cage`. Ne plus l'éditer, et surtout ne JAMAIS la resynchroniser vers la copie Windows (voir 1.3). Seuls `~/marvel-work/python/` et `~/marvel-work/tools/cloudflared` restent utilisés. |
 
 En cas de doute sur le dossier dans lequel on se trouve :
-`readlink -f .` doit commencer par `/home/arnau/marvel-work/fusion/marvel-lcg-src`.
+`readlink -f .` doit commencer par
+`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
 
 ### 1.5 Documentation de l'auteur original
 
@@ -339,6 +396,11 @@ Exemples officiels à consulter avant d'écrire une carte neuve :
 5. Pour une carte custom hors dépôt : voir `data/cards_custom.json` et le
    mécanisme `cards/<id>.py.txt` (guide de l'éditeur).
 6. Recopier vers le dossier projet (§1.3).
+7. **Obligatoire avant de considérer la carte terminée** : compléter
+   `CHECKLIST-VALIDATION-CARTE.md` (même dossier). Il couvre ce que ce §4 ne
+   couvre pas : revue texte-contre-code mot à mot, comparaison des nombres,
+   un cas `test_capacites` par capacité avec preuve par substitution, et une
+   partie autoplay ciblée avec grep exhaustif des erreurs.
 
 ### 4.1 En cas de doute sur une carte : DEMANDER, carte par carte
 
@@ -423,7 +485,9 @@ faut le dire clairement en fin de travail.
 8. **Texte FRANÇAIS de chaque carte** dans
    `ui-app/src/board/textes-fr-fanmade.ts` (voir §11.1). **Obligatoire** : sans
    lui, les cartes du pack n'ont aucun tooltip français, et rien ne le signale.
-9. Valider (§8) + jouer une partie complète avec le héros.
+9. Valider (§8) + compléter `CHECKLIST-VALIDATION-CARTE.md` pour CHAQUE carte
+   du pack (obligatoire, pas seulement les cartes signature) + jouer une
+   partie complète avec le héros.
 10. **Recopier vers le dossier projet** (§1.3), sinon rien n'est archivé côté
     Windows.
 
@@ -607,6 +671,30 @@ formulaire restent à vérifier/remplir à la main.
 `~/marvel-work/fusion/marvel-lcg-src`. Le 09/08/2026 cette copie était en
 retard de deux fichiers du moteur et d'une carte sur la copie Windows, qui
 est celle que le jeu exécute. On vise donc `.game-src` **côté Windows** :
+
+> ### ⚠️ POURQUOI `.game-src` ET JAMAIS `"$W"` DIRECTEMENT (leçon du 29/08/2026)
+>
+> `.game-src/` n'est pas une copie : ses dossiers de code et de données sont des
+> **liens symboliques** vers `src/`, `data/`, `deck/`, `assets/`. Il voit donc
+> toujours le travail en cours, à la seconde près. Mais il a son **propre
+> `launch.json`, sur un port dédié (26100)**, et c'est là tout l'intérêt.
+>
+> `tools/test_cards.py` (comme plusieurs autres outils du §8) **RÉÉCRIT le
+> `launch.json` du dossier qu'on lui donne** : il y force `server_addresses`
+> sur le port passé en argument. Viser `"$W"` au lieu de `"$W/.game-src"`
+> laisse donc le vrai `launch.json` avec un port de test.
+>
+> Constaté le 29/08/2026 : après une série de lancements sur `"$W"`,
+> `launch.json` portait `127.0.0.1:46694`. Or `JOUER-SOLO.bat` teste et ouvre
+> `http://127.0.0.1:2345/` : la partie solo serait partie sur un port que rien
+> n'allait chercher, et le `.bat` se serait refermé sans expliquer pourquoi.
+>
+> Contrôle après toute campagne de validation, et remise en état si besoin :
+>
+> ```bash
+> $PY -c "import json;print(json.load(open('$W/launch.json'))['server_addresses'])"
+> # doit afficher ['127.0.0.1:2345']
+> ```
 
 ```bash
 W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
