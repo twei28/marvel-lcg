@@ -1,6 +1,6 @@
 """Verifie que les cles d'un fichier de campagne existent vraiment dans le moteur.
 
-Le piege est documente au §5 de docs/CAMPAGNES.md et ne fait AUCUN bruit : une
+Le piege est documente au §5 de docs/rapports/CAMPAGNES.md et ne fait AUCUN bruit : une
 cle mal orthographiee dans `data/campagnes/*.json` ne leve rien du tout. Le
 moteur lit une valeur vide, la recompense ne s'applique pas, et la campagne a
 l'air de fonctionner. C'est le genre de defaut qu'on ne decouvre qu'en jouant
