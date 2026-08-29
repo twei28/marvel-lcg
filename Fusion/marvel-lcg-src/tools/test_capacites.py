@@ -6269,6 +6269,264 @@ CAS = [
         "declencher": ["Puzzle.Reveal('ok023')"],
         "verifier": "okoye_war_drumming_branche_identite_civile_surge",
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « iron_lad » : il001a-il023
+    # ------------------------------------------------------------------------
+    {
+        "nom": "il001a Iron Lad — Destiny : regarde 4 cartes, en garde au plus 2, defausse le reste",
+        "pourquoi": "invariant valide quel que soit le type de ressource nomme ou les correspondances trouvees : au moins 2 des 4 cartes vues partent TOUJOURS en defausse",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')"],
+        "declencher": ["Puzzle.Action('il001a', 'Action', 0)"],
+        "verifier": "iron_lad_destiny_defausse_au_moins_deux",
+    },
+    {
+        "nom": "il001b Nathaniel Richards — Inventive Genius reduit de 2 le cout de la prochaine carte TECH",
+        "pourquoi": "preuve par insuffisance de ressources : il009 (cout 1) est jouee sans AUCUNE carte de paiement en main, donc seule la reduction de 2 (plancher 0) rend cela possible",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "main_exclusive": ["il009"],
+        "declencher": ["Puzzle.Action('il001b', 'Action', 0)"],
+        "jouer": ["il009"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["il009"]},
+    },
+    {
+        "nom": "il002 Stature — Response : soigne 1 degat de l'identite a son entree en jeu",
+        "pourquoi": "le pilote decline le bonus optionnel (defausser jusqu'a 3 cartes), donc exactement 1 degat soigne",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Damage('Iron Lad', 3)"],
+        "declencher": ["Puzzle.PutIntoPlay('il002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "il003 Energy Overflow — 6 degats a un ennemi, X=1 (cout imprime de la carte TECH defaussee)",
+        "pourquoi": "X est calcule APRES paiement du cout, choix des cibles fait a la main dans le handler (pas un SetTarget statique) : preuve que le montant de degats (6, pas 2) est bien atteint",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il009', under_control=True)"],
+        "main_exclusive": ["il003", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "il004 Ion Blast — 2 degats de base a un ennemi",
+        "pourquoi": "preuve du degat de base garanti ; la branche bonus (defausser 5 cartes pour 6 degats) reste optionnelle, le pilote decline",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')"],
+        "main_exclusive": ["il004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il004"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "il007 Seeking Solutions — melange une carte TECH de la defausse dans le deck",
+        "pourquoi": "preuve directe et robuste : la carte doit avoir QUITTE la defausse, independamment du bonus de pioche (secondaire, non verifie ici) ; c'est un Event, il doit etre JOUE (pas Puzzle.Action, reserve aux cartes deja en jeu)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Discard('il009')"],
+        "main_exclusive": ["il007", "01089"],
+        "declencher": [],
+        "cibles": ["il009"],
+        "jouer": ["il007"],
+        "verifier": "iron_lad_seeking_solutions_remet_en_deck",
+    },
+    {
+        "nom": "il009 Vision AI — melange le dessus de la defausse, rend le dessous en main",
+        "pourquoi": "deux cibles distinctes (from_where Topmost / Bottommost) sur la meme defausse a 2 cartes",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('il009', under_control=True)",
+            "Puzzle.Discard('01088')",
+            "Puzzle.Discard('01089')",
+        ],
+        "declencher": ["Puzzle.Action('il009', 'AlterEgoAction', 0)"],
+        "verifier": "iron_lad_vision_ai_melange_et_retourne",
+    },
+    {
+        "nom": "il010 Hack — retire la menace posee au lieu de l'ajouter",
+        "pourquoi": "message.SetBeInstead + RemoveThreatFromSchemes : la menace du complot principal doit BAISSER, jamais monter, quand un sbire manigance",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il010', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "iron_lad_hack_retire_au_lieu_de_placer",
+    },
+    {
+        "nom": "il011 Ion Amplifiers — entre en jeu avec 1 compteur ion (elle-meme, seule carte TECH controlee)",
+        "pourquoi": "compte DYNAMIQUE pose a la main (AfterCardEnterPlay + PlaceCountersOn), pas desc.Uses",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["il011", "ion", 1]]},
+    },
+    {
+        "nom": "il011 Ion Amplifiers — 2 compteurs ion si 2 cartes TECH sont controlees (elle-meme + Vision AI)",
+        "pourquoi": "verifie que le compte suit vraiment le nombre de cartes TECH controlees, pas une constante",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il009', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["il011", "ion", 2]]},
+    },
+    {
+        "nom": "il013 Iron Lad's Boots — Iron Lad gagne le trait AERIAL",
+        "pourquoi": "GiveKeywordToAttached('You', trait='AERIAL') sans cible attachee",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('il013', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "en_jeu": ["il013"]},
+    },
+    {
+        "nom": "il013 Iron Lad's Boots — Response : apres avoir joue un evenement, rend le dessous de la defausse",
+        "pourquoi": "declencheur generique AfterPlayerPlayedCard(CardFinder(card_type=Event))",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il013', under_control=True)",
+            "Puzzle.Discard('01089')",
+        ],
+        "main_exclusive": ["il004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il004"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01089"]},
+    },
+    {
+        "nom": "il014 Iron Lad's Helmet — Response : apres un pouvoir de base, rend le dessous de la defausse",
+        "pourquoi": "declencheur AfterUnitUseBasicPower(powers=['ATK','THW']), meme modele que ok001a",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il014', under_control=True)",
+            "Puzzle.Discard('01089')",
+        ],
+        "declencher": ["Puzzle.Attack('Iron Lad')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01089"]},
+    },
+    {
+        "nom": "il015 Iron Lad's Suit — +3 PV et redresse Iron Lad",
+        "pourquoi": "GiveKeywordToAttached('You', health=3) et Faces.ReadyAll sur l'identite",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il015', under_control=True)",
+            "Puzzle.Exhaust('il001a')",
+        ],
+        "declencher": ["Puzzle.Action('il015', 'HeroAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3}, "pret": ["il001a"]},
+    },
+    {
+        "nom": "il016 Neurokinetic Interface — 2 degats a un ennemi apres reveler une trahison",
+        "pourquoi": "branche « treachery or minion » de AfterPlayerRevealCard ; HeroResponse exige la forme heros (oubli initial corrige)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il016', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('il021')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "il017 Shadow of the Future — branche « retirer les 3 dessus du deck -> retirer l'obligation »",
+        "pourquoi": "WhenThisObligationGiveToYou + ChooseAbilities a 2 branches, meme modele qu'ok019",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('il017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["il017"]},
+    },
+    {
+        "nom": "il018 Early Start — When Revealed : incline chaque amelioration Iron Lad en jeu",
+        "pourquoi": "UpgradesIronLadEnJeu filtre par set_name, pas par trait",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('il018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["il011"]},
+    },
+    {
+        "nom": "il019 Kang the Conqueror — empile l'amelioration au cout le plus eleve, la rend a sa defaite",
+        "pourquoi": "Filter.One(highest_cost=True) + TuckCardUnderHere puis retour en main au When Defeated ; deux coups de degats (Toughness absorbe le premier)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('il011', under_control=True)",
+            "Puzzle.PutIntoPlay('il015', under_control=True)",
+        ],
+        "declencher": [
+            "Puzzle.Reveal('il019')",
+            "Puzzle.Damage('il019', 1)",
+            "Puzzle.Damage('il019', 99)",
+        ],
+        "verifier": "iron_lad_kang_empile_puis_rend",
+    },
+    {
+        "nom": "il020 Taking Responsability — Forced Response : defausse le dessus du deck apres une attaque",
+        "pourquoi": "AfterUnitUseBasicPower(powers=['ATK','THW']), meme modele que Weakened (11018, officielle)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Reveal('il020')", "Puzzle.ChangeForm('Iron Lad')"],
+        "declencher": ["Puzzle.Attack('Iron Lad')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "il020 Taking Responsability — Action : retire le dessus du deck pour se defausser",
+        "pourquoi": "cout sans choix (pas de CostFunc.RemoveFromGame reutilisable pour une carte de deck, code a la main)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Reveal('il020')"],
+        "declencher": ["Puzzle.Action('il020', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["il020"]},
+    },
+    {
+        "nom": "il021 Pay the Price — defausse 8 cartes du deck",
+        "pourquoi": "player.DiscardDeckTopCards(8, effect) ; deck de depart assez grand pour ne pas gagner renfort",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('il021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 8},
+    },
+    {
+        "nom": "il023 Sudden Plan Change — condition Stature en jeu, change de forme, +1 taille de main",
+        "pourquoi": "TeamUp rendu comme 'Stature (alliee) en jeu' (tranche par l'utilisateur le 29/08/2026), only_if_you_control_face",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il002', under_control=True)"],
+        "declencher": [],
+        "jouer": ["il023"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "attributs": {"hand_size": 1}},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -8292,6 +8550,72 @@ def okoye_war_drumming_branche_identite_civile_surge(monde, aides):
         return False, (f"defausse Rencontre = {ids_defausse_rencontre} (attendu au moins 2 : "
                        f"War Drumming elle-meme + la carte supplementaire tiree par Renfort)")
     return True, f"Renfort a bien distribue une carte Rencontre supplementaire (defausse Rencontre = {ids_defausse_rencontre})"
+
+def iron_lad_destiny_defausse_au_moins_deux(monde, aides):
+    """il001a : Destiny regarde 4 cartes, en garde au plus 2 (AskChooseFaces
+    range (0,2)) : au moins 2 partent donc TOUJOURS en defausse, quel que
+    soit le type de ressource nomme ou les correspondances trouvees."""
+    joueur = monde.players[0]
+    n = len(list(joueur.discard_pile.Get()))
+    if n < 2:
+        return False, (f"defausse du joueur = {n} carte(s) (attendu au moins 2 : "
+                       f"Destiny regarde 4 cartes et n'en garde jamais plus de 2)")
+    return True, f"Destiny a bien defausse au moins 2 des 4 cartes vues (defausse = {n})"
+
+def iron_lad_seeking_solutions_remet_en_deck(monde, aides):
+    """il007/il008 : la carte choisie (il009, forcee via 'cibles') doit avoir
+    QUITTE la defausse (melangee dans le deck). Le bonus de pioche (1 carte
+    par carte TECH melangee) est secondaire et non verifie ici."""
+    joueur = monde.players[0]
+    ids_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "il009" in ids_defausse:
+        return False, f"il009 est encore dans la defausse (defausse={ids_defausse}) : pas melangee"
+    return True, "il009 a bien quitte la defausse (melangee dans le deck)"
+
+def iron_lad_vision_ai_melange_et_retourne(monde, aides):
+    """il009 : deux cibles distinctes sur la meme defausse a 2 cartes.
+    01089 (defaussee en dernier, donc dessus) doit etre melangee dans le
+    deck ; 01088 (defaussee en premier, donc dessous) doit revenir en main."""
+    joueur = monde.players[0]
+    ids_main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    ids_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    soucis = []
+    if "01089" in ids_defausse:
+        soucis.append(f"01089 (dessus de la defausse) est encore dans la defausse : pas melangee (defausse={ids_defausse})")
+    if "01088" not in ids_main:
+        soucis.append(f"01088 (dessous de la defausse) n'est pas revenu en main (main={ids_main})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Vision AI a bien melange le dessus de la defausse et rendu le dessous en main"
+
+def iron_lad_hack_retire_au_lieu_de_placer(monde, aides):
+    """il010 : message.SetBeInstead + RemoveThreatFromSchemes([meme plan]) :
+    la menace du complot principal doit BAISSER (jamais monter) quand un
+    sbire manigance, et Hack doit avoir ete defaussee (cout de l'Interrupt)."""
+    face = aides["par_id"](monde, "01097b")
+    if face is None:
+        return False, "complot principal (01097b) introuvable"
+    if face.threat >= 5:
+        return False, (f"menace sur le complot principal = {face.threat} (attendu < 5 : la menace "
+                       f"posee doit etre retiree au lieu d'etre ajoutee)")
+    if aides["par_id"](monde, "il010") is not None:
+        return False, "Hack (il010) est encore en jeu (devrait etre defaussee, cout de l'Interrupt)"
+    return True, f"Hack a bien empeche la pose de menace et en a retire du complot principal (menace={face.threat}, depart 5)"
+
+def iron_lad_kang_empile_puis_rend(monde, aides):
+    """il019 : Filter.One(highest_cost=True) doit choisir il015 (cout 3) et
+    non il011 (cout 2) ; au When Defeated, il015 doit revenir en main et
+    Kang doit avoir quitte le jeu (mis de cote)."""
+    joueur = monde.players[0]
+    ids_main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    soucis = []
+    if "il015" not in ids_main:
+        soucis.append(f"il015 (cout le plus eleve, 3) n'est pas revenue en main apres la defaite de Kang (main={ids_main})")
+    if aides["par_id"](monde, "il019") is not None:
+        soucis.append("Kang the Conqueror (il019) est encore trouvable en jeu (devrait etre mis de cote)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Kang a bien empile il015 (cout le plus eleve) puis l'a rendue a sa defaite, et s'est mis de cote"
 '''
 
 

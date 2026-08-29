@@ -1050,4 +1050,48 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // okoye — War Drumming (Treachery, nemesis) x2
   'ok023': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
   'ok024': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
+
+  // iron_lad — Iron Lad (Hero)
+  'il001a': "<i>Destin</i> — <b>Action</b> : nommez un type de ressource et regardez les 4 cartes du dessus de votre deck. Ajoutez jusqu'à 2 cartes portant le type de ressource choisi à votre main et défaussez les autres. <i>(Limite d'une fois par round.)</i>",
+  // iron_lad — Iron Lad (AlterEgo, Nathaniel Richards)
+  'il001b': "<i>Génie inventif</i> — <b>Action</b> : réduisez le coût en ressources de la prochaine carte [[TECH]] jouée cette phase de 2. <i>(Limite d'une fois par round.)</i>",
+  // iron_lad — Stature (Ally)
+  'il002': "<b>Réponse</b> : après que Stature est entrée en jeu, soignez 1 dégât de votre identité. Vous pouvez défausser jusqu'à 3 cartes de votre deck pour soigner 1 dégât supplémentaire par carte défaussée.",
+  // iron_lad — Energy Overflow (Event)
+  'il003': "<b>Action de héros</b> : défaussez une carte [[TECH]] que vous contrôlez → infligez 6 dégâts à X ennemis en jeu, X étant égal au coût en ressources imprimé de la carte défaussée. Ces dégâts ignorent les cartes d'état Tenace.",
+  // iron_lad — Ion Blast (Event) x3
+  'il004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  'il005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  'il006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  // iron_lad — Seeking Solutions (Event) x2
+  'il007': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  'il008': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  // iron_lad — Vision AI (Support)
+  'il009': "<b>Action d'identité civile</b> : inclinez Vision AI → mélangez la carte du dessus de votre défausse dans votre deck. Retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Hack (Upgrade)
+  'il010': "<b>Interruption</b> <i>(contre)</i> : quand une menace serait placée sur un plan, défaussez Hack → retirez ce montant de ce plan à la place. De plus, vous pouvez défausser 5 cartes de votre deck pour retirer le même montant d'un plan différent.",
+  // iron_lad — Ion Amplifiers (Upgrade) x2
+  'il011': "Utilisations <i>(X compteurs d'ion, X étant égal au nombre de cartes [[TECH]] que vous contrôlez.)</i>\n<b>Ressource de héros</b> : inclinez Ion Amplifiers et retirez 1 compteur d'ion → générez une ressource [wild].",
+  'il012': "Utilisations <i>(X compteurs d'ion, X étant égal au nombre de cartes [[TECH]] que vous contrôlez.)</i>\n<b>Ressource de héros</b> : inclinez Ion Amplifiers et retirez 1 compteur d'ion → générez une ressource [wild].",
+  // iron_lad — Iron Lad's Boots (Upgrade)
+  'il013': "Iron Lad gagne le trait [[AERIAL]].\n<b>Réponse de héros</b> : après avoir joué un événement, inclinez Iron Lad's Boots → retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Iron Lad's Helmet (Upgrade)
+  'il014': "<b>Réponse de héros</b> : après qu'Iron Lad a utilisé un pouvoir de base, inclinez Iron Lad's Helmet → retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Iron Lad's Suit (Upgrade)
+  'il015': "Vous gagnez +3 points de vie.\n<b>Action de héros</b> : inclinez Iron Lad's Suit → redressez Iron Lad.",
+  // iron_lad — Neurokinetic Interface (Upgrade)
+  'il016': "<b>Réponse de héros</b> : après avoir révélé une carte de rencontre, inclinez Neurokinetic Interface → si cette carte était :\n• Une traîtrise ou un sbire, infligez 2 dégâts à un ennemi.\n• Un plan secondaire ou une pièce jointe, retirez 2 menaces d'un plan.",
+  // iron_lad — Shadow of the Future (Obligation)
+  'il017': "<b><i>Donnez-la au joueur Nathaniel Richards.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Retirez les 3 cartes du dessus de votre deck de la partie → retirez Shadow of the Future de la partie.\n• Défaussez 1 carte [[TECH]] que vous contrôlez. Défaussez 3 cartes de votre deck. Défaussez cette obligation.",
+  // iron_lad — Early Start (SideScheme, nemesis)
+  'il018': "<b>Une fois révélée</b> : inclinez chaque amélioration Iron Lad en jeu.\nTant que ce plan est en jeu, les améliorations Iron Lad ne peuvent pas être redressées.",
+  // iron_lad — Kang the Conqueror (Minion, nemesis)
+  'il019': "Robustesse. Vilenie.\n<b>Une fois révélée</b> : placez l'amélioration Iron Lad au coût le plus élevé en jeu sous Kang the Conqueror.\n<b>Quand vaincu</b> : renvoyez l'amélioration placée ici dans la main de son propriétaire. Mettez Kang the Conqueror de côté.",
+  // iron_lad — Taking Responsability (Obligation, nemesis)
+  'il020': "<b>Réponse Obligatoire</b> : après que vous avez attaqué ou contré, défaussez la carte du dessus de votre deck.\n<b>Action</b> : retirez la carte du dessus de votre deck de la partie → défaussez cette obligation.",
+  // iron_lad — Pay the Price (Treachery, nemesis) x2
+  'il021': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
+  'il022': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
+  // iron_lad — Sudden Plan Change (Event, Basic, Team-Up)
+  'il023': "Team-Up (Stature et Iron Lad). Maximum 1 par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
 }

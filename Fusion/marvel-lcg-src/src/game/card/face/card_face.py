@@ -163,6 +163,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'formula', 'sanity', 'pigeon',
         # Les Spider-Bots de l'arbre Web-Spinner portent leurs propres compteurs.
         'bot',
+        # CORRECTIF : compteur du pack custom iron_lad (CptScorp). Ion
+        # Amplifiers (il011/il012) entre en jeu avec un compteur « ion » par
+        # carte TECH controlee (pose a la main, desc.Uses ne sait pas porter
+        # un compte dynamique) et le depense en Hero Resource.
+        'ion',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

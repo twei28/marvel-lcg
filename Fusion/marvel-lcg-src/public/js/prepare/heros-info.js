@@ -1083,4 +1083,16 @@ export const HEROS_INFO = {
         apparition: "Black Panther Vol. 4 #1 (2005)",
     },
 
+    "il001a": {
+        bio: "Nathaniel Richards est un adolescent du 31ème siècle qui a découvert son destin le plus sombre : devenir Kang le Conquérant. Refusant ce futur, il a volé une armure inspirée de la technologie Vision/Avengers, remonté le temps et rejoint les Young Avengers sous le nom d'Iron Lad. Génie de la technologie autant que farouche opposé à sa propre destinée, il lutte sans relâche contre l'héritage qu'il refuse d'incarner.",
+        bioEn: "Nathaniel Richards is a teenager from the 31st century who discovered his darkest possible future: becoming Kang the Conqueror. Refusing that fate, he stole an armor inspired by Vision/Avengers technology, traveled back in time, and joined the Young Avengers as Iron Lad. A technological genius as much as a fierce opponent of his own destiny, he fights relentlessly against the legacy he refuses to become.",
+        civil: "Nathaniel Richards",
+        base: "New York",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Kang le Conquérant (lui-même)",
+        ennemisEn: "Kang the Conqueror (himself)",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
 };

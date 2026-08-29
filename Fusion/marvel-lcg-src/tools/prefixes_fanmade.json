@@ -68,6 +68,13 @@
       "cartes": 15,
       "depuis": "2026-08-12"
     },
+    "il": {
+      "pack": "iron_lad",
+      "libelle": "126. Custom (Iron Lad)",
+      "cartes": 24,
+      "depuis": "2026-08-29",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2). Regle imprimee sur l'insert : au reshuffle du deck joueur, en plus de la carte rencontre standard, le joueur doit aussi chercher et reveler son sbire nemesis (Kang the Conqueror)."
+    },
     "iw": {
       "pack": "invisible_woman",
       "libelle": "104. Custom (Invisible Woman)",

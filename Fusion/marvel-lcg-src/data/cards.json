@@ -76005,7 +76005,409 @@
             "text": "<b>When Revealed</b>: Discard each other SETTING environment in play.\n<b>Hero Action</b>: Exhaust an AERIAL card you control or spend an [energy] resource → a friendly character you control gains the AERIAL trait until the end of the round."
         }
     ],
-    "checksum": "729e011dd9cffe52f29bb16c43c830666a0fac021fc4b3d5dc99cb44e03a726e",
+    "iron_lad": [
+        {
+            "card_id": "il001a",
+            "type": "Hero",
+            "name": "* Iron Lad",
+            "subtitle": "Nathaniel Richards",
+            "desc": {
+                "HP": "9",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "4"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<i>Destiny</i> — <b>Action</b>: Name a resource type and look at the top 4 cards of your deck. Add up to 2 cards with the chosen resource type to your hand and discard the others. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il001b",
+            "type": "AlterEgo",
+            "name": "* Iron Lad",
+            "subtitle": "Nathaniel Richards",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "GENIUS"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<i>Inventive Genius</i> — <b>Action</b>: Reduce the resource cost of the next [[TECH]] card played this phase by 2. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il002",
+            "type": "Ally",
+            "name": "* Stature",
+            "subtitle": "Cassie Lang",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2",
+                "THW": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Response</b>: After Stature enters play, heal 1 damage from your identity. You may discard up to 3 cards from your deck to heal 1 more damage for each card discarded.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il003",
+            "type": "Event",
+            "name": "Energy Overflow",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Action</b>: Discard a [[TECH]] card you control → deal 6 damage to X enemies in play, where X is equal to the printed resource cost of the discarded card. This damage ignores tough status cards.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il004",
+            "type": "Event",
+            "name": "Ion Blast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. You may discard 5 cards from your deck to deal 6 damage instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il005",
+            "type": "Event",
+            "name": "Ion Blast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. You may discard 5 cards from your deck to deal 6 damage instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il006",
+            "type": "Event",
+            "name": "Ion Blast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. You may discard 5 cards from your deck to deal 6 damage instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il007",
+            "type": "Event",
+            "name": "Seeking Solutions",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Iron Lad",
+            "text": "<b>Alter-Ego Action</b>: Shuffle 2 cards from your discard pile back into your deck. Draw 1 card for each [[TECH]] card shuffled into your deck this way.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il008",
+            "type": "Event",
+            "name": "Seeking Solutions",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Iron Lad",
+            "text": "<b>Alter-Ego Action</b>: Shuffle 2 cards from your discard pile back into your deck. Draw 1 card for each [[TECH]] card shuffled into your deck this way.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il009",
+            "type": "Support",
+            "name": "* Vision AI",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Vision AI → shuffle the top card of your discard pile into your deck. Return the bottom card of your discard pile to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il010",
+            "type": "Upgrade",
+            "name": "Hack",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PREPARATION",
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Interrupt</b> <i>(thwart)</i>: When threat would be placed on a scheme, discard Hack → remove that amount from that scheme instead. Additionally, you may discard 5 cards from your deck to remove the same amount from a different scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il011",
+            "type": "Upgrade",
+            "name": "Ion Amplifiers",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "Uses <i>(X ion counters, where X is equal to the number of [[TECH]] cards you control.)</i>\n<b>Hero Resource</b>: Exhaust Ion Amplifiers and remove 1 ion counter from it → generate a [wild] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il012",
+            "type": "Upgrade",
+            "name": "Ion Amplifiers",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "Uses <i>(X ion counters, where X is equal to the number of [[TECH]] cards you control.)</i>\n<b>Hero Resource</b>: Exhaust Ion Amplifiers and remove 1 ion counter from it → generate a [wild] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il013",
+            "type": "Upgrade",
+            "name": "* Iron Lad's Boots",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "Iron Lad gains [[AERIAL]].\n<b>Hero Response</b>: After playing an event, exhaust Iron Lad's Boots → return the bottom card of your discard pile to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il014",
+            "type": "Upgrade",
+            "name": "* Iron Lad's Helmet",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Response</b>: After Iron Lad uses a basic power, exhaust Iron Lad's Helmet → return the bottom card of your discard pile to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il015",
+            "type": "Upgrade",
+            "name": "* Iron Lad's Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "You get +3 hit points.\n<b>Hero Action</b>: Exhaust Iron Lad's Suit → ready Iron Lad.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il016",
+            "type": "Upgrade",
+            "name": "* Neurokinetic Interface",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Lad",
+            "text": "<b>Hero Response</b>: After you reveal an encounter card, exhaust Neurokinetic Interface → if that card was:\n• A treachery or minion, deal 2 damage to an enemy.\n• A side scheme or attachment, remove 2 threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il017",
+            "type": "Obligation",
+            "name": "Shadow of the Future",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Nathaniel Richards"
+            },
+            "traits": [],
+            "set_name": "Iron Lad",
+            "text": "<b><i>Give to the Nathaniel Richards player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Remove the top 3 cards of your deck from the game → remove Shadow of the Future from the game.\n• Discard 1 [[TECH]] card you control. Discard 3 cards from your deck. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il018",
+            "type": "SideScheme",
+            "name": "Early Start",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3"
+            },
+            "traits": [],
+            "set_name": "Iron Lad Nemesis",
+            "text": "<b>When Revealed</b>: Exhaust each Iron Lad upgrade in play.\nWhile this scheme is in play, Iron Lad upgrades cannot be readied.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il019",
+            "type": "Minion",
+            "name": "* Kang the Conqueror",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "SCH": "2",
+                "ATK": "2",
+                "Toughness": "1",
+                "Villainous": "1",
+                "Boost": "3",
+                "Nemesis": "Iron Lad"
+            },
+            "traits": [
+                "TEMPORAL"
+            ],
+            "set_name": "Iron Lad Nemesis",
+            "text": "Toughness. Villainous.\n<b>When Revealed</b>: Put the highest cost Iron Lad upgrade in play under Kang the Conqueror.\n<b>When Defeated</b>: Return the upgrade under here to its owner's hand. Set Kang the Conqueror aside.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il020",
+            "type": "Obligation",
+            "name": "Taking Responsability",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Iron Lad"
+            },
+            "traits": [],
+            "set_name": "Iron Lad Nemesis",
+            "text": "<b>Forced Response</b>: After you attack or thwart, discard the top card of your deck.\n<b>Action</b>: Remove the top card of your deck from the game → discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il021",
+            "type": "Treachery",
+            "name": "Pay the Price",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Iron Lad Nemesis",
+            "text": "<b>When Revealed</b>: Discard 8 cards from your deck. If less than 8 cards were discarded this way, this card gains surge.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il022",
+            "type": "Treachery",
+            "name": "Pay the Price",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Iron Lad Nemesis",
+            "text": "<b>When Revealed</b>: Discard 8 cards from your deck. If less than 8 cards were discarded this way, this card gains surge.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "il023",
+            "type": "Event",
+            "name": "Sudden Plan Change",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "MaxPerDeck": "1",
+                "Class": "Basic"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Iron Lad",
+            "text": "Team-Up (Stature and Iron Lad). Max 1 per deck.\n<b>Hero Action</b>: Change to another form. You get +1 hand size until the end of the phase.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "9de549431ceaa2f53a3ee42523e23a0e9b0a1c899119cc99fdc3b81a8d9a75fa",
     "okoye": [
         {
             "card_id": "ok001a",
