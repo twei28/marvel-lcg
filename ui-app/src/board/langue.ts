@@ -7,6 +7,7 @@
 // langue, et la reconnexion WebSocket est déjà gérée par moteur.ts.
 
 import { DICO_EN_BASE } from './dico-en'
+import { alignerScansSurLangue } from './scans-fr'
 
 const CLE_LANGUE = 'marvel-langue'
 
@@ -44,6 +45,11 @@ export async function basculerLangue(): Promise<void> {
   } catch {
     /* stockage indisponible : la bascule serveur reste utile */
   }
+  // Les IMAGES des cartes suivent aussi : elles ont leur propre reglage
+  // (« Scans en francais », menu Options), et le laisser en arriere donnait une
+  // interface anglaise sur un plateau francais. Le reglage reste modifiable a
+  // la main juste apres, pour qui veut le melange.
+  alignerScansSurLangue(nouvelle)
   try {
     await fetch('/set_language?' + nouvelle)
   } catch {

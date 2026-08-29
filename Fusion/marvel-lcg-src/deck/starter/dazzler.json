@@ -1,0 +1,68 @@
+{
+    "version": "0.5.9",
+    "name": "Dazzler",
+    "metadata": {
+        "url": "https://drive.google.com/drive/folders/1EhcLzLpiZ1InMT37NE3Do2P9VnUjYJ7B",
+        "author": "Lord Havok",
+        "note": "Pack custom de Lord Havok, reproduit tel quel. Le deck est celui de la fiche « Starter Deck (including custom cards) » fournie par l'auteur : 16 cartes signature, aspect Justice, et les cartes custom Song of Justice, Encore x2 et Power Ballad x2. Live Concert est en set_aside : c'est une carte Permanent posee au Setup par Alison Blaire. Les cinq noms non resolus de la fiche (Jem, Lila Cheney, Luna Snow, Virgo) n'apparaissent que dans le texte de Power Ballad, pas dans le deck."
+    },
+    "hero": [
+        "dz001a,dz001b"
+    ],
+    "hero_deck": [
+        "dz002",
+        "dz003",
+        "dz004",
+        "dz005",
+        "dz006",
+        "dz007",
+        "dz008",
+        "dz009",
+        "dz010",
+        "dz011",
+        "dz012",
+        "dz013",
+        "dz014",
+        "dz015",
+        "dz016"
+    ],
+    "set_aside": [
+        "dz017a"
+    ],
+    "obligations": [
+        "dz019"
+    ],
+    "nemesis_set": [
+        "dz020",
+        "dz021",
+        "dz022",
+        "dz022",
+        "dz023"
+    ],
+    "player_deck": [
+        "15011",
+        "04049",
+        "04049",
+        "01060",
+        "01060",
+        "15013",
+        "15013",
+        "22015",
+        "dz025",
+        "51018",
+        "30019",
+        "30019",
+        "06031",
+        "33019",
+        "13018",
+        "01084",
+        "dz034",
+        "dz034",
+        "dz030",
+        "dz030",
+        "01088",
+        "01089",
+        "01090",
+        "05023"
+    ]
+}

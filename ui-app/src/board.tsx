@@ -36,6 +36,7 @@ import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { toScanCard, type ContexteCarte } from './board/card-model'
+import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
   EvenementCentrale,
@@ -1541,6 +1542,15 @@ function PagePartie({
   )
   const cartesMondeParId = useMemo(() => indexerCartesMonde(etat.monde), [etat.monde])
   const cartesAfficheesParId = useMemo(() => indexerCartesAffichees(plateau), [plateau])
+  const cartesMondeParNom = useMemo(
+    () => indexerCartesMondeParNom(cartesMondeParId),
+    [cartesMondeParId]
+  )
+  // Un choix textuel (« quelle chanson ? ») montre le SCAN de la carte nommee.
+  const carteDeLOption = useCallback(
+    (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
+    [cartesMondeParNom, joueurActif, catalogue]
+  )
   const [optionSurvolee, setOptionSurvolee] = useState<Option | undefined>(undefined)
   const [pulseTemporaire, setPulseTemporaire] = useState<Set<number>>(() => new Set())
   const [ciblesMenu, setCiblesMenu] = useState<{ titre: string; cartes: ScanCardProps[] } | undefined>(
@@ -2001,6 +2011,7 @@ function PagePartie({
           choisirOption={choisirOptionDepuisMenu}
           annuler={interaction.annuler}
           survolerOption={setOptionSurvolee}
+          carteDeLOption={carteDeLOption}
         />
       ) : null}
 

@@ -2,7 +2,11 @@ from . import *
 
 # Recon Team
 # Hero Action (thwart): Remove 3 threat from a scheme. If you spent a Squirrel
-#   to play this card, remove 1 threat from a different scheme.
+#   to play this card, remove 1 threat from a scheme.
+#
+# 28/08/2026 : la restriction "different scheme" a ete retiree a la demande de
+# l'utilisateur (choix delibere, pas un bug texte-vs-code) - le point bonus
+# peut desormais viser le meme scheme que les 3 premiers points de menace.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -14,18 +18,17 @@ def GetAbilities() -> Sequence['Ability']:
         if not ADepenseUnEcureuil(effect):
             return
 
-        autres = [face for face in Worlds.FindCardsOnField(effect, card_type=Scheme2)
-                  if face not in vises]
-        if not autres:
+        cibles = list(Worlds.FindCardsOnField(effect, card_type=Scheme2))
+        if not cibles:
             return
 
         joueur = effect.GetInitiator()
         joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility(
-                "Remove 1 threat from a different scheme",
+                "Remove 1 threat from a scheme",
                 lambda targets: this.RemoveThreatFromSchemes(list(targets), 1, effect),
-            ).SetTarget(Select.From(faces=autres), range=(1, 1)),
+            ).SetTarget(Select.From(faces=cibles), range=(1, 1)),
         )
 
     return [

@@ -2,7 +2,12 @@ from . import *
 
 # The Bruiser
 # Interrupt: When another SQUIRREL ally you control would take consequential
-#   damage, exhaust The Bruiser → deal 1 of that damage to The Bruiser instead.
+#   damage, exhaust The Bruiser → prevent 1 of that damage. Deal 1 damage to
+#   The Bruiser.
+#
+# Formulation alignee sur le visuel le 28/08/2026 : le code faisait DEJA
+# prevention puis degat (PreventDamage + TakeDamage), c'est l'ancien texte
+# « deal 1 of that damage instead » qui decrivait mal une redirection.
 #
 # Les ecureuils ne peuvent pas defendre : leurs degats viennent donc de leurs
 # propres attaques et manigances, pas des cartes rencontre. C'est la seule

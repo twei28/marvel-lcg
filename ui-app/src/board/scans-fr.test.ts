@@ -78,3 +78,33 @@ describe('scanUrl', () => {
     expect(scanUrl('sg001a')).toBe('/scan/sg001a')
   })
 })
+
+describe('alignerScansSurLangue', () => {
+  it('coupe les scans francais quand l interface passe en anglais', async () => {
+    const { alignerScansSurLangue } = await import('./scans-fr')
+    alignerScansSurLangue('en')
+    expect(window.localStorage.getItem(CLE_SCANS_FR)).toBe('off')
+    expect(scansFrActifs()).toBe(false)
+    expect(picIdFr(AVEC_SCAN)).toBe(AVEC_SCAN)
+  })
+
+  it('rallume les scans francais quand l interface repasse en francais', async () => {
+    const { alignerScansSurLangue } = await import('./scans-fr')
+    window.localStorage.setItem(CLE_SCANS_FR, 'off')
+    alignerScansSurLangue('fr')
+    expect(window.localStorage.getItem(CLE_SCANS_FR)).toBe('on')
+    expect(picIdFr(AVEC_SCAN)).toBe('fr_01001a')
+  })
+
+  it('ne casse pas la bascule quand localStorage leve une exception', async () => {
+    const { alignerScansSurLangue } = await import('./scans-fr')
+    const spy = vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
+      throw new Error('localStorage access denied')
+    })
+    try {
+      expect(() => alignerScansSurLangue('en')).not.toThrow()
+    } finally {
+      spy.mockRestore()
+    }
+  })
+})

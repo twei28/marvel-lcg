@@ -100,14 +100,15 @@ class ImageCreatorHelper:
         words = filtered_text.split()
         current_line = ""
 
-        # for word in words:
-        #     # Check if adding the next word would exceed the max width
-        #     test_line = f"{current_line} {word}".strip()
-        #     if draw.textsize(test_line, font=ImageCreatorHelper.font)[0] <= max_width:
-        #         current_line = test_line
-        #     else:
-        #         lines.append(current_line)
-        #         current_line = word
+        for word in words:
+            # Check if adding the next word would exceed the max width
+            test_line = f"{current_line} {word}".strip()
+            if draw.textlength(test_line, font=font) <= max_width:
+                current_line = test_line
+            else:
+                if current_line:
+                    lines.append(current_line)
+                current_line = word
 
         # Add the last line if there's any text left
         if current_line:

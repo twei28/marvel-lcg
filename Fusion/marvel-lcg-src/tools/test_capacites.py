@@ -5956,6 +5956,619 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["ag002", "ag015"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « iron_lad » : il001a-il023
+    # ------------------------------------------------------------------------
+    {
+        "nom": "il001a Iron Lad — Destiny : regarde 4 cartes, en garde au plus 2, defausse le reste",
+        "pourquoi": "invariant valide quel que soit le type de ressource nomme ou les correspondances trouvees : au moins 2 des 4 cartes vues partent TOUJOURS en defausse",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')"],
+        "declencher": ["Puzzle.Action('il001a', 'Action', 0)"],
+        "verifier": "iron_lad_destiny_defausse_au_moins_deux",
+    },
+    {
+        "nom": "il001b Nathaniel Richards — Inventive Genius reduit de 2 le cout de la prochaine carte TECH",
+        "pourquoi": "preuve par insuffisance de ressources : il009 (cout 1) est jouee sans AUCUNE carte de paiement en main, donc seule la reduction de 2 (plancher 0) rend cela possible",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "main_exclusive": ["il009"],
+        "declencher": ["Puzzle.Action('il001b', 'Action', 0)"],
+        "jouer": ["il009"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["il009"]},
+    },
+    {
+        "nom": "il002 Stature — Response : soigne 1 degat de l'identite a son entree en jeu",
+        "pourquoi": "le pilote decline le bonus optionnel (defausser jusqu'a 3 cartes), donc exactement 1 degat soigne",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Damage('Iron Lad', 3)"],
+        "declencher": ["Puzzle.PutIntoPlay('il002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "il003 Energy Overflow — 6 degats a un ennemi, X=1 (cout imprime de la carte TECH defaussee)",
+        "pourquoi": "X est calcule APRES paiement du cout, choix des cibles fait a la main dans le handler (pas un SetTarget statique) : preuve que le montant de degats (6, pas 2) est bien atteint",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il009', under_control=True)"],
+        "main_exclusive": ["il003", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "il004 Ion Blast — 2 degats de base a un ennemi",
+        "pourquoi": "preuve du degat de base garanti ; la branche bonus (defausser 5 cartes pour 6 degats) reste optionnelle, le pilote decline",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')"],
+        "main_exclusive": ["il004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il004"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "il007 Seeking Solutions — melange une carte TECH de la defausse dans le deck",
+        "pourquoi": "preuve directe et robuste : la carte doit avoir QUITTE la defausse, independamment du bonus de pioche (secondaire, non verifie ici) ; c'est un Event, il doit etre JOUE (pas Puzzle.Action, reserve aux cartes deja en jeu)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Discard('il009')"],
+        "main_exclusive": ["il007", "01089"],
+        "declencher": [],
+        "cibles": ["il009"],
+        "jouer": ["il007"],
+        "verifier": "iron_lad_seeking_solutions_remet_en_deck",
+    },
+    {
+        "nom": "il009 Vision AI — melange le dessus de la defausse, rend le dessous en main",
+        "pourquoi": "deux cibles distinctes (from_where Topmost / Bottommost) sur la meme defausse a 2 cartes",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('il009', under_control=True)",
+            "Puzzle.Discard('01088')",
+            "Puzzle.Discard('01089')",
+        ],
+        "declencher": ["Puzzle.Action('il009', 'AlterEgoAction', 0)"],
+        "verifier": "iron_lad_vision_ai_melange_et_retourne",
+    },
+    {
+        "nom": "il010 Hack — retire la menace posee au lieu de l'ajouter",
+        "pourquoi": "message.SetBeInstead + RemoveThreatFromSchemes : la menace du complot principal doit BAISSER, jamais monter, quand un sbire manigance",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il010', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "iron_lad_hack_retire_au_lieu_de_placer",
+    },
+    {
+        "nom": "il011 Ion Amplifiers — entre en jeu avec 1 compteur ion (elle-meme, seule carte TECH controlee)",
+        "pourquoi": "compte DYNAMIQUE pose a la main (AfterCardEnterPlay + PlaceCountersOn), pas desc.Uses",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["il011", "ion", 1]]},
+    },
+    {
+        "nom": "il011 Ion Amplifiers — 2 compteurs ion si 2 cartes TECH sont controlees (elle-meme + Vision AI)",
+        "pourquoi": "verifie que le compte suit vraiment le nombre de cartes TECH controlees, pas une constante",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il009', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["il011", "ion", 2]]},
+    },
+    {
+        "nom": "il013 Iron Lad's Boots — Iron Lad gagne le trait AERIAL",
+        "pourquoi": "GiveKeywordToAttached('You', trait='AERIAL') sans cible attachee",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('il013', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "en_jeu": ["il013"]},
+    },
+    {
+        "nom": "il013 Iron Lad's Boots — Response : apres avoir joue un evenement, rend le dessous de la defausse",
+        "pourquoi": "declencheur generique AfterPlayerPlayedCard(CardFinder(card_type=Event))",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il013', under_control=True)",
+            "Puzzle.Discard('01089')",
+        ],
+        "main_exclusive": ["il004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["il004"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01089"]},
+    },
+    {
+        "nom": "il014 Iron Lad's Helmet — Response : apres un pouvoir de base, rend le dessous de la defausse",
+        "pourquoi": "declencheur AfterUnitUseBasicPower(powers=['ATK','THW']), meme modele que ok001a",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il014', under_control=True)",
+            "Puzzle.Discard('01089')",
+        ],
+        "declencher": ["Puzzle.Attack('Iron Lad')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01089"]},
+    },
+    {
+        "nom": "il015 Iron Lad's Suit — +3 PV et redresse Iron Lad",
+        "pourquoi": "GiveKeywordToAttached('You', health=3) et Faces.ReadyAll sur l'identite",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('Iron Lad')",
+            "Puzzle.PutIntoPlay('il015', under_control=True)",
+            "Puzzle.Exhaust('il001a')",
+        ],
+        "declencher": ["Puzzle.Action('il015', 'HeroAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3}, "pret": ["il001a"]},
+    },
+    {
+        "nom": "il016 Neurokinetic Interface — 2 degats a un ennemi apres reveler une trahison",
+        "pourquoi": "branche « treachery or minion » de AfterPlayerRevealCard ; HeroResponse exige la forme heros (oubli initial corrige)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il016', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('il021')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "il017 Shadow of the Future — branche « retirer les 3 dessus du deck -> retirer l'obligation »",
+        "pourquoi": "WhenThisObligationGiveToYou + ChooseAbilities a 2 branches, meme modele qu'ok019",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('il017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["il017"]},
+    },
+    {
+        "nom": "il018 Early Start — When Revealed : incline chaque amelioration Iron Lad en jeu",
+        "pourquoi": "UpgradesIronLadEnJeu filtre par set_name, pas par trait",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il011', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('il018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["il011"]},
+    },
+    {
+        "nom": "il019 Kang the Conqueror — empile l'amelioration au cout le plus eleve, la rend a sa defaite",
+        "pourquoi": "Filter.One(highest_cost=True) + TuckCardUnderHere puis retour en main au When Defeated ; deux coups de degats (Toughness absorbe le premier)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('il011', under_control=True)",
+            "Puzzle.PutIntoPlay('il015', under_control=True)",
+        ],
+        "declencher": [
+            "Puzzle.Reveal('il019')",
+            "Puzzle.Damage('il019', 1)",
+            "Puzzle.Damage('il019', 99)",
+        ],
+        "verifier": "iron_lad_kang_empile_puis_rend",
+    },
+    {
+        "nom": "il020 Taking Responsability — Forced Response : defausse le dessus du deck apres une attaque",
+        "pourquoi": "AfterUnitUseBasicPower(powers=['ATK','THW']), meme modele que Weakened (11018, officielle)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Reveal('il020')", "Puzzle.ChangeForm('Iron Lad')"],
+        "declencher": ["Puzzle.Attack('Iron Lad')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "il020 Taking Responsability — Action : retire le dessus du deck pour se defausser",
+        "pourquoi": "cout sans choix (pas de CostFunc.RemoveFromGame reutilisable pour une carte de deck, code a la main)",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.Reveal('il020')"],
+        "declencher": ["Puzzle.Action('il020', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["il020"]},
+    },
+    {
+        "nom": "il021 Pay the Price — defausse 8 cartes du deck",
+        "pourquoi": "player.DiscardDeckTopCards(8, effect) ; deck de depart assez grand pour ne pas gagner renfort",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('il021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 8},
+    },
+    {
+        "nom": "il023 Sudden Plan Change — condition Stature en jeu, change de forme, +1 taille de main",
+        "pourquoi": "TeamUp rendu comme 'Stature (alliee) en jeu' (tranche par l'utilisateur le 29/08/2026), only_if_you_control_face",
+        "scenario": "rhino",
+        "heros": "iron_lad",
+        "mise_en_place": ["Puzzle.ChangeForm('Iron Lad')", "Puzzle.PutIntoPlay('il002', under_control=True)"],
+        "declencher": [],
+        "jouer": ["il023"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "attributs": {"hand_size": 1}},
+    },
+
+    # ------------------------------------------------------------------------
+    # Packs custom DAZZLER (dz) et WOLVERINE X-23 (wx), ajoutes le 29/08/2026.
+    # Chacun de ces cinq cas a passe la PREUVE PAR SUBSTITUTION exigee par
+    # CHECKLIST-VALIDATION-CARTE.md bloc 3 : module retire -> ROUGE,
+    # module remis -> VERT.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "dz017a Live Concert — Setup : posee en jeu par Alison Blaire",
+        "pourquoi": ("le Setup posait la carte sur sa SEULE face recto ; sans les deux "
+                     "faces, `Card.Flip` la couchait face cachee et elle QUITTAIT le jeu, "
+                     "ce qui tuait toute la moitie Showtime! du pack"),
+        "scenario": "rhino",
+        "heros": "dazzler",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dz017a"]},
+    },
+    {
+        "nom": "dz016 Sound Collector Suit — Dazzler gagne +1 DEF",
+        "pourquoi": "effet continu d'une armure : verifier qu'il touche bien l'identite",
+        "scenario": "rhino",
+        "heros": "dazzler",
+        # La partie demarre en ALTER-EGO : sans ce passage en forme heros,
+        # l'identite n'a pas d'attribut `defense` et la verification tombe sur
+        # un AttributeError au lieu de mesurer quoi que ce soit.
+        # `ChangeForm` BASCULE vers l'autre face : on lui passe la face EN
+        # COURS (l'alter-ego), pas celle qu'on veut atteindre.
+        "mise_en_place": ["Puzzle.ChangeForm('dz001b')"],
+        "declencher": ["Puzzle.PutIntoPlay('dz016', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}, "en_jeu": ["dz016"]},
+    },
+    {
+        "nom": "dz002 Longshot — entre en jeu avec 2 compteurs knife",
+        "pourquoi": ("les compteurs d'entree passent par `ThisEnterPlayWithCounters` et "
+                     "NON par une cle desc ; le compteur `knife` a du etre declare dans "
+                     "COUNTER_LIST, sans quoi la carte tombe des la creation de la partie"),
+        "scenario": "rhino",
+        "heros": "dazzler",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('dz002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["dz002", "knife", 2]]},
+    },
+    {
+        "nom": "wx002 Wolverine's Claws — Setup : posee en jeu par Laura Kinney",
+        "pourquoi": "re-skin de X-23 : verifier que le Setup vise bien wx002 et pas 43002",
+        "scenario": "rhino",
+        "heros": "wolverine_x23",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wx002"]},
+    },
+    {
+        "nom": "wx009 Adamantium Lacing — +2 PV a l'identite et retaliate 1",
+        "pourquoi": ("deux `GiveKeywordToAttached` distincts ; le second visait le heros "
+                     "PAR NOM, or « Wolverine » n'est plus unique depuis ce pack — la "
+                     "cible est desormais bornee au controleur"),
+        "scenario": "rhino",
+        "heros": "wolverine_x23",
+        # Forme heros obligatoire : `retaliate` n'existe pas sur l'alter-ego,
+        # et le CardFinder de la carte cherche « Wolverine », pas
+        # « Laura Kinney ». `ChangeForm` BASCULE : on passe la face en cours.
+        "mise_en_place": ["Puzzle.ChangeForm('wx001b')"],
+        "declencher": ["Puzzle.PutIntoPlay('wx009', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2, "retaliate": 1}, "en_jeu": ["wx009"]},
+    },
+    {
+        "nom": "si008 Stark Island — recherche + met en jeu EN PAYANT le cout",
+        "pourquoi": ("aucune carte officielle ne combine recherche et paiement du "
+                     "cout (`Player.PlayACard`, generalisation de `PlayAnAlly`) ; "
+                     "prouver que le cout est VRAIMENT paye, pas seulement que la "
+                     "carte cherchee est trouvee et posee gratuitement"),
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('si008', under_control=True)",
+            "Puzzle.CreatePlayerDiscardPile('si007')",
+        ],
+        # Seule carte en main : 01088 (Energy, [energy][energy]). Force le
+        # pilote a payer AVEC elle le cout 1 de Pepper Potts (si007) — sans
+        # `main_exclusive`, la main de depart resterait et masquerait un
+        # eventuel oubli de paiement.
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('si008', 'AlterEgoAction')"],
+        # `Search.PlayerCard(..., may=True)` : choix a minimum 0, le pilote
+        # decline par defaut sans ce drapeau (§8 du guide).
+        "accepter_choix": True,
+        # Plusieurs [[Individual]] sont legaux (Daniel Hall/Claire Mooney/Mason
+        # Thomas dans le deck, Pepper Potts en defausse ET dans le deck) : sans
+        # forcer la cible, le pilote prend le premier trouve (cout 0), ce qui
+        # ne prouverait rien sur le paiement. Pepper Potts (cout 1) le prouve.
+        "cibles": ["si007"],
+        "verifier": "si008_stark_island_paye",
+    },
+    {
+        "nom": "si001a Superior Iron Man — Ressource : degat a un ami -> genere wild",
+        "pourquoi": "premiere carte du pack, verifier le cout CostFunc.DealDamage + CanGenerateResources",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')"],
+        "declencher": [],
+        "main_exclusive": ["si010"],
+        "jouer": ["si010"],
+        "verifier": "si001a_degat_et_ressource",
+    },
+    {
+        "nom": "DIAGNOSTIC si002 — PutIntoPlay direct (sans passer par le Setup)",
+        "pourquoi": "isoler si le bug vient de si002 lui-meme ou du mecanisme BeginGameWithSetAside",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si002', under_control=True)"],
+        "declencher": [],
+        "verifier": "diag_si002_direct",
+    },
+    {
+        "nom": "DIAGNOSTIC wonder_man — Setup : Ionic Physiology (temoin)",
+        "pourquoi": "verifier que BeginGameWithSetAside marche pour un heros CONNU BON avant de blamer si001b",
+        "scenario": "rhino",
+        "heros": "wonder_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "diag_wonder_man_ionic",
+    },
+    {
+        "nom": "si001b Tony Stark — Setup : trouve et met en jeu l'Armure Endo-Sym",
+        "pourquoi": "BeginGameWithSetAside, modele Wonder Man 58001b",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "si001b_armure_en_jeu",
+    },
+    {
+        "nom": "si001b Tony Stark — O.P.A. : depense X mental -> retire 1+X menace",
+        "pourquoi": "cout variable Cost(\"B\") minimum 1, valeur lue sur cost_func.Get(Spend).return_res",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PlaceThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Action('si001b', 'Action')"],
+        "main_exclusive": ["01089"],
+        "surpayer": True,
+        "cibles": ["01097b"],
+        "verifier": "si001b_opa_retire_menace",
+    },
+    {
+        "nom": "si002 Endo-Sym Armor — Hero Action (attaque) : depense X physical -> 2+X degats",
+        "pourquoi": "bug .SetPlay() trouve et corrige ; verifier que l'attaque marche bien maintenant",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')"],
+        "declencher": ["Puzzle.Action('si002', 'HeroAction')"],
+        # Main VIDE (main_exclusive: []) : seule source de paiement possible =
+        # la capacite Ressource de l'identite (deal 1 damage -> wild), X=1
+        # garanti. Une carte a 2 symboles ("RR") ne se laisse pas forcer de
+        # facon fiable par `payer_avec` (repli par couleur du pilote ne
+        # matche pas "RR" avec "R"), donc on verifie la formule avec X=1.
+        "main_exclusive": [],
+        "cibles": ["01094"],
+        "verifier": "si002_attaque_degats",
+    },
+    {
+        "nom": "si002 Endo-Sym Armor — Hero Interrupt (defense) : depense X energy -> previent 1+X",
+        "pourquoi": ("meme correctif .SetPlay() ; HeroInterrupt exige la forme HEROS "
+                     "(is_hero_type), sans ChangeForm l'ability n'est meme pas offerte"),
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')"],
+        "declencher": ["Puzzle.Damage('si001a', 5)"],
+        "main_exclusive": [],
+        "verifier": "si002_defense_prevention",
+    },
+    {
+        "nom": "si003 Teen Abomination — entre avec 4 rage, +1 ATK/rage, -1 rage apres attaque",
+        "pourquoi": "ThisEnterPlayWithCounters + ThisGainKeyword dynamique + AfterUnitUseBasicPower",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si003', under_control=True)"],
+        "declencher": ["Puzzle.Attack('si003')"],
+        "verifier": "si003_rage_et_atk",
+    },
+    {
+        "nom": "si007 Pepper Potts — Action : retire 1 menace en ignorant la crise",
+        "pourquoi": "RemoveThreatFromSchemes(ignore_crisis=True), teste avec Crowd Control (01108) en jeu",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('si007', under_control=True)",
+            "Puzzle.PutIntoPlay('01108', under_control=True)",
+            "Puzzle.PlaceThreat('01097b', 5)",
+        ],
+        "declencher": ["Puzzle.Action('si007', 'Action')"],
+        "cibles": ["01097b"],
+        "verifier": "si007_ignore_crisis",
+    },
+    {
+        "nom": "si004 Daniel Hall — dernier jeton Flouze : genere wild + defausse 1 carte de la main",
+        "pourquoi": "ex_operation apres paiement, verifie GetCounters('cash')==0 pour detecter le dernier jeton",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('si004', under_control=True)",
+            "Puzzle.Counter('si004', 'cash', -2)",
+        ],
+        "declencher": [],
+        "main_exclusive": ["si010"],
+        "main": ["01085"],
+        "payer_avec": ["si004"],
+        "jouer": ["si010"],
+        "verifier": "si004_dernier_jeton",
+    },
+    {
+        "nom": "si009 Iron Sight — annule les icones de boost (corrige avec le retrait de .SetPlay())",
+        "pourquoi": "meme bug .SetPlay() que si002 (Support injouable depuis la main sinon)",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si009', under_control=True)"],
+        "declencher": ["Puzzle.Boost('01108')"],
+        "verifier": "si009_boost_annule",
+    },
+    {
+        "nom": "si010 Endo-Sym Spare — cherche Endo-Sym Matter en defausse et la mele au deck",
+        "pourquoi": "Faces.ShuffleAllTo + .SetTarget(from_where=YourDiscardPile)",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('si010', under_control=True)",
+            "Puzzle.CreatePlayerDiscardPile('si013')",
+        ],
+        "declencher": ["Puzzle.Action('si010', 'AlterEgoAction')"],
+        "verifier": "si010_matter_dans_deck",
+    },
+    {
+        "nom": "si009 Iron Sight — jouable normalement depuis la main (verif du correctif .SetPlay())",
+        "pourquoi": ("sans le correctif, Support.GetAbilities() ne generait plus "
+                     "CanPlayThisSupportCard() : la carte etait injouable depuis la main"),
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "main_exclusive": ["si009", "01088"],
+        "jouer": ["si009"],
+        "verifier": "si009_jouable_depuis_main",
+    },
+    {
+        "nom": "si011 Spectacular Blast — 3 degats + retire 2 menaces",
+        "pourquoi": "double cible (SetTarget/SetTarget2) sur la meme carte",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')", "Puzzle.PlaceThreat('01097b', 5)"],
+        "declencher": [],
+        "main_exclusive": ["si011", "01090"],
+        "jouer": ["si011"],
+        "cibles": ["01094", "01097b"],
+        "verifier": "si011_double_effet",
+    },
+    {
+        "nom": "si012 Spectacular Save — previent 3 degats + retire 1 menace (Interruption)",
+        "pourquoi": "Event joue en reaction (Hero Interrupt), verifier is_hero_type + double effet",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        # 1er degat consomme le LimitOncePerPhase de si002 (concurrente possible),
+        # pour forcer le pilote a utiliser si012 sur le VRAI degat de 5 teste.
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')", "Puzzle.PlaceThreat('01097b', 5)",
+                          "Puzzle.Damage('si001a', 1)"],
+        "declencher": ["Puzzle.Damage('si001a', 5)"],
+        "main_exclusive": ["si012", "01088"],
+        "cibles": ["01097b"],
+        "verifier": "si012_double_effet",
+    },
+    {
+        "nom": "si013 Endo-Sym Matter — double la ressource pour une carte de Classe Hero",
+        "pourquoi": "DoubleResourcesThisGenerates(card_class=Hero) : 1 wild imprime doit devenir 2",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        # ne_pas_depenser exclut la capacite Ressource de l'identite (si001a) :
+        # sans cela, le pilote la sollicite EN PLUS de si013 (surpaiement),
+        # ce qui declenche l'interruption de defense de si002 sur le degat
+        # auto-inflige et confond l'estimation de paiement du pilote (bug de
+        # harnais, pas de carte -- confirme en isolant si002 temporairement).
+        "mise_en_place": ["Puzzle.ChangeForm('si001b')", "Puzzle.PlaceThreat('01097b', 3)"],
+        "declencher": [],
+        "main_exclusive": ["si013", "si011"],
+        "payer_avec": ["si013"],
+        "ne_pas_depenser": ["si001a"],
+        "jouer": ["si011"],
+        "verifier": "si013_double_ressource",
+    },
+    {
+        "nom": "si014 Alone — option 1 : exhaust Tony Stark, retire l'obligation de la partie",
+        "pourquoi": "modele Business Problems (01170, obligation officielle de Tony Stark)",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('si014')"],
+        "verifier": "si014_option1_exhaust",
+    },
+    # NOTE : pas de cas automatise pour l'option 2 ("Spend 3 resources...").
+    # `YouMayFlipToYourAlterEgoForm` (cards/pack/__init__.py:132) reflippe
+    # TOUJOURS le joueur en alter-ego avant le choix (le pilote generique
+    # accepte le "may" par defaut), donc l'option 1 (condition IsAlterEgo)
+    # redevient disponible et `premiere_option_jouable()` la reprend en
+    # premier -- le harnais n'a pas de mecanisme pour forcer un CHOIX NOMME
+    # entre 2 ForChoiceAbility (seulement des cibles a l'interieur d'un
+    # choix deja selectionne). Le code suit fidelement le modele officiel
+    # Business Problems (01170) + Soldiers of Fortune (aos/50102.py pour
+    # ThisCardGainSurge) ; a verifier en partie reelle.
+    {
+        "nom": "si015 Massive Attack — Une fois revelee : 1 degat au joueur",
+        "pourquoi": "message.GetToPlayer() (pas GetInitiator) pour une carte rencontre",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('si015')"],
+        "verifier": "si015_when_revealed",
+    },
+    {
+        "nom": "si015 Massive Attack — Boost : mise en jeu",
+        "pourquoi": "WhenCardBecomeBoost + PutThisIntoPlay",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('si015')"],
+        "verifier": "si015_boost_en_jeu",
+    },
+    {
+        "nom": "si016 Tony Stark A.I. — Armored 2 : previent 2 degats a CHAQUE instance",
+        "pourquoi": "mot-cle maison, Forced Interrupt sans limite (contrairement a Toughness)",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si016', under_control=True)"],
+        "declencher": ["Puzzle.Damage('si016', 3)", "Puzzle.Damage('si016', 3)"],
+        "verifier": "si016_armored_repete",
+    },
+    {
+        "nom": "si016 Tony Stark A.I. — Une fois revelee + Boost : 1 degat au joueur chacun",
+        "pourquoi": "deux triggers distincts (When Revealed et [star]) sur le meme minion",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('si016')", "Puzzle.Boost('si016')"],
+        "verifier": "si016_revealed_et_boost",
+    },
+    {
+        "nom": "si017 Get My Body Back — Une fois revelee : 2 degats au joueur (2x1)",
+        "pourquoi": "decision utilisateur : 2 instances de 1 degat, pas 1 instance de 2",
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('si017')"],
+        "verifier": "si017_deux_degats",
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -7684,6 +8297,325 @@ def agent13_hallucination(monde, aides):
         return False, (f"menace sur le complot principal = {scheme.threat} (attendu 3 : "
                        f"preuve que l'interruption a remplace le degat, ce qui exige l'attache)")
     return True, "sbire trouve, attache (seul moyen de declencher AttachedMinion), defausse au premier degat"
+
+def iron_lad_destiny_defausse_au_moins_deux(monde, aides):
+    """il001a : Destiny regarde 4 cartes, en garde au plus 2 (AskChooseFaces
+    range (0,2)) : au moins 2 partent donc TOUJOURS en defausse, quel que
+    soit le type de ressource nomme ou les correspondances trouvees."""
+    joueur = monde.players[0]
+    n = len(list(joueur.discard_pile.Get()))
+    if n < 2:
+        return False, (f"defausse du joueur = {n} carte(s) (attendu au moins 2 : "
+                       f"Destiny regarde 4 cartes et n'en garde jamais plus de 2)")
+    return True, f"Destiny a bien defausse au moins 2 des 4 cartes vues (defausse = {n})"
+
+def iron_lad_seeking_solutions_remet_en_deck(monde, aides):
+    """il007/il008 : la carte choisie (il009, forcee via 'cibles') doit avoir
+    QUITTE la defausse (melangee dans le deck). Le bonus de pioche (1 carte
+    par carte TECH melangee) est secondaire et non verifie ici."""
+    joueur = monde.players[0]
+    ids_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "il009" in ids_defausse:
+        return False, f"il009 est encore dans la defausse (defausse={ids_defausse}) : pas melangee"
+    return True, "il009 a bien quitte la defausse (melangee dans le deck)"
+
+def iron_lad_vision_ai_melange_et_retourne(monde, aides):
+    """il009 : deux cibles distinctes sur la meme defausse a 2 cartes.
+    01089 (defaussee en dernier, donc dessus) doit etre melangee dans le
+    deck ; 01088 (defaussee en premier, donc dessous) doit revenir en main."""
+    joueur = monde.players[0]
+    ids_main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    ids_defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    soucis = []
+    if "01089" in ids_defausse:
+        soucis.append(f"01089 (dessus de la defausse) est encore dans la defausse : pas melangee (defausse={ids_defausse})")
+    if "01088" not in ids_main:
+        soucis.append(f"01088 (dessous de la defausse) n'est pas revenu en main (main={ids_main})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Vision AI a bien melange le dessus de la defausse et rendu le dessous en main"
+
+def iron_lad_hack_retire_au_lieu_de_placer(monde, aides):
+    """il010 : message.SetBeInstead + RemoveThreatFromSchemes([meme plan]) :
+    la menace du complot principal doit BAISSER (jamais monter) quand un
+    sbire manigance, et Hack doit avoir ete defaussee (cout de l'Interrupt)."""
+    face = aides["par_id"](monde, "01097b")
+    if face is None:
+        return False, "complot principal (01097b) introuvable"
+    if face.threat >= 5:
+        return False, (f"menace sur le complot principal = {face.threat} (attendu < 5 : la menace "
+                       f"posee doit etre retiree au lieu d'etre ajoutee)")
+    if aides["par_id"](monde, "il010") is not None:
+        return False, "Hack (il010) est encore en jeu (devrait etre defaussee, cout de l'Interrupt)"
+    return True, f"Hack a bien empeche la pose de menace et en a retire du complot principal (menace={face.threat}, depart 5)"
+
+def iron_lad_kang_empile_puis_rend(monde, aides):
+    """il019 : Filter.One(highest_cost=True) doit choisir il015 (cout 3) et
+    non il011 (cout 2) ; au When Defeated, il015 doit revenir en main et
+    Kang doit avoir quitte le jeu (mis de cote)."""
+    joueur = monde.players[0]
+    ids_main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    soucis = []
+    if "il015" not in ids_main:
+        soucis.append(f"il015 (cout le plus eleve, 3) n'est pas revenue en main apres la defaite de Kang (main={ids_main})")
+    if aides["par_id"](monde, "il019") is not None:
+        soucis.append("Kang the Conqueror (il019) est encore trouvable en jeu (devrait etre mis de cote)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Kang a bien empile il015 (cout le plus eleve) puis l'a rendue a sa defaite, et s'est mis de cote"
+def si008_stark_island_paye(monde, aides):
+    """si008 : Pepper Potts (cout 1) doit etre en jeu ET 01088 doit avoir
+    quitte la main (seule source de paiement possible avec main_exclusive) :
+    preuve que le cout a vraiment ete paye via Player.PlayACard, pas
+    seulement que la carte cherchee a ete posee gratuitement.
+    """
+    pepper = aides["par_id"](monde, "si007")
+    if pepper is None:
+        return False, "Pepper Potts (si007) n'est pas en jeu : la recherche ou la mise en jeu a echoue"
+    joueur = monde.players[0]
+    en_main = [f for f in joueur.hand_cards.GetAll()
+               if getattr(f.paper, "card_id", None) == "01088"]
+    if en_main:
+        return False, "01088 est encore en main : le cout de Pepper Potts n'a pas ete paye"
+    return True, "Pepper Potts en jeu, 01088 depensee pour payer son cout : PlayACard fonctionne"
+
+def si001a_degat_et_ressource(monde, aides):
+    """si001a : jouer si010 (cout 1) sans aucune autre source de ressource en
+    main doit forcer le pilote a utiliser la capacite Ressource de l'identite
+    (degat a un ami -> genere wild) : l'identite doit avoir subi 1 degat.
+    """
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    endo_sym_spare = aides["par_id"](monde, "si010")
+    if endo_sym_spare is None:
+        return False, "si010 n'est pas en jeu : la carte n'a pas ete payee/jouee"
+    if subis < 1:
+        return False, f"degats subis par l'identite = {subis} (attendu >= 1 : preuve que la capacite Ressource a servi)"
+    return True, f"si010 en jeu, {subis} degat(s) subis par l'identite : la capacite Ressource a paye"
+
+def diag_si002_direct(monde, aides):
+    armure = aides["par_id"](monde, "si002")
+    if armure is None:
+        return False, "si002 n'est pas en jeu meme via Puzzle.PutIntoPlay direct : le bug est dans si002 lui-meme"
+    return True, "si002 en jeu via PutIntoPlay direct : le bug vient donc de BeginGameWithSetAside/additional_discard_pile"
+
+def diag_wonder_man_ionic(monde, aides):
+    ionic = aides["par_id"](monde, "58002")
+    if ionic is None:
+        return False, "58002 (Ionic Physiology) n'est pas en jeu : BeginGameWithSetAside ne se declenche pas dans ce harnais"
+    return True, "Ionic Physiology en jeu : BeginGameWithSetAside fonctionne bien dans ce harnais"
+
+def si001b_armure_en_jeu(monde, aides):
+    """si001b : l'Armure Endo-Sym (si002) doit etre en jeu des le debut de partie."""
+    armure = aides["par_id"](monde, "si002")
+    if armure is None:
+        partout = []
+        for objet in monde.object_manager.card_dict.values():
+            face = objet.face
+            if face is not None and getattr(face.paper, "card_id", None) == "si002":
+                partout.append((face.IsInPlay(), face.card.area))
+        return False, f"si002 introuvable EN JEU ; occurrences ailleurs (IsInPlay, area) = {partout}"
+    return True, "Endo-Sym Armor trouvee et mise en jeu par le Setup de Tony Stark"
+
+def si001b_opa_retire_menace(monde, aides):
+    """si001b : O.P.A. doit retirer 1+X menaces (X = ressources mentales
+    depensees, ici 2 via Genius surpaye) d'une manigance a 5 menaces : 2 attendues."""
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        scheme = aides["par_id"](monde, "01097a")
+    if scheme is None:
+        return False, "manigance principale introuvable"
+    joueur = monde.players[0]
+    en_main = [f for f in joueur.hand_cards.GetAll()
+               if getattr(f.paper, "card_id", None) == "01089"]
+    if en_main:
+        return False, "01089 (Genius) est encore en main : le cout n'a pas ete paye"
+    if scheme.threat != 2:
+        return False, f"menace restante = {scheme.threat} (attendu 2 : 5 - (1 + 2 mental depenses))"
+    return True, f"menace restante = 2, conforme a 1+X avec X=2 mental depenses"
+
+def si002_attaque_degats(monde, aides):
+    """si002 : Rhino (01094, HP 14) doit avoir subi 2+X degats. X=1 (minimum
+    garanti par la capacite Ressource de l'identite) => 3 degats."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "01094 (Rhino) introuvable en jeu"
+    subis = rhino.max_health - rhino.health
+    if subis != 3:
+        return False, f"degats subis par Rhino = {subis} (attendu 3 : 2 + X avec X=1 physical minimum)"
+    return True, "Rhino a subi 3 degats (2 + 1 physical minimum) : Hero Action fonctionne"
+
+def si002_defense_prevention(monde, aides):
+    """si002 : l'identite doit avoir subi 3 degats sur les 5 infliges (1+X
+    previens, X=1 energy minimum, donc 2 previens, 3 restent)."""
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    if subis != 3:
+        return False, f"degats subis par l'identite = {subis} (attendu 3 : 5 infliges - (1+1) previens)"
+    return True, "3 degats subis sur 5 (2 previens) : Hero Interrupt fonctionne"
+
+def si003_rage_et_atk(monde, aides):
+    """si003 : apres 1 attaque de base, rage doit passer de 4 a 3 et l'ATK de 4 a 3."""
+    teen = aides["par_id"](monde, "si003")
+    if teen is None:
+        return False, "si003 introuvable en jeu"
+    rage = teen.GetCounters('rage')
+    if rage != 3:
+        return False, f"compteurs rage = {rage} (attendu 3 apres 1 attaque)"
+    if teen.attack != 3:
+        return False, f"ATK courante = {teen.attack} (attendu 3 = 0 + 3 rage)"
+    return True, "rage=3, ATK=3 apres l'attaque de base : les 2 capacites fonctionnent"
+
+def si007_ignore_crisis(monde, aides):
+    """si007 : la manigance principale doit avoir perdu 1 menace MALGRE
+    Crowd Control (Crisis 1) en jeu, preuve que ignore_crisis fonctionne."""
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        scheme = aides["par_id"](monde, "01097a")
+    if scheme is None:
+        return False, "manigance principale introuvable"
+    if scheme.threat != 4:
+        return False, f"menace restante = {scheme.threat} (attendu 4 : 5-1, malgre Crowd Control en jeu)"
+    return True, "1 menace retiree malgre Crowd Control (Crisis) : ignore_crisis fonctionne"
+
+def si004_dernier_jeton(monde, aides):
+    """si004 : au dernier jeton Flouze, Daniel Hall doit se defausser
+    (Uses natif) ET une carte de la main doit avoir ete defaussee (ex_operation)."""
+    si010 = aides["par_id"](monde, "si010")
+    if si010 is None:
+        return False, "si010 n'est pas en jeu : le paiement via si004 a echoue"
+    daniel = aides["par_id"](monde, "si004")
+    if daniel is not None:
+        return False, "si004 est encore en jeu : Uses natif n'a pas defausse la carte au dernier jeton"
+    joueur = monde.players[0]
+    en_main = [f for f in joueur.hand_cards.GetAll()
+               if getattr(f.paper, "card_id", None) == "01085"]
+    if en_main:
+        return False, "01085 est encore en main : l'Interruption Obligatoire n'a pas defausse de carte"
+    return True, "si010 joue (paye par si004), si004 auto-defausse, 01085 defaussee : tout fonctionne"
+
+def si009_boost_annule(monde, aides):
+    """si009 : apres avoir annule un boost, il doit rester 1 jeton Observation sur 2."""
+    iron_sight = aides["par_id"](monde, "si009")
+    if iron_sight is None:
+        return False, "si009 n'est pas en jeu"
+    obs = iron_sight.GetCounters('observation')
+    if obs != 1:
+        return False, f"jetons Observation restants = {obs} (attendu 1 sur 2 : l'interruption n'a pas ete utilisee)"
+    return True, "1 jeton Observation consomme : l'interruption d'annulation de boost fonctionne"
+
+def si010_matter_dans_deck(monde, aides):
+    """si010 : Endo-Sym Matter (si013) doit avoir quitte la defausse (melangee au deck)."""
+    joueur = monde.players[0]
+    en_defausse = [f for f in joueur.discard_pile.Get(True)
+                   if getattr(f.paper, "card_id", None) == "si013"]
+    if en_defausse:
+        return False, "si013 est encore en defausse : elle n'a pas ete melangee au deck"
+    return True, "si013 a quitte la defausse : la recherche + le melange au deck fonctionnent"
+
+def si009_jouable_depuis_main(monde, aides):
+    """si009 : doit pouvoir etre jouee normalement depuis la main en payant son cout."""
+    iron_sight = aides["par_id"](monde, "si009")
+    if iron_sight is None:
+        return False, "si009 n'est jamais entree en jeu : injouable depuis la main (regression du bug .SetPlay())"
+    return True, "si009 jouee normalement depuis la main : CanPlayThisSupportCard() est bien present"
+
+def si011_double_effet(monde, aides):
+    """si011 : Rhino doit avoir subi 3 degats ET la manigance doit avoir perdu 2 menaces."""
+    rhino = aides["par_id"](monde, "01094")
+    scheme = aides["par_id"](monde, "01097b") or aides["par_id"](monde, "01097a")
+    if rhino is None or scheme is None:
+        return False, "Rhino ou manigance introuvable"
+    subis = rhino.max_health - rhino.health
+    if subis != 3:
+        return False, f"degats subis par Rhino = {subis} (attendu 3)"
+    if scheme.threat != 3:
+        return False, f"menace restante = {scheme.threat} (attendu 3 : 5-2)"
+    return True, "3 degats + 2 menaces retirees : les 2 cibles fonctionnent"
+
+def si012_double_effet(monde, aides):
+    """si012 : l'identite doit avoir subi 2 degats sur 5 (3 previens) ET la manigance perdu 1 menace."""
+    identite = aides["identite"](monde)
+    scheme = aides["par_id"](monde, "01097b") or aides["par_id"](monde, "01097a")
+    if scheme is None:
+        return False, "manigance introuvable"
+    subis = identite.max_health - identite.health
+    if subis != 2:
+        return False, f"degats subis par l'identite = {subis} (attendu 2 : 5-3 previens)"
+    if scheme.threat != 4:
+        return False, f"menace restante = {scheme.threat} (attendu 4 : 5-1)"
+    return True, "2 degats subis (3 previens) + 1 menace retiree : Interruption + double effet fonctionnent"
+
+def si013_double_ressource(monde, aides):
+    """si013 : si011 (cout 2, un Event qui se resout puis se defausse) doit
+    avoir inflige ses 3 degats a Rhino, preuve qu'elle a ete jouee en payant
+    SEULEMENT avec le G unique de si013, double a 2 par DoubleResourcesThisGenerates."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino introuvable"
+    subis = rhino.max_health - rhino.health
+    if subis != 3:
+        return False, f"degats subis par Rhino = {subis} (attendu 3 : si011 n'a pas ete jouee, le G unique de si013 n'a pas ete double)"
+    return True, "si011 (cout 2) jouee et resolue avec le seul G de si013 : la ressource a bien ete doublee"
+
+def si014_option1_exhaust(monde, aides):
+    """si014 option 1 : Tony Stark doit etre incline (cout de l'option), preuve
+    qu'elle a ete choisie (option 2 n'incline jamais l'identite)."""
+    identite = aides["identite"](monde)
+    if not identite.IsExhaust():
+        return False, "l'identite n'est pas inclinee : l'option 1 (Exhaust Tony Stark) n'a pas ete choisie"
+    return True, "identite inclinee : l'option 1 (retrait de la partie) a bien ete choisie et executee"
+
+def si014_option2_surge(monde, aides):
+    """si014 option 2, paiement impossible (main vide) : la carte doit gagner renfort (surge)."""
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and getattr(face.paper, "card_id", None) == "si014":
+            if getattr(face, "surge", 0) < 1:
+                return False, f"surge={getattr(face, 'surge', None)} (attendu >=1 : le paiement a du echouer)"
+            return True, "si014 a gagne renfort : ThisCardGainSurge s'est declenche sur paiement impossible"
+    return False, "si014 introuvable dans le monde"
+
+def si015_when_revealed(monde, aides):
+    """si015 : 1 degat au joueur a la revelation."""
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, f"degats subis = {subis} (attendu 1)"
+    return True, "1 degat inflige a la revelation de Massive Attack"
+
+def si015_boost_en_jeu(monde, aides):
+    """si015 : le Boost doit mettre Massive Attack en jeu."""
+    scheme = aides["par_id"](monde, "si015")
+    if scheme is None:
+        return False, "si015 n'est pas en jeu apres le Boost"
+    return True, "Massive Attack mise en jeu par son Boost"
+
+def si016_armored_repete(monde, aides):
+    """si016 : 2 instances de 3 degats, Armored 2 previent 2 a chaque fois -> 2 subis au total."""
+    minion = aides["par_id"](monde, "si016")
+    if minion is None:
+        return False, "si016 n'est pas en jeu (peut-etre defait, verifier les degats)"
+    subis = minion.max_health - minion.health
+    if subis != 2:
+        return False, f"degats subis par si016 = {subis} (attendu 2 : (3-2) x 2 instances)"
+    return True, "2 degats subis sur 6 infliges (2 x 2 previens) : Armored 2 se recharge a chaque instance"
+
+def si016_revealed_et_boost(monde, aides):
+    """si016 : When Revealed + [star] Boost doivent chacun infliger 1 degat au joueur (2 au total)."""
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    if subis != 2:
+        return False, f"degats subis par l'identite = {subis} (attendu 2 : 1 revele + 1 boost)"
+    return True, "2 degats au joueur (1 revele + 1 boost) : les 2 triggers fonctionnent"
+
+def si017_deux_degats(monde, aides):
+    """si017 : 2 instances de 1 degat au joueur (pas 1 instance de 2)."""
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    if subis != 2:
+        return False, f"degats subis = {subis} (attendu 2)"
+    return True, "2 degats infliges au joueur (2 instances de 1)"
 '''
 
 

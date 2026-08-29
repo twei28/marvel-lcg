@@ -4,8 +4,14 @@ from . import *
 # Attach to your identity card. You cannot spend SQUIRREL allies.
 # Alter-Ego Action: Exhaust Doreen Green and discard a card with a printed
 #   [mental] resource from your hand → discard Ratatoskr's Whispers.
-# [star] Boost: Discard 1 SQUIRREL ally you control. If you cannot, this
-#   activation gets +1 ATK and +1 SCH.
+# [star] Boost: Discard 1 SQUIRREL ally you control. If you cannot, the villain
+#   gets +1 ATK and +1 SCH for this activation.
+#
+# Texte corrige le 28/08/2026 : il disait « this activation gets +1 ATK » —
+# une activation ne porte pas de valeurs. Convention officielle verifiee
+# (04116 Zola, 08026 Taskmaster) : c'est le VILAIN qui recoit le bonus pour
+# cette activation. Le code faisait deja exactement cela
+# (GainATKForThisAttack / GainSCHForThisScheme), seul le texte etait faux.
 #
 # L'interdiction de depense n'est pas une capacite de cette carte : la
 # capacite Resource de chaque ecureuil teste sa presence (PeutDepenser dans le

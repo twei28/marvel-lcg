@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
+import { CarteApercu } from './Board'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
 import { usePlacement } from './placement/usePlacement'
@@ -14,6 +16,16 @@ type DemandeCentraleProps = {
   choisirOption: (option: Option) => void
   annuler: () => void
   survolerOption?: (option: Option | undefined) => void
+  /**
+   * Le SCAN de la carte qu'une option nomme, quand elle en nomme une.
+   *
+   * Le moteur ne sait proposer qu'un nom quand il fait choisir entre des cartes
+   * qui ne sont pas sur la table (« quelle chanson prends-tu ? »). Un nom seul
+   * ne dit pas ce que fait la carte : signale en jeu sur Alison Blaire, dont le
+   * joueur devait choisir a l'aveugle entre deux titres. Voir
+   * carteNommeeParOption dans board.tsx.
+   */
+  carteDeLOption?: (option: Option) => ScanCardProps | undefined
 }
 
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
@@ -161,8 +173,14 @@ export function DemandeCentrale({
   choisirOption,
   annuler,
   survolerOption,
+  carteDeLOption,
 }: DemandeCentraleProps) {
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
+  // Carte regardee : l'agrandissement s'ouvre au survol du bouton, comme au
+  // survol d'une carte de la table, et avec le meme panneau (texte francais
+  // compris). C'est LUI qui repond a « je ne sais pas ce que fait la carte » :
+  // la vignette du bouton ne fait que la reconnaitre.
+  const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
   const signature = useMemo(
     () => `${demande.event_name}|${demande.ability_type}|${options.map((option) => option.id).join(',')}`,
     [demande.ability_type, demande.event_name, options]
@@ -180,6 +198,7 @@ export function DemandeCentrale({
 
   useEffect(() => {
     setRaisonVisible(undefined)
+    setCarteRegardee(undefined)
     survolerOption?.(undefined)
   }, [signature, survolerOption])
 
@@ -193,11 +212,15 @@ export function DemandeCentrale({
     choisirOption(option)
   }
 
-  const activerOption = (option: Option) => {
+  const activerOption = (option: Option, carte?: ScanCardProps) => {
+    // L'agrandissement s'ouvre MEME sur une option indisponible : savoir
+    // pourquoi on ne peut pas la prendre demande de lire la carte.
+    setCarteRegardee(carte)
     if (!option.failure_reason) survolerOption?.(option)
   }
 
   const desactiverOption = (option: Option) => {
+    setCarteRegardee(undefined)
     if (!option.failure_reason) survolerOption?.(undefined)
   }
 
@@ -222,8 +245,28 @@ export function DemandeCentrale({
           const cibles = resumeCibles(option, cartesParId)
           const indisponible = option.failure_reason !== ''
           const montrerRaison = indisponible && raisonVisible === option.id
+          const carte = carteDeLOption?.(option)
           return (
-            <span className="af-action-wrap" key={option.id}>
+            <span
+              className={`af-action-wrap${carte ? ' a-vignette' : ''}`}
+              key={option.id}
+              onMouseEnter={() => activerOption(option, carte)}
+              onMouseLeave={() => desactiverOption(option)}
+            >
+              {/* La carte que l'option nomme, en petit au-dessus du bouton.
+                  Elle est CLIQUABLE : viser la carte plutot que son nom est le
+                  geste naturel, et c'est celui de toutes les autres cartes de
+                  l'ecran. Le survol, lui, ouvre le grand apercu. */}
+              {carte ? (
+                <span className="dc-vignette">
+                  <ScanCard
+                    {...carte}
+                    state={indisponible ? 'disabled' : 'targetable'}
+                    highlight={false}
+                    onSelect={() => choisirOuInformer(option)}
+                  />
+                </span>
+              ) : null}
               <button
                 type="button"
                 className={`af-action ${classeTonaliteAction(`${nom} ${demande.ability_type}`)}${
@@ -231,9 +274,7 @@ export function DemandeCentrale({
                 }`}
                 aria-disabled={indisponible || undefined}
                 title={indisponible ? option.failure_reason : undefined}
-                onMouseEnter={() => activerOption(option)}
-                onMouseLeave={() => desactiverOption(option)}
-                onFocus={() => activerOption(option)}
+                onFocus={() => activerOption(option, carte)}
                 onBlur={() => desactiverOption(option)}
                 onClick={() => choisirOuInformer(option)}
               >
@@ -253,6 +294,11 @@ export function DemandeCentrale({
           </span>
         ) : null}
       </div>
+
+      {/* Le meme agrandissement que sur la table : scan en grand, mots-cles et
+          texte francais. Il se monte dans <body> (portail) et passe devant ce
+          panneau, comme il passe devant la table. */}
+      {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
     </section>
   )
 }

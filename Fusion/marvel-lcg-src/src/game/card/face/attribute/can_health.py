@@ -249,9 +249,16 @@ class CanHealth(HasHealth):
                 units.append(overkill_target)
 
             world = self.card.world
-            first_player = world.GetFirstPlayer()
+            # CORRECTIF : `GetFirstPlayer` leve une assertion quand plus aucun
+            # joueur n'est en vie. Le coup fatal porte par une attaque overkill
+            # sur le dernier heros passait donc par ici et faisait tomber la
+            # partie au lieu de la finir. `first_player` ne sert qu'a ordonner
+            # des degats simultanes : sans unite a ordonner, il est inutile, et
+            # il n'a plus de sens une fois la partie perdue.
+            reste_un_joueur = any(not player.is_eliminated for player in world.const_players)
+            first_player = world.GetFirstPlayer() if units and reste_un_joueur else None
 
-            while units:
+            while units and first_player:
                 if not units:
                     break
 

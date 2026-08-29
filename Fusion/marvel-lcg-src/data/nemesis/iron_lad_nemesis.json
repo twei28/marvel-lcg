@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Iron Lad Nemesis",
+    "encounters": [
+        "il018",
+        "il019",
+        "il020",
+        "il021",
+        "il022"
+    ]
+}

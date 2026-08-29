@@ -33,3 +33,18 @@ export function picIdFr(picId: string): string {
   if (!scansFrActifs()) return picId
   return aScanFr(picId) ? PREFIXE_FR + picId : picId
 }
+
+/** Aligne les scans sur la langue de l'interface. Appele par la bascule 🌐
+    (langue.ts) : passer en anglais sans changer les images laissait le plateau
+    en francais, ce qui se lisait comme un bug.
+
+    L'option « Scans en francais » du menu Options reste maitresse APRES coup :
+    un joueur qui veut l'interface en anglais et les scans en francais n'a qu'a
+    la rallumer, seule la bascule de langue realigne. */
+export function alignerScansSurLangue(langue: 'fr' | 'en'): void {
+  try {
+    window.localStorage.setItem(CLE_SCANS_FR, langue === 'fr' ? 'on' : 'off')
+  } catch {
+    /* preference non critique : la bascule de langue reste utile */
+  }
+}

@@ -881,6 +881,44 @@ export const HEROS_INFO = {
         apparition: "Avengers #9 (1964)",
     },
 
+    "dz001a": {
+        bio: "Alison Blaire voulait chanter, pas sauver le monde. Mutante capable de transformer le son en lumière, elle en a d'abord fait un jeu de scène avant d'en faire une arme : plus la salle est bruyante, plus ses faisceaux sont puissants. Longtemps tiraillée entre les projecteurs et le costume, elle a fini par comprendre qu'elle n'avait pas à choisir. Elle est aujourd'hui des X-Men sans avoir jamais rangé le micro.",
+        bioEn: "Alison Blaire wanted to sing, not to save the world. A mutant who turns sound into light, she first made it a stage act before making it a weapon: the louder the room, the brighter her beams. Long torn between the spotlight and the costume, she eventually realised she did not have to choose. She now stands with the X-Men without ever having put the microphone away.",
+        civil: "Alison Blaire",
+        base: "Los Angeles, New York",
+        equipes: "X-Men, A-Force",
+        equipesEn: "X-Men, A-Force",
+        ennemis: "Klaw, Le Fléau",
+        ennemisEn: "Klaw, Juggernaut",
+        apparition: "Uncanny X-Men #130 (1980)",
+    },
+
+    "rg001a": {
+        bio: "Alexei Shostakov était le pilote d'essai le plus décoré d'Union soviétique et le mari de Natasha Romanoff. L'État a mis en scène sa mort pour en faire une arme, et l'a rendu au monde sous le nom de Gardien Rouge, réponse officielle à Captain America. Son bouclier et son entraînement en font un soldat redoutable ; son orgueil et les mensonges qu'on lui a fait avaler en font un homme plus fragile qu'il n'y paraît.",
+        bioEn: "Alexei Shostakov was the most decorated test pilot in the Soviet Union, and Natasha Romanoff's husband. The State faked his death to turn him into a weapon, and gave him back to the world as the Red Guardian, its official answer to Captain America. His shield and his training make him a formidable soldier; his pride, and the lies he was fed, make him a more fragile man than he looks.",
+        civil: "Alexei Shostakov",
+        base: "Russie",
+        baseEn: "Russia",
+        equipes: "Thunderbolts, Gardiens Rouges",
+        equipesEn: "Thunderbolts, Red Guardians",
+        ennemis: "Captain America, la Chambre Rouge",
+        ennemisEn: "Captain America, the Red Room",
+        apparition: "Avengers #43 (1967)",
+    },
+
+    "wx001a": {
+        bio: "Vingt-troisième tentative de recréer Wolverine à partir d'un échantillon d'ADN dégradé, Laura Kinney a été conçue comme une arme et élevée en laboratoire. Elle possède le facteur de guérison, deux griffes par main et une de plus à chaque pied. Quand Logan disparaît, elle ne se contente pas de lui succéder : elle reprend son nom, son masque et son manteau, et devient Wolverine à part entière.",
+        bioEn: "The twenty-third attempt to recreate Wolverine from a degraded DNA sample, Laura Kinney was designed as a weapon and raised in a lab. She has the healing factor, two claws per hand and one more in each foot. When Logan is gone she does not merely succeed him: she takes up his name, his mask and his coat, and becomes Wolverine in her own right.",
+        civil: "Laura Kinney",
+        base: "Institut Xavier, New York",
+        baseEn: "Xavier Institute, New York",
+        equipes: "X-Men, X-Force",
+        equipesEn: "X-Men, X-Force",
+        ennemis: "Programme Arme X, Kimura",
+        ennemisEn: "Weapon X programme, Kimura",
+        apparition: "All-New Wolverine #1 (2015)",
+    },
+
     "43001a": {
         bio: "Vingt-troisième tentative de recréer Wolverine à partir d'un échantillon d'ADN dégradé, Laura Kinney a été conçue comme une arme et élevée en laboratoire par une mère porteuse qu'on lui interdisait d'aimer. Elle possède le facteur de guérison, deux griffes par main et une de plus à chaque pied. Sortie du programme, elle apprend lentement à être quelqu'un plutôt que quelque chose, et reprend un jour le nom de Wolverine.",
         bioEn: "The twenty-third attempt to recreate Wolverine from a degraded DNA sample, Laura Kinney was designed as a weapon and raised in a lab by a surrogate mother she was forbidden to love. She has the healing factor, two claws per hand and one more in each foot. Out of the programme, she slowly learns to be someone rather than something, and one day takes up the name Wolverine.",
@@ -1069,6 +1107,30 @@ export const HEROS_INFO = {
         civil: "Sharon Carter",
         equipes: "S.H.I.E.L.D.",
         apparition: "Tales of Suspense #75 (1966)",
+    },
+
+    "il001a": {
+        bio: "Nathaniel Richards est un adolescent du 31ème siècle qui a découvert son destin le plus sombre : devenir Kang le Conquérant. Refusant ce futur, il a volé une armure inspirée de la technologie Vision/Avengers, remonté le temps et rejoint les Young Avengers sous le nom d'Iron Lad. Génie de la technologie autant que farouche opposé à sa propre destinée, il lutte sans relâche contre l'héritage qu'il refuse d'incarner.",
+        bioEn: "Nathaniel Richards is a teenager from the 31st century who discovered his darkest possible future: becoming Kang the Conqueror. Refusing that fate, he stole an armor inspired by Vision/Avengers technology, traveled back in time, and joined the Young Avengers as Iron Lad. A technological genius as much as a fierce opponent of his own destiny, he fights relentlessly against the legacy he refuses to become.",
+        civil: "Nathaniel Richards",
+        base: "New York",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Kang le Conquérant (lui-même)",
+        ennemisEn: "Kang the Conqueror (himself)",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
+    "si001a": {
+        bio: "Après les évènements d'AXIS, l'alignement moral de Tony Stark bascule : il revient à San Francisco et se proclame « Superior Iron Man », convaincu d'être devenu la meilleure version de lui-même. Il distribue l'Extremis 3.0, une application qui guérit et embellit instantanément, mais la fait payer très cher et coupe l'accès à qui ne peut plus régler l'abonnement. Enfermé dans une armure blanche et or et dans un narcissisme sans limite, il ne recule devant rien pour asseoir son empire, jusqu'à ce que Daredevil s'oppose à lui.",
+        bioEn: "After the events of AXIS, Tony Stark's moral compass flips: he returns to San Francisco and declares himself \"Superior Iron Man\", convinced he has become the best version of himself. He distributes Extremis 3.0, an app that instantly heals and beautifies its users, but charges a steep price and cuts off anyone who stops paying. Locked in a white-and-gold armor and boundless narcissism, he stops at nothing to secure his empire, until Daredevil stands against him.",
+        civil: "Tony Stark",
+        base: "San Francisco",
+        equipes: "Avengers",
+        equipesEn: "Avengers",
+        ennemis: "Daredevil, lui-même",
+        ennemisEn: "Daredevil, himself",
+        apparition: "Superior Iron Man #1 (2015)",
     },
 
 };

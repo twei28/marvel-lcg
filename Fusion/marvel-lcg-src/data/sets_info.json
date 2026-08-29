@@ -847,6 +847,24 @@
         "encounters": [],
         "max_id": "60064"
     },
+    "61. Jessica Jones": {
+        "name": "jj",
+        "scenarios": [],
+        "heroes": [
+            "jessica_jones"
+        ],
+        "encounters": [],
+        "max_id": "61040"
+    },
+    "62. Luke Cage": {
+        "name": "luke_cage",
+        "scenarios": [],
+        "heroes": [
+            "luke_cage"
+        ],
+        "encounters": [],
+        "max_id": "62037"
+    },
     "99. Custom (Rainy)": {
         "name": "rainy",
         "scenarios": [],
@@ -970,7 +988,7 @@
         "name": "jessica_jones",
         "scenarios": [],
         "heroes": [
-            "jessica_jones"
+            "jessica_jones_custom"
         ],
         "encounters": [
             "on_the_job"
@@ -1063,5 +1081,50 @@
         "encounters": [],
         "max_id": "wd165"
     },
-    "checksum": "f124d32c1cabd7ebc8ba51d2a2bb24f81ba8342c294fd2cc2f1d86dd78875f54"
+    "121. Custom (Red Guardian)": {
+        "name": "red_guardian",
+        "scenarios": [],
+        "heroes": [
+            "red_guardian"
+        ],
+        "encounters": [],
+        "max_id": "rg017"
+    },
+    "checksum": "9aeabfba358a2ad490058d653f73fc2cec021078026e2fecdb5d2879685cc8de",
+    "122. Custom (Wolverine X-23)": {
+        "name": "wolverine_x23",
+        "scenarios": [],
+        "heroes": [
+            "wolverine_x23"
+        ],
+        "encounters": [],
+        "max_id": "wx012"
+    },
+    "123. Custom (Dazzler)": {
+        "name": "dazzler",
+        "scenarios": [],
+        "heroes": [
+            "dazzler"
+        ],
+        "encounters": [],
+        "max_id": "dz038"
+    },
+    "126. Custom (Superior Iron Man)": {
+        "name": "superior_iron_man",
+        "scenarios": [],
+        "heroes": [
+            "superior_iron_man"
+        ],
+        "encounters": [],
+        "max_id": "si017"
+    },
+    "127. Custom (Iron Lad)": {
+        "name": "iron_lad",
+        "scenarios": [],
+        "heroes": [
+            "iron_lad"
+        ],
+        "encounters": [],
+        "max_id": "il023"
+    }
 }

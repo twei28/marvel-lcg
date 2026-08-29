@@ -13,6 +13,13 @@
     "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
   ],
   "prefixes": {
+    "aa": {
+      "pack": "agatha_harkness",
+      "libelle": "132. Custom (Agatha Harkness)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Hero pack Mystic (Ripper3) : mecanique persona 'Ghost Agatha' remise en jeu apres elimination totale du joueur (WhenPlayerEliminated + PutIntoPlay, deja existants). Reutiliser she_hulk/dazzler pour PERSONA, mister_fantastic_nemesis pour la structure obligation+nemesis. Carte 'Agatha All Along' absente du zip source, a reclamer avant portage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "ab": {
       "pack": "albert",
       "libelle": "100. Custom (Albert)",
@@ -31,11 +38,32 @@
       "cartes": 22,
       "depuis": "2026-08-12"
     },
+    "al": {
+      "pack": "alligator_loki",
+      "libelle": "140. Custom (Alligator Loki)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 4/5 : concept central inedit dans le moteur, le heros lui-meme s'attache a un ennemi comme un attachment mobile (Interrupt attaque/defense + detachement Forced Response). Toutes les autres mecaniques (overkill, patrol, indirect damage, team-up, persona) existent deja. Squelette le plus proche : pack lockjaw. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
+    "an": {
+      "pack": "angela",
+      "libelle": "133. Custom (Angela)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Heroine Asgard/trait Weapon (frenzy, ready apres defaite de minion) + set nemesis Hela. Toutes les primitives existent deja (steady, trait Weapon, ready-on-response, cancel-when-revealed). Reutiliser red_guardian et wolverine comme base de code. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "av": {
       "pack": "agent_anti_venom",
       "libelle": "111. Custom (Agent Anti-Venom)",
       "cartes": 18,
       "depuis": "2026-08-12"
+    },
+    "bt": {
+      "pack": "beast",
+      "libelle": "134. Custom (Beast)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Hank McCoy, hero+nemesis (Dark Beast). Seul point neuf : mini-pool 'Discovery' de 5 cartes hors-deck mele via Forced Response au passage alter-ego, construit sur des primitives existantes (set_aside_deck deja utilise par Iceman/Storm/Valkyrie/Wonder Man). Reutiliser red_guardian comme squelette. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "bw": {
       "pack": "brawn",
@@ -49,6 +77,13 @@
       "cartes": 20,
       "depuis": "2026-08-12"
     },
+    "dd": {
+      "pack": "doctor_doom",
+      "libelle": "139. Custom (Doctor Doom)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "dt": {
       "pack": "determination",
       "libelle": "118. Custom (Determination)",
@@ -56,17 +91,66 @@
       "depuis": "2026-08-13",
       "note": "L'aspect fan-made de designhacker.ca, 142 cartes relevees, toutes dans le jeu avec leur module ; le set est declare dans sets_info.json."
     },
+    "dz": {
+      "pack": "dazzler",
+      "libelle": "123. Custom (Dazzler)",
+      "cartes": 40,
+      "depuis": "2026-08-29",
+      "note": "Pack custom de Lord Havok. Apporte la Setlist (zone attachee a Live Concert, 4 places) et la capacite secondaire \u00ab Showtime! \u00bb, rendue par AbilityType.Special que zero carte du jeu n'utilisait."
+    },
+    "gb": {
+      "pack": "gorr",
+      "libelle": "136. Custom (Gorr the God Butcher)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Pack VILAIN autonome (pas un heros), 34 cartes, villain 3-stage, environnement double-face, deck-out trigger (cf. mts/thanos). Depend d'un set modulaire externe 'Intergalactic Hazards' non fourni dans le zip source, a creer ou substituer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "gp": {
       "pack": "gwenpool",
       "libelle": "101. Custom (Gwenpool)",
       "cartes": 18,
       "depuis": "2026-08-12"
     },
+    "gs": {
+      "pack": "galactic_storm",
+      "libelle": "144. Custom (Galactic Storm)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 5 scenarios + 2 interludes + epilogue, 305 cartes, 4 sets modulaires additionnels, 2 nouveaux heros jouables (Binary, Quasar) a stater entierement. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
+    "hd": {
+      "pack": "howard_the_duck",
+      "libelle": "135. Custom (Howard the Duck)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Defender/Guardian, victory display bonus (cf. pattern cable/loki), Persona (Man-Thing), Toughness. Un seul point d'incertitude : carte signature 'Nexus of All Realities' (choix de play area a l'entree d'un personnage), aucun precedent trouve, a investiguer specifiquement avant portage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
+    "ho": {
+      "pack": "harry_osborn",
+      "libelle": "131. Custom (Harry Osborn / Green Goblin)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Green Goblin Ultimate (Earth-6160) devient un HEROS jouable (Harry Osborn), hero+nemesis, trait TECH + Persona (Gwen Stacy Osborn). Zero primitive nouvelle. Attention : ne pas confondre avec le pack VILAIN officiel existant 'gob' (Green Goblin classique), totalement distinct malgre un nom de carte Obligation identique ('Risky Business') dans les deux. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "ht": {
       "pack": "human_torch",
       "libelle": "102. Custom (Human Torch)",
       "cartes": 15,
       "depuis": "2026-08-12"
+    },
+    "il": {
+      "pack": "iron_lad",
+      "libelle": "127. Custom (Iron Lad)",
+      "cartes": 24,
+      "depuis": "2026-08-29",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2). Regle imprimee sur l'insert : au reshuffle du deck joueur, en plus de la carte rencontre standard, le joueur doit aussi chercher et reveler son sbire nemesis (Kang the Conqueror)."
+    },
+    "ip": {
+      "pack": "iron_patriot",
+      "libelle": "142. Custom (Iron Patriot)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 4/5. Norman Osborn, hero+nemesis(Doctor Doom, numerotation propre au pack)+mini-encounter-set (Molecule Man). Coeur du pack = deck secondaire de 20 cartes 'REGISTERED' attache au heros (pioche/engagement separes, conversion minion-vers-allie), aucun equivalent dans le moteur : un vrai sous-systeme a concevoir, pas juste de l'assemblage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "iw": {
       "pack": "invisible_woman",
@@ -80,11 +164,25 @@
       "cartes": 23,
       "depuis": "2026-08-12"
     },
+    "kb": {
+      "pack": "kate_bishop",
+      "libelle": "124. Custom (Kate Bishop)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5 -- portage le plus direct du lot. Hero+nemesis (Madame Masque), compteurs de fleches quasi identiques au Hawkeye officiel (pack trors/hawkeye : CostFunc.Counter deja pret a copier). Depend d'un allie 'Hawkeye' specifique a l'identite (Family = Trouble) absent du zip, a fournir via pack trors/hawkeye. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "lj": {
       "pack": "lockjaw",
       "libelle": "117. Custom (Lockjaw)",
       "cartes": 31,
       "depuis": "2026-08-12"
+    },
+    "ma": {
+      "pack": "ms_america",
+      "libelle": "137. Custom (Ms. America)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 3/5. America Chavez, hero+nemesis (Catalina Chavez). Presque tout existe deja (trait SUPERPOWER, branchement par icone de ressource imprimee -- cf. av007.py, compteurs). Seul point neuf : le minion nemesis copie les modificateurs de stat du joueur en substituant l'icone THW->SCH, aucune primitive de ce type trouvee. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "mf": {
       "pack": "mister_fantastic",
@@ -104,17 +202,58 @@
       "cartes": 31,
       "depuis": "2026-08-12"
     },
+    "ok": {
+      "pack": "okoye",
+      "libelle": "125. Custom (Okoye)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Okoye devient heroine jouable (Dora Milaje/Wakanda), hero+nemesis (Nakia). Reutilise directement le pack officiel bp (Aneka/Ayo/Okoye/Dora Milaje deja codees) -- attention aux collisions de noms de cartes entre les deux versions. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
+    "pt": {
+      "pack": "patriot",
+      "libelle": "138. Custom (Patriot)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 3/5. Eli Bradley, hero+nemesis (Mr. Hyde), trait Young Avenger (nouveau, alter-ego 'any aspect' deja existant sinon). Deux cartes neuves sans precedent : deplacement d'attachment entre personnages avec texte neutralise (Commandeer) et echange de valeurs ATK/THW (Commander's Orders). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "ra": {
       "pack": "rainy",
       "libelle": "99. Custom (Rainy)",
       "cartes": 20,
       "depuis": "2026-08-12"
     },
+    "rg": {
+      "pack": "red_guardian",
+      "libelle": "121. Custom (Red Guardian)",
+      "cartes": 18,
+      "depuis": "2026-08-29"
+    },
+    "sd": {
+      "pack": "speed",
+      "libelle": "141. Custom (Speed)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 4/5. Thomas Shepherd (speedster, Young Avengers), hero+nemesis. Compteurs 'explosifs' EXISTANTS (framework generique deja utilise par aos/baron_zemo, maria_hill, modok), mais la ressource dediee eclair (5e type de ressource, utilisee sur 5 des 15 cartes) n'a aucun equivalent : la classe Resources du moteur est figee sur R/B/Y/G. Vraie primitive moteur a creer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "sg": {
       "pack": "squirrel_girl",
       "libelle": "112. Custom (Squirrel Girl)",
       "cartes": 23,
       "depuis": "2026-08-12"
+    },
+    "si": {
+      "pack": "superior_iron_man",
+      "libelle": "126. Custom (Superior Iron Man)",
+      "cartes": 18,
+      "depuis": "2026-08-29",
+      "note": "Re-skin complet d'Iron Man/Tony Stark (comme Wolverine l'a ete pour X-23), set_name distinct de \"Iron Man\"/\"Iron Man Nemesis\" (officiels). Armure Endo-Sym permanente posee au Setup (BeginGameWithSetAside). Deux arbitrages utilisateur : Sauvetage theatral (013/014) code en 2 copies identiques d'Interruption de heros (la version francaise de la carte 014 disait a tort \"Reponse\", l'anglais original confirme Interrupt) ; Get My Body Back inflige 2 degats au joueur Tony Stark (le second \"take 1 damage\" n'a pas de cible imprimee). Mot-cle maison \"Armored 2\" (absent de tout le jeu et du materiel fourni) code carte par carte (Interrupt qui previent 2 degats a CHAQUE instance, pas juste au combat), documente dans mots-cles/armored.md. Aspect du deck : Protection (aucun aspect fourni par l'auteur)."
+    },
+    "sk": {
+      "pack": "skrull_menace",
+      "libelle": "143. Custom (Skrull Menace)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 4 scenarios, 5 vilains/nemesis jouables, systeme de Cooperation Area/victory display. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur, avant Galactic Storm car pas de nouveaux heros a stater. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "sp": {
       "pack": "spot",
@@ -129,11 +268,25 @@
       "cartes": 18,
       "depuis": "2026-08-12"
     },
+    "ss": {
+      "pack": "kaine_parker",
+      "libelle": "128. Custom (Kaine Parker / Scarlet Spider)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Kaine Parker (clone de Peter Parker), hero+nemesis (Assassins Guild). Zero primitive nouvelle (excess damage deja exploite par spdr/wsp/jj, overkill, piercing). Pack nomme 'kaine_parker' expres pour eviter toute confusion avec un futur portage Ben Reilly (autre Scarlet Spider). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "th": {
       "pack": "the_thing",
       "libelle": "105. Custom (The Thing)",
       "cartes": 18,
       "depuis": "2026-08-12"
+    },
+    "vp": {
+      "pack": "venompool",
+      "libelle": "129. Custom (Venompool)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Fusion Deadpool/Venom, hero+nemesis. Presque tout existe deja (drain, overkill, surge, tutor). Seul point neuf : mot-cle 'Plotting' (minion scheme automatiquement apres engagement), simple assemblage du hook AfterMinionEngagePlayer deja present, pas une primitive manquante. Reutiliser deadpool + vnm comme base. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "vr": {
       "pack": "venom_rainy",
@@ -141,12 +294,26 @@
       "cartes": 16,
       "depuis": "2026-08-12"
     },
+    "wc": {
+      "pack": "wiccan",
+      "libelle": "130. Custom (Wiccan)",
+      "cartes": 0,
+      "depuis": "2026-08-29",
+      "note": "RESERVE, pas encore cree. Difficulte 2/5. Billy Kaplan, hero+nemesis (Moridun). Comptage d'icones boost sur le dessus du deck de rencontre : pattern quasi identique au pack fanmade agent_13, deja code et copiable. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+    },
     "wd": {
       "pack": "web_of_deceit",
       "libelle": "120. Custom (Web of Deceit)",
       "cartes": 38,
       "depuis": "2026-08-14",
       "note": "La campagne fan-made Web of Deceit (Ripper3), 5 scenarios. Lot 1 : le scenario Shocker, les modulaires Crime Wave, Power Drain II et Bodyguard, et les cartes de mise en place de la campagne."
+    },
+    "wx": {
+      "pack": "wolverine_x23",
+      "libelle": "122. Custom (Wolverine X-23)",
+      "cartes": 13,
+      "depuis": "2026-08-29",
+      "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de \u00ab Wolverine \u00bb (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
     }
   }
 }

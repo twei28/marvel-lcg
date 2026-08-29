@@ -1005,4 +1005,83 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ag014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre CTR.",
   // rainy — Sleeper Agent (Obligation)
   'ag015': "<b><i>Donnez-la au joueur Sharon Carter.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
+  // iron_lad — Iron Lad (Hero)
+  'il001a': "<i>Destin</i> — <b>Action</b> : nommez un type de ressource et regardez les 4 cartes du dessus de votre deck. Ajoutez jusqu'à 2 cartes portant le type de ressource choisi à votre main et défaussez les autres. <i>(Limite d'une fois par round.)</i>",
+  // iron_lad — Iron Lad (AlterEgo, Nathaniel Richards)
+  'il001b': "<i>Génie inventif</i> — <b>Action</b> : réduisez le coût en ressources de la prochaine carte [[TECH]] jouée cette phase de 2. <i>(Limite d'une fois par round.)</i>",
+  // iron_lad — Stature (Ally)
+  'il002': "<b>Réponse</b> : après que Stature est entrée en jeu, soignez 1 dégât de votre identité. Vous pouvez défausser jusqu'à 3 cartes de votre deck pour soigner 1 dégât supplémentaire par carte défaussée.",
+  // iron_lad — Energy Overflow (Event)
+  'il003': "<b>Action de héros</b> : défaussez une carte [[TECH]] que vous contrôlez → infligez 6 dégâts à X ennemis en jeu, X étant égal au coût en ressources imprimé de la carte défaussée. Ces dégâts ignorent les cartes d'état Tenace.",
+  // iron_lad — Ion Blast (Event) x3
+  'il004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  'il005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  'il006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
+  // iron_lad — Seeking Solutions (Event) x2
+  'il007': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  'il008': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  // iron_lad — Vision AI (Support)
+  'il009': "<b>Action d'identité civile</b> : inclinez Vision AI → mélangez la carte du dessus de votre défausse dans votre deck. Retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Hack (Upgrade)
+  'il010': "<b>Interruption</b> <i>(contre)</i> : quand une menace serait placée sur un plan, défaussez Hack → retirez ce montant de ce plan à la place. De plus, vous pouvez défausser 5 cartes de votre deck pour retirer le même montant d'un plan différent.",
+  // iron_lad — Ion Amplifiers (Upgrade) x2
+  'il011': "Utilisations <i>(X compteurs d'ion, X étant égal au nombre de cartes [[TECH]] que vous contrôlez.)</i>\n<b>Ressource de héros</b> : inclinez Ion Amplifiers et retirez 1 compteur d'ion → générez une ressource [wild].",
+  'il012': "Utilisations <i>(X compteurs d'ion, X étant égal au nombre de cartes [[TECH]] que vous contrôlez.)</i>\n<b>Ressource de héros</b> : inclinez Ion Amplifiers et retirez 1 compteur d'ion → générez une ressource [wild].",
+  // iron_lad — Iron Lad's Boots (Upgrade)
+  'il013': "Iron Lad gagne le trait [[AERIAL]].\n<b>Réponse de héros</b> : après avoir joué un événement, inclinez Iron Lad's Boots → retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Iron Lad's Helmet (Upgrade)
+  'il014': "<b>Réponse de héros</b> : après qu'Iron Lad a utilisé un pouvoir de base, inclinez Iron Lad's Helmet → retournez la carte du dessous de votre défausse dans votre main.",
+  // iron_lad — Iron Lad's Suit (Upgrade)
+  'il015': "Vous gagnez +3 points de vie.\n<b>Action de héros</b> : inclinez Iron Lad's Suit → redressez Iron Lad.",
+  // iron_lad — Neurokinetic Interface (Upgrade)
+  'il016': "<b>Réponse de héros</b> : après avoir révélé une carte de rencontre, inclinez Neurokinetic Interface → si cette carte était :\n• Une traîtrise ou un sbire, infligez 2 dégâts à un ennemi.\n• Un plan secondaire ou une pièce jointe, retirez 2 menaces d'un plan.",
+  // iron_lad — Shadow of the Future (Obligation)
+  'il017': "<b><i>Donnez-la au joueur Nathaniel Richards.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Retirez les 3 cartes du dessus de votre deck de la partie → retirez Shadow of the Future de la partie.\n• Défaussez 1 carte [[TECH]] que vous contrôlez. Défaussez 3 cartes de votre deck. Défaussez cette obligation.",
+  // iron_lad — Early Start (SideScheme, nemesis)
+  'il018': "<b>Une fois révélée</b> : inclinez chaque amélioration Iron Lad en jeu.\nTant que ce plan est en jeu, les améliorations Iron Lad ne peuvent pas être redressées.",
+  // iron_lad — Kang the Conqueror (Minion, nemesis)
+  'il019': "Robustesse. Vilenie.\n<b>Une fois révélée</b> : placez l'amélioration Iron Lad au coût le plus élevé en jeu sous Kang the Conqueror.\n<b>Quand vaincu</b> : renvoyez l'amélioration placée ici dans la main de son propriétaire. Mettez Kang the Conqueror de côté.",
+  // iron_lad — Taking Responsability (Obligation, nemesis)
+  'il020': "<b>Réponse Obligatoire</b> : après que vous avez attaqué ou contré, défaussez la carte du dessus de votre deck.\n<b>Action</b> : retirez la carte du dessus de votre deck de la partie → défaussez cette obligation.",
+  // iron_lad — Pay the Price (Treachery, nemesis) x2
+  'il021': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
+  'il022': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
+  // iron_lad — Sudden Plan Change (Event, Basic, Team-Up)
+  'il023': "Team-Up (Stature et Iron Lad). Maximum 1 par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
+  // superior_iron_man — Superior Iron Man (Hero)
+  'si001a': "<i>« Quoi les autres ? »</i> — <b>Ressource</b> : infligez 1 dégât à un personnage ami → générez une ressource [wild]. <i>(Limite d'une fois par phase.)</i>",
+  // superior_iron_man — Tony Stark (AlterEgo)
+  'si001b': "<b>Mise en place</b> : trouvez l'Armure Endo-Sym et mettez-la en jeu.\n<i>O.P.A.</i> — <b>Action</b> <i>(contre)</i> : dépensez X ressources [mental] (minimum 1) → retirez 1 + X menace d'une manigance. <i>(Limite d'une fois par phase.)</i>",
+  // superior_iron_man — Endo-Sym Armor (Upgrade)
+  'si002': "Permanent. Mise en place.\n<b>Action de héros</b> <i>(attaque)</i> : dépensez X ressources [physical] (minimum 1) → infligez 2 + X dégâts à un ennemi. <i>(Limite d'une fois par phase.)</i>\n<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts, dépensez X ressources [energy] (minimum 1) → prévenez 1 + X de ces dégâts. <i>(Limite d'une fois par phase.)</i>",
+  // superior_iron_man — Teen Abomination (Jammy) (Ally)
+  'si003': "Teen Abomination entre en jeu avec 4 jetons Rage sur lui.\n<b>Réponse Obligatoire</b> : après que Teen Abomination a fait une attaque de base, retirez-lui 1 jeton Rage.\n[star] Teen Abomination gagne +1 ATQ pour chaque jeton Rage sur lui.",
+  // superior_iron_man — Daniel Hall (Support)
+  'si004': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Daniel Hall et inclinez-le → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Daniel Hall, choisissez une carte de votre main et défaussez-la.",
+  // superior_iron_man — Claire Mooney (Support)
+  'si005': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Claire Mooney et inclinez-la → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Claire Mooney, choisissez une carte de votre main et défaussez-la.",
+  // superior_iron_man — Mason Thomas (Support)
+  'si006': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Mason Thomas et inclinez-le → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Mason Thomas, choisissez une carte de votre main et défaussez-la.",
+  // superior_iron_man — Pepper Potts (Support)
+  'si007': "<b>Action</b> : inclinez Pepper Potts → retirez 1 menace d'une manigance en ignorant son icône de crise.",
+  // superior_iron_man — Stark Island (Support)
+  'si008': "<b>Action d'alter ego</b> : inclinez Stark Island → recherchez dans votre deck et dans votre pile de défausse un soutien [[Individual]] et mettez-le en jeu sous votre contrôle en payant son coût. Mélangez votre deck.",
+  // superior_iron_man — Iron Sight (Support)
+  'si009': "Utilisation (2 [per_hero] jetons Observation).\n<b>Interruption</b> : quand une carte de boost est retournée face visible lors d'une activation, retirez 1 jeton Observation d'Iron Sight et inclinez-la → annulez les icônes de boost de cette carte.",
+  // superior_iron_man — Endo-Sym Spare (Upgrade)
+  'si010': "<b>Action d'alter ego</b> : inclinez Réserve Endo-Sym → recherchez dans votre pile de défausse une carte ressource Matière Endo-Sym et mélangez-la dans votre deck.",
+  // superior_iron_man — Spectacular Blast (Event)
+  'si011': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 3 dégâts à un ennemi. Retirez 2 menaces d'une manigance.",
+  // superior_iron_man — Spectacular Save (Event)
+  'si012': "<b>Interruption de héros</b> <i>(contre/défense)</i> : quand un personnage ami est censé subir n'importe quelle quantité de dégâts, prévenez 3 de ces dégâts. Retirez 1 menace d'une manigance.",
+  // superior_iron_man — Endo-Sym Matter (Resource)
+  'si013': "Doublez le nombre de ressources générées par cette carte lorsque vous payez pour les cartes spécifiques à votre identité (y compris pour le coût des capacités sur ces cartes).",
+  // superior_iron_man — Alone (Obligation)
+  'si014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Inclinez Tony Stark → retirez Alone de la partie.\n• Dépensez 3 ressources de n'importe quel type. Si vous ne le pouvez pas, cette carte gagne renfort. Défaussez cette obligation.",
+  // superior_iron_man — Massive Attack (SideScheme)
+  'si015': "Entrave 2.\n<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark.\n[star] <b>Boost</b> : mettez Massive Attack en jeu.",
+  // superior_iron_man — Tony Stark A.I. (Minion)
+  'si016': "Armure 2. Garde. Patrouille.\n<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark.\n[star] Infligez 1 dégât au joueur Tony Stark.",
+  // superior_iron_man — Get My Body Back (Treachery)
+  'si017': "<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark, puis infligez-lui 1 dégât supplémentaire.",
 }

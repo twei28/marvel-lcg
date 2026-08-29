@@ -8,7 +8,10 @@ def GetAbilities() -> Sequence['Ability']:
             this.DealDamage(targets, 1, effect)
         def gain_aerial(targets: Sequence['CardFace']):
             identity = initiator.GetIdentity()
-            identity.GainTraitsUntilEndOfRound(['AERIAL'], effect)
+            # CORRECTIF : `GainTraitsUntilEndOfRound` n'existe pas. Le moteur
+            # expose `GainUntilRoundEnd(by_effect, trait=...)`. L'option
+            # « gagne AERIAL » plantait donc a chaque choix, silencieusement.
+            identity.GainUntilRoundEnd(effect, trait=['AERIAL'])
         initiator.ChooseAbilities(effect,
             AbilityFactory.ForChoiceAbility('Deal 1 damage to an enemy', deal_damage).SetTarget(Enemy),
             AbilityFactory.ForChoiceAbility('Daredevil gains the AERIAL trait until the end of the round', gain_aerial))

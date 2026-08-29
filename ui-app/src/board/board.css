@@ -977,6 +977,50 @@
     gap: 4px;
   }
 
+  /* --- L'option qui NOMME une carte ----------------------------------------
+     Le moteur ne sait proposer qu'un nom quand il fait choisir entre des cartes
+     absentes de la table (fouiller son deck, par exemple). Un nom seul ne dit
+     pas ce que fait la carte. On pose donc son scan au-dessus du bouton :
+     assez grand pour la RECONNAITRE, jamais assez pour la lire — c'est
+     l'agrandissement au survol (.carte-apercu) qui la donne a lire. */
+  .af-action-wrap.a-vignette {
+    gap: 6px;
+  }
+
+  .dc-vignette {
+    /* Le panneau parent laisse passer la souris vers la table
+       (pointer-events: none) : la vignette doit la reprendre, sinon elle n'est
+       ni cliquable ni survolable. */
+    pointer-events: auto;
+    display: block;
+  }
+
+  .dc-vignette .scan-card {
+    --card-w: 104px;
+    /* Pas d'agrandissement SUR PLACE : il recouvrirait les options voisines,
+       et l'apercu lateral fait deja ce travail, en mieux (texte francais). */
+    --inspect-scale: 1;
+    cursor: pointer;
+  }
+
+  /* La vignette et le bouton sont une seule et meme cible : survoler l'un
+     eclaire l'autre. */
+  .af-action-wrap.a-vignette:hover .af-action {
+    filter: brightness(1.08);
+  }
+
+  .af-action-wrap.a-vignette .af-action {
+    font-size: 0.98rem;
+    min-height: 40px;
+    padding-block: 7px;
+  }
+
+  @media (max-width: 560px) {
+    .dc-vignette .scan-card {
+      --card-w: 84px;
+    }
+  }
+
   .af-action,
   .assistant-simple-action {
     max-width: 240px;

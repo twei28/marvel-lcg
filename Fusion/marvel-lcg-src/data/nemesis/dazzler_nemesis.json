@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Dazzler Nemesis",
+    "encounters": [
+        "dz020",
+        "dz021",
+        "dz022",
+        "dz022",
+        "dz023"
+    ]
+}

@@ -10,6 +10,12 @@ import { DICO_EN_BASE } from "/public/js/prepare/dico-en.js";
 
 const CLE_LANGUE = "marvel-langue";
 
+/** Réglage « Scans en français » du PLATEAU (ui-app/src/board/scans-fr.ts).
+ *  Le wizard, lui, suit langueActuelle() directement (scans-fr.js) ; cette clé
+ *  n'est écrite ici que pour que le plateau parte dans la même langue. Elle est
+ *  posée en clair plutôt qu'importée : scans-fr.js importe déjà ce module. */
+const CLE_SCANS_FR_PLATEAU = "marvel-board-scans-fr";
+
 export function langueActuelle() {
     try {
         return localStorage.getItem(CLE_LANGUE) === "en" ? "en" : "fr";
@@ -41,6 +47,12 @@ export async function basculerLangue() {
     try {
         localStorage.setItem(CLE_LANGUE, nouvelle);
     } catch (e) { /* stockage indisponible : la bascule serveur reste utile */ }
+    // Les IMAGES des cartes du plateau suivent aussi : elles ont leur propre
+    // réglage (« Scans en français », menu Options du plateau), et le laisser en
+    // arrière donnait une interface anglaise sur un plateau français.
+    try {
+        localStorage.setItem(CLE_SCANS_FR_PLATEAU, nouvelle === "fr" ? "on" : "off");
+    } catch (e) { /* préférence non critique */ }
     try {
         await fetch("/set_language?" + nouvelle);
     } catch (e) { /* hors ligne : le client bascule quand même */ }

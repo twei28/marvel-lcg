@@ -635,6 +635,41 @@ class PlayerAction:
             # self.ChooseEffects([effect], )
         return False
 
+    # CORRECTIF (pack custom superior_iron_man, Merlin) : `PlayAnAlly` ne fait
+    # rien de specifique aux allies dans son corps (`face.card`, `face.effect`,
+    # `face.Play` sont generiques a toute carte jouable, `CardPlayer.Play` vit
+    # dans card_player.py, pas dans Ally) -- seul son annotation de type et son
+    # nom le restreignaient. Stark Island (si008) a besoin du meme mecanisme
+    # ("search ... and put it into play ... paying its cost") pour un Support,
+    # ce qu'aucune carte officielle ne fait (toutes les recherches similaires
+    # jouent gratuitement ou ajoutent seulement a la main). Generalisee ici
+    # plutot que dupliquee sur PlayAnAlly, pour ne rien risquer sur son
+    # comportement existant.
+    def PlayACard(self, face: 'CardFace', paying_cost: bool) -> bool:
+        from game.element.resources import Resources
+        from game.effect.rule import GameRule
+        from game.operate.faces import Faces
+
+        player = self.GetPlayer()
+
+        effects = face.effect.Find(func_name="Play")
+        for effect in effects:
+            effect.context.initiator = player
+            message = Message.WhenPlayerLikeInTurn(player, GameRule(player.GetIdentity()))
+            message.Send()
+            effect.checker.UpdateLegalTargets()
+            effect.context.targets_internal = effect.context.all_legal_targets[:effect.context.target_range[1]]
+            effect.context.bind_message = message
+            from_area = face.card.area
+            if paying_cost:
+                face.card.can_state.is_like_in_hand = True
+                self.ChooseEffects([effect], message)
+                face.card.can_state.is_like_in_hand = None
+            else:
+                Faces.MoveAllToProcessingArea([face], effect)
+                return face.Play(player, effect, message, Resources("0"), from_area, False)
+        return False
+
     def PlayOneCardLikeInTurn(self, faces: List['CardFace'],
                             by_effect: 'Effect',
                             *,

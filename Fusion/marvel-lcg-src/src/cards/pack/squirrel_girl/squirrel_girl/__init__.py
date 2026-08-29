@@ -82,6 +82,28 @@ def ADepenseUnEcureuil(effect: 'Effect') -> bool:
     return True
 
 
+def DepensePourCarteSquirrelGirl(effect: 'Effect') -> bool:
+    """L'ecureuil qu'on vient de depenser paie-t-il une carte Squirrel Girl ?
+
+    Depuis le 28/08/2026, « Squirrel Aid » paie N'IMPORTE QUELLE carte (patron
+    officiel de Reed Richards mf001b : ressource universelle, bonus reserve a
+    une famille). Ce sont les BONUS qui portent desormais la restriction :
+    Unbeatable Army, The Forager et The Gatherer ne se declenchent que si
+    l'ecureuil a servi a payer une carte du set.
+
+    Lecture SEULE, contrairement a `ADepenseUnEcureuil` : la marque doit
+    survivre pour les bonus imprimes sur les cartes elles-memes (Squirrel
+    Swarm, Recon Team, Unbeatable!), qui la consomment plus tard.
+    """
+    joueur = effect.GetInitiator()
+    if joueur is None:
+        return False
+    cle = _Cle(joueur, "DepensePour")
+    if not effect.world.store.HasKey(cle):
+        return False
+    return EstCarteSquirrelGirl(effect.world.store.GetFace(cle))
+
+
 ################################################################################
 # Le set SQUIRREL GIRL
 #
@@ -266,10 +288,15 @@ def CapaciteDepenseIdentite() -> 'Ability':
     def marquer(effect: 'Effect', message: 'Message.WhenPlayerPayingResources') -> None:
         MarquerDepensePour(message.GetToPlayer(), message.paying_card, effect)
 
+    # 28/08/2026 : plus de `for_card=FinderCarteSquirrelGirl()`. La ressource
+    # paie desormais N'IMPORTE QUELLE carte ; ce sont les bonus (Unbeatable
+    # Army, Forager, Gatherer) qui sont reserves aux cartes du set, via
+    # `DepensePourCarteSquirrelGirl`. Patron officiel : Reed Richards (mf001b).
+    # Motif : une ressource limitee a 15 cartes sur 40 restait le plus souvent
+    # inutilisable en main, ce qui rendait les ecureuils frustrants a jouer.
     return (AbilityFactory.CanGenerateResources(
                 AbilityType.Resource,
                 Resources('G'),
-                for_card=FinderCarteSquirrelGirl(),
                 conditions=[lambda effect, message: PeutDepenser(effect)],
                 ex_operation=marquer,
             )
@@ -300,17 +327,24 @@ def Ecureuil() -> List['Ability']:
 
 
 def ReponseALaDepense(operation) -> 'Ability':
-    """« Response: After you spend this Squirrel, ... »
+    """« Interrupt: When you spend this Squirrel to pay for a Squirrel Girl
+    card, ... »
 
     La depense n'est plus une capacite de l'ecureuil (voir
     `CapaciteDepenseIdentite`) : elle se lit sur son DEPART du jeu, quand la
     marque de depense le designe.
+
+    28/08/2026 : la ressource etant devenue universelle, l'effet est desormais
+    reserve aux cartes du set (choix de l'utilisateur : payer une carte
+    d'aspect ne donne QUE la ressource, aucun bonus).
     """
 
     def c_est_bien_une_depense(effect: 'Effect', message: 'Message.AfterCardLeavePlay') -> bool:
         if DiscordeEnJeu(effect):
             return False
-        return EcureuilDepense(effect) is effect.this
+        if EcureuilDepense(effect) is not effect.this:
+            return False
+        return DepensePourCarteSquirrelGirl(effect)
 
     return AbilityFactory.AfterCardLeavePlay(
         AbilityType.Response,

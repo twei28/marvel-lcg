@@ -218,8 +218,16 @@ class Ability:
             # declarer 'thwart' (The Other Guy 90110), et la partie plantait.
             # Meme jeu de labels que `HeroResponse`, restreint au thwart comme
             # pour `AlterEgoAction`.
+            # AMENDEMENT (29/08/2026) : 'attack' ajoute. La restriction au seul
+            # thwart etait une supposition ; une carte OFFICIELLE la dement.
+            # Entrapment (61024, Jessica Jones) est imprimee « Alter-Ego
+            # Response (attack) » et inflige vraiment des degats au vilain. Sans
+            # ce label, elle levait
+            # `AssertionError: label='attack' ... [61024]` et le deck
+            # jj_couverture ne montait pas. 'defense' reste exclu : aucune carte
+            # ne le prouve a ce jour.
             elif self.flags.IsType(AbilityType.AlterEgoResponse):
-                check_sub_type(['thwart'], ["Play"])
+                check_sub_type(['thwart', 'attack'], ["Play"])
             elif self.is_play:
                 check_sub_type([], ["Play"])
             elif self.when == Message.WhenCardPutIntoPlay:

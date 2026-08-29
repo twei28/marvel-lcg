@@ -1,11 +1,23 @@
 from . import *
 
 # The Forager
-# Response: After you spend The Forager, look at the top 2 cards of your deck.
-#   Discard 1 of them, or return them in any order.
+# Interrupt: When you spend The Forager to pay for a Squirrel Girl card, look
+#   at the top 2 cards of your deck. You may discard 1 of those cards. Return
+#   the remaining cards to the top of your deck in any order.
+#
+# 28/08/2026 : la ressource des ecureuils paie desormais n'importe quelle
+# carte, mais cet effet-ci reste reserve aux cartes du set (garde pose dans
+# `ReponseALaDepense`).
 #
 # Meme montage que The Gatherer (sg007) : la depense etant portee par
-# l'identite, la reponse se lit sur le depart du jeu de cet ecureuil.
+# l'identite, l'effet se lit sur le depart du jeu de cet ecureuil.
+#
+# ECART DE TEXTE ASSUME (28/08/2026) : la carte est libellee « Interrupt /
+# When », le moteur declenche sur AfterCardLeavePlay (« Response / After ») —
+# il n'existe aucun crochet « quand tu depenserais un ecureuil », la depense
+# n'etant pas une notion moteur. Sans consequence observable ici : l'effet ne
+# reference pas l'ecureuil lui-meme, il se resout une fois, au moment de la
+# depense, dans les deux lectures.
 
 def GetAbilities() -> Sequence['Ability']:
 

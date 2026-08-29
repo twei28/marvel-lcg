@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Red Guardian Nemesis",
+    "encounters": [
+        "rg013",
+        "rg014",
+        "rg015",
+        "rg016",
+        "rg017"
+    ]
+}

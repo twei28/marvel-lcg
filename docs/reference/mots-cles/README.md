@@ -50,6 +50,7 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] investigate-x.md (pack `jessica_jones`)
 - [x] setlist.md (pack `dazzler`)
 - [x] showtime.md (pack `dazzler`)
+- [x] armored.md (pack `superior_iron_man`)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

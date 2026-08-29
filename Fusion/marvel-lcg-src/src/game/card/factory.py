@@ -108,7 +108,14 @@ class CardFactory:
                                                     "sr006",   # spider_man_rainy
                                                     "mk008",   # Fight or Foil (moon_knight)
                                                     "mk010",   # Where'd He Go? (moon_knight)
-                                                    "lj024"]:  # Wet Slobbering Kiss (lockjaw)
+                                                    "lj024",   # Wet Slobbering Kiss (lockjaw)
+                                                    # CORRECTIF (29/08/2026) : carte OFFICIELLE du pack
+                                                    # Jessica Jones (sorti le 21/08/2026). Elle porte
+                                                    # deux capacites de jeu DISTINCTES, une en alter-ego
+                                                    # (chercher un player side scheme) et une en heros
+                                                    # (en retirer 3 menaces). Sans cette declaration,
+                                                    # le deck jessica_jones ne montait pas.
+                                                    "61019"]:  # Strategy Session (jj)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

@@ -1,0 +1,95 @@
+// Signale en jeu (Alison Blaire, Dazzler) : « quand je cherche une chanson, il
+// me montre juste les noms, pas les cartes, je ne sais pas ce qu'elles font ».
+//
+// Le moteur n'y peut rien — `AskChooseOneText` ne transporte que du texte. Mais
+// le descripteur, lui, contient le deck en entier : la carte est LA, il ne
+// manquait que le rapprochement par le nom.
+
+import { describe, expect, it } from 'vitest'
+import { catalogueVide } from './catalogue'
+import { carteNommeeParOption, cleNomCarte, indexerCartesMondeParNom } from './option-carte'
+import type { Option } from './ask'
+import type { WorldCard } from './world'
+
+function carte(id: number, name: string, cardId: string): WorldCard {
+  return {
+    id,
+    is_ready: true,
+    // Une carte du DECK : le moteur ne la montre a personne.
+    is_face_up: false,
+    visible_for_players: [],
+    bind_object_id: 0,
+    name,
+    info: {},
+    traits: {},
+    buffs: {},
+    card_id: cardId,
+    pic_id: cardId,
+    down_card_ids: ['player'],
+    card_type: 'Event',
+    cost: 2,
+    resources: [],
+  }
+}
+
+function option(name: string, bindId = 0): Option {
+  return {
+    id: 7,
+    name,
+    bind_id: bindId,
+    bind_player_id: 0,
+    all_legal_targets: [],
+    target_num_range: [0, 0],
+    target_payment: {},
+    select_rule: '',
+    target_must_include_traits: [],
+    failure_reason: '',
+    is_search: false,
+  }
+}
+
+const CHANSONS = new Map<number, WorldCard>([
+  [61, carte(61, '"Beautiful Dreamer"', 'dz004')],
+  [62, carte(62, '"Beauty and the Beast"', 'dz003')],
+  [9, carte(9, 'Alison Blaire', 'dz001b')],
+])
+
+describe('cleNomCarte', () => {
+  it('ignore les guillemets, la casse et les espaces en trop', () => {
+    expect(cleNomCarte('  "Beautiful   Dreamer" ')).toBe(cleNomCarte('beautiful dreamer'))
+  })
+})
+
+describe('carteNommeeParOption', () => {
+  const parNom = indexerCartesMondeParNom(CHANSONS)
+
+  it('retrouve la carte du deck que l’option nomme', () => {
+    const trouvee = carteNommeeParOption(option('"Beautiful Dreamer"'), parNom, 0, catalogueVide)
+    expect(trouvee?.codeCarte).toBe('dz004')
+    expect(trouvee?.name).toBe('"Beautiful Dreamer"')
+  })
+
+  it('la montre de FACE : la question la revele deja, en texte', () => {
+    // Sans ce forcage, toScanCard rendrait le DOS du deck (visible_for_players
+    // est vide) et le joueur verrait deux dos identiques.
+    const trouvee = carteNommeeParOption(option('"Beauty and the Beast"'), parNom, 0, catalogueVide)
+    expect(trouvee?.facedown).toBeFalsy()
+    expect(trouvee?.imageUrl).toContain('dz003')
+  })
+
+  it('ne montre rien pour une option qui ne nomme aucune carte', () => {
+    expect(carteNommeeParOption(option('Cancel'), parNom, 0, catalogueVide)).toBeUndefined()
+  })
+
+  it('ne redouble pas la carte PORTEUSE de l’option', () => {
+    // Elle est deja sur la table, et son nom est deja sous le bouton.
+    expect(carteNommeeParOption(option('Alison Blaire', 9), parNom, 0, catalogueVide)).toBeUndefined()
+  })
+
+  it('ignore les noms trop courts pour designer une carte', () => {
+    // « R », « B », « 2 »... : types de ressource et nombres passent par le
+    // meme AskChooseOneText que les cartes.
+    const parNomCourt = indexerCartesMondeParNom(new Map([[1, carte(1, 'R', 'x')]]))
+    expect(carteNommeeParOption(option('R'), parNomCourt, 0, catalogueVide)).toBeUndefined()
+  })
+})

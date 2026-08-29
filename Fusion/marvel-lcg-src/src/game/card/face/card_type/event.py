@@ -8,7 +8,26 @@ from cards.paper import Paper
 from game.element.damage_property import DamageProperty
 
 @final
-class Event(HasTeamUp, HasAlliance, ClassCard, FinalType):
+# CORRECTIF (29/08/2026) : `CanPlaceCounter` ajoute.
+# Un evenement ne sejourne normalement pas en jeu, il n'avait donc jamais eu
+# besoin de porter des compteurs. Le pack custom `dazzler` est le premier cas :
+# ses evenements [[SONG]] RESTENT dans la « Setlist » de Live Concert, et la
+# carte du heros dit mot pour mot « place 1 sound counter ON A SONG in the
+# Setlist ». Le compteur doit donc vivre sur la chanson, pas ailleurs.
+#
+# C'est une addition PUREMENT d'API, sans etat nouveau : le composant qui
+# stocke les compteurs (`components.counter`) est deja cree pour TOUTE carte
+# par `Card.Components.__init__` (game/card/card.py:97), et le moteur le
+# commente lui-meme : « We create all of components here for card change ».
+# Le mixin n'ouvre que l'acces (`GetCounters`, `PlaceCountersInternal`,
+# `RemoveCountersInternal`) et le rendu (`GetInfoDict` -> cle `c_<nom>`).
+#
+# LIMITE D'AFFICHAGE, mesuree et independante de ce correctif : la Setlist est
+# batie sur la `PlaceCardArea`, declaree `is_out_of_play = True`
+# (game/deck/deck_type.py:34). `GetRenderInfo` (card_face.py:369) n'emet donc
+# rien pour ces cartes, compteur compris. Le jeton EXISTE bien sur la bonne
+# carte et le journal l'annonce, mais aucun badge ne s'affiche dessus.
+class Event(HasTeamUp, HasAlliance, ClassCard, CanPlaceCounter, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)

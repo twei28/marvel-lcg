@@ -9,6 +9,7 @@ import { prefs } from "/public/js/prepare/prefs.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
+import { MECHANTS_INFO } from "/public/js/prepare/mechants-info.js";
 import { etatSalon } from "/public/js/prepare/salon-etat.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversion.js";
@@ -1110,28 +1111,57 @@ function cacherApercuHeros() {
     if (recap) recap.classList.remove("apercu");
 }
 
-function showScnHover(sc, tileEl) {
-    const box = hoverPop();
-    box.classList.remove("bare", "trio");
+/** Contenu de la fiche d'un scénario : cartes vilain, nom, bio, détails.
+ *  Servi soit dans la colonne de droite, soit dans l'infobulle. */
+function ficheVilain(sc) {
     const vcards = (sc.villainCards && sc.villainCards.length) ? sc.villainCards : [sc.tileImage].filter(Boolean);
     const multi = vcards.length > 1;
-    box.classList.toggle("wide", multi);
     const cardsEl = multi
         ? el("div", { class: "hh-row" }, ...vcards.map((id) => el("img", { class: "hh-rowcard", src: cardImageUrl(id), alt: sc.name })))
         : el("img", { class: "hh-card", src: cardImageUrl(vcards[0] || sc.tileImage), alt: sc.name });
-    box.replaceChildren(
-        cardsEl,
-        multi ? el("div", { class: "hh-rowhint" }, vcards.length + " " + t("méchants")) : null,
-        el("div", { class: "hh-name mvl" }, sc.name),
-        el("div", { class: "hh-ext" }, sc.extension.replace(/^\d+\.\s*/, "")),
-        detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
-        multi ? detailRow(t("Nombre de méchants"), String(vcards.length)) : detailRow(t("Stades du méchant"), String(sc.villains.length || "-")),
-        detailRow(t("Manigances"), String(sc.schemes.length)),
-        detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
-        detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
-        ...defiRows(sc),
-        sc.hasExpertVariant ? el("div", { class: "sd-badge" }, t("Expert disponible")) : null,
-    );
+
+    const info = MECHANTS_INFO[vcards[0]];
+    const en = langueActuelle() === "en";
+    const champ = (fr, versionEn) => (en && versionEn) || fr;
+
+    return {
+        multi,
+        elements: [
+            cardsEl,
+            multi ? el("div", { class: "hh-rowhint" }, vcards.length + " " + t("méchants")) : null,
+            el("div", { class: "hh-name mvl" }, sc.name),
+            el("div", { class: "hh-ext" }, sc.extension.replace(/^\d+\.\s*/, "")),
+            info ? el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)) : null,
+            detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
+            multi ? detailRow(t("Nombre de méchants"), String(vcards.length)) : detailRow(t("Stades du méchant"), String(sc.villains.length || "-")),
+            detailRow(t("Manigances"), String(sc.schemes.length)),
+            detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
+            detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
+            ...defiRows(sc),
+            sc.hasExpertVariant ? el("div", { class: "sd-badge" }, t("Expert disponible")) : null,
+        ],
+    };
+}
+
+function showScnHover(sc, tileEl) {
+    const { multi, elements } = ficheVilain(sc);
+
+    // Même préférence que showHeroHover : colonne de droite quand la place
+    // le permet, infobulle flottante sinon.
+    if (colonneApercuDisponible()) {
+        clearTimeout(_hideTimer);
+        const zone = document.getElementById("recap-apercu");
+        zone.replaceChildren(...elements.filter(Boolean));
+        const recap = zone.closest(".recap");
+        if (recap) recap.classList.add("apercu");
+        hideHover();
+        return;
+    }
+
+    const box = hoverPop();
+    box.classList.remove("bare", "trio");
+    box.classList.toggle("wide", multi);
+    box.replaceChildren(...elements.filter(Boolean));
     popShow(box, tileEl);
 }
 

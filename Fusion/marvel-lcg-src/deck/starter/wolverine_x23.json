@@ -1,0 +1,69 @@
+{
+    "version": "0.5.9",
+    "name": "Wolverine (X-23)",
+    "metadata": {
+        "url": "https://drive.google.com/drive/folders/15CEr-57P6_uuof1LHDh0qSMkMa-5JUqN",
+        "author": "BlueHG",
+        "note": "Re-skin de X-23. Les 16 cartes signature sont reprises telles quelles ; l'auteur ne fournit ni obligation ni set nemesis, on garde donc ceux de X-23 (43028 a 43033), qui parlent deja de Laura Kinney et de Honey Badger. Le deck joueur est celui du deck de depart X-23."
+    },
+    "hero": [
+        "wx001a,wx001b"
+    ],
+    "hero_deck": [
+        "wx003",
+        "wx004",
+        "wx004",
+        "wx005",
+        "wx005",
+        "wx005",
+        "wx006",
+        "wx006",
+        "wx007",
+        "wx008",
+        "wx009",
+        "wx010",
+        "wx011",
+        "wx012",
+        "wx012"
+    ],
+    "set_aside": [
+        "wx002"
+    ],
+    "obligations": [
+        "43028"
+    ],
+    "nemesis_set": [
+        "43029",
+        "43030",
+        "43031",
+        "43032",
+        "43033"
+    ],
+    "player_deck": [
+        "43013",
+        "43014",
+        "43015",
+        "43016",
+        "43016",
+        "43016",
+        "43017",
+        "43017",
+        "43017",
+        "43018",
+        "43019",
+        "43019",
+        "43019",
+        "43020",
+        "43020",
+        "43020",
+        "43021",
+        "43022",
+        "43023",
+        "43024",
+        "43025",
+        "43026",
+        "43027",
+        "43027",
+        "43027"
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "version": "0.5.9",
+    "name": "Superior Iron Man",
+    "metadata": {
+        "url": "",
+        "author": "Merlin",
+        "note": "Pack custom de Merlin (xb.fanmade.org), re-skin d'Iron Man/Tony Stark. Seules les 16 cartes signature + obligation + nemesis sont fournies par l'auteur : aucun aspect ni deck de 25 cartes. Aspect choisi avec l'utilisateur (29/08/2026) : Protection (coherent avec Sauvetage theatral et l'Armure Endo-Sym, tournees vers la prevention de degats). Deck = precon Protection officiel (Black Widow, Luke Cage, Counter-Punch, Get Behind Me!, The Power of Protection, Med Team, Armored Vest, Indomitable) + basiques (Emergency, First Aid, les 3 resources de type, Tenacity)."
+    },
+    "hero": [
+        "si001a,si001b"
+    ],
+    "hero_deck": [
+        "si003",
+        "si004",
+        "si005",
+        "si006",
+        "si007",
+        "si008",
+        "si009",
+        "si010",
+        "si011",
+        "si011",
+        "si011",
+        "si012",
+        "si012",
+        "si013",
+        "si013"
+    ],
+    "set_aside": [
+        "si002"
+    ],
+    "obligations": [
+        "si014"
+    ],
+    "nemesis_set": [
+        "si015",
+        "si016",
+        "si017",
+        "si017",
+        "si017"
+    ],
+    "player_deck": [
+        "01075",
+        "01076",
+        "01077",
+        "01077",
+        "01078",
+        "01078",
+        "01079",
+        "01079",
+        "01080",
+        "01080",
+        "01081",
+        "01081",
+        "01082",
+        "01082",
+        "01085",
+        "01085",
+        "01086",
+        "01086",
+        "01087",
+        "01087",
+        "01088",
+        "01089",
+        "01090",
+        "01093",
+        "01093"
+    ]
+}
