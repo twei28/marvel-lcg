@@ -1090,7 +1090,7 @@
         "encounters": [],
         "max_id": "rg017"
     },
-    "checksum": "dfc427edc187fbb242c93b5612daef9862a9e0a220de37a17b7eb5337929d127",
+    "checksum": "14b949c2475d0e62221ed41fb8de6435f6ca6e1fdcbc5de9e97f07345cbe14c1",
     "122. Custom (Wolverine X-23)": {
         "name": "wolverine_x23",
         "scenarios": [],
@@ -1135,5 +1135,14 @@
         ],
         "encounters": [],
         "max_id": "kb020"
+    },
+    "125. Custom (Okoye)": {
+        "name": "okoye",
+        "scenarios": [],
+        "heroes": [
+            "okoye"
+        ],
+        "encounters": [],
+        "max_id": "ok024"
     }
 }

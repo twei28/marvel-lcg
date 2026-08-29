@@ -1109,6 +1109,18 @@ export const HEROS_INFO = {
         apparition: "Tales of Suspense #75 (1966)",
     },
 
+    "ok001a": {
+        bio: "Générale des Dora Milaje, la garde d'élite entièrement féminine du Wakanda, Okoye a juré fidélité au trône plutôt qu'à son occupant : elle a servi loyalement T'Challa, et n'a jamais hésité à s'opposer à un roi qui trahissait son peuple. Guerrière redoutable à la sagaie, elle méprise la technologie occidentale et préfère l'entraînement martial rigoureux des Dora Milaje. Meneuse née, elle rallie ses sœurs d'armes et les jeunes héros wakandais autour d'elle avec la même discipline de fer qu'elle s'impose à elle-même.",
+        bioEn: "General of the Dora Milaje, Wakanda's all-female elite guard, Okoye has sworn loyalty to the throne rather than to whoever sits on it: she has served T'Challa faithfully, and never hesitated to stand against a king who betrayed his people. A formidable spear-fighter, she scorns western technology and trusts the rigorous martial training of the Dora Milaje instead. A born leader, she rallies her sisters-in-arms and Wakanda's young heroes around her with the same iron discipline she holds herself to.",
+        civil: "Okoye",
+        base: "Wakanda",
+        equipes: "Dora Milaje, Vengeurs",
+        equipesEn: "Dora Milaje, Avengers",
+        ennemis: "Killmonger, Klaw",
+        ennemisEn: "Killmonger, Klaw",
+        apparition: "Black Panther Vol. 4 #1 (2005)",
+    },
+
     "il001a": {
         bio: "Nathaniel Richards est un adolescent du 31ème siècle qui a découvert son destin le plus sombre : devenir Kang le Conquérant. Refusant ce futur, il a volé une armure inspirée de la technologie Vision/Avengers, remonté le temps et rejoint les Young Avengers sous le nom d'Iron Lad. Génie de la technologie autant que farouche opposé à sa propre destinée, il lutte sans relâche contre l'héritage qu'il refuse d'incarner.",
         bioEn: "Nathaniel Richards is a teenager from the 31st century who discovered his darkest possible future: becoming Kang the Conqueror. Refusing that fate, he stole an armor inspired by Vision/Avengers technology, traveled back in time, and joined the Young Avengers as Iron Lad. A technological genius as much as a fierce opponent of his own destiny, he fights relentlessly against the legacy he refuses to become.",

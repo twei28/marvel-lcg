@@ -77617,7 +77617,7 @@
             "custom": "Kajislav"
         }
     ],
-    "checksum": "58c73c667f32d949b9409a7229e9016bf9890f81857ced7aee8478c4a05e6e02",
+    "checksum": "0dcbfba25782b444b340840022666fc5ae62be9e3432bb661004ba5f8100a31a",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -79601,6 +79601,457 @@
             "set_name": "Kate Bishop Nemesis",
             "text": "<b>When Revealed</b>: Take 1 damage. Then, take 1 indirect damage for each friendly character you control.\n[star] <b>Boost</b>: Reveal this card.",
             "custom": "CptScorp"
+        }
+    ],
+    "okoye": [
+        {
+            "card_id": "ok001a",
+            "type": "Hero",
+            "name": "* Okoye",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "<i>The Art of War</i> \u2014 <b>Response</b>: After you make a basic attack or basic thwart, [[DORA MILAJE]] allies you control take 1 less consequential damage when performing the same basic power until the end of the phase. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok001b",
+            "type": "AlterEgo",
+            "name": "* Okoye",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "SOLDIER",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "<i>Vanguard Leader</i> \u2014 <b>Setup</b>: Search your deck and discard pile for a [[REINFORCEMENTS]] card and add it to your hand. <i>(Shuffle.)</i>\n<i>Marshalling Forces</i> \u2014 <b>Action</b>: Shuffle a [[REINFORCEMENTS]] card from your discard pile into your deck. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok002",
+            "type": "Ally",
+            "name": "* Aneka",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2",
+                "THW": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Response</b>: After Aneka enters play, all other [[DORA MILAJE]] allies you control get +1 ATK until the end of the phase.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok003",
+            "type": "Ally",
+            "name": "* Ayo",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "1",
+                "THW": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Response</b>: After Ayo enters play, all other [[DORA MILAJE]] allies you control get +1 THW until the end of the phase.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok004",
+            "type": "Event",
+            "name": "Adored Ones",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "REINFORCEMENTS"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b>: Choose one:\n\u2022 Create 2 Dora Milaje allies and put them into play.\n\u2022 Search your deck and discard pile for Aneka or Ayo and put her into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok005",
+            "type": "Event",
+            "name": "Adored Ones",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "REINFORCEMENTS"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b>: Choose one:\n\u2022 Create 2 Dora Milaje allies and put them into play.\n\u2022 Search your deck and discard pile for Aneka or Ayo and put her into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok006",
+            "type": "Event",
+            "name": "Angelic Warfare",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "REINFORCEMENTS"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b>: Create 2 Midnight Angel allies and put them into play.\n<b>Hero Action</b>: Ready Okoye and give up to 3 allies a tough status card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok007",
+            "type": "Event",
+            "name": "Angelic Warfare",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "REINFORCEMENTS"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b>: Create 2 Midnight Angel allies and put them into play.\n<b>Hero Action</b>: Ready Okoye and give up to 3 allies a tough status card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok008",
+            "type": "Event",
+            "name": "Spear Thrust",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "TACTIC"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. You may exhaust up to 3 [[DORA MILAJE]] characters you control to deal a total of X damage divided among enemies as you choose, where X is the number of allies exhausted as part of this effect.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok009",
+            "type": "Event",
+            "name": "Spear Thrust",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "TACTIC"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. You may exhaust up to 3 [[DORA MILAJE]] characters you control to deal a total of X damage divided among enemies as you choose, where X is the number of allies exhausted as part of this effect.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok010",
+            "type": "Support",
+            "name": "Close Ranks",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Okoye",
+            "text": "<b>Response</b>: After a [[DORA MILAJE]] ally you control is defeated, place 1 phalanx counter here <i>(to a maximum of 3)</i>.\n<b>Resource</b>: Exhaust Close Ranks and remove any number of phalanx counters here \u2192 generate that many [physical] resources.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok011",
+            "type": "Support",
+            "name": "* Upanga",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "Each [[DORA MILAJE]] ally you control gets +1 hit point.\n<b>Alter-Ego Action</b>: Exhaust Upanga \u2192 shuffle 1 [[ARMOR]], [[TECH]], or [[WEAPON]] card from your discard pile into your deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok012",
+            "type": "Upgrade",
+            "name": "Midnight Angel Armor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Okoye",
+            "text": "Attach to a friendly [[DORA MILAJE]] character. Max 1 per character.\nAttached character gets +2 hit points, gains the [[AERIAL]] trait, and loses the fragile keyword.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok013",
+            "type": "Upgrade",
+            "name": "Midnight Angel Armor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Okoye",
+            "text": "Attach to a friendly [[DORA MILAJE]] character. Max 1 per character.\nAttached character gets +2 hit points, gains the [[AERIAL]] trait, and loses the fragile keyword.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok014",
+            "type": "Upgrade",
+            "name": "* Royal Protector",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TITLE"
+            ],
+            "set_name": "Okoye",
+            "text": "Increase your ally limit by 1. Okoye gets +1 THW while in hero form.\n<b>Hero Response</b>: After a [[WAKANDA]] ally is defeated, exhaust Royal Protector \u2192 ready Okoye.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok015",
+            "type": "Upgrade",
+            "name": "Vibranium Spear",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Restricted": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "set_name": "Okoye",
+            "text": "Attach to a friendly [[WAKANDA]] character.\nRestricted. Max 1 per character.\nAttached character gets +1 ATK <i>(+2 ATK instead if attached to an ally)</i> and its basic attacks gain piercing.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok016",
+            "type": "Upgrade",
+            "name": "Vibranium Spear",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Restricted": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "set_name": "Okoye",
+            "text": "Attach to a friendly [[WAKANDA]] character.\nRestricted. Max 1 per character.\nAttached character gets +1 ATK <i>(+2 ATK instead if attached to an ally)</i> and its basic attacks gain piercing.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok017",
+            "type": "Ally",
+            "name": "Dora Milaje",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "HP": "2",
+                "ATK": "1",
+                "THW": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nLegion. <i>(2 allies with the legion keyword count as 1 ally toward your ally limit.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok018",
+            "type": "Ally",
+            "name": "Midnight Angel",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "HP": "3",
+                "ATK": "2",
+                "THW": "2",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AERIAL",
+                "DORA MILAJE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye",
+            "text": "Fragile. <i>(Attacks against this character gain overkill.)</i>\nLegion. <i>(2 allies with the legion keyword count as 1 ally toward your ally limit.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok019",
+            "type": "Obligation",
+            "name": "Funeral Rites",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Okoye"
+            },
+            "traits": [],
+            "set_name": "Okoye",
+            "text": "<b><i>Give to the Okoye player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust your alter ego and all [[DORA MILAJE]] allies you control \u2192 remove Funeral Rites from the game.\n\u2022 Exhaust 3 [[DORA MILAJE]] allies you control. If no ally was exhausted this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok020",
+            "type": "SideScheme",
+            "name": "Malevolent Mimic",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3"
+            },
+            "traits": [],
+            "set_name": "Okoye Nemesis",
+            "text": "<i>Nakia has coopted a Wakandan secret weapon\u2014a mimic. She's poisoned it to wreak havoc on innocent civilians!</i>\n<b>Forced Response</b>: After an ally is defeated, place 2 threat here.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok021",
+            "type": "Minion",
+            "name": "* Malice",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "3",
+                "ATK": "1",
+                "Boost": "2",
+                "Steady": "1",
+                "Nemesis": "Okoye"
+            },
+            "traits": [
+                "DORA MILAJE",
+                "ELITE",
+                "WAKANDA"
+            ],
+            "set_name": "Okoye Nemesis",
+            "text": "Steady.\n<b>Forced Response</b>: After an ally is defeated, Malice schemes.\n<i>(Okoye's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok022",
+            "type": "Minion",
+            "name": "* Mimic-27",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "1",
+                "ATK": "0",
+                "Boost": "2"
+            },
+            "traits": [
+                "WAKANDA"
+            ],
+            "set_name": "Okoye Nemesis",
+            "text": "X is equal to your ATK <i>(X is equal to 0 instead if you are in alter-ego form)</i>.\n<b>Forced Interrupt</b>: When Mimic-27 attacks, you must choose an ally to defend against her attack, if able.\n<b>Forced Response</b>: After Mimic-27 attacks and defeats a character, she attacks again. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok023",
+            "type": "Treachery",
+            "name": "War Drumming",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Okoye Nemesis",
+            "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: Choose a minion in play. That minion attacks you. If the attacking enemy's ATK is 2 or less, it gains villainous for this attack. If its ATK is 3 or more, it gains overkill for this attack. If there are no minions in play, this card gains surge.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ok024",
+            "type": "Treachery",
+            "name": "War Drumming",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Okoye Nemesis",
+            "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: Choose a minion in play. That minion attacks you. If the attacking enemy's ATK is 2 or less, it gains villainous for this attack. If its ATK is 3 or more, it gains overkill for this attack. If there are no minions in play, this card gains surge.",
+            "custom": "Arnaud"
         }
     ]
 }

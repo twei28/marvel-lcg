@@ -51,6 +51,9 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] setlist.md (pack `dazzler`)
 - [x] showtime.md (pack `dazzler`)
 - [x] armored.md (pack `superior_iron_man`)
+- [x] fragile.md (pack `okoye`, déjà défini une première fois dans le pack
+      `determination` — même mécanisme, réutilisé ici)
+- [x] legion.md (pack `okoye`)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

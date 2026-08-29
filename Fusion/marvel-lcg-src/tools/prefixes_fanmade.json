@@ -204,9 +204,8 @@
     "ok": {
       "pack": "okoye",
       "libelle": "125. Custom (Okoye)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Okoye devient heroine jouable (Dora Milaje/Wakanda), hero+nemesis (Nakia). Reutilise directement le pack officiel bp (Aneka/Ayo/Okoye/Dora Milaje deja codees) -- attention aux collisions de noms de cartes entre les deux versions. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 25,
+      "depuis": "2026-08-29"
     },
     "pt": {
       "pack": "patriot",

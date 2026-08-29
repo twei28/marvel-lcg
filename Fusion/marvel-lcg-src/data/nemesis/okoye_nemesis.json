@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Okoye Nemesis",
+    "encounters": [
+        "ok020",
+        "ok021",
+        "ok022",
+        "ok023",
+        "ok024"
+    ]
+}

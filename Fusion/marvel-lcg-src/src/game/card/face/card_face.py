@@ -191,6 +191,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # cette entree, `IsCounter('style')` echoue et la carte fait planter
         # TOUT chargement du hero_deck de Kate Bishop des la mise en place.
         'style',
+        # CORRECTIF : compteur du pack custom okoye (CptScorp). Close Ranks
+        # (ok010) place des compteurs "phalanx" (max 3) et les depense en
+        # ressources [physical] via son pouvoir de ressource.
+        'phalanx',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

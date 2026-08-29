@@ -1005,6 +1005,52 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ag014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre CTR.",
   // rainy — Sleeper Agent (Obligation)
   'ag015': "<b><i>Donnez-la au joueur Sharon Carter.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
+
+  // okoye — Okoye (Hero)
+  'ok001a': "<i>L'Art de la guerre</i> — <b>Réponse</b> : après avoir effectué une attaque de base ou un contre de base, les alliés [[DORA MILAJE]] que vous contrôlez subissent 1 dégât consécutif de moins lorsqu'ils effectuent le même pouvoir de base jusqu'à la fin de la phase. <i>(Limite d'une fois par round.)</i>",
+  // okoye — Okoye (AlterEgo)
+  'ok001b': "<i>Meneuse de l'avant-garde</i> — <b>Mise en place</b> : cherchez une carte [[REINFORCEMENTS]] dans votre deck et votre pile de défausse, et ajoutez-la à votre main. <i>(Mélangez.)</i>\n<i>Rassemblement des forces</i> — <b>Action</b> : mélangez une carte [[REINFORCEMENTS]] de votre pile de défausse dans votre deck. <i>(Limite d'une fois par round.)</i>",
+  // okoye — Aneka (Ally)
+  'ok002': "<b>Réponse</b> : après qu'Aneka est entrée en jeu, tous les autres alliés [[DORA MILAJE]] que vous contrôlez gagnent +1 ATQ jusqu'à la fin de la phase.",
+  // okoye — Ayo (Ally)
+  'ok003': "<b>Réponse</b> : après qu'Ayo est entrée en jeu, tous les autres alliés [[DORA MILAJE]] que vous contrôlez gagnent +1 CTR jusqu'à la fin de la phase.",
+  // okoye — Adored Ones (Event) x2
+  'ok004': "<b>Action de héros</b> : choisissez une option :\n• Créez 2 alliés Dora Milaje et mettez-les en jeu.\n• Cherchez Aneka ou Ayo dans votre deck et votre pile de défausse, et mettez-la en jeu.",
+  'ok005': "<b>Action de héros</b> : choisissez une option :\n• Créez 2 alliés Dora Milaje et mettez-les en jeu.\n• Cherchez Aneka ou Ayo dans votre deck et votre pile de défausse, et mettez-la en jeu.",
+  // okoye — Angelic Warfare (Event) x2
+  'ok006': "<b>Action de héros</b> : créez 2 alliés Midnight Angel et mettez-les en jeu.\n<b>Action de héros</b> : redressez Okoye et donnez à jusqu'à 3 alliés une carte d'état Tenace.",
+  'ok007': "<b>Action de héros</b> : créez 2 alliés Midnight Angel et mettez-les en jeu.\n<b>Action de héros</b> : redressez Okoye et donnez à jusqu'à 3 alliés une carte d'état Tenace.",
+  // okoye — Spear Thrust (Event) x2
+  'ok008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Vous pouvez incliner jusqu'à 3 personnages [[DORA MILAJE]] que vous contrôlez pour infliger un total de X dégâts répartis entre des ennemis comme vous le souhaitez, X étant le nombre d'alliés inclinés dans le cadre de cet effet.",
+  'ok009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Vous pouvez incliner jusqu'à 3 personnages [[DORA MILAJE]] que vous contrôlez pour infliger un total de X dégâts répartis entre des ennemis comme vous le souhaitez, X étant le nombre d'alliés inclinés dans le cadre de cet effet.",
+  // okoye — Close Ranks (Support)
+  'ok010': "<b>Réponse</b> : après qu'un allié [[DORA MILAJE]] que vous contrôlez a été mis K.O., placez 1 compteur de phalange ici <i>(jusqu'à un maximum de 3)</i>.\n<b>Ressource</b> : inclinez Close Ranks et retirez n'importe quel nombre de compteurs de phalange ici → générez autant de ressources [physical].",
+  // okoye — Upanga (Support)
+  'ok011': "Chaque allié [[DORA MILAJE]] que vous contrôlez gagne +1 point de vie.\n<b>Action d'identité civile</b> : inclinez Upanga → mélangez 1 carte [[ARMOR]], [[TECH]] ou [[WEAPON]] de votre pile de défausse dans votre deck.",
+  // okoye — Midnight Angel Armor (Upgrade) x2
+  'ok012': "Attachez-la à un personnage [[DORA MILAJE]] allié. Maximum 1 par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
+  'ok013': "Attachez-la à un personnage [[DORA MILAJE]] allié. Maximum 1 par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
+  // okoye — Royal Protector (Upgrade)
+  'ok014': "Votre limite d'alliés augmente de 1. Okoye gagne +1 CTR en forme de héros.\n<b>Réponse de héros</b> : après qu'un allié [[WAKANDA]] a été mis K.O., inclinez Royal Protector → redressez Okoye.",
+  // okoye — Vibranium Spear (Upgrade) x2
+  'ok015': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. Maximum 1 par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
+  'ok016': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. Maximum 1 par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
+  // okoye — Dora Milaje (jeton Created Ally)
+  'ok017': "Fragile. <i>(Les attaques contre ce personnage gagnent déferlement.)</i>\nLégion. <i>(2 alliés ayant le mot-clé légion comptent comme 1 allié pour votre limite d'alliés.)</i>",
+  // okoye — Midnight Angel (jeton Created Ally)
+  'ok018': "Fragile. <i>(Les attaques contre ce personnage gagnent déferlement.)</i>\nLégion. <i>(2 alliés ayant le mot-clé légion comptent comme 1 allié pour votre limite d'alliés.)</i>",
+  // okoye — Funeral Rites (Obligation)
+  'ok019': "<b><i>Donnez-la au joueur Okoye.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité civile et tous les alliés [[DORA MILAJE]] que vous contrôlez → retirez Funeral Rites de la partie.\n• Inclinez 3 alliés [[DORA MILAJE]] que vous contrôlez. Si aucun allié n'a été incliné de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // okoye — Malevolent Mimic (SideScheme, nemesis)
+  'ok020': "<i>Nakia a détourné une arme secrète wakandaise — un mimique. Elle l'a empoisonnée pour semer le chaos parmi les civils innocents !</i>\n<b>Réponse Obligatoire</b> : après qu'un allié a été mis K.O., placez 2 menaces ici.",
+  // okoye — Malice (Minion, nemesis)
+  'ok021': "Solide.\n<b>Réponse Obligatoire</b> : après qu'un allié a été mis K.O., Malice manigance.\n<i>(Sbire némésis d'Okoye.)</i>",
+  // okoye — Mimic-27 (Minion, nemesis)
+  'ok022': "X est égal à votre ATQ (X est égal à 0 à la place si vous êtes en forme d'identité civile).\n<b>Interruption Obligatoire</b> : quand Mimic-27 attaque, vous devez choisir un allié pour défendre contre son attaque, si possible.\n<b>Réponse Obligatoire</b> : après que Mimic-27 a attaqué et mis K.O. un personnage, elle attaque à nouveau. <i>(Limite d'une fois par round.)</i>",
+  // okoye — War Drumming (Treachery, nemesis) x2
+  'ok023': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
+  'ok024': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
+
   // iron_lad — Iron Lad (Hero)
   'il001a': "<i>Destin</i> — <b>Action</b> : nommez un type de ressource et regardez les 4 cartes du dessus de votre deck. Ajoutez jusqu'à 2 cartes portant le type de ressource choisi à votre main et défaussez les autres. <i>(Limite d'une fois par round.)</i>",
   // iron_lad — Iron Lad (AlterEgo, Nathaniel Richards)
@@ -1048,6 +1094,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'il022': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
   // iron_lad — Sudden Plan Change (Event, Basic, Team-Up)
   'il023': "Team-Up (Stature et Iron Lad). Maximum 1 par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
+
   // superior_iron_man — Superior Iron Man (Hero)
   'si001a': "<i>« Quoi les autres ? »</i> — <b>Ressource</b> : infligez 1 dégât à un personnage ami → générez une ressource [wild]. <i>(Limite d'une fois par phase.)</i>",
   // superior_iron_man — Tony Stark (AlterEgo)
