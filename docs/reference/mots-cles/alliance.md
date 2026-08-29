@@ -1,13 +1,81 @@
 # Alliance
 
-**Texte imprimé / définition** : « Alliance. » Cette carte permet à un **autre joueur** de contribuer au financement de ses coûts. Elle n'offre pas une capacité imprimée distincte, mais plutôt un accès partagé aux ressources d'autres joueurs.
+**Texte imprimé / définition** : « Alliance. *(The players can pay this card's
+costs as a group.)* » Les joueurs peuvent financer le coût de la carte
+collectivement, chacun depuis sa propre main. Le mot-clé ne fait que cela : il
+ouvre le paiement, il ne dit rien de l'effet, qui reste celui du texte imprimé
+en dessous.
 
-**Mécanisme moteur** : Pas de clé `desc.Alliance` simple. Le mécanisme passe par le hook `CheckAnyPlayerMayHelpPay()` dans `game/ability/factory/resources.py`, qui autorise un autre joueur à financer un coût si une condition est remplie. **Deux implémentations principales** : (a) **Coordinated Effort** (58032), une amélioration : tant qu'elle est attachée à une carte, tout joueur peut aider à payer les coûts de cette carte (implémentation du texte imprimé : « Any player may spend resources from their hand as if they were attached to your identity »). (b) **Forces Combined** (cd003, pack `cloak_dagger`) : une autorisation permanente qui s'incline après usage, permettant aux deux identités liées (Cloak et Dagger) de puiser dans leurs deux mains respectives (voir la note Variantes maison).
+**Mécanisme moteur** : clé `desc.Alliance` sur la carte, lue nativement par le
+moteur, exactement comme Toughness, Guard, Patrol ou Retaliate. `HasAlliance`
+(`src/game/card/face/attribute/has_alliance.py`) enregistre l'attribut
+`Alliance` -> `alliance` en **booléen** ; il est mêlé au type `Event`
+(`src/game/card/face/card_type/event.py` : `class Event(HasTeamUp, HasAlliance,
+ClassCard, FinalType)`), donc réservé aux événements. Le drapeau est consulté à
+deux endroits :
 
-**Carte exemple** : `58032` : Coordinated Effort (aucune clé `desc.Alliance`), la capacité est gérée par le moteur via la fonction `CheckAnyPlayerMayHelpPay()`. Le script `58032.py` existe et code une restriction d'attachement (« This upgrade can be played on Encounter cards »), pas le mécanisme Alliance lui-même : c'est le hook du moteur qui gère l'accès partagé aux ressources d'autres joueurs.
+- `src/game/ability/factory/resources.py` (deux occurrences, dans les contrôles
+  de paiement) : `if Event.IsType(message.paying_for_effect.this): if
+  message.paying_for_effect.this.alliance: return True` ;
+- `src/game/event/manager.py` : sur un `Message.WhenPlayerPayingResources`, le
+  joueur à contrôler devient `message.to_player` quand l'événement payé porte
+  `alliance`.
 
-**Pièges connus** : Alliance ne s'applique qu'au **financement des coûts**, jamais aux autres mécaniques (dégâts, menace, etc.). L'autre joueur peut contribuer à payer le coût, mais n'a pas le contrôle de l'effet produit. Le propriétaire de la carte décide toujours comment l'utiliser. Si une future carte cumule Alliance avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mécanisme Alliance lui-même.
+**Aucun script requis** pour le mot-clé lui-même : c'est une des « bases
+automatiques » du guide.
 
-**Variantes maison** : **Forces Combined** (cd003, pack `cloak_dagger`) : une **autorisation** permanente qui utilise le même hook `CheckAnyPlayerMayHelpPay` mais l'étend aux deux identités liées (Cloak et Dagger). Tant que la carte est en jeu et prête, elle permet aux deux mains de contribuer au financement, ce qui reflète l'idée qu'elles contrôlent conjointement un pouvoir (« you may spend resources from both of your hands »). Le script cd003.py gère l'inclinaison qui ferme temporairement cet accès partagé après chaque utilisation effectif d'une ressource venue de l'autre main.
+**Carte exemple** : `25036` : Cosmic Alliance, pack `valk` (`desc` contient
+`"Alliance": "1"`), lu directement depuis `desc`. Un fichier `25036.py` existe
+bien, mais il ne code que la **Hero Action** imprimée (« Choose an AVENGER
+character and a GUARDIAN character → ready each of those characters », via
+`AbilityFactory.WhenInYourPlayTurn` + `Faces.ReadyAll`), jamais le mot-clé.
+Même schéma pour `26035` (Joining Forces, pack `vision`) et `40053` (Team
+Investigation, pack `next_evol`, dont le `.py` ne porte que le
+`RemoveThreatFromSchemes`).
 
-**Note historique** : Le brief du plan mentionnait la card_id `70003` pour Forces Combined, mais cet identifiant est périmé (ancien schéma de numérotation). La carte réelle utilise l'identifiant `cd003` du pack cloak_dagger et correspond exactement à la description du guide (section 9).
+Le catalogue compte **16 cartes** avec `desc.Alliance` (23032, 23034, 25033,
+25036, 26035, 40053, 42031, 44046, 47028, 47029, 48031, 48032, 53019, dt061,
+dt115, wd136). Seules quatre d'entre elles impriment le rappel entre
+parenthèses (`25036`, `26035`, `40053`, `42031`) ; sur les autres, « Alliance. »
+est écrit seul, sans rappel, comme le note le commentaire en tête de
+`dt061.py`. Le comportement moteur est identique dans les deux cas.
+
+**Pièges connus** :
+- Alliance ne s'applique qu'au **financement des coûts**, jamais aux autres
+  mécaniques (dégâts, menace, etc.). L'autre joueur peut contribuer à payer,
+  mais le propriétaire de la carte reste maître de l'effet.
+- Le drapeau est **booléen et réservé aux événements** (`Event` hérite de
+  `HasAlliance`). Le poser sur un autre type de carte n'aurait aucun effet.
+- **Ne pas confondre avec Coordinated Effort (`58032`, pack `wonder_man`)** :
+  cette carte ne porte PAS le mot-clé Alliance imprimé, et son `desc` n'a pas
+  de clé `Alliance`. Son texte est « Attach to an encounter card in play. Max 1
+  per encounter card. While paying costs on attached card, any player may help
+  pay those costs. » C'est un mécanisme distinct, proche dans l'esprit
+  (« laisser un autre joueur aider à payer ») mais géré par le crochet
+  `CheckAnyPlayerMayHelpPay()` de
+  `src/game/ability/factory/resources.py`, un **CORRECTIF maison** (voir §9 du
+  guide) qui teste la présence d'un attachement nommé « Coordinated Effort ».
+  Ce crochet est appelé en `or` juste après le test natif `.alliance`, ce qui
+  explique la ressemblance de comportement sans qu'il s'agisse du même
+  mot-clé. Le script `58032.py` ne code d'ailleurs que la restriction
+  d'attachement (`CanPlayThisUpgradeCard(CardFinder(card_type=EncounterCard))`).
+- Si une future carte cumule Alliance avec une capacité imprimée distincte
+  (c'est le cas des trois cartes ci-dessus), vérifier via `find` si un script
+  existe : le script devra porter uniquement cette capacité annexe, jamais le
+  mot-clé Alliance lui-même.
+
+**Variantes maison** : **Forces Combined** (`cd003`, pack `cloak_dagger`) est le
+second usager du crochet `CheckAnyPlayerMayHelpPay`, et pas du mot-clé Alliance
+(son `desc` ne contient que `Class` et `Permanent`). Son texte imprimé est
+« Interrupt: When you would spend resources on a card or ability, exhaust
+Forces Combined → you may spend resources from both of your hands for that card
+or ability. » Le crochet parcourt les cartes contrôlées et renvoie vrai dès
+qu'une carte nommée « Forces Combined » est en jeu et **prête** ; l'inclinaison
+elle-même est portée par la capacité de `cd003.py`, pas par le contrôle. C'est
+un écart documenté au §9 du guide, cohérent avec la mécanique des deux
+identités liées Cloak & Dagger (`linked_identity`).
+
+**Note historique** : le brief du plan mentionnait la card_id `70003` pour
+Forces Combined, mais cet identifiant est périmé (ancien schéma de
+numérotation). La carte réelle utilise l'identifiant `cd003` du pack
+`cloak_dagger`.
