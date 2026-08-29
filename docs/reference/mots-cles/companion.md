@@ -90,5 +90,4 @@ n'est pas une simple copie augmentée d'une capacité de dépense : elle
 ajoute aussi `AbilityFactory.UnitCannotHaveUpgradeAttached("This")` (l'allié
 ne peut pas recevoir d'amélioration), la capacité de dépense étant portée
 séparément par le reste du pack et non par `Ecureuil()` elle-même. Voir
-`squirrel.md` (à créer) pour le détail ; les deux fiches sont censées se
-renvoyer l'une à l'autre.
+`squirrel.md` pour le détail.
