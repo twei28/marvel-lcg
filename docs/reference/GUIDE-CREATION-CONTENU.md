@@ -92,7 +92,7 @@ en 1.1).
 | Decks de départ | `deck/starter/<hero>.json` (gabarit : `deck/temp/.temp_hero.json`) |
 | Scripts de capacités | `src/cards/pack/<pack>/<set>/<card_id>.py` |
 | Images des cartes | `assets/pics/<card_id>.<jpg\|png\|webp>` |
-| Biographies des héros | `public/js/prepare/heros-info.js` (voir §5.1 de PROCESSUS-HEROS.md) |
+| Biographies des héros | `public/js/prepare/heros-info.js` (voir Étape 7 de PROCESSUS-HEROS.md) |
 | Traits et compteurs du moteur | `src/game/card/face/card_face.py` (énums `TRAITS` et `COUNTER`) |
 
 Exemple concret pour un nouveau héros, pack `human_torch`. On pose `W` une

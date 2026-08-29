@@ -6,7 +6,7 @@
 
 **Carte exemple** : `jj022` : Power Couple (`desc` ne contient pas TeamUp, la condition est portée par le `.py` correspondant). Ce script gère la condition `couple_present()` qui vérifie que Jessica Jones est l'identité actuelle et que Luke Cage (son allié signature) est en jeu. Un fichier `jj022.py` existe dans `src/cards/pack` : ce script gère la capacité complète avec sa condition de présence.
 
-**Pièges connus** : **Ne pas confondre identité et allié.** La clé `desc.TeamUp` suppose **deux vraies identités héros**. Si le second héros nommé est en réalité un **allié signature** (comme Luke Cage pour Jessica Jones), la clé seule ne suffit pas : une condition de script est nécessaire pour vérifier la présence de cet allié (voir `jj022.py` et `docs/reference/GUIDE-CREATION-CONTENU.md` section 9, entrée `jessica_jones`). Certaines cartes Team-Up imposent aussi un placement spécifique (par exemple, une doit être contrôlée par un joueur, l'autre par l'autre).
+**Pièges connus** : **Ne pas confondre identité et allié.** La clé `desc.TeamUp` suppose **deux vraies identités héros**. Si le second héros nommé est en réalité un **allié signature** (comme Luke Cage pour Jessica Jones), la clé seule ne suffit pas : une condition de script est nécessaire pour vérifier la présence de cet allié (voir `jj022.py` et `docs/reference/GUIDE-CREATION-CONTENU.md` section 9, entrée `jessica_jones`).
 
 **Variantes maison** : aucune recensée pour l'instant.
 
