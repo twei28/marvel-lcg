@@ -43,8 +43,8 @@ Gabarit à copier pour chaque nouvelle fiche :
 
 ## Maison
 
-- [ ] drain-x.md (pack `agent_anti_venom`)
-- [ ] traitor.md (pack `agent_anti_venom`)
+- [x] drain-x.md (pack `agent_anti_venom`)
+- [x] traitor.md (pack `agent_anti_venom`)
 - [ ] companion.md (pack `lockjaw`)
 - [ ] squirrel.md (pack `squirrel_girl`)
 - [ ] investigate-x.md (pack `jessica_jones`)
