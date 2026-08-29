@@ -40,7 +40,8 @@ Dans `heroes` du bon pack.
 
 ## Étape 6 : Images
 
-`assets/pics/<card_id>.jpg` pour toutes les cartes (extension obligatoire).
+`assets/pics/<card_id>.jpg` pour toutes les cartes (extension obligatoire,
+voir §4 de `GUIDE-CREATION-CONTENU.md`).
 
 ## Étape 7 : Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
 
@@ -67,9 +68,12 @@ Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
 ```
 
 Règles : tout champ optionnel sauf `bio`/`bioEn` (mieux vaut omettre que
-d'inventer) ; les `*En` seulement si la traduction diffère ; viser 3-4
-phrases (panneau étroit, 314 px) ; libellés affichés via `t()` dans
-`public/js/prepare/dico-en.js`. Ne pas oublier le rsync des deux `public/`
+d'inventer ; un champ absent disparaît simplement de la fiche) ; les `*En`
+seulement si la traduction diffère (« New York » ou « Thanos » se passent
+de doublon, en anglais un `*En` absent affiche la version française) ;
+viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
+dans `public/js/prepare/dico-en.js` (voir §11 de `GUIDE-CREATION-CONTENU.md`).
+Ne pas oublier le rsync des deux `public/`
 (voir §10 de `GUIDE-CREATION-CONTENU.md`) : ce fichier vit hors du dépôt du
 moteur. Un héros sans entrée retombe silencieusement sur l'ancien affichage :
 rien ne casse, mais la fiche manque, donc **preuve obligatoire** = confirmer
