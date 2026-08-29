@@ -6590,6 +6590,371 @@ CAS = [
     # A verifier malgre tout en partie reelle : le symptome (le pilote
     # d'autoplay se bloque en reproposant O.P.A.) reste reel meme s'il n'a
     # pas viole la regle.
+
+    # ------------------------------------------------------------------------
+    # Pack « kate_bishop » : identite kb001a/kb001b, signatures kb002-kb013,
+    # obligation kb014, Team-Up kb015, set nemesis kb016-kb020.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "kb001a Hawkeye (Kate Bishop) — Master Archer : retire 2 compteurs fleche, inflige 2 degats a l'attaquant",
+        "pourquoi": ("le plafond variable (3, 5 avec Kate's Quiver) est gere a la main via "
+                     "player.DeclareNumber, jamais par CostFunc.Counter : sans `choisir_option` "
+                     "le pilote choisirait toujours 0 (reponse minimale toujours legale), et la "
+                     "carte semblerait inerte alors qu'elle marche"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.Counter('kb012', 'arrow', 3)"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "choisir_option": "2",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "compteurs": [["kb012", "arrow", 1]]},
+    },
+    {
+        "nom": "kb001b Kate Bishop — Action : cherche Kate's Bow dans le deck/defausse et le pose en jeu",
+        "pourquoi": "Search.PlayerCard doit vraiment trouver la carte et PutIntoPlay doit reussir",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('kb012')"],
+        "declencher": ["Puzzle.Action('kb001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["kb012"]},
+    },
+    {
+        "nom": "kb002 Hawkeye (Clint Barton) — Interrupt : defait par degat consequent, se remelange au deck + 1 fleche sur Kate's Bow",
+        "pourquoi": ("CORRECTIF DE DONNEES (data/cards.json) : ATK/THW etaient imprimes sans "
+                     "asterisque (« 2 »/« 1 »), donc `printed_attack_consequential_damage=0` et "
+                     "l'allie ne pouvait JAMAIS subir de degat consequent -- son propre Interrupt, "
+                     "qui reagit precisement a ce degat, etait totalement inatteignable. Corrige en "
+                     "« 2* »/« 1* » (Consequential 1 sur ATK et THW), a l'identique du modele "
+                     "imprime 01066/58013 (« * Hawkeye » officiel, ATK 1*/THW 1*)"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.PutIntoPlay('kb002', under_control=True)",
+                          "Puzzle.Damage('kb002', 1)"],
+        "declencher": ["Puzzle.Attack('kb002')"],
+        "verifier": "kb_hawkeye_ally_consequential",
+    },
+    {
+        "nom": "kb003 Evasive Shot — prevention de 4 degats + riposte egale aux compteurs fleche (plafond 5)",
+        "pourquoi": "Rhino (ATK 2) est integralement encaisse par la prevention de 4 : preuve que la prevention agit vraiment, pas juste la riposte",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.Counter('kb012', 'arrow', 3)"],
+        "main_exclusive": ["kb003", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "degats": [["01094", 3]], "defausse": ["kb003"]},
+    },
+    {
+        "nom": "kb004 Infiltrate — en forme heros : prevention de 2 menaces seulement",
+        "pourquoi": "branche « sinon » du texte (4 seulement si alter-ego) : ce cas isole la valeur EN FORME HEROS",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')", "Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["kb004", "01089"],
+        "declencher": ["Puzzle.PlaceThreat('01097b', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "defausse": ["kb004"]},
+    },
+    {
+        "nom": "kb004 Infiltrate — en forme alter-ego : prevention de 4 menaces",
+        "pourquoi": "branche « si alter-ego » du texte : sans ce second cas, la valeur 4 n'est jamais distinguee de 2",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["kb004", "01089"],
+        "declencher": ["Puzzle.PlaceThreat('01097b', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "defausse": ["kb004"]},
+    },
+    {
+        "nom": "kb005 Quick Draw — Alter-Ego Action : bascule en heros et redresse",
+        "pourquoi": "deux abilities distinctes selon la forme : ce cas isole la branche Alter-Ego (bascule + redresse)",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.Exhaust('kb001b')"],
+        "main_exclusive": ["kb005", "01090"],
+        "declencher": [],
+        "jouer": ["kb005"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "pret": ["kb001a"]},
+    },
+    {
+        "nom": "kb005 Quick Draw — Hero Action : redresse et pose 2 compteurs fleche",
+        "pourquoi": "branche Hero, distincte de la branche Alter-Ego testee a part",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.Exhaust('kb001a')"],
+        "main_exclusive": ["kb005", "01090"],
+        "declencher": [],
+        "jouer": ["kb005"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["kb001a"], "compteurs": [["kb012", "arrow", 2]]},
+    },
+    {
+        "nom": "kb006 Smoke Arrow — annule l'activation d'un ennemi, depense 1 compteur fleche, bascule en alter-ego",
+        "pourquoi": "SetBeInstead doit vraiment annuler l'attaque de Rhino (0 degat sur l'identite), pas juste s'afficher",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.Counter('kb012', 'arrow', 1)"],
+        "main_exclusive": ["kb006", "01089", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["kb012", "arrow", 0]], "degats_identite": 0, "forme": "AlterEgo"},
+    },
+    {
+        "nom": "kb007 Anchor Points — Resource : incline Anchor Points -> ressource wild pour une carte SKILL",
+        "pourquoi": "for_card=CardFinder2('SKILL') restreint le paiement : sans lui la carte ne finance rien de valide",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb007', under_control=True)"],
+        "main_exclusive": ["kb005"],
+        "declencher": [],
+        "jouer": ["kb005"],
+        "verifier": "etat_attendu",
+        # kb010 (Athletic Agility) coute 2 : injouable avec la seule ressource
+        # wild d'Anchor Points. kb005 (Quick Draw, SKILL, cout 1) tient dans
+        # la seule ressource generee -- preuve suffisante que le paiement a
+        # bien ete finance par Anchor Points (main_exclusive ne laisse aucune
+        # autre source). C'est un evenement : il part en defausse, pas en jeu.
+        "attendu": {"exhausted": ["kb007"], "defausse": ["kb005"]},
+    },
+    {
+        "nom": "kb008 Hawkeye Investigations — Response : apres prevention de menace, 1 menace retiree d'UNE AUTRE manigance",
+        "pourquoi": ("AJOUT MOTEUR (AfterThreatBePrevented) : la Response retire sa menace AVANT que "
+                     "le reste de la pose (le complot principal, deja en cours de resolution) ne "
+                     "s'applique -- cibler CE MEME complot annulerait exactement le retrait (retire 1 "
+                     "avant pose, +1 repose juste apres = aucun changement net, ce qui ne prouverait "
+                     "rien). On cible donc kb016, une AUTRE manigance deja en jeu, seule facon "
+                     "d'observer un effet net"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb008', under_control=True)",
+                          "Puzzle.PutIntoPlay('kb016')",
+                          "Puzzle.SetThreat('kb016', 2)",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["kb004", "01089"],
+        "declencher": ["Puzzle.PlaceThreat('01097b', 3)"],
+        # Le champ « name » transmis au pilote remplace les espaces par des
+        # underscores (observe via TRACE_OPTIONS : "Finding_the_Perfect_LMD").
+        "choisir_option": "Finding_the_Perfect_LMD",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1], ["kb016", 1]]},
+    },
+    {
+        "nom": "kb008 Hawkeye Investigations — Response : apres prevention de degats, 1 menace retiree",
+        "pourquoi": "second Response de la carte, declenche par une prevention de DEGATS (Evasive Shot) plutot que de menace",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb008', under_control=True)",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)"],
+        # `SetThreat` passe par `WhenSchemeWouldPlaceThreat` : lance en
+        # DECLENCHER (apres main_exclusive) pour eviter que « Great
+        # Responsibility » (01061, aspect Justice du deck de depart, cout 0)
+        # ne detourne la pose en 5 degats sur l'identite s'il traine encore en
+        # main de depart -- main_exclusive garantit une main propre avant.
+        "main_exclusive": ["kb003", "01090"],
+        "declencher": ["Puzzle.SetThreat('01097b', 5)", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "degats_identite": 0},
+    },
+    {
+        "nom": "kb009 Lucky — Alter-Ego Action : incline Lucky, soigne 2 degats, pose 1 compteur fleche",
+        "pourquoi": "cout d'inclinaison + double consequence (soin + compteur) sur la meme resolution",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.Damage('kb001b', 3)",
+                          "Puzzle.PutIntoPlay('kb009', under_control=True)",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)"],
+        "declencher": ["Puzzle.Action('kb009', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "compteurs": [["kb012", "arrow", 1]], "exhausted": ["kb009"]},
+    },
+    {
+        "nom": "kb010 Athletic Agility — Agile 1 reduit un coup non defendu, puis riposte 1 degat",
+        "pourquoi": ("reduction ET riposte sur la MEME attaque NON DEFENDUE, deux volets du texte "
+                     "imprime. `Puzzle.Exhaust('kb001a')` AVANT l'attaque : incline, Kate ne peut "
+                     "plus se declarer elle-meme defenseuse (seul personnage en solo), ce qui rend "
+                     "l'attaque reellement non defendue -- sans cela le pilote la declare "
+                     "defenseuse par defaut (DEF imprimee 1 appliquee), et `while_defending=False` "
+                     "ne s'active jamais"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')", "Puzzle.PutIntoPlay('kb010', under_control=True)",
+                          "Puzzle.Exhaust('kb001a')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "kb011 Kate's Aviators — Hero Action : incline + retire 1 compteur style -> pioche 1 carte",
+        "pourquoi": "Uses (2 compteurs a l'entree en jeu) + double cout (inclinaison ET compteur) + pioche reelle",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb011', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('35013')"],
+        "declencher": ["Puzzle.Action('kb011', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["kb011"], "compteurs": [["kb011", "style", 1]], "en_main": ["35013"]},
+    },
+    {
+        "nom": "kb012 Kate's Bow — les attaques de base gagnent ranged : Retaliate de l'ennemi ignore",
+        "pourquoi": "temoin ci-dessous : sans Kate's Bow, le meme montage encaisse la riposte de Retaliate",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.PutIntoPlay('11017')"],
+        "declencher": ["Puzzle.Attack('kb001a')"],
+        "cibles": ["11017"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["11017", 2]], "degats_identite": 0},
+    },
+    {
+        "nom": "kb012 Kate's Bow — TEMOIN : sans la carte, la meme attaque subit la riposte de Retaliate",
+        "pourquoi": "sans ce temoin, le cas precedent passerait meme si `GainRanged` ne faisait rien",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')", "Puzzle.PutIntoPlay('11017')"],
+        "declencher": ["Puzzle.Attack('kb001a')"],
+        "cibles": ["11017"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["11017", 2]], "degats_identite": 1},
+    },
+    {
+        "nom": "kb012 Kate's Bow — Interrupt : 1 compteur fleche place en fin de phase joueur",
+        "pourquoi": "declencheur WhenPhaseEnd, hors de portee de l'API Puzzle : message envoye directement dans le verifieur, comme brawn_ressource_seulement_si_epuise le fait deja pour un autre declencheur",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb012', under_control=True)"],
+        "declencher": [],
+        "verifier": "kb_bow_fin_de_phase",
+    },
+    {
+        "nom": "kb013 Kate's Quiver — Resource : incline Kate's Quiver -> ressource wild + 1 compteur fleche sur Kate's Bow",
+        "pourquoi": "double consequence de la meme Resource ability : la ressource ET le compteur",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.PutIntoPlay('kb013', under_control=True)"],
+        "main_exclusive": ["kb009"],
+        "declencher": [],
+        "jouer": ["kb009"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["kb013"], "en_jeu": ["kb009"], "compteurs": [["kb012", "arrow", 1]]},
+    },
+    {
+        "nom": "kb014 Family = Trouble — branche par defaut : l'allie Hawkeye retire du jeu, l'obligation retiree du jeu",
+        "pourquoi": "player.ChooseAbilities prend la PREMIERE branche par defaut (pas de Cancel ajoute, contrairement a MayChooseOneAbility) : c'est elle qui est exercee ici",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('kb002')"],
+        "declencher": ["Puzzle.Reveal('kb014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["kb014", "kb002"]},
+    },
+    {
+        "nom": "kb015 Tandem Archery — Team-Up : pose 2 compteurs fleche sur Kate's Bow, pioche 1 carte",
+        "pourquoi": "SetTarget('TeamUp') exige Hawkeye (Clint Barton) ET Kate Bishop en jeu -> partie a 2 joueurs",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "heros2": "hawkeye",
+        # HeroAction : injouable en alter-ego (defaut au demarrage).
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')",
+                          "Puzzle.PutIntoPlay('kb012', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('35013')"],
+        "declencher": [],
+        "jouer": ["kb015"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["kb012", "arrow", 2]], "defausse": ["kb015"], "en_main": ["35013"]},
+    },
+    {
+        "nom": "kb016 Finding the Perfect LMD — tant qu'elle est en jeu, Madame Masque ne peut pas prendre de degats",
+        "pourquoi": "UnitCannotTakeDamageWhile cible Madame Masque par son nom : verifie qu'elle encaisse vraiment 0",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb016')", "Puzzle.PutIntoPlay('kb017')"],
+        "declencher": ["Puzzle.Damage('kb017', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["kb017", 0]], "en_jeu": ["kb016", "kb017"]},
+    },
+    {
+        "nom": "kb017 Madame Masque — ATK/SCH copies sur ATK/THW imprimes de la forme HEROS, Kate en forme HEROS",
+        "pourquoi": ("Kate est mise en forme Heros ici pour prouver le mecanisme central (copie reelle, "
+                     "non triviale : verifie 2/2, pas 0=0). Voir le cas suivant pour la forme alter-ego, "
+                     "l'interet reel de la carte (« MEME si Kate n'est pas en forme heros »)."),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')", "Puzzle.PutIntoPlay('kb017')"],
+        "declencher": [],
+        "verifier": "kb_madame_masque_stats",
+    },
+    {
+        "nom": "kb017 Madame Masque — ATK/SCH copies sur ATK/THW imprimes de la forme HEROS, Kate en ALTER-EGO",
+        "pourquoi": ("Corrige le 29/8/2026 : c'est le cas qui echouait avant la correction "
+                     "(`heros.attack`/`heros.thwart` valent 0 pour une face d'identite non affichee, "
+                     "cf. docstring de `kb_madame_masque_stats`). Kate demarre en alter-ego par defaut "
+                     "(aucun `Puzzle.ChangeForm` ici) : c'est precisement le scenario que le texte de la "
+                     "carte revendique (« la forme heros de l'identite qu'elle affronte », MEME "
+                     "actuellement en alter-ego) et qui n'etait pas prouve."),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb017')"],
+        "declencher": [],
+        "verifier": "kb_madame_masque_stats",
+    },
+    {
+        "nom": "kb018 Masque's Minions — Forced Interrupt : survit a une defaite, se soigne, gagne 1 compteur",
+        "pourquoi": "SetBeInstead doit remplacer la defaite ET soigner integralement, pas juste ajouter un compteur",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb018')"],
+        "declencher": ["Puzzle.Damage('kb018', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["kb018"], "degats": [["kb018", 0]], "compteurs": [["kb018", "minion", 1]]},
+    },
+    {
+        "nom": "kb018 Masque's Minions — Forced Interrupt : au 2e compteur, defausse pour de bon",
+        "pourquoi": "seconde ligne imprimee, conditionnee au compteur pose par la premiere : temoin qu'il ne survit pas indefiniment",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb018')", "Puzzle.Counter('kb018', 'minion', 1)"],
+        "declencher": ["Puzzle.Damage('kb018', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["kb018"]},
+    },
+    {
+        "nom": "kb019 Golden Shot (1/2) — When Revealed : 1 degat direct + 1 indirect par personnage allie controle",
+        "pourquoi": "2 personnages controles (identite + kb002) -> 1 + 2 = 3 degats, pas juste 1 + 1",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('kb019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "kb020 Golden Shot (2/2) — meme texte que kb019, exemplaire physique distinct",
+        "pourquoi": "deuxieme card_id physique de la meme trahison : verifie qu'il porte bien la MEME capacite (pas un doublon vide)",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.PutIntoPlay('kb002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('kb020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -8651,6 +9016,101 @@ def si001b_opa_limite_phase(monde, aides):
     except Exception as e:
         return False, f"2e activation a leve une erreur inattendue : {type(e).__name__}: {e}"
     return False, "2e activation d'O.P.A. ACCEPTEE dans la meme phase : LimitOncePerPhase ne bloque pas la reoffre"
+
+################################################################################
+# Pack « kate_bishop » (kb001-kb020).
+def kb_hawkeye_ally_consequential(monde, aides):
+    """kb002 : Hawkeye defait par degat CONSEQUENT doit etre REMELANGE au deck
+    (pas defausse) et poser 1 compteur fleche sur Kate's Bow.
+
+    Garde contre un faux positif : « hors_jeu » a lui seul ne distingue pas
+    « remelange au deck » de « defausse normalement » (les deux quittent le
+    jeu). On verifie explicitement la PRESENCE dans le player_deck et
+    l'ABSENCE dans la defausse.
+    """
+    arc = aides["par_id"](monde, "kb012")
+    if arc is None:
+        return False, "Kate's Bow n'est pas en jeu"
+    n = arc.CastTo(aides["CanPlaceCounter"]).GetCounters('arrow')
+    if n != 1:
+        return False, f"compteurs arrow sur Kate's Bow = {n} (attendu 1)"
+
+    joueur = monde.players[0]
+    dans_deck = any(getattr(f.paper, "card_id", None) == "kb002" for f in joueur.player_deck.Get())
+    dans_defausse = any(getattr(f.paper, "card_id", None) == "kb002" for f in joueur.discard_pile.Get())
+    encore_en_jeu = aides["par_id"](monde, "kb002") is not None
+
+    if encore_en_jeu:
+        return False, "Hawkeye (kb002) est encore en jeu : l'Interrupt n'a pas remplace la defaite"
+    if dans_defausse:
+        return False, "Hawkeye (kb002) est dans la defausse : il a ete DEFAUSSE au lieu d'etre remelange au deck"
+    if not dans_deck:
+        return False, "Hawkeye (kb002) n'est ni en jeu, ni en defausse, ni dans le deck : il a disparu"
+    return True, "Hawkeye remelange au deck (pas defausse) et 1 compteur fleche pose sur Kate's Bow"
+
+def kb_bow_fin_de_phase(monde, aides):
+    """kb012 : Interrupt imprime -> 1 compteur fleche a la fin de la phase joueur.
+
+    Le declencheur (`AbilityFactory.WhenPlayerPhaseEnd`) n'est pas atteignable
+    par l'API Puzzle (elle ne rejoue que des commandes `Puzzle.*`, et aucune ne
+    fait avancer les phases). On envoie donc directement le message
+    `Message.WhenPhaseEnd` que l'ability ecoute reellement -- meme principe que
+    `brawn_ressource_seulement_si_epuise` plus haut, qui manipule l'etat du jeu
+    directement dans le verifieur plutot que via `declencher`.
+    """
+    from game.message import Message
+
+    arc = aides["par_id"](monde, "kb012")
+    if arc is None:
+        return False, "Kate's Bow n'est pas en jeu"
+    avant = arc.CastTo(aides["CanPlaceCounter"]).GetCounters('arrow')
+
+    message = Message.WhenPhaseEnd(monde.phase_id, "Player", monde)
+    message.Send()
+
+    apres = arc.CastTo(aides["CanPlaceCounter"]).GetCounters('arrow')
+    if apres != avant + 1:
+        return False, (f"compteurs arrow sur Kate's Bow = {apres} apres WhenPhaseEnd "
+                       f"(attendu {avant + 1} : {avant} avant + 1 place en fin de phase)")
+    return True, f"1 compteur fleche pose en fin de phase joueur ({avant} -> {apres})"
+
+def kb_madame_masque_stats(monde, aides):
+    """kb017 : ATK/SCH de Madame Masque = ATK/THW IMPRIMES de la face HEROS de
+    l'identite engagee, quelle que soit la forme ACTUELLEMENT affichee.
+
+    Corrige le 29/8/2026 : la carte lisait `heros.attack`/`heros.thwart`
+    (proprietes CALCULEES via `GetKeyword`, qui ne se peuplent que sur la face
+    ACTIVEMENT affichee -- valent 0 pour une face d'identite dormante). Elle
+    lit maintenant `heros.printed_attack`/`heros.printed_thwart`, remplis pour
+    CHAQUE face des `Initialize()` (card_face.py), actif ou non -- meme
+    pattern deja utilise par av013.py/av014.py/ag012.py pour lire le stat
+    d'une autre carte. Ce verifieur suit donc `printed_attack`/`printed_thwart`
+    (la reference correcte), pas `attack`/`thwart` (casse pour une face
+    inactive, bug moteur distinct et non corrige ici).
+
+    Preuve non triviale : verifie une valeur NON NULLE (2/2, imprime de
+    kb001a), pas juste une egalite qui passerait aussi a 0=0. Deux cas
+    utilisent ce verifieur : Kate en forme Heros (ou `heros.attack` vaut aussi
+    2, donc ne distinguerait pas un retour a l'ancien code fautif) ET Kate en
+    alter-ego (ou `heros.attack` vaudrait 0 avec l'ancien code -- c'est ce cas
+    qui aurait echoue avant la correction).
+    """
+    masque = aides["par_id"](monde, "kb017")
+    if masque is None:
+        return False, "Madame Masque (kb017) n'est pas en jeu"
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    heros = identite.GetHeroFace()
+
+    soucis = []
+    if masque.attack != heros.printed_attack:
+        soucis.append(f"ATK Madame Masque = {masque.attack} (attendu {heros.printed_attack}, ATK imprime de la face heros)")
+    if masque.scheme != heros.printed_thwart:
+        soucis.append(f"SCH Madame Masque = {masque.scheme} (attendu {heros.printed_thwart}, THW imprime de la face heros)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"Madame Masque copie ATK={masque.attack}/SCH={masque.scheme} de la face heros engagee"
 '''
 
 
@@ -8988,6 +9448,35 @@ def executer_un_cas(game_dir, port, index):
             return trouvees
 
         def premiere_option_jouable():
+            # `choisir_option` (pack kate_bishop) : forcer UNE option PRECISE
+            # parmi plusieurs choix nommes sans cible-carte (DeclareNumber,
+            # ChooseAbilities a options textuelles) ou le pilote, qui prend
+            # toujours la PREMIERE option non en echec, choisirait sinon
+            # systematiquement "0" ou la premiere branche. Sans elle, "Master
+            # Archer" (kb001a) ne retirerait jamais de compteur puisque 0 est
+            # une reponse toujours legale a `player.DeclareNumber`. Cle
+            # ADDITIVE : n'affecte AUCUN cas qui ne la definit pas (repli
+            # integral sur la boucle historique ci-dessous si absente ou sans
+            # correspondance), donc aucun cas existant n'est modifie.
+            voulues = cas.get("choisir_option")
+            if voulues and etat["phase"] == "cas":
+                if isinstance(voulues, str):
+                    voulues = [voulues]
+                for o in options:
+                    if isinstance(o, dict) and not o.get("failure_reason") \
+                            and o.get("name") in voulues:
+                        legales = [str(x) for x in (o.get("all_legal_targets") or [])]
+                        mini, maxi = (o.get("target_num_range") or [0, 0])[:2]
+                        cibles = legales[:mini]
+                        if cas.get("accepter_choix") and legales:
+                            borne = maxi if isinstance(maxi, int) and maxi > 0 else 1
+                            cibles = legales[:borne]
+                        forcees = choisir_cibles(cas.get("cibles") or [], legales)
+                        if forcees:
+                            cibles = forcees[:maxi] if isinstance(maxi, int) else forcees
+                        return json.dumps({"id": str(o.get("id", 0)),
+                                           "targets": cibles,
+                                           "resources": payer(o, cibles)})
             # Accepter la premiere option jouable en fournissant le nombre
             # MINIMAL de cibles qu'elle exige. Repondre « aucune cible » a un
             # choix qui en exige une fait rejeter la reponse par le moteur, qui

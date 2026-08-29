@@ -49,6 +49,36 @@ class AbilityFactoryScheme:
             is_local=which_scheme == "This"
         )
 
+    # AJOUT (pack custom kate_bishop, kb008 Hawkeye Investigations) : fabrique
+    # jumelle de `AbilityFactory.AfterDamageBePrevented` (damage.py) pour la
+    # menace. `which_scheme` et `prevent_by` suivent le meme defaut « None
+    # matche tout » que `Condition.CheckWhichCard` (card_type.py:98).
+    @staticmethod
+    def AfterThreatBePrevented(ability_type: 'AbilityType',
+                               operation: OperationType[Message.AfterThreatBePrevented],
+                               *,
+                               which_scheme: CardType=None,
+                               prevent_by: CardType=None,
+                               conditions: ConditionsType[Message.AfterThreatBePrevented]=[],
+                               ) -> 'Ability':
+
+        def check_which_scheme(effect: 'Effect', message: 'Message.AfterThreatBePrevented') -> bool:
+            return Condition.CheckWhichCard(which_scheme, message.trigger, effect)
+
+        def check_prevent_by(effect: 'Effect', message: 'Message.AfterThreatBePrevented') -> bool:
+            return Condition.CheckWhichCard(prevent_by, message.prevent_by_effect.this, effect)
+
+        return Ability(
+            ability_type,
+            Message.AfterThreatBePrevented,
+            [
+                *conditions,
+                check_which_scheme,
+                check_prevent_by,
+            ],
+            operation
+        )
+
     @staticmethod
     def WhenSchemeWouldRemoveThreat(ability_type: 'AbilityType',
                                    which_scheme: CardType,

@@ -77617,7 +77617,7 @@
             "custom": "Kajislav"
         }
     ],
-    "checksum": "737c04a2b000fdd38d4b28f596d7bd2fb4c06255268b65303e509250eb446264",
+    "checksum": "58c73c667f32d949b9409a7229e9016bf9890f81857ced7aee8478c4a05e6e02",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -79248,6 +79248,359 @@
             "set_name": "Iron Lad",
             "text": "Team-Up (Stature and Iron Lad). Max 1 per deck.\n<b>Hero Action</b>: Change to another form. You get +1 hand size until the end of the phase.",
             "custom": "Arnaud"
+        }
+    ],
+    "kate_bishop": [
+        {
+            "card_id": "kb001a",
+            "type": "Hero",
+            "name": "* Hawkeye",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<i>Master Archer</i> \u2014 <b>Interrupt</b> <i>(attack)</i>: When an enemy initiates an attack, remove up to 3 arrow counters from Kate's Bow \u2192 deal 1 damage to that enemy for each arrow counter removed.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb001b",
+            "type": "AlterEgo",
+            "name": "* Kate Bishop",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "PRIVATE INVESTIGATOR"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<i>Skillful</i> \u2014 During deck building you may include <b>SKILL</b> cards from any aspect.\n<b>Action</b>: Search your deck and discard pile for Kate's Bow and put it into play. (Limit once per round.)",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb002",
+            "type": "Ally",
+            "name": "* Hawkeye",
+            "subtitle": "Clint Barton",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Interrupt</b>: When Hawkeye would be defeated by consequential damage, shuffle him into your deck and place 1 arrow counter on Kate's Bow.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb003",
+            "type": "Event",
+            "name": "Evasive Shot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SKILL"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent 4 of that damage. Then, deal 1 damage to the attacker for each arrow counter on Kate's Bow (to a maximum of 5).",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb004",
+            "type": "Event",
+            "name": "Infiltrate",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Interrupt</b>: When any amount of threat would be placed on a scheme, prevent 2 of that threat (4 instead if you are in alter-ego form).",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb005",
+            "type": "Event",
+            "name": "Quick Draw",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Alter-Ego Action</b>: Flip to hero form and ready your hero.\n<b>Hero Action</b>: Ready your hero and place 2 arrow counters on Kate's Bow.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb006",
+            "type": "Event",
+            "name": "Smoke Arrow",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARROW"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Hero Interrupt</b>: When an enemy initiates an activation, remove 1 arrow counter from Kate's Bow \u2192 cancel that activation. You may spend a resource to flip to alter-ego form or ready your hero.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb007",
+            "type": "Support",
+            "name": "Anchor Points",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Resource</b>: Exhaust Anchor Points \u2192 generate a [wild] resource for a <b>SKILL</b> card.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb008",
+            "type": "Support",
+            "name": "Hawkeye Investigations",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Response</b>: After you prevent any amount of threat from being placed on a scheme, remove 1 threat from a scheme.\n<b>Response</b>: After you prevent any amount of damage, remove 1 threat from a scheme.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb009",
+            "type": "Support",
+            "name": "Lucky",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "GOOD BOY"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Lucky \u2192 heal 2 damage from Kate Bishop and place 1 arrow counter on Kate's Bow.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb010",
+            "type": "Upgrade",
+            "name": "Athletic Agility",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "You gain Agile 1. <i>(Reduce damage taken from undefended attacks by 1, to a minimum of 1.)</i>\n<b>Interrupt</b>: When you prevent any amount of damage from an attack, deal 1 damage to an enemy.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb011",
+            "type": "Upgrade",
+            "name": "Kate's Aviators",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Uses": "2,style",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "Uses (2 style counters). <i>(Enters play with 2 counters. When those are gone, discard this card.)</i>\n<b>Hero Action</b>: Exhaust Kate's Aviators and remove 1 style counter from it \u2192 draw 1 card.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb012",
+            "type": "Upgrade",
+            "name": "Kate's Bow",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Restricted": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "Restricted.\nYour basic attacks gain ranged.\n<b>Interrupt</b>: At the end of the player phase, place 1 arrow counter on this card. (Max of 10 arrow counters here.)",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb013",
+            "type": "Upgrade",
+            "name": "Kate's Quiver",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Kate Bishop",
+            "text": "You may remove up to 5 arrow counters with your <i>Master Archer</i> Interrupt instead.\n<b>Resource</b>: Exhaust Kate's Quiver \u2192 generate a [wild] resource and place 1 arrow counter on Kate's Bow.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb014",
+            "type": "Obligation",
+            "name": "Family = Trouble",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Kate Bishop"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop",
+            "text": "<b><i>Give to the Kate Bishop player.</i></b>\nYou may flip to alter-ego form. Choose:\n- Find the hero-specific Hawkeye ally and remove it from the game \u2192 remove Family = Trouble from the game.\n- Remove all arrow counters from Kate's Bow. You cannot place arrow counters on Kate's Bow until the end of the next round. Discard this obligation.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb015",
+            "type": "Event",
+            "name": "Tandem Archery",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "MaxPerDeck": "1",
+                "TeamUp": "Hawkeye/Clint Barton;Hawkeye/Kate Bishop",
+                "Class": "Basic"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop",
+            "text": "Team-Up (Hawkeye (Clint Barton) and Hawkeye (Kate Bishop)). Max 1 per deck.\n<b>Hero Action</b>: Ready Hawkeye's Bow or put 2 arrow counters on Kate's Bow. Draw 1 card.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb016",
+            "type": "SideScheme",
+            "name": "Finding the Perfect LMD",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop Nemesis",
+            "text": "Madame Masque has managed to get her hands on more Life Model Decoys and is causing havoc with your image!\nWhile this scheme is in play, threat cannot be prevented from being placed on a scheme and Madame Masque cannot take damage.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb017",
+            "type": "Minion",
+            "name": "* Madame Masque",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "Boost": "3",
+                "Nemesis": "Hawkeye"
+            },
+            "traits": [
+                "MASTERS OF EVIL"
+            ],
+            "set_name": "Kate Bishop Nemesis",
+            "text": "[star] Madame Masque's ATK and SCH are equal to the ATK and THW, respectively, of the hero form of the identity she is engaged with.\n<i>(Hawkeye's nemesis minion.)</i>",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb018",
+            "type": "Minion",
+            "name": "Masque's Minions",
+            "subtitle": "",
+            "desc": {
+                "HP": "2",
+                "ATK": "1",
+                "SCH": "1",
+                "Boost": "1",
+                "Guard": "1"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop Nemesis",
+            "text": "Guard.\n<b>Forced Interrupt</b>: When this minion would be defeated, place 1 minion counter on it and heal all damage from him.\n<b>Forced Interrupt</b>: When this minion has 2 or more counters on it, discard it.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb019",
+            "type": "Treachery",
+            "name": "Golden Shot",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop Nemesis",
+            "text": "<b>When Revealed</b>: Take 1 damage. Then, take 1 indirect damage for each friendly character you control.\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "CptScorp"
+        },
+        {
+            "card_id": "kb020",
+            "type": "Treachery",
+            "name": "Golden Shot",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Kate Bishop Nemesis",
+            "text": "<b>When Revealed</b>: Take 1 damage. Then, take 1 indirect damage for each friendly character you control.\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "CptScorp"
         }
     ]
 }

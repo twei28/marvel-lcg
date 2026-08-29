@@ -186,6 +186,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # "cash" (Flouze sur la carte imprimee) alimente Daniel Hall/Claire
         # Mooney/Mason Thomas ; l'"observation" alimente Iron Sight.
         'cash', 'observation',
+        # CORRECTIF : compteur du pack custom kate_bishop (CptScorp). Kate's
+        # Aviators (kb011) entre en jeu avec "Uses (2 style counters)" ; sans
+        # cette entree, `IsCounter('style')` echoue et la carte fait planter
+        # TOUT chargement du hero_deck de Kate Bishop des la mise en place.
+        'style',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

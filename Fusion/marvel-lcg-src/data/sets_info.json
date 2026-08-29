@@ -1090,7 +1090,7 @@
         "encounters": [],
         "max_id": "rg017"
     },
-    "checksum": "9aeabfba358a2ad490058d653f73fc2cec021078026e2fecdb5d2879685cc8de",
+    "checksum": "dfc427edc187fbb242c93b5612daef9862a9e0a220de37a17b7eb5337929d127",
     "122. Custom (Wolverine X-23)": {
         "name": "wolverine_x23",
         "scenarios": [],
@@ -1126,5 +1126,14 @@
         ],
         "encounters": [],
         "max_id": "il023"
+    },
+    "124. Custom (Hawkeye - Kate Bishop)": {
+        "name": "kate_bishop",
+        "scenarios": [],
+        "heroes": [
+            "kate_bishop"
+        ],
+        "encounters": [],
+        "max_id": "kb020"
     }
 }

@@ -166,10 +166,9 @@
     },
     "kb": {
       "pack": "kate_bishop",
-      "libelle": "124. Custom (Kate Bishop)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5 -- portage le plus direct du lot. Hero+nemesis (Madame Masque), compteurs de fleches quasi identiques au Hawkeye officiel (pack trors/hawkeye : CostFunc.Counter deja pret a copier). Depend d'un allie 'Hawkeye' specifique a l'identite (Family = Trouble) absent du zip, a fournir via pack trors/hawkeye. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "libelle": "124. Custom (Hawkeye - Kate Bishop)",
+      "cartes": 21,
+      "depuis": "2026-08-29"
     },
     "lj": {
       "pack": "lockjaw",

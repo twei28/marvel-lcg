@@ -88,11 +88,19 @@ class SenderScheme:
         def UpdateValue(self, value: int, by_effect: 'Effect'):
             self.value += value
 
-        def PreventThreat(self, value: int|Literal["All"], by_effect: 'Effect'):
+        def PreventThreat(self, value: int|Literal["All"], by_effect: 'Effect') -> int:
+            from game.message import Message
             if value == "All":
+                prevented = self.value
                 self.value = 0
             else:
+                assert value > 0
+                prevented = value
                 self.UpdateValue(-1 * value, by_effect)
+            if prevented > 0:
+                message = Message.AfterThreatBePrevented(self.trigger, prevented, by_effect)
+                message.Send()
+            return prevented
 
         def ReduceThreat(self, value: int, by_effect: 'Effect'):
             self.UpdateValue(-1 * value, by_effect)
@@ -105,6 +113,20 @@ class SenderScheme:
             text = TransText("{scheme} gained {value}{symbol}", scheme=scheme, value=value, symbol=Symbol.threat)
             self.Present(text, "", scheme, by_effect.this)
             # self.TriggerOnEvent(OnEvent.Threat)
+
+    # AJOUT (pack custom kate_bishop, kb008 Hawkeye Investigations) : pendant du
+    # cote menace de `AfterDamageBePrevented` (sender_damage.py) -- ce message
+    # n'existait pas pour la menace, aucune carte n'ayant eu besoin jusqu'ici de
+    # reagir « after you prevent threat ». Modele : `AfterDamageBePrevented`,
+    # simplifie (pas d'attaquant / de propriete d'attaque, une manigance n'a pas
+    # ces notions).
+    class AfterThreatBePrevented(TriggerSchemeMessage):
+        def __init__(self, scheme: 'Scheme2', value: int, effect: 'Effect') -> None:
+            self.prevent_by_effect: Final = effect
+            self.prevent_threat: Final = value
+            super().__init__(trigger=scheme)
+            text = TransText("Prevented {value}{symbol} from being placed on {scheme} ({effect})", value=value, symbol=Symbol.threat, scheme=scheme, effect=effect.this)
+            self.Present(text, "banished", scheme, effect.this)
 
     class WhenSchemeWouldRemoveThreat(TriggerSchemeMessage, HasEndEventMessage, CanBeInstead):
         def __init__(self, scheme: 'Scheme2', by_face: 'CardFace', value: int, by_effect: 'Effect', being_thw_message: 'Message.WhenSchemeBeingThwart|None') -> None:
