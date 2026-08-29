@@ -1,12 +1,12 @@
-# Marvel Champions LCG — projet custom
+# Marvel Champions LCG : projet custom
 
 Jeu Marvel Champions LCG basé sur le moteur officiel open-source
 `irefrixs/marvel-lcg`. Copie vivante du moteur :
 `Fusion/marvel-lcg-src/` (détail des deux copies et du piège associé dans
-`docs/reference/GUIDE-CREATION-CONTENU.md` §1 — ne jamais y toucher sans
+`docs/reference/GUIDE-CREATION-CONTENU.md` §1 : ne jamais y toucher sans
 avoir lu cette section en premier).
 
-## Règle impérative — création ou modification de contenu
+## Règle impérative : création ou modification de contenu
 
 - **Nouvelle carte ou modification d'une carte existante** : lire et suivre
   `docs/reference/PROCESSUS-CARTE.md` du début à la fin. Rien n'est
