@@ -19,12 +19,12 @@ Gabarit à copier pour chaque nouvelle fiche :
 
 ## Officiels
 
-- [ ] toughness.md
-- [ ] guard.md
-- [ ] quickstrike.md
-- [ ] retaliate.md
-- [ ] restricted.md
-- [ ] permanent.md
+- [x] toughness.md
+- [x] guard.md
+- [x] quickstrike.md
+- [x] retaliate.md
+- [x] restricted.md
+- [x] permanent.md
 - [ ] surge.md
 - [ ] villainous.md
 - [ ] hazard.md
