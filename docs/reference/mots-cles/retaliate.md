@@ -1,11 +1,10 @@
 # Retaliate
 
-**Texte imprimé / définition** : « Retaliate. » Un personnage avec ce
-mot-clé inflige, en plus de ses dégâts normaux de défense, des dégâts
-supplémentaires égaux à sa valeur de Retaliate à l'attaquant qui vient de
-l'attaquer, une fois le combat résolu. C'est un compteur (`Retaliate 1`,
-`Retaliate 2`, ...), réinitialisé à sa valeur imprimée à chaque reset des
-mots-clés.
+**Texte imprimé / définition** : « Retaliate 1. *(After this character is
+attacked, deal 1 damage to the attacking character.)* » Après qu'un personnage
+Retaliate a été attaqué, l'attaquant subit un nombre de dégâts égal à la valeur
+de Retaliate. C'est un compteur (`Retaliate 1`, `Retaliate 2`, ...),
+réinitialisé à sa valeur imprimée à chaque reset des mots-clés.
 
 **Mécanisme moteur** : clé `desc.Retaliate` sur la carte, lue nativement
 par le moteur. `HasRetaliate`
@@ -14,17 +13,26 @@ par le moteur. `HasRetaliate`
 `OnResetKeywords` via `GainRetaliate`, et fournit
 `ResolveRetaliate(atk_message)` qui applique les dégâts en retour en
 s'appuyant sur la classe `Retaliate(GameRule)` de
-`src/game/effect/rule.py` comme justification de l'effet. **Aucun script
-requis** pour ce mot-clé.
+`src/game/effect/rule.py` comme justification de l'effet. Trois conditions y
+sont vérifiées avant le `attacker.TakeDamage(...)` : l'attaquant existe et
+n'est pas vaincu, l'attaque n'est pas à distance (`atk_message.IsRanged()`) et
+le défenseur n'est pas vaincu, et l'attaque n'ignore pas le mot-clé
+(`atk_message.IsIgnoreRetaliate()`). Sinon un `Message.AfterIgnoreKeywordOnCard`
+est émis à la place. L'appel vient de `can_attack.py` et de
+`src/game/effect/effect_invoke.py`. **Aucun script requis** pour ce mot-clé.
 
 **Carte exemple** : `01040a` : * Black Panther (`desc` contient
 `"Retaliate": "1"`), lu directement depuis `desc`, aucun script requis.
 Aucun fichier `01040a.py` trouvé dans `src/cards/pack` : cette face de
 carte n'a pas de capacité imprimée distincte nécessitant un script.
 
-**Pièges connus** : Retaliate est lié à l'ordre de résolution du combat
-(voir Quickstrike, qui peut empêcher un Retaliate de se déclencher si
-l'attaquant tue le défenseur avant qu'il ne riposte). Si une future carte
+**Pièges connus** : trois cas où Retaliate ne se déclenche pas, tous lisibles
+dans `ResolveRetaliate` : attaque **à distance** (`IsRanged()`), défenseur ou
+attaquant **déjà vaincu** au moment de la résolution, et attaque qui **ignore
+Retaliate** (`IsIgnoreRetaliate()`). Aucun rapport en revanche avec Quickstrike :
+ce mot-clé n'est pas une règle d'ordre de résolution des dégâts, c'est une
+attaque déclenchée quand un sbire s'engage avec un héros (voir sa fiche), et il
+n'a aucune interaction particulière avec Retaliate. Si une future carte
 cumule Retaliate avec une capacité imprimée annexe (déclencheur sur les
 dégâts infligés, par exemple), vérifier via `find` si un script existe
 pour cette carte : le script devra porter uniquement cette capacité
