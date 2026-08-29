@@ -5,7 +5,7 @@
 Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 
 **Valeur centrale :** Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mobile, sans jamais toucher aux règles du moteur.
-**Focus actuel (12/08/2026) :** le mode campagne est sans dette connue (`docs/CAMPAGNES.md`). Hors campagne, le plus gros chantier ouvert est le mode bataille Civil War. La refonte UI est livrée autrement que prévu : lire l'encart de tête de `ROADMAP.md`.
+**Focus actuel (12/08/2026) :** le mode campagne est sans dette connue (`docs/rapports/CAMPAGNES.md`). Hors campagne, le plus gros chantier ouvert est le mode bataille Civil War. La refonte UI est livrée autrement que prévu : lire l'encart de tête de `ROADMAP.md`.
 
 ## Position actuelle
 
@@ -24,7 +24,7 @@ MODE CAMPAGNE, qui a sa propre documentation. Ne pas chercher son état ici.
 
 | Où | Quoi |
 |---|---|
-| `docs/CAMPAGNES.md` | le mode campagne, 18 sections, tenu à jour à chaque commit |
+| `docs/rapports/CAMPAGNES.md` | le mode campagne, 18 sections, tenu à jour à chaque commit |
 | `.twei/SESSION.md` | l'état de la dernière session et la TODO vivante |
 | `ROADMAP.md` (encart de tête) | l'état réel des 7 phases de la refonte UI |
 
@@ -59,7 +59,7 @@ correspondant dans le contexte accumulé.
    `.planning/todos/2026-07-30-mode-bataille-civil-war.md` ;
 2. **scans FR** : 430 cartes sans image française (136 officielles, 294 fan-made), 80
    identifiants inconnus de marvelcdb, 5 désaccords OCTGN à vérifier à l'œil
-   (`docs/RAPPORT-SCANS-FR.md`, chiffres du 6 août) ;
+   (`docs/rapports/RAPPORT-SCANS-FR.md`, chiffres du 6 août) ;
 3. **serveur permanent multijoueur** : conçu, non implémenté (le mode tunnel marche) ;
 4. **trois vérifications qui demandent un humain** : une partie avec un deck
    MarvelCDB menée jusqu'au plateau, la partie de salon à deux navigateurs, le
@@ -224,7 +224,7 @@ Dernière session : **2026-08-12**
 Arrêté à : **le mode campagne n'a plus de dette connue.** Les trois défauts assumés
 qui restaient ont été traités un par un (Professor X câblé, la répartition des
 preuves ne part plus au navigateur, la branche gagnante d'AoA couverte dans les deux
-sens) — §16 à §18 de `docs/CAMPAGNES.md`. Les documents de planification, périmés
+sens) — §16 à §18 de `docs/rapports/CAMPAGNES.md`. Les documents de planification, périmés
 depuis le 3 août, ont été remis à l'état mesuré le même jour.
 Fichier de reprise : `.twei/SESSION.md` (lu au démarrage de session)
 Prochaine étape : **rien d'imposé.** Par ordre de valeur : le mode bataille Civil

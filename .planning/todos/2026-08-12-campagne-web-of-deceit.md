@@ -46,7 +46,7 @@ Albert = 100). Le risque de doublon est réel et se mesure avant de coder.
 
 ## 2. Ce qui joue en notre faveur
 
-**Le mode campagne n'a plus de dette connue** (12/8/2026, `docs/CAMPAGNES.md`).
+**Le mode campagne n'a plus de dette connue** (12/8/2026, `docs/rapports/CAMPAGNES.md`).
 Les huit boîtes sont jouées, les carnets se remplissent seuls, et depuis
 aujourd'hui une campagne se joue à plusieurs. **Ajouter une neuvième campagne est
 un travail de CONTENU, pas de moteur** — au contraire de l'aspect Determination.
@@ -816,7 +816,7 @@ cinq complots 1A l'appellent.
 
 `verifier_campagnes` : **« web_of_deceit — 6 clés déclarées, OK »**, et « toutes
 les clés déclarées existent dans le moteur ». C'est l'outil qui attrape le piège
-documenté au §5 de `docs/CAMPAGNES.md` : une clé mal orthographiée ne lève rien
+documenté au §5 de `docs/rapports/CAMPAGNES.md` : une clé mal orthographiée ne lève rien
 du tout, la récompense ne s'applique pas, et on ne s'en aperçoit qu'après cinq
 scénarios joués pour rien.
 

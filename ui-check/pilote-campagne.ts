@@ -1,6 +1,6 @@
 // Mener une VRAIE partie de campagne depuis un test, et rien de plus.
 //
-// Ce pilote est la recette du §10 de docs/CAMPAGNES.md, sortie de
+// Ce pilote est la recette du §10 de docs/rapports/CAMPAGNES.md, sortie de
 // `campagne-panneau.spec.ts` pour servir aux autres epreuves de bout en bout
 // (relevés automatiques du carnet, Professor Saved, accusation d'aos). Il est
 // laisse VOLONTAIREMENT dans campagne-panneau, qui garde sa copie : ce test-la

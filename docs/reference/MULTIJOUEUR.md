@@ -134,7 +134,7 @@ avant de commencer.
   quelqu'un abandonne, il n'y a rien de prévu.
 
 Le détail technique (les deux routes, la règle des droits, les pièges) est au §19
-de `docs/CAMPAGNES.md`.
+de `docs/rapports/CAMPAGNES.md`.
 
 ---
 

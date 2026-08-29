@@ -20,16 +20,16 @@ Les liens utiles :
 
 ### 1.1 Les deux seuls dossiers qui comptent
 
-> ## ⚠️ CORRECTIF DU 29/08/2026 — CETTE SECTION ÉTAIT INVERSÉE
+> ## ⚠️ CORRECTIF DU 29/08/2026 : CETTE SECTION ÉTAIT INVERSÉE
 >
 > Le guide désignait `~/marvel-work/fusion/marvel-lcg-src/` comme la copie
 > vivante et le dossier Windows comme un miroir archivé. **C'est l'inverse
 > depuis au moins le 14/08/2026.**
 >
-> **NE JAMAIS lancer le `rsync` de l'ancienne section 1.3 dans le sens
-> `~/marvel-work/fusion` → Windows.** Il effacerait cinq packs entiers
-> (`dazzler`, `red_guardian`, `wolverine_x23`, `jj`, `luke_cage`) et tous les
-> correctifs moteur postérieurs au 14/08.
+> **NE JAMAIS lancer un `rsync` dans le sens `~/marvel-work/fusion` →
+> Windows.** Il effacerait cinq packs entiers (`dazzler`, `red_guardian`,
+> `wolverine_x23`, `jj`, `luke_cage`) et tous les correctifs moteur
+> postérieurs au 14/08.
 >
 > Preuves, vérifiables en une commande chacune :
 > - Les trois fichiers que l'utilisateur double-clique (`JOUER-SOLO.bat`,
@@ -50,7 +50,7 @@ Toute autre copie trouvée sur la machine est un vestige (voir 1.4).
 | Rôle | Chemin |
 |---|---|
 | **① Copie VIVANTE (celle qui tourne, on édite ICI)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/` |
-| **② Copie WSL (VESTIGE, figée au 14/08/2026)** | `~/marvel-work/fusion/marvel-lcg-src/` — ne plus éditer, ne plus en resynchroniser |
+| **② Copie WSL (VESTIGE, figée au 14/08/2026)** | `~/marvel-work/fusion/marvel-lcg-src/` : ne plus éditer, ne plus en resynchroniser |
 
 En cas de doute sur le dossier dans lequel on se trouve, `readlink -f .` doit
 commencer par
@@ -62,24 +62,24 @@ Vérification en une ligne que l'on est bien dans la copie qui tourne :
 ls src/cards/pack | grep -qx dazzler && echo "copie VIVANTE" || echo "VESTIGE, ne pas editer"
 ```
 
-Le dossier projet ② contient le miroir du moteur plus tout ce qui n'appartient
+Le dossier projet contient le miroir du moteur plus tout ce qui n'appartient
 qu'à nous :
 
 ```
 C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\
-├── Fusion\marvel-lcg-src\     ← miroir du moteur (copie de ①)
-├── ui-app\                    ← notre client React (source unique, pas de miroir)
-├── GUIDE-CREATION-CONTENU.md  ← ce fichier
-├── JOUER-SOLO.bat / JOUER-EN-MULTI.bat
-└── MULTIJOUEUR.md, BRIEF-REFONTE-PLATEAU.md, ...
+├── Fusion\marvel-lcg-src\     : le moteur (copie ①, celle qui tourne)
+├── ui-app\                    : notre client React (source unique, pas de miroir)
+├── docs\                      : toute la documentation, dont ce fichier
+├── JOUER-SOLO.bat / JOUER-EN-MULTI.bat / JOUER-SERVEUR.bat
+└── CLAUDE.md
 ```
 
 ### 1.2 Où créer chaque type de contenu
 
 Les chemins ci-dessous sont **relatifs à la racine du moteur**, c'est-à-dire à
-① (`.../Jeu Marvel Champions/Fusion/marvel-lcg-src/`). On les crée là, et
-c'est tout : depuis le 29/08/2026 il n'y a plus de recopie à faire, la copie
-qu'on édite EST celle qui tourne (voir le correctif en 1.1).
+`Fusion/marvel-lcg-src/`. On les crée là, et c'est tout : il n'y a plus de
+recopie à faire, la copie qu'on édite EST celle qui tourne (voir le correctif
+en 1.1).
 
 | Élément | Chemin (depuis la racine du moteur) |
 |---|---|
@@ -92,11 +92,11 @@ qu'on édite EST celle qui tourne (voir le correctif en 1.1).
 | Decks de départ | `deck/starter/<hero>.json` (gabarit : `deck/temp/.temp_hero.json`) |
 | Scripts de capacités | `src/cards/pack/<pack>/<set>/<card_id>.py` |
 | Images des cartes | `assets/pics/<card_id>.<jpg\|png\|webp>` |
-| Biographies des héros | `public/js/prepare/heros-info.js` (voir §5.1) |
+| Biographies des héros | `public/js/prepare/heros-info.js` (voir §5.1 de PROCESSUS-HEROS.md) |
 | Traits et compteurs du moteur | `src/game/card/face/card_face.py` (énums `TRAITS` et `COUNTER`) |
 
-Exemple concret pour un nouveau héros, pack `human_torch`, depuis WSL. On pose
-`W` une fois pour toutes :
+Exemple concret pour un nouveau héros, pack `human_torch`. On pose `W` une
+fois pour toutes :
 
 ```bash
 W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
@@ -124,70 +124,26 @@ cd "$W" && PYTHONPATH="$W/src" ~/marvel-work/python/bin/python3.10 \
 Le client React `ui-app/` n'existe QUE dans le dossier projet, à côté de
 `Fusion/` : on l'édite là-bas, et `ui-app/deployer.sh` se charge de le déployer.
 
-### 1.3 Recopie — IL N'Y EN A PLUS
+### 1.3 Recopie : il n'y en a plus
 
-> ## ⚠️ CORRECTIF DU 29/08/2026 — LE `rsync` DE CETTE SECTION EST DESTRUCTEUR
->
-> Il recopiait `~/marvel-work/fusion/marvel-lcg-src` **par-dessus** la copie
-> Windows. Or c'est la copie Windows qui tourne, et la copie WSL est figée au
-> 14/08/2026. Le lancer aujourd'hui **effacerait cinq packs entiers**
-> (`dazzler`, `red_guardian`, `wolverine_x23`, `jj`, `luke_cage`), leurs images,
-> leurs decks, et tous les correctifs moteur postérieurs au 14/08.
->
-> **Il n'y a plus rien à recopier.** On édite ① et c'est fini : le lanceur
-> compile le `src/` de ① et lie ses `data`, `deck` et `assets`.
->
-> L'ancien bloc est conservé ci-dessous, COMMENTÉ, pour que personne ne le
-> reconstitue de mémoire en croyant bien faire.
->
-> ```bash
-> # NE PAS EXECUTER — sens inverse, detruit le travail depuis le 14/08/2026
-> # S=~/marvel-work/fusion/marvel-lcg-src
-> # M=".../Jeu Marvel Champions/Fusion/marvel-lcg-src"
-> # rsync -a "$S/data/" "$M/data/"        ...
-> ```
->
-> Si un jour on veut vraiment archiver ① vers la copie WSL, c'est l'autre sens
-> (`$M` → `$S`), et seulement avec `--dry-run` d'abord.
+Il n'y a plus rien à recopier. On édite la copie ① et c'est fini : le lanceur
+compile son `src/` et lie ses `data`, `deck` et `assets`. Le bloc `rsync` qui
+existait ici avant le correctif du 29/08/2026 recopiait la copie WSL
+(vestige, figée au 14/08/2026) **par-dessus** la copie Windows : le lancer
+aujourd'hui effacerait cinq packs entiers et tous les correctifs postérieurs
+au 14/08. Ne jamais le reconstituer de mémoire.
 
-⚠️ **Note historique, toujours valable** : les fichiers de la RACINE n'étaient
-pas couverts par ce `rsync` :
-`launch.json`, `launch.online.json`, `launcher.py`, `launcher_fast.py`,
-`launcher-multi.sh`, `defectueux.json`. Les deux copies évoluent donc chacune
-de leur côté, et c'est déjà arrivé de coûter cher : le `launch.json` du miroir
-avait perdu `cards_json_custom_file`, si bien que les héros de
-`data/cards_custom.json` (Stan Lee, Hulk Rainy, Rescue Rainy) s'affichaient
-**sans PV ni stats** dans le wizard, uniquement quand on lançait par le `.bat`.
-
-Contrôle des clés de configuration après toute modification :
-
-```bash
-python3 - <<'EOF'
-import json
-S = "/home/arnau/marvel-work/fusion/marvel-lcg-src/launch.json"
-M = "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/launch.json"
-a, b = json.load(open(S)), json.load(open(M))
-print("WSL seulement    :", sorted(set(a) - set(b)) or "aucune")
-print("miroir seulement :", sorted(set(b) - set(a)) or "aucune")
-print("valeurs differentes :", sorted(k for k in set(a) & set(b) if a[k] != b[k]) or "aucune")
-EOF
-```
-
-`server_addresses` est la seule clé qu'on veut volontairement différente entre
-`launch.json` (solo, port 2345) et `launch.online.json` (multi, port 2347).
+Si un jour on veut vraiment archiver ① vers la copie WSL, c'est le sens
+inverse (`Windows` → `WSL`), et seulement avec `--dry-run` d'abord.
 
 ### 1.4 Dossiers à ne JAMAIS utiliser
 
 | Chemin | Pourquoi |
 |---|---|
-| `C:\Users\arnau\Desktop\Marvel LCG last try\Fusion\` | Vieux dossier d'avant le déplacement du projet. Les liens de `.game` ont déjà pointé dessus par erreur (réparé le 1/8/2026). |
-| `~/marvel-work/boot/`, `boot_sub/`, `boot_sub2/`, `boot_sub3/`, `boot_sub4/` | Bacs à sable de la phase de reconstruction bytecode. |
+| `C:\Users\arnau\Desktop\Marvel LCG last try\Fusion\` | Vieux dossier d'avant le déplacement du projet. |
+| `~/marvel-work/boot/`, `boot_sub/`, `boot_sub2/`, `boot_sub3/`, `boot_sub4/` | Bacs à sable de la phase de reconstruction bytecode, abandonnée. |
 | `~/marvel-work/marvel-lcg-independent/`, `marvel-lcg-rebuilt/` | Anciennes reconstructions, abandonnées depuis l'adoption du source officiel. |
-| `~/marvel-work/fusion/marvel-lcg-src/` | **Ajouté le 29/08/2026.** Ancienne copie vivante, figée au 14/08/2026. Elle ignore `dazzler`, `red_guardian`, `wolverine_x23`, `jj` et `luke_cage`. Ne plus l'éditer, et surtout ne JAMAIS la resynchroniser vers la copie Windows (voir 1.3). Seuls `~/marvel-work/python/` et `~/marvel-work/tools/cloudflared` restent utilisés. |
-
-En cas de doute sur le dossier dans lequel on se trouve :
-`readlink -f .` doit commencer par
-`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
+| `~/marvel-work/fusion/marvel-lcg-src/` | Ancienne copie vivante, figée au 14/08/2026. Elle ignore `dazzler`, `red_guardian`, `wolverine_x23`, `jj` et `luke_cage`. Ne plus l'éditer, et surtout ne JAMAIS la resynchroniser vers la copie Windows (voir 1.3). Seuls `~/marvel-work/python/` et `~/marvel-work/tools/cloudflared` restent utilisés. |
 
 ### 1.5 Documentation de l'auteur original
 
@@ -378,157 +334,19 @@ Exemples officiels à consulter avant d'écrire une carte neuve :
 - `docs/card_scripting_guide.md` : Swinging Web Kick, Backflip, Black Cat,
   Spider-Tracer, Web-Shooter, Eviction Notice, Shocker, Steve Rogers.
 
-## 4. Checklist — nouvelle carte
+## 4. Nouvelle carte
 
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers le
-> dossier projet avec le `rsync` de §1.3.
+Voir `PROCESSUS-CARTE.md`, qui couvre construction ET validation dans
+l'ordre d'exécution. Ce fichier-ci reste la référence pour le format des
+données (§2) et l'API de scripting (§3).
 
-1. Ajouter l'entrée dans `data/cards.json`, dans le bon pack (respecter le tri
-   par `card_id`). Renseigner `type`, `name`, `desc`, `traits`, `set_name`, `text`.
-2. Si la carte a des capacités : créer
-   `src/cards/pack/<pack>/<set>/<card_id>.py` avec `GetAbilities()`.
-   S'inspirer d'une carte proche déjà scriptée (4 200+ exemples).
-3. Image : déposer le scan dans `assets/pics/<card_id>.png` (ou `.jpg`/`.webp` ;
-   le chargeur `engine/file/cache.py` EXIGE une extension). Sinon le jeu tente
-   marvelcdb puis génère un fallback.
-4. Valider (§8) : au minimum `test_cards.py` à 0 erreur.
-5. Pour une carte custom hors dépôt : voir `data/cards_custom.json` et le
-   mécanisme `cards/<id>.py.txt` (guide de l'éditeur).
-6. Recopier vers le dossier projet (§1.3).
-7. **Obligatoire avant de considérer la carte terminée** : compléter
-   `CHECKLIST-VALIDATION-CARTE.md` (même dossier). Il couvre ce que ce §4 ne
-   couvre pas : revue texte-contre-code mot à mot, comparaison des nombres,
-   un cas `test_capacites` par capacité avec preuve par substitution, et une
-   partie autoplay ciblée avec grep exhaustif des erreurs.
+## 5. Nouveau héros
 
-### 4.1 En cas de doute sur une carte : DEMANDER, carte par carte
-
-**Règle absolue.** Dès qu'une carte laisse place à plus d'une lecture, on ne
-tranche pas tout seul : on pose la question à l'utilisateur.
-
-- **Une question à la fois**, en **multichoix**, avec l'option recommandée en
-  premier et « Autre (précise) » toujours disponible en dernier.
-- **Une question par carte.** Ne jamais grouper « voici mes 8 arbitrages,
-  valide en bloc » : chaque carte a son contexte, et un lot se valide à la
-  légère.
-- Chaque option doit dire **ce que ça change en jeu**, pas seulement ce que ça
-  change dans le code. « Bear Arms à 3 de coût pour 1 dégât par tour » parle,
-  « on appelle `Drain()` » ne parle pas.
-- Poser la question **avant** d'écrire le script, pas après. Ce qui n'a pas
-  été demandé au bon moment doit l'être quand même : mieux vaut une question
-  tardive qu'un arbitrage silencieux.
-
-Ce qui déclenche une question, sans exception :
-
-| Situation | Exemple vécu |
-|---|---|
-| Mot-clé maison non défini sur les cartes fournies | `drain X` (Agent Anti-Venom) : introuvable sur les scans et en ligne |
-| Texte imprimé contradictoire | The Made Men : « Forced **Interrupt** : **After** Maniac schemes or attacks » |
-| Valeur imprimée que le moteur ne sait pas encoder | l'ATK « ★ » du Homme-Pourpre |
-| Portée d'une phrase ambiguë | « Discard this obligation » : la dernière option seulement, ou les deux ? |
-| Mot-clé officiel inapplicable tel quel | `TeamUp` de Power Couple, qui suppose DEUX héros en jeu |
-| Contenu absent du matériel fourni | aucune decklist d'aspect livrée par l'auteur |
-| Un effet que le moteur ne peut pas rendre fidèlement | « if this attack has ranged or piercing » sur un événement |
-| Une icône imprimée qu'on ne reconnaît pas | l'icône « nœuds reliés » de Lockjaw, prise pour un os pendant cinq jours |
-
-**Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
-une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
-vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
-supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
-Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
-`RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
-os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
-promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :
-tous comparent le code au texte saisi, et le texte était faux pareillement.
-Seul un joueur l'a vu, en partie.
-
-Ce qui ne déclenche PAS de question : les choix purement techniques sans effet
-sur les règles (quelle fabrique employer, où ranger un helper, format d'image).
-Ceux-là se documentent au §9, ils ne se discutent pas.
-
-À l'inverse, les points **non tranchables** (une capacité que le harnais ne sait
-pas déclencher, un doute sur le comportement réel du moteur) ne sont pas des
-questions : ils vont dans la liste « à vérifier en partie réelle » du §9, et il
-faut le dire clairement en fin de travail.
-
-## 5. Checklist — nouveau héros
-
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers
-> `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`
-> avec le `rsync` de §1.3. Jamais l'inverse.
-
-1. **Cartes** dans `data/cards.json` (pack du produit, `set_name` = nom du héros) :
-   - `XXXXXa` type `Hero` (`HP/ATK/THW/DEF/HS`) et `XXXXXb` type `AlterEgo`
-     (`HP/REC/HS`) — même carte, deux faces ;
-   - les ~15 cartes signature ;
-   - 1 obligation (`desc.GiveTo` = nom de l'alter-ego) ;
-   - 5 cartes némésis (`set_name` = `"<Héros> Nemesis"`).
-2. **Scripts** pour chaque carte à capacités (y c. les faces a/b du héros :
-   capacités imprimées, le reste — ATK/THW/DEF/REC de base — est automatique).
-3. **Deck de départ** `deck/starter/<hero>.json` :
-   ```json
-   { "version": "0.5.8", "name": "Mon Héros", "metadata": {"url": ""},
-     "hero": ["XXXXXa,XXXXXb"],
-     "hero_deck": ["...15 cartes..."],
-     "set_aside": [],
-     "obligations": ["..."],
-     "nemesis_set": ["...5 cartes..."],
-     "player_deck": ["...~25 cartes d'aspect..."] }
-   ```
-4. `data/nemesis/<hero>_nemesis.json` (facultatif, pour l'UI).
-5. Référencer le héros dans `heroes` du bon pack de `data/sets_info.json`.
-6. Images de toutes les cartes dans `assets/pics/<card_id>.jpg` (l'extension
-   est obligatoire, voir §4).
-7. **Mini-biographie** dans `public/js/prepare/heros-info.js` (voir §5.1).
-8. **Texte FRANÇAIS de chaque carte** dans
-   `ui-app/src/board/textes-fr-fanmade.ts` (voir §11.1). **Obligatoire** : sans
-   lui, les cartes du pack n'ont aucun tooltip français, et rien ne le signale.
-9. Valider (§8) + compléter `CHECKLIST-VALIDATION-CARTE.md` pour CHAQUE carte
-   du pack (obligatoire, pas seulement les cartes signature) + jouer une
-   partie complète avec le héros.
-10. **Recopier vers le dossier projet** (§1.3), sinon rien n'est archivé côté
-    Windows.
-
-### 5.1 Mini-biographie du héros (obligatoire)
-
-Le wizard affiche, au survol d'un héros, une fiche « qui est ce personnage »
-(voir `showHeroHover` dans `public/js/prepare/app.js`). Elle décrit le
-PERSONNAGE, jamais sa mécanique de jeu : c'est de la culture Marvel, pas des
-règles. Un héros sans entrée retombe silencieusement sur l'ancien affichage
-(le grand visuel seul) : rien ne casse, mais la fiche manque.
-
-Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
-`card_id` de la face héros** et jamais par le nom (`01001a` Peter Parker et
-`27030a` Miles Morales s'appellent tous les deux « Spider-Man ») :
-
-```js
-"64001a": {
-    bio:   "3 ou 4 phrases : origine, pouvoirs, ce qui définit le personnage.",
-    bioEn: "Same, in English.",
-    civil: "Johnny Storm",
-    base: "New York (Baxter Building)",
-    equipes: "Quatre Fantastiques, Vengeurs",
-    equipesEn: "Fantastic Four, Avengers",
-    ennemis: "Fatalis, l'Homme-Taupe",
-    ennemisEn: "Doctor Doom, Mole Man",
-    apparition: "Fantastic Four #1 (1961)",
-},
-```
-
-Règles d'écriture :
-- **Tout champ est optionnel sauf `bio` et `bioEn`** : mieux vaut omettre une
-  ligne que d'inventer une némésis ou une date de première apparition. Un champ
-  absent disparaît simplement de la fiche.
-- Les champs `*En` ne sont nécessaires que si la traduction diffère (« New
-  York » ou « Thanos » se passent de doublon). En anglais, un `*En` absent
-  affiche la version française.
-- Viser 3 ou 4 phrases : le panneau de survol est étroit (314 px).
-- Les libellés affichés passent par `t()` et ont leur entrée dans
-  `public/js/prepare/dico-en.js` (voir §11).
-- **Ne pas oublier le rsync des deux `public/`** (voir §10) : ce fichier vit
-  hors du dépôt du moteur.
+Voir `PROCESSUS-HEROS.md`, qui couvre toutes les étapes (cartes, scripts,
+deck, biographie, texte français, validation) et exige un
+`PROCESSUS-CARTE.md` rempli pour chaque carte du pack. Les deux points
+d'attention ci-dessous restent ici car ils décrivent un mécanisme du moteur,
+pas une étape du processus.
 
 ### 5.2 Ne jamais mettre une carte signature d'un autre héros dans un deck
 
@@ -613,9 +431,8 @@ variante resterait orpheline.
 
 ## 6. Checklist — nouveau scénario
 
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers le
-> dossier projet avec le `rsync` de §1.3.
+> **Où créer tout ça** : dans la copie vivante `Fusion/marvel-lcg-src/`
+> (voir §1.1). Depuis le 29/08/2026 il n'y a plus de recopie à faire.
 
 1. **Cartes** dans `data/cards.json` :
    - un `Villain` par stade (`Stage: "1"`, `"2"`, `"3"`, `HP` souvent en `"N*"`) ;
@@ -1012,9 +829,10 @@ quatre familles, toutes nées d'un défaut réellement rencontré :
   Draugr Buddy sans `Guard`, Defend Hell's Kitchen sans `Hinder`) ; elles
   affichaient un mot-clé qu'elles n'appliquaient pas ;
 - **images manquantes** dans un pack custom. A révélé que les 17 scans de
-  `spider_man_rainy` n'existaient QUE dans le miroir Windows : le `rsync` allant
-  de la copie vivante vers le miroir, un `--delete` sur `assets/pics/` les aurait
-  effacées.
+  `spider_man_rainy` n'existaient QUE côté Windows : à l'époque le `rsync`
+  allait de la copie WSL vers Windows, et un `--delete` sur `assets/pics/` les
+  aurait effacées. C'est exactement le risque décrit par le correctif du
+  29/08/2026 (§1.1), et la raison pour laquelle ce `rsync` a disparu.
 
 Il produit enfin le **taux de couverture de chaque pack custom** par les cas de
 comportement. Sans ce relevé, « le pack est validé » veut seulement dire « il se
@@ -1104,9 +922,9 @@ Notre moteur diverge du source officiel sur ces points, tous commentés
 | pack `spider_man_rainy` (71001a-71017) | héros custom **Spider-Man (Peter Parker)** (par « Rainy », scans Drive) créé le 3/8/2026 : 15 cartes signature autour des **compteurs toile** (« web an enemy » = 1 compteur `web`, plafond 3 par ennemi) + carte de règles **Impact Webbing** (71012, Permanent/Setup, `set_aside` + `SetupPutIntoPlay` sur l'alter-ego, modèle The Trunk) qui porte le plafond ET l'effet : à l'activation d'un ennemi entoilé, retrait de tous les compteurs et `-1 SCH / -1 ATK` par compteur pour cette activation (`GainATKForThisAttack` / `GainSCHForThisScheme` négatifs sur `WhenUnitWouldAttack` / `WhenUnitWouldScheme`). Ressources signature Great Power / Great Responsibility à effet différé (montage 68007, `WhenYouSpendThisCardToPlay` + abilité portée par l'identité). Obligation Bad Publicity (Uses 3 menace, retrait à chaque ennemi/plan vaincu par le joueur) + set némésis **Mysterio** (compteurs `illusion` encaissant les dégâts à sa place, cartes rencontre face cachée). Deck de départ Justice du Spider-Man officiel (`deck/starter/spider_man_rainy.json`). Écarts assumés : Webbed Up pose toujours ses 3 compteurs (« up to 3 », jamais désavantageux) ; le « picture of Spider-Man » de J. Jonah Jameson est lu comme « carte du set signature autre que JJJ » ; l'Interrupt de Ben Reilly est rendu en interruption sur ses pouvoirs de base attaque/parade. **Validé par 10 cas** dans `tools/test_capacites.py`. Audit : 2 suspicions `marqueur_sans_capacite` (71001a, 72001a), faux positifs — les Responses « après ennemi vaincu » passent par `WhenUnitWouldBeDefeated` en interne, même famille que Wasp 13001a. **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (pas de déclencheur d'attaque ennemie dans l'API Puzzle) : Impact Webbing en situation réelle, Webbed Up (défense), Spider-Sense (pioche + annulation de boost via `CancelBoostAbility`), Just Like Flies (engagement) — fabriques standards, à vérifier en partie réelle. |
 | pack `venom_rainy` (72001a-72015) | héros custom **Venom (Eddie Brock)** (par « Rainy », scans Drive) créé le 3/8/2026 : 15 cartes signature (tempo agressif : Symbiotic Bond génère 1 [wild] contre 1 dégât, Hunger soigne à chaque ennemi vaincu, Symbiotic Fury redresse après dégâts subis, Bulletproof se remélange au deck, Just A Snack lit `paid_this_resources` pour son bonus [physical] — montage Stand Fast/Ashley Barton). Obligation We Hunger (flip FORCÉ en forme héros + choix dégâts/menace) + set némésis **Carnage** (Forced Response « après un soin, 1 dégât » construit à la main sur `Message.AfterUnitHealHealth`, modèle The Thing 67001b ; Symbiote Rioter ×3 Guard/Patrol). Deck de départ Protection du Black Panther officiel (`deck/starter/venom_rainy.json`). **Validé par 10 cas** dans `tools/test_capacites.py` (124/124 au 3/8/2026, les 2 packs confondus). Non couverts : Camouflage et Lethal Protector (interruptions sur attaque ennemie), Sharp Teeth overkill/piercing (attaque de base non pilotable). |
 | `game/card/face/card_face.py` (TRAITS + COUNTER) | traits `MIDNIGHT SON`, `WEB`, `JOURNALIST`, `TITLE` et compteurs `illusion`, `menace` ajoutés pour les packs spider_man_rainy / venom_rainy (`# CORRECTIF`) |
-| pack `jessica_jones` (73001a-73022) | héroïne custom **Jessica Jones** (par « ekAugust », scans Drive) créée le 4/8/2026. Tout le kit tourne autour des **manigances secondaires** : *Hard-Hitting Investigation* frappe pour la valeur d'ATK à chaque manigance vaincue, 8 des 15 cartes signature comptent ou exigent une manigance en jeu. Le pack apporte deux choses que le moteur ne connaissait pas. (a) Le set de rencontre **« On the Job »** (73012-73016, `data/encounter_sets/on_the_job.json`), mélangé au deck Rencontre par le **Setup de l'alter-ego** : le seul point d'accroche possible est `Message.WhenGameBeginSetup`, où l'on ajoute `"on_the_job"` à `message.encounter_set_names` — après, `World.Begin` a déjà créé PUIS mélangé le deck (étape 10), et un `ShuffleAllTo` arriverait trop tard. L'ability est enregistrée en `RegisterTemp` depuis `WhenPlayerSelectHero`, qui passe avant. (b) Le mot-clé maison **INVESTIGATE X** (« When revealed, move X threat from the main scheme to here ») : aucune fabrique moteur ne le porte, il est rendu par `Investigate()` dans le `__init__.py` du set, qui retire d'abord sur le complot principal et ne pose ici que ce qui a réellement été retiré. Compteur `evidence` ajouté au moteur pour Jessica's Camera, dont les trois paliers (1/2/3 → +1 DEF/THW/ATK) sont trois `GiveKeywordToAttached` distincts sur `OnEvent.Counter`. Obligation Stable Home Life + set némésis **Purple Man** (« Look At Me! », Purple Man, « I've Got Everyone » ×2, The Purple Children). Deck de départ Justice de l'insert (`deck/starter/jessica_jones.json`), dont **les 25 cartes d'aspect existent toutes** dans la collection. Les trois ressources doubles redessinées du pack (JJ23-25) sont livrées en **collection d'art alternatif** `ekaug_jj` (§12 bis) et non en cartes : valeurs de jeu identiques à 01088-01090, seule l'image change. Écarts assumés : (a) **Power Couple** (73022) est imprimée « Team-Up (Jessica Jones and Luke Cage) », mais Luke Cage est ici l'**allié signature** 73002, pas un héros — la clé `TeamUp` de `cards.json` suppose deux identités en jeu, la restriction est donc portée par une condition de jeu du script ; (b) l'ATK de **Purple Man** est imprimée « ★ » (il n'attaque jamais, son Forced Interrupt remplace l'attaque par de la menace) et vaut 0 dans les données, aucune valeur non numérique n'étant acceptée ; (c) « si tu as vaincu une manigance secondaire **ce round** » (The Truth Hurts) n'existe pas dans `player_stat.py` : un marqueur maison est posé sur `effect.world` par une capacité silencieuse `Temp0` portée par les DEUX faces d'identité, Crack the Case étant une simple « Action » jouable aussi en alter-ego. **Validé par 7 cas** ajoutés à `tools/test_capacites.py` (dont un témoin sur les paliers de la caméra, et la règle d'or vérifiée en cassant `Investigate`). L'audit signale 1 suspicion `marqueur_sans_capacite` (73006 Out in the Open) : faux positif identique à Enhanced Spider-Sense 01004 et Get Behind Me! 01078, la carte ANNULE un « When Revealed » au lieu d'en porter un. **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (pas de déclencheur d'attaque dans l'API Puzzle) : le Forced Interrupt de Purple Man, l'Interrupt de Jessica's Jacket et celui d'Out in the Open, à vérifier en partie réelle. |
+| pack `jessica_jones` (73001a-73022) | héroïne custom **Jessica Jones** (par « ekAugust », scans Drive) créée le 4/8/2026. Tout le kit tourne autour des **manigances secondaires** : *Hard-Hitting Investigation* frappe pour la valeur d'ATK à chaque manigance vaincue, 8 des 15 cartes signature comptent ou exigent une manigance en jeu. Le pack apporte deux choses que le moteur ne connaissait pas. (a) Le set de rencontre **« On the Job »** (73012-73016, `data/encounter_sets/on_the_job.json`), mélangé au deck Rencontre par le **Setup de l'alter-ego** : le seul point d'accroche possible est `Message.WhenGameBeginSetup`, où l'on ajoute `"on_the_job"` à `message.encounter_set_names` — après, `World.Begin` a déjà créé PUIS mélangé le deck (étape 10), et un `ShuffleAllTo` arriverait trop tard. L'ability est enregistrée en `RegisterTemp` depuis `WhenPlayerSelectHero`, qui passe avant. (b) Le mot-clé maison **INVESTIGATE X** (« When revealed, move X threat from the main scheme to here ») (mécanisme détaillé dans mots-cles/investigate-x.md). Compteur `evidence` ajouté au moteur pour Jessica's Camera, dont les trois paliers (1/2/3 → +1 DEF/THW/ATK) sont trois `GiveKeywordToAttached` distincts sur `OnEvent.Counter`. Obligation Stable Home Life + set némésis **Purple Man** (« Look At Me! », Purple Man, « I've Got Everyone » ×2, The Purple Children). Deck de départ Justice de l'insert (`deck/starter/jessica_jones.json`), dont **les 25 cartes d'aspect existent toutes** dans la collection. Les trois ressources doubles redessinées du pack (JJ23-25) sont livrées en **collection d'art alternatif** `ekaug_jj` (§12 bis) et non en cartes : valeurs de jeu identiques à 01088-01090, seule l'image change. Écarts assumés : (a) **Power Couple** (73022) est imprimée « Team-Up (Jessica Jones and Luke Cage) », mais Luke Cage est ici l'**allié signature** 73002, pas un héros — la clé `TeamUp` de `cards.json` suppose deux identités en jeu, la restriction est donc portée par une condition de jeu du script ; (b) l'ATK de **Purple Man** est imprimée « ★ » (il n'attaque jamais, son Forced Interrupt remplace l'attaque par de la menace) et vaut 0 dans les données, aucune valeur non numérique n'étant acceptée ; (c) « si tu as vaincu une manigance secondaire **ce round** » (The Truth Hurts) n'existe pas dans `player_stat.py` : un marqueur maison est posé sur `effect.world` par une capacité silencieuse `Temp0` portée par les DEUX faces d'identité, Crack the Case étant une simple « Action » jouable aussi en alter-ego. **Validé par 7 cas** ajoutés à `tools/test_capacites.py` (dont un témoin sur les paliers de la caméra, et la règle d'or vérifiée en cassant `Investigate`). L'audit signale 1 suspicion `marqueur_sans_capacite` (73006 Out in the Open) : faux positif identique à Enhanced Spider-Sense 01004 et Get Behind Me! 01078, la carte ANNULE un « When Revealed » au lieu d'en porter un. **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (pas de déclencheur d'attaque dans l'API Puzzle) : le Forced Interrupt de Purple Man, l'Interrupt de Jessica's Jacket et celui d'Out in the Open, à vérifier en partie réelle. |
 | `game/card/face/card_face.py` (COUNTER) | compteur `evidence` ajouté pour le pack jessica_jones (`# CORRECTIF`) |
-| pack `agent_anti_venom` (74001a-74016 + `aav_traitor_minion`) | héros custom **Agent Anti-Venom / Flash Thompson** (par « DesignHacker », scans Drive, version 3.0) créé le 4/8/2026. Le kit entier lit **« exactly 10 hit points remaining »** : 10 est aussi le total imprimé, la condition vaut donc « intact », mais on compare bien les PV COURANTS à 10 et jamais `health` à `max_health`, sinon un bonus de PV la satisferait à tort. Elle pilote *Ten Out of Ten!* (+1 THW/ATK/DEF et piercing) et les moitiés conditionnelles de Dig Deep et d'Extricate. **Deux mots-clés maison** : (a) **`drain X`**, utilisé par Unlikely Allies et Bear Arms mais **défini nulle part sur les cartes fournies** (aucun insert dans les trois dossiers Drive, rien trouvé en ligne) — lecture arrêtée avec l'utilisateur le 4/8/2026 : *X dégâts à l'ennemi, puis X soins sur Agent Anti-Venom, et sur lui seul*, centralisée dans `Drain()` du `__init__.py` du set ; (b) **`traitor`**, lui défini en toutes lettres sur les cartes qui le posent, rendu par `TreatAsMinion` (game/ability/factory/treat.py) appelé **hors attachement** — le moteur ne l'exposait que via `AfterCardGainUpgrade` — avec la carte-gabarit `aav_traitor_minion` et un SCH forcé à 1. Obligation Spread Too Thin + set némésis **Maniac** (The Made Men, Infected Scorpion, Infected ×2). Écarts assumés : (a) **Bear Arms** « next attack gains ranged » n'a pas de durée équivalente dans le moteur : capacité `UnitAttackGainKeyword` temporaire sur l'identité, retirée dès sa première exécution ; (c) **Anti-Venom Goo** cumule une réduction de coût et un décompte de surpaiement : montage Pure Lightforce 70006 (effet différé porté par l'identité, `paid_this_resources` vs `this_effect_need_cost`) doublé d'un `ReduceCostToPlayFaceWhen` ciblé sur l'effet en cours ; (d) **The Made Men** est imprimée « Forced Interrupt: **After** Maniac schemes or attacks » (contradictoire) et est câblée en `ForcedResponse` sur `AfterEnemyActivationEnd` ; (e) **aucune decklist d'aspect n'est fournie** par l'auteur : deck Protection du Core Set retenu (soin, retaliate, défense), choix consigné dans `metadata.aspect_note` de `deck/starter/agent_anti_venom.json`. **"I've Got This!"** (« 7 damage instead if this attack has ranged or piercing ») ne devine RIEN : la carte porte `SetLabel('attack')`, donc `DealDamage` passe par `CanAttack.SpecialAttack` (voir `is_like_attack`) et c'est une vraie attaque. Le moteur résout les mots-clés (`CheckIfAttackMessageHasKeyword`) puis envoie `WhenUnitMakeKeyWordAttack` si l'attaque en a au moins un : la carte s'y accroche via une capacité temporaire et ajoute ses 2 dégâts. Conséquence voulue, demandée le 4/8/2026 : n'importe quelle carte d'aspect **extérieure au pack** qui accorde ranged ou piercing aux attaques du héros compte pour le bonus. Deux impasses avant d'y arriver, à ne pas refaire : `WhenRecalculateAttackDamage` posé en `Ability` brute n'est jamais appelé, et `UnitGetATKWhileAttackingInternal` filtre sur les attaques **de base** uniquement. **Validé par 9 cas** ajoutés à `tools/test_capacites.py`, dont un témoin blessé qui tombe si le buff de Ten Out of Ten! devient inconditionnel (règle d'or vérifiée). Leçon de données : le bonus d'un **attachement** se déclare avec la clé `ATK+` (Concussion Blasters 01153) et non `ATK`, faute de quoi la création de partie plante sur `KeyError: 'ATK'`. L'audit signale 1 suspicion `marqueur_sans_capacite` (74014), faux positif du point (d). **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (l'API Puzzle n'a ni déclencheur d'attaque ni activation d'action de carte en jeu) : le `drain 1` de Bear Arms, Unlikely Allies, Anti-Venom Goo, l'Interrupt de Spider-Man 74002, Maniac, The Made Men et le `traitor` d'Infected Scorpion, à vérifier en partie réelle. |
+| pack `agent_anti_venom` (74001a-74016 + `aav_traitor_minion`) | héros custom **Agent Anti-Venom / Flash Thompson** (par « DesignHacker », scans Drive, version 3.0) créé le 4/8/2026. Le kit entier lit **« exactly 10 hit points remaining »** : 10 est aussi le total imprimé, la condition vaut donc « intact », mais on compare bien les PV COURANTS à 10 et jamais `health` à `max_health`, sinon un bonus de PV la satisferait à tort. Elle pilote *Ten Out of Ten!* (+1 THW/ATK/DEF et piercing) et les moitiés conditionnelles de Dig Deep et d'Extricate. **Deux mots-clés maison** : (a) **`drain X`**, utilisé par Unlikely Allies et Bear Arms mais **défini nulle part sur les cartes fournies** (aucun insert dans les trois dossiers Drive, rien trouvé en ligne) — lecture arrêtée avec l'utilisateur le 4/8/2026 : *X dégâts à l'ennemi, puis X soins sur Agent Anti-Venom, et sur lui seul* (mécanisme détaillé dans mots-cles/drain-x.md) ; (b) **`traitor`**, lui défini en toutes lettres sur les cartes qui le posent (mécanisme détaillé dans mots-cles/traitor.md). Obligation Spread Too Thin + set némésis **Maniac** (The Made Men, Infected Scorpion, Infected ×2). Écarts assumés : (a) **Bear Arms** « next attack gains ranged » n'a pas de durée équivalente dans le moteur : capacité `UnitAttackGainKeyword` temporaire sur l'identité, retirée dès sa première exécution ; (c) **Anti-Venom Goo** cumule une réduction de coût et un décompte de surpaiement : montage Pure Lightforce 70006 (effet différé porté par l'identité, `paid_this_resources` vs `this_effect_need_cost`) doublé d'un `ReduceCostToPlayFaceWhen` ciblé sur l'effet en cours ; (d) **The Made Men** est imprimée « Forced Interrupt: **After** Maniac schemes or attacks » (contradictoire) et est câblée en `ForcedResponse` sur `AfterEnemyActivationEnd` ; (e) **aucune decklist d'aspect n'est fournie** par l'auteur : deck Protection du Core Set retenu (soin, retaliate, défense), choix consigné dans `metadata.aspect_note` de `deck/starter/agent_anti_venom.json`. **"I've Got This!"** (« 7 damage instead if this attack has ranged or piercing ») ne devine RIEN : la carte porte `SetLabel('attack')`, donc `DealDamage` passe par `CanAttack.SpecialAttack` (voir `is_like_attack`) et c'est une vraie attaque. Le moteur résout les mots-clés (`CheckIfAttackMessageHasKeyword`) puis envoie `WhenUnitMakeKeyWordAttack` si l'attaque en a au moins un : la carte s'y accroche via une capacité temporaire et ajoute ses 2 dégâts. Conséquence voulue, demandée le 4/8/2026 : n'importe quelle carte d'aspect **extérieure au pack** qui accorde ranged ou piercing aux attaques du héros compte pour le bonus. Deux impasses avant d'y arriver, à ne pas refaire : `WhenRecalculateAttackDamage` posé en `Ability` brute n'est jamais appelé, et `UnitGetATKWhileAttackingInternal` filtre sur les attaques **de base** uniquement. **Validé par 9 cas** ajoutés à `tools/test_capacites.py`, dont un témoin blessé qui tombe si le buff de Ten Out of Ten! devient inconditionnel (règle d'or vérifiée). Leçon de données : le bonus d'un **attachement** se déclare avec la clé `ATK+` (Concussion Blasters 01153) et non `ATK`, faute de quoi la création de partie plante sur `KeyError: 'ATK'`. L'audit signale 1 suspicion `marqueur_sans_capacite` (74014), faux positif du point (d). **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (l'API Puzzle n'a ni déclencheur d'attaque ni activation d'action de carte en jeu) : le `drain 1` de Bear Arms, Unlikely Allies, Anti-Venom Goo, l'Interrupt de Spider-Man 74002, Maniac, The Made Men et le `traitor` d'Infected Scorpion, à vérifier en partie réelle. |
 
 | pack `moon_knight` (76001a-76024) | héros custom **Moon Knight** (par « DesignHacker », scans Drive « MC4 Sealed ») créé le 4/8/2026. **Première identité du moteur à CINQ faces** : Moon Knight (héros, Aggression -1), Marc Spector (alter-ego de départ, main de 7), Mr. Knight (héros, Protection -1), Steven Grant (alter-ego, Leadership -1), Jake Lockley (alter-ego, Justice -1) — chaque personnalité réduit de 1 le coût des cartes de « son » aspect via `ReduceCostToPlayFaceWhen`, doublé d'un second réducteur pour l'événement signature bi-classe correspondant (« This card is both a Moon Knight card and an X card », le moteur n'ayant qu'une classe par carte). Deck de départ = **decklist officielle du scan** (27 cartes d'aspect, toutes présentes dans la collection), règle *Cheap Shots* (tous les aspects, aucun coût imprimé ≥ 3, ≥ 4 cartes par aspect en comptant les bi-classes) vérifiée à la main et affichée dans `reglesAspect` du deck-builder. Le pack apporte aussi le **set modulaire « Age of Khonshu »** (`data/encounter_sets/age_of_khonshu.json`) : 4 héros corrompus en sbires ELITE Villainous dont le When Defeated **crée à la volée l'artefact lié** (Mjolnir, Eye of Agamotto, Hell Charger, Iron Fist) via `CardFactory.GenerateCard` et le met en jeu sous le contrôle du joueur qui a porté le coup (`has_defeating_player=True`) — les 4 artefacts ne sont dans aucun deck. Écarts assumés : (a) la **pile d'identités** de l'insert (interdiction de revenir à une face quittée avant la fin de la phase) n'est pas câblée — bloquer un choix du menu coûterait l'action (leçon Losing Control TAH) ; (b) **Seek Help** : « discard Steven Grant and Jake Lockley from the IDENTITY stack » devient « exhaust Marc Spector », le moteur ne sachant pas retirer des faces ; (c) **Gear Up** « until the end of the round » rendu par `GainUntilPhaseEnd` (l'attaque a lieu en phase du méchant) ; (d) **Versatility** « treat as any aspect » est purement deck-building, non câblé. Traits `IDENTITY`/`ARTIFACT` ajoutés (`# CORRECTIF`). **Validé par 16 cas** (dont : départ sur la bonne face parmi 5, réduction en chaîne FoF→Deck and Cover gratuite, Echo copiant les stats du héros actif, Frenchie annulant la menace, Bushman immortel une fois, Thor→Mjolnir, limite par aspect de Different Strokes). **Leçons harnais** (corrigées dans `tools/test_capacites.py`) : les identités multi-faces exposent des options `Change_To_<Face>` (et non `Change_Form`), ajoutées aux déclencheurs du pilote ; `AfterPlayerPlayedCard` a pour trigger le JOUEUR, la carte jouée est `message.played_face` ; c'est `WhenUnitWouldBeDefeated` (modèle Loki 55029a) qu'il faut pour un « heal instead of defeat », pas `WhenUnitBeDefeated` ; poser la menace AVANT Frenchie en mise en place, sinon le pilote le défausse sur le SetThreat. **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque : Gear Up et Khonshu-action (pas de déclencheur d'attaque/d'activation de plateau), Mjolnir/Eye/Hell Charger/Iron Fist artefacts (créés en jeu mais capacités à vérifier en partie réelle). ⚠ Le pack a d'abord été numéroté 71xxx puis 73xxx : tranches prises en parallèle par `spider_man_rainy`, `venom_rainy` et `jessica_jones` — TOUJOURS vérifier les doublons de `card_id` sur TOUTE la collection avant de choisir une tranche. |
 
@@ -1121,10 +939,10 @@ optionnels, donc la ligne fautive n'est jamais exécutée. Défaut trouvé le
 4/8/2026 sur les obligations de `jessica_jones` et d'`agent_anti_venom`, par
 introspection des attributs plutôt que par les tests.
 
-| pack `lockjaw` (78001a-78030) | héros custom **Lockjaw** (par « Nugget », Marvel Champions Custom Project Cycle I, scans Drive) créé le 4/8/2026. Le chien téléporteur des Inhumains : 15 cartes signature bâties sur le trait **TELEPORT** (la plupart font changer de forme), plus **13 cartes d'aspect « Lockjaw and the Pet Avengers »** (78018-78030 : Zabu/Agression, Throg/Justice, Redwing/Leadership, Hairball et Lockheed/Protection, Ms. Lion, Ms. Marvel, Central Park et 4 autres en Basic). Deck de départ = **decklist officielle du scan** (aspect Protection, 15 + 25 cartes, toutes présentes). Écarts assumés : (a) ~~la carte imprime une ressource « os » propre au pack~~ **FAUX, corrigé le 10/8/2026** : cette icône est la ressource **mentale**, et la lire comme un os avait fait rendre quatre cartes par un [wild]. Fetch!, Fast Travel, Zooming Around et Ruff Ambush testent désormais la couleur **B**. Voir le §4.1 sur la façon de vérifier une icône ; (b) **Companion** (« ne compte pas dans la limite d'alliés et ne peut pas défendre ») est un mot-clé maison, composé dans le `__init__` du set à partir de `ThisNotCountAllyLimit` + `UnitCannotDefend` ; (c) **Tuning Fork** : `during="YourTurn"` est refusé par le moteur dès que la carte visée n'est pas « This » (assert dans `YouMayPlayCardLikeInHand`), la clause est omise — sans effet pratique, un soutien ne se jouant que pendant son tour ; (d) **Ms. Marvel** : ses deux « Interrupt » étoilés se déclenchant à chaque activation, ils sont rendus par un bonus permanent `attack/thwart + *_consequential_damage` (même écart que Fin Fang Foom 68016) ; (e) **Provoked** vérifie son seuil de 3 compteurs `calm` dans la Response qui les pose, plutôt qu'en Interrupt séparé. Traits `PET AVENGER`/`GOOD BOY`/`TELEPORT`/`KING`/`ARTHROSIAN`/`HAMSTER`/`SAVAGE LAND`/`X-MAN` et compteur `calm` ajoutés au moteur (`# CORRECTIF`). **Validé par 12 cas** (setup de Tuning Fork, Kamala's Room, Ms. Marvel, Annihilus renvoyé au deck Rencontre, Provoked qui verrouille la forme héros, Dognapped! nourri par les TELEPORT, paiement par la fourchette, Wet Slobbering Kiss, Zooming Around, Companionship, Animals Unleashed, Psionic Tracking). **Leçon** : « chaque ennemi engagé avec ce joueur » ne se cherche PAS par un filtre d'engagement — le moteur n'en expose pas pour le vilain ; il faut le montage de la carte officielle **Energy Daggers (01046)**, `Worlds.FindVillain()` + `player.GetEngagedMinions()`. L'audit signale 2 suspicions `marqueur_sans_capacite` (78017, 78026) : faux positifs, ce sont les écarts (d) et (e). **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (pas de déclencheur d'attaque ni d'action de plateau dans l'API Puzzle) : Fetch!, Cheer Up, Doc Jaw's Lab, New Attilan, Ruff Ambush, Teleport To Safety, Jaw Lock, Black Bolt, Hairball, Zabu, Lockheed, Dog Catcher — à vérifier en partie réelle. |
+| pack `lockjaw` (78001a-78030) | héros custom **Lockjaw** (par « Nugget », Marvel Champions Custom Project Cycle I, scans Drive) créé le 4/8/2026. Le chien téléporteur des Inhumains : 15 cartes signature bâties sur le trait **TELEPORT** (la plupart font changer de forme), plus **13 cartes d'aspect « Lockjaw and the Pet Avengers »** (78018-78030 : Zabu/Agression, Throg/Justice, Redwing/Leadership, Hairball et Lockheed/Protection, Ms. Lion, Ms. Marvel, Central Park et 4 autres en Basic). Deck de départ = **decklist officielle du scan** (aspect Protection, 15 + 25 cartes, toutes présentes). Écarts assumés : (a) ~~la carte imprime une ressource « os » propre au pack~~ **FAUX, corrigé le 10/8/2026** : cette icône est la ressource **mentale**, et la lire comme un os avait fait rendre quatre cartes par un [wild]. Fetch!, Fast Travel, Zooming Around et Ruff Ambush testent désormais la couleur **B**. Voir le §4.1 sur la façon de vérifier une icône ; (b) **Companion** (« ne compte pas dans la limite d'alliés et ne peut pas défendre ») est un mot-clé maison (mécanisme détaillé dans mots-cles/companion.md) ; (c) **Tuning Fork** : `during="YourTurn"` est refusé par le moteur dès que la carte visée n'est pas « This » (assert dans `YouMayPlayCardLikeInHand`), la clause est omise — sans effet pratique, un soutien ne se jouant que pendant son tour ; (d) **Ms. Marvel** : ses deux « Interrupt » étoilés se déclenchant à chaque activation, ils sont rendus par un bonus permanent `attack/thwart + *_consequential_damage` (même écart que Fin Fang Foom 68016) ; (e) **Provoked** vérifie son seuil de 3 compteurs `calm` dans la Response qui les pose, plutôt qu'en Interrupt séparé. Traits `PET AVENGER`/`GOOD BOY`/`TELEPORT`/`KING`/`ARTHROSIAN`/`HAMSTER`/`SAVAGE LAND`/`X-MAN` et compteur `calm` ajoutés au moteur (`# CORRECTIF`). **Validé par 12 cas** (setup de Tuning Fork, Kamala's Room, Ms. Marvel, Annihilus renvoyé au deck Rencontre, Provoked qui verrouille la forme héros, Dognapped! nourri par les TELEPORT, paiement par la fourchette, Wet Slobbering Kiss, Zooming Around, Companionship, Animals Unleashed, Psionic Tracking). **Leçon** : « chaque ennemi engagé avec ce joueur » ne se cherche PAS par un filtre d'engagement — le moteur n'en expose pas pour le vilain ; il faut le montage de la carte officielle **Energy Daggers (01046)**, `Worlds.FindVillain()` + `player.GetEngagedMinions()`. L'audit signale 2 suspicions `marqueur_sans_capacite` (78017, 78026) : faux positifs, ce sont les écarts (d) et (e). **~~Non couverts par le harnais~~ — PERIME, tous couverts depuis le 10/8/2026** (voir la note en fin de §8) ; motif d'epoque (pas de déclencheur d'attaque ni d'action de plateau dans l'API Puzzle) : Fetch!, Cheer Up, Doc Jaw's Lab, New Attilan, Ruff Ambush, Teleport To Safety, Jaw Lock, Black Bolt, Hairball, Zabu, Lockheed, Dog Catcher — à vérifier en partie réelle. |
 
 | `game/selector/selector.py` + `game/card/face/model/face_gain.py` | **deux points d'accroche** posés pour le pack `squirrel_girl` : une face peut déclarer `refuse_target_fn(effect)` (elle n'apparaît plus dans les cibles légales) et `refuse_gain_fn(effect)` (elle refuse tout bonus). Inertes tant qu'aucune carte ne les arme (`getattr` rend `None`), donc sans effet sur les 4600 autres cartes. Seul moyen de rendre « les écureuils ne peuvent être ni choisis ni renforcés par une carte joueur hors du set » : `Gain` est `@final` et appelée en direct, sans message interceptable, et la sélection de cibles n'a qu'un seul entonnoir, `GetAllLegalTargets`. |
-| pack `squirrel_girl` (75001a-75022) | héroïne custom **Squirrel Girl** créée le 5/8/2026 à partir d'un brief markdown, **arbitrée carte par carte avec l'utilisateur** (9 décisions, voir plus bas). Un **DECK ÉCUREUIL** de six alliés mis de côté au setup, monté comme le deck d'invocation de **Doctor Strange (09001b)** : `BeginGameWithSetAside` puis `Faces.ShuffleAllTo(additional_deck)`, et un `WhenCardWouldMoveToArea` posé sur chaque écureuil renvoie sa défausse vers `additional_discard_pile`. Deux notions maison, toutes deux dans le `__init__` du set : **appeler** un écureuil (révéler le dessus, le mettre en jeu épuisé, remélanger la défausse écureuil si le deck est vide) et **dépenser** un écureuil. La « réduction de coût de 1 » du matériel d'origine est rendue par une capacité `Resource` portée par chaque écureuil (défausse en coût, `for_card=CardFinder(set_name="Squirrel Girl")`) : effet identique à la table, et le moteur sait alors dire « si tu as dépensé un écureuil » par le message `WhenCardBeSpendAsResource`, sur lequel s'accrochent Unbeatable Army (identité), Nuts!, The Gatherer et The Forager. Mot-clé maison **Squirrel** = `ThisNotCountAllyLimit` + `UnitCannotDefend` + `UnitCannotHaveUpgradeAttached` + la capacité de dépense (même montage que `Companion` de Lockjaw). Écarts assumés : (a) **Network of Trees** n'a pas de capacité propre — le moteur n'a pas de message « quand tu appellerais un écureuil », l'interruption est résolue dans `AppelerEcureuil`, seul point de passage de tous les appels ; (b) **Discord in the Branches** ne porte pas le blanchiment : le moteur ne rend blanche qu'une face désignée, donc chaque capacité d'écureuil teste elle-même la présence de la manigance (`PasDeDiscorde`) — un septième écureuil devrait reprendre la condition ; (c) **Ratatoskr's Whispers** ne porte pas l'interdiction de dépense : c'est la capacité `Resource` de chaque écureuil qui vérifie sa présence ; (d) le Boost de Poisoned Rumors épuise dès le retournement au lieu de « after this activation ends » (sans conséquence : un écureuil n'agit jamais pendant l'activation d'un ennemi). **Écarts au brief d'origine, tous validés en multichoix le 5/8/2026** : le Costume déclenche sur « un sbire est vaincu » et non sur l'attaque de base (ATK 1, le moteur ne démarrait jamais) ; The Bruiser absorbe le **dégât conséquent** d'un autre écureuil en s'épuisant, au lieu de rediriger des dégâts de rencontre que les écureuils ne subissent jamais (ils ne défendent pas) ; Squirrel Swarm passe à 3 dégâts +3 si un écureuil a été dépensé ; The Forager récompense la dépense et non l'entrée en jeu ; l'obligation reprend le gabarit officiel (« défausse cette obligation », 1 écureuil) ; Poisoned Rumors reprend le squelette « sinon » sans choix libre. Traits `SQUIRREL`/`STUDENT`/`SUIT`/`NETWORK`/`ASGARDIAN` ajoutés au moteur. Deck de départ Agression du brief (25 cartes d'aspect, toutes présentes), **sans Boot Camp** : remplacé par Martial Prowess, puisque les écureuils refusent les bonus extérieurs. **Validé par 19 cas** ajoutés à `tools/test_capacites.py`, dont un **témoin** qui prouve que Boot Camp augmente bien un allié ordinaire, sans quoi le cas du refus de bonus passerait même si le point d'accroche était mort. **Leçon** : les cartes d'un deck (hors jeu) ne se désignent PAS par `SetTarget(Select.From(faces=...))` — le sélecteur ne les restreint pas, et le pilote a choisi le vilain puis l'a déplacé dans le deck écureuil ; il faut `player.MayChooseFace(faces, effect)`. Autre leçon : `Puzzle.PutIntoPlay` crée une copie NEUVE de la carte, qui n'a reçu aucune règle du setup — tout cas portant sur les règles d'écureuil doit faire APPELER l'écureuil par le jeu. **Validé par 28 cas, 22 cartes sur 23** — seul The Lookout, carte volontairement vierge, n'a pas de cas dédié. Y arriver a demandé **trois ajouts au harnais**, décrits au §8 : `Puzzle.Attack(defender=...)`, `Puzzle.PutIntoPlay(under_control=True)` et la clé de cas `accepter_choix`. La limite « **1 seul écureuil par carte jouée** » a coûté une refonte du montage, le 6/8/2026 : la capacité `Resource` n'est PAS portée par les six écureuils mais par les deux faces d'**identité** (« Squirrel Aid »), avec pour coût de défausser un écureuil que tu contrôles. Le moteur recense les sources de paiement une seule fois, avant toute dépense, et une capacité ne compte que pour une source : six capacités = six écureuils dépensables, et refuser une source déjà recensée fait tomber l'assertion `len(resources_effects) == 1` de `ProcessPayingEffect`. La limite n'est donc pas exprimable a posteriori ; avec une source unique elle est structurelle, et le joueur choisit toujours quel écureuil part, via le coût. Conséquence : les réponses « après avoir dépensé cet écureuil » (The Gatherer, The Forager) ne se lisent plus sur `WhenCardBeSpendAsResource` — le déclencheur serait l'identité — mais sur le **départ du jeu** de l'écureuil, quand la marque de dépense le désigne (`ReponseALaDepense`). L'audit signale 2 suspicions sur le pack, toutes deux faux positifs : **75012** (marqueur `Interrupt` et `exhaust_sans_cout`, l'interruption vit dans l'appel — même cas que Forces Combined 70003) et **75003** (marqueur `Response` : le moteur transforme un `AfterUnitDefeatedUnit` en capacité « Delay Ability », exactement comme l'allié Hercules 68002 ; le comportement est prouvé par son cas). |
+| pack `squirrel_girl` (75001a-75022) | héroïne custom **Squirrel Girl** créée le 5/8/2026 à partir d'un brief markdown, **arbitrée carte par carte avec l'utilisateur** (9 décisions, voir plus bas). Un **DECK ÉCUREUIL** de six alliés mis de côté au setup, monté comme le deck d'invocation de **Doctor Strange (09001b)** : `BeginGameWithSetAside` puis `Faces.ShuffleAllTo(additional_deck)`, et un `WhenCardWouldMoveToArea` posé sur chaque écureuil renvoie sa défausse vers `additional_discard_pile`. Deux notions maison, toutes deux dans le `__init__` du set : **appeler** un écureuil (révéler le dessus, le mettre en jeu épuisé, remélanger la défausse écureuil si le deck est vide) et **dépenser** un écureuil. La « réduction de coût de 1 » du matériel d'origine est rendue par une capacité `Resource` portée par chaque écureuil (défausse en coût, `for_card=CardFinder(set_name="Squirrel Girl")`) : effet identique à la table, et le moteur sait alors dire « si tu as dépensé un écureuil » par le message `WhenCardBeSpendAsResource`, sur lequel s'accrochent Unbeatable Army (identité), Nuts!, The Gatherer et The Forager. Mot-clé maison **Squirrel** (mécanisme détaillé dans mots-cles/squirrel.md). Écarts assumés : (a) **Network of Trees** n'a pas de capacité propre — le moteur n'a pas de message « quand tu appellerais un écureuil », l'interruption est résolue dans `AppelerEcureuil`, seul point de passage de tous les appels ; (b) **Discord in the Branches** ne porte pas le blanchiment : le moteur ne rend blanche qu'une face désignée, donc chaque capacité d'écureuil teste elle-même la présence de la manigance (`PasDeDiscorde`) — un septième écureuil devrait reprendre la condition ; (c) **Ratatoskr's Whispers** ne porte pas l'interdiction de dépense : c'est la capacité `Resource` de chaque écureuil qui vérifie sa présence ; (d) le Boost de Poisoned Rumors épuise dès le retournement au lieu de « after this activation ends » (sans conséquence : un écureuil n'agit jamais pendant l'activation d'un ennemi). **Écarts au brief d'origine, tous validés en multichoix le 5/8/2026** : le Costume déclenche sur « un sbire est vaincu » et non sur l'attaque de base (ATK 1, le moteur ne démarrait jamais) ; The Bruiser absorbe le **dégât conséquent** d'un autre écureuil en s'épuisant, au lieu de rediriger des dégâts de rencontre que les écureuils ne subissent jamais (ils ne défendent pas) ; Squirrel Swarm passe à 3 dégâts +3 si un écureuil a été dépensé ; The Forager récompense la dépense et non l'entrée en jeu ; l'obligation reprend le gabarit officiel (« défausse cette obligation », 1 écureuil) ; Poisoned Rumors reprend le squelette « sinon » sans choix libre. Traits `SQUIRREL`/`STUDENT`/`SUIT`/`NETWORK`/`ASGARDIAN` ajoutés au moteur. Deck de départ Agression du brief (25 cartes d'aspect, toutes présentes), **sans Boot Camp** : remplacé par Martial Prowess, puisque les écureuils refusent les bonus extérieurs. **Validé par 19 cas** ajoutés à `tools/test_capacites.py`, dont un **témoin** qui prouve que Boot Camp augmente bien un allié ordinaire, sans quoi le cas du refus de bonus passerait même si le point d'accroche était mort. **Leçon** : les cartes d'un deck (hors jeu) ne se désignent PAS par `SetTarget(Select.From(faces=...))` — le sélecteur ne les restreint pas, et le pilote a choisi le vilain puis l'a déplacé dans le deck écureuil ; il faut `player.MayChooseFace(faces, effect)`. Autre leçon : `Puzzle.PutIntoPlay` crée une copie NEUVE de la carte, qui n'a reçu aucune règle du setup — tout cas portant sur les règles d'écureuil doit faire APPELER l'écureuil par le jeu. **Validé par 28 cas, 22 cartes sur 23** — seul The Lookout, carte volontairement vierge, n'a pas de cas dédié. Y arriver a demandé **trois ajouts au harnais**, décrits au §8 : `Puzzle.Attack(defender=...)`, `Puzzle.PutIntoPlay(under_control=True)` et la clé de cas `accepter_choix`. La limite « **1 seul écureuil par carte jouée** » a coûté une refonte du montage, le 6/8/2026 : la capacité `Resource` n'est PAS portée par les six écureuils mais par les deux faces d'**identité** (« Squirrel Aid »), avec pour coût de défausser un écureuil que tu contrôles. Le moteur recense les sources de paiement une seule fois, avant toute dépense, et une capacité ne compte que pour une source : six capacités = six écureuils dépensables, et refuser une source déjà recensée fait tomber l'assertion `len(resources_effects) == 1` de `ProcessPayingEffect`. La limite n'est donc pas exprimable a posteriori ; avec une source unique elle est structurelle, et le joueur choisit toujours quel écureuil part, via le coût. Conséquence : les réponses « après avoir dépensé cet écureuil » (The Gatherer, The Forager) ne se lisent plus sur `WhenCardBeSpendAsResource` — le déclencheur serait l'identité — mais sur le **départ du jeu** de l'écureuil, quand la marque de dépense le désigne (`ReponseALaDepense`). L'audit signale 2 suspicions sur le pack, toutes deux faux positifs : **75012** (marqueur `Interrupt` et `exhaust_sans_cout`, l'interruption vit dans l'appel — même cas que Forces Combined 70003) et **75003** (marqueur `Response` : le moteur transforme un `AfterUnitDefeatedUnit` en capacité « Delay Ability », exactement comme l'allié Hercules 68002 ; le comportement est prouvé par son cas). |
 
 | **La zone RÉSERVE** : `game/deck/deck_type.py`, `game/player/player.py`, `game/card/card.py`, `game/player/action/player_get.py`, `game/world/game_area/game_area.py`, `game/render/to_descriptor.py` + `descriptor/world.py`, `game/effect/effect_context.py`, `game/player/action/player_action.py`, `game/ability/cost_func.py`, `game/ability/factory/resources.py` | Mécanique maison du pack `brawn` (7/8/2026), et **première zone de joueur ajoutée au moteur**. L'insert la définit comme « an out of play area that functions in a similar manner to the hand » : 3 cartes au plus, on y joue des cartes en payant leur coût, on peut y défausser des cartes pour générer leurs ressources, et **les deux zones ne se mélangent jamais dans un même paiement**. Montage : (a) `DeckType.ReserveArea` **arme le drapeau `is_like_in_hand`**, qui était déclaré dans `DeckTypeFlags.Base` sans qu'aucune zone ne s'en serve ; (b) `Card.IsLikeInHand()` lit ce drapeau AVANT son cache `can_state` — sinon la réponse serait figée avant que la carte n'entre en Réserve ; (c) `player.reserve` est créée pour TOUS les joueurs (une zone vide ne coûte rien et le descripteur la rend vide), avec `PutIntoReserve` / `EnforceReserveLimit` qui font redescendre à 3 en faisant CHOISIR au joueur, comme la limite de main ; (d) `CostFunc.ReturnToReserve`, calque de `ReturnToHand`, pour le coût imprimé de Silk 77002 ; (e) le cloisonnement du paiement dans `CheckThisCanDropPay`. ⚠ **Le piège du cloisonnement** : la liste des payeurs est dressée par `UpdatePayResources` AVANT que la carte jouée parte en zone de traitement, et relue APRÈS au moment de dépenser — à ce moment plus rien ne dit d'où elle venait. D'où `effect.context.play_from_area`, posé dans `ResolveEffect` juste avant le déplacement. Le moteur ne peut trancher que la moitié déterministe de la règle (carte jouée depuis la main → payeurs de la main seulement, et symétriquement) : pour un coût qui n'est ni l'un ni l'autre (capacité d'une carte en jeu, carte de rencontre), il propose légitimement les deux zones puisque le joueur n'a encore rien choisi. **Le mélange est donc fermé côté plateau**, au moment du clic (`ui-app/src/board/interaction.ts`, couvert par `reserve-cloisonnement.test.ts`, 4 cas dont 3 vérifiés rouges sans le correctif) |
 | pack `brawn` (77001a-77025) | héros custom **Brawn / Amadeus Cho** (par « Rainy », scans Drive + zip `Brawn-20260807T065409Z-1-001.zip`) créé le 7/8/2026. 15 cartes signature bâties sur la **Réserve** (voir la ligne ci-dessus) : *Mastermind Excello* la remplit depuis le dessus du deck, *Cho's Lab* depuis le dessous à chaque changement de forme, et **trois cartes récompensent le fait de jouer DEPUIS la Réserve** (Brawn's Suit → 1 dégât, Forward-Thinking → redresse l'identité, Totally Awesome → 1 menace retirée). *The Complete Package* inverse le réflexe habituel des identités génératrices : Brawn génère un [mental] **parce qu'il est déjà épuisé**, là où Peter Parker ou Star-Lord s'épuisent POUR générer. Obligation Analysis Paralysis + set némésis **Namor** (Rising Tide pose 1 jeton d'accélération par round, et Namor gagne +X ATK/SCH pour X jetons EN JEU — la manigance se nourrit elle-même). Deux alliés signature **alternatifs** portant le même numéro (Silk 77002, Ironheart 77003), chacun avec son Team-Up. Deck de départ Protection `deck/starter/brawn.json`. **Écarts assumés** : (a) **aucune decklist d'aspect n'est fournie** par l'auteur — Protection retenu avec l'utilisateur, motif dans `metadata.aspect_note` ; (b) les deux **Team-Up** sont imprimés « Brawn and Silk » / « Brawn and Ironheart » alors que Silk et Ironheart sont ici des ALLIÉS : la clé `TeamUp` de `cards.json` suppose deux identités en jeu et rendrait les cartes mortes en solo, la restriction est donc une condition de jeu (`SetCondition(only_if_you_control_face=...)`), montage de Power Couple 73022 ; (c) **Hulk Out** est imprimée « For each rage counter here, Brawn gets +1 ATK and +1 DEF and gains retaliate 1 » — arbitré avec l'utilisateur le 7/8/2026 : le « for each » porte sur l'ATK et la DEF, **pas** sur riposte, qui reste à 1 ; (d) une icône **[wild]** défaussée compte pour chaque couleur dans Shockwave et Brains and Brawn, comme le fait Hulk 01050 (carte officielle au montage jumeau). **Validé par 29 cas** ajoutés à `tools/test_capacites.py` (429/429 au 7/8/2026), dont **trois témoins** : Gamma Strike payée en [energy] doit faire 7 dégâts et pas 10, Namor doit voir ses stats MONTER quand un jeton s'ajoute (un bonus figé à l'entrée en jeu passerait sinon), et Strong as Silk doit être jouable AVEC Silk en jeu — ce dernier a fait tomber un vrai défaut. ⚠ **`SetCondition(only_if_you_control_face=...)` ne voit pas les alliés** : la clause fouille `GetIdentity().GetInventoryDeck()`, c'est-à-dire les cartes ATTACHÉES à l'identité. Employée pour les deux Team-Up, elle était donc silencieusement TOUJOURS fausse et les rendait injouables en toutes circonstances — le cas « injouable sans Silk » passait pour la mauvaise raison. Il faut une condition maison dans le paramètre `conditions=` de la fabrique, qui parcourt `joueur.allies`. C'est exactement le faux vert que le cas symétrique existe pour attraper. La clé de vérification `en_reserve` / `taille_reserve` a été ajoutée au harnais. **Leçon de test** : le premier cas de Gamma Strike était faux, pas la carte — Haymaker 01087 porte une ressource **énergie**, pas physique ; le paiement « uniquement [physical] » se monte avec Counter-Punch 01077. Même chose pour Silk, dont le cas posait 01096 (Rhino, le **vilain**) là où son action réclame un sbire. ⚠ **« Put this card into your reserve » ne se code PAS en déplaçant la carte** : un événement est défaussé par `Event.OnAfterPlay` APRÈS la résolution de son effet, et le déplacement fait pendant l'opération est écrasé (mesuré : la carte arrivait bien en `ReserveArea`, puis repartait en défausse). Le crochet est `Message.WhenCardWouldDiscard` + `SetToArea`, centralisé dans `RecyclerVersLaReserve()` du `__init__.py` du set. **Deux pièges s'y cachent** : (a) le moteur envoie ce message **plusieurs fois** pour une même carte (4 fois, mesuré) — les premiers envois sont des contrôles, seul le dernier défausse ; avec `unregister_after_exec=True` l'abilité disparaissait donc après un simple contrôle et la vraie défausse partait sans redirection ; (b) l'abilité restant armée, elle doit refuser de rediriger une défausse **venant de la Réserve**, sans quoi la carte y resterait prisonnière même quand la limite de 3 veut l'en sortir — d'où le filtre `is_processing`. ⚠ **Collision de nom** : `* Amadeus Cho` existe déjà en 68001b (pack `totally_awesome_hulk`), et `Worlds.FindPlayerByName` (obligation `GiveTo`) rend le PREMIER joueur qui porte le nom. **Instruit le 7/8/2026, conclusion : rien à corriger dans le moteur.** (a) La configuration n'est pas atteignable : Brawn et Totally Awesome Hulk sont deux versions du MÊME personnage, que les règles interdisent d'asseoir à la même table — et le projet vit déjà avec 9 collisions identiques (Peter Parker 01001b/71001b, Venom, Thor, Spider-Man…). (b) Le correctif tenté — préférer le propriétaire de la carte — **ne peut pas fonctionner** : mesuré, `Obligation.GetOwner()` rend le SCÉNARIO (`Rhino`) et non le joueur, l'obligation vivant dans le deck Rencontre. Il a donc été retiré plutôt que de laisser dans le moteur un correctif inopérant touchant tous les packs. Seule conséquence pratique, déjà connue : **ne jamais désigner cette identité par son nom dans un cas de test** (le harnais Puzzle cherche aussi par nom). ⚠⚠ **UNE CARTE QUI SE RECYCLE VERS LA RÉSERVE PENDANT UNE FENÊTRE DE RÉACTION DOIT BORNER SON DÉCLENCHEUR.** Trouvé en partie réelle le 7/8/2026 sur Calculated Defense 77004/77005. La carte payée en [mental] depuis la main revient en Réserve — or la Réserve est une zone « comme en main » : la carte y **redevenait immédiatement jouable, dans la même fenêtre de défense**, qui n'était pas encore refermée. Le jeu reproposait « Play Calculated Defense » sans fin, chaque tour de boucle relançant la séquence d'attaque, et le joueur finissait sans aucun paiement possible. Une carte ordinaire ne connaît pas ce problème : elle part en défausse et cesse d'être jouable. Correctif : `.LimitOncePerEvent()` sur le déclencheur — **par ÉVÉNEMENT et non par phase**, pour qu'un second exemplaire reste jouable sur la même défense, ce que le texte imprimé autorise. Gamma Strike 77006/77007 se recycle aussi mais n'est PAS concernée : son déclencheur est une action de tour (`WhenInYourPlayTurn`), pas une fenêtre forcée — le joueur garde la main et la rejouer est le cycle voulu. |
@@ -1254,10 +1072,15 @@ tableau. À chaque synchro avec le dépôt officiel, réappliquer ce tableau
 - Côté UI, l'affichage multi-vilains (Sinister Six...) repose sur une
   heuristique par noms (`ui-app/src/board/zones.ts`) : à revalider si un
   nouveau scénario multi-vilains est ajouté.
-- **Deux `public/` existent** (copie vivante WSL et miroir du dossier projet,
-  voir §1.1) : `ui-app/deployer.sh` déploie dans les deux, mais `js/prepare/`
-  (wizard, prefs, deck-builder, biographies) est édité à la main hors dépôt.
-  Après toute modif côté WSL, appliquer le `rsync` de §1.3.
+- **Deux `public/` existent** (la copie vivante Windows et le vestige WSL,
+  voir §1.1) : `ui-app/deployer.sh` déploie `dist/` dans les deux. Le dossier
+  `js/prepare/` (wizard, prefs, deck-builder, biographies) est édité à la main,
+  hors dépôt, et directement dans la copie vivante : il n'y a aucune recopie à
+  faire ensuite (voir §1.3).
+  ⚠️ En revanche `deployer.sh` recopie encore `public/js` et `public/css`
+  **depuis le vestige WSL vers la copie Windows**, avec `--delete`. Tant que ce
+  bloc n'est pas corrigé, le lancer écrase les modules `public/js/prepare/`
+  édités côté Windows : vérifier `js/prepare/` après chaque déploiement.
 - Plusieurs vieilles copies du moteur traînent encore sur la machine et ne
   doivent jamais servir de référence : la liste complète est en §1.4.
 

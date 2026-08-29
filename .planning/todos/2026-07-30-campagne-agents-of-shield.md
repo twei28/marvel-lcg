@@ -39,11 +39,11 @@ est dans les boîtes-campagnes de l'écran, et son scénario 5 se joue.
 **Ce qui a été livré au-delà de cette spec :** la grille de déduction à l'écran,
 l'accusation avec l'accusé qui DÉCOULE de la combinaison (correctif de règle, p.19),
 la reprise du scénario 5 après une défaite en standard, le soin de campagne experte, et
-le report des compteurs secrets. Détail complet au §8 bis de `docs/CAMPAGNES.md`.
+le report des compteurs secrets. Détail complet au §8 bis de `docs/rapports/CAMPAGNES.md`.
 
 **Ce qui reste ouvert sur aos :** rien de connu. Le deck de rencontre part toujours au
 navigateur avec ses identifiants, comme pour toutes les boîtes (§17 de
-`docs/CAMPAGNES.md`).
+`docs/rapports/CAMPAGNES.md`).
 
 ---
 
