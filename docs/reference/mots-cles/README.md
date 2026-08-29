@@ -25,12 +25,12 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] retaliate.md
 - [x] restricted.md
 - [x] permanent.md
-- [ ] surge.md
-- [ ] villainous.md
-- [ ] hazard.md
-- [ ] crisis.md
-- [ ] acceleration.md
-- [ ] amplify.md
+- [x] surge.md
+- [x] villainous.md
+- [x] hazard.md
+- [x] crisis.md
+- [x] acceleration.md
+- [x] amplify.md
 - [ ] steady.md
 - [ ] stalwart.md
 - [ ] peril.md
