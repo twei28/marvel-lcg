@@ -48,8 +48,8 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] companion.md (pack `lockjaw`)
 - [x] squirrel.md (pack `squirrel_girl`)
 - [x] investigate-x.md (pack `jessica_jones`)
-- [ ] setlist.md (pack `dazzler`)
-- [ ] showtime.md (pack `dazzler`)
+- [x] setlist.md (pack `dazzler`)
+- [x] showtime.md (pack `dazzler`)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
