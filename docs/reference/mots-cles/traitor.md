@@ -13,7 +13,8 @@ consequential damage.)* ».
 moteur. Manipulated Mind (27171) et « Lost » Child (47027) n'appellent
 PAS cette fonction nue : elles utilisent
 `AbilityFactory.TreatAttachedCardAsMinion(Ally, "Minion", ...)`
-(`game/ability/factory/asset_helper.py`), un helper apparenté mais
+(`treat.py`, méthode statique de la classe `AbilityFactoryTreat`, le même
+fichier que `TreatAsMinion`), un helper apparenté mais
 distinct, câblé sur l'attachement de la carte (`AttachTo2` dans leur
 `WhenThisRevealed`, converti automatiquement via
 `AfterCardGainUpgrade`). Ici le déclencheur du pack `agent_anti_venom`
@@ -86,7 +87,7 @@ schéma/attaque de Maniac.
 
 **Pièges connus** : ne pas confondre `TreatAsMinion` (fonction nue de
 `treat.py`, appelée directement depuis une capacité) avec
-`AbilityFactory.TreatAttachedCardAsMinion` (`asset_helper.py`), le helper
+`AbilityFactory.TreatAttachedCardAsMinion` (`treat.py`), le helper
 utilisé par Manipulated Mind et « Lost » Child, qui suppose lui un
 attachement posé sur l'allié et se déclenche via `AfterCardGainUpgrade`.
 Une implémentation qui chercherait `traitor` uniquement du côté
