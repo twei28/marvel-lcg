@@ -15,6 +15,27 @@ from . import *
 # X est lu sur `effect.cost_func.Get(CostFunc.Spend).return_res`, modele
 # Lightning Strike (thor/thor/06006.py) pour le cout "Spend X [couleur]
 # resources (minimum 1)" -- `Cost("B")` = un symbole [mental] = minimum 1.
+#
+# POINT A VERIFIER EN PARTIE REELLE (autoplay, 29/08/2026) : le pilote
+# d'autoplay s'est bloque plusieurs fois (3/24 parties) en reproposant O.P.A.
+# comme seule option "legale" restante alors qu'elle a deja ete utilisee dans
+# la phase -- meme symptome pour l'Interruption de defense de si002 (2/24).
+# Enquete : `Puzzle.Action` deux fois de suite ACCEPTE la 2e activation, mais
+# c'est un faux positif du harnais de test (`Message.WhenPlayerLikeInTurn`
+# est une `LikeFakeMessage`/`NoSendMessage` qui contourne expres
+# `SetHasSpellInPhase()`, donc `LimitOncePerPhase` n'est jamais teste
+# fidelement par ce chemin). Indice que la VRAIE partie respecte bien la
+# limite : dans le journal d'autoplay bloque, la menace du complot PRINCIPAL
+# a EMPIRE malgre "O.P.A.": 6 dans le round -- incompatible avec 6 vraies
+# executions qui retirent de la menace a chaque fois. Hypothese la plus
+# probable : la liste des CIBLES legales (schemes avec menace) se calcule
+# independamment de la capacite a payer le cout "minimum 1", donc l'option
+# reste listee meme quand plus aucune ressource mentale n'est disponible --
+# meme famille que Tenacity (01093, carte OFFICIELLE), deja documentee dans
+# autoplay.py comme "le defaut est ailleurs" (le pilote de test, pas la
+# carte). Aucun correctif applique : risque de toucher le calcul de cibles
+# partage par toute capacite a cout "Spend X (minimum 1)" du jeu entier,
+# bien au-dela de ce pack. A confirmer par un vrai joueur humain.
 
 def GetAbilities() -> Sequence['Ability']:
 

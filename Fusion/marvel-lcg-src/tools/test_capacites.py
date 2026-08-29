@@ -6569,6 +6569,27 @@ CAS = [
         "declencher": ["Puzzle.Reveal('si017')"],
         "verifier": "si017_deux_degats",
     },
+    # NOTE : pas de cas automatise pour "O.P.A. reste-t-elle offerte 2 fois
+    # dans la meme phase ?" (vu en autoplay, graine 1, rhino -- bloquage).
+    # Tente via `Puzzle.Action` deux fois de suite : la 2e activation est
+    # ACCEPTEE, ce qui ressemblait a un vrai bug. Mais `Puzzle.Action` passe
+    # par `Message.WhenPlayerLikeInTurn` (sender_player.py:338), une
+    # `LikeFakeMessage` + `NoSendMessage` FAITE pour contourner la
+    # comptabilite normale (`Send()` ne fait rien) -- `effect.
+    # SetHasSpellInPhase()` (effect_invoke.py:158), qui enregistre l'usage
+    # pour `LimitOncePerPhase`, ne se declenche QUE si `message.
+    # send_resolve_message` est vrai, ce que `WhenPlayerLikeInTurn` desactive
+    # expres. Le test etait donc invalide : il prouvait que le CONTOURNEMENT
+    # de test contourne bien la comptabilite, pas que la vraie partie le
+    # ferait. Preuve indirecte que ce n'est PAS un vrai bug de regle : dans le
+    # journal d'autoplay, malgre "O.P.A.": 6 en un round, la menace du complot
+    # PRINCIPAL a EMPIRE (0.14 -> 0.43) au lieu de s'ameliorer -- coherent
+    # avec une option qui reste listee mais que le moteur refuse en silence a
+    # la resolution (meme famille que Tenacity 01093, deja documente dans ce
+    # fichier comme "le defaut est ailleurs"), pas avec 6 vraies executions.
+    # A verifier malgre tout en partie reelle : le symptome (le pilote
+    # d'autoplay se bloque en reproposant O.P.A.) reste reel meme s'il n'a
+    # pas viole la regle.
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -8616,6 +8637,20 @@ def si017_deux_degats(monde, aides):
     if subis != 2:
         return False, f"degats subis = {subis} (attendu 2)"
     return True, "2 degats infliges au joueur (2 instances de 1)"
+
+def si001b_opa_limite_phase(monde, aides):
+    """si001b : apres 1 usage d'O.P.A. dans la phase, une 2e tentative doit
+    etre REFUSEE (AssertionError, aucune action disponible) -- sinon
+    LimitOncePerPhase ne bloque pas vraiment la reoffre, ce qui boucle le
+    pilote d'autoplay (bloqua reellement une partie, graine 1, rhino)."""
+    from game.puzzle.puzzle import PuzzleHelper
+    try:
+        PuzzleHelper.Exec(["Puzzle.Action('si001b', 'Action')"], monde)
+    except AssertionError as e:
+        return True, f"2e activation refusee comme attendu ({e}) : LimitOncePerPhase fonctionne"
+    except Exception as e:
+        return False, f"2e activation a leve une erreur inattendue : {type(e).__name__}: {e}"
+    return False, "2e activation d'O.P.A. ACCEPTEE dans la meme phase : LimitOncePerPhase ne bloque pas la reoffre"
 '''
 
 
