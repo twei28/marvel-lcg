@@ -9,3 +9,5 @@
 **Pièges connus** : **Ne pas confondre identité et allié.** La clé `desc.TeamUp` suppose **deux vraies identités héros**. Si le second héros nommé est en réalité un **allié signature** (comme Luke Cage pour Jessica Jones), la clé seule ne suffit pas : une condition de script est nécessaire pour vérifier la présence de cet allié (voir `jj022.py` et `docs/reference/GUIDE-CREATION-CONTENU.md` section 9, entrée `jessica_jones`). Certaines cartes Team-Up imposent aussi un placement spécifique (par exemple, une doit être contrôlée par un joueur, l'autre par l'autre).
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+**Note historique** : Le brief du plan mentionnait la card_id `73022` pour Power Couple, mais cet identifiant est périmé (ancien schéma de numérotation). La carte réelle utilise l'identifiant `jj022` du pack jessica_jones et correspond exactement à la description du guide (section 9).
