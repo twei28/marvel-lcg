@@ -1063,5 +1063,14 @@
         "encounters": [],
         "max_id": "wd165"
     },
-    "checksum": "f124d32c1cabd7ebc8ba51d2a2bb24f81ba8342c294fd2cc2f1d86dd78875f54"
+    "124. Custom (Hawkeye - Kate Bishop)": {
+        "name": "kate_bishop",
+        "scenarios": [],
+        "heroes": [
+            "kate_bishop"
+        ],
+        "encounters": [],
+        "max_id": "kb020"
+    },
+    "checksum": "2b2d1102728a19f3a147b6aabdf6bf283d49f40dcf4cdb8b1318f6bf438ee798"
 }

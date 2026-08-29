@@ -670,7 +670,16 @@ class AbilityFactoryDamage:
             return is_from_attack == message.IsFromAttack()
     
         def check_who_not_take_damage(effect: 'Effect', message: 'Message.AfterDamageBePrevented') -> bool:
-            return Condition.CheckWhichCard(who_not_take_damage, message.trigger, effect)
+            # CORRECTIF (test de comportement, pack kate_bishop kb008/kb010,
+            # premiers appelants de `who_not_take_damage`) : passer "You" tel
+            # quel plantait `CheckWhichCard` (`assert not isinstance(check_rule,
+            # Sequence)` a card_type.py:247, une chaine EST une Sequence) --
+            # aucune des autres branches de `invoke_check_card` ne reconnait le
+            # litteral "You". Modele `check_attacker` (factory/do_attack.py),
+            # seul autre `check_*` de ce fichier a filtrer sur "You" : il
+            # convertit d'abord via `Condition.GetYouRule(..., identity=True)`.
+            rule = Condition.GetYouRule(who_not_take_damage, identity=True)
+            return Condition.CheckWhichCard(rule, message.trigger, effect)
         
         def check_prevent_by(effect: 'Effect', message: 'Message.AfterDamageBePrevented') -> bool:
             return Condition.CheckWhichCard(prevent_by, message.prevent_by_effect.this, effect)

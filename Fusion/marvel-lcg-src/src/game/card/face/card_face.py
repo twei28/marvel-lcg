@@ -163,6 +163,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'formula', 'sanity', 'pigeon',
         # Les Spider-Bots de l'arbre Web-Spinner portent leurs propres compteurs.
         'bot',
+        # CORRECTIF : compteur du pack custom kate_bishop (CptScorp). Kate's
+        # Aviators (kb011) entre en jeu avec "Uses (2 style counters)" ; sans
+        # cette entree, `IsCounter('style')` echoue et la carte fait planter
+        # TOUT chargement du hero_deck de Kate Bishop des la mise en place.
+        'style',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
