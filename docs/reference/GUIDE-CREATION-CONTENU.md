@@ -321,81 +321,16 @@ Exemples officiels à consulter avant d'écrire une carte neuve :
 - `docs/card_scripting_guide.md` : Swinging Web Kick, Backflip, Black Cat,
   Spider-Tracer, Web-Shooter, Eviction Notice, Shocker, Steve Rogers.
 
-## 4. Checklist — nouvelle carte
+## 4. Nouvelle carte
 
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers le
-> dossier projet avec le `rsync` de §1.3.
-
-1. Ajouter l'entrée dans `data/cards.json`, dans le bon pack (respecter le tri
-   par `card_id`). Renseigner `type`, `name`, `desc`, `traits`, `set_name`, `text`.
-2. Si la carte a des capacités : créer
-   `src/cards/pack/<pack>/<set>/<card_id>.py` avec `GetAbilities()`.
-   S'inspirer d'une carte proche déjà scriptée (4 200+ exemples).
-3. Image : déposer le scan dans `assets/pics/<card_id>.png` (ou `.jpg`/`.webp` ;
-   le chargeur `engine/file/cache.py` EXIGE une extension). Sinon le jeu tente
-   marvelcdb puis génère un fallback.
-4. Valider (§8) : au minimum `test_cards.py` à 0 erreur.
-5. Pour une carte custom hors dépôt : voir `data/cards_custom.json` et le
-   mécanisme `cards/<id>.py.txt` (guide de l'éditeur).
-6. Recopier vers le dossier projet (§1.3).
-
-### 4.1 En cas de doute sur une carte : DEMANDER, carte par carte
-
-**Règle absolue.** Dès qu'une carte laisse place à plus d'une lecture, on ne
-tranche pas tout seul : on pose la question à l'utilisateur.
-
-- **Une question à la fois**, en **multichoix**, avec l'option recommandée en
-  premier et « Autre (précise) » toujours disponible en dernier.
-- **Une question par carte.** Ne jamais grouper « voici mes 8 arbitrages,
-  valide en bloc » : chaque carte a son contexte, et un lot se valide à la
-  légère.
-- Chaque option doit dire **ce que ça change en jeu**, pas seulement ce que ça
-  change dans le code. « Bear Arms à 3 de coût pour 1 dégât par tour » parle,
-  « on appelle `Drain()` » ne parle pas.
-- Poser la question **avant** d'écrire le script, pas après. Ce qui n'a pas
-  été demandé au bon moment doit l'être quand même : mieux vaut une question
-  tardive qu'un arbitrage silencieux.
-
-Ce qui déclenche une question, sans exception :
-
-| Situation | Exemple vécu |
-|---|---|
-| Mot-clé maison non défini sur les cartes fournies | `drain X` (Agent Anti-Venom) : introuvable sur les scans et en ligne |
-| Texte imprimé contradictoire | The Made Men : « Forced **Interrupt** : **After** Maniac schemes or attacks » |
-| Valeur imprimée que le moteur ne sait pas encoder | l'ATK « ★ » du Homme-Pourpre |
-| Portée d'une phrase ambiguë | « Discard this obligation » : la dernière option seulement, ou les deux ? |
-| Mot-clé officiel inapplicable tel quel | `TeamUp` de Power Couple, qui suppose DEUX héros en jeu |
-| Contenu absent du matériel fourni | aucune decklist d'aspect livrée par l'auteur |
-| Un effet que le moteur ne peut pas rendre fidèlement | « if this attack has ranged or piercing » sur un événement |
-| Une icône imprimée qu'on ne reconnaît pas | l'icône « nœuds reliés » de Lockjaw, prise pour un os pendant cinq jours |
-
-**Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
-une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
-vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
-supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
-Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
-`RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
-os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
-promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :
-tous comparent le code au texte saisi, et le texte était faux pareillement.
-Seul un joueur l'a vu, en partie.
-
-Ce qui ne déclenche PAS de question : les choix purement techniques sans effet
-sur les règles (quelle fabrique employer, où ranger un helper, format d'image).
-Ceux-là se documentent au §9, ils ne se discutent pas.
-
-À l'inverse, les points **non tranchables** (une capacité que le harnais ne sait
-pas déclencher, un doute sur le comportement réel du moteur) ne sont pas des
-questions : ils vont dans la liste « à vérifier en partie réelle » du §9, et il
-faut le dire clairement en fin de travail.
+Voir `PROCESSUS-CARTE.md`, qui couvre construction ET validation dans
+l'ordre d'exécution. Ce fichier-ci reste la référence pour le format des
+données (§2) et l'API de scripting (§3).
 
 ## 5. Checklist — nouveau héros
 
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers
-> `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`
-> avec le `rsync` de §1.3. Jamais l'inverse.
+> **Où créer tout ça** : dans la copie vivante `Fusion/marvel-lcg-src/`
+> (voir §1.1). Depuis le 29/08/2026 il n'y a plus de recopie à faire.
 
 1. **Cartes** dans `data/cards.json` (pack du produit, `set_name` = nom du héros) :
    - `XXXXXa` type `Hero` (`HP/ATK/THW/DEF/HS`) et `XXXXXb` type `AlterEgo`
@@ -549,9 +484,8 @@ variante resterait orpheline.
 
 ## 6. Checklist — nouveau scénario
 
-> **Où créer tout ça** : dans la copie vivante
-> `~/marvel-work/fusion/marvel-lcg-src/` (voir §1.1), puis recopier vers le
-> dossier projet avec le `rsync` de §1.3.
+> **Où créer tout ça** : dans la copie vivante `Fusion/marvel-lcg-src/`
+> (voir §1.1). Depuis le 29/08/2026 il n'y a plus de recopie à faire.
 
 1. **Cartes** dans `data/cards.json` :
    - un `Villain` par stade (`Stage: "1"`, `"2"`, `"3"`, `HP` souvent en `"N*"`) ;
