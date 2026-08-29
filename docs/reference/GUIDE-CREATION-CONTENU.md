@@ -327,79 +327,13 @@ Voir `PROCESSUS-CARTE.md`, qui couvre construction ET validation dans
 l'ordre d'exécution. Ce fichier-ci reste la référence pour le format des
 données (§2) et l'API de scripting (§3).
 
-## 5. Checklist — nouveau héros
+## 5. Nouveau héros
 
-> **Où créer tout ça** : dans la copie vivante `Fusion/marvel-lcg-src/`
-> (voir §1.1). Depuis le 29/08/2026 il n'y a plus de recopie à faire.
-
-1. **Cartes** dans `data/cards.json` (pack du produit, `set_name` = nom du héros) :
-   - `XXXXXa` type `Hero` (`HP/ATK/THW/DEF/HS`) et `XXXXXb` type `AlterEgo`
-     (`HP/REC/HS`) — même carte, deux faces ;
-   - les ~15 cartes signature ;
-   - 1 obligation (`desc.GiveTo` = nom de l'alter-ego) ;
-   - 5 cartes némésis (`set_name` = `"<Héros> Nemesis"`).
-2. **Scripts** pour chaque carte à capacités (y c. les faces a/b du héros :
-   capacités imprimées, le reste — ATK/THW/DEF/REC de base — est automatique).
-3. **Deck de départ** `deck/starter/<hero>.json` :
-   ```json
-   { "version": "0.5.8", "name": "Mon Héros", "metadata": {"url": ""},
-     "hero": ["XXXXXa,XXXXXb"],
-     "hero_deck": ["...15 cartes..."],
-     "set_aside": [],
-     "obligations": ["..."],
-     "nemesis_set": ["...5 cartes..."],
-     "player_deck": ["...~25 cartes d'aspect..."] }
-   ```
-4. `data/nemesis/<hero>_nemesis.json` (facultatif, pour l'UI).
-5. Référencer le héros dans `heroes` du bon pack de `data/sets_info.json`.
-6. Images de toutes les cartes dans `assets/pics/<card_id>.jpg` (l'extension
-   est obligatoire, voir §4).
-7. **Mini-biographie** dans `public/js/prepare/heros-info.js` (voir §5.1).
-8. **Texte FRANÇAIS de chaque carte** dans
-   `ui-app/src/board/textes-fr-fanmade.ts` (voir §11.1). **Obligatoire** : sans
-   lui, les cartes du pack n'ont aucun tooltip français, et rien ne le signale.
-9. Valider (§8) + jouer une partie complète avec le héros.
-10. **Recopier vers le dossier projet** (§1.3), sinon rien n'est archivé côté
-    Windows.
-
-### 5.1 Mini-biographie du héros (obligatoire)
-
-Le wizard affiche, au survol d'un héros, une fiche « qui est ce personnage »
-(voir `showHeroHover` dans `public/js/prepare/app.js`). Elle décrit le
-PERSONNAGE, jamais sa mécanique de jeu : c'est de la culture Marvel, pas des
-règles. Un héros sans entrée retombe silencieusement sur l'ancien affichage
-(le grand visuel seul) : rien ne casse, mais la fiche manque.
-
-Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
-`card_id` de la face héros** et jamais par le nom (`01001a` Peter Parker et
-`27030a` Miles Morales s'appellent tous les deux « Spider-Man ») :
-
-```js
-"64001a": {
-    bio:   "3 ou 4 phrases : origine, pouvoirs, ce qui définit le personnage.",
-    bioEn: "Same, in English.",
-    civil: "Johnny Storm",
-    base: "New York (Baxter Building)",
-    equipes: "Quatre Fantastiques, Vengeurs",
-    equipesEn: "Fantastic Four, Avengers",
-    ennemis: "Fatalis, l'Homme-Taupe",
-    ennemisEn: "Doctor Doom, Mole Man",
-    apparition: "Fantastic Four #1 (1961)",
-},
-```
-
-Règles d'écriture :
-- **Tout champ est optionnel sauf `bio` et `bioEn`** : mieux vaut omettre une
-  ligne que d'inventer une némésis ou une date de première apparition. Un champ
-  absent disparaît simplement de la fiche.
-- Les champs `*En` ne sont nécessaires que si la traduction diffère (« New
-  York » ou « Thanos » se passent de doublon). En anglais, un `*En` absent
-  affiche la version française.
-- Viser 3 ou 4 phrases : le panneau de survol est étroit (314 px).
-- Les libellés affichés passent par `t()` et ont leur entrée dans
-  `public/js/prepare/dico-en.js` (voir §11).
-- **Ne pas oublier le rsync des deux `public/`** (voir §10) : ce fichier vit
-  hors du dépôt du moteur.
+Voir `PROCESSUS-HEROS.md`, qui couvre toutes les étapes (cartes, scripts,
+deck, biographie, texte français, validation) et exige un
+`PROCESSUS-CARTE.md` rempli pour chaque carte du pack. Les deux points
+d'attention ci-dessous restent ici car ils décrivent un mécanisme du moteur,
+pas une étape du processus.
 
 ### 5.2 Ne jamais mettre une carte signature d'un autre héros dans un deck
 
