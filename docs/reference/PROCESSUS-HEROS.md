@@ -73,9 +73,10 @@ seulement si la traduction diffère (« New York » ou « Thanos » se passent
 de doublon, en anglais un `*En` absent affiche la version française) ;
 viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
 dans `public/js/prepare/dico-en.js` (voir §11 de `GUIDE-CREATION-CONTENU.md`).
-Ne pas oublier le rsync des deux `public/`
-(voir §10 de `GUIDE-CREATION-CONTENU.md`) : ce fichier vit hors du dépôt du
-moteur. Un héros sans entrée retombe silencieusement sur l'ancien affichage :
+Ce fichier vit hors du dépôt du moteur : on l'édite directement dans la copie
+vivante, il n'y a aucune recopie à faire (voir §1.3 de
+`GUIDE-CREATION-CONTENU.md`).
+Un héros sans entrée retombe silencieusement sur l'ancien affichage :
 rien ne casse, mais la fiche manque, donc **preuve obligatoire** = confirmer
 au survol du héros dans le wizard que le panneau affiche bien le texte
 attendu, pas juste le grand visuel seul.
