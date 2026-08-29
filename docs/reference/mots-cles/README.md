@@ -47,7 +47,7 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] traitor.md (pack `agent_anti_venom`)
 - [x] companion.md (pack `lockjaw`)
 - [x] squirrel.md (pack `squirrel_girl`)
-- [ ] investigate-x.md (pack `jessica_jones`)
+- [x] investigate-x.md (pack `jessica_jones`)
 - [ ] setlist.md (pack `dazzler`)
 - [ ] showtime.md (pack `dazzler`)
 
