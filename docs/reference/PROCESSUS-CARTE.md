@@ -68,8 +68,8 @@ Ce qui déclenche une question, sans exception :
 **Une icône de ressource ne se nomme jamais à vue.** Elle se vérifie contre
 une carte du **même pack** dont la fiche déclare la ressource : `desc.RES`
 vaut `R` physique, `B` mental, `Y` énergie, `G` wild. On découpe le coin
-supérieur gauche des deux scans et on compare. Sur Lockjaw, 78005 Kamala's
-Room porte `RES=B` et imprime la forme litigieuse ; 78002 Black Bolt porte
+supérieur gauche des deux scans et on compare. Sur Lockjaw, lj005 Kamala's
+Room porte `RES=B` et imprime la forme litigieuse ; lj002 Black Bolt porte
 `RES=G` et imprime une ÉTOILE. Une lecture au jugé a inventé une « ressource
 os » rendue par un wild, et quatre cartes n'ont pas rendu ce qu'elles
 promettent jusqu'au 9/8/2026. **Aucun outil du projet ne peut attraper ça** :

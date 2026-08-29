@@ -54,7 +54,7 @@ Ajouter une entrée dans `public/js/prepare/heros-info.js`, **indexée par le
 `27030a` Miles Morales s'appellent tous les deux « Spider-Man ») :
 
 ```js
-"64001a": {
+"ht001a": {
     bio:   "3 ou 4 phrases : origine, pouvoirs, ce qui définit le personnage.",
     bioEn: "Same, in English.",
     civil: "Johnny Storm",
