@@ -4,6 +4,12 @@ from . import *
 # Hero Action (attack/thwart): Remove 2 threat from a scheme, then deal 3
 #   damage to the villain. If you paid for this card using only [wild]
 #   resources, remove 2 additional threat.
+#
+# CORRECTIF (30/08/2026) : le module ne posait que le label 'thwart' alors que la
+# carte est imprimee « (attack/thwart) » et inflige 3 degats au vilain. Le label
+# 'attack' est ce qui livre la capacite au statut Sonne
+# (`cards/pack/status/stunned.py`) : un Amadeus Cho Sonne jouait la carte, retirait
+# sa menace, frappait le vilain, et GARDAIT son statut.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -27,6 +33,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             calculated_strike,
         ).SetPlay(hero_form_only=True)
-        .SetLabel('thwart')
+        .SetLabel('attack', 'thwart')
         .SetTarget(Scheme2),
     ]

@@ -9523,6 +9523,60 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 1]], "en_jeu": ["01125"]},
     },
+    {
+        "nom": "ah008 Calculated Strike — Sonne, la carte est ANNULEE et le statut consomme",
+        "pourquoi": ("carte imprimee « (attack/thwart) » qui infligeait 3 degats au vilain, mais "
+                     "le module ne posait que le label 'thwart'. Le label 'attack' est ce qui "
+                     "livre la capacite a Sonne (`cards/pack/status/stunned.py`, l.49). Sonde "
+                     "de mesure : jumeau exact du cas ah008 de base, avec le heros Sonne"),
+        "scenario": "rhino",
+        "heros": "totally_awesome_hulk",
+        "mise_en_place": ["Puzzle.ChangeForm('ah001b')",
+                          "Puzzle.SetThreat('01097b', 4)",
+                          "Puzzle.Stun('ah001a')"],
+        "main_exclusive": ["ah008", "ah010", "ah009", "ah011"],
+        "declencher": [],
+        "jouer": ["ah008"],
+        "payer_avec": ["ah010", "ah009", "ah011"],
+        "cibles": ["01097b", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "degats": [["01094", 0]],
+                    "statuts_absents": [["ah001a", "Stunned"]]},
+    },
+    {
+        "nom": "hd009 Quack and Burn — Sonne, la carte est ANNULEE et le statut consomme",
+        "pourquoi": ("carte imprimee « (attack/thwart) ». La capacite PRINCIPALE, celle qui "
+                     "infligeait les degats, portait `SetLabel()` VIDE ; seul le "
+                     "`ForChoiceAbility` imbrique du retrait de menace portait 'thwart'. Sonde "
+                     "de mesure : le heros est Sonne, la carte devrait etre annulee"),
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+                          "Puzzle.Stun('hd001a')"],
+        "main_exclusive": ["hd009", "01087", "01087"],
+        "declencher": ["Puzzle.SetThreat('01097b', 5)"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["hd009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]],
+                    "statuts_absents": [["hd001a", "Stunned"]]},
+    },
+    {
+        "nom": "hd005 Quack Attack — Sonne, l'interruption est ANNULEE et le statut consomme",
+        "pourquoi": ("carte imprimee « (attack/defense) ». La capacite PRINCIPALE porte "
+                     "`SetLabel()` VIDE ; seul le `ForChoiceAbility` imbrique des degats porte "
+                     "'attack'. Sonde de mesure : si le label imbrique suffit, Sonne annule "
+                     "quand meme et l'identite encaisse les 3 degats sans prevention"),
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+                          "Puzzle.Stun('hd001a')"],
+        "main_exclusive": ["hd005", "01088"],
+        "declencher": ["Puzzle.Damage('hd001a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3,
+                    "statuts_absents": [["hd001a", "Stunned"]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -10458,6 +10512,17 @@ def etat_attendu(monde, aides):
             soucis.append(f"{card_id} introuvable en jeu (statut {statut})")
         elif not face.CastTo(aides["CanStatus"]).HasStatus(statut):
             soucis.append(f"{card_id} ne porte pas le statut {statut}")
+
+    # Cle `statuts_absents` : l'inverse de `statuts`. Indispensable des qu'un cas
+    # prouve qu'un statut a ete CONSOMME — c'est la moitie invisible des labels
+    # 'attack'/'thwart', qui n'ont d'autre effet observable que de livrer la
+    # capacite a Sonne et Desoriente (`cards/pack/status/`).
+    for card_id, statut in attendu.get("statuts_absents") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (statut {statut})")
+        elif face.CastTo(aides["CanStatus"]).HasStatus(statut):
+            soucis.append(f"{card_id} porte ENCORE le statut {statut}")
 
     # `defausse` prouve qu'un evenement a bien ete JOUE : un evenement encore en
     # main n'est ni « en jeu » ni dans la defausse, donc `hors_jeu` ne le voit pas.

@@ -33,6 +33,15 @@ from . import *
 # pose une question distincte et reste testable.
 
 
+# CORRECTIF (30/08/2026) : la capacite PRINCIPALE portait `SetLabel()` VIDE ; seul
+# le `ForChoiceAbility` imbrique portait un label. Mesure : un label pose sur une
+# ability imbriquee ne livre PAS la capacite aux statuts. Sonne et Desoriente
+# ecoutent `AfterPlayerTriggerAbility(label=...)` sur l'ability JOUEE
+# (`cards/pack/status/`), et la carte passait donc en force. Modele : la carte
+# OFFICIELLE 18004 Crosscounter, meme forme, qui pose ses trois labels imprimes
+# sur l'ability principale.
+
+
 def GetAbilities() -> Sequence['Ability']:
 
     def attaque_de_man_thing(effect: 'Effect', trouve: 'CardFace|None') -> int:
@@ -85,6 +94,6 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
             quack_and_burn,
-        ).SetPlay().SetLabel()
+        ).SetPlay().SetLabel('attack', 'thwart')
         .SetTarget(Enemy),
     ]
