@@ -1095,4 +1095,13 @@ export const HEROS_INFO = {
         apparition: "Young Avengers Vol. 1 #1 (2005)",
     },
 
+    "ss001a": {
+        bio: "Kaine Parker est un clone imparfait de Peter Parker (Spider-Man), créé par le généticien Miles Warren (le Jackal) durant la « Clone Saga ». Rongé par une dégénérescence cellulaire et une haine de son original, il a d'abord sombré dans la violence sous l'identité de la Tarantula, avant de chercher la rédemption en devenant le vigilant plus mesuré Scarlet Spider. Hanté par la culpabilité de ses crimes passés, il protège aujourd'hui les rues avec une brutalité assumée mais un code moral retrouvé.",
+        bioEn: "Kaine Parker is an imperfect clone of Peter Parker (Spider-Man), created by geneticist Miles Warren (the Jackal) during the \"Clone Saga\". Wracked by cellular degeneration and a hatred of his original, he first fell into violence as the vigilante Tarantula, before seeking redemption as the more measured Scarlet Spider. Haunted by guilt over his past crimes, he now protects the streets with brutal efficiency but a rediscovered moral code.",
+        civil: "Kaine Parker",
+        ennemis: "Miles Warren (le Jackal)",
+        ennemisEn: "Miles Warren (the Jackal)",
+        apparition: "Web of Spider-Man Vol. 1 #119 (1994)",
+    },
+
 };

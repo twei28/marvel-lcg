@@ -106,6 +106,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "SQUIRREL", "STUDENT", "SUIT", "NETWORK", "ASGARDIAN",  # CORRECTIF : traits du pack custom squirrel_girl
         "PSYCHIATRIST",  # CORRECTIF : trait du pack custom agent_13 (Rainy)
         "REPTILIAN", "A.I.M. SCIENTIST", "MULTIVERSE", "CORRUPT", "TRAP!", "UNDERLING",  # CORRECTIF : traits du pack custom web_of_deceit (Ripper3)
+        "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

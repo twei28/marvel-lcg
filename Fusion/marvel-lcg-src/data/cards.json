@@ -76407,7 +76407,6 @@
             "custom": "Arnaud"
         }
     ],
-    "checksum": "9de549431ceaa2f53a3ee42523e23a0e9b0a1c899119cc99fdc3b81a8d9a75fa",
     "okoye": [
         {
             "card_id": "ok001a",
@@ -76858,5 +76857,398 @@
             "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: Choose a minion in play. That minion attacks you. If the attacking enemy's ATK is 2 or less, it gains villainous for this attack. If its ATK is 3 or more, it gains overkill for this attack. If there are no minions in play, this card gains surge.",
             "custom": "Arnaud"
         }
-    ]
+    ],
+    "scarlet_spider": [
+        {
+            "card_id": "ss001a",
+            "type": "Hero",
+            "name": "* Scarlet Spider",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "3",
+                "HS": "5"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<i>Extreme Interrogation</i> — <b>Response</b>: After you deal excess damage to a minion, shuffle it back into the encounter deck. Then, remove threat from a scheme equal to the amount of excess damage dealt. <i>(Max 3 threat per minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss001b",
+            "type": "AlterEgo",
+            "name": "* Kaine Parker",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "REC": "4",
+                "HS": "6"
+            },
+            "traits": [
+                "CLONE"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<i>Spider Link</i> — <b>Action</b>: Discard 1 card from your hand → search your discard pile for 1 copy of Spider-pathy and add it to your hand. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss002",
+            "type": "Event",
+            "name": "Grim Resolve",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Choose a basic power, you get +1 to that power until the end of the round for each different resource spent on this card. Then, ready your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss003",
+            "type": "Event",
+            "name": "Grim Resolve",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Choose a basic power, you get +1 to that power until the end of the round for each different resource spent on this card. Then, ready your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss004",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss005",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss006",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss007",
+            "type": "Event",
+            "name": "Spider-pathy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Search the encounter deck for the topmost minion and put it into play engaged with you. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss008",
+            "type": "Event",
+            "name": "Spider-pathy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Search the encounter deck for the topmost minion and put it into play engaged with you. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss009",
+            "type": "Event",
+            "name": "Unrestrained",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. If the villain takes overkill damage from this attack, stun and confuse the villain.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss010",
+            "type": "Event",
+            "name": "Unrestrained",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. If the villain takes overkill damage from this attack, stun and confuse the villain.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss011",
+            "type": "Support",
+            "name": "* Four Seasons' Room",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Four Seasons' Room → draw 1 card <i>(2 instead if you give a facedown boost card to the villain)</i>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss012",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss013",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss014",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss015",
+            "type": "Upgrade",
+            "name": "* Spider Stealth Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "You get +1 hit point.\n<b>Hero Interrupt</b>: When you play an [[ATTACK]] or [[THWART]] event, increase the damage dealt or the threat removed by that event by 1.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss016",
+            "type": "Upgrade",
+            "name": "* Stings of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Scarlet Spider gets +1 ATK.\n<b>Hero Interrupt</b>: When you attack, exhaust Stings of Kaine → that attack gains piercing and overkill.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss017",
+            "type": "Obligation",
+            "name": "Murderer's Guilt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Kaine Parker"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider",
+            "text": "<b><i>Give to the Kaine Parker player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Kaine Parker and take 2 damage → remove Murderer's Guilt from the game.\n• Take 1 damage for each event in your hand. If less than 3 damage was taken this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss018",
+            "type": "SideScheme",
+            "name": "Assassins Guild",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "<i>Kaine had previously taken kill contracts in the Assassins Guild jurisdiction. They want their share!</i>\nEach [[ASSASSIN]] enemy gets +1 ATK.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss019",
+            "type": "Minion",
+            "name": "* Bella Donna",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "SCH": "3",
+                "ATK": "1",
+                "Boost": "3",
+                "Nemesis": "Scarlet Spider"
+            },
+            "traits": [
+                "ASSASSIN",
+                "ELITE"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Plotting. <i>(After this minion engages your identity, it schemes.)</i>\n<b>Forced Interrupt</b>: When Bella Donna is defeated, search the encounter deck for another [[ASSASSIN]] minion and reveal it.\n<i>(Scarlet Spider's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss020",
+            "type": "Minion",
+            "name": "* Harvester",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "2",
+                "ATK": "2",
+                "Boost": "2",
+                "Quickstrike": "1"
+            },
+            "traits": [
+                "ASSASSIN"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Quickstrike.\nHarvester's attacks gain piercing.\n<b>Forced Response</b>: After Harvester attacks and damages a character, deal 1 damage to that character.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss021",
+            "type": "Minion",
+            "name": "* Undead Hand Ninja",
+            "subtitle": "",
+            "desc": {
+                "HP": "2",
+                "SCH": "0",
+                "ATK": "2",
+                "Incite": "1"
+            },
+            "traits": [
+                "ASSASSIN"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Incite 1.\n<b>Forced Interrupt</b>: When this minion would be defeated, shuffle it back into the encounter deck instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss022",
+            "type": "Treachery",
+            "name": "Forced Contract",
+            "subtitle": "",
+            "desc": {
+                "Surge": "1"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Surge.\n<b>When Revealed</b>: The ally with highest ATK takes damage equal to Scarlet Spider's ATK. If there is no ally in play, you take 2 damage.\n<hr />\n[star] <b>Boost</b>: Each friendly character takes 1 damage.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "09b6230f96aa0d9027d9df3f20fd9bd4f0162d18d2c5228981db5e8ec7af9c0b"
 }

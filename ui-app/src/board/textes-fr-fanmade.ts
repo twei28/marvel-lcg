@@ -1094,4 +1094,44 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'il022': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
   // iron_lad — Sudden Plan Change (Event, Basic, Team-Up)
   'il023': "Team-Up (Stature et Iron Lad). Maximum 1 par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
+
+  // scarlet_spider — Scarlet Spider (Hero)
+  'ss001a': "<i>Interrogatoire extrême</i> — <b>Réponse</b> : après que vous avez infligé un excès de dégâts à un sbire, remélangez-le dans le deck de rencontre. Puis, retirez d'un plan une menace égale au montant de dégâts en excès infligés. <i>(Maximum 3 menaces par sbire.)</i>",
+  // scarlet_spider — Kaine Parker (AlterEgo)
+  'ss001b': "<i>Lien arachnéen</i> — <b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre défausse 1 exemplaire de Spider-pathy et ajoutez-le à votre main. <i>(Limite d'une fois par round.)</i>",
+  // scarlet_spider — Grim Resolve (Event) x2
+  'ss002': "<b>Action</b> : choisissez un pouvoir de base, vous gagnez +1 à ce pouvoir jusqu'à la fin du round pour chaque ressource différente dépensée sur cette carte. Puis, redressez votre identité.",
+  'ss003': "<b>Action</b> : choisissez un pouvoir de base, vous gagnez +1 à ce pouvoir jusqu'à la fin du round pour chaque ressource différente dépensée sur cette carte. Puis, redressez votre identité.",
+  // scarlet_spider — Precise Force (Event) x3
+  'ss004': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  'ss005': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  'ss006': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  // scarlet_spider — Spider-pathy (Event) x2
+  'ss007': "<b>Action</b> : cherchez dans le deck de rencontre le sbire le plus proche du dessus et mettez-le en jeu, engagé avec vous. Piochez 1 carte.",
+  'ss008': "<b>Action</b> : cherchez dans le deck de rencontre le sbire le plus proche du dessus et mettez-le en jeu, engagé avec vous. Piochez 1 carte.",
+  // scarlet_spider — Unrestrained (Event) x2
+  'ss009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
+  'ss010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
+  // scarlet_spider — Four Seasons' Room (Support)
+  'ss011': "<b>Action d'identité civile</b> : inclinez Four Seasons' Room → piochez 1 carte <i>(2 à la place si vous donnez une carte boost face cachée au vilain)</i>.",
+  // scarlet_spider — Mark of Kaine (Upgrade) x3
+  'ss012': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  'ss013': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  'ss014': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  // scarlet_spider — Spider Stealth Suit (Upgrade)
+  'ss015': "Vous gagnez +1 point de vie.\n<b>Interruption de héros</b> : quand vous jouez un événement [[ATTAQUE]] ou [[CONTRE]], augmentez de 1 le dégât infligé ou la menace retirée par cet événement.",
+  // scarlet_spider — Stings of Kaine (Upgrade)
+  'ss016': "Scarlet Spider gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous attaquez, inclinez Stings of Kaine → cette attaque gagne perçant et déferlement.",
+  // scarlet_spider — Murderer's Guilt (Obligation)
+  'ss017': "<b><i>Donnez-la au joueur Kaine Parker.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Kaine Parker et subissez 2 dégâts → retirez Murderer's Guilt de la partie.\n• Subissez 1 dégât par événement dans votre main. Si moins de 3 dégâts ont été subis de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // scarlet_spider — Assassins Guild (SideScheme, nemesis)
+  'ss018': "<i>Kaine avait autrefois accepté des contrats d'assassinat sur le territoire de la Guilde des Assassins. Elle veut sa part !</i>\nChaque ennemi [[ASSASSIN]] gagne +1 ATQ.",
+  // scarlet_spider — Bella Donna (Minion, nemesis)
+  'ss019': "Machination. <i>(Après que ce sbire s'est engagé avec votre identité, il manigance.)</i>\n<b>Interruption Obligatoire</b> : quand Bella Donna est mise K.O., cherchez dans le deck de rencontre un autre sbire [[ASSASSIN]] et révélez-le.\n<i>(Sbire némésis de Scarlet Spider.)</i>",
+  // scarlet_spider — Harvester (Minion, nemesis)
+  'ss020': "Coup rapide.\nLes attaques de Harvester gagnent perçant.\n<b>Réponse Obligatoire</b> : après que Harvester a attaqué et blessé un personnage, infligez 1 dégât à ce personnage.",
+  // scarlet_spider — Undead Hand Ninja (Minion, nemesis)
+  'ss021': "Incitation 1.\n<b>Interruption Obligatoire</b> : quand ce sbire serait mis K.O., remélangez-le dans le deck de rencontre à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // scarlet_spider — Forced Contract (Treachery, nemesis)
+  'ss022': "Renfort.\n<b>Une fois révélée</b> : l'allié ayant l'ATQ la plus élevée subit des dégâts égaux à l'ATQ de Scarlet Spider. S'il n'y a aucun allié en jeu, vous subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : chaque personnage ami subit 1 dégât.",
 }

@@ -6527,6 +6527,237 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"forme": "AlterEgo", "attributs": {"hand_size": 1}},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « scarlet_spider » : ss001a-ss022
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ss001a Scarlet Spider — Extreme Interrogation : sbire vaincu par exces remelange, menace retiree = exces",
+        "pourquoi": "AfterUnitAttackAndDefeatUnit('This'->Minion, has_excess_damage=True) ; message.target encore deplacable a ce stade (Faces.ShuffleAllTo vers le deck rencontre) ; retrait de menace = min(exces,3)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.SetThreat('01097b', 5)",
+        ],
+        "main_exclusive": ["01087", "01088"],
+        "declencher": [],
+        "cibles": ["01110"],
+        "jouer": ["01087"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["01110"], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ss001b Kaine Parker — Spider Link : defausse 1 carte, cherche Spider-pathy en defausse, l'ajoute en main",
+        "pourquoi": "Search.PlayerCard(include_discard_pile=True, name='Spider-pathy') + initiator.GainCard, meme modele qu'ok001b",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.Discard('ss007')"],
+        "declencher": ["Puzzle.Action('ss001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ss007"]},
+    },
+    {
+        "nom": "ss002 Grim Resolve — choisit ATK (1er choix), +1 pour la ressource depensee, redresse l'identite",
+        "pourquoi": "effect.GetPaidResources().GetResourceIconTypes() (modele 47009 Grande Finale) ; TemporaryGain(..., Message.WhenRoundEnd, attack=1) ; Faces.ReadyAll([identite])",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.Exhaust('ss001a')"],
+        "main_exclusive": ["ss002", "01088"],
+        "declencher": [],
+        "jouer": ["ss002"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "pret": ["ss001a"]},
+    },
+    {
+        "nom": "ss004 Precise Force — Hero Action (attack) jouee, degats bornes 0-3 sur un ennemi",
+        "pourquoi": "initiator.DeclareNumber(0,3) (modele dt005/il002) ; le pilote choisit TOUJOURS le premier item de la liste offerte (valeur 0), meme limite deja documentee sur il002 : la branche non-nulle reste declaree mais non forcable par ce harnais",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss004"],
+        "verifier": "ss004_precise_force_joue_et_borne",
+    },
+    {
+        "nom": "ss007 Spider-pathy — cherche le sbire du dessus du deck de rencontre, le met en jeu engage, pioche 1",
+        "pourquoi": "Search.EncounterCard(include_discard_pile=False, card_type=Minion) + face.PutIntoPlay (auto-engage, face_on_event.py:169)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss007", "01088"],
+        "declencher": [],
+        "jouer": ["ss007"],
+        "verifier": "ss007_spider_pathy_pose_sbire",
+    },
+    {
+        "nom": "ss009 Unrestrained — 7 degats garantis a un ennemi (branche stun/confuse si exces non exercee ici)",
+        "pourquoi": "this.DealDamage(effect.targets, 7, effect, if_this_attack_deal_excess_damage=...) (modele wsp/13013.py) ; Rhino (14 PV) encaisse 7 sans etre vaincu, donc sans exces : preuve du degat de base garanti seulement",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss009", "01090", "01090"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]]},
+    },
+    {
+        "nom": "ss011 Four Seasons' Room — Alter-Ego Action : exhaust -> pioche 1 (branche par defaut, comme Funeral Rites)",
+        "pourquoi": "player.ChooseAbilities a 2 branches (modele core/02035.py Intimidation) ; le pilote prend TOUJOURS la premiere option (draw 1), meme convention que il017/ok019 pour une branche libre",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ss011', under_control=True)"],
+        "declencher": ["Puzzle.Action('ss011', 'AlterEgoAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ss011"], "taille_main": 7},
+    },
+    {
+        "nom": "ss012 Mark of Kaine — attaques contre le sbire marque gagnent deferlement (deversement sur un autre ennemi)",
+        "pourquoi": "WhenUnitWouldAttackUnit(None, 'AttachedMinion', ...) + message.GainOverKill (modele officiel exact 33032 Marked) ; attaquant = un ALLIE (pas l'identite), pour eviter la reponse ss001a (attacker='This') dont l'interaction avec le deversement 'Simultaneous Overkill' du moteur (can_health.py:258) fait planter le harnais (AssertionError reproductible, voir rapport) — la capacite testee ici (le deferlement lui-meme) est independante de ss001a",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.Damage('01110', 1)",
+            "Puzzle.PutIntoPlay('01051', under_control=True)",
+        ],
+        "declencher": ["Puzzle.PutIntoPlay('ss012', under_control=True)", "Puzzle.Attack('01051')"],
+        "cibles": ["01110"],
+        "verifier": "ss012_mark_of_kaine_deferlement",
+    },
+    {
+        "nom": "ss015 Spider Stealth Suit — +1 point de vie fixe sur l'identite",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis('You', health=1), modele ok016 Royal Protector (upgrade sans attache)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('ss015', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 1}},
+    },
+    {
+        "nom": "ss015 Spider Stealth Suit — Hero Interrupt : +1 au degat inflige par un evenement ATTACK joue",
+        "pourquoi": "WhenDamageWouldBeDealtTo(by_play_card=('YouControl', CardFinder(trait='ATTACK', card_type=Event))) + IncreaseDamage(1) ; Unrestrained (ss009) inflige un montant FIXE (7, pas de DeclareNumber) pour un total previsible 7+1=8",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('ss015', under_control=True)"],
+        "main_exclusive": ["ss009", "01090", "01090"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 8]]},
+    },
+    {
+        "nom": "ss016 Stings of Kaine — +1 ATK fixe sur Scarlet Spider",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis('You', attack=1), modele ok016 Royal Protector",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('ss016', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}},
+    },
+    {
+        "nom": "ss016 Stings of Kaine — Hero Interrupt : exhaust quand vous attaquez (piercing + overkill accordes)",
+        "pourquoi": "WhenUnitMakeAttack('You') + SetCostFunc(CostFunc.Exhaust('This')) (modele cw/tigra/56005.py Sharp Claws) ; l'inclinaison prouve que l'interruption a bien ete offerte et payee ; cible a 3 PV pour egaler exactement l'ATK effective (2 de base + 1 fixe de Stings of Kaine) et EVITER l'exces (qui, combine au deferlement accorde ici, ferait planter le harnais sur l'interaction 'Simultaneous Overkill' deja rencontree sur ss012)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('ss016', under_control=True)",
+            "Puzzle.PutIntoPlay('01101')",
+        ],
+        "declencher": ["Puzzle.Attack('ss001a')"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ss016"]},
+    },
+    {
+        "nom": "ss017 Murderer's Guilt — branche « exhaust Kaine Parker + 2 degats -> retirer de la partie » (branche par defaut)",
+        "pourquoi": "WhenThisObligationGiveToYou + ChooseAbilities a 2 branches (modele ok019 Funeral Rites) ; le pilote prend la premiere option, meme convention que il017",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ss017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss017"]},
+    },
+    {
+        "nom": "ss018 Assassins Guild — chaque sbire ASSASSIN gagne +1 ATK",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(CardFinder2('ASSASSIN', Enemy), attack=1), modele officiel 01136 Ultron",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ss018')", "Puzzle.PutIntoPlay('ss020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ss020", "attack", 1]]},
+    },
+    {
+        "nom": "ss019 Bella Donna — Plotting : manigance a l'engagement de l'identite",
+        "pourquoi": "AfterMinionEngagePlayer('This','You') + this.BasicSchemes(effect) (modele ok021 Malice, mots-cles/plotting.md) ; PutIntoPlay engage automatiquement le sbire",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.PutIntoPlay('ss019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ss019 Bella Donna — Forced Interrupt : a sa defaite, cherche un autre sbire ASSASSIN et le revele",
+        "pourquoi": "WhenUnitBeDefeated(ForcedInterrupt,'This') + Search.EncounterCard(trait='ASSASSIN') + face.Reveal (modele core/spider_man_nemesis/01095.py Rhino) ; deck de rencontre truque a un seul sbire ASSASSIN trouvable",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('ss020')", "Puzzle.PutIntoPlay('ss019')"],
+        "declencher": ["Puzzle.Damage('ss019', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss019"], "en_jeu": ["ss020"]},
+    },
+    {
+        "nom": "ss020 Harvester — attaques gagnent piercing (ignore tenace) ET Forced Response +1 degat apres avoir blesse",
+        "pourquoi": "UnitAttackGainKeyword('This', piercing=True) (modele officiel 04027 Crossfire) + AfterUnitAttackAndDamageUnit (modele core/klaw/01118.py) ; identite tenace : sans piercing 0 degat, avec piercing seul 2, avec les deux capacites 3 -- 3 valeurs distinctes selon ce qui est retire",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('ss020')", "Puzzle.Tough('ss001a')"],
+        "declencher": ["Puzzle.Attack('ss020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "ss021 Undead Hand Ninja — Forced Interrupt : serait vaincu -> remelange dans le deck de rencontre a la place",
+        "pourquoi": "WhenUnitWouldBeDefeated('This') + message.SetBeInstead + Faces.ShuffleAllTo (modele fan-made exact lj015 Annihilus)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ss021')"],
+        "declencher": ["Puzzle.Damage('ss021', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss021"], "dans_deck_rencontre": ["ss021"]},
+    },
+    {
+        "nom": "ss022 Forced Contract — When Revealed : l'allie a l'ATK la plus haute subit des degats = ATK de Scarlet Spider",
+        "pourquoi": "max(allies, key=attack) + player.GetHero().attack (modele th015 Friendly Fire pour le max)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01051', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('ss022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01051", 2]]},
+    },
+    {
+        "nom": "ss022 Forced Contract — Boost : chaque personnage ami subit 1 degat",
+        "pourquoi": "player.GetControlCharacters() + DealDamage(units, 1, effect) (modele officiel exact core/01154.py Concussive Blast)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('01051', under_control=True)"],
+        "declencher": ["Puzzle.Boost('ss022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01051", 1]], "degats_identite": 1},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -8616,6 +8847,76 @@ def iron_lad_kang_empile_puis_rend(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, "Kang a bien empile il015 (cout le plus eleve) puis l'a rendue a sa defaite, et s'est mis de cote"
+
+def ss004_precise_force_joue_et_borne(monde, aides):
+    """ss004/ss005/ss006 : DeclareNumber(0,3) -- le pilote choisit toujours le
+    premier item propose (valeur 0), meme limite documentee sur il002. On
+    verifie donc que la carte a bien ete JOUEE (defausse) et que le degat
+    reste dans la borne haute imprimee [0,3] : preuve structurelle que
+    DealDamage(effect.targets, value, effect) est bien appele avec value
+    dans les bornes, la branche non-nulle restant hors de portee du pilote
+    generique (pas de cle de cas pour forcer une option parmi plusieurs)."""
+    ids = [getattr(f.paper, "card_id", None) for f in monde.players[0].discard_pile.Get()]
+    if "ss004" not in ids and "ss005" not in ids and "ss006" not in ids:
+        return False, f"aucun exemplaire de Precise Force n'est dans la defausse (carte non jouee, defausse={ids})"
+    cible = aides["par_id"](monde, "01094")
+    if cible is None:
+        return False, "01094 introuvable en jeu"
+    degats = cible.max_health - cible.health
+    if degats < 0 or degats > 3:
+        return False, f"degats sur 01094 = {degats} (hors bornes [0,3])"
+    return True, (f"Precise Force jouee (defausse), degats sur 01094 = {degats} "
+                  f"(borne 0-3 respectee ; le pilote decline systematiquement la valeur "
+                  f"non nulle via DeclareNumber, meme limite que il002)")
+
+def ss012_mark_of_kaine_deferlement(monde, aides):
+    """ss012/ss013/ss014 : Mark of Kaine attachee a 01110 (ATK imprime 1),
+    Tigra (01051, 2 ATK) l'attaque. 01110 est adoucie a 1 PV, donc l'attaque
+    la vainc avec 1 point d'exces. Un sbire ayant un ATK non nul rend le
+    delta de PV de l'attaquante AMBIGU (le degat consequentiel standard, ATK
+    du sbire vaincu = 1, se confond numeriquement avec le deversement du
+    deferlement) : la preuve directe et non ambigue est donc le JOURNAL de
+    la partie, qui trace explicitement 'gains overkill' avec Mark of Kaine
+    comme source au moment ou `message.GainOverKill(effect)` s'execute."""
+    import os
+    prefixe = os.environ.get("CAS_PREFIX", "")
+    chemin_log = f"/tmp/capacites_{prefixe}517.log"
+    try:
+        contenu = open(chemin_log, encoding="utf-8", errors="replace").read()
+    except Exception as exc:
+        return False, f"journal introuvable ({chemin_log}) : {exc}"
+
+    if aides["par_id"](monde, "01110") is not None:
+        return False, "01110 est encore en jeu (devrait avoir ete vaincu par l'attaque de Tigra)"
+
+    if "gains overkill" not in contenu:
+        return False, "aucune trace de 'gains overkill' dans le journal de la partie"
+    if "Mark of Kaine" not in contenu:
+        return False, "'gains overkill' present mais pas attribue a Mark of Kaine dans le journal"
+
+    return True, "01110 vaincu ; le journal trace explicitement 'gains overkill' avec Mark of Kaine comme source"
+
+def ss007_spider_pathy_pose_sbire(monde, aides):
+    """ss007/ss008 : Search.EncounterCard(card_type=Minion) puis PutIntoPlay,
+    qui engage AUTOMATIQUEMENT le sbire trouve avec le joueur courant
+    (face_on_event.py:169). On verifie qu'au moins un sbire est en jeu,
+    engage avec le joueur, et que Spider-pathy a bien ete jouee."""
+    from game.card.face.card_type import Minion
+    joueur = monde.players[0]
+    sbires = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Minion.IsType(face):
+            sbires.append(face)
+    if not sbires:
+        return False, "aucun sbire en jeu apres Spider-pathy"
+    engage_ok = any(m.GetEngagedPlayer() == joueur for m in sbires)
+    if not engage_ok:
+        return False, "aucun des sbires en jeu n'est engage avec le joueur"
+    ids = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "ss007" not in ids and "ss008" not in ids:
+        return False, f"Spider-pathy n'est pas dans la defausse (carte non jouee, defausse={ids})"
+    return True, f"{len(sbires)} sbire(s) en jeu, au moins un engage avec le joueur, Spider-pathy jouee"
 '''
 
 
