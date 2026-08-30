@@ -156,8 +156,28 @@ fi
 #
 # Ca s'est paye deux fois : le multijoueur a tourne sur un assistant en retard
 # de plusieurs correctifs, et il a fallu recopier salon.html, l'assistant et le
-# dictionnaire a la main. La source est l'installation WSL, celle qu'on edite.
-REFERENCE="$HOME/marvel-work/fusion/marvel-lcg-src"
+# dictionnaire a la main.
+#
+# ⚠ CORRECTIF DU 31/08/2026 — LE SENS ETAIT INVERSE, ET C'ETAIT DESTRUCTEUR.
+# Ce bloc declarait l'installation WSL « la source, celle qu'on edite ». C'est
+# faux depuis le correctif du 29/08/2026 du guide (§1.1) : la copie WSL est un
+# VESTIGE fige, et c'est le dossier Windows qui est vivant. Le rsync partait
+# donc du vestige VERS le jeu, avec --delete.
+#
+# Mesure du 30/08/2026, juste avant ce correctif :
+#   public/js/prepare/heros-info.js   jeu 117 708 o (30/08, bios ok001a wc001a
+#                                     sd001a pt001a)  <-  vestige 103 635 o
+#                                     (12/08, AUCUNE de ces bios)
+#   public/js/deckbuilder/app.js      jeu  29 141 o (30/08, regles Madame Web
+#                                     + Patriot)      <-  vestige 28 042 o
+#                                     (13/08, Madame Web seule)
+# Le lancer effacait donc, en silence, toutes les biographies de heros ajoutees
+# depuis le 12/08 et les regles de deck-building fan-made.
+#
+# La reference est desormais la PREMIERE installation de JEUX, c'est-a-dire le
+# dossier Windows, celui que lance JOUER-SOLO.bat et celui qu'on edite. Le sens
+# est donc jeu -> vestige, et la boucle saute la reference elle-meme.
+REFERENCE="${JEUX[0]}"
 
 if [ -d "$REFERENCE/public" ]; then
   for jeu in "${JEUX[@]}"; do
