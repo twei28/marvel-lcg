@@ -6631,6 +6631,21 @@ CAS = [
         "verifier": "ss012_mark_of_kaine_deferlement",
     },
     {
+        "nom": "ss012 Mark of Kaine — Hero Interrupt : +2 a l'exces quand Scarlet Spider vainc elle-meme le sbire marque (regression moteur ChooseOrder/ChoiceOne)",
+        "pourquoi": "WhenUnitAttackDealExcessDamage(HeroInterrupt, 'You', ...) + message.IncreaseDamage(2, effect) (modele gmw/16045.py Follow Through). 39043 Goblin (HP imprime 1, aucune capacite propre) : l'identite Scarlet Spider (ATK 2) le vainc avec 1 exces garanti, sans Puzzle.Damage prealable (ne s'applique pas de façon fiable sur une carte fraichement instanciee dans le meme mise_en_place, piege distinct de FindOrCreateFace). Ce scenario precis (attaquant = identite, PAS un allie) a revele deux vrais bugs moteur le 30/08/2026 : (1) engine/controller/controller.py ChoiceOne plantait en boucle infinie (AssertionError, target_range=(2,2) fige a l'offre du choix vs all_legal_targets reevalue plus court a la validation) des que le deversement d'exces (Worlds.FindVillain, can_attack.py) ajoute le VILLAIN comme second candidat a `ChooseOrder` aux cotes du sbire vaincu (can_health.py:245-249) ; (2) une fois (1) corrige, game/player/model/player_ask.py ChooseOrder plantait sur `assert len(faces) == 0` car `effect` revenait vide sans que `faces` le soit. Preuve par substitution du CORRECTIF (pas du module ss012, deja prouve capacite 1 au cas precedent) : les deux correctifs retires -> AssertionError/boucle infinie reproductible a volonte ; correctifs en place -> partie continue normalement, Rhino subit bien 1+2=3 degats d'exces (preuve que l'interruption a reellement augmente le montant, pas seulement qu'elle a ete offerte).",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('39043')",
+            "Puzzle.PutIntoPlay('ss012', under_control=True)",
+        ],
+        "declencher": ["Puzzle.Attack('ss001a')"],
+        "cibles": ["39043"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats_min": [["01094", 3]]},
+    },
+    {
         "nom": "ss015 Spider Stealth Suit — +1 point de vie fixe sur l'identite",
         "pourquoi": "GiveKeywordToInPlayWhenApplyThis('You', health=1), modele ok016 Royal Protector (upgrade sans attache)",
         "scenario": "rhino",

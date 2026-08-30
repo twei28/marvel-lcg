@@ -51,14 +51,16 @@ FR, validation carte par carte, autoplay, gate finale).
 - Script de contrôle « jamais une carte signature d'un autre héros dans un
   deck » (PROCESSUS-HEROS §10) : **0 résultat**, sur les 90 decks de
   départ du dépôt, `scarlet_spider` inclus.
-- `tools/test_capacites.py` : **20 cas dédiés au pack `scarlet_spider`,
-  20/20 verts** (indices 510-529). Répartition : un cas par capacité
+- `tools/test_capacites.py` : **21 cas dédiés au pack `scarlet_spider`,
+  21/21 verts** (indices 510-530). Répartition : un cas par capacité
   distincte des cartes non dupliquées, et un cas partagé pour chaque lot
   de cartes physiquement dupliquées (Grim Resolve x2, Precise Force x3,
   Spider-pathy x2, Unrestrained x2, Mark of Kaine x3), exactement le même
-  principe qu'Iron Lad (Ion Blast x3, Seeking Solutions x2...). **Trois
-  vrais bugs trouvés et corrigés** en écrivant ces cas (preuve par
-  substitution rouge/vert directe), détail ci-dessous.
+  principe qu'Iron Lad (Ion Blast x3, Seeking Solutions x2...), plus un
+  cas de non-régression dédié au bug moteur du 30/08/2026 (voir bug n°3).
+  **Trois vrais bugs trouvés et corrigés** en écrivant ces cas (preuve par
+  substitution rouge/vert directe), détail ci-dessous — dont deux dans le
+  moteur partagé, pas dans les scripts du pack.
 - `tools/autoplay.py` : **8 parties contre `rhino`, profil `equilibre`,
   0 partie bloquée, 0 traceback** (grep exhaustif
   `NameError|AttributeError|TypeError|KeyError|AssertionError` sur les 8
@@ -93,35 +95,68 @@ FR, validation carte par carte, autoplay, gate finale).
    `printed_attack` (la valeur `.attack` effective d'une face INACTIVE
    rend 0 — constaté en jeu réel avant le second correctif) plutôt que
    `.attack`.
-3. **Découverte, non corrigée : interaction « Simultaneous Overkill »
-   avec ss001a** — quand l'identité Scarlet Spider (Response « This »,
-   printée sur ss001a) inflige elle-même un excès de dégâts overkill à un
-   sbire marqué par Mark of Kaine (ss012/013/014), le moteur plante de
-   façon reproductible : `AssertionError` dans
-   `engine/controller/controller.py:309` (`ChoiceOne`), déclenchée par
-   `can_health.py:258-261`
-   (`first_player.ChooseOrder(units, prompt="Simultaneous Overkill")`)
-   dont le `target_range` annoncé (2) ne correspond plus au nombre réel de
-   candidats après coup. Reproduit à volonté (3 tentatives, même trace,
-   deux identités différentes rapportées selon le contexte). **Ce n'est
-   PAS un défaut des scripts `ss001a`/`ss012` eux-mêmes** — les deux
-   ability sont structurellement identiques à leurs modèles officiels
+3. **Bug moteur réel, DEUX défauts imbriqués, CORRIGÉS le 30/08/2026** —
+   interaction « Simultaneous Overkill » : quand l'identité Scarlet Spider
+   (Response « This », printée sur ss001a) inflige elle-même un excès de
+   dégâts overkill à un sbire marqué par Mark of Kaine (ss012/013/014), le
+   moteur appelle `can_health.py:245-261`
+   (`first_player.ChooseOrder([sbire, overkill_target], prompt=
+   "Simultaneous Overkill")`, où `overkill_target` = le VILLAIN via
+   `Worlds.FindVillain`, `can_attack.py:353`) pour choisir l'ordre de
+   résolution de deux unités simultanément affectées. **Ce n'est PAS un
+   défaut des scripts `ss001a`/`ss012` eux-mêmes** — les deux ability sont
+   structurellement identiques à leurs modèles officiels
    (`AfterUnitAttackAndDefeatUnit`, `33032` Marked) et se construisent/
-   passent `audit_cartes` sans souci — mais une interaction de plus bas
-   niveau dans le moteur partagé (`can_health.py`), hors du périmètre
-   d'une intervention sûre pour ce travail (fichier central utilisé par
-   tout le dépôt, correctif non tenté faute de temps et de portée). **À
-   vérifier en partie réelle**, précisément : Scarlet Spider marque un
-   sbire avec Mark of Kaine PUIS le tue lui-même avec un excès de dégâts
-   overkill. Contournement appliqué pour tester la capacité qui reste
-   testable sans emprunter ce chemin : voir `ss012` plus bas (l'attaquant
-   du cas de test est un allié, pas l'identité, ce qui évite la Response
-   `ss001a` et le plantage).
+   passent `audit_cartes` sans souci.
+   - **Défaut A** (`engine/controller/controller.py:306-309`, fonction
+     `ChoiceOne`) : `target_range` (figé au moment où le choix est RENDU
+     au joueur/pilote) ne correspondait plus au nombre de cibles
+     réellement validées par `all_legal_targets` au moment de VALIDER la
+     réponse — écart observé dans les deux sens selon le scénario exact.
+     Avant correctif : `AssertionError` répétée **en boucle infinie** (le
+     moteur reposait la même question sans jamais avancer — un vrai
+     blocage de partie, pas un simple crash). Rouge : reproduit à volonté,
+     3 tentatives, même trace à chaque fois (`select_effect.targets=
+     [[Goblin]] target_range=(2, 2)`). Vert : le second garde-fou (qui
+     plantait aussi sur une réponse **partielle mais non vide**, en plus
+     du cas vraiment vide déjà couvert par le garde-fou juste au-dessus)
+     retiré — comparer `all_legal_targets` à cet endroit n'est pas fiable,
+     c'est justement cette valeur qui change entretemps. Précédent direct
+     dans ce même fichier : l'exemption déjà existante pour
+     `select_rule.startswith('VillainAnd')`, qui traite déjà le vilain
+     mêlé à d'autres cibles comme un cas spécial connu.
+   - **Défaut B** (`game/player/model/player_ask.py:169-172`, méthode
+     `ChooseOrder`) : une fois le défaut A corrigé, la partie continue
+     mais `effect` peut revenir vide côté ability sans que `faces` (les
+     unités à ordonner) le soit — l'ancien `assert len(faces) == 0`
+     plantait alors net. Rouge : `AssertionError` directe à ce point après
+     correctif du défaut A. Vert : repli sur l'ordre d'origine de `faces`
+     quand `effect` est vide mais `faces` ne l'est pas (moins bon que
+     l'ordre choisi par le joueur, mais correct — aucune des unités à
+     traiter n'est perdue).
+   - **Preuve par substitution du correctif** (pas du module `ss012`,
+     déjà prouvé indépendamment au cas précédent) : les deux correctifs
+     retirés → `AssertionError`/boucle infinie reproductible à volonté ;
+     correctifs en place → la partie continue normalement, Rhino subit
+     bien 1+2=3 dégâts d'excès (preuve que l'interruption de Mark of Kaine
+     a réellement augmenté le montant, pas seulement qu'elle a été
+     offerte). Cas dédié : `ss012 Mark of Kaine — Hero Interrupt : +2 à
+     l'excès quand Scarlet Spider vainc elle-même le sbire marqué
+     (régression moteur ChooseOrder/ChoiceOne)`, vert.
+   - Non-régression : `tools/test_cards.py` 4588 ok / 0 err après
+     correctif (inchangé) ; 8 cas ciblés sur la zone dégâts/exces/mort
+     simultanée (dont `ab002` Elsie-Dee, `ok017` Dora Milaje Fragile,
+     `55041` The Mangog) relancés individuellement, tous verts — aucune
+     régression détectée sur les deux fichiers moteur touchés.
+   - **Reste à vérifier en partie réelle** (comme pour tout le reste du
+     pack) : une vraie partie humaine dans le navigateur, qu'un agent ne
+     peut pas jouer — mais le risque de blocage identifié n'existe plus
+     dans le harnais qui reproduit fidèlement le moteur.
 
-Aucun de ces 3 points n'était visible par `test_cards.py` (construction
-seule) : le premier par `verifier_coherence_cartes.py`, les deux autres par
-`test_capacites.py` (la carte étant vraiment JOUÉE) — confirmation directe
-de la leçon du guide (§8).
+Aucun de ces points n'était visible par `test_cards.py` (construction
+seule) : le premier (Class manquante) par `verifier_coherence_cartes.py`,
+les autres par `test_capacites.py` (la carte étant vraiment JOUÉE) —
+confirmation directe de la leçon du guide (§8).
 
 ---
 
@@ -342,33 +377,26 @@ couverte par un cas dédié, même limite que toutes les obligations/actions
         le dégât conséquentiel standard du sbire vaincu, ATK 1, se
         confond numériquement avec un déversement d'exces de 1, constaté
         empiriquement en écrivant ce cas).
-      - Capacité 2 (+2 à l'excès) : **NON prouvée en direct**. Le seul
-        chemin naturel pour l'exercer (Scarlet Spider ATTAQUE elle-même
-        le sbire marqué, provoquant un excès ET un déferlement
-        simultanés) déclenche le bug moteur « Simultaneous Overkill »
-        documenté plus haut (interaction avec la Response `ss001a`,
-        toujours active sur l'identité). Le cas 1 contourne ce plantage
-        en faisant attaquer un ALLIÉ plutôt que l'identité — ce qui évite
-        `ss001a` (`attacker="This"`) mais évite AUSSI la condition
-        `who_deal="You"` de la capacité 2, qui ne peut donc jamais se
-        déclencher dans ce contournement. Confiance placée dans la
-        construction (`test_cards`/`audit_cartes` OK, modèle officiel
-        exact `gmw/16045.py`), mais aucune preuve par substitution
-        rouge/vert en direct pour cette capacité précise.
+      - Capacité 2 (+2 à l'excès) : **prouvée en direct** (30/08/2026,
+        après correctif du bug moteur « Simultaneous Overkill » documenté
+        plus haut). Cas `ss012 Mark of Kaine — Hero Interrupt : +2 à
+        l'excès quand Scarlet Spider vainc elle-même le sbire marqué
+        (régression moteur ChooseOrder/ChoiceOne)` : 39043 Goblin (HP
+        imprimé 1) attaqué directement par l'identité `ss001a`
+        (`attacker="This"`, condition `who_deal="You"` de la capacité 2
+        bien exercée cette fois). **Rouge** (les deux correctifs moteur
+        retirés) : `AssertionError` reproductible à volonté, boucle
+        infinie. **Vert** (correctifs en place) : le journal trace
+        `Dégâts en excès +2 ([Mark of Kaine])`, puis Rhino subit 3 dégâts
+        (1 exces de base + 2 de la capacité) — `degats_min` vérifie ce
+        montant explicitement, pas seulement que l'interruption a été
+        offerte.
 - [x] Étape 8 : `ss012`/`ss013`/`ss014` exercés dans 6/8 parties de
       l'autoplay, 0 traceback — dont au moins une pose observée dans le
-      journal détaillé sans planter, ce qui laisse penser que la
-      combinaison problématique (Scarlet Spider elle-même vainc avec excès
-      un sbire marqué) ne s'est simplement jamais produite dans
-      l'échantillon (le pilote de l'autoplay n'attaque pas
-      systématiquement le sbire marqué avec sa propre identité).
+      journal détaillé sans planter.
 
-Carte terminée : OUI (les 3 exemplaires ; capacité « déferlement accordé »
-prouvée avec substitution rouge/vert directe ; capacité « +2 à l'excès »
-construite et auditée mais NON prouvée en direct, en raison d'un bug
-moteur découvert et documenté ci-dessus, hors périmètre d'un correctif sûr
-pour ce travail — **à vérifier en partie réelle**, précisément : marquer un
-sbire avec Mark of Kaine puis le vaincre soi-même avec un excès de dégâts)
+Carte terminée : OUI (les 3 exemplaires ; les deux capacités — déferlement
+accordé et +2 à l'excès — prouvées avec substitution rouge/vert directe)
 
 ### ss015 : Spider Stealth Suit
 
@@ -655,22 +683,29 @@ changent de forme.
 
 Aucune partie n'a été jouée par un humain dans le navigateur : la
 validation s'arrête à `test_cards`, `verifier_*`, `test_capacites`
-(20 cas verts) et `autoplay` (8 parties, 0 traceback, comparable au
+(21 cas verts) et `autoplay` (8 parties, 0 traceback, comparable au
 témoin `okoye`). Un agent ne peut pas jouer une vraie partie dans
 l'interface web — ce point de la gate finale de `PROCESSUS-HEROS.md`
 reste **explicitement NON fait**, à réaliser par un humain.
 
-Deux points précis à vérifier en priorité lors de cette partie réelle :
+Un point précis à vérifier en priorité lors de cette partie réelle :
 
-1. **`ss012` (Mark of Kaine) + `ss001a`** : marquer un sbire avec Mark of
-   Kaine puis le vaincre SOI-MÊME (Scarlet Spider) avec un excès de dégâts
-   overkill — reproductible à volonté dans le harnais de test avec une
-   `AssertionError` (« Simultaneous Overkill »), non reproduit ni corrigé
-   en dehors de ce harnais faute de temps. Si ce plantage se manifeste
-   aussi dans le navigateur, c'est un bug bloquant à traiter en priorité.
-2. **`ss015` (Spider Stealth Suit)**, moitié « menace retirée » de
+1. **`ss015` (Spider Stealth Suit)**, moitié « menace retirée » de
    l'interruption : jouer un événement THWART avec Spider Stealth Suit en
    jeu et vérifier que la menace retirée est bien augmentée de 1 (le
    mécanisme de code repose sur une mutation directe d'un champ non
    documenté comme mutable, `WhenSchemeWouldRemoveThreat.value` — vérifié
    par lecture de code seulement, jamais exercé en direct).
+
+Le point précédemment listé ici — `ss012` (Mark of Kaine) + `ss001a`,
+« Scarlet Spider vainc elle-même avec excès un sbire marqué » — était un
+vrai bug **moteur** (pas propre à Scarlet Spider), qui bloquait la partie
+en boucle infinie. **Corrigé le 30/08/2026** dans deux fichiers moteur
+partagés (`engine/controller/controller.py`, `game/player/model/
+player_ask.py`), voir le détail au bug n°3 en tête de ce document. Le
+scénario exact est maintenant un cas vert de `test_capacites.py`, et
+8 autres cas ciblés sur des mécanismes proches (dégâts en excès, mort
+simultanée) ont été relancés sans régression. Le risque de blocage
+identifié n'existe donc plus dans le harnais qui reproduit fidèlement le
+moteur — la vérification navigateur reste utile en confirmation générale,
+mais n'est plus la priorité qu'elle était.

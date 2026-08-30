@@ -168,6 +168,20 @@ class PlayerAsk:
         )
         if not effect:
             # Game will crash here if we don't discard the ally attached by "25031"
+            if faces:
+                # CORRECTIF (30/08/2026) : `effect` peut revenir vide meme avec
+                # des `faces` non vides quand `ChoiceOne` (engine/controller/
+                # controller.py) a du accepter une reponse PARTIELLE (voir
+                # correctif du meme jour a cet endroit) -- le choix de l'ordre
+                # n'a alors pas pleinement abouti cote ability. Repli : ordre
+                # d'origine de `faces`, moins bon que le choix du joueur mais
+                # correct (aucune des unites a traiter n'est perdue,
+                # contrairement a l'ancien `assert len(faces) == 0` qui
+                # plantait ici). Observe reproductible (pack custom
+                # scarlet_spider, set 127) : `can_health.py` -> `ChooseOrder(
+                # [sbire, overkill_target])`, ou `overkill_target` est le
+                # VILLAIN (`Worlds.FindVillain`, can_attack.py).
+                return list(faces)
             assert len(faces) == 0
             return []
         else:

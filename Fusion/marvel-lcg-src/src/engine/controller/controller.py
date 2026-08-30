@@ -303,10 +303,28 @@ class Controller:
                 if select_effect.targets == [] and select_effect.context.target_range[0] > 0:
                     assert False, f"{select_effect=} {select_effect.targets=} {select_effect.context.target_range=}"
 
-                if len(select_effect.targets) < select_effect.context.target_range[0] and \
-                    select_effect.ability.selectors[0] and \
-                    not select_effect.ability.selectors[0].selector_range.select_rule.startswith('VillainAnd'):
-                    assert False, f"{select_effect=} {select_effect.targets=} {select_effect.context.target_range=}"
+                # CORRECTIF (30/08/2026) : l'ancien second garde-fou plantait
+                # aussi sur une reponse PARTIELLE (au moins 1 cible legale
+                # fournie, mais moins que `target_range[0]`), retire.
+                # Observe reproductible (pack custom scarlet_spider, set 127) :
+                # `can_health.py` demande a `ChooseOrder([sbire,
+                # overkill_target])` d'ordonner 2 unites simultanees (le sbire
+                # vaincu et le VILLAIN qui recoit le deversement d'exces via
+                # `Worlds.FindVillain`, can_attack.py) ; `target_range=(2, 2)`
+                # est fige au moment ou le choix est RENDU au joueur/pilote,
+                # mais `all_legal_targets` est REEVALUE au moment de VALIDER
+                # la reponse -- si la legalite du vilain comme cible change
+                # entre les deux passages, le nombre de cibles reellement
+                # selectionnables ne correspond plus au minimum annonce, et
+                # une reponse pourtant complete (tout ce qui etait montre a
+                # ete choisi) etait rejetee -- boucle infinie d'AssertionError
+                # (le moteur reposait la meme question sans jamais avancer).
+                # Le premier garde-fou ci-dessus (reponse totalement VIDE)
+                # reste actif : seule la reponse PARTIELLE-mais-non-vide n'est
+                # plus fatale. Precedent direct pour cette meme famille de cas
+                # (le vilain comme cible melangee a d'autres unites) : le
+                # `select_rule.startswith('VillainAnd')` que ce bloc verifiait
+                # deja plus haut avant ce correctif.
 
                 select_effect.context.paid_this_res_effects.clear()
                 for resources in input_effect.resources:
