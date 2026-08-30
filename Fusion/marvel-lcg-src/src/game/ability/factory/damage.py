@@ -252,11 +252,50 @@ class AbilityFactoryDamage:
         )
 
     @staticmethod
-    def UnitCannotTakeDamage(which_card: CardTypeMin) -> 'Ability':
-        return AbilityFactory.GiveBuffToInPlayWhenApplyThis(
-            which_card,
-            buffs=[BuffCannotTakeDamage]
-        )
+    def UnitCannotTakeDamage(which_card: CardTypeMin) -> List['Ability']:
+        # CORRECTIF (bugs du jeu original), 30/08/2026. Cette fabrique portait
+        # DEUX defauts, et aucune carte du depot ne l'appelait : le premier
+        # l'aurait fait planter, le second l'aurait rendue silencieusement
+        # inerte. Trouves tous les deux en portant sd022 Conflicted Feelings
+        # (« While this obligation is in play, Coat of Arms cannot be
+        # damaged »).
+        #
+        # 1. NameError. `damage.py` fait `from . import *` alors que
+        #    `game/ability/factory/__init__.py` n'a pas encore expose
+        #    `AbilityFactory` (ligne 21, apres l'import des sous-fabriques) ni
+        #    `game.buff` (ligne 27) : ces noms n'entrent JAMAIS dans les
+        #    globales de ce module. Toutes les autres methodes du fichier qui
+        #    appellent `AbilityFactory` sont protegees par l'import local de
+        #    `UnitCannotTakeMoreDamageEachPhase` (ligne 195) ; celle-ci etait
+        #    la seule sans. D'ou les deux imports locaux ci-dessous.
+        #
+        # 2. Capacite INERTE. `BuffCannotTakeDamage` (game/buff/buff.py:67)
+        #    est une classe marqueur VIDE, et AUCUN chemin de degats ne la
+        #    consulte : `grep -rn BuffCannotTakeDamage src/` ne trouve que sa
+        #    definition, son export et cet appel. Son voisin
+        #    `BuffCannotBeStunned`, lui, est bien lu
+        #    (can_status.py:152, status/stunned.py:16) — c'est ce qui rend
+        #    l'oubli visible. Poser le buff seul laissait donc la carte
+        #    subir les degats sans que rien ne le signale.
+        #    On garde le buff (il porte l'affichage du plateau) et on ajoute la
+        #    VRAIE prevention, par la meme voie que `ThisCannotTakeDamageWhile`
+        #    (21160 Loki), seul chemin de ce fichier qui previent reellement.
+        #
+        # La fabrique rend desormais une LISTE de capacites : l'appeler avec
+        # `*AbilityFactory.UnitCannotTakeDamage(...)`.
+        from game.ability.factory import AbilityFactory
+        from game.buff.buff import BuffCannotTakeDamage
+
+        return [
+            AbilityFactory.GiveBuffToInPlayWhenApplyThis(
+                which_card,
+                buffs=[BuffCannotTakeDamage]
+            ),
+            AbilityFactoryDamage.UnitCannotTakeDamageWhile(
+                AbilityType.NonKeyword,
+                which_card,
+            ),
+        ]
 
     @staticmethod
     def UnitCannotTakeDamageWhile(ability_type: 'AbilityType',
