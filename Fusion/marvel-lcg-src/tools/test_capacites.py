@@ -9620,6 +9620,653 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 2]]},
     },
+    # ------------------------------------------------------ pack ms_america --
+    # Le pack tourne autour de Star-Gaze (ma001a), la Response qui branche sur
+    # la RESSOURCE IMPRIMEE de la carte SUPERPOWER jouee. Les quatre branches
+    # ont chacune leur cas, plus une contre-epreuve « carte non-SUPERPOWER ».
+    {
+        "nom": "ma001a Star-Gaze — branche [physical] : 1 degat a un ennemi",
+        "pourquoi": ("mecanique centrale du pack. ma009 America's Anger imprime [physical] "
+                     "et coute 1. L'identite est INCLINEE au depart parce que le cout de "
+                     "ma009 est « redresser ton identite » (arbitrage du 30/08/2026) : "
+                     "prete, la carte serait injouable"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma009", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["ma009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]], "defausse": ["ma009"]},
+    },
+    {
+        "nom": "ma001a Star-Gaze — branche [energy] : 1 degat soigne sur Ms. America",
+        "pourquoi": ("ma005 Star Light imprime [energy]. L'identite porte 3 degats au "
+                     "depart : sans le soin le releve ne pourrait pas distinguer « rien "
+                     "ne s'est passe » de « la branche a resolu »"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Damage('ma001a', 3)"],
+        "declencher": [],
+        "main_exclusive": ["ma005", "01088", "01090"],
+        "jouer": ["ma005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "en_jeu": ["ma005"]},
+    },
+    {
+        "nom": "ma001a Star-Gaze — branche [mental] : 1 menace retiree d'une manigance",
+        "pourquoi": ("ma007 Hyper-Cosmic Awareness imprime [mental]. La menace est posee a "
+                     "5 : a 8 le complot principal AVANCE et le releve mesurerait autre "
+                     "chose (piege du GUIDE §10)"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma007", "01088", "01090"],
+        "jouer": ["ma007"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ma001a Star-Gaze — branche [wild] : Ms. America est REDRESSEE",
+        "pourquoi": ("ma013 Star Portal imprime [wild]. L'identite est inclinee au depart, "
+                     "sinon « redresser » ne se verrait pas. Un allie est seme dans la "
+                     "defausse parce que ma013 est injouable sans"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.CreatePlayerDiscardPile('01059')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma013", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma013"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ma001a"]},
+    },
+    {
+        "nom": "ma001a Star-Gaze — contre-epreuve : une carte NON-SUPERPOWER ne declenche RIEN",
+        "pourquoi": ("temoin negatif indispensable : sans lui, une capacite qui partirait "
+                     "sur CHAQUE carte jouee passerait les quatre cas precedents. 01059 "
+                     "Jessica Jones est un allie [energy] SANS le trait SUPERPOWER : si "
+                     "Star-Gaze partait, l'identite serait soignee"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Damage('ma001a', 3)"],
+        "declencher": [],
+        "main_exclusive": ["01059", "01088", "01090"],
+        "jouer": ["01059"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "en_jeu": ["01059"]},
+    },
+    {
+        "nom": "ma001b Thinking With Portals — defausser 1 carte remonte 1 carte de la defausse dans le deck",
+        "pourquoi": ("la fleche est un COUT : sans carte en main, l'action n'est pas "
+                     "proposee. La partie demarre en identite civile, aucun ChangeToFace "
+                     "n'est necessaire. `cibles` designe ma002 pour que la recherche ne "
+                     "remonte pas la carte qui vient de payer"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('ma002')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('ma001b', 'Action')"],
+        "cibles": ["ma002"],
+        "verifier": "ma001b_carte_remontee_dans_le_deck",
+    },
+    {
+        "nom": "ma002 Alloy — Hero Response : +1 ATQ apres la RESOLUTION de Star-Gaze",
+        "pourquoi": ("le declencheur est la RESOLUTION de Star-Gaze, pas le jeu d'une carte "
+                     "SUPERPOWER : deux choses differentes. ma007 est joue pour faire "
+                     "resoudre la branche [mental], qui a besoin de menace sur une "
+                     "manigance pour avoir une cible legale"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma002', under_control=True)"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma007", "01088", "01090"],
+        "jouer": ["ma007"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ma002", "attack", 1]]},
+    },
+    {
+        "nom": "ma002 Alloy — contre-epreuve : sans carte SUPERPOWER jouee, aucun bonus",
+        "pourquoi": ("jumeau negatif du cas precedent. 01059 n'a pas le trait SUPERPOWER : "
+                     "Star-Gaze ne resout pas, Alloy garde son ATQ imprimee. Une capacite "
+                     "qui donnerait +1 a chaque carte jouee echouerait ici"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma002', under_control=True)"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["01087", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["01087"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ma002", "attack", 0]]},
+    },
+    {
+        "nom": "ma003 Hawkeye — [star] son attaque est PERFORANTE : le Robuste de Rhino saute et les degats passent",
+        "pourquoi": ("`piercing` defausse les cartes de statut Tough AVANT d'infliger les "
+                     "degats. Sans le mot-cle, le Tough absorberait TOUT et le releve "
+                     "montrerait 0 degat. ⚠ `ranged`, lui, ignore la RIPOSTE et non le "
+                     "Garde (can_retaliate.py:38) : il n'est pas observable ici"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma003', under_control=True)",
+                          "Puzzle.Tough('01094')"],
+        "declencher": ["Puzzle.Attack('ma003')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "ma003 Hawkeye — Interrupt : vaincue par degats consecutifs APRES Star-Gaze, elle est MELANGEE DANS LE DECK",
+        "pourquoi": ("cas qui exige la cle `declencher_apres` : il faut avoir joue une carte "
+                     "SUPERPOWER (donc resolu Star-Gaze) AVANT que l'attaque ne la tue, or "
+                     "`declencher` tourne avant `jouer`. Elle est amenee a 1 PV pour que le "
+                     "SEUL degat consecutif de son ATQ 2* la mette a terre"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma003', under_control=True)",
+                          "Puzzle.Damage('ma003', 1)"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma007", "01088", "01090"],
+        "jouer": ["ma007"],
+        "declencher_apres": ["Puzzle.Attack('ma003')"],
+        "cibles": ["01094"],
+        "verifier": "ma003_melangee_dans_le_deck",
+    },
+    {
+        "nom": "ma003 Hawkeye — contre-epreuve : SANS Star-Gaze resolue, elle est bel et bien VAINCUE",
+        "pourquoi": ("jumeau negatif du cas precedent, et seule preuve que la clause « if "
+                     "you have resolved Star-Gaze this turn » est vraiment lue : sans elle "
+                     "l'allie serait sauve dans tous les cas"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma003', under_control=True)",
+                          "Puzzle.Damage('ma003', 1)"],
+        "declencher": ["Puzzle.Attack('ma003')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ma003"], "defausse": ["ma003"]},
+    },
+    {
+        "nom": "ma004 Santana Family — Alter-Ego Action : un evenement de la DEFAUSSE est attache FACE CACHEE",
+        "pourquoi": ("la partie demarre en identite civile : aucun ChangeToFace. Le cout de "
+                     "la fleche est l'inclinaison, verifiee elle aussi. Le plafond de 2 est "
+                     "porte par une `conditions=`"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ma004', under_control=True)",
+                          "Puzzle.CreatePlayerDiscardPile('ma015')"],
+        "declencher": ["Puzzle.Action('ma004', 'AlterEgoAction')"],
+        "cibles": ["ma015"],
+        "verifier": "ma004_evenement_attache",
+    },
+    {
+        "nom": "ma005 Star Light — la ressource imprimee de la carte payee devient [wild] : Star-Gaze REDRESSE au lieu de soigner",
+        "pourquoi": ("preuve indirecte mais sans ambiguite de la seconde phrase. ma006 Star "
+                     "Flight imprime [energy] : sans le changement, Star-Gaze soignerait "
+                     "(l'identite n'a aucun degat, donc rien de visible) et l'identite "
+                     "resterait INCLINEE. Avec, la branche [wild] la redresse. La main ne "
+                     "contient qu'un seul icone (ma009 = [physical]) : Star Light est donc "
+                     "OBLIGEE de financer le second point du cout"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma005', under_control=True)",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma006", "ma009"],
+        "jouer": ["ma006"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ma001a"], "exhausted": ["ma005"], "en_jeu": ["ma006"]},
+    },
+    {
+        "nom": "ma006 Star Flight — bonus continu : +1 CTR et trait AERIAL a Ms. America",
+        "pourquoi": ("deux choses distinctes dans la meme phrase, un bonus de stat ET un "
+                     "trait accorde : le releve controle les deux"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma006', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}, "traits": ["AERIAL"]},
+    },
+    {
+        "nom": "ma006 Star Flight — Hero Interrupt : l'evenement joue gagne SUPERPOWER, donc Star-Gaze part",
+        "pourquoi": ("c'est le SEUL moyen du catalogue de faire declencher Star-Gaze sur une "
+                     "carte d'aspect. 01087 Haymaker est un evenement BASIC [energy] SANS "
+                     "le trait SUPERPOWER : sans Star Flight, Star-Gaze ne part pas et "
+                     "l'identite garde ses 3 degats. Avec, la branche [energy] en soigne 1. "
+                     "Le releve controle aussi l'inclinaison, qui est le cout de la fleche, "
+                     "et les 3 degats de Haymaker sur Rhino (preuve que l'evenement a bien "
+                     "ete joue et non simplement defausse)"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma006', under_control=True)",
+                          "Puzzle.Damage('ma001a', 3)"],
+        "declencher": [],
+        "main_exclusive": ["01087", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["01087"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "degats_identite": 2,
+                    "exhausted": ["ma006"]},
+    },
+    {
+        "nom": "ma007 Hyper-Cosmic Awareness — Hero Response : 1 compteur star par carte SUPERPOWER jouee",
+        "pourquoi": ("ma007 est elle-meme SUPERPOWER : la poser puis jouer ma005 doit donner "
+                     "UN compteur, pas deux (la carte est deja en jeu quand ma005 est "
+                     "jouee)"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma007', under_control=True)"],
+        "declencher": [],
+        "main_exclusive": ["ma005", "01088", "01090"],
+        "jouer": ["ma005"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ma007", "star", 1]]},
+    },
+    {
+        "nom": "ma007 Hyper-Cosmic Awareness — Hero Interrupt : 4 compteurs retires, la carte rencontre est ANNULEE et defaussee",
+        "pourquoi": ("le cout a DEUX parties (incliner ET retirer 4 compteurs) : le releve "
+                     "controle les deux. 01107 est une manigance annexe : annulee, elle "
+                     "n'entre PAS en jeu, ce qui est directement observable"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma007', under_control=True)",
+                          "Puzzle.Counter('ma007', 'star', 4)"],
+        "declencher": ["Puzzle.Reveal('01107')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ma007", "star", 0]], "exhausted": ["ma007"],
+                    "hors_jeu": ["01107"]},
+    },
+    {
+        "nom": "ma007 Hyper-Cosmic Awareness — contre-epreuve : a 3 compteurs, l'annulation est INJOUABLE",
+        "pourquoi": ("`CostFunc.Counter` filtre lui-meme les porteurs qui n'ont pas assez de "
+                     "compteurs : la capacite ne doit meme pas etre proposee. Sans ce "
+                     "temoin, un cout mal ecrit annulerait la carte a n'importe quel "
+                     "nombre de compteurs"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma007', under_control=True)",
+                          "Puzzle.Counter('ma007', 'star', 3)"],
+        "declencher": ["Puzzle.Reveal('01107')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ma007", "star", 3]], "pret": ["ma007"],
+                    "en_jeu": ["01107"]},
+    },
+    {
+        "nom": "ma008 Energy Infusion — Star-Gaze est resolue UNE SECONDE FOIS, sur la couleur de la carte payee",
+        "pourquoi": ("ma009 imprime [physical] : Star-Gaze inflige 1 degat, et Energy "
+                     "Infusion la rejoue sur la MEME couleur, donc 2 degats au total. La "
+                     "main ne contient QUE ma009 et ma008 : Energy Infusion est donc "
+                     "obligee de payer, et ses deux icones [wild] ne dictent PAS la "
+                     "branche (sinon Ms. America serait redressee au lieu de frapper)"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma009", "ma008"],
+        "cibles": ["01094"],
+        "jouer": ["ma009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "ma009 America's Anger — les modificateurs d'ATQ sont DOUBLES a la prochaine utilisation",
+        "pourquoi": ("01057 Combat Training donne +1 ATQ : Ms. America passe de 2 a 3. La "
+                     "carte double le MODIFICATEUR, pas la base -> 2 + (1 x 2) = 4 a "
+                     "l'attaque suivante, jamais 6. Avec le degat de Star-Gaze [physical], "
+                     "Rhino encaisse 5. `preferer_option` force la branche ATQ (le pilote "
+                     "prend toujours la premiere, ici CTR) et `declencher_apres` fait "
+                     "attaquer APRES le jeu de la carte"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('01057', under_control=True)",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma009", "01088"],
+        "preferer_option": "your ATK",
+        "cibles": ["01094"],
+        "jouer": ["ma009"],
+        "declencher_apres": ["Puzzle.Attack('ma001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "ma009 America's Anger — contre-epreuve : identite DEJA PRETE, la carte est INJOUABLE",
+        "pourquoi": ("arbitrage EXPLICITE de l'utilisateur du 30/08/2026, refuse comme "
+                     "exception : la fleche est un cout, « redresser ton identite » en fait "
+                     "partie, donc une identite prete rend la carte injouable. Ce cas est la "
+                     "pour que personne ne « corrige » ce comportement sans le voir tomber"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma009", "01088"],
+        "jouer": ["ma009"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ma009"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "ma011 Bulletproof Chica — Hero Interrupt (defense) : tous les degats prevenus et un Robuste sur l'identite",
+        "pourquoi": ("l'identite est INCLINEE : un heros incline ne defend pas, c'est le "
+                     "seul moyen fiable de faire arriver une attaque jusqu'a lui (GUIDE §8). "
+                     "Avec `defender='ma001a'`, la DEF 2 ramenait l'attaque de Rhino a 0 "
+                     "degat et l'interruption n'etait jamais proposee — le declencheur est "
+                     "`WhenUnitWouldTakeDamage`, pas la fenetre de defense. La carte est en "
+                     "MAIN, pas dans `jouer` : elle se joue en reaction"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "main_exclusive": ["ma011", "01088"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts": [["ma001a", "Tough"]],
+                    "defausse": ["ma011"]},
+    },
+    {
+        "nom": "ma013 Star Portal — l'allie de la defausse arrive INCLINE, la menace et les degats suivent SES valeurs",
+        "pourquoi": ("01059 Jessica Jones imprime CTR 1* et ATQ 2* : 1 menace retiree et "
+                     "2 degats. L'inclinaison a l'entree en jeu est le point le plus facile "
+                     "a rater (`PutIntoPlay(..., exhaust=True)`), elle est controlee. "
+                     "Star-Gaze [wild] redresse l'identite, deja prete : sans effet visible"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.CreatePlayerDiscardPile('01059')"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma013", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma013"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01059"], "exhausted": ["01059"],
+                    "degats": [["01094", 2]], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ma013 Star Portal — contre-epreuve : aucun allie dans aucune defausse, la carte est INJOUABLE",
+        "pourquoi": ("la fleche est un cout, rendu ici par une `conditions=` faute de "
+                     "`CostFunc` capable de le dire. Sans ce temoin, la carte pourrait "
+                     "partir a vide et le joueur bruler 2 ressources pour rien"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma013", "01088", "01090"],
+        "jouer": ["ma013"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ma013"], "menace": [["01097b", 5]]},
+    },
+    {
+        "nom": "ma015 Break Through — 4 degats, 3 menaces, et un ennemi ETOURDI parce que la manigance tombe",
+        "pourquoi": ("les trois effets d'un coup. La menace est posee a 3 exactement : les "
+                     "3 retirees enlevent la DERNIERE, ce qui declenche "
+                     "`if_this_remove_last_threat`. Star-Gaze [energy] soigne dans le vide "
+                     "(l'identite est intacte) et n'ajoute aucun degat"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 3)"],
+        "main_exclusive": ["ma015", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma015"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "menace": [["01097b", 0]],
+                    "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "ma015 Break Through — contre-epreuve : aucune defaite, aucun Etourdi",
+        "pourquoi": ("jumeau negatif du cas precedent : menace a 5, il en reste 2 apres "
+                     "coup, et Rhino (14 PV) survit a 4 degats. La troisieme phrase est "
+                     "CONDITIONNELLE — sans ce temoin, un Etourdi inconditionnel passerait"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma015", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma015"],
+        "verifier": "ma015_aucun_etourdi",
+    },
+    {
+        "nom": "ma017 Edges Syndrome — malus continu : -1 a CHAQUE pouvoir de base",
+        "pourquoi": ("l'obligation RESTE EN JEU (modele 28021 / 04166) : c'est ce qui donne "
+                     "son sens a ses deux Actions. Les trois pouvoirs de la face heros sont "
+                     "controles d'un coup"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.Reveal('ma017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": -1, "thwart": -1, "defense": -1},
+                    "en_jeu": ["ma017"]},
+    },
+    {
+        "nom": "ma017 Edges Syndrome — Action 1 : 2 degats subis, la carte est DEFAUSSEE",
+        "pourquoi": ("la fleche est un cout, rendu par `CostFunc.TakeDamage(2, "
+                     "\"YourIdentity\")` : le releve controle les degats ET le depart de la "
+                     "carte, sinon un cout non paye passerait"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.Reveal('ma017')",
+                       "Puzzle.Action('ma017', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ma017"], "degats_identite": 2},
+    },
+    {
+        "nom": "ma017 Edges Syndrome — Action 2 : 4 degats subis, la carte est RETIREE DU JEU",
+        "pourquoi": ("branche inatteignable sans le 3e argument de `Puzzle.Action` : le "
+                     "pilote prend toujours la premiere action offerte. Le verificateur "
+                     "distingue « retiree du jeu » de « defaussee », ce qu'`etat_attendu` "
+                     "ne sait pas faire"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": ["Puzzle.Reveal('ma017')",
+                       "Puzzle.Action('ma017', 'Action', 1)"],
+        "verifier": "ma017_retiree_du_jeu",
+    },
+    {
+        "nom": "ma018 Catalina Chavez — elle gagne les modificateurs de la zone de jeu, CTR converti en MNG",
+        "pourquoi": ("arbitrage de l'utilisateur du 30/08/2026 : lecture LITTERALE, tout ce "
+                     "qui est dans la zone de jeu. 01057 Combat Training donne +1 ATQ et "
+                     "ma006 Star Flight +1 CTR : Catalina doit gagner +1 ATQ et +1 MNG "
+                     "(pas +1 CTR, un sbire n'en a pas)"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('01057', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma006', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma018')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ma018", "attack", 1], ["ma018", "scheme", 1]]},
+    },
+    {
+        "nom": "ma018 Catalina Chavez — contre-epreuve : zone de jeu vide, ATQ et MNG restent imprimes",
+        "pourquoi": ("jumeau negatif du cas precedent. Il reste VERT sans le module (rien "
+                     "ne se passe non plus), il ne prouve donc rien seul : c'est le couple "
+                     "avec le cas positif qui prouve que la capacite lit vraiment la zone "
+                     "de jeu et n'ajoute pas un bonus fixe"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma018')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ma018", "attack", 0], ["ma018", "scheme", 0]]},
+    },
+    {
+        "nom": "ma019 Search for the Cure — menace de depart = cout combine des allies attaches",
+        "pourquoi": ("la menace de depart est X, CABLEE a la main (ecart assume, modeles "
+                     "mw018 et wc019a) : `desc.StartingThreat` ne sait pas dire « la somme "
+                     "du cout des cartes attachees ». 01059 coute 3 -> 3 menaces, et PAS le "
+                     "repli a 2 par joueur. `accepter_choix` est indispensable : la "
+                     "recherche est un `may`, et le pilote decline par defaut"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01059')"],
+        "declencher": ["Puzzle.Reveal('ma019')"],
+        "accepter_choix": True,
+        "cibles": ["01059"],
+        "verifier": "ma019_allie_attache_et_menace",
+    },
+    {
+        "nom": "ma019 Search for the Cure — aucun allie attache : 2 menaces par joueur, en plus",
+        "pourquoi": ("seconde moitie de la phrase imprimee. La defausse ne contient qu'une "
+                     "ressource : aucun allie a attacher, donc le repli s'applique — en "
+                     "solo, 1 joueur x 2[per_hero] x 1 heros = 2"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01088')"],
+        "declencher": ["Puzzle.Reveal('ma019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ma019", 2]]},
+    },
+    {
+        "nom": "ma020 Star Lightning — Catalina attaque et l'identite est SONNEE",
+        "pourquoi": ("l'identite est inclinee pour qu'elle ne defende pas : c'est le seul "
+                     "moyen fiable de faire arriver une attaque jusqu'a elle (GUIDE §8). "
+                     "La clause est « if this attack DEALS DAMAGE », pas « if undefended » "
+                     ": on controle donc les degats ET le statut"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma018')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": ["Puzzle.Reveal('ma020')"],
+        "verifier": "ma020_sonnee_apres_attaque",
+    },
+    {
+        "nom": "ma020 Star Lightning — contre-epreuve : Catalina absente, aucune attaque et aucun Sonne",
+        "pourquoi": ("jumeau negatif. La branche « surge » qui part alors n'est PAS "
+                     "observable de facon deterministe (limite du harnais declaree dans "
+                     "docs/ms_america_cartes.md) : ce cas prouve seulement que rien "
+                     "d'autre ne se produit"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": ["Puzzle.Reveal('ma020')"],
+        "verifier": "ma020_rien_ne_se_passe",
+    },
+    {
+        "nom": "ma022 Gwenpool — +1 ATQ par amelioration signature, PLAFONNE a +2",
+        "pourquoi": ("trois ameliorations signature sont posees (ma005, ma006, ma007) : le "
+                     "plafond doit en ramener le bonus a +2. Sans lui, Gwenpool serait a "
+                     "+3. `IdentitySpecific` est la classe moteur des cartes signature"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma005', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma006', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma007', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma022', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ma022", "attack", 2]]},
+    },
+    {
+        "nom": "ma023 Marvel Boy — vaincu par degats consecutifs, une amelioration inclinee est REDRESSEE",
+        "pourquoi": ("le texte dit « IS defeated », pas « would be » : rien n'est remplace, "
+                     "l'allie meurt. Star Light est inclinee au depart, sinon `canbe_ready` "
+                     "l'ecarte et la capacite n'a aucune cible legale. Marvel Boy est amene "
+                     "a 1 PV pour que son unique degat consecutif le tue"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma023', under_control=True)",
+                          "Puzzle.PutIntoPlay('ma005', under_control=True)",
+                          "Puzzle.Exhaust('ma005')",
+                          "Puzzle.Damage('ma023', 2)"],
+        "declencher": ["Puzzle.Attack('ma023')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ma023"], "pret": ["ma005"]},
+    },
+    {
+        "nom": "ma024 Noh-Varr's Ship — capacite Resource : elle finance un evenement et s'incline",
+        "pourquoi": ("la main ne contient qu'un seul icone (ma009 = [physical]) pour un cout "
+                     "de 2 : le vaisseau est OBLIGE de fournir le second. Sans lui, ma015 "
+                     "resterait en main. Le releve controle l'inclinaison, qui est le cout "
+                     "de la fleche"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma024', under_control=True)"],
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)"],
+        "main_exclusive": ["ma015", "ma009"],
+        "cibles": ["01094"],
+        "jouer": ["ma015"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ma024"], "defausse": ["ma015"]},
+    },
+    {
+        "nom": "ma024 Noh-Varr's Ship — contre-epreuve : injouable si l'identite n'a pas le trait YOUNG AVENGER",
+        "pourquoi": ("temoin monte avec un AUTRE heros : Okoye n'est pas une YOUNG AVENGER. "
+                     "Sans ce cas, la condition de jeu serait invisible — une carte sans "
+                     "condition passerait le cas positif a l'identique"),
+        "scenario": "rhino",
+        "heros": "okoye",
+        "mise_en_place": ["Puzzle.ChangeToFace('Okoye', 'ok001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma024", "01088", "01090"],
+        "jouer": ["ma024"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ma024"], "hors_jeu": ["ma024"]},
+    },
+    {
+        "nom": "ma025 Power Stomp — X degats = ATQ courante, sur le vilain ET chaque sbire engage",
+        "pourquoi": ("01057 Combat Training porte Ms. America a ATQ 3, ce qui rend la carte "
+                     "jouable ET fixe X. 01103 Shocker (3 PV) est engage : il tombe "
+                     "exactement. Rhino encaisse 3 + 1 (Star-Gaze [physical], la carte est "
+                     "SUPERPOWER) = 4"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('01057', under_control=True)",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "declencher": [],
+        "main_exclusive": ["ma025", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma025"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "hors_jeu": ["01103"]},
+    },
+    {
+        "nom": "ma025 Power Stomp — contre-epreuve : ATQ 2, la carte est INJOUABLE",
+        "pourquoi": ("« Play only if your hero has at least 3 ATK » porte sur une valeur "
+                     "COURANTE, qu'aucun kwarg de `SetPlay` ne sait exprimer : la condition "
+                     "est ecrite a la main. Sans ce temoin elle serait invisible"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma025", "01088", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["ma025"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ma025"], "degats": [["01094", 0]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -12940,6 +13587,164 @@ def pt021_hyde_a_frappe(monde, aides):
 
     return True, (f"Mr. Hyde a attaque ({subis} degat(s) sur l'identite) et "
                   f"l'allie est intact")
+
+
+# ------------------------------------------------------- pack ms_america --
+
+def _ma_dans_le_deck(monde, card_id):
+    for face in monde.players[0].player_deck.GetAll():
+        if getattr(face.paper, "card_id", None) == card_id:
+            return True
+    return False
+
+
+def _ma_dans_la_defausse(monde, card_id):
+    for face in monde.players[0].discard_pile.GetAll():
+        if getattr(face.paper, "card_id", None) == card_id:
+            return True
+    return False
+
+
+def ma001b_carte_remontee_dans_le_deck(monde, aides):
+    """ma001b : la carte cherchee dans la defausse est bien DANS LE DECK.
+
+    `etat_attendu` ne sait pas regarder le deck du joueur : « hors_jeu » serait
+    satisfait par une carte restee dans la defausse, ce qui ne prouverait rien.
+    On controle aussi que la carte qui a PAYE, elle, est bien a la defausse.
+    """
+    soucis = []
+    if not _ma_dans_le_deck(monde, "ma002"):
+        soucis.append("ma002 n'est pas dans le deck du joueur")
+    if _ma_dans_la_defausse(monde, "ma002"):
+        soucis.append("ma002 est encore dans la defausse")
+    if not _ma_dans_la_defausse(monde, "01088"):
+        soucis.append("01088 n'a pas ete defaussee : le cout n'a pas ete paye")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "ma002 a quitte la defausse pour le deck, 01088 a paye"
+
+
+def ma003_melangee_dans_le_deck(monde, aides):
+    """ma003 : « shuffle her into your deck INSTEAD » — le deck, pas la defausse."""
+    soucis = []
+    if aides["par_id"](monde, "ma003") is not None:
+        soucis.append("ma003 est encore en jeu : elle aurait du partir")
+    if _ma_dans_la_defausse(monde, "ma003"):
+        soucis.append("ma003 est dans la DEFAUSSE : le remplacement « instead » "
+                      "n'a pas eu lieu")
+    if not _ma_dans_le_deck(monde, "ma003"):
+        soucis.append("ma003 n'est pas dans le deck du joueur")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "ma003 a ete melangee dans le deck au lieu d'etre vaincue"
+
+
+def ma004_evenement_attache(monde, aides):
+    """ma004 : l'evenement est SOUS le soutien, et le soutien est incline."""
+    santana = aides["par_id"](monde, "ma004")
+    if santana is None:
+        return False, "ma004 introuvable en jeu"
+    soucis = []
+    zone = santana.GetPlacedCardArea()
+    ids = [getattr(f.paper, "card_id", None) for f in zone.GetAll()]
+    if "ma015" not in ids:
+        soucis.append(f"ma015 n'est pas attachee a Santana Family (zone = {ids})")
+    if not santana.IsExhaust():
+        soucis.append("ma004 n'est pas inclinee : le cout de la fleche n'a pas ete paye")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"ma015 est attachee sous ma004 (zone = {ids}) et ma004 est inclinee"
+
+
+def ma015_aucun_etourdi(monde, aides):
+    """ma015 : la troisieme phrase est CONDITIONNELLE — ici, rien ne tombe."""
+    vilain = aides["par_id"](monde, "01094")
+    if vilain is None:
+        return False, "Rhino introuvable"
+    soucis = []
+    degats = vilain.max_health - vilain.health
+    if degats != 4:
+        soucis.append(f"degats sur Rhino = {degats} (attendu 4)")
+    manigance = aides["par_id"](monde, "01097b")
+    if manigance is None:
+        soucis.append("complot principal introuvable")
+    elif manigance.threat != 2:
+        soucis.append(f"menace = {manigance.threat} (attendu 2 : 5 - 3)")
+    statut = vilain.CastTo(aides["CanStatus"])
+    if statut.HasStatus("Stunned") or statut.HasStatus("Confused"):
+        soucis.append("Rhino porte un statut : la clause conditionnelle est "
+                      "partie alors que RIEN n'a ete vaincu")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "4 degats, 3 menaces retirees, aucun statut : la clause est bien conditionnelle"
+
+
+def ma017_retiree_du_jeu(monde, aides):
+    """ma017 : « remove this card from the game » n'est pas « discard »."""
+    soucis = []
+    if aides["par_id"](monde, "ma017") is not None:
+        soucis.append("ma017 est encore en jeu")
+    if _ma_dans_la_defausse(monde, "ma017"):
+        soucis.append("ma017 est dans la defausse : elle devait etre RETIREE DU JEU")
+    identite = aides["identite"](monde)
+    subis = identite.max_health - identite.health
+    if subis != 4:
+        soucis.append(f"degats sur l'identite = {subis} (attendu 4)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "ma017 a quitte le jeu sans passer par la defausse, 4 degats subis"
+
+
+def ma019_allie_attache_et_menace(monde, aides):
+    """ma019 : l'allie est attache, et la menace vaut SON cout imprime."""
+    manigance = aides["par_id"](monde, "ma019")
+    if manigance is None:
+        return False, "ma019 introuvable en jeu"
+    soucis = []
+    zone = manigance.GetPlacedCardArea()
+    ids = [getattr(f.paper, "card_id", None) for f in zone.GetAll()]
+    if "01059" not in ids:
+        soucis.append(f"01059 n'est pas attachee (zone = {ids})")
+    if manigance.threat != 3:
+        soucis.append(f"menace = {manigance.threat} (attendu 3, le cout de 01059 ; "
+                      f"2 signifierait que le repli « pas d'allie » s'est applique)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "01059 attachee et menace de depart = 3, son cout imprime"
+
+
+def ma020_sonnee_apres_attaque(monde, aides):
+    """ma020 : Catalina attaque, des degats passent, l'identite est Sonnee."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    soucis = []
+    subis = identite.max_health - identite.health
+    if subis <= 0:
+        soucis.append("l'identite n'a rien encaisse : Catalina n'a pas attaque")
+    if not identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        soucis.append("l'identite n'est pas Sonnee")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"Catalina a attaque ({subis} degat(s)) et l'identite est Sonnee"
+
+
+def ma020_rien_ne_se_passe(monde, aides):
+    """ma020, contre-epreuve : sans Catalina, ni degat ni Sonne."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    soucis = []
+    subis = identite.max_health - identite.health
+    if subis != 0:
+        soucis.append(f"l'identite a encaisse {subis} degat(s) alors que Catalina "
+                      f"n'est pas en jeu")
+    if identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        soucis.append("l'identite est Sonnee alors qu'aucune attaque n'a eu lieu")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, ("aucune attaque, aucun Sonne : la branche « if no attack is made "
+                  "this way » est la seule partie (surge non observable)")
 '''
 
 
@@ -13124,6 +13929,17 @@ def executer_un_cas(game_dir, port, index):
                 deposer_en_reserve(card_id)
             for card_id in cas.get("jouer_reserve") or []:
                 jouer_depuis_la_reserve(card_id)
+            # `declencher_apres` : commandes Puzzle.* jouees APRES `jouer`.
+            # Ajoutee le 30/08/2026 pour le pack `ms_america`. `declencher`
+            # tourne AVANT `jouer` : impossible sans cette cle de tester une
+            # capacite dont l'effet ne se voit qu'a l'usage SUIVANT d'un
+            # pouvoir (ma009 America's Anger, « double all modifiers ... on
+            # its next use this turn ») ou une carte qui exige qu'un evenement
+            # ait deja ete joue dans le tour (ma003 Hawkeye, « if you have
+            # resolved Star-Gaze this turn »). Cle ADDITIVE : aucun cas
+            # existant ne la definit, aucun n'est modifie.
+            if cas.get("declencher_apres"):
+                PuzzleHelper.Exec(cas["declencher_apres"], monde)
         except Exception as exc:
             import traceback
             traceback.print_exc()

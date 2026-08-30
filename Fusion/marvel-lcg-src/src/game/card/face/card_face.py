@@ -112,6 +112,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
+        "STARLING",  # CORRECTIF : trait du pack custom ms_america (jakxin)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -205,6 +206,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # phase des joueurs et, en partant, infligent 1 degat a l'ennemi ou
         # retirent 1 menace a la manigance.
         'explosive',
+        # CORRECTIF : compteur du pack custom ms_america (jakxin). Hyper-Cosmic
+        # Awareness (ma007) accumule 1 compteur « star » par carte SUPERPOWER
+        # jouee, et en depense 4 d'un coup pour annuler une carte rencontre.
+        'star',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

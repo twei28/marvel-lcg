@@ -1,0 +1,69 @@
+{
+    "version": "0.5.8",
+    "name": "Ms. America",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (jakxin). Aspect JUSTICE choisi par l'utilisateur le 30/08/2026. Mesure faite avant de choisir : le trait SUPERPOWER, sur lequel repose Star-Gaze, n'existe QUE sur des cartes de heros (0 carte Aggression, 0 Justice, 0 Leadership, 2 Protection dans tout le catalogue) — l'aspect ne change donc presque rien au declenchement de la capacite d'identite. Le choix porte sur le reste du deck : Ms. America a CTR 1, son pire pouvoir, alors que son kit couvre deja les degats (ATQ 2, Break Through a 4 degats, deux allies a ATQ 2). Justice comble le trou et apporte de la pioche, ce qui compte avec une main de 4 en forme heros.",
+        "deckbuilding_note": "L'alter-ego imprime « You may include upgrade cards that modify your basic powers from any aspect in your deck » : cette regle est ASPECT-AGNOSTIQUE, elle permet de piocher Combat Training (Aggression), Heroic Intuition (Justice) ou Armored Vest (Protection) quel que soit l'aspect retenu. Implementee dans public/js/deckbuilder/app.js, fonction exemptDeLaLimiteAspect (§14.1 du guide), troisieme cas apres Madame Web et Patriot.",
+        "cartes_du_pack_note": "Trois des cinq cartes bonus du pack sont AGGRESSION (ma022 Gwenpool, ma025 Power Stomp, ma026 Moment of Triumph) : elles entrent au catalogue et restent deckables, mais ne peuvent pas figurer dans ce deck Justice. Les deux cartes BASIC du pack, elles, y sont : ma023 Marvel Boy et ma024 Noh-Varr's Ship.",
+        "reskins_note": "ma027 / ma028 / ma029 sont les re-skins des ressources basiques (full_link vers 01088 Energy, 01089 Genius, 01090 Strength). On met les RE-SKINS et jamais les originales : full_link clone le nom et la cle MaxPerDeck 1, donc avoir les deux violerait la limite par nom.",
+        "tenacity_note": "01093 Tenacity volontairement ABSENTE, comme pour speed et patriot : seul bloqueur d'autoplay officiel connu. Le temoin okoye la contient, l'ecart joue donc en faveur du heros custom."
+    },
+    "hero": [
+        "ma001a,ma001b"
+    ],
+    "hero_deck": [
+        "ma002",
+        "ma003",
+        "ma004",
+        "ma005",
+        "ma006",
+        "ma007",
+        "ma008",
+        "ma009",
+        "ma010",
+        "ma011",
+        "ma012",
+        "ma013",
+        "ma014",
+        "ma015",
+        "ma016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ma017"
+    ],
+    "nemesis_set": [
+        "ma018",
+        "ma019",
+        "ma020",
+        "ma021"
+    ],
+    "player_deck": [
+        "01058",
+        "01059",
+        "01060",
+        "01060",
+        "01060",
+        "01061",
+        "01061",
+        "01062",
+        "01062",
+        "01063",
+        "01063",
+        "01064",
+        "01065",
+        "01065",
+        "01065",
+        "ma023",
+        "ma024",
+        "ma027",
+        "ma028",
+        "ma029",
+        "01085",
+        "01086",
+        "01087",
+        "01091",
+        "01092"
+    ]
+}

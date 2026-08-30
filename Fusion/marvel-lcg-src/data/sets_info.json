@@ -1189,5 +1189,14 @@
         "encounters": [],
         "max_id": "pt022"
     },
-    "checksum": "c7e833130a34411e05674ee07532ecd886e51c900c0fe095af580fb91e766919"
+    "137. Custom (Ms. America)": {
+        "name": "ms_america",
+        "scenarios": [],
+        "heroes": [
+            "ms_america"
+        ],
+        "encounters": [],
+        "max_id": "ma029"
+    },
+    "checksum": "5674d2eca810291665d0da0f56b364f15d77db2aa66c88026fd7353fe8606e98"
 }

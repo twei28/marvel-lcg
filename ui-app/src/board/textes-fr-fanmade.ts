@@ -1350,4 +1350,56 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // patriot — Bulldozing Charge (Treachery, nemesis, x2)
   'pt021': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
   'pt022': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
+
+  // ---------------------------------------------------------------- ms_america
+  // Pack fan-made « jakxin », set 137. America Chavez, la Starling.
+  // ma026 a ma029 sont des re-skins `full_link` (12030, 01088, 01089, 01090) :
+  // le client herite du texte de la carte liee, rien a ecrire pour elles.
+  // ms_america — Ms. America (Hero)
+  'ma001a': "<i>Star-Gaze</i> — <b>Réponse</b> : après avoir joué une carte [[SUPERPOWER]], si la ressource IMPRIMÉE de cette carte était :\n• [physical] – infligez 1 dégât à un ennemi.\n• [energy] – soignez 1 dégât sur Ms. America.\n• [mental] – retirez 1 menace d'une manigance.\n• [wild] – redressez Ms. America.",
+  // ms_america — America Chavez (AlterEgo)
+  'ma001b': "Vous pouvez inclure dans votre deck des améliorations qui modifient vos pouvoirs de base, de n'importe quel aspect.\n<i>Thinking With Portals</i> — <b>Action</b> : défaussez une carte de votre main → cherchez une carte dans votre pile de défausse et mélangez-la dans votre deck. <i>(Limite d'une fois par round.)</i>",
+  // ms_america — Alloy (Ally)
+  'ma002': "<b><i>Robuste</i></b>.\n<b>Réponse de héros</b> : après avoir résolu « Star-Gaze », Alloy gagne +1 ATQ jusqu'à la fin du tour.",
+  // ms_america — Hawkeye / Kate Bishop (Ally)
+  'ma003': "[star] L'attaque de Hawkeye gagne <b><i>Perforation</i></b> et <b><i>Distance</i></b>.\n<b>Interruption</b> : quand Hawkeye devrait être mise K.O. par des dégâts consécutifs, si vous avez résolu « Star-Gaze » ce tour-ci, mélangez-la dans votre deck à la place.",
+  // ms_america — Santana Family (Support)
+  'ma004': "Les événements attachés à Santana Family peuvent être joués comme s'ils étaient dans votre main.\n<b>Action d'identité civile</b> : inclinez Santana Family → cherchez un événement dans votre pile de défausse et attachez-le face cachée à cette carte <i>(maximum 2)</i>.",
+  // ms_america — Star Light (Upgrade)
+  'ma005': "<b>Ressource de héros</b> : inclinez Star Light → générez une ressource [wild]. Vous pouvez remplacer la ressource imprimée de la carte jouée par une ressource [wild].",
+  // ms_america — Star Flight (Upgrade)
+  'ma006': "Ms. America gagne +1 CTR et le trait [[AERIAL]].\n<b>Interruption de héros</b> : quand vous jouez une carte Événement, inclinez Star Flight → cet événement gagne le trait [[SUPERPOWER]].",
+  // ms_america — Hyper-Cosmic Awareness (Upgrade)
+  'ma007': "<b>Réponse de héros</b> : après avoir joué une carte [[SUPERPOWER]], placez 1 compteur star sur cette carte.\n<b>Interruption de héros</b> : quand une carte Rencontre est révélée, inclinez cette carte et retirez-en 4 compteurs star → annulez tous ses effets et défaussez-la.",
+  // ms_america — Energy Infusion (Resource)
+  'ma008': "<b>Réponse de héros</b> : après avoir dépensé cette carte pour payer une carte [[SUPERPOWER]], résolvez « Star-Gaze » une fois de plus, sur la même ressource imprimée que la carte jouée.",
+  // ms_america — America's Anger (Event, x2)
+  'ma009': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → doublez tous les modificateurs appliqués au pouvoir choisi lors de sa prochaine utilisation ce tour-ci.",
+  'ma010': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → doublez tous les modificateurs appliqués au pouvoir choisi lors de sa prochaine utilisation ce tour-ci.",
+  // ms_america — Bulletproof Chica (Event, x2)
+  'ma011': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, prévenez tous ces dégâts. Donnez une carte de statut Robuste à votre identité.",
+  'ma012': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, prévenez tous ces dégâts. Donnez une carte de statut Robuste à votre identité.",
+  // ms_america — Star Portal (Event, x2)
+  'ma013': "<b>Action de héros</b> : cherchez un allié dans la pile de défausse de n'importe quel joueur et mettez-le incliné dans la zone de jeu de n'importe quel joueur → retirez d'une manigance un nombre de menaces égal au CTR de cet allié et infligez à un ennemi un nombre de dégâts égal à son ATQ.",
+  'ma014': "<b>Action de héros</b> : cherchez un allié dans la pile de défausse de n'importe quel joueur et mettez-le incliné dans la zone de jeu de n'importe quel joueur → retirez d'une manigance un nombre de menaces égal au CTR de cet allié et infligez à un ennemi un nombre de dégâts égal à son ATQ.",
+  // ms_america — Break Through (Event, x2)
+  'ma015': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 4 dégâts à un ennemi. Retirez 3 menaces d'une manigance. Si cela met K.O. un ennemi ou une manigance, étourdissez ou désorientez un ennemi.",
+  'ma016': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 4 dégâts à un ennemi. Retirez 3 menaces d'une manigance. Si cela met K.O. un ennemi ou une manigance, étourdissez ou désorientez un ennemi.",
+  // ms_america — Edges Syndrome (Obligation)
+  'ma017': "<b><i>Donnez-la au joueur America Chavez.</i></b>\nVotre identité subit -1 à chacun de ses pouvoirs de base.\n<b>Action</b> : subissez 2 dégâts → défaussez cette carte.\n<b>Action</b> : subissez 4 dégâts → retirez cette carte de la partie.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // ms_america — Catalina Chavez (Minion, nemesis)
+  'ma018': "<b><i>Coup Rapide</i></b>.\n[star] Catalina Chavez gagne chaque modificateur de caractéristique présent dans votre zone de jeu (le CTR étant remplacé par le MNG).\n<i>(Sbire némésis de Ms. America.)</i>",
+  // ms_america — Search for the Cure (SideScheme, nemesis)
+  'ma019': "<b>Une fois révélée</b> : chaque joueur cherche un allié dans sa pile de défausse et l'attache à cette carte. La menace de départ de cette carte est égale au coût en ressources cumulé des cartes attachées. Pour chaque joueur qui n'a attaché aucun allié, cette carte reçoit 2[per_hero] menaces de départ supplémentaires.",
+  // ms_america — Star Lightning (Treachery, nemesis, x2)
+  'ma020': "<b>Une fois révélée</b> : Catalina Chavez vous attaque. Si cette attaque inflige des dégâts, votre identité est étourdie. Si aucune attaque n'a eu lieu de cette façon, cette carte gagne <b><i>Déferlement</i></b>.",
+  'ma021': "<b>Une fois révélée</b> : Catalina Chavez vous attaque. Si cette attaque inflige des dégâts, votre identité est étourdie. Si aucune attaque n'a eu lieu de cette façon, cette carte gagne <b><i>Déferlement</i></b>.",
+  // ms_america — Gwenpool (Ally, Agressivite)
+  'ma022': "[star] Gwenpool gagne +1 ATQ par amélioration spécifique à une identité que vous contrôlez <i>(maximum +2 ATQ)</i>.",
+  // ms_america — Marvel Boy (Ally, Basic)
+  'ma023': "<b>Interruption</b> : quand Marvel Boy est mis K.O. par des dégâts consécutifs, redressez une amélioration que vous contrôlez.",
+  // ms_america — Noh-Varr's Ship (Support, Basic)
+  'ma024': "Jouable uniquement si votre identité a le trait [[YOUNG AVENGER]].\n<b>Ressource</b> : inclinez Noh-Varr's Ship → générez une ressource [wild].",
+  // ms_america — Power Stomp (Event, Agressivite)
+  'ma025': "Jouable uniquement si votre héros a au moins 3 ATQ.\n<b>Action de héros</b> <i>(attaque)</i> : infligez X dégâts au vilain et à chaque sbire engagé avec vous, X étant égal à votre ATQ.",
 }

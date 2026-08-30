@@ -115,7 +115,18 @@ class CardFactory:
                                                     # (chercher un player side scheme) et une en heros
                                                     # (en retirer 3 menaces). Sans cette declaration,
                                                     # le deck jessica_jones ne montait pas.
-                                                    "61019"]:  # Strategy Session (jj)
+                                                    "61019",   # Strategy Session (jj)
+                                                    # CORRECTIF (30/08/2026) : Quick Draw, pack
+                                                    # custom kate_bishop. Motif IDENTIQUE a
+                                                    # 61019 : une AlterEgoAction (« Flip to hero
+                                                    # form and ready your hero ») et une
+                                                    # HeroAction (« Ready your hero and place 2
+                                                    # arrow counters on Kate's Bow »), les deux
+                                                    # `.SetPlay()`. Le module n'a aucun defaut ;
+                                                    # sans cette declaration le deck
+                                                    # kate_bishop ne montait pas (assert au
+                                                    # setup, invisible pour test_cards).
+                                                    "kb005"]:  # Quick Draw (kate_bishop)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune
