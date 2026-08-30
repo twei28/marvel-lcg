@@ -136,9 +136,28 @@ function reglesAspect(hero) {
  * deck. » Ces alliés ne comptent donc pas dans le décompte des aspects.
  */
 function exemptDeLaLimiteAspect(hero, carte) {
-    if (!/madame web/i.test((hero && hero.name) || "")) return false;
-    if (carte.type !== "Ally") return false;
-    return (carte.traits || []).includes("WEB-WARRIOR") || /spider/i.test(carte.name);
+    const nom = (hero && hero.name) || "";
+    if (/madame web/i.test(nom)) {
+        if (carte.type !== "Ally") return false;
+        return (carte.traits || []).includes("WEB-WARRIOR") || /spider/i.test(carte.name);
+    }
+    /* Leader (Elijah Bradley / Patriot, pt001b) : « During deck building you
+     * may include YOUNG AVENGER allies from any aspect. » Ces alliés ne
+     * comptent donc pas dans le décompte des aspects.
+     * ⚠ Aucune cible légale à ce jour : les deux seuls alliés YOUNG AVENGER
+     * du catalogue (il002 Stature, wc002 Hulkling) sont de classe Hero, donc
+     * cartes signature d'autres héros, interdites de deck. La règle est
+     * implémentée pour le jour où un allié YOUNG AVENGER d'aspect sortira. */
+    /* ⚠ Test ANCRÉ, pas un /patriot/i lâche : le dossier « A créer » contient
+     * un pack « Iron Patriot » non encore porté, que la version lâche aurait
+     * silencieusement doté de la règle Leader le jour de son arrivée. On
+     * n'accepte donc que le nom exact, l'étoile d'unicité en moins
+     * (cards/paper.py retire le préfixe « * », mais pas partout côté client). */
+    if (/^\*?\s*patriot$/i.test(nom.trim())) {
+        if (carte.type !== "Ally") return false;
+        return (carte.traits || []).includes("YOUNG AVENGER");
+    }
+    return false;
 }
 
 function valider() {

@@ -6,6 +6,13 @@
 
 **Carte exemple** : `01109` : Bomb Scare (`desc` contient `"Acceleration": "1"`), lu directement depuis `desc`, aucun script requis. Un fichier `01109.py` existe dans `src/cards/pack` : ce script gère une capacité imprimée annexe (placement de threat à la révélation), pas le mot-clé Acceleration.
 
-**Pièges connus** : ne pas confondre avec Hazard, qui agit pendant la phase vilain en tirant des cartes Rencontre supplémentaires plutôt qu'en posant du threat. Les cartes Acceleration peuvent cumuler plusieurs icônes (compteur > 1), chaque icône plaçant un threat supplémentaire. Si une future carte cumule Acceleration avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Acceleration lui-même.
+**Pièges connus** : ne pas confondre avec Hazard, qui agit pendant la phase vilain en tirant des cartes Rencontre supplémentaires plutôt qu'en posant du threat.
+
+> **Distinguer les deux ICÔNES imprimées** : voir l'encadré de `hazard.md`,
+> qui donne la différence visuelle exacte (Acceleration = pointe vers le haut
+> **+ barre de soulignement** ; Aléa = carte penchée **nue**) et la méthode de
+> découpe employée le 30/08/2026 pour la trancher. `ag011` Assassination Plot
+> est le témoin de référence du dépôt pour l'icône Acceleration : son `desc`
+> déclare `Acceleration` et son scan porte bien la forme à pointe + barre. Les cartes Acceleration peuvent cumuler plusieurs icônes (compteur > 1), chaque icône plaçant un threat supplémentaire. Si une future carte cumule Acceleration avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Acceleration lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.

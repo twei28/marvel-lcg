@@ -1145,4 +1145,57 @@ export const HEROS_INFO = {
         apparition: "Superior Iron Man #1 (2015)",
     },
 
+    "ss001a": {
+        bio: "Kaine Parker est un clone imparfait de Peter Parker (Spider-Man), créé par le généticien Miles Warren (le Jackal) durant la « Clone Saga ». Rongé par une dégénérescence cellulaire et une haine de son original, il a d'abord sombré dans la violence sous l'identité de la Tarantula, avant de chercher la rédemption en devenant le vigilant plus mesuré Scarlet Spider. Hanté par la culpabilité de ses crimes passés, il protège aujourd'hui les rues avec une brutalité assumée mais un code moral retrouvé.",
+        bioEn: "Kaine Parker is an imperfect clone of Peter Parker (Spider-Man), created by geneticist Miles Warren (the Jackal) during the \"Clone Saga\". Wracked by cellular degeneration and a hatred of his original, he first fell into violence as the vigilante Tarantula, before seeking redemption as the more measured Scarlet Spider. Haunted by guilt over his past crimes, he now protects the streets with brutal efficiency but a rediscovered moral code.",
+        civil: "Kaine Parker",
+        ennemis: "Miles Warren (le Jackal)",
+        ennemisEn: "Miles Warren (the Jackal)",
+        apparition: "Web of Spider-Man Vol. 1 #119 (1994)",
+    },
+
+    "hd001a": {
+        bio: "Howard est un canard anthropomorphe intelligent et cynique venu de Duckworld, projeté sur Terre par un accident cosmique lié au Nexus de toutes les Réalités, dans les marais de Citrusville. Échoué à Cleveland, coincé dans un monde de « grands singes chauves » qu'il méprise autant qu'il le subit, il gagne sa vie comme détective privé râleur, héros bien malgré lui. Ses seuls véritables alliés sont Man-Thing, la créature du marais où il est arrivé, et Beverly Switzler, qui l'a recueilli. Créé par Steve Gerber et Val Mayerik en 1973.",
+        bioEn: "Howard is a sharp-tongued, cynical anthropomorphic duck from Duckworld, hurled onto Earth by a cosmic accident tied to the Nexus of All Realities in the swamps of Citrusville. Stranded in Cleveland, stuck in a world of \"hairless apes\" he despises as much as he endures, he scrapes by as a grumbling private eye and a hero entirely against his will. His only real allies are Man-Thing, the creature of the swamp where he landed, and Beverly Switzler, who took him in. Created by Steve Gerber and Val Mayerik in 1973.",
+        civil: "Howard Duckson",
+        base: "Cleveland (Ohio)",
+        apparition: "Adventure into Fear #19 (1973)",
+    },
+
+    "wc001a": {
+        bio: "Billy Kaplan est un adolescent de Manhattan qui découvre qu'il manie la magie du chaos : il lui suffit de formuler ses souhaits à voix haute pour que la réalité s'y plie. Membre fondateur des Young Avengers sous le nom de Wiccan, il apprend qu'il est en réalité l'un des fils réincarnés de la Sorcière Rouge et de la Vision, et le frère jumeau de Speed. Époux de Hulkling, avec qui il règne sur l'empire Kree/Skrull, il porte aussi une prophétie écrasante : devenir le Demiurge, le sorcier le plus puissant de l'univers. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Billy Kaplan is a Manhattan teenager who discovers he wields chaos magic: he need only speak his wishes aloud for reality to bend to them. A founding member of the Young Avengers as Wiccan, he learns he is in fact one of the reincarnated sons of the Scarlet Witch and the Vision, and the twin brother of Speed. Married to Hulkling, with whom he rules the Kree/Skrull empire, he also carries a crushing prophecy: to become the Demiurge, the most powerful sorcerer in the universe. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Billy Kaplan",
+        base: "New York (Manhattan)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Moridun, Kang le Conquérant",
+        ennemisEn: "Moridun, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
+    "sd001a": {
+        bio: "Tommy Shepherd est un adolescent au caractère explosif, expulsé du lycée après avoir accidentellement fait sauter son école quand ses pouvoirs se sont réveillés. Enfermé dans une prison pour jeunes mutants, il en est tiré par les Young Avengers, qui découvrent son visage familier : il est le frère jumeau réincarné de Billy Kaplan, l'autre fils perdu de la Sorcière Rouge et de la Vision. Sous le nom de Speed, il court plus vite que le son et fait vibrer la matière jusqu'à la détonation, un don qu'il partage avec son oncle Vif-Argent. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Tommy Shepherd is a hot-headed teenager, thrown out of school after accidentally blowing the building up when his powers woke. Locked away in a juvenile facility for mutants, he is broken out by the Young Avengers, who recognize his face at once: he is the reincarnated twin brother of Billy Kaplan, the other lost son of the Scarlet Witch and the Vision. As Speed he runs faster than sound and vibrates matter until it detonates, a gift he shares with his uncle Quicksilver. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Thomas Shepherd",
+        base: "New York (Springfield, New Jersey)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Coat of Arms, Kang le Conquérant",
+        ennemisEn: "Coat of Arms, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #10 (2005)",
+    },
+
+    "pt001a": {
+        bio: "Elijah Bradley est le petit-fils d'Isaiah Bradley, le « Captain America noir » sur qui l'armée américaine a testé le sérum du super-soldat. Adolescent, Eli se fait passer pour un héritier du sérum et prend le nom de Patriot, avant d'avouer qu'il doit en réalité sa force à une drogue de synthèse, le MGH. Sevré puis authentiquement transfusé par le sang de son grand-père, il devient le meneur des Young Avengers : le stratège, celui qui reste debout devant ses coéquipiers et encaisse à leur place. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Elijah Bradley is the grandson of Isaiah Bradley, the \"black Captain America\" the US Army tested the super-soldier serum on. As a teenager Eli passes himself off as an heir to the serum and takes the name Patriot, before admitting that his strength really comes from a synthetic drug, MGH. Clean at last, and genuinely transfused with his grandfather's blood, he becomes the leader of the Young Avengers: the strategist, the one who stands in front of his teammates and takes the hit for them. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Elijah Bradley",
+        base: "New York (Brooklyn)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Mr. Hyde, Kang le Conquérant",
+        ennemisEn: "Mr. Hyde, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
 };

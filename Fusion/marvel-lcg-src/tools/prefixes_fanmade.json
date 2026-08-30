@@ -121,9 +121,9 @@
     "hd": {
       "pack": "howard_the_duck",
       "libelle": "135. Custom (Howard the Duck)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Defender/Guardian, victory display bonus (cf. pattern cable/loki), Persona (Man-Thing), Toughness. Un seul point d'incertitude : carte signature 'Nexus of All Realities' (choix de play area a l'entree d'un personnage), aucun precedent trouve, a investiguer specifiquement avant portage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 28,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made RyCoRan, zip 'Howard the Duck (05-23 Final)'. 2 faces heros + 16 signature + 3 ressources re-skinnees (full_link vers 01088/01089/01090) + 1 obligation + 6 nemesis (dont Hellcow, sbire ALTERNATIF a utiliser a la place du Collector quand on affronte le scenario du Collector, donc hors du nemesis_set standard)."
     },
     "ho": {
       "pack": "harry_osborn",
@@ -210,9 +210,9 @@
     "pt": {
       "pack": "patriot",
       "libelle": "138. Custom (Patriot)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 3/5. Eli Bradley, hero+nemesis (Mr. Hyde), trait Young Avenger (nouveau, alter-ego 'any aspect' deja existant sinon). Deux cartes neuves sans precedent : deplacement d'attachment entre personnages avec texte neutralise (Commandeer) et echange de valeurs ATK/THW (Commander's Orders). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 23,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider, wiccan et speed. Elijah Bradley, Young Avengers. 2 faces heros + 15 signature + 1 obligation + 5 nemesis (Mr. Hyde). Le kit ne parle que d'ALLIES. L'alter-ego imprime une REGLE DE DECK-BUILDING (mot-cle maison 'Leader' : allies YOUNG AVENGER de n'importe quel aspect), aujourd'hui sans cible legale dans le catalogue. Collision de noms assumee : deux allies OFFICIELS s'appellent deja Patriot, 29016 (Rayshaun Lucas, Leadership) et 56041 (Elijah Bradley lui-meme, Protection)."
     },
     "ra": {
       "pack": "rainy",
@@ -229,9 +229,9 @@
     "sd": {
       "pack": "speed",
       "libelle": "141. Custom (Speed)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 4/5. Thomas Shepherd (speedster, Young Avengers), hero+nemesis. Compteurs 'explosifs' EXISTANTS (framework generique deja utilise par aos/baron_zemo, maria_hill, modok), mais la ressource dediee eclair (5e type de ressource, utilisee sur 5 des 15 cartes) n'a aucun equivalent : la classe Resources du moteur est figee sur R/B/Y/G. Vraie primitive moteur a creer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 23,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider et wiccan. Tommy Shepherd, Young Avengers. 2 faces heros + 15 cartes signature + 1 obligation + 4 nemesis, plus une SECONDE obligation (Conflicted Feelings) qui appartient au set nemesis (numerotee SPEED NEMESIS 5/5 sur le scan). Mecanique neuve : les compteurs explosifs (compteur moteur `explosive`), poses par la capacite du heros et retires en fin de phase des joueurs."
     },
     "sg": {
       "pack": "squirrel_girl",
@@ -267,11 +267,11 @@
       "depuis": "2026-08-12"
     },
     "ss": {
-      "pack": "kaine_parker",
-      "libelle": "128. Custom (Kaine Parker / Scarlet Spider)",
-      "cartes": 0,
+      "pack": "scarlet_spider",
+      "libelle": "128. Custom (Scarlet Spider)",
+      "cartes": 23,
       "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Kaine Parker (clone de Peter Parker), hero+nemesis (Assassins Guild). Zero primitive nouvelle (excess damage deja exploite par spdr/wsp/jj, overkill, piercing). Pack nomme 'kaine_parker' expres pour eviter toute confusion avec un futur portage Ben Reilly (autre Scarlet Spider). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project), zip 'Scarlet Spider' (Kaine Parker). 2 faces heros + 15 signature + 1 obligation + 5 nemesis, aucune decklist d'aspect fournie."
     },
     "th": {
       "pack": "the_thing",
@@ -295,9 +295,9 @@
     "wc": {
       "pack": "wiccan",
       "libelle": "130. Custom (Wiccan)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Billy Kaplan, hero+nemesis (Moridun). Comptage d'icones boost sur le dessus du deck de rencontre : pattern quasi identique au pack fanmade agent_13, deja code et copiable. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 25,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad et scarlet_spider. 2 faces heros + 15 signature + 1 Team-Up basique (Royal Couple) + 1 obligation + 6 nemesis (New Vessel wc019a se retourne en The Demiurge wc019b). Tout le kit compte les icones BOOST de la carte du dessus du deck rencontre."
     },
     "wd": {
       "pack": "web_of_deceit",

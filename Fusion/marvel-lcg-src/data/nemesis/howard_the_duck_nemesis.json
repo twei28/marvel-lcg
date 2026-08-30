@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Howard the Duck Nemesis",
+    "encounters": [
+        "hd022",
+        "hd023",
+        "hd025",
+        "hd026",
+        "hd027"
+    ]
+}

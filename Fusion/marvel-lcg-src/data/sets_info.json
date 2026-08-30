@@ -1090,7 +1090,6 @@
         "encounters": [],
         "max_id": "rg017"
     },
-    "checksum": "14b949c2475d0e62221ed41fb8de6435f6ca6e1fdcbc5de9e97f07345cbe14c1",
     "122. Custom (Wolverine X-23)": {
         "name": "wolverine_x23",
         "scenarios": [],
@@ -1144,5 +1143,51 @@
         ],
         "encounters": [],
         "max_id": "ok024"
-    }
+    },
+    "128. Custom (Scarlet Spider)": {
+        "name": "scarlet_spider",
+        "scenarios": [],
+        "heroes": [
+            "scarlet_spider"
+        ],
+        "encounters": [],
+        "max_id": "ss022"
+    },
+    "135. Custom (Howard the Duck)": {
+        "name": "howard_the_duck",
+        "scenarios": [],
+        "heroes": [
+            "howard_the_duck"
+        ],
+        "encounters": [],
+        "max_id": "hd027"
+    },
+    "130. Custom (Wiccan)": {
+        "name": "wiccan",
+        "scenarios": [],
+        "heroes": [
+            "wiccan"
+        ],
+        "encounters": [],
+        "max_id": "wc023"
+    },
+    "141. Custom (Speed)": {
+        "name": "speed",
+        "scenarios": [],
+        "heroes": [
+            "speed"
+        ],
+        "encounters": [],
+        "max_id": "sd022"
+    },
+    "138. Custom (Patriot)": {
+        "name": "patriot",
+        "scenarios": [],
+        "heroes": [
+            "patriot"
+        ],
+        "encounters": [],
+        "max_id": "pt022"
+    },
+    "checksum": "c7e833130a34411e05674ee07532ecd886e51c900c0fe095af580fb91e766919"
 }

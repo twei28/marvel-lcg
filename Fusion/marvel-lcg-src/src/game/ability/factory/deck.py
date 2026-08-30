@@ -87,7 +87,17 @@ class AbilityFactoryDeck:
                                     only_during_player_phase: bool=False,
                                     ) -> List['Ability']:
         from game.ability.factory import AbilityFactory
-        from game.card.face.card_type import Hero
+        # CORRECTIF 30/08/2026 (pack `wiccan`) : le cast etait `Hero`, ce qui
+        # interdisait de porter « play with the top card face up » sur une face
+        # ALTER-EGO. Magik (45030a) et Falcon (53001a), les deux seuls usages
+        # anterieurs, sont des faces heros et ne voyaient pas le probleme ;
+        # Wiccan imprime sa Clairvoyance sur SES DEUX FACES, et wc001b
+        # (Billy Kaplan) plantait le montage de partie sur
+        # `AssertionError: self=[(01,wc001b) Billy Kaplan] face_type=Hero`.
+        # `this` n'est de toute facon jamais utilise (Unused juste apres) : le
+        # cast ne sert que d'assertion, elargie ici a `Identity`, la classe mere
+        # commune de Hero et AlterEgo (game/card/face/card_type/identity.py:10).
+        from game.card.face.card_type import Identity
 
         def check_only_during_player_phase(effect: 'Effect', message: 'Message.AfterCardsMoved|Message.AfterDeckShuffle|Message.AfterUnitChangeForm|Message.WhenUnitWouldChangeForm') -> bool:
             if only_during_player_phase == False:
@@ -96,7 +106,7 @@ class AbilityFactoryDeck:
             return effect.world.phase.IsPlayerPhase("AnyPlayer")
 
         def magik(effect: 'Effect', message: 'Message.AfterCardsMoved|Message.AfterDeckShuffle|Message.AfterUnitChangeForm|Message.WhenUnitWouldChangeForm|Message.WhenPhaseBegin') -> None:
-            this = effect.this.CastTo(Hero)
+            this = effect.this.CastTo(Identity)
             Unused(this)
 
             for deck in which_deck(effect):

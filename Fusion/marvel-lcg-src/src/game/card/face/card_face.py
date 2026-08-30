@@ -108,6 +108,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "SQUIRREL", "STUDENT", "SUIT", "NETWORK", "ASGARDIAN",  # CORRECTIF : traits du pack custom squirrel_girl
         "PSYCHIATRIST",  # CORRECTIF : trait du pack custom agent_13 (Rainy)
         "REPTILIAN", "A.I.M. SCIENTIST", "MULTIVERSE", "CORRUPT", "TRAP!", "UNDERLING",  # CORRECTIF : traits du pack custom web_of_deceit (Ripper3)
+        "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
+        "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
+        "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
+        "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -195,6 +199,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (ok010) place des compteurs "phalanx" (max 3) et les depense en
         # ressources [physical] via son pouvoir de ressource.
         'phalanx',
+        # CORRECTIF : compteur du pack custom speed (CptScorp). L'insert du pack
+        # decrit les « explosive counters » : la capacite du heros en pose un sur
+        # un ennemi ou une manigance (max 1 par carte), ils sont retires en fin de
+        # phase des joueurs et, en partant, infligent 1 degat a l'ennemi ou
+        # retirent 1 menace a la manigance.
+        'explosive',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

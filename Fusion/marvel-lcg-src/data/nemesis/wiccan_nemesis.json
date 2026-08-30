@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Wiccan Nemesis",
+    "encounters": [
+        "wc019a,wc019b",
+        "wc020",
+        "wc021",
+        "wc022",
+        "wc023"
+    ]
+}

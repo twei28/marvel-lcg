@@ -1131,4 +1131,223 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'si016': "Armure 2. Garde. Patrouille.\n<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark.\n[star] Infligez 1 dégât au joueur Tony Stark.",
   // superior_iron_man — Get My Body Back (Treachery)
   'si017': "<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark, puis infligez-lui 1 dégât supplémentaire.",
+  // scarlet_spider — Scarlet Spider (Hero)
+  'ss001a': "<i>Interrogatoire extrême</i> — <b>Réponse</b> : après que vous avez infligé un excès de dégâts à un sbire, remélangez-le dans le deck de rencontre. Puis, retirez d'un plan une menace égale au montant de dégâts en excès infligés. <i>(Maximum 3 menaces par sbire.)</i>",
+  // scarlet_spider — Kaine Parker (AlterEgo)
+  'ss001b': "<i>Lien arachnéen</i> — <b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre défausse 1 exemplaire de Spider-pathy et ajoutez-le à votre main. <i>(Limite d'une fois par round.)</i>",
+  // scarlet_spider — Grim Resolve (Event) x2
+  'ss002': "<b>Action</b> : choisissez un pouvoir de base, vous gagnez +1 à ce pouvoir jusqu'à la fin du round pour chaque ressource différente dépensée sur cette carte. Puis, redressez votre identité.",
+  'ss003': "<b>Action</b> : choisissez un pouvoir de base, vous gagnez +1 à ce pouvoir jusqu'à la fin du round pour chaque ressource différente dépensée sur cette carte. Puis, redressez votre identité.",
+  // scarlet_spider — Precise Force (Event) x3
+  'ss004': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  'ss005': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  'ss006': "<b>Action de héros</b> <i>(attaque)</i> : infligez jusqu'à 3 dégâts à un ennemi.",
+  // scarlet_spider — Spider-pathy (Event) x2
+  'ss007': "<b>Action</b> : cherchez dans le deck de rencontre le sbire le plus proche du dessus et mettez-le en jeu, engagé avec vous. Piochez 1 carte.",
+  'ss008': "<b>Action</b> : cherchez dans le deck de rencontre le sbire le plus proche du dessus et mettez-le en jeu, engagé avec vous. Piochez 1 carte.",
+  // scarlet_spider — Unrestrained (Event) x2
+  'ss009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
+  'ss010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
+  // scarlet_spider — Four Seasons' Room (Support)
+  'ss011': "<b>Action d'identité civile</b> : inclinez Four Seasons' Room → piochez 1 carte <i>(2 à la place si vous donnez une carte boost face cachée au vilain)</i>.",
+  // scarlet_spider — Mark of Kaine (Upgrade) x3
+  'ss012': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  'ss013': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  'ss014': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
+  // scarlet_spider — Spider Stealth Suit (Upgrade)
+  'ss015': "Vous gagnez +1 point de vie.\n<b>Interruption de héros</b> : quand vous jouez un événement [[ATTAQUE]] ou [[CONTRE]], augmentez de 1 le dégât infligé ou la menace retirée par cet événement.",
+  // scarlet_spider — Stings of Kaine (Upgrade)
+  'ss016': "Scarlet Spider gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous attaquez, inclinez Stings of Kaine → cette attaque gagne perçant et déferlement.",
+  // scarlet_spider — Murderer's Guilt (Obligation)
+  'ss017': "<b><i>Donnez-la au joueur Kaine Parker.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Kaine Parker et subissez 2 dégâts → retirez Murderer's Guilt de la partie.\n• Subissez 1 dégât par événement dans votre main. Si moins de 3 dégâts ont été subis de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // scarlet_spider — Assassins Guild (SideScheme, nemesis)
+  'ss018': "<i>Kaine avait autrefois accepté des contrats d'assassinat sur le territoire de la Guilde des Assassins. Elle veut sa part !</i>\nChaque ennemi [[ASSASSIN]] gagne +1 ATQ.",
+  // scarlet_spider — Bella Donna (Minion, nemesis)
+  'ss019': "Machination. <i>(Après que ce sbire s'est engagé avec votre identité, il manigance.)</i>\n<b>Interruption Obligatoire</b> : quand Bella Donna est mise K.O., cherchez dans le deck de rencontre un autre sbire [[ASSASSIN]] et révélez-le.\n<i>(Sbire némésis de Scarlet Spider.)</i>",
+  // scarlet_spider — Harvester (Minion, nemesis)
+  'ss020': "Coup rapide.\nLes attaques de Harvester gagnent perçant.\n<b>Réponse Obligatoire</b> : après que Harvester a attaqué et blessé un personnage, infligez 1 dégât à ce personnage.",
+  // scarlet_spider — Undead Hand Ninja (Minion, nemesis)
+  'ss021': "Incitation 1.\n<b>Interruption Obligatoire</b> : quand ce sbire serait mis K.O., remélangez-le dans le deck de rencontre à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // scarlet_spider — Forced Contract (Treachery, nemesis)
+  'ss022': "Renfort.\n<b>Une fois révélée</b> : l'allié ayant l'ATQ la plus élevée subit des dégâts égaux à l'ATQ de Scarlet Spider. S'il n'y a aucun allié en jeu, vous subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : chaque personnage ami subit 1 dégât.",
+
+  // howard_the_duck — Howard the Duck (Hero)
+  'hd001a': "<i>Détective privé</i> — <b>Interruption</b> : quand une menace devrait être placée sur une manigance, empêchez 1 de cette menace. <i>(Limite d'une fois par round.)</i>\n<b>Réponse</b> : après qu'une manigance annexe est entrée en jeu, redressez Howard the Duck. <i>(Limite d'une fois par round.)</i>",
+  // howard_the_duck — Howard Duckson (AlterEgo)
+  'hd001b': "<i>Raisonnement can-artésien</i> — <b>Action</b> : regardez les 3 cartes du dessus du deck de rencontre. Placez-en 1 sous le deck et remettez les autres dans l'ordre de votre choix. <i>(Limite d'une fois par round.)</i>",
+  // howard_the_duck — Man-Thing (Ally)
+  'hd002': "Ténacité.\nRéduisez de 1 le coût pour jouer Man-Thing pour chaque manigance annexe Howard the Duck dans la zone de victoire.",
+  // howard_the_duck — Mallard Magic (Event) x2
+  'hd003': "<b>Action de héros</b> : choisissez :\n• Sonnez un ennemi et infligez-lui 5 dégâts.\n• Désorientez un ennemi et retirez 4 menaces d'une manigance.",
+  'hd004': "<b>Action de héros</b> : choisissez :\n• Sonnez un ennemi et infligez-lui 5 dégâts.\n• Désorientez un ennemi et retirez 4 menaces d'une manigance.",
+  // howard_the_duck — Quack Attack (Event) x2
+  'hd005': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le montant, empêchez 2 de ces dégâts. Infligez 1 dégât à un ennemi pour chaque manigance annexe dans la zone de victoire.",
+  'hd006': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le montant, empêchez 2 de ces dégâts. Infligez 1 dégât à un ennemi pour chaque manigance annexe dans la zone de victoire.",
+  // howard_the_duck — Fowl Play (Event) x2
+  'hd007': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous déjouez ainsi une manigance annexe, vous pouvez redresser votre héros ou retirer 1 menace d'une manigance pour chaque manigance annexe dans la zone de victoire.",
+  'hd008': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous déjouez ainsi une manigance annexe, vous pouvez redresser votre héros ou retirer 1 menace d'une manigance pour chaque manigance annexe dans la zone de victoire.",
+  // howard_the_duck — Quack and Burn (Event)
+  'hd009': "<b>Action de héros</b> <i>(attaque/contre)</i> : cherchez Man-Thing et ajoutez-le à votre main. Infligez à un ennemi des dégâts égaux à l'ATQ de Man-Thing et retirez d'une manigance une menace égale au CTR de Howard the Duck.",
+  // howard_the_duck — Trapped (PlayerSideScheme)
+  'hd010': "Victoire 0.\nTant que Trapped est dans la zone de victoire, Howard the Duck gagne +1 ATQ.\n<b>Quand déjouée</b> : chaque joueur peut chercher un allié dans son deck et sa pile de défausse, et l'ajouter à sa main. Le joueur qui a déjoué cette manigance peut mettre cet allié en jeu.",
+  // howard_the_duck — In a World (PlayerSideScheme)
+  'hd011': "Victoire 0.\nTant que In a World est dans la zone de victoire, Howard the Duck gagne +1 DEF.\n<b>Quand déjouée</b> : donnez une carte d'état Tenace à chaque joueur. Le joueur qui a déjoué cette manigance peut soigner 2 dégâts de son identité.",
+  // howard_the_duck — He Never Made (PlayerSideScheme)
+  'hd012': "Victoire 0.\nTant que He Never Made est dans la zone de victoire, Howard the Duck gagne +1 CTR.\n<b>Quand déjouée</b> : chaque joueur peut mélanger jusqu'à 3 cartes de sa pile de défausse dans son deck. Le joueur qui a déjoué cette manigance peut à la place ajouter 1 de ces cartes à sa main.",
+  // howard_the_duck — Beverly Switzler (Support)
+  'hd013': "<b>Action d'identité civile</b> : inclinez Beverly Switzler → remettez dans votre main la carte Howard the Duck la plus basse de votre pile de défausse. Soignez 1 dégât de votre identité.",
+  // howard_the_duck — Ducktective Agency (Support)
+  'hd014': "<b>Ressource</b> : inclinez Ducktective Agency → générez 1 ressource [mental] pour un événement.\n<b>Réponse de héros</b> : après que vous avez retiré la dernière menace d'une manigance, redressez Ducktective Agency.",
+  // howard_the_duck — Duckpool Suit (Upgrade)
+  'hd015': "Vous gagnez +3 points de vie.\nHoward the Duck gagne +1 ATQ.\n<b>Réponse de héros</b> : après que vous avez déjoué une manigance annexe, inclinez Duckpool Suit → infligez 1 dégât à un ennemi.",
+  // howard_the_duck — Iron Suit (Upgrade)
+  'hd016': "<b>Action</b> : inclinez Iron Suit → déplacez 1 menace d'une manigance vers cette carte.\n<b>Action de héros</b> : inclinez Iron Suit et retirez X menaces de cette carte → infligez X dégâts à un sbire ou retirez X menaces d'une manigance.",
+  // howard_the_duck — Nexus of all Realities (Upgrade)
+  'hd017': "Mise en place. Permanent.\n<b>Interruption</b> : quand un personnage entre en jeu, choisissez la zone de jeu dans laquelle il est joué.\n<b>Interruption</b> : quand un allié que vous contrôlez quitte le jeu, cherchez une carte événement dans votre deck et ajoutez-la à votre main.",
+  // howard_the_duck — Energy / Genius / Strength (Resource, re-skins de 01088/01089/01090)
+  'hd018': "Maximum 1 par deck.",
+  'hd019': "Maximum 1 par deck.",
+  'hd020': "Maximum 1 par deck.",
+  // howard_the_duck — Waddle it Be? (Obligation)
+  'hd021': "<b><i>Donnez-la au joueur Howard Duckson.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Howard Duckson → retirez Waddle it Be? de la partie.\n• Retirez de la zone de victoire toutes les manigances annexes Howard the Duck et mélangez-les dans votre deck. Si aucune manigance n'a été retirée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // howard_the_duck — Duck and Cover! (SideScheme, nemesis)
+  'hd022': "<i>Quack-tastrophe ! Howard the Duck s'est encore mis dans un pétrin qui le dépasse. C'est aux héros de le sauver d'un groupe de chasseurs de primes interdimensionnels.</i>\n<b>Une fois révélée</b> : chaque joueur doit défausser de sa main les cartes ayant une ressource [mental] imprimée. Placez 1 menace supplémentaire ici pour chaque carte défaussée de cette façon.",
+  // howard_the_duck — Collector (Minion, nemesis)
+  'hd023': "Vilenie. <i>(Quand ce sbire s'active, donnez-lui une carte boost.)</i>\n<b>Une fois révélé</b> : défaussez un allié ou un soutien que vous contrôlez. Si vous ne pouvez pas, mettez en jeu la manigance la plus proche du dessus du deck de rencontre.\n<i>(Sbire némésis de Howard the Duck.)</i>",
+  // howard_the_duck — Hellcow (Minion, nemesis alternatif)
+  'hd024': "Coup Rapide.\n<b>Interruption Obligatoire</b> : quand la phase du méchant commence, soignez 1 dégât de Hellcow.\n<b>Interruption</b> : quand Hellcow devrait être mise K.O., remélangez-la dans le deck de rencontre à la place.",
+  // howard_the_duck — Duck, Duck, Doom! (SideScheme, nemesis)
+  'hd025': "<i>Doctor Bong a tendu un piège pour capturer Howard the Duck.</i>\n<b>Une fois révélée</b> : placez un allié que vous contrôlez sous cette carte. Si vous ne pouvez pas, désorientez votre identité.\n<b>Quand déjouée</b> : rendez l'allié placé sous cette carte à la main de son propriétaire.",
+  // howard_the_duck — A Fowl Plot (SideScheme, nemesis)
+  'hd026': "<i>Le Collectionneur compte ajouter Howard the Duck à sa collection d'objets rares et uniques.</i>\n<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, placez 1 menace sur la manigance principale et subissez 1 dégât.\n<i>(Manigance annexe némésis de Howard the Duck.)</i>",
+  // howard_the_duck — Duck Hunt (Treachery, nemesis)
+  'hd027': "<b>Une fois révélée (identité civile)</b> : le méchant manigance. S'il y a des manigances annexes en jeu, répartissez et placez plutôt parmi elles la menace de cette activation.\n<b>Une fois révélée (héros)</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, soignez plutôt 3 dégâts de celui-ci.",
+  // wiccan — Wiccan (Hero)
+  'wc001a': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Interruption Obligatoire</b> : au début de la phase du méchant, défaussez la carte du dessus du deck de rencontre.",
+  // wiccan — Billy Kaplan (AlterEgo)
+  'wc001b': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Action</b> : regardez les 2 cartes du dessus du deck de rencontre, vous pouvez en défausser une. <i>(Limite d'une fois par round.)</i>",
+  // wiccan — Hulkling (Ally)
+  'wc002': "<b>Interruption</b> : quand Hulkling attaque, il gagne +1 ATQ pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, défaussez cette carte.",
+  // wiccan — Impenetrable Barrier (Event, x2)
+  'wc003': "<b>Action de héros</b> : donnez une carte d'état Tenace à votre héros. Donnez une carte d'état Tenace à un maximum de X personnages amis, où X est égal au nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  'wc004': "<b>Action de héros</b> : donnez une carte d'état Tenace à votre héros. Donnez une carte d'état Tenace à un maximum de X personnages amis, où X est égal au nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  // wiccan — Magic Bolt (Event, x3)
+  'wc005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  'wc006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  'wc007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // wiccan — Magic Manipulation (Event)
+  'wc008': "<b>Action d'identité civile</b> : remélangez 1 carte de votre pile de défausse dans votre deck pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, piochez 1 carte.",
+  // wiccan — Magic Portal (Event, x2)
+  'wc009': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
+  'wc010': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
+  // wiccan — Teleport (Event, x2)
+  'wc011': "<b>Action</b> : choisissez un joueur → redressez l'identité de ce joueur. Ce joueur peut changer de forme. Si la carte du dessus du deck de rencontre a 2 icônes de boost ou plus, ce joueur gagne +1 à un pouvoir de base de son choix jusqu'à la fin du round.",
+  'wc012': "<b>Action</b> : choisissez un joueur → redressez l'identité de ce joueur. Ce joueur peut changer de forme. Si la carte du dessus du deck de rencontre a 2 icônes de boost ou plus, ce joueur gagne +1 à un pouvoir de base de son choix jusqu'à la fin du round.",
+  // wiccan — Transmutation (Event)
+  'wc013': "<b>Action</b> : cherchez une carte dans le deck de rencontre. Puis, mélangez le deck de rencontre et placez cette carte sur son dessus. Piochez 1 carte.",
+  // wiccan — Warping Reality (Event)
+  'wc014': "<b>Action</b> : réduisez de 1+X le coût de la prochaine carte jouée durant ce round, où X est le nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  // wiccan — Mother's Protection (Support)
+  'wc015': "<b>Interruption</b> : quand votre identité devrait subir des dégâts, remélangez Mother's Protection dans votre deck → empêchez 3 de ces dégâts.",
+  // wiccan — Wiccan's Cloak (Upgrade)
+  'wc016': "<b>Réponse</b> : après avoir joué un événement [[SPELL]] qui compte le nombre d'icônes de boost sur une carte de rencontre, inclinez Wiccan's Cloak et défaussez la carte du dessus du deck de rencontre → résolvez à nouveau cet événement.",
+  // wiccan — Royal Couple (Event, Basic)
+  'wc017': "Team-Up (Hulkling et Wiccan). Maximum 1 par deck.\n<b>Action de héros</b> : choisissez une carte dans la pile de défausse de rencontre et placez-la sur le dessus du deck de rencontre. Redressez votre héros.",
+  // wiccan — Avoiding the Demiurge (Obligation)
+  'wc018': "<b><i>Donnez-la au joueur Billy Kaplan.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité → retirez Avoiding the Demiurge de la partie.\n• Les icônes de boost ne peuvent plus être comptées pour les effets des cartes Wiccan jusqu'à la fin de la prochaine phase des joueurs. Défaussez cette obligation.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // wiccan — New Vessel (SideScheme, nemesis)
+  'wc019a': "<i>Moridun a infecté Wiccan et se trouve désormais dans son esprit. L'emprise du sorcier maléfique sur Wiccan ne cesse de grandir.</i>\nSeul le joueur Billy Kaplan peut retirer de la menace de cette manigance.\n<b>Quand déjouée</b> : retirez 2 menaces de la manigance principale. Puis, mettez de côté New Vessel et Moridun.\n<b>Une fois accomplie</b> : mettez Moridun de côté et retournez cette carte. <i>(8 menaces.)</i>",
+  // wiccan — The Demiurge (Environment, verso de wc019a)
+  'wc019b': "Permanent.\n<b>Réponse Obligatoire</b> : après qu'un deck de joueur se retrouve à court de cartes, placez 1 menace sur la manigance principale.",
+  // wiccan — Moridun (Attachment, nemesis)
+  'wc020': "Attachez-la à l'identité du joueur Billy Kaplan.\n<b>Une fois révélée</b> : révélez votre manigance annexe New Vessel mise de côté.\n<b>Interruption Obligatoire</b> : quand Wiccan devrait infliger des dégâts à un ennemi ou retirer de la menace d'une manigance, placez 1 menace sur la manigance annexe New Vessel.\n<i>(Sbire némésis de Wiccan.)</i>",
+  // wiccan — Inescapable Horror (Treachery, nemesis, x2)
+  'wc021': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
+  'wc022': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
+  // wiccan — Master Magus Returns (Treachery, nemesis)
+  'wc023': "<b>Une fois révélée</b> : si l'environnement The Demiurge n'est pas en jeu, révélez l'attachement Moridun mis de côté, puis retirez Master Magus Returns de la partie. Si Moridun n'a pas été révélé de cette façon, vous êtes désorienté.\n<hr />\n[star] <b>Boost</b> : vous êtes désorienté.",
+  // speed — Speed (Hero) [set 141, CptScorp]
+  'sd001a': "<i>Hyperkinetic Fuel</i> — <b>Interruption</b> : quand vous payez un événement uniquement avec des ressources [energy], placez un compteur explosif sur un ennemi ou une manigance. <i>(Voir l'encart.)</i>",
+  // speed — Thomas Shepherd (AlterEgo)
+  'sd001b': "<i>Accelerated Perception</i> — <b>Action</b> : remélangez 1 événement de votre pile de défausse dans votre deck. Puis, piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+  // speed — Quicksilver (Ally)
+  'sd002': "<b>Interruption</b> : quand Quicksilver attaque ou contre un ennemi ou une manigance portant un compteur explosif, il ne subit aucun dégât consécutif pour cette utilisation.",
+  // speed — Blasting Velocity (Event, x2)
+  'sd003': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Effectuez une attaque de base contre un ennemi portant un compteur explosif, sans vous incliner.",
+  'sd004': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Effectuez une attaque de base contre un ennemi portant un compteur explosif, sans vous incliner.",
+  // speed — "I'm Out" (Event)
+  'sd005': "<b>Interruption de héros</b> : quand vous révélez une carte de rencontre, annulez les effets de cette carte et défaussez-la. Si vous deviez résoudre la capacité <i>\"Hyperkinetic Fuel\"</i> de Speed en jouant cet événement, remélangez plutôt 1 événement de votre pile de défausse dans votre deck et piochez 1 carte.",
+  // speed — Kinetic Flurry (Event, x2)
+  'sd006': "Vous ne pouvez dépenser que des ressources [energy] pour payer cette carte. Choisissez un ennemi et effectuez X fois l'attaque suivante :\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à cet ennemi (3 dégâts à la place si cet ennemi porte un compteur explosif).",
+  'sd007': "Vous ne pouvez dépenser que des ressources [energy] pour payer cette carte. Choisissez un ennemi et effectuez X fois l'attaque suivante :\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à cet ennemi (3 dégâts à la place si cet ennemi porte un compteur explosif).",
+  // speed — Swift Strikes (Event, x3)
+  'sd008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  'sd009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  'sd010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  // speed — Top Speed (Resource, x2)
+  'sd011': "<b>Interruption</b> : quand vous dépensez cette carte, vous pouvez générer une ressource [energy] supplémentaire ([energy][energy] à la place s'il y a un compteur explosif en jeu). Si vous le faites, vous ne pouvez plus jouer de cartes pour le reste du tour.",
+  'sd012': "<b>Interruption</b> : quand vous dépensez cette carte, vous pouvez générer une ressource [energy] supplémentaire ([energy][energy] à la place s'il y a un compteur explosif en jeu). Si vous le faites, vous ne pouvez plus jouer de cartes pour le reste du tour.",
+  // speed — Mother's Protection (Support)
+  'sd013': "<b>Interruption</b> : quand votre identité devrait subir des dégâts, remélangez Mother's Protection dans votre deck → empêchez 3 de ces dégâts.",
+  // speed — Explosive Touch (Upgrade)
+  'sd014': "<b>Réponse de héros</b> : après avoir attaqué ou contré, avec un pouvoir de base, un ennemi ou une manigance portant un compteur explosif, inclinez Explosive Touch → redressez Speed.",
+  // speed — Never Ending Spark (Upgrade)
+  'sd015': "<b>Réponse de héros</b> : après qu'un compteur explosif est placé sur un ennemi ou une manigance, redressez cette carte.\n<b>Ressource</b> : inclinez Never Ending Spark → générez une ressource [energy].",
+  // speed — Quick Adaptation (Upgrade)
+  'sd016': "<b>Interruption de héros</b> : quand vous attaquez ou contrez, avec un pouvoir de base, un ennemi ou une manigance portant un compteur explosif, vous gagnez +1 ATQ et +1 CTR pour cette utilisation.",
+  // speed — No Outrunning This (Obligation)
+  'sd017': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Thomas Shepherd → retirez No Outrunning This de la partie.\n• Vous ne pouvez pas résoudre l'<b>Interruption</b> <i>Hyperkinetic Fuel</i> de Speed jusqu'à la fin du prochain round. Défaussez cette obligation.",
+  // speed — The Real Question (SideScheme, nemesis)
+  'sd018': "<i>\"Les super-héros, c'est bien ?\"</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck de rencontre jusqu'à ce qu'un attachement soit défaussé. Révélez cet attachement.\nTant que cette manigance est en jeu, les attachements gagnent <b><i>Permanent</i></b>.",
+  // speed — Coat of Arms (Minion, nemesis)
+  'sd019': "Coup Rapide.\n[star] Quand Coat of Arms attaque, si elle inflige des dégâts, infligez 1 dégât supplémentaire à chaque personnage que vous contrôlez.\n<i>(Sbire némésis de Speed.)</i>",
+  // speed — Inspirational Art (Attachment, nemesis)
+  'sd020': "Attachez-la au vilain.\n<b>Interruption Obligatoire</b> : quand une carte de boost est retournée face visible durant une activation du vilain, chaque carte de boost gagne +1 icône de boost ([boost]).\n<b>Action de héros</b> : dépensez des ressources [energy][physical] → défaussez cette carte.",
+  // speed — Magic Chains (Attachment, nemesis)
+  'sd021': "Attachez-la à Coat of Arms, si possible. Sinon, attachez-la au vilain.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché attaque, si l'attaque inflige des dégâts, sonnez votre héros → défaussez cette carte.",
+  // speed — Conflicted Feelings (Obligation, nemesis)
+  'sd022': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nTant que cette obligation est en jeu, Coat of Arms ne peut pas subir de dégâts.\n<b>Action d'identité civile</b> : dépensez des ressources [energy][mental] → défaussez cette carte.",
+  // patriot — Patriot (Hero)
+  'pt001a': "<i>Will to Protect</i> — <b>Interruption</b> : quand un allié que vous contrôlez devrait subir des dégâts consécutifs, déplacez ces dégâts sur Patriot. <i>(Limite d'une fois par round.)</i>",
+  // patriot — Elijah Bradley (AlterEgo)
+  'pt001b': "<i>Leader</i> — Pendant la construction du deck, vous pouvez inclure des alliés [[YOUNG AVENGER]] de n'importe quel aspect.\n<b>Action</b> : inclinez Elijah Bradley → cherchez le Patriot's Shield dans votre deck et votre pile de défausse, et ajoutez-le à votre main. Mélangez votre deck.",
+  // patriot — Hawkingbird (Ally)
+  'pt002': "Les alliés que vous contrôlez gagnent +1 point de vie.\n<b>Réponse</b> : après l'entrée en jeu de Hawkingbird, vous pouvez chercher dans votre deck et votre pile de défausse une amélioration pouvant être attachée à un allié, et l'ajouter à votre main.",
+  // patriot — Aided Defense (Event, x2)
+  'pt003': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, inclinez un allié que vous contrôlez → vous gagnez +1 DEF par point de vie restant sur l'allié incliné. Si vous ne subissez aucun dégât de cette attaque, redressez l'allié incliné.",
+  'pt004': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, inclinez un allié que vous contrôlez → vous gagnez +1 DEF par point de vie restant sur l'allié incliné. Si vous ne subissez aucun dégât de cette attaque, redressez l'allié incliné.",
+  // patriot — Covered Fire (Event, x2)
+  'pt005': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
+  'pt006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
+  // patriot — Isaiah Bradley (Support)
+  'pt007': "Vous gagnez +1 REC.\n<b>Action d'identité civile</b> : inclinez Isaiah Bradley → soignez 2 dégâts sur Elijah Bradley.",
+  // patriot — Commandeer (Upgrade)
+  'pt008': "<b>Action de héros</b> : inclinez et défaussez Commandeer, choisissez un allié → déplacez 1 attachement d'un ennemi vers cet allié jusqu'à la fin du round. Considérez que la zone de texte de cet attachement est vierge, et que son MNG est un CTR.",
+  // patriot — Commander's Orders (Upgrade)
+  'pt009': "<b>Interruption de héros</b> : quand un allié que vous contrôlez devrait s'activer, inclinez Commander's Orders → échangez ses valeurs d'ATQ et de CTR pour cette activation.",
+  // patriot — Follow My Lead (Upgrade)
+  'pt010': "<b>Ressource</b> : inclinez Follow My Lead → générez une ressource [wild] pour un allié ou pour une amélioration pouvant être attachée à un allié.",
+  // patriot — On Your Feet (Upgrade)
+  'pt011': "<b>Action de héros</b> : inclinez On Your Feet → choisissez : redressez un allié, ou soignez 1 dégât sur un allié.",
+  // patriot — Patriot's Shield (Upgrade)
+  'pt012': "Vous gagnez +1 DEF.\n<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, vous pouvez déplacer 1 de ces dégâts ici. Quand Patriot's Shield atteint 3 dégâts, défaussez-la.",
+  // patriot — Revenge (Upgrade)
+  'pt013': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand Patriot subit des dégâts d'une attaque, quel qu'en soit le nombre, défaussez Revenge → l'allié attaché gagne +2 ATQ jusqu'à la fin du prochain round.",
+  // patriot — The Chosen Leader (Upgrade)
+  'pt014': "<b>Réponse</b> : après qu'un allié que vous contrôlez est mis K.O. par des dégâts consécutifs, cherchez un allié dans votre deck et ajoutez-le à votre main.\n<b>Réponse Obligatoire</b> : quand un allié que vous contrôlez est utilisé pour se défendre, infligez 1 dégât à votre identité.",
+  // patriot — Throwing Stars (Upgrade)
+  'pt015': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> <i>(attaque)</i> : quand l'allié attaché attaque, défaussez Throwing Stars → infligez 3 dégâts répartis comme vous le souhaitez. Cette attaque gagne <b><i>Perforation</i></b> et <b><i>Distance</i></b>.",
+  // patriot — Working Together (Upgrade)
+  'pt016': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand l'allié attaché devrait contrer, choisissez un autre personnage ami et défaussez Working Together → ajoutez la valeur de CTR de ce personnage ami au contre de cet allié.",
+  // patriot — MGH Addiction (Obligation)
+  'pt017': "<b><i>Donnez-la au joueur Elijah Bradley.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Défaussez la carte de soutien Isaiah Bradley → retirez MGH Addiction de la partie.\n• Inclinez tous les alliés sous votre contrôle. Si aucun allié n'a été incliné de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // patriot — Mr. Hyde's Lab (SideScheme, nemesis)
+  'pt018': "<i>\"Vous faites juste du lèche-vitrine... ou vous voulez entrer ?\" – Mr. Hyde</i>\n<b>Une fois K.O.</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, cherchez Mr. Hyde dans le deck de rencontre et la pile de défausse de rencontre, et mettez-le en jeu.",
+  // patriot — Mr. Hyde (Minion, nemesis)
+  'pt019': "Robuste.\n<b>Une fois révélée</b> : cherchez l'attachement MGH Drug dans le deck de rencontre, la pile de défausse de rencontre et les cartes mises de côté, et attachez-le à Mr. Hyde.\n<i>(Sbire némésis de Patriot.)</i>",
+  // patriot — MGH Drug (Attachment, nemesis)
+  'pt020': "Attachez-la à Mr. Hyde, si possible. Sinon, attachez-la au vilain.\n[star] Les attaques de l'ennemi attaché gagnent <b><i>Surpuissance</i></b>.\n<b>Action de héros</b> : dépensez des ressources [mental][energy] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // patriot — Bulldozing Charge (Treachery, nemesis, x2)
+  'pt021': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
+  'pt022': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
 }

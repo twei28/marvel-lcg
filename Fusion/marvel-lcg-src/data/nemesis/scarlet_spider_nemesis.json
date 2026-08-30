@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Scarlet Spider Nemesis",
+    "encounters": [
+        "ss018",
+        "ss019",
+        "ss020",
+        "ss021",
+        "ss022"
+    ]
+}

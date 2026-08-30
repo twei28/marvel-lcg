@@ -7268,6 +7268,2200 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 3},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « scarlet_spider » : ss001a-ss022
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ss001a Scarlet Spider — Extreme Interrogation : sbire vaincu par exces remelange, menace retiree = exces",
+        "pourquoi": "AfterUnitAttackAndDefeatUnit('This'->Minion, has_excess_damage=True) ; message.target encore deplacable a ce stade (Faces.ShuffleAllTo vers le deck rencontre) ; retrait de menace = min(exces,3)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.SetThreat('01097b', 5)",
+        ],
+        "main_exclusive": ["01087", "01088"],
+        "declencher": [],
+        "cibles": ["01110"],
+        "jouer": ["01087"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["01110"], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ss001b Kaine Parker — Spider Link : defausse 1 carte, cherche Spider-pathy en defausse, l'ajoute en main",
+        "pourquoi": "Search.PlayerCard(include_discard_pile=True, name='Spider-pathy') + initiator.GainCard, meme modele qu'ok001b",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.Discard('ss007')"],
+        "declencher": ["Puzzle.Action('ss001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ss007"]},
+    },
+    {
+        "nom": "ss002 Grim Resolve — choisit ATK (1er choix), +1 pour la ressource depensee, redresse l'identite",
+        "pourquoi": "effect.GetPaidResources().GetResourceIconTypes() (modele 47009 Grande Finale) ; TemporaryGain(..., Message.WhenRoundEnd, attack=1) ; Faces.ReadyAll([identite])",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.Exhaust('ss001a')"],
+        "main_exclusive": ["ss002", "01088"],
+        "declencher": [],
+        "jouer": ["ss002"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "pret": ["ss001a"]},
+    },
+    {
+        "nom": "ss004 Precise Force — Hero Action (attack) jouee, degats bornes 0-3 sur un ennemi",
+        "pourquoi": "initiator.DeclareNumber(0,3) (modele dt005/il002) ; le pilote choisit TOUJOURS le premier item de la liste offerte (valeur 0), meme limite deja documentee sur il002 : la branche non-nulle reste declaree mais non forcable par ce harnais",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss004", "01088"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss004"],
+        "verifier": "ss004_precise_force_joue_et_borne",
+    },
+    {
+        "nom": "ss007 Spider-pathy — cherche le sbire du dessus du deck de rencontre, le met en jeu engage, pioche 1",
+        "pourquoi": "Search.EncounterCard(include_discard_pile=False, card_type=Minion) + face.PutIntoPlay (auto-engage, face_on_event.py:169)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss007", "01088"],
+        "declencher": [],
+        "jouer": ["ss007"],
+        "verifier": "ss007_spider_pathy_pose_sbire",
+    },
+    {
+        "nom": "ss009 Unrestrained — 7 degats garantis a un ennemi (branche stun/confuse si exces non exercee ici)",
+        "pourquoi": "this.DealDamage(effect.targets, 7, effect, if_this_attack_deal_excess_damage=...) (modele wsp/13013.py) ; Rhino (14 PV) encaisse 7 sans etre vaincu, donc sans exces : preuve du degat de base garanti seulement",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "main_exclusive": ["ss009", "01090", "01090"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]]},
+    },
+    {
+        "nom": "ss011 Four Seasons' Room — Alter-Ego Action : exhaust -> pioche 1 (branche par defaut, comme Funeral Rites)",
+        "pourquoi": "player.ChooseAbilities a 2 branches (modele core/02035.py Intimidation) ; le pilote prend TOUJOURS la premiere option (draw 1), meme convention que il017/ok019 pour une branche libre",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ss011', under_control=True)"],
+        "declencher": ["Puzzle.Action('ss011', 'AlterEgoAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ss011"], "taille_main": 7},
+    },
+    {
+        "nom": "ss012 Mark of Kaine — attaques contre le sbire marque gagnent deferlement (deversement sur un autre ennemi)",
+        "pourquoi": "WhenUnitWouldAttackUnit(None, 'AttachedMinion', ...) + message.GainOverKill (modele officiel exact 33032 Marked) ; attaquant = un ALLIE (pas l'identite), pour eviter la reponse ss001a (attacker='This') dont l'interaction avec le deversement 'Simultaneous Overkill' du moteur (can_health.py:258) fait planter le harnais (AssertionError reproductible, voir rapport) — la capacite testee ici (le deferlement lui-meme) est independante de ss001a",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.Damage('01110', 1)",
+            "Puzzle.PutIntoPlay('01051', under_control=True)",
+        ],
+        "declencher": ["Puzzle.PutIntoPlay('ss012', under_control=True)", "Puzzle.Attack('01051')"],
+        "cibles": ["01110"],
+        "verifier": "ss012_mark_of_kaine_deferlement",
+    },
+    {
+        "nom": "ss012 Mark of Kaine — Hero Interrupt : +2 a l'exces quand Scarlet Spider vainc elle-meme le sbire marque (regression moteur ChooseOrder/ChoiceOne)",
+        "pourquoi": "WhenUnitAttackDealExcessDamage(HeroInterrupt, 'You', ...) + message.IncreaseDamage(2, effect) (modele gmw/16045.py Follow Through). 39043 Goblin (HP imprime 1, aucune capacite propre) : l'identite Scarlet Spider (ATK 2) le vainc avec 1 exces garanti, sans Puzzle.Damage prealable (ne s'applique pas de façon fiable sur une carte fraichement instanciee dans le meme mise_en_place, piege distinct de FindOrCreateFace). Ce scenario precis (attaquant = identite, PAS un allie) a revele deux vrais bugs moteur le 30/08/2026 : (1) engine/controller/controller.py ChoiceOne plantait en boucle infinie (AssertionError, target_range=(2,2) fige a l'offre du choix vs all_legal_targets reevalue plus court a la validation) des que le deversement d'exces (Worlds.FindVillain, can_attack.py) ajoute le VILLAIN comme second candidat a `ChooseOrder` aux cotes du sbire vaincu (can_health.py:245-249) ; (2) une fois (1) corrige, game/player/model/player_ask.py ChooseOrder plantait sur `assert len(faces) == 0` car `effect` revenait vide sans que `faces` le soit. Preuve par substitution du CORRECTIF (pas du module ss012, deja prouve capacite 1 au cas precedent) : les deux correctifs retires -> AssertionError/boucle infinie reproductible a volonte ; correctifs en place -> partie continue normalement, Rhino subit bien 1+2=3 degats d'exces (preuve que l'interruption a reellement augmente le montant, pas seulement qu'elle a ete offerte).",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('39043')",
+            "Puzzle.PutIntoPlay('ss012', under_control=True)",
+        ],
+        "declencher": ["Puzzle.Attack('ss001a')"],
+        "cibles": ["39043"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats_min": [["01094", 3]]},
+    },
+    {
+        "nom": "ss015 Spider Stealth Suit — +1 point de vie fixe sur l'identite",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis('You', health=1), modele ok016 Royal Protector (upgrade sans attache)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('ss015', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 1}},
+    },
+    {
+        "nom": "ss015 Spider Stealth Suit — Hero Interrupt : +1 au degat inflige par un evenement ATTACK joue",
+        "pourquoi": "WhenDamageWouldBeDealtTo(by_play_card=('YouControl', CardFinder(trait='ATTACK', card_type=Event))) + IncreaseDamage(1) ; Unrestrained (ss009) inflige un montant FIXE (7, pas de DeclareNumber) pour un total previsible 7+1=8",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('ss015', under_control=True)"],
+        "main_exclusive": ["ss009", "01090", "01090"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["ss009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 8]]},
+    },
+    {
+        "nom": "ss016 Stings of Kaine — +1 ATK fixe sur Scarlet Spider",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis('You', attack=1), modele ok016 Royal Protector",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('ss016', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}},
+    },
+    {
+        "nom": "ss016 Stings of Kaine — Hero Interrupt : exhaust quand vous attaquez (piercing + overkill accordes)",
+        "pourquoi": "WhenUnitMakeAttack('You') + SetCostFunc(CostFunc.Exhaust('This')) (modele cw/tigra/56005.py Sharp Claws) ; l'inclinaison prouve que l'interruption a bien ete offerte et payee ; cible a 3 PV pour egaler exactement l'ATK effective (2 de base + 1 fixe de Stings of Kaine) et EVITER l'exces (qui, combine au deferlement accorde ici, ferait planter le harnais sur l'interaction 'Simultaneous Overkill' deja rencontree sur ss012)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Kaine Parker', 'ss001a')",
+            "Puzzle.PutIntoPlay('ss016', under_control=True)",
+            "Puzzle.PutIntoPlay('01101')",
+        ],
+        "declencher": ["Puzzle.Attack('ss001a')"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ss016"]},
+    },
+    {
+        "nom": "ss017 Murderer's Guilt — branche « exhaust Kaine Parker + 2 degats -> retirer de la partie » (branche par defaut)",
+        "pourquoi": "WhenThisObligationGiveToYou + ChooseAbilities a 2 branches (modele ok019 Funeral Rites) ; le pilote prend la premiere option, meme convention que il017",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ss017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss017"]},
+    },
+    {
+        "nom": "ss018 Assassins Guild — chaque sbire ASSASSIN gagne +1 ATK",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(CardFinder2('ASSASSIN', Enemy), attack=1), modele officiel 01136 Ultron",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ss018')", "Puzzle.PutIntoPlay('ss020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ss020", "attack", 1]]},
+    },
+    {
+        "nom": "ss019 Bella Donna — Plotting : manigance a l'engagement de l'identite",
+        "pourquoi": "AfterMinionEngagePlayer('This','You') + this.BasicSchemes(effect) (modele ok021 Malice, mots-cles/plotting.md) ; PutIntoPlay engage automatiquement le sbire",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.PutIntoPlay('ss019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ss019 Bella Donna — Forced Interrupt : a sa defaite, cherche un autre sbire ASSASSIN et le revele",
+        "pourquoi": "WhenUnitBeDefeated(ForcedInterrupt,'This') + Search.EncounterCard(trait='ASSASSIN') + face.Reveal (modele core/spider_man_nemesis/01095.py Rhino) ; deck de rencontre truque a un seul sbire ASSASSIN trouvable",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('ss020')", "Puzzle.PutIntoPlay('ss019')"],
+        "declencher": ["Puzzle.Damage('ss019', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss019"], "en_jeu": ["ss020"]},
+    },
+    {
+        "nom": "ss020 Harvester — attaques gagnent piercing (ignore tenace) ET Forced Response +1 degat apres avoir blesse",
+        "pourquoi": "UnitAttackGainKeyword('This', piercing=True) (modele officiel 04027 Crossfire) + AfterUnitAttackAndDamageUnit (modele core/klaw/01118.py) ; identite tenace : sans piercing 0 degat, avec piercing seul 2, avec les deux capacites 3 -- 3 valeurs distinctes selon ce qui est retire",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('ss020')", "Puzzle.Tough('ss001a')"],
+        "declencher": ["Puzzle.Attack('ss020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "ss021 Undead Hand Ninja — Forced Interrupt : serait vaincu -> remelange dans le deck de rencontre a la place",
+        "pourquoi": "WhenUnitWouldBeDefeated('This') + message.SetBeInstead + Faces.ShuffleAllTo (modele fan-made exact lj015 Annihilus)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ss021')"],
+        "declencher": ["Puzzle.Damage('ss021', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ss021"], "dans_deck_rencontre": ["ss021"]},
+    },
+    {
+        "nom": "ss022 Forced Contract — When Revealed : l'allie a l'ATK la plus haute subit des degats = ATK de Scarlet Spider",
+        "pourquoi": "max(allies, key=attack) + player.GetHero().attack (modele th015 Friendly Fire pour le max)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01051', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('ss022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01051", 2]]},
+    },
+    {
+        "nom": "ss022 Forced Contract — Boost : chaque personnage ami subit 1 degat",
+        "pourquoi": "player.GetControlCharacters() + DealDamage(units, 1, effect) (modele officiel exact core/01154.py Concussive Blast)",
+        "scenario": "rhino",
+        "heros": "scarlet_spider",
+        "mise_en_place": ["Puzzle.ChangeToFace('Kaine Parker', 'ss001a')", "Puzzle.PutIntoPlay('01051', under_control=True)"],
+        "declencher": ["Puzzle.Boost('ss022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01051", 1]], "degats_identite": 1},
+    },
+
+    # ------------------------------------------------------------------------
+    # Pack « howard_the_duck » : hd001a-hd027 (RyCoRan, set 135)
+    # PIEGE de nommage : les deux faces s'appellent « Howard the Duck » et
+    # « Howard Duckson », noms UNIQUES dans les 5168 cartes du depot, mais on
+    # suit quand meme la convention `Puzzle.ChangeToFace('<face active>',
+    # '<card_id vise>')` de scarlet_spider — elle ne passe jamais par la
+    # recherche ambigue de `FindOrCreateFace`.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "hd001a Howard the Duck — Private Eye : previent 1 menace posee sur une manigance",
+        "pourquoi": "WhenThreatWouldBePlacedOn(Interrupt, None) + message.PreventThreat(1) (modele bkw/08017 Counterintelligence). `Puzzle.PlaceThreat` passe bien par PlaceThreatInternal, donc par le message interrompu : 3 poses -> 2 reellement placees",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PlaceThreat('01097b', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "hd001a Howard the Duck — Response : redresse Howard apres l'entree en jeu d'une manigance annexe",
+        "pourquoi": "AfterCardEnterPlay(Response, SchemeSide2) + Faces.ReadyAll([this]) ; hd025 (manigance annexe nemesis) mise en jeu SANS reveler, pour n'exercer que le declencheur d'entree en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')", "Puzzle.Exhaust('hd001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('hd025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["hd001a"], "en_jeu": ["hd025"]},
+    },
+    {
+        "nom": "hd001b Howard Duckson — Deducktive Reasoning : met une des 3 cartes du dessus sous le deck de rencontre",
+        "pourquoi": "LookAtDeck + MayChooseFace + MoveAllToDeck(..., 'Bottom') (modele 40004 Precognition, sauf que Precognition DEFAUSSE) ; hd024 remontee sur le DESSUS du deck de rencontre par Puzzle.PutIntoDeck, le pilote prend toujours le premier item offert",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hd024')", "Puzzle.PutIntoDeck('hd024')"],
+        "declencher": ["Puzzle.Action('hd001b', 'Action', 0)"],
+        "verifier": "hd001b_carte_mise_au_fond_du_deck_rencontre",
+    },
+    {
+        "nom": "hd002 Man-Thing — cout reduit de 1 par manigance Howard en zone de victoire (preuve par insuffisance)",
+        "pourquoi": "ReduceCostToPlayThis(<nb de manigances Howard en victoire>) (modele 34021 Storm). Trois Haymaker = 3 ressources EXACTEMENT : le cout imprime 4 est impayable, seul le cout reduit a 3 (hd010 en zone de victoire) rend Man-Thing jouable. Meme technique de preuve que il001b",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.SetThreat('hd010', 0)",
+        ],
+        "main_exclusive": ["hd002", "01087", "01087", "01087"],
+        "declencher": [],
+        "jouer": ["hd002"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hd002"]},
+    },
+    {
+        "nom": "hd003 Mallard Magic — branche 1 : sonne un ennemi et lui inflige 5 degats",
+        "pourquoi": "UNE seule ability .SetPlay() (factory.py n'accepte qu'un play_count de 1) + ChooseAbilities a 2 branches ; le pilote prend TOUJOURS la premiere option, meme convention que il017/ok019/ss011. La MEME cible recoit le statut ET les degats (piege `that <nom>`). Partage avec hd004, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd003", "01088", "01089"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["hd003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "hd005 Quack Attack — Hero Interrupt : previent 2 des degats subis",
+        "pourquoi": "WhenUnitWouldTakeDamage(HeroInterrupt, 'You') + message.PreventDamage(2) (modele 40012 Telekinetic Force Field). Source de degats DETERMINISTE (Puzzle.Damage, 3 points) plutot qu'une attaque de Rhino : Howard a DEF 2 contre ATK 2, il defend et ne subit rien, l'interruption n'a alors aucune fenetre (constate le 30/08/2026). 3 - 2 prevenus = 1 degat. Partage avec hd006, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd005", "01088"],
+        "declencher": ["Puzzle.Damage('hd001a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "defausse": ["hd005"]},
+    },
+    {
+        "nom": "hd007 Fowl Play — retire 3 menaces, vainc la manigance annexe et redresse le heros",
+        "pourquoi": "RemoveThreatFromSchemes(..., if_this_remove_last_threat=<fn>) (modele 56009 Feline Senses / 29005 Fly Over) puis MayChooseOneAbility a 2 branches, dont la premiere est « Ready your hero ». Howard incline AVANT : son redressement prouve que la branche bonus a bien tourne. Partage avec hd008, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.Exhaust('hd001a')",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "pret": ["hd001a"]},
+    },
+    {
+        "nom": "hd009 Quack and Burn — Man-Thing en main, degats = ATK de Man-Thing, menace retiree = THW de Howard",
+        "pourquoi": "Search.PlayerCard(name='Man-Thing') + GainCard (modele ok001b/ss001b) ; les DEUX montants sont dynamiques : 3 degats (ATK imprimee de Man-Thing, lue via printed_attack — lecon ss022) et 2 menaces (THW effective de la face Heros, modele 40009 Askani'son). La menace finale attendue est 2 et non 3 : les 5 menaces posees par Puzzle.SetThreat passent par PlaceThreatInternal, donc par Private Eye (hd001a, en jeu en forme heros) qui en previent 1 -> 4 posees, moins les 2 retirees = 2",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd009", "01087", "01087"],
+        "declencher": ["Puzzle.SetThreat('01097b', 5)"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["hd009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "menace": [["01097b", 2]], "en_main": ["hd002"]},
+    },
+    {
+        "nom": "hd010 Trapped — When Defeated : chaque joueur cherche un allie, le vainqueur peut le mettre en jeu",
+        "pourquoi": "WhenSchemeBeDefeated(WhenDefeated, 'This', has_defeating_player=True) (modele 47003 Shopping Spree) ; la manigance est vaincue par une VRAIE action de joueur (hd007 joue), seul moyen d'avoir un `defeating_player`. Man-Thing depose en defausse : la recherche doit l'en sortir puis le poser en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.CreatePlayerDiscardPile('hd002')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010", "hd002"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "en_jeu": ["hd002"]},
+    },
+    {
+        "nom": "hd011 In a World — When Defeated : Tenace a chaque joueur, le vainqueur soigne 2 degats",
+        "pourquoi": "meme montage que hd010 ; deux portees distinctes verifiees d'un coup — le statut Tenace (chaque joueur) ET le soin de 2 (le seul vainqueur, 3 degats subis avant -> 1 apres)",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd011', under_control=True)",
+            "Puzzle.Damage('hd001a', 3)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd011"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd011"], "degats_identite": 1, "statuts": [["hd001a", "Tough"]]},
+    },
+    {
+        "nom": "hd012 He Never Made — When Defeated : 3 cartes quittent la defausse, 1 va en main au lieu du deck",
+        "pourquoi": "AskChooseFaces((0,3)) + ShuffleAllTo, avec la carte gardee RETIREE de la liste avant le remelange (piege `instead`). `accepter_choix` force le pilote a prendre le MAXIMUM de cibles : sans lui, un choix « up to 3 » se resout a 0 et la capacite parait morte",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.CreatePlayerDiscardPile('01051', '01088', '01089')",
+            "Puzzle.PutIntoPlay('hd012', under_control=True)",
+        ],
+        "main": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd012"],
+        "accepter_choix": True,
+        "jouer": ["hd007"],
+        "verifier": "hd012_defausse_videe_et_une_carte_en_main",
+    },
+    {
+        "nom": "hd013 Beverly Switzler — rend la carte Howard la plus BASSE de la defausse et soigne 1",
+        "pourquoi": "filtre par SET (`CardFinder(set_name='Howard the Duck')`) sur `discard_pile.Get()`, qui rend la defausse du FOND vers le dessus. 01087 Haymaker est deposee SOUS hd005 : c'est elle la vraie carte du fond, mais elle n'est pas une carte Howard — si le filtre etait absent, c'est elle qui remonterait",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.CreatePlayerDiscardPile('01087', 'hd005')",
+            "Puzzle.PutIntoPlay('hd013', under_control=True)",
+            "Puzzle.Damage('hd001b', 2)",
+        ],
+        "declencher": ["Puzzle.Action('hd013', 'AlterEgoAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["hd005"], "degats_identite": 1, "exhausted": ["hd013"]},
+    },
+    {
+        "nom": "hd014 Ducktective Agency — capacite Resource : 1 ressource mentale pour un EVENEMENT (preuve par insuffisance)",
+        "pourquoi": "CanGenerateResources(Resource, Resources('B'), for_card=CardFinder(card_type=Event)) (modele 48005 Prehensile Tail). PREUVE PAR INSUFFISANCE : la main ne contient QUE First Aid (01086, evenement officiel a cout 1) et AUCUNE carte-ressource — la seule source de paiement possible est l'Agence. Cible du soin : l'identite, blessee au prealable. Un evenement a cout 2 ne convenait pas : le pilote generique ne compose pas un paiement a plusieurs sources, verifie avec un temoin officiel (40007 Graymalkin) pose a cote de l'Agence, lui non plus retenu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd014', under_control=True)",
+            "Puzzle.Damage('hd001a', 3)",
+        ],
+        "main_exclusive": ["01086"],
+        "declencher": [],
+        "cibles": ["hd001a"],
+        "payer_avec": ["hd014"],
+        "jouer": ["01086"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["01086"], "exhausted": ["hd014"], "degats_identite": 1},
+    },
+    {
+        "nom": "hd014 Ducktective Agency — Hero Response : redressee apres le retrait de la derniere menace d'une manigance",
+        "pourquoi": "AfterUnitDefeatedScheme(HeroResponse, 'You', None) (scheme.py:203, famille de 40001a Cable) ; l'Agence est inclinee AVANT, donc elle ne peut pas non plus servir a payer : son redressement ne peut venir que de la Response",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd014', under_control=True)",
+            "Puzzle.Exhaust('hd014')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "pret": ["hd014"]},
+    },
+    {
+        "nom": "hd015 Duckpool Suit — +3 points de vie a l'identite et +1 ATK a Howard",
+        "pourquoi": "deux GiveKeywordToInPlayWhenApplyThis de portees DIFFERENTES sur la meme carte (modele ok014 Royal Protector) : « you » (l'identite) pour les PV, la face Heros NOMMEE pour l'ATK",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('hd015', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3, "attack": 1}, "en_jeu": ["hd015"]},
+    },
+    {
+        "nom": "hd015 Duckpool Suit — Hero Response : inclinee apres la defaite d'une manigance annexe, 1 degat a un ennemi",
+        "pourquoi": "AfterUnitDefeatedScheme(HeroResponse, 'You', SchemeSide2) restreint aux manigances ANNEXES (contrairement a hd014, qui accepte n'importe quelle manigance) + CostFunc.Exhaust('This')",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd015', under_control=True)",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010", "01094"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "exhausted": ["hd015"], "degats": [["01094", 1]]},
+    },
+    {
+        "nom": "hd016 Iron Suit — Action : deplace 1 menace d'une manigance vers la carte (jeton, pas compteur)",
+        "pourquoi": "RemoveThreatFromSchemes + Faces.PlaceTokensOn([this], <retire>, 'threat') (modele exact 50046 Secret Agent). La menace posee sur une carte JOUEUR est un JETON, jamais un compteur : la cle `jetons` du harnais le verifie explicitement",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hd016', under_control=True)",
+            "Puzzle.SetThreat('01097b', 5)",
+        ],
+        "declencher": ["Puzzle.Action('hd016', 'Action', 0)"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "jetons": [["hd016", "threat", 1]], "exhausted": ["hd016"]},
+    },
+    {
+        "nom": "hd016 Iron Suit — Hero Action : depense X menaces de la carte pour X degats a un sbire",
+        "pourquoi": "DeclareNumber(1, <jetons disponibles>) puis ChooseAbilities a 2 branches de portees ASYMETRIQUES (degats a un SBIRE, menace sur n'importe quelle manigance). Le pilote prend le premier item offert : X=1, branche degats. 3 jetons poses, 2 doivent rester",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd016', under_control=True)",
+            "Puzzle.Token('hd016', 'threat', 3)",
+            "Puzzle.PutIntoPlay('01110')",
+        ],
+        "declencher": ["Puzzle.Action('hd016', 'HeroAction', 0)"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01110", 1]], "jetons": [["hd016", "threat", 2]]},
+    },
+    {
+        "nom": "hd017 Nexus of all Realities — Interrupt : un allie quitte le jeu, un evenement est cherche dans le deck",
+        "pourquoi": "WhenCardLeavePlay(Interrupt, ('YouControl', Ally)) + Search.PlayerCard(card_type=Event) ; la main est videe puis rechargee d'une SEULE carte ressource (aucun evenement) : tout evenement present en fin de cas ne peut venir que de la recherche. Man-Thing porte Tenacite : il faut DEUX coups de degats pour le vaincre, le premier etant absorbe par le statut Tenace (meme piege que il019 Kang). Le PREMIER Interrupt imprime (« choose a play area ») est deliberement non code, voir hd017.py",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd002', under_control=True)",
+        ],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Damage('hd002', 1)", "Puzzle.Damage('hd002', 99)"],
+        "verifier": "hd017_un_evenement_cherche_en_main",
+    },
+    {
+        "nom": "hd021 Waddle it Be? — branche 1 : incline l'alter-ego et retire l'obligation de la partie",
+        "pourquoi": "WhenThisObligationGiveToYou + YouMayFlipToYourAlterEgoForm + ChooseAbilities a 2 branches (modele ok019 Funeral Rites / ss017) ; le pilote prend la premiere option, meme convention que il017",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hd021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd021"]},
+    },
+    {
+        "nom": "hd022 Duck and Cover! — When Revealed : defausse les cartes a ressource mentale imprimee, +1 menace par carte",
+        "pourquoi": "hand_cards.FindCards(has_printed_res='B') + DiscardAll (modele 01179 Yon-Rogg's Treason) ; deux Genius (RES 'BB') en main : menace de depart 2 + 2 defaussees = 4. Cas joue en forme d'IDENTITE CIVILE a dessein, pour que Private Eye (hd001a, hors jeu en civil) n'interfere pas avec la menace posee",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "main_exclusive": ["01089", "01089"],
+        "declencher": ["Puzzle.Reveal('hd022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hd022", 4]], "taille_main": 0},
+    },
+    {
+        "nom": "hd023 Collector — When Revealed : defausse un allie controle",
+        "pourquoi": "GetControlCardsByType(ally=True, support=True) (piege `you control`) + AskChooseFace + DiscardAll ; Man-Thing est le seul allie/soutien en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd002"], "en_jeu": ["hd023"]},
+    },
+    {
+        "nom": "hd023 Collector — branche de repli : aucun allie ni soutien, la manigance du dessus du deck de rencontre entre en jeu",
+        "pourquoi": "« If you CANNOT » : verifie AVANT le choix, pas apres un refus. hd025 remontee sur le dessus du deck de rencontre (Puzzle.PutIntoDeck) pour rendre la carte trouvee deterministe. Modele de la recherche : ss007 Spider-pathy",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hd025')", "Puzzle.PutIntoDeck('hd025')"],
+        "declencher": ["Puzzle.Reveal('hd023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hd025", "hd023"]},
+    },
+    {
+        "nom": "hd024 Hellcow — Interrupt : serait vaincue -> remelangee dans le deck de rencontre a la place",
+        "pourquoi": "WhenUnitWouldBeDefeated('This') + SetBeInstead + ShuffleAllTo (modele exact ss021 Undead Hand Ninja / lj015 Annihilus) ; piege `instead` : la carte PART du terrain et ARRIVE dans le deck, elle n'est pas dupliquee",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd024')"],
+        "declencher": ["Puzzle.Damage('hd024', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd024"], "dans_deck_rencontre": ["hd024"]},
+    },
+    {
+        "nom": "hd025 Duck, Duck, Doom! — range un allie sous la carte, puis le rend en main a sa defaite",
+        "pourquoi": "TuckCardUnderHere + GetPlacedCardArea().Get() (modele exact 50081 Abduct Superhumans, qui les remet EN JEU la ou hd025 les rend EN MAIN via Faces.ReturnToHand(..., 'Owner'))",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd025')", "Puzzle.SetThreat('hd025', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd025"], "en_main": ["hd002"]},
+    },
+    {
+        "nom": "hd025 Duck, Duck, Doom! — branche de repli : aucun allie, l'identite est desorientee",
+        "pourquoi": "« If you CANNOT » distinct d'un refus : aucun allie en jeu du tout. Statut pose sur l'identite civile (hd001b), forme de depart",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hd025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["hd001b", "Confused"]]},
+    },
+    {
+        "nom": "hd026 A Fowl Plot — When Revealed : defausse une amelioration controlee",
+        "pourquoi": "GetControlCardsByType(upgrade=True) + AskChooseFace ; `cibles` designe explicitement hd016 pour eviter que le pilote ne tombe sur hd017 (permanente, en jeu des la mise en place)",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd016', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd026')"],
+        "cibles": ["hd016"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd016"], "en_jeu": ["hd026"]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Hero) : donne Tenace au vilain",
+        "pourquoi": "WhenThisRevealed('Hero') (modele 01106 Stampede / ok023) + Faces.GiveStatus([villain], 'Tough')",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Tough"]]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Hero), branche « If you cannot » : le vilain deja Tenace est soigne de 3",
+        "pourquoi": "« If you CANNOT » verifie AVANT (HasStatus('Tough')), pas apres un echec silencieux ; « heal 3 damage from IT » vise le vilain lui-meme (piege `that <nom>`) : 5 degats subis -> 2 apres",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.Damage('01094', 5)",
+            "Puzzle.Tough('01094')",
+        ],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Alter-Ego) : la menace du vilain part sur les manigances annexes, pas sur le complot principal",
+        "pourquoi": "interruption TEMPORAIRE WhenSchemeWouldPlaceThreat(MainScheme) enregistree avant BasicSchemes (modele 50035b Stealth) + PreventThreat('All') + repartition point par point (modele ok008). Piege `instead` : le complot principal doit rester a 0, la manigance annexe doit monter",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.SetThreat('01097b', 0)",
+        ],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]], "menace_min": [["hd010", 4]]},
+    },
+    # ------------------------------------------------------------------------
+    # Pack « wiccan » : wc001a-wc023 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # Mecanique centrale : COMPTER LES ICONES DE BONUS DE LA CARTE DU DESSUS
+    # DU DECK RENCONTRE. Comme pour agent_13, un cas vert avec 0 icone ne
+    # prouverait rien : le deck Rencontre est donc truque via
+    # `Puzzle.CreateEncounterDeck` avec des cartes a icones CONNUES —
+    # 01106 Stampede (1 icone, palier « 0 ou 1 ») et 01111 Explosion
+    # (2 icones, palier « 2 ou plus »).
+    #
+    # `Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "wc001a Wiccan — Clairvoyance : la carte du dessus du deck rencontre est FACE VISIBLE (forme heros)",
+        "pourquoi": ("`PlayWithTopCardOfDeckFaceup(..., only_during_player_phase=True)` pose un "
+                     "`WhenPlayerPhaseBegin` : la sonde renvoie ce message dans le monde et "
+                     "verifie que la carte du dessus est bien retournee. Sans le module, elle "
+                     "reste face cachee et tout le kit joue a l'aveugle"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc_clairvoyance_dessus_face_visible",
+    },
+    {
+        "nom": "wc001b Billy Kaplan — Clairvoyance : face visible AUSSI en identite civile",
+        "pourquoi": ("la capacite est imprimee sur LES DEUX faces : sans module sur wc001b, "
+                     "passer en identite civile eteindrait la carte visible. C'est aussi ce cas "
+                     "qui a trouve le bug moteur `CastTo(Hero)` de la fabrique partagee"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc_clairvoyance_dessus_face_visible",
+    },
+    {
+        "nom": "wc001a Wiccan — Forced Interrupt : au debut de la phase du vilain, le dessus du deck rencontre est defausse",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle (aucune commande n'avance de "
+                     "phase) : la sonde renvoie `Message.WhenPhaseBegin('Villain')` dans le "
+                     "monde, exactement ce que fait `world.phase_begin` (world.py:789-793)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc001a_defausse_au_debut_de_la_phase_du_vilain",
+    },
+    {
+        "nom": "wc001b Billy Kaplan — Action : regarde les 2 du dessus du deck rencontre et en defausse 1",
+        "pourquoi": ("la defausse est OPTIONNELLE (« you MAY discard one of them ») : sans "
+                     "`accepter_choix`, le pilote choisit 0 carte et la capacite parait morte "
+                     "(piege du §8 du guide). La defausse de rencontre est VIDE au depart, "
+                     "donc toute carte qui s'y trouve vient de cette action"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": ["Puzzle.Action('wc001b', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "wc_defausse_rencontre_non_vide",
+    },
+    {
+        "nom": "wc002 Hulkling — Interrupt : +1 ATQ par icone de bonus du dessus du deck, puis cette carte est defaussee",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111 Explosion) : ATQ 1* (=1 en solo) "
+                     "+ 2 icones = 3 degats. Un cas a 0 icone ne distinguerait rien. La carte "
+                     "defaussee prouve la seconde phrase du texte"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')", "Puzzle.Attack('wc002')"],
+        "cibles": ["01094"],
+        "verifier": "wc002_hulkling_bonus_et_defausse",
+    },
+    {
+        "nom": "wc003 Impenetrable Barrier — Hero Action : Tough au heros PUIS a X personnages amis",
+        "pourquoi": ("deux phrases, deux portees : le heros recoit son Tough sans condition, "
+                     "les X autres viennent des icones de bonus (01111 = 2). `accepter_choix` "
+                     "exerce le « up to X », dont le minimum est 0 et que le pilote declinerait "
+                     "sinon. Code partage avec wc004"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc003", "01088"],
+        "accepter_choix": True,
+        "jouer": ["wc003"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["wc001a", "Tough"], ["wc002", "Tough"]]},
+    },
+    {
+        "nom": "wc005 Magic Bolt — palier « 0 ou 1 icone » : 3 degats puis pioche 1",
+        "pourquoi": ("deck Rencontre truque a 1 icone (01106 Stampede) : la branche du haut. "
+                     "Main videe puis rechargee, donc la carte en main a la fin ne peut venir "
+                     "que de la pioche. Code partage avec wc006 et wc007"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "taille_main": 1},
+    },
+    {
+        "nom": "wc005 Magic Bolt — palier « 2 icones ou plus » : 3 + 3 degats, le SECOND en ranged",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111 Explosion). La cible est "
+                     "M.O.D.O.K. (01184, 8 PV, Retaliate 2 IMPRIME) : il survit aux 6 degats, "
+                     "et sa riposte distingue les deux montages — seule la SECONDE salve est "
+                     "ranged (arbitrage documente dans wc005.py), donc l'identite ne doit "
+                     "encaisser la riposte qu'UNE fois"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('01184')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01184"],
+        "accepter_choix": True,
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01184", 6]]},
+    },
+    {
+        "nom": "wc008 Magic Manipulation — Alter-Ego Action : X cartes remontent de la defausse dans le deck, puis pioche 1",
+        "pourquoi": ("X = icones de bonus (01111 = 2), donc EXACTEMENT les 2 cartes semees dans "
+                     "la defausse doivent la quitter. Un cas a 0 icone ne prouverait rien. "
+                     "Aucun ChangeToFace : la partie demarre deja en alter-ego"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01086')",
+                          "Puzzle.CreatePlayerDiscardPile('01087')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc008"],
+        "jouer": ["wc008"],
+        "verifier": "wc008_defausse_remontee_dans_le_deck",
+    },
+    {
+        "nom": "wc009 Magic Portal — palier « 0 ou 1 icone » : 5 menaces retirees puis pioche 1",
+        "pourquoi": ("deck Rencontre truque a 1 icone (01106). Menace posee a 6, SOUS le seuil "
+                     "du complot : au-dela il s'accomplit et l'evenement n'a plus de cible "
+                     "legale. Code partage avec wc010"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "wc009 Magic Portal — palier « 2 icones ou plus » : 5 menaces sur la cible PUIS 2 sur CHAQUE manigance en jeu",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111). Une manigance annexe (01107) est "
+                     "posee a 3 menaces a cote : elle doit descendre a 1 sans avoir ete choisie, "
+                     "ce qui prouve la portee « each scheme in play » (piege `each`)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 3)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 1]]},
+    },
+    {
+        "nom": "wc011 Teleport — Action : redresse l'identite du joueur choisi et lui donne +1 a un pouvoir de base",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111), seul palier qui donne le bonus. "
+                     "L'identite est inclinee au depart : le redressement et le bonus sont deux "
+                     "preuves independantes. Code partage avec wc012"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc011", "01088"],
+        "jouer": ["wc011"],
+        "preferer_option": "Cancel",
+        "verifier": "wc011_teleport",
+    },
+    {
+        "nom": "wc011 Teleport — Action : « that player MAY change their form » (bascule optionnelle acceptee)",
+        "pourquoi": ("seconde moitie de la meme phrase imprimee. Sans ce cas, la bascule de "
+                     "forme n'est jamais exercee : le cas voisin repond « Cancel » a la "
+                     "question pour garder la face heros et pouvoir mesurer le +1 ATQ. Ici on "
+                     "laisse le pilote accepter, et la partie doit finir en identite civile"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc011", "01088"],
+        "jouer": ["wc011"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "pret": ["wc001b"]},
+    },
+    {
+        "nom": "wc013 Transmutation — Action : la carte cherchee dans le deck rencontre remonte SUR LE DESSUS",
+        "pourquoi": ("01111 est place sur le dessus, 01143 juste dessous ; `cibles` force la "
+                     "recherche sur 01143. Le selecteur remelange le deck (search_internal.py), "
+                     "donc retrouver 01143 sur le dessus prouve la remontee, pas un hasard"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01143')",
+                          "Puzzle.CreateEncounterDeck('01111')"],
+        "declencher": [],
+        "main_exclusive": ["wc013"],
+        "cibles": ["01143"],
+        "jouer": ["wc013"],
+        "verifier": "wc013_carte_remontee_sur_le_dessus",
+    },
+    {
+        "nom": "wc014 Warping Reality — Action : la carte suivante coute 1+X de moins (preuve par insuffisance)",
+        "pourquoi": ("Magic Portal (wc009) coute 3 et la main ne contient qu'Energy (01088), qui "
+                     "fournit 2 ressources : SANS la reduction elle est injouable. Avec 1 icone "
+                     "de bonus (01106), la reduction vaut 1+1=2, le cout tombe a 1 et la carte "
+                     "part. Preuve par insuffisance, sans ambiguite"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc014", "wc009", "01088"],
+        "cibles": ["01097b"],
+        # Warping Reality porte elle-meme une ressource [wild] : sans cette
+        # interdiction, le pilote la DEPENSE pour financer Magic Portal (0+2+1
+        # = 3, le cout plein) et le cas reste vert meme sans le module — c'est
+        # ce qu'a montre la preuve par substitution du 30/08/2026. Interdite
+        # comme ressource, elle ne peut plus servir qu'a ce que la carte fait
+        # vraiment : reduire le cout suivant.
+        "ne_pas_depenser": ["wc014"],
+        "jouer": ["wc014", "wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "defausse": ["wc009"]},
+    },
+    {
+        "nom": "wc015 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
+        "pourquoi": ("5 degats infliges a l'identite, 3 prevenus -> 2 encaisses. Le cout "
+                     "(remelanger la carte dans le deck) est REEL : elle ne doit plus etre en jeu"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc015', under_control=True)"],
+        "declencher": ["Puzzle.Damage('wc001a', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["wc015"]},
+    },
+    {
+        "nom": "wc016 Wiccan's Cloak — Response : l'evenement SPELL qui compte les icones est RESOLU UNE SECONDE FOIS",
+        "pourquoi": ("Magic Bolt (wc005) inflige 3 degats ; rejouee par la cape elle en inflige "
+                     "3 de plus, sans etre repayee (`ResolveToPlayer` -> `skip_cost=True`). "
+                     "6 degats et la cape inclinee : deux preuves. Deck Rencontre truque a "
+                     "01106 pour rester sur le palier bas et ne pas melanger les branches"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc016', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 6]], "exhausted": ["wc016"]},
+    },
+    {
+        "nom": "wc017 Royal Couple — Hero Action AVEC Hulkling : la carte de la defausse rencontre remonte et le heros est redresse",
+        "pourquoi": ("Team-Up rendu comme condition « Hulkling en jeu » (arbitrage utilisateur "
+                     "du 30/08/2026). Le heros est incline au depart, la defausse de rencontre "
+                     "est truquee a 01106 : les deux moities du texte sont observables"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)",
+                          "Puzzle.CreateEncounterDiscardPile('01106')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": [],
+        "main_exclusive": ["wc017", "01088"],
+        "jouer": ["wc017"],
+        "verifier": "wc017_royal_couple",
+    },
+    {
+        "nom": "wc017 Royal Couple — SANS Hulkling : la carte reste injouable, le heros reste incline",
+        "pourquoi": ("contre-epreuve de la condition : sans elle, la carte partirait quand meme "
+                     "et redresserait le heros. C'est exactement le defaut qu'il023 avait "
+                     "(`only_if_you_control_face` qui ne voit pas les allies)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDiscardPile('01106')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": [],
+        "main_exclusive": ["wc017", "01088"],
+        "jouer": ["wc017"],
+        "verifier": "wc017_sans_hulkling",
+    },
+    {
+        "nom": "wc018 Avoiding the Demiurge — branche 1 : incliner l'identite -> retirer l'obligation du jeu",
+        "pourquoi": ("le pilote prend TOUJOURS la premiere option d'un ChooseAbilities "
+                     "(convention il017/ok019) : c'est donc cette branche-la qu'il exerce "
+                     "spontanement. L'obligation doit avoir QUITTE le jeu"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc018')"],
+        "verifier": "wc018_obligation_retiree",
+    },
+    {
+        "nom": "wc018 Avoiding the Demiurge — branche 2 : les icones de bonus ne sont plus comptees, jusqu'a la fin de la phase joueur",
+        "pourquoi": ("branche inatteignable sans la cle `preferer_option` ajoutee le 30/08/2026 "
+                     "(le pilote prend toujours la premiere option). Le verificateur controle "
+                     "l'interrupteur global du pack DANS LES DEUX SENS : leve juste apres, puis "
+                     "abaisse quand la sonde renvoie `WhenPhaseEnd('Player')` dans le monde"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc018')"],
+        "preferer_option": "Boost icons cannot be counted",
+        "verifier": "wc018_interrupteur_des_boosts",
+    },
+    {
+        "nom": "wc019a New Vessel — When Completed (8 menaces) : Moridun est mis de cote et la carte se RETOURNE en wc019b The Demiurge",
+        "pourquoi": ("mecanisme rare : une manigance annexe qui devient un ENVIRONNEMENT. La "
+                     "carte est generee avec SES DEUX FACES (« wc019a,wc019b ») — avec la seule "
+                     "face recto, `Card.Flip` la couche face cachee et elle QUITTE le jeu "
+                     "(lecon Dazzler). Le seuil de 8 est cable a la main (ecart assume, "
+                     "modele mw018)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')"],
+        "declencher": ["Puzzle.PlaceThreat('wc019a', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc019b"], "hors_jeu": ["wc019a"]},
+    },
+    {
+        "nom": "wc019a New Vessel — When Defeated : 2 menaces retirees du complot principal, la manigance et Moridun mis de cote",
+        "pourquoi": ("« set aside » et non « discard » : c'est ce qui permet a wc020 de "
+                     "re-reveler « your SET-ASIDE New Vessel side scheme ». Le complot principal "
+                     "est pose a 5 : il doit finir a 3"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.PlaceThreat('wc019a', -4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "hors_jeu": ["wc019a", "wc019b"]},
+    },
+    {
+        "nom": "wc019b The Demiurge — Forced Response : quand un deck de JOUEUR se vide, 1 menace sur le complot principal",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle sans bruit (vider le deck "
+                     "declenche aussi la penalite standard, qui distribue une carte rencontre "
+                     "et fausserait le releve) : la sonde renvoie `Message.AfterDeckRunOut` sur "
+                     "le deck du joueur, exactement ce que fait `Deck` quand il se vide"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.PlaceThreat('wc019a', 4)",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": [],
+        "verifier": "wc019b_deck_joueur_vide",
+    },
+    {
+        "nom": "wc020 Moridun — When Revealed : la manigance New Vessel MISE DE COTE est revelee",
+        "pourquoi": ("wc019a est deja dans la zone de reserve du joueur au montage de la partie "
+                     "(le set nemesis y vit, worlds.py:384) : la carte revelee est donc bien "
+                     "CELLE DU DECK, pas une copie fabriquee par le harnais"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc020", "wc019a"]},
+    },
+    {
+        "nom": "wc020 Moridun — Forced Interrupt : quand Wiccan inflige des degats a un ennemi, 1 menace sur New Vessel",
+        "pourquoi": ("New Vessel demarre a 4 menaces imprimees : apres une attaque de base de "
+                     "Wiccan elle doit etre a 5. Le declencheur est nomme (« Wiccan »), pas "
+                     "« votre identite »"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Reveal('wc020')"],
+        "declencher": ["Puzzle.Attack('wc001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["wc019a", 5]]},
+    },
+    {
+        "nom": "wc020 Moridun — Forced Interrupt : quand Wiccan retire de la menace d'une manigance, 1 menace sur New Vessel",
+        "pourquoi": ("second declencheur de la meme phrase imprimee (« deal damage OR remove "
+                     "threat ») : deux fabriques distinctes, jamais un `if`. Le retrait passe "
+                     "par Magic Portal (wc009), dont la cible est forcee sur le complot "
+                     "principal pour ne pas viser New Vessel elle-meme"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Reveal('wc020')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["wc019a", 5]]},
+    },
+    {
+        "nom": "wc021 Inescapable Horror — When Revealed SANS Moridun : 1 degat a chaque personnage ami, aucun etourdissement",
+        "pourquoi": ("portee NUE (« each friendly character ») : l'identite ET l'allie "
+                     "encaissent. Sans Moridun en jeu, la seconde phrase ne doit PAS partir — "
+                     "c'est le contre-exemple du cas suivant. Code partage avec wc022"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('wc021')"],
+        "verifier": "wc021_degats_sans_etourdissement",
+    },
+    {
+        "nom": "wc021 Inescapable Horror — When Revealed AVEC Moridun : le joueur est SONNE en plus",
+        "pourquoi": "la branche conditionnelle « If Moridun is in play » n'est exercee que la",
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc020')"],
+        "declencher": ["Puzzle.Reveal('wc021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["wc001a", "Stunned"]], "degats_identite": 1},
+    },
+    {
+        "nom": "wc021 Inescapable Horror — capacite Boost : 1 degat a chaque personnage ami QUE VOUS CONTROLEZ",
+        "pourquoi": ("portee DIFFERENTE de celle du When Revealed (« you control » imprime sur "
+                     "la seule capacite Boost) ; sans module, la capacite Boost n'existe pas et "
+                     "l'allie ne prend rien"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.Boost('wc021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["wc002", 1]]},
+    },
+    {
+        "nom": "wc023 Master Magus Returns — When Revealed : Moridun mis de cote est revele, la trahison est retiree du jeu",
+        "pourquoi": ("wc020 est dans la zone de reserve du joueur au montage (set nemesis) : "
+                     "c'est bien la carte du deck qui entre en jeu. « then remove ... from the "
+                     "game » appartient a la branche conditionnelle"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc020"], "hors_jeu": ["wc023"]},
+    },
+    {
+        "nom": "wc023 Master Magus Returns — When Revealed avec The Demiurge en jeu : rien n'est revele, le joueur est DESORIENTE",
+        "pourquoi": ("branche negative du texte : « If Moridun was not revealed this way, you "
+                     "are confused ». New Vessel est accomplie au montage pour poser "
+                     "l'environnement, ce qui bloque la revelation"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.PlaceThreat('wc019a', 4)"],
+        "declencher": ["Puzzle.Reveal('wc023')"],
+        "verifier": "wc023_desoriente_et_non_retiree",
+    },
+    {
+        "nom": "wc023 Master Magus Returns — capacite Boost : le joueur est DESORIENTE",
+        "pourquoi": "capacite Boost distincte du When Revealed, sans module elle n'existe pas",
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('wc023')"],
+        "verifier": "identite_a_un_statut",
+    },
+    {
+        "nom": "wc019a New Vessel — seul le joueur Billy Kaplan peut retirer de la menace de cette manigance",
+        "pourquoi": ("restriction intestable en solo : il faut une VRAIE partie a deux joueurs "
+                     "(`heros2`) et deux tentatives de retrait, une par joueur. Le pilote "
+                     "generique ne sait pas faire contrer le SECOND joueur : la verification "
+                     "monte donc les deux effets a la main (`GameRule(identite)`, dont "
+                     "`initiator` vaut le joueur controlant la face, rule.py:10-22) et compare "
+                     "les deux resultats"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "heros2": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')"],
+        "declencher": [],
+        "verifier": "wc019a_seul_billy_retire_la_menace",
+    },
+    # ------------------------------------------------------------------------
+    # Pack « speed » : sd001a-sd022 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # MECANIQUE CENTRALE : LES COMPTEURS EXPLOSIFS. Le compteur s'appelle
+    # `explosive` ; il se pose avec `Puzzle.Counter('<card_id>', 'explosive', N)`
+    # et se lit avec la cle `compteurs` de `etat_attendu`.
+    #
+    # Le BALAYAGE de fin de phase des joueurs (regle de l'insert) est hors de
+    # portee de l'API Puzzle, qui n'avance aucune phase : deux verificateurs
+    # sont des SONDES IN-PROCESS et renvoient dans le monde
+    # `Message.WhenPhaseEnd(monde.phase_id, "Player", monde)`, exactement le
+    # message qu'emet `world.phase_end` au meme moment.
+    #
+    # `Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu — le catalogue
+    # contient aussi un allie `15010` « * Speed » et un sbire `57060`).
+    #
+    # Ressources de paiement, toujours par `main_exclusive` : `01088` Energy
+    # (YY, donc « uniquement en energie ») et `01090` Strength (RR, donc
+    # PHYSIQUE : le temoin negatif de Hyperkinetic Fuel). Un wild ne peut pas
+    # servir de temoin negatif — il compte comme energie.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "sd001a Speed — Hyperkinetic Fuel : un evenement paye UNIQUEMENT en energie pose 1 compteur explosif",
+        "pourquoi": ("mecanique centrale du pack. `main_exclusive` a 01088 (YY) garantit que "
+                     "le paiement est integralement en energie ; sans cette cle le pilote "
+                     "puiserait dans la main de depart et `OnlyHasColor(\'Y\')` ne serait "
+                     "jamais vrai (piege Ashley Barton). Le compteur est pose AVANT que "
+                     "l'evenement se resolve : c'est un Interrupt"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd008", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 1]]},
+    },
+    {
+        "nom": "sd001a Speed — Hyperkinetic Fuel NE part PAS quand l'evenement est paye en PHYSIQUE",
+        "pourquoi": ("temoin negatif indispensable : sans lui, une capacite qui poserait un "
+                     "compteur a CHAQUE evenement passerait le cas precedent. 01090 Strength "
+                     "fournit RR ; un wild aurait compte comme energie et n'aurait rien prouve"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 0]], "degats": [["01094", 3]]},
+    },
+    {
+        "nom": "sd001a Speed — regle de l'insert : PLAFOND de 1 compteur explosif par ennemi/manigance",
+        "pourquoi": ("regle transverse portee par l'identite, pas par une carte. On demande "
+                     "5 compteurs d'un coup : le plafond doit en laisser 1. Meme forme que le "
+                     "cas ht001a (plafond de 3 compteurs flamme)"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 1]]},
+    },
+    {
+        "nom": "sd001a Speed — regle de l'insert : a la fin de la phase des joueurs, le compteur d'un ENNEMI part et lui inflige 1 degat",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle (aucune commande n'avance de "
+                     "phase) : la sonde renvoie `Message.WhenPhaseEnd(phase_id, \'Player\')` "
+                     "dans le monde. Le verificateur controle les DEUX moities : le compteur "
+                     "a disparu ET le degat a ete inflige"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "verifier": "sd_balayage_ennemi",
+    },
+    {
+        "nom": "sd001b Thomas Shepherd — regle de l'insert EN ALTER-EGO : le compteur d'une MANIGANCE part et retire 1 menace",
+        "pourquoi": ("la regle est imprimee sur l'insert, pas sur une carte : elle doit valoir "
+                     "sur LES DEUX faces. Sans module sur sd001b, finir la phase des joueurs "
+                     "en identite civile laisserait les compteurs en place pour toujours. "
+                     "Aucun ChangeToFace ici : la partie demarre deja en alter-ego"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "verifier": "sd_balayage_manigance",
+    },
+    {
+        "nom": "sd001b Thomas Shepherd — Accelerated Perception : un evenement remonte de la defausse dans le deck, puis pioche 1",
+        "pourquoi": ("le remelange vise UN EVENEMENT (sd003 seme dans la defausse) et la "
+                     "pioche est INCONDITIONNELLE. Main videe puis rechargee d'une seule "
+                     "carte : une main a 2 a la fin ne peut venir que de la pioche"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('sd003')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('sd001b', 'Action')"],
+        # `main_exclusive` VIDE la main de depart DANS LA DEFAUSSE : elle y jette
+        # d'autres evenements (01052, 01053...). Sans `cibles`, le pilote prend
+        # le premier evenement legal et le releve ne veut plus rien dire.
+        "cibles": ["sd003"],
+        "verifier": "sd001b_accelerated_perception",
+    },
+    {
+        "nom": "sd002 Quicksilver — Interrupt : AUCUN degat consecutif quand la cible porte un compteur explosif",
+        "pourquoi": ("ATQ 2* = 1 degat consecutif imprime, lu nativement. La capacite doit "
+                     "l'annuler pour CETTE utilisation. Modele du declencheur : 17020 Cosmo"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd002", 0], ["01094", 2]]},
+    },
+    {
+        "nom": "sd002 Quicksilver — contre-epreuve SANS compteur : il encaisse bien son degat consecutif",
+        "pourquoi": ("temoin negatif : sans lui, un allie qui ne prendrait JAMAIS de degat "
+                     "consecutif passerait le cas precedent"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('sd002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd002", 1], ["01094", 2]]},
+    },
+    {
+        "nom": "sd003 Blasting Velocity — 3 menaces retirees PUIS attaque de base sur l'ennemi marque, sans s'incliner",
+        "pourquoi": ("les deux moities de la carte sont mesurees separement. Le heros est "
+                     "INCLINE au depart : l'attaque de base part quand meme, ce qui prouve "
+                     "le « without exhausting ». Paiement en PHYSIQUE (01090) pour que "
+                     "Hyperkinetic Fuel ne pose pas un second compteur et ne brouille pas "
+                     "le releve. Code partage avec sd004"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd003", "01090"],
+        "cibles": ["01097b", "01094"],
+        "jouer": ["sd003"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "degats": [["01094", 1]]},
+    },
+    {
+        "nom": "sd005 \"I'm Out\" — Hero Interrupt : la carte rencontre revelee est annulee et defaussee",
+        "pourquoi": ("modele mw009 Foresight : l'evenement est en main, `Puzzle.Reveal` fait "
+                     "venir la carte du deck Rencontre (sans quoi `from_encounter=True` ne "
+                     "matcherait jamais). sd020 s'attacherait au vilain si elle n'etait pas "
+                     "annulee : son absence du jeu est la preuve. Paiement en PHYSIQUE pour "
+                     "rester sur la branche « annulation » et pas sur le « instead »"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "main_exclusive": ["sd005", "01090"],
+        "declencher": ["Puzzle.Reveal('sd020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd020"], "defausse": ["sd005"]},
+    },
+    {
+        "nom": "sd005 \"I'm Out\" — branche « instead » : payee en energie, elle remonte un evenement et pioche AU LIEU de poser un compteur",
+        "pourquoi": ("couplage inter-cartes : c'est la capacite du HEROS (sd001a) qui teste "
+                     "si la carte payee est sd005. Sa ressource IMPRIMEE est MENTALE, le cas "
+                     "« payee uniquement en energie » doit donc etre construit expres. Le "
+                     "verificateur controle les TROIS consequences : l'evenement remonte, "
+                     "AUCUN compteur explosif en jeu, et l'annulation a quand meme eu lieu"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.CreatePlayerDiscardPile('sd003')"],
+        "main_exclusive": ["sd005", "01088"],
+        "declencher": ["Puzzle.Reveal('sd020')"],
+        # Voir le cas sd001b : la main de depart part a la defausse et y ajoute
+        # d'autres evenements ; `cibles` fixe celui que la carte doit remonter.
+        "cibles": ["sd003"],
+        "verifier": "sd005_instead",
+    },
+    {
+        "nom": "sd006 Kinetic Flurry — X attaques SEPAREES a 3 degats sur l'ennemi marque",
+        "pourquoi": ("cout X : sans `surpayer` le pilote ne paie rien, X vaut 0 et la carte "
+                     "parait inerte (piege du §8). 01088 fournit 2 energies -> X = 2, et "
+                     "l'ennemi porte un compteur -> 3 degats par attaque, donc 6. A 2 degats "
+                     "(branche sans compteur) on lirait 4 : les deux branches sont "
+                     "distinguables. Code partage avec sd007"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd006", "01088"],
+        "surpayer": True,
+        "cibles": ["01094"],
+        "jouer": ["sd006"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "sd008 Swift Strikes — 3 degats PUIS contre de base sur la manigance marquee, sans s'incliner",
+        "pourquoi": ("MIROIR de sd003 : degats d'abord, CONTRE de base ensuite, sur une "
+                     "MANIGANCE marquee. Le heros est incline au depart, le contre part quand "
+                     "meme. CTR 1 -> 6 menaces deviennent 5. Le cas sd016 rejoue exactement "
+                     "ce montage AVEC Quick Adaptation en jeu et lit 4 : la paire prouve le "
+                     "+1 CTR. Code partage avec sd009 et sd010"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "menace": [["01097b", 5]]},
+    },
+    {
+        "nom": "sd011 Top Speed — AVEC un compteur explosif en jeu : 1 + 2 ressources, la carte a 3 devient jouable (preuve par insuffisance)",
+        "pourquoi": ("Never Ending Spark (sd015) coute 3 et Top Speed est la SEULE ressource "
+                     "en main. Sans le supplement double, elle ne fournirait que 2 et la "
+                     "carte resterait injouable : sa presence en jeu prouve les 3 ressources. "
+                     "Code partage avec sd012"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd015", "sd011"],
+        "jouer": ["sd015"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd015"]},
+    },
+    {
+        "nom": "sd011 Top Speed — SANS compteur explosif : le supplement n'est que de 1, la carte a 3 reste injouable",
+        "pourquoi": ("contre-epreuve du cas precedent, meme montage sans le compteur. Sans "
+                     "elle, un supplement de 2 INCONDITIONNEL passerait le premier cas"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd015", "sd011"],
+        "jouer": ["sd015"],
+        "verifier": "etat_attendu",
+        # Une carte dont le cout ne peut pas etre paye n'est PAS rendue a la
+        # main : `CardPlayer.Play` la defausse (card_player.py:134-136). Les
+        # deux cles ensemble disent bien « elle n'est jamais entree en jeu ».
+        "attendu": {"hors_jeu": ["sd015"], "defausse": ["sd015"]},
+    },
+    {
+        "nom": "sd011 Top Speed — la carte qu'on paie part QUAND MEME, mais plus aucune autre ensuite",
+        "pourquoi": ("LE point risque de la carte : `PlayersCannotPlayCardWhile` ne doit pas "
+                     "bloquer la carte en cours de paiement, sinon Top Speed n'a aucun sens. "
+                     "Le verificateur controle les deux : sd014 est bien entree en jeu, et "
+                     "sd013 (cout 1, financable par le 01088 encore en main) n'est plus "
+                     "jouable"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd014", "sd013", "sd011", "01088"],
+        "payer_avec": ["sd011"],
+        "jouer": ["sd014"],
+        "verifier": "sd011_restriction_du_tour",
+    },
+    {
+        "nom": "sd013 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
+        "pourquoi": ("duplicat volontaire de wc015 (meme carte reutilisee par l'auteur pour "
+                     "le frere jumeau) : le cas est donc le meme. 5 degats infliges, 3 "
+                     "prevenus -> 2 encaisses, et le cout (remelanger la carte) est REEL"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd013', under_control=True)"],
+        "declencher": ["Puzzle.Damage('sd001a', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["sd013"]},
+    },
+    {
+        "nom": "sd014 Explosive Touch — apres une ATTAQUE de base sur une cible marquee : la carte s'incline, Speed est redresse",
+        "pourquoi": ("une attaque de base incline le heros (c'est son cout) : le retrouver "
+                     "PRET apres l'attaque ne peut venir que de la Response. L'inclinaison "
+                     "d'Explosive Touch prouve que le cout a bien ete paye"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd014', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd001a"], "exhausted": ["sd014"]},
+    },
+    {
+        "nom": "sd014 Explosive Touch — apres un CONTRE de base sur une manigance marquee (via sd008)",
+        "pourquoi": ("l'autre moitie du declencheur imprime (« basic attack OR basic "
+                     "thwart »). L'API Puzzle n'a pas de commande de contre : on passe par "
+                     "le contre de base offert par Swift Strikes. Le heros est incline au "
+                     "depart et doit finir PRET"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd014', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd001a"], "exhausted": ["sd014"]},
+    },
+    {
+        "nom": "sd015 Never Ending Spark — Hero Response : la carte inclinee est REDRESSEE quand un compteur explosif est pose",
+        "pourquoi": ("premiere des deux capacites imprimees. La carte est inclinee au depart : "
+                     "seule la Response peut la redresser"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd015', under_control=True)",
+                          "Puzzle.Exhaust('sd015')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd015"]},
+    },
+    {
+        "nom": "sd015 Never Ending Spark — Resource : elle finance seule une carte a cout 1 et s'incline",
+        "pourquoi": ("seconde capacite imprimee, distincte. La main ne contient QUE la carte "
+                     "a jouer : la ressource ne peut venir que de la Spark, et son "
+                     "inclinaison prouve le cout"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd015', under_control=True)"],
+        "declencher": [],
+        "main_exclusive": ["sd013"],
+        "jouer": ["sd013"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd013"], "exhausted": ["sd015"]},
+    },
+    {
+        "nom": "sd016 Quick Adaptation — +1 ATQ contre un ennemi marque",
+        "pourquoi": ("ATQ imprimee 1 : une attaque de base a 2 degats ne peut venir que du "
+                     "bonus. La carte NE S'INCLINE PAS (c'est sd014 qui s'incline), le "
+                     "verificateur le controle aussi pour ne pas confondre les deux cartes"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd016', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "pret": ["sd016"]},
+    },
+    {
+        "nom": "sd016 Quick Adaptation — +1 CTR contre une manigance marquee (via sd008)",
+        "pourquoi": ("montage IDENTIQUE au cas sd008, plus Quick Adaptation en jeu : la "
+                     "manigance tombe a 4 au lieu de 5. La paire de cas est la preuve du +1 "
+                     "CTR, et l'API Puzzle n'a pas de commande de contre"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd016', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "sd017 No Outrunning This — branche 1 : incliner Thomas Shepherd -> l'obligation est retiree du jeu",
+        "pourquoi": ("le pilote prend TOUJOURS la premiere option d'un ChooseAbilities "
+                     "(convention il017/ok019/wc018) : c'est donc cette branche-la qu'il "
+                     "exerce spontanement. La partie demarre en alter-ego, la condition "
+                     "`player.IsAlterEgo()` est remplie"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('sd017')"],
+        "verifier": "sd017_obligation_retiree",
+    },
+    {
+        "nom": "sd017 No Outrunning This — branche 2 : Hyperkinetic Fuel eteint jusqu'a la fin du PROCHAIN round",
+        "pourquoi": ("branche inatteignable sans `preferer_option`. Le verificateur controle "
+                     "l'interrupteur DANS LES DEUX SENS et surtout la duree : apres la "
+                     "PREMIERE fin de round il doit rester leve (c'est le round courant), il "
+                     "ne retombe qu'a la SECONDE (« the end of the NEXT round »). C'est la "
+                     "difference avec wc018, qui s'eteint des la fin de la phase joueur"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('sd017')"],
+        "preferer_option": "You cannot resolve Speed",
+        "verifier": "sd017_interrupteur_hyperkinetic",
+    },
+    {
+        "nom": "sd018 The Real Question — When Revealed : defausse jusqu'a un attachement, qui est ensuite REVELE",
+        "pourquoi": ("le deck Rencontre est truque avec sd020 sur le dessus : l'attachement "
+                     "trouve doit etre revele, donc entrer en jeu attache au vilain. Modeles "
+                     "40093 et wd104, qui impriment la meme phrase"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.CreateEncounterDeck('sd020')", "Puzzle.Reveal('sd018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd018", "sd020"]},
+    },
+    {
+        "nom": "sd018 The Real Question — tant qu'elle est en jeu, les attachements gagnent Permanent",
+        "pourquoi": ("seconde phrase imprimee, distincte du When Revealed. L'attachement "
+                     "entre en jeu APRES la manigance : c'est le chemin le plus fragile de "
+                     "`GiveKeywordToInPlayWhenApplyThis`. Le verificateur lit le mot-cle sur "
+                     "la carte, pas le texte"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd018')"],
+        "declencher": ["Puzzle.PutIntoPlay('sd020')"],
+        "verifier": "sd018_attachements_permanents",
+    },
+    {
+        "nom": "sd019 Coat of Arms — [star] : si son attaque inflige des degats, 1 degat de plus a CHAQUE personnage du joueur",
+        "pourquoi": ("le sbire est mis en jeu AVANT le passage en forme heros, sinon "
+                     "Quickstrike (natif, non code) declencherait une attaque de plus et "
+                     "fausserait le releve. Identite ET allie sont INCLINES : sinon le "
+                     "pilote declare un defenseur (constate le 30/08/2026 : Quicksilver "
+                     "encaissait l'attaque a la place du heros). ATQ 1 -> l'identite "
+                     "encaisse 1 puis 1 de "
+                     "supplement = 2, et l'allie 1 : la portee « each character you control » "
+                     "est ainsi verifiee sur DEUX personnages"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Exhaust('sd001a')",
+                          "Puzzle.Exhaust('sd002')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["sd002", 1]]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — attachee au vilain, chaque carte de bonus d'une activation gagne +1 icone",
+        "pourquoi": ("deck Rencontre truque a 01106 Stampede (1 icone imprimee). Rhino ATQ 2 "
+                     "+ 1 icone = 3 sans l'attachement, 4 avec : la valeur exacte est la "
+                     "preuve du +1. `en_jeu` controle en meme temps l'attache au vilain"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd020')",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "en_jeu": ["sd020"]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — Hero Action : depenser [energy][physical] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE, pas a vue (lecon Lockjaw) : 01088 (YY) "
+                     "et 01090 (RR) fournissent exactement une energie et un physique"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd020')"],
+        # ⚠ LIMITE DU PILOTE : `payer()` compte des RESSOURCES, pas des
+        # COULEURS (`besoin = len(cout)`, puis `poids = len(couleur)`). Energy
+        # (01088, « YY ») couvrait donc a lui seul un cout de 2 et le paiement
+        # partait sans le physique, ce que le moteur refusait ensuite en
+        # silence. On finance donc avec deux cartes a UNE SEULE icone : sd003
+        # imprime [energy], sd008 imprime [physical].
+        "main_exclusive": ["sd003", "sd008"],
+        "declencher": ["Puzzle.Action('sd020', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd020"]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — la Hero Action devient INDISPONIBLE tant que The Real Question est en jeu",
+        "pourquoi": ("collision Permanent : une carte permanente ne peut pas etre defaussee, "
+                     "et le moteur PLANTE sur ce chemin (assert de card_face.py). La Hero "
+                     "Action doit donc etre grisee, pas echouer. Le verificateur interroge le "
+                     "filtre du gestionnaire d'evenements, exactement comme `Puzzle.Action`"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd018')",
+                          "Puzzle.PutIntoPlay('sd020')"],
+        "main_exclusive": ["01088", "01090"],
+        "declencher": [],
+        "verifier": "sd020_action_indisponible",
+    },
+    {
+        "nom": "sd021 Magic Chains — attachee a Coat of Arms, elle etourdit le heros puis se defausse",
+        "pourquoi": ("l'attache conditionnelle vise Coat of Arms EN PRIORITE : l'attachement "
+                     "doit donc etre lie au sbire, pas au vilain. Le sbire est pose avant le "
+                     "passage en forme heros pour eviter Quickstrike. Les deux consequences "
+                     "sont controlees : statut Sonne ET carte defaussee"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd021')",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "sd021_chaines",
+    },
+    {
+        "nom": "sd021 Magic Chains — en ALTER-EGO le cout de la fleche est impayable : la carte RESTE",
+        "pourquoi": ("la fleche lie un COUT (« stun your hero ») a un EFFET (« discard this "
+                     "card ») : regle officielle du Rules Reference, confirmee par "
+                     "l'utilisateur le 30/08/2026. Sans heros en jeu le cout n'est pas "
+                     "payable, donc RIEN ne se passe et l'attachement garde son +1 ATQ. "
+                     "Contre-epreuve du cas precedent, dont il ne differe que par l'absence "
+                     "de passage en forme heros"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd021')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "sd021_cout_impayable",
+    },
+    {
+        "nom": "sd022 Conflicted Feelings — tant qu'elle est en jeu, Coat of Arms ne peut pas subir de degats",
+        "pourquoi": ("`Puzzle.Damage` ne fait RIEN sur un sbire (piege documente du guide) : "
+                     "on passe donc par une vraie attaque de base du heros. ATQ 1 -> 1 degat "
+                     "attendu sans l'obligation, 0 avec. `en_jeu` controle au passage que "
+                     "l'obligation RESTE en jeu apres avoir ete donnee (modele 28021)"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Reveal('sd022')"],
+        "declencher": ["Puzzle.Attack('sd001a')"],
+        "cibles": ["sd019"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd019", 0]], "en_jeu": ["sd022"]},
+    },
+    {
+        "nom": "sd022 Conflicted Feelings — Alter-Ego Action : depenser [energy][mental] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE : 01088 (YY) et 01089 (BB) fournissent "
+                     "exactement une energie et un mental. La partie demarre en alter-ego, "
+                     "l'action est donc disponible d'emblee"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.Reveal('sd022')"],
+        # Meme limite du pilote que pour sd020 : deux cartes a UNE icone, sd003
+        # ([energy]) et sd005 ([mental]).
+        "main_exclusive": ["sd003", "sd005"],
+        "declencher": ["Puzzle.Action('sd022', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd022"]},
+    },
+    # ------------------------------------------------------------------------
+    # Pack « patriot » : pt001a-pt022 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # TOUT LE KIT PARLE D'ALLIES : 12 des 17 cartes joueur en dependent. Les
+    # cas ci-dessous posent donc presque toujours un allie sous controle.
+    # `01083` Mockingbird (ATQ 1*, CTR 1*, 3 PV) sert d'allie de reference :
+    # elle est dans le deck de depart Leadership, ses DEUX pouvoirs de base
+    # infligent 1 degat consecutif, et ses valeurs sont assez basses pour que
+    # chaque bonus se lise a l'unite.
+    #
+    # `Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu).
+    #
+    # Les degats d'une attaque de Rhino dependent de ses icones de bonus :
+    # `Puzzle.CreateEncounterDeck('01106')` (Stampede, 1 icone) rend la valeur
+    # DETERMINISTE — Rhino ATQ 2 + 1 = 3.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "pt001a Patriot — Will to Protect : le degat CONSECUTIF de l'allie part sur Patriot",
+        "pourquoi": ("modele dt009 Savior Complex : `SetBeInstead` + `TakeDamage`. Le degat "
+                     "est DEPLACE, pas duplique (lecon The Spot) : l'allie doit finir a 0 "
+                     "degat ET l'identite a 1. Un seul des deux releves ne prouverait rien"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 0]], "degats_identite": 1},
+    },
+    {
+        "nom": "pt001a Patriot — Will to Protect : LIMITE une fois par round (deux allies frappent)",
+        "pourquoi": ("`.LimitOncePerRound()` imprime entre parentheses. Deux allies a degat "
+                     "consecutif attaquent : Patriot ne doit encaisser qu'UNE fois, l'autre "
+                     "allie garde son degat. Sans la limite, l'identite prendrait 2"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')", "Puzzle.Attack('01067')"],
+        "cibles": ["01094", "01094"],
+        "verifier": "pt001a_limite_une_fois_par_round",
+    },
+    {
+        "nom": "pt001b Elijah Bradley — Action : le Patriot's Shield sort du deck et arrive en main",
+        "pourquoi": ("PIEGE DU `*` D'UNICITE : pt012 s'appelle « * Patriot's Shield » dans "
+                     "cards.json, mais paper.py:45 retire le prefixe. Une recherche sur "
+                     "« * Patriot's Shield » ne trouverait rien, EN SILENCE. Le cas prouve "
+                     "que le nom cherche est le bon, et que l'identite s'incline (le cout)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('pt001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pt012"], "exhausted": ["pt001b"]},
+    },
+    {
+        "nom": "pt002 Hawkingbird — +1 PV a TOUS les allies, ELLE COMPRISE",
+        "pourquoi": ("le texte n'ecrit PAS « other » : a 1 PV imprime, Hawkingbird mourrait "
+                     "au moindre degat sans son propre bonus. Le cas controle les DEUX "
+                     "allies, le sien et celui d'a cote — un seul ne departagerait pas "
+                     "`not_include_this=True` de `False`"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt002', under_control=True)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["pt002", "health", 1], ["01083", "health", 1]]},
+    },
+    {
+        "nom": "pt002 Hawkingbird — Response : elle cherche une amelioration ATTACHABLE A UN ALLIE",
+        "pourquoi": ("le filtre n'est pas « une amelioration » mais « attachable a un allie » "
+                     "(`CardFinder(canbe_attach_to=...)`). Le deck est truque avec pt013 "
+                     "(s'attache a un allie) ET pt012 (s'attache a l'identite) : seule la "
+                     "premiere doit remonter. Sans le filtre, pt012 serait un choix legal"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')"],
+        "declencher": ["Puzzle.CreatePlayerDeck('pt013')",
+                       "Puzzle.PutIntoPlay('pt002', under_control=True)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pt013"]},
+    },
+    {
+        "nom": "pt003 Aided Defense — +1 DEF par PV RESTANT de l'allie epuise, puis il est redresse",
+        "pourquoi": ("Rhino ATQ 2 + 1 icone (01106) = 3 degats. DEF 2 du heros + 2 PV de "
+                     "Maria Hill = 4 : le heros ne prend RIEN, donc « if you take no damage "
+                     "-> ready the exhausted ally » part aussi. Les trois moities de la carte "
+                     "sont mesurees d'un coup (cout paye, bonus, redresse). `Puzzle.Defend` "
+                     "ouvre la fenetre et le pilote joue la carte depuis la main, comme pour "
+                     "sg016 Unbeatable!. Code partage avec pt004"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "main_exclusive": ["pt003"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Defend('pt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "pret": ["01067"], "defausse": ["pt003"]},
+    },
+    {
+        "nom": "pt005 Covered Fire — l'allie CHOISI (pas epuise) inflige ses degats d'ATQ a un ennemi",
+        "pourquoi": ("difference avec pt003 : l'allie est DESIGNE, il ne s'incline pas. "
+                     "Maria Hill ATQ 1 -> exactement 1 degat sur Rhino, et l'allie reste "
+                     "PRET. Ce n'est pas une attaque de l'allie : aucun degat consecutif. "
+                     "Code partage avec pt006"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "main_exclusive": ["pt005", "01088"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Defend('pt001a', '01094')"],
+        "cibles": ["01067", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1], ["01067", 0]], "pret": ["01067"],
+                    "defausse": ["pt005"]},
+    },
+    {
+        "nom": "pt007 Isaiah Bradley — +1 REC continu ET Alter-Ego Action : 2 degats soignes",
+        "pourquoi": ("les deux capacites imprimees sont mesurees ensemble : `attributs` lit "
+                     "le REC courant contre le REC imprime (3 -> 4), `degats_identite` "
+                     "prouve le soin de 2 sur 3 degats poses. La partie demarre en "
+                     "alter-ego, l'action est donc disponible d'emblee"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pt007', under_control=True)",
+                          "Puzzle.Damage('pt001b', 3)"],
+        "declencher": ["Puzzle.Action('pt007', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}, "degats_identite": 1,
+                    "exhausted": ["pt007"]},
+    },
+    {
+        "nom": "pt008 Commandeer — l'attachement passe du vilain a l'allie, texte blanc, SCH devenu CTR",
+        "pourquoi": ("04075 Exo-Suit porte ATK+ 1 ET SCH+ 1 : c'est la seule facon de "
+                     "mesurer la conversion. Rhino doit REDESCENDRE a son ATQ imprimee, "
+                     "Mockingbird monter de +1 ATQ et de +1 CTR (le SCH converti, qu'un "
+                     "allie perdrait sinon en silence, face_gain.py:123). Le verificateur "
+                     "controle aussi que la carte est bien LIEE a l'allie et traitee comme "
+                     "blanche"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('04075')",
+                          "Puzzle.PutIntoPlay('pt008', under_control=True)"],
+        "declencher": ["Puzzle.Action('pt008', 'HeroAction')"],
+        "cibles": ["01083", "04075"],
+        "verifier": "pt008_attachement_deplace",
+    },
+    {
+        "nom": "pt009 Commander's Orders — l'ATQ et le CTR de l'allie sont ECHANGES pour cette activation",
+        "pourquoi": ("Maria Hill 01067 a ATQ 1 et CTR 2 : apres l'echange elle frappe pour 2. "
+                     "PIEGE `message.power` : il vaut 'ATK'/'THW', jamais 'Attack'/'Thwart' — "
+                     "une condition ecrite avec le mauvais litteral serait MORTE et le cas "
+                     "montrerait 1 degat"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt009', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01067')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "exhausted": ["pt009"]},
+    },
+    {
+        "nom": "pt010 Follow My Lead — la ressource [wild] finance une amelioration attachable a un allie",
+        "pourquoi": ("modele mw006 Weaving a Web. pt013 Revenge (cout 1, s'attache a un "
+                     "allie) est la seule carte en main : sans la ressource elle reste "
+                     "injouable, avec elle elle entre en jeu. Un allie est en jeu, sans quoi "
+                     "aucune amelioration ne passerait le filtre"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt010', under_control=True)"],
+        "main_exclusive": ["pt013"],
+        "declencher": [],
+        "jouer": ["pt013"],
+        "cibles": ["01083"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pt013"], "exhausted": ["pt010"]},
+    },
+    {
+        "nom": "pt010 Follow My Lead — contre-epreuve : elle NE finance PAS une amelioration d'identite",
+        "pourquoi": ("la ressource est RESTREINTE. pt012 Patriot's Shield coute 1 et "
+                     "s'attache a l'IDENTITE : elle ne passe pas le filtre, donc elle n'entre "
+                     "JAMAIS en jeu et la ressource n'est jamais depensee (pt010 reste "
+                     "PRET). Contre-epreuve du cas precedent, dont il ne differe que par "
+                     "la carte a payer. Cette verte-la est legitime : elle affirme que RIEN "
+                     "ne se passe"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt010', under_control=True)"],
+        "main_exclusive": ["pt012"],
+        "declencher": [],
+        "jouer": ["pt012"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt012"], "pret": ["pt010"]},
+    },
+    {
+        "nom": "pt011 On Your Feet — branche 1 : un allie incline est REDRESSE",
+        "pourquoi": ("le pilote prend la PREMIERE option d'un ChooseAbilities : c'est la "
+                     "redresse. L'allie est incline en mise en place, sans quoi la branche "
+                     "n'aurait aucune cible legale (`canbe_ready=True`)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt011', under_control=True)",
+                          "Puzzle.Exhaust('01083')"],
+        "declencher": ["Puzzle.Action('pt011', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["01083"], "exhausted": ["pt011"]},
+    },
+    {
+        "nom": "pt011 On Your Feet — branche 2 : 1 degat soigne sur un allie",
+        "pourquoi": ("branche inatteignable sans la cle `preferer_option` : le pilote prend "
+                     "toujours la premiere option. L'allie porte 2 degats en mise en place, "
+                     "sans quoi la branche n'a aucune cible (`canbe_heal=True`)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt011', under_control=True)",
+                          "Puzzle.Damage('01083', 2)"],
+        "declencher": ["Puzzle.Action('pt011', 'HeroAction')"],
+        "preferer_option": "Heal 1 damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 1]], "exhausted": ["pt011"]},
+    },
+    {
+        "nom": "pt012 Patriot's Shield — +1 DEF continu ET 1 SEUL degat DEPLACE sur la carte",
+        "pourquoi": ("modele 04065 Crossbones' Armor, mais 1 point et non tous : Rhino ATQ 2 "
+                     "+ 1 icone (01106) = 3, le heros est INCLINE donc ne defend pas, il "
+                     "encaisse 2 et le bouclier prend 1 compteur. Si le point etait duplique "
+                     "au lieu d'etre deplace, l'identite serait a 3"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt012', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}, "degats_identite": 2,
+                    "compteurs": [["pt012", "damage", 1]]},
+    },
+    {
+        "nom": "pt012 Patriot's Shield — a 3 degats elle est DEFAUSSEE",
+        "pourquoi": ("le seuil imprime est 3, pas 5 (04065). Deux compteurs sont poses en "
+                     "mise en place, le troisieme vient de l'attaque : la carte doit quitter "
+                     "le jeu dans la foulee"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt012', under_control=True)",
+                          "Puzzle.Counter('pt012', 'damage', 2)",
+                          "Puzzle.Exhaust('pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt012"], "degats_identite": 2},
+    },
+    {
+        "nom": "pt013 Revenge — quand Patriot encaisse une attaque, l'allie porteur gagne +2 ATQ",
+        "pourquoi": ("« YourHero » et non un CardFinder par NOM : DEUX allies "
+                     "officiels s'appellent deja Patriot (29016, 56041). Le heros ET l'allie "
+                     "sont inclines : c'est le seul moyen de faire arriver l'attaque "
+                     "jusqu'a l'identite. La carte est defaussee (le cout de la fleche) et "
+                     "l'allie monte de 1 a 3 d'ATQ"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt013', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')",
+                          "Puzzle.Exhaust('01067')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01067", "attack", 2]], "hors_jeu": ["pt013"]},
+    },
+    {
+        "nom": "pt014 The Chosen Leader — Forced Response : un allie qui DEFEND coute 1 degat a l'identite",
+        "pourquoi": ("TEXTE CONTRADICTOIRE tranche par l'utilisateur le 30/08/2026 : le "
+                     "mot-cle en gras (« Forced Response ») fait foi, « When » n'est que de "
+                     "l'anglais relache. `AfterUnitBecomeDefender` part au moment ou l'allie "
+                     "est DESIGNE defenseur, donc meme s'il meurt de l'attaque"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt014', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "pt014 The Chosen Leader — Response : allie vaincu par degat CONSECUTIF -> un allie remonte en main",
+        "pourquoi": ("restriction forte `by_consequential=True` (modele 38028 Med Lab) : un "
+                     "allie tue par une ATTAQUE ne declencherait RIEN. Deux allies frappent : "
+                     "le premier consomme la limite de Will to Protect, le second (a 1 PV) "
+                     "encaisse donc vraiment son degat consecutif et meurt. La main est "
+                     "VIDEE par `main_exclusive` : tout allie qui s'y trouve ensuite vient "
+                     "de la recherche"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt014', under_control=True)",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.Damage('01083', 2)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01067')", "Puzzle.Attack('01083')"],
+        "cibles": ["01094", "01094"],
+        "verifier": "pt014_allie_cherche",
+    },
+    {
+        "nom": "pt015 Throwing Stars — 3 degats REPARTIS en plus de l'attaque de l'allie porteur",
+        "pourquoi": ("`repeat_rules` « Health » rend la vraie repartition : un clic = une "
+                     "attribution, il en faut TROIS (les doublons de all_legal_targets sont "
+                     "du sens, pas du bruit). Mockingbird ATQ 1 + 3 repartis = 4 degats sur "
+                     "Rhino, et la carte est defaussee (le cout de la fleche)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt015', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')"],
+        "cibles": ["01094", "01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "hors_jeu": ["pt015"]},
+    },
+    {
+        "nom": "pt016 Working Together — le CTR d'un AUTRE personnage ami s'ajoute au contre de l'allie",
+        "pourquoi": ("« another » : l'allie porteur est exclu de la liste, seul Patriot "
+                     "(CTR 1) est un choix legal en solo. 6 menaces - 1 (allie) - 1 (heros) "
+                     "= 4. La carte est defaussee (le cout de la fleche)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt016', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.Action('01083', 'BasicPower', 1)"],
+        "cibles": ["01097b", "pt001a"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "hors_jeu": ["pt016"]},
+    },
+    {
+        "nom": "pt017 MGH Addiction — branche 1 : defausser Isaiah Bradley retire l'obligation DU JEU",
+        "pourquoi": ("la fleche est un COUT : sans pt007 en jeu la branche est INDISPONIBLE. "
+                     "Ici elle est disponible et le pilote prend la premiere option. Les "
+                     "DEUX cartes doivent quitter le jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pt007', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt017", "pt007"]},
+    },
+    {
+        "nom": "pt017 MGH Addiction — branche 2 : tous les allies sont EPUISES, pas de surge",
+        "pourquoi": ("sans pt007 en jeu la premiere branche est indisponible : seule la "
+                     "seconde est proposee. Un allie PRET est epuise « this way », donc la "
+                     "condition du surge est fausse. L'obligation part a la defausse"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01083"], "hors_jeu": ["pt017"]},
+    },
+    {
+        "nom": "pt018 Mr. Hyde's Lab — When Defeated : Mr. Hyde n'est pas la, il est CHERCHE et mis en jeu",
+        "pourquoi": ("le sbire nemesis est place dans le deck Rencontre par le banc "
+                     "(au montage il vit dans la reserve du joueur, hors de portee d'une "
+                     "recherche « encounter deck + discard pile »). La manigance est "
+                     "ramenee a 1 menace pour qu'un seul contre de base la batte"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt018')",
+                          "Puzzle.SetThreat('pt018', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt019')",
+                       "Puzzle.Action('pt001a', 'BasicPower', 1)"],
+        "cibles": ["pt018"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pt019"], "hors_jeu": ["pt018"]},
+    },
+    {
+        "nom": "pt019 Mr. Hyde — When Revealed : le MGH Drug est cherche dans TROIS zones et attache a lui",
+        "pourquoi": ("« encounter deck, encounter discard pile AND SET ASIDE CARDS » : trois "
+                     "zones, pas deux (pt018, elle, n'en cite que deux). Le verificateur "
+                     "controle que l'attachement est bien LIE au sbire, pas seulement en jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt020')", "Puzzle.Reveal('pt019')"],
+        "verifier": "pt019_mgh_drug_attachee",
+    },
+    {
+        "nom": "pt020 MGH Drug — Hero Action : depenser [mental][energy] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE, pas a vue (lecon Lockjaw). Meme "
+                     "limite du pilote que pour sd020 : deux cartes a UNE icone, pt009 "
+                     "([mental]) et pt003 ([energy]). L'attache conditionnelle est controlee "
+                     "au passage — sans elle la carte ne serait meme pas en jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt020')"],
+        "main_exclusive": ["pt009", "pt003"],
+        "declencher": ["Puzzle.Action('pt020', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt020"]},
+    },
+    {
+        "nom": "pt020 MGH Drug — [star] : les attaques de l'ennemi porteur gagnent OVERKILL",
+        "pourquoi": ("l'overkill n'est observable qu'avec un defenseur qui MEURT : "
+                     "Maria Hill ramenee a 1 PV encaisse l'attaque, l'exces passe a "
+                     "l'identite. Rhino ATQ 2 + 1 (l'ATK+ de la carte) + 1 icone (01106) = 4, "
+                     "moins 1 PV du defenseur = 3 sur l'identite. Sans overkill, l'identite "
+                     "ne prendrait RIEN"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt020')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Damage('01067', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — When Revealed SANS Mr. Hyde : 1 degat a CHAQUE personnage ami",
+        "pourquoi": ("le repli part aussi quand le sbire n'est pas en jeu (modele 02040 Tail "
+                     "Sweep, `else: action()`). « each friendly character » n'est pas "
+                     "restreint a « you control » : l'allie ET l'identite encaissent. Code "
+                     "partage avec pt022"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 1]], "degats_identite": 1},
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — AVEC Mr. Hyde en jeu : il attaque, l'allie ne prend RIEN",
+        "pourquoi": ("contre-epreuve du cas precedent : quand l'attaque a lieu, la branche "
+                     "« if no attack was made this way » ne part PAS. Le heros ET l'allie "
+                     "sont inclines pour que personne ne defende, l'allie doit rester "
+                     "intact. Cette verte "
+                     "affirme que RIEN ne se passe cote allie ; son jumeau positif est le "
+                     "cas precedent"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt019')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')",
+                          "Puzzle.Exhaust('01067')"],
+        "declencher": ["Puzzle.Reveal('pt021')"],
+        "verifier": "pt021_hyde_a_frappe",
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — capacite Boost : l'attaque en cours gagne OVERKILL",
+        "pourquoi": ("la trahison est posee sur le DESSUS du deck Rencontre : elle devient "
+                     "la carte de bonus de l'attaque. 1 icone imprimee -> Rhino ATQ 2 + 1 = 3, "
+                     "moins 1 PV du defenseur = 2 sur l'identite grace a l'overkill. Sans la "
+                     "capacite Boost, l'identite ne prendrait RIEN"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Damage('01067', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt021')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -9719,6 +11913,829 @@ def kb_madame_masque_stats(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"Madame Masque copie ATK={masque.attack}/SCH={masque.scheme} de la face heros engagee"
+
+def ss004_precise_force_joue_et_borne(monde, aides):
+    """ss004/ss005/ss006 : DeclareNumber(0,3) -- le pilote choisit toujours le
+    premier item propose (valeur 0), meme limite documentee sur il002. On
+    verifie donc que la carte a bien ete JOUEE (defausse) et que le degat
+    reste dans la borne haute imprimee [0,3] : preuve structurelle que
+    DealDamage(effect.targets, value, effect) est bien appele avec value
+    dans les bornes, la branche non-nulle restant hors de portee du pilote
+    generique (pas de cle de cas pour forcer une option parmi plusieurs)."""
+    ids = [getattr(f.paper, "card_id", None) for f in monde.players[0].discard_pile.Get()]
+    if "ss004" not in ids and "ss005" not in ids and "ss006" not in ids:
+        return False, f"aucun exemplaire de Precise Force n'est dans la defausse (carte non jouee, defausse={ids})"
+    cible = aides["par_id"](monde, "01094")
+    if cible is None:
+        return False, "01094 introuvable en jeu"
+    degats = cible.max_health - cible.health
+    if degats < 0 or degats > 3:
+        return False, f"degats sur 01094 = {degats} (hors bornes [0,3])"
+    return True, (f"Precise Force jouee (defausse), degats sur 01094 = {degats} "
+                  f"(borne 0-3 respectee ; le pilote decline systematiquement la valeur "
+                  f"non nulle via DeclareNumber, meme limite que il002)")
+
+def ss012_mark_of_kaine_deferlement(monde, aides):
+    """ss012/ss013/ss014 : Mark of Kaine attachee a 01110 (ATK imprime 1),
+    Tigra (01051, 2 ATK) l'attaque. 01110 est adoucie a 1 PV, donc l'attaque
+    la vainc avec 1 point d'exces. Un sbire ayant un ATK non nul rend le
+    delta de PV de l'attaquante AMBIGU (le degat consequentiel standard, ATK
+    du sbire vaincu = 1, se confond numeriquement avec le deversement du
+    deferlement) : la preuve directe et non ambigue est donc le JOURNAL de
+    la partie, qui trace explicitement 'gains overkill' avec Mark of Kaine
+    comme source au moment ou `message.GainOverKill(effect)` s'execute."""
+    import os
+    prefixe = os.environ.get("CAS_PREFIX", "")
+    chemin_log = f"/tmp/capacites_{prefixe}517.log"
+    try:
+        contenu = open(chemin_log, encoding="utf-8", errors="replace").read()
+    except Exception as exc:
+        return False, f"journal introuvable ({chemin_log}) : {exc}"
+
+    if aides["par_id"](monde, "01110") is not None:
+        return False, "01110 est encore en jeu (devrait avoir ete vaincu par l'attaque de Tigra)"
+
+    if "gains overkill" not in contenu:
+        return False, "aucune trace de 'gains overkill' dans le journal de la partie"
+    if "Mark of Kaine" not in contenu:
+        return False, "'gains overkill' present mais pas attribue a Mark of Kaine dans le journal"
+
+    return True, "01110 vaincu ; le journal trace explicitement 'gains overkill' avec Mark of Kaine comme source"
+
+def ss007_spider_pathy_pose_sbire(monde, aides):
+    """ss007/ss008 : Search.EncounterCard(card_type=Minion) puis PutIntoPlay,
+    qui engage AUTOMATIQUEMENT le sbire trouve avec le joueur courant
+    (face_on_event.py:169). On verifie qu'au moins un sbire est en jeu,
+    engage avec le joueur, et que Spider-pathy a bien ete jouee."""
+    from game.card.face.card_type import Minion
+    joueur = monde.players[0]
+    sbires = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Minion.IsType(face):
+            sbires.append(face)
+    if not sbires:
+        return False, "aucun sbire en jeu apres Spider-pathy"
+    engage_ok = any(m.GetEngagedPlayer() == joueur for m in sbires)
+    if not engage_ok:
+        return False, "aucun des sbires en jeu n'est engage avec le joueur"
+    ids = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get()]
+    if "ss007" not in ids and "ss008" not in ids:
+        return False, f"Spider-pathy n'est pas dans la defausse (carte non jouee, defausse={ids})"
+    return True, f"{len(sbires)} sbire(s) en jeu, au moins un engage avec le joueur, Spider-pathy jouee"
+
+def hd001b_carte_mise_au_fond_du_deck_rencontre(monde, aides):
+    """hd001b : hd024 etait sur le DESSUS du deck de rencontre ; apres
+    Deducktive Reasoning elle doit se trouver au FOND, et nulle part ailleurs."""
+    from game.operate.worlds import Worlds
+    cartes = Worlds.GetEncounterDeckCards(monde)
+    ids = [getattr(f.paper, "card_id", None) for f in cartes]
+    if "hd024" not in ids:
+        return False, "hd024 n'est plus dans le deck de rencontre (deck = %s...)" % ids[:6]
+    if ids[0] == "hd024":
+        return False, "hd024 est toujours sur le dessus du deck de rencontre"
+    if ids[-1] != "hd024":
+        return False, ("hd024 n'est pas au fond du deck de rencontre "
+                       "(position %d sur %d)" % (ids.index("hd024"), len(ids)))
+    return True, "hd024 mise au fond du deck de rencontre (%d cartes)" % len(ids)
+
+def hd012_defausse_videe_et_une_carte_en_main(monde, aides):
+    """hd012 : les 3 cartes semees en defausse doivent l'avoir quittee, et
+    exactement une d'entre elles doit se trouver en MAIN (« instead »)."""
+    semees = {"01051", "01088", "01089"}
+    joueur = monde.players[0]
+    defausse = {getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()}
+    main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    restantes = semees & defausse
+    if restantes:
+        return False, "encore en defausse : %s" % sorted(restantes)
+    gardees = [c for c in main if c in semees]
+    if len(gardees) != 1:
+        return False, ("%d carte(s) semee(s) en main (attendu 1) ; main = %s"
+                       % (len(gardees), main))
+    return True, "3 cartes sorties de la defausse, %s gardee en main" % gardees[0]
+
+def hd017_un_evenement_cherche_en_main(monde, aides):
+    """hd017 : la main ne contenait qu'une carte Resource avant le declencheur ;
+    tout evenement present maintenant vient de la recherche du second Interrupt."""
+    from game.card.face.card_type import Event
+    joueur = monde.players[0]
+    main = list(joueur.hand_cards.GetAll())
+    evenements = [getattr(f.paper, "card_id", None) for f in main if Event.IsType(f)]
+    if not evenements:
+        return False, ("aucun evenement en main : le second Interrupt de hd017 "
+                       "n'a rien cherche (main = %s)"
+                       % [getattr(f.paper, "card_id", None) for f in main])
+    return True, "evenement(s) cherche(s) en main : %s" % evenements
+
+# ------------------------------------------------------------------------
+# Pack « wiccan » : wc001a-wc023
+#
+# Trois de ces verificateurs sont des SONDES IN-PROCESS : ils renvoient dans
+# le monde un message que l'API Puzzle ne sait pas produire (debut de phase
+# du vilain, fin de phase joueur, deck de joueur vide). C'est exactement le
+# message qu'envoie le moteur lui-meme au meme moment ; la seule chose qu'ils
+# court-circuitent, c'est l'attente du tour de jeu correspondant.
+# ------------------------------------------------------------------------
+
+def _wc_dessus_du_deck_rencontre(monde):
+    from game.operate.worlds import Worlds
+    cartes = Worlds.GetEncounterDeckCards(monde)
+    return cartes[0] if cartes else None
+
+def _wc_defausse_rencontre(monde):
+    from game.operate.worlds import Worlds
+    return [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDiscardPileCards(monde)]
+
+def wc_clairvoyance_dessus_face_visible(monde, aides):
+    """wc001a / wc001b : au debut de la phase des joueurs, la carte du dessus
+    du deck rencontre doit etre retournee FACE VISIBLE."""
+    from game.message import Message
+    Message.WhenPhaseBegin("Player", monde).Send()
+
+    face = _wc_dessus_du_deck_rencontre(monde)
+    if face is None:
+        return False, "deck de rencontre vide : rien a retourner"
+    card_id = getattr(face.paper, "card_id", "?")
+    if not face.card.state.is_face_up:
+        return False, (f"la carte du dessus du deck rencontre ({card_id}) est "
+                       f"encore FACE CACHEE : Clairvoyance n'a pas joue")
+    return True, f"carte du dessus du deck rencontre ({card_id}) retournee face visible"
+
+def wc001a_defausse_au_debut_de_la_phase_du_vilain(monde, aides):
+    """wc001a : le Forced Interrupt defausse le dessus du deck rencontre au
+    debut de la phase du vilain. La defausse de rencontre est VIDE au depart
+    d'une partie : tout ce qui s'y trouve apres la sonde vient de la."""
+    from game.message import Message
+    avant = _wc_defausse_rencontre(monde)
+    if avant:
+        return False, f"la defausse de rencontre n'etait pas vide au depart : {avant}"
+
+    dessus = _wc_dessus_du_deck_rencontre(monde)
+    attendu = getattr(dessus.paper, "card_id", None) if dessus else None
+
+    Message.WhenPhaseBegin("Villain", monde).Send()
+
+    apres = _wc_defausse_rencontre(monde)
+    if not apres:
+        return False, "aucune carte de rencontre defaussee au debut de la phase du vilain"
+    if attendu is not None and attendu not in apres:
+        return False, (f"la carte defaussee n'est pas celle du dessus "
+                       f"(attendue {attendu}, defausse = {apres})")
+    return True, f"carte du dessus ({attendu}) defaussee au debut de la phase du vilain"
+
+def wc_defausse_rencontre_non_vide(monde, aides):
+    """wc001b : « look at the top 2 cards, you may discard one of them ». La
+    defausse de rencontre est vide au depart, donc toute carte qui s'y trouve
+    a ete defaussee par l'action."""
+    apres = _wc_defausse_rencontre(monde)
+    if not apres:
+        return False, "aucune carte de rencontre defaussee : l'action n'a rien fait"
+    return True, f"carte(s) de rencontre defaussee(s) par l'action : {apres}"
+
+def wc002_hulkling_bonus_et_defausse(monde, aides):
+    """wc002 : ATQ 1* (1 en solo) + 2 icones de bonus (01111 Explosion) = 3
+    degats, et la carte comptee est ensuite defaussee."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino (01094) introuvable en jeu"
+    subis = rhino.max_health - rhino.health
+    if subis < 3:
+        return False, (f"degats sur Rhino = {subis} (attendu au moins 3 : ATQ 1 "
+                       f"+ 2 icones de bonus). Le bonus d'icones n'a pas ete applique")
+    defausse = _wc_defausse_rencontre(monde)
+    if "01111" not in defausse:
+        return False, (f"la carte comptee (01111) n'a pas ete defaussee "
+                       f"(defausse de rencontre = {defausse})")
+    return True, f"{subis} degats (1 ATQ + 2 icones) et 01111 defaussee"
+
+def wc008_defausse_remontee_dans_le_deck(monde, aides):
+    """wc008 : 2 icones de bonus -> les 2 cartes semees dans la defausse du
+    joueur doivent l'avoir quittee (remelangees dans le deck)."""
+    joueur = monde.players[0]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    restantes = [c for c in ("01086", "01087") if c in defausse]
+    if restantes:
+        return False, (f"encore dans la defausse du joueur : {restantes} "
+                       f"(defausse = {defausse})")
+    return True, "les 2 cartes semees ont quitte la defausse (remelangees dans le deck)"
+
+def wc011_teleport(monde, aides):
+    """wc011 : l'identite choisie est REDRESSEE, et elle porte +1 sur l'un de
+    ses pouvoirs de base jusqu'a la fin du round.
+
+    Le pouvoir n'est pas impose : le texte dit « a basic power of THEIR
+    choice », et le pilote prend la premiere branche proposee. On accepte donc
+    n'importe lequel des quatre, mais il en faut un."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.IsExhaust():
+        return False, "l'identite est encore inclinee : Teleport ne l'a pas redressee"
+
+    bonus = []
+    for nom, imprime in (("attack", "printed_attack"),
+                         ("thwart", "printed_thwart"),
+                         ("defense", "printed_defense"),
+                         ("recover", "printed_recovery")):
+        if not hasattr(identite, nom) or not hasattr(identite, imprime):
+            continue
+        if getattr(identite, nom) > getattr(identite, imprime):
+            bonus.append(nom)
+    if not bonus:
+        return False, ("identite redressee, mais AUCUN pouvoir de base au-dessus de sa "
+                       "valeur imprimee : le bonus « 2 icones ou plus » n'est pas parti")
+    return True, f"identite redressee et +1 sur {bonus}"
+
+def wc013_carte_remontee_sur_le_dessus(monde, aides):
+    """wc013 : la carte cherchee (01143, forcee par `cibles`) doit se trouver
+    SUR LE DESSUS du deck rencontre apres le melange."""
+    from game.operate.worlds import Worlds
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if not ids:
+        return False, "deck de rencontre vide"
+    if ids[0] != "01143":
+        return False, (f"le dessus du deck rencontre est {ids[0]} (attendu 01143) ; "
+                       f"6 premieres = {ids[:6]}")
+    return True, "01143 remontee sur le dessus du deck rencontre apres melange"
+
+def wc017_royal_couple(monde, aides):
+    """wc017 : le heros est redresse ET la carte choisie dans la defausse de
+    rencontre est remontee sur le deck."""
+    from game.operate.worlds import Worlds
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.IsExhaust():
+        return False, "le heros est encore incline : Royal Couple n'a pas joue"
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if "01106" not in ids:
+        return False, "01106 n'a pas quitte la defausse de rencontre pour le deck"
+    if ids[0] != "01106":
+        return False, f"01106 est dans le deck mais pas sur le DESSUS (dessus = {ids[0]})"
+    return True, "heros redresse et 01106 remontee sur le dessus du deck rencontre"
+
+def wc017_sans_hulkling(monde, aides):
+    """wc017 : sans Hulkling en jeu, la condition doit interdire la carte —
+    le heros reste incline et rien ne remonte de la defausse de rencontre."""
+    from game.operate.worlds import Worlds
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.IsExhaust():
+        return False, ("le heros a ete redresse alors que Hulkling n'est pas en jeu : "
+                       "la condition Team-Up ne joue pas")
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if ids and ids[0] == "01106":
+        return False, "01106 est remontee sur le deck alors que Hulkling n'est pas en jeu"
+    return True, "sans Hulkling, Royal Couple ne fait rien : heros toujours incline"
+
+def wc018_obligation_retiree(monde, aides):
+    """wc018, branche 1 : l'obligation quitte le jeu et l'identite est
+    inclinee."""
+    if aides["par_id"](monde, "wc018") is not None:
+        return False, "wc018 est encore en jeu : la resolution a echoue"
+    identite = aides["identite"](monde)
+    if identite is not None and not identite.IsExhaust():
+        return False, "l'identite n'est pas inclinee : le cout de la branche n'a pas ete paye"
+    return True, "obligation retiree du jeu et identite inclinee"
+
+def wc018_interrupteur_des_boosts(monde, aides):
+    """wc018, branche 2 : l'interrupteur global du pack est leve, puis
+    rabaisse a la fin de la phase des joueurs.
+
+    On teste l'interrupteur PAR SON EFFET, pas seulement par la valeur du
+    drapeau : `IconesBoostDuDessus` doit rendre 0 tant qu'il est leve, alors
+    que la carte du dessus du deck rencontre porte de vraies icones."""
+    from game.message import Message
+    from game.effect.rule import DebugRule
+    from cards.pack.wiccan.wiccan import (
+        BoostsComptables, IconesBoostDuDessus, DRAPEAU_BOOSTS_ETEINTS,
+    )
+
+    if aides["par_id"](monde, "wc018") is not None:
+        return False, "wc018 est encore en jeu : la resolution a echoue"
+
+    if not getattr(monde, DRAPEAU_BOOSTS_ETEINTS, False):
+        return False, ("le drapeau d'extinction des icones de bonus n'est pas leve : "
+                       "la branche 2 n'a pas ete choisie ou n'a rien fait")
+
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    if BoostsComptables(effet):
+        return False, "BoostsComptables() rend encore Vrai alors que le drapeau est leve"
+    if IconesBoostDuDessus(effet, monde.players[0]) != 0:
+        return False, "IconesBoostDuDessus() rend encore un nombre non nul"
+
+    Message.WhenPhaseEnd(monde.phase_id, "Player", monde).Send()
+
+    if getattr(monde, DRAPEAU_BOOSTS_ETEINTS, False):
+        return False, ("le drapeau est reste leve apres la fin de la phase des joueurs : "
+                       "l'extinction serait definitive")
+    return True, ("icones de bonus eteintes (drapeau leve, comptage a 0), puis rallumees "
+                  "a la fin de la phase des joueurs")
+
+def wc019b_deck_joueur_vide(monde, aides):
+    """wc019b : quand un deck de JOUEUR se vide, 1 menace sur le complot
+    principal. Sonde : on renvoie `Message.AfterDeckRunOut` sur le deck du
+    joueur, exactement le message qu'emet le moteur quand le deck se vide —
+    sans la penalite standard qui, elle, distribuerait une carte rencontre et
+    fausserait le releve."""
+    from game.message import Message
+    from game.operate.worlds import Worlds
+
+    if aides["par_id"](monde, "wc019b") is None:
+        return False, "wc019b n'est pas en jeu : le retournement de New Vessel a echoue"
+
+    principaux = Worlds.GetAllMainSchemes(monde)
+    if not principaux:
+        return False, "aucun complot principal en jeu"
+    avant = principaux[0].threat
+
+    Message.AfterDeckRunOut(monde.players[0].player_deck).Send()
+
+    apres = principaux[0].threat
+    if apres != avant + 1:
+        return False, (f"menace du complot principal : {avant} -> {apres} "
+                       f"(attendu {avant + 1})")
+    return True, f"1 menace posee sur le complot principal ({avant} -> {apres})"
+
+def wc021_degats_sans_etourdissement(monde, aides):
+    """wc021 : 1 degat a CHAQUE personnage ami (identite + allie), et AUCUN
+    etourdissement puisque Moridun n'est pas en jeu."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, f"degats sur l'identite = {subis} (attendu 1)"
+
+    allie = aides["par_id"](monde, "wc002")
+    if allie is None:
+        return False, "l'allie wc002 n'est plus en jeu"
+    if allie.max_health - allie.health != 1:
+        return False, (f"degats sur l'allie wc002 = {allie.max_health - allie.health} "
+                       f"(attendu 1 : la portee est « each friendly character »)")
+
+    if identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "l'identite est Sonnee alors que Moridun n'est pas en jeu"
+    return True, "1 degat a l'identite et a l'allie, aucun etourdissement"
+
+def wc023_desoriente_et_non_retiree(monde, aides):
+    """wc023 : The Demiurge en jeu -> aucune revelation de Moridun, le joueur
+    est Desoriente, et la trahison n'est PAS retiree du jeu (« then remove »
+    appartient a la branche conditionnelle)."""
+    if aides["par_id"](monde, "wc019b") is None:
+        return False, "wc019b n'est pas en jeu : le montage du cas a echoue"
+    if aides["par_id"](monde, "wc020") is not None:
+        return False, "Moridun a ete revele alors que The Demiurge est en jeu"
+
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.CastTo(aides["CanStatus"]).HasStatus("Confused"):
+        return False, "l'identite n'est pas Desorientee"
+    return True, "aucune revelation de Moridun, identite Desorientee"
+
+def wc019a_seul_billy_retire_la_menace(monde, aides):
+    """wc019a : « Only the Billy Kaplan player can remove threat from this
+    scheme. » On tente le retrait DEUX fois, avec deux initiateurs differents.
+
+    `GameRule(face)` prend pour initiateur le controleur de la face
+    (rule.py:10-22) : monter l'effet sur l'identite du joueur 2 puis sur celle
+    du joueur 1 donne exactement les deux initiateurs que
+    `PlayersCannotRemoveThreatFrom` compare (player.py:268-269).
+
+    C'est la MANIGANCE qui porte l'appel (`nv.RemoveThreatFromSchemes`), pas
+    l'identite : `CanThwart.OnRemoveSchemeThreat` lit `by_effect.ability`
+    (can_thwart.py:62), attribut qu'un effet de REGLE n'a pas. Passer par la
+    manigance emprunte le chemin de base, exactement comme `Puzzle.PlaceThreat`
+    et comme mw018/wc019a eux-memes."""
+    from game.effect.rule import GameRule
+
+    nv = aides["par_id"](monde, "wc019a")
+    if nv is None:
+        return False, "wc019a n'est pas en jeu"
+    if len(monde.players) < 2:
+        return False, "la partie n'a qu'un joueur : la restriction est intestable"
+
+    depart = nv.threat
+    if depart < 3:
+        return False, f"menace de depart trop basse sur New Vessel ({depart})"
+
+    autre = monde.players[1].GetIdentity()
+    nv.RemoveThreatFromSchemes([nv], 2, GameRule(autre))
+    if nv.threat != depart:
+        return False, (f"le second joueur ({autre.name}) a retire de la menace : "
+                       f"{depart} -> {nv.threat}. La restriction ne joue pas")
+
+    billy = monde.players[0].GetIdentity()
+    nv.RemoveThreatFromSchemes([nv], 2, GameRule(billy))
+    if nv.threat != depart - 2:
+        return False, (f"le joueur Billy Kaplan n'a PAS pu retirer de la menace : "
+                       f"{depart} -> {nv.threat} (attendu {depart - 2}). "
+                       f"La restriction est trop large")
+    return True, (f"menace inchangee pour le second joueur ({depart}), puis "
+                  f"{depart} -> {nv.threat} pour le joueur Billy Kaplan")
+
+# ------------------------------------------------------------------------
+# Pack « speed » : sd001a-sd022
+#
+# Deux de ces verificateurs sont des SONDES IN-PROCESS : ils renvoient dans le
+# monde `Message.WhenPhaseEnd(phase_id, "Player", monde)` ou
+# `Message.WhenRoundEnd(monde)`, exactement les messages qu'emet le moteur au
+# meme moment. L'API Puzzle n'avance aucune phase ni aucun round : c'est le
+# seul moyen d'exercer le balayage des compteurs explosifs (regle de l'insert)
+# et la duree de l'interrupteur de l'obligation sd017.
+# ------------------------------------------------------------------------
+
+def _sd_compteurs_explosifs_en_jeu(monde, aides):
+    total = 0
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.IsInPlay():
+            continue
+        if isinstance(face, aides["CanPlaceCounter"]):
+            total += face.GetCounters("explosive")
+    return total
+
+def _sd_fin_de_phase_joueur(monde):
+    from game.message import Message
+    Message.WhenPhaseEnd(monde.phase_id, "Player", monde).Send()
+
+def sd_balayage_ennemi(monde, aides):
+    """sd001a : a la fin de la phase des joueurs, le compteur explosif d'un
+    ENNEMI est retire du jeu ET lui inflige 1 degat."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino (01094) introuvable en jeu"
+    if rhino.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive") != 1:
+        return False, "le compteur explosif n'a pas ete pose au montage du cas"
+    avant = rhino.max_health - rhino.health
+
+    _sd_fin_de_phase_joueur(monde)
+
+    reste = rhino.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive")
+    if reste != 0:
+        return False, (f"le compteur explosif est encore la ({reste}) : le balayage de "
+                       f"fin de phase des joueurs n'a pas eu lieu")
+    apres = rhino.max_health - rhino.health
+    if apres != avant + 1:
+        return False, (f"degats sur Rhino : {avant} -> {apres} (attendu {avant + 1}). "
+                       f"Le compteur est parti sans infliger son degat")
+    return True, f"compteur retire et 1 degat inflige ({avant} -> {apres})"
+
+def sd_balayage_manigance(monde, aides):
+    """sd001b : meme regle, en identite civile, sur une MANIGANCE — 1 menace
+    retiree au moment du retrait du compteur."""
+    joueur = monde.players[0]
+    if joueur.IsHero():
+        return False, "le cas devait rester en identite civile"
+
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        return False, "le complot principal (01097b) est introuvable"
+    if scheme.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive") != 1:
+        return False, "le compteur explosif n'a pas ete pose au montage du cas"
+    avant = scheme.threat
+
+    _sd_fin_de_phase_joueur(monde)
+
+    reste = scheme.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive")
+    if reste != 0:
+        return False, (f"le compteur explosif est encore la ({reste}) : la regle de "
+                       f"l'insert ne joue pas quand Speed finit la phase en alter-ego")
+    if scheme.threat != avant - 1:
+        return False, (f"menace : {avant} -> {scheme.threat} (attendu {avant - 1}). "
+                       f"Le compteur est parti sans retirer sa menace")
+    return True, f"compteur retire et 1 menace retiree ({avant} -> {scheme.threat})"
+
+def sd001b_accelerated_perception(monde, aides):
+    """sd001b : l'evenement seme dans la defausse (sd003) l'a quittee, et la
+    main est passee de 1 a 2 cartes (la pioche est inconditionnelle)."""
+    joueur = monde.players[0]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    if "sd003" in defausse:
+        return False, (f"sd003 est encore dans la defausse du joueur : le remelange n'a "
+                       f"pas eu lieu (defausse = {defausse})")
+    main = len(list(joueur.hand_cards.Get()))
+    if main != 2:
+        return False, (f"main a {main} carte(s) (attendu 2 : 1 carburant + 1 piochee). "
+                       f"La pioche n'a pas eu lieu")
+    return True, "sd003 a quitte la defausse (remelangee dans le deck) et 1 carte piochee"
+
+def sd005_instead(monde, aides):
+    """sd005, branche « instead » : l'evenement de la defausse remonte, on
+    pioche, AUCUN compteur explosif n'est pose, et l'annulation a quand meme eu
+    lieu (le « instead » ne remplace QUE Hyperkinetic Fuel)."""
+    joueur = monde.players[0]
+    soucis = []
+
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    if "sd003" in defausse:
+        soucis.append("sd003 est encore dans la defausse : le remelange n'a pas eu lieu")
+    if "sd005" not in defausse:
+        soucis.append(f"sd005 n'a pas ete jouee (defausse du joueur = {defausse})")
+
+    total = _sd_compteurs_explosifs_en_jeu(monde, aides)
+    if total != 0:
+        soucis.append(f"{total} compteur(s) explosif(s) en jeu : le « instead » n'a pas "
+                      f"remplace la pose de compteur")
+
+    if aides["par_id"](monde, "sd020") is not None:
+        soucis.append("sd020 est en jeu : l'annulation de la carte rencontre n'a pas eu "
+                      "lieu, alors que le « instead » ne la remplace pas")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, ("evenement remonte de la defausse, aucun compteur explosif pose, "
+                  "carte rencontre annulee quand meme")
+
+def sd011_restriction_du_tour(monde, aides):
+    """sd011 : la carte financee par Top Speed est bien entree en jeu, et
+    plus aucune autre ne peut etre jouee ce tour-ci."""
+    joueur = monde.players[0]
+
+    if aides["par_id"](monde, "sd014") is None:
+        return False, ("sd014 n'est pas en jeu : la restriction a bloque la carte que "
+                       "Top Speed etait justement en train de payer")
+
+    suivante = None
+    for face in joueur.hand_cards.GetAll():
+        if getattr(face.paper, "card_id", None) == "sd013":
+            suivante = face
+            break
+    if suivante is None:
+        return False, "sd013 n'est plus en main : le montage du cas a echoue"
+
+    if suivante.CanPlayBy(joueur):
+        return False, ("sd013 est encore jouable alors que le supplement de Top Speed a "
+                       "ete pris : « you cannot play cards for the rest of the turn » ne "
+                       "joue pas")
+    return True, ("sd014 (payee par Top Speed) est en jeu, et sd013 n'est plus jouable "
+                  "pour le reste du tour")
+
+def sd017_obligation_retiree(monde, aides):
+    """sd017, branche 1 : l'obligation quitte le jeu et l'identite civile est
+    inclinee."""
+    if aides["par_id"](monde, "sd017") is not None:
+        return False, "sd017 est encore en jeu : la resolution a echoue"
+    identite = aides["identite"](monde)
+    if identite is not None and not identite.IsExhaust():
+        return False, "l'identite n'est pas inclinee : le cout de la branche n'a pas ete paye"
+    return True, "obligation retiree du jeu et Thomas Shepherd incline"
+
+def sd017_interrupteur_hyperkinetic(monde, aides):
+    """sd017, branche 2 : Hyperkinetic Fuel est eteint, et il le RESTE apres la
+    premiere fin de round — il ne se rallume qu'a la SECONDE (« until the end
+    of the NEXT round »)."""
+    from game.message import Message
+    from cards.pack.speed.speed import (
+        HyperkineticFuelActif, DRAPEAU_HYPERKINETIC_ETEINT,
+    )
+    from game.effect.rule import DebugRule
+
+    if aides["par_id"](monde, "sd017") is not None:
+        return False, "sd017 est encore en jeu : la branche 2 n'a pas ete choisie"
+
+    if not getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau d'extinction n'est pas leve : la branche 2 n'a pas ete "
+                       "choisie ou n'a rien fait")
+
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    if HyperkineticFuelActif(effet):
+        return False, "HyperkineticFuelActif() rend encore Vrai alors que le drapeau est leve"
+
+    Message.WhenRoundEnd(monde).Send()
+    if not getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau est retombe des la PREMIERE fin de round : le texte dit "
+                       "« until the end of the NEXT round », il faut en laisser passer une")
+
+    Message.WhenRoundEnd(monde).Send()
+    if getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau est reste leve apres la SECONDE fin de round : "
+                       "l'extinction serait definitive")
+    if not HyperkineticFuelActif(effet):
+        return False, "HyperkineticFuelActif() rend encore Faux apres la seconde fin de round"
+    return True, ("Hyperkinetic Fuel eteint, toujours eteint apres la 1re fin de round, "
+                  "rallume a la 2e")
+
+def sd018_attachements_permanents(monde, aides):
+    """sd018 : l'attachement entre en jeu APRES la manigance et doit porter le
+    mot-cle Permanent."""
+    if aides["par_id"](monde, "sd018") is None:
+        return False, "sd018 n'est pas en jeu : le montage du cas a echoue"
+    art = aides["par_id"](monde, "sd020")
+    if art is None:
+        return False, "sd020 n'est pas en jeu : le montage du cas a echoue"
+    if not getattr(art, "permanent", False):
+        return False, ("sd020 ne porte PAS le mot-cle Permanent alors que The Real Question "
+                       "est en jeu")
+    return True, "l'attachement entre en jeu apres la manigance et gagne bien Permanent"
+
+def _sd_actions_de_carte(monde, card_id, aides, ability_type=None):
+    """(actions DECLAREES, actions REELLEMENT disponibles) sur une carte en jeu.
+
+    Reproduit exactement le filtrage de `Puzzle.Action` (puzzle.py:495-506) :
+    la seconde liste est ce que le joueur voit propose, condition comprise.
+
+    On rend AUSSI les actions declarees, et c'est indispensable : sans elles,
+    un cas « l'action est indisponible » resterait vert quand le module de la
+    carte est retire, puisqu'il n'y aurait plus d'action du tout. La paire
+    distingue « capacite absente » de « capacite presente mais grisee »."""
+    from game.ability.ability import AbilityType
+    from game.event.manager import EventManager
+    from game.message import Message
+    from game.effect.rule import GameRule
+
+    face = aides["par_id"](monde, card_id)
+    if face is None:
+        return None, None
+    joueur = monde.players[0]
+    type_demande = getattr(AbilityType, ability_type) if ability_type else None
+    candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn,
+                                             type=type_demande)
+                 if not x.ability.is_play]
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    disponibles = EventManager.FilterAvailableEffects(
+        message, candidats, joueur, monde, None)
+    return candidats, disponibles
+
+def sd020_action_indisponible(monde, aides):
+    """sd020 : tant que The Real Question (sd018) est en jeu, l'attachement est
+    Permanent et sa Hero Action de defausse doit etre GRISEE — pas echouer, ni
+    faire planter la partie sur l'assert de `DiscardInternal`."""
+    if aides["par_id"](monde, "sd018") is None:
+        return False, "sd018 n'est pas en jeu : le montage du cas a echoue"
+    art = aides["par_id"](monde, "sd020")
+    if art is None:
+        return False, "sd020 n'est pas en jeu : le montage du cas a echoue"
+    if not getattr(art, "permanent", False):
+        return False, "sd020 ne porte pas Permanent : le montage du cas a echoue"
+
+    candidats, effets = _sd_actions_de_carte(monde, "sd020", aides, "HeroAction")
+    if not candidats:
+        return False, ("sd020 ne DECLARE aucune Hero Action : le cas ne prouverait rien "
+                       "(une capacite absente est aussi « indisponible »)")
+    if effets:
+        return False, (f"la Hero Action de sd020 est encore proposee ({len(effets)} effet(s)) "
+                       f"alors que The Real Question est en jeu : la defausse d'une carte "
+                       f"Permanente ferait planter la partie")
+    return True, ("Hero Action declaree mais indisponible tant que The Real Question est "
+                  "en jeu")
+
+def sd021_chaines(monde, aides):
+    """sd021 : apres l'attaque du sbire porteur, le heros est SONNE et
+    l'attachement est defausse."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "le heros n'est pas Sonne : le Forced Response n'a pas joue"
+    if aides["par_id"](monde, "sd021") is not None:
+        return False, "sd021 est encore en jeu : elle n'a pas ete defaussee"
+    return True, "heros Sonne et Magic Chains defaussee"
+
+
+def sd021_cout_impayable(monde, aides):
+    """sd021 : en identite civile il n'y a AUCUN heros a etourdir, donc le cout
+    de la fleche n'est pas payable : ni etourdissement, ni defausse."""
+    if aides["par_id"](monde, "sd021") is None:
+        return False, "sd021 defaussee alors que le cout n'etait pas payable"
+    identite = aides["identite"](monde)
+    if identite is not None and identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "identite Sonnee alors qu'aucun heros n'est en jeu"
+    return True, "cout impayable : Magic Chains reste en jeu, personne n'est Sonne"
+
+def pt001a_limite_une_fois_par_round(monde, aides):
+    """pt001a : « (Limit once per round.) ». Deux allies a degat consecutif
+    frappent ; Patriot ne peut encaisser qu'UNE fois.
+
+    On ne peut pas dire d'avance LEQUEL des deux allies sera protege (l'ordre
+    depend du moteur) : on compte donc les totaux."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, (f"l'identite a encaisse {subis} degat(s) (attendu 1 : "
+                       f"la limite une-fois-par-round)")
+
+    total_allies = 0
+    for card_id in ("01083", "01067"):
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            return False, f"{card_id} introuvable en jeu"
+        total_allies += face.max_health - face.health
+    if total_allies != 1:
+        return False, (f"les allies portent {total_allies} degat(s) au total "
+                       f"(attendu 1 : celui que Patriot n'a PAS pu reprendre)")
+
+    return True, "1 degat deplace sur Patriot, 1 degat laisse a l'allie : limite respectee"
+
+
+def pt008_attachement_deplace(monde, aides):
+    """pt008 : l'Exo-Suit passe de Rhino a Mockingbird, son texte est blanc,
+    son ATK+ suit le porteur et son SCH+ devient un CTR+."""
+    exo = aides["par_id"](monde, "04075")
+    allie = aides["par_id"](monde, "01083")
+    vilain = aides["par_id"](monde, "01094")
+    if exo is None:
+        return False, "04075 Exo-Suit n'est plus en jeu"
+    if allie is None:
+        return False, "01083 Mockingbird n'est plus en jeu"
+    if vilain is None:
+        return False, "01094 Rhino introuvable"
+
+    soucis = []
+
+    porteur = exo.GetBindFace()
+    if porteur is not allie:
+        soucis.append(f"l'Exo-Suit est attache a {porteur} (attendu Mockingbird)")
+
+    if not exo.is_treat_as_if_blank:
+        soucis.append("l'Exo-Suit n'est PAS traite comme blanc")
+
+    # « treat SCH as THW » : ATK+ 1 et SCH+ 1 sur l'allie -> +1 ATQ et +1 CTR.
+    if allie.attack != allie.printed_attack + 1:
+        soucis.append(f"ATQ de l'allie = {allie.attack} "
+                      f"(imprime {allie.printed_attack}, attendu +1 par l'ATK+)")
+    if allie.thwart != allie.printed_thwart + 1:
+        soucis.append(f"CTR de l'allie = {allie.thwart} "
+                      f"(imprime {allie.printed_thwart}, attendu +1 : le SCH+ converti)")
+
+    # Rhino a rendu le bonus.
+    if vilain.attack != vilain.printed_attack:
+        soucis.append(f"ATQ de Rhino = {vilain.attack} "
+                      f"(imprime {vilain.printed_attack}) : le bonus n'a pas suivi")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "attachement deplace, texte blanc, ATK+ suivi et SCH+ converti en CTR+"
+
+
+def pt014_allie_cherche(monde, aides):
+    """pt014 : l'allie vaincu par degat CONSECUTIF fait remonter un allie du
+    deck a la main. La main a ete VIDEE par `main_exclusive` : tout allie qui
+    s'y trouve vient de la recherche."""
+    from game.card.face.card_type import Ally
+
+    mort = aides["par_id"](monde, "01083")
+    if mort is not None:
+        return False, ("01083 est encore en jeu : le degat consecutif ne l'a pas "
+                       "vaincu (la limite de Will to Protect a-t-elle bien ete "
+                       "consommee par le premier allie ?)")
+
+    allies_en_main = [getattr(f.paper, "card_id", "?")
+                      for f in monde.players[0].hand_cards.GetAll()
+                      if Ally.IsType(f)]
+    if not allies_en_main:
+        cartes = [getattr(f.paper, "card_id", "?")
+                  for f in monde.players[0].hand_cards.GetAll()]
+        return False, f"aucun allie en main apres la recherche (main = {cartes})"
+
+    return True, f"allie(s) remonte(s) en main : {allies_en_main}"
+
+
+def pt019_mgh_drug_attachee(monde, aides):
+    """pt019 : le MGH Drug cherche est bien ATTACHE au sbire, pas seulement en
+    jeu."""
+    hyde = aides["par_id"](monde, "pt019")
+    drug = aides["par_id"](monde, "pt020")
+    if hyde is None:
+        return False, "pt019 Mr. Hyde n'est pas en jeu"
+    if drug is None:
+        return False, "pt020 MGH Drug n'est pas en jeu : la recherche a echoue"
+    porteur = drug.GetBindFace()
+    if porteur is not hyde:
+        return False, f"le MGH Drug est attache a {porteur} (attendu Mr. Hyde)"
+    return True, "MGH Drug trouve et attache a Mr. Hyde"
+
+
+def pt021_hyde_a_frappe(monde, aides):
+    """pt021 : quand Mr. Hyde est en jeu, il attaque et la branche « if no
+    attack was made this way » ne part PAS. L'allie doit etre intact et
+    l'identite avoir encaisse l'attaque."""
+    allie = aides["par_id"](monde, "01067")
+    identite = aides["identite"](monde)
+    if allie is None:
+        return False, "01067 n'est plus en jeu"
+    if identite is None:
+        return False, "identite introuvable"
+
+    degats_allie = allie.max_health - allie.health
+    if degats_allie != 0:
+        return False, (f"l'allie porte {degats_allie} degat(s) : la branche "
+                       f"« if no attack was made this way » est partie a tort")
+
+    subis = identite.max_health - identite.health
+    if subis <= 0:
+        return False, "l'identite n'a rien encaisse : Mr. Hyde n'a pas attaque"
+
+    return True, (f"Mr. Hyde a attaque ({subis} degat(s) sur l'identite) et "
+                  f"l'allie est intact")
 '''
 
 
@@ -10090,7 +13107,33 @@ def executer_un_cas(game_dir, port, index):
             # choix qui en exige une fait rejeter la reponse par le moteur, qui
             # repose alors la meme question a l'infini (c'est ce qui bloquait la
             # mise en place d'Albert, dont la capacite Setup fouille le deck).
-            for o in options:
+            # `preferer_option` : choisir l'option dont le NOM contient l'un des
+            # fragments donnes, au lieu de la premiere jouable. Ajoute le
+            # 30/08/2026 pour le pack `wiccan`. Sans elle, un `ChooseAbilities`
+            # a plusieurs branches n'est testable que sur SA PREMIERE branche
+            # (« le pilote prend toujours la premiere option », convention
+            # il017/ok019/ss011) : la seconde branche de l'obligation wc018,
+            # qui eteint le comptage des icones de bonus pour tout le pack,
+            # n'aurait eu aucun cas sujet. Le filtre porte sur le libelle exact
+            # de la `ForChoiceAbility`, pas sur un rang : il ne se trompe pas de
+            # question quand plusieurs asks s'enchainent, il n'agit que sur
+            # celles qui proposent vraiment ce libelle.
+            ordonnees = options
+            if cas.get("preferer_option") and etat["phase"] == "cas":
+                fragments = cas["preferer_option"]
+                if isinstance(fragments, str):
+                    fragments = [fragments]
+                # Le moteur remplace les espaces des noms d'option par des
+                # soulignes (« +1_ATK_until_the_end_of_the_round ») : on
+                # normalise les deux cotes, sinon aucun libelle a plusieurs
+                # mots ne peut jamais correspondre.
+                def _nom(o):
+                    return str(o.get("name") or "").replace("_", " ")
+                preferees = [o for o in options if isinstance(o, dict)
+                             and any(f.replace("_", " ") in _nom(o) for f in fragments)]
+                ordonnees = preferees + [o for o in options if o not in preferees]
+
+            for o in ordonnees:
                 if isinstance(o, dict) and not o.get("failure_reason"):
                     legales = [str(x) for x in (o.get("all_legal_targets") or [])]
                     mini, maxi = (o.get("target_num_range") or [0, 0])[:2]

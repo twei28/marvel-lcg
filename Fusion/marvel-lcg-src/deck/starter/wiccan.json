@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Wiccan",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (CptScorp, Cycle 2) : le zip ne contient que les 15 cartes signature, le Team-Up basique Royal Couple et le set nemesis. Aspect JUSTICE choisi par l'utilisateur le 30/08/2026 : THW 2 / ATK 1, gros thwart (Magic Portal retire 5 menaces), et surtout une nemesis qui est elle-meme une manigance a nettoyer vite (New Vessel). Meme aspect qu'Iron Lad, du meme auteur.",
+        "nemesis_note": "wc019a New Vessel se RETOURNE en wc019b The Demiurge quand elle est completee (8 menaces) : seule wc019a figure dans nemesis_set, la face verso est atteinte par retournement, jamais tiree.",
+        "royal_couple_note": "wc017 Royal Couple porte « Team-Up (Hulkling and Wiccan) » mais est rendue comme condition « Hulkling en jeu », allie OU heros (tranche par l'utilisateur le 30/08/2026). Elle est de classe Basic et compte donc dans les 25 cartes d'aspect, pas dans le hero_deck."
+    },
+    "hero": [
+        "wc001a,wc001b"
+    ],
+    "hero_deck": [
+        "wc002",
+        "wc003",
+        "wc004",
+        "wc005",
+        "wc006",
+        "wc007",
+        "wc008",
+        "wc009",
+        "wc010",
+        "wc011",
+        "wc012",
+        "wc013",
+        "wc014",
+        "wc015",
+        "wc016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "wc018"
+    ],
+    "nemesis_set": [
+        "wc019a,wc019b",
+        "wc020",
+        "wc021",
+        "wc022",
+        "wc023"
+    ],
+    "player_deck": [
+        "wc017",
+        "01058",
+        "01059",
+        "01060",
+        "01060",
+        "01060",
+        "01061",
+        "01061",
+        "01062",
+        "01062",
+        "01062",
+        "01063",
+        "01063",
+        "01064",
+        "01065",
+        "01065",
+        "01084",
+        "01085",
+        "01086",
+        "01087",
+        "01088",
+        "01089",
+        "01092",
+        "01093",
+        "01091"
+    ]
+}

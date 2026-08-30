@@ -77617,7 +77617,7 @@
             "custom": "Kajislav"
         }
     ],
-    "checksum": "0dcbfba25782b444b340840022666fc5ae62be9e3432bb661004ba5f8100a31a",
+    "checksum": "035627274fc0878a37f424a3581c855865f4250244771f6515018442ec15bf79",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -80051,6 +80051,2032 @@
             "traits": [],
             "set_name": "Okoye Nemesis",
             "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: Choose a minion in play. That minion attacks you. If the attacking enemy's ATK is 2 or less, it gains villainous for this attack. If its ATK is 3 or more, it gains overkill for this attack. If there are no minions in play, this card gains surge.",
+            "custom": "Arnaud"
+        }
+    ],
+    "scarlet_spider": [
+        {
+            "card_id": "ss001a",
+            "type": "Hero",
+            "name": "* Scarlet Spider",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "3",
+                "HS": "5"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<i>Extreme Interrogation</i> \u2014 <b>Response</b>: After you deal excess damage to a minion, shuffle it back into the encounter deck. Then, remove threat from a scheme equal to the amount of excess damage dealt. <i>(Max 3 threat per minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss001b",
+            "type": "AlterEgo",
+            "name": "* Kaine Parker",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "REC": "4",
+                "HS": "6"
+            },
+            "traits": [
+                "CLONE"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<i>Spider Link</i> \u2014 <b>Action</b>: Discard 1 card from your hand \u2192 search your discard pile for 1 copy of Spider-pathy and add it to your hand. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss002",
+            "type": "Event",
+            "name": "Grim Resolve",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Choose a basic power, you get +1 to that power until the end of the round for each different resource spent on this card. Then, ready your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss003",
+            "type": "Event",
+            "name": "Grim Resolve",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Choose a basic power, you get +1 to that power until the end of the round for each different resource spent on this card. Then, ready your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss004",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss005",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss006",
+            "type": "Event",
+            "name": "Precise Force",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 3 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss007",
+            "type": "Event",
+            "name": "Spider-pathy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Search the encounter deck for the topmost minion and put it into play engaged with you. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss008",
+            "type": "Event",
+            "name": "Spider-pathy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Action</b>: Search the encounter deck for the topmost minion and put it into play engaged with you. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss009",
+            "type": "Event",
+            "name": "Unrestrained",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. If the villain takes overkill damage from this attack, stun and confuse the villain.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss010",
+            "type": "Event",
+            "name": "Unrestrained",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. If the villain takes overkill damage from this attack, stun and confuse the villain.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss011",
+            "type": "Support",
+            "name": "* Four Seasons' Room",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Four Seasons' Room \u2192 draw 1 card <i>(2 instead if you give a facedown boost card to the villain)</i>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss012",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss013",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss014",
+            "type": "Upgrade",
+            "name": "Mark of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Attach to a minion. Attacks against this minion gain overkill.\n<b>Hero Interrupt</b>: When Scarlet Spider deals excess damage to this minion, increase that damage by 2.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss015",
+            "type": "Upgrade",
+            "name": "* Spider Stealth Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "You get +1 hit point.\n<b>Hero Interrupt</b>: When you play an [[ATTACK]] or [[THWART]] event, increase the damage dealt or the threat removed by that event by 1.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss016",
+            "type": "Upgrade",
+            "name": "* Stings of Kaine",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Scarlet Spider",
+            "text": "Scarlet Spider gets +1 ATK.\n<b>Hero Interrupt</b>: When you attack, exhaust Stings of Kaine \u2192 that attack gains piercing and overkill.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss017",
+            "type": "Obligation",
+            "name": "Murderer's Guilt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Kaine Parker"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider",
+            "text": "<b><i>Give to the Kaine Parker player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Kaine Parker and take 2 damage \u2192 remove Murderer's Guilt from the game.\n\u2022 Take 1 damage for each event in your hand. If less than 3 damage was taken this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss018",
+            "type": "SideScheme",
+            "name": "Assassins Guild",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "<i>Kaine had previously taken kill contracts in the Assassins Guild jurisdiction. They want their share!</i>\nEach [[ASSASSIN]] enemy gets +1 ATK.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss019",
+            "type": "Minion",
+            "name": "* Bella Donna",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "SCH": "3",
+                "ATK": "1",
+                "Boost": "3",
+                "Nemesis": "Scarlet Spider"
+            },
+            "traits": [
+                "ASSASSIN",
+                "ELITE"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Plotting. <i>(After this minion engages your identity, it schemes.)</i>\n<b>Forced Interrupt</b>: When Bella Donna is defeated, search the encounter deck for another [[ASSASSIN]] minion and reveal it.\n<i>(Scarlet Spider's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss020",
+            "type": "Minion",
+            "name": "* Harvester",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "2",
+                "ATK": "2",
+                "Boost": "2",
+                "Quickstrike": "1"
+            },
+            "traits": [
+                "ASSASSIN"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Quickstrike.\nHarvester's attacks gain piercing.\n<b>Forced Response</b>: After Harvester attacks and damages a character, deal 1 damage to that character.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss021",
+            "type": "Minion",
+            "name": "* Undead Hand Ninja",
+            "subtitle": "",
+            "desc": {
+                "HP": "2",
+                "SCH": "0",
+                "ATK": "2",
+                "Incite": "1"
+            },
+            "traits": [
+                "ASSASSIN"
+            ],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Incite 1.\n<b>Forced Interrupt</b>: When this minion would be defeated, shuffle it back into the encounter deck instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ss022",
+            "type": "Treachery",
+            "name": "Forced Contract",
+            "subtitle": "",
+            "desc": {
+                "Surge": "1"
+            },
+            "traits": [],
+            "set_name": "Scarlet Spider Nemesis",
+            "text": "Surge.\n<b>When Revealed</b>: The ally with highest ATK takes damage equal to Scarlet Spider's ATK. If there is no ally in play, you take 2 damage.\n<hr />\n[star] <b>Boost</b>: Each friendly character takes 1 damage.",
+            "custom": "Arnaud"
+        }
+    ],
+    "howard_the_duck": [
+        {
+            "card_id": "hd001a",
+            "type": "Hero",
+            "name": "* Howard the Duck",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "DEFENDER",
+                "GUARDIAN"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<i>Private Eye</i> \u2014 <b>Interrupt</b>: When threat would be placed on a scheme, prevent 1 of that threat. <i>(Limit once per round.)</i>\n<b>Response</b>: After a side scheme enters play, ready Howard the Duck. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd001b",
+            "type": "AlterEgo",
+            "name": "* Howard Duckson",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "DUCK",
+                "GENIUS"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<i>Deducktive Reasoning</i> \u2014 <b>Action</b>: Look at the top 3 cards of the encounter deck. Put 1 on the bottom of the deck and the others back in any order. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd002",
+            "type": "Ally",
+            "name": "* Man-Thing",
+            "subtitle": "Theodore Sallis",
+            "desc": {
+                "Cost": "4",
+                "HP": "5",
+                "ATK": "3**",
+                "THW": "1*",
+                "RES": "G",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENDER",
+                "PSIONIC"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "Toughness.\nReduce the cost to play Man-Thing by 1 for each Howard the Duck side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd003",
+            "type": "Event",
+            "name": "Mallard Magic",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b>: Choose:\n\u2022 Stun an enemy and deal 5 damage to it.\n\u2022 Confuse an enemy and remove 4 threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd004",
+            "type": "Event",
+            "name": "Mallard Magic",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b>: Choose:\n\u2022 Stun an enemy and deal 5 damage to it.\n\u2022 Confuse an enemy and remove 4 threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd005",
+            "type": "Event",
+            "name": "Quack Attack",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When you would take any amount of damage, prevent 2 of that damage. Deal 1 damage to an enemy for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd006",
+            "type": "Event",
+            "name": "Quack Attack",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When you would take any amount of damage, prevent 2 of that damage. Deal 1 damage to an enemy for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd007",
+            "type": "Event",
+            "name": "Fowl Play",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you defeat a side scheme in this way, you may ready your hero or remove 1 threat from a scheme for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd008",
+            "type": "Event",
+            "name": "Fowl Play",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you defeat a side scheme in this way, you may ready your hero or remove 1 threat from a scheme for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd009",
+            "type": "Event",
+            "name": "Quack and Burn",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Find Man-Thing and add him to your hand. Deal damage to an enemy equal to Man-Thing's ATK and remove threat from a scheme equal to Howard the Duck's THW.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd010",
+            "type": "PlayerSideScheme",
+            "name": "Trapped",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile Trapped is in the victory display, Howard the Duck gets +1 ATK.\n<b>When Defeated</b>: Each player may search their deck and discard pile for an ally and add it to their hand. The player who defeated this scheme, may put that ally into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd011",
+            "type": "PlayerSideScheme",
+            "name": "In a World",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile In a World is in the victory display, Howard the Duck gets +1 DEF.\n<b>When Defeated</b>: Give each player a tough status card. The player who defeated this scheme, may heal 2 damage from their identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd012",
+            "type": "PlayerSideScheme",
+            "name": "He Never Made",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile He Never Made is in the victory display, Howard the Duck gets +1 THW.\n<b>When Defeated</b>: Each player may shuffle up to 3 cards from their discard pile into their deck. The player who defeated this scheme, may add 1 of those cards, to their hand instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd013",
+            "type": "Support",
+            "name": "* Beverly Switzler",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Beverly Switzler \u2192 return the bottommost Howard the Duck card from your discard pile to your hand. Heal 1 damage from your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd014",
+            "type": "Support",
+            "name": "* Ducktective Agency",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Resource</b>: Exhaust Ducktective Agency \u2192 generate a [mental] resource for an event.\n<b>Hero Response</b>: After you remove the last threat from a scheme, ready Ducktective Agency.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd015",
+            "type": "Upgrade",
+            "name": "Duckpool Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "You get +3 hit points.\nHoward the Duck gets +1 ATK.\n<b>Hero Response</b>: After you defeat a side scheme, exhaust Duckpool Suit \u2192 deal 1 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd016",
+            "type": "Upgrade",
+            "name": "* Iron Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Action</b>: Exhaust Iron Suit \u2192 move 1 threat from a scheme to here.\n<b>Hero Action</b>: Exhaust Iron Suit and remove X threat from here \u2192 deal X damage to a minion or remove X threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd017",
+            "type": "Upgrade",
+            "name": "Nexus of all Realities",
+            "subtitle": "",
+            "desc": {
+                "Setup": "1",
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Setup. Permanent.\n<b>Interrupt</b>: When a character enters play, choose a play area that character is played to.\n<b>Interrupt</b>: When an ally you control leaves play, search your deck for an event card, and add it to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd018",
+            "full_link": "01088"
+        },
+        {
+            "card_id": "hd019",
+            "full_link": "01089"
+        },
+        {
+            "card_id": "hd020",
+            "full_link": "01090"
+        },
+        {
+            "card_id": "hd021",
+            "type": "Obligation",
+            "name": "Waddle it Be?",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Howard Duckson"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "<b><i>Give to the Howard Duckson player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Howard Duckson \u2192 remove Waddle it Be? from the game.\n\u2022 Remove and shuffle all Howard the Duck side schemes from the victory display into your deck. If no schemes were removed this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd022",
+            "type": "SideScheme",
+            "name": "Duck and Cover!",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>Quack-tastrophe! Howard the Duck is in over his head once again. It's up to the heroes to save him from a group of interdimensional bounty hunters.</i>\n<b>When Revealed</b>: Each player must discard cards with a printed [mental] from their hand. Place 1 additional threat here for each card discarded this way.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd023",
+            "type": "Minion",
+            "name": "* Collector",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "3",
+                "ATK": "1",
+                "Boost": "2",
+                "Villainous": "1",
+                "Nemesis": "Howard the Duck"
+            },
+            "traits": [
+                "ELDER"
+            ],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "Villainous. <i>(When this minion activates, give it a boost card.)</i>\n<b>When Revealed</b>: Discard an ally or support you control. If you cannot, put the topmost scheme from the encounter deck into play.\n<i>(Howard the Duck's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd024",
+            "type": "Minion",
+            "name": "* Hellcow",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "SCH": "1",
+                "ATK": "2",
+                "Boost": "2",
+                "Quickstrike": "1",
+                "Nemesis": "Howard the Duck"
+            },
+            "traits": [
+                "ELITE",
+                "VAMPIRE"
+            ],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "Quickstrike.\n<b>Forced Interrupt</b>: When the villain phase begins, heal 1 damage from Hellcow.\n<b>Interrupt</b>: When Hellcow would be defeated, shuffle her into the encounter deck instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd025",
+            "type": "SideScheme",
+            "name": "Duck, Duck, Doom!",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>Doctor Bong has set up a trap to capture Howard the Duck.</i>\n<b>When Revealed</b>: Place an ally you control beneath this card. If you cannot, confuse your identity.\n<b>When Defeated</b>: Return the ally beneath here to its owner's hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd026",
+            "type": "SideScheme",
+            "name": "A Fowl Plot",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3",
+                "Acceleration": "1"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>The Collector plans to add Howard the Duck to his collection of rare and unique items.</i>\n<b>When Revealed</b>: Discard an upgrade you control. If no cards were discarded this way, place 1 threat on the main scheme and take 1 damage.\n<i>(Howard the Duck's nemesis side scheme.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd027",
+            "type": "Treachery",
+            "name": "Duck Hunt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<b>When Revealed (Alter-Ego)</b>: The villain schemes. If there are side schemes in play, divide and place threat from this activation among them instead.\n<b>When Revealed (Hero)</b>: Give the villain a tough status card. If you cannot, heal 3 damage from it instead.",
+            "custom": "Arnaud"
+        }
+    ],
+    "wiccan": [
+        {
+            "card_id": "wc001a",
+            "type": "Hero",
+            "name": "* Wiccan",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "2",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "MYSTIC",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<i>Clairvoyance</i> \u2014 During the player phase, play with the top card of the encounter deck face up.\n<b>Forced Interrupt</b>: At the start of the villain phase, discard the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc001b",
+            "type": "AlterEgo",
+            "name": "* Billy Kaplan",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "MYSTIC"
+            ],
+            "set_name": "Wiccan",
+            "text": "<i>Clairvoyance</i> \u2014 During the player phase, play with the top card of the encounter deck face up.\n<b>Action</b>: Look at the top 2 cards of the encounter deck, you may discard one of them. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc002",
+            "type": "Ally",
+            "name": "* Hulkling",
+            "subtitle": "Teddy Altman",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "KREE",
+                "SKRULL",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Interrupt</b>: When Hulkling attacks, he gets +1 ATK for each boost icon on the top card of the encounter deck. Then, discard that card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc003",
+            "type": "Event",
+            "name": "Impenetrable Barrier",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b>: Give your hero a Tough status card. Give up to X friendly characters a Tough status card, where X is equal to the amount of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc004",
+            "type": "Event",
+            "name": "Impenetrable Barrier",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b>: Give your hero a Tough status card. Give up to X friendly characters a Tough status card, where X is equal to the amount of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc005",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n\u2022 0 or 1 boost icons \u2192 draw 1 card.\n\u2022 2 or more boost icons \u2192 deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc006",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n\u2022 0 or 1 boost icons \u2192 draw 1 card.\n\u2022 2 or more boost icons \u2192 deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc007",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n\u2022 0 or 1 boost icons \u2192 draw 1 card.\n\u2022 2 or more boost icons \u2192 deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc008",
+            "type": "Event",
+            "name": "Magic Manipulation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Alter-Ego Action</b>: Shuffle 1 card from your discard pile back into your deck for each boost icon on the top card of the encounter deck. Then, draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc009",
+            "type": "Event",
+            "name": "Magic Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Then, if the top card of the encounter deck has:\n\u2022 0 or 1 boost icons \u2192 draw 1 card.\n\u2022 2 or more boost icons \u2192 remove 2 threat from each scheme in play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc010",
+            "type": "Event",
+            "name": "Magic Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Then, if the top card of the encounter deck has:\n\u2022 0 or 1 boost icons \u2192 draw 1 card.\n\u2022 2 or more boost icons \u2192 remove 2 threat from each scheme in play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc011",
+            "type": "Event",
+            "name": "Teleport",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Choose a player \u2192 ready that player's identity. That player may change their form. If the top card of the encounter deck has 2 or more boost icons, that player gets +1 to a basic power of their choice until the end of the round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc012",
+            "type": "Event",
+            "name": "Teleport",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Choose a player \u2192 ready that player's identity. That player may change their form. If the top card of the encounter deck has 2 or more boost icons, that player gets +1 to a basic power of their choice until the end of the round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc013",
+            "type": "Event",
+            "name": "Transmutation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Search the encounter deck for a card. Then, shuffle the encounter deck and put that card on top of it. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc014",
+            "type": "Event",
+            "name": "Warping Reality",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Reduce the cost of the next card played this round by 1+X, where X is the number of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc015",
+            "type": "Support",
+            "name": "Mother's Protection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "FAMILY"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Interrupt</b>: When your identity would take any amount of damage, shuffle Mother's Protection back into your deck \u2192 prevent 3 of that damage.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc016",
+            "type": "Upgrade",
+            "name": "* Wiccan's Cloak",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Response</b>: After you play a [[SPELL]] event that counts the amount of boost icons on an encounter card, exhaust Wiccan's Cloak and discard the top card of the encounter deck \u2192 resolve that event again.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc017",
+            "type": "Event",
+            "name": "Royal Couple",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "MaxPerDeck": "1",
+                "Class": "Basic"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Wiccan",
+            "text": "Team-Up (Hulkling and Wiccan). Max 1 per deck.\n<b>Hero Action</b>: Choose one card from the encounter discard pile and put it on top of the encounter deck. Ready your hero.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc018",
+            "type": "Obligation",
+            "name": "Avoiding the Demiurge",
+            "subtitle": "",
+            "desc": {
+                "GiveTo": "Billy Kaplan"
+            },
+            "traits": [],
+            "set_name": "Wiccan",
+            "text": "<b><i>Give to the Billy Kaplan player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust your identity \u2192 remove Avoiding the Demiurge from the game.\n\u2022 Boost icons cannot be counted for any Wiccan card effects until the end of the next player phase. Discard this obligation.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc019a",
+            "type": "SideScheme",
+            "name": "New Vessel",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "4"
+            },
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<i>Moridun has infected Wiccan and is now inside his mind. The evil wizard's control over Wiccan is growing stronger.</i>\nOnly the Billy Kaplan player can remove threat from this scheme.\n<b>When Defeated</b>: Remove 2 threat from the main scheme. Then, set aside New Vessel and Moridun.\n<b>When Completed</b>: Set aside Moridun and flip this card. <i>(8 threat.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc019b",
+            "type": "Environment",
+            "name": "The Demiurge",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1"
+            },
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "Permanent.\n<b>Forced Response</b>: After a player deck runs out of cards, place 1 threat on the main scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc020",
+            "type": "Attachment",
+            "name": "* Moridun",
+            "subtitle": "",
+            "desc": {},
+            "traits": [
+                "WIZARD"
+            ],
+            "set_name": "Wiccan Nemesis",
+            "text": "Attach to the Billy Kaplan player's identity.\n<b>When Revealed</b>: Reveal your set-aside New Vessel side scheme.\n<b>Forced Interrupt</b>: When Wiccan would deal damage to an enemy or remove threat from a scheme, place 1 threat on the New Vessel side scheme.\n<i>(Wiccan's Nemesis Minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc021",
+            "type": "Treachery",
+            "name": "Inescapable Horror",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: Deal 1 damage to each friendly character. If Moridun is in play, you are stunned.\n<hr />\n[star] <b>Boost</b>: Deal 1 damage to each friendly character you control.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc022",
+            "type": "Treachery",
+            "name": "Inescapable Horror",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: Deal 1 damage to each friendly character. If Moridun is in play, you are stunned.\n<hr />\n[star] <b>Boost</b>: Deal 1 damage to each friendly character you control.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc023",
+            "type": "Treachery",
+            "name": "Master Magus Returns",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: If The Demiurge environment is not in play, reveal the set-aside Moridun attachment, then remove Master Magus Returns from the game. If Moridun was not revealed this way, you are confused.\n<hr />\n[star] <b>Boost</b>: You are confused.",
+            "custom": "Arnaud"
+        }
+    ],
+    "speed": [
+        {
+            "card_id": "sd001a",
+            "type": "Hero",
+            "name": "* Speed",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Speed",
+            "text": "<i>Hyperkinetic Fuel</i> \u2014 <b>Interrupt</b>: When you pay for an event with only [energy] resources, put an explosive counter on an enemy or scheme. <i>(See insert.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd001b",
+            "type": "AlterEgo",
+            "name": "* Thomas Shepherd",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "CIVILIAN"
+            ],
+            "set_name": "Speed",
+            "text": "<i>Accelerated Perception</i> \u2014 <b>Action</b>: Shuffle 1 event from your discard pile into your deck. Then, draw 1 card. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd002",
+            "type": "Ally",
+            "name": "* Quicksilver",
+            "subtitle": "Pietro Maximoff",
+            "desc": {
+                "Cost": "4",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When Quicksilver attacks or thwarts an enemy or scheme with an explosive counter on it, he suffers no consequential damage for that use.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd003",
+            "type": "Event",
+            "name": "Blasting Velocity",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Make a basic attack against an enemy with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd004",
+            "type": "Event",
+            "name": "Blasting Velocity",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Make a basic attack against an enemy with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd005",
+            "type": "Event",
+            "name": "\"I'm Out\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "TACTIC"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Interrupt</b>: When you reveal an encounter card, cancel the effects of that card and discard it. If you would resolve Speed's <i>\"Hyperkinetic Fuel\"</i> ability when playing this event, shuffle 1 event from your discard pile into your deck and draw 1 card instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd006",
+            "type": "Event",
+            "name": "Kinetic Flurry",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "You can only spend [energy] resources to pay for this card. Choose an enemy and perform the following attack X times:\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to that enemy (3 damage instead if that enemy has an explosive counter on it).",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd007",
+            "type": "Event",
+            "name": "Kinetic Flurry",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "You can only spend [energy] resources to pay for this card. Choose an enemy and perform the following attack X times:\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to that enemy (3 damage instead if that enemy has an explosive counter on it).",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd008",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd009",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd010",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd011",
+            "type": "Resource",
+            "name": "Top Speed",
+            "subtitle": "",
+            "desc": {
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When you spend this card, you may generate an additional [energy] resource ([energy][energy] instead if there is an explosive counter in play). If you do, you cannot play cards for the rest of the turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd012",
+            "type": "Resource",
+            "name": "Top Speed",
+            "subtitle": "",
+            "desc": {
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When you spend this card, you may generate an additional [energy] resource ([energy][energy] instead if there is an explosive counter in play). If you do, you cannot play cards for the rest of the turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd013",
+            "type": "Support",
+            "name": "Mother's Protection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "FAMILY"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When your identity would take any amount of damage, shuffle Mother's Protection back into your deck \u2192 prevent 3 of that damage.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd014",
+            "type": "Upgrade",
+            "name": "Explosive Touch",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Response</b>: After you basic attack or basic thwart an enemy or scheme that has an explosive counter on it, exhaust Explosive Touch \u2192 ready Speed.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd015",
+            "type": "Upgrade",
+            "name": "Never Ending Spark",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Response</b>: After an explosive counter is placed on an enemy or scheme, ready this card.\n<b>Resource</b>: Exhaust Never Ending Spark \u2192 generate a [energy] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd016",
+            "type": "Upgrade",
+            "name": "Quick Adaptation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Interrupt</b>: When you basic attack or basic thwart against an enemy or scheme with an explosive counter on it, you get +1 ATK and +1 THW for that use.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd017",
+            "type": "Obligation",
+            "name": "No Outrunning This",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Thomas Shepherd"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b><i>Give to the Thomas Shepherd player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Thomas Shepherd \u2192 remove No Outrunning This from the game.\n\u2022 You cannot resolve Speed's <i>Hyperkinetic Fuel</i> <b>Interrupt</b> until the end of the next round. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd018",
+            "type": "SideScheme",
+            "name": "The Real Question",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "StartingThreat": "2*"
+            },
+            "traits": [],
+            "set_name": "Speed Nemesis",
+            "text": "<i>\"R Superheroes gud?\"</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until an attachment is discarded. Reveal that attachment.\nWhile this scheme is in play, attachments gain <b><i>Permanent</i></b>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd019",
+            "type": "Minion",
+            "name": "* Coat of Arms",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "1*",
+                "SCH": "2",
+                "Boost": "2",
+                "Quickstrike": "1",
+                "Nemesis": "Thomas Shepherd"
+            },
+            "traits": [
+                "ANTI HERO"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Quickstrike.\n[star] When Coat of Arms attacks, if it deals damage, deal 1 additional damage to each character you control.\n<i>(Speed's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd020",
+            "type": "Attachment",
+            "name": "Inspirational Art",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3"
+            },
+            "traits": [
+                "ART"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Attach to the villain.\n<b>Forced Interrupt</b>: When a boost card is turned faceup during a villain activation, each boost card gets +1 boost icons ([boost]).\n<b>Hero Action</b>: Spend [energy][physical] resources \u2192 discard this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd021",
+            "type": "Attachment",
+            "name": "Magic Chains",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "ATK+": "1"
+            },
+            "traits": [
+                "WEAPON",
+                "MYSTIC"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Attach to Coat of Arms, if able. If you cannot, attach to the villain.\n<b>Forced Response</b>: After the attached enemy attacks, if the attack deals damage, stun your hero \u2192 discard this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd022",
+            "type": "Obligation",
+            "name": "Conflicted Feelings",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Thomas Shepherd"
+            },
+            "traits": [],
+            "set_name": "Speed Nemesis",
+            "text": "<b><i>Give to the Thomas Shepherd player.</i></b>\nWhile this obligation is in play, Coat of Arms cannot be damaged.\n<b>Alter-Ego Action</b>: Spend [energy][mental] resources \u2192 discard this card.",
+            "custom": "Arnaud"
+        }
+    ],
+    "patriot": [
+        {
+            "card_id": "pt001a",
+            "type": "Hero",
+            "name": "* Patriot",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Patriot",
+            "text": "<i>Will to Protect</i> \u2014 <b>Interrupt</b>: When an ally you control would take consequential damage, move that damage to Patriot. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt001b",
+            "type": "AlterEgo",
+            "name": "* Elijah Bradley",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "CIVILIAN"
+            ],
+            "set_name": "Patriot",
+            "text": "<i>Leader</i> \u2014 During deck building you may include [[YOUNG AVENGER]] allies from any aspect.\n<b>Action</b>: Exhaust Elijah Bradley \u2192 search your deck and discard pile for the Patriot's Shield and add it to your hand. Shuffle your deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt002",
+            "type": "Ally",
+            "name": "* Hawkingbird",
+            "subtitle": "Kate Bishop",
+            "desc": {
+                "Cost": "3",
+                "HP": "1",
+                "ATK": "0",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Patriot",
+            "text": "Allies you control get +1 hit point.\n<b>Response</b>: After Hawkingbird enters play, you may search your deck and discard pile for an upgrade that can be attached to allies and add it to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt003",
+            "type": "Event",
+            "name": "Aided Defense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, exhaust an ally you control \u2192 you get +1 DEF for each remaining hit point on the exhausted ally. If you take no damage from that attack, ready the exhausted ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt004",
+            "type": "Event",
+            "name": "Aided Defense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, exhaust an ally you control \u2192 you get +1 DEF for each remaining hit point on the exhausted ally. If you take no damage from that attack, ready the exhausted ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt005",
+            "type": "Event",
+            "name": "Covered Fire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, choose an ally you control \u2192 deal damage to an enemy equal to that ally's ATK value or remove threat from a scheme equal to that ally's THW value.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt006",
+            "type": "Event",
+            "name": "Covered Fire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, choose an ally you control \u2192 deal damage to an enemy equal to that ally's ATK value or remove threat from a scheme equal to that ally's THW value.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt007",
+            "type": "Support",
+            "name": "* Isaiah Bradley",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Patriot",
+            "text": "You get +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Isaiah Bradley \u2192 heal 2 damage from Elijah Bradley.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt008",
+            "type": "Upgrade",
+            "name": "Commandeer",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Action</b>: Exhaust and discard Commandeer, choose an ally \u2192 move 1 attachment from an enemy to that ally until the end of the round. Treat the attachment's text box as blank and treat SCH as THW.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt009",
+            "type": "Upgrade",
+            "name": "Commander's Orders",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b>: When an ally you control would activate, exhaust Commander's Orders \u2192 switch its ATK and THW values for that activation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt010",
+            "type": "Upgrade",
+            "name": "Follow My Lead",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Resource</b>: Exhaust Follow My Lead \u2192 generate a [wild] resource for an ally or an upgrade that can be attached to an ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt011",
+            "type": "Upgrade",
+            "name": "On Your Feet",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Hero Action</b>: Exhaust On Your Feet \u2192 choose: ready an ally or heal 1 damage from an ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt012",
+            "type": "Upgrade",
+            "name": "* Patriot's Shield",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Patriot",
+            "text": "You get +1 DEF.\n<b>Hero Interrupt</b>: When you would take damage from an attack, you may move 1 of that damage here. When Patriot's Shield reaches 3 damage, discard it.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt013",
+            "type": "Upgrade",
+            "name": "Revenge",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b>: When Patriot takes any amount of damage from an attack, discard Revenge \u2192 the attached ally gets +2 ATK until the end of the next round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt014",
+            "type": "Upgrade",
+            "name": "The Chosen Leader",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TITLE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Response</b>: After an ally you control is defeated by consequential damage, search your deck for an ally and add it to your hand.\n<b>Forced Response</b>: When an ally you control is used to defend, deal 1 damage to your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt015",
+            "type": "Upgrade",
+            "name": "Throwing Stars",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b> <i>(attack)</i>: When the attached ally attacks, discard Throwing Stars \u2192 deal 3 damage divided as you choose. This attack gains piercing and ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt016",
+            "type": "Upgrade",
+            "name": "Working Together",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b>: When the attached ally would thwart, choose another friendly character and discard Working Together \u2192 add the friendly character's THW value to this ally's thwart.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt017",
+            "type": "Obligation",
+            "name": "MGH Addiction",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Elijah Bradley"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b><i>Give to the Elijah Bradley player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Discard the Isaiah Bradley support card \u2192 remove MGH Addiction from the game.\n\u2022 Exhaust all allies under your control. If no allies were exhausted this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt018",
+            "type": "SideScheme",
+            "name": "Mr. Hyde's Lab",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "Crisis": "1",
+                "StartingThreat": "2*"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<i>\"You just window shopping... Or would you like to come in?\" \u2013 Mr. Hyde</i>\n<b>When Defeated</b>: Mr. Hyde attacks you. If no attack was made this way, search the encounter deck and encounter discard pile for Mr. Hyde and put him into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt019",
+            "type": "Minion",
+            "name": "* Mr. Hyde",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "ATK": "2",
+                "SCH": "2",
+                "Boost": "3",
+                "Toughness": "1",
+                "Nemesis": "Elijah Bradley"
+            },
+            "traits": [
+                "ELITE"
+            ],
+            "set_name": "Patriot Nemesis",
+            "text": "Toughness.\n<b>When Revealed</b>: Search encounter deck, encounter discard pile and set aside cards for the MGH Drug attachment and attach it to Mr. Hyde.\n<i>(Patriot's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt020",
+            "type": "Attachment",
+            "name": "MGH Drug",
+            "subtitle": "",
+            "desc": {
+                "Boost": "0",
+                "ATK+": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "Attach to Mr. Hyde, if able. If you cannot, attach to the villain.\n[star] Attached enemy's attacks gain overkill.\n<b>Hero Action</b>: Spend [mental][energy] resources \u2192 discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt021",
+            "type": "Treachery",
+            "name": "Bulldozing Charge",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<b>When Revealed</b>: Mr. Hyde attacks you. If no attack was made this way, deal 1 damage to each friendly character.\n<hr />\n[star] <b>Boost</b>: If this card resolves during an attack, this attack gains overkill.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt022",
+            "type": "Treachery",
+            "name": "Bulldozing Charge",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<b>When Revealed</b>: Mr. Hyde attacks you. If no attack was made this way, deal 1 damage to each friendly character.\n<hr />\n[star] <b>Boost</b>: If this card resolves during an attack, this attack gains overkill.",
             "custom": "Arnaud"
         }
     ]
