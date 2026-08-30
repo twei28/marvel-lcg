@@ -1134,4 +1134,56 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ss021': "Incitation 1.\n<b>Interruption Obligatoire</b> : quand ce sbire serait mis K.O., remélangez-le dans le deck de rencontre à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // scarlet_spider — Forced Contract (Treachery, nemesis)
   'ss022': "Renfort.\n<b>Une fois révélée</b> : l'allié ayant l'ATQ la plus élevée subit des dégâts égaux à l'ATQ de Scarlet Spider. S'il n'y a aucun allié en jeu, vous subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : chaque personnage ami subit 1 dégât.",
+
+  // howard_the_duck — Howard the Duck (Hero)
+  'hd001a': "<i>Détective privé</i> — <b>Interruption</b> : quand une menace devrait être placée sur une manigance, empêchez 1 de cette menace. <i>(Limite d'une fois par round.)</i>\n<b>Réponse</b> : après qu'une manigance annexe est entrée en jeu, redressez Howard the Duck. <i>(Limite d'une fois par round.)</i>",
+  // howard_the_duck — Howard Duckson (AlterEgo)
+  'hd001b': "<i>Raisonnement can-artésien</i> — <b>Action</b> : regardez les 3 cartes du dessus du deck de rencontre. Placez-en 1 sous le deck et remettez les autres dans l'ordre de votre choix. <i>(Limite d'une fois par round.)</i>",
+  // howard_the_duck — Man-Thing (Ally)
+  'hd002': "Ténacité.\nRéduisez de 1 le coût pour jouer Man-Thing pour chaque manigance annexe Howard the Duck dans la zone de victoire.",
+  // howard_the_duck — Mallard Magic (Event) x2
+  'hd003': "<b>Action de héros</b> : choisissez :\n• Sonnez un ennemi et infligez-lui 5 dégâts.\n• Désorientez un ennemi et retirez 4 menaces d'une manigance.",
+  'hd004': "<b>Action de héros</b> : choisissez :\n• Sonnez un ennemi et infligez-lui 5 dégâts.\n• Désorientez un ennemi et retirez 4 menaces d'une manigance.",
+  // howard_the_duck — Quack Attack (Event) x2
+  'hd005': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le montant, empêchez 2 de ces dégâts. Infligez 1 dégât à un ennemi pour chaque manigance annexe dans la zone de victoire.",
+  'hd006': "<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le montant, empêchez 2 de ces dégâts. Infligez 1 dégât à un ennemi pour chaque manigance annexe dans la zone de victoire.",
+  // howard_the_duck — Fowl Play (Event) x2
+  'hd007': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous déjouez ainsi une manigance annexe, vous pouvez redresser votre héros ou retirer 1 menace d'une manigance pour chaque manigance annexe dans la zone de victoire.",
+  'hd008': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous déjouez ainsi une manigance annexe, vous pouvez redresser votre héros ou retirer 1 menace d'une manigance pour chaque manigance annexe dans la zone de victoire.",
+  // howard_the_duck — Quack and Burn (Event)
+  'hd009': "<b>Action de héros</b> <i>(attaque/contre)</i> : cherchez Man-Thing et ajoutez-le à votre main. Infligez à un ennemi des dégâts égaux à l'ATQ de Man-Thing et retirez d'une manigance une menace égale au CTR de Howard the Duck.",
+  // howard_the_duck — Trapped (PlayerSideScheme)
+  'hd010': "Victoire 0.\nTant que Trapped est dans la zone de victoire, Howard the Duck gagne +1 ATQ.\n<b>Quand déjouée</b> : chaque joueur peut chercher un allié dans son deck et sa pile de défausse, et l'ajouter à sa main. Le joueur qui a déjoué cette manigance peut mettre cet allié en jeu.",
+  // howard_the_duck — In a World (PlayerSideScheme)
+  'hd011': "Victoire 0.\nTant que In a World est dans la zone de victoire, Howard the Duck gagne +1 DEF.\n<b>Quand déjouée</b> : donnez une carte d'état Tenace à chaque joueur. Le joueur qui a déjoué cette manigance peut soigner 2 dégâts de son identité.",
+  // howard_the_duck — He Never Made (PlayerSideScheme)
+  'hd012': "Victoire 0.\nTant que He Never Made est dans la zone de victoire, Howard the Duck gagne +1 CTR.\n<b>Quand déjouée</b> : chaque joueur peut mélanger jusqu'à 3 cartes de sa pile de défausse dans son deck. Le joueur qui a déjoué cette manigance peut à la place ajouter 1 de ces cartes à sa main.",
+  // howard_the_duck — Beverly Switzler (Support)
+  'hd013': "<b>Action d'identité civile</b> : inclinez Beverly Switzler → remettez dans votre main la carte Howard the Duck la plus basse de votre pile de défausse. Soignez 1 dégât de votre identité.",
+  // howard_the_duck — Ducktective Agency (Support)
+  'hd014': "<b>Ressource</b> : inclinez Ducktective Agency → générez 1 ressource [mental] pour un événement.\n<b>Réponse de héros</b> : après que vous avez retiré la dernière menace d'une manigance, redressez Ducktective Agency.",
+  // howard_the_duck — Duckpool Suit (Upgrade)
+  'hd015': "Vous gagnez +3 points de vie.\nHoward the Duck gagne +1 ATQ.\n<b>Réponse de héros</b> : après que vous avez déjoué une manigance annexe, inclinez Duckpool Suit → infligez 1 dégât à un ennemi.",
+  // howard_the_duck — Iron Suit (Upgrade)
+  'hd016': "<b>Action</b> : inclinez Iron Suit → déplacez 1 menace d'une manigance vers cette carte.\n<b>Action de héros</b> : inclinez Iron Suit et retirez X menaces de cette carte → infligez X dégâts à un sbire ou retirez X menaces d'une manigance.",
+  // howard_the_duck — Nexus of all Realities (Upgrade)
+  'hd017': "Mise en place. Permanent.\n<b>Interruption</b> : quand un personnage entre en jeu, choisissez la zone de jeu dans laquelle il est joué.\n<b>Interruption</b> : quand un allié que vous contrôlez quitte le jeu, cherchez une carte événement dans votre deck et ajoutez-la à votre main.",
+  // howard_the_duck — Energy / Genius / Strength (Resource, re-skins de 01088/01089/01090)
+  'hd018': "Maximum 1 par deck.",
+  'hd019': "Maximum 1 par deck.",
+  'hd020': "Maximum 1 par deck.",
+  // howard_the_duck — Waddle it Be? (Obligation)
+  'hd021': "<b><i>Donnez-la au joueur Howard Duckson.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Howard Duckson → retirez Waddle it Be? de la partie.\n• Retirez de la zone de victoire toutes les manigances annexes Howard the Duck et mélangez-les dans votre deck. Si aucune manigance n'a été retirée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  // howard_the_duck — Duck and Cover! (SideScheme, nemesis)
+  'hd022': "<i>Quack-tastrophe ! Howard the Duck s'est encore mis dans un pétrin qui le dépasse. C'est aux héros de le sauver d'un groupe de chasseurs de primes interdimensionnels.</i>\n<b>Une fois révélée</b> : chaque joueur doit défausser de sa main les cartes ayant une ressource [mental] imprimée. Placez 1 menace supplémentaire ici pour chaque carte défaussée de cette façon.",
+  // howard_the_duck — Collector (Minion, nemesis)
+  'hd023': "Vilenie. <i>(Quand ce sbire s'active, donnez-lui une carte boost.)</i>\n<b>Une fois révélé</b> : défaussez un allié ou un soutien que vous contrôlez. Si vous ne pouvez pas, mettez en jeu la manigance la plus proche du dessus du deck de rencontre.\n<i>(Sbire némésis de Howard the Duck.)</i>",
+  // howard_the_duck — Hellcow (Minion, nemesis alternatif)
+  'hd024': "Coup Rapide.\n<b>Interruption Obligatoire</b> : quand la phase du méchant commence, soignez 1 dégât de Hellcow.\n<b>Interruption</b> : quand Hellcow devrait être mise K.O., remélangez-la dans le deck de rencontre à la place.",
+  // howard_the_duck — Duck, Duck, Doom! (SideScheme, nemesis)
+  'hd025': "<i>Doctor Bong a tendu un piège pour capturer Howard the Duck.</i>\n<b>Une fois révélée</b> : placez un allié que vous contrôlez sous cette carte. Si vous ne pouvez pas, désorientez votre identité.\n<b>Quand déjouée</b> : rendez l'allié placé sous cette carte à la main de son propriétaire.",
+  // howard_the_duck — A Fowl Plot (SideScheme, nemesis)
+  'hd026': "<i>Le Collectionneur compte ajouter Howard the Duck à sa collection d'objets rares et uniques.</i>\n<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, placez 1 menace sur la manigance principale et subissez 1 dégât.\n<i>(Manigance annexe némésis de Howard the Duck.)</i>",
+  // howard_the_duck — Duck Hunt (Treachery, nemesis)
+  'hd027': "<b>Une fois révélée (identité civile)</b> : le méchant manigance. S'il y a des manigances annexes en jeu, répartissez et placez plutôt parmi elles la menace de cette activation.\n<b>Une fois révélée (héros)</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, soignez plutôt 3 dégâts de celui-ci.",
 }

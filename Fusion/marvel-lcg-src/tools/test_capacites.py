@@ -6773,6 +6773,405 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats": [["01051", 1]], "degats_identite": 1},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « howard_the_duck » : hd001a-hd027 (RyCoRan, set 128)
+    # PIEGE de nommage : les deux faces s'appellent « Howard the Duck » et
+    # « Howard Duckson », noms UNIQUES dans les 5168 cartes du depot, mais on
+    # suit quand meme la convention `Puzzle.ChangeToFace('<face active>',
+    # '<card_id vise>')` de scarlet_spider — elle ne passe jamais par la
+    # recherche ambigue de `FindOrCreateFace`.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "hd001a Howard the Duck — Private Eye : previent 1 menace posee sur une manigance",
+        "pourquoi": "WhenThreatWouldBePlacedOn(Interrupt, None) + message.PreventThreat(1) (modele bkw/08017 Counterintelligence). `Puzzle.PlaceThreat` passe bien par PlaceThreatInternal, donc par le message interrompu : 3 poses -> 2 reellement placees",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PlaceThreat('01097b', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "hd001a Howard the Duck — Response : redresse Howard apres l'entree en jeu d'une manigance annexe",
+        "pourquoi": "AfterCardEnterPlay(Response, SchemeSide2) + Faces.ReadyAll([this]) ; hd025 (manigance annexe nemesis) mise en jeu SANS reveler, pour n'exercer que le declencheur d'entree en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')", "Puzzle.Exhaust('hd001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('hd025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["hd001a"], "en_jeu": ["hd025"]},
+    },
+    {
+        "nom": "hd001b Howard Duckson — Deducktive Reasoning : met une des 3 cartes du dessus sous le deck de rencontre",
+        "pourquoi": "LookAtDeck + MayChooseFace + MoveAllToDeck(..., 'Bottom') (modele 40004 Precognition, sauf que Precognition DEFAUSSE) ; hd024 remontee sur le DESSUS du deck de rencontre par Puzzle.PutIntoDeck, le pilote prend toujours le premier item offert",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hd024')", "Puzzle.PutIntoDeck('hd024')"],
+        "declencher": ["Puzzle.Action('hd001b', 'Action', 0)"],
+        "verifier": "hd001b_carte_mise_au_fond_du_deck_rencontre",
+    },
+    {
+        "nom": "hd002 Man-Thing — cout reduit de 1 par manigance Howard en zone de victoire (preuve par insuffisance)",
+        "pourquoi": "ReduceCostToPlayThis(<nb de manigances Howard en victoire>) (modele 34021 Storm). Trois Haymaker = 3 ressources EXACTEMENT : le cout imprime 4 est impayable, seul le cout reduit a 3 (hd010 en zone de victoire) rend Man-Thing jouable. Meme technique de preuve que il001b",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.SetThreat('hd010', 0)",
+        ],
+        "main_exclusive": ["hd002", "01087", "01087", "01087"],
+        "declencher": [],
+        "jouer": ["hd002"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hd002"]},
+    },
+    {
+        "nom": "hd003 Mallard Magic — branche 1 : sonne un ennemi et lui inflige 5 degats",
+        "pourquoi": "UNE seule ability .SetPlay() (factory.py n'accepte qu'un play_count de 1) + ChooseAbilities a 2 branches ; le pilote prend TOUJOURS la premiere option, meme convention que il017/ok019/ss011. La MEME cible recoit le statut ET les degats (piege `that <nom>`). Partage avec hd004, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd003", "01088", "01089"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "jouer": ["hd003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "hd005 Quack Attack — Hero Interrupt : previent 2 des degats subis",
+        "pourquoi": "WhenUnitWouldTakeDamage(HeroInterrupt, 'You') + message.PreventDamage(2) (modele 40012 Telekinetic Force Field). Source de degats DETERMINISTE (Puzzle.Damage, 3 points) plutot qu'une attaque de Rhino : Howard a DEF 2 contre ATK 2, il defend et ne subit rien, l'interruption n'a alors aucune fenetre (constate le 30/08/2026). 3 - 2 prevenus = 1 degat. Partage avec hd006, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd005", "01088"],
+        "declencher": ["Puzzle.Damage('hd001a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "defausse": ["hd005"]},
+    },
+    {
+        "nom": "hd007 Fowl Play — retire 3 menaces, vainc la manigance annexe et redresse le heros",
+        "pourquoi": "RemoveThreatFromSchemes(..., if_this_remove_last_threat=<fn>) (modele 56009 Feline Senses / 29005 Fly Over) puis MayChooseOneAbility a 2 branches, dont la premiere est « Ready your hero ». Howard incline AVANT : son redressement prouve que la branche bonus a bien tourne. Partage avec hd008, code identique",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.Exhaust('hd001a')",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "pret": ["hd001a"]},
+    },
+    {
+        "nom": "hd009 Quack and Burn — Man-Thing en main, degats = ATK de Man-Thing, menace retiree = THW de Howard",
+        "pourquoi": "Search.PlayerCard(name='Man-Thing') + GainCard (modele ok001b/ss001b) ; les DEUX montants sont dynamiques : 3 degats (ATK imprimee de Man-Thing, lue via printed_attack — lecon ss022) et 2 menaces (THW effective de la face Heros, modele 40009 Askani'son). La menace finale attendue est 2 et non 3 : les 5 menaces posees par Puzzle.SetThreat passent par PlaceThreatInternal, donc par Private Eye (hd001a, en jeu en forme heros) qui en previent 1 -> 4 posees, moins les 2 retirees = 2",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "main_exclusive": ["hd009", "01087", "01087"],
+        "declencher": ["Puzzle.SetThreat('01097b', 5)"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["hd009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "menace": [["01097b", 2]], "en_main": ["hd002"]},
+    },
+    {
+        "nom": "hd010 Trapped — When Defeated : chaque joueur cherche un allie, le vainqueur peut le mettre en jeu",
+        "pourquoi": "WhenSchemeBeDefeated(WhenDefeated, 'This', has_defeating_player=True) (modele 47003 Shopping Spree) ; la manigance est vaincue par une VRAIE action de joueur (hd007 joue), seul moyen d'avoir un `defeating_player`. Man-Thing depose en defausse : la recherche doit l'en sortir puis le poser en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.CreatePlayerDiscardPile('hd002')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010", "hd002"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "en_jeu": ["hd002"]},
+    },
+    {
+        "nom": "hd011 In a World — When Defeated : Tenace a chaque joueur, le vainqueur soigne 2 degats",
+        "pourquoi": "meme montage que hd010 ; deux portees distinctes verifiees d'un coup — le statut Tenace (chaque joueur) ET le soin de 2 (le seul vainqueur, 3 degats subis avant -> 1 apres)",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd011', under_control=True)",
+            "Puzzle.Damage('hd001a', 3)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd011"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd011"], "degats_identite": 1, "statuts": [["hd001a", "Tough"]]},
+    },
+    {
+        "nom": "hd012 He Never Made — When Defeated : 3 cartes quittent la defausse, 1 va en main au lieu du deck",
+        "pourquoi": "AskChooseFaces((0,3)) + ShuffleAllTo, avec la carte gardee RETIREE de la liste avant le remelange (piege `instead`). `accepter_choix` force le pilote a prendre le MAXIMUM de cibles : sans lui, un choix « up to 3 » se resout a 0 et la capacite parait morte",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.CreatePlayerDiscardPile('01051', '01088', '01089')",
+            "Puzzle.PutIntoPlay('hd012', under_control=True)",
+        ],
+        "main": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd012"],
+        "accepter_choix": True,
+        "jouer": ["hd007"],
+        "verifier": "hd012_defausse_videe_et_une_carte_en_main",
+    },
+    {
+        "nom": "hd013 Beverly Switzler — rend la carte Howard la plus BASSE de la defausse et soigne 1",
+        "pourquoi": "filtre par SET (`CardFinder(set_name='Howard the Duck')`) sur `discard_pile.Get()`, qui rend la defausse du FOND vers le dessus. 01087 Haymaker est deposee SOUS hd005 : c'est elle la vraie carte du fond, mais elle n'est pas une carte Howard — si le filtre etait absent, c'est elle qui remonterait",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.CreatePlayerDiscardPile('01087', 'hd005')",
+            "Puzzle.PutIntoPlay('hd013', under_control=True)",
+            "Puzzle.Damage('hd001b', 2)",
+        ],
+        "declencher": ["Puzzle.Action('hd013', 'AlterEgoAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["hd005"], "degats_identite": 1, "exhausted": ["hd013"]},
+    },
+    {
+        "nom": "hd014 Ducktective Agency — capacite Resource : 1 ressource mentale pour un EVENEMENT (preuve par insuffisance)",
+        "pourquoi": "CanGenerateResources(Resource, Resources('B'), for_card=CardFinder(card_type=Event)) (modele 48005 Prehensile Tail). PREUVE PAR INSUFFISANCE : la main ne contient QUE First Aid (01086, evenement officiel a cout 1) et AUCUNE carte-ressource — la seule source de paiement possible est l'Agence. Cible du soin : l'identite, blessee au prealable. Un evenement a cout 2 ne convenait pas : le pilote generique ne compose pas un paiement a plusieurs sources, verifie avec un temoin officiel (40007 Graymalkin) pose a cote de l'Agence, lui non plus retenu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd014', under_control=True)",
+            "Puzzle.Damage('hd001a', 3)",
+        ],
+        "main_exclusive": ["01086"],
+        "declencher": [],
+        "cibles": ["hd001a"],
+        "payer_avec": ["hd014"],
+        "jouer": ["01086"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["01086"], "exhausted": ["hd014"], "degats_identite": 1},
+    },
+    {
+        "nom": "hd014 Ducktective Agency — Hero Response : redressee apres le retrait de la derniere menace d'une manigance",
+        "pourquoi": "AfterUnitDefeatedScheme(HeroResponse, 'You', None) (scheme.py:203, famille de 40001a Cable) ; l'Agence est inclinee AVANT, donc elle ne peut pas non plus servir a payer : son redressement ne peut venir que de la Response",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd014', under_control=True)",
+            "Puzzle.Exhaust('hd014')",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "pret": ["hd014"]},
+    },
+    {
+        "nom": "hd015 Duckpool Suit — +3 points de vie a l'identite et +1 ATK a Howard",
+        "pourquoi": "deux GiveKeywordToInPlayWhenApplyThis de portees DIFFERENTES sur la meme carte (modele ok014 Royal Protector) : « you » (l'identite) pour les PV, la face Heros NOMMEE pour l'ATK",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('hd015', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3, "attack": 1}, "en_jeu": ["hd015"]},
+    },
+    {
+        "nom": "hd015 Duckpool Suit — Hero Response : inclinee apres la defaite d'une manigance annexe, 1 degat a un ennemi",
+        "pourquoi": "AfterUnitDefeatedScheme(HeroResponse, 'You', SchemeSide2) restreint aux manigances ANNEXES (contrairement a hd014, qui accepte n'importe quelle manigance) + CostFunc.Exhaust('This')",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd015', under_control=True)",
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+        ],
+        "main_exclusive": ["hd007", "01087", "01087"],
+        "declencher": [],
+        "cibles": ["hd010", "01094"],
+        "jouer": ["hd007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd010"], "exhausted": ["hd015"], "degats": [["01094", 1]]},
+    },
+    {
+        "nom": "hd016 Iron Suit — Action : deplace 1 menace d'une manigance vers la carte (jeton, pas compteur)",
+        "pourquoi": "RemoveThreatFromSchemes + Faces.PlaceTokensOn([this], <retire>, 'threat') (modele exact 50046 Secret Agent). La menace posee sur une carte JOUEUR est un JETON, jamais un compteur : la cle `jetons` du harnais le verifie explicitement",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hd016', under_control=True)",
+            "Puzzle.SetThreat('01097b', 5)",
+        ],
+        "declencher": ["Puzzle.Action('hd016', 'Action', 0)"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "jetons": [["hd016", "threat", 1]], "exhausted": ["hd016"]},
+    },
+    {
+        "nom": "hd016 Iron Suit — Hero Action : depense X menaces de la carte pour X degats a un sbire",
+        "pourquoi": "DeclareNumber(1, <jetons disponibles>) puis ChooseAbilities a 2 branches de portees ASYMETRIQUES (degats a un SBIRE, menace sur n'importe quelle manigance). Le pilote prend le premier item offert : X=1, branche degats. 3 jetons poses, 2 doivent rester",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd016', under_control=True)",
+            "Puzzle.Token('hd016', 'threat', 3)",
+            "Puzzle.PutIntoPlay('01110')",
+        ],
+        "declencher": ["Puzzle.Action('hd016', 'HeroAction', 0)"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01110", 1]], "jetons": [["hd016", "threat", 2]]},
+    },
+    {
+        "nom": "hd017 Nexus of all Realities — Interrupt : un allie quitte le jeu, un evenement est cherche dans le deck",
+        "pourquoi": "WhenCardLeavePlay(Interrupt, ('YouControl', Ally)) + Search.PlayerCard(card_type=Event) ; la main est videe puis rechargee d'une SEULE carte ressource (aucun evenement) : tout evenement present en fin de cas ne peut venir que de la recherche. Man-Thing porte Tenacite : il faut DEUX coups de degats pour le vaincre, le premier etant absorbe par le statut Tenace (meme piege que il019 Kang). Le PREMIER Interrupt imprime (« choose a play area ») est deliberement non code, voir hd017.py",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.PutIntoPlay('hd002', under_control=True)",
+        ],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Damage('hd002', 1)", "Puzzle.Damage('hd002', 99)"],
+        "verifier": "hd017_un_evenement_cherche_en_main",
+    },
+    {
+        "nom": "hd021 Waddle it Be? — branche 1 : incline l'alter-ego et retire l'obligation de la partie",
+        "pourquoi": "WhenThisObligationGiveToYou + YouMayFlipToYourAlterEgoForm + ChooseAbilities a 2 branches (modele ok019 Funeral Rites / ss017) ; le pilote prend la premiere option, meme convention que il017",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hd021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd021"]},
+    },
+    {
+        "nom": "hd022 Duck and Cover! — When Revealed : defausse les cartes a ressource mentale imprimee, +1 menace par carte",
+        "pourquoi": "hand_cards.FindCards(has_printed_res='B') + DiscardAll (modele 01179 Yon-Rogg's Treason) ; deux Genius (RES 'BB') en main : menace de depart 2 + 2 defaussees = 4. Cas joue en forme d'IDENTITE CIVILE a dessein, pour que Private Eye (hd001a, hors jeu en civil) n'interfere pas avec la menace posee",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "main_exclusive": ["01089", "01089"],
+        "declencher": ["Puzzle.Reveal('hd022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hd022", 4]], "taille_main": 0},
+    },
+    {
+        "nom": "hd023 Collector — When Revealed : defausse un allie controle",
+        "pourquoi": "GetControlCardsByType(ally=True, support=True) (piege `you control`) + AskChooseFace + DiscardAll ; Man-Thing est le seul allie/soutien en jeu",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd002"], "en_jeu": ["hd023"]},
+    },
+    {
+        "nom": "hd023 Collector — branche de repli : aucun allie ni soutien, la manigance du dessus du deck de rencontre entre en jeu",
+        "pourquoi": "« If you CANNOT » : verifie AVANT le choix, pas apres un refus. hd025 remontee sur le dessus du deck de rencontre (Puzzle.PutIntoDeck) pour rendre la carte trouvee deterministe. Modele de la recherche : ss007 Spider-pathy",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hd025')", "Puzzle.PutIntoDeck('hd025')"],
+        "declencher": ["Puzzle.Reveal('hd023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hd025", "hd023"]},
+    },
+    {
+        "nom": "hd024 Hellcow — Interrupt : serait vaincue -> remelangee dans le deck de rencontre a la place",
+        "pourquoi": "WhenUnitWouldBeDefeated('This') + SetBeInstead + ShuffleAllTo (modele exact ss021 Undead Hand Ninja / lj015 Annihilus) ; piege `instead` : la carte PART du terrain et ARRIVE dans le deck, elle n'est pas dupliquee",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd024')"],
+        "declencher": ["Puzzle.Damage('hd024', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd024"], "dans_deck_rencontre": ["hd024"]},
+    },
+    {
+        "nom": "hd025 Duck, Duck, Doom! — range un allie sous la carte, puis le rend en main a sa defaite",
+        "pourquoi": "TuckCardUnderHere + GetPlacedCardArea().Get() (modele exact 50081 Abduct Superhumans, qui les remet EN JEU la ou hd025 les rend EN MAIN via Faces.ReturnToHand(..., 'Owner'))",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd025')", "Puzzle.SetThreat('hd025', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd025"], "en_main": ["hd002"]},
+    },
+    {
+        "nom": "hd025 Duck, Duck, Doom! — branche de repli : aucun allie, l'identite est desorientee",
+        "pourquoi": "« If you CANNOT » distinct d'un refus : aucun allie en jeu du tout. Statut pose sur l'identite civile (hd001b), forme de depart",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hd025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["hd001b", "Confused"]]},
+    },
+    {
+        "nom": "hd026 A Fowl Plot — When Revealed : defausse une amelioration controlee",
+        "pourquoi": "GetControlCardsByType(upgrade=True) + AskChooseFace ; `cibles` designe explicitement hd016 pour eviter que le pilote ne tombe sur hd017 (permanente, en jeu des la mise en place)",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hd016', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hd026')"],
+        "cibles": ["hd016"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hd016"], "en_jeu": ["hd026"]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Hero) : donne Tenace au vilain",
+        "pourquoi": "WhenThisRevealed('Hero') (modele 01106 Stampede / ok023) + Faces.GiveStatus([villain], 'Tough')",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": ["Puzzle.ChangeToFace('Howard Duckson', 'hd001a')"],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Tough"]]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Hero), branche « If you cannot » : le vilain deja Tenace est soigne de 3",
+        "pourquoi": "« If you CANNOT » verifie AVANT (HasStatus('Tough')), pas apres un echec silencieux ; « heal 3 damage from IT » vise le vilain lui-meme (piege `that <nom>`) : 5 degats subis -> 2 apres",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.ChangeToFace('Howard Duckson', 'hd001a')",
+            "Puzzle.Damage('01094', 5)",
+            "Puzzle.Tough('01094')",
+        ],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "hd027 Duck Hunt — When Revealed (Alter-Ego) : la menace du vilain part sur les manigances annexes, pas sur le complot principal",
+        "pourquoi": "interruption TEMPORAIRE WhenSchemeWouldPlaceThreat(MainScheme) enregistree avant BasicSchemes (modele 50035b Stealth) + PreventThreat('All') + repartition point par point (modele ok008). Piege `instead` : le complot principal doit rester a 0, la manigance annexe doit monter",
+        "scenario": "rhino",
+        "heros": "howard_the_duck",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hd010', under_control=True)",
+            "Puzzle.SetThreat('01097b', 0)",
+        ],
+        "declencher": ["Puzzle.Reveal('hd027')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]], "menace_min": [["hd010", 4]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -8932,6 +9331,51 @@ def ss007_spider_pathy_pose_sbire(monde, aides):
     if "ss007" not in ids and "ss008" not in ids:
         return False, f"Spider-pathy n'est pas dans la defausse (carte non jouee, defausse={ids})"
     return True, f"{len(sbires)} sbire(s) en jeu, au moins un engage avec le joueur, Spider-pathy jouee"
+
+def hd001b_carte_mise_au_fond_du_deck_rencontre(monde, aides):
+    """hd001b : hd024 etait sur le DESSUS du deck de rencontre ; apres
+    Deducktive Reasoning elle doit se trouver au FOND, et nulle part ailleurs."""
+    from game.operate.worlds import Worlds
+    cartes = Worlds.GetEncounterDeckCards(monde)
+    ids = [getattr(f.paper, "card_id", None) for f in cartes]
+    if "hd024" not in ids:
+        return False, "hd024 n'est plus dans le deck de rencontre (deck = %s...)" % ids[:6]
+    if ids[0] == "hd024":
+        return False, "hd024 est toujours sur le dessus du deck de rencontre"
+    if ids[-1] != "hd024":
+        return False, ("hd024 n'est pas au fond du deck de rencontre "
+                       "(position %d sur %d)" % (ids.index("hd024"), len(ids)))
+    return True, "hd024 mise au fond du deck de rencontre (%d cartes)" % len(ids)
+
+def hd012_defausse_videe_et_une_carte_en_main(monde, aides):
+    """hd012 : les 3 cartes semees en defausse doivent l'avoir quittee, et
+    exactement une d'entre elles doit se trouver en MAIN (« instead »)."""
+    semees = {"01051", "01088", "01089"}
+    joueur = monde.players[0]
+    defausse = {getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()}
+    main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    restantes = semees & defausse
+    if restantes:
+        return False, "encore en defausse : %s" % sorted(restantes)
+    gardees = [c for c in main if c in semees]
+    if len(gardees) != 1:
+        return False, ("%d carte(s) semee(s) en main (attendu 1) ; main = %s"
+                       % (len(gardees), main))
+    return True, "3 cartes sorties de la defausse, %s gardee en main" % gardees[0]
+
+def hd017_un_evenement_cherche_en_main(monde, aides):
+    """hd017 : la main ne contenait qu'une carte Resource avant le declencheur ;
+    tout evenement present maintenant vient de la recherche du second Interrupt."""
+    from game.card.face.card_type import Event
+    joueur = monde.players[0]
+    main = list(joueur.hand_cards.GetAll())
+    evenements = [getattr(f.paper, "card_id", None) for f in main if Event.IsType(f)]
+    if not evenements:
+        return False, ("aucun evenement en main : le second Interrupt de hd017 "
+                       "n'a rien cherche (main = %s)"
+                       % [getattr(f.paper, "card_id", None) for f in main])
+    return True, "evenement(s) cherche(s) en main : %s" % evenements
+
 '''
 
 

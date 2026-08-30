@@ -1063,7 +1063,7 @@
         "encounters": [],
         "max_id": "wd165"
     },
-    "checksum": "bca163d1d1a1eb6b8d2db242ad12e9209390ccec75d500fb977660b8afcd278f",
+    "checksum": "73d1489c6ed279d85a192fa53db3f8a5cc149f5e0585ae964d1b2f6207a6a7c4",
     "125. Custom (Okoye)": {
         "name": "okoye",
         "scenarios": [],
@@ -1090,5 +1090,14 @@
         ],
         "encounters": [],
         "max_id": "ss022"
+    },
+    "128. Custom (Howard the Duck)": {
+        "name": "howard_the_duck",
+        "scenarios": [],
+        "heroes": [
+            "howard_the_duck"
+        ],
+        "encounters": [],
+        "max_id": "hd027"
     }
 }

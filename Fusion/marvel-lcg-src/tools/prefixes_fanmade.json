@@ -62,6 +62,13 @@
       "cartes": 18,
       "depuis": "2026-08-12"
     },
+    "hd": {
+      "pack": "howard_the_duck",
+      "libelle": "128. Custom (Howard the Duck)",
+      "cartes": 28,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made RyCoRan, zip 'Howard the Duck (05-23 Final)'. 2 faces heros + 16 signature + 3 ressources re-skinnees (full_link vers 01088/01089/01090) + 1 obligation + 6 nemesis (dont Hellcow, sbire ALTERNATIF a utiliser a la place du Collector quand on affronte le scenario du Collector, donc hors du nemesis_set standard)."
+    },
     "ht": {
       "pack": "human_torch",
       "libelle": "102. Custom (Human Torch)",

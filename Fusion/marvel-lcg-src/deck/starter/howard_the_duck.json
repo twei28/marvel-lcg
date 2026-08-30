@@ -1,0 +1,70 @@
+{
+ "version": "0.5.8",
+ "name": "Howard the Duck",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (RyCoRan) : le zip 'Howard the Duck (05-23 Final)' ne contient que les 16 cartes signature, les 3 ressources re-skinnees et le set nemesis. Aspect JUSTICE choisi par l'utilisateur le 30/08/2026 : le kit entier tourne autour des manigances annexes (poser puis vaincre ses 3 manigances-joueur, Private Eye qui previent la menace, Response au sbire d'une manigance qui entre en jeu, Fowl Play, Ducktective Agency), et THW 2 / ATK 1 confirme l'orientation.",
+  "ressources_note": "Les 3 ressources basiques du deck sont les re-skins du pack (hd018 Energy, hd019 Genius, hd020 Strength, en full_link vers 01088/01089/01090) et NON les cartes officielles : c'est tout l'interet de leur presence dans le zip. Ne jamais ajouter 01088/01089/01090 en plus, MaxPerDeck vaut 1.",
+  "setup_note": "hd017 Nexus of all Realities est une carte Setup + Permanent : elle commence la partie EN JEU et n'est pas melangee au deck. La clé `set_aside` d'un deck de depart est purement DOCUMENTAIRE dans ce depot — SceneLoader.NewScene ne la lit pas (loader.py:98-108 ne construit le HeroDescriptor qu'avec hero / hero_deck / obligations / nemesis_set / player_deck), et seul le chemin « puzzle » s'en sert (server_new_game.py:109/122). Le mecanisme REEL, commun aux 20 autres heros a set_aside non vide (Wolverine 35001b, Vision 26001b, Spider-Man Rainy sr001b, Storm, Doctor Strange...), est porte par l'IDENTITE : `AbilityFactory.SetupPutIntoPlay([...])` genere la carte depuis son card_id sans qu'elle ait besoin d'etre dans un deck (setup.py:6-31). hd001b (Howard Duckson) porte donc `SetupPutIntoPlay([\"hd017\"])`."
+ },
+ "hero": [
+  "hd001a,hd001b"
+ ],
+ "hero_deck": [
+  "hd002",
+  "hd003",
+  "hd004",
+  "hd005",
+  "hd006",
+  "hd007",
+  "hd008",
+  "hd009",
+  "hd010",
+  "hd011",
+  "hd012",
+  "hd013",
+  "hd014",
+  "hd015",
+  "hd016"
+ ],
+ "set_aside": [
+  "hd017"
+ ],
+ "obligations": [
+  "hd021"
+ ],
+ "nemesis_set": [
+  "hd022",
+  "hd023",
+  "hd025",
+  "hd026",
+  "hd027"
+ ],
+ "player_deck": [
+  "01058",
+  "01059",
+  "01060",
+  "01060",
+  "01060",
+  "01061",
+  "01061",
+  "01062",
+  "01062",
+  "01062",
+  "01063",
+  "01063",
+  "01064",
+  "01065",
+  "01065",
+  "01084",
+  "01085",
+  "01086",
+  "01087",
+  "01091",
+  "01092",
+  "01093",
+  "hd018",
+  "hd019",
+  "hd020"
+ ]
+}

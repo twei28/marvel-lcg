@@ -1104,4 +1104,12 @@ export const HEROS_INFO = {
         apparition: "Web of Spider-Man Vol. 1 #119 (1994)",
     },
 
+    "hd001a": {
+        bio: "Howard est un canard anthropomorphe intelligent et cynique venu de Duckworld, projeté sur Terre par un accident cosmique lié au Nexus de toutes les Réalités, dans les marais de Citrusville. Échoué à Cleveland, coincé dans un monde de « grands singes chauves » qu'il méprise autant qu'il le subit, il gagne sa vie comme détective privé râleur, héros bien malgré lui. Ses seuls véritables alliés sont Man-Thing, la créature du marais où il est arrivé, et Beverly Switzler, qui l'a recueilli. Créé par Steve Gerber et Val Mayerik en 1973.",
+        bioEn: "Howard is a sharp-tongued, cynical anthropomorphic duck from Duckworld, hurled onto Earth by a cosmic accident tied to the Nexus of All Realities in the swamps of Citrusville. Stranded in Cleveland, stuck in a world of \"hairless apes\" he despises as much as he endures, he scrapes by as a grumbling private eye and a hero entirely against his will. His only real allies are Man-Thing, the creature of the swamp where he landed, and Beverly Switzler, who took him in. Created by Steve Gerber and Val Mayerik in 1973.",
+        civil: "Howard Duckson",
+        base: "Cleveland (Ohio)",
+        apparition: "Adventure into Fear #19 (1973)",
+    },
+
 };

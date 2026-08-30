@@ -77250,5 +77250,448 @@
             "custom": "Arnaud"
         }
     ],
-    "checksum": "09b6230f96aa0d9027d9df3f20fd9bd4f0162d18d2c5228981db5e8ec7af9c0b"
+    "howard_the_duck": [
+        {
+            "card_id": "hd001a",
+            "type": "Hero",
+            "name": "* Howard the Duck",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "DEFENDER",
+                "GUARDIAN"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<i>Private Eye</i> — <b>Interrupt</b>: When threat would be placed on a scheme, prevent 1 of that threat. <i>(Limit once per round.)</i>\n<b>Response</b>: After a side scheme enters play, ready Howard the Duck. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd001b",
+            "type": "AlterEgo",
+            "name": "* Howard Duckson",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "DUCK",
+                "GENIUS"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<i>Deducktive Reasoning</i> — <b>Action</b>: Look at the top 3 cards of the encounter deck. Put 1 on the bottom of the deck and the others back in any order. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd002",
+            "type": "Ally",
+            "name": "* Man-Thing",
+            "subtitle": "Theodore Sallis",
+            "desc": {
+                "Cost": "4",
+                "HP": "5",
+                "ATK": "3**",
+                "THW": "1*",
+                "RES": "G",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENDER",
+                "PSIONIC"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "Toughness.\nReduce the cost to play Man-Thing by 1 for each Howard the Duck side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd003",
+            "type": "Event",
+            "name": "Mallard Magic",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b>: Choose:\n• Stun an enemy and deal 5 damage to it.\n• Confuse an enemy and remove 4 threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd004",
+            "type": "Event",
+            "name": "Mallard Magic",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b>: Choose:\n• Stun an enemy and deal 5 damage to it.\n• Confuse an enemy and remove 4 threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd005",
+            "type": "Event",
+            "name": "Quack Attack",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When you would take any amount of damage, prevent 2 of that damage. Deal 1 damage to an enemy for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd006",
+            "type": "Event",
+            "name": "Quack Attack",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When you would take any amount of damage, prevent 2 of that damage. Deal 1 damage to an enemy for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd007",
+            "type": "Event",
+            "name": "Fowl Play",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you defeat a side scheme in this way, you may ready your hero or remove 1 threat from a scheme for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd008",
+            "type": "Event",
+            "name": "Fowl Play",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you defeat a side scheme in this way, you may ready your hero or remove 1 threat from a scheme for each side scheme in the victory display.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd009",
+            "type": "Event",
+            "name": "Quack and Burn",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Find Man-Thing and add him to your hand. Deal damage to an enemy equal to Man-Thing's ATK and remove threat from a scheme equal to Howard the Duck's THW.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd010",
+            "type": "PlayerSideScheme",
+            "name": "Trapped",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile Trapped is in the victory display, Howard the Duck gets +1 ATK.\n<b>When Defeated</b>: Each player may search their deck and discard pile for an ally and add it to their hand. The player who defeated this scheme, may put that ally into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd011",
+            "type": "PlayerSideScheme",
+            "name": "In a World",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile In a World is in the victory display, Howard the Duck gets +1 DEF.\n<b>When Defeated</b>: Give each player a tough status card. The player who defeated this scheme, may heal 2 damage from their identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd012",
+            "type": "PlayerSideScheme",
+            "name": "He Never Made",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "StartingThreat": "3*",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Victory 0.\nWhile He Never Made is in the victory display, Howard the Duck gets +1 THW.\n<b>When Defeated</b>: Each player may shuffle up to 3 cards from their discard pile into their deck. The player who defeated this scheme, may add 1 of those cards, to their hand instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd013",
+            "type": "Support",
+            "name": "* Beverly Switzler",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Beverly Switzler → return the bottommost Howard the Duck card from your discard pile to your hand. Heal 1 damage from your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd014",
+            "type": "Support",
+            "name": "* Ducktective Agency",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Resource</b>: Exhaust Ducktective Agency → generate a [mental] resource for an event.\n<b>Hero Response</b>: After you remove the last threat from a scheme, ready Ducktective Agency.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd015",
+            "type": "Upgrade",
+            "name": "Duckpool Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "You get +3 hit points.\nHoward the Duck gets +1 ATK.\n<b>Hero Response</b>: After you defeat a side scheme, exhaust Duckpool Suit → deal 1 damage to an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd016",
+            "type": "Upgrade",
+            "name": "* Iron Suit",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Howard the Duck",
+            "text": "<b>Action</b>: Exhaust Iron Suit → move 1 threat from a scheme to here.\n<b>Hero Action</b>: Exhaust Iron Suit and remove X threat from here → deal X damage to a minion or remove X threat from a scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd017",
+            "type": "Upgrade",
+            "name": "Nexus of all Realities",
+            "subtitle": "",
+            "desc": {
+                "Setup": "1",
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "Setup. Permanent.\n<b>Interrupt</b>: When a character enters play, choose a play area that character is played to.\n<b>Interrupt</b>: When an ally you control leaves play, search your deck for an event card, and add it to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd018",
+            "full_link": "01088"
+        },
+        {
+            "card_id": "hd019",
+            "full_link": "01089"
+        },
+        {
+            "card_id": "hd020",
+            "full_link": "01090"
+        },
+        {
+            "card_id": "hd021",
+            "type": "Obligation",
+            "name": "Waddle it Be?",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Howard Duckson"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck",
+            "text": "<b><i>Give to the Howard Duckson player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Howard Duckson → remove Waddle it Be? from the game.\n• Remove and shuffle all Howard the Duck side schemes from the victory display into your deck. If no schemes were removed this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd022",
+            "type": "SideScheme",
+            "name": "Duck and Cover!",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>Quack-tastrophe! Howard the Duck is in over his head once again. It's up to the heroes to save him from a group of interdimensional bounty hunters.</i>\n<b>When Revealed</b>: Each player must discard cards with a printed [mental] from their hand. Place 1 additional threat here for each card discarded this way.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd023",
+            "type": "Minion",
+            "name": "* Collector",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "SCH": "3",
+                "ATK": "1",
+                "Boost": "2",
+                "Villainous": "1",
+                "Nemesis": "Howard the Duck"
+            },
+            "traits": [
+                "ELDER"
+            ],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "Villainous. <i>(When this minion activates, give it a boost card.)</i>\n<b>When Revealed</b>: Discard an ally or support you control. If you cannot, put the topmost scheme from the encounter deck into play.\n<i>(Howard the Duck's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd024",
+            "type": "Minion",
+            "name": "* Hellcow",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "SCH": "1",
+                "ATK": "2",
+                "Boost": "2",
+                "Quickstrike": "1",
+                "Nemesis": "Howard the Duck"
+            },
+            "traits": [
+                "ELITE",
+                "VAMPIRE"
+            ],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "Quickstrike.\n<b>Forced Interrupt</b>: When the villain phase begins, heal 1 damage from Hellcow.\n<b>Interrupt</b>: When Hellcow would be defeated, shuffle her into the encounter deck instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd025",
+            "type": "SideScheme",
+            "name": "Duck, Duck, Doom!",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>Doctor Bong has set up a trap to capture Howard the Duck.</i>\n<b>When Revealed</b>: Place an ally you control beneath this card. If you cannot, confuse your identity.\n<b>When Defeated</b>: Return the ally beneath here to its owner's hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd026",
+            "type": "SideScheme",
+            "name": "A Fowl Plot",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3",
+                "Acceleration": "1"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<i>The Collector plans to add Howard the Duck to his collection of rare and unique items.</i>\n<b>When Revealed</b>: Discard an upgrade you control. If no cards were discarded this way, place 1 threat on the main scheme and take 1 damage.\n<i>(Howard the Duck's nemesis side scheme.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "hd027",
+            "type": "Treachery",
+            "name": "Duck Hunt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Howard the Duck Nemesis",
+            "text": "<b>When Revealed (Alter-Ego)</b>: The villain schemes. If there are side schemes in play, divide and place threat from this activation among them instead.\n<b>When Revealed (Hero)</b>: Give the villain a tough status card. If you cannot, heal 3 damage from it instead.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "62384a4d83633c923c9d231670e2002a7e1b5f1bd85df80bd0832b230cb01d63"
 }
