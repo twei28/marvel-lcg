@@ -77617,7 +77617,486 @@
             "custom": "Kajislav"
         }
     ],
-    "checksum": "035627274fc0878a37f424a3581c855865f4250244771f6515018442ec15bf79",
+    "ms_america": [
+        {
+            "card_id": "ma001a",
+            "type": "Hero",
+            "name": "* Ms. America",
+            "subtitle": "",
+            "desc": {
+                "HP": "14",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "4"
+            },
+            "traits": [
+                "STARLING",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<i>Star-Gaze</i> — <b>Response</b>: After you play a [[SUPERPOWER]] card, if that card's printed resource was:\n• [physical] – Deal 1 damage to an enemy.\n• [energy] – Heal 1 damage from Ms. America.\n• [mental] – Remove 1 threat from a scheme.\n• [wild] – Ready Ms. America.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma001b",
+            "type": "AlterEgo",
+            "name": "* America Chavez",
+            "subtitle": "",
+            "desc": {
+                "HP": "14",
+                "REC": "5",
+                "HS": "6"
+            },
+            "traits": [
+                "STARLING"
+            ],
+            "set_name": "Ms. America",
+            "text": "You may include upgrade cards that modify your basic powers from any aspect in your deck.\n<i>Thinking With Portals</i> — <b>Action</b>: Discard a card from your hand → search your discard pile for a card and shuffle it into your deck. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma002",
+            "type": "Ally",
+            "name": "* Alloy",
+            "subtitle": "Ramone Watts",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "G",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AERIAL",
+                "MUTATE"
+            ],
+            "set_name": "Ms. America",
+            "text": "Toughness.\n<b>Hero Response</b>: After you resolve \"Star-Gaze\", Alloy gets +1 ATK until the end of the turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma003",
+            "type": "Ally",
+            "name": "* Hawkeye",
+            "subtitle": "Kate Bishop",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Ms. America",
+            "text": "[star] Hawkeye's attack gains piercing and ranged.\n<b>Interrupt</b>: When Hawkeye would be defeated by consequential damage, if you have resolved \"Star-Gaze\" this turn, shuffle her into your deck instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma004",
+            "type": "Support",
+            "name": "* Santana Family",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Ms. America",
+            "text": "Events attached to Santana Family may be played as if they were in your hand.\n<b>Alter-Ego Action</b>: Exhaust Santana Family → search your discard pile for an event and attach it to this card facedown <i>(to a maximum of 2)</i>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma005",
+            "type": "Upgrade",
+            "name": "* Star Light",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Resource</b>: Exhaust Star Light → generate a [wild] resource. You may change the printed resource of the played card to a [wild] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma006",
+            "type": "Upgrade",
+            "name": "* Star Flight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "Ms. America gets +1 THW and gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: When you play an event card, exhaust Star Flight → that event gains the [[SUPERPOWER]] trait.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma007",
+            "type": "Upgrade",
+            "name": "* Hyper-Cosmic Awareness",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Response</b>: After you play a [[SUPERPOWER]] card, place 1 star counter on this card.\n<b>Hero Interrupt</b>: When an encounter card is revealed, exhaust this card and remove 4 star counters from it → cancel all of its effects and discard it.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma008",
+            "type": "Resource",
+            "name": "Energy Infusion",
+            "subtitle": "",
+            "desc": {
+                "RES": "GG",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Response</b>: After you spend this card to pay for a [[SUPERPOWER]] card, resolve \"Star-Gaze\" an additional time as the same printed resource as the played event.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma009",
+            "type": "Event",
+            "name": "America's Anger",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma010",
+            "type": "Event",
+            "name": "America's Anger",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma011",
+            "type": "Event",
+            "name": "Bulletproof Chica",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. Give your identity a tough status card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma012",
+            "type": "Event",
+            "name": "Bulletproof Chica",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. Give your identity a tough status card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma013",
+            "type": "Event",
+            "name": "Star Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted → remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma014",
+            "type": "Event",
+            "name": "Star Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted → remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma015",
+            "type": "Event",
+            "name": "Break Through",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 4 damage to an enemy. Remove 3 threat from a scheme. If this defeats an enemy or scheme, stun or confuse an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma016",
+            "type": "Event",
+            "name": "Break Through",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 4 damage to an enemy. Remove 3 threat from a scheme. If this defeats an enemy or scheme, stun or confuse an enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma017",
+            "type": "Obligation",
+            "name": "Edges Syndrome",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "America Chavez"
+            },
+            "traits": [],
+            "set_name": "Ms. America",
+            "text": "<b><i>Give to the America Chavez player.</i></b>\nYour identity gets -1 to each of its basic powers.\n<b>Action</b>: Take 2 damage → discard this card.\n<b>Action</b>: Take 4 damage → remove this card from the game.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma018",
+            "type": "Minion",
+            "name": "* Catalina Chavez",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "1*",
+                "SCH": "1*",
+                "Boost": "2",
+                "Quickstrike": "1",
+                "Nemesis": "America Chavez"
+            },
+            "traits": [
+                "STARLING"
+            ],
+            "set_name": "Ms. America Nemesis",
+            "text": "Quickstrike.\n[star] Catalina Chavez gets each stat modifier in your play area (replacing THW with SCH).\n<i>(Ms. America's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma019",
+            "type": "SideScheme",
+            "name": "Search for the Cure",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "set_name": "Ms. America Nemesis",
+            "text": "<b>When Revealed</b>: Each player searches their discard pile for an ally and attaches it to this card. This card's starting threat is equal to the combined resource cost of the attached cards. For each player that did not attach an ally to this card, this card gets an additional 2[per_hero] starting threat.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma020",
+            "type": "Treachery",
+            "name": "Star Lightning",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America Nemesis",
+            "text": "<b>When Revealed</b>: Catalina Chavez attacks you. If this attack deals damage, stun your identity. If no attack is made this way, this card gains surge.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma021",
+            "type": "Treachery",
+            "name": "Star Lightning",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America Nemesis",
+            "text": "<b>When Revealed</b>: Catalina Chavez attacks you. If this attack deals damage, stun your identity. If no attack is made this way, this card gains surge.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma022",
+            "type": "Ally",
+            "name": "* Gwenpool",
+            "subtitle": "Gwendolyn Poole",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "G",
+                "Class": "Aggression"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "set_name": "Ms. America",
+            "text": "[star] Gwenpool gets +1 ATK for each identity-specific upgrade you control <i>(to a maximum of +2 ATK)</i>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma023",
+            "type": "Ally",
+            "name": "* Marvel Boy",
+            "subtitle": "Noh-Varr",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Basic"
+            },
+            "traits": [
+                "KREE",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Ms. America",
+            "text": "<b>Interrupt</b>: When Marvel Boy is defeated by consequential damage, ready an upgrade you control.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma024",
+            "type": "Support",
+            "name": "* Noh-Varr's Ship",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Basic"
+            },
+            "traits": [
+                "KREE",
+                "VEHICLE",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Ms. America",
+            "text": "Play only if your identity has the [[YOUNG AVENGER]] trait.\n<b>Resource</b>: Exhaust Noh-Varr's Ship → generate a [wild] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma025",
+            "type": "Event",
+            "name": "Power Stomp",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Aggression"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Ms. America",
+            "text": "Play only if your hero has at least 3 ATK.\n<b>Hero Action</b> <i>(attack)</i>: Deal X damage to the villain and each minion engaged with you, where X equals your ATK.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ma026",
+            "full_link": "12030"
+        },
+        {
+            "card_id": "ma027",
+            "full_link": "01088"
+        },
+        {
+            "card_id": "ma028",
+            "full_link": "01089"
+        },
+        {
+            "card_id": "ma029",
+            "full_link": "01090"
+        }
+    ],
+    "checksum": "9dba9d8f520db6c0560726681a471d51d0c8633b6babdd869603e7033508e34b",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -78778,7 +79257,8 @@
             "name": "Endo-Sym Matter",
             "subtitle": "",
             "desc": {
-                "RES": "G"
+                "RES": "G",
+                "Class": "Hero"
             },
             "traits": [],
             "set_name": "Superior Iron Man",

@@ -157,6 +157,32 @@ function exemptDeLaLimiteAspect(hero, carte) {
         if (carte.type !== "Ally") return false;
         return (carte.traits || []).includes("YOUNG AVENGER");
     }
+    /* Ms. America (America Chavez, ma001b) : « You may include upgrade cards
+     * that modify your basic powers from any aspect in your deck. » Ces
+     * améliorations ne comptent donc pas dans le décompte des aspects.
+     * ⚠ Test ANCRÉ comme celui de Patriot : le catalogue contient déjà
+     * « America Chavez » (l'alter-ego) et un pack « Iron Patriot » attend
+     * d'être porté ; un /america/i lâche attraperait n'importe quoi.
+     * ⚠ « qui modifient tes pouvoirs de base » n'est PAS un trait : c'est une
+     * propriété à dériver. Mesure du 30/08/2026 sur data/cards.json : les clés
+     * `ATK+` / `THW+` / `SCH+` du `desc` n'existent QUE sur des ATTACHEMENTS
+     * de rencontre (Charge, Enhanced Ivory Horn) — aucune amélioration
+     * d'aspect ne les porte, elles expriment leur bonus en CODE
+     * (`GiveKeywordToAttached`). Le seul signal fiable est donc le TEXTE, et
+     * la formule est stable dans tout le catalogue : « Your hero gets +1 ATK »,
+     * « Your alter-ego gets +1 REC », « you get +3 DEF ». On garde les deux
+     * voies (desc d'abord, texte ensuite).
+     * Ce filtre laisse passer Combat Training, Heroic Intuition, Armored Vest,
+     * Aggressive/Defensive/Heroic Conditioning, Brute Force, Innate Reflexes…
+     * et ÉCARTE Inspired, Laser Blaster ou Danger Room Training, qui disent
+     * « ATTACHED ALLY gets » : ce ne sont pas TES pouvoirs de base. */
+    if (/^\*?\s*ms\.?\s*america$/i.test(nom.trim())) {
+        if (carte.type !== "Upgrade") return false;
+        const d = carte.desc || {};
+        if (d["ATK+"] || d["THW+"] || d["DEF+"] || d["SCH+"]) return true;
+        const txt = String(carte.text || "").replace(/<[^>]*>/g, " ");
+        return /\b(?:your\s+(?:hero|identity|alter-ego)|you)\b[^.]{0,60}?[+−-]\d+\s*(?:ATK|THW|DEF|REC)\b/i.test(txt);
+    }
     return false;
 }
 

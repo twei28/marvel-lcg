@@ -1198,4 +1198,17 @@ export const HEROS_INFO = {
         apparition: "Young Avengers Vol. 1 #1 (2005)",
     },
 
+    "ma001a": {
+        bio: "America Chavez vient d'un autre univers, le Utopian Parallel, une dimension hors du temps où l'ont élevée ses deux mères. Quand elles se sacrifient pour sauver leur monde, l'adolescente le quitte pour aller « faire ses preuves » dans le nôtre. Sa force et son invulnérabilité feraient d'elle une adversaire de poids pour n'importe quel Vengeur, mais son vrai pouvoir est ailleurs : d'un coup de pied, elle ouvre des portails en forme d'étoile qui percent la paroi entre les univers. Créée par Joe Casey et Nick Dragotta en 2011.",
+        bioEn: "America Chavez comes from another universe, the Utopian Parallel, a dimension outside of time where her two mothers raised her. When they sacrifice themselves to save their world, the teenager leaves it to go and prove herself in ours. Her strength and invulnerability would make her a match for any Avenger, but her real power lies elsewhere: with a single kick she opens star-shaped portals that punch through the wall between universes. Created by Joe Casey and Nick Dragotta in 2011.",
+        civil: "America Chavez",
+        base: "New York (et le Utopian Parallel)",
+        baseEn: "New York (and the Utopian Parallel)",
+        equipes: "Young Avengers, Ultimates, West Coast Avengers",
+        equipesEn: "Young Avengers, Ultimates, West Coast Avengers",
+        ennemis: "Catalina Chavez, Mère Amérique",
+        ennemisEn: "Catalina Chavez, Mother America",
+        apparition: "Vengeance #1 (2011)",
+    },
+
 };

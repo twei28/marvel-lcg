@@ -82,7 +82,7 @@
       "libelle": "139. Custom (Doctor Doom)",
       "cartes": 0,
       "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "note": "Cree le 30/08/2026. Auteur jakxin. Difficulte annoncee 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "dt": {
       "pack": "determination",
@@ -179,7 +179,7 @@
     "ma": {
       "pack": "ms_america",
       "libelle": "137. Custom (Ms. America)",
-      "cartes": 0,
+      "cartes": 30,
       "depuis": "2026-08-29",
       "note": "RESERVE, pas encore cree. Difficulte 3/5. America Chavez, hero+nemesis (Catalina Chavez). Presque tout existe deja (trait SUPERPOWER, branchement par icone de ressource imprimee -- cf. av007.py, compteurs). Seul point neuf : le minion nemesis copie les modificateurs de stat du joueur en substituant l'icone THW->SCH, aucune primitive de ce type trouvee. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
