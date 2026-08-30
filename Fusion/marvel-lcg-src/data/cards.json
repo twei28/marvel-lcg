@@ -78504,5 +78504,385 @@
             "custom": "Arnaud"
         }
     ],
-    "checksum": "4dba0db5258e55fa4fd192df55e86915aa8488039a730518afb671d7bedf10ee"
+    "patriot": [
+        {
+            "card_id": "pt001a",
+            "type": "Hero",
+            "name": "* Patriot",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Patriot",
+            "text": "<i>Will to Protect</i> — <b>Interrupt</b>: When an ally you control would take consequential damage, move that damage to Patriot. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt001b",
+            "type": "AlterEgo",
+            "name": "* Elijah Bradley",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "CIVILIAN"
+            ],
+            "set_name": "Patriot",
+            "text": "<i>Leader</i> — During deck building you may include [[YOUNG AVENGER]] allies from any aspect.\n<b>Action</b>: Exhaust Elijah Bradley → search your deck and discard pile for the Patriot's Shield and add it to your hand. Shuffle your deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt002",
+            "type": "Ally",
+            "name": "* Hawkingbird",
+            "subtitle": "Kate Bishop",
+            "desc": {
+                "Cost": "3",
+                "HP": "1",
+                "ATK": "0",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Patriot",
+            "text": "Allies you control get +1 hit point.\n<b>Response</b>: After Hawkingbird enters play, you may search your deck and discard pile for an upgrade that can be attached to allies and add it to your hand.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt003",
+            "type": "Event",
+            "name": "Aided Defense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, exhaust an ally you control → you get +1 DEF for each remaining hit point on the exhausted ally. If you take no damage from that attack, ready the exhausted ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt004",
+            "type": "Event",
+            "name": "Aided Defense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, exhaust an ally you control → you get +1 DEF for each remaining hit point on the exhausted ally. If you take no damage from that attack, ready the exhausted ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt005",
+            "type": "Event",
+            "name": "Covered Fire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, choose an ally you control → deal damage to an enemy equal to that ally's ATK value or remove threat from a scheme equal to that ally's THW value.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt006",
+            "type": "Event",
+            "name": "Covered Fire",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, choose an ally you control → deal damage to an enemy equal to that ally's ATK value or remove threat from a scheme equal to that ally's THW value.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt007",
+            "type": "Support",
+            "name": "* Isaiah Bradley",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Patriot",
+            "text": "You get +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Isaiah Bradley → heal 2 damage from Elijah Bradley.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt008",
+            "type": "Upgrade",
+            "name": "Commandeer",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Hero Action</b>: Exhaust and discard Commandeer, choose an ally → move 1 attachment from an enemy to that ally until the end of the round. Treat the attachment's text box as blank and treat SCH as THW.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt009",
+            "type": "Upgrade",
+            "name": "Commander's Orders",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Hero Interrupt</b>: When an ally you control would activate, exhaust Commander's Orders → switch its ATK and THW values for that activation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt010",
+            "type": "Upgrade",
+            "name": "Follow My Lead",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Resource</b>: Exhaust Follow My Lead → generate a [wild] resource for an ally or an upgrade that can be attached to an ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt011",
+            "type": "Upgrade",
+            "name": "On Your Feet",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b>Hero Action</b>: Exhaust On Your Feet → choose: ready an ally or heal 1 damage from an ally.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt012",
+            "type": "Upgrade",
+            "name": "* Patriot's Shield",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Patriot",
+            "text": "You get +1 DEF.\n<b>Hero Interrupt</b>: When you would take damage from an attack, you may move 1 of that damage here. When Patriot's Shield reaches 3 damage, discard it.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt013",
+            "type": "Upgrade",
+            "name": "Revenge",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b>: When Patriot takes any amount of damage from an attack, discard Revenge → the attached ally gets +2 ATK until the end of the next round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt014",
+            "type": "Upgrade",
+            "name": "The Chosen Leader",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TITLE"
+            ],
+            "set_name": "Patriot",
+            "text": "<b>Response</b>: After an ally you control is defeated by consequential damage, search your deck for an ally and add it to your hand.\n<b>Forced Response</b>: When an ally you control is used to defend, deal 1 damage to your identity.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt015",
+            "type": "Upgrade",
+            "name": "Throwing Stars",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b> <i>(attack)</i>: When the attached ally attacks, discard Throwing Stars → deal 3 damage divided as you choose. This attack gains piercing and ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt016",
+            "type": "Upgrade",
+            "name": "Working Together",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Patriot",
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Interrupt</b>: When the attached ally would thwart, choose another friendly character and discard Working Together → add the friendly character's THW value to this ally's thwart.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt017",
+            "type": "Obligation",
+            "name": "MGH Addiction",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Elijah Bradley"
+            },
+            "traits": [],
+            "set_name": "Patriot",
+            "text": "<b><i>Give to the Elijah Bradley player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Discard the Isaiah Bradley support card → remove MGH Addiction from the game.\n• Exhaust all allies under your control. If no allies were exhausted this way, this card gains surge. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt018",
+            "type": "SideScheme",
+            "name": "Mr. Hyde's Lab",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "Crisis": "1",
+                "StartingThreat": "2*"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<i>\"You just window shopping... Or would you like to come in?\" – Mr. Hyde</i>\n<b>When Defeated</b>: Mr. Hyde attacks you. If no attack was made this way, search the encounter deck and encounter discard pile for Mr. Hyde and put him into play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt019",
+            "type": "Minion",
+            "name": "* Mr. Hyde",
+            "subtitle": "",
+            "desc": {
+                "HP": "5",
+                "ATK": "2",
+                "SCH": "2",
+                "Boost": "3",
+                "Toughness": "1",
+                "Nemesis": "Elijah Bradley"
+            },
+            "traits": [
+                "ELITE"
+            ],
+            "set_name": "Patriot Nemesis",
+            "text": "Toughness.\n<b>When Revealed</b>: Search encounter deck, encounter discard pile and set aside cards for the MGH Drug attachment and attach it to Mr. Hyde.\n<i>(Patriot's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt020",
+            "type": "Attachment",
+            "name": "MGH Drug",
+            "subtitle": "",
+            "desc": {
+                "Boost": "0",
+                "ATK+": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "Attach to Mr. Hyde, if able. If you cannot, attach to the villain.\n[star] Attached enemy's attacks gain overkill.\n<b>Hero Action</b>: Spend [mental][energy] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt021",
+            "type": "Treachery",
+            "name": "Bulldozing Charge",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<b>When Revealed</b>: Mr. Hyde attacks you. If no attack was made this way, deal 1 damage to each friendly character.\n<hr />\n[star] <b>Boost</b>: If this card resolves during an attack, this attack gains overkill.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "pt022",
+            "type": "Treachery",
+            "name": "Bulldozing Charge",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Patriot Nemesis",
+            "text": "<b>When Revealed</b>: Mr. Hyde attacks you. If no attack was made this way, deal 1 damage to each friendly character.\n<hr />\n[star] <b>Boost</b>: If this card resolves during an attack, this attack gains overkill.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "d4f7af9763413cd8cecfffb21a8cb12596688ff2e56c138ebb713df97db7f41a"
 }

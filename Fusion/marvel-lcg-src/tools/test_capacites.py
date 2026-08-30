@@ -8229,6 +8229,498 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["sd022"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « patriot » : pt001a-pt022 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # TOUT LE KIT PARLE D'ALLIES : 12 des 17 cartes joueur en dependent. Les
+    # cas ci-dessous posent donc presque toujours un allie sous controle.
+    # `01083` Mockingbird (ATQ 1*, CTR 1*, 3 PV) sert d'allie de reference :
+    # elle est dans le deck de depart Leadership, ses DEUX pouvoirs de base
+    # infligent 1 degat consecutif, et ses valeurs sont assez basses pour que
+    # chaque bonus se lise a l'unite.
+    #
+    # `Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu).
+    #
+    # Les degats d'une attaque de Rhino dependent de ses icones de bonus :
+    # `Puzzle.CreateEncounterDeck('01106')` (Stampede, 1 icone) rend la valeur
+    # DETERMINISTE — Rhino ATQ 2 + 1 = 3.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "pt001a Patriot — Will to Protect : le degat CONSECUTIF de l'allie part sur Patriot",
+        "pourquoi": ("modele dt009 Savior Complex : `SetBeInstead` + `TakeDamage`. Le degat "
+                     "est DEPLACE, pas duplique (lecon The Spot) : l'allie doit finir a 0 "
+                     "degat ET l'identite a 1. Un seul des deux releves ne prouverait rien"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 0]], "degats_identite": 1},
+    },
+    {
+        "nom": "pt001a Patriot — Will to Protect : LIMITE une fois par round (deux allies frappent)",
+        "pourquoi": ("`.LimitOncePerRound()` imprime entre parentheses. Deux allies a degat "
+                     "consecutif attaquent : Patriot ne doit encaisser qu'UNE fois, l'autre "
+                     "allie garde son degat. Sans la limite, l'identite prendrait 2"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')", "Puzzle.Attack('01067')"],
+        "cibles": ["01094", "01094"],
+        "verifier": "pt001a_limite_une_fois_par_round",
+    },
+    {
+        "nom": "pt001b Elijah Bradley — Action : le Patriot's Shield sort du deck et arrive en main",
+        "pourquoi": ("PIEGE DU `*` D'UNICITE : pt012 s'appelle « * Patriot's Shield » dans "
+                     "cards.json, mais paper.py:45 retire le prefixe. Une recherche sur "
+                     "« * Patriot's Shield » ne trouverait rien, EN SILENCE. Le cas prouve "
+                     "que le nom cherche est le bon, et que l'identite s'incline (le cout)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('pt001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pt012"], "exhausted": ["pt001b"]},
+    },
+    {
+        "nom": "pt002 Hawkingbird — +1 PV a TOUS les allies, ELLE COMPRISE",
+        "pourquoi": ("le texte n'ecrit PAS « other » : a 1 PV imprime, Hawkingbird mourrait "
+                     "au moindre degat sans son propre bonus. Le cas controle les DEUX "
+                     "allies, le sien et celui d'a cote — un seul ne departagerait pas "
+                     "`not_include_this=True` de `False`"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt002', under_control=True)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["pt002", "health", 1], ["01083", "health", 1]]},
+    },
+    {
+        "nom": "pt002 Hawkingbird — Response : elle cherche une amelioration ATTACHABLE A UN ALLIE",
+        "pourquoi": ("le filtre n'est pas « une amelioration » mais « attachable a un allie » "
+                     "(`CardFinder(canbe_attach_to=...)`). Le deck est truque avec pt013 "
+                     "(s'attache a un allie) ET pt012 (s'attache a l'identite) : seule la "
+                     "premiere doit remonter. Sans le filtre, pt012 serait un choix legal"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')"],
+        "declencher": ["Puzzle.CreatePlayerDeck('pt013')",
+                       "Puzzle.PutIntoPlay('pt002', under_control=True)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pt013"]},
+    },
+    {
+        "nom": "pt003 Aided Defense — +1 DEF par PV RESTANT de l'allie epuise, puis il est redresse",
+        "pourquoi": ("Rhino ATQ 2 + 1 icone (01106) = 3 degats. DEF 2 du heros + 2 PV de "
+                     "Maria Hill = 4 : le heros ne prend RIEN, donc « if you take no damage "
+                     "-> ready the exhausted ally » part aussi. Les trois moities de la carte "
+                     "sont mesurees d'un coup (cout paye, bonus, redresse). `Puzzle.Defend` "
+                     "ouvre la fenetre et le pilote joue la carte depuis la main, comme pour "
+                     "sg016 Unbeatable!. Code partage avec pt004"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "main_exclusive": ["pt003"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Defend('pt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "pret": ["01067"], "defausse": ["pt003"]},
+    },
+    {
+        "nom": "pt005 Covered Fire — l'allie CHOISI (pas epuise) inflige ses degats d'ATQ a un ennemi",
+        "pourquoi": ("difference avec pt003 : l'allie est DESIGNE, il ne s'incline pas. "
+                     "Maria Hill ATQ 1 -> exactement 1 degat sur Rhino, et l'allie reste "
+                     "PRET. Ce n'est pas une attaque de l'allie : aucun degat consecutif. "
+                     "Code partage avec pt006"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)"],
+        "main_exclusive": ["pt005", "01088"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Defend('pt001a', '01094')"],
+        "cibles": ["01067", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1], ["01067", 0]], "pret": ["01067"],
+                    "defausse": ["pt005"]},
+    },
+    {
+        "nom": "pt007 Isaiah Bradley — +1 REC continu ET Alter-Ego Action : 2 degats soignes",
+        "pourquoi": ("les deux capacites imprimees sont mesurees ensemble : `attributs` lit "
+                     "le REC courant contre le REC imprime (3 -> 4), `degats_identite` "
+                     "prouve le soin de 2 sur 3 degats poses. La partie demarre en "
+                     "alter-ego, l'action est donc disponible d'emblee"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pt007', under_control=True)",
+                          "Puzzle.Damage('pt001b', 3)"],
+        "declencher": ["Puzzle.Action('pt007', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}, "degats_identite": 1,
+                    "exhausted": ["pt007"]},
+    },
+    {
+        "nom": "pt008 Commandeer — l'attachement passe du vilain a l'allie, texte blanc, SCH devenu CTR",
+        "pourquoi": ("04075 Exo-Suit porte ATK+ 1 ET SCH+ 1 : c'est la seule facon de "
+                     "mesurer la conversion. Rhino doit REDESCENDRE a son ATQ imprimee, "
+                     "Mockingbird monter de +1 ATQ et de +1 CTR (le SCH converti, qu'un "
+                     "allie perdrait sinon en silence, face_gain.py:123). Le verificateur "
+                     "controle aussi que la carte est bien LIEE a l'allie et traitee comme "
+                     "blanche"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('04075')",
+                          "Puzzle.PutIntoPlay('pt008', under_control=True)"],
+        "declencher": ["Puzzle.Action('pt008', 'HeroAction')"],
+        "cibles": ["01083", "04075"],
+        "verifier": "pt008_attachement_deplace",
+    },
+    {
+        "nom": "pt009 Commander's Orders — l'ATQ et le CTR de l'allie sont ECHANGES pour cette activation",
+        "pourquoi": ("Maria Hill 01067 a ATQ 1 et CTR 2 : apres l'echange elle frappe pour 2. "
+                     "PIEGE `message.power` : il vaut 'ATK'/'THW', jamais 'Attack'/'Thwart' — "
+                     "une condition ecrite avec le mauvais litteral serait MORTE et le cas "
+                     "montrerait 1 degat"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt009', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01067')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "exhausted": ["pt009"]},
+    },
+    {
+        "nom": "pt010 Follow My Lead — la ressource [wild] finance une amelioration attachable a un allie",
+        "pourquoi": ("modele mw006 Weaving a Web. pt013 Revenge (cout 1, s'attache a un "
+                     "allie) est la seule carte en main : sans la ressource elle reste "
+                     "injouable, avec elle elle entre en jeu. Un allie est en jeu, sans quoi "
+                     "aucune amelioration ne passerait le filtre"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt010', under_control=True)"],
+        "main_exclusive": ["pt013"],
+        "declencher": [],
+        "jouer": ["pt013"],
+        "cibles": ["01083"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pt013"], "exhausted": ["pt010"]},
+    },
+    {
+        "nom": "pt010 Follow My Lead — contre-epreuve : elle NE finance PAS une amelioration d'identite",
+        "pourquoi": ("la ressource est RESTREINTE. pt012 Patriot's Shield coute 1 et "
+                     "s'attache a l'IDENTITE : elle ne passe pas le filtre, donc elle n'entre "
+                     "JAMAIS en jeu et la ressource n'est jamais depensee (pt010 reste "
+                     "PRET). Contre-epreuve du cas precedent, dont il ne differe que par "
+                     "la carte a payer. Cette verte-la est legitime : elle affirme que RIEN "
+                     "ne se passe"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt010', under_control=True)"],
+        "main_exclusive": ["pt012"],
+        "declencher": [],
+        "jouer": ["pt012"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt012"], "pret": ["pt010"]},
+    },
+    {
+        "nom": "pt011 On Your Feet — branche 1 : un allie incline est REDRESSE",
+        "pourquoi": ("le pilote prend la PREMIERE option d'un ChooseAbilities : c'est la "
+                     "redresse. L'allie est incline en mise en place, sans quoi la branche "
+                     "n'aurait aucune cible legale (`canbe_ready=True`)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt011', under_control=True)",
+                          "Puzzle.Exhaust('01083')"],
+        "declencher": ["Puzzle.Action('pt011', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["01083"], "exhausted": ["pt011"]},
+    },
+    {
+        "nom": "pt011 On Your Feet — branche 2 : 1 degat soigne sur un allie",
+        "pourquoi": ("branche inatteignable sans la cle `preferer_option` : le pilote prend "
+                     "toujours la premiere option. L'allie porte 2 degats en mise en place, "
+                     "sans quoi la branche n'a aucune cible (`canbe_heal=True`)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt011', under_control=True)",
+                          "Puzzle.Damage('01083', 2)"],
+        "declencher": ["Puzzle.Action('pt011', 'HeroAction')"],
+        "preferer_option": "Heal 1 damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 1]], "exhausted": ["pt011"]},
+    },
+    {
+        "nom": "pt012 Patriot's Shield — +1 DEF continu ET 1 SEUL degat DEPLACE sur la carte",
+        "pourquoi": ("modele 04065 Crossbones' Armor, mais 1 point et non tous : Rhino ATQ 2 "
+                     "+ 1 icone (01106) = 3, le heros est INCLINE donc ne defend pas, il "
+                     "encaisse 2 et le bouclier prend 1 compteur. Si le point etait duplique "
+                     "au lieu d'etre deplace, l'identite serait a 3"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt012', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}, "degats_identite": 2,
+                    "compteurs": [["pt012", "damage", 1]]},
+    },
+    {
+        "nom": "pt012 Patriot's Shield — a 3 degats elle est DEFAUSSEE",
+        "pourquoi": ("le seuil imprime est 3, pas 5 (04065). Deux compteurs sont poses en "
+                     "mise en place, le troisieme vient de l'attaque : la carte doit quitter "
+                     "le jeu dans la foulee"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt012', under_control=True)",
+                          "Puzzle.Counter('pt012', 'damage', 2)",
+                          "Puzzle.Exhaust('pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt012"], "degats_identite": 2},
+    },
+    {
+        "nom": "pt013 Revenge — quand Patriot encaisse une attaque, l'allie porteur gagne +2 ATQ",
+        "pourquoi": ("« YourHero » et non un CardFinder par NOM : DEUX allies "
+                     "officiels s'appellent deja Patriot (29016, 56041). Le heros ET l'allie "
+                     "sont inclines : c'est le seul moyen de faire arriver l'attaque "
+                     "jusqu'a l'identite. La carte est defaussee (le cout de la fleche) et "
+                     "l'allie monte de 1 a 3 d'ATQ"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt013', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')",
+                          "Puzzle.Exhaust('01067')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01067", "attack", 2]], "hors_jeu": ["pt013"]},
+    },
+    {
+        "nom": "pt014 The Chosen Leader — Forced Response : un allie qui DEFEND coute 1 degat a l'identite",
+        "pourquoi": ("TEXTE CONTRADICTOIRE tranche par l'utilisateur le 30/08/2026 : le "
+                     "mot-cle en gras (« Forced Response ») fait foi, « When » n'est que de "
+                     "l'anglais relache. `AfterUnitBecomeDefender` part au moment ou l'allie "
+                     "est DESIGNE defenseur, donc meme s'il meurt de l'attaque"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt014', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "pt014 The Chosen Leader — Response : allie vaincu par degat CONSECUTIF -> un allie remonte en main",
+        "pourquoi": ("restriction forte `by_consequential=True` (modele 38028 Med Lab) : un "
+                     "allie tue par une ATTAQUE ne declencherait RIEN. Deux allies frappent : "
+                     "le premier consomme la limite de Will to Protect, le second (a 1 PV) "
+                     "encaisse donc vraiment son degat consecutif et meurt. La main est "
+                     "VIDEE par `main_exclusive` : tout allie qui s'y trouve ensuite vient "
+                     "de la recherche"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt014', under_control=True)",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.Damage('01083', 2)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01067')", "Puzzle.Attack('01083')"],
+        "cibles": ["01094", "01094"],
+        "verifier": "pt014_allie_cherche",
+    },
+    {
+        "nom": "pt015 Throwing Stars — 3 degats REPARTIS en plus de l'attaque de l'allie porteur",
+        "pourquoi": ("`repeat_rules` « Health » rend la vraie repartition : un clic = une "
+                     "attribution, il en faut TROIS (les doublons de all_legal_targets sont "
+                     "du sens, pas du bruit). Mockingbird ATQ 1 + 3 repartis = 4 degats sur "
+                     "Rhino, et la carte est defaussee (le cout de la fleche)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt015', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01083')"],
+        "cibles": ["01094", "01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "hors_jeu": ["pt015"]},
+    },
+    {
+        "nom": "pt016 Working Together — le CTR d'un AUTRE personnage ami s'ajoute au contre de l'allie",
+        "pourquoi": ("« another » : l'allie porteur est exclu de la liste, seul Patriot "
+                     "(CTR 1) est un choix legal en solo. 6 menaces - 1 (allie) - 1 (heros) "
+                     "= 4. La carte est defaussee (le cout de la fleche)"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('pt016', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.Action('01083', 'BasicPower', 1)"],
+        "cibles": ["01097b", "pt001a"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "hors_jeu": ["pt016"]},
+    },
+    {
+        "nom": "pt017 MGH Addiction — branche 1 : defausser Isaiah Bradley retire l'obligation DU JEU",
+        "pourquoi": ("la fleche est un COUT : sans pt007 en jeu la branche est INDISPONIBLE. "
+                     "Ici elle est disponible et le pilote prend la premiere option. Les "
+                     "DEUX cartes doivent quitter le jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pt007', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt017", "pt007"]},
+    },
+    {
+        "nom": "pt017 MGH Addiction — branche 2 : tous les allies sont EPUISES, pas de surge",
+        "pourquoi": ("sans pt007 en jeu la premiere branche est indisponible : seule la "
+                     "seconde est proposee. Un allie PRET est epuise « this way », donc la "
+                     "condition du surge est fausse. L'obligation part a la defausse"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01083"], "hors_jeu": ["pt017"]},
+    },
+    {
+        "nom": "pt018 Mr. Hyde's Lab — When Defeated : Mr. Hyde n'est pas la, il est CHERCHE et mis en jeu",
+        "pourquoi": ("le sbire nemesis est place dans le deck Rencontre par le banc "
+                     "(au montage il vit dans la reserve du joueur, hors de portee d'une "
+                     "recherche « encounter deck + discard pile »). La manigance est "
+                     "ramenee a 1 menace pour qu'un seul contre de base la batte"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt018')",
+                          "Puzzle.SetThreat('pt018', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt019')",
+                       "Puzzle.Action('pt001a', 'BasicPower', 1)"],
+        "cibles": ["pt018"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pt019"], "hors_jeu": ["pt018"]},
+    },
+    {
+        "nom": "pt019 Mr. Hyde — When Revealed : le MGH Drug est cherche dans TROIS zones et attache a lui",
+        "pourquoi": ("« encounter deck, encounter discard pile AND SET ASIDE CARDS » : trois "
+                     "zones, pas deux (pt018, elle, n'en cite que deux). Le verificateur "
+                     "controle que l'attachement est bien LIE au sbire, pas seulement en jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt020')", "Puzzle.Reveal('pt019')"],
+        "verifier": "pt019_mgh_drug_attachee",
+    },
+    {
+        "nom": "pt020 MGH Drug — Hero Action : depenser [mental][energy] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE, pas a vue (lecon Lockjaw). Meme "
+                     "limite du pilote que pour sd020 : deux cartes a UNE icone, pt009 "
+                     "([mental]) et pt003 ([energy]). L'attache conditionnelle est controlee "
+                     "au passage — sans elle la carte ne serait meme pas en jeu"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt020')"],
+        "main_exclusive": ["pt009", "pt003"],
+        "declencher": ["Puzzle.Action('pt020', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pt020"]},
+    },
+    {
+        "nom": "pt020 MGH Drug — [star] : les attaques de l'ennemi porteur gagnent OVERKILL",
+        "pourquoi": ("l'overkill n'est observable qu'avec un defenseur qui MEURT : "
+                     "Maria Hill ramenee a 1 PV encaisse l'attaque, l'exces passe a "
+                     "l'identite. Rhino ATQ 2 + 1 (l'ATK+ de la carte) + 1 icone (01106) = 4, "
+                     "moins 1 PV du defenseur = 3 sur l'identite. Sans overkill, l'identite "
+                     "ne prendrait RIEN"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt020')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Damage('01067', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — When Revealed SANS Mr. Hyde : 1 degat a CHAQUE personnage ami",
+        "pourquoi": ("le repli part aussi quand le sbire n'est pas en jeu (modele 02040 Tail "
+                     "Sweep, `else: action()`). « each friendly character » n'est pas "
+                     "restreint a « you control » : l'allie ET l'identite encaissent. Code "
+                     "partage avec pt022"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pt021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01083", 1]], "degats_identite": 1},
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — AVEC Mr. Hyde en jeu : il attaque, l'allie ne prend RIEN",
+        "pourquoi": ("contre-epreuve du cas precedent : quand l'attaque a lieu, la branche "
+                     "« if no attack was made this way » ne part PAS. Le heros ET l'allie "
+                     "sont inclines pour que personne ne defende, l'allie doit rester "
+                     "intact. Cette verte "
+                     "affirme que RIEN ne se passe cote allie ; son jumeau positif est le "
+                     "cas precedent"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('pt019')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Exhaust('pt001a')",
+                          "Puzzle.Exhaust('01067')"],
+        "declencher": ["Puzzle.Reveal('pt021')"],
+        "verifier": "pt021_hyde_a_frappe",
+    },
+    {
+        "nom": "pt021 Bulldozing Charge — capacite Boost : l'attaque en cours gagne OVERKILL",
+        "pourquoi": ("la trahison est posee sur le DESSUS du deck Rencontre : elle devient "
+                     "la carte de bonus de l'attaque. 1 icone imprimee -> Rhino ATQ 2 + 1 = 3, "
+                     "moins 1 PV du defenseur = 2 sur l'identite grace a l'overkill. Sans la "
+                     "capacite Boost, l'identite ne prendrait RIEN"),
+        "scenario": "rhino",
+        "heros": "patriot",
+        "mise_en_place": ["Puzzle.ChangeToFace('Elijah Bradley', 'pt001a')",
+                          "Puzzle.PutIntoPlay('01067', under_control=True)",
+                          "Puzzle.Damage('01067', 1)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('pt021')",
+                       "Puzzle.Attack('01094', defender='01067')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -11012,6 +11504,135 @@ def sd021_cout_impayable(monde, aides):
     if identite is not None and identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
         return False, "identite Sonnee alors qu'aucun heros n'est en jeu"
     return True, "cout impayable : Magic Chains reste en jeu, personne n'est Sonne"
+
+def pt001a_limite_une_fois_par_round(monde, aides):
+    """pt001a : « (Limit once per round.) ». Deux allies a degat consecutif
+    frappent ; Patriot ne peut encaisser qu'UNE fois.
+
+    On ne peut pas dire d'avance LEQUEL des deux allies sera protege (l'ordre
+    depend du moteur) : on compte donc les totaux."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, (f"l'identite a encaisse {subis} degat(s) (attendu 1 : "
+                       f"la limite une-fois-par-round)")
+
+    total_allies = 0
+    for card_id in ("01083", "01067"):
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            return False, f"{card_id} introuvable en jeu"
+        total_allies += face.max_health - face.health
+    if total_allies != 1:
+        return False, (f"les allies portent {total_allies} degat(s) au total "
+                       f"(attendu 1 : celui que Patriot n'a PAS pu reprendre)")
+
+    return True, "1 degat deplace sur Patriot, 1 degat laisse a l'allie : limite respectee"
+
+
+def pt008_attachement_deplace(monde, aides):
+    """pt008 : l'Exo-Suit passe de Rhino a Mockingbird, son texte est blanc,
+    son ATK+ suit le porteur et son SCH+ devient un CTR+."""
+    exo = aides["par_id"](monde, "04075")
+    allie = aides["par_id"](monde, "01083")
+    vilain = aides["par_id"](monde, "01094")
+    if exo is None:
+        return False, "04075 Exo-Suit n'est plus en jeu"
+    if allie is None:
+        return False, "01083 Mockingbird n'est plus en jeu"
+    if vilain is None:
+        return False, "01094 Rhino introuvable"
+
+    soucis = []
+
+    porteur = exo.GetBindFace()
+    if porteur is not allie:
+        soucis.append(f"l'Exo-Suit est attache a {porteur} (attendu Mockingbird)")
+
+    if not exo.is_treat_as_if_blank:
+        soucis.append("l'Exo-Suit n'est PAS traite comme blanc")
+
+    # « treat SCH as THW » : ATK+ 1 et SCH+ 1 sur l'allie -> +1 ATQ et +1 CTR.
+    if allie.attack != allie.printed_attack + 1:
+        soucis.append(f"ATQ de l'allie = {allie.attack} "
+                      f"(imprime {allie.printed_attack}, attendu +1 par l'ATK+)")
+    if allie.thwart != allie.printed_thwart + 1:
+        soucis.append(f"CTR de l'allie = {allie.thwart} "
+                      f"(imprime {allie.printed_thwart}, attendu +1 : le SCH+ converti)")
+
+    # Rhino a rendu le bonus.
+    if vilain.attack != vilain.printed_attack:
+        soucis.append(f"ATQ de Rhino = {vilain.attack} "
+                      f"(imprime {vilain.printed_attack}) : le bonus n'a pas suivi")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "attachement deplace, texte blanc, ATK+ suivi et SCH+ converti en CTR+"
+
+
+def pt014_allie_cherche(monde, aides):
+    """pt014 : l'allie vaincu par degat CONSECUTIF fait remonter un allie du
+    deck a la main. La main a ete VIDEE par `main_exclusive` : tout allie qui
+    s'y trouve vient de la recherche."""
+    from game.card.face.card_type import Ally
+
+    mort = aides["par_id"](monde, "01083")
+    if mort is not None:
+        return False, ("01083 est encore en jeu : le degat consecutif ne l'a pas "
+                       "vaincu (la limite de Will to Protect a-t-elle bien ete "
+                       "consommee par le premier allie ?)")
+
+    allies_en_main = [getattr(f.paper, "card_id", "?")
+                      for f in monde.players[0].hand_cards.GetAll()
+                      if Ally.IsType(f)]
+    if not allies_en_main:
+        cartes = [getattr(f.paper, "card_id", "?")
+                  for f in monde.players[0].hand_cards.GetAll()]
+        return False, f"aucun allie en main apres la recherche (main = {cartes})"
+
+    return True, f"allie(s) remonte(s) en main : {allies_en_main}"
+
+
+def pt019_mgh_drug_attachee(monde, aides):
+    """pt019 : le MGH Drug cherche est bien ATTACHE au sbire, pas seulement en
+    jeu."""
+    hyde = aides["par_id"](monde, "pt019")
+    drug = aides["par_id"](monde, "pt020")
+    if hyde is None:
+        return False, "pt019 Mr. Hyde n'est pas en jeu"
+    if drug is None:
+        return False, "pt020 MGH Drug n'est pas en jeu : la recherche a echoue"
+    porteur = drug.GetBindFace()
+    if porteur is not hyde:
+        return False, f"le MGH Drug est attache a {porteur} (attendu Mr. Hyde)"
+    return True, "MGH Drug trouve et attache a Mr. Hyde"
+
+
+def pt021_hyde_a_frappe(monde, aides):
+    """pt021 : quand Mr. Hyde est en jeu, il attaque et la branche « if no
+    attack was made this way » ne part PAS. L'allie doit etre intact et
+    l'identite avoir encaisse l'attaque."""
+    allie = aides["par_id"](monde, "01067")
+    identite = aides["identite"](monde)
+    if allie is None:
+        return False, "01067 n'est plus en jeu"
+    if identite is None:
+        return False, "identite introuvable"
+
+    degats_allie = allie.max_health - allie.health
+    if degats_allie != 0:
+        return False, (f"l'allie porte {degats_allie} degat(s) : la branche "
+                       f"« if no attack was made this way » est partie a tort")
+
+    subis = identite.max_health - identite.health
+    if subis <= 0:
+        return False, "l'identite n'a rien encaisse : Mr. Hyde n'a pas attaque"
+
+    return True, (f"Mr. Hyde a attaque ({subis} degat(s) sur l'identite) et "
+                  f"l'allie est intact")
 '''
 
 

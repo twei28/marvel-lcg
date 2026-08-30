@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Patriot Nemesis",
+    "encounters": [
+        "pt018",
+        "pt019",
+        "pt020",
+        "pt021",
+        "pt022"
+    ]
+}

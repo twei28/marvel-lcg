@@ -1271,4 +1271,47 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sd021': "Attachez-la à Coat of Arms, si possible. Sinon, attachez-la au vilain.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché attaque, si l'attaque inflige des dégâts, sonnez votre héros → défaussez cette carte.",
   // speed — Conflicted Feelings (Obligation, nemesis)
   'sd022': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nTant que cette obligation est en jeu, Coat of Arms ne peut pas subir de dégâts.\n<b>Action d'identité civile</b> : dépensez des ressources [energy][mental] → défaussez cette carte.",
+  // patriot — Patriot (Hero)
+  'pt001a': "<i>Will to Protect</i> — <b>Interruption</b> : quand un allié que vous contrôlez devrait subir des dégâts consécutifs, déplacez ces dégâts sur Patriot. <i>(Limite d'une fois par round.)</i>",
+  // patriot — Elijah Bradley (AlterEgo)
+  'pt001b': "<i>Leader</i> — Pendant la construction du deck, vous pouvez inclure des alliés [[YOUNG AVENGER]] de n'importe quel aspect.\n<b>Action</b> : inclinez Elijah Bradley → cherchez le Patriot's Shield dans votre deck et votre pile de défausse, et ajoutez-le à votre main. Mélangez votre deck.",
+  // patriot — Hawkingbird (Ally)
+  'pt002': "Les alliés que vous contrôlez gagnent +1 point de vie.\n<b>Réponse</b> : après l'entrée en jeu de Hawkingbird, vous pouvez chercher dans votre deck et votre pile de défausse une amélioration pouvant être attachée à un allié, et l'ajouter à votre main.",
+  // patriot — Aided Defense (Event, x2)
+  'pt003': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, inclinez un allié que vous contrôlez → vous gagnez +1 DEF par point de vie restant sur l'allié incliné. Si vous ne subissez aucun dégât de cette attaque, redressez l'allié incliné.",
+  'pt004': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, inclinez un allié que vous contrôlez → vous gagnez +1 DEF par point de vie restant sur l'allié incliné. Si vous ne subissez aucun dégât de cette attaque, redressez l'allié incliné.",
+  // patriot — Covered Fire (Event, x2)
+  'pt005': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
+  'pt006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
+  // patriot — Isaiah Bradley (Support)
+  'pt007': "Vous gagnez +1 REC.\n<b>Action d'identité civile</b> : inclinez Isaiah Bradley → soignez 2 dégâts sur Elijah Bradley.",
+  // patriot — Commandeer (Upgrade)
+  'pt008': "<b>Action de héros</b> : inclinez et défaussez Commandeer, choisissez un allié → déplacez 1 attachement d'un ennemi vers cet allié jusqu'à la fin du round. Considérez que la zone de texte de cet attachement est vierge, et que son MNG est un CTR.",
+  // patriot — Commander's Orders (Upgrade)
+  'pt009': "<b>Interruption de héros</b> : quand un allié que vous contrôlez devrait s'activer, inclinez Commander's Orders → échangez ses valeurs d'ATQ et de CTR pour cette activation.",
+  // patriot — Follow My Lead (Upgrade)
+  'pt010': "<b>Ressource</b> : inclinez Follow My Lead → générez une ressource [wild] pour un allié ou pour une amélioration pouvant être attachée à un allié.",
+  // patriot — On Your Feet (Upgrade)
+  'pt011': "<b>Action de héros</b> : inclinez On Your Feet → choisissez : redressez un allié, ou soignez 1 dégât sur un allié.",
+  // patriot — Patriot's Shield (Upgrade)
+  'pt012': "Vous gagnez +1 DEF.\n<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, vous pouvez déplacer 1 de ces dégâts ici. Quand Patriot's Shield atteint 3 dégâts, défaussez-la.",
+  // patriot — Revenge (Upgrade)
+  'pt013': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand Patriot subit des dégâts d'une attaque, quel qu'en soit le nombre, défaussez Revenge → l'allié attaché gagne +2 ATQ jusqu'à la fin du prochain round.",
+  // patriot — The Chosen Leader (Upgrade)
+  'pt014': "<b>Réponse</b> : après qu'un allié que vous contrôlez est mis K.O. par des dégâts consécutifs, cherchez un allié dans votre deck et ajoutez-le à votre main.\n<b>Réponse Obligatoire</b> : quand un allié que vous contrôlez est utilisé pour se défendre, infligez 1 dégât à votre identité.",
+  // patriot — Throwing Stars (Upgrade)
+  'pt015': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> <i>(attaque)</i> : quand l'allié attaché attaque, défaussez Throwing Stars → infligez 3 dégâts répartis comme vous le souhaitez. Cette attaque gagne <b><i>Perforation</i></b> et <b><i>Distance</i></b>.",
+  // patriot — Working Together (Upgrade)
+  'pt016': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand l'allié attaché devrait contrer, choisissez un autre personnage ami et défaussez Working Together → ajoutez la valeur de CTR de ce personnage ami au contre de cet allié.",
+  // patriot — MGH Addiction (Obligation)
+  'pt017': "<b><i>Donnez-la au joueur Elijah Bradley.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Défaussez la carte de soutien Isaiah Bradley → retirez MGH Addiction de la partie.\n• Inclinez tous les alliés sous votre contrôle. Si aucun allié n'a été incliné de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // patriot — Mr. Hyde's Lab (SideScheme, nemesis)
+  'pt018': "<i>\"Vous faites juste du lèche-vitrine... ou vous voulez entrer ?\" – Mr. Hyde</i>\n<b>Une fois K.O.</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, cherchez Mr. Hyde dans le deck de rencontre et la pile de défausse de rencontre, et mettez-le en jeu.",
+  // patriot — Mr. Hyde (Minion, nemesis)
+  'pt019': "Robuste.\n<b>Une fois révélée</b> : cherchez l'attachement MGH Drug dans le deck de rencontre, la pile de défausse de rencontre et les cartes mises de côté, et attachez-le à Mr. Hyde.\n<i>(Sbire némésis de Patriot.)</i>",
+  // patriot — MGH Drug (Attachment, nemesis)
+  'pt020': "Attachez-la à Mr. Hyde, si possible. Sinon, attachez-la au vilain.\n[star] Les attaques de l'ennemi attaché gagnent <b><i>Surpuissance</i></b>.\n<b>Action de héros</b> : dépensez des ressources [mental][energy] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // patriot — Bulldozing Charge (Treachery, nemesis, x2)
+  'pt021': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
+  'pt022': "<b>Une fois révélée</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, infligez 1 dégât à chaque personnage ami.\n<hr />\n[star] <b>Boost</b> : si cette carte est résolue durant une attaque, cette attaque gagne <b><i>Surpuissance</i></b>.",
 }

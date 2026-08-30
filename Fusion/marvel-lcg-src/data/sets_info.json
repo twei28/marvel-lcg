@@ -1072,7 +1072,16 @@
         "encounters": [],
         "max_id": "sd022"
     },
-    "checksum": "32960eacb567d4076a55237ee5cf9d66f21da7fc7a32b16907846d5082606459",
+    "131. Custom (Patriot)": {
+        "name": "patriot",
+        "scenarios": [],
+        "heroes": [
+            "patriot"
+        ],
+        "encounters": [],
+        "max_id": "pt022"
+    },
+    "checksum": "1f3dbe9d34248e40dcf0027f6dba7ce075fd962b0364d391c450804b7246d3c3",
     "125. Custom (Okoye)": {
         "name": "okoye",
         "scenarios": [],

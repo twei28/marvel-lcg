@@ -1136,4 +1136,16 @@ export const HEROS_INFO = {
         apparition: "Young Avengers Vol. 1 #10 (2005)",
     },
 
+    "pt001a": {
+        bio: "Elijah Bradley est le petit-fils d'Isaiah Bradley, le « Captain America noir » sur qui l'armée américaine a testé le sérum du super-soldat. Adolescent, Eli se fait passer pour un héritier du sérum et prend le nom de Patriot, avant d'avouer qu'il doit en réalité sa force à une drogue de synthèse, le MGH. Sevré puis authentiquement transfusé par le sang de son grand-père, il devient le meneur des Young Avengers : le stratège, celui qui reste debout devant ses coéquipiers et encaisse à leur place. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Elijah Bradley is the grandson of Isaiah Bradley, the \"black Captain America\" the US Army tested the super-soldier serum on. As a teenager Eli passes himself off as an heir to the serum and takes the name Patriot, before admitting that his strength really comes from a synthetic drug, MGH. Clean at last, and genuinely transfused with his grandfather's blood, he becomes the leader of the Young Avengers: the strategist, the one who stands in front of his teammates and takes the hit for them. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Elijah Bradley",
+        base: "New York (Brooklyn)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Mr. Hyde, Kang le Conquérant",
+        ennemisEn: "Mr. Hyde, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
 };
