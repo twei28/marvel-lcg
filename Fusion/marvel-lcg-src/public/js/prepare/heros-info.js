@@ -1112,4 +1112,16 @@ export const HEROS_INFO = {
         apparition: "Adventure into Fear #19 (1973)",
     },
 
+    "wc001a": {
+        bio: "Billy Kaplan est un adolescent de Manhattan qui découvre qu'il manie la magie du chaos : il lui suffit de formuler ses souhaits à voix haute pour que la réalité s'y plie. Membre fondateur des Young Avengers sous le nom de Wiccan, il apprend qu'il est en réalité l'un des fils réincarnés de la Sorcière Rouge et de la Vision, et le frère jumeau de Speed. Époux de Hulkling, avec qui il règne sur l'empire Kree/Skrull, il porte aussi une prophétie écrasante : devenir le Demiurge, le sorcier le plus puissant de l'univers. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Billy Kaplan is a Manhattan teenager who discovers he wields chaos magic: he need only speak his wishes aloud for reality to bend to them. A founding member of the Young Avengers as Wiccan, he learns he is in fact one of the reincarnated sons of the Scarlet Witch and the Vision, and the twin brother of Speed. Married to Hulkling, with whom he rules the Kree/Skrull empire, he also carries a crushing prophecy: to become the Demiurge, the most powerful sorcerer in the universe. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Billy Kaplan",
+        base: "New York (Manhattan)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Moridun, Kang le Conquérant",
+        ennemisEn: "Moridun, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #1 (2005)",
+    },
+
 };

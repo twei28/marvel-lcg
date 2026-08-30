@@ -7172,6 +7172,505 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 0]], "menace_min": [["hd010", 4]]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « wiccan » : wc001a-wc023 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # Mecanique centrale : COMPTER LES ICONES DE BONUS DE LA CARTE DU DESSUS
+    # DU DECK RENCONTRE. Comme pour agent_13, un cas vert avec 0 icone ne
+    # prouverait rien : le deck Rencontre est donc truque via
+    # `Puzzle.CreateEncounterDeck` avec des cartes a icones CONNUES —
+    # 01106 Stampede (1 icone, palier « 0 ou 1 ») et 01111 Explosion
+    # (2 icones, palier « 2 ou plus »).
+    #
+    # `Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "wc001a Wiccan — Clairvoyance : la carte du dessus du deck rencontre est FACE VISIBLE (forme heros)",
+        "pourquoi": ("`PlayWithTopCardOfDeckFaceup(..., only_during_player_phase=True)` pose un "
+                     "`WhenPlayerPhaseBegin` : la sonde renvoie ce message dans le monde et "
+                     "verifie que la carte du dessus est bien retournee. Sans le module, elle "
+                     "reste face cachee et tout le kit joue a l'aveugle"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc_clairvoyance_dessus_face_visible",
+    },
+    {
+        "nom": "wc001b Billy Kaplan — Clairvoyance : face visible AUSSI en identite civile",
+        "pourquoi": ("la capacite est imprimee sur LES DEUX faces : sans module sur wc001b, "
+                     "passer en identite civile eteindrait la carte visible. C'est aussi ce cas "
+                     "qui a trouve le bug moteur `CastTo(Hero)` de la fabrique partagee"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc_clairvoyance_dessus_face_visible",
+    },
+    {
+        "nom": "wc001a Wiccan — Forced Interrupt : au debut de la phase du vilain, le dessus du deck rencontre est defausse",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle (aucune commande n'avance de "
+                     "phase) : la sonde renvoie `Message.WhenPhaseBegin('Villain')` dans le "
+                     "monde, exactement ce que fait `world.phase_begin` (world.py:789-793)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": [],
+        "verifier": "wc001a_defausse_au_debut_de_la_phase_du_vilain",
+    },
+    {
+        "nom": "wc001b Billy Kaplan — Action : regarde les 2 du dessus du deck rencontre et en defausse 1",
+        "pourquoi": ("la defausse est OPTIONNELLE (« you MAY discard one of them ») : sans "
+                     "`accepter_choix`, le pilote choisit 0 carte et la capacite parait morte "
+                     "(piege du §8 du guide). La defausse de rencontre est VIDE au depart, "
+                     "donc toute carte qui s'y trouve vient de cette action"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01106')"],
+        "declencher": ["Puzzle.Action('wc001b', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "wc_defausse_rencontre_non_vide",
+    },
+    {
+        "nom": "wc002 Hulkling — Interrupt : +1 ATQ par icone de bonus du dessus du deck, puis cette carte est defaussee",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111 Explosion) : ATQ 1* (=1 en solo) "
+                     "+ 2 icones = 3 degats. Un cas a 0 icone ne distinguerait rien. La carte "
+                     "defaussee prouve la seconde phrase du texte"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')", "Puzzle.Attack('wc002')"],
+        "cibles": ["01094"],
+        "verifier": "wc002_hulkling_bonus_et_defausse",
+    },
+    {
+        "nom": "wc003 Impenetrable Barrier — Hero Action : Tough au heros PUIS a X personnages amis",
+        "pourquoi": ("deux phrases, deux portees : le heros recoit son Tough sans condition, "
+                     "les X autres viennent des icones de bonus (01111 = 2). `accepter_choix` "
+                     "exerce le « up to X », dont le minimum est 0 et que le pilote declinerait "
+                     "sinon. Code partage avec wc004"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc003", "01088"],
+        "accepter_choix": True,
+        "jouer": ["wc003"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["wc001a", "Tough"], ["wc002", "Tough"]]},
+    },
+    {
+        "nom": "wc005 Magic Bolt — palier « 0 ou 1 icone » : 3 degats puis pioche 1",
+        "pourquoi": ("deck Rencontre truque a 1 icone (01106 Stampede) : la branche du haut. "
+                     "Main videe puis rechargee, donc la carte en main a la fin ne peut venir "
+                     "que de la pioche. Code partage avec wc006 et wc007"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "taille_main": 1},
+    },
+    {
+        "nom": "wc005 Magic Bolt — palier « 2 icones ou plus » : 3 + 3 degats, le SECOND en ranged",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111 Explosion). La cible est "
+                     "M.O.D.O.K. (01184, 8 PV, Retaliate 2 IMPRIME) : il survit aux 6 degats, "
+                     "et sa riposte distingue les deux montages — seule la SECONDE salve est "
+                     "ranged (arbitrage documente dans wc005.py), donc l'identite ne doit "
+                     "encaisser la riposte qu'UNE fois"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('01184')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01184"],
+        "accepter_choix": True,
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01184", 6]]},
+    },
+    {
+        "nom": "wc008 Magic Manipulation — Alter-Ego Action : X cartes remontent de la defausse dans le deck, puis pioche 1",
+        "pourquoi": ("X = icones de bonus (01111 = 2), donc EXACTEMENT les 2 cartes semees dans "
+                     "la defausse doivent la quitter. Un cas a 0 icone ne prouverait rien. "
+                     "Aucun ChangeToFace : la partie demarre deja en alter-ego"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01086')",
+                          "Puzzle.CreatePlayerDiscardPile('01087')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc008"],
+        "jouer": ["wc008"],
+        "verifier": "wc008_defausse_remontee_dans_le_deck",
+    },
+    {
+        "nom": "wc009 Magic Portal — palier « 0 ou 1 icone » : 5 menaces retirees puis pioche 1",
+        "pourquoi": ("deck Rencontre truque a 1 icone (01106). Menace posee a 6, SOUS le seuil "
+                     "du complot : au-dela il s'accomplit et l'evenement n'a plus de cible "
+                     "legale. Code partage avec wc010"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "wc009 Magic Portal — palier « 2 icones ou plus » : 5 menaces sur la cible PUIS 2 sur CHAQUE manigance en jeu",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111). Une manigance annexe (01107) est "
+                     "posee a 3 menaces a cote : elle doit descendre a 1 sans avoir ete choisie, "
+                     "ce qui prouve la portee « each scheme in play » (piege `each`)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 3)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 1]]},
+    },
+    {
+        "nom": "wc011 Teleport — Action : redresse l'identite du joueur choisi et lui donne +1 a un pouvoir de base",
+        "pourquoi": ("deck Rencontre truque a 2 icones (01111), seul palier qui donne le bonus. "
+                     "L'identite est inclinee au depart : le redressement et le bonus sont deux "
+                     "preuves independantes. Code partage avec wc012"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc011", "01088"],
+        "jouer": ["wc011"],
+        "preferer_option": "Cancel",
+        "verifier": "wc011_teleport",
+    },
+    {
+        "nom": "wc011 Teleport — Action : « that player MAY change their form » (bascule optionnelle acceptee)",
+        "pourquoi": ("seconde moitie de la meme phrase imprimee. Sans ce cas, la bascule de "
+                     "forme n'est jamais exercee : le cas voisin repond « Cancel » a la "
+                     "question pour garder la face heros et pouvoir mesurer le +1 ATQ. Ici on "
+                     "laisse le pilote accepter, et la partie doit finir en identite civile"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01111')"],
+        "main_exclusive": ["wc011", "01088"],
+        "jouer": ["wc011"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "pret": ["wc001b"]},
+    },
+    {
+        "nom": "wc013 Transmutation — Action : la carte cherchee dans le deck rencontre remonte SUR LE DESSUS",
+        "pourquoi": ("01111 est place sur le dessus, 01143 juste dessous ; `cibles` force la "
+                     "recherche sur 01143. Le selecteur remelange le deck (search_internal.py), "
+                     "donc retrouver 01143 sur le dessus prouve la remontee, pas un hasard"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01143')",
+                          "Puzzle.CreateEncounterDeck('01111')"],
+        "declencher": [],
+        "main_exclusive": ["wc013"],
+        "cibles": ["01143"],
+        "jouer": ["wc013"],
+        "verifier": "wc013_carte_remontee_sur_le_dessus",
+    },
+    {
+        "nom": "wc014 Warping Reality — Action : la carte suivante coute 1+X de moins (preuve par insuffisance)",
+        "pourquoi": ("Magic Portal (wc009) coute 3 et la main ne contient qu'Energy (01088), qui "
+                     "fournit 2 ressources : SANS la reduction elle est injouable. Avec 1 icone "
+                     "de bonus (01106), la reduction vaut 1+1=2, le cout tombe a 1 et la carte "
+                     "part. Preuve par insuffisance, sans ambiguite"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc014", "wc009", "01088"],
+        "cibles": ["01097b"],
+        # Warping Reality porte elle-meme une ressource [wild] : sans cette
+        # interdiction, le pilote la DEPENSE pour financer Magic Portal (0+2+1
+        # = 3, le cout plein) et le cas reste vert meme sans le module — c'est
+        # ce qu'a montre la preuve par substitution du 30/08/2026. Interdite
+        # comme ressource, elle ne peut plus servir qu'a ce que la carte fait
+        # vraiment : reduire le cout suivant.
+        "ne_pas_depenser": ["wc014"],
+        "jouer": ["wc014", "wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "defausse": ["wc009"]},
+    },
+    {
+        "nom": "wc015 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
+        "pourquoi": ("5 degats infliges a l'identite, 3 prevenus -> 2 encaisses. Le cout "
+                     "(remelanger la carte dans le deck) est REEL : elle ne doit plus etre en jeu"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc015', under_control=True)"],
+        "declencher": ["Puzzle.Damage('wc001a', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["wc015"]},
+    },
+    {
+        "nom": "wc016 Wiccan's Cloak — Response : l'evenement SPELL qui compte les icones est RESOLU UNE SECONDE FOIS",
+        "pourquoi": ("Magic Bolt (wc005) inflige 3 degats ; rejouee par la cape elle en inflige "
+                     "3 de plus, sans etre repayee (`ResolveToPlayer` -> `skip_cost=True`). "
+                     "6 degats et la cape inclinee : deux preuves. Deck Rencontre truque a "
+                     "01106 pour rester sur le palier bas et ne pas melanger les branches"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc016', under_control=True)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc005", "01088"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "jouer": ["wc005"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 6]], "exhausted": ["wc016"]},
+    },
+    {
+        "nom": "wc017 Royal Couple — Hero Action AVEC Hulkling : la carte de la defausse rencontre remonte et le heros est redresse",
+        "pourquoi": ("Team-Up rendu comme condition « Hulkling en jeu » (arbitrage utilisateur "
+                     "du 30/08/2026). Le heros est incline au depart, la defausse de rencontre "
+                     "est truquee a 01106 : les deux moities du texte sont observables"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)",
+                          "Puzzle.CreateEncounterDiscardPile('01106')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": [],
+        "main_exclusive": ["wc017", "01088"],
+        "jouer": ["wc017"],
+        "verifier": "wc017_royal_couple",
+    },
+    {
+        "nom": "wc017 Royal Couple — SANS Hulkling : la carte reste injouable, le heros reste incline",
+        "pourquoi": ("contre-epreuve de la condition : sans elle, la carte partirait quand meme "
+                     "et redresserait le heros. C'est exactement le defaut qu'il023 avait "
+                     "(`only_if_you_control_face` qui ne voit pas les allies)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.CreateEncounterDiscardPile('01106')",
+                          "Puzzle.Exhaust('wc001a')"],
+        "declencher": [],
+        "main_exclusive": ["wc017", "01088"],
+        "jouer": ["wc017"],
+        "verifier": "wc017_sans_hulkling",
+    },
+    {
+        "nom": "wc018 Avoiding the Demiurge — branche 1 : incliner l'identite -> retirer l'obligation du jeu",
+        "pourquoi": ("le pilote prend TOUJOURS la premiere option d'un ChooseAbilities "
+                     "(convention il017/ok019) : c'est donc cette branche-la qu'il exerce "
+                     "spontanement. L'obligation doit avoir QUITTE le jeu"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc018')"],
+        "verifier": "wc018_obligation_retiree",
+    },
+    {
+        "nom": "wc018 Avoiding the Demiurge — branche 2 : les icones de bonus ne sont plus comptees, jusqu'a la fin de la phase joueur",
+        "pourquoi": ("branche inatteignable sans la cle `preferer_option` ajoutee le 30/08/2026 "
+                     "(le pilote prend toujours la premiere option). Le verificateur controle "
+                     "l'interrupteur global du pack DANS LES DEUX SENS : leve juste apres, puis "
+                     "abaisse quand la sonde renvoie `WhenPhaseEnd('Player')` dans le monde"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc018')"],
+        "preferer_option": "Boost icons cannot be counted",
+        "verifier": "wc018_interrupteur_des_boosts",
+    },
+    {
+        "nom": "wc019a New Vessel — When Completed (8 menaces) : Moridun est mis de cote et la carte se RETOURNE en wc019b The Demiurge",
+        "pourquoi": ("mecanisme rare : une manigance annexe qui devient un ENVIRONNEMENT. La "
+                     "carte est generee avec SES DEUX FACES (« wc019a,wc019b ») — avec la seule "
+                     "face recto, `Card.Flip` la couche face cachee et elle QUITTE le jeu "
+                     "(lecon Dazzler). Le seuil de 8 est cable a la main (ecart assume, "
+                     "modele mw018)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')"],
+        "declencher": ["Puzzle.PlaceThreat('wc019a', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc019b"], "hors_jeu": ["wc019a"]},
+    },
+    {
+        "nom": "wc019a New Vessel — When Defeated : 2 menaces retirees du complot principal, la manigance et Moridun mis de cote",
+        "pourquoi": ("« set aside » et non « discard » : c'est ce qui permet a wc020 de "
+                     "re-reveler « your SET-ASIDE New Vessel side scheme ». Le complot principal "
+                     "est pose a 5 : il doit finir a 3"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.PlaceThreat('wc019a', -4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "hors_jeu": ["wc019a", "wc019b"]},
+    },
+    {
+        "nom": "wc019b The Demiurge — Forced Response : quand un deck de JOUEUR se vide, 1 menace sur le complot principal",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle sans bruit (vider le deck "
+                     "declenche aussi la penalite standard, qui distribue une carte rencontre "
+                     "et fausserait le releve) : la sonde renvoie `Message.AfterDeckRunOut` sur "
+                     "le deck du joueur, exactement ce que fait `Deck` quand il se vide"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.PlaceThreat('wc019a', 4)",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": [],
+        "verifier": "wc019b_deck_joueur_vide",
+    },
+    {
+        "nom": "wc020 Moridun — When Revealed : la manigance New Vessel MISE DE COTE est revelee",
+        "pourquoi": ("wc019a est deja dans la zone de reserve du joueur au montage de la partie "
+                     "(le set nemesis y vit, worlds.py:384) : la carte revelee est donc bien "
+                     "CELLE DU DECK, pas une copie fabriquee par le harnais"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc020", "wc019a"]},
+    },
+    {
+        "nom": "wc020 Moridun — Forced Interrupt : quand Wiccan inflige des degats a un ennemi, 1 menace sur New Vessel",
+        "pourquoi": ("New Vessel demarre a 4 menaces imprimees : apres une attaque de base de "
+                     "Wiccan elle doit etre a 5. Le declencheur est nomme (« Wiccan »), pas "
+                     "« votre identite »"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Reveal('wc020')"],
+        "declencher": ["Puzzle.Attack('wc001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["wc019a", 5]]},
+    },
+    {
+        "nom": "wc020 Moridun — Forced Interrupt : quand Wiccan retire de la menace d'une manigance, 1 menace sur New Vessel",
+        "pourquoi": ("second declencheur de la meme phrase imprimee (« deal damage OR remove "
+                     "threat ») : deux fabriques distinctes, jamais un `if`. Le retrait passe "
+                     "par Magic Portal (wc009), dont la cible est forcee sur le complot "
+                     "principal pour ne pas viser New Vessel elle-meme"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.Reveal('wc020')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc009", "01088", "01089"],
+        "cibles": ["01097b"],
+        "jouer": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["wc019a", 5]]},
+    },
+    {
+        "nom": "wc021 Inescapable Horror — When Revealed SANS Moridun : 1 degat a chaque personnage ami, aucun etourdissement",
+        "pourquoi": ("portee NUE (« each friendly character ») : l'identite ET l'allie "
+                     "encaissent. Sans Moridun en jeu, la seconde phrase ne doit PAS partir — "
+                     "c'est le contre-exemple du cas suivant. Code partage avec wc022"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('wc021')"],
+        "verifier": "wc021_degats_sans_etourdissement",
+    },
+    {
+        "nom": "wc021 Inescapable Horror — When Revealed AVEC Moridun : le joueur est SONNE en plus",
+        "pourquoi": "la branche conditionnelle « If Moridun is in play » n'est exercee que la",
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc020')"],
+        "declencher": ["Puzzle.Reveal('wc021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["wc001a", "Stunned"]], "degats_identite": 1},
+    },
+    {
+        "nom": "wc021 Inescapable Horror — capacite Boost : 1 degat a chaque personnage ami QUE VOUS CONTROLEZ",
+        "pourquoi": ("portee DIFFERENTE de celle du When Revealed (« you control » imprime sur "
+                     "la seule capacite Boost) ; sans module, la capacite Boost n'existe pas et "
+                     "l'allie ne prend rien"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.PutIntoPlay('wc002', under_control=True)"],
+        "declencher": ["Puzzle.Boost('wc021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["wc002", 1]]},
+    },
+    {
+        "nom": "wc023 Master Magus Returns — When Revealed : Moridun mis de cote est revele, la trahison est retiree du jeu",
+        "pourquoi": ("wc020 est dans la zone de reserve du joueur au montage (set nemesis) : "
+                     "c'est bien la carte du deck qui entre en jeu. « then remove ... from the "
+                     "game » appartient a la branche conditionnelle"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('wc023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wc020"], "hors_jeu": ["wc023"]},
+    },
+    {
+        "nom": "wc023 Master Magus Returns — When Revealed avec The Demiurge en jeu : rien n'est revele, le joueur est DESORIENTE",
+        "pourquoi": ("branche negative du texte : « If Moridun was not revealed this way, you "
+                     "are confused ». New Vessel est accomplie au montage pour poser "
+                     "l'environnement, ce qui bloque la revelation"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')",
+                          "Puzzle.PlaceThreat('wc019a', 4)"],
+        "declencher": ["Puzzle.Reveal('wc023')"],
+        "verifier": "wc023_desoriente_et_non_retiree",
+    },
+    {
+        "nom": "wc023 Master Magus Returns — capacite Boost : le joueur est DESORIENTE",
+        "pourquoi": "capacite Boost distincte du When Revealed, sans module elle n'existe pas",
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('wc023')"],
+        "verifier": "identite_a_un_statut",
+    },
+    {
+        "nom": "wc019a New Vessel — seul le joueur Billy Kaplan peut retirer de la menace de cette manigance",
+        "pourquoi": ("restriction intestable en solo : il faut une VRAIE partie a deux joueurs "
+                     "(`heros2`) et deux tentatives de retrait, une par joueur. Le pilote "
+                     "generique ne sait pas faire contrer le SECOND joueur : la verification "
+                     "monte donc les deux effets a la main (`GameRule(identite)`, dont "
+                     "`initiator` vaut le joueur controlant la face, rule.py:10-22) et compare "
+                     "les deux resultats"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "heros2": "okoye",
+        "mise_en_place": ["Puzzle.PutIntoPlay('wc019a,wc019b')"],
+        "declencher": [],
+        "verifier": "wc019a_seul_billy_retire_la_menace",
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -9376,6 +9875,316 @@ def hd017_un_evenement_cherche_en_main(monde, aides):
                        % [getattr(f.paper, "card_id", None) for f in main])
     return True, "evenement(s) cherche(s) en main : %s" % evenements
 
+# ------------------------------------------------------------------------
+# Pack « wiccan » : wc001a-wc023
+#
+# Trois de ces verificateurs sont des SONDES IN-PROCESS : ils renvoient dans
+# le monde un message que l'API Puzzle ne sait pas produire (debut de phase
+# du vilain, fin de phase joueur, deck de joueur vide). C'est exactement le
+# message qu'envoie le moteur lui-meme au meme moment ; la seule chose qu'ils
+# court-circuitent, c'est l'attente du tour de jeu correspondant.
+# ------------------------------------------------------------------------
+
+def _wc_dessus_du_deck_rencontre(monde):
+    from game.operate.worlds import Worlds
+    cartes = Worlds.GetEncounterDeckCards(monde)
+    return cartes[0] if cartes else None
+
+def _wc_defausse_rencontre(monde):
+    from game.operate.worlds import Worlds
+    return [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDiscardPileCards(monde)]
+
+def wc_clairvoyance_dessus_face_visible(monde, aides):
+    """wc001a / wc001b : au debut de la phase des joueurs, la carte du dessus
+    du deck rencontre doit etre retournee FACE VISIBLE."""
+    from game.message import Message
+    Message.WhenPhaseBegin("Player", monde).Send()
+
+    face = _wc_dessus_du_deck_rencontre(monde)
+    if face is None:
+        return False, "deck de rencontre vide : rien a retourner"
+    card_id = getattr(face.paper, "card_id", "?")
+    if not face.card.state.is_face_up:
+        return False, (f"la carte du dessus du deck rencontre ({card_id}) est "
+                       f"encore FACE CACHEE : Clairvoyance n'a pas joue")
+    return True, f"carte du dessus du deck rencontre ({card_id}) retournee face visible"
+
+def wc001a_defausse_au_debut_de_la_phase_du_vilain(monde, aides):
+    """wc001a : le Forced Interrupt defausse le dessus du deck rencontre au
+    debut de la phase du vilain. La defausse de rencontre est VIDE au depart
+    d'une partie : tout ce qui s'y trouve apres la sonde vient de la."""
+    from game.message import Message
+    avant = _wc_defausse_rencontre(monde)
+    if avant:
+        return False, f"la defausse de rencontre n'etait pas vide au depart : {avant}"
+
+    dessus = _wc_dessus_du_deck_rencontre(monde)
+    attendu = getattr(dessus.paper, "card_id", None) if dessus else None
+
+    Message.WhenPhaseBegin("Villain", monde).Send()
+
+    apres = _wc_defausse_rencontre(monde)
+    if not apres:
+        return False, "aucune carte de rencontre defaussee au debut de la phase du vilain"
+    if attendu is not None and attendu not in apres:
+        return False, (f"la carte defaussee n'est pas celle du dessus "
+                       f"(attendue {attendu}, defausse = {apres})")
+    return True, f"carte du dessus ({attendu}) defaussee au debut de la phase du vilain"
+
+def wc_defausse_rencontre_non_vide(monde, aides):
+    """wc001b : « look at the top 2 cards, you may discard one of them ». La
+    defausse de rencontre est vide au depart, donc toute carte qui s'y trouve
+    a ete defaussee par l'action."""
+    apres = _wc_defausse_rencontre(monde)
+    if not apres:
+        return False, "aucune carte de rencontre defaussee : l'action n'a rien fait"
+    return True, f"carte(s) de rencontre defaussee(s) par l'action : {apres}"
+
+def wc002_hulkling_bonus_et_defausse(monde, aides):
+    """wc002 : ATQ 1* (1 en solo) + 2 icones de bonus (01111 Explosion) = 3
+    degats, et la carte comptee est ensuite defaussee."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino (01094) introuvable en jeu"
+    subis = rhino.max_health - rhino.health
+    if subis < 3:
+        return False, (f"degats sur Rhino = {subis} (attendu au moins 3 : ATQ 1 "
+                       f"+ 2 icones de bonus). Le bonus d'icones n'a pas ete applique")
+    defausse = _wc_defausse_rencontre(monde)
+    if "01111" not in defausse:
+        return False, (f"la carte comptee (01111) n'a pas ete defaussee "
+                       f"(defausse de rencontre = {defausse})")
+    return True, f"{subis} degats (1 ATQ + 2 icones) et 01111 defaussee"
+
+def wc008_defausse_remontee_dans_le_deck(monde, aides):
+    """wc008 : 2 icones de bonus -> les 2 cartes semees dans la defausse du
+    joueur doivent l'avoir quittee (remelangees dans le deck)."""
+    joueur = monde.players[0]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    restantes = [c for c in ("01086", "01087") if c in defausse]
+    if restantes:
+        return False, (f"encore dans la defausse du joueur : {restantes} "
+                       f"(defausse = {defausse})")
+    return True, "les 2 cartes semees ont quitte la defausse (remelangees dans le deck)"
+
+def wc011_teleport(monde, aides):
+    """wc011 : l'identite choisie est REDRESSEE, et elle porte +1 sur l'un de
+    ses pouvoirs de base jusqu'a la fin du round.
+
+    Le pouvoir n'est pas impose : le texte dit « a basic power of THEIR
+    choice », et le pilote prend la premiere branche proposee. On accepte donc
+    n'importe lequel des quatre, mais il en faut un."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.IsExhaust():
+        return False, "l'identite est encore inclinee : Teleport ne l'a pas redressee"
+
+    bonus = []
+    for nom, imprime in (("attack", "printed_attack"),
+                         ("thwart", "printed_thwart"),
+                         ("defense", "printed_defense"),
+                         ("recover", "printed_recovery")):
+        if not hasattr(identite, nom) or not hasattr(identite, imprime):
+            continue
+        if getattr(identite, nom) > getattr(identite, imprime):
+            bonus.append(nom)
+    if not bonus:
+        return False, ("identite redressee, mais AUCUN pouvoir de base au-dessus de sa "
+                       "valeur imprimee : le bonus « 2 icones ou plus » n'est pas parti")
+    return True, f"identite redressee et +1 sur {bonus}"
+
+def wc013_carte_remontee_sur_le_dessus(monde, aides):
+    """wc013 : la carte cherchee (01143, forcee par `cibles`) doit se trouver
+    SUR LE DESSUS du deck rencontre apres le melange."""
+    from game.operate.worlds import Worlds
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if not ids:
+        return False, "deck de rencontre vide"
+    if ids[0] != "01143":
+        return False, (f"le dessus du deck rencontre est {ids[0]} (attendu 01143) ; "
+                       f"6 premieres = {ids[:6]}")
+    return True, "01143 remontee sur le dessus du deck rencontre apres melange"
+
+def wc017_royal_couple(monde, aides):
+    """wc017 : le heros est redresse ET la carte choisie dans la defausse de
+    rencontre est remontee sur le deck."""
+    from game.operate.worlds import Worlds
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if identite.IsExhaust():
+        return False, "le heros est encore incline : Royal Couple n'a pas joue"
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if "01106" not in ids:
+        return False, "01106 n'a pas quitte la defausse de rencontre pour le deck"
+    if ids[0] != "01106":
+        return False, f"01106 est dans le deck mais pas sur le DESSUS (dessus = {ids[0]})"
+    return True, "heros redresse et 01106 remontee sur le dessus du deck rencontre"
+
+def wc017_sans_hulkling(monde, aides):
+    """wc017 : sans Hulkling en jeu, la condition doit interdire la carte —
+    le heros reste incline et rien ne remonte de la defausse de rencontre."""
+    from game.operate.worlds import Worlds
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.IsExhaust():
+        return False, ("le heros a ete redresse alors que Hulkling n'est pas en jeu : "
+                       "la condition Team-Up ne joue pas")
+    ids = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+    if ids and ids[0] == "01106":
+        return False, "01106 est remontee sur le deck alors que Hulkling n'est pas en jeu"
+    return True, "sans Hulkling, Royal Couple ne fait rien : heros toujours incline"
+
+def wc018_obligation_retiree(monde, aides):
+    """wc018, branche 1 : l'obligation quitte le jeu et l'identite est
+    inclinee."""
+    if aides["par_id"](monde, "wc018") is not None:
+        return False, "wc018 est encore en jeu : la resolution a echoue"
+    identite = aides["identite"](monde)
+    if identite is not None and not identite.IsExhaust():
+        return False, "l'identite n'est pas inclinee : le cout de la branche n'a pas ete paye"
+    return True, "obligation retiree du jeu et identite inclinee"
+
+def wc018_interrupteur_des_boosts(monde, aides):
+    """wc018, branche 2 : l'interrupteur global du pack est leve, puis
+    rabaisse a la fin de la phase des joueurs.
+
+    On teste l'interrupteur PAR SON EFFET, pas seulement par la valeur du
+    drapeau : `IconesBoostDuDessus` doit rendre 0 tant qu'il est leve, alors
+    que la carte du dessus du deck rencontre porte de vraies icones."""
+    from game.message import Message
+    from game.effect.rule import DebugRule
+    from cards.pack.wiccan.wiccan import (
+        BoostsComptables, IconesBoostDuDessus, DRAPEAU_BOOSTS_ETEINTS,
+    )
+
+    if aides["par_id"](monde, "wc018") is not None:
+        return False, "wc018 est encore en jeu : la resolution a echoue"
+
+    if not getattr(monde, DRAPEAU_BOOSTS_ETEINTS, False):
+        return False, ("le drapeau d'extinction des icones de bonus n'est pas leve : "
+                       "la branche 2 n'a pas ete choisie ou n'a rien fait")
+
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    if BoostsComptables(effet):
+        return False, "BoostsComptables() rend encore Vrai alors que le drapeau est leve"
+    if IconesBoostDuDessus(effet, monde.players[0]) != 0:
+        return False, "IconesBoostDuDessus() rend encore un nombre non nul"
+
+    Message.WhenPhaseEnd(monde.phase_id, "Player", monde).Send()
+
+    if getattr(monde, DRAPEAU_BOOSTS_ETEINTS, False):
+        return False, ("le drapeau est reste leve apres la fin de la phase des joueurs : "
+                       "l'extinction serait definitive")
+    return True, ("icones de bonus eteintes (drapeau leve, comptage a 0), puis rallumees "
+                  "a la fin de la phase des joueurs")
+
+def wc019b_deck_joueur_vide(monde, aides):
+    """wc019b : quand un deck de JOUEUR se vide, 1 menace sur le complot
+    principal. Sonde : on renvoie `Message.AfterDeckRunOut` sur le deck du
+    joueur, exactement le message qu'emet le moteur quand le deck se vide —
+    sans la penalite standard qui, elle, distribuerait une carte rencontre et
+    fausserait le releve."""
+    from game.message import Message
+    from game.operate.worlds import Worlds
+
+    if aides["par_id"](monde, "wc019b") is None:
+        return False, "wc019b n'est pas en jeu : le retournement de New Vessel a echoue"
+
+    principaux = Worlds.GetAllMainSchemes(monde)
+    if not principaux:
+        return False, "aucun complot principal en jeu"
+    avant = principaux[0].threat
+
+    Message.AfterDeckRunOut(monde.players[0].player_deck).Send()
+
+    apres = principaux[0].threat
+    if apres != avant + 1:
+        return False, (f"menace du complot principal : {avant} -> {apres} "
+                       f"(attendu {avant + 1})")
+    return True, f"1 menace posee sur le complot principal ({avant} -> {apres})"
+
+def wc021_degats_sans_etourdissement(monde, aides):
+    """wc021 : 1 degat a CHAQUE personnage ami (identite + allie), et AUCUN
+    etourdissement puisque Moridun n'est pas en jeu."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, f"degats sur l'identite = {subis} (attendu 1)"
+
+    allie = aides["par_id"](monde, "wc002")
+    if allie is None:
+        return False, "l'allie wc002 n'est plus en jeu"
+    if allie.max_health - allie.health != 1:
+        return False, (f"degats sur l'allie wc002 = {allie.max_health - allie.health} "
+                       f"(attendu 1 : la portee est « each friendly character »)")
+
+    if identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "l'identite est Sonnee alors que Moridun n'est pas en jeu"
+    return True, "1 degat a l'identite et a l'allie, aucun etourdissement"
+
+def wc023_desoriente_et_non_retiree(monde, aides):
+    """wc023 : The Demiurge en jeu -> aucune revelation de Moridun, le joueur
+    est Desoriente, et la trahison n'est PAS retiree du jeu (« then remove »
+    appartient a la branche conditionnelle)."""
+    if aides["par_id"](monde, "wc019b") is None:
+        return False, "wc019b n'est pas en jeu : le montage du cas a echoue"
+    if aides["par_id"](monde, "wc020") is not None:
+        return False, "Moridun a ete revele alors que The Demiurge est en jeu"
+
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.CastTo(aides["CanStatus"]).HasStatus("Confused"):
+        return False, "l'identite n'est pas Desorientee"
+    return True, "aucune revelation de Moridun, identite Desorientee"
+
+def wc019a_seul_billy_retire_la_menace(monde, aides):
+    """wc019a : « Only the Billy Kaplan player can remove threat from this
+    scheme. » On tente le retrait DEUX fois, avec deux initiateurs differents.
+
+    `GameRule(face)` prend pour initiateur le controleur de la face
+    (rule.py:10-22) : monter l'effet sur l'identite du joueur 2 puis sur celle
+    du joueur 1 donne exactement les deux initiateurs que
+    `PlayersCannotRemoveThreatFrom` compare (player.py:268-269).
+
+    C'est la MANIGANCE qui porte l'appel (`nv.RemoveThreatFromSchemes`), pas
+    l'identite : `CanThwart.OnRemoveSchemeThreat` lit `by_effect.ability`
+    (can_thwart.py:62), attribut qu'un effet de REGLE n'a pas. Passer par la
+    manigance emprunte le chemin de base, exactement comme `Puzzle.PlaceThreat`
+    et comme mw018/wc019a eux-memes."""
+    from game.effect.rule import GameRule
+
+    nv = aides["par_id"](monde, "wc019a")
+    if nv is None:
+        return False, "wc019a n'est pas en jeu"
+    if len(monde.players) < 2:
+        return False, "la partie n'a qu'un joueur : la restriction est intestable"
+
+    depart = nv.threat
+    if depart < 3:
+        return False, f"menace de depart trop basse sur New Vessel ({depart})"
+
+    autre = monde.players[1].GetIdentity()
+    nv.RemoveThreatFromSchemes([nv], 2, GameRule(autre))
+    if nv.threat != depart:
+        return False, (f"le second joueur ({autre.name}) a retire de la menace : "
+                       f"{depart} -> {nv.threat}. La restriction ne joue pas")
+
+    billy = monde.players[0].GetIdentity()
+    nv.RemoveThreatFromSchemes([nv], 2, GameRule(billy))
+    if nv.threat != depart - 2:
+        return False, (f"le joueur Billy Kaplan n'a PAS pu retirer de la menace : "
+                       f"{depart} -> {nv.threat} (attendu {depart - 2}). "
+                       f"La restriction est trop large")
+    return True, (f"menace inchangee pour le second joueur ({depart}), puis "
+                  f"{depart} -> {nv.threat} pour le joueur Billy Kaplan")
+
 '''
 
 
@@ -9718,7 +10527,33 @@ def executer_un_cas(game_dir, port, index):
             # choix qui en exige une fait rejeter la reponse par le moteur, qui
             # repose alors la meme question a l'infini (c'est ce qui bloquait la
             # mise en place d'Albert, dont la capacite Setup fouille le deck).
-            for o in options:
+            # `preferer_option` : choisir l'option dont le NOM contient l'un des
+            # fragments donnes, au lieu de la premiere jouable. Ajoute le
+            # 30/08/2026 pour le pack `wiccan`. Sans elle, un `ChooseAbilities`
+            # a plusieurs branches n'est testable que sur SA PREMIERE branche
+            # (« le pilote prend toujours la premiere option », convention
+            # il017/ok019/ss011) : la seconde branche de l'obligation wc018,
+            # qui eteint le comptage des icones de bonus pour tout le pack,
+            # n'aurait eu aucun cas sujet. Le filtre porte sur le libelle exact
+            # de la `ForChoiceAbility`, pas sur un rang : il ne se trompe pas de
+            # question quand plusieurs asks s'enchainent, il n'agit que sur
+            # celles qui proposent vraiment ce libelle.
+            ordonnees = options
+            if cas.get("preferer_option") and etat["phase"] == "cas":
+                fragments = cas["preferer_option"]
+                if isinstance(fragments, str):
+                    fragments = [fragments]
+                # Le moteur remplace les espaces des noms d'option par des
+                # soulignes (« +1_ATK_until_the_end_of_the_round ») : on
+                # normalise les deux cotes, sinon aucun libelle a plusieurs
+                # mots ne peut jamais correspondre.
+                def _nom(o):
+                    return str(o.get("name") or "").replace("_", " ")
+                preferees = [o for o in options if isinstance(o, dict)
+                             and any(f.replace("_", " ") in _nom(o) for f in fragments)]
+                ordonnees = preferees + [o for o in options if o not in preferees]
+
+            for o in ordonnees:
                 if isinstance(o, dict) and not o.get("failure_reason"):
                     legales = [str(x) for x in (o.get("all_legal_targets") or [])]
                     mini, maxi = (o.get("target_num_range") or [0, 0])[:2]

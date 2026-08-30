@@ -168,6 +168,13 @@
       "cartes": 16,
       "depuis": "2026-08-12"
     },
+    "wc": {
+      "pack": "wiccan",
+      "libelle": "129. Custom (Wiccan)",
+      "cartes": 25,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad et scarlet_spider. 2 faces heros + 15 signature + 1 Team-Up basique (Royal Couple) + 1 obligation + 6 nemesis (New Vessel wc019a se retourne en The Demiurge wc019b). Tout le kit compte les icones BOOST de la carte du dessus du deck rencontre."
+    },
     "wd": {
       "pack": "web_of_deceit",
       "libelle": "120. Custom (Web of Deceit)",

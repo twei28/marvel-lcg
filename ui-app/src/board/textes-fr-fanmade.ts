@@ -1186,4 +1186,48 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'hd026': "<i>Le Collectionneur compte ajouter Howard the Duck à sa collection d'objets rares et uniques.</i>\n<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, placez 1 menace sur la manigance principale et subissez 1 dégât.\n<i>(Manigance annexe némésis de Howard the Duck.)</i>",
   // howard_the_duck — Duck Hunt (Treachery, nemesis)
   'hd027': "<b>Une fois révélée (identité civile)</b> : le méchant manigance. S'il y a des manigances annexes en jeu, répartissez et placez plutôt parmi elles la menace de cette activation.\n<b>Une fois révélée (héros)</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, soignez plutôt 3 dégâts de celui-ci.",
+  // wiccan — Wiccan (Hero)
+  'wc001a': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Interruption Obligatoire</b> : au début de la phase du méchant, défaussez la carte du dessus du deck de rencontre.",
+  // wiccan — Billy Kaplan (AlterEgo)
+  'wc001b': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Action</b> : regardez les 2 cartes du dessus du deck de rencontre, vous pouvez en défausser une. <i>(Limite d'une fois par round.)</i>",
+  // wiccan — Hulkling (Ally)
+  'wc002': "<b>Interruption</b> : quand Hulkling attaque, il gagne +1 ATQ pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, défaussez cette carte.",
+  // wiccan — Impenetrable Barrier (Event, x2)
+  'wc003': "<b>Action de héros</b> : donnez une carte d'état Tenace à votre héros. Donnez une carte d'état Tenace à un maximum de X personnages amis, où X est égal au nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  'wc004': "<b>Action de héros</b> : donnez une carte d'état Tenace à votre héros. Donnez une carte d'état Tenace à un maximum de X personnages amis, où X est égal au nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  // wiccan — Magic Bolt (Event, x3)
+  'wc005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  'wc006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  'wc007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // wiccan — Magic Manipulation (Event)
+  'wc008': "<b>Action d'identité civile</b> : remélangez 1 carte de votre pile de défausse dans votre deck pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, piochez 1 carte.",
+  // wiccan — Magic Portal (Event, x2)
+  'wc009': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
+  'wc010': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
+  // wiccan — Teleport (Event, x2)
+  'wc011': "<b>Action</b> : choisissez un joueur → redressez l'identité de ce joueur. Ce joueur peut changer de forme. Si la carte du dessus du deck de rencontre a 2 icônes de boost ou plus, ce joueur gagne +1 à un pouvoir de base de son choix jusqu'à la fin du round.",
+  'wc012': "<b>Action</b> : choisissez un joueur → redressez l'identité de ce joueur. Ce joueur peut changer de forme. Si la carte du dessus du deck de rencontre a 2 icônes de boost ou plus, ce joueur gagne +1 à un pouvoir de base de son choix jusqu'à la fin du round.",
+  // wiccan — Transmutation (Event)
+  'wc013': "<b>Action</b> : cherchez une carte dans le deck de rencontre. Puis, mélangez le deck de rencontre et placez cette carte sur son dessus. Piochez 1 carte.",
+  // wiccan — Warping Reality (Event)
+  'wc014': "<b>Action</b> : réduisez de 1+X le coût de la prochaine carte jouée durant ce round, où X est le nombre d'icônes de boost sur la carte du dessus du deck de rencontre.",
+  // wiccan — Mother's Protection (Support)
+  'wc015': "<b>Interruption</b> : quand votre identité devrait subir des dégâts, remélangez Mother's Protection dans votre deck → empêchez 3 de ces dégâts.",
+  // wiccan — Wiccan's Cloak (Upgrade)
+  'wc016': "<b>Réponse</b> : après avoir joué un événement [[SPELL]] qui compte le nombre d'icônes de boost sur une carte de rencontre, inclinez Wiccan's Cloak et défaussez la carte du dessus du deck de rencontre → résolvez à nouveau cet événement.",
+  // wiccan — Royal Couple (Event, Basic)
+  'wc017': "Team-Up (Hulkling et Wiccan). Maximum 1 par deck.\n<b>Action de héros</b> : choisissez une carte dans la pile de défausse de rencontre et placez-la sur le dessus du deck de rencontre. Redressez votre héros.",
+  // wiccan — Avoiding the Demiurge (Obligation)
+  'wc018': "<b><i>Donnez-la au joueur Billy Kaplan.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité → retirez Avoiding the Demiurge de la partie.\n• Les icônes de boost ne peuvent plus être comptées pour les effets des cartes Wiccan jusqu'à la fin de la prochaine phase des joueurs. Défaussez cette obligation.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // wiccan — New Vessel (SideScheme, nemesis)
+  'wc019a': "<i>Moridun a infecté Wiccan et se trouve désormais dans son esprit. L'emprise du sorcier maléfique sur Wiccan ne cesse de grandir.</i>\nSeul le joueur Billy Kaplan peut retirer de la menace de cette manigance.\n<b>Quand déjouée</b> : retirez 2 menaces de la manigance principale. Puis, mettez de côté New Vessel et Moridun.\n<b>Une fois accomplie</b> : mettez Moridun de côté et retournez cette carte. <i>(8 menaces.)</i>",
+  // wiccan — The Demiurge (Environment, verso de wc019a)
+  'wc019b': "Permanent.\n<b>Réponse Obligatoire</b> : après qu'un deck de joueur se retrouve à court de cartes, placez 1 menace sur la manigance principale.",
+  // wiccan — Moridun (Attachment, nemesis)
+  'wc020': "Attachez-la à l'identité du joueur Billy Kaplan.\n<b>Une fois révélée</b> : révélez votre manigance annexe New Vessel mise de côté.\n<b>Interruption Obligatoire</b> : quand Wiccan devrait infliger des dégâts à un ennemi ou retirer de la menace d'une manigance, placez 1 menace sur la manigance annexe New Vessel.\n<i>(Sbire némésis de Wiccan.)</i>",
+  // wiccan — Inescapable Horror (Treachery, nemesis, x2)
+  'wc021': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
+  'wc022': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
+  // wiccan — Master Magus Returns (Treachery, nemesis)
+  'wc023': "<b>Une fois révélée</b> : si l'environnement The Demiurge n'est pas en jeu, révélez l'attachement Moridun mis de côté, puis retirez Master Magus Returns de la partie. Si Moridun n'a pas été révélé de cette façon, vous êtes désorienté.\n<hr />\n[star] <b>Boost</b> : vous êtes désorienté.",
 }

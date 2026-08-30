@@ -77693,5 +77693,424 @@
             "custom": "Arnaud"
         }
     ],
-    "checksum": "62384a4d83633c923c9d231670e2002a7e1b5f1bd85df80bd0832b230cb01d63"
+    "wiccan": [
+        {
+            "card_id": "wc001a",
+            "type": "Hero",
+            "name": "* Wiccan",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "2",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "MYSTIC",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<i>Clairvoyance</i> — During the player phase, play with the top card of the encounter deck face up.\n<b>Forced Interrupt</b>: At the start of the villain phase, discard the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc001b",
+            "type": "AlterEgo",
+            "name": "* Billy Kaplan",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "MYSTIC"
+            ],
+            "set_name": "Wiccan",
+            "text": "<i>Clairvoyance</i> — During the player phase, play with the top card of the encounter deck face up.\n<b>Action</b>: Look at the top 2 cards of the encounter deck, you may discard one of them. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc002",
+            "type": "Ally",
+            "name": "* Hulkling",
+            "subtitle": "Teddy Altman",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "KREE",
+                "SKRULL",
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Interrupt</b>: When Hulkling attacks, he gets +1 ATK for each boost icon on the top card of the encounter deck. Then, discard that card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc003",
+            "type": "Event",
+            "name": "Impenetrable Barrier",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b>: Give your hero a Tough status card. Give up to X friendly characters a Tough status card, where X is equal to the amount of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc004",
+            "type": "Event",
+            "name": "Impenetrable Barrier",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b>: Give your hero a Tough status card. Give up to X friendly characters a Tough status card, where X is equal to the amount of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc005",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n• 0 or 1 boost icons → draw 1 card.\n• 2 or more boost icons → deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc006",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n• 0 or 1 boost icons → draw 1 card.\n• 2 or more boost icons → deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc007",
+            "type": "Event",
+            "name": "Magic Bolt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Then, if the top card of the encounter deck has:\n• 0 or 1 boost icons → draw 1 card.\n• 2 or more boost icons → deal 3 damage to an enemy. This attack gains ranged.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc008",
+            "type": "Event",
+            "name": "Magic Manipulation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Alter-Ego Action</b>: Shuffle 1 card from your discard pile back into your deck for each boost icon on the top card of the encounter deck. Then, draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc009",
+            "type": "Event",
+            "name": "Magic Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Then, if the top card of the encounter deck has:\n• 0 or 1 boost icons → draw 1 card.\n• 2 or more boost icons → remove 2 threat from each scheme in play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc010",
+            "type": "Event",
+            "name": "Magic Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 5 threat from a scheme. Then, if the top card of the encounter deck has:\n• 0 or 1 boost icons → draw 1 card.\n• 2 or more boost icons → remove 2 threat from each scheme in play.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc011",
+            "type": "Event",
+            "name": "Teleport",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Choose a player → ready that player's identity. That player may change their form. If the top card of the encounter deck has 2 or more boost icons, that player gets +1 to a basic power of their choice until the end of the round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc012",
+            "type": "Event",
+            "name": "Teleport",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Choose a player → ready that player's identity. That player may change their form. If the top card of the encounter deck has 2 or more boost icons, that player gets +1 to a basic power of their choice until the end of the round.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc013",
+            "type": "Event",
+            "name": "Transmutation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Search the encounter deck for a card. Then, shuffle the encounter deck and put that card on top of it. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc014",
+            "type": "Event",
+            "name": "Warping Reality",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Action</b>: Reduce the cost of the next card played this round by 1+X, where X is the number of boost icons on the top card of the encounter deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc015",
+            "type": "Support",
+            "name": "Mother's Protection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "FAMILY"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Interrupt</b>: When your identity would take any amount of damage, shuffle Mother's Protection back into your deck → prevent 3 of that damage.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc016",
+            "type": "Upgrade",
+            "name": "* Wiccan's Cloak",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Wiccan",
+            "text": "<b>Response</b>: After you play a [[SPELL]] event that counts the amount of boost icons on an encounter card, exhaust Wiccan's Cloak and discard the top card of the encounter deck → resolve that event again.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc017",
+            "type": "Event",
+            "name": "Royal Couple",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "MaxPerDeck": "1",
+                "Class": "Basic"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "set_name": "Wiccan",
+            "text": "Team-Up (Hulkling and Wiccan). Max 1 per deck.\n<b>Hero Action</b>: Choose one card from the encounter discard pile and put it on top of the encounter deck. Ready your hero.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc018",
+            "type": "Obligation",
+            "name": "Avoiding the Demiurge",
+            "subtitle": "",
+            "desc": {
+                "GiveTo": "Billy Kaplan"
+            },
+            "traits": [],
+            "set_name": "Wiccan",
+            "text": "<b><i>Give to the Billy Kaplan player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust your identity → remove Avoiding the Demiurge from the game.\n• Boost icons cannot be counted for any Wiccan card effects until the end of the next player phase. Discard this obligation.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc019a",
+            "type": "SideScheme",
+            "name": "New Vessel",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "4"
+            },
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<i>Moridun has infected Wiccan and is now inside his mind. The evil wizard's control over Wiccan is growing stronger.</i>\nOnly the Billy Kaplan player can remove threat from this scheme.\n<b>When Defeated</b>: Remove 2 threat from the main scheme. Then, set aside New Vessel and Moridun.\n<b>When Completed</b>: Set aside Moridun and flip this card. <i>(8 threat.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc019b",
+            "type": "Environment",
+            "name": "The Demiurge",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1"
+            },
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "Permanent.\n<b>Forced Response</b>: After a player deck runs out of cards, place 1 threat on the main scheme.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc020",
+            "type": "Attachment",
+            "name": "* Moridun",
+            "subtitle": "",
+            "desc": {},
+            "traits": [
+                "WIZARD"
+            ],
+            "set_name": "Wiccan Nemesis",
+            "text": "Attach to the Billy Kaplan player's identity.\n<b>When Revealed</b>: Reveal your set-aside New Vessel side scheme.\n<b>Forced Interrupt</b>: When Wiccan would deal damage to an enemy or remove threat from a scheme, place 1 threat on the New Vessel side scheme.\n<i>(Wiccan's Nemesis Minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc021",
+            "type": "Treachery",
+            "name": "Inescapable Horror",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: Deal 1 damage to each friendly character. If Moridun is in play, you are stunned.\n<hr />\n[star] <b>Boost</b>: Deal 1 damage to each friendly character you control.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc022",
+            "type": "Treachery",
+            "name": "Inescapable Horror",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: Deal 1 damage to each friendly character. If Moridun is in play, you are stunned.\n<hr />\n[star] <b>Boost</b>: Deal 1 damage to each friendly character you control.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "wc023",
+            "type": "Treachery",
+            "name": "Master Magus Returns",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Wiccan Nemesis",
+            "text": "<b>When Revealed</b>: If The Demiurge environment is not in play, reveal the set-aside Moridun attachment, then remove Master Magus Returns from the game. If Moridun was not revealed this way, you are confused.\n<hr />\n[star] <b>Boost</b>: You are confused.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "403a2f9e450fcdf028831392f190293856e9fab2db0b67a6259d80345996e405"
 }
