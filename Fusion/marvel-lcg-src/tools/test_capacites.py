@@ -9577,6 +9577,49 @@ CAS = [
         "attendu": {"degats_identite": 3,
                     "statuts_absents": [["hd001a", "Stunned"]]},
     },
+    {
+        "nom": "gp014 \"Future Me Scares Me\" — Incite en SOLO STANDARD : 1 menace (temoin)",
+        "pourquoi": ("la carte imprime DEUX lignes d'Incite qui s'additionnent (verifie sur le "
+                     "visuel, assets/pics/gp014.png) : « Incite 0 (1 en multijoueur) » et "
+                     "« Incite 1 (2 en expert) ». En solo standard cela fait 0 + 1 = 1, la "
+                     "valeur du `desc`. Ce cas est le TEMOIN : il doit rester vert avant comme "
+                     "apres le cablage des deux bonus conditionnels. Incite = poser X menaces "
+                     "sur le complot principal a la revelation (`can_incite.py`)"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('gp014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "gp014 \"Future Me Scares Me\" — Incite en MULTIJOUEUR : 2 menaces",
+        "pourquoi": ("premiere ligne imprimee : « incite 1 instead, if this is a multiplayer "
+                     "game » -> 1 + 1 = 2. `Worlds.GetPlayerNum` existe ; gp014 est la SEULE "
+                     "carte du depot dont le texte parle de multijoueur, donc aucun precedent, "
+                     "mais la primitive est la"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('gp014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "gp014 \"Future Me Scares Me\" — Incite en EXPERT : 2 menaces",
+        "pourquoi": ("seconde ligne imprimee : « incite 2 instead, if this is an expert mode "
+                     "game » -> 0 + 2 = 2. Le moteur porte une fabrique DEDIEE, "
+                     "`AbilityFactory.IfExpertModeThisGainKeyword(incite=1)` : l'affirmation "
+                     "du module (« le moteur ne porte qu'une valeur d'Incite ») etait fausse, "
+                     "comme celles de gp003 et gp005"),
+        "scenario": "rhino_expert",
+        "heros": "gwenpool",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('gp014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
