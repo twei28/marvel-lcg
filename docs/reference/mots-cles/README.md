@@ -101,6 +101,17 @@ propre au pack, donc aucun mot-clé maison à cataloguer.
   le critère de cette tâche (mot-clé = terme en gras sur carte imprimée),
   ce n'est pas un mot-clé à ficher ici, malgré son importance mécanique :
   le mécanisme reste documenté au §9 du guide, pas dans ce catalogue.
+- **`speed`** (Tommy Shepherd, set 130, 30/08/2026) : les **compteurs
+  explosifs** de l'insert du pack sont un mécanisme maison central, mais le
+  terme n'est **jamais imprimé en gras** — balayage complet des balises `<b>`
+  des 23 cartes : `Action`, `Alter-Ego Action`, `Forced Interrupt`, `Forced
+  Response`, `Hero Action`, `Hero Interrupt`, `Hero Response`, `Interrupt`,
+  `Resource`, `When Revealed`, la ligne « Give to the Thomas Shepherd
+  player. », et **`Permanent`** (sd018), qui a déjà sa fiche. Même critère que
+  la Réserve de `brawn` et que les compteurs `flame` de `human_torch` : ce sont
+  des compteurs de carte, pas un mot-clé. Le mécanisme est documenté en tête de
+  `src/cards/pack/speed/speed/__init__.py` et dans `docs/speed_cartes.md`.
+  `Quickstrike` (sd019) est imprimé sans gras mais possède déjà sa fiche.
 
 Quatre packs supplémentaires, absents du §9 du guide et inaccessibles
 depuis ce worktree (existent uniquement dans un checkout non lié), ont été

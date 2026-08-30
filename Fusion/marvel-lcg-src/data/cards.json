@@ -78112,5 +78112,397 @@
             "custom": "Arnaud"
         }
     ],
-    "checksum": "403a2f9e450fcdf028831392f190293856e9fab2db0b67a6259d80345996e405"
+    "speed": [
+        {
+            "card_id": "sd001a",
+            "type": "Hero",
+            "name": "* Speed",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "YOUNG AVENGER"
+            ],
+            "set_name": "Speed",
+            "text": "<i>Hyperkinetic Fuel</i> — <b>Interrupt</b>: When you pay for an event with only [energy] resources, put an explosive counter on an enemy or scheme. <i>(See insert.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd001b",
+            "type": "AlterEgo",
+            "name": "* Thomas Shepherd",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "CIVILIAN"
+            ],
+            "set_name": "Speed",
+            "text": "<i>Accelerated Perception</i> — <b>Action</b>: Shuffle 1 event from your discard pile into your deck. Then, draw 1 card. <i>(Limit once per round.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd002",
+            "type": "Ally",
+            "name": "* Quicksilver",
+            "subtitle": "Pietro Maximoff",
+            "desc": {
+                "Cost": "4",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When Quicksilver attacks or thwarts an enemy or scheme with an explosive counter on it, he suffers no consequential damage for that use.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd003",
+            "type": "Event",
+            "name": "Blasting Velocity",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Make a basic attack against an enemy with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd004",
+            "type": "Event",
+            "name": "Blasting Velocity",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Make a basic attack against an enemy with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd005",
+            "type": "Event",
+            "name": "\"I'm Out\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "TACTIC"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Interrupt</b>: When you reveal an encounter card, cancel the effects of that card and discard it. If you would resolve Speed's <i>\"Hyperkinetic Fuel\"</i> ability when playing this event, shuffle 1 event from your discard pile into your deck and draw 1 card instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd006",
+            "type": "Event",
+            "name": "Kinetic Flurry",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "You can only spend [energy] resources to pay for this card. Choose an enemy and perform the following attack X times:\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to that enemy (3 damage instead if that enemy has an explosive counter on it).",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd007",
+            "type": "Event",
+            "name": "Kinetic Flurry",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "You can only spend [energy] resources to pay for this card. Choose an enemy and perform the following attack X times:\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to that enemy (3 damage instead if that enemy has an explosive counter on it).",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd008",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd009",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd010",
+            "type": "Event",
+            "name": "Swift Strikes",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. Make a basic thwart against a scheme with an explosive counter on it without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd011",
+            "type": "Resource",
+            "name": "Top Speed",
+            "subtitle": "",
+            "desc": {
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When you spend this card, you may generate an additional [energy] resource ([energy][energy] instead if there is an explosive counter in play). If you do, you cannot play cards for the rest of the turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd012",
+            "type": "Resource",
+            "name": "Top Speed",
+            "subtitle": "",
+            "desc": {
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When you spend this card, you may generate an additional [energy] resource ([energy][energy] instead if there is an explosive counter in play). If you do, you cannot play cards for the rest of the turn.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd013",
+            "type": "Support",
+            "name": "Mother's Protection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "FAMILY"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Interrupt</b>: When your identity would take any amount of damage, shuffle Mother's Protection back into your deck → prevent 3 of that damage.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd014",
+            "type": "Upgrade",
+            "name": "Explosive Touch",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Response</b>: After you basic attack or basic thwart an enemy or scheme that has an explosive counter on it, exhaust Explosive Touch → ready Speed.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd015",
+            "type": "Upgrade",
+            "name": "Never Ending Spark",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Response</b>: After an explosive counter is placed on an enemy or scheme, ready this card.\n<b>Resource</b>: Exhaust Never Ending Spark → generate a [energy] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd016",
+            "type": "Upgrade",
+            "name": "Quick Adaptation",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Speed",
+            "text": "<b>Hero Interrupt</b>: When you basic attack or basic thwart against an enemy or scheme with an explosive counter on it, you get +1 ATK and +1 THW for that use.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd017",
+            "type": "Obligation",
+            "name": "No Outrunning This",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Thomas Shepherd"
+            },
+            "traits": [],
+            "set_name": "Speed",
+            "text": "<b><i>Give to the Thomas Shepherd player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Thomas Shepherd → remove No Outrunning This from the game.\n• You cannot resolve Speed's <i>Hyperkinetic Fuel</i> <b>Interrupt</b> until the end of the next round. Discard this obligation.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd018",
+            "type": "SideScheme",
+            "name": "The Real Question",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "StartingThreat": "2*"
+            },
+            "traits": [],
+            "set_name": "Speed Nemesis",
+            "text": "<i>\"R Superheroes gud?\"</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until an attachment is discarded. Reveal that attachment.\nWhile this scheme is in play, attachments gain <b><i>Permanent</i></b>.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd019",
+            "type": "Minion",
+            "name": "* Coat of Arms",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "1*",
+                "SCH": "2",
+                "Boost": "2",
+                "Quickstrike": "1",
+                "Nemesis": "Thomas Shepherd"
+            },
+            "traits": [
+                "ANTI HERO"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Quickstrike.\n[star] When Coat of Arms attacks, if it deals damage, deal 1 additional damage to each character you control.\n<i>(Speed's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd020",
+            "type": "Attachment",
+            "name": "Inspirational Art",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3"
+            },
+            "traits": [
+                "ART"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Attach to the villain.\n<b>Forced Interrupt</b>: When a boost card is turned faceup during a villain activation, each boost card gets +1 boost icons ([boost]).\n<b>Hero Action</b>: Spend [energy][physical] resources → discard this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd021",
+            "type": "Attachment",
+            "name": "Magic Chains",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "ATK+": "1"
+            },
+            "traits": [
+                "WEAPON",
+                "MYSTIC"
+            ],
+            "set_name": "Speed Nemesis",
+            "text": "Attach to Coat of Arms, if able. If you cannot, attach to the villain.\n<b>Forced Response</b>: After the attached enemy attacks, if the attack deals damage, stun your hero → discard this card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "sd022",
+            "type": "Obligation",
+            "name": "Conflicted Feelings",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Thomas Shepherd"
+            },
+            "traits": [],
+            "set_name": "Speed Nemesis",
+            "text": "<b><i>Give to the Thomas Shepherd player.</i></b>\nWhile this obligation is in play, Coat of Arms cannot be damaged.\n<b>Alter-Ego Action</b>: Spend [energy][mental] resources → discard this card.",
+            "custom": "Arnaud"
+        }
+    ],
+    "checksum": "4dba0db5258e55fa4fd192df55e86915aa8488039a730518afb671d7bedf10ee"
 }

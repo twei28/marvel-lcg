@@ -109,6 +109,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
+        "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -171,6 +172,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # carte TECH controlee (pose a la main, desc.Uses ne sait pas porter
         # un compte dynamique) et le depense en Hero Resource.
         'ion',
+        # CORRECTIF : compteur du pack custom speed (CptScorp). L'insert du pack
+        # decrit les « explosive counters » : la capacite du heros en pose un sur
+        # un ennemi ou une manigance (max 1 par carte), ils sont retires en fin de
+        # phase des joueurs et, en partant, infligent 1 degat a l'ennemi ou
+        # retirent 1 menace a la manigance.
+        'explosive',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

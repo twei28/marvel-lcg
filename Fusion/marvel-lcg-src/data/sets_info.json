@@ -1063,7 +1063,16 @@
         "encounters": [],
         "max_id": "wd165"
     },
-    "checksum": "127e7931eeb197f1e252c380b16b52b8be81628e06669df2f1ba72208088523a",
+    "130. Custom (Speed)": {
+        "name": "speed",
+        "scenarios": [],
+        "heroes": [
+            "speed"
+        ],
+        "encounters": [],
+        "max_id": "sd022"
+    },
+    "checksum": "32960eacb567d4076a55237ee5cf9d66f21da7fc7a32b16907846d5082606459",
     "125. Custom (Okoye)": {
         "name": "okoye",
         "scenarios": [],

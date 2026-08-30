@@ -1230,4 +1230,45 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'wc022': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
   // wiccan — Master Magus Returns (Treachery, nemesis)
   'wc023': "<b>Une fois révélée</b> : si l'environnement The Demiurge n'est pas en jeu, révélez l'attachement Moridun mis de côté, puis retirez Master Magus Returns de la partie. Si Moridun n'a pas été révélé de cette façon, vous êtes désorienté.\n<hr />\n[star] <b>Boost</b> : vous êtes désorienté.",
+  // speed — Speed (Hero) [set 130, CptScorp]
+  'sd001a': "<i>Hyperkinetic Fuel</i> — <b>Interruption</b> : quand vous payez un événement uniquement avec des ressources [energy], placez un compteur explosif sur un ennemi ou une manigance. <i>(Voir l'encart.)</i>",
+  // speed — Thomas Shepherd (AlterEgo)
+  'sd001b': "<i>Accelerated Perception</i> — <b>Action</b> : remélangez 1 événement de votre pile de défausse dans votre deck. Puis, piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+  // speed — Quicksilver (Ally)
+  'sd002': "<b>Interruption</b> : quand Quicksilver attaque ou contre un ennemi ou une manigance portant un compteur explosif, il ne subit aucun dégât consécutif pour cette utilisation.",
+  // speed — Blasting Velocity (Event, x2)
+  'sd003': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Effectuez une attaque de base contre un ennemi portant un compteur explosif, sans vous incliner.",
+  'sd004': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Effectuez une attaque de base contre un ennemi portant un compteur explosif, sans vous incliner.",
+  // speed — "I'm Out" (Event)
+  'sd005': "<b>Interruption de héros</b> : quand vous révélez une carte de rencontre, annulez les effets de cette carte et défaussez-la. Si vous deviez résoudre la capacité <i>\"Hyperkinetic Fuel\"</i> de Speed en jouant cet événement, remélangez plutôt 1 événement de votre pile de défausse dans votre deck et piochez 1 carte.",
+  // speed — Kinetic Flurry (Event, x2)
+  'sd006': "Vous ne pouvez dépenser que des ressources [energy] pour payer cette carte. Choisissez un ennemi et effectuez X fois l'attaque suivante :\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à cet ennemi (3 dégâts à la place si cet ennemi porte un compteur explosif).",
+  'sd007': "Vous ne pouvez dépenser que des ressources [energy] pour payer cette carte. Choisissez un ennemi et effectuez X fois l'attaque suivante :\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à cet ennemi (3 dégâts à la place si cet ennemi porte un compteur explosif).",
+  // speed — Swift Strikes (Event, x3)
+  'sd008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  'sd009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  'sd010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Effectuez un contre de base contre une manigance portant un compteur explosif, sans vous incliner.",
+  // speed — Top Speed (Resource, x2)
+  'sd011': "<b>Interruption</b> : quand vous dépensez cette carte, vous pouvez générer une ressource [energy] supplémentaire ([energy][energy] à la place s'il y a un compteur explosif en jeu). Si vous le faites, vous ne pouvez plus jouer de cartes pour le reste du tour.",
+  'sd012': "<b>Interruption</b> : quand vous dépensez cette carte, vous pouvez générer une ressource [energy] supplémentaire ([energy][energy] à la place s'il y a un compteur explosif en jeu). Si vous le faites, vous ne pouvez plus jouer de cartes pour le reste du tour.",
+  // speed — Mother's Protection (Support)
+  'sd013': "<b>Interruption</b> : quand votre identité devrait subir des dégâts, remélangez Mother's Protection dans votre deck → empêchez 3 de ces dégâts.",
+  // speed — Explosive Touch (Upgrade)
+  'sd014': "<b>Réponse de héros</b> : après avoir attaqué ou contré, avec un pouvoir de base, un ennemi ou une manigance portant un compteur explosif, inclinez Explosive Touch → redressez Speed.",
+  // speed — Never Ending Spark (Upgrade)
+  'sd015': "<b>Réponse de héros</b> : après qu'un compteur explosif est placé sur un ennemi ou une manigance, redressez cette carte.\n<b>Ressource</b> : inclinez Never Ending Spark → générez une ressource [energy].",
+  // speed — Quick Adaptation (Upgrade)
+  'sd016': "<b>Interruption de héros</b> : quand vous attaquez ou contrez, avec un pouvoir de base, un ennemi ou une manigance portant un compteur explosif, vous gagnez +1 ATQ et +1 CTR pour cette utilisation.",
+  // speed — No Outrunning This (Obligation)
+  'sd017': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Thomas Shepherd → retirez No Outrunning This de la partie.\n• Vous ne pouvez pas résoudre l'<b>Interruption</b> <i>Hyperkinetic Fuel</i> de Speed jusqu'à la fin du prochain round. Défaussez cette obligation.",
+  // speed — The Real Question (SideScheme, nemesis)
+  'sd018': "<i>\"Les super-héros, c'est bien ?\"</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck de rencontre jusqu'à ce qu'un attachement soit défaussé. Révélez cet attachement.\nTant que cette manigance est en jeu, les attachements gagnent <b><i>Permanent</i></b>.",
+  // speed — Coat of Arms (Minion, nemesis)
+  'sd019': "Coup Rapide.\n[star] Quand Coat of Arms attaque, si elle inflige des dégâts, infligez 1 dégât supplémentaire à chaque personnage que vous contrôlez.\n<i>(Sbire némésis de Speed.)</i>",
+  // speed — Inspirational Art (Attachment, nemesis)
+  'sd020': "Attachez-la au vilain.\n<b>Interruption Obligatoire</b> : quand une carte de boost est retournée face visible durant une activation du vilain, chaque carte de boost gagne +1 icône de boost ([boost]).\n<b>Action de héros</b> : dépensez des ressources [energy][physical] → défaussez cette carte.",
+  // speed — Magic Chains (Attachment, nemesis)
+  'sd021': "Attachez-la à Coat of Arms, si possible. Sinon, attachez-la au vilain.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché attaque, si l'attaque inflige des dégâts, sonnez votre héros → défaussez cette carte.",
+  // speed — Conflicted Feelings (Obligation, nemesis)
+  'sd022': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nTant que cette obligation est en jeu, Coat of Arms ne peut pas subir de dégâts.\n<b>Action d'identité civile</b> : dépensez des ressources [energy][mental] → défaussez cette carte.",
 }

@@ -7671,6 +7671,564 @@ CAS = [
         "declencher": [],
         "verifier": "wc019a_seul_billy_retire_la_menace",
     },
+    # ------------------------------------------------------------------------
+    # Pack « speed » : sd001a-sd022 (custom, auteur « CptScorp », Cycle 2)
+    #
+    # MECANIQUE CENTRALE : LES COMPTEURS EXPLOSIFS. Le compteur s'appelle
+    # `explosive` ; il se pose avec `Puzzle.Counter('<card_id>', 'explosive', N)`
+    # et se lit avec la cle `compteurs` de `etat_attendu`.
+    #
+    # Le BALAYAGE de fin de phase des joueurs (regle de l'insert) est hors de
+    # portee de l'API Puzzle, qui n'avance aucune phase : deux verificateurs
+    # sont des SONDES IN-PROCESS et renvoient dans le monde
+    # `Message.WhenPhaseEnd(monde.phase_id, "Player", monde)`, exactement le
+    # message qu'emet `world.phase_end` au meme moment.
+    #
+    # `Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')` et jamais
+    # `Puzzle.ChangeForm` : la partie demarre en alter-ego, et ChangeToFace
+    # nomme explicitement la face visee (piege du nom ambigu — le catalogue
+    # contient aussi un allie `15010` « * Speed » et un sbire `57060`).
+    #
+    # Ressources de paiement, toujours par `main_exclusive` : `01088` Energy
+    # (YY, donc « uniquement en energie ») et `01090` Strength (RR, donc
+    # PHYSIQUE : le temoin negatif de Hyperkinetic Fuel). Un wild ne peut pas
+    # servir de temoin negatif — il compte comme energie.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "sd001a Speed — Hyperkinetic Fuel : un evenement paye UNIQUEMENT en energie pose 1 compteur explosif",
+        "pourquoi": ("mecanique centrale du pack. `main_exclusive` a 01088 (YY) garantit que "
+                     "le paiement est integralement en energie ; sans cette cle le pilote "
+                     "puiserait dans la main de depart et `OnlyHasColor(\'Y\')` ne serait "
+                     "jamais vrai (piege Ashley Barton). Le compteur est pose AVANT que "
+                     "l'evenement se resolve : c'est un Interrupt"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd008", "01088"],
+        "cibles": ["01094"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 1]]},
+    },
+    {
+        "nom": "sd001a Speed — Hyperkinetic Fuel NE part PAS quand l'evenement est paye en PHYSIQUE",
+        "pourquoi": ("temoin negatif indispensable : sans lui, une capacite qui poserait un "
+                     "compteur a CHAQUE evenement passerait le cas precedent. 01090 Strength "
+                     "fournit RR ; un wild aurait compte comme energie et n'aurait rien prouve"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 0]], "degats": [["01094", 3]]},
+    },
+    {
+        "nom": "sd001a Speed — regle de l'insert : PLAFOND de 1 compteur explosif par ennemi/manigance",
+        "pourquoi": ("regle transverse portee par l'identite, pas par une carte. On demande "
+                     "5 compteurs d'un coup : le plafond doit en laisser 1. Meme forme que le "
+                     "cas ht001a (plafond de 3 compteurs flamme)"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "explosive", 1]]},
+    },
+    {
+        "nom": "sd001a Speed — regle de l'insert : a la fin de la phase des joueurs, le compteur d'un ENNEMI part et lui inflige 1 degat",
+        "pourquoi": ("declencheur hors de portee de l'API Puzzle (aucune commande n'avance de "
+                     "phase) : la sonde renvoie `Message.WhenPhaseEnd(phase_id, \'Player\')` "
+                     "dans le monde. Le verificateur controle les DEUX moities : le compteur "
+                     "a disparu ET le degat a ete inflige"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "verifier": "sd_balayage_ennemi",
+    },
+    {
+        "nom": "sd001b Thomas Shepherd — regle de l'insert EN ALTER-EGO : le compteur d'une MANIGANCE part et retire 1 menace",
+        "pourquoi": ("la regle est imprimee sur l'insert, pas sur une carte : elle doit valoir "
+                     "sur LES DEUX faces. Sans module sur sd001b, finir la phase des joueurs "
+                     "en identite civile laisserait les compteurs en place pour toujours. "
+                     "Aucun ChangeToFace ici : la partie demarre deja en alter-ego"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "verifier": "sd_balayage_manigance",
+    },
+    {
+        "nom": "sd001b Thomas Shepherd — Accelerated Perception : un evenement remonte de la defausse dans le deck, puis pioche 1",
+        "pourquoi": ("le remelange vise UN EVENEMENT (sd003 seme dans la defausse) et la "
+                     "pioche est INCONDITIONNELLE. Main videe puis rechargee d'une seule "
+                     "carte : une main a 2 a la fin ne peut venir que de la pioche"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('sd003')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('sd001b', 'Action')"],
+        # `main_exclusive` VIDE la main de depart DANS LA DEFAUSSE : elle y jette
+        # d'autres evenements (01052, 01053...). Sans `cibles`, le pilote prend
+        # le premier evenement legal et le releve ne veut plus rien dire.
+        "cibles": ["sd003"],
+        "verifier": "sd001b_accelerated_perception",
+    },
+    {
+        "nom": "sd002 Quicksilver — Interrupt : AUCUN degat consecutif quand la cible porte un compteur explosif",
+        "pourquoi": ("ATQ 2* = 1 degat consecutif imprime, lu nativement. La capacite doit "
+                     "l'annuler pour CETTE utilisation. Modele du declencheur : 17020 Cosmo"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd002", 0], ["01094", 2]]},
+    },
+    {
+        "nom": "sd002 Quicksilver — contre-epreuve SANS compteur : il encaisse bien son degat consecutif",
+        "pourquoi": ("temoin negatif : sans lui, un allie qui ne prendrait JAMAIS de degat "
+                     "consecutif passerait le cas precedent"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('sd002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd002", 1], ["01094", 2]]},
+    },
+    {
+        "nom": "sd003 Blasting Velocity — 3 menaces retirees PUIS attaque de base sur l'ennemi marque, sans s'incliner",
+        "pourquoi": ("les deux moities de la carte sont mesurees separement. Le heros est "
+                     "INCLINE au depart : l'attaque de base part quand meme, ce qui prouve "
+                     "le « without exhausting ». Paiement en PHYSIQUE (01090) pour que "
+                     "Hyperkinetic Fuel ne pose pas un second compteur et ne brouille pas "
+                     "le releve. Code partage avec sd004"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd003", "01090"],
+        "cibles": ["01097b", "01094"],
+        "jouer": ["sd003"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "degats": [["01094", 1]]},
+    },
+    {
+        "nom": "sd005 \"I'm Out\" — Hero Interrupt : la carte rencontre revelee est annulee et defaussee",
+        "pourquoi": ("modele mw009 Foresight : l'evenement est en main, `Puzzle.Reveal` fait "
+                     "venir la carte du deck Rencontre (sans quoi `from_encounter=True` ne "
+                     "matcherait jamais). sd020 s'attacherait au vilain si elle n'etait pas "
+                     "annulee : son absence du jeu est la preuve. Paiement en PHYSIQUE pour "
+                     "rester sur la branche « annulation » et pas sur le « instead »"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "main_exclusive": ["sd005", "01090"],
+        "declencher": ["Puzzle.Reveal('sd020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd020"], "defausse": ["sd005"]},
+    },
+    {
+        "nom": "sd005 \"I'm Out\" — branche « instead » : payee en energie, elle remonte un evenement et pioche AU LIEU de poser un compteur",
+        "pourquoi": ("couplage inter-cartes : c'est la capacite du HEROS (sd001a) qui teste "
+                     "si la carte payee est sd005. Sa ressource IMPRIMEE est MENTALE, le cas "
+                     "« payee uniquement en energie » doit donc etre construit expres. Le "
+                     "verificateur controle les TROIS consequences : l'evenement remonte, "
+                     "AUCUN compteur explosif en jeu, et l'annulation a quand meme eu lieu"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.CreatePlayerDiscardPile('sd003')"],
+        "main_exclusive": ["sd005", "01088"],
+        "declencher": ["Puzzle.Reveal('sd020')"],
+        # Voir le cas sd001b : la main de depart part a la defausse et y ajoute
+        # d'autres evenements ; `cibles` fixe celui que la carte doit remonter.
+        "cibles": ["sd003"],
+        "verifier": "sd005_instead",
+    },
+    {
+        "nom": "sd006 Kinetic Flurry — X attaques SEPAREES a 3 degats sur l'ennemi marque",
+        "pourquoi": ("cout X : sans `surpayer` le pilote ne paie rien, X vaut 0 et la carte "
+                     "parait inerte (piege du §8). 01088 fournit 2 energies -> X = 2, et "
+                     "l'ennemi porte un compteur -> 3 degats par attaque, donc 6. A 2 degats "
+                     "(branche sans compteur) on lirait 4 : les deux branches sont "
+                     "distinguables. Code partage avec sd007"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd006", "01088"],
+        "surpayer": True,
+        "cibles": ["01094"],
+        "jouer": ["sd006"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "sd008 Swift Strikes — 3 degats PUIS contre de base sur la manigance marquee, sans s'incliner",
+        "pourquoi": ("MIROIR de sd003 : degats d'abord, CONTRE de base ensuite, sur une "
+                     "MANIGANCE marquee. Le heros est incline au depart, le contre part quand "
+                     "meme. CTR 1 -> 6 menaces deviennent 5. Le cas sd016 rejoue exactement "
+                     "ce montage AVEC Quick Adaptation en jeu et lit 4 : la paire prouve le "
+                     "+1 CTR. Code partage avec sd009 et sd010"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "menace": [["01097b", 5]]},
+    },
+    {
+        "nom": "sd011 Top Speed — AVEC un compteur explosif en jeu : 1 + 2 ressources, la carte a 3 devient jouable (preuve par insuffisance)",
+        "pourquoi": ("Never Ending Spark (sd015) coute 3 et Top Speed est la SEULE ressource "
+                     "en main. Sans le supplement double, elle ne fournirait que 2 et la "
+                     "carte resterait injouable : sa presence en jeu prouve les 3 ressources. "
+                     "Code partage avec sd012"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "main_exclusive": ["sd015", "sd011"],
+        "jouer": ["sd015"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd015"]},
+    },
+    {
+        "nom": "sd011 Top Speed — SANS compteur explosif : le supplement n'est que de 1, la carte a 3 reste injouable",
+        "pourquoi": ("contre-epreuve du cas precedent, meme montage sans le compteur. Sans "
+                     "elle, un supplement de 2 INCONDITIONNEL passerait le premier cas"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd015", "sd011"],
+        "jouer": ["sd015"],
+        "verifier": "etat_attendu",
+        # Une carte dont le cout ne peut pas etre paye n'est PAS rendue a la
+        # main : `CardPlayer.Play` la defausse (card_player.py:134-136). Les
+        # deux cles ensemble disent bien « elle n'est jamais entree en jeu ».
+        "attendu": {"hors_jeu": ["sd015"], "defausse": ["sd015"]},
+    },
+    {
+        "nom": "sd011 Top Speed — la carte qu'on paie part QUAND MEME, mais plus aucune autre ensuite",
+        "pourquoi": ("LE point risque de la carte : `PlayersCannotPlayCardWhile` ne doit pas "
+                     "bloquer la carte en cours de paiement, sinon Top Speed n'a aucun sens. "
+                     "Le verificateur controle les deux : sd014 est bien entree en jeu, et "
+                     "sd013 (cout 1, financable par le 01088 encore en main) n'est plus "
+                     "jouable"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd014", "sd013", "sd011", "01088"],
+        "payer_avec": ["sd011"],
+        "jouer": ["sd014"],
+        "verifier": "sd011_restriction_du_tour",
+    },
+    {
+        "nom": "sd013 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
+        "pourquoi": ("duplicat volontaire de wc015 (meme carte reutilisee par l'auteur pour "
+                     "le frere jumeau) : le cas est donc le meme. 5 degats infliges, 3 "
+                     "prevenus -> 2 encaisses, et le cout (remelanger la carte) est REEL"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd013', under_control=True)"],
+        "declencher": ["Puzzle.Damage('sd001a', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["sd013"]},
+    },
+    {
+        "nom": "sd014 Explosive Touch — apres une ATTAQUE de base sur une cible marquee : la carte s'incline, Speed est redresse",
+        "pourquoi": ("une attaque de base incline le heros (c'est son cout) : le retrouver "
+                     "PRET apres l'attaque ne peut venir que de la Response. L'inclinaison "
+                     "d'Explosive Touch prouve que le cout a bien ete paye"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd014', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd001a"], "exhausted": ["sd014"]},
+    },
+    {
+        "nom": "sd014 Explosive Touch — apres un CONTRE de base sur une manigance marquee (via sd008)",
+        "pourquoi": ("l'autre moitie du declencheur imprime (« basic attack OR basic "
+                     "thwart »). L'API Puzzle n'a pas de commande de contre : on passe par "
+                     "le contre de base offert par Swift Strikes. Le heros est incline au "
+                     "depart et doit finir PRET"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd014', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd001a"], "exhausted": ["sd014"]},
+    },
+    {
+        "nom": "sd015 Never Ending Spark — Hero Response : la carte inclinee est REDRESSEE quand un compteur explosif est pose",
+        "pourquoi": ("premiere des deux capacites imprimees. La carte est inclinee au depart : "
+                     "seule la Response peut la redresser"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd015', under_control=True)",
+                          "Puzzle.Exhaust('sd015')"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sd015"]},
+    },
+    {
+        "nom": "sd015 Never Ending Spark — Resource : elle finance seule une carte a cout 1 et s'incline",
+        "pourquoi": ("seconde capacite imprimee, distincte. La main ne contient QUE la carte "
+                     "a jouer : la ressource ne peut venir que de la Spark, et son "
+                     "inclinaison prouve le cout"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd015', under_control=True)"],
+        "declencher": [],
+        "main_exclusive": ["sd013"],
+        "jouer": ["sd013"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd013"], "exhausted": ["sd015"]},
+    },
+    {
+        "nom": "sd016 Quick Adaptation — +1 ATQ contre un ennemi marque",
+        "pourquoi": ("ATQ imprimee 1 : une attaque de base a 2 degats ne peut venir que du "
+                     "bonus. La carte NE S'INCLINE PAS (c'est sd014 qui s'incline), le "
+                     "verificateur le controle aussi pour ne pas confondre les deux cartes"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd016', under_control=True)"],
+        "declencher": ["Puzzle.Counter('01094', 'explosive', 1)",
+                       "Puzzle.Attack('sd001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "pret": ["sd016"]},
+    },
+    {
+        "nom": "sd016 Quick Adaptation — +1 CTR contre une manigance marquee (via sd008)",
+        "pourquoi": ("montage IDENTIQUE au cas sd008, plus Quick Adaptation en jeu : la "
+                     "manigance tombe a 4 au lieu de 5. La paire de cas est la preuve du +1 "
+                     "CTR, et l'API Puzzle n'a pas de commande de contre"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd016', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Counter('01097b', 'explosive', 1)"],
+        "main_exclusive": ["sd008", "01090"],
+        "cibles": ["01094", "01097b"],
+        "jouer": ["sd008"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "sd017 No Outrunning This — branche 1 : incliner Thomas Shepherd -> l'obligation est retiree du jeu",
+        "pourquoi": ("le pilote prend TOUJOURS la premiere option d'un ChooseAbilities "
+                     "(convention il017/ok019/wc018) : c'est donc cette branche-la qu'il "
+                     "exerce spontanement. La partie demarre en alter-ego, la condition "
+                     "`player.IsAlterEgo()` est remplie"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('sd017')"],
+        "verifier": "sd017_obligation_retiree",
+    },
+    {
+        "nom": "sd017 No Outrunning This — branche 2 : Hyperkinetic Fuel eteint jusqu'a la fin du PROCHAIN round",
+        "pourquoi": ("branche inatteignable sans `preferer_option`. Le verificateur controle "
+                     "l'interrupteur DANS LES DEUX SENS et surtout la duree : apres la "
+                     "PREMIERE fin de round il doit rester leve (c'est le round courant), il "
+                     "ne retombe qu'a la SECONDE (« the end of the NEXT round »). C'est la "
+                     "difference avec wc018, qui s'eteint des la fin de la phase joueur"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('sd017')"],
+        "preferer_option": "You cannot resolve Speed",
+        "verifier": "sd017_interrupteur_hyperkinetic",
+    },
+    {
+        "nom": "sd018 The Real Question — When Revealed : defausse jusqu'a un attachement, qui est ensuite REVELE",
+        "pourquoi": ("le deck Rencontre est truque avec sd020 sur le dessus : l'attachement "
+                     "trouve doit etre revele, donc entrer en jeu attache au vilain. Modeles "
+                     "40093 et wd104, qui impriment la meme phrase"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.CreateEncounterDeck('sd020')", "Puzzle.Reveal('sd018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sd018", "sd020"]},
+    },
+    {
+        "nom": "sd018 The Real Question — tant qu'elle est en jeu, les attachements gagnent Permanent",
+        "pourquoi": ("seconde phrase imprimee, distincte du When Revealed. L'attachement "
+                     "entre en jeu APRES la manigance : c'est le chemin le plus fragile de "
+                     "`GiveKeywordToInPlayWhenApplyThis`. Le verificateur lit le mot-cle sur "
+                     "la carte, pas le texte"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd018')"],
+        "declencher": ["Puzzle.PutIntoPlay('sd020')"],
+        "verifier": "sd018_attachements_permanents",
+    },
+    {
+        "nom": "sd019 Coat of Arms — [star] : si son attaque inflige des degats, 1 degat de plus a CHAQUE personnage du joueur",
+        "pourquoi": ("le sbire est mis en jeu AVANT le passage en forme heros, sinon "
+                     "Quickstrike (natif, non code) declencherait une attaque de plus et "
+                     "fausserait le releve. Identite ET allie sont INCLINES : sinon le "
+                     "pilote declare un defenseur (constate le 30/08/2026 : Quicksilver "
+                     "encaissait l'attaque a la place du heros). ATQ 1 -> l'identite "
+                     "encaisse 1 puis 1 de "
+                     "supplement = 2, et l'allie 1 : la portee « each character you control » "
+                     "est ainsi verifiee sur DEUX personnages"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd002', under_control=True)",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Exhaust('sd001a')",
+                          "Puzzle.Exhaust('sd002')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["sd002", 1]]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — attachee au vilain, chaque carte de bonus d'une activation gagne +1 icone",
+        "pourquoi": ("deck Rencontre truque a 01106 Stampede (1 icone imprimee). Rhino ATQ 2 "
+                     "+ 1 icone = 3 sans l'attachement, 4 avec : la valeur exacte est la "
+                     "preuve du +1. `en_jeu` controle en meme temps l'attache au vilain"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd020')",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')", "Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "en_jeu": ["sd020"]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — Hero Action : depenser [energy][physical] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE, pas a vue (lecon Lockjaw) : 01088 (YY) "
+                     "et 01090 (RR) fournissent exactement une energie et un physique"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd020')"],
+        # ⚠ LIMITE DU PILOTE : `payer()` compte des RESSOURCES, pas des
+        # COULEURS (`besoin = len(cout)`, puis `poids = len(couleur)`). Energy
+        # (01088, « YY ») couvrait donc a lui seul un cout de 2 et le paiement
+        # partait sans le physique, ce que le moteur refusait ensuite en
+        # silence. On finance donc avec deux cartes a UNE SEULE icone : sd003
+        # imprime [energy], sd008 imprime [physical].
+        "main_exclusive": ["sd003", "sd008"],
+        "declencher": ["Puzzle.Action('sd020', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd020"]},
+    },
+    {
+        "nom": "sd020 Inspirational Art — la Hero Action devient INDISPONIBLE tant que The Real Question est en jeu",
+        "pourquoi": ("collision Permanent : une carte permanente ne peut pas etre defaussee, "
+                     "et le moteur PLANTE sur ce chemin (assert de card_face.py). La Hero "
+                     "Action doit donc etre grisee, pas echouer. Le verificateur interroge le "
+                     "filtre du gestionnaire d'evenements, exactement comme `Puzzle.Action`"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.PutIntoPlay('sd018')",
+                          "Puzzle.PutIntoPlay('sd020')"],
+        "main_exclusive": ["01088", "01090"],
+        "declencher": [],
+        "verifier": "sd020_action_indisponible",
+    },
+    {
+        "nom": "sd021 Magic Chains — attachee a Coat of Arms, elle etourdit le heros puis se defausse",
+        "pourquoi": ("l'attache conditionnelle vise Coat of Arms EN PRIORITE : l'attachement "
+                     "doit donc etre lie au sbire, pas au vilain. Le sbire est pose avant le "
+                     "passage en forme heros pour eviter Quickstrike. Les deux consequences "
+                     "sont controlees : statut Sonne ET carte defaussee"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd021')",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Exhaust('sd001a')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "sd021_chaines",
+    },
+    {
+        "nom": "sd021 Magic Chains — en ALTER-EGO le cout de la fleche est impayable : la carte RESTE",
+        "pourquoi": ("la fleche lie un COUT (« stun your hero ») a un EFFET (« discard this "
+                     "card ») : regle officielle du Rules Reference, confirmee par "
+                     "l'utilisateur le 30/08/2026. Sans heros en jeu le cout n'est pas "
+                     "payable, donc RIEN ne se passe et l'attachement garde son +1 ATQ. "
+                     "Contre-epreuve du cas precedent, dont il ne differe que par l'absence "
+                     "de passage en forme heros"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.PutIntoPlay('sd021')"],
+        "declencher": ["Puzzle.Attack('sd019')"],
+        "verifier": "sd021_cout_impayable",
+    },
+    {
+        "nom": "sd022 Conflicted Feelings — tant qu'elle est en jeu, Coat of Arms ne peut pas subir de degats",
+        "pourquoi": ("`Puzzle.Damage` ne fait RIEN sur un sbire (piege documente du guide) : "
+                     "on passe donc par une vraie attaque de base du heros. ATQ 1 -> 1 degat "
+                     "attendu sans l'obligation, 0 avec. `en_jeu` controle au passage que "
+                     "l'obligation RESTE en jeu apres avoir ete donnee (modele 28021)"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sd019')",
+                          "Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')",
+                          "Puzzle.Reveal('sd022')"],
+        "declencher": ["Puzzle.Attack('sd001a')"],
+        "cibles": ["sd019"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sd019", 0]], "en_jeu": ["sd022"]},
+    },
+    {
+        "nom": "sd022 Conflicted Feelings — Alter-Ego Action : depenser [energy][mental] la defausse",
+        "pourquoi": ("cout releve par DECOUPE D'IMAGE : 01088 (YY) et 01089 (BB) fournissent "
+                     "exactement une energie et un mental. La partie demarre en alter-ego, "
+                     "l'action est donc disponible d'emblee"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.Reveal('sd022')"],
+        # Meme limite du pilote que pour sd020 : deux cartes a UNE icone, sd003
+        # ([energy]) et sd005 ([mental]).
+        "main_exclusive": ["sd003", "sd005"],
+        "declencher": ["Puzzle.Action('sd022', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sd022"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -10185,6 +10743,275 @@ def wc019a_seul_billy_retire_la_menace(monde, aides):
     return True, (f"menace inchangee pour le second joueur ({depart}), puis "
                   f"{depart} -> {nv.threat} pour le joueur Billy Kaplan")
 
+# ------------------------------------------------------------------------
+# Pack « speed » : sd001a-sd022
+#
+# Deux de ces verificateurs sont des SONDES IN-PROCESS : ils renvoient dans le
+# monde `Message.WhenPhaseEnd(phase_id, "Player", monde)` ou
+# `Message.WhenRoundEnd(monde)`, exactement les messages qu'emet le moteur au
+# meme moment. L'API Puzzle n'avance aucune phase ni aucun round : c'est le
+# seul moyen d'exercer le balayage des compteurs explosifs (regle de l'insert)
+# et la duree de l'interrupteur de l'obligation sd017.
+# ------------------------------------------------------------------------
+
+def _sd_compteurs_explosifs_en_jeu(monde, aides):
+    total = 0
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.IsInPlay():
+            continue
+        if isinstance(face, aides["CanPlaceCounter"]):
+            total += face.GetCounters("explosive")
+    return total
+
+def _sd_fin_de_phase_joueur(monde):
+    from game.message import Message
+    Message.WhenPhaseEnd(monde.phase_id, "Player", monde).Send()
+
+def sd_balayage_ennemi(monde, aides):
+    """sd001a : a la fin de la phase des joueurs, le compteur explosif d'un
+    ENNEMI est retire du jeu ET lui inflige 1 degat."""
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino (01094) introuvable en jeu"
+    if rhino.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive") != 1:
+        return False, "le compteur explosif n'a pas ete pose au montage du cas"
+    avant = rhino.max_health - rhino.health
+
+    _sd_fin_de_phase_joueur(monde)
+
+    reste = rhino.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive")
+    if reste != 0:
+        return False, (f"le compteur explosif est encore la ({reste}) : le balayage de "
+                       f"fin de phase des joueurs n'a pas eu lieu")
+    apres = rhino.max_health - rhino.health
+    if apres != avant + 1:
+        return False, (f"degats sur Rhino : {avant} -> {apres} (attendu {avant + 1}). "
+                       f"Le compteur est parti sans infliger son degat")
+    return True, f"compteur retire et 1 degat inflige ({avant} -> {apres})"
+
+def sd_balayage_manigance(monde, aides):
+    """sd001b : meme regle, en identite civile, sur une MANIGANCE — 1 menace
+    retiree au moment du retrait du compteur."""
+    joueur = monde.players[0]
+    if joueur.IsHero():
+        return False, "le cas devait rester en identite civile"
+
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        return False, "le complot principal (01097b) est introuvable"
+    if scheme.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive") != 1:
+        return False, "le compteur explosif n'a pas ete pose au montage du cas"
+    avant = scheme.threat
+
+    _sd_fin_de_phase_joueur(monde)
+
+    reste = scheme.CastTo(aides["CanPlaceCounter"]).GetCounters("explosive")
+    if reste != 0:
+        return False, (f"le compteur explosif est encore la ({reste}) : la regle de "
+                       f"l'insert ne joue pas quand Speed finit la phase en alter-ego")
+    if scheme.threat != avant - 1:
+        return False, (f"menace : {avant} -> {scheme.threat} (attendu {avant - 1}). "
+                       f"Le compteur est parti sans retirer sa menace")
+    return True, f"compteur retire et 1 menace retiree ({avant} -> {scheme.threat})"
+
+def sd001b_accelerated_perception(monde, aides):
+    """sd001b : l'evenement seme dans la defausse (sd003) l'a quittee, et la
+    main est passee de 1 a 2 cartes (la pioche est inconditionnelle)."""
+    joueur = monde.players[0]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    if "sd003" in defausse:
+        return False, (f"sd003 est encore dans la defausse du joueur : le remelange n'a "
+                       f"pas eu lieu (defausse = {defausse})")
+    main = len(list(joueur.hand_cards.Get()))
+    if main != 2:
+        return False, (f"main a {main} carte(s) (attendu 2 : 1 carburant + 1 piochee). "
+                       f"La pioche n'a pas eu lieu")
+    return True, "sd003 a quitte la defausse (remelangee dans le deck) et 1 carte piochee"
+
+def sd005_instead(monde, aides):
+    """sd005, branche « instead » : l'evenement de la defausse remonte, on
+    pioche, AUCUN compteur explosif n'est pose, et l'annulation a quand meme eu
+    lieu (le « instead » ne remplace QUE Hyperkinetic Fuel)."""
+    joueur = monde.players[0]
+    soucis = []
+
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.GetAll()]
+    if "sd003" in defausse:
+        soucis.append("sd003 est encore dans la defausse : le remelange n'a pas eu lieu")
+    if "sd005" not in defausse:
+        soucis.append(f"sd005 n'a pas ete jouee (defausse du joueur = {defausse})")
+
+    total = _sd_compteurs_explosifs_en_jeu(monde, aides)
+    if total != 0:
+        soucis.append(f"{total} compteur(s) explosif(s) en jeu : le « instead » n'a pas "
+                      f"remplace la pose de compteur")
+
+    if aides["par_id"](monde, "sd020") is not None:
+        soucis.append("sd020 est en jeu : l'annulation de la carte rencontre n'a pas eu "
+                      "lieu, alors que le « instead » ne la remplace pas")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, ("evenement remonte de la defausse, aucun compteur explosif pose, "
+                  "carte rencontre annulee quand meme")
+
+def sd011_restriction_du_tour(monde, aides):
+    """sd011 : la carte financee par Top Speed est bien entree en jeu, et
+    plus aucune autre ne peut etre jouee ce tour-ci."""
+    joueur = monde.players[0]
+
+    if aides["par_id"](monde, "sd014") is None:
+        return False, ("sd014 n'est pas en jeu : la restriction a bloque la carte que "
+                       "Top Speed etait justement en train de payer")
+
+    suivante = None
+    for face in joueur.hand_cards.GetAll():
+        if getattr(face.paper, "card_id", None) == "sd013":
+            suivante = face
+            break
+    if suivante is None:
+        return False, "sd013 n'est plus en main : le montage du cas a echoue"
+
+    if suivante.CanPlayBy(joueur):
+        return False, ("sd013 est encore jouable alors que le supplement de Top Speed a "
+                       "ete pris : « you cannot play cards for the rest of the turn » ne "
+                       "joue pas")
+    return True, ("sd014 (payee par Top Speed) est en jeu, et sd013 n'est plus jouable "
+                  "pour le reste du tour")
+
+def sd017_obligation_retiree(monde, aides):
+    """sd017, branche 1 : l'obligation quitte le jeu et l'identite civile est
+    inclinee."""
+    if aides["par_id"](monde, "sd017") is not None:
+        return False, "sd017 est encore en jeu : la resolution a echoue"
+    identite = aides["identite"](monde)
+    if identite is not None and not identite.IsExhaust():
+        return False, "l'identite n'est pas inclinee : le cout de la branche n'a pas ete paye"
+    return True, "obligation retiree du jeu et Thomas Shepherd incline"
+
+def sd017_interrupteur_hyperkinetic(monde, aides):
+    """sd017, branche 2 : Hyperkinetic Fuel est eteint, et il le RESTE apres la
+    premiere fin de round — il ne se rallume qu'a la SECONDE (« until the end
+    of the NEXT round »)."""
+    from game.message import Message
+    from cards.pack.speed.speed import (
+        HyperkineticFuelActif, DRAPEAU_HYPERKINETIC_ETEINT,
+    )
+    from game.effect.rule import DebugRule
+
+    if aides["par_id"](monde, "sd017") is not None:
+        return False, "sd017 est encore en jeu : la branche 2 n'a pas ete choisie"
+
+    if not getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau d'extinction n'est pas leve : la branche 2 n'a pas ete "
+                       "choisie ou n'a rien fait")
+
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    if HyperkineticFuelActif(effet):
+        return False, "HyperkineticFuelActif() rend encore Vrai alors que le drapeau est leve"
+
+    Message.WhenRoundEnd(monde).Send()
+    if not getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau est retombe des la PREMIERE fin de round : le texte dit "
+                       "« until the end of the NEXT round », il faut en laisser passer une")
+
+    Message.WhenRoundEnd(monde).Send()
+    if getattr(monde, DRAPEAU_HYPERKINETIC_ETEINT, False):
+        return False, ("le drapeau est reste leve apres la SECONDE fin de round : "
+                       "l'extinction serait definitive")
+    if not HyperkineticFuelActif(effet):
+        return False, "HyperkineticFuelActif() rend encore Faux apres la seconde fin de round"
+    return True, ("Hyperkinetic Fuel eteint, toujours eteint apres la 1re fin de round, "
+                  "rallume a la 2e")
+
+def sd018_attachements_permanents(monde, aides):
+    """sd018 : l'attachement entre en jeu APRES la manigance et doit porter le
+    mot-cle Permanent."""
+    if aides["par_id"](monde, "sd018") is None:
+        return False, "sd018 n'est pas en jeu : le montage du cas a echoue"
+    art = aides["par_id"](monde, "sd020")
+    if art is None:
+        return False, "sd020 n'est pas en jeu : le montage du cas a echoue"
+    if not getattr(art, "permanent", False):
+        return False, ("sd020 ne porte PAS le mot-cle Permanent alors que The Real Question "
+                       "est en jeu")
+    return True, "l'attachement entre en jeu apres la manigance et gagne bien Permanent"
+
+def _sd_actions_de_carte(monde, card_id, aides, ability_type=None):
+    """(actions DECLAREES, actions REELLEMENT disponibles) sur une carte en jeu.
+
+    Reproduit exactement le filtrage de `Puzzle.Action` (puzzle.py:495-506) :
+    la seconde liste est ce que le joueur voit propose, condition comprise.
+
+    On rend AUSSI les actions declarees, et c'est indispensable : sans elles,
+    un cas « l'action est indisponible » resterait vert quand le module de la
+    carte est retire, puisqu'il n'y aurait plus d'action du tout. La paire
+    distingue « capacite absente » de « capacite presente mais grisee »."""
+    from game.ability.ability import AbilityType
+    from game.event.manager import EventManager
+    from game.message import Message
+    from game.effect.rule import GameRule
+
+    face = aides["par_id"](monde, card_id)
+    if face is None:
+        return None, None
+    joueur = monde.players[0]
+    type_demande = getattr(AbilityType, ability_type) if ability_type else None
+    candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn,
+                                             type=type_demande)
+                 if not x.ability.is_play]
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    disponibles = EventManager.FilterAvailableEffects(
+        message, candidats, joueur, monde, None)
+    return candidats, disponibles
+
+def sd020_action_indisponible(monde, aides):
+    """sd020 : tant que The Real Question (sd018) est en jeu, l'attachement est
+    Permanent et sa Hero Action de defausse doit etre GRISEE — pas echouer, ni
+    faire planter la partie sur l'assert de `DiscardInternal`."""
+    if aides["par_id"](monde, "sd018") is None:
+        return False, "sd018 n'est pas en jeu : le montage du cas a echoue"
+    art = aides["par_id"](monde, "sd020")
+    if art is None:
+        return False, "sd020 n'est pas en jeu : le montage du cas a echoue"
+    if not getattr(art, "permanent", False):
+        return False, "sd020 ne porte pas Permanent : le montage du cas a echoue"
+
+    candidats, effets = _sd_actions_de_carte(monde, "sd020", aides, "HeroAction")
+    if not candidats:
+        return False, ("sd020 ne DECLARE aucune Hero Action : le cas ne prouverait rien "
+                       "(une capacite absente est aussi « indisponible »)")
+    if effets:
+        return False, (f"la Hero Action de sd020 est encore proposee ({len(effets)} effet(s)) "
+                       f"alors que The Real Question est en jeu : la defausse d'une carte "
+                       f"Permanente ferait planter la partie")
+    return True, ("Hero Action declaree mais indisponible tant que The Real Question est "
+                  "en jeu")
+
+def sd021_chaines(monde, aides):
+    """sd021 : apres l'attaque du sbire porteur, le heros est SONNE et
+    l'attachement est defausse."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    if not identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "le heros n'est pas Sonne : le Forced Response n'a pas joue"
+    if aides["par_id"](monde, "sd021") is not None:
+        return False, "sd021 est encore en jeu : elle n'a pas ete defaussee"
+    return True, "heros Sonne et Magic Chains defaussee"
+
+
+def sd021_cout_impayable(monde, aides):
+    """sd021 : en identite civile il n'y a AUCUN heros a etourdir, donc le cout
+    de la fleche n'est pas payable : ni etourdissement, ni defausse."""
+    if aides["par_id"](monde, "sd021") is None:
+        return False, "sd021 defaussee alors que le cout n'etait pas payable"
+    identite = aides["identite"](monde)
+    if identite is not None and identite.CastTo(aides["CanStatus"]).HasStatus("Stunned"):
+        return False, "identite Sonnee alors qu'aucun heros n'est en jeu"
+    return True, "cout impayable : Magic Chains reste en jeu, personne n'est Sonne"
 '''
 
 

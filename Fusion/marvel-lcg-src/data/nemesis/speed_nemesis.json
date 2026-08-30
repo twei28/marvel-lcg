@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Speed Nemesis",
+    "encounters": [
+        "sd018",
+        "sd019",
+        "sd020",
+        "sd021",
+        "sd022"
+    ]
+}

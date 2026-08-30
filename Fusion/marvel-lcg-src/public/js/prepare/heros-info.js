@@ -1124,4 +1124,16 @@ export const HEROS_INFO = {
         apparition: "Young Avengers Vol. 1 #1 (2005)",
     },
 
+    "sd001a": {
+        bio: "Tommy Shepherd est un adolescent au caractère explosif, expulsé du lycée après avoir accidentellement fait sauter son école quand ses pouvoirs se sont réveillés. Enfermé dans une prison pour jeunes mutants, il en est tiré par les Young Avengers, qui découvrent son visage familier : il est le frère jumeau réincarné de Billy Kaplan, l'autre fils perdu de la Sorcière Rouge et de la Vision. Sous le nom de Speed, il court plus vite que le son et fait vibrer la matière jusqu'à la détonation, un don qu'il partage avec son oncle Vif-Argent. Créé par Allan Heinberg et Jim Cheung en 2005.",
+        bioEn: "Tommy Shepherd is a hot-headed teenager, thrown out of school after accidentally blowing the building up when his powers woke. Locked away in a juvenile facility for mutants, he is broken out by the Young Avengers, who recognize his face at once: he is the reincarnated twin brother of Billy Kaplan, the other lost son of the Scarlet Witch and the Vision. As Speed he runs faster than sound and vibrates matter until it detonates, a gift he shares with his uncle Quicksilver. Created by Allan Heinberg and Jim Cheung in 2005.",
+        civil: "Thomas Shepherd",
+        base: "New York (Springfield, New Jersey)",
+        equipes: "Young Avengers",
+        equipesEn: "Young Avengers",
+        ennemis: "Coat of Arms, Kang le Conquérant",
+        ennemisEn: "Coat of Arms, Kang the Conqueror",
+        apparition: "Young Avengers Vol. 1 #10 (2005)",
+    },
+
 };

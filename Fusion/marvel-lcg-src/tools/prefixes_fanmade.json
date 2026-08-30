@@ -130,6 +130,13 @@
       "cartes": 20,
       "depuis": "2026-08-12"
     },
+    "sd": {
+      "pack": "speed",
+      "libelle": "130. Custom (Speed)",
+      "cartes": 23,
+      "depuis": "2026-08-30",
+      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider et wiccan. Tommy Shepherd, Young Avengers. 2 faces heros + 15 cartes signature + 1 obligation + 4 nemesis, plus une SECONDE obligation (Conflicted Feelings) qui appartient au set nemesis (numerotee SPEED NEMESIS 5/5 sur le scan). Mecanique neuve : les compteurs explosifs (compteur moteur `explosive`), poses par la capacite du heros et retires en fin de phase des joueurs."
+    },
     "sg": {
       "pack": "squirrel_girl",
       "libelle": "112. Custom (Squirrel Girl)",
