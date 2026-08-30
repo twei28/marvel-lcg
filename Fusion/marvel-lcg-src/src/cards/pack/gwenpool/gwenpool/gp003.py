@@ -4,7 +4,13 @@ from . import *
 # Hero Action (attack/thwart): Deal 1 damage to the villain and remove 1
 # threat from the main scheme. If the villain schemed last round, ____.
 # Bulle : « Confuse the villain. »
-# LENIENT : le moteur n'accepte qu'un seul label ; 'attack' retenu.
+# CORRECTIF (30/08/2026) : la carte porte les DEUX labels imprimes. Le module
+# n'en posait qu'un, au motif que « le moteur n'accepte qu'un seul label » —
+# c'est faux, `Ability.SetLabel(*labels)` est variadique et la carte OFFICIELLE
+# 18004 Crosscounter en pose trois. Le label 'thwart' est ce qui declenche le
+# statut Desoriente (`cards/pack/status/confused.py`) : sans lui, une Gwenpool
+# Desorientee jouait cette carte, retirait quand meme sa menace, et GARDAIT son
+# statut.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -23,5 +29,5 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
             it_cant_end_like_this
-        ).SetPlay().SetLabel('attack'),
+        ).SetPlay().SetLabel('attack', 'thwart'),
     ]

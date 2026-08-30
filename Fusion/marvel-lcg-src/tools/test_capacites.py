@@ -9462,6 +9462,67 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2},
     },
+    {
+        "nom": "gp003 \"It Can't End Like This!\" — Desorientee, la carte est ANNULEE et le statut consomme",
+        "pourquoi": ("la carte est imprimee « (attack/thwart) » et porte les traits ATTACK et "
+                     "THWART, mais le module ne posait que le label 'attack'. Or le label "
+                     "'thwart' est ce qui declenche Desoriente. Sans lui, une Gwenpool "
+                     "Desorientee joue la carte, retire quand meme sa menace, et GARDE son "
+                     "statut. Meme forme que la carte OFFICIELLE 18004 Crosscounter"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "mise_en_place": ["Puzzle.ChangeForm('gp001b')",
+                          "Puzzle.SetThreat('01097b', 3)",
+                          "Puzzle.Confuse('gp001a')"],
+        "main_exclusive": ["gp003", "gp002"],
+        "declencher": [],
+        "jouer": ["gp003"],
+        "verifier": "gp003_desorientee_annule_tout",
+    },
+    {
+        "nom": "gp005 \"Sorry, Gotta Run!\" — elle dejoue le complot principal MALGRE un sbire patrol",
+        "pourquoi": ("la carte est imprimee « ignores the patrol keyword and crisis icons ». "
+                     "Le module n'ignorait que les crises, au motif que « le moteur ne propose "
+                     "pas d'exemption patrol » — c'est faux, `SetIgnoreKeyword('Crisis', "
+                     "'Patrol')` existe et deux cartes portant LA MEME phrase l'utilisent, "
+                     "42006 Natural Flight (officielle) et 61023 Grapnel Launcher. Patrol "
+                     "protege le COMPLOT PRINCIPAL (`minion.py`, SetGuardPatrolEffectedBy -> "
+                     "GetMainSchemes) : avec le Magistrate 45134 engage, le complot principal "
+                     "est hors d'atteinte et la carte ne tient pas sa promesse"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "mise_en_place": ["Puzzle.ChangeForm('gp001b')",
+                          "Puzzle.SetThreat('01097b', 3)",
+                          "Puzzle.PutIntoPlay('45134')"],
+        "main_exclusive": ["gp005", "gp003", "gp002"],
+        "declencher": [],
+        "jouer": ["gp005"],
+        "payer_avec": ["gp003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "en_jeu": ["45134"]},
+    },
+    {
+        "nom": "gp005 \"Sorry, Gotta Run!\" — elle dejoue le complot principal MALGRE une icone de crise",
+        "pourquoi": ("jumeau du cas patrol, pour l'autre moitie de la phrase imprimee. Le "
+                     "correctif remplace `ignore_crisis=True` (un enregistrement temporaire "
+                     "d'UnitIgnoreKeywordIcons) par `SetIgnoreKeyword('Crisis', 'Patrol')`, "
+                     "la convention de 42006 : ce cas est VERT avant comme apres, il garantit "
+                     "que le changement de mecanisme ne perd pas la crise en route. "
+                     "`scheme_main.py` RemoveThreatInternal rend 0 sans l'exemption"),
+        "scenario": "rhino",
+        "heros": "gwenpool",
+        "mise_en_place": ["Puzzle.ChangeForm('gp001b')",
+                          "Puzzle.SetThreat('01097b', 3)",
+                          "Puzzle.PutIntoPlay('01125')"],
+        "main_exclusive": ["gp005", "gp003", "gp002"],
+        "declencher": [],
+        "jouer": ["gp005"],
+        "payer_avec": ["gp003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "en_jeu": ["01125"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -10799,6 +10860,41 @@ def identite_sans_statut_tenace(monde, aides):
     if identite.IsTough():
         return False, "l'identite porte encore un statut Tenace"
     return True, "le statut Tenace a bien ete defausse"
+
+def gp003_desorientee_annule_tout(monde, aides):
+    """gp003 est imprimee « (attack/thwart) » : Desoriente doit l'ANNULER.
+
+    Le label `thwart` est ce qui declenche le statut Desoriente
+    (`cards/pack/status/confused.py`, `AfterPlayerTriggerAbility(label='thwart')`).
+    Sans lui, la carte passe en force : elle retire sa menace ET l'identite
+    garde son statut pour plus tard. Avec lui, `set_be_instead` remplace TOUTE
+    la capacite — c'est deja ce qui arrive a la carte OFFICIELLE 18004
+    Crosscounter, imprimee « (attack/defense/thwart) », pour laquelle
+    `confused.py` porte un cas special.
+    """
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    soucis = []
+    if identite.IsConfused():
+        soucis.append("l'identite est encore Desorientee : le statut n'a pas ete consomme")
+    principal = aides["par_id"](monde, "01097b")
+    if principal is None:
+        soucis.append("complot principal 01097b introuvable")
+    elif principal.threat != 3:
+        soucis.append(f"menace sur 01097b = {principal.threat} (attendu 3 : "
+                      "la capacite devait etre annulee)")
+    vilain = aides["par_id"](monde, "01094")
+    if vilain is None:
+        soucis.append("Rhino introuvable")
+    else:
+        subis = vilain.max_health - vilain.health
+        if subis != 0:
+            soucis.append(f"degats sur Rhino = {subis} (attendu 0 : "
+                          "la capacite devait etre annulee)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "capacite annulee de bout en bout, statut Desoriente consomme"
 
 def identite_est_tenace(monde, aides):
     """L'identite du joueur porte un statut Tenace."""
