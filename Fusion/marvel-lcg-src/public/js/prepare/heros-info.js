@@ -1211,4 +1211,15 @@ export const HEROS_INFO = {
         apparition: "Vengeance #1 (2011)",
     },
 
+    "vp001a": {
+        bio: "Wade Wilson est un mercenaire canadien que le programme Arme X a « soigné » d'un cancer en lui greffant le facteur de guérison de Wolverine : il en est ressorti immortel, défiguré, et durablement fêlé. Deadpool sait qu'il est un personnage de bande dessinée et s'adresse volontiers au lecteur. Quand il croise un symbiote klyntar, le costume vivant trouve en lui un hôte que rien ne tue et qui parle encore plus que lui — l'alliance de la bavarde et du monstre donne Venompool, une créature qui se soigne en dévorant ce qu'elle frappe.",
+        bioEn: "Wade Wilson is a Canadian mercenary whom the Weapon X programme \"cured\" of cancer by grafting Wolverine's healing factor onto him: he came out immortal, disfigured, and permanently cracked. Deadpool knows he is a comic-book character and cheerfully addresses the reader. When he runs into a Klyntar symbiote, the living suit finds in him a host that nothing can kill and who talks even more than it does — the pairing of the motormouth and the monster gives Venompool, a creature that heals itself by devouring whatever it hits.",
+        civil: "Wade Winston Wilson",
+        base: "New York",
+        equipes: "X-Force, Thunderbolts, Mercs for Money",
+        equipesEn: "X-Force, Thunderbolts, Mercs for Money",
+        ennemis: "Killer Thrill, T-Ray, Ajax",
+        apparition: "The New Mutants #98 (1991)",
+    },
+
 };
