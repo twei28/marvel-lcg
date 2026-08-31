@@ -1,0 +1,15 @@
+{
+ "init": true,
+ "ok": 3444,
+ "err": 7,
+ "sans_GetAbilities": 405,
+ "failures": {
+  "cards.pack.cw.resistance.56200b": "abilities: NameError: name 'Leader' is not defined",
+  "cards.pack.mut_gen.magneto.32150": "abilities: AssertionError",
+  "cards.pack.mut_gen.shadowcat.32055": "abilities: AssertionError",
+  "cards.pack.nova.armadillo.28030": "abilities: AssertionError",
+  "cards.pack.sm.osborn_tech.27152": "abilities: AssertionError",
+  "cards.pack.tt.trickster_magic.55061": "abilities: AssertionError",
+  "cards.pack.tt.trickster_magic.55062": "abilities: AssertionError"
+ }
+}

@@ -1,0 +1,2691 @@
+[
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', '1')"
+  ],
+  [
+   "cards/pack/trors/absorbing_man/04081.py",
+   "cards/pack/trors/absorbing_man/04083.py",
+   "cards/pack/trors/absorbing_man/04082.py",
+   "cards/pack/trors/absorbing_man/04080.py",
+   "cards/pack/sm/guerrilla_tactics/27144.py",
+   "cards/pack/next_evol/telepathy/40162.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/ability/factory/setup.py",
+   "cards/pack/deadpool/44050.py",
+   "cards/pack/spiderham/spider_ham_nemesis/30028.py",
+   "cards/pack/vnm/20015.py",
+   "cards/pack/psylocke/41015.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "cards/pack/sm/sinister_six/__init__.py",
+   "game/message/sender/sender_friend.py",
+   "game/world/world_rule.py",
+   "cards/pack/deadpool/44057.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "core/utility/cast.py",
+   "cards/pack/twc/07001b.py",
+   "cards/pack/ironheart/29024.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/player/limit_monitor/team_limit.py",
+   "game/player/limit_monitor/ally_limit.py",
+   "game/world/limit_monitor/player_side_scheme_limit.py"
+  ]
+ ],
+ [
+  [],
+  [
+   "game/ability/ability_ignore.py",
+   "game/card/ui_effect_by.py"
+  ]
+ ],
+ [
+  [
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')"
+  ],
+  [
+   "game/game_run/game_session.py",
+   "core/lib/time.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'this'\")",
+   "+('STORE_FAST', \"'this'\")",
+   "-('LOAD_DEREF', \"'this'\")",
+   "+('LOAD_FAST', \"'this'\")",
+   "-('STORE_DEREF', \"'identity'\")",
+   "+('STORE_FAST', \"'identity'\")",
+   "-('STORE_DEREF', \"'juggernaut'\")",
+   "+('STORE_FAST', \"'juggernaut'\")"
+  ],
+  [
+   "cards/pack/next_evol/juggernaut/40125.py",
+   "cards/pack/next_evol/juggernaut/40126.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'defeated'\")",
+   "-('LOAD_CLOSURE', \"'defeated'\")",
+   "-('BUILD_TUPLE', '1')",
+   "+('STORE_FAST', \"'defeated'\")",
+   "-('MAKE_FUNCTION', '8')",
+   "+('MAKE_FUNCTION', '0')",
+   "-('LOAD_DEREF', \"'defeated'\")",
+   "+('LOAD_FAST', \"'defeated'\")"
+  ],
+  [
+   "cards/pack/spiderham/30014.py",
+   "cards/pack/hood/crossfires_crew/24023.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'damage'\")",
+   "+('STORE_FAST', \"'damage'\")",
+   "-('LOAD_CLOSURE', \"'damage'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_DEREF', \"'damage'\")",
+   "+('LOAD_FAST', \"'damage'\")",
+   "-('LOAD_DEREF', \"'damage'\")"
+  ],
+  [
+   "cards/pack/falcon/falcon/53003.py",
+   "cards/pack/wsp/13032.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/card/face/attribute/can_teamwork.py",
+   "cards/pack/core/iron_man/01034.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'identity'\")",
+   "+('LOAD_METHOD', \"'HasTrait'\")",
+   "+('LOAD_CONST', \"'ENTHRALLED'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('LOAD_FAST', \"'identity'\")"
+  ],
+  [
+   "cards/pack/tt/enchantress/55024.py",
+   "cards/pack/tt/enchantress/55023.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'villain'\")",
+   "-('BUILD_LIST', '1')",
+   "-('BUILD_LIST', '0')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "cards/pack/core/black_panther/01046.py",
+   "cards/pack/core/black_panther_nemesis/01158.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_ATTR', \"'ability'\")",
+   "-('LOAD_ATTR', \"'Find'\")",
+   "-('LOAD_GLOBAL', \"'AbilityType'\")",
+   "-('LOAD_ATTR', \"'Preparation'\")",
+   "-('LOAD_CONST', \"('type',)\")",
+   "-('CALL_FUNCTION_KW', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "cards/pack/aos/black_widow/50070.py",
+   "cards/pack/aos/black_widow/50074.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_GLOBAL', \"'XMansionIsInPlay'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('CALL_FUNCTION', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_CONST', '0')",
+   "-('RETURN_VALUE', 'None')"
+  ],
+  [
+   "cards/pack/gambit/37021.py",
+   "cards/pack/gambit/37031.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_DEREF', \"'apply'\")",
+   "+('LOAD_DEREF', \"'effect'\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('LOAD_FAST', \"'diff'\")",
+   "+('LOAD_CONST', 'False')",
+   "+('CALL_FUNCTION', '4')",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "game/ability/factory/environment_helper2.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'tuple'\")",
+   "-('LIST_TO_TUPLE', 'None')",
+   "+('CALL_FUNCTION', '1')",
+   "-('SETUP_FINALLY', '72')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")"
+  ],
+  [
+   "game/message/message.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '478')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "engine/controller/controller.py"
+  ]
+ ],
+ [
+  [
+   "-('DUP_TOP_TWO', 'None')",
+   "-('INPLACE_ADD', 'None')",
+   "-('ROT_THREE', 'None')",
+   "-('STORE_SUBSCR', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "-('LOAD_ATTR', \"'count_calls'\")",
+   "-('LOAD_CONST', \"('return', None)\")",
+   "-('LOAD_CONST', \"'<code my_method>'\")"
+  ],
+  [
+   "core/meta_class/instance_tracker.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'from_deck'\")",
+   "-('LOAD_FAST', \"'Message'\")",
+   "-('LOAD_METHOD', \"'WhenCountingResourcesOnCards'\")",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_FAST', \"'from_deck'\")",
+   "-('CALL_METHOD', '2')",
+   "-('STORE_FAST', \"'message'\")",
+   "-('LOAD_FAST', \"'message'\")"
+  ],
+  [
+   "game/operate/faces_counter.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_METHOD', \"'GetAttachedAttachments'\")",
+   "-('CALL_METHOD', '0')",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'y'\")",
+   "-('LOAD_FAST', \"'y'\")",
+   "-('LIST_APPEND', '3')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/operate/players.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'call_reveal'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_FAST', \"'this'\")",
+   "+('LOAD_ATTR', \"'Reveal'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('LOAD_FAST', \"'GameRule'\")",
+   "+('LOAD_FAST', \"'this'\")",
+   "+('CALL_FUNCTION', '1')"
+  ],
+  [
+   "game/card/face/model/face_on_event.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'self'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '8')",
+   "-('LOAD_DEREF', \"'self'\")",
+   "+('MAKE_FUNCTION', '0')",
+   "+('LOAD_FAST', \"'self'\")",
+   "-('LOAD_DEREF', \"'self'\")",
+   "-('LOAD_ATTR', \"'curr_face_traits'\")"
+  ],
+  [
+   "game/ability/factory/enhance_self.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'last_bind_card'\")",
+   "+('STORE_FAST', \"'last_bind_card'\")",
+   "-('STORE_DEREF', \"'last_bind_card'\")",
+   "+('STORE_FAST', \"'last_bind_card'\")",
+   "+('LOAD_DEREF', \"'process_fn'\")",
+   "+('LOAD_DEREF', \"'effect'\")",
+   "+('LOAD_DEREF', \"'last_value'\")",
+   "+('LOAD_DEREF', \"'last_value'\")"
+  ],
+  [
+   "game/ability/factory/on_while.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'command'\")",
+   "-('LOAD_METHOD', \"'isdigit'\")",
+   "-('CALL_METHOD', '0')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_GLOBAL', \"'int'\")",
+   "-('LOAD_FAST', \"'command'\")",
+   "-('CALL_FUNCTION', '1')",
+   "-('STORE_FAST', \"'step'\")"
+  ],
+  [
+   "game/cheat/cheat.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'self'\")",
+   "-('LOAD_ATTR', \"'r'\")",
+   "-('LOAD_CONST', '0')",
+   "-('COMPARE_OP', \"'>'\")",
+   "-('JUMP_IF_TRUE_OR_POP', \"'J'\")",
+   "-('JUMP_IF_FALSE_OR_POP', \"'J'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('JUMP_IF_FALSE_OR_POP', \"'J'\")"
+  ],
+  [
+   "game/element/rbyg.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'other_discard_faces'\")",
+   "+('LOAD_METHOD', \"'append'\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('CALL_METHOD', '1')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('STORE_FAST', \"'found_face'\")"
+  ],
+  [
+   "game/deck/deck.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '510')",
+   "-('POP_BLOCK', 'None')",
+   "-('DUP_TOP', 'None')",
+   "-('LOAD_GLOBAL', \"'requests'\")",
+   "-('LOAD_ATTR', \"'exceptions'\")",
+   "-('LOAD_ATTR', \"'Timeout'\")",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "engine/file/cache.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('LOAD_CONST', 'None')",
+   "-('RETURN_VALUE', 'None')"
+  ],
+  [
+   "game/game.py"
+  ]
+ ],
+ [
+  [
+   "+('BUILD_MAP', '0')",
+   "+('DICT_UPDATE', '1')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/operate/setup_cards.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "+('STORE_FAST', \"'_item'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "game/operate/faces.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'do_active'\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'active_cnt'\")",
+   "-('LOAD_CONST', '1')",
+   "-('INPLACE_ADD', 'None')",
+   "-('STORE_FAST', \"'active_cnt'\")",
+   "-('LOAD_FAST', \"'Worlds'\")",
+   "-('LOAD_METHOD', \"'IsGameOver'\")"
+  ],
+  [
+   "game/operate/enemies.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "-('STORE_DEREF', \"'effects_temp_unit'\")",
+   "+('STORE_FAST', \"'effects_temp_unit'\")",
+   "-('STORE_DEREF', \"'effects_temp_ally'\")",
+   "+('STORE_FAST', \"'effects_temp_ally'\")",
+   "-('LOAD_CLOSURE', \"'effects_temp_unit'\")"
+  ],
+  [
+   "game/card/face/model/face_action.py"
+  ]
+ ],
+ [
+  [
+   "-('INPLACE_ADD', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "-('STORE_DEREF', \"'attacked_you'\")",
+   "+('STORE_FAST', \"'attacked_you'\")",
+   "-('LOAD_CLOSURE', \"'attacked_you'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')"
+  ],
+  [
+   "game/card/face/attribute/can_attack.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'origin_face'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_FAST', \"'origin_face'\")",
+   "+('LOAD_ATTR', \"'is_infinite_health'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_METHOD', \"'ResetHealth'\")",
+   "+('LOAD_FAST', \"'ResetKeyword'\")"
+  ],
+  [
+   "game/card/face/attribute/can_health.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('INPLACE_ADD', 'None')",
+   "+('BINARY_ADD', 'None')"
+  ],
+  [
+   "game/player/scenario.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'select'\")",
+   "+('STORE_FAST', \"'select'\")",
+   "-('LOAD_CLOSURE', \"'select'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')",
+   "+('LOAD_CONST', \"'Cancel'\")",
+   "+('STORE_FAST', \"'text'\")"
+  ],
+  [
+   "game/player/model/player_ask.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")",
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")",
+   "-('LOAD_CLOSURE', \"'during_attack'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_DEREF', \"'during_attack'\")"
+  ],
+  [
+   "game/ability/factory/boost.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_METHOD', \"'SetCannotTakeMoreThanDamage'\")",
+   "-('LOAD_FAST', \"'value'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('CALL_METHOD', '2')",
+   "-('POP_TOP', 'None')",
+   "-('LOAD_CONST', 'None')",
+   "-('RETURN_VALUE', 'None')",
+   "-('LOAD_FAST', \"'message'\")"
+  ],
+  [
+   "game/ability/factory/damage.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'ValueError'\")",
+   "+('LOAD_CONST', \"'Function call to a non-attribute is n",
+   "+('CALL_FUNCTION', '1')",
+   "+('RAISE_VARARGS', '1')",
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/puzzle/puzzle.py"
+  ]
+ ],
+ [
+  [
+   "+('STORE_FAST', \"'_item'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('LOAD_GLOBAL', \"'TransText'\")",
+   "-('LOAD_CONST', \"'{deck} ({size}): {cards}'\")",
+   "-('LOAD_FAST', \"'deck'\")",
+   "-('LOAD_FAST', \"'size'\")",
+   "-('LOAD_CONST', 'None')"
+  ],
+  [
+   "game/message/sender/sender_player.py"
+  ]
+ ],
+ [
+  [
+   "-('FORMAT_VALUE', '(None, False)')",
+   "-('FORMAT_VALUE', '(None, False)')",
+   "-('INPLACE_ADD', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "+('STORE_FAST', \"'name'\")",
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'campaign'\")"
+  ],
+  [
+   "game/scene/scene.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', \"'Place 2 secret counters on a [[Board ",
+   "-('LOAD_CLOSURE', \"'effect'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('LOAD_CONST', \"'<code <lambda>>'\")",
+   "-('LOAD_CONST', \"'GetAbilities.<locals>.zemos_manipulat",
+   "-('MAKE_FUNCTION', '8')",
+   "-('CALL_METHOD', '2')",
+   "-('LOAD_ATTR', \"'SetTarget'\")"
+  ],
+  [
+   "cards/pack/aos/baron_zemo/50167b.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'player'\")",
+   "-('LOAD_DEREF', \"'player'\")",
+   "+('STORE_FAST', \"'player'\")",
+   "+('LOAD_FAST', \"'player'\")",
+   "-('LOAD_DEREF', \"'player'\")",
+   "-('LOAD_METHOD', \"'ChooseAbilities'\")",
+   "+('LOAD_FAST', \"'mojo'\")",
+   "+('LOAD_CONST', 'None')"
+  ],
+  [
+   "cards/pack/mojo/mojo/39033.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'ConfigVariables'\")",
+   "+('LOAD_ATTR', \"'is_initialized'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'ConfigVariables'\")",
+   "+('LOAD_METHOD', \"'InitVariable'\")",
+   "+('LOAD_FAST', \"'var_name'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "engine/config.py"
+  ]
+ ],
+ [
+  [
+   "+('IMPORT_FROM', \"'random'\")",
+   "+('POP_TOP', 'None')",
+   "+('IMPORT_FROM', \"'random'\")",
+   "+('POP_TOP', 'None')",
+   "+('IMPORT_FROM', \"'random'\")",
+   "+('POP_TOP', 'None')",
+   "+('IMPORT_FROM', \"'random'\")",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "engine/lib/random.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'image'\")",
+   "-('LOAD_GLOBAL', \"'ImageCreator'\")",
+   "-('LOAD_ATTR', \"'cache_images'\")",
+   "-('LOAD_FAST', \"'color'\")",
+   "-('STORE_SUBSCR', 'None')",
+   "+('STORE_FAST', \"'width'\")",
+   "-('ROT_TWO', 'None')",
+   "-('STORE_FAST', \"'width'\")"
+  ],
+  [
+   "engine/lib/image_creator.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('SETUP_FINALLY', '180')",
+   "-('SETUP_FINALLY', '68')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")"
+  ],
+  [
+   "engine/job/job.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'caller'\")",
+   "-('BUILD_TUPLE', '6')",
+   "+('BUILD_TUPLE', '5')",
+   "-('SETUP_FINALLY', '384')",
+   "-('SETUP_FINALLY', '246')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')"
+  ],
+  [
+   "engine/device/web/server/server_socket.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', '0')",
+   "+('LOAD_FAST', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'GetVillains'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'card'\")",
+   "+('LOAD_ATTR', \"'game_area'\")",
+   "+('CALL_METHOD', '1')"
+  ],
+  [
+   "game/card/face/card_type/minion.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'__class__'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '13')",
+   "+('MAKE_FUNCTION', '5')",
+   "-('STORE_FAST', \"'value'\")",
+   "-('LOAD_FAST', \"'Message'\")",
+   "-('LOAD_METHOD', \"'WhenSchemeWouldRemoveThreat'\")",
+   "-('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/card/face/base/scheme.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_DEREF', \"'self'\")",
+   "-('LOAD_METHOD', \"'OnAfterPlay'\")",
+   "-('LOAD_FAST', \"'player'\")",
+   "-('LOAD_DEREF', \"'by_effect'\")",
+   "-('LOAD_FAST', \"'play_message'\")",
+   "-('LOAD_FAST', \"'message'\")",
+   "-('LOAD_FAST', \"'from_area'\")",
+   "-('CALL_METHOD', '5')"
+  ],
+  [
+   "game/card/face/base/card_player.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_GLOBAL', \"'get_args'\")",
+   "-('CALL_FUNCTION', '1')",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'value'\")",
+   "-('LOAD_FAST', \"'value'\")",
+   "-('LIST_APPEND', '3')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/player/form/form.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('SETUP_WITH', '96')",
+   "-('POP_BLOCK', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('DUP_TOP', 'None')",
+   "-('DUP_TOP', 'None')",
+   "+('LOAD_CONST', 'None')",
+   "+('LOAD_CONST', 'None')"
+  ],
+  [
+   "game/player/element/player_setup.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'None')",
+   "+('LOAD_DEREF', \"'Player'\")",
+   "+('LOAD_METHOD', \"'IsType'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('LOAD_ATTR', \"'this'\")",
+   "+('LOAD_METHOD', \"'GetControlBy'\")",
+   "+('CALL_METHOD', '0')",
+   "+('CALL_METHOD', '1')"
+  ],
+  [
+   "game/ability/factory/minion.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'False')",
+   "+('LOAD_FAST', \"'Minion'\")",
+   "+('LOAD_METHOD', \"'IsType'\")",
+   "+('LOAD_DEREF', \"'minion'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_DEREF', \"'face'\")",
+   "+('LOAD_ATTR', \"'paper'\")"
+  ],
+  [
+   "game/ability/factory/treat.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'AbilityFactoryDoAttack'\")",
+   "+('LOAD_ATTR', \"'AfterUnitAttackUnitInternal'\")",
+   "+('LOAD_DEREF', \"'ability_type'\")",
+   "+('LOAD_DEREF', \"'attacker'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('LOAD_DEREF', \"'operation'\")",
+   "+('LOAD_DEREF', \"'use_atk'\")",
+   "+('LOAD_DEREF', \"'dealt_damage'\")"
+  ],
+  [
+   "game/ability/factory/do_attack.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_METHOD', \"'GetControlByPlayer'\")",
+   "-('CALL_METHOD', '0')",
+   "-('LOAD_ATTR', \"'obligations_area'\")",
+   "-('LOAD_METHOD', \"'Get'\")",
+   "-('CALL_METHOD', '0')",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'x'\")"
+  ],
+  [
+   "game/selector/selector_target_helper.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'into_area'\")",
+   "-('LOAD_ATTR', \"'flags'\")",
+   "-('LOAD_ATTR', \"'is_in_play'\")",
+   "-('UNARY_NOT', 'None')",
+   "-('JUMP_IF_TRUE_OR_POP', \"'J'\")",
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('STORE_FAST', \"'found_face'\")"
+  ],
+  [
+   "game/message/on_event/on_event.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'would_message'\")",
+   "+('LOAD_METHOD', \"'DoesNotTakeConsequentialDamage'\")",
+   "+('LOAD_FAST', \"'by_effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "game/message/sender/sender_unit.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'green'\")",
+   "+('STORE_FAST', \"'green'\")",
+   "-('LOAD_CLOSURE', \"'green'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')",
+   "-('LOAD_DEREF', \"'green'\")",
+   "+('LOAD_FAST', \"'green'\")"
+  ],
+  [
+   "game/element/resources.py"
+  ]
+ ],
+ [
+  [
+   "-('DUP_TOP', 'None')",
+   "-('INPLACE_ADD', 'None')",
+   "-('ROT_TWO', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "+('LOAD_FAST', \"'campaign'\")"
+  ],
+  [
+   "game/scene/loader.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'player'\")",
+   "-('LOAD_DEREF', \"'player'\")",
+   "+('STORE_FAST', \"'player'\")",
+   "+('LOAD_FAST', \"'player'\")",
+   "-('LOAD_CLOSURE', \"'player'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_CLOSURE', \"'player'\")"
+  ],
+  [
+   "cards/pack/tt/enchantress/55025.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'selected_objects'\")",
+   "+('ROT_TWO', 'None')",
+   "-('LOAD_FAST', \"'selected_objects'\")",
+   "-('BUILD_LIST', '1')",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_METHOD', \"'GetCounters'\")",
+   "-('LOAD_CONST', \"'secret'\")",
+   "-('CALL_METHOD', '1')"
+  ],
+  [
+   "cards/pack/aos/baron_zemo/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'scheme'\")",
+   "-('LOAD_FAST', \"'player'\")",
+   "-('LOAD_METHOD', \"'ChooseAbilities'\")",
+   "-('LOAD_DEREF', \"'effect'\")",
+   "-('LOAD_DEREF', \"'scheme'\")",
+   "+('STORE_FAST', \"'scheme'\")",
+   "+('LOAD_FAST', \"'scheme'\")",
+   "-('LOAD_GLOBAL', \"'AbilityFactory'\")"
+  ],
+  [
+   "cards/pack/sm/city_in_chaos/27130.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'took_damage'\")",
+   "+('STORE_FAST', \"'took_damage'\")",
+   "-('LOAD_CLOSURE', \"'took_damage'\")",
+   "-('BUILD_TUPLE', '3')",
+   "+('BUILD_TUPLE', '2')",
+   "-('LOAD_DEREF', \"'took_damage'\")",
+   "+('LOAD_FAST', \"'took_damage'\")",
+   "-('LOAD_CLOSURE', \"'took_damage'\")"
+  ],
+  [
+   "cards/pack/sm/osborn_tech/27151.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_WITH', '162')",
+   "-('POP_BLOCK', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('DUP_TOP', 'None')",
+   "-('DUP_TOP', 'None')",
+   "+('LOAD_CONST', 'None')",
+   "+('LOAD_CONST', 'None')",
+   "-('WITH_EXCEPT_START', 'None')"
+  ],
+  [
+   "cards/pack/toafk/kang/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '24')",
+   "-('POP_BLOCK', 'None')",
+   "-('LOAD_CONST', 'None')",
+   "-('RETURN_VALUE', 'None')",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "engine/engine.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_FAST', \"'profile_info'\")",
+   "-('LOAD_ATTR', \"'call_time'\")",
+   "+('LOAD_CONST', \"'profile_info.call_time'\")",
+   "-('LOAD_FAST', \"'ave'\")"
+  ],
+  [
+   "engine/profile/profiler.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "+('LOAD_GLOBAL', \"'tuple'\")",
+   "-('LIST_TO_TUPLE', 'None')",
+   "+('CALL_FUNCTION', '1')",
+   "+('LOAD_GLOBAL', \"'tuple'\")"
+  ],
+  [
+   "engine/task/manager.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'size_mb'\")",
+   "+('LOAD_CONST', \"'size_mb'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "engine/device/manager/web/manager.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'check_file_name'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_CLOSURE', \"'check_file_name'\")",
+   "-('BUILD_TUPLE', '3')",
+   "+('BUILD_TUPLE', '2')",
+   "-('LOAD_GLOBAL', \"'FileManager'\")",
+   "-('LOAD_METHOD', \"'IsFile'\")"
+  ],
+  [
+   "engine/file/manager.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")"
+  ],
+  [
+   "core/utility/func.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "-('DUP_TOP_TWO', 'None')",
+   "-('INPLACE_ADD', 'None')",
+   "-('ROT_THREE', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "+('LOAD_GLOBAL', \"'CallTracker'\")",
+   "+('LOAD_ATTR', \"'method_call_count'\")"
+  ],
+  [
+   "core/meta_class/call_tracker.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "+('LOAD_FAST', \"'target'\")",
+   "+('LOAD_ATTR', \"'paper'\")",
+   "+('LOAD_ATTR', \"'card_id'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('LOAD_CONST', '2')"
+  ],
+  [
+   "game/operate/referential.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")",
+   "+('LOAD_CONST', \"'face.paper.card_id='\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('LOAD_ATTR', \"'paper'\")",
+   "+('LOAD_ATTR', \"'card_id'\")",
+   "+('FORMAT_VALUE', '(<built-in function repr>, False)')"
+  ],
+  [
+   "game/card/factory.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '132')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "game/card/face/effect/face_effect.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'self'\")",
+   "-('LOAD_ATTR', \"'Defeated'\")",
+   "-('LOAD_FAST', \"'killer'\")",
+   "-('LOAD_FAST', \"'by_effect'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/card/face/base/unit.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_CONST', '1')",
+   "+('STORE_FAST', \"'need_discard'\")",
+   "+('LOAD_FAST', \"'rule'\")",
+   "+('LOAD_CONST', \"'All'\")",
+   "+('COMPARE_OP', \"'=='\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'Math'\")",
+   "+('LOAD_ATTR', \"'INT_INF'\")"
+  ],
+  [
+   "game/card/face/component/status.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('LOAD_FAST', \"'found'\")",
+   "-('POP_JUMP_IF_TRUE', \"'J'\")",
+   "-('LOAD_CONST', 'False')",
+   "-('RETURN_VALUE', 'None')",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/card/face/model/consider_as.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'return_val'\")",
+   "-('LOAD_FAST', \"'health'\")",
+   "-('INPLACE_ADD', 'None')",
+   "-('STORE_FAST', \"'return_val'\")",
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'unit'\")",
+   "+('LOAD_ATTR', \"'card'\")",
+   "+('LOAD_ATTR', \"'state'\")"
+  ],
+  [
+   "game/card/face/model/face_gain.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'value'\")",
+   "-('LOAD_CONST', \"''\")",
+   "-('COMPARE_OP', \"'!='\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_CONST', '1')",
+   "+('POP_TOP', 'None')",
+   "-('LOAD_CONST', '0')",
+   "-('STORE_FAST', \"'value'\")"
+  ],
+  [
+   "game/card/face/attribute/has_attribute.py"
+  ]
+ ],
+ [
+  [
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')",
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')",
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')"
+  ],
+  [
+   "game/render/symbol.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('LOAD_FAST', \"'world'\")",
+   "-('LOAD_ATTR', \"'rule'\")",
+   "-('LOAD_ATTR', \"'v16_player_elimination'\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'CardFinder'\")"
+  ],
+  [
+   "game/player/player.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/player/limit_monitor/restricted_limit.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '72')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "game/effect/effect_invoke.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_DEREF', \"'Worlds'\")",
+   "-('LOAD_METHOD', \"'FindCardsOnField'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_FAST', \"'otherwise_selector'\")",
+   "-('CALL_METHOD', '2')",
+   "-('STORE_FAST', \"'faces'\")",
+   "-('LOAD_DEREF', \"'Filter'\")",
+   "-('LOAD_METHOD', \"'One'\")"
+  ],
+  [
+   "game/ability/factory/asset.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'diff'\")",
+   "+('LOAD_ATTR', \"'diff'\")",
+   "+('STORE_FAST', \"'diff_val'\")",
+   "+('LOAD_FAST', \"'unit'\")",
+   "+('LOAD_ATTR', \"'Gain'\")",
+   "+('LOAD_CONST', '()')",
+   "+('BUILD_MAP', '0')",
+   "+('BUILD_MAP', '0')"
+  ],
+  [
+   "game/ability/factory/environment_helper.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'counter_name'\")",
+   "-('BUILD_TUPLE', '4')",
+   "+('BUILD_TUPLE', '3')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'True')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'True')"
+  ],
+  [
+   "game/ability/factory/counter.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'token_name'\")",
+   "-('BUILD_TUPLE', '3')",
+   "+('BUILD_TUPLE', '2')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'True')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'True')"
+  ],
+  [
+   "game/ability/factory/token.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'tuple'\")",
+   "-('LIST_TO_TUPLE', 'None')",
+   "+('CALL_FUNCTION', '1')",
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')"
+  ],
+  [
+   "game/world/world_render.py"
+  ]
+ ],
+ [
+  [
+   "-('INPLACE_ADD', 'None')",
+   "+('BINARY_ADD', 'None')"
+  ],
+  [
+   "game/selector/selector_target.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_JUMP_IF_TRUE', \"'J'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'Math'\")",
+   "+('LOAD_ATTR', \"'INT_INF'\")",
+   "+('RETURN_VALUE', 'None')",
+   "-('RETURN_VALUE', 'None')",
+   "-('LOAD_GLOBAL', \"'Math'\")",
+   "-('LOAD_ATTR', \"'INT_INF'\")"
+  ],
+  [
+   "game/selector/selector_range.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'initiator'\")",
+   "+('LOAD_METHOD', \"'IsScenario'\")",
+   "+('CALL_METHOD', '0')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('BUILD_LIST', '0')",
+   "+('RETURN_VALUE', 'None')",
+   "+('LOAD_DEREF', \"'share_trait_with_your_hero'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "game/selector/selector_filter.py"
+  ]
+ ],
+ [
+  [
+   "-('DUP_TOP', 'None')",
+   "-('ROT_THREE', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "game/selector/selector_rule.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'Deck'\")",
+   "+('STORE_FAST', \"'Deck'\")",
+   "-('LOAD_CLOSURE', \"'Deck'\")",
+   "-('LOAD_CLOSURE', \"'Worlds'\")",
+   "-('LOAD_CLOSURE', \"'effect'\")",
+   "-('BUILD_TUPLE', '3')",
+   "+('LOAD_CLOSURE', \"'Worlds'\")",
+   "+('LOAD_CLOSURE', \"'effect'\")"
+  ],
+  [
+   "game/selector/selector_where.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'self'\")",
+   "-('LOAD_METHOD', \"'Present'\")",
+   "-('LOAD_FAST', \"'text'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('CALL_METHOD', '2')",
+   "+('CALL_FUNCTION', '2')",
+   "+('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/message/sender/sender_deck.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'value'\")",
+   "+('STORE_FAST', \"'value'\")",
+   "-('LOAD_CLOSURE', \"'value'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_DEREF', \"'value'\")",
+   "+('LOAD_FAST', \"'value'\")",
+   "-('LOAD_DEREF', \"'value'\")"
+  ],
+  [
+   "cards/pack/falcon/falcon/53004.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'value'\")",
+   "-('LOAD_FAST', \"'villain'\")",
+   "-('LOAD_ATTR', \"'DoSchemes'\")",
+   "-('LOAD_FAST', \"'player'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_GLOBAL', \"'SchemeProperty'\")",
+   "-('LOAD_FAST', \"'value'\")",
+   "-('LOAD_CONST', \"('additional_value',)\")"
+  ],
+  [
+   "cards/pack/mut_gen/sabretooth/32070.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'entered'\")",
+   "-('LOAD_CLOSURE', \"'entered'\")",
+   "-('BUILD_TUPLE', '1')",
+   "+('STORE_FAST', \"'entered'\")",
+   "-('MAKE_FUNCTION', '8')",
+   "+('MAKE_FUNCTION', '0')",
+   "-('LOAD_DEREF', \"'entered'\")",
+   "+('LOAD_FAST', \"'entered'\")"
+  ],
+  [
+   "cards/pack/core/standard/01190.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'no_preparation'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '8')",
+   "+('MAKE_FUNCTION', '0')",
+   "-('STORE_DEREF', \"'no_preparation'\")",
+   "+('STORE_FAST', \"'no_preparation'\")"
+  ],
+  [
+   "cards/pack/aos/black_widow/50068.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'size'\")",
+   "+('STORE_FAST', \"'size'\")",
+   "-('LOAD_CLOSURE', \"'size'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_DEREF', \"'size'\")",
+   "+('LOAD_FAST', \"'size'\")",
+   "-('LOAD_DEREF', \"'size'\")"
+  ],
+  [
+   "cards/pack/aos/batroc/50097.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'members'\")",
+   "+('STORE_FAST', \"'members'\")",
+   "-('LOAD_DEREF', \"'members'\")",
+   "+('LOAD_FAST', \"'members'\")",
+   "-('LOAD_CLOSURE', \"'members'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')"
+  ],
+  [
+   "cards/pack/aos/shield_executive_board/50184a.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_DEREF', \"'flip_top_card'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('CALL_FUNCTION', '2')",
+   "+('LOAD_ATTR', \"'additional_deck'\")",
+   "+('LOAD_FAST', \"'message'\")",
+   "+('LOAD_ATTR', \"'into_areas'\")",
+   "+('CONTAINS_OP', '1')",
+   "+('JUMP_IF_TRUE_OR_POP', \"'J'\")"
+  ],
+  [
+   "cards/pack/drs/doctor_strange/09001b.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'counter'\")",
+   "-('LOAD_CLOSURE', \"'counter'\")",
+   "-('BUILD_TUPLE', '1')",
+   "+('STORE_FAST', \"'counter'\")",
+   "-('MAKE_FUNCTION', '8')",
+   "+('MAKE_FUNCTION', '0')",
+   "-('LOAD_DEREF', \"'counter'\")",
+   "+('LOAD_FAST', \"'counter'\")"
+  ],
+  [
+   "cards/pack/ironheart/ironheart/29005.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'counter'\")",
+   "+('STORE_FAST', \"'counter'\")",
+   "-('LOAD_CLOSURE', \"'counter'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')",
+   "-('LOAD_DEREF', \"'counter'\")",
+   "+('LOAD_FAST', \"'counter'\")"
+  ],
+  [
+   "cards/pack/ironheart/ironheart/29006.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")",
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "+('LOAD_GLOBAL', \"'AssertionError'\")"
+  ],
+  [
+   "cards/pack/ironheart/ironheart/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'gain_surge'\")",
+   "+('STORE_FAST', \"'gain_surge'\")",
+   "-('LOAD_CLOSURE', \"'gain_surge'\")",
+   "-('BUILD_TUPLE', '2')",
+   "+('BUILD_TUPLE', '1')",
+   "-('LOAD_DEREF', \"'gain_surge'\")",
+   "+('LOAD_FAST', \"'gain_surge'\")",
+   "-('STORE_DEREF', \"'gain_surge'\")"
+  ],
+  [
+   "cards/pack/ironheart/zzzax/29040.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'defeats_character'\")",
+   "+('STORE_FAST', \"'defeats_character'\")",
+   "-('LOAD_CLOSURE', \"'defeats_character'\")",
+   "-('BUILD_TUPLE', '1')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')",
+   "-('LOAD_DEREF', \"'defeats_character'\")",
+   "+('LOAD_FAST', \"'defeats_character'\")"
+  ],
+  [
+   "cards/pack/sm/spider_man_morales_nemesis/27060.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'has_put_into_play'\")",
+   "-('LOAD_CLOSURE', \"'has_put_into_play'\")",
+   "-('BUILD_TUPLE', '1')",
+   "+('STORE_FAST', \"'has_put_into_play'\")",
+   "-('MAKE_FUNCTION', '8')",
+   "+('MAKE_FUNCTION', '0')",
+   "-('LOAD_DEREF', \"'has_put_into_play'\")",
+   "+('LOAD_FAST', \"'has_put_into_play'\")"
+  ],
+  [
+   "cards/pack/sm/sinister_six/27112.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_METHOD', \"'GetInitiator'\")",
+   "-('CALL_METHOD', '0')",
+   "-('LOAD_METHOD', \"'IsAlterEgo'\")",
+   "-('CALL_METHOD', '0')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_CONST', '3')",
+   "-('RETURN_VALUE', 'None')"
+  ],
+  [
+   "cards/pack/spdr/spdr/31007.py"
+  ]
+ ],
+ [
+  [
+   "-('UNPACK_SEQUENCE', '3')",
+   "+('STORE_FAST', \"'_item'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('UNPACK_SEQUENCE', '2')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_CONST', '2')",
+   "+('BINARY_SUBSCR', 'None')",
+   "-('UNPACK_SEQUENCE', '3')"
+  ],
+  [
+   "cards/pack/next_evol/stryfe/40173.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_DEREF', \"'attcked'\")",
+   "+('STORE_FAST', \"'attcked'\")",
+   "-('LOAD_CLOSURE', \"'attcked'\")",
+   "-('BUILD_TUPLE', '3')",
+   "+('BUILD_TUPLE', '2')",
+   "-('LOAD_DEREF', \"'attcked'\")",
+   "+('LOAD_FAST', \"'attcked'\")",
+   "-('STORE_DEREF', \"'attcked'\")"
+  ],
+  [
+   "cards/pack/next_evol/black_tom_cassidy/40135.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '24')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_EXCEPT', 'None')",
+   "-('LOAD_FAST', \"'response'\")"
+  ],
+  [
+   "engine/lib/check_new_version.py"
+  ]
+ ],
+ [
+  [
+   "-('UNPACK_SEQUENCE', '4')",
+   "+('UNPACK_SEQUENCE', '2')",
+   "+('LOAD_CONST', '397')",
+   "+('LOAD_CONST', '31')",
+   "-('BINARY_SUBSCR', 'None')",
+   "-('ROT_TWO', 'None')",
+   "+('STORE_SUBSCR', 'None')",
+   "-('STORE_SUBSCR', 'None')"
+  ],
+  [
+   "engine/lib/mt19937.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'Ellipsis')",
+   "+('LOAD_NAME', \"'Ellipsis'\")",
+   "+('LOAD_GLOBAL', \"'tuple'\")",
+   "-('LIST_TO_TUPLE', 'None')",
+   "+('CALL_FUNCTION', '1')"
+  ],
+  [
+   "engine/job/manager.py"
+  ]
+ ],
+ [
+  [
+   "-('DUP_TOP', 'None')",
+   "-('ROT_THREE', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_GLOBAL', \"'Log'\")",
+   "+('LOAD_METHOD', \"'Info'\")",
+   "+('LOAD_GLOBAL', \"'CATEGORY_NAME'\")",
+   "+('LOAD_CONST', \"'Uploaded: '\")",
+   "+('LOAD_FAST', \"'result'\")"
+  ],
+  [
+   "engine/device/web/server/server_upload.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'device_manager'\")",
+   "+('LOAD_METHOD', \"'ExitWait'\")",
+   "+('CALL_METHOD', '0')",
+   "+('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "engine/device/web/server/server_sync.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "+('DUP_TOP', 'None')",
+   "+('LOAD_GLOBAL', \"'Exception'\")",
+   "+('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('RERAISE', '0')"
+  ],
+  [
+   "engine/network/net_lib.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '70')",
+   "-('POP_BLOCK', 'None')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "game_entry.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', \"('dataclass', 'field')\")",
+   "+('LOAD_CONST', \"('dataclass', 'field', 'asdict', 'fiel",
+   "-('POP_TOP', 'None')",
+   "-('LOAD_CONST', '0')",
+   "-('LOAD_CONST', \"('asdict',)\")",
+   "-('IMPORT_NAME', \"'dataclasses'\")",
+   "-('POP_TOP', 'None')",
+   "-('LOAD_CONST', '0')"
+  ],
+  [
+   "core/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('CONTAINS_OP', '0')",
+   "-('POP_JUMP_IF_TRUE', \"'J'\")",
+   "+('CONTAINS_OP', '1')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "core/utility/types.py"
+  ]
+ ],
+ [
+  [
+   "+('STORE_FAST', \"'_item'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "core/lib/beep.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "+('JUMP_ABSOLUTE', \"'J'\")",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('LOAD_ATTR', \"'card'\")"
+  ],
+  [
+   "game/operate/search_internal.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', \"('CardFinder', 'CardFinder2')\")",
+   "+('LOAD_CONST', \"('CardFinder',)\")",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_CONST', '0')",
+   "+('LOAD_CONST', \"('CardFinder2',)\")",
+   "+('IMPORT_NAME', \"'game.card.card_finder'\")"
+  ],
+  [
+   "game/card/face/__init__.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_METHOD', \"'Advance'\")",
+   "+('LOAD_FAST', \"'would_defeated_message'\")",
+   "+('LOAD_ATTR', \"'by_effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "game/card/face/base/villain.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'False')",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'counters'\")",
+   "+('LOAD_FAST', \"'name'\")",
+   "+('DUP_TOP_TWO', 'None')",
+   "+('BINARY_SUBSCR', 'None')",
+   "+('LOAD_FAST', \"'counters'\")",
+   "+('INPLACE_SUBTRACT', 'None')"
+  ],
+  [
+   "game/card/face/component/counter.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'False')",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'token'\")",
+   "+('LOAD_FAST', \"'name'\")",
+   "+('DUP_TOP_TWO', 'None')",
+   "+('BINARY_SUBSCR', 'None')",
+   "+('LOAD_FAST', \"'token'\")",
+   "+('INPLACE_SUBTRACT', 'None')"
+  ],
+  [
+   "game/card/face/component/token.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'this'\")",
+   "+('LOAD_ATTR', \"'IsConsiderAs'\")",
+   "+('LOAD_FAST', \"'trait'\")",
+   "+('LOAD_CONST', \"('trait',)\")",
+   "+('CALL_FUNCTION_KW', '1')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_CONST', 'True')"
+  ],
+  [
+   "game/card/face/model/trait.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'this'\")",
+   "-('LOAD_METHOD', \"'DefaultChangeToFace'\")",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_FAST', \"'by_effect'\")",
+   "-('CALL_METHOD', '2')",
+   "-('POP_TOP', 'None')",
+   "-('LOAD_CONST', 'None')",
+   "-('RETURN_VALUE', 'None')"
+  ],
+  [
+   "game/card/face/model/form.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_CONST', '1')",
+   "+('LOAD_DEREF', \"'self'\")",
+   "+('STORE_ATTR', \"'printed_stage'\")",
+   "+('LOAD_FAST', \"'value'\")",
+   "+('LOAD_METHOD', \"'endswith'\")",
+   "+('LOAD_CONST', \"'2'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "game/card/face/attribute/has_stage.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'do_move'\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'Faces'\")",
+   "-('LOAD_METHOD', \"'AddToVictoryDisplay'\")",
+   "-('LOAD_FAST', \"'self'\")",
+   "-('BUILD_LIST', '1')",
+   "-('LOAD_FAST', \"'GameRule'\")",
+   "-('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/card/face/attribute/has_victory.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'faces'\")",
+   "+('LOAD_METHOD', \"'add'\")",
+   "+('LOAD_FAST', \"'unit'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_CONST', 'True')",
+   "+('STORE_FAST', \"'found'\")"
+  ],
+  [
+   "game/card/face/attribute/has_teamup.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'Faces'\")",
+   "-('LOAD_METHOD', \"'DiscardAll'\")",
+   "-('BUILD_LIST', '1')",
+   "-('LOAD_FAST', \"'by_effect'\")",
+   "+('LOAD_ATTR', \"'card'\")",
+   "+('LOAD_ATTR', \"'area'\")",
+   "+('LOAD_METHOD', \"'UnMarkAsRemoved'\")",
+   "+('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/card/face/attribute/can_attach.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'AbilityFactory'\")",
+   "+('LOAD_ATTR', \"'GiveKeywordToAttached'\")",
+   "+('LOAD_FAST', \"'get_value'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'modify_atk'\")",
+   "+('CALL_FUNCTION', '1')",
+   "+('LOAD_FAST', \"'get_value'\")",
+   "+('LOAD_FAST', \"'self'\")"
+  ],
+  [
+   "game/card/face/attribute/has_modify.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('LOAD_FAST', \"'call_back'\")",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_FAST', \"'boost_icons'\")",
+   "-('CALL_FUNCTION', '2')",
+   "-('POP_TOP', 'None')",
+   "-('LOAD_FAST', \"'Message'\")",
+   "-('LOAD_METHOD', \"'AfterCardBecomeBoost'\")"
+  ],
+  [
+   "game/card/face/attribute/can_boost.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'printed_boost'\")",
+   "+('STORE_FAST', \"'value'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_METHOD', \"'GetKeyword'\")",
+   "+('LOAD_CONST', \"'Boost'\")",
+   "+('CALL_METHOD', '1')",
+   "+('STORE_FAST', \"'value'\")"
+  ],
+  [
+   "game/card/face/attribute/has_boost_icon.py"
+  ]
+ ],
+ [
+  [
+   "-('INPLACE_ADD', 'None')",
+   "+('BINARY_ADD', 'None')",
+   "+('LOAD_FAST', \"'end_message'\")",
+   "+('LOAD_METHOD', \"'Send'\")",
+   "+('CALL_METHOD', '0')",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_FAST', \"'use_basic_power_message'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "game/card/face/attribute/can_thwart.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'GetMainSchemes'\")",
+   "+('LOAD_FAST', \"'self'\")",
+   "+('LOAD_ATTR', \"'card'\")",
+   "+('LOAD_ATTR', \"'game_area'\")",
+   "+('CALL_METHOD', '1')",
+   "+('GET_ITER', 'None')",
+   "+('FOR_ITER', \"'J'\")"
+  ],
+  [
+   "game/card/face/attribute/has_crisis.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('FORMAT_VALUE', '(None, False)')",
+   "+('BUILD_SET', '1')"
+  ],
+  [
+   "game/effect/effect_failure.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', 'None')",
+   "+('LOAD_CONST', \"'None'\")"
+  ],
+  [
+   "game/ability/factory/attachment.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CLOSURE', \"'alter_ego_has_traits'\")",
+   "-('LOAD_CLOSURE', \"'has_traits'\")",
+   "-('LOAD_CLOSURE', \"'names'\")",
+   "-('LOAD_CLOSURE', \"'solo'\")",
+   "-('BUILD_TUPLE', '4')",
+   "-('MAKE_FUNCTION', '12')",
+   "+('MAKE_FUNCTION', '4')"
+  ],
+  [
+   "game/ability/factory/challenge.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_DEREF', \"'num'\")",
+   "-('LOAD_CONST', \"'Any'\")",
+   "-('COMPARE_OP', \"'=='\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'message'\")",
+   "-('LOAD_METHOD', \"'SetReturn'\")",
+   "-('LOAD_CONST', '9999')",
+   "-('CALL_METHOD', '1')"
+  ],
+  [
+   "game/ability/factory/status.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_CONST', '0')",
+   "+('LOAD_CONST', \"('Leader',)\")",
+   "+('IMPORT_NAME', \"'game.card.face.card_type'\")",
+   "+('IMPORT_FROM', \"'Leader'\")",
+   "+('STORE_FAST', \"'Leader'\")",
+   "+('POP_TOP', 'None')",
+   "-('LOAD_GLOBAL', \"'Leader'\")",
+   "+('LOAD_FAST', \"'Leader'\")"
+  ],
+  [
+   "game/ability/factory/environment.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_DEREF', \"'filter'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('LOAD_FAST', \"'unit'\")",
+   "+('CALL_FUNCTION', '2')",
+   "+('STORE_FAST', \"'new_data'\")",
+   "+('LOAD_GLOBAL', \"'isinstance'\")",
+   "+('LOAD_FAST', \"'message'\")",
+   "+('LOAD_GLOBAL', \"'Message'\")"
+  ],
+  [
+   "game/ability/factory/asset_helper.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'powers'\")",
+   "+('STORE_FAST', \"'basic_powers'\")",
+   "+('LOAD_CONST', \"'ATK'\")",
+   "+('LOAD_CONST', \"'SCH'\")",
+   "+('BUILD_LIST', '2')",
+   "+('STORE_FAST', \"'basic_powers'\")",
+   "+('BUILD_LIST', '0')",
+   "+('STORE_FAST', \"'basic_powers'\")"
+  ],
+  [
+   "game/ability/condition/condition.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('LOAD_GLOBAL', \"'GAME_OVER_REASON_MAP'\")",
+   "-('LOAD_FAST', \"'reason'\")"
+  ],
+  [
+   "game/world/game_over.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'deck'\")",
+   "+('LOAD_METHOD', \"'Shuffle'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_GLOBAL', \"'Types'\")",
+   "+('LOAD_METHOD', \"'RemoveDuplicates'\")",
+   "+('LOAD_FAST', \"'places'\")"
+  ],
+  [
+   "game/selector/selector_end.py"
+  ]
+ ],
+ [
+  [
+   "-('DUP_TOP', 'None')",
+   "-('ROT_THREE', 'None')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "game/selector/selector.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "-('STORE_FAST', \"'text'\")",
+   "-('LOAD_FAST', \"'self'\")",
+   "-('LOAD_ATTR', \"'Present'\")",
+   "-('LOAD_FAST', \"'text'\")",
+   "-('LOAD_CONST', \"'activate'\")",
+   "-('LOAD_FAST', \"'face'\")"
+  ],
+  [
+   "game/message/sender/sender_effect.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'TransText'\")",
+   "+('LOAD_CONST', '\"{face} placed {tokens} \\'{name}\\' tok",
+   "+('LOAD_FAST', \"'face'\")",
+   "+('LOAD_FAST', \"'num'\")",
+   "+('LOAD_FAST', \"'name'\")",
+   "+('LOAD_FAST', \"'by_effect'\")",
+   "+('LOAD_ATTR', \"'this'\")",
+   "+('LOAD_CONST', \"('face', 'tokens', 'name', 'by_effect'"
+  ],
+  [
+   "game/message/sender/sender_token.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', \"('Insert', 'Challenge')\")",
+   "+('LOAD_CONST', \"('Insert',)\")",
+   "+('POP_TOP', 'None')",
+   "+('LOAD_CONST', '0')",
+   "+('LOAD_CONST', \"('Challenge',)\")",
+   "+('IMPORT_NAME', \"'game.card.face.card_type'\")"
+  ],
+  [
+   "cards/paper.py"
+  ]
+ ],
+ [
+  [
+   "-('UNPACK_SEQUENCE', '3')",
+   "+('STORE_FAST', \"'_item'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('UNPACK_SEQUENCE', '2')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "+('LOAD_CONST', '2')",
+   "+('BINARY_SUBSCR', 'None')",
+   "+('LOAD_FAST', \"'face'\")"
+  ],
+  [
+   "cards/pack/x23/x_23/43012.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_ATTR', \"'traits'\")",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'y'\")",
+   "-('LOAD_FAST', \"'y'\")",
+   "-('LIST_APPEND', '3')",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "+('LIST_APPEND', '2')"
+  ],
+  [
+   "cards/pack/trors/absorbing_man/__init__.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'FindMainScheme'\")",
+   "+('LOAD_FAST', \"'this'\")",
+   "+('CALL_METHOD', '1')",
+   "+('STORE_FAST', \"'scheme'\")",
+   "+('LOAD_FAST', \"'scheme'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_FAST', \"'this'\")"
+  ],
+  [
+   "cards/pack/trors/absorbing_man/04078.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'face'\")",
+   "-('BUILD_LIST', '1')",
+   "-('BUILD_LIST', '0')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "cards/pack/falcon/falcon/53005.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', '3')",
+   "-('LOAD_CONST', '2')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "cards/pack/mut_gen/mansion_attack/32130.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'damage'\")",
+   "-('LOAD_FAST', \"'this'\")",
+   "-('LOAD_METHOD', \"'DealDamage'\")",
+   "-('LOAD_FAST', \"'ally'\")",
+   "-('BUILD_LIST', '1')",
+   "-('LOAD_FAST', \"'damage'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('CALL_METHOD', '3')"
+  ],
+  [
+   "cards/pack/mut_gen/sabretooth/32063b.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'GetFirstPlayer'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('STORE_FAST', \"'player'\")",
+   "+('LOAD_GLOBAL', \"'Search'\")",
+   "+('LOAD_ATTR', \"'EncounterCard'\")",
+   "+('LOAD_FAST', \"'effect'\")"
+  ],
+  [
+   "cards/pack/mut_gen/magneto/32143a.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_IF_FALSE_OR_POP', \"'J'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('JUMP_IF_FALSE_OR_POP', \"'J'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('JUMP_IF_FALSE_OR_POP', \"'J'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "cards/pack/core/black_panther_nemesis/01157.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'this'\")",
+   "+('LOAD_METHOD', \"'GainSurge'\")",
+   "+('LOAD_CONST', '1')",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('CALL_METHOD', '2')",
+   "+('POP_TOP', 'None')"
+  ],
+  [
+   "cards/pack/core/ultron/01146.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'card_classes'\")",
+   "-('LOAD_GLOBAL', \"'Search'\")",
+   "-('LOAD_ATTR', \"'PlayerCard'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_FAST', \"'friend'\")",
+   "-('LOAD_METHOD', \"'GetOwnerPlayer'\")",
+   "-('CALL_METHOD', '0')",
+   "-('LOAD_CONST', 'False')"
+  ],
+  [
+   "cards/pack/rogue/rogue/38009.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_ATTR', \"'dealt_encounter_cards'\")",
+   "-('LOAD_METHOD', \"'Get'\")",
+   "-('CALL_METHOD', '0')",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'x'\")",
+   "-('LOAD_FAST', \"'x'\")",
+   "-('LIST_APPEND', '3')"
+  ],
+  [
+   "cards/pack/aos/50051.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('RETURN_VALUE', 'None')",
+   "-('LOAD_GLOBAL', \"'Worlds'\")",
+   "-('LOAD_METHOD', \"'IsExpert'\")",
+   "-('LOAD_DEREF', \"'effect'\")",
+   "-('CALL_METHOD', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "cards/pack/aos/batroc/50089a.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_FAST', \"'scheme'\")",
+   "+('POP_JUMP_IF_FALSE', \"'J'\")",
+   "+('LOAD_FAST', \"'this'\")",
+   "+('LOAD_METHOD', \"'PlaceThreatOnSchemes'\")",
+   "+('LOAD_FAST', \"'scheme'\")",
+   "+('BUILD_LIST', '1')",
+   "+('LOAD_CONST', '2')"
+  ],
+  [
+   "cards/pack/aos/aim_abduction/50080.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_GLOBAL', \"'Worlds'\")",
+   "-('LOAD_METHOD', \"'IsExpert'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('CALL_METHOD', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_CONST', '3')",
+   "-('RETURN_VALUE', 'None')"
+  ],
+  [
+   "cards/pack/aos/shield_executive_board/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "cards/pack/iceman/iceman/46010.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_METHOD', \"'CanHeath'\")",
+   "-('CALL_METHOD', '0')",
+   "-('POP_JUMP_IF_TRUE', \"'J'\")",
+   "-('LOAD_FAST', \"'x'\")",
+   "-('LOAD_METHOD', \"'HasStatus'\")",
+   "-('LOAD_CONST', \"'Any'\")",
+   "-('CALL_METHOD', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")"
+  ],
+  [
+   "cards/pack/drs/09019.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'piercing'\")",
+   "-('LOAD_FAST', \"'iron_man'\")",
+   "-('LOAD_ATTR', \"'DoAttackYou'\")",
+   "-('LOAD_FAST', \"'player'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_GLOBAL', \"'AttackProperty'\")",
+   "-('LOAD_FAST', \"'piercing'\")",
+   "-('LOAD_CONST', \"('piercing',)\")"
+  ],
+  [
+   "cards/pack/cw/iron_man/56071.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_DEREF', \"'effect'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "-('STORE_DEREF', \"'this'\")",
+   "+('STORE_FAST', \"'this'\")"
+  ],
+  [
+   "cards/pack/cw/standard_pvp/56128b.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_CONST', '1')",
+   "-('LOAD_CONST', '0')",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")"
+  ],
+  [
+   "cards/pack/cw/standard_pvp/56125.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'GetFirstPlayer'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('STORE_FAST', \"'first_player'\")",
+   "+('LOAD_FAST', \"'first_player'\")",
+   "+('LOAD_METHOD', \"'DealEncounterCards'\")",
+   "+('LOAD_CONST', '1')"
+  ],
+  [
+   "cards/pack/sm/sinister_six/27101a.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_GLOBAL', \"'len'\")",
+   "-('LOAD_FAST', \"'found_faces'\")",
+   "-('CALL_FUNCTION', '1')",
+   "-('LOAD_CONST', '1')",
+   "-('COMPARE_OP', \"'=='\")",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'found_faces'\")",
+   "-('LOAD_CONST', '0')"
+  ],
+  [
+   "cards/pack/sm/venom_goblin/27124.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_FAST', \"'player'\")",
+   "+('LOAD_METHOD', \"'GetIdentity'\")",
+   "+('CALL_METHOD', '0')",
+   "+('STORE_FAST', \"'identity'\")",
+   "+('LOAD_GLOBAL', \"'Faces'\")",
+   "+('LOAD_METHOD', \"'GiveStatus'\")",
+   "+('LOAD_FAST', \"'identity'\")",
+   "+('BUILD_LIST', '1')"
+  ],
+  [
+   "cards/pack/aoa/celestial_tech/45157.py"
+  ]
+ ],
+ [
+  [
+   "+('LOAD_GLOBAL', \"'Worlds'\")",
+   "+('LOAD_METHOD', \"'FindVillain'\")",
+   "+('LOAD_FAST', \"'effect'\")",
+   "+('CALL_METHOD', '1')",
+   "+('STORE_FAST', \"'villain'\")",
+   "+('LOAD_CONST', 'None')",
+   "+('STORE_FAST', \"'villain'\")",
+   "-('STORE_FAST', \"'villains'\")"
+  ],
+  [
+   "cards/pack/aoa/celestial_tech/45156.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'x'\")",
+   "-('LOAD_METHOD', \"'IsName'\")",
+   "-('LOAD_CONST', \"'Groot'\")",
+   "-('CALL_METHOD', '1')",
+   "-('POP_JUMP_IF_TRUE', \"'J'\")",
+   "-('LOAD_GLOBAL', \"'Upgrade'\")",
+   "-('LOAD_METHOD', \"'IsType'\")",
+   "-('LOAD_FAST', \"'x'\")"
+  ],
+  [
+   "cards/pack/gmw/16020.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_IF_TRUE_OR_POP', \"'J'\")",
+   "+('POP_JUMP_IF_TRUE', \"'J'\")"
+  ],
+  [
+   "cards/pack/gmw/collector_1/__init__.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_METHOD', \"'GetControlCharacters'\")",
+   "-('CALL_METHOD', '0')",
+   "-('GET_ITER', 'None')",
+   "-('FOR_ITER', \"'J'\")",
+   "-('STORE_FAST', \"'x'\")",
+   "-('LOAD_FAST', \"'x'\")",
+   "-('LIST_APPEND', '3')",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "cards/pack/gmw/collector_2/16085b.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_METHOD', \"'GetInitiator'\")",
+   "-('CALL_METHOD', '0')",
+   "-('LOAD_METHOD', \"'IsControl'\")",
+   "-('LOAD_GLOBAL', \"'CardFinder'\")",
+   "-('LOAD_CONST', \"'Milano'\")",
+   "-('LOAD_CONST', \"('name',)\")",
+   "-('CALL_FUNCTION_KW', '1')"
+  ],
+  [
+   "cards/pack/gmw/the_market/16165.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('LOAD_ASSERTION_ERROR', 'None')",
+   "-('LOAD_CONST', \"'target='\")",
+   "-('LOAD_FAST', \"'target'\")",
+   "-('FORMAT_VALUE', '(<built-in function repr>, False)')",
+   "-('BUILD_STRING', '2')",
+   "-('CALL_FUNCTION', '1')",
+   "-('RAISE_VARARGS', '1')"
+  ],
+  [
+   "cards/pack/qsv/quicksilver/14004.py"
+  ]
+ ],
+ [
+  [
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")",
+   "-('JUMP_ABSOLUTE', \"'J'\")"
+  ],
+  [
+   "cards/pack/scw/scarlet_witch/15004.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_ATTR', \"'this'\")",
+   "-('LOAD_METHOD', \"'GetControlByOrOwner'\")",
+   "-('CALL_METHOD', '0')",
+   "-('LOAD_METHOD', \"'IsPlayer'\")",
+   "-('CALL_METHOD', '0')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'effect'\")"
+  ],
+  [
+   "cards/pack/next_evol/40204.py"
+  ]
+ ],
+ [
+  [
+   "-('STORE_FAST', \"'overkill'\")",
+   "-('LOAD_FAST', \"'villain'\")",
+   "-('LOAD_ATTR', \"'DoAttackYou'\")",
+   "-('LOAD_FAST', \"'player'\")",
+   "-('LOAD_FAST', \"'effect'\")",
+   "-('LOAD_GLOBAL', \"'AttackProperty'\")",
+   "-('LOAD_FAST', \"'overkill'\")",
+   "-('LOAD_CONST', \"('overkill',)\")"
+  ],
+  [
+   "cards/pack/next_evol/morlock_siege/40089.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_GLOBAL', \"'ClassCard'\")",
+   "-('LOAD_METHOD', \"'IsType'\")",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('CALL_METHOD', '1')",
+   "-('POP_JUMP_IF_FALSE', \"'J'\")",
+   "-('LOAD_FAST', \"'face'\")",
+   "-('LOAD_METHOD', \"'IsDeckBuildingClass'\")",
+   "-('LOAD_CONST', \"'Domino'\")"
+  ],
+  [
+   "cards/pack/next_evol/domino/40044.py"
+  ]
+ ],
+ [
+  [
+   "-('LOAD_FAST', \"'y'\")",
+   "-('LOAD_FAST', \"'b'\")",
+   "-('BINARY_ADD', 'None')",
+   "-('LOAD_FAST', \"'r'\")",
+   "-('BINARY_ADD', 'None')",
+   "-('LOAD_FAST', \"'g'\")",
+   "-('BINARY_ADD', 'None')",
+   "-('LOAD_CONST', '0')"
+  ],
+  [
+   "cards/pack/next_evol/domino/40041.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', 'True')",
+   "+('STORE_FAST', \"'lowest_cost'\")",
+   "+('LOAD_CONST', 'False')",
+   "+('STORE_FAST', \"'highest_cost'\")"
+  ],
+  [
+   "cards/pack/next_evol/super_strength/40158.py"
+  ]
+ ],
+ [
+  [
+   "+('JUMP_FORWARD', \"'J'\")",
+   "+('LOAD_CONST', '2')"
+  ],
+  [
+   "cards/pack/next_evol/flight/40154.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '88')",
+   "+('BUILD_MAP', '0')",
+   "+('DICT_UPDATE', '1')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "engine/lib/translate.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '164')",
+   "-('SETUP_FINALLY', '52')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('DUP_TOP', 'None')",
+   "-('JUMP_IF_NOT_EXC_MATCH', \"'J'\")",
+   "+('LOAD_GLOBAL', \"'UNKNOWN'\")",
+   "-('POP_TOP', 'None')"
+  ],
+  [
+   "engine/task/task.py"
+  ]
+ ],
+ [
+  [
+   "-('SETUP_FINALLY', '58')",
+   "-('POP_BLOCK', 'None')",
+   "-('JUMP_FORWARD', \"'J'\")",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_TOP', 'None')",
+   "-('POP_EXCEPT', 'None')"
+  ],
+  [
+   "engine/device/web/server/server_new_game.py"
+  ]
+ ]
+]
