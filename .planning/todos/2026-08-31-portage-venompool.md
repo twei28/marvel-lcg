@@ -192,7 +192,7 @@ lettre morte.
 
 ---
 
-## 7. Cas de comportement : 20/20, avec 10 preuves par substitution
+## 7. Cas de comportement : 25/25, avec 15 preuves par substitution
 
 | Carte | Capacité | Cas | Substitution : sans le module |
 |---|---|---|---|
@@ -216,6 +216,11 @@ lettre morte.
 | `vp015` | +1 SCH si Killer Thrill | ✅ | — |
 | `vp016` | meilleur allié par ATQ imprimée | ✅ | 0 dégât |
 | `vp016` | aucun allié → surge | ✅ | — |
+| `vp004` | Tasty Meal, les **4** effets | ✅ | les trois bonus de stats disparaissent |
+| `vp006` | Whack-a-Rabbit, borne calculée | ✅ | un seul déclenchement au lieu de deux |
+| `vp007` | soin après attaque | ✅ | identité à 3 dégâts au lieu de 2 |
+| `vp011` | flip **forcé** en alter-ego | ✅ | face active reste `vp001a` |
+| `vp015` | Plotting | ✅ | la menace du complot ne monte pas |
 
 La paire `vp003` est la plus probante : **chaque cas passe au rouge quand on
 lui donne la portée de l'autre branche**, ce qui prouve non seulement que
@@ -256,6 +261,10 @@ fournissaient respectivement 4 et 6 cibles. La différence venait donc du
 **cas**, pas de la carte. Les deux en fournissent 6 désormais, et c'est à la
 carte de plafonner à 4 sans True Form.
 
+**c'. La face de mise en place.** Le complot principal en jeu est `01097b`,
+pas `01097a` : cette dernière n'est que la face de setup et `par_id` ne la
+trouve pas. 73 cas du fichier utilisaient déjà `01097b`.
+
 **c. Le décalage d'indices.** `test_capacites` ne se pilote que par
 `CAS_INDEX`, un **rang**. Retirer le cas `vp013` a décalé tous les suivants :
 deux substitutions ont visé la mauvaise carte et sont revenues vertes à
@@ -276,11 +285,16 @@ le fichier avant de lancer.
   désigne comme le seul juge de « est-ce que la carte est **agréable** et
   fait ce qu'elle promet ». L'autoplay prouve qu'aucune carte ne plante, pas
   qu'elles sont plaisantes à jouer, ni que l'équilibrage tient.
-- Quelques capacités restent sans cas sujet dédié : `vp004` Tasty Meal (les
-  trois bonus et le piercing conditionnel), `vp006` Whack-a-Rabbit (le
-  nombre de déclenchements), `vp007` Eat Them All! (la limite par phase),
-  `vp011` l'obligation (les deux options), `vp015` Plotting, et le `[star]`
-  Boost de `vp014`/`vp015`.
+- **Une seule capacité reste sans cas sujet** : le `[star]` Boost de
+  `vp014`/`vp015` (« deal this card to yourself as a facedown encounter
+  card »). Son mécanisme est repris **mot pour mot** de `bw021 Imperius
+  Rex!`, avec le piège de redirection que cette carte documente elle-même
+  (le moteur range une carte de boost APRÈS la résolution de son effet, il
+  faut détourner le rangement à venir). `bw021` n'a pas non plus de cas pour
+  cette moitié-là.
+- Le piercing conditionnel de `vp004` (« if True Form is in play, this
+  attack gains piercing ») n'est pas isolé par un cas : les quatre autres
+  effets de la carte le sont.
 
 ### Point matériel
 
