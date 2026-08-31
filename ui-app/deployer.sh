@@ -13,16 +13,15 @@ set -euo pipefail
 # tout en laissant croire que le build venait des sources en cours d'edition.
 RACINE_APP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# DEUX installations du jeu, et il faut servir les deux :
-#   - Fusion/marvel-lcg-src, a cote de ce depot : c'est celle que lance
-#     JOUER-EN-MULTI.bat, donc celle sur laquelle l'utilisateur joue vraiment ;
-#   - ~/marvel-work/fusion/marvel-lcg-src : la copie WSL, celle que sert le
-#     serveur de developpement du port 2346 et que teste le harnais ui-check.
-# Le brief du projet dit que la premiere est perimee. C'est faux, et l'avoir cru
-# a fait deployer trois fois de suite dans un jeu auquel personne ne jouait.
+# UNE SEULE installation du jeu : Fusion/marvel-lcg-src, a cote de ce depot.
+# C'est celle que lancent les JOUER-*.bat, donc celle sur laquelle on joue.
+# La copie WSL (~/marvel-work/fusion/marvel-lcg-src), ancienne deuxieme cible,
+# a ete supprimee le 31/08/2026 lors du grand rangement : c'est elle qui avait
+# efface les biographies de heros le 30/08 (voir le commentaire en fin de
+# script). ui-check vise une URL (UI_CHECK_BASE), pas un dossier : pour tester
+# sur un autre port, lancer CETTE installation avec un launch.json de test.
 JEUX=(
   "$(cd "$RACINE_APP/.." && pwd)/Fusion/marvel-lcg-src"
-  "$HOME/marvel-work/fusion/marvel-lcg-src"
 )
 
 cd "$RACINE_APP"
