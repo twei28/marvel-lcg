@@ -521,8 +521,9 @@ garantit au moins que les clés déclarées existent.
 
 ### 6 bis. Ce que les livrets officiels ont appris (10/8/2026)
 
-Les PDF officiels de FFG, livrets et carnets de campagne, sont sur le Bureau à
-la racine de `Marvel LCG last try`. Ils sont **vectoriels**, donc lisibles au
+Les PDF officiels de FFG, livrets et carnets de campagne, sont dans
+`regles-officielles/` à la racine de `Marvel LCG last try` (rangés là le
+31/08/2026, ils étaient à la racine). Ils sont **vectoriels**, donc lisibles au
 texte et rendables en image. Les avoir change deux choses sur `mut_gen`, et
 aucune n'était devinable depuis le code seul.
 
@@ -705,7 +706,7 @@ dupliquée** : les deux scénarios la référencent.
 résumé français seul — c'est prévu, rien ne casse.
 
 `tools/pages_livret.py` fait le découpage à partir des PDF officiels, qui sont
-sur le Bureau à la racine de `Marvel LCG last try`. Les livrets sont carrés et
+dans `regles-officielles/` à la racine de `Marvel LCG last try`. Les livrets sont carrés et
 vectoriels : on REND les pages, on n'extrait pas leurs images, ce qui donne un
 traitement uniforme et la taille des scans déjà en place, 975 px. La seule
 chose à fournir pour une nouvelle boîte est la CARTE des pages, en tête de
@@ -722,16 +723,11 @@ dans un bloc « Règles de la campagne ».
 
 ## 8. Pièges
 
-**Le déploiement écrase `public/`.** `ui-app/deployer.sh` traite
-`~/marvel-work/fusion/marvel-lcg-src` comme la SOURCE de `public/js` et
-`public/css`, et la `rsync --delete` par-dessus la copie Windows. Éditer
-`public/js` côté Windows puis déployer **supprime le travail** — c'est arrivé
-une fois sur ce chantier. Toute modification de `public/js` ou `public/css`
-doit être poussée vers la copie WSL avant le déploiement suivant :
-
-```bash
-wsl.exe -e bash -lc "rsync -a '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/public/js/' \$HOME/marvel-work/fusion/marvel-lcg-src/public/js/"
-```
+**Le déploiement écrase `public/`.** RÉSOLU en deux temps : le 30/08
+(`deployer.sh` inverse le sens, le jeu Windows devient la référence), puis le
+31/08/2026, où la copie WSL `~/marvel-work/fusion/marvel-lcg-src` a été
+**supprimée** lors du grand rangement. `deployer.sh` n'a plus qu'une cible,
+l'installation vivante. Plus aucun `rsync` de compensation n'est nécessaire.
 
 `outils/rejouer-patches-campagne.py` rejoue, de façon idempotente, les patches
 « campagne » de `public/js/prepare/app.js` et `launcher.js` si le cas se
@@ -753,20 +749,13 @@ propre terminal.
 `Fusion/marvel-lcg-src/campagnes/`, à côté de `replays/` — `.game` est
 reconstruit à chaque lancement.
 
-**La copie WSL peut écraser `src/`, pas seulement `public/`.** Une autre
-session, sur ce même dépôt, entretient un outillage qui repasse la copie
-`~/marvel-work/fusion/marvel-lcg-src` par-dessus la copie Windows. Ce chantier
-a vu son câblage de `mts` et `mut_gen`, ainsi que la réparation du carnet,
-effacés deux fois dans `src/cards/pack/` par ce mécanisme, alors qu'il ne
-touchait pas `public/`. `src/cards/` n'est pas suivi par git, ce qui rend la
-perte invisible tant qu'on ne compare pas les deux copies. Le remède est le
-même que pour `public/js` : pousser toute modification de `src/` vers la
-copie WSL après chaque commit, tant qu'une autre session peut tourner en
-parallèle sur ce dépôt :
-
-```bash
-wsl.exe -e bash -lc "rsync -a '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/src/' \$HOME/marvel-work/fusion/marvel-lcg-src/src/"
-```
+**La copie WSL peut écraser `src/`, pas seulement `public/`.** RÉSOLU le
+31/08/2026 : la copie `~/marvel-work/fusion/marvel-lcg-src` a été supprimée,
+il n'existe plus qu'une installation du jeu. Ce piège est conservé ici comme
+témoignage : ce mécanisme a effacé deux fois du travail dans
+`src/cards/pack/` sans toucher `public/`. Si une deuxième copie du jeu
+réapparaît un jour, relire ce paragraphe avant de la brancher à quoi que ce
+soit.
 
 **Le moteur exécute `.game`, pas `src/`.** `launcher_fast.py` compile
 `src/*.py` en `.game/*.pyc`, mais seulement si la source est plus récente que

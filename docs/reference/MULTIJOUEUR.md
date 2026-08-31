@@ -81,7 +81,7 @@ Pour terminer : **Ctrl+C** dans la fenêtre (ou ferme-la).
   et pour tout arrêter : `pkill -f launcher_fast.py ; pkill -f cloudflared`.
   ⚠️ Cela met fin à la partie en cours : ouvre d'abord `http://127.0.0.1:2345` et sauvegarde depuis le plateau si tu veux la garder.
 - **Une seule partie à la fois** par PC (un moteur = une partie).
-- **Images des cartes** : `launch.online.json` cherche les images dans `./assets/pics/` puis, en secours, dans l'ancien dossier `Jeux original/assets/pics/` (chemin absolu) et enfin sur Internet (marvelcdb / cerebro). Si tu **supprimes `Jeux original`**, les images continuent de marcher via `./assets/pics/` et le web, mais tu peux nettoyer ce chemin devenu inutile dans `image_folders`.
+- **Images des cartes** : `launch.online.json` cherche les images dans `./assets/pics/` et `./assets/pics-fr/`, puis en secours sur Internet (marvelcdb / cerebro). L'ancien chemin de secours vers `Jeux original/assets/pics/` a été retiré le 31/08/2026 avec la suppression de ce dossier.
 
 ---
 

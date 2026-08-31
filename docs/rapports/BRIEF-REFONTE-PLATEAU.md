@@ -1,3 +1,7 @@
+> ⚠️ **RAPPORT HISTORIQUE.** Depuis le grand rangement du 31/08/2026, plusieurs chemins cités ici
+> n'existent plus (`_archive-2026-08-08/`, la copie WSL `~/marvel-work/fusion/`, les vieux dossiers du
+> Bureau...). L'état actuel fait foi dans `docs/reference/GUIDE-CREATION-CONTENU.md` §1.
+
 # Brief complet - Refonte du plateau Marvel Champions LCG
 
 Ce document sert de passation pour une autre IA. Il decrit le contexte, les contraintes fortes, les decisions UX deja validees par l'utilisateur, le prototype actuel, et la marche a suivre pour transformer ce prototype en vrai plateau de jeu sans casser le moteur ni l'ancien runtime.

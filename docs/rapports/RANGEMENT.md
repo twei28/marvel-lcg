@@ -1,3 +1,7 @@
+> ⚠️ **RAPPORT HISTORIQUE.** Depuis le grand rangement du 31/08/2026, plusieurs chemins cités ici
+> n'existent plus (`_archive-2026-08-08/`, la copie WSL `~/marvel-work/fusion/`, les vieux dossiers du
+> Bureau...). L'état actuel fait foi dans `docs/reference/GUIDE-CREATION-CONTENU.md` §1.
+
 # Rangement du dossier — état, cible, et ce qui a été fait
 
 Écrit le 08/08/2026. Le dossier `Marvel LCG last try` avait accumulé trois ans

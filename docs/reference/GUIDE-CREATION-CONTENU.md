@@ -18,49 +18,39 @@ Les liens utiles :
 
 ## 1. Architecture : où vit quoi
 
-### 1.1 Les deux seuls dossiers qui comptent
+### 1.1 La seule copie qui compte
 
-> ## ⚠️ CORRECTIF DU 29/08/2026 : CETTE SECTION ÉTAIT INVERSÉE
+> ## ✅ RANGEMENT DU 31/08/2026 : IL N'Y A PLUS QU'UNE COPIE
 >
-> Le guide désignait `~/marvel-work/fusion/marvel-lcg-src/` comme la copie
-> vivante et le dossier Windows comme un miroir archivé. **C'est l'inverse
-> depuis au moins le 14/08/2026.**
+> Historique, pour comprendre les traces dans les vieux rapports : jusqu'au
+> 29/08/2026 ce guide désignait `~/marvel-work/fusion/marvel-lcg-src/` (WSL)
+> comme la copie vivante. C'était l'inverse depuis le 14/08, et cette
+> confusion a effacé du travail à plusieurs reprises (rsync du vestige vers
+> le jeu, deployer.sh à double cible). Le 31/08/2026, la copie WSL et toutes
+> les autres copies mortes ont été **supprimées** (inventaire en §1.4).
 >
-> **NE JAMAIS lancer un `rsync` dans le sens `~/marvel-work/fusion` →
-> Windows.** Il effacerait cinq packs entiers (`dazzler`, `red_guardian`,
-> `wolverine_x23`, `jj`, `luke_cage`) et tous les correctifs moteur
-> postérieurs au 14/08.
+> Le jeu vit à UN SEUL endroit, et c'est là qu'on édite :
 >
-> Preuves, vérifiables en une commande chacune :
-> - Les trois fichiers que l'utilisateur double-clique (`JOUER-SOLO.bat`,
->   `JOUER-EN-MULTI.bat`, `JOUER-SERVEUR.bat`) font tous
->   `cd '<Windows>/Fusion/marvel-lcg-src'` avant de lancer le jeu.
+> | Rôle | Chemin |
+> |---|---|
+> | **Copie VIVANTE (la seule)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/` |
+>
+> Ce qui garantit que c'est bien elle qui tourne :
+> - Les trois lanceurs de référence (`Jeu Marvel Champions/JOUER-*.bat`,
+>   suivis par git) font `cd '<Windows>/Fusion/marvel-lcg-src'` avant de
+>   lancer le jeu. Les `JOUER-*.bat` à la racine de `Marvel LCG last try`
+>   sont de simples trampolines de deux lignes vers ceux-là.
 > - `launcher_fast.py` pose `ROOT = dirname(__file__)`, puis `SRC = ROOT/src`
 >   et `GAME = ROOT/.game` : il compile donc le `src/` de SON dossier, et lie
->   les `data`, `deck`, `assets` du même. Les trois `launcher*.sh` font pareil
+>   les `data`, `deck`, `assets` du même. Les `launcher*.sh` font pareil
 >   avec `RACINE="$(dirname "$0")"`.
-> - `~/marvel-work` ne fournit plus que l'INTERPRÉTEUR (`python/bin/python3.10`)
->   et `tools/cloudflared`. Rien d'autre.
-> - `~/marvel-work/fusion/marvel-lcg-src/data/cards.json` est daté du
->   **14/08/2026** et ne connaît aucun des cinq packs ci-dessus.
-
-Le projet vit à **deux endroits**, et un seul des deux est exécuté par le jeu.
-Toute autre copie trouvée sur la machine est un vestige (voir 1.4).
-
-| Rôle | Chemin |
-|---|---|
-| **① Copie VIVANTE (celle qui tourne, on édite ICI)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/` |
-| **② Copie WSL (VESTIGE, figée au 14/08/2026)** | `~/marvel-work/fusion/marvel-lcg-src/` : ne plus éditer, ne plus en resynchroniser |
+> - `~/marvel-work` (WSL) ne fournit que l'INTERPRÉTEUR
+>   (`python/bin/python3.10`) et `tools/` (cloudflared, test_newgame.py…).
+>   Aucune copie du jeu n'y vit plus.
 
 En cas de doute sur le dossier dans lequel on se trouve, `readlink -f .` doit
 commencer par
 `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
-
-Vérification en une ligne que l'on est bien dans la copie qui tourne :
-
-```bash
-ls src/cards/pack | grep -qx dazzler && echo "copie VIVANTE" || echo "VESTIGE, ne pas editer"
-```
 
 Le dossier projet contient le miroir du moteur plus tout ce qui n'appartient
 qu'à nous :
@@ -136,14 +126,21 @@ au 14/08. Ne jamais le reconstituer de mémoire.
 Si un jour on veut vraiment archiver ① vers la copie WSL, c'est le sens
 inverse (`Windows` → `WSL`), et seulement avec `--dry-run` d'abord.
 
-### 1.4 Dossiers à ne JAMAIS utiliser
+### 1.4 Les copies mortes : toutes supprimées le 31/08/2026
 
-| Chemin | Pourquoi |
-|---|---|
-| `C:\Users\arnau\Desktop\Marvel LCG last try\Fusion\` | Vieux dossier d'avant le déplacement du projet. |
-| `~/marvel-work/boot/`, `boot_sub/`, `boot_sub2/`, `boot_sub3/`, `boot_sub4/` | Bacs à sable de la phase de reconstruction bytecode, abandonnée. |
-| `~/marvel-work/marvel-lcg-independent/`, `marvel-lcg-rebuilt/` | Anciennes reconstructions, abandonnées depuis l'adoption du source officiel. |
-| `~/marvel-work/fusion/marvel-lcg-src/` | Ancienne copie vivante, figée au 14/08/2026. Elle ignore `dazzler`, `red_guardian`, `wolverine_x23`, `jj` et `luke_cage`. Ne plus l'éditer, et surtout ne JAMAIS la resynchroniser vers la copie Windows (voir 1.3). Seuls `~/marvel-work/python/` et `~/marvel-work/tools/cloudflared` restent utilisés. |
+Le grand rangement du 31/08/2026 a supprimé TOUTES les copies mortes que
+cette section recensait : `Marvel LCG last try\Fusion\` (vide),
+`_archive-2026-08-08\`, les vieux dossiers `Marvel LCG` et
+`Marvel LCG.backup-2026-07-07` du Bureau, et côté WSL `~/marvel-work/fusion/`
+(l'ancienne copie vivante figée au 14/08, responsable des écrasements),
+`boot*/`, `marvel-lcg-independent/`, `marvel-lcg-rebuilt/` et ~150 scripts en
+vrac. `~/marvel-work` ne contient plus que `python/`, `tools/`,
+`py310.tar.gz` et le projet Android (`android/`, `android-payload/`).
+
+**La règle demeure** : toute copie du moteur qui réapparaît ailleurs que
+`Fusion/marvel-lcg-src/` est un doublon jusqu'à preuve du contraire, et une
+copie morte qu'on garde finit toujours par mordre. Sauvegarde de secours des
+images (hors git) : `~/marvel-backups/pics-2026-08-31.tar` (2,7 Go).
 
 ### 1.5 Documentation de l'auteur original
 
@@ -484,10 +481,10 @@ formulaire restent à vérifier/remplir à la main.
 
 ## 8. Validation — obligatoire avant de considérer le travail fini
 
-**Viser la copie qui SERT.** Les commandes ci-dessous portaient sur
-`~/marvel-work/fusion/marvel-lcg-src`. Le 09/08/2026 cette copie était en
-retard de deux fichiers du moteur et d'une carte sur la copie Windows, qui
-est celle que le jeu exécute. On vise donc `.game-src` **côté Windows** :
+**Viser la copie qui SERT.** Les commandes ci-dessous portaient jadis sur
+`~/marvel-work/fusion/marvel-lcg-src` (copie WSL, en retard dès le 09/08 et
+supprimée le 31/08/2026). On vise donc `.game-src` **côté Windows**, dans la
+seule installation restante :
 
 > ### ⚠️ POURQUOI `.game-src` ET JAMAIS `"$W"` DIRECTEMENT (leçon du 29/08/2026)
 >
@@ -963,7 +960,8 @@ tableau. À chaque synchro avec le dépôt officiel, réappliquer ce tableau
 - Oublier le `__init__.py` d'un nouveau dossier de set = cartes silencieusement
   sans capacités.
 - Les effets « texte seul » connus (non câblés) sont recensés dans
-  `~/marvel-work/TODO.md` — vérifier avant de croire à un bug.
+  `docs/rapports/archive-marvel-work/TODO.md` (ex `~/marvel-work/TODO.md`,
+  archivé le 31/08/2026) — vérifier avant de croire à un bug.
 - **Tests de comportement, jouer une carte** : `Puzzle.PutIntoPlay` POSE la carte sans la payer, donc ne teste ni la génération de ressources, ni les conditions « si vous avez payé uniquement avec... », ni les capacités Resource. Le harnais expose pour cela les clés `main` (cartes déposées en main comme carburant), `jouer` (cartes jouées depuis la main en payant vraiment) et `payer_avec` (impose QUELLES cartes financent le coût, indispensable quand la ressource dépensée a elle-même un effet). Le pilote remplit le champ `resources` de la réponse à partir de `target_payment` ; sans cela le coût reste impayé et la carte n'est jamais jouée.
 - ~~**Limite connue** : les événements qui ciblent un complot ne se jouent pas par cette voie.~~ **CORRIGÉ le 7/8/2026** : ce n'était pas une limite du harnais. Un événement qui RETIRE de la menace n'a aucune cible légale tant qu'aucun complot n'en porte — `CanPlayBy` rend alors `False` et la carte reste en main, sans le moindre ASK pour le signaler. Il faut donc **poser de la menace en mise en place** : `Puzzle.PlaceThreat('The Break-In!', 3)`. ⚠ Et la doser : à 8, le complot principal AVANCE, la partie repart pour un tour, le joueur repioche, et le cas mesure alors tout autre chose. Heavy Lifting 77008 est couverte depuis. Calculated Strike 68008 et For Justice! 01060 devraient l'être de la même façon.
 - **Tests de comportement, paiement** : les clés du champ `payment` des options
@@ -1066,21 +1064,20 @@ tableau. À chaque synchro avec le dépôt officiel, réappliquer ce tableau
   Corollaire : le réglage « premier joueur » du wizard est **grisé en multi**,
   parce que `buildDescriptor()` l'applique en faisant TOURNER l'ordre des
   joueurs, ce qui décollerait les sièges des personnes.
-- **`launcher-multi.sh` n'existe QUE dans le dossier projet Windows**, pas dans
-  la copie WSL : c'est de là que `JOUER-EN-MULTI.bat` le lance. Ne pas le
-  chercher dans `~/marvel-work/`.
+- **`launcher-multi.sh` vit dans `Fusion/marvel-lcg-src/`** : c'est de là que
+  `JOUER-EN-MULTI.bat` le lance. `~/marvel-work/` ne fournit que
+  l'interpréteur Python et `tools/cloudflared`.
 - Côté UI, l'affichage multi-vilains (Sinister Six...) repose sur une
   heuristique par noms (`ui-app/src/board/zones.ts`) : à revalider si un
   nouveau scénario multi-vilains est ajouté.
-- **Deux `public/` existent** (la copie vivante Windows et le vestige WSL,
-  voir §1.1) : `ui-app/deployer.sh` déploie `dist/` dans les deux. Le dossier
-  `js/prepare/` (wizard, prefs, deck-builder, biographies) est édité à la main,
-  hors dépôt, et directement dans la copie vivante : il n'y a aucune recopie à
-  faire ensuite (voir §1.3).
-  ⚠️ En revanche `deployer.sh` recopie encore `public/js` et `public/css`
-  **depuis le vestige WSL vers la copie Windows**, avec `--delete`. Tant que ce
-  bloc n'est pas corrigé, le lancer écrase les modules `public/js/prepare/`
-  édités côté Windows : vérifier `js/prepare/` après chaque déploiement.
+- **Un seul `public/` existe** depuis le 31/08/2026 (le vestige WSL est
+  supprimé) : `ui-app/deployer.sh` déploie `dist/` dans la seule
+  installation. Le dossier `js/prepare/` (wizard, prefs, deck-builder,
+  biographies) est édité à la main, hors dépôt, et directement dans la copie
+  vivante : il n'y a aucune recopie à faire ensuite (voir §1.3). Le sens
+  destructeur du vieux `deployer.sh` (rsync `--delete` depuis le vestige) a
+  été corrigé le 30/08 puis rendu impossible le 31/08 avec la suppression du
+  vestige.
 - Plusieurs vieilles copies du moteur traînent encore sur la machine et ne
   doivent jamais servir de référence : la liste complète est en §1.4.
 
