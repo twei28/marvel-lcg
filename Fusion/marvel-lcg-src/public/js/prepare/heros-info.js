@@ -1248,4 +1248,16 @@ export const HEROS_INFO = {
         apparition: "Ultimate Spider-Man #2 (2024)",
     },
 
+    "aa001a": {
+        bio: "Née avant les procès de Salem, Agatha Harkness a survécu à son propre bûcher et à quelques siècles de plus. Sorcière parmi les plus puissantes de la Terre, elle fut le mentor de Wanda Maximoff et la gouvernante de Franklin Richards, toujours à mi-chemin entre la protectrice acariâtre et la manipulatrice qui joue dix coups d'avance. Même la Mort, qui la réclame depuis des siècles, n'a jamais réussi à la garder : quand Agatha tombe, c'est son fantôme qui reprend la partie.",
+        bioEn: "Born before the Salem trials, Agatha Harkness survived her own pyre and a few extra centuries. One of Earth's most powerful witches, she mentored Wanda Maximoff and governed young Franklin Richards, forever halfway between cantankerous protector and schemer playing ten moves ahead. Even Death, who has claimed her for centuries, never managed to keep her: when Agatha falls, her ghost picks up the game.",
+        civil: "Agatha Harkness",
+        base: "Whisper Hill, New Salem",
+        equipes: "Alliée des Quatre Fantastiques et des Avengers",
+        equipesEn: "Ally of the Fantastic Four and the Avengers",
+        ennemis: "La Mort, Salem's Seven",
+        ennemisEn: "Death, Salem's Seven",
+        apparition: "Fantastic Four #94 (1970)",
+    },
+
 };

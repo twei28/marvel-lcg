@@ -1515,4 +1515,49 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ho016': "Robuste. Vilenie.\n[star] L'attaque de Bullseye gagne <b><i>Perçant</i></b> et <b><i>Déferlement</i></b>.",
   // harry_osborn — Refrain From Argument (SideScheme nemesis)
   'ho017': "Entrave 1[per_hero].\n<i>(Icône de crise : la menace ne peut pas être retirée de la manigance principale.)</i>\n<hr />\n[star] <b>Boost</b> : révélez cette carte s'il n'y a aucune manigance annexe en jeu.",
+
+  // agatha_harkness — Agatha Harkness (Hero)
+  'aa001a': "<i>Power Absorption</i> — <b>Réponse</b> : après qu'Agatha Harkness a subi des dégâts d'une attaque, défaussez autant de cartes du dessus de votre deck. Ajoutez à votre main 1 carte [[SPELL]] défaussée de cette façon. <i>(Limite une fois par phase.)</i>",
+  // agatha_harkness — Agatha Harkness (AlterEgo)
+  'aa001b': "<b>Mise en place</b> : mettez Ghost Agatha de côté. Cherchez la manigance-joueur Agatha All Along et ajoutez-la à votre main.\n<i>Ghost Form</i> — <b>Réponse Obligatoire</b> : après que vous avez été éliminé de la partie, mettez en jeu le soutien Ghost Agatha mis de côté.",
+  // agatha_harkness — Scarlet Witch (Ally, signature)
+  'aa002': "Vous pouvez jouer l'événement attaché à Scarlet Witch comme s'il était dans votre main, en réduisant son coût de 1.\n<b>Réponse</b> : après que Scarlet Witch est entrée en jeu, choisissez un événement [[SPELL]] dans votre pile de défausse et attachez-le à elle face cachée.",
+  // agatha_harkness — Ebony (Support, signature)
+  'aa003': "Tant que vous êtes en forme d'alter ego, Agatha Harkness gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Ebony → regardez les 2 cartes du dessus de votre deck. Ajoutez-en 1 à votre main.",
+  // agatha_harkness — Wake Thy Power (Event, x2)
+  'aa004': "<b>Action de héros</b> : défaussez les 2 cartes du dessus de votre deck. Pour chaque icône de ressource défaussée de cette façon :\n• [energy] – retirez 2 menaces d'une manigance.\n• [mental] – piochez 1 carte.\n• [physical] – soignez 2 dégâts de votre héros.\n• [wild] – choisissez 1 des options ci-dessus.",
+  // agatha_harkness — Witchcraft (Event, x3)
+  'aa005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi. Défaussez les 3 cartes du dessus du deck de rencontre. Pour chaque icône de boost défaussée de cette façon, infligez 1 dégât supplémentaire à CET ennemi. Pour chaque carte défaussée de cette façon sans icône de boost, étourdissez ou désorientez un ennemi.",
+  // agatha_harkness — Soul Harvest (Event, x2)
+  'aa006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Soignez 2 dégâts d'Agatha Harkness. Défaussez la carte du dessus de votre deck. Si ses ressources imprimées comportent :\n• [wild] ou [physical] — étourdissez CET ennemi.\n• [mental] ou [energy] — désorientez CET ennemi.",
+  // agatha_harkness — Occult Knowledge (Resource, signature)
+  'aa007': "<b>Réponse</b> : après que cette carte a été défaussée du dessus de votre deck, ajoutez-la à votre main.",
+  // agatha_harkness — Agatha All Along (PlayerSideScheme, signature)
+  'aa008': "Victoire 0.\n<b>Réponse</b> : après qu'Agatha Harkness a subi des dégâts d'une attaque, retirez autant de menaces d'ici.\nTant qu'Agatha All Along est au tableau des victoires, Agatha Harkness gagne +1 à chacun de ses pouvoirs de base et +3 points de vie.",
+  // agatha_harkness — The Witches' Road (Support, signature)
+  'aa009': "<b>Réponse</b> : après qu'un alter ego [[MYSTIC]] est passé en forme de héros, inclinez The Witches' Road → réduisez de 1 le coût en ressources de la prochaine carte [[SPELL]] que ce héros joue cette phase. Mélangez 2 cartes de la défausse de ce héros dans son deck.",
+  // agatha_harkness — Mirror Image (Upgrade, signature)
+  'aa010': "Tant que vous êtes en forme de héros, Agatha Harkness gagne +1 CTR.\n<b>Interruption</b> : quand vous devriez subir des dégâts qui vous mettraient K.O., défaussez plutôt cette carte.",
+  // agatha_harkness — Runic Magician (Upgrade, signature)
+  'aa011': "<b>Ressource</b> : inclinez Runic Magician → générez une ressource [wild] pour une carte [[SPELL]] ou [[MYSTIC]].\n<b>Interruption de héros</b> : quand vous résolvez la capacité « Power Absorption » d'Agatha Harkness, ignorez l'exigence du trait [[SPELL]].",
+  // agatha_harkness — Regained Youth (Upgrade, signature)
+  'aa012': "Vous gagnez +4 points de vie.\n<b>Réponse</b> : après que votre deck s'est vidé, soignez 2 dégâts de votre identité.",
+  // agatha_harkness — Ghost Agatha (Support persona, mise de côté)
+  'aa013': "Permanente. Le premier joueur contrôle Ghost Agatha.\n<b>Action</b> : inclinez Ghost Agatha → regardez les 3 cartes du dessus de votre deck. Piochez-en 1, défaussez-en 1 et remettez-en 1 sur le dessus de votre deck.",
+  // agatha_harkness — Chaotic Forces (Obligation)
+  'aa014': "<b><i>Donnez-la au joueur Agatha Harkness.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Cherchez Agatha All Along au tableau des victoires et mettez-la en jeu → retirez Chaotic Forces de la partie.\n• Défaussez cette carte et la carte du dessus du deck de rencontre. Pour chaque icône de boost défaussée de cette façon, subissez 1 dégât indirect.",
+  // agatha_harkness — Burned at the Stake (SideScheme nemesis)
+  'aa015': "Death gagne <b><i>Robuste</i></b>.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
+  // agatha_harkness — Death (Minion nemesis)
+  'aa016': "[star] Death ne peut pas être vaincue.\n<b><i>Vulnérable</i></b>. <i>(Défaussez ce personnage s'il est étourdi ou désorienté.)</i>\n<i>(Sbire némésis d'Agatha Harkness.)</i>",
+  // agatha_harkness — Funeral (Obligation du set nemesis)
+  'aa017': "Votre héros gagne -1 CTR.\n<b>Action d'alter ego</b> : dépensez une ressource [energy] → défaussez cette carte.",
+  // agatha_harkness — Death's Embrace (Attachment nemesis, x2)
+  'aa018': "Attachez-la à votre identité.\nChaque carte que vous jouez coûte 1 ressource supplémentaire.\n<b>Action de héros</b> : inclinez votre héros ou dépensez [mental][energy][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : si cette activation est une manigance, attachez cette carte au premier joueur.",
+  // agatha_harkness — Wiccan (Ally Justice, carte bonus)
+  'aa019': "<b>Réponse</b> : après que Wiccan a contré, défaussez la carte du dessus du deck de rencontre. Pour chaque icône de boost défaussée de cette façon, infligez 1 dégât à un ennemi.",
+  // agatha_harkness — Pixie (Ally Leadership, carte bonus)
+  'aa020': "<b>Réponse</b> : après avoir joué Pixie depuis votre main, ajoutez un allié [[X-MEN]] de votre pile de défausse à votre main.",
+  // agatha_harkness — Coven of Chaos (Event Leadership, carte bonus)
+  'aa021': "Jouable seulement si votre identité a le trait [[MYSTIC]].\n<b>Action d'alter ego</b> : mettez en jeu un allié [[MYSTIC]] de la pile de défausse de n'importe quel joueur, sous le contrôle de son propriétaire.",
 }
