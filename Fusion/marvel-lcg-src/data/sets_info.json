@@ -1198,5 +1198,14 @@
         "encounters": [],
         "max_id": "ma029"
     },
-    "checksum": "5674d2eca810291665d0da0f56b364f15d77db2aa66c88026fd7353fe8606e98"
+    "129. Custom (Venompool)": {
+        "name": "venompool",
+        "scenarios": [],
+        "heroes": [
+            "venompool"
+        ],
+        "encounters": [],
+        "max_id": "vp016"
+    },
+    "checksum": "a642b1c2b4eb0a0a5bff33995b16eab69b4b6c7f1a0495b72cbcfb6bba8fda99"
 }

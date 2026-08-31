@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Venompool",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Decklist COMPLETE fournie par l'auteur (CptScorp, Cycle 2) sur la planche « Venompool Starter Deck » du zip : 15 cartes signature, 9 cartes PROTECTION et 16 cartes basiques, reprises ici a l'identique. Contrairement a ms_america et patriot, aucun choix d'aspect n'a eu a etre fait : l'aspect Protection est celui de l'auteur.",
+  "collision_note": "QUATRE homonymes preexistants, tous verifies avant montage du deck. (1) « Venompool » : dt105 est un ALLIE de classe Determination (aspect fan-made) — un allie a son propre nom ne peut pas entrer dans ce deck, il est explicitement EXCLU. (2) « Wade Wilson » : 44001b est l'alter-ego officiel de Deadpool ; l'insert du pack interdit lui-meme de jouer Deadpool et Venompool dans la meme partie, et desc.GiveTo de vp011 se resout par nom. (3) « Black Cat » : 01002 est l'allie signature de Spider-Man (classe Hero, donc jamais dans ce deck) et wd045 un sbire du pack Electro. (4) « Thwip! » sr003 et « Foresight » mw009 sont des evenements signature de Spider-Man (Rainy) et Madame Web, tous deux de classe Hero : jamais melangeables avec ce deck.",
+  "auteur": "CptScorp — Marvel Champions Custom Project, Cycle 2"
+ },
+ "hero": [
+  "vp001a,vp001b"
+ ],
+ "hero_deck": [
+  "vp002",
+  "vp003",
+  "vp003",
+  "vp003",
+  "vp004",
+  "vp004",
+  "vp005",
+  "vp005",
+  "vp006",
+  "vp006",
+  "vp006",
+  "vp007",
+  "vp008",
+  "vp009",
+  "vp010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "vp011"
+ ],
+ "nemesis_set": [
+  "vp012",
+  "vp013",
+  "vp014",
+  "vp015",
+  "vp016"
+ ],
+ "player_deck": [
+  "16014",
+  "16014",
+  "01081",
+  "16016",
+  "16017",
+  "16017",
+  "01082",
+  "01082",
+  "09020",
+  "15031",
+  "15031",
+  "17020",
+  "13018",
+  "01083",
+  "01084",
+  "01088",
+  "01089",
+  "01090",
+  "13024",
+  "13024",
+  "01091",
+  "01092",
+  "16024",
+  "05033",
+  "05023"
+ ]
+}
