@@ -1,0 +1,78 @@
+# À FAIRE : revoir les decks de départ que Claude a construits
+
+**Demandé par l'utilisateur le 31/08/2026.** À traiter **quand tous les
+personnages fan-made auront été portés**, pas avant.
+
+---
+
+## Pourquoi
+
+Quand l'auteur d'un pack fournit sa decklist, elle est recopiée telle quelle :
+aucun jugement, aucun risque. C'est le cas de `venompool`, `lockjaw`,
+`moon_knight`, `totally_awesome_hulk`.
+
+Quand il n'en fournit pas, le deck a été **construit par Claude**, sur cette
+méthode :
+
+1. lire tout le kit et identifier ce qu'il récompense (son « moteur ») ;
+2. proposer à l'utilisateur l'aspect qui nourrit ce moteur — la décision lui
+   revient, elle est de conception, pas technique ;
+3. filtrer `data/cards.json` par classe d'aspect et par texte, en privilégiant
+   ce qui alimente le moteur ;
+4. appliquer les contraintes dures (15 signature + 25, aucune carte signature
+   d'un autre héros, aucun allié au nom du héros, bonne classe) ;
+5. consigner le raisonnement dans `metadata.aspect_note`.
+
+**Les limites, dites franchement :**
+
+- **aucun deck n'a jamais été testé en jeu.** `autoplay.py` prouve qu'il ne
+  plante pas, pas qu'il est bon : son pilote est une heuristique, et son taux
+  de victoire ne veut rien dire (Deadpool officiel fait 0 % lui aussi) ;
+- **aucune notion validée de courbe ni d'équilibrage** — un coût moyen se
+  calcule, il ne dit pas si le deck se joue bien ;
+- les choix viennent de la **lecture du texte** des cartes, pas de parties
+  jouées ;
+- **aucune règle écrite n'existe dans le projet** pour ce cas : la méthode
+  ci-dessus est un usage, pas une norme.
+
+C'est donc, dans chaque portage, la partie la plus susceptible d'être fausse.
+
+---
+
+## Les 12 decks à revoir
+
+| Deck | Aspect retenu | Choisi par |
+|---|---|---|
+| `agent_anti_venom` | (à relire dans son `aspect_note`) | session antérieure |
+| `angela` | Agressivité | utilisateur, 31/08/2026 |
+| `brawn` | (à relire) | session antérieure |
+| `howard_the_duck` | Justice | session antérieure |
+| `iron_lad` | (à relire) | session antérieure |
+| `kate_bishop` | (à relire) | session antérieure |
+| `ms_america` | Justice | utilisateur, 30/08/2026 |
+| `okoye` | (à relire) | session antérieure |
+| `patriot` | Leadership | utilisateur, 30/08/2026 |
+| `scarlet_spider` | (à relire) | session antérieure |
+| `speed` | Agressivité | session antérieure |
+| `wiccan` | Justice | session antérieure |
+
+**Ne PAS revoir** : `venompool`, `lockjaw`, `moon_knight`,
+`totally_awesome_hulk` — decklists d'auteur, recopiées.
+
+À noter : `human_torch` et `mister_fantastic` avaient une decklist d'auteur,
+mais 3 et 4 cartes n'existaient pas dans le moteur et ont été **remplacées**
+(voir §9 du GUIDE). Ces substitutions-là méritent aussi un coup d'œil.
+
+---
+
+## Comment revoir, le jour venu
+
+La seule mesure qui vaut est **une partie jouée à la main**. Aucun outil du
+projet ne juge un deck. Piste concrète, deck par deck :
+
+1. lancer une partie solo avec le deck tel quel ;
+2. noter ce qui reste bloqué en main faute de ressources, et ce qui ne sert
+   jamais ;
+3. corriger, et mettre à jour `metadata.aspect_note` avec la raison du
+   changement — le fichier doit rester la trace du POURQUOI, pas seulement du
+   QUOI.
