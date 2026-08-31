@@ -154,14 +154,62 @@ l'a prouvé. Remplacé par `Faces.DiscardAll([this], effect)`.
 
 ---
 
-## 5. Ce qui reste à prouver
+## 5. Étape 8 : autoplay ciblé — fait
 
-- cas `test_capacites` pour les capacités **non encore couvertes** : `vp001a`
-  Fear Factor et sa limite, `vp001b` (REC conditionnel, Unexpected Bond),
-  `vp003` à `vp008`, `vp011`, `vp012`, `vp016` ;
-- `tools/autoplay.py`, 8 parties minimum contre un héros témoin ;
-- une partie complète jouée à la main dans le navigateur — **seul juge de
-  « est-ce que la carte est agréable et fait ce qu'elle promet »**.
+8 parties `venompool` contre 8 parties `deadpool` en **témoin** (le témoin
+naturel : l'insert du pack dit que c'est le même personnage), même vilain
+(Rhino), même difficulté, même profil, mêmes graines.
+
+| deck | parties | V | D | rounds | incidents |
+|---|---|---|---|---|---|
+| **venompool** | 8 | 0 | 8 | **5,4** | **0** |
+| deadpool (témoin) | 8 | 0 | 8 | 4,5 | **0** |
+
+Causes de fin **identiques** des deux côtés : 7 « Main Scheme Completed »,
+1 « All players eliminated ». Le 0 % de victoire est une propriété du
+pilote heuristique, pas du pack — le guide prévient qu'un taux absolu ne
+veut rien dire. Venompool tient même une manche de plus que son témoin.
+
+**Grep exhaustif** des 8 journaux (`NameError|AttributeError|TypeError|
+KeyError|AssertionError`) : **0 partout**.
+
+**Lecture des journaux** : les **17 `card_id` du pack** apparaissent en
+partie réelle, identité et set némésis compris. Aucune carte n'est restée
+lettre morte.
+
+---
+
+## 6. Batterie finale (31/08/2026)
+
+| Preuve | Référence | Après portage |
+|---|---|---|
+| `test_cards` | 4895 ok / 0 err | **4912 ok / 0 err** (+17) |
+| `verifier_tous_les_decks` | 104/104 | **105/105** |
+| `verifier_prefixes` | propre | propre |
+| `verifier_coherence_cartes` | 0 obligation orpheline, 0 image manquante | identique |
+| `launch.json` du jeu | `127.0.0.1:2345` | `127.0.0.1:2345` |
+| `git diff --stat` | propre | propre |
+
+---
+
+## 7. Ce qui reste — et c'est la gate finale
+
+`PROCESSUS-HEROS.md` est clair : **« Pas de héros à moitié validé »**. Le
+pack n'est donc PAS déclaré terminé.
+
+- **Cas `test_capacites` manquants** — 7 capacités couvertes sur ~20 :
+  `vp001a` Fear Factor et sa limite par phase, `vp001b` (REC conditionnel et
+  Unexpected Bond), `vp003`, `vp004`, `vp005`, `vp006`, `vp007`, `vp008`,
+  `vp011`, `vp012`, `vp016`.
+- **La partie réelle au navigateur**, que rien de ce qui précède ne remplace :
+  c'est le seul juge de « est-ce que la carte est agréable et fait ce qu'elle
+  promet ». Elle n'a **pas** été faite.
+
+### Point matériel
+
+`assets/pics/` est hors git : les 17 images ne vivent que dans le dossier du
+jeu, et sont **postérieures** à la sauvegarde `~/marvel-backups/pics-2026-08-31.tar`.
+Elles restent régénérables depuis le zip de `A créer/`.
 
 ### Leçon d'outillage (coûteuse, à ne pas reperdre)
 
