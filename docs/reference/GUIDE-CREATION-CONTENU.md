@@ -595,12 +595,23 @@ cd "$W" && $PY \
 cd "$W" && python3 tools/verifier_coherence_cartes.py \
     /tmp/coherence-cartes.json
 
-# 6 bis. Création de partie pour CHAQUE deck de départ (référence : 89/89 le
-#    9/8/2026. `cloak_dagger` et `wonder_man`, en échec le 4/8, passent tous
-#    les deux depuis)
+# 6 bis. Création de partie pour CHAQUE deck de départ (référence : 105/105 le
+#    31/08/2026, 89/89 le 9/8/2026. `cloak_dagger` et `wonder_man`, en échec
+#    le 4/8, passent tous les deux depuis)
+#
+#    ⚠ COMBIEN DE DECKS MONTER : ça dépend de ce qu'on a touché. Voir la
+#    règle de portée juste après le §8, « Vérifier un deck ou les cent ».
+#    En bref : un pack neuf qui ne touche QUE ses propres fichiers se
+#    contrôle avec DECK_NOM (le sien + un témoin) ; dès qu'un fichier
+#    PARTAGÉ bouge, la passe complète est obligatoire.
 cd "$W" && $PY \
     tools/verifier_tous_les_decks.py "$W/.game-src" \
     27000 /tmp/rapport-decks.json
+
+#    Un seul deck (rapide, ~40 s) :
+cd "$W" && DECK_NOM=venompool $PY \
+    tools/verifier_tous_les_decks.py "$W/.game-src" 27000 /tmp/rapport-decks.json
+#    puis lire /tmp/deck_venompool.json
 
 # 7. Création de partie
 cd ~/marvel-work && $PY tools/test_newgame.py "$W/.game-src"
@@ -762,6 +773,47 @@ Un huitième défaut n'était pas dans une carte mais dans le **moteur** :
 capacité Resource a un second effet (« … puis redressez cette carte ») en
 perdait la moitié en silence : Sue Storm 66001b et Reed Richards 65001b ne se
 redressaient jamais.
+
+### Vérifier un deck, ou les cent — la règle de portée
+
+Monter les 105 decks prend **~18 minutes**. Ce n'est pas toujours nécessaire,
+et ce n'est pas toujours facultatif. Le critère n'est pas « combien de héros
+ai-je créés » mais **quels fichiers ai-je touchés**.
+
+| Ce qu'on a modifié | Ce qu'il faut monter |
+|---|---|
+| **Uniquement** les fichiers propres à un pack : `src/cards/pack/<pack>/`, ses entrées dans `data/cards.json`, son `deck/starter/<pack>.json`, son entrée `sets_info.json` | **Son deck + un témoin**, via `DECK_NOM` |
+| **N'importe quel fichier partagé** : `src/game/`, `src/engine/`, la liste blanche de `game/card/factory.py`, l'énum `COUNTER` de `card_face.py`, ou une modification/suppression d'entrées EXISTANTES de `data/cards.json` | **Les 105, sans exception** |
+
+La raison est simple : un fichier partagé est lu par tous les héros. Le
+portage de `venompool` (31/08/2026) a justement dû toucher **trois** fichiers
+partagés — la liste blanche de `factory.py` (événement à deux capacités
+`Play`), l'énum `COUNTER` (compteur `adrenaline`) et `data/cards.json` — d'où
+passe complète obligatoire ce jour-là. À l'inverse, ajouter une carte à un
+pack déjà en place ne peut casser que ce pack.
+
+**Un deck seul** (`DECK_NOM`, non documenté ailleurs, lu dans `main()` de
+l'outil) :
+
+```bash
+cd "$W" && DECK_NOM=<nom_du_deck> $PY \
+    tools/verifier_tous_les_decks.py "$W/.game-src" 27000 /tmp/rapport.json
+cat /tmp/deck_<nom_du_deck>.json
+```
+
+Toujours passer **un témoin** avec le deck testé (un héros au kit proche, ou
+simplement `spider_man`) : un échec qui touche les deux vient de la machine
+ou du moteur, un échec qui ne touche que le nouveau vient du pack.
+
+> ### ⚠ NE JAMAIS LANCER DEUX HARNAIS EN PARALLÈLE
+>
+> `verifier_tous_les_decks.py`, `test_capacites.py` et `autoplay.py` ouvrent
+> chacun un port par cas. Deux lancements simultanés se volent leurs ports et
+> saturent la machine. Mesuré le 31/08/2026 : la passe complète est tombée à
+> **73/105**, dont **31 faux échecs** `AssertionError: ip=..., port=...` plus
+> un faux « main vide après le setup » — zéro régression réelle derrière.
+> Ces échecs-là ne sont PAS des régressions (voir aussi l'avertissement de
+> l'étape 4). En série, la même passe rend 105/105.
 
 `verifier_tous_les_decks.py` (étape 6 bis) monte une **vraie partie pour chacun
 des 88 decks de départ**. C'est le seul outil qui exerce le SETUP de toutes les
