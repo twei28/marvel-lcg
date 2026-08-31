@@ -1478,4 +1478,41 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'an014': "<b>Interruption forcée</b> : quand Disir devrait être mise K.O., mélangez-la plutôt dans le deck de rencontre.\n<hr />\n[star] <b>Boost</b> : après la fin de cette activation, mélangez cette carte dans le deck de rencontre.",
   // angela — Back from Hel (Treachery, nemesis)
   'an015': "<b>Une fois révélée</b> : cherchez le sbire le plus au fond de la pile de défausse de rencontre et révélez-le.\n<hr />\n[star] <b>Boost</b> : si vous êtes engagé avec un sbire, cette attaque gagne 1 icône de boost supplémentaire ([boost]).",
+
+  // harry_osborn — Green Goblin (Hero)
+  'ho001a': "<b>Réponse</b> : après que vous avez attaqué un ennemi, retirez 1 carte de statut de CET ennemi → infligez 2 dégâts à un ennemi et retirez 2 menaces d'une manigance.",
+  // harry_osborn — Harry Osborn (AlterEgo)
+  'ho001b': "Vous pouvez inclure dans votre deck le nombre maximal d'exemplaires de 3 améliorations [[TECH]] d'aspects autres que l'aspect choisi.",
+  // harry_osborn — Spider-Man, Peter Parker (Ally, signature)
+  'ho002': "<b>Réponse</b> : après que Spider-Man est entré en jeu, placez un total de 2 cartes de statut étourdi sur jusqu'à 2 ennemis.",
+  // harry_osborn — Repulsor Blast (Event, x2)
+  'ho003': "<b>Action de héros</b> <i>(attaque)</i> : étourdissez un ennemi. Infligez 4 dégâts à CET ennemi.",
+  // harry_osborn — Pumpkin Bomb (Event, x2)
+  'ho004': "<b>Action de héros</b> <i>(attaque)</i> : choisissez un joueur. Infligez X dégâts au Méchant et à chaque sbire engagé avec ce joueur. Pour chaque ennemi mis K.O. de cette façon, désorientez un ennemi.",
+  // harry_osborn — Gwen Stacy Osborn (Support, signature)
+  'ho005': "Harry Osborn gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Harry Osborn et Gwen Stacy Osborn → désorientez un ennemi.",
+  // harry_osborn — Norman Osborn (Support, signature)
+  'ho006': "<b>Interruption de héros</b> : quand vous jouez un événement [[ATTACK]], inclinez Norman Osborn → cet événement inflige 1 dégât supplémentaire.",
+  // harry_osborn — Otto Octavius (Support, signature)
+  'ho007': "<b>Action d'alter ego</b> : inclinez Otto Octavius → choisissez un joueur. Ce joueur cherche une amélioration [[TECH]] dans son deck et l'ajoute à sa main. (Mélangez.)",
+  // harry_osborn — Goblin Armor (Upgrade, signature)
+  'ho008': "Vous gagnez +3 points de vie.\n<b>Action de héros</b> <i>(contre)</i> : inclinez Goblin Armor → retirez 1 menace d'une manigance (2 menaces à la place si vous avez le trait [[AERIAL]]).",
+  // harry_osborn — Goblin Helmet (Upgrade, signature)
+  'ho009': "<b>Action de héros</b> : inclinez Goblin Helmet → redressez une amélioration [[TECH]] que vous contrôlez.\n<b>Ressource de héros</b> : inclinez Goblin Helmet et 1 amélioration [[TECH]] que vous contrôlez → générez la ressource imprimée sur cette amélioration.",
+  // harry_osborn — Powered Gauntlets (Upgrade, x2)
+  'ho010': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Powered Gauntlets → infligez 1 dégât à un ennemi. Si vous avez le trait [[AERIAL]], vous pouvez dépenser une ressource de n'importe quel type pour désorienter CET ennemi.",
+  // harry_osborn — Goblin Glider (Upgrade, signature)
+  'ho011': "Green Goblin gagne +1 ATQ et le trait [[AERIAL]].\n<b>Action de héros</b> : inclinez Goblin Glider → redressez Green Goblin.",
+  // harry_osborn — "That Had to Hurt" (Upgrade, x2)
+  'ho012': "Temporaire. Forme héros seulement. Attachez à un ennemi. Maximum 1 par ennemi.\nLe personnage attaché perd le mot-clé Robuste ou Solide.\n<b>Réponse</b> : après que le personnage attaché a reçu une carte de statut, infligez-lui 1 dégât.",
+  // harry_osborn — Risky Business (Obligation)
+  'ho013': "<b><i>Donnez au joueur Harry Osborn.</i></b>\nVous êtes étourdi.\n<b>Action d'alter ego</b> : inclinez Harry Osborn → défaussez cette carte. Renvoyez dans votre main l'amélioration [[TECH]] la plus au-dessus de votre pile de défausse.",
+  // harry_osborn — Ruler of Manhattan (SideScheme nemesis)
+  'ho014': "<b>Une fois révélée</b> : défaussez les cartes du dessus du deck de rencontre jusqu'à défausser une manigance annexe. Révélez cette manigance annexe. Retirez d'ici autant de menaces que le nombre d'icônes de boost ([boost]) sur cette carte.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>\n<i>(Manigance annexe némésis de Green Goblin.)</i>",
+  // harry_osborn — Kingpin (Minion nemesis)
+  'ho015': "[star] Kingpin gagne +1 MNG et +1 ATQ pour chaque manigance annexe en jeu.\n<i>(Sbire némésis de Green Goblin.)</i>\n<hr />\n[star] <b>Boost</b> : placez 2 menaces sur chaque manigance annexe.",
+  // harry_osborn — Bullseye (Minion nemesis, x2)
+  'ho016': "Robuste. Vilenie.\n[star] L'attaque de Bullseye gagne <b><i>Perçant</i></b> et <b><i>Déferlement</i></b>.",
+  // harry_osborn — Refrain From Argument (SideScheme nemesis)
+  'ho017': "Entrave 1[per_hero].\n<i>(Icône de crise : la menace ne peut pas être retirée de la manigance principale.)</i>\n<hr />\n[star] <b>Boost</b> : révélez cette carte s'il n'y a aucune manigance annexe en jeu.",
 }

@@ -1235,4 +1235,17 @@ export const HEROS_INFO = {
         apparition: "Age of Ultron #10 (2013)",
     },
 
+    "ho001a": {
+        bio: "Sur Terre-6160, l'univers Ultimate refondé par le Créateur, Norman Osborn est mort en laissant à son fils un empire industriel et une armure verte. Harry endosse le Green Goblin non pas comme une malédiction, mais comme un choix : héros, justicier ou quelque chose d'autre, il l'ignore lui-même. Entre les conseils d'administration d'Oscorp, l'intelligence artificielle acerbe de son père et son alliance avec le Spider-Man de ce monde, il survole Manhattan sur son planeur en cherchant la réponse — au grand déplaisir du Caïd, qui considère la ville comme sa propriété.",
+        bioEn: "On Earth-6160, the Ultimate universe remade by the Maker, Norman Osborn died leaving his son an industrial empire and a green suit of armor. Harry takes up the Green Goblin mantle not as a curse but as a choice: hero, vigilante or something else, he does not know himself. Between Oscorp board meetings, his father's acid-tongued A.I. and his alliance with this world's Spider-Man, he glides over Manhattan looking for the answer — much to the displeasure of the Kingpin, who regards the city as his property.",
+        civil: "Harry Osborn",
+        base: "New York (Terre-6160)",
+        baseEn: "New York (Earth-6160)",
+        equipes: "Les Ultimates, alliance avec Spider-Man",
+        equipesEn: "The Ultimates, alliance with Spider-Man",
+        ennemis: "Le Caïd, Bullseye",
+        ennemisEn: "Kingpin, Bullseye",
+        apparition: "Ultimate Spider-Man #2 (2024)",
+    },
+
 };
