@@ -20,7 +20,11 @@ from . import *
 def GetAbilities() -> Sequence['Ability']:
 
     def hels_retribution(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
-        this = effect.this.CastTo(SideScheme)
+        # CORRECTIF 31/08/2026 : `SideScheme` n'existe pas dans l'espace
+        # cards.pack (NameError constate sur le meme appel dans ho014) — la
+        # classe moteur est `SchemeSide2`. Le When Revealed plantait donc a
+        # CHAQUE revelation en partie reelle, et aucun cas ne le couvrait.
+        this = effect.this.CastTo(SchemeSide2)
         Unused(this)
 
         joueur = message.GetToPlayer()

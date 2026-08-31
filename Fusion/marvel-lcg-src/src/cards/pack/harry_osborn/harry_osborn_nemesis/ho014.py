@@ -30,8 +30,9 @@ def GetAbilities() -> Sequence['Ability']:
 
     def ruler(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         # ⚠ la classe moteur est `SchemeSide2` (scheme_side.py), il n'existe
-        # AUCUN nom `SideScheme` dans l'espace `cards.pack` — an011 et 50074
-        # portent le meme appel latent jamais execute, a corriger un jour.
+        # AUCUN nom `SideScheme` dans l'espace `cards.pack`. an011 portait le
+        # meme appel (corrige + couvert le 31/08/2026) ; 50074 l'avait deja
+        # commente (« cannot add this »).
         this = effect.this.CastTo(SchemeSide2)
 
         deck = Worlds.GetEncounterDeck(effect)

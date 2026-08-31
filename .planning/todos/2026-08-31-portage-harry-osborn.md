@@ -40,9 +40,13 @@ quand un fichier moteur partagé a changé.
 ### Deux appels latents `CastTo(SideScheme)` repérés ailleurs
 
 `SideScheme` n'existe pas dans l'espace `cards.pack` (la classe moteur est
-`SchemeSide2`). Le portage l'a payé au premier test de ho014 (`NameError`) ;
-`an011` (angela) et `50074` (aos/black_widow) portent le MÊME appel, jamais
-exécuté par leurs cas. À corriger un jour.
+`SchemeSide2`). Le portage l'a payé au premier test de ho014 (`NameError`).
+Suites, le soir même : `an011` (angela) portait le MÊME appel VIVANT et
+aucun cas ne déclenchait sa révélation — le When Revealed plantait donc en
+partie réelle ; corrigé, cas ajouté (« la revelation defausse 1 carte par
+ASGARD en jeu »), rouge par substitution, et les 10 cas angela repassent.
+`50074` (aos/black_widow) était une fausse alerte : l'appel y est déjà
+commenté (« cannot add this »).
 
 ### L'icône du side scheme, identifiée par comparaison (leçon Lockjaw)
 

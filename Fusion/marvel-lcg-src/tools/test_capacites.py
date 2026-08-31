@@ -10881,6 +10881,25 @@ CAS = [
         "attendu": {"hors_jeu": ["an014"], "dans_deck_rencontre": ["an014"]},
     },
 
+    {
+        "nom": "an011 Hel's Retribution — la revelation defausse 1 carte par ASGARD en jeu",
+        "pourquoi": ("cas AJOUTE le 31/08/2026 en corrigeant le CastTo(SideScheme) "
+                     "(NameError, meme defaut que ho014) : le When Revealed plantait a "
+                     "chaque revelation et AUCUN cas ne le couvrait. Trois cartes "
+                     "ASGARD en jeu (Angela + an008 + an009), un deck de trois "
+                     "cartes : les trois doivent finir en defausse"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')",
+                          "Puzzle.PutIntoPlay('an008')",
+                          "Puzzle.PutIntoPlay('an009')",
+                          "Puzzle.CreatePlayerDeck('01088', '01089', '01090')"],
+        "declencher": ["Puzzle.Reveal('an011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["01088", "01089", "01090"],
+                    "en_jeu": ["an011"]},
+    },
+
     # ------------------------------------------------------------------------
     # Pack « harry_osborn » : Green Goblin (Harry Osborn), set 131, ho001a-ho017
     # ------------------------------------------------------------------------
