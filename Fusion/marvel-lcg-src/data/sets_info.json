@@ -1225,5 +1225,14 @@
         "encounters": [],
         "max_id": "ho017"
     },
-    "checksum": "126187ffb13de2baa60d97aa3a68ef3d0e03285e885363c627d2d35754a2479b"
+    "132. Custom (Agatha Harkness)": {
+        "name": "agatha_harkness",
+        "scenarios": [],
+        "heroes": [
+            "agatha_harkness"
+        ],
+        "encounters": [],
+        "max_id": "aa021"
+    },
+    "checksum": "79bef1d4f1fe13f5260ce90f8e86ee7ab80fb8e33e907324ea7287e784a89862"
 }

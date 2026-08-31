@@ -16,9 +16,9 @@
     "aa": {
       "pack": "agatha_harkness",
       "libelle": "132. Custom (Agatha Harkness)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Hero pack Mystic (Ripper3) : mecanique persona 'Ghost Agatha' remise en jeu apres elimination totale du joueur (WhenPlayerEliminated + PutIntoPlay, deja existants). Reutiliser she_hulk/dazzler pour PERSONA, mister_fantastic_nemesis pour la structure obligation+nemesis. Carte 'Agatha All Along' absente du zip source, a reclamer avant portage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 22,
+      "depuis": "2026-08-31",
+      "note": "Cree le 31/08/2026. Auteur Ripper3. Agatha Harkness, hero Mystic 'top du deck' : aa001a/b identite, aa002-aa012 signature (11 cartes distinctes, 15 exemplaires), aa013 Ghost Agatha (persona mise de cote, en jeu apres elimination), aa014 obligation, aa015-aa018 set nemesis Death (2e obligation Funeral DANS le set nemesis), aa019-aa021 cartes d'aspect bonus (Wiccan Justice, Pixie et Coven of Chaos Leadership). 'Agatha All Along' (aa008, manigance-joueur) retenue en version 13 menaces (zip) sur decision utilisateur du 31/08 - la version Discord a 10 existe. Trait COSMIC ENTITY ajoute a l'enum. Homonymes geres dans le collision_note du deck."
     },
     "ab": {
       "pack": "albert",

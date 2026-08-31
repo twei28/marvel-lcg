@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "568373099a76c8bcb68bd73bacb9ad18fc22f28730a7fad7396d83ec1731eb23",
+    "checksum": "a8be6adbeb7d430db2537e95837ac14425cf39150470bae3ea26de910482adfb",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -83472,6 +83472,390 @@
             "traits": [],
             "text": "Hinder 1[per_hero].\n<i>(Crisis Icon: Threat cannot be removed from the main scheme.)</i>\n<hr />\n[star] <b>Boost</b>: Reveal this card if there is no side scheme in play.",
             "set_name": "Harry Osborn Nemesis",
+            "custom": "Arnaud"
+        }
+    ],
+    "agatha_harkness": [
+        {
+            "card_id": "aa001a",
+            "type": "Hero",
+            "name": "* Agatha Harkness",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "MYSTIC"
+            ],
+            "text": "<i>Power Absorption</i> \u2014 <b>Response</b>: After Agatha Harkness takes any amount of damage from an attack, discard an equal number of cards from the top of your deck. Add 1 [[SPELL]] card discarded this way to your hand. <i>(Limit once per phase.)</i>",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa001b",
+            "type": "AlterEgo",
+            "name": "* Agatha Harkness",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "MYSTIC"
+            ],
+            "text": "<b>Setup</b>: Set aside Ghost Agatha. Find the Agatha All Along player side scheme and add it to your hand.\n<i>Ghost Form</i> \u2014 <b>Forced Response</b>: After you are eliminated from the game, find the set-aside Ghost Agatha support and put it into play.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa002",
+            "type": "Ally",
+            "name": "* Scarlet Witch",
+            "subtitle": "Wanda Maximoff",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER",
+                "MYSTIC"
+            ],
+            "text": "You may play the event attached to Scarlet Witch as if it were in your hand, reducing its cost by 1.\n<b>Response</b>: After Scarlet Witch enters play, choose a [[SPELL]] event in your discard pile and attach it to her facedown.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa003",
+            "type": "Support",
+            "name": "* Ebony",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CREATURE"
+            ],
+            "text": "While in alter-ego form, Agatha Harkness gets +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Ebony \u2192 look at the top 2 cards of your deck. Add 1 of those cards to your hand.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa004",
+            "type": "Event",
+            "name": "Wake Thy Power",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL"
+            ],
+            "text": "<b>Hero Action</b>: Discard the top 2 cards of your deck. For each resource icon discarded this way, do the following:\n\u2022 [energy] \u2013 Remove 2 threat from a scheme.\n\u2022 [mental] \u2013 Draw 1 card.\n\u2022 [physical] \u2013 Heal 2 damage from your hero.\n\u2022 [wild] \u2013 Choose 1 of the above.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa005",
+            "type": "Event",
+            "name": "Witchcraft",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. Discard the top 3 cards of the encounter deck. For each boost icon discarded this way, deal 1 additional damage to that enemy. For each card discarded this way that has boost icons equal to 0, stun or confuse an enemy.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa006",
+            "type": "Event",
+            "name": "Soul Harvest",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. Heal 2 damage from Agatha Harkness. Discard the top card of your deck. If that card's printed resources has:\n\u2022 [wild] or [physical] \u2014 Stun that enemy.\n\u2022 [mental] or [energy] \u2014 Confuse that enemy.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa007",
+            "type": "Resource",
+            "name": "Occult Knowledge",
+            "subtitle": "",
+            "desc": {
+                "RES": "GB",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "<b>Response</b>: After this card is discarded from the top of your deck, add it to your hand.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa008",
+            "type": "PlayerSideScheme",
+            "name": "* Agatha All Along",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "StartingThreat": "13",
+                "Victory": "0",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "Victory 0.\n<b>Response</b>: After Agatha Harkness takes any amount of damage from an attack, remove an equal amount of threat from here.\nWhile Agatha All Along is in the victory display, Agatha Harkness gets +1 to each of her basic powers and +3 hit points.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa009",
+            "type": "Support",
+            "name": "* The Witches' Road",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "text": "<b>Response</b>: After a [[MYSTIC]] alter-ego changes into hero form, exhaust The Witches' Road \u2192 reduce the resource cost of the next [[SPELL]] card that hero plays this phase by 1. Shuffle 2 cards from that hero's discard pile into their deck.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa010",
+            "type": "Upgrade",
+            "name": "Mirror Image",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ILLUSION",
+                "SPELL"
+            ],
+            "text": "While in hero form, Agatha Harkness gets +1 THW.\n<b>Interrupt</b>: When you would take damage that would defeat you, discard this card instead.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa011",
+            "type": "Upgrade",
+            "name": "Runic Magician",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "text": "<b>Resource</b>: Exhaust Runic Magician \u2192 generate a [wild] resource for a [[SPELL]] or [[MYSTIC]] card.\n<b>Hero Interrupt</b>: When you resolve Agatha Harkness's \"Power Absorption\" ability, ignore the [[SPELL]] trait requirement.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa012",
+            "type": "Upgrade",
+            "name": "Regained Youth",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "text": "You get +4 hit points.\n<b>Response</b>: After your deck runs out of cards, heal 2 damage from your identity.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa013",
+            "type": "Support",
+            "name": "* Ghost Agatha",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "text": "Permanent. The first player controls Ghost Agatha.\n<b>Action</b>: Exhaust Ghost Agatha \u2192 look at the top 3 cards of your deck. Draw 1 of them, discard 1 of them, and place 1 of them back on top of your deck.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa014",
+            "type": "Obligation",
+            "name": "Chaotic Forces",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Agatha Harkness"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Agatha Harkness player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Search the victory display for Agatha All Along and put it into play \u2192 remove Chaotic Forces from the game.\n\u2022 Discard this card and the top card of the encounter deck. For each boost icon discarded this way, take 1 indirect damage.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa015",
+            "type": "SideScheme",
+            "name": "Burned at the Stake",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "6",
+                "Boost": "1",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "text": "Death gains Stalwart.\n<i>(Hazard Icon: Deal +1 encounter card during the villain phase.)</i>",
+            "set_name": "Agatha Harkness Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa016",
+            "type": "Minion",
+            "name": "* Death",
+            "subtitle": "",
+            "desc": {
+                "HP": "INF",
+                "SCH": "2",
+                "ATK": "2",
+                "Boost": "2",
+                "Vulnerable": "1",
+                "Nemesis": "Agatha Harkness"
+            },
+            "traits": [
+                "COSMIC ENTITY",
+                "ELITE"
+            ],
+            "text": "[star] Death cannot be defeated.\nVulnerable. <i>(Discard this character if it is stunned or confused.)</i>\n<i>(Agatha Harkness's nemesis minion.)</i>",
+            "set_name": "Agatha Harkness Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa017",
+            "type": "Obligation",
+            "name": "Funeral",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Agatha Harkness"
+            },
+            "traits": [],
+            "text": "Your hero gets -1 THW.\n<b>Alter-Ego Action</b>: Spend a [energy] resource \u2192 discard this card.",
+            "set_name": "Agatha Harkness Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa018",
+            "type": "Attachment",
+            "name": "Death's Embrace",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [
+                "SPELL"
+            ],
+            "text": "Attach to your identity.\nEach card you play costs 1 additional resource.\n<b>Hero Action</b>: Exhaust your hero or spend [mental][energy][physical] \u2192 discard this card.\n<hr />\n[star] <b>Boost</b>: If this activation is a scheme, attach this card to the first player.",
+            "set_name": "Agatha Harkness Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa019",
+            "type": "Ally",
+            "name": "* Wiccan",
+            "subtitle": "William Kaplan",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "B",
+                "Class": "Justice"
+            },
+            "traits": [
+                "AVENGER",
+                "MYSTIC"
+            ],
+            "text": "<b>Response</b>: After Wiccan thwarts, discard the top card of the encounter deck. For each boost icon discarded this way, deal 1 damage to an enemy.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa020",
+            "type": "Ally",
+            "name": "* Pixie",
+            "subtitle": "Megan Gwynn",
+            "desc": {
+                "Cost": "2",
+                "HP": "2",
+                "ATK": "2**",
+                "THW": "1*",
+                "RES": "Y",
+                "Class": "Leadership"
+            },
+            "traits": [
+                "AERIAL",
+                "MYSTIC",
+                "X-MEN"
+            ],
+            "text": "<b>Response</b>: After you play Pixie from your hand, add an [[X-MEN]] ally from your discard pile to your hand.",
+            "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "aa021",
+            "type": "Event",
+            "name": "Coven of Chaos",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Leadership"
+            },
+            "traits": [
+                "SPELL"
+            ],
+            "text": "Play only if your identity has the [[MYSTIC]] trait.\n<b>Alter-Ego Action</b>: Put a [[MYSTIC]] ally in any player's discard pile into play under its owner's control.",
+            "set_name": "Agatha Harkness",
             "custom": "Arnaud"
         }
     ]

@@ -76,6 +76,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EXTREMIS", "INDIVIDUAL",
         # CORRECTIF : trait du pack custom harry_osborn (Dipsome).
         "EARTH-6160",
+        # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
+        "COSMIC ENTITY",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
