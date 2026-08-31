@@ -40,6 +40,9 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] vulnerable.md
 - [x] teamup.md
 - [x] alliance.md
+- [x] temporary.md
+- [x] piercing.md
+- [x] overkill.md
 
 ## Maison
 
