@@ -3,6 +3,14 @@
 Étapes propres au héros. Chaque carte du pack passe en plus par
 `PROCESSUS-CARTE.md` en entier : ce fichier ne duplique pas ses 8 étapes.
 
+> **Aller plus vite SANS rien sauter** : `docs/reference/RECETTES-MOTEUR.md`
+> donne, mécanique par mécanique, la fabrique, la carte modèle et le piège
+> déjà payé (son §9 liste le chemin outillé complet avec les durées :
+> `[filtre]` des cas, `substituer_pack.py`, `DECK_NOM`, règle de portée).
+> Toutes les gates restent dues — c'est le chemin vers chacune qui est
+> raccourci. Référence : harry_osborn (18 cartes, 26 cas, 17 substitutions)
+> a tenu en une demi-journée le 31/08/2026 avec ces outils.
+
 ## Étape 1 : Cartes dans `data/cards.json`
 
 Pack du produit, `set_name` = nom du héros :

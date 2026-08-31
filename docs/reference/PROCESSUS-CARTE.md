@@ -25,6 +25,12 @@ comparable (même déclencheur, même genre d'effet), et pourquoi. Plus de
 4 200 cartes sont déjà scriptées dans le dépôt : s'en inspirer plutôt que
 réinventer. Ne pas écrire une ligne de script avant d'avoir rempli ce champ.
 
+**Commencer par `docs/reference/RECETTES-MOTEUR.md`** : l'index
+« mécanique imprimée → fabrique + carte modèle + piège » capitalise ce que
+chaque portage a payé pour l'apprendre. La recette donne le POINT DE DÉPART ;
+elle ne dispense ni de lire la carte modèle, ni du reste de l'étape. Une
+mécanique absente de l'index se cherche au grep — puis s'y AJOUTE.
+
 ```
 Capacité <nom> : carte de référence <card_id> (<nom>) : comparable parce que ...
 ```
@@ -145,6 +151,10 @@ Revealed... séparé sur le texte imprimé) :
 2. Le cas doit être **sujet** : le `card_id` apparaît dans le NOM du cas.
 3. **Preuve par substitution, obligatoire** : retirer/commenter le module,
    relancer le cas, constater ROUGE. Remettre le module, constater VERT.
+   En une commande pour tout le pack : `tools/substituer_pack.py <game_dir>
+   <port> <préfixe>` (et les cas seuls se relancent vite avec le `[filtre]`
+   de `test_capacites.py`). Un contre-cas d'ABSENCE d'effet reste vert sous
+   substitution : l'assumer dans le journal, pas le maquiller.
 4. Clés déterministes utiles : `main_exclusive`, `cibles`, `surpayer`,
    `payer_avec`, `accepter_choix`, `heros2`.
 5. Pour une capacité de tour de jeu : `Puzzle.Attack`, `Puzzle.Scheme`,
