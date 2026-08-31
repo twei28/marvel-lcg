@@ -139,7 +139,16 @@ class CardFactory:
                                                     # raison (formes GIANT / TINY). Sans cette
                                                     # declaration, le deck venompool ne monte pas,
                                                     # et test_cards ne le voit pas.
-                                                    "vp003"]:  # Talk About Armed Assault (venompool)
+                                                    "vp003",   # Talk About Armed Assault (venompool)
+                                                    # CORRECTIF (31/08/2026) : Heven's Fury, pack
+                                                    # custom angela. Meme motif que vp003 : « Deal 7
+                                                    # damage to an enemy. You MAY exhaust a WEAPON.
+                                                    # If you do, divide the damage among enemies
+                                                    # INSTEAD. » `range` etant fige a la
+                                                    # construction, les deux portees demandent deux
+                                                    # capacites, et le « you may » devient le choix
+                                                    # entre elles.
+                                                    "an003"]:  # Heven's Fury (angela)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

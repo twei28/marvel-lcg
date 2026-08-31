@@ -9,6 +9,13 @@ class PlayerStat:
         self.this_phase_played_cards: List['CardFace'] = []
         self.this_phase_revealed_cards: List['CardFace'] = []
         self.kill_counter: List['Unit2'] = []
+        # CORRECTIF (pack custom angela, 31/08/2026) : `kill_counter` est remis
+        # a zero a chaque PHASE (OnBeginPhase). Les cartes d'Angela comptent
+        # « each minion you defeated this ROUND » (an004 Murderous Glare,
+        # an007 Asgard's Assassin), ce qui inclut les sbires vaincus pendant la
+        # phase du vilain. On tient donc un second compteur, vide seulement au
+        # changement de round.
+        self.round_kill_counter: List['Unit2'] = []
 
     def ResetPlayedRevealedCards(self):
         self.this_turn_played_cards.clear()
@@ -19,8 +26,12 @@ class PlayerStat:
     def ResetKillCounter(self):
         self.kill_counter.clear()
 
+    def ResetRoundKillCounter(self):
+        self.round_kill_counter.clear()
+
     def UpdateKillCounter(self, unit: 'Unit2'):
         self.kill_counter.append(unit)
+        self.round_kill_counter.append(unit)
 
     def RecordPlayedFace(self, face: 'CardFace'):
         self.this_turn_played_cards.append(face)
@@ -71,7 +82,9 @@ class PlayerStat:
 
     def OnBeginRound(self) -> None:
         self.this_round_played_cards.clear()
+        self.ResetRoundKillCounter()
 
     def OnEndRound(self) -> None:
         self.this_round_played_cards.clear()
+        self.ResetRoundKillCounter()
 
