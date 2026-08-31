@@ -1,0 +1,67 @@
+{
+    "version": "0.5.8",
+    "name": "Harry Osborn",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Dipsome) : le zip ne contient que les 2 faces heros, les 15 cartes signature, l'obligation et le set nemesis. Aspect AGRESSIVITE choisi par l'utilisateur le 31/08/2026. Raison : le kit fabrique des statuts (ho002 Spider-Man stun x2, ho003 Repulsor Blast stun, ho004 Pumpkin Bomb confuse, ho010 Powered Gauntlets confuse) et la Response d'identite (ho001a) les convertit en 2 degats + 2 menaces retirees ; l'Agressivite nourrit ce moteur avec Press the Advantage x3 (pioche sur ennemi stun/confus) et comble l'ATK 1 (Skilled Strike, Combat Training, avec le +1 du Goblin Glider). Norman Osborn (ho006) donne +1 degat aux evenements ATTACK, d'ou la densite d'events rouges (Clobber, Relentless Assault, Into the Fray, Uppercut ecarte pour la courbe). La regle de deckbuilding de ho001b (3 upgrades TECH d'autres aspects, plein exemplaires) est UTILISEE : Sonic Rifle x2 (Justice, confuse), Stun Gun x2 (Protection, stun) et Energy Barrier x2 (Protection) — les deux premiers fabriquent les statuts que l'identite consomme, tous alimentent le Goblin Helmet (ho009) en ressources imprimees. Deft Focus paie les 4 evenements SUPERPOWER du kit. Courbe ~1,7.",
+        "collision_note": "Homonymes verifies avant montage, tous dans d'AUTRES sets, aucun partage d'identifiant : « Green Goblin » (vilains officiels 02001b-02003b et 02014-02016, sbire wd033), « Risky Business » (ho013 porte le meme nom que le SET vilain officiel de Norman Osborn ET que l'obligation du pack officiel gob - pure coincidence d'auteur), « Repulsor Blast » (01031/56070, Iron Man, textes differents), « Powered Gauntlets » (01038 Iron Man, texte PROCHE mais different : degats bonus au lieu de confusion payante ; 56065 attachement de scenario), « Goblin Glider » (02019, attachement du vilain officiel), « Pumpkin Bombs » au pluriel (02021), « Kingpin » (wd091-wd093, 60061), « Bullseye » (56088, 60033), « Spider-Man » (nombreux allies homonymes officiels). L'allie ho002 est exclu d'office des decks des heros Spider-Man par la regle du nom."
+    },
+    "hero": [
+        "ho001a,ho001b"
+    ],
+    "hero_deck": [
+        "ho002",
+        "ho003",
+        "ho003",
+        "ho004",
+        "ho004",
+        "ho005",
+        "ho006",
+        "ho007",
+        "ho008",
+        "ho009",
+        "ho010",
+        "ho010",
+        "ho011",
+        "ho012",
+        "ho012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ho013"
+    ],
+    "nemesis_set": [
+        "ho014",
+        "ho015",
+        "ho016",
+        "ho016",
+        "ho017"
+    ],
+    "player_deck": [
+        "04043",
+        "04043",
+        "04043",
+        "18012",
+        "18012",
+        "01053",
+        "01053",
+        "13013",
+        "09037",
+        "09037",
+        "01057",
+        "10018",
+        "16043",
+        "20015",
+        "20015",
+        "52020",
+        "52020",
+        "05017",
+        "05017",
+        "01088",
+        "01089",
+        "01090",
+        "01055",
+        "01055",
+        "16024"
+    ]
+}

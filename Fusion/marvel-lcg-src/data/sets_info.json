@@ -1216,5 +1216,14 @@
         "encounters": [],
         "max_id": "an015"
     },
-    "checksum": "c08c88954bb3885188ff9a788e6c7471284c2690bca51f852525867d00c06926"
+    "131. Custom (Harry Osborn / Green Goblin)": {
+        "name": "harry_osborn",
+        "scenarios": [],
+        "heroes": [
+            "harry_osborn"
+        ],
+        "encounters": [],
+        "max_id": "ho017"
+    },
+    "checksum": "126187ffb13de2baa60d97aa3a68ef3d0e03285e885363c627d2d35754a2479b"
 }

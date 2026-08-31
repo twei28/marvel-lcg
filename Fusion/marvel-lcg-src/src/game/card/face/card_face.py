@@ -74,6 +74,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "ICE", "STONE", "METAL", "WOOD",
         # CORRECTIF : traits du pack custom superior_iron_man (Merlin).
         "EXTREMIS", "INDIVIDUAL",
+        # CORRECTIF : trait du pack custom harry_osborn (Dipsome).
+        "EARTH-6160",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",

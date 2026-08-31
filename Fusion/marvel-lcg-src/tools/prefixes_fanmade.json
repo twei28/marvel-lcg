@@ -50,7 +50,7 @@
       "libelle": "133. Custom (Angela)",
       "cartes": 16,
       "depuis": "2026-08-31",
-      "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent « this ROUND ». an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie « Angela » 18011 (d'Agressivite, donc exclu) et le vilain officiel « Hela » 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent \u00ab this ROUND \u00bb. an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie \u00ab Angela \u00bb 18011 (d'Agressivite, donc exclu) et le vilain officiel \u00ab Hela \u00bb 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "av": {
       "pack": "agent_anti_venom",
@@ -128,9 +128,9 @@
     "ho": {
       "pack": "harry_osborn",
       "libelle": "131. Custom (Harry Osborn / Green Goblin)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Green Goblin Ultimate (Earth-6160) devient un HEROS jouable (Harry Osborn), hero+nemesis, trait TECH + Persona (Gwen Stacy Osborn). Zero primitive nouvelle. Attention : ne pas confondre avec le pack VILAIN officiel existant 'gob' (Green Goblin classique), totalement distinct malgre un nom de carte Obligation identique ('Risky Business') dans les deux. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 18,
+      "depuis": "2026-08-31",
+      "note": "Cree le 31/08/2026. Auteur Dipsome. Harry Osborn (Earth-6160) en HEROS Green Goblin : ho001a/b identite, ho002-ho012 signature (11 cartes distinctes, 15 exemplaires), ho013 obligation, ho014-ho017 set nemesis (Kingpin/Bullseye). Trait EARTH-6160 ajoute a l'enum TRAITS. Ne pas confondre avec le pack VILAIN officiel 'gob' (Green Goblin classique), totalement distinct malgre un nom d'Obligation identique ('Risky Business') dans les deux."
     },
     "ht": {
       "pack": "human_torch",

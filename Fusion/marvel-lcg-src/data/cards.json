@@ -77635,7 +77635,7 @@
                 "YOUNG AVENGER"
             ],
             "set_name": "Ms. America",
-            "text": "<i>Star-Gaze</i> — <b>Response</b>: After you play a [[SUPERPOWER]] card, if that card's printed resource was:\n• [physical] – Deal 1 damage to an enemy.\n• [energy] – Heal 1 damage from Ms. America.\n• [mental] – Remove 1 threat from a scheme.\n• [wild] – Ready Ms. America.",
+            "text": "<i>Star-Gaze</i> \u2014 <b>Response</b>: After you play a [[SUPERPOWER]] card, if that card's printed resource was:\n\u2022 [physical] \u2013 Deal 1 damage to an enemy.\n\u2022 [energy] \u2013 Heal 1 damage from Ms. America.\n\u2022 [mental] \u2013 Remove 1 threat from a scheme.\n\u2022 [wild] \u2013 Ready Ms. America.",
             "custom": "Arnaud"
         },
         {
@@ -77652,7 +77652,7 @@
                 "STARLING"
             ],
             "set_name": "Ms. America",
-            "text": "You may include upgrade cards that modify your basic powers from any aspect in your deck.\n<i>Thinking With Portals</i> — <b>Action</b>: Discard a card from your hand → search your discard pile for a card and shuffle it into your deck. <i>(Limit once per round.)</i>",
+            "text": "You may include upgrade cards that modify your basic powers from any aspect in your deck.\n<i>Thinking With Portals</i> \u2014 <b>Action</b>: Discard a card from your hand \u2192 search your discard pile for a card and shuffle it into your deck. <i>(Limit once per round.)</i>",
             "custom": "Arnaud"
         },
         {
@@ -77711,7 +77711,7 @@
                 "PERSONA"
             ],
             "set_name": "Ms. America",
-            "text": "Events attached to Santana Family may be played as if they were in your hand.\n<b>Alter-Ego Action</b>: Exhaust Santana Family → search your discard pile for an event and attach it to this card facedown <i>(to a maximum of 2)</i>.",
+            "text": "Events attached to Santana Family may be played as if they were in your hand.\n<b>Alter-Ego Action</b>: Exhaust Santana Family \u2192 search your discard pile for an event and attach it to this card facedown <i>(to a maximum of 2)</i>.",
             "custom": "Arnaud"
         },
         {
@@ -77728,7 +77728,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Resource</b>: Exhaust Star Light → generate a [wild] resource. You may change the printed resource of the played card to a [wild] resource.",
+            "text": "<b>Hero Resource</b>: Exhaust Star Light \u2192 generate a [wild] resource. You may change the printed resource of the played card to a [wild] resource.",
             "custom": "Arnaud"
         },
         {
@@ -77745,7 +77745,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "Ms. America gets +1 THW and gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: When you play an event card, exhaust Star Flight → that event gains the [[SUPERPOWER]] trait.",
+            "text": "Ms. America gets +1 THW and gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: When you play an event card, exhaust Star Flight \u2192 that event gains the [[SUPERPOWER]] trait.",
             "custom": "Arnaud"
         },
         {
@@ -77762,7 +77762,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Response</b>: After you play a [[SUPERPOWER]] card, place 1 star counter on this card.\n<b>Hero Interrupt</b>: When an encounter card is revealed, exhaust this card and remove 4 star counters from it → cancel all of its effects and discard it.",
+            "text": "<b>Hero Response</b>: After you play a [[SUPERPOWER]] card, place 1 star counter on this card.\n<b>Hero Interrupt</b>: When an encounter card is revealed, exhaust this card and remove 4 star counters from it \u2192 cancel all of its effects and discard it.",
             "custom": "Arnaud"
         },
         {
@@ -77794,7 +77794,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity \u2192 double all modifiers applied to the chosen power on its next use this turn.",
             "custom": "Arnaud"
         },
         {
@@ -77812,7 +77812,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+            "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity \u2192 double all modifiers applied to the chosen power on its next use this turn.",
             "custom": "Arnaud"
         },
         {
@@ -77865,7 +77865,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted → remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
+            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted \u2192 remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
             "custom": "Arnaud"
         },
         {
@@ -77882,7 +77882,7 @@
                 "SUPERPOWER"
             ],
             "set_name": "Ms. America",
-            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted → remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
+            "text": "<b>Hero Action</b>: Search any player's discard pile for an ally and put it into any player's play area exhausted \u2192 remove threat from a scheme equal to that ally's THW and deal damage to an enemy equal to that ally's ATK.",
             "custom": "Arnaud"
         },
         {
@@ -77934,7 +77934,7 @@
             },
             "traits": [],
             "set_name": "Ms. America",
-            "text": "<b><i>Give to the America Chavez player.</i></b>\nYour identity gets -1 to each of its basic powers.\n<b>Action</b>: Take 2 damage → discard this card.\n<b>Action</b>: Take 4 damage → remove this card from the game.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "text": "<b><i>Give to the America Chavez player.</i></b>\nYour identity gets -1 to each of its basic powers.\n<b>Action</b>: Take 2 damage \u2192 discard this card.\n<b>Action</b>: Take 4 damage \u2192 remove this card from the game.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
             "custom": "Arnaud"
         },
         {
@@ -78058,7 +78058,7 @@
                 "YOUNG AVENGER"
             ],
             "set_name": "Ms. America",
-            "text": "Play only if your identity has the [[YOUNG AVENGER]] trait.\n<b>Resource</b>: Exhaust Noh-Varr's Ship → generate a [wild] resource.",
+            "text": "Play only if your identity has the [[YOUNG AVENGER]] trait.\n<b>Resource</b>: Exhaust Noh-Varr's Ship \u2192 generate a [wild] resource.",
             "custom": "Arnaud"
         },
         {
@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "5acc533d357c59701b10d020a116585e03d7997672f6f2348a978ff46321193f",
+    "checksum": "568373099a76c8bcb68bd73bacb9ad18fc22f28730a7fad7396d83ec1731eb23",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -82578,7 +82578,7 @@
                 "SYMBIOTE",
                 "WEB-WARRIOR"
             ],
-            "text": "<i>Fear Factor</i> — <b>Response</b> <i>(thwart)</i>: After Venompool defeats an enemy, remove 1 threat from a scheme. <i>(Limit 1 [per_hero] per phase.)</i>",
+            "text": "<i>Fear Factor</i> \u2014 <b>Response</b> <i>(thwart)</i>: After Venompool defeats an enemy, remove 1 threat from a scheme. <i>(Limit 1 [per_hero] per phase.)</i>",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82595,7 +82595,7 @@
             "traits": [
                 "MUTANT"
             ],
-            "text": "[star] Wade Wilson can only use his REC when he has 3 or fewer hit points.\n<i>Unexpected Bond</i> — <b>Action</b>: Exhaust Wade Wilson → search your deck and discard pile for the Klyntar Suit upgrade and add it to your hand. Shuffle your deck.",
+            "text": "[star] Wade Wilson can only use his REC when he has 3 or fewer hit points.\n<i>Unexpected Bond</i> \u2014 <b>Action</b>: Exhaust Wade Wilson \u2192 search your deck and discard pile for the Klyntar Suit upgrade and add it to your hand. Shuffle your deck.",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82687,7 +82687,7 @@
             "traits": [
                 "ATTACK"
             ],
-            "text": "You may trigger the \"<b>Hero Action</b>\" below one additional time for each minion engaged with you. <i>(Each enemy may only be targeted once.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Take 1 damage → deal 2 damage to an enemy.",
+            "text": "You may trigger the \"<b>Hero Action</b>\" below one additional time for each minion engaged with you. <i>(Each enemy may only be targeted once.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Take 1 damage \u2192 deal 2 damage to an enemy.",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82722,7 +82722,7 @@
                 "GENIUS",
                 "TACTIC"
             ],
-            "text": "<b>Hero Action</b>: Take 2 damage and exhaust Foresight → ready Venompool.",
+            "text": "<b>Hero Action</b>: Take 2 damage and exhaust Foresight \u2192 ready Venompool.",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82739,7 +82739,7 @@
             "traits": [
                 "SYMBIOTE"
             ],
-            "text": "You get +3 hit points.\n<b>Hero Response</b> <i>(attack)</i>: After you take damage from an enemy attack, exhaust Klyntar Suit → drain 1 from the attacking enemy. <i>(See insert.)</i>",
+            "text": "You get +3 hit points.\n<b>Hero Response</b> <i>(attack)</i>: After you take damage from an enemy attack, exhaust Klyntar Suit \u2192 drain 1 from the attacking enemy. <i>(See insert.)</i>",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82757,7 +82757,7 @@
                 "SUPERPOWER",
                 "SYMBIOTE"
             ],
-            "text": "Discard this card from play if you do not control Klyntar Suit.\n<b>Hero Interrupt</b>: When Venompool makes a basic attack against an enemy, exhaust True Form → that attack gains overkill. Drain 1 from that enemy.",
+            "text": "Discard this card from play if you do not control Klyntar Suit.\n<b>Hero Interrupt</b>: When Venompool makes a basic attack against an enemy, exhaust True Form \u2192 that attack gains overkill. Drain 1 from that enemy.",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82771,7 +82771,7 @@
                 "GiveTo": "Wade Wilson"
             },
             "traits": [],
-            "text": "<b><i>Give to the Wade Wilson player.</i></b>\nYou must flip to alter-ego form. Choose:\n• Exhaust Wade Wilson → remove One Too Many Voices from the game.\n• Discard Klyntar Suit. If Klyntar Suit was not discarded this way, this card gains surge. Discard this obligation.",
+            "text": "<b><i>Give to the Wade Wilson player.</i></b>\nYou must flip to alter-ego form. Choose:\n\u2022 Exhaust Wade Wilson \u2192 remove One Too Many Voices from the game.\n\u2022 Discard Klyntar Suit. If Klyntar Suit was not discarded this way, this card gains surge. Discard this obligation.",
             "set_name": "Venompool",
             "custom": "Arnaud"
         },
@@ -82882,7 +82882,7 @@
                 "ASGARD",
                 "GUARDIAN"
             ],
-            "text": "<i>Frenzy</i> — <b>Response</b>: After you defeat a minion, ready Angela. <i>(Limit once per round.)</i>",
+            "text": "<i>Frenzy</i> \u2014 <b>Response</b>: After you defeat a minion, ready Angela. <i>(Limit once per round.)</i>",
             "set_name": "Angela",
             "custom": "Arnaud"
         },
@@ -82899,7 +82899,7 @@
             "traits": [
                 "ASGARD"
             ],
-            "text": "<b>Setup</b>: Search your deck and discard pile for a [[WEAPON]] card and add it to your hand. Shuffle your deck.\n[star] <i>Of Heven and Hel</i> — Aldrif Odinsdottir gets +1 REC for each [[WEAPON]] you control.",
+            "text": "<b>Setup</b>: Search your deck and discard pile for a [[WEAPON]] card and add it to your hand. Shuffle your deck.\n[star] <i>Of Heven and Hel</i> \u2014 Aldrif Odinsdottir gets +1 REC for each [[WEAPON]] you control.",
             "set_name": "Angela",
             "custom": "Arnaud"
         },
@@ -82987,7 +82987,7 @@
             "traits": [
                 "WEAPON"
             ],
-            "text": "Angela gains steady.\n<b>Hero Interrupt</b>: When an enemy activates, discard this card → that enemy gets -X ATK and -X SCH for that activation, where X is Angela's ATK.",
+            "text": "Angela gains steady.\n<b>Hero Interrupt</b>: When an enemy activates, discard this card \u2192 that enemy gets -X ATK and -X SCH for that activation, where X is Angela's ATK.",
             "set_name": "Angela",
             "custom": "Arnaud"
         },
@@ -83005,7 +83005,7 @@
                 "ASGARD",
                 "TITLE"
             ],
-            "text": "<b>Hero Resource</b>: Exhaust Asgard's Assassin → generate a [physical] resource <i>(if you defeated a minion this round, generate [wild] instead)</i>.",
+            "text": "<b>Hero Resource</b>: Exhaust Asgard's Assassin \u2192 generate a [physical] resource <i>(if you defeated a minion this round, generate [wild] instead)</i>.",
             "set_name": "Angela",
             "custom": "Arnaud"
         },
@@ -83056,7 +83056,7 @@
                 "GiveTo": "Aldrif Odinsdottir"
             },
             "traits": [],
-            "text": "<b><i>Give to the Aldrif Odinsdottir player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Aldrif Odinsdottir → remove Banished from Asgard from the game.\n• Discard 1 [[ASGARD]] card you control. You are stunned. If no card was discarded this way, this card gains surge. Discard this obligation.",
+            "text": "<b><i>Give to the Aldrif Odinsdottir player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Aldrif Odinsdottir \u2192 remove Banished from Asgard from the game.\n\u2022 Discard 1 [[ASGARD]] card you control. You are stunned. If no card was discarded this way, this card gains surge. Discard this obligation.",
             "set_name": "Angela",
             "custom": "Arnaud"
         },
@@ -83147,6 +83147,331 @@
             "traits": [],
             "text": "<b>When Revealed</b>: Search the encounter discard pile for the bottom most minion and reveal it.\n<hr />\n[star] <b>Boost</b>: If you are engaged with a minion, this attack gains 1 additional boost icon ([boost]).",
             "set_name": "Angela Nemesis",
+            "custom": "Arnaud"
+        }
+    ],
+    "harry_osborn": [
+        {
+            "card_id": "ho001a",
+            "type": "Hero",
+            "name": "* Green Goblin",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "EARTH-6160",
+                "GOBLIN"
+            ],
+            "text": "<b>Response</b>: After you attack an enemy, remove 1 status card from that enemy \u2192 deal 2 damage to an enemy and remove 2 threat from a scheme.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho001b",
+            "type": "AlterEgo",
+            "name": "* Harry Osborn",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "EARTH-6160",
+                "BUSINESSMAN"
+            ],
+            "text": "You may include the maximum number of copies of 3 [[TECH]] upgrades in your deck from aspects other than your chosen aspect.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho002",
+            "type": "Ally",
+            "name": "* Spider-Man",
+            "subtitle": "Peter Parker",
+            "desc": {
+                "Cost": "4",
+                "HP": "3",
+                "ATK": "2*",
+                "THW": "2*",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "EARTH-6160",
+                "WEB-WARRIOR"
+            ],
+            "text": "<b>Response</b>: After Spider-Man enters play, place a total of 2 stun status cards on up to 2 enemies.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho003",
+            "type": "Event",
+            "name": "Repulsor Blast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Stun an enemy. Deal 4 damage to that enemy.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho004",
+            "type": "Event",
+            "name": "Pumpkin Bomb",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Choose a player. Deal X damage to the villain and each minion engaged with that player. For each enemy defeated this way, confuse an enemy.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho005",
+            "type": "Support",
+            "name": "* Gwen Stacy Osborn",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "text": "Harry Osborn gets +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Harry Osborn and Gwen Stacy Osborn \u2192 confuse an enemy.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho006",
+            "type": "Support",
+            "name": "* Norman Osborn",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA",
+                "TECH"
+            ],
+            "text": "<b>Hero Interrupt</b>: When you play an [[ATTACK]] event, exhaust Norman Osborn \u2192 that event deals 1 additional damage.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho007",
+            "type": "Support",
+            "name": "* Otto Octavius",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "text": "<b>Alter-Ego Action</b>: Exhaust Otto Octavius \u2192 choose a player. That player searches their deck for a [[TECH]] upgrade and add it to their hand. (Shuffle.)",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho008",
+            "type": "Upgrade",
+            "name": "* Goblin Armor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "text": "You get +3 hit points.\n<b>Hero Action</b> <i>(thwart)</i>: Exhaust Goblin Armor \u2192 remove 1 threat from a scheme (2 threat instead if you have the [[AERIAL]] trait).",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho009",
+            "type": "Upgrade",
+            "name": "* Goblin Helmet",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Goblin Helmet \u2192 ready a [[TECH]] upgrade you control.\n<b>Hero Resource</b>: Exhaust Goblin Helmet and 1 [[TECH]] upgrade you control \u2192 generate the printed resource on that upgrade.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho010",
+            "type": "Upgrade",
+            "name": "Powered Gauntlets",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Powered Gauntlets \u2192 deal 1 damage to an enemy. If you have the [[AERIAL]] trait, you may spend a resource of any type to confuse that enemy.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho011",
+            "type": "Upgrade",
+            "name": "* Goblin Glider",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "EARTH-6160",
+                "TECH",
+                "VEHICLE"
+            ],
+            "text": "Green Goblin gets +1 ATK and gains the [[AERIAL]] trait.\n<b>Hero Action</b>: Exhaust Goblin Glider \u2192 ready Green Goblin.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho012",
+            "type": "Upgrade",
+            "name": "\u201cThat Had to Hurt\u201d",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero",
+                "Temporary": "1",
+                "MaxPerUnit": "1"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "text": "Temporary. Hero form only. Attach to an enemy. Max 1 per enemy.\nAttached character loses the stalwart or steady keyword.\n<b>Response</b>: After attached character gets a status card, deal 1 damage to it.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho013",
+            "type": "Obligation",
+            "name": "Risky Business",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Harry Osborn"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Harry Osborn player.</i></b>\nYou are stunned.\n<b>Alter-Ego Action</b>: Exhaust Harry Osborn \u2192 discard this card. Return the topmost [[TECH]] upgrade in your discard pile to your hand.",
+            "set_name": "Harry Osborn",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho014",
+            "type": "SideScheme",
+            "name": "Ruler of Manhattan",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "5",
+                "Boost": "3",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a side scheme is discarded. Reveal that side scheme. Remove threat from here equal to the number of boost icons ([boost]) on that card.\n<i>(Hazard Icon: Deal +1 encounter card during the villain phase.)</i>\n<i>(Green Goblin's nemesis side scheme.)</i>",
+            "set_name": "Harry Osborn Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho015",
+            "type": "Minion",
+            "name": "* Kingpin",
+            "subtitle": "",
+            "desc": {
+                "HP": "8",
+                "SCH": "1*",
+                "ATK": "1*",
+                "Boost": "2",
+                "Nemesis": "Harry Osborn"
+            },
+            "traits": [
+                "EARTH-6160",
+                "ELITE"
+            ],
+            "text": "[star] Kingpin gets +1 SCH and +1 ATK for each side scheme in play.\n<i>(Green Goblin's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: Place 2 threat on each side scheme.",
+            "set_name": "Harry Osborn Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho016",
+            "type": "Minion",
+            "name": "* Bullseye",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "SCH": "1",
+                "ATK": "1*",
+                "Stalwart": "1",
+                "Villainous": "1"
+            },
+            "traits": [
+                "EARTH-6160",
+                "ASSASSIN"
+            ],
+            "text": "Stalwart. Villainous.\n[star] Bullseye's attack gains piercing and overkill.",
+            "set_name": "Harry Osborn Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "ho017",
+            "type": "SideScheme",
+            "name": "Refrain From Argument",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2",
+                "Hinder": "1*",
+                "Boost": "0",
+                "Crisis": "1"
+            },
+            "traits": [],
+            "text": "Hinder 1[per_hero].\n<i>(Crisis Icon: Threat cannot be removed from the main scheme.)</i>\n<hr />\n[star] <b>Boost</b>: Reveal this card if there is no side scheme in play.",
+            "set_name": "Harry Osborn Nemesis",
             "custom": "Arnaud"
         }
     ]
