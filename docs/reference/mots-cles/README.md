@@ -130,6 +130,18 @@ propre au pack, donc aucun mot-clé maison à cataloguer.
   même critère que la Réserve de `brawn` et les compteurs explosifs de
   `speed`, ce sont des compteurs de carte, pas un mot-clé.
 
+- **`angela`** (Aldrif Odinsdottir, set 133, 31/08/2026) : balayage complet
+  des balises `<b>` des 16 cartes — `Boost`, `Forced Interrupt`, `Hero
+  Action`, `Hero Interrupt`, `Hero Resource`, `Response`, `Setup`, `When
+  Revealed` : que des labels d'aptitude standards. Les quatre mots-clés que le
+  pack CITE ont tous déjà leur fiche ou sont natifs : `steady` (an006),
+  `Restricted` (an009, lu dans `desc`), `surge` (an010), `overkill` (an013).
+  Le décompte « each minion you defeated this round » (an004, an007) est un
+  mécanisme central du pack mais n'est **jamais imprimé en gras** : même
+  critère que la Réserve de `brawn` ou les compteurs d'adrénaline de
+  `venompool`, ce n'est pas un mot-clé. Il est rendu par
+  `PlayerStat.round_kill_counter`, ajouté au moteur pour l'occasion.
+
 Quatre packs supplémentaires, absents du §9 du guide et inaccessibles
 depuis ce worktree (existent uniquement dans un checkout non lié), ont été
 vérifiés directement par l'agent contrôleur avec la même heuristique

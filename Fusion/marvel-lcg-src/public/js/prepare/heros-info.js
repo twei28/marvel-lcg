@@ -1222,4 +1222,17 @@ export const HEROS_INFO = {
         apparition: "The New Mutants #98 (1991)",
     },
 
+    "an001a": {
+        bio: "Aldrif Odinsdottir est la fille aînée d'Odin et de Freyja, enlevée nourrisson pendant la guerre entre Asgard et le Heven. Élevée par les anges qui l'avaient volée, elle a grandi dans une culture où rien n'est gratuit et où toute dette se paie : on l'a appelée Angela, chasseuse de primes. Quand elle apprend enfin ses origines, elle ne rentre pas au bercail pour autant — elle continue de traquer, l'épée Xiphos au poing et les rubans de son armure claquant derrière elle. Créée par Neil Gaiman et Todd McFarlane, arrivée chez Marvel en 2013.",
+        bioEn: "Aldrif Odinsdottir is the firstborn daughter of Odin and Freyja, stolen as an infant during the war between Asgard and Heven. Raised by the very angels who took her, she grew up in a culture where nothing is free and every debt is paid: they called her Angela, bounty hunter. When she finally learns her origins she does not simply come home — she keeps on hunting, the sword Xiphos in hand and the ribbons of her armour snapping behind her. Created by Neil Gaiman and Todd McFarlane, brought into Marvel in 2013.",
+        civil: "Aldrif Odinsdottir",
+        base: "Le Heven, puis Asgard",
+        baseEn: "Heven, later Asgard",
+        equipes: "Gardiens de la Galaxie, Asgardiens",
+        equipesEn: "Guardians of the Galaxy, Asgardians",
+        ennemis: "Hela, les Disir",
+        ennemisEn: "Hela, the Disir",
+        apparition: "Age of Ultron #10 (2013)",
+    },
+
 };

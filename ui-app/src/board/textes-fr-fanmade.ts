@@ -1442,4 +1442,40 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'vp015': "<b><i>Plotting</i></b>. <i>(Après que ce sbire s'est engagé avec vous, il manigance.)</i>\n[star] Tant que Killer Thrill est en jeu, Guzz gagne +1 MNG.\n<hr />\n[star] <b>Boost</b> : après cette activation, distribuez-vous cette carte comme carte de rencontre face cachée.",
   // venompool — Psyche Warp (Treachery, nemesis)
   'vp016': "<b>Une fois révélée</b> : vous subissez X dégâts, X étant égal à l'ATQ de l'allié ayant la plus haute ATQ IMPRIMÉE parmi vos alliés. Défaussez cet allié. Si aucun dégât n'a été subi de cette façon, cette carte gagne <b><i>Déferlement</i></b>.",
+
+  // ------------------------------------------------------------------- angela
+  // Pack fan-made « Juri Krasko », set 133. Aldrif Odinsdottir, fille d'Odin
+  // elevee dans le Heven. Tout son kit paie quand un SBIRE tombe.
+  // angela — Angela (Hero)
+  'an001a': "<i>Frenzy</i> — <b>Réponse</b> : après avoir mis un sbire K.O., redressez Angela. <i>(Limite une fois par manche.)</i>",
+  // angela — Aldrif Odinsdottir (AlterEgo)
+  'an001b': "<b>Mise en place</b> : cherchez une carte [[WEAPON]] dans votre deck et votre pile de défausse et ajoutez-la à votre main. Mélangez votre deck.\n[star] <i>Of Heven and Hel</i> — Aldrif Odinsdottir gagne +1 REC par carte [[WEAPON]] que vous contrôlez.",
+  // angela — Sera (Ally, signature)
+  'an002': "Angela gagne +1 en taille de main.",
+  // angela — Heven's Fury (Event, x3)
+  'an003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Vous pouvez incliner une carte [[WEAPON]] que vous contrôlez. Si vous le faites, répartissez plutôt les dégâts entre les ennemis en jeu.",
+  // angela — Murderous Glare (Event, x3)
+  'an004': "<b>Réponse</b> <i>(contrer)</i> : après qu'Angela a attaqué et mis un ennemi K.O., retirez 2 menaces d'une manigance. Retirez 1 menace supplémentaire de CETTE manigance par sbire que vous avez mis K.O. durant cette manche.",
+  // angela — Single Out (Event, x3)
+  'an005': "<b>Interruption de héros</b> : quand une carte de traîtrise est révélée depuis le deck de rencontre, annulez ses effets « <b>Une fois révélée</b> ». Cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec n'importe quel joueur.",
+  // angela — Angelic Ribbons (Upgrade)
+  'an006': "Angela gagne <b><i>Ferme</i></b>.\n<b>Interruption de héros</b> : quand un ennemi s'active, défaussez cette carte → cet ennemi gagne -X ATQ et -X MNG pour cette activation, X étant l'ATQ d'Angela.",
+  // angela — Asgard's Assassin (Upgrade, x2)
+  'an007': "<b>Ressource de héros</b> : inclinez Asgard's Assassin → générez une ressource [physical] <i>(si vous avez mis un sbire K.O. durant cette manche, générez plutôt [wild])</i>.",
+  // angela — Siri's Dress (Upgrade)
+  'an008': "Vous gagnez +4 points de vie.\nAngela gagne le trait [[AERIAL]].",
+  // angela — Xiphos, Sword of the Stars (Upgrade)
+  'an009': "<b><i>Limité</i></b>.\nAngela gagne +1 ATQ.\n<b>Réponse</b> : après qu'Angela a mis un sbire K.O., piochez une carte. <i>(Limite une fois par manche.)</i>",
+  // angela — Banished from Asgard (Obligation)
+  'an010': "<b><i>Donnez cette carte au joueur d'Aldrif Odinsdottir.</i></b>\nVous pouvez passer en forme alter ego. Choisissez :\n• Inclinez Aldrif Odinsdottir → retirez Banished from Asgard de la partie.\n• Défaussez 1 carte [[ASGARD]] que vous contrôlez. Vous êtes étourdi. Si aucune carte n'a été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // angela — Hel's Retribution (SideScheme, nemesis)
+  'an011': "<b>Une fois révélée</b> : le joueur actif défausse de son deck autant de cartes qu'il y a de cartes [[ASGARD]] en jeu.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
+  // angela — Hela (Minion, nemesis)
+  'an012': "Tant qu'il y a d'autres sbires en jeu, Hela ne peut pas subir de dégâts.\n<b>Interruption forcée</b> : quand vous mettez un sbire K.O., défaussez une carte de votre main.\n<i>(Sbire nemesis d'Angela.)</i>",
+  // angela — Hel-Wolf (Minion, nemesis)
+  'an013': "[star] Le joueur engagé doit se défendre contre les attaques de Hel-Wolf avec un allié qu'il contrôle, s'il le peut.\n<hr />\n[star] <b>Boost</b> : cette attaque gagne <b><i>Surpuissance</i></b>.",
+  // angela — Disir (Minion, nemesis)
+  'an014': "<b>Interruption forcée</b> : quand Disir devrait être mise K.O., mélangez-la plutôt dans le deck de rencontre.\n<hr />\n[star] <b>Boost</b> : après la fin de cette activation, mélangez cette carte dans le deck de rencontre.",
+  // angela — Back from Hel (Treachery, nemesis)
+  'an015': "<b>Une fois révélée</b> : cherchez le sbire le plus au fond de la pile de défausse de rencontre et révélez-le.\n<hr />\n[star] <b>Boost</b> : si vous êtes engagé avec un sbire, cette attaque gagne 1 icône de boost supplémentaire ([boost]).",
 }
