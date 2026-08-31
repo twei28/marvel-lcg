@@ -18,6 +18,12 @@ laisse pas le monde dans un etat reutilisable.
     python3.10 tools/verifier_tous_les_decks.py <game_dir> <port_base> [rapport]
 
 ⚠ Chaque deck ouvre le port `port_base + index`. Rester sous 65535.
+
+⚠ JAMAIS DEUX HARNAIS EN PARALLELE (celui-ci, test_capacites.py,
+autoplay.py) : chaque processus fils REECRIT `<game_dir>/launch.json` pour y
+poser son port avant de demarrer le moteur, qui le RELIT ensuite. Deux passes
+simultanees se marchent dessus quelle que soit la plage de ports choisie
+(constate le 31/08/2026 : 16 « AssertionError: ip/port » fantomes).
 """
 import sys, os, json, glob, subprocess, threading, time
 

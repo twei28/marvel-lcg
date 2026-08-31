@@ -20,6 +20,19 @@ Usage
 -----
     python3.10 tools/test_capacites.py <game_dir> <port> [rapport.json] [filtre]
 Viser .game-src (liens vers src/), jamais .game qui n'est que du bytecode.
+
+`[filtre]` : sous-chaine cherchee dans le NOM des cas (ex. `ho0` pour le pack
+harry_osborn). ⚠ Longtemps documente sans etre implemente : constate puis
+IMPLANTE le 31/08/2026 (voir `main()`). Une passe filtree ne remplace pas la
+batterie complete quand un fichier moteur partage a change (regle de portee du
+§6bis du GUIDE) : elle sert a iterer vite sur un pack.
+
+⚠ JAMAIS DEUX HARNAIS EN PARALLELE (celui-ci, verifier_tous_les_decks.py,
+autoplay.py) : chaque processus fils REECRIT `<game_dir>/launch.json` pour y
+poser son port avant de demarrer le moteur, qui le RELIT ensuite. Deux passes
+simultanees se marchent dessus quelle que soit la plage de ports choisie —
+c'est la cause reelle des 16 « AssertionError: ip/port » du 31/08/2026
+(91/107 decks), pas une collision de plages.
 """
 import json
 import os
@@ -10867,6 +10880,425 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["an014"], "dans_deck_rencontre": ["an014"]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « harry_osborn » : Green Goblin (Harry Osborn), set 131, ho001a-ho017
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ho001a Green Goblin — Response : un statut retire = 2 degats + 2 menaces",
+        "pourquoi": ("`AfterUnitAttackEnd(Response, 'You', ..., against_who=Enemy)` "
+                     "(modele iw001a Boo!) + cout wd005 (retrait de statut) + double "
+                     "cible 08013. Rhino est SONNE avant : le cout a de quoi payer. "
+                     "ATK 1 du heros + 2 de la Response = 3 degats, et 2 menaces "
+                     "partent du complot principal charge a 5"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.Stun('01094')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('ho001a')"],
+        "cibles": ["01094", "01094", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Stunned"]],
+                    "degats_min": [["01094", 3]],
+                    "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ho002 Spider-Man — a l'arrivee, 2 stun repartis sur 2 ennemis",
+        "pourquoi": ("modele 01083 Mockingbird (`AfterCardEnterPlay`) etendu a 2 cibles "
+                     "(`range=(1, 2)`). Deux ennemis en jeu, un stun chacun"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01110')"],
+        "declencher": ["Puzzle.PutIntoPlay('ho002')"],
+        "cibles": ["01094", "01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"], ["01110", "Stunned"]]},
+    },
+    {
+        "nom": "ho003 Repulsor Blast — stun PUIS 4 degats au meme ennemi",
+        "pourquoi": ("modele 05015 Tackle. « to THAT enemy » : une seule cible pour les "
+                     "deux moities. 01088 Energy paie les 2 ressources. ⚠ CHAINE : la "
+                     "Response d'identite (ho001a) se declenche sur l'attaque et "
+                     "consomme le stun -> 4+2=6 degats et statut ABSENT a l'arrivee, "
+                     "meme convention que le cas Frenzy d'an001a"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')"],
+        "main_exclusive": ["ho003", "01088"],
+        "declencher": [],
+        "jouer": ["ho003"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Stunned"]],
+                    "degats": [["01094", 6]],
+                    "defausse": ["ho003"]},
+    },
+    {
+        "nom": "ho004 Pumpkin Bomb — X degats au vilain et au sbire, confuse par K.O.",
+        "pourquoi": ("modele 04006 Explosive Arrow (selecteur "
+                     "'VillainAndEngagedSamePlayerMinion') + `effect.GetCostX()` (14006). "
+                     "X=2 : Hydra Bomber (2 PV) tombe, donc UNE confusion, posee sur le "
+                     "vilain — « confuse AN enemy », pas forcement un ennemi touche. "
+                     "⚠ PAS de `cibles` : le selecteur AoE liste vilain+sbires engages, "
+                     "les forcer a ['01094'] excluait le sbire (rouge du 31/08). "
+                     "⚠ CHAINE ho001a : la confusion posee est aussitot consommee par "
+                     "la Response -> 2+2=4 degats au vilain, statut absent"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('01110')"],
+        "main_exclusive": ["ho004", "01088"],
+        "declencher": [],
+        "jouer": ["ho004"],
+        "surpayer": True,
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]],
+                    "hors_jeu": ["01110"],
+                    "statuts_absents": [["01094", "Confused"]]},
+    },
+    {
+        "nom": "ho005 Gwen Stacy Osborn — +1 REC en continu",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(Identity, control_by='You', "
+                     "recover=1)`, modele an002 Sera (+1 taille de main)"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('ho005')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}},
+    },
+    {
+        "nom": "ho005 Gwen Stacy Osborn — Alter-Ego Action : double inclinaison, confuse",
+        "pourquoi": ("cout double `CostFunc.Exhaust('YourIdentity')` + `Exhaust('This')` "
+                     "(modele 31009). La partie demarre en alter-ego : l'action est "
+                     "disponible d'emblee"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ho005')"],
+        "declencher": ["Puzzle.Action('ho005', 'AlterEgoAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]],
+                    "exhausted": ["ho005"]},
+    },
+    {
+        "nom": "ho006 Norman Osborn — l'evenement ATTACK gagne +1 degat",
+        "pourquoi": ("modele 32047 Aggressive Energy (RegisterTemp + "
+                     "DealAdditionalDamage), declencheur `WhenPlayerPlayCard`. Repulsor "
+                     "Blast passe de 4 a 5 degats quand Norman s'incline. ⚠ CHAINE "
+                     "ho001a (stun consomme) : 5+2=7 degats au total"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho006')"],
+        "main_exclusive": ["ho003", "01088"],
+        "declencher": [],
+        "jouer": ["ho003"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]],
+                    "exhausted": ["ho006"]},
+    },
+    {
+        "nom": "ho007 Otto Octavius — fouille du deck : une amelioration TECH en main",
+        "pourquoi": ("modele 01034 Stark Tower (choose a player) + an001b "
+                     "(`Search.PlayerCard(include_player_deck=True)`). Le deck du joueur "
+                     "contient Energy Barrier (TECH) et deux ressources : seule la TECH "
+                     "est proposable"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ho007')",
+                          "Puzzle.CreatePlayerDeck('05017', '01088', '01089')"],
+        "declencher": ["Puzzle.Action('ho007', 'AlterEgoAction')"],
+        "cibles": ["ho001b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["05017"],
+                    "exhausted": ["ho007"]},
+    },
+    {
+        "nom": "ho008 Goblin Armor — +3 points de vie en continu",
+        "pourquoi": "`GiveKeywordToAttached('You', health=3)`, modele an008 Siri's Dress",
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('ho008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3}},
+    },
+    {
+        "nom": "ho008 Goblin Armor — action de contre : 1 menace SANS le trait AERIAL",
+        "pourquoi": ("la branche de base. Modele 01038 pour le conditionnel de trait, "
+                     "teste ici en l'ABSENCE du planeur : 1 seule menace part"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho008')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Action('ho008', 'HeroAction')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]],
+                    "exhausted": ["ho008"]},
+    },
+    {
+        "nom": "ho008 Goblin Armor — action de contre : 2 menaces AVEC le trait AERIAL",
+        "pourquoi": ("la branche « 2 threat instead if you have the AERIAL trait » : le "
+                     "Goblin Glider (ho011) donne le trait, la meme action retire 2"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho008')",
+                          "Puzzle.PutIntoPlay('ho011')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Action('ho008', 'HeroAction')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]],
+                    "exhausted": ["ho008"]},
+    },
+    {
+        "nom": "ho009 Goblin Helmet — redresse une amelioration TECH inclinee",
+        "pourquoi": ("modele 31009 SP//dr Command (`canbe_ready=True` + "
+                     "`Faces.ReadyAll`). Forcefield Generator (31019, TECH) est "
+                     "incline avant. ⚠ PAS 05017 : le deck de depart en contient "
+                     "deux exemplaires, et `Puzzle.Exhaust` (FindCommandCards) "
+                     "attrape la copie du DECK, pas celle en jeu -> "
+                     "`assert IsInPlay()`. 31019 n'est dans aucun deck du cas"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho009')",
+                          "Puzzle.PutIntoPlay('31019')",
+                          "Puzzle.Exhaust('31019')"],
+        "declencher": ["Puzzle.Action('ho009', 'HeroAction')"],
+        "cibles": ["31019"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["31019"],
+                    "exhausted": ["ho009"]},
+    },
+    {
+        "nom": "ho009 Goblin Helmet — genere la ressource IMPRIMEE de la TECH epuisee",
+        "pourquoi": ("modele 31001a SP//dr Suit (couple CanGenerateResources + "
+                     "DoGenerateResources sur `return_exhausted_cards`). Forcefield "
+                     "Generator (31019, TECH, [energy] imprime, hors deck du cas) : le "
+                     "casque paie 1 des 2 ressources de Repulsor Blast, 01088 fournit "
+                     "le reste — le casque ET la TECH finissent inclines. ⚠ CHAINE "
+                     "ho001a sur le stun de ho003 : 4+2=6 degats"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho009')",
+                          "Puzzle.PutIntoPlay('31019')"],
+        "main_exclusive": ["ho003", "01088"],
+        "declencher": [],
+        "jouer": ["ho003"],
+        "payer_avec": ["ho009", "01088"],
+        "surpayer": True,
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]],
+                    "exhausted": ["ho009", "31019"]},
+    },
+    {
+        "nom": "ho010 Powered Gauntlets — 1 degat, PAS de confusion sans AERIAL",
+        "pourquoi": ("la branche de base : sans le trait, l'option payante n'est meme "
+                     "pas proposee. Homonyme 01038 verifie : textes differents, aucun "
+                     "partage de code"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho010')"],
+        "declencher": ["Puzzle.Action('ho010', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]],
+                    "statuts_absents": [["01094", "Confused"]],
+                    "exhausted": ["ho010"]},
+    },
+    {
+        "nom": "ho010 Powered Gauntlets — AERIAL : une ressource depensee, ennemi desoriente",
+        "pourquoi": ("la branche AERIAL (planeur en jeu) : "
+                     "`ForChoiceAbilityWithCost(Cost('1'))`, modele 50134. 01090 en main "
+                     "paie la ressource optionnelle. ⚠ CHAINE ho001a : l'action des "
+                     "gants compte comme une attaque, la Response consomme la confusion "
+                     "-> 1+2=3 degats, statut absent"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho010')",
+                          "Puzzle.PutIntoPlay('ho011')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('ho010', 'HeroAction')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "statuts_absents": [["01094", "Confused"]],
+                    "exhausted": ["ho010"]},
+    },
+    {
+        "nom": "ho011 Goblin Glider — +1 ATK et trait AERIAL en continu",
+        "pourquoi": ("`GiveKeywordToAttached('You', attack=1, trait='AERIAL')`, modele "
+                     "an008/ra007"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('ho011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "traits": ["AERIAL"],
+                    "en_jeu": ["ho011"]},
+    },
+    {
+        "nom": "ho011 Goblin Glider — action : redresse Green Goblin",
+        "pourquoi": ("`Faces.ReadyAll([hero])` sous `CostFunc.Exhaust('This')`. Le heros "
+                     "est incline AVANT : sans l'action il le resterait"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho011')",
+                          "Puzzle.Exhaust('ho001a')"],
+        "declencher": ["Puzzle.Action('ho011', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ho001a"],
+                    "exhausted": ["ho011"]},
+    },
+    {
+        "nom": "ho012 That Had to Hurt — Bullseye perd Robuste, se fait sonner, prend 1 degat",
+        "pourquoi": ("le cas prouve les DEUX moities d'un coup, sur le sbire du pack : "
+                     "Bullseye (ho016) est Stalwart, donc sans ho012 le stun serait "
+                     "refuse ; avec ho012 (stalwart=-1, modele 50144) le stun passe, et "
+                     "la Response `AfterStatusCardPlaceOn` inflige 1 degat"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho016')",
+                          "Puzzle.PutIntoPlay('ho012')"],
+        "cibles": ["ho016"],
+        "declencher": ["Puzzle.Stun('ho016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ho016", "Stunned"]],
+                    "degats": [["ho016", 1]]},
+    },
+    {
+        "nom": "ho013 Risky Business — a la remise : le joueur est etourdi",
+        "pourquoi": ("`WhenThisObligationGiveToYou` + GiveStatus, modele an010. La "
+                     "partie demarre en alter-ego, l'identite ho001b recoit le statut"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ho013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ho001b", "Stunned"]],
+                    "en_jeu": ["ho013"]},
+    },
+    {
+        "nom": "ho013 Risky Business — l'action : defausse et remonte la TECH du dessus",
+        "pourquoi": ("`PlayerActionToDiscardThis` (modele wd005) + `FindTopmost` de "
+                     "01034 Stark Tower. La defausse contient [01088, 05017] : c'est la "
+                     "TECH la plus au-dessus (05017) qui remonte"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.Reveal('ho013')",
+                          "Puzzle.CreatePlayerDiscardPile('01088', '05017')"],
+        "declencher": ["Puzzle.Action('ho013', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ho013"],
+                    "en_main": ["05017"]},
+    },
+    {
+        "nom": "ho014 Ruler of Manhattan — deterre un complot annexe et s'allege de ses boosts",
+        "pourquoi": ("Une fois revelee : defausse jusqu'a un complot annexe (01107, "
+                     "Boost 2, du set Rhino lui-meme), le revele, et retire 2 menaces "
+                     "d'elle-meme (5 - 2 = 3). 01110 devant dans le deck prouve que la "
+                     "boucle defausse bien les non-complots. Modeles : 15004 Hex Bolt "
+                     "(defausse rencontre + comptage de boosts) et an015 (revelation "
+                     "depuis la defausse)"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110', '01107')"],
+        "declencher": ["Puzzle.Reveal('ho014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01107"],
+                    "menace": [["ho014", 3]]},
+    },
+    {
+        "nom": "ho015 Kingpin — +1 SCH et +1 ATK par complot annexe en jeu",
+        "pourquoi": ("modele 04125 Red Skull (`ThisGainKeywordForEachFaceInPlay` sur "
+                     "SchemeSide2), etendu au SCH (01059 Jessica Jones). Un complot "
+                     "annexe en jeu -> +1 partout"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.Reveal('01107')"],
+        "declencher": ["Puzzle.PutIntoPlay('ho015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ho015", "attack", 1],
+                                        ["ho015", "scheme", 1]]},
+    },
+    {
+        "nom": "ho015 Kingpin — Boost : 2 menaces sur chaque complot annexe",
+        "pourquoi": ("`WhenCardBecomeBoost` + `PlaceThreatOnSchemes('EachSideScheme', 2)` "
+                     "(litteral moteur, card_face.py:621). 01107 demarre a 2 menaces et "
+                     "doit finir a 4 au moins"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.Reveal('01107')"],
+        "declencher": ["Puzzle.Boost('ho015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["01107", 4]]},
+    },
+    {
+        "nom": "ho016 Bullseye — son attaque gagne Percant : la robustesse saute ET blesse",
+        "pourquoi": ("modele 27078 (`UnitAttackGainKeyword(piercing/overkill)`). "
+                     "⚠ Le defenseur est l'ALLIE ho002 (pas d'esquive de DEF) avec une "
+                     "carte robuste : SANS piercing la robustesse est consommee et les "
+                     "degats valent 0 ; AVEC, elle est defaussee ET l'ATK 1 blesse — "
+                     "seul le degat discrimine, la robustesse part dans les deux cas. "
+                     "Premiere version sur l'identite (DEF 2), rouge a tort : 1 - 2 = 0 "
+                     "degat meme avec piercing. L'overkill du meme handler est "
+                     "indeclenchable par le harnais (ATK 1 ne deborde jamais d'un "
+                     "defenseur a 1 PV minimum) : couvert par la meme ligne de code que "
+                     "le piercing prouve ici"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.ChangeToFace('ho001b', 'ho001a')",
+                          "Puzzle.PutIntoPlay('ho016')",
+                          "Puzzle.PutIntoPlay('ho002', under_control=True)",
+                          "Puzzle.Tough('ho002')"],
+        "declencher": ["Puzzle.Defend('ho002', 'ho016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["ho002", "Tough"]],
+                    "degats": [["ho002", 1]]},
+    },
+    {
+        "nom": "ho017 Refrain From Argument — Boost : se revele s'il n'y a AUCUN complot annexe",
+        "pourquoi": ("modele 16140 Sound the Alarms (`WhenCardBecomeBoost` + "
+                     "`RevealThisCard`), avec la condition « no side scheme in play ». "
+                     "Aucun complot annexe : la carte entre en jeu avec 2 menaces + "
+                     "Entrave 1 par joueur = 3"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('ho017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ho017"],
+                    "menace_min": [["ho017", 3]]},
+    },
+    {
+        "nom": "ho017 Refrain From Argument — Boost muet si un complot annexe est en jeu",
+        "pourquoi": ("le contre-cas : 01107 en jeu, la condition tombe, la carte reste "
+                     "un boost ordinaire et ne doit PAS entrer en jeu"),
+        "scenario": "rhino",
+        "heros": "harry_osborn",
+        "mise_en_place": ["Puzzle.Reveal('01107')"],
+        "declencher": ["Puzzle.Boost('ho017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ho017"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -14906,14 +15338,25 @@ def main():
         executer_un_cas(game_dir, port, int(os.environ["CAS_INDEX"]))
         return
 
+    # [filtre] : sous-chaine cherchee dans le NOM du cas. Longtemps documente
+    # sans etre implemente (annotation du 31/08/2026 en tete de fichier) ;
+    # implante ce meme jour. Les index d'origine sont conserves : le fils
+    # recoit toujours l'index ABSOLU dans CAS, et le rapport reste comparable
+    # a celui d'une passe complete.
+    filtre = sys.argv[4] if len(sys.argv) > 4 else None
+    selection = [(i, c) for i, c in enumerate(CAS)
+                 if not filtre or filtre in c["nom"]]
+    if filtre:
+        print(f"FILTRE « {filtre} » : {len(selection)}/{len(CAS)} cas retenus")
+
     resultats = []
-    for index, cas in enumerate(CAS):
+    for rang, (index, cas) in enumerate(selection):
         chemin = f"/tmp/capacites_{os.environ.get('CAS_PREFIX', '')}{index}.json"
         if os.path.exists(chemin):
             os.remove(chemin)
         env = dict(os.environ, CAS_INDEX=str(index))
         subprocess.run([sys.executable, os.path.abspath(__file__), game_dir,
-                        str(port + index), rapport],
+                        str(port + rang), rapport],
                        env=env, timeout=300, capture_output=True)
         if os.path.exists(chemin):
             resultats.append(json.load(open(chemin)))
