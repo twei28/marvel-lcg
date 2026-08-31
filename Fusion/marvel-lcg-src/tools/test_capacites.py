@@ -10647,6 +10647,97 @@ CAS = [
     #
     # La chaine complete est la : pose automatique en fin de phase, puis
     # franchissement du seuil de 2, retrait de TOUS les compteurs, activation.
+    {
+        "nom": "vp004 Tasty Meal — 2 degats, 1 menace, et les TROIS bonus jusqu'a la fin de la manche",
+        "pourquoi": ("modele 18020 Hit and Run (SetTarget + SetTarget2, lus dans "
+                     "effect.targets / targets2) et 12016 Moxie (GainUntilRoundEnd des "
+                     "trois stats d'un coup). Les quatre effets sont verifies ensemble : "
+                     "un module qui en oublierait un seul passerait un controle partiel. "
+                     "Menace posee a 8 pour ne pas coincider avec la StartingThreat de 2"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "main_exclusive": ["vp004", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp004"],
+        "cibles": ["01094", "01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "menace": [["01109", 7]],
+                    "attributs": {"attack": 1, "thwart": 1, "defense": 1}},
+    },
+    {
+        "nom": "vp006 Whack-a-Rabbit — un declenchement de plus par sbire engage, chaque ennemi une seule fois",
+        "pourquoi": ("la borne haute est CALCULEE (SelectorRange accepte un Callable) : "
+                     "1 + le nombre de sbires engages. Avec Killer Thrill engagee, DEUX "
+                     "declenchements, donc deux ennemis DIFFERENTS a 2 degats et 2 degats "
+                     "subis par l'identite (1 par declenchement). Killer Thrill a 5 PV : "
+                     "elle survit, donc reste verifiable. L'absence de repeat_rules est ce "
+                     "qui interdit de viser deux fois le meme ennemi"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('vp013')"],
+        "main_exclusive": ["vp006", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp006"],
+        "cibles": ["01094", "vp013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["vp013", 2]],
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "vp007 Eat Them All! — 1 soin apres une attaque de Venompool",
+        "pourquoi": ("le declencheur est « attacks » TOUT COURT (is_basic_attack=None), "
+                     "contrairement a vp010 qui exige une attaque de BASE. L'identite est "
+                     "blessee de 3 : apres l'attaque elle doit etre a 2. Killer Thrill "
+                     "(5 PV) encaisse sans mourir"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.Damage('vp001a', 3)",
+                          "Puzzle.PutIntoPlay('vp007')",
+                          "Puzzle.PutIntoPlay('vp013')"],
+        "declencher": ["Puzzle.Attack('vp001a')"],
+        "cibles": ["vp013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["vp013", 2]]},
+    },
+    {
+        "nom": "vp011 One Too Many Voices — le changement de forme est FORCE, pas propose",
+        "pourquoi": ("LE piege de cette carte : ses deux modeles, 48026 Crisis of Faith et "
+                     "16053 Crisis on Halfworld, disent « You MAY flip to alter-ego form » "
+                     "et passent par YouMayFlipToYourAlterEgoForm. Celle-ci dit « You MUST "
+                     "flip ». On part de la forme HEROS : apres resolution, la face active "
+                     "doit etre vp001b, sans qu'aucun choix n'ait ete offert"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "declencher": ["Puzzle.Reveal('vp011')"],
+        "accepter_choix": True,
+        "verifier": "face_identite",
+        "attendu": {"face": "vp001b"},
+    },
+    {
+        "nom": "vp015 Guzz — Plotting : il manigance apres s'etre engage",
+        "pourquoi": ("mot-cle maison du pack scarlet_spider, fiche plotting.md : "
+                     "AfterMinionEngagePlayer + BasicSchemes. Guzz a SCH 1 : la menace du "
+                     "complot principal doit avoir augmente d'au moins 1 apres son "
+                     "engagement. `menace_min` et non `menace` : la valeur exacte depend "
+                     "du nombre de joueurs et du tirage. ⚠ Le complot principal en jeu "
+                     "est 01097b, la face B : 01097a n'est que la face de mise en place et "
+                     "`par_id` ne la trouve pas (73 cas du fichier utilisent deja 01097b)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.PutIntoPlay('vp015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["01097b", 1]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
