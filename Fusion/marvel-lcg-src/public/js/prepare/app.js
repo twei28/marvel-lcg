@@ -1208,10 +1208,19 @@ function showExtHover(ext, tabEl) {
    clé localStorage. Images : assets/pics/<card_id>_<code>.jpg */
 const COLLECTIONS_RESSOURCES = [
     // « Standard » et « Aléatoire » en tête, tout le reste par ordre
-    // alphabétique. Trois origines mélangées : rééditions d'extension
-    // (vrais codes de carte), promos « Play-and-Share » de FFG, et
-    // collections fan-made « DesignHacker ». Sinister Motives (27020-22)
-    // est volontairement absent : visuel identique au jeu de base.
+    // alphabétique. Quatre origines mélangées : rééditions d'extension
+    // (vrais codes de carte), promos « Play-and-Share » de FFG,
+    // collections fan-made « DesignHacker », et les re-skins livrés PAR un
+    // pack fan-made (Gwenpool, Howard the Duck, Ms. America). Sinister
+    // Motives (27020-22) est volontairement absent : visuel identique au
+    // jeu de base.
+    //
+    // ⚠ N'inscrire une collection ICI que si ses TROIS images existent dans
+    // assets/pics/ : sans elles la vignette part en repli silencieux. Un
+    // relevé du 31/08/2026 a trouvé ~40 triplets de re-skins déclarés dans
+    // data/cards.json (full_link vers 01088/89/90) dont les images ne sont
+    // PAS livrées — luke_cage 62025-27 par exemple : ils restent donc hors
+    // de cette liste tant que les images manquent.
     { code: "standard", nom: "Standard", apercu: "01089" },
     { code: "random", nom: "Aléatoire", apercu: null },
     { code: "dh_adamwarlock", nom: "Adam Warlock", apercu: "01089_dh_adamwarlock" },
@@ -1227,11 +1236,14 @@ const COLLECTIONS_RESSOURCES = [
     { code: "dh_gamora", nom: "Gamora", apercu: "01089_dh_gamora" },
     { code: "dh_ghostspider", nom: "Ghost-Spider", apercu: "01089_dh_ghostspider" },
     { code: "dh_groot", nom: "Groot", apercu: "01089_dh_groot" },
+    { code: "gwenpool", nom: "Gwenpool", apercu: "gp016" },
     { code: "hk", nom: "Hawkeye", apercu: "01089_hk" },
+    { code: "howard", nom: "Howard the Duck", apercu: "hd019" },
     { code: "hu", nom: "Hulk", apercu: "01089_hu" },
     { code: "im", nom: "Iron Man", apercu: "01089_im" },
     { code: "ekaug_jj", nom: "Jessica Jones", apercu: "01089_ekaug_jj" },
     { code: "dh_miles", nom: "Miles Morales", apercu: "01089_dh_miles" },
+    { code: "ms_america", nom: "Ms. America", apercu: "ma028" },
     { code: "mm", nom: "Ms. Marvel", apercu: "01089_mm" },
     { code: "mutant", nom: "Mutant Genesis", apercu: "32023" },
     { code: "dh_nebula", nom: "Nebula", apercu: "01089_dh_nebula" },

@@ -76,3 +76,40 @@ projet ne juge un deck. Piste concrète, deck par deck :
 3. corriger, et mettre à jour `metadata.aspect_note` avec la raison du
    changement — le fichier doit rester la trace du POURQUOI, pas seulement du
    QUOI.
+
+---
+
+## MESURE FAITE LE 31/08/2026 : 7 decks de départ sont ILLÉGAUX
+
+Constaté en vrai, dans le wizard : l'écran de préparation affiche déjà un
+badge « ⚠ Hors règles » avec le détail au survol. Scan des limites
+d'exemplaires (`desc.MaxPerDeck`, « Max N per deck » imprimé, et unicité `*`)
+sur **tous** les decks du projet :
+
+| Deck de départ | Infraction | Origine |
+|---|---|---|
+| `gwenpool` | Blackout ×2, Git Gud ×2, Rock Paper Scissors ×3, Tic-Tac-Toe ×3 — **max 1** chacune (uniques) | fan-made, session antérieure |
+| `howard_the_duck` | The Power of Justice ×3 — max 2 | fan-made, session antérieure |
+| `iron_lad` | The Power of Justice ×3 — max 2 | fan-made, session antérieure |
+| `scarlet_spider` | The Power of Aggression ×3 — max 2 | fan-made, session antérieure |
+| `speed` | Energy ×2 — max 1 | fan-made, session antérieure |
+| `wiccan` | The Power of Justice ×3 — max 2 | fan-made, session antérieure |
+| `jubilee` | Unlikely Duo ×2 — max 1 | **deck OFFICIEL du moteur** : ne pas y toucher sans vérifier la liste publiée par FFG |
+
+Le deck officiel de Deadpool met bien ces cartes 'Pool en **1** exemplaire :
+les ×2/×3 de `gwenpool` sont donc des erreurs, pas une convention de pack.
+
+Deux autres endroits, hors périmètre de ce TODO mais notés au passage :
+- **`Commanding Leadership`**, un des « paquets d'aspect conseillés » assemblés
+  à la volée par le wizard : Hawkeye ×2 (max 1) ;
+- `deck/custom/Wolverine_custom.json` (The Power of Determination ×3,
+  Twice the Determination ×3) et quatre `prebuilt_*.json` : fichiers importés
+  ou personnels, à laisser à leur propriétaire.
+
+**Ce qui est SAIN :** les 144 decks d'aspect de
+`deck/custom/<héros>_<aspect>.json` (commit `0b41fc5`) — zéro infraction, la
+règle est vérifiée par leur validateur de construction.
+
+Correction non faite : retirer un exemplaire en trop change l'équilibre d'un
+deck, c'est exactement la revue que ce TODO décrit. À traiter deck par deck,
+en remplaçant la carte retirée plutôt qu'en descendant à 24 cartes.

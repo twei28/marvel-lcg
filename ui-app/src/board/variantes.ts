@@ -55,6 +55,12 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   mutant: ['32022', '32023', '32024'],
   shield: ['50025', '50026', '50027'],
   civilwar: ['56020', '56021', '56022'],
+  // Re-skins livres PAR un pack fan-made (memes regles, autre illustration).
+  // Ajoutes le 31/08/2026 : ils existaient dans data/cards.json avec leurs
+  // images, mais n'etaient proposes nulle part.
+  gwenpool: ['gp015', 'gp016', 'gp017'],
+  howard: ['hd018', 'hd019', 'hd020'],
+  ms_america: ['ma027', 'ma028', 'ma029'],
 }
 
 /**
