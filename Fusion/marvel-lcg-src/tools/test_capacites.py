@@ -10267,6 +10267,52 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["ma025"], "degats": [["01094", 0]]},
     },
+    {
+        "nom": "mf001a Flexibility — un evenement SUPERPOWER JOUE ne doit PAS revenir en main",
+        "pourquoi": ("le texte dit « or discard it from your hand WITHOUT BEING PLAYED ». Le "
+                     "module ecoute `AfterCardDiscard`, qui ne sait pas d'ou la carte part : "
+                     "un evenement joué finit lui aussi a la defausse. Sonde de MESURE. Le "
+                     "paiement se fait avec 01088 (Energie, aucun trait) pour qu'aucune carte "
+                     "SUPERPOWER ne soit depensee et ne consomme la limite avant l'evenement"),
+        "scenario": "rhino",
+        "heros": "mister_fantastic",
+        "mise_en_place": ["Puzzle.ChangeForm('mf001b')", "Puzzle.SetThreat('01097b', 4)"],
+        "main_exclusive": ["mf009", "01088"],
+        "payer_avec": ["01088"],
+        "declencher": [],
+        "jouer": ["mf009"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["mf009"]},
+    },
+    {
+        "nom": "mf001a Flexibility — une carte SUPERPOWER defaussee DEPUIS LE JEU ne doit PAS revenir en main",
+        "pourquoi": ("le texte dit « discard it FROM YOUR HAND ». Cosmic Flight (01017) est une "
+                     "amelioration SUPERPOWER : detruite en jeu, elle ne devrait pas revenir en "
+                     "main. Sonde de MESURE. Le deck de DEPART de Mister Fantastic ne contient "
+                     "que des evenements SUPERPOWER, mais le jeu compte 102 ameliorations "
+                     "SUPERPOWER et le deckbuilder permet d'en mettre"),
+        "scenario": "rhino",
+        "heros": "mister_fantastic",
+        "mise_en_place": ["Puzzle.ChangeForm('mf001b')",
+                          "Puzzle.PutIntoPlay('01017', under_control=True)"],
+        "declencher": ["Puzzle.Discard('01017')"],
+        "verifier": "mf001a_ou_est_la_carte",
+    },
+    {
+        "nom": "mf001a Flexibility — SUPERPOWER defaussee DE LA MAIN sans etre jouee : elle DOIT revenir",
+        "pourquoi": ("troisieme branche du texte, jamais couverte : « or discard it from your "
+                     "hand without being played ». Sonde de MESURE : `control_by_player='You'` "
+                     "exige `is_in_play` (`factory/discard.py`), et la main porte `is_in_hand`, "
+                     "pas `is_in_play` (`deck/deck_type.py`). Lecture statique : la branche ne "
+                     "part peut-etre jamais"),
+        "scenario": "rhino",
+        "heros": "mister_fantastic",
+        "mise_en_place": ["Puzzle.ChangeForm('mf001b')"],
+        "main_exclusive": ["mf011", "mf009"],
+        "declencher": ["Puzzle.Discard('mf011')"],
+        "verifier": "mf001a_ou_est_mf011",
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -11650,6 +11696,34 @@ def gp003_desorientee_annule_tout(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, "capacite annulee de bout en bout, statut Desoriente consomme"
+
+def mf001a_ou_est_la_carte(monde, aides):
+    """Diagnostic : ou 01017 a-t-elle atterri apres avoir ete defaussee DU JEU ?"""
+    j = monde.players[0]
+    def ids(seq):
+        return [getattr(f.paper, "card_id", None) for f in seq]
+    main = ids(j.hand_cards.GetAll())
+    defausse = ids(j.discard_pile.Get())
+    en_jeu = aides["par_id"](monde, "01017") is not None
+    ou = f"main={main} defausse={defausse} en_jeu={en_jeu}"
+    if "01017" in main:
+        return False, "SUR-DECLENCHEMENT : 01017 est revenue EN MAIN alors qu'elle etait EN JEU. " + ou
+    if "01017" in defausse:
+        return True, "01017 est bien restee dans la defausse. " + ou
+    return False, "01017 est introuvable, la sonde ne prouve rien. " + ou
+
+def mf001a_ou_est_mf011(monde, aides):
+    """Diagnostic : mf011 defaussee DE LA MAIN sans etre jouee revient-elle ?"""
+    j = monde.players[0]
+    ids = lambda seq: [getattr(f.paper, "card_id", None) for f in seq]
+    main = ids(j.hand_cards.GetAll())
+    defausse = ids(j.discard_pile.Get())
+    ou = f"main={main} defausse={defausse}"
+    if "mf011" in main:
+        return True, "mf011 est bien revenue en main (branche du texte respectee). " + ou
+    if "mf011" in defausse:
+        return False, "MANQUE : mf011 est restee dans la defausse, la Response n'a PAS part. " + ou
+    return False, "mf011 introuvable. " + ou
 
 def identite_est_tenace(monde, aides):
     """L'identite du joueur porte un statut Tenace."""
