@@ -192,33 +192,99 @@ lettre morte.
 
 ---
 
-## 7. Ce qui reste — et c'est la gate finale
+## 7. Cas de comportement : 20/20, avec 10 preuves par substitution
 
-`PROCESSUS-HEROS.md` est clair : **« Pas de héros à moitié validé »**. Le
-pack n'est donc PAS déclaré terminé.
+| Carte | Capacité | Cas | Substitution : sans le module |
+|---|---|---|---|
+| `vp001a` | Fear Factor | ✅ | menace 8 au lieu de 7 |
+| `vp001b` | REC **bloquée** > 3 PV | ✅ | « autorisée à 7 PV » |
+| `vp001b` | REC **autorisée** ≤ 3 PV | ✅ | — (l'autre moitié de la même condition) |
+| `vp001b` | Unexpected Bond | ✅ | — |
+| `vp002` | ignore les icônes de crise | ✅ | — |
+| `vp003` | 4 dégâts **sans** True Form | ✅ | 6 dégâts (branche élargie) |
+| `vp003` | 6 dégâts **avec** True Form | ✅ | 4 dégâts (branche rétrécie) |
+| `vp005` | étourdit le vilain | ✅ | — |
+| `vp005` | « instead » : 3 menaces | ✅ | menace 9 au lieu de 6 |
+| `vp008` | Foresight (3 effets) | ✅ | — |
+| `vp009` | +3 points de vie | ✅ | — |
+| `vp009` | `drain 1`, les deux moitiés | ✅ | 0 dégât **et** identité à 4 |
+| `vp010` | défausse en cascade | ✅ | reste en jeu |
+| `vp012` | 3 dégâts indirects (révélation) | ✅ | — |
+| `vp012` | 1 dégât indirect (Boost) | ✅ | 2 au lieu de 3 |
+| `vp013` | +1 ATK par compteur | ✅ | — |
+| `vp014` | +1 ATK si Killer Thrill | ✅ | étoile réintroduite : bonus perdu |
+| `vp015` | +1 SCH si Killer Thrill | ✅ | — |
+| `vp016` | meilleur allié par ATQ imprimée | ✅ | 0 dégât |
+| `vp016` | aucun allié → surge | ✅ | — |
 
-- **Cas `test_capacites` manquants** — 7 capacités couvertes sur ~20 :
-  `vp001a` Fear Factor et sa limite par phase, `vp001b` (REC conditionnel et
-  Unexpected Bond), `vp003`, `vp004`, `vp005`, `vp006`, `vp007`, `vp008`,
-  `vp011`, `vp012`, `vp016`.
-- **La partie réelle au navigateur**, que rien de ce qui précède ne remplace :
-  c'est le seul juge de « est-ce que la carte est agréable et fait ce qu'elle
-  promet ». Elle n'a **pas** été faite.
+La paire `vp003` est la plus probante : **chaque cas passe au rouge quand on
+lui donne la portée de l'autre branche**, ce qui prouve non seulement que
+chaque branche fait son travail, mais que la condition True Form choisit
+bien la bonne des deux.
+
+### `vp013` Forced Interrupt : hors de portée du harnais, prouvé autrement
+
+Aucune commande `Puzzle` ne termine une phase (`End()` ne fait que relâcher
+le mode « skip »), et `kb012 Kate's Bow`, qui porte le **même** déclencheur
+`WhenPlayerPhaseEnd`, contourne de la même façon. La preuve vient donc des
+journaux d'autoplay, qui jouent de vraies phases :
+
+```
+323: Killer Thrill activates
+324: would place 1 'adrenaline' counter
+325: reçoit 1 compteur(s) « adrenaline »
+447: reçoit 1 compteur(s) « adrenaline »
+449: perd 2 compteur(s) « adrenaline »
+```
+
+Toute la chaîne y est : pose automatique, franchissement du seuil de 2,
+retrait de **tous** les compteurs, activation.
+
+---
+
+## 8. Trois cas qui ne prouvaient RIEN — et comment on l'a su
+
+C'est la preuve par substitution qui les a démasqués, pas la lecture.
+
+**a. La menace qui coïncidait.** Fear Factor et Thwip! posaient le complot
+`01109` puis attendaient une menace de **2** après retrait. Or 2 est
+exactement la `StartingThreat` de cette carte : les deux cas passaient
+module débranché. Valeurs portées à 8 → 7 et 9 → 6.
+
+**b. Le cas qui plafonnait à la place du module.** Les deux cas de `vp003`
+fournissaient respectivement 4 et 6 cibles. La différence venait donc du
+**cas**, pas de la carte. Les deux en fournissent 6 désormais, et c'est à la
+carte de plafonner à 4 sans True Form.
+
+**c. Le décalage d'indices.** `test_capacites` ne se pilote que par
+`CAS_INDEX`, un **rang**. Retirer le cas `vp013` a décalé tous les suivants :
+deux substitutions ont visé la mauvaise carte et sont revenues vertes à
+tort. Le journal de partie l'a montré — je croyais lancer « vilain déjà
+étourdi », le moteur exécutait « étourdit le vilain ».
+
+**Règle qui en découle** : relever la table des indices avant toute
+substitution, et faire afficher au script la neutralisation effective dans
+le fichier avant de lancer.
+
+---
+
+## 9. Ce qui reste — la gate n'est pas franchie
+
+`PROCESSUS-HEROS.md` est catégorique : **« Pas de héros à moitié validé »**.
+
+- **La partie réelle au navigateur n'a pas été faite.** Le processus la
+  désigne comme le seul juge de « est-ce que la carte est **agréable** et
+  fait ce qu'elle promet ». L'autoplay prouve qu'aucune carte ne plante, pas
+  qu'elles sont plaisantes à jouer, ni que l'équilibrage tient.
+- Quelques capacités restent sans cas sujet dédié : `vp004` Tasty Meal (les
+  trois bonus et le piercing conditionnel), `vp006` Whack-a-Rabbit (le
+  nombre de déclenchements), `vp007` Eat Them All! (la limite par phase),
+  `vp011` l'obligation (les deux options), `vp015` Plotting, et le `[star]`
+  Boost de `vp014`/`vp015`.
 
 ### Point matériel
 
 `assets/pics/` est hors git : les 17 images ne vivent que dans le dossier du
-jeu, et sont **postérieures** à la sauvegarde `~/marvel-backups/pics-2026-08-31.tar`.
-Elles restent régénérables depuis le zip de `A créer/`.
-
-### Leçon d'outillage (coûteuse, à ne pas reperdre)
-
-`tools/test_capacites.py` **n'a pas de filtre par nom** : son docstring
-annonce `[filtre]` en 4ᵉ argument, mais `main()` ne lit que `argv[1..3]`. Le
-seul moyen de cibler des cas est `CAS_INDEX=<n>`, un cas à la fois.
-
-Avoir cru au filtre a lancé les **776** cas au lieu de 7, en parallèle de la
-vérification des decks : la machine saturée a produit **31 faux échecs**
-`AssertionError: port=...` (73/105 au lieu de 104/105) et un faux « main vide
-après le setup » sur venompool. Le guide prévient déjà que ces échecs-là ne
-sont pas des régressions. **Ne jamais lancer deux harnais en parallèle.**
+jeu, et sont **postérieures** à la sauvegarde
+`~/marvel-backups/pics-2026-08-31.tar`. Elles restent régénérables depuis le
+zip de `A créer/`.
