@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "The Thing (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "The Thing encaisse pendant qu'une nuee d'allies Leadership thwart a sa place, ce qui compense son THW 1. Comparaison avec Hulk (175 decks Leadership MarvelCDB) et Colossus (68 decks, dont les paquets X-Men ont ete ecartes au profit des Avengers). Le trait Avenger du heros debloque Stinger, qui ne compte pas dans la limite d'allies, et rentabilise la nuee Ant-Man, Squirrel Girl, Wonder Man, Hawkeye, White Tiger et Black Knight. Make the Call et Get Ready recyclent ces corps a bas cout, Strength In Numbers les convertit en pioche. Command Team et Team Training prolongent leur duree de vie, Inspired en fait de vrais piliers. Kaluu va chercher un evenement du kit comme It's Clobberin' Time!. Courbe a 1,20 : le deck pose du monde chaque tour pendant que le heros defend avec ses tough."
+ },
+ "hero": [
+  "th001a,th001b"
+ ],
+ "hero_deck": [
+  "th002",
+  "th003",
+  "th004",
+  "th005",
+  "th006",
+  "th006",
+  "th007",
+  "th008",
+  "th008",
+  "th008",
+  "th008",
+  "th009",
+  "th009",
+  "th010",
+  "th010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "th011"
+ ],
+ "nemesis_set": [
+  "th012",
+  "th013",
+  "th014",
+  "th015",
+  "th015"
+ ],
+ "player_deck": [
+  "12011",
+  "12014",
+  "01067",
+  "03013",
+  "03014",
+  "04011",
+  "21014",
+  "21013",
+  "04012",
+  "01071",
+  "01071",
+  "01071",
+  "03017",
+  "03017",
+  "01069",
+  "01073",
+  "04016",
+  "23016",
+  "01074",
+  "01074",
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072"
+ ]
+}

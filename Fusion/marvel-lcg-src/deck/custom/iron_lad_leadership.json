@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Iron Lad (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Iron Lad fournit degats et controle par ses evenements pendant que ses armures TECH tiennent la duree ; le deck ajoute une armee d'allies pour couvrir ses 9 points de vie. Comparaison : Iron Man en Leadership (321 decks MarvelCDB jouables) et Ironheart en Leadership (272 decks). Neuf allies a courbe basse avec Make the Call x3 pour les recycler, et le Triskelion pour en garder un de plus en jeu. Power Gloves x2 est le choix structurant : c'est une carte TECH qui grossit les Ion Amplifiers tout en transformant chaque activation d'allie AVENGER en degat gratuit. Stinger est exclu car Iron Lad est YOUNG AVENGER et non AVENGER. Moon Girl et Ingenuity-like piochent grace au trait GENIUS de l'alter-ego. Strength In Numbers et Get Ready convertissent la largeur d'allies en pioche et en activations, ce que le kit ne sait pas faire seul. Team Training garde les petits corps en vie plus longtemps."
+ },
+ "hero": [
+  "il001a,il001b"
+ ],
+ "hero_deck": [
+  "il002",
+  "il003",
+  "il004",
+  "il005",
+  "il006",
+  "il007",
+  "il008",
+  "il009",
+  "il010",
+  "il011",
+  "il012",
+  "il013",
+  "il014",
+  "il015",
+  "il016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "il017"
+ ],
+ "nemesis_set": [
+  "il018",
+  "il019",
+  "il020",
+  "il021",
+  "il022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072",
+  "12011",
+  "01067",
+  "03013",
+  "03014",
+  "21014",
+  "01066",
+  "21013",
+  "28018",
+  "01084",
+  "01073",
+  "04016",
+  "08031",
+  "12017",
+  "12017",
+  "01071",
+  "01071",
+  "01071",
+  "01069",
+  "01069",
+  "03017"
+ ]
+}

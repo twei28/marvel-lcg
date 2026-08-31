@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Agent Anti-Venom (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Agent Anti-Venom est GUARDIAN : le Leadership rejoue le paquet Gardiens de la Galaxie des decks Venom Leadership de MarvelCDB (140 decks, Groot 72 pour cent, Knowhere 67 pour cent). Sept allies, tous GUARDIAN dont quatre verrouilles par trait (Groot, Rocket Raccoon, Gamora, Drax), plus Martinex a cout reduit : la table complete active Guardians of the Galaxy qui pioche a chaque equipement d'allie. Laser Blaster et Comms Implant sont ces equipements, Inspired complete. Welcome Aboard, verrouille GUARDIAN, reduit chaque allie de 2 et Knowhere agrandit la table en piochant. The Power in All of Us x2 paie double les allies Basic du paquet. Sept allies plutot que neuf car les recrues passent par Make the Call et Welcome Aboard, et One Man Army garde de la valeur en debut de partie. Le heros thwart et defend a 10 PV pendant que les Gardiens frappent."
+ },
+ "hero": [
+  "av001a,av001b"
+ ],
+ "hero_deck": [
+  "av002",
+  "av003",
+  "av003",
+  "av004",
+  "av004",
+  "av005",
+  "av005",
+  "av005",
+  "av006",
+  "av006",
+  "av007",
+  "av008",
+  "av009",
+  "av010",
+  "av011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "av012"
+ ],
+ "nemesis_set": [
+  "av013",
+  "av014",
+  "av015",
+  "av016",
+  "av016"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "13024",
+  "13024",
+  "17022",
+  "20027",
+  "20027",
+  "22033",
+  "17019",
+  "17019",
+  "18030",
+  "04016",
+  "01069",
+  "01071",
+  "01071",
+  "01074",
+  "01074",
+  "16047",
+  "16019",
+  "19020",
+  "18019",
+  "21065",
+  "17013",
+  "21053"
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "version": "0.5.8",
+ "name": "Thor (Jane Foster) (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Hammer Swing en interruption previent la totalite d'une attaque en epuisant Mjolnir, et Unyielding retire de la menace quand Thor ne subit aucun degat, un plan defensif que la Protection pousse a fond. Comparaison : Thor officiel en Protection, 162 decks MarvelCDB jouables analyses, plus 44 decks Valkyrie. Unflappable x2 pioche et Ever Vigilant x2 (jouable grace au trait AERIAL donne par Mjolnir, present chez 43 pour cent des vrais decks Thor Protection) readye le heros en retirant 2 menaces, ce qui comble la THW 1. Armored Vest x2, Desperate Defense x2 et Counter-Punch x2 valorisent la DEF 2 et le retaliate de Mighty. Energy Barrier x2 et The Night Nurse encaissent et nettoient les statuts. Godlike Stamina x2 soigne gratuitement grace au trait ASGARD. Les allies defensifs (Nova, Clea, Brother Voodoo, Black Widow, Mockingbird) annulent ou amortissent l'encounter pendant que Thor tient la ligne."
+ },
+ "hero": [
+  "ra001a,ra001b"
+ ],
+ "hero_deck": [
+  "ra002",
+  "ra003",
+  "ra004",
+  "ra004",
+  "ra004",
+  "ra005",
+  "ra005",
+  "ra006",
+  "ra006",
+  "ra007",
+  "ra008",
+  "ra009",
+  "ra010",
+  "ra011",
+  "ra012",
+  "ra013"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ra026"
+ ],
+ "nemesis_set": [
+  "ra028",
+  "ra027",
+  "ra029",
+  "ra030",
+  "ra031"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079",
+  "17030",
+  "17030",
+  "25024",
+  "25024",
+  "01077",
+  "01077",
+  "09015",
+  "09015",
+  "01081",
+  "01081",
+  "09020",
+  "09020",
+  "05017",
+  "05017",
+  "09019",
+  "05012",
+  "09013",
+  "09012",
+  "01075",
+  "01083"
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Lockjaw (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Avec 14 PV, DEF 2 et Teleport To Safety qui annule une attaque entiere, Lockjaw est un tank naturel : ce deck est la version defensive construite, la ou le deck de depart mise tout sur les Pet Avengers. Comparaison : Groot (386 decks Protection MarvelCDB, Armored Vest 85 pour cent, Unflappable 83 pour cent). Taunt x2 est taille pour lui : encaisser volontairement une attaque du vilain sur 14 PV pour piocher 3 cartes, avec Teleport To Safety en filet. Perseverance x2 repond au changement de forme permanent du kit par un statut tough a chaque flip. Counter-Punch x2 rend 2 degats par defense, double par Electrostatic Armor, et Indomitable x2 releve apres avoir defendu. Hairball et Lockheed, compagnons Protection du pack, restent en jeu sans occuper de place d'allie et Hairball previent 1 degat par attaque. Unflappable et Armored Vest convertissent les defenses parfaites en pioche. Night Nurse soigne sur la duree d'une partie que ce heros fait durer."
+ },
+ "hero": [
+  "lj001a,lj001b"
+ ],
+ "hero_deck": [
+  "lj002",
+  "lj003",
+  "lj004",
+  "lj005",
+  "lj006",
+  "lj007",
+  "lj008",
+  "lj008",
+  "lj009",
+  "lj009",
+  "lj010",
+  "lj010",
+  "lj011",
+  "lj011",
+  "lj012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "lj013"
+ ],
+ "nemesis_set": [
+  "lj014",
+  "lj015",
+  "lj016",
+  "lj016",
+  "lj017"
+ ],
+ "player_deck": [
+  "lj021",
+  "lj022",
+  "09013",
+  "16012",
+  "01075",
+  "01081",
+  "09020",
+  "10031",
+  "01082",
+  "01082",
+  "05017",
+  "05017",
+  "42016",
+  "42016",
+  "13033",
+  "13033",
+  "01077",
+  "01077",
+  "09015",
+  "09019",
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079"
+ ]
+}

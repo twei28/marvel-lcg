@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Red Guardian (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Red Guardian frappe a 2 avec piercing via Shield Strike et encaisse tout avec Shield Block : ce deck Agressivite en fait un chasseur de sbires. References : Captain America (355 decks Agressivite MarvelCDB) et Winter Soldier (215 decks). Man on the Wall, la carte fetiche des joueurs Winter Soldier, exige le trait Soldier que Red Guardian possede sur ses deux faces : reduction de cout par sbire engage. Spoiling for a Fight x2 va chercher un sbire et le redresse, Toe to Toe x2 provoque une attaque que Shield Block annule entierement avant de rendre 5 degats. Combat Training x2 et Skilled Strike x2 montent son attaque de base a 3 voire 5. Hall of Heroes convertit tous ces sbires vaincus en pioche, le manque criant du kit. Cinq allies economes, Hulk et Spider-Girl en tete."
+ },
+ "hero": [
+  "rg001a,rg001b"
+ ],
+ "hero_deck": [
+  "rg002",
+  "rg003",
+  "rg004",
+  "rg004",
+  "rg005",
+  "rg005",
+  "rg006",
+  "rg006",
+  "rg006",
+  "rg007",
+  "rg007",
+  "rg008",
+  "rg009",
+  "rg010",
+  "rg011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "rg012"
+ ],
+ "nemesis_set": [
+  "rg013",
+  "rg014",
+  "rg015",
+  "rg016",
+  "rg017"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "01050",
+  "01051",
+  "04040",
+  "25014",
+  "01083",
+  "54019",
+  "01057",
+  "01057",
+  "10018",
+  "09037",
+  "09037",
+  "10015",
+  "10015",
+  "10014",
+  "10014",
+  "06017",
+  "54016",
+  "54016",
+  "01053",
+  "01053"
+ ]
+}

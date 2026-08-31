@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Lockjaw (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Ruff Ambush du kit frappe a 5-7 apres un retour en forme heros : l'Agressivite empile d'autres recompenses sur ce meme declencheur. Comparaison : Groot (67 decks Agressivite MarvelCDB) et Ant-Man pour Surprise Attack (66 pour cent de ses 221 decks). Surprise Attack x3 repond exactement comme Ruff Ambush au changement de forme : un aller-retour de Lockjaw devient 8 a 11 degats. Ready to Rumble releve le heros apres le flip pour enchainer une attaque de base. Skilled Strike x3 et Combat Training x2 exploitent la vraie ATK 2 de Lockjaw, contrairement a Howard ou Doreen, et Jarnbjorn ajoute 2 degats sur chaque attaque. Zabu, compagnon du pack en classe Agressivite, apporte du piercing sans occuper de place d'allie. Chase Them Down convertit un sbire acheve en 2 menaces retirees, le point faible du heros. Hall of Heroes recycle les sbires vaincus en pioche pendant les tours en alter-ego."
+ },
+ "hero": [
+  "lj001a,lj001b"
+ ],
+ "hero_deck": [
+  "lj002",
+  "lj003",
+  "lj004",
+  "lj005",
+  "lj006",
+  "lj007",
+  "lj008",
+  "lj008",
+  "lj009",
+  "lj009",
+  "lj010",
+  "lj010",
+  "lj011",
+  "lj011",
+  "lj012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "lj013"
+ ],
+ "nemesis_set": [
+  "lj014",
+  "lj015",
+  "lj016",
+  "lj016",
+  "lj017"
+ ],
+ "player_deck": [
+  "lj018",
+  "01051",
+  "06012",
+  "16040",
+  "04040",
+  "13014",
+  "13014",
+  "13014",
+  "09037",
+  "09037",
+  "09037",
+  "01053",
+  "01053",
+  "01052",
+  "01057",
+  "01057",
+  "06019",
+  "21022",
+  "16024",
+  "06017",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

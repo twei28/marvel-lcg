@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Scarlet Spider (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Extreme Interrogation convertit les degats excedentaires sur les sbires en retrait de menace et renvoie le sbire dans le deck de rencontre, Mark of Kaine et Stings of Kaine fournissant l'overkill. Comparaison : Spider-Man officiel en Agressivite, 367 decks MarvelCDB jouables analyses. Looking for Trouble x2 et l'alliee Angela sont le choix structurant : ils vont chercher eux-memes les sbires a executer, comme Spider-pathy, pour ne jamais manquer de carburant. Relentless Assault x3 (5 degats sur sbire, overkill contre une ressource physique) et Into the Fray x2 sont les executeurs parfaits du moteur. Moment of Triumph x2 convertit les degats excedentaires en soin et comble l'absence de soin du kit. Hall of Heroes transforme chaque sbire vaincu en pioche future, l'autre trou du paquet. Toe to Toe exploite la DEF 3 de Kaine pour echanger favorablement avec le scelerat."
+ },
+ "hero": [
+  "ss001a,ss001b"
+ ],
+ "hero_deck": [
+  "ss002",
+  "ss003",
+  "ss004",
+  "ss005",
+  "ss006",
+  "ss007",
+  "ss008",
+  "ss009",
+  "ss010",
+  "ss011",
+  "ss012",
+  "ss013",
+  "ss014",
+  "ss015",
+  "ss016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ss017"
+ ],
+ "nemesis_set": [
+  "ss018",
+  "ss019",
+  "ss020",
+  "ss021",
+  "ss022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "01057",
+  "10018",
+  "16043",
+  "16043",
+  "13013",
+  "13013",
+  "01053",
+  "01053",
+  "01053",
+  "10015",
+  "10015",
+  "12030",
+  "12030",
+  "06017",
+  "05023",
+  "18011",
+  "01050",
+  "01051",
+  "04040",
+  "01084"
+ ]
+}

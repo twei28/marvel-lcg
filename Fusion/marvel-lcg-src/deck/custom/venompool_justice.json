@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Venompool (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit recompense les ennemis vaincus (Fear Factor retire 1 menace par kill) mais le THW de base reste a 1 : la Justice comble ce manque de controle. Compare a Deadpool (42 decks) et Venom (418 decks) en Justice sur MarvelCDB. Clear the Area et For Justice! forment le socle de thwart, One Way or Another cree des programmes annexes qui nourrissent Skilled Investigator et Jessica Jones. Turn the Tide reconvertit un programme nettoye en 3 degats, ce qui relance Fear Factor. Deft Focus reduit le cout des nombreux evenements SUPERPOWER du kit (Thwip!, Tasty Meal, Talk About Armed Assault). Moira MacTaggert est jouable car Wade Wilson est MUTANT et pioche a chaque bascule en heros. Endurance couvre les 9 PV fragiles et l'auto-degat de Whack-a-Rabbit et Foresight. Le deck apporte du bleu et du jaune face a un kit tres rouge."
+ },
+ "hero": [
+  "vp001a,vp001b"
+ ],
+ "hero_deck": [
+  "vp002",
+  "vp003",
+  "vp003",
+  "vp003",
+  "vp004",
+  "vp004",
+  "vp005",
+  "vp005",
+  "vp006",
+  "vp006",
+  "vp006",
+  "vp007",
+  "vp008",
+  "vp009",
+  "vp010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "vp011"
+ ],
+ "nemesis_set": [
+  "vp012",
+  "vp013",
+  "vp014",
+  "vp015",
+  "vp016"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062",
+  "05023",
+  "16024",
+  "01065",
+  "06031",
+  "04047",
+  "04049",
+  "04049",
+  "04049",
+  "01060",
+  "01060",
+  "22015",
+  "22015",
+  "15015",
+  "15015",
+  "38018",
+  "08012",
+  "15011",
+  "01059",
+  "01083",
+  "13018"
+ ]
+}

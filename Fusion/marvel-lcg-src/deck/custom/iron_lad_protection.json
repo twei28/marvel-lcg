@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Iron Lad (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Iron Lad n'a que 9 points de vie (12 avec la Suit) et aucun soin, mais un DEF de 2 et des armures TECH qui alimentent les Ion Amplifiers. Comparaison : Iron Man en Protection (718 decks MarvelCDB jouables), ou Energy Barrier apparait dans 89 pour cent des listes. Energy Barrier x3 et Electrostatic Armor sont des TECH : elles protegent le heros ET grossissent les compteurs d'ions. Repurpose x3 est le choix structurant : defausser une Energy Barrier videe pour se readier declenche en prime le Casque d'Iron Lad qui recupere une carte de la defausse. Med Team x2 et Night Nurse comblent l'absence totale de soin du kit. What Doesn't Kill Me soigne et readie, en synergie avec la Suit. Brother Voodoo va chercher les evenements signature et Luke Cage, seule carte a 4, offre un corps durable que le kit ne fournit pas."
+ },
+ "hero": [
+  "il001a,il001b"
+ ],
+ "hero_deck": [
+  "il002",
+  "il003",
+  "il004",
+  "il005",
+  "il006",
+  "il007",
+  "il008",
+  "il009",
+  "il010",
+  "il011",
+  "il012",
+  "il013",
+  "il014",
+  "il015",
+  "il016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "il017"
+ ],
+ "nemesis_set": [
+  "il018",
+  "il019",
+  "il020",
+  "il021",
+  "il022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079",
+  "01075",
+  "16012",
+  "09012",
+  "01076",
+  "05017",
+  "05017",
+  "05017",
+  "10031",
+  "01081",
+  "09020",
+  "09019",
+  "01080",
+  "01080",
+  "31016",
+  "31016",
+  "31016",
+  "09016",
+  "09016",
+  "27016",
+  "27016"
+ ]
+}

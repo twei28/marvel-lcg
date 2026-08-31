@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Mister Fantastic (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : THW 3 de base, Flexibility qui recycle les SUPERPOWER depensees en ressource, et Great Minds qui genere du mental chaque round. Comparaison : Doctor Strange en Justice (196 decks MarvelCDB jouables) et Iron Man en Justice (677 decks). Heroic Intuition porte le THW a 4 : chaque activation de base vaut un evenement, et For Justice! x3 puis Multitasking x2 profitent des ressources mentales de Great Minds et d'Ingenuity (trait GENIUS de Reed). Deft Focus est le choix structurant : il reduit le cout des nombreuses SUPERPOWER du kit (Big Reach, Stretched Thin, Mental Gymnastics). Clear the Area x3 et One Way or Another regarnissent la main, ce qui nourrit Big Reach et repousse la main vide au bon moment. Moon Girl, jouable via le trait GENIUS, pioche en entrant. Under Surveillance donne le temps de flip que Reed adore pour Baxter Building et H.E.R.B.I.E."
+ },
+ "hero": [
+  "mf001a,mf001b"
+ ],
+ "hero_deck": [
+  "mf002",
+  "mf003",
+  "mf004",
+  "mf005",
+  "mf006",
+  "mf007",
+  "mf008",
+  "mf009",
+  "mf009",
+  "mf010",
+  "mf010",
+  "mf010",
+  "mf011",
+  "mf011",
+  "mf012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "mf013"
+ ],
+ "nemesis_set": [
+  "mf014",
+  "mf015",
+  "mf016",
+  "mf016",
+  "mf017"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062",
+  "01059",
+  "08012",
+  "15011",
+  "28018",
+  "01084",
+  "04047",
+  "01065",
+  "06031",
+  "29027",
+  "16024",
+  "01060",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "04049",
+  "15013",
+  "15013",
+  "22015",
+  "22015"
+ ]
+}

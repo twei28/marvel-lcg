@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Human Torch (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Unstable Uniform donne +1 DEF et pose un compteur flamme sur l'attaquant quand Human Torch encaisse : le kit recompense litteralement le fait de defendre. Base comparee : Captain Marvel en Protection (169 decks MarvelCDB), qui joue exactement ce squelette Med Team, Energy Barrier, Armored Vest. Counter-Punch x3 est le pivot : apres chaque defense il rend 2 degats, qui s'ajoutent au ping du costume, le tank devient une source de degats. Desperate Defense et Indomitable le readyent apres defense pour continuer a jouer Nova Flame au tour suivant. Armored Vest porte la DEF a 4 avec le costume, ce qui rend Unflappable (pioche sur defense parfaite) fiable. Med Team et Night Nurse comblent l'absence totale de soin du kit hors Radiate. Les allies Luke Cage et Nova encaissent ou punissent les attaques, Black Widow annule les traitrises, Clea et Starhawk reviennent bloquer. Ressources R/B/G et The Power of Protection x2 face a un kit tout en jaune."
+ },
+ "hero": [
+  "ht001a,ht001b"
+ ],
+ "hero_deck": [
+  "ht002",
+  "ht003",
+  "ht004",
+  "ht005",
+  "ht006",
+  "ht006",
+  "ht007",
+  "ht007",
+  "ht008",
+  "ht008",
+  "ht009",
+  "ht009",
+  "ht009",
+  "ht010",
+  "ht010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ht011"
+ ],
+ "nemesis_set": [
+  "ht012",
+  "ht013",
+  "ht014",
+  "ht014",
+  "ht014"
+ ],
+ "player_deck": [
+  "01077",
+  "01077",
+  "01077",
+  "09015",
+  "09015",
+  "05014",
+  "05014",
+  "05017",
+  "05017",
+  "01082",
+  "01082",
+  "01081",
+  "09020",
+  "01080",
+  "09019",
+  "01076",
+  "05012",
+  "01075",
+  "09013",
+  "16012",
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079"
+ ]
+}

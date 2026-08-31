@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Superior Iron Man (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Superior Iron Man genere des ressources sauvages en continu (What Else?, les trois Individuals a cash) mais son statline 1/1/1 fait peu par lui-meme ; les allies font le travail a sa place. Comparaison : Iron Man en Leadership (321 decks MarvelCDB jouables). Neuf allies a courbe basse, dont Stinger, reserve aux identites AVENGER, qui ne compte pas dans la limite d'allies. Make the Call x3 recycle les allies tombes et le Triskelion elargit le banc. Strength In Numbers x3 est le choix structurant : avec un banc large, il pioche 3 a 4 cartes et alimente O.P.A. en cartes mentales pour les tours en alter-ego. White Tiger et Maria Hill piochent en entrant, ce que le kit ne fait pas. Team Training et Rapid Response gardent le banc en vie. La courbe a 1,2 de moyenne laisse chaque tour de quoi payer O.P.A. ou l'armure."
+ },
+ "hero": [
+  "si001a,si001b"
+ ],
+ "hero_deck": [
+  "si003",
+  "si004",
+  "si005",
+  "si006",
+  "si007",
+  "si008",
+  "si009",
+  "si010",
+  "si011",
+  "si011",
+  "si011",
+  "si012",
+  "si012",
+  "si013",
+  "si013"
+ ],
+ "set_aside": [
+  "si002"
+ ],
+ "obligations": [
+  "si014"
+ ],
+ "nemesis_set": [
+  "si015",
+  "si016",
+  "si017",
+  "si017",
+  "si017"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072",
+  "12014",
+  "12011",
+  "01067",
+  "03013",
+  "03014",
+  "01066",
+  "21013",
+  "21014",
+  "01084",
+  "01073",
+  "04016",
+  "08031",
+  "01071",
+  "01071",
+  "01071",
+  "01069",
+  "01069",
+  "03017",
+  "03017",
+  "03017"
+ ]
+}

@@ -1,0 +1,68 @@
+{
+  "version": "0.5.8",
+  "name": "Wolverine (X-23) (Leadership)",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Moteur du kit : le duo avec Honey Badger, qui redresse Wolverine quand elle prend des degats et copie ses stats via Sisterly Bond. Comparaison : X-23 (248 decks MarvelCDB en Leadership, son aspect le plus joue) et Wolverine (57 decks). L'ossature vient des vrais decks X-23 : Sidekick sur Honey Badger, puis Side-by-Side x2 qui redresse la paire entiere pour un enchainement d'activations. Danger Room Training et Game Time gonflent et redressent les allies X-MEN, Suit Up va chercher l'allie et son upgrade d'un coup. Les neuf allies sont tous X-MEN pour activer Utopia (limite d'allies +1, redressements gratuits) et Uncanny X-Men (PV et rabais), et To Me, My X-Men! x2 les met en jeu a prix casse. Phoenix et Pixie recyclent, Beak thwarte a l'entree, Beast va chercher les ressources. Le kit garde pour lui le soin et la menace, le deck fournit le nombre."
+  },
+  "hero": [
+    "wx001a,wx001b"
+  ],
+  "hero_deck": [
+    "wx003",
+    "wx004",
+    "wx004",
+    "wx005",
+    "wx005",
+    "wx005",
+    "wx006",
+    "wx006",
+    "wx007",
+    "wx008",
+    "wx009",
+    "wx010",
+    "wx011",
+    "wx012",
+    "wx012"
+  ],
+  "set_aside": [
+    "wx002"
+  ],
+  "obligations": [
+    "43028"
+  ],
+  "nemesis_set": [
+    "43029",
+    "43030",
+    "43031",
+    "43032",
+    "43033"
+  ],
+  "player_deck": [
+    "36017",
+    "32019",
+    "33011",
+    "36022",
+    "33019",
+    "45048",
+    "32048",
+    "49014",
+    "46020",
+    "45015",
+    "45016",
+    "45016",
+    "33015",
+    "33015",
+    "45017",
+    "33022",
+    "33022",
+    "36020",
+    "36020",
+    "33020",
+    "36018",
+    "01072",
+    "01088",
+    "01089",
+    "01090"
+  ]
+}

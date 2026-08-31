@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Howard the Duck (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le moteur de Howard tourne autour des manigances annexes : ses 3 manigances-joueur, le ready quand une manigance entre en jeu, et les recompenses au tableau des victoires. Comparaison : Spider-Ham (97 decks Justice MarvelCDB analyses) et Rocket Raccoon (171 decks). One Way or Another x2 revele une manigance annexe de la rencontre : elle declenche le ready de Howard, pioche 3 cartes, puis Fowl Play la nettoie pour nourrir le tableau des victoires. Skilled Investigator x2 pioche a chaque manigance annexe vaincue, un metronome dans ce deck. Think Fast! x2 est verrouille au trait GUARDIAN que Howard possede : confusion du vilain pour flipper tranquillement. Overwatch x2 profite des multiples schemes en jeu pour deplacer la menace retiree. Jessica Jones gagne +1 THW par manigance annexe en jeu, choix evident. Ressources doubles : 01088/01089/01090 officielles, en remplacement (jamais en plus) des re-skins hd018-hd020 du pack, qui leur sont identiques par full_link mais que le validateur ne resout pas. Manque comble : la pioche (One Way or Another, Skilled Investigator), car le kit n'en a presque pas."
+ },
+ "hero": [
+  "hd001a,hd001b"
+ ],
+ "hero_deck": [
+  "hd002",
+  "hd003",
+  "hd004",
+  "hd005",
+  "hd006",
+  "hd007",
+  "hd008",
+  "hd009",
+  "hd010",
+  "hd011",
+  "hd012",
+  "hd013",
+  "hd014",
+  "hd015",
+  "hd016"
+ ],
+ "set_aside": [
+  "hd017"
+ ],
+ "obligations": [
+  "hd021"
+ ],
+ "nemesis_set": [
+  "hd022",
+  "hd023",
+  "hd025",
+  "hd026",
+  "hd027"
+ ],
+ "player_deck": [
+  "01059",
+  "01058",
+  "08012",
+  "01084",
+  "01060",
+  "01060",
+  "01060",
+  "22015",
+  "22015",
+  "04049",
+  "04049",
+  "19031",
+  "19031",
+  "04047",
+  "04047",
+  "01065",
+  "01065",
+  "30019",
+  "30019",
+  "40027",
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062"
+ ]
+}

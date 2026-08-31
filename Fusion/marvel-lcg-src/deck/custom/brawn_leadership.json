@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Brawn (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Brawn manque d'allies dans son kit (Silk seule) et Leadership fournit une nuee a bas cout qui thwart et tape pendant que Brawn defend puis exploite son etat epuise. Comparaison avec She-Hulk (217 decks Leadership MarvelCDB) et Hulk (175 decks) : Ant-Man, Maria Hill, Squirrel Girl, Wonder Man et White Tiger dominent les deux listes. Make the Call et Strength In Numbers recyclent et convertissent cette nuee en pioche, ce qui alimente la reserve via Mastermind Excello. Champions Mobile Bunker exploite le trait Champion de Brawn pour lisser les mains. Stinger est absente car elle exige le trait Avenger que Brawn n'a pas. Triskelion et Team Training fiabilisent la table d'allies, Inspired transforme un allie en menace durable. Courbe a 1,25, rien au-dessus du cout 3 : tout se joue vite."
+ },
+ "hero": [
+  "bw001a,bw001b"
+ ],
+ "hero_deck": [
+  "bw002",
+  "bw004",
+  "bw005",
+  "bw006",
+  "bw007",
+  "bw008",
+  "bw009",
+  "bw010",
+  "bw011",
+  "bw012",
+  "bw013",
+  "bw014",
+  "bw015",
+  "bw016",
+  "bw017"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "bw018"
+ ],
+ "nemesis_set": [
+  "bw019",
+  "bw020",
+  "bw021",
+  "bw022",
+  "bw023"
+ ],
+ "player_deck": [
+  "12011",
+  "01067",
+  "03013",
+  "03014",
+  "21014",
+  "04011",
+  "21013",
+  "13018",
+  "01083",
+  "01071",
+  "01071",
+  "01071",
+  "03017",
+  "03017",
+  "03017",
+  "01073",
+  "04016",
+  "28020",
+  "01074",
+  "01074",
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072"
+ ]
+}

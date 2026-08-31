@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Speed (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Speed a DEF 2 et Mother's Protection, et ses evenements de defense a 1 de cout payes en energie posent des compteurs explosifs meme pendant le tour du scelerat. Comparaison : Quicksilver officiel en Protection, 396 decks MarvelCDB jouables analyses, ou Never Back Down x3 (62 pour cent des decks) est la carte phare : DEF 2 plus 2 egale souvent zero degat et un etourdissement. Side Step x2 paye en energie previent 3 degats, renvoie 1 degat et pose un compteur. Desperate Defense x2 redresse Speed apres une defense reussie pour garder son activation. Armored Vest, Electrostatic Armor et Unflappable sont les permanents standards de l'aspect, Unflappable comblant le manque de pioche. What Doesn't Kill Me x2 soigne et redresse contre une ressource physique. Les compteurs poses en defendant nourrissent ensuite Quick Adaptation et Explosive Touch au tour suivant."
+ },
+ "hero": [
+  "sd001a,sd001b"
+ ],
+ "hero_deck": [
+  "sd002",
+  "sd003",
+  "sd004",
+  "sd005",
+  "sd006",
+  "sd007",
+  "sd008",
+  "sd009",
+  "sd010",
+  "sd011",
+  "sd012",
+  "sd013",
+  "sd014",
+  "sd015",
+  "sd016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "sd017"
+ ],
+ "nemesis_set": [
+  "sd018",
+  "sd019",
+  "sd020",
+  "sd021",
+  "sd022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079",
+  "01081",
+  "09020",
+  "10031",
+  "16024",
+  "14014",
+  "14014",
+  "14014",
+  "14015",
+  "14015",
+  "09015",
+  "09015",
+  "27016",
+  "27016",
+  "09019",
+  "05023",
+  "09013",
+  "09012",
+  "13018",
+  "01083",
+  "01075"
+ ]
+}

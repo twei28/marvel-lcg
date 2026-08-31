@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Totally Awesome Hulk (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Hypermind rend toutes les ressources wild : chaque bonus conditionnel de paiement se declenche automatiquement, et Drop Kick etourdit et pioche a chaque fois. Comparaison avec Hulk (833 decks Agressivite MarvelCDB) et She-Hulk (495 decks) : Combat Training, Drop Kick, Skilled Strike et Martial Prowess sont les piliers communs. Into the Fray couvre le vrai trou du kit, l'absence totale de thwart en forme Uncontrollable Hulk (THW 0), en convertissant l'overkill en menace retiree. Limitless Stamina (16 PV imprimes) redonne une attaque de base, qui profite des +2 degats de la forme Brute et de Kinetic Stomp. Hand Cannon et Skilled Strike gonflent ces memes attaques de base. L'allie Brawn s'ajoute a The Locust grace au trait Champion. Courbe a 1,95, la plus haute des quatre decks : les couts 3 sont les charges utiles et Hypermind les paie sans contrainte de couleur."
+ },
+ "hero": [
+  "ah001a,ah001b,ah001c"
+ ],
+ "hero_deck": [
+  "ah002",
+  "ah003",
+  "ah004",
+  "ah005",
+  "ah006",
+  "ah007",
+  "ah008",
+  "ah008",
+  "ah009",
+  "ah009",
+  "ah009",
+  "ah010",
+  "ah010",
+  "ah011",
+  "ah011"
+ ],
+ "set_aside": [
+  "ah012a,ah012b"
+ ],
+ "obligations": [
+  "ah013"
+ ],
+ "nemesis_set": [
+  "ah014",
+  "ah015",
+  "ah016",
+  "ah017",
+  "ah018"
+ ],
+ "player_deck": [
+  "01050",
+  "28010",
+  "01051",
+  "04040",
+  "10011",
+  "10014",
+  "10014",
+  "09037",
+  "09037",
+  "09037",
+  "13013",
+  "13013",
+  "18012",
+  "18012",
+  "01057",
+  "10018",
+  "16046",
+  "31023",
+  "31023",
+  "01092",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

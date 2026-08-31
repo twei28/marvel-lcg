@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Venom (Eddie Brock) (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Venom encaisse volontairement (Symbiotic Bond, Symbiotic Fury) et se soigne en devorant les sbires (Hunger), mais sa THW 1 est le plus gros trou du kit, que la Justice vient boucher. Comparaison : Venom officiel (Flash Thompson) en Justice, 418 decks MarvelCDB jouables analyses, en ecartant ses cartes a trait GUARDIAN que ce Venom n'a pas. For Justice! x3, Clear the Area x2 et Multitasking x2 assurent le controle de menace qu'Eddie Brock ne fait qu'en alter-ego. Heroic Intuition x2 monte la THW a 2 et Making an Entrance x2 la pousse a 4 en soignant, du carburant direct pour Symbiotic Bond. Sonic Rifle, l'engin fetiche des vrais decks Venom Justice, confuse le mechant pour flip en securite. Under Surveillance x2 achete du temps et Endurance ajoute 3 PV a un heros qui se blesse tout seul. Quake, Eros, Jessica Jones, Mockingbird et Daredevil gerent plans et sbires en soutien."
+ },
+ "hero": [
+  "vr001a,vr001b"
+ ],
+ "hero_deck": [
+  "vr002",
+  "vr003",
+  "vr003",
+  "vr004",
+  "vr004",
+  "vr005",
+  "vr005",
+  "vr005",
+  "vr006",
+  "vr007",
+  "vr007",
+  "vr008",
+  "vr009",
+  "vr010",
+  "vr011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "vr012"
+ ],
+ "nemesis_set": [
+  "vr014",
+  "vr013",
+  "vr015",
+  "vr015",
+  "vr015"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062",
+  "01060",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "15013",
+  "15013",
+  "20013",
+  "20013",
+  "01065",
+  "01065",
+  "06031",
+  "06031",
+  "20015",
+  "05023",
+  "08012",
+  "22011",
+  "01059",
+  "01083",
+  "01058"
+ ]
+}

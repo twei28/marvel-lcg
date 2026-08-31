@@ -1,0 +1,65 @@
+{
+    "version": "0.5.8",
+    "name": "Ms. America (Agressivité)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Moteur du kit : Star-Gaze et de gros degats natifs (ATQ 2, Break Through a 4 degats), l'aspect pousse donc la machine a fond. Base sur Captain Marvel (359 decks Aggression MarvelCDB jouables ici) et Hercules (99 decks). Choix structurant : Combat Training x2 met l'ATQ a 3, ce qui debloque Power Stomp (ma025, carte Aggression du pack, exige ATQ 3 ou plus) et se double avec America's Anger. Skilled Strike et les modificateurs profitent aussi du doublement d'America's Anger. Toe to Toe est presque gratuit avec DEF 2, 14 PV et Bulletproof Chica qui annule une attaque entiere. Chase Them Down bouche le trou de thwart : le deck vainc des ennemis en permanence. Gwenpool (ma022) monte a ATQ 3 grace aux upgrades signature Star Light et Star Flight. Moment of Triumph (12030, l'originale, pas la re-skin ma026 que le validateur ne resout pas) recycle l'overkill en soin. Cout moyen tres bas (environ 1,1), le deck tourne meme sur des petites mains."
+    },
+    "hero": [
+        "ma001a,ma001b"
+    ],
+    "hero_deck": [
+        "ma002",
+        "ma003",
+        "ma004",
+        "ma005",
+        "ma006",
+        "ma007",
+        "ma008",
+        "ma009",
+        "ma010",
+        "ma011",
+        "ma012",
+        "ma013",
+        "ma014",
+        "ma015",
+        "ma016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ma017"
+    ],
+    "nemesis_set": [
+        "ma018",
+        "ma019",
+        "ma020",
+        "ma021"
+    ],
+    "player_deck": [
+        "01088",
+        "01089",
+        "01090",
+        "01055",
+        "01055",
+        "16024",
+        "01057",
+        "01057",
+        "ma025",
+        "ma025",
+        "09037",
+        "09037",
+        "10015",
+        "10015",
+        "01053",
+        "01053",
+        "12030",
+        "12030",
+        "01052",
+        "01052",
+        "ma022",
+        "13012",
+        "01050",
+        "04040",
+        "06012"
+    ]
+}

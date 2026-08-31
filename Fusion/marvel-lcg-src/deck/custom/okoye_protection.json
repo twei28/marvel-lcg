@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Okoye (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Okoye a DEF 2 et un essaim de jetons Dora qui font d'excellents blocages, et Close Ranks transforme chaque Dora tombee en ressource physique. Reference : Black Panther, 462 decks Protection MarvelCDB analyses. Le trio Armored Vest, Unflappable, Electrostatic Armor forme le socle permanent quasi systematique de l'aspect. What Doesn't Kill Me x2 exige une ressource physique : Close Ranks la fournit gratuitement, ce qui donne soin et redressement a prix casse. Desperate Defense x2 et Never Back Down x2 permettent de defendre sans rien encaisser puis de se redresser, Counter-Punch x2 rentabilise son ATK 2 en defendant. Med Team x2 comble l'absence totale de soin du kit. Clea et Starhawk sont des bloqueurs recyclables qui completent les jetons Dora."
+ },
+ "hero": [
+  "ok001a,ok001b"
+ ],
+ "hero_deck": [
+  "ok002",
+  "ok003",
+  "ok004",
+  "ok005",
+  "ok006",
+  "ok007",
+  "ok008",
+  "ok009",
+  "ok010",
+  "ok011",
+  "ok012",
+  "ok013",
+  "ok014",
+  "ok015",
+  "ok016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ok019"
+ ],
+ "nemesis_set": [
+  "ok020",
+  "ok021",
+  "ok022",
+  "ok023",
+  "ok024"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079",
+  "01075",
+  "09013",
+  "16012",
+  "01084",
+  "01083",
+  "01081",
+  "09020",
+  "10031",
+  "05017",
+  "05017",
+  "09015",
+  "09015",
+  "14014",
+  "14014",
+  "01077",
+  "01077",
+  "01080",
+  "01080",
+  "27016",
+  "27016"
+ ]
+}

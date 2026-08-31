@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Iron Lad (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Ion Blast et Energy Overflow convertissent le deck et les cartes TECH en degats directs, et les Bottes et le Casque recuperent ce qui part a la defausse. Comparaison : Iron Man en Agressivite (361 decks MarvelCDB jouables) et Ironheart en Agressivite (78 decks). Hand Cannon x2 est le choix structurant : c'est une carte TECH qui grossit les Ion Amplifiers et donne overkill aux attaques de base, boostees par Skilled Strike x3 et Combat Training. Chase Them Down x3 transforme chaque sbire vaincu en retrait de menace, ce qui bouche le trou de controle de menace d'un deck rouge. Wasp se paie en surcout avec les nombreuses ressources energie du kit et Relentless Assault x3 nettoie les sbires avant qu'ils ne frappent un heros a 9 points de vie. Drop Kick apporte l'etourdissement qui protege les tours en alter-ego. La courbe reste basse (1,55 de moyenne) pour jouer plusieurs cartes par tour malgre une main de 5."
+ },
+ "hero": [
+  "il001a,il001b"
+ ],
+ "hero_deck": [
+  "il002",
+  "il003",
+  "il004",
+  "il005",
+  "il006",
+  "il007",
+  "il008",
+  "il009",
+  "il010",
+  "il011",
+  "il012",
+  "il013",
+  "il014",
+  "il015",
+  "il016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "il017"
+ ],
+ "nemesis_set": [
+  "il018",
+  "il019",
+  "il020",
+  "il021",
+  "il022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "01050",
+  "04040",
+  "01051",
+  "13012",
+  "01083",
+  "01057",
+  "16046",
+  "16046",
+  "01053",
+  "01053",
+  "01053",
+  "09037",
+  "09037",
+  "09037",
+  "01052",
+  "01052",
+  "01052",
+  "10014",
+  "10014",
+  "13013"
+ ]
+}

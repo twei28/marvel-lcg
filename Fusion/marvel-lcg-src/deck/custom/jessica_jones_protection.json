@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Jessica Jones (Protection)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "La defense de base est un pouvoir de base : chaque garde de Jessica genere une preuve, et Leather Jacket la fait defendre a 3 en ajoutant une preuve de plus. Comparaison avec Daredevil (14 decks Protection, tres oriente defense) et Black Widow (252 decks Protection) sur l'index local. Desperate Defense et Never Back Down portent sa DEF a 5 avec Armored Vest et jacket, pour defendre sans degat, piocher avec Unflappable et etourdir le vilain. Indomitable la redresse apres la garde et Counter-Punch riposte a hauteur de son ATK : une activation villain devient preuve, riposte et pioche. Energy Barrier et Defensive Stance couvrent les gros coups, Preemptive Strike neutralise les boosts. The Night Nurse soigne et retire les statuts, seul soin d'un kit qui n'en a aucun. Black Widow, Clea et Starhawk offrent des corps recyclables a bas cout. Courbe quasi entierement a 1-2, The Power of Protection paie les cartes vertes."
+    },
+    "hero": [
+        "61001a,61001b"
+    ],
+    "hero_deck": [
+        "61003",
+        "61004",
+        "61004",
+        "61005",
+        "61006",
+        "61006",
+        "61006",
+        "61007",
+        "61008",
+        "61009",
+        "61010",
+        "61011",
+        "61012",
+        "61013",
+        "61014"
+    ],
+    "set_aside": [
+        "61002"
+    ],
+    "obligations": [
+        "61030",
+        "61033a",
+        "61033b",
+        "61033c"
+    ],
+    "nemesis_set": [
+        "61031",
+        "61032"
+    ],
+    "player_deck": [
+        "01081",
+        "09020",
+        "01082",
+        "01082",
+        "09015",
+        "09015",
+        "14014",
+        "14014",
+        "05014",
+        "05014",
+        "01077",
+        "01077",
+        "05017",
+        "05017",
+        "08032",
+        "56046",
+        "09019",
+        "01075",
+        "09013",
+        "16012",
+        "01083",
+        "01088",
+        "01089",
+        "01090",
+        "01079"
+    ]
+}

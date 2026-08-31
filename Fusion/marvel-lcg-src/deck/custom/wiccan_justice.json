@@ -1,0 +1,66 @@
+{
+  "version": "0.5.8",
+  "name": "Wiccan (Justice)",
+  "hero": [
+    "wc001a,wc001b"
+  ],
+  "hero_deck": [
+    "wc002",
+    "wc003",
+    "wc004",
+    "wc005",
+    "wc006",
+    "wc007",
+    "wc008",
+    "wc009",
+    "wc010",
+    "wc011",
+    "wc012",
+    "wc013",
+    "wc014",
+    "wc015",
+    "wc016"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "wc018"
+  ],
+  "nemesis_set": [
+    "wc019a,wc019b",
+    "wc020",
+    "wc021",
+    "wc022",
+    "wc023"
+  ],
+  "player_deck": [
+    "01060",
+    "01060",
+    "01060",
+    "04049",
+    "04049",
+    "15013",
+    "15013",
+    "15015",
+    "15015",
+    "22015",
+    "04047",
+    "01065",
+    "06031",
+    "09026",
+    "15019",
+    "15019",
+    "15019",
+    "08012",
+    "01059",
+    "13018",
+    "01083",
+    "01062",
+    "01088",
+    "01089",
+    "01090"
+  ],
+  "metadata": {
+    "url": "",
+    "aspect_note": "Le moteur de Wiccan est la lecture du sommet du deck de rencontre : ses sorts comptent les icones d'amplification et Magic Portal retire 5 menaces d'un coup. Deck compare a Scarlet Witch (498 decks MarvelCDB) et Doctor Strange (196 decks) en Justice. Choix structurants : le paquet For Justice!, Multitasking et Clear the Area, dope par ses 2 THW, pour ne jamais laisser la menace s'installer ; Turn the Tide convertit chaque manigance nettoyee, ce que Magic Portal fait presque a chaque tour, en 3 degats qui compensent son 1 ATK ; Mystique, il abuse de Spiritual Meditation en 3 exemplaires et de The Sorcerer Supreme pour nourrir des sorts couteux ; The Power of Justice double sur un deck tres jaune. Quake et Mockingbird neutralisent les sbires que son faible ATK gere mal, Ironheart et Jessica Jones completent la pioche et le thwart."
+  }
+}

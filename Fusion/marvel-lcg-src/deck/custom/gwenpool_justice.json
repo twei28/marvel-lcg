@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Gwenpool (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le moteur de Gwenpool est son THW 2 et ses evenements a bulles : Sorry, Gotta Run! ignore patrouille et icones crisis, It Can't End Like This! thwart en attaquant. Deadpool, le comparable propose, joue en classe 'Pool (42 decks Justice seulement), donc le squelette vient surtout des staples Justice (12035 decks analyses). Clear the Area, For Justice! et Multitasking forment le socle de thwart, Heroic Intuition monte le THW a 3. Turn the Tide comble le vrai trou du kit, l'ATK 1 : nettoyer un programme declenche 3 degats gratuits. One Way or Another pioche et cree des cibles pour Skilled Investigator et Jessica Jones. Sonic Rifle confuse sans exposer ses 9 PV, ce qui permet de basculer en alter-ego pour recharger Unbelievable Gwenpool. Les allies Quake, Wiccan et Nick Fury couvrent les sbires pendant qu'elle thwart."
+ },
+ "hero": [
+  "gp001a,gp001b"
+ ],
+ "hero_deck": [
+  "gp002",
+  "gp002",
+  "gp003",
+  "gp003",
+  "gp004",
+  "gp004",
+  "gp005",
+  "gp005",
+  "gp005",
+  "gp006",
+  "gp006",
+  "gp006",
+  "gp007",
+  "gp008",
+  "gp009"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "gp010"
+ ],
+ "nemesis_set": [
+  "gp012",
+  "gp011",
+  "gp013",
+  "gp013",
+  "gp014"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062",
+  "01065",
+  "04047",
+  "06031",
+  "04049",
+  "04049",
+  "04049",
+  "01060",
+  "01060",
+  "15013",
+  "15013",
+  "15015",
+  "15015",
+  "22015",
+  "22015",
+  "20015",
+  "08012",
+  "15011",
+  "01059",
+  "01083",
+  "01084"
+ ]
+}

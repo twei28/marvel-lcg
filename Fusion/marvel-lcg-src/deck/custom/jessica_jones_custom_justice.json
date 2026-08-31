@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Jessica Jones custom (Justice)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Cette version de Jessica Jones vit des plans secondaires : leur revelation fait piocher 2 cartes (Pays the Bills), leur defaite inflige son ATK (Hard-Hitting Investigation), redresse (Crack the Case) et charge la camera. Comparaison avec Daredevil (53 decks Justice) et Black Widow (791 decks Justice) sur l'index local, mais l'ossature vient des decks side scheme type One Way or Another. One Way or Another x3 revele un plan a la demande, donc pioche immediate et cible fraiche, et Out in the Open du kit fait le reste. Followed et Chance Encounter s'attachent aux plans qu'elle va de toute facon detruire pour convertir chaque defaite en 4 degats ou en allie. Team Investigation et Clear the Area fournissent le gros volume de thwart que reclame le moteur. Build Support et Lay the Trap ajoutent des plans joueurs qui declenchent aussi ses reponses. Skilled Investigator transforme chaque plan vaincu en pioche. Allies economiques (Quake, Wiccan, Mockingbird, Nick Fury), le deck tournant autour du heros."
+    },
+    "hero": [
+        "jj001a,jj001b"
+    ],
+    "hero_deck": [
+        "jj002",
+        "jj003",
+        "jj003",
+        "jj004",
+        "jj004",
+        "jj005",
+        "jj005",
+        "jj006",
+        "jj006",
+        "jj007",
+        "jj007",
+        "jj008",
+        "jj009",
+        "jj010",
+        "jj011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "jj017"
+    ],
+    "nemesis_set": [
+        "jj018",
+        "jj019",
+        "jj020",
+        "jj020",
+        "jj021"
+    ],
+    "player_deck": [
+        "22015",
+        "22015",
+        "22015",
+        "04049",
+        "04049",
+        "04049",
+        "15013",
+        "40053",
+        "40053",
+        "04047",
+        "03032",
+        "03032",
+        "26034",
+        "01065",
+        "06031",
+        "40027",
+        "41016",
+        "08012",
+        "15011",
+        "01083",
+        "01084",
+        "01088",
+        "01089",
+        "01090",
+        "01062"
+    ]
+}

@@ -1,0 +1,68 @@
+{
+  "version": "0.5.8",
+  "name": "Wolverine (X-23) (Justice)",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Moteur du kit : prendre des degats pour se redresser (Living Weapon) et un THW 2 que Animal Instinct convertit en THW+ATK sur un meme tour. Comparaison : X-23 (58 decks MarvelCDB en Justice) et Wolverine (91 decks). Making an Entrance x2 est taillee pour elle : +2 THW et un soin si le plan est nettoye, exactement la ou Animal Instinct l'emmene. Overwatch fait rebondir chaque gros thwart vers un second plan, Heroic Intuition monte le THW de base a 3. Upside the Head exploite ses nombreuses attaques de base redressees pour confusionner le vilain et schemer en securite. Mission Training et Game Time font de Honey Badger une thwarteuse gratuite et rejouable. One Way or Another et Skilled Investigator apportent la pioche qui manque au kit, X-Mansion soigne Laura en alter-ego grace au trait MUTANT. Professor X, Blindfold et Bishop controlent la table en allies X-MEN."
+  },
+  "hero": [
+    "wx001a,wx001b"
+  ],
+  "hero_deck": [
+    "wx003",
+    "wx004",
+    "wx004",
+    "wx005",
+    "wx005",
+    "wx005",
+    "wx006",
+    "wx006",
+    "wx007",
+    "wx008",
+    "wx009",
+    "wx010",
+    "wx011",
+    "wx012",
+    "wx012"
+  ],
+  "set_aside": [
+    "wx002"
+  ],
+  "obligations": [
+    "43028"
+  ],
+  "nemesis_set": [
+    "43029",
+    "43030",
+    "43031",
+    "43032",
+    "43033"
+  ],
+  "player_deck": [
+    "34016",
+    "34016",
+    "33022",
+    "33022",
+    "20013",
+    "20013",
+    "41015",
+    "41015",
+    "04047",
+    "01065",
+    "30019",
+    "30019",
+    "22015",
+    "22015",
+    "04049",
+    "04049",
+    "32019",
+    "33019",
+    "33014",
+    "37011",
+    "45048",
+    "32049",
+    "01088",
+    "01089",
+    "01090"
+  ]
+}

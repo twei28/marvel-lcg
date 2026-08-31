@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Howard the Duck (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Howard a DEF 2 et un kit qui aime rester en forme heros : la Protection le transforme en mur qui pioche. Comparaison : Rocket Raccoon (165 decks Protection MarvelCDB, Energy Barrier x2.8 quasi systematique) et Spider-Ham (149 decks). Energy Barrier x3 previent et renvoie les degats, en synergie avec Quack Attack qui previent deja 2 degats en interrupt. Armored Vest porte la DEF a 3, Unflappable convertit les defenses parfaites en pioche et Electrostatic Armor en degats. Desperate Defense et Indomitable relevent Howard pour continuer a contrer la menace avec Private Eye et THW 2. What Doesn't Kill Me x2 soigne et releve, le rouge du deck paie son exigence physique. Night Nurse et Med Team comblent l'absence totale de soin du kit. Ressources doubles : 01088/01089/01090 officielles, en remplacement (jamais en plus) des re-skins hd018-hd020 du pack, identiques par full_link."
+ },
+ "hero": [
+  "hd001a,hd001b"
+ ],
+ "hero_deck": [
+  "hd002",
+  "hd003",
+  "hd004",
+  "hd005",
+  "hd006",
+  "hd007",
+  "hd008",
+  "hd009",
+  "hd010",
+  "hd011",
+  "hd012",
+  "hd013",
+  "hd014",
+  "hd015",
+  "hd016"
+ ],
+ "set_aside": [
+  "hd017"
+ ],
+ "obligations": [
+  "hd021"
+ ],
+ "nemesis_set": [
+  "hd022",
+  "hd023",
+  "hd025",
+  "hd026",
+  "hd027"
+ ],
+ "player_deck": [
+  "01075",
+  "09013",
+  "09012",
+  "16012",
+  "09014",
+  "01081",
+  "09020",
+  "10031",
+  "05017",
+  "05017",
+  "05017",
+  "01082",
+  "01082",
+  "27016",
+  "27016",
+  "09015",
+  "09015",
+  "14014",
+  "09019",
+  "01080",
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079"
+ ]
+}

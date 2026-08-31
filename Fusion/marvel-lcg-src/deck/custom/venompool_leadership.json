@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Venompool (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit de Venompool est autonome en degats (Talk About Armed Assault, Whack-a-Rabbit) mais n'a ni pioche ni presence de table : le Leadership apporte les deux avec 8 allies. Compare a Deadpool (51 decks) et Venom (140 decks) en Leadership sur MarvelCDB. Venompool n'etant ni AVENGER ni GUARDIAN, les paquets a trait (Stinger, Welcome Aboard) sont ecartes au profit des valeurs sures toutes classes : Maria Hill, White Tiger et Nick Fury pour la pioche, Hawkeye pour tenir les sbires a distance du moteur Whack-a-Rabbit. Strength In Numbers convertit la table en cartes, Make the Call et Rapid Response recyclent les allies tombes. Get Ready et Command Team redressent Hawkeye ou White Tiger. Triskelion et Team Training fiabilisent la table. Le heros garde ses evenements signature pour tuer, les allies gerent la menace que son THW 1 ne couvre pas."
+ },
+ "hero": [
+  "vp001a,vp001b"
+ ],
+ "hero_deck": [
+  "vp002",
+  "vp003",
+  "vp003",
+  "vp003",
+  "vp004",
+  "vp004",
+  "vp005",
+  "vp005",
+  "vp006",
+  "vp006",
+  "vp006",
+  "vp007",
+  "vp008",
+  "vp009",
+  "vp010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "vp011"
+ ],
+ "nemesis_set": [
+  "vp012",
+  "vp013",
+  "vp014",
+  "vp015",
+  "vp016"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072",
+  "01073",
+  "04016",
+  "01071",
+  "01071",
+  "01069",
+  "01069",
+  "08031",
+  "01074",
+  "01074",
+  "03017",
+  "03017",
+  "23016",
+  "01067",
+  "01066",
+  "03013",
+  "21014",
+  "21013",
+  "03014",
+  "01084",
+  "13018"
+ ]
+}

@@ -1,0 +1,66 @@
+{
+  "version": "0.5.8",
+  "name": "Wiccan (Leadership)",
+  "hero": [
+    "wc001a,wc001b"
+  ],
+  "hero_deck": [
+    "wc002",
+    "wc003",
+    "wc004",
+    "wc005",
+    "wc006",
+    "wc007",
+    "wc008",
+    "wc009",
+    "wc010",
+    "wc011",
+    "wc012",
+    "wc013",
+    "wc014",
+    "wc015",
+    "wc016"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "wc018"
+  ],
+  "nemesis_set": [
+    "wc019a,wc019b",
+    "wc020",
+    "wc021",
+    "wc022",
+    "wc023"
+  ],
+  "player_deck": [
+    "21055",
+    "01067",
+    "03013",
+    "21014",
+    "01066",
+    "21013",
+    "13018",
+    "01083",
+    "01084",
+    "01071",
+    "01071",
+    "01073",
+    "04016",
+    "08031",
+    "01069",
+    "01069",
+    "03017",
+    "03017",
+    "01074",
+    "09026",
+    "15019",
+    "15019",
+    "01088",
+    "01089",
+    "01090"
+  ],
+  "metadata": {
+    "url": "",
+    "aspect_note": "Le moteur de Wiccan est la lecture du sommet du deck de rencontre ; ses 2 THW et ses gros sorts gerent la menace, le Leadership lui fournit l'armee qui frappe et encaisse a sa place. Deck compare a Scarlet Witch (254 decks MarvelCDB) et Doctor Strange (763 decks) en Leadership. Choix structurants : Summoning Spell, reserve aux Mystiques, deterre un allie en defaussant du deck, avec neuf allies pour le rendre fiable ; Hawkeye et Mockingbird neutralisent les sbires que son 1 ATK ne peut pas punir ; White Tiger et Nick Fury, seule carte a 4, se justifient par leur pioche explosive dans un kit qui n'en a aucune ; Strength In Numbers et Get Ready convertissent la table en cartes et en actions. Kaluu, Mystique, va chercher les sorts du kit. Triskelion, Team Training et Rapid Response font durer cette armee. Sorcerer Supreme et Spiritual Meditation huilent le tout."
+  }
+}

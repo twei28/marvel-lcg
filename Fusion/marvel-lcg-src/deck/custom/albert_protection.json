@@ -1,0 +1,66 @@
+{
+  "version": "0.5.8",
+  "name": "Albert (Protection)",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Moteur du kit : Initiate Protocol, relance ici par Guard Protocol qui donne tough et retaliate 1 ; la Protection en fait un mur qui rend chaque coup. Comparaison : Wolverine (274 decks MarvelCDB en Protection), croise avec les staples de l'aspect. Avec Kevlar Shell, Armored Vest et Electrostatic Armor, Albert defend a 4 en rendant 2 degats par attaque subie avant meme de contre-attaquer. Desperate Defense et Indomitable le redressent apres la defense, What Doesn't Kill Me soigne et redresse pour enchainer. Unflappable convertit les defenses parfaites (frequentes grace a tough) en pioche, le manque principal du kit. Energy Barrier x2 et Counter-Punch ajoutent des degats passifs. Reboot x2 redresse Albert ou un allie ANDROID : Jocasta, Victor Mancha, Protector et Machine Man forment un corps de garde robotique, Night Nurse et Clea soignent le reste."
+  },
+  "hero": [
+    "ab001a,ab001b"
+  ],
+  "hero_deck": [
+    "ab002",
+    "ab003",
+    "ab003",
+    "ab003",
+    "ab004",
+    "ab004",
+    "ab004",
+    "ab005",
+    "ab005",
+    "ab005",
+    "ab006",
+    "ab007",
+    "ab008",
+    "ab009",
+    "ab010"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "ab011"
+  ],
+  "nemesis_set": [
+    "ab012",
+    "ab013",
+    "ab014",
+    "ab015",
+    "ab016"
+  ],
+  "player_deck": [
+    "01081",
+    "10031",
+    "09020",
+    "09015",
+    "09015",
+    "03033",
+    "01077",
+    "01077",
+    "05017",
+    "05017",
+    "27016",
+    "27016",
+    "01082",
+    "26024",
+    "26024",
+    "09019",
+    "26013",
+    "26015",
+    "26014",
+    "09013",
+    "26022",
+    "01079",
+    "01088",
+    "01089",
+    "01090"
+  ]
+}

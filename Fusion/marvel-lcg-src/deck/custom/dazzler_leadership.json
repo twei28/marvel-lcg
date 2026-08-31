@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Dazzler (Leadership)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Moteur du kit : les evenements SONG et la Setlist, maries ici a une escouade entierement X-MEN qui exploite le trait de Dazzler. Base sur Jubilee (85 decks Leadership MarvelCDB jouables ici, memes synergies mutantes) et Star-Lord (668 decks). Choix structurant : sept allies tous X-MEN pour activer les deux paliers d'Uncanny X-Men (PV +1 et cout reduit de 1 quand tous les personnages sont X-MEN, ce que l'identite garantit) et l'extension de limite d'Utopia. Pixie repeche les X-MEN defausses, Forge va chercher Utopia ou Uncanny X-Men, Beak thwart a l'entree, Angel coute 2 grace au trait. Danger Room Training x2 rend les petits corps rentables. Song of Leadership x2 les soigne a hauteur de la defausse de chansons, et Out and Proud du kit soigne tout le banc. Make the Call x2 et Beauty and the Beast completent le recrutement. Sept allies au lieu de huit a dix : la recursion et la recherche du kit compensent largement, aucun autre allie X-MEN n'existant en Leadership ou Basic dans le catalogue."
+    },
+    "hero": [
+        "dz001a,dz001b"
+    ],
+    "hero_deck": [
+        "dz002",
+        "dz003",
+        "dz004",
+        "dz005",
+        "dz006",
+        "dz007",
+        "dz008",
+        "dz009",
+        "dz010",
+        "dz011",
+        "dz012",
+        "dz013",
+        "dz014",
+        "dz015",
+        "dz016"
+    ],
+    "set_aside": [
+        "dz017a"
+    ],
+    "obligations": [
+        "dz019"
+    ],
+    "nemesis_set": [
+        "dz020",
+        "dz021",
+        "dz022",
+        "dz022",
+        "dz023"
+    ],
+    "player_deck": [
+        "01088",
+        "01089",
+        "01090",
+        "dz030",
+        "dz030",
+        "dz034",
+        "dz034",
+        "dz033",
+        "dz033",
+        "dz029",
+        "dz026",
+        "dz026",
+        "36018",
+        "33020",
+        "33015",
+        "33015",
+        "36017",
+        "33011",
+        "45048",
+        "46020",
+        "36022",
+        "32019",
+        "33019",
+        "01071",
+        "01071"
+    ]
+}

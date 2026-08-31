@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Gwenpool (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Gwenpool a ATK 1 mais DEF 3 et un kit d'evenements : l'Agressivite passe donc par les evenements d'attaque, pas par l'attaque de base. Deadpool (73 decks Agressivite) et les staples de l'aspect (13192 decks) servent de reference. Toe to Toe x3 est le choix structurant : avec DEF 3 plus Fun Background Noise pour annuler le pire, elle encaisse la contre-attaque et rend 5 degats. Honed Technique et Aggressive Energy gonflent Here I Come!, Drop Kick et Into the Fray, le kit etant riche en bleu pour payer le mental. Clobber revient en main si c'est la premiere carte du tour, parfait avec sa pioche de bulles, et Chase Them Down convertit un kill en thwart gratuit. Hall of Heroes convertit les sbires tues en pioche et Moment of Triumph recycle l'overkill de Here I Come! en soin. Endurance protege ses 9 PV. Cinq allies dont Hulk et Spider-Girl pour le controle des sbires."
+ },
+ "hero": [
+  "gp001a,gp001b"
+ ],
+ "hero_deck": [
+  "gp002",
+  "gp002",
+  "gp003",
+  "gp003",
+  "gp004",
+  "gp004",
+  "gp005",
+  "gp005",
+  "gp005",
+  "gp006",
+  "gp006",
+  "gp006",
+  "gp007",
+  "gp008",
+  "gp009"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "gp010"
+ ],
+ "nemesis_set": [
+  "gp012",
+  "gp011",
+  "gp013",
+  "gp013",
+  "gp014"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "32047",
+  "32047",
+  "10015",
+  "10015",
+  "10015",
+  "10014",
+  "10014",
+  "18012",
+  "18012",
+  "13013",
+  "01052",
+  "28017",
+  "05023",
+  "06017",
+  "12030",
+  "01050",
+  "04040",
+  "01051",
+  "01083",
+  "13018"
+ ]
+}

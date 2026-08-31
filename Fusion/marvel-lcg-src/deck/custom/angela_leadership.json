@@ -1,0 +1,66 @@
+{
+  "version": "0.5.8",
+  "name": "Angela (Leadership)",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Moteur du kit : vaincre des sbires ; le Leadership y contribue par Hawkeye, qui abat les sbires des leur entree en jeu, et repond surtout a Hel-Wolf, le sbire nemesis qui punit les defenses du heros : huit allies offrent des defenseurs sacrifiables en permanence. Comparaison : Valkyrie (60 decks MarvelCDB en Leadership) et Wolverine (57 decks). Make the Call et Rapid Response recyclent les allies tombes en defense, Get Ready et Command Team les redressent pour bloquer encore. Team Training et Reinforced Suit allongent leur duree de vie, Inspired et Lead from the Front convertissent leur activation en tempo. Strength in Numbers comble le manque de pioche du kit une fois la table posee. White Tiger, Kaluu et Maria Hill piochent ou filtrent en entrant en jeu, Nick Fury et Mockingbird restent les meilleurs pompiers du jeu."
+  },
+  "hero": [
+    "an001a,an001b"
+  ],
+  "hero_deck": [
+    "an002",
+    "an003",
+    "an003",
+    "an003",
+    "an004",
+    "an004",
+    "an004",
+    "an005",
+    "an005",
+    "an005",
+    "an006",
+    "an007",
+    "an007",
+    "an008",
+    "an009"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "an010"
+  ],
+  "nemesis_set": [
+    "an011",
+    "an012",
+    "an013",
+    "an014",
+    "an015"
+  ],
+  "player_deck": [
+    "01067",
+    "01066",
+    "03013",
+    "21013",
+    "21014",
+    "01083",
+    "01084",
+    "13018",
+    "01071",
+    "01071",
+    "01069",
+    "01069",
+    "08031",
+    "08031",
+    "04016",
+    "23016",
+    "01074",
+    "12018",
+    "01070",
+    "03017",
+    "03017",
+    "01072",
+    "01088",
+    "01089",
+    "01090"
+  ]
+}

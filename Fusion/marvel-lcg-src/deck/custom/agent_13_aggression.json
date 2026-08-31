@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Agent 13 (Agressivité)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Hand-to-Hand Specialist offre chaque round une attaque de base gratuite apres un pouvoir de base : l'Agressivite muscle cette attaque a 1 ATK pres inutile autrement. Comparaison avec Black Widow (160 decks Agressivite) et Maria Hill (49 decks) sur l'index local. Skilled Strike porte l'attaque gratuite a 3, Combat Training et Aggressive Conditioning la montent en permanence tout en gonflant ses 9 points de vie, et S.H.I.E.L.D. Sidearm, taille pour son trait, ajoute 1 degat par attaque de base. Le pistolet signature convertit deja les boosts en degats : Tac Team ajoute des tirs S.H.I.E.L.D. a la demande, repris des decks Maria Hill. Relentless Assault et One by One finissent les sbires que ses petites attaques ont entames. Counterattack et Lie in Wait, standards Black Widow, punissent ce qui ose la frapper malgre sa DEF de 2. Espionage exploite le trait Spy contre les surges. Allies S.H.I.E.L.D. (Winter Soldier, Spider-Woman, Mockingbird, Nick Fury) pour l'identite et la pression."
+    },
+    "hero": [
+        "ag001a,ag001b"
+    ],
+    "hero_deck": [
+        "ag002",
+        "ag003",
+        "ag003",
+        "ag003",
+        "ag004",
+        "ag004",
+        "ag004",
+        "ag005",
+        "ag005",
+        "ag006",
+        "ag006",
+        "ag007",
+        "ag008",
+        "ag009",
+        "ag010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ag015"
+    ],
+    "nemesis_set": [
+        "ag011",
+        "ag012",
+        "ag013",
+        "ag014",
+        "ag014"
+    ],
+    "player_deck": [
+        "09037",
+        "09037",
+        "09037",
+        "54020",
+        "54020",
+        "01057",
+        "10018",
+        "56013",
+        "01056",
+        "01056",
+        "01053",
+        "01053",
+        "28014",
+        "28014",
+        "08030",
+        "13017",
+        "08033",
+        "53035",
+        "52033",
+        "01083",
+        "01084",
+        "01088",
+        "01089",
+        "01090",
+        "01055"
+    ]
+}

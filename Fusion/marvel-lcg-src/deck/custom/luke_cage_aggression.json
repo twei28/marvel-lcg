@@ -1,0 +1,65 @@
+{
+ "version": "0.5.8",
+ "name": "Luke Cage (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit encaisse sans broncher grace aux cartes tough illimitees et frappe en zone avec Sweet Christmas : ce deck pousse la moitie offensive. Comparaison sur Hulk, l'echantillon le plus massif des heros similaires (833 decks Agressivite MarvelCDB), grand amateur de Drop Kick et Skilled Strike. Skilled Strike x3 et Combat Training x2 montent son ATK de base, la facon la moins chere de taper pour un heros qui veut garder ses ressources pour Sweet Christmas. Drop Kick x2 paye en physique (le kit est plein de rouge) stun le vilain et pioche. You'll Pay for That! x2 est le choix signature : Luke encaisse les attaques du vilain sur sa pile de tough, puis convertit les degats subis en thwart, son vrai point faible. Looking for Trouble attire les sbires sur lui, la ou Cruisin' for a Bruisin' et Sweet Christmas les broient en groupe. Moment of Triumph recycle l'overkill de Cruisin' en soin. Ressources Y/G en face du kit rouge et bleu, The Power of Aggression x2 et Martial Prowess financent les events rouges."
+ },
+ "hero": [
+  "62001a,62001b"
+ ],
+ "hero_deck": [
+  "62002",
+  "62003",
+  "62003",
+  "62004",
+  "62005",
+  "62005",
+  "62006",
+  "62006",
+  "62007",
+  "62008",
+  "62009",
+  "62009",
+  "62010",
+  "62010",
+  "62011"
+ ],
+ "obligations": [
+  "62028"
+ ],
+ "nemesis_set": [
+  "62029",
+  "62030",
+  "62031",
+  "62032",
+  "62033"
+ ],
+ "player_deck": [
+  "01057",
+  "01057",
+  "10014",
+  "10014",
+  "09037",
+  "09037",
+  "09037",
+  "10018",
+  "01053",
+  "01053",
+  "10016",
+  "10016",
+  "16043",
+  "16043",
+  "12030",
+  "01050",
+  "01051",
+  "13012",
+  "04040",
+  "01084",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

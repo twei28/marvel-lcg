@@ -1,0 +1,65 @@
+{
+    "version": "0.5.8",
+    "name": "Ms. America (Justice)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Moteur du kit : Star-Gaze ne se declenche que sur les cartes SUPERPOWER du set, donc l'aspect sert surtout a combler le vrai trou, la parade aux menaces (CTR 1). Deck construit en croisant Captain Marvel (411 decks Justice MarvelCDB jouables ici) et Hercules (16 decks) avec les staples Justice. For Justice! x3, Clear the Area x2 et Multitasking x2 donnent le volume de thwart que le kit n'a pas, et Heroic Intuition x2 monte le CTR a 2 pour les tours creux. Deft Focus reduit presque toutes les cartes du kit (toutes SUPERPOWER), c'est la meilleure carte Basic possible pour elle. Cinq allies dont Quake et Jessica Jones nourrissent Star Portal, qui les repeche de la defausse pour du thwart et des degats. One Way or Another et Skilled Investigator convertissent les side schemes en pioche, precieuse avec une main de 4. Les degats restent au kit : ATQ 2, Break Through, Interrogation Room recompense les sbires vaincus. Cout moyen bas, couleurs equilibrees face a un kit charge en ressources sauvages et energie."
+    },
+    "hero": [
+        "ma001a,ma001b"
+    ],
+    "hero_deck": [
+        "ma002",
+        "ma003",
+        "ma004",
+        "ma005",
+        "ma006",
+        "ma007",
+        "ma008",
+        "ma009",
+        "ma010",
+        "ma011",
+        "ma012",
+        "ma013",
+        "ma014",
+        "ma015",
+        "ma016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ma017"
+    ],
+    "nemesis_set": [
+        "ma018",
+        "ma019",
+        "ma020",
+        "ma021"
+    ],
+    "player_deck": [
+        "01088",
+        "01089",
+        "01090",
+        "01062",
+        "01062",
+        "16024",
+        "01060",
+        "01060",
+        "01060",
+        "04049",
+        "04049",
+        "15013",
+        "15013",
+        "22015",
+        "01065",
+        "01065",
+        "06031",
+        "04047",
+        "08012",
+        "15011",
+        "01059",
+        "01083",
+        "01084",
+        "01092",
+        "01063"
+    ]
+}

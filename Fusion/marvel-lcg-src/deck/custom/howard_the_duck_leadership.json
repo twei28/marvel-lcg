@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Howard the Duck (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Howard porte le trait GUARDIAN : ce deck exploite les verrous de trait des Gardiens de la Galaxie. Comparaison : Rocket Raccoon (142 decks Leadership MarvelCDB) et Spider-Ham (197 decks). Welcome Aboard x2 (reserve aux identites GUARDIAN) reduit de 2 le cout du prochain allie, et Knowhere (meme verrou) monte la limite d'allies a 4 en piochant sur chaque allie GUARDIAN joue : Major Victory, Gamora et Drax en profitent. Gamora et Drax, allies basiques verrouilles GUARDIAN, donnent des corps que peu de heros peuvent jouer. Make the Call x3 recycle les allies depuis la defausse et Rapid Response rejoue un allie vaincu. Strength in Numbers et Get Ready entretiennent la table d'allies pendant que Howard contre la menace avec Private Eye. Huit allies, courbe tres basse (1.35), le kit gere la menace et les allies gerent le reste. Ressources doubles : 01088/01089/01090 officielles, en remplacement (jamais en plus) des re-skins hd018-hd020 du pack, identiques par full_link."
+ },
+ "hero": [
+  "hd001a,hd001b"
+ ],
+ "hero_deck": [
+  "hd002",
+  "hd003",
+  "hd004",
+  "hd005",
+  "hd006",
+  "hd007",
+  "hd008",
+  "hd009",
+  "hd010",
+  "hd011",
+  "hd012",
+  "hd013",
+  "hd014",
+  "hd015",
+  "hd016"
+ ],
+ "set_aside": [
+  "hd017"
+ ],
+ "obligations": [
+  "hd021"
+ ],
+ "nemesis_set": [
+  "hd022",
+  "hd023",
+  "hd025",
+  "hd026",
+  "hd027"
+ ],
+ "player_deck": [
+  "21053",
+  "19020",
+  "18019",
+  "01067",
+  "01066",
+  "21013",
+  "21014",
+  "01084",
+  "01071",
+  "01071",
+  "01071",
+  "20027",
+  "20027",
+  "03017",
+  "03017",
+  "01069",
+  "01069",
+  "17022",
+  "01073",
+  "08031",
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072"
+ ]
+}

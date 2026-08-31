@@ -1,0 +1,65 @@
+{
+    "version": "0.5.8",
+    "name": "Ms. America (Leadership)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Moteur du kit : Star-Gaze et surtout Star Portal, qui repeche un allie de la defausse pour du thwart et des degats immediats, ce que Leadership nourrit mieux que tout autre aspect. Base sur Captain Marvel (738 decks Leadership MarvelCDB jouables ici) et Hercules (51 decks). Neuf allies a l'entree en jeu rentable (Maria Hill, White Tiger, Kaluu, Squirrel Girl, Ironheart) : chacun rend de la valeur, meurt en bloquant, puis revient par Make the Call x3 ou Star Portal. Attention aux pieges de trait evites : Ms. America est YOUNG AVENGER et non AVENGER, donc Stinger et Avenge Me! sont exclus (verification du texte faite), tout comme l'allie Hawkeye officiel qui partage son nom avec la signature Kate Bishop. Teamwork bouche le trou de CTR en ajoutant le THW d'un allie a son pouvoir de base. Strength In Numbers convertit le banc en pioche, Triskelion et Team Training l'elargissent, Rapid Response relance le meilleur allie tombe. Deft Focus reduit tout le kit SUPERPOWER."
+    },
+    "hero": [
+        "ma001a,ma001b"
+    ],
+    "hero_deck": [
+        "ma002",
+        "ma003",
+        "ma004",
+        "ma005",
+        "ma006",
+        "ma007",
+        "ma008",
+        "ma009",
+        "ma010",
+        "ma011",
+        "ma012",
+        "ma013",
+        "ma014",
+        "ma015",
+        "ma016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ma017"
+    ],
+    "nemesis_set": [
+        "ma018",
+        "ma019",
+        "ma020",
+        "ma021"
+    ],
+    "player_deck": [
+        "01088",
+        "01089",
+        "01090",
+        "01072",
+        "01072",
+        "16024",
+        "01067",
+        "03013",
+        "21014",
+        "12011",
+        "21013",
+        "01068",
+        "13018",
+        "01083",
+        "01084",
+        "01071",
+        "01071",
+        "01071",
+        "03017",
+        "03017",
+        "06032",
+        "06032",
+        "01073",
+        "04016",
+        "08031"
+    ]
+}

@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Speed (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Hyperkinetic Fuel pose un compteur explosif des qu'un evenement est paye uniquement en energie, et le kit convertit ces compteurs en attaques et redressements gratuits (Explosive Touch, Quick Adaptation). Comparaison : Quicksilver officiel en Agressivite, 344 decks MarvelCDB jouables analyses. Clobber x2 est le choix structurant : 2 de cout, payable avec la carte Energy ou Top Speed pour poser un compteur, et il revient en main s'il est joue en premier. Skilled Strike x3 et Adrenaline Rush x2 (piliers des decks Quicksilver) dopent les attaques de base gratuites offertes par Blasting Velocity et Explosive Touch, corrigeant l'ATK 1 imprimee. Relentless Assault, Uppercut et Chase Them Down completent en degats payables en energie et en controle. Deft Focus reduit les evenements Superpower du kit. Ironheart et la pioche d'alter-ego compensent l'absence de pioche du paquet."
+ },
+ "hero": [
+  "sd001a,sd001b"
+ ],
+ "hero_deck": [
+  "sd002",
+  "sd003",
+  "sd004",
+  "sd005",
+  "sd006",
+  "sd007",
+  "sd008",
+  "sd009",
+  "sd010",
+  "sd011",
+  "sd012",
+  "sd013",
+  "sd014",
+  "sd015",
+  "sd016"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "sd017"
+ ],
+ "nemesis_set": [
+  "sd018",
+  "sd019",
+  "sd020",
+  "sd021",
+  "sd022"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "01057",
+  "14022",
+  "14022",
+  "16024",
+  "09037",
+  "09037",
+  "09037",
+  "18012",
+  "18012",
+  "01053",
+  "01053",
+  "01052",
+  "01052",
+  "01054",
+  "05023",
+  "01050",
+  "04040",
+  "13012",
+  "13018",
+  "01083"
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "version": "0.5.8",
+ "name": "Luke Cage (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit est un tank a cartes tough qui defend chaque tour, et son pack Leadership natif (Iron Fist, Misty Knight, Defensive Formation) prolonge ce theme DEFENDER. Comparaison sur Hulk (175 decks Leadership MarvelCDB) et Colossus (68 decks), tous deux joues en banc d'allies protecteur. Le noyau DEFENDER du pack est conserve : Defensive Formation x2 donne des tough a Misty Knight, qui gagne alors +2 THW et +2 ATK, et Fogwell's Gym ready tout ce petit monde. Take a Stand x2 est le choix signature : Luke defend de toute facon sur sa pile de tough, et chaque defense booste tout le banc. Neuf allies dont U.S. Agent (retaliate, 5 PV) et Wonder Man donnent la frappe que le heros seul n'a pas. Make the Call, Rapid Response et Le Triskelion recyclent et elargissent le banc, Strength In Numbers x2 comble le deficit de pioche du kit. Team Training durcit des allies qui doivent parfois bloquer. Ressources Y/G en face d'un kit rouge et bleu, The Power of Leadership x2 paie les allies bleus."
+ },
+ "hero": [
+  "62001a,62001b"
+ ],
+ "hero_deck": [
+  "62002",
+  "62003",
+  "62003",
+  "62004",
+  "62005",
+  "62005",
+  "62006",
+  "62006",
+  "62007",
+  "62008",
+  "62009",
+  "62009",
+  "62010",
+  "62010",
+  "62011"
+ ],
+ "obligations": [
+  "62028"
+ ],
+ "nemesis_set": [
+  "62029",
+  "62030",
+  "62031",
+  "62032",
+  "62033"
+ ],
+ "player_deck": [
+  "62012",
+  "62013",
+  "62014",
+  "01067",
+  "03013",
+  "12011",
+  "03014",
+  "01084",
+  "04014",
+  "62018",
+  "62018",
+  "62015",
+  "62015",
+  "01071",
+  "01071",
+  "03017",
+  "03017",
+  "01073",
+  "04016",
+  "08031",
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072"
+ ]
+}

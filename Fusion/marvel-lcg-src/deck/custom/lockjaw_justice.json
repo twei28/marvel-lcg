@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Lockjaw (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Lockjaw a THW 1 et change de forme sans arret grace a ses 9 evenements TELEPORT : la Justice comble son plus gros manque en surfant sur ce moteur. Comparaison : Groot (197 decks Justice MarvelCDB) et Ant-Man pour Lay Down the Law (84 pour cent de ses 253 decks Justice). Lay Down the Law x3 est la carte pivot : reponse a un changement de forme, 3 a 4 menaces retirees, et Lockjaw flippe plusieurs fois par round avec Fast Travel et Teleport To Safety. Throg, compagnon du pack en classe Justice, pinge 1 menace sur chaque scheme sans occuper de place d'allie, et Companionship le convertit en pioche. Heroic Intuition x2 double le THW de base. Deft Focus reduit les evenements SUPERPOWER du kit (Teleport To Safety, Fast Travel, Psionic Tracking). Under Surveillance x2 exploite les 14 PV : Lockjaw a le temps de jouer long. For Justice! et Clear the Area assurent le volume de menace retiree que le kit n'a pas."
+ },
+ "hero": [
+  "lj001a,lj001b"
+ ],
+ "hero_deck": [
+  "lj002",
+  "lj003",
+  "lj004",
+  "lj005",
+  "lj006",
+  "lj007",
+  "lj008",
+  "lj008",
+  "lj009",
+  "lj009",
+  "lj010",
+  "lj010",
+  "lj011",
+  "lj011",
+  "lj012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "lj013"
+ ],
+ "nemesis_set": [
+  "lj014",
+  "lj015",
+  "lj016",
+  "lj016",
+  "lj017"
+ ],
+ "player_deck": [
+  "lj019",
+  "15011",
+  "08012",
+  "01083",
+  "01059",
+  "12031",
+  "12031",
+  "12031",
+  "01060",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "15013",
+  "lj028",
+  "01065",
+  "01065",
+  "06031",
+  "06031",
+  "16024",
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062"
+ ]
+}

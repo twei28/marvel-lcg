@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Howard the Duck (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Howard a ATK 1 : l'agressivite passe par les evenements d'attaque, pas par l'attaque de base. Comparaison : Rocket Raccoon (418 decks Agressivite MarvelCDB) et Spider-Ham (64 decks). Relentless Assault x3 et Into the Fray x2 fournissent les gros degats contre les sbires, et Hall of Heroes convertit ces sbires vaincus en pioche. Gamora et Drax sont des allies basiques verrouilles au trait GUARDIAN que Howard possede, un acces rare a ATK 3 pour 3. Chase Them Down x2 se declenche apres qu'un evenement d'attaque acheve un ennemi et rebouche le trou de gestion de menace. Jarnbjorn punit chaque attaque du heros, y compris Quack Attack et Mallard Magic du kit. Toe to Toe est couvert par l'interrupt de Quack Attack qui previent 2 degats, et Endurance compense les 9 PV fragiles. Ressources doubles : 01088/01089/01090 officielles, en remplacement (jamais en plus) des re-skins hd018-hd020 du pack, identiques par full_link."
+ },
+ "hero": [
+  "hd001a,hd001b"
+ ],
+ "hero_deck": [
+  "hd002",
+  "hd003",
+  "hd004",
+  "hd005",
+  "hd006",
+  "hd007",
+  "hd008",
+  "hd009",
+  "hd010",
+  "hd011",
+  "hd012",
+  "hd013",
+  "hd014",
+  "hd015",
+  "hd016"
+ ],
+ "set_aside": [
+  "hd017"
+ ],
+ "obligations": [
+  "hd021"
+ ],
+ "nemesis_set": [
+  "hd022",
+  "hd023",
+  "hd025",
+  "hd026",
+  "hd027"
+ ],
+ "player_deck": [
+  "19020",
+  "18019",
+  "06012",
+  "01051",
+  "01050",
+  "01053",
+  "01053",
+  "01053",
+  "13013",
+  "13013",
+  "18012",
+  "18012",
+  "10015",
+  "10015",
+  "01052",
+  "01052",
+  "06019",
+  "05023",
+  "06017",
+  "01092",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

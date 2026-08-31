@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Invisible Woman (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le moteur du kit est le changement de forme permanent : Boo! force un flip apres chaque attaque et Spectral Shift pioche en flippant. Comparaison sur Wasp (174 decks Justice MarvelCDB), autre heroine a double forme, et Spider-Woman (415 decks). Lay Down the Law x3 est le choix structurant : chaque flip retire 3 menace, 4 si payee avec du mental, et Sue Storm genere justement du mental. For Justice!, Multitasking et Crisis Averted profitent du meme mental pour leurs bonus, le kit paie donc le deck. THW 2 en forme invisible plus Heroic Intuition et Infiltrate font d'elle une machine anti-scheme complete. Under Surveillance achete le temps que ce plan de controle demande. Les allies (Quake, Coulson, Wiccan, Mockingbird, Nick Fury) bloquent pour proteger ses 8 PV, le vrai point faible du kit. Ressources R/G apportees en face d'un kit sature de bleu et de jaune, The Power of Justice x2 en carburant."
+ },
+ "hero": [
+  "iw001a,iw001b,iw001c"
+ ],
+ "hero_deck": [
+  "iw002",
+  "iw003",
+  "iw004",
+  "iw005",
+  "iw006",
+  "iw007",
+  "iw008",
+  "iw009",
+  "iw009",
+  "iw010",
+  "iw011",
+  "iw011",
+  "iw012",
+  "iw012",
+  "iw012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "iw013"
+ ],
+ "nemesis_set": [
+  "iw014",
+  "iw015",
+  "iw016",
+  "iw017",
+  "iw018"
+ ],
+ "player_deck": [
+  "12031",
+  "12031",
+  "12031",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "15013",
+  "15013",
+  "06031",
+  "06031",
+  "01065",
+  "04047",
+  "14030",
+  "15012",
+  "08012",
+  "08011",
+  "15011",
+  "01083",
+  "01084",
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062"
+ ]
+}

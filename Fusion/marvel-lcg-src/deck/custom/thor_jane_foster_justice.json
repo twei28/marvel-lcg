@@ -1,0 +1,67 @@
+{
+ "version": "0.5.8",
+ "name": "Thor (Jane Foster) (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Mjolnir recupere chaque round via Worthy alimente Hammer Swing et un gros potentiel de frappe, mais la THW 1 de Thor est le vrai trou du kit. Comparaison : Thor officiel en Justice, 201 decks MarvelCDB jouables analyses, plus 39 decks Valkyrie. For Justice! x3, Clear the Area x2 et Multitasking x2 donnent enfin un controle de menace fiable, que Congress of Worlds seul ne peut pas assurer. Heroic Intuition x2 monte la THW de base a 2 pour rendre chaque activation utile. Under Surveillance x2 et Skilled Investigator x2 temporisent le plan principal et ajoutent de la pioche, autre manque du kit. Godlike Stamina x2 exploite le trait ASGARD de l'identite pour soigner et retirer les statuts a cout nul. Les allies (Quake, Wiccan, Jessica Jones, Daredevil, Mockingbird) sont les piliers Justice des vrais decks et gerent les sbires pendant que Thor frappe au marteau."
+ },
+ "hero": [
+  "ra001a,ra001b"
+ ],
+ "hero_deck": [
+  "ra002",
+  "ra003",
+  "ra004",
+  "ra004",
+  "ra004",
+  "ra005",
+  "ra005",
+  "ra006",
+  "ra006",
+  "ra007",
+  "ra008",
+  "ra009",
+  "ra010",
+  "ra011",
+  "ra012",
+  "ra013"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ra026"
+ ],
+ "nemesis_set": [
+  "ra028",
+  "ra027",
+  "ra029",
+  "ra030",
+  "ra031"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062",
+  "01060",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "15013",
+  "15013",
+  "25024",
+  "25024",
+  "01065",
+  "01065",
+  "06031",
+  "06031",
+  "04047",
+  "04047",
+  "08012",
+  "15011",
+  "01059",
+  "01058",
+  "01083"
+ ]
+}

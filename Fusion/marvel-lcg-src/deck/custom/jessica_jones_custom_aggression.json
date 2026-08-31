@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Jessica Jones custom (Agressivité)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Hard-Hitting Investigation inflige des degats egaux a l'ATK de Jessica apres chaque plan secondaire vaincu : l'Agressivite pousse cet ATK au maximum. Comparaison avec Black Widow (160 decks Agressivite) et Daredevil (20 decks) sur l'index local. Combat Training et Aggressive Conditioning portent la reponse a 4 degats gratuits par plan vaincu, Skilled Strike monte l'attaque de base a 4 quand il faut finir un sbire. Breakthrough du kit frappe plus fort s'il reste des plans en jeu : Looking for Trouble garde le controle de la menace principale sans vider les plans secondaires et amene des sbires que Relentless Assault et Drop Kick executent, Chase Them Down convertissant chaque mise a mort en 2 menaces retirees. Counterattack et Lie in Wait punissent ce qui la frappe. Quincarrier exploite son trait Avenger pour une ressource wild recurrente et Endurance rembourre ses 12 points de vie. Allies de pression bon marche : Tigra, Spider-Girl, Hulk, Mockingbird, Nick Fury."
+    },
+    "hero": [
+        "jj001a,jj001b"
+    ],
+    "hero_deck": [
+        "jj002",
+        "jj003",
+        "jj003",
+        "jj004",
+        "jj004",
+        "jj005",
+        "jj005",
+        "jj006",
+        "jj006",
+        "jj007",
+        "jj007",
+        "jj008",
+        "jj009",
+        "jj010",
+        "jj011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "jj017"
+    ],
+    "nemesis_set": [
+        "jj018",
+        "jj019",
+        "jj020",
+        "jj020",
+        "jj021"
+    ],
+    "player_deck": [
+        "09037",
+        "09037",
+        "09037",
+        "01057",
+        "56013",
+        "01053",
+        "01053",
+        "01052",
+        "01052",
+        "16043",
+        "16043",
+        "10014",
+        "08030",
+        "13017",
+        "08023",
+        "05023",
+        "01051",
+        "04040",
+        "01050",
+        "01083",
+        "01084",
+        "01088",
+        "01089",
+        "01090",
+        "01055"
+    ]
+}

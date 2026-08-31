@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Brawn (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit de Brawn recompense les ressources physiques : Gamma Strike gagne overkill et 3 degats s'il est paye uniquement en physique, Heavy Lifting convertit le physique en menace retiree. Comparaison avec Hulk (833 decks Agressivite MarvelCDB) et She-Hulk (495 decks) : Combat Training, Martial Prowess, Skilled Strike et Drop Kick y sont omnipresents. Martial Prowess genere justement la ressource physique qui declenche les bonus de Gamma Strike et Drop Kick. The Locust exploite le trait Champion de Brawn pour recycler un evenement rouge depuis la defausse. Chase Them Down bouche le trou de controle de menace typique de l'aspect en profitant des sbires vaincus. Limitless Stamina (14 PV imprimes, condition remplie de justesse) offre un redressement, et Brawn retombe ensuite a l'etat epuise ou son identite genere du mental. Courbe a 1,5 avec six evenements a cout 0 : le deck joue plusieurs cartes par tour."
+ },
+ "hero": [
+  "bw001a,bw001b"
+ ],
+ "hero_deck": [
+  "bw002",
+  "bw004",
+  "bw005",
+  "bw006",
+  "bw007",
+  "bw008",
+  "bw009",
+  "bw010",
+  "bw011",
+  "bw012",
+  "bw013",
+  "bw014",
+  "bw015",
+  "bw016",
+  "bw017"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "bw018"
+ ],
+ "nemesis_set": [
+  "bw019",
+  "bw020",
+  "bw021",
+  "bw022",
+  "bw023"
+ ],
+ "player_deck": [
+  "01050",
+  "01051",
+  "28010",
+  "04040",
+  "13018",
+  "09037",
+  "09037",
+  "09037",
+  "10014",
+  "10014",
+  "18012",
+  "18012",
+  "01052",
+  "01052",
+  "01052",
+  "01057",
+  "10018",
+  "31023",
+  "31023",
+  "01092",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

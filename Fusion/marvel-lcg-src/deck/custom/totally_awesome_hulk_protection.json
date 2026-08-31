@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Totally Awesome Hulk (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Avec DEF 3, 16 points de vie, Motivation et Gamma Barrier, Totally Awesome Hulk est un defenseur naturel que Protection pousse a fond. Comparaison avec Hulk (282 decks Protection MarvelCDB) et She-Hulk (165 decks) : Counter-Punch, Desperate Defense, Armored Vest, Unflappable et Indomitable forment le noyau commun. Taunt attire l'attaque sur sa grosse defense et pioche 3 cartes, un carburant precieux pour Reverse Engineer. What Doesn't Kill Me soigne et redresse, sa condition de ressource physique etant automatiquement remplie par Hypermind. Black Widow annule une carte de rencontre par tour puisque toute ressource generee est wild donc mentale. Night Nurse et Med Team compensent les degats que Motivation et The Trunk infligent au heros. Courbe a 1,40 : le deck defend, riposte et garde sa main pour les evenements du kit."
+ },
+ "hero": [
+  "ah001a,ah001b,ah001c"
+ ],
+ "hero_deck": [
+  "ah002",
+  "ah003",
+  "ah004",
+  "ah005",
+  "ah006",
+  "ah007",
+  "ah008",
+  "ah008",
+  "ah009",
+  "ah009",
+  "ah009",
+  "ah010",
+  "ah010",
+  "ah011",
+  "ah011"
+ ],
+ "set_aside": [
+  "ah012a,ah012b"
+ ],
+ "obligations": [
+  "ah013"
+ ],
+ "nemesis_set": [
+  "ah014",
+  "ah015",
+  "ah016",
+  "ah017",
+  "ah018"
+ ],
+ "player_deck": [
+  "01076",
+  "01075",
+  "09013",
+  "13018",
+  "01077",
+  "01077",
+  "01077",
+  "09015",
+  "09015",
+  "42016",
+  "42016",
+  "27016",
+  "27016",
+  "01081",
+  "09020",
+  "01082",
+  "01082",
+  "10031",
+  "09019",
+  "01080",
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079"
+ ]
+}

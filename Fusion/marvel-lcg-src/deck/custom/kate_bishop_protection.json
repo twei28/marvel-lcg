@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Kate Bishop (Protection)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : tout le pack de Kate recompense la prevention de degats (Athletic Agility renvoie 1 degat, Hawkeye Investigations retire de la menace apres chaque prevention), Protection multiplie donc ses declencheurs. Comparaison : Hawkeye officiel en Protection, 147 decks MarvelCDB jouables analyses. Energy Barrier x3 est le pivot : chaque compteur previent 1 degat et en renvoie 1, ce qui active les deux reponses du kit a repetition. Side Step et Evasive Shot jouent le meme role sur les grosses attaques. What Doesn't Kill Me x2, Med Team et Night Nurse comblent l'absence totale de soin en forme heros (Lucky ne soigne qu'en alter-ego). Indomitable x2 redresse Kate apres ses defenses, sa DEF 1 etant compensee par Armored Vest et la prevention. Alliés defensifs classiques (Black Widow, Brother Voodoo, Clea, Iron Fist) pour encaisser et gerer les contretemps."
+ },
+ "hero": [
+  "kb001a,kb001b"
+ ],
+ "hero_deck": [
+  "kb002",
+  "kb003",
+  "kb004",
+  "kb004",
+  "kb005",
+  "kb005",
+  "kb006",
+  "kb007",
+  "kb008",
+  "kb009",
+  "kb009",
+  "kb010",
+  "kb011",
+  "kb012",
+  "kb013"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "kb014"
+ ],
+ "nemesis_set": [
+  "kb016",
+  "kb017",
+  "kb018",
+  "kb019",
+  "kb020"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01079",
+  "01079",
+  "05017",
+  "05017",
+  "05017",
+  "01081",
+  "09020",
+  "05014",
+  "05014",
+  "27016",
+  "27016",
+  "01082",
+  "01082",
+  "14015",
+  "01080",
+  "09019",
+  "05023",
+  "01075",
+  "09012",
+  "09013",
+  "09014",
+  "01084"
+ ]
+}

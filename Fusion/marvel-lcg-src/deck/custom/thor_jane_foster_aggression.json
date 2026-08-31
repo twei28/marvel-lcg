@@ -1,0 +1,67 @@
+{
+ "version": "0.5.8",
+ "name": "Thor (Jane Foster) (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Mjolnir est une arme recuperable a volonte via Worthy, ce que Mean Swing x3 et Jarnbjorn transforment en attaques de base enormes, completees par Skilled Strike x2 et Combat Training x2. Comparaison : Thor officiel en Agressivite, 1019 decks MarvelCDB jouables analyses, plus 198 decks Valkyrie. Into the Fray x2 convertit l'exces de degats en retrait de menace, ce qui comble en partie la THW 1 du kit. Godlike Stamina x2 et The Bifrost exploitent le trait ASGARD de l'identite : soin gratuit et recherche d'allies ASGARD (Valkyrie, Throg, Angela). Hall of Heroes et Battle Fury recompensent la chasse aux sbires que le kit adore (Odinson, Lightning Strike). Les allies restent peu chers (Angela a 0, Throg et Hulk a 2) pour garder une courbe basse malgre les evenements a 3."
+ },
+ "hero": [
+  "ra001a,ra001b"
+ ],
+ "hero_deck": [
+  "ra002",
+  "ra003",
+  "ra004",
+  "ra004",
+  "ra004",
+  "ra005",
+  "ra005",
+  "ra006",
+  "ra006",
+  "ra007",
+  "ra008",
+  "ra009",
+  "ra010",
+  "ra011",
+  "ra012",
+  "ra013"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ra026"
+ ],
+ "nemesis_set": [
+  "ra028",
+  "ra027",
+  "ra029",
+  "ra030",
+  "ra031"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055",
+  "06015",
+  "06015",
+  "06015",
+  "09037",
+  "09037",
+  "25024",
+  "25024",
+  "13013",
+  "13013",
+  "01057",
+  "01057",
+  "06018",
+  "06019",
+  "06017",
+  "25023",
+  "06012",
+  "18011",
+  "25014",
+  "01050",
+  "01051"
+ ]
+}

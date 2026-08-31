@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Brawn (Justice)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le moteur de Brawn repose sur les jeux depuis la reserve (Totally Awesome, Brawn's Suit, Forward-Thinking) et sur la ressource mentale generee quand il est epuise. Comparaison avec She-Hulk (445 decks Justice MarvelCDB) et Hulk (219 decks) : les deux colosses jouent Justice sur les memes piliers, For Justice!, Clear the Area, Under Surveillance et Skilled Investigator. Multitasking profite directement de la ressource mentale gratuite de The Complete Package pour toucher deux schemas. Le kit etant charge en ressources rouges et bleues, le deck ramene du jaune (For Justice!, Under Surveillance, Heroic Intuition, Quake, Jessica Jones). Les allies restent autour de cinq, avec Nick Fury comme joker polyvalent et Ironheart pour la pioche. Endurance comble la fragilite relative de Brawn a 14 points de vie. Courbe moyenne a 1,75 : le deck tourne meme avec des mains courtes."
+ },
+ "hero": [
+  "bw001a,bw001b"
+ ],
+ "hero_deck": [
+  "bw002",
+  "bw004",
+  "bw005",
+  "bw006",
+  "bw007",
+  "bw008",
+  "bw009",
+  "bw010",
+  "bw011",
+  "bw012",
+  "bw013",
+  "bw014",
+  "bw015",
+  "bw016",
+  "bw017"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "bw018"
+ ],
+ "nemesis_set": [
+  "bw019",
+  "bw020",
+  "bw021",
+  "bw022",
+  "bw023"
+ ],
+ "player_deck": [
+  "08012",
+  "01059",
+  "13018",
+  "01084",
+  "01083",
+  "01060",
+  "01060",
+  "01060",
+  "04049",
+  "04049",
+  "04049",
+  "15013",
+  "15013",
+  "04047",
+  "04047",
+  "01065",
+  "06031",
+  "06031",
+  "05023",
+  "01092",
+  "01088",
+  "01089",
+  "01090",
+  "01062",
+  "01062"
+ ]
+}

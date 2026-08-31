@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Invisible Woman (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit tourne autour du flip permanent et d'un solide support d'equipe (tough via Force Shields, confuse via Vanishing Act), mais il manque de presence sur le plateau. Comparaison sur Wasp (119 decks Leadership MarvelCDB) et Spider-Woman (600 decks), toutes deux jouees en banc d'allies generique. Moxie x3 est le choix structurant : a cout 0, chaque changement de forme force par Boo! donne +1 partout jusqu'a la fin du round, ce qui repare son ATK faible et durcit sa defense. Huit allies proteges par Team Training bloquent pour ses 8 PV, le point faible du kit. Kaluu cherche un event dans un kit qui en compte douze, Beast recupere une ressource, White Tiger et Maria Hill piochent. Make the Call et Rapid Response recyclent le banc, Le Triskelion l'elargit. Command Team ready un allie chaque tour pour bloquer ou taper deux fois. Ressources R/G en face du kit bleu et jaune, The Power of Leadership x2 paie les allies bleus."
+ },
+ "hero": [
+  "iw001a,iw001b,iw001c"
+ ],
+ "hero_deck": [
+  "iw002",
+  "iw003",
+  "iw004",
+  "iw005",
+  "iw006",
+  "iw007",
+  "iw008",
+  "iw009",
+  "iw009",
+  "iw010",
+  "iw011",
+  "iw011",
+  "iw012",
+  "iw012",
+  "iw012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "iw013"
+ ],
+ "nemesis_set": [
+  "iw014",
+  "iw015",
+  "iw016",
+  "iw017",
+  "iw018"
+ ],
+ "player_deck": [
+  "01067",
+  "21014",
+  "03013",
+  "12011",
+  "03014",
+  "21013",
+  "33011",
+  "01084",
+  "12016",
+  "12016",
+  "12016",
+  "01071",
+  "01071",
+  "03017",
+  "03017",
+  "01073",
+  "04016",
+  "08031",
+  "23016",
+  "01074",
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072"
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "version": "0.5.8",
+ "name": "Human Torch (Agressivité)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Le kit est deja un moteur d'attaque : compteurs flamme qui pingent, Nova Flame avec overkill, Blaze and Daze qui stun. Comparaison sur Captain Marvel (359 decks Agressivite MarvelCDB) et Nova (184 decks), dont les listes exploitent le trait AERIAL. Pitchback x3 est le choix structurant : Human Torch est AERIAL (texte verifie) et attaque chaque tour, donc 4 degats bonus pour 1 ressource apres chaque attaque. Dive Bomb x2 (AERIAL verifie) sert de finisher de zone en complement de Nova Flame. Chase Them Down bouche le trou de thwart du kit en convertissant les sbires vaincus par les flammes en menace retiree. Moment of Triumph recycle l'overkill de Nova Flame et de Relentless Assault en soin, seul soin du deck avec Radiate. Martial Prowess et The Power of Aggression x2 financent une courbe de kit chere (Nova Flame a 4, Blaze a 3). Allies economes (Wasp a 0, Hulk a 2, Spider-Girl a 2) pour bloquer sans plomber la courbe, moyenne du deck sous 2."
+ },
+ "hero": [
+  "ht001a,ht001b"
+ ],
+ "hero_deck": [
+  "ht002",
+  "ht003",
+  "ht004",
+  "ht005",
+  "ht006",
+  "ht006",
+  "ht007",
+  "ht007",
+  "ht008",
+  "ht008",
+  "ht009",
+  "ht009",
+  "ht009",
+  "ht010",
+  "ht010"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ht011"
+ ],
+ "nemesis_set": [
+  "ht012",
+  "ht013",
+  "ht014",
+  "ht014",
+  "ht014"
+ ],
+ "player_deck": [
+  "17028",
+  "17028",
+  "28012",
+  "28012",
+  "28012",
+  "09037",
+  "09037",
+  "01053",
+  "01053",
+  "01052",
+  "01052",
+  "12030",
+  "12030",
+  "01057",
+  "10018",
+  "01050",
+  "13012",
+  "04040",
+  "01051",
+  "01083",
+  "01088",
+  "01089",
+  "01090",
+  "01055",
+  "01055"
+ ]
+}

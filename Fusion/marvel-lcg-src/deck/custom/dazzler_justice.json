@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Dazzler (Justice)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Moteur du kit : jouer des evenements SONG en rafale pour remplir la Setlist et declencher les Showtime, avec un THW 2 correct mais un ATK 1 et 9 PV fragiles. Base sur Jubilee (169 decks Justice MarvelCDB jouables ici, tres orientes X-Men, trait que Dazzler possede) et Star-Lord (104 decks). Socle commun aux quatre decks : Power Ballad x2 (cout reel 1 pour elle), Encore x2, Duet x2 et Love Song, sept chansons Basic qui gonflent la Setlist et la defausse. Song of Justice x2 en profite directement : jusqu'a 4 menaces retirees pour 1. For Justice!, Clear the Area et Heroic Intuition assurent le volume de thwart classique. The X-Jet fournit une ressource sauvage par tour grace au trait X-MEN de l'identite (texte verifie). Cypher pioche quand il frappe un ennemi confus, or le kit confond en boucle (A Little Girl's Dream, Hush Now Baby). Quatre allies seulement, mais Beauty and the Beast va en chercher un dans le deck a la demande."
+    },
+    "hero": [
+        "dz001a,dz001b"
+    ],
+    "hero_deck": [
+        "dz002",
+        "dz003",
+        "dz004",
+        "dz005",
+        "dz006",
+        "dz007",
+        "dz008",
+        "dz009",
+        "dz010",
+        "dz011",
+        "dz012",
+        "dz013",
+        "dz014",
+        "dz015",
+        "dz016"
+    ],
+    "set_aside": [
+        "dz017a"
+    ],
+    "obligations": [
+        "dz019"
+    ],
+    "nemesis_set": [
+        "dz020",
+        "dz021",
+        "dz022",
+        "dz022",
+        "dz023"
+    ],
+    "player_deck": [
+        "01088",
+        "01089",
+        "01090",
+        "dz030",
+        "dz030",
+        "dz034",
+        "dz034",
+        "dz033",
+        "dz033",
+        "dz029",
+        "dz025",
+        "dz025",
+        "01060",
+        "01060",
+        "04049",
+        "04049",
+        "01065",
+        "01065",
+        "06031",
+        "22015",
+        "41013",
+        "15011",
+        "08012",
+        "32019",
+        "32020"
+    ]
+}

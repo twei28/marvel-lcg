@@ -1,0 +1,67 @@
+{
+ "version": "0.5.8",
+ "name": "Thor (Jane Foster) (Leadership)",
+ "metadata": {
+  "url": "",
+  "aspect_note": "Moteur du kit : Thor frappe fort mais thwart mal et n'a aucune pioche en forme heros, le Leadership apporte donc une equipe qui thwart et encaisse a sa place. Comparaison : Thor officiel en Leadership, 211 decks MarvelCDB jouables analyses, plus 60 decks Valkyrie. Huit allies dont Beta Ray Bill (retire 2 menaces en tuant un sbire, exactement le trou du kit), White Tiger et Maria Hill pour la pioche, Stinger jouable grace au trait AVENGER, et Hugin & Munin qui amene un sbire a devorer avec Lightning Strike ou Odinson. Squared Off x2 nourrit ce meme plan : un sbire arrive et un allie sort avec 3 de reduction. Make the Call x3, Rapid Response x2 et Get Ready x2 recyclent et reactivent l'equipe. The Triskelion, Team Training et Sky Cycle rendent la table d'allies durable. La courbe reste basse, seuls Beta Ray Bill et Squared Off depassent 2."
+ },
+ "hero": [
+  "ra001a,ra001b"
+ ],
+ "hero_deck": [
+  "ra002",
+  "ra003",
+  "ra004",
+  "ra004",
+  "ra004",
+  "ra005",
+  "ra005",
+  "ra006",
+  "ra006",
+  "ra007",
+  "ra008",
+  "ra009",
+  "ra010",
+  "ra011",
+  "ra012",
+  "ra013"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ra026"
+ ],
+ "nemesis_set": [
+  "ra028",
+  "ra027",
+  "ra029",
+  "ra030",
+  "ra031"
+ ],
+ "player_deck": [
+  "01088",
+  "01089",
+  "01090",
+  "01072",
+  "01072",
+  "01071",
+  "01071",
+  "01071",
+  "49017",
+  "49017",
+  "01069",
+  "01069",
+  "08031",
+  "08031",
+  "01073",
+  "04016",
+  "04015",
+  "12014",
+  "01067",
+  "53017",
+  "21014",
+  "03013",
+  "01066",
+  "21013",
+  "17012"
+ ]
+}
