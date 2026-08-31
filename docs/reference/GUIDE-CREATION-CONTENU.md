@@ -36,10 +36,9 @@ Les liens utiles :
 > | **Copie VIVANTE (la seule)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src/` |
 >
 > Ce qui garantit que c'est bien elle qui tourne :
-> - Les trois lanceurs de référence (`Jeu Marvel Champions/JOUER-*.bat`,
->   suivis par git) font `cd '<Windows>/Fusion/marvel-lcg-src'` avant de
->   lancer le jeu. Les `JOUER-*.bat` à la racine de `Marvel LCG`
->   sont de simples trampolines de deux lignes vers ceux-là.
+> - Les trois lanceurs (`JOUER-*.bat` à la racine de `Marvel LCG`, suivis
+>   par git) font `cd '<Windows>/Fusion/marvel-lcg-src'` avant de lancer le
+>   jeu. Il n'existe qu'un seul jeu de lanceurs depuis le 31/08/2026.
 > - `launcher_fast.py` pose `ROOT = dirname(__file__)`, puis `SRC = ROOT/src`
 >   et `GAME = ROOT/.game` : il compile donc le `src/` de SON dossier, et lie
 >   les `data`, `deck`, `assets` du même. Les `launcher*.sh` font pareil
@@ -141,6 +140,13 @@ vrac. `~/marvel-work` ne contient plus que `python/`, `tools/`,
 `Fusion/marvel-lcg-src/` est un doublon jusqu'à preuve du contraire, et une
 copie morte qu'on garde finit toujours par mordre. Sauvegarde de secours des
 images (hors git) : `~/marvel-backups/pics-2026-08-31.tar` (2,7 Go).
+
+**Si le dossier du projet est un jour déplacé ou renommé** : les liens
+symboliques de `.game/` sont ABSOLUS et cassent en silence (constaté le
+31/08/2026 : le moteur meurt sur `translate_fr.json` introuvable). Le remède
+est documenté dans `launcher_fast.py` : `rm -rf .game`, il se reconstruit au
+lancement suivant (~5 min). Mettre aussi à jour les chemins en dur des
+`JOUER-*.bat` et de la doc.
 
 ### 1.5 Documentation de l'auteur original
 

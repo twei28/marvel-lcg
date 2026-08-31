@@ -11,8 +11,8 @@ event you play this round by 3. Showtime!: Confuse a non-[[ELITE]] enemy. »
 `Fusion/marvel-lcg-src/src/cards/pack/dazzler/dazzler/__init__.py`, absent
 de ce worktree et de l'historique git de ce dépôt (vérifié lors de cette
 tâche). Contenu ci-dessous lu directement par l'agent coordinateur dans le
-checkout original `/mnt/c/Users/arnau/Desktop/Marvel LCG last
-try/Jeu Marvel Champions/` et transmis verbatim ; non relu de façon
+checkout original `/mnt/c/Users/arnau/Desktop/Marvel LCG/` et
+transmis verbatim ; non relu de façon
 indépendante par l'agent qui rédige cette fiche.
 
 ```python

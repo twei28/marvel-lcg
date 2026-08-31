@@ -100,9 +100,9 @@ DECK_VALEURS = {"requis"}
 # vide, la recompense disparait, et c'est exactement le silence que cet outil
 # existe pour casser (meme famille que la cle mal orthographiee du §5).
 # Le depot met `ui-app` DEUX niveaux au-dessus de marvel-lcg-src
-# (« Jeu Marvel Champions/ui-app »), et la copie de travail de ~/marvel-work ne
-# l'a pas du tout. On cherche donc, et l'absence n'est pas une erreur : elle est
-# annoncee, et les `detection` ne sont simplement pas verifiees la-bas.
+# (« Marvel LCG/ui-app »). On cherche donc, et l'absence n'est pas une
+# erreur : elle est annoncee, et les `detection` ne sont simplement pas
+# verifiees la-bas.
 CHEMINS_DETECTEURS = [
     os.path.join(haut, "ui-app", "src", "board", "campagne", "detecteurs.ts")
     for haut in (

@@ -7,10 +7,9 @@
 # ou l'enchainement de commandes POSIX de ce fichier ne fonctionne pas.
 set -euo pipefail
 
-# Deduit du fichier lui-meme, jamais ecrit en dur : il existe plusieurs copies de
-# ce depot sur le disque (Desktop/"Marvel LCG"/ui-app et
-# .../Jeu Marvel Champions/ui-app). Un chemin absolu deployait la copie perimee
-# tout en laissant croire que le build venait des sources en cours d'edition.
+# Deduit du fichier lui-meme, jamais ecrit en dur : quand plusieurs copies de
+# ce depot existaient sur le disque, un chemin absolu deployait la copie
+# perimee tout en laissant croire que le build venait des sources editees.
 RACINE_APP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # UNE SEULE installation du jeu : Fusion/marvel-lcg-src, a cote de ce depot.
