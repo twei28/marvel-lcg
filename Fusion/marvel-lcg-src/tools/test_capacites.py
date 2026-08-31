@@ -11318,11 +11318,554 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["ho017"]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « agatha_harkness » : Agatha Harkness, set 132, aa001a-aa021
+    # ------------------------------------------------------------------------
+    {
+        "nom": "aa001a Power Absorption — 1 degat d'attaque subi = 1 carte defaussee, le SPELL remonte",
+        "pourquoi": ("`AfterUnitTookDamage(Response, 'You', is_from_attack=True)` "
+                     "(27078), montant = `took_damage`. Rhino ATK 2 contre DEF 1 "
+                     "-> 1 degat subi -> 1 carte defaussee ; `Puzzle.PutIntoDeck` "
+                     "pose aa005 (SPELL) sur le DESSUS, donc c'est elle qui tombe "
+                     "et remonte en main"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreateEncounterDeck('wd009')",
+                          "Puzzle.PutIntoDeck('aa005')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "en_main": ["aa005"]},
+    },
+    {
+        "nom": "aa001a Power Absorption + aa011 — Runic Magician leve l'exigence SPELL",
+        "pourquoi": ("le Hero Interrupt d'aa011 est implemente DANS aa001a (helper "
+                     "RunicMagicianEnJeu) : avec la carte en jeu, une carte NON-SPELL "
+                     "defaussee (01088 Energy) devient eligible et remonte en main. "
+                     "⚠ Reste vert si on stubbe aa011 : le helper teste la PRESENCE "
+                     "de la carte en jeu, pas son module — par conception, comme "
+                     "annonce dans les deux fichiers"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa011')",
+                          "Puzzle.CreateEncounterDeck('wd009')",
+                          "Puzzle.PutIntoDeck('01088')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "en_main": ["01088"]},
+    },
+    {
+        "nom": "aa001b Setup — Agatha All Along part du deck vers la main des la mise en place",
+        "pourquoi": ("`WhenCardSetup` + `Search.PlayerCard(card_ids=['aa008'])` "
+                     "(modele an001b) ; « Set aside Ghost Agatha » est porte par le "
+                     "set_aside du deck de depart, comme Frostbite chez Iceman — "
+                     "aa013 ne doit PAS etre en jeu"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["aa008"],
+                    "hors_jeu": ["aa013"]},
+    },
+    {
+        "nom": "aa001b Ghost Form — l'elimination met Ghost Agatha en jeu (partie a 2)",
+        "pourquoi": ("`Message.WhenPlayerEliminated` en Ability brute. ⚠ Le flux "
+                     "d'elimination (player.py:113) defausse TOUT et retire le joueur "
+                     "AVANT le message, qui ne porte pas le joueur : la condition lit "
+                     "« MON proprietaire est elimine ET le fantome encore en reserve » "
+                     "(la set_aside_deck survit au flux). Partie a DEUX joueurs : en "
+                     "solo l'elimination termine la partie avant toute reponse"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreatePlayerAdditionalDeck('aa013')"],
+        "declencher": ["Puzzle.Damage('aa001a', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["aa013"]},
+    },
+    {
+        "nom": "aa002 Scarlet Witch — a l'arrivee, un SPELL de la defausse s'attache face cachee",
+        "pourquoi": ("quasi-jumelle de dz014 Lightbringr : `AfterCardEnterPlay` + "
+                     "`PlaceCardHere(..., False, ...)` depuis `YourDiscardPile`. Le "
+                     "verificateur sur mesure controle que aa005 est bien DANS la zone "
+                     "de cartes posees de Wanda, plus dans la defausse"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreatePlayerDiscardPile('aa005', '01088')"],
+        "declencher": ["Puzzle.PutIntoPlay('aa002', under_control=True)"],
+        "cibles": ["aa005"],
+        "verifier": "aa002_sort_attache",
+    },
+    {
+        "nom": "aa003 Ebony — +1 REC en continu",
+        "pourquoi": "`GiveKeywordToInPlayWhenApplyThis(Identity, recover=1)`, modele ho005",
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('aa003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}},
+    },
+    {
+        "nom": "aa003 Ebony — regarde 2, en garde 1 en main, l'autre reste sur le deck",
+        "pourquoi": ("`LookAtDeck` + `AskChooseFaces` + `GainCard` (51016). aa005 et "
+                     "01088 poses sur le dessus ; aa005 choisie -> main, 01088 reste "
+                     "dans le deck (PAS en defausse : regarder n'est pas defausser)"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa003')",
+                          "Puzzle.PutIntoDeck('01088')",
+                          "Puzzle.PutIntoDeck('aa005')"],
+        "declencher": ["Puzzle.Action('aa003', 'AlterEgoAction')"],
+        "cibles": ["aa005"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["aa005"],
+                    "exhausted": ["aa003"]},
+    },
+    {
+        "nom": "aa004 Wake Thy Power — 2 icones physiques = 4 PV soignes",
+        "pourquoi": ("branches par couleur (01050 Hulk, .r/.b/.y/.g). 01090 Strength "
+                     "imprime RR : DEUX icones physiques sur les deux cartes du "
+                     "dessus (01090 + 15019 B qui pioche 1) -> soin 2+2 sur les 5 "
+                     "degats poses avant, reste 1"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.Damage('aa001a', 5)",
+                          "Puzzle.PutIntoDeck('15019')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["aa004", "01089"],
+        "declencher": [],
+        "jouer": ["aa004"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "defausse": ["aa004", "01090"]},
+    },
+    {
+        "nom": "aa005 Witchcraft — 4 icones de boost = 1+4 degats au meme ennemi",
+        "pourquoi": ("modele 15004 Hex Bolt : defausse de 3 cartes rencontre "
+                     "controlees (01101 boost 1, 01110 boost 1, 01107 boost 2), tous "
+                     "les bonus vont a « THAT enemy »"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreateEncounterDeck('01101', '01110', '01107')"],
+        "main_exclusive": ["aa005", "01088"],
+        "declencher": [],
+        "jouer": ["aa005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "aa005 Witchcraft — 3 cartes a 0 icone = 3 statuts poses",
+        "pourquoi": ("la seconde moitie : wd009 Feedback imprime Boost 0, trois "
+                     "exemplaires defausses -> trois choix « stun or confuse » "
+                     "(ChooseAbilities prend la premiere branche : trois stun "
+                     "empiles sur Rhino, la verification ne teste que la presence)"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreateEncounterDeck('wd009', 'wd009', 'wd009')"],
+        "main_exclusive": ["aa005", "01088"],
+        "declencher": [],
+        "jouer": ["aa005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]],
+                    "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "aa006 Soul Harvest — 5 degats, soin 2, et le R du dessus etourdit",
+        "pourquoi": ("modele 09004 Magic Blast : 01090 (RR) sur le dessus -> branche "
+                     "wild/physical -> stun. Agatha blessee de 3 avant, soignee de 2, "
+                     "reste 1"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.Damage('aa001a', 3)",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["aa006", "aa004", "15019", "aa010", "aa012"],
+        "surpayer": True,
+        "payer_avec": ["aa004", "15019", "aa010", "aa012"],
+        "declencher": [],
+        "jouer": ["aa006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]],
+                    "degats_identite": 1,
+                    "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "aa007 Occult Knowledge — defaussee du dessus par aa006, elle remonte en main",
+        "pourquoi": ("jumelle de 40060 Digging Deep (`AfterCardDiscardInternal`, "
+                     "from_where='PlayerDeckTop'). aa006 la defausse du dessus : elle "
+                     "revient en main, et son GB (wild+mental) remplit LES DEUX "
+                     "branches de Soul Harvest -> stun ET confuse"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoDeck('aa007')"],
+        "main_exclusive": ["aa006", "aa004", "15019", "aa010", "aa012"],
+        "surpayer": True,
+        "payer_avec": ["aa004", "15019", "aa010", "aa012"],
+        "declencher": [],
+        "jouer": ["aa006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["aa007"],
+                    "statuts": [["01094", "Stunned"], ["01094", "Confused"]]},
+    },
+    {
+        "nom": "aa008 Agatha All Along — posee a 13, les degats subis la vident",
+        "pourquoi": ("manigance-joueur (40006 Technovirus Purge). Jouee a cout 0, "
+                     "menace 13 (version zip retenue par l'utilisateur). ⚠ Cas de "
+                     "DONNEES (desc), pas de capacite : il reste vert sous "
+                     "substitution, c'est normal — la Response est prouvee par le "
+                     "cas suivant"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')"],
+        "main_exclusive": ["aa008"],
+        "declencher": [],
+        "jouer": ["aa008"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["aa008"],
+                    "menace": [["aa008", 13]]},
+    },
+    {
+        "nom": "aa008 Agatha All Along — chaque degat d'attaque subi retire autant de menace",
+        "pourquoi": ("la Response `AfterUnitTookDamage(is_from_attack=True)` : Rhino "
+                     "inflige 1 (defense de base declaree par le pilote), 1 menace "
+                     "part. ⚠ le harnais execute `declencher` AVANT `jouer` : la "
+                     "carte est posee par PutIntoPlay en mise en place"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreateEncounterDeck('wd009')",
+                          "Puzzle.PutIntoPlay('aa008', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["aa008", 12]],
+                    "degats_identite": 1},
+    },
+    {
+        "nom": "aa008 Agatha All Along — videe, elle part au tableau et donne +1 partout et +3 PV",
+        "pourquoi": ("le coeur de la carte : menace reduite a 1, la Response du "
+                     "degat suivant la vide -> Victory 0 -> tableau des victoires -> "
+                     "`works_in_the_victory_display=True` (40006) : +1 THW/ATK/DEF "
+                     "et +3 PV tant qu'elle y est"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.CreateEncounterDeck('wd009')",
+                          "Puzzle.PutIntoPlay('aa008', under_control=True)",
+                          "Puzzle.SetThreat('aa008', 1)"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1, "attack": 1, "defense": 1,
+                                  "health": 3},
+                    "hors_jeu": ["aa008"]},
+    },
+    {
+        "nom": "aa009 The Witches' Road — la bascule en heros reduit le prochain SPELL",
+        "pourquoi": ("`AfterUnitChangeForm(to_form=Hero)` filtre MYSTIC + "
+                     "`UpdateNextCardPlayCost(-1, SPELL, Phase)` (16024 Deft Focus). "
+                     "Preuve par le paiement : aa005 (cout 2) est payee avec la seule "
+                     "15019 (1 icone) — impossible sans la reduction"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa009')"],
+        "main_exclusive": ["aa005", "15019"],
+        "declencher": ["Puzzle.ChangeForm('aa001b')"],
+        "jouer": ["aa005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["aa009"],
+                    "defausse": ["aa005"],
+                    "degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "aa010 Mirror Image — +1 CTR en forme heros",
+        "pourquoi": "`GiveKeywordToAttached('You', thwart=1)`, modele an008",
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('aa010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}},
+    },
+    {
+        "nom": "aa010 Mirror Image — les degats letaux la defaussent A LA PLACE",
+        "pourquoi": ("`WhenUnitWouldTakeDamage` + `SetBeInstead` (56069 Mark V), "
+                     "condition `will_take_damage >= PV restants`. 99 degats "
+                     "annules, la carte part, Agatha reste a 0 degat"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa010')"],
+        "declencher": ["Puzzle.Damage('aa001a', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["aa010"],
+                    "degats_identite": 0},
+    },
+    {
+        "nom": "aa011 Runic Magician — sa ressource paie un SPELL",
+        "pourquoi": ("`CanGenerateResources(Resources('G'), for_card=check_effect_fn "
+                     "SPELL|MYSTIC)` (54002). aa005 cout 2 payee par aa011 (wild) + "
+                     "15019 : preuve que la ressource est offerte pour un SPELL"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa011')"],
+        "main_exclusive": ["aa005", "15019"],
+        "declencher": [],
+        "jouer": ["aa005"],
+        "payer_avec": ["aa011", "15019"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["aa011"],
+                    "defausse": ["aa005"]},
+    },
+    {
+        "nom": "aa012 Regained Youth — +4 PV en continu",
+        "pourquoi": "`GiveKeywordToAttached('You', health=4)`, modele an008",
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('aa012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 4}},
+    },
+    {
+        "nom": "aa012 Regained Youth — le deck vide soigne 2",
+        "pourquoi": ("`AfterDeckReset(is_player_deck=True)` cible sur MON deck "
+                     "(21068 Universal Church). Deck reduit a une carte, pioche de "
+                     "40 vide le deck de 33 cartes, la reconstitution depuis la "
+                     "defausse declenche le soin. ⚠ `Puzzle.CreatePlayerDeck` AJOUTE "
+                     "des cartes sans vider le deck : impossible de raccourcir"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa012')",
+                          "Puzzle.Damage('aa001a', 3)",
+                          "Puzzle.CreateEncounterDeck('wd009')"],
+        "declencher": ["Puzzle.Attack('01094')",
+                       "Puzzle.Draw(40)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "aa013 Ghost Agatha — trie le dessus : pioche 1, defausse 1, remet 1",
+        "pourquoi": ("`LookAtDeck(3)` + trois sorts distincts (51016). aa005 "
+                     "piochee, 01088 defaussee, la troisieme reste sur le deck"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa013', under_control=True)",
+                          "Puzzle.PutIntoDeck('01089')",
+                          "Puzzle.PutIntoDeck('01088')",
+                          "Puzzle.PutIntoDeck('aa005')"],
+        "declencher": ["Puzzle.Action('aa013', 'Action')"],
+        "cibles": ["aa005", "01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["aa005"],
+                    "defausse": ["01088"],
+                    "exhausted": ["aa013"]},
+    },
+    {
+        "nom": "aa014 Chaotic Forces — sans rien au tableau, la 2e puce inflige l'indirect",
+        "pourquoi": ("squelette an010. Le tableau des victoires est vide : la "
+                     "premiere puce (condition) n'est pas proposee, ChooseAbilities "
+                     "prend la seconde — defausse du dessus rencontre (01107, "
+                     "boost 2) -> 2 degats indirects (kb019)"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01101', '01107')"],
+        "declencher": ["Puzzle.Reveal('aa014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2,
+                    "hors_jeu": ["aa014"]},
+    },
+    {
+        "nom": "aa015 Burned at the Stake — Robuste protege Death du stun",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(card_ids=['aa016'], "
+                     "stalwart=1)`. Avec le complot en jeu, le stun est REFUSE et "
+                     "Death reste en jeu malgre sa Vulnerabilite — c'est le verrou "
+                     "du set"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa016')",
+                          "Puzzle.Reveal('aa015')"],
+        "declencher": ["Puzzle.Stun('aa016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["aa016"],
+                    "statuts_absents": [["aa016", "Stunned"]]},
+    },
+    {
+        "nom": "aa016 Death — Vulnerable : le stun la defausse",
+        "pourquoi": ("Vulnerable est natif (desc, fiche vulnerable.md) : sans "
+                     "aa015, un stun la retire du jeu — la SEULE sortie du sbire. "
+                     "⚠ Cas de DONNEES : vert sous substitution, par construction"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa016')"],
+        "declencher": ["Puzzle.Stun('aa016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["aa016"]},
+    },
+    {
+        "nom": "aa016 Death — 99 degats ne la vainquent pas",
+        "pourquoi": ("desc HP 'INF' + `UnitCannotBeDefeatedWhile` (16080b "
+                     "* Collector, MEME phrase imprimee) : elle encaisse et reste. "
+                     "⚠ Reste vert sous substitution : HP 'INF' suffit deja a lui "
+                     "seul, le module double la garantie par fidelite au texte "
+                     "imprime — ecart assume, consigne au journal"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa016')"],
+        "declencher": ["Puzzle.Damage('aa016', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["aa016"]},
+    },
+    {
+        "nom": "aa017 Funeral — -1 CTR tant qu'elle est la, une [energy] la defausse",
+        "pourquoi": ("obligation DU SET NEMESIS (cas rare). Malus continu "
+                     "`thwart=-1` + `PlayerActionToDiscardThis(AlterEgoAction)` "
+                     "paye `Cost('Y')` (01088 en main)"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.Reveal('aa017')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('aa017', 'AlterEgoAction')"],
+        "payer_avec": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["aa017"]},
+    },
+    {
+        "nom": "aa018 Death's Embrace — chaque carte coute 1 de plus",
+        "pourquoi": ("quasi-jumelle de 15026 Magical Suspension (nemesis officielle "
+                     "de Scarlet Witch) : `EachCardYouPlayCostAdditionalResource`. "
+                     "⚠ Cas rendu DISCRIMINANT apres substitution : la premiere "
+                     "version (jouer une carte a cout 0 et regarder la defausse) "
+                     "restait verte sans le module. Ici aa005 coute 2 et la main ne "
+                     "contient QUE 01088 (2 icones) : sans le module elle se joue "
+                     "(01088 depensee, Rhino blesse), avec le module (cout 3) le "
+                     "paiement ECHOUE — 01088 reste en main et Rhino est intact. "
+                     "⚠ La carte refusee finit en defausse (le harnais la pose sur "
+                     "la table avant l'echec) : c'est la RESSOURCE INTACTE qui "
+                     "discrimine, pas la position de l'evenement. "
+                     "⚠ PAS de `cibles` ici : la cle force TOUTES les selections, y "
+                     "compris la cible d'ATTACHE de aa018, qui n'entrait alors jamais "
+                     "en jeu (piege documente dans RECETTES-MOTEUR §7)"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa018', under_control=True)"],
+        "main_exclusive": ["aa005", "01088"],
+        "declencher": [],
+        "jouer": ["aa005"],
+        "payer_avec": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"],
+                    "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "aa018 Death's Embrace — l'action a ressources la defausse",
+        "pourquoi": ("la seconde porte de sortie : `PlayerActionToDiscardThis` paye "
+                     "Cost('BYR') — trois ressources exactes, une de chaque"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
+                          "Puzzle.PutIntoPlay('aa018')"],
+        "main_exclusive": ["aa004", "15019", "aa012"],
+        "declencher": ["Puzzle.Action('aa018', 'HeroAction', 1)"],
+        "payer_avec": ["aa004", "15019", "aa012"],
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["aa018"]},
+    },
+    {
+        "nom": "aa019 Wiccan — apres son contre, les icones du dessus frappent",
+        "pourquoi": ("PREMIER usage de `Puzzle.Thwart` (ajoute au harnais pour ce "
+                     "cas : aucun declencheur « After <allie> thwarts » n'etait "
+                     "joignable). 01107 (boost 2) sur le deck rencontre -> 2 choix "
+                     "« 1 degat a un ennemi » sur Rhino"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.PutIntoPlay('aa019', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreateEncounterDeck('01101', '01107')"],
+        "declencher": ["Puzzle.Thwart('aa019')"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "aa020 Pixie — jouee de la main, un allie X-MEN remonte de la defausse",
+        "pourquoi": ("`AfterPlayerPlayedCard('This', from_hand=True)` (31022) + "
+                     "selecteur `YourDiscardPile`. Colossus (32048, X-MEN) remonte"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('32048')"],
+        "main_exclusive": ["aa020", "01088"],
+        "declencher": [],
+        "jouer": ["aa020"],
+        "cibles": ["32048"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["aa020"],
+                    "en_main": ["32048"]},
+    },
+    {
+        "nom": "aa021 Coven of Chaos — un allie MYSTIC ressuscite chez son proprietaire",
+        "pourquoi": ("condition de jeu `only_if_your_identity_has_trait='MYSTIC'` "
+                     "(ma024) — Agatha est MYSTIC — et `face.PutIntoPlay(owner)` "
+                     "depuis `PlayersDiscardPile`. Kaluu (21014, MYSTIC) revient"),
+        "scenario": "rhino",
+        "heros": "agatha_harkness",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('21014')"],
+        "main_exclusive": ["aa021", "01089"],
+        "declencher": [],
+        "jouer": ["aa021"],
+        "cibles": ["21014"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["21014"],
+                    "defausse": ["aa021"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+def aa002_sort_attache(monde, aides):
+    """aa002 : le SPELL choisi est place SOUS Scarlet Witch, plus en defausse.
+
+    `etat_attendu` ne sait pas regarder la zone de cartes posees d'un allie :
+    on verifie ici que aa005 vit dans la zone de cartes placees de aa002 et
+    n'est plus dans la defausse du joueur.
+    """
+    wanda = aides["par_id"](monde, "aa002")
+    if wanda is None:
+        return False, "aa002 introuvable en jeu"
+    zone = wanda.GetPlacedCardArea()
+    if zone is None:
+        return False, "aa002 n'a pas de zone de cartes posees"
+    ids = [getattr(f.paper, "card_id", None) for f in zone.Get(True)]
+    if "aa005" not in ids:
+        return False, f"aa005 absente de la zone de Scarlet Witch ({ids})"
+    defausse = [getattr(f.paper, "card_id", None)
+                for f in monde.players[0].discard_pile.Get(True)]
+    if "aa005" in defausse:
+        return False, "aa005 est encore dans la defausse"
+    return True, "sort attache sous Scarlet Witch"
+
+
 def brawn_ressource_seulement_si_epuise(monde, aides):
     """bw001a : « The Complete Package » n'existe que tant que Brawn est epuise.
 

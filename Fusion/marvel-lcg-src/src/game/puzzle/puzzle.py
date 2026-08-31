@@ -453,6 +453,25 @@ class RunPuzzle:
         self.Attack(attacker, defender=card)
         return self.FindFaceInPlay(card)
 
+    def Thwart(self, card: CardName) -> 'CardFace':
+        """Fait CONTRER un personnage ami : son pouvoir de base THW.
+
+        Miroir de la branche amie de `Puzzle.Attack` (ajoute le 31/08/2026
+        pour le portage agatha_harkness) : sans lui, aucun declencheur
+        « After <allie> thwarts » (`AfterUnitThwartEnd`, ex. aa019 Wiccan)
+        n'etait joignable par le harnais. Meme montage exactement :
+        `MakeBasicPowerLikeInTurn` avec le pouvoir "THW", par le CONTROLEUR
+        de la carte.
+        """
+        from game.card.face.base import Friend
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer()
+
+        assert Friend.IsType(face), f"{card=} n'est pas un personnage ami"
+        controleur = face.GetControlByPlayer() or player
+        controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
+        return face
+
     def Scheme(self, card: CardName) -> 'CardFace':
         """Fait manigancer un ennemi contre le joueur courant."""
         from game.card.face.base import Enemy
