@@ -21,4 +21,8 @@ l'engagement, pas à l'activation suivante du sbire.
 
 **Variantes maison** : `ss019` (`* Bella Donna`, pack `scarlet_spider`,
 CptScorp) est la première carte à nommer ce mécanisme « Plotting » avec
-texte de rappel entre parenthèses, façon mot-clé officiel.
+texte de rappel entre parenthèses, façon mot-clé officiel. `vp015` (`* Guzz`,
+pack `venompool`, même auteur) le reprend à l'identique, à un mot près dans
+le rappel : « After this minion engages **you**, it schemes » au lieu de
+« engages **your identity** ». Même mécanisme, même déclencheur
+`AfterMinionEngagePlayer` : la différence est rédactionnelle, pas mécanique.

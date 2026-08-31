@@ -282,9 +282,9 @@
     "vp": {
       "pack": "venompool",
       "libelle": "129. Custom (Venompool)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Fusion Deadpool/Venom, hero+nemesis. Presque tout existe deja (drain, overkill, surge, tutor). Seul point neuf : mot-cle 'Plotting' (minion scheme automatiquement apres engagement), simple assemblage du hook AfterMinionEngagePlayer deja present, pas une primitive manquante. Reutiliser deadpool + vnm comme base. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+      "cartes": 17,
+      "depuis": "2026-08-31",
+      "note": "LIVRE le 31/08/2026. Auteur CptScorp, Cycle 2. Wade Wilson porte le symbiote Klyntar. 17 card_id : vp001a-vp011 (set Venompool) et vp012-vp016 (set Venompool Nemesis). Decklist COMPLETE fournie par l'auteur, aspect PROTECTION : aucun choix a faire. Le mot-cle 'Plotting' annonce par le plan est bien la (vp015 Guzz), mais la vraie nouveaute est ailleurs : l'insert du pack DEFINIT par ecrit le mot-cle maison 'drain X', reste indefini depuis agent_anti_venom, et confirme mot pour mot la convention retenue le 4/8/2026. Compteur moteur 'adrenaline' ajoute pour vp013. Quatre homonymes preexistants documentes dans le collision_note du deck (Wade Wilson 44001b, Venompool dt105, Black Cat 01002, Thwip! sr003, Foresight mw009). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
     },
     "vr": {
       "pack": "venom_rainy",

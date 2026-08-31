@@ -1402,4 +1402,44 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ma024': "Jouable uniquement si votre identité a le trait [[YOUNG AVENGER]].\n<b>Ressource</b> : inclinez Noh-Varr's Ship → générez une ressource [wild].",
   // ms_america — Power Stomp (Event, Agressivite)
   'ma025': "Jouable uniquement si votre héros a au moins 3 ATQ.\n<b>Action de héros</b> <i>(attaque)</i> : infligez X dégâts au vilain et à chaque sbire engagé avec vous, X étant égal à votre ATQ.",
+
+  // ---------------------------------------------------------------- venompool
+  // Pack fan-made « CptScorp », Cycle 2, set 129. Wade Wilson porte le
+  // symbiote Klyntar. Le mot-cle maison « drain X » est DEFINI par l'insert du
+  // pack : infliger X degats a l'ennemi, puis soigner X degats sur votre
+  // identite (voir docs/reference/mots-cles/drain-x.md).
+  // venompool — Venompool (Hero)
+  'vp001a': "<i>Fear Factor</i> — <b>Réponse</b> <i>(contrer)</i> : après que Venompool a mis un ennemi K.O., retirez 1 menace d'une manigance. <i>(Limite 1 [per_hero] par phase.)</i>",
+  // venompool — Wade Wilson (AlterEgo)
+  'vp001b': "[star] Wade Wilson ne peut utiliser sa REC que lorsqu'il a 3 points de vie ou moins.\n<i>Unexpected Bond</i> — <b>Action</b> : inclinez Wade Wilson → cherchez l'amélioration Klyntar Suit dans votre deck et votre pile de défausse et ajoutez-la à votre main. Mélangez votre deck.",
+  // venompool — Black Cat (Ally, signature)
+  'vp002': "[star] Le contre de base de Black Cat ignore les icônes de crise ([crisis]).",
+  // venompool — Talk About Armed Assault (Event, x3)
+  'vp003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts répartis entre les ennemis comme vous le souhaitez <i>(6 dégâts à la place si l'amélioration True Form est en jeu)</i>.",
+  // venompool — Tasty Meal (Event, x2)
+  'vp004': "<b>Action de héros</b> <i>(attaque/contrer)</i> : infligez 2 dégâts à un ennemi. Retirez 1 menace d'une manigance. Venompool gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin de la manche. Si True Form est en jeu, cette attaque gagne <b><i>Perforation</i></b>.",
+  // venompool — Thwip! (Event, x2)
+  'vp005': "<b>Action de héros</b> <i>(contrer)</i> : étourdissez le vilain. Si le vilain est déjà étourdi, retirez 3 menace d'une manigance à la place.",
+  // venompool — Whack-a-Rabbit (Event, x3)
+  'vp006': "Vous pouvez déclencher l'« <b>Action de héros</b> » ci-dessous une fois de plus par sbire engagé avec vous. <i>(Chaque ennemi ne peut être ciblé qu'une seule fois.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : subissez 1 dégât → infligez 2 dégâts à un ennemi.",
+  // venompool — Eat Them All! (Upgrade)
+  'vp007': "<b>Réponse de héros</b> : après que Venompool a attaqué, soignez 1 dégât sur lui. <i>(Limite une fois par phase.)</i>",
+  // venompool — Foresight (Upgrade)
+  'vp008': "<b>Action de héros</b> : subissez 2 dégâts et inclinez Foresight → redressez Venompool.",
+  // venompool — Klyntar Suit (Upgrade)
+  'vp009': "Vous gagnez +3 points de vie.\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir subi des dégâts d'une attaque ennemie, inclinez Klyntar Suit → drainez 1 à l'ennemi attaquant. <i>(Voir l'insert : infligez 1 dégât à cet ennemi, puis soignez 1 dégât sur votre identité.)</i>",
+  // venompool — True Form (Upgrade)
+  'vp010': "Défaussez cette carte du jeu si vous ne contrôlez pas Klyntar Suit.\n<b>Interruption de héros</b> : quand Venompool fait une attaque de base contre un ennemi, inclinez True Form → cette attaque gagne <b><i>Surpuissance</i></b>. Drainez 1 à cet ennemi.",
+  // venompool — One Too Many Voices (Obligation)
+  'vp011': "<b><i>Donnez cette carte au joueur de Wade Wilson.</i></b>\nVous devez passer en forme alter ego. Choisissez :\n• Inclinez Wade Wilson → retirez One Too Many Voices de la partie.\n• Défaussez Klyntar Suit. Si Klyntar Suit n'a pas été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // venompool — Shocking Entrance (SideScheme, nemesis)
+  'vp012': "<b>Une fois révélée</b> : infligez 3 dégâts indirects au premier joueur.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât indirect au premier joueur.",
+  // venompool — Killer Thrill (Minion, nemesis)
+  'vp013': "[star] Killer Thrill gagne +1 ATQ par compteur d'adrénaline sur elle.\n<b>Interruption forcée</b> : quand la phase du joueur se termine, placez 1 compteur d'adrénaline sur Killer Thrill. Puis, s'il y a 2 compteurs d'adrénaline ou plus sur elle, retirez-les tous et elle s'active.\n<i>(Sbire nemesis de Venompool.)</i>",
+  // venompool — Coldwar (Minion, nemesis)
+  'vp014': "<b><i>Coup Rapide</i></b>. <i>(Après que ce sbire s'est engagé avec votre héros, il vous attaque.)</i>\n[star] Tant que Killer Thrill est en jeu, Coldwar gagne +1 ATQ.\n<hr />\n[star] <b>Boost</b> : après cette activation, distribuez-vous cette carte comme carte de rencontre face cachée.",
+  // venompool — Guzz (Minion, nemesis)
+  'vp015': "<b><i>Plotting</i></b>. <i>(Après que ce sbire s'est engagé avec vous, il manigance.)</i>\n[star] Tant que Killer Thrill est en jeu, Guzz gagne +1 MNG.\n<hr />\n[star] <b>Boost</b> : après cette activation, distribuez-vous cette carte comme carte de rencontre face cachée.",
+  // venompool — Psyche Warp (Treachery, nemesis)
+  'vp016': "<b>Une fois révélée</b> : vous subissez X dégâts, X étant égal à l'ATQ de l'allié ayant la plus haute ATQ IMPRIMÉE parmi vos alliés. Défaussez cet allié. Si aucun dégât n'a été subi de cette façon, cette carte gagne <b><i>Déferlement</i></b>.",
 }

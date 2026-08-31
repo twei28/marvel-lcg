@@ -10313,6 +10313,101 @@ CAS = [
         "declencher": ["Puzzle.Discard('mf011')"],
         "verifier": "mf001a_ou_est_mf011",
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « venompool » : Wade Wilson symbiote, set 129, vp001a-vp016
+    # ------------------------------------------------------------------------
+    {
+        "nom": "vp009 Klyntar Suit — You get +3 hit points",
+        "pourquoi": ("modele 05023 Endurance : `GiveKeywordToAttached(\"You\", health=3)`. "
+                     "Le bonus vise l'IDENTITE, pas la carte : un `health` pose sur "
+                     "l'amelioration elle-meme ne se verrait nulle part en jeu"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('vp009')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3}, "en_jeu": ["vp009"]},
+    },
+    {
+        "nom": "vp009 Klyntar Suit — drain 1 : 1 degat a l'attaquant ET 1 soin sur l'identite",
+        "pourquoi": ("le mot-cle « drain » du pack, defini par l'insert : degats PUIS soin. "
+                     "Verifier les DEUX moities : un module qui n'infligerait que les degats "
+                     "passerait un controle qui ne regarde que l'ennemi. L'identite est "
+                     "blessee de 3 avant, elle doit finir a 2"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp009')",
+                          "Puzzle.Damage('vp001a', 3)"],
+        "declencher": ["Puzzle.Attack('01094', defender='vp001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]], "degats_identite": 2},
+    },
+    {
+        "nom": "vp010 True Form — se defausse quand Klyntar Suit quitte le jeu",
+        "pourquoi": ("« Discard this card from play if you do not control Klyntar Suit ». "
+                     "Aucune carte du depot ne portait cette tournure : la dependance passe "
+                     "par `AfterCardLeavePlay`. Sans le module, True Form resterait en jeu "
+                     "toute seule, ce que le texte interdit"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp009')",
+                          "Puzzle.PutIntoPlay('vp010')"],
+        "declencher": ["Puzzle.Discard('vp009')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["vp009", "vp010"]},
+    },
+    {
+        "nom": "vp013 Killer Thrill — +1 ATK par compteur d'adrenaline",
+        "pourquoi": ("`ThisGainKeyword` + `OnEvent.Counter`, modele 12011 Ant-Man. Le "
+                     "compteur `adrenaline` a du etre ajoute a l'enum COUNTER du moteur : "
+                     "sans lui la carte tomberait des la creation de partie. 2 compteurs "
+                     "doivent donner exactement +2 ATK"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp013')"],
+        "declencher": ["Puzzle.Counter('vp013', 'adrenaline', 2)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["vp013", "attack", 2]],
+                    "compteurs": [["vp013", "adrenaline", 2]]},
+    },
+    {
+        "nom": "vp014 Coldwar — +1 ATK tant que Killer Thrill est en jeu",
+        "pourquoi": ("`ThisGainKeywordWhileFaceIsInPlay` n'expose PAS `attack` "
+                     "(enhance_self.py:138) : il a fallu passer par `ThisGainKeyword` avec "
+                     "`OnEvent.CardInPlay`, modele dt133 Orka. Le cas verifie que le bonus "
+                     "arrive bien quand Killer Thrill entre en jeu"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp014')"],
+        "declencher": ["Puzzle.PutIntoPlay('vp013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["vp014", "attack", 1]]},
+    },
+    {
+        "nom": "vp015 Guzz — +1 SCH tant que Killer Thrill est en jeu",
+        "pourquoi": ("jumeau de vp014 mais sur la MANIGANCE, pas l'attaque : deux cartes "
+                     "au texte quasi identique dont une seule ligne differe, exactement le "
+                     "genre de paire ou un copier-coller se voit en partie et pas en lecture"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp015')"],
+        "declencher": ["Puzzle.PutIntoPlay('vp013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["vp015", "scheme", 1]]},
+    },
+    {
+        "nom": "vp002 Black Cat — son contre de base ignore les icones de crise",
+        "pourquoi": ("modele 32002 Shadowcat. Black Cat n'imprime QUE crisis (ni guard ni "
+                     "patrol) : le cas prouve que la capacite existe, et le module ne coche "
+                     "que crisis pour ne pas creer de capacite fantome"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('vp002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["vp002"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --

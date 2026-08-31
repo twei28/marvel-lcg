@@ -117,6 +117,19 @@ propre au pack, donc aucun mot-clé maison à cataloguer.
   `src/cards/pack/speed/speed/__init__.py` et dans `docs/speed_cartes.md`.
   `Quickstrike` (sd019) est imprimé sans gras mais possède déjà sa fiche.
 
+- **`venompool`** (Wade Wilson symbiote, set 129, 31/08/2026) : balayage
+  complet des balises `<b>` des 17 cartes — `Action`, `Boost`, `Forced
+  Interrupt`, `Hero Action`, `Hero Interrupt`, `Hero Response`, `Response`,
+  `When Revealed`, et la ligne « Give to the Wade Wilson player. » : que des
+  labels d'aptitude standards. Les six mots-clés que le pack CITE ont tous
+  déjà leur fiche ou sont natifs du moteur : `drain X` (vp009, vp010 — et
+  c'est l'insert de CE pack qui en a enfin donné la définition imprimée, voir
+  `drain-x.md`), `Plotting` (vp015), `Quickstrike` (vp014), `surge` (vp011,
+  vp016), `overkill` (vp010), `piercing` (vp004). Les compteurs
+  d'**adrénaline** de Killer Thrill (vp013) ne sont jamais imprimés en gras :
+  même critère que la Réserve de `brawn` et les compteurs explosifs de
+  `speed`, ce sont des compteurs de carte, pas un mot-clé.
+
 Quatre packs supplémentaires, absents du §9 du guide et inaccessibles
 depuis ce worktree (existent uniquement dans un checkout non lié), ont été
 vérifiés directement par l'agent contrôleur avec la même heuristique
