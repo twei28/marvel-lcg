@@ -428,8 +428,17 @@ TÉMOIN `venompool`, mêmes graines, le 31/08/2026 :
   Repasse propre : 102/107 + les 5 premiers decks (touchés par la batterie
   pas encore tuée) reverifiés un à un, tous OK.
 - Batterie complète des 829 cas (non-régression, fichiers moteur partagés
-  touchés : `card_face.py` enum TRAITS, harnais) : lancée seule le
-  31/08/2026 au soir. (*résultat à consigner à la fin de la passe, ~2 h.*)
+  touchés : `card_face.py` enum TRAITS, harnais) : **801/829**, et les 28
+  rouges sont tous EXPLIQUÉS, aucun n'est une régression du portage :
+  - 23 cas du pack `jj` pointaient `"heros": "jessica_jones"`, orphelins
+    depuis que ce nom désigne l'ancienne version set 61 (renommage
+    `jessica_jones_custom` à l'époque d'iron_lad). **Corrigés le jour même**
+    et re-vérifiés : 28/28 cas jj verts au `[filtre]` ;
+  - 5 écarts de comportement préexistants (sg009/sg013/sg007/sg006, ss012),
+    sans traceback, sans lien avec les fichiers touchés aujourd'hui :
+    consignés dans `.planning/todos/2026-08-31-cas-rouges-sg-ss.md`.
+- `tools/substituer_pack.py` (promu du script jetable du jour) : passe réelle
+  sur ho016, « rouges 1/1 », arbre git propre après restauration.
 
 ## 5. Ce que ces contrôles ne peuvent pas voir — reste à faire
 
