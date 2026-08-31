@@ -10738,6 +10738,135 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace_min": [["01097b", 1]]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « angela » : Aldrif Odinsdottir, set 133, an001a-an015
+    # ------------------------------------------------------------------------
+    {
+        "nom": "an001a Angela — Frenzy : vaincre un SBIRE la redresse",
+        "pourquoi": ("`AfterUnitDefeatedUnit(Response, \"You\", Minion, ...)` + ReadyAll. "
+                     "Angela est epuisee AVANT : sans la capacite elle le resterait. "
+                     "⚠ La cible est Minion, pas Enemy — contraste imprime avec an004 "
+                     "Murderous Glare, qui dit « an ENEMY ».\n"
+                     "⚠ LA VICTIME NE PEUT PAS ETRE an014 Disir : elle n'est JAMAIS "
+                     "vaincue (« shuffle them into the encounter deck INSTEAD »), donc "
+                     "Frenzy ne partirait pas — premiere version du cas, rouge a tort le "
+                     "31/08/2026. On prend 01110 Hydra Bomber, 2 PV, qu'Angela (ATQ 2) "
+                     "abat d'une attaque de base. L'attaque l'incline, Frenzy la redresse"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')",
+                          "Puzzle.PutIntoPlay('01110')"],
+        "declencher": ["Puzzle.Attack('an001a')"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["an001a"], "hors_jeu": ["01110"]},
+    },
+    {
+        "nom": "an001b Aldrif Odinsdottir — Setup : une arme sort du deck et arrive en main",
+        "pourquoi": ("modele ok001b * Okoye, jumeau exact (`WhenCardSetup` + "
+                     "`Search.PlayerCard(include_player_deck=True, "
+                     "include_discard_pile=True, trait=...)` + GainCard). Le deck "
+                     "contient trois armes : an006 Angelic Ribbons et an009 Xiphos. "
+                     "L'une des deux doit etre en main des la mise en place"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "angela_arme_en_main",
+    },
+    {
+        "nom": "an001b Aldrif Odinsdottir — +1 REC par arme controlee",
+        "pourquoi": ("[star] Of Heven and Hel. Deux armes en jeu (an006 et an009) doivent "
+                     "donner +2 REC. Une seule armerait le cas a passer avec un module qui "
+                     "rendrait toujours 1 : on en pose donc DEUX"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.PutIntoPlay('an006')",
+                          "Puzzle.PutIntoPlay('an009')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 2}},
+    },
+    {
+        "nom": "an002 Sera — Angela gagne +1 en taille de main",
+        "pourquoi": ("modele 06007 * Asgard, qui porte le meme « You get +1 hand size » et "
+                     "le rend par GiveKeywordToInPlayWhenApplyThis(Identity, "
+                     "control_by=\"You\"). GiveKeywordToAttached ne conviendrait pas : Sera "
+                     "est un ALLIE, elle ne s'attache a rien"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('an002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": 1}, "en_jeu": ["an002"]},
+    },
+    {
+        "nom": "an009 Xiphos — +1 ATK a Angela",
+        "pourquoi": ("la moitie permanente de la carte, verifiee separement de sa Response. "
+                     "Angela a 2 ATQ imprimee, elle doit passer a 3"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('an009')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}},
+    },
+    {
+        "nom": "an008 Siri's Dress — +4 PV et le trait AERIAL",
+        "pourquoi": ("DEUX effets sur la meme carte, verifies ensemble : un module qui "
+                     "n'accorderait que les PV passerait un controle partiel"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('an008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 4}, "traits": ["AERIAL"]},
+    },
+    {
+        "nom": "an012 Hela — intouchable tant qu'un AUTRE sbire est en jeu",
+        "pourquoi": ("modele 05027 * Thomas Edison (`ThisCannotTakeDamageWhile`). Avec "
+                     "Disir (an014) en jeu a cote, 99 degats sur Hela ne doivent RIEN "
+                     "faire. ⚠ « OTHER minions » : sans le filtre excluant Hela elle-meme, "
+                     "elle serait invulnerable en permanence"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.PutIntoPlay('an012')",
+                          "Puzzle.PutIntoPlay('an014')"],
+        "declencher": ["Puzzle.Damage('an012', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["an012", 0]], "en_jeu": ["an012"]},
+    },
+    {
+        "nom": "an012 Hela — SEULE en jeu, elle subit normalement les degats",
+        "pourquoi": ("l'autre moitie de la condition. Sans ce cas, un module qui rendrait "
+                     "TOUJOURS True passerait le precedent. Seule, Hela (4 PV) doit tomber"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.PutIntoPlay('an012')"],
+        "declencher": ["Puzzle.Damage('an012', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["an012"]},
+    },
+    {
+        "nom": "an014 Disir — vaincue, elle retourne dans le deck de rencontre",
+        "pourquoi": ("« would be defeated ... INSTEAD » : c'est un REMPLACEMENT. La defaite "
+                     "ne doit PAS avoir lieu, sinon le moteur d'Angela (Frenzy, Xiphos, "
+                     "Murderous Glare) se declencherait quand meme — exactement ce que la "
+                     "carte veut empecher.\n"
+                     "⚠ VERIFIER `hors_jeu` SEUL NE PROUVE RIEN : Disir quitte le jeu "
+                     "dans les deux cas, qu'elle soit melangee au deck ou simplement "
+                     "vaincue. Le cas serait non discriminant (defaut vu le 31/08/2026 en "
+                     "preparant la substitution). Le critere qui tranche est "
+                     "`dans_deck_rencontre` : elle doit s'y trouver, pas dans la defausse"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')",
+                          "Puzzle.PutIntoPlay('an014')"],
+        "declencher": ["Puzzle.Damage('an014', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["an014"], "dans_deck_rencontre": ["an014"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -11363,6 +11492,15 @@ def we_hunger_resolue(monde, aides):
     if menace is not None and menace >= 3:
         return True, "option menace appliquee"
     return False, f"aucune penalite constatee (degats={subis}, menace={menace})"
+
+def angela_arme_en_main(monde, aides):
+    """an001b Setup : une carte [[WEAPON]] doit etre en main des la mise en place."""
+    joueur = monde.players[0]
+    armes = [f for f in joueur.hand_cards.GetAll() if f.HasTrait("WEAPON")]
+    if armes:
+        noms = ", ".join(getattr(f.paper, "card_id", "?") for f in armes)
+        return True, f"arme(s) en main : {noms}"
+    return False, "aucune carte WEAPON en main apres la mise en place"
 
 def venompool_rec_autorisee(monde, aides):
     """« Wade Wilson can only use his REC when he has 3 or fewer hit points. »

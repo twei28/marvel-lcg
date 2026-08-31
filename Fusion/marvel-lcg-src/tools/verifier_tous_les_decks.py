@@ -85,6 +85,23 @@ def executer_un_deck(game_dir, port, nom_deck):
         noms = {o.get("name") for o in options if isinstance(o, dict)}
         if {"Attack", "Thwart", "Change_Form", "Change Form", "Recover"} & noms \
                 or any(str(n).startswith("Change_To_") for n in noms if n):
+            # CORRECTIF (31/08/2026) : on releve la main ICI, au moment precis
+            # ou le tour du joueur s'ouvre, et une seule fois.
+            #
+            # La boucle de controle plus bas sonde toutes les 0,5 s depuis un
+            # AUTRE fil, pendant que ce pilote-ci continue de jouer des cartes.
+            # Elle attrapait donc une main deja videe et rendait « main vide
+            # apres le setup » — un ECHEC PUREMENT FAUX. Mesure du 31/08/2026 :
+            # `magik` echouait dans la passe complete, puis passait 3 fois sur 3
+            # en isole, avec des mains relevees a 3, 3 puis 1. La course etait
+            # visible a l'oeil nu dans ces chiffres.
+            if not souci.get("pret"):
+                try:
+                    joueur = jeu.world.players[0]
+                    souci["main"] = len(list(joueur.hand_cards.Get()))
+                    souci["deck"] = joueur.player_deck.GetSize()
+                except Exception:
+                    pass
             souci["pret"] = True
         if compteur["asks"] > 400:
             souci["exc"] = "le tour du joueur n'a jamais ete atteint"
@@ -128,8 +145,15 @@ def executer_un_deck(game_dir, port, nom_deck):
             try:
                 joueur = monde.players[0]
                 identite = joueur.GetIdentity()
-                taille = len(list(joueur.hand_cards.Get()))
-                reste = joueur.player_deck.GetSize()
+                # Valeurs relevees par le pilote a l'ouverture du tour (voir le
+                # CORRECTIF plus haut) ; on ne relit le monde que si, pour une
+                # raison quelconque, elles manquent.
+                taille = souci.get("main")
+                reste = souci.get("deck")
+                if taille is None:
+                    taille = len(list(joueur.hand_cards.Get()))
+                if reste is None:
+                    reste = joueur.player_deck.GetSize()
             except Exception:
                 identite = None
             if identite is not None:
