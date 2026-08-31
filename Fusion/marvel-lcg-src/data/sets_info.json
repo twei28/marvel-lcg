@@ -1207,5 +1207,14 @@
         "encounters": [],
         "max_id": "vp016"
     },
-    "checksum": "a642b1c2b4eb0a0a5bff33995b16eab69b4b6c7f1a0495b72cbcfb6bba8fda99"
+    "133. Custom (Angela)": {
+        "name": "angela",
+        "scenarios": [],
+        "heroes": [
+            "angela"
+        ],
+        "encounters": [],
+        "max_id": "an015"
+    },
+    "checksum": "c08c88954bb3885188ff9a788e6c7471284c2690bca51f852525867d00c06926"
 }

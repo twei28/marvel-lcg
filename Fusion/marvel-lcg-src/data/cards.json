@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "32503689b610d1679e4e3688c42a19a1a47291dcd2daf82895e0cd39f681210b",
+    "checksum": "5acc533d357c59701b10d020a116585e03d7997672f6f2348a978ff46321193f",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -82862,6 +82862,291 @@
             "traits": [],
             "text": "<b>When Revealed</b>: You take X damage where X is equal to the ATK of the ally with the highest printed ATK. Discard that ally. If no damage was taken this way, this card gains surge.",
             "set_name": "Venompool Nemesis",
+            "custom": "Arnaud"
+        }
+    ],
+    "angela": [
+        {
+            "card_id": "an001a",
+            "type": "Hero",
+            "name": "* Angela",
+            "subtitle": "",
+            "desc": {
+                "HP": "13",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "4"
+            },
+            "traits": [
+                "ASGARD",
+                "GUARDIAN"
+            ],
+            "text": "<i>Frenzy</i> — <b>Response</b>: After you defeat a minion, ready Angela. <i>(Limit once per round.)</i>",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an001b",
+            "type": "AlterEgo",
+            "name": "* Aldrif Odinsdottir",
+            "subtitle": "",
+            "desc": {
+                "HP": "13",
+                "REC": "4*",
+                "HS": "6"
+            },
+            "traits": [
+                "ASGARD"
+            ],
+            "text": "<b>Setup</b>: Search your deck and discard pile for a [[WEAPON]] card and add it to your hand. Shuffle your deck.\n[star] <i>Of Heven and Hel</i> — Aldrif Odinsdottir gets +1 REC for each [[WEAPON]] you control.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an002",
+            "type": "Ally",
+            "name": "* Sera",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "HEVEN"
+            ],
+            "text": "Angela gets +1 hand size.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an003",
+            "type": "Event",
+            "name": "Heven's Fury",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. You may exhaust a [[WEAPON]] you control. If you do, divide the damage among enemies in play instead.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an004",
+            "type": "Event",
+            "name": "Murderous Glare",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "text": "<b>Response</b> <i>(thwart)</i>: After Angela attacks and defeats an enemy, remove 2 threat from a scheme. Remove 1 additional threat from that scheme for each minion you defeated this round.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an005",
+            "type": "Event",
+            "name": "Single Out",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "text": "<b>Hero Interrupt</b>: When a treachery card is revealed from the encounter deck, cancel its \"<b>When Revealed</b>\" effects. Search the encounter deck for a minion and put it into play engaged with any player.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an006",
+            "type": "Upgrade",
+            "name": "Angelic Ribbons",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "Angela gains steady.\n<b>Hero Interrupt</b>: When an enemy activates, discard this card → that enemy gets -X ATK and -X SCH for that activation, where X is Angela's ATK.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an007",
+            "type": "Upgrade",
+            "name": "Asgard's Assassin",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ASGARD",
+                "TITLE"
+            ],
+            "text": "<b>Hero Resource</b>: Exhaust Asgard's Assassin → generate a [physical] resource <i>(if you defeated a minion this round, generate [wild] instead)</i>.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an008",
+            "type": "Upgrade",
+            "name": "* Siri's Dress",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "ASGARD"
+            ],
+            "text": "You get +4 hit points.\nAngela gains the [[AERIAL]] trait.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an009",
+            "type": "Upgrade",
+            "name": "* Xiphos",
+            "subtitle": "Sword of the Stars",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Restricted": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ASGARD",
+                "WEAPON"
+            ],
+            "text": "Restricted.\nAngela gets +1 ATK.\n<b>Response</b>: After Angela defeats a minion, draw a card. <i>(Limit once per round.)</i>",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an010",
+            "type": "Obligation",
+            "name": "Banished from Asgard",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Aldrif Odinsdottir"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Aldrif Odinsdottir player.</i></b>\nYou may flip to alter-ego form. Choose:\n• Exhaust Aldrif Odinsdottir → remove Banished from Asgard from the game.\n• Discard 1 [[ASGARD]] card you control. You are stunned. If no card was discarded this way, this card gains surge. Discard this obligation.",
+            "set_name": "Angela",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an011",
+            "type": "SideScheme",
+            "name": "Hel's Retribution",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "Hazard": "1",
+                "StartingThreat": "2"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: The active player discards cards from their deck equal to [[ASGARD]] cards in play.\n<i>(Hazard Icon: Deal +1 encounter card during the villain phase.)</i>",
+            "set_name": "Angela Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an012",
+            "type": "Minion",
+            "name": "* Hela",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "2",
+                "Boost": "2",
+                "Nemesis": "Aldrif Odinsdottir"
+            },
+            "traits": [
+                "ASGARD",
+                "ELITE",
+                "MYSTIC"
+            ],
+            "text": "While there are other minions in play, Hela may not take damage.\n<b>Forced Interrupt</b>: When you defeat a minion, discard a card from your hand.\n<i>(Angela's nemesis minion.)</i>",
+            "set_name": "Angela Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an013",
+            "type": "Minion",
+            "name": "* Hel-Wolf",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "ATK": "3*",
+                "SCH": "1",
+                "Boost": "2",
+                "Nemesis": "Aldrif Odinsdottir"
+            },
+            "traits": [
+                "CREATURE",
+                "UNDEAD"
+            ],
+            "text": "[star] The engaged player must defend against Hel-Wolf's attacks with an ally they control, if able.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill.",
+            "set_name": "Angela Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an014",
+            "type": "Minion",
+            "name": "* Disir",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "1",
+                "Boost": "1",
+                "Nemesis": "Aldrif Odinsdottir"
+            },
+            "traits": [
+                "ASGARD",
+                "UNDEAD"
+            ],
+            "text": "<b>Forced Interrupt</b>: When Disir would be defeated, shuffle them into the encounter deck instead.\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card back into the encounter deck.",
+            "set_name": "Angela Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "an015",
+            "type": "Treachery",
+            "name": "Back from Hel",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: Search the encounter discard pile for the bottom most minion and reveal it.\n<hr />\n[star] <b>Boost</b>: If you are engaged with a minion, this attack gains 1 additional boost icon ([boost]).",
+            "set_name": "Angela Nemesis",
             "custom": "Arnaud"
         }
     ]
