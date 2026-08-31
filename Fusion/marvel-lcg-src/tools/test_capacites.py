@@ -10427,6 +10427,226 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["vp002"]},
     },
+
+    {
+        "nom": "vp001a Venompool — Fear Factor : vaincre un ennemi retire 1 menace",
+        "pourquoi": ("Response sur AfterUnitDefeatedUnit + RemoveThreatFromSchemes. Le "
+                     "complot annexe est pose a 8 menaces : sans la capacite il resterait "
+                     "a 8. Venompool ATQ 2 vainc Guzz (PV 2) d'une attaque de base. ⚠ 8 et "
+                     "non 3 : 01109 a une StartingThreat de 2, et attendre 2 apres retrait "
+                     "rendait le cas NON DISCRIMINANT — il passait avec ou sans le module "
+                     "(defaut trouve par la preuve par substitution le 31/08/2026)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('vp015')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "declencher": ["Puzzle.Attack('vp001a')"],
+        "cibles": ["vp015", "01109"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01109", 7]]},
+    },
+    {
+        "nom": "vp001b Wade Wilson — REC BLOQUEE au-dessus de 3 PV",
+        "pourquoi": ("« can only use his REC when he has 3 or fewer hit points » : on code "
+                     "la NEGATION via UnitCannotRecover. A 2 degats (7 PV restants sur 9) "
+                     "la recuperation doit etre refusee, les degats ne bougent pas"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.Damage('vp001b', 2)"],
+        "declencher": [],
+        "verifier": "venompool_rec_autorisee",
+        "rec_attendue": False,
+    },
+    {
+        "nom": "vp001b Wade Wilson — REC AUTORISEE a 3 PV ou moins",
+        "pourquoi": ("l'autre moitie de la condition, sans laquelle le premier cas passerait "
+                     "aussi avec une capacite qui bloque TOUJOURS la recuperation. A 6 degats "
+                     "(3 PV restants) la REC 6 doit soigner"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.Damage('vp001b', 6)"],
+        "declencher": [],
+        "verifier": "venompool_rec_autorisee",
+        "rec_attendue": True,
+    },
+    {
+        "nom": "vp001b Wade Wilson — Unexpected Bond : Klyntar Suit sort du deck et arrive en main",
+        "pourquoi": ("modele 04001b Clint Barton (Search.PlayerCard sur deck ET defausse, "
+                     "puis GainCard). Le cout est l'inclinaison de l'alter-ego : on verifie "
+                     "les DEUX, la carte en main et l'identite epuisee"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('vp001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["vp009"], "exhausted": ["vp001b"]},
+    },
+    {
+        "nom": "vp003 Talk About Armed Assault — 4 degats SANS True Form",
+        "pourquoi": ("modele 13006 Wasp Sting : `range=(1,4)` + `repeat_rules='Health'` "
+                     "autorise a empiler les 4 degats sur un seul ennemi, ce que « divided "
+                     "among enemies as you choose » exige. C'est aussi la carte qui a du "
+                     "etre declaree dans factory.py (deux capacites Play). ⚠ On fournit SIX "
+                     "cibles alors que la carte n'en autorise que quatre : c'est le MODULE "
+                     "qui doit plafonner a 4, pas le cas. Fournir exactement 4 cibles "
+                     "rendait la paire de cas non discriminante — les deux passaient meme "
+                     "avec la branche True Form neutralisee (defaut trouve par substitution "
+                     "le 31/08/2026)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "main_exclusive": ["vp003", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp003"],
+        "cibles": ["01094", "01094", "01094", "01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "vp003 Talk About Armed Assault — 6 degats AVEC True Form en jeu",
+        "pourquoi": ("l'autre branche, celle qui justifie les deux capacites mutuellement "
+                     "exclusives. Sans elle, la carte plafonnerait a 4 meme avec True Form. "
+                     "Klyntar Suit est posee d'abord : True Form se defausse sans elle"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('vp009')",
+                          "Puzzle.PutIntoPlay('vp010')"],
+        "main_exclusive": ["vp003", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp003"],
+        "cibles": ["01094", "01094", "01094", "01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "vp005 Thwip! — etourdit le vilain quand il ne l'est pas",
+        "pourquoi": ("premiere branche. Modele 18028 Waylay pour IsStunned/GiveStatus. "
+                     "Sans le module, le vilain resterait sans statut"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "main_exclusive": ["vp005", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp005"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "vp005 Thwip! — vilain DEJA etourdi : 3 menaces retirees A LA PLACE",
+        "pourquoi": ("mot-piege « instead » (PROCESSUS-CARTE etape 5) : les 3 menaces "
+                     "REMPLACENT l'etourdissement, elles ne s'y ajoutent pas. Le complot "
+                     "annexe est pose a 9, il doit finir a 6. Un module qui ferait les deux "
+                     "passerait le cas precedent mais pas celui-ci. ⚠ 9 et non 5 : la "
+                     "StartingThreat de 01109 vaut 2, et attendre 2 rendait le cas non "
+                     "discriminant (defaut trouve par substitution le 31/08/2026)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.Stun('01094')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 9)"],
+        "main_exclusive": ["vp005", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["vp005"],
+        "cibles": ["01109"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01109", 6]]},
+    },
+    {
+        "nom": "vp008 Foresight — subir 2 degats et s'incliner pour redresser Venompool",
+        "pourquoi": ("cout DOUBLE et indivisible (CostFunc.TakeDamage + CostFunc.Exhaust "
+                     "enchaines). On verifie les trois effets : l'identite redressee, "
+                     "l'amelioration inclinee, et les 2 degats reellement subis"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('vp008')",
+                          "Puzzle.Exhaust('vp001a')"],
+        "declencher": ["Puzzle.Action('vp008', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["vp001a"], "exhausted": ["vp008"],
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "vp016 Psyche Warp — degats egaux a l'ATQ IMPRIMEE du meilleur allie, qui est defausse",
+        "pourquoi": ("ARBITRAGE UTILISATEUR : « the ally » = les allies du joueur qui revele, "
+                     "jamais ceux d'un coequipier. 01083 Mockingbird (ATQ imprimee 2) contre "
+                     "vp002 Black Cat (ATQ imprimee 3) : c'est Black Cat qui doit partir, et "
+                     "l'identite prendre 3. Deux allies exactement pour prouver que le "
+                     "MAXIMUM est bien calcule, pas le premier venu"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.PutIntoPlay('vp002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('vp016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "hors_jeu": ["vp002"],
+                    "en_jeu": ["01083"]},
+    },
+    {
+        "nom": "vp016 Psyche Warp — AUCUN allie : 0 degat, la carte prend surge",
+        "pourquoi": ("« If no damage was taken this way, this card gains surge ». Sans allie "
+                     "la carte doit deferler. C'est la branche que le premier cas ne touche "
+                     "pas, et celle qui ferait boucler une partie si elle etait inerte"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "declencher": ["Puzzle.Reveal('vp016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "vp012 Shocking Entrance — When Revealed : 3 degats indirects au premier joueur",
+        "pourquoi": ("modele 42025 Harpoon (TakeIndirectDamage). On vise le PREMIER joueur "
+                     "via Worlds.GetFirstPlayer, pas message.GetToPlayer()"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "declencher": ["Puzzle.Reveal('vp012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "vp012 Shocking Entrance — [star] Boost : 1 degat indirect au premier joueur",
+        "pourquoi": ("la capacite Boost est une SECONDE capacite, distincte du When "
+                     "Revealed : un module qui n'implementerait que la premiere passerait "
+                     "le cas precedent. ⚠ L'attendu est 3, pas 1 : `Puzzle.Boost` fait "
+                     "ACTIVER Rhino avec cette carte de boost, et son attaque ajoute ses "
+                     "propres degats. Le journal montre bien « would deal 1 damage » pour "
+                     "la seule capacite Boost ; la substitution le confirme (3 avec le "
+                     "module, 2 sans)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')"],
+        "declencher": ["Puzzle.Boost('vp012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    # vp013 Killer Thrill — Forced Interrupt « quand la phase du joueur se
+    # termine » : HORS DE PORTEE DU HARNAIS, et ce n'est pas un defaut du
+    # module. Aucune commande Puzzle ne termine une phase (`Puzzle.End()` ne
+    # fait que relacher le mode « skip » du controleur), et `kb012 Kate's Bow`,
+    # qui porte le MEME declencheur `WhenPlayerPhaseEnd`, contourne de la meme
+    # facon en posant ses compteurs a la main.
+    #
+    # La preuve vient donc de l'AUTOPLAY, qui joue de vraies phases. Extrait
+    # d'un journal de partie du 31/08/2026 (/tmp/autoplay_venompool_*.log) :
+    #
+    #   323: [(04,vp013) Killer Thrill] activates
+    #   324: [(04,vp013) Killer Thrill] would place 1 'adrenaline' counter
+    #   325: [(04,vp013) Killer Thrill] recoit 1 compteur(s) « adrenaline »
+    #   ...
+    #   447: [(04,vp013) Killer Thrill] recoit 1 compteur(s) « adrenaline »
+    #   449: [(04,vp013) Killer Thrill] perd 2 compteur(s) « adrenaline »
+    #
+    # La chaine complete est la : pose automatique en fin de phase, puis
+    # franchissement du seuil de 2, retrait de TOUS les compteurs, activation.
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -11052,6 +11272,31 @@ def we_hunger_resolue(monde, aides):
     if menace is not None and menace >= 3:
         return True, "option menace appliquee"
     return False, f"aucune penalite constatee (degats={subis}, menace={menace})"
+
+def venompool_rec_autorisee(monde, aides):
+    """« Wade Wilson can only use his REC when he has 3 or fewer hit points. »
+
+    Le harnais Puzzle ne sait pas declencher une RECUPERATION DE BASE : ce
+    n'est pas une capacite de carte (`Puzzle.Action` ne connait que les
+    AbilityType), c'est une option de tour. On interroge donc directement la
+    regle que le moteur consulte, `CanRecover.IsCanRecover`, qui envoie le
+    message `CheckIfUnitCanRecover` sur lequel `UnitCannotRecover` se branche.
+
+    La cle de cas `rec_attendue` dit ce qu'on attend : True (autorisee) ou
+    False (bloquee).
+    """
+    from game.effect.rule import GameRule
+
+    attendu = aides["cas"].get("rec_attendue")
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    reelle = identite.IsCanRecover(GameRule(identite))
+    pv = identite.health
+    if reelle == attendu:
+        return True, f"REC {'autorisee' if reelle else 'bloquee'} a {pv} PV, comme attendu"
+    return False, (f"REC {'autorisee' if reelle else 'bloquee'} a {pv} PV, "
+                   f"attendu {'autorisee' if attendu else 'bloquee'}")
 
 def identite_a_un_statut(monde, aides):
     identite = aides["identite"](monde)
