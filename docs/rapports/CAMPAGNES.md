@@ -58,7 +58,7 @@ Le jeu tourne sous WSL, en Python 3.10 obligatoire.
 Démarrer le serveur (ou double-cliquer `JOUER-SOLO.bat`) :
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py"
 ```
 
 Le jeu répond sur `http://127.0.0.1:2345`. L'écran des campagnes est sur
@@ -80,7 +80,7 @@ cd ui-app && npx vitest run && npx tsc --noEmit
 Construire et déployer le plateau après toute modification de `ui-app/` :
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions' && bash ui-app/deployer.sh"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG' && bash ui-app/deployer.sh"
 ```
 
 Les fichiers de `public/` (HTML, JS, CSS non compilés) sont servis par lien
@@ -409,7 +409,7 @@ un carnet, et rend le descripteur de monde. C'est l'outil qui a servi à établi
 le tableau ci-dessus.
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/sonde.json \
   CAMPAIGN_LOG='{\"Player 1 Role\":\"Brawler\",\"Captive Allies\":\"32089\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . master_mold captain_america 4801"
@@ -522,7 +522,7 @@ garantit au moins que les clés déclarées existent.
 ### 6 bis. Ce que les livrets officiels ont appris (10/8/2026)
 
 Les PDF officiels de FFG, livrets et carnets de campagne, sont dans
-`regles-officielles/` à la racine de `Marvel LCG last try` (rangés là le
+`regles-officielles/` à la racine de `Marvel LCG` (rangés là le
 31/08/2026, ils étaient à la racine). Ils sont **vectoriels**, donc lisibles au
 texte et rendables en image. Les avoir change deux choses sur `mut_gen`, et
 aucune n'était devinable depuis le code seul.
@@ -706,7 +706,7 @@ dupliquée** : les deux scénarios la référencent.
 résumé français seul — c'est prévu, rien ne casse.
 
 `tools/pages_livret.py` fait le découpage à partir des PDF officiels, qui sont
-dans `regles-officielles/` à la racine de `Marvel LCG last try`. Les livrets sont carrés et
+dans `regles-officielles/` à la racine de `Marvel LCG`. Les livrets sont carrés et
 vectoriels : on REND les pages, on n'extrait pas leurs images, ce qui donne un
 traitement uniforme et la taille des scans déjà en place, 975 px. La seule
 chose à fournir pour une nouvelle boîte est la CARTE des pages, en tête de
@@ -769,7 +769,7 @@ mémoire et comparer au bytecode réellement chargé, plutôt que de se fier aux
 dates de fichiers :
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py --build-only"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py --build-only"
 ```
 
 Si les compteurs `compilés` restent obstinément bas alors qu'un fichier vient

@@ -1,7 +1,7 @@
 """Serveur de developpement du jeu, sur un port choisi, sans authentification.
 
     ~/marvel-work/python/bin/python3.10 \
-      "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check/scripts/serveur-dev.py" --port 2346
+      "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check/scripts/serveur-dev.py" --port 2346
 
 POURQUOI CE SCRIPT EXISTE
 -------------------------

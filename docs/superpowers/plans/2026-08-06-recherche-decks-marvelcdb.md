@@ -298,9 +298,9 @@ Attendu : `TOUT PASSE`, 17 lignes `OK`.
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/tools/" "$M/tools/"
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add docs/superpowers/plans/2026-08-06-recherche-decks-marvelcdb.md
 git commit -m "docs(marvelcdb): plan d'implementation de la recherche de decks"
 ```
@@ -681,7 +681,7 @@ ls -ld ~/marvel-work/fusion/marvel-lcg-src/.game/data/marvelcdb
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/tools/" "$M/tools/"
 rsync -a "$S/data/marvelcdb/" "$M/data/marvelcdb/"
 ```
@@ -795,7 +795,7 @@ process.exit(echecs === 0 ? 0 : 1)
 - [ ] **Étape 2 : lancer le test pour le voir échouer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-marvelcdb.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-marvelcdb.mjs
 ```
 
 Attendu : `ERR_MODULE_NOT_FOUND` sur `filtres.js`.
@@ -930,9 +930,9 @@ function paquetVide(code) {
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/public/js/" "$M/public/js/"
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-marvelcdb.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-marvelcdb.mjs
 ```
 
 Attendu : 14 lignes `OK` puis `TOUT PASSE`.
@@ -940,7 +940,7 @@ Attendu : 14 lignes `OK` puis `TOUT PASSE`.
 - [ ] **Étape 5 : commiter le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add outils/verifier-marvelcdb.mjs
 git commit -m "test(marvelcdb): filtres et favoris de la recherche de decks"
 ```
@@ -1022,7 +1022,7 @@ Les deux lignes finales (`console.log` / `process.exit`) restent en dernier, inc
 - [ ] **Étape 2 : lancer le test pour le voir échouer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-marvelcdb.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-marvelcdb.mjs
 ```
 
 Attendu : `ERR_MODULE_NOT_FOUND` sur `conversion.js`.
@@ -1106,9 +1106,9 @@ Le reste de la fonction (résolution du héros, `return { hero, deck }`) est inc
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/public/js/" "$M/public/js/"
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-marvelcdb.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-marvelcdb.mjs
 ```
 
 Attendu : `TOUT PASSE`, 23 lignes `OK`.
@@ -1122,7 +1122,7 @@ Attendu : le deck « Hives are Stronger Together » est importé, la fenêtre pr
 - [ ] **Étape 7 : commiter le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add outils/verifier-marvelcdb.mjs
 git commit -m "test(marvelcdb): conversion d'un deck marvelcdb en deck moteur"
 ```
@@ -1320,7 +1320,7 @@ Dans `public/js/prepare/dico-en.js`, ajouter un bloc à la suite de celui de l'i
 ```bash
 node --check "//wsl.localhost/Ubuntu/home/arnau/marvel-work/fusion/marvel-lcg-src/public/js/prepare/app.js"
 node --check "//wsl.localhost/Ubuntu/home/arnau/marvel-work/fusion/marvel-lcg-src/public/js/prepare/dico-en.js"
-bash "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app/deployer.sh"
+bash "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app/deployer.sh"
 ```
 
 Attendu : aucune sortie des deux `node --check`, et `deployer.sh` finit par « Deploye dans 2 installation(s) ».
@@ -1396,7 +1396,7 @@ Si un fichier dépasse 3 Mo, **ne pas découper tout de suite** : mesurer d'abor
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/data/marvelcdb/" "$M/data/marvelcdb/"
 ls -ld "$M/.game/data"     # doit être un lien symbolique vers data/
 ```
@@ -1410,7 +1410,7 @@ Attendu : le plateau se charge, la main contient les cartes du deck choisi, aucu
 - [ ] **Étape 7 : non-régression du harnais**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-check" && npm run captures
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check" && npm run captures
 ```
 
 `prepare.html` fait partie des écrans sous captures de référence, mais le panneau n'est visible qu'après un clic : la référence `preparation-nouvelle` **ne doit pas bouger**. Si elle bouge, c'est que le bouton « Decks MarvelCDB » a modifié la mise en page de la barre d'import : passer par `npm run captures:valider`, jamais par `--update-snapshots`.
@@ -1422,7 +1422,7 @@ C'est le test que la spec §10 désigne comme « celui qui compte » : il pilote
 ⚠️ **Il détruit la partie en cours** (il appelle `/new`). À ne lancer qu'après l'étape 6.
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-check" && npm run lancement
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check" && npm run lancement
 ```
 
 Attendu : vert. Le panneau n'ayant modifié ni les libellés (« Continuer », « Lancer la partie ») ni la forme de la charge, un rouge ici signale une vraie régression, pas un changement voulu. Le contrat ne se modifie jamais pour faire passer un test rouge.
@@ -1432,7 +1432,7 @@ Attendu : vert. Le panneau n'ayant modifié ni les libellés (« Continuer », �
 Mettre le todo à jour (statut, date, écarts constatés) :
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add .planning/todos/2026-07-28-recherche-decks-marvelcdb.md
 git commit -m "docs(marvelcdb): recherche de decks livree, todo mis a jour"
 ```

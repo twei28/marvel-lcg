@@ -167,7 +167,7 @@ if __name__ == '__main__':
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_campagne_en_cours.py
 ```
 
@@ -231,7 +231,7 @@ Remplacer tout le corps de `secret_pour_le_moteur()` (en gardant sa docstring) p
 - [x] **Étape 5 : relancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_campagne_en_cours.py
 ```
 
@@ -271,7 +271,7 @@ Et dans `__init__`, à côté des autres :
 - [x] **Étape 7 : vérifier que rien n'a bougé côté campagnes**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_campagne_en_cours.py
 ~/marvel-work/python/bin/python3.10 tools/verifier_campagnes.py
 ~/marvel-work/python/bin/python3.10 tools/verifier_grille_aos.py
@@ -282,7 +282,7 @@ Attendu : les trois verts. `secret_pour_le_moteur()` vient d'être réécrit : s
 - [x] **Étape 8 : porter vers l'arborescence vivante et commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 cp Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py \
    ~/marvel-work/fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py
 cp Fusion/marvel-lcg-src/tools/test_campagne_en_cours.py \
@@ -371,7 +371,7 @@ describe('le contexte de campagne', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/campagne/contexte.test.ts
 ```
 
@@ -440,7 +440,7 @@ Le `if (!contexte || !monde)` qui précédait l'`async` disparaît : il est remo
 - [x] **Étape 6 : relancer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run && npx tsc --noEmit
 ```
 
@@ -449,7 +449,7 @@ Attendu : VERT, avec plus de cas qu'avant (408 + 6).
 - [x] **Étape 7 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/campagne/contexte.ts ui-app/src/board/campagne/contexte.test.ts \
         ui-app/src/board/campagne/PanneauRecompenses.tsx ui-app/src/board/RapportBug.tsx
 git commit -m "feat(campagne): le plateau demande au serveur quand il n'a pas la cle"
@@ -592,7 +592,7 @@ if __name__ == '__main__':
 **Avant d'écrire l'implémentation**, relever le vrai nom de la classe du serveur de campagne (le test suppose `ServeurCampagne`) :
 
 ```bash
-grep -n "^class" "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py"
+grep -n "^class" "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py"
 ```
 
 Corriger le test si le nom diffère.
@@ -600,7 +600,7 @@ Corriger le test si le nom diffère.
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_carnet_partiel.py
 ```
 
@@ -657,7 +657,7 @@ Et dans `__init__` :
 - [x] **Étape 4 : relancer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_carnet_partiel.py
 ~/marvel-work/python/bin/python3.10 tools/test_campagne_en_cours.py
 ~/marvel-work/python/bin/python3.10 tools/test_ecriture_atomique.py
@@ -668,7 +668,7 @@ Attendu : les trois verts.
 - [x] **Étape 5 : porter et commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 cp Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py \
    ~/marvel-work/fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py
 cp Fusion/marvel-lcg-src/tools/test_carnet_partiel.py \
@@ -751,7 +751,7 @@ describe('qui valide pour la table', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/campagne/droits-carnet.test.ts
 ```
 
@@ -859,7 +859,7 @@ d) ajouter au dictionnaire `dico-en.ts` :
 - [x] **Étape 5 : relancer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run && npx tsc --noEmit
 ```
 
@@ -868,7 +868,7 @@ Attendu : VERT. Si un test existant de `PanneauRecompenses` casse faute de la no
 - [x] **Étape 6 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/campagne/droits-carnet.ts ui-app/src/board/campagne/droits-carnet.test.ts \
         ui-app/src/board/campagne/PanneauRecompenses.tsx ui-app/src/board.tsx ui-app/src/board/dico-en.ts
 git commit -m "feat(campagne): chacun ne saisit que ses champs, les autres en lecture"
@@ -939,7 +939,7 @@ describe('le panneau à plusieurs', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/campagne/PanneauRecompenses.multi.test.tsx
 ```
 
@@ -1050,14 +1050,14 @@ d) ajouter au dictionnaire :
 - [x] **Étape 5 : relancer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run && npx tsc --noEmit
 ```
 
 - [x] **Étape 6 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/campagne/ ui-app/src/board/dico-en.ts
 git commit -m "feat(campagne): les distants envoient leurs champs, l'hote valide pour la table"
 ```
@@ -1180,7 +1180,7 @@ Dans `public/js/prepare/dico-en.js` (RÉFÉRENCE) :
 - [x] **Étape 4 : déployer et vérifier statiquement**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 bash ui-app/deployer.sh
 node --check "//wsl.localhost/Ubuntu/home/arnau/marvel-work/fusion/marvel-lcg-src/public/js/salon/app.js"
 ```
@@ -1190,7 +1190,7 @@ Attendu : le déploiement passe, `node --check` ne dit rien. Rappel : Node est l
 - [x] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 cp Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py \
    ~/marvel-work/fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py
 git add Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py \
@@ -1256,7 +1256,7 @@ describe('le signal du scénario suivant', () => {
 - [x] **Étape 2 : lancer, vérifier le rouge**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/campagne/attente-scenario.test.ts
 ```
 
@@ -1309,7 +1309,7 @@ Dans `PanneauRecompenses.tsx`, ajouter :
 - [x] **Étape 5 : relancer et commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run && npx tsc --noEmit
 cd ..
 git add ui-app/src/board/campagne/
@@ -1331,11 +1331,11 @@ C'est le critère d'acceptation de la fiche, et rien de ce qui précède ne le r
 - [ ] **Étape 1 : déployer l'ensemble**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 cp Fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py \
    ~/marvel-work/fusion/marvel-lcg-src/src/engine/device/web/server/server_campagne.py
 cd ~/marvel-work/fusion/marvel-lcg-src && ~/marvel-work/python/bin/python3.10 launcher_fast.py --build-only
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && bash ui-app/deployer.sh
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && bash ui-app/deployer.sh
 ```
 
 Puis **redémarrer le serveur de dev** : le bytecode n'est relu qu'au démarrage, et les deux routes neuves n'existeront pas sans cela.
@@ -1353,7 +1353,7 @@ Créer `ui-check/tests/campagne-multi.spec.ts`, sur le modèle de `campagne-pilo
 Lancer :
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-check"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check"
 export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE
 npx playwright test tests/campagne-multi.spec.ts --project=pc
 ```
@@ -1374,7 +1374,7 @@ Ce que le test ne couvre pas et qui demande un humain : le salon. Lancer `JOUER-
 - [ ] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-check/tests/campagne-multi.spec.ts docs/ .twei/SESSION.md .planning/
 git commit -m "test(campagne): une campagne menee a deux, du lancement a la validation"
 ```

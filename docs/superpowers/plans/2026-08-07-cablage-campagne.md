@@ -24,12 +24,12 @@
 ## Raccourcis de commandes
 
 Les commandes ci-dessous sont réutilisées partout dans le plan. `$MOTEUR` désigne
-`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
+`/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src`.
 
 Lancer la sonde sur un scénario :
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/sonde.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: Cosmo\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . ebony_maw captain_america 4801"
@@ -84,7 +84,7 @@ attendue avant de coder.
 - [ ] **Étape 1 : constater l'état actuel, avant de toucher au fichier**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/sonde-avant.json \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . ebony_maw captain_america 4801"
 wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -162,7 +162,7 @@ Dans la docstring, sous la ligne `RAPPORT  : ...`, ajouter :
 - [ ] **Étape 5 : prouver l'extension sur le témoin**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/sonde-apres.json FIN_DE_PARTIE=1 \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . ebony_maw captain_america 4801"
 wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -188,7 +188,7 @@ continuer. Ne pas passer à la tâche 2 sur un témoin muet.
 - [ ] **Étape 6 : vérifier que l'ancien usage est intact**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/sonde-sans.json \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . ebony_maw captain_america 4801"
 wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -231,7 +231,7 @@ mélanger la carte `21181` dans le deck de rencontre
 (`ShuffleIntoEncounterIfPool('21181', 'Security Breach')`, `campaign.py:139`).
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-tower-avant.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: Security Breach\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . the_tower_defense captain_america 4801"
@@ -300,7 +300,7 @@ Le niveau 4 mélange `21188` dans le deck de rencontre sans condition
 `System Shock`.
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-hela.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: System Shock\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . hela captain_america 4801"
@@ -346,7 +346,7 @@ Le niveau 5 met Odin en jeu sous contrôle si le pool le contient
 (`PutIntoPlayIfPool('21139b,21139a', 'Odin', under_control=True)`).
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-loki.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: Odin\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . loki captain_america 4801"
@@ -415,7 +415,7 @@ Le niveau 3 mélange les alliés captifs dans le deck
 `32089` est un allié captif de la boîte.
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-mm-avant.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Player 1 Role\":\"Brawler\",\"Captive Allies\":\"32089\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . master_mold captain_america 4801"
@@ -496,7 +496,7 @@ la mise en place n'a pas planté, et `carnet_sortant` est présent.
 ```bash
 for duo in "sabretooth 1" "project_wideawake 2" "mansion_attack 4" "magneto 5"; do
   set -- $duo
-  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
     RAPPORT=/tmp/s-mg-$1.json FIN_DE_PARTIE=1 \
     CAMPAIGN_LOG='{\"Player 1 Role\":\"Brawler\"}' \
     ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . $1 captain_america 4801"
@@ -598,7 +598,7 @@ entrée, sauf vérification contraire au moment d'éditer :
 ```bash
 for duo in "morlock_siege 1" "on_the_run 2" "juggernaut 3" "mister_sinister 4" "stryfe 5"; do
   set -- $duo
-  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
     RAPPORT=/tmp/s-ne-$1.json FIN_DE_PARTIE=1 \
     ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . $1 captain_america 4801"
   wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -622,7 +622,7 @@ puis `JuggernautMomentumCounters()` pose sur chaque vilain autant de compteurs
 doit donc donner deux cartes `4019xb` en jeu ET `c_momentum: 2` sur le vilain.
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-jugg.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: Team Assembled\":\"1\",\"Campaign Pool: Geared Up\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . juggernaut captain_america 4801"
@@ -726,7 +726,7 @@ Préfixes :
 ```bash
 for duo in "unus 1" "four_horsemen 2" "apocalypse 3" "dark_beast 4" "en_sabah_nur 5"; do
   set -- $duo
-  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+  wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
     RAPPORT=/tmp/s-aoa-$1.json FIN_DE_PARTIE=1 \
     ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . $1 captain_america 4801"
   wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -747,7 +747,7 @@ ou `Mission Done: …`, que `CollectAoA` produit.
 `Panicked Refugees` (`EachPlayerShufflesCopyIfPool('45178', 'Panicked Refugees')`).
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-aoa-entrant.json FIN_DE_PARTIE=1 \
   CAMPAIGN_LOG='{\"Campaign Pool: Panicked Refugees\":\"1\"}' \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . four_horsemen captain_america 4801"
@@ -855,7 +855,7 @@ Dans `__init__`, sous la ligne de `get_campagne_definition` :
 
 ```bash
 wsl.exe -e bash -lc "pkill -f 'launcher_[f]ast'" ; true
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   rm -f .game/campaign_log_last.json && \
   nohup ~/marvel-work/python/bin/python3.10 launcher_fast.py >/tmp/serveur.log 2>&1 &"
 ```
@@ -871,7 +871,7 @@ Attendu : `{"players_won": false, "suggestions": {}}`.
 - [ ] **Étape 5 : vérifier fichier présent**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   printf '%s' '{\"players_won\": true, \"suggestions\": {\"Campaign Pool: Cosmo\": \"1\", \"Vide\": null}}' > .game/campaign_log_last.json"
 wsl.exe -e bash -lc "curl -s http://127.0.0.1:2345/get_carnet_suggere"
 ```
@@ -1183,7 +1183,7 @@ aucune erreur de types.
 - [ ] **Étape 8 : déployer le plateau**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions' && bash ui-app/deployer.sh"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG' && bash ui-app/deployer.sh"
 ```
 
 Toucher `ui-app/src` ne change rien tant que ce script n'a pas tourné.
@@ -1260,7 +1260,7 @@ c'est le style du fichier, pas un modèle à réinventer.
 - [ ] **Étape 4 : lancer le test**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   ~/marvel-work/python/bin/python3.10 -m pytest tools/test_config_serveur.py -v"
 ```
 
@@ -1274,7 +1274,7 @@ défaut, le chemin reste `./campaign_log_last.json` : rien ne change. Le
 confirmer :
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   RAPPORT=/tmp/s-verif.json FIN_DE_PARTIE=1 \
   ~/marvel-work/python/bin/python3.10 tools/sonde_campagne.py . ebony_maw captain_america 4801"
 wsl.exe -e bash -lc "~/marvel-work/python/bin/python3.10 -c \"
@@ -1310,7 +1310,7 @@ La boîte devient jouable depuis l'écran des campagnes. Les clés viennent de
 - [ ] **Étape 1 : relever les clés, sans les recopier de mémoire**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   ~/marvel-work/python/bin/python3.10 -c \"
 import re
 src=open('src/cards/pack/mts/campaign.py').read()
@@ -1495,7 +1495,7 @@ même si la route du moteur tombe.
 - [ ] **Étape 3 : vérifier que le fichier est du JSON valide et complet**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   ~/marvel-work/python/bin/python3.10 -c \"
 import json,re
 d=json.load(open('data/campagnes/mts.json',encoding='utf-8'))
@@ -1523,7 +1523,7 @@ continuer.
 - [ ] **Étape 4 : voir la campagne apparaître dans l'écran**
 
 ```bash
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && \
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && \
   nohup ~/marvel-work/python/bin/python3.10 launcher_fast.py >/tmp/serveur.log 2>&1 &"
 wsl.exe -e bash -lc "curl -s http://127.0.0.1:2345/list_campagnes_definies"
 wsl.exe -e bash -lc "curl -s 'http://127.0.0.1:2345/get_campagne_definition?mts' | head -c 300"

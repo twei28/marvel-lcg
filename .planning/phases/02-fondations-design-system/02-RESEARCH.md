@@ -50,7 +50,7 @@ Le routage serveur a été vérifié **en direct sur le serveur en cours** : `.h
 **Installation :**
 
 ```bash
-# depuis /mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-app  (chemin Windows natif, obligatoire)
+# depuis /mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app  (chemin Windows natif, obligatoire)
 npm install react@19.2.8 react-dom@19.2.8
 npm install -D vite@8.1.5 @vitejs/plugin-react@6.0.4 typescript@6.0.3
 npm install -D @types/react@19 @types/react-dom@19 vite-plugin-checker@0.14.5
@@ -64,7 +64,7 @@ npm install -D @axe-core/playwright@4.12.1 culori@4.0.2
 ### Recommended Project Structure
 
 ```
-/mnt/c/Users/arnau/Desktop/Marvel LCG last try/     # dépôt git, chemin Windows natif
+/mnt/c/Users/arnau/Desktop/Marvel LCG/     # dépôt git, chemin Windows natif
 ├── ui-check/                  # harnais Playwright (existant, phase 1)
 └── ui-app/                    # NOUVEAU — sources de la nouvelle UI, jamais dans le livrable
     ├── package.json
@@ -151,7 +151,7 @@ export default defineConfig({
 # ui-app/deployer.sh — à lancer depuis WSL.
 set -euo pipefail
 
-RACINE_APP="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-app"
+RACINE_APP="/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 JEU="$HOME/marvel-work/fusion/marvel-lcg-src"
 
 cd "$RACINE_APP"
@@ -431,7 +431,7 @@ Ne pas coder la formule de contraste à la main : la relative luminance WCAG a d
 ### Pitfall 4 : Node est Windows, le jeu est en WSL
 
 **Ce qui se passe :** `~/.local/bin/node` est un lien vers `/mnt/c/Program Files/nodejs/node.exe` ; il n'existe **aucun Node natif Linux** (vérifié : `which -a node` ne remonte que ce lien). Depuis un dossier WSL, `process.cwd()` est un chemin UNC `\\wsl.localhost\…`.
-**Comment l'éviter :** `ui-app/` sous `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/` comme `ui-check/`, `outDir` local, franchissement par `rsync` en bash. Ne jamais pointer `outDir` sur l'arborescence du jeu.
+**Comment l'éviter :** `ui-app/` sous `/mnt/c/Users/arnau/Desktop/Marvel LCG/` comme `ui-check/`, `outDir` local, franchissement par `rsync` en bash. Ne jamais pointer `outDir` sur l'arborescence du jeu.
 **Rappel npm :** les scripts npm passent par `cmd.exe` → une seule commande par script, pas de `&&`, pas de variable d'environnement en préfixe sans `WSLENV`.
 
 ### Pitfall 5 : les tokens ne gagnent pas la cascade tout seuls

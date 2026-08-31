@@ -162,7 +162,7 @@ sys.exit(1 if echecs else 0)
 - [ ] **Step 2: Lancer le test pour le voir échouer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_config_serveur.py
 ```
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: Lancer le test et le voir passer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_config_serveur.py
 ```
 
@@ -257,7 +257,7 @@ Attendu : `N/N verifications passees` et code de sortie 0.
 - [ ] **Step 5: Vérifier à la main que la sortie est lisible**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/config_serveur.py 2
 cat .serveur/launch-1.json
 ~/marvel-work/python/bin/python3.10 tools/config_serveur.py 9 ; echo "code de sortie : $?"
@@ -268,7 +268,7 @@ Attendu : deux chemins affichés, un JSON avec le port 2351, puis un message d'e
 - [ ] **Step 6: Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add -f Fusion/marvel-lcg-src/tools/config_serveur.py Fusion/marvel-lcg-src/tools/test_config_serveur.py
 git commit -m "feat(serveur): deriver une configuration de moteur par place"
 ```
@@ -428,7 +428,7 @@ wait
 - [ ] **Step 2: Rendre le script exécutable et vérifier les cas limites**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 chmod +x launcher-serveur.sh
 bash -n launcher-serveur.sh && echo "syntaxe OK"
 ./launcher-serveur.sh 5 ; echo "code de sortie : $?"
@@ -441,7 +441,7 @@ Attendu : `syntaxe OK`, puis trois fois un message `Nombre de places invalide` e
 - [ ] **Step 3: Fumée sur une seule place, sans tunnel**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 SANS_TUNNEL=1 ./launcher-serveur.sh 1 &
 sleep 45
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:2351/prepare.html
@@ -453,7 +453,7 @@ Attendu : `200`. Si le code est autre chose, lire `/tmp/marvel-serveur-1.log` av
 - [ ] **Step 4: Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add -f Fusion/marvel-lcg-src/launcher-serveur.sh
 git commit -m "feat(serveur): lancer N moteurs independants et leurs tunnels"
 ```
@@ -605,7 +605,7 @@ sys.exit(1 if echecs else 0)
 - [ ] **Step 2: Lancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ~/marvel-work/python/bin/python3.10 tools/test_serveur_multi.py
 ```
 
@@ -625,7 +625,7 @@ Attendu : les deux commandes ne renvoient rien. Si un moteur traîne, le test n'
 - [ ] **Step 4: Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add -f Fusion/marvel-lcg-src/tools/test_serveur_multi.py
 git commit -m "test(serveur): prouver l'isolement des sauvegardes et des decks"
 ```
@@ -653,7 +653,7 @@ title Marvel Champions - serveur pour les amis
 echo Demarrage du serveur...
 echo (laisse cette fenetre ouverte : les liens ne marchent que pendant ce temps)
 echo.
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && ./launcher-serveur.sh"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && ./launcher-serveur.sh"
 echo.
 echo Serveur arrete.
 pause
@@ -674,7 +674,7 @@ Fusion/statistics-serveur-*.json
 - [ ] **Step 3: Mesurer ce que quatre places coûtent**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 SANS_TUNNEL=1 ./launcher-serveur.sh 4 &
 sleep 120
 ps -o rss=,comm= -C python3.10 | awk '{somme += $1} END {printf "RAM totale des moteurs : %.0f Mo\n", somme/1024}'
@@ -687,7 +687,7 @@ Noter le chiffre et le rapporter à l'utilisateur. S'il dépasse la moitié de l
 - [ ] **Step 4: Essai complet avec tunnels, une seule place**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ./launcher-serveur.sh 1
 ```
 
@@ -698,7 +698,7 @@ Ne pas cocher cette étape sans avoir réellement ouvert le lien dans un navigat
 - [ ] **Step 5: Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add JOUER-SERVEUR.bat .gitignore
 git commit -m "feat(serveur): entree Windows et depot propre"
 ```

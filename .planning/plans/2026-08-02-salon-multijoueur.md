@@ -214,7 +214,7 @@ Attendu : `ok 3973 / err 0`.
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a --exclude __pycache__ "$S/src/" "$M/src/" && rsync -a "$S/tools/" "$M/tools/"
 cd "$M/.." && git add Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/tools
 git commit -m "feat(salon): routes de choix de heros/deck par siege"
@@ -284,7 +284,7 @@ process.exit(echecs === 0 ? 0 : 1)
 - [ ] **Étape 2 : lancer, vérifier l'échec**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-salon-etat.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-salon-etat.mjs
 ```
 Attendu : `ERR_MODULE_NOT_FOUND` (le module n'existe pas).
 
@@ -333,7 +333,7 @@ export function etatSalon({ nombreJoueurs, sieges }) {
 - [ ] **Étape 4 : relancer, vérifier que tout passe**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && node outils/verifier-salon-etat.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && node outils/verifier-salon-etat.mjs
 ```
 Attendu : 6 lignes OK, `TOUT PASSE`.
 
@@ -341,7 +341,7 @@ Attendu : 6 lignes OK, `TOUT PASSE`.
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/public/" "$M/public/"
 cd "$M/.." && git add Fusion/marvel-lcg-src/public/js/prepare/salon-etat.js outils/verifier-salon-etat.mjs
 git commit -m "feat(salon): decision de lancement en module pur, teste sous node"
@@ -516,7 +516,7 @@ Puis lancer le jeu en solo (`JOUER-SOLO.bat`), ouvrir `http://127.0.0.1:2345/sal
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a --exclude __pycache__ "$S/src/" "$M/src/" && rsync -a "$S/public/" "$M/public/"
 cd "$M/.." && git add Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public
 git commit -m "feat(salon): page de choix heros/deck pour l'invite"
@@ -657,7 +657,7 @@ Puis `JOUER-SOLO.bat` : créer une partie 1 joueur et une partie 2 joueurs hot-s
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/public/" "$M/public/"
 cd "$M/.." && git add Fusion/marvel-lcg-src/public
 git commit -m "feat(salon): l'hote voit les choix et attend la table complete"
@@ -692,7 +692,7 @@ Le lien de l'hôte (`&to=prepare`) ne change pas.
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 diff "$S/launcher-multi.sh" "$M/launcher-multi.sh" && echo "les deux copies sont identiques"
 ```
 Attendu : aucune différence. Ce fichier est à la racine, hors du `rsync` du guide §1.3 : c'est le piège qui a déjà coûté cher avec `launch.json`.
@@ -739,7 +739,7 @@ C'est le seul test qui valide la bascule salon → plateau, et il est manuel.
 - [ ] **Étape 6 : committer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add Fusion/marvel-lcg-src/launcher-multi.sh MULTIJOUEUR.md GUIDE-CREATION-CONTENU.md
 git commit -m "docs(salon): liens invites vers le salon, mode d'emploi et piege des sieges"
 ```

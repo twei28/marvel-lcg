@@ -157,7 +157,7 @@ for dp,dirs,files in os.walk(root):
   if f.endswith('.pyc') and '__pycache__' in dp: continue
   p=os.path.join(dp,f); z.write(p,os.path.relpath(p,root))
 z.close(); print('ok')"
-cp ~/marvel-work/marvel-lcg-src-fusion.zip "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Fusion/"
+cp ~/marvel-work/marvel-lcg-src-fusion.zip "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/"
 ```
 
 ## Ordre de reconstruction suggéré (du plus sûr au plus risqué)

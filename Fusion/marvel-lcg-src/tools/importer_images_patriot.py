@@ -11,7 +11,7 @@ import os
 import shutil
 
 SRC = "/tmp/claude-1000/patriot_zip/Patriot"
-DST = ("/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/"
+DST = ("/mnt/c/Users/arnau/Desktop/Marvel LCG/"
        ".claude/worktrees/okoye/Fusion/marvel-lcg-src/assets/pics")
 
 MAP = {

@@ -19,7 +19,7 @@ fichier n'existe ni dans ce worktree ni dans l'historique git de ce dépôt
 (vérifié lors de cette tâche : absent de `master` et de toutes les branches
 accessibles via `git log --all`). Son contenu ci-dessous a été lu
 directement par l'agent coordinateur dans le checkout original
-`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/` (hors
+`/mnt/c/Users/arnau/Desktop/Marvel LCG/` (hors
 du périmètre de ce worktree) et transmis verbatim ; il n'a pas été relu de
 façon indépendante par l'agent qui rédige cette fiche.
 

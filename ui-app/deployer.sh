@@ -8,7 +8,7 @@
 set -euo pipefail
 
 # Deduit du fichier lui-meme, jamais ecrit en dur : il existe plusieurs copies de
-# ce depot sur le disque (Desktop/"Marvel LCG last try"/ui-app et
+# ce depot sur le disque (Desktop/"Marvel LCG"/ui-app et
 # .../Jeu Marvel Champions/ui-app). Un chemin absolu deployait la copie perimee
 # tout en laissant croire que le build venait des sources en cours d'edition.
 RACINE_APP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

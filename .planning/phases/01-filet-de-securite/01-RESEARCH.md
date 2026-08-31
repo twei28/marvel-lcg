@@ -51,7 +51,7 @@ La recherche a été menée **contre le serveur réel en train de tourner** (`ht
 
 ```bash
 # Depuis un chemin Windows natif (obligatoire — voir Pitfall 1)
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check"
 npm init -y
 npm install -D @playwright/test@1.62.0
 npx playwright install chromium
@@ -66,7 +66,7 @@ Deux emplacements, séparés volontairement.
 **A. Le harnais (dépôt Desktop, chemin Windows natif, versionné avec `.planning/`)**
 
 ```
-"Marvel LCG last try"/
+"Marvel LCG"/
 ├── .planning/
 └── ui-check/                      # tout l'outillage de non-régression
     ├── package.json               # scripts en français (voir plus bas)
@@ -307,7 +307,7 @@ Ajouter en complément un test **sans navigateur** (`fetch` direct sur `/new?dat
 
 **Ce qui se passe :** `~/.local/bin/node` est un lien vers `/mnt/c/Program Files/nodejs/node.exe`. Il n'y a **aucun Node natif Linux**. Depuis un dossier WSL, `process.cwd()` vaut `\\wsl.localhost\Ubuntu\home\arnau` — un chemin UNC. `npm` résout aussi vers `/mnt/c/Program Files/nodejs/npm`.
 **Mesures :** `node -e "console.log(process.platform, process.cwd())"` → `win32 \\wsl.localhost\Ubuntu\home\arnau`. `npm init -y` dans `/tmp` fonctionne (Windows 11 gère `\\wsl.localhost`), mais l'accès UNC est lent et fragile sur une arborescence `node_modules`.
-**Comment l'éviter :** installer `ui-check/` sous `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/` (= `C:\Users\arnau\Desktop\...`, chemin Windows natif). Lancer toutes les commandes npm depuis là.
+**Comment l'éviter :** installer `ui-check/` sous `/mnt/c/Users/arnau/Desktop/Marvel LCG/` (= `C:\Users\arnau\Desktop\...`, chemin Windows natif). Lancer toutes les commandes npm depuis là.
 **Vérifié :** Windows node atteint le serveur WSL — `fetch('http://127.0.0.1:2345/main.html')` → 200, 6516 octets ; `fetch('http://localhost:2345/get_world?p=0')` → 200. La redirection localhost de WSL2 fonctionne, aucune configuration réseau à faire.
 **Signes d'alerte :** `EPERM`/`ENOENT` inexpliqués à l'install ; `UNC paths are not supported` ; scripts npm très lents.
 

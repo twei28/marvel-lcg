@@ -176,7 +176,7 @@ Aucun.
 - ⚠️ **`Fusion/marvel-lcg-src` est un codebase de DISTRIBUTION périmé**, et c'est lui que sert `JOUER-EN-MULTI.bat` sur le port 2345, avec mot de passe (`launch.online.json`) et tunnel Cloudflare public. Le codebase de TRAVAIL, seul alimenté par `deployer.sh`, est `~/marvel-work/fusion/marvel-lcg-src`. Ne jamais couper ce serveur ni écrire dans `Fusion/` : une partie peut être en cours avec d'autres joueurs.
 - ⚠️ **Un `200 OK` sur `/main.html` ne prouve pas que le jeu est servi** : la page d'authentification et la page d'avertissement de cache répondent toutes deux 200. Contrôler le CONTENU (titre contenant `Marvel`), comme le fait `global-setup.ts`.
 - **Serveur de développement local sur le port 2346**, à laisser allumé pour les plans 02-05 à 02-09 (il ne survit pas à un redémarrage du poste) :
-  `~/marvel-work/python/bin/python3.10 "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check/scripts/serveur-dev.py" --port 2346`
+  `~/marvel-work/python/bin/python3.10 "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check/scripts/serveur-dev.py" --port 2346`
   Puis, pour le harnais : `export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE`.
 - **`RELEASE=1` doit être posé avant tout import du moteur** dans un lanceur maison : sans elle, le moteur démarre en mode debug (`0.5.9.200d`) et importe `editor.editor`, absent de la distribution. Les références ont été prises en mode release (`0.5.9.200r`).
 - **`ui-check/test-results/` est vidé à chaque exécution de Playwright** : n'y déposer que du jetable. Les outils vivent dans `ui-check/scripts/`.

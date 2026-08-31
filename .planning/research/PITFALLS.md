@@ -283,7 +283,7 @@ Phase 1 « Fondations CSS », immédiatement après le filet de sécurité et **
 Configuration réelle `[SOURCE: launch.json]` :
 ```
 "image_servers": ["https://cerebrodatastorage.blob.core.windows.net/...", "https://marvelcdb.com/..."]
-"image_folders": ["./assets/pics/", "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeux original/assets/pics/"]
+"image_folders": ["./assets/pics/", "/mnt/c/Users/arnau/Desktop/Marvel LCG/Jeux original/assets/pics/"]
 "cache_max_age": 60
 ```
 

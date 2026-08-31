@@ -10,7 +10,7 @@ if %errorlevel%==0 goto DEJA_LANCE
 echo Demarrage de la partie solo...
 echo (laisse cette fenetre ouverte pendant toute la partie)
 echo.
-wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py"
+wsl.exe -e bash -lc "cd '/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src' && ~/marvel-work/python/bin/python3.10 launcher_fast.py"
 echo.
 echo Partie terminee.
 pause

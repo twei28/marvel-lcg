@@ -33,12 +33,12 @@ Les liens utiles :
 >
 > | Rôle | Chemin |
 > |---|---|
-> | **Copie VIVANTE (la seule)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/` |
+> | **Copie VIVANTE (la seule)** | Windows : `C:\Users\arnau\Desktop\Marvel LCG\Fusion\marvel-lcg-src\`<br>Depuis WSL : `/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src/` |
 >
 > Ce qui garantit que c'est bien elle qui tourne :
 > - Les trois lanceurs de référence (`Jeu Marvel Champions/JOUER-*.bat`,
 >   suivis par git) font `cd '<Windows>/Fusion/marvel-lcg-src'` avant de
->   lancer le jeu. Les `JOUER-*.bat` à la racine de `Marvel LCG last try`
+>   lancer le jeu. Les `JOUER-*.bat` à la racine de `Marvel LCG`
 >   sont de simples trampolines de deux lignes vers ceux-là.
 > - `launcher_fast.py` pose `ROOT = dirname(__file__)`, puis `SRC = ROOT/src`
 >   et `GAME = ROOT/.game` : il compile donc le `src/` de SON dossier, et lie
@@ -50,13 +50,13 @@ Les liens utiles :
 
 En cas de doute sur le dossier dans lequel on se trouve, `readlink -f .` doit
 commencer par
-`/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src`.
+`/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src`.
 
 Le dossier projet contient le miroir du moteur plus tout ce qui n'appartient
 qu'à nous :
 
 ```
-C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\
+C:\Users\arnau\Desktop\Marvel LCG\
 ├── Fusion\marvel-lcg-src\     : le moteur (copie ①, celle qui tourne)
 ├── ui-app\                    : notre client React (source unique, pas de miroir)
 ├── docs\                      : toute la documentation, dont ce fichier
@@ -89,7 +89,7 @@ Exemple concret pour un nouveau héros, pack `human_torch`. On pose `W` une
 fois pour toutes :
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 ```
 
 ```
@@ -129,7 +129,7 @@ inverse (`Windows` → `WSL`), et seulement avec `--dry-run` d'abord.
 ### 1.4 Les copies mortes : toutes supprimées le 31/08/2026
 
 Le grand rangement du 31/08/2026 a supprimé TOUTES les copies mortes que
-cette section recensait : `Marvel LCG last try\Fusion\` (vide),
+cette section recensait : `Marvel LCG\Fusion\` (vide),
 `_archive-2026-08-08\`, les vieux dossiers `Marvel LCG` et
 `Marvel LCG.backup-2026-07-07` du Bureau, et côté WSL `~/marvel-work/fusion/`
 (l'ancienne copie vivante figée au 14/08, responsable des écrasements),
@@ -511,7 +511,7 @@ seule installation restante :
 > ```
 
 ```bash
-W="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+W="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 PY=$HOME/marvel-work/python/bin/python3.10
 ```
 

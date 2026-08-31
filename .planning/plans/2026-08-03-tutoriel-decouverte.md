@@ -147,7 +147,7 @@ Changer temporairement `MAIN_ATTENDUE[0]` en `"99999"`, relancer, constater l'é
 
 ```bash
 rsync -a ~/marvel-work/fusion/marvel-lcg-src/tools/ \
-  "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src/tools/"
+  "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src/tools/"
 ```
 
 ---
@@ -276,7 +276,7 @@ process.exit(code)
 - [ ] **Étape 2 : lancer, vérifier l'échec**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && node outils/verifier-lecons.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && node outils/verifier-lecons.mjs
 ```
 Attendu : échec de compilation, `lecons.ts` n'existe pas.
 
@@ -440,21 +440,21 @@ export const LECONS: Lecon[] = [
 - [ ] **Étape 4 : relancer, vérifier que tout passe**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && node outils/verifier-lecons.mjs
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && node outils/verifier-lecons.mjs
 ```
 Attendu : 19 lignes OK, `TOUT PASSE`.
 
 - [ ] **Étape 5 : typecheck**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm run typecheck
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm run typecheck
 ```
 Attendu : aucune sortie.
 
 - [ ] **Étape 6 : ajouter `.tmp-verif-lecons/` au `.gitignore` de `ui-app`, puis committer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 printf '.tmp-verif-lecons/\n' >> ui-app/.gitignore
 git add ui-app/src/board/lecons.ts ui-app/outils/verifier-lecons.mjs ui-app/.gitignore
 git commit -m "feat(tutoriel): les 11 lecons du mode Decouverte, en module pur"
@@ -684,7 +684,7 @@ Ajouter dans `ui-app/src/board/dico-en.ts` les entrées de toutes les chaînes d
 - [ ] **Étape 5 : typecheck et build**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npm run typecheck && npm run build
 ```
 Attendu : aucune erreur.
@@ -692,14 +692,14 @@ Attendu : aucune erreur.
 - [ ] **Étape 6 : vérifier qu'une partie NORMALE n'est pas touchée**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions" && bash ui-app/deployer.sh
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG" && bash ui-app/deployer.sh
 ```
 Puis `JOUER-SOLO.bat`, lancer une partie ordinaire : **aucun coach ne doit apparaître** (la clé `marvel-board-tutoriel` n'existe pas). C'est la vérification la plus importante de cette tâche.
 
 - [ ] **Étape 7 : committer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/CoucheCoach.tsx ui-app/src/board.tsx ui-app/src/board/board.css ui-app/src/board/dico-en.ts
 git commit -m "feat(tutoriel): couche coach, une mission a la fois, jamais bloquante"
 ```
@@ -804,9 +804,9 @@ Dans `GUIDE-CREATION-CONTENU.md` §13 :
 
 ```bash
 S=~/marvel-work/fusion/marvel-lcg-src
-M="/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/Fusion/marvel-lcg-src"
+M="/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 rsync -a "$S/public/" "$M/public/"
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add GUIDE-CREATION-CONTENU.md 2>/dev/null || true
 git commit -m "feat(tutoriel): mode Decouverte dans la preparation de partie"
 ```

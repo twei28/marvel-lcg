@@ -4,7 +4,7 @@
 
 # Rangement du dossier — état, cible, et ce qui a été fait
 
-Écrit le 08/08/2026. Le dossier `Marvel LCG last try` avait accumulé trois ans
+Écrit le 08/08/2026. Le dossier `Marvel LCG` avait accumulé trois ans
 de copies, d'essais et d'archives sans logique apparente. Ce document dit ce
 qu'était chaque chose, où elle est allée, et pourquoi.
 
@@ -58,7 +58,7 @@ déplacer ne casse rien.
 ## 2. L'arborescence cible
 
 ```
-Marvel LCG last try/
+Marvel LCG/
 ├── Jeu Marvel Champions/          la seule copie vivante
 │   ├── docs/                      les documents, dont celui-ci
 │   ├── paquets-cartes/            les zips de packs fournis par les auteurs
@@ -128,7 +128,7 @@ pointent tous sur `Jeu Marvel Champions/Fusion/marvel-lcg-src`.
 
 **Un piège découvert en les vérifiant** : l'ancien `JOUER-EN-MULTI.bat` de la
 racine, le seul qui s'y trouvait, ne lançait PAS le jeu courant. Il pointait sur
-`Marvel LCG last try/Fusion/marvel-lcg-src`, un moteur obsolète de 4547 fichiers
+`Marvel LCG/Fusion/marvel-lcg-src`, un moteur obsolète de 4547 fichiers
 source contre 10684, sans même de `cards.json`. Il démarrait donc une vieille
 version. Il est conservé dans l'archive sous
 `JOUER-EN-MULTI.bat.casse-pointait-sur-vieux-moteur`.
@@ -151,7 +151,7 @@ qu'un dossier vide. Pour le faire disparaître, fermer les fenêtres de
 l'explorateur puis :
 
 ```bash
-rmdir "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Fusion"
+rmdir "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion"
 ```
 
 **La copie Arnaud avait été mal jugée.** Un premier examen l'avait déclarée vide
@@ -167,7 +167,7 @@ sers, remets-la en place plutôt que de la reconstruire.
 ### Refaire, si l'arbre se salit à nouveau
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 
 # 1. L'archive
 mkdir -p _archive-2026-08-08/{reconstruction-source,depot-racine}
@@ -200,7 +200,7 @@ mv *.mp3 MarvelChampions.apk sauvegarde-packs-supprimes-*.tar.gz medias/
 ### Défaire
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 mv _archive-2026-08-08/copie-Arnaud "Jeu Marvel Champions Arnaud"
 mv _archive-2026-08-08/racine-Fusion Fusion
 mv _archive-2026-08-08/reconstruction-source/* .
@@ -217,7 +217,7 @@ comme référence d'une reconstruction du source abandonnée depuis.
 
 **Il ne l'était pas.** Le `launch.json` du moteur déclarait trois dossiers
 d'images, dont un chemin ABSOLU vers
-`Marvel LCG last try/Jeux original/assets/pics/`. **3876 images de cartes
+`Marvel LCG/Jeux original/assets/pics/`. **3876 images de cartes
 n'existaient que là.** L'archiver tel quel aurait privé la majorité des cartes
 de leur visuel, sans erreur ni message.
 

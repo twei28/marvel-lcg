@@ -406,7 +406,7 @@ checksum recalculé ; 10 proxies PIL déployés vers les 3 assets/pics).
 
 Constat demandé par l'utilisateur ce jour-là. **Rien n'a été modifié**, c'est un
 relevé. Chemin concerné :
-`C:\Users\arnau\Desktop\Marvel LCG last try\Jeu Marvel Champions\`
+`C:\Users\arnau\Desktop\Marvel LCG\`
 
 **Poids total : ~2,1 Go**, dont 1,5 Go de scans (`assets/`, légitime) et
 **~650 Mo d'archives et de sauvegardes devenues inutiles**.

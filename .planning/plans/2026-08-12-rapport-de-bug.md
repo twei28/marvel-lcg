@@ -106,7 +106,7 @@ describe('le texte brut du journal', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/historique-brut.test.ts
 ```
 
@@ -174,7 +174,7 @@ Le rapport doit pouvoir DIRE qu'il est tronqué. Changer `const MAX_ENTREES = 40
 - [x] **Étape 7 : relancer les tests**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/historique-brut.test.ts src/board/historique-partie-portee.test.ts && npx tsc --noEmit
 ```
 
@@ -183,7 +183,7 @@ Attendu : VERT des deux côtés. `historique-partie-portee.test.ts` est relancé
 - [x] **Étape 8 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/HistoriquePartie.tsx ui-app/src/board/historique-brut.test.ts
 git commit -m "feat(journal): garder le texte brut du moteur a cote du texte affiche"
 ```
@@ -258,7 +258,7 @@ describe('collecte des erreurs console', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/erreurs-console.test.ts
 ```
 
@@ -339,7 +339,7 @@ export function installerCollecteErreurs(): () => void {
 - [x] **Étape 4 : relancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/erreurs-console.test.ts && npx tsc --noEmit
 ```
 
@@ -350,7 +350,7 @@ Si le troisième cas échoue parce que les erreurs des cas précédents se cumul
 - [x] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/erreurs-console.ts ui-app/src/board/erreurs-console.test.ts
 git commit -m "feat(rapport): garder les erreurs console recentes en memoire"
 ```
@@ -539,7 +539,7 @@ describe('le rapport', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/rapport-bug.test.ts
 ```
 
@@ -840,7 +840,7 @@ export function construireRapport(
 - [x] **Étape 4 : relancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/rapport-bug.test.ts && npx tsc --noEmit
 ```
 
@@ -849,7 +849,7 @@ Attendu : VERT.
 - [x] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/rapport-bug.ts ui-app/src/board/rapport-bug.test.ts
 git commit -m "feat(rapport): le module qui assemble l'etat de la partie"
 ```
@@ -921,7 +921,7 @@ Ajouter `rapportEnTexte, nomFichierRapport` à l'import en tête du fichier de t
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/rapport-bug.test.ts
 ```
 
@@ -1050,7 +1050,7 @@ export function nomFichierRapport(rapport: RapportBug): string {
 - [x] **Étape 4 : relancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/rapport-bug.test.ts && npx tsc --noEmit
 ```
 
@@ -1059,7 +1059,7 @@ Attendu : VERT.
 - [x] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/rapport-bug.ts ui-app/src/board/rapport-bug.test.ts
 git commit -m "feat(rapport): la version texte, collable et honnete sur ce qu'elle ignore"
 ```
@@ -1186,7 +1186,7 @@ describe('le panneau', () => {
 - [x] **Étape 2 : lancer le test, vérifier qu'il échoue**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/RapportBug.test.tsx
 ```
 
@@ -1378,7 +1378,7 @@ Vérifier avant d'ajouter que `'Copier'` et `'Télécharger'` ne sont pas déjà
 - [x] **Étape 5 : relancer le test**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run src/board/RapportBug.test.tsx && npx tsc --noEmit
 ```
 
@@ -1387,7 +1387,7 @@ Attendu : VERT.
 - [x] **Étape 6 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board/RapportBug.tsx ui-app/src/board/RapportBug.test.tsx ui-app/src/board/dico-en.ts
 git commit -m "feat(rapport): copier et telecharger, avec le choix de la profondeur"
 ```
@@ -1534,7 +1534,7 @@ Dans `ui-app/src/board/board.css`, à côté des règles `.hp-entete` existantes
 - [x] **Étape 4 : vérifier que rien n'est cassé**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npx vitest run && npx tsc --noEmit
 ```
 
@@ -1543,7 +1543,7 @@ Attendu : VERT, et le nombre de cas doit avoir AUGMENTÉ par rapport aux 365 de 
 - [x] **Étape 5 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/src/board.tsx ui-app/src/board/HistoriquePartie.tsx ui-app/src/board/board.css
 git commit -m "feat(rapport): le panneau H et le raccourci B sortent le rapport"
 ```
@@ -1560,7 +1560,7 @@ Un rapport qui n'a jamais été pris sur une vraie partie ne prouve rien. C'est 
 - [ ] **Étape 1 : déployer**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 bash ui-app/deployer.sh
 ```
 
@@ -1569,7 +1569,7 @@ Attendu : le build passe, le garde-fou de sortie ne signale rien, la recopie ver
 - [ ] **Étape 2 : lancer le serveur de dev et une partie**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 ~/marvel-work/python/bin/python3.10 ui-check/scripts/serveur-dev.py --port 2346
 ```
 
@@ -1595,7 +1595,7 @@ Sur la partie en cours, ouvrir la console du navigateur et lire le compteur du b
 - [ ] **Étape 6 : commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add .twei/SESSION.md .planning/STATE.md .planning/todos/2026-08-12-rapport-de-bug.md .planning/plans/2026-08-12-rapport-de-bug.md
 git commit -m "docs(rapport): le rapport de bug est pris sur une vraie partie"
 ```

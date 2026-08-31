@@ -196,7 +196,7 @@ Aucune configuration externe. En revanche, un serveur doit tourner :
 
 ```bash
 ~/marvel-work/python/bin/python3.10 \
-  "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check/scripts/serveur-dev.py" --port 2346
+  "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check/scripts/serveur-dev.py" --port 2346
 ```
 
 Il tourne actuellement et doit rester allume pour les plans 02-05 a 02-09. Les commandes du harnais qui doivent le viser :

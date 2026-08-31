@@ -35,10 +35,10 @@ tech-stack:
 
 key-files:
   created:
-    - /mnt/c/Users/arnau/Desktop/Marvel LCG last try/Fusion/marvel-lcg-src-fusion.zip.bak-avant-phase1
+    - /mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src-fusion.zip.bak-avant-phase1
     - /home/arnau/marvel-work/scratch/ecartes-01-06/scene.html.bak-avant-ui
   modified:
-    - /mnt/c/Users/arnau/Desktop/Marvel LCG last try/Fusion/marvel-lcg-src-fusion.zip
+    - /mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src-fusion.zip
     - .planning/STATE.md
     - .planning/ROADMAP.md
 

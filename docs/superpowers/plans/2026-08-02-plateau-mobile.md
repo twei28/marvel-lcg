@@ -69,7 +69,7 @@ Le modèle de condensation est la règle qui rend le niveau 1 tenable : il déci
 Justification de la dépendance, à recopier dans le message de commit : les règles de condensation et la pile de couches sont de la logique pure dont la justesse ne se voit pas sur une capture, et Playwright ne sait pas les tester à ce niveau.
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
 npm install --save-dev vitest@^3 jsdom@^26 @testing-library/react@^16 @testing-library/jest-dom@^6
 ```
 
@@ -181,7 +181,7 @@ describe('condenser', () => {
 
 - [ ] **Step 6 : Lancer les tests pour vérifier qu'ils échouent**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm test`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm test`
 Attendu : ÉCHEC, `Failed to resolve import "./condensation"`.
 
 - [ ] **Step 7 : Écrire `ui-app/src/board/mobile/condensation.ts`**
@@ -261,18 +261,18 @@ export function condenser(unites: UniteAffichee[], budget: BudgetBande): BandeCo
 
 - [ ] **Step 8 : Lancer les tests pour vérifier qu'ils passent**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm test`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm test`
 Attendu : 6 tests verts dans `condensation.test.ts`.
 
 - [ ] **Step 9 : Vérifier que le typage reste propre**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm run typecheck`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm run typecheck`
 Attendu : aucune sortie, code de retour 0.
 
 - [ ] **Step 10 : Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-app/package.json ui-app/package-lock.json ui-app/vitest.config.ts ui-app/src/test-setup.ts ui-app/src/board/mobile/
 git commit -m "feat(mobile): modele de condensation des bandes, teste
 
@@ -1083,7 +1083,7 @@ Attendu : 4 tests verts.
 
 - [ ] **Step 7 : Vérifier que le mode PC n'a pas bougé**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm test && npm run typecheck`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm test && npm run typecheck`
 Attendu : tous les tests verts, typage propre. Le champ est purement additif : aucun rendu PC ne le lit.
 
 - [ ] **Step 8 : Commit**
@@ -1726,7 +1726,7 @@ Et dans `mobile.css`, ajouter à la règle `.bande-titre` :
 
 - [ ] **Step 6 : Lancer les tests pour vérifier qu'ils passent**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm test`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm test`
 Attendu : tous les tests verts, dont les 3 de `PlateauMobile`.
 
 - [ ] **Step 7 : Commit**
@@ -1781,7 +1781,7 @@ Le panneau d'options utilise déjà des lignes `.ligne-option` avec un état à 
 
 - [ ] **Step 4 : Vérifier le typage et les tests**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm run typecheck`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm run typecheck`
 Attendu : aucune sortie, code de retour 0. Si `PlateauMobile` refuse une prop de `Board`, c'est que sa signature a divergé de `BoardProps` : corriger `PlateauMobile`, jamais le site d'appel.
 
 Run : `npm test`
@@ -1824,7 +1824,7 @@ onFocus={() => activerOption(option)}
 
 - [ ] **Step 3 : Vérifier que le mode PC n'a pas changé**
 
-Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions/ui-app" && npm run typecheck && npm test`
+Run : `cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app" && npm run typecheck && npm test`
 Attendu : vert. `onFocus` s'ajoute au survol, il ne le remplace pas : le comportement souris est inchangé.
 
 - [ ] **Step 4 : Commit**
@@ -1960,7 +1960,7 @@ test('La vue d\'etat tient a l\'ecran et se joue au doigt', async ({ page }) => 
 Le test vise le jeu servi, pas le serveur Vite : il faut donc déployer d'abord.
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 bash ui-app/deployer.sh
 ```
 
@@ -1971,7 +1971,7 @@ Attendu : build vert, garde-fou d'extensions vert, recopie vers `public/app/`.
 Vérifier d'abord que le serveur de développement tourne sur 2346 (voir `.planning/STATE.md`, points de vigilance), puis :
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check"
 export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE
 npm run plateau-mobile
 ```
@@ -1981,7 +1981,7 @@ Attendu au premier passage : des échecs sur certains états. C'est le but du te
 - [ ] **Step 6 : Vérifier que les références PC restent vertes**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/ui-check"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-check"
 npm run captures
 ```
 
@@ -1990,7 +1990,7 @@ Attendu : toutes les références existantes vertes. Une seule qui bouge signifi
 - [ ] **Step 7 : Commit**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ../ui-check/playwright.config.ts ../ui-check/package.json ../ui-check/tests/plateau-mobile.spec.ts
 git commit -m "test(mobile): gabarit S24, non-debordement et cibles 44px sur les 34 etats"
 ```
@@ -2005,7 +2005,7 @@ git commit -m "test(mobile): gabarit S24, non-debordement et cibles 44px sur les
 - [ ] **Step 1 : Déployer la version finale**
 
 ```bash
-cd "/mnt/c/Users/arnau/Desktop/Marvel LCG last try/Jeu Marvel Champions"
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 bash ui-app/deployer.sh
 ```
 
