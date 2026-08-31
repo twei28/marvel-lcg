@@ -10,7 +10,12 @@ from cards.pack import *
 # ===========================================================================
 
 
-KILLER_THRILL_NAME = "* Killer Thrill"
+# ⚠ PIEGE DU `*` D'UNICITE : la carte s'appelle « * Killer Thrill » dans
+# cards.json, mais `cards/paper.py:46` retire le prefixe (`lstrip("* ")`).
+# Une recherche sur « * Killer Thrill » ne trouve RIEN, en silence — c'est
+# exactement ce qui a fait echouer les cas vp014 et vp015 le 31/08/2026,
+# et le meme piege que pt012 « * Patriot's Shield ».
+KILLER_THRILL_NAME = "Killer Thrill"
 
 
 def RedirigerVersLeJoueur(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:

@@ -10334,14 +10334,33 @@ CAS = [
         "pourquoi": ("le mot-cle « drain » du pack, defini par l'insert : degats PUIS soin. "
                      "Verifier les DEUX moities : un module qui n'infligerait que les degats "
                      "passerait un controle qui ne regarde que l'ennemi. L'identite est "
-                     "blessee de 3 avant, elle doit finir a 2"),
+                     "blessee de 3 avant. DEUX pieges de mise en place ici : (1) sans "
+                     "`ChangeToFace` prealable, `Puzzle.Damage('vp001a')` instancie une "
+                     "SECONDE identite dans l'aside deck et le rendu leve AssertionError "
+                     "(modele ma005/hd001a, qui font tous le ChangeToFace d'abord) ; "
+                     "(2) on designe la face par son CARD_ID `vp001b` et non par « Wade "
+                     "Wilson », qui est aussi le nom de 44001b, l'alter-ego officiel de "
+                     "Deadpool. TROISIEME piege, trouve en jeu : l'attaquant est un "
+                     "SBIRE (vp014, ATK 1 fixe) et non Rhino, et l'identite est EPUISEE "
+                     "avant. Avec Rhino, le pilote defendait (degats reduits a 0) et la "
+                     "Response ne partait jamais — le module avait raison, c'est le cas "
+                     "qui etait faux. Un sbire n'a pas de carte de boost : les nombres "
+                     "sont donc deterministes, et les DEUX moities du drain sont "
+                     "prouvees d'un coup : vp014 finit a 1 degat (la moitie « degats ») "
+                     "et l'identite reste a 3 (la moitie « soin » a exactement annule le "
+                     "degat subi)"),
         "scenario": "rhino",
         "heros": "venompool",
-        "mise_en_place": ["Puzzle.PutIntoPlay('vp009')",
-                          "Puzzle.Damage('vp001a', 3)"],
-        "declencher": ["Puzzle.Attack('01094', defender='vp001a')"],
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.Damage('vp001a', 3)",
+                          "Puzzle.PutIntoPlay('vp009')",
+                          "Puzzle.PutIntoPlay('vp014')",
+                          "Puzzle.Exhaust('vp001a')"],
+        "declencher": ["Puzzle.Attack('vp014')"],
+        "cibles": ["vp001a"],
+        "accepter_choix": True,
         "verifier": "etat_attendu",
-        "attendu": {"degats_min": [["01094", 1]], "degats_identite": 2},
+        "attendu": {"degats": [["vp014", 1]], "degats_identite": 3},
     },
     {
         "nom": "vp010 True Form — se defausse quand Klyntar Suit quitte le jeu",

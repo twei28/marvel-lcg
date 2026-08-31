@@ -126,7 +126,20 @@ class CardFactory:
                                                     # sans cette declaration le deck
                                                     # kate_bishop ne montait pas (assert au
                                                     # setup, invisible pour test_cards).
-                                                    "kb005"]:  # Quick Draw (kate_bishop)
+                                                    "kb005",   # Quick Draw (kate_bishop)
+                                                    # CORRECTIF (31/08/2026) : Talk About Armed
+                                                    # Assault, pack custom venompool. Ce n'est PAS
+                                                    # un « Choose one » : c'est UNE capacite dont
+                                                    # la portee change (« 4 damage divided among
+                                                    # enemies, 6 instead if True Form is in
+                                                    # play »). `range` etant fige a la
+                                                    # construction, il faut deux capacites
+                                                    # mutuellement exclusives — modele 13006 Wasp
+                                                    # Sting, deja dans cette liste pour la meme
+                                                    # raison (formes GIANT / TINY). Sans cette
+                                                    # declaration, le deck venompool ne monte pas,
+                                                    # et test_cards ne le voit pas.
+                                                    "vp003"]:  # Talk About Armed Assault (venompool)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

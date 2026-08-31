@@ -27,7 +27,8 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(message)
 
         if not ControlsUpgrade(effect, KLYNTAR_SUIT_NAME):
-            this.Discard(effect)
+            # `Upgrade` n'expose pas de `Discard()` : on passe par Faces.
+            Faces.DiscardAll([this], effect)
 
     def true_form(effect: 'Effect', message: 'Message.WhenUnitWouldAttack') -> None:
         this = effect.this.CastTo(Upgrade)
