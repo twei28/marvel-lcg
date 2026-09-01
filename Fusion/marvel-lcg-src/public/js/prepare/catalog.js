@@ -201,6 +201,10 @@ function encounterKind(name) {
 }
 
 let _extensions = null, _heroes = null, _encounterSets = null;
+// `set_name` des héros marqués `metadata.indisponible` dans leur deck de
+// départ. Rempli par heroes(), lu par setsMasques() : le deckbuilder s'en sert
+// pour ne pas proposer les cartes signature d'un héros retiré du jeu.
+let _setsMasques = new Set();
 const _scenariosByExt = new Map();
 
 export const catalog = {
@@ -232,7 +236,30 @@ export const catalog = {
         exts.forEach((e) => e.heroes.forEach((h) => (heroExt[h] = e.key)));
         const ids = (await api.listStarterDecks()).map(fileName);
         const loaded = await Promise.all(ids.map((id) => api.deck(id).then((d) => ({ id, d })).catch(() => null)));
-        _heroes = loaded.filter((x) => x && x.d && x.d.hero && x.d.hero.length).map(({ id, d }) => {
+        // Héros RETIRÉS du jeu : `metadata.indisponible` dans leur deck de
+        // départ. Le fichier reste dans deck/starter/ — c'est volontaire, pour
+        // que les cas de tools/test_capacites.py continuent de tourner (le
+        // harnais charge le deck par son nom) : on masque un héros sans perdre
+        // sa couverture de test. Ajouté le 01/09/2026 pour Squirrel Girl.
+        // Cette liste sert aussi au deckbuilder, qui appelle heroes().
+        // ⚠ On collecte les set_name depuis TOUTES les cartes du deck, pas
+        // seulement depuis la face héros : un pack en compte souvent plusieurs.
+        // Squirrel Girl en a trois (« Squirrel Girl », « Squirrel Deck » pour
+        // les six écureuils mis de côté, « Squirrel Girl Nemesis »), et ses six
+        // cartes empruntables sont justement dans « Squirrel Deck ».
+        _setsMasques = new Set();
+        loaded.forEach((x) => {
+            if (!x || !x.d || !x.d.metadata || !x.d.metadata.indisponible) return;
+            const d = x.d;
+            const listes = [d.hero, d.hero_deck, d.set_aside, d.obligations, d.nemesis_set];
+            listes.forEach((liste) => (liste || []).forEach((entree) => {
+                const cid = String(entree).split(",")[0];
+                const c = cards.get(cid);
+                if (c && c.set_name) _setsMasques.add(c.set_name);
+            }));
+        });
+        _heroes = loaded.filter((x) => x && x.d && x.d.hero && x.d.hero.length
+                                       && !(x.d.metadata && x.d.metadata.indisponible)).map(({ id, d }) => {
             const heroCardId = d.hero[0].split(",")[0];
             const c = cards.get(heroCardId);
             const extension = heroExt[id] || "";
@@ -260,6 +287,13 @@ export const catalog = {
             };
         }).sort((a, b) => a.name.localeCompare(b.name));
         return _heroes;
+    },
+
+    /** `set_name` des héros retirés du jeu (`metadata.indisponible`).
+     *  Appeler heroes() d'abord : c'est lui qui remplit la liste. */
+    async setsMasques() {
+        await this.heroes();
+        return _setsMasques;
     },
 
     /** Decks jouables pour un héros donné : base + identités alternatives + sauvegardés. */

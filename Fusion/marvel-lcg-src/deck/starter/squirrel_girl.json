@@ -4,7 +4,9 @@
     "metadata": {
         "url": "",
         "author": "Arnaud",
-        "note": "Pack custom. Deck de depart Agression : trouver des vilains, les faire tomber, appeler des ecureuils. Boot Camp est volontairement absent, remplace par Martial Prowess : les ecureuils ne peuvent pas voir leurs valeurs augmentees par une carte hors du set."
+        "note": "Pack custom. Deck de depart Agression : trouver des vilains, les faire tomber, appeler des ecureuils. Boot Camp est volontairement absent, remplace par Martial Prowess : les ecureuils ne peuvent pas voir leurs valeurs augmentees par une carte hors du set.",
+        "indisponible": true,
+        "indisponible_note": "Retiree des heros jouables le 01/09/2026, a la demande de l'utilisateur : le pack n'est pas au point (4 cas de test rouges connus, sg006/sg007/sg009/sg013, consignes dans .planning/todos/2026-08-31-cas-rouges-sg-ss.md). Le deck reste ICI, et non deplace, pour que les 30 cas de test du harnais continuent de tourner : la couverture sera intacte le jour ou on corrigera le pack. Pour la remettre : supprimer la cle `indisponible`."
     },
     "hero": [
         "sg001a,sg001b"

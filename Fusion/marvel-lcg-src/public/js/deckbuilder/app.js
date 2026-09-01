@@ -81,9 +81,15 @@ const _pools = new Map(); // avecSignature -> liste
 async function poolJoueur(avecSignature = false) {
     if (_pools.has(avecSignature)) return _pools.get(avecSignature);
     const cs = await cards.load();
+    // Cartes signature des heros RETIRES du jeu (`metadata.indisponible` dans
+    // leur deck de depart) : elles ne doivent plus etre empruntables, y compris
+    // par Stan Lee, qui est le seul a piocher dans les signatures des autres.
+    // Ajoute le 01/09/2026 avec le retrait de Squirrel Girl.
+    const masques = await catalog.setsMasques();
     const vus = new Map(); // titre+class+type -> premiere carte (dedoublonne les reimpressions)
     for (const id of Object.keys(cs.const_card_dict)) {
         const c = cs.const_card_dict[id];
+        if (c && c.set_name && masques.has(c.set_name)) continue;
         const garde = estCarteJoueur(c) || (avecSignature && estCarteSignature(c));
         if (!garde) continue;
         const cle = `${c.name}|${c.class}|${c.type}`;
