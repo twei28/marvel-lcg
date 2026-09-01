@@ -56,7 +56,7 @@ prochain set libre après Dazzler `123` était `124`).
 
 | # | Set | Préfixe | Héros/Vilain | Réutiliser | Point notable |
 |---|---|---|---|---|---|
-| 1 | 124 | `kb` | **Kate Bishop** (Hawkeye) | `trors/hawkeye` (compteurs de flèches identiques) | Portage le plus direct du lot. Allié "Hawkeye" référencé mais absent du zip — piocher dans `trors/hawkeye`. |
+| 1 | 124 | `kb` | **Kate Bishop** (Hawkeye) | `trors/hawkeye` (compteurs de flèches identiques) | ✅ PORTÉ. ~~Allié "Hawkeye" référencé mais absent du zip — piocher dans `trors/hawkeye`.~~ **RÉSOLU** : la carte a été créée à l'identique (`kb002`, allié 2/2 PV, ATQ 2\*, CTR 1\*, ressource wild, AVENGER), pas substituée par une carte officielle. Scan de l'auteur (CptScorp, « HAWKEYE 1/15, Cycle 2 ») fourni par l'utilisateur le 01/09/2026 et **comparé point par point** à `kb002` : coût, PV, stats, traits, texte et image concordent. Rien à réclamer. |
 | 2 | 125 | `ok` | **Okoye** | pack officiel `bp` (Aneka/Ayo/Okoye déjà codées) | Attention aux collisions de noms de cartes avec les versions officielles. |
 | 3 | 126 | `si` | **Superior Iron Man** | `core/iron_man` | Re-skin complet façon Wolverine X-23. Le zip contient du texte structuré (`xb-cards.json`) mais sans le texte de règles — a fallu lire quelques images quand même. |
 | 4 | 127 | `il` | **Iron Lad** | `ironheart` (trait TECH, compteurs) | Rien de neuf, assemblage standard. |
@@ -122,10 +122,29 @@ worktree`) restent recommandés pour un vrai travail en parallèle.
   pack.
 - **Doctor Doom** : comparer carte par carte "Hero Revised" et "Alt Arts"
   avant portage, pour confirmer qu'il s'agit bien du même texte de règles.
-- **Agatha Harkness** : carte "Agatha All Along" absente du zip, à
-  réclamer ou à reconstituer depuis le texte des autres cartes qui la
-  référencent.
-- **Kate Bishop** et **Patriot** référencent chacun un allié
-  "Hawkeye"/famille spécifique à l'identité, non fourni dans leur zip
-  respectif — à sourcer dans `trors/hawkeye` (Kate Bishop) ou à créer
+- **Agatha Harkness** : ~~carte "Agatha All Along" absente du zip, à
+  réclamer~~ ✅ **FOURNIE** par l'utilisateur et portée (`aa008`,
+  manigance-joueur). **Reste ouvert, en revanche** : elle existe en deux
+  versions, **13 menaces** (planche du zip) et **10** (Discord de l'auteur),
+  textes identiques par ailleurs. 13 retenues sur arbitrage utilisateur du
+  31/08/2026 ; c'est un vrai choix d'équilibrage, la carte se vidant en
+  encaissant des attaques. Seul point de ce §5 qui vaudrait encore une
+  question à l'auteur.
+- ~~**Kate Bishop**~~ ✅ **RÉSOLU le 01/09/2026** : l'allié Hawkeye (Clint
+  Barton) a bien été créé à l'identique dans le pack (`kb002`), et non
+  substitué par la version officielle. Le scan de l'auteur, fourni par
+  l'utilisateur, concorde en tout point. **Ne plus le compter comme un point
+  ouvert** : cette ligne du plan datait d'AVANT le portage.
+- ~~**Patriot**~~ ✅ **RÉSOLU** : l'allié spécifique existe (`pt002`
+  « * Hawkingbird », Kate Bishop, trait YOUNG AVENGER), avec son script, son
+  image et sa place dans le deck de départ. Ligne également antérieure au
+  portage.
+
+> ⚠ **Leçon du 01/09/2026** : ce paragraphe a été écrit AVANT les portages et
+> a été relu ensuite comme s'il décrivait l'état courant, ce qui a fait
+> annoncer à tort deux points ouverts (Kate Bishop, Patriot). **Toujours
+> vérifier dans `data/cards.json` et `deck/starter/` avant de citer une
+> lacune de ce plan.**
+
+Anciennement à créer
   (Patriot).

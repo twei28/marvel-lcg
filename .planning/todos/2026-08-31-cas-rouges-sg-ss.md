@@ -21,7 +21,32 @@ Re-vérifiés 28/28 après correction.
 | sg013 Call the Squirrels — 2 écureuils entrent en jeu PRÊTS | sg002 arrive incliné |
 | sg007 The Gatherer — le dépenser soigne 1 dégât | 3 dégâts restants (soin non appliqué) |
 | sg006 The Forager — le dépenser fait fouiller le dessus du deck | la branche optionnelle ne part pas |
-| ss012 Mark of Kaine — les attaques contre le sbire marqué gagnent déferlement | aucune trace de « gains overkill » dans le journal |
+| ~~ss012 Mark of Kaine~~ | ✅ **RÉSOLU le 01/09/2026** — voir ci-dessous |
+
+## ✅ ss012 — RÉSOLU le 01/09/2026 : le CONTRÔLE était cassé, pas la carte
+
+`ss012_mark_of_kaine_deferlement` relit le journal de partie pour y chercher
+« gains overkill ». Elle en lisait le chemin avec **un index CODÉ EN DUR** :
+
+```python
+chemin_log = f"/tmp/capacites_{prefixe}517.log"
+```
+
+Des cas insérés avant lui ont décalé `ss012` de l'index **517 à 573**. La
+fonction lisait donc le journal d'un cas sans aucun rapport (aujourd'hui un
+diagnostic de Superior Iron Man), n'y trouvait évidemment pas « gains
+overkill », et déclarait rouge. **La carte n'a jamais eu le moindre défaut.**
+
+La piste notée plus bas — « un changement de format de log suffirait à le
+fausser » — visait juste, mais la cause était plus simple : un index qui glisse.
+
+**Correctif** : le dictionnaire `aides` expose désormais `index`, l'index du cas
+COURANT, et la fonction lit **son propre** journal. Vérifié : `[filtre] ss012`
+→ **2/2**. Plus aucun index codé en dur dans le fichier.
+
+**Leçon** : toute vérification qui relit un journal de partie doit passer par
+`aides["index"]`. Un numéro figé dans le code casse silencieusement à la
+première insertion de cas.
 
 ## Pistes (non vérifiées, à confirmer en séance)
 

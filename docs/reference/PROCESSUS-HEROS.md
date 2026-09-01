@@ -79,6 +79,9 @@ Règles : tout champ optionnel sauf `bio`/`bioEn` (mieux vaut omettre que
 d'inventer ; un champ absent disparaît simplement de la fiche) ; les `*En`
 seulement si la traduction diffère (« New York » ou « Thanos » se passent
 de doublon, en anglais un `*En` absent affiche la version française) ;
+**`civilEn` et `baseEn` existent aussi** (`app.js:1068-1069`), même si le
+gabarit ci-dessus ne les montre pas — utile pour « Institut Xavier » /
+« Xavier Institute » (constaté au portage `bt001a`, 31/08/2026) ;
 viser 3-4 phrases (panneau étroit, 314 px) ; libellés affichés via `t()`
 dans `public/js/prepare/dico-en.js` (voir §11 de `GUIDE-CREATION-CONTENU.md`).
 Ce fichier vit hors du dépôt du moteur : on l'édite directement dans la copie
