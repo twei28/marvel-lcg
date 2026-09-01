@@ -65,7 +65,8 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 
 | Texte | API | Modèle | Piège |
 |---|---|---|---|
-| You get +N hit points / +ATK / trait | `GiveKeywordToAttached("You", health=N, attack=N, trait="AERIAL")` | an008, 05023, ho008, ho011 | pour un SOUTIEN non attaché : `GiveKeywordToInPlayWhenApplyThis(Identity, control_by="You", ...)` (an002, ho005) |
+| You get +N hit points / +ATK / trait | `GiveKeywordToAttached("You", health=N, attack=N, trait="AERIAL")` | an008, 05023, ho008, ho011 | pour un SOUTIEN ou un ALLIÉ non attaché : `GiveKeywordToInPlayWhenApplyThis(<cible>, control_by="You", ...)` (an002, ho005) |
+| **« NOM gets +X »** vs **« YOU get +X »** | `GiveKeywordToInPlayWhenApplyThis(**Hero**, …)` vs `(**Identity**, …)` | an002 Sera → `Hero` ; 06007 Asgard → `Identity` | ⚠ **LIRE LE MOT, pas le modèle.** « You » désigne l'identité, donc les DEUX faces. Un NOM PROPRE n'en désigne qu'UNE : « **Angela** gets +1 hand size » ne vaut qu'en forme héros, puisque l'alter-ego s'appelle Aldrif Odinsdottir. Copier `Identity` depuis Asgard donnait le bonus aussi en alter-ego. **Trouvé en partie réelle par le joueur le 1/9/2026**, jamais par les tests : le seul cas existant se plaçait en forme héros, où les deux écritures donnent le même résultat. → **Tout bonus continu d'identité exige un contre-cas dans l'AUTRE forme.** |
 | perd stalwart / steady | `GiveKeywordToAttached("Character", stalwart=-1, steady=-1)` | 50144, ho012 | un retrait sur mot-clé absent est neutre |
 | gets +1 X for each <face> in play | `ThisGainKeywordForEachFaceInPlay(CardFinder(card_type=SchemeSide2), attack=1, scheme=1)` | 04125 Red Skull, 01059, ho015 | la classe des complots annexes est `SchemeSide2` — `SideScheme` N'EXISTE PAS dans cards.pack |
 | gets +1 X par compteur/état dynamique | `ThisGainKeyword(fn, recover=1, change_on_event=OnEvent...)` | an001b, dt133 | — |
@@ -137,6 +138,15 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
   recrée exactement les faux échecs ip/port ci-dessus.
   ⚠ Ne lève PAS la règle précédente : `autoplay.py` et
   `verifier_tous_les_decks.py` écrivent toujours dans le `launch.json` commun.
+- **Le port de base doit tenir dans la plage TCP, cas compris.** Chaque cas
+  prend `port + rang`, donc une batterie complète va jusqu'à `port + 907`.
+  Au-delà de 65535 le serveur web ne se lie à rien, `manager_web.httpds` reste
+  vide, et **chaque** cas meurt sur `IndexError: list index out of range`
+  (`web_device.py:53`). Le rapport annonce alors **« 0/908 »**, ce qui ressemble
+  à une régression massive du contenu alors que **rien n'a été testé**. Payé le
+  1/9/2026 : une batterie complète lancée sur le port 67000 a brûlé 25 minutes
+  pour rien. Un garde-fou refuse désormais la commande d'entrée, avec la borne
+  maximale calculée. **Base usuelle : 40000.**
 - **Avant de lancer un harnais : `pgrep -af test_capacites`**, jamais `ss` sur
   les ports. Chaque cas ouvre puis referme SON port : entre deux cas, la plage
   paraît libre alors qu'une passe complète tourne. Le rapport JSON n'est écrit
