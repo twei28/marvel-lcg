@@ -72,10 +72,16 @@ def GetAbilities() -> Sequence['Ability']:
         player = identite.GetOwner()
         if not isinstance(player, Player) or not player.is_eliminated:
             return None
-        # le vrai serveur (/new) verse le set_aside du deck dans la reserve
-        # du joueur via Puzzle.CreatePlayerAdditionalDeck
-        # (server_new_game.py:93) ; repli sur la reserve du MONDE par
-        # precaution, certains flux y rangent les mises de cote
+        # ⚠ FAUX, constate le 01/09/2026 en portant Alligator Loki :
+        # server_new_game.py:93 est le chemin PUZZLE seulement. En vraie
+        # partie (/new), `HeroDescriptor` n'a pas de champ `set_aside` et
+        # player_setup.py:213 a la generation en commentaire : aa013 n'existe
+        # nulle part, le fantome n'est jamais trouve. A corriger par
+        # `AbilityFactory.BeginGameWithSetAside(["aa013"])` (modele bt001b,
+        # al001b), puis retirer `Puzzle.CreatePlayerAdditionalDeck('aa013')`
+        # du cas du harnais (doublon). Non fait ici : hors du portage en cours.
+        # Repli sur la reserve du MONDE par precaution, certains flux y
+        # rangent les mises de cote.
         fantome = player.set_aside_deck.FindCard(card_ids=["aa013"])
         if fantome is None:
             fantome = player.world.aside_deck.FindCard(card_ids=["aa013"])
