@@ -38,6 +38,14 @@ imprimées ; ATK/THW/DEF/REC de base sont automatiques).
   "player_deck": ["...~25 cartes d'aspect..."] }
 ```
 
+⚠ `set_aside` ne sert qu'aux clients (catalogue, lanceur) : le moteur ne lit
+pas ce champ en vraie partie (`HeroDescriptor` ne l'a pas, la génération est
+en commentaire dans `player_setup.py`). Une carte mise de côté au setup doit
+être créée par le héros lui-même, `AbilityFactory.BeginGameWithSetAside([...])`
+sur l'alter-ego (modèles bt001b, 09001b, al001b). Le harnais la fait exister
+avec `Puzzle.CreatePlayerAdditionalDeck`, ce qui laisse un cas vert pour une
+carte absente en jeu réel : ne pas s'y fier (Alligator Loki, 01/09/2026).
+
 ## Étape 4 : `data/nemesis/<hero>_nemesis.json`
 
 Facultatif, pour l'UI.
