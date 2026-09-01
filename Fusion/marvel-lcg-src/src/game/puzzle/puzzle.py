@@ -437,18 +437,33 @@ class RunPuzzle:
         `WhenUnitBeingAttack` et declare alors la defense de base, exactement ce
         que ferait le joueur en repondant « je defends » a la question du
         moteur.
+
+        ⚠ Passer par `message.DeclareDefender` et non par `BasicDefense` seul
+        (constate le 01/09/2026, cas al001a « defense de base ») : `BasicDefense`
+        enregistre la defense sans lever `has_declare_defender`, le moteur pose
+        donc ENCORE sa question « defendre ? », le pilote des tests repond oui
+        avec le meme heros, et `can_attack.py` ADDITIONNE les deux
+        `defense_messages` : DEF comptee deux fois (Shocker ATK 2 contre DEF 1
+        faisait 0 degat). `DeclareDefender` leve le drapeau, `check_defender`
+        (friend.py) ecarte alors la question du moteur : une seule defense.
+        Le defenseur est incline s'il etait pret, comme le cout de la defense
+        de base ; un defenseur deja incline reste tolere (souplesse des tests).
         """
         from game.ability.factory import AbilityFactory
         from game.ability.ability import AbilityType
-        from game.card.face.card_type import Ally, Hero
+        from game.card.face.base import Unit2
         from game.message import Message
+        from game.operate.faces import Faces
 
         face = self.FindFaceInPlay(card)
 
         def declarer(effect: 'Effect', message: 'Message.WhenUnitBeingAttack') -> None:
             if message.has_declare_defender:
                 return
-            effect.this.CastTo(Ally | Hero).BasicDefense(message, effect)
+            this = effect.this.CastTo(Unit2)
+            if this.IsReady():
+                Faces.ExhaustAll([this], effect)
+            message.DeclareDefender(this, effect)
 
         face.effect.RegisterTemp(
             AbilityFactory.WhenUnitBeingAttack(
