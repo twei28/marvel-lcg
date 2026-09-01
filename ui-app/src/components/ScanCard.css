@@ -376,6 +376,65 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(85, 224, 138, 0.45);
   }
 
+  /* Heros ACCROCHE a un ennemi (Lock Jaws) : badge orange dans le bandeau,
+     meme gabarit que Active. */
+  .pastille-accroche {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #1a0e04;
+    background: linear-gradient(180deg, #ffb35c, #d97a1c);
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(255, 160, 70, 0.45);
+  }
+
+  /* Ennemi MORDU : pastille texte en bas a gauche du scan, tant qu'aucune
+     image n'est branchee (morsure.ts). */
+  .pastille-morsure {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #1a0e04;
+    background: linear-gradient(180deg, #ffb35c, #d97a1c);
+    border: 1px solid #ffd9a8;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+  }
+
+  /* Meme marqueur, version IMAGE (PNG fourni) : posee sur le bas du scan,
+     un peu decalee comme une carte glissee sous l'ennemi. */
+  .marque-morsure {
+    position: absolute;
+    left: 4%;
+    bottom: 3%;
+    width: 46%;
+    height: auto;
+    z-index: 3;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
+    pointer-events: none;
+  }
+
+  /* Halo orange sur l'ennemi mordu, pour le reperer meme de loin. */
+  .scan-card.est-mordu .scan-frame {
+    box-shadow: 0 0 0 2px #e8912e, 0 0 16px rgba(255, 160, 70, 0.7);
+  }
+
   .kind-pill,
   .ally-hp-badge,
   .scheme-threat-badge,

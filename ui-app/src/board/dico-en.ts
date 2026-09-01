@@ -128,6 +128,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'État': 'Status',
   'En attente': 'Waiting',
   'Actif': 'Active',
+  'Accroché': 'Latched',
+  'Mordu': 'Bitten',
   'Défausse': 'Discard',
   'cartes dans la pile': 'cards in the pile',
   'Dépensée': 'Spent',

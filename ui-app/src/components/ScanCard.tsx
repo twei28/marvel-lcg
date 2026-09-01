@@ -14,6 +14,7 @@
 // traduit une carte de partie en props d'ici.
 import type { CSSProperties } from 'react'
 import { t } from '../board/langue'
+import { IMAGE_MORSURE } from './morsure'
 import './ScanCard.css'
 
 // Vraies icones de stats (bursts comic) fournies par l'utilisateur. Vite les
@@ -148,6 +149,17 @@ export type ScanCardProps = {
   /** Cette pile est une DEFAUSSE : petit badge « Discard » sur le cote. */
   discard?: boolean
   /**
+   * Ennemi TENU par un heros qui s'y accroche (Alligator Loki, Lock Jaws) :
+   * marqueur de morsure sur la carte, image si `IMAGE_MORSURE` est branchee
+   * (voir morsure.ts), pastille « Mordu » sinon.
+   */
+  mordu?: boolean
+  /**
+   * Heros ACCROCHE a un ennemi : pastille « Accroché » dans le bandeau, en
+   * miroir du marqueur pose sur l'ennemi. La carte du heros ne bouge pas.
+   */
+  accroche?: boolean
+  /**
    * Remplace l'etiquette de type imprimee en haut par ce texte (ex. le NOM d'un
    * deck special : « Invocation »). Prioritaire sur le type et sur estNemesis.
    */
@@ -271,6 +283,8 @@ export function ScanCard({
   deckSpecial = false,
   aspect,
   discard = false,
+  mordu = false,
+  accroche = false,
   labelType,
   state = 'ready',
   exhausted = false,
@@ -331,6 +345,8 @@ export function ScanCard({
     // Halo de camp, jamais sur une carte face cachee (n'en revele pas le camp).
     !facedown && camp ? `camp-${camp}` : '',
     !facedown && estNemesis ? 'est-nemesis' : '',
+    !facedown && mordu ? 'est-mordu' : '',
+    !facedown && accroche ? 'est-accroche' : '',
     inactif ? 'est-inactif' : '',
     !facedown && deckSpecial ? 'est-deck-special' : '',
     // Jamais sur une carte face cachee : son aspect n'est pas connu du joueur.
@@ -377,6 +393,7 @@ export function ScanCard({
           <span className="kind-pill">{label}</span>
           {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
+          {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}
         </div>
 
         <div className="scan-frame">
@@ -405,6 +422,19 @@ export function ScanCard({
           ) : null}
 
           {discard ? <span className="pastille-discard">{t('Défausse')}</span> : null}
+
+          {mordu && !facedown ? (
+            IMAGE_MORSURE ? (
+              <img
+                className="marque-morsure"
+                src={IMAGE_MORSURE}
+                alt={t('Mordu')}
+                draggable="false"
+              />
+            ) : (
+              <span className="pastille-morsure">{t('Mordu')}</span>
+            )
+          ) : null}
 
           {spentCount ? (
             <span className="spent-badge" aria-label={`${t('Dépensée')} ${spentCount} ${t('fois')}`}>

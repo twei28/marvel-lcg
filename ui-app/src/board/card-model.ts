@@ -325,6 +325,10 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     allyHp: pvAffiches(card, contexte.catalogue),
     schemeThreat: menaceAffichee(card),
     counters: compteursAffiches(card),
+    // Prise de Lock Jaws (Alligator Loki) : le moteur marque l'ennemi tenu
+    // (`held_by_hero`, numero du joueur, 0 = personne) et le heros accroche.
+    mordu: (card.info.held_by_hero ?? 0) > 0,
+    accroche: (card.info.attached_to_enemy ?? 0) > 0,
     proprietaire: contexte.proprietaire,
     camp: campDe(card),
     stats: statsAffichees(card, contexte.catalogue),

@@ -1644,4 +1644,46 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'dd015': "<b><i>Garde</i></b>. <b><i>Patrouille</i></b>.\nTant que Mister Fantastic est engagé avec vous, chaque fois que vous générez une ressource [mental], générez plutôt une ressource [physical].\n<b>Une fois révélé</b> : Mister Fantastic s'engage avec le joueur Doctor Doom.\n<i>(Sbire némésis de Doctor Doom.)</i>",
   // doctor_doom — Richards! (Treachery nemesis, x2)
   'dd016': "<b>Une fois révélée</b> : Mister Fantastic s'active. Si Mister Fantastic ne s'est pas activé de cette façon, cherchez-le et révélez-le.",
+
+  // alligator_loki — Alligator Loki (Hero)
+  'al001a': "L'ennemi attaché gagne -1 MNG et -1 ATQ.\n<i>Lock Jaws</i> — <b>Interruption</b> : quand Alligator Loki effectue une attaque ou une défense de base contre un ennemi, attachez Alligator Loki à cet ennemi.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché s'est activé, détachez Alligator Loki.",
+  // alligator_loki — Alligator Loki (AlterEgo)
+  'al001b': "<b>Mise en place</b> : cherchez Throg et ajoutez-le à votre main.\n<i>Nap Time</i> — <b>Réponse Obligatoire</b> : après que vous êtes passé sous cette forme, détachez Alligator Loki. Vous pouvez effectuer une récupération de base sans vous incliner.",
+  // alligator_loki — Throg (Minion de joueur, signature)
+  'al002': "<b><i>Patrouille</i></b>.\n<b>Interruption</b> : quand Alligator Loki attaque Throg, cette attaque gagne <b><i>Déferlement</i></b>.\n<b>Une fois vaincu</b> : retirez 3 menaces d'une manigance. Mélangez Throg dans le deck du joueur Alligator Loki.",
+  // alligator_loki — Chomp! (Event, x4)
+  'al003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
+  'al004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
+  'al005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
+  'al006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
+  // alligator_loki — See You Later! (Event, x2)
+  'al007': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez en forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
+  'al008': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez en forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
+  // alligator_loki — Alligator Antics (Event, signature)
+  'al009': "<b>Action</b> : redressez votre identité. Cherchez le sbire Throg dans n'importe quel deck ou pile de défausse et mettez-le en jeu. Cherchez dans la zone de mise de côté, le deck de rencontre et sa pile de défausse un attachement qui peut être attaché à un sbire, et attachez-le à Throg.",
+  // alligator_loki — Loki (Support persona, signature)
+  'al010': "Alligator Loki gagne le trait [[MYSTIC]].\nTant que vous êtes en forme de héros, Alligator Loki gagne +1 CTR.\n<b>Ressource d'alter ego</b> : inclinez Loki → générez une ressource [wild].",
+  // alligator_loki — Butterfly Swamp (Support, signature)
+  'al011': "Tant que vous êtes en forme d'alter ego, Alligator Loki gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Butterfly Swamp → mélangez 1 carte [[PREPARATION]] de votre pile de défausse dans votre deck. Piochez 1 carte.",
+  // alligator_loki — Gator Aid (Upgrade, signature)
+  'al012': "<b>Interruption</b> : quand le personnage attaché utilise un pouvoir de base, inclinez Gator Aid → ce personnage gagne +1 à ce pouvoir pour cette utilisation. Après cette utilisation, vous pouvez attacher cette carte à un autre personnage ami.",
+  // alligator_loki — Unbreakable Grip (Upgrade, signature)
+  'al013': "Tant que vous êtes en forme de héros, Alligator Loki gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous devriez détacher Alligator Loki d'un ennemi en jeu, inclinez plutôt Unbreakable Grip.",
+  // alligator_loki — Lurking (Upgrade, x3)
+  'al014': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  'al015': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  'al016': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  // alligator_loki — Time Out (Obligation)
+  'al017': "<b><i>Donnez-la au joueur Alligator Loki.</i></b>\nCherchez Frogjolnir dans la zone de mise de côté et mélangez-le dans le deck de rencontre.\nVous gagnez -2 ATQ tant que vous êtes en forme de héros.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Time Out de la partie.",
+  // alligator_loki — Throg and Loki (SideScheme nemesis)
+  'al018': "<i>« SMAK ! SHLORP ! RAWR ! KLONK ! SPLOOSH ! »</i>\nAlligator Loki ne peut attaquer que Throg.\n<b>Une fois révélée</b> : si Throg n'est pas en jeu, cherchez-le dans le deck de rencontre et sa pile de défausse et révélez-le.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
+  // alligator_loki — Throg (Minion nemesis)
+  'al019': "<b>Interruption Obligatoire</b> : quand ce sbire devrait entrer en jeu, défaussez tout autre Throg en jeu. Placez ici, face cachée, une carte de votre main au hasard.\n<b>Une fois vaincu</b> : rendez chaque carte face cachée placée ici à la main de son propriétaire.\n<i>(Sbire némésis d'Alligator Loki.)</i>",
+  // alligator_loki — Lightning Bolt (Treachery nemesis, x2)
+  'al020': "<b>Une fois révélée</b> : défaussez 2 cartes du deck de rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck de rencontre.",
+  'al021': "<b>Une fois révélée</b> : défaussez 2 cartes du deck de rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck de rencontre.",
+  // alligator_loki — Frogjolnir (Attachment nemesis, mise de côté)
+  'al022': "Si Throg n'est pas en jeu, trouvez-le et révélez-le. Attachez cette carte à Throg. Puis Throg s'active contre vous.\nThrog gagne le trait [[AERIAL]].\n[star] <b>Réponse Obligatoire</b> : après que Throg vous a attaqué, subissez 1 dégât indirect.",
+  // alligator_loki — Little Rascals (Event Team-Up, carte bonus)
+  'al023': "Team-Up (Alligator Loki et Honey Badger/Gabby Kinney). Max 1 par deck.\n<b>Action</b> : étourdissez et désorientez le vilain. Si vous ne le pouvez pas, redressez Alligator Loki ou Honey Badger.",
 }
