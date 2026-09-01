@@ -10820,16 +10820,39 @@ CAS = [
     },
     {
         "nom": "an002 Sera — Angela gagne +1 en taille de main",
-        "pourquoi": ("modele 06007 * Asgard, qui porte le meme « You get +1 hand size » et "
-                     "le rend par GiveKeywordToInPlayWhenApplyThis(Identity, "
-                     "control_by=\"You\"). GiveKeywordToAttached ne conviendrait pas : Sera "
-                     "est un ALLIE, elle ne s'attache a rien"),
+        "pourquoi": ("modele 06007 * Asgard, meme "
+                     "GiveKeywordToInPlayWhenApplyThis(..., control_by=\"You\"). "
+                     "GiveKeywordToAttached ne conviendrait pas : Sera est un ALLIE, "
+                     "elle ne s'attache a rien. ⚠ CIBLE `Hero` et NON `Identity` : "
+                     "Asgard dit « YOU get +1 hand size » (les deux faces), Sera dit "
+                     "« ANGELA gets +1 hand size » — et « Angela » est le nom de la "
+                     "seule face heros an001a. Voir le contre-cas qui suit"),
         "scenario": "rhino",
         "heros": "angela",
         "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')"],
         "declencher": ["Puzzle.PutIntoPlay('an002', under_control=True)"],
         "verifier": "etat_attendu",
         "attendu": {"attributs": {"hand_size": 1}, "en_jeu": ["an002"]},
+    },
+    {
+        "nom": "an002 Sera — AUCUN bonus de main en forme d'alter-ego",
+        "pourquoi": ("CONTRE-CAS du precedent, et le seul qui attrape le defaut : la "
+                     "carte dit « ANGELA gets +1 hand size », or « Angela » ne "
+                     "designe que la face HEROS (an001a). En alter-ego (an001b "
+                     "Aldrif Odinsdottir) la taille de main doit rester a son "
+                     "imprime. Le module visait `Identity` — les DEUX faces — sur le "
+                     "modele de 06007 Asgard, qui dit « YOU » et non un nom. Signale "
+                     "par l'utilisateur EN PARTIE REELLE le 01/09/2026 : aucun cas "
+                     "ne testait la forme alter-ego, le premier passait au vert et "
+                     "le defaut restait invisible"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('an002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo",
+                    "en_jeu": ["an002"],
+                    "attributs": {"hand_size": 0}},
     },
     {
         "nom": "an009 Xiphos — +1 ATK a Angela",
@@ -11854,6 +11877,307 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["21014"],
                     "defausse": ["aa021"]},
+    },
+
+    # ------------------------------------------------------------------
+    # Pack « doctor_doom » : Doctor Doom, set 139, dd001a-dd016
+    # ------------------------------------------------------------------
+    {
+        "nom": "dd001a Power Syphon — payer un SPELL en mental pose 1 compteur de pouvoir",
+        "pourquoi": ("`AfterPlayerPlayedCard(Response, 'You', CardFinder2('SPELL', "
+                     "Event))` : son message porte `paid_resources` "
+                     "(sender_player.py:204), la couleur du paiement de l'EVENEMENT. "
+                     "`effect.GetPaidResources()` designerait le paiement de la "
+                     "capacite elle-meme, pas celui de la carte jouee. dd005 est un "
+                     "SPELL a 3, paye avec 01089 Genius ([mental]x2) + 01088"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')"],
+        "main_exclusive": ["dd005", "01089", "01088"],
+        "declencher": [],
+        "jouer": ["dd005"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["dd001a", "power", 1]]},
+    },
+    {
+        "nom": "dd001a Overwhelming Power — 3 compteurs echanges contre villainous",
+        "pourquoi": ("EXTENSION MOTEUR du 01/09/2026 : `HasVillainous` ajoute a la "
+                     "chaine de `Hero` (identity.py) et parametre `villainous` sur "
+                     "`GainUntilRoundEnd` (face_action.py). Sans elle, l'attribut "
+                     "n'existe meme pas sur une identite. Confirme par FFG : Elektra "
+                     "sera le 1er heros OFFICIEL a porter ce mot-cle"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PlaceCounters('dd001a', 'power', 3)"],
+        "declencher": ["Puzzle.Action('dd001a')"],
+        "verifier": "dd_villainous_actif",
+    },
+    {
+        "nom": "dd002 Victorious — son entree en jeu repeche un evenement SPELL",
+        "pourquoi": ("`AfterCardEnterPlay(Response, 'This')` (modele 01083 "
+                     "Mockingbird) + `Search.PlayerCard(include_player_deck=True, "
+                     "include_discard_pile=True, trait='SPELL', card_type=Event)`. "
+                     "⚠ `include_player_deck` est OBLIGATOIRE, sans defaut : piege "
+                     "paye sur bt011. dd004 est pose sur le dessus du deck"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoDeck('dd004')"],
+        "declencher": ["Puzzle.PutIntoPlay('dd002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dd002"],
+                    "en_main": ["dd004"]},
+    },
+    {
+        "nom": "dd003 Doombot — joue en interruption, il defend sans s'incliner",
+        "pourquoi": ("`WhenUnitInitiatesAttackAgainst(Interrupt, Enemy, 'You')` "
+                     "(modele 20003) + `message.DeclareDefender(this, effect)` "
+                     "(modeles 32017 Mutant Protectors et 56047). ⚠ "
+                     "`DeclareDefender` N'INCLINE PAS : 32017 appelle "
+                     "`Faces.ExhaustAll` juste avant parce que SA carte incline, "
+                     "Doombot non — c'est tout le sens de « without exhausting it ». "
+                     "Son `Requirement ([mental])` est une base automatique "
+                     "(desc.Requirement) : dd007 porte trois [mental] et le "
+                     "satisfait"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('01102')"],
+        "main_exclusive": ["dd003", "dd007"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dd003"],
+                    "pret": ["dd003"],
+                    "degats_identite": 0},
+    },
+    {
+        "nom": "dd005 Doom Prevails — X degats selon les icones de boost du dessus du deck",
+        "pourquoi": ("`Worlds.GetEncounterDeck(effect).GetTops(3)` — on REGARDE, on "
+                     "ne defausse pas : « look at », contrairement a ho014 qui "
+                     "defausse — puis `FacesCounter.CountTotalBoostIcons` (modele "
+                     "15004 Hex Bolt). `Puzzle.CreateEncounterDeck` fixe le sommet "
+                     "sur trois cartes a icones connues, sinon X depend du melange"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.CreateEncounterDeck('01104', '01105', '01106')"],
+        "main_exclusive": ["dd005", "dd007"],
+        "declencher": [],
+        "jouer": ["dd005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]],
+                    "defausse": ["dd005"]},
+    },
+    {
+        "nom": "dd004 This World Is Mine! — 8 degats, et deferlement si paye tout en mental",
+        "pourquoi": ("modele 01053 Relentless Assault : c'est le HEROS qui inflige, "
+                     "avec `AttackProperty(overkill=..., piercing=...)` — et non "
+                     "`DamageProperty`, qui ne connait ni l'un ni l'autre. "
+                     "`OnlyHasColor('B')` et non `HasColor` : le texte dit « only »"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')"],
+        "main_exclusive": ["dd004", "dd007"],
+        "declencher": [],
+        "jouer": ["dd004"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 8]],
+                    "defausse": ["dd004"]},
+    },
+    {
+        "nom": "dd006 Pain Is For Lesser Men! — l'attaque est annulee, l'ennemi etourdi et desoriente",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(HeroInterrupt, 'You')` + "
+                     "`PreventDamage('All')` (modele 01003 Backflip / 03005 Shield "
+                     "Block), puis les DEUX statuts si paye uniquement en mental. "
+                     "dd007 Unparalleled Genius porte trois [mental] : elle paie "
+                     "seule le cout 2. ⚠ L'ATTAQUANT EST SANDMAN (01102, ATQ 3), "
+                     "PAS Rhino : avec DEF 2, Doom absorbait entierement les 2 "
+                     "d'ATQ de Rhino, si bien que « when you WOULD take any amount "
+                     "of damage » n'etait jamais atteint et que l'interruption ne "
+                     "pouvait pas partir. Ni retirer le defenseur ni incliner Doom "
+                     "n'y changeaient rien : le pilote defend quand il le peut, et "
+                     "le debut de tour redresse. Il fallait une attaque qui PERCE "
+                     "la defense"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('01102')"],
+        "main_exclusive": ["dd006", "dd007"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "statuts": [["01102", "Stunned"], ["01102", "Confused"]]},
+    },
+    {
+        "nom": "dd008 Doomstadt — un SPELL glisse dessous reste jouable",
+        "pourquoi": ("modele aa002 * Scarlet Witch : `YouMayPlayCardLikeInHand("
+                     "NonKeyword, Event, from_where='ThisPlacedCard')` rend jouables "
+                     "les cartes glissees, `TuckCardUnderHere` les y met "
+                     "(card_face.py:973), et `GetPlacedCardArea().GetSize()` les "
+                     "compte pour le plafond de 3"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd008')"],
+        "main_exclusive": ["dd004"],
+        "declencher": ["Puzzle.Action('dd008')"],
+        "cibles": ["dd004"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["dd008"],
+                    "taille_main": 0},
+    },
+    {
+        "nom": "dd009 Doom's Time Platform — la premiere branche redresse Doctor Doom",
+        "pourquoi": ("`ChooseAbilities` a deux puces ; le pilote prend TOUJOURS la "
+                     "premiere (RECETTES §2), donc ce cas couvre « Ready Doctor "
+                     "Doom » et le suivant la seconde branche via `preferer_option`"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd009')",
+                          "Puzzle.Exhaust('dd001a')"],
+        "declencher": ["Puzzle.Action('dd009')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["dd001a"],
+                    "exhausted": ["dd009"]},
+    },
+    {
+        "nom": "dd010 Doom's Armor — +3 PV et trait AERIAL en continu",
+        "pourquoi": ("`GiveKeywordToAttached('You', health=3, trait='AERIAL')` "
+                     "(modele an008/ho011, recette §3). Le bonus vit avec la carte, "
+                     "sans declencheur. 11 PV imprimes -> 14"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd010')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3},
+                    "traits": ["AERIAL"]},
+    },
+    {
+        "nom": "dd011 Doom's Mask — genere DEUX mentales pour un SPELL, une seule sinon",
+        "pourquoi": ("`resources_fn` evaluee AU PAIEMENT (modele an007), qui relit "
+                     "`message.paying_for_card` (sender_player.py:281). ⚠ PIEGE "
+                     "ho009 : le couple Can+Do de 31001a fige `res` AVANT le "
+                     "PayCost. dd005 est un SPELL a 3 : le masque en couvre 2, "
+                     "01088 Energy le dernier"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd011')"],
+        "main_exclusive": ["dd005", "01088"],
+        "declencher": [],
+        "jouer": ["dd005"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["dd005"],
+                    "exhausted": ["dd011"]},
+    },
+    {
+        "nom": "dd011 Doom's Mask — Doctor Doom gagne steady",
+        "pourquoi": ("`GiveKeywordToAttached('You', steady=1)` (recette §3, fiche "
+                     "mots-cles/steady.md). Contre-cas continu du precedent"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd011')"],
+        "declencher": [],
+        "verifier": "dd_steady_actif",
+    },
+    {
+        "nom": "dd012 Rescue Cynthia von Doom — l'obligation force le passage en alter-ego",
+        "pourquoi": ("« FLIP to alter-ego form », PAS « you may flip » : on "
+                     "n'utilise donc pas `YouMayFlipToYourAlterEgoForm` (aa014, "
+                     "bt019) mais `ChangeToForm(AlterEgo)` directement, comme vp011. "
+                     "Et `PlayersCannotChangeForms` bloque ensuite le retour"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')"],
+        "declencher": ["Puzzle.Reveal('dd012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo",
+                    "en_jeu": ["dd012"]},
+    },
+    {
+        "nom": "dd013 Incomparable Ego — l'obligation incline les allies en jeu",
+        "pourquoi": ("`Faces.ExhaustAll` sur les allies + `CardCannotReady(Ally, "
+                     "control_by='You')` qui rend une LISTE d'abilities (d'ou le "
+                     "`*`). Modele 44032 « The Merc with the Mouth », meme couple"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd002')"],
+        "declencher": ["Puzzle.Reveal('dd013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["dd002"],
+                    "en_jeu": ["dd013"]},
+    },
+    {
+        "nom": "dd014 Meddlesome Heroes! — vaincue, elle inflige 4 degats indirects",
+        "pourquoi": ("`WhenSchemeBeDefeated(WhenDefeated, 'This')` — et NON "
+                     "`AfterSchemeBeDefeated`, seule la premiere teste "
+                     "`is_when_defeated` (defeated.py:444). Le pilote prend la "
+                     "PREMIERE branche du `ChooseAbilities`, soit les degats. "
+                     "⚠ `Puzzle.Thwart(card)` fait CONTRER un personnage AMI, ce "
+                     "n'est pas la cible : pour vaincre une manigance on vide sa "
+                     "menace, comme le cas jj012. ⚠ `main_exclusive` ne laisse que "
+                     "dd007 en main : sans cela le pilote jouait dd006 « Pain Is "
+                     "For Lesser Men! » pour PREVENIR les 4 degats indirects, et le "
+                     "cas mesurait 0 alors que le module marchait (« Prevented 4 of "
+                     "this damage » dans le journal). Chaine aval, RECETTES §7"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.Reveal('dd014')"],
+        "main_exclusive": ["dd007"],
+        "declencher": ["Puzzle.SetThreat('dd014', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["dd001a", 1]]},
+    },
+    {
+        "nom": "dd015 Mister Fantastic — engage avec lui, le mental genere devient physique",
+        "pourquoi": ("LE contre-feu du pack : tout Doom carbure au [mental]. Modele "
+                     "ah001a « Hypermind » (pack totally_awesome_hulk), meme "
+                     "`Ability` brute sur `Message.CheckEffectGeneratedResources` + "
+                     "`SetResources`. Difference : Hypermind convertit TOUT en "
+                     "[wild], ici on ne touche QUE la part mentale. Doom's Mask "
+                     "genere du [mental] : sous Mister Fantastic il rend du "
+                     "[physical]. dd005 est un SPELL a 3, paye par le masque (2) "
+                     "plus 01088 Energy — le paiement ne contient donc AUCUN "
+                     "[mental], et « Power Syphon » ne pose PAS de compteur. "
+                     "⚠ Premiere version du cas : elle ne verifiait que `en_jeu`, "
+                     "vrai meme sans le module, et restait VERTE sous substitution "
+                     "(0/1) — elle ne prouvait rien. Les icones IMPRIMEES (dd007) "
+                     "ne sont pas affectees : seule la GENERATION l'est"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')",
+                          "Puzzle.PutIntoPlay('dd011')",
+                          "Puzzle.Reveal('dd015')"],
+        "main_exclusive": ["dd005", "01088"],
+        "declencher": [],
+        "jouer": ["dd005"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dd015"],
+                    "compteurs": [["dd001a", "power", 0]]},
+    },
+    {
+        "nom": "dd016 Richards! — Mister Fantastic absent, la carte le fait venir",
+        "pourquoi": ("« If Mister Fantastic did NOT activate this way » est le REPLI "
+                     "de la premiere phrase, pas un ajout : coder les deux ferait "
+                     "entrer un second sbire. Modeles 21106 Proxima's Power et 11051 "
+                     "Ancient Grudge (`DoActivate`). ⚠ La recherche vise le card_id "
+                     "dd015, jamais le NOM : « Mister Fantastic » designe aussi le "
+                     "heros officiel mf001a et l'allie iw002"),
+        "scenario": "rhino",
+        "heros": "doctor_doom",
+        "mise_en_place": ["Puzzle.ChangeForm('dd001b')"],
+        "declencher": ["Puzzle.Reveal('dd016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dd015"]},
     },
 
     # ------------------------------------------------------------------
@@ -14964,6 +15288,44 @@ def ss004_precise_force_joue_et_borne(monde, aides):
                   f"(borne 0-3 respectee ; le pilote decline systematiquement la valeur "
                   f"non nulle via DeclareNumber, meme limite que il002)")
 
+def dd_villainous_actif(monde, aides):
+    """dd001a : apres « Overwhelming Power », le HEROS porte villainous.
+
+    C'est la seule verification qui prouve l'EXTENSION MOTEUR du 01/09/2026 :
+    `HasVillainous` n'etait herite que par `Minion` (minion.py:10), donc
+    `IsVillainous()` n'existait meme pas sur une identite. On verifie aussi que
+    les 3 compteurs ont bien ete depenses.
+    """
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    soucis = []
+    from game.card.face.attribute.has_villainous import HasVillainous
+    if not HasVillainous.IsType(identite):
+        soucis.append("l'identite n'est pas HasVillainous : l'extension moteur "
+                      "d'identity.py n'est pas active")
+    elif not identite.IsVillainous():
+        soucis.append("l'identite ne porte PAS villainous apres Overwhelming Power")
+    restants = identite.CastTo(aides["CanPlaceCounter"]).GetCounters('power')
+    if restants != 0:
+        soucis.append(f"compteurs power restants = {restants} (attendu 0 : les 3 "
+                      "sont le cout)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "le heros porte villainous, les 3 compteurs sont depenses"
+
+
+def dd_steady_actif(monde, aides):
+    """dd011 : Doom's Mask accorde `steady` a l'identite."""
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    valeur = identite.GetKeyword('Steady')
+    if valeur <= 0:
+        return False, f"steady = {valeur} (attendu au moins 1)"
+    return True, f"l'identite porte steady ({valeur})"
+
+
 def ss012_mark_of_kaine_deferlement(monde, aides):
     """ss012/ss013/ss014 : Mark of Kaine attachee a 01110 (ATK imprime 1),
     Tigra (01051, 2 ATK) l'attaque. 01110 est adoucie a 1 PV, donc l'attaque
@@ -16538,6 +16900,21 @@ def main():
     if paralleles > 1:
         print(f"PARALLELE : {paralleles} cas a la fois, "
               f"un dossier de jeu par fils ({', '.join(os.path.basename(d) for d in dossiers)})")
+
+    # ⚠ GARDE-FOU (01/09/2026) : le port d'un cas vaut `port + rang`, donc
+    # jusqu'a `port + len(selection) - 1`. Au-dela de 65535 le serveur web du
+    # moteur ne se lie a RIEN, `manager_web.httpds` reste vide, et CHAQUE cas
+    # meurt sur `IndexError: list index out of range` dans `web_device.py:53`.
+    # Le rapport annonce alors « 0/908 » : un verdict qui ressemble a une
+    # regression massive du contenu alors que rien n'a ete teste. Une batterie
+    # complete lancee sur le port 67000 a ainsi brule 25 minutes pour rien.
+    # Echouer tout de suite, avec la raison.
+    port_max = port + max(0, len(selection) - 1)
+    if port < 1024 or port_max > 65535:
+        sys.exit(f"PORT INVALIDE : les {len(selection)} cas utiliseraient "
+                 f"{port}..{port_max}, hors de la plage TCP 1024-65535. "
+                 f"Choisir une base <= {65535 - len(selection) + 1} "
+                 f"(la valeur usuelle est 40000).")
 
     prefixe = os.environ.get("CAS_PREFIX", "")
 
