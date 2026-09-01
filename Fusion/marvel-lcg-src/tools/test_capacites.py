@@ -27,6 +27,23 @@ IMPLANTE le 31/08/2026 (voir `main()`). Une passe filtree ne remplace pas la
 batterie complete quand un fichier moteur partage a change (regle de portee du
 §6bis du GUIDE) : elle sert a iterer vite sur un pack.
 
+`PARALLELES=<n>` (variable d'environnement, defaut 1) : jouer n cas A LA FOIS.
+Chaque fils recoit SON dossier de jeu (`.game-src-par0`, `-par1`...), donc son
+`launch.json` : c'est ce fichier unique, et lui seul, qui interdisait le
+parallele. Peu couteux — `.game-src` ne pese que 20 Ko de liens symboliques
+RELATIFS, recopies tels quels dans un dossier frere.
+
+    PARALLELES=4 python3.10 tools/test_capacites.py .game-src 40000 rapport.json
+
+Mesure du 01/09/2026 sur les 28 cas du pack `bt` : **270 s -> 67 s** (x4),
+verdicts ET messages identiques un a un. Batterie complete : 2 h 15 -> ~34 min.
+⚠ Le port suit le RANG GLOBAL, jamais le rang dans le pool : deux fils
+simultanes doivent avoir des ports distincts, sinon on recree exactement les
+faux echecs ip/port decrits ci-dessous.
+⚠ Toute validation de portage exige que la passe parallele ait ete comparee
+CAS PAR CAS a une passe sequentielle : un meme total peut cacher des chemins
+differents.
+
 ⚠ JAMAIS DEUX HARNAIS EN PARALLELE (celui-ci, verifier_tous_les_decks.py,
 autoplay.py) : chaque processus fils REECRIT `<game_dir>/launch.json` pour y
 poser son port avant de demarrer le moteur, qui le RELIT ensuite. Deux passes
@@ -11838,6 +11855,482 @@ CAS = [
         "attendu": {"en_jeu": ["21014"],
                     "defausse": ["aa021"]},
     },
+
+    # ------------------------------------------------------------------
+    # Pack « beast » : Beast / Dr Hank McCoy, set 134, bt001a-bt023
+    # ------------------------------------------------------------------
+    {
+        "nom": "bt001a Thick Skinned — 0 degat encaisse en defendant repeche une carte du deck",
+        "pourquoi": ("`AfterUnitDefendAgainstAttack(Response, 'You', take_no_damage=True)` "
+                     "— le drapeau existait deja (do_attack.py:288), aucune carte "
+                     "officielle ne l'employait. Rhino ATQ 2 contre DEF 3 imprimee "
+                     "-> 0 degat -> la fouille part. `Puzzle.PutIntoDeck('01077')` "
+                     "pose Counter-Punch sur le DESSUS, c'est donc elle que le "
+                     "pilote trouve en premier"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "declencher": ["Puzzle.Defend('bt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "en_main": ["01090"]},
+    },
+    {
+        "nom": "bt001b Scientific Discovery — repasser en alter-ego melange 1 Discovery dans le deck",
+        "pourquoi": ("`AfterUnitChangeForm(ForcedResponse, 'You', to_this_form=True)` "
+                     "(modele 01019a She-Hulk) puis `Faces.ShuffleAllTo` vers "
+                     "`player_deck`. `Rand.RandomChoice` est DETERMINISTE sous "
+                     "`disable_shuffle` (rand.py:22, il rend le premier element) : "
+                     "c'est donc bt014 qui part, et le pool tombe de 5 a 4"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "declencher": ["Puzzle.ChangeForm('bt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo",
+                    "taille_mis_de_cote": 4},
+    },
+    {
+        "nom": "bt001b pool Discovery — les 5 cartes sont mises de cote des la mise en place",
+        "pourquoi": ("`BeginGameWithSetAside` (modele 36001b Ororo Munroe) : les cinq "
+                     "cartes vivent hors du deck des la selection du heros, et AUCUNE "
+                     "n'est en jeu ni en main. Contre-cas du precedent"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_mis_de_cote": 5,
+                    "mis_de_cote": ["bt014", "bt015", "bt016", "bt017", "bt018"],
+                    "hors_jeu": ["bt014", "bt015", "bt016", "bt017", "bt018"]},
+    },
+    {
+        "nom": "bt001b Setup — les cartes ecartees au mulligan reviennent dans le deck",
+        "pourquoi": ("`AfterPlayerResolveMulligans` : message + envoi + fabrique "
+                     "AJOUTES au moteur le 31/08/2026, le mulligan n'ayant AUCUN "
+                     "point d'accroche (`WhenPlayerResolveMulligans` existait mais "
+                     "n'etait jamais `.Send()`). La cle `mulligan: \'all\'` du "
+                     "harnais, ajoutee le 01/09/2026, ecarte TOUTE la main : sans "
+                     "le module les 6 cartes finissent dans la defausse, avec lui "
+                     "elles sont remelangees dans le deck. `taille_main: 6` prouve "
+                     "que la repioche a bien eu lieu AVANT le remelange — sinon le "
+                     "joueur pourrait retomber sur ce qu'il vient d'ecarter"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mulligan": "all",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 0,
+                    "taille_main": 6,
+                    "forme": "AlterEgo"},
+    },
+    {
+        "nom": "bt002 Wonder Man — vaincu, il inflige 2 degats a un ennemi",
+        "pourquoi": ("`WhenUnitBeDefeated(WhenDefeated, 'This')` (modele 44013 "
+                     "Dogpool). 4 PV : `Puzzle.Damage` de 4 le met K.O. et la "
+                     "capacite part sur le vilain"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt002')"],
+        "declencher": ["Puzzle.Damage('bt002', 4)"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "hors_jeu": ["bt002"]},
+    },
+    {
+        "nom": "bt003 Phoenix — vaincue, elle inflige 2 degats a un ennemi",
+        "pourquoi": "meme module que bt002, traits differents (PSIONIC. X-MEN)",
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt003')"],
+        "declencher": ["Puzzle.Damage('bt003', 4)"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "hors_jeu": ["bt003"]},
+    },
+    {
+        "nom": "bt004 Experimental Warfare — 0 degat encaisse : 3 degats a l'attaquant et identite redressee",
+        "pourquoi": ("`WhenUnitDefendAgainstAttack(Interrupt, 'You')` (modele 03033 "
+                     "Expert Defense) + `RegisterTemp` d'un `AfterUnitDefendAgainstAttack"
+                     "(take_no_damage=True, against_which_attack=...)` (modele ho006). "
+                     "Hunter Gear en jeu donne une amelioration a incliner, donc +1 DEF ; "
+                     "DEF 3+1 imprimee absorbe deja les 2 de Rhino, l'attaque passe a 0"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt013')"],
+        "main_exclusive": ["bt004", "01088"],
+        "declencher": ["Puzzle.Defend('bt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "degats": [["01094", 3]],
+                    "exhausted": ["bt013"],
+                    "defausse": ["bt004"]},
+    },
+    {
+        "nom": "bt005 Fighting With Friends — paye en mental, il redresse le heros ET un allie",
+        "pourquoi": ("`effect.GetPaidResources().HasColor('B')` (modele 01013 Photonic "
+                     "Blast) ; `HasColor` et non `OnlyHasColor`, le texte ne dit pas "
+                     "« only ». Wonder Man incline puis redresse prouve la seconde "
+                     "moitie ; 01089 Genius est la ressource [mental] du paiement"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt002')",
+                          "Puzzle.Exhaust('bt002')",
+                          "Puzzle.Exhaust('bt001a')"],
+        "main_exclusive": ["bt005", "01089"],
+        "declencher": [],
+        "jouer": ["bt005"],
+        "payer_avec": ["01089"],
+        "cibles": ["bt002"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bt001a", "bt002"],
+                    "defausse": ["bt005"]},
+    },
+    {
+        "nom": "bt005 Fighting With Friends — sans mental, seul le heros se redresse",
+        "pourquoi": ("contre-cas du precedent : paye avec 01090 Strength ([physical]), "
+                     "la branche `HasColor('B')` ne part pas et l'allie reste incline. "
+                     "⚠ Reste vert sous substitution du module pour la partie « allie », "
+                     "puisqu'il verifie une ABSENCE d'effet"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt002')",
+                          "Puzzle.Exhaust('bt002')",
+                          "Puzzle.Exhaust('bt001a')"],
+        "main_exclusive": ["bt005", "01090"],
+        "declencher": [],
+        "jouer": ["bt005"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bt001a"],
+                    "exhausted": ["bt002"],
+                    "defausse": ["bt005"]},
+    },
+    {
+        "nom": "bt006 In The Heat Of Battle — 4 menaces retirees d'une manigance annexe",
+        "pourquoi": ("`RemoveThreatFromSchemes(effect.targets, 4)` sur une cible "
+                     "`Scheme2` (modele 04049 Clear the Area). wd009 est la manigance "
+                     "annexe de reference des cas du projet ; a 4 menaces ou plus, "
+                     "elle survit et le bonus Discovery ne part pas"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.Reveal('01107')"],
+        "main_exclusive": ["bt006", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["bt006"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["bt006"],
+                    "hors_jeu": ["01107"],
+                    "taille_mis_de_cote": 4},
+    },
+    {
+        "nom": "bt007a Multi-Tasking — premiere carte du tour : l'effet se resout DEUX fois",
+        "pourquoi": ("`stat.this_turn_played_cards` filtre sur les AUTRES cartes "
+                     "(player_stat.py:7). Seule carte jouee du tour -> repetition "
+                     "unique -> 2 degats au vilain, pas 1. ARBITRAGE : une seule "
+                     "repetition, sinon la condition reste vraie et l'effet boucle "
+                     "a l'infini"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "main_exclusive": ["bt007a", "01089"],
+        "declencher": [],
+        "jouer": ["bt007a"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "defausse": ["bt007a"]},
+    },
+    {
+        "nom": "bt007b Multi-Tasking — la copie [physical] se comporte a l'identique",
+        "pourquoi": ("bt007b est le meme module, seule l'icone de ressource change "
+                     "(6/15 mental, 7/15 physique). Precedent : 01043a/b/c/d Wakanda "
+                     "Forever!. Le cas prouve que le second card_id est bien cable"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "main_exclusive": ["bt007b", "01090"],
+        "declencher": [],
+        "jouer": ["bt007b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "defausse": ["bt007b"]},
+    },
+    {
+        "nom": "bt008 Primal Rage — +5 ATQ sur une attaque de base, au prix d'une carte",
+        "pourquoi": ("`WhenUnitMakeAttack(HeroInterrupt, 'You', is_basic_attack=True)` "
+                     "+ `GainATKForThisAttack(5)` (modele 19005 Knife Leap), avec "
+                     "`CostFunc.Discard('YourHandCards')` (modele 45014). ATQ 2 + 5 "
+                     "= 7 degats au vilain"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "main_exclusive": ["bt008", "01088", "01089"],
+        "declencher": ["Puzzle.Attack('bt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 7]],
+                    "defausse": ["bt008"]},
+    },
+    {
+        "nom": "bt010 Beast's Lab — le joueur choisi repeche une amelioration du deck",
+        "pourquoi": ("`SetTarget(fn -> identites)` + `Players.ForEachTargets` (modele "
+                     "01034 Stark Tower) puis `Search.PlayerCard(include_player_deck, "
+                     "include_discard_pile, card_type=Upgrade)` (modele 04001b). "
+                     "01081 Armored Vest pose sur le dessus du deck est l'amelioration "
+                     "trouvee"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt010')",
+                          "Puzzle.PutIntoDeck('01081')"],
+        "declencher": ["Puzzle.Action('bt010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01081"],
+                    "exhausted": ["bt010"]},
+    },
+    {
+        "nom": "bt011 Hank's Kimono — une ressource de la defausse remonte sur le deck",
+        "pourquoi": ("`Search.PlayerCard(include_discard_pile, card_type=Resource)` "
+                     "puis `Faces.MoveAllToDeck(..., 'Top', ...)`. La carte ne revient "
+                     "PAS en main : le texte dit « on the top of your deck ». 01088 "
+                     "Energy est le type Resource, bt009 aussi. ⚠ `defausse_joueur: "
+                     "0` est INDISPENSABLE : sans lui le cas etait un FAUX VERT — "
+                     "le module plantait (`include_player_deck` manquant) et 01088 "
+                     "remontait quand meme dans le deck par le remelange de la "
+                     "defausse. Seul l'autoplay l'a vu"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01088')",
+                          "Puzzle.PutIntoPlay('bt011')"],
+        "declencher": ["Puzzle.Action('bt011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["01088"],
+                    "defausse_joueur": 0,
+                    "exhausted": ["bt011"]},
+    },
+    {
+        "nom": "bt012 Civilian Disguise — defendre depense 1 compteur de deguisement et pioche",
+        "pourquoi": ("`AfterUnitDefendAgainstAttack(Response, 'You')` SANS "
+                     "`take_no_damage` (elle pioche quels que soient les degats) + "
+                     "`CostFunc.Counter('This', 1, 'disguise')` (modele 23016 Command "
+                     "Team). `desc.Uses = '3,disguise'` pose les 3 compteurs : la "
+                     "carte tombe a 2"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt012')"],
+        "declencher": ["Puzzle.Defend('bt001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bt012", "disguise", 2]]},
+    },
+    {
+        "nom": "bt013 Hunter Gear — +1 DEF continu sur l'identite",
+        "pourquoi": ("`GiveKeywordToAttached('You', defense=1)` (modele an008/ho011). "
+                     "DEF 3 imprimee -> 4. Le bonus vit avec la carte, sans "
+                     "declencheur"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt013')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}},
+    },
+    {
+        "nom": "bt014 Peter Parker — s'incline pour generer une ressource [wild]",
+        "pourquoi": ("`CanGenerateResources(Resource, Resources('G'))` + "
+                     "`CostFunc.Exhaust('This')` (modele ab007 Donald Pierce). "
+                     "Aucune ressource n'est laissee en main : 22034 Defensive "
+                     "Training coute 1, le wild de Peter Parker est donc le SEUL "
+                     "paiement possible. ⚠ bt005 avait ete essayee d'abord : elle "
+                     "REDRESSE l'allie qui vient de payer, et le cas voyait Peter "
+                     "Parker pret (chaine aval, RECETTES §7)"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt014')"],
+        "main_exclusive": ["22034"],
+        "declencher": [],
+        "jouer": ["22034"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["22034"],
+                    "exhausted": ["bt014"]},
+    },
+    {
+        "nom": "bt015 Space Hand Grenade — l'attaque du sbire est annulee et il prend 4 degats",
+        "pourquoi": ("`CanPlayThisUpgradeCard(CardFinder(card_type=Minion))` + "
+                     "`WhenUnitMakeAttack(ForcedInterrupt, 'AttachedMinion')` (modele "
+                     "01185 Biomechanical Upgrades) puis `CancelThisAttack`. "
+                     "01101 Hydra Mercenary (3 PV) encaisse les 4 degats et TOMBE : "
+                     "c'est sa disparition qui les prouve, un `degats_min` ne "
+                     "trouverait plus la carte en jeu"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('bt015')"],
+        "cibles": ["01101"],
+        "declencher": ["Puzzle.Attack('01101', 'bt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "hors_jeu": ["01101"]},
+    },
+    {
+        "nom": "bt016 Ambush — l'attaque du vilain est annulee au prix d'un soutien incline",
+        "pourquoi": ("`WhenUnitInitiatesAttackAgainst(ForcedInterrupt, Villain, "
+                     "'You')` + `CancelThisAttack` (modele 20003 Grasping Tendrils) "
+                     "et `CostFunc.Exhaust(card_type=Support, "
+                     "from_where=['YouControlCards'])`. Beast ne DEFEND pas ici : "
+                     "sans l'annulation il encaisserait les 2 d'ATQ de Rhino. "
+                     "bt012 Civilian Disguise sert de soutien a incliner. "
+                     "⚠ A exige d'ajouter `ForcedInterrupt` a `check_sub_type` "
+                     "(ability.py) : sans quoi le deck ne montait meme pas. "
+                     "⚠ Pas de cle `defausse` : un evenement joue depuis une "
+                     "interruption FORCEE ne passe pas par la defausse du joueur "
+                     "au moment du controle. C'est l'inclinaison du soutien — son "
+                     "COUT — qui prouve qu'il a bien ete joue"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt012')"],
+        "main_exclusive": ["bt016"],
+        "declencher": ["Puzzle.Attack('01094', 'bt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "exhausted": ["bt012"]},
+    },
+    {
+        "nom": "bt019 Unfinished Projects — 2 cartes defaussees retirent l'obligation DE LA PARTIE",
+        "pourquoi": ("`WhenThisObligationGiveToYou` + `YouMayFlipToYourAlterEgoForm` "
+                     "+ `ChooseAbilities` a deux puces (modele aa014 Chaotic Forces). "
+                     "`ChooseAbilities` prend la PREMIERE branche (RECETTES §2), "
+                     "celle qui coute 2 ameliorations/soutiens. ARBITRAGE : "
+                     "« remove Mutation Degeneration » nomme une carte inexistante, "
+                     "lue comme l'obligation elle-meme — d'ou `RemoveAllFromGame`, "
+                     "et non une simple defausse"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt012')",
+                          "Puzzle.PutIntoPlay('bt013')"],
+        "declencher": ["Puzzle.Reveal('bt019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo",
+                    "hors_jeu": ["bt019", "bt012", "bt013"],
+                    "degats_identite": 0},
+    },
+    {
+        "nom": "bt019 Unfinished Projects — sans 2 cartes a payer, il reste la branche a 2 degats",
+        "pourquoi": ("contre-cas du precedent : la premiere puce est conditionnee a "
+                     "`len(cartes_defaussables()) >= 2` (meme garde-fou qu'aa014). "
+                     "Rien en jeu -> seule la seconde branche est proposee : "
+                     "identite inclinee, 2 degats, obligation defaussee (elle "
+                     "repassera, contrairement a l'autre branche)"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "declencher": ["Puzzle.Reveal('bt019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo",
+                    "degats_identite": 2,
+                    "hors_jeu": ["bt019"]},
+    },
+    {
+        "nom": "bt017 Automated Life-Support — l'allie survit, soigne de 1 et robuste",
+        "pourquoi": ("`WhenUnitWouldBeDefeated(ForcedInterrupt, 'AttachedAlly')` + "
+                     "`SetBeInstead` (modele 01185) puis `HealthUnits` et "
+                     "`GiveStatus('Tough')`. Sans `SetBeInstead`, l'allie meurt "
+                     "malgre le soin. Wonder Man a 4 PV, on lui en enleve 4"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt002')",
+                          "Puzzle.PutIntoPlay('bt017')"],
+        "cibles": ["bt002"],
+        "declencher": ["Puzzle.Damage('bt002', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bt002"],
+                    "statuts": [["bt002", "Tough"]]},
+    },
+    {
+        "nom": "bt018 Mecha-Beast — +1 CTR et +2 points de vie a l'identite",
+        "pourquoi": ("`GiveKeywordToAttached('You', thwart=1, health=2)` (modele "
+                     "an008/ho011, recette §3). CTR 1 -> 2, PV 13 -> 15. « +2 "
+                     "hitpoints » monte le MAXIMUM, ce n'est pas un soin"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt018')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1, "health": 2}},
+    },
+    {
+        "nom": "bt021 Dark Transformation — 5 cartes defaussees, 1 degat par carte signature",
+        "pourquoi": ("`WhenThisRevealed` + `message.GetToPlayer()` (modele an011 : "
+                     "l'initiateur d'une carte de rencontre n'est PAS le joueur) puis "
+                     "`DiscardDeckTopCards(5)`. « hero-specific » se lit par la classe "
+                     "`IdentitySpecific` (11020 Depowered, test de player_action.py:574). "
+                     "Trois signatures posees sur le dessus = 3 degats"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoDeck('01088', '01089', '01090', 'bt008', 'bt009', 'bt012')"],
+        "declencher": ["Puzzle.Reveal('bt021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "bt022 Dark Beast — sa revelation desoriente tous les allies en jeu",
+        "pourquoi": ("`WhenThisRevealed` + `Faces.GiveStatus(allies, 'Confused')` avec "
+                     "un filtre `canbe_confused=True` (recette §2). ARBITRAGE : « All "
+                     "allies » n'est pas qualifie, donc TOUS les allies en jeu. "
+                     "« Stalwart » est une base automatique, aucun module"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.PutIntoPlay('bt002')",
+                          "Puzzle.PutIntoPlay('bt003')"],
+        "declencher": ["Puzzle.Reveal('bt022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["bt002", "Confused"], ["bt003", "Confused"]]},
+    },
+    {
+        "nom": "bt023 Mutant Science Program — sans allie en defausse, 2 compteurs de test par heros",
+        "pourquoi": ("`WhenThisRevealed` : 1 compteur par allie en defausse, SINON "
+                     "2[per_hero]. Defausse vide -> la branche « instead » part, et "
+                     "`Worlds.ConvertPerPlayerIconToInt('2*')` vaut 2 en solo. Le "
+                     "compteur 'test' existait deja dans l'enum COUNTER"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')"],
+        "declencher": ["Puzzle.Reveal('bt023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bt023", "test", 2]]},
+    },
+    {
+        "nom": "bt023 Mutant Science Program — avec 3 allies en defausse, 3 compteurs de test",
+        "pourquoi": ("contre-cas du precedent : la premiere branche l'emporte des "
+                     "qu'il y a AU MOINS un allie en defausse. Trois allies -> trois "
+                     "compteurs, et non 2[per_hero]"),
+        "scenario": "rhino",
+        "heros": "beast",
+        "mise_en_place": ["Puzzle.ChangeForm('bt001b')",
+                          "Puzzle.CreatePlayerDiscardPile('bt002', 'bt003', '01083')"],
+        "declencher": ["Puzzle.Reveal('bt023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bt023", "test", 3]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -12855,6 +13348,35 @@ def etat_attendu(monde, aides):
         n = len(list(monde.players[0].hand_cards.Get()))
         if n != attendu["taille_main"]:
             soucis.append(f"main = {n} carte(s) (attendu {attendu['taille_main']})")
+
+    # Cle `dans_deck_joueur` (AJOUT 01/09/2026, pack beast) : le pendant de
+    # `dans_deck_rencontre` pour le deck du JOUEUR. Sans elle, aucune capacite
+    # qui melange une carte dans le deck n'est prouvable : la carte n'est ni en
+    # jeu, ni en main, ni dans la defausse, donc aucune des cles existantes ne
+    # la voit. C'est le cas du pool « Discovery » de Beast, que bt001b et bt006
+    # font passer du set_aside vers le deck.
+    for card_id in attendu.get("dans_deck_joueur") or []:
+        cartes = [getattr(f.paper, "card_id", None)
+                  for f in monde.players[0].player_deck.GetAll()]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas dans le deck du joueur "
+                          f"(deck = {cartes})")
+
+    # Cle `mis_de_cote` (AJOUT 01/09/2026, pack beast) : le `set_aside_deck` du
+    # joueur, alias de `additional_discard_pile`. Prouve qu'une carte y est
+    # ENCORE — ou, en contre-cas, qu'elle en est bien partie.
+    for card_id in attendu.get("mis_de_cote") or []:
+        cartes = [getattr(f.paper, "card_id", None)
+                  for f in monde.players[0].set_aside_deck.GetAll()]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas mis de cote "
+                          f"(set_aside = {cartes})")
+
+    if "taille_mis_de_cote" in attendu:
+        n = len(list(monde.players[0].set_aside_deck.Get()))
+        if n != attendu["taille_mis_de_cote"]:
+            soucis.append(f"set_aside = {n} carte(s) "
+                          f"(attendu {attendu['taille_mis_de_cote']})")
 
     for card_id in attendu.get("en_main") or []:
         cartes = [getattr(f.paper, "card_id", None)
@@ -14453,7 +14975,13 @@ def ss012_mark_of_kaine_deferlement(monde, aides):
     comme source au moment ou `message.GainOverKill(effect)` s'execute."""
     import os
     prefixe = os.environ.get("CAS_PREFIX", "")
-    chemin_log = f"/tmp/capacites_{prefixe}517.log"
+    # ⚠ CORRECTIF 01/09/2026 : l'index etait CODE EN DUR (« 517 »). Des cas
+    # inseres avant celui-ci l'ont decale a 573, et la fonction relisait donc le
+    # journal d'un cas etranger, ou « gains overkill » n'apparait evidemment
+    # pas. Rouge permanent depuis, sans aucun defaut de la carte : c'est le
+    # CONTROLE qui etait casse, pas ss012. Toute verification qui relit un
+    # journal doit lire LE SIEN, via `aides["index"]`.
+    chemin_log = f"/tmp/capacites_{prefixe}{aides['index']}.log"
     try:
         contenu = open(chemin_log, encoding="utf-8", errors="replace").read()
     except Exception as exc:
@@ -15470,7 +15998,14 @@ def executer_un_cas(game_dir, port, index):
         aides = {"par_nom": par_nom, "par_id": par_id, "identite": identite,
                  "CanStatus": CanStatus, "CanPlaceCounter": CanPlaceCounter,
                  "CanPlaceToken": CanPlaceToken,
-                 "cas": cas}
+                 "cas": cas,
+                 # AJOUT 01/09/2026 : l'index du cas COURANT. Une fonction de
+                 # verification qui relit le journal de partie doit lire LE
+                 # SIEN. `ss012_mark_of_kaine_deferlement` le codait en dur
+                 # (« 517 ») : des cas inseres avant lui l'ont decale a 573, et
+                 # la fonction lisait depuis le journal d'un cas sans rapport.
+                 # D'ou un rouge permanent, sans le moindre defaut de carte.
+                 "index": index}
 
         def en_main(card_id):
             for face in monde.players[0].hand_cards.GetAll():
@@ -15748,7 +16283,52 @@ def executer_un_cas(game_dir, port, index):
                         break
             return trouvees
 
+        def option_mulligan():
+            """`mulligan: "all" | [card_id, ...]` — ECARTER des cartes au mulligan.
+
+            AJOUT du 01/09/2026 (pack beast, bt001b). Le mulligan est la seule
+            decision de l'etape 15 de `World.Setup`, et le pilote y repondait
+            toujours « je ne defausse rien » : `premiere_option_jouable` fournit
+            le nombre MINIMAL de cibles, soit zero ici. Aucune carte ne pouvait
+            donc reagir au mulligan, et la capacite `Setup` de Dr Hank McCoy
+            (« All cards you mulligan are shuffled back into your deck ») etait
+            intestable.
+
+            `"all"` ecarte TOUTE la main : c'est le seul reglage deterministe,
+            la main de depart dependant du melange. Une liste de card_id reste
+            possible quand on veut cibler.
+
+            Cle ADDITIVE : sans elle, on retombe sur le comportement historique
+            (`return None` -> la boucle habituelle reprend la main), donc aucun
+            des cas existants ne change. L'option visee porte le nom exact
+            « Resolve Mulligans » (verifie par TRACE_OPTIONS le 01/09/2026).
+            """
+            voulues = cas.get("mulligan")
+            if not voulues:
+                return None
+            for o in options:
+                if not isinstance(o, dict) or o.get("failure_reason"):
+                    continue
+                if o.get("name") != "Resolve Mulligans":
+                    continue
+                legales = [str(x) for x in (o.get("all_legal_targets") or [])]
+                if not legales:
+                    return None
+                if voulues == "all":
+                    cibles = legales
+                else:
+                    cibles = choisir_cibles(voulues, legales)
+                if not cibles:
+                    return None
+                return json.dumps({"id": str(o.get("id", 0)),
+                                   "targets": cibles,
+                                   "resources": []})
+            return None
+
         def premiere_option_jouable():
+            force = option_mulligan()
+            if force is not None:
+                return force
             # `choisir_option` (pack kate_bishop) : forcer UNE option PRECISE
             # parmi plusieurs choix nommes sans cible-carte (DeclareNumber,
             # ChooseAbilities a options textuelles) ou le pilote, qui prend
@@ -15891,6 +16471,46 @@ def executer_un_cas(game_dir, port, index):
 
 
 # ------------------------------------------------------------- orchestration --
+def preparer_dossiers_paralleles(game_dir, nombre):
+    """Un dossier de jeu par fils, pour lever l'interdiction du parallele.
+
+    Ce n'est pas le moteur qui interdit deux cas simultanes, c'est
+    `<game_dir>/launch.json` : un seul fichier, que CHAQUE fils reecrit avec
+    SON port avant de demarrer (voir `executer_un_cas`). Deux fils s'ecrasent
+    donc mutuellement, et le moteur relit le port de l'autre — cause reelle des
+    22 « AssertionError ip/port » du 31/08/2026.
+
+    On donne son exemplaire a chacun. C'est peu couteux : `.game-src` pese 20 Ko,
+    ce n'est pas une copie du jeu mais un dossier de liens symboliques
+    RELATIFS (`assets -> ../assets`, `cards -> ../src/cards`). Recopies tels
+    quels dans un dossier FRERE, ces liens restent valides — d'ou `os.readlink`,
+    et surtout pas un chemin recalcule.
+
+    `nombre == 1` rend le dossier d'origine : rien n'est cree, le comportement
+    historique est strictement conserve.
+    """
+    import shutil
+    game_dir = os.path.abspath(game_dir)
+    if nombre <= 1:
+        return [game_dir]
+    dossiers = []
+    for i in range(nombre):
+        d = f"{game_dir}-par{i}"
+        os.makedirs(d, exist_ok=True)
+        for nom in os.listdir(game_dir):
+            src, dst = os.path.join(game_dir, nom), os.path.join(d, nom)
+            if os.path.lexists(dst):
+                continue
+            if os.path.islink(src):
+                os.symlink(os.readlink(src), dst)   # lien relatif conserve
+            elif os.path.isdir(src):
+                os.symlink(src, dst)                # __pycache__ : lecture seule
+            else:
+                shutil.copy2(src, dst)              # launch.json : SA copie
+        dossiers.append(d)
+    return dossiers
+
+
 def main():
     game_dir = os.path.expanduser(sys.argv[1])
     port = int(sys.argv[2])
@@ -15911,23 +16531,51 @@ def main():
     if filtre:
         print(f"FILTRE « {filtre} » : {len(selection)}/{len(CAS)} cas retenus")
 
-    resultats = []
-    for rang, (index, cas) in enumerate(selection):
-        chemin = f"/tmp/capacites_{os.environ.get('CAS_PREFIX', '')}{index}.json"
+    # PARALLELES=<n> : jouer n cas a la fois. Par defaut 1, donc STRICTEMENT le
+    # comportement historique tant qu'on ne demande rien.
+    paralleles = max(1, int(os.environ.get("PARALLELES", "1")))
+    dossiers = preparer_dossiers_paralleles(game_dir, paralleles)
+    if paralleles > 1:
+        print(f"PARALLELE : {paralleles} cas a la fois, "
+              f"un dossier de jeu par fils ({', '.join(os.path.basename(d) for d in dossiers)})")
+
+    prefixe = os.environ.get("CAS_PREFIX", "")
+
+    def jouer(travail):
+        rang, (index, cas) = travail
+        chemin = f"/tmp/capacites_{prefixe}{index}.json"
         if os.path.exists(chemin):
             os.remove(chemin)
         env = dict(os.environ, CAS_INDEX=str(index))
-        subprocess.run([sys.executable, os.path.abspath(__file__), game_dir,
+        # ⚠ Le port suit le RANG GLOBAL, jamais le rang dans le pool : deux
+        # fils simultanes doivent avoir des ports distincts, sinon on recree
+        # exactement les faux echecs « ip/port » du 31/08/2026.
+        subprocess.run([sys.executable, os.path.abspath(__file__),
+                        dossiers[rang % len(dossiers)],
                         str(port + rang), rapport],
                        env=env, timeout=300, capture_output=True)
         if os.path.exists(chemin):
-            resultats.append(json.load(open(chemin)))
-        else:
-            resultats.append({"index": index, "nom": cas["nom"], "ok": False,
-                              "message": "aucun resultat (processus mort ; voir "
-                                         f"/tmp/capacites_{os.environ.get('CAS_PREFIX', '')}{index}.log)"})
-        etat = "OK  " if resultats[-1]["ok"] else "ECHEC"
-        print(f"{etat} {cas['nom']}\n      {resultats[-1]['message']}")
+            return json.load(open(chemin))
+        return {"index": index, "nom": cas["nom"], "ok": False,
+                "message": "aucun resultat (processus mort ; voir "
+                           f"/tmp/capacites_{prefixe}{index}.log)"}
+
+    if paralleles > 1:
+        from concurrent.futures import ThreadPoolExecutor
+        # Des THREADS, pas des process : le travail reel est deja dans des
+        # `subprocess`, les threads ne font qu'attendre. `map` preserve l'ordre
+        # de `selection`, donc le rapport reste comparable a une passe
+        # sequentielle.
+        with ThreadPoolExecutor(max_workers=paralleles) as pool:
+            resultats = list(pool.map(jouer, enumerate(selection)))
+        for r, (_, cas) in zip(resultats, selection):
+            print(f"{'OK  ' if r['ok'] else 'ECHEC'} {cas['nom']}\n      {r['message']}")
+    else:
+        resultats = []
+        for travail in enumerate(selection):
+            resultats.append(jouer(travail))
+            etat = "OK  " if resultats[-1]["ok"] else "ECHEC"
+            print(f"{etat} {travail[1][1]['nom']}\n      {resultats[-1]['message']}")
 
     reussis = sum(1 for r in resultats if r["ok"])
     print(f"\nBILAN : {reussis}/{len(resultats)} cas passes")
