@@ -26,12 +26,15 @@ Six familles, toutes nees d'un defaut reellement rencontre :
 
 5. IMAGES manquantes pour les packs custom.
 
-6. CAPACITE ANNONCEE SANS AUCUN MODULE (01/09/2026). Neuf cartes de
-   web_of_deceit, en jeu dans trois scenarios, ne faisaient RIEN : aucun
-   fichier ne repondait a leur identifiant, et `database.py:220` se contente
-   alors d'un `ability_cache = []` silencieux. Les quatre outils qui auraient
-   pu le voir posent tous une question qui suppose le module deja la — le
-   detail est au-dessus de la famille 6, plus bas dans ce fichier.
+6. CAPACITE ANNONCEE SANS AUCUN MODULE (01/09/2026). Une carte dont le texte
+   declare une capacite et a laquelle AUCUN fichier ne repond ne fait rien du
+   tout : `database.py:220` se contente d'un `ability_cache = []` silencieux,
+   et aucun autre outil ne pose cette question — ils supposent tous le module
+   deja la.
+   ⚠ Deux champs dispensent legitimement de module : `ability_link` (les
+   capacites d'une autre carte, database.py:124) et `full_link` (alias
+   complet). Ils sont exclus. Leur oubli a produit une fausse alerte de neuf
+   cartes le jour meme ou ce crible a ete ecrit.
 """
 import sys, os, json, re, collections
 
@@ -100,10 +103,18 @@ for cle, info in sets_info.items():
 # Le suffixe de face va de a a z, pas de a a d : Moon Knight est la premiere
 # identite a CINQ faces, et mk001e n'etait donc reconnue par aucune de ces
 # deux expressions. Son cas existait, le pack affichait quand meme 27/28.
-cites = set(re.findall(r"\b(\d{5}[a-z]?)\b", tests))
+# ⚠ CORRIGE le 01/09/2026 : l'expression ne reconnaissait QUE les identifiants
+# officiels a cinq chiffres. Or les packs custom, les seuls que cette mesure
+# pretende couvrir, portent un prefixe de DEUX LETTRES suivi de trois chiffres
+# (`wd018`, `dd001a`). Aucun n'etait donc reconnu, `total` restait a 0 pour
+# chacun, et le tableau de couverture s'affichait VIDE sous son propre titre.
+# Une mesure qui ne mesure rien ressemble a une mesure qui ne trouve rien.
+ID_CARTE_SEUL = r"(?:\d{5}|[a-z]{2}\d{3})[a-z]?"
+ID_CARTE = rf"\b({ID_CARTE_SEUL})\b"
+cites = set(re.findall(ID_CARTE, tests))
 sujets = set()
 for nom_de_cas in re.findall(r'"nom"\s*:\s*(?:\(\s*)?["\']([^"\']+)', tests):
-    sujets.update(re.findall(r"\b(\d{5}[a-z]?)\b", nom_de_cas))
+    sujets.update(re.findall(ID_CARTE, nom_de_cas))
 # Un pack contient parfois DEUX EXEMPLAIRES de la meme carte, sous deux
 # identifiants (Brawn : bw004/bw005, bw006/bw007...). Leurs scripts sont
 # identiques a la ligne pres. Ecrire un second cas qui ne differe que par
@@ -146,7 +157,10 @@ for pack in sorted(p for p in packs_custom if p in cartes):
     doublons = []
     for c in cartes[pack]:
         cid = c.get("card_id", "")
-        if not cid or not cid[0].isdigit():
+        # ⚠ le test etait `cid[0].isdigit()`, qui excluait TOUS les packs
+        # custom : leur identifiant commence par deux lettres. Voir la note
+        # d'ID_CARTE plus haut.
+        if not cid or not re.fullmatch(ID_CARTE_SEUL, cid):
             continue
         # Un `full_link` sans `type` n'est pas une carte : c'est un ALIAS vers
         # une carte de base du jeu (gp015 -> 01088). Aucun script, aucun
@@ -241,7 +255,9 @@ sans_image = []
 for pack in sorted(p for p in packs_custom if p in cartes):
     for c in cartes[pack]:
         cid = c.get("card_id", "")
-        if cid and cid[0].isdigit() and cid not in images:
+        # meme correction que pour la couverture : les packs custom
+        # etaient tous exclus par le test sur le premier caractere.
+        if cid and re.fullmatch(ID_CARTE_SEUL, cid) and cid not in images:
             sans_image.append(f"{cid} ({pack}) {c.get('name', '')}".strip())
 rapport["images_manquantes"] = sans_image
 
@@ -301,6 +317,16 @@ for pack, c in toutes:
     mods = modules_par_pack.get(pack, set())
     # Une face porte parfois le module de son identite (wd077a / wd077).
     if cid in mods or cid.rstrip("abcde") in mods:
+        continue
+    # ⚠ CORRECTIF DU MEME JOUR, apres une FAUSSE ALERTE de neuf cartes.
+    # `ability_link` fait charger les capacites d'une AUTRE carte
+    # (database.py:124) : la carte n'a pas de module a elle, et c'est voulu.
+    # Web of Deceit reimprime neuf modulaires officiels sous des identifiants
+    # `wd`, chacun renvoyant a son jumeau — wd085 -> 50159, wd020 -> 02041...
+    # Sans cette exclusion, le crible les declarait toutes inertes. Elles
+    # fonctionnaient parfaitement.
+    # `full_link` va plus loin encore : la carte entiere est un alias.
+    if c.get("ability_link") or c.get("full_link"):
         continue
     texte = c.get("text") or ""
     texte = re.sub(r"<i>.*?</i>", " ", texte, flags=re.S)   # ambiance

@@ -2296,7 +2296,8 @@ CAS = [
         "jouer": ["lj024"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        "attendu": {"degats": [["01094", 3]]},
+        # 5 degats poses, 1 soigne : la carte defaussee porte une icone.
+        "attendu": {"degats": [["01094", 4]]},
     },
     {
         "nom": "lj010 Zooming Around — 1 degat au vilain engage et 1 menace retiree",
@@ -3268,7 +3269,8 @@ CAS = [
         "payer_avec": ["mf009", "mf011", "mf012"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        "attendu": {"degats": [["01094", 3]]},
+        # 5 degats poses, 1 soigne : la carte defaussee porte une icone.
+        "attendu": {"degats": [["01094", 4]]},
     },
     {
         "nom": "mf012 Mental Gymnastics — 2 degats a X=0, et l'ennemi est Desoriente",
@@ -12655,6 +12657,179 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"compteurs": [["bt023", "test", 3]]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « web_of_deceit » : les neuf REIMPRESSIONS de modulaires officiels
+    # (01/09/2026)
+    #
+    # Ces neuf cartes n'ont AUCUN module a elles, et c'est normal : chacune
+    # porte un `ability_link` vers son jumeau officiel, ce qui fait charger les
+    # capacites de ce jumeau (database.py:124).
+    #   wd018 -> 24042   wd019 -> 16141   wd020 -> 02041   wd021 -> 02042
+    #   wd023 -> 02044   wd024 -> 02045   wd078 -> 01169   wd084 -> 01166
+    #   wd085 -> 50159
+    #
+    # ⚠ CES CAS NE TOMBERONT PAS AU ROUGE SOUS SUBSTITUTION du pack
+    # web_of_deceit, et ce n'est pas un defaut : il n'y a rien a substituer.
+    # C'est le module du pack OFFICIEL qui travaille. Un module wd0XX.py pose
+    # a cote serait du code MORT, jamais charge — verifie le 01/09/2026 en
+    # stubbant wd085 : la reduction de degats partait quand meme, attribuee a
+    # Aerial Dogfight dans le journal.
+    #
+    # Ce qu'ils prouvent, en revanche : que le lien tient, que le jumeau
+    # designe est le bon, et que la carte se comporte comme son texte l'annonce
+    # dans NOTRE jeu. Le pack n'avait aucun cas dedie sur ses 176 cartes.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "wd018 Crime Pays — un sbire CRIMINAL cherche dans le deck entre en jeu",
+        "pourquoi": "premier cas du pack sur cette carte ; prouve le lien vers 24042",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd016', 'wd023', 'wd024')"],
+        "declencher": ["Puzzle.Reveal('wd018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wd016"]},
+    },
+    {
+        "nom": "wd019 Honor Among Thieves — le sbire revele recoit un statut Tough",
+        "pourquoi": "prouve le lien vers 16141 ; le Tough est la moitie de l'effet",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd023', 'wd016', 'wd024')"],
+        "declencher": ["Puzzle.Reveal('wd019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["wd016"], "statuts": [["wd016", "Tough"]]},
+    },
+    {
+        "nom": "wd020 Power Drain — la defaite fait defausser une ressource par icone de boost",
+        "pourquoi": "prouve le lien vers 02041, dont l'effet est un When Defeated",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd023', 'wd023', 'wd024')",
+                          "Puzzle.CreateHandCards('01090', '01090', '01090')",
+                          "Puzzle.Reveal('wd020')"],
+        "declencher": ["Puzzle.SetThreat('wd020', 0)"],
+        # ⚠ `cibles` est INDISPENSABLE ici. Le moteur pose un choix regi par
+        # `select_rule: "CombinedResourceIcons"` avec [2, 2] : les cartes
+        # designees doivent totaliser 2 icones. Le pilote fournit toujours le
+        # nombre MINIMAL de cibles, soit une seule, prise au debut de la liste
+        # legale — si elle ne porte qu'une icone, le moteur refuse et repose la
+        # meme question sans fin. Le cas tournait 300 s puis mourait en timeout.
+        # 01090 Strength porte RR, donc deux icones a elle seule.
+        "cibles": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "wd021 * Electro — son attaque inflige aussi les icones de boost defaussees",
+        "pourquoi": "prouve le lien vers 02042, Forced Response comprise",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd017', 'wd023', 'wd024')",
+                          "Puzzle.PutIntoPlay('wd021')"],
+        "declencher": ["Puzzle.Attack('wd021')"],
+        "verifier": "etat_attendu",
+        # ⚠ La cle `degats_min` cherche par card_id, et le cas tourne en
+        # ALTER-EGO : 01001a n'est pas en jeu, c'est 01001b. `degats_identite`
+        # passe par l'identite, quelle que soit la face.
+        # 2 degats d'attaque puis 1 indirect par icone de boost defaussee.
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "wd023 Lightning Bolt — 1 degat indirect par icone de boost defaussee",
+        "pourquoi": "prouve le lien vers 02044",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd016', 'wd017', 'wd024')"],
+        "declencher": ["Puzzle.Reveal('wd023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "wd024 Shock Therapy — le vilain se soigne d'une icone de boost defaussee",
+        "pourquoi": "prouve le lien vers 02045",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd017', 'wd023', 'wd024')",
+                          "Puzzle.Damage('01094', 5)"],
+        "declencher": ["Puzzle.Reveal('wd024')"],
+        "verifier": "etat_attendu",
+        # 5 degats poses, 1 soigne : la carte defaussee porte une icone.
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "wd078 The Vulture's Plans — 1 menace par TYPE de ressource defausse",
+        "pourquoi": ("prouve le lien vers 01169. Le compte porte sur les TYPES "
+                     "distincts, pas sur le nombre de cartes : deux Strength ne valent "
+                     "qu'une menace"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateHandCards('01090')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('wd078')"],
+        "verifier": "etat_attendu",
+        # Pas de `taille_main` : le joueur repioche jusqu'a sa taille de main
+        # avant la verification, donc la main ne prouve rien ici. La MENACE,
+        # elle, ne bouge que par cette carte.
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "wd084 Highway Robbery — une carte de la main part face cachee sous la manigance",
+        "pourquoi": "prouve le lien vers 01166, premiere moitie",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateHandCards('01055')"],
+        "declencher": ["Puzzle.Reveal('wd084')"],
+        "verifier": "etat_attendu",
+        # ⚠ PAS `taille_main` : le joueur repioche jusqu'a sa taille de main
+        # avant la verification, la main ne prouve donc rien. C'est la ZONE
+        # POSEE sous la manigance qu'il faut regarder, d'ou la cle ajoutee le
+        # meme jour.
+        "attendu": {"pose_sous": [["wd084", "01055"]],
+                    "taille_pose_sous": [["wd084", 1]]},
+    },
+    {
+        "nom": "wd084 Highway Robbery — la vaincre rend la carte a son proprietaire",
+        "pourquoi": "seconde moitie de 01166 : le When Defeated rend la carte",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateHandCards('01055')",
+                          "Puzzle.Reveal('wd084')"],
+        "declencher": ["Puzzle.SetThreat('wd084', 0)"],
+        "verifier": "etat_attendu",
+        # ⚠ 01055 « The Power of Aggression » est ABSENTE du deck de depart de
+        # Spider-Man : la retrouver en main ne peut donc PAS venir d'une
+        # pioche. Avec 01090 Strength, qui est dans le deck, le cas aurait ete
+        # vert sans rien prouver.
+        "attendu": {"en_main": ["01055"], "hors_jeu": ["wd084"]},
+    },
+    {
+        "nom": "wd085 Aerial Dogfight — un personnage AERIAL encaisse 2 degats de moins",
+        "pourquoi": ("prouve le lien vers 50159. Effet CONTINU, sans aucun mot de "
+                     "declaration dans le texte"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd017', 'wd023', 'wd024')",
+                          "Puzzle.PutIntoPlay('21047')",
+                          "Puzzle.PutIntoPlay('wd017')",
+                          "Puzzle.Reveal('wd085')"],
+        "declencher": ["Puzzle.Attack('wd017', '21047')"],
+        "verifier": "etat_attendu",
+        # Hired Gun frappe a 2, la reduction vaut 2 : il ne passe rien.
+        "attendu": {"degats": [["21047", 0]]},
+    },
+    {
+        "nom": "wd085 Aerial Dogfight — temoin : sans la manigance, les degats passent entiers",
+        "pourquoi": ("sans ce temoin le cas precedent ne prouve rien : il faut montrer que "
+                     "la difference vient bien de la carte"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('wd017', 'wd023', 'wd024')",
+                          "Puzzle.PutIntoPlay('21047')",
+                          "Puzzle.PutIntoPlay('wd017')"],
+        "declencher": ["Puzzle.Attack('wd017', '21047')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["21047", 2]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -13721,6 +13896,33 @@ def etat_attendu(monde, aides):
         n = len(list(monde.players[0].reserve.Get()))
         if n != attendu["taille_reserve"]:
             soucis.append(f"reserve = {n} carte(s) (attendu {attendu['taille_reserve']})")
+
+    # Cles `pose_sous` et `taille_pose_sous` (AJOUT 01/09/2026, web_of_deceit) :
+    # la zone des cartes POSEES sous une autre (`GetPlacedCardArea`). Sans
+    # elles, aucune capacite qui range une carte sous une autre n'est prouvable :
+    # la carte n'est ni en jeu, ni en main, ni dans la defausse, ni dans un deck.
+    # C'est le cas de wd084 Highway Robbery, qui prend une carte au hasard dans
+    # chaque main et la pose face cachee sous elle.
+    # ⚠ `Get(True)` et non `Get()` : le drapeau demande aussi les cartes FACE
+    # CACHEE, et c'est precisement ainsi que wd084 les pose.
+    for hote, card_id in attendu.get("pose_sous") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (pose_sous)")
+            continue
+        posees = [getattr(f.paper, "card_id", None)
+                  for f in face.GetPlacedCardArea().Get(True)]
+        if card_id not in posees:
+            soucis.append(f"{card_id} n'est pas pose sous {hote} (pose = {posees})")
+
+    for hote, valeur in attendu.get("taille_pose_sous") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (taille_pose_sous)")
+            continue
+        n = len(list(face.GetPlacedCardArea().Get(True)))
+        if n != valeur:
+            soucis.append(f"{n} carte(s) posee(s) sous {hote} (attendu {valeur})")
 
     if "defausse_joueur" in attendu:
         n = len(list(monde.players[0].discard_pile.Get()))
