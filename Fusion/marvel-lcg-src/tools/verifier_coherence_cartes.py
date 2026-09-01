@@ -6,7 +6,7 @@ N'a pas besoin du moteur : ne lit que `data/cards.json`, `data/sets_info.json`,
 `deck/starter/*.json`, `assets/pics/` et `tools/test_capacites.py`. Se lance
 donc en une seconde, contrairement aux autres outils du §8.
 
-Quatre familles, toutes nees d'un defaut reellement rencontre le 4/8/2026 :
+Six familles, toutes nees d'un defaut reellement rencontre :
 
 1. COLLISIONS DE NOMS D'IDENTITE entre packs differents. Le pack
    agent_anti_venom a introduit un second « * Flash Thompson », homonyme du
@@ -23,6 +23,15 @@ Quatre familles, toutes nees d'un defaut reellement rencontre le 4/8/2026 :
 4. COHERENCE mot-cle imprime / cle `desc`. Un « Toughness. » dans le texte sans
    la cle `Toughness` donne une carte qui ment au joueur, et l'inverse une
    carte qui fait quelque chose que son texte n'annonce pas.
+
+5. IMAGES manquantes pour les packs custom.
+
+6. CAPACITE ANNONCEE SANS AUCUN MODULE (01/09/2026). Neuf cartes de
+   web_of_deceit, en jeu dans trois scenarios, ne faisaient RIEN : aucun
+   fichier ne repondait a leur identifiant, et `database.py:220` se contente
+   alors d'un `ability_cache = []` silencieux. Les quatre outils qui auraient
+   pu le voir posent tous une question qui suppose le module deja la — le
+   detail est au-dessus de la famille 6, plus bas dans ce fichier.
 """
 import sys, os, json, re, collections
 
@@ -236,6 +245,81 @@ for pack in sorted(p for p in packs_custom if p in cartes):
             sans_image.append(f"{cid} ({pack}) {c.get('name', '')}".strip())
 rapport["images_manquantes"] = sans_image
 
+# --- 6. Cartes a capacite ANNONCEE mais SANS AUCUN MODULE --------------------
+#
+# AJOUTE le 01/09/2026, apres neuf cartes inertes trouvees d'un coup dans
+# web_of_deceit (wd018, wd019, wd020, wd021, wd023, wd024, wd078, wd084,
+# wd085). Elles etaient dans les decks de rencontre de trois scenarios et ne
+# faisaient RIEN.
+#
+# ⚠ POURQUOI AUCUN OUTIL NE LE VOYAIT. `database.py:220` est muet : quand
+# aucun module ne repond, `ability_cache[card_id] = []` et la partie continue.
+# Et chaque outil existant pose une question qui suppose le module deja la :
+#   * `verifier_noms_modules`   lit le code DES modules presents ;
+#   * `verifier_appels_modules` verifie les appels DES modules presents ;
+#   * `verifier_cartes_en_jeu`  ne regarde que les attributs du `desc` — il
+#     annoncait « les 176 cartes portent ce que leur texte annonce », ce qui
+#     etait vrai et trompeur a la fois ;
+#   * `sonde_capacites`         compte les capacites trouvees.
+# Aucune ne demandait « cette carte devrait-elle avoir un module ? ».
+#
+# Le crible : on retire les phrases entierement couvertes par une base
+# automatique du `desc`, les rappels entre parentheses et l'ambiance en
+# italique. Ce qui reste et qui declare une capacite est un manque.
+DECLARE = re.compile(
+    r"\b(Response|Interrupt|Action|When Revealed|When Defeated|Forced|Special|"
+    r"Resource:|Boost:)\b", re.I)
+# Un effet CONTINU ne porte aucun de ces mots : wd085 « Reduce the damage… »
+# n'a ete attrape que par cette seconde passe.
+CONTINU = re.compile(
+    r"^(Reduce|Increase|Each|While|Whenever|Players|Cards|The villain|"
+    r"Attached|Attacks|Treat|Ignore|Limit)\b", re.I)
+# Un mot-cle seul, ou suivi de son rappel entre parentheses, vit dans le desc.
+KEYWORD = (r"Surge|Vulnerable|Guard|Patrol|Toughness|Steady|Stalwart|Quickstrike|"
+           r"Peril|Permanent|Restricted|Amplify|Overkill|Piercing|Ranged|Elite|"
+           r"Retaliate \d+|Hinder \d+\S*|Incite \d+\S*|Victory \d+|Setup|"
+           r"Uses \([^)]*\)|Requirement \([^)]*\)|Villainous")
+KEYWORD_SEUL = re.compile(rf"^\s*(?:(?:{KEYWORD})[.\s]*)+$", re.I)
+
+modules_par_pack = {}
+for pack in sorted(packs_custom):
+    racine_pack = os.path.join(RACINE, "src", "cards", "pack", pack)
+    trouves = set()
+    for dossier, _, fichiers in os.walk(racine_pack):
+        for f in fichiers:
+            if f.endswith(".py") and f != "__init__.py":
+                trouves.add(f[:-3])
+    modules_par_pack[pack] = trouves
+
+sans_module = []
+for pack, c in toutes:
+    if pack not in packs_custom:
+        continue
+    cid = c.get("card_id", "")
+    if not cid or not c.get("type"):
+        continue
+    mods = modules_par_pack.get(pack, set())
+    # Une face porte parfois le module de son identite (wd077a / wd077).
+    if cid in mods or cid.rstrip("abcde") in mods:
+        continue
+    texte = c.get("text") or ""
+    texte = re.sub(r"<i>.*?</i>", " ", texte, flags=re.S)   # ambiance
+    texte = re.sub(r"<[^>]+>", "", texte)
+    texte = re.sub(r"\([^)]*\)", "", texte)                 # rappels de regles
+    restes = []
+    for ligne in texte.split("\n"):
+        ligne = ligne.strip()
+        if not ligne or KEYWORD_SEUL.match(ligne):
+            continue
+        if DECLARE.search(ligne) or CONTINU.match(ligne):
+            restes.append(ligne)
+    if restes:
+        sans_module.append({
+            "card_id": cid, "pack": pack, "type": c.get("type"),
+            "nom": c.get("name", ""), "texte": restes,
+        })
+rapport["capacite_annoncee_sans_module"] = sans_module
+
 json.dump(rapport, open(REPORT, "w"), indent=1, ensure_ascii=False)
 
 lignes = []
@@ -257,6 +341,11 @@ for i in sans_destinataire:
 lignes.append(f"images manquantes (packs custom) : {len(sans_image)}")
 for i in sans_image[:20]:
     lignes.append(f"    {i}")
+lignes.append(f"capacite annoncee SANS AUCUN module : {len(sans_module)}")
+for i in sans_module:
+    lignes.append(f"    {i['card_id']} ({i['pack']}) {i['type']} {i['nom']}")
+    for t in i["texte"]:
+        lignes.append(f"        {t[:96]}")
 lignes.append("couverture des packs custom (cas DEDIE + doublon de code, puis simplement citees) :")
 for pack, info in sorted(couverture.items(), key=lambda kv: int(kv[1]["taux"].rstrip(" %"))):
     # Les doublons sont affiches A PART, jamais fondus dans les cas dedies :
@@ -274,5 +363,5 @@ print("\n".join(lignes))
 # Shuri). C'est un releve « a connaitre », qui explique pourquoi on ne designe
 # jamais une carte par son nom. Les trois autres familles, elles, sont des
 # defauts a corriger.
-probleme = bool(par_nom_dans_tests or incoherences or sans_image)
+probleme = bool(par_nom_dans_tests or incoherences or sans_image or sans_module)
 sys.exit(1 if probleme else 0)

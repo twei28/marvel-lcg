@@ -41,8 +41,17 @@ def GetAbilities() -> Sequence['Ability']:
         #
         # ECART ASSUME : « gains Victory 0 » n'est pas rendu. Victory est un
         # attribut de carte que le moteur lit dans les donnees, pas un mot-cle
-        # qui se donne en jeu ; le sbire recrute ne rapportera donc rien a
-        # l'affichage des points de victoire.
+        # qui se donne en jeu : `GainVictory` existe, mais en commentaire
+        # (has_victory.py:45).
+        #
+        # ⚠ CORRECTION DU 01/09/2026 — la portee de cet ecart etait SOUS-ESTIMEE
+        # ici. Il etait ecrit que « le sbire ne rapportera rien a l'affichage
+        # des points de victoire », ce qui laisse croire a une perte de points.
+        # Ce n'est pas la question : `victory` est un BOOLEEN,
+        # `printed_victory != None` (has_victory.py:51). Victory 0 vaut bien
+        # zero point, mais il ENVOIE LA CARTE a l'affichage des victoires, donc
+        # HORS DE LA PARTIE. Sans lui, le sbire de nemesis recrute retourne a la
+        # defausse et peut donc revenir. C'est un ecart de REGLE, pas de score.
         Ability(
             AbilityType.NonKeyword,
             Message.CheckIfFaceApplyUniqueRule,

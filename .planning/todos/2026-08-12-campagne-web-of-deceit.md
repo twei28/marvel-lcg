@@ -1,17 +1,29 @@
 # TODO / SPEC — La campagne « Web of Deceit »
 
-**Statut :** 🚧 **EN COURS.** Le scénario **#1 (Shocker) est dans le jeu et se
-gagne** : 38 cartes, leurs images, leurs sets de rencontre, ses deux
-difficultés, et les modules qui font tourner sa boucle (voir §13). Les quatre
-autres scénarios, les modulaires restants et les spécialisations ne sont pas
-commencés.
+**Statut :** ✅ **TERMINÉE.** Les **cinq scénarios** sont dans le jeu, plus le
+sous-fifre du Vautour, soit **176 cartes**, leurs images, leurs modulaires, les
+**cinq arbres de talents** (50 modules) et le carnet de campagne. Deux revues
+carte-par-carte ont suivi : les 50 cartes de talents (§27) puis les 126 autres
+(§29). Mesures au §29 : `test_cards` 4516/0, `verifier_campagnes` OK,
+**36 parties d'autoplay sans traceback**.
+
+⚠️ **CET EN-TÊTE ÉTAIT FAUX jusqu'au 01/09/2026.** Il annonçait encore
+« EN COURS, seul le scénario #1, rien n'est dans le jeu », état vrai le
+13/08/2026 au matin et périmé dès le 14/08 (§14 à §22). Les sections datées
+disaient la vérité, l'en-tête non : c'est lui qu'on lit en premier. Corrigé en
+relisant le code, non le journal.
+
+Ce qui reste ouvert est **écrit, pas oublié** : la clause non rendue de `wd077b`
+(§29, elle demande un message moteur neuf, décision à prendre) et huit
+approximations relevées et assumées, listées en fin de §29.
+
 **Inventorié et lu le 2026-08-13.** Les 438 cartes du Drive sont
 localisées, téléchargées et lisibles ; le livret est lu ; les 5 scénarios sont
 définis ; le croisement avec l'existant est fait ; le scénario #1 est transcrit.
-**Rien n'est encore dans le jeu.** Voir §7 à §11.
+Voir §7 à §11.
 ⚠️ **Ce n'est PAS qu'un travail de contenu** : le livret ajoute un système de
-**spécialisations** (arbres de talents entre scénarios) que le moteur ne sait
-pas faire. Voir §9.
+**spécialisations** (arbres de talents entre scénarios) que le moteur ne savait
+pas faire. Voir §9, et §15 pour la voie retenue.
 **Origine :** demande utilisateur (dossier Google Drive partagé)
 **Prérequis :** `2026-08-12-nommage-contenu-fanmade.md` (le préfixe `wd`)
 **Source :** https://drive.google.com/drive/folders/1K0Q-41Aqy6tgPDMp0K6pYRKdv66IWCIN

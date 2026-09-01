@@ -46,8 +46,16 @@ TYPES_PAR_ATTRIBUT = {
                     "SideScheme", "Ally"},
     "Toughness":   {"Minion", "Villain", "Ally"},
     "Retaliate":   {"Minion", "Villain", "Ally", "Hero"},
+    # CORRIGE le 01/09/2026 : il manquait "Upgrade", "Environment", "Treachery"
+    # et "Obligation". `Upgrade` herite bel et bien de `HasVictory`
+    # (upgrade.py:10), et les quatre autres passent par
+    # `EncounterNonVillainCard` (card_encounter.py:7). L'outil signalait donc
+    # wd155 « Bag Head » comme portant un Victory que le moteur ne connaitrait
+    # pas, alors que sa valeur est lue normalement. Table refaite en relevant
+    # les classes qui heritent de `HasVictory`, jamais de memoire.
     "Victory":     {"Minion", "SideScheme", "PlayerSideScheme", "Villain",
-                    "Ally", "Attachment"},
+                    "Ally", "Attachment", "Upgrade", "Environment",
+                    "Treachery", "Obligation"},
 }
 
 REGLES = [
