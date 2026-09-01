@@ -1,0 +1,10 @@
+{
+    "version": "0.5.9",
+    "name": "Doctor Doom Nemesis",
+    "encounters": [
+        "dd014",
+        "dd015",
+        "dd016",
+        "dd016"
+    ]
+}

@@ -1243,5 +1243,14 @@
         "encounters": [],
         "max_id": "bt023"
     },
-    "checksum": "1b548df5b48506e7208b51a9020f8922dbd7f566212c0e8873c47cee17e1813b"
+    "139. Custom (Doctor Doom)": {
+        "name": "doctor_doom",
+        "scenarios": [],
+        "heroes": [
+            "doctor_doom"
+        ],
+        "encounters": [],
+        "max_id": "dd016"
+    },
+    "checksum": "5e43bb4b923be266aa6ffc9dfb228105503f1de77a6796ca74993159fffff94c"
 }

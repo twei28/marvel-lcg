@@ -1610,4 +1610,38 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'bt022': "<b><i>Robuste</i></b>. <i>(Ce personnage ne peut être ni étourdi ni désorienté.)</i>\n<b>Une fois révélé</b> : tous les alliés sont désorientés.\n<i>(Sbire némésis de Beast.)</i>",
   // beast — Mutant Science Program (SideScheme nemesis)
   'bt023': "<i>« Beast enlève des mutants et pratique sur eux des tests dangereux. »</i>\n<b>Une fois révélée</b> : placez 1 compteur de test sur cette manigance annexe pour chaque allié dans votre pile de défausse. S'il n'y a aucun allié dans votre pile de défausse, placez plutôt 2[per_hero] compteurs de test.\n<b>Réponse Obligatoire</b> : chaque fois que vous piochez un allié dans votre main → retirez 1 compteur de test, défaussez l'allié, puis cherchez le sbire Lizard-Fied dans le deck de rencontre ou la pile de défausse et mettez-le en jeu.",
+  // doctor_doom — Doctor Doom (Hero)
+  'dd001a': "<i>Power Syphon</i> — <b>Réponse</b> : après que vous avez payé un événement [[SPELL]] avec une ressource [mental], placez 1 compteur de pouvoir ici (maximum 3).\n<i>Overwhelming Power</i> — <b>Action</b> : retirez 3 compteurs de pouvoir → vous gagnez <b><i>Vilain</i></b> jusqu'à la fin du round. Ignorez les effets de boost des cartes de boost qui vous sont distribuées.",
+  // doctor_doom — Victor von Doom (AlterEgo)
+  'dd001b': "Vous ne pouvez inclure aucun allié supplémentaire dans votre deck.\n<i>Master of Magic and Technology</i> — vous pouvez inclure jusqu'à 6 cartes [[TECH]] et/ou [[SPELL]] d'aspects autres que celui que vous avez choisi.",
+  // doctor_doom — Victorious (Ally, signature)
+  'dd002': "<b><i>Robuste</i></b>.\n<b>Réponse</b> : après que Victorious est entrée en jeu, cherchez un événement [[SPELL]] dans votre deck et votre pile de défausse et ajoutez-le à votre main.",
+  // doctor_doom — Doombot (Ally, x2)
+  'dd003': "<b><i>Exigence</i></b> ([mental]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\n<b><i>Robuste</i></b>.\n<b>Interruption</b> : quand un ennemi vous attaque, jouez Doombot depuis votre main (en payant son coût) et déclarez-le défenseur sans l'incliner.",
+  // doctor_doom — "This World Is Mine!" (Event, x3)
+  'dd004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si vous avez payé cette carte uniquement avec des ressources [mental], cette attaque gagne <b><i>Déferlement</i></b> et <b><i>Perçage</i></b>.",
+  // doctor_doom — "Doom Prevails" (Event, signature)
+  'dd005': "<b>Action de héros</b> : regardez les 3 cartes du dessus du deck de rencontre. Infligez X dégâts répartis entre les ennemis en jeu, où X est le nombre d'icônes ([star] et [boost]) dans la zone de boost de ces cartes. Si vous avez payé cette carte uniquement avec des ressources [mental], retirez aussi X menaces réparties entre les manigances en jeu.",
+  // doctor_doom — "Pain Is For Lesser Men!" (Event, x2)
+  'dd006': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, empêchez tous ces dégâts. Si vous avez payé cette carte uniquement avec des ressources [mental], étourdissez et désorientez l'ennemi.",
+  // doctor_doom — Unparalleled Genius (Resource [mental]x3, x2)
+  'dd007': "",
+  // doctor_doom — Doomstadt (Support, signature)
+  'dd008': "Les événements glissés sous Doomstadt peuvent être joués comme s'ils étaient dans votre main.\n<b>Action</b> : inclinez Doomstadt → glissez un événement [[SPELL]] de votre main sous cette carte (maximum 3).",
+  // doctor_doom — Doom's Time Platform (Upgrade, signature)
+  'dd009': "<b>Action de héros</b> : inclinez Doom's Time Platform → choisissez :\n• Redressez Doctor Doom.\n• Mélangez 1 événement ou 1 amélioration de votre pile de défausse dans votre deck.",
+  // doctor_doom — Doom's Armor (Upgrade, signature)
+  'dd010': "Doctor Doom gagne +3 points de vie et le trait [[AERIAL]].\n<b>Interruption de héros</b> : si Doctor Doom a <b><i>Vilain</i></b>, quand il utilise un pouvoir de base, inclinez Doom's Armor → distribuez-vous 1 carte de boost supplémentaire.",
+  // doctor_doom — Doom's Mask (Upgrade, signature)
+  'dd011': "Doctor Doom gagne <b><i>Constance</i></b>.\n<b>Ressource</b> : inclinez Doom's Mask → générez une ressource [mental] (plutôt [mental][mental] si vous payez un événement [[SPELL]]).",
+  // doctor_doom — Rescue Cynthia von Doom (Obligation)
+  'dd012': "<b><i>Donnez-la au joueur Victor von Doom.</i></b>\nPassez en forme d'alter ego. Vous ne pouvez pas changer de forme.\n• <b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte [[TECH]] que vous contrôlez → retirez cette carte de la partie.\n• <b>Action d'alter ego</b> : inclinez votre identité → défaussez cette carte.",
+  // doctor_doom — Incomparable Ego (Obligation)
+  'dd013': "<b><i>Donnez-la au joueur Victor von Doom.</i></b>\nInclinez chaque allié que vous contrôlez. Les alliés que vous contrôlez ne peuvent pas se redresser.\n<b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte [mental] de votre main → défaussez cette carte.\n<i>(Icône d'accélération : placez 1 menace supplémentaire sur la manigance principale durant la phase du vilain.)</i>\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // doctor_doom — Meddlesome Heroes! (SideScheme nemesis)
+  'dd014': "<i>« Mes inventions ont sauvé des mondes, mais la meilleure chose que j'aie jamais bâtie, c'était ma famille. » — Reed Richards</i>\n<b>Une fois vaincue</b> : subissez 4 dégâts indirects ou placez 4 menaces réparties entre les manigances en jeu.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
+  // doctor_doom — Mister Fantastic (Minion nemesis)
+  'dd015': "<b><i>Garde</i></b>. <b><i>Patrouille</i></b>.\nTant que Mister Fantastic est engagé avec vous, chaque fois que vous générez une ressource [mental], générez plutôt une ressource [physical].\n<b>Une fois révélé</b> : Mister Fantastic s'engage avec le joueur Doctor Doom.\n<i>(Sbire némésis de Doctor Doom.)</i>",
+  // doctor_doom — Richards! (Treachery nemesis, x2)
+  'dd016': "<b>Une fois révélée</b> : Mister Fantastic s'active. Si Mister Fantastic ne s'est pas activé de cette façon, cherchez-le et révélez-le.",
 }

@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "ba1b74c681c05bc6baa13765964d4c478e9d004a19ac37145b1cc35900154b00",
+    "checksum": "921bb05dfa629b9adc2d5aacbd5570b19db23256470c394cb334fb3cae547ee0",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -84303,6 +84303,305 @@
             "traits": [],
             "text": "<i>\"Beast is kidnapping mutants and performing dangerous tests on them.\"</i>\n<b>When Revealed</b>: Place 1 test counter on this side scheme for every ally in your discard pile. If there are 0 allies in your discard pile, place 2[per_hero] test counters instead.\n<b>Forced Response</b>: Whenever you draw an ally into your hand \u2192 remove 1 test counter and discard the ally and find the Lizard-Fied Minion in the encounter or discard pile and put it into play.",
             "set_name": "Beast Nemesis",
+            "custom": "Arnaud"
+        }
+    ],
+    "doctor_doom": [
+        {
+            "card_id": "dd001a",
+            "type": "Hero",
+            "name": "* Doctor Doom",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "ATK": "1",
+                "THW": "3",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "LATVERIA",
+                "MYSTIC"
+            ],
+            "text": "<i>Power Syphon</i> \u2014 <b>Response</b>: After you pay for a [[SPELL]] event using a [mental] resource, place 1 power counter here (to a maximum of 3).\n<i>Overwhelming Power</i> \u2014 <b>Action</b>: Remove 3 power counters \u2192 you gain villainous until the end of the round. Ignore any boost effects on boost cards dealt to you.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd001b",
+            "type": "AlterEgo",
+            "name": "* Victor von Doom",
+            "subtitle": "",
+            "desc": {
+                "HP": "11",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "GENIUS",
+                "LATVERIA"
+            ],
+            "text": "You cannot include any additional allies in your deck.\n<i>Master of Magic and Technology</i> \u2014 You may include up to 6 [[TECH]] and/or [[SPELL]] cards in your deck from aspects other than your chosen aspect.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd002",
+            "type": "Ally",
+            "name": "* Victorious",
+            "subtitle": "Zora Vukovic",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "3*",
+                "THW": "1*",
+                "RES": "G",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "HERALD",
+                "LATVERIA"
+            ],
+            "text": "Toughness.\n<b>Response</b>: After Victorious enters play, search your deck and discard pile for a [[SPELL]] event and add it to your hand.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd003",
+            "type": "Ally",
+            "name": "Doombot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "HP": "2",
+                "ATK": "2*",
+                "RES": "R",
+                "Requirement": "B",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "Requirement ([mental]). <i>(While paying for this card, spend the listed resources.)</i>\nToughness.\n<b>Interrupt</b>: When an enemy attacks you, play Doombot from your hand (paying its resource cost) and declare it the defender without exhausting it.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd004",
+            "type": "Event",
+            "name": "\"This World Is Mine!\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SPELL"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy. If you paid for this card using only [mental] resources, this attack gains overkill and piercing.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd005",
+            "type": "Event",
+            "name": "\"Doom Prevails\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SPELL"
+            ],
+            "text": "<b>Hero Action</b>: Look at the top 3 cards of the encounter deck. Deal X damage among enemies in play where X equals the number of icons ([star] and [boost]) in those encounter cards' boost areas. If you paid for this card with only [mental] resources, also remove X threat from among schemes in play.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd006",
+            "type": "Event",
+            "name": "\"Pain Is For Lesser Men!\"",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SPELL"
+            ],
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent all of that damage. If you paid for this card using only [mental] resources, stun and confuse the enemy.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd007",
+            "type": "Resource",
+            "name": "Unparalleled Genius",
+            "subtitle": "",
+            "desc": {
+                "RES": "BBB",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd008",
+            "type": "Support",
+            "name": "* Doomstadt",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION",
+                "LATVERIA"
+            ],
+            "text": "Events tucked under Doomstadt can be played as if they were in your hand.\n<b>Action</b>: Exhaust Doomstadt \u2192 tuck a [[SPELL]] event from your hand under here (to a maximum of 3).",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd009",
+            "type": "Upgrade",
+            "name": "* Doom's Time Platform",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Doom's Time Platform \u2192 choose:\n\u2022 Ready Doctor Doom.\n\u2022 Shuffle 1 event or upgrade from your discard pile back into your deck.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd010",
+            "type": "Upgrade",
+            "name": "* Doom's Armor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "Doctor Doom gets +3 hit points and gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: If Doctor Doom has villainous, when using a basic power, exhaust Doom's Armor \u2192 deal yourself 1 additional boost card.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd011",
+            "type": "Upgrade",
+            "name": "* Doom's Mask",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "Doctor Doom gains steady.\n<b>Resource</b>: Exhaust Doom's Mask \u2192 generate a [mental] resource ([mental][mental] resources instead if paying for a [[SPELL]] event).",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd012",
+            "type": "Obligation",
+            "name": "Rescue Cynthia von Doom",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Victor von Doom"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Victor von Doom player.</i></b>\nFlip to alter-ego form. You may not change form.\n\u2022 <b>Alter-Ego Action</b>: Exhaust your identity and discard a [[TECH]] card you control \u2192 remove this card from the game.\n\u2022 <b>Alter-Ego Action</b>: Exhaust your identity \u2192 discard this card.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd013",
+            "type": "Obligation",
+            "name": "Incomparable Ego",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "Acceleration": "1",
+                "Hazard": "1",
+                "GiveTo": "Victor von Doom"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Victor von Doom player.</i></b>\nExhaust each ally you control. Allies you control cannot ready.\n<b>Alter-Ego Action</b>: Exhaust your identity and discard a [mental] from your hand \u2192 discard this card.\n<i>(Acceleration Icon: Place 1 additional threat on the main scheme during the villain phase.)</i>\n<i>(Hazard Icon: Deal +1 encounter card during the villain phase.)</i>\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "set_name": "Doctor Doom",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd014",
+            "type": "SideScheme",
+            "name": "Meddlesome Heroes!",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "4",
+                "Boost": "3",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "text": "<i>\"My inventions have saved worlds, but the best thing I ever built was my family.\" \u2014 Reed Richards</i>\n<b>When Defeated</b>: Take 4 indirect damage or place 4 threat among any schemes in play.\n<i>(Hazard Icon: Deal +1 encounter card during the villain phase.)</i>",
+            "set_name": "Doctor Doom Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd015",
+            "type": "Minion",
+            "name": "* Mister Fantastic",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "2",
+                "Guard": "1",
+                "Patrol": "1",
+                "Boost": "2",
+                "Nemesis": "Doctor Doom"
+            },
+            "traits": [
+                "FANTASTIC FOUR",
+                "GENIUS"
+            ],
+            "text": "Guard. Patrol.\nWhile Mister Fantastic is engaged with you, each time you generate a [mental] resource, generate a [physical] instead.\n<b>When Revealed</b>: Mister Fantastic engages the Doctor Doom player.\n<i>(Doctor Doom's nemesis minion.)</i>",
+            "set_name": "Doctor Doom Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "dd016",
+            "type": "Treachery",
+            "name": "Richards!",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: Mister Fantastic activates. If Mister Fantastic did not activate this way, find and reveal Mister Fantastic.",
+            "set_name": "Doctor Doom Nemesis",
             "custom": "Arnaud"
         }
     ]

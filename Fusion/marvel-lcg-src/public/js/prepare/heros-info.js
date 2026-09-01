@@ -1272,4 +1272,17 @@ export const HEROS_INFO = {
         apparition: "X-Men #1 (1963)",
     },
 
+    "dd001a": {
+        bio: "Fils d'une sorcière et d'un guérisseur tsigane, Victor von Doom a fui la Latvérie avec deux certitudes : que le monde lui devait réparation, et qu'il valait mieux que lui. Une expérience ratée lui a brûlé le visage ; il a forgé son masque encore rougeoyant et l'a posé sur sa peau. Depuis, il règne sur la Latvérie en monarque absolu, seul homme à maîtriser à la fois la science la plus avancée et la magie la plus ancienne. Il ne se voit jamais comme un vilain : simplement comme le seul dirigeant que le monde mérite.",
+        bioEn: "Son of a witch and a Romani healer, Victor von Doom fled Latveria with two certainties: that the world owed him, and that he was better than it. A failed experiment burned his face; he forged his mask and pressed it on while it still glowed. He has ruled Latveria as absolute monarch ever since, the only man to master both the most advanced science and the oldest sorcery. He never sees himself as a villain, merely as the one ruler the world deserves.",
+        civil: "Victor von Doom",
+        base: "Castel Doom, Latvérie",
+        baseEn: "Castle Doom, Latveria",
+        equipes: "Monarque de Latvérie",
+        equipesEn: "Monarch of Latveria",
+        ennemis: "Les Quatre Fantastiques, Reed Richards",
+        ennemisEn: "The Fantastic Four, Reed Richards",
+        apparition: "Fantastic Four #5 (1962)",
+    },
+
 };

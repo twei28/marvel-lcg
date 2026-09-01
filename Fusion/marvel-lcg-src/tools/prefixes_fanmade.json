@@ -80,9 +80,9 @@
         "dd": {
             "pack": "doctor_doom",
             "libelle": "139. Custom (Doctor Doom)",
-            "cartes": 0,
+            "cartes": 17,
             "depuis": "2026-08-29",
-            "note": "Cree le 30/08/2026. Auteur jakxin. Difficulte annoncee 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+            "note": "Portage en cours (01/09/2026). CORRECTIF : l'auteur est **Grawlix Ipsum** (credite sur chaque carte), pas jakxin. CORRECTIF : le zip 'Doctor Doom Alt Arts' n'est PAS le meme kit de cartes \u2014 il contient 16 cartes DIFFERENTES (arts alternatifs de cartes OFFICIELLES : Spiritual Meditation, Summoning Spell, Zone of Silence, Sorcerer Supreme, ressources doubles ; plus Castle Doom, Kristoff, Prot-Doombot, Ingenuity). Aucun nom en commun avec 'Hero Revised' : PAS de fusion, a traiter a part. Le pack Revised fait 17 entrees : 2 identites, 10 cartes signature (15 exemplaires), 2 OBLIGATIONS et 4 cartes nemesis. Voir .planning/todos/2026-09-01-portage-doctor-doom.md."
         },
         "dt": {
             "pack": "determination",

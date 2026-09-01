@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Doctor Doom",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Grawlix Ipsum). Aspect AGRESSION choisi par l'utilisateur le 01/09/2026. ⚠ DEUX contraintes de deckbuilding imprimees sur l'alter-ego dd001b commandent ce deck : « You cannot include any additional allies in your deck » — les SEULS allies sont donc les signatures dd002 Victorious et dd003 Doombot, et le deck d'aspect n'en contient AUCUN — et « Master of Magic and Technology : up to 6 TECH and/or SPELL cards from aspects other than your chosen aspect ». La seconde est exploitee avec TROIS cartes sur les 6 permises, toutes SPELL et toutes choisies pour le moteur mental du heros : 21050 Zone of Silence (Justice), 21055 Summoning Spell (Leadership) et 15019 Spiritual Meditation. Le reste est de l'Agression pure. Doom a ATQ 1 imprime : le deck ne mise donc PAS sur ses attaques de base mais sur ses evenements signature (dd004 « This World Is Mine! », 8 degats) ; Combat Training et Martial Prowess montent l'ATQ pour rendre les pouvoirs de base utiles une fois villainous actif, moment ou chaque attaque lui donne une carte de boost.",
+        "collision_note": "« Mister Fantastic » (dd015) est un SBIRE nemesis. Le meme nom porte le HEROS officiel mf001a et l'allie Leadership iw002 (pack Invisible Woman) : les trois peuvent coexister en jeu, et les cas de test visent dd015 par son card_id, jamais par son nom.",
+        "villainous_note": "dd001a « Overwhelming Power » accorde le mot-cle villainous au HEROS. Il a fallu etendre le moteur (HasVillainous ajoute a la chaine de Hero, garde num<=0 dans can_boost.py, parametre villainous sur TemporaryGain/GainUntilRoundEnd). Confirme par FFG le 13/08/2026 : Elektra sera le premier heros OFFICIEL a porter ce mot-cle."
+    },
+    "hero": [
+        "dd001a,dd001b"
+    ],
+    "hero_deck": [
+        "dd002",
+        "dd003",
+        "dd003",
+        "dd004",
+        "dd004",
+        "dd004",
+        "dd005",
+        "dd006",
+        "dd006",
+        "dd007",
+        "dd007",
+        "dd008",
+        "dd009",
+        "dd010",
+        "dd011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "dd012",
+        "dd013"
+    ],
+    "nemesis_set": [
+        "dd014",
+        "dd015",
+        "dd016",
+        "dd016"
+    ],
+    "player_deck": [
+        "01053",
+        "01053",
+        "01054",
+        "04044",
+        "04044",
+        "10015",
+        "10016",
+        "09037",
+        "01057",
+        "01057",
+        "10018",
+        "14029",
+        "16045",
+        "01055",
+        "01055",
+        "21050",
+        "15026",
+        "21055",
+        "15019",
+        "13016",
+        "16046",
+        "01088",
+        "01089",
+        "01090",
+        "12030"
+    ]
+}
