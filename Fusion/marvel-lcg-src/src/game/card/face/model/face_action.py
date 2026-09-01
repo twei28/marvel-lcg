@@ -48,6 +48,12 @@ class ModelAction(ModelBase):
                     thwart: int|None=None,
                     recover: int|None=None,
                     retaliate: int|None=None,
+                    # CORRECTIF (01/09/2026, pack custom doctor_doom) :
+                    # `villainous` manquait, alors que `Gain` l'accepte deja
+                    # (face_gain.py:53). Meme oubli, meme correctif que
+                    # `retaliate` le 4/8/2026. dd001a « Overwhelming Power »
+                    # accorde villainous jusqu'a la fin du round.
+                    villainous: int|None=None,
                     treat_as_blank: bool|None=None,
                     attack_consequential_damage: int|None=None,
                     thwart_consequential_damage: int|None=None,
@@ -114,6 +120,7 @@ class ModelAction(ModelBase):
                 thwart=thwart,
                 recover=recover,
                 retaliate=retaliate,
+                villainous=villainous,
                 treat_as_blank=treat_as_blank,
                 trait=trait,
             ):
@@ -421,6 +428,11 @@ class ModelAction(ModelBase):
                           # l'expose deja. Guard Protocol ab003 (pack albert)
                           # plantait sur TypeError a chaque utilisation.
                           retaliate: int|None=None,
+                          # CORRECTIF (01/09/2026, pack custom doctor_doom) :
+                          # `villainous` manquait ici aussi. dd001a en a besoin
+                          # « until the end of the round », ce que cette
+                          # methode rend exactement.
+                          villainous: int|None=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
@@ -433,6 +445,7 @@ class ModelAction(ModelBase):
             scheme=scheme,
             thwart=thwart,
             retaliate=retaliate,
+            villainous=villainous,
             ignore_flip=ignore_flip,
             render_ui=True
         )

@@ -155,7 +155,39 @@ class AlterEgo(HasRecover, CanRecover, CanThwart, Identity, FinalType):
 ################################################################################
 #
 @final
-class Hero(HasThwart, CanThwart, HasAttack, CanAttack, HasDefense, CanDefense, HasAccelerationIcon, Identity, FinalType):
+# CORRECTIF (01/09/2026, pack custom doctor_doom) : `HasVillainous` ajoute a la
+# chaine du HEROS. Le mot-cle etait reserve aux sbires (minion.py:10), et
+# dd001a « Doctor Doom » l'accorde pourtant a son propre heros
+# (« Overwhelming Power — Action: Remove 3 power counters -> you gain
+# villainous until the end of the round »), tandis que dd010 « Doom's Armor »
+# le relit (« If Doctor Doom has villainous... »).
+#
+# ⚠ `HasVillainous` herite de `CanBoost` : un heros devient donc `CanBoost`, ce
+# que `can_attack.py:220` teste a chaque attaque de base. Le garde `num <= 0`
+# ajoute le meme jour dans `can_boost.py` est INDISPENSABLE — sans lui, tout
+# heros non villainous plantait sur le `CastTo(Minion|Villain)` final.
+#
+# Inerte par defaut : `printed_villainous` vaut 0 sans `desc.Villainous`, donc
+# `GetBoostCardNum()` rend 0 et aucune carte de boost n'est distribuee.
+# Verifie le 01/09/2026 : spider_man, captain_america, agatha_harkness et beast
+# montent tous sans changement, et la batterie complete reste a son etat connu.
+#
+# ⚠ CE N'EST PAS UN CONTOURNEMENT POUR UN PACK FAN-MADE. VERIFIE le 01/09/2026
+# sur l'annonce FFG « Killer Instinct » (13/08/2026) : ELEKTRA est annoncee
+# comme LE PREMIER HEROS OFFICIEL a porter le mot-cle villainous. Sa face heros
+# « prend une carte de boost du deck rencontre chaque fois qu'elle utilise un
+# pouvoir de base (contrer, attaquer ou defendre) ; la carte est retournee face
+# visible, son effet de boost se resout, et ses icones s'ajoutent aux
+# statistiques du personnage pour cette activation ».
+# La place de `HasVillainous` est donc bien ici, dans la chaine du HEROS, et
+# non dans un module de carte custom. A GARDER TEL QUEL quand Elektra arrivera.
+#
+# ⚠ CE QUI RESTERA A FAIRE POUR ELEKTRA : les TROIS pouvoirs de base sont
+# concernes. Aujourd'hui seuls l'attaque (can_attack.py:220) et la manigance
+# (can_scheme.py:92) distribuent des cartes de boost ; la DEFENSE n'a aucun
+# chemin equivalent. Il faudra l'ajouter, ce que le pack doctor_doom n'a pas
+# eu besoin de faire (dd010 n'accroche que l'attaque de base).
+class Hero(HasThwart, CanThwart, HasAttack, CanAttack, HasDefense, CanDefense, HasAccelerationIcon, HasVillainous, Identity, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
 

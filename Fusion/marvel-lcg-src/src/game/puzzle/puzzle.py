@@ -189,6 +189,23 @@ class RunPuzzle:
                 source = face
             face.TakeDamage(source, val, self.debug_rule)
 
+    def PlaceCounters(self, card: CardName, name: str, val: int):
+        """AJOUT (01/09/2026, pack custom doctor_doom) : poser des compteurs.
+
+        Sans cela, aucune capacite qui DEPENSE des compteurs n'est testable :
+        il faudrait d'abord jouer les cartes qui les posent, ce qui melerait
+        deux capacites dans un meme cas. dd001a « Overwhelming Power » exige
+        3 compteurs `power` avant de pouvoir s'activer.
+
+        Miroir de `Puzzle.Damage` : on va droit a l'etat voulu, sans passer par
+        le jeu normal.
+        """
+        from game.card.face.attribute.can_place_counter import CanPlaceCounter
+        face = self.FindOrCreateFace(card)
+        # `CastTo` et non un `if IsType` : une carte qui n'accepte pas de
+        # compteurs doit faire ECHOUER le cas, pas le laisser passer au vert.
+        face.CastTo(CanPlaceCounter).PlaceCountersInternal(val, name, self.debug_rule)
+
     def Confuse(self, card: CardName):
         from game.operate.faces import Faces
         unit = self.FindOrCreateFace(card).CastTo(Unit2)

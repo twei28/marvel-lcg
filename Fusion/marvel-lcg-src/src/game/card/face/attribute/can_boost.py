@@ -10,6 +10,19 @@ class CanBoost(CardFace):
         from game.card.face.card_type import Minion
         from game.card.face.base import Villain
 
+        # CORRECTIF (01/09/2026, pack custom doctor_doom) : sortir tot quand il
+        # n'y a AUCUNE carte a donner. `can_attack.py:220` appelle cette
+        # methode a chaque attaque de base des que la face est `CanBoost`, sans
+        # regarder `num` — et le `CastTo(Minion|Villain)` de la derniere ligne
+        # pose un assert. Depuis que `Hero` herite de `HasVillainous` (donc de
+        # CanBoost) pour rendre « you gain villainous » de dd001a, tout heros
+        # non villainous passait ici avec num=0 et plantait a CHAQUE attaque.
+        # Inerte pour les sbires et vilains : a num=0, la boucle
+        # `PopEncounterCards` ne faisait deja rien, et le message de texte
+        # annoncait « 0 carte ».
+        if num <= 0:
+            return
+
         def process(face: 'CardFace'):
             self.GiveBoostCard(face, by_effect, would_atk_message)
 
