@@ -2296,8 +2296,7 @@ CAS = [
         "jouer": ["lj024"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        # 5 degats poses, 1 soigne : la carte defaussee porte une icone.
-        "attendu": {"degats": [["01094", 4]]},
+        "attendu": {"degats": [["01094", 3]]},
     },
     {
         "nom": "lj010 Zooming Around — 1 degat au vilain engage et 1 menace retiree",
@@ -3269,8 +3268,7 @@ CAS = [
         "payer_avec": ["mf009", "mf011", "mf012"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        # 5 degats poses, 1 soigne : la carte defaussee porte une icone.
-        "attendu": {"degats": [["01094", 4]]},
+        "attendu": {"degats": [["01094", 3]]},
     },
     {
         "nom": "mf012 Mental Gymnastics — 2 degats a X=0, et l'ennemi est Desoriente",
@@ -12830,6 +12828,544 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats": [["21047", 2]]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « alligator_loki » : Alligator Loki, set 140, al001a-al023
+    # Rhino 01094 (ATK 2, SCH 1), Shocker 01103 (3 PV, ATK 2), Hydra Bomber
+    # 01110 (2 PV), Hydra Mercenary 01101 (3 PV, Guard). Complot principal
+    # 01097b. Le heros s'ACCROCHE (Hero.attached_enemy, extension moteur) : la
+    # cle `accroche_a` du verificateur `al_etat` lit ce lien (card_id ou None).
+    # ⚠ `main_exclusive` sur tout cas qui ATTAQUE : la main de depart du deck
+    # Agressivite contient Skilled Strike (09037), que le pilote joue sur
+    # l'attaque de base (+2 ATK), tuant Shocker avant toute verification.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "al001a Lock Jaws — l'attaque de base accroche le heros, l'ennemi perd 1 SCH et 1 ATK",
+        "pourquoi": ("`WhenUnitWouldAttack(Interrupt, 'This', is_basic_attack=True)` "
+                     "-> `AttachHeroTo` ; puis `GiveKeywordToInPlayWhenApplyThis("
+                     "CardFinder(check_effect_fn=EstAccrocheA), scheme=-1, attack=-1)` "
+                     "ne vise que l'ennemi tenu (identite d'objet, pas nom)"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Attack('al001a')"],
+        "cibles": ["01103"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": "01103",
+                    "degats": [["01103", 2]],
+                    "attributs_carte": [["01103", "attack", -1],
+                                        ["01103", "scheme", -1]]},
+    },
+    {
+        "nom": "al001a Lock Jaws — la defense de base accroche aussi, le -1 ATK s'applique au coup en cours, puis la Forced Response lache",
+        "pourquoi": ("`WhenUnitDefendAgainstAttack(Interrupt, 'This', is_basic_defense=True)` "
+                     "avec `message.attacker`. Shocker ATK 2 -> accroche -> ATK 1, "
+                     "DEF 1 du heros -> 0 degat. La defense a lieu PENDANT "
+                     "l'activation de Shocker : a sa fin, « After attached enemy "
+                     "activates » detache (journal : « unequipped » juste apres « Fin "
+                     "de l'activation »). L'usage defensif de Lock Jaws vaut donc "
+                     "une reduction de degats, pas une prise durable"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Defend('al001a', '01103')"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": None,
+                    "degats_identite": 0},
+    },
+    {
+        "nom": "al001a Forced Response — l'ennemi tenu s'active, le heros lache prise",
+        "pourquoi": ("`AfterEnemyActivationEnd(ForcedResponse, Enemy)` filtre sur "
+                     "`EstAccrocheA(message.this)` puis `DetacherLeHeros`. Shocker "
+                     "attaque a ATK 1 (malus) sans defenseur -> 1 degat"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "cibles": ["01103"],
+        "declencher": ["Puzzle.Attack('al001a')",
+                       "Puzzle.Attack('01103')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": None,
+                    "degats_identite": 1},
+    },
+    {
+        "nom": "al001a Forced Response — un AUTRE ennemi s'active : le heros reste accroche",
+        "pourquoi": ("contre-cas : le filtre porte sur `message.this`, l'ennemi qui "
+                     "s'active. Rhino attaque (2 degats), Shocker reste tenu"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "cibles": ["01103"],
+        "declencher": ["Puzzle.Attack('al001a')",
+                       "Puzzle.Attack('01094')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": "01103",
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "al001b Setup — Throg (al002) part du deck vers la main",
+        "pourquoi": "`WhenPlayerSelectHero` + `Search.PlayerCard(card_ids=['al002'])` + `GainCard` (modele an001b)",
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["al002"]},
+    },
+    {
+        "nom": "al001b Nap Time — passer en alter-ego detache le heros et offre une recuperation sans incliner",
+        "pourquoi": ("`AfterUnitChangeForm(ForcedResponse, 'You', to_this_form=True)` : "
+                     "`DetacherLeHeros(force=True)` puis ChooseAbilities facultatif -> "
+                     "`BasicRecover` (REC 2). 3 degats -> 1 ; l'identite reste PRETE"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "cibles": ["01103"],
+        "declencher": ["Puzzle.Attack('al001a')",
+                       "Puzzle.Ready('al001a')",
+                       "Puzzle.Damage('al001a', 3)",
+                       "Puzzle.ChangeForm('al001a')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": None,
+                    "forme": "AlterEgo",
+                    "degats_identite": 1,
+                    "pret": ["al001b"]},
+    },
+    {
+        "nom": "al002 Throg — Alligator Loki l'attaque avec overkill, l'exces va au vilain ; vaincu : -3 menace et retour au deck",
+        "pourquoi": ("`WhenUnitWouldAttack(Interrupt, CardFinder(name='Alligator Loki'))` "
+                     "pose `property.overkill` ; `WhenUnitBeDefeated` -> "
+                     "`RetirerMenaceDUneManigance(3)` + `ShuffleAllTo(player_deck)`. "
+                     "Throg a 3 degats sur 4 PV, ATK 2 -> 1 d'exces sur Rhino"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al002', under_control=True)",
+                          "Puzzle.Damage('al002', 3)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('al001a')"],
+        "cibles": ["al002"],
+        "main_exclusive": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["al002"],
+                    "degats": [["01094", 1]],
+                    "menace": [["01097b", 2]],
+                    "dans_deck_joueur": ["al002"]},
+    },
+    {
+        "nom": "al003 Chomp! — 4 degats sans accroche, puis le heros peut s'accrocher",
+        "pourquoi": ("`DealDamage(if_this_attack_defeats=)` ; non vaincu -> ChooseAbilities "
+                     "facultatif « attach » que le pilote accepte (premiere option)"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al003"],
+        "cibles": ["01094"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": "01094",
+                    "degats": [["01094", 4]],
+                    "defausse": ["al003"]},
+    },
+    {
+        "nom": "al003 Chomp! — 6 degats sur l'ennemi deja tenu",
+        "pourquoi": ("`6 if EstAccrocheA(cible) else 4`. L'attaque de base (2) a "
+                     "accroche Rhino en mise en place : 2 + 6 = 8"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "main_exclusive": ["01090", "01088"],
+        "declencher": ["Puzzle.Attack('al001a')"],
+        "jouer": ["al003"],
+        "cibles": ["01094"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": "01094",
+                    "degats": [["01094", 8]]},
+    },
+    {
+        "nom": "al003 Chomp! — vaincre l'ennemi redresse Alligator Loki",
+        "pourquoi": ("branche `if_this_attack_defeats` -> `Faces.ReadyAll([heros])`, "
+                     "et PAS de proposition d'accrochage (l'ennemi est parti). "
+                     "Shocker 3 PV contre 4 degats ; le heros etait incline"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Exhaust('al001a')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al003"],
+        "cibles": ["01103"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": None,
+                    "hors_jeu": ["01103"],
+                    "pret": ["al001a"]},
+    },
+    {
+        "nom": "al007 See You Later! — -3 menace, passage en alter-ego, Throg remonte de la defausse au deck",
+        "pourquoi": ("`RemoveThreatFromSchemes` + `ChangeToForm(AlterEgo)` + "
+                     "`MayChooseOneAbility` (« you may shuffle Throg ») que "
+                     "`accepter_choix` fait accepter -> al002 quitte la defausse"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreatePlayerDiscardPile('al002')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al007"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]],
+                    "forme": "AlterEgo",
+                    "dans_deck_joueur": ["al002"]},
+    },
+    {
+        "nom": "al009 Alligator Antics — redresse l'identite et sort Throg (al002) du deck du joueur",
+        "pourquoi": ("`Faces.ReadyAll([identite])` + `Search.SearchForCard(include_player_deck='All', "
+                     "include_encounter_deck=True, card_ids=['al002', 'al019'])` + "
+                     "`PutIntoPlay`. Aucun attachement compatible dans les zones "
+                     "fouillees : la seconde fouille rend None sans planter"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.Exhaust('al001a')",
+                          "Puzzle.PutIntoDeck('al002')"],
+        "main": ["01088"],
+        "declencher": [],
+        "jouer": ["al009"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["al001a"],
+                    "en_jeu": ["al002"],
+                    "defausse": ["al009"]},
+    },
+    {
+        "nom": "al009 Alligator Antics — trouve le Throg NEMESIS dans le deck de rencontre et lui attache Frogjolnir",
+        "pourquoi": ("meme fouille, al019 dans le deck de rencontre ; puis la seconde "
+                     "fouille (`include_set_aside=True`, `CanAttachTo(throg)`) "
+                     "trouve al022 mise de cote et `AttachTo2`. al019 en entrant "
+                     "pose une carte de la main sous lui (al019)"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        # al022 est mise de cote par al001b (`BeginGameWithSetAside`), comme
+        # en vraie partie : rien a creer a la main.
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.CreateEncounterDeck('01101', 'al019', '01101')"],
+        "main": ["01088"],
+        "declencher": [],
+        "jouer": ["al009"],
+        # `CreateEncounterDeck` AJOUTE au deck de Rhino, qui garde ses propres
+        # attachements (01098-01100) : sans `cibles`, le pilote prend la
+        # premiere carte proposee (Enhanced Ivory Horn) et non Frogjolnir.
+        "cibles": ["al022"],
+        "verifier": "al_frogjolnir_sur_throg",
+    },
+    {
+        "nom": "al010 Loki — trait MYSTIC et +1 THW en forme heros",
+        "pourquoi": ("deux `GiveKeywordToInPlayWhenApplyThis(CardFinder(name=...))` : "
+                     "trait sur les deux faces, THW sur `card_type=Hero` seulement"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('al010', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["MYSTIC"],
+                    "attributs": {"thwart": 1}},
+    },
+    {
+        "nom": "al011 Butterfly Swamp — +1 REC en alter-ego ; l'action remonte une PREPARATION et pioche",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(CardFinder(card_type=AlterEgo), recover=1)` ; "
+                     "`WhenInYourPlayTurn(AlterEgoAction)` + `CostFunc.Exhaust('This')` : "
+                     "al014 (PREPARATION) quitte la defausse pour le deck, 01088 (non "
+                     "PREPARATION) y reste"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.PutIntoPlay('al011', under_control=True)",
+                          "Puzzle.CreatePlayerDiscardPile('al014', '01088')"],
+        "declencher": ["Puzzle.Action('al011', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1},
+                    "exhausted": ["al011"],
+                    "dans_deck_joueur": ["al014"]},
+    },
+    {
+        "nom": "al012 Gator Aid — +1 a l'attaque de base du porteur (Shocker 3 PV tombe)",
+        "pourquoi": ("`WhenUnitWouldAttackOrThwart(Interrupt, 'AttachedCharacter', "
+                     "is_basic_power=True)` + `GainATKForThisAttack(1)`, cout "
+                     "`Exhaust('This')`. ATK 2 + 1 = 3 = PV de Shocker"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al012', under_control=True)",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Attack('al001a')"],
+        "cibles": ["01103"],
+        "main_exclusive": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01103"],
+                    "exhausted": ["al012"]},
+    },
+    {
+        "nom": "al013 Unbreakable Grip — +1 ATK en forme heros",
+        "pourquoi": "`GiveKeywordToAttached(Hero, attack=1)`, modele ma006",
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('al013', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}},
+    },
+    {
+        "nom": "al013 Unbreakable Grip — l'ennemi tenu s'active, la Grip s'incline et le heros reste accroche",
+        "pourquoi": ("la fenetre « would detach » est ouverte a la main dans "
+                     "`DetacherLeHeros` : Grip prete et en jeu -> ChooseAbilities "
+                     "facultatif, acceptee par le pilote -> `ExhaustAll([grip])`, pas "
+                     "de `DetachHero`. Arbitrage du 01/09/2026 : la Forced Response "
+                     "d'al001a passe par cette fenetre. Cible Rhino (14 PV) : avec "
+                     "la Grip l'ATK vaut 3 et tuerait Shocker"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al013', under_control=True)"],
+        "cibles": ["01094"],
+        "declencher": ["Puzzle.Attack('al001a')",
+                       "Puzzle.Attack('01094')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": "01094",
+                    "degats": [["01094", 3]],
+                    "exhausted": ["al013"]},
+    },
+    {
+        "nom": "al013 Unbreakable Grip — deja inclinee, elle ne retient rien",
+        "pourquoi": "contre-cas : `not f.IsExhaust()` dans la recherche de la Grip",
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al013', under_control=True, exhaust=True)"],
+        "cibles": ["01094"],
+        "declencher": ["Puzzle.Attack('al001a')",
+                       "Puzzle.Attack('01094')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_etat",
+        "attendu": {"accroche_a": None},
+    },
+    {
+        "nom": "al014 Lurking — un sbire entre en jeu : Lurking se defausse, attaque de base a +1 ATK sans incliner",
+        "pourquoi": ("`AfterCardEnterPlay(HeroResponse, Minion)` + `CostFunc.Discard('This')` "
+                     "-> `heros.BasicAttack([sbire], property=AttackProperty("
+                     "additional_value=1))`. Hydra Bomber 2 PV tombe ; le heros "
+                     "reste pret"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al014', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('01110')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110", "al014"],
+                    "defausse": ["al014"],
+                    "pret": ["al001a"]},
+    },
+    {
+        "nom": "al017 Time Out — a la remise, Frogjolnir quitte la mise de cote pour le deck de rencontre ; -2 ATK en heros",
+        "pourquoi": ("`WhenThisObligationGiveToYou` -> `Search.SearchForCard(include_set_aside=True, "
+                     "card_ids=['al022'])` + `ShuffleAllTo('EncounterDeck')` ; "
+                     "`GiveKeywordToInPlayWhenApplyThis(Hero, control_by='You', attack=-2)`"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        # al022 est mise de cote par al001b (`BeginGameWithSetAside`), comme
+        # en vraie partie : `taille_mis_de_cote: 0` prouve qu'elle en sort.
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "declencher": ["Puzzle.Reveal('al017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["al017"],
+                    "dans_deck_rencontre": ["al022"],
+                    "taille_mis_de_cote": 0,
+                    "attributs": {"attack": -2}},
+    },
+    {
+        "nom": "al017 Time Out — Alter-Ego Action : incliner l'alter-ego retire l'obligation du jeu",
+        "pourquoi": ("`PlayerActionToRemoveThisFromGame(AlterEgoAction)` + "
+                     "`CostFunc.Exhaust('YourIdentity')` (modele 32055 / 56023)"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.Reveal('al017')"],
+        "declencher": ["Puzzle.Action('al017', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["al017"],
+                    "exhausted": ["al001b"]},
+    },
+    {
+        "nom": "al018 Throg and Loki — When Revealed : Throg absent -> sorti du deck de rencontre et revele",
+        "pourquoi": ("`Worlds.FindCardOnField(card_ids=['al019'])` None -> "
+                     "`Search.EncounterCard(include_discard_pile=True)` + `Reveal`"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.CreateEncounterDeck('01101', 'al019', '01101')"],
+        "declencher": ["Puzzle.Reveal('al018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["al018", "al019"]},
+    },
+    {
+        "nom": "al018 Throg and Loki — Alligator Loki ne peut attaquer que Throg",
+        "pourquoi": ("`UnitCannotAttackTarget(CardFinder(name=NOM_HEROS), can_only_attack="
+                     "CardFinder(name='Throg'))` (40168a). Rhino demande comme cible : "
+                     "refuse, seule cible legale al019 -> Rhino intact, Throg blesse"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al019')",
+                          "Puzzle.PutIntoPlay('al018')"],
+        "declencher": ["Puzzle.Attack('al001a')"],
+        "cibles": ["01094"],
+        "main_exclusive": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0], ["al019", 2]]},
+    },
+    {
+        "nom": "al019 Throg (nemesis) — en entrant, chasse l'autre Throg et pose une carte de la main sous lui",
+        "pourquoi": ("`WhenCardWouldEnterPlay(ForcedInterrupt)` -> `DiscardAll` des "
+                     "autres « Throg » (al002 compris) ; `AfterCardEnterPlay` -> "
+                     "`Rand.RandomChoice(main)` + `PlaceCardHere(face, False)`. "
+                     "`main_exclusive` : la seule carte en main est 01088"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('al019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["al019"],
+                    "hors_jeu": ["al002"],
+                    "defausse": ["al002"],
+                    "pose_sous": [["al019", "01088"]],
+                    "taille_main": 0},
+    },
+    {
+        "nom": "al019 Throg (nemesis) — vaincu, la carte posee sous lui revient en main",
+        "pourquoi": ("`WhenUnitBeDefeated(WhenDefeated)` -> `Faces.ReturnToHand("
+                     "GetPlacedCardArea().Get(), 'Owner')` (33027 / faces.py:306)"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('al019')",
+                       "Puzzle.Damage('al019', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["al019"],
+                    "en_main": ["01088"]},
+    },
+    {
+        "nom": "al020 Lightning Bolt — 2 cartes defaussees, 1 indirect par icone de boost (ability_link 02044)",
+        "pourquoi": ("al020/al021 partagent les capacites de 02044 Lightning Bolt (Power "
+                     "Drain) par `ability_link`. Deux Charge (boost 2) -> 4 indirects. "
+                     "`CreateEncounterDeck` pose le DERNIER argument sur le dessus"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.CreateEncounterDeck('01101', '01099', '01099')"],
+        "declencher": ["Puzzle.Reveal('al020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "al022 Frogjolnir — Throg absent : trouve, revele, arme et AERIAL ; puis il s'active contre vous",
+        "pourquoi": ("`AttachToFaceWhenPutIntoPlay(CardFinder(card_ids=['al019']), "
+                     "if_cannot_operation=)` -> `Find.Find` + `Reveal` + `AttachTo2` ; "
+                     "`WhenThisRevealed` -> `DoActivate` (ATK 1 +1 = 2 sans defenseur) ; "
+                     "`GiveKeywordToAttached(Minion, trait='AERIAL')`"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.CreateEncounterDeck('01101', 'al019')",
+                          # heros incline : pret, le pilote defend et Lock Jaws
+                          # s'accroche (-1 ATK), les 2 degats tombent a 0
+                          "Puzzle.Exhaust('al001a')"],
+        "declencher": ["Puzzle.Reveal('al022')"],
+        "verifier": "al_frogjolnir_sur_throg",
+        "attendu": {"aerial": True,
+                    "degats_identite_min": 2},
+    },
+    {
+        "nom": "al022 Frogjolnir — Forced Response : apres l'attaque de Throg, 1 degat indirect en plus",
+        "pourquoi": ("`AfterUnitAttackYou(ForcedResponse, 'AttachedMinion')` + "
+                     "`TakeIndirectDamage(1)`. Throg deja en jeu et arme (Reveal sans "
+                     "recherche) ; l'activation de la revelation fait 2 + 1, puis "
+                     "l'attaque declenchee 2 + 1 : au moins 6 au total. Heros "
+                     "INCLINE d'avance, sinon le pilote defend et Lock Jaws retire 1"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('al019')",
+                          "Puzzle.Exhaust('al001a')",
+                          "Puzzle.Reveal('al022')"],
+        "declencher": ["Puzzle.Attack('al019')"],
+        "main_exclusive": ["01088"],
+        "verifier": "al_frogjolnir_sur_throg",
+        "attendu": {"degats_identite_min": 6},
+    },
+    {
+        "nom": "al023 Little Rascals — Team-Up avec Honey Badger : le vilain est sonne ET desoriente",
+        "pourquoi": ("`.SetTarget('TeamUp')` + cle desc `TeamUp` (has_teamup.py) : la "
+                     "carte n'est jouable qu'avec les deux personnages en jeu ; "
+                     "`Faces.GiveStatus` x2 reussissent -> pas de redressement"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('43003', under_control=True)",
+                          "Puzzle.Exhaust('al001a')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al023"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"], ["01094", "Confused"]],
+                    "exhausted": ["al001a"],
+                    "defausse": ["al023"]},
+    },
+    {
+        "nom": "al023 Little Rascals — vilain deja sonne : « if you cannot » redresse Alligator Loki",
+        "pourquoi": ("`GiveStatus('Stunned')` rend 0 (deja present) -> branche "
+                     "`AskChooseFace` parmi les personnages nommes et inclines : le "
+                     "heros incline est redresse, le confus est quand meme pose"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')",
+                          "Puzzle.PutIntoPlay('43003', under_control=True)",
+                          "Puzzle.Stun('01094')",
+                          "Puzzle.Exhaust('al001a')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al023"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"], ["01094", "Confused"]],
+                    "pret": ["al001a"]},
+    },
+    {
+        "nom": "al023 Little Rascals — sans Honey Badger, la carte n'est pas jouable",
+        "pourquoi": ("contre-cas Team-Up : `GetTeamUpUnits` ne trouve pas le second "
+                     "personnage, le moteur bloque la carte -> elle reste en main, "
+                     "Rhino sans statut"),
+        "scenario": "rhino",
+        "heros": "alligator_loki",
+        "mise_en_place": ["Puzzle.ChangeToFace('al001b', 'al001a')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["al023"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Stunned"], ["01094", "Confused"]],
+                    "en_main": ["al023"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -16493,6 +17029,70 @@ def ma020_rien_ne_se_passe(monde, aides):
         return False, " ; ".join(soucis)
     return True, ("aucune attaque, aucun Sonne : la branche « if no attack is made "
                   "this way » est la seule partie (surge non observable)")
+
+# ---- pack alligator_loki -------------------------------------------------
+def _al_heros(monde):
+    """La face HEROS d'Alligator Loki (elle porte `attached_enemy`), quelle
+    que soit la face active."""
+    from game.card.face.card_type import Identity
+    identite = monde.players[0].GetIdentity()
+    if not Identity.IsType(identite):
+        return None
+    return identite.CastTo(Identity).GetHeroFace()
+
+
+def al_etat(monde, aides):
+    """`etat_attendu` + cle `accroche_a` : card_id de l'ennemi tenu par le
+    heros (`Hero.GetHeldEnemy`), ou None s'il ne tient personne. Verifie aussi
+    que l'ennemi tenu porte bien le marqueur UI `held_by_hero` et le heros
+    `attached_to_enemy` (base/enemy.py, card_type/identity.py)."""
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    heros = _al_heros(monde)
+    if heros is None:
+        return False, "face heros introuvable"
+    tenu = heros.GetHeldEnemy()
+    tenu_id = getattr(tenu.paper, "card_id", None) if tenu is not None else None
+    voulu = attendu.get("accroche_a")
+    if tenu_id != voulu:
+        soucis.append(f"le heros tient {tenu_id} (attendu {voulu})")
+    if tenu is not None:
+        if tenu.GetInfoDict().get("held_by_hero") != 1:
+            soucis.append("l'ennemi tenu ne porte pas le marqueur UI held_by_hero=1")
+        if heros.GetInfoDict().get("attached_to_enemy") != 1:
+            soucis.append("le heros ne porte pas le marqueur UI attached_to_enemy=1")
+    ok, message = etat_attendu(monde, aides)
+    if not ok:
+        soucis.append(message)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"accroche a {tenu_id} ; {message}"
+
+
+def al_frogjolnir_sur_throg(monde, aides):
+    """al022 attachee a al019 (et pas ailleurs), tous deux en jeu. Cles
+    optionnelles : `aerial` (Throg a gagne le trait), `degats_identite_min`."""
+    attendu = aides["cas"].get("attendu") or {}
+    throg = aides["par_id"](monde, "al019")
+    marteau = aides["par_id"](monde, "al022")
+    soucis = []
+    if throg is None:
+        soucis.append("al019 n'est pas en jeu")
+    if marteau is None:
+        soucis.append("al022 n'est pas en jeu")
+    if throg is not None and marteau is not None and marteau.bind_face is not throg:
+        soucis.append(f"al022 est attachee a {marteau.bind_face}, pas a al019")
+    if attendu.get("aerial") and throg is not None and not throg.HasTrait("AERIAL"):
+        soucis.append("al019 n'a pas le trait AERIAL")
+    if "degats_identite_min" in attendu:
+        identite = aides["identite"](monde)
+        subis = identite.max_health - identite.health
+        if subis < attendu["degats_identite_min"]:
+            soucis.append(f"degats sur l'identite = {subis} "
+                          f"(attendu au moins {attendu['degats_identite_min']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Frogjolnir sur Throg"
 '''
 
 
