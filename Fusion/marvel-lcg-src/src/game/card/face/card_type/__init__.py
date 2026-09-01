@@ -11,6 +11,7 @@ from game.card.face.card_type.leader import Leader
 from game.card.face.card_type.scheme_side import EncounterSideScheme
 from game.card.face.card_type.scheme_main import MainScheme
 from game.card.face.card_type.scheme_player import PlayerSideScheme
+from game.card.face.card_type.minion_player import PlayerMinion
 from game.card.face.card_type.environment import Environment
 
 from game.card.face.card_type.upgrade import Upgrade
@@ -31,6 +32,7 @@ Unused(Leader)
 Unused(EncounterSideScheme)
 Unused(MainScheme)
 Unused(PlayerSideScheme)
+Unused(PlayerMinion)
 Unused(Environment)
 Unused(Upgrade)
 Unused(Support)

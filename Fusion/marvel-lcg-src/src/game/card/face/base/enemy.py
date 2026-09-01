@@ -13,6 +13,30 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
         super().__init__(paper)
 
     ################################################################################
+    # Un heros peut etre ACCROCHE a cet ennemi (Alligator Loki, voir
+    # `Hero.attached_enemy` dans card_type/identity.py). Rend le numero
+    # d'affichage du joueur (player_id + 1) dont le heros tient cet ennemi,
+    # 0 sinon : c'est le marqueur que l'interface pose sur la carte ennemie.
+    def GetHoldingHeroPlayerNumber(self) -> int:
+        from game.card.face.card_type.identity import Hero, Identity
+        for player in self.card.world.const_players:
+            if player.area_hero.GetSize() == 0:
+                continue
+            identity = player.area_hero.Get()[0]
+            if not Identity.IsType(identity):
+                continue
+            hero = identity.CastTo(Identity).GetHeroFace()
+            if Hero.IsType(hero) and hero.CastTo(Hero).GetHeldEnemy() is self:
+                return player.player_id + 1
+        return 0
+
+    @override
+    def GetInfoDict(self) -> Dict[str, int]:
+        return super().GetInfoDict() | {
+            'held_by_hero': self.GetHoldingHeroPlayerNumber(),
+        }
+
+    ################################################################################
     #
     def DoSchemes(self, against_player: 'Player', by_effect: 'Effect', *,
                     property: 'SchemeProperty|None'=None,

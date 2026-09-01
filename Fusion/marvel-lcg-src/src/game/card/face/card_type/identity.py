@@ -191,7 +191,95 @@ class Hero(HasThwart, CanThwart, HasAttack, CanAttack, HasDefense, CanDefense, H
     @override
     def __init__(self, paper: 'Paper') -> None:
 
+        # EXTENSION (01/09/2026, pack custom alligator_loki) : un HEROS peut
+        # etre ACCROCHE a un ennemi.
+        #
+        # al001a « Alligator Loki » s'attache lui-meme a l'ennemi qu'il attaque
+        # ou contre lequel il defend, et cinq autres cartes du pack relisent cet
+        # etat (al003 Chomp!, al013 Unbreakable Grip, al001b Nap Time...).
+        #
+        # ⚠ POURQUOI LA CARTE NE BOUGE PAS. La voie « normale » serait de faire
+        # heriter `Hero` de `CanAttach` et d'appeler `AttachTo2`, qui deplace la
+        # carte dans la zone d'ameliorations de la cible
+        # (`Faces.MoveAllTo([self], face.GetInventoryDeck(), ...)`). C'est
+        # exactement ce qu'il ne faut PAS faire ici : `Player.GetIdentity`
+        # (player_get.py:191) rend l'INSERT DU MONDE des que `player.area_hero`
+        # est vide, et ce deplacement la vide. Toutes les cartes du jeu qui
+        # demandent « ton identite » recevraient alors la mauvaise face.
+        # Mesure faite avant d'ecrire une ligne, pas apres.
+        #
+        # Le lien est donc porte par le HEROS lui-meme, sa carte restant dans sa
+        # zone. Cote regles c'est identique : le heros EST l'attachement, il n'y
+        # a aucune carte marqueur intermediaire, et les deux messages officiels
+        # (`WhenCardWouldAttachTo`, `AfterCardDetachFrom`) sont emis, ce qui
+        # laisse Unbreakable Grip s'accrocher a la fenetre « would detach ».
+        # Seule la POSITION de la carte a l'ecran differe de la table.
+        self.attached_enemy: 'CardFace|None' = None
+
         super().__init__(paper)
+
+    ################################################################################
+    # ACCROCHAGE DU HEROS A UN ENNEMI (voir le commentaire du constructeur)
+    #
+    def AttachHeroTo(self, face: 'CardFace', by_effect: 'Effect') -> bool:
+        """Accroche CE heros a `face`. Rend False si l'ennemi n'est plus en jeu."""
+        from game.message import Message
+
+        if not face.card.IsOnField():
+            return False
+        if self.attached_enemy is face:
+            return True
+
+        # Meme fenetre que pour un attachement ordinaire : une carte peut s'y
+        # opposer (`is_be_instead`).
+        message = Message.WhenCardWouldAttachTo(self, face, by_effect)
+        message.Send()
+        if message.is_be_instead:
+            return False
+
+        if self.attached_enemy is not None:
+            self.DetachHero(by_effect)
+
+        self.attached_enemy = face
+        Message.AfterCardAttachTo(face, self, message).Send()
+        return True
+
+    def DetachHero(self, by_effect: 'Effect') -> bool:
+        """Detache CE heros de l'ennemi qu'il tenait. Rend False s'il n'en tenait aucun.
+
+        ⚠ La fenetre `WhenCardWouldDetachFrom` n'existe pas dans le moteur : le
+        `DetachFrom2` officiel n'emet QUE `AfterCardDetachFrom`, une fois le
+        detachement acquis. Unbreakable Grip (al013) doit pourtant s'interposer
+        AVANT (« when you would detach... exhaust Unbreakable Grip instead »),
+        d'ou le message `WhenCardWouldAttachTo` reutilise a l'envers ? Non :
+        c'est le module al013 qui intercepte, en enveloppant cet appel. Voir
+        `cards/pack/alligator_loki/__init__.py`, helper `DetacherLeHeros`, qui
+        est le SEUL point d'entree utilise par les cartes du pack.
+        """
+        from game.message import Message
+
+        face = self.attached_enemy
+        if face is None:
+            return False
+        self.attached_enemy = None
+        Message.AfterCardDetachFrom(face, self).Send()
+        return True
+
+    def GetHeldEnemy(self) -> 'CardFace|None':
+        """L'ennemi encore EN JEU que ce heros tient, sinon None (et oubli du lien)."""
+        face = self.attached_enemy
+        if face is not None and not face.card.IsOnField():
+            self.attached_enemy = None
+            return None
+        return face
+
+    @override
+    def GetInfoDict(self) -> Dict[str, int]:
+        # Marqueur UI : le heros est accroche a un ennemi (l'ennemi porte de
+        # son cote `held_by_hero`, voir base/enemy.py).
+        return super().GetInfoDict() | {
+            'attached_to_enemy': 1 if self.GetHeldEnemy() is not None else 0,
+        }
 
     @override
     def GetAbilities(self) -> List['Ability']:

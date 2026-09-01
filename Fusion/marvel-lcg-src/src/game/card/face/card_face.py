@@ -28,6 +28,15 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
     is_final = False
 
+    # EXTENSION (01/09/2026, pack custom alligator_loki) : types FINALS qu'une
+    # sous-classe revendique aussi. `IsType` d'un type final n'accepte que le
+    # type EXACT (`type(face) is cls`) : `Minion.IsType(<PlayerMinion>)`
+    # rendait donc False, et le sbire de joueur n'etait un sbire pour personne
+    # (Guard, engagement, attaque... `has_guard.py:32` assertait des l'entree
+    # en jeu). La sous-classe declare ici les types finals dont elle EST un
+    # cas : `PlayerMinion.also_final_types = (Minion,)`.
+    also_final_types: 'Tuple[Type[CardFace], ...]' = ()
+
     # def __enter__(self):
     #     return self
 
@@ -461,7 +470,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
     def IsType(cls: Type[TF], face: 'CardFace|Effect|None', check_consider: bool=True) -> TypeGuard['TF']:
         if isinstance(face, CardFace):
             if cls.is_final:
-                if type(face) is cls:
+                if type(face) is cls or cls in type(face).also_final_types:
                     return True
             else:
                 if isinstance(face, cls):

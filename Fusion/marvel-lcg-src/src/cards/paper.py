@@ -69,7 +69,7 @@ class Paper:
     def IsFromSet(self, set_name: "CardFace.SETNAMES") -> bool:
         return self.set_name == set_name
 
-    def GetType(self) -> Type['Insert|Challenge|Hero|AlterEgo|Ally|Minion|EncounterVillain|Leader|MainScheme|SchemeSide2|PlayerSideScheme|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|StatusCard|Evidence']:
+    def GetType(self) -> Type['Insert|Challenge|Hero|AlterEgo|Ally|Minion|EncounterVillain|Leader|MainScheme|SchemeSide2|PlayerSideScheme|PlayerMinion|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|StatusCard|Evidence']:
         from game.card.face.card_type import Insert, Challenge
         from game.card.face.card_type import Minion
         from game.card.face.card_type import EncounterVillain
@@ -77,6 +77,7 @@ class Paper:
         from game.card.face.card_type import EncounterSideScheme
         from game.card.face.card_type import MainScheme
         from game.card.face.card_type import PlayerSideScheme
+        from game.card.face.card_type import PlayerMinion
         from game.card.face.card_type import Upgrade
         from game.card.face.card_type import Support
         from game.card.face.card_type import Attachment
@@ -103,6 +104,10 @@ class Paper:
             'MainScheme': MainScheme,
             'SideScheme': EncounterSideScheme,
             'PlayerSideScheme': PlayerSideScheme,
+            # EXTENSION (01/09/2026, pack alligator_loki) : le SBIRE DE
+            # JOUEUR, type defini par l'encart du pack. Voir
+            # game/card/face/card_type/minion_player.py.
+            'PlayerMinion': PlayerMinion,
             'Upgrade': Upgrade,
             'Support': Support,
             'Attachment': Attachment,

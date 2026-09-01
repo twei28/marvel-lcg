@@ -188,6 +188,41 @@ class AbilityFactoryPlay:
         ).SetPlay()
 
     @staticmethod
+    def CanPlayThisMinionCard(*, conditions: ConditionsType[Message.WhenPlayerInTurn]=[]
+                                ) -> 'Ability':
+        """« Je suis un SBIRE DE JOUEUR, jouable depuis la main. »
+
+        AJOUT (01/09/2026, pack custom alligator_loki). Jumelle exacte de
+        `CanPlayThisSchemeCard` ci-dessus, que l'encart « PLAYER MINIONS » du
+        pack cite nommement : « Player minions are played in the same manner as
+        player side schemes. »
+
+        ⚠ La SEULE difference tient dans la derniere phrase de l'encart :
+        « When a player minion is played or revealed, it always ENGAGES ITS
+        OWNER. » `PutIntoPlay(initiator, ...)` fait deja exactement cela pour
+        un sbire — c'est la voie que prennent toutes les cartes qui mettent un
+        sbire en jeu engage avec un joueur (wd018, bt023) — donc rien de plus
+        n'est necessaire, et surtout aucun `EngagePlayer` ajoute a la main qui
+        provoquerait un second engagement.
+        """
+        from game.card.face.card_type import PlayerMinion
+        from game.ability.factory import AbilityFactory
+        def put_into_play(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
+            this = effect.this.CastTo(PlayerMinion)
+            initiator = effect.GetInitiator()
+            this.PutIntoPlay(initiator, effect)
+
+        return AbilityFactory.WhenInYourPlayTurn(
+            AbilityType.PlayTurnOption,
+            put_into_play,
+            conditions=[
+                lambda effect, message:
+                    Condition.FieldHasNotThisUniqueType(effect.this, effect),
+                *conditions
+            ],
+        ).SetPlay()
+
+    @staticmethod
     def WhenPlayerWouldPlayCard(ability_type: 'AbilityType',
                                 which_player: PlayerType,
                                 which_card: CardType,
