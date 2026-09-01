@@ -1260,4 +1260,16 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #94 (1970)",
     },
 
+    "bt001a": {
+        bio: "Henry McCoy est né avec des mains et des pieds démesurés, et un cerveau qui l'était plus encore. Membre fondateur des X-Men, il a quitté l'école de Xavier pour la recherche génétique, s'est administré son propre sérum, et en est ressorti couvert d'une fourrure bleue : un fauve capable de citer Shakespeare entre deux bonds. Biochimiste de premier plan, il a servi les Avengers et les Defenders sans jamais cesser d'être le savant du groupe, celui dont la curiosité finit régulièrement par coûter cher à ses amis.",
+        bioEn: "Henry McCoy was born with oversized hands and feet, and a brain that was larger still. A founding X-Man, he left Xavier's school for genetic research, dosed himself with his own serum, and came out covered in blue fur: a beast who quotes Shakespeare between leaps. A leading biochemist, he has served the Avengers and the Defenders without ever ceasing to be the team's scientist, the one whose curiosity regularly ends up costing his friends dearly.",
+        civil: "Dr Henry Philip McCoy",
+        base: "Institut Xavier, Salem Center",
+        baseEn: "Xavier Institute, Salem Center",
+        equipes: "X-Men, Avengers, Defenders, X-Factor",
+        ennemis: "Dark Beast, Fatalis, les Maraudeurs",
+        ennemisEn: "Dark Beast, Doctor Doom, the Marauders",
+        apparition: "X-Men #1 (1963)",
+    },
+
 };

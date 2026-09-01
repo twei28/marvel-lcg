@@ -1234,5 +1234,14 @@
         "encounters": [],
         "max_id": "aa021"
     },
-    "checksum": "79bef1d4f1fe13f5260ce90f8e86ee7ab80fb8e33e907324ea7287e784a89862"
+    "134. Custom (Beast)": {
+        "name": "beast",
+        "scenarios": [],
+        "heroes": [
+            "beast"
+        ],
+        "encounters": [],
+        "max_id": "bt023"
+    },
+    "checksum": "1b548df5b48506e7208b51a9020f8922dbd7f566212c0e8873c47cee17e1813b"
 }

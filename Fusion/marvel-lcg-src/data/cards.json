@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "a8be6adbeb7d430db2537e95837ac14425cf39150470bae3ea26de910482adfb",
+    "checksum": "ba1b74c681c05bc6baa13765964d4c478e9d004a19ac37145b1cc35900154b00",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -83856,6 +83856,453 @@
             ],
             "text": "Play only if your identity has the [[MYSTIC]] trait.\n<b>Alter-Ego Action</b>: Put a [[MYSTIC]] ally in any player's discard pile into play under its owner's control.",
             "set_name": "Agatha Harkness",
+            "custom": "Arnaud"
+        }
+    ],
+    "beast": [
+        {
+            "card_id": "bt001a",
+            "type": "Hero",
+            "name": "* Beast",
+            "subtitle": "",
+            "desc": {
+                "HP": "13",
+                "ATK": "2",
+                "THW": "1",
+                "DEF": "3",
+                "HS": "5"
+            },
+            "traits": [
+                "X-MEN",
+                "MUTANT"
+            ],
+            "text": "<i>Thick Skinned</i> \u2014 <b>Response</b>: When you take 0 damage when defending, search for any card in your deck or discard pile and place it in your hand.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt001b",
+            "type": "AlterEgo",
+            "name": "* Dr Hank McCoy",
+            "subtitle": "",
+            "desc": {
+                "HP": "13",
+                "REC": "4",
+                "HS": "6"
+            },
+            "traits": [
+                "SCIENTIST",
+                "GENIUS",
+                "MUTANT"
+            ],
+            "text": "<i>Scientific Discovery</i> \u2014 <b>Forced Response</b>: After you change to this form, shuffle 1 random discovery card into your deck.\n<b>Setup</b>: All cards you mulligan from your hand during setup are shuffled back into your deck.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt002",
+            "type": "Ally",
+            "name": "* Wonder Man",
+            "subtitle": "Simon Williams",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "text": "<b>When Defeated</b>: Deal 2 damage to an enemy.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt003",
+            "type": "Ally",
+            "name": "* Phoenix",
+            "subtitle": "Jean Grey",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PSIONIC",
+                "X-MEN"
+            ],
+            "text": "<b>When Defeated</b>: Deal 2 damage to an enemy.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt004",
+            "type": "Event",
+            "name": "Experimental Warfare",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "text": "<b>Interrupt</b> <i>(defense)</i>: Exhaust all upgrade cards in play, Beast gains +1 DEF for each exhausted upgrade when defending this attack. If the attack dealt \"0\" damage, deal 3 damage to the attacking character and ready your identity.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt005",
+            "type": "Event",
+            "name": "Fighting With Friends",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "text": "<b>Hero Response</b>: Ready your hero. If you paid for this card using a [mental] resource \u2192 ready an ally.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt006",
+            "type": "Event",
+            "name": "In The Heat Of Battle",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "text": "<b>Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. If this event removed all threat from a scheme \u2192 shuffle 1 discovery card into your hand.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt007a",
+            "type": "Event",
+            "name": "Multi-Tasking",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART",
+                "ATTACK"
+            ],
+            "text": "<b>Hero Action</b> <i>(thwart)</i> <i>(attack)</i>: Deal 1 damage to all enemy characters and remove 1 threat from all schemes. If this was the first card you played this turn \u2192 repeat this hero action.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt007b",
+            "type": "Event",
+            "name": "Multi-Tasking",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART",
+                "ATTACK"
+            ],
+            "text": "<b>Hero Action</b> <i>(thwart)</i> <i>(attack)</i>: Deal 1 damage to all enemy characters and remove 1 threat from all schemes. If this was the first card you played this turn \u2192 repeat this hero action.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt008",
+            "type": "Event",
+            "name": "Primal Rage",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "<b>Hero Interrupt</b>: When you make a basic attack, discard a card from your hand \u2192 you get +5 ATK for that attack.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt009",
+            "type": "Resource",
+            "name": "Alien Materials",
+            "subtitle": "",
+            "desc": {
+                "RES": "YB",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt010",
+            "type": "Support",
+            "name": "Beast's Lab",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION",
+                "X-MEN"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Beast's Lab \u2192 choose a player. That player searches their deck and discard pile for an upgrade and places it into their hand.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt011",
+            "type": "Support",
+            "name": "Hank's Kimono",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "text": "<b>Alter-Ego Action</b>: Exhaust Hank's Kimono \u2192 search your discard pile for a resource card and place it on the top of your deck.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt012",
+            "type": "Support",
+            "name": "Civilian Disguise",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Uses": "3,disguise",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "text": "<i>(Enters play with 3 disguise counters.)</i>\n<b>Response</b>: After defending an attack, remove 1 disguise counter \u2192 draw 1 card.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt013",
+            "type": "Upgrade",
+            "name": "Hunter Gear",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM",
+                "ARMOR"
+            ],
+            "text": "Beast gets +1 DEF.\n<b>Action</b>: Exhaust Hunter Gear \u2192 generate a [physical] resource if you have no cards marked with a [physical] resource in your hand.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt014",
+            "type": "Ally",
+            "name": "* Peter Parker",
+            "subtitle": "Lab Assistant",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "0",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CIVILIAN",
+                "GENIUS"
+            ],
+            "text": "<b>Action</b>: Exhaust this card \u2192 generate a [wild] resource.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt015",
+            "type": "Upgrade",
+            "name": "Space Hand Grenade",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "Attach to minion.\n<b>Forced Interrupt</b>: When this minion would attack, cancel that attack and deal 4 damage to that minion.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt016",
+            "type": "Event",
+            "name": "Ambush",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "DEFENSE"
+            ],
+            "text": "<b>Forced Interrupt</b> <i>(attack/defense)</i>: When the villain would attack you, exhaust an support card in play \u2192 cancel that attack.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt017",
+            "type": "Upgrade",
+            "name": "Automated Life-Support",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR"
+            ],
+            "text": "Attach to an ally. Max 1 per ally.\n<b>Forced Interrupt</b>: When the ally would be defeated, heal 1 damage and give the ally a tough status card.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt018",
+            "type": "Upgrade",
+            "name": "Mecha-Beast",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH",
+                "ARMOR"
+            ],
+            "text": "Attach to Beast.\nBeast gains +1 THW and +2 hitpoints.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt019",
+            "type": "Obligation",
+            "name": "Unfinished Projects",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Dr Hank McCoy"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Hank McCoy player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Discard 2 upgrade/support cards in play \u2192 remove Mutation Degeneration from the game.\n\u2022 Exhaust your identity and take 2 damage. Discard this obligation.",
+            "set_name": "Beast",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt020",
+            "type": "Minion",
+            "name": "Lizard-Fied Mutants",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "1",
+                "Guard": "1",
+                "Patrol": "1",
+                "Boost": "2",
+                "Nemesis": "Beast"
+            },
+            "traits": [
+                "LIZARD",
+                "MUTANT"
+            ],
+            "text": "Guard. Patrol. <i>(While this minion is engaged with you, you cannot attack the villain, and you cannot thwart the main scheme.)</i>\n<i>(Beast's nemesis minion.)</i>",
+            "set_name": "Beast Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt021",
+            "type": "Treachery",
+            "name": "Dark Transformation",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: Discard the top 5 cards from your deck. You take 1 damage for every hero-specific card you discarded this way.",
+            "set_name": "Beast Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt022",
+            "type": "Minion",
+            "name": "* Dark Beast",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "ATK": "1",
+                "SCH": "4",
+                "Stalwart": "1",
+                "Boost": "3",
+                "Nemesis": "Beast"
+            },
+            "traits": [
+                "ELITE",
+                "MUTANT"
+            ],
+            "text": "Stalwart. <i>(This character cannot be stunned or confused.)</i>\n<b>When Revealed</b>: All allies are confused.\n<i>(Beast's nemesis minion.)</i>",
+            "set_name": "Beast Nemesis",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "bt023",
+            "type": "SideScheme",
+            "name": "Mutant Science Program",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "5*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "text": "<i>\"Beast is kidnapping mutants and performing dangerous tests on them.\"</i>\n<b>When Revealed</b>: Place 1 test counter on this side scheme for every ally in your discard pile. If there are 0 allies in your discard pile, place 2[per_hero] test counters instead.\n<b>Forced Response</b>: Whenever you draw an ally into your hand \u2192 remove 1 test counter and discard the ally and find the Lizard-Fied Minion in the encounter or discard pile and put it into play.",
+            "set_name": "Beast Nemesis",
             "custom": "Arnaud"
         }
     ]

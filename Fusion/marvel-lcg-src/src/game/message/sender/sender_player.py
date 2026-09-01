@@ -43,6 +43,27 @@ class SenderPlayer:
             text = TransText("{player} resolves mulligans", player=player)
             self.Present(text, "")
 
+    class AfterPlayerResolveMulligans(TriggerPlayerMessage):
+        """Le mulligan de ce joueur est fini, sa main est deja recompletee.
+
+        AJOUT (pack custom beast, 31/08/2026). `WhenPlayerResolveMulligans`
+        ci-dessus n'est jamais `.Send()` : il sert de contexte a la defausse,
+        pas de declencheur, et AUCUNE carte ne pouvait donc reagir au mulligan.
+        bt001b « Dr Hank McCoy » en a besoin : « All cards you mulligan from
+        your hand during setup are shuffled back into your deck. »
+
+        `discarded_faces` porte exactement les cartes ecartees au mulligan —
+        pas le contenu de la pile de defausse, qu'un autre effet de mise en
+        place pourrait avoir garni.
+
+        Il part APRES le `DrawUp("Max")` : remettre les cartes dans le deck
+        avant la repioche les rendrait repiochables, et le joueur pourrait
+        retomber sur ce qu'il vient d'ecarter.
+        """
+        def __init__(self, player: 'Player', discarded_faces: List['CardFace']) -> None:
+            self.discarded_faces: Final = discarded_faces
+            super().__init__(player=player)
+
     class WhenPlayerWouldDrawCard(TriggerPlayerMessage, TriggerFaceMessage, CanBeInstead):
         def __init__(self, player: 'Player', face: 'CardFace', by_effect: 'Effect') -> None:
             self.by_effect: Final = by_effect

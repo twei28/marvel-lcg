@@ -1,317 +1,317 @@
 {
-  "_lisez_moi": [
-    "Les prefixes de card_id du contenu FAN-MADE, un par source.",
-    "",
-    "Pourquoi des LETTRES : les sets officiels sont numerotes, et le jeu en est",
-    "a 60 (Fear No Evil). Le contenu fan-made occupait 61 a 79, c'est-a-dire la",
-    "place des prochaines sorties de FFG. Lettres et chiffres ne se rencontrent",
-    "jamais : la collision est impossible par construction, pas par vigilance.",
-    "",
-    "Tout ajout de contenu fan-made DECLARE son prefixe ici avant d'ecrire une",
-    "seule carte. tools/verifier_prefixes.py refuse ce qui n'y est pas.",
-    "",
-    "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
-  ],
-  "prefixes": {
-    "aa": {
-      "pack": "agatha_harkness",
-      "libelle": "132. Custom (Agatha Harkness)",
-      "cartes": 22,
-      "depuis": "2026-08-31",
-      "note": "Cree le 31/08/2026. Auteur Ripper3. Agatha Harkness, hero Mystic 'top du deck' : aa001a/b identite, aa002-aa012 signature (11 cartes distinctes, 15 exemplaires), aa013 Ghost Agatha (persona mise de cote, en jeu apres elimination), aa014 obligation, aa015-aa018 set nemesis Death (2e obligation Funeral DANS le set nemesis), aa019-aa021 cartes d'aspect bonus (Wiccan Justice, Pixie et Coven of Chaos Leadership). 'Agatha All Along' (aa008, manigance-joueur) retenue en version 13 menaces (zip) sur decision utilisateur du 31/08 - la version Discord a 10 existe. Trait COSMIC ENTITY ajoute a l'enum. Homonymes geres dans le collision_note du deck."
-    },
-    "ab": {
-      "pack": "albert",
-      "libelle": "100. Custom (Albert)",
-      "cartes": 17,
-      "depuis": "2026-08-12"
-    },
-    "ag": {
-      "pack": "agent_13",
-      "libelle": "114. Custom (Agent 13)",
-      "cartes": 16,
-      "depuis": "2026-08-12"
-    },
-    "ah": {
-      "pack": "totally_awesome_hulk",
-      "libelle": "106. Custom (Totally Awesome Hulk)",
-      "cartes": 22,
-      "depuis": "2026-08-12"
-    },
-    "al": {
-      "pack": "alligator_loki",
-      "libelle": "140. Custom (Alligator Loki)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 4/5 : concept central inedit dans le moteur, le heros lui-meme s'attache a un ennemi comme un attachment mobile (Interrupt attaque/defense + detachement Forced Response). Toutes les autres mecaniques (overkill, patrol, indirect damage, team-up, persona) existent deja. Squelette le plus proche : pack lockjaw. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "an": {
-      "pack": "angela",
-      "libelle": "133. Custom (Angela)",
-      "cartes": 16,
-      "depuis": "2026-08-31",
-      "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent \u00ab this ROUND \u00bb. an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie \u00ab Angela \u00bb 18011 (d'Agressivite, donc exclu) et le vilain officiel \u00ab Hela \u00bb 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "av": {
-      "pack": "agent_anti_venom",
-      "libelle": "111. Custom (Agent Anti-Venom)",
-      "cartes": 18,
-      "depuis": "2026-08-12"
-    },
-    "bt": {
-      "pack": "beast",
-      "libelle": "134. Custom (Beast)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Hank McCoy, hero+nemesis (Dark Beast). Seul point neuf : mini-pool 'Discovery' de 5 cartes hors-deck mele via Forced Response au passage alter-ego, construit sur des primitives existantes (set_aside_deck deja utilise par Iceman/Storm/Valkyrie/Wonder Man). Reutiliser red_guardian comme squelette. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "bw": {
-      "pack": "brawn",
-      "libelle": "113. Custom (Brawn)",
-      "cartes": 26,
-      "depuis": "2026-08-12"
-    },
-    "cd": {
-      "pack": "cloak_dagger",
-      "libelle": "108. Custom (Cloak & Dagger)",
-      "cartes": 20,
-      "depuis": "2026-08-12"
-    },
-    "dd": {
-      "pack": "doctor_doom",
-      "libelle": "139. Custom (Doctor Doom)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "Cree le 30/08/2026. Auteur jakxin. Difficulte annoncee 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "dt": {
-      "pack": "determination",
-      "libelle": "118. Custom (Determination)",
-      "cartes": 142,
-      "depuis": "2026-08-13",
-      "note": "L'aspect fan-made de designhacker.ca, 142 cartes relevees, toutes dans le jeu avec leur module ; le set est declare dans sets_info.json."
-    },
-    "dz": {
-      "pack": "dazzler",
-      "libelle": "123. Custom (Dazzler)",
-      "cartes": 40,
-      "depuis": "2026-08-29",
-      "note": "Pack custom de Lord Havok. Apporte la Setlist (zone attachee a Live Concert, 4 places) et la capacite secondaire \u00ab Showtime! \u00bb, rendue par AbilityType.Special que zero carte du jeu n'utilisait."
-    },
-    "gb": {
-      "pack": "gorr",
-      "libelle": "136. Custom (Gorr the God Butcher)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 2/5. Pack VILAIN autonome (pas un heros), 34 cartes, villain 3-stage, environnement double-face, deck-out trigger (cf. mts/thanos). Depend d'un set modulaire externe 'Intergalactic Hazards' non fourni dans le zip source, a creer ou substituer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "gp": {
-      "pack": "gwenpool",
-      "libelle": "101. Custom (Gwenpool)",
-      "cartes": 18,
-      "depuis": "2026-08-12"
-    },
-    "gs": {
-      "pack": "galactic_storm",
-      "libelle": "144. Custom (Galactic Storm)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 5 scenarios + 2 interludes + epilogue, 305 cartes, 4 sets modulaires additionnels, 2 nouveaux heros jouables (Binary, Quasar) a stater entierement. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "hd": {
-      "pack": "howard_the_duck",
-      "libelle": "135. Custom (Howard the Duck)",
-      "cartes": 28,
-      "depuis": "2026-08-30",
-      "note": "Pack fan-made RyCoRan, zip 'Howard the Duck (05-23 Final)'. 2 faces heros + 16 signature + 3 ressources re-skinnees (full_link vers 01088/01089/01090) + 1 obligation + 6 nemesis (dont Hellcow, sbire ALTERNATIF a utiliser a la place du Collector quand on affronte le scenario du Collector, donc hors du nemesis_set standard)."
-    },
-    "ho": {
-      "pack": "harry_osborn",
-      "libelle": "131. Custom (Harry Osborn / Green Goblin)",
-      "cartes": 18,
-      "depuis": "2026-08-31",
-      "note": "Cree le 31/08/2026. Auteur Dipsome. Harry Osborn (Earth-6160) en HEROS Green Goblin : ho001a/b identite, ho002-ho012 signature (11 cartes distinctes, 15 exemplaires), ho013 obligation, ho014-ho017 set nemesis (Kingpin/Bullseye). Trait EARTH-6160 ajoute a l'enum TRAITS. Ne pas confondre avec le pack VILAIN officiel 'gob' (Green Goblin classique), totalement distinct malgre un nom d'Obligation identique ('Risky Business') dans les deux."
-    },
-    "ht": {
-      "pack": "human_torch",
-      "libelle": "102. Custom (Human Torch)",
-      "cartes": 15,
-      "depuis": "2026-08-12"
-    },
-    "il": {
-      "pack": "iron_lad",
-      "libelle": "127. Custom (Iron Lad)",
-      "cartes": 24,
-      "depuis": "2026-08-29",
-      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2). Regle imprimee sur l'insert : au reshuffle du deck joueur, en plus de la carte rencontre standard, le joueur doit aussi chercher et reveler son sbire nemesis (Kang the Conqueror)."
-    },
-    "ip": {
-      "pack": "iron_patriot",
-      "libelle": "142. Custom (Iron Patriot)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 4/5. Norman Osborn, hero+nemesis(Doctor Doom, numerotation propre au pack)+mini-encounter-set (Molecule Man). Coeur du pack = deck secondaire de 20 cartes 'REGISTERED' attache au heros (pioche/engagement separes, conversion minion-vers-allie), aucun equivalent dans le moteur : un vrai sous-systeme a concevoir, pas juste de l'assemblage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "iw": {
-      "pack": "invisible_woman",
-      "libelle": "104. Custom (Invisible Woman)",
-      "cartes": 20,
-      "depuis": "2026-08-12"
-    },
-    "jj": {
-      "pack": "jessica_jones",
-      "libelle": "110. Custom (Jessica Jones)",
-      "cartes": 23,
-      "depuis": "2026-08-12"
-    },
-    "kb": {
-      "pack": "kate_bishop",
-      "libelle": "124. Custom (Hawkeye - Kate Bishop)",
-      "cartes": 21,
-      "depuis": "2026-08-29"
-    },
-    "lj": {
-      "pack": "lockjaw",
-      "libelle": "117. Custom (Lockjaw)",
-      "cartes": 31,
-      "depuis": "2026-08-12"
-    },
-    "ma": {
-      "pack": "ms_america",
-      "libelle": "137. Custom (Ms. America)",
-      "cartes": 30,
-      "depuis": "2026-08-29",
-      "note": "LIVRE (commit cd74477, 30 card_id). America Chavez, hero+nemesis (Catalina Chavez). Point neuf resolu au portage : le minion nemesis copie les modificateurs de stat du joueur en substituant l'icone THW->SCH. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "mf": {
-      "pack": "mister_fantastic",
-      "libelle": "103. Custom (Mister Fantastic)",
-      "cartes": 18,
-      "depuis": "2026-08-12"
-    },
-    "mk": {
-      "pack": "moon_knight",
-      "libelle": "116. Custom (Moon Knight)",
-      "cartes": 28,
-      "depuis": "2026-08-12"
-    },
-    "mw": {
-      "pack": "madame_web",
-      "libelle": "107. Custom (Madame Web)",
-      "cartes": 31,
-      "depuis": "2026-08-12"
-    },
-    "ok": {
-      "pack": "okoye",
-      "libelle": "125. Custom (Okoye)",
-      "cartes": 25,
-      "depuis": "2026-08-29"
-    },
-    "pt": {
-      "pack": "patriot",
-      "libelle": "138. Custom (Patriot)",
-      "cartes": 23,
-      "depuis": "2026-08-30",
-      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider, wiccan et speed. Elijah Bradley, Young Avengers. 2 faces heros + 15 signature + 1 obligation + 5 nemesis (Mr. Hyde). Le kit ne parle que d'ALLIES. L'alter-ego imprime une REGLE DE DECK-BUILDING (mot-cle maison 'Leader' : allies YOUNG AVENGER de n'importe quel aspect), aujourd'hui sans cible legale dans le catalogue. Collision de noms assumee : deux allies OFFICIELS s'appellent deja Patriot, 29016 (Rayshaun Lucas, Leadership) et 56041 (Elijah Bradley lui-meme, Protection)."
-    },
-    "ra": {
-      "pack": "rainy",
-      "libelle": "99. Custom (Rainy)",
-      "cartes": 20,
-      "depuis": "2026-08-12"
-    },
-    "rg": {
-      "pack": "red_guardian",
-      "libelle": "121. Custom (Red Guardian)",
-      "cartes": 18,
-      "depuis": "2026-08-29"
-    },
-    "sd": {
-      "pack": "speed",
-      "libelle": "141. Custom (Speed)",
-      "cartes": 23,
-      "depuis": "2026-08-30",
-      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider et wiccan. Tommy Shepherd, Young Avengers. 2 faces heros + 15 cartes signature + 1 obligation + 4 nemesis, plus une SECONDE obligation (Conflicted Feelings) qui appartient au set nemesis (numerotee SPEED NEMESIS 5/5 sur le scan). Mecanique neuve : les compteurs explosifs (compteur moteur `explosive`), poses par la capacite du heros et retires en fin de phase des joueurs."
-    },
-    "sg": {
-      "pack": "squirrel_girl",
-      "libelle": "112. Custom (Squirrel Girl)",
-      "cartes": 23,
-      "depuis": "2026-08-12"
-    },
-    "si": {
-      "pack": "superior_iron_man",
-      "libelle": "126. Custom (Superior Iron Man)",
-      "cartes": 18,
-      "depuis": "2026-08-29",
-      "note": "Re-skin complet d'Iron Man/Tony Stark (comme Wolverine l'a ete pour X-23), set_name distinct de \"Iron Man\"/\"Iron Man Nemesis\" (officiels). Armure Endo-Sym permanente posee au Setup (BeginGameWithSetAside). Deux arbitrages utilisateur : Sauvetage theatral (013/014) code en 2 copies identiques d'Interruption de heros (la version francaise de la carte 014 disait a tort \"Reponse\", l'anglais original confirme Interrupt) ; Get My Body Back inflige 2 degats au joueur Tony Stark (le second \"take 1 damage\" n'a pas de cible imprimee). Mot-cle maison \"Armored 2\" (absent de tout le jeu et du materiel fourni) code carte par carte (Interrupt qui previent 2 degats a CHAQUE instance, pas juste au combat), documente dans mots-cles/armored.md. Aspect du deck : Protection (aucun aspect fourni par l'auteur)."
-    },
-    "sk": {
-      "pack": "skrull_menace",
-      "libelle": "143. Custom (Skrull Menace)",
-      "cartes": 0,
-      "depuis": "2026-08-29",
-      "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 4 scenarios, 5 vilains/nemesis jouables, systeme de Cooperation Area/victory display. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur, avant Galactic Storm car pas de nouveaux heros a stater. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "sp": {
-      "pack": "spot",
-      "libelle": "119. Custom (The Spot)",
-      "cartes": 21,
-      "depuis": "2026-08-13",
-      "note": "Le scenario fan-made The Spot (DesignHacker), 25 cartes physiques et 19 distinctes ; il apporte le mot-cle ThreatLevel."
-    },
-    "sr": {
-      "pack": "spider_man_rainy",
-      "libelle": "115. Custom (Spider-Man Rainy)",
-      "cartes": 18,
-      "depuis": "2026-08-12"
-    },
-    "ss": {
-      "pack": "scarlet_spider",
-      "libelle": "128. Custom (Scarlet Spider)",
-      "cartes": 23,
-      "depuis": "2026-08-29",
-      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project), zip 'Scarlet Spider' (Kaine Parker). 2 faces heros + 15 signature + 1 obligation + 5 nemesis, aucune decklist d'aspect fournie."
-    },
-    "th": {
-      "pack": "the_thing",
-      "libelle": "105. Custom (The Thing)",
-      "cartes": 18,
-      "depuis": "2026-08-12"
-    },
-    "vp": {
-      "pack": "venompool",
-      "libelle": "129. Custom (Venompool)",
-      "cartes": 17,
-      "depuis": "2026-08-31",
-      "note": "LIVRE le 31/08/2026. Auteur CptScorp, Cycle 2. Wade Wilson porte le symbiote Klyntar. 17 card_id : vp001a-vp011 (set Venompool) et vp012-vp016 (set Venompool Nemesis). Decklist COMPLETE fournie par l'auteur, aspect PROTECTION : aucun choix a faire. Le mot-cle 'Plotting' annonce par le plan est bien la (vp015 Guzz), mais la vraie nouveaute est ailleurs : l'insert du pack DEFINIT par ecrit le mot-cle maison 'drain X', reste indefini depuis agent_anti_venom, et confirme mot pour mot la convention retenue le 4/8/2026. Compteur moteur 'adrenaline' ajoute pour vp013. Quatre homonymes preexistants documentes dans le collision_note du deck (Wade Wilson 44001b, Venompool dt105, Black Cat 01002, Thwip! sr003, Foresight mw009). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
-    },
-    "vr": {
-      "pack": "venom_rainy",
-      "libelle": "109. Custom (Venom Rainy)",
-      "cartes": 16,
-      "depuis": "2026-08-12"
-    },
-    "wc": {
-      "pack": "wiccan",
-      "libelle": "130. Custom (Wiccan)",
-      "cartes": 25,
-      "depuis": "2026-08-30",
-      "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad et scarlet_spider. 2 faces heros + 15 signature + 1 Team-Up basique (Royal Couple) + 1 obligation + 6 nemesis (New Vessel wc019a se retourne en The Demiurge wc019b). Tout le kit compte les icones BOOST de la carte du dessus du deck rencontre."
-    },
-    "wd": {
-      "pack": "web_of_deceit",
-      "libelle": "120. Custom (Web of Deceit)",
-      "cartes": 38,
-      "depuis": "2026-08-14",
-      "note": "La campagne fan-made Web of Deceit (Ripper3), 5 scenarios. Lot 1 : le scenario Shocker, les modulaires Crime Wave, Power Drain II et Bodyguard, et les cartes de mise en place de la campagne."
-    },
-    "wx": {
-      "pack": "wolverine_x23",
-      "libelle": "122. Custom (Wolverine X-23)",
-      "cartes": 13,
-      "depuis": "2026-08-29",
-      "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de \u00ab Wolverine \u00bb (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
+    "_lisez_moi": [
+        "Les prefixes de card_id du contenu FAN-MADE, un par source.",
+        "",
+        "Pourquoi des LETTRES : les sets officiels sont numerotes, et le jeu en est",
+        "a 60 (Fear No Evil). Le contenu fan-made occupait 61 a 79, c'est-a-dire la",
+        "place des prochaines sorties de FFG. Lettres et chiffres ne se rencontrent",
+        "jamais : la collision est impossible par construction, pas par vigilance.",
+        "",
+        "Tout ajout de contenu fan-made DECLARE son prefixe ici avant d'ecrire une",
+        "seule carte. tools/verifier_prefixes.py refuse ce qui n'y est pas.",
+        "",
+        "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
+    ],
+    "prefixes": {
+        "aa": {
+            "pack": "agatha_harkness",
+            "libelle": "132. Custom (Agatha Harkness)",
+            "cartes": 22,
+            "depuis": "2026-08-31",
+            "note": "Cree le 31/08/2026. Auteur Ripper3. Agatha Harkness, hero Mystic 'top du deck' : aa001a/b identite, aa002-aa012 signature (11 cartes distinctes, 15 exemplaires), aa013 Ghost Agatha (persona mise de cote, en jeu apres elimination), aa014 obligation, aa015-aa018 set nemesis Death (2e obligation Funeral DANS le set nemesis), aa019-aa021 cartes d'aspect bonus (Wiccan Justice, Pixie et Coven of Chaos Leadership). 'Agatha All Along' (aa008, manigance-joueur) retenue en version 13 menaces (zip) sur decision utilisateur du 31/08 - la version Discord a 10 existe. Trait COSMIC ENTITY ajoute a l'enum. Homonymes geres dans le collision_note du deck."
+        },
+        "ab": {
+            "pack": "albert",
+            "libelle": "100. Custom (Albert)",
+            "cartes": 17,
+            "depuis": "2026-08-12"
+        },
+        "ag": {
+            "pack": "agent_13",
+            "libelle": "114. Custom (Agent 13)",
+            "cartes": 16,
+            "depuis": "2026-08-12"
+        },
+        "ah": {
+            "pack": "totally_awesome_hulk",
+            "libelle": "106. Custom (Totally Awesome Hulk)",
+            "cartes": 22,
+            "depuis": "2026-08-12"
+        },
+        "al": {
+            "pack": "alligator_loki",
+            "libelle": "140. Custom (Alligator Loki)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "RESERVE, pas encore cree. Difficulte 4/5 : concept central inedit dans le moteur, le heros lui-meme s'attache a un ennemi comme un attachment mobile (Interrupt attaque/defense + detachement Forced Response). Toutes les autres mecaniques (overkill, patrol, indirect damage, team-up, persona) existent deja. Squelette le plus proche : pack lockjaw. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "an": {
+            "pack": "angela",
+            "libelle": "133. Custom (Angela)",
+            "cartes": 16,
+            "depuis": "2026-08-31",
+            "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent \u00ab this ROUND \u00bb. an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie \u00ab Angela \u00bb 18011 (d'Agressivite, donc exclu) et le vilain officiel \u00ab Hela \u00bb 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "av": {
+            "pack": "agent_anti_venom",
+            "libelle": "111. Custom (Agent Anti-Venom)",
+            "cartes": 18,
+            "depuis": "2026-08-12"
+        },
+        "bt": {
+            "pack": "beast",
+            "libelle": "134. Custom (Beast)",
+            "cartes": 25,
+            "depuis": "2026-08-29",
+            "note": "Porte le 31/08/2026. Pool 'Discovery' de 5 cartes hors-deck (bt014-bt018) sur BeginGameWithSetAside, comme storm/36001b. Deux card_id pour Multi-Tasking (bt007a mental, bt007b physique), sur le precedent 01043a/b/c/d. Journal : .planning/todos/2026-08-31-portage-beast.md"
+        },
+        "bw": {
+            "pack": "brawn",
+            "libelle": "113. Custom (Brawn)",
+            "cartes": 26,
+            "depuis": "2026-08-12"
+        },
+        "cd": {
+            "pack": "cloak_dagger",
+            "libelle": "108. Custom (Cloak & Dagger)",
+            "cartes": 20,
+            "depuis": "2026-08-12"
+        },
+        "dd": {
+            "pack": "doctor_doom",
+            "libelle": "139. Custom (Doctor Doom)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "Cree le 30/08/2026. Auteur jakxin. Difficulte annoncee 3/5. Heros hybride Mystic/Tech, bascule statut 'villainous' pilotee par compteurs de power (cf. Moon Knight AoK, Cyclops/Phoenix) + exception de deckbuilding multi-aspect (pas de primitive equivalente trouvee, a valider). Fusionne le zip 'Doctor Doom Hero Revised' (regles) et 'Doctor Doom Alt Arts' (memes cartes, illustrations alternatives uniquement, a comparer texte par texte avant de ne garder que les images). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "dt": {
+            "pack": "determination",
+            "libelle": "118. Custom (Determination)",
+            "cartes": 142,
+            "depuis": "2026-08-13",
+            "note": "L'aspect fan-made de designhacker.ca, 142 cartes relevees, toutes dans le jeu avec leur module ; le set est declare dans sets_info.json."
+        },
+        "dz": {
+            "pack": "dazzler",
+            "libelle": "123. Custom (Dazzler)",
+            "cartes": 40,
+            "depuis": "2026-08-29",
+            "note": "Pack custom de Lord Havok. Apporte la Setlist (zone attachee a Live Concert, 4 places) et la capacite secondaire \u00ab Showtime! \u00bb, rendue par AbilityType.Special que zero carte du jeu n'utilisait."
+        },
+        "gb": {
+            "pack": "gorr",
+            "libelle": "136. Custom (Gorr the God Butcher)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "RESERVE, pas encore cree. Difficulte 2/5. Pack VILAIN autonome (pas un heros), 34 cartes, villain 3-stage, environnement double-face, deck-out trigger (cf. mts/thanos). Depend d'un set modulaire externe 'Intergalactic Hazards' non fourni dans le zip source, a creer ou substituer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "gp": {
+            "pack": "gwenpool",
+            "libelle": "101. Custom (Gwenpool)",
+            "cartes": 18,
+            "depuis": "2026-08-12"
+        },
+        "gs": {
+            "pack": "galactic_storm",
+            "libelle": "144. Custom (Galactic Storm)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 5 scenarios + 2 interludes + epilogue, 305 cartes, 4 sets modulaires additionnels, 2 nouveaux heros jouables (Binary, Quasar) a stater entierement. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "hd": {
+            "pack": "howard_the_duck",
+            "libelle": "135. Custom (Howard the Duck)",
+            "cartes": 28,
+            "depuis": "2026-08-30",
+            "note": "Pack fan-made RyCoRan, zip 'Howard the Duck (05-23 Final)'. 2 faces heros + 16 signature + 3 ressources re-skinnees (full_link vers 01088/01089/01090) + 1 obligation + 6 nemesis (dont Hellcow, sbire ALTERNATIF a utiliser a la place du Collector quand on affronte le scenario du Collector, donc hors du nemesis_set standard)."
+        },
+        "ho": {
+            "pack": "harry_osborn",
+            "libelle": "131. Custom (Harry Osborn / Green Goblin)",
+            "cartes": 18,
+            "depuis": "2026-08-31",
+            "note": "Cree le 31/08/2026. Auteur Dipsome. Harry Osborn (Earth-6160) en HEROS Green Goblin : ho001a/b identite, ho002-ho012 signature (11 cartes distinctes, 15 exemplaires), ho013 obligation, ho014-ho017 set nemesis (Kingpin/Bullseye). Trait EARTH-6160 ajoute a l'enum TRAITS. Ne pas confondre avec le pack VILAIN officiel 'gob' (Green Goblin classique), totalement distinct malgre un nom d'Obligation identique ('Risky Business') dans les deux."
+        },
+        "ht": {
+            "pack": "human_torch",
+            "libelle": "102. Custom (Human Torch)",
+            "cartes": 15,
+            "depuis": "2026-08-12"
+        },
+        "il": {
+            "pack": "iron_lad",
+            "libelle": "127. Custom (Iron Lad)",
+            "cartes": 24,
+            "depuis": "2026-08-29",
+            "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2). Regle imprimee sur l'insert : au reshuffle du deck joueur, en plus de la carte rencontre standard, le joueur doit aussi chercher et reveler son sbire nemesis (Kang the Conqueror)."
+        },
+        "ip": {
+            "pack": "iron_patriot",
+            "libelle": "142. Custom (Iron Patriot)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "RESERVE, pas encore cree. Difficulte 4/5. Norman Osborn, hero+nemesis(Doctor Doom, numerotation propre au pack)+mini-encounter-set (Molecule Man). Coeur du pack = deck secondaire de 20 cartes 'REGISTERED' attache au heros (pioche/engagement separes, conversion minion-vers-allie), aucun equivalent dans le moteur : un vrai sous-systeme a concevoir, pas juste de l'assemblage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "iw": {
+            "pack": "invisible_woman",
+            "libelle": "104. Custom (Invisible Woman)",
+            "cartes": 20,
+            "depuis": "2026-08-12"
+        },
+        "jj": {
+            "pack": "jessica_jones",
+            "libelle": "110. Custom (Jessica Jones)",
+            "cartes": 23,
+            "depuis": "2026-08-12"
+        },
+        "kb": {
+            "pack": "kate_bishop",
+            "libelle": "124. Custom (Hawkeye - Kate Bishop)",
+            "cartes": 21,
+            "depuis": "2026-08-29"
+        },
+        "lj": {
+            "pack": "lockjaw",
+            "libelle": "117. Custom (Lockjaw)",
+            "cartes": 31,
+            "depuis": "2026-08-12"
+        },
+        "ma": {
+            "pack": "ms_america",
+            "libelle": "137. Custom (Ms. America)",
+            "cartes": 30,
+            "depuis": "2026-08-29",
+            "note": "LIVRE (commit cd74477, 30 card_id). America Chavez, hero+nemesis (Catalina Chavez). Point neuf resolu au portage : le minion nemesis copie les modificateurs de stat du joueur en substituant l'icone THW->SCH. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "mf": {
+            "pack": "mister_fantastic",
+            "libelle": "103. Custom (Mister Fantastic)",
+            "cartes": 18,
+            "depuis": "2026-08-12"
+        },
+        "mk": {
+            "pack": "moon_knight",
+            "libelle": "116. Custom (Moon Knight)",
+            "cartes": 28,
+            "depuis": "2026-08-12"
+        },
+        "mw": {
+            "pack": "madame_web",
+            "libelle": "107. Custom (Madame Web)",
+            "cartes": 31,
+            "depuis": "2026-08-12"
+        },
+        "ok": {
+            "pack": "okoye",
+            "libelle": "125. Custom (Okoye)",
+            "cartes": 25,
+            "depuis": "2026-08-29"
+        },
+        "pt": {
+            "pack": "patriot",
+            "libelle": "138. Custom (Patriot)",
+            "cartes": 23,
+            "depuis": "2026-08-30",
+            "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider, wiccan et speed. Elijah Bradley, Young Avengers. 2 faces heros + 15 signature + 1 obligation + 5 nemesis (Mr. Hyde). Le kit ne parle que d'ALLIES. L'alter-ego imprime une REGLE DE DECK-BUILDING (mot-cle maison 'Leader' : allies YOUNG AVENGER de n'importe quel aspect), aujourd'hui sans cible legale dans le catalogue. Collision de noms assumee : deux allies OFFICIELS s'appellent deja Patriot, 29016 (Rayshaun Lucas, Leadership) et 56041 (Elijah Bradley lui-meme, Protection)."
+        },
+        "ra": {
+            "pack": "rainy",
+            "libelle": "99. Custom (Rainy)",
+            "cartes": 20,
+            "depuis": "2026-08-12"
+        },
+        "rg": {
+            "pack": "red_guardian",
+            "libelle": "121. Custom (Red Guardian)",
+            "cartes": 18,
+            "depuis": "2026-08-29"
+        },
+        "sd": {
+            "pack": "speed",
+            "libelle": "141. Custom (Speed)",
+            "cartes": 23,
+            "depuis": "2026-08-30",
+            "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad, scarlet_spider et wiccan. Tommy Shepherd, Young Avengers. 2 faces heros + 15 cartes signature + 1 obligation + 4 nemesis, plus une SECONDE obligation (Conflicted Feelings) qui appartient au set nemesis (numerotee SPEED NEMESIS 5/5 sur le scan). Mecanique neuve : les compteurs explosifs (compteur moteur `explosive`), poses par la capacite du heros et retires en fin de phase des joueurs."
+        },
+        "sg": {
+            "pack": "squirrel_girl",
+            "libelle": "112. Custom (Squirrel Girl)",
+            "cartes": 23,
+            "depuis": "2026-08-12"
+        },
+        "si": {
+            "pack": "superior_iron_man",
+            "libelle": "126. Custom (Superior Iron Man)",
+            "cartes": 18,
+            "depuis": "2026-08-29",
+            "note": "Re-skin complet d'Iron Man/Tony Stark (comme Wolverine l'a ete pour X-23), set_name distinct de \"Iron Man\"/\"Iron Man Nemesis\" (officiels). Armure Endo-Sym permanente posee au Setup (BeginGameWithSetAside). Deux arbitrages utilisateur : Sauvetage theatral (013/014) code en 2 copies identiques d'Interruption de heros (la version francaise de la carte 014 disait a tort \"Reponse\", l'anglais original confirme Interrupt) ; Get My Body Back inflige 2 degats au joueur Tony Stark (le second \"take 1 damage\" n'a pas de cible imprimee). Mot-cle maison \"Armored 2\" (absent de tout le jeu et du materiel fourni) code carte par carte (Interrupt qui previent 2 degats a CHAQUE instance, pas juste au combat), documente dans mots-cles/armored.md. Aspect du deck : Protection (aucun aspect fourni par l'auteur)."
+        },
+        "sk": {
+            "pack": "skrull_menace",
+            "libelle": "143. Custom (Skrull Menace)",
+            "cartes": 0,
+            "depuis": "2026-08-29",
+            "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 4 scenarios, 5 vilains/nemesis jouables, systeme de Cooperation Area/victory display. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur, avant Galactic Storm car pas de nouveaux heros a stater. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "sp": {
+            "pack": "spot",
+            "libelle": "119. Custom (The Spot)",
+            "cartes": 21,
+            "depuis": "2026-08-13",
+            "note": "Le scenario fan-made The Spot (DesignHacker), 25 cartes physiques et 19 distinctes ; il apporte le mot-cle ThreatLevel."
+        },
+        "sr": {
+            "pack": "spider_man_rainy",
+            "libelle": "115. Custom (Spider-Man Rainy)",
+            "cartes": 18,
+            "depuis": "2026-08-12"
+        },
+        "ss": {
+            "pack": "scarlet_spider",
+            "libelle": "128. Custom (Scarlet Spider)",
+            "cartes": 23,
+            "depuis": "2026-08-29",
+            "note": "Pack fan-made CptScorp (Marvel Champions Custom Project), zip 'Scarlet Spider' (Kaine Parker). 2 faces heros + 15 signature + 1 obligation + 5 nemesis, aucune decklist d'aspect fournie."
+        },
+        "th": {
+            "pack": "the_thing",
+            "libelle": "105. Custom (The Thing)",
+            "cartes": 18,
+            "depuis": "2026-08-12"
+        },
+        "vp": {
+            "pack": "venompool",
+            "libelle": "129. Custom (Venompool)",
+            "cartes": 17,
+            "depuis": "2026-08-31",
+            "note": "LIVRE le 31/08/2026. Auteur CptScorp, Cycle 2. Wade Wilson porte le symbiote Klyntar. 17 card_id : vp001a-vp011 (set Venompool) et vp012-vp016 (set Venompool Nemesis). Decklist COMPLETE fournie par l'auteur, aspect PROTECTION : aucun choix a faire. Le mot-cle 'Plotting' annonce par le plan est bien la (vp015 Guzz), mais la vraie nouveaute est ailleurs : l'insert du pack DEFINIT par ecrit le mot-cle maison 'drain X', reste indefini depuis agent_anti_venom, et confirme mot pour mot la convention retenue le 4/8/2026. Compteur moteur 'adrenaline' ajoute pour vp013. Quatre homonymes preexistants documentes dans le collision_note du deck (Wade Wilson 44001b, Venompool dt105, Black Cat 01002, Thwip! sr003, Foresight mw009). Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "vr": {
+            "pack": "venom_rainy",
+            "libelle": "109. Custom (Venom Rainy)",
+            "cartes": 16,
+            "depuis": "2026-08-12"
+        },
+        "wc": {
+            "pack": "wiccan",
+            "libelle": "130. Custom (Wiccan)",
+            "cartes": 25,
+            "depuis": "2026-08-30",
+            "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2), meme auteur qu'iron_lad et scarlet_spider. 2 faces heros + 15 signature + 1 Team-Up basique (Royal Couple) + 1 obligation + 6 nemesis (New Vessel wc019a se retourne en The Demiurge wc019b). Tout le kit compte les icones BOOST de la carte du dessus du deck rencontre."
+        },
+        "wd": {
+            "pack": "web_of_deceit",
+            "libelle": "120. Custom (Web of Deceit)",
+            "cartes": 38,
+            "depuis": "2026-08-14",
+            "note": "La campagne fan-made Web of Deceit (Ripper3), 5 scenarios. Lot 1 : le scenario Shocker, les modulaires Crime Wave, Power Drain II et Bodyguard, et les cartes de mise en place de la campagne."
+        },
+        "wx": {
+            "pack": "wolverine_x23",
+            "libelle": "122. Custom (Wolverine X-23)",
+            "cartes": 13,
+            "depuis": "2026-08-29",
+            "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de \u00ab Wolverine \u00bb (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
+        }
     }
-  }
 }

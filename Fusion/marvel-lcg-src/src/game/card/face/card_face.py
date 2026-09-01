@@ -78,6 +78,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EARTH-6160",
         # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
         "COSMIC ENTITY",
+        # CORRECTIF : trait du pack custom beast. Le sbire nemesis bt020
+        # « Lizard-Fied Mutants » porte « LIZARD. MUTANT. ». Purement
+        # declaratif : TRAITS n'est qu'un `Literal` de typage, aucun controle
+        # ne le lit a l'execution (cf. l'unique usage, cards/paper.py:13).
+        "LIZARD",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -211,6 +216,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # phase des joueurs et, en partant, infligent 1 degat a l'ennemi ou
         # retirent 1 menace a la manigance.
         'explosive',
+        # CORRECTIF : compteur du pack custom beast. bt012 Civilian Disguise
+        # entre en jeu avec « Uses (3 disguise counters) » : sans cette
+        # entree, `IsCounter('disguise')` refuse le nom et la carte tombe des
+        # la construction du deck (meme panne que 'style' pour kate_bishop).
+        'disguise',
         # CORRECTIF : compteur du pack custom ms_america (jakxin). Hyper-Cosmic
         # Awareness (ma007) accumule 1 compteur « star » par carte SUPERPOWER
         # jouee, et en depense 4 d'un coup pour annuler une carte rencontre.

@@ -1560,4 +1560,54 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'aa020': "<b>Réponse</b> : après avoir joué Pixie depuis votre main, ajoutez un allié [[X-MEN]] de votre pile de défausse à votre main.",
   // agatha_harkness — Coven of Chaos (Event Leadership, carte bonus)
   'aa021': "Jouable seulement si votre identité a le trait [[MYSTIC]].\n<b>Action d'alter ego</b> : mettez en jeu un allié [[MYSTIC]] de la pile de défausse de n'importe quel joueur, sous le contrôle de son propriétaire.",
+  // beast — Beast (Hero)
+  'bt001a': "<i>Thick Skinned</i> — <b>Réponse</b> : quand vous subissez 0 dégât en vous défendant, cherchez n'importe quelle carte dans votre deck ou votre pile de défausse et ajoutez-la à votre main.",
+  // beast — Dr Hank McCoy (AlterEgo)
+  'bt001b': "<i>Scientific Discovery</i> — <b>Réponse Obligatoire</b> : après que vous êtes passé sous cette forme, mélangez 1 carte de découverte au hasard dans votre deck.\n<b>Mise en place</b> : toutes les cartes que vous écartez de votre main au mulligan pendant la mise en place sont remélangées dans votre deck.",
+  // beast — Wonder Man (Ally, signature)
+  'bt002': "<b>Une fois vaincu</b> : infligez 2 dégâts à un ennemi.",
+  // beast — Phoenix (Ally, signature)
+  'bt003': "<b>Une fois vaincue</b> : infligez 2 dégâts à un ennemi.",
+  // beast — Experimental Warfare (Event, signature)
+  'bt004': "<b>Interruption</b> <i>(défense)</i> : inclinez toutes les cartes d'amélioration en jeu, Beast gagne +1 DEF par amélioration inclinée quand il se défend contre cette attaque. Si l'attaque a infligé « 0 » dégât, infligez 3 dégâts au personnage attaquant et redressez votre identité.",
+  // beast — Fighting With Friends (Event, x2)
+  'bt005': "<b>Réponse de héros</b> : redressez votre héros. Si vous avez payé cette carte avec une ressource [mental] → redressez un allié.",
+  // beast — In The Heat Of Battle (Event, signature)
+  'bt006': "<b>Action</b> <i>(contrer)</i> : retirez 4 menaces d'une manigance. Si cet événement a retiré toutes les menaces d'une manigance → mélangez 1 carte de découverte dans votre main.",
+  // beast — Multi-Tasking ([mental]) (Event, signature)
+  'bt007a': "<b>Action de héros</b> <i>(contrer)</i> <i>(attaque)</i> : infligez 1 dégât à tous les personnages ennemis et retirez 1 menace de toutes les manigances. Si c'était la première carte que vous avez jouée ce tour-ci → répétez cette action de héros.",
+  // beast — Multi-Tasking ([physical]) (Event, signature)
+  'bt007b': "<b>Action de héros</b> <i>(contrer)</i> <i>(attaque)</i> : infligez 1 dégât à tous les personnages ennemis et retirez 1 menace de toutes les manigances. Si c'était la première carte que vous avez jouée ce tour-ci → répétez cette action de héros.",
+  // beast — Primal Rage (Event, x2)
+  'bt008': "<b>Interruption de héros</b> : quand vous effectuez une attaque de base, défaussez une carte de votre main → vous gagnez +5 ATQ pour cette attaque.",
+  // beast — Alien Materials (Resource double [energy][mental], x2)
+  'bt009': "",
+  // beast — Beast's Lab (Support, signature)
+  'bt010': "<b>Action de héros</b> : inclinez Beast's Lab → choisissez un joueur. Ce joueur cherche une amélioration dans son deck et sa pile de défausse et l'ajoute à sa main.",
+  // beast — Hank's Kimono (Support, signature)
+  'bt011': "<b>Action d'alter ego</b> : inclinez Hank's Kimono → cherchez une carte ressource dans votre pile de défausse et placez-la sur le dessus de votre deck.",
+  // beast — Civilian Disguise (Support, signature)
+  'bt012': "<i>(Entre en jeu avec 3 compteurs de déguisement.)</i>\n<b>Réponse</b> : après vous être défendu contre une attaque, retirez 1 compteur de déguisement → piochez 1 carte.",
+  // beast — Hunter Gear (Upgrade, signature)
+  'bt013': "Beast gagne +1 DEF.\n<b>Action</b> : inclinez Hunter Gear → générez une ressource [physical] si vous n'avez aucune carte marquée d'une ressource [physical] dans votre main.",
+  // beast — Peter Parker (Ally, découverte mise de côté)
+  'bt014': "<b>Action</b> : inclinez cette carte → générez une ressource [wild].",
+  // beast — Space Hand Grenade (Upgrade, découverte mise de côté)
+  'bt015': "Attachez-la à un sbire.\n<b>Interruption Obligatoire</b> : quand ce sbire devrait attaquer, annulez cette attaque et infligez 4 dégâts à ce sbire.",
+  // beast — Ambush (Event, découverte mise de côté)
+  'bt016': "<b>Interruption Obligatoire</b> <i>(attaque/défense)</i> : quand le vilain devrait vous attaquer, inclinez une carte de soutien en jeu → annulez cette attaque.",
+  // beast — Automated Life-Support (Upgrade, découverte mise de côté)
+  'bt017': "Attachez-la à un allié. Maximum 1 par allié.\n<b>Interruption Obligatoire</b> : quand l'allié devrait être vaincu, soignez 1 dégât et donnez-lui une carte de statut Robuste.",
+  // beast — Mecha-Beast (Upgrade, découverte mise de côté)
+  'bt018': "Attachez-la à Beast.\nBeast gagne +1 CTR et +2 points de vie.",
+  // beast — Unfinished Projects (Obligation)
+  'bt019': "<b><i>Donnez-la au joueur Hank McCoy.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Défaussez 2 cartes d'amélioration/soutien en jeu → retirez Mutation Degeneration de la partie.\n• Inclinez votre identité et subissez 2 dégâts. Défaussez cette obligation.",
+  // beast — Lizard-Fied Mutants (Minion nemesis, x2)
+  'bt020': "<b><i>Garde</i></b>. <b><i>Patrouille</i></b>. <i>(Tant que ce sbire est engagé avec vous, vous ne pouvez pas attaquer le vilain, et vous ne pouvez pas contrer la manigance principale.)</i>\n<i>(Sbire némésis de Beast.)</i>",
+  // beast — Dark Transformation (Treachery nemesis)
+  'bt021': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus de votre deck. Vous subissez 1 dégât pour chaque carte spécifique au héros défaussée de cette façon.",
+  // beast — Dark Beast (Minion nemesis)
+  'bt022': "<b><i>Robuste</i></b>. <i>(Ce personnage ne peut être ni étourdi ni désorienté.)</i>\n<b>Une fois révélé</b> : tous les alliés sont désorientés.\n<i>(Sbire némésis de Beast.)</i>",
+  // beast — Mutant Science Program (SideScheme nemesis)
+  'bt023': "<i>« Beast enlève des mutants et pratique sur eux des tests dangereux. »</i>\n<b>Une fois révélée</b> : placez 1 compteur de test sur cette manigance annexe pour chaque allié dans votre pile de défausse. S'il n'y a aucun allié dans votre pile de défausse, placez plutôt 2[per_hero] compteurs de test.\n<b>Réponse Obligatoire</b> : chaque fois que vous piochez un allié dans votre main → retirez 1 compteur de test, défaussez l'allié, puis cherchez le sbire Lizard-Fied dans le deck de rencontre ou la pile de défausse et mettez-le en jeu.",
 }

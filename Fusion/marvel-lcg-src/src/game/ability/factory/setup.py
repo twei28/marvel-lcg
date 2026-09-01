@@ -170,6 +170,39 @@ class AbilityFactorySetup:
         )
 
     @staticmethod
+    def AfterPlayerResolveMulligans(ability_type: 'AbilityType',
+                                    operation: OperationType[Message.AfterPlayerResolveMulligans],
+                                    *,
+                                    conditions: ConditionsType[Message.AfterPlayerResolveMulligans]=[],
+                                    ) -> 'Ability':
+        """AJOUT (pack custom beast, 31/08/2026) : reagir a SON PROPRE mulligan.
+
+        Aucune fabrique du moteur n'accrochait l'etape 15 de `World` : le
+        message `WhenPlayerResolveMulligans` existe mais n'est jamais `.Send()`,
+        il ne sert que de contexte a la defausse. bt001b « Dr Hank McCoy » en a
+        besoin (« All cards you mulligan from your hand during setup are
+        shuffled back into your deck »).
+
+        `message.discarded_faces` porte les cartes ecartees, et le message part
+        APRES la repioche : voir `Message.AfterPlayerResolveMulligans`.
+
+        La condition filtre sur le joueur de CETTE carte : le mulligan d'un
+        autre joueur ne declenche rien.
+        """
+        def check_is_your_mulligan(effect: 'Effect', message: 'Message.AfterPlayerResolveMulligans') -> bool:
+            return effect.GetInitiator() == message.GetToPlayer()
+
+        return Ability(
+            ability_type,
+            Message.AfterPlayerResolveMulligans,
+            [
+                check_is_your_mulligan,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
     def WhenCardSetup(which_card: 'Literal["This"]|CardFace',
                       operation: OperationType[Message.WhenCardSetup]) -> 'Ability':
 

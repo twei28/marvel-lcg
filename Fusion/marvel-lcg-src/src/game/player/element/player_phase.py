@@ -11,7 +11,7 @@ class PlayerPhase:
 
     ################################################################################
     # Phase
-    def MayDiscardHandCardsAndDrawUpToMax(self, display_name: str, message: 'Message2'):
+    def MayDiscardHandCardsAndDrawUpToMax(self, display_name: str, message: 'Message2') -> List['CardFace']:
         from game.effect.rule import GameRule
         player = self.player
         faces = player.hand_cards.Get()
@@ -20,11 +20,18 @@ class PlayerPhase:
         value = value if value >= 0 else 0
 
         rule = GameRule(player.GetIdentity(), message, display_name=display_name)
-        player.AskDiscardFaces(faces, (value, "All"), rule)
+        # AJOUT (pack custom beast) : on RETOURNE ce qui a ete ecarte. L'appel
+        # etait deja fait, `AskDiscardFaces` rendait deja la liste ; seul le
+        # `return` est neuf, aucun appelant existant ne le lit.
+        discarded = player.AskDiscardFaces(faces, (value, "All"), rule)
         player.DrawUp("Max", rule)
+        return discarded
 
     def ResolveMulligans(self, message: 'Message.WhenPlayerResolveMulligans') -> None:
-        self.MayDiscardHandCardsAndDrawUpToMax("Resolve Mulligans", message)
+        discarded = self.MayDiscardHandCardsAndDrawUpToMax("Resolve Mulligans", message)
+        # AJOUT (pack custom beast, bt001b) : seul point du moteur ou une carte
+        # peut reagir au mulligan. Voir Message.AfterPlayerResolveMulligans.
+        Message.AfterPlayerResolveMulligans(self.player, discarded).Send()
 
     def BeginPhase(self) -> None:
         player = self.player

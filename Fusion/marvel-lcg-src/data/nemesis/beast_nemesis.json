@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Beast Nemesis",
+    "encounters": [
+        "bt020",
+        "bt020",
+        "bt021",
+        "bt022",
+        "bt023"
+    ]
+}

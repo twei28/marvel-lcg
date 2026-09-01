@@ -228,6 +228,18 @@ class Ability:
             # ne le prouve a ce jour.
             elif self.flags.IsType(AbilityType.AlterEgoResponse):
                 check_sub_type(['thwart', 'attack'], ["Play"])
+            # CORRECTIF (01/09/2026, pack custom beast) : meme defaut que
+            # `AlterEgoResponse` ci-dessus — `ForcedInterrupt` manquait a la
+            # chaine et tombait sur `elif self.is_play`, qui n'autorise AUCUN
+            # label. bt016 « Ambush » est imprimee « Forced Interrupt
+            # (attack/defense) » et se joue depuis la main : sans cette entree,
+            # le seul fait de monter le deck levait
+            # `AssertionError: label='defense' ... [bt016]` des la mise en
+            # place. Meme jeu de labels que `Interrupt` (dont ForcedInterrupt
+            # n'est que la variante obligatoire) : 'attack' reste exclu, une
+            # carte jouee en reaction a l'attaque d'un ennemi est une defense.
+            elif self.flags.IsType(AbilityType.ForcedInterrupt):
+                check_sub_type(['defense', 'thwart'], ["Play"])
             elif self.is_play:
                 check_sub_type([], ["Play"])
             elif self.when == Message.WhenCardPutIntoPlay:
