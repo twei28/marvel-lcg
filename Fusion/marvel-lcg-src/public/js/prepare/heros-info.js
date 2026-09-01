@@ -1285,4 +1285,18 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #5 (1962)",
     },
 
+    "al001a": {
+        bio: "Sur une Terre où Loki est né alligator, le dieu de la malice a gardé sa fourberie et perdu ses pouces. Recruté par le Loki de la Terre-616 dans sa bande de variants, ce petit reptile vert n'a jamais reçu de trône, seulement une auge et le respect de ses pairs. Il mord tout ce qui passe, surtout Throg, la grenouille du tonnerre, avec qui il entretient une vendetta bruyante à coups de « SMAK ! » et de « SPLOOSH ! ». Il ne lâche jamais prise : une fois les mâchoires refermées sur un ennemi, il faut que celui-ci bouge pour s'en défaire.",
+        bioEn: "On an Earth where Loki was born an alligator, the god of mischief kept his cunning and lost his thumbs. Recruited by the Earth-616 Loki into his gang of variants, this little green reptile never got a throne, only a trough and the respect of his peers. He bites everything that passes, especially Throg, the frog of thunder, with whom he keeps up a noisy vendetta of \"SMAK!\" and \"SPLOOSH!\". He never lets go: once his jaws close on an enemy, that enemy has to move to shake him off.",
+        civil: "Loki Laufeyson (variant alligator)",
+        civilEn: "Loki Laufeyson (alligator variant)",
+        base: "Le marais aux papillons, Asgard",
+        baseEn: "Butterfly Swamp, Asgard",
+        equipes: "La bande des variants de Loki",
+        equipesEn: "Loki's gang of variants",
+        ennemis: "Throg, Loki (le vrai)",
+        ennemisEn: "Throg, Loki (the real one)",
+        apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
+    },
+
 };

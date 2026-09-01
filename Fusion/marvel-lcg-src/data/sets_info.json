@@ -1252,5 +1252,14 @@
         "encounters": [],
         "max_id": "dd016"
     },
-    "checksum": "5e43bb4b923be266aa6ffc9dfb228105503f1de77a6796ca74993159fffff94c"
+    "140. Custom (Alligator Loki)": {
+        "name": "alligator_loki",
+        "scenarios": [],
+        "heroes": [
+            "alligator_loki"
+        ],
+        "encounters": [],
+        "max_id": "al023"
+    },
+    "checksum": "83d1b710e1c18006f7070b0681fcef1273f5f2d9aa2b7d38087bcd562d8ca6b8"
 }

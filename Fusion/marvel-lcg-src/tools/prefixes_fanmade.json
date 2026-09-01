@@ -41,9 +41,9 @@
         "al": {
             "pack": "alligator_loki",
             "libelle": "140. Custom (Alligator Loki)",
-            "cartes": 0,
+            "cartes": 24,
             "depuis": "2026-08-29",
-            "note": "RESERVE, pas encore cree. Difficulte 4/5 : concept central inedit dans le moteur, le heros lui-meme s'attache a un ennemi comme un attachment mobile (Interrupt attaque/defense + detachement Forced Response). Toutes les autres mecaniques (overkill, patrol, indirect damage, team-up, persona) existent deja. Squelette le plus proche : pack lockjaw. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+            "note": "Porte le 01/09/2026 (22 modules, al004-006/al008/al015-016/al020-021 par ability_link). Extension moteur : Hero.attached_enemy + AttachHeroTo/DetachHero (identity.py), PlayerMinion (minion_player.py) pour Throg al002, CanPlayThisMinionCard (play.py). Frogjolnir al022 vit dans le set_aside du deck de depart, l'obligation Time Out la melange dans le deck de rencontre. Voir .planning/todos/2026-09-01-portage-alligator-loki.md."
         },
         "an": {
             "pack": "angela",

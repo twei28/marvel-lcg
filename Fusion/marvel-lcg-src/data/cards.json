@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "921bb05dfa629b9adc2d5aacbd5570b19db23256470c394cb334fb3cae547ee0",
+    "checksum": "b9b8b1604add1ceeb6d8ba91ff867aaed41ea4fc5b99f7eee8460c1f39a04d98",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -84602,6 +84602,424 @@
             "traits": [],
             "text": "<b>When Revealed</b>: Mister Fantastic activates. If Mister Fantastic did not activate this way, find and reveal Mister Fantastic.",
             "set_name": "Doctor Doom Nemesis",
+            "custom": "Arnaud"
+        }
+    ],
+    "alligator_loki": [
+        {
+            "card_id": "al001a",
+            "type": "Hero",
+            "name": "* Alligator Loki",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "ASGARD",
+                "CREATURE"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Attached enemy gets -1 SCH and -1 ATK.\n<i>Lock Jaws</i> \u2014 <b>Interrupt</b>: When Alligator Loki makes a basic attack or defense against an enemy, attach Alligator Loki to that enemy.\n<b>Forced Response</b>: After attached enemy activates, detach Alligator Loki.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al001b",
+            "type": "AlterEgo",
+            "name": "* Alligator Loki",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "2",
+                "HS": "6"
+            },
+            "traits": [
+                "ASGARD",
+                "CREATURE"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Setup</b>: Find Throg and add him to your hand.\n<i>Nap Time</i> \u2014 <b>Forced Response</b>: After you switch to this form, detach Alligator Loki. You may make a basic recovery without exhausting.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al002",
+            "type": "PlayerMinion",
+            "name": "* Throg",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "HP": "4",
+                "SCH": "0",
+                "ATK": "0",
+                "Patrol": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ASGARD",
+                "CREATURE"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Patrol.\n<b>Interrupt</b>: When Alligator Loki attacks Throg, that attack gains overkill.\n<b>When Defeated</b>: Remove 3 threat from a scheme. Shuffle Throg into the Alligator Loki player's deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al003",
+            "type": "Event",
+            "name": "Chomp!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy (6 damage instead if Alligator Loki is attached to that enemy). If this attack defeats an enemy, ready Alligator Loki. Otherwise, you may attach Alligator Loki to that enemy.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al004",
+            "type": "Event",
+            "name": "Chomp!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy (6 damage instead if Alligator Loki is attached to that enemy). If this attack defeats an enemy, ready Alligator Loki. Otherwise, you may attach Alligator Loki to that enemy.",
+            "custom": "Arnaud",
+            "ability_link": "al003"
+        },
+        {
+            "card_id": "al005",
+            "type": "Event",
+            "name": "Chomp!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy (6 damage instead if Alligator Loki is attached to that enemy). If this attack defeats an enemy, ready Alligator Loki. Otherwise, you may attach Alligator Loki to that enemy.",
+            "custom": "Arnaud",
+            "ability_link": "al003"
+        },
+        {
+            "card_id": "al006",
+            "type": "Event",
+            "name": "Chomp!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy (6 damage instead if Alligator Loki is attached to that enemy). If this attack defeats an enemy, ready Alligator Loki. Otherwise, you may attach Alligator Loki to that enemy.",
+            "custom": "Arnaud",
+            "ability_link": "al003"
+        },
+        {
+            "card_id": "al007",
+            "type": "Event",
+            "name": "See You Later!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Change to alter-ego form. You may shuffle Throg from your discard pile into your deck.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al008",
+            "type": "Event",
+            "name": "See You Later!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Change to alter-ego form. You may shuffle Throg from your discard pile into your deck.",
+            "custom": "Arnaud",
+            "ability_link": "al007"
+        },
+        {
+            "card_id": "al009",
+            "type": "Event",
+            "name": "Alligator Antics",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki",
+            "text": "<b>Action</b>: Ready your identity. Search any deck and discard pile for the Throg minion and put him into play. Search the set-aside area, encounter deck and discard pile area for an attachment that can be attached to a minion and attach it to Throg.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al010",
+            "type": "Support",
+            "name": "* Loki",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ASGARD",
+                "PERSONA"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Alligator Loki gains the [[MYSTIC]] trait.\nWhile in hero form, Alligator Loki gets +1 THW.\n<b>Alter-Ego Resource</b>: Exhaust Loki \u2192 generate a [wild] resource.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al011",
+            "type": "Support",
+            "name": "* Butterfly Swamp",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "While in alter-ego form, Alligator Loki gets +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Butterfly Swamp \u2192 shuffle 1 [[PREPARATION]] card from your discard pile into your deck. Draw 1 card.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al012",
+            "type": "Upgrade",
+            "name": "Gator Aid",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "<b>Interrupt</b>: When attached character uses a basic power, exhaust Gator Aid \u2192 that character gets +1 to that power for this use. After this use, you may attach this to another friendly character.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al013",
+            "type": "Upgrade",
+            "name": "Unbreakable Grip",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "While in hero form, Alligator Loki gets +1 ATK.\n<b>Hero Interrupt</b>: When you would detach Alligator Loki from an enemy in play, exhaust Unbreakable Grip instead.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al014",
+            "type": "Upgrade",
+            "name": "Lurking",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Max 1 per player.\n<b>Hero Response</b>: After a minion enters play, discard Lurking \u2192 Alligator Loki makes a basic attack against that minion without exhausting. Alligator Loki gets +1 ATK for this attack.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al015",
+            "type": "Upgrade",
+            "name": "Lurking",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Max 1 per player.\n<b>Hero Response</b>: After a minion enters play, discard Lurking \u2192 Alligator Loki makes a basic attack against that minion without exhausting. Alligator Loki gets +1 ATK for this attack.",
+            "custom": "Arnaud",
+            "ability_link": "al014"
+        },
+        {
+            "card_id": "al016",
+            "type": "Upgrade",
+            "name": "Lurking",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "MaxPerUnit": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Alligator Loki",
+            "text": "Max 1 per player.\n<b>Hero Response</b>: After a minion enters play, discard Lurking \u2192 Alligator Loki makes a basic attack against that minion without exhausting. Alligator Loki gets +1 ATK for this attack.",
+            "custom": "Arnaud",
+            "ability_link": "al014"
+        },
+        {
+            "card_id": "al017",
+            "type": "Obligation",
+            "name": "Time Out",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Alligator Loki"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki",
+            "text": "<i>Give to the Alligator Loki player.</i>\nSearch the set-aside area for Frogjolnir and shuffle it into the encounter deck.\nYou get -2 ATK while in hero form.\n<b>Alter-Ego Action</b>: Exhaust your alter-ego \u2192 remove Time Out from the game.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al018",
+            "type": "SideScheme",
+            "name": "Throg and Loki",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "2",
+                "Hazard": "1"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki Nemesis",
+            "text": "<i>\"SMAK! SHLORP! RAWR! KLONK! SPLOOSH!\"</i>\nAlligator Loki can attack only Throg.\n<b>When Revealed</b>: If Throg is not in play, search the encounter deck and discard pile for him and reveal him.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al019",
+            "type": "Minion",
+            "name": "* Throg",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "SCH": "1",
+                "ATK": "1",
+                "Boost": "1"
+            },
+            "traits": [
+                "ASGARD",
+                "CREATURE"
+            ],
+            "set_name": "Alligator Loki Nemesis",
+            "text": "<b>Forced Interrupt</b>: When this minion would enter play, discard any other Throg from play. Place a random card from your hand facedown here.\n<b>When Defeated</b>: Return each facedown card here to its owner's hand.\n<i>(Alligator Loki's nemesis minion.)</i>",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al020",
+            "type": "Treachery",
+            "name": "Lightning Bolt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki Nemesis",
+            "text": "<b>When Revealed</b>: Discard 2 cards from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck.",
+            "custom": "Arnaud",
+            "ability_link": "02044"
+        },
+        {
+            "card_id": "al021",
+            "type": "Treachery",
+            "name": "Lightning Bolt",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki Nemesis",
+            "text": "<b>When Revealed</b>: Discard 2 cards from the encounter deck. Take 1 indirect damage for each boost icon discarded this way.\n<hr />\n[star] <b>Boost</b>: Discard 3 cards from the encounter deck.",
+            "custom": "Arnaud",
+            "ability_link": "02044"
+        },
+        {
+            "card_id": "al022",
+            "type": "Attachment",
+            "name": "* Frogjolnir",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "SCH+": "1",
+                "ATK+": "1"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "set_name": "Alligator Loki Nemesis",
+            "text": "If Throg is not in play, find him and reveal him. Attach this card to Throg. Then, Throg activates against you.\nThrog gains the [[AERIAL]] trait.\n[star] <b>Forced Response</b>: After Throg attacks you, take 1 indirect damage.",
+            "custom": "Arnaud"
+        },
+        {
+            "card_id": "al023",
+            "type": "Event",
+            "name": "Little Rascals",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "MaxPerDeck": "1",
+                "TeamUp": "Alligator Loki;Honey Badger/Gabby Kinney",
+                "Class": "Basic"
+            },
+            "traits": [],
+            "set_name": "Alligator Loki",
+            "text": "Team-Up (Alligator Loki and Honey Badger/Gabby Kinney). Max 1 per deck.\n<b>Action</b>: Stun and confuse the villain. If you cannot, ready Alligator Loki or Honey Badger.",
             "custom": "Arnaud"
         }
     ]

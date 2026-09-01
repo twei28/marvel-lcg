@@ -1,0 +1,10 @@
+{
+    "version": "0.5.9",
+    "name": "Alligator Loki Nemesis",
+    "encounters": [
+        "al018",
+        "al019",
+        "al020",
+        "al021"
+    ]
+}
