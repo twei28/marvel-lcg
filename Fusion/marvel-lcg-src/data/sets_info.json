@@ -1189,6 +1189,18 @@
         "encounters": [],
         "max_id": "pt022"
     },
+    "136. Custom (Gorr the God Butcher)": {
+        "name": "gorr",
+        "scenarios": [
+            "gorr",
+            "gorr_expert"
+        ],
+        "heroes": [],
+        "encounters": [
+            "gorr"
+        ],
+        "max_id": "gb022"
+    },
     "137. Custom (Ms. America)": {
         "name": "ms_america",
         "scenarios": [],

@@ -85022,5 +85022,411 @@
             "text": "Team-Up (Alligator Loki and Honey Badger/Gabby Kinney). Max 1 per deck.\n<b>Action</b>: Stun and confuse the villain. If you cannot, ready Alligator Loki or Honey Badger.",
             "custom": "Arnaud"
         }
+    ],
+    "gorr": [
+        {
+            "card_id": "gb001",
+            "type": "Villain",
+            "name": "* Gorr the God Butcher",
+            "subtitle": "",
+            "desc": {
+                "HP": "13*",
+                "ATK": "2",
+                "SCH": "1",
+                "Stage": "I"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Forced Response</b>: After a player's deck runs out of cards, Gorr the God Butcher activates against them.\n<i>\"Next you will learn how it feels to be butchered.\"</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb002",
+            "type": "Villain",
+            "name": "* Gorr the God Butcher",
+            "subtitle": "",
+            "desc": {
+                "HP": "16*",
+                "ATK": "2",
+                "SCH": "2",
+                "Stage": "II"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>When Revealed</b>: Deal each player 1 facedown encounter card.\n<b>Forced Response</b>: After a player's deck runs out of cards, Gorr the God Butcher activates against them.\n<i>\"Next you will learn how it feels to be butchered.\"</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb003",
+            "type": "Villain",
+            "name": "* Gorr the God Butcher",
+            "subtitle": "",
+            "desc": {
+                "HP": "19*",
+                "ATK": "3",
+                "SCH": "2",
+                "Stage": "III"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>When Revealed</b>: Advance the main scheme to stage 3A. Discard the top 5 cards of each player's deck.\n<b>Forced Response</b>: After a player's deck runs out of cards, Gorr the God Butcher activates against them.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb004a",
+            "type": "MainScheme",
+            "name": "Deicide",
+            "subtitle": "",
+            "desc": {
+                "Stage": "1A"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Contents</b>: Gorr the God Butcher (I) and Gorr the God Butcher (II). <i>(Gorr the God Butcher (II) and Gorr the God Butcher (III) instead for expert mode.)</i> Gorr the God Butcher, Necroverse, and Standard encounter sets. One additional modular encounter set <i>(recommended: Intergalactic Hazards)</i>.\n<b>Setup</b>: Set the Necroverse modular encounter set, the Necro-Raven Gestalt minion, the double-sided Godbomb environment, and all copies of Heroes' Labor and Stalking Berserker aside, out of play. Advance to stage 1B.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb004b",
+            "type": "MainScheme",
+            "name": "Deicide",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "0",
+                "TargetThreat": "3*",
+                "EscalationThreat": "1*",
+                "Stage": "1B"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Forced Response</b>: After step 1 of the villain phase, if the villain's stage number is 2 or 3, place 1 plan counter here. Then, if there are 3 or more plan counters here, advance to stage 2A.\n<b>Forced Response</b>: After Gorr the God Butcher defeats an ally, place 1 threat on this scheme.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb005a",
+            "type": "MainScheme",
+            "name": "Make Ready the Bomb",
+            "subtitle": "",
+            "desc": {
+                "Stage": "2A"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<i>Gorr's plan is revealed. He's coerced a god of bombs to construct a massive bomb, and using the stolen power of time gods, he plans to detonate it. Across space, across all time, all gods will die.</i>\n<b>When Revealed</b>: Put the set-aside Godbomb environment into play. Shuffle 1 copy of the Heroes' Labor treachery into each player's deck. Advance to stage 2B.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb005b",
+            "type": "MainScheme",
+            "name": "Make Ready the Bomb",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "TargetThreat": "9*",
+                "EscalationThreat": "1*",
+                "Stage": "2B"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Forced Response</b>: After step 1 of the villain phase, place 1 [per_hero] timer counters on the Godbomb environment.\n<b>Forced Response</b>: After an enemy attacks and defeats an ally, place 1 timer counter on the Godbomb environment.\n<b>If this stage is completed, the players lose the game.</b>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb006a",
+            "type": "MainScheme",
+            "name": "Welcome to Darkness",
+            "subtitle": "",
+            "desc": {
+                "Stage": "3A"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<i>The god who is not a god has given himself over entirely to the All-Black Necroblade.</i>\n<b>When Revealed</b>: If the Godbomb environment is in play, remove all timer counters from it and flip it to its All-Black Necroverse side. Otherwise, put the set-aside All-Black Necroverse environment into play. Shuffle the set-aside Necroverse modular encounter set into the encounter deck. Shuffle 1 copy of the Stalking Berserker minion into each player's deck.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb006b",
+            "type": "MainScheme",
+            "name": "Welcome to Darkness",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "TargetThreat": "8*",
+                "EscalationThreat": "1*",
+                "Stage": "3B"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Forced Response</b>: After a player's deck runs out of cards, place 4 necro counters on the All-Black Necroverse environment.\n<b>Hero Action</b>: Discard 1 card from your hand at random \u2192 remove 1 necro counter from All-Black Necroverse.\n<b>If this stage is completed, the players lose the game.</b>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb007a",
+            "type": "Environment",
+            "name": "Godbomb",
+            "subtitle": "",
+            "desc": {},
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "If there are 12 [per_hero] or more timer counters here, the players lose the game.\n<b>Hero Action</b>: Discard an ally you control \u2192 remove 1 timer counter from here.\n<i>\"Bleed for my blessed bomb.\"</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb007b",
+            "type": "Environment",
+            "name": "All-Black Necroverse",
+            "subtitle": "",
+            "desc": {},
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "While All-Black Necroverse has the following number of necro counters:\n\u2022 3 [per_hero]: Gorr the God Butcher's attacks gain overkill.\n\u2022 6 [per_hero]: All NECROVERSE enemies get +1 ATK.\n\u2022 9 [per_hero]: All NECROVERSE enemies get +1 SCH.\n\u2022 12 [per_hero]: The players lose the game.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb008",
+            "type": "Minion",
+            "name": "* Necro-Raven Gestalt",
+            "subtitle": "",
+            "desc": {
+                "HP": "5*",
+                "ATK": "3",
+                "SCH": "3",
+                "Boost": "4",
+                "Guard": "1",
+                "Patrol": "1"
+            },
+            "traits": [
+                "ELITE",
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Guard. Patrol.\n<b>Forced Interrupt</b>: When Necro-Raven Gestalt would be defeated, instead of discarding it, set it aside, out of play instead.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb009",
+            "type": "Minion",
+            "name": "Black Berserker",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "ATK": "2",
+                "SCH": "1",
+                "Boost": "1",
+                "Patrol": "1"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Patrol.\n[star] Black Berserker gets +X hit points, where X is the number of NECROVERSE attachments in play (to a maximum of 4).\n<i>\"This is not my killer. This is his guard dog. His very strong guard dog.\"</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb010",
+            "type": "Minion",
+            "name": "Necro-Raven",
+            "subtitle": "",
+            "desc": {
+                "HP": "3",
+                "ATK": "0",
+                "SCH": "1",
+                "Boost": "1",
+                "Surge": "1",
+                "Incite": "1"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Incite 1. Surge.\n<b>Forced Response</b>: After Necro-Raven enters play, discard the top card of your deck. Then, if there are 3 copies of Necro-Raven in play, discard them and summon the Necro-Raven Gestalt minion and put it into play engaged with you.\n<hr />\n[star] <b>Boost</b>: Put Necro-Raven into play engaged with you.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb011",
+            "type": "Attachment",
+            "name": "Blighted Chains",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Attach to your identity.\nAs an additional cost to use a hero's basic power, you must discard 1 random card from your hand.\n<b>Alter-Ego Action</b>: Discard the top 2 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb012",
+            "type": "Attachment",
+            "name": "Mind-Hewn Blade",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "ATK+": "1"
+            },
+            "traits": [
+                "NECROVERSE",
+                "WEAPON"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Attach to Gorr the God Butcher.\n[star] <b>Forced Interrupt</b>: When Gorr the God Butcher attacks you, discard the top 2 cards of your deck. This attack gains piercing.\n<b>Hero Action</b>: Take 2 indirect damage and discard the top 2 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb013",
+            "type": "Attachment",
+            "name": "Umbral Wings",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Attach to Gorr the God Butcher.\n<b>Forced Interrupt</b>: When Gorr the God Butcher is dealt damage, reduce that damage by 1.\n<b>Hero Action</b>: Discard 2 cards from your hand and the top 2 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb014",
+            "type": "Attachment",
+            "name": "Vicious Tendrils",
+            "subtitle": "",
+            "desc": {
+                "Boost": "3",
+                "ATK+": "1"
+            },
+            "traits": [
+                "NECROVERSE",
+                "WEAPON"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "Attach to Gorr the God Butcher.\nGorr the God Butcher gains retaliate 1.\n[star] Gorr the God Butcher's attacks gain ranged.\n<b>Hero Action</b>: Discard 1 card at random from your hand and discard the top 4 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb015",
+            "type": "Treachery",
+            "name": "Anti-Dogma",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>When Revealed</b>: Gorr the God Butcher schemes. Place 2 threat on the main scheme or discard the top 2 cards of your deck.\n<hr />\n[star] <b>Boost</b>: Place 2 threat on the main scheme or discard the top 2 cards of your deck.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb016",
+            "type": "Treachery",
+            "name": "Brutal Cunning",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "Peril": "1"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "Peril.\n<b>When Revealed</b>: Choose one:\n\u2022 Discard cards from the top of the encounter deck until you discard a NECROVERSE attachment. Reveal that card.\n\u2022 Shuffle the bottommost NECROVERSE attachment in the encounter discard pile into the encounter deck. This card gains surge.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb017",
+            "type": "Treachery",
+            "name": "Gleeful Savagery",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>When Revealed (Alter-Ego)</b>: Take 1 indirect damage. This card gains surge.\n<b>When Revealed (Hero)</b>: Gorr the God Butcher attacks you. Take 2 indirect damage or discard the top 2 cards of your deck.\n<hr />\n[star] <b>Boost</b>: Take 2 indirect damage or discard the top 2 cards of your deck.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb021",
+            "type": "Treachery",
+            "name": "Heroes' Labor",
+            "subtitle": "",
+            "desc": {
+                "Incite": "1"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "Incite 1.\n<b>Forced Response</b>: After you draw Heroes' Labor or discard it from the top of your deck, reveal it.\n<b>When Revealed</b>: Place 1 timer counter on the Godbomb environment, if able. Otherwise, place 1 necro counter on the All-Black Necroverse environment. Put this card into your discard pile <i>(instead of discarding it to the encounter discard pile)</i>.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb018",
+            "type": "SideScheme",
+            "name": "Forgotten Gods",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "3*",
+                "Boost": "1",
+                "Crisis": "1"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<i>Everywhere you go, you find the trail of dieties' corpses that Gorr has left behind.</i>\n<b>Forced Response</b>: When the villain phase ends, deal each player 1 indirect damage.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb019",
+            "type": "SideScheme",
+            "name": "Nihilistic Vision",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<i>On a backwoods planet, an alien boy looks up at the morning sky, and watches the sun turn black.</i>\n<b>When Revealed</b>: Discard cards from the top of the encounter deck until an attachment is discarded. Reveal that card.\nAll NECROVERSE enemies (including Gorr the God Butcher) get +1 ATK.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb020",
+            "type": "SideScheme",
+            "name": "You Are My God",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2",
+                "Boost": "2",
+                "Crisis": "1",
+                "Hinder": "1*"
+            },
+            "traits": [],
+            "set_name": "Gorr the God Butcher",
+            "text": "<i>Even if Gorr kills all the gods in creation, there will still be one god left standing.</i>\nHinder 1[per_hero].\n<b>Forced Response</b>: After Gorr the God Butcher attacks, he attacks again. Deal him no boost cards for this attack. <i>(Limit once per player per phase.)</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "gb022",
+            "type": "Minion",
+            "name": "Stalking Berserker",
+            "subtitle": "",
+            "desc": {
+                "HP": "2",
+                "ATK": "0",
+                "SCH": "0"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Gorr the God Butcher",
+            "text": "<b>Forced Response</b>: After you draw Stalking Berserker or discard it from the top of your deck, reveal it.\n<b>Forced Response</b>: After your turn ends, discard the top 2 cards of your deck and place 1 necro counter on the All-Black Necroverse environment.\n<b>When Defeated</b>: Put this card into the engaged player's discard pile.",
+            "custom": "BLUEHG"
+        }
     ]
 }

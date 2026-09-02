@@ -1,0 +1,26 @@
+{
+    "version": "0.5.8",
+    "name": "Gorr the God Butcher",
+    "villain": [
+        "gb001",
+        "gb002"
+    ],
+    "expert": false,
+    "schemes": [
+        "gb004a,gb004b",
+        "gb005a,gb005b",
+        "gb006a,gb006b"
+    ],
+    "set_aside": [
+        "gb007a,gb007b",
+        "gb008"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "gorr",
+        "standard"
+    ],
+    "modular_sets": [
+        "legions_of_hel"
+    ]
+}

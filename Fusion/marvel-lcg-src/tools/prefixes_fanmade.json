@@ -101,9 +101,9 @@
         "gb": {
             "pack": "gorr",
             "libelle": "136. Custom (Gorr the God Butcher)",
-            "cartes": 0,
+            "cartes": 26,
             "depuis": "2026-08-29",
-            "note": "RESERVE, pas encore cree. Difficulte 2/5. Pack VILAIN autonome (pas un heros), 34 cartes, villain 3-stage, environnement double-face, deck-out trigger (cf. mts/thanos). Depend d'un set modulaire externe 'Intergalactic Hazards' non fourni dans le zip source, a creer ou substituer. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+            "note": "Porte le 02/09/2026. Pack VILAIN de BLUEHG : 34 cartes physiques = 26 card_id (les doublons sont pixel-identiques, verifie par comparaison de la zone de texte). Vilain a 3 stades, complot principal a 3 stades, environnement RECTO-VERSO Godbomb/All-Black Necroverse a compteurs, deux cartes a DOS JOUEUR (Heroes' Labor gb021, Stalking Berserker gb022) melangees aux decks des joueurs. Deux sets d'encartage : `gorr` (deck de rencontre initial) et `necroverse` (modulaire mis de cote, melange a l'etape 3A) ; repartition par le trait NECROVERSE imprime. Le modulaire recommande \u00ab Intergalactic Hazards \u00bb est INTROUVABLE : Legions de Hel par defaut (choix de l'utilisateur, a remplacer quand le vrai set sera retrouve). Voir .planning/todos/2026-09-02-portage-gorr.md."
         },
         "gp": {
             "pack": "gwenpool",
