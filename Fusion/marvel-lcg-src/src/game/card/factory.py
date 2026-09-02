@@ -148,7 +148,16 @@ class CardFactory:
                                                     # construction, les deux portees demandent deux
                                                     # capacites, et le « you may » devient le choix
                                                     # entre elles.
-                                                    "an003"]:  # Heven's Fury (angela)
+                                                    "an003",   # Heven's Fury (angela)
+                                                    # CORRECTIF (02/09/2026) : Solar Beam, pack
+                                                    # custom viv_vision. Meme carte, meme nom et
+                                                    # meme structure que son HOMONYME OFFICIEL
+                                                    # 26008, deja en tete de cette liste : deux
+                                                    # Hero Action distinctes, l'une (attack),
+                                                    # l'autre (thwart), les deux `.SetPlay()`.
+                                                    # Sans cette declaration le deck viv_vision
+                                                    # ne monte pas, et test_cards ne le voit pas.
+                                                    "vv005"]:  # Solar Beam (viv_vision)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

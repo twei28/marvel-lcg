@@ -1686,4 +1686,34 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'al022': "Si Throg n'est pas en jeu, trouvez-le et révélez-le. Attachez cette carte à Throg. Puis Throg s'active contre vous.\nThrog gagne le trait [[AERIAL]].\n[star] <b>Réponse Obligatoire</b> : après que Throg vous a attaqué, subissez 1 dégât indirect.",
   // alligator_loki — Little Rascals (Event Team-Up, carte bonus)
   'al023': "Team-Up (Alligator Loki et Honey Badger/Gabby Kinney). Max 1 par deck.\n<b>Action</b> : étourdissez et désorientez le vilain. Si vous ne le pouvez pas, redressez Alligator Loki ou Honey Badger.",
+
+  // viv_vision — Viv Vision (Hero) [set 147, Rainy]
+  'vv001a': "<i>Density Manipulation</i> — <b>Action</b> : dépensez une ressource [energy] → vous gagnez +2 à un pouvoir de base de votre choix jusqu'à la fin du round. <i>(Limite d'une fois par round.)</i>",
+  // viv_vision — Viv Vision (AlterEgo)
+  'vv001b': "<i>Recharge</i> — <b>Action</b> : choisissez dans votre pile de défausse une carte portant une ressource [energy] imprimée et placez-la sur le dessus de votre deck. <i>(Limite d'une fois par round.)</i>",
+  // viv_vision — Hologram Projection (Event)
+  'vv002': "<b><i>Exigence</i></b> ([energy][mental]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\n<b>Interruption de héros</b> : quand un ennemi devrait s'activer, annulez cette activation et désorientez cet ennemi.",
+  // viv_vision — Just a Phase (Event, x2)
+  // ⚠ ECART ASSUME : la carte imprime « Interruption de héros », le moteur la
+  // rend en « Action de héros (contre) » — le mot-cle Patrouille est verifie au
+  // CHOIX DE LA CIBLE, donc avant toute fenetre d'interruption. Voir l'en-tete
+  // de src/cards/pack/viv_vision/viv_vision/vv003.py. Le texte FR ci-dessous
+  // decrit ce que la carte FAIT REELLEMENT en jeu, pour ne pas promettre au
+  // joueur un declencheur qu'il ne verra jamais.
+  'vv003': "<b>Action de héros</b> <i>(contre)</i> : inclinez votre héros → effectuez une menée de base avec +3 CTR, en ignorant le mot-clé Patrouille et l'icône de crise ([crisis]). Cette menée gagne percée.",
+  'vv004': "<b><i>Exigence</i></b> ([energy]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\n<b>Interruption</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, prévenez la totalité de ces dégâts. Vous gagnez Robuste jusqu'à la fin du round.",
+  // viv_vision — Solar Beam (Event, x4)
+  'vv005': "<b><i>Exigence</i></b> ([energy]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Cette attaque gagne à distance.\n<b>Action de héros</b> <i>(contre)</i> : retirez 4 menaces d'une manigance.",
+  // viv_vision — Superdense Strike (Event, x2)
+  'vv006': "<b>Interruption de héros</b> : quand votre héros effectue une attaque de base contre un ennemi, il gagne +4 ATQ pour cette attaque et cette attaque gagne perçant. Donnez une carte d'état Tenace à votre héros.",
+  // viv_vision — Sparky the Dog (Support)
+  'vv007': "<b>Interruption de héros</b> : quand un sbire déclenche une attaque, inclinez Sparky the Dog → infligez 2 dégâts à ce sbire.\n<b>Action d'alter ego</b> : inclinez Sparky the Dog → soignez 1 dégât de votre identité.",
+  // viv_vision — Computer Mind (Upgrade)
+  'vv008': "<b>Réponse</b> : après avoir joué une carte portant le mot-clé Exigence, inclinez Computer Mind → piochez 1 carte par ressource exigée sur cette carte.",
+  // viv_vision — Insubstantial Flight (Upgrade)
+  'vv009': "<b><i>Exigence</i></b> ([energy]). <i>(En payant cette carte, dépensez les ressources indiquées.)</i>\nVous gagnez le trait [[AERIAL]].\n<b>Réponse de héros</b> : après que votre héros s'est incliné, inclinez Insubstantial Flight → redressez votre héros.",
+  // viv_vision — Viv's Solar Gem (Upgrade)
+  'vv010': "<b>Ressource</b> : inclinez Viv's Solar Gem → générez une ressource [energy].\n<b>Réponse</b> : après la fin de la phase du Méchant, redressez Viv's Solar Gem.",
+  // viv_vision — Grounded (Obligation)
+  'vv011': "<b><i>Donnez-la au joueur Viv Vision.</i></b>\nPassez en forme d'identité civile.\nVous ne pouvez pas changer de forme.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Grounded de la partie.",
 }

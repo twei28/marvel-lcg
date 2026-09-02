@@ -41,6 +41,12 @@ const DEPUIS_TEXTE: Record<string, { nom: string; definition: string }> = {
   Overkill: { nom: 'Déferlement', definition: 'Les dégâts en excès de cette attaque sont infligés au Méchant (depuis un sbire) ou à votre identité (depuis un allié).' },
   Ranged: { nom: 'À Distance', definition: 'Cette attaque ignore Riposte.' },
   Uses: { nom: 'Utilisations', definition: 'Entre en jeu avec X jetons ; quand le dernier est dépensé, défaussez cette carte.' },
+  // Mot-cle MAISON du pack fan-made viv_vision (Rainy), imprime sur vv003
+  // « Just a Phase » et sur aucune carte officielle. L'auteur ne le definit
+  // nulle part : sans cette entree, le joueur lit un mot qui n'existe pas.
+  // Definition de la liste communautaire « Marvel Champions Home Brew Master
+  // List » ; detail complet dans docs/reference/mots-cles/breakthrough.md.
+  Breakthrough: { nom: 'Percée', definition: 'Comme Déferlement, mais pour la menace : quand cette menée vide une manigance, la menée en excès est retirée d’une autre manigance de votre choix.' },
 }
 
 const REGEX_TEXTE: Array<[RegExp, string]> = Object.keys(DEPUIS_TEXTE).map((nom) => [

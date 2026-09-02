@@ -68,6 +68,8 @@ la plus fréquente sur un pack vilain.
       `determination` — même mécanisme, réutilisé ici)
 - [x] legion.md (pack `okoye`)
 - [x] plotting.md (pack `scarlet_spider`)
+- [x] breakthrough.md (pack `viv_vision`, mot-clé JAMAIS défini par l'auteur :
+      définition arbitrée le 02/09/2026, miroir d'`overkill` pour la menace)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

@@ -1299,4 +1299,17 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "vv001a": {
+        bio: "Vivian est la fille synthézoïde de la Vision, qui s'est fabriqué une famille entière en copiant les ondes cérébrales de sa femme dans trois corps neufs. Sa mère et son frère détruits, Viv reste seule à porter le projet de son père : apprendre à être humaine. Elle en a les pouvoirs — modifier sa densité jusqu'à traverser les murs ou devenir dure comme le diamant, voler, projeter l'énergie solaire de la gemme de son front — et pas encore les codes, ce qu'elle compense par une franchise désarmante. Au lycée puis chez les Champions, elle grandit avec Ms. Marvel et Nova, un chien synthézoïde nommé Sparky sur les talons.",
+        bioEn: "Vivian is the synthezoid daughter of the Vision, who built himself an entire family by copying his wife's brain patterns into three new bodies. With her mother and brother destroyed, Viv is left alone carrying her father's project: learning to be human. She has the powers for it — shifting her density to phase through walls or turn diamond-hard, flying, firing the solar energy of the gem in her forehead — and not yet the social codes, which she makes up for with disarming bluntness. Through high school and then the Champions, she grows up alongside Ms. Marvel and Nova, with a synthezoid dog named Sparky at her heels.",
+        civil: "Vivian Vision",
+        base: "Alexandria, Virginie",
+        baseEn: "Alexandria, Virginia",
+        equipes: "Les Champions, la famille Vision",
+        equipesEn: "The Champions, the Vision family",
+        ennemis: "Viv (son double organique), Ultron",
+        ennemisEn: "Viv (her organic double), Ultron",
+        apparition: "The Vision #1 (2015)",
+    },
+
 };

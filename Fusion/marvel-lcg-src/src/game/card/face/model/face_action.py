@@ -54,6 +54,15 @@ class ModelAction(ModelBase):
                     # `retaliate` le 4/8/2026. dd001a « Overwhelming Power »
                     # accorde villainous jusqu'a la fin du round.
                     villainous: int|None=None,
+                    # CORRECTIF (02/09/2026, pack custom viv_vision) :
+                    # `stalwart` manquait, alors que `Gain` l'accepte deja
+                    # (face_gain.py:23). Troisieme occurrence du meme oubli,
+                    # apres `retaliate` (4/8/2026) et `villainous` (1/9/2026).
+                    # vv004 « Phase Up » accorde stalwart jusqu'a la fin du
+                    # round : c'est le PREMIER stalwart temporaire du depot,
+                    # les ~30 autres cartes qui l'accordent le font toutes par
+                    # attachement permanent.
+                    stalwart: int|None=None,
                     treat_as_blank: bool|None=None,
                     attack_consequential_damage: int|None=None,
                     thwart_consequential_damage: int|None=None,
@@ -121,6 +130,7 @@ class ModelAction(ModelBase):
                 recover=recover,
                 retaliate=retaliate,
                 villainous=villainous,
+                stalwart=stalwart,
                 treat_as_blank=treat_as_blank,
                 trait=trait,
             ):
@@ -433,6 +443,11 @@ class ModelAction(ModelBase):
                           # « until the end of the round », ce que cette
                           # methode rend exactement.
                           villainous: int|None=None,
+                          # CORRECTIF (02/09/2026, pack custom viv_vision) :
+                          # meme ajout que `villainous` ci-dessus, pour vv004
+                          # « Phase Up » (« You gain stalwart until the end of
+                          # the round »).
+                          stalwart: int|None=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
@@ -446,6 +461,7 @@ class ModelAction(ModelBase):
             thwart=thwart,
             retaliate=retaliate,
             villainous=villainous,
+            stalwart=stalwart,
             ignore_flip=ignore_flip,
             render_ui=True
         )

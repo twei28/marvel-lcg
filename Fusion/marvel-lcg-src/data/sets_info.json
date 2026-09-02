@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "83d1b710e1c18006f7070b0681fcef1273f5f2d9aa2b7d38087bcd562d8ca6b8",
+    "checksum": "b29b0019d67f799adc21033a6e2a539e4de4fd15521f8a0df6728ed9ecaea2b3",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1291,5 +1291,14 @@
             "necroverse"
         ],
         "max_id": "nv006"
+    },
+    "147. Custom (Viv Vision)": {
+        "name": "viv_vision",
+        "scenarios": [],
+        "heroes": [
+            "viv_vision"
+        ],
+        "encounters": [],
+        "max_id": "vv011"
     }
 }

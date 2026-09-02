@@ -13961,6 +13961,356 @@ CAS = [
         # Revelee, elle applique sa branche « Otherwise » : le heros est desoriente.
         "attendu": {"statuts": [["01001a", "Confused"]]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « viv_vision » : vv001a-vv011 (custom, auteur « Rainy », set 147)
+    #
+    # Les deux faces s'appellent toutes les deux « Viv Vision » : on ne
+    # designe JAMAIS l'identite par son nom dans ces cas, toujours par le
+    # card_id de la face en jeu (`Puzzle.ChangeToFace('vv001b', 'vv001a')`).
+    #
+    # Ressources de paiement, toujours par `main_exclusive` : 01088 Energy
+    # (YY) pour tout ce qui exige de l'energie, 01089 Genius (B) pour le
+    # mental, 01090 Strength (RR) pour le physique.
+    #
+    # Scenario rhino : 01094 Rhino, 01097b la manigance principale
+    # (StartingThreat 0), 01102 * Sandman (sbire ATQ 3, Toughness),
+    # 01107 Breakin' & Takin' (manigance annexe, 2 menaces), 01108 Crowd
+    # Control (manigance annexe a icone de CRISE).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "vv001a Density Manipulation — 1 energie donne +2 a un pouvoir de base pour le round",
+        "pourquoi": ("`WhenInYourPlayTurn(Action).SetCost(Cost('Y')).LimitOncePerRound()` "
+                     "+ un `ForChoiceAbility` par pouvoir (modele 01068 * Vision, qui "
+                     "n'en offre que deux et pour la PHASE). Le pilote prend la "
+                     "premiere branche : THW. CTR imprime 1 -> 3"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('vv001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 2}},
+    },
+    {
+        "nom": "vv001b Recharge — une carte a energie IMPRIMEE remonte de la defausse sur le deck",
+        "pourquoi": ("`AskChooseFace` sur `CardFinder(has_printed_res='Y').Checks("
+                     "joueur.discard_pile.Get(True))` puis `Faces.MoveAllToDeck(..., "
+                     "'Top', ...)` (modele ag001b, meme auteur). ⚠ `defausse_joueur: 0` "
+                     "est indispensable : sans lui le cas serait vert meme si la carte "
+                     "revenait au deck par un remelange (leçon bt011)"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01088')"],
+        "declencher": ["Puzzle.Action('vv001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["01088"], "defausse_joueur": 0},
+    },
+    {
+        "nom": "vv001b Recharge — une carte WILD n'est PAS repechable (contre-cas)",
+        "pourquoi": ("« a PRINTED [energy] resource » : le moteur compare la couleur "
+                     "imprimee SANS convertir le wild (checker.py:436). 01090 Strength "
+                     "est RR : elle doit rester en defausse. Contre-cas d'ABSENCE "
+                     "d'effet, donc VERT sous substitution — assume"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01090')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "vv002 Hologram Projection — l'activation du vilain est annulee et le vilain desoriente",
+        "pourquoi": ("`WhenEnemyWouldActivate(HeroInterrupt, None, ...).SetPlay()"
+                     ".SetLabel()` + `message.SetBeInstead(effect)` (modele 27006 Web "
+                     "Binding, qui porte elle aussi un Requirement) puis "
+                     "`Faces.GiveStatus([message.trigger], 'Confused', effect)`. La "
+                     "manigance principale reste a 0 : la manigance du vilain n'a pas "
+                     "eu lieu"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        # ⚠ RESSOURCES A UNE SEULE ICONE, et c'est INDISPENSABLE. Le pilote
+        # compte les ressources en QUANTITE, pas en couleur : 01088 Energy
+        # porte « YY », donc elle couvre a elle seule un cout de 2, et il
+        # s'arrete la — le `Requirement ([energy][mental])` n'est alors PAS
+        # satisfait et le jeu de la carte echoue en silence. 01082 Indomitable
+        # (Y) et 01081 Armored Vest (B) apportent une icone chacune : les deux
+        # sont donc depensees, et la couleur exigee est couverte.
+        "main_exclusive": ["vv002", "01082", "01081"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "menace": [["01097b", 0]]},
+    },
+    {
+        "nom": "vv003 Just a Phase — breakthrough : la menee en exces passe sur une autre manigance",
+        "pourquoi": ("mot-cle MAISON, arbitre le 02/09/2026 puis confirme par la liste "
+                     "communautaire : miroir d'`overkill` pour la menace. L'exces se lit "
+                     "sur `AfterUnitThwartScheme` (voulu - remove_threat) et se reporte "
+                     "par `ChooseAbilities` + `SetTarget(Scheme2, exclude=[...])`. "
+                     "CTR 1 + 3 = 4 sur une annexe a 2 menaces : elle tombe, et les 2 "
+                     "restantes partent sur la principale (5 -> 3)"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 2)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["vv003", "01089"],
+        "declencher": [],
+        "jouer": ["vv003"],
+        "cibles": ["01107", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01107"], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "vv003 Just a Phase — l'icone de CRISE est ignoree pour cette menee",
+        "pourquoi": ("`SetIgnoreKeyword('Crisis', 'Patrol')` sur l'abilite qui EXECUTE "
+                     "la menee (modele 61023 Grapnel Launcher). 01108 Crowd Control "
+                     "interdit normalement tout retrait de menace sur la principale "
+                     "(`MainScheme.RemoveThreatInternal`, scheme_main.py:151). Ici la "
+                     "principale passe de 5 a 1 : CTR 1 + 3 = 4"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["vv003", "01089"],
+        "declencher": [],
+        "jouer": ["vv003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "vv003 Just a Phase — le mot-cle PATROL est leve, le complot principal redevient visable",
+        "pourquoi": ("c'est LA raison de l'ecart de declencheur (Interruption -> "
+                     "Hero Action, §4 du journal de portage). Le moteur filtre "
+                     "`patrol` AU CHOIX DE LA CIBLE (`ability.py:970` -> "
+                     "`MainScheme.CanBeThwartBy`, `scheme_main.py:204`) : avec "
+                     "16119 Badoon Lieutenant (Patrol 1) engage, la manigance "
+                     "principale n'est PAS selectionnable par une menee de base. "
+                     "Seul `SetIgnoreKeyword('Crisis', 'Patrol')` sur l'abilite qui "
+                     "EXECUTE la menee la rend visable. Principale 5 -> 1"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('16119')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["vv003", "01089"],
+        "declencher": [],
+        "jouer": ["vv003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "vv004 Phase Up — tous les degats sont prevenus et Viv gagne Robuste",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(Interrupt, 'You').SetPlay()"
+                     ".SetLabel('defense')` + `PreventDamage('All')` (modele 03005 "
+                     "Shield Block, et NON 01003 Backflip qui filtre sur l'attaque), "
+                     "puis `GainUntilRoundEnd(stalwart=1)`. ⚠ Ce `stalwart` temporaire "
+                     "a exige un CORRECTIF moteur : `TemporaryGain` ne passait pas "
+                     "l'argument a `Gain`"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')"],
+        "main_exclusive": ["vv004", "01088"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "vv004_degats_prevenus_et_robuste",
+    },
+    {
+        "nom": "vv005 Solar Beam — Hero Action (attack) : 5 degats a un ennemi",
+        "pourquoi": ("premiere des DEUX capacites Play de la carte (modele 26008, son "
+                     "homonyme officiel, deja dans la liste blanche de "
+                     "game/card/factory.py — vv005 y a ete ajoutee). "
+                     "`DealDamage(..., 5, ..., property=AttackProperty(ranged=True))`"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')"],
+        "main_exclusive": ["vv005", "01088"],
+        "declencher": [],
+        "jouer": ["vv005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "defausse": ["vv005"]},
+    },
+    {
+        "nom": "vv005 Solar Beam — Hero Action (thwart) : 4 menaces retirees",
+        "pourquoi": ("seconde capacite Play. `RemoveThreatFromSchemes(..., 4, ...)`. "
+                     "⚠ ce retrait n'est PAS une menee : `breakthrough` ne s'y applique "
+                     "pas et la crise le bloquerait normalement. Principale a 6 -> 2"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["vv005", "01088"],
+        # Deux capacites Play sur la meme carte : le moteur les nomme « Play »
+        # (attaque) et « Play_1 » (menee). Sans `choisir_option`, le pilote
+        # prend toujours la premiere.
+        "choisir_option": "Play_1",
+        "declencher": [],
+        "jouer": ["vv005"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "vv006 Superdense Strike — +4 ATQ, l'attaque perce la Tenacite, et Viv devient Tenace",
+        "pourquoi": ("`WhenUnitWouldAttack(HeroInterrupt, 'You', is_basic_attack=True, "
+                     "attack_targets=Enemy)` + `GainATKForThisAttack(4)` + "
+                     "`GainPiercing` (modele 56017 Savage Strike), puis "
+                     "`Faces.GiveStatus([message.attacker], 'Tough', effect)`. "
+                     "Rhino recoit d'abord une carte Tenace : sans piercing il "
+                     "encaisserait 0 degat. ATQ 1 + 4 = 5"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.Tough('01094')"],
+        "main_exclusive": ["vv006", "01090"],
+        "declencher": ["Puzzle.Attack('vv001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 5]],
+                    "statuts": [["vv001a", "Tough"]]},
+    },
+    {
+        "nom": "vv007 Sparky the Dog — Interruption : 2 degats au sbire qui declenche une attaque",
+        "pourquoi": ("`WhenUnitWouldAttack(HeroInterrupt, Minion, ...)"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele 18015 First Hit "
+                     "pour le declencheur, sr010 pour `message.attacker`). Sandman a "
+                     "4 PV et la Tenacite : les 2 degats de Sparky ne sont pas des "
+                     "degats d'attaque, la carte Tenace ne les arrete donc pas"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv007')",
+                          "Puzzle.PutIntoPlay('01102')"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["vv007"]},
+    },
+    {
+        "nom": "vv007 Sparky the Dog — Action d'alter-ego : 1 degat soigne sur l'identite",
+        "pourquoi": ("`WhenInYourPlayTurn(AlterEgoAction).SetCostFunc(CostFunc.Exhaust("
+                     "'This'))` (modele aa003 Ebony) + `HealthUnits([identite], 1)`. "
+                     "L'identite prend 3 degats, il en reste 2 apres le soin"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vv007')",
+                          "Puzzle.Damage('vv001b', 3)"],
+        "declencher": ["Puzzle.Action('vv007')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["vv007"]},
+    },
+    {
+        "nom": "vv008 Computer Mind — pioche 1 carte PAR ressource exigee de la carte jouee",
+        "pourquoi": ("`AfterPlayerPlayedCard(Response, 'You', None, ...)` filtre sur "
+                     "`face.requirement.val > 0`, puis `DrawUp(requirement.val)`. "
+                     "AUCUNE autre carte du depot ne lit le mot-cle Requirement. "
+                     "vv002 exige [energy][mental] : DEUX cartes piochees, ce qui "
+                     "prouve le « for each » et pas seulement le declenchement"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv008')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        # Meme precaution qu'au cas vv002 : deux ressources a UNE icone, sans
+        # quoi le Requirement de vv002 n'est pas satisfait et rien ne se joue.
+        "main_exclusive": ["vv002", "01082", "01081"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "vv008_deux_cartes_piochees",
+    },
+    {
+        "nom": "vv009 Insubstantial Flight — l'identite gagne le trait AERIAL",
+        "pourquoi": ("`GiveKeywordToAttached('You', trait='AERIAL')` (modele ho011 "
+                     "* Goblin Glider). Effet continu, sans declencheur"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv009')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "en_jeu": ["vv009"]},
+    },
+    {
+        "nom": "vv009 Insubstantial Flight — apres que le heros s'est incline, il est redresse",
+        "pourquoi": ("AUCUNE fabrique n'enveloppe `Message.AfterCardExhausted` et "
+                     "AUCUNE carte du depot ne s'y abonnait : l'`Ability` est "
+                     "construite a la main (montage cd008/aa001b). L'attaque de base "
+                     "incline Viv, la reponse l'a redressee et vv009 est inclinee"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv009')"],
+        "declencher": ["Puzzle.Attack('vv001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["vv001a"], "exhausted": ["vv009"]},
+    },
+    {
+        "nom": "vv010 Viv's Solar Gem — la gemme inclinee finance un cout en energie",
+        "pourquoi": ("`CanGenerateResources(AbilityType.Resource, Resources('Y'))"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele sd015 Never "
+                     "Ending Spark). Elle paie a elle seule vv003 (cout 1) : la main "
+                     "ne contient AUCUNE ressource, donc seule la gemme peut payer"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv010')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["vv003"],
+        "declencher": [],
+        "jouer": ["vv003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["vv010"], "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "vv010 Viv's Solar Gem — la gemme se redresse a la fin de la phase du vilain",
+        "pourquoi": ("`AfterPhaseEnd(Response, 'Villain', ...)` (modele 29030). "
+                     "Declencheur hors de portee de l'API Puzzle, qui n'avance aucune "
+                     "phase : le verificateur renvoie dans le monde le message "
+                     "`Message.AfterPhaseEnd(..., 'Villain', ...)`, meme sonde que "
+                     "kb012 et les compteurs explosifs de speed"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv010')",
+                          "Puzzle.Exhaust('vv010')"],
+        "declencher": [],
+        "verifier": "vv010_redressee_en_fin_de_phase_vilain",
+    },
+    {
+        "nom": "vv011 Grounded — l'obligation bascule Viv en alter-ego et s'y verrouille",
+        "pourquoi": ("`WhenThisRevealed` + `ChangeToForm(AlterEgo)`, puis "
+                     "`PlayersCannotChangeForms(NonKeyword, 'AttachedPlayer')` "
+                     "(modele 36030 Claustrophobia, texte identique mot pour mot). "
+                     "La revelation force la forme civile"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')"],
+        "declencher": ["Puzzle.Reveal('vv011')"],
+        "verifier": "etat_attendu",
+        # ⚠ `face` N'EST PAS une cle de `etat_attendu` (elle appartient a un
+        # autre verificateur) : l'ecrire ici ne verifiait RIEN, et le cas
+        # passait au vert sous substitution parce que `en_jeu` seul est vrai
+        # sans le module. La cle qui teste vraiment la forme est `forme`
+        # (test_capacites.py:15244). Faux vert trouve par la preuve par
+        # substitution, exactement ce qu'elle sert a trouver.
+        "attendu": {"forme": "AlterEgo", "en_jeu": ["vv011"]},
+    },
+    {
+        "nom": "vv011 Grounded — l'action d'alter-ego retire l'obligation DE LA PARTIE",
+        "pourquoi": ("`PlayerActionToRemoveThisFromGame(AlterEgoAction)"
+                     ".SetCostFunc(CostFunc.Exhaust('YourIdentity'))`. "
+                     "« remove from the game », pas « discard » : la carte ne revient "
+                     "jamais dans le deck rencontre"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.Reveal('vv011')"],
+        "declencher": ["Puzzle.Action('vv011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["vv011"], "exhausted": ["vv001b"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -18013,6 +18363,72 @@ def nv_un_sbire_est_entre_en_jeu(monde, aides):
         if face is not None and face.IsInPlay() and isinstance(face, Minion):
             return True, f"sbire {face.paper.card_id} revele et en jeu"
     return False, "aucun sbire revele"
+
+def vv004_degats_prevenus_et_robuste(monde, aides):
+    """vv004 : aucun degat encaisse, et l'identite porte Robuste.
+
+    `etat_attendu` ne sait pas lire `stalwart` : la table IMPRIME ne le
+    contient pas, parce qu'AUCUNE carte du depot n'accordait jusqu'ici un
+    stalwart TEMPORAIRE (les ~30 autres l'accordent par attachement permanent).
+    D'ou cette sonde, qui lit directement l'attribut de la face.
+    """
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    soucis = []
+    degats = identite.max_health - identite.health
+    if degats != 0:
+        soucis.append(f"degats encaisses = {degats} (attendu 0 : « prevent all »)")
+    if getattr(identite, "stalwart", 0) <= 0:
+        soucis.append("l'identite n'a PAS gagne stalwart "
+                      "(correctif TemporaryGain/GainUntilRoundEnd absent ?)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "degats entierement prevenus et Robuste acquis"
+
+def vv008_deux_cartes_piochees(monde, aides):
+    """vv008 : jouer vv002 (Requirement [energy][mental]) pioche DEUX cartes.
+
+    C'est le « for each required resource » qui est teste, pas seulement le
+    declenchement : une carte a un seul Requirement en aurait pioche une.
+    La main de depart est fixee par `main_exclusive` a 3 cartes, dont les 3
+    sont depensees en jouant vv002 (cout 2, payees par 01088 + 01089, et
+    vv002 elle-meme quitte la main). Il doit donc rester exactement 2 cartes.
+    """
+    main = list(monde.players[0].hand_cards.GetAll())
+    if len(main) != 2:
+        return False, (f"main = {len(main)} carte(s) apres coup (attendu 2 : "
+                       "la pioche de Computer Mind pour 2 ressources exigees)")
+    piece = aides["par_id"](monde, "vv008")
+    if piece is None:
+        return False, "vv008 introuvable en jeu"
+    if not piece.IsExhaust():
+        return False, "vv008 n'est pas incline : le cout n'a pas ete paye"
+    return True, "2 cartes piochees et Computer Mind incline"
+
+def vv010_redressee_en_fin_de_phase_vilain(monde, aides):
+    """vv010 : la gemme inclinee se redresse a la fin de la phase du vilain.
+
+    `AfterPhaseEnd(Response, 'Villain')` est hors de portee de l'API Puzzle,
+    qui n'avance aucune phase. On renvoie donc dans le monde exactement le
+    message qu'emet `world.phase_end` a cet instant — meme sonde que kb012
+    (fin de phase joueur) et que le balayage des compteurs explosifs de speed.
+    """
+    from game.message import Message
+    gemme = aides["par_id"](monde, "vv010")
+    if gemme is None:
+        return False, "vv010 introuvable en jeu"
+    if not gemme.IsExhaust():
+        return False, "vv010 n'etait pas inclinee au depart : le cas ne prouve rien"
+    # Sequence exacte de `World` (world.py:808-814) : le message « when » puis
+    # le message « after », ce dernier construit A PARTIR du premier.
+    phase_message = Message.WhenPhaseEnd(monde.phase_id, "Villain", monde)
+    phase_message.Send()
+    Message.AfterPhaseEnd(monde.phase_id, "Villain", phase_message).Send()
+    if gemme.IsExhaust():
+        return False, ("vv010 est restee inclinee apres la fin de la phase du "
+                       "vilain")
+    return True, "la gemme s'est redressee a la fin de la phase du vilain"
 
 '''
 

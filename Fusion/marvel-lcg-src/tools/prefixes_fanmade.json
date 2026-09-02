@@ -125,6 +125,13 @@
             "depuis": "2026-08-30",
             "note": "Pack fan-made RyCoRan, zip 'Howard the Duck (05-23 Final)'. 2 faces heros + 16 signature + 3 ressources re-skinnees (full_link vers 01088/01089/01090) + 1 obligation + 6 nemesis (dont Hellcow, sbire ALTERNATIF a utiliser a la place du Collector quand on affronte le scenario du Collector, donc hors du nemesis_set standard)."
         },
+        "hk": {
+            "pack": "hulk_rainy",
+            "libelle": "148. Custom (Hulk)",
+            "cartes": 0,
+            "depuis": "2026-09-02",
+            "note": "RESERVE, pas encore cree. Vague 0 du deuxieme arrivage. Auteur Rainy. 14 cartes, difficulte 2/5. set_name a trancher : 'Hulk' est pris par le heros officiel 10001a. Pas de set nemesis dans le zip. Voir .planning/todos/2026-09-02-prep-vague0-hulk.md"
+        },
         "ho": {
             "pack": "harry_osborn",
             "libelle": "131. Custom (Harry Osborn / Green Goblin)",
@@ -144,6 +151,13 @@
             "cartes": 24,
             "depuis": "2026-08-29",
             "note": "Pack fan-made CptScorp (Marvel Champions Custom Project, Cycle 2). Regle imprimee sur l'insert : au reshuffle du deck joueur, en plus de la carte rencontre standard, le joueur doit aussi chercher et reveler son sbire nemesis (Kang the Conqueror)."
+        },
+        "im": {
+            "pack": "iron_man_model_42",
+            "libelle": "149. Custom (Iron Man Model 42)",
+            "cartes": 0,
+            "depuis": "2026-09-02",
+            "note": "RESERVE, pas encore cree. Auteur Rainy. 15 cartes, difficulte 2/5. Toute l'economie tient au compteur `reactor`, lu par 10 cartes sur 15. set_name a trancher : 'Iron Man' est pris. Pas de set nemesis. Voir .planning/todos/2026-09-02-prep-vague0-iron-man-model-42.md"
         },
         "ip": {
             "pack": "iron_patriot",
@@ -175,6 +189,13 @@
             "libelle": "117. Custom (Lockjaw)",
             "cartes": 31,
             "depuis": "2026-08-12"
+        },
+        "ls": {
+            "pack": "lady_sif",
+            "libelle": "150. Custom (Lady Sif)",
+            "cartes": 0,
+            "depuis": "2026-09-02",
+            "note": "RESERVE, pas encore cree. Auteur Rainy. 18 cartes, difficulte 2/5. Seul pack de la vague 0 avec un set nemesis complet (Enchantress, Skurge). set_name 'Lady Sif' verifie libre. Voir .planning/todos/2026-09-02-prep-vague0-lady-sif.md"
         },
         "ma": {
             "pack": "ms_america",
@@ -291,6 +312,13 @@
             "libelle": "109. Custom (Venom Rainy)",
             "cartes": 16,
             "depuis": "2026-08-12"
+        },
+        "vv": {
+            "pack": "viv_vision",
+            "libelle": "147. Custom (Viv Vision)",
+            "cartes": 12,
+            "depuis": "2026-09-02",
+            "note": "LIVRE le 02/09/2026. Auteur Rainy, vague 0 du deuxieme arrivage. Vivian, la fille synthezoide de Vision : vv001a/b identite, vv002-vv010 signature (9 cartes distinctes, 15 exemplaires), vv011 obligation Grounded. AUCUNE carte nemesis dans le zip : `nemesis_set` prend le modulaire OFFICIEL Zzzax (Ironheart, 29036-29040), que l'auteur recommande. Mot-cle MAISON `breakthrough` (vv003), jamais defini par l'auteur : arbitre le 02/09 comme le miroir d'`overkill` pour la menace, puis confirme par la liste communautaire ; fiche docs/reference/mots-cles/breakthrough.md. ECART ASSUME sur vv003 : le declencheur imprime \u00ab Hero Interrupt \u00bb est rendu en \u00ab Hero Action (thwart) \u00bb, le moteur verifiant `patrol` au choix de la cible et non a la resolution (modele 61023). Deux fichiers moteur PARTAGES touches : `stalwart` ajoute a TemporaryGain/GainUntilRoundEnd (1er stalwart temporaire du depot) et vv005 ajoutee a la liste blanche des evenements a deux capacites Play. Sous-dossier \u00ab Vivian alt cards \u00bb ECARTE : variante de REGLES, pas d'art. Voir .planning/todos/2026-09-02-portage-viv-vision.md"
         },
         "wc": {
             "pack": "wiccan",

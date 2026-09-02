@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "b9b8b1604add1ceeb6d8ba91ff867aaed41ea4fc5b99f7eee8460c1f39a04d98",
+    "checksum": "0e9d2cc957ed44b953b9047cb078eea88332fa86ba953cd82e37901eaeb51d2a",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -85585,6 +85585,223 @@
             "set_name": "Necroverse",
             "text": "<i>The final doom of all gods is Gorr's weapon in its truest form. The Annihilablade hangs over us all.</i>\nHinder 2[per_hero].\n<b>Forced Interrupt</b>: When facedown encounter cards are dealt to players during the villain phase, deal each player 1 additional facedown encounter card.",
             "custom": "BLUEHG"
+        }
+    ],
+    "viv_vision": [
+        {
+            "card_id": "vv001a",
+            "type": "Hero",
+            "name": "* Viv Vision",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "ANDROID",
+                "CHAMPION"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<i>Density Manipulation</i> \u2014 <b>Action</b>: Spend a [energy] resource \u2192 you get +2 to a chosen basic power until the end of the round. <i>(Limit once per round.)</i>",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv001b",
+            "type": "AlterEgo",
+            "name": "* Viv Vision",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "ANDROID"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<i>Recharge</i> \u2014 <b>Action</b>: Choose a card with a printed [energy] resource in your discard pile and place it on top of your deck. <i>(Limit once per round.)</i>",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv002",
+            "type": "Event",
+            "name": "Hologram Projection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero",
+                "Requirement": "YB"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Viv Vision",
+            "text": "Requirement ([energy][mental]).\n<b>Hero Interrupt</b>: When an enemy would activate, cancel that activation and confuse that enemy.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv003",
+            "type": "Event",
+            "name": "Just a Phase",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<b>Hero Interrupt</b>: When your hero makes a basic thwart, they get +3 THW and ignore the patrol keyword and the crisis icon <i>([crisis])</i> for that thwart. This thwart gains breakthrough.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv004",
+            "type": "Event",
+            "name": "Phase Up",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero",
+                "Requirement": "Y"
+            },
+            "traits": [
+                "DEFENSE",
+                "SUPERPOWER"
+            ],
+            "set_name": "Viv Vision",
+            "text": "Requirement ([energy]).\n<b>Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. You gain stalwart until the end of the round.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv005",
+            "type": "Event",
+            "name": "Solar Beam",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero",
+                "Requirement": "Y"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Viv Vision",
+            "text": "Requirement ([energy]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. This attack gains ranged.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv006",
+            "type": "Event",
+            "name": "Superdense Strike",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<b>Hero Interrupt</b>: When your hero makes a basic attack against an enemy, she gets +4 ATK for that attack and that attack gains piercing. Give your hero a tough status card.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv007",
+            "type": "Support",
+            "name": "* Sparky the Dog",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ANDROID",
+                "GOOD BOY"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<b>Hero Interrupt</b>: When a minion initiates an attack, exhaust Sparky the Dog \u2192 deal 2 damage to that minion.\n<b>Alter-Ego Action</b>: Exhaust Sparky the Dog \u2192 heal 1 damage from your identity.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv008",
+            "type": "Upgrade",
+            "name": "Computer Mind",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION",
+                "SUPERPOWER"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<b>Response</b>: After you play a card that has the requirement keyword, exhaust Computer Mind \u2192 draw 1 card for each required resource on that card.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv009",
+            "type": "Upgrade",
+            "name": "Insubstantial Flight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero",
+                "Requirement": "Y"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Viv Vision",
+            "text": "Requirement ([energy]).\nYou gain the [[AERIAL]] trait.\n<b>Hero Response</b>: After your hero exhausts, exhaust Insubstantial Flight \u2192 ready your hero.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv010",
+            "type": "Upgrade",
+            "name": "* Viv's Solar Gem",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "set_name": "Viv Vision",
+            "text": "<b>Resource</b>: Exhaust Viv's Solar Gem \u2192 generate a [energy] resource.\n<b>Response</b>: After the villain phase ends, ready Viv's Solar Gem.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "vv011",
+            "type": "Obligation",
+            "name": "Grounded",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Viv Vision"
+            },
+            "traits": [],
+            "set_name": "Viv Vision",
+            "text": "<b><i>Give to the Viv Vision player.</i></b>\nFlip to alter-ego form.\nYou cannot change form.\n<b>Alter-Ego Action</b>: Exhaust your alter-ego \u2192 remove Grounded from the game.",
+            "custom": "Rainy"
         }
     ]
 }
