@@ -118,8 +118,40 @@ worktree`) restent recommandés pour un vrai travail en parallèle.
 ## 5. Points à trancher avant de lancer le premier portage
 
 - **Gorr the God Butcher** dépend d'un set modulaire "Intergalactic
-  Hazards" absent du zip fourni — à créer ou remplacer avant de livrer le
-  pack.
+  Hazards" absent du zip fourni. ⚠ **INTROUVABLE** : ni officiel, ni dans
+  nos packs, ni dans les zips Galactic Storm / Skrull Menace (vérifié le
+  02/09/2026). Le texte de Deicide 1A ne fait que le **recommander**, un
+  modulaire quelconque convient. **Décision de l'utilisateur (02/09/2026)** :
+  le scénario propose **Légions de Hel** par défaut, en attendant.
+  ➡ **TROUVÉ le 02/09/2026** : l'utilisateur a fourni deux dossiers Drive de
+  **Patrick Burk**, tous deux à porter comme sets modulaires à part entière :
+  - **Intergalactic Hazards [2.5]** —
+    `https://drive.google.com/drive/folders/1AmHdjyKQcmjUM0SlWazmO0qeNPnYK0NW`
+    (le modulaire recommandé par Deicide 1A) ;
+  - **Necroverse [1.5]** —
+    `https://drive.google.com/drive/folders/1S3Sm_N4uNZrANMNV6LLQrmeglo4xYG75`
+    (le modulaire que le Setup met de côté et que le complot 3A mélange).
+
+  ⚠ Le connecteur Drive ne lit que le Drive de l'utilisateur : ces dossiers
+  sont partagés par lien et **restent inaccessibles**. Pour les porter, il
+  faut leurs zips dans `A créer/`, comme les 42 packs précédents.
+
+  ⚠ **Conséquence déjà appliquée sur le pack Gorr** : les 34 cartes du zip
+  forment UN SEUL set d'encartage (toutes portent « GORR THE GOD BUTCHER
+  (x/34) » en pied). Le premier montage, qui coupait les 11 cartes au trait
+  NECROVERSE pour en faire le modulaire, était faux. Le Setup et le complot
+  3A cherchent le `set_name` « Necroverse » : ils ne trouvent rien tant que
+  le set externe n'est pas porté, et fonctionneront sans changer une ligne
+  le jour où il le sera.
+
+  ⚠ L'utilisateur a présenté Necroverse comme « pour l'expert » : le texte
+  de Deicide 1A dit autre chose (« Gorr the God Butcher, **Necroverse**, and
+  Standard encounter sets », dans les deux modes). À reconfirmer avec lui au
+  moment de porter le set.
+
+  En attendant, `data/scenarios/gorr.json` et `gorr_expert.json` proposent
+  **Légions de Hel** ; le joueur peut choisir un autre modulaire à l'écran de
+  préparation.
 - ~~**Doctor Doom** : comparer carte par carte "Hero Revised" et "Alt Arts"~~
   ✅ **TRANCHÉ le 01/09/2026** : ce ne sont PAS les mêmes cartes (16 cartes
   différentes dans "Alt Arts", aucun nom en commun). Pas de fusion ; le zip

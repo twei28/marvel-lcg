@@ -43,6 +43,16 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] temporary.md
 - [x] piercing.md
 - [x] overkill.md
+- [x] ranged.md
+- [x] boost.md (icônes `desc.Boost` ET effet « [star] Boost », deux
+      mécanismes distincts)
+- [x] special.md (le `[star]` d'une capacité permanente, à ne pas confondre
+      avec l'étoile d'un effet Boost)
+
+⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
+Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),
+jamais dans `desc`, et le moteur ne lui associe aucune mécanique. Confusion
+la plus fréquente sur un pack vilain.
 
 ## Maison
 
