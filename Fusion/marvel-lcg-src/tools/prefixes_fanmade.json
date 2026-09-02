@@ -43,7 +43,7 @@
             "libelle": "140. Custom (Alligator Loki)",
             "cartes": 24,
             "depuis": "2026-08-29",
-            "note": "Porte le 01/09/2026 (22 modules, al004-006/al008/al015-016/al020-021 par ability_link). Extension moteur : Hero.attached_enemy + AttachHeroTo/DetachHero (identity.py), PlayerMinion (minion_player.py) pour Throg al002, CanPlayThisMinionCard (play.py). Frogjolnir al022 vit dans le set_aside du deck de depart, l'obligation Time Out la melange dans le deck de rencontre. Voir .planning/todos/2026-09-01-portage-alligator-loki.md."
+            "note": "Porte le 01/09/2026, valide le 02/09 (32 cas verts, 8 parties autoplay). 16 modules (22 fichiers, al004-006/al008/al015-016/al020-021 par ability_link). Extension moteur : Hero.attached_enemy + AttachHeroTo/DetachHero (identity.py), PlayerMinion (minion_player.py) pour Throg al002, CanPlayThisMinionCard (play.py). Frogjolnir al022 vit dans le set_aside du deck de depart, l'obligation Time Out la melange dans le deck de rencontre. Voir .planning/todos/2026-09-01-portage-alligator-loki.md."
         },
         "an": {
             "pack": "angela",
@@ -82,7 +82,7 @@
             "libelle": "139. Custom (Doctor Doom)",
             "cartes": 17,
             "depuis": "2026-08-29",
-            "note": "Portage en cours (01/09/2026). CORRECTIF : l'auteur est **Grawlix Ipsum** (credite sur chaque carte), pas jakxin. CORRECTIF : le zip 'Doctor Doom Alt Arts' n'est PAS le meme kit de cartes \u2014 il contient 16 cartes DIFFERENTES (arts alternatifs de cartes OFFICIELLES : Spiritual Meditation, Summoning Spell, Zone of Silence, Sorcerer Supreme, ressources doubles ; plus Castle Doom, Kristoff, Prot-Doombot, Ingenuity). Aucun nom en commun avec 'Hero Revised' : PAS de fusion, a traiter a part. Le pack Revised fait 17 entrees : 2 identites, 10 cartes signature (15 exemplaires), 2 OBLIGATIONS et 4 cartes nemesis. Voir .planning/todos/2026-09-01-portage-doctor-doom.md."
+            "note": "Porte le 01/09/2026. CORRECTIF : l'auteur est **Grawlix Ipsum** (credite sur chaque carte), pas jakxin. CORRECTIF : le zip 'Doctor Doom Alt Arts' n'est PAS le meme kit de cartes \u2014 il contient 16 cartes DIFFERENTES (arts alternatifs de cartes OFFICIELLES : Spiritual Meditation, Summoning Spell, Zone of Silence, Sorcerer Supreme, ressources doubles ; plus Castle Doom, Kristoff, Prot-Doombot, Ingenuity). Aucun nom en commun avec 'Hero Revised' : PAS de fusion, a traiter a part. Le pack Revised fait 17 entrees : 2 identites, 10 cartes signature (15 exemplaires), 2 OBLIGATIONS et 4 cartes nemesis. Voir .planning/todos/2026-09-01-portage-doctor-doom.md."
         },
         "dt": {
             "pack": "determination",

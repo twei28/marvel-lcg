@@ -9,10 +9,14 @@ dans `data/cards.json` et `deck/starter/`. Le plan a déjà induit en erreur deu
 fois (Kate Bishop, Patriot). Le tableau ci-dessous a été croisé avec le
 catalogue réel.
 
-## 1. Ce qui reste du plan (6 items)
+## 1. Ce qui reste du plan (4 items)
 
-`gb` Gorr · `dd` Doctor Doom · `al` Alligator Loki · `ip` Iron Patriot ·
-`gs` Galactic Storm · `sk` Skrull Menace.
+`gb` Gorr · `ip` Iron Patriot · `sk` Skrull Menace · `gs` Galactic Storm,
+dans cet ordre (plan du 29/08, §3).
+
+⚠ MISE À JOUR DU 02/09/2026 : `dd` Doctor Doom et `al` Alligator Loki, qui
+figuraient ici, sont livrés et testés. Le zip « Doctor Doom Alt Arts » reste
+à traiter à part (16 cartes différentes, aucun nom en commun).
 
 Sources Drive repérées : **Alligator Loki** (ripman3), **Skrull Menace** avec
 ses deux extensions « New Revengers » et « Army of Skrulls » (555ztr).

@@ -120,8 +120,10 @@ worktree`) restent recommandés pour un vrai travail en parallèle.
 - **Gorr the God Butcher** dépend d'un set modulaire "Intergalactic
   Hazards" absent du zip fourni — à créer ou remplacer avant de livrer le
   pack.
-- **Doctor Doom** : comparer carte par carte "Hero Revised" et "Alt Arts"
-  avant portage, pour confirmer qu'il s'agit bien du même texte de règles.
+- ~~**Doctor Doom** : comparer carte par carte "Hero Revised" et "Alt Arts"~~
+  ✅ **TRANCHÉ le 01/09/2026** : ce ne sont PAS les mêmes cartes (16 cartes
+  différentes dans "Alt Arts", aucun nom en commun). Pas de fusion ; le zip
+  "Alt Arts" reste à traiter comme un pack à part.
 - **Agatha Harkness** : ~~carte "Agatha All Along" absente du zip, à
   réclamer~~ ✅ **FOURNIE** par l'utilisateur et portée (`aa008`,
   manigance-joueur). **Reste ouvert, en revanche** : elle existe en deux
