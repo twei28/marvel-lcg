@@ -191,8 +191,15 @@ TÉMOIN contre `rhino`, le 02/09/2026 :
 - `test_capacites` filtré `gb0` : **30/30**.
 - Substitution : **25/26 cartes** rouges, 3 cas verts expliqués au §2.
 - `test_cards` : **5047 ok / 0 err**.
-- ⚠ Batterie complète du harnais : **à faire** (fichiers partagés touchés :
-  `card_face.py` pour les compteurs et le trait, `tools/test_capacites.py`).
+- Batterie complète du harnais : **993/997** (02/09/2026). Les 4 rouges sont
+  les rouges **préexistants** de Squirrel Girl (sg006, sg007, sg009, sg013,
+  cf. `2026-08-31-cas-rouges-sg-ss.md`), **0 régression** — et ss012, rouge
+  lors des batteries précédentes, passe désormais.
+- `tools/audit_cartes.py` : **0 discordance** sur les trois packs, 0 module
+  en erreur.
+- Pas de textes français : c'est la convention du projet pour les packs
+  VILAIN (ni The Spot ni Web of Deceit n'en ont), seuls les héros sont
+  traduits dans `textes-fr-fanmade.ts`.
 - Après le portage des modulaires : `gb0` **32/32** (les 30 cas, plus le
   remélange de Necroverse et le ★ Boost de Forgotten Gods).
 

@@ -112,6 +112,9 @@ héros** : 2 dégâts avec overkill, 0 sans.
 - `test_cards` : **5057 ok / 0 err**.
 - Autoplay 8 parties contre `gorr`, les deux modulaires en jeu : **0 erreur**,
   les 10 cartes vues en partie réelle.
+- Batterie complète du harnais : **993/997**, les 4 rouges préexistants de
+  Squirrel Girl, **0 régression**.
+- `tools/audit_cartes.py` : **0 discordance** sur les deux sets.
 
 ---
 

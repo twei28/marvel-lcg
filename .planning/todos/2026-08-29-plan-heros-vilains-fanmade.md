@@ -199,97 +199,100 @@ Anciennement à créer
 
 ---
 
+---
+
 ## 6. Deuxième arrivage : 27 zips déposés à la racine le 02/09/2026
 
-**Méthode :** contenu de chaque zip listé, puis carte d'identité (et les cartes
-signalant une mécanique inhabituelle) lues à l'image. Aucune difficulté n'est
-donnée sur la foi d'un nom de fichier.
+> ⚠ **Ce paragraphe a été réécrit le 02/09/2026 après une première version
+> fausse.** La première tentative classait les packs à partir des NOMS de
+> fichiers et de la seule carte d'identité, et concluait par exemple que Throg
+> était « presque de l'assemblage » parce que le pack Alligator Loki contient
+> des cartes nommées Throg et Frogjolnir. **Ce sont des cartes différentes, sans
+> aucun code commun.** Le classement ci-dessous repose sur la lecture des 425
+> cartes distinctes des 23 packs, une par une. C'est le même piège que la leçon
+> du 01/09 en §5 : ne jamais citer une réutilisation sans avoir lu les deux
+> cartes.
 
-### 6.1 Quatre zips à écarter tout de suite
+### 6.1 Quatre zips à écarter
 
 | Zip | Raison |
 |---|---|
 | **Intergalactic Hazards [2.5]** | Déjà porté le 02/09 (`ih`, 6 cartes). |
 | **Necroverse [1.5]** | Déjà porté le 02/09 (`nv`, 8 cartes). |
-| **Galactic Storm** | Copie octet pour octet de `A créer/Galactic Storm` (21 fichiers, même arborescence). |
-| **Skrull Menace (Released)** | Copie de `A créer/Skrull Menace (Released)` (39 fichiers, même arborescence). |
+| **Galactic Storm** | Même arborescence que `A créer/Galactic Storm` (21 fichiers). |
+| **Skrull Menace (Released)** | Même arborescence que `A créer/Skrull Menace` (39 fichiers). |
 
-23 nouveaux items restent.
+23 nouveaux items restent, 425 cartes distinctes.
 
-### 6.2 Groupe A — clonage direct, aucune primitive neuve (2/5)
+### 6.2 Les six briques partagées, qui commandent l'ordre
 
-| Item | Auteur | Cartes | Réutiliser | Capacité lue |
+Le facteur de coût n'est pas le pack, c'est la brique. Six briques reviennent
+d'un pack à l'autre ; les écrire une fois sert à chaque fois.
+
+| # | Brique | Packs qui en dépendent |
+|---|---|---|
+| 1 | **Provenance du paiement** : la carte sait avec QUELLE ressource, ou par QUEL chemin, elle a été payée | Throg, Beta Ray Bill, Hulk, Lady Sif, Spider-Man 2099, Spider-Woman, Venomized |
+| 2 | **Zone « glissée sous » une carte**, persistante et invisible au `find` | Spider-Man Noir, Black Cat, Throg, Beta Ray Bill |
+| 3 | **Sélection d'une carte par son TEXTE** (« portant Hero Action ou Hero Response ») | Black Cat, Sunfire, Doctor Druid |
+| 4 | **Recherche dans toute la COLLECTION** (pas le deck) | Black Cat, Cameo compliment |
+| 5 | **Pouvoir de base démultiplié** (résolu contre chaque manigance ou chaque sbire) | Throg, Beta Ray Bill, Ares, Blink |
+| 6 | **Upgrade JOUEUR attachée à un ennemi ou à une manigance** | Ares, Sunfire, Blink, Yondu |
+
+### 6.3 Difficulté réelle, pack par pack
+
+| Pack | Auteur | Cartes | Diff. | Ce qui la fixe |
 |---|---|---|---|---|
-| **Throg** | Rainy | 23 | `alligator_loki` en entier | Réponse : rendre Frogjolnir à la main → prêter Throg. Frogjolnir (`al022`), Throg sbire-joueur (`al002`) et le nemesis Alligator Loki sont déjà codés. |
-| **Viv Vision** | Rainy | 21 | `vision` officiel | Action : dépenser une ressource ⚡ → +2 à un pouvoir de base. Clone de Vision. |
-| **Hulk** | Rainy | 19 | `core/hulk` officiel | Réponse : après que Hulk subit des dégâts, 1 dégât à un ennemi. Une ligne. |
-| **Lady Sif** | Rainy | 23 | `red_guardian`, `angela` | Réponse : après un pouvoir de base, retirer 1 menace. |
-| **Beta Ray Bill** | Rainy | 19 | `thor` officiel | Action : chercher Stormbreaker et l'ajouter à la main. Motif Mjolnir à l'identique. |
-| **Iron Man (Model 42)** | Rainy | 18 | `core/iron_man`, `superior_iron_man` | Action : dépenser X ressources ⚡ imprimées → X compteurs `reactor`. ⚡ est la ressource ÉNERGIE officielle, pas un 5e type. |
-| **Blade** | Rainy | 26 | compteurs (`speed`, `venompool`) | Réponse : après un pouvoir de base, retirer 1 compteur `blood` → prêter Blade. |
-| **Sunfire** | Rainy | 29 | `beast` (pool hors-deck), `superior_iron_man` | Interruption : attacher une copie mise de côté de Burning (6 exemplaires) à l'ennemi attaqué ou défendu. |
-| **Texas Twister** | Kajislav | 32 | `dazzler`, upgrades exclusives | Upgrades ROTATION mutuellement exclusives, défaussées à l'attaque de base. |
-| **Armored Spidey** | Kajislav | 33 | `gorr` (Godbomb recto-verso), `wiccan` | Spider Armor : permanent recto-verso à compteurs `metal`, se retourne quand le dernier part. |
-| **Ares** | Rainy | 23 | `doctor_doom` (exception de deck), `angela` (`an005`) | Alter-ego : jusqu'à 5 upgrades TACTIC hors aspect. Héros : chercher un sbire dans le deck rencontre et le mettre en jeu engagé. |
-| **Spider-Man 2099** | Rainy | 23 | fouille de deck existante | Réponse : chercher un event dans le deck, le jouer, remettre les cartes défaussées au fond **dans l'ordre de défausse**. |
+| **Viv Vision** | Rainy | 12 | 2/5 | Clone de Vision. Un seul mot-clé neuf, `breakthrough`, absent du moteur et des fiches. |
+| **Hulk** | Rainy | 15 | 2/5 | Tout paie sur le changement de forme. Brique 1 sur 2 cartes. Pas de set nemesis. |
+| **Iron Man (Model 42)** | Rainy | 15 | 2/5 | Une seule économie, les compteurs `reactor`. ⚡ = ressource ÉNERGIE officielle, pas un 5ᵉ type. |
+| **Lady Sif** | Rainy | 18 | 2/5 | Prêter des ASGARD, chercher une WEAPON. Brique 1 sur 1 carte. |
+| **Beta Ray Bill** | Rainy | 13 | 3/5 | Briques 1, 2 et 5 à la fois. Le motif Mjolnir n'est qu'une partie du pack. |
+| **Throg** | Rainy | 17 | 3/5 | Briques 1, 2 et 5. Aucune réutilisation possible du pack `alligator_loki`. |
+| **Spider-Man Noir** | Rainy | 16 | 3/5 | Brique 2, dans sa version la plus lisible : 8 cartes sur 16 la lisent. |
+| **Sunfire** | Rainy | 16 | 3/5 | Briques 3 et 6. Pool BURNING de 6 upgrades qui font l'aller-retour avec la réserve. |
+| **Ares** | Rainy | 15 | 3/5 | Brique 6 poussée loin : modificateurs de dégâts posés SUR l'ennemi, éponge à dégâts, sélection d'upgrade selon la légalité d'attache. |
+| **Blade** | Rainy | 17 | 3/5 | Le set nemesis entier est mélangé au deck de rencontre AU SETUP, et deux cartes OCTROIENT DU TEXTE aux sbires. Mot-clé `teamwork` sans fiche. |
+| **Spider-Man 2099** | Rainy | 19 | 3/5 | Brique 1 appliquée au CHEMIN de mise en jeu (6 cartes). Mot-clé maison `Seek`. Capacité « Acceleration » homonyme du mot-clé OFFICIEL. |
+| **Blink** | Kajislav | 24 | 3/5 | Brique 6 : les PORTAL s'attachent aux ennemis ET aux manigances. Deux hooks neufs (carte qui entre en main, upgrade défaussée du jeu). |
+| **Yondu** | BlueHG + DesignHacker | 20 | 3/5 | Brique 6 + mot-clé maison `summon` + « la prochaine carte dépensée compte double ». Decklist fournie. |
+| **Night Thrasher** | DesignHacker | 19 | 3/5 | Mot-clé maison `agile X`, Battle Board recto-verso, mémoire de la dernière carte jouée. ⚠ contient une carte étrangère (MAGMA NEMESIS 2/5). |
+| **Texas Twister** | Kajislav | 28 | 3/5 | Mécanique 2/5, volume 3/5 : 8 cartes d'aspect génériques et un trait RANGER à créer. Défaut d'écriture sur Lone Star Rangers. |
+| **Armored Spidey** | Kajislav | 30 | 3/5 | Spider Armor recto-verso à compteurs (motif Godbomb), plus 9 cartes d'aspect génériques qui entrent dans le pool commun. |
+| **Spider-Woman** | Kajislav | 32 | 3/5 | Compteurs `psionic web`, annulation des icônes boost une par une, brique 1. Le plus gros pack héros, avec un nemesis livré en deux versions. |
+| **Venomized** | ekAugust | 38 | 3/5 | Un ASPECT complet. Mot-clé `weakness` et règle de deckbuilding au coût cumulé. Recette connue via `determination`. |
+| **Black Cat** | Rainy | 13 | 4/5 | Briques 2, 3 et 4 réunies, plus substitution d'icônes boost, annulation d'activation et mot-clé `Multiverse` non défini dans le zip. |
+| **Cameo compliment** | BlueRiver | 3 | 4/5 | 3 cartes, mais brique 4 seule : chercher dans tout le catalogue une carte d'une identité absente, avec l'écran qui va avec. |
+| **Superior Spider-Man** | Rainy | 22 | 4/5 | Mot-clé `Track` : de la MENACE SUR UN SBIRE, état de jeu inexistant. Plus DEUX alter-ego au choix avec chacun son obligation. |
+| **Doctor Druid** | Kajislav | 17 | 4/5 | 8 cartes produisent un effet CONTINU DEPUIS LA MAIN. Recalcul à chaque changement de main, et le bot doit comprendre qu'une carte gardée vaut quelque chose. |
+| **Muse** | Rainy | 6 | 4/5 | 6 cartes, mais 5 demandent « une carte qui porte l'illustration de ton identité ». Donnée absente du moteur pour tout le catalogue. Décision de conception à prendre avec l'utilisateur. |
 
-### 6.3 Groupe B — une brique neuve, isolée (3/5)
+### 6.4 Ordre conseillé
 
-| Item | Auteur | Cartes | Ce qui est vraiment neuf |
-|---|---|---|---|
-| **Spider-Man Noir** | Rainy | 23 | Zone de cartes « glissées sous l'identité » (max 3), +X ATQ/CTR selon leur nombre, alimentée par les traîtrises résolues. |
-| **Black Cat** | Rainy | 13 | Même zone, plus dur : Interruption qui, au moment où les icônes d'une carte rencontre sont comptées, **compte celles d'une carte glissée à la place**. |
-| **Spider-Woman** | Kajislav | 36 | Annuler les icônes boost **une par une** en dépensant des compteurs `psionic web`, à la révélation de la carte boost. |
-| **Yondu** | BlueHG + DesignHacker | 23 | La Yaka Arrow migre entre ennemis et l'identité, avec un effet à chaque attache et détache. Motifs `alligator_loki` (AttachHeroTo/DetachHero) et `patriot` (Commandeer). |
-| **Superior Spider-Man** | Rainy | 26 | **Deux alter-ego au choix** (Peter Parker, Elliot Tolliver) pour un seul héros, et Contingency Plan : carte attachée face cachée, jouable comme si elle était en main. |
-| **Night Thrasher** | DesignHacker | 26 | Mot-clé maison **agile X** (réduire de X les dégâts d'une attaque à carte boost). Fiche à créer avant la première ligne de code. |
-| **Blink** | Kajislav | 30 | Portal : upgrade attachée à un ennemi ou une manigance qui **réduit de 2 le coût** d'un event ATTAQUE ou MENÉE visant cette cible. Réduction conditionnée à la cible choisie. |
-| **Doctor Druid** | Kajislav | 23 | Action : jouer le premier event de la défausse **dont la capacité est de type Action ou Hero Action**. Le moteur doit introspecter le type de capacité de cartes en défausse. |
-| **Muse** | Rainy | 7 | Set MODULAIRE (pas un héros). Interruption forcée : « quand un joueur joue une carte **à l'effigie de son identité** ». Aucune donnée du moteur ne dit quelles cartes représentent le héros : convention à trancher. |
+**Vague 0, quatre vrais 2/5 pour se remettre en route** : Viv Vision, Hulk,
+Lady Sif, Iron Man (Model 42). Hulk et Lady Sif font écrire la brique 1 sur deux
+cartes faciles, là où elle est vérifiable à l'œil.
 
-### 6.4 Groupe C — chantier de moteur (4/5)
+**Vague 1, la brique 1 rentabilisée** : Beta Ray Bill, Throg. Ils ajoutent la
+brique 2 dans sa forme la plus simple (une seule carte glissée) et la brique 5.
 
-| Item | Auteur | Cartes | Le sous-système |
-|---|---|---|---|
-| **[1] Venomized** | ekAugust | 37 | **Un nouvel ASPECT** (noir), utilisable par tous les héros. Mot-clé maison **weakness** (cartes mélangées au deck, hors compte de taille, à effet négatif à la pioche) et règle de deckbuilding au **coût cumulé** : 1 à 20 → 1 carte weakness, 21 à 40 → 2. Recette connue via `determination`, mais le mot-clé et la règle sont neufs. |
-| **Cameo compliment** | BlueRiver | 3 | 3 cartes seulement, mais chacune dit « cherche dans ta **collection** » au Setup : sélection sur tout le catalogue selon un critère (upgrade WEAPON spécifique à une identité absente de la partie), plus l'écran qui va avec. |
+**Vague 2, la zone glissée** : Spider-Man Noir (la zone comme ressource, 8 cartes
+la lisent), puis Black Cat (la même zone plus la substitution d'icônes et la
+recherche en collection), puis Cameo compliment (3 cartes, qui ne fait que
+réutiliser la recherche en collection).
 
-### 6.5 Ordre conseillé
+**Vague 3, les upgrades posées sur les ennemis** : Sunfire, Ares, Blink, Yondu.
+Quatre variantes de la brique 6, de la plus simple à la plus mobile.
 
-Les 23 nouveaux items s'insèrent après ce qui reste du plan d'origine. L'ordre
-suit la réutilisation, pas la difficulté brute : deux items qui partagent une
-brique se suivent.
+**Vague 4, les gros packs autonomes** : Blade, Spider-Man 2099, Night Thrasher,
+Texas Twister, Armored Spidey, Spider-Woman. Aucun ne dépend des autres, chacun
+apporte un mot-clé maison ou du volume.
 
-1. **Throg** (2/5). Le plus rentable du lot : le pack `alligator_loki` livré le
-   01/09 contient déjà Frogjolnir, le sbire Throg et le nemesis Alligator Loki.
-2. **Viv Vision, Hulk, Lady Sif, Beta Ray Bill** (2/5). Quatre clones de héros
-   officiels, capacité d'identité en une ligne.
-3. **Iron Man (Model 42), Blade, Sunfire** (2/5). Compteurs et cartes mises de
-   côté : trois motifs déjà écrits trois fois.
-4. **Texas Twister, Armored Spidey** (2/5). Upgrades exclusives et permanent
-   recto-verso à compteurs.
-5. **Ares, Spider-Man 2099** (2/5). Exception de deckbuilding façon `dd` et
-   fouille de deck.
-6. **Spider-Man Noir puis Black Cat** (3/5 puis 4/5). Noir construit la zone
-   « glissée sous l'identité » dans sa version simple, Black Cat la reprend et
-   n'a plus que la substitution d'icônes à écrire.
-7. **Spider-Woman** (3/5). Même famille : intervenir pendant la résolution des
-   icônes boost, juste après Black Cat.
-8. **Yondu, Superior Spider-Man** (3/5). Attachement mobile et zone jouable
-   hors main : deux motifs posés par `alligator_loki`, `patriot` et `beast`.
-9. **Night Thrasher, Blink, Doctor Druid** (3/5). Trois briques indépendantes,
-   une par pack, aucune dépendance entre elles.
-10. **Muse** (3/5). 7 cartes, mais une question de données à trancher avec
-    l'utilisateur avant d'écrire.
-11. **[1] Venomized** (4/5). Le plus gros retour sur investissement du lot :
-    un aspect entier disponible pour tous les héros du jeu.
-12. **Iron Patriot** (4/5, reste du plan d'origine). Deck secondaire REGISTERED.
-13. **Cameo compliment** (4/5). 3 cartes, mais un sélecteur sur tout le
-    catalogue et un écran à faire.
-14. **Doctor Doom Alt Arts** (2/5, valeur faible). 12 arts alternatifs de
-    cartes officielles et 4 vraies cartes (Castle Doom, Kristoff, Prot-Doombot,
-    Ingenuity). À faire quand on veut, ça ne débloque rien.
-15. **Skrull Menace, Galactic Storm** (5/5). Bloqués, voir §7.
+**Vague 5, les chantiers** : Venomized (un aspect entier, le plus rentable des
+quatre), Iron Patriot (reste du plan d'origine), Superior Spider-Man, Doctor
+Druid, Muse (à trancher avec l'utilisateur avant tout code).
+
+**Hors vague** : Doctor Doom Alt Arts, 2/5 et sans dépendance, à faire quand on
+veut. Skrull Menace et Galactic Storm restent bloqués, voir §7.
 
 ## 7. ⚠ Les deux campagnes sont incomplètes dans le matériel fourni
 
@@ -314,3 +317,19 @@ identité, le livret 24 pages, les visuels de boîte. Ni les 5 scénarios, ni le
 ➡ **À demander à l'utilisateur avant de planifier ces deux campagnes** : les
 zips des scénarios eux-mêmes. En l'état, les porter voudrait dire inventer les
 cartes à partir du livret, ce qui n'est pas du portage.
+
+## 8. Mots-clés maison rencontrés, à ficher avant d'écrire une ligne
+
+Vérifié dans `src/` et dans `docs/reference/mots-cles/` le 02/09/2026.
+
+| Mot-clé | Pack | État |
+|---|---|---|
+| `breakthrough` | Viv Vision | absent du moteur ET des fiches |
+| `agile X` | Night Thrasher | absent du moteur ET des fiches |
+| `Seek` | Spider-Man 2099 | absent ; défini par l'insert du pack |
+| `summon` | Yondu | absent ; à déduire des cartes, pas d'insert |
+| `Track` | Superior Spider-Man | absent ; défini par l'insert du pack |
+| `weakness` | Venomized | absent ; défini par l'insert du pack |
+| `Multiverse` | Black Cat | le mot existe dans `card_face.py`, mais comme TRAIT chez Blink (Earth-295) et comme MOT-CLÉ chez Black Cat. Deux notions, à ne pas confondre. Le zip Black Cat ne le définit pas : question à l'auteur. |
+| `teamwork (VAMPIRE)` | Blade | présent dans les fabriques `environment` du moteur, sans fiche |
+| `Acceleration` | Spider-Man 2099 | ⚠ homonyme total du mot-clé OFFICIEL déjà fiché. Annoter `acceleration.md`. |
