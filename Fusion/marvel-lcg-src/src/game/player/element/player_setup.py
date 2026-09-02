@@ -227,7 +227,30 @@ class PlayerSetup:
         player.set_aside_obligations += CardFactory.GenerateCards(obligations, player.set_aside_nemesis_sets, player.world)
 
         # 5. Set Aside Nemesis Sets
-        CardFactory.GenerateCards(nemesis_set, player.set_aside_nemesis_sets, player.world)
+        cartes_nemesis = CardFactory.GenerateCards(nemesis_set, player.set_aside_nemesis_sets, player.world)
+
+        # CORRECTIF (02/09/2026) : marquer les cartes du set nemesis avec le
+        # joueur a qui elles appartiennent.
+        #
+        # Pourquoi. `CardEncounter.IsNemesis` decidait jusqu'ici en comparant
+        # des NOMS DE SET : la carte devait porter un `set_name` finissant par
+        # « Nemesis » et egal a celui du heros. Cela marche pour les heros
+        # officiels, dont le set nemesis porte leur nom, et CASSE des qu'un
+        # deck EMPRUNTE le set nemesis d'un autre — ce que font sans arret les
+        # packs fan-made, dont les auteurs ne livrent pas toujours de nemesis.
+        # Constate le 02/09/2026 : Viv Vision emprunte le modulaire officiel
+        # Zzzax (set_name « Zzzax », qui ne finit pas par « Nemesis »), et
+        # `01190` Shadow of the Past — carte du set STANDARD, donc presente a
+        # CHAQUE partie — ne mettait jamais le sbire en jeu : il partait
+        # melange au deck rencontre et la traitrise gagnait surge. Prouve par
+        # sonde, avec temoin (Spider-Man / Vulture entre bien en jeu).
+        #
+        # Le marqueur suit la carte partout, ce qu'une regle « la carte est
+        # dans la reserve nemesis » ne ferait pas : `49022` Face the Past
+        # (Magneto) cherche le sbire nemesis jusque dans le deck rencontre.
+        for carte in cartes_nemesis:
+            for face in carte.printed_faces:
+                face.nemesis_of_player = player
 
         # 6. Shuffle Player Decks
         if player.world.rule.create_player_deck_first:

@@ -7,6 +7,26 @@ class EncounterCard(CanSurge, CanAccelerationToken, CardFace):
 class EncounterNonVillainCard(HasBoostIcon, CanIncite, HasVictory, HasPeril, EncounterCard):
 
     def IsNemesis(self, player: 'Player') -> bool:
+        # CORRECTIF (02/09/2026) : la carte est-elle DANS le set nemesis de CE
+        # joueur ? C'est la seule question qui compte, et le deck de depart y
+        # repond deja par sa cle `nemesis_set`. Le marqueur est pose a la mise
+        # en place (`player_setup.py`, etape 5) et suit la carte partout.
+        #
+        # Le test par NOM DE SET conserve juste en dessous ne marchait que pour
+        # un heros dont le set nemesis porte son propre nom. Des qu'un deck
+        # EMPRUNTE le set d'un autre — cas courant des packs fan-made, dont les
+        # auteurs ne livrent pas toujours de nemesis — il rendait False, et
+        # `01190` Shadow of the Past (set STANDARD, donc a chaque partie) ne
+        # mettait jamais le sbire en jeu. Detail et preuve : commentaire de
+        # `player_setup.py`.
+        #
+        # AJOUT PUR : ce chemin ne peut que transformer un False en True, et
+        # seulement pour une carte reellement declaree dans le `nemesis_set` du
+        # joueur. Aucun heros officiel ne change de comportement, son set
+        # portant deja son nom.
+        if getattr(self, "nemesis_of_player", None) is player:
+            return True
+
         if not self.paper.set_name.endswith(" Nemesis"):
             return False
         identity = player.GetIdentity()

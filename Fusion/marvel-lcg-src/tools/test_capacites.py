@@ -13962,6 +13962,36 @@ CAS = [
         "attendu": {"statuts": [["01001a", "Confused"]]},
     },
     {
+        "nom": "01190 Shadow of the Past — le sbire nemesis EMPRUNTE entre bien en jeu",
+        "pourquoi": ("carte du set STANDARD, donc presente a CHAQUE partie, et restee "
+                     "sans cas. Elle cherche le sbire par `CardFinder(is_nemesis=player)` "
+                     "-> `IsNemesis`, qui comparait des NOMS DE SET : un deck qui EMPRUNTE "
+                     "le set nemesis d'un autre rendait donc False, le sbire partait "
+                     "melange au deck rencontre et la traitrise gagnait surge. "
+                     "Viv Vision emprunte le modulaire officiel Zzzax (set_name « Zzzax », "
+                     "qui ne finit meme pas par « Nemesis ») : 29037 doit entrer en jeu"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["29037"]},
+    },
+    {
+        "nom": "01190 Shadow of the Past — TEMOIN : un set nemesis PROPRE marche toujours",
+        "pourquoi": ("garde-fou du correctif ci-dessus : le chemin historique, par nom de "
+                     "set, doit continuer de fonctionner pour les ~60 heros officiels. "
+                     "Spider-Man et son set « Spider-Man Nemesis » : 01167 * Vulture "
+                     "entre en jeu. Ce cas etait DEJA vert avant le correctif, et doit "
+                     "le rester — c'est tout son interet"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01167"]},
+    },
+    {
         "nom": "21191 Fandral — sa menee de BASE ignore l'icone de crise",
         "pourquoi": ("carte OFFICIELLE restee SANS AUCUN CAS jusqu'au 02/09/2026. "
                      "`UnitIgnoreKeywordIcons('This', crisis=True, "
