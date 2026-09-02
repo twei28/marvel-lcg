@@ -333,3 +333,44 @@ Vérifié dans `src/` et dans `docs/reference/mots-cles/` le 02/09/2026.
 | `Multiverse` | Black Cat | le mot existe dans `card_face.py`, mais comme TRAIT chez Blink (Earth-295) et comme MOT-CLÉ chez Black Cat. Deux notions, à ne pas confondre. Le zip Black Cat ne le définit pas : question à l'auteur. |
 | `teamwork (VAMPIRE)` | Blade | présent dans les fabriques `environment` du moteur, sans fiche |
 | `Acceleration` | Spider-Man 2099 | ⚠ homonyme total du mot-clé OFFICIEL déjà fiché. Annoter `acceleration.md`. |
+
+---
+## 6. ARRIVAGE DU 02/09/2026 : 25 zips déposés à la racine
+
+L'utilisateur a déposé ce jour-là une fournée de zips à la racine du
+dépôt (`*.zip`), non suivis par git. Deux ont été portés dans la foulée
+(Intergalactic Hazards et Necroverse, les deux modulaires de Gorr) ; les
+autres attendent. Cette liste n'a PAS été triée par difficulté ni
+croisée avec `data/cards.json` : le faire avant d'en annoncer un comme
+manquant, comme le rappelle l'encart en fin de §3.
+
+- `Ares`
+- `Armored Spidey (Released)`
+- `Beta Ray Bill`
+- `Black Cat`
+- `Blade`
+- `Blink (Released)`
+- `Cameo compliment`
+- `Doctor Druid (Released)`
+- `Galactic Storm`
+- `Hulk`
+- ✅ `Intergalactic Hazards [2.5]`
+- `Iron Man (Model 42)`
+- `Lady Sif`
+- `Muse`
+- `NIGHT THRASHER (MC4 SEALED)`
+- ✅ `Necroverse [1.5]`
+- `Skrull Menace (Released)`
+- `Spider-Man 2099`
+- `Spider-Man Noir`
+- `Spider-Woman (Released)`
+- `Sunfire`
+- `Superior Spider-Man`
+- `Texas Twister (Released)`
+- `Throg`
+- `Viv Vision`
+- `YONDU (MC4 SEALED)`
+- `[1] Venomized`
+
+⚠ `Galactic Storm` et `Skrull Menace (Released)` sont des DOUBLONS des
+zips déjà présents dans `A créer/` : vérifier avant de porter.
