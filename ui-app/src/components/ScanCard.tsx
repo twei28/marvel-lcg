@@ -423,17 +423,10 @@ export function ScanCard({
 
           {discard ? <span className="pastille-discard">{t('Défausse')}</span> : null}
 
-          {mordu && !facedown ? (
-            IMAGE_MORSURE ? (
-              <img
-                className="marque-morsure"
-                src={IMAGE_MORSURE}
-                alt={t('Mordu')}
-                draggable="false"
-              />
-            ) : (
-              <span className="pastille-morsure">{t('Mordu')}</span>
-            )
+          {/* Repli quand aucune illustration n'est branchee (morsure.ts).
+              L'alligator, lui, vit HORS du cadre : voir plus bas. */}
+          {mordu && !facedown && !IMAGE_MORSURE ? (
+            <span className="pastille-morsure">{t('Mordu')}</span>
           ) : null}
 
           {spentCount ? (
@@ -511,6 +504,19 @@ export function ScanCard({
             </div>
           ) : null}
         </div>
+
+        {/* L'ALLIGATOR ACCROCHE, hors de `.scan-frame` a dessein : le cadre
+            rogne son contenu (`overflow: hidden`), et le marqueur doit mordre
+            le bord droit en debordant. Il grandit avec la carte puisqu'il est
+            dans `.scan-visuel`, la couche qui porte le zoom au survol. */}
+        {mordu && !facedown && IMAGE_MORSURE ? (
+          <img
+            className="marque-morsure"
+            src={IMAGE_MORSURE}
+            alt={t('Mordu')}
+            draggable="false"
+          />
+        ) : null}
       </div>
     </article>
   )

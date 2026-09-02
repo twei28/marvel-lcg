@@ -41,6 +41,9 @@
       "scan";
     gap: 5px;
     width: var(--card-w);
+    /* Ancre du marqueur de morsure, qui doit deborder hors du cadre (lui
+       rogne son contenu) tout en suivant le zoom de cette couche. */
+    position: relative;
     /* .scan-frame prend son arrondi de son parent (border-radius: inherit).
        Sans ce relais, l'insertion de cette couche carrerait les coins du cadre,
        et avec eux la forme du halo. */
@@ -376,8 +379,9 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(85, 224, 138, 0.45);
   }
 
-  /* Heros ACCROCHE a un ennemi (Lock Jaws) : badge orange dans le bandeau,
-     meme gabarit que Active. */
+  /* Heros ACCROCHE a un ennemi (Lock Jaws) : badge dans le bandeau, meme
+     gabarit que Active, au VERT de l'alligator pour s'accorder au halo des
+     deux cartes liees. */
   .pastille-accroche {
     display: inline-flex;
     align-items: center;
@@ -387,10 +391,10 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: #1a0e04;
-    background: linear-gradient(180deg, #ffb35c, #d97a1c);
+    color: #05200f;
+    background: linear-gradient(180deg, #6bf7a8, #17b45f);
     border-radius: 6px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(255, 160, 70, 0.45);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(40, 230, 130, 0.45);
   }
 
   /* Ennemi MORDU : pastille texte en bas a gauche du scan, tant qu'aucune
@@ -418,21 +422,33 @@
 
   /* Meme marqueur, version IMAGE (PNG fourni) : posee sur le bas du scan,
      un peu decalee comme une carte glissee sous l'ennemi. */
+  /* L'ALLIGATOR ACCROCHE AU BORD DROIT (choix de l'utilisateur, 02/09/2026).
+     L'illustration est deja tete en bas : aucune rotation, il pend le long du
+     bord et deborde d'environ un tiers de sa largeur pour qu'on le lise comme
+     accroche A la carte, et non pose DESSUS. Tout est en fractions de
+     `--card-w` : un pourcentage de hauteur ne se resoudrait pas ici, le parent
+     grid n'ayant pas de hauteur explicite. */
   .marque-morsure {
     position: absolute;
-    left: 4%;
-    bottom: 3%;
-    width: 46%;
-    height: auto;
-    z-index: 3;
-    transform: rotate(-8deg);
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
+    right: calc(var(--card-w) * -0.16);
+    bottom: calc(var(--card-w) * -0.06);
+    height: calc(var(--card-w) * 1.3);
+    width: auto;
+    z-index: 4;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
     pointer-events: none;
   }
 
-  /* Halo orange sur l'ennemi mordu, pour le reperer meme de loin. */
+  /* Halo VERT sur l'ennemi mordu : la meme couleur que le contour de
+     l'alligator, pour que les deux marques se repondent. */
   .scan-card.est-mordu .scan-frame {
-    box-shadow: 0 0 0 2px #e8912e, 0 0 16px rgba(255, 160, 70, 0.7);
+    box-shadow: 0 0 0 2px #22e07a, 0 0 16px rgba(40, 230, 130, 0.7);
+  }
+
+  /* Le heros accroche porte le meme vert : d'un coup d'oeil, les deux cartes
+     liees sont de la meme couleur. */
+  .scan-card.est-accroche .scan-frame {
+    box-shadow: 0 0 0 2px #22e07a, 0 0 16px rgba(40, 230, 130, 0.7);
   }
 
   .kind-pill,

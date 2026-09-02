@@ -53,13 +53,32 @@ réclamer d'un type final (`PlayerMinion.also_final_types = (Minion,)`).
 
 Exigence de l'utilisateur : « on doit clairement pouvoir voir à quel
 ennemi on est attaché ». `card-model.ts` lit `info.held_by_hero` →
-`mordu`, `info.attached_to_enemy` → `accroche` ; `ScanCard.tsx` pose une
-pastille « Mordu » (bas gauche, halo orange sur le cadre) sur l'ennemi et
-« Accroché » dans le bandeau du héros. L'utilisateur fournira **un PNG à
-poser sur la carte mordue** : `src/components/morsure.ts` exporte
-`IMAGE_MORSURE` (null aujourd'hui) ; brancher l'image = déposer le fichier
-et remplacer deux lignes, ScanCard bascule seul du texte à l'image
-(`.marque-morsure`). Test `morsure.test.ts` (4 cas verts), `tsc` propre.
+`mordu`, `info.attached_to_enemy` → `accroche` ; `ScanCard.tsx` marque les deux
+cartes liées en VERT (`#22e07a`, la couleur du contour de l'illustration) :
+halo sur le cadre des deux, pastille « Accroché » dans le bandeau du héros,
+et sur l'ennemi **l'alligator lui-même**.
+
+L'illustration a été fournie par l'utilisateur le 02/09/2026, et son
+placement arbitré en trois questions : **accroché au bord droit**, tête en
+bas (l'image l'est déjà, aucune rotation), haut de 1,15 largeur de carte,
+débordant d'environ un tiers de sa largeur pour se lire comme accroché A la
+carte et non posé DESSUS ; **halo vert, sans pastille texte** côté ennemi ;
+**pastille + halo, sans seconde image** côté héros.
+
+Deux contraintes ont dicté le montage :
+- `.scan-frame` rogne son contenu (`overflow: hidden`) : le marqueur vit
+  donc dans `.scan-visuel` (qui reçoit `position: relative`), la couche qui
+  porte aussi le zoom au survol.
+- le serveur du jeu ne sert que `.html/.js/.css` (liste blanche de
+  `web_server.py`, un `.png` renvoie silencieusement « no image ») :
+  l'image doit être INLINÉE. `assetsInlineLimit: () => true` s'en charge, et
+  `npm run verifier-sortie` échouerait si un fichier image sortait. Le PNG a
+  donc été rogné et ramené à 189x600 (1,1 Mo -> 21 ko) pour que le data URI
+  reste raisonnable.
+
+Tests : `morsure.test.ts` (modèle, 4 cas) et `ScanCard.morsure.test.tsx`
+(rendu, 4 cas, assertions sur les CLASSES et non sur le texte, qui dépend de
+la langue). Suite complète 481/481, `tsc` propre.
 
 ### Le harnais comptait DEF deux fois (`Puzzle.Defend`)
 
@@ -350,8 +369,8 @@ Hors deck de départ (injouable en solo).
 ## 5. Ce que ces contrôles ne peuvent pas voir — reste à faire
 
 - **Une vraie partie jouée à la main** (gate finale) : non faite.
-- **Le PNG de morsure** : à fournir par l'utilisateur, branchement décrit
-  dans `ui-app/src/components/morsure.ts`.
+- **Le marqueur à l'œil, en vraie partie** : le rendu n'a été vérifié que sur
+  une page de démonstration reprenant le CSS réel, jamais sur le plateau.
 - **ui-app déployée** (`deployer.sh`, 01/09/2026) ; survol de la biographie
   et du marqueur en vraie partie : à faire à l'œil.
 
