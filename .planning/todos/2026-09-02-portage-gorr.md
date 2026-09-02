@@ -193,16 +193,18 @@ TÉMOIN contre `rhino`, le 02/09/2026 :
 - `test_cards` : **5047 ok / 0 err**.
 - ⚠ Batterie complète du harnais : **à faire** (fichiers partagés touchés :
   `card_face.py` pour les compteurs et le trait, `tools/test_capacites.py`).
+- Après le portage des modulaires : `gb0` **32/32** (les 30 cas, plus le
+  remélange de Necroverse et le ★ Boost de Forgotten Gods).
 
 ---
 
 ## 5. Ce que ces contrôles ne voient pas — reste à faire
 
 - **Une vraie partie jouée à la main** : non faite.
-- **Les deux sets modulaires** fournis par l'utilisateur le 02/09, à porter :
-  **Intergalactic Hazards [2.5]** (6 cartes) et **Necroverse [1.5]**
-  (8 cartes), tous deux de BLUEHG, zips à la racine du dépôt. Le second
-  rendra démontrable le Setup de gb004a et rendra au scénario son escalade
-  d'origine.
+- ~~**Les deux sets modulaires**~~ ✅ **PORTÉS le 02/09/2026**, dans la
+  foulée : `145. Intergalactic Hazards` et `146. Necroverse`, journal
+  `2026-09-02-portage-modulaires-gorr.md`. Les deux scénarios de Gorr les
+  déclarent, et le Setup de gb004a est **enfin démontrable** : il est rouge
+  sans son module (1/1), là où il restait vert faute d'effet mesurable.
 - **Le stade 3 en partie réelle** : l'autoplay ne l'atteint jamais, seuls
   les cas de test y vont (par le vilain III en expert).

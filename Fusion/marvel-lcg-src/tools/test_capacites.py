@@ -13505,6 +13505,18 @@ CAS = [
         "attendu": {"en_jeu": ["gb007b"]},
     },
     {
+        "nom": "gb006a Welcome to Darkness 3A — le set Necroverse revient dans le deck de rencontre",
+        "pourquoi": ("`Worlds.GetSetAsideAreaCards(effect, CardFinder(set_name="
+                     "\'Necroverse\'))` puis `ShuffleAllTo(\'EncounterDeck\')`. Le set "
+                     "modulaire externe est porte depuis le 02/09/2026 : cette moitie "
+                     "du complot 3A est enfin mesurable"),
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb003')"],
+        "verifier": "gorr_necroverse_remelange",
+    },
+    {
         "nom": "gb006b Welcome to Darkness 3B — un deck epuise pose 4 compteurs necro",
         "pourquoi": ("`Ability` a la main sur `AfterDeckRunOut` (comme gb001) + "
                      "`PoserNecro(effect, 4)`. Scenario EXPERT : c'est le vilain III "
@@ -13761,6 +13773,193 @@ CAS = [
         "mise_en_place": ["Puzzle.Reveal('gb003')", "Puzzle.PutIntoPlay('gb022')"],
         "declencher": [],
         "verifier": "gorr_berserker_fin_de_tour",
+    },
+    # ========================================================================
+    # Sets MODULAIRES « intergalactic_hazards » (ih001-ih004) et « necroverse »
+    # (nv001-nv006), de BLUEHG. Tous deux branches sur le scenario `gorr` :
+    # Necroverse est mis de cote au Setup et remelange a l'etape 3A,
+    # Intergalactic Hazards est le modulaire recommande par Deicide 1A.
+    # ========================================================================
+    {
+        "nom": "ih001 Bounty Hunter — +2 ATQ quand le heros est desoriente",
+        "pourquoi": ("`WhenUnitAttackYou(ForcedInterrupt, 'This')` + "
+                     "`message.GainATKForThisAttack(2, effect)`, sous condition "
+                     "`identite.IsConfused()`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.PutIntoPlay('ih001')", "Puzzle.Confuse('01001a')"],
+        "declencher": ["Puzzle.Attack('ih001')"],
+        "verifier": "etat_attendu",
+        # ATQ 1 imprimee + 2 = 3 degats sur un heros incline.
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "ih001 Bounty Hunter — sans desorientation, l'ATQ reste a 1 (contre-cas)",
+        "pourquoi": "la condition « if you are confused » doit vraiment filtrer",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.PutIntoPlay('ih001')"],
+        "declencher": ["Puzzle.Attack('ih001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "ih002 Solar Flare — deja desoriente, 3 degats indirects",
+        "pourquoi": ("branche « If you are confused » : "
+                     "`identite.TakeIndirectDamage(this, 3, effect)`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001a')"],
+        "declencher": ["Puzzle.Reveal('ih002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "ih002 Solar Flare — sinon, le heros devient desoriente",
+        "pourquoi": "branche « Otherwise » : `Faces.GiveStatus([identite], 'Confused')`",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('ih002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01001a", "Confused"]], "degats_identite": 0},
+    },
+    {
+        "nom": "ih003 Turned Around — desoriente, puis le sbire engage attaque",
+        "pourquoi": ("`GiveStatus` puis `MayChooseFace` parmi "
+                     "`joueur.engaged_minions` et `DoAttackYou`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.PutIntoPlay('ih001')"],
+        "declencher": ["Puzzle.Reveal('ih003')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # Desoriente D'ABORD, donc Bounty Hunter frappe a 1+2 = 3.
+        "attendu": {"statuts": [["01001a", "Confused"]], "degats_identite": 3},
+    },
+    {
+        "nom": "ih004 Asteroid Belt — entre en jeu avec 2 compteurs asteroid par joueur",
+        "pourquoi": ("`desc.Uses = '2*,asteroid'` : base automatique, le moteur pose "
+                     "les compteurs a l'entree en jeu et defausse la carte quand le "
+                     "dernier part"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('ih004')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ih004", "asteroid", 2]]},
+    },
+    {
+        "nom": "ih004 Asteroid Belt — l'action retire X compteurs, X = le meilleur pouvoir",
+        "pourquoi": ("`WhenInYourPlayTurn(HeroAction)` + `CostFunc.Exhaust('YourHero')`, "
+                     "X = max(ATQ, CTR, DEF)"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('ih004')",
+                          "Puzzle.Counter('ih004', 'asteroid', 3)"],
+        "declencher": ["Puzzle.Action('ih004', 'HeroAction')"],
+        "verifier": "gorr_asteroides_deblayes",
+    },
+    {
+        "nom": "nv001 Shadow Serpent — ses attaques gagnent overkill",
+        "pourquoi": ("`UnitAttackGainKeyword('This', overkill=True)` : l'attaque "
+                     "traverse l'allie qu'elle vainc"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        # ⚠ « l'allie tombe » ne prouve RIEN (ATQ 3 contre 3 PV, il tombe de
+        # toute facon) : la substitution laissait le cas vert. L'allie est donc
+        # blesse d'abord — il ne lui reste qu'1 PV — et on mesure l'EXCES qui
+        # passe sur le heros : 2 degats avec overkill, 0 sans.
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.PutIntoPlay('nv001')", "Puzzle.PutIntoPlay('01058')",
+                          "Puzzle.Damage('01058', 2)"],
+        "declencher": ["Puzzle.Attack('nv001', defender='01058')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01058"], "degats_identite": 2},
+    },
+    {
+        "nom": "nv002 Annihilablade — l'allie vaincu par le vilain est RETIRE du jeu",
+        "pourquoi": ("`WhenUnitWouldBeDefeated(ForcedInterrupt, Ally)` + `SetBeInstead` "
+                     "+ `Faces.RemoveAllFromGame` : l'allie ne va pas a la defausse"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.Reveal('nv002')", "Puzzle.PutIntoPlay('01058')"],
+        "declencher": ["Puzzle.Attack('gb001', defender='01058')"],
+        "verifier": "nv_allie_retire_du_jeu",
+    },
+    {
+        "nom": "nv003 Dark Apotheosis — s'attache a l'ennemi le plus solide",
+        "pourquoi": ("`AttachToFaceWhenPutIntoPlay` avec une fonction de selection : "
+                     "`max(ennemis, key=health)`. Gorr I a 13 PV, le sbire 3"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ih001')"],
+        "declencher": ["Puzzle.Reveal('nv003')"],
+        "verifier": "etat_attendu",
+        # +1 ATQ et +1 MNG imprimes, poses sur le VILAIN et non sur le sbire.
+        "attendu": {"attributs_carte": [["gb001", "attack", 1], ["gb001", "scheme", 1]]},
+    },
+    {
+        "nom": "nv004 Manifest Will — remelange les sbires de la defausse et en revele un",
+        "pourquoi": ("`ShuffleAllTo(sbires de la defausse, 'EncounterDeck')` puis "
+                     "`DiscardEncounterCardsUntil(card_type=Minion)` + `Reveal`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDiscardPile('gb009')"],
+        "declencher": ["Puzzle.Reveal('nv004')"],
+        "verifier": "nv_un_sbire_est_entre_en_jeu",
+    },
+    {
+        "nom": "nv005 The Ingenuity of Hatred — meme chose pour les attachements",
+        "pourquoi": ("jumelle de nv004 au type pres : "
+                     "`DiscardEncounterCardsUntil(card_type=Attachment)`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDiscardPile('gb013')"],
+        "declencher": ["Puzzle.Reveal('nv005')"],
+        "verifier": "gorr_attachement_revele",
+    },
+    {
+        "nom": "nv006 The Planet Cleaver — Hinder 2 par joueur et icone Hasard",
+        "pourquoi": ("« 1 carte de rencontre face cachee de plus par joueur » EST la "
+                     "definition de l'icone Hasard : `ThisGainKeyword(hazard=1)`, et "
+                     "`Hinder 2*` est une base automatique du `desc`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('nv006')"],
+        "verifier": "etat_attendu",
+        # Menace de depart 1 (fixe) + Hinder 2 par joueur = 3 en solo.
+        "attendu": {"menace": [["nv006", 3]], "attributs_carte": [["nv006", "hazard", 1]]},
+    },
+    {
+        "nom": "gb018 Forgotten Gods — [star] Boost : la carte se revele au lieu d'etre defaussee",
+        "pourquoi": ("`WhenCardBecomeBoost` + `RegisterTemp(WhenCardWouldDiscard)` pour "
+                     "detourner le rangement a venir (modele an014). ⚠ Sans cas, le "
+                     "`TypeError` de `RegisterTemp` (argument `unregister_after_exec` "
+                     "manquant) restait invisible : le ★ Boost ne faisait RIEN. Trouve "
+                     "par l'autoplay le 02/09/2026"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('gb018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["gb018"]},
+    },
+    {
+        "nom": "ih002 Solar Flare — [star] Boost : la carte se revele au lieu d'etre defaussee",
+        "pourquoi": "meme montage que gb018, et meme piege sur `RegisterTemp`",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Boost('ih002')"],
+        "verifier": "etat_attendu",
+        # Revelee, elle applique sa branche « Otherwise » : le heros est desoriente.
+        "attendu": {"statuts": [["01001a", "Confused"]]},
     },
 ]
 
@@ -17726,7 +17925,22 @@ def gorr_setup_range_les_cartes(monde, aides):
             return False, f"{card_id} est en jeu alors qu'il doit etre mis de cote"
     if aides["par_id"](monde, "gb004b") is None:
         return False, "le complot n'est pas au stade 1B"
-    return True, "Gestalt et environnement hors jeu, complot en 1B"
+
+    # Le vrai travail du Setup, mesurable depuis que le set modulaire
+    # « Necroverse » est porte (02/09/2026) : ses 8 cartes doivent avoir
+    # QUITTE le deck de rencontre pour la reserve. Le complot 3A les y
+    # remelangera.
+    from game.operate.worlds import Worlds
+    deck = [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDeckCards(monde)]
+    restants = [x for x in deck if x and x.startswith("nv")]
+    if restants:
+        return False, (f"{len(restants)} carte(s) Necroverse encore dans le "
+                       f"deck de rencontre : {sorted(set(restants))}")
+    reserve = [getattr(f.paper, "card_id", None) for f in monde.aside_deck.Get(True)]
+    if not [x for x in reserve if x and x.startswith("nv")]:
+        return False, f"aucune carte Necroverse en reserve ({reserve})"
+    return True, "Necroverse mis de cote, Gestalt et environnement hors jeu, complot en 1B"
 
 def gorr_deux_attaques(monde, aides):
     """gb020 : Gorr attaque, puis attaque une seconde fois.
@@ -17749,6 +17963,56 @@ def gorr_deux_attaques(monde, aides):
         return False, (f"{subis} degat(s) subis : une seule attaque de 2 "
                        f"(la seconde attaque n'a pas eu lieu)")
     return True, f"{subis} degats : Gorr a bien attaque deux fois"
+
+def gorr_necroverse_remelange(monde, aides):
+    """gb006a : le set modulaire Necroverse, mis de cote au Setup, revient
+    dans le deck de rencontre quand le complot passe au stade 3."""
+    from game.operate.worlds import Worlds
+    deck = [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDeckCards(monde)]
+    revenues = [x for x in deck if x and x.startswith("nv")]
+    if not revenues:
+        reserve = [getattr(f.paper, "card_id", None) for f in monde.aside_deck.Get(True)]
+        return False, (f"aucune carte Necroverse dans le deck de rencontre "
+                       f"(reserve = {sorted(set(x for x in reserve if x))})")
+    return True, f"{len(revenues)} cartes Necroverse remelangees dans le deck"
+
+def gorr_asteroides_deblayes(monde, aides):
+    """ih004 : l'action retire X compteurs, X = le meilleur des trois pouvoirs
+    du heros. On lit X sur l'identite plutot que de l'ecrire en dur : il
+    depend du heros choisi."""
+    env = aides["par_id"](monde, "ih004")
+    if env is None:
+        return False, "Asteroid Belt n'est plus en jeu"
+    identite = aides["identite"](monde)
+    x = max(identite.attack, identite.thwart, identite.defense)
+    poses = 2 * len(monde.players) + 3   # Uses (2 par joueur) + la mise en place
+    reste = env.CastTo(aides["CanPlaceCounter"]).GetCounters('asteroid')
+    if reste != poses - x:
+        return False, (f"{reste} compteur(s) restants (attendu {poses - x} : "
+                       f"{poses} poses moins X={x})")
+    return True, f"X={x} compteurs retires, {reste} restants"
+
+def nv_allie_retire_du_jeu(monde, aides):
+    """nv002 : l'allie vaincu par le vilain quitte la PARTIE, il n'est ni en
+    jeu ni dans la defausse du joueur."""
+    if aides["par_id"](monde, "01058") is not None:
+        return False, "l'allie est encore en jeu"
+    defausse = [getattr(f.paper, "card_id", None)
+                for f in monde.players[0].discard_pile.Get(True)]
+    if "01058" in defausse:
+        return False, ("l'allie est dans la defausse : sans l'attachement, "
+                       "c'est la qu'il finit")
+    return True, "l'allie a ete retire du jeu, pas defausse"
+
+def nv_un_sbire_est_entre_en_jeu(monde, aides):
+    """nv004 : la fouille revele un sbire, donc il entre en jeu."""
+    from game.card.face.card_type import Minion
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and isinstance(face, Minion):
+            return True, f"sbire {face.paper.card_id} revele et en jeu"
+    return False, "aucun sbire revele"
 
 '''
 

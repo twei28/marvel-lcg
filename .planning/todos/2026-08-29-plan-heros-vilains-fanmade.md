@@ -1,9 +1,20 @@
 # PLAN — Ordre de création des héros/vilains fan-made du dossier « A créer »
 
-**Statut :** 📋 Plan prêt. Rien n'est encore créé — seuls les 21 préfixes/numéros de
-set ont été réservés dans `tools/prefixes_fanmade.json` (`cartes: 0`, note
-"RESERVE"), pour que plusieurs sessions puissent démarrer des héros différents
-en parallèle sans se marcher dessus.
+**Statut au 02/09/2026 :** 18 des 21 items sont LIVRÉS, plus deux sets
+modulaires non prévus au plan (`ih` Intergalactic Hazards, `nv` Necroverse).
+Chiffres vérifiés dans `tools/prefixes_fanmade.json`, pas dans ce document.
+
+| Reste du plan d'origine | Préfixe | État |
+|---|---|---|
+| Iron Patriot | `ip` | `cartes: 0`, jamais commencé |
+| Skrull Menace | `sk` | `cartes: 0`, **matériel incomplet**, voir §7 |
+| Galactic Storm | `gs` | `cartes: 0`, **matériel incomplet**, voir §7 |
+| Doctor Doom Alt Arts | aucun | 16 cartes distinctes, pas de préfixe réservé |
+
+⚠ La phrase « Rien n'est encore créé » qui occupait cette place datait du
+29/08 et était fausse depuis le 31/08. Les tableaux du §3 sont eux aussi
+antérieurs aux portages : ils décrivent le travail PRÉVU, pas l'état courant.
+Toujours vérifier dans `tools/prefixes_fanmade.json`.
 **Origine :** demande utilisateur — 22 zips de héros/vilains fan-made
 accumulés dans `A créer/`, à trier par difficulté et à ordonner pour
 maximiser la réutilisation de mécaniques du moteur d'un pack à l'autre.
@@ -132,9 +143,12 @@ worktree`) restent recommandés pour un vrai travail en parallèle.
     `https://drive.google.com/drive/folders/1S3Sm_N4uNZrANMNV6LLQrmeglo4xYG75`
     (le modulaire que le Setup met de côté et que le complot 3A mélange).
 
-  ⚠ Le connecteur Drive ne lit que le Drive de l'utilisateur : ces dossiers
-  sont partagés par lien et **restent inaccessibles**. Pour les porter, il
-  faut leurs zips dans `A créer/`, comme les 42 packs précédents.
+  ✅ **RÉGLÉ le 02/09/2026** : l'utilisateur a déposé les deux zips à la
+  racine du projet, et les deux sets sont portés (`ih`, 6 cartes ; `nv`,
+  8 cartes). Le complot 3A et le Setup de Gorr trouvent désormais le
+  `set_name` « Necroverse » qu'ils cherchaient. Reste ouvert : remplacer
+  Légions de Hel par Intergalactic Hazards dans `data/scenarios/gorr.json`,
+  maintenant que le vrai modulaire existe.
 
   ⚠ **Conséquence déjà appliquée sur le pack Gorr** : les 34 cartes du zip
   forment UN SEUL set d'encartage (toutes portent « GORR THE GOD BUTCHER
@@ -182,3 +196,121 @@ worktree`) restent recommandés pour un vrai travail en parallèle.
 
 Anciennement à créer
   (Patriot).
+
+---
+
+## 6. Deuxième arrivage : 27 zips déposés à la racine le 02/09/2026
+
+**Méthode :** contenu de chaque zip listé, puis carte d'identité (et les cartes
+signalant une mécanique inhabituelle) lues à l'image. Aucune difficulté n'est
+donnée sur la foi d'un nom de fichier.
+
+### 6.1 Quatre zips à écarter tout de suite
+
+| Zip | Raison |
+|---|---|
+| **Intergalactic Hazards [2.5]** | Déjà porté le 02/09 (`ih`, 6 cartes). |
+| **Necroverse [1.5]** | Déjà porté le 02/09 (`nv`, 8 cartes). |
+| **Galactic Storm** | Copie octet pour octet de `A créer/Galactic Storm` (21 fichiers, même arborescence). |
+| **Skrull Menace (Released)** | Copie de `A créer/Skrull Menace (Released)` (39 fichiers, même arborescence). |
+
+23 nouveaux items restent.
+
+### 6.2 Groupe A — clonage direct, aucune primitive neuve (2/5)
+
+| Item | Auteur | Cartes | Réutiliser | Capacité lue |
+|---|---|---|---|---|
+| **Throg** | Rainy | 23 | `alligator_loki` en entier | Réponse : rendre Frogjolnir à la main → prêter Throg. Frogjolnir (`al022`), Throg sbire-joueur (`al002`) et le nemesis Alligator Loki sont déjà codés. |
+| **Viv Vision** | Rainy | 21 | `vision` officiel | Action : dépenser une ressource ⚡ → +2 à un pouvoir de base. Clone de Vision. |
+| **Hulk** | Rainy | 19 | `core/hulk` officiel | Réponse : après que Hulk subit des dégâts, 1 dégât à un ennemi. Une ligne. |
+| **Lady Sif** | Rainy | 23 | `red_guardian`, `angela` | Réponse : après un pouvoir de base, retirer 1 menace. |
+| **Beta Ray Bill** | Rainy | 19 | `thor` officiel | Action : chercher Stormbreaker et l'ajouter à la main. Motif Mjolnir à l'identique. |
+| **Iron Man (Model 42)** | Rainy | 18 | `core/iron_man`, `superior_iron_man` | Action : dépenser X ressources ⚡ imprimées → X compteurs `reactor`. ⚡ est la ressource ÉNERGIE officielle, pas un 5e type. |
+| **Blade** | Rainy | 26 | compteurs (`speed`, `venompool`) | Réponse : après un pouvoir de base, retirer 1 compteur `blood` → prêter Blade. |
+| **Sunfire** | Rainy | 29 | `beast` (pool hors-deck), `superior_iron_man` | Interruption : attacher une copie mise de côté de Burning (6 exemplaires) à l'ennemi attaqué ou défendu. |
+| **Texas Twister** | Kajislav | 32 | `dazzler`, upgrades exclusives | Upgrades ROTATION mutuellement exclusives, défaussées à l'attaque de base. |
+| **Armored Spidey** | Kajislav | 33 | `gorr` (Godbomb recto-verso), `wiccan` | Spider Armor : permanent recto-verso à compteurs `metal`, se retourne quand le dernier part. |
+| **Ares** | Rainy | 23 | `doctor_doom` (exception de deck), `angela` (`an005`) | Alter-ego : jusqu'à 5 upgrades TACTIC hors aspect. Héros : chercher un sbire dans le deck rencontre et le mettre en jeu engagé. |
+| **Spider-Man 2099** | Rainy | 23 | fouille de deck existante | Réponse : chercher un event dans le deck, le jouer, remettre les cartes défaussées au fond **dans l'ordre de défausse**. |
+
+### 6.3 Groupe B — une brique neuve, isolée (3/5)
+
+| Item | Auteur | Cartes | Ce qui est vraiment neuf |
+|---|---|---|---|
+| **Spider-Man Noir** | Rainy | 23 | Zone de cartes « glissées sous l'identité » (max 3), +X ATQ/CTR selon leur nombre, alimentée par les traîtrises résolues. |
+| **Black Cat** | Rainy | 13 | Même zone, plus dur : Interruption qui, au moment où les icônes d'une carte rencontre sont comptées, **compte celles d'une carte glissée à la place**. |
+| **Spider-Woman** | Kajislav | 36 | Annuler les icônes boost **une par une** en dépensant des compteurs `psionic web`, à la révélation de la carte boost. |
+| **Yondu** | BlueHG + DesignHacker | 23 | La Yaka Arrow migre entre ennemis et l'identité, avec un effet à chaque attache et détache. Motifs `alligator_loki` (AttachHeroTo/DetachHero) et `patriot` (Commandeer). |
+| **Superior Spider-Man** | Rainy | 26 | **Deux alter-ego au choix** (Peter Parker, Elliot Tolliver) pour un seul héros, et Contingency Plan : carte attachée face cachée, jouable comme si elle était en main. |
+| **Night Thrasher** | DesignHacker | 26 | Mot-clé maison **agile X** (réduire de X les dégâts d'une attaque à carte boost). Fiche à créer avant la première ligne de code. |
+| **Blink** | Kajislav | 30 | Portal : upgrade attachée à un ennemi ou une manigance qui **réduit de 2 le coût** d'un event ATTAQUE ou MENÉE visant cette cible. Réduction conditionnée à la cible choisie. |
+| **Doctor Druid** | Kajislav | 23 | Action : jouer le premier event de la défausse **dont la capacité est de type Action ou Hero Action**. Le moteur doit introspecter le type de capacité de cartes en défausse. |
+| **Muse** | Rainy | 7 | Set MODULAIRE (pas un héros). Interruption forcée : « quand un joueur joue une carte **à l'effigie de son identité** ». Aucune donnée du moteur ne dit quelles cartes représentent le héros : convention à trancher. |
+
+### 6.4 Groupe C — chantier de moteur (4/5)
+
+| Item | Auteur | Cartes | Le sous-système |
+|---|---|---|---|
+| **[1] Venomized** | ekAugust | 37 | **Un nouvel ASPECT** (noir), utilisable par tous les héros. Mot-clé maison **weakness** (cartes mélangées au deck, hors compte de taille, à effet négatif à la pioche) et règle de deckbuilding au **coût cumulé** : 1 à 20 → 1 carte weakness, 21 à 40 → 2. Recette connue via `determination`, mais le mot-clé et la règle sont neufs. |
+| **Cameo compliment** | BlueRiver | 3 | 3 cartes seulement, mais chacune dit « cherche dans ta **collection** » au Setup : sélection sur tout le catalogue selon un critère (upgrade WEAPON spécifique à une identité absente de la partie), plus l'écran qui va avec. |
+
+### 6.5 Ordre conseillé
+
+Les 23 nouveaux items s'insèrent après ce qui reste du plan d'origine. L'ordre
+suit la réutilisation, pas la difficulté brute : deux items qui partagent une
+brique se suivent.
+
+1. **Throg** (2/5). Le plus rentable du lot : le pack `alligator_loki` livré le
+   01/09 contient déjà Frogjolnir, le sbire Throg et le nemesis Alligator Loki.
+2. **Viv Vision, Hulk, Lady Sif, Beta Ray Bill** (2/5). Quatre clones de héros
+   officiels, capacité d'identité en une ligne.
+3. **Iron Man (Model 42), Blade, Sunfire** (2/5). Compteurs et cartes mises de
+   côté : trois motifs déjà écrits trois fois.
+4. **Texas Twister, Armored Spidey** (2/5). Upgrades exclusives et permanent
+   recto-verso à compteurs.
+5. **Ares, Spider-Man 2099** (2/5). Exception de deckbuilding façon `dd` et
+   fouille de deck.
+6. **Spider-Man Noir puis Black Cat** (3/5 puis 4/5). Noir construit la zone
+   « glissée sous l'identité » dans sa version simple, Black Cat la reprend et
+   n'a plus que la substitution d'icônes à écrire.
+7. **Spider-Woman** (3/5). Même famille : intervenir pendant la résolution des
+   icônes boost, juste après Black Cat.
+8. **Yondu, Superior Spider-Man** (3/5). Attachement mobile et zone jouable
+   hors main : deux motifs posés par `alligator_loki`, `patriot` et `beast`.
+9. **Night Thrasher, Blink, Doctor Druid** (3/5). Trois briques indépendantes,
+   une par pack, aucune dépendance entre elles.
+10. **Muse** (3/5). 7 cartes, mais une question de données à trancher avec
+    l'utilisateur avant d'écrire.
+11. **[1] Venomized** (4/5). Le plus gros retour sur investissement du lot :
+    un aspect entier disponible pour tous les héros du jeu.
+12. **Iron Patriot** (4/5, reste du plan d'origine). Deck secondaire REGISTERED.
+13. **Cameo compliment** (4/5). 3 cartes, mais un sélecteur sur tout le
+    catalogue et un écran à faire.
+14. **Doctor Doom Alt Arts** (2/5, valeur faible). 12 arts alternatifs de
+    cartes officielles et 4 vraies cartes (Castle Doom, Kristoff, Prot-Doombot,
+    Ingenuity). À faire quand on veut, ça ne débloque rien.
+15. **Skrull Menace, Galactic Storm** (5/5). Bloqués, voir §7.
+
+## 7. ⚠ Les deux campagnes sont incomplètes dans le matériel fourni
+
+Vérifié le 02/09/2026 en listant les deux zips, dans leurs deux copies
+identiques (`A créer/` et racine).
+
+**Skrull Menace** (39 fichiers) ne contient que la couche campagne : 7 alliés,
+7 manigances-joueur, 6 soutiens, 6 upgrades, le livret 24 pages et les visuels
+de boîte. **Aucun vilain, aucun complot principal, aucun set de rencontre.** Or
+le carnet de campagne (page 22) compte 4 scénarios avec « Shaper of Worlds » et
+« Cosmic Cube Creation », et la feuille de coopération (page 24) réclame Skrull
+Spy, Skrull Warrior, Skrull Soldier, Skrull Commander, Hijacked, Cloning
+Program, Emperor's Throne, Plotting Revenge, Seeking a Suitable World : rien de
+tout cela n'est dans le zip. Le livret annonce aussi des **formes
+supplémentaires** de héros (« origin form » de Hulkling), donc des héros
+absents eux aussi.
+
+**Galactic Storm** (21 fichiers) : 3 alliés de campagne, 10 alliés liés à une
+identité, le livret 24 pages, les visuels de boîte. Ni les 5 scénarios, ni les
+4 modulaires, ni Binary, ni Quasar.
+
+➡ **À demander à l'utilisateur avant de planifier ces deux campagnes** : les
+zips des scénarios eux-mêmes. En l'état, les porter voudrait dire inventer les
+cartes à partir du livret, ce qui n'est pas du portage.
