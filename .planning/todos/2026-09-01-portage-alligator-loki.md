@@ -97,8 +97,11 @@ set_aside, et c'est celui du harnais (`Puzzle.CreatePlayerAdditionalDeck`),
 d'où un cas vert pour une carte absente en vraie partie. Correction :
 `AbilityFactory.BeginGameWithSetAside(["al022"])` sur al001b (modèle
 bt001b, 09001b, 46001b), et les deux cas qui créaient al022 à la main ne le
-font plus. **Agatha Harkness a le même défaut** (aa013 Ghost Agatha jamais
-générée en vraie partie) : annoté dans aa001b, non corrigé ici.
+font plus. **Agatha Harkness avait le même défaut**, corrigé le 02/09/2026
+(aa001b, témoin 0/2 sans la ligne). **Audit des 29 decks de départ à
+`set_aside` non vide** : tous les autres créent bien leurs cartes (par
+constante ou par `SetupPutIntoPlay`), et SP//dr est câblé dans le moteur
+(`player_setup.py:197`). Il n'y avait que ces deux trous.
 
 ### Un Interrupt nu pose une question à chaque déclenchement
 
@@ -351,7 +354,6 @@ Hors deck de départ (injouable en solo).
   dans `ui-app/src/components/morsure.ts`.
 - **ui-app déployée** (`deployer.sh`, 01/09/2026) ; survol de la biographie
   et du marqueur en vraie partie : à faire à l'œil.
-- **Agatha Harkness** : aa013 jamais générée en vraie partie (§0), à
-  corriger par `BeginGameWithSetAside`.
+
 - **Little Rascals en multijoueur réel** avec X-23 : prouvée par cas,
   jamais vue en partie.

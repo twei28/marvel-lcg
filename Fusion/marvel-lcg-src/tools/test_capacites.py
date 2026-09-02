@@ -11401,15 +11401,16 @@ CAS = [
     {
         "nom": "aa001b Setup — Agatha All Along part du deck vers la main des la mise en place",
         "pourquoi": ("`WhenCardSetup` + `Search.PlayerCard(card_ids=['aa008'])` "
-                     "(modele an001b) ; « Set aside Ghost Agatha » est porte par le "
-                     "set_aside du deck de depart, comme Frostbite chez Iceman — "
-                     "aa013 ne doit PAS etre en jeu"),
+                     "(modele an001b) ; « Set aside Ghost Agatha » est porte par "
+                     "`BeginGameWithSetAside` (le set_aside du fichier de deck ne "
+                     "sert qu'aux clients) — aa013 en RESERVE, pas en jeu"),
         "scenario": "rhino",
         "heros": "agatha_harkness",
         "mise_en_place": [],
         "declencher": [],
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["aa008"],
+                    "mis_de_cote": ["aa013"],
                     "hors_jeu": ["aa013"]},
     },
     {
@@ -11423,8 +11424,11 @@ CAS = [
         "scenario": "rhino",
         "heros": "agatha_harkness",
         "heros2": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')",
-                          "Puzzle.CreatePlayerAdditionalDeck('aa013')"],
+        # aa013 est mise de cote par aa001b (`BeginGameWithSetAside`), comme
+        # en vraie partie : rien a creer a la main. Le
+        # `Puzzle.CreatePlayerAdditionalDeck` d'avant le 02/09/2026 masquait
+        # justement l'absence de la carte en jeu reel.
+        "mise_en_place": ["Puzzle.ChangeToFace('aa001b', 'aa001a')"],
         "declencher": ["Puzzle.Damage('aa001a', 99)"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["aa013"]},

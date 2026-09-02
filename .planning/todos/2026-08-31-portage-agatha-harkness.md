@@ -49,6 +49,19 @@ qui vaut pour toute future carte « après élimination » :
   est le chemin du vrai serveur, `server_new_game.py:93`) : le module cherche
   d'abord `player.set_aside_deck`, puis `world.aside_deck` en repli.
 
+  ⚠ **CORRIGÉ LE 02/09/2026, ce raisonnement était faux.**
+  `server_new_game.py:93` n'est pas « le vrai serveur » mais le chemin
+  PUZZLE, celui du harnais. En vraie partie, `HeroDescriptor` n'a pas de
+  champ `set_aside` et `SelectIdentity` (`player_setup.py:213`) a la
+  génération en commentaire : le `set_aside` du fichier de deck ne sert
+  qu'aux clients (catalogue, lanceur). aa013 n'existait donc nulle part et
+  Ghost Form ne trouvait jamais son fantôme, le cas restant vert parce que
+  le harnais créait la carte lui-même. Écart repéré en portant Alligator
+  Loki. Correctif : `AbilityFactory.BeginGameWithSetAside(["aa013"])` sur
+  aa001b (modèle bt001b / 09001b / 46001b), `Puzzle.CreatePlayerAdditionalDeck`
+  retiré du cas, et le cas de Setup exige désormais `mis_de_cote: ["aa013"]`.
+  Témoin : ligne retirée → **0/2**, ligne remise → **2/2** (32/32 sur `aa0`).
+
 ### Homonymes, en pagaille (7 familles)
 
 Consignés dans `metadata.collision_note` du deck et en tête du `__init__` du
@@ -137,7 +150,8 @@ CardFinder). Son Hero Interrupt vit dans aa001a (helper du `__init__`) :
 annoncé dans les deux fichiers.
 
 ### aa013 Ghost Agatha — Carte terminée : OUI
-Tri du dessus en trois sorts (51016). Rouge 1/1.
+Tri du dessus en trois sorts (51016). Rouge 1/1. Mise de côté au setup par
+`BeginGameWithSetAside` sur aa001b (correctif du 02/09/2026, voir §0).
 
 ### aa014 Chaotic Forces — Carte terminée : OUI
 Squelette an010 ; première puce conditionnée à la présence de aa008 au

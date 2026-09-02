@@ -10,9 +10,15 @@ from . import *
 # Cartes de reference (RECETTES-MOTEUR) :
 #  - Setup + fouille : an001b / ok001b, `WhenCardSetup` +
 #    `Search.PlayerCard(include_player_deck=True, finder=...)` + `GainCard` ;
-#  - « Set aside Ghost Agatha » : porte par la CONSTRUCTION du deck
-#    (aa013 est dans `set_aside` de deck/starter/agatha_harkness.json, comme
-#    Frostbite chez Iceman) — rien a scripter pour cette phrase ;
+#  - « Set aside Ghost Agatha » : `AbilityFactory.BeginGameWithSetAside`,
+#    modele bt001b / 09001b / 46001b. ⚠ CORRECTION DU 02/09/2026 : le champ
+#    `set_aside` de deck/starter/agatha_harkness.json ne suffit PAS. Il ne
+#    sert qu'aux clients (catalogue, lanceur) ; `HeroDescriptor`
+#    (scene/replay/hero.py) n'a pas ce champ et `SelectIdentity`
+#    (player_setup.py:213) a la generation en commentaire. Seul le chemin
+#    PUZZLE (server_new_game.py:93) versait un set_aside, donc le harnais
+#    seul : en vraie partie aa013 n'existait nulle part et Ghost Form ne
+#    trouvait jamais son fantome. Ecart repere en portant Alligator Loki ;
 #  - la mise en jeu depuis la reserve : modele iceman
 #    (`player.set_aside_deck.FindCard(...)`), puis `Faces.PutIntoPlayAll` ;
 #  - l'elimination : `Message.WhenPlayerEliminated` (sender_player.py:349),
@@ -72,16 +78,10 @@ def GetAbilities() -> Sequence['Ability']:
         player = identite.GetOwner()
         if not isinstance(player, Player) or not player.is_eliminated:
             return None
-        # ⚠ FAUX, constate le 01/09/2026 en portant Alligator Loki :
-        # server_new_game.py:93 est le chemin PUZZLE seulement. En vraie
-        # partie (/new), `HeroDescriptor` n'a pas de champ `set_aside` et
-        # player_setup.py:213 a la generation en commentaire : aa013 n'existe
-        # nulle part, le fantome n'est jamais trouve. A corriger par
-        # `AbilityFactory.BeginGameWithSetAside(["aa013"])` (modele bt001b,
-        # al001b), puis retirer `Puzzle.CreatePlayerAdditionalDeck('aa013')`
-        # du cas du harnais (doublon). Non fait ici : hors du portage en cours.
-        # Repli sur la reserve du MONDE par precaution, certains flux y
-        # rangent les mises de cote.
+        # `BeginGameWithSetAside` depose aa013 dans `additional_discard_pile`,
+        # dont `set_aside_deck` est l'alias (player.py:100). Repli sur la
+        # reserve du MONDE par precaution : certains flux y rangent les mises
+        # de cote.
         fantome = player.set_aside_deck.FindCard(card_ids=["aa013"])
         if fantome is None:
             fantome = player.world.aside_deck.FindCard(card_ids=["aa013"])
@@ -96,6 +96,7 @@ def GetAbilities() -> Sequence['Ability']:
             fantome.PutIntoPlay(player, effect)
 
     return [
+        AbilityFactory.BeginGameWithSetAside(["aa013"]),
         AbilityFactory.WhenCardSetup(
             "This",
             setup,
