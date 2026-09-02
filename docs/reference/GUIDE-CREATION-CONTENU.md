@@ -432,6 +432,53 @@ leurs images. En revanche, **pas de biographie** dans `heros-info.js` : le
 panneau de survol s'indexe sur la face du deck de base, une entrée pour la
 variante resterait orpheline.
 
+### 5.4 Règles de deckbuilding propres au héros
+
+Certains héros impriment sur leur alter-ego des contraintes que le deck-builder
+doit connaître : Fatalis (`dd001b`) interdit tout allié supplémentaire et
+autorise jusqu'à 6 cartes TECH/SPELL d'autres aspects. Ces règles se déclarent
+**dans le deck de départ du héros**, sous `metadata.deckbuilding` — même voie
+que `metadata.hero_alts` (§5.3), et pour la même raison : le moteur ignore
+`metadata`, et un héros neuf apporte ses règles avec lui au lieu d'exiger une
+retouche de `public/js/deckbuilder/app.js`.
+
+```json
+"metadata": {
+    "deckbuilding": {
+        "aspects":         { "min": 1, "max": 1 },
+        "hors_aspect":     { "max": 6, "traits": ["TECH", "SPELL"],
+                             "label": "6 cartes TECH/SPELL d’autres aspects" },
+        "types_interdits": ["Ally"]
+    }
+}
+```
+
+Les trois clés sont facultatives :
+
+| Clé | Effet |
+|---|---|
+| `aspects` | `min` / `max` d'aspects distincts. `max: 99` = aspects libres. `label` remplace le libellé calculé |
+| `hors_aspect` | Quota de cartes empruntées à d'AUTRES aspects. `traits` restreint aux cartes portant l'un d'eux ; liste vide ou absente = n'importe quelle carte |
+| `types_interdits` | Types de cartes que le héros refuse (`"Ally"`, `"Upgrade"`…). Ne touche PAS les cartes signature, qui vivent dans `hero_deck` et non dans la sélection |
+
+Deux points de sémantique à connaître, tous deux dans `valider()` :
+
+- **L'aspect « choisi » est celui qui pèse le plus lourd**, pas un champ à
+  renseigner. Les autres aspects ne sortent du décompte que si **toutes** leurs
+  cartes passent le test de `hors_aspect` ; s'il en reste une qui échoue, la
+  classe entière reste comptée et c'est l'erreur d'aspect ordinaire qui parle.
+  Un quota silencieux masquerait quel aspect de trop a été introduit.
+- **Une carte hors quota n'est pas la seule faute possible** : depuis le
+  02/09/2026, la validation refuse aussi toute carte qui n'appartient pas à un
+  deck de joueur (type de rencontre, ou carte signature d'un autre héros). Cette
+  faille avait laissé `15026 Magical Suspension`, un attachement du set némésis
+  de la Sorcière Rouge, dans le `player_deck` de Fatalis : sans `class`, elle
+  échappait à tous les contrôles et le deck ressortait « légal ».
+
+La table câblée de `reglesAspect()` reste en place pour les héros officiels
+(Spider-Woman, Cloak & Dagger, Adam Warlock, Moon Knight), qu'on ne va pas
+rouvrir un par un ; **le déclaratif l'emporte** quand il est présent.
+
 ## 6. Checklist — nouveau scénario
 
 > **Où créer tout ça** : dans la copie vivante `Fusion/marvel-lcg-src/`

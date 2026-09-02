@@ -521,6 +521,27 @@ button{cursor:pointer}
 .hero-card:hover .hc-fav,.hc-fav.on{opacity:1}
 .hc-fav.on{color:#0e0b02;background:var(--gold);border-color:var(--gold)}
 
+/* « Voir le deck » : meme pastille que l'etoile, rangee juste dessous pour ne
+   pas empieter sur les PV (en haut a droite) ni sur le nom (en bas). */
+.hc-deck{
+  position:absolute;
+  z-index:3;
+  top:38px;
+  left:7px;
+  width:27px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  color:var(--dim);
+  background:rgba(0,0,0,.7);
+  border:1px solid rgba(255,255,255,.18);
+  opacity:0;
+  transition:opacity var(--dur),color var(--dur),background var(--dur);
+}
+.hero-card:hover .hc-deck{opacity:1}
+.hc-deck:hover{color:#0e0b02;background:var(--gold);border-color:var(--gold)}
+
 /* Pastille « ce héros a un art alternatif » : pendant discret de l'étoile
    de favori, en haut à droite pour ne pas se marcher dessus. */
 .hc-art{
@@ -897,6 +918,22 @@ button{cursor:pointer}
 .dm-head b{font-size:26px;color:#fff}
 .dm-sub{color:var(--mute);font-size:13px}
 .dm-close{margin-left:auto;background:var(--steel2);border:1px solid var(--line);color:var(--txt);width:36px;height:36px;border-radius:8px;font-size:15px;cursor:pointer}
+.dm-edit{
+  margin-left:auto;
+  padding:5px 12px;
+  font:inherit;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:#0e0b02;
+  background:var(--gold);
+  border:1px solid var(--gold);
+  cursor:pointer;
+}
+.dm-edit:hover{filter:brightness(1.12)}
+.dm-edit + .dm-close{margin-left:8px}
+
 .dm-close:hover{border-color:var(--red2);color:#fff}
 .dm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
 .dm-card{position:relative}

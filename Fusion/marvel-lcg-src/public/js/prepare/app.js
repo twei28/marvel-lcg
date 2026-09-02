@@ -963,8 +963,29 @@ async function refreshHeroGrid(pre) {
                     e.currentTarget.classList.toggle("on", on);
                 },
             }, "★"),
+            // Pendant de l'etoile : voir le deck du heros sans avoir a le
+            // choisir et a descendre jusqu'au Briefing 02.
+            el("span", {
+                class: "hc-deck",
+                title: t("Voir le deck"),
+                onclick: (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    ouvrirDeckDuHeros(h);
+                },
+            }, "▤"),
         );
     }));
+}
+
+/** Apercu du deck de base d'un heros, depuis sa vignette. La modale porte le
+ *  bouton « Modifier », qui ouvre le deck-builder charge sur ce deck. */
+async function ouvrirDeckDuHeros(h) {
+    await cards.load();
+    let decks = [];
+    try { decks = await catalog.decksForHero(h); } catch (e) { return; }
+    const base = decks.find((d) => d.source === "base") || decks[0];
+    if (base) showDeckCards(base.deck, h, base.id);
 }
 
 function autoAdvanceSlot() {
@@ -1490,7 +1511,12 @@ function showCardHover(id, anchorEl) {
     box.replaceChildren(el("img", { class: "hh-card", src: cardImageUrl(id), alt: "" }));
     popShow(box, anchorEl);
 }
-function showDeckCards(deck) {
+/** Apercu d'un deck, toutes cartes visibles.
+ *  `hero` et `deckId` sont facultatifs : quand ils sont fournis, la modale
+ *  gagne un bouton qui ouvre le deck-builder DEJA CHARGE sur ce deck-la
+ *  (parametre `?deck=`, voir js/deckbuilder/app.js). Sans eux, la modale reste
+ *  un simple apercu, comme avant. */
+function showDeckCards(deck, hero, deckId) {
     const ids = [...(deck.hero || []).flatMap((x) => String(x).split(",")), ...(deck.hero_deck || []), ...(deck.player_deck || [])];
     const counts = {};
     for (const id of ids) counts[id] = (counts[id] || 0) + 1;
@@ -1499,6 +1525,16 @@ function showDeckCards(deck) {
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, deck.name || "Deck"),
                 el("span", { class: "dm-sub" }, ids.length + " " + t("cartes")),
+                hero ? el("button", {
+                    class: "dm-edit",
+                    title: t("Ouvrir ce deck dans l’éditeur"),
+                    onclick: (e) => {
+                        e.stopPropagation();
+                        const q = "/deck-builder.html?hero=" + encodeURIComponent(hero.id) +
+                            (deckId ? "&deck=" + encodeURIComponent(deckId) : "");
+                        window.open(q, "_blank");
+                    },
+                }, t("Modifier")) : null,
                 el("button", { class: "dm-close", onclick: () => { hideHover(); overlay.remove(); } }, "✕"),
             ),
             el("div", { class: "dm-grid" }, ...Object.keys(counts).map((id) =>
@@ -1760,7 +1796,7 @@ async function loadDecks(i) {
                         title: ecarts.join(" · "),
                       }, "⚠ " + t("Hors règles"))]
                     : []),
-                el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); showDeckCards(dk.deck); } }, t("Voir les cartes")),
+                el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); showDeckCards(dk.deck, p.hero, dk.id); } }, t("Voir les cartes")),
             ),
         );
     };
