@@ -55,7 +55,12 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         def reveler(effet_temp: 'Effect', message2: 'Message.WhenCardWouldDiscard') -> None:
-            Unused(message2)
+            # ⚠ REVELER NE SUFFIT PAS : la carte entrait bien en jeu, puis le
+            # moteur poursuivait son rangement et la defaussait aussitot
+            # (constate au cas « [star] Boost » le 02/09/2026). Il faut donc
+            # REMPLACER la defausse (`WhenCardWouldDiscard` porte
+            # `CanBeInstead`), puis reveler.
+            message2.SetBeInstead(effet_temp)
             this.Reveal(joueur, effet_temp)
 
         this.effect.RegisterTemp(
@@ -64,6 +69,11 @@ def GetAbilities() -> Sequence['Ability']:
                 "This",
                 reveler,
             ),
+            # ⚠ `unregister_after_exec` est OBLIGATOIRE (mot-cle sans defaut,
+            # face_effect.py:98) : sans lui, `TypeError` avalee par le moteur
+            # et le ★ Boost ne fait RIEN. Trouve par l'autoplay le 02/09/2026.
+            # True : la redirection ne sert qu'une fois.
+            unregister_after_exec=True,
         )
 
     return [
