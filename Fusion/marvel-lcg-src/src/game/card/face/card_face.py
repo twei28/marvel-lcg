@@ -131,6 +131,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
         "STARLING",  # CORRECTIF : trait du pack custom ms_america (jakxin)
+        "NECROVERSE",  # CORRECTIF : trait du pack custom gorr (BLUEHG)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -234,6 +235,16 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # Awareness (ma007) accumule 1 compteur « star » par carte SUPERPOWER
         # jouee, et en depense 4 d'un coup pour annuler une carte rencontre.
         'star',
+        # CORRECTIF : compteurs du pack custom gorr (BLUEHG). Les trois
+        # horloges du scenario : `plan` s'accumule sur le complot principal
+        # 1B et le fait avancer a 3, `timer` s'accumule sur l'environnement
+        # Godbomb et fait perdre a 12 par joueur, `necro` sur sa face
+        # All-Black Necroverse et renforce les ennemis par paliers avant de
+        # faire perdre a 12 par joueur. Sans ces entrees, `IsCounter` refuse
+        # le nom et la partie tombe des la pose du premier compteur.
+        'plan',
+        'timer',
+        'necro',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
@@ -260,6 +271,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # Distincts de "Iron Man"/"Iron Man Nemesis" (officiels) : IsDeckBuildingClass
         # compare les set_name litteralement (meme piege que wolverine_x23).
         "Superior Iron Man", "Superior Iron Man Nemesis",
+        # CORRECTIF : set_names du pack custom gorr (BLUEHG). Deux sets
+        # d'encartage : le principal et son modulaire, mis de cote au setup et
+        # melange au deck de rencontre a l'etape 3A.
+        "Gorr the God Butcher", "Necroverse",
     ]
 
     BASIC_POWER = Literal["ATK", "THW", "REC", "SCH", "DEF"]
