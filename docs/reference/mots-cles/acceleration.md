@@ -15,4 +15,11 @@
 > est le témoin de référence du dépôt pour l'icône Acceleration : son `desc`
 > déclare `Acceleration` et son scan porte bien la forme à pointe + barre. Les cartes Acceleration peuvent cumuler plusieurs icônes (compteur > 1), chaque icône plaçant un threat supplémentaire. Si une future carte cumule Acceleration avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Acceleration lui-même.
 
-**Variantes maison** : aucune recensée pour l'instant.
+**Variantes maison** : aucune, mais ⚠ **un homonyme existe** dans un pack non
+encore porté. Le pack fan-made **Spider-Man 2099** (Rainy, zip du 02/09/2026)
+appelle « *Acceleration* » une CAPACITÉ D'IDENTITÉ (chercher un event dans son
+deck et le jouer, puis remettre les cartes défaussées sous le deck), sans aucun
+rapport avec l'icône décrite ici. Six cartes du pack testent « si tu as joué
+cette carte via ta capacité *Acceleration* ». Au moment de porter ce pack, ne pas
+réutiliser `desc.Acceleration` ni `HasAccelerationIcon` : ce sont deux notions
+différentes sous le même mot.
