@@ -245,6 +245,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'plan',
         'timer',
         'necro',
+        # CORRECTIF : compteur du set modulaire custom intergalactic_hazards
+        # (BLUEHG). Asteroid Belt entre en jeu avec « Uses (2 asteroid
+        # counters) » : sans cette entree, `IsCounter('asteroid')` refuse le
+        # nom et la carte tombe des la construction du deck.
+        'asteroid',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

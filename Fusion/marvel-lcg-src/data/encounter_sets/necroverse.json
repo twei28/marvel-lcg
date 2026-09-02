@@ -1,0 +1,14 @@
+{
+    "version": "0.5.8",
+    "name": "necroverse",
+    "encounters": [
+        "nv001",
+        "nv001",
+        "nv002",
+        "nv003",
+        "nv003",
+        "nv004",
+        "nv005",
+        "nv006"
+    ]
+}

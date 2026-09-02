@@ -1273,5 +1273,23 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "83d1b710e1c18006f7070b0681fcef1273f5f2d9aa2b7d38087bcd562d8ca6b8"
+    "checksum": "83d1b710e1c18006f7070b0681fcef1273f5f2d9aa2b7d38087bcd562d8ca6b8",
+    "145. Custom (Intergalactic Hazards)": {
+        "name": "intergalactic_hazards",
+        "scenarios": [],
+        "heroes": [],
+        "encounters": [
+            "intergalactic_hazards"
+        ],
+        "max_id": "ih004"
+    },
+    "146. Custom (Necroverse)": {
+        "name": "necroverse",
+        "scenarios": [],
+        "heroes": [],
+        "encounters": [
+            "necroverse"
+        ],
+        "max_id": "nv006"
+    }
 }

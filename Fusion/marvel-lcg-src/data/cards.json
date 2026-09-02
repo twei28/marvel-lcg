@@ -85428,5 +85428,163 @@
             "text": "<b>Forced Response</b>: After you draw Stalking Berserker or discard it from the top of your deck, reveal it.\n<b>Forced Response</b>: After your turn ends, discard the top 2 cards of your deck and place 1 necro counter on the All-Black Necroverse environment.\n<b>When Defeated</b>: Put this card into the engaged player's discard pile.",
             "custom": "BLUEHG"
         }
+    ],
+    "intergalactic_hazards": [
+        {
+            "card_id": "ih001",
+            "type": "Minion",
+            "name": "Bounty Hunter",
+            "subtitle": "",
+            "desc": {
+                "HP": "3",
+                "ATK": "1",
+                "SCH": "1",
+                "Boost": "2",
+                "Patrol": "1"
+            },
+            "traits": [
+                "CRIMINAL"
+            ],
+            "set_name": "Intergalactic Hazards",
+            "text": "Patrol.\n[star] <b>Forced Interrupt</b>: When Bounty Hunter attacks, if you are confused, they get +2 ATK for this attack.\n<i>Your antagonist is well connected, but these hired guns won't stop you.</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "ih002",
+            "type": "Treachery",
+            "name": "Solar Flare",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Intergalactic Hazards",
+            "text": "<b>When Revealed</b>: If you are confused, take 3 indirect damage. Otherwise, you are confused.\n<hr />\n[star] <b>Boost</b>: Reveal this card.\n<i>\"That was close!\" -Rocket Raccoon</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "ih003",
+            "type": "Treachery",
+            "name": "Turned Around",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Intergalactic Hazards",
+            "text": "<b>When Revealed</b>: You are confused. Then, choose an engaged minion, if able. That enemy attacks you.\n<i>\"I hate to say it, but I think we're lost.\" \u2014Star-Lord</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "ih004",
+            "type": "Environment",
+            "name": "Asteroid Belt",
+            "subtitle": "",
+            "desc": {
+                "Uses": "2*,asteroid"
+            },
+            "traits": [
+                "LOCATION",
+                "SETTING"
+            ],
+            "set_name": "Intergalactic Hazards",
+            "text": "Uses (2[per_hero] asteroid counters).\n<b>Forced Response</b>: After the end of the player phase, each player takes 2 indirect damage.\n<b>Hero Action</b>: Exhaust your hero \u2192 remove X asteroid counters from here, where X is the highest of your ATK, THW, or DEF.",
+            "custom": "BLUEHG"
+        }
+    ],
+    "necroverse": [
+        {
+            "card_id": "nv001",
+            "type": "Minion",
+            "name": "Shadow Serpent",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "ATK": "3",
+                "SCH": "2",
+                "Boost": "1"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Necroverse",
+            "text": "[star] Shadow Serpent's attacks gain overkill.\n<hr />\n[star] <b>Boost</b>: Deal yourself 1 facedown encounter card.\n<i>\"I feel them... drowning. Feel the blackness flooding them.\"</i>",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "nv002",
+            "type": "Attachment",
+            "name": "* Annihilablade",
+            "subtitle": "",
+            "desc": {
+                "Boost": "4",
+                "ATK+": "1"
+            },
+            "traits": [
+                "NECROVERSE",
+                "WEAPON"
+            ],
+            "set_name": "Necroverse",
+            "text": "Attach to the villain.\n[star] <b>Forced Interrupt</b>: When the villain's attack would defeat an ally, remove that ally from the game instead of discarding it.\n<b>Hero Action</b>: Spend [physical][mental][energy] resources and discard the top 5 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "nv003",
+            "type": "Attachment",
+            "name": "Dark Apotheosis",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "ATK+": "1",
+                "SCH+": "1"
+            },
+            "traits": [
+                "NECROVERSE"
+            ],
+            "set_name": "Necroverse",
+            "text": "Attach to the enemy with the most hit points remaining.\n<b>Hero Action</b>: Spend [physical][mental] resources and discard the top 3 cards of your deck \u2192 discard this card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "nv004",
+            "type": "Treachery",
+            "name": "Manifest Will",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Necroverse",
+            "text": "<b>When Revealed</b>: Shuffle all minions in the encounter discard pile into the encounter deck. Discard cards from the top of the encounter deck until a minion is discarded. Reveal that card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "nv005",
+            "type": "Treachery",
+            "name": "The Ingenuity of Hatred",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Necroverse",
+            "text": "<b>When Revealed</b>: Shuffle all attachments in the encounter discard pile into the encounter deck. Discard cards from the top of the encounter deck until an attachment is discarded. Reveal that card.",
+            "custom": "BLUEHG"
+        },
+        {
+            "card_id": "nv006",
+            "type": "SideScheme",
+            "name": "The Planet Cleaver",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "1",
+                "Boost": "3",
+                "Hinder": "2*"
+            },
+            "traits": [],
+            "set_name": "Necroverse",
+            "text": "<i>The final doom of all gods is Gorr's weapon in its truest form. The Annihilablade hangs over us all.</i>\nHinder 2[per_hero].\n<b>Forced Interrupt</b>: When facedown encounter cards are dealt to players during the villain phase, deal each player 1 additional facedown encounter card.",
+            "custom": "BLUEHG"
+        }
     ]
 }

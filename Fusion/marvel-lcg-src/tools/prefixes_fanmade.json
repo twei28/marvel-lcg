@@ -312,6 +312,20 @@
             "cartes": 13,
             "depuis": "2026-08-29",
             "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de \u00ab Wolverine \u00bb (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
+        },
+        "ih": {
+            "pack": "intergalactic_hazards",
+            "libelle": "145. Custom (Intergalactic Hazards)",
+            "cartes": 6,
+            "depuis": "2026-09-02",
+            "note": "Porte le 02/09/2026. SET MODULAIRE de BLUEHG (6 cartes), le modulaire recommande par Gorr the God Butcher. Sbire Bounty Hunter x2, traitrises Solar Flare et Turned Around x2, environnement Asteroid Belt a compteurs `asteroid`. Tout le set tourne autour du statut DESORIENTE."
+        },
+        "nv": {
+            "pack": "necroverse",
+            "libelle": "146. Custom (Necroverse)",
+            "cartes": 8,
+            "depuis": "2026-09-02",
+            "note": "Porte le 02/09/2026. SET MODULAIRE de BLUEHG (8 cartes), celui que le Setup de Gorr met de cote et que le complot 3A melange au deck de rencontre. Sbire Shadow Serpent x2, attachements Annihilablade et Dark Apotheosis x2, traitrises Manifest Will et The Ingenuity of Hatred, complot annexe The Planet Cleaver. `set_name` = \u00ab Necroverse \u00bb, le nom que cherchent gb004a et gb006a."
         }
     }
 }

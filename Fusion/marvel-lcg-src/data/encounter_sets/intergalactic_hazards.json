@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "intergalactic_hazards",
+    "encounters": [
+        "ih001",
+        "ih001",
+        "ih002",
+        "ih003",
+        "ih003",
+        "ih004"
+    ]
+}

@@ -18,9 +18,10 @@
     "encounters": [],
     "encounter_sets": [
         "gorr",
+        "necroverse",
         "standard"
     ],
     "modular_sets": [
-        "legions_of_hel"
+        "intergalactic_hazards"
     ]
 }
