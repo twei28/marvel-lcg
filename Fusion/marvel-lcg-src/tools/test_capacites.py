@@ -13370,6 +13370,398 @@ CAS = [
         "attendu": {"statuts_absents": [["01094", "Stunned"], ["01094", "Confused"]],
                     "en_main": ["al023"]},
     },
+
+    # ========================================================================
+    # Pack VILAIN « gorr » : gb001-gb022 (set 136, auteur BLUEHG)
+    #
+    # Le scenario tient sur trois horloges a compteurs (`plan` sur le complot
+    # 1B, `timer` sur la Godbomb, `necro` sur sa face All-Black Necroverse) et
+    # sur deux cartes a DOS JOUEUR melangees aux decks (gb021, gb022).
+    # Scenario « gorr » = Gorr I + II, « gorr_expert » = Gorr II + III.
+    # ========================================================================
+    {
+        "nom": "gb001 Gorr the God Butcher I — un deck de joueur epuise le fait s'activer",
+        "pourquoi": ("`Ability` a la main sur `Message.AfterDeckRunOut` (la fabrique "
+                     "`AfterDeckRunOut` ne sait pas dire « n'importe quel joueur »), "
+                     "condition `message.deck.flags.is_player_deck`, puis `DoActivate` "
+                     "contre le proprietaire du deck. Modele wc019b"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        # ⚠ Aucune commande Puzzle ne vide un deck (`CreatePlayerDeck` AJOUTE
+        # au deck existant) : le verificateur envoie `Message.AfterDeckRunOut`
+        # sur le deck du joueur, comme le fait `player_deck` quand il s'epuise.
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "gorr_deck_epuise_active_gorr",
+    },
+    {
+        "nom": "gb002 Gorr the God Butcher II — a la revelation, 1 carte rencontre par joueur",
+        "pourquoi": ("`WhenThisRevealed(None, ...)` + `Players.ForEachPlayer` + "
+                     "`joueur.DealEncounterCards(1, effect)`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb002')"],
+        "verifier": "gorr_cartes_distribuees",
+    },
+    {
+        "nom": "gb003 Gorr the God Butcher III — a la revelation, le complot saute en 3A",
+        "pourquoi": ("`Worlds.GetMainSchemes(...)[0].Advance(\'3A\', effect)` puis "
+                     "`DiscardDeckTopCards(5)` par joueur. Le saut vers 3A est explicite : "
+                     "le complot peut etre encore en 1B"),
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["gb006b"]},
+    },
+    {
+        "nom": "gb004a Deicide 1A — le Setup met de cote le Gestalt et l'environnement",
+        "pourquoi": ("`WhenCardSetup` + `SetupCards.SetAsideCards` : le sbire gb008 et "
+                     "l'environnement recto-verso gb007a/b doivent etre HORS JEU au "
+                     "depart, et le complot doit avoir avance seul en 1B (une face A "
+                     "sans `TargetThreat` s'avance toute seule, scheme_main.py:65-73)"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "gorr_setup_range_les_cartes",
+    },
+    {
+        "nom": "gb004b Deicide 1B — au stade II, l\'etape 1 pose le 3e compteur plan et fait avancer",
+        "pourquoi": ("`AfterResolveVillainPhaseStep(ForcedResponse, 1, ...)`, modele "
+                     "04113b. Declencheur hors de portee de l\'API Puzzle : le "
+                     "verificateur renvoie le message du moteur, comme wc001a"),
+        # ⚠ `Puzzle.Reveal('gb002')` ne change PAS le vilain en jeu (il revele
+        # une copie) : `Worlds.FindVillain` rendrait toujours gb001, stade I.
+        # Le scenario EXPERT commence avec gb002, donc au stade II.
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Counter('gb004b', 'plan', 2)"],
+        "declencher": [],
+        "verifier": "gorr_plan_avance_le_complot",
+    },
+    {
+        "nom": "gb004b Deicide 1B — au stade I, aucun compteur plan (contre-cas)",
+        "pourquoi": "condition « if the villain\'s stage number is 2 or 3 » : au stade I, rien",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "gorr_plan_ne_bouge_pas_au_stade_I",
+    },
+    {
+        "nom": "gb005a Make Ready the Bomb 2A — pose la Godbomb et glisse Heroes\' Labor dans chaque deck",
+        "pourquoi": ("`SetupCards.PutIntoPlay(name=\'Godbomb\', card_type=Environment)` "
+                     "puis `CardFactory.GenerateCard(\'gb021\', joueur.player_deck, monde)` "
+                     "+ `ShuffleAllTo` : c\'est la creation DANS le deck du joueur qui "
+                     "donne le dos joueur (card.py:815-838), exige par le PDF de l\'auteur"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PlaceThreat('gb004b', 3)"],
+        "verifier": "gorr_bombe_amorcee",
+    },
+    {
+        "nom": "gb005b Make Ready the Bomb 2B — l\'etape 1 de la phase du vilain pose 1 timer par joueur",
+        "pourquoi": ("`AfterResolveVillainPhaseStep` + `PoserTimer(effect, \'1*\')`, "
+                     "l\'helper du pack qui ne trouve la Godbomb que sur sa face A"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        # Le stade 2 s'atteint en REMPLISSANT le stade 1B (seuil 3 par joueur) :
+        # reveler la face 2A a la main casse l'avancement (`AdvanceMainScheme`
+        # asserte sur `prev_scheme.card.back_faces`, world.py:902).
+        "mise_en_place": ["Puzzle.PlaceThreat('gb004b', 3)"],
+        "declencher": [],
+        "verifier": "gorr_timer_par_joueur",
+    },
+    {
+        "nom": "gb006a Welcome to Darkness 3A — retourne la Godbomb et vide ses timers",
+        "pourquoi": ("branche « if the Godbomb environment is in play » : "
+                     "`RemoveCountersOn(All, 'timer')` puis `card.Flip(effect)`, modele 50090a"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceThreat('gb004b', 3)",
+                          "Puzzle.Counter('gb007a', 'timer', 5)"],
+        "declencher": ["Puzzle.Reveal('gb003')"],
+        "verifier": "etat_attendu",
+        # On verifie le RETOURNEMENT et la disparition des timers. Les `necro`
+        # ne sont pas concluants ici : le vilain III defausse 5 cartes par
+        # joueur et peut reveler un Heroes' Labor, qui en pose un.
+        "attendu": {"en_jeu": ["gb007b"], "hors_jeu": ["gb007a"]},
+    },
+    {
+        "nom": "gb006a Welcome to Darkness 3A — sans Godbomb posee, l\'environnement sort de la reserve",
+        "pourquoi": ("branche « Otherwise » : le complot 2B n\'a jamais ete traverse, la "
+                     "carte est encore dans le set_aside du scenario"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        # Le stade 3 s'atteint par le vilain III, dont le « When Revealed »
+        # avance le complot a 3A (scenario expert : gb003 est en jeu).
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["gb007b"]},
+    },
+    {
+        "nom": "gb006b Welcome to Darkness 3B — un deck epuise pose 4 compteurs necro",
+        "pourquoi": ("`Ability` a la main sur `AfterDeckRunOut` (comme gb001) + "
+                     "`PoserNecro(effect, 4)`. Scenario EXPERT : c'est le vilain III "
+                     "qui amene le complot au stade 3"),
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('gb003')"],
+        "declencher": [],
+        "verifier": "gorr_deck_epuise_pose_4_necro",
+    },
+    {
+        "nom": "gb007a Godbomb — au 12e timer par joueur, les joueurs perdent",
+        "pourquoi": ("`IfThereAreAtLeastCounterHere(\'12*\', \'timer\', SetGameOver(False))`, "
+                     "modele 39003b"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceThreat('gb004b', 3)"],
+        "declencher": ["Puzzle.Counter('gb007a', 'timer', 12)"],
+        "verifier": "gorr_partie_perdue",
+    },
+    {
+        "nom": "gb007b All-Black Necroverse — a 6 necro par joueur, les NECROVERSE gagnent +1 ATQ",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(..., condition=au_moins(\'6*\'), "
+                     "change_on_event=OnEvent.Counter(\'This\', \'necro\'), attack=1)` : "
+                     "sans le `change_on_event`, le bonus resterait fige (piege al001a)"),
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        # Le stade 3 s'atteint par le vilain III, dont le « When
+        # Revealed » avance le complot a 3A.
+        "mise_en_place": ["Puzzle.Reveal('gb003')"],
+        "declencher": ["Puzzle.Counter('gb007b', 'necro', 6)"],
+        "verifier": "etat_attendu",
+        # Scenario expert : le vilain en jeu est gb002 (ATQ 2 imprimee).
+        "attendu": {"attributs_carte": [["gb002", "attack", 1]]},
+    },
+    {
+        "nom": "gb007b All-Black Necroverse — a 5 necro, l\'ATQ ne bouge pas (contre-cas du palier)",
+        "pourquoi": "le seuil est « 6 par joueur » : a 5, Gorr garde son ATQ imprimee de 2",
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        # Le stade 3 s'atteint par le vilain III, dont le « When
+        # Revealed » avance le complot a 3A.
+        "mise_en_place": ["Puzzle.Reveal('gb003')"],
+        "declencher": ["Puzzle.Counter('gb007b', 'necro', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["gb002", "attack", 0]]},
+    },
+    {
+        "nom": "gb008 Necro-Raven Gestalt — vaincu, il part en reserve au lieu de la defausse",
+        "pourquoi": ("`WhenUnitWouldBeDefeated(ForcedInterrupt, \'This\')` + "
+                     "`message.SetBeInstead(effect)` + `Faces.SetAside`. Jumelle an014"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('gb008')"],
+        "declencher": ["Puzzle.Damage('gb008', 99)"],
+        # ⚠ Le Gestalt appartient au SCENARIO : `Card.SetAside` le range dans
+        # `world.aside_deck` et non dans le `set_aside_deck` du joueur que
+        # regarde la cle `mis_de_cote` (card.py:599-605).
+        "verifier": "gorr_gestalt_en_reserve",
+    },
+    {
+        "nom": "gb009 Black Berserker — +1 PV par attachement NECROVERSE en jeu",
+        "pourquoi": ("`ThisGainKeyword(check_fn, health=1, "
+                     "change_on_event=OnEvent.CardInPlay(Attachment))` : la valeur vient de "
+                     "check_fn (modele 57005b), le plafond de 4 est dans le `min`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('gb009')"],
+        "declencher": ["Puzzle.Reveal('gb012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["gb009", "health", 1]]},
+    },
+    {
+        "nom": "gb010 Necro-Raven — trois copies en jeu invoquent le Gestalt",
+        "pourquoi": ("`AfterCardEnterPlay(ForcedResponse, \'This\')` : defausse le dessus du "
+                     "deck, puis si 3 copies sont en jeu les defausse et sort le Gestalt de "
+                     "la reserve"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('gb010')", "Puzzle.PutIntoPlay('gb010')"],
+        "declencher": ["Puzzle.PutIntoPlay('gb010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["gb008"], "hors_jeu": ["gb010"]},
+    },
+    {
+        "nom": "gb011 Blighted Chains — l\'attaque de base coute une carte au hasard",
+        "pourquoi": ("`AdditionalCostToAttack/Thwart/Defense(CardFinder(card_type=Hero), "
+                     "CostFunc.Discard(\'RandomHandCard\'))` : trois fabriques dediees, il "
+                     "n\'existe pas de cle unique « pouvoir de base »"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb011')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        # ⚠ `Puzzle.Attack(x)` fait attaquer X : pour l'attaque de BASE du
+        # heros, on passe l'identite, pas le vilain.
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "gb012 Mind-Hewn Blade — quand Gorr attaque, 2 cartes du deck sautent",
+        "pourquoi": ("`WhenUnitAttackYou(ForcedInterrupt, CardFinder(name=...))` : "
+                     "`DiscardDeckTopCards(2)` puis `message.GainPiercing(effect)`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb012')",
+                          "Puzzle.Exhaust('01001a')",
+                          ],
+        "declencher": ["Puzzle.Attack('gb001')"],
+        "verifier": "gorr_deux_cartes_defaussees",
+    },
+    {
+        "nom": "gb013 Umbral Wings — les degats subis par Gorr sont reduits de 1",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, CardFinder(name=...))` + "
+                     "`message.ReduceDamage(1, effect)`. Modele 26015"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('gb013')"],
+        "declencher": ["Puzzle.Damage('gb001', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["gb001", 2]]},
+    },
+    {
+        "nom": "gb014 Vicious Tendrils — Gorr gagne riposte 1 et +1 ATQ",
+        "pourquoi": ("`GiveKeywordToAttached(retaliate=1)` : le mot-cle est DONNE au porteur. "
+                     "⚠ `desc.Retaliate` sur un Attachment fait planter la CREATION de la "
+                     "carte (KeyError \'Retaliate\', has_attribute.py:32) : constate en "
+                     "autoplay le 02/09/2026"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["gb001", "attack", 1], ["gb001", "retaliate", 1]]},
+    },
+    {
+        "nom": "gb015 Anti-Dogma — Gorr manigance, puis 2 menaces ou 2 cartes",
+        "pourquoi": ("`villain.DoSchemes(joueur, effect)` puis `ChooseAbilities` entre poser "
+                     "2 menaces et defausser le dessus du deck"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('gb015')"],
+        "accepter_choix": True,
+        # Gorr I manigance (MNG 1) puis la branche « 2 menaces » : 3 menaces,
+        # soit exactement le seuil du stade 1B en solo — le complot avance donc
+        # en 2A/2B. C'est la preuve que les DEUX effets ont eu lieu.
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["gb005b"]},
+    },
+    {
+        "nom": "gb016 Brutal Cunning — la fouille sort un attachement NECROVERSE et le revele",
+        "pourquoi": ("premiere branche : `Worlds.DiscardEncounterCardsUntil(trait=..., "
+                     "card_type=Attachment)` puis `Reveal`. Peril est une base automatique"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('gb013', 'gb012')"],
+        "declencher": ["Puzzle.Reveal('gb016')"],
+        "accepter_choix": True,
+        "verifier": "gorr_attachement_revele",
+    },
+    {
+        "nom": "gb017 Gleeful Savagery — en alter-ego, 1 degat indirect et surge",
+        "pourquoi": ("`WhenThisRevealed(\'Alter-Ego\')` : "
+                     "`identite.TakeIndirectDamage(this, 1, effect)` + `ThisCardGainSurge`. "
+                     "Modele 01145"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "declencher": ["Puzzle.Reveal('gb017')"],
+        # ⚠ `degats_identite_min` seul restait VERT sans le module (la
+        # substitution l'a montre) : d'autres sources blessent l'identite. On
+        # verifie donc le SURGE, que rien d'autre ne produit ici — la carte
+        # placee sous le deck de rencontre est revelee dans la foulee.
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('gb019')"],
+        "verifier": "gorr_savagery_surge",
+    },
+    {
+        "nom": "gb018 Forgotten Gods — a la fin de la phase du vilain, 1 degat indirect a chacun",
+        "pourquoi": ("`WhenVillainPhaseEnd(ForcedResponse, ...)` + `ForEachPlayer` + "
+                     "`identite.TakeIndirectDamage(this, 1, effect)`. Declencheur hors de "
+                     "portee de Puzzle : le verificateur envoie `Message.WhenPhaseEnd`"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('gb018')"],
+        "declencher": [],
+        "verifier": "gorr_degats_a_la_fin_de_la_phase",
+    },
+    {
+        "nom": "gb019 Nihilistic Vision — tous les NECROVERSE gagnent +1 ATQ",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(CardFinder(trait=\'NECROVERSE\', "
+                     "card_type=Enemy), attack=1)`, effet continu tant que le complot "
+                     "annexe est en jeu"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        # La fouille revele le premier attachement du deck : on met Umbral Wings
+        # (gb013), qui ne donne AUCUN bonus d'ATQ, sinon son « +1 ATK » imprime
+        # s'ajouterait et masquerait l'effet propre du complot annexe.
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('gb013')"],
+        "declencher": ["Puzzle.Reveal('gb019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["gb001", "attack", 1]]},
+    },
+    {
+        "nom": "gb020 You Are My God — apres son attaque, Gorr attaque une seconde fois",
+        "pourquoi": ("`AfterUnitAttackEnd(ForcedResponse, CardFinder(name=...))` + "
+                     "`DoActivate(..., do_not_give_boost=True)`, borne par "
+                     "`LimitOncePerPhasePerPlayer` et NON `LimitOncePerPhase` (globale, "
+                     "panne documentee sur wd056b). ⚠ Cas reecrit trois fois, chaque "
+                     "fois parce que la substitution le montrait VERT sans module : "
+                     "l'obligation de Spider-Man pose deja 1 degat au setup, les cartes "
+                     "de boost font varier le reste, `degats_identite_min` n'est pas une "
+                     "cle de `etat_attendu` (elle etait ignoree en silence), et SONNER "
+                     "Gorr annule toute l'ACTIVATION donc `AfterUnitAttackEnd` n'est "
+                     "jamais emis. Le verificateur declenche donc lui-meme une "
+                     "activation SANS boost et compte les degats : 2 pour une attaque, "
+                     "4 pour deux"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.Reveal('gb020')"],
+        "declencher": [],
+        "verifier": "gorr_deux_attaques",
+    },
+    {
+        "nom": "gb021 Heroes\' Labor — revelee, elle pose 1 timer sur la Godbomb",
+        "pourquoi": ("`WhenThisRevealed` : `PoserTimer(effect, 1)` et, a defaut, "
+                     "`PoserNecro`. Le « if able » est le retour booleen de l\'helper"),
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceThreat('gb004b', 3)"],
+        "declencher": ["Puzzle.Reveal('gb021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["gb007a", "timer", 1]]},
+    },
+    {
+        "nom": "gb021 Heroes\' Labor — sans Godbomb, c\'est un compteur necro qui part",
+        "pourquoi": "branche « Otherwise » : l\'environnement est sur sa face All-Black",
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        # Le stade 3 s'atteint par le vilain III, dont le « When
+        # Revealed » avance le complot a 3A.
+        "mise_en_place": ["Puzzle.Reveal('gb003')"],
+        "declencher": ["Puzzle.Reveal('gb021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["gb007b", "necro", 1]]},
+    },
+    {
+        "nom": "gb022 Stalking Berserker — a la fin de ton tour, 2 cartes et 1 necro",
+        "pourquoi": ("`AfterPlayerTurnEnd(ForcedResponse, \'EngagedPlayer\')` : "
+                     "`DiscardDeckTopCards(2)` + `PoserNecro(effect, 1)`. Declencheur hors "
+                     "de portee de Puzzle : le verificateur envoie le message"),
+        "scenario": "gorr_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('gb003')", "Puzzle.PutIntoPlay('gb022')"],
+        "declencher": [],
+        "verifier": "gorr_berserker_fin_de_tour",
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -17097,6 +17489,267 @@ def al_frogjolnir_sur_throg(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, "Frogjolnir sur Throg"
+
+# ------------------------------------------------------------------------
+# Pack VILAIN « gorr » (set 136, BLUEHG).
+#
+# Trois declencheurs du scenario sont HORS DE PORTEE de l'API Puzzle, qui
+# n'a aucune commande pour avancer une phase ou finir un tour :
+#   - « After step 1 of the villain phase » (gb004b, gb005b) ;
+#   - « When the villain phase ends » (gb018) ;
+#   - « After your turn ends » (gb022).
+# Les sondes ci-dessous envoient le message du moteur exactement comme le
+# fait `world` a l'endroit correspondant, sur le modele deja employe par
+# `wc001a_defausse_au_debut_de_la_phase_du_vilain`.
+# ------------------------------------------------------------------------
+
+def _gorr_etape_1_de_la_phase_du_vilain(monde):
+    """Rejoue la fin de l'etape 1 de la phase du vilain."""
+    from game.message import Message
+    debut = Message.WhenVillainPhaseStepStart(1, monde)
+    Message.AfterResolveVillainPhaseStep(1, debut).Send()
+
+def _gorr_compteurs(monde, aides, card_id, nom):
+    face = aides["par_id"](monde, card_id)
+    if face is None:
+        return None
+    return face.CastTo(aides["CanPlaceCounter"]).GetCounters(nom)
+
+def gorr_plan_avance_le_complot(monde, aides):
+    """gb004b : au stade II du vilain, l'etape 1 pose le 3e compteur `plan`
+    et le complot passe en 2A/2B."""
+    avant = _gorr_compteurs(monde, aides, "gb004b", 'plan')
+    if avant is None:
+        return False, "gb004b n'est pas en jeu"
+    if avant != 2:
+        return False, f"gb004b portait {avant} compteur(s) plan au depart (attendu 2)"
+
+    _gorr_etape_1_de_la_phase_du_vilain(monde)
+
+    if aides["par_id"](monde, "gb005b") is None:
+        restant = _gorr_compteurs(monde, aides, "gb004b", 'plan')
+        return False, (f"le complot n'a pas avance en 2B (plan = {restant})")
+    return True, "3e compteur plan pose, complot avance en 2B"
+
+def gorr_plan_ne_bouge_pas_au_stade_I(monde, aides):
+    """gb004b, contre-cas : le vilain au stade I ne pose aucun compteur."""
+    _gorr_etape_1_de_la_phase_du_vilain(monde)
+    n = _gorr_compteurs(monde, aides, "gb004b", 'plan')
+    if n is None:
+        return False, "gb004b n'est pas en jeu"
+    if n != 0:
+        return False, f"{n} compteur(s) plan poses alors que le vilain est au stade I"
+    return True, "aucun compteur plan au stade I"
+
+def gorr_timer_par_joueur(monde, aides):
+    """gb005b : l'etape 1 de la phase du vilain pose 1 timer par joueur."""
+    _gorr_etape_1_de_la_phase_du_vilain(monde)
+    n = _gorr_compteurs(monde, aides, "gb007a", 'timer')
+    if n is None:
+        return False, "la Godbomb (gb007a) n'est pas en jeu"
+    if n != len(monde.players):
+        return False, f"{n} compteur(s) timer (attendu {len(monde.players)}, 1 par joueur)"
+    return True, f"{n} compteur(s) timer poses"
+
+def gorr_degats_a_la_fin_de_la_phase(monde, aides):
+    """gb018 : a la fin de la phase du vilain, 1 degat indirect a chacun."""
+    from game.message import Message
+    identite = monde.players[0].GetIdentity()
+    def subis():
+        return (identite.max_health - identite.health) if identite else 0
+    avant = subis()
+    Message.WhenPhaseEnd(1, "Villain", monde).Send()
+    apres = subis()
+    if apres <= avant:
+        return False, f"aucun degat inflige (avant {avant}, apres {apres})"
+    return True, f"degats passes de {avant} a {apres}"
+
+def gorr_berserker_fin_de_tour(monde, aides):
+    """gb022 : a la fin du tour du joueur engage, 2 cartes du deck sautent et
+    1 compteur necro se pose."""
+    from game.message import Message
+    joueur = monde.players[0]
+    taille_avant = joueur.player_deck.GetSize()
+    necro_avant = _gorr_compteurs(monde, aides, "gb007b", 'necro')
+    if necro_avant is None:
+        return False, "All-Black Necroverse (gb007b) n'est pas en jeu"
+
+    fin = Message.WhenPlayerTurnEnd(joueur, 1)
+    Message.AfterPlayerTurnEnd(joueur, fin).Send()
+
+    taille_apres = joueur.player_deck.GetSize()
+    necro_apres = _gorr_compteurs(monde, aides, "gb007b", 'necro')
+    if taille_avant - taille_apres != 2:
+        return False, (f"deck passe de {taille_avant} a {taille_apres} "
+                       f"(attendu -2)")
+    if necro_apres != necro_avant + 1:
+        return False, f"necro passe de {necro_avant} a {necro_apres} (attendu +1)"
+    return True, f"2 cartes defaussees, necro {necro_avant} -> {necro_apres}"
+
+def gorr_cartes_distribuees(monde, aides):
+    """gb002 : chaque joueur recoit 1 carte de rencontre face cachee."""
+    for joueur in monde.players:
+        cartes = joueur.dealt_encounter_cards.Get(True)
+        if not cartes:
+            return False, "aucune carte de rencontre distribuee"
+    return True, "1 carte de rencontre distribuee par joueur"
+
+def gorr_bombe_amorcee(monde, aides):
+    """gb005a : la Godbomb est en jeu ET chaque deck contient un Heroes' Labor
+    a DOS JOUEUR (donc cree dans le deck du joueur, cf. card.py:815-838)."""
+    if aides["par_id"](monde, "gb007a") is None:
+        return False, "la Godbomb (gb007a) n'est pas en jeu"
+    for joueur in monde.players:
+        ids = [getattr(f.paper, "card_id", None) for f in joueur.player_deck.Get(True)]
+        if "gb021" not in ids:
+            return False, f"aucun Heroes' Labor dans le deck de {joueur}"
+        labeur = [f for f in joueur.player_deck.Get(True)
+                  if getattr(f.paper, "card_id", None) == "gb021"][0]
+        proprietaire = labeur.card.GetOwner()
+        if getattr(proprietaire, "is_scenario", False):
+            return False, ("Heroes' Labor appartient au SCENARIO : son dos serait "
+                           "une carte de rencontre, pas un dos joueur")
+    return True, "Godbomb en jeu, un Heroes' Labor a dos joueur par deck"
+
+def gorr_partie_perdue(monde, aides):
+    """gb007a : au 12e timer par joueur, les joueurs perdent."""
+    if not monde.is_game_over:
+        return False, "la partie n'est pas terminee"
+    if monde.game_over.players_won:
+        return False, "les joueurs ont GAGNE (attendu : defaite)"
+    return True, f"partie perdue ({monde.game_over.reason})"
+
+def gorr_attachement_revele(monde, aides):
+    """gb016 : la fouille sort un attachement NECROVERSE du deck de rencontre
+    et le REVELE, donc il est en jeu."""
+    from game.card.face.card_type import Attachment
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.IsInPlay():
+            continue
+        if not isinstance(face, Attachment):
+            continue
+        if "NECROVERSE" in (face.paper.traits or []):
+            return True, f"attachement {face.paper.card_id} revele et en jeu"
+    return False, "aucun attachement NECROVERSE revele"
+
+def _gorr_envoyer_deck_epuise(monde):
+    """Rejoue l'epuisement du deck du premier joueur.
+
+    Aucune commande Puzzle ne vide un deck (`CreatePlayerDeck` AJOUTE au deck
+    existant) : on envoie le message que `Deck` emet lui-meme quand il tombe a
+    zero, exactement comme `wc001a` rejoue le debut de la phase du vilain.
+    """
+    from game.message import Message
+    Message.AfterDeckRunOut(monde.players[0].player_deck).Send()
+
+def gorr_deck_epuise_active_gorr(monde, aides):
+    """gb001 : le deck epuise fait s'activer Gorr contre son proprietaire.
+
+    Peter Parker est en alter-ego : Gorr manigance (MNG 1), donc la menace du
+    complot principal monte.
+    """
+    complot = aides["par_id"](monde, "gb004b")
+    if complot is None:
+        return False, "gb004b n'est pas en jeu"
+    avant = complot.threat
+    _gorr_envoyer_deck_epuise(monde)
+    apres_complot = aides["par_id"](monde, "gb004b")
+    apres = apres_complot.threat if apres_complot is not None else None
+    if apres_complot is None:
+        return True, "le complot a avance : Gorr a bien manigance"
+    if apres <= avant:
+        return False, f"menace inchangee ({avant} -> {apres}) : Gorr ne s'est pas active"
+    return True, f"Gorr s'est active, menace {avant} -> {apres}"
+
+def gorr_deck_epuise_pose_4_necro(monde, aides):
+    """gb006b : au stade 3, un deck epuise pose 4 compteurs necro."""
+    avant = _gorr_compteurs(monde, aides, "gb007b", 'necro')
+    if avant is None:
+        return False, "All-Black Necroverse (gb007b) n'est pas en jeu"
+    _gorr_envoyer_deck_epuise(monde)
+    apres = _gorr_compteurs(monde, aides, "gb007b", 'necro')
+    if apres != avant + 4:
+        return False, f"necro {avant} -> {apres} (attendu +4)"
+    return True, f"necro {avant} -> {apres}"
+
+def gorr_gestalt_en_reserve(monde, aides):
+    """gb008 : vaincu, le Gestalt quitte le jeu pour la reserve du MONDE.
+
+    Il appartient au scenario : `Card.SetAside` le range dans
+    `world.aside_deck`, pas dans le `set_aside_deck` du joueur (card.py:599).
+    """
+    if aides["par_id"](monde, "gb008") is not None:
+        return False, "gb008 est encore en jeu"
+    ids = [getattr(f.paper, "card_id", None) for f in monde.aside_deck.Get(True)]
+    if "gb008" not in ids:
+        return False, f"gb008 n'est pas dans la reserve du monde ({ids})"
+    defausse = _wc_defausse_rencontre(monde)
+    if "gb008" in defausse:
+        return False, ("gb008 est dans la defausse de rencontre : sans son "
+                       "Interruption Obligatoire, c'est la qu'il finit")
+    return True, "le Gestalt est en reserve, pas a la defausse"
+
+def gorr_deux_cartes_defaussees(monde, aides):
+    """gb012 : l'attaque de Gorr defausse 2 cartes du deck du joueur.
+
+    La defausse du joueur est VIDE au depart d'une partie : tout ce qui s'y
+    trouve apres l'attaque vient de l'Interruption Obligatoire de la lame.
+    """
+    defausse = monde.players[0].discard_pile.Get(True)
+    if len(defausse) < 2:
+        ids = [getattr(f.paper, "card_id", None) for f in defausse]
+        return False, f"{len(defausse)} carte(s) defaussee(s) (attendu 2) : {ids}"
+    return True, f"{len(defausse)} carte(s) defaussees par la lame"
+
+def gorr_savagery_surge(monde, aides):
+    """gb017, branche alter-ego : « This card gains surge », donc une seconde
+    carte de rencontre est revelee dans la foulee.
+
+    Le degat indirect seul ne prouvait rien : Gorr s'active aussi a la fin de
+    la revelation (constate par substitution le 02/09/2026).
+    """
+    defausse = _wc_defausse_rencontre(monde)
+    en_jeu = [getattr(objet.face.paper, "card_id", None)
+              for objet in monde.object_manager.card_dict.values()
+              if objet.face is not None and objet.face.IsInPlay()]
+    if "gb019" not in defausse and "gb019" not in en_jeu:
+        return False, ("la carte suivante du deck de rencontre n'a pas ete "
+                       f"revelee : surge absent (defausse = {defausse})")
+    return True, "surge : la carte suivante a bien ete revelee"
+
+def gorr_setup_range_les_cartes(monde, aides):
+    """gb004a : au Setup, le Gestalt et l'environnement sont hors jeu, et le
+    complot principal est passe seul en 1B."""
+    for card_id in ("gb008", "gb007a", "gb007b"):
+        if aides["par_id"](monde, card_id) is not None:
+            return False, f"{card_id} est en jeu alors qu'il doit etre mis de cote"
+    if aides["par_id"](monde, "gb004b") is None:
+        return False, "le complot n'est pas au stade 1B"
+    return True, "Gestalt et environnement hors jeu, complot en 1B"
+
+def gorr_deux_attaques(monde, aides):
+    """gb020 : Gorr attaque, puis attaque une seconde fois.
+
+    L'attaque est declenchee ICI, sans cartes de boost, pour que les degats
+    soient deterministes : ATQ 2 par attaque, donc 2 degats pour une attaque
+    et 4 pour deux. Le heros est incline en mise en place, il ne defend pas.
+    """
+    from game.effect.rule import GameRule
+    vilain = aides["par_id"](monde, "gb001")
+    if vilain is None:
+        return False, "gb001 n'est pas en jeu"
+    identite = aides["identite"](monde)
+    avant = identite.max_health - identite.health
+
+    vilain.DoActivate(monde.players[0], GameRule(vilain), do_not_give_boost=True)
+
+    subis = (identite.max_health - identite.health) - avant
+    if subis < 4:
+        return False, (f"{subis} degat(s) subis : une seule attaque de 2 "
+                       f"(la seconde attaque n'a pas eu lieu)")
+    return True, f"{subis} degats : Gorr a bien attaque deux fois"
+
 '''
 
 
