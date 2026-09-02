@@ -1687,6 +1687,35 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alligator_loki — Little Rascals (Event Team-Up, carte bonus)
   'al023': "Team-Up (Alligator Loki et Honey Badger/Gabby Kinney). Max 1 par deck.\n<b>Action</b> : étourdissez et désorientez le vilain. Si vous ne le pouvez pas, redressez Alligator Loki ou Honey Badger.",
 
+  // hulk_rainy — Hulk (Hero) [set 148, Rainy]
+  'hk001a': "<i>Anger</i> — <b>Réponse</b> : après que Hulk a subi des dégâts, infligez 1 dégât à un ennemi.",
+  // hulk_rainy — Bruce Banner (AlterEgo)
+  'hk001b': "<i>Bring Out The Big Guy</i> — <b>Interruption</b> : quand un ennemi devrait manigancer, dépensez une ressource [physical] → passez en forme de héros. Cet ennemi vous attaque à la place.",
+  // hulk_rainy — Black Widow (Ally)
+  'hk002': "[star] <b>Réponse</b> : après que Black Widow a contré, retirez 1 menace d'une AUTRE manigance.\n<b>Action de héros</b> : inclinez Black Widow → passez en forme d'identité civile.",
+  // hulk_rainy — Brilliant Mind (Event, x2)
+  'hk003': "<b>Action d'alter ego</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous avez payé cette carte uniquement avec des ressources [mental], choisissez de retirer 2 menaces supplémentaires de cette manigance OU de désorienter un ennemi.",
+  // hulk_rainy — Hulk Smash (Event, x2)
+  'hk004': "<b>Action de héros</b> : effectuez les attaques suivantes contre LA MÊME cible :\n• <i>(attaque)</i> : infligez 3 dégâts.\n• <i>(attaque)</i> : infligez 3 dégâts.\n• <i>(attaque)</i> : infligez 3 dégâts.",
+  // hulk_rainy — Interception (Event, x2)
+  'hk005': "<b>Interruption de héros</b> : quand une traîtrise est révélée, subissez 2 dégâts → annulez tous ses effets et défaussez-la. Si vous avez SURPAYÉ cette carte avec une ressource [energy] ou [physical], retirez 2 menaces d'une manigance.",
+  // hulk_rainy — Reckless Charge (Event, x2)
+  'hk006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à Hulk → infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec une ressource [physical], cette attaque gagne Déferlement.",
+  // hulk_rainy — Natural Genius (Resource)
+  'hk007': "Ne dépensez cette carte qu'en forme d'identité civile.",
+  // hulk_rainy — Unnatural Strength (Resource)
+  'hk008': "Ne dépensez cette carte qu'en forme de héros.",
+  // hulk_rainy — The Other Guy (Support)
+  'hk009': "<b>Réponse d'alter ego</b> <i>(contre)</i> : après avoir changé de forme, retirez 1 menace d'une manigance. <i>(Limite d'une fois par phase.)</i>\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 1 dégât à un ennemi. <i>(Limite d'une fois par phase.)</i>",
+  // hulk_rainy — Intimidating Roar (Upgrade)
+  'hk010': "<b>Réponse de héros</b> <i>(contre)</i> : après que Hulk a subi des dégâts D'UNE ATTAQUE, inclinez Intimidating Roar → retirez 1 menace d'une manigance (2 menaces à la place si vous avez subi 3 dégâts ou plus).",
+  // hulk_rainy — Limitless Endurance (Upgrade)
+  'hk011': "Vous gagnez +3 points de vie et Bruce Banner gagne +1 REC.\n<b>Action de héros</b> : inclinez Limitless Endurance → soignez 1 dégât de Hulk.",
+  // hulk_rainy — Limitless Strength (Upgrade)
+  'hk012': "Hulk gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Limitless Strength → générez une ressource [physical].",
+  // hulk_rainy — Inner Conflict (Obligation)
+  'hk013': "<b><i>Donnez-la au joueur Bruce Banner.</i></b>\nChangez de forme (retournez votre identité). Puis :\n• Si vous êtes Bruce Banner, défaussez 1 carte AU HASARD de votre main. Défaussez cette obligation.\n• Si vous êtes Hulk, inclinez votre héros. Défaussez cette obligation.",
+
   // viv_vision — Viv Vision (Hero) [set 147, Rainy]
   'vv001a': "<i>Density Manipulation</i> — <b>Action</b> : dépensez une ressource [energy] → vous gagnez +2 à un pouvoir de base de votre choix jusqu'à la fin du round. <i>(Limite d'une fois par round.)</i>",
   // viv_vision — Viv Vision (AlterEgo)

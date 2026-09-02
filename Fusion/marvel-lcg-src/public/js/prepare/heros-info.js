@@ -1299,6 +1299,18 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "hk001a": {
+        bio: "Bruce Banner est un physicien nucléaire que l'explosion d'une bombe à rayons gamma, déclenchée pour sauver un adolescent égaré sur le site d'essai, a irradié sans le tuer. Depuis, la colère le transforme en une masse verte d'une force sans limite connue : plus il enrage, plus il devient puissant. Vengeur de la première heure, il passe sa vie à fuir l'armée, ses propres démons et le monstre qu'il porte, tout en revenant chaque fois qu'on a besoin de la chose la plus forte qui soit.",
+        bioEn: "Bruce Banner is a nuclear physicist irradiated but not killed by the blast of a gamma bomb he set off to save a teenager who had wandered onto the test site. Since then, anger turns him into a green mass of no known upper limit of strength: the angrier he gets, the stronger he gets. A founding Avenger, he spends his life running from the army, from his own demons and from the monster he carries, while turning up every time the strongest one there is happens to be needed.",
+        civil: "Dr Robert Bruce Banner",
+        base: "Dayton, Ohio",
+        equipes: "Vengeurs, Défenseurs",
+        equipesEn: "Avengers, Defenders",
+        ennemis: "l'Abomination, le Chef, Général Ross",
+        ennemisEn: "Abomination, the Leader, General Ross",
+        apparition: "The Incredible Hulk #1 (1962)",
+    },
+
     "vv001a": {
         bio: "Vivian est la fille synthézoïde de la Vision, qui s'est fabriqué une famille entière en copiant les ondes cérébrales de sa femme dans trois corps neufs. Sa mère et son frère détruits, Viv reste seule à porter le projet de son père : apprendre à être humaine. Elle en a les pouvoirs — modifier sa densité jusqu'à traverser les murs ou devenir dure comme le diamant, voler, projeter l'énergie solaire de la gemme de son front — et pas encore les codes, ce qu'elle compense par une franchise désarmante. Au lycée puis chez les Champions, elle grandit avec Ms. Marvel et Nova, un chien synthézoïde nommé Sparky sur les talons.",
         bioEn: "Vivian is the synthezoid daughter of the Vision, who built himself an entire family by copying his wife's brain patterns into three new bodies. With her mother and brother destroyed, Viv is left alone carrying her father's project: learning to be human. She has the powers for it — shifting her density to phase through walls or turn diamond-hard, flying, firing the solar energy of the gem in her forehead — and not yet the social codes, which she makes up for with disarming bluntness. Through high school and then the Champions, she grows up alongside Ms. Marvel and Nova, with a synthezoid dog named Sparky at her heels.",

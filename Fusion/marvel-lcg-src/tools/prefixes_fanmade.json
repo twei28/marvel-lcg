@@ -128,9 +128,9 @@
         "hk": {
             "pack": "hulk_rainy",
             "libelle": "148. Custom (Hulk)",
-            "cartes": 0,
+            "cartes": 14,
             "depuis": "2026-09-02",
-            "note": "RESERVE, pas encore cree. Vague 0 du deuxieme arrivage. Auteur Rainy. 14 cartes, difficulte 2/5. set_name a trancher : 'Hulk' est pris par le heros officiel 10001a. Pas de set nemesis dans le zip. Voir .planning/todos/2026-09-02-prep-vague0-hulk.md"
+            "note": "Cree le 02/09/2026. Auteur Rainy. hk001a/b identite, hk002-hk012 signature (11 cartes distinctes, 15 exemplaires), hk013 obligation. set_name 'Hulk (Rainy)' : 'Hulk' est pris par le heros officiel 10001a, et IsDeckBuildingClass compare les set_name litteralement. AUCUN set nemesis dans le zip : le deck emprunte celui du Hulk officiel (10026-10028), ce qui n'a ete rendu jouable que par le correctif IsNemesis du meme jour. Deux homonymes de cartes signature du Hulk officiel : 'Hulk Smash' (hk004 / 10003) et 'Limitless Strength' (hk012 / 10007, ressource la-bas, amelioration ici)."
         },
         "ho": {
             "pack": "harry_osborn",

@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "b29b0019d67f799adc21033a6e2a539e4de4fd15521f8a0df6728ed9ecaea2b3",
+    "checksum": "ae973b6eb1522b7c9db85a1bdf8faffb70365585cb2c5fa4f62b67c70e605f19",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1300,5 +1300,14 @@
         ],
         "encounters": [],
         "max_id": "vv011"
+    },
+    "148. Custom (Hulk)": {
+        "name": "hulk_rainy",
+        "scenarios": [],
+        "heroes": [
+            "hulk_rainy"
+        ],
+        "encounters": [],
+        "max_id": "hk013"
     }
 }

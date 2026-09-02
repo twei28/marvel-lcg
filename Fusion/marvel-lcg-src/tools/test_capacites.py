@@ -14016,6 +14016,301 @@ CAS = [
         "attendu": {"menace": [["01097b", 2]]},
     },
     # ------------------------------------------------------------------------
+    # Pack « hulk_rainy » : hk001a-hk013 (custom, auteur « Rainy », set 148)
+    #
+    # `set_name` = « Hulk (Rainy) » ; « Hulk » est pris par le heros OFFICIEL
+    # 10001a. Ne JAMAIS designer l'identite par son nom dans ces cas, les deux
+    # Hulk s'appellent pareil : toujours par card_id.
+    #
+    # La partie demarre en ALTER-EGO. `Puzzle.ChangeToFace('hk001b', 'hk001a')`
+    # bascule en heros.
+    #
+    # Ressources de paiement : 01088 Energy (YY), 01089 Genius (BB),
+    # 01090 Strength (RR). ⚠ Le pilote compte les ressources en QUANTITE, pas
+    # en couleur : pour imposer une COULEUR precise, prendre des cartes a UNE
+    # seule icone (piege paye sur vv002).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "hk001a Anger — chaque degat subi rend 1 degat a un ennemi",
+        "pourquoi": ("`AfterUnitTookDamage(Response, 'You', op)` (modele aa001a) SANS "
+                     "`is_from_attack` : le texte dit « takes damage » tout court. "
+                     "⚠ Hulk doit etre INCLINE d'abord : avec DEF 3 contre l'ATQ 2 de Rhino "
+                     "il DEFEND et ne subit AUCUN degat — Anger ne partirait "
+                     "jamais, et le cas serait rouge pour une raison etrangere a "
+                     "la carte. Incline, il encaisse 2 et Anger rend 1 degat"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.Exhaust('hk001a')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "hk001b Bring Out The Big Guy — le complot devient une attaque, en forme heros",
+        "pourquoi": ("jumeau mot pour mot de 52019 Ready for a Fight : "
+                     "`WhenUnitWouldScheme(Interrupt, Enemy, op).SetTarget('YourIdentity')` "
+                     "puis ChangeToForm(Hero) + SetBeInstead + DoAttackYou. La "
+                     "manigance principale ne doit PAS monter, et le joueur finit en "
+                     "forme heros. Le cout est une ressource physique, d'ou 01090"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "menace": [["01097b", 0]]},
+    },
+    {
+        "nom": "hk002 Black Widow — Action de heros : elle s'incline et le joueur passe en civil",
+        "pourquoi": ("`WhenInYourPlayTurn(HeroAction).SetCostFunc(CostFunc.Exhaust('This'))` "
+                     "+ `ChangeToForm(AlterEgo)` (modele ag005 Parting Shots)"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.PutIntoPlay('hk002', under_control=True)"],
+        "declencher": ["Puzzle.Action('hk002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "exhausted": ["hk002"]},
+    },
+    {
+        "nom": "hk003 Brilliant Mind — paye UNIQUEMENT en mental : 3 + 2 menaces retirees",
+        "pourquoi": ("« using ONLY [mental] » -> `GetPaidResources().OnlyHasColor('B')` "
+                     "(modele 10004 Sub-Orbital Leap). 01089 Genius porte BB et couvre "
+                     "seule le cout 2 : le paiement est donc integralement mental, le "
+                     "bonus s'applique, et le pilote prend la PREMIERE branche "
+                     "(+2 menaces). Principale 6 -> 1. ⚠ Surtout PAS 8 : le seuil de "
+                     "01097b est 7[per_hero], donc 8 menaces ACCOMPLISSENT le "
+                     "complot et la partie est perdue avant que la carte se joue"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["hk003", "01089"],
+        "declencher": [],
+        "jouer": ["hk003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "hk003 Brilliant Mind — CONTRE-CAS : paye en physique, pas de bonus",
+        "pourquoi": ("le meme cas avec 01090 Strength (RR) : le paiement n'est PAS "
+                     "uniquement mental, donc 3 menaces seulement. Prouve que "
+                     "`OnlyHasColor` mord vraiment, la ou `HasColor` aurait laisse "
+                     "passer. Principale 6 -> 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["hk003", "01090"],
+        "declencher": [],
+        "jouer": ["hk003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "hk004 Hulk Smash — TROIS attaques de 3 sur LA MEME cible",
+        "pourquoi": ("« against the SAME target » : la cible se choisit UNE fois "
+                     "(`SetTarget(Enemy)` sur l\'abilite), puis trois `DealDamage`. "
+                     "Ecart voulu avec th010, qui repose un selecteur a chaque attaque. "
+                     "9 degats sur Rhino"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')"],
+        "main_exclusive": ["hk004", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["hk004"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 9]]},
+    },
+    {
+        "nom": "hk005 Interception — la traitrise est annulee, et le surpaiement retire 2 menaces",
+        "pourquoi": ("« cancel ALL of its effects and discard it » -> `can_be_cancel` = "
+                     "\"All\" et `CancelAllEffectsAndDiscardIt`, et NON le "
+                     "`CancelWhenRevealedEffect` d'an005 / 01078, qui ne couvre que le "
+                     "« When Revealed ». 01105 « I'm Tough » donne normalement une "
+                     "carte Tenace a Rhino : annulee, il n'en recoit AUCUNE. Le cout "
+                     "« take 2 damage » est reellement paye. `surpayer` est "
+                     "indispensable : la carte coute 0, le pilote ne depenserait donc "
+                     "rien et le bonus de SURPAIEMENT ne partirait jamais. 01090 "
+                     "Strength est physique, donc le bonus s'applique : principale "
+                     "5 -> 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["hk005", "01090"],
+        "surpayer": True,
+        "declencher": ["Puzzle.Reveal('01105')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Tough"]],
+                    "degats_identite": 2,
+                    "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "hk007 Natural Genius — INJOUABLE en forme heros, donc la carte payee reste en main",
+        "pourquoi": ("`CheckThisCanDropPay(Resources('BB'), "
+                     "spend_this_only_in_alter_ego_form=True)` (modele 10007, la "
+                     "ressource du Hulk OFFICIEL). ⚠ Le module ne fait QUE restreindre : "
+                     "sans lui, `desc.RES` suffirait a payer. Le seul cas SUJET valable "
+                     "est donc la RESTRICTION. En forme heros, hk007 ne peut pas etre "
+                     "depensee ; hk006 (cout 1) n'a alors aucune autre source de "
+                     "paiement et n'inflige AUCUN degat. ⚠ Ne pas verifier « hk006 "
+                     "est restee en main » : un jeu de carte qui ECHOUE defausse quand "
+                     "meme l'evenement (player_action.py). Ce qui se lit, c'est que "
+                     "Rhino ne prend rien et que hk007 n'a PAS ete depensee. Sans le "
+                     "module, hk006 serait jouee et les deux tombent"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')"],
+        "main_exclusive": ["hk006", "hk007"],
+        "declencher": [],
+        "jouer": ["hk006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_main": ["hk007"]},
+    },
+    {
+        "nom": "hk008 Unnatural Strength — INJOUABLE en alter-ego, donc la carte payee reste en main",
+        "pourquoi": ("la jumelle miroir de hk007 : "
+                     "`spend_this_only_in_hero_form=True`. En forme civile, hk008 ne "
+                     "peut pas etre depensee ; hk003 (Alter-Ego Action, cout 2) n'a "
+                     "alors aucune autre source : la menace ne bouge pas et hk008 "
+                     "n'est pas depensee. Meme raisonnement de subjectivite que hk007, "
+                     "et meme precaution sur la defausse d'un jeu rate"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["hk003", "hk008"],
+        "declencher": [],
+        "jouer": ["hk003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5]], "en_main": ["hk008"]},
+    },
+    {
+        "nom": "hk006 Reckless Charge — se blesser de 1 pour infliger 3",
+        "pourquoi": ("le degat a Hulk est un COUT (`CostFunc.Custom`), donc paye AVANT. "
+                     "Modele 01053 Relentless Assault pour « paid using A [physical] » "
+                     "-> `HasColor(\'R\')` -> overkill. ⚠ Le degat de cout declenche "
+                     "AUSSI Anger (hk001a), qui rend 1 degat : Rhino en prend donc au "
+                     "moins 4, pas 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')"],
+        "main_exclusive": ["hk006", "01090"],
+        "declencher": [],
+        "jouer": ["hk006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 3]], "degats_identite": 1},
+    },
+    {
+        "nom": "hk009 The Other Guy — passer en HEROS inflige 1 degat",
+        "pourquoi": ("`AfterUnitChangeForm(HeroResponse, \'You\', op).LimitOncePerPhase()`. "
+                     "⚠ Le point delicat de la carte : la forme evaluee est celle "
+                     "d\'APRES la bascule. En partant de l\'alter-ego et en passant "
+                     "en heros, c\'est la branche HERO qui doit tirer, pas l\'autre"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay(\'hk009\', under_control=True)"],
+        "declencher": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "hk009 The Other Guy — passer en ALTER-EGO retire 1 menace",
+        "pourquoi": ("la branche miroir, `AlterEgoResponse`. En partant du heros et en "
+                     "passant en civil, c\'est elle qui doit tirer. Principale 5 -> 4"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')",
+                          "Puzzle.PutIntoPlay(\'hk009\', under_control=True)",
+                          "Puzzle.SetThreat(\'01097b\', 5)"],
+        "declencher": ["Puzzle.ChangeToFace(\'hk001a\', \'hk001b\')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "hk010 Intimidating Roar — 2 menaces retirees quand Hulk encaisse 3 degats ou plus",
+        "pourquoi": ("`AfterUnitTookDamage(HeroResponse, \'You\', is_from_attack=True)` "
+                     "+ `CostFunc.Exhaust(\'This\')`. ⚠ Le montant se lit sur "
+                     "`message.took_damage` et non `message.damage` : un getattr avec "
+                     "defaut aurait rendu 0 en silence, et la carte n\'aurait JAMAIS "
+                     "donne ses 2 menaces. Rhino frappe a 2 ATQ, DEF 3 de Hulk... on "
+                     "force donc l\'attaque d\'un sbire ATQ 3 (01102 Sandman) sur un "
+                     "Hulk deja incline. Principale 5 -> 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')",
+                          "Puzzle.PutIntoPlay(\'hk010\', under_control=True)",
+                          "Puzzle.PutIntoPlay(\'01102\')",
+                          "Puzzle.Exhaust(\'hk001a\')",
+                          "Puzzle.SetThreat(\'01097b\', 5)"],
+        "declencher": ["Puzzle.Attack(\'01102\')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "exhausted": ["hk010"]},
+    },
+    {
+        "nom": "hk011 Limitless Endurance — +3 PV a l\'identite et +1 REC a Bruce Banner",
+        "pourquoi": ("« YOU get +3 hit points » -> `GiveKeywordToAttached(\'You\', "
+                     "health=3)`, les deux faces. « BRUCE BANNER gets +1 REC » -> nom "
+                     "PROPRE, donc `GiveKeywordToInPlayWhenApplyThis(CardFinder("
+                     "name=\'Bruce Banner\'), recover=1)`, la face civile seule. "
+                     "Piege documente au §3 de RECETTES-MOTEUR, trouve en partie reelle "
+                     "sur an002. PV 15 -> 18, REC 4 -> 5"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay(\'hk011\', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3, "recover": 1}, "en_jeu": ["hk011"]},
+    },
+    {
+        "nom": "hk012 Limitless Strength — +1 ATQ a Hulk",
+        "pourquoi": ("« HULK gets +1 ATK » : nom PROPRE, donc la face HEROS seule "
+                     "(`CardFinder(name=\'Hulk\')`, modele an002 Sera). ATQ 2 -> 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')",
+                          "Puzzle.PutIntoPlay(\'hk012\', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "en_jeu": ["hk012"]},
+    },
+    {
+        "nom": "hk013 Inner Conflict — en HEROS, l\'obligation bascule en civil et defausse 1 carte",
+        "pourquoi": ("modele 10025 Inner Demons, l\'obligation du Hulk OFFICIEL, au mot "
+                     "pres. ⚠ Le piege : relire la face APRES "
+                     "`ChangeToOtherIdentityForm`, sinon les branches testent le nom "
+                     "d\'AVANT. En partant du heros on devient Bruce Banner, donc c\'est "
+                     "la branche defausse qui tire"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')"],
+        "declencher": ["Puzzle.Reveal(\'hk013\')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "hors_jeu": ["hk013"]},
+    },
+    {
+        "nom": "hk013 Inner Conflict — en CIVIL, l\'obligation bascule en heros et l\'epuise",
+        "pourquoi": ("la branche miroir : en partant de l\'alter-ego on devient Hulk, "
+                     "donc le heros s\'epuise au lieu de defausser. C\'est ce cas qui "
+                     "prouve que la face est bien relue APRES la bascule"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal(\'hk013\')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "exhausted": ["hk001a"], "hors_jeu": ["hk013"]},
+    },
+    # ------------------------------------------------------------------------
     # Pack « viv_vision » : vv001a-vv011 (custom, auteur « Rainy », set 147)
     #
     # Les deux faces s'appellent toutes les deux « Viv Vision » : on ne

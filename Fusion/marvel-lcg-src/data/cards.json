@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "0e9d2cc957ed44b953b9047cb078eea88332fa86ba953cd82e37901eaeb51d2a",
+    "checksum": "de758854f262f90892b00d95ef24728c4770627f20c14936cdcae201fd5b2adb",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -85801,6 +85801,254 @@
             "traits": [],
             "set_name": "Viv Vision",
             "text": "<b><i>Give to the Viv Vision player.</i></b>\nFlip to alter-ego form.\nYou cannot change form.\n<b>Alter-Ego Action</b>: Exhaust your alter-ego \u2192 remove Grounded from the game.",
+            "custom": "Rainy"
+        }
+    ],
+    "hulk_rainy": [
+        {
+            "card_id": "hk001a",
+            "type": "Hero",
+            "name": "* Hulk",
+            "subtitle": "",
+            "desc": {
+                "HP": "15",
+                "ATK": "2",
+                "THW": "0",
+                "DEF": "3",
+                "HS": "4"
+            },
+            "traits": [
+                "AVENGER",
+                "GAMMA"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<i>Anger</i> \u2014 <b>Response</b>: After Hulk takes damage, deal 1 damage to an enemy.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk001b",
+            "type": "AlterEgo",
+            "name": "* Bruce Banner",
+            "subtitle": "",
+            "desc": {
+                "HP": "15",
+                "REC": "4",
+                "HS": "6"
+            },
+            "traits": [
+                "GENIUS",
+                "SCIENTIST"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<i>Bring Out The Big Guy</i> \u2014 <b>Interrupt</b>: When an enemy would scheme, spend a [physical] resource \u2192 change to your hero form. That enemy attacks you instead.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk002",
+            "type": "Ally",
+            "name": "* Black Widow",
+            "subtitle": "Natasha Romanoff",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER",
+                "S.H.I.E.L.D",
+                "SPY"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "[star] <b>Response</b>: After Black Widow thwarts, remove 1 threat from another scheme.\n<b>Hero Action</b>: Exhaust Black Widow \u2192 flip to your alter-ego form.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk003",
+            "type": "Event",
+            "name": "Brilliant Mind",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Alter-Ego Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you paid for this card using only [mental] resources, choose to either remove 2 additional threat from that scheme or confuse an enemy.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk004",
+            "type": "Event",
+            "name": "Hulk Smash",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Hero Action</b>: Make the following attacks against the same target:\n\u2022 <i>(attack)</i>: Deal 3 damage.\n\u2022 <i>(attack)</i>: Deal 3 damage.\n\u2022 <i>(attack)</i>: Deal 3 damage.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk005",
+            "type": "Event",
+            "name": "Interception",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Hero Interrupt</b>: When a treachery is revealed, take 2 damage \u2192 cancel all of its effects and discard it. If you overpaid for this card with a [energy] or [physical] resource, remove 2 threat from a scheme.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk006",
+            "type": "Event",
+            "name": "Reckless Charge",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to Hulk \u2192 deal 3 damage to an enemy. If you paid for this card using a [physical] resource, this attack gains overkill.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk007",
+            "type": "Resource",
+            "name": "Natural Genius",
+            "subtitle": "",
+            "desc": {
+                "RES": "BB",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Hulk (Rainy)",
+            "text": "Spend this card only in alter-ego form.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk008",
+            "type": "Resource",
+            "name": "Unnatural Strength",
+            "subtitle": "",
+            "desc": {
+                "RES": "RR",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "set_name": "Hulk (Rainy)",
+            "text": "Spend this card only in hero form.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk009",
+            "type": "Support",
+            "name": "The Other Guy",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "GAMMA",
+                "PERSONA"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Alter-Ego Response</b> <i>(thwart)</i>: After you change form, remove 1 threat from a scheme. <i>(Limit once per phase.)</i>\n<b>Hero Response</b> <i>(attack)</i>: After you change form, deal 1 damage to an enemy. <i>(Limit once per phase.)</i>",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk010",
+            "type": "Upgrade",
+            "name": "Intimidating Roar",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL",
+                "SUPERPOWER"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b>Hero Response</b> <i>(thwart)</i>: After Hulk takes damage from an attack, exhaust Intimidating Roar \u2192 remove 1 threat from a scheme (2 threat instead if you took 3 or more damage).",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk011",
+            "type": "Upgrade",
+            "name": "Limitless Endurance",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION",
+                "GAMMA",
+                "SUPERPOWER"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "You get +3 hit points and Bruce Banner gets +1 REC.\n<b>Hero Action</b>: Exhaust Limitless Endurance \u2192 heal 1 damage from Hulk.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk012",
+            "type": "Upgrade",
+            "name": "Limitless Strength",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION",
+                "GAMMA",
+                "SUPERPOWER"
+            ],
+            "set_name": "Hulk (Rainy)",
+            "text": "Hulk gets +1 ATK.\n<b>Hero Resource</b>: Exhaust Limitless Strength \u2192 generate a [physical] resource.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "hk013",
+            "type": "Obligation",
+            "name": "Inner Conflict",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Bruce Banner"
+            },
+            "traits": [],
+            "set_name": "Hulk (Rainy)",
+            "text": "<b><i>Give to the Bruce Banner player.</i></b>\nChange form (flip your identity). Then:\n\u2022 If you are Bruce Banner, discard 1 random card from your hand. Discard this obligation.\n\u2022 If you are Hulk, exhaust your hero. Discard this obligation.",
             "custom": "Rainy"
         }
     ]
