@@ -332,6 +332,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Télécharger': 'Download',
   'Copier un rapport de bug': 'Copy a bug report',
   'Télécharger le rapport complet': 'Download the full report',
+  'Log': 'Log',
+  'Télécharger tout le déroulé de la partie en fichier texte':
+    'Download the whole game log as a text file',
   'Rapport copié': 'Report copied',
   'Rapport téléchargé': 'Report downloaded',
   'Copie refusée par le navigateur': 'Copy refused by the browser',

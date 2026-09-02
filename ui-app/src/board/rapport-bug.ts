@@ -53,6 +53,21 @@ export type CarteBug = {
   visible: boolean
   /** Renseigné quand la carte est attachée à une autre. */
   attacheeA?: string
+  /**
+   * TOUT le reste de `info`, sauf ce que la ligne rend déjà (`health`,
+   * `k_threat`). C'est là que vivent les compteurs : pouvoir, tous usages,
+   * accélération, charges d'une amélioration… Les clés varient selon le type
+   * de carte, et une capacité maison en invente de nouvelles : on ne peut donc
+   * pas dresser la liste de ce qui compte, et un rapport qui trierait
+   * tairait justement le compteur du jour.
+   *
+   * Ajouté le 02/09/2026 : sans lui, un bug sur « Power Syphon » (dd001a place
+   * un compteur de pouvoir, maximum 3) était indiagnosticable — le rapport ne
+   * disait pas combien de compteurs portait le héros.
+   */
+  compteurs?: Record<string, number>
+  /** Mots-clés temporaires posés par un effet (villainous, stalwart…). */
+  buffs?: Record<string, string>
 }
 
 export type OptionBug = {
@@ -134,7 +149,33 @@ function nombre(carte: WorldCard, cle: string): number | undefined {
   return typeof valeur === 'number' ? valeur : undefined
 }
 
+/** Le reste de `info`, une fois retiré ce que la ligne rend déjà en clair.
+ *  On ne retire `health` / `k_threat` que s'ils SONT rendus : sur une carte
+ *  d'un autre type ils passent par `compteurs`, où ils valent mieux que rien. */
+function compteurs(carte: WorldCard, rendus: string[]): Record<string, number> | undefined {
+  const sortie: Record<string, number> = {}
+  for (const [cle, valeur] of Object.entries(carte.info)) {
+    if (rendus.includes(cle)) continue
+    if (typeof valeur !== 'number' || valeur === 0) continue
+    sortie[cle] = valeur
+  }
+  return Object.keys(sortie).length > 0 ? sortie : undefined
+}
+
 function decrire(carte: WorldCard, zone: string, joueur?: number): CarteBug {
+  const estUnite = UNIT_TYPES.has(carte.card_type)
+  const estManigance = SCHEME_TYPES.has(carte.card_type)
+  const rendus = [
+    ...(estUnite ? ['health'] : []),
+    ...(estManigance ? ['k_threat'] : []),
+  ]
+  // `buffs` est un Partial : une clé peut porter `undefined`. On filtre donc
+  // au lieu d'étaler, sinon le type promis (Record<string, string>) ment.
+  const buffsRetenus: Record<string, string> = {}
+  for (const [cle, valeur] of Object.entries(carte.buffs)) {
+    if (typeof valeur === 'string' && valeur !== '') buffsRetenus[cle] = valeur
+  }
+  const buffs = Object.keys(buffsRetenus).length > 0 ? buffsRetenus : undefined
   return {
     objet: objet(carte.id),
     card_id: carte.card_id,
@@ -142,11 +183,13 @@ function decrire(carte: WorldCard, zone: string, joueur?: number): CarteBug {
     type: carte.card_type,
     zone,
     joueur,
-    vie: UNIT_TYPES.has(carte.card_type) ? nombre(carte, 'health') : undefined,
-    menace: SCHEME_TYPES.has(carte.card_type) ? nombre(carte, 'k_threat') : undefined,
+    vie: estUnite ? nombre(carte, 'health') : undefined,
+    menace: estManigance ? nombre(carte, 'k_threat') : undefined,
     prete: carte.is_ready,
     visible: carte.is_face_up,
     attacheeA: carte.bind_object_id ? objet(carte.bind_object_id) : undefined,
+    compteurs: compteurs(carte, rendus),
+    buffs,
   }
 }
 
@@ -307,10 +350,25 @@ function ligneCarte(carte: CarteBug): string {
     carte.prete ? undefined : 'engagée',
     carte.visible ? undefined : 'face cachée',
     carte.attacheeA ? `attachée à ${carte.attacheeA}` : undefined,
+    carte.compteurs
+      ? Object.entries(carte.compteurs)
+          .map(([cle, valeur]) => `${cle}=${valeur}`)
+          .join(' ')
+      : undefined,
+    carte.buffs
+      ? Object.entries(carte.buffs)
+          .map(([cle, valeur]) => `buff:${cle}=${valeur}`)
+          .join(' ')
+      : undefined,
   ].filter((e): e is string => e !== undefined)
   const place = carte.joueur !== undefined ? ` P${carte.joueur + 1}` : ''
   const suffixe = etats.length > 0 ? ` [${etats.join(', ')}]` : ''
-  return `  ${carte.objet} ${carte.nom} (${carte.card_id}, ${carte.type})${place}${suffixe}`
+  // La ZONE etait collectee depuis le premier jour et n'etait jamais ecrite.
+  // Sans elle, deux cartes du meme nom sont indiscernables et, surtout, on ne
+  // peut pas dire si un sbire est ENGAGE ou au REBUT — c'est pourtant ce qui
+  // decide si sa capacite continue s'applique encore (dd015 Mister Fantastic,
+  // qui convertit le mental en physique tant qu'il est engage).
+  return `  ${carte.objet} ${carte.nom} (${carte.card_id}, ${carte.type}, ${carte.zone})${place}${suffixe}`
 }
 
 function ligneOption(option: OptionBug): string {
@@ -408,12 +466,12 @@ export function rapportEnTexte(rapport: RapportBug): string {
  * deux rapports pris dans la même soirée, et évitent le « rapport (3).json »
  * du navigateur.
  */
-export function nomFichierRapport(rapport: RapportBug): string {
+export function nomFichierRapport(rapport: RapportBug, extension: 'json' | 'txt' = 'json'): string {
   const base = (rapport.contexte.scenario ?? 'partie')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
-  return `rapport-${base || 'partie'}-r${rapport.contexte.round}.json`
+  return `rapport-${base || 'partie'}-r${rapport.contexte.round}.${extension}`
 }

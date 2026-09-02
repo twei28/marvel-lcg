@@ -25,7 +25,10 @@ import type { World } from './world'
 
 export type OutilsRapport = {
   copier: (portee: PorteeRapport) => Promise<void>
-  telecharger: (portee: PorteeRapport) => void
+  /** `format` par défaut 'json' : le bouton historique ne change pas de
+   *  comportement. 'txt' rend la version LISIBLE, celle qu'on relit ou qu'on
+   *  colle dans une conversation. */
+  telecharger: (portee: PorteeRapport, format?: 'json' | 'txt') => void
   /** Confirmation transitoire, ou null. Affichée aussi hors du panneau. */
   message: string | null
 }
@@ -103,14 +106,18 @@ export function useRapportBug(
   )
 
   const telecharger = useCallback(
-    (portee: PorteeRapport) => {
+    (portee: PorteeRapport, format: 'json' | 'txt' = 'json') => {
       const rapport = construire(portee)
       if (!rapport) return
-      const contenu = new Blob([JSON.stringify(rapport, null, 1)], { type: 'application/json' })
+      const texte = format === 'txt'
+      const contenu = new Blob(
+        [texte ? rapportEnTexte(rapport) : JSON.stringify(rapport, null, 1)],
+        { type: texte ? 'text/plain;charset=utf-8' : 'application/json' }
+      )
       const url = URL.createObjectURL(contenu)
       const lien = document.createElement('a')
       lien.href = url
-      lien.download = nomFichierRapport(rapport)
+      lien.download = nomFichierRapport(rapport, texte ? 'txt' : 'json')
       lien.click()
       URL.revokeObjectURL(url)
       annoncer(t('Rapport téléchargé'))

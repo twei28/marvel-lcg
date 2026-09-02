@@ -2150,6 +2150,20 @@ function PagePartie({
               effacer={historique.effacer}
               rapport={rapport}
             />
+            {/* « Log » : le rapport complet en UN clic, sans ouvrir le panneau
+                ni choisir une profondeur. Les mêmes boutons existent au bas du
+                panneau Historique depuis le 12/8/2026, mais personne ne les y
+                trouvait — et c'est au moment où un bug vient de se produire
+                qu'on a le moins envie de chercher. Toute la partie, en texte
+                lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
+            <button
+              type="button"
+              className="bh-bouton bh-log"
+              onClick={() => rapport.telecharger('partie', 'txt')}
+              title={t('Télécharger tout le déroulé de la partie en fichier texte')}
+            >
+              <span aria-hidden="true">🧾</span> {t('Log')}
+            </button>
             <MessageRapport message={rapport.message} />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>

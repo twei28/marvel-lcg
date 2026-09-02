@@ -262,6 +262,48 @@ describe('la version texte', () => {
     expect(texte).toContain('INJOUABLE : not enough resources')
   })
 
+  // Regression du 02/09/2026 : le rapport ne rendait que `health` et
+  // `k_threat`, et jetait le reste de `info`. Un compteur de pouvoir sur le
+  // heros (dd001a « Power Syphon », maximum 3) etait donc invisible, ce qui
+  // rendait le bug correspondant indiagnosticable depuis un rapport.
+  it('rend les compteurs que la ligne ne montre pas deja', () => {
+    const doom = carte(70, '* Doctor Doom', 'dd001a', 'Hero', { health: 11, power: 2 })
+    const texte = rapportEnTexte(
+      construireRapport(monde({ area_villain: [doom] }), undefined, [], 'recent', CONTEXTE)
+    )
+    expect(texte).toContain('11 PV')
+    expect(texte).toContain('power=2')
+  })
+
+  it('ne repete pas en compteur ce que la ligne rend en clair', () => {
+    const doom = carte(70, '* Doctor Doom', 'dd001a', 'Hero', { health: 11 })
+    const texte = rapportEnTexte(
+      construireRapport(monde({ area_villain: [doom] }), undefined, [], 'recent', CONTEXTE)
+    )
+    expect(texte).toContain('11 PV')
+    expect(texte).not.toContain('health=11')
+  })
+
+  it('rend les mots-cles temporaires poses par un effet', () => {
+    const doom = carte(70, '* Doctor Doom', 'dd001a', 'Hero', { health: 11 })
+    doom.buffs = { villainous: '1' }
+    const texte = rapportEnTexte(
+      construireRapport(monde({ area_villain: [doom] }), undefined, [], 'recent', CONTEXTE)
+    )
+    expect(texte).toContain('buff:villainous=1')
+  })
+
+  // Regression du 02/09/2026 : `zone` etait collectee mais jamais rendue.
+  // Savoir si un sbire est engage ou au rebut decide si sa capacite continue
+  // s'applique encore.
+  it('ecrit la zone de chaque carte', () => {
+    const sbire = carte(5, '* Mister Fantastic', 'dd015', 'Minion', { health: 4 })
+    const texte = rapportEnTexte(
+      construireRapport(monde({ encounter_discard_pile: [sbire] }), undefined, [], 'recent', CONTEXTE)
+    )
+    expect(texte).toContain('(dd015, Minion, défausse rencontre)')
+  })
+
   it('nomme le fichier avec le scenario et le round', () => {
     expect(nomFichierRapport(base())).toBe('rapport-none-shall-pass-r3.json')
   })
