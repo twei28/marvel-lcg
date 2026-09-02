@@ -437,17 +437,28 @@ commit séparé de celui du portage. La troisième reste ouverte.
   Même famille que le correctif `stalwart` du §3.
   ✅ **CORRIGÉ** : `recover` ajouté à `GainUntilRoundEnd`.
   `verifier_api_cartes.py` passe de 4 fautes à 2.
-- ❌ **NON corrigé, et pourquoi.**
-  `AbilityFactory.UnitIgnoreKeywordIcons` déclare un paramètre
+- ✅ **CORRIGÉ le 02/09/2026** (commit séparé).
+  `AbilityFactory.UnitIgnoreKeywordIcons` déclarait un paramètre
   `while_use_basic_thw` qu'elle **n'utilise jamais** (`play.py:448`). Une seule
   carte le passe, `21191` ★ Fandral : son « quand Fandral utilise son CTR de
   base, ignorez les icônes de crise » ignore donc la crise **en permanence**,
   pas seulement pendant sa menée de base.
-  Ce n'est **pas** une ligne à ajouter : le moteur n'expose nulle part, depuis
-  l'effet reçu par `CheckIfEffectIsIgnoreKeyWord`, de quoi reconnaître une
-  menée DE BASE. Il faudrait créer ce crochet. Et la carte est officielle,
-  sans aucun cas de test pour rattraper une erreur. Laissé ouvert
-  délibérément.
+  ⚠ **Je m'étais trompé en écrivant qu'il fallait créer un crochet dans le
+  moteur.** Le marqueur existait déjà : `ThisCanThwart` (`factory/friend.py`)
+  construit la menée de base en `AbilityType.BasicPower` et la marque
+  `.SetFuncName("THW")`. La condition tient en trois lignes :
+  `ability.flags.is_basic_power and ability.IsFunction("THW")`.
+  `21191` a reçu au passage **son premier cas de test**, la carte n'en avait
+  aucun.
+  ⚠ **Ce que le cas ne prouve PAS** : il était déjà vert avant le correctif,
+  puisque l'ignore s'appliquait alors à tout. Il garde le comportement imprimé
+  contre une correction trop zélée, rien de plus. Le correctif est **latent**
+  aujourd'hui : Fandral n'a aucun autre effet que sa menée de base, et aucune
+  amélioration du pool ne s'attache à un allié en retirant de la menace — donc
+  aucune position de jeu ne distingue les deux comportements. Un témoin a été
+  écrit puis **retiré** parce qu'il ne prouvait rien (la crise empêche le héros
+  de sélectionner le complot principal, le pilote se rabattait sur une autre
+  cible).
 - **`doctor_doom` et `sp_dr` ne montent aucune partie** (voir §8bis), et c'est
   antérieur à ce portage. `dd003` Doombot est un allié à deux capacités
   `Play` : la liste blanche de `factory.py` traite ce cas pour les `Event`

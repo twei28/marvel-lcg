@@ -58,7 +58,7 @@ portent ce genre de phrase.
 | `hk005` « cancel all of its effects and discard it » (traîtrise) | `an005` Single Out (Angela) | Annulation d'un « When Revealed » déjà écrite dans un pack maison. |
 | `hk004` trois attaques successives sur la même cible | `04006` / `ho004` (recette §6 « AoE ») + `Puzzle.Attack` | Le point délicat est « against the SAME target » : la cible est choisie une fois, pas trois. |
 | `hk001a` « After Hulk takes damage, deal 1 damage » | famille Response-après-dégâts (`rg`, `an001a` Frenzy) | — |
-| `hk001b` Interruption qui remplace un complot par une attaque | **à chercher** : aucun modèle identifié le 02/09. C'est le seul vrai point d'attention du pack. | Deux effets dans un seul Interrupt : changement de forme, puis redirection de l'activation. |
+| `hk001b` Interruption qui remplace un complot par une attaque | ~~à chercher : aucun modèle identifié~~ → **`52019` Ready for a Fight** (pack `silk`), trouvé au grep le 02/09 par la session de portage | ⚠ **CORRECTION** : le modèle existe, et c'est un jumeau MOT POUR MOT. `52019` imprime « **Interrupt**: When an enemy would scheme, discard Ready for a Fight → change to hero form. That enemy attacks you instead. » Seul le coût diffère (défausser l'amélioration ici, dépenser une ressource physique sur `hk001b`). Montage déjà écrit : `WhenUnitWouldScheme(Interrupt, Enemy, op).SetTarget("YourIdentity")`, puis `ChangeToForm(Hero, effect)`, `message.SetBeInstead(effect)` et `message.trigger.CastTo(Enemy).DoAttackYou(initiator, effect)`. **Le pack n'a donc aucune inconnue**, et la Q4 du §5 est sans objet. |
 | `hk007`, `hk008` ressource jouable seulement dans une forme | `.SetPlay(hero_form_only=True)` (recette §5, modèles `01009`, `ho012`) | Vérifier qu'il existe l'équivalent alter-ego. |
 | `hk009` Response après changement de forme, une par forme | `dz`/`she_hulk` (trait PERSONA déjà utilisé) | — |
 
@@ -99,14 +99,11 @@ Vérifié : sur les 111 decks de départ du dépôt, aucun n'a de `nemesis_set` 
 - B) **Protection** : `hk011` Limitless Endurance et les 15 PV vont dans ce sens.
 - C) Autre (précise).
 
-**Q4 — `hk001b` « That enemy attacks you instead ».**
-L'Interruption remplace un complot par une attaque, en cours d'activation, et
-change la forme au passage. Aucun modèle trouvé dans le dépôt le 02/09.
-- A) *(recommandé)* Chercher d'abord au grep une Interruption sur
-  `WhenEnemyWouldScheme` ; si rien, poser la question du comportement exact
-  (le sbire s'épuise-t-il ? l'attaque est-elle défendable ?) avant de coder.
-- B) Coder au plus simple et inscrire l'écart au §9 du guide.
-- C) Autre (précise).
+**~~Q4 — `hk001b` « That enemy attacks you instead »~~ — SANS OBJET.**
+La question prévoyait « chercher d'abord au grep ; si rien, demander ». Le grep
+a été fait le 02/09 et il a rendu **`52019` Ready for a Fight**, jumeau mot pour
+mot déjà scripté (voir §3). Il n'y a donc rien à arbitrer : on transpose, en
+remplaçant le coût de défausse par la dépense d'une ressource physique.
 
 ## 6. Ce que ce dossier ne fait PAS
 

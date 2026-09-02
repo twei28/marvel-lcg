@@ -474,6 +474,21 @@ class AbilityFactoryPlay:
                 check_unit = which_unit
             return Condition.CheckWhichCard(check_unit, by_face, effect)
 
+        # CORRECTIF (02/09/2026) : `while_use_basic_thw` etait DECLARE mais
+        # jamais lu — la seule carte qui le passe, 21191 * Fandral (« When
+        # Fandral uses his basic THW, ignore any crisis icons in play »),
+        # ignorait donc la crise pour TOUS ses effets, pas seulement pendant
+        # sa menee de base. Le moteur sait deja reconnaitre une menee de base
+        # sans qu'il faille lui ajouter quoi que ce soit : `ThisCanThwart`
+        # (factory/friend.py) construit l'abilite en `AbilityType.BasicPower`
+        # et la marque `.SetFuncName("THW")`. Les deux ensemble ne designent
+        # que le pouvoir de base de menee.
+        def check_basic_thwart(effect: 'Effect', message: 'Message.CheckIfEffectIsIgnoreKeyWord') -> bool:
+            if not while_use_basic_thw:
+                return True
+            ability = message.effect.ability
+            return ability.flags.is_basic_power and ability.IsFunction("THW")
+
         return Ability(
             AbilityType.NonKeyword,
             Message.CheckIfEffectIsIgnoreKeyWord,
@@ -481,6 +496,7 @@ class AbilityFactoryPlay:
                 lambda effect, message:
                     message.keyword in keywords,
                 check_which_unit,
+                check_basic_thwart,
                 *conditions
             ],
             lambda effect, message:

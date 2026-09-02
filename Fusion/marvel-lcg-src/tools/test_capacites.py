@@ -13961,6 +13961,30 @@ CAS = [
         # Revelee, elle applique sa branche « Otherwise » : le heros est desoriente.
         "attendu": {"statuts": [["01001a", "Confused"]]},
     },
+    {
+        "nom": "21191 Fandral — sa menee de BASE ignore l'icone de crise",
+        "pourquoi": ("carte OFFICIELLE restee SANS AUCUN CAS jusqu'au 02/09/2026. "
+                     "`UnitIgnoreKeywordIcons('This', crisis=True, "
+                     "while_use_basic_thw=True)` : le dernier argument etait "
+                     "DECLARE mais jamais lu (play.py), donc Fandral ignorait la "
+                     "crise pour tous ses effets. Ce cas garde le comportement "
+                     "IMPRIME : 01108 Crowd Control interdit normalement tout "
+                     "retrait sur la principale ; la menee de base de Fandral "
+                     "(CTR 3) doit passer outre, 5 -> 2. ⚠ CE CAS NE PROUVE PAS "
+                     "le correctif : il etait deja vert AVANT, puisque l'ignore "
+                     "s'appliquait alors a tout. Il garde le comportement imprime "
+                     "contre une correction trop zelee. Le correctif lui-meme est "
+                     "LATENT — voir le journal de portage, §10"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('21191', under_control=True)",
+                          "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('21191')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
     # ------------------------------------------------------------------------
     # Pack « viv_vision » : vv001a-vv011 (custom, auteur « Rainy », set 147)
     #
