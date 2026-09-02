@@ -90,7 +90,17 @@ class CardFactory:
             if ClassCard.IsType(face):
                 if type(face) != Resource:
                     if type(face) == Ally:
-                        if face.paper.card_id in ["45031"]:
+                        # CORRECTIF (02/09/2026) : `dd003` Doombot, pack custom
+                        # doctor_doom. Meme motif que les evenements ci-dessous,
+                        # mais cote ALLIE : la carte porte DEUX capacites
+                        # « Play » — `CanPlayThisAllyCard()` pour la pose
+                        # normale, et l'Interruption imprimee « play Doombot
+                        # from your hand and declare it the defender », qui est
+                        # elle aussi `.SetPlay()`. Sans cette declaration, le
+                        # deck `doctor_doom` ne monte AUCUNE partie (assert au
+                        # setup, invisible pour test_cards). Trouve par la passe
+                        # complete des 112 decks le 02/09/2026.
+                        if face.paper.card_id in ["45031", "dd003"]:
                             pass
                         else:
                             assert len(face.ability.Find(func_name="Play")) == 1, f"{face.paper.card_id=}"

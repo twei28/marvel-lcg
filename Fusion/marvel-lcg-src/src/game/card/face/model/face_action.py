@@ -448,6 +448,17 @@ class ModelAction(ModelBase):
                           # « Phase Up » (« You gain stalwart until the end of
                           # the round »).
                           stalwart: int|None=None,
+                          # CORRECTIF (02/09/2026) : `recover` manquait ICI
+                          # alors que `TemporaryGain` l'accepte depuis toujours
+                          # (voir sa signature juste au-dessus). Consequence :
+                          # wd159 et wd160 « Web Swing! » (pack web_of_deceit)
+                          # appellent `GainUntilRoundEnd(..., recover=1)`, ce
+                          # qui leve un TypeError avale par le moteur. Le
+                          # `Faces.ReadyAll` qui precede s'execute, donc le
+                          # heros EST redresse, mais le « +1 a chaque pouvoir
+                          # de base » n'arrive jamais : la carte est a moitie
+                          # morte, en silence. Trouve par verifier_api_cartes.
+                          recover: int|None=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
@@ -462,6 +473,7 @@ class ModelAction(ModelBase):
             retaliate=retaliate,
             villainous=villainous,
             stalwart=stalwart,
+            recover=recover,
             ignore_flip=ignore_flip,
             render_ui=True
         )

@@ -420,9 +420,10 @@ pack** — voir §10), `verifier_prefixes.py`.
 - Vérification au survol du héros dans le wizard que la biographie de
   `vv001a` s'affiche (preuve exigée par l'étape 7 de `PROCESSUS-HEROS`).
 
-## 10. Trouvailles hors pack, non corrigées
+## 10. Trouvailles hors pack
 
-Signalées, pas traitées : elles n'appartiennent pas à ce portage.
+Deux ont été CORRIGÉES le 02/09/2026, sur demande de l'utilisateur, dans un
+commit séparé de celui du portage. La troisième reste ouverte.
 
 - `GainUntilRoundEnd` n'expose pas `recover`, que `TemporaryGain` accepte
   pourtant (`face_action.py`, paramètre déclaré juste au-dessus).
@@ -433,17 +434,28 @@ Signalées, pas traitées : elles n'appartiennent pas à ce portage.
   **Effet réel, à ne pas surestimer** : `Faces.ReadyAll` s'exécute AVANT la
   ligne fautive, donc le héros EST redressé ; c'est le « +1 à chaque pouvoir
   de base » qui n'arrive jamais. La carte est à moitié morte, en silence.
-  Même famille que le correctif `stalwart` du §3, et **une ligne** suffirait.
-- `AbilityFactory.UnitIgnoreKeywordIcons` déclare un paramètre
+  Même famille que le correctif `stalwart` du §3.
+  ✅ **CORRIGÉ** : `recover` ajouté à `GainUntilRoundEnd`.
+  `verifier_api_cartes.py` passe de 4 fautes à 2.
+- ❌ **NON corrigé, et pourquoi.**
+  `AbilityFactory.UnitIgnoreKeywordIcons` déclare un paramètre
   `while_use_basic_thw` qu'elle **n'utilise jamais** (`play.py:448`). Une seule
   carte le passe, `21191` ★ Fandral : son « quand Fandral utilise son CTR de
   base, ignorez les icônes de crise » ignore donc la crise **en permanence**,
   pas seulement pendant sa menée de base.
+  Ce n'est **pas** une ligne à ajouter : le moteur n'expose nulle part, depuis
+  l'effet reçu par `CheckIfEffectIsIgnoreKeyWord`, de quoi reconnaître une
+  menée DE BASE. Il faudrait créer ce crochet. Et la carte est officielle,
+  sans aucun cas de test pour rattraper une erreur. Laissé ouvert
+  délibérément.
 - **`doctor_doom` et `sp_dr` ne montent aucune partie** (voir §8bis), et c'est
   antérieur à ce portage. `dd003` Doombot est un allié à deux capacités
   `Play` : la liste blanche de `factory.py` traite ce cas pour les `Event`
   (une douzaine d'entrées) mais, côté `Ally`, ne connaît que `45031`. Ajouter
-  `dd003` à côté d'elle est probablement tout ce qu'il manque.
+  `dd003` à côté d'elle est tout ce qu'il manquait.
+  ✅ **CORRIGÉ** : le deck `doctor_doom` monte à nouveau
+  (« identite dd001a, main 6, deck 34 »), et la passe complète passe de
+  110/112 à **111/112**. Seul `sp_dr` reste rouge.
 - `ui-app/src/board/mots-cles.ts` n'a pas d'entrée `Requirement`, alors que la
   clé existe dans `desc` : les ~30 cartes qui portent ce mot-clé, dont 5 de ce
   pack, n'affichent aucune infobulle pour lui. `Breakthrough` y a été ajouté
