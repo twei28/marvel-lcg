@@ -132,6 +132,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
         "STARLING",  # CORRECTIF : trait du pack custom ms_america (jakxin)
         "NECROVERSE",  # CORRECTIF : trait du pack custom gorr (BLUEHG)
+        "TEMPTATION",  # CORRECTIF : trait du pack custom lady_sif (Rainy)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

@@ -668,9 +668,35 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         return len(candidates) >= besoin
 
     def empreinte(ctx, options):
-        """Signature d'une situation, pour reperer qu'on tourne en rond."""
+        """Signature d'une situation, pour reperer qu'on tourne en rond.
+
+        CORRECTIF (03/09/2026, pack lady_sif) : la menace des manigances
+        ANNEXES entre desormais dans la signature. `menace_ratio` ne lit que la
+        manigance PRINCIPALE ; une capacite qui retire de la menace d'une
+        annexe ne bougeait donc AUCUN des cinq termes, et deux declenchements
+        successifs partageaient la meme cle. Le compteur `MAX_REPETITIONS`
+        s'epuisait alors sur une capacite qui, elle, faisait bel et bien
+        avancer la partie.
+
+        Constate sur `ls001a` Valiant Warrior (« After Lady Sif uses a basic
+        power, remove 1 threat from a scheme »), une Response SANS limite qui
+        part deux a quatre fois par round : **3 parties bloquees sur 32**, la
+        question fautive etant toujours la meme et toujours forcee
+        (`plage=[1, 1]`, donc « 0 » illegal).
+
+        L'empreinte de PROGRES de `desistement` (plus bas dans ce fichier)
+        comptait deja les annexes : les deux signatures du meme fichier ne
+        regardaient pas le meme monde. On aligne la plus grossiere sur la
+        plus fine.
+
+        Correctif strictement ADDITIF : un terme de plus ne peut que SEPARER
+        des situations jusque-la confondues, jamais en confondre de nouvelles.
+        Il ne peut donc pas creer de blocage la ou il n'y en avait pas.
+        """
         return (ctx["round"], ctx.get("taille_main", 0),
                 round(ctx["pv_ratio"], 2), round(ctx["menace_ratio"], 2),
+                tuple(sorted(nombre(getattr(sc, "threat", 0))
+                             for sc in ctx.get("schemes_secondaires") or [])),
                 tuple(sorted(str(o.get("id")) for o in options)))
 
     def clef_option(o):

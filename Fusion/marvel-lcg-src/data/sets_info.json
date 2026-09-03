@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "ae973b6eb1522b7c9db85a1bdf8faffb70365585cb2c5fa4f62b67c70e605f19",
+    "checksum": "091c1e03963e95b5e1f344cf3f326f9e4bda6331d8ffe1bd9d319e38cd7b9065",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1309,5 +1309,14 @@
         ],
         "encounters": [],
         "max_id": "hk013"
+    },
+    "150. Custom (Lady Sif)": {
+        "name": "lady_sif",
+        "scenarios": [],
+        "heroes": [
+            "lady_sif"
+        ],
+        "encounters": [],
+        "max_id": "ls017"
     }
 }

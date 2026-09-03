@@ -48,6 +48,8 @@ Gabarit à copier pour chaque nouvelle fiche :
       mécanismes distincts)
 - [x] special.md (le `[star]` d'une capacité permanente, à ne pas confondre
       avec l'étoile d'un effet Boost)
+- [x] teamwork.md (base native lue dans `desc.Teamwork`, aucun script — et
+      deux règles cohabitent dans le moteur selon `v16_teamwork`)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),

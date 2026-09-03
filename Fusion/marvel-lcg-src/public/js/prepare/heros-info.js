@@ -1299,6 +1299,18 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "ls001a": {
+        bio: "Sif est une deesse asgardienne et l'une des meilleures lames des Neuf Royaumes, elevee aux cotes de Thor et de Loki. Guerriere avant tout, elle a du arracher sa place dans une armee qui ne voulait pas d'une femme, et sa chevelure noire — Loki lui ayant coupe ses cheveux d'or par malice — est devenue le signe de ce qu'elle a paye pour l'obtenir. Elle se bat aux cotes des Guerriers de Choc et de Thor, dont elle est tour a tour la compagne d'armes et l'amour contrarie. Sa loyaute envers Asgard passe avant tout le reste, y compris son propre bonheur.",
+        bioEn: "Sif is an Asgardian goddess and one of the finest blades in the Nine Realms, raised alongside Thor and Loki. A warrior first, she had to carve out her place in an army that did not want a woman in it, and her black hair — Loki having shorn off her golden locks out of spite — became the mark of what that place cost her. She fights beside the Warriors Three and beside Thor, by turns his shield-sister and his thwarted love. Her loyalty to Asgard comes before everything else, her own happiness included.",
+        civil: "Sif",
+        base: "Asgard",
+        equipes: "Guerriers de Choc, Asgardiens",
+        equipesEn: "Warriors Three, Asgardians",
+        ennemis: "l'Enchanteresse, Skurge l'Executeur, Loki",
+        ennemisEn: "the Enchantress, Skurge the Executioner, Loki",
+        apparition: "Journey into Mystery #102 (1964)",
+    },
+
     "hk001a": {
         bio: "Bruce Banner est un physicien nucléaire que l'explosion d'une bombe à rayons gamma, déclenchée pour sauver un adolescent égaré sur le site d'essai, a irradié sans le tuer. Depuis, la colère le transforme en une masse verte d'une force sans limite connue : plus il enrage, plus il devient puissant. Vengeur de la première heure, il passe sa vie à fuir l'armée, ses propres démons et le monstre qu'il porte, tout en revenant chaque fois qu'on a besoin de la chose la plus forte qui soit.",
         bioEn: "Bruce Banner is a nuclear physicist irradiated but not killed by the blast of a gamma bomb he set off to save a teenager who had wandered onto the test site. Since then, anger turns him into a green mass of no known upper limit of strength: the angrier he gets, the stronger he gets. A founding Avenger, he spends his life running from the army, from his own demons and from the monster he carries, while turning up every time the strongest one there is happens to be needed.",

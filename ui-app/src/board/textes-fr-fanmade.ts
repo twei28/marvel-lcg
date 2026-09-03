@@ -1745,4 +1745,41 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'vv010': "<b>Ressource</b> : inclinez Viv's Solar Gem → générez une ressource [energy].\n<b>Réponse</b> : après la fin de la phase du Méchant, redressez Viv's Solar Gem.",
   // viv_vision — Grounded (Obligation)
   'vv011': "<b><i>Donnez-la au joueur Viv Vision.</i></b>\nPassez en forme d'identité civile.\nVous ne pouvez pas changer de forme.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Grounded de la partie.",
+
+  // lady_sif — Lady Sif (Hero) [set 150, Rainy]
+  'ls001a': "<i>Valiant Warrior</i> — <b>Réponse</b> <i>(contre)</i> : après que Lady Sif a utilisé un pouvoir de base, retirez 1 menace d'une manigance.",
+  // lady_sif — Lady Sif (AlterEgo)
+  'ls001b': "<i>Shieldmaiden</i> — <b>Action</b> : redressez un personnage [[ASGARD]] amical. <i>(Limite d'une fois par round.)</i>",
+  // lady_sif — Thor, Odinson (Ally)
+  'ls002': "[star] <b>Réponse</b> : après que Thor a attaqué, choisissez un joueur. Infligez 1 dégât à chaque sbire engagé avec ce joueur.",
+  // lady_sif — Impale (Event, x2)
+  'ls003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Choisissez de faire gagner à cette attaque SOIT Déferlement, SOIT Perforation.",
+  // lady_sif — Lead The Charge (Event, x3)
+  'ls004': "<b>Action de héros</b> <i>(attaque)</i> : Lady Sif effectue une attaque de base SANS s'incliner. Choisissez un AUTRE personnage amical. Ce personnage gagne +1 ATQ jusqu'à la fin du round.",
+  // lady_sif — To Arms! (Event)
+  'ls005': "<b>Action d'alter ego</b> : passez en forme de héros. Vous pouvez dépenser 1 ressource pour redresser votre héros.\n<b>Action de héros</b> : cherchez une amélioration [[WEAPON]] dans votre deck ET dans votre défausse, et ajoutez-la à votre main. Mélangez votre deck.",
+  // lady_sif — Valiant Defense (Event, x3)
+  'ls006': "<b>Interruption de héros</b> <i>(défense)</i> : quand un ennemi attaque, effectuez une défense de base SANS incliner votre héros. Vous gagnez +1 DEF pour cette attaque (+2 DEF à la place si vous avez payé cette carte avec une ressource [energy]).",
+  // lady_sif — Sif's Chambers (Support)
+  'ls007': "<b>Action d'alter ego</b> : inclinez Sif's Chambers → soignez 1 dégât de Lady Sif. Soignez 1 dégât de Thor ou d'Odinson. Choisissez une carte Lady Sif dans votre défausse et mélangez-la dans votre deck.",
+  // lady_sif — Sif's Steed (Support)
+  'ls008': "<b>Réponse de héros</b> : après que Lady Sif s'est inclinée, inclinez Sif's Steed → redressez Lady Sif.\n<b>Action de héros</b> : inclinez Sif's Steed → redressez Lady Sif.",
+  // lady_sif — Sif's Crest (Upgrade)
+  'ls009': "Vous gagnez +2 points de vie.\n<b>Interruption de héros</b> : quand Lady Sif utilise un pouvoir de base, piochez 1 carte. <i>(Limite d'une fois par phase.)</i>",
+  // lady_sif — Sif's Spear (Upgrade)
+  'ls010': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 DEF en forme de héros et gagne Riposte 1.",
+  // lady_sif — Sif's Sword (Upgrade)
+  'ls011': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 ATQ en forme de héros. En forme de héros, les attaques de BASE de Lady Sif gagnent Perforation.",
+  // lady_sif — Unrequited Love (Obligation)
+  'ls012': "<b><i>Donnez-la au joueur Lady Sif.</i></b>\nVous pouvez passer en forme d'identité civile.\nÉtourdissez Lady Sif. Étourdissez OU désorientez Thor. Si vous ne le pouvez pas, désorientez Lady Sif. Défaussez cette obligation.",
+  // lady_sif_nemesis — Captivating Wiles (SideScheme)
+  'ls013': "<i>L'Enchanteresse nous manipule pour que nous fassions son sale travail !</i>\n<b>Interruption forcée</b> : quand la phase du joueur commence, inclinez l'identité du PREMIER joueur et placez 2 menaces sur la manigance principale.\n<hr />[star] <b>Boost</b> : placez 2 menaces sur la manigance principale.",
+  // lady_sif_nemesis — Enchantress (Minion)
+  'ls014': "<b>Interruption forcée</b> : quand Enchantress est attaquée, déclarez le héros engagé défenseur (sans l'incliner). Si vous ne le pouvez pas, annulez cette attaque et placez 2 menaces sur la manigance principale à la place. <i>(Limite d'une fois par phase.)</i>\n<i>(Sbire némésis de Lady Sif.)</i>",
+  // lady_sif_nemesis — Skurge (Minion)
+  'ls015': "<b><i>Travail d'équipe</i></b> ([[ASGARD]]). <b><i>Robustesse.</i></b>\n[star] <b>Interruption forcée</b> : quand Skurge vous attaque, il attaque le personnage que VOUS contrôlez ayant le moins de points de vie restants. Cette attaque gagne Déferlement et Perforation.\n<hr />[star] <b>Boost</b> : détruisez un allié que vous contrôlez.",
+  // lady_sif_nemesis — Hypnotic Suggestion (Attachment)
+  'ls016': "Attachez-la à votre identité.\n<b>Action forcée</b> : inclinez cette carte → piochez 1 carte, puis jouez cette carte (en payant son coût). Si vous ne le pouvez pas, placez 2 menaces sur la manigance principale.\n<b>Action d'alter ego</b> : inclinez cette carte et dépensez une ressource [mental] → défaussez cette carte.",
+  // lady_sif_nemesis — Love Concoction (Attachment)
+  'ls017': "Attachez-la à votre identité.\n<b>Action forcée</b> : inclinez cette carte et donnez au méchant une carte de boost face cachée → redressez votre identité.\n<b>Action d'alter ego</b> : inclinez cette carte et donnez au méchant une carte de boost face cachée → défaussez cette carte.\n<hr />[star] <b>Boost</b> : révélez cette carte.",
 }

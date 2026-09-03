@@ -14660,6 +14660,499 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["vv011"], "exhausted": ["vv001b"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « lady_sif » : ls001a-ls017 (custom, auteur « Rainy », set 150)
+    #
+    # DEUX sets dans ce pack : « Lady Sif » (ls001a-ls012) et « Lady Sif
+    # Nemesis » (ls013-ls017).
+    #
+    # ⚠ Les deux faces d'identite s'appellent toutes les deux « Lady Sif » : on
+    # ne designe JAMAIS l'identite par son nom, toujours par le card_id de la
+    # face en jeu (`Puzzle.ChangeToFace('ls001b', 'ls001a')`). La partie
+    # demarre en ALTER-EGO.
+    #
+    # ⚠ VALIANT WARRIOR (ls001a) SE DECLENCHE A CHAQUE POUVOIR DE BASE, SANS
+    # LIMITE. Tout cas qui fait attaquer, contrer ou defendre le heros doit
+    # donc poser de la menace sur 01097b (`Puzzle.SetThreat`) ET fournir la
+    # cible dans `cibles` : sans manigance chargee, le selecteur
+    # `has_threat=True` n'a aucune cible legale.
+    #
+    # Scenario rhino : 01094 Rhino (PV 14, ATQ 2), 01097b la manigance
+    # principale (StartingThreat 0), 01102 * Sandman (sbire PV 4, ATQ 3,
+    # Toughness), 01107 Breakin' & Takin', 01108 Crowd Control.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ls001a Valiant Warrior — une MENEE de base retire 1 menace de plus",
+        "pourquoi": ("`AfterUnitUseBasicPower(Response, 'You', op)` (modele 04032 "
+                     "* Captain Marvel, qui emploie 'This' parce qu'elle est ALLIEE). "
+                     "CTR 1 : la menee de base retire 1, la Response 1 de plus. "
+                     "Principale 5 -> 3. ⚠ AUCUNE limite imprimee, contrairement a "
+                     "ls009 qui plafonne a une fois par phase"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('ls001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ls001a Valiant Warrior — une ATTAQUE de base retire aussi 1 menace",
+        "pourquoi": ("le cas qui prouve « a basic power » et non « your basic thwart "
+                     "power » : le parametre `powers` de la fabrique reste a None, "
+                     "donc les TROIS pouvoirs declenchent. Rhino prend l'ATQ 2, et la "
+                     "principale passe quand meme de 5 a 4"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('ls001a', '01094')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "degats_min": [["01094", 2]]},
+    },
+    {
+        "nom": "ls001b Shieldmaiden — l'alter-ego ASGARD se redresse lui-meme",
+        "pourquoi": ("`WhenInYourPlayTurn(Action).LimitOncePerRound().SetTarget("
+                     "'YouControlUnit', trait='ASGARD', canbe_ready=True)`. La face "
+                     "civile PORTE le trait ASGARD : « a friendly ASGARD character » "
+                     "l'inclut, et c'est la cible la plus sure a monter (l'allie "
+                     "ls002 existe aussi dans le DECK, ou `Puzzle.Exhaust` irait le "
+                     "chercher — piege ho009). `canbe_ready=True` exige une cible "
+                     "reellement inclinee"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.Exhaust('ls001b')"],
+        "declencher": ["Puzzle.Action('ls001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ls001b"]},
+    },
+    {
+        "nom": "ls002 Thor — apres son attaque, 1 degat a chaque sbire du joueur choisi",
+        "pourquoi": ("`AfterUnitAttackEnd(Response, 'This', op)` puis un choix de "
+                     "JOUEUR (`SetTarget('Players')` + `Players.ForEachTargets`, "
+                     "modele 50013 * Slingshot). ⚠ Sandman porte Toughness : le 1er "
+                     "degat consomme sa carte Tenace au lieu d'entamer ses PV. C'est "
+                     "donc l'ABSENCE du statut Tough qui prouve le degat, pas un "
+                     "compteur de PV"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.PutIntoPlay('01102')"],
+        "declencher": ["Puzzle.Attack('ls002', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01102", "Tough"]]},
+    },
+    {
+        "nom": "ls003 Impale — 6 degats, avec Deferlement au choix",
+        "pourquoi": ("deux `ForChoiceAbility` EXCLUSIVES dans un seul "
+                     "`ChooseAbilities` : « either overkill or piercing », jamais les "
+                     "deux. `choisir_option` force la branche Deferlement, sinon le "
+                     "pilote prend toujours la premiere"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')"],
+        "main_exclusive": ["ls003", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["ls003"],
+        "cibles": ["01094"],
+        "choisir_option": ["This attack gains overkill"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 6]]},
+    },
+    {
+        "nom": "ls004 Lead The Charge — attaque de base SANS incliner, et +1 ATQ a Thor",
+        "pourquoi": ("`heros.BasicAttack(effect.targets, effect)` (modele bw024 Strong "
+                     "as Silk, seule autre carte du depot a imprimer « without "
+                     "exhausting ») : c'est l'ACTION de base du joueur qui incline "
+                     "d'ordinaire, pas l'attaque. Le heros doit donc rester PRET. "
+                     "« ANOTHER friendly character » exclut Lady Sif : la cible "
+                     "forcee est ls002"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["ls004", "01090"],
+        "declencher": [],
+        "jouer": ["ls004"],
+        "cibles": ["01094", "ls002", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 2]], "pret": ["ls001a"],
+                    "attributs_carte": [["ls002", "attack", 1]]},
+    },
+    {
+        "nom": "ls005 To Arms! — l'Action d'alter ego fait passer en forme de heros",
+        "pourquoi": ("`identite.ChangeToForm(Hero, effect)` (modele ag005 Parting "
+                     "Shots). Cout 0 : la carte se joue main vide. Le « you may spend "
+                     "1 resource to ready your hero » passe par "
+                     "`MayChooseOneAbility`, donc facultatif — sans ressource en "
+                     "main, la branche Cancel suffit"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": [],
+        "declencher": [],
+        "main_exclusive": ["ls005"],
+        "jouer": ["ls005"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero"},
+    },
+    {
+        "nom": "ls005 To Arms! — l'Action de heros va chercher une arme DANS LA DEFAUSSE",
+        "pourquoi": ("`Search.PlayerCard(include_player_deck=True, "
+                     "include_discard_pile=True, trait='WEAPON', card_type=Upgrade)` "
+                     "(modele an001b / ok001b). ⚠ Le modele d'origine 01040b T'Challa "
+                     "ne fouille QUE le deck : le copier aurait tu la moitie de la "
+                     "phrase. On place donc ls010 dans la DEFAUSSE, pas dans le deck, "
+                     "et c'est ce cas-la qui le prouve. Main reduite a ls005 : le "
+                     "pilote ne peut pas rejouer l'arme dans la foulee (piege bt001a)"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.CreatePlayerDiscardPile('ls010')"],
+        "declencher": [],
+        "main_exclusive": ["ls005"],
+        "jouer": ["ls005"],
+        "cibles": ["ls010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ls010"]},
+    },
+    {
+        "nom": "ls006 Valiant Defense — defense de base SANS incliner, Rhino ne passe pas",
+        "pourquoi": ("jumeau de `25011` Shieldmaiden (pack valk) : "
+                     "`WhenUnitBeingAttack(HeroInterrupt, 'You', Enemy, op)` + "
+                     "`GainForThisActive(..., message.would_atk_message, defense=N)` "
+                     "+ `DeclareDefender`. ⚠ `DeclareDefender` N'INCLINE PAS de "
+                     "lui-meme (commentaire de dd003 Doombot) : c'est exactement ce "
+                     "que « without exhausting your hero » demande. ⚠ LE HEROS EST "
+                     "INCLINE A LA MISE EN PLACE, et c'est ce qui rend le cas SUJET : "
+                     "au premier passage, le pilote defendait NORMALEMENT (en "
+                     "inclinant) et la carte n'etait jamais jouee — 0 degat pour la "
+                     "mauvaise raison. Heros incline, la defense de base ordinaire est "
+                     "impossible : seule ls006 peut encore defendre. DEF 2 + 1 = 3 "
+                     "contre l'ATQ 2 de Rhino -> 0 degat, et la defense de base "
+                     "declenche Valiant Warrior au passage (5 -> 4). ⚠ `Puzzle.Attack` "
+                     "est appele SANS second argument : ce parametre fait DEFENDRE la "
+                     "carte nommee (puzzle.py:385), donc `Puzzle.Attack('01094', "
+                     "'ls001a')` ajoutait une PREMIERE defense de base, un second "
+                     "declenchement de Valiant Warrior, et la principale tombait a 3. "
+                     "⚠ LIMITE ASSUMEE : "
+                     "la branche +2 DEF (paiement en energie) n'est PAS separable ici, "
+                     "Rhino etape 1 ne frappant qu'a 2 — les deux valeurs ramenent a 0. "
+                     "Il faudrait un ennemi a ATQ 4"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.Exhaust('ls001a')"],
+        "main_exclusive": ["ls006", "01088"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["ls006"],
+                    "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ls007 Sif's Chambers — soigne Lady Sif, soigne Thor, et repeche une carte",
+        "pourquoi": ("trois effets sequentiels sous un SEUL cout d'inclinaison : le "
+                     "`->` ne couvre que le premier soin. ⚠ ARBITRAGE UTILISATEUR du "
+                     "03/09/2026 : « Thor or Odinson » vise TOUT personnage amical en "
+                     "jeu portant l'un de ces noms, meme chez un autre joueur. "
+                     "« a LADY SIF card » est une carte du SET (`CardFinder("
+                     "set_name='Lady Sif')`), pas une carte de ce NOM. 3 degats "
+                     "subis -> 2 ; Thor blesse de 1 -> 0"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ls007')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.Damage('ls001b', 3)",
+                          "Puzzle.Damage('ls002', 1)",
+                          "Puzzle.CreatePlayerDiscardPile('ls003')"],
+        "declencher": ["Puzzle.Action('ls007')"],
+        "cibles": ["ls002", "ls003"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["ls002", 0]],
+                    "dans_deck_joueur": ["ls003"], "exhausted": ["ls007"]},
+    },
+    {
+        "nom": "ls008 Sif's Steed — la Response redresse le heros qui vient de s'incliner",
+        "pourquoi": ("jumeau de vv009 Insubstantial Flight : AUCUNE fabrique "
+                     "n'enveloppe `Message.AfterCardExhausted`, on construit "
+                     "l'`Ability` a la main avec le filtre "
+                     "`Condition.CheckWhichCard('YourHero', message.trigger, effect)`. "
+                     "L'attaque de base incline le heros, la Response le redresse en "
+                     "inclinant le soutien"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls008')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('ls001a', '01094')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ls001a"], "exhausted": ["ls008"]},
+    },
+    {
+        "nom": "ls008 Sif's Steed — l'Action redresse a la demande",
+        "pourquoi": ("la seconde capacite, `WhenInYourPlayTurn(HeroAction)` + "
+                     "`CostFunc.Exhaust('This')` (modele ho011). ⚠ ORDRE DE MISE EN "
+                     "PLACE : on incline le heros AVANT de poser le soutien, sinon "
+                     "c'est la Response ci-dessus qui tire et le cas ne prouve plus "
+                     "rien sur l'Action"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.Exhaust('ls001a')",
+                          "Puzzle.PutIntoPlay('ls008')"],
+        "declencher": ["Puzzle.Action('ls008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ls001a"], "exhausted": ["ls008"]},
+    },
+    {
+        "nom": "ls009 Sif's Crest — +2 PV a l'identite, dans les DEUX formes",
+        "pourquoi": ("« YOU get +2 hit points » : « you » = l'identite, donc "
+                     "`GiveKeywordToAttached('You', health=2)` et non `(Hero, ...)`. "
+                     "Le cas est monte en forme CIVILE, celle ou une ecriture `Hero` "
+                     "ne donnerait rien — c'est le piege an002, trouve en partie "
+                     "reelle. PV 13 -> 15"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ls009')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2}, "en_jeu": ["ls009"]},
+    },
+    {
+        "nom": "ls009 Sif's Crest — un pouvoir de base pioche 1 carte",
+        "pourquoi": ("`WhenUnitUseBasicPower(HeroInterrupt, 'You', op)"
+                     ".LimitOncePerPhase()` — la version INTERRUPTION du declencheur "
+                     "de ls001a, qui, lui, est une RESPONSE sans limite. Le deck est "
+                     "reduit a 01088 Energy : la carte piochee est identifiable, et "
+                     "c'est une RESSOURCE, que le pilote ne peut pas jouer dans la "
+                     "foulee (piege bt001a)"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls009')",
+                          "Puzzle.CreatePlayerDeck('01088')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01089"],
+        "declencher": ["Puzzle.Thwart('ls001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"]},
+    },
+    {
+        "nom": "ls010 Sif's Spear — +1 DEF et Riposte 1, en forme de heros",
+        "pourquoi": ("jumeau de `03009` * Captain America's Shield : "
+                     "`GiveKeywordToAttached(Hero, defense=1, retaliate=1)`. La cible "
+                     "est le TYPE de face et non le nom — les deux faces s'appellent "
+                     "« Lady Sif », et l'allie officiel 06002 aussi. `Restricted` est "
+                     "une base automatique lue dans `desc` : aucun module. DEF 2 -> 3"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls010')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1, "retaliate": 1}, "en_jeu": ["ls010"]},
+    },
+    {
+        "nom": "ls011 Sif's Sword — +1 ATQ, et l'attaque de base PERFORE la carte Tenace",
+        "pourquoi": ("`GiveKeywordToAttached(Hero, attack=1)` + "
+                     "`UnitAttackGainKeyword('You', piercing=True, "
+                     "is_basic_attack=True)` (modele 27078). Sandman porte Toughness : "
+                     "sans Perforation son statut Tenace absorberait TOUT et il "
+                     "prendrait 0. Avec, il encaisse les 3 degats (ATQ 2 + 1). "
+                     "`is_basic_attack=True` est indispensable : sans lui, Impale et "
+                     "Lead The Charge perforeraient aussi, ce que le texte n'accorde "
+                     "pas"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls011')",
+                          "Puzzle.PutIntoPlay('01102')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('ls001a', '01102')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "degats_min": [["01102", 3]]},
+    },
+    {
+        "nom": "ls012 Unrequited Love — SANS Thor, la branche de repli desoriente Lady Sif",
+        "pourquoi": ("modele an010 Banished from Asgard. « If you cannot » est "
+                     "REELLEMENT atteignable : Thor n'est pas en jeu la plupart du "
+                     "temps, un seul exemplaire etant au deck. Lady Sif encaisse donc "
+                     "les DEUX statuts, et l'obligation part"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ls012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ls001b", "Stunned"], ["ls001b", "Confused"]],
+                    "hors_jeu": ["ls012"]},
+    },
+    {
+        "nom": "ls012 Unrequited Love — AVEC Thor, c'est lui qui encaisse, pas Lady Sif",
+        "pourquoi": ("le CONTRE-CAS de la branche de repli : Thor en jeu, "
+                     "`choisir_option` force « Stun Thor », et Lady Sif n'est PAS "
+                     "desorientee. C'est ce cas qui prouve que le `If you cannot` "
+                     "teste bien le RETOUR de `GiveStatus` et pas autre chose"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ls002', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('ls012')"],
+        "choisir_option": ["Stun Thor"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ls002", "Stunned"], ["ls001b", "Stunned"]],
+                    "statuts_absents": [["ls001b", "Confused"]],
+                    "hors_jeu": ["ls012"]},
+    },
+    {
+        "nom": "ls013 Captivating Wiles — le Boost pose 2 menaces sur la principale",
+        "pourquoi": ("`WhenCardBecomeBoost('This', op)` (modele an013 / ho015). "
+                     "`Puzzle.Boost` pose la carte au sommet du deck rencontre PUIS "
+                     "fait ACTIVER le vilain (puzzle.py:337) : la menace lue est donc "
+                     "la somme des trois termes, et c'est voulu — 1 (MNG de Rhino) "
+                     "+ 1 (l'icone de boost chiffree de la carte) + 2 (l'effet "
+                     "[star] Boost) = 4. Le joueur est en ALTER-EGO, donc Rhino "
+                     "manigance au lieu d'attaquer"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Boost('ls013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ls013 Captivating Wiles — au debut de la phase du joueur, le premier joueur s'incline",
+        "pourquoi": ("`WhenPlayerPhaseBegin(ForcedInterrupt, op)` est hors de portee "
+                     "de l'API Puzzle, qui n'avance aucune phase. On renvoie donc "
+                     "dans le monde le message exact emis par `world.py:792` — meme "
+                     "sonde que vv010 pour la fin de phase du vilain. ⚠ « the FIRST "
+                     "player's identity » et non « the engaged player » : "
+                     "`Worlds.GetFirstPlayer`, jamais `effect.GetInitiator()`"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ls013')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": [],
+        "verifier": "ls013_incline_le_premier_joueur",
+    },
+    {
+        "nom": "ls014 Enchantress — SANS heros en jeu, l'attaque est annulee et 2 menaces tombent",
+        "pourquoi": ("⚠ ARBITRAGE UTILISATEUR du 03/09/2026 : « If you cannot » tire "
+                     "des que le moteur n'a pose AUCUN defenseur, verifie a "
+                     "posteriori sur `message.defender`. Ce cas monte la situation "
+                     "reellement atteignable : le joueur est en ALTER-EGO, c'est "
+                     "l'allie Thor qui frappe, il n'y a donc aucune face heros a "
+                     "declarer. L'attaque est annulee (Enchantress a 5 PV et n'en "
+                     "perd aucun) et 2 menaces partent sur la principale. "
+                     "⚠ `Puzzle.Attack` est appele SANS second argument : ce parametre "
+                     "fait DEFENDRE la carte nommee, donc `Puzzle.Attack('ls002', "
+                     "'ls014')` posait Enchantress elle-meme comme defenseur AVANT la "
+                     "capacite — `message.defender` n'etait plus None et le repli ne "
+                     "tirait jamais. La cible passe par `cibles`"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.PutIntoPlay('ls014')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Attack('ls002')"],
+        "cibles": ["ls014"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "degats": [["ls014", 0]]},
+    },
+    {
+        "nom": "ls014 Enchantress — le heros qui la frappe est declare DEFENSEUR de sa propre attaque",
+        "pourquoi": ("le cas nominal, et son temoin est indirect mais net : une "
+                     "defense de base EST un pouvoir de base, donc Valiant Warrior "
+                     "(ls001a) tire UNE SECONDE FOIS. Sans le module d'Enchantress, "
+                     "seule l'attaque declenche la Response et la principale passe de "
+                     "5 a 4 ; avec lui, la defense forcee la fait tomber a 3. C'est "
+                     "aussi ce cas qui prouve que `DeclareDefender` a bien pose un "
+                     "defenseur, sans quoi la branche « If you cannot » aurait annule "
+                     "l'attaque"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls014')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Attack('ls001a')"],
+        "cibles": ["ls014", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ls015 Skurge — il frappe l'allie le plus bas en PV, et le deferlement passe",
+        "pourquoi": ("jumeau de `24026` * Crossfire : `WhenUnitWouldAttack("
+                     "ForcedInterrupt, 'This', op)` + `Filter.One(..., "
+                     "fewest_remaining_hp=True)` + `message.ReplaceTarget`. ⚠ ECART "
+                     "IMPRIME AVEC CROSSFIRE : « the character YOU control » borne au "
+                     "joueur engage, alors que Crossfire balaie toute la table. Thor "
+                     "blesse de 1 n'a plus que 2 PV : l'ATQ 3 le tue, et le "
+                     "Deferlement renvoie 1 degat au joueur. ⚠ LE HEROS EST INCLINE A "
+                     "LA MISE EN PLACE : au premier passage il se declarait DEFENSEUR "
+                     "a la place de Thor et encaissait 1 degat (ATQ 3 - DEF 2), ce qui "
+                     "laissait Thor intact et ne prouvait rien de la redirection"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.Damage('ls002', 1)",
+                          "Puzzle.PutIntoPlay('ls015')",
+                          "Puzzle.Exhaust('ls001a')"],
+        "declencher": ["Puzzle.Attack('ls015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ls002"], "degats_identite": 1},
+    },
+    {
+        "nom": "ls015 Skurge — le Boost detruit un allie",
+        "pourquoi": ("« [star] Boost: Defeat an ally you control » : la punition "
+                     "directe de l'aspect Commandement du deck de depart. Sans allie "
+                     "en jeu, rien ne se passe — le texte ne prevoit aucun repli"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)"],
+        "declencher": ["Puzzle.Boost('ls015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ls002"]},
+    },
+    {
+        "nom": "ls016 Hypnotic Suggestion — carte injouable piochee : 2 menaces a la place",
+        "pourquoi": ("jumeau de `55008b` Trance of Greed : `player.DrawUp(1, effect)` "
+                     "puis `player.PlayCardsLikeInTurn(faces, effect)`, dont le "
+                     "RETOUR dit si la carte a pu etre jouee. Le deck est reduit a "
+                     "ls003 (cout 3) et la main a 01089 (2 mentales) : le paiement "
+                     "est impossible, donc « If you cannot » tire. Cas ATTEIGNABLE, "
+                     "contrairement au piege wd028"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.CreatePlayerDeck('ls003')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["01089"],
+        "declencher": ["Puzzle.Reveal('ls016')", "Puzzle.Action('ls016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ls016"], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ls017 Love Concoction — le Boost revele la carte, qui s'attache a l'identite",
+        "pourquoi": ("`WhenCardBecomeBoost('This', RevealThisCard)` (modele ho017 / "
+                     "27078) + `AttachToFaceWhenPutIntoPlay('YourIdentity')` (modele "
+                     "02048 All Tied Up). C'est le seul chemin d'entree en jeu de "
+                     "cette carte : `desc.Boost = 0`, elle n'ajoute rien a "
+                     "l'activation, elle se revele"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('ls017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ls017"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -18754,6 +19247,33 @@ def vv008_deux_cartes_piochees(monde, aides):
     if not piece.IsExhaust():
         return False, "vv008 n'est pas incline : le cout n'a pas ete paye"
     return True, "2 cartes piochees et Computer Mind incline"
+
+def ls013_incline_le_premier_joueur(monde, aides):
+    """ls013 : au debut de la phase du JOUEUR, le premier joueur s'incline et
+    2 menaces tombent sur la principale.
+
+    `WhenPlayerPhaseBegin(ForcedInterrupt, ...)` est hors de portee de l'API
+    Puzzle, qui n'avance aucune phase. On renvoie donc dans le monde le
+    message exact emis par `world.py:792` — meme sonde que vv010 pour la fin
+    de phase du vilain.
+    """
+    from game.message import Message
+    complot = aides["par_id"](monde, "ls013")
+    if complot is None:
+        return False, "ls013 introuvable en jeu"
+    joueur = monde.GetFirstPlayer()
+    identite = joueur.GetIdentity()
+    if identite.IsExhaust():
+        return False, "l'identite etait deja inclinee : le cas ne prouve rien"
+    principale = aides["par_id"](monde, "01097b")
+    avant = principale.threat if principale is not None else 0
+    Message.WhenPhaseBegin("Player", monde).Send()
+    if not identite.IsExhaust():
+        return False, "l'identite du premier joueur n'a PAS ete inclinee"
+    apres = principale.threat if principale is not None else 0
+    if apres - avant != 2:
+        return False, f"menace principale {avant} -> {apres} (attendu +2)"
+    return True, "premier joueur incline et 2 menaces posees sur la principale"
 
 def vv010_redressee_en_fin_de_phase_vilain(monde, aides):
     """vv010 : la gemme inclinee se redresse a la fin de la phase du vilain.

@@ -193,9 +193,9 @@
         "ls": {
             "pack": "lady_sif",
             "libelle": "150. Custom (Lady Sif)",
-            "cartes": 0,
-            "depuis": "2026-09-02",
-            "note": "RESERVE, pas encore cree. Auteur Rainy. 18 cartes, difficulte 2/5. Seul pack de la vague 0 avec un set nemesis complet (Enchantress, Skurge). set_name 'Lady Sif' verifie libre. Voir .planning/todos/2026-09-02-prep-vague0-lady-sif.md"
+            "cartes": 18,
+            "depuis": "2026-09-03",
+            "note": "Cree le 03/09/2026. Auteur Rainy. ls001a/b identite, ls002-ls011 signature (10 cartes distinctes, 15 exemplaires), ls012 obligation, ls013-ls017 set nemesis 'Lady Sif Nemesis' (Enchantress, Skurge, Captivating Wiles et deux attachements TEMPTATION). Seul pack de la vague 0 avec un set nemesis complet. set_name 'Lady Sif' libre : l'homonyme officiel 06002 est un ALLIE de Thor, pas un set. Trait TEMPTATION ajoute a l'enum TRAITS pour ce pack. Premier contenu maison a imprimer le mot-cle Teamwork (ls015 Skurge), d'ou la fiche docs/reference/mots-cles/teamwork.md."
         },
         "ma": {
             "pack": "ms_america",

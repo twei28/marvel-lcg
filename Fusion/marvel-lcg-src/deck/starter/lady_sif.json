@@ -1,0 +1,72 @@
+{
+    "version": "0.5.8",
+    "name": "Lady Sif",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Rainy) : le zip contient les 2 faces heros, les 15 exemplaires signature, l'obligation et les 5 cartes nemesis, rien d'autre. Aspect COMMANDEMENT choisi par l'utilisateur le 03/09/2026. Le kit y pousse de partout : ls002 Thor est un allie ASGARD, ls001b Shieldmaiden redresse un personnage ASGARD amical une fois par round, ls004 Lead The Charge donne +1 ATQ a un AUTRE personnage amical, et ls007 Sif's Chambers soigne Thor. Le deck fournit donc des allies a redresser, a equiper et a rappeler.",
+        "pouvoirs_de_base_note": "LA MECANIQUE VEDETTE DU PACK : chaque pouvoir de base paie deux fois. ls001a Valiant Warrior retire 1 menace a CHAQUE pouvoir de base, SANS limite ; ls009 Sif's Crest pioche 1 carte au premier de chaque phase. Le deck multiplie donc les occasions d'en utiliser : ls004 (attaque de base gratuite), ls006 (defense de base gratuite), ls008 Sif's Steed (redresse apres chaque epuisement), 01069 Get Ready et 03017 Strength In Numbers. 06032 Teamwork est le meilleur choix d'aspect du lot : il ajoute la statistique d'un allie a un pouvoir de BASE, donc sans jamais faire perdre le declenchement de Valiant Warrior. Piege de lecture : cette carte s'appelle « Teamwork » comme le MOT-CLE porte par ls015 Skurge, mais les deux n'ont aucun rapport.",
+        "ctr_note": "Lady Sif a CTR 1, ce qui est peu. La menee ne passe donc pas par la carte d'evenement mais par la REPETITION : 1 menace retiree par pouvoir de base, plus la menee de base elle-meme, plus les allies. Un round a quatre pouvoirs de base (attaque de base, ls004, defense de base, ls006) retire 4 menaces avec Valiant Warrior seul.",
+        "armes_note": "ls010 Sif's Spear et ls011 Sif's Sword sont les DEUX seules cartes WEAPON du deck, et toutes deux Restricted : un joueur peut porter les deux, et pas une de plus. ls005 To Arms! va chercher l'une ou l'autre dans le deck ET dans la defausse, ce qui en fait la carte la plus fiable du kit.",
+        "nemesis_note": "Seul pack de la vague 0 avec un set nemesis COMPLET : ls013 Captivating Wiles (complot annexe qui incline le premier joueur a chaque phase), ls014 Enchantress, ls015 Skurge, et deux attachements TEMPTATION. ⚠ ls015 Skurge porte Teamwork (ASGARD) et ls014 Enchantress porte le trait ASGARD : les deux ensemble, Skurge s'active gratuitement en arrivant. ⚠ Le Boost de Skurge (« Defeat an ally you control ») punit directement l'aspect Commandement : c'est le risque assume de ce deck.",
+        "collision_note": "⚠ « Lady Sif » est aussi le nom de l'allie officiel 06002, carte SIGNATURE de Thor (desc.Class = 'Hero'), et de 21190 (campagne MTS). Le heros ls001a porte le meme nom : c'est le set_name qui differe. Aucune carte de classe Hero d'un autre heros n'entre dans ce deck, le controle de l'etape 10 de PROCESSUS-HEROS est vert. « Thor » (ls002) a six homonymes, dont le heros officiel 06001a et les allies 13011, 25013 et 59020 — notre allie est une carte DISTINCTE, aux capacites differentes. « Enchantress », « Skurge », « Hypnotic Suggestion » et « Love Concoction » ont chacun au moins un homonyme.",
+        "arbitrage_note": "Deux lectures ont ete tranchees par l'utilisateur le 03/09/2026 : (1) ls007 « heal 1 damage from Thor or Odinson » vise TOUT personnage amical en jeu nomme « Thor » ou « Odinson », y compris chez un autre joueur ; (2) ls014 « If you cannot » se declenche des que le moteur n'a pas pose de defenseur, et pas seulement quand aucun heros n'est en jeu."
+    },
+    "hero": [
+        "ls001a,ls001b"
+    ],
+    "hero_deck": [
+        "ls002",
+        "ls003",
+        "ls003",
+        "ls004",
+        "ls004",
+        "ls004",
+        "ls005",
+        "ls006",
+        "ls006",
+        "ls006",
+        "ls007",
+        "ls008",
+        "ls009",
+        "ls010",
+        "ls011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ls012"
+    ],
+    "nemesis_set": [
+        "ls013",
+        "ls014",
+        "ls015",
+        "ls016",
+        "ls017"
+    ],
+    "player_deck": [
+        "01067",
+        "04014",
+        "12013",
+        "01083",
+        "01084",
+        "01071",
+        "01071",
+        "01071",
+        "01069",
+        "01069",
+        "06032",
+        "06032",
+        "01074",
+        "01074",
+        "08031",
+        "08031",
+        "01073",
+        "04016",
+        "03017",
+        "21018",
+        "01072",
+        "01072",
+        "01088",
+        "01089",
+        "01090"
+    ]
+}
