@@ -78096,7 +78096,315 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "c39710d82dde94d6195009a13f242f728fa445ad4e1ad3a9951d542703138028",
+    "night_thrasher": [
+        {
+            "card_id": "nt001a",
+            "type": "Hero",
+            "name": "* Night Thrasher",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "1",
+                "HS": "5"
+            },
+            "traits": [
+                "AVENGER",
+                "NEW WARRIOR"
+            ],
+            "text": "<i>Varial Heelflip</i> \u2014 <b>Response</b>: After you play a [[SKILL]] card, flip the Battle Board upgrade. <i>(Limit once per phase.)</i>",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt001b",
+            "type": "AlterEgo",
+            "name": "* Dwayne Taylor",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "GENIUS"
+            ],
+            "text": "<i>Tech Deck</i> \u2014 During deck-building you may include up to 4 [[SKILL]] cards in your deck from aspects other than your own.\n<i>Manual</i> \u2014 <b>Action</b>: Shuffle X [[SKILL]] cards from your hand into your deck \u2192 draw X cards. <i>(Limit once per round.)</i>",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt002",
+            "type": "Event",
+            "name": "Disaster",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SKILL",
+                "THWART"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Flip the Battle Board upgrade. Then, if it has the:\n\u2022 [[VEHICLE]] trait, remove 3 threat from a scheme.\n\u2022 [[WEAPON]] trait, deal 4 damage to an enemy.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt003a",
+            "type": "Upgrade",
+            "name": "* Battle Board",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1",
+                "Setup": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "VEHICLE"
+            ],
+            "text": "Permanent. Setup.\nNight Thrasher gets +1 THW and gains agile 1 <i>(reduce damage from attacks with boost cards by 1)</i>.\n<b>Response</b>: After you flip to this side, remove 1 threat from a scheme.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt003b",
+            "type": "Upgrade",
+            "name": "* Battle Board",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "Permanent.\nNight Thrasher gets +1 ATK and +1 DEF.\n<b>Hero Response</b>: After you flip to this side, deal 1 damage to an enemy.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt004",
+            "type": "Event",
+            "name": "Drop In",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "text": "<b>Hero Response</b>: After you change to hero form, if the Battle Board upgrade has the:\n\u2022 [[VEHICLE]] trait, confuse an enemy.\n\u2022 [[WEAPON]] trait, stun an enemy.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt005",
+            "type": "Event",
+            "name": "Kickflip",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SKILL"
+            ],
+            "text": "If the last card you played this round was a Night Thrasher event, reduce the cost to play this card by 1.\n<b>Hero Action</b> <i>(attack)</i>: Flip the Battle Board upgrade and deal 1 damage to an enemy. Draw 1 card.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt006",
+            "type": "Event",
+            "name": "Melon Grab",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SKILL"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 8 damage to an enemy. If the Battle Board upgrade has the:\n\u2022 [[VEHICLE]] trait, damage from this attack can be divided among enemies as you choose.\n\u2022 [[WEAPON]] trait, this attack gains piercing and overkill.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt007",
+            "type": "Event",
+            "name": "Tailblock",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SKILL"
+            ],
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, if the Battle Board upgrade has the:\n\u2022 [[VEHICLE]] trait, prevent 1 of that damage and draw 2 cards.\n\u2022 [[WEAPON]] trait, prevent 3 of that damage.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt008",
+            "type": "Support",
+            "name": "* The Mancave",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "text": "<b>Alter-Ego Response</b>: After you change form, heal 1 damage from your identity.\n<b>Hero Response</b>: After you change form, reduce the resource cost of the next [[SKILL]] card you play this turn by 1.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt009",
+            "type": "Upgrade",
+            "name": "* Escrima Sticks",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "While the Battle Board upgrade has the [[VEHICLE]] trait, your attacks gain piercing and overkill.\n<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. Shuffle this card into your deck.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt010",
+            "type": "Upgrade",
+            "name": "Multi-Skilled",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "text": "<b>Resource</b>: Exhaust Multi-Skilled \u2192 generate a [wild] resource for a [[SKILL]] card.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt011",
+            "type": "Upgrade",
+            "name": "Prewind Stance",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "text": "Night Thrasher gets +1 DEF and gains retaliate 1.\n<b>Hero Interrupt</b>: When your turn or the villain phase begins, exhaust Prewind Stance \u2192 flip the Battle Board upgrade.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt012",
+            "type": "Obligation",
+            "name": "Practice",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Dwayne Taylor"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Night Thrasher player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust your identity or discard 1 card from your hand \u2192 remove Practice from the game.\n\u2022 You cannot flip the Battle Board upgrade until the start of the next villain phase. Discard this obligation.",
+            "set_name": "Night Thrasher",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt013",
+            "type": "Minion",
+            "name": "* Terrax the Tamer",
+            "subtitle": "",
+            "desc": {
+                "HP": "7",
+                "SCH": "1",
+                "ATK": "2",
+                "Boost": "2",
+                "Nemesis": "Dwayne Taylor"
+            },
+            "traits": [
+                "COSMIC",
+                "MUTANT"
+            ],
+            "text": "<b>Forced Response</b>: After Terrax the Tamer activates, discard the top 8 cards of the encounter deck. If the Cosmic Ax attachment was discarded this way, reveal it.\n<i>(Night Thrasher's nemesis minion.)</i>",
+            "set_name": "Night Thrasher Nemesis",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt014",
+            "type": "SideScheme",
+            "name": "Cemented",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2",
+                "Hinder": "1*",
+                "Boost": "2"
+            },
+            "traits": [],
+            "text": "Hinder 1[per_hero].\nPlayers cannot make basic attacks with heroes or allies or flip upgrades or identities.\n<b>Action</b>: Each player may discard 1 card from their hand \u2192 until the end of the phase, each player who discarded a card this way may treat this card's printed text box as if it were blank.",
+            "set_name": "Night Thrasher Nemesis",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt015",
+            "type": "Treachery",
+            "name": "Cosmic Connection",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: If the Cosmic Ax attachment is in play and your hero has a [[WEAPON]] card in play, take 3 indirect damage. If no damage was taken this way, this card gains surge.",
+            "set_name": "Night Thrasher Nemesis",
+            "custom": "DESIGNHACKER"
+        },
+        {
+            "card_id": "nt016",
+            "type": "Attachment",
+            "name": "* Cosmic Ax",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "ATK+": "2"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "Attach to Terrax the Tamer. If you cannot, discard the top 8 cards of the encounter deck. If Terrax the Tamer was discarded this way, reveal him and attach Cosmic Ax to him.\n<hr />\n[star] <b>Boost</b>: If Terrax the Tamer is in play, reveal this card.",
+            "set_name": "Night Thrasher Nemesis",
+            "custom": "DESIGNHACKER"
+        }
+    ],
+    "checksum": "5654c73e4cd8e19d4651d8f5139acc9d90c891b72ba860945d1a115bc8d377fa",
     "wolverine_x23": [
         {
             "card_id": "wx001a",

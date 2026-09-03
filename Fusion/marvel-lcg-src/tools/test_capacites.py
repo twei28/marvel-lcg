@@ -16548,6 +16548,580 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"taille_main": 1, "en_main": ["01088"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « night_thrasher » : nt001a-nt016 (custom, auteur « DESIGNHACKER », 153)
+    #
+    # ⚠ TOUT TOURNE AUTOUR DE `nt003a/nt003b` BATTLE BOARD, amelioration
+    # PERMANENTE RECTO-VERSO posee AU SETUP par `desc.Setup`. Chaque cas
+    # demarre donc planche cote VEHICLE (nt003a), la face qui porte le Setup.
+    # Les cas qui veulent l'autre face la retournent par
+    # `Puzzle.Flip('nt003a')`.
+    #
+    # ⚠ NEUF des quinze cartes du deck retournent la planche ou testent sa
+    # face : un cas qui oublie de fixer la face teste la mauvaise branche.
+    #
+    # ⚠ `Puzzle.CreateEncounterDeck` AJOUTE au deck existant, elle ne le
+    # remplace pas. Les cas qui ont besoin d'une carte de boost CONNUE la
+    # remontent sur le dessus par `Puzzle.PutIntoDeck` (modele hd024/hd025).
+    #
+    # Scenario rhino : 01094 Rhino (PV 14, ATQ 2, MNG 1), 01097b la manigance
+    # principale, 01101 Hydra Mercenary (PV 3, ATQ 1, GARDE 1), 01103
+    # * Shocker (PV 3, ATQ 2), 01105 « I'm Tough » (0 icone de boost),
+    # 01106 Stampede (1 icone), 01109 Bomb Scare (complot annexe).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "nt003a Battle Board — la planche arrive AU SETUP, face VEHICLE",
+        "pourquoi": ("le point de depart de tout le pack : `desc.Setup` met la carte "
+                     "en jeu a la mise en place, sans qu'aucun module ne l'appelle. "
+                     "Sans elle, NEUF des quinze cartes du deck n'ont plus rien a "
+                     "lire. Le trait VEHICLE prouve en plus que c'est bien la face `a` "
+                     "qui arrive"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt003a Battle Board — la face VEHICLE donne +1 CTR au heros",
+        "pourquoi": ("« NIGHT THRASHER gets +1 THW » cite un NOM PROPRE, celui de la "
+                     "seule face heros (l'alter-ego s'appelle Dwayne Taylor) : "
+                     "`GiveKeywordToInPlayWhenApplyThis(CardFinder(name='Night "
+                     "Thrasher'), thwart=1)` et non `'You'`, qui donnerait le bonus a "
+                     "une face civile sans CTR (piege an002). CTR imprimee 1 -> 2"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}, "en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt003a Battle Board — revenir sur VEHICLE retire 1 menace",
+        "pourquoi": ("`AfterFlipToThisFace(Response, op)` (modele 45075b / as002a) : "
+                     "le declencheur est l'ARRIVEE sur cette face, pas le depart. La "
+                     "planche est d'abord retournee sur WEAPON, puis ramenee : "
+                     "principale a 5, il doit rester 4"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.Flip('nt003a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Flip('nt003b')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt003a Battle Board — agile 1 retire 1 degat a une attaque avec boost",
+        "pourquoi": ("MOT-CLE MAISON, fiche docs/reference/mots-cles/agile.md. AUCUNE "
+                     "primitive moteur : le montage s'accroche a "
+                     "`WhenBoostCardTurnedFaceUp(while_attack=True)` et enregistre a "
+                     "cet instant un `ReduceCharacterTakeDamageBy` TEMPORAIRE borne a "
+                     "l'attaque. 01106 Stampede est remontee sur le DESSUS du deck de "
+                     "rencontre : 1 icone de boost, donc Rhino frappe a 2+1=3, reduit "
+                     "a 2. ⚠ Le heros est INCLINE, sans quoi il se declare defenseur "
+                     "et sa DEF absorbe tout — le cas passerait au vert pour la "
+                     "mauvaise raison (leçon im007)"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Exhaust('nt001a')",
+                          "Puzzle.CreateEncounterDeck('01106')",
+                          "Puzzle.PutIntoDeck('01106')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "nt003a Battle Board — agile ne touche PAS aux degats hors attaque",
+        "pourquoi": ("LE CONTRE-CAS du mot-cle maison, et la fiche "
+                     "docs/reference/mots-cles/agile.md l'exige nommement : « ne pas "
+                     "le rendre par un `ReduceCharacterTakeDamageBy` PERMANENT, ce "
+                     "serait une reduction de TOUS les degats ». Ici les 3 degats "
+                     "n'arrivent par AUCUNE attaque — donc aucune carte de boost n'est "
+                     "retournee, donc rien n'est enregistre — et les 3 doivent passer "
+                     "entiers. ⚠ Contre-cas d'ABSENCE d'effet : il reste VERT sous "
+                     "substitution, c'est assume ; c'est le cas jumeau « agile 1 "
+                     "retire 1 degat » qui porte la preuve. "
+                     "⚠ LIMITE DU HARNAIS, ecrite noir sur blanc : le contre-cas "
+                     "VRAIMENT discriminant serait une ATTAQUE sans carte de boost, et "
+                     "le harnais ne sait pas en produire — une activation d'ennemi en "
+                     "recoit toujours"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "declencher": ["Puzzle.Damage('nt001a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt003b Battle Board — la face WEAPON donne +1 ATQ et +1 DEF",
+        "pourquoi": ("le pendant exact du bonus VEHICLE, sur l'autre face : meme NOM "
+                     "PROPRE, memes deux statistiques. ATQ 1 -> 2 et DEF 1 -> 2. "
+                     "⚠ Le contre-cas en forme CIVILE est structurellement impossible "
+                     "a observer : la face alter-ego n'a ni ATQ ni DEF, et c'est "
+                     "precisement ce qui rend `CardFinder(name=...)` sur"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Flip('nt003a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "defense": 1},
+                    "en_jeu": ["nt003b"]},
+    },
+    {
+        "nom": "nt003b Battle Board — passer sur WEAPON inflige 1 degat",
+        "pourquoi": ("« **Hero** Response » ici, alors que la face VEHICLE imprime "
+                     "« Response » nue : les deux faces ne s'ecrivent PAS pareil, et "
+                     "c'est voulu — infliger des degats depuis la forme civile n'aurait "
+                     "pas de sens. Le cas tourne donc en forme heros"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "declencher": ["Puzzle.Flip('nt003a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]], "en_jeu": ["nt003b"]},
+    },
+    {
+        "nom": "nt001a Varial Heelflip — jouer une carte SKILL retourne la planche",
+        "pourquoi": ("`AfterPlayerPlayedCard(Response, 'You', CardFinder(trait="
+                     "'SKILL'), op)` (modele as001b / 17022), ou `'You'` teste "
+                     "`message.to_player` — le destinataire, pas celui qui joue. "
+                     "⚠ « Limit once per PHASE », pas par round : "
+                     "`LimitOncePerPhase()`, rare dans le depot (modele 15001a). "
+                     "04047 Skilled Investigator coute 0 et porte SKILL : la planche "
+                     "doit basculer sur WEAPON"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "main_exclusive": ["04047"],
+        "declencher": [],
+        "jouer": ["04047"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt003b", "04047"], "hors_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt001b Manual — 2 cartes SKILL remelangees, 2 cartes piochees",
+        "pourquoi": ("« Shuffle X SKILL cards from your hand into your deck -> draw X "
+                     "cards » : X est le NOMBRE DE CARTES CHOISIES, pas un cout en "
+                     "ressources, d'ou `SetTarget(..., from_where=['YourHandCards'], "
+                     "range=(1, 'All'))` et `len(effect.targets)` pour la pioche. "
+                     "`Faces.ShuffleAllTo(cartes, joueur.player_deck, effect)` remet "
+                     "dans le DECK, pas dans la defausse. La main contient 2 cartes "
+                     "SKILL et rien d'autre : elle doit rester a 2 apres l'echange, "
+                     "et les deux cartes doivent avoir quitte la main"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": [],
+        "main_exclusive": ["04047", "01065"],
+        "declencher": ["Puzzle.Action('nt001b', 'Action')"],
+        "cibles": ["04047", "01065"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "dans_deck_joueur": ["04047", "01065"]},
+    },
+    {
+        "nom": "nt002 Disaster — planche sur VEHICLE apres bascule : 3 menaces retirees",
+        "pourquoi": ("⚠ LE PIEGE DE LA CARTE EST L'ORDRE DE LECTURE. « **Then**, if it "
+                     "has the » : la face se lit APRES le retournement. La planche "
+                     "part donc de WEAPON pour arriver sur VEHICLE, et c'est la "
+                     "branche « remove 3 threat » qui doit tomber. Lire la face "
+                     "d'avant inverserait les deux branches. "
+                     "⚠ LE COMPTE N'EST PAS 5-3=2 MAIS 5-1-3=1, et la planche finit "
+                     "cote WEAPON : Disaster porte le trait SKILL, donc `nt001a` "
+                     "Varial Heelflip se declenche a son tour et REBASCULE la planche, "
+                     "et le retour sur VEHICLE a lui-meme retire 1 menace. Trois "
+                     "capacites du pack s'enchainent sur une seule carte jouee, et "
+                     "c'est bien ce que le pack promet"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Flip('nt003a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["nt002", "01090"],
+        "declencher": [],
+        "jouer": ["nt002"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "en_jeu": ["nt003b"]},
+    },
+    {
+        "nom": "nt002 Disaster — planche sur WEAPON apres bascule : 4 degats",
+        "pourquoi": ("LE CONTRE-CAS de la branche precedente, et le seul moyen de "
+                     "prouver que l'ordre de lecture est le bon : la planche part de "
+                     "VEHICLE (sa face de Setup) et arrive sur WEAPON, donc c'est la "
+                     "branche « deal 4 damage » qui tombe. Les deux cas ensemble "
+                     "encadrent le piege. ⚠ La planche finit cote VEHICLE et non "
+                     "WEAPON : Disaster porte SKILL, donc Varial Heelflip rebascule "
+                     "derriere elle"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "main_exclusive": ["nt002", "01090"],
+        "declencher": [],
+        "jouer": ["nt002"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]], "en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt004 Drop In — planche VEHICLE : l'ennemi est desoriente",
+        "pourquoi": ("`AfterUnitChangeForm(HeroResponse, 'You', op, to_form=Hero)` "
+                     "(modele 01019a / bt001b) : « change **to hero form** », PAS "
+                     "« change form » tout court — c'est la difference exacte avec "
+                     "nt008 The Mancave. Le ciblage est DANS l'operation (modele "
+                     "08013) parce que le filtre depend de la face : `canbe_confused` "
+                     "cote vehicule, `canbe_stunned` cote arme"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": [],
+        "main_exclusive": ["nt004", "01089"],
+        "declencher": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "defausse": ["nt004"]},
+    },
+    {
+        "nom": "nt004 Drop In — planche WEAPON : l'ennemi est etourdi",
+        "pourquoi": ("LE CONTRE-CAS, sur l'autre face. Le vehicule empeche de "
+                     "manigancer, l'arme empeche de frapper : la correspondance est "
+                     "thematique ET imprimee, et l'intervertir passerait inapercu sans "
+                     "ces deux cas jumeaux"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.Flip('nt003a')"],
+        "main_exclusive": ["nt004", "01089"],
+        "declencher": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]], "defausse": ["nt004"]},
+    },
+    {
+        "nom": "nt005 Kickflip — retourne la planche, 1 degat, et pioche 1",
+        "pourquoi": ("la seule carte du pack qui retourne la planche SANS rien lire "
+                     "dessus : les trois effets tombent toujours. La main ne contient "
+                     "que nt005 et 01090 (2 [physical]) : apres paiement elle est "
+                     "VIDE, donc une main a 1 carte prouve la pioche. ⚠ La planche "
+                     "finit cote VEHICLE : Kickflip porte SKILL, donc Varial Heelflip "
+                     "la rebascule apres coup"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "main_exclusive": ["nt005", "01090"],
+        "declencher": [],
+        "jouer": ["nt005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]], "taille_main": 1,
+                    "en_jeu": ["nt003a"]},
+    },
+    {
+        "nom": "nt005 Kickflip — le second Kickflip du round coute 1 de moins",
+        "pourquoi": ("`ReduceCostToPlayThis(1, conditions=[...])` (resources.py:586) "
+                     "lisant `player.stat.this_round_played_cards[-1]` "
+                     "(player_stat.py:8). ⚠ « the **LAST** card you played this "
+                     "round » : la DERNIERE, d'ou `[-1]` et jamais un `any(...)`. "
+                     "⚠ Et « a **Night Thrasher** event » : un evenement de CE set. "
+                     "Le cas est SUJET par construction — la main contient DEUX "
+                     "Kickflip et UNE SEULE ressource double : sans la reduction, le "
+                     "second est impayable et reste en main. "
+                     "⚠ CE CAS A TROUVE UN VRAI DEFAUT DE MODULE le 03/09/2026 : le "
+                     "moteur enregistre la carte jouee AVANT de calculer son cout, "
+                     "donc Kickflip se voyait ELLE-MEME comme « la derniere carte "
+                     "jouee ce round » et la reduction etait PERMANENTE — journal : "
+                     "« would play Kickflip with () » sur la PREMIERE copie. Le module "
+                     "exclut desormais `effect.this` de la liste. "
+                     "⚠ LA MESURE EST EN DEGATS ET PAS EN TAILLE DE MAIN : le pilote "
+                     "paie comme il veut, et le journal montre qu'il defausse le SECOND "
+                     "Kickflip comme ressource pour payer le premier. Les degats, eux, "
+                     "sont deterministes : 1 par Kickflip plus 1 a chaque arrivee de la "
+                     "planche cote WEAPON, soit 4 quand les deux sont joues. Le journal "
+                     "confirme la reduction ligne a ligne : « with (R) » sur le premier, "
+                     "« with () » sur le second"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "main_exclusive": ["nt005", "nt005", "01090"],
+        "declencher": [],
+        "jouer": ["nt005", "nt005"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]]},
+    },
+    {
+        "nom": "nt006 Melon Grab — planche WEAPON : 8 degats percants et deferlants",
+        "pourquoi": ("« 8 damage » pour un cout de 3, la plus grosse frappe du pack, "
+                     "et c'est bien ce qui est imprime. Cote WEAPON l'attaque gagne "
+                     "`AttackProperty(piercing=True, overkill=True)` (modele 27078 / "
+                     "ho016). Rhino a 14 PV : les 8 degats se lisent directement"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Flip('nt003a')"],
+        "main_exclusive": ["nt006", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["nt006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 8]]},
+    },
+    {
+        "nom": "nt007 Tailblock — planche VEHICLE : 1 degat prevenu et 2 cartes piochees",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(HeroInterrupt, 'You', op)` + "
+                     "`message.PreventDamage(1, effect)` (modele im007 / as001a). "
+                     "⚠ « **any amount** of damage » SANS « from an attack » : toute "
+                     "instance, d'ou l'ABSENCE de `is_from_attack` — c'est la "
+                     "difference exacte avec as001a du pack precedent. Rhino frappe a "
+                     "2 avec une carte de boost a 0 icone (01105), agile 1 en retire "
+                     "1, Tailblock le dernier : zero degat subi. Le heros est incline "
+                     "pour qu'il ne defende pas"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Exhaust('nt001a')",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "main_exclusive": ["nt007", "01089"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["nt007"]},
+    },
+    {
+        "nom": "nt008 The Mancave — passer en civil soigne 1 degat",
+        "pourquoi": ("« After you **change form** » tout court, dans les deux "
+                     "capacites : PAS « change to hero form » (difference exacte avec "
+                     "nt004). Chaque capacite est filtree par son propre type, donc "
+                     "c'est la forme d'ARRIVEE qui decide laquelle se propose. 3 "
+                     "degats poses, 1 soigne, il en reste 2. ⚠ Aucun cout "
+                     "d'inclinaison imprime : le soutien n'est PAS incline"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.PutIntoPlay('nt008', under_control=True)",
+                          "Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Damage('nt001a', 3)"],
+        "declencher": ["Puzzle.ChangeToFace('nt001a', 'nt001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "pret": ["nt008"]},
+    },
+    {
+        "nom": "nt008 The Mancave — passer en heros rend gratuite une carte SKILL a 1",
+        "pourquoi": ("`Worlds.UpdateNextCardPlayCost(joueur, -1, effect, finder="
+                     "CardFinder(trait='SKILL'), in_this='Turn')` (modele im001b / "
+                     "16024 Deft Focus). ⚠ « this **turn** », pas « this phase ». Le "
+                     "cas est SUJET par construction : la main ne contient QUE 16024 "
+                     "Deft Focus (cout 1, SKILL), donc aucune ressource pour la "
+                     "payer — si elle entre en jeu, c'est que son cout est tombe a 0. "
+                     "⚠ ET PAS 08018 Spycraft, essayee d'abord : elle imprime « Play "
+                     "only if you control a [[Spy]] character », et Night Thrasher "
+                     "n'est ni Spy ni rien d'approchant. Elle ne pouvait donc jamais "
+                     "entrer en jeu, et le cas echouait sans que la carte testee y "
+                     "soit pour quoi que ce soit"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.PutIntoPlay('nt008', under_control=True)"],
+        "main_exclusive": ["16024"],
+        "declencher": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "jouer": ["16024"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["16024"]},
+    },
+    {
+        "nom": "nt009 Escrima Sticks — 6 degats, puis la carte retourne dans le deck",
+        "pourquoi": ("« **Shuffle** this card into your deck » : dans le DECK, pas "
+                     "dans la defausse — l'amelioration se recycle au lieu d'etre "
+                     "perdue. `Faces.ShuffleAllTo` (modele bt006). L'Action n'a AUCUN "
+                     "autre cout que ce retrait du terrain"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.PutIntoPlay('nt009', under_control=True)"],
+        "declencher": ["Puzzle.Action('nt009', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 6]], "hors_jeu": ["nt009"],
+                    "dans_deck_joueur": ["nt009"]},
+    },
+    {
+        "nom": "nt009 Escrima Sticks — planche VEHICLE : l'attaque de base perce le Robuste",
+        "pourquoi": ("« While the Battle Board upgrade has the [[VEHICLE]] trait, your "
+                     "attacks gain piercing and overkill » — condition CONTINUE rendue "
+                     "par `UnitAttackGainKeyword(..., conditions=[...])`. Perforation "
+                     "ignore le statut Robuste : 01102 * Sandman entre en jeu avec une "
+                     "carte Tenace, et sans le mot-cle l'attaque ne lui ferait AUCUN "
+                     "degat. ⚠ Contre-intuitif mais imprime : le bonus tombe cote "
+                     "VEHICLE, pas cote arme"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.PutIntoPlay('nt009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01102')"],
+        "declencher": ["Puzzle.Attack('nt001a')"],
+        "cibles": ["01102"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01102", 1]]},
+    },
+    {
+        "nom": "nt010 Multi-Skilled — sa ressource ne paie QUE les cartes SKILL",
+        "pourquoi": ("`CanGenerateResources(Resource, Resources('G'), CardFinder("
+                     "trait='SKILL'))` (modele 14017 Nerves of Steel, 15 cartes "
+                     "officielles au meme montage). ⚠ Le [wild] genere n'est PAS le "
+                     "[mental] du cout imprime : deux choses differentes sur la meme "
+                     "carte, piege classique de lecture. Montage de preuve de im005 : "
+                     "la main est reduite a la SEULE carte a payer, 16024 Deft Focus "
+                     "(cout 1, SKILL), donc l'amelioration est l'UNIQUE source. "
+                     "⚠ 08018 Spycraft, essayee d'abord, exige un personnage [[Spy]] "
+                     "que ce heros n'a pas : elle ne pouvait jamais entrer en jeu"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.PutIntoPlay('nt010', under_control=True)"],
+        "main_exclusive": ["16024"],
+        "declencher": [],
+        "jouer": ["16024"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["nt010"], "en_jeu": ["16024"]},
+    },
+    {
+        "nom": "nt011 Prewind Stance — +1 DEF et Riposte 1 au heros",
+        "pourquoi": ("« NIGHT THRASHER gets +1 DEF and gains retaliate 1 » : NOM "
+                     "PROPRE, la seule face heros. Riposte est une BASE automatique du "
+                     "moteur (fiche mots-cles/retaliate.md) : on ne la recode pas, on "
+                     "la DONNE. DEF 1 -> 2, Riposte 0 -> 1"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.PutIntoPlay('nt011', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1, "retaliate": 1}},
+    },
+    {
+        "nom": "nt011 Prewind Stance — le debut de la phase du vilain retourne la planche",
+        "pourquoi": ("« your turn **or** the villain phase begins » : DEUX messages "
+                     "differents (`WhenPlayerTurnBegin` turn_phase.py:23 et "
+                     "`WhenVillainPhaseBegin` turn_phase.py:176), donc DEUX capacites "
+                     "— un seul `Ability` ne peut pas ecouter les deux. Ce cas prouve "
+                     "la SECONDE, celle qui donne au pack une bascule gratuite pendant "
+                     "la phase du vilain. ⚠ « **exhaust** -> » : la fleche en fait un "
+                     "cout, la carte doit finir inclinee. "
+                     "⚠ `Puzzle.BeginVillainPhase()` A ETE AJOUTE AU HARNAIS POUR CE "
+                     "CAS (03/09/2026) : le harnais savait faire attaquer, contrer, "
+                     "manigancer et defendre, mais pas FRANCHIR UNE FRONTIERE DE "
+                     "PHASE. Aucun des 1136 cas de la batterie ne joignait « quand la "
+                     "phase du mechant commence ». `Puzzle.Attack` ne suffit PAS : "
+                     "elle fait attaquer le vilain sans jamais ouvrir la phase"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.PutIntoPlay('nt011', under_control=True)"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt003b"], "exhausted": ["nt011"]},
+    },
+    {
+        "nom": "nt012 Practice — incliner l'identite retire l'obligation de la PARTIE",
+        "pourquoi": ("modele im014 / an010 : `WhenThisObligationGiveToYou(op)` + "
+                     "`YouMayFlipToYourAlterEgoForm` + `ChooseAbilities`. ⚠ « remove "
+                     "Practice **from the game** » sur cette branche, contre "
+                     "« **Discard** this obligation » sur la troisieme : deux sorties "
+                     "DIFFERENTES, a ne jamais coder l'une pour l'autre. Le pilote "
+                     "prend la premiere branche offerte, donc celle-ci"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('nt012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["nt012"], "exhausted": ["nt001b"]},
+    },
+    {
+        "nom": "nt013 Terrax the Tamer — son activation defausse 8 cartes du deck rencontre",
+        "pourquoi": ("« After Terrax the Tamer **activates** » : l'ACTIVATION, donc "
+                     "attaque OU manigance — `AfterEnemyActivatesAgainstYou` "
+                     "(activate.py:68), et surtout PAS `AfterUnitSchemeEnd` comme "
+                     "as023 * Kingpin, qui imprime « SCHEMES ». La Cosmic Ax est "
+                     "remontee sur le dessus du deck de rencontre : elle est donc "
+                     "defaussee « this way », donc revelee, donc attachee a Terrax"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.PutIntoPlay('nt013')",
+                          "Puzzle.CreateEncounterDeck('nt016')",
+                          "Puzzle.PutIntoDeck('nt016')"],
+        "declencher": ["Puzzle.Attack('nt013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt016"]},
+    },
+    {
+        "nom": "nt014 Cemented — le heros ne peut plus attaquer en pouvoir de BASE",
+        "pourquoi": ("`PlayersCannotMakeBasicAttack('AnyPlayer')` (player.py:48), qui "
+                     "teste `is_basic_power` ET `'ATK' in ability.func_names`. Sans le "
+                     "complot, l'ATQ 1 du heros fait 1 degat a Rhino ; avec lui, "
+                     "l'attaque de base n'est plus proposee du tout et Rhino ne prend "
+                     "RIEN. ⚠ Cas d'ABSENCE d'effet : il reste vert sous substitution, "
+                     "c'est assume"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.PutIntoPlay('nt014')"],
+        "declencher": ["Puzzle.Attack('nt001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "nt015 Cosmic Connection — hache en jeu et arme chez le heros : 3 degats",
+        "pourquoi": ("DEUX conditions CUMULATIVES reliees par « and » : la Cosmic Ax "
+                     "en jeu ET une carte WEAPON chez le heros. La planche est "
+                     "retournee cote WEAPON (nt003b porte le trait) et la hache est "
+                     "posee sur Terrax : les deux tombent, donc 3 degats INDIRECTS. "
+                     "⚠ La hache porte elle aussi WEAPON, mais elle est attachee a "
+                     "TERRAX et pas au heros : c'est le filtre sur les cartes du "
+                     "joueur qui l'exclut. ⚠ LA HACHE EST REVELEE, PAS POSEE : "
+                     "`Puzzle.PutIntoPlay('nt016')` la CREE sans la mettre en jeu — un "
+                     "attachement sans porteur n'entre nulle part, et le journal "
+                     "s'arretait a « created ». C'est son propre « When Revealed » qui "
+                     "la fixe sur Terrax"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Flip('nt003a')",
+                          "Puzzle.PutIntoPlay('nt013')",
+                          "Puzzle.Reveal('nt016')"],
+        "declencher": ["Puzzle.Reveal('nt015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "nt015 Cosmic Connection — sans la hache, aucun degat",
+        "pourquoi": ("LE CONTRE-CAS de la premiere condition. La planche est bien cote "
+                     "WEAPON, mais la Cosmic Ax n'est pas en jeu : « If **no** damage "
+                     "was taken this way » se lit alors sur ZERO, et la carte gagne "
+                     "Dechainement au lieu de mordre. ⚠ Cas d'ABSENCE d'effet : vert "
+                     "sous substitution, assume — c'est le cas jumeau ci-dessus qui "
+                     "porte la preuve"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')",
+                          "Puzzle.Flip('nt003a')"],
+        "declencher": ["Puzzle.Reveal('nt015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "nt016 Cosmic Ax — Terrax en jeu : la hache s'attache a lui",
+        "pourquoi": ("« Attach to Terrax the Tamer. **If you cannot**, ... » : la "
+                     "condition se verifie AVANT de fouiller, pas apres un refus "
+                     "(piege wd028). Terrax present = on attache, et les 8 cartes ne "
+                     "sont PAS defaussees. `this.AttachTo2(minion, effect)` "
+                     "(can_attach.py:49), modele ag013 Hallucination. Le `+2 ATK` est "
+                     "lu dans `desc['ATK+']` par le moteur, sans script : ATQ 2 -> 4"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.PutIntoPlay('nt013')"],
+        "declencher": ["Puzzle.Reveal('nt016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt016"], "attributs_carte": [["nt013", "attack", 2]]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --

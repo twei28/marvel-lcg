@@ -229,6 +229,13 @@
             "cartes": 31,
             "depuis": "2026-08-12"
         },
+        "nt": {
+            "pack": "night_thrasher",
+            "libelle": "153. Custom (Night Thrasher)",
+            "cartes": 18,
+            "depuis": "2026-09-03",
+            "note": "Cree le 03/09/2026. Auteur DESIGNHACKER, format « MC4 SEALED ». nt001a/b identite, nt003a/b Battle Board (amelioration PERMANENTE a DEUX FACES, VEHICLE/WEAPON, Setup), nt002-nt011 signature (15 exemplaires), nt012 obligation, nt013-nt016 set nemesis Terrax the Tamer. TOUT LE PACK LIT LA BATTLE BOARD : 9 des 15 cartes du deck la retournent ou testent sa face. Mot-cle MAISON `agile 1`, defini par l'auteur sur la carte meme (fiche docs/reference/mots-cles/agile.md) ; aucune primitive moteur. Aspect JUSTICE choisi par l'utilisateur le 03/09/2026 (aucune decklist fournie) : le kit recompense le trait SKILL, dont Justice a le plus gros vivier. PIEGE DU MATERIEL : les noms de FICHIERS ne correspondent pas aux noms de CARTES (`UPGRADE - Night Thrasher_s Suit.png` contient « Prewind Stance », `SUPPORT - The Man Cave.png` contient « The Mancave »). Le zip contient une carte ETRANGERE, « Fired Up » (bandeau MAGMA NEMESIS 2/5, art et texte de Selene) : ECARTEE sur decision de l'utilisateur, a reprendre le jour ou Magma sera portee. Homonyme : dt125 * Night Thrasher, allie du pack determination."
+        },
         "ok": {
             "pack": "okoye",
             "libelle": "125. Custom (Okoye)",

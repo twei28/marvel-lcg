@@ -72,6 +72,10 @@ la plus fréquente sur un pack vilain.
 - [x] plotting.md (pack `scarlet_spider`)
 - [x] breakthrough.md (pack `viv_vision`, mot-clé JAMAIS défini par l'auteur :
       définition arbitrée le 02/09/2026, miroir d'`overkill` pour la menace)
+- [x] agile.md (pack `night_thrasher`, `nt003a` Battle Board face VEHICLE :
+      définition DONNÉE par l'auteur entre parenthèses, aucun arbitrage — mais
+      aucune primitive moteur, et un contre-cas « attaque sans carte de boost »
+      obligatoire, sans quoi les deux montages possibles passent au vert)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

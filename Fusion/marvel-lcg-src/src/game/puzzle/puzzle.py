@@ -504,6 +504,38 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
+    def BeginVillainPhase(self) -> None:
+        """Ouvre la PHASE DU MECHANT, sans la jouer.
+
+        AJOUT (03/09/2026, pack custom night_thrasher). Le harnais savait
+        faire attaquer, contrer, maniganter et defendre, mais il ne savait pas
+        FRANCHIR UNE FRONTIERE DE PHASE : aucune capacite « quand la phase du
+        mechant commence » n'etait joignable, et la batterie entiere n'en
+        comptait pas un seul cas. `nt011` Prewind Stance en vit.
+
+        On reproduit exactement l'ouverture de phase du moteur
+        (`world.py:789`, fonction locale `phase_begin`) : l'etat passe en
+        phase du mechant, `WhenPhaseBegin` part — c'est lui que les
+        interruptions attendent —, chaque joueur ouvre sa phase, puis
+        `AfterPhaseBegin`. On ne joue PAS la suite de la phase : les cas qui
+        veulent l'activation du vilain ont deja `Puzzle.Attack` et
+        `Puzzle.Scheme` pour ca.
+        """
+        from game.message import Message
+        from game.world.phase import Phase
+
+        world = self.world
+        world.phase.SetState(Phase.State.PlaceThreat)
+        world.phase_id += 1
+
+        phase_message = Message.WhenPhaseBegin("Villain", world)
+        phase_message.Send()
+
+        for player in world.const_players:
+            player.phase.BeginPhase()
+
+        Message.AfterPhaseBegin(phase_message).Send()
+
     def Scheme(self, card: CardName) -> 'CardFace':
         """Fait manigancer un ennemi contre le joueur courant."""
         from game.card.face.base import Enemy

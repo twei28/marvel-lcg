@@ -1299,6 +1299,19 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "nt001a": {
+        bio: "Dwayne Taylor a vu ses parents abattus sous ses yeux quand il etait enfant, et il a hérité d'un empire industriel avant d'avoir l'âge de le comprendre. Il a mis cette fortune au service d'une obsession : traquer le meurtrier. Sans super-pouvoirs, il compense par un entraînement d'arts martiaux, une armure de sa propre conception et une planche de combat blindée qui lui sert tour à tour de véhicule et d'arme. Fondateur et chef des New Warriors, il porte mal la responsabilité d'une équipe d'adolescents : dur avec eux, plus dur encore avec lui-même.",
+        bioEn: "Dwayne Taylor watched his parents gunned down in front of him as a child, and inherited an industrial empire before he was old enough to understand it. He turned that fortune toward one obsession: hunting the killer. With no superpowers, he compensates with martial arts training, a suit of his own design and an armoured battle board that serves in turn as vehicle and weapon. Founder and leader of the New Warriors, he wears the responsibility for a team of teenagers badly: hard on them, harder still on himself.",
+        civil: "Dwayne Michael Taylor",
+        base: "New York (le Mancave)",
+        baseEn: "New York (the Mancave)",
+        equipes: "New Warriors, Vengeurs",
+        equipesEn: "New Warriors, Avengers",
+        ennemis: "Terrax, le Caïd, Midnight's Fire",
+        ennemisEn: "Terrax, Kingpin, Midnight's Fire",
+        apparition: "Thor #411 (1989)",
+    },
+
     "as001a": {
         bio: "Peter Parker de la Terre-31198 est le Spider-Man d'un monde ou le Fleau a mis sa ville a feu et a sang : le costume de tissu n'y suffisait plus. Avec l'aide de Tony Stark, il s'est fait une armure Spider-Armor, plaques de metal et vibranium par-dessus la toile, capable d'encaisser ce que ses reflexes ne peuvent plus esquiver. L'homme dessous n'a pas change : photographe fauche au Daily Bugle, patron malmene de Parker Industries, il continue de porter seul les consequences d'un pouvoir qu'il n'a jamais demande. L'armure s'abime a chaque coup pare, et il faut rentrer la reparer.",
         bioEn: "Peter Parker of Earth-31198 is the Spider-Man of a world where the Juggernaut tore his city apart: cloth was no longer enough. With Tony Stark's help he built himself the Spider Armor, metal and vibranium plating over the webbing, able to soak up what his reflexes can no longer dodge. The man underneath has not changed: broke photographer at the Daily Bugle, harried head of Parker Industries, still carrying alone the cost of a power he never asked for. The armour wears down with every blow it stops, and he has to go home and repair it.",

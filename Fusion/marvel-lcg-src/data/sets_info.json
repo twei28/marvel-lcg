@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "fda355e9ae82f6d52127c0b4895aa2b4211b9ee134ee67933e54c8f291303286",
+    "checksum": "9bcbd33ba10b66aa5246b439b24a7b4c5a83e3ebe4e0185355573f96cdc85c86",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1336,5 +1336,14 @@
         ],
         "encounters": [],
         "max_id": "as026"
+    },
+    "153. Custom (Night Thrasher)": {
+        "name": "night_thrasher",
+        "scenarios": [],
+        "heroes": [
+            "night_thrasher"
+        ],
+        "encounters": [],
+        "max_id": "nt016"
     }
 }

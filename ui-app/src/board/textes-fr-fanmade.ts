@@ -1869,4 +1869,40 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'as025': "<b>Quand elle est révélée</b> : choisissez de subir 1 dégât OU de placer 1 menace sur la manigance principale, par soutien que vous contrôlez. Si vous ne contrôlez AUCUN soutien, cette carte gagne Déchaînement.\n<hr />[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) par soutien que vous contrôlez.",
   // armored_spidey_nemesis — Behind the Scenes (Treachery)
   'as026': "<b>Quand elle est révélée</b> : défaussez la première carte de votre deck. Puis défaussez de votre main CHAQUE carte du même type que la carte défaussée. Si AUCUNE carte n'a été défaussée de votre main de cette façon, cette carte gagne Déchaînement.",
+  // night_thrasher — Night Thrasher (Hero) [set 153, DESIGNHACKER]
+  'nt001a': "<i>Varial Heelflip</i> — <b>Réponse</b> : après avoir joué une carte [[SKILL]], retournez l'amélioration Battle Board. <i>(Limite d'une fois par phase.)</i>",
+  // night_thrasher — Dwayne Taylor (AlterEgo)
+  'nt001b': "<i>Tech Deck</i> — Pendant la construction de deck, vous pouvez inclure jusqu'à 4 cartes [[SKILL]] d'aspects AUTRES que le vôtre.\n<i>Manual</i> — <b>Action</b> : remélangez X cartes [[SKILL]] de votre main dans votre deck → piochez X cartes. <i>(Limite d'une fois par round.)</i>",
+  // night_thrasher — Disaster (Event, x2)
+  'nt002': "<b>Action de héros</b> <i>(attaque/contre)</i> : retournez l'amélioration Battle Board. PUIS, si elle a le trait :\n• [[VEHICLE]], retirez 3 menaces d'une manigance.\n• [[WEAPON]], infligez 4 dégâts à un ennemi.",
+  // night_thrasher — Battle Board, face VEHICLE (Upgrade permanente)
+  'nt003a': "Permanente. Mise en place.\nNight Thrasher gagne +1 CTR et Agile 1 <i>(réduit de 1 les dégâts des attaques accompagnées de cartes de boost)</i>.\n<b>Réponse</b> : après que vous êtes passé sur cette face, retirez 1 menace d'une manigance.",
+  // night_thrasher — Battle Board, face WEAPON (Upgrade permanente)
+  'nt003b': "Permanente.\nNight Thrasher gagne +1 ATQ et +1 DEF.\n<b>Réponse de héros</b> : après que vous êtes passé sur cette face, infligez 1 dégât à un ennemi.",
+  // night_thrasher — Drop In (Event, x2)
+  'nt004': "<b>Réponse de héros</b> : après être passé en forme de HÉROS, si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], désorientez un ennemi.\n• [[WEAPON]], étourdissez un ennemi.",
+  // night_thrasher — Kickflip (Event, x4)
+  'nt005': "Si la DERNIÈRE carte que vous avez jouée ce round était un événement Night Thrasher, réduisez de 1 le coût de cette carte.\n<b>Action de héros</b> <i>(attaque)</i> : retournez l'amélioration Battle Board ET infligez 1 dégât à un ennemi. Piochez 1 carte.",
+  // night_thrasher — Melon Grab (Event)
+  'nt006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], les dégâts de cette attaque peuvent être répartis entre les ennemis comme vous voulez.\n• [[WEAPON]], cette attaque gagne Perforation et Déferlement.",
+  // night_thrasher — Tailblock (Event, x2)
+  'nt007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quels qu'ils soient, si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], prévenez 1 de ces dégâts et piochez 2 cartes.\n• [[WEAPON]], prévenez 3 de ces dégâts.",
+  // night_thrasher — The Mancave (Support)
+  'nt008': "<b>Réponse d'alter ego</b> : après avoir changé de forme, soignez 1 dégât de votre identité.\n<b>Réponse de héros</b> : après avoir changé de forme, réduisez de 1 le coût en ressources de la PROCHAINE carte [[SKILL]] que vous jouez ce tour.",
+  // night_thrasher — Escrima Sticks (Upgrade)
+  'nt009': "Tant que l'amélioration Battle Board a le trait [[VEHICLE]], vos attaques gagnent Perforation et Déferlement.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Remélangez cette carte dans votre deck.",
+  // night_thrasher — Multi-Skilled (Upgrade)
+  'nt010': "<b>Ressource</b> : inclinez Multi-Skilled → générez une ressource [wild] pour une carte [[SKILL]].",
+  // night_thrasher — Prewind Stance (Upgrade)
+  'nt011': "Night Thrasher gagne +1 DEF et Riposte 1.\n<b>Interruption de héros</b> : quand votre tour OU la phase du méchant commence, inclinez Prewind Stance → retournez l'amélioration Battle Board.",
+  // night_thrasher_nemesis — Practice (Obligation)
+  'nt012': "<b><i>Donnez-la au joueur Night Thrasher.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité OU défaussez 1 carte de votre main → retirez Practice de la partie.\n• Vous ne pouvez pas retourner l'amélioration Battle Board jusqu'au début de la prochaine phase du méchant. Défaussez cette obligation.",
+  // night_thrasher_nemesis — Terrax the Tamer (Minion)
+  'nt013': "<b>Réponse forcée</b> : après que Terrax the Tamer s'est activé, défaussez les 8 premières cartes du deck de rencontre. Si l'attachement Cosmic Ax a été défaussé de cette façon, révélez-le.\n<i>(Sbire némésis de Night Thrasher.)</i>",
+  // night_thrasher_nemesis — Cemented (SideScheme)
+  'nt014': "<b><i>Entrave 1[per_hero].</i></b>\nLes joueurs ne peuvent pas effectuer d'attaque de BASE avec un héros ou un allié, ni retourner d'améliorations ou d'identités.\n<b>Action</b> : chaque joueur PEUT défausser 1 carte de sa main → jusqu'à la fin de la phase, chaque joueur ayant défaussé une carte de cette façon peut traiter la zone de texte imprimée de cette carte comme si elle était vierge.",
+  // night_thrasher_nemesis — Cosmic Connection (Treachery, x2)
+  'nt015': "<b>Quand elle est révélée</b> : si l'attachement Cosmic Ax est en jeu ET que votre héros contrôle une carte [[WEAPON]], subissez 3 dégâts INDIRECTS. Si AUCUN dégât n'a été subi de cette façon, cette carte gagne Déchaînement.",
+  // night_thrasher_nemesis — Cosmic Ax (Attachment)
+  'nt016': "Attachez-le à Terrax the Tamer. Si vous ne le pouvez pas, défaussez les 8 premières cartes du deck de rencontre. Si Terrax the Tamer a été défaussé de cette façon, révélez-le et attachez-lui Cosmic Ax.\n<hr />[star] <b>Boost</b> : si Terrax the Tamer est en jeu, révélez cette carte.",
 }
