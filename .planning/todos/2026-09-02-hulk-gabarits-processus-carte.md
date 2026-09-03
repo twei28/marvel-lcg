@@ -17,9 +17,10 @@ Gate de `PROCESSUS-HEROS.md` : un gabarit rempli par carte. Rédigés le
 **Preuves communes**, citées une fois :
 
 - **Étape 7, substitution** : `substituer_pack.py .game-src 31500 hk0` →
-  **14/14 cartes prouvées**, et sur les **17 cas, 17 tombent au rouge** quand
-  le module de leur carte disparaît. Aucun cas resté vert sans son module,
-  aucune carte sans cas.
+  **14/14 cartes prouvées**, et sur les **20 cas, 20 tombent au rouge** quand
+  le module de leur carte disparaît (passe du 03/09/2026, après l'ajout des
+  3 cas manquants). Aucun cas resté vert sans son module, aucune carte sans
+  cas.
 - **Étape 8, autoplay** : **32 parties** (Rhino et Klaw, normal et expert,
   profil équilibré, 8 graines). **Grep exhaustif : 0 erreur sur les 32
   journaux**, et **0 incident** compté par l'outil lui-même. 5 victoires sur
@@ -34,8 +35,8 @@ Gate de `PROCESSUS-HEROS.md` : un gabarit rempli par carte. Rédigés le
   `148. Custom (Hulk)` dans `sets_info.json`, préfixe `hk` déclaré dans
   `tools/prefixes_fanmade.json`, checksums refaits (`recalculer_checksums.py`
   → « inchangé » à la relecture du 02/09 au soir).
-- `test_capacites.py [hk0]` : **17/17 cas verts**, dont les 8 cas des six
-  modules réécrits.
+- `test_capacites.py [hk0]` : **20/20 cas verts**, dont les 8 cas des six
+  modules réécrits et les 3 cas ajoutés le 03/09/2026.
 - **Étape 10 de PROCESSUS-HEROS** : contrôle « jamais une signature d'un autre
   héros dans un deck » relancé sur `deck/starter/hulk_rainy.json` →
   **aucun écart**, alors que le pack porte deux homonymes de cartes du Hulk
@@ -103,8 +104,11 @@ hk009 The Other Guy.
       du dégât conséquent, lu nativement dans `desc`. Résultat : conforme.
 - [x] Étape 6 : coût 3 / 3 PV / CTR 2* / ATQ 1*, ressource wild.
       Résultat : conforme.
-- [x] Étape 7 : 2 capacités, **1 cas** (la bascule de forme ; la Response de
-      contre n'a pas de cas dédié — écart assumé, voir §Reste à faire).
+- [x] Étape 7 : 2 capacités, **2 cas** (ajout du 03/09/2026) : la bascule de
+      forme, et la Response de contre. Ce second cas est celui qui prouve le
+      mot **« from ANOTHER scheme »** : Black Widow contre la principale de son
+      CTR 2, et la Response doit se reporter sur l'annexe. Sans l'exclusion,
+      elle retirerait deux fois de la même.
 - [x] Étape 8 : voir preuve commune.
 
 > ⚠ **Homonyme** : six « Black Widow » dans la base, dont l'alliée officielle
@@ -292,10 +296,10 @@ hk009 The Other Guy.
       Résultat : conforme.
 - [x] Étape 6 : coût 3, ressource énergie ; +3 PV, +1 REC, 1 soin par round.
       Résultat : conforme.
-- [x] Étape 7 : 3 capacités, **1 cas** — il couvre les deux bonus permanents
-      d'un coup (`attributs: {health: 3, recover: 1}`), qui sont la partie
-      piégeuse. L'action de soin n'a pas de cas dédié : écart assumé, voir
-      §Reste à faire.
+- [x] Étape 7 : 3 capacités, **2 cas**. Le premier couvre les deux bonus
+      permanents d'un coup (`attributs: {health: 3, recover: 1}`), qui sont la
+      partie piégeuse ; le second (ajout du 03/09/2026) prouve l'action de
+      soin : 3 dégâts posés, 1 soigné, il en reste 2.
 - [x] Étape 8 : voir preuve commune.
 
 ---
@@ -314,8 +318,10 @@ hk009 The Other Guy.
       coût. Résultat : conforme.
 - [x] Étape 6 : coût 3, ressource physique ; +1 ATQ, 1 ressource physique
       générée par round. Résultat : conforme.
-- [x] Étape 7 : 2 capacités, **1 cas** (le +1 ATQ). La génération de ressource
-      n'a pas de cas dédié : écart assumé, voir §Reste à faire.
+- [x] Étape 7 : 2 capacités, **2 cas**. Le premier prouve le +1 ATQ ; le second
+      (ajout du 03/09/2026) prouve la génération de ressource, sur le montage
+      de `vv010` : la main est réduite à la seule carte à payer, donc
+      l'amélioration est l'UNIQUE source de paiement possible.
 - [x] Étape 8 : voir preuve commune.
 
 > ⚠ **Homonyme de classe Hero** : `10007` Limitless Strength est une carte
@@ -377,10 +383,10 @@ aucun `*.vrai` et qu'aucun module ne fait 74 octets.
 
 ### Reste à faire (écarts assumés, aucun bloquant)
 
-- **Trois capacités sans cas de test dédié** : la Response de contre de hk002,
-  l'action de soin de hk011, la génération de ressource de hk012. Les trois
-  sont des montages recopiés à l'identique de leur modèle et vérifiés au
-  chargement par `test_cards` ; aucune n'est un point délicat du pack.
+- ~~Trois capacités sans cas de test dédié~~ : **comblé le 03/09/2026** à la
+  demande de l'utilisateur. La Response de contre de `hk002`, l'action de soin
+  de `hk011` et la génération de ressource de `hk012` ont chacune leur cas
+  sujet, vert du premier coup. La batterie passe de 17 à **20 cas**.
 - **Aucun set némésis propre** : le zip n'en fournit pas. Le deck emprunte
   celui du Hulk officiel sur décision de l'utilisateur du 02/09, ce qui n'était
   jouable qu'après le correctif moteur du même jour (commit `89b9a45`).

@@ -17,6 +17,18 @@ from . import *
 #    `SetTarget("Players")` puis `Players.ForEachTargets(cibles, fn)`, le fn
 #    recevant un `Player`.
 #
+# ⚠ PAS DE `CanPlayThisAllyCard()` ICI, ET C'EST MESURE. Le squelette de hk002
+# en portait un, recopie par habitude. La preuve par substitution du
+# 03/09/2026 a montre que le cas « l'allie se joue depuis la main » restait
+# VERT sans le module : l'allie entre en jeu tout seul. Verification faite
+# dans la foulee sur tout le depot : **420 allies sur 453 ne l'appellent
+# pas**, dont aa019 * Wiccan, la carte de reference de la Response ci-dessus.
+# La fabrique ne sert qu'aux chemins ou l'allie est joue HORS de son tour,
+# depuis une fenetre d'interruption (dd003 Doombot, 45031 * Colossus) : c'est
+# la que le commentaire du moteur « Without this, this ally cannot be play »
+# s'applique. Une ligne morte de moins, et un cas de test qui redevient
+# honnete.
+#
 # ⚠ ECART AVEC L'HOMONYME OFFICIEL. `25013` * Thor: Odinson porte le meme nom
 # ET le meme sous-titre, mais une capacite TOTALEMENT differente (une
 # Interruption qui ajoute des cibles a sa propre attaque, payee en energie).
@@ -63,7 +75,6 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
-        AbilityFactory.CanPlayThisAllyCard(),
         AbilityFactory.AfterUnitAttackEnd(
             AbilityType.Response,
             "This",

@@ -15153,6 +15153,171 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["ls017"]},
     },
+    # ------------------------------------------------------------------------
+    # LES 8 CAS MANQUANTS, ecrits le 03/09/2026 a la demande de l'utilisateur.
+    #
+    # Les gabarits des packs `hulk_rainy` et `lady_sif` listaient 8 capacites
+    # construites mais sans cas SUJET : la gate de PROCESSUS-CARTE etait tenue
+    # pour les autres, celles-ci restaient des ecarts assumes. Elles ne le sont
+    # plus.
+    #
+    # ⚠ Le releve des journaux d'autoplay (32 parties par pack) montrait que
+    # cinq d'entre elles tiraient bel et bien en partie reelle (hk002 x11,
+    # hk011 x4, hk012 x7, ls002 x67) mais que **ls016 et ls017 ne sont JAMAIS
+    # entrees en jeu** : elles ne sortaient que comme cartes de boost. Ces
+    # deux-la n'etaient donc ni prouvees ni infirmees par quoi que ce soit.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "hk002 Black Widow — apres avoir contre, 1 menace retiree d'une AUTRE manigance",
+        "pourquoi": ("`AfterUnitAttackOrThwart(Response, 'This', op, "
+                     "conditions=[seulement_thwart])` (modele aa019 * Wiccan). Le mot "
+                     "qui compte est « from ANOTHER scheme » : le selecteur EXCLUT "
+                     "les manigances que Black Widow vient de contrer "
+                     "(`exclude=message.schemes`). Elle contre la principale de son "
+                     "CTR 2 (5 -> 3), et la Response doit alors se reporter sur "
+                     "l'annexe (3 -> 2). Sans l'exclusion, elle retirerait deux fois "
+                     "de la principale et l'annexe resterait a 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.PutIntoPlay('hk002', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 3)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('hk002')"],
+        "cibles": ["01097b", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3], ["01107", 2]]},
+    },
+    {
+        "nom": "hk011 Limitless Endurance — l'Action de heros soigne 1 degat de Hulk",
+        "pourquoi": ("la troisieme capacite de la carte, la seule qui se declenche : "
+                     "`WhenInYourPlayTurn(HeroAction)` + `CostFunc.Exhaust('This')` + "
+                     "`HealthUnits` (modele 38007 Energy Transfer). Les deux bonus "
+                     "continus ont deja leur cas ; celui-ci prouve le soin. 3 degats "
+                     "poses, 1 soigne, il en reste 2. ⚠ « heal 1 damage from HULK » : "
+                     "la face heros, pas un allie du meme nom"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.PutIntoPlay('hk011')",
+                          "Puzzle.Damage('hk001a', 3)"],
+        "declencher": ["Puzzle.Action('hk011')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["hk011"]},
+    },
+    {
+        "nom": "hk012 Limitless Strength — la ressource physique paie a elle seule hk006",
+        "pourquoi": ("`CanGenerateResources(HeroResource, Resources('R'))"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele an007 / ma005), "
+                     "sur le montage de preuve de vv010 : la main est reduite a la "
+                     "seule carte a payer, donc l'amelioration est l'UNIQUE source de "
+                     "paiement possible. hk006 Reckless Charge coute 1 [physical] ; "
+                     "s'il part, c'est que hk012 a genere. Et comme le paiement est "
+                     "physique, hk006 gagne Deferlement au passage"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.ChangeToFace('hk001b', 'hk001a')",
+                          "Puzzle.PutIntoPlay('hk012')"],
+        "main_exclusive": ["hk006"],
+        "declencher": [],
+        "jouer": ["hk006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["hk012"], "degats_min": [["01094", 3]]},
+    },
+    {
+        "nom": "ls002 Thor — l'allie se joue depuis la main",
+        "pourquoi": ("⚠ CAS NON SUJET, ET C'EST LE RESULTAT QUI L'A DIT. Il a ete "
+                     "ecrit pour prouver `CanPlayThisAllyCard()`, sur la foi du "
+                     "commentaire du moteur sur 45031 * Colossus (« Without this, this "
+                     "ally cannot be play »). La substitution du 03/09/2026 l'a laisse "
+                     "VERT sans le module : l'allie entre en jeu tout seul. Releve "
+                     "dans la foulee sur tout le depot : **420 allies sur 453 "
+                     "n'appellent pas cette fabrique**, dont aa019 * Wiccan. La ligne "
+                     "a donc ete RETIREE de ls002 — elle ne sert qu'aux chemins ou "
+                     "l'allie est joue hors de son tour (dd003, 45031). Le cas reste "
+                     "en place comme garde de non-regression : il prouve que l'allie "
+                     "est jouable, cout 3 paye par 01088 (YY) et 01089 (BB)"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')"],
+        "main_exclusive": ["ls002", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["ls002"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ls002"]},
+    },
+    {
+        "nom": "ls016 Hypnotic Suggestion — elle s'accroche a l'IDENTITE du joueur",
+        "pourquoi": ("`AttachToFaceWhenPutIntoPlay('YourIdentity')` (modele 02048 All "
+                     "Tied Up). ⚠ Le cas existant ne verifiait que « en jeu », ce qui "
+                     "ne dit RIEN de l'hote : une carte accrochee au vilain serait "
+                     "« en jeu » elle aussi. Le verificateur maison lit donc "
+                     "`GetBindFace()` et exige que ce soit la face d'identite du "
+                     "joueur. ⚠ Ces deux attachements ne sont JAMAIS entres en jeu "
+                     "sur 32 parties d'autoplay : ils ne sortaient que comme cartes "
+                     "de boost"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ls016')"],
+        "verifier": "ls016_accrochee_a_l_identite",
+    },
+    {
+        "nom": "ls016 Hypnotic Suggestion — l'Action d'alter ego la defausse contre un mental",
+        "pourquoi": ("`PlayerActionToDiscardThis(AlterEgoAction).SetCost(Cost('B'))"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele 02048). ⚠ Le "
+                     "cout a DEUX parties — incliner la carte ET depenser un mental — "
+                     "et le piege wd005 est d'en oublier une. `Puzzle.Ready` la "
+                     "redresse d'abord : l'Action FORCEE de la meme carte l'incline "
+                     "des son entree en jeu, ce qui rendrait le cout impayable. "
+                     "`type='AlterEgoAction'` choisit la bonne des deux actions"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.Reveal('ls016')",
+                          "Puzzle.Ready('ls016')"],
+        "main_exclusive": ["01089"],
+        "declencher": ["Puzzle.Action('ls016', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ls016"]},
+    },
+    {
+        "nom": "ls017 Love Concoction — l'Action forcee redresse l'identite",
+        "pourquoi": ("`WhenInYourPlayTurn(ForcedAction)` + `CostFunc.Exhaust('This')` "
+                     "+ `Faces.GiveFacedownBoostCards` (modele 02035 Intimidation) + "
+                     "`Faces.ReadyAll`. C'est la tentation de la carte : elle "
+                     "redresse l'identite chaque round, au prix d'une carte de boost "
+                     "donnee au vilain, et elle RESTE en jeu — c'est ce qui la "
+                     "distingue de l'Action d'alter ego, qui, elle, la defausse. "
+                     "L'identite est inclinee a la mise en place pour que le "
+                     "redressement se voie"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.Reveal('ls017')",
+                          "Puzzle.Ready('ls017')",
+                          "Puzzle.Exhaust('ls001b')"],
+        "declencher": ["Puzzle.Action('ls017', 'ForcedAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ls001b"], "exhausted": ["ls017"], "en_jeu": ["ls017"]},
+    },
+    {
+        "nom": "ls017 Love Concoction — l'Action d'alter ego la defausse",
+        "pourquoi": ("la seconde moitie de la tentation : meme cout double (incliner "
+                     "ET donner une carte de boost au vilain), mais la carte PART. "
+                     "⚠ En jeu, elle n'est prenable que si le joueur la choisit AVANT "
+                     "l'Action forcee, qui incline la carte et rend celle-ci "
+                     "impayable pour le reste du round. C'est le dilemme imprime, et "
+                     "`type='AlterEgoAction'` le reproduit"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.Reveal('ls017')",
+                          "Puzzle.Ready('ls017')"],
+        "declencher": ["Puzzle.Action('ls017', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ls017"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -19247,6 +19412,26 @@ def vv008_deux_cartes_piochees(monde, aides):
     if not piece.IsExhaust():
         return False, "vv008 n'est pas incline : le cout n'a pas ete paye"
     return True, "2 cartes piochees et Computer Mind incline"
+
+def ls016_accrochee_a_l_identite(monde, aides):
+    """ls016 : l'attachement se pose sur l'IDENTITE DU JOUEUR, pas ailleurs.
+
+    « en jeu » ne dit rien de l'hote : une carte accrochee au vilain serait
+    « en jeu » elle aussi. On lit donc `GetBindFace()`, le lien que pose
+    `AttachToFaceWhenPutIntoPlay`, et on exige la face d'identite du joueur.
+    """
+    carte = aides["par_id"](monde, "ls016")
+    if carte is None:
+        return False, "ls016 n'est pas en jeu"
+    hote = carte.GetBindFace()
+    if hote is None:
+        return False, "ls016 est en jeu mais n'est accrochee a RIEN"
+    identite = monde.GetFirstPlayer().GetIdentity()
+    if hote != identite:
+        attendu = getattr(identite.paper, "card_id", identite)
+        trouve = getattr(hote.paper, "card_id", hote)
+        return False, f"ls016 est accrochee a {trouve} (attendu l'identite {attendu})"
+    return True, "ls016 est accrochee a l'identite du joueur"
 
 def ls013_incline_le_premier_joueur(monde, aides):
     """ls013 : au debut de la phase du JOUEUR, le premier joueur s'incline et

@@ -9,9 +9,10 @@ Seul pack de la vague 0 avec un set némésis complet.
 **Preuves communes**, citées une fois :
 
 - **Étape 7, substitution** : `substituer_pack.py .game-src 42100 ls0` →
-  **18/18 cartes prouvées**, et sur les **26 cas, 26 tombent au rouge** quand le
-  module de leur carte disparaît. Aucun cas resté vert sans son module, aucune
-  carte sans cas.
+  **18/18 cartes prouvées**. Sur les **31 cas, 30 tombent au rouge** quand le
+  module de leur carte disparaît (passe du 03/09/2026, après l'ajout des 5 cas
+  manquants). Le trente-et-unième est **assumé non sujet** et documenté :
+  voir `ls002`.
 - **Étape 8, autoplay** : **32 parties** (Rhino et Klaw, normal et expert,
   profil équilibré, 8 graines). **Grep exhaustif : 0 erreur sur les 32
   journaux**, et **0 partie bloquée** — après deux correctifs, voir §Bilan :
@@ -31,7 +32,7 @@ Seul pack de la vague 0 avec un set némésis complet.
 - **Étape 1** : pack `lady_sif` en queue de `cards.json`, set
   `150. Custom (Lady Sif)` dans `sets_info.json`, préfixe `ls` mis à jour dans
   `tools/prefixes_fanmade.json`, checksums recalculés.
-- `test_capacites.py [ls0]` : **26/26 cas verts**.
+- `test_capacites.py [ls0]` : **31/31 cas verts**.
 - `test_cards` : **5101 ok / 0 erreur** (5083 avant le pack, +18).
 - **Étape 10 de PROCESSUS-HEROS** : contrôle « jamais une signature d'un autre
   héros dans un deck » relancé sur les **113 decks de départ** → **0 écart**,
@@ -139,14 +140,27 @@ et chaque usage retire 1 menace (`ls001a`) puis pioche (`ls009`).
       conséquent lu dans `desc`. Résultat : conforme.
 - [x] Étape 6 : coût 3 / 3 PV / CTR 1* / ATQ 2*, ressource wild. Résultat :
       conforme.
-- [x] Étape 7 : 2 capacités (`CanPlayThisAllyCard` + la Response), **1 cas**
-      sur la Response. ⚠ Sandman porte Toughness : c'est l'ABSENCE du statut
-      Tenace qui prouve le dégât, pas un compteur de PV.
+- [x] Étape 7 : **1 capacité, 1 cas sujet**, plus 1 cas de non-régression.
+      Le cas sujet est celui de la Response : ⚠ Sandman porte Toughness, c'est
+      donc l'ABSENCE du statut Tenace qui prouve le dégât, pas un compteur de
+      PV.
 - [x] Étape 8 : voir preuve commune.
 
 > ⚠ **Homonyme** : `25013` * Thor: Odinson porte le même nom ET le même
 > sous-titre, mais une capacité totalement différente. Ne pas copier son
 > module. Cinq autres « Thor » existent dans la base.
+
+> ⚠ **`CanPlayThisAllyCard()` a été RETIRÉ le 03/09/2026, et c'est la mesure
+> qui l'a décidé.** Le squelette de `hk002` en portait un, recopié par
+> habitude. Le cas écrit pour le prouver est resté **vert sans le module** :
+> l'allié entre en jeu tout seul. Vérification dans la foulée sur tout le
+> dépôt : **420 alliés sur 453 ne l'appellent pas**, dont `aa019` * Wiccan, la
+> carte de référence de la Response ci-dessus. La fabrique ne sert qu'aux
+> chemins où l'allié est joué HORS de son tour, depuis une fenêtre
+> d'interruption (`dd003` Doombot, `45031` * Colossus) : c'est là que le
+> commentaire du moteur « Without this, this ally cannot be play » s'applique.
+> Une ligne morte de moins, un écart de moins, et le cas reste en place comme
+> garde de non-régression.
 
 **Carte terminée : OUI**
 
@@ -519,10 +533,14 @@ et chaque usage retire 1 menace (`ls001a`) puis pioche (`ls009`).
       Résultat : conforme.
 - [x] Étape 6 : 1 icône de boost, 2 menaces en repli, coût [mental].
       Résultat : conforme.
-- [x] Étape 7 : 3 capacités, **1 cas** sur l'Action forcée, montée pour que
-      « If you cannot » tire (deck réduit à `ls003` coût 3, main à 2 mentales).
-      L'attachement et l'Action d'alter ego n'ont pas de cas dédié : écart
-      assumé, voir §Reste à faire.
+- [x] Étape 7 : 3 capacités, **3 cas**. L'Action forcée, montée pour que « If
+      you cannot » tire (deck réduit à `ls003` coût 3, main à 2 mentales).
+      L'attachement (ajout du 03/09/2026), prouvé par un **vérificateur maison**
+      qui lit `GetBindFace()` : « en jeu » ne dit rien de l'hôte, une carte
+      accrochée au vilain serait « en jeu » elle aussi. L'Action d'alter ego
+      enfin, dont le coût a DEUX parties (incliner ET dépenser un mental) et
+      qui exige un `Puzzle.Ready` préalable, l'Action forcée de la même carte
+      l'inclinant dès son entrée en jeu.
 - [x] Étape 8 : voir preuve commune.
 
 > ⚠ **Homonyme** : `ag014` Hypnotic Suggestion est une TRAITRISE du pack maison
@@ -548,10 +566,12 @@ et chaque usage retire 1 menace (`ls001a`) puis pioche (`ls009`).
       prendre EN PREMIER ; `desc.Boost = "0"`, la carte n'ajoute rien à
       l'activation. Résultat : conforme.
 - [x] Étape 6 : aucune icône chiffrée, une icône `[star]`. Résultat : conforme.
-- [x] Étape 7 : 4 capacités, **1 cas** sur le `[star] Boost`, qui est le seul
-      chemin d'entrée en jeu de la carte et prouve du même coup l'attachement à
-      l'identité. Les deux Actions n'ont pas de cas dédié : écart assumé, voir
-      §Reste à faire.
+- [x] Étape 7 : 4 capacités, **3 cas**. Le `[star] Boost`, qui est le seul
+      chemin d'entrée en jeu de la carte. L'Action forcée (ajout du
+      03/09/2026) : l'identité inclinée à la mise en place se redresse, et la
+      carte RESTE en jeu. L'Action d'alter ego : même coût double, mais la
+      carte PART. Les deux ensemble rendent le dilemme imprimé, puisqu'en
+      partie réelle la seconde n'est prenable qu'AVANT la première.
 - [x] Étape 8 : voir preuve commune.
 
 **Carte terminée : OUI**
@@ -631,11 +651,15 @@ l'abilité.
 
 ### Reste à faire (écarts assumés, aucun bloquant)
 
-- **Cinq capacités sans cas de test dédié** : le `CanPlayThisAllyCard` de
-  `ls002`, l'attachement et l'Action d'alter ego de `ls016`, les deux Actions
-  de `ls017`. Les trois premières sont des montages recopiés à l'identique de
-  leur modèle ; les deux dernières exigent d'ordonner deux actions dans le même
-  tour, ce que le pilote du harnais ne sait pas arbitrer.
+- ~~Cinq capacités sans cas de test dédié~~ : **comblé le 03/09/2026** à la
+  demande de l'utilisateur. Quatre ont leur cas sujet, vert du premier coup ;
+  la cinquième, le `CanPlayThisAllyCard` de `ls002`, s'est révélée être une
+  ligne morte et a été retirée,
+  et la batterie passe de 26 à **31 cas**. Le relevé des journaux d'autoplay
+  qui a motivé l'ajout mérite d'être gardé : `ls002` avait été jouée **67 fois**
+  en 32 parties, mais **`ls016` et `ls017` ne sont JAMAIS entrées en jeu** —
+  elles ne sortaient que comme cartes de boost. Ces deux-là n'étaient donc ni
+  prouvées ni infirmées par quoi que ce soit avant ces cas.
 - **La branche +2 DEF de `ls006`** n'est pas séparable de la branche +1 dans le
   scénario Rhino : il faudrait un ennemi à ATQ 4.
 - **`desc.Nemesis`** a été posé sur `ls014` et `ls015`, ce que **40 sbires
