@@ -66,18 +66,29 @@ La Battle Board, placée en `set_aside` par mimétisme avec les autres
 améliorations recto-verso du dépôt, **n'entrait jamais en jeu** : **vingt cas
 sur vingt-neuf tombaient d'un coup**.
 
-⚠ Ce n'est PAS la même situation que Phoenix Force, Spider Armor ou le SP//dr
-Suit : celles-là sont posées par un `SetupPutIntoPlay` sur l'ALTER-EGO, et
-`set_aside` n'y sert qu'à l'affichage. La Battle Board, elle, porte
-`desc.Setup` sur la carte elle-même — c'est le motif `04159a`, et il exige
-d'être **dans le deck**. Le deck compte donc 16 entrées signature, dont une
-quitte le deck dès la mise en place : 15 restent, comme la numérotation
-imprimée de l'auteur.
+Le moteur ne charge tout simplement pas `set_aside` (`player_setup.py:213`,
+l'appel est en commentaire). Une carte de `set_aside` n'existe donc en partie
+que si **le héros la crée lui-même**, par `SetupPutIntoPlay` ou
+`BeginGameWithSetAside`. La Battle Board n'a **aucune identité qui la pose** :
+elle porte `desc.Setup` sur la carte, motif `04159a`, et sa place est donc
+**dans le deck**, seul endroit que le scan `Setup` regarde. Le deck compte 16
+entrées signature, dont une quitte le deck dès la mise en place : 15 restent,
+comme la numérotation imprimée de l'auteur.
 
-⚠ **Deux cartes du dépôt ont le même défaut latent** : `sr012` Impact Webbing
-(pack `spider_man_rainy`) et `hd017` Nexus of all Realities (pack
-`howard_the_duck`) portent `desc.Setup` et sont en `set_aside`. Non corrigées
-ici — hors périmètre de ce portage — mais signalées.
+⚠ **UNE FAUSSE PISTE, corrigée le soir même, et elle mérite d'être écrite.**
+La première rédaction de ce journal accusait `sr012` Impact Webbing
+(`spider_man_rainy`) et `hd017` Nexus of all Realities (`howard_the_duck`) du
+même défaut « latent » : `desc.Setup` + `set_aside`. **C'était faux.** Leur
+alter-ego les pose par `SetupPutIntoPlay` (`sr001b.py:29`, `hd001b.py:58`), et
+une sonde qui monte une VRAIE partie et regarde le terrain rend `en_jeu: true`
+pour les deux. Les deux « corrections » ont été révoquées.
+
+⚠ **Et le cas de test ne pouvait pas trancher** : `test_capacites` matérialise
+`set_aside` (piège Alligator Loki, déjà documenté au §3 de PROCESSUS-HEROS), si
+bien que le cas « sr012 est en jeu dès le setup » reste **vert dans les deux
+montages**. Seule une partie réellement montée sait le dire. La leçon vaut plus
+que le correctif : **devant une question « cette carte est-elle vraiment en jeu
+en partie ? », le harnais n'est pas un juge.**
 
 ### 2. Le module d'une obligation vit dans le dossier de SON set_name
 
