@@ -150,7 +150,24 @@ pour ne pas dupliquer le mécanisme `catalog.heroes()` / `blocIdentiteHeros()`).
 - [ ] Étapes 1 à 8 complètes
 - [ ] Un `PROCESSUS-CARTE.md` rempli et « Carte terminée : OUI » pour
       **chaque** carte du pack (lister les card_id)
+- [ ] **`tools/verifier_tous_les_decks.py` relancé, et le deck du nouveau
+      héros au vert** *(ajouté le 03/09/2026)*
 - [ ] Une partie complète jouée avec le héros
+
+> ### ⚠ POURQUOI `verifier_tous_les_decks` EST UNE GATE (leçon `ls005`, 3/9/2026)
+>
+> `factory.py` pose des **asserts de construction** qu'aucun autre outil ne
+> déclenche : un événement à deux capacités `Play` (un « Choose one », ou une
+> Action civile + une Action héros sur la même carte) doit être **déclaré dans
+> une liste blanche**, sinon la partie plante **au setup**.
+>
+> `test_cards` ne monte pas de partie. `test_capacites` et `substituer_pack`
+> ne montent que les positions écrites à la main, qui n'exercent pas la
+> construction du deck complet. **Seul `verifier_tous_les_decks` l'attrape.**
+>
+> Mesuré : le deck `lady_sif` était **injouable depuis son portage de la
+> veille**, ses gabarits cochés, ses 22 cas verts et ses 18 cartes prouvées
+> par substitution. Le pack suivant l'a découvert par hasard.
 
 Pas de héros à moitié validé : si une seule carte du pack manque son
 « Carte terminée : OUI », le héros entier reste NON.

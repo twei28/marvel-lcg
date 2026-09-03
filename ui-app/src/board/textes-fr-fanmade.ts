@@ -1813,4 +1813,60 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'im013': "<b>Interruption de héros</b> : quand Iron Man effectue une menée de BASE, retirez-lui 1 pion réacteur → cette menée retire 2 menaces supplémentaires et ignore le mot-clé Patrouille.",
   // iron_man_model_42 — Technical Issues (Obligation)
   'im014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Tony Stark ET Tony's Workshop → retirez Technical Issues de la partie.\n• Retirez 2 pions réacteur de votre identité. Si AUCUN pion réacteur n'a été retiré de cette façon, cette carte gagne Déchaînement. Défaussez cette obligation.",
+  // armored_spidey — Armored Spidey (Hero) [set 152, Kajislav]
+  'as001a': "<i>Armor Protection</i> — <b>Interruption</b> : quand vous devriez subir des dégâts, quels qu'ils soient, provenant d'une attaque, retirez 1 pion métal de Spider Armor → prévenez jusqu'à 2 de ces dégâts.",
+  // armored_spidey — Peter Parker (AlterEgo)
+  'as001b': "<b>Mise en place</b> : mettez en jeu votre amélioration Spider Armor, face [[OPERATIONAL]] visible. Placez 3 pions métal dessus.\n<i>Egomaniac</i> — <b>Réponse</b> : après qu'un joueur a joué une carte sous VOTRE contrôle, piochez 1 carte <i>(limite d'une fois par round et par joueur)</i>.",
+  // armored_spidey — Spider Armor, face OPERATIONAL (Upgrade permanente)
+  'as002a': "Permanente.\n<b>Réponse forcée</b> : après que vous êtes passé sur cette face, placez 3 pions métal ici.\n<b>Réponse forcée</b> : après que le DERNIER pion métal a été retiré d'ici, retournez cette carte.",
+  // armored_spidey — Spider Armor, face DESTROYED (Upgrade permanente)
+  'as002b': "Permanente.\nArmored Spidey gagne -1 ATQ et -1 DEF.\n<b>Action d'alter ego</b> : dépensez 3 ressources de n'importe quel type → retournez cette carte.",
+  // armored_spidey — Spider-Bot (Ally)
+  'as003': "<b><i>Robustesse.</i></b>\n<b>Action</b> : défaussez Spider-Bot → retournez votre amélioration Spider Armor sur sa face [[OPERATIONAL]].",
+  // armored_spidey — Burst It! (Event)
+  'as004': "<b>Action de héros</b> : retirez TOUS les pions métal de Spider Armor → infligez 1 dégât à CHAQUE ennemi en jeu par pion métal retiré de cette façon.",
+  // armored_spidey — Embrace It! (Event, x2)
+  'as005': "<b>Réponse</b> : après que vous avez retiré un pion métal de Spider Armor, redressez votre identité.",
+  // armored_spidey — Kick It! (Event, x2)
+  'as006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Vous pouvez retirer 1 pion métal de Spider Armor pour étourdir CET ennemi.",
+  // armored_spidey — Sell It! (Event)
+  'as007': "<b>Action d'alter ego</b> : retirez autant de pions métal que vous voulez de Spider Armor. Piochez 2 cartes par pion métal retiré de cette façon.",
+  // armored_spidey — Sense It! (Event, x2)
+  'as008': "<b>Interruption de héros</b> : quand une carte de traîtrise est révélée depuis le deck de rencontre, annulez tous ses effets et défaussez-la. Vous pouvez retirer 1 pion métal de Spider Armor → infligez 1 dégât au méchant OU retirez 1 menace de la manigance principale par icône de boost défaussée de cette façon.",
+  // armored_spidey — Swing It! (Event, x2)
+  'as009': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Vous pouvez retirer 1 pion métal de Spider Armor pour désorienter un ennemi.",
+  // armored_spidey — Gwen Stacy (Support)
+  'as010': "<b>Réponse</b> : après qu'une carte de coût IMPRIMÉ 2 ou plus est entrée en jeu sous votre contrôle, redressez Gwen Stacy. <i>(Limite d'une fois par round.)</i>\n<b>Ressource</b> : inclinez Gwen Stacy → générez une ressource [wild].",
+  // armored_spidey — Parker Industries (Support)
+  'as011': "<b>Action d'alter ego</b> : inclinez Parker Industries → regardez les 3 premières cartes de votre deck. Ajoutez-en 1 à votre main et défaussez les autres.",
+  // armored_spidey — Night Vision (Upgrade)
+  'as012': "Tant que Spider Armor a le trait [[OPERATIONAL]], Armored Spidey gagne +1 CTR et ignore les mots-clés Garde et Patrouille.",
+  // armored_spidey — Vibranium Enhancement (Upgrade)
+  'as013': "Tant que Spider Armor a le trait [[OPERATIONAL]], Armored Spidey gagne Riposte 1 et Stoïque.\n<b>Réponse</b> : après avoir joué cette carte, si Spider Armor a le trait [[OPERATIONAL]], placez 1 pion métal dessus <i>(maximum 3)</i>.",
+  // armored_spidey — Corporate Expansion (Obligation)
+  'as014': "<b><i>Donnez-la au joueur Peter Parker.</i></b>\nVous ne pouvez pas jouer de cartes d'ÉVÉNEMENT tant que vous êtes en forme de héros.\n<b>Réponse d'alter ego</b> : après qu'une carte de coût IMPRIMÉ 2 ou plus est entrée en jeu sous votre contrôle, défaussez cette obligation.",
+  // armored_spidey — Scarlet Spider (Ally, Protection)
+  'as015': "Scarlet Spider entre en jeu avec 3 pions sens sur lui.\n<b>Interruption</b> : quand le méchant s'active contre vous, retirez 1 pion sens de Scarlet Spider → réduisez de 1 le nombre d'icônes de boost ([boost]) de CHAQUE carte de boost pour cette activation.",
+  // armored_spidey — Six-Armed Spider-Man (Ally, Protection)
+  'as016': "<b>Réponse</b> : après que Six-Armed Spider-Man s'est défendu contre une attaque, défaussez les 6 premières cartes de votre deck. Infligez 1 dégât à l'ennemi attaquant par type de carte DIFFÉRENT défaussé de cette façon.",
+  // armored_spidey — Defensive Briefing (Event, Protection, x2)
+  'as017': "<b>Action de héros</b> : choisissez jusqu'à X héros. Chaque héros choisi gagne +3 DEF jusqu'à la fin du round.",
+  // armored_spidey — Just a Ricochet (Event, Protection, x2)
+  'as018': "Jouable seulement si vous contrôlez une amélioration [[ARMOR]].\n<b>Réponse de héros</b> <i>(attaque)</i> : après que votre héros a effectué une défense de base et n'a subi AUCUN dégât, infligez à un ennemi un nombre de dégâts égal à la DEF de votre héros.",
+  // armored_spidey — The Daily Bugle (Support, Protection)
+  'as019': "<b>Réponse</b> : après qu'un personnage ou une manigance annexe a été vaincu, inclinez The Daily Bugle → placez 1 pion article ici.\n<b>Action d'alter ego</b> : retirez TOUS les pions article d'ici → soignez 1 dégât d'un personnage que vous contrôlez par pion article retiré de cette façon.",
+  // armored_spidey — Double Defense (Upgrade, Protection, x2)
+  'as020': "Maximum 1 par joueur.\n<b>Interruption de héros</b> : quand un personnage AUTRE que votre identité devrait subir des dégâts, quels qu'ils soient, provenant d'une attaque, défaussez Double Defense → réduisez ce montant de la DEF de votre héros.",
+  // armored_spidey — Octo Spidey (Ally, Basic)
+  'as021': "[star] <b>Interruption</b> : quand Octo Spidey utilise un pouvoir de base, défaussez les 4 premières cartes de votre deck. Octo Spidey gagne +1 à CE pouvoir pour cette utilisation par type de ressource DIFFÉRENT défaussé de cette façon.",
+  // armored_spidey — Spider-Verse (Support, Basic)
+  'as022': "Jouable seulement si votre identité a le trait [[WEB-WARRIOR]] ou « Spider » dans son titre.\nAugmentez de 1 votre limite d'alliés.\n<b>Ressource</b> : inclinez Spider-Verse → générez une ressource [energy] pour un allié ayant le trait [[WEB-WARRIOR]] ou « Spider » dans son titre, pour n'importe quel joueur.",
+  // armored_spidey_nemesis — Kingpin (Minion)
+  'as023': "[star] <b>Réponse forcée</b> : après que Kingpin a manigancé, défaussez la première carte du deck de rencontre, puis placez 1 menace sur la manigance annexe « The Kingpin of Crime » par icône de boost défaussée de cette façon.\n<i>(Sbire némésis d'Armored Spidey.)</i>",
+  // armored_spidey_nemesis — "The Kingpin of Crime" (SideScheme)
+  'as024': "<b><i>Entrave 1.</i></b>\nTraitez la zone de texte imprimée de CHAQUE soutien NON permanent comme si elle était vierge.",
+  // armored_spidey_nemesis — Underworld Impact (Treachery, x2)
+  'as025': "<b>Quand elle est révélée</b> : choisissez de subir 1 dégât OU de placer 1 menace sur la manigance principale, par soutien que vous contrôlez. Si vous ne contrôlez AUCUN soutien, cette carte gagne Déchaînement.\n<hr />[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) par soutien que vous contrôlez.",
+  // armored_spidey_nemesis — Behind the Scenes (Treachery)
+  'as026': "<b>Quand elle est révélée</b> : défaussez la première carte de votre deck. Puis défaussez de votre main CHAQUE carte du même type que la carte défaussée. Si AUCUNE carte n'a été défaussée de votre main de cette façon, cette carte gagne Déchaînement.",
 }

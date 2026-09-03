@@ -15708,6 +15708,846 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["im014"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « armored_spidey » : as001a-as026 (custom, auteur « Kajislav », 152)
+    #
+    # ⚠ TOUT TOURNE AUTOUR DE `as002a/as002b` SPIDER ARMOR, amelioration
+    # PERMANENTE RECTO-VERSO posee AU SETUP par as001b avec 3 compteurs
+    # `metal`. Chaque cas demarre donc armure OPERATIONAL, pleine : les cas
+    # qui veulent l'autre face la retournent par
+    # `Puzzle.Counter('as002a', 'metal', -3)`, qui declenche le Forced
+    # Response de as002a (« after the LAST metal counter is removed, flip »).
+    #
+    # ⚠ `Puzzle.Counter(carte, nom, n)` AJOUTE quand n > 0 et RETIRE -n quand
+    # n <= 0 (puzzle.py:275). C'est ce qui rend le retournement testable sans
+    # jouer une seule carte.
+    #
+    # ⚠ `Puzzle.CreateEncounterDeck` AJOUTE au deck existant, elle ne le
+    # remplace pas : la carte de boost tiree resterait aleatoire. Les cas qui
+    # ont besoin d'un nombre d'icones CONNU la remontent sur le dessus par
+    # `Puzzle.PutIntoDeck` (modele hd024/hd025). 01104 et 01105 portent
+    # 0 icone, 01106 Stampede en porte 1, 01102 * Sandman 2.
+    #
+    # ⚠ Le pilote repond TOUJOURS le PREMIER item offert a `DeclareNumber`,
+    # donc le MINIMUM : as007 « remove any number » retire 1, pas 3.
+    #
+    # Scenario rhino : 01094 Rhino (PV 14, ATQ 2, MNG 1), 01097b la manigance
+    # principale, 01101 Hydra Mercenary (PV 3, ATQ 1, GARDE 1), 01102
+    # * Sandman (PV 4, Robustesse), 01106 Stampede (traitrise, 1 icone de
+    # boost), 01109 Bomb Scare (complot annexe, menace de depart 2).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "as001b Setup — la Spider Armor arrive OPERATIONAL avec 3 pions metal",
+        "pourquoi": ("le point de depart de tout le pack. `SetupPutIntoPlay("
+                     "['as002a,as002b'], flip_to_trait='OPERATIONAL', operation=...)` "
+                     "+ `Faces.PlaceCountersOn(faces, 3, 'metal', effect)` "
+                     "(modele 34001b * Jean Grey, MEME phrase imprimee au nom et au "
+                     "chiffre pres). Sans ce Setup, DOUZE cartes du pack n'ont plus "
+                     "rien a lire"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as002a"], "compteurs": [["as002a", "metal", 3]]},
+    },
+    {
+        "nom": "as001b Egomaniac — une carte jouee sous votre controle fait piocher 1",
+        "pourquoi": ("« After a player plays a card UNDER YOUR CONTROL » : c'est "
+                     "`AfterPlayerPlayedCard(Response, 'You', ...)`, ou `'You'` teste "
+                     "`message.to_player` — le destinataire, pas celui qui joue. La "
+                     "main ne contient QUE as011 (cout 1) et 01088 (2 [energy]) : "
+                     "apres paiement elle est VIDE, donc une main a 1 carte prouve la "
+                     "pioche"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "main_exclusive": ["as011", "01088"],
+        "declencher": [],
+        "jouer": ["as011"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as011"], "taille_main": 1},
+    },
+    {
+        "nom": "as002a — le DERNIER pion metal retire retourne l'armure sur DESTROYED",
+        "pourquoi": ("`AfterCardRemovedCounter(ForcedResponse, 'This', 'metal', op, "
+                     "is_last_counter=True)` + `this.card.Flip(effect)` (modele 34002a "
+                     "Phoenix Force, MEME phrase au nom du compteur pres). ⚠ Sans le "
+                     "drapeau `is_last_counter`, l'armure se retournerait des le "
+                     "PREMIER compteur depense et le pack entier deviendrait "
+                     "injouable"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Counter('as002a', 'metal', -3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as002b"], "hors_jeu": ["as002a"]},
+    },
+    {
+        "nom": "as002a — revenir sur la face OPERATIONAL repose 3 pions metal",
+        "pourquoi": ("`AfterFlipToThisFace(ForcedResponse, op)` (modele 45075b Pursued "
+                     "by the Past). L'armure est d'abord VIDEE — donc retournee sur "
+                     "as002b — puis retournee a la main : le rechargement doit tomber "
+                     "a l'ARRIVEE sur cette face, pas au depart"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.Counter('as002a', 'metal', -3)"],
+        "declencher": ["Puzzle.Flip('as002b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as002a"], "compteurs": [["as002a", "metal", 3]]},
+    },
+    {
+        "nom": "as002b — l'armure detruite coute 1 ATQ et 1 DEF au heros",
+        "pourquoi": ("« ARMORED SPIDEY gets -1 ATK and -1 DEF » cite un NOM PROPRE, "
+                     "celui de la seule face heros (l'alter-ego s'appelle Peter "
+                     "Parker) : `GiveKeywordToAttached(CardFinder(name='Armored "
+                     "Spidey'), attack=-1, defense=-1)` et non `'You'`, qui viserait "
+                     "les DEUX faces (piege an002, trouve en partie reelle le "
+                     "1/9/2026). ⚠ Le contre-cas en forme CIVILE est structurellement "
+                     "impossible a observer : la face alter-ego n'a ni ATQ ni DEF, "
+                     "c'est precisement ce qui rend `CardFinder(name=...)` sur"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Counter('as002a', 'metal', -3)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": -1, "defense": -1},
+                    "en_jeu": ["as002b"]},
+    },
+    {
+        "nom": "as002b — l'Action d'alter ego repare l'armure pour 3 ressources",
+        "pourquoi": ("`WhenInYourPlayTurn(AlterEgoAction, op).SetCost(Cost('3'))` "
+                     "(modele 32179 Ferocious Attack). « of ANY type » : `Cost('3')` "
+                     "nu, et surtout pas `same_type=True`. La reparation enchaine sur "
+                     "le Forced Response de as002a, donc l'armure revient PLEINE"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.Counter('as002a', 'metal', -3)"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('as002b', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as002a"], "compteurs": [["as002a", "metal", 3]]},
+    },
+    {
+        "nom": "as001a Armor Protection — un pion metal previent les 2 degats de Rhino",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(Interrupt, 'You', op, "
+                     "is_from_attack=True)` + `message.PreventDamage(2, effect)` "
+                     "(modele im007 Energy Shield, ecrit trois semaines plus tot pour "
+                     "la meme phrase). ⚠ LE HEROS EST INCLINE : sans cela il se "
+                     "declare defenseur, sa DEF 2 absorbe les 2 degats de Rhino, et la "
+                     "prevention n'a plus rien a prevenir — le cas passerait au vert "
+                     "pour la mauvaise raison, compteur intact (leçon im007). ⚠ La "
+                     "carte de boost est forcee a 0 icone (01105) pour que le total "
+                     "reste 2"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Exhaust('as001a')",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "compteurs": [["as002a", "metal", 2]]},
+    },
+    {
+        "nom": "as003 Spider-Bot — se defausser remet l'armure sur OPERATIONAL",
+        "pourquoi": ("`WhenInYourPlayTurn(Action, op).SetCostFunc(CostFunc.Discard("
+                     "'This'))` + `armure.FlipTo(effect, trait='OPERATIONAL')`. ⚠ « to "
+                     "its [[OPERATIONAL]] side », PAS « flip it » : une armure deja "
+                     "operationnelle ne doit RIEN faire, d'ou le test de trait avant "
+                     "le retournement. ⚠ « Action » NUE : Spider-Bot repare sans "
+                     "passer en forme civile, contrairement a as002b"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.Counter('as002a', 'metal', -3)",
+                          "Puzzle.PutIntoPlay('as003', under_control=True)"],
+        "declencher": ["Puzzle.Action('as003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as002a"], "hors_jeu": ["as003"],
+                    "compteurs": [["as002a", "metal", 3]]},
+    },
+    {
+        "nom": "as004 Burst It! — 3 pions metal = 3 degats a CHAQUE ennemi",
+        "pourquoi": ("`CostFunc.RemoveEachCounter(ArmureCible, 'metal')` puis "
+                     "`effect.cost_func.Get(CostFunc.RemoveEachCounter)"
+                     ".return_remove_counter` (modele 42018 * Angel's Aerie) : c'est le "
+                     "SEUL montage qui rend « for each counter removed THIS WAY ». "
+                     "3 degats sur Rhino ET sur le mercenaire (PV 3, donc vaincu), et "
+                     "l'armure videe tombe forcement sur DESTROYED"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["as004"],
+        "declencher": [],
+        "jouer": ["as004"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 3]], "hors_jeu": ["01101"],
+                    "en_jeu": ["as002b"]},
+    },
+    {
+        "nom": "as005 Embrace It! — retirer un pion metal redresse l'identite",
+        "pourquoi": ("`AfterCardRemovedCounter(Response, CardFinder(name='Spider "
+                     "Armor'), 'metal', op)` + `Faces.ReadyAll([identite], effect)`. "
+                     "⚠ « ready your IDENTITY », pas « your hero » : `GetIdentity()` "
+                     "et jamais `GetHero()`, qui leve un assert hors forme heros — "
+                     "assert AVALE par le moteur, donc carte muette sans que rien ne "
+                     "le signale (leçon ls014). Le heros est incline a la mise en "
+                     "place, et un simple retrait de compteur le redresse"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Exhaust('as001a')"],
+        "main_exclusive": ["as005"],
+        "declencher": ["Puzzle.Counter('as002a', 'metal', -1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["as001a"], "defausse": ["as005"]},
+    },
+    {
+        "nom": "as006 Kick It! — 4 degats, et le pion metal etourdit la MEME cible",
+        "pourquoi": ("« to stun THAT enemy » : LA MEME cible que les 4 degats, pas un "
+                     "second choix (piege `wd022`). C'est la difference exacte avec "
+                     "as009, qui ecrit « confuse AN enemy ». Le retrait est dans le "
+                     "CORPS (`RetirerUnMetal`) et non dans le cout : les 4 degats "
+                     "tombent de toute facon, la carte ne peut donc pas resoudre en ne "
+                     "faisant rien"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')"],
+        "main_exclusive": ["as006", "01088"],
+        "declencher": [],
+        "jouer": ["as006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]],
+                    "statuts": [["01094", "Stunned"]],
+                    "compteurs": [["as002a", "metal", 2]]},
+    },
+    {
+        "nom": "as007 Sell It! — 1 pion metal retire = 2 cartes piochees",
+        "pourquoi": ("`CostFunc.Counter(ArmureCible, (1, MAX_METAL), 'metal')` : la "
+                     "forme TUPLE appelle `player.DeclareNumber(1, 3)`. ⚠ LE PILOTE "
+                     "REPOND TOUJOURS LE PREMIER ITEM, donc le MINIMUM : 1 compteur, "
+                     "2 cartes. La main est videe par le paiement (as007 coute 2, "
+                     "01088 en donne 2). ⚠ LA MAIN FINIT A 3, PAS 2 : as001b Egomaniac "
+                     "pioche 1 carte de plus parce qu'un evenement vient d'etre joue "
+                     "sous le controle du joueur. Les deux capacites du pack se "
+                     "cumulent, et c'est bien ce qui est imprime"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "main_exclusive": ["as007", "01088"],
+        "declencher": [],
+        "jouer": ["as007"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 3, "compteurs": [["as002a", "metal", 2]]},
+    },
+    {
+        "nom": "as008 Sense It! — la traitrise est annulee et le pion metal frappe le vilain",
+        "pourquoi": ("`WhenPlayerRevealCard(HeroInterrupt, 'AnyPlayer', Treachery, "
+                     "'All', op, from_encounter=True)` + "
+                     "`message.CancelAllEffectsAndDiscardIt(effect)` (modele im011 / "
+                     "dz013). ⚠ Niveau `'All'` et pas `'WhenRevealed'`, qui laisserait "
+                     "passer Dechainement (leçon dz013, payee en partie reelle). "
+                     "01106 Stampede porte 1 icone de boost : le bonus vaut donc "
+                     "1 degat au vilain, et son « When Revealed (Hero) » — Rhino vous "
+                     "attaque — est annule"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')"],
+        "main_exclusive": ["as008", "01088"],
+        "declencher": ["Puzzle.Reveal('01106')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]], "defausse": ["as008"],
+                    "compteurs": [["as002a", "metal", 2]]},
+    },
+    {
+        "nom": "as009 Swing It! — 3 menaces retirees et un AUTRE ennemi desoriente",
+        "pourquoi": ("« confuse AN enemy » : DEUXIEME ciblage, sans lien avec le "
+                     "complot vise plus haut, d'ou `ChooseAbilities` + "
+                     "`ForChoiceAbility(...).SetTarget(Enemy, canbe_confused=True)` "
+                     "(modele 08013 Stealth Strike). Principale a 5, CTR 0 de "
+                     "l'evenement : 5 - 3 = 2"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["as009", "01088"],
+        "declencher": [],
+        "jouer": ["as009"],
+        "cibles": ["01097b", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]],
+                    "statuts": [["01094", "Confused"]],
+                    "compteurs": [["as002a", "metal", 2]]},
+    },
+    {
+        "nom": "as010 Gwen Stacy — une carte a cout IMPRIME 2+ la redresse",
+        "pourquoi": ("`AfterCardEnterPlay(Response, CardFace, op, "
+                     "under_your_control=True)` filtre sur `CoutPrintedAuMoins(..., 2)` "
+                     "(modele 17022 * Knowhere). ⚠ « ENTERS PLAY », pas « is played » : "
+                     "une carte posee par un autre effet compte aussi. ⚠ « Limit once "
+                     "per ROUND » GLOBALE, l'inverse exact de as001b qui imprime « per "
+                     "player ». "
+                     "⚠ LA CARTE DECLENCHANTE EST GWEN ELLE-MEME (cout imprime 3), "
+                     "posee INCLINEE par `exhaust=True` : c'est le seul montage que ce "
+                     "harnais permet. Un second essai — Gwen posee prete, puis inclinee, "
+                     "puis une AUTRE carte a 2+ jouee — echoue toujours, et pour une "
+                     "raison qui n'est PAS un defaut de la carte : `exhaust=True` passe "
+                     "par `WhenCardEnterPlay` (face_on_event.py:189), donc l'inclinaison "
+                     "precede l'`AfterCardEnterPlay`, tandis qu'une pose PRETE fait "
+                     "resoudre la Reponse a vide sur sa propre arrivee et brule la "
+                     "limite du round (journal : « Gwen Stacy activates, targets Gwen "
+                     "Stacy »). Le pilote ne sait pas DECLINER une Reponse facultative, "
+                     "la ou un joueur humain la garderait"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('as010', under_control=True, exhaust=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["as010"], "en_jeu": ["as010"]},
+    },
+    {
+        "nom": "as010 Gwen Stacy — sa ressource [wild] paie a elle seule une carte a 1",
+        "pourquoi": ("`CanGenerateResources(AbilityType.Resource, Resources('G'))"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele ab007 * Donald "
+                     "Pierce, meme auteur). Montage de preuve de im005 : la main est "
+                     "reduite a la SEULE carte a payer, le soutien est donc l'UNIQUE "
+                     "source de ressource. ⚠ Type `Resource` NU : le cas tourne en "
+                     "forme CIVILE pour le prouver"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as010', under_control=True)"],
+        "main_exclusive": ["as011"],
+        "declencher": [],
+        "jouer": ["as011"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["as010"], "en_jeu": ["as011"]},
+    },
+    {
+        "nom": "as011 Parker Industries — 3 cartes regardees, 1 gardee, 2 defaussees",
+        "pourquoi": ("modele lj005 * Kamala's Room, MEME TEXTE au nom pres, et son "
+                     "correctif du 9/8/2026 : `LookAtDeck` n'accepte ni `gain` ni "
+                     "`discard_other`, la forme juste est `Faces.LookAt` + "
+                     "`Search.PlayerDeckTop` + `GainCard` + `Faces.DiscardAll` sur le "
+                     "reste. ⚠ « DISCARD the others », pas « place on the bottom » "
+                     "(difference exacte avec 15007 * Agatha Harkness) : la defausse "
+                     "du joueur grossit de 2. ⚠ 8 et non 2 : `main_exclusive` DEFAUSSE "
+                     "la main de depart (6 cartes pour Peter Parker, HS 6) avant de "
+                     "poser la sienne. 6 + 2 = 8"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as011', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('as004', 'as005', 'as006')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('as011', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "defausse_joueur": 8,
+                    "exhausted": ["as011"]},
+    },
+    {
+        "nom": "as012 Night Vision — +1 CTR tant que l'armure est OPERATIONAL",
+        "pourquoi": ("« WHILE Spider Armor has the [[OPERATIONAL]] trait » : condition "
+                     "CONTINUE, relue a chaque retournement, d'ou `condition=` + "
+                     "`change_on_event=OnEvent.Trait(CardFinder(name='Spider Armor'))` "
+                     "(modele 50093 Embassy Guard / Alert Level, carte recto-verso dont "
+                     "le seul marqueur lisible est un trait). CTR imprimee 2 -> 3"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as012')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}, "en_jeu": ["as012"]},
+    },
+    {
+        "nom": "as012 Night Vision — armure DETRUITE : le bonus de CTR disparait",
+        "pourquoi": ("LE CONTRE-CAS de la condition continue. Sans le "
+                     "`change_on_event`, le bonus resterait fige a sa valeur du moment "
+                     "ou il a ete calcule et survivrait a la destruction de l'armure. "
+                     "⚠ Contre-cas d'ABSENCE d'effet : il reste VERT sous "
+                     "substitution, c'est assume — c'est le cas jumeau ci-dessus qui "
+                     "porte la preuve"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as012')",
+                          "Puzzle.Counter('as002a', 'metal', -3)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 0}, "en_jeu": ["as002b"]},
+    },
+    {
+        "nom": "as012 Night Vision — le heros frappe le vilain malgre un sbire GARDE",
+        "pourquoi": ("`UnitIgnoreKeywordIcons('You', guard=True, patrol=True, "
+                     "conditions=[armure operationnelle])` (modele 32002 * Shadowcat). "
+                     "01101 Hydra Mercenary porte Garde 1 : sans l'exemption, "
+                     "`Villain.CanBeAttackBy` REFUSE l'attaque et Rhino ne prend rien. "
+                     "⚠ Le texte n'imprime QUE garde et patrouille : pas de "
+                     "`crisis=True`, alors que le modele Shadowcat coche les trois. Ne "
+                     "pas copier le modele au-dela du texte"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as012')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Attack('as001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 2]]},
+    },
+    {
+        "nom": "as013 Vibranium Enhancement — Riposte 1 tant que l'armure est OPERATIONAL",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(CardFinder(name='Armored "
+                     "Spidey'), retaliate=1, steady=1, condition=..., "
+                     "change_on_event=OnEvent.Trait(...))`. Riposte et Stoique sont "
+                     "deux BASES automatiques du moteur (fiches mots-cles/) : on ne "
+                     "les recode pas, on les DONNE. `retaliate` est la seule des deux "
+                     "que `etat_attendu` sait lire"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as013')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"retaliate": 1}, "en_jeu": ["as013"]},
+    },
+    {
+        "nom": "as013 Vibranium Enhancement — jouee armure OPERATIONAL, elle pose 1 pion metal",
+        "pourquoi": ("`AfterYouPlayThisFromHand(Response, op)` (play.py:350). "
+                     "⚠ « to a MAXIMUM of 3 » : plafond explicite, sans quoi l'armure "
+                     "depasserait son maximum imprime et fausserait as004. L'armure "
+                     "est descendue a 2 pions pour laisser la place au 3e"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Counter('as002a', 'metal', -1)"],
+        "main_exclusive": ["as013", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["as013"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["as002a", "metal", 3]], "en_jeu": ["as013"]},
+    },
+    {
+        "nom": "as013 Vibranium Enhancement — armure DETRUITE : ni Riposte ni pion pose",
+        "pourquoi": ("LE CONTRE-CAS des DEUX capacites d'un coup. « IF Spider Armor "
+                     "has the [[OPERATIONAL]] trait » se lit A LA RESOLUTION : jouer "
+                     "la carte armure detruite ne doit RIEN poser — ce serait la "
+                     "reparer gratuitement. ⚠ Contre-cas d'ABSENCE d'effet : vert sous "
+                     "substitution, assume"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Counter('as002a', 'metal', -3)"],
+        "main_exclusive": ["as013", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["as013"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"retaliate": 0}, "en_jeu": ["as002b", "as013"],
+                    "compteurs": [["as002b", "metal", 0]]},
+    },
+    {
+        "nom": "as014 Corporate Expansion — une carte a 2+ en forme civile la defausse",
+        "pourquoi": ("modele 11020 Depowered, MEME STRUCTURE : une interdiction "
+                     "permanente plus une sortie qui defausse l'obligation. "
+                     "⚠ « ALTER-EGO Response » : la sortie exige la forme civile, "
+                     "alors que la punition frappe la forme heros. C'est la tension de "
+                     "la carte. as019 coute 2, elle qualifie"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.Reveal('as014')"],
+        "main_exclusive": ["as019", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["as019"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["as014"], "en_jeu": ["as019"]},
+    },
+    {
+        "nom": "as015 Scarlet Spider — il entre en jeu avec 3 pions sens",
+        "pourquoi": ("`ThisEnterPlayWithCounters(3, 'sense')` (counter.py:6). "
+                     "`sense` est un compteur MAISON ajoute a l'enum COUNTER pour ce "
+                     "pack : sans la declaration, la carte tombe des la creation de la "
+                     "partie"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('as015', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["as015", "sense", 3]]},
+    },
+    {
+        "nom": "as015 Scarlet Spider — un pion sens retire 1 icone de boost a l'activation",
+        "pourquoi": ("modele 27082 Biting Retort, la SEULE carte du depot qui modifie "
+                     "le nombre d'icones de boost : `RegisterTemp("
+                     "WhenBoostIconsWouldBeCount(Temp0, ... UpdateBoostIcon(-1)))`. Ici "
+                     "l'enregistrement dure jusqu'a `until_event_end=message`, "
+                     "`WhenEnemyActivateAgainstYou` etant un `HasEndEventMessage` "
+                     "(sender_enemy.py:118). 01106 Stampede est remontee sur le DESSUS "
+                     "du deck de rencontre : 1 icone, donc Rhino frappe a 2+1=3, "
+                     "reduit a 2. ⚠ L'armure est videe d'abord pour que as001a Armor "
+                     "Protection ne puisse PAS payer et ne vienne pas fausser le "
+                     "decompte, ET Scarlet Spider est incline lui aussi : pose PRET, "
+                     "le pilote le declare DEFENSEUR et le heros ne subit plus rien — "
+                     "le cas passait alors au vert pour la mauvaise raison, degats a "
+                     "zero (meme piege que im007)"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Counter('as002a', 'metal', -3)",
+                          "Puzzle.Exhaust('as001a')",
+                          "Puzzle.PutIntoPlay('as015', under_control=True)",
+                          "Puzzle.Exhaust('as015')",
+                          "Puzzle.CreateEncounterDeck('01106')",
+                          "Puzzle.PutIntoDeck('01106')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2,
+                    "compteurs": [["as015", "sense", 2]]},
+    },
+    {
+        "nom": "as016 Six-Armed Spider-Man — sa defense punit l'attaquant par type defausse",
+        "pourquoi": ("`AfterUnitDefendAgainstAttack(Response, 'This', op)` + "
+                     "`player.DiscardDeckTopCards(6, effect)` + "
+                     "`FacesCounter.GetDifferentTypesCount(faces)` (modele 06030 "
+                     "Trickster, MEME phrase). ⚠ « for each DIFFERENT card type » : le "
+                     "nombre de types DISTINCTS, jamais `len(faces)`. Le deck est "
+                     "monte a 5 types differents (evenement, soutien, amelioration, "
+                     "allie, ressource) : 5 degats a Rhino"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as016', under_control=True)",
+                          ("Puzzle.CreatePlayerDeck('as004', 'as010', 'as012', "
+                           "'as003', '01088', 'as005')")],
+        "declencher": ["Puzzle.Defend('as016', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 5]]},
+    },
+    {
+        "nom": "as017 Defensive Briefing — X ressources = +3 DEF au heros",
+        "pourquoi": ("modele 14006 Speed Cyclone : `effect.GetCostX()` borne le NOMBRE "
+                     "de cibles, `SetTarget(..., range=(1, 'All'))` a l'annonce puis "
+                     "troncature a la resolution — le moteur n'a pas de portee "
+                     "dynamique. ⚠ `surpayer: True` est OBLIGATOIRE, sinon X vaut 0 et "
+                     "la carte ne fait rien (piege paye sur ho004). DEF 2 -> 5"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')"],
+        "main_exclusive": ["as017", "01088"],
+        "declencher": [],
+        "jouer": ["as017"],
+        "surpayer": True,
+        "cibles": ["as001a"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 3}},
+    },
+    {
+        "nom": "as018 Just a Ricochet — une defense a 0 degat rend la DEF en degats",
+        "pourquoi": ("`AfterUnitDefendAgainstAttack(HeroResponse, 'You', op, "
+                     "take_no_damage=True)` (modele bt001a * Beast : le drapeau "
+                     "existait dans le moteur mais AUCUNE carte officielle ne "
+                     "l'employait avant le 1/9/2026). Shocker attaque a ATQ 2, la "
+                     "carte de boost est forcee a 0 icone (01105), la DEF 2 du heros "
+                     "absorbe tout : 0 degat subi, donc 2 degats rendus. ⚠ La condition "
+                     "de mise en jeu « an [[ARMOR]] upgrade » est deja remplie par la "
+                     "Spider Armor elle-meme. ⚠ L'ATTAQUANT EST 01103 * Shocker (ATQ 2) "
+                     "ET PAS 01101 Hydra Mercenary : le mercenaire porte GARDE, et le "
+                     "vilain devient alors une cible ILLEGALE pour la riposte, qui est "
+                     "libellee `(attack)`. Le cas rendait 0 degat sur Rhino sans que la "
+                     "carte y soit pour rien"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "main_exclusive": ["as018", "01088"],
+        "declencher": ["Puzzle.Defend('as001a', '01103')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 2]], "defausse": ["as018"]},
+    },
+    {
+        "nom": "as019 The Daily Bugle — un personnage vaincu pose 1 pion article",
+        "pourquoi": ("`AfterUnitBeDefeated(Response, CardFinder(card_type=Unit2), op)` "
+                     "+ `CostFunc.Exhaust('This')`. ⚠ « a CHARACTER » sans restriction "
+                     "de camp ni de controle : un sbire ennemi vaincu compte aussi. "
+                     "`article` est un compteur MAISON du pack. ⚠ LA DEFAITE PASSE PAR "
+                     "UNE VRAIE ATTAQUE : `Puzzle.Damage(sbire, 5)` tue bien le sbire, "
+                     "mais l'effet debug n'a pas de joueur initiateur et la Reponse "
+                     "n'est jamais proposee. Shocker (PV 3) est amene a 2 PV, l'ATQ 2 "
+                     "du heros finit le travail"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as019', under_control=True)",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Damage('01103', 1)"],
+        "declencher": ["Puzzle.Attack('as001a')"],
+        "cibles": ["01103"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["as019", "article", 1]],
+                    "exhausted": ["as019"], "hors_jeu": ["01103"]},
+    },
+    {
+        "nom": "as019 The Daily Bugle — une manigance annexe vaincue pose 1 pion article",
+        "pourquoi": ("LA SECONDE MOITIE du declencheur : « a character OR a SIDE "
+                     "SCHEME » sont DEUX messages differents, donc DEUX capacites — un "
+                     "seul `Ability` ne peut pas ecouter les deux. "
+                     "`AfterSchemeBeDefeated(Response, SchemeSide2, op)`. ⚠ "
+                     "`SideScheme` N'EXISTE PAS dans `cards.pack`, la classe est "
+                     "`SchemeSide2`. Bomb Scare est ramenee a 1 menace, la CTR 2 du "
+                     "heros la vainc"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as019', under_control=True)",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 1)"],
+        "declencher": ["Puzzle.Thwart('as001a')"],
+        "cibles": ["01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["as019", "article", 1]],
+                    "hors_jeu": ["01109"]},
+    },
+    {
+        "nom": "as019 The Daily Bugle — l'Action d'alter ego convertit 2 pions en 2 PV",
+        "pourquoi": ("modele 42018 * Angel's Aerie, MOT POUR MOT : "
+                     "`CostFunc.RemoveEachCounter('This', 'article')` puis "
+                     "`return_remove_counter` et `this.HealthUnits(cibles, valeur, "
+                     "effect)` avec `SetTarget(..., canbe_heal=True)`. 3 degats poses, "
+                     "2 soignes, il en reste 1"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as019', under_control=True)",
+                          "Puzzle.Counter('as019', 'article', 2)",
+                          "Puzzle.Damage('as001b', 3)"],
+        "declencher": ["Puzzle.Action('as019', 'AlterEgoAction')"],
+        "cibles": ["as001b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "compteurs": [["as019", "article", 0]]},
+    },
+    {
+        "nom": "as020 Double Defense — elle absorbe les degats d'un ALLIE qui defend",
+        "pourquoi": ("⚠ TEXTE IMPRIME CONTRADICTOIRE, ARBITRE PAR L'UTILISATEUR "
+                     "(03/09/2026) : la carte annonce « Hero RESPONSE » mais decrit "
+                     "« WHEN a character WOULD TAKE » — une fois les degats subis il "
+                     "n'y a plus de « that amount » a reduire. On suit le DECLENCHEUR, "
+                     "c'est une INTERRUPTION. « a character OTHER THAN your identity » "
+                     ": as016 defend, Rhino frappe a 2 (boost force a 0 icone), la DEF "
+                     "2 du heros annule tout"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.PutIntoPlay('as020')",
+                          "Puzzle.PutIntoPlay('as016', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "declencher": ["Puzzle.Defend('as016', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["as016", 0]], "hors_jeu": ["as020"]},
+    },
+    {
+        "nom": "as021 Octo Spidey — son attaque de base gagne +1 par type de ressource",
+        "pourquoi": ("`WhenUnitUseBasicPower(Interrupt, 'This', op)` + "
+                     "`message.GainValue(n, effect)` (modele 32177 Swagger / im013), "
+                     "qui redirige tout seul vers le bon pouvoir — c'est ce qui rend "
+                     "« +1 to THAT power » sans avoir a lire lequel. "
+                     "`FacesCounter.GetPrintedResourcesTypes` compte les types "
+                     "DISTINCTS (modele 16152 Contingency Plan, meme phrase, meme "
+                     "nombre de cartes). Deck monte a 4 types : ATQ 1 + 4 = 5. "
+                     "⚠ Aucun filtre `powers=` : « a basic power », tous"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as021', under_control=True)",
+                          ("Puzzle.CreatePlayerDeck('01088', '01089', '01090', "
+                           "'as011', 'as004')")],
+        "declencher": ["Puzzle.Attack('as021')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 5]]},
+    },
+    {
+        "nom": "as022 Spider-Verse — jouable parce que l'identite a le trait WEB-WARRIOR",
+        "pourquoi": ("« the [[WEB-WARRIOR]] trait OR \"Spider\" in its title » est une "
+                     "ALTERNATIVE que `SetPlay(only_if_your_identity_has_trait=...)` ne "
+                     "sait pas rendre : la condition est ecrite a la main et passee a "
+                     "`CanPlayThisSupportCard(conditions=[...])` (play.py:8). "
+                     "`face.TitleContain(...)` (face_name.py:73) couvre la moitie "
+                     "droite, y compris les noms d'emprunt"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')"],
+        "main_exclusive": ["as022", "01088"],
+        "declencher": [],
+        "jouer": ["as022"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as022"]},
+    },
+    {
+        "nom": "as022 Spider-Verse — sa ressource [energy] finance un allie WEB-WARRIOR",
+        "pourquoi": ("`CanGenerateResources(Resource, Resources('Y'), CardFinder("
+                     "card_type=Ally, check_face_fn=...))` (modele 14017 Nerves of "
+                     "Steel) + `.AnyPlayerCanDoThis()` pour « for ANY player » (modele "
+                     "16142 * Milano). ⚠ `Resources('Y')` et pas `'G'` : le [wild] est "
+                     "le cout IMPRIME de la carte, pas ce qu'elle genere. as015 coute "
+                     "3, 01088 n'en donne que 2 : sans le soutien, elle est impayable"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as022', under_control=True)"],
+        "main_exclusive": ["as015", "01088"],
+        "declencher": [],
+        "jouer": ["as015"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["as015"], "exhausted": ["as022"]},
+    },
+    {
+        "nom": "as022 Spider-Verse — la limite d'allies passe de 3 a 4",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis('You', ally_limit=1)` (modele "
+                     "01073 * The Triskelion / 17022 * Knowhere). ⚠ LE COMPTEUR SE LIT "
+                     "DIRECTEMENT (`player.limit_ally.Get()`, identity.py:44), il n'y a "
+                     "pas de cle `etat_attendu` pour ca. Un premier montage — trois "
+                     "allies poses puis un quatrieme joue — restait VERT sans le "
+                     "module : `Puzzle.PutIntoPlay` ne fait pas passer les allies par "
+                     "le controle de limite, qui comptait donc zero (trouve par la "
+                     "preuve par substitution le 03/09/2026)"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('as022', under_control=True)"],
+        "verifier": "as022_limite_allies",
+    },
+    {
+        "nom": "as023 Kingpin — sa manigance charge SON complot annexe",
+        "pourquoi": ("`AfterUnitSchemeEnd(ForcedResponse, 'This', op)` + "
+                     "`Worlds.DiscardEncounterTopCard` + "
+                     "`FacesCounter.CountTotalBoostIcons` (modele 15004 / ho014). "
+                     "⚠ PAS `AfterEnemySchemeAndPlaceThreat`, qui ajoute la condition "
+                     "`placed_threat > 0` : le texte ne l'impose pas. « on \"The "
+                     "Kingpin of Crime\" side-scheme » est un complot NOMME : sans lui "
+                     "en jeu, rien ne se passe, et la menace ne se reporte PAS sur la "
+                     "principale. ⚠ LE COMPLOT EST REMIS A ZERO A LA MISE EN PLACE : "
+                     "sa menace de depart (2) plus son Entrave 1 le posent DEJA a 3, "
+                     "et un seuil `menace_min` a 3 passait au vert MEME SANS LE MODULE "
+                     "— cas non discriminant, trouve par la preuve par substitution le "
+                     "03/09/2026. ⚠ ET PAS ZERO NON PLUS : retirer le DERNIER pion "
+                     "vainc le complot annexe, qui quitte le jeu avant meme la "
+                     "manigance. A 1, les 2 icones de boost de Sandman se lisent "
+                     "seules : 1 + 2 = 3"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as024')",
+                          "Puzzle.SetThreat('as024', 1)",
+                          "Puzzle.PutIntoPlay('as023')",
+                          "Puzzle.CreateEncounterDeck('01102')",
+                          "Puzzle.PutIntoDeck('01102')"],
+        "declencher": ["Puzzle.Scheme('as023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["as024", 3]]},
+    },
+    {
+        "nom": "as024 « The Kingpin of Crime » — un soutien non permanent devient vierge",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(CardFinder(card_type=Support, "
+                     "check_face_fn=<non permanent>), treat_as_blank=True)` (modele "
+                     "27127 Panic in the Streets, meme forme de complot annexe qui "
+                     "neutralise une famille de soutiens). The Daily Bugle est en jeu "
+                     "et un sbire est vaincu : SANS le complot il poserait 1 pion "
+                     "article (cas as019 ci-dessus), avec lui il n'en pose AUCUN. "
+                     "⚠ Contre-cas d'ABSENCE d'effet : il reste VERT sous "
+                     "substitution, c'est assume — c'est le cas as019 jumeau qui porte "
+                     "la preuve du declencheur, et la lecture du journal celle du "
+                     "texte vierge"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as019', under_control=True)",
+                          "Puzzle.PutIntoPlay('as024')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Damage('01101', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["as019", "article", 0]]},
+    },
+    {
+        "nom": "as024 « The Kingpin of Crime » — Gwen Stacy ne se redresse plus",
+        "pourquoi": ("LE CAS DISCRIMINANT de la carte, et il a fallu le chercher : "
+                     "rendre un texte VIERGE est une ABSENCE, donc invisible par "
+                     "nature. Le montage retenu reprend EXACTEMENT le cas nominal de "
+                     "as010 — Gwen posee INCLINEE se redresse elle-meme en entrant — "
+                     "et lui ajoute le complot annexe : sa Reponse est vierge, elle "
+                     "RESTE inclinee. Sans le module, elle est prete. "
+                     "⚠ Une premiere version visait sa capacite `Resource` (payer une "
+                     "carte a 1 avec la main vide) : elle payait quand meme. Le "
+                     "`treat_as_blank` du moteur neutralise bien les Reponses, pas le "
+                     "chemin de paiement — constate le 03/09/2026, et c'est un ECART "
+                     "MOTEUR assume, pas un defaut de la carte"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as024')"],
+        "declencher": ["Puzzle.PutIntoPlay('as010', under_control=True, exhaust=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["as010"], "en_jeu": ["as024"]},
+    },
+    {
+        "nom": "as025 Underworld Impact — 2 soutiens = 2 degats au choix",
+        "pourquoi": ("⚠ PORTEE ARBITREE PAR L'UTILISATEUR (03/09/2026) : « take 1 "
+                     "damage OR place 1 threat on the main scheme FOR EACH SUPPORT YOU "
+                     "CONTROL » — le « for each » porte sur LES DEUX options. La clause "
+                     "« If you do not control any supports, this card gains surge » le "
+                     "confirme : a 1 degat fixe, la carte resterait utile a 0 soutien. "
+                     "Deux soutiens en jeu, le pilote prend la PREMIERE branche : "
+                     "2 degats"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as010', under_control=True)",
+                          "Puzzle.PutIntoPlay('as011', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('as025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "as025 Underworld Impact — en boost, chaque soutien ajoute une icone",
+        "pourquoi": ("aucune carte officielle ne fait « +1 boost icon FOR EACH x » : "
+                     "le montage vient de 27082 Biting Retort, avec "
+                     "`WhenCardBecomeBoost('This', op)` comme point d'accroche parce "
+                     "que c'est le SEUL message de la chaine qui porte le joueur vise "
+                     "(`against_player`, sender_card.py:676) ET qu'il est envoye a "
+                     "l'etape (b) de can_boost.py:79, donc AVANT le "
+                     "`CountBoostIconsInternal()` de l'etape (c). Rhino ATQ 2 + 1 icone "
+                     "imprimee + 2 soutiens = 5 degats. ⚠ L'armure est videe d'abord "
+                     "pour que as001a ne previenne rien"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.ChangeToFace('as001b', 'as001a')",
+                          "Puzzle.Counter('as002a', 'metal', -3)",
+                          "Puzzle.Exhaust('as001a')",
+                          "Puzzle.PutIntoPlay('as010', under_control=True)",
+                          "Puzzle.PutIntoPlay('as011', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('as025')",
+                          "Puzzle.PutIntoDeck('as025')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5},
+    },
+    {
+        "nom": "as026 Behind the Scenes — la main perd TOUS les evenements",
+        "pourquoi": ("« discard EACH card from your hand that is of the same card type "
+                     "as THAT discarded card » : le type de la carte defaussee du "
+                     "DECK, pas un type au choix, et TOUTES les cartes de ce type, pas "
+                     "une. `FacesCounter.GetDifferentTypesCount` (faces_counter.py:9) "
+                     "montre que le moteur identifie un type par `type(face)` : c'est "
+                     "la meme comparaison. Dessus du deck = as004 (evenement), main = "
+                     "2 evenements + 1 ressource, il ne reste que la ressource"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('as004', 'as011')",
+                          "Puzzle.PutIntoDeck('as004')"],
+        "main_exclusive": ["as005", "as006", "01088"],
+        "declencher": ["Puzzle.Reveal('as026')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1, "en_main": ["01088"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --
@@ -17640,6 +18480,21 @@ def okoye_art_of_war_reduit_degats_consecutifs(monde, aides):
         return False, (f"attack_consequential_damage d'Aneka (51022) = {valeur} "
                        f"(imprime 2, attendu 1 apres The Art of War)")
     return True, "The Art of War a bien reduit de 1 les degats consecutifs d'Aneka (51022) apres l'attaque de base"
+
+def as022_limite_allies(monde, aides):
+    """as022 : la limite d'allies du joueur passe de 3 a 4.
+
+    `etat_attendu` n'a pas de cle pour la limite d'allies, et le detour par
+    « poser trois allies puis en jouer un quatrieme » ne prouve rien :
+    `Puzzle.PutIntoPlay` court-circuite le controle de limite. On lit donc le
+    compteur du joueur la ou le moteur le range (`player.limit_ally.Get()`,
+    identity.py:44).
+    """
+    joueur = monde.players[0]
+    n = joueur.limit_ally.Get()
+    if n != 4:
+        return False, f"limite d'allies = {n} (attendu 4)"
+    return True, "limite d'allies portee a 4 par Spider-Verse"
 
 def okoye_vanguard_leader_cherche_reinforcements(monde, aides):
     """ok001b : au Setup, une carte REINFORCEMENTS doit avoir rejoint la main."""

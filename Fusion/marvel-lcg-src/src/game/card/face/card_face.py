@@ -133,6 +133,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "STARLING",  # CORRECTIF : trait du pack custom ms_america (jakxin)
         "NECROVERSE",  # CORRECTIF : trait du pack custom gorr (BLUEHG)
         "TEMPTATION",  # CORRECTIF : trait du pack custom lady_sif (Rainy)
+        "OPERATIONAL", "DESTROYED",  # CORRECTIF : les deux faces de Spider Armor, pack custom armored_spidey (Kajislav)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -160,6 +161,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'evidence',  # CORRECTIF : compteur du pack custom jessica_jones (ekAugust)\n
         'adrenaline',  # CORRECTIF : compteur du pack custom venompool (CptScorp)
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
+        'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

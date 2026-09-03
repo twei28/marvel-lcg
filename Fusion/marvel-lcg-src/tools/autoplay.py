@@ -686,12 +686,16 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         meme monde, et qui divergent des qu'on n'en corrige qu'une. La
         premiere passe n'avait ajoute les compteurs qu'a `progres`, et le
         blocage s'est simplement deplace sur l'autre garde-fou.
+
+        ⚠ CORRECTIF DU 03/09/2026 (soir), pack armored_spidey : on balaie
+        TOUTES les faces du plateau, pas seulement l'identite et les allies.
+        La premiere ecriture ne lisait que ces deux-la, et le compteur `metal`
+        d'Armored Spidey vit sur une AMELIORATION (Spider Armor) : le meme
+        blocage serait revenu tel quel. Anticipe a la lecture des scans, avant
+        le premier autoplay du pack.
         """
-        faces = list(ctx["allies"])
-        if ctx.get("identite_face") is not None:
-            faces.append(ctx["identite_face"])
         return tuple(sorted(nombre(getattr(f, "GetAllCounters", lambda: 0)())
-                            for f in faces))
+                            for f in ctx["faces"].values()))
 
     def empreinte(ctx, options):
         """Signature d'une situation, pour reperer qu'on tourne en rond.

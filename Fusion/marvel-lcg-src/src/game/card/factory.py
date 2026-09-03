@@ -167,7 +167,22 @@ class CardFactory:
                                                     # l'autre (thwart), les deux `.SetPlay()`.
                                                     # Sans cette declaration le deck viv_vision
                                                     # ne monte pas, et test_cards ne le voit pas.
-                                                    "vv005"]:  # Solar Beam (viv_vision)
+                                                    "vv005",   # Solar Beam (viv_vision)
+                                                    # CORRECTIF (03/09/2026) : To Arms!, pack custom
+                                                    # lady_sif. Meme motif que 61019 Strategy Session
+                                                    # et kb005 Quick Draw : une AlterEgoAction
+                                                    # (« Change to hero form. You may spend a
+                                                    # resource to ready your hero. ») et une
+                                                    # HeroAction (« Search your deck and discard pile
+                                                    # for a WEAPON upgrade »), les deux `.SetPlay()`.
+                                                    # ⚠ LE DECK lady_sif NE MONTAIT PLUS AUCUNE
+                                                    # PARTIE depuis son portage du 03/09/2026 :
+                                                    # AssertionError au setup, invisible pour
+                                                    # `test_cards`, `test_capacites` (qui ne monte
+                                                    # que les cas ecrits) et `substituer_pack`.
+                                                    # Seul `verifier_tous_les_decks` le voit, et il
+                                                    # n'avait pas ete relance apres ce pack.
+                                                    "ls005"]:  # To Arms! (lady_sif)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

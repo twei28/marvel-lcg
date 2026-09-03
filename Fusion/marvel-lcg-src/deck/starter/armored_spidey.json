@@ -1,0 +1,73 @@
+{
+    "version": "0.5.8",
+    "name": "Armored Spidey",
+    "metadata": {
+        "url": "",
+        "aspect_note": "PREMIER PACK DE LA SERIE A FOURNIR SA DECKLIST. Kajislav livre le deck de depart carte par carte (scans « 48/49 starter deck armored spidey »), aspect PROTECTION : aucune question d'aspect n'a ete posee, contrairement a hulk_rainy, lady_sif et iron_man_model_42. Les 25 cartes ci-dessous sont exactement celles de la liste imprimee, dans son ordre.",
+        "armure_note": "LA MECANIQUE VEDETTE. as002a/as002b Spider Armor est une amelioration PERMANENTE RECTO-VERSO, posee au Setup par as001b avec 3 compteurs `metal`. Six cartes en depensent (as001a previent 2 degats, as004 frappe chaque ennemi, as006 etourdit, as007 pioche 2 par compteur, as008 punit une traitrise annulee, as009 desoriente), deux en posent (as002a a chaque retour sur OPERATIONAL, as013 jusqu'a 3), trois lisent la face (as003 la repare, as012 donne +1 CTR et ignore Garde/Patrouille, as013 donne Riposte 1 et Stoique) et as005 reagit au retrait. Le dernier compteur retire retourne l'armure sur DESTROYED : -1 ATQ et -1 DEF jusqu'a reparation. Depenser du metal est toujours un pari.",
+        "compteurs_note": "Trois compteurs MAISON ajoutes a l'enum COUNTER du moteur pour ce pack : `metal` (Spider Armor), `sense` (as015 Scarlet Spider), `article` (as019 The Daily Bugle). Deux traits MAISON ajoutes a l'enum TRAITS : OPERATIONAL et DESTROYED, les deux faces de l'armure. Sans ces declarations, les cartes tombent a la CONSTRUCTION, pas en jeu.",
+        "obligation_note": "as014 Corporate Expansion est un vrai etau : « You cannot play event cards while in hero form » bloque as004 a as009, c'est-a-dire SIX des onze cartes signature. La sortie est une Reponse d'alter-ego, donc il faut ranger le costume pour s'en debarrasser. Modele moteur 11020 Depowered.",
+        "spiderman_note": "⚠ CARTE ARBITREE. La decklist imprime « 28 Spider-Man » en cartes BASIC, sans sous-titre, et le zip ne la fournit PAS : la numerotation des fichiers custom saute 20, 22-27, 29, 31-35 et 37-40, exactement les places des cartes officielles du deck (Return the Favor, True Grit, Med Team, Armored Vest, Electrostatic Armor, Indomitable, Unflappable, Spider-Man, Energy, Genius, Strength). C'est donc un allie OFFICIEL. Quatre le sont et portent ce nom exact : 13019 (Miles Morales), 27017 (Hobie Brown), 27049 (Peter Parker), 31022 (Otto Octavius). ⚠ 27049 est ECARTE sur decision de l'utilisateur (03/09/2026) : son sous-titre est « Peter Parker », l'identite civile du heros, et on ne met pas deux fois la meme personne sur la table. Meme raison pour ecarter tout allie Peter Parker de l'univers principal. L'auteur, lui, respecte deja cette regle : ses deux variantes signature as015 et as016 sont des Peter Parker d'AUTRES terres (Earth-98311 et Earth-39811), distincts de notre Earth-31198. RETENU : 13019 * Spider-Man (Miles Morales), Basic, sans homonymie avec l'identite. A echanger dans le deck-builder si l'auteur precise autre chose.",
+        "collision_note": "⚠ « * Scarlet Spider » : as015 (ce pack) et mw022 (pack maison madame_web) portent le MEME nom et sont TOUS DEUX de classe Protection. Deux cartes distinctes, aux capacites differentes, qui peuvent se croiser dans un meme deck de Protection : c'est le set_name qui les separe. ⚠ « * Peter Parker » : l'alter-ego officiel 01001b et trois allies portent ce nom ; notre face civile a le sous-titre « Earth-31198 ». ⚠ « * Kingpin » : as023 et le sbire officiel du set Kingpin. Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle de l'etape 10 de PROCESSUS-HEROS reste vert."
+    },
+    "hero": [
+        "as001a,as001b"
+    ],
+    "hero_deck": [
+        "as003",
+        "as004",
+        "as005",
+        "as005",
+        "as006",
+        "as006",
+        "as007",
+        "as008",
+        "as008",
+        "as009",
+        "as009",
+        "as010",
+        "as011",
+        "as012",
+        "as013"
+    ],
+    "set_aside": [
+        "as002a,as002b"
+    ],
+    "obligations": [
+        "as014"
+    ],
+    "nemesis_set": [
+        "as023",
+        "as024",
+        "as025",
+        "as025",
+        "as026"
+    ],
+    "player_deck": [
+        "as015",
+        "as016",
+        "as017",
+        "as017",
+        "as018",
+        "as018",
+        "27015",
+        "18031",
+        "18031",
+        "01080",
+        "01080",
+        "as019",
+        "01081",
+        "as020",
+        "as020",
+        "10031",
+        "01082",
+        "01082",
+        "09020",
+        "as021",
+        "13019",
+        "01088",
+        "01089",
+        "01090",
+        "as022"
+    ]
+}

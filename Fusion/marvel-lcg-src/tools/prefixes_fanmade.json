@@ -50,7 +50,14 @@
             "libelle": "133. Custom (Angela)",
             "cartes": 16,
             "depuis": "2026-08-31",
-            "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent \u00ab this ROUND \u00bb. an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie \u00ab Angela \u00bb 18011 (d'Agressivite, donc exclu) et le vilain officiel \u00ab Hela \u00bb 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+            "note": "LIVRE le 31/08/2026. Auteur Juri Krasko. Aldrif Odinsdottir, fille d'Odin elevee dans le Heven. 16 card_id : an001a-an010 (set Angela) et an011-an015 (set Angela Nemesis). AUCUNE decklist fournie : aspect AGRESSIVITE choisi par l'utilisateur, parce que TOUT le kit paie quand un sbire tombe (an001a Frenzy, an004 Murderous Glare, an007 Asgard's Assassin, an009 Xiphos) et que an005 Single Out va meme chercher un sbire pour le mettre en jeu. Le moteur a recu PlayerStat.round_kill_counter : son kill_counter existant est vide a chaque PHASE, or ces cartes comptent « this ROUND ». an003 Heven's Fury declaree dans la liste blanche de factory.py (deux capacites Play, meme motif que vp003). Deux homonymes documentes dans le collision_note du deck : l'allie « Angela » 18011 (d'Agressivite, donc exclu) et le vilain officiel « Hela » 21136/21137. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+        },
+        "as": {
+            "pack": "armored_spidey",
+            "libelle": "152. Custom (Armored Spidey)",
+            "cartes": 28,
+            "depuis": "2026-09-03",
+            "note": "Cree le 03/09/2026. Auteur Kajislav. as001a/b identite, as002a/b Spider Armor (amelioration PERMANENTE a DEUX FACES, OPERATIONAL/DESTROYED, modele officiel 04159a/b), as003-as013 signature (16 exemplaires), as014 obligation, as015-as020 six cartes d'aspect PROTECTION, as021-as022 deux cartes BASIC, as023-as026 set nemesis Kingpin. PREMIER PACK DE LA SERIE A FOURNIR SA DECKLIST : l'auteur donne le deck de depart carte par carte, aspect PROTECTION — aucune question d'aspect a poser. Trois compteurs maison ajoutes a l'enum COUNTER : metal (Spider Armor), sense (as015), article (as019). Deux traits ajoutes : OPERATIONAL et DESTROYED. Homonyme : mw022 * Scarlet Spider (pack madame_web) porte le meme nom que as015 et est aussi de classe Protection."
         },
         "av": {
             "pack": "agent_anti_venom",
@@ -82,7 +89,7 @@
             "libelle": "139. Custom (Doctor Doom)",
             "cartes": 17,
             "depuis": "2026-08-29",
-            "note": "Porte le 01/09/2026. CORRECTIF : l'auteur est **Grawlix Ipsum** (credite sur chaque carte), pas jakxin. CORRECTIF : le zip 'Doctor Doom Alt Arts' n'est PAS le meme kit de cartes \u2014 il contient 16 cartes DIFFERENTES (arts alternatifs de cartes OFFICIELLES : Spiritual Meditation, Summoning Spell, Zone of Silence, Sorcerer Supreme, ressources doubles ; plus Castle Doom, Kristoff, Prot-Doombot, Ingenuity). Aucun nom en commun avec 'Hero Revised' : PAS de fusion, a traiter a part. Le pack Revised fait 17 entrees : 2 identites, 10 cartes signature (15 exemplaires), 2 OBLIGATIONS et 4 cartes nemesis. Voir .planning/todos/2026-09-01-portage-doctor-doom.md."
+            "note": "Porte le 01/09/2026. CORRECTIF : l'auteur est **Grawlix Ipsum** (credite sur chaque carte), pas jakxin. CORRECTIF : le zip 'Doctor Doom Alt Arts' n'est PAS le meme kit de cartes — il contient 16 cartes DIFFERENTES (arts alternatifs de cartes OFFICIELLES : Spiritual Meditation, Summoning Spell, Zone of Silence, Sorcerer Supreme, ressources doubles ; plus Castle Doom, Kristoff, Prot-Doombot, Ingenuity). Aucun nom en commun avec 'Hero Revised' : PAS de fusion, a traiter a part. Le pack Revised fait 17 entrees : 2 identites, 10 cartes signature (15 exemplaires), 2 OBLIGATIONS et 4 cartes nemesis. Voir .planning/todos/2026-09-01-portage-doctor-doom.md."
         },
         "dt": {
             "pack": "determination",
@@ -96,14 +103,14 @@
             "libelle": "123. Custom (Dazzler)",
             "cartes": 40,
             "depuis": "2026-08-29",
-            "note": "Pack custom de Lord Havok. Apporte la Setlist (zone attachee a Live Concert, 4 places) et la capacite secondaire \u00ab Showtime! \u00bb, rendue par AbilityType.Special que zero carte du jeu n'utilisait."
+            "note": "Pack custom de Lord Havok. Apporte la Setlist (zone attachee a Live Concert, 4 places) et la capacite secondaire « Showtime! », rendue par AbilityType.Special que zero carte du jeu n'utilisait."
         },
         "gb": {
             "pack": "gorr",
             "libelle": "136. Custom (Gorr the God Butcher)",
             "cartes": 26,
             "depuis": "2026-08-29",
-            "note": "Porte le 02/09/2026. Pack VILAIN de BLUEHG : 34 cartes physiques = 26 card_id (les doublons sont pixel-identiques, verifie par comparaison de la zone de texte). Vilain a 3 stades, complot principal a 3 stades, environnement RECTO-VERSO Godbomb/All-Black Necroverse a compteurs, deux cartes a DOS JOUEUR (Heroes' Labor gb021, Stalking Berserker gb022) melangees aux decks des joueurs. Deux sets d'encartage : `gorr` (deck de rencontre initial) et `necroverse` (modulaire mis de cote, melange a l'etape 3A) ; repartition par le trait NECROVERSE imprime. Le modulaire recommande \u00ab Intergalactic Hazards \u00bb est INTROUVABLE : Legions de Hel par defaut (choix de l'utilisateur, a remplacer quand le vrai set sera retrouve). Voir .planning/todos/2026-09-02-portage-gorr.md."
+            "note": "Porte le 02/09/2026. Pack VILAIN de BLUEHG : 34 cartes physiques = 26 card_id (les doublons sont pixel-identiques, verifie par comparaison de la zone de texte). Vilain a 3 stades, complot principal a 3 stades, environnement RECTO-VERSO Godbomb/All-Black Necroverse a compteurs, deux cartes a DOS JOUEUR (Heroes' Labor gb021, Stalking Berserker gb022) melangees aux decks des joueurs. Deux sets d'encartage : `gorr` (deck de rencontre initial) et `necroverse` (modulaire mis de cote, melange a l'etape 3A) ; repartition par le trait NECROVERSE imprime. Le modulaire recommande « Intergalactic Hazards » est INTROUVABLE : Legions de Hel par defaut (choix de l'utilisateur, a remplacer quand le vrai set sera retrouve). Voir .planning/todos/2026-09-02-portage-gorr.md."
         },
         "gp": {
             "pack": "gwenpool",
@@ -318,7 +325,7 @@
             "libelle": "147. Custom (Viv Vision)",
             "cartes": 12,
             "depuis": "2026-09-02",
-            "note": "LIVRE le 02/09/2026. Auteur Rainy, vague 0 du deuxieme arrivage. Vivian, la fille synthezoide de Vision : vv001a/b identite, vv002-vv010 signature (9 cartes distinctes, 15 exemplaires), vv011 obligation Grounded. AUCUNE carte nemesis dans le zip : `nemesis_set` prend le modulaire OFFICIEL Zzzax (Ironheart, 29036-29040), que l'auteur recommande. Mot-cle MAISON `breakthrough` (vv003), jamais defini par l'auteur : arbitre le 02/09 comme le miroir d'`overkill` pour la menace, puis confirme par la liste communautaire ; fiche docs/reference/mots-cles/breakthrough.md. ECART ASSUME sur vv003 : le declencheur imprime \u00ab Hero Interrupt \u00bb est rendu en \u00ab Hero Action (thwart) \u00bb, le moteur verifiant `patrol` au choix de la cible et non a la resolution (modele 61023). Deux fichiers moteur PARTAGES touches : `stalwart` ajoute a TemporaryGain/GainUntilRoundEnd (1er stalwart temporaire du depot) et vv005 ajoutee a la liste blanche des evenements a deux capacites Play. Sous-dossier \u00ab Vivian alt cards \u00bb ECARTE : variante de REGLES, pas d'art. Voir .planning/todos/2026-09-02-portage-viv-vision.md"
+            "note": "LIVRE le 02/09/2026. Auteur Rainy, vague 0 du deuxieme arrivage. Vivian, la fille synthezoide de Vision : vv001a/b identite, vv002-vv010 signature (9 cartes distinctes, 15 exemplaires), vv011 obligation Grounded. AUCUNE carte nemesis dans le zip : `nemesis_set` prend le modulaire OFFICIEL Zzzax (Ironheart, 29036-29040), que l'auteur recommande. Mot-cle MAISON `breakthrough` (vv003), jamais defini par l'auteur : arbitre le 02/09 comme le miroir d'`overkill` pour la menace, puis confirme par la liste communautaire ; fiche docs/reference/mots-cles/breakthrough.md. ECART ASSUME sur vv003 : le declencheur imprime « Hero Interrupt » est rendu en « Hero Action (thwart) », le moteur verifiant `patrol` au choix de la cible et non a la resolution (modele 61023). Deux fichiers moteur PARTAGES touches : `stalwart` ajoute a TemporaryGain/GainUntilRoundEnd (1er stalwart temporaire du depot) et vv005 ajoutee a la liste blanche des evenements a deux capacites Play. Sous-dossier « Vivian alt cards » ECARTE : variante de REGLES, pas d'art. Voir .planning/todos/2026-09-02-portage-viv-vision.md"
         },
         "wc": {
             "pack": "wiccan",
@@ -339,7 +346,7 @@
             "libelle": "122. Custom (Wolverine X-23)",
             "cartes": 13,
             "depuis": "2026-08-29",
-            "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de \u00ab Wolverine \u00bb (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
+            "note": "Re-skin de X-23 par BlueHG : le heros devient Wolverine et passe X-FORCE -> X-MEN. set_name distinct de « Wolverine » (le heros officiel 35001a) car IsDeckBuildingClass compare les set_name litteralement."
         },
         "ih": {
             "pack": "intergalactic_hazards",
@@ -353,7 +360,7 @@
             "libelle": "146. Custom (Necroverse)",
             "cartes": 8,
             "depuis": "2026-09-02",
-            "note": "Porte le 02/09/2026. SET MODULAIRE de BLUEHG (8 cartes), celui que le Setup de Gorr met de cote et que le complot 3A melange au deck de rencontre. Sbire Shadow Serpent x2, attachements Annihilablade et Dark Apotheosis x2, traitrises Manifest Will et The Ingenuity of Hatred, complot annexe The Planet Cleaver. `set_name` = \u00ab Necroverse \u00bb, le nom que cherchent gb004a et gb006a."
+            "note": "Porte le 02/09/2026. SET MODULAIRE de BLUEHG (8 cartes), celui que le Setup de Gorr met de cote et que le complot 3A melange au deck de rencontre. Sbire Shadow Serpent x2, attachements Annihilablade et Dark Apotheosis x2, traitrises Manifest Will et The Ingenuity of Hatred, complot annexe The Planet Cleaver. `set_name` = « Necroverse », le nom que cherchent gb004a et gb006a."
         }
     }
 }

@@ -1299,6 +1299,19 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "as001a": {
+        bio: "Peter Parker de la Terre-31198 est le Spider-Man d'un monde ou le Fleau a mis sa ville a feu et a sang : le costume de tissu n'y suffisait plus. Avec l'aide de Tony Stark, il s'est fait une armure Spider-Armor, plaques de metal et vibranium par-dessus la toile, capable d'encaisser ce que ses reflexes ne peuvent plus esquiver. L'homme dessous n'a pas change : photographe fauche au Daily Bugle, patron malmene de Parker Industries, il continue de porter seul les consequences d'un pouvoir qu'il n'a jamais demande. L'armure s'abime a chaque coup pare, et il faut rentrer la reparer.",
+        bioEn: "Peter Parker of Earth-31198 is the Spider-Man of a world where the Juggernaut tore his city apart: cloth was no longer enough. With Tony Stark's help he built himself the Spider Armor, metal and vibranium plating over the webbing, able to soak up what his reflexes can no longer dodge. The man underneath has not changed: broke photographer at the Daily Bugle, harried head of Parker Industries, still carrying alone the cost of a power he never asked for. The armour wears down with every blow it stops, and he has to go home and repair it.",
+        civil: "Peter Benjamin Parker (Terre-31198)",
+        civilEn: "Peter Benjamin Parker (Earth-31198)",
+        base: "New York (Parker Industries)",
+        equipes: "Spider-Verse, Vengeurs",
+        equipesEn: "Spider-Verse, Avengers",
+        ennemis: "le Caid, le Fleau, le Bouffon Vert",
+        ennemisEn: "Kingpin, the Juggernaut, the Green Goblin",
+        apparition: "Amazing Spider-Man #656 (2011)",
+    },
+
     "im001a": {
         bio: "Tony Stark est un industriel milliardaire dont l'usine d'armement a fait la fortune, jusqu'a ce qu'un eclat d'obus se loge pres de son coeur et qu'un electro-aimant de fortune l'empeche de le tuer. De cette prison de metal il a fait une armure, puis un metier. La Model 42 est la plus intime de ses armures : une nuee de composants stockes sous sa peau, qu'il appelle a lui par la pensee. Genie, ingenieur, alcoolique en remission, il repare le monde avec la meme obstination qu'il met a se reparer lui-meme.",
         bioEn: "Tony Stark is a billionaire industrialist who made his fortune building weapons, until a shrapnel fragment lodged near his heart and a makeshift electromagnet was all that kept it from killing him. He turned that metal prison into a suit of armour, then into a calling. The Model 42 is the most intimate of his suits: a swarm of components stored beneath his skin, summoned by thought alone. Genius, engineer, recovering alcoholic, he repairs the world with the same stubbornness he brings to repairing himself.",

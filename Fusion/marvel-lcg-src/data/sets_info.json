@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "c22118653c057135b0ce9284c008d5dad0b32c7beceef06fa78eddbac743ad2c",
+    "checksum": "fda355e9ae82f6d52127c0b4895aa2b4211b9ee134ee67933e54c8f291303286",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1327,5 +1327,14 @@
         ],
         "encounters": [],
         "max_id": "im014"
+    },
+    "152. Custom (Armored Spidey)": {
+        "name": "armored_spidey",
+        "scenarios": [],
+        "heroes": [
+            "armored_spidey"
+        ],
+        "encounters": [],
+        "max_id": "as026"
     }
 }

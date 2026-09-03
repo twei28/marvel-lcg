@@ -668,3 +668,35 @@ l'abilité.
   False pour un sbire (`card_encounter.py:35`) et `01190` Shadow of the Past ne
   le met jamais en jeu. C'est un écart de DONNÉES officielles, pas du pack :
   signalé ici, non corrigé.
+
+---
+
+## ⚠ CORRECTIF DU 03/09/2026 (soir) — le deck ne montait AUCUNE partie
+
+Trouvé pendant le portage du pack suivant (`armored_spidey`), en relançant
+`verifier_tous_les_decks.py` sur les 115 decks de départ :
+
+```
+ECHEC lady_sif   setup : AssertionError: face.paper.card_id='ls005'
+```
+
+`ls005` **To Arms!** porte DEUX capacités `Play` — une `AlterEgoAction`
+(« Change to hero form. You may spend a resource to ready your hero. ») et une
+`HeroAction` (« Search your deck and discard pile for a WEAPON upgrade »).
+`factory.py` pose un `assert len(face.ability.Find(func_name="Play")) == 1`
+sur tout événement qui n'est pas déclaré dans sa liste blanche. **Le deck
+`lady_sif` était donc injouable depuis son portage**, et ce fichier de
+gabarits affirmait le contraire.
+
+Corrigé : `"ls005"` ajouté à la liste blanche de
+`src/game/card/factory.py`, même motif que `61019` Strategy Session et
+`kb005` Quick Draw. `verifier_tous_les_decks` repasse ensuite au vert sur
+lady_sif.
+
+**Ce que ça apprend, et c'est le vrai sujet** : l'assert tombe **au setup**,
+donc `test_cards`, `test_capacites` et `substituer_pack` ne le voient PAS —
+le premier ne monte pas de partie, les deux autres ne montent que les
+positions écrites à la main, qui n'exercent pas la construction du deck
+complet. **Seul `verifier_tous_les_decks` l'attrape**, et il n'avait pas été
+relancé après ce pack. Il fait maintenant partie de la gate finale de
+`PROCESSUS-HEROS.md`.

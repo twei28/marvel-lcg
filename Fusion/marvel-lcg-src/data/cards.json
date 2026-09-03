@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "9d370f85c3dc82685ef86071c4fed833a6f2dc3a590c406755971d5ab0d44d5c",
+    "checksum": "c39710d82dde94d6195009a13f242f728fa445ad4e1ad3a9951d542703138028",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -86635,6 +86635,497 @@
             "set_name": "Iron Man (Model 42)",
             "text": "<b><i>Give to the Tony Stark player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Tony Stark and Tony's Workshop \u2192 remove Technical Issues from the game.\n\u2022 Remove 2 reactor counters from your identity. If no reactor counters were removed this way, this card gains surge. Discard this obligation.",
             "custom": "Rainy"
+        }
+    ],
+    "armored_spidey": [
+        {
+            "card_id": "as001a",
+            "type": "Hero",
+            "name": "* Armored Spidey",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<i>Armor Protection</i> \u2014 <b>Interrupt</b>: When you would take any amount of damage from an attack, remove a metal counter from Spider Armor \u2192 prevent up to 2 of that damage.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as001b",
+            "type": "AlterEgo",
+            "name": "* Peter Parker",
+            "subtitle": "Earth-31198",
+            "desc": {
+                "HP": "10",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "BUSINESSMAN",
+                "VARIANT"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Setup</b>: Put your Spider Armor upgrade into play, [[OPERATIONAL]] side faceup. Place 3 metal counters on it.\n<i>Egomaniac</i> \u2014 <b>Response</b>: After a player plays a card under your control, draw 1 card <i>(limit once per round per player)</i>.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as002a",
+            "type": "Upgrade",
+            "name": "Spider Armor",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "OPERATIONAL"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Permanent.\n<b>Forced Response</b>: After you flip to this side, place 3 metal counters here.\n<b>Forced Response</b>: After the last metal counter is removed from here, flip this card.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as002b",
+            "type": "Upgrade",
+            "name": "Spider Armor",
+            "subtitle": "",
+            "desc": {
+                "Permanent": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "DESTROYED"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Permanent.\nArmored Spidey gets -1 ATK and -1 DEF.\n<b>Alter-Ego Action</b>: Spend 3 resources of any type \u2192 flip this card.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as003",
+            "type": "Ally",
+            "name": "* Spider-Bot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "4",
+                "HP": "3",
+                "THW": "1*",
+                "ATK": "3**",
+                "RES": "Y",
+                "Toughness": "1",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ROBOT"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Toughness.\n<b>Action</b>: Discard Spider-Bot \u2192 flip your Spider Armor upgrade to its [[OPERATIONAL]] side.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as004",
+            "type": "Event",
+            "name": "Burst It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Hero Action</b>: Remove each metal counter from Spider Armor \u2192 deal 1 damage to each enemy in play for each metal counter removed this way.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as005",
+            "type": "Event",
+            "name": "Embrace It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Response</b>: After you remove a metal counter from Spider Armor, ready your identity.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as006",
+            "type": "Event",
+            "name": "Kick It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. You may remove 1 metal counter from Spider Armor to stun that enemy.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as007",
+            "type": "Event",
+            "name": "Sell It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Alter-Ego Action</b>: Remove any number of metal counters from Spider Armor. For each metal counter removed this way, draw 2 cards.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as008",
+            "type": "Event",
+            "name": "Sense It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Hero Interrupt</b>: When a treachery card is revealed from the encounter deck, cancel all of its effects and discard it. You may remove a metal counter from Spider Armor \u2192 deal 1 damage to the villain or remove 1 threat from the main scheme for each boost icon discarded this way.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as009",
+            "type": "Event",
+            "name": "Swing It!",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "THWART"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. You may remove 1 metal counter from Spider Armor to confuse an enemy.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as010",
+            "type": "Support",
+            "name": "* Gwen Stacy",
+            "subtitle": "Earth-31198",
+            "desc": {
+                "Cost": "3",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PERSONA"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Response</b>: After a card with the printed cost of 2 or more enters play under your control, ready Gwen Stacy. <i>(Limit once per round.)</i>\n<b>Resource</b>: Exhaust Gwen Stacy \u2192 generate a [wild] resource.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as011",
+            "type": "Support",
+            "name": "* Parker Industries",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Parker Industries \u2192 look at the top 3 cards of your deck. Add 1 to your hand and discard the others.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as012",
+            "type": "Upgrade",
+            "name": "Night Vision",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM",
+                "TECH"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "While Spider Armor has the [[OPERATIONAL]] trait, Armored Spidey gets +1 THW and he ignores guard and patrol keyword.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as013",
+            "type": "Upgrade",
+            "name": "Vibranium Enhancement",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "While Spider Armor has the [[OPERATIONAL]] trait, Armored Spidey gains retaliate 1 and steady.\n<b>Response</b>: After you play this card, if Spider Armor has the [[OPERATIONAL]] trait, place 1 metal counter on it (to a maximum of 3).",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as014",
+            "type": "Obligation",
+            "name": "Corporate Expansion",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Peter Parker"
+            },
+            "traits": [],
+            "set_name": "Armored Spidey",
+            "text": "<b><i>Give to the Peter Parker player.</i></b>\nYou cannot play event cards while in hero form.\n<b>Alter-Ego Response</b>: After a card with the printed cost of 2 or more enters play under your control, discard this obligation.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as015",
+            "type": "Ally",
+            "name": "* Scarlet Spider",
+            "subtitle": "Peter Parker (Earth-98311)",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "THW": "1*",
+                "ATK": "2*",
+                "RES": "Y",
+                "Class": "Protection"
+            },
+            "traits": [
+                "VARIANT",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Scarlet Spider enters play with 3 sense counters on him.\n<b>Interrupt</b>: When the villain activates against you, remove 1 sense counter from Scarlet Spider \u2192 reduce the amount of boost icons ([boost]) on each boost card by 1 for that activation.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as016",
+            "type": "Ally",
+            "name": "* Six-Armed Spider-Man",
+            "subtitle": "Peter Parker (Earth-39811)",
+            "desc": {
+                "Cost": "3",
+                "HP": "4",
+                "THW": "1*",
+                "ATK": "2**",
+                "RES": "R",
+                "Class": "Protection"
+            },
+            "traits": [
+                "VARIANT",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Response</b>: After Six-Armed Spider-Man defends against an attack, discard the top 6 cards of your deck. Deal 1 damage to the attacking enemy for each different card type discarded this way.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as017",
+            "type": "Event",
+            "name": "Defensive Briefing",
+            "subtitle": "",
+            "desc": {
+                "Cost": "X",
+                "RES": "B",
+                "Class": "Protection"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Hero Action</b>: Choose up to X heroes. Each chosen hero gets +3 DEF until the end of the round.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as018",
+            "type": "Event",
+            "name": "Just a Ricochet",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Protection"
+            },
+            "traits": [
+                "DEFENSE"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Play only if you control an [[ARMOR]] upgrade.\n<b>Hero Response</b> <i>(attack)</i>: After your hero makes a basic defense and takes no damage, deal damage to an enemy equal to your hero's DEF.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as019",
+            "type": "Support",
+            "name": "* The Daily Bugle",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Protection"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "<b>Response</b>: After a character or a side scheme is defeated, exhaust The Daily Bugle \u2192 place 1 article counter here.\n<b>Alter-Ego Action</b>: Remove each article counter from here \u2192 heal 1 damage from a character you control for each article counter removed this way.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as020",
+            "type": "Upgrade",
+            "name": "Double Defense",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "MaxPerUnit": "1",
+                "Class": "Protection"
+            },
+            "traits": [
+                "PREPARATION",
+                "TACTIC"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Max 1 per player.\n<b>Hero Response</b>: When a character other than your identity would take any amount of damage from an attack, discard Double Defense \u2192 reduce that amount by your hero's DEF.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as021",
+            "type": "Ally",
+            "name": "* Octo Spidey",
+            "subtitle": "Peter Parker (Earth-11983)",
+            "desc": {
+                "Cost": "4",
+                "HP": "3",
+                "THW": "0*",
+                "ATK": "1*",
+                "RES": "G",
+                "Class": "Basic"
+            },
+            "traits": [
+                "VARIANT",
+                "WEB-WARRIOR"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "[star] <b>Interrupt</b>: When Octo Spidey uses a basic power, discard the top 4 cards of your deck. Octo Spidey gets +1 to that power for this use for each different resource type discarded this way.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as022",
+            "type": "Support",
+            "name": "* Spider-Verse",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Basic"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Armored Spidey",
+            "text": "Play only if your identity has the [[WEB-WARRIOR]] trait or \"Spider\" in its title.\nIncrease your ally limit by 1.\n<b>Action</b>: Exhaust Spider-Verse \u2192 generate a [energy] resource for an ally with the [[WEB-WARRIOR]] trait or with \"Spider\" in its title for any player.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as023",
+            "type": "Minion",
+            "name": "* Kingpin",
+            "subtitle": "",
+            "desc": {
+                "HP": "6",
+                "SCH": "1*",
+                "ATK": "2",
+                "Boost": "2",
+                "Nemesis": "Peter Parker"
+            },
+            "traits": [
+                "CRIMINAL",
+                "ELITE"
+            ],
+            "set_name": "Armored Spidey Nemesis",
+            "text": "[star] <b>Forced Response</b>: After Kingpin schemes, discard the top card of the encounter deck, place 1 threat on \"The Kingpin of Crime\" side-scheme for each boost icon discarded this way.\n<i>(Armored Spidey's nemesis minion.)</i>",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as024",
+            "type": "SideScheme",
+            "name": "\u201cThe Kingpin of Crime\u201d",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2",
+                "Hinder": "1",
+                "Boost": "2"
+            },
+            "traits": [],
+            "set_name": "Armored Spidey Nemesis",
+            "text": "<i>The title known as \u201cThe Kingpin of Crime\u201d was feared throughout the East Coast. Fisk's self-proclaimed title became legit after managing to form almost all of gangs and organizations under his command.</i>\nHinder 1.\nTreat the printed text box of each non-permanent support as if it were blank.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as025",
+            "type": "Treachery",
+            "name": "Underworld Impact",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Armored Spidey Nemesis",
+            "text": "<b>When Revealed</b>: Choose to either take 1 damage or place 1 threat on the main scheme for each support you control. If you do not control any supports, this card gains surge.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each support you control.",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "as026",
+            "type": "Treachery",
+            "name": "Behind the Scenes",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "set_name": "Armored Spidey Nemesis",
+            "text": "<b>When Revealed</b>: Discard the top card of your deck. Then, discard each card from your hand that is of the same card type as that discarded card. If no card was discarded from your hand this way, this card gains surge.",
+            "custom": "Kajislav"
         }
     ]
 }
