@@ -15318,6 +15318,396 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["ls017"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « iron_man_model_42 » : im001a-im014 (custom, auteur « Rainy », 151)
+    #
+    # ⚠ TOUT TOURNE AUTOUR DU COMPTEUR MAISON `reactor`, pose sur la face
+    # d'IDENTITE. En forme heros c'est `im001a` qui le porte, en forme civile
+    # `im001b` : les cas verifient donc l'un ou l'autre selon la forme montee.
+    # `Puzzle.Counter('<face>', 'reactor', n)` le precharge.
+    #
+    # ⚠ La partie demarre en ALTER-EGO. `im001b` a un `Setup` : il tourne a la
+    # creation de la partie, avant toute mise en place du cas.
+    #
+    # Scenario rhino : 01094 Rhino (PV 14, ATQ 2, MNG 1), 01097b la manigance
+    # principale, 01102 * Sandman (PV 4, ATQ 3, Toughness), 01105 « I'm Tough »
+    # (traitrise qui donne une carte Tenace a Rhino).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "im001a Reactor Cores — 01088 Energy vaut DEUX compteurs a elle seule",
+        "pourquoi": ("le coeur du pack, et son piege : « Spend X printed [energy] "
+                     "RESOURCES » compte les ICONES, pas les cartes. 01088 Energy porte "
+                     "RES='YY', elle vaut donc 2 compteurs. Compter `len(cartes)` "
+                     "aurait sous-paye le joueur en silence. `GetPrintedResourcesCount` "
+                     "(modele 01174 Electromagnetic Backlash) compte les icones ; le "
+                     "selecteur `has_printed_res='Y'` (modele 29038 Haywire) choisit "
+                     "les cartes"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('im001a')"],
+        "cibles": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["im001a", "reactor", 2]]},
+    },
+    {
+        "nom": "im001b Inventor — le Setup va chercher une amelioration TECH",
+        "pourquoi": ("`WhenCardSetup('This', op)` + `Search.PlayerCard("
+                     "include_player_deck=True, trait='TECH', card_type=Upgrade)` "
+                     "(modele an001b / ok001b). ⚠ « search your DECK » seulement : "
+                     "pas de `include_discard_pile`, contrairement a ls005 du pack "
+                     "precedent. Le Setup tourne a la creation de la partie ; `cibles` "
+                     "force im010 Rocket Boots, qui est TECH"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "declencher": [],
+        "cibles": ["im010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["im010"]},
+    },
+    {
+        "nom": "im001b Inventor — l'Action rend jouable une amelioration a 1 sans ressource",
+        "pourquoi": ("`Worlds.UpdateNextCardPlayCost(joueur, -1, effect, finder=..., "
+                     "in_this='Phase')` (modele 16024 Deft Focus via aa009). Le cas est "
+                     "SUJET par construction : la main ne contient QUE im010 (cout 1), "
+                     "donc aucune ressource pour la payer. Si elle entre en jeu, c'est "
+                     "que son cout est tombe a 0. ⚠ La carte imprime « this ROUND » et "
+                     "le moteur n'offre que 'Phase' ou 'Turn' : ecart assume, documente "
+                     "dans le module"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "main_exclusive": ["im010"],
+        "declencher": ["Puzzle.Action('im001b')"],
+        "jouer": ["im010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im002 Repulsor Barrage — le compteur depense double les degats",
+        "pourquoi": ("trois etages : 3 degats de base, +3 si un compteur part, "
+                     "repartition libre si AERIAL. Ici le compteur part (le pilote "
+                     "prend la premiere branche du `MayChooseOneAbility`), Iron Man "
+                     "n'est PAS aerien, donc 6 degats sur la seule cible et le compteur "
+                     "tombe a 1"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.Counter('im001a', 'reactor', 2)"],
+        "main_exclusive": ["im002", "01088"],
+        "declencher": [],
+        "jouer": ["im002"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 6]],
+                    "compteurs": [["im001a", "reactor", 1]]},
+    },
+    {
+        "nom": "im003 Tactical Overview — le compteur depense double les menaces retirees",
+        "pourquoi": ("la jumelle exacte de im002, cote menee : 3 + 3 = 6 menaces "
+                     "retirees, et le compteur tombe a 1. ⚠ La principale est chargee "
+                     "a 6 et NON a 8 : son seuil est de 7 par joueur (01097b, "
+                     "TargetThreat 7*), et la poser a 8 TERMINAIT la partie avant que "
+                     "le cas ne joue — la carte n'etait jamais jouee et le cas "
+                     "echouait sans rapport avec la carte"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.Counter('im001a', 'reactor', 2)",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["im003", "01089"],
+        "declencher": [],
+        "jouer": ["im003"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]],
+                    "compteurs": [["im001a", "reactor", 1]]},
+    },
+    {
+        "nom": "im004 Take Flight — sans AERIAL : redresse et donne le trait, SANS compteur",
+        "pourquoi": ("⚠ LE PIEGE DE LA CARTE EST L'ORDRE DE LECTURE. « If Iron Man "
+                     "ALREADY has AERIAL » se lit AVANT que la carte ne donne le "
+                     "trait, sinon la condition est toujours vraie. Ce cas est le "
+                     "CONTRE-CAS : Iron Man n'est pas aerien au depart, il gagne donc "
+                     "le trait mais AUCUN compteur"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.Exhaust('im001a')"],
+        "main_exclusive": ["im004", "01088"],
+        "declencher": [],
+        "jouer": ["im004"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["im001a"], "traits": ["AERIAL"],
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im004 Take Flight — DEJA aerien grace a im010 : un compteur tombe",
+        "pourquoi": ("le cas nominal de la seconde phrase. im010 Rocket Boots donne "
+                     "AERIAL en permanence : la condition « already » est donc vraie "
+                     "et la carte pose 1 compteur. C'est la boucle du pack — a 1 "
+                     "[energy], Take Flight devient une source de reacteur"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im010')"],
+        "main_exclusive": ["im004", "01088"],
+        "declencher": [],
+        "jouer": ["im004"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["im001a", "reactor", 1]]},
+    },
+    {
+        "nom": "im005 Stark Tower — la ressource wild paie a elle seule une amelioration a 1",
+        "pourquoi": ("`CanGenerateResources(AbilityType.Resource, Resources('G'))"
+                     ".SetCostFunc(CostFunc.Exhaust('This'))` (modele an007 / ma005), "
+                     "sur le montage de preuve de vv010 : la main est reduite a la "
+                     "seule carte a payer, le soutien est donc l'UNIQUE source. ⚠ Le "
+                     "type est `Resource` NU, pas `Hero Resource` : le cas est monte "
+                     "en forme CIVILE pour le prouver"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.PutIntoPlay('im005')"],
+        "main_exclusive": ["im010"],
+        "declencher": [],
+        "jouer": ["im010"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["im005"], "en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im006 Tony's Workshop — soigne 1 degat ET pose 1 compteur, en forme civile",
+        "pourquoi": ("les deux effets d'un seul cout d'inclinaison (modele aa003 "
+                     "* Ebony). 3 degats poses, 1 soigne, il en reste 2. ⚠ Le compteur "
+                     "va sur l'IDENTITE, donc sur im001b en forme civile : c'est la "
+                     "seule source de reacteur accessible hors forme heros"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.PutIntoPlay('im006')",
+                          "Puzzle.Damage('im001b', 3)"],
+        "declencher": ["Puzzle.Action('im006')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["im006"],
+                    "compteurs": [["im001b", "reactor", 1]]},
+    },
+    {
+        "nom": "im007 Energy Shield — +1 DEF a la face heros",
+        "pourquoi": ("« IRON MAN gets +1 DEF » cite un nom PROPRE, celui de la seule "
+                     "face heros (l'alter-ego s'appelle Tony Stark) : "
+                     "`GiveKeywordToAttached(Hero, defense=1)` et non `'You'`, qui "
+                     "donnerait le bonus a une face civile sans DEF. DEF 2 -> 3"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im007')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}, "en_jeu": ["im007"]},
+    },
+    {
+        "nom": "im007 Energy Shield — un compteur previent les 2 degats de Rhino",
+        "pourquoi": ("`WhenUnitWouldTakeDamage` + `message.PreventDamage(2, effect)` "
+                     "(modele si016 * Tony Stark A.I., mot-cle maison « Armored 2 », et "
+                     "01098 Armored Rhino Suit). Rhino frappe a 2 SANS defense "
+                     "declaree : sans la carte, 2 degats passent ; avec elle, zero, et "
+                     "le compteur part. ⚠ `Puzzle.Attack` est appele sans second "
+                     "argument, qui ferait DEFENDRE le heros et masquerait la "
+                     "prevention derriere la DEF. ⚠ ET LE HEROS EST INCLINE A LA MISE "
+                     "EN PLACE : au premier passage il se declarait quand meme "
+                     "defenseur, sa DEF 2+1=3 absorbait les 2 degats de Rhino, et la "
+                     "prevention n'avait plus rien a prevenir — le cas passait au vert "
+                     "pour la mauvaise raison, compteur intact"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im007')",
+                          "Puzzle.Counter('im001a', 'reactor', 1)",
+                          "Puzzle.Exhaust('im001a')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im008 Mark IVa Repulsors — l'attaque de base passe de 2 a 4 degats",
+        "pourquoi": ("`WhenUnitWouldAttack(HeroInterrupt, 'You', op, "
+                     "is_basic_attack=True)` + `DealAdditionalDamage(2)` + "
+                     "`GainRanged` (modele 41019 Directed Force). ⚠ La fenetre est "
+                     "`WhenUnitWouldAttack` et non `WhenUnitUseBasicPower` : c'est la "
+                     "seule qui porte ces deux methodes. ATQ 2 + 2 = 4, compteur a 0"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im008')",
+                          "Puzzle.Counter('im001a', 'reactor', 1)"],
+        "declencher": ["Puzzle.Attack('im001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 4]],
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im009 Repulsor Core One — la premiere Action stocke un compteur",
+        "pourquoi": ("`WhenInYourPlayTurn(HeroAction)` + `CostFunc.Exhaust('This')` "
+                     "(modele ho011). C'est la seule source de compteur qui ne coute "
+                     "aucune carte. `index=0` designe la premiere des deux actions, "
+                     "toutes deux `HeroAction` — le `type` ne les distingue pas"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im009')"],
+        "declencher": ["Puzzle.Action('im009', None, 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["im001a", "reactor", 1]],
+                    "exhausted": ["im009"]},
+    },
+    {
+        "nom": "im009 Repulsor Core One — la seconde Action echange un compteur contre un redressement",
+        "pourquoi": ("le cout a DEUX parties : retirer 1 compteur ET incliner la carte "
+                     "(piege wd005). Le retrait passe par `CostFunc.Custom`, dont le "
+                     "False bloque le paiement : sans compteur, l'action n'est meme "
+                     "pas proposee. `index=1` designe la seconde action"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im009')",
+                          "Puzzle.Counter('im001a', 'reactor', 1)",
+                          "Puzzle.Exhaust('im001a')"],
+        "declencher": ["Puzzle.Action('im009', None, 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["im001a"], "exhausted": ["im009"],
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im010 Rocket Boots — le trait AERIAL est permanent",
+        "pourquoi": ("`GiveKeywordToAttached(Hero, trait='AERIAL')` (modele vv009 / "
+                     "ho011). C'est la carte qui debloque le pack : elle rend im002 et "
+                     "im003 repartissables et fait de im004 une source de compteur. "
+                     "« IRON MAN gains » : nom propre, face heros seule"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im010')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im010 Rocket Boots — +1 au pouvoir de base employe, ici la menee",
+        "pourquoi": ("`WhenUnitUseBasicPower(HeroInterrupt, 'You', op)` + "
+                     "`message.GainValue(1, effect)` (modele 32177 Swagger). "
+                     "`GainValue` redirige tout seul vers le bon pouvoir "
+                     "(sender_unit.py:21) : c'est ce qui rend « +1 to THAT power » "
+                     "sans avoir a savoir lequel. CTR 2 + 1 = 3, principale 5 -> 2"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im010')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('im001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "exhausted": ["im010"]},
+    },
+    {
+        "nom": "im011 Save The Day — la traitrise est annulee, la carte part, le compteur aussi",
+        "pourquoi": ("`WhenPlayerRevealCard(HeroInterrupt, 'AnyPlayer', Treachery, "
+                     "'All', op)` + `CancelAllEffectsAndDiscardIt` (modele dz013 / "
+                     "09007). Le cout a DEUX parties : defausser la carte ET retirer un "
+                     "compteur. 01105 « I'm Tough » donne normalement une carte Tenace "
+                     "a Rhino : annulee, il n'en recoit aucune"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im011')",
+                          "Puzzle.Counter('im001a', 'reactor', 1)"],
+        "declencher": ["Puzzle.Reveal('01105')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Tough"]],
+                    "hors_jeu": ["im011"],
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im012 Hulkbuster Armor — -1 carte en main, +1 ATQ et +1 DEF",
+        "pourquoi": ("la carte ALTERNATIVE du pack (meme numero imprime 14/15 que "
+                     "im011). Les trois bonus continus d'un coup, dont un MALUS reel : "
+                     "la main passe de 5 a 4, ce qui est cher pour un heros qui "
+                     "convertit sa main en compteurs"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im012')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": -1, "attack": 1, "defense": 1},
+                    "en_jeu": ["im012"]},
+    },
+    {
+        "nom": "im012 Hulkbuster Armor — elle previent TOUS les degats une fois, puis quitte la partie",
+        "pourquoi": ("`PreventDamage('All', effect)` + `Faces.RemoveAllFromGame` "
+                     "(modele si016 pour la prevention, 32177 Swagger pour le retrait). "
+                     "⚠ `Interrupt` NU, pas `Hero Interrupt` : la prevention marche "
+                     "dans les DEUX formes, contrairement a im007. Et « from the GAME », "
+                     "pas une defausse : la carte ne revient jamais. ⚠ Le heros est "
+                     "incline a la mise en place, sans quoi sa DEF 2+1=3 absorbe les "
+                     "2 degats de Rhino et la prevention ne se declenche jamais"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im012')",
+                          "Puzzle.Exhaust('im001a')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "hors_jeu": ["im012"]},
+    },
+    {
+        "nom": "im013 Tactical Interface — la menee de base retire 2 menaces de plus",
+        "pourquoi": ("le miroir de im008, cote menee : meme cout d'un compteur, meme "
+                     "fenetre `WhenUnitUseBasicPower`, filtree sur `message.power == "
+                     "'THW'`. CTR 2 + 2 = 4, principale 5 -> 1. ⚠ L'exemption de "
+                     "Patrouille passe par `UnitIgnoreKeywordIcons` enregistre en "
+                     "TEMPORAIRE : `SetIgnoreKeyword` sur cette abilite ne servirait a "
+                     "rien, la menee etant faite par un AUTRE effet que le notre"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.ChangeToFace('im001b', 'im001a')",
+                          "Puzzle.PutIntoPlay('im013')",
+                          "Puzzle.Counter('im001a', 'reactor', 1)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('im001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]],
+                    "compteurs": [["im001a", "reactor", 0]]},
+    },
+    {
+        "nom": "im014 Technical Issues — avec l'atelier en jeu, l'obligation quitte la partie",
+        "pourquoi": ("modele an010 Banished from Asgard, jumeau de structure. La "
+                     "premiere branche exige DEUX cartes inclinables : Tony Stark ET "
+                     "Tony's Workshop. Avec les deux prets, le pilote prend cette "
+                     "branche et l'obligation est RETIREE DE LA PARTIE, pas defaussee"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": ["Puzzle.PutIntoPlay('im006')"],
+        "declencher": ["Puzzle.Reveal('im014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["im014"], "exhausted": ["im001b", "im006"]},
+    },
+    {
+        "nom": "im014 Technical Issues — sans atelier ni compteur, la branche de repli defausse",
+        "pourquoi": ("le CONTRE-CAS : sans Tony's Workshop en jeu, la premiere branche "
+                     "n'est pas prenable (sa `condition` la refuse) et c'est la seconde "
+                     "qui tire. Le reacteur etant a zero, AUCUN compteur n'est retire : "
+                     "la carte gagne Dechainement et part a la defausse. « If NO reactor "
+                     "counters were removed THIS WAY » se lit sur le nombre REELLEMENT "
+                     "retire"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('im014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["im014"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --

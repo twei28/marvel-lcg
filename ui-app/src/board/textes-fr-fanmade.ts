@@ -1782,4 +1782,35 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ls016': "Attachez-la à votre identité.\n<b>Action forcée</b> : inclinez cette carte → piochez 1 carte, puis jouez cette carte (en payant son coût). Si vous ne le pouvez pas, placez 2 menaces sur la manigance principale.\n<b>Action d'alter ego</b> : inclinez cette carte et dépensez une ressource [mental] → défaussez cette carte.",
   // lady_sif_nemesis — Love Concoction (Attachment)
   'ls017': "Attachez-la à votre identité.\n<b>Action forcée</b> : inclinez cette carte et donnez au méchant une carte de boost face cachée → redressez votre identité.\n<b>Action d'alter ego</b> : inclinez cette carte et donnez au méchant une carte de boost face cachée → défaussez cette carte.\n<hr />[star] <b>Boost</b> : révélez cette carte.",
+
+  // iron_man_model_42 — Iron Man (Hero) [set 151, Rainy]
+  'im001a': "<i>Reactor Cores</i> — <b>Action</b> : dépensez X ressources [energy] IMPRIMÉES → placez X pions réacteur ici.",
+  // iron_man_model_42 — Tony Stark (AlterEgo)
+  'im001b': "<i>Inventor</i> — <b>Mise en place</b> : défaussez 1 carte de votre main → cherchez une amélioration [[TECH]] dans votre deck et ajoutez-la à votre main.\n<b>Action</b> : réduisez de 1 le coût de la prochaine amélioration jouée ce round. <i>(Limite d'une fois par round.)</i>",
+  // iron_man_model_42 — Repulsor Barrage (Event, x2)
+  'im002': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Cette attaque gagne Portée. Vous pouvez retirer 1 pion réacteur d'Iron Man pour infliger 3 dégâts supplémentaires à CET ennemi. Si Iron Man a le trait [[AERIAL]], vous pouvez répartir les dégâts entre les ennemis comme vous voulez.",
+  // iron_man_model_42 — Tactical Overview (Event, x2)
+  'im003': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Vous pouvez retirer 1 pion réacteur d'Iron Man pour retirer 3 menaces supplémentaires de CETTE manigance. Si Iron Man a le trait [[AERIAL]], vous pouvez répartir les menaces retirées entre les manigances comme vous voulez.",
+  // iron_man_model_42 — Take Flight (Event, x3)
+  'im004': "<b>Action de héros</b> : redressez Iron Man. Iron Man gagne le trait [[AERIAL]] jusqu'à la fin du round. Si Iron Man a DÉJÀ [[AERIAL]], placez 1 pion réacteur sur Iron Man.",
+  // iron_man_model_42 — Stark Tower (Support)
+  'im005': "<b>Ressource</b> : inclinez Stark Tower → générez une ressource [wild] pour n'importe quel joueur.",
+  // iron_man_model_42 — Tony's Workshop (Support)
+  'im006': "<b>Action d'alter ego</b> : inclinez Tony's Workshop → soignez 1 dégât de Tony Stark et placez 1 pion réacteur sur lui.",
+  // iron_man_model_42 — Energy Shield (Upgrade)
+  'im007': "Iron Man gagne +1 DEF.\n<b>Interruption de héros</b> : quand Iron Man devrait subir des dégâts, quels qu'ils soient, retirez-lui 1 pion réacteur → prévenez jusqu'à 2 de ces dégâts.",
+  // iron_man_model_42 — Mark IVa Repulsors (Upgrade)
+  'im008': "<b>Interruption de héros</b> : quand Iron Man effectue une attaque de BASE, retirez-lui 1 pion réacteur → cette attaque inflige 2 dégâts supplémentaires et gagne Portée.",
+  // iron_man_model_42 — Repulsor Core One (Upgrade)
+  'im009': "<b>Action de héros</b> : inclinez Repulsor Core One → placez 1 pion réacteur sur Iron Man.\n<b>Action de héros</b> : retirez 1 pion réacteur d'Iron Man et inclinez Repulsor Core One → redressez Iron Man.",
+  // iron_man_model_42 — Rocket Boots (Upgrade)
+  'im010': "Iron Man gagne le trait [[AERIAL]].\n<b>Interruption de héros</b> : quand vous utilisez l'un des pouvoirs de base d'Iron Man, inclinez Rocket Boots → Iron Man gagne +1 à CE pouvoir pour cette utilisation.",
+  // iron_man_model_42 — Save The Day (Upgrade)
+  'im011': "<b>Interruption de héros</b> : quand une traîtrise est révélée, défaussez Save The Day et retirez 1 pion réacteur d'Iron Man → annulez tous les effets de cette traîtrise et défaussez-la.",
+  // iron_man_model_42 — Hulkbuster Armor (Upgrade, variante de im011)
+  'im012': "Iron Man gagne -1 carte en main, +1 ATQ et +1 DEF, et ses attaques de BASE gagnent Déferlement.\n<b>Interruption</b> : quand Iron Man devrait subir des dégâts, quels qu'ils soient, retirez cette carte de la partie → prévenez TOUS ces dégâts.",
+  // iron_man_model_42 — Tactical Interface (Upgrade)
+  'im013': "<b>Interruption de héros</b> : quand Iron Man effectue une menée de BASE, retirez-lui 1 pion réacteur → cette menée retire 2 menaces supplémentaires et ignore le mot-clé Patrouille.",
+  // iron_man_model_42 — Technical Issues (Obligation)
+  'im014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Tony Stark ET Tony's Workshop → retirez Technical Issues de la partie.\n• Retirez 2 pions réacteur de votre identité. Si AUCUN pion réacteur n'a été retiré de cette façon, cette carte gagne Déchaînement. Défaussez cette obligation.",
 }

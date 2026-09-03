@@ -667,6 +667,32 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                       for oid in list(entree)[:1] if str(oid) not in interdits]
         return len(candidates) >= besoin
 
+    def compteurs_du_joueur(ctx):
+        """Compteurs portes par l'identite et les allies du joueur.
+
+        CORRECTIF (03/09/2026, pack iron_man_model_42). Les deux empreintes du
+        pilote — celle du garde-fou anti-repetition (`empreinte`) et celle du
+        desistement (`progres`) — ignoraient les compteurs. Depenser un
+        compteur pour PREVENIR des degats ne bougeait donc AUCUN de leurs
+        termes : les PV ne baissent pas, justement parce que la prevention a
+        marche, et la capacite passait pour n'avoir rien fait.
+
+        Constate sur `im007` Energy Shield (« remove 1 reactor counter ->
+        prevent up to 2 of that damage »). Le journal montre le compteur retire
+        ET les degats prevenus : la partie AVAIT progresse.
+
+        ⚠ Le helper est PARTAGE a dessein. Les deux corrections du 03/09 ont la
+        meme cause : deux signatures du meme fichier qui ne regardaient pas le
+        meme monde, et qui divergent des qu'on n'en corrige qu'une. La
+        premiere passe n'avait ajoute les compteurs qu'a `progres`, et le
+        blocage s'est simplement deplace sur l'autre garde-fou.
+        """
+        faces = list(ctx["allies"])
+        if ctx.get("identite_face") is not None:
+            faces.append(ctx["identite_face"])
+        return tuple(sorted(nombre(getattr(f, "GetAllCounters", lambda: 0)())
+                            for f in faces))
+
     def empreinte(ctx, options):
         """Signature d'une situation, pour reperer qu'on tourne en rond.
 
@@ -697,6 +723,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 round(ctx["pv_ratio"], 2), round(ctx["menace_ratio"], 2),
                 tuple(sorted(nombre(getattr(sc, "threat", 0))
                              for sc in ctx.get("schemes_secondaires") or [])),
+                compteurs_du_joueur(ctx),
                 tuple(sorted(str(o.get("id")) for o in options)))
 
     def clef_option(o):
@@ -777,6 +804,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             ctx.get("traits_amis", ()),
             ctx.get("taille_defausse", 0),
             len(ctx["allies"]) + len(ctx["sbires"]) + len(ctx["schemes_secondaires"]),
+            compteurs_du_joueur(ctx),
         )
         if brute and brute == etat.get("derniere_question_brute") \
                 and progres == etat.get("dernier_progres") \

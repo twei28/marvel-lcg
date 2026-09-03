@@ -1,0 +1,72 @@
+{
+    "version": "0.5.8",
+    "name": "Iron Man (Model 42)",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Rainy). Aspect AGRESSIVITE choisi par l'utilisateur le 03/09/2026, et c'est aussi celui du deck de depart de l'Iron Man officiel. Le deck est construit sur une contrainte que le kit impose : im001a Reactor Cores exige des ressources ENERGIE IMPRIMEES, donc 21 des 25 cartes d'aspect portent une icone [energy] imprimee, 22 icones au total puisque 01088 Energy en porte deux. Une carte d'aspect n'est plus seulement un effet, c'est aussi du carburant.",
+        "reactor_note": "LA MECANIQUE VEDETTE. `reactor` est un compteur MAISON, ajoute a l'enum COUNTER du moteur pour ce pack. Quatre cartes en posent (im001a en convertissant des cartes energie de la main, im004 si Iron Man est deja AERIAL, im006 en forme civile, im009 a la demande) et huit en depensent (im002 +3 degats, im003 +3 menaces, im007 previent 2, im008 +2 degats et Portee, im009 redresse, im011 annule une traitrise, im013 +2 menaces et ignore Patrouille, im014 l'obligation en retire 2 de force). Avec 10 PV seulement, le compteur est a la fois la ressource offensive ET la reserve de survie.",
+        "printed_note": "⚠ ARBITRAGE DE L'UTILISATEUR (03/09/2026) : « Spend X PRINTED [energy] resources » se lit LITTERALEMENT. Seules les cartes dont l'icone imprimee est [energy] chargent le reacteur. Consequence directe : im005 Stark Tower ne peut PAS le charger (elle GENERE un wild), ni 01055 The Power of Aggression. En revanche 01088 Energy, qui porte DEUX icones energie imprimees, vaut deux compteurs a lui seul.",
+        "aerial_note": "La seconde boucle du pack. im010 Rocket Boots donne AERIAL en permanence, im004 Take Flight pour le round. AERIAL debloque la repartition libre des degats (im002) et de la menace (im003), rend im004 auto-nourri, et c'est aussi ce qui active 42029 Bombs Away cote aspect — la seule carte d'Agressivite du deck qui exige un personnage AERIAL.",
+        "alternative_note": "⚠ im012 Hulkbuster Armor porte le MEME numero imprime que im011 Save The Day (14/15) : l'auteur la donne comme « alternative replacement ». Ce n'est pas un cumul. Decision de l'utilisateur : les DEUX cartes existent dans le jeu, et c'est im011 Save The Day qui part dans ce deck. Pour jouer la variante, echanger les deux dans le deck-builder.",
+        "nemesis_note": "Le zip ne fournit AUCUNE carte nemesis, seulement l'obligation im014. Sur decision de l'utilisateur (03/09/2026), on emprunte le set nemesis de l'IRON MAN OFFICIEL : 01171 Imminent Overload, 01172 * Whiplash, 01173 Electric Whip Attack x2, 01174 Electromagnetic Backlash. ⚠ Cet emprunt n'etait pas jouable avant le correctif `IsNemesis` du 02/09/2026 (commit 89b9a45) : les cartes du nemesis_set sont desormais MARQUEES a la mise en place avec leur joueur. Coincidence utile : 01174 Electromagnetic Backlash compte justement les ressources energie IMPRIMEES d'un joueur, la meme lecture que im001a.",
+        "collision_note": "⚠ « Iron Man » est le nom du heros OFFICIEL 01029a et de l'allie 09039 ; « Tony Stark » celui de l'alter-ego officiel 01029b et, presque, du sbire nemesis si016 * Tony Stark A.I. du pack maison superior_iron_man — dont le desc.Nemesis vaut d'ailleurs « Tony Stark ». C'est le set_name qui differe, pas le nom des cartes. Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle de l'etape 10 de PROCESSUS-HEROS reste vert. L'allie 01050 * Hulk est de classe Agressivite, pas Hero : il est donc legal ici, contrairement au deck de hulk_rainy ou il entrait en collision d'unicite avec le heros lui-meme."
+    },
+    "hero": [
+        "im001a,im001b"
+    ],
+    "hero_deck": [
+        "im002",
+        "im002",
+        "im003",
+        "im003",
+        "im004",
+        "im004",
+        "im004",
+        "im005",
+        "im006",
+        "im007",
+        "im008",
+        "im009",
+        "im010",
+        "im011",
+        "im013"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "im014"
+    ],
+    "nemesis_set": [
+        "01171",
+        "01172",
+        "01173",
+        "01173",
+        "01174"
+    ],
+    "player_deck": [
+        "01053",
+        "01053",
+        "06014",
+        "06014",
+        "42029",
+        "42029",
+        "28014",
+        "28014",
+        "13013",
+        "12030",
+        "19030",
+        "13017",
+        "28016",
+        "35015",
+        "01050",
+        "04040",
+        "06012",
+        "16040",
+        "46016",
+        "54016",
+        "01055",
+        "01055",
+        "01088",
+        "01089",
+        "01090"
+    ]
+}

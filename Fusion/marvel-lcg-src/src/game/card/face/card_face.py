@@ -159,6 +159,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'illusion', 'menace',  # CORRECTIF : compteurs des packs custom spider_man_rainy / venom_rainy (Rainy)
         'evidence',  # CORRECTIF : compteur du pack custom jessica_jones (ekAugust)\n
         'adrenaline',  # CORRECTIF : compteur du pack custom venompool (CptScorp)
+        'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

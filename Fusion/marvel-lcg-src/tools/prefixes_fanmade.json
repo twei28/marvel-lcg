@@ -155,9 +155,9 @@
         "im": {
             "pack": "iron_man_model_42",
             "libelle": "149. Custom (Iron Man Model 42)",
-            "cartes": 0,
-            "depuis": "2026-09-02",
-            "note": "RESERVE, pas encore cree. Auteur Rainy. 15 cartes, difficulte 2/5. Toute l'economie tient au compteur `reactor`, lu par 10 cartes sur 15. set_name a trancher : 'Iron Man' est pris. Pas de set nemesis. Voir .planning/todos/2026-09-02-prep-vague0-iron-man-model-42.md"
+            "cartes": 15,
+            "depuis": "2026-09-03",
+            "note": "Cree le 03/09/2026. Auteur Rainy. im001a/b identite, im002-im013 signature (12 cartes distinctes, 15 exemplaires), im014 obligation. set_name 'Iron Man (Model 42)' : 'Iron Man' est pris par le heros officiel 01029a et 'Superior Iron Man' par le pack si. Toute l'economie tient au compteur maison `reactor`, ajoute a l'enum COUNTER pour ce pack et lu par 10 cartes sur 15. im012 Hulkbuster Armor est donnee par l'auteur comme 'alternative replacement for Save The Day' (les deux portent le numero 14/15) : les DEUX sont creees, im011 est celle du deck de depart. Pas de set nemesis dans le zip."
         },
         "ip": {
             "pack": "iron_patriot",

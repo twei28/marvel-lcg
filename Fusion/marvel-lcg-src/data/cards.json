@@ -78096,7 +78096,7 @@
             "full_link": "01090"
         }
     ],
-    "checksum": "80a72e5abc169ac348171b4601439136d33f720db555d68fbd0f39f13bafd023",
+    "checksum": "9d370f85c3dc82685ef86071c4fed833a6f2dc3a590c406755971d5ab0d44d5c",
     "wolverine_x23": [
         {
             "card_id": "wx001a",
@@ -86373,6 +86373,267 @@
             ],
             "set_name": "Lady Sif Nemesis",
             "text": "Attach to your identity.\n<b>Forced Action</b>: Exhaust this card and give the villain a facedown boost card \u2192 ready your identity.\n<b>Alter-Ego Action</b>: Exhaust this card and give the villain a facedown boost card \u2192 discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+            "custom": "Rainy"
+        }
+    ],
+    "iron_man_model_42": [
+        {
+            "card_id": "im001a",
+            "type": "Hero",
+            "name": "* Iron Man",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "AVENGER"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<i>Reactor Cores</i> \u2014 <b>Action</b>: Spend X printed [energy] resources \u2192 place X reactor counters here.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im001b",
+            "type": "AlterEgo",
+            "name": "* Tony Stark",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "GENIUS"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<i>Inventor</i> \u2014 <b>Setup</b>: Discard 1 card from your hand \u2192 search your deck for a [[TECH]] upgrade and add it to your hand.\n<b>Action</b>: Reduce the cost of the next upgrade played this round by 1. <i>(Limit once per round.)</i>",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im002",
+            "type": "Event",
+            "name": "Repulsor Barrage",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. This attack gains ranged. You may remove 1 reactor counter from Iron Man to deal 3 additional damage to that enemy. If Iron Man has the [[AERIAL]] trait, you may divide damage among enemies as you choose.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im003",
+            "type": "Event",
+            "name": "Tactical Overview",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. You may remove 1 reactor counter from Iron Man to remove 3 additional threat from that scheme. If Iron Man has the [[AERIAL]] trait, you may divide threat removed from among schemes as you choose.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im004",
+            "type": "Event",
+            "name": "Take Flight",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Action</b>: Ready Iron Man. Iron Man gains the [[AERIAL]] trait until the end of the round. If Iron Man already has [[AERIAL]], place 1 reactor counter on Iron Man.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im005",
+            "type": "Support",
+            "name": "* Stark Tower",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Resource</b>: Exhaust Stark Tower \u2192 generate a [wild] resource for any player.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im006",
+            "type": "Support",
+            "name": "* Tony's Workshop",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Alter-Ego Action</b>: Exhaust Tony's Workshop \u2192 heal 1 damage from Tony Stark and place 1 reactor counter on him.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im007",
+            "type": "Upgrade",
+            "name": "Energy Shield",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "Iron Man gets +1 DEF.\n<b>Hero Interrupt</b>: When Iron Man would take any amount of damage, remove 1 reactor counter from him \u2192 prevent up to 2 of that damage.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im008",
+            "type": "Upgrade",
+            "name": "* Mark IVa Repulsors",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Interrupt</b>: When Iron Man makes a basic attack, remove 1 reactor counter from him \u2192 that attack deals 2 additional damage and gains ranged.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im009",
+            "type": "Upgrade",
+            "name": "* Repulsor Core One",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Action</b>: Exhaust Repulsor Core One \u2192 place 1 reactor counter on Iron Man.\n<b>Hero Action</b>: Remove 1 reactor counter from Iron Man and exhaust Repulsor Core One \u2192 ready Iron Man.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im010",
+            "type": "Upgrade",
+            "name": "Rocket Boots",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "Iron Man gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: When you use one of Iron Man's basic powers, exhaust Rocket Boots \u2192 Iron Man gets +1 to that power for this use.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im011",
+            "type": "Upgrade",
+            "name": "Save The Day",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PREPARATION"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Interrupt</b>: When a treachery is revealed, discard Save The Day and remove 1 reactor counter from Iron Man \u2192 cancel all of that treachery's effects and discard it.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im012",
+            "type": "Upgrade",
+            "name": "* Hulkbuster Armor",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ARMOR",
+                "TECH"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "Iron Man gets -1 hand size, +1 ATK and DEF and his basic attacks gain overkill.\n<b>Interrupt</b>: When Iron Man would take any amount of damage, remove this card from the game \u2192 prevent all of that damage.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im013",
+            "type": "Upgrade",
+            "name": "Tactical Interface",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b>Hero Interrupt</b>: When Iron Man makes a basic thwart, remove 1 reactor counter from him \u2192 that thwart removes 2 additional threat and ignores the patrol keyword.",
+            "custom": "Rainy"
+        },
+        {
+            "card_id": "im014",
+            "type": "Obligation",
+            "name": "Technical Issues",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1",
+                "GiveTo": "Tony Stark"
+            },
+            "traits": [],
+            "set_name": "Iron Man (Model 42)",
+            "text": "<b><i>Give to the Tony Stark player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Tony Stark and Tony's Workshop \u2192 remove Technical Issues from the game.\n\u2022 Remove 2 reactor counters from your identity. If no reactor counters were removed this way, this card gains surge. Discard this obligation.",
             "custom": "Rainy"
         }
     ]

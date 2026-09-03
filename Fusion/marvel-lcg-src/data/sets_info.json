@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "091c1e03963e95b5e1f344cf3f326f9e4bda6331d8ffe1bd9d319e38cd7b9065",
+    "checksum": "c22118653c057135b0ce9284c008d5dad0b32c7beceef06fa78eddbac743ad2c",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1318,5 +1318,14 @@
         ],
         "encounters": [],
         "max_id": "ls017"
+    },
+    "151. Custom (Iron Man Model 42)": {
+        "name": "iron_man_model_42",
+        "scenarios": [],
+        "heroes": [
+            "iron_man_model_42"
+        ],
+        "encounters": [],
+        "max_id": "im014"
     }
 }

@@ -1299,6 +1299,18 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "im001a": {
+        bio: "Tony Stark est un industriel milliardaire dont l'usine d'armement a fait la fortune, jusqu'a ce qu'un eclat d'obus se loge pres de son coeur et qu'un electro-aimant de fortune l'empeche de le tuer. De cette prison de metal il a fait une armure, puis un metier. La Model 42 est la plus intime de ses armures : une nuee de composants stockes sous sa peau, qu'il appelle a lui par la pensee. Genie, ingenieur, alcoolique en remission, il repare le monde avec la meme obstination qu'il met a se reparer lui-meme.",
+        bioEn: "Tony Stark is a billionaire industrialist who made his fortune building weapons, until a shrapnel fragment lodged near his heart and a makeshift electromagnet was all that kept it from killing him. He turned that metal prison into a suit of armour, then into a calling. The Model 42 is the most intimate of his suits: a swarm of components stored beneath his skin, summoned by thought alone. Genius, engineer, recovering alcoholic, he repairs the world with the same stubbornness he brings to repairing himself.",
+        civil: "Anthony Edward « Tony » Stark",
+        base: "Stark Tower, New York",
+        equipes: "Vengeurs, Illuminati",
+        equipesEn: "Avengers, Illuminati",
+        ennemis: "le Mandarin, Whiplash, Obadiah Stane",
+        ennemisEn: "the Mandarin, Whiplash, Obadiah Stane",
+        apparition: "Tales of Suspense #39 (1963)",
+    },
+
     "ls001a": {
         bio: "Sif est une deesse asgardienne et l'une des meilleures lames des Neuf Royaumes, elevee aux cotes de Thor et de Loki. Guerriere avant tout, elle a du arracher sa place dans une armee qui ne voulait pas d'une femme, et sa chevelure noire — Loki lui ayant coupe ses cheveux d'or par malice — est devenue le signe de ce qu'elle a paye pour l'obtenir. Elle se bat aux cotes des Guerriers de Choc et de Thor, dont elle est tour a tour la compagne d'armes et l'amour contrarie. Sa loyaute envers Asgard passe avant tout le reste, y compris son propre bonheur.",
         bioEn: "Sif is an Asgardian goddess and one of the finest blades in the Nine Realms, raised alongside Thor and Loki. A warrior first, she had to carve out her place in an army that did not want a woman in it, and her black hair — Loki having shorn off her golden locks out of spite — became the mark of what that place cost her. She fights beside the Warriors Three and beside Thor, by turns his shield-sister and his thwarted love. Her loyalty to Asgard comes before everything else, her own happiness included.",
