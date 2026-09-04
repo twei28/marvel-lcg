@@ -1943,4 +1943,34 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'yd017': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il soigne 2 dégâts. SINON, convoquez Sav'rkk et révélez-le.\n<hr />[star] <b>Boost</b> : le MÉCHANT soigne 2 dégâts.",
   // yondu_nemesis — Savage Destruction (Treachery)
   'yd018': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il vous ATTAQUE. SINON, convoquez Sav'rkk et révélez-le.",
+  // doctor_druid — * Doctor Druid (Hero) [set 155, Kajislav]
+  'dr001a': "<i>Rituel druidique</i> — <b>Action</b> : subissez 1 dégât → jouez l'événement le plus haut de votre défausse portant une capacité « Action » ou « Action de héros » <i>(en payant son coût)</i>. <i>(Limite d'une fois par round.)</i>",
+  // doctor_druid — * Anthony Druid (AlterEgo)
+  'dr001b': "<i>Soins psychiatriques</i> — <b>Interruption</b> : quand un personnage amical effectue une récupération de base, il gagne +X REC, où X est égal à la REC d'Anthony Druid.",
+  // doctor_druid — * Doctor Strange (Ally)
+  'dr002': "Tant que cette carte est dans votre MAIN, Doctor Druid ignore le mot-clé Garde, le mot-clé Patrouille et l'icône de crise ([crisis]).\n<b>Réponse</b> : après que Doctor Strange attaque ou contre, rendez à votre main l'événement le plus haut de votre défausse.",
+  // doctor_druid — * Ancient One (Support)
+  'dr003': "Tant que cette carte est dans votre MAIN, vos attaques de base gagnent Déferlement, Perforation et Portée.\n<b>Action d'alter-ego</b> : inclinez Ancient One → regardez les 3 premières cartes de votre deck, ajoutez chaque carte Doctor Druid à votre main et défaussez les autres.",
+  // doctor_druid — Fellow Druid (Support, x2)
+  'dr004': "Tant que cette carte est dans votre MAIN, vous gagnez +1 en taille de main.\n<b>Ressource</b> : inclinez Fellow Druid → générez une ressource [wild] pour une carte Doctor Druid.",
+  // doctor_druid — Astral Travel (Event, x2)
+  'dr005': "Tant que cette carte est dans votre MAIN, vos contres retirent 1 menace supplémentaire.\n<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance.",
+  // doctor_druid — Awaken Nature (Event, x2)
+  'dr006': "Tant que cette carte est dans votre MAIN, Doctor Druid gagne Représailles 1.\n<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 1 dégât à chaque ennemi et retirez 1 menace de chaque manigance.",
+  // doctor_druid — Elemental Control (Event, x2)
+  'dr007': "Tant que cette carte est dans votre MAIN, vos attaques infligent 1 dégât supplémentaire.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi.",
+  // doctor_druid — Mystical Protection (Event, x2)
+  'dr008': "Tant que cette carte est dans votre MAIN, chaque personnage que vous contrôlez gagne Inébranlable.\n<b>Interruption de héros</b> : quand une carte de rencontre devrait être révélée, défaussez-la à la place. S'il n'y a aucune icône de boost ([boost]) sur cette carte, donnez une carte de statut Tenace à un personnage amical.",
+  // doctor_druid — Practice of Druidry (Event, x3)
+  'dr009': "Tant que cette carte est dans votre MAIN, votre identité gagne +1 à chacun de ses pouvoirs de base.\n<b>Action de héros</b> : redressez Doctor Druid.",
+  // doctor_druid — Ancient Order of Druids (Obligation)
+  'dr010': "<b><i>Donnez-la au joueur Anthony Druid.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Anthony Druid → retirez Ancient Order of Druids de la partie.\n• Défaussez chaque événement spécifique à l'identité de votre main. Si aucun événement n'a été défaussé de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
+  // doctor_druid_nemesis — * Nekra (Minion)
+  'dr011': "Nekra gagne +1 ATQ et +1 PV pour chaque pion haine sur elle.\n<b>Réponse forcée</b> : après que Nekra attaque ou subit des dégâts, placez 1 pion haine sur elle <i>(maximum 5)</i>.\n<i>(Sbire némésis de Doctor Druid.)</i>",
+  // doctor_druid_nemesis — Harness Violent Emotions (SideScheme)
+  'dr012': "<i>Plus les émotions de Nekra sont violentes, plus elle devient forte.</i>\n<b>Une fois révélée</b> : cherchez Nekra dans le deck ET la défausse de rencontre, et révélez-la.\n<b>Interruption forcée</b> : quand Nekra vous attaque, défaussez 1 carte spécifique à l'identité de votre main.",
+  // doctor_druid_nemesis — Emotionally Overwhelmed (Attachment, x2)
+  'dr013': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand votre tour commence, défaussez un événement spécifique à l'identité de votre main.\n<b>Action d'alter-ego</b> : étourdissez votre identité → défaussez cette carte.",
+  // doctor_druid_nemesis — Resurrection of Nekra (Treachery)
+  'dr014': "<b>Une fois révélée</b> : si Nekra est en jeu, elle s'active contre vous. SINON, cherchez Nekra dans le deck ET la défausse de rencontre, et révélez-la.",
 }

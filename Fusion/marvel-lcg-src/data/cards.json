@@ -87749,5 +87749,266 @@
             "text": "<b>When Revealed</b>: Discard the top card of your deck. Then, discard each card from your hand that is of the same card type as that discarded card. If no card was discarded from your hand this way, this card gains surge.",
             "custom": "Kajislav"
         }
+    ],
+    "doctor_druid": [
+        {
+            "card_id": "dr001a",
+            "type": "Hero",
+            "name": "* Doctor Druid",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "1",
+                "THW": "1",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "AVENGER",
+                "MYSTIC"
+            ],
+            "text": "<i>Druidic Ritual</i> \u2014 <b>Action</b>: Take 1 damage \u2192 play the topmost event with an \"Action\", or \"Hero Action\" ability in your discard pile <i>(paying its cost)</i>. <i>(Limit once per round.)</i>",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr001b",
+            "type": "AlterEgo",
+            "name": "* Anthony Druid",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "2",
+                "HS": "6"
+            },
+            "traits": [
+                "MYSTIC"
+            ],
+            "text": "<i>Psychiatric Care</i> \u2014 <b>Interrupt</b>: When a friendly character makes a basic recovery, they get +X REC, where X is equal to Anthony Druid's REC.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr002",
+            "type": "Ally",
+            "name": "* Doctor Strange",
+            "subtitle": "Stephen Strange",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "2*",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "AVENGER",
+                "MYSTIC"
+            ],
+            "text": "While this card is in your hand Doctor Druid ignores the guard keyword, the patrol keyword, and the crisis icon ([crisis]).\n<b>Response</b>: After Doctor Strange attacks or thwarts, return the topmost event from your discard pile into your hand.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr003",
+            "type": "Support",
+            "name": "* Ancient One",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "MYSTIC",
+                "PERSONA"
+            ],
+            "text": "While this card is in your hand, your basic attacks gain overkill, piercing and ranged.\n<b>Alter-Ego Action</b>: Exhaust Ancient One \u2192 look at the top 3 cards of your deck, add each Doctor Druid card to your hand and discard the others.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr004",
+            "type": "Support",
+            "name": "Fellow Druid",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "MYSTIC",
+                "PERSONA"
+            ],
+            "text": "While this card is in your hand, you get +1 hand size.\n<b>Resource</b>: Exhaust Fellow Druid \u2192 generate a [wild] resource for a Doctor Druid card.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr005",
+            "type": "Event",
+            "name": "Astral Travel",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "text": "While this card is in your hand your thwarts remove 1 additional threat.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr006",
+            "type": "Event",
+            "name": "Awaken Nature",
+            "subtitle": "",
+            "desc": {
+                "Cost": "3",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "text": "While this card is in your hand Doctor Druid gains retaliate 1.\n<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 1 damage to each enemy and remove 1 threat from each scheme.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr007",
+            "type": "Event",
+            "name": "Elemental Control",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "text": "While this card is in your hand your attacks deal 1 additional damage.\n<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr008",
+            "type": "Event",
+            "name": "Mystical Protection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "text": "While this card is in your hand, each character you control gains stalwart.\n<b>Hero Interrupt</b>: When an encounter card would be revealed, discard it instead. If there is no boost icon ([boost]) on that card, give a friendly character a tough status card.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr009",
+            "type": "Event",
+            "name": "Practice of Druidry",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL"
+            ],
+            "text": "While this card is in your hand, your identity gets +1 to each of its basic powers.\n<b>Hero Action</b>: Ready Doctor Druid.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr010",
+            "type": "Obligation",
+            "name": "Ancient Order of Druids",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Anthony Druid"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Anthony Druid player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Anthony Druid \u2192 remove Ancient Order of Druids from the game.\n\u2022 Discard each identity-specific event from your hand. If no event was discarded this way, this card gains surge. Discard this obligation.",
+            "set_name": "Doctor Druid",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr011",
+            "type": "Minion",
+            "name": "* Nekra",
+            "subtitle": "",
+            "desc": {
+                "HP": "3",
+                "SCH": "2",
+                "ATK": "1",
+                "Boost": "2",
+                "Nemesis": "Anthony Druid"
+            },
+            "traits": [
+                "ELITE",
+                "LETHAL LEGION"
+            ],
+            "text": "Nekra gets +1 ATK and +1 HP for each hate counter on her.\n<b>Forced Response</b>: After Nekra attacks or takes damage, place 1 hate counter on her <i>(to a maximum of 5)</i>.\n<i>(Doctor Druid's nemesis minion.)</i>",
+            "set_name": "Doctor Druid Nemesis",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr012",
+            "type": "SideScheme",
+            "name": "Harness Violent Emotions",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3"
+            },
+            "traits": [],
+            "text": "<i>The more violent Nekra's emotions are the stronger she becomes.</i>\n<b>When Revealed</b>: Search the encounter deck and discard pile for Nekra and reveal her.\n<b>Forced Interrupt</b>: When Nekra attacks you, discard 1 identity-specific card from your hand.",
+            "set_name": "Doctor Druid Nemesis",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr013",
+            "type": "Attachment",
+            "name": "Emotionally Overwhelmed",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When your turn begins, discard an identity-specific event from your hand.\n<b>Alter-Ego Action</b>: Stun your identity \u2192 discard this card.",
+            "set_name": "Doctor Druid Nemesis",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "dr014",
+            "type": "Treachery",
+            "name": "Resurrection of Nekra",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: If Nekra is in play, she activates against you. Otherwise, search the encounter deck and discard pile for Nekra and reveal her.",
+            "set_name": "Doctor Druid Nemesis",
+            "custom": "Kajislav"
+        }
     ]
 }

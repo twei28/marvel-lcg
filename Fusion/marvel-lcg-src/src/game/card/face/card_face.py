@@ -163,6 +163,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
+        'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

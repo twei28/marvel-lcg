@@ -159,7 +159,33 @@ Revealed... séparé sur le texte imprimé) :
    `payer_avec`, `accepter_choix`, `heros2`.
 5. Pour une capacité de tour de jeu : `Puzzle.Attack`, `Puzzle.Scheme`,
    `Puzzle.Action` plutôt que « hors de portée du harnais ».
-6. **Toute limite imprimée exige un TÉMOIN D'ÉPUISEMENT.** Dès que la carte
+6. **Un cas va JUSQU'AU BOUT de ce que la carte annonce.** Si la carte fait
+   deux choses, le cas mesure les deux. S'il n'en mesure qu'une, il certifie
+   la moitié qui marche et couvre celle qui casse.
+
+   > ⚠ Leçon du 04/09/2026, pack `doctor_druid`. **Deux cartes plantaient à
+   > CHAQUE partie alors que leurs cas passaient au vert**, parce que les
+   > assertions s'arrêtaient avant le point de rupture : `dr001a` mesurait le
+   > COÛT (payé avant le crash) mais pas l'effet, `dr006` mesurait les dégâts
+   > mais pas le retrait de menace. Le moteur AVALE ces exceptions : 338 et 52
+   > occurrences par fournée d'autoplay, invisibles autrement.
+   >
+   > ⚠ **Et ne JAMAIS retirer une assertion parce qu'elle échoue.** Sur
+   > `dr005`, l'assertion de menace a été remplacée par une mesure plus
+   > commode : elle échouait pour une bonne raison (`RemoveThreat` n'existe
+   > pas). Retirer ce qui dérange masque le défaut au lieu de le corriger.
+
+7. **Se méfier des effets de la PARTIE, pas seulement de la carte.** Une carte
+   du deck jouée par le pilote peut fausser la mesure. Écrire la ligne de base
+   dans le cas.
+
+   > ⚠ Même pack : `12016` Moxie, que le pilote joue systématiquement, donne
+   > +1 ATQ / +1 CTR / +1 DEF pour le round. **Trois cas passaient grâce à
+   > elle** alors que la mécanique testée ne fonctionnait pas du tout. Lire le
+   > JOURNAL DE PARTIE, pas seulement le message d'échec : la ligne
+   > « would play Moxie » a expliqué cinq échecs d'un coup.
+
+8. **Toute limite imprimée exige un TÉMOIN D'ÉPUISEMENT.** Dès que la carte
    dit « Limit once per round / per phase », un second cas doit monter DEUX
    déclenchements dans le même round (ou la même phase) et mesurer un
    **chiffre** au second : menace restante, taille de main, incliné/prêt.

@@ -1,0 +1,70 @@
+{
+    "version": "0.5.8",
+    "name": "Doctor Druid",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aspect MENEUR, DONNE PAR L'AUTEUR : le scan « Starter Deck » (Extras 47) liste le deck carte par carte, aucune question d'aspect a poser. C'est le troisieme pack de la serie a fournir sa decklist, apres armored_spidey et yondu. Deux entrees ne differaient de leur carte que par l'orthographe : « Side by Side » est 45016 Side-by-Side, « Strength in Numbers » est 03017 Strength In Numbers.",
+        "main_note": "LA MAIN EST LA VRAIE ZONE DE JEU. Sept des huit cartes signature portent « While this card is in your hand ». Garder une carte vaut souvent mieux que la jouer, et dr009 Practice of Druidry (x3, +1 a chaque pouvoir de base) est la plus frequente du deck precisement pour ca. dr004 Fellow Druid donne +1 en taille de main, ce qui augmente le nombre d'effets actifs simultanement.",
+        "defausse_note": "LA DEFAUSSE EST UNE SECONDE MAIN. dr001a Druidic Ritual rejoue depuis la defausse l'evenement le plus haut portant une Action, et dr002 Doctor Strange y reprend un evenement a chaque attaque ou contre. dr003 Ancient One defausse volontairement ce qu'elle ne garde pas : ce n'est pas une perte pour ce heros.",
+        "nemesis_note": "Le set nemesis vise EXACTEMENT cette economie : dr012 et dr013 defaussent des cartes « identity-specific » DE LA MAIN, et dr010 l'obligation propose de vider la main de ses evenements. Nekra, elle, grossit de +1 ATQ et +1 PV par pion `hate`, poses a chaque fois qu'elle attaque OU subit des degats, jusqu'a 5.",
+        "collision_note": "⚠ dr002 « * Doctor Strange » porte le nom du HEROS OFFICIEL 09001a (et du sbire mk017 du pack moon_knight). Les deux ne peuvent donc pas etre en jeu en meme temps en multijoueur, regle d'unicite. Aucun impact sur l'etape 10 du processus : dr002 est de classe Hero du set « Doctor Druid », c'est-a-dire du set de CE heros. Meme famille que dt125 pour night_thrasher et al019 pour Throg."
+    },
+    "hero": [
+        "dr001a,dr001b"
+    ],
+    "hero_deck": [
+        "dr002",
+        "dr003",
+        "dr004",
+        "dr004",
+        "dr005",
+        "dr005",
+        "dr006",
+        "dr006",
+        "dr007",
+        "dr007",
+        "dr008",
+        "dr008",
+        "dr009",
+        "dr009",
+        "dr009"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "dr010"
+    ],
+    "nemesis_set": [
+        "dr011",
+        "dr012",
+        "dr013",
+        "dr013",
+        "dr014"
+    ],
+    "player_deck": [
+        "17011",
+        "21014",
+        "01067",
+        "12016",
+        "12016",
+        "45016",
+        "45016",
+        "03017",
+        "03017",
+        "01072",
+        "01072",
+        "45015",
+        "13018",
+        "01084",
+        "18020",
+        "18020",
+        "15019",
+        "15019",
+        "15019",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "16024",
+        "09026"
+    ]
+}

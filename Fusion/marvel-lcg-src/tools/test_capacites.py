@@ -17803,6 +17803,413 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2},
     },
+# ------------------------------------------------------------------------
+    # Pack « doctor_druid » : Anthony Druid, set 155, dr001a-dr014
+    #
+    # ⚠ LA ZONE DE JEU DE CE PACK EST LA MAIN. Sept cartes sur huit portent
+    # « While this card is in your hand ». Le cas NOMINAL se monte donc avec
+    # `main_exclusive` et SANS `jouer` : c'est la carte NON jouee qui agit. Et
+    # le contre-temoin qui compte est l'inverse exact — une fois JOUEE, la
+    # carte quitte la main et son bonus DOIT disparaitre.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "dr001a Doctor Druid — Druidic Ritual se paie 1 degat",
+        "pourquoi": ("le heros n'avait AUCUN cas sujet : trou sorti par la preuve par "
+                     "substitution du 04/09/2026 (« AUCUN CAS — gate non tenue »).\n"
+                     "« Take 1 damage » est un COUT (`CostFunc.TakeDamage`), donc il "
+                     "tombe meme si la suite ne trouve rien a rejouer — c'est ce que "
+                     "mesure ce cas, et c'est discriminant : sans le module, l'action "
+                     "n'existe pas et l'identite reste intacte.\n"
+                     "⚠ ECART ASSUME sur la suite de la carte : le texte dit « play the "
+                     "topmost event... », or le moteur n'a AUCUNE operation « joue cette "
+                     "carte ». L'idiome est `YouMayPlayCardLikeInHand`, qui rend la "
+                     "carte JOUABLE (modele 05018 Lockjaw). La permission est donc posee "
+                     "en temporaire ; le joueur paie bien le cout de l'evenement, mais "
+                     "peut renoncer, ce que la carte imprimee ne prevoit pas.\n"
+                     "⚠ C'est aussi ce module qui porte les SEPT bonus « en main » du "
+                     "set : le substituer fait tomber bien plus que ce seul cas"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.CreatePlayerDiscardPile('dr007')"],
+        "main_exclusive": ["01088", "01088"],
+        "declencher": ["Puzzle.Action('dr001a', 'Action')"],
+        "jouer": ["dr007"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        # ⚠ LE CAS VA MAINTENANT JUSQU'AU BOUT. Sa premiere version ne
+        # mesurait que le COUT (1 degat), paye AVANT le crash : elle passait
+        # au vert alors que `RegisterTemp` levait une exception avalee a
+        # chaque partie (338 fois a l'autoplay). On verifie donc que
+        # l'evenement de la DEFAUSSE est reellement rejouable : Elemental
+        # Control y est pose d'avance, et ses 4 degats tombent sur Rhino.
+        "attendu": {"degats_identite": 1, "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "dr001b Anthony Druid — Psychiatric Care ajoute sa propre REC",
+        "pourquoi": ("l'alter-ego n'avait AUCUN cas sujet non plus.\n"
+                     "« +X REC, where X is equal to Anthony Druid's REC » : REC imprimee "
+                     "2, donc 2 + 2 = 4, soit un ecart de 2.\n"
+                     "⚠ X est lu sur la REC **IMPRIMEE** et non la courante : lire la "
+                     "courante ferait boucler la carte sur elle-meme (2 donne +2, donc "
+                     "4, qui redonnerait +4...). Le texte suppose un X fige.\n"
+                     "⚠ ECART ASSUME : le texte dit « Interrupt: when a friendly "
+                     "character makes a basic recovery » ; on code un bonus permanent "
+                     "tant qu'Anthony est en jeu. L'effet observable est le meme, la REC "
+                     "ne servant QUE lors d'une recuperation"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001b", "recover", 2]]},
+    },
+    {
+        "nom": "dr007 Elemental Control — EN MAIN, elle donne +1 ATQ au heros",
+        "pourquoi": ("⚠ LIGNE DE BASE MOXIE : le deck contient 12016 Moxie, que le pilote joue "
+                     "systematiquement en Reponse au changement de forme, et qui donne "
+                     "+1 ATQ, +1 CTR et +1 DEF jusqu'a la fin du round. Les ecarts "
+                     "attendus ici INCLUENT donc ce +1. Mesure du 04/09/2026 : sans en "
+                     "tenir compte, trois cas passaient au VERT grace a Moxie alors que "
+                     "la mecanique du pack ne fonctionnait pas du tout.\n"
+                     "la mecanique signature du pack, et une forme de cas nouvelle au "
+                     "depot : on ne joue RIEN, on se contente d'avoir la carte en main. "
+                     "`main_exclusive` la garantit seule en main. Rendu par "
+                     "`GiveKeywordToInPlayWhenApplyThis(\"You\", attack=1)` passe par "
+                     "`CanWorkOnlyInHand()`, dont c'est le PREMIER usage non-cout du "
+                     "depot. ⚠ `attributs_carte` attend un ECART : 1, pas 2"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "main_exclusive": ["dr007"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001a", "attack", 2]]},
+    },
+    {
+        "nom": "dr007 Elemental Control — JOUEE, le bonus disparait (et 4 degats tombent)",
+        "pourquoi": ("⚠ LIGNE DE BASE MOXIE : le deck contient 12016 Moxie, que le pilote joue "
+                     "systematiquement en Reponse au changement de forme, et qui donne "
+                     "+1 ATQ, +1 CTR et +1 DEF jusqu'a la fin du round. Les ecarts "
+                     "attendus ici INCLUENT donc ce +1. Mesure du 04/09/2026 : sans en "
+                     "tenir compte, trois cas passaient au VERT grace a Moxie alors que "
+                     "la mecanique du pack ne fonctionnait pas du tout.\n"
+                     "LE CONTRE-TEMOIN QUI COMPTE. Toute la tension du pack est la : la "
+                     "carte vaut mieux gardee que jouee. On la joue donc, et on verifie "
+                     "que l'ATQ REDESCEND a son imprime (ecart 0) pendant que les 4 "
+                     "degats, eux, tombent bien. Sans ce cas, un bonus qui resterait "
+                     "actif apres la mise en jeu passerait pour correct"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "main_exclusive": ["dr007", "01088"],
+        "declencher": [],
+        "jouer": ["dr007"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]],
+                    "attributs_carte": [["dr001a", "attack", 1]]},
+    },
+    {
+        "nom": "dr005 Astral Travel — EN MAIN, +1 CTR ; l'action retire 3 menaces",
+        "pourquoi": ("⚠ LIGNE DE BASE MOXIE : le deck contient 12016 Moxie, que le pilote joue "
+                     "systematiquement en Reponse au changement de forme, et qui donne "
+                     "+1 ATQ, +1 CTR et +1 DEF jusqu'a la fin du round. Les ecarts "
+                     "attendus ici INCLUENT donc ce +1. Mesure du 04/09/2026 : sans en "
+                     "tenir compte, trois cas passaient au VERT grace a Moxie alors que "
+                     "la mecanique du pack ne fonctionnait pas du tout.\n"
+                     "jumelle de dr007 cote menace. Le complot annexe 01109 est pose a 8 "
+                     "menaces pour que le retrait de 3 soit discriminant (sa "
+                     "StartingThreat de 2 rendrait le cas muet, defaut trouve sur vp001a "
+                     "le 31/08/2026)"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "main_exclusive": ["dr005"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001a", "thwart", 2]]},
+    },
+    {
+        "nom": "dr005 Astral Travel — JOUEE, 3 menaces retirees et le +1 CTR perdu",
+        "pourquoi": ("meme paire que dr007 : l'effet joue tombe, le bonus de main "
+                     "disparait. 8 - 3 = 5"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "main_exclusive": ["dr005", "01088"],
+        "declencher": [],
+        "jouer": ["dr005"],
+        "cibles": ["01109"],
+        "verifier": "etat_attendu",
+        # ⚠ LA MESURE DE LA MENACE AVAIT ETE RETIREE le 04/09 parce qu'elle
+        # echouait — c'etait une ERREUR de ma part : elle echouait parce que
+        # `RemoveThreat` n'existe pas et que le moteur AVALAIT l'exception.
+        # Retirer une assertion qui derange masque le defaut au lieu de le
+        # corriger. Elle est remise : 8 - 3 = 5.
+        "attendu": {"menace": [["01109", 5]],
+                    "attributs_carte": [["dr001a", "thwart", 1]]},
+    },
+    {
+        "nom": "dr009 Practice of Druidry — EN MAIN, +1 a CHACUN des pouvoirs de base",
+        "pourquoi": ("⚠ LIGNE DE BASE MOXIE : le deck contient 12016 Moxie, que le pilote joue "
+                     "systematiquement en Reponse au changement de forme, et qui donne "
+                     "+1 ATQ, +1 CTR et +1 DEF jusqu'a la fin du round. Les ecarts "
+                     "attendus ici INCLUENT donc ce +1. Mesure du 04/09/2026 : sans en "
+                     "tenir compte, trois cas passaient au VERT grace a Moxie alors que "
+                     "la mecanique du pack ne fonctionnait pas du tout.\n"
+                     "« +1 to EACH of its basic powers » : ATQ, CTR et DEF d'un coup. "
+                     "Trois mesures dans le meme cas, parce que le texte dit « chacun » "
+                     "et qu'un montage qui n'en donnerait qu'un passerait sinon"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "main_exclusive": ["dr009"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001a", "attack", 2],
+                                        ["dr001a", "thwart", 2],
+                                        ["dr001a", "defense", 2]]},
+    },
+    {
+        "nom": "dr009 Practice of Druidry — JOUEE, elle redresse le heros",
+        "pourquoi": ("« Hero Action: Ready Doctor Druid », sans libelle : ce n'est ni une "
+                     "attaque ni un contre. Le heros est incline d'avance, sans quoi le "
+                     "cas ne mesurerait rien"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.Exhaust('dr001a')"],
+        "main_exclusive": ["dr009", "01088"],
+        "declencher": [],
+        "jouer": ["dr009"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["dr001a"]},
+    },
+    {
+        "nom": "dr004 Fellow Druid — EN MAIN, +1 en taille de main",
+        "pourquoi": ("le bonus va au JOUEUR, pas a la carte. ⚠ Mesure indirecte : la "
+                     "main de depart d'un heros a HS 5 en compte 6 avec la carte, donc "
+                     "on lit `hand_size` sur l'identite en ecart"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "main_exclusive": ["dr004"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001a", "hand_size", 1]]},
+    },
+    {
+        "nom": "dr004 Fellow Druid — sa ressource ne finance QUE les cartes du set",
+        "pourquoi": ("SEUL CAS QUI APPARTIENNE EN PROPRE A dr004 : sa moitie « en main » "
+                     "est portee par le heros (voir __init__.py), si bien que la "
+                     "substitution la laissait a 0/1 — trou signale le 04/09/2026.\n"
+                     "« generate a [wild] resource FOR A DOCTOR DRUID CARD » : la "
+                     "restriction passe par `for_card=CardFinder(set_name=...)`. Sans "
+                     "elle, la carte serait strictement meilleure qu'une ressource "
+                     "ordinaire.\n"
+                     "Montage : la main ne contient QUE dr009 (cout 1) et aucune "
+                     "ressource. La seule facon de la jouer est d'incliner Fellow Druid. "
+                     "Le heros est incline d'avance : s'il finit PRET, c'est que dr009 a "
+                     "bien ete jouee, donc que la ressource a ete generee"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('dr004', under_control=True)",
+                          "Puzzle.Exhaust('dr001a')"],
+        "main_exclusive": ["dr009"],
+        "declencher": [],
+        "jouer": ["dr009"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["dr001a"], "exhausted": ["dr004"]},
+    },
+    {
+        "nom": "dr006 Awaken Nature — EN MAIN, le heros gagne Represailles 1",
+        "pourquoi": ("⚠ NOMME : « DOCTOR DRUID gains retaliate 1 », donc le seul heros, "
+                     "contraste imprime avec dr008 qui dit « each character you "
+                     "control ». Mesure sur l'ecart de `retaliate`"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "main_exclusive": ["dr006"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dr001a", "retaliate", 1]]},
+    },
+    {
+        "nom": "dr006 Awaken Nature — JOUEE : 1 degat a CHAQUE ennemi",
+        "pourquoi": ("« each enemy » et « each scheme » : aucune cible a choisir. Deux "
+                     "ennemis en jeu, les deux doivent encaisser"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "main_exclusive": ["dr006", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["dr006"],
+        "verifier": "etat_attendu",
+        # ⚠ LES DEUX MOITIES : le cas d'origine ne mesurait que les degats, et
+        # passait donc alors que le retrait de menace plantait (exception
+        # avalee, sortie par l'autoplay). Un cas doit aller JUSQU'AU BOUT de
+        # ce que la carte annonce.
+        "attendu": {"degats": [["01094", 1], ["01101", 1]],
+                    "menace": [["01109", 7]]},
+    },
+    {
+        "nom": "dr002 Doctor Strange — EN MAIN, le heros ignore GARDE",
+        "pourquoi": ("Hydra Mercenary a Garde : sans cette carte en main, le mechant est "
+                     "une cible illegale et l'attaque de base ne peut pas le viser. "
+                     "⚠ `UnitIgnoreKeywordIcons` vise le heros PAR SON NOM et non par "
+                     "\"You\" : lecon payee sur as012, ou le moteur traduit \"You\" en "
+                     "\"This\" et compare a la carte elle-meme"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["dr002"],
+        "declencher": ["Puzzle.Attack('dr001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "dr002 Doctor Strange — contre-temoin : sans elle en main, GARDE s'applique",
+        "pourquoi": ("le jumeau du precedent, et le seul qui prouve que le mot-cle est "
+                     "REELLEMENT ignore : avec la main vide, le mechant reste protege "
+                     "et n'encaisse rien"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('dr001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "dr008 Mystical Protection — EN MAIN, elle annule une carte de rencontre",
+        "pourquoi": ("⚠ PREMIERE VERSION DU CAS ABANDONNEE : elle mesurait le mot-cle "
+                     "Inebranlable par `attributs_carte`, or `stalwart` n'est PAS dans "
+                     "la table `IMPRIME` du harnais — le cas tombait sur "
+                     "« KeyError: 'stalwart' ». On mesure donc l'autre moitie de la "
+                     "carte, qui est chiffrable.\n"
+                     "« When an encounter card would be revealed, discard it INSTEAD » : "
+                     "`WhenCardWouldReveal` + `SetBeInstead`. 01105 ne porte AUCUNE icone "
+                     "de boost, donc la seconde phrase s'applique aussi et l'identite "
+                     "recoit Tenace.\n"
+                     "⚠ MOT-PIEGE : c'est une HERO INTERRUPT, donc la SEULE carte du set "
+                     "que `dr001a` Druidic Ritual ne peut PAS rejouer depuis la defausse"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        # ⚠ UNE RESSOURCE EST OBLIGATOIRE : la carte coute 1 et s'emploie en la
+        # JOUANT depuis la main. Avec la seule dr008 en main, le journal disait
+        # « (Hero Interrupt,Play) [dr008] WhenCardWouldReveal failed » — cout
+        # impayable, donc interruption jamais offerte.
+        "main_exclusive": ["dr008", "01088"],
+        "declencher": ["Puzzle.Reveal('01105')"],
+        "verifier": "etat_attendu",
+        # ⚠ ON MESURE L'ANNULATION, pas le statut : 01105 « I'm Tough » donne
+        # Tenace AU MECHANT. Si l'interruption marche, la carte est defaussee
+        # avant de se resoudre et Rhino ne gagne donc RIEN. Sans le module, il
+        # gagne Tenace : le cas est discriminant dans les deux sens.
+        "attendu": {"statuts_absents": [["01094", "Tough"]]},
+    },
+    {
+        "nom": "dr003 Ancient One — l'action civile garde les cartes Doctor Druid et defausse le reste",
+        "pourquoi": ("« add each Doctor Druid card to your hand and discard the others » : "
+                     "le tri se fait sur `IsDeckBuildingClass(\"Doctor Druid\")`, PLUS "
+                     "restrictif que « specifique a l'identite ». Le deck est force a "
+                     "trois cartes connues : deux du set, une Basic"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dr003', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('dr007', 'dr009', '01088')"],
+        # ⚠ UNE LISTE VIDE EST FALSY : le harnais traiterait `main_exclusive`
+        # comme absente et laisserait la main de depart, qui contient deja des
+        # cartes du set — le cas ne prouverait plus rien. On impose donc une
+        # carte NEUTRE, etrangere au deck signature.
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('dr003', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["dr007", "dr009"], "exhausted": ["dr003"]},
+    },
+    {
+        "nom": "dr010 Ancient Order of Druids — incliner l'alter-ego retire l'obligation de la PARTIE",
+        "pourquoi": ("modele yd013 / nt012. ⚠ « REMOVE from the game » sur cette branche "
+                     "contre « DISCARD this obligation » sur l'autre : deux sorties "
+                     "differentes.\n"
+                     "⚠ EMPLACEMENT DU MODULE : le bandeau dit « DOCTOR DRUID », donc le "
+                     "module vit dans `doctor_druid/` et non dans le dossier nemesis. "
+                     "Piege bt019, paye quatre fois"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('dr010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["dr010"], "exhausted": ["dr001b"]},
+    },
+    {
+        "nom": "dr011 Nekra — attaquer lui pose un pion haine, et la rend plus forte",
+        "pourquoi": ("« +1 ATK and +1 HP for each hate counter » : valeur DYNAMIQUE. "
+                     "⚠ L'ETOILE IMPRIMEE N'EST PAS « par joueur » : Nekra est encodee "
+                     "3/1 dans cards.json et c'est le module qui ajoute. Une attaque du "
+                     "heros la fait monter d'un pion (elle SUBIT des degats), donc "
+                     "ATQ 1 -> 2"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')",
+                          "Puzzle.PutIntoPlay('dr011')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('dr001a')"],
+        "cibles": ["dr011"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["dr011", "hate", 1]],
+                    "attributs_carte": [["dr011", "attack", 1]]},
+    },
+    {
+        "nom": "dr014 Resurrection of Nekra — Nekra absente : elle est convoquee et revelee",
+        "pourquoi": ("« search the encounter deck AND DISCARD PILE » : les deux zones, "
+                     "sans quoi la carte serait inerte des la premiere mort de Nekra — "
+                     "or c'est exactement le cas qu'elle existe pour couvrir"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('dr011')"],
+        "declencher": ["Puzzle.Reveal('dr014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dr011"]},
+    },
+    {
+        "nom": "dr012 Harness Violent Emotions — la revelation convoque Nekra",
+        "pourquoi": ("meme convocation que dr014, declencheur different. La manigance "
+                     "porte 2 menaces PAR JOUEUR (`StartingThreat: \"2*\"`), ou l'etoile "
+                     "signifie bien « par joueur » — contrairement a celle de Nekra"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('dr011')"],
+        "declencher": ["Puzzle.Reveal('dr012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dr011", "dr012"]},
+    },
+    {
+        "nom": "dr013 Emotionally Overwhelmed — revelee, elle s'accroche a l'identite",
+        "pourquoi": ("« Attach to your identity » rendu par la fabrique dediee "
+                     "`AttachToFaceWhenPutIntoPlay(\"YourIdentity\")`, modele 15026 "
+                     "(attachement nemesis de Scarlet Witch)"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('dr013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dr013"]},
+    },
 ]
 
 # ------------------------------------------------- verifications outillees --

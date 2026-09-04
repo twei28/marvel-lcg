@@ -1299,6 +1299,19 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "dr001a": {
+        bio: "Anthony Ludgate Druid est psychiatre de formation quand une lettre anonyme l'envoie au Tibet, où un lama mourant lui transmet des pouvoirs mystiques et le charge de veiller sur la Terre. Premier super-héros de l'ère moderne selon certaines chronologies, il précède Doctor Strange comme sorcier des Vengeurs, sans jamais s'en défaire d'une certaine humilité clinique. Il lit les esprits, se projette hors de son corps et commande aux éléments, mais reste avant tout un médecin : sa vraie force est de comprendre ce qui blesse les autres.",
+        bioEn: "Anthony Ludgate Druid trained as a psychiatrist before an anonymous letter sent him to Tibet, where a dying lama passed on mystical powers and charged him with watching over the Earth. By some chronologies the first super hero of the modern age, he precedes Doctor Strange as the Avengers' sorcerer, never quite shedding a clinician's humility. He reads minds, projects out of his body and commands the elements, but he remains a doctor first: his real strength is understanding what hurts people.",
+        civil: "Anthony Ludgate Druid",
+        base: "Nouvelle-Angleterre, et le plan astral",
+        baseEn: "New England, and the astral plane",
+        equipes: "Vengeurs, Ordre ancien des druides",
+        equipesEn: "Avengers, Ancient Order of Druids",
+        ennemis: "Nekra, Légion létale",
+        ennemisEn: "Nekra, Lethal Legion",
+        apparition: "Amazing Adventures #1 (1961)",
+    },
+
     "yd001a": {
         bio: "Yondu Udonta est un Centaurien de la planète Centauri-IV, arraché enfant à son monde et vendu aux Ravageurs, dont il a fini par diriger un clan. Sa crête sensorielle lui permet de piloter la flèche Yaka par le seul sifflement : l'arme tourne, revient, transperce, et lui obéit au souffle près. Contrebandier, mercenaire, voleur d'enfants pour le compte d'Ego, il a élevé Peter Quill au lieu de le livrer — et a été banni des Ravageurs pour ça. Il joue les brutes vénales avec un soin d'artisan, et meurt en père.",
         bioEn: "Yondu Udonta is a Centaurian from Centauri-IV, torn from his world as a child and sold to the Ravagers, whose clan he eventually came to lead. The sensory fin on his head lets him steer the Yaka arrow by whistling alone: the weapon turns, returns, pierces, obedient to his breath. Smuggler, mercenary, child-thief in Ego's employ, he raised Peter Quill instead of delivering him — and was exiled from the Ravagers for it. He plays the greedy thug with a craftsman's care, and dies a father.",
