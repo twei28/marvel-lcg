@@ -18641,10 +18641,611 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["bk018"]},
     },
+    {
+        "nom": "tt001a Vortex Control — une attaque de base donne +1 ATQ, et RIEN aux deux autres pouvoirs",
+        "pourquoi": ("« +1 to THAT power » : le pouvoir est lu sur `message.power`, jamais "
+                     "devine. Les deux zeros sur CTR et DEF sont le CONTRE-TEMOIN : sans "
+                     "eux, un module qui donnerait +1 partout passerait ce cas, et la "
+                     "carte deviendrait un triple de tt003 Accelerated Rotation.\n"
+                     "⚠ AUCUNE LIMITE IMPRIMEE, contrairement a `14001a` Quicksilver : "
+                     "l'absence de `LimitOncePerRound` est volontaire et verifiee au scan.\n"
+                     "⚠ LA MAIN EST VIDEE AVANT LE CHANGEMENT DE FORME, ET C'EST OBLIGATOIRE. "
+                     "Le deck contient trois `12016` Moxie, que le pilote joue systematiquement "
+                     "en Reponse au passage en heros : +1 ATQ, +1 CTR et +1 DEF pour tout "
+                     "le round. Toutes les mesures d'attribut en etaient faussees (leçon "
+                     "doctor_druid). `main_exclusive` ne vide la main qu'APRES `mise_en_place` : "
+                     "le changement de forme doit donc vivre dans `declencher`, pas avant.\n"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                       "Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "thwart": 0, "defense": 0}},
+    },
+    {
+        "nom": "tt001a Vortex Control — deux usages dans le round EMPILENT : +2 ATQ",
+        "pourquoi": ("temoin de l'ABSENCE de limite, exige par le §8 du PROCESSUS-CARTE a "
+                     "l'envers : ici c'est le SECOND declenchement qui doit passer. Un "
+                     "`LimitOncePerRound` pose par reflexe laisserait ce cas a +1.\n"
+                     "Main videe avant le changement de forme, voir le cas precedent"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                       "Puzzle.Attack('tt001a')", "Puzzle.Ready('tt001a')",
+                       "Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 2}},
+    },
+    {
+        "nom": "tt001b Slowdown — passer en civil remet 2 cartes SUPERPOWER de la defausse dans le deck",
+        "pourquoi": ("« up to 2 SUPERPOWER cards » : filtre par TRAIT et non par type, et "
+                     "destination DECK et non main — c'est le contraste imprime avec tt005 "
+                     "Pine Ridge Reservation, qui rend a la MAIN.\n"
+                     "⚠ VERIFICATION OUTILLEE OBLIGATOIRE : `dans_deck_joueur` lit un deck "
+                     "LIE a sa defausse et repondait deja oui sans le module. Sorti par la "
+                     "substitution, pas par le cas"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.CreatePlayerDiscardPile('bk005', 'bk006')"],
+        "declencher": ["Puzzle.ChangeToFace('tt001a', 'tt001b')"],
+        # ⚠ `cibles` SEUL NE SUFFIT PAS SUR UN « UP TO N ». Le pilote prend le
+        # MINIMUM d'une plage : avec `range=(0, 2)` il choisit ZERO carte, la
+        # capacite « active » sans rien faire, et le journal ne montre qu'un
+        # « Drew Daniels activates » parfaitement muet. Le repli generique
+        # n'honore `cibles` que pour UNE cible : la premiere passe remontait
+        # tt003 et laissait tt004 en defausse. Seule la branche
+        # `choisir_option` applique `forcees[:maxi]`, donc les DEUX.
+        "choisir_option": "Slowdown",
+        "cibles": ["bk005", "bk006"],
+        "verifier": "tt001b_remelange",
+    },
+    {
+        "nom": "tt002 Shooting Star — son arrivee REDRESSE le heros",
+        "pourquoi": ("« ready TEXAS TWISTER » : l'IDENTITE, pas l'alliee. Le heros est "
+                     "incline expres, sans quoi le redressement ne se verrait pas.\n"
+                     "01090 Strength et 01088 Energy sont en main POUR PAYER les 3"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.Exhaust('tt001a')"],
+        "main_exclusive": ["tt002", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["tt002"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tt001a"], "en_jeu": ["tt002"]},
+    },
+    {
+        "nom": "tt003 Accelerated Rotation — les TROIS pouvoirs d'un coup",
+        "pourquoi": ("contraste imprime avec tt001a, qui n'en donne qu'un. Cout 0 : aucune "
+                     "ressource necessaire, la main peut rester vide.\n"
+                     "⚠ La main est reduite a la seule carte testee AVANT le changement "
+                     "de forme : sinon le pilote joue Moxie et fausse les trois mesures"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": [],
+        "main_exclusive": ["tt003"],
+        "declencher": ["Puzzle.ChangeToFace('tt001b', 'tt001a')"],
+        "jouer": ["tt003"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "thwart": 1, "defense": 1}},
+    },
+    {
+        "nom": "tt004 Keep Spinning — jouee en Reponse a une attaque de base, elle redresse le heros",
+        "pourquoi": ("la carte est en MAIN et non dans `jouer` : c'est une REPONSE, elle ne "
+                     "se joue que dans sa fenetre, juste apres le pouvoir de base (modele "
+                     "`ma011`). Le heros s'incline en attaquant, le redressement est donc "
+                     "mesurable"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')"],
+        "main_exclusive": ["tt004", "01090"],
+        "declencher": ["Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tt001a"], "defausse": ["tt004"]},
+    },
+    {
+        "nom": "tt005 Pine Ridge Reservation — +1 REC a Drew Daniels, et la derniere defaussee revient en main",
+        "pourquoi": ("les DEUX moities de la carte dans un seul cas (§6 du PROCESSUS-CARTE). "
+                     "REC imprimee 3 -> 4. « the TOP card » est la DERNIERE defaussee, donc "
+                     "tt004 et non tt003 : la defausse est creee dans cet ordre expres"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tt005', under_control=True)",
+                          "Puzzle.CreatePlayerDiscardPile('tt003', 'tt004')"],
+        "declencher": ["Puzzle.Action('tt005', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"recover": 1}, "en_main": ["tt004"],
+                    "exhausted": ["tt005"]},
+    },
+    {
+        "nom": "tt006 Agent T — l'identite gagne le trait S.H.I.E.L.D, et la carte paie Keep Spinning",
+        "pourquoi": ("les DEUX moities. ⚠ LE TRAIT S'ECRIT `S.H.I.E.L.D` SANS POINT FINAL "
+                     "cote moteur (card_face.py:76), la ou la carte imprime le point.\n"
+                     "La main ne contient QUE Keep Spinning, sans une seule ressource : "
+                     "si Agent T ne generait rien, l'evenement a 1 serait impayable et le "
+                     "heros resterait incline"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt006', under_control=True)"],
+        "main_exclusive": ["tt004"],
+        "declencher": ["Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["S.H.I.E.L.D"], "exhausted": ["tt006"],
+                    "pret": ["tt001a"]},
+    },
+    {
+        "nom": "tt007 Cyclonic Suction — un pouvoir de base fait piocher la carte du dessus",
+        "pourquoi": ("le deck est force a un seul exemplaire pour que la pioche soit "
+                     "MESURABLE. L'inclinaison est le COUT : sans elle, la Reponse n'a pas "
+                     "eu lieu"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt007', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('tt003')"],
+        "main_exclusive": [],
+        "declencher": ["Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["tt003"], "exhausted": ["tt007"]},
+    },
+    {
+        "nom": "tt008 Spin It to the Left! — +1 CTR et +1 DEF, et RIEN a l'ATQ",
+        "pourquoi": ("le zero sur l'ATQ est le CONTRE-TEMOIN qui separe tt008 de sa "
+                     "jumelle tt009 : deux modules identiques passeraient chacun leur "
+                     "propre cas sans ce chiffre.\n"
+                     "⚠ Main videe avant le changement de forme : Moxie fausserait les "
+                     "trois mesures (leçon doctor_druid)"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                       "Puzzle.PutIntoPlay('tt008', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1, "defense": 1, "attack": 0}},
+    },
+    {
+        "nom": "tt008 Spin It to the Left! — une ATTAQUE de base la defausse",
+        "pourquoi": ("« After you make a basic ATTACK » : c'est le pouvoir qu'elle NE "
+                     "renforce PAS qui la tue. `powers=[\"ATK\"]` seulement"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt008', under_control=True)"],
+        "declencher": ["Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["tt008"]},
+    },
+    {
+        "nom": "tt008 Spin It to the Left! — un CONTRE de base ne la defausse PAS",
+        "pourquoi": ("contre-temoin du precedent : copier `powers` de la jumelle tt009 "
+                     "sans le changer rendrait les deux cartes identiques, et ce cas est "
+                     "le seul qui le verrait"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt008', under_control=True)"],
+        "declencher": ["Puzzle.Thwart('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["tt008"]},
+    },
+    {
+        "nom": "tt009 Spin It to the Right! — +1 ATQ et +1 DEF, et un CONTRE de base la defausse",
+        "pourquoi": ("miroir exact de tt008. Le zero au CTR separe les deux cartes, et "
+                     "`powers=[\"THW\"]` est le pouvoir qu'elle ne renforce pas.\n"
+                     "⚠ Main videe avant le changement de forme, voir tt008"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                       "Puzzle.PutIntoPlay('tt009', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "defense": 1, "thwart": 0}},
+    },
+    {
+        "nom": "tt009 Spin It to the Right! — l'arrivee de sa jumelle ROTATION la defausse",
+        "pourquoi": ("« When a [[ROTATION]] card enters play, discard this card » : les "
+                     "deux ameliorations portent le trait et s'excluent. ⚠ C'est une "
+                     "INTERRUPTION : tt009 part AVANT que tt008 n'arrive, donc les deux "
+                     "ne coexistent jamais.\n"
+                     "⚠ Et le module doit S'EXCLURE LUI-MEME, sinon il se defausse a sa "
+                     "propre entree en jeu — tt008 doit donc bien etre EN JEU a la fin"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt009', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('tt008', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["tt009"], "en_jeu": ["tt008"]},
+    },
+    {
+        "nom": "tt010 Texas Twister's Hat — Solide : un seul Etourdi ne suffit plus",
+        "pourquoi": ("le mot-cle steady n'est PAS mesurable par `attributs` (absent de la "
+                     "table IMPRIME du harnais, meme leçon que dr008). On le mesure donc "
+                     "par son EFFET, dans une verification outillee : une carte Etourdi "
+                     "est bien posee (sinon le declencheur n'a rien fait), et l'identite "
+                     "n'est pourtant PAS etourdie. ⚠ `attendu.statuts_absents` ne "
+                     "conviendrait pas : il lit `HasStatus`, qui est VRAI des la premiere "
+                     "carte, Solide ou non"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt010', under_control=True)"],
+        "declencher": ["Puzzle.Stun('tt001a')"],
+        "verifier": "tt010_solide",
+    },
+    {
+        "nom": "tt010 Texas Twister's Hat — son Action civile redresse Drew Daniels",
+        "pourquoi": ("« ready DREW DANIELS » : l'ALTER-EGO. L'identite est inclinee expres. "
+                     "⚠ La carte se JOUE en forme heros et ne SERT qu'en forme civile"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tt010', under_control=True)",
+                          "Puzzle.Exhaust('tt001b')"],
+        "declencher": ["Puzzle.Action('tt010', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tt001b"], "exhausted": ["tt010"]},
+    },
+    {
+        "nom": "tt011 Whirling Debris — Riposte 1 au heros, et son Action repartit l'ATQ entre deux ennemis",
+        "pourquoi": ("les DEUX moities. La riposte se mesure par `attributs_carte` sur "
+                     "l'identite (retaliate est dans la table IMPRIME).\n"
+                     "⚠ ECART ASSUME : le texte est une Interruption sur l'attaque de base, "
+                     "impossible a rendre — les cibles sont figees avant. Voir l'en-tete du "
+                     "module. La forme retenue est une Hero Action qui incline la carte ET "
+                     "l'identite"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt011', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Action('tt011', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["tt001a", "retaliate", 1]],
+                    "exhausted": ["tt011", "tt001a"]},
+    },
+    {
+        "nom": "tt012 Armadillo — deux pions carapace, et l'arrivee d'un sbire lui donne Robuste",
+        "pourquoi": ("les DEUX moities. Le retrait du pion est un COUT : le compteur passe "
+                     "de 2 a 1, et c'est lui qui limite la carte — surtout pas un "
+                     "`LimitOncePerRound` ajoute par reflexe"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt012', under_control=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["tt012", "shell", 1]],
+                    "statuts": [["tt012", "Tough"]]},
+    },
+    {
+        "nom": "tt013 Fifty-One — vaincu par ses PROPRES degats consequents, il dope un autre allie",
+        "pourquoi": ("« defeated by taking CONSEQUENTIAL damage » : `by_consequential=True` "
+                     "sur la fabrique, et non une attaque du vilain. Fifty-One a 2 PV et "
+                     "1 degat consequent au contre : deux contres le tuent"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt013', under_control=True)",
+                          "Puzzle.PutIntoPlay('tt002', under_control=True)"],
+        "declencher": ["Puzzle.Thwart('tt013')", "Puzzle.Ready('tt013')",
+                       "Puzzle.Thwart('tt013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["tt013"],
+                    "attributs_carte": [["tt002", "thwart", 1], ["tt002", "attack", 1]]},
+    },
+    {
+        "nom": "tt014 Firebird — une energie sur le deck lui epargne son degat consequent",
+        "pourquoi": ("CTR 2* : contrer lui coute normalement 1 degat. 01088 Energy porte "
+                     "DEUX icones [energy] imprimees, la reduction est donc de 2 et le "
+                     "degat tombe a 0.\n"
+                     "⚠ La menace prouve que le contre a bien eu lieu : sans elle, « 0 "
+                     "degat » voudrait dire « rien ne s'est passe » (le piege paye sur "
+                     "tt017 et tt018)"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt014', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('01088')"],
+        "declencher": ["Puzzle.Thwart('tt014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tt014", 0]], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "tt014 Firebird — contre-temoin : sans energie sur le deck, elle prend son degat",
+        "pourquoi": ("« For each [energy] PRINTED resource » : 01090 Strength est "
+                     "[physical][physical], aucune reduction. Sans ce cas, un module qui "
+                     "reduirait par carte defaussee au lieu de par icone energie passerait "
+                     "le precedent"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt014', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('01090')"],
+        "declencher": ["Puzzle.Thwart('tt014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tt014", 1]], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "tt021 Master Pandemonium — la branche « energie » vide la main et laisse l'identite PRETE",
+        "pourquoi": ("⚠ CE CAS-CI EST LE SEUL DISCRIMINANT DES DEUX, et c'est la "
+                     "substitution qui l'a dit. La branche « incliner l'identite » passe "
+                     "au vert MEME SANS LE MODULE : l'identite se retrouve inclinee par "
+                     "le deroulement normal de l'attaque, la mesure ne prouve donc rien. "
+                     "Ici 01088 Energy doit QUITTER la main, ce que rien d'autre ne fait, "
+                     "et l'identite doit rester PRETE, ce qui exclut l'autre branche"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.Reveal('tt021')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Scheme('tt021')"],
+        "choisir_option": "Spend_an_energy_resource",
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["01088"], "pret": ["tt001a"], "en_jeu": ["tt021"]},
+    },
+    {
+        "nom": "tt021 Master Pandemonium — sans energie en main, son activation incline l'identite",
+        "pourquoi": ("« choose to EITHER spend an [energy] resource OR exhaust your "
+                     "identity » : la main ne contient que 01090 Strength, donc aucune "
+                     "energie, et la seule branche payable est l'inclinaison.\n"
+                     "⚠ C'est une INTERRUPTION et non une Reponse : la taxe se paie AVANT "
+                     "l'activation. `AfterEnemyActivatesAgainstYou` (montage bk018) serait "
+                     "le mauvais moment.\n"
+                     "⚠ `Puzzle.Scheme` ET NON `Puzzle.Attack` : sur une attaque, le pilote "
+                     "declare une DEFENSE, ce qui incline l'identite tout seul — la mesure "
+                     "passait alors au vert sans le module. La manigance du sbire est une "
+                     "activation propre, sans defense"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.Reveal('tt021')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Scheme('tt021')"],
+        "choisir_option": "Exhaust_your_identity",
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["tt001a"], "en_jeu": ["tt021"]},
+    },
+    {
+        "nom": "tt015 Living Lightning — son attaque frappe TOUT LE MONDE, y compris ses amis",
+        "pourquoi": ("« each character IN PLAY » : amis compris. Le contre-temoin est "
+                     "l'ALLIE VOISIN (tt002, 3 PV) qui doit prendre 1 degat : un module "
+                     "qui aurait ecrit « chaque ennemi » passerait tout le reste"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt015', under_control=True)",
+                          "Puzzle.PutIntoPlay('tt002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('tt015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tt002", 1]], "degats_identite": 1},
+    },
+    {
+        "nom": "tt016 Lone Star Rangers — la mort d'un RANGER redresse les autres, HEROS COMPRIS",
+        "pourquoi": ("« each RANGER CHARACTER you control » : l'identite heros porte "
+                     "elle-meme le trait RANGER. Un module qui aurait lu « allie » "
+                     "laisserait le heros incline, et c'est exactement ce que ce cas "
+                     "mesure.\n"
+                     "Fifty-One meurt de ses propres degats consequents pour fournir le "
+                     "declencheur"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt013', under_control=True)",
+                          "Puzzle.PutIntoPlay('tt002', under_control=True)",
+                          "Puzzle.Exhaust('tt001a')", "Puzzle.Exhaust('tt002')"],
+        "main_exclusive": ["tt016", "01090"],
+        "declencher": ["Puzzle.Thwart('tt013')", "Puzzle.Ready('tt013')",
+                       "Puzzle.Thwart('tt013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tt001a", "tt002"]},
+    },
+    {
+        "nom": "tt017 Phantom Rider — il subit 1 degat consequent de moins",
+        "pourquoi": ("CTR 1* : un contre lui coute normalement 1 degat. Avec la reduction, "
+                     "il n'en prend aucun. La moitie « ignore Garde/Patrouille/Crise » "
+                     "n'est pas mesurable dans le meme cas : elle vit dans "
+                     "`UnitIgnoreKeywordIcons`, dont le piege connu (`as012`) est le "
+                     "`which_unit`.\n"
+                     "⚠ LE TEMOIN DE MENACE EST OBLIGATOIRE. Sans menace sur le complot, "
+                     "`Puzzle.Thwart` ne fait RIEN et l'allie ne prend aucun degat : le "
+                     "cas passait alors au vert sans avoir rien mesure. Menace 5 -> 4 "
+                     "prouve que le contre a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt017', under_control=True)"],
+        "declencher": ["Puzzle.Thwart('tt017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tt017", 0]], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "tt018 Red Wolf — l'arrivee d'un allie lui epargne 1 degat consequent",
+        "pourquoi": ("⚠ « UNDER YOUR CONTROL » : sans `under_your_control=True`, la carte "
+                     "serait deux fois trop bonne en multijoueur. Red Wolf a CTR 2** : "
+                     "deux degats consequents normalement, un seul avec la reduction.\n"
+                     "⚠ RED WOLF DECLENCHE SUR SA PROPRE ENTREE EN JEU : rien dans le "
+                     "texte ne l'exclut, et c'est le seul allie du cas. Menace 5 -> 3 "
+                     "prouve que le contre a eu lieu, sans quoi 0 degat voudrait dire "
+                     "« rien ne s'est passe »"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('tt018', under_control=True)"],
+        "declencher": ["Puzzle.Thwart('tt018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tt018", 1]], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "tt019 Twist Again — un pouvoir de base du HEROS redresse aussi Shooting Star",
+        "pourquoi": ("« ready BOTH of them » : les deux, y compris celui qui n'a rien fait. "
+                     "Shooting Star est inclinee expres et ne fait rien elle-meme — c'est "
+                     "elle qui prouve le « both »"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.PutIntoPlay('tt002', under_control=True)",
+                          "Puzzle.Exhaust('tt002')"],
+        "main_exclusive": ["tt019", "01090"],
+        "declencher": ["Puzzle.Attack('tt001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tt001a", "tt002"]},
+    },
+    {
+        "nom": "tt020 Rodeo Extravaganza — l'identite ne se redresse plus, et l'Action civile la retire de la PARTIE",
+        "pourquoi": ("les DEUX moities. Shooting Star arrive et devrait redresser le heros "
+                     "(tt002) : l'obligation l'en empeche, ce qui prouve le blocage par "
+                     "une carte JOUEUR.\n"
+                     "⚠ « REMOVE from the game » et non « discard » : `hors_jeu` seul ne "
+                     "suffirait pas a distinguer les deux, mais le retrait est la seule "
+                     "sortie codee.\n"
+                     "⚠ EMPLACEMENT : bandeau TEXAS TWISTER, donc module dans "
+                     "`texas_twister/` et non dans le dossier nemesis. Piege bt019, "
+                     "SIXIEME occurrence"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.Reveal('tt020')", "Puzzle.Exhaust('tt001a')"],
+        "main_exclusive": ["tt002", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["tt002"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["tt001a"], "en_jeu": ["tt020", "tt002"]},
+    },
+    {
+        "nom": "tt020 Rodeo Extravaganza — inclinee, l'alter-ego la retire de la partie",
+        "pourquoi": ("l'autre moitie : la seule sortie de l'obligation. ⚠ Elle ne se "
+                     "defausse PAS toute seule a la revelation, contrairement a yd013, "
+                     "dr010 et bk017"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.Reveal('tt020')"],
+        "declencher": ["Puzzle.Action('tt020', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["tt020"], "exhausted": ["tt001b"]},
+    },
+    {
+        "nom": "tt022 Portal to Hell — sa revelation convoque ET revele Demonic Limbs",
+        "pourquoi": ("« FIND ... AND REVEAL IT » : chercher ne suffit pas. Les DEUX zones "
+                     "sont fouillees, deck de rencontre ET defausse — meme motif que "
+                     "yd017, dr012, bk020"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('tt023')",
+                          "Puzzle.Reveal('tt021')"],
+        "declencher": ["Puzzle.Reveal('tt022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["tt022", "tt023"]},
+    },
+    {
+        "nom": "tt023 Demonic Limbs — accrochee a Master Pandemonium, il ne peut plus subir de degats",
+        "pourquoi": ("« Master Pandemonium CANNOT TAKE DAMAGE » : on le frappe pour 99 et "
+                     "il reste a 0. C'est la seule facon de prouver que "
+                     "`UnitCannotTakeDamage` vise bien l'HOTE et non l'attachement"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.Reveal('tt021')"],
+        "declencher": ["Puzzle.Reveal('tt023')", "Puzzle.Damage('tt021', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["tt021", "tt023"], "degats": [["tt021", 0]]},
+    },
+    {
+        "nom": "tt023 Demonic Limbs — sans Master Pandemonium, elle etourdit ET rend confus",
+        "pourquoi": ("la clause de repli « If you cannot [attach] », qui n'est PAS "
+                     "decorative : tt022 revele l'attachement meme quand le sbire est "
+                     "absent, et c'est le cas frequent. Elle passe par "
+                     "`if_cannot_operation`, le point d'entree prevu par la fabrique"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')"],
+        "declencher": ["Puzzle.Reveal('tt023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["tt001a", "Stunned"], ["tt001a", "Confused"]]},
+    },
+    {
+        "nom": "tt024 Soul Fragmentation — les TROIS clauses se cumulent",
+        "pourquoi": ("trois `if` independants, pas un choix : un deck force a [physical], "
+                     "[mental] et [wild] declenche les trois effets d'un coup. Lire « ou » "
+                     "diviserait la carte par trois.\n"
+                     "⚠ L'ENERGIE N'EST PAS CITEE par la carte : c'est la seule couleur "
+                     "sans effet, et justement celle que Master Pandemonium reclame"),
+        "scenario": "rhino",
+        "heros": "texas_twister",
+        "mise_en_place": ["Puzzle.ChangeToFace('tt001b', 'tt001a')",
+                          "Puzzle.CreatePlayerDeck('01090', '01089', '01072')"],
+        "declencher": ["Puzzle.Reveal('tt024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["tt001a", "Stunned"], ["tt001a", "Confused"]],
+                    "exhausted": ["tt001a"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+def tt001b_remelange(monde, aides):
+    """tt001b : les cartes SUPERPOWER ont bien QUITTE la defausse.
+
+    ⚠ LES DEUX CARTES SONT ETRANGERES AU DECK (bk005 et bk006, pack blink),
+    et ce n'est pas un caprice. Une premiere version posait tt003 et tt004,
+    qui sont DANS le deck : la main de depart en avait deja defausse un
+    exemplaire, le pilote a remelange CET exemplaire-la, et le controle par
+    card_id voyait toujours « tt004 en defausse ». Le journal montrait pourtant
+    deux cartes remelangees. Deux objets, un seul card_id.
+
+    ⚠ `attendu.dans_deck_joueur` NE DISCRIMINE PAS ICI. Il lit
+    `player_deck.GetAll()`, et le deck du joueur est LIE a sa defausse
+    (`BindDiscardPile`, player.py:73) : les cartes de la defausse y figurent
+    deja. Le cas passait donc au vert SANS le module — c'est la substitution
+    qui l'a sorti, et rien d'autre.
+
+    On mesure donc le depart : les deux cartes ne sont plus dans la DEFAUSSE.
+    """
+    ids = [getattr(f.paper, "card_id", None)
+           for f in monde.players[0].discard_pile.GetAll()]
+    restantes = [c for c in ("bk005", "bk006") if c in ids]
+    if restantes:
+        return False, f"encore dans la defausse : {restantes} (defausse = {ids})"
+    return True, "les 2 cartes SUPERPOWER ont quitte la defausse"
+
+
+def tt010_solide(monde, aides):
+    """tt010 : Solide accorde par une amelioration, mesure par son EFFET.
+
+    ⚠ `attendu.statuts` NE PEUT PAS servir ici. Il appelle `HasStatus`, qui
+    dit seulement « une carte Etourdi est posee » — et elle l'est, meme avec
+    Solide. Le mot-cle ne supprime pas la carte, il exige la DEUXIEME avant
+    que le personnage soit reellement etourdi. Et `attributs` ne peut pas
+    davantage : `steady` est absent de la table IMPRIME du harnais, meme
+    leçon que `stalwart` sur dr008.
+
+    On mesure donc les deux a la fois : la carte est bien posee (sinon le
+    declencheur n'a rien fait, et le cas passerait au vert pour rien), ET
+    l'identite n'est pourtant PAS etourdie.
+    """
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    statut = identite.CastTo(aides["CanStatus"])
+    if not statut.HasStatus("Stunned"):
+        return False, "aucune carte Etourdi posee : le declencheur n'a rien fait"
+    if statut.IsStunned():
+        return False, "l'identite est REELLEMENT etourdie : Solide n'a pas ete accorde"
+    return True, "1 carte Etourdi posee, mais l'identite n'est pas etourdie (Solide)"
+
+
 def aa002_sort_attache(monde, aides):
     """aa002 : le SPELL choisi est place SOUS Scarlet Witch, plus en defausse.
 

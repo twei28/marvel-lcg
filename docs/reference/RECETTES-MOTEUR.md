@@ -157,6 +157,10 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
 - Coût arbitraire : `CostFunc.Custom(None, fn)` — `fn(targets, effect) ->
   bool`, False bloque le paiement (ho009).
 - « Hero form only » : `.SetPlay(hero_form_only=True)` (01009, ho012).
+- **Une BRANCHE de choix qui coûte** : `ForChoiceAbilityWithCost(cost, nom)`
+  (`for_choice.py:110`), le coût en **premier** argument.
+  `ForChoiceAbility(...).SetCost(...)` lève un assert explicite du moteur
+  (`ability.py:342`).
 
 ## 6. Ciblage
 
@@ -173,6 +177,36 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
 - **`[filtre]`** : `... rapport.json "ho0"` — 26 cas en 4 min. La batterie
   complète reste due quand un fichier moteur PARTAGÉ change (règle de portée
   §6bis du GUIDE).
+
+### 7bis. Quatre façons de mesurer *rien* et de le croire vert
+
+Constatées le 04-05/09/2026 (packs blink et texas_twister), chacune a produit
+au moins un cas vert qui ne prouvait rien.
+
+- **Moxie (`12016`) fausse TOUTE mesure d'attribut.** Le pilote la joue
+  systématiquement en Réponse au passage en forme héros : +1 ATQ, +1 CTR,
+  +1 DEF pour le round. `main_exclusive` ne vide la main qu'**après**
+  `mise_en_place` : le changement de forme doit donc vivre dans `declencher`.
+  Deux packs l'ont payée, l'un en vert (doctor_druid, 3 cas), l'autre en rouge.
+- **`Puzzle.Thwart` ne fait RIEN sans menace sur le complot.** Pas de cible
+  légale, pas de contre, pas de dégât conséquent — et « 0 dégât » ressemble
+  exactement au succès qu'on cherchait. Toujours poser
+  `Puzzle.SetThreat('01097b', N)` **et** un témoin de menace dans `attendu`.
+  Idem pour `Puzzle.Attack` : le pilote y déclare une **défense**, qui incline
+  l'identité toute seule — mesurer « l'identité est inclinée » après une
+  attaque ne prouve rien.
+- **`dans_deck_joueur` lit un deck LIÉ à sa défausse** (`BindDiscardPile`,
+  `player.py:73`) : une carte de la défausse y figure déjà. Pour prouver qu'une
+  carte a **quitté** la défausse, écrire une vérification outillée.
+- **Le pilote prend le MINIMUM d'un « up to N ».** Avec `range=(0, 2)` il
+  choisit zéro cible et la capacité « active » sans rien faire. Il faut
+  `cibles`, **et** `choisir_option` : le repli générique n'honore `cibles` que
+  pour UNE cible, seule la branche `choisir_option` applique `forcees[:maxi]`.
+
+⚠ Et un `card_id` ne désigne pas un objet : deux exemplaires de la même carte
+partagent l'identifiant. Un contrôle « X est encore en défausse » peut viser
+l'exemplaire d'à côté. Préférer, pour ces cas, des cartes **étrangères au
+deck**.
 - **JAMAIS deux harnais en parallèle** (test_capacites, verifier_tous_les_decks,
   autoplay) : chaque fils réécrit `.game-src/launch.json` → AssertionError
   ip/port fantômes, quelles que soient les plages.

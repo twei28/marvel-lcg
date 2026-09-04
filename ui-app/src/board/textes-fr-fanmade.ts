@@ -1973,4 +1973,96 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'dr013': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand votre tour commence, défaussez un événement spécifique à l'identité de votre main.\n<b>Action d'alter-ego</b> : étourdissez votre identité → défaussez cette carte.",
   // doctor_druid_nemesis — Resurrection of Nekra (Treachery)
   'dr014': "<b>Une fois révélée</b> : si Nekra est en jeu, elle s'active contre vous. SINON, cherchez Nekra dans le deck ET la défausse de rencontre, et révélez-la.",
+  // blink — * Blink (Hero) [set 156, Kajislav]
+  'bk001a': "<i>Manipulation des portails</i> — <b>Action</b> : rendez à votre main 1 amélioration [[PORTAL]] en jeu. <i>(Limite d'une fois par round.)</i>\n<b>Réponse</b> : après être passée sous cette forme, remélangez 1 amélioration [[PORTAL]] de votre défausse dans votre deck.",
+  // blink — * Clarice Ferguson (AlterEgo)
+  'bk001b': "<i>Vacances méritées</i> — <b>Réponse forcée</b> : après être passée sous cette forme, remélangez chaque amélioration [[PORTAL]] en jeu dans votre deck. Soignez 1 dégât de votre identité par amélioration ainsi remélangée.",
+  // blink — * Sabretooth (Ally)
+  'bk002': "<b>Réponse</b> : après que Sabretooth arrive dans votre main, s'il y a une amélioration [[PORTAL]] en jeu, mettez-le en jeu sous votre contrôle. <i>(Limite d'une fois par round.)</i>",
+  // blink — Assault Redirection (Event, x2)
+  'bk003': "<b>Interruption de héros</b> <i>(défense)</i> : quand un personnage devrait subir des dégâts, quels qu'ils soient, d'une attaque, prévenez la totalité de ces dégâts. Vous pouvez défausser une amélioration [[PORTAL]] attachée à un ennemi pour infliger à cet ennemi autant de dégâts que ceux prévenus de cette façon.",
+  // blink — Everywhere at Once (Event, x3)
+  'bk004': "<b>Action de héros</b> <i>(attaque/contre)</i> : infligez 2 dégâts à chaque ennemi portant une amélioration [[PORTAL]]. Retirez 2 menaces de chaque manigance portant une amélioration [[PORTAL]].",
+  // blink — Lose Footing (Event)
+  'bk005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi, plus 2 dégâts supplémentaires par amélioration [[PORTAL]] qui lui est attachée.",
+  // blink — Multiple 'Porting (Event)
+  'bk006': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance, plus 2 menaces supplémentaires par amélioration [[PORTAL]] qui lui est attachée.",
+  // blink — * Crystal Palace (Support)
+  'bk007': "<b>Réponse</b> : après qu'une amélioration [[PORTAL]] est défaussée du jeu, inclinez Crystal Palace → attachez-la ici face cachée.\n<b>Action d'alter-ego</b> : inclinez Crystal Palace → ajoutez à votre main chaque amélioration [[PORTAL]] attachée ici.",
+  // blink — * Blink's Quiver (Upgrade)
+  'bk008': "<b>Action de héros</b> : inclinez Blink's Quiver → cherchez une amélioration [[PORTAL]] dans votre deck et ajoutez-la à votre main.\n<b>Action de héros</b> : mettez en jeu une amélioration [[PORTAL]] de votre main.",
+  // blink — Portal (Upgrade, x5)
+  'bk009': "Forme héros uniquement. Attachez-la à un ennemi ou à une manigance.\n<b>Interruption</b> : quand l'ennemi ou la manigance attaché(e) devient la cible d'un événement [[ATTACK]] ou [[THWART]], réduisez de 2 le coût en ressources de cet événement. Défaussez cette carte après la résolution de cet événement.",
+  // blink — * Nocturne (Ally, Agressivité)
+  'bk010': "<b>Réponse</b> : après que Nocturne entre en jeu, infligez 1 dégât à un sbire par amélioration que vous contrôlez.",
+  // blink — Little Surprise (Event, Agressivité, x2)
+  'bk011': "<b>Interruption de héros</b> <i>(attaque)</i> : quand un ennemi manigance, infligez-lui 4 dégâts.",
+  // blink — * Mimic (Ally, Basic)
+  'bk012': "[star] <b>Action</b> : choisissez un personnage en jeu → jusqu'à la fin du round, la CTR de Mimic est égale à la CTR imprimée de ce personnage <i>(sa SCH à la place si vous choisissez un ennemi)</i> et son ATQ est égale à l'ATQ imprimée de ce personnage.",
+  // blink — * Morph (Ally, Basic)
+  'bk013': "<b>Action</b> : remélangez Morph dans le deck de rencontre.\n<b>Une fois révélée</b> : défaussez Morph.",
+  // blink — Proper Funeral (Event, Basic, x2)
+  'bk014': "Alliance. Max 1 par phase.\n<b>Réponse</b> : après qu'un allié est vaincu, retirez cet allié de la partie → piochez 3 cartes.",
+  // blink — * Earth-295 (Support, Basic)
+  'bk015': "<b>Action</b> : inclinez Earth-295 et dépensez 1 ressource de n'importe quel type → redressez un allié, un soutien ou une amélioration unique ([star]) en jeu.",
+  // blink — * Tallus (Upgrade, Basic)
+  'bk016': "<b>Action</b> : inclinez Tallus → regardez la carte du dessus de votre deck. Si c'est un événement, vous pouvez le jouer <i>(en payant son coût)</i>. Remélangez votre deck.\n<b>Réponse</b> : après qu'un soutien [[LOCATION]] entre en jeu, redressez Tallus.",
+  // blink — Stranger in This Reality (Obligation)
+  'bk017': "<b><i>Donnez-la au joueur Clarice Ferguson.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Clarice Ferguson → retirez Stranger in This Reality de la partie.\n• Défaussez chaque amélioration [[PORTAL]] en jeu. Si aucune amélioration [[PORTAL]] n'a été défaussée de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
+  // blink_nemesis — * Timebroker (Minion)
+  'bk018': "Timebroker ne peut pas subir de dégâts.\n[star] <b>Réponse forcée</b> : après l'activation de Timebroker, placez 2 menaces sur la manigance annexe Damaged Reality.\n<b>Réponse forcée</b> : après que Timebroker entre en jeu, trouvez la manigance annexe Damaged Reality et révélez-la.\n<i>(Sbire némésis de Blink.)</i>",
+  // blink_nemesis — Damaged Reality (SideScheme)
+  'bk019': "<i>Les Timebreakers avaient accidentellement endommagé de nombreuses réalités à travers le Multivers, puis piégé des héros pour qu'ils réparent leurs erreurs.</i>\n<b>Une fois révélée</b> : placez 1 menace supplémentaire ici par amélioration [[PORTAL]] en jeu. PUIS, défaussez l'une de ces améliorations.\n<b>Une fois vaincue</b> : défaussez Timebroker.",
+  // blink_nemesis — Timebreakers (Treachery, x3)
+  'bk020': "<b>Une fois révélée</b> : cherchez Timebroker dans le deck ET la défausse de rencontre, et révélez-le. <i>(Remélangez.)</i> Si Timebroker n'entre pas en jeu de cette façon, cette carte gagne Renfort.",
+  // texas_twister — * Texas Twister (Hero)
+  'tt001a': "<i>Contrôle du vortex</i> — [star] <b>Réponse</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister <i>(CTR, ATQ ou DEF)</i>, il gagne +1 à CE pouvoir jusqu'à la fin du round.",
+  // texas_twister — * Drew Daniels (AlterEgo)
+  'tt001b': "<i>Ralentissement</i> — <b>Réponse</b> : après être passé sous cette forme, remélangez jusqu'à 2 cartes [[SUPERPOWER]] de votre défausse dans votre deck.",
+  // texas_twister — * Shooting Star (Ally)
+  'tt002': "<b>Réponse</b> : après que Shooting Star entre en jeu, redressez Texas Twister.",
+  // texas_twister — Accelerated Rotation (Event, x2)
+  'tt003': "<b>Action de héros</b> : Texas Twister gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin du round.",
+  // texas_twister — Keep Spinning (Event, x5)
+  'tt004': "<b>Réponse de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister <i>(CTR, ATQ ou DEF)</i>, redressez Texas Twister.",
+  // texas_twister — * Pine Ridge Reservation (Support)
+  'tt005': "Drew Daniels gagne +1 REC.\n<b>Action d'alter-ego</b> : inclinez Pine Ridge Reservation → rendez à votre main la carte du dessus de votre défausse.",
+  // texas_twister — * Agent T (Upgrade)
+  'tt006': "Votre identité gagne le trait [[S.H.I.E.L.D.]].\n<b>Ressource</b> : inclinez Agent T → générez une ressource [wild].",
+  // texas_twister — Cyclonic Suction (Upgrade)
+  'tt007': "<b>Réponse de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister <i>(CTR, ATQ ou DEF)</i>, inclinez Cyclonic Suction → piochez 1 carte.",
+  // texas_twister — Spin It to the Left! (Upgrade)
+  'tt008': "Texas Twister gagne +1 CTR et +1 DEF.\n<b>Interruption forcée</b> : quand une carte [[ROTATION]] entre en jeu, défaussez cette carte.\n<b>Réponse forcée</b> : après que vous faites une attaque de base, défaussez cette carte.",
+  // texas_twister — Spin It to the Right! (Upgrade)
+  'tt009': "Texas Twister gagne +1 ATQ et +1 DEF.\n<b>Interruption forcée</b> : quand une carte [[ROTATION]] entre en jeu, défaussez cette carte.\n<b>Réponse forcée</b> : après que vous faites un contre de base, défaussez cette carte.",
+  // texas_twister — * Texas Twister's Hat (Upgrade)
+  'tt010': "Texas Twister gagne <b><i>Solide</i></b>.\n<b>Action d'alter-ego</b> : inclinez Texas Twister's Hat → redressez Drew Daniels.",
+  // texas_twister — Whirling Debris (Upgrade)
+  'tt011': "Texas Twister gagne <b><i>Riposte 1</i></b>.\n<b>Interruption de héros</b> : quand vous faites une attaque de base, inclinez Whirling Debris → les dégâts de cette attaque peuvent être répartis entre les ennemis de votre choix.",
+  // texas_twister — * Armadillo (Ally, Protection)
+  'tt012': "Armadillo entre en jeu avec 2 pions carapace sur lui.\n<b>Réponse</b> : après qu'un sbire entre en jeu, retirez 1 pion carapace d'Armadillo → donnez une carte de statut Robuste à Armadillo.",
+  // texas_twister — * Fifty-One (Ally, Leadership)
+  'tt013': "<b>Réponse</b> : après que Fifty-One est vaincu en subissant des dégâts consécutifs, choisissez un allié ; cet allié gagne +1 CTR et +1 ATQ jusqu'à la fin de la phase.",
+  // texas_twister — * Firebird (Ally, Justice)
+  'tt014': "[star] <b>Interruption</b> : quand Firebird contre, défaussez la carte du dessus de votre deck. Par ressource [energy] imprimée ainsi défaussée, réduisez de 1 tous les dégâts consécutifs que Firebird subit pour cet usage.",
+  // texas_twister — * Living Lightning (Ally, Agressivité)
+  'tt015': "[star] <b>Interruption</b> : quand Living Lightning attaque, infligez 1 dégât à chaque personnage en jeu.",
+  // texas_twister — Lone Star Rangers (Event, Basic)
+  'tt016': "<b>Action de héros</b> : après qu'un personnage [[RANGER]] est vaincu, redressez chaque personnage [[RANGER]] que vous contrôlez.",
+  // texas_twister — * Phantom Rider (Ally, Basic)
+  'tt017': "Phantom Rider subit -1 dégât consécutif ; il ignore les mots-clés Garde et Patrouille, ainsi que toute icône de crise ([crisis]) en jeu.",
+  // texas_twister — * Red Wolf (Ally, Basic)
+  'tt018': "<b>Réponse</b> : après qu'un allié entre en jeu sous votre contrôle, réduisez de 1 tous les dégâts consécutifs que Red Wolf subit jusqu'à la fin de la phase.",
+  // texas_twister — Twist Again (Event, Basic, max 1)
+  'tt019': "Équipe (Texas Twister et Shooting Star). Max 1 par deck.\n<b>Action de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister ou de Shooting Star, redressez-les tous les deux.",
+  // texas_twister — Rodeo Extravaganza (Obligation)
+  'tt020': "<b><i>Donnez-la au joueur de Drew Daniels.</i></b>\nVotre identité ne peut pas être redressée par des effets de cartes joueur.\n<b>Action d'alter-ego</b> : inclinez Drew Daniels → retirez Rodeo Extravaganza de la partie.",
+  // texas_twister_nemesis — * Master Pandemonium (Minion)
+  'tt021': "[star] <b>Interruption forcée</b> : quand Master Pandemonium s'apprête à s'activer contre vous, choisissez de dépenser une ressource [energy] ou d'incliner votre identité.\n<i>(Sbire némésis de Texas Twister.)</i>",
+  // texas_twister_nemesis — Portal to Hell (SideScheme)
+  'tt022': "<i>Le corps de Master Pandemonium est un portail vers l'Enfer, d'où il peut libérer d'innombrables démons.</i>\n<b>Une fois révélée</b> : cherchez l'attachement Demonic Limbs et révélez-le.",
+  // texas_twister_nemesis — Demonic Limbs (Attachment)
+  'tt023': "Attachez-la à Master Pandemonium. Si vous ne pouvez pas, étourdissez un personnage que vous contrôlez et rendez confus un personnage que vous contrôlez.\nMaster Pandemonium ne peut pas subir de dégâts.\n<b>Action de héros</b> : dépensez [energy][energy] → défaussez cette carte.",
+  // texas_twister_nemesis — Soul Fragmentation (Treachery, x2)
+  'tt024': "<b>Une fois révélée</b> : défaussez les 3 cartes du dessus de votre deck. Si une ressource [physical] a été défaussée ainsi, vous êtes étourdi ; si une ressource [mental] a été défaussée ainsi, vous êtes confus ; si une ressource [wild] a été défaussée ainsi, inclinez votre identité.",
 }

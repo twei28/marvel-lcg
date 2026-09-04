@@ -135,6 +135,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "TEMPTATION",  # CORRECTIF : trait du pack custom lady_sif (Rainy)
         "OPERATIONAL", "DESTROYED",  # CORRECTIF : les deux faces de Spider Armor, pack custom armored_spidey (Kajislav)
         "PORTAL",  # CORRECTIF : trait du pack custom blink (Kajislav), porte par les 5 ameliorations qui font tout le pack
+        # CORRECTIF : traits du pack custom texas_twister (Kajislav).
+        # ⚠ ROTATION n'est pas decoratif : tt008 et tt009 se defaussent
+        # mutuellement des qu'une carte ROTATION entre en jeu.
+        "RANGER", "ROTATION", "DEMON",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -165,6 +169,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
+        'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

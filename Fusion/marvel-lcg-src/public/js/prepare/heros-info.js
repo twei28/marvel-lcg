@@ -1413,4 +1413,15 @@ export const HEROS_INFO = {
         apparition: "The Vision #1 (2015)",
     },
 
+    "tt001a": {
+        bio: "Drew Daniels a grandi sur une exploitation pétrolière du Texas. Un accident sur un puits l'expose à une décharge d'énergie qui le transforme en tornade vivante : il fait tourner son corps assez vite pour voler, frapper et disperser tout ce qui l'approche. Mercenaire au départ, il devient shérif adjoint puis membre des Rangers, l'équipe de super-héros du Sud-Ouest américain. Un cow-boy bavard, fier de son chapeau, et nettement plus fiable qu'il n'en a l'air.",
+        bioEn: "Drew Daniels grew up on a Texas oil rig. An accident at a well exposed him to an energy discharge that turned him into a living tornado: he spins his body fast enough to fly, strike, and scatter anything that comes near. A mercenary at first, he became a deputy marshal and then a member of the Rangers, the Southwest's own super-hero team. A talkative cowboy, proud of his hat, and a good deal more reliable than he looks.",
+        civil: "Drew Daniels",
+        base: "Texas et le Sud-Ouest américain",
+        baseEn: "Texas and the American Southwest",
+        equipes: "Rangers",
+        ennemis: "Master Pandemonium",
+        apparition: "Fantastic Four #177 (1976)",
+    },
+
 };

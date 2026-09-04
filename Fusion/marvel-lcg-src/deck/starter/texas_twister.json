@@ -1,0 +1,70 @@
+{
+  "version": "0.5.8",
+  "name": "Texas Twister",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Aspect MENEUR, donne par la decklist de l'auteur (Extras, « starter deck texas twister »). UNE SEULE decklist fournie, contrairement a blink : les 8 cartes d'aspect maison du zip (tt012 a tt019) n'y figurent PAS. Elles sont portees quand meme et entrent dans le vivier GENERAL des aspects, ou elles deviennent jouables par tous les heros.",
+    "basic_power_note": "TOUT LE DECK LIT UNE SEULE PHRASE : « After you use one of Texas Twister's basic powers (THW, ATK, or DEF) ». Elle revient sur l'identite heros (tt001a, +1 a CE pouvoir jusqu'a la fin du round, SANS limite), sur les CINQ Keep Spinning (tt004, redresser le heros), sur Cyclonic Suction (tt007, piocher) et sur Twist Again (tt019, redresser le heros ET Shooting Star). Chaque usage rend le suivant meilleur : c'est le moteur du pack, et la raison pour laquelle l'obligation tt020 interdit precisement de redresser l'identite.",
+    "rotation_note": "tt008 Spin It to the Left! et tt009 Spin It to the Right! portent toutes deux le trait maison ROTATION et se defaussent l'une l'autre : on ne peut jamais avoir les deux. Chacune meurt en plus sur le pouvoir de base qu'elle ne renforce PAS.",
+    "cartes_maison_note": "HUIT CARTES D'ASPECT MAISON hors deck de depart : tt012 Armadillo (Protection), tt013 Fifty-One (Meneur), tt014 Firebird (Justice), tt015 Living Lightning (Agressivite), tt016 Lone Star Rangers, tt017 Phantom Rider, tt018 Red Wolf et tt019 Twist Again (Basic). ⚠ Elles entrent dans le vivier GENERAL des aspects, donc jouables par TOUS les heros.",
+    "noms_decklist_note": "DEUX ECARTS DE NOM dans la decklist de l'auteur, tranches sur les cartes officielles : « Civil Duty » est 14023 CIVIC Duty, et « The Power of All of Us » est 13024 The Power IN All of Us. Aucune carte ne porte les noms imprimes sur la decklist."
+  },
+  "hero": [
+    "tt001a,tt001b"
+  ],
+  "hero_deck": [
+    "tt002",
+    "tt003",
+    "tt003",
+    "tt004",
+    "tt004",
+    "tt004",
+    "tt004",
+    "tt004",
+    "tt005",
+    "tt006",
+    "tt007",
+    "tt008",
+    "tt009",
+    "tt010",
+    "tt011"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "tt020"
+  ],
+  "nemesis_set": [
+    "tt021",
+    "tt022",
+    "tt023",
+    "tt024",
+    "tt024"
+  ],
+  "player_deck": [
+    "01067",
+    "05032",
+    "05032",
+    "05032",
+    "12016",
+    "12016",
+    "12016",
+    "01072",
+    "29020",
+    "27046",
+    "01084",
+    "50054",
+    "01088",
+    "01089",
+    "01090",
+    "13024",
+    "27054",
+    "01092",
+    "27055",
+    "14022",
+    "14022",
+    "14023",
+    "14023",
+    "16024",
+    "16024"
+  ]
+}
