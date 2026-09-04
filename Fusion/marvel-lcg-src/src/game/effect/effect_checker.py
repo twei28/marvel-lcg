@@ -18,6 +18,53 @@ class EffectChecker:
         self.failures = FailureReason(effect)
         self.cost_for_different_target = TargetCost()
 
+    # =======================================================================
+    # COUT QUI DEPEND DE LA CIBLE CHOISIE
+    #
+    # Par defaut le moteur calcule UN SEUL cout, avec `target=None`, AVANT que
+    # la cible ne soit choisie : `Message.WhenCalculateEffectCost.for_targets`
+    # est alors VIDE. Une reduction conditionnee a la cible ne peut donc pas
+    # tomber. Seule la boucle ci-dessous, qui calcule un cout PAR cible legale,
+    # remplit `for_targets`.
+    #
+    # ⚠ ELLE ETAIT DECLENCHEE PAR UN `card_id` ECRIT EN DUR DANS LE MOTEUR
+    # (`if "09039" in ...`, * Iron Man: Tony Stark). Toute autre carte au meme
+    # texte etait donc SILENCIEUSEMENT INERTE : la condition ne voyait jamais
+    # de cible, et le joueur se retrouvait avec un cout non reduit, donc
+    # souvent impayable, sans le moindre message. Trouve le 04/09/2026 sur
+    # `bk009` Portal (pack blink), dont le texte est « When attached enemy or
+    # scheme WOULD BE A TARGET OF an ATTACK or THWART event, reduce that
+    # event's resource cost by 2 ».
+    #
+    # Les deux listes restent explicites plutot que devinees : la boucle coute
+    # un calcul de cout PAR cible legale, on ne l'allume donc que pour les
+    # cartes qui en ont reellement besoin.
+    # =======================================================================
+
+    # Cartes qui, EN TANT QUE CIBLE, changent le cout de ce qui les vise.
+    COST_DEPENDS_ON_TARGET_CARD_IDS = ("09039",)
+
+    # Ameliorations qui, ATTACHEES a une cible, changent le cout de ce qui la
+    # vise. Elles ne sont pas la cible elles-memes : c'est leur hote qui l'est.
+    COST_DEPENDS_ON_TARGET_UPGRADE_IDS = ("bk009",)
+
+    def CostDependsOnTarget(self, effect: 'Effect') -> bool:
+        cibles = list(effect.context.all_legal_targets)
+        if not cibles:
+            return False
+        for face in cibles:
+            if face.paper.card_id in EffectChecker.COST_DEPENDS_ON_TARGET_CARD_IDS:
+                return True
+        if not EffectChecker.COST_DEPENDS_ON_TARGET_UPGRADE_IDS:
+            return False
+        from game.operate.worlds import Worlds
+        for face in Worlds.GetOnFieldCards(effect):
+            if face.paper.card_id not in EffectChecker.COST_DEPENDS_ON_TARGET_UPGRADE_IDS:
+                continue
+            if getattr(face, "bind_face", None) in cibles:
+                return True
+        return False
+
     def HasCostTargets(self) -> bool:
         for cost_func in self.effect.cost_func.GetAll():
             if not cost_func.HasTargets(self.effect):
@@ -161,7 +208,7 @@ class EffectChecker:
                     self.cost_for_different_target.AddPayment(target, cost_effect, res, check_effect)
                 pass
 
-            if "09039" in [x.paper.card_id for x in effect.context.all_legal_targets]:
+            if self.CostDependsOnTarget(effect):
                 for target in effect.context.all_legal_targets:
                     process_target(target)
             else:

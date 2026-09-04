@@ -1299,6 +1299,19 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "bk001a": {
+        bio: "Clarice Ferguson vient d'Terre-295, la réalité que Legion a brisée en tuant son propre père. Mutante téléporteuse, elle ouvre des portails qu'elle lance comme des javelots : ce qui les traverse en ressort ailleurs, ou en morceaux. Morte une première fois pour couvrir la fuite de ses camarades, ramenée par les Timebreakers pour réparer des réalités abîmées, elle a fini par choisir la sienne. Sarcastique, increvable, et la seule à trouver ça drôle.",
+        bioEn: "Clarice Ferguson comes from Earth-295, the reality Legion shattered by killing his own father. A teleporter, she opens portals and throws them like javelins: whatever passes through comes out somewhere else, or in pieces. She died once covering her teammates' escape, was brought back by the Timebreakers to repair damaged realities, and eventually chose one of her own. Sarcastic, hard to kill, and the only one who finds it funny.",
+        civil: "Clarice Ferguson",
+        base: "Terre-295, et le Crystal Palace",
+        baseEn: "Earth-295, and the Crystal Palace",
+        equipes: "X-Men, Exilés",
+        equipesEn: "X-Men, Exiles",
+        ennemis: "Timebroker, Timebreakers",
+        ennemisEn: "Timebroker, Timebreakers",
+        apparition: "Uncanny X-Men #317 (1994)",
+    },
+
     "dr001a": {
         bio: "Anthony Ludgate Druid est psychiatre de formation quand une lettre anonyme l'envoie au Tibet, où un lama mourant lui transmet des pouvoirs mystiques et le charge de veiller sur la Terre. Premier super-héros de l'ère moderne selon certaines chronologies, il précède Doctor Strange comme sorcier des Vengeurs, sans jamais s'en défaire d'une certaine humilité clinique. Il lit les esprits, se projette hors de son corps et commande aux éléments, mais reste avant tout un médecin : sa vraie force est de comprendre ce qui blesse les autres.",
         bioEn: "Anthony Ludgate Druid trained as a psychiatrist before an anonymous letter sent him to Tibet, where a dying lama passed on mystical powers and charged him with watching over the Earth. By some chronologies the first super hero of the modern age, he precedes Doctor Strange as the Avengers' sorcerer, never quite shedding a clinician's humility. He reads minds, projects out of his body and commands the elements, but he remains a doctor first: his real strength is understanding what hurts people.",

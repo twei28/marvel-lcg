@@ -134,6 +134,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "NECROVERSE",  # CORRECTIF : trait du pack custom gorr (BLUEHG)
         "TEMPTATION",  # CORRECTIF : trait du pack custom lady_sif (Rainy)
         "OPERATIONAL", "DESTROYED",  # CORRECTIF : les deux faces de Spider Armor, pack custom armored_spidey (Kajislav)
+        "PORTAL",  # CORRECTIF : trait du pack custom blink (Kajislav), porte par les 5 ameliorations qui font tout le pack
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)

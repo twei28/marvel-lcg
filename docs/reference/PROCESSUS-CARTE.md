@@ -222,6 +222,35 @@ d'épuisement.
    directement la nouvelle carte, pas seulement grep les mots d'erreur.
 4. Comparer le taux de blocage de la nouvelle carte à celui du témoin.
 
+## §9 : une gate qui répond « OK » n'est pas une preuve tant qu'on ne l'a pas vue ÉCHOUER
+
+Constat du 04/09/2026, et il vaut pour tout l'outillage.
+
+`tools/verifier_appels_modules.py` ne lisait que
+`src/cards/pack/<pack>/*.py`. Or un pack de héros est rangé en
+`pack/<pack>/<set>/` et `pack/<pack>/<set>_nemesis/` : le seul fichier au
+premier niveau est un `__init__.py`. **Aucun module de carte n'était lu pour
+116 packs sur 122.** L'outil répondait « OK : tous les appels existent » sans
+en avoir examiné un seul, et cette phrase figure comme preuve dans tous les
+gabarits de night_thrasher, lady_sif, armored_spidey, iron_man_model_42,
+yondu et doctor_druid.
+
+Ce que la gate réparée a trouvé le jour même, dans du code déjà livré :
+
+- `bk018` Timebroker : `this.PlaceThreatOn` n'existe pas. Il maniganciat sans
+  poser la moindre menace, **et son cas de test était vert**.
+- `spider_man_rainy/sr014` : `this.GetThreat()` n'existe pas (la menace se lit
+  par la propriété `this.threat`). L'Interruption forcée ne partait jamais.
+
+**Règle** : avant de citer un outil comme preuve dans un gabarit, lui donner
+une fois une erreur qu'il DOIT voir, et vérifier qu'il tombe. Un « OK » non
+calibré ne prouve rien — ni sur la carte, ni sur l'outil.
+
+**Corollaire pour le moteur** : `effect_checker.py` déclenchait sa boucle de
+coût par cible sur un `card_id` écrit en dur (`if "09039" in ...`). Devant une
+capacité qui « ne part jamais » sans message d'erreur, chercher un
+**littéral** dans le moteur avant de soupçonner son propre code.
+
 ## Ce que ces blocs ne peuvent pas voir
 
 Une vraie partie jouée par un humain dans le navigateur reste le seul juge

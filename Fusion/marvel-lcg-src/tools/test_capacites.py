@@ -18210,8 +18210,438 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["dr013"]},
     },
+# ------------------------------------------------------------------------
+    # Pack « blink » : Clarice Ferguson, set 156, bk001a-bk020
+    #
+    # TOUT LE PACK LIT bk009 PORTAL. Les cas mesurent donc systematiquement un
+    # CHIFFRE (degats, menace, taille de main), et vont JUSQU'AU BOUT des deux
+    # moities de chaque carte — leçon du pack doctor_druid, ou deux cartes
+    # plantaient a chaque partie avec des cas au vert.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "bk009 Portal — pose sur un ennemi, il reduit de 2 le cout d'un evenement ATTACK qui le vise",
+        "pourquoi": ("LE CAS CENTRAL DU PACK, et il est fortement discriminant : la main "
+                     "ne contient AUCUNE ressource. bk005 Lose Footing coute 2 et n'est "
+                     "donc jouable QUE si le portail rabat son cout a 0.\\n"
+                     "⚠ ET IL MESURE AUSSI LE TIMING DE LA DEFAUSSE : le portail doit "
+                     "etre encore attache A LA RESOLUTION, puisque Lose Footing compte "
+                     "« 2 degats supplementaires par PORTAL attache a la cible ». "
+                     "4 + 2 = 6. Une premiere version du module defaussait des la "
+                     "reduction de cout et n'aurait inflige que 4 — defaut trouve en "
+                     "ECRIVANT ce cas, avant de l'executer"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk009", "bk005"],
+        "declencher": [],
+        "jouer": ["bk009", "bk005"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "bk009 Portal — contre-temoin : sans portail, Lose Footing est INJOUABLE",
+        "pourquoi": ("le jumeau du precedent, et le seul qui prouve que la reduction "
+                     "existe vraiment : meme main sans ressource, mais aucun portail "
+                     "pose. Lose Footing coute alors 2, ne peut pas etre payee, et le "
+                     "mechant reste intact"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk005"],
+        "declencher": [],
+        "jouer": ["bk005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "bk004 Everywhere at Once — elle ne frappe QUE les porteurs de portail",
+        "pourquoi": ("« each enemy WITH a PORTAL attached » est un FILTRE, pas une cible. "
+                     "Deux ennemis en jeu, UN SEUL portail : le mechant encaisse 2, le "
+                     "sbire RIEN. Sans le filtre, les deux prendraient 2 et le cas "
+                     "passerait a tort"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["bk009", "bk004"],
+        "declencher": [],
+        "jouer": ["bk009", "bk004"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["01101", 0]]},
+    },
+    {
+        "nom": "bk006 Multiple 'Porting — 3 menaces, plus 2 par portail sur LA manigance",
+        "pourquoi": ("jumelle de bk005 cote menace. Le complot annexe 01109 est pose a 9 "
+                     "pour que le retrait soit discriminant (sa StartingThreat de 2 "
+                     "rendrait un seuil bas muet — defaut trouve sur vp001a le "
+                     "31/08/2026). 9 - (3 + 2) = 4.\\n"
+                     "⚠ `RemoveThreatFromSchemes` et NON `RemoveThreat`, qui n'existe "
+                     "pas : leçon doctor_druid, exception AVALEE par le moteur"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 9)"],
+        "main_exclusive": ["bk009", "bk006", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["bk009", "bk006"],
+        "cibles": ["01109", "01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01109", 4]]},
+    },
+    {
+        "nom": "bk001a Blink — Portal Manipulation rend un portail EN MAIN",
+        "pourquoi": ("« from PLAY to your HAND » : le portail est REUTILISABLE, ce n'est "
+                     "pas une defausse. `.LimitOncePerRound()` — limite qui etait "
+                     "SILENCIEUSEMENT INERTE avant le correctif moteur du 03/09/2026, et "
+                     "qui mord ici parce qu'il s'agit d'une Action ordinaire"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk009"],
+        "declencher": [],
+        "jouer": ["bk009"],
+        "cibles": ["01094"],
+        "declencher_apres": ["Puzzle.Action('bk001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bk009"]},
+    },
+    {
+        "nom": "bk001b Clarice Ferguson — passer en civil remelange TOUS les portails et soigne d'autant",
+        "pourquoi": ("« EACH ... from play » et « heal 1 for each upgrade SHUFFLED THIS "
+                     "WAY » : le soin se compte sur ce qui a REELLEMENT ete remelange. "
+                     "Deux portails poses, identite blessee de 5 : elle finit a 3.\\n"
+                     "⚠ Contraste imprime avec bk001a, qui n'en prend QU'UN et depuis la "
+                     "DEFAUSSE"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Damage('bk001a', 5)"],
+        "main_exclusive": ["bk009", "bk009"],
+        "declencher": [],
+        "jouer": ["bk009", "bk009"],
+        "cibles": ["01094", "01101"],
+        "declencher_apres": ["Puzzle.ChangeToFace('bk001a', 'bk001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "hors_jeu": ["bk009"]},
+    },
+    {
+        "nom": "bk002 Sabretooth — arrive en main avec un portail en jeu, il entre en jeu SEUL",
+        "pourquoi": ("capacite DECLENCHEE depuis la main, montee sur "
+                     "`CanWorkOnlyInHand()` — modele `21032` Pip the Troll, que le "
+                     "moteur cite nommement dans son controle de zone.\\n"
+                     "⚠ CE CAS-LA FONCTIONNE, contrairement aux bonus CONTINUS depuis la "
+                     "main (leçon doctor_druid) : le drapeau gouverne la RESOLUTION "
+                     "d'une capacite, donc il suffit a un declencheur.\n"
+                     "⚠ L'ORDRE DU CAS EST LA MOITIE DU TEST : le portail doit etre EN "
+                     "JEU AVANT que Sabretooth n'arrive en main. Une premiere version le "
+                     "donnait par `main_exclusive` en meme temps que le portail, donc "
+                     "AVANT sa mise en jeu : la condition etait legitimement fausse et le "
+                     "cas rougissait sur un module pourtant juste"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk009"],
+        "declencher": [],
+        "jouer": ["bk009"],
+        "cibles": ["01094"],
+        "declencher_apres": ["Puzzle.Gain('bk002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bk002"]},
+    },
+    {
+        "nom": "bk008 Blink's Quiver — l'action cherche un portail dans le deck",
+        "pourquoi": ("DEUX Hero Actions distinctes sur la meme carte. Celle-ci a un cout "
+                     "d'inclinaison ; la seconde, gratuite, pose un portail depuis la "
+                     "main. Deck force a un seul portail pour que la fouille soit "
+                     "mesurable"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk008', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('bk009')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bk008', 'HeroAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bk009"], "exhausted": ["bk008"]},
+    },
+    {
+        "nom": "bk007 Crystal Palace — un portail defausse du JEU est range dessous",
+        "pourquoi": ("« After a PORTAL is DISCARDED FROM PLAY » : `AfterCardDiscard` avec "
+                     "`from_where=\"PlayerArea\"`, donc PAS depuis la main ni le deck. "
+                     "⚠ L'OBLIGATION bk017 NE PEUT PAS SERVIR DE DECLENCHEUR, bien "
+                     "qu'elle defausse les portails : elle commence par « You may flip "
+                     "to alter-ego form », et bk001b Clarice Ferguson REMELANGE alors "
+                     "tous les portails dans le deck. Il n'en reste aucun a defausser, "
+                     "la carte gagne Renfort, et le cas mesurait cette cascade au lieu "
+                     "de Crystal Palace.\n"
+                     "⚠ `Puzzle.Discard('bk009')` NE CONVIENT PAS NON PLUS : il prend un "
+                     "exemplaire QUELCONQUE, et le journal montrait la copie 21 partir "
+                     "du DECK pendant que la copie 20 restait sur Rhino. Le declencheur "
+                     "retenu est le texte meme du portail : bk005 le vise, il se defausse "
+                     "DU TERRAIN apres resolution. Un seul cas couvre donc les deux "
+                     "cartes, et la defausse est celle que le jeu produit vraiment"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk007', under_control=True)"],
+        "main_exclusive": ["bk009", "bk005"],
+        "declencher": [],
+        "jouer": ["bk009", "bk005"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bk007"], "pose_sous": [["bk007", "bk009"]]},
+    },
+    {
+        "nom": "bk005 Lose Footing — 4 degats, plus 2 PAR portail accroche a LA CIBLE",
+        "pourquoi": ("« for each PORTAL attached TO IT » : les portails de LA CIBLE, pas "
+                     "ceux du terrain. Deux portails sur Rhino donnent 4 + 2x2 = 8.\n"
+                     "⚠ TEMOIN DU TIMING DE bk009 : les deux portails se defaussent APRES "
+                     "resolution. S'ils partaient au calcul du cout, les degats "
+                     "tomberaient a 4 — le chiffre 8 prouve donc les deux cartes"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk009", "bk009", "bk005"],
+        "declencher": [],
+        "jouer": ["bk009", "bk009", "bk005"],
+        "cibles": ["01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 8]], "hors_jeu": ["bk009"]},
+    },
+    {
+        "nom": "bk003 Assault Redirection — les degats prevenus repartent sur l'ennemi qui porte le portail",
+        "pourquoi": ("modele `ma011` Bulletproof Chica : l'identite est INCLINEE, seul "
+                     "moyen fiable de faire arriver une attaque jusqu'a elle, et la carte "
+                     "est en MAIN et non dans `jouer` puisqu'elle se joue en reaction.\n"
+                     "Rhino imprime ATQ 2 : 2 degats prevenus, donc 2 renvoyes. Le portail "
+                     "est defausse pour payer ce renvoi, c'est la seconde moitie du texte.\n"
+                     "⚠ 01090 Strength est en main POUR PAYER : apres la pose du portail "
+                     "la main serait vide, et l'evenement coute 1"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.Exhaust('bk001a')"],
+        "main_exclusive": ["bk009", "bk003", "01090"],
+        "declencher": [],
+        "jouer": ["bk009"],
+        "cibles": ["01094"],
+        "declencher_apres": ["Puzzle.Attack('01094')"],
+        "choisir_option": "Discard_a_Portal_to_redirect_the_damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "degats": [["01094", 2]],
+                    "defausse": ["bk003", "bk009"]},
+    },
+    {
+        "nom": "bk003 Assault Redirection — contre-temoin : elle ne previent PAS les degats que le HEROS inflige",
+        "pourquoi": ("« a character » pris a la lettre incluait le VILAIN : le pilote "
+                     "d'autoplay a joue cette carte pour annuler les degats que Blink "
+                     "infligeait elle-meme a Klaw, et le moteur est tombe sur "
+                     "`assert being_atk_message.defense_messages == []` — une defense "
+                     "ouverte au milieu d'une attaque. `who_deal_damage=Enemy` borne la "
+                     "carte a ce que son libelle `(defense)` annonce.\n"
+                     "Ici bk005 frappe Rhino pour 4+2 = 6 avec bk003 EN MAIN et de quoi "
+                     "la payer : les 6 degats doivent passer. Avant le correctif, ce "
+                     "chiffre tombait a 0"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')"],
+        "main_exclusive": ["bk009", "bk005", "bk003", "01090"],
+        "declencher": [],
+        "jouer": ["bk009", "bk005"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "en_main": ["bk003"]},
+    },
+    {
+        "nom": "bk013 Morph — son Action le renvoie dans le deck RENCONTRE, pas dans le votre",
+        "pourquoi": ("allie Basic dont l'Action le melange au deck de RENCONTRE : la zone "
+                     "de destination est tout le piege de la carte, `ShuffleAllToEncounter"
+                     "Deck` et non `ShuffleAllToPlayerDeck`. Son autre moitie « When "
+                     "Revealed: discard Morph » n'est atteignable qu'une fois qu'il y est"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk013', under_control=True)"],
+        "declencher": ["Puzzle.Action('bk013', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["bk013"]},
+    },
+    {
+        "nom": "bk016 Tallus — l'arrivee d'un soutien LOCATION le redresse",
+        "pourquoi": ("« After a LOCATION support enters play » : `AfterCardEnterPlay` avec "
+                     "`CardFinder(card_type=Support, trait=\"LOCATION\")`. Tallus est mis "
+                     "INCLINE, le redressement est donc mesurable.\n"
+                     "⚠ bk007 Crystal Palace est mis en jeu par le harnais et non joue : "
+                     "la Reponse ne demande pas qu'il soit JOUE, seulement qu'il ENTRE en "
+                     "jeu, et la main n'a pas de quoi payer ses 2"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk016', under_control=True)",
+                          "Puzzle.Exhaust('bk016')"],
+        "declencher": ["Puzzle.PutIntoPlay('bk007', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bk016"]},
+    },
+    {
+        "nom": "bk017 Stranger in This Reality — incliner l'alter-ego retire l'obligation de la PARTIE",
+        "pourquoi": ("modele yd013 / dr010. ⚠ « REMOVE from the game » sur cette branche "
+                     "contre « DISCARD » sur l'autre : deux sorties differentes.\\n"
+                     "⚠ EMPLACEMENT : bandeau BLINK, donc module dans `blink/` et non "
+                     "dans le dossier nemesis. Piege bt019, vu AVANT d'ecrire cette "
+                     "fois — cinquieme occurrence"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('bk017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["bk017"], "exhausted": ["bk001b"]},
+    },
+    {
+        "nom": "bk010 Nocturne — ses degats comptent TOUTES les ameliorations, pas seulement les portails",
+        "pourquoi": ("« for each UPGRADE you control » : le texte ne dit PAS « PORTAL ». "
+                     "Deux ameliorations controlees (un portail sur un ennemi + Blink's "
+                     "Quiver) donnent donc 2 degats au sbire.\\n"
+                     "⚠ CARTE D'ASPECT MAISON : elle entre dans le vivier general de "
+                     "l'Agressivite, donc jouable par TOUS les heros"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk008', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["bk009", "bk010", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["bk009", "bk010"],
+        "cibles": ["01094", "01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01101", 2]]},
+    },
+    {
+        "nom": "bk011 Little Surprise — l'interruption frappe l'ennemi qui manigance",
+        "pourquoi": ("« When an enemy SCHEMES » -> `WhenUnitWouldScheme`, la fenetre "
+                     "AVANT que la menace ne soit posee. Les 4 degats tombent sur "
+                     "Shocker (3 PV), qui meurt donc avant de maniganer : c'est tout "
+                     "l'interet d'une INTERRUPTION plutot que d'une Reponse"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "main_exclusive": ["bk011", "01088"],
+        "declencher_apres": ["Puzzle.Scheme('01103')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01103"]},
+    },
+    {
+        "nom": "bk012 Mimic — son Action copie l'ATQ IMPRIMEE d'un personnage",
+        "pourquoi": ("⚠ CTR et ATQ imprimees « ★ », sans valeur fixe : arbitrage de "
+                     "l'utilisateur du 04/09/2026, encodee 0/0, l'Action posant les "
+                     "valeurs copiees.\\n"
+                     "« that character's PRINTED ATK » : on copie l'IMPRIME, donc les "
+                     "bonus en cours sur la cible ne suivent pas. Rhino a ATQ 2 imprimee "
+                     "-> ecart de 2 sur un Mimic a 0"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk012', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bk012', 'Action')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["bk012", "attack", 2]]},
+    },
+    {
+        "nom": "bk014 Proper Funeral — l'allie vaincu quitte la PARTIE et fait piocher 3",
+        "pourquoi": ("« REMOVE that ally FROM THE GAME » est le COUT (fleche), pas "
+                     "l'effet. `Alliance` est un mot-cle OFFICIEL (17 cartes, fiche "
+                     "mots-cles/alliance.md) : rien a coder. `.MaxOnePerPhase()`, modele "
+                     "19030. Main videe d'avance : `taille_main` 3 mesure exactement la "
+                     "pioche"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "main_exclusive": ["bk014"],
+        "declencher": ["Puzzle.Damage('01083', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 3, "hors_jeu": ["01083"]},
+    },
+    {
+        "nom": "bk015 Earth-295 — elle redresse une carte UNIQUE en jeu",
+        "pourquoi": ("⚠ DEUX couts cumules : l'inclinaison ET 1 ressource. Mot-piege "
+                     "« cout a plusieurs parties » du PROCESSUS-CARTE — en oublier une "
+                     "rendrait la carte gratuite. Blink's Quiver est incline d'avance : "
+                     "s'il finit PRET, l'action a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('bk015', under_control=True)",
+                          "Puzzle.PutIntoPlay('bk008', under_control=True)",
+                          "Puzzle.Exhaust('bk008')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('bk015', 'Action')"],
+        "cibles": ["bk008"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bk008"], "exhausted": ["bk015"]},
+    },
+    {
+        "nom": "bk018 Timebroker — revele, il convoque Damaged Reality et ne peut PAS subir de degats",
+        "pourquoi": ("les TROIS moities de la carte dans un seul cas, comme l'exige "
+                     "desormais le §6 du PROCESSUS-CARTE. « cannot take damage » : on le "
+                     "frappe pour 99 et il reste a 0 degat, ce qui prouve aussi que le "
+                     "seul moyen de s'en debarrasser est de VAINCRE la manigance.\n"
+                     "⚠ LA MENACE APRES ACTIVATION MANQUAIT, et ce cas etait VERT "
+                     "malgre un `PlaceThreatOn` inexistant : le moteur avalait "
+                     "l'erreur, Timebroker manigançait sans rien poser. Sorti par la "
+                     "gate `verifier_appels_modules` une fois reparee, pas par ce "
+                     "cas. 2 menaces imprimees + 2 posees = 4"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.CreateEncounterDeck('bk019')"],
+        "declencher": ["Puzzle.Reveal('bk018')", "Puzzle.Scheme('bk018')",
+                       "Puzzle.Damage('bk018', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bk018", "bk019"], "degats": [["bk018", 0]],
+                    "menace": [["bk019", 4]]},
+    },
+    {
+        "nom": "bk019 Damaged Reality — sa menace monte d'un par portail, puis elle en defausse un",
+        "pourquoi": ("LE MIROIR DU KIT : plus Blink deploie, plus la manigance coute "
+                     "cher. Deux portails poses -> 2 menaces imprimees + 2 = 4, PUIS un "
+                     "portail defausse (« Then »), donc un seul reste en jeu.\\n"
+                     "L'ordre compte : la menace est posee AVANT la defausse"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["bk009", "bk009"],
+        "declencher": [],
+        "jouer": ["bk009", "bk009"],
+        "cibles": ["01094", "01101"],
+        "declencher_apres": ["Puzzle.Reveal('bk019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["bk019", 4]]},
+    },
+    {
+        "nom": "bk020 Timebreakers — Timebroker absent : il est convoque ET revele",
+        "pourquoi": ("« the encounter deck AND DISCARD PILE » : les deux zones, sans quoi "
+                     "la carte serait inerte des que Timebroker a ete defausse une fois "
+                     "— exactement le cas qu'elle existe pour couvrir. Meme motif que "
+                     "yd017, yd018, dr012 et dr014"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('bk018', 'bk019')"],
+        "declencher": ["Puzzle.Reveal('bk020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bk018"]},
+    },
 ]
-
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''

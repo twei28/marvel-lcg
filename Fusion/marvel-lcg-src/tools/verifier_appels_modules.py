@@ -59,60 +59,85 @@ def main() -> int:
     from engine import Engine
     Engine.Initialize()
 
+    # ⚠ CORRECTIF DU 04/09/2026 : CETTE GATE ETAIT VIDE POUR 116 PACKS SUR 122.
+    #
+    # L'outil ne lisait QUE `src/cards/pack/<pack>/*.py`. Or un pack de heros
+    # est range en `pack/<pack>/<set>/`, `pack/<pack>/<set>_nemesis/` : le seul
+    # fichier au premier niveau est un `__init__.py`, et les modules de cartes
+    # n'etaient JAMAIS lus. L'outil repondait « OK : tous les appels existent »
+    # sans en avoir examine un seul. Mesure qui l'a etabli : reintroduire
+    # `Faces.ShuffleAllToEncounterDeck` (methode inexistante, plantage reel en
+    # partie sur bk013 Morph) laissait l'outil au vert.
+    #
+    # Les six packs plats historiques (`core`, `dt`...) etaient les seuls
+    # reellement couverts — d'ou les deux prises citees plus haut.
+    #
+    # On parcourt donc recursivement, et on importe le namespace DU DOSSIER :
+    # un module de carte fait `from . import *`, ce sont donc les noms de SON
+    # set qu'il voit, pas ceux du pack parent.
+    def dossiers_de_modules(pack: str):
+        base = os.path.join(racine, "src", "cards", "pack", pack)
+        for chemin, sous_dossiers, fichiers in os.walk(base):
+            sous_dossiers[:] = [d for d in sous_dossiers if d != "__pycache__"]
+            if not any(x.endswith(".py") and x != "__init__.py" for x in fichiers):
+                continue
+            relatif = os.path.relpath(chemin, os.path.join(racine, "src"))
+            yield chemin, relatif.replace(os.sep, ".")
+
     lignes = []
     for pack in packs:
-        module_pack = __import__("cards.pack." + pack, fromlist=["*"])
-        dossier = os.path.join(racine, "src", "cards", "pack", pack)
-        for nom_fichier in sorted(os.listdir(dossier)):
-            if not nom_fichier.endswith(".py"):
-                continue
-            arbre = ast.parse(io.open(os.path.join(dossier, nom_fichier),
-                                      encoding="utf-8").read())
-
-            # Le type des variables, quand le module le declare par CastTo.
-            #
-            # ⚠ UNE VARIABLE EST LOCALE A SA FONCTION. Un fichier peut nommer
-            # `this` dans dix fonctions, avec dix types differents — c'est le
-            # cas de twc/__init__.py. Retenir le dernier vu faisait conclure sur
-            # le mauvais type et signalait un appel parfaitement valide. On ne
-            # garde donc un type QUE s'il est le seul declare pour ce nom dans
-            # tout le fichier ; sinon on ne conclut pas.
-            vus = {}
-            for n in ast.walk(arbre):
-                if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call) \
-                        and isinstance(n.value.func, ast.Attribute) \
-                        and n.value.func.attr == "CastTo" and n.value.args \
-                        and isinstance(n.value.args[0], ast.Name) \
-                        and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name):
-                    vus.setdefault(n.targets[0].id, set()).add(n.value.args[0].id)
-            types_locaux = {nom: list(t)[0] for nom, t in vus.items() if len(t) == 1}
-
-            for n in ast.walk(arbre):
-                if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)):
+        for dossier, nom_module in dossiers_de_modules(pack):
+            module_pack = __import__(nom_module, fromlist=["*"])
+            for nom_fichier in sorted(os.listdir(dossier)):
+                if not nom_fichier.endswith(".py"):
                     continue
-                base, methode = n.func.value, n.func.attr
-                if not isinstance(base, ast.Name):
-                    continue
-                # ⚠ PIEGE : `from cards.pack import *` expose aussi des
-                # SOUS-MODULES du moteur, et leur nom ressemble a celui des
-                # variables des cartes — `player` est le module `game.player`,
-                # `message` le module `game.message`, `effect` le module
-                # `game.effect`. Les prendre pour la variable locale produisait
-                # 145 faux signalements. On ne garde donc que les CLASSES.
-                import types as _types
-                cible = getattr(module_pack, base.id, None)
-                if isinstance(cible, _types.ModuleType):
-                    cible = None
-                if cible is None and base.id in types_locaux:
-                    cible = getattr(module_pack, types_locaux[base.id], None)
+                arbre = ast.parse(io.open(os.path.join(dossier, nom_fichier),
+                                          encoding="utf-8").read())
+
+                # Le type des variables, quand le module le declare par CastTo.
+                #
+                # ⚠ UNE VARIABLE EST LOCALE A SA FONCTION. Un fichier peut nommer
+                # `this` dans dix fonctions, avec dix types differents — c'est le
+                # cas de twc/__init__.py. Retenir le dernier vu faisait conclure sur
+                # le mauvais type et signalait un appel parfaitement valide. On ne
+                # garde donc un type QUE s'il est le seul declare pour ce nom dans
+                # tout le fichier ; sinon on ne conclut pas.
+                vus = {}
+                for n in ast.walk(arbre):
+                    if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call) \
+                            and isinstance(n.value.func, ast.Attribute) \
+                            and n.value.func.attr == "CastTo" and n.value.args \
+                            and isinstance(n.value.args[0], ast.Name) \
+                            and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name):
+                        vus.setdefault(n.targets[0].id, set()).add(n.value.args[0].id)
+                types_locaux = {nom: list(t)[0] for nom, t in vus.items() if len(t) == 1}
+
+                for n in ast.walk(arbre):
+                    if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)):
+                        continue
+                    base, methode = n.func.value, n.func.attr
+                    if not isinstance(base, ast.Name):
+                        continue
+                    # ⚠ PIEGE : `from cards.pack import *` expose aussi des
+                    # SOUS-MODULES du moteur, et leur nom ressemble a celui des
+                    # variables des cartes — `player` est le module `game.player`,
+                    # `message` le module `game.message`, `effect` le module
+                    # `game.effect`. Les prendre pour la variable locale produisait
+                    # 145 faux signalements. On ne garde donc que les CLASSES.
+                    import types as _types
+                    cible = getattr(module_pack, base.id, None)
                     if isinstance(cible, _types.ModuleType):
                         cible = None
-                if cible is None or not isinstance(cible, type):
-                    continue  # variable dont on ignore le type : on ne conclut rien
-                if not hasattr(cible, methode):
-                    lignes.append("%s/%s:%d  %s.%s n'existe pas"
-                                  % (pack, nom_fichier, n.lineno,
-                                     base.id, methode))
+                    if cible is None and base.id in types_locaux:
+                        cible = getattr(module_pack, types_locaux[base.id], None)
+                        if isinstance(cible, _types.ModuleType):
+                            cible = None
+                    if cible is None or not isinstance(cible, type):
+                        continue  # variable dont on ignore le type : on ne conclut rien
+                    if not hasattr(cible, methode):
+                        lignes.append("%s/%s:%d  %s.%s n'existe pas"
+                                      % (nom_module.replace("cards.pack.", ""),
+                                         nom_fichier, n.lineno, base.id, methode))
 
     sys.stdout = vrai_stdout
     if lignes:

@@ -1363,5 +1363,14 @@
         ],
         "encounters": [],
         "max_id": "dr014"
+    },
+    "156. Custom (Blink)": {
+        "name": "blink",
+        "scenarios": [],
+        "heroes": [
+            "blink"
+        ],
+        "encounters": [],
+        "max_id": "bk020"
     }
 }

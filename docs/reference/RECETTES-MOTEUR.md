@@ -103,6 +103,36 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | ... la ressource imprimée d'une AUTRE carte | `resources_fn` + `FacesCounter.GetPrintedResources([face])` | 21006, ho009 | **NE PAS suivre le couple Can+Do de 31001a** : dans `DoGenerateResources`, `res` est figé AVANT le `PayCost` — un `res_fn` sur `return_exhausted_cards` lit l'état d'avant paiement (constaté sur ho009). Couleur à figer à l'annonce, coût aligné par `CostFunc.Custom` |
 | ressource + effet différé sur la carte payée | `ex_operation` / `WhenYouSpendThisCardToPlay` | 54002, 32047, ah007 | — |
 
+## 4ter. Réduire un coût « quand CETTE carte est la cible »
+
+> ⚠ **Le moteur ne calcule un coût PAR CIBLE que si on le lui demande.**
+> Par défaut, `EffectChecker.CheckCost` appelle `process_target(None)` : le
+> coût est calculé **une seule fois, avant tout choix de cible**, et
+> `Message.WhenCalculateEffectCost.for_targets` arrive **vide**. Une condition
+> qui lit les cibles est donc toujours fausse, la réduction ne tombe jamais, et
+> le seul symptôme est un `WhenPlayerInTurn failed` dans le journal —
+> c'est-à-dire « coût impayable », sans un mot sur la cause.
+
+- La bonne fabrique est `AbilityFactory.ReduceCostToPlayFaceWhen(which_card,
+  valeur, which_player, conditions=[...])` (`resources.py:642`), et le **seul**
+  champ qui donne les cibles est `message.for_targets`. Ni `for_face`, ni
+  `for_effect` n'existent sur ce message (`sender_player.py:234`).
+- `which_player="You"` passe par `Select.GetYou(effect)` : inutilisable quand
+  la carte source est une **amélioration attachée à un ennemi**. Prendre
+  `"AnyPlayer"` et laisser le filtre par cible borner l'effet (modèle `09039`
+  * Iron Man: Tony Stark).
+- **Il faut inscrire la carte dans `EffectChecker`** (`effect_checker.py`) pour
+  que la boucle par cible s'allume :
+  `COST_DEPENDS_ON_TARGET_CARD_IDS` si la carte est elle-même la cible,
+  `COST_DEPENDS_ON_TARGET_UPGRADE_IDS` si c'est une amélioration attachée à la
+  cible. Sans cette ligne, tout le reste est correct et **inerte**.
+- Après coup, `AfterPlayerPlayedCard` n'a **pas** `for_targets` : les cibles
+  vivent sur `message.play_effect.targets`, et la carte jouée sur
+  `message.played_face`.
+
+Constaté le 04/09/2026 sur `bk009` Portal (pack blink). Avant ce jour, la
+boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
+
 ## 4bis. Libellés de capacité (`SetLabel`)
 
 - `Ability.LABEL` vaut `'attack' | 'thwart' | 'defense'`, et **un seul appel**

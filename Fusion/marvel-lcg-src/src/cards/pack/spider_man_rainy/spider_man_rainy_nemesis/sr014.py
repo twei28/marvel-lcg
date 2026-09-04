@@ -31,7 +31,14 @@ def GetAbilities() -> Sequence['Ability']:
         # Un plan annexe vaincu part avec 0 menace ; s'il quitte le jeu avec de
         # la menace dessus (fin des compteurs illusion), il n'a pas ete vaincu.
         this = effect.this.CastTo(EncounterSideScheme)
-        return this.GetThreat() > 0
+        # ⚠ `GetThreat()` N'EXISTE PAS : la menace se lit par la PROPRIETE
+        # `this.threat` (idiome du depot : ab005, 50154, bt006, 01111). Le
+        # moteur avalait l'AttributeError, la condition ne rendait donc jamais
+        # True et l'Interruption forcee ne partait JAMAIS — la carte perdait
+        # silencieusement la moitie de son texte. Trouve le 04/09/2026 par la
+        # gate `verifier_appels_modules` une fois reparee : elle ne lisait
+        # aucun sous-dossier de pack, donc aucun module de heros.
+        return this.threat > 0
 
     return [
         AbilityFactory.ThisEnterPlayWithCounters(2, 'illusion'),

@@ -88010,5 +88010,374 @@
             "set_name": "Doctor Druid Nemesis",
             "custom": "Kajislav"
         }
+    ],
+    "blink": [
+        {
+            "card_id": "bk001a",
+            "type": "Hero",
+            "name": "* Blink",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "<i>Portal Manipulation</i> \u2014 <b>Action</b>: Return 1 [[PORTAL]] upgrade from play to your hand. <i>(Limit once per round.)</i>\n<b>Response</b>: After you change to this form, shuffle 1 [[PORTAL]] upgrade from your discard pile into your deck.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk001b",
+            "type": "AlterEgo",
+            "name": "* Clarice Ferguson",
+            "subtitle": "",
+            "desc": {
+                "HP": "9",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "MUTANT"
+            ],
+            "text": "<i>Deserved Vacation</i> \u2014 <b>Forced Response</b>: After you change to this form, shuffle each [[PORTAL]] upgrade from play into your deck. Heal 1 damage from your identity for each upgrade shuffled this way.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk002",
+            "type": "Ally",
+            "name": "* Sabretooth",
+            "subtitle": "Victor Creed",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "3**",
+                "THW": "1*",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "<b>Response</b>: After Sabretooth enters your hand, if there is a [[PORTAL]] upgrade in play, put Sabretooth into play under your control. <i>(Limit once per round.)</i>",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk003",
+            "type": "Event",
+            "name": "Assault Redirection",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "DEFENSE",
+                "SUPERPOWER"
+            ],
+            "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When a character would take any amount of damage from an attack, prevent all of that damage. You may discard a [[PORTAL]] upgrade attached to an enemy to deal damage to that enemy equal to the amount prevented this way.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk004",
+            "type": "Event",
+            "name": "Everywhere at Once",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "THWART"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 2 damage to each enemy with a [[PORTAL]] upgrade attached. Remove 2 threat from each scheme with a [[PORTAL]] upgrade attached.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk005",
+            "type": "Event",
+            "name": "Lose Footing",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK",
+                "SUPERPOWER"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Deal 2 additional damage to that enemy for each [[PORTAL]] upgrade attached to it.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk006",
+            "type": "Event",
+            "name": "Multiple 'Porting",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER",
+                "THWART"
+            ],
+            "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. Remove 2 additional threat from that scheme for each [[PORTAL]] upgrade attached to it.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk007",
+            "type": "Support",
+            "name": "* Crystal Palace",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "LOCATION"
+            ],
+            "text": "<b>Response</b>: After a [[PORTAL]] upgrade is discarded from play, exhaust Crystal Palace \u2192 attach it facedown here.\n<b>Alter-Ego Action</b>: Exhaust Crystal Palace \u2192 add each [[PORTAL]] upgrade attached here to your hand.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk008",
+            "type": "Upgrade",
+            "name": "* Blink's Quiver",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Blink's Quiver \u2192 search your deck for a [[PORTAL]] upgrade and add it to your hand.\n<b>Hero Action</b>: Put a [[PORTAL]] upgrade from your hand into play.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk009",
+            "type": "Upgrade",
+            "name": "Portal",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "PORTAL"
+            ],
+            "text": "Hero form only. Attach to an enemy or a scheme.\n<b>Interrupt</b>: When attached enemy or scheme would be a target of an [[ATTACK]] or [[THWART]] event, reduce that event's resource cost by 2. Discard this card after that event resolves.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk010",
+            "type": "Ally",
+            "name": "* Nocturne",
+            "subtitle": "Talia Wagner",
+            "desc": {
+                "Cost": "3",
+                "HP": "2",
+                "ATK": "2*",
+                "THW": "1*",
+                "RES": "B",
+                "Class": "Aggression"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "<b>Response</b>: After Nocturne enters play, deal 1 damage to a minion for each upgrade you control.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk011",
+            "type": "Event",
+            "name": "Little Surprise",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Aggression"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "text": "<b>Hero Interrupt</b> <i>(attack)</i>: When an enemy schemes, deal 4 damage to that enemy.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk012",
+            "type": "Ally",
+            "name": "* Mimic",
+            "subtitle": "Calvin Rankin",
+            "desc": {
+                "Cost": "3",
+                "HP": "3",
+                "ATK": "0**",
+                "THW": "0**",
+                "RES": "G",
+                "Class": "Basic"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "[star] <b>Action</b>: Choose a character in play \u2192 until the end of the round, Mimic's THW is equal to that character's printed THW <i>(SCH instead if you choose an enemy)</i> and his ATK is equal to that character's printed ATK.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk013",
+            "type": "Ally",
+            "name": "* Morph",
+            "subtitle": "Kevin Sidney",
+            "desc": {
+                "Cost": "2",
+                "HP": "3",
+                "ATK": "1*",
+                "THW": "1*",
+                "RES": "G",
+                "Class": "Basic"
+            },
+            "traits": [
+                "X-MEN"
+            ],
+            "text": "<b>Action</b>: Shuffle Morph into the encounter deck.\n<b>When Revealed</b>: Discard Morph.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk014",
+            "type": "Event",
+            "name": "Proper Funeral",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "B",
+                "Class": "Basic"
+            },
+            "traits": [],
+            "text": "Alliance. Max 1 per phase.\n<b>Response</b>: After an ally is defeated, remove that ally from the game \u2192 draw 3 cards.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk015",
+            "type": "Support",
+            "name": "* Earth-295",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "G",
+                "Class": "Basic"
+            },
+            "traits": [
+                "MULTIVERSE",
+                "LOCATION"
+            ],
+            "text": "<b>Action</b>: Exhaust Earth-295 and spend 1 resource of any type \u2192 ready a unique ([star]) ally, support or upgrade in play.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk016",
+            "type": "Upgrade",
+            "name": "* Tallus",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "B",
+                "Class": "Basic"
+            },
+            "traits": [
+                "ITEM"
+            ],
+            "text": "<b>Action</b>: Exhaust Tallus \u2192 look at the top card of your deck. If that card is an event, you may play it <i>(paying its cost)</i>. Shuffle your deck.\n<b>Response</b>: After a [[LOCATION]] support enters play, ready Tallus.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk017",
+            "type": "Obligation",
+            "name": "Stranger in This Reality",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Clarice Ferguson"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Clarice Ferguson player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Clarice Ferguson \u2192 remove Stranger in This Reality from the game.\n\u2022 Discard each [[PORTAL]] upgrade from play. If no [[PORTAL]] upgrade was discarded this way, this card gains surge. Discard this obligation.",
+            "set_name": "Blink",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk018",
+            "type": "Minion",
+            "name": "* Timebroker",
+            "subtitle": "",
+            "desc": {
+                "HP": "1",
+                "SCH": "2",
+                "ATK": "0",
+                "Boost": "2",
+                "Nemesis": "Clarice Ferguson"
+            },
+            "traits": [
+                "ILLUSION"
+            ],
+            "text": "Timebroker cannot take damage.\n[star] <b>Forced Response</b>: After Timebroker activates, place 2 threat on the Damaged Reality side scheme.\n<b>Forced Response</b>: After Timebroker enters play, find the Damaged Reality side scheme and reveal it.\n<i>(Blink's nemesis minion.)</i>",
+            "set_name": "Blink Nemesis",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk019",
+            "type": "SideScheme",
+            "name": "Damaged Reality",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2",
+                "Boost": "2",
+                "Crisis": "1"
+            },
+            "traits": [],
+            "text": "<i>Timebreakers had accidentally damaged many realities across the Multiverse and tricked heroes into fixing their mistakes.</i>\n<b>When Revealed</b>: Place 1 additional threat here for each [[PORTAL]] upgrade in play. Then, discard 1 of those upgrades.\n<b>When Defeated</b>: Discard Timebroker.",
+            "set_name": "Blink Nemesis",
+            "custom": "Kajislav"
+        },
+        {
+            "card_id": "bk020",
+            "type": "Treachery",
+            "name": "Timebreakers",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Timebroker and reveal him. <i>(Shuffle.)</i> If Timebroker does not enter play this way, this card gains surge.",
+            "set_name": "Blink Nemesis",
+            "custom": "Kajislav"
+        }
     ]
 }
