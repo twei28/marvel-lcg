@@ -1905,4 +1905,42 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'nt015': "<b>Quand elle est révélée</b> : si l'attachement Cosmic Ax est en jeu ET que votre héros contrôle une carte [[WEAPON]], subissez 3 dégâts INDIRECTS. Si AUCUN dégât n'a été subi de cette façon, cette carte gagne Déchaînement.",
   // night_thrasher_nemesis — Cosmic Ax (Attachment)
   'nt016': "Attachez-le à Terrax the Tamer. Si vous ne le pouvez pas, défaussez les 8 premières cartes du deck de rencontre. Si Terrax the Tamer a été défaussé de cette façon, révélez-le et attachez-lui Cosmic Ax.\n<hr />[star] <b>Boost</b> : si Terrax the Tamer est en jeu, révélez cette carte.",
+  // yondu — Yondu (Hero) [set 154, BLUEHG + DESIGNHACKER]
+  'yd001a': "<i>D'ast Whistlin'</i> — <b>Interruption</b> : quand l'amélioration Yaka Arrow est attachée à un ennemi OU en est retirée, infligez 1 dégât à CET ennemi. Quand elle est attachée à votre identité, soignez 1 dégât de Yondu.",
+  // yondu — Yondu Udonta (AlterEgo)
+  'yd001b': "<i>Crew Cut</i> — <b>Action</b> : convoquez l'amélioration Tahlei et ajoutez-la à votre main. <i>(Limite d'une fois par round.)</i>\n<i>Whistlin'</i> — <b>Action</b> : inclinez Yondu Udonta → convoquez l'amélioration Yaka Arrow et ajoutez-la à votre main.\n<i>(« Convoquer » = fouiller votre deck ET votre défausse pour la carte nommée.)</i>",
+  // yondu — Cheap Shot (Event)
+  'yd002': "<b>Action de héros</b> <i>(attaque)</i> : étourdissez un ennemi. PUIS, si CET ennemi a l'amélioration Yaka Arrow attachée, infligez-lui 6 dégâts.",
+  // yondu — Fight Dirty (Event)
+  'yd003': "<b>Action de héros</b> <i>(attaque)</i> : désorientez un ennemi. PUIS, si CET ennemi a l'amélioration Yaka Arrow attachée, infligez-lui 6 dégâts.",
+  // yondu — Whistle While You Work (Event, x2)
+  'yd004': "<b>Action de héros</b> : attachez l'amélioration Yaka Arrow à Yondu → redressez Yondu ET l'amélioration Tahlei. Si l'amélioration Yaka Arrow n'est PAS en jeu, convoquez-la et ajoutez-la à votre main À LA PLACE.",
+  // yondu — Tough Motherlover (Event)
+  'yd005': "<b>Action</b> : donnez une carte de statut Tenace à votre identité. PUIS, si vous avez l'amélioration Yaka Arrow EN MAIN, piochez une carte.",
+  // yondu — Twirlin' and Whirlin' (Event, x4)
+  'yd006': "Vous pouvez répéter cette capacité pour chaque ressource surpayée pour cette carte.\n<b>Action de héros</b> : attachez l'amélioration Yaka Arrow à un ennemi ou à votre identité.",
+  // yondu — Jackpot! (Resource)
+  'yd007': "<b>Réponse</b> : après avoir dépensé cette carte, traitez la PROCHAINE carte que vous dépensez comme si elle avait le DOUBLE de ressources.",
+  // yondu — Ravager Redshirts (Support)
+  'yd008': "<b>Interruption de héros</b> : quand vous devriez subir des dégâts, quels qu'ils soient, d'un ennemi ayant l'amélioration Yaka Arrow attachée, inclinez Ravager Redshirts → prévenez jusqu'à 2 de ces dégâts.",
+  // yondu — Invest (Upgrade)
+  'yd009': "<b>Action de héros</b> : inclinez Invest et dépensez 2 ressources ou plus de votre main → si le nombre de ressources dépensées de cette façon était de :\n• 2 — attachez l'amélioration Yaka Arrow à un ennemi ou à votre identité.\n• 3 — redressez Yondu et l'amélioration Tahlei.\n• 4 ou plus — piochez 5 cartes.",
+  // yondu — Ravage (Upgrade)
+  'yd010': "Les sbires portant un pion blessure gagnent le mot-clé Fragile. <i>(Les attaques contre un personnage fragile gagnent Déferlement.)</i>\n<b>Réponse de héros</b> : après que l'amélioration Yaka Arrow a été attachée à un SBIRE, inclinez Ravage → placez un pion blessure sur CE sbire.",
+  // yondu — Tahlei (Upgrade)
+  'yd011': "<b>Action de héros</b> : inclinez Tahlei → si l'amélioration Yaka Arrow est EN JEU, attachez-la à un ennemi, à votre identité, ou ajoutez-la à votre main.",
+  // yondu — Yaka Arrow (Upgrade)
+  'yd012': "La Yaka Arrow ne peut être attachée à une carte que si elle est EN JEU. Tant qu'elle est attachée à Yondu, il gagne +1 CTR et +1 ATQ.\n<b>Interruption forcée</b> : quand l'ennemi auquel elle est attachée devrait être vaincu, attachez la Yaka Arrow à un ennemi, à votre identité, ou ajoutez-la à votre main.",
+  // yondu — Banished (Obligation)
+  'yd013': "<b><i>Donnez-la au joueur Yondu Udonta.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre alter ego → retirez Banished de la partie.\n• Défaussez l'amélioration Yaka Arrow ET inclinez l'amélioration Tahlei. Défaussez cette obligation.",
+  // yondu_nemesis — Price on Your Head (SideScheme)
+  'yd014': "<b>Réponse forcée</b> : après qu'un personnage AMICAL a été vaincu, soignez 1 dégât de Sav'rkk. Si Sav'rkk n'est PAS en jeu, soignez 1 dégât du méchant À LA PLACE.",
+  // yondu_nemesis — Sav'rkk (Minion)
+  'yd015': "Les améliorations ne peuvent PAS être retirées de Sav'rkk.\n<b>Quand il est révélé</b> : convoquez l'attachement Sword-Gun-Arm et attachez-le à Sav'rkk.\n<i>(Sbire némésis de Yondu.)</i>",
+  // yondu_nemesis — Sword-Gun-Arm (Attachment)
+  'yd016': "Attachez-le à Sav'rkk. Si vous ne le pouvez pas, attachez-le au sbire ayant la plus forte ATQ. Si vous ne le pouvez pas, cette carte gagne Déchaînement.\n[star] Les attaques du personnage auquel il est attaché gagnent Déferlement.\n<b>Réponse forcée</b> : quand le personnage auquel il est attaché a 2 points de vie restants ou moins, défaussez Sword-Gun-Arm.",
+  // yondu_nemesis — Hard to Kill (Treachery)
+  'yd017': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il soigne 2 dégâts. SINON, convoquez Sav'rkk et révélez-le.\n<hr />[star] <b>Boost</b> : le MÉCHANT soigne 2 dégâts.",
+  // yondu_nemesis — Savage Destruction (Treachery)
+  'yd018': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il vous ATTAQUE. SINON, convoquez Sav'rkk et révélez-le.",
 }

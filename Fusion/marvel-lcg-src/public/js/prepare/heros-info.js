@@ -1299,6 +1299,19 @@ export const HEROS_INFO = {
         apparition: "Loki #4 (2023, Marvel Comics, d'après la série Disney+ Loki, 2021)",
     },
 
+    "yd001a": {
+        bio: "Yondu Udonta est un Centaurien de la planète Centauri-IV, arraché enfant à son monde et vendu aux Ravageurs, dont il a fini par diriger un clan. Sa crête sensorielle lui permet de piloter la flèche Yaka par le seul sifflement : l'arme tourne, revient, transperce, et lui obéit au souffle près. Contrebandier, mercenaire, voleur d'enfants pour le compte d'Ego, il a élevé Peter Quill au lieu de le livrer — et a été banni des Ravageurs pour ça. Il joue les brutes vénales avec un soin d'artisan, et meurt en père.",
+        bioEn: "Yondu Udonta is a Centaurian from Centauri-IV, torn from his world as a child and sold to the Ravagers, whose clan he eventually came to lead. The sensory fin on his head lets him steer the Yaka arrow by whistling alone: the weapon turns, returns, pierces, obedient to his breath. Smuggler, mercenary, child-thief in Ego's employ, he raised Peter Quill instead of delivering him — and was exiled from the Ravagers for it. He plays the greedy thug with a craftsman's care, and dies a father.",
+        civil: "Yondu Udonta",
+        base: "l'Eclector, vaisseau des Ravageurs",
+        baseEn: "the Eclector, Ravager flagship",
+        equipes: "Ravageurs, Gardiens de la Galaxie",
+        equipesEn: "Ravagers, Guardians of the Galaxy",
+        ennemis: "Sav'rkk, Ego, Taserface",
+        ennemisEn: "Sav'rkk, Ego, Taserface",
+        apparition: "Guardians of the Galaxy #1 (1969)",
+    },
+
     "nt001a": {
         bio: "Dwayne Taylor a vu ses parents abattus sous ses yeux quand il etait enfant, et il a hérité d'un empire industriel avant d'avoir l'âge de le comprendre. Il a mis cette fortune au service d'une obsession : traquer le meurtrier. Sans super-pouvoirs, il compense par un entraînement d'arts martiaux, une armure de sa propre conception et une planche de combat blindée qui lui sert tour à tour de véhicule et d'arme. Fondateur et chef des New Warriors, il porte mal la responsabilité d'une équipe d'adolescents : dur avec eux, plus dur encore avec lui-même.",
         bioEn: "Dwayne Taylor watched his parents gunned down in front of him as a child, and inherited an industrial empire before he was old enough to understand it. He turned that fortune toward one obsession: hunting the killer. With no superpowers, he compensates with martial arts training, a suit of his own design and an armoured battle board that serves in turn as vehicle and weapon. Founder and leader of the New Warriors, he wears the responsibility for a team of teenagers badly: hard on them, harder still on himself.",

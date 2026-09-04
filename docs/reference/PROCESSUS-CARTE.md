@@ -159,9 +159,27 @@ Revealed... séparé sur le texte imprimé) :
    `payer_avec`, `accepter_choix`, `heros2`.
 5. Pour une capacité de tour de jeu : `Puzzle.Attack`, `Puzzle.Scheme`,
    `Puzzle.Action` plutôt que « hors de portée du harnais ».
+6. **Toute limite imprimée exige un TÉMOIN D'ÉPUISEMENT.** Dès que la carte
+   dit « Limit once per round / per phase », un second cas doit monter DEUX
+   déclenchements dans le même round (ou la même phase) et mesurer un
+   **chiffre** au second : menace restante, taille de main, incliné/prêt.
+   Jamais une simple présence.
+
+   > ⚠ Leçon du 03/09/2026, signalée en jeu sur `angela` (« elle peut faire
+   > ses trucs plusieurs fois par round »). Sur ~1200 cas de batterie et
+   > **171 cartes portant une limite, aucun cas ne vérifiait qu'une limite
+   > MORD** : tous prouvaient qu'une capacité PART. Une limite inerte était
+   > donc structurellement invisible. Le défaut était dans le moteur
+   > (`once_per.py`, `GetForDelayAbility`) et rendait `LimitOncePerRound`
+   > muette sur toute la famille `AfterUnitDefeatedUnit`.
+   >
+   > Corollaire pour l'étape 2 : `an001a` citait `vp001a` comme carte de
+   > référence, or `vp001a` portait **déjà** le même défaut. Une carte modèle
+   > se vérifie par un test, pas par ressemblance.
 
 Aucune carte n'est « terminée » tant qu'il reste une capacité sans cas sujet
-et sans preuve par substitution.
+et sans preuve par substitution — ni une limite imprimée sans témoin
+d'épuisement.
 
 ## Étape 8 : Bloc autoplay ciblé, grep exhaustif des erreurs
 
@@ -198,6 +216,10 @@ outil manque.
       Résultat : ...
 - [ ] Étape 7 : cas test_capacites par capacité, preuve par substitution :
       capacité 1 : cas <nom>, rouge sans module / vert avec : capacité 2 : ...
+      Résultat : ...
+- [ ] Étape 7 bis : limite imprimée ? OUI / NON. Si OUI, témoin d'épuisement :
+      cas <nom>, deux déclenchements dans le même round/phase, chiffre mesuré
+      au second : ...
       Résultat : ...
 - [ ] Étape 8 : autoplay ciblé : N parties, témoin <héros>, grep tracebacks : 0,
       lecture du journal : ...

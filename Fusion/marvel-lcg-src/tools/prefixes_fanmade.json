@@ -368,6 +368,13 @@
             "cartes": 8,
             "depuis": "2026-09-02",
             "note": "Porte le 02/09/2026. SET MODULAIRE de BLUEHG (8 cartes), celui que le Setup de Gorr met de cote et que le complot 3A melange au deck de rencontre. Sbire Shadow Serpent x2, attachements Annihilablade et Dark Apotheosis x2, traitrises Manifest Will et The Ingenuity of Hatred, complot annexe The Planet Cleaver. `set_name` = « Necroverse », le nom que cherchent gb004a et gb006a."
+        },
+        "yd": {
+            "pack": "yondu",
+            "libelle": "154. Custom (Yondu)",
+            "cartes": 19,
+            "depuis": "2026-09-03",
+            "note": "Cree le 03/09/2026. Auteurs BLUEHG + DESIGNHACKER, format « MC4 SEALED ». yd001a/b identite, yd002-yd012 signature (11 cartes distinctes, 15 exemplaires), yd013 obligation, yd014-yd018 set nemesis Sav'rkk. TOUT LE PACK TOURNE AUTOUR DE `yd012` YAKA ARROW, une amelioration qui se plante sur un ENNEMI, sur l'identite, ou revient en main : le pouvoir du heros inflige 1 degat a chaque fois qu'elle arrive sur un ennemi ou le quitte, et soigne 1 quand elle se pose sur l'identite. NEUF cartes la deplacent ou la lisent. Mot-cle MAISON `summon`, employe SIX fois et JAMAIS defini par l'auteur : definition arbitree par l'utilisateur le 03/09/2026 — fouiller le deck ET la defausse (fiche docs/reference/mots-cles/summon.md). Compteur MAISON `wound` (yd010 Ravage), a ajouter a l'enum COUNTER. Aspect AGRESSIVITE, DONNE PAR L'AUTEUR (scan « Yondu Starter Deck ») : aucune question d'aspect a poser. Homonymes : 17013 * Yondu (allie officiel de Star-Lord), 40043 Jackpot! (pack Domino), dt027 Cheap Shot (pack determination)."
         }
     }
 }

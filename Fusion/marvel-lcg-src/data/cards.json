@@ -78404,7 +78404,321 @@
             "custom": "DESIGNHACKER"
         }
     ],
-    "checksum": "5654c73e4cd8e19d4651d8f5139acc9d90c891b72ba860945d1a115bc8d377fa",
+    "yondu": [
+        {
+            "card_id": "yd001a",
+            "type": "Hero",
+            "name": "* Yondu",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "ATK": "2",
+                "THW": "2",
+                "DEF": "2",
+                "HS": "5"
+            },
+            "traits": [
+                "GUARDIAN",
+                "RAVAGER"
+            ],
+            "text": "<i>D'ast Whistlin'</i> \u2014 <b>Interrupt</b>: When the Yaka Arrow upgrade is attached to or removed from an enemy, deal 1 damage to that enemy. When it is attached to your identity, heal 1 damage from Yondu.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd001b",
+            "type": "AlterEgo",
+            "name": "* Yondu Udonta",
+            "subtitle": "",
+            "desc": {
+                "HP": "10",
+                "REC": "3",
+                "HS": "6"
+            },
+            "traits": [
+                "OUTLAW"
+            ],
+            "text": "<i>Crew Cut</i> \u2014 <b>Action</b>: Summon the Tahlei upgrade and add it to your hand. <i>(Limit once per round.)</i>\n<i>Whistlin'</i> \u2014 <b>Action</b>: Exhaust Yondu Udonta \u2192 summon the Yaka Arrow upgrade and add it to your hand.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd002",
+            "type": "Event",
+            "name": "Cheap Shot",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Stun an enemy. Then, if that enemy has the Yaka Arrow upgrade attached, deal 6 damage to that enemy.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd003",
+            "type": "Event",
+            "name": "Fight Dirty",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ATTACK"
+            ],
+            "text": "<b>Hero Action</b> <i>(attack)</i>: Confuse an enemy. Then, if that enemy has the Yaka Arrow upgrade attached, deal 6 damage to that enemy.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd004",
+            "type": "Event",
+            "name": "Whistle While You Work",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "BG",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TACTIC"
+            ],
+            "text": "<b>Hero Action</b>: Attach the Yaka Arrow upgrade to Yondu \u2192 ready Yondu and the Tahlei upgrade. If the Yaka Arrow upgrade is not in play, summon it and add it to your hand instead.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd005",
+            "type": "Event",
+            "name": "Tough Motherlover",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "CONDITION"
+            ],
+            "text": "<b>Action</b>: Give your identity a tough status card. Then, if you have the Yaka Arrow upgrade in your hand, draw a card.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd006",
+            "type": "Event",
+            "name": "Twirlin' and Whirlin'",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SUPERPOWER"
+            ],
+            "text": "You may repeat this ability for each resource you overpaid for this card.\n<b>Hero Action</b>: Attach the Yaka Arrow upgrade to an enemy or to your identity.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd007",
+            "type": "Resource",
+            "name": "Jackpot!",
+            "subtitle": "",
+            "desc": {
+                "RES": "G",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "<b>Response</b>: After you spend this card, treat the next card you spend as if it has double the resources.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd008",
+            "type": "Support",
+            "name": "Ravager Redshirts",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [],
+            "text": "<b>Hero Interrupt</b>: When you would take any amount of damage from an enemy with the Yaka Arrow upgrade attached, exhaust Ravager Redshirts \u2192 prevent up to 2 of that damage.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd009",
+            "type": "Upgrade",
+            "name": "Invest",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "R",
+                "Class": "Hero"
+            },
+            "traits": [
+                "ITEM",
+                "TACTIC"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Invest and spend 2 or more resources from your hand \u2192 if the number of resources spent this way was:\n\u2022 2 \u2014 Attach the Yaka Arrow upgrade to an enemy or to your identity.\n\u2022 3 \u2014 Ready Yondu and the Tahlei upgrade.\n\u2022 4 or more \u2014 Draw 5 cards.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd010",
+            "type": "Upgrade",
+            "name": "Ravage",
+            "subtitle": "",
+            "desc": {
+                "Cost": "2",
+                "RES": "B",
+                "Class": "Hero"
+            },
+            "traits": [
+                "SKILL",
+                "TACTIC"
+            ],
+            "text": "Minions with a wound counter gain the fragile keyword. <i>(Attacks against fragile characters gain overkill.)</i>\n<b>Hero Response</b>: After the Yaka Arrow upgrade is attached to a minion, exhaust Ravage \u2192 place a wound counter on that minion.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd011",
+            "type": "Upgrade",
+            "name": "Tahlei",
+            "subtitle": "",
+            "desc": {
+                "Cost": "0",
+                "RES": "BB",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH"
+            ],
+            "text": "<b>Hero Action</b>: Exhaust Tahlei \u2192 if the Yaka Arrow upgrade is in play, attach it to an enemy, to your identity, or add it to your hand.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd012",
+            "type": "Upgrade",
+            "name": "Yaka Arrow",
+            "subtitle": "",
+            "desc": {
+                "Cost": "1",
+                "RES": "Y",
+                "Class": "Hero"
+            },
+            "traits": [
+                "TECH",
+                "WEAPON"
+            ],
+            "text": "Yaka Arrow cannot be attached to cards unless it is in play. While it is attached to Yondu, he gets +1 THW and +1 ATK.\n<b>Forced Interrupt</b>: When attached enemy would be defeated, attach Yaka Arrow to an enemy, to your identity, or add it to your hand.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd013",
+            "type": "Obligation",
+            "name": "Banished",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "GiveTo": "Yondu Udonta"
+            },
+            "traits": [],
+            "text": "<b><i>Give to the Yondu Udonta player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust your alter-ego \u2192 remove Banished from the game.\n\u2022 Discard the Yaka Arrow upgrade and exhaust the Tahlei upgrade. Discard this obligation.",
+            "set_name": "Yondu",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd014",
+            "type": "SideScheme",
+            "name": "Price on Your Head",
+            "subtitle": "",
+            "desc": {
+                "StartingThreat": "2*",
+                "Boost": "3"
+            },
+            "traits": [],
+            "text": "<i>The heroes are on the bad side of some nasty intergalactic malcontents who have sent the bounty hunter Sav'rkk after them.</i>\n<b>Forced Response</b>: After a friendly character is defeated, heal 1 damage from Sav'rkk. If Sav'rkk is not in play, heal 1 damage from the villain instead.",
+            "set_name": "Yondu Nemesis",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd015",
+            "type": "Minion",
+            "name": "* Sav'rkk",
+            "subtitle": "",
+            "desc": {
+                "HP": "4",
+                "SCH": "1",
+                "ATK": "2",
+                "Boost": "2",
+                "Nemesis": "Yondu Udonta"
+            },
+            "traits": [
+                "ELITE",
+                "SCOUNDREL"
+            ],
+            "text": "Upgrades cannot be removed from Sav'rkk.\n<b>When Revealed</b>: Summon the Sword-Gun-Arm attachment and attach it to Sav'rkk.\n<i>(Yondu's nemesis minion.)</i>",
+            "set_name": "Yondu Nemesis",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd016",
+            "type": "Attachment",
+            "name": "Sword-Gun-Arm",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2",
+                "ATK+": "1*"
+            },
+            "traits": [
+                "WEAPON"
+            ],
+            "text": "Attach to Sav'rkk. If you cannot, attach to the minion with the highest ATK. If you cannot, this card gains surge.\n[star] Attached character's attacks gain overkill.\n<b>Forced Response</b>: When attached character has 2 or less remaining hit points, discard Sword-Gun-Arm.",
+            "set_name": "Yondu Nemesis",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd017",
+            "type": "Treachery",
+            "name": "Hard to Kill",
+            "subtitle": "",
+            "desc": {
+                "Boost": "2"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: If Sav'rkk is in play, he heals 2 damage. Otherwise, summon Sav'rkk and reveal him.\n<hr />\n[star] <b>Boost</b>: The villain heals 2 damage.",
+            "set_name": "Yondu Nemesis",
+            "custom": "BLUEHG + DESIGNHACKER"
+        },
+        {
+            "card_id": "yd018",
+            "type": "Treachery",
+            "name": "Savage Destruction",
+            "subtitle": "",
+            "desc": {
+                "Boost": "1"
+            },
+            "traits": [],
+            "text": "<b>When Revealed</b>: If Sav'rkk is in play, he attacks you. Otherwise, summon Sav'rkk and reveal him.",
+            "set_name": "Yondu Nemesis",
+            "custom": "BLUEHG + DESIGNHACKER"
+        }
+    ],
+    "checksum": "f1544988136ef828e8ff804825d6c2e4b523e82c84da4f3da65034be291c79e0",
     "wolverine_x23": [
         {
             "card_id": "wx001a",

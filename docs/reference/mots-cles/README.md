@@ -72,6 +72,10 @@ la plus fréquente sur un pack vilain.
 - [x] plotting.md (pack `scarlet_spider`)
 - [x] breakthrough.md (pack `viv_vision`, mot-clé JAMAIS défini par l'auteur :
       définition arbitrée le 02/09/2026, miroir d'`overkill` pour la menace)
+- [x] summon.md (pack `yondu`, employé SIX fois et JAMAIS défini par l'auteur :
+      définition arbitrée le 03/09/2026 — fouiller le deck ET la défausse —,
+      sans quoi une Yaka Arrow défaussée est perdue et neuf cartes du pack
+      deviennent mortes)
 - [x] agile.md (pack `night_thrasher`, `nt003a` Battle Board face VEHICLE :
       définition DONNÉE par l'auteur entre parenthèses, aucun arbitrage — mais
       aucune primitive moteur, et un contre-cas « attaque sans carte de boost »

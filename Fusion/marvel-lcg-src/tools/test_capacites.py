@@ -10479,6 +10479,31 @@ CAS = [
         "attendu": {"menace": [["01109", 7]]},
     },
     {
+        "nom": "vp001a Venompool — Fear Factor : le SECOND ennemi de la phase ne retire PLUS de menace",
+        "pourquoi": ("TEMOIN D'EPUISEMENT, ajoute le 03/09/2026 avec le correctif moteur de "
+                     "`once_per.py`. Cette carte portait le MEME defaut latent qu'Angela — "
+                     "et c'est elle que l'en-tete d'an001a cite comme modele : le montage "
+                     "casse a ete recopie depuis une carte deja cassee, en silence.\n"
+                     "« Limit 1 [per_hero] per PHASE » : deux ennemis abattus dans la MEME "
+                     "phase ne doivent retirer qu'UNE menace. 8 -> 7, et surtout pas 6. "
+                     "Avant le correctif ce cas rendait 6.\n"
+                     "⚠ Le complot annexe 01109 est a 8 et non a 3 : sa StartingThreat de 2 "
+                     "rendrait le cas non discriminant (defaut trouve par substitution le "
+                     "31/08/2026, voir le cas nominal juste au-dessus)"),
+        "scenario": "rhino",
+        "heros": "venompool",
+        "mise_en_place": ["Puzzle.ChangeToFace('vp001b', 'vp001a')",
+                          "Puzzle.PutIntoPlay('vp015')",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 8)"],
+        "declencher": ["Puzzle.Attack('vp001a')", "Puzzle.Attack('vp001a')"],
+        "cibles": ["vp015", "01109", "01110", "01109"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01109", 7]]},
+    },
+    {
         "nom": "vp001b Wade Wilson — REC BLOQUEE au-dessus de 3 PV",
         "pourquoi": ("« can only use his REC when he has 3 or fewer hit points » : on code "
                      "la NEGATION via UnitCannotRecover. A 2 degats (7 PV restants sur 9) "
@@ -10791,6 +10816,52 @@ CAS = [
         "cibles": ["01110"],
         "verifier": "etat_attendu",
         "attendu": {"pret": ["an001a"], "hors_jeu": ["01110"]},
+    },
+    {
+        "nom": "an001a Angela — Frenzy : le SECOND sbire du round ne la redresse PLUS",
+        "pourquoi": ("TEMOIN DE LA LIMITE, signale en jeu le 03/09/2026 : « elle peut "
+                     "faire ses trucs plusieurs fois par round ». Le cas nominal "
+                     "ci-dessus prouve que Frenzy PART ; aucun ne prouvait qu'elle ne "
+                     "repart pas. Deux sbires a 2 PV restants tombent dans le MEME "
+                     "round : le premier redresse Angela (c'est ce qui rend la seconde "
+                     "attaque possible), le second ne doit RIEN faire. Angela finit donc "
+                     "EPUISEE. Sans `.LimitOncePerRound()` effective, elle finirait "
+                     "PRETE et le cas passerait au rouge.\n"
+                     "⚠ 01103 Shocker a 3 PV : on lui en retire 1 pour que l'ATQ 2 "
+                     "d'Angela l'abatte d'un coup, comme 01110 Hydra Bomber"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Damage('01103', 1)"],
+        "declencher": ["Puzzle.Attack('an001a')", "Puzzle.Attack('an001a')"],
+        "cibles": ["01110", "01103"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["an001a"],
+                    "hors_jeu": ["01110", "01103"]},
+    },
+    {
+        "nom": "an009 Xiphos — une SEULE carte piochee, meme en abattant deux sbires",
+        "pourquoi": ("meme limite, meme signalement, sur l'autre carte du pack qui porte "
+                     "« Limit once per round ». Xiphos et Frenzy se declenchent sur le "
+                     "MEME message (`AfterUnitDefeatedUnit` sur un Minion) : si la "
+                     "limite etait inoperante, les deux se cumuleraient a chaque sbire. "
+                     "Main reduite a UNE carte par `main_exclusive` (⚠ une liste VIDE est falsy "
+                     "en Python : le harnais la traite comme absente et la main de depart reste). "
+                     "1 + 1 pioche = 2 ; sans la limite, 3"),
+        "scenario": "rhino",
+        "heros": "angela",
+        "mise_en_place": ["Puzzle.ChangeToFace('an001b', 'an001a')",
+                          "Puzzle.PutIntoPlay('an009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Damage('01103', 1)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('an001a')", "Puzzle.Attack('an001a')"],
+        "cibles": ["01110", "01103"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "hors_jeu": ["01110", "01103"]},
     },
     {
         "nom": "an001b Aldrif Odinsdottir — Setup : une arme sort du deck et arrive en main",
@@ -14758,7 +14829,7 @@ CAS = [
         "declencher": [],
         "jouer": ["ls003"],
         "cibles": ["01094"],
-        "choisir_option": ["This attack gains overkill"],
+        "choisir_option": ["This_attack_gains_overkill"],
         "verifier": "etat_attendu",
         "attendu": {"degats_min": [["01094", 6]]},
     },
@@ -15004,7 +15075,7 @@ CAS = [
         "heros": "lady_sif",
         "mise_en_place": ["Puzzle.PutIntoPlay('ls002', under_control=True)"],
         "declencher": ["Puzzle.Reveal('ls012')"],
-        "choisir_option": ["Stun Thor"],
+        "choisir_option": ["Stun_Thor"],
         "verifier": "etat_attendu",
         "attendu": {"statuts": [["ls002", "Stunned"], ["ls001b", "Stunned"]],
                     "statuts_absents": [["ls001b", "Confused"]],
@@ -17121,6 +17192,609 @@ CAS = [
         "declencher": ["Puzzle.Reveal('nt016')"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["nt016"], "attributs_carte": [["nt013", "attack", 2]]},
+    },
+{
+        "nom": "yd012 Yaka Arrow — jouee sur un sbire, l'arrivee de la fleche mord (yd001a, 1 degat)",
+        "pourquoi": ("les deux moities du kit d'un coup. La fleche est un Upgrade qui "
+                     "ne s'attache qu'a un ENNEMI (`CanPlayThisUpgradeCard(CardFinder("
+                     "card_type=Enemy))`), et « D'ast Whistlin' » de yd001a est un "
+                     "`AfterCardAttachTo` filtre sur le NOM de la fleche : poser la "
+                     "fleche, c'est deja infliger 1 degat. Sans ce cas, une fleche qui "
+                     "s'attache sans blesser passerait pour correcte"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["yd012", "01088"],
+        "declencher": [],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "01101", "degats": [["01101", 1]]},
+    },
+    {
+        "nom": "yd001a — la fleche qui QUITTE un ennemi le blesse aussi, et son arrivee sur Yondu le SOIGNE",
+        "pourquoi": ("la carte dit « attached to OR removed from »: DEUX messages, "
+                     "`AfterCardAttachTo` et `AfterCardDetachFrom` (ce dernier sans "
+                     "fabrique, monte a la main). Et le meme texte SOIGNE quand l'hote "
+                     "est votre identite. Un seul deplacement doit donc produire 1 "
+                     "degat de plus au sbire (total 2 avec la pose) ET 1 soin. Temoin "
+                     "chiffre : `degats_identite` 3 -> 2"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)",
+                          "Puzzle.Damage('yd001a', 3)"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "declencher_apres": ["Puzzle.Action('yd011', 'HeroAction')"],
+        "choisir_option": "Attach_Yaka_Arrow_to_your_identity",
+        "declencher": [],
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "yd001a", "degats": [["01101", 2]],
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "yd011 Tahlei — contre-temoin : sans la fleche EN JEU, l'action ne fait rien",
+        "pourquoi": ("« if the Yaka Arrow upgrade is IN PLAY » : la Tahlei n'est pas un "
+                     "invocateur, elle deplace une fleche deja posee. Sans ce temoin, "
+                     "une Tahlei qui convoquerait la fleche passerait inapercue"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)"],
+        "declencher": ["Puzzle.Action('yd011', 'HeroAction')"],
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": None, "degats": [["01101", 0]]},
+    },
+    {
+        "nom": "yd011 Tahlei — la fleche rappelee EN MAIN",
+        "pourquoi": ("troisieme branche de la Tahlei (« add it to your hand »), celle "
+                     "qui recycle la fleche pour la reposer sur une autre cible. "
+                     "`choisir_option` force la branche : le pilote prendrait sinon la "
+                     "premiere offerte"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "declencher_apres": ["Puzzle.Action('yd011', 'HeroAction')"],
+        "choisir_option": "Add_Yaka_Arrow_to_your_hand",
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd012"], "degats": [["01101", 2]]},
+    },
+    {
+        "nom": "yd001b Crew Cut — la Tahlei convoquee depuis le DECK",
+        "pourquoi": ("mot-cle maison « summon » (docs/reference/mots-cles/summon.md). "
+                     "Volet deck : `Search.PlayerCard(include_player_deck=True)`. "
+                     "`LimitOncePerRound` sur la branche Crew Cut"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('yd011')"],
+        "declencher": ["Puzzle.Action('yd001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd011"]},
+    },
+    {
+        "nom": "yd001b Crew Cut — la Tahlei convoquee depuis la DEFAUSSE (arbitrage summon)",
+        "pourquoi": ("LE cas qui justifie l'arbitrage du 03/09/2026 : « summon » fouille "
+                     "le deck ET la defausse. Sans le volet defausse, une Tahlei "
+                     "defaussee serait perdue pour la partie et six cartes du pack "
+                     "deviendraient mortes. C'est le seul test qui distingue les deux "
+                     "lectures du mot-cle"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('yd011')"],
+        "declencher": ["Puzzle.Action('yd001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd011"]},
+    },
+    {
+        "nom": "yd001b Whistlin' — la fleche convoquee, l'alter-ego incline",
+        "pourquoi": ("seconde action civile, dont le cout est un `CostFunc.Exhaust("
+                     "'YourIdentity')` : le cout est DANS le cout, jamais dans le corps. "
+                     "`index=1` designe la seconde des deux actions de yd001b"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('yd012')"],
+        "declencher": ["Puzzle.Action('yd001b', 'Action', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd012"], "exhausted": ["yd001b"]},
+    },
+    {
+        "nom": "yd002 Cheap Shot — etourdit, et la fleche attachee ajoute 6 degats",
+        "pourquoi": ("« Then, if that enemy has the Yaka Arrow attached » : le bonus est "
+                     "conditionne a l'HOTE de la fleche, pas a sa simple presence. On "
+                     "vise le mechant (PV 14) pour que 6 degats restent lisibles ; "
+                     "1 (pose de la fleche) + 6 = 7"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["yd012", "yd002", "01088", "01088"],
+        "jouer": ["yd012", "yd002"],
+        "cibles": ["01094", "01094"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]], "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "yd002 Cheap Shot — contre-temoin : sans la fleche, l'etourdissement SEUL",
+        "pourquoi": ("temoin obligatoire du precedent : si les 6 degats tombaient sans "
+                     "condition, le cas nominal serait vert malgre tout. Ici 0 degat "
+                     "attendu, et le statut quand meme"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["yd002", "01088"],
+        "jouer": ["yd002"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "yd003 Fight Dirty — desoriente, et la fleche attachee ajoute 6 degats",
+        "pourquoi": ("jumelle de yd002 cote manigance : `canbe_confused=True` au lieu de "
+                     "`canbe_stunned=True`. Deux cartes voisines qu'il serait facile "
+                     "d'ecrire a l'identique par copier-coller"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["yd012", "yd003", "01088", "01088"],
+        "jouer": ["yd012", "yd003"],
+        "cibles": ["01094", "01094"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]], "statuts": [["01094", "Confused"]]},
+    },
+    {
+        "nom": "yd004 Whistle While You Work — la fleche revient sur Yondu et le redresse avec la Tahlei",
+        "pourquoi": ("la carte fait trois choses d'un coup : rappeler la fleche sur "
+                     "l'identite, redresser Yondu, redresser la Tahlei. Les deux cartes "
+                     "sont inclinees a la mise en place pour que le redressement soit "
+                     "mesurable, et le retour sur l'identite SOIGNE (yd001a)"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)",
+                          "Puzzle.Damage('yd001a', 3)"],
+        "main_exclusive": ["yd012", "yd004", "01088", "01088"],
+        "jouer": ["yd012", "yd004"],
+        "cibles": ["01101"],
+        "declencher_apres": [],
+        "declencher": [],
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "yd001a", "degats": [["01101", 2]],
+                    "degats_identite": 2, "pret": ["yd001a", "yd011"]},
+    },
+    {
+        "nom": "yd004 Whistle While You Work — contre-temoin : fleche ABSENTE du jeu, elle est convoquee EN MAIN",
+        "pourquoi": ("« If the Yaka Arrow upgrade is NOT in play, summon it and add it to "
+                     "your hand INSTEAD » : branche de repli, et seul filet du pack si la "
+                     "fleche a ete defaussee. Le mot « instead » est imperatif : aucun "
+                     "redressement ne doit avoir lieu ici, d'ou la Tahlei laissee "
+                     "inclinee dans `exhausted`"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)",
+                          "Puzzle.Exhaust('yd011')",
+                          "Puzzle.CreatePlayerDeck('yd012')"],
+        "main_exclusive": ["yd004", "01088"],
+        "jouer": ["yd004"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd012"], "exhausted": ["yd011"]},
+    },
+    {
+        "nom": "yd005 Tough Motherlover — Tenace, et la pioche parce que la fleche est EN MAIN",
+        "pourquoi": ("« if you have the Yaka Arrow upgrade IN HAND » : la condition se lit "
+                     "dans la MAIN, pas en jeu ni en defausse. On garde donc yd012 en "
+                     "main sans la jouer (`ne_pas_depenser` la protege du paiement)"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["yd005", "yd012", "01088"],
+        "jouer": ["yd005"],
+        "ne_pas_depenser": ["yd012"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["yd001a", "Tough"]], "taille_main": 2},
+    },
+    {
+        "nom": "yd005 Tough Motherlover — contre-temoin : sans la fleche en main, Tenace SEUL",
+        "pourquoi": ("meme carte, condition fausse : le statut tombe quand meme mais la "
+                     "main ne grossit pas. Sans ce temoin, une pioche inconditionnelle "
+                     "serait invisible"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["yd005", "01088"],
+        "jouer": ["yd005"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["yd001a", "Tough"]], "taille_main": 0},
+    },
+    {
+        "nom": "yd006 Twirlin' and Whirlin' — elle deplace la fleche, qui mord au depart",
+        "pourquoi": ("le coeur de la carte : DEPLACER la fleche, donc mordre au DEPART "
+                     "(1 degat) en plus de la pose (1 degat) : Hydra Mercenary finit a 2. "
+                     "L'arrivee sur l'identite SOIGNE, d'ou 3 -> 2.\n"
+                     "⚠ ON VISE LA BRANCHE SANS CIBLE (« to your identity ») et pas la "
+                     "branche ennemi : `cibles` apparie par card_id SANS consommer les "
+                     "entrees, si bien qu'un deplacement d'ennemi a ennemi retombe "
+                     "toujours sur l'hote courant et ne prouve rien. Mesure du "
+                     "04/09/2026. La branche ennemi reste couverte par le cas nominal "
+                     "de yd012, qui pose la fleche sur un sbire.\n"
+                     "⚠ LE SURPAIEMENT N'EST PAS TESTE ICI, et c'est assume : « repeat "
+                     "for each resource overpaid » suppose de surpayer une carte APRES "
+                     "en avoir paye une autre dans le meme cas, or `surpayer` vide la "
+                     "main des le PREMIER paiement (yd012 raflait tout). La repetition "
+                     "reste donc a verifier en partie reelle. Constate le 04/09/2026"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Damage('yd001a', 3)"],
+        "main_exclusive": ["yd012", "yd006", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["yd012", "yd006"],
+        "ne_pas_depenser": ["yd006", "yd012"],
+        "payer_avec": ["01088"],
+        "cibles": ["01101"],
+        "choisir_option": "Attach_Yaka_Arrow_to_your_identity",
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "yd001a", "degats": [["01101", 2]],
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "yd007 Jackpot! — depensee comme ressource, elle finance sans planter",
+        "pourquoi": ("⚠ CE CAS NE PROUVE PAS LE DOUBLEMENT, et c'est un constat, pas un "
+                     "renoncement de confort. Le moteur VALIDE le cout AVANT d'autoriser "
+                     "la mise en jeu, avec les valeurs nominales : journal du 04/09/2026, "
+                     "« Helicarrier (Turn Option,Play) [01092] WhenPlayerInTurn failed », "
+                     "la carte est refusee puis defaussee. Or Jackpot ne double qu'APRES "
+                     "avoir ete depensee (`AfterYouSpendThisCard`). Elle ne peut donc "
+                     "JAMAIS debloquer un cout que la pre-validation refuse, et quand le "
+                     "cout est deja payable le doublement ne change rien d'observable "
+                     "(le harnais n'expose pas les ressources restantes).\n"
+                     "CONSEQUENCE POUR LA CARTE : telle qu'ecrite, elle est quasi inerte "
+                     "sur ce moteur. A arbitrer par l'utilisateur — la relire en « genere "
+                     "2 ressources » la rendrait effective, mais ce n'est plus son texte.\n"
+                     "Ce que le cas verifie donc : la carte est bien depensable comme "
+                     "ressource, sa Response s'enregistre sans exception, et la carte "
+                     "financee entre en jeu. Sans cela, une Jackpot qui planterait au "
+                     "moment de la depense passerait inapercue (le moteur avale)"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
+        "main_exclusive": ["01092", "yd007", "01088"],
+        "declencher": [],
+        "jouer": ["01092"],
+        "payer_avec": ["yd007", "01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01092"]},
+    },
+    {
+        "nom": "yd008 Ravager Redshirts — previent 2 degats du porteur de la fleche",
+        "pourquoi": ("⚠ L'ATTAQUANT DOIT FRAPPER PLUS FORT QUE DEF 2 : Yondu a DEF 2 et le moteur "
+                     "l'applique d'office sans defenseur declare (journal : « would deal 0 "
+                     "damage » avec Shocker, ATQ 2), il ne reste alors RIEN a prevenir. "
+                     "Sandman frappe a 3, donc 1 degat passe. Corrige le 04/09/2026.\n"
+                     "`WhenUnitWouldTakeDamage(HeroInterrupt, 'You', who_deal_damage=Enemy)` "
+                     "avec une condition qui remonte a `message.attacker` et verifie que "
+                     "la fleche est accrochee A LUI. Shocker frappe pour 2, tout est "
+                     "prevenu"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01102')",
+                          "Puzzle.PutIntoPlay('yd008', under_control=True)"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01102"],
+        "declencher_apres": ["Puzzle.Attack('01102')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "exhausted": ["yd008"]},
+    },
+    {
+        "nom": "yd008 Ravager Redshirts — contre-temoin : un ennemi SANS la fleche, rien n'est prevenu",
+        "pourquoi": ("« from an enemy with the Yaka Arrow upgrade attached » : la reduction "
+                     "n'est pas un bouclier general. Sans fleche en jeu la condition est "
+                     "fausse, les 2 degats de Shocker passent, et le support reste PRET"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01102')",
+                          "Puzzle.PutIntoPlay('yd008', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "pret": ["yd008"]},
+    },
+    {
+        "nom": "yd009 Invest — 2 ressources : la fleche se deplace, et le soin suit",
+        "pourquoi": ("cout a paliers lu sur `effect.GetCostX()`. Main de DEUX ressources "
+                     "exactement (un seul 01088) : X vaut 0, donc la premiere branche.\n"
+                     "⚠ LES PALIERS 3 ET 4 NE SONT PAS TESTABLES PAR CE HARNAIS, et les "
+                     "cas correspondants ont ete RETIRES plutot que laisses rouges : "
+                     "`surpayer` n'agit que sur les couts de MISE EN JEU, pas sur les "
+                     "couts d'ACTIVATION passes par `Puzzle.Action` (le pilote paie "
+                     "alors le minimum, mesure le 04/09/2026 : main 1 au lieu de 5). "
+                     "Les deux paliers restent a verifier en partie reelle.\n"
+                     "La fleche part de Hydra Mercenary (qui finit a 2 : 1 pose + 1 "
+                     "depart) vers l'identite, qui est donc SOIGNEE de 1 : 3 -> 2"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Damage('yd001a', 3)"],
+        "main_exclusive": ["yd012", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "declencher_apres": ["Puzzle.Action('yd009', 'HeroAction')"],
+        "choisir_option": "Attach_Yaka_Arrow_to_your_identity",
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "yd001a", "degats": [["01101", 2]],
+                    "degats_identite": 2, "exhausted": ["yd009"]},
+    },
+    {
+        "nom": "yd010 Ravage — la fleche posee sur un SBIRE pose un pion blessure",
+        "pourquoi": ("`AfterCardAttachTo` filtre sur le nom de la fleche PUIS sur le type "
+                     "de l'hote (`Minion.IsType`). Le compteur `wound` est MAISON, ajoute "
+                     "a l'enum COUNTER du moteur pour ce pack : sans cet ajout, "
+                     "`PlaceCountersOn` leverait une exception que le moteur AVALE, et la "
+                     "carte paraitrait simplement inerte"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('yd010', under_control=True)"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01101", "wound", 1]], "exhausted": ["yd010"]},
+    },
+    {
+        "nom": "yd010 Ravage — contre-temoin : la fleche posee sur l'IDENTITE ne blesse personne",
+        "pourquoi": ("« after the Yaka Arrow is attached to a MINION » : la Ravage ignore "
+                     "le mechant et l'identite. Ici la fleche va sur le mechant, aucun "
+                     "pion ne doit apparaitre et le support reste PRET"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd010', under_control=True)"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01094", "wound", 0]], "pret": ["yd010"]},
+    },
+    {
+        "nom": "yd010 Ravage — un sbire blesse rend l'attaque DEFERLANTE, l'exces va au mechant",
+        "pourquoi": ("mot-cle maison « fragile », rendu par `WhenUnitWouldAttackUnit` + "
+                     "`GainOverKill` cible sur `CardFinder(card_type=Minion, "
+                     "has_counter='wound')`. Le sbire est amene a 1 PV restant : l'ATQ 2 "
+                     "de Yondu le tue et 1 degat DOIT deborder sur le mechant. Sans "
+                     "⚠ LE PION EST POSE PAR LA FLECHE, pas par `Puzzle.Counter` : celui-ci "
+                     "visait une AUTRE instance du sbire que `PutIntoPlay` (journal : pion "
+                     "sur l'id 55, sbire en jeu id 56), le pion n'existait donc pas la ou "
+                     "il fallait. On passe par le chemin reel de la carte, deja prouve par "
+                     "le cas nominal de Ravage. Hydra Bomber a 2 PV : la pose de la fleche "
+                     "lui en retire 1, l'ATQ 2 achieve et fait deborder 1. "
+                     "Deferlement, le mechant resterait intact"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd010', under_control=True)",
+                          "Puzzle.PutIntoPlay('01110')"],
+        "main_exclusive": ["yd012", "01088"],
+        "declencher": [],
+        "jouer": ["yd012"],
+        "cibles": ["01110", "01110"],
+        "declencher_apres": ["Puzzle.Attack('yd001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]]},
+    },
+    {
+        "nom": "yd012 Yaka Arrow — attachee a Yondu, elle lui donne +1 ATQ et +1 CTR",
+        "pourquoi": ("`GiveKeywordToAttached(CardFinder(name='Yondu'), thwart=1, attack=1)` : "
+                     "le bonus est reserve au HEROS, il ne doit pas suivre la fleche chez "
+                     "un ennemi. ⚠ `attributs_carte` attend un ECART et non une valeur "
+                     "absolue (le harnais compare `base + ecart`) : on ecrit donc 1, "
+                     "pas 3. Base 2/2 -> 3/3"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["yd012", "yd004", "01088", "01088"],
+        "jouer": ["yd012", "yd004"],
+        "cibles": ["01101"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["yd001a", "attack", 1],
+                                        ["yd001a", "thwart", 1]]},
+    },
+    {
+        "nom": "yd012 Yaka Arrow — l'ennemi porteur vaincu, la fleche se rabat sur l'identite",
+        "pourquoi": ("`WhenUnitWouldBeDefeated(ForcedInterrupt, 'AttachedEnemy')` : la "
+                     "fleche ne part JAMAIS a la defausse avec son hote, sinon le heros "
+                     "perdrait sa piece maitresse en tuant un sbire. Hydra Mercenary a 3 "
+                     "PV, 1 lui est deja pris par la pose : l'ATQ 2 de Yondu l'acheve"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["yd012", "01088"],
+        "jouer": ["yd012"],
+        "cibles": ["01101"],
+        "declencher_apres": ["Puzzle.Attack('yd001a')"],
+        "choisir_option": "Attach_Yaka_Arrow_to_your_identity",
+        "declencher": [],
+        "verifier": "yd_attachements",
+        "attendu": {"fleche_sur": "yd001a"},
+    },
+    {
+        "nom": "yd013 Banished — incliner l'alter-ego retire l'obligation de la PARTIE",
+        "pourquoi": ("modele nt012 / im014 : `WhenThisObligationGiveToYou` + "
+                     "`YouMayFlipToYourAlterEgoForm` + `ChooseAbilities`. ⚠ « REMOVE "
+                     "Banished from the game » sur cette branche contre « DISCARD this "
+                     "obligation » sur l'autre : deux sorties differentes, jamais l'une "
+                     "pour l'autre"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('yd013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["yd013"], "exhausted": ["yd001b"]},
+    },
+    {
+        "nom": "yd013 Banished — alter-ego DEJA incline : la seconde branche defausse l'obligation",
+        "pourquoi": ("la premiere branche porte `condition=not identite.IsExhaust()`. "
+                     "L'alter-ego incline d'avance la ferme, le pilote tombe sur la "
+                     "seconde : l'obligation part a la DEFAUSSE, pas hors jeu. C'est le "
+                     "seul cas qui prouve que la condition existe.\n"
+                     "⚠ NE PAS attendre la carte dans la defausse du JOUEUR : une obligation "
+                     "part a la defausse RENCONTRE (journal : « was discarded to EncounterDiscardPile »). "
+                     "La branche se discrimine donc par l'inclinaison de la Tahlei, que la "
+                     "branche 1 ne fait pas"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.Exhaust('yd001b')",
+                          "Puzzle.PutIntoPlay('yd011', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('yd013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["yd013"], "exhausted": ["yd011"]},
+    },
+    {
+        "nom": "yd014 Price on Your Head — un personnage AMICAL vaincu soigne Sav'rkk",
+        "pourquoi": ("`AfterUnitBeDefeated(ForcedResponse, Friend)`. Sav'rkk est amene a "
+                     "1 PV restant : le soin le remonte a 2, mesure par `degats` 3 -> 2. "
+                     "Sans la manigance en jeu, rien ne doit bouger"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd014')",
+                          "Puzzle.PutIntoPlay('yd015')",
+                          "Puzzle.Damage('yd015', 3)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Damage('01083', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["yd015", 2]]},
+    },
+    {
+        "nom": "yd014 Price on Your Head — Sav'rkk absent : c'est le MECHANT qui est soigne",
+        "pourquoi": ("« If Sav'rkk is NOT in play, heal 1 damage from the villain "
+                     "INSTEAD » : branche de repli, celle qui joue le plus souvent "
+                     "puisque Sav'rkk n'arrive qu'au nemesis. Rhino est blesse de 5, il "
+                     "doit finir a 4"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.PutIntoPlay('yd014')",
+                          "Puzzle.Damage('01094', 5)",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Damage('01083', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "yd015 Sav'rkk — revele, il convoque son Sword-Gun-Arm",
+        "pourquoi": ("« When Revealed: summon the Sword-Gun-Arm attachment and attach it "
+                     "to Sav'rkk » : volet RENCONTRE du mot-cle summon "
+                     "(`Search.SearchForCards(include_encounter_deck=True, "
+                     "include_encounter_discard_pile=True)`), a ne pas confondre avec "
+                     "`Search.PlayerCard` du cote joueur"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('yd016')"],
+        "declencher": ["Puzzle.Reveal('yd015')"],
+        "verifier": "yd_attachements",
+        "attendu": {"bras_sur": "yd015", "en_jeu": ["yd015", "yd016"]},
+    },
+    {
+        "nom": "yd016 Sword-Gun-Arm — sans Sav'rkk, il va au sbire a la plus forte ATQ",
+        "pourquoi": ("« Attach to Sav'rkk. If you cannot, attach to the minion with the "
+                     "highest ATK » : la condition se verifie AVANT de chercher (piege "
+                     "wd028 / nt016). Hydra Mercenary ATQ 1 et Shocker ATQ 2 sont tous "
+                     "deux en jeu : le bras doit choisir Shocker, pas le premier venu"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Reveal('yd016')"],
+        "verifier": "yd_attachements",
+        "attendu": {"bras_sur": "01103"},
+    },
+    {
+        "nom": "yd016 Sword-Gun-Arm — le porteur tombe a 2 PV restants : le bras se defausse",
+        "pourquoi": ("`AfterUnitTookDamage(ForcedResponse, 'AttachedEnemy')` avec une "
+                     "condition qui lit les PV RESTANTS (`face.health`, via "
+                     "can_health.py:62), et surtout PAS les PV imprimes. Shocker a 3 PV : "
+                     "1 degat le met a 2, le bras doit partir.\n"
+                     "⚠ `hors_jeu` et non `defausse` : yd016 est une carte de RENCONTRE, elle "
+                     "part a la defausse rencontre, jamais a celle du joueur"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Reveal('yd016')"],
+        "declencher": ["Puzzle.Damage('01103', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["yd016"]},
+    },
+    {
+        "nom": "yd017 Hard to Kill — Sav'rkk absent : il est convoque ET revele",
+        "pourquoi": ("la traitrise est le seul moteur d'arrivee de Sav'rkk. « summon "
+                     "Sav'rkk and reveal it » : convoquer NE SUFFIT PAS, il faut le "
+                     "reveler, et cette revelation declenche a son tour la convocation "
+                     "du bras. Chaine complete en un seul cas"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('yd015', 'yd016')"],
+        "declencher": ["Puzzle.Reveal('yd017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["yd015", "yd016"]},
+    },
+    {
+        "nom": "yd017 Hard to Kill — Sav'rkk DEJA en jeu : il est soigne de 2",
+        "pourquoi": ("premiere branche de la meme carte. Sav'rkk blesse de 3 sur 4 PV "
+                     "remonte a 1 : `degats` 3 -> 1. Sans ce cas, une carte qui "
+                     "convoquerait un SECOND Sav'rkk passerait pour correcte"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.PutIntoPlay('yd015')",
+                          "Puzzle.Damage('yd015', 3)"],
+        "declencher": ["Puzzle.Reveal('yd017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["yd015", 1]]},
+    },
+    {
+        "nom": "yd018 Savage Destruction — Sav'rkk en jeu : il ATTAQUE le joueur",
+        "pourquoi": ("⚠ ON RESTE EN ALTER-EGO : yd001b n'a AUCUNE DEF, alors que le heros a DEF 2 "
+                     "et absorberait entierement l'ATQ 2 de Sav'rkk. "
+                     "`DoAttackYou(joueur, effect)` : une attaque hors activation "
+                     "normale. ATQ 2, aucun defenseur declare, donc 2 degats a "
+                     "l'identite. La branche de repli (convocation) est celle de yd017, "
+                     "deja couverte"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.PutIntoPlay('yd015')"],
+        "declencher": ["Puzzle.Reveal('yd018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
     },
 ]
 
@@ -21303,6 +21977,39 @@ def vv010_redressee_en_fin_de_phase_vilain(monde, aides):
                        "vilain")
     return True, "la gemme s'est redressee a la fin de la phase du vilain"
 
+
+def yd_attachements(monde, aides):
+    """Yondu : ou sont accrochees la Yaka Arrow et le Sword-Gun-Arm ?
+
+    `etat_attendu` sait dire qu'une carte est EN JEU, jamais SUR QUI elle est
+    accrochee. Or tout le pack tient a cela : la meme fleche vaut 6 degats sur
+    un ennemi, +1/+1 sur Yondu, et un soin en arrivant chez lui. Cles :
+    `fleche_sur` et `bras_sur`, valant le card_id de l'hote attendu, ou None
+    pour « pas en jeu ». Les autres cles d'`attendu` restent verifiees par
+    `etat_attendu`.
+    """
+    attendu = aides["cas"].get("attendu") or {}
+    soucis = []
+    for cle, carte_id in (("fleche_sur", "yd012"), ("bras_sur", "yd016")):
+        if cle not in attendu:
+            continue
+        voulu = attendu[cle]
+        carte = aides["par_id"](monde, carte_id)
+        if carte is None:
+            if voulu is not None:
+                soucis.append(f"{carte_id} n'est pas en jeu (attendu sur {voulu})")
+            continue
+        hote = carte.GetBindFace()
+        hote_id = getattr(hote.paper, "card_id", None) if hote is not None else None
+        if hote_id != voulu:
+            soucis.append(f"{carte_id} est accrochee a {hote_id} (attendu {voulu})")
+    ok, message = etat_attendu(monde, aides)
+    if not ok:
+        soucis.append(message)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"attachements conformes ; {message}"
+
 '''
 
 
@@ -21703,6 +22410,14 @@ def executer_un_cas(game_dir, port, index):
             force = option_mulligan()
             if force is not None:
                 return force
+            # ⚠ LES ESPACES DEVIENNENT DES UNDERSCORES. Le moteur publie le
+            # libelle d'un `ForChoiceAbility("Add Yaka Arrow to your hand")`
+            # sous la forme `Add_Yaka_Arrow_to_your_hand`. Un `choisir_option`
+            # ecrit avec des espaces ne s'apparie donc JAMAIS, et le repli
+            # ci-dessous prend la premiere option — silencieusement, sans que
+            # rien ne signale que le choix demande a ete ignore. Constate le
+            # 04/09/2026 sur le pack yondu, via TRACE_OPTIONS=1.
+            #
             # `choisir_option` (pack kate_bishop) : forcer UNE option PRECISE
             # parmi plusieurs choix nommes sans cible-carte (DeclareNumber,
             # ChooseAbilities a options textuelles) ou le pilote, qui prend

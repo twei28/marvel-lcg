@@ -1273,7 +1273,7 @@
         "encounters": [],
         "max_id": "al023"
     },
-    "checksum": "9bcbd33ba10b66aa5246b439b24a7b4c5a83e3ebe4e0185355573f96cdc85c86",
+    "checksum": "9bfa73caee6d5164948201e1a3c1a9e0b74fd631d78c5d5f9761720de03ceb50",
     "145. Custom (Intergalactic Hazards)": {
         "name": "intergalactic_hazards",
         "scenarios": [],
@@ -1345,5 +1345,14 @@
         ],
         "encounters": [],
         "max_id": "nt016"
+    },
+    "154. Custom (Yondu)": {
+        "name": "yondu",
+        "scenarios": [],
+        "heroes": [
+            "yondu"
+        ],
+        "encounters": [],
+        "max_id": "yd018"
     }
 }

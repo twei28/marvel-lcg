@@ -1,0 +1,71 @@
+{
+    "version": "0.5.8",
+    "name": "Yondu",
+    "metadata": {
+        "url": "",
+        "aspect_note": "DECKLIST DONNEE PAR L'AUTEUR (scan « Yondu Starter Deck » du zip MC4 SEALED), aspect AGRESSIVITE : aucune question d'aspect n'a ete posee, contrairement a lady_sif, iron_man_model_42 et night_thrasher. Les 25 cartes ci-dessous sont exactement celles de la liste imprimee, dans son ordre : 18 cartes d'Agressivite et 7 cartes Basic.",
+        "fleche_note": "LA MECANIQUE VEDETTE. `yd012` Yaka Arrow est une amelioration qui ne vit PAS sur son porteur habituel : elle s'attache a un ENNEMI, a l'IDENTITE, ou revient en MAIN. Le pouvoir du heros (`yd001a` D'ast Whistlin') transforme chaque DEPLACEMENT en effet — 1 degat quand elle arrive sur un ennemi, 1 degat quand elle le quitte, 1 soin quand elle se pose sur l'identite. Un aller-retour ennemi -> identite -> ennemi fait donc mal TROIS fois. NEUF cartes du pack ne font que la deplacer ou la lire.",
+        "summon_note": "Mot-cle MAISON `summon`, employe SIX fois et JAMAIS defini par l'auteur. Definition ARBITREE par l'utilisateur le 03/09/2026 : fouiller le DECK **ET** la DEFAUSSE (fiche docs/reference/mots-cles/summon.md). La defausse est la moitie qui compte : `yd013` Banished defausse explicitement la Yaka Arrow, et sans elle la fleche serait perdue pour la partie — neuf cartes du pack deviendraient mortes.",
+        "compteur_note": "Compteur MAISON `wound`, ajoute a l'enum COUNTER du moteur (src/game/card/face/card_face.py) pour `yd010` Ravage. Sans lui, `IsCounter` refuse le nom et la carte tombe des la CREATION de la partie, pas en jeu.",
+        "nemesis_note": "⚠ `yd015` Sav'rkk imprime « Upgrades cannot be removed from Sav'rkk » : la Yaka Arrow plantee sur lui ne peut plus repartir, et quatre cartes du pack perdent leur cible. MAIS `yd012` porte une Forced Interrupt « when attached enemy WOULD BE defeated » : elle s'echappe juste avant sa mort. Les deux textes se repondent, et c'est le sel du set nemesis. Sav'rkk n'a que 4 PV mais revient : `yd017` Hard to Kill le soigne ou le convoque, `yd018` Savage Destruction le convoque et le fait attaquer.",
+        "collision_note": "⚠ « * Yondu » est aussi le nom de l'allie officiel `17013`, carte de Star-Lord. Notre face heros porte le meme nom : c'est le set_name qui differe, et l'allie officiel n'entre pas dans ce deck. « Jackpot! » a un homonyme `40043` (pack Domino) et « Cheap Shot » un homonyme `dt027` (pack determination). Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle de l'etape 10 de PROCESSUS-HEROS reste vert."
+    },
+    "hero": [
+        "yd001a,yd001b"
+    ],
+    "hero_deck": [
+        "yd002",
+        "yd003",
+        "yd004",
+        "yd004",
+        "yd005",
+        "yd006",
+        "yd006",
+        "yd006",
+        "yd006",
+        "yd007",
+        "yd008",
+        "yd009",
+        "yd010",
+        "yd011",
+        "yd012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "yd013"
+    ],
+    "nemesis_set": [
+        "yd014",
+        "yd015",
+        "yd016",
+        "yd017",
+        "yd018"
+    ],
+    "player_deck": [
+        "18011",
+        "16040",
+        "06011",
+        "25014",
+        "19030",
+        "19030",
+        "19030",
+        "16043",
+        "16043",
+        "16043",
+        "46015",
+        "46015",
+        "46015",
+        "46016",
+        "46016",
+        "46016",
+        "56013",
+        "18018",
+        "17020",
+        "19020",
+        "16047",
+        "01088",
+        "01089",
+        "01090",
+        "17022"
+    ]
+}

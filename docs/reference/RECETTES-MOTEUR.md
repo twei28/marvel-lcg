@@ -21,7 +21,27 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | Texte imprimé | Fabrique | Modèle | Piège |
 |---|---|---|---|
 | After you attack an enemy | `AfterUnitAttackEnd(type, "You", op, against_who=Enemy)` | iw001a, ho001a | le champ du message est `attacked_targets`, PAS `attacked` |
-| After you attack and defeat / After you defeat | `AfterUnitDefeatedUnit(type, "You", Minion\|Enemy, op)` | an001a, an004, vp001a | « attacks AND defeats » → `is_from_attack=True` ; Minion ≠ Enemy, lire le mot imprimé |
+| After you attack and defeat / After you defeat | `AfterUnitDefeatedUnit(type, "You", Minion\|Enemy, op)` | an001a, an004, vp001a | « attacks AND defeats » → `is_from_attack=True` ; Minion ≠ Enemy, lire le mot imprimé ; **limite → lire l'encadré ci-dessous** |
+
+> ⚠ **`AfterUnitDefeatedUnit` + « Limit once per round/phase », défaut moteur
+> corrigé le 03/09/2026.** Cette fabrique ne rend PAS la Réponse demandée :
+> elle rend une enveloppe `DelayAbility` branchée sur
+> `WhenFaceWouldDealDamage` (`factory/defeated.py:330`) qui **fabrique une
+> capacité interne neuve à chaque défaite**. La limite était posée sur
+> l'enveloppe, dont tous les drapeaux de type valent `False` — donc
+> `Effect.SetHasSpellInPhase` (`effect.py:161`) ne l'inscrivait jamais au
+> registre, alors qu'il inscrivait l'interne, différente à chaque fois.
+> `LimitOncePerRound()` était **silencieusement inerte** sur toute la famille.
+>
+> Corrigé dans `src/game/ability/condition/once_per.py` (`GetForDelayAbility`),
+> où les deux lignes nécessaires existaient **en commentaire** avec un mauvais
+> chemin d'attribut (`ability.type` au lieu de `ability.flags`).
+>
+> Signalé en jeu sur `angela`. Trois cartes portaient le défaut : `an001a`,
+> `an009`, `vp001a` — et `vp001a` était justement la carte de référence citée
+> par `an001a`, donc le montage cassé s'est recopié tout seul. Chacune a
+> désormais son **témoin d'épuisement** dans `test_capacites.py`, exigé par
+> l'étape 7 bis de `PROCESSUS-CARTE.md`.
 | After <allié> enters play | `AfterCardEnterPlay(Response, "This", op)` | 01083 Mockingbird, ho002 | — |
 | Hero Action (attack/thwart) sur événement | `WhenInYourPlayTurn(HeroAction, op).SetPlay().SetLabel('attack')` | 05015 Tackle, ho003 | le label alimente Sonné/Désorienté |
 | Hero Interrupt: When you play an [[ATTACK]] event | `WhenPlayerPlayCard(HeroInterrupt, "You", CardFinder2("ATTACK", Event), op)` | ho006 (37006, 05011 pour le message) | ≠ « when you SPEND » (32047/54002 : paiement) |
