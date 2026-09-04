@@ -133,7 +133,10 @@ function surveillerLeLancement() {
         try {
             const reponse = await fetch("get_play_scene_name?");
             const nom = (await reponse.text()).trim();
-            if (nom) location.href = `/app/board.html?p=${siege}`;
+            // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en
+            // sert pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait
+            // tous les sieges et verrait les mains de tout le monde.
+            if (nom) location.href = `/app/board.html?p=${siege}&multi=1`;
         } catch (e) {
             /* serveur momentanément injoignable : on réessaiera au tour suivant */
         }

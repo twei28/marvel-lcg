@@ -3,8 +3,9 @@
 Gate de `PROCESSUS-HEROS.md` : un gabarit rempli par carte. Rédigés les 03 et
 04/09/2026. Auteurs du pack : **BLUEHG + DESIGNHACKER**, format « MC4 SEALED ».
 
-⚠ **UNE CARTE N'EST PAS TERMINÉE : `yd007` Jackpot!** Voir son gabarit et le
-paragraphe « Ce que l'outillage ne couvre pas ». Le reste du pack est complet.
+⚠ **`yd007` Jackpot! n'est pas prouvée par un test** — mais le défaut est dans
+l'**outillage**, pas dans la carte. Arbitrage de l'utilisateur du 04/09/2026 :
+**gardée telle quelle**. Voir son gabarit. Le reste du pack est complet.
 
 **Preuves communes**, citées une fois :
 
@@ -44,7 +45,7 @@ du pack deviendraient mortes. Fiche : `docs/reference/mots-cles/summon.md`.
 
 ---
 
-## Les cinq vrais défauts trouvés, tous silencieux
+## Les six vrais défauts trouvés, tous silencieux
 
 Aucun n'a été signalé par un message d'erreur. Chacun a demandé de lire un
 journal de partie.
@@ -83,9 +84,27 @@ celui que le message de l'obligation désigne.
 morsure du départ. La branche « en main » était donc gratuite à tort. Elles
 passent par `RappelerLaFlecheEnMain`.
 
-### 5. `yd007` Jackpot! est quasi inerte sur ce moteur
+### 5. `yd007` Jackpot! ne peut pas débloquer un coût FIXE
 
-Détail dans son gabarit.
+Le moteur valide le coût **avant** d'autoriser la mise en jeu ; la carte double
+**après** avoir été dépensée. ⚠ Une première rédaction en concluait « quasi
+inerte » : **c'était trop fort**, faute d'avoir testé autre chose qu'un coût
+fixe. Le doublement agit pendant le paiement, donc sur les coûts **variables**,
+sur lesquels le kit de Yondu est bâti. Détail et arbitrage dans son gabarit.
+
+### 6. `GetBindFace()` fait `assert face` — trouvé par l'AUTOPLAY, pas par les tests
+
+Il lève une `AssertionError` dès que la carte n'est **pas** attachée, et la Yaka
+Arrow passe son temps à l'être. **Neuf appels directs** dans le pack. Le moteur
+avale l'exception : la capacité ne fait rien, en silence.
+
+⚠ **Le tableau d'autoplay affichait `0 traceback` et `0 partie bloquée`.** Les
+erreurs n'étaient que dans les **journaux de partie**, fichier par fichier —
+2 fois sur 128 parties, depuis la condition de `yd015`. C'est exactement ce que
+l'étape 8 impose (« grep exhaustif des journaux, pas seulement le bilan »).
+
+Le pack lit désormais l'hôte d'une carte par un accesseur sûr, `Hote`, présent
+dans les deux sets, avec l'avertissement écrit sur place.
 
 ---
 
@@ -158,25 +177,32 @@ Ce fichier donne le verdict et ce qui est propre à la carte.
 - [x] Étape 2 : `AfterYouSpendThisCard` + `WhenCountingResourcesOnCards`.
 - [x] Étape 5 : « la PROCHAINE carte dépensée », donc un enregistrement
       temporaire. Résultat : conforme au texte.
-- [x] Étape 6 : ressource [wild], aucun coût.
-- [ ] **Étape 7 : 1 cas, rouge 0/1 — la carte n'est PAS prouvée.**
+- [x] Étape 6 : ressource [wild], aucun coût, 1 exemplaire au deck.
+- [ ] **Étape 7 : 1 cas, rouge 0/1 — le doublement n'est PAS prouvé.**
 
-**Carte terminée : NON.**
+**Carte terminée : NON au sens strict du processus** (aucun cas ne tombe au
+rouge sans son module). **Mais la carte est correcte** : ce qui manque est un
+montage de test, pas un correctif.
 
-Le moteur **valide le coût avant** d'autoriser la mise en jeu, avec les valeurs
-nominales : journal du 04/09/2026, `Helicarrier (Turn Option,Play) [01092]
-WhenPlayerInTurn failed`, la carte est refusée puis défaussée. Or Jackpot ne
-double qu'**après** avoir été dépensée. Elle ne peut donc **jamais** débloquer
-un coût que la pré-validation refuse, et quand le coût est déjà payable, le
-doublement ne change rien d'observable (le harnais n'expose pas les ressources
-restantes).
+⚠ **CORRECTION D'UNE PREMIÈRE ANALYSE.** Ce fichier concluait « carte quasi
+inerte ». **C'était trop fort**, faute d'avoir testé autre chose qu'un coût
+fixe. Ce que le moteur impose : il valide le coût **avant** d'autoriser la mise
+en jeu, avec les valeurs nominales (journal : `Helicarrier (Turn Option,Play)
+[01092] WhenPlayerInTurn failed`). Jackpot, qui double **après** avoir été
+dépensée, ne peut donc pas débloquer un coût **fixe** inatteignable.
 
-Le cas restant vérifie ce qui est vérifiable : la carte se dépense, sa Réponse
-s'enregistre sans exception, la carte financée entre en jeu.
+Mais le doublement agit bien **pendant le paiement**, donc sur les coûts
+**variables** — et le kit de Yondu est bâti dessus : `yd006` « repeat for each
+resource overpaid » coûte 0 (jamais bloquée) et `yd009` lit des paliers. La
+carte sert à ce pour quoi l'auteur l'a mise là.
 
-**En attente d'arbitrage de l'utilisateur** : laisser la carte fidèle au texte
-de l'auteur (quasi inerte), ou la relire en « génère 2 ressources » (effective,
-mais ce n'est plus son texte).
+**Pourquoi le doublement reste non testé** : il faudrait surpayer une carte
+APRÈS en avoir payé une autre dans le même cas, or `surpayer` vide la main dès
+le premier paiement. Même limite que `yd006` et `yd009`.
+
+**Arbitrage de l'utilisateur, 04/09/2026 : gardée telle quelle**, fidèle au
+texte de l'auteur.
+
 
 ### yd008 : Ravager Redshirts — **OUI** (2 cas, rouges 1/2 ; le vert est le contre-témoin)
 ### yd009 : Invest — **OUI** (1 cas, rouge 1/1 ; paliers 3 et 4 non couverts, voir plus haut)

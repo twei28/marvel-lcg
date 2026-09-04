@@ -17457,22 +17457,29 @@ CAS = [
     },
     {
         "nom": "yd007 Jackpot! — depensee comme ressource, elle finance sans planter",
-        "pourquoi": ("⚠ CE CAS NE PROUVE PAS LE DOUBLEMENT, et c'est un constat, pas un "
-                     "renoncement de confort. Le moteur VALIDE le cout AVANT d'autoriser "
-                     "la mise en jeu, avec les valeurs nominales : journal du 04/09/2026, "
-                     "« Helicarrier (Turn Option,Play) [01092] WhenPlayerInTurn failed », "
-                     "la carte est refusee puis defaussee. Or Jackpot ne double qu'APRES "
-                     "avoir ete depensee (`AfterYouSpendThisCard`). Elle ne peut donc "
-                     "JAMAIS debloquer un cout que la pre-validation refuse, et quand le "
-                     "cout est deja payable le doublement ne change rien d'observable "
-                     "(le harnais n'expose pas les ressources restantes).\n"
-                     "CONSEQUENCE POUR LA CARTE : telle qu'ecrite, elle est quasi inerte "
-                     "sur ce moteur. A arbitrer par l'utilisateur — la relire en « genere "
-                     "2 ressources » la rendrait effective, mais ce n'est plus son texte.\n"
-                     "Ce que le cas verifie donc : la carte est bien depensable comme "
-                     "ressource, sa Response s'enregistre sans exception, et la carte "
-                     "financee entre en jeu. Sans cela, une Jackpot qui planterait au "
-                     "moment de la depense passerait inapercue (le moteur avale)"),
+        "pourquoi": ("⚠ CE CAS NE PROUVE PAS LE DOUBLEMENT — et le defaut est dans "
+                     "l'OUTILLAGE, pas dans la carte.\n"
+                     "Ce que le moteur impose : il VALIDE le cout AVANT d'autoriser la "
+                     "mise en jeu, avec les valeurs nominales (journal du 04/09/2026, "
+                     "« Helicarrier (Turn Option,Play) [01092] WhenPlayerInTurn failed »). "
+                     "Jackpot, qui double APRES avoir ete depensee, ne peut donc pas "
+                     "debloquer un cout FIXE inatteignable.\n"
+                     "⚠ CORRECTION DU 04/09/2026 : une premiere lecture concluait « carte "
+                     "quasi inerte ». C'ETAIT TROP FORT, faute d'avoir teste autre chose "
+                     "qu'un cout fixe. Le doublement agit bien PENDANT le paiement, donc "
+                     "sur les couts VARIABLES — et le kit de Yondu est bati dessus : "
+                     "yd006 « repeat for each resource overpaid » coute 0 (jamais "
+                     "bloquee) et yd009 lit des paliers. La carte sert a ce pour quoi "
+                     "l'auteur l'a mise la. Arbitrage utilisateur du 04/09/2026 : GARDEE "
+                     "TELLE QUELLE.\n"
+                     "Pourquoi le doublement n'est pas teste : il faudrait surpayer une "
+                     "carte APRES en avoir paye une autre dans le meme cas, or `surpayer` "
+                     "vide la main des le PREMIER paiement. Meme limite que yd006 et "
+                     "yd009.\n"
+                     "Ce que le cas verifie donc : la carte se depense, sa Response "
+                     "s'enregistre sans exception, et la carte financee entre en jeu. "
+                     "Sans cela, une Jackpot qui planterait a la depense passerait "
+                     "inapercue (le moteur avale les exceptions des modules)"),
         "scenario": "rhino",
         "heros": "yondu",
         "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')"],
