@@ -437,6 +437,67 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
+    async def _appeler_site(self, chemin: str, champs: dict):
+        """Relaie un appel au site, en 127.0.0.1, avec le jeton de la partie.
+
+        Le navigateur est servi depuis `p<N>.<domaine>` et le site depuis
+        `<domaine>` : une requete directe serait croisee, et le cookie de
+        session du site ne voyagerait pas. On passe donc par ici, ou l'appel
+        part du serveur et n'a aucune frontiere a franchir.
+        """
+        from engine.device.web.server.server_base import SITE_INTERNE, SITE_JETON
+        import urllib.parse
+        base = SITE_INTERNE.value or ''
+        jeton = SITE_JETON.value or ''
+        if not base or not jeton:
+            return None                 # pas de site derriere : rien a relayer
+        corps = dict(champs, jeton=jeton)
+        try:
+            import aiohttp
+            temps = aiohttp.ClientTimeout(total=5)
+            async with aiohttp.ClientSession(timeout=temps) as session:
+                async with session.post(base + chemin,
+                                        data=urllib.parse.urlencode(corps)) as reponse:
+                    if reponse.status != 200:
+                        return None
+                    return await reponse.json()
+        except Exception:
+            # Site injoignable ou trop lent : le panneau se taira, la partie
+            # continue. Rien ici ne doit pouvoir interrompre une partie.
+            return None
+
+    async def get_salon_joueurs(self, request: web.Request) -> web.Response:
+        """Qui est connecte avec un compte, et les derniers messages.
+
+        ⚠ RESERVE AU SIEGE 0. Le tchat est celui des titulaires de compte ; un
+        invite arrive par un lien de siege n'en fait pas partie, et n'a pas a
+        lire ce qu'ils s'ecrivent.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'actif': False})
+        depuis = request.rel_url.query.get('depuis', '0')
+        donnees = await self._appeler_site('/api/vue', {'depuis': depuis})
+        if donnees is None:
+            return web.json_response({'actif': False})
+        donnees['actif'] = True
+        return web.json_response(donnees)
+
+    async def post_salon_message(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        data = await request.json()
+        texte = str(data.get('texte', '') or '')
+        if not texte.strip():
+            return web.json_response({'error': 'texte vide'}, status=400)
+        donnees = await self._appeler_site('/api/dire', {'texte': texte})
+        if donnees is None:
+            return web.json_response({'error': 'site injoignable'}, status=503)
+        return web.json_response({'ok': True})
+
     async def set_language(self, request: web.Request) -> web.Response:
         # Bascule FR/EN de la narration a chaud (bouton langue du client) :
         # recharge la table TransText ('fr') ou la vide ('en'). N'affecte que
@@ -509,6 +570,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
+        self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
+        self.AddPostSecurity('/post_salon_message', self.post_salon_message)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)

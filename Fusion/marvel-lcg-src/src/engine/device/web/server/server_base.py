@@ -16,6 +16,13 @@ SEAT_PASSWORDS = ConfigVariables.ListStr('seat_passwords', [])
 # n'apparait alors nulle part. L'orchestrateur ne renseigne cette cle que pour
 # la partie de l'administrateur.
 SITE_ADMIN_URL = ConfigVariables.Str('site_admin_url', '')
+# Adresse LOCALE du site qui a lance cette partie, et jeton pour parler en son
+# nom. Vides par defaut : un moteur lance a la main n'a pas de site derriere
+# lui, et le panneau des joueurs ne s'affiche alors nulle part.
+# ⚠ Le jeton ne doit JAMAIS partir vers le navigateur : c'est le moteur qui
+# appelle le site, pas le client.
+SITE_INTERNE = ConfigVariables.Str('site_interne', '')
+SITE_JETON = ConfigVariables.Str('site_jeton', '')
 
 class GameServerBase(WebServer):
 

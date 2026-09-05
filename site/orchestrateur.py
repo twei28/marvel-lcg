@@ -121,6 +121,10 @@ class Partie:
         # ne decide que de ce qu'on AFFICHE. Les sieges non distribues
         # restent verrouilles par une cle que personne n'a.
         self.joueurs = 1
+        # Jeton que le MOTEUR presente au site pour parler en son nom (liste
+        # des joueurs, tchat). Il ne sort jamais du serveur : le navigateur ne
+        # le voit pas, c'est le moteur qui appelle le site en 127.0.0.1.
+        self.jeton_site = ""
 
     def base_url(self) -> str:
         if DOMAINE:
@@ -168,6 +172,7 @@ class Partie:
 
 PARTIES: dict[str, Partie] = {}          # code -> Partie
 EMPLACEMENTS: dict[int, str] = {}        # emplacement -> code
+JETONS_SITE: dict[str, str] = {}         # jeton -> pseudo (voir Partie.jeton_site)
 VERROU = threading.Lock()
 
 
@@ -192,6 +197,12 @@ def _config_partie(emplacement: int, partie: Partie) -> str:
     if partie.code == ADMIN:
         racine = f"https://{DOMAINE}" if DOMAINE else f"http://127.0.0.1:{PORT_SITE}"
         cfg["site_admin_url"] = racine + "/admin"
+    # Liste des joueurs et tchat : le MOTEUR interroge le site en local, et le
+    # navigateur ne parle qu'a son propre domaine. Sans ce detour il faudrait
+    # ouvrir le site aux requetes croisees de p1..p20 et desserrer le SameSite
+    # du cookie de session, pour un service qui n'en vaut pas le prix.
+    cfg["site_interne"] = f"http://127.0.0.1:{PORT_SITE}"
+    cfg["site_jeton"] = partie.jeton_site
 
     # Les chemins de la configuration sont relatifs a `.game/`, pas a la
     # racine : le moteur fait `os.chdir(.game)` avant de les resoudre.
@@ -269,6 +280,8 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
         # siege ouvert a qui trouve l'adresse.
         partie.cles_sieges = [secrets.token_urlsafe(8) for _ in range(4)]
         partie.joueurs = joueurs
+        partie.jeton_site = secrets.token_urlsafe(24)
+        JETONS_SITE[partie.jeton_site] = pseudo
         EMPLACEMENTS[emplacement] = pseudo
         PARTIES[pseudo] = partie
 
@@ -340,6 +353,7 @@ def eteindre_jeu(code: str) -> bool:
         if partie is None:
             return False
         EMPLACEMENTS.pop(partie.emplacement, None)
+        JETONS_SITE.pop(partie.jeton_site, None)
     if partie.processus is not None and partie.processus.poll() is None:
         # `start_new_session` a mis le moteur dans son propre groupe : on tue
         # LE GROUPE, sinon les sous-processus du lanceur survivraient et le
@@ -407,6 +421,12 @@ CREATE TABLE IF NOT EXISTS parties (
     fermee_le   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_parties_hote ON parties(hote);
+CREATE TABLE IF NOT EXISTS messages (
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    pseudo TEXT NOT NULL,
+    texte  TEXT NOT NULL,
+    quand  TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS invitations (
     jeton       TEXT PRIMARY KEY,
     cree_le     TEXT NOT NULL,
@@ -440,6 +460,10 @@ def initialiser_base() -> None:
         # ancienne, et tombait sur « no such column: emplacement ».
         cx.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_comptes_emplacement"
                    " ON comptes(emplacement) WHERE emplacement IS NOT NULL")
+        # Presence : meme precaution que pour `emplacement`, la colonne est
+        # ajoutee hors du SCHEMA pour les bases deja en service.
+        if "vu_le" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN vu_le TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -679,6 +703,95 @@ def supprimer_invitation(jeton: str) -> None:
     with _cx() as cx:
         cx.execute("DELETE FROM invitations WHERE jeton = ? AND utilise_par IS NULL",
                    (jeton,))
+
+
+# Au-dela de ce delai sans signe de vie, on ne dit plus « en ligne ».
+# Le client se signale toutes les 60 s : deux minutes laissent passer un
+# battement manque sans faire clignoter la liste.
+DELAI_PRESENCE = 120
+
+
+def toucher_presence(pseudo: str) -> None:
+    with _cx() as cx:
+        cx.execute("UPDATE comptes SET vu_le=? WHERE pseudo=?", (_maintenant(), pseudo))
+
+
+def _secondes_depuis(quand):
+    """Secondes ecoulees depuis cet horodatage, ou None s'il est illisible."""
+    from datetime import datetime
+    try:
+        return (datetime.now() - datetime.fromisoformat(quand)).total_seconds()
+    except (TypeError, ValueError):
+        return None
+
+
+def _il_y_a(quand: str) -> str:
+    """« a l'instant », « il y a 3 min », « il y a 2 h », « il y a 4 j »."""
+    ecart = _secondes_depuis(quand)
+    if ecart is None:
+        return ""
+    if ecart < 90:
+        return "a l'instant"
+    if ecart < 5400:
+        return "il y a %d min" % round(ecart / 60)
+    if ecart < 172800:
+        return "il y a %d h" % round(ecart / 3600)
+    return "il y a %d j" % round(ecart / 86400)
+
+
+def presence():
+    """Qui est la, et dans quel etat.
+
+    Trois etats, et non deux : savoir que quelqu'un est deja EN PARTIE evite
+    de l'inviter pour rien. « En ligne » vient de la derniere fois qu'il s'est
+    signale ; « en partie » vient du moteur reellement allume, qui est un fait
+    et non une declaration.
+    """
+    sortie = []
+    for ligne in liste_comptes():
+        if ligne["statut"] != "valide":
+            continue
+        pseudo = ligne["pseudo"]
+        partie = PARTIES.get(pseudo)
+        vu = ligne["vu_le"] if "vu_le" in ligne.keys() else None
+        ecart = _secondes_depuis(vu) if vu else None
+        if partie is not None and partie.vivant():
+            etat, detail = "partie", "en partie"
+        elif ecart is not None and ecart < DELAI_PRESENCE:
+            etat, detail = "ligne", "en ligne"
+        elif vu:
+            etat, detail = "absent", "vu " + _il_y_a(vu)
+        else:
+            etat, detail = "absent", "jamais venu"
+        sortie.append({"pseudo": pseudo, "etat": etat, "detail": detail})
+    return sortie
+
+
+# On ne garde pas l'historique complet : un tchat de salon sert a se retrouver,
+# pas a archiver. Au-dela, les plus anciens partent.
+MESSAGES_GARDES = 200
+TAILLE_MESSAGE = 500
+
+
+def dire(pseudo: str, texte: str) -> None:
+    texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
+    if not texte:
+        return
+    with _cx() as cx:
+        cx.execute("INSERT INTO messages (pseudo, texte, quand) VALUES (?,?,?)",
+                   (pseudo, texte, _maintenant()))
+        cx.execute("DELETE FROM messages WHERE id NOT IN"
+                   " (SELECT id FROM messages ORDER BY id DESC LIMIT ?)",
+                   (MESSAGES_GARDES,))
+
+
+def messages_depuis(depuis: int = 0):
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT id, pseudo, texte, quand FROM messages WHERE id > ?"
+            " ORDER BY id LIMIT ?", (depuis, MESSAGES_GARDES)).fetchall()
+    return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
+             "quand": l["quand"][11:16]} for l in lignes]
 
 
 def ouvrir_session(pseudo: str) -> str:
@@ -1021,6 +1134,7 @@ class Handler(BaseHTTPRequestHandler):
             if not pseudo:
                 self._rediriger("/")
                 return
+            toucher_presence(pseudo)
             partie = jeu_de(pseudo)
             if partie is not None and partie.vivant() and _moteur_repond(partie.port):
                 # Redirection vers un AUTRE hote (p<N>.domaine) : c'est voulu,
@@ -1107,6 +1221,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(400, self._formulaire("connexion", str(erreur)))
                 return
             jeton = ouvrir_session(qui)
+            # Sans ceci, « en ligne » n'apparaitrait presque jamais : la
+            # presence n'etait rafraichie que par le MOTEUR, donc uniquement
+            # pendant qu'une partie tourne. On la touche des l'entree sur le
+            # site, ce qui couvre le moment ou le moteur demarre encore.
+            toucher_presence(qui)
             self.send_response(303)
             self.send_header("Location", "/entrer")
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
@@ -1129,6 +1248,39 @@ class Handler(BaseHTTPRequestHandler):
                 changer_statut(champs.get("pseudo", "").strip().lower(),
                                champs.get("statut", ""))
             self._rediriger("/admin")
+
+        elif self.path in ("/api/vue", "/api/dire"):
+            # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
+            # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
+            # partie plutot que par le cookie de session : le navigateur est sur
+            # p<N>.<domaine> et son cookie de site ne voyagerait pas jusqu'ici.
+            # Le jeton dit de quel compte il s'agit ; il meurt avec la partie.
+            qui = JETONS_SITE.get(champs.get("jeton", ""))
+            if not qui:
+                self._repondre(403, b'{"error":"jeton inconnu"}',
+                               "application/json; charset=utf-8")
+                return
+            if self.path == "/api/dire":
+                dire(qui, champs.get("texte", ""))
+                self._repondre(200, b'{"ok":true}',
+                               "application/json; charset=utf-8")
+                return
+            # Toute consultation vaut signe de vie : c'est ce qui fait
+            # apparaitre « en ligne » sans demander au joueur de le declarer.
+            toucher_presence(qui)
+            try:
+                depuis = int(champs.get("depuis", "0") or "0")
+            except ValueError:
+                depuis = 0
+            messages = messages_depuis(depuis)
+            corps = {
+                "pseudo": qui,
+                "joueurs": presence(),
+                "messages": messages,
+                "dernier": messages[-1]["id"] if messages else depuis,
+            }
+            self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
+                           "application/json; charset=utf-8")
 
         elif self.path == "/eteindre":
             if not pseudo:

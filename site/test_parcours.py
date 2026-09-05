@@ -105,6 +105,77 @@ if os.path.isfile(reel):
 else:
     print("  (launch.json absent : verification du bouton admin sautee)")
 
+# --- Presence et tchat ------------------------------------------------------
+o.PARTIES.clear()
+o.initialiser_base()
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+    cx.execute("DELETE FROM comptes")
+o.inscrire("chloe", "chloe@exemple.fr", "motdepasse123")
+o.changer_statut("chloe", "valide")
+o.inscrire("hugo", "hugo@exemple.fr", "motdepasse123")
+o.changer_statut("hugo", "valide")
+
+o.dire("chloe", "  salut   tout   le monde  ")
+o.dire("hugo", "")
+msgs = o.messages_depuis(0)
+verifier("un message envoye se relit", len(msgs) == 1, str(msgs))
+verifier("les espaces en trop sont ramenes a un",
+         msgs and msgs[0]["texte"] == "salut tout le monde", str(msgs))
+verifier("un message vide n'est pas garde", len(msgs) == 1, str(msgs))
+
+o.dire("hugo", "x" * 900)
+verifier("un message trop long est coupe",
+         len(o.messages_depuis(msgs[0]["id"])[0]["texte"]) == o.TAILLE_MESSAGE)
+
+# `depuis` ne doit rendre QUE la suite : sans quoi le client reconstruirait
+# tout le fil a chaque tour et les messages se dedoubleraient.
+dernier = o.messages_depuis(0)[-1]["id"]
+verifier("rien de neuf apres le dernier lu", o.messages_depuis(dernier) == [])
+o.dire("chloe", "et maintenant ?")
+suite = o.messages_depuis(dernier)
+verifier("seul le nouveau message revient",
+         len(suite) == 1 and suite[0]["texte"] == "et maintenant ?", str(suite))
+
+# La purge : on ne garde pas tout.
+for i in range(o.MESSAGES_GARDES + 20):
+    o.dire("hugo", "message %d" % i)
+with o._cx() as cx:
+    total = cx.execute("SELECT COUNT(*) FROM messages").fetchone()[0]
+verifier("le tchat ne grossit pas indefiniment",
+         total == o.MESSAGES_GARDES, "%d gardes" % total)
+
+# --- Les trois etats de presence --------------------------------------------
+with o._cx() as cx:
+    cx.execute("UPDATE comptes SET vu_le=NULL")
+etats = {j["pseudo"]: j["etat"] for j in o.presence()}
+verifier("jamais venu = absent", etats.get("chloe") == "absent", str(etats))
+
+o.toucher_presence("chloe")
+etats = {j["pseudo"]: (j["etat"], j["detail"]) for j in o.presence()}
+verifier("vu a l'instant = en ligne", etats.get("chloe", ("",))[0] == "ligne", str(etats))
+verifier("hugo, lui, reste absent", etats.get("hugo", ("",))[0] == "absent", str(etats))
+
+allumer("chloe", 2)
+etats = {j["pseudo"]: (j["etat"], j["detail"]) for j in o.presence()}
+verifier("moteur allume = en partie", etats.get("chloe", ("",))[0] == "partie", str(etats))
+verifier("et on le DIT", etats.get("chloe", ("", ""))[1] == "en partie", str(etats))
+o.PARTIES.clear()
+
+# Une visite ancienne se raconte, elle ne se cache pas.
+from datetime import datetime, timedelta
+vieux = (datetime.now() - timedelta(hours=3)).isoformat(" ", "seconds")
+with o._cx() as cx:
+    cx.execute("UPDATE comptes SET vu_le=? WHERE pseudo='chloe'", (vieux,))
+detail = {j["pseudo"]: j["detail"] for j in o.presence()}.get("chloe", "")
+verifier("une visite ancienne est datee", detail.startswith("vu il y a 3 h"), detail)
+
+# Un compte en attente de validation ne figure pas dans la liste.
+o.inscrire("zoe", "zoe@exemple.fr", "motdepasse123")
+verifier("un compte non valide n'apparait pas",
+         "zoe" not in [j["pseudo"] for j in o.presence()],
+         str([j["pseudo"] for j in o.presence()]))
+
 o.PARTIES.clear()
 print()
 print("ECHECS : %d" % len(echecs))
