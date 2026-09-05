@@ -478,7 +478,10 @@ class GameServerGet(GameServerBase):
         if passwords and any(passwords) and not self.tient_le_siege(request, 0):
             return web.json_response({'actif': False})
         depuis = request.rel_url.query.get('depuis', '0')
-        donnees = await self._appeler_site('/api/vue', {'depuis': depuis})
+        # `avec` vide = tchat general ; un pseudo = conversation privee.
+        avec = request.rel_url.query.get('avec', '')
+        donnees = await self._appeler_site('/api/vue',
+                                           {'depuis': depuis, 'avec': avec})
         if donnees is None:
             return web.json_response({'actif': False})
         donnees['actif'] = True
@@ -493,7 +496,9 @@ class GameServerGet(GameServerBase):
         texte = str(data.get('texte', '') or '')
         if not texte.strip():
             return web.json_response({'error': 'texte vide'}, status=400)
-        donnees = await self._appeler_site('/api/dire', {'texte': texte})
+        donnees = await self._appeler_site('/api/dire',
+                                           {'texte': texte,
+                                            'a': str(data.get('a', '') or '')})
         if donnees is None:
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})

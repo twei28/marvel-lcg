@@ -145,6 +145,64 @@ with o._cx() as cx:
 verifier("le tchat ne grossit pas indefiniment",
          total == o.MESSAGES_GARDES, "%d gardes" % total)
 
+# --- Tchat prive : qui voit quoi --------------------------------------------
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+o.inscrire("lea", "lea@exemple.fr", "motdepasse123")
+o.changer_statut("lea", "valide")
+
+o.dire("chloe", "message pour tout le monde")
+o.dire("chloe", "juste pour toi hugo", "hugo")
+o.dire("hugo", "bien recu chloe", "chloe")
+
+general = [m["texte"] for m in o.messages_depuis(0)]
+verifier("le general ne contient QUE le general",
+         general == ["message pour tout le monde"], str(general))
+
+vus_chloe = [m["texte"] for m in o.messages_depuis(0, "chloe", "hugo")]
+verifier("chloe voit ses deux messages prives avec hugo",
+         vus_chloe == ["juste pour toi hugo", "bien recu chloe"], str(vus_chloe))
+
+vus_hugo = [m["texte"] for m in o.messages_depuis(0, "hugo", "chloe")]
+verifier("hugo voit exactement la meme conversation",
+         vus_hugo == vus_chloe, str(vus_hugo))
+
+# ⚠ LE CAS QUI COMPTE. Sans la clause sur le couple expediteur/destinataire,
+# n'importe quel titulaire de compte lirait les messages prives des autres.
+vus_lea = [m["texte"] for m in o.messages_depuis(0, "lea", "chloe")]
+verifier("lea ne voit RIEN de la conversation de chloe et hugo",
+         vus_lea == [], str(vus_lea))
+vus_lea2 = [m["texte"] for m in o.messages_depuis(0, "lea", "hugo")]
+verifier("ni dans l'autre sens", vus_lea2 == [], str(vus_lea2))
+
+# Un destinataire qui n'existe pas : le message n'est pas ecrit, plutot que de
+# tomber dans une conversation que personne n'ouvrira jamais.
+avant_faute = len(o.messages_depuis(0, "chloe", "personne"))
+o.dire("chloe", "coucou", "personne-qui-nexiste-pas")
+verifier("un destinataire inconnu ne cree pas de message",
+         len(o.messages_depuis(0, "chloe", "personne-qui-nexiste-pas")) == avant_faute)
+
+recents = o.derniers_prives("chloe")
+verifier("chloe sait qu'elle a du nouveau avec hugo",
+         "hugo" in recents and recents["hugo"] > 0, str(recents))
+verifier("et rien avec lea", "lea" not in recents, str(recents))
+
+# Les deux purges sont SEPAREES : un general anime ne doit pas emporter les
+# messages prives de tout le monde.
+prive_avant = len(o.messages_depuis(0, "chloe", "hugo"))
+for i in range(o.MESSAGES_GARDES + 30):
+    o.dire("lea", "bavardage %d" % i)
+prive_apres = len(o.messages_depuis(0, "chloe", "hugo"))
+verifier("un general bavard n'efface pas les prives",
+         prive_apres == prive_avant, "%d puis %d" % (prive_avant, prive_apres))
+with o._cx() as cx:
+    gen = cx.execute("SELECT COUNT(*) FROM messages WHERE destinataire IS NULL").fetchone()[0]
+verifier("le general reste plafonne", gen == o.MESSAGES_GARDES, str(gen))
+
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+    cx.execute("DELETE FROM comptes WHERE pseudo='lea'")
+
 # --- Les trois etats de presence --------------------------------------------
 with o._cx() as cx:
     cx.execute("UPDATE comptes SET vu_le=NULL")

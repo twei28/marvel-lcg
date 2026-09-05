@@ -425,7 +425,10 @@ CREATE TABLE IF NOT EXISTS messages (
     id     INTEGER PRIMARY KEY AUTOINCREMENT,
     pseudo TEXT NOT NULL,
     texte  TEXT NOT NULL,
-    quand  TEXT NOT NULL
+    quand  TEXT NOT NULL,
+    -- NULL = tchat general, lisible par tous les comptes. Un pseudo = message
+    -- prive, visible du seul couple expediteur/destinataire.
+    destinataire TEXT
 );
 CREATE TABLE IF NOT EXISTS invitations (
     jeton       TEXT PRIMARY KEY,
@@ -464,6 +467,10 @@ def initialiser_base() -> None:
         # ajoutee hors du SCHEMA pour les bases deja en service.
         if "vu_le" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN vu_le TEXT")
+        # Meme precaution pour les bases creees avant le tchat prive.
+        colonnes_msg = {r["name"] for r in cx.execute("PRAGMA table_info(messages)")}
+        if "destinataire" not in colonnes_msg:
+            cx.execute("ALTER TABLE messages ADD COLUMN destinataire TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -770,28 +777,74 @@ def presence():
 # On ne garde pas l'historique complet : un tchat de salon sert a se retrouver,
 # pas a archiver. Au-dela, les plus anciens partent.
 MESSAGES_GARDES = 200
+# Les conversations privees sont plus nombreuses et plus lentes a defiler :
+# une seule generale se partage entre tous, les privees se multiplient.
+PRIVES_GARDES = 500
 TAILLE_MESSAGE = 500
 
 
-def dire(pseudo: str, texte: str) -> None:
+def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
+    """Ecrit un message. `destinataire` vide = tchat general."""
     texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
     if not texte:
         return
+    a = (destinataire or "").strip().lower() or None
+    # ⚠ On n'ecrit un message prive que vers un compte QUI EXISTE. Sans ce
+    # controle, une faute de frappe ecrirait dans une conversation que
+    # personne ne lira jamais, sans que l'expediteur s'en doute.
+    if a is not None and compte(a) is None:
+        return
     with _cx() as cx:
-        cx.execute("INSERT INTO messages (pseudo, texte, quand) VALUES (?,?,?)",
-                   (pseudo, texte, _maintenant()))
-        cx.execute("DELETE FROM messages WHERE id NOT IN"
-                   " (SELECT id FROM messages ORDER BY id DESC LIMIT ?)",
-                   (MESSAGES_GARDES,))
+        cx.execute("INSERT INTO messages (pseudo, texte, quand, destinataire)"
+                   " VALUES (?,?,?,?)", (pseudo, texte, _maintenant(), a))
+        # ⚠ DEUX PURGES SEPAREES. Une seule, globale, aurait laisse une
+        # conversation generale animee effacer les messages prives de tout le
+        # monde : ils partagent la meme table, pas le meme usage.
+        cx.execute("DELETE FROM messages WHERE destinataire IS NULL AND id NOT IN"
+                   " (SELECT id FROM messages WHERE destinataire IS NULL"
+                   "  ORDER BY id DESC LIMIT ?)", (MESSAGES_GARDES,))
+        cx.execute("DELETE FROM messages WHERE destinataire IS NOT NULL AND id NOT IN"
+                   " (SELECT id FROM messages WHERE destinataire IS NOT NULL"
+                   "  ORDER BY id DESC LIMIT ?)", (PRIVES_GARDES,))
 
 
-def messages_depuis(depuis: int = 0):
+def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
+    """Les messages d'UNE conversation, apres `depuis`.
+
+    Sans `avec`, c'est le tchat general. Avec, c'est la conversation privee
+    entre `moi` et `avec`, dans les deux sens.
+    """
+    avec = (avec or "").strip().lower()
     with _cx() as cx:
-        lignes = cx.execute(
-            "SELECT id, pseudo, texte, quand FROM messages WHERE id > ?"
-            " ORDER BY id LIMIT ?", (depuis, MESSAGES_GARDES)).fetchall()
+        if not avec:
+            lignes = cx.execute(
+                "SELECT id, pseudo, texte, quand FROM messages"
+                " WHERE destinataire IS NULL AND id > ?"
+                " ORDER BY id LIMIT ?", (depuis, MESSAGES_GARDES)).fetchall()
+        else:
+            lignes = cx.execute(
+                "SELECT id, pseudo, texte, quand FROM messages WHERE id > ?"
+                " AND ((pseudo=? AND destinataire=?) OR (pseudo=? AND destinataire=?))"
+                " ORDER BY id LIMIT ?",
+                (depuis, moi, avec, avec, moi, MESSAGES_GARDES)).fetchall()
     return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
              "quand": l["quand"][11:16]} for l in lignes]
+
+
+def derniers_prives(moi: str) -> dict:
+    """Pour chaque correspondant, l'identifiant du dernier message echange.
+
+    Le client le compare a ce qu'il a deja affiche pour signaler d'une pastille
+    les conversations ou quelque chose est arrive. Sans cela, un message prive
+    resterait invisible tant qu'on n'ouvre pas la bonne conversation.
+    """
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT CASE WHEN pseudo=? THEN destinataire ELSE pseudo END AS qui,"
+            "       MAX(id) AS dernier FROM messages"
+            " WHERE destinataire IS NOT NULL AND (pseudo=? OR destinataire=?)"
+            " GROUP BY qui", (moi, moi, moi)).fetchall()
+    return {l["qui"]: l["dernier"] for l in lignes if l["qui"]}
 
 
 def ouvrir_session(pseudo: str) -> str:
@@ -1261,7 +1314,7 @@ class Handler(BaseHTTPRequestHandler):
                                "application/json; charset=utf-8")
                 return
             if self.path == "/api/dire":
-                dire(qui, champs.get("texte", ""))
+                dire(qui, champs.get("texte", ""), champs.get("a", ""))
                 self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
                 return
@@ -1272,12 +1325,17 @@ class Handler(BaseHTTPRequestHandler):
                 depuis = int(champs.get("depuis", "0") or "0")
             except ValueError:
                 depuis = 0
-            messages = messages_depuis(depuis)
+            avec = champs.get("avec", "")
+            messages = messages_depuis(depuis, qui, avec)
             corps = {
                 "pseudo": qui,
                 "joueurs": presence(),
                 "messages": messages,
                 "dernier": messages[-1]["id"] if messages else depuis,
+                # Dernier message echange avec chacun : le client s'en sert pour
+                # signaler d'une pastille les conversations ou il s'est passe
+                # quelque chose, sans avoir a les ouvrir une par une.
+                "prives": derniers_prives(qui),
             }
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
