@@ -145,6 +145,29 @@ with o._cx() as cx:
 verifier("le tchat ne grossit pas indefiniment",
          total == o.MESSAGES_GARDES, "%d gardes" % total)
 
+# --- Le mot de passe du moteur survit-il a un redemarrage ? ------------------
+# ⚠ LE CAS QUI A FAIT MAL. Tire au hasard a chaque allumage, il perimait le
+# cookie deja pose dans le navigateur des le moindre redemarrage du service, et
+# laissait son proprietaire devant une demande de mot de passe que le site
+# n'affiche nulle part.
+premier = o.mot_de_passe_jeu("chloe")
+verifier("un mot de passe de jeu est attribue", bool(premier), repr(premier))
+verifier("et il ne change pas d'un appel a l'autre",
+         o.mot_de_passe_jeu("chloe") == premier, repr(premier))
+verifier("chaque compte a le sien",
+         o.mot_de_passe_jeu("hugo") != premier)
+
+# On simule deux allumages successifs : le mot de passe doit etre le meme, les
+# cles de siege doivent, elles, avoir change.
+p1 = o.Partie(2, "chloe", "x"); p1.mot_de_passe = o.mot_de_passe_jeu("chloe")
+p1.cles_sieges = [o.secrets.token_urlsafe(8) for _ in range(4)]
+p2 = o.Partie(2, "chloe", "x"); p2.mot_de_passe = o.mot_de_passe_jeu("chloe")
+p2.cles_sieges = [o.secrets.token_urlsafe(8) for _ in range(4)]
+verifier("apres redemarrage, le cookie du navigateur reste valable",
+         p1.mot_de_passe == p2.mot_de_passe)
+verifier("mais un lien d'invitation d'hier ne rouvre rien",
+         p1.cles_sieges != p2.cles_sieges)
+
 # --- Tchat prive : qui voit quoi --------------------------------------------
 with o._cx() as cx:
     cx.execute("DELETE FROM messages")

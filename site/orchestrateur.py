@@ -273,9 +273,13 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
         if emplacement is None:
             raise RuntimeError("Aucun espace de jeu ne t'est attribue.")
         partie = Partie(emplacement, pseudo, f"Jeu de {pseudo}")
-        # Les mots de passe changent a chaque allumage : un lien d'invitation
-        # donne hier ne doit pas rouvrir un siege aujourd'hui.
-        partie.mot_de_passe = secrets.token_urlsafe(6)
+        # ⚠ LE MOT DE PASSE DU MOTEUR NE CHANGE PLUS. Il appartient au compte
+        # (colonne `mdp_jeu`) : le tirer a chaque allumage perimait le cookie
+        # deja pose dans le navigateur des le moindre redemarrage, et laissait
+        # son proprietaire devant une demande de mot de passe qu'il ignore.
+        partie.mot_de_passe = mot_de_passe_jeu(pseudo)
+        # Les cles de SIEGE, elles, changent bien a chaque allumage : un lien
+        # d'invitation donne hier ne doit pas rouvrir une place aujourd'hui.
         # QUATRE cles, toujours, meme en solo : un siege sans cle serait un
         # siege ouvert a qui trouve l'adresse.
         partie.cles_sieges = [secrets.token_urlsafe(8) for _ in range(4)]
@@ -410,7 +414,17 @@ CREATE TABLE IF NOT EXISTS comptes (
     -- l'index partiel ci-dessous, que SQLite accepte dans les deux cas, et
     -- dont la clause WHERE laisse coexister plusieurs comptes sans
     -- emplacement.
-    emplacement         INTEGER
+    emplacement         INTEGER,
+    -- ⚠ MOT DE PASSE DU MOTEUR, ET IL DOIT RESTER STABLE.
+    -- Il etait tire au hasard a chaque allumage. Consequence : tout
+    -- redemarrage du moteur (mise a jour, plantage, extinction volontaire)
+    -- perimait le cookie `session_token` deja pose dans le navigateur, qui
+    -- se retrouvait devant une demande de mot de passe QU'IL NE CONNAISSAIT
+    -- PAS — le site ne l'affiche nulle part. Il appartient donc au compte,
+    -- comme son emplacement. Les cles de SIEGE, elles, continuent de tourner
+    -- a chaque allumage : c'est ce qui empeche un lien d'hier de rouvrir une
+    -- place aujourd'hui.
+    mdp_jeu             TEXT
 );
 CREATE TABLE IF NOT EXISTS parties (
     code        TEXT PRIMARY KEY,
@@ -471,6 +485,8 @@ def initialiser_base() -> None:
         colonnes_msg = {r["name"] for r in cx.execute("PRAGMA table_info(messages)")}
         if "destinataire" not in colonnes_msg:
             cx.execute("ALTER TABLE messages ADD COLUMN destinataire TEXT")
+        if "mdp_jeu" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN mdp_jeu TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -489,6 +505,21 @@ def _attribuer_emplacements_manquants() -> None:
             cx.execute("UPDATE comptes SET emplacement = ? WHERE pseudo = ?",
                        (libre, c["pseudo"]))
             pris.add(libre)
+
+
+def mot_de_passe_jeu(pseudo: str) -> str:
+    """Le mot de passe que le moteur de CE compte exigera, cree au besoin.
+
+    Stable par construction : voir le commentaire de la colonne `mdp_jeu`.
+    """
+    with _cx() as cx:
+        ligne = cx.execute("SELECT mdp_jeu FROM comptes WHERE pseudo=?",
+                           (pseudo,)).fetchone()
+        if ligne is not None and ligne["mdp_jeu"]:
+            return ligne["mdp_jeu"]
+        nouveau = secrets.token_urlsafe(9)
+        cx.execute("UPDATE comptes SET mdp_jeu=? WHERE pseudo=?", (nouveau, pseudo))
+    return nouveau
 
 
 def emplacement_de(pseudo: str):
