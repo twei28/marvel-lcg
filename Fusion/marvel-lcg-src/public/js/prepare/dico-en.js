@@ -359,6 +359,19 @@ export const DICO_EN_BASE = {
     "Les autres joueurs choisissent leur héros depuis leur lien": "The other players pick their hero from their own link",
     "Tous sur cet écran": "Everyone on this screen",
     "Tu choisis et joues tous les héros toi-même": "You pick and play every hero yourself",
+    "Générer les liens à envoyer": "Generate the links to send",
+    "Ton propre deck": "Your own deck",
+    "Importer": "Import",
+    "Le deck doit être public sur marvelcdb, et être celui de ce héros.":
+        "The deck must be public on marvelcdb, and belong to this hero.",
+    "Ce deck n’est pas celui de ce héros.": "This deck does not belong to this hero.",
+    "Import en cours…": "Importing…",
+    "Import impossible.": "Import failed.",
+    "Le serveur a refusé le deck.": "The server rejected the deck.",
+    "Parcourir les cartes": "Browse the cards",
+    "Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.":
+        "One link per person, to send out. Each player picks their hero and deck from theirs.",
+    "Impossible de récupérer les liens.": "Could not fetch the links.",
     "2 à 4 héros, chacun choisit le sien": "2 to 4 heroes, each player picks their own",
     "Partie en ligne": "Online game",
     "Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs depuis le lien que tu leur as envoyé.":
@@ -496,4 +509,4 @@ export const DICO_EN_BASE = {
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
-};
+};

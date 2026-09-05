@@ -102,12 +102,42 @@
             font: inherit; color: var(--sourdine); background: none;
             border: none; cursor: pointer; padding: 0; margin-bottom: 10px;
         }
+        /* Apporter SON deck : l'invite n'a pas de compte et ne verra jamais le
+           constructeur, coller un lien marvelcdb est sa seule porte. */
+        .salon-mcdb {
+            margin-top: 14px; padding: 12px; border: 1px solid var(--bord);
+            border-radius: 8px; background: var(--carte);
+        }
+        .salon-mcdb b { display: block; font-size: 0.95rem; margin-bottom: 8px; }
+        .salon-mcdb-ligne { display: flex; gap: 8px; flex-wrap: wrap; }
+        .salon-mcdb-champ {
+            flex: 1 1 220px; min-width: 0; font: inherit; font-size: 0.85rem;
+            color: inherit; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--bord); border-radius: 6px; padding: 7px 10px;
+        }
+        .salon-mcdb-bouton {
+            font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--or);
+            background: rgba(255, 212, 90, 0.12);
+            border: 1px solid rgba(255, 212, 90, 0.45);
+            border-radius: 6px; padding: 7px 14px; cursor: pointer;
+        }
+        .salon-mcdb-bouton:disabled { opacity: 0.5; cursor: default; }
+        .salon-mcdb small { display: block; margin-top: 7px; color: var(--sourdine); font-size: 0.75rem; }
+        .salon-galerie {
+            color: var(--sourdine); font-size: 0.8rem; text-decoration: none;
+            border-bottom: 1px dotted var(--bord);
+        }
+        .salon-galerie:hover { color: var(--or); }
     </style>
 </head>
 <body>
     <main>
         <h1>Marvel Champions</h1>
         <p id="salon-entete"></p>
+        <!-- L'invite n'a acces a rien d'autre du jeu : ni decks de l'hote, ni
+             campagnes, ni constructeur. La galerie est la seule exception,
+             pour qu'il puisse se documenter pendant qu'il choisit. -->
+        <p><a class="salon-galerie" href="/galerie.html" target="_blank" rel="noopener">🃏 Parcourir les cartes</a></p>
         <p id="salon-statut"></p>
         <div id="salon-attente">
             <b>Tu es prêt<span class="points"></span></b>

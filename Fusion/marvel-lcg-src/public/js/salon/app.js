@@ -10,8 +10,10 @@
 // seule ne donne aucun droit.
 "use strict";
 import { catalog } from "/public/js/prepare/catalog.js";
-import { cardImageUrl } from "/public/js/prepare/api.js";
+import { cardImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js";
 import { t, boutonLangue } from "/public/js/prepare/langue.js";
+import { cards } from "/public/js/prepare/cards.js";
+import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
@@ -88,6 +90,109 @@ async function envoyerChoix(deck) {
     rendreDecks();
 }
 
+/* ---------------- Import d'un deck MarvelCDB ---------------- */
+//
+// L'invite n'a pas de compte et ne verra jamais le constructeur de decks : le
+// seul moyen d'apporter SON deck est de coller son lien MarvelCDB. Le deck est
+// converti puis ENREGISTRE sur le serveur, parce que le salon ne transmet a
+// l'hote qu'un identifiant (`set_choix_siege`), jamais les quarante cartes.
+
+function mcdbId(saisie) {
+    const texte = String(saisie || "").trim();
+    const avecChemin = texte.match(/(?:decklist|deck)\/(?:view\/)?(\d+)/);
+    if (avecChemin) return avecChemin[1];
+    const nu = texte.match(/(\d{3,})/);
+    return nu ? nu[1] : "";
+}
+
+async function mcdbCharger(id) {
+    // Les deux formes d'adresse de MarvelCDB : une liste publiee, ou un deck
+    // personnel rendu public. On essaie l'une puis l'autre.
+    for (const url of [`https://marvelcdb.com/api/public/decklist/${id}.json`,
+                       `https://marvelcdb.com/api/public/deck/${id}.json`]) {
+        try {
+            const r = await fetch(url);
+            if (r.ok) return await r.json();
+        } catch (e) { /* adresse suivante */ }
+    }
+    throw new Error(t("Deck introuvable sur marvelcdb") + " (ID " + id + "). "
+        + t("Vérifie que le deck est public."));
+}
+
+async function importerMarvelcdb(saisie) {
+    const id = mcdbId(saisie);
+    if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
+    const data = await mcdbCharger(id);
+    await cards.load();
+
+    // MarvelCDB nomme le heros `hero_code` pour Marvel Champions
+    // (`investigator_code` est le champ d'Arkham Horror, et reste vide ici).
+    const code = String(data.hero_code || data.investigator_code || "").split(",")[0];
+    const codeBase = code.replace(/[a-z]$/, "");
+    const memeHero = (autre) => {
+        const c = String(autre || "").split(",")[0];
+        return c === code || c.replace(/[a-z]$/, "") === codeBase;
+    };
+    // ⚠ Le heros est DEJA choisi a ce stade. Accepter un deck d'un autre heros
+    // donnerait un siege qui joue autre chose que ce qu'il a selectionne.
+    if (!memeHero(etat.hero.heroCardId) && !memeHero((etat.hero.deck.hero || [])[0])) {
+        throw new Error(t("Ce deck n’est pas celui de ce héros."));
+    }
+
+    // Meme conversion que le wizard (public/js/marvelcdb/conversion.js) : un
+    // deck jouable cote hote doit l'etre a l'identique cote invite.
+    const deck = versDeckMoteur(
+        { id, nom: data.name || etat.hero.name, cartes: data.slots || {} },
+        etat.hero.deck,
+        (cid) => { const c = cards.get(cid); return (c && c.class) || ""; },
+    );
+
+    // Un nom par siege ET par deck : deux invites qui importent le meme deck
+    // ne s'ecrasent pas, et un invite qui change d'avis ne laisse pas trainer
+    // le precedent sous le meme nom.
+    const nom = `mcdb-${id}-siege${siege}`;
+    const reponse = await fetch("/save_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file_name: nom, deck }),
+    });
+    const rep = await reponse.json().catch(() => ({}));
+    if (!reponse.ok || rep.error) {
+        throw new Error(rep.error || t("Le serveur a refusé le deck."));
+    }
+    // Notre propre liste date d'avant l'enregistrement : sans cet oubli, le
+    // deck fraichement importe n'apparaitrait pas dans la liste ci-dessous.
+    oublierDecksSauvegardes();
+    return { id: nom, name: deck.name || nom, source: "saved", deck };
+}
+
+function champImport() {
+    const saisie = el("input", {
+        class: "salon-mcdb-champ",
+        placeholder: t("Colle une URL ou un ID marvelcdb..."),
+    });
+    const bouton = el("button", { class: "salon-mcdb-bouton" }, t("Importer"));
+    bouton.onclick = async () => {
+        if (!saisie.value.trim()) return;
+        bouton.disabled = true;
+        statut(t("Import en cours…"));
+        try {
+            const dk = await importerMarvelcdb(saisie.value);
+            await envoyerChoix(dk);
+        } catch (e) {
+            statut(e.message || t("Import impossible."), true);
+        } finally {
+            bouton.disabled = false;
+        }
+    };
+    saisie.onkeydown = (ev) => { if (ev.key === "Enter") bouton.onclick(); };
+    return el("div", { class: "salon-mcdb" },
+        el("b", {}, t("Ton propre deck")),
+        el("div", { class: "salon-mcdb-ligne" }, saisie, bouton),
+        el("small", {}, t("Le deck doit être public sur marvelcdb, et être celui de ce héros.")),
+    );
+}
+
 /* ---------------- Rendu ---------------- */
 
 async function rendreDecks() {
@@ -104,7 +209,8 @@ async function rendreDecks() {
         },
             el("b", {}, dk.name),
             el("span", {}, (dk.aspects && dk.aspects.length ? dk.aspects.join(" + ") : t("Deck de base")))
-        ))
+        )),
+        champImport(),
     );
 }
 
@@ -220,6 +326,10 @@ async function demarrer() {
     $("#salon-entete").textContent = `${t("Tu es le")} ${t("Joueur")} ${siege + 1}`;
     // Bouton 🌐 FR/EN, comme le wizard et le plateau (guide §11).
     $("#salon-entete").append(" ", boutonLangue("salon-langue"));
+    // Le lien vers la galerie est ecrit en francais dans la page : on le
+    // retraduit ici, comme le bandeau d'attente juste au-dessus.
+    const galerie = document.querySelector(".salon-galerie");
+    if (galerie) galerie.textContent = "🃏 " + t("Parcourir les cartes");
     // La campagne d'abord : s'il y en a une, il n'y a aucun choix a reprendre
     // ni a proposer, et `reprendreChoixExistant` n'aurait rien a trouver.
     const campagne = await campagneEnCours();

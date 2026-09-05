@@ -397,6 +397,46 @@ class GameServerGet(GameServerBase):
             'sieges': {str(p): c for p, c in choix.items()},
         })
 
+    async def get_liens_sieges(self, request: web.Request) -> web.Response:
+        """Les cles de siege, pour que l'HOTE fabrique ses liens d'invitation.
+
+        ⚠ RESERVE AU SIEGE 0. Une cle de siege OUVRE ce siege : la rendre a qui
+        la demande laisserait n'importe quel visiteur de la partie s'asseoir a
+        la place d'un invite. `allowed_seats` prouve la detention du siege 0
+        par le cookie que /claim_seat a pose.
+
+        On ne renvoie que les CLES, jamais l'adresse complete : le moteur ignore
+        tout du domaine public place devant lui (`p3.exemple.com`), la ou le
+        navigateur de l'hote, lui, le connait exactement.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            # Partie sans protection de siege : il n'y a aucun lien a donner.
+            return web.json_response({'multi': False, 'cles': []})
+        # `tient_le_siege` et NON `allowed_seats` : cette derniere ouvre les
+        # sieges orphelins, or avant le debut d'une partie ils le sont TOUS.
+        # Elle laisserait donc le premier visiteur venu repartir avec les
+        # quatre cles, c'est-a-dire avec la partie.
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
+    async def get_site_admin(self, request: web.Request) -> web.Response:
+        """L'adresse d'administration du site, s'il y en a une et si c'est l'hote.
+
+        Reserve au siege 0 par la meme garde stricte que les cles : un invite
+        n'a rien a faire dans l'administration des comptes.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS, SITE_ADMIN_URL
+        url = SITE_ADMIN_URL.value or ''
+        if not url:
+            return web.json_response({'url': ''})
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'url': ''})
+        return web.json_response({'url': url})
+
     async def set_language(self, request: web.Request) -> web.Response:
         # Bascule FR/EN de la narration a chaud (bouton langue du client) :
         # recharge la table TransText ('fr') ou la vide ('en'). N'affecte que
@@ -467,6 +507,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
+        self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
+        self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)

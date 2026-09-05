@@ -1129,6 +1129,58 @@ button{cursor:pointer}
 .coop-choix.sel { border-color: #ffd45a; background: rgba(255, 212, 90, 0.12); }
 .coop-choix small { opacity: 0.72; font-size: 12px; }
 
+/* Les liens d'invitation, sous la bascule : c'est la qu'on decide d'attendre
+   du monde, donc la qu'on veut de quoi le convoquer. Le bloc n'apparait qu'a
+   partir de deux heros, et donne UN lien par siege d'invite. */
+.liens-invites { margin-top: 10px; }
+.liens-bouton {
+    font: inherit;
+    color: #ffd45a;
+    background: rgba(255, 212, 90, 0.10);
+    border: 1px solid rgba(255, 212, 90, 0.45);
+    border-radius: 6px;
+    padding: 7px 14px;
+    cursor: pointer;
+}
+.liens-bouton:hover { background: rgba(255, 212, 90, 0.18); }
+.liens-erreur { display: block; margin-top: 6px; color: #ff8a80; font-size: 12px; }
+.liens-invites.ouvert {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 6px;
+}
+.liens-ligne { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.liens-qui { flex: 0 0 78px; font-size: 13px; opacity: 0.78; }
+/* Un champ plutot qu'un texte : selectionnable au clavier meme quand le
+   presse-papier est refuse (page non securisee, permission bloquee). */
+.liens-url {
+    flex: 1 1 260px;
+    min-width: 0;
+    font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 4px;
+    padding: 5px 8px;
+}
+.liens-copier {
+    font: inherit;
+    font-size: 12px;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.liens-copier:hover { background: rgba(255, 255, 255, 0.12); }
+.liens-copier.ok { color: #7fdc8c; border-color: rgba(127, 220, 140, 0.5); }
+.liens-aide { opacity: 0.7; font-size: 12px; }
+
 /* Etat du salon dans le bandeau de l hote : qui a choisi, et quoi.
    Pleine largeur du bandeau (flex-basis 100%) pour passer sous le texte
    d explication plutot que de se glisser a cote. */

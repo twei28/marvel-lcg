@@ -86,6 +86,24 @@ def lire():
         return {}
 
 
+def lire_liens(cookie=None):
+    """GET /get_liens_sieges, avec ou sans jeton de siege.
+
+    Rend (code, corps). Le corps est {} quand la reponse n'est pas du JSON :
+    tant que la route n'existe pas, le serveur retombe sur son routage de
+    fichiers, et on veut un echec lisible plutot qu'une exception.
+    """
+    entetes = {"Cookie": cookie} if cookie else {}
+    requete = urllib.request.Request(BASE + "/get_liens_sieges", headers=entetes)
+    try:
+        with urllib.request.urlopen(requete, timeout=5) as reponse:
+            return reponse.status, json.loads(reponse.read().decode("utf-8"))
+    except urllib.error.HTTPError as erreur:
+        return erreur.code, {}
+    except Exception:
+        return 0, {}
+
+
 def creer_partie():
     # Un VRAI descripteur, sur le modele de ce que construit le wizard
     # (public/js/prepare/launcher.js, buildDescriptor). Un descripteur invalide
@@ -130,6 +148,10 @@ try:
         code, _ = poster({"p": 1, "hero_card_id": "mw001a", "deck_id": "madame_web"})
         verifier("solo : aucune protection de siege, l'ecriture passe",
                  code == 200, f"code={code}")
+        code, corps = lire_liens()
+        verifier("solo : aucun lien a distribuer",
+                 code == 200 and corps.get("multi") is False and corps.get("cles") == [],
+                 f"code={code} {corps}")
         raise SystemExit
 
     jeton_j1 = hashlib.md5(b"j1").hexdigest()
@@ -168,6 +190,28 @@ try:
     verifier("changement d'avis pris en compte",
              lire().get("sieges", {}).get("1", {}).get("hero_card_id") == "01001a",
              json.dumps(lire().get("sieges")))
+
+    # --- Les cles de siege ne sortent que pour l'HOTE ----------------------
+    # Une cle OUVRE un siege : la rendre a qui la demande laisserait n'importe
+    # quel visiteur de la partie s'asseoir a la place d'un invite. Ces trois cas
+    # sont la raison d'etre de la route, pas un ornement.
+    jeton_h0 = hashlib.md5(b"h0").hexdigest()
+    cookie_h0 = f"seat_token_0={jeton_h0}"
+
+    code, corps = lire_liens()
+    verifier("liens : sans jeton -> 403", code == 403, f"code={code} {corps}")
+
+    code, corps = lire_liens(cookie=cookie_j1)
+    verifier("liens : le jeton d'un INVITE ne suffit pas -> 403",
+             code == 403, f"code={code} {corps}")
+
+    code, corps = lire_liens(cookie=f"seat_token_0={hashlib.md5(b'faux').hexdigest()}")
+    verifier("liens : un mauvais jeton d'hote -> 403", code == 403, f"code={code}")
+
+    code, corps = lire_liens(cookie=cookie_h0)
+    verifier("liens : l'hote recoit les quatre cles",
+             code == 200 and corps.get("multi") is True
+             and corps.get("cles") == MOTS_DE_PASSE, f"code={code} {corps}")
 
     # --- La page du salon est-elle servie, et le lien y mene-t-il ? ---------
     # Le RENDU (grille de heros, liste de decks) demande un navigateur : il est

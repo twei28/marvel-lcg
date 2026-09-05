@@ -147,6 +147,18 @@ class Partie:
             })
         return sortie
 
+    def lien_hote(self) -> str:
+        """L'adresse ou l'on DEPOSE le proprietaire du compte.
+
+        `to=prepare` mene a l'ecran « Rassemble tes heros », c'est-a-dire la ou
+        il atterrissait autrefois en ouvrant l'adresse du moteur a la main. Le
+        `claim_seat` au passage lui pose le cookie du siege 0 : sans lui, le
+        moteur ne le reconnaitrait pas comme l'hote et lui refuserait les cles
+        d'invitation.
+        """
+        cle = self.cles_sieges[0] if self.cles_sieges else ""
+        return f"{self.base_url()}/claim_seat?p=0&key={cle}&to=prepare"
+
     def solo(self) -> bool:
         return self.joueurs <= 1
 
@@ -174,6 +186,12 @@ def _config_partie(emplacement: int, partie: Partie) -> str:
     cfg = config_serveur.construire_config(base, emplacement)
     cfg["password"] = partie.mot_de_passe
     cfg["seat_passwords"] = partie.cles_sieges
+    # Le bouton « Administration » du jeu n'existe que si cette cle est
+    # renseignee, et elle ne l'est que pour l'administrateur : le moteur ne
+    # sait rien des comptes du site, c'est ici qu'on le lui dit.
+    if partie.code == ADMIN:
+        racine = f"https://{DOMAINE}" if DOMAINE else f"http://127.0.0.1:{PORT_SITE}"
+        cfg["site_admin_url"] = racine + "/admin"
 
     # Les chemins de la configuration sont relatifs a `.game/`, pas a la
     # racine : le moteur fait `os.chdir(.game)` avant de les resoudre.
@@ -280,6 +298,38 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
     except Exception:
         eteindre_jeu(pseudo)
         raise
+
+
+DEMARRAGES: set[str] = set()
+ERREURS_DEMARRAGE: dict[str, str] = {}
+VERROU_DEMARRAGE = threading.Lock()
+
+
+def demarrer_en_fond(pseudo: str) -> None:
+    """Allume le moteur SANS retenir la requete HTTP.
+
+    ⚠ NE PAS APPELER `lancer_jeu` DEPUIS UNE ROUTE. Le premier allumage peut
+    prendre plusieurs minutes : le navigateur abandonnerait bien avant, en ne
+    montrant qu'une page blanche. On demarre donc a cote, et la page d'attente
+    se rafraichit jusqu'a ce que le moteur reponde.
+    """
+    with VERROU_DEMARRAGE:
+        if pseudo in DEMARRAGES:
+            return              # deja en route : ne pas en lancer un second
+        DEMARRAGES.add(pseudo)
+        ERREURS_DEMARRAGE.pop(pseudo, None)
+
+    def travail() -> None:
+        try:
+            partie = lancer_jeu(pseudo)
+            journal_partie_ouverte(partie, pseudo)
+        except Exception as erreur:
+            ERREURS_DEMARRAGE[pseudo] = str(erreur)
+        finally:
+            with VERROU_DEMARRAGE:
+                DEMARRAGES.discard(pseudo)
+
+    threading.Thread(target=travail, daemon=True).start()
 
 
 def eteindre_jeu(code: str) -> bool:
@@ -643,6 +693,7 @@ def ouvrir_session(pseudo: str) -> str:
 PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+{tete}
 <title>NarwhalChampions</title>
 <style>
   :root {{ color-scheme: dark; }}
@@ -707,111 +758,50 @@ PAGE = """<!doctype html>
 </main>
 """
 
-def _libelle_places(n: int) -> str:
-    return "Seul" if n <= 1 else "%d joueurs" % n
+def _barre(pseudo: str) -> str:
+    admin = ' &middot; <a href="/admin">Administration</a>' if pseudo == ADMIN else ""
+    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
+            '<a href="/deconnexion">Se deconnecter</a></div>'
+            % (html.escape(pseudo), admin))
 
 
-def _boutons_places(nombres, actuel: int = 0, classe: str = "") -> str:
-    """La rangee de choix « Seul / 2 / 3 / 4 joueurs ».
+def page_attente(pseudo: str) -> bytes:
+    """Le seul ecran du site entre la connexion et le jeu.
 
-    Chaque bouton poste vers `/jeu`. Sur un jeu deja allume, cela ne redemarre
-    rien : les quatre cles existent depuis le debut, seul le nombre de liens
-    AFFICHES change. `actuel` desactive le bouton du nombre en cours, pour
-    qu'on voie ou l'on en est.
+    Il ne s'affiche que le temps que le moteur reponde, puis la balise
+    `refresh` renvoie sur `/entrer`, qui redirige vers le jeu. En regime
+    normal (moteur deja allume) personne ne voit jamais cette page.
     """
-    morceaux = []
-    for n in nombres:
-        texte = html.escape(_libelle_places(n))
-        if n == actuel:
-            morceaux.append('<button type="button" disabled>%s</button>' % texte)
-        else:
-            morceaux.append(
-                '<form method="post" action="/jeu">'
-                '<input type="hidden" name="joueurs" value="%d">'
-                '<button%s type="submit">%s</button></form>' % (n, classe, texte))
-    return "".join(morceaux)
-
-
-def rendre_page(pseudo=None, message="", vue="") -> bytes:
-    if pseudo:
-        admin = ' &middot; <a href="/admin">Administration</a>' if pseudo == ADMIN else ""
-        barre = ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
-                 '<a href="/deconnexion">Se deconnecter</a></div>'
-                 % (html.escape(pseudo), admin))
-        partie = jeu_de(pseudo)
-        if partie is not None and partie.vivant():
-            liens = "".join(
-                '<li><span>%s</span><a href="%s">%s</a></li>' % (
-                    html.escape(l["libelle"]), html.escape(l["url"]),
-                    html.escape(l["url"]))
-                for l in partie.liens())
-            if partie.solo():
-                sous = "Ton jeu est allume."
-                intro_mdp = "Mot de passe du jeu :"
-                intro_places = "Des amis te rejoignent finalement ?"
-            else:
-                sous = ("Ton jeu est allume. Le premier lien est le tien, "
-                        "les autres sont pour tes amis.")
-                intro_mdp = "Mot de passe a donner a tes invites :"
-                intro_places = "Vous etes :"
-            corps = GABARIT_JEU.format(
-                mdp=html.escape(partie.mot_de_passe),
-                liens=liens,
-                intro_mdp=intro_mdp,
-                intro_places=intro_places,
-                boutons=_boutons_places((1, 2, 3, 4), actuel=partie.joueurs))
-        elif vue == "multi":
-            corps = GABARIT_NOMBRE.format(
-                boutons=_boutons_places((2, 3, 4)))
-            sous = "Le jeu demarre juste apres, et tes liens s'affichent."
-        else:
-            corps = GABARIT_CHOIX
-            sous = "Ton espace de jeu t'attend."
+    erreur = ERREURS_DEMARRAGE.get(pseudo, "")
+    if erreur:
+        tete = ""
+        sous = "Quelque chose a coince."
+        corps = ('<div class="table">'
+                 '<div class="entete"><strong>Ton jeu n\'a pas demarre</strong></div>'
+                 '<p class="mdp">%s</p>'
+                 '<form method="get" action="/entrer" style="margin-top:1rem">'
+                 '<button type="submit">Reessayer</button></form></div>'
+                 % html.escape(erreur))
     else:
-        barre = ('<div class="barre"><span>Il faut un compte pour jouer.</span>'
-                 '<span><a href="/connexion">Se connecter</a></span></div>')
-        corps = ""
-        sous = "Marvel Champions en ligne, sur invitation."
-    if message:
-        barre = '<div class="avert">%s</div>%s' % (html.escape(message), barre)
-    return PAGE.format(sous=sous, barre=barre, corps=corps,
+        tete = '<meta http-equiv="refresh" content="3;url=/entrer">'
+        sous = "Un instant."
+        corps = ('<div class="table">'
+                 '<div class="entete"><strong>Ton jeu demarre</strong></div>'
+                 '<p class="mdp">Le premier allumage prend une minute ou deux. '
+                 'Cette page bascule toute seule des que c\'est pret.</p></div>')
+    return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
                        heures=int(DUREE_MAX_HEURES)).encode("utf-8")
 
 
-# Etape 1 : seul, ou avec des amis.
-GABARIT_CHOIX = """<div class="choix">
-  <form method="post" action="/jeu">
-    <input type="hidden" name="joueurs" value="1">
-    <button type="submit"><b>Jouer seul</b>
-      <em>Campagne, bac a sable, constructeur de decks, hauts faits.</em></button>
-  </form>
-  <form method="get" action="/multi">
-    <button class="calme" type="submit"><b>Jouer avec des amis</b>
-      <em>Tu choisis a combien, le site te donne les liens a leur envoyer.</em></button>
-  </form>
-</div>"""
-
-# Etape 2 : combien de joueurs. C'est ce nombre qui decide combien de liens
-# seront affiches a l'etape suivante.
-GABARIT_NOMBRE = """<div class="table">
-  <div class="entete"><strong>Vous serez combien ?</strong></div>
-  <p class="mdp">Toi compris. Tu recevras un lien a envoyer par invite.</p>
-  <div class="places" style="margin-bottom:0">{boutons}</div>
-</div>
-<a class="retour" href="/">Revenir en arriere</a>"""
-
-# Etape 3 : le jeu tourne, voici les liens.
-GABARIT_JEU = """<div class="table">
-  <div class="entete">
-    <strong>Ton jeu tourne</strong>
-    <form method="post" action="/eteindre" style="margin:0">
-      <button class="rouge" type="submit">Eteindre</button>
-    </form>
-  </div>
-  <p class="mdp">{intro_mdp} <code>{mdp}</code></p>
-  <ul>{liens}</ul>
-  <div class="apres"><span>{intro_places}</span>{boutons}</div>
-</div>"""
+def page_arret(pseudo: str) -> bytes:
+    corps = ('<div class="table">'
+             '<div class="entete"><strong>Ton jeu est eteint</strong></div>'
+             '<p class="mdp">Rien n\'est perdu : tes decks, tes campagnes et tes '
+             'hauts faits t\'attendent au prochain allumage.</p>'
+             '<form method="get" action="/entrer" style="margin-top:1rem">'
+             '<button type="submit">Rallumer mon jeu</button></form></div>')
+    return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
+                       corps=corps, heures=int(DUREE_MAX_HEURES)).encode("utf-8")
 
 
 PAGE_FORMULAIRE = """<!doctype html>
@@ -1020,7 +1010,34 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         pseudo = self._session()
         if self.path in ("/", "/index.html"):
-            self._repondre(200, rendre_page(pseudo))
+            # ⚠ LE SITE N'EST QU'UNE PORTE. Qui est connecte n'a rien a faire
+            # ici : il veut son jeu, pas une page d'accueil. Qui ne l'est pas
+            # voit le formulaire tout de suite, sans page intermediaire.
+            if pseudo:
+                self._rediriger("/entrer")
+            else:
+                self._repondre(200, self._formulaire("connexion"))
+        elif self.path == "/entrer":
+            if not pseudo:
+                self._rediriger("/")
+                return
+            partie = jeu_de(pseudo)
+            if partie is not None and partie.vivant() and _moteur_repond(partie.port):
+                # Redirection vers un AUTRE hote (p<N>.domaine) : c'est voulu,
+                # le client du jeu utilise des chemins absolus et ne supporte
+                # pas d'etre servi sous un prefixe (voir l'en-tete du fichier).
+                self.send_response(303)
+                self.send_header("Location", partie.lien_hote())
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            demarrer_en_fond(pseudo)
+            self._repondre(200, page_attente(pseudo))
+        elif self.path == "/arret":
+            if not pseudo:
+                self._rediriger("/")
+                return
+            self._repondre(200, page_arret(pseudo))
         elif self.path.startswith("/inscription"):
             import urllib.parse
             requete = urllib.parse.urlparse(self.path)
@@ -1030,11 +1047,6 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
-        elif self.path == "/multi":
-            if not pseudo:
-                self._repondre(403, rendre_page(None, "Il faut un compte pour jouer."))
-                return
-            self._repondre(200, rendre_page(pseudo, vue="multi"))
         elif self.path == "/connexion":
             self._repondre(200, self._formulaire("connexion"))
         elif self.path == "/deconnexion":
@@ -1096,7 +1108,7 @@ class Handler(BaseHTTPRequestHandler):
                 return
             jeton = ouvrir_session(qui)
             self.send_response(303)
-            self.send_header("Location", "/")
+            self.send_header("Location", "/entrer")
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
             self.send_header("Set-Cookie",
@@ -1118,38 +1130,16 @@ class Handler(BaseHTTPRequestHandler):
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path == "/jeu":
-            # ⚠ LE COMPTE N'EST EXIGE QUE POUR ALLUMER SON PROPRE JEU. Les
-            # invites rejoignent par leur lien de siege, qui porte sa propre
-            # cle : c'est le moteur qui protege le siege, pas ce service.
-            if not pseudo:
-                self._repondre(403, rendre_page(None, "Il faut un compte pour jouer."))
-                return
-            try:
-                joueurs = int(champs.get("joueurs", "1") or "1")
-            except ValueError:
-                joueurs = 1
-            # Changer le nombre sur un jeu deja allume n'ouvre pas une
-            # nouvelle partie : on ne le consigne donc qu'au vrai demarrage.
-            ancien = jeu_de(pseudo)
-            neuf = ancien is None or not ancien.vivant()
-            try:
-                partie = lancer_jeu(pseudo, joueurs)
-                if neuf:
-                    journal_partie_ouverte(partie, pseudo)
-            except Exception as erreur:
-                self._repondre(503, rendre_page(pseudo, str(erreur)))
-                return
-            self._rediriger("/")
-
         elif self.path == "/eteindre":
             if not pseudo:
-                self._repondre(403, rendre_page(None, "Connecte-toi d'abord."))
+                self._rediriger("/")
                 return
             # On n'eteint QUE son propre jeu : le code est le pseudo.
             if eteindre_jeu(pseudo):
                 journal_partie_fermee(pseudo)
-            self._rediriger("/")
+            # Vers /arret et surtout PAS vers / : cette derniere rallumerait
+            # aussitot ce qu'on vient d'eteindre.
+            self._rediriger("/arret")
 
         else:
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")

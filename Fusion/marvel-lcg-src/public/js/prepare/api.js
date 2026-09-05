@@ -13,6 +13,18 @@ async function getJSON(url) {
     return json;
 }
 
+/**
+ * Oublie la liste des decks sauvegardés, pour la relire au prochain appel.
+ *
+ * ⚠ Nécessaire depuis que l'INVITÉ peut importer un deck MarvelCDB depuis le
+ * salon : le deck est alors écrit sur le serveur APRÈS que l'hôte a lu sa
+ * liste, et sans cet oubli l'hôte garderait sa version d'avant — le choix de
+ * l'invité resterait introuvable, donc silencieusement ignoré.
+ */
+export function oublierDecksSauvegardes() {
+    _cache.delete("list_deck?");
+}
+
 /** "./deck/starter/spider_man.json" -> "spider_man" */
 export function fileName(path) {
     return String(path).replace(/^.*[\\/]/, "").replace(/\.[^/.]+$/, "");

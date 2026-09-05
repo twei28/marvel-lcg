@@ -1,6 +1,6 @@
 // app.js - Assistant "Preparer une partie" : briefing Marvel Champions.
 "use strict";
-import { cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js?v=8b2b67ef";
+import { cardImageUrl, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=8b2b67ef";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
@@ -273,6 +273,10 @@ function assignHero(slotIndex, hero) {
 
 /* ---------------- Salon multijoueur ---------------- */
 
+// Decks deja relus apres un echec : evite de rejouer la lecture a chaque
+// sondage pour un deck qui, lui, n'existe vraiment pas.
+const decksRelus = new Set();
+
 /** Traduit les choix recus en heros + deck dans state.players. */
 async function appliquerChoixSalon() {
     // En coop locale sur un serveur en ligne, les sieges sont a l'hote : un
@@ -286,8 +290,18 @@ async function appliquerChoixSalon() {
         if (!hero) continue;
         const joueur = state.players[p];
         if (!joueur) continue;
-        const decks = await catalog.decksForHero(hero);
-        const dk = decks.find((d) => d.id === choix.deck_id);
+        let decks = await catalog.decksForHero(hero);
+        let dk = decks.find((d) => d.id === choix.deck_id);
+        if (!dk && !decksRelus.has(choix.deck_id)) {
+            // Deck inconnu : l'invite vient peut-etre de l'importer depuis
+            // MarvelCDB, et notre liste date d'avant. On la relit UNE fois par
+            // deck — sans ce garde-fou, un deck reellement absent declencherait
+            // une requete a chaque sondage, toutes les deux secondes.
+            decksRelus.add(choix.deck_id);
+            oublierDecksSauvegardes();
+            decks = await catalog.decksForHero(hero);
+            dk = decks.find((d) => d.id === choix.deck_id);
+        }
         if (!dk) continue;
         joueur.hero = hero;
         joueur.deck = dk.deck;
@@ -772,10 +786,100 @@ function choixCoop() {
         class: "coop-choix" + ((state.coopEnLigne !== false) === distant ? " sel" : ""),
         onclick: () => { state.coopEnLigne = distant; render(); },
     }, el("b", { class: "mvl" }, titre), el("small", {}, detail));
-    return el("div", { class: "coop-bascule" },
-        bouton(true, t("Chacun sur son appareil"), t("Les autres joueurs choisissent leur héros depuis leur lien")),
-        bouton(false, t("Tous sur cet écran"), t("Tu choisis et joues tous les héros toi-même")),
+    return el("div", { class: "coop-zone" },
+        el("div", { class: "coop-bascule" },
+            bouton(true, t("Chacun sur son appareil"), t("Les autres joueurs choisissent leur héros depuis leur lien")),
+            bouton(false, t("Tous sur cet écran"), t("Tu choisis et joues tous les héros toi-même")),
+        ),
+        // Le lien n'a de sens QUE si quelqu'un est a l'autre bout. « Tous sur
+        // cet ecran » n'attend personne : proposer d'inviter y serait faux.
+        state.coopEnLigne !== false ? blocLiens() : null,
     );
+}
+
+/* ---------------- Liens d'invitation ---------------- */
+
+// Les cles de siege, une fois demandees au moteur. `null` tant que l'hote n'a
+// rien demande : on ne va pas chercher des cles dont personne n'a besoin.
+const liensInvites = { cles: null, erreur: "", copie: -1 };
+
+/**
+ * L'adresse a envoyer a l'invite du siege `p`.
+ *
+ * `location.origin` plutot qu'une adresse fabriquee par le moteur : le moteur
+ * ignore tout du domaine public place devant lui (`p3.exemple.com`), la ou le
+ * navigateur de l'hote le connait exactement. `to=salon` envoie l'invite
+ * choisir son heros et son deck, pas directement au plateau.
+ */
+function lienDuSiege(p) {
+    const cle = (liensInvites.cles || [])[p] || "";
+    return location.origin + "/claim_seat?p=" + p
+        + "&key=" + encodeURIComponent(cle) + "&to=salon";
+}
+
+async function genererLiens() {
+    liensInvites.erreur = "";
+    try {
+        const res = await fetch("get_liens_sieges?");
+        const brut = await res.json();
+        // ⚠ `res.ok` NE SUFFIT PAS : le moteur repond 403 avec un corps JSON
+        // quand le client ne tient pas le siege 0. Sans ce test, `cles` serait
+        // `undefined` et chaque lien sortirait avec `key=`, c'est-a-dire
+        // ouvert a qui devine l'adresse.
+        if (!res.ok || !brut.multi || !Array.isArray(brut.cles)) {
+            throw new Error(brut.error || "indisponible");
+        }
+        liensInvites.cles = brut.cles;
+    } catch (e) {
+        liensInvites.erreur = t("Impossible de récupérer les liens.");
+    }
+    render();
+}
+
+function blocLiens() {
+    // A un seul heros il n'y a personne a inviter : le bouton mentirait.
+    if (state.playerCount < 2) return null;
+
+    if (!liensInvites.cles) {
+        return el("div", { class: "liens-invites" },
+            el("button", { class: "liens-bouton", onclick: genererLiens },
+                t("Générer les liens à envoyer")),
+            liensInvites.erreur
+                ? el("small", { class: "liens-erreur" }, liensInvites.erreur)
+                : null,
+        );
+    }
+
+    const bloc = el("div", { class: "liens-invites ouvert" });
+    // Un lien par siege d'INVITE, et le nombre suit celui des heros choisis :
+    // le siege 0 est celui de l'hote, deja devant son ecran.
+    for (let p = 1; p < state.playerCount; p += 1) {
+        const url = lienDuSiege(p);
+        bloc.append(el("div", { class: "liens-ligne" },
+            el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
+            el("input", {
+                class: "liens-url", readonly: true, value: url,
+                onclick: (ev) => ev.target.select(),
+            }),
+            el("button", {
+                class: "liens-copier" + (liensInvites.copie === p ? " ok" : ""),
+                onclick: async () => {
+                    try {
+                        await navigator.clipboard.writeText(url);
+                        liensInvites.copie = p;
+                    } catch (e) {
+                        // Presse-papier refuse (page non securisee, permission) :
+                        // le champ reste selectionnable a la main.
+                        liensInvites.copie = -1;
+                    }
+                    render();
+                },
+            }, liensInvites.copie === p ? t("Copié") : t("Copier")),
+        ));
+    }
+    bloc.append(el("small", { class: "liens-aide" },
+        t("Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.")));
+    return bloc;
 }
 
 function bandeauEnLigne() {

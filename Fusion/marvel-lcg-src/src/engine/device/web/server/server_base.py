@@ -11,6 +11,11 @@ from engine.config import ConfigVariables
 # controle, comportement d'origine (JOUER-SOLO et hot-seat local intacts).
 # Un client prouve son siege via le cookie seat_token_<n> pose par /claim_seat.
 SEAT_PASSWORDS = ConfigVariables.ListStr('seat_passwords', [])
+# Adresse de l'administration du SITE qui a lance cette partie. Vide par
+# defaut : un moteur lance a la main n'a pas de site devant lui, et le bouton
+# n'apparait alors nulle part. L'orchestrateur ne renseigne cette cle que pour
+# la partie de l'administrateur.
+SITE_ADMIN_URL = ConfigVariables.Str('site_admin_url', '')
 
 class GameServerBase(WebServer):
 
@@ -49,6 +54,26 @@ class GameServerBase(WebServer):
             return not self.device_manager.client_manager.GetClients(seat)
         except Exception:
             return False
+
+    def tient_le_siege(self, request: web.Request, seat: int) -> bool:
+        """Ce client PROUVE-t-il qu'il tient ce siege, cookie en main ?
+
+        ⚠ NE PAS REMPLACER PAR `allowed_seats` : elle ouvre tout siege
+        qu'aucun client ne tient (« reprise d'un siege abandonne », plus bas).
+        C'est juste EN COURS de partie, ou un siege muet bloquerait tout le
+        monde. C'est faux AVANT : tant que personne ne s'est connecte, les
+        quatre sieges sont orphelins, et le premier visiteur venu passerait
+        pour l'hote. A n'utiliser que la ou une usurpation coute cher, comme
+        la distribution des cles de siege.
+        """
+        passwords = SEAT_PASSWORDS.value
+        if seat < 0 or seat >= len(passwords):
+            return False
+        attendu = passwords[seat]
+        if not attendu:
+            return True          # siege volontairement laisse sans protection
+        jeton = request.cookies.get(f'seat_token_{seat}')
+        return bool(jeton) and jeton == self.seat_hash(attendu)
 
     def allowed_seats(self, request: web.Request) -> 'Set[int]|None':
         """Sieges que CE client a le droit d'occuper. None = protection coupee."""
