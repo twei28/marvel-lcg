@@ -333,6 +333,18 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Copier un rapport de bug': 'Copy a bug report',
   'Télécharger le rapport complet': 'Download the full report',
   'Log': 'Log',
+  'Manuel': 'Manual',
+  'Pas à pas': 'Step by step',
+  'Instantané': 'Instant',
+  'Rythme de la phase du méchant : un clic par étape, déroulé automatique, ou tout d’un coup':
+    'Villain phase pacing: one click per step, automatic playback, or all at once',
+  'Vitesse du déroulé': 'Playback speed',
+  'Temps d’affichage de chaque étape': 'How long each step stays on screen',
+  'En pause': 'Paused',
+  'Clic : suite · Espace : pause': 'Click: next · Space: pause',
+  'Reprendre': 'Resume',
+  'Pause': 'Pause',
+  'Tout passer': 'Skip all',
   'Télécharger tout le déroulé de la partie en fichier texte':
     'Download the whole game log as a text file',
   'Rapport copié': 'Report copied',

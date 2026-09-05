@@ -1773,6 +1773,32 @@
      Note : un scenario a beaucoup de piles (Hercule, decks supplementaires) peut
      les faire deborder ; a surveiller et gerer par chevauchement si besoin. */
 
+  /* ⚠ LE DEBORDEMENT ANNONCE CI-DESSUS EST ARRIVE, mais en HAUTEUR, et il a
+     fallu le regler SANS reduire les cartes (la ligne du dessus est une
+     decision de l'utilisateur, pas un reglage).
+
+     Le compte, a la taille de scene minimale, qui est aussi la taille reelle
+     sur un ecran large (echelle = h/940, donc hauteur = 940 pile) :
+       940 - 20 de padding de scene - 21 de gouttieres = 899 pour 4 rangees,
+       soit 224 par rangee ; la zone en retire ses 20 + 4 de retrait -> 200.
+     Or une carte de pile mesure 24 (.top-strip, l'etiquette de type) + 5 (la
+     gouttiere de .scan-visuel) + 176 (le cadre) = 205. Cinq pixels de trop, et
+     comme les piles sont calees EN BAS, ils debordent VERS LE HAUT : les mises
+     de cote montaient sur le deck et la defausse du joueur, et le dessus des
+     piles (« Ally », « Side scheme »...) s'affichait par-dessus la rangee
+     voisine. Signale en jeu le 03/09/2026, capture a l'appui.
+
+     Les cinq pixels sont repris sur la GOUTTIERE MORTE entre l'etiquette et
+     l'image, qui ne porte aucune information : 24 + 0 + 176 = 200, la carte
+     tient. Sa taille, elle, ne bouge pas d'un pixel. Le pendant horizontal du
+     meme defaut est traite dans zones.ts (piles(), qui force le portrait) :
+     une pile a l'encombrement d'une pile, en largeur comme en hauteur. */
+  .zone-piles-rencontre .scan-visuel,
+  .zone-piles-joueur .scan-visuel,
+  .zone-annexes .scan-visuel {
+    gap: 0;
+  }
+
   /* Les cartes du selecteur sont hors scene : elles ne suivent pas l'echelle de
      la table, donc leur taille et leur agrandissement se reglent ici. */
   /* Cartes du selecteur : taille lisible, PAS d'agrandissement en place (il
@@ -5003,4 +5029,84 @@
   font-size: 11px;
   opacity: 0.8;
   font-style: italic;
+}
+
+/* ---- Pas à pas de la phase du méchant ---------------------------------- */
+/* Le halo double le son et le chiffre : trois canaux pour le même fait, parce
+   qu'aucun ne suffit seul — le son passe inaperçu, le chiffre s'efface, et le
+   halo seul ne dit pas de combien. */
+.pas-a-pas-halo {
+  position: relative;
+  animation: pas-a-pas-pulse 900ms ease-out;
+  border-radius: 6px;
+}
+@keyframes pas-a-pas-pulse {
+  0% { box-shadow: 0 0 0 0 var(--pap-teinte, #fff), 0 0 0 0 transparent; }
+  35% { box-shadow: 0 0 18px 6px var(--pap-teinte, #fff), 0 0 40px 12px var(--pap-teinte, #fff); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.pas-a-pas-degats { --pap-teinte: #ff5a4e; }
+.pas-a-pas-soin { --pap-teinte: #5ce08a; }
+.pas-a-pas-menace { --pap-teinte: #ffd24a; }
+.pas-a-pas-revelation { --pap-teinte: #5ab6ff; }
+
+.pas-a-pas-chiffre {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  z-index: 40;
+  transform: translateX(-50%);
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 900;
+  color: #0d0f14;
+  background: var(--pap-teinte, #fff);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  animation: pas-a-pas-monte 900ms ease-out forwards;
+}
+@keyframes pas-a-pas-monte {
+  0% { opacity: 0; transform: translate(-50%, 8px) scale(0.8); }
+  25% { opacity: 1; transform: translate(-50%, -6px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -26px) scale(1); }
+}
+
+.pas-a-pas-barre {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  z-index: 220;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px;
+  color: var(--txt, #e8edf3);
+  background: rgba(10, 12, 16, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
+.pas-a-pas-barre .pap-point { font-weight: 800; letter-spacing: 0.02em; }
+.pas-a-pas-barre .pap-aide { opacity: 0.62; }
+.pas-a-pas-barre .pap-bouton {
+  font: inherit;
+  font-weight: 800;
+  padding: 4px 11px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 7px;
+  cursor: pointer;
+}
+.pas-a-pas-barre .pap-bouton:hover { background: rgba(255, 255, 255, 0.18); }
+
+/* Curseur de vitesse, dans le panneau Options. */
+.ligne-option-curseur { display: flex; align-items: center; gap: 10px; }
+.ligne-option-curseur input[type='range'] { flex: 1; min-width: 90px; accent-color: var(--gold, #ffd24a); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pas-a-pas-halo, .pas-a-pas-chiffre { animation: none; }
 }

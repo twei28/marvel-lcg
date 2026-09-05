@@ -81,12 +81,19 @@ import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
-  CLE_PHASE_RAPIDE,
   Moteur,
   evenementNarreImportant,
-  lirePhaseRapide,
+  ecrireDelaiPasAPas,
+  ecrireModePhaseMechant,
+  lireDelaiPasAPas,
+  lireModePhaseMechant,
+  DELAI_PAS_A_PAS_MAX,
+  DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
+  type ModePhaseMechant,
 } from './board/moteur'
+import { CouchePasAPas } from './board/CouchePasAPas'
+import { usePasAPas } from './board/pas-a-pas'
 import { SelecteurCibles } from './board/SelecteurCibles'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
@@ -772,6 +779,7 @@ function usePartieEnCours(playerId: number) {
     aNous: false,
     connecte: false,
     validationRequise: false,
+    pasAPas: { actif: false, enPause: false },
     tentatives: 0,
   })
 
@@ -796,7 +804,11 @@ function usePartieEnCours(playerId: number) {
     repondre,
     continuer: () => moteur.continuer(),
     reconnecter: () => moteur.reconnecterMaintenant(),
-    reglerPhaseRapide: (actif: boolean) => moteur.setPhaseRapide(actif),
+    reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
+    reglerDelaiPasAPas: (ms: number) => moteur.setDelaiPasAPas(ms),
+    avancerPasAPas: () => moteur.avancerMaintenant(),
+    basculerPausePasAPas: () => moteur.basculerPause(),
+    passerToutLaPhase: () => moteur.passerToutLaPhase(),
   }
 }
 
@@ -1114,8 +1126,10 @@ function PanneauOptions({
   basculerTextesCdb,
   succes,
   basculerSucces,
-  phaseRapide,
-  basculerPhaseRapide,
+  modePhase,
+  cyclerModePhase,
+  delaiPasAPas,
+  reglerDelaiPasAPas,
   validationCourte,
   basculerValidationCourte,
   reglageMode,
@@ -1144,8 +1158,10 @@ function PanneauOptions({
   basculerTextesCdb: () => void
   succes: boolean
   basculerSucces: () => void
-  phaseRapide: boolean
-  basculerPhaseRapide: () => void
+  modePhase: ModePhaseMechant
+  cyclerModePhase: () => void
+  delaiPasAPas: number
+  reglerDelaiPasAPas: (ms: number) => void
   validationCourte: boolean
   basculerValidationCourte: () => void
   reglageMode: ReglageMode
@@ -1214,12 +1230,42 @@ function PanneauOptions({
             actif={autoCible}
             onBascule={basculerAutoCible}
           />
-          <LigneOption
-            libelle={t('Phase du méchant rapide')}
-            detail={t('Enchaîne la phase sans « Continue », puis affiche un bilan')}
-            actif={phaseRapide}
-            onBascule={basculerPhaseRapide}
-          />
+          {/* TROIS positions, plus une case a cocher : « Instantane » enchainait
+              tout si vite qu'on ne voyait plus ce qu'on encaissait, et « Manuel »
+              demandait un clic a chaque fois. « Pas a pas » est le chainon
+              manquant, et le defaut. */}
+          <button
+            type="button"
+            className="ligne-option"
+            onClick={cyclerModePhase}
+            title={t('Rythme de la phase du méchant : un clic par étape, déroulé automatique, ou tout d’un coup')}
+          >
+            <span className="ligne-option-libelle">{t('Phase du méchant')}</span>
+            <span className="ligne-option-etat" aria-hidden="true">
+              {modePhase === 'manuel'
+                ? t('Manuel')
+                : modePhase === 'pas-a-pas'
+                  ? t('Pas à pas')
+                  : t('Instantané')}
+            </span>
+          </button>
+          {modePhase === 'pas-a-pas' ? (
+            <label className="ligne-option ligne-option-curseur">
+              <span className="ligne-option-libelle">{t('Vitesse du déroulé')}</span>
+              <input
+                type="range"
+                min={DELAI_PAS_A_PAS_MIN}
+                max={DELAI_PAS_A_PAS_MAX}
+                step={100}
+                value={delaiPasAPas}
+                onChange={(e) => reglerDelaiPasAPas(Number(e.target.value))}
+                title={t('Temps d’affichage de chaque étape')}
+              />
+              <span className="ligne-option-etat" aria-hidden="true">
+                {(delaiPasAPas / 1000).toFixed(1).replace('.', ',')} s
+              </span>
+            </label>
+          ) : null}
           <LigneOption
             libelle={t('Validation courte')}
             detail={t('Supprime le « Valider » quand la cible est unique et le coût couvert')}
@@ -1452,7 +1498,17 @@ function PagePartie({
   changerModeActions: (mode: ModeActions) => void
 }) {
   const confirmer = useConfirmation()
-  const { etat, repondre, continuer, reconnecter, reglerPhaseRapide } = usePartieEnCours(playerId)
+  const {
+    etat,
+    repondre,
+    continuer,
+    reconnecter,
+    reglerModePhase,
+    reglerDelaiPasAPas,
+    avancerPasAPas,
+    basculerPausePasAPas,
+    passerToutLaPhase,
+  } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
   // devient vert et pulse — jamais d'auto-pass, le joueur garde la main.
@@ -1778,24 +1834,61 @@ function PagePartie({
     })
   }, [])
 
-  const [phaseRapide, setPhaseRapide] = useState(lirePhaseRapide)
-  const basculerPhaseRapide = useCallback(() => {
-    setPhaseRapide((p) => {
-      const nouveau = !p
-      try {
-        window.localStorage.setItem(CLE_PHASE_RAPIDE, nouveau ? 'on' : 'off')
-      } catch {
-        /* preference non critique */
-      }
-      return nouveau
+  const [modePhase, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
+  const choisirModePhase = useCallback((mode: ModePhaseMechant) => {
+    setModePhase(mode)
+    ecrireModePhaseMechant(mode)
+  }, [])
+
+  // Le panneau Options fait tourner les trois positions dans l'ordre de la
+  // lisibilite decroissante : Manuel -> Pas a pas -> Instantane.
+  const cyclerModePhase = useCallback(() => {
+    setModePhase((m) => {
+      const suivant: ModePhaseMechant =
+        m === 'manuel' ? 'pas-a-pas' : m === 'pas-a-pas' ? 'instantane' : 'manuel'
+      ecrireModePhaseMechant(suivant)
+      return suivant
     })
   }, [])
 
-  // Le reglage vit dans le composant, mais c'est le Moteur qui retient (ou non)
-  // l'accuse de reception : il faut le lui redire a chaque changement.
+  const [delaiPasAPas, setDelaiPasAPas] = useState(lireDelaiPasAPas)
+  const choisirDelaiPasAPas = useCallback((ms: number) => {
+    setDelaiPasAPas(ms)
+    ecrireDelaiPasAPas(ms)
+  }, [])
+
+  // Les reglages vivent dans le composant, mais c'est le Moteur qui retient (ou
+  // non) l'accuse de reception : il faut les lui redire a chaque changement.
   useEffect(() => {
-    reglerPhaseRapide(phaseRapide)
-  }, [phaseRapide, reglerPhaseRapide])
+    reglerModePhase(modePhase)
+  }, [modePhase, reglerModePhase])
+  useEffect(() => {
+    reglerDelaiPasAPas(delaiPasAPas)
+  }, [delaiPasAPas, reglerDelaiPasAPas])
+
+  // Halo et chiffre flottant sur la carte de l'etape en cours. N'a de sens que
+  // pendant le pas a pas : ailleurs les rendus defilent trop vite pour qu'un
+  // halo veuille dire quoi que ce soit.
+  usePasAPas(historique.entrees, etat.pasAPas.actif)
+
+  // Espace : pause / reprise. Ailleurs qu'en pas a pas la touche ne fait rien,
+  // et on ne la vole jamais a un champ de saisie.
+  useEffect(() => {
+    if (!etat.pasAPas.actif) return
+    const surTouche = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' || e.repeat) return
+      const cible = e.target as HTMLElement | null
+      if (cible && /^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName)) return
+      e.preventDefault()
+      basculerPausePasAPas()
+    }
+    window.addEventListener('keydown', surTouche)
+    return () => window.removeEventListener('keydown', surTouche)
+  }, [etat.pasAPas.actif, basculerPausePasAPas])
+
+  // Le bilan de fin de phase ne vaut que quand on n'a PAS deroule l'action :
+  // en mode manuel chaque etape a deja ete vue une par une.
+  const phaseRapide = modePhase !== 'manuel'
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
@@ -2074,6 +2167,14 @@ function PagePartie({
         />
       ) : null}
 
+      <CouchePasAPas
+        actif={etat.pasAPas.actif}
+        enPause={etat.pasAPas.enPause}
+        phase={etat.monde?.phase}
+        onAvancer={avancerPasAPas}
+        onBasculerPause={basculerPausePasAPas}
+        onToutPasser={passerToutLaPhase}
+      />
       <CoucheHautsFaits hautsFaits={etat.hautsFaits} />
       <RecapPhaseMechant
         entrees={historique.entrees}
@@ -2250,8 +2351,10 @@ function PagePartie({
               basculerTextesCdb={basculerTextesCdb}
               succes={succes}
               basculerSucces={basculerSucces}
-              phaseRapide={phaseRapide}
-              basculerPhaseRapide={basculerPhaseRapide}
+              modePhase={modePhase}
+              cyclerModePhase={cyclerModePhase}
+              delaiPasAPas={delaiPasAPas}
+              reglerDelaiPasAPas={choisirDelaiPasAPas}
               validationCourte={validationCourte}
               basculerValidationCourte={basculerValidationCourte}
               reglageMode={reglageMode}

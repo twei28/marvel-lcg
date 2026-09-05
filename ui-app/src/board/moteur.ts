@@ -31,6 +31,134 @@ export function lirePhaseRapide(): boolean {
 }
 
 /**
+ * Le rythme de la phase du mechant, en TROIS positions et non plus une case.
+ *
+ *  - « manuel »     : un « Continue » a chaque evenement important. L'ancien
+ *                     etat decoche.
+ *  - « pas-a-pas »  : chaque evenement s'affiche puis rend la main tout seul
+ *                     apres `delai`. Le nouveau, et le defaut.
+ *  - « instantane » : rien ne retient le moteur ; le bilan de fin de phase
+ *                     raconte apres coup. L'ancien etat coche.
+ *
+ * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
+ * personnel (localStorage), et en multijoueur chacun le sien.
+ */
+export type ModePhaseMechant = 'manuel' | 'pas-a-pas' | 'instantane'
+
+export const CLE_MODE_PHASE = 'marvel-board-mode-phase-mechant'
+export const CLE_DELAI_PAS_A_PAS = 'marvel-board-delai-pas-a-pas'
+
+export const DELAI_PAS_A_PAS_DEFAUT = 1200
+export const DELAI_PAS_A_PAS_MIN = 300
+export const DELAI_PAS_A_PAS_MAX = 3000
+
+const MODES: ModePhaseMechant[] = ['manuel', 'pas-a-pas', 'instantane']
+
+/**
+ * MIGRATION de l'ancienne case a cocher. Elle ne connaissait que deux etats :
+ * « off » = un Continue a chaque fois, tout le reste = instantane. Un joueur
+ * qui avait coche la case subissait justement le defaut qu'on corrige ici : on
+ * le fait donc atterrir sur « pas-a-pas », pas sur « instantane ». Celui qui
+ * avait DECOCHE, lui, avait choisi le mode manuel en connaissance de cause : on
+ * le lui laisse.
+ */
+export function lireModePhaseMechant(): ModePhaseMechant {
+  try {
+    const brut = window.localStorage.getItem(CLE_MODE_PHASE)
+    if (brut && (MODES as string[]).includes(brut)) return brut as ModePhaseMechant
+    return window.localStorage.getItem(CLE_PHASE_RAPIDE) === 'off' ? 'manuel' : 'pas-a-pas'
+  } catch {
+    return 'pas-a-pas'
+  }
+}
+
+export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
+  try {
+    window.localStorage.setItem(CLE_MODE_PHASE, mode)
+  } catch {
+    /* stockage refuse : le mode vaudra pour la session, c'est tout */
+  }
+}
+
+/** Borne le delai : une valeur hors plage rendrait la phase injouable. */
+export function bornerDelai(valeur: number): number {
+  if (!Number.isFinite(valeur)) return DELAI_PAS_A_PAS_DEFAUT
+  return Math.min(DELAI_PAS_A_PAS_MAX, Math.max(DELAI_PAS_A_PAS_MIN, Math.round(valeur)))
+}
+
+export function lireDelaiPasAPas(): number {
+  try {
+    const brut = window.localStorage.getItem(CLE_DELAI_PAS_A_PAS)
+    return brut === null ? DELAI_PAS_A_PAS_DEFAUT : bornerDelai(Number(brut))
+  } catch {
+    return DELAI_PAS_A_PAS_DEFAUT
+  }
+}
+
+export function ecrireDelaiPasAPas(valeur: number): void {
+  try {
+    window.localStorage.setItem(CLE_DELAI_PAS_A_PAS, String(bornerDelai(valeur)))
+  } catch {
+    /* idem */
+  }
+}
+
+/**
+ * Les quatre etapes de la phase du mechant, telles que le moteur les nomme
+ * (game/world/phase.py). Memes cles que RecapPhaseMechant : c'est la carte de
+ * reference, et le pas a pas doit raconter la meme histoire que le bilan.
+ * Le point 5 (jeton de premier joueur) ne produit rien a montrer.
+ */
+export const PHASES_DU_MECHANT = new Set([
+  'Main Scheme Place Threat',
+  'Enemy Activation',
+  'Deal Encounter Cards',
+  'Reveal Encounter Cards',
+])
+
+/**
+ * Ce que le pas a pas s'arrete pour montrer. Plus LARGE que
+ * `evenementNarreImportant`, qui sert au mode manuel : celui-ci ne retient que
+ * les moments ou l'on doit CLIQUER, alors qu'ici on veut voir passer les quatre
+ * familles demandees — cartes de boost, cartes de rencontre, menace, degats et
+ * statuts.
+ *
+ * Les statuts (etourdi/confus/tenace) s'ajoutent donc a la liste, et ils ne se
+ * lisent PAS dans le texte : ils ont leurs propres evenements.
+ */
+/**
+ * QUI retient l'accuse de reception, et pourquoi. Extrait de `lire()` pour etre
+ * testable : c'est la seule regle qui decide du rythme, et une erreur ici rend
+ * soit la phase illisible (on n'attend jamais), soit la partie bloquee (on
+ * attend toujours).
+ */
+export type DecisionAccuse = 'immediat' | 'attendre-clic' | 'attendre-delai'
+
+export function decisionAccuse(
+  mode: ModePhaseMechant,
+  monde: World | undefined,
+  phaseSautee: boolean
+): DecisionAccuse {
+  const phase = monde?.phase ?? ''
+  if (mode === 'manuel') {
+    return phase === 'Enemy Activation' && evenementNarreImportant(monde)
+      ? 'attendre-clic'
+      : 'immediat'
+  }
+  if (mode === 'pas-a-pas' && !phaseSautee) {
+    return PHASES_DU_MECHANT.has(phase) && evenementAMontrer(monde) ? 'attendre-delai' : 'immediat'
+  }
+  return 'immediat'
+}
+
+export function evenementAMontrer(monde: World | undefined): boolean {
+  if (!monde) return false
+  const nom = monde.event_name ?? ''
+  if (nom === 'AfterUnitGainStatus' || nom === 'AfterUnitLostStatus') return true
+  return evenementNarreImportant(monde)
+}
+
+/**
  * Une notification poussee par le moteur (Notify.Show, cote Python). Elle arrive
  * dans `notify_texts`, chaque entree etant un objet DEJA serialise en JSON.
  */
@@ -87,16 +215,39 @@ function lireTrame(brut: unknown): Trame | undefined {
 }
 
 /**
+ * Cette partie est-elle REPARTIE sur plusieurs machines ?
+ *
+ * Le salon pose `multi=1` sur le lien de chaque siege (salon/app.js). Le
+ * lancement solo, lui, ouvre `/app/board.html` sans ce drapeau — y compris a
+ * la reprise, qui passe `?p=0` : la seule presence de `p` ne suffit donc PAS
+ * a distinguer les deux cas, d'ou un drapeau explicite.
+ */
+function estMultijoueur(): boolean {
+  return new URLSearchParams(window.location.search).has('multi')
+}
+
+/**
  * Adresse du socket, sur la meme origine que la page.
  *
- * HOT-SEAT : on s'annonce pour TOUS les joueurs de la partie, pas seulement
- * celui de la vue. Sans cela, une partie a 2+ heros ne demarre jamais : le
- * moteur attend la connexion de chaque joueur (WaitConnect), et un client
- * « p=0 » seul laisse le joueur 1 aux abonnes absents.
+ * HOT-SEAT : hors multijoueur, on s'annonce pour TOUS les joueurs de la partie
+ * et pas seulement celui de la vue. Sans cela, une partie a 2+ heros sur UN
+ * ecran ne demarre jamais : le moteur attend la connexion de chaque joueur
+ * (WaitConnect), et un client « p=0 » seul laisse le joueur 1 aux abonnes
+ * absents.
+ *
+ * ⚠ MAIS JAMAIS EN MULTIJOUEUR. `hot_seat` fait rendre au serveur TOUS les
+ * sieges (`get_player_ids`, server_base.py:90) des lors qu'aucun mot de passe
+ * de siege n'est defini — `allowed_seats` rend alors `None`, donc aucun
+ * filtrage. L'hote reservait ainsi les sieges de tout le monde et se voyait
+ * interroge pour eux, cartes en main comprises. Signale en jeu : « en tant
+ * qu'hote je vois toutes les cartes, alors que ceux qui rejoignent ne voient
+ * bien que les leurs ». Les invites n'etaient pas touches parce qu'ils
+ * arrivent sur un siege deja pris par l'hote.
  */
 function adresseSocket(playerId: number): string {
   const protocole = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  return `${protocole}://${window.location.host}/ws?hot_seat&p=${playerId}`
+  const siege = estMultijoueur() ? `p=${playerId}` : `hot_seat&p=${playerId}`
+  return `${protocole}://${window.location.host}/ws?${siege}`
 }
 
 /** Ce que le moteur demande, ou undefined s'il ne demande rien. */
@@ -112,9 +263,11 @@ export async function chargerDemande(playerId: number): Promise<Demande | undefi
   }
 }
 
-/** Accuse reception d'une trame, pour TOUS les joueurs locaux (hot-seat). */
+/** Accuse reception d'une trame : pour TOUS les joueurs locaux en hot-seat,
+ *  pour SON SEUL siege en multijoueur (meme raison que `adresseSocket`). */
 export async function accuserReception(playerId: number, trame: Trame): Promise<void> {
-  await fetch(`/client_updated?hot_seat&p=${playerId}&r=${trame.render_id}&g=${trame.game_id}`, {
+  const siege = estMultijoueur() ? `p=${playerId}` : `hot_seat&p=${playerId}`
+  await fetch(`/client_updated?${siege}&r=${trame.render_id}&g=${trame.game_id}`, {
     cache: 'no-store',
   }).catch(() => undefined)
 }
@@ -175,6 +328,12 @@ export type EtatMoteur = {
   connecte: boolean
   /** Le moteur attend une validation visuelle avant de poursuivre. */
   validationRequise: boolean
+  /**
+   * Pas a pas : une etape est affichee et son echeance court. `enPause` fige
+   * l'echeance jusqu'a nouvel ordre. Sert au plateau pour le clic « suite »,
+   * l'indicateur de pause et le bouton « Tout passer ».
+   */
+  pasAPas: { actif: boolean; enPause: boolean }
   /** Reconnexion : horodatage (ms) de la prochaine tentative, si programmee. */
   prochaineTentative?: number
   /** Nombre de tentatives de reconnexion depuis la coupure. */
@@ -213,6 +372,7 @@ export class Moteur {
     aNous: false,
     connecte: false,
     validationRequise: false,
+    pasAPas: { actif: false, enPause: false },
     tentatives: 0,
     hautsFaits: [],
     siegesAbsents: [],
@@ -241,13 +401,57 @@ export class Moteur {
    * ne clique jamais gelait la phase pour tout le monde. En accusant tout de
    * suite, plus personne ne retient personne.
    */
-  private phaseRapide = false
+  private mode: ModePhaseMechant = 'pas-a-pas'
+  private delaiPasAPas = DELAI_PAS_A_PAS_DEFAUT
+  private minuteurPasAPas: number | undefined
+  private enPause = false
+  /** « Tout passer » : vrai jusqu'a la SORTIE de la phase du mechant. */
+  private phaseSautee = false
 
-  setPhaseRapide(actif: boolean) {
-    this.phaseRapide = actif
-    // Un accuse deja retenu ne doit pas rester en attente d'un clic qui
-    // n'arrivera plus : on le libere immediatement.
-    if (actif && this.trameEnAttente) void this.continuer()
+  setModePhaseMechant(mode: ModePhaseMechant) {
+    this.mode = mode
+    // Un accuse deja retenu ne doit pas rester en attente d'un geste qui
+    // n'arrivera plus : changer de mode le libere immediatement.
+    if (mode !== 'manuel' && this.trameEnAttente) void this.continuer()
+  }
+
+  setDelaiPasAPas(ms: number) {
+    this.delaiPasAPas = bornerDelai(ms)
+  }
+
+  /** Clic du joueur : l'etape affichee a ete lue, on passe a la suivante. */
+  avancerMaintenant(): void {
+    if (this.trameEnAttente) void this.continuer()
+  }
+
+  /**
+   * Espace : fige (ou relance) l'echeance. En pause on ne programme rien ; le
+   * moteur attend, exactement comme en mode manuel.
+   */
+  basculerPause(): boolean {
+    this.enPause = !this.enPause
+    this.publier({ pasAPas: { actif: this.trameEnAttente !== undefined, enPause: this.enPause } })
+    if (this.enPause) {
+      if (this.minuteurPasAPas !== undefined) window.clearTimeout(this.minuteurPasAPas)
+      this.minuteurPasAPas = undefined
+    } else {
+      this.programmerAvance()
+    }
+    return this.enPause
+  }
+
+  /** « Tout passer » : le reste de la phase defile sans s'arreter. */
+  passerToutLaPhase(): void {
+    this.phaseSautee = true
+    this.enPause = false
+    this.avancerMaintenant()
+  }
+
+  private programmerAvance(): void {
+    if (this.minuteurPasAPas !== undefined) window.clearTimeout(this.minuteurPasAPas)
+    this.minuteurPasAPas = undefined
+    if (this.enPause || !this.trameEnAttente) return
+    this.minuteurPasAPas = window.setTimeout(() => void this.continuer(), this.delaiPasAPas)
   }
 
   constructor(private readonly playerId: number) {}
@@ -409,18 +613,26 @@ export class Moteur {
       // MAIS seulement pour les evenements IMPORTANTS (activation/attaque, boost,
       // degats, menace). Les etapes de detail (deplacements, exhaust, melanges,
       // effets, marqueurs) sont accusees tout de suite -> passees sans Continue.
-      if (
-        this.trame &&
-        !this.phaseRapide &&
-        monde?.phase === 'Enemy Activation' &&
-        evenementNarreImportant(monde)
-      ) {
+      // « Tout passer » ne vaut que pour LA phase en cours : des qu'on en sort,
+      // le pas a pas reprend au round suivant sans rien demander.
+      const dansLaPhase = PHASES_DU_MECHANT.has(monde?.phase ?? '')
+      if (!dansLaPhase && this.phaseSautee) this.phaseSautee = false
+
+      const decision = decisionAccuse(this.mode, monde, this.phaseSautee)
+      if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true })
         // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
         // client fantome bloque la phase ennemie pour tout le monde).
         if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
         this.minuteurAutoContinue = window.setTimeout(() => void this.continuer(), 6000)
+      } else if (this.trame && decision === 'attendre-delai') {
+        // On retient l'accuse le temps que l'etape se lise. Le moteur attend
+        // sans limite (max_timeout = 0), c'est donc NOUS qui donnons le rythme :
+        // aucun monde n'est bufferise, aucune desynchronisation possible.
+        this.trameEnAttente = this.trame
+        this.publier({ pasAPas: { actif: true, enPause: this.enPause } })
+        this.programmerAvance()
       } else if (this.trame) {
         await accuserReception(this.playerId, this.trame)
       }
@@ -463,10 +675,14 @@ export class Moteur {
       window.clearTimeout(this.minuteurAutoContinue)
       this.minuteurAutoContinue = undefined
     }
+    if (this.minuteurPasAPas !== undefined) {
+      window.clearTimeout(this.minuteurPasAPas)
+      this.minuteurPasAPas = undefined
+    }
     const trame = this.trameEnAttente
     if (!trame) return
     this.trameEnAttente = undefined
-    this.publier({ validationRequise: false })
+    this.publier({ validationRequise: false, pasAPas: { actif: false, enPause: this.enPause } })
     await accuserReception(this.playerId, trame)
   }
 }
