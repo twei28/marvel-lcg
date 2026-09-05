@@ -1273,7 +1273,6 @@
     "encounters": [],
     "max_id": "al023"
   },
-  "checksum": "9bfa73caee6d5164948201e1a3c1a9e0b74fd631d78c5d5f9761720de03ceb50",
   "145. Custom (Intergalactic Hazards)": {
     "name": "intergalactic_hazards",
     "scenarios": [],
@@ -1390,5 +1389,15 @@
     ],
     "encounters": [],
     "max_id": "br012"
-  }
+  },
+  "159. Custom (Throg)": {
+    "name": "throg",
+    "scenarios": [],
+    "heroes": [
+      "throg"
+    ],
+    "encounters": [],
+    "max_id": "tg016"
+  },
+  "checksum": "d3316da55d14b54448e542c00ffdf9e2ddb98c353e78c2303154981111167828"
 }

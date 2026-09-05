@@ -78718,7 +78718,6 @@
       "custom": "BLUEHG + DESIGNHACKER"
     }
   ],
-  "checksum": "f1544988136ef828e8ff804825d6c2e4b523e82c84da4f3da65034be291c79e0",
   "wolverine_x23": [
     {
       "card_id": "wx001a",
@@ -89063,5 +89062,301 @@
       "set_name": "Beta Ray Bill",
       "custom": "Rainy"
     }
-  ]
+  ],
+  "throg": [
+    {
+      "card_id": "tg001a",
+      "type": "Hero",
+      "name": "* Throg",
+      "subtitle": "",
+      "desc": {
+        "HP": "12",
+        "ATK": "2",
+        "THW": "1",
+        "DEF": "2",
+        "HS": "5"
+      },
+      "traits": [
+        "ASGARD",
+        "GUARDIAN"
+      ],
+      "text": "[star] <i>Froglike Stamina</i> — <b>Response</b>: After Throg uses a basic power, return Frogjolnir to your hand → ready Throg. <i>(Limit once per phase.)</i>",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg001b",
+      "type": "AlterEgo",
+      "name": "* Puddlegulp",
+      "subtitle": "",
+      "desc": {
+        "HP": "12",
+        "REC": "4",
+        "HS": "6"
+      },
+      "traits": [
+        "ASGARD",
+        "CREATURE"
+      ],
+      "text": "<i>Worthy</i> — <b>Action</b>: Find Frogjolnir and add it to your hand. <i>(Limit once per round.)</i>",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg002",
+      "type": "Event",
+      "name": "Airborne Amphibian",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "R",
+        "Class": "Hero"
+      },
+      "traits": [
+        "AERIAL",
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Action</b>: Ready Throg and Frogjolnir. You may choose a minion engaged with another player and engage it to draw 1 card.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg003",
+      "type": "Event",
+      "name": "Great Courage",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "THWART"
+      ],
+      "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Engage any number of minions in play. For each minion engaged with you <i>(to a maximum of 3)</i>, remove 2 threat from a scheme.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg004",
+      "type": "Event",
+      "name": "Hammer Throw",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "R",
+        "Class": "Hero"
+      },
+      "traits": [
+        "ATTACK",
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Frogjolnir and return it to your hand → deal 6 damage to an enemy. This attack gains overkill.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg005",
+      "type": "Event",
+      "name": "Lightning Leap",
+      "subtitle": "",
+      "desc": {
+        "Cost": "1",
+        "RES": "Y",
+        "Class": "Hero"
+      },
+      "traits": [
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Interrupt</b>: When you make a basic attack against a minion engaged with a player, resolve that attack against the villain and each minion engaged with that player instead, ignoring the guard keyword.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg006",
+      "type": "Event",
+      "name": "Thunderous Charge",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Interrupt</b>: When you make a basic thwart against a scheme, resolve that thwart against each scheme in play instead, ignoring the crisis icon ([crisis]) <i>(in the order of your choice, including any bonuses to your THW for that thwart)</i>.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg007",
+      "type": "Support",
+      "name": "* Foreverglade",
+      "subtitle": "",
+      "desc": {
+        "Cost": "1",
+        "RES": "G",
+        "Class": "Hero"
+      },
+      "traits": [
+        "LOCATION"
+      ],
+      "text": "<b>Alter-Ego Response</b>: After you make a basic recovery, exhaust Foreverglade → ready Puddlegulp and draw 1 card.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg008",
+      "type": "Upgrade",
+      "name": "Frog of Thunder",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "Y",
+        "Class": "Hero"
+      },
+      "traits": [
+        "ASGARD",
+        "TITLE"
+      ],
+      "text": "<b>Hero Resource</b>: Exhaust Frog of Thunder → generate a [energy] resource. If you paid for a Throg card this way, deal 1 damage to an enemy.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg009",
+      "type": "Upgrade",
+      "name": "* Frogjolnir",
+      "subtitle": "",
+      "desc": {
+        "Cost": "1",
+        "RES": "Y",
+        "Class": "Hero",
+        "Restricted": "1"
+      },
+      "traits": [
+        "ASGARD",
+        "WEAPON"
+      ],
+      "text": "Restricted.\nThrog gains the [[AERIAL]] trait.\n<b>Hero Interrupt</b>: When Throg uses a basic power, exhaust Frogjolnir → Throg gets +1 to that power for this use.",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg010",
+      "type": "Upgrade",
+      "name": "* Throg's Armor",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "R",
+        "Class": "Hero"
+      },
+      "traits": [
+        "ARMOR",
+        "ASGARD"
+      ],
+      "text": "You get +2 hit points.\n<b>Hero Response</b>: After you engage a minion, give Throg a tough status card. If you cannot, draw 1 card. <i>(Limit once per phase.)</i>",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg011",
+      "type": "Obligation",
+      "name": "Trouble in Central Park",
+      "subtitle": "",
+      "desc": {
+        "Boost": "2",
+        "Uses": "3,foe",
+        "Victory": "0",
+        "GiveTo": "Puddlegulp"
+      },
+      "traits": [],
+      "text": "<b><i>Give to the Puddlegulp player.</i></b>\nUses (3 foe counters). Victory 0.\n<b>Forced Action</b>: Seek a minion from the encounter deck and put it into play engaged with you → remove 1 foe counter from here. That enemy attacks you. <i>(Limit once per round.)</i>",
+      "set_name": "Throg",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg012",
+      "type": "SideScheme",
+      "name": "Adorable Distraction",
+      "subtitle": "",
+      "desc": {
+        "Boost": "3",
+        "StartingThreat": "1*",
+        "Hinder": "1*",
+        "Crisis": "1"
+      },
+      "traits": [],
+      "text": "<i>Alligator Loki is distracting everybody with his cuteness. Somebody, pet him so we can get back to saving the day!</i>\nHinder 1[per_hero].\nAlligator Loki cannot be attacked.\n<i>(Throg's nemesis side scheme.)</i>",
+      "set_name": "Throg Nemesis",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg013",
+      "type": "Minion",
+      "name": "* Alligator Loki",
+      "subtitle": "",
+      "desc": {
+        "HP": "5",
+        "ATK": "3",
+        "SCH": "1",
+        "Boost": "2",
+        "Nemesis": "Throg"
+      },
+      "traits": [
+        "ASGARD",
+        "CREATURE"
+      ],
+      "text": "<b>Forced Response</b>: After Alligator Loki enters play, find Chomped and attach it to your identity.\n[star] <b>Forced Interrupt</b>: When Alligator Loki schemes and places threat, place that much threat on each side scheme.\n[star] Alligator Loki's attacks gain piercing.\n<i>(Throg's nemesis minion.)</i>",
+      "set_name": "Throg Nemesis",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg014",
+      "type": "SideScheme",
+      "name": "Causing a Commotion",
+      "subtitle": "",
+      "desc": {
+        "Boost": "2",
+        "StartingThreat": "1*",
+        "Hazard": "1"
+      },
+      "traits": [],
+      "text": "<i>Alligator Loki is making a scene and causing havoc! Somebody catch him before he makes an even bigger mess!</i>\n<b>When Revealed</b>: Each player discards the top 3 cards of their deck and places 1 threat here for each different card type they discarded this way.",
+      "set_name": "Throg Nemesis",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg015",
+      "type": "SideScheme",
+      "name": "\"Lost\" Property",
+      "subtitle": "",
+      "desc": {
+        "Boost": "1",
+        "StartingThreat": "3*"
+      },
+      "traits": [],
+      "text": "<i>That scamp took our stuff! Catch him and get it back, no matter how cute he looks with it!</i>\n<b>When Revealed</b>: Each player tucks an identity-specific upgrade they control under this card. It cannot be found while under here.\n<b>When Defeated</b>: Add each card under here to its owner's hand.",
+      "set_name": "Throg Nemesis",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "tg016",
+      "type": "Attachment",
+      "name": "Chomped",
+      "subtitle": "",
+      "desc": {
+        "Boost": "0"
+      },
+      "traits": [
+        "CONDITION"
+      ],
+      "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When the round ends, take 1 damage.\n<b>Forced Interrupt</b>: When you would use a basic power, discard Chomped and take 1 damage instead.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+      "set_name": "Throg Nemesis",
+      "custom": "Rainy"
+    }
+  ],
+  "checksum": "0b96abd3071327204c6ea839bcb48b1929da7974ee1d9dfcd4fc3cb53b6d5a4e"
 }

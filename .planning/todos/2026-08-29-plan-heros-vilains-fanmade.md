@@ -1,5 +1,13 @@
 # PLAN — Ordre de création des héros/vilains fan-made du dossier « A créer »
 
+> **Rangement du 05/09/2026.** Les zips ne sont plus a la racine : ceux dont
+> le pack existe sont dans `paquets-cartes/`, ceux qui restent a porter dans
+> `A creer/`. Les chemins cites plus bas (« zips deposes a la racine »,
+> « A creer/Galactic Storm ») datent d'avant. `OneDrive_2026-08-29.zip` a ete
+> renomme `Iron Patriot-20260829T085900Z-1-001.zip`, son vrai contenu.
+> Les doublons Galactic Storm et Skrull Menace (exports du 13/08 et du 02/09)
+> cohabitent desormais dans `A creer/`, rien n'a ete supprime.
+
 **Statut au 02/09/2026 :** 18 des 21 items sont LIVRÉS, plus deux sets
 modulaires non prévus au plan (`ih` Intergalactic Hazards, `nv` Necroverse).
 Chiffres vérifiés dans `tools/prefixes_fanmade.json`, pas dans ce document.

@@ -50,6 +50,9 @@ Gabarit à copier pour chaque nouvelle fiche :
       avec l'étoile d'un effet Boost)
 - [x] teamwork.md (base native lue dans `desc.Teamwork`, aucun script — et
       deux règles cohabitent dans le moteur selon `v16_teamwork`)
+- [x] uses.md (base native lue dans `desc.Uses`, aucun script : le moteur
+      pose les pions à l'entrée en jeu ET fait sortir la carte au dernier pion
+      retiré — ne PAS recoder la sortie)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),

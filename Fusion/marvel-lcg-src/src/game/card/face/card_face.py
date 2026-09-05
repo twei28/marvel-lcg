@@ -264,6 +264,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # counters) » : sans cette entree, `IsCounter('asteroid')` refuse le
         # nom et la carte tombe des la construction du deck.
         'asteroid',
+        # CORRECTIF : compteur du pack custom throg (Rainy). tg011 Trouble in
+        # Central Park entre en jeu avec « Uses (3 foe counters) » : sans cette
+        # entree, `IsCounter('foe')` refuse le nom et l'obligation tombe des la
+        # construction du deck (meme panne que 'style' pour kate_bishop et
+        # 'disguise' pour beast). Fiche du mot-cle : docs/reference/mots-cles/uses.md
+        'foe',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
