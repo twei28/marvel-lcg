@@ -1381,5 +1381,14 @@
     ],
     "encounters": [],
     "max_id": "tt024"
+  },
+  "158. Custom (Beta Ray Bill)": {
+    "name": "beta_ray_bill",
+    "scenarios": [],
+    "heroes": [
+      "beta_ray_bill"
+    ],
+    "encounters": [],
+    "max_id": "br012"
   }
 }

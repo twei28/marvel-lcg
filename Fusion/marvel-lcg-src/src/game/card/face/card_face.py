@@ -139,6 +139,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # ⚠ ROTATION n'est pas decoratif : tt008 et tt009 se defaussent
         # mutuellement des qu'une carte ROTATION entre en jeu.
         "RANGER", "ROTATION", "DEMON",
+        "CYBORG",  # CORRECTIF : trait du pack custom beta_ray_bill (Rainy)
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -170,6 +171,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
+        'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

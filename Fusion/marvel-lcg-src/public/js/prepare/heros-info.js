@@ -1424,4 +1424,15 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #177 (1976)",
     },
 
+    "br001a": {
+        bio: "Bill etait le champion genetiquement modifie du peuple korbinite, transforme en cyborg pour proteger les derniers survivants de sa race a bord du vaisseau vivant Skuttlebutt. Envoye en eclaireur, il croise la route de Thor, souleve Mjolnir et se revele digne — ce qu'aucun autre etranger n'avait fait. Odin lui forge alors Stormbreaker, sa propre arme. Depuis, il erre entre les etoiles, frere d'armes du dieu du tonnerre et gardien d'un peuple qu'il ne reverra peut-etre jamais.",
+        bioEn: "Bill was the genetically engineered champion of the Korbinite people, remade as a cyborg to guard the last survivors of his race aboard the living ship Skuttlebutt. Sent ahead as a scout, he crossed paths with Thor, lifted Mjolnir, and proved worthy — something no outsider had ever done. Odin forged him Stormbreaker, a hammer of his own. He has wandered the stars ever since, oathbrother to the god of thunder and guardian of a people he may never see again.",
+        base: "Skuttlebutt, et les confins de l'espace",
+        baseEn: "Skuttlebutt, and deep space",
+        equipes: "Gardiens de la Galaxie, Vengeurs",
+        equipesEn: "Guardians of the Galaxy, Avengers",
+        ennemis: "Surtur, Stellaris",
+        apparition: "The Mighty Thor #337 (1983)",
+    },
+
 };

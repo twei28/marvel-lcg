@@ -19191,6 +19191,279 @@ CAS = [
         "attendu": {"statuts": [["tt001a", "Stunned"], ["tt001a", "Confused"]],
                     "exhausted": ["tt001a"]},
     },
+    {
+        "nom": "br001a Worthy — le marteau EN JEU revient en main ET frappe pour 3",
+        "pourquoi": ("« FIND » couvre le terrain autant que le deck : rappeler Stormbreaker "
+                     "DEPUIS LE JEU est le cas interessant, puisque c'est le seul qui "
+                     "frappe. Les 3 degats sont conditionnes a « if it LEAVES PLAY this "
+                     "way »"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "declencher": ["Puzzle.Action('br001a', 'Action')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["br010"], "degats": [["01094", 3]]},
+    },
+    {
+        "nom": "br001a Worthy — contre-temoin : depuis le DECK, il ne frappe personne",
+        "pourquoi": ("« if it LEAVES PLAY this way » : le mot-piege. Sans ce cas, un module "
+                     "qui frapperait a tous les coups passerait le precedent. Le marteau "
+                     "rejoint bien la main dans les deux cas — c'est le zero degat qui "
+                     "separe les deux moities"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.CreatePlayerDeck('br010')"],
+        "declencher": ["Puzzle.Action('br001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["br010"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "br001b Starfarer — en civil, il va chercher un Star Jump dans le deck",
+        "pourquoi": ("⚠ LES DEUX FACES PORTENT LE MEME NOM. Le filtre est donc le TYPE, "
+                     "et la capacite civile est bien distincte de `Worthy`"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('br005')"],
+        "declencher": ["Puzzle.Action('br001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["br005"]},
+    },
+    {
+        "nom": "br002 Eye of the Storm — une menace retiree de chaque manigance",
+        "pourquoi": ("cout X : le pilote paie le MINIMUM, soit une ressource, donc X = 1. "
+                     "Menace 5 -> 4 sur le complot principal.\n"
+                     "⚠ ECART ASSUME sur « spend X [ENERGY] resources » : `desc.Cost` ne "
+                     "connait pas de X TYPE (16 cartes en X, une seule en « R »), le joueur "
+                     "paie donc X ressources de n'importe quel type"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["br002", "01090"],
+        "declencher": [],
+        "jouer": ["br002"],
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "br005 Star Jump — X vaut 1 : une seule branche, et elle redresse le heros",
+        "pourquoi": ("« Choose X of the following » : X = 1 avec une ressource payee, donc "
+                     "UNE branche. `choisir_option` force laquelle — sans elle le pilote "
+                     "prendrait la premiere, qui convoque un sbire.\n"
+                     "Le heros est incline expres, sans quoi le redressement ne se verrait "
+                     "pas"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.Exhaust('br001a')"],
+        "main_exclusive": ["br005", "01090"],
+        "declencher": [],
+        "jouer": ["br005"],
+        # ⚠ Meme piege que br002 : sans `surpayer`, X = 0 et la carte
+        # « active » sans ouvrir la moindre branche. Le journal ne montre
+        # qu'un « Star Jump activates » parfaitement muet.
+        "surpayer": True,
+        "choisir_option": "Ready_Beta_Ray_Bill",
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["br001a"]},
+    },
+    {
+        "nom": "br011 Hammer Time — Thor en jeu, elle convoque un sbire et le pulverise",
+        "pourquoi": ("⚠ UN EVENEMENT TEAM-UP EXIGE `.SetTarget(\"TeamUp\")`, faute de quoi "
+                     "`database.py:223` fait tomber LE SETUP DU DECK — pas la partie, le "
+                     "SETUP, et seul `verifier_tous_les_decks` le voit (leçon ls005). "
+                     "13011 * Thor est mis en jeu pour satisfaire la Team-Up : le moteur "
+                     "accepte une identite OU un allie.\n"
+                     "Hydra Mercenary a 3 PV et prend 10 degats : le Deferlement envoie les "
+                     "7 restants sur le vilain, ce qui prouve les deux moities d'un coup"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('13011', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01101')"],
+        "main_exclusive": ["br011", "01088", "01090", "01089"],
+        "declencher": [],
+        "jouer": ["br011"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "br003 Hammer Throw — incline le marteau, frappe pour 6, puis le reprend en main",
+        "pourquoi": ("montage `06005`, la Hammer Throw OFFICIELLE de Thor, dont celle-ci "
+                     "est l'homonyme exact (8 degats la-bas, 6 ici). La carte inclinee "
+                     "est reprise par `return_exhausted_cards`, pas par une recherche"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "main_exclusive": ["br003", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["br003"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "en_main": ["br010"]},
+    },
+    {
+        "nom": "br004 Hammer Twirl — l'attaque de Rhino est entierement prevenue",
+        "pourquoi": ("modele `ma011` : l'identite est INCLINEE, seul moyen fiable de faire "
+                     "arriver une attaque jusqu'a elle, et la carte est en MAIN et non "
+                     "dans `jouer` puisqu'elle se joue en reaction.\n"
+                     "⚠ br004 est le PREMIER evenement du pack a DEUX capacites `Play` : "
+                     "« exhaust Stormbreaker OR spend 1 resource » sont deux couts, donc "
+                     "deux capacites, et le `card_id` a du etre declare dans la liste "
+                     "blanche de `factory.py` (leçon ls005)"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.Exhaust('br001a')"],
+        "main_exclusive": ["br004", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["br004"]},
+    },
+    {
+        "nom": "br006 Thunderstrike — 3 degats au vilain et au sbire engage, et les deux sont etourdis",
+        "pourquoi": ("« the villain AND each minion engaged with THAT PLAYER » : le "
+                     "litteral `VillainAndEngagedSamePlayerMinion` rend la phrase entiere, "
+                     "choix du joueur compris.\n"
+                     "⚠ UNE PREMIERE VERSION ECRIVAIT `SetTarget(\"EachPlayerIdentity\")`, "
+                     "qui n'existe nulle part — et `test_cards` construisait la carte SANS "
+                     "BRONCHER, la chaine n'etant validee qu'a la selection"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        # ⚠ LE PILOTE SOUS-PAIE UN COUT MIXTE. `Requirement ([energy])` plus
+        # un cout de 3 se rend « Y2 » cote moteur : une energie PLUS deux
+        # ressources. Le pilote s'arretait a `01088` Energy (YY = 2 icones) et
+        # l'evenement tombait « injouable » sans le moindre message, la
+        # difference etant d'UNE icone. Deux Energy en main levent l'ambiguite.
+        "main_exclusive": ["br006", "01088", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["br006"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "br007 Skuttlebutt — pret, il donne +1 en taille de main",
+        "pourquoi": ("⚠ IL N'EXISTE AUCUN `OnEvent` POUR L'INCLINAISON : le bonus se "
+                     "recalcule par `condition=`, evalue a chaque lecture. Main imprimee "
+                     "4 -> 5"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                       "Puzzle.PutIntoPlay('br007', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": 1}},
+    },
+    {
+        "nom": "br007 Skuttlebutt — son Action frappe TOUS les ennemis, et il reste incline",
+        "pourquoi": ("les deux autres moities : « deal 2 damage to EACH enemy » (vilain ET "
+                     "sbire), et « does NOT ready at the end of the player phase », qui "
+                     "est la moitie qu'on oublie"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br007', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Action('br007', 'HeroAction')"],
+        "choisir_option": "Deal_2_damage_to_each_enemy",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["01101", 2]], "exhausted": ["br007"]},
+    },
+    {
+        "nom": "br008 Calm Before the Storm — marteau EN JEU : +1 ATQ et rien au CTR",
+        "pourquoi": ("les deux bonus sont EXCLUSIFS. Le zero au CTR est le contre-temoin : "
+                     "sans lui, un module qui donnerait les deux passerait ce cas.\n"
+                     "⚠ Main videe avant le changement de forme : le deck contient de "
+                     "l'Agressivite, mais la leçon Moxie vaut pour toute mesure d'attribut"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                       "Puzzle.PutIntoPlay('br008', under_control=True)",
+                       "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "thwart": 0}},
+    },
+    {
+        "nom": "br008 Calm Before the Storm — marteau ABSENT : +1 CTR et rien a l'ATQ",
+        "pourquoi": ("le miroir exact. Les deux cas ensemble prouvent que la condition est "
+                     "bien relue (`ex_change_on_event=OnEvent.CardInPlay`), et pas figee "
+                     "a la mise en jeu"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                       "Puzzle.PutIntoPlay('br008', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1, "attack": 0}},
+    },
+    {
+        "nom": "br009 Oathbrother — l'arrivee d'un sbire fait chercher un evenement",
+        "pourquoi": ("« seek an event FROM YOUR DECK » : le deck SEUL, contrairement a "
+                     "`Worthy` et `Starfarer` qui disent « find » et couvrent aussi la "
+                     "defausse. Trois formulations voisines dans le meme pack.\n"
+                     "Deck force a un seul evenement pour que la pioche soit mesurable"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br009', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('br003')"],
+        "declencher": ["Puzzle.PutIntoPlay('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["br003"]},
+    },
+    {
+        "nom": "br010 Stormbreaker — le heros gagne le trait AERIAL",
+        "pourquoi": ("« YOUR HERO gains the AERIAL trait ». ⚠ Le filtre par NOM ne "
+                     "distinguerait PAS les deux faces, qui s'appellent toutes deux « Beta "
+                     "Ray Bill » : `GiveKeywordToAttached` sans filtre vise l'identite "
+                     "porteuse, quelle que soit sa face"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"]},
+    },
+    {
+        "nom": "br012 Unworthy — elle confisque le marteau, et un ennemi vaincu retire un pion",
+        "pourquoi": ("les DEUX moities. Les 2 pions viennent de `desc.Uses`, lu NATIVEMENT "
+                     "(Obligation herite de HasUses) : en retirer un doit laisser 1.\n"
+                     "⚠ EMPLACEMENT : bandeau BETA RAY BILL, donc module dans "
+                     "`beta_ray_bill/` et non dans un dossier nemesis. Piege bt019, "
+                     "SEPTIEME occurrence"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        # ⚠ « After YOU defeat an enemy » : LE TUEUR DOIT ETRE LE JOUEUR.
+        # `Puzzle.Damage` frappe par une `DebugRule`, ce n'est donc PAS vous, et
+        # la Reponse forcee ne partait pas. Pire, `Puzzle.Damage('01101', 2)`
+        # posee en mise en place ne touchait meme pas le sbire EN JEU :
+        # `FindOrCreateFace` avait cree un SECOND objet du meme card_id (meme
+        # piege que le cas tt001b, pack texas_twister). Hydra Mercenary a 3 PV
+        # et le heros frappe a 2 : on l'acheve donc en DEUX attaques de base.
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br010', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Reveal('br012')",
+                       "Puzzle.Attack('br001a')", "Puzzle.Ready('br001a')",
+                       "Puzzle.Attack('br001a')"],
+        "cibles": ["01101", "01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["br012", "br010"]],
+                    "compteurs": [["br012", "unworthy", 1]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -23699,7 +23972,20 @@ def executer_un_cas(game_dir, port, index):
             cle = cibles[0] if cibles and cibles[0] in paiements else next(iter(paiements))
             infos = paiements.get(cle) or {}
             cout = str(infos.get("cost", "0"))
-            besoin = int(cout) if cout.isdigit() else len(cout)
+            # CORRECTIF 05/09/2026 : UN COUT MIXTE ETAIT SOUS-PAYE D'UNE ICONE.
+            # `len(cout)` vaut 2 pour « Y2 », alors que ce cout en reclame
+            # TROIS : une energie PLUS deux ressources. C'est la forme que
+            # prend `Requirement ([energy])` combine a un cout chiffre — le
+            # moteur concatene la lettre et le nombre. Le pilote s'arretait
+            # donc a deux icones, le moteur refusait le paiement, et la carte
+            # tombait « injouable » sans le moindre message : `br006`
+            # Thunderstrike (pack beta_ray_bill) n'etait pas testable.
+            # `len()` reste juste pour les couts purement colores (« RB »,
+            # « YY ») : on somme donc les chiffres et on compte les lettres.
+            if cout.isdigit():
+                besoin = int(cout)
+            else:
+                besoin = sum(int(c) if c.isdigit() else 1 for c in cout)
             interdits = {str(option.get("bind_id"))}
             # « ne_pas_depenser » INTERDIT a des cartes de servir de ressource,
             # la ou « payer_avec » se contente de les PREFERER, en gardant tout

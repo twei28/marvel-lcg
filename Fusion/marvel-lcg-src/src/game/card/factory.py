@@ -182,7 +182,17 @@ class CardFactory:
                                                     # que les cas ecrits) et `substituer_pack`.
                                                     # Seul `verifier_tous_les_decks` le voit, et il
                                                     # n'avait pas ete relance apres ce pack.
-                                                    "ls005"]:  # To Arms! (lady_sif)
+                                                    "ls005",   # To Arms! (lady_sif)
+                                                    # CORRECTIF (05/09/2026) : Hammer Twirl, pack
+                                                    # custom beta_ray_bill. « exhaust Stormbreaker
+                                                    # OR spend 1 resource of any type » : deux
+                                                    # COUTS pour le meme effet, et un cout est fige
+                                                    # a la construction. Le « or » devient donc le
+                                                    # choix entre deux Hero Interrupt (defense),
+                                                    # les deux `.SetPlay()`. Declaree AVANT
+                                                    # d'ecrire le module, la leçon ls005 ayant
+                                                    # coute une journee de deck injouable.
+                                                    "br004"]:  # Hammer Twirl (beta_ray_bill)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

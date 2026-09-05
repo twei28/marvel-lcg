@@ -161,8 +161,27 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
   (`for_choice.py:110`), le coût en **premier** argument.
   `ForChoiceAbility(...).SetCost(...)` lève un assert explicite du moteur
   (`ability.py:342`).
+- **Coût mixte `Requirement` + chiffre** : `Requirement ([energy])` sur une
+  carte à 3 se rend `"Y2"` — une énergie **plus** deux ressources, donc trois.
+  ⚠ Le harnais lisait `len("Y2") = 2` et sous-payait d'une icône, rendant la
+  carte « injouable » sans message. Corrigé le 05/09/2026 dans `payer()`.
+- **Deux coûts alternatifs (« A **or** B »)** : un coût est figé à la
+  construction, le « or » devient donc **deux capacités** — et si les deux sont
+  `Play`, le `card_id` DOIT figurer dans la liste blanche de
+  `src/game/card/factory.py`, sinon **le deck ne monte plus aucune partie**
+  (leçon `ls005`, modèles `an003`, `vv005`, `br004`).
 
 ## 6. Ciblage
+
+> ⚠ **`SetTarget` prend une CHAÎNE LIBRE, et une chaîne inventée ne lève
+> rien.** `SetTarget("EachPlayerIdentity")` a construit sans broncher sous
+> `test_cards` : le littéral n'est validé qu'à la sélection, en partie. Avant
+> d'écrire un littéral de ciblage, **compter ses usages dans le dépôt** — s'il
+> n'apparaît qu'une fois, et que cette fois est la vôtre, il est inventé.
+> Constaté le 05/09/2026 sur `br006` Thunderstrike.
+> Un événement **Team-Up** doit en outre porter `.SetTarget("TeamUp")` :
+> `database.py:223` pose un assert, et son absence fait tomber **le setup du
+> deck**.
 
 - `SetTarget(Enemy, canbe_stunned=True)`, `range=(1, 2)`, `range=(1,"All")`,
   `from_where=["YouControlCards"]`, `canbe_ready=True`, `canbe_confused=True`.
@@ -202,6 +221,16 @@ au moins un cas vert qui ne prouvait rien.
   choisit zéro cible et la capacité « active » sans rien faire. Il faut
   `cibles`, **et** `choisir_option` : le repli générique n'honore `cibles` que
   pour UNE cible, seule la branche `choisir_option` applique `forcees[:maxi]`.
+
+- **Le pilote paie le MINIMUM d'un coût X, c'est-à-dire ZÉRO.** Le moteur
+  annonce `cost: 0` pour un `desc.Cost` valant « X » : la carte « active » sans
+  rien faire, journal muet. La clé **`surpayer`** est obligatoire sur toute
+  carte à coût X. ⚠ Et `effect.GetCostX()` compte les **cartes** dépensées, pas
+  les icônes : une seule carte-ressource donne X = 1, même quand elle en porte
+  deux (`01090` Strength, « RR »).
+- **`Puzzle.Damage` n'est pas « vous ».** Un texte « After **you** defeat an
+  enemy » ne se déclenche pas : la `DebugRule` n'est pas le joueur. Faire
+  achever la cible par une attaque de base du héros.
 
 ⚠ Et un `card_id` ne désigne pas un objet : deux exemplaires de la même carte
 partagent l'identifiant. Un contrôle « X est encore en défausse » peut viser

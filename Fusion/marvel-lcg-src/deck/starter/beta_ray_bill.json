@@ -1,0 +1,69 @@
+{
+  "version": "0.5.8",
+  "name": "Beta Ray Bill",
+  "metadata": {
+    "url": "",
+    "aspect_note": "Aspect AGRESSIVITE, choisi faute de decklist : le zip n'a AUCUN dossier Extras. Tout le kit cherche des sbires — br005 Star Jump en convoque un, br011 Hammer Time en pose un pour le frapper a 10, br009 Oathbrother declenche sur leur arrivee, br006 Thunderstrike frappe ceux qui sont engages. L'Agressivite est le seul aspect qui accompagne cette boucle.",
+    "nemesis_note": "⚠ LE ZIP N'A AUCUN SET NEMESIS : il s'arrete a l'obligation br012 Unworthy. Le deck EMPRUNTE donc celui de THOR (06026 reste l'obligation de Thor et n'est PAS reprise ; 06027-06030 sont les 5 cartes nemesis : Family Feud, Loki, deux Frost Giants, Trickster). C'est le calque de ce qui a ete fait pour hulk_rainy (qui emprunte le Hulk officiel) et viv_vision (qui prend le modulaire Zzzax). Troisieme pack de Rainy dans ce cas. L'emprunt n'est jouable que depuis le correctif moteur du 02/09/2026 (« un deck peut enfin EMPRUNTER le set nemesis d'un autre heros »), sans lequel 01190 Shadow of the Past ne trouvait pas de sbire nemesis.",
+    "stormbreaker_note": "TOUT LE DECK LIT br010 STORMBREAKER, unique et Restreinte. SEPT cartes la citent nommement : br001a la rappelle en main et frappe pour 3 si elle etait en jeu, br003 l'incline pour 6 degats puis la rappelle, br004 l'incline pour prevenir, br002 et br004 lisent si ELLE a paye, br008 change de bonus selon qu'elle est en jeu, et br012 la confisque sous elle. Le marteau fait l'aller-retour main <-> jeu en permanence : c'est le moteur economique du heros.",
+    "noms_note": "⚠ LES DEUX FACES PORTENT LE MEME NOM « Beta Ray Bill » : il n'a pas d'identite civile. Et br003 Hammer Throw est un HOMONYME EXACT de 06005, la Hammer Throw officielle de Thor (8 degats la-bas, 6 ici)."
+  },
+  "hero": [
+    "br001a,br001b"
+  ],
+  "hero_deck": [
+    "br002",
+    "br002",
+    "br003",
+    "br003",
+    "br003",
+    "br004",
+    "br004",
+    "br005",
+    "br005",
+    "br006",
+    "br006",
+    "br007",
+    "br008",
+    "br009",
+    "br010"
+  ],
+  "set_aside": [],
+  "obligations": [
+    "br012"
+  ],
+  "nemesis_set": [
+    "06027",
+    "06028",
+    "06029",
+    "06029",
+    "06030"
+  ],
+  "player_deck": [
+    "01053",
+    "01053",
+    "01054",
+    "01054",
+    "01054",
+    "01055",
+    "01055",
+    "01057",
+    "05030",
+    "05030",
+    "28014",
+    "28014",
+    "br011",
+    "01088",
+    "01089",
+    "01090",
+    "01084",
+    "01092",
+    "13024",
+    "14022",
+    "14022",
+    "16024",
+    "16024",
+    "01087",
+    "01087"
+  ]
+}

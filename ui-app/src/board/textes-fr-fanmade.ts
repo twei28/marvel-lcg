@@ -2065,4 +2065,30 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'tt023': "Attachez-la à Master Pandemonium. Si vous ne pouvez pas, étourdissez un personnage que vous contrôlez et rendez confus un personnage que vous contrôlez.\nMaster Pandemonium ne peut pas subir de dégâts.\n<b>Action de héros</b> : dépensez [energy][energy] → défaussez cette carte.",
   // texas_twister_nemesis — Soul Fragmentation (Treachery, x2)
   'tt024': "<b>Une fois révélée</b> : défaussez les 3 cartes du dessus de votre deck. Si une ressource [physical] a été défaussée ainsi, vous êtes étourdi ; si une ressource [mental] a été défaussée ainsi, vous êtes confus ; si une ressource [wild] a été défaussée ainsi, inclinez votre identité.",
+  // beta_ray_bill — * Beta Ray Bill (Hero)
+  'br001a': "<i>Digne</i> — <b>Action</b> : cherchez Stormbreaker et ajoutez-la à votre main. Si elle quitte le jeu de cette façon, infligez 3 dégâts à un ennemi. <i>(Limite d'une fois par round.)</i>",
+  // beta_ray_bill — * Beta Ray Bill (AlterEgo) — ⚠ MEME NOM que la face héros
+  'br001b': "<i>Voyageur des étoiles</i> — <b>Action</b> : cherchez un exemplaire de Star Jump et ajoutez-le à votre main. <i>(Limite d'une fois par round.)</i>",
+  // beta_ray_bill — Eye of the Storm (Event, x2)
+  'br002': "<b>Action de héros</b> : dépensez X ressources [energy] et choisissez un joueur → retirez X menaces de chaque manigance en jeu. Ce joueur engage jusqu'à X sbires en jeu. Cette action ignore l'icône de crise si vous avez le trait [[AERIAL]] ou si vous avez utilisé Stormbreaker pour payer cette carte.",
+  // beta_ray_bill — Hammer Throw (Event, x3) — ⚠ HOMONYME de 06005 (Thor)
+  'br003': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Stormbreaker → infligez 6 dégâts à un ennemi. Cherchez Stormbreaker et ajoutez-la à votre main. Cette attaque gagne Déferlement.",
+  // beta_ray_bill — Hammer Twirl (Event, x2)
+  'br004': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, inclinez Stormbreaker ou dépensez 1 ressource de n'importe quel type → prévenez tous ces dégâts. Si vous avez payé cette carte avec Stormbreaker, infligez 2 dégâts à votre attaquant.",
+  // beta_ray_bill — Star Jump (Event, coût X, x2)
+  'br005': "<b>Action</b> : choisissez X des effets suivants :\n• Cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → redressez Skuttlebutt.\n• Cherchez une carte Beta Ray Bill et ajoutez-la à votre main.\n• Redressez Beta Ray Bill.",
+  // beta_ray_bill — Thunderstrike (Event, x2)
+  'br006': "Prérequis ([energy]).\n<b>Action de héros</b> : choisissez un joueur → infligez 3 dégâts au vilain et à chaque sbire engagé avec ce joueur. Étourdissez chaque ennemi ainsi blessé.",
+  // beta_ray_bill — * Skuttlebutt (Support)
+  'br007': "Skuttlebutt ne se redresse pas à la fin de la phase du joueur. Tant que Skuttlebutt est prêt, vous gagnez +1 en taille de main.\n<b>Action de héros</b> : inclinez Skuttlebutt → choisissez l'un des effets suivants :\n• Infligez 2 dégâts à chaque ennemi.\n• Retirez 2 menaces de chaque manigance.",
+  // beta_ray_bill — Calm Before the Storm (Upgrade)
+  'br008': "Votre héros gagne +1 ATQ tant que Stormbreaker est en jeu, et +1 CTR tant qu'elle ne l'est pas.\n<b>Action de héros</b> : dépensez 1 ressource de n'importe quel type et inclinez cette carte → résolvez la capacité <i>Digne</i> de votre héros <i>(en ignorant sa limite)</i>.",
+  // beta_ray_bill — Oathbrother (Upgrade)
+  'br009': "<b>Réponse de héros</b> : après qu'un sbire entre en jeu, cherchez un événement dans votre deck et ajoutez-le à votre main. <i>(Limite d'une fois par phase.)</i>",
+  // beta_ray_bill — * Stormbreaker (Upgrade)
+  'br010': "Restreinte.\nVotre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : défaussez Stormbreaker du jeu → générez [wild][wild] pour un événement.",
+  // beta_ray_bill — Hammer Time (Event, Basic, max 1)
+  'br011': "Alliance. Équipe (Beta Ray Bill et Thor). Max 1 par deck.\n<b>Action de héros</b> <i>(attaque)</i> : cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → infligez-lui 10 dégâts. Cette attaque gagne Déferlement.",
+  // beta_ray_bill — Unworthy (Obligation)
+  'br012': "<b><i>Donnez-la au joueur de Beta Ray Bill.</i></b>\nUtilisations (2 pions indignité). Victoire 0.\n<b>Une fois révélée</b> : cherchez Stormbreaker et glissez-la sous cette carte. Tant qu'elle y est, Stormbreaker ne peut pas être cherchée.\n<b>Réponse forcée</b> : après que vous vainquez un ennemi ou une manigance, retirez 1 pion indignité d'ici.",
 }

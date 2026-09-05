@@ -88824,5 +88824,244 @@
       "set_name": "Texas Twister Nemesis",
       "custom": "Kajislav"
     }
+  ],
+  "beta_ray_bill": [
+    {
+      "card_id": "br001a",
+      "type": "Hero",
+      "name": "* Beta Ray Bill",
+      "subtitle": "",
+      "desc": {
+        "HP": "14",
+        "ATK": "2",
+        "THW": "1",
+        "DEF": "2",
+        "HS": "4"
+      },
+      "traits": [
+        "ASGARD",
+        "CYBORG",
+        "GUARDIAN"
+      ],
+      "text": "<i>Worthy</i> — <b>Action</b>: Find Stormbreaker and add it to your hand. If it leaves play this way, deal 3 damage to an enemy. <i>(Limit once per round.)</i>",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br001b",
+      "type": "AlterEgo",
+      "name": "* Beta Ray Bill",
+      "subtitle": "",
+      "desc": {
+        "HP": "14",
+        "REC": "3",
+        "HS": "5"
+      },
+      "traits": [
+        "ASGARD",
+        "CYBORG"
+      ],
+      "text": "<i>Starfarer</i> — <b>Action</b>: Find a copy of Star Jump and add it to your hand. <i>(Limit once per round.)</i>",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br002",
+      "type": "Event",
+      "name": "Eye of the Storm",
+      "subtitle": "",
+      "desc": {
+        "Cost": "1",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Action</b>: Spend X [energy] resources and choose a player → remove X threat from each scheme in play. That player engages up to X minions in play. This action ignores the crisis icon if you have the [[AERIAL]] trait or used Stormbreaker to pay for this card.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br003",
+      "type": "Event",
+      "name": "Hammer Throw",
+      "subtitle": "",
+      "desc": {
+        "Cost": "3",
+        "RES": "R",
+        "Class": "Hero"
+      },
+      "traits": [
+        "ATTACK",
+        "SUPERPOWER"
+      ],
+      "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Stormbreaker → deal 6 damage to an enemy. Find Stormbreaker and add it to your hand. This attack gains overkill.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br004",
+      "type": "Event",
+      "name": "Hammer Twirl",
+      "subtitle": "",
+      "desc": {
+        "Cost": "0",
+        "RES": "R",
+        "Class": "Hero"
+      },
+      "traits": [
+        "DEFENSE"
+      ],
+      "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, exhaust Stormbreaker or spend 1 resource of any type → prevent all of that damage. If you paid for this card using Stormbreaker, deal 2 damage to your attacker.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br005",
+      "type": "Event",
+      "name": "Star Jump",
+      "subtitle": "",
+      "desc": {
+        "Cost": "X",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "TACTIC"
+      ],
+      "text": "<b>Action</b>: Choose X of the following:\n• Seek a minion from the encounter deck and put it into play engaged with you → ready Skuttlebutt.\n• Find a Beta Ray Bill card and add it to your hand.\n• Ready Beta Ray Bill.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br006",
+      "type": "Event",
+      "name": "Thunderstrike",
+      "subtitle": "",
+      "desc": {
+        "Cost": "3",
+        "RES": "Y",
+        "Class": "Hero",
+        "Requirement": "Y"
+      },
+      "traits": [
+        "SUPERPOWER"
+      ],
+      "text": "Requirement ([energy]).\n<b>Hero Action</b>: Choose a player → deal 3 damage to the villain and each minion engaged with that player. Stun each enemy damaged this way.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br007",
+      "type": "Support",
+      "name": "* Skuttlebutt",
+      "subtitle": "",
+      "desc": {
+        "Cost": "3",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "AERIAL",
+        "PERSONA",
+        "VEHICLE"
+      ],
+      "text": "Skuttlebutt does not ready at the end of the player phase. While Skuttlebutt is ready, you get +1 hand size.\n<b>Hero Action</b>: Exhaust Skuttlebutt → choose one:\n• Deal 2 damage to each enemy.\n• Remove 2 threat from each scheme.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br008",
+      "type": "Upgrade",
+      "name": "Calm Before the Storm",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "Y",
+        "Class": "Hero"
+      },
+      "traits": [
+        "SKILL",
+        "SUPERPOWER"
+      ],
+      "text": "Your hero gets +1 ATK while Stormbreaker is in play and +1 THW while it is not in play.\n<b>Hero Action</b>: Spend 1 resource of any type and exhaust this card → resolve your hero's <i>Worthy</i> ability <i>(ignoring its limit)</i>.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br009",
+      "type": "Upgrade",
+      "name": "Oathbrother",
+      "subtitle": "",
+      "desc": {
+        "Cost": "2",
+        "RES": "B",
+        "Class": "Hero"
+      },
+      "traits": [
+        "ASGARD",
+        "TITLE"
+      ],
+      "text": "<b>Hero Response</b>: After a minion enters play, seek an event from your deck and add it to your hand. <i>(Limit once per phase.)</i>",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br010",
+      "type": "Upgrade",
+      "name": "* Stormbreaker",
+      "subtitle": "",
+      "desc": {
+        "Cost": "1",
+        "RES": "G",
+        "Class": "Hero",
+        "Restricted": "1"
+      },
+      "traits": [
+        "ASGARD",
+        "WEAPON"
+      ],
+      "text": "Restricted.\nYour hero gains the [[AERIAL]] trait.\n<b>Hero Resource</b>: Discard Stormbreaker from play → generate [wild][wild] resources for an event.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br011",
+      "type": "Event",
+      "name": "Hammer Time",
+      "subtitle": "",
+      "desc": {
+        "Cost": "3",
+        "RES": "Y",
+        "MaxPerDeck": "1",
+        "Class": "Basic",
+        "Alliance": "1",
+        "TeamUp": "Beta Ray Bill;Thor"
+      },
+      "traits": [
+        "AERIAL",
+        "ATTACK"
+      ],
+      "text": "Alliance. Team-Up (Beta Ray Bill and Thor). Max 1 per deck.\n<b>Hero Action</b> <i>(attack)</i>: Search the encounter deck for a minion and put it into play engaged with you → deal 10 damage to that enemy. This attack gains overkill.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    },
+    {
+      "card_id": "br012",
+      "type": "Obligation",
+      "name": "Unworthy",
+      "subtitle": "",
+      "desc": {
+        "Boost": "2",
+        "Uses": "2,unworthy",
+        "Victory": "0",
+        "GiveTo": "Beta Ray Bill"
+      },
+      "traits": [],
+      "text": "<b><i>Give to the Beta Ray Bill player.</i></b>\nUses (2 unworthy counters). Victory 0.\n<b>When Revealed</b>: Find Stormbreaker and tuck it here. While it is tucked here, Stormbreaker cannot be found.\n<b>Forced Response</b>: After you defeat an enemy or scheme, remove 1 unworthy counter from here.",
+      "set_name": "Beta Ray Bill",
+      "custom": "Rainy"
+    }
   ]
 }

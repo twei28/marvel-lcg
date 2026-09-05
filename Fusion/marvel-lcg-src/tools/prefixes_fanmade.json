@@ -396,6 +396,13 @@
       "cartes": 25,
       "depuis": "2026-09-04",
       "note": "Cree le 04/09/2026. Auteur Kajislav. Texas Twister, heros Meneur qui rejoue ses pouvoirs de base : chaque usage de CTR/ATQ/DEF le renforce, le redresse ou fait piocher. ⚠ Ne pas confondre avec le DOSSIER `src/cards/pack/tt/`, qui est le pack officiel Thor et n'a aucun card_id en lettres : le prefixe `tt` etait libre."
+    },
+    "br": {
+      "pack": "beta_ray_bill",
+      "libelle": "158. Custom (Beta Ray Bill)",
+      "cartes": 13,
+      "depuis": "2026-09-05",
+      "note": "Cree le 05/09/2026. Auteur Rainy. br001a/b identite, br002-br010 signature (9 cartes distinctes, 15 exemplaires), br011 Hammer Time (Basic, Team-Up avec Thor), br012 obligation Unworthy. ⚠ LES DEUX FACES PORTENT LE MEME NOM « Beta Ray Bill » : il n'a pas d'identite civile, et le zip numerote 0.1 l'ALTER-EGO et 0.2 le HEROS, dans cet ordre inverse. AUCUN set nemesis dans le zip, troisieme pack de Rainy dans ce cas apres hulk_rainy et viv_vision : le deck EMPRUNTE celui de Thor (06026-06030), calque de ce qui a ete fait pour hulk_rainy avec le Hulk officiel."
     }
   }
 }
