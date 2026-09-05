@@ -85,6 +85,10 @@ FICHIER_COMPTES = os.environ.get("FICHIER_COMPTES", os.path.join(RACINE_SITE, "c
 BASE = os.environ.get("BASE", os.path.join(RACINE_SITE, "narwhal.db"))
 MAX_COMPTES = int(os.environ.get("MAX_COMPTES", "20"))
 ADMIN = os.environ.get("ADMIN", "arnaud").strip().lower()
+# Inscription LIBRE : quiconque a l'adresse du site peut demander un compte,
+# qui reste en attente de validation. La mettre a "0" ferme cette porte : seul
+# un LIEN D'INVITATION permet alors de creer un compte.
+INSCRIPTION_LIBRE = os.environ.get("INSCRIPTION_LIBRE", "1") != "0"
 
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur  # noqa: E402  (dependant de sys.path ci-dessus)
@@ -299,6 +303,12 @@ CREATE TABLE IF NOT EXISTS parties (
     fermee_le   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_parties_hote ON parties(hote);
+CREATE TABLE IF NOT EXISTS invitations (
+    jeton       TEXT PRIMARY KEY,
+    cree_le     TEXT NOT NULL,
+    utilise_par TEXT,
+    utilise_le  TEXT
+);
 """
 
 
@@ -373,7 +383,7 @@ def statut_de(pseudo: str) -> str:
     return ligne["statut"] if ligne else ""
 
 
-def inscrire(pseudo: str, email: str, mot_de_passe: str) -> str:
+def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str:
     pseudo = (pseudo or "").strip().lower()
     email = (email or "").strip().lower()
     if not (3 <= len(pseudo) <= 24) or not pseudo.replace("_", "").replace("-", "").isalnum():
@@ -384,6 +394,8 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str) -> str:
         raise ValueError("Adresse e-mail invalide.")
     if len(mot_de_passe or "") < 8:
         raise ValueError("Mot de passe trop court : 8 caracteres au minimum.")
+    if not INSCRIPTION_LIBRE and not invitation_valide(jeton) and pseudo != ADMIN:
+        raise ValueError("Il faut un lien d'invitation pour creer un compte ici.")
     with VERROU_COMPTES, _cx() as cx:
         if cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
             raise ValueError("Ce pseudo est deja pris.")
@@ -395,14 +407,28 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str) -> str:
             "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
         if valides >= MAX_COMPTES and pseudo != ADMIN:
             raise ValueError(f"Le site est complet ({MAX_COMPTES} comptes).")
+        # ⚠ LE JETON EST RELU ET CONSOMME DANS LA MEME TRANSACTION que la
+        # creation du compte. Le verifier avant puis le consommer apres
+        # laisserait deux personnes cliquant en meme temps sur le meme lien
+        # creer deux comptes : la fenetre est etroite, elle n'est pas nulle.
+        invite = False
+        if jeton:
+            ligne = cx.execute(
+                "SELECT utilise_par FROM invitations WHERE jeton = ?", (jeton,)).fetchone()
+            invite = ligne is not None and ligne["utilise_par"] is None
+        # Un lien d'invitation VAUT validation : c'est tout son interet.
+        # L'administrateur, lui, est valide d'office, sans quoi personne ne
+        # pourrait valider le premier compte.
+        statut = "valide" if (invite or pseudo == ADMIN) else "attente"
         sel = secrets.token_bytes(16).hex()
         cx.execute(
             "INSERT INTO comptes (pseudo, email, sel, empreinte, statut, cree)"
             " VALUES (?, ?, ?, ?, ?, ?)",
-            (pseudo, email, sel, _empreinte(mot_de_passe, sel),
-             # Le compte de l'administrateur est valide d'office : sans ca,
-             # personne ne pourrait valider le premier compte.
-             "valide" if pseudo == ADMIN else "attente", _maintenant()))
+            (pseudo, email, sel, _empreinte(mot_de_passe, sel), statut, _maintenant()))
+        if invite:
+            cx.execute(
+                "UPDATE invitations SET utilise_par = ?, utilise_le = ? WHERE jeton = ?",
+                (pseudo, _maintenant(), jeton))
     return pseudo
 
 
@@ -468,6 +494,49 @@ def dernieres_parties(combien: int = 25):
         return cx.execute(
             "SELECT * FROM parties ORDER BY ouverte_le DESC, rowid DESC LIMIT ?",
             (combien,)).fetchall()
+
+
+def creer_invitation() -> str:
+    """Un jeton a USAGE UNIQUE qui vaut validation.
+
+    C'est le chemin normal : celui qui recoit le lien entre directement, sans
+    passer par la file d'attente. L'inscription libre reste possible, mais
+    elle, elle attend une validation a la main.
+    """
+    jeton = secrets.token_urlsafe(16)
+    with _cx() as cx:
+        cx.execute("INSERT INTO invitations (jeton, cree_le) VALUES (?, ?)",
+                   (jeton, _maintenant()))
+    return jeton
+
+
+def invitation_valide(jeton: str) -> bool:
+    if not jeton:
+        return False
+    with _cx() as cx:
+        ligne = cx.execute(
+            "SELECT utilise_par FROM invitations WHERE jeton = ?", (jeton,)).fetchone()
+    return ligne is not None and ligne["utilise_par"] is None
+
+
+def invitations_libres():
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM invitations WHERE utilise_par IS NULL"
+            " ORDER BY cree_le DESC").fetchall()
+
+
+def invitations_utilisees(combien: int = 15):
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM invitations WHERE utilise_par IS NOT NULL"
+            " ORDER BY utilise_le DESC LIMIT ?", (combien,)).fetchall()
+
+
+def supprimer_invitation(jeton: str) -> None:
+    with _cx() as cx:
+        cx.execute("DELETE FROM invitations WHERE jeton = ? AND utilise_par IS NULL",
+                   (jeton,))
 
 
 def ouvrir_session(pseudo: str) -> str:
@@ -626,6 +695,8 @@ PAGE_ADMIN = """<!doctype html>
            cursor:pointer; border:1px solid #30363d; background:transparent; color:inherit; }}
   button.oui {{ border-color:#238636; color:#3fb950; }}
   button.non {{ border-color:#f85149; color:#f85149; }}
+  code {{ background:#161b22; padding:.2rem .45rem; border-radius:.3rem;
+         font-size:.8rem; word-break:break-all; }}
   form {{ display:inline; margin-right:.3rem; }}
   a {{ color:#58a6ff; }}
 </style>
@@ -637,6 +708,18 @@ PAGE_ADMIN = """<!doctype html>
         <th>Statut</th><th></th></tr>
     {lignes}
   </table>
+  <h1 style="margin-top:2.5rem">Invitations</h1>
+  <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
+  entre directement, sans passer par la file d'attente.</p>
+  <form method="post" action="/admin" style="margin-bottom:1rem">
+    <input type="hidden" name="action" value="inviter">
+    <button class="oui" type="submit">Creer un lien d'invitation</button>
+  </form>
+  <table>
+    <tr><th>Lien</th><th>Cree le</th><th>Utilise par</th><th></th></tr>
+    {invitations}
+  </table>
+
   <h1 style="margin-top:2.5rem">Parties</h1>
   <p class="sous">Les 25 dernieres, la plus recente en haut.</p>
   <table>
@@ -690,11 +773,13 @@ class Handler(BaseHTTPRequestHandler):
         brut = self.rfile.read(taille).decode("utf-8", "replace")
         return {k: v[0] for k, v in urllib.parse.parse_qs(brut).items()}
 
-    def _formulaire(self, quoi: str, erreur: str = "") -> bytes:
+    def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
         inscription = quoi == "inscription"
-        champs = ('<label>Pseudo<input name="pseudo" autocomplete="username" required></label>'
+        champs = ('<input type="hidden" name="i" value="%s">'
+                  '<label>Pseudo<input name="pseudo" autocomplete="username" required></label>'
                   '<label>Adresse e-mail<input name="email" type="email" '
-                  'autocomplete="email" required></label>') if inscription else (
+                  'autocomplete="email" required></label>'
+                  % html.escape(jeton)) if inscription else (
                   '<label>Pseudo ou adresse e-mail<input name="pseudo" '
                   'autocomplete="username" required></label>')
         return PAGE_FORMULAIRE.format(
@@ -704,8 +789,10 @@ class Handler(BaseHTTPRequestHandler):
             auto="new-password" if inscription else "current-password",
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
-            pied=('Ton compte devra etre valide a la main avant de servir. '
-                  'Deja un compte ? <a href="/connexion">Se connecter</a>.'
+            pied=(('Tu es invite : ton compte sera actif tout de suite.'
+                   if invitation_valide(jeton) else
+                   'Ton compte devra etre valide a la main avant de servir.')
+                  + ' Deja un compte ? <a href="/connexion">Se connecter</a>.'
                   if inscription else
                   'Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
         ).encode("utf-8")
@@ -730,6 +817,24 @@ class Handler(BaseHTTPRequestHandler):
                     html.escape(c["cree"] or ""),
                     html.escape(c["derniere_connexion"] or "jamais"),
                     html.escape(statut), actions))
+        base = ("https://%s" % DOMAINE) if DOMAINE else "http://127.0.0.1:%d" % PORT_SITE
+        inv = []
+        for i in invitations_libres():
+            lien = "%s/inscription?i=%s" % (base, i["jeton"])
+            inv.append('<tr><td><code>%s</code></td><td>%s</td><td>—</td>'
+                       '<td><form method="post" action="/admin">'
+                       '<input type="hidden" name="action" value="annuler">'
+                       '<input type="hidden" name="jeton" value="%s">'
+                       '<button class="non" type="submit">Annuler</button></form></td></tr>'
+                       % (html.escape(lien), html.escape(i["cree_le"]),
+                          html.escape(i["jeton"])))
+        for i in invitations_utilisees():
+            inv.append("<tr><td>—</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+                html.escape(i["cree_le"]), html.escape(i["utilise_par"] or ""),
+                html.escape(i["utilise_le"] or "")))
+        if not inv:
+            inv.append('<tr><td colspan="4">Aucune invitation. '
+                       'Cree-en une ci-dessus.</td></tr>')
         parties = "".join(
             "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
@@ -740,14 +845,22 @@ class Handler(BaseHTTPRequestHandler):
             parties = '<tr><td colspan="4">Aucune partie pour le moment.</td></tr>'
         return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
+                                 invitations="".join(inv),
                                  parties=parties).encode("utf-8")
 
     def do_GET(self):
         pseudo = self._session()
         if self.path in ("/", "/index.html"):
             self._repondre(200, rendre_page(pseudo))
-        elif self.path == "/inscription":
-            self._repondre(200, self._formulaire("inscription"))
+        elif self.path.startswith("/inscription"):
+            import urllib.parse
+            requete = urllib.parse.urlparse(self.path)
+            jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
+            if not INSCRIPTION_LIBRE and not invitation_valide(jeton):
+                self._repondre(403, self._formulaire(
+                    "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
+                return
+            self._repondre(200, self._formulaire("inscription", jeton=jeton))
         elif self.path == "/connexion":
             self._repondre(200, self._formulaire("connexion"))
         elif self.path == "/deconnexion":
@@ -784,18 +897,22 @@ class Handler(BaseHTTPRequestHandler):
 
         if self.path == "/inscription":
             try:
+                jeton = champs.get("i", "")
+                invite = invitation_valide(jeton)
                 inscrire(champs.get("pseudo", ""), champs.get("email", ""),
-                         champs.get("mdp", ""))
+                         champs.get("mdp", ""), jeton)
             except ValueError as erreur:
-                self._repondre(400, self._formulaire("inscription", str(erreur)))
+                self._repondre(400, self._formulaire(
+                    "inscription", str(erreur), champs.get("i", "")))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
                 titre="Demande enregistree", action="/connexion", bouton="Entrer",
                 auto="current-password", erreur="",
                 champs='<label>Pseudo ou adresse e-mail<input name="pseudo" '
                        'autocomplete="username" required></label>',
-                pied="Ton compte attend une validation manuelle. Reviens une fois "
-                     "qu'elle est faite.").encode("utf-8"))
+                pied=("Ton compte est actif : connecte-toi." if invite else
+                      "Ton compte attend une validation manuelle. Reviens une fois "
+                      "qu'elle est faite.")).encode("utf-8"))
 
         elif self.path == "/connexion":
             try:
@@ -817,8 +934,14 @@ class Handler(BaseHTTPRequestHandler):
             if pseudo != ADMIN:
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
-            changer_statut(champs.get("pseudo", "").strip().lower(),
-                           champs.get("statut", ""))
+            action = champs.get("action", "")
+            if action == "inviter":
+                creer_invitation()
+            elif action == "annuler":
+                supprimer_invitation(champs.get("jeton", ""))
+            else:
+                changer_statut(champs.get("pseudo", "").strip().lower(),
+                               champs.get("statut", ""))
             self._rediriger("/admin")
 
         elif self.path == "/partie":
