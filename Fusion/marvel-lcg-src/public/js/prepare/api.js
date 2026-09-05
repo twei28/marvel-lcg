@@ -2,6 +2,8 @@
 // Aucun endpoint n'est modifié côté serveur ; on ne fait que consommer l'existant.
 "use strict";
 
+import { picIdLangue } from "/public/js/prepare/scans-fr.js";
+
 const _cache = new Map();
 
 async function getJSON(url) {
@@ -45,10 +47,19 @@ export const api = {
     gamers:          () => fetch("get_gamers?").then(r => r.text()),
 };
 
-/** Image d'une carte : la route serveur résout /<card_id> -> image. */
+/** Image d'une carte : la route serveur résout /<card_id> -> image.
+ *
+ *  En français, on demande le scan FR (`fr_<code>`). C'est LE point de passage
+ *  de toutes les images hors plateau : le wizard, le constructeur de decks, le
+ *  salon, l'écran de campagne et les puzzles passent tous par ici. Auparavant
+ *  seule la galerie appelait `picIdLangue`, et une interface en français
+ *  affichait donc des cartes en anglais partout ailleurs.
+ *
+ *  Aucun risque si un scan FR manque : le moteur retombe de lui-même sur
+ *  l'anglais (repli écrit dans engine/file/cache.py, voir scans-fr.js). */
 export function cardImageUrl(cardId) {
     if (!cardId) return "";
-    return "/" + String(cardId).split(",")[0];
+    return "/" + picIdLangue(String(cardId).split(",")[0]);
 }
 /** Image d'une boîte d'extension : /sets/<clé>. encodeURI (pas ...Component)
  *  pour garder les apostrophes intactes (ex. "Galaxy's Most Wanted"). */

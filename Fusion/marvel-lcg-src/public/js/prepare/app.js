@@ -733,19 +733,42 @@ function modeStrip() {
         ));
         return strip;
     }
-    // « Coop locale » MENT quand la partie est en ligne : les autres joueurs ne
-    // sont pas a cote de toi, et ils choisissent eux-memes leur heros. Le
-    // serveur nous dit deja s'il s'agit d'une partie en ligne (salon.multi), on
-    // renomme donc a la volee. Pas de mode supplementaire : le moteur n'en
-    // connait pas, et un mode de plus serait un etat de plus a tenir juste.
-    const distant = enLigne();
+    // DEUX TUILES, pas une qui se renomme.
+    //
+    // « Coop locale » et « Coop en ligne » sont deux facons de jouer, et on doit
+    // pouvoir passer de l'une a l'autre d'un clic. La version precedente
+    // n'affichait qu'une tuile dont le nom changeait selon un reglage pose plus
+    // bas : il fallait avoir compris ce reglage pour savoir ou l'on etait.
+    //
+    // Cote MOTEUR il n'y a toujours qu'un mode, `hotseat` : les deux tuiles
+    // designent le meme, et ne different que par `coopEnLigne`. Ajouter un vrai
+    // mode obligerait a le porter dans le lanceur, la validation et le
+    // recapitulatif, pour ne rien changer a la partie jouee.
+    const tuiles = [];
     for (const m of MODES) {
-        const on = state.mode.id === m.id;
-        const libelle = libelleMode(m);
-        const detail = distant && m.id === "hotseat" ? t("2 à 4 héros, chacun choisit le sien") : m.desc;
+        if (m.id === "hotseat" && state.salon.multi) {
+            tuiles.push({ mode: m, distant: false, mark: m.mark,
+                          libelle: m.label, detail: m.desc });
+            tuiles.push({ mode: m, distant: true, mark: "@",
+                          libelle: t("Coop en ligne"),
+                          detail: t("2 à 4 héros, chacun choisit le sien") });
+            continue;
+        }
+        tuiles.push({ mode: m, distant: null, mark: m.mark,
+                      libelle: m.label, detail: m.desc });
+    }
+    for (const tuile of tuiles) {
+        const m = tuile.mode;
+        // Une tuile de coop n'est allumee que si le mode ET la destination
+        // concordent : sans le second test, les deux s'allumeraient ensemble.
+        const on = state.mode.id === m.id
+            && (tuile.distant === null || (state.coopEnLigne !== false) === tuile.distant);
+        const libelle = tuile.libelle;
+        const detail = tuile.detail;
         strip.append(el("button", {
             class: "mode-pill" + (on ? " sel" : ""),
             onclick: () => {
+                if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
                 // La campagne n'est plus un mode du wizard : elle a son écran,
                 // qui impose l'ordre des scénarios, les sets et la difficulté.
                 if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
@@ -759,7 +782,7 @@ function modeStrip() {
                 render();
             },
         },
-            el("span", { class: "mode-mark mvl" }, m.mark),
+            el("span", { class: "mode-mark mvl" }, tuile.mark),
             el("span", { class: "mode-copy" },
                 el("b", {}, libelle),
                 el("small", {}, detail),
@@ -780,21 +803,20 @@ function modeStrip() {
  * autres sieges. Ce choix n'existe que la : ailleurs il n'y a rien a decider,
  * et un bouton de plus serait du bruit.
  */
+/**
+ * Sous la bande des modes : de quoi convoquer les invites.
+ *
+ * L'ancienne bascule « Chacun sur son appareil / Tous sur cet ecran » a
+ * disparu : elle disait la meme chose que les deux tuiles « Coop locale » et
+ * « Coop en ligne », qui se choisissent maintenant directement.
+ *
+ * Ne reste donc ici que les liens, et seulement quand quelqu'un est attendu a
+ * l'autre bout : les proposer en coop locale serait faux.
+ */
 function choixCoop() {
     if (!state.salon.multi || state.mode.id !== "hotseat") return null;
-    const bouton = (distant, titre, detail) => el("button", {
-        class: "coop-choix" + ((state.coopEnLigne !== false) === distant ? " sel" : ""),
-        onclick: () => { state.coopEnLigne = distant; render(); },
-    }, el("b", { class: "mvl" }, titre), el("small", {}, detail));
-    return el("div", { class: "coop-zone" },
-        el("div", { class: "coop-bascule" },
-            bouton(true, t("Chacun sur son appareil"), t("Les autres joueurs choisissent leur héros depuis leur lien")),
-            bouton(false, t("Tous sur cet écran"), t("Tu choisis et joues tous les héros toi-même")),
-        ),
-        // Le lien n'a de sens QUE si quelqu'un est a l'autre bout. « Tous sur
-        // cet ecran » n'attend personne : proposer d'inviter y serait faux.
-        state.coopEnLigne !== false ? blocLiens() : null,
-    );
+    if (state.coopEnLigne === false) return null;
+    return el("div", { class: "coop-zone" }, blocLiens());
 }
 
 /* ---------------- Liens d'invitation ---------------- */
