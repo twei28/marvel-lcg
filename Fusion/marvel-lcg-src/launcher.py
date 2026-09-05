@@ -80,7 +80,21 @@ except ModuleNotFoundError:
     sys.modules["winsound"] = ws
 
 from engine.network.web_server import WebServer
-WebServer.IsAuthenticate = lambda self, request=None: True
+# ⚠ NE PAS REMETTRE `WebServer.IsAuthenticate = lambda ...: True` ICI.
+#
+# Cette ligne debranchait le mot de passe du moteur. Sans consequence tant que
+# le jeu tournait sur la machine de son proprietaire ; desastreuse des qu'il est
+# servi sur un domaine public, ou n'importe qui trouvant l'adresse entrait dans
+# la partie sans rien presenter.
+#
+# La retirer ne change RIEN au jeu local : sans `password` dans la
+# configuration, `hash_password` vaut None et `IsAuthenticate` rend True de
+# lui-meme (engine/network/web_server.py). Le mot de passe n'est exige que
+# lorsqu'il est configure, c'est-a-dire quand le site lance la partie — et le
+# lien de siege pose alors le cookie tout seul (`handle_claim_seat`).
+#
+# `IsVersionMatch` reste debranchee : elle exige un cookie `app_version` que
+# personne n'a a sa premiere visite, et renverrait chacun sur clean_cache.
 WebServer.IsVersionMatch = lambda self, request=None: True
 from engine import Engine
 print("Engine.Initialize() ->", Engine.Initialize())

@@ -31,7 +31,12 @@ class GameServerHTML(GameServerBase):
         # Bonne cle -> cookie seat_token_<n> (1 an) + redirection vers le
         # plateau de ce siege. Mauvaise cle -> 403.
         self.AddHtmlSecurity('/salon.html', './public/salon.html')
-        self.AddAwaitGetSecurity('/claim_seat', self.handle_claim_seat)
+        # ⚠ `need_auth=False` EST INDISPENSABLE. Cette route est celle qui POSE
+        # le cookie de session : la placer derriere le mot de passe qu'elle
+        # delivre condamnerait l'hote et ses invites a rester dehors, leur lien
+        # a la main. La cle de siege portee par l'URL est le laissez-passer, et
+        # elle est verifiee juste en dessous.
+        self.AddAwaitGetSecurity('/claim_seat', self.handle_claim_seat, need_auth=False)
 
     async def handle_claim_seat(self, request):
         from aiohttp import web
@@ -69,5 +74,25 @@ class GameServerHTML(GameServerBase):
                 path='/',
                 httponly=True,
             )
+            # LE LIEN VAUT LE MOT DE PASSE.
+            #
+            # Le moteur protege l'application entiere par un mot de passe
+            # (`password`, cookie `session_token`). Sans la ligne ci-dessous,
+            # remettre cette protection en service obligerait l'hote ET chaque
+            # invite a taper ce mot de passe apres avoir clique sur leur lien,
+            # alors qu'ils viennent precisement de prouver qu'ils sont attendus
+            # en presentant une cle de siege valide.
+            #
+            # On leur ouvre donc la porte au passage. Qui arrive SANS lien reste
+            # arrete par la page de mot de passe, ce qui est tout l'objet de la
+            # manoeuvre.
+            if getattr(self, 'hash_password', None):
+                response.set_cookie(
+                    'session_token',
+                    self.hash_password,
+                    max_age=31536000,
+                    path='/',
+                    httponly=True,
+                )
         return response
 
