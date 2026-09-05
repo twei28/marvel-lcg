@@ -1,0 +1,87 @@
+# NarwhalChampions — configuration Caddy
+#
+# ⚠ UN SOUS-DOMAINE PAR TABLE, JAMAIS UN PREFIXE DE CHEMIN.
+# Le client du jeu utilise des chemins ABSOLUS partout (`/ws`, `/save_deck`,
+# `/set_choix_siege`, `/app/board.html`, `/get_achievements`...). Servir une
+# table sous `narwhalchampions.xx/p3/` ferait repartir chacun de ces appels a
+# la racine du SITE au lieu du moteur de la table, et tout casserait. Avec un
+# sous-domaine, l'hote change et les chemins absolus restent justes.
+#
+# ⚠ LES ROUTES SONT STATIQUES. C'est l'orchestrateur qui alloue les tables ;
+# le routage, lui, ne bouge jamais. Rien a reconfigurer en vol, donc rien a
+# deboguer en vol.
+#
+# Le certificat WILDCARD impose un challenge DNS : Caddy doit avoir un jeton
+# API chez le fournisseur DNS. Ci-dessous, l'exemple Cloudflare. Il faut la
+# version de Caddy compilee avec ce module :
+#   xcaddy build --with github.com/caddy-dns/cloudflare
+#
+# Remplacer `narwhalchampions.xx` par le domaine reel.
+
+{
+	email TON-EMAIL@exemple.fr
+}
+
+# --- Le site : accueil, comptes, ouverture des tables ---------------------
+narwhalchampions.xx, www.narwhalchampions.xx {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080
+}
+
+# --- Les 20 tables --------------------------------------------------------
+# `p<N>.narwhalchampions.xx` -> port 2350+N.
+# Le bloc couvre le WebSocket sans rien de special : `reverse_proxy` de Caddy
+# relaie nativement la montee en grade Upgrade/Connection.
+#
+# ⚠ `*.narwhalchampions.xx` demande un enregistrement DNS WILDCARD pointant
+# sur la meme IP, et le certificat wildcard ci-dessus.
+p1.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2351 }
+p2.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2352 }
+p3.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2353 }
+p4.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2354 }
+p5.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2355 }
+p6.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2356 }
+p7.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2357 }
+p8.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2358 }
+p9.narwhalchampions.xx  { encode zstd gzip
+	reverse_proxy 127.0.0.1:2359 }
+p10.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2360 }
+p11.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2361 }
+p12.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2362 }
+p13.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2363 }
+p14.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2364 }
+p15.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2365 }
+p16.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2366 }
+p17.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2367 }
+p18.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2368 }
+p19.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2369 }
+p20.narwhalchampions.xx { encode zstd gzip
+	reverse_proxy 127.0.0.1:2370 }
+
+# Les blocs ci-dessus utilisent le certificat wildcard. Pour l'obtenir, ajouter
+# dans le bloc global (en haut) :
+#
+#   {
+#       email TON-EMAIL@exemple.fr
+#       acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+#   }
+#
+# et fournir CLOUDFLARE_API_TOKEN au service Caddy.

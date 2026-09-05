@@ -97,3 +97,12 @@ Fusion/marvel-lcg-src/assets/pics-proxy/
 /A créer/
 /regles-officielles/
 /.twei/
+
+# NarwhalChampions : sorties d'execution de l'orchestrateur.
+# `.site/` porte les configurations generees par table et les journaux des
+# moteurs ; `comptes.json` porte les empreintes de mots de passe. Ni l'un ni
+# l'autre n'a sa place dans le depot — et un secret commite ne se change plus,
+# il reste dans l'historique pour toujours (leçon launch.online.json, 10/8/2026).
+Fusion/marvel-lcg-src/.site/
+site/comptes.json
+site/comptes.json.tmp

@@ -17,7 +17,13 @@ import os
 import sys
 
 PORT_BASE = 2350
-PLACES_MAX = 4
+# ⚠ RELEVE DE 4 A 20 LE 05/09/2026 pour le site NarwhalChampions, dont
+# l'orchestrateur (`site/orchestrateur.py`) reutilise `construire_config` :
+# c'est le SEUL endroit qui sait quelles cles doivent etre separees par place,
+# et le dupliquer aurait garanti la divergence.
+# `launcher-serveur.sh` continue de se limiter a 4 tout seul, dans son propre
+# controle d'argument : ce relevement ne change donc rien a son comportement.
+PLACES_MAX = 20
 
 
 def construire_config(base: dict, place: int) -> dict:
