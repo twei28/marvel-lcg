@@ -115,6 +115,12 @@ class Partie:
         self.mot_de_passe = ""
         self.cles_sieges: list[str] = []
         self.debut = time.time()
+        # Combien de sieges l'hote veut ouvrir. 1 = il joue seul, et aucun
+        # lien d'invitation ne lui est propose.
+        # ⚠ Les QUATRE cles existent toujours (voir `lancer_jeu`) : ce nombre
+        # ne decide que de ce qu'on AFFICHE. Les sieges non distribues
+        # restent verrouilles par une cle que personne n'a.
+        self.joueurs = 1
 
     def base_url(self) -> str:
         if DOMAINE:
@@ -129,14 +135,20 @@ class Partie:
         """
         base = self.base_url()
         sortie = []
-        for siege in range(4):
-            cle = self.cles_sieges[siege] if siege < len(self.cles_sieges) else ""
+        # ⚠ Borne sur les cles REELLEMENT detenues, pas sur `joueurs` seul :
+        # un siege sans cle produirait un lien `key=` vide, c'est-a-dire une
+        # place ouverte a qui devine l'adresse.
+        for siege in range(min(self.joueurs, len(self.cles_sieges))):
+            cle = self.cles_sieges[siege]
             sortie.append({
                 "siege": siege,
                 "libelle": "Toi" if siege == 0 else f"Invite {siege}",
                 "url": f"{base}/claim_seat?p={siege}&key={cle}&to=salon",
             })
         return sortie
+
+    def solo(self) -> bool:
+        return self.joueurs <= 1
 
     def vivant(self) -> bool:
         return self.processus is not None and self.processus.poll() is None
@@ -214,7 +226,7 @@ def jeu_de(pseudo: str):
     return PARTIES.get(pseudo)
 
 
-def lancer_jeu(pseudo: str) -> Partie:
+def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
     """Allume le moteur de cette personne, sur SON emplacement.
 
     ⚠ AUCUN EFFACEMENT ICI. `_nettoyer_emplacement` existe toujours, mais
@@ -222,9 +234,11 @@ def lancer_jeu(pseudo: str) -> Partie:
     demandee explicitement. Le premier montage effaçait les dossiers a chaque
     ouverture, ce qui detruisait decks et campagnes entre deux visites.
     """
+    joueurs = max(1, min(4, joueurs))
     with VERROU:
         deja = PARTIES.get(pseudo)
         if deja is not None and deja.vivant():
+            deja.joueurs = joueurs
             return deja
         emplacement = emplacement_de(pseudo)
         if emplacement is None:
@@ -233,7 +247,10 @@ def lancer_jeu(pseudo: str) -> Partie:
         # Les mots de passe changent a chaque allumage : un lien d'invitation
         # donne hier ne doit pas rouvrir un siege aujourd'hui.
         partie.mot_de_passe = secrets.token_urlsafe(6)
+        # QUATRE cles, toujours, meme en solo : un siege sans cle serait un
+        # siege ouvert a qui trouve l'adresse.
         partie.cles_sieges = [secrets.token_urlsafe(8) for _ in range(4)]
+        partie.joueurs = joueurs
         EMPLACEMENTS[emplacement] = pseudo
         PARTIES[pseudo] = partie
 
@@ -650,6 +667,26 @@ PAGE = """<!doctype html>
   li span {{ min-width:8.5rem; color:#9aa7b4; font-size:.9rem; }}
   li a {{ color:#58a6ff; word-break:break-all; font-size:.9rem; }}
   .vide {{ color:#9aa7b4; }}
+  .choix {{ display:grid; gap:.75rem; margin-bottom:1.5rem; }}
+  .choix form {{ display:block; margin:0; }}
+  .choix button {{ width:100%; text-align:left; padding:.9rem 1.1rem; }}
+  .choix b {{ display:block; font-size:1rem; font-weight:600; }}
+  .choix em {{ display:block; font-size:.85rem; font-style:normal; opacity:.75; margin-top:.2rem; }}
+  button.calme {{ background:#161b22; color:#e6edf3; border-color:#30363d; }}
+  button.calme:hover {{ background:#1c232c; }}
+  .places {{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin:0 0 1.5rem; }}
+  .places form {{ display:inline; margin:0; }}
+  .places button {{ min-width:5.5rem; }}
+  .places span {{ color:#9aa7b4; font-size:.9rem; }}
+  .apres {{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
+           margin-top:1rem; padding-top:.9rem; border-top:1px solid #21262d; }}
+  .apres form {{ display:inline; margin:0; }}
+  .apres span {{ color:#9aa7b4; font-size:.85rem; }}
+  .apres button {{ background:transparent; color:#9aa7b4; border-color:#30363d;
+                  font-size:.85rem; padding:.25rem .7rem; min-width:0; }}
+  .apres button:hover {{ background:#1c232c; color:#e6edf3; }}
+  .apres button[disabled] {{ border-color:#1f6feb; color:#58a6ff; cursor:default; }}
+  a.retour {{ color:#58a6ff; font-size:.9rem; }}
   .barre {{ display:flex; justify-content:space-between; align-items:center;
            gap:1rem; margin-bottom:1.5rem; color:#9aa7b4; font-size:.9rem; }}
   .barre a {{ color:#58a6ff; }}
@@ -670,7 +707,32 @@ PAGE = """<!doctype html>
 </main>
 """
 
-def rendre_page(pseudo=None, message="") -> bytes:
+def _libelle_places(n: int) -> str:
+    return "Seul" if n <= 1 else "%d joueurs" % n
+
+
+def _boutons_places(nombres, actuel: int = 0, classe: str = "") -> str:
+    """La rangee de choix « Seul / 2 / 3 / 4 joueurs ».
+
+    Chaque bouton poste vers `/jeu`. Sur un jeu deja allume, cela ne redemarre
+    rien : les quatre cles existent depuis le debut, seul le nombre de liens
+    AFFICHES change. `actuel` desactive le bouton du nombre en cours, pour
+    qu'on voie ou l'on en est.
+    """
+    morceaux = []
+    for n in nombres:
+        texte = html.escape(_libelle_places(n))
+        if n == actuel:
+            morceaux.append('<button type="button" disabled>%s</button>' % texte)
+        else:
+            morceaux.append(
+                '<form method="post" action="/jeu">'
+                '<input type="hidden" name="joueurs" value="%d">'
+                '<button%s type="submit">%s</button></form>' % (n, classe, texte))
+    return "".join(morceaux)
+
+
+def rendre_page(pseudo=None, message="", vue="") -> bytes:
     if pseudo:
         admin = ' &middot; <a href="/admin">Administration</a>' if pseudo == ADMIN else ""
         barre = ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
@@ -683,16 +745,27 @@ def rendre_page(pseudo=None, message="") -> bytes:
                     html.escape(l["libelle"]), html.escape(l["url"]),
                     html.escape(l["url"]))
                 for l in partie.liens())
+            if partie.solo():
+                sous = "Ton jeu est allume."
+                intro_mdp = "Mot de passe du jeu :"
+                intro_places = "Des amis te rejoignent finalement ?"
+            else:
+                sous = ("Ton jeu est allume. Le premier lien est le tien, "
+                        "les autres sont pour tes amis.")
+                intro_mdp = "Mot de passe a donner a tes invites :"
+                intro_places = "Vous etes :"
             corps = GABARIT_JEU.format(
-                base=html.escape(partie.base_url()),
                 mdp=html.escape(partie.mot_de_passe),
-                liens=liens)
-            sous = "Ton jeu est allume. Le premier lien est le tien."
+                liens=liens,
+                intro_mdp=intro_mdp,
+                intro_places=intro_places,
+                boutons=_boutons_places((1, 2, 3, 4), actuel=partie.joueurs))
+        elif vue == "multi":
+            corps = GABARIT_NOMBRE.format(
+                boutons=_boutons_places((2, 3, 4)))
+            sous = "Le jeu demarre juste apres, et tes liens s'affichent."
         else:
-            corps = ('<form method="post" action="/jeu">'
-                     '<button type="submit">Lancer mon jeu</button></form>'
-                     '<p class="vide">Campagne, bac a sable, constructeur de decks,'
-                     ' hauts faits : tout est dans ton espace, et tout y reste.</p>')
+            corps = GABARIT_CHOIX
             sous = "Ton espace de jeu t'attend."
     else:
         barre = ('<div class="barre"><span>Il faut un compte pour jouer.</span>'
@@ -705,6 +778,29 @@ def rendre_page(pseudo=None, message="") -> bytes:
                        heures=int(DUREE_MAX_HEURES)).encode("utf-8")
 
 
+# Etape 1 : seul, ou avec des amis.
+GABARIT_CHOIX = """<div class="choix">
+  <form method="post" action="/jeu">
+    <input type="hidden" name="joueurs" value="1">
+    <button type="submit"><b>Jouer seul</b>
+      <em>Campagne, bac a sable, constructeur de decks, hauts faits.</em></button>
+  </form>
+  <form method="get" action="/multi">
+    <button class="calme" type="submit"><b>Jouer avec des amis</b>
+      <em>Tu choisis a combien, le site te donne les liens a leur envoyer.</em></button>
+  </form>
+</div>"""
+
+# Etape 2 : combien de joueurs. C'est ce nombre qui decide combien de liens
+# seront affiches a l'etape suivante.
+GABARIT_NOMBRE = """<div class="table">
+  <div class="entete"><strong>Vous serez combien ?</strong></div>
+  <p class="mdp">Toi compris. Tu recevras un lien a envoyer par invite.</p>
+  <div class="places" style="margin-bottom:0">{boutons}</div>
+</div>
+<a class="retour" href="/">Revenir en arriere</a>"""
+
+# Etape 3 : le jeu tourne, voici les liens.
 GABARIT_JEU = """<div class="table">
   <div class="entete">
     <strong>Ton jeu tourne</strong>
@@ -712,8 +808,9 @@ GABARIT_JEU = """<div class="table">
       <button class="rouge" type="submit">Eteindre</button>
     </form>
   </div>
-  <p class="mdp">Mot de passe a donner a tes invites : <code>{mdp}</code></p>
+  <p class="mdp">{intro_mdp} <code>{mdp}</code></p>
   <ul>{liens}</ul>
+  <div class="apres"><span>{intro_places}</span>{boutons}</div>
 </div>"""
 
 
@@ -933,6 +1030,11 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
+        elif self.path == "/multi":
+            if not pseudo:
+                self._repondre(403, rendre_page(None, "Il faut un compte pour jouer."))
+                return
+            self._repondre(200, rendre_page(pseudo, vue="multi"))
         elif self.path == "/connexion":
             self._repondre(200, self._formulaire("connexion"))
         elif self.path == "/deconnexion":
@@ -1024,8 +1126,17 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, rendre_page(None, "Il faut un compte pour jouer."))
                 return
             try:
-                partie = lancer_jeu(pseudo)
-                journal_partie_ouverte(partie, pseudo)
+                joueurs = int(champs.get("joueurs", "1") or "1")
+            except ValueError:
+                joueurs = 1
+            # Changer le nombre sur un jeu deja allume n'ouvre pas une
+            # nouvelle partie : on ne le consigne donc qu'au vrai demarrage.
+            ancien = jeu_de(pseudo)
+            neuf = ancien is None or not ancien.vivant()
+            try:
+                partie = lancer_jeu(pseudo, joueurs)
+                if neuf:
+                    journal_partie_ouverte(partie, pseudo)
             except Exception as erreur:
                 self._repondre(503, rendre_page(pseudo, str(erreur)))
                 return
