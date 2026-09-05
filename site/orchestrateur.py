@@ -30,6 +30,7 @@ import os
 import secrets
 import shutil
 import signal
+import sqlite3
 import subprocess
 import sys
 import threading
@@ -77,6 +78,11 @@ DELAI_DEMARRAGE = 240                 # secondes d'attente avant d'abandonner
 # personnes en gratuit et ferait doublon. Ici, aucune dependance —
 # `hashlib.scrypt` est dans la bibliotheque standard.
 FICHIER_COMPTES = os.environ.get("FICHIER_COMPTES", os.path.join(RACINE_SITE, "comptes.json"))
+# La base remplace le fichier JSON depuis le 05/09/2026 : il fallait pouvoir
+# consulter QUI a un compte, avec quelle adresse, et QUAND chacun a joue — ce
+# qu'un dictionnaire ecrase a chaque ecriture ne permet pas.
+# `sqlite3` est dans la bibliotheque standard : toujours aucune dependance.
+BASE = os.environ.get("BASE", os.path.join(RACINE_SITE, "narwhal.db"))
 MAX_COMPTES = int(os.environ.get("MAX_COMPTES", "20"))
 ADMIN = os.environ.get("ADMIN", "arnaud").strip().lower()
 
@@ -265,36 +271,79 @@ def faucheur() -> None:
             trop_vieille = (time.time() - partie.debut) > DUREE_MAX_HEURES * 3600
             if not partie.vivant() or trop_vieille:
                 fermer_partie(code)
+                journal_partie_fermee(code)
 
 
 # --------------------------------------------------------------------------
 # Comptes
 # --------------------------------------------------------------------------
-COMPTES: dict[str, dict] = {}
 SESSIONS: dict[str, str] = {}            # jeton -> pseudo
 VERROU_COMPTES = threading.Lock()
 
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS comptes (
+    pseudo              TEXT PRIMARY KEY,
+    email               TEXT UNIQUE,
+    sel                 TEXT NOT NULL,
+    empreinte           TEXT NOT NULL,
+    statut              TEXT NOT NULL DEFAULT 'attente',
+    cree                TEXT NOT NULL,
+    derniere_connexion  TEXT
+);
+CREATE TABLE IF NOT EXISTS parties (
+    code        TEXT PRIMARY KEY,
+    nom         TEXT NOT NULL,
+    hote        TEXT NOT NULL,
+    emplacement INTEGER NOT NULL,
+    ouverte_le  TEXT NOT NULL,
+    fermee_le   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_parties_hote ON parties(hote);
+"""
 
-def charger_comptes() -> None:
-    global COMPTES
-    try:
-        with open(FICHIER_COMPTES, encoding="utf-8") as f:
-            COMPTES = json.load(f)
-    except (OSError, ValueError):
-        COMPTES = {}
+
+def _cx() -> sqlite3.Connection:
+    """Une connexion par appel : `check_same_thread` interdirait le partage
+    entre les fils du serveur, et SQLite gere tres bien ce rythme d'ecriture."""
+    cx = sqlite3.connect(BASE, timeout=10)
+    cx.row_factory = sqlite3.Row
+    # WAL : un lecteur ne bloque plus un ecrivain. Sur un site ou l'on consulte
+    # la page de validation pendant qu'une partie s'ouvre, ca compte.
+    cx.execute("PRAGMA journal_mode=WAL")
+    cx.execute("PRAGMA foreign_keys=ON")
+    return cx
 
 
-def _ecrire_comptes() -> None:
-    """Ecriture ATOMIQUE : fichier temporaire puis `os.replace`.
+def initialiser_base() -> None:
+    with _cx() as cx:
+        cx.executescript(SCHEMA)
+    _migrer_depuis_json()
 
-    C'est la seule donnee du site qui ne se regenere pas. Une coupure au
-    milieu d'un `json.dump` direct laisserait un fichier tronque, donc tous
-    les comptes perdus.
+
+def _migrer_depuis_json() -> None:
+    """Reprend l'ancien `comptes.json` s'il existe et que la base est vide.
+
+    ⚠ SANS CETTE REPRISE, LE PASSAGE A LA BASE EFFACERAIT LES COMPTES DEJA
+    VALIDES. Le fichier est conserve tel quel : on ne detruit pas la seule
+    trace d'un etat anterieur.
     """
-    provisoire = FICHIER_COMPTES + ".tmp"
-    with open(provisoire, "w", encoding="utf-8") as f:
-        json.dump(COMPTES, f, ensure_ascii=False, indent=2)
-    os.replace(provisoire, FICHIER_COMPTES)
+    if not os.path.isfile(FICHIER_COMPTES):
+        return
+    with _cx() as cx:
+        if cx.execute("SELECT COUNT(*) FROM comptes").fetchone()[0]:
+            return
+        try:
+            anciens = json.load(open(FICHIER_COMPTES, encoding="utf-8"))
+        except (OSError, ValueError):
+            return
+        for pseudo, c in anciens.items():
+            cx.execute(
+                "INSERT OR IGNORE INTO comptes"
+                " (pseudo, email, sel, empreinte, statut, cree)"
+                " VALUES (?, NULL, ?, ?, ?, ?)",
+                (pseudo, c.get("sel", ""), c.get("empreinte", ""),
+                 c.get("statut", "attente"), c.get("cree", "")))
+        print(f"  base : {len(anciens)} compte(s) repris depuis {FICHIER_COMPTES}")
 
 
 def _empreinte(mot_de_passe: str, sel: str) -> str:
@@ -304,58 +353,121 @@ def _empreinte(mot_de_passe: str, sel: str) -> str:
     return brut.hex()
 
 
-def inscrire(pseudo: str, mot_de_passe: str) -> str:
+def _maintenant() -> str:
+    return time.strftime("%Y-%m-%d %H:%M")
+
+
+def compte(identifiant: str):
+    """Un compte par son PSEUDO OU son EMAIL, au choix de qui se connecte."""
+    ident = (identifiant or "").strip().lower()
+    if not ident:
+        return None
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM comptes WHERE pseudo = ? OR email = ?",
+            (ident, ident)).fetchone()
+
+
+def statut_de(pseudo: str) -> str:
+    ligne = compte(pseudo)
+    return ligne["statut"] if ligne else ""
+
+
+def inscrire(pseudo: str, email: str, mot_de_passe: str) -> str:
     pseudo = (pseudo or "").strip().lower()
+    email = (email or "").strip().lower()
     if not (3 <= len(pseudo) <= 24) or not pseudo.replace("_", "").replace("-", "").isalnum():
         raise ValueError("Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _.")
+    # Controle volontairement minimal : on verifie qu'une adresse ressemble a
+    # une adresse, pas qu'elle existe. Seule la validation manuelle fait foi.
+    if "@" not in email or "." not in email.split("@")[-1] or len(email) < 6:
+        raise ValueError("Adresse e-mail invalide.")
     if len(mot_de_passe or "") < 8:
         raise ValueError("Mot de passe trop court : 8 caracteres au minimum.")
-    with VERROU_COMPTES:
-        if pseudo in COMPTES:
+    with VERROU_COMPTES, _cx() as cx:
+        if cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
             raise ValueError("Ce pseudo est deja pris.")
+        if cx.execute("SELECT 1 FROM comptes WHERE email = ?", (email,)).fetchone():
+            raise ValueError("Cette adresse est deja utilisee.")
         # ⚠ LE PLAFOND NE COMPTE QUE LES COMPTES VALIDES. Sinon une vague
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
-        valides = sum(1 for c in COMPTES.values() if c.get("statut") == "valide")
+        valides = cx.execute(
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
         if valides >= MAX_COMPTES and pseudo != ADMIN:
             raise ValueError(f"Le site est complet ({MAX_COMPTES} comptes).")
         sel = secrets.token_bytes(16).hex()
-        COMPTES[pseudo] = {
-            "sel": sel,
-            "empreinte": _empreinte(mot_de_passe, sel),
-            # Le compte de l'administrateur est valide d'office : sans ca,
-            # personne ne pourrait valider le premier compte.
-            "statut": "valide" if pseudo == ADMIN else "attente",
-            "cree": time.strftime("%Y-%m-%d %H:%M"),
-        }
-        _ecrire_comptes()
+        cx.execute(
+            "INSERT INTO comptes (pseudo, email, sel, empreinte, statut, cree)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            (pseudo, email, sel, _empreinte(mot_de_passe, sel),
+             # Le compte de l'administrateur est valide d'office : sans ca,
+             # personne ne pourrait valider le premier compte.
+             "valide" if pseudo == ADMIN else "attente", _maintenant()))
     return pseudo
 
 
-def verifier(pseudo: str, mot_de_passe: str) -> str:
-    pseudo = (pseudo or "").strip().lower()
-    with VERROU_COMPTES:
-        compte = COMPTES.get(pseudo)
-        if compte is None:
-            raise ValueError("Pseudo ou mot de passe incorrect.")
-        attendu = compte.get("empreinte", "")
-        # `compare_digest` : comparaison a temps constant, pour ne pas laisser
-        # fuir l'empreinte par le temps de reponse.
-        if not secrets.compare_digest(_empreinte(mot_de_passe, compte["sel"]), attendu):
-            raise ValueError("Pseudo ou mot de passe incorrect.")
-        if compte.get("statut") != "valide":
-            raise ValueError("Ton compte attend encore ma validation.")
-    return pseudo
+def verifier(identifiant: str, mot_de_passe: str) -> str:
+    ligne = compte(identifiant)
+    if ligne is None:
+        raise ValueError("Identifiant ou mot de passe incorrect.")
+    # `compare_digest` : comparaison a temps constant, pour ne pas laisser
+    # fuir l'empreinte par le temps de reponse.
+    if not secrets.compare_digest(_empreinte(mot_de_passe, ligne["sel"]), ligne["empreinte"]):
+        raise ValueError("Identifiant ou mot de passe incorrect.")
+    if ligne["statut"] != "valide":
+        raise ValueError("Ton compte attend encore ma validation.")
+    with _cx() as cx:
+        cx.execute("UPDATE comptes SET derniere_connexion = ? WHERE pseudo = ?",
+                   (_maintenant(), ligne["pseudo"]))
+    return ligne["pseudo"]
 
 
 def changer_statut(pseudo: str, statut: str) -> None:
-    with VERROU_COMPTES:
-        if pseudo in COMPTES and statut in ("valide", "attente", "refuse"):
-            COMPTES[pseudo]["statut"] = statut
-            _ecrire_comptes()
+    if statut not in ("valide", "attente", "refuse"):
+        return
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("UPDATE comptes SET statut = ? WHERE pseudo = ?", (statut, pseudo))
     if statut != "valide":
+        # Un compte devalide ne doit pas continuer sa session en cours.
         for jeton, qui in list(SESSIONS.items()):
             if qui == pseudo:
                 SESSIONS.pop(jeton, None)
+
+
+def liste_comptes():
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM comptes ORDER BY"
+            " CASE statut WHEN 'attente' THEN 0 WHEN 'valide' THEN 1 ELSE 2 END,"
+            " pseudo").fetchall()
+
+
+def nb_valides() -> int:
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
+
+
+def journal_partie_ouverte(partie, hote: str) -> None:
+    with _cx() as cx:
+        cx.execute(
+            "INSERT OR REPLACE INTO parties"
+            " (code, nom, hote, emplacement, ouverte_le, fermee_le)"
+            " VALUES (?, ?, ?, ?, ?, NULL)",
+            (partie.code, partie.nom, hote, partie.emplacement, _maintenant()))
+
+
+def journal_partie_fermee(code: str) -> None:
+    with _cx() as cx:
+        cx.execute("UPDATE parties SET fermee_le = ? WHERE code = ? AND fermee_le IS NULL",
+                   (_maintenant(), code))
+
+
+def dernieres_parties(combien: int = 25):
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM parties ORDER BY ouverte_le DESC, rowid DESC LIMIT ?",
+            (combien,)).fetchall()
 
 
 def ouvrir_session(pseudo: str) -> str:
@@ -488,7 +600,7 @@ PAGE_FORMULAIRE = """<!doctype html>
   <h1>{titre}</h1>
   {erreur}
   <form method="post" action="{action}">
-    <label>Pseudo<input name="pseudo" autocomplete="username" required></label>
+    {champs}
     <label>Mot de passe<input name="mdp" type="password" autocomplete="{auto}" required></label>
     <button type="submit">{bouton}</button>
   </form>
@@ -518,11 +630,18 @@ PAGE_ADMIN = """<!doctype html>
   a {{ color:#58a6ff; }}
 </style>
 <main>
-  <h1>Validations</h1>
-  <p class="sous">{valides} compte(s) valide(s) sur {max}. <a href="/">Retour au site</a></p>
+  <h1>Comptes</h1>
+  <p class="sous">{valides} valide(s) sur {max}. <a href="/">Retour au site</a></p>
   <table>
-    <tr><th>Pseudo</th><th>Cree le</th><th>Statut</th><th></th></tr>
+    <tr><th>Pseudo</th><th>Adresse</th><th>Demande le</th><th>Derniere connexion</th>
+        <th>Statut</th><th></th></tr>
     {lignes}
+  </table>
+  <h1 style="margin-top:2.5rem">Parties</h1>
+  <p class="sous">Les 25 dernieres, la plus recente en haut.</p>
+  <table>
+    <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
+    {parties}
   </table>
 </main>
 """
@@ -559,8 +678,9 @@ class Handler(BaseHTTPRequestHandler):
             nom, _, valeur = morceau.strip().partition("=")
             if nom == "nc_session":
                 pseudo = SESSIONS.get(valeur)
-                # Un compte devalide en cours de route ne doit plus passer.
-                if pseudo and COMPTES.get(pseudo, {}).get("statut") == "valide":
+                # Un compte devalide en cours de route ne doit plus passer :
+                # le statut est relu EN BASE, pas garde en memoire.
+                if pseudo and statut_de(pseudo) == "valide":
                     return pseudo
         return None
 
@@ -572,11 +692,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def _formulaire(self, quoi: str, erreur: str = "") -> bytes:
         inscription = quoi == "inscription"
+        champs = ('<label>Pseudo<input name="pseudo" autocomplete="username" required></label>'
+                  '<label>Adresse e-mail<input name="email" type="email" '
+                  'autocomplete="email" required></label>') if inscription else (
+                  '<label>Pseudo ou adresse e-mail<input name="pseudo" '
+                  'autocomplete="username" required></label>')
         return PAGE_FORMULAIRE.format(
             titre="Creer un compte" if inscription else "Se connecter",
             action="/inscription" if inscription else "/connexion",
             bouton="Demander un compte" if inscription else "Entrer",
             auto="new-password" if inscription else "current-password",
+            champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             pied=('Ton compte devra etre valide a la main avant de servir. '
                   'Deja un compte ? <a href="/connexion">Se connecter</a>.'
@@ -585,14 +711,11 @@ class Handler(BaseHTTPRequestHandler):
         ).encode("utf-8")
 
     def _page_admin(self) -> bytes:
-        with VERROU_COMPTES:
-            comptes = sorted(COMPTES.items())
-            valides = sum(1 for c in COMPTES.values() if c.get("statut") == "valide")
         lignes = []
-        for pseudo, compte in comptes:
-            statut = compte.get("statut", "attente")
+        for c in liste_comptes():
+            statut = c["statut"]
             actions = ""
-            if pseudo != ADMIN:
+            if c["pseudo"] != ADMIN:
                 for cible, classe, libelle in (("valide", "oui", "Valider"),
                                                ("refuse", "non", "Refuser")):
                     if statut != cible:
@@ -600,12 +723,24 @@ class Handler(BaseHTTPRequestHandler):
                                     '<input type="hidden" name="pseudo" value="%s">'
                                     '<input type="hidden" name="statut" value="%s">'
                                     '<button class="%s" type="submit">%s</button></form>'
-                                    % (html.escape(pseudo), cible, classe, libelle))
-            lignes.append("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-                html.escape(pseudo), html.escape(compte.get("cree", "")),
-                html.escape(statut), actions))
-        return PAGE_ADMIN.format(valides=valides, max=MAX_COMPTES,
-                                 lignes="".join(lignes)).encode("utf-8")
+                                    % (html.escape(c["pseudo"]), cible, classe, libelle))
+            lignes.append(
+                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+                    html.escape(c["pseudo"]), html.escape(c["email"] or "—"),
+                    html.escape(c["cree"] or ""),
+                    html.escape(c["derniere_connexion"] or "jamais"),
+                    html.escape(statut), actions))
+        parties = "".join(
+            "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+                html.escape(p["nom"]), html.escape(p["hote"]),
+                html.escape(p["ouverte_le"]),
+                html.escape(p["fermee_le"] or "en cours"))
+            for p in dernieres_parties())
+        if not parties:
+            parties = '<tr><td colspan="4">Aucune partie pour le moment.</td></tr>'
+        return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
+                                 lignes="".join(lignes),
+                                 parties=parties).encode("utf-8")
 
     def do_GET(self):
         pseudo = self._session()
@@ -649,13 +784,16 @@ class Handler(BaseHTTPRequestHandler):
 
         if self.path == "/inscription":
             try:
-                inscrire(champs.get("pseudo", ""), champs.get("mdp", ""))
+                inscrire(champs.get("pseudo", ""), champs.get("email", ""),
+                         champs.get("mdp", ""))
             except ValueError as erreur:
                 self._repondre(400, self._formulaire("inscription", str(erreur)))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
                 titre="Demande enregistree", action="/connexion", bouton="Entrer",
                 auto="current-password", erreur="",
+                champs='<label>Pseudo ou adresse e-mail<input name="pseudo" '
+                       'autocomplete="username" required></label>',
                 pied="Ton compte attend une validation manuelle. Reviens une fois "
                      "qu'elle est faite.").encode("utf-8"))
 
@@ -691,7 +829,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, rendre_page(None, "Il faut un compte valide pour ouvrir une table."))
                 return
             try:
-                creer_partie(champs.get("nom", "").strip() or f"Table de {pseudo}")
+                partie = creer_partie(champs.get("nom", "").strip() or f"Table de {pseudo}")
+                journal_partie_ouverte(partie, pseudo)
             except Exception as erreur:
                 self._repondre(503, rendre_page(pseudo, str(erreur)))
                 return
@@ -701,7 +840,9 @@ class Handler(BaseHTTPRequestHandler):
             if not pseudo:
                 self._repondre(403, rendre_page(None, "Connecte-toi pour fermer une table."))
                 return
-            fermer_partie(champs.get("code", ""))
+            code = champs.get("code", "")
+            if fermer_partie(code):
+                journal_partie_fermee(code)
             self._rediriger("/")
 
         else:
@@ -716,8 +857,8 @@ def main() -> int:
         print(f"Python du moteur introuvable ou non executable : {PYTHON}", file=sys.stderr)
         return 1
 
-    charger_comptes()
-    if ADMIN not in COMPTES:
+    initialiser_base()
+    if compte(ADMIN) is None:
         print(f"  ⚠ Aucun compte administrateur « {ADMIN} » : cree-le sur /inscription,")
         print("    il sera valide d'office.")
     threading.Thread(target=faucheur, daemon=True).start()
@@ -736,8 +877,8 @@ def main() -> int:
     print(f"  moteur      : {RACINE_JEU}")
     print(f"  emplacements: {NB_EMPLACEMENTS} (ports {PORT_BASE + 1} a {PORT_BASE + NB_EMPLACEMENTS})")
     print(f"  domaine     : {DOMAINE or '(local, liens en 127.0.0.1)'}")
-    print(f"  comptes     : {sum(1 for c in COMPTES.values() if c.get('statut') == 'valide')}"
-          f"/{MAX_COMPTES} valides, admin « {ADMIN} »")
+    print(f"  base        : {BASE}")
+    print(f"  comptes     : {nb_valides()}/{MAX_COMPTES} valides, admin « {ADMIN} »")
     try:
         serveur.serve_forever()
     finally:
