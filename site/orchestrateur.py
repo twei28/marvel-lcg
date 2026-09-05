@@ -98,6 +98,14 @@ import config_serveur  # noqa: E402  (dependant de sys.path ci-dessus)
 # Etat
 # --------------------------------------------------------------------------
 class Partie:
+    """L'espace de jeu d'UNE personne : son moteur, son port, ses liens.
+
+    ⚠ CE N'EST PAS UNE TABLE JETABLE. L'emplacement appartient au compte, et
+    ses dossiers (decks, campagnes, hauts faits, sauvegardes) survivent a
+    l'arret du moteur. Ne JAMAIS les effacer au demarrage : c'est tout
+    l'interet d'avoir un compte.
+    """
+
     def __init__(self, emplacement: int, code: str, nom: str) -> None:
         self.emplacement = emplacement
         self.port = PORT_BASE + emplacement
@@ -125,7 +133,7 @@ class Partie:
             cle = self.cles_sieges[siege] if siege < len(self.cles_sieges) else ""
             sortie.append({
                 "siege": siege,
-                "libelle": "Hote (joueur 1)" if siege == 0 else f"Joueur {siege + 1}",
+                "libelle": "Toi" if siege == 0 else f"Invite {siege}",
                 "url": f"{base}/claim_seat?p={siege}&key={cle}&to=salon",
             })
         return sortie
@@ -201,21 +209,35 @@ def _nettoyer_emplacement(emplacement: int) -> None:
             pass
 
 
-def creer_partie(nom: str) -> Partie:
+def jeu_de(pseudo: str):
+    """L'espace de jeu ALLUME de cette personne, ou None."""
+    return PARTIES.get(pseudo)
+
+
+def lancer_jeu(pseudo: str) -> Partie:
+    """Allume le moteur de cette personne, sur SON emplacement.
+
+    ⚠ AUCUN EFFACEMENT ICI. `_nettoyer_emplacement` existe toujours, mais
+    n'est plus appele au demarrage : il ne sert qu'a une remise a zero
+    demandee explicitement. Le premier montage effaçait les dossiers a chaque
+    ouverture, ce qui detruisait decks et campagnes entre deux visites.
+    """
     with VERROU:
-        libres = [n for n in range(1, NB_EMPLACEMENTS + 1) if n not in EMPLACEMENTS]
-        if not libres:
-            raise RuntimeError("Toutes les tables sont occupees. Reessaie dans un moment.")
-        emplacement = libres[0]
-        code = secrets.token_urlsafe(6)
-        partie = Partie(emplacement, code, nom or f"Table {emplacement}")
+        deja = PARTIES.get(pseudo)
+        if deja is not None and deja.vivant():
+            return deja
+        emplacement = emplacement_de(pseudo)
+        if emplacement is None:
+            raise RuntimeError("Aucun espace de jeu ne t'est attribue.")
+        partie = Partie(emplacement, pseudo, f"Jeu de {pseudo}")
+        # Les mots de passe changent a chaque allumage : un lien d'invitation
+        # donne hier ne doit pas rouvrir un siege aujourd'hui.
         partie.mot_de_passe = secrets.token_urlsafe(6)
         partie.cles_sieges = [secrets.token_urlsafe(8) for _ in range(4)]
-        EMPLACEMENTS[emplacement] = code
-        PARTIES[code] = partie
+        EMPLACEMENTS[emplacement] = pseudo
+        PARTIES[pseudo] = partie
 
     try:
-        _nettoyer_emplacement(emplacement)
         chemin_config = _config_partie(emplacement, partie)
         journal = open(os.path.join(RACINE_JEU, ".site", f"moteur-{emplacement}.log"),
                        "w", encoding="utf-8")
@@ -239,11 +261,13 @@ def creer_partie(nom: str) -> Partie:
             time.sleep(1)
         raise RuntimeError("Le moteur n'a pas repondu a temps.")
     except Exception:
-        fermer_partie(code)
+        eteindre_jeu(pseudo)
         raise
 
 
-def fermer_partie(code: str) -> bool:
+def eteindre_jeu(code: str) -> bool:
+    """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
+    compte et doivent etre la au prochain allumage."""
     with VERROU:
         partie = PARTIES.pop(code, None)
         if partie is None:
@@ -274,7 +298,7 @@ def faucheur() -> None:
         for code, partie in list(PARTIES.items()):
             trop_vieille = (time.time() - partie.debut) > DUREE_MAX_HEURES * 3600
             if not partie.vivant() or trop_vieille:
-                fermer_partie(code)
+                eteindre_jeu(code)
                 journal_partie_fermee(code)
 
 
@@ -292,7 +316,20 @@ CREATE TABLE IF NOT EXISTS comptes (
     empreinte           TEXT NOT NULL,
     statut              TEXT NOT NULL DEFAULT 'attente',
     cree                TEXT NOT NULL,
-    derniere_connexion  TEXT
+    derniere_connexion  TEXT,
+    -- ⚠ L'EMPLACEMENT APPARTIENT AU COMPTE, PAS A LA PARTIE. C'est ce qui
+    -- fait qu'on retrouve ses decks, ses campagnes en cours et ses hauts
+    -- faits d'une visite a l'autre : le moteur s'arrete, ses dossiers
+    -- restent. Consequence assumee : il y a autant de comptes possibles que
+    -- d'emplacements.
+    -- ⚠ PAS DE `UNIQUE` SUR LA COLONNE : SQLite refuse
+    -- `ALTER TABLE ... ADD COLUMN ... UNIQUE` sur une table existante
+    -- (« Cannot add a UNIQUE column »), et la migration d'une base deja en
+    -- service tombait donc en boucle au demarrage. L'unicite est portee par
+    -- l'index partiel ci-dessous, que SQLite accepte dans les deux cas, et
+    -- dont la clause WHERE laisse coexister plusieurs comptes sans
+    -- emplacement.
+    emplacement         INTEGER
 );
 CREATE TABLE IF NOT EXISTS parties (
     code        TEXT PRIMARY KEY,
@@ -327,7 +364,38 @@ def _cx() -> sqlite3.Connection:
 def initialiser_base() -> None:
     with _cx() as cx:
         cx.executescript(SCHEMA)
+        # Reprise des bases anterieures a la colonne `emplacement`.
+        colonnes = {r["name"] for r in cx.execute("PRAGMA table_info(comptes)")}
+        if "emplacement" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN emplacement INTEGER")
+        # ⚠ L'INDEX EST CREE APRES LA COLONNE, ET HORS DU SCHEMA. Place dans
+        # `SCHEMA`, `executescript` l'executait AVANT l'ALTER sur une base
+        # ancienne, et tombait sur « no such column: emplacement ».
+        cx.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_comptes_emplacement"
+                   " ON comptes(emplacement) WHERE emplacement IS NOT NULL")
     _migrer_depuis_json()
+    _attribuer_emplacements_manquants()
+
+
+def _attribuer_emplacements_manquants() -> None:
+    """Donne un emplacement aux comptes qui n'en ont pas encore."""
+    with _cx() as cx:
+        pris = {r["emplacement"] for r in cx.execute(
+            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
+        for c in cx.execute(
+                "SELECT pseudo FROM comptes WHERE emplacement IS NULL ORDER BY cree"):
+            libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
+            if libre is None:
+                print(f"  ⚠ plus d'emplacement libre pour « {c['pseudo']} »")
+                break
+            cx.execute("UPDATE comptes SET emplacement = ? WHERE pseudo = ?",
+                       (libre, c["pseudo"]))
+            pris.add(libre)
+
+
+def emplacement_de(pseudo: str):
+    ligne = compte(pseudo)
+    return ligne["emplacement"] if ligne else None
 
 
 def _migrer_depuis_json() -> None:
@@ -421,10 +489,17 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         # pourrait valider le premier compte.
         statut = "valide" if (invite or pseudo == ADMIN) else "attente"
         sel = secrets.token_bytes(16).hex()
+        pris = {r["emplacement"] for r in cx.execute(
+            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
+        libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
+        if libre is None:
+            raise ValueError("Plus aucun espace de jeu disponible.")
         cx.execute(
-            "INSERT INTO comptes (pseudo, email, sel, empreinte, statut, cree)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
-            (pseudo, email, sel, _empreinte(mot_de_passe, sel), statut, _maintenant()))
+            "INSERT INTO comptes"
+            " (pseudo, email, sel, empreinte, statut, cree, emplacement)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (pseudo, email, sel, _empreinte(mot_de_passe, sel), statut,
+             _maintenant(), libre))
         if invite:
             cx.execute(
                 "UPDATE invitations SET utilise_par = ?, utilise_le = ? WHERE jeton = ?",
@@ -584,65 +659,62 @@ PAGE = """<!doctype html>
 </style>
 <main>
   <h1>NarwhalChampions</h1>
-  <p class="sous">{libres} table(s) libre(s) sur {total}. Une table accueille jusqu'a 4 joueurs.</p>
+  <p class="sous">{sous}</p>
   {barre}
-  {ouvrir}
-  {tables}
-  <footer>Un compte n'est necessaire que pour OUVRIR une table. Tes invites
-  arrivent par leur lien de siege, sans rien creer. Chaque lien reserve un
-  siege : personne ne peut jouer a la place d'un autre. Une table se ferme
-  quand on clique sur Terminer, ou automatiquement au bout de {heures} h.</footer>
+  {corps}
+  <footer>Ton espace de jeu est a toi : tes decks, tes campagnes en cours et
+  tes hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu
+  n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien sans
+  avoir besoin d'un compte. Extinction automatique au bout de {heures} h
+  d'allumage.</footer>
 </main>
 """
 
-GABARIT_TABLE = """<div class="table">
-  <div class="entete">
-    <strong>{nom}</strong>
-    <form method="post" action="/fermer" style="margin:0">
-      <input type="hidden" name="code" value="{code}">
-      <button class="rouge" type="submit">Terminer</button>
-    </form>
-  </div>
-  <p class="mdp">Mot de passe d'entree : <code>{mdp}</code></p>
-  <ul>{liens}</ul>
-</div>"""
-
-
 def rendre_page(pseudo=None, message="") -> bytes:
     if pseudo:
-        admin = ' &middot; <a href="/admin">Validations</a>' if pseudo == ADMIN else ""
+        admin = ' &middot; <a href="/admin">Administration</a>' if pseudo == ADMIN else ""
         barre = ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
                  '<a href="/deconnexion">Se deconnecter</a></div>'
                  % (html.escape(pseudo), admin))
-        ouvrir = ('<form method="post" action="/partie">'
-                  '<input name="nom" placeholder="Nom de la table (facultatif)" maxlength="40">'
-                  '<button type="submit">Ouvrir une table</button></form>')
+        partie = jeu_de(pseudo)
+        if partie is not None and partie.vivant():
+            liens = "".join(
+                '<li><span>%s</span><a href="%s">%s</a></li>' % (
+                    html.escape(l["libelle"]), html.escape(l["url"]),
+                    html.escape(l["url"]))
+                for l in partie.liens())
+            corps = GABARIT_JEU.format(
+                base=html.escape(partie.base_url()),
+                mdp=html.escape(partie.mot_de_passe),
+                liens=liens)
+            sous = "Ton jeu est allume. Le premier lien est le tien."
+        else:
+            corps = ('<form method="post" action="/jeu">'
+                     '<button type="submit">Lancer mon jeu</button></form>'
+                     '<p class="vide">Campagne, bac a sable, constructeur de decks,'
+                     ' hauts faits : tout est dans ton espace, et tout y reste.</p>')
+            sous = "Ton espace de jeu t'attend."
     else:
-        barre = ('<div class="barre"><span>Il faut un compte pour ouvrir une table.</span>'
-                 '<span><a href="/connexion">Se connecter</a> &middot; '
-                 '<a href="/inscription">Creer un compte</a></span></div>')
-        ouvrir = ""
+        barre = ('<div class="barre"><span>Il faut un compte pour jouer.</span>'
+                 '<span><a href="/connexion">Se connecter</a></span></div>')
+        corps = ""
+        sous = "Marvel Champions en ligne, sur invitation."
     if message:
         barre = '<div class="avert">%s</div>%s' % (html.escape(message), barre)
-    with VERROU:
-        parties = sorted(PARTIES.values(), key=lambda p: p.emplacement)
-        libres = NB_EMPLACEMENTS - len(EMPLACEMENTS)
-    if parties:
-        blocs = []
-        for p in parties:
-            liens = "".join(
-                '<li><span>{}</span><a href="{}">{}</a></li>'.format(
-                    html.escape(l["libelle"]), html.escape(l["url"]), html.escape(l["url"]))
-                for l in p.liens())
-            blocs.append(GABARIT_TABLE.format(
-                nom=html.escape(p.nom), code=html.escape(p.code),
-                mdp=html.escape(p.mot_de_passe), liens=liens))
-        tables = "".join(blocs)
-    else:
-        tables = '<p class="vide">Aucune table ouverte pour le moment.</p>'
-    return PAGE.format(libres=libres, total=NB_EMPLACEMENTS, tables=tables,
-                       barre=barre, ouvrir=ouvrir,
+    return PAGE.format(sous=sous, barre=barre, corps=corps,
                        heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+
+
+GABARIT_JEU = """<div class="table">
+  <div class="entete">
+    <strong>Ton jeu tourne</strong>
+    <form method="post" action="/eteindre" style="margin:0">
+      <button class="rouge" type="submit">Eteindre</button>
+    </form>
+  </div>
+  <p class="mdp">Mot de passe a donner a tes invites : <code>{mdp}</code></p>
+  <ul>{liens}</ul>
+</div>"""
 
 
 PAGE_FORMULAIRE = """<!doctype html>
@@ -883,7 +955,7 @@ class Handler(BaseHTTPRequestHandler):
             with VERROU:
                 etat = {"libres": NB_EMPLACEMENTS - len(EMPLACEMENTS),
                         "total": NB_EMPLACEMENTS,
-                        "tables": [{"code": p.code, "nom": p.nom,
+                        "jeux": [{"code": p.code, "nom": p.nom,
                                     "emplacement": p.emplacement,
                                     "vivant": p.vivant()} for p in PARTIES.values()]}
             self._repondre(200, json.dumps(etat, ensure_ascii=False).encode("utf-8"),
@@ -944,28 +1016,28 @@ class Handler(BaseHTTPRequestHandler):
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path == "/partie":
-            # ⚠ LE COMPTE N'EST EXIGE QUE POUR OUVRIR UNE TABLE. Les invites
-            # arrivent par leur lien de siege, qui porte sa propre cle : c'est
-            # le moteur qui protege le siege, pas ce service.
+        elif self.path == "/jeu":
+            # ⚠ LE COMPTE N'EST EXIGE QUE POUR ALLUMER SON PROPRE JEU. Les
+            # invites rejoignent par leur lien de siege, qui porte sa propre
+            # cle : c'est le moteur qui protege le siege, pas ce service.
             if not pseudo:
-                self._repondre(403, rendre_page(None, "Il faut un compte valide pour ouvrir une table."))
+                self._repondre(403, rendre_page(None, "Il faut un compte pour jouer."))
                 return
             try:
-                partie = creer_partie(champs.get("nom", "").strip() or f"Table de {pseudo}")
+                partie = lancer_jeu(pseudo)
                 journal_partie_ouverte(partie, pseudo)
             except Exception as erreur:
                 self._repondre(503, rendre_page(pseudo, str(erreur)))
                 return
             self._rediriger("/")
 
-        elif self.path == "/fermer":
+        elif self.path == "/eteindre":
             if not pseudo:
-                self._repondre(403, rendre_page(None, "Connecte-toi pour fermer une table."))
+                self._repondre(403, rendre_page(None, "Connecte-toi d'abord."))
                 return
-            code = champs.get("code", "")
-            if fermer_partie(code):
-                journal_partie_fermee(code)
+            # On n'eteint QUE son propre jeu : le code est le pseudo.
+            if eteindre_jeu(pseudo):
+                journal_partie_fermee(pseudo)
             self._rediriger("/")
 
         else:
@@ -990,7 +1062,7 @@ def main() -> int:
     def arreter(*_):
         print("\nFermeture de toutes les tables...")
         for code in list(PARTIES):
-            fermer_partie(code)
+            eteindre_jeu(code)
         serveur.shutdown()
 
     signal.signal(signal.SIGINT, lambda *_: threading.Thread(target=arreter).start())
@@ -1006,7 +1078,7 @@ def main() -> int:
         serveur.serve_forever()
     finally:
         for code in list(PARTIES):
-            fermer_partie(code)
+            eteindre_jeu(code)
     return 0
 
 
