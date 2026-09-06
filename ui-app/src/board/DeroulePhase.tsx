@@ -17,6 +17,9 @@ import { useDerouleScene } from './useDerouleScene'
 /** Le temps de voir passer une etape technique, sans la lire. */
 const DELAI_AUTO_MS = 500
 
+/** Le temps de lire un boost a capacite avant le suivant. */
+const DELAI_BOOST_MS = 1500
+
 /** Les quatre temps de la carte de reference, dans l'ordre. */
 const TEMPS: { cle: TempsPhase; libelle: string }[] = [
   { cle: 'menace', libelle: 'Menace' },
@@ -140,6 +143,34 @@ export function DeroulePhase({
     return () => document.removeEventListener('keydown', auClavier)
   })
 
+  // Combien de boosts sont deja retournes sur l'etape courante. Ils
+  // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
+  // carte. Une attaque a trois boosts couterait sinon quatre clics.
+  const [boostsMontres, setBoostsMontres] = useState(0)
+
+  useEffect(() => {
+    setBoostsMontres(etape?.boosts.length ? 1 : 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
+    // reconstruit a chaque trame du moteur (meme piege que plus haut avec
+    // `signature`, et que useDerouleScene.ts et TraitCible.tsx) : en
+    // dependre remettrait `boostsMontres` a 1 en boucle et aucun boost ne
+    // s'enchainerait jamais. `etape?.cle` identifie l'etape, et
+    // `etape?.boosts.length` reagit si son compte de boosts change.
+  }, [etape?.cle, etape?.boosts.length])
+
+  useEffect(() => {
+    const total = etape?.boosts.length ?? 0
+    if (boostsMontres === 0 || boostsMontres >= total) return
+    const minuteur = window.setTimeout(
+      () => setBoostsMontres((n) => n + 1),
+      DELAI_BOOST_MS
+    )
+    return () => window.clearTimeout(minuteur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- meme raison :
+    // `etape?.cle` et `etape?.boosts.length` suffisent a piloter le
+    // minuteur, l'identite de `etape` ne doit pas le redeclencher.
+  }, [boostsMontres, etape?.cle, etape?.boosts.length])
+
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
   // tomber tout le plateau (React compte alors un hook de plus au rendu
@@ -170,6 +201,16 @@ export function DeroulePhase({
         </ol>
 
         <p className="deroule-titre">{titreEtape(etape)}</p>
+        {etape.boosts.length > 0 ? (
+          <ul className="deroule-boosts">
+            {etape.boosts.slice(0, boostsMontres).map((boost) => (
+              <li key={boost.cle}>
+                <b>{boost.nom}</b>
+                <span>+{boost.apport}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         {etape.consequences.length > 0 ? (
           <ul className="deroule-consequences">
             {etape.consequences.map((consequence) => (

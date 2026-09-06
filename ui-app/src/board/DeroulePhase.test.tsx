@@ -300,4 +300,58 @@ describe('cartouche du deroule', () => {
       vi.useRealTimers()
     }
   })
+
+  it('retourne les boosts un par un', async () => {
+    // Le moment de tension du jeu : chaque carte se lit avant la suivante.
+    const avecBoosts: EtapeDeroule[] = [
+      {
+        cle: 'a',
+        temps: 'activations',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        carteId: 50,
+        cibleId: 12,
+        auteurNom: 'Ultron',
+        cibleNom: 'Shuri',
+        boosts: [
+          { cle: 'b0', nom: 'Boost A', cibleId: 91, apport: 1 },
+          { cle: 'b1', nom: 'Boost B', cibleId: 92, apport: 2 },
+        ],
+        consequences: [],
+      },
+    ]
+    vi.useFakeTimers()
+    try {
+      render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} />)
+      expect(screen.getByText('Boost A')).toBeInTheDocument()
+      expect(screen.queryByText('Boost B')).not.toBeInTheDocument()
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1600)
+      })
+      expect(screen.getByText('Boost B')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('n attend pas de clic pour les boosts : c est l etape qui attend', () => {
+    const avecBoosts: EtapeDeroule[] = [
+      {
+        cle: 'a',
+        temps: 'activations',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        carteId: 50,
+        boosts: [{ cle: 'b0', nom: 'Boost A', cibleId: 91, apport: 1 }],
+        consequences: [],
+      },
+    ]
+    render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} />)
+    expect(screen.getByRole('button', { name: /Suivant/i })).toBeInTheDocument()
+  })
+
+  it('n affiche aucun bloc de boost quand il n y en a pas', () => {
+    const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    expect(container.querySelector('.deroule-boosts')).toBeNull()
+  })
 })

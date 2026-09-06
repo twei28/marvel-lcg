@@ -2788,6 +2788,49 @@
     font-weight: 700;
   }
 
+  /* Les cartes de boost, retournees une par une : c'est le moment de tension
+     du jeu, il merite d'etre montre. */
+  .deroule-boosts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .deroule-boosts li {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 4px 8px;
+    font-size: 0.82rem;
+    background: rgba(240, 19, 30, 0.16);
+    border: 1px solid rgba(240, 19, 30, 0.5);
+    border-radius: 6px;
+    animation: deroule-boost-entre 220ms ease-out;
+  }
+
+  .deroule-boosts li span {
+    font-weight: 900;
+    color: #ffd24a;
+  }
+
+  @keyframes deroule-boost-entre {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  body.plateau-sans-animations .deroule-boosts li {
+    animation: none;
+  }
+
   .deroule-consequences {
     margin: 0 0 8px;
     padding: 0 0 0 18px;
@@ -5452,6 +5495,10 @@
   .deroule-trait line {
     animation: none;
     stroke-dashoffset: 0;
+  }
+
+  .deroule-boosts li {
+    animation: none;
   }
 
   .bandeau-phase,
