@@ -114,7 +114,7 @@ JOURS_RAPPORTS_TRAITES = int(os.environ.get("JOURS_RAPPORTS_TRAITES", "30"))
 # Plafond du CORPS d'une requete POST, avant toute lecture.
 # ⚠ `Content-Length` EST UNE DECLARATION DU CLIENT, PAS UN FAIT. Sans plafond,
 # n'importe qui, sans compte et sans cookie, fait allouer au serveur ce qu'il
-# annonce — y compris sur une route qui finira en 404. Le moteur, lui, a le
+# annonce, y compris sur une route qui finira en 404. Le moteur, lui, a le
 # sien depuis toujours (`client_max_size=8 Mio`, `web_server.py`) ; c'est le
 # site qui n'en avait pas. Meme chiffre pour la meme raison : le plus gros
 # envoi legitime est un rapport de bug, capture de 4 Mio encodee en base64
@@ -788,7 +788,7 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
 # `debit_rapport_ok`, avec un verrou en plus : ici deux fils peuvent tomber sur
 # la meme cle en meme temps, et c'est meme le scenario qu'on redoute.
 # En memoire : un redemarrage remet les compteurs a zero, ce qui est sans
-# consequence — le frein protege d'un flot, pas d'un adversaire patient.
+# consequence : le frein protege d'un flot, pas d'un adversaire patient.
 _TENTATIVES: dict[str, list[float]] = {}
 _VERROU_TENTATIVES = threading.Lock()
 
