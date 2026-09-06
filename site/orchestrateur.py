@@ -281,12 +281,16 @@ def _port_libre(port: int) -> bool:
     donc pour libre, alors que le `Popen` suivant allait mourir dessus. Poser
     la prise, c'est demander a l'OS exactement ce qu'il repondra au moteur.
 
-    `SO_REUSEADDR` parce que c'est ce que fait `asyncio`, donc le moteur : sans
-    lui, un port en TIME_WAIT se donnerait pour pris alors qu'il ne l'est plus.
+    SANS `SO_REUSEADDR`, et c'est volontaire : la barriere qui tranche cote
+    moteur est `NetLib.IsPortAvailable` (engine/device/manager/web/manager.py),
+    qui fait un `bind` nu. Avec l'option, un port laisse en TIME_WAIT par une
+    partie qu'on vient d'eteindre se donnait ici pour libre, puis le moteur
+    mourait dessus sur son assertion et le joueur lisait « le moteur s'est
+    arrete au demarrage ». Poser la prise exactement comme le moteur la posera,
+    c'est la seule facon d'obtenir la meme reponse que lui.
     """
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as prise:
-        prise.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             prise.bind(("127.0.0.1", port))
         except OSError:

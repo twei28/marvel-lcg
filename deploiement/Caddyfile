@@ -163,6 +163,10 @@
 	# Une page de table ne doit pas transmettre son URL (clé de siège incluse)
 	# aux sites qu'elle lierait : le Referer s'arrête au même domaine.
 	header Referrer-Policy "same-origin"
+	# Le HSTS de l'apex ne couvre les tables que pour un navigateur qui a déjà
+	# vu l'apex en HTTPS. Un lien d'invitation arrive souvent AVANT : on le pose
+	# donc aussi ici, sur les vingt tables.
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
 	log {
 		output file /var/log/caddy/tables.log {
