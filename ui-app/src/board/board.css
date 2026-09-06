@@ -2608,6 +2608,40 @@
     box-shadow: 0 24px 58px rgba(0, 0, 0, 0.64);
   }
 
+  /* --- Mise en scene d'une etape du deroule -------------------------------
+     La carte qui agit grandit sur place, le reste du plateau s'assombrit sans
+     devenir illisible : on doit continuer a voir la manigance monter ou un
+     heros encaisser ailleurs. Tout ceci est debraye plus bas. */
+  .deroule-voile .plateau-scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: rgba(4, 6, 10, 0.55);
+    pointer-events: none;
+  }
+
+  .plateau-scene .scan-card.deroule-en-avant,
+  .plateau-scene .scan-card.deroule-cible {
+    position: relative;
+    z-index: 70;
+  }
+
+  .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
+    transform: scale(2.36);
+    transition: transform 220ms ease;
+  }
+
+  .plateau-scene .scan-card.deroule-cible .scan-frame {
+    box-shadow:
+      0 0 0 3px #F0131E,
+      0 0 22px 6px rgba(240, 19, 30, 0.55);
+  }
+
+  body.plateau-sans-animations .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
+    transition: none;
+  }
+
   .deroule-temps {
     display: flex;
     gap: 10px;
@@ -5287,4 +5321,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pas-a-pas-halo, .pas-a-pas-chiffre { animation: none; }
+
+  .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
+    transition: none;
+  }
 }

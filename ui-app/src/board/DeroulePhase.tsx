@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import { regleEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
+import { useDerouleScene } from './useDerouleScene'
 
 /** Le temps de voir passer une etape technique, sans la lire. */
 const DELAI_AUTO_MS = 500
@@ -137,6 +138,12 @@ export function DeroulePhase({
     document.addEventListener('keydown', auClavier)
     return () => document.removeEventListener('keydown', auClavier)
   })
+
+  // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
+  // ce composant a un `return null` plus bas, et un hook place apres lui fait
+  // tomber tout le plateau (React compte alors un hook de plus au rendu
+  // suivant).
+  useDerouleScene(etape, !termine)
 
   // Le `return null` vient APRES tous les hooks, jamais avant : React exige
   // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant
