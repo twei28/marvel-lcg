@@ -672,6 +672,28 @@ if os.path.isfile(_caddyfile):
              "max-age=31536000" in _apex and "includeSubDomains" in _apex,
              _apex[:400])
 
+# --- Un rapport trop gros n'est pas une panne de reseau ---------------------
+# ⚠ LE REFUS DOIT SE DIRE POUR CE QU'IL EST. Le site plafonne le corps a huit
+# mega-octets ; le moteur, qui relaie, rendait « site injoignable » pour tout
+# ce qui n'etait pas un 200, et son auteur renvoyait le meme rapport, aussi
+# gros, en boucle.
+try:
+    _code, _, _ = appel("POST", "/api/bug", annonce=_enorme, delai=4)
+except OSError as _erreur:
+    _code = repr(_erreur)
+verifier("un rapport trop volumineux est refuse par le site en 413",
+         _code == 413, str(_code))
+
+_relais = os.path.join(o.RACINE_JEU, "src", "engine", "device", "web", "server",
+                       "server_get.py")
+if os.path.isfile(_relais):
+    _src = open(_relais, encoding="utf-8").read()
+    verifier("le moteur distingue ce refus d'une panne",
+             "413" in _src and "rapport trop volumineux" in _src,
+             "server_get.py ne parle que de site injoignable")
+    verifier("et il le repasse au navigateur avec le meme code",
+             "'rapport trop volumineux'}, status=413" in _src, "")
+
 # --- S7 : ce qui vit a l'execution ne doit pas pouvoir etre commite ---------
 # ⚠ UN SECRET COMMITE NE SE CHANGE PLUS : il reste dans l'historique pour
 # toujours. `narwhal.db` porte les empreintes, les adresses e-mail, les jetons

@@ -442,20 +442,30 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
-    async def _appeler_site(self, chemin: str, champs: dict, secondes: int = 5):
+    async def _appeler_site(self, chemin: str, champs: dict, secondes: int = 5,
+                            avec_statut: bool = False):
         """Relaie un appel au site, en 127.0.0.1, avec le jeton de la partie.
 
         Le navigateur est servi depuis `p<N>.<domaine>` et le site depuis
         `<domaine>` : une requete directe serait croisee, et le cookie de
         session du site ne voyagerait pas. On passe donc par ici, ou l'appel
         part du serveur et n'a aucune frontiere a franchir.
+
+        Avec `avec_statut`, rend le couple (statut HTTP, donnees), le statut
+        valant 0 quand le site n'a pas repondu du tout. C'est le seul moyen de
+        distinguer « le site a refuse » de « le site est injoignable » : sans
+        lui, un rapport de bug trop gros pour le plafond de corps du site
+        s'annoncait a son auteur comme une panne de reseau, et il le renvoyait.
         """
         from engine.device.web.server.server_base import SITE_INTERNE, SITE_JETON
         import urllib.parse
+        def rendre(statut, donnees):
+            return (statut, donnees) if avec_statut else donnees
+
         base = SITE_INTERNE.value or ''
         jeton = SITE_JETON.value or ''
         if not base or not jeton:
-            return None                 # pas de site derriere : rien a relayer
+            return rendre(0, None)      # pas de site derriere : rien a relayer
         corps = dict(champs, jeton=jeton)
         try:
             import aiohttp
@@ -464,12 +474,12 @@ class GameServerGet(GameServerBase):
                 async with session.post(base + chemin,
                                         data=urllib.parse.urlencode(corps)) as reponse:
                     if reponse.status != 200:
-                        return None
-                    return await reponse.json()
+                        return rendre(reponse.status, None)
+                    return rendre(reponse.status, await reponse.json())
         except Exception:
             # Site injoignable ou trop lent : le panneau se taira, la partie
             # continue. Rien ici ne doit pouvoir interrompre une partie.
-            return None
+            return rendre(0, None)
 
     async def get_salon_joueurs(self, request: web.Request) -> web.Response:
         """Qui est connecte avec un compte, et les derniers messages.
@@ -542,7 +552,15 @@ class GameServerGet(GameServerBase):
         }
         # Vingt secondes, et non cinq : la capture pese mille fois un message
         # de tchat, et le site l'ecrit sur disque avant de repondre.
-        donnees = await self._appeler_site('/api/bug', champs, secondes=20)
+        statut, donnees = await self._appeler_site('/api/bug', champs, secondes=20,
+                                                   avec_statut=True)
+        # ⚠ UN REFUS N'EST PAS UNE PANNE. Le site plafonne le corps d'une
+        # requete a huit mega-octets et rend 413 au-dela ; annonce « site
+        # injoignable », ce refus poussait a renvoyer le meme rapport, aussi
+        # gros, en boucle. On le dit pour ce qu'il est : c'est la capture qui
+        # pese trop.
+        if statut == 413:
+            return web.json_response({'error': 'rapport trop volumineux'}, status=413)
         if donnees is None:
             return web.json_response({'error': 'site injoignable'}, status=503)
         if donnees.get('error'):
