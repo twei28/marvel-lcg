@@ -79,6 +79,10 @@ la plus fréquente sur un pack vilain.
       définition arbitrée le 03/09/2026 — fouiller le deck ET la défausse —,
       sans quoi une Yaka Arrow défaussée est perdue et neuf cartes du pack
       deviennent mortes)
+- [x] multiverse.md (packs `rainy`, `brawn`, `blackcat` : mot-clé employé par
+      TROIS auteurs et défini par AUCUN. Définition arbitrée le 05/09/2026 —
+      marqueur de deckbuilding, ZÉRO ligne de code, l'unicité fait tout le
+      travail. ⚠ à ne pas confondre avec le TRAIT `MULTIVERSE` de `wd029`)
 - [x] agile.md (pack `night_thrasher`, `nt003a` Battle Board face VEHICLE :
       définition DONNÉE par l'auteur entre parenthèses, aucun arbitrage — mais
       aucune primitive moteur, et un contre-cas « attaque sans carte de boost »
