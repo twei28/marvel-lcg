@@ -118,6 +118,10 @@ if ($faireCode) {
   # *.db/*.sqlite3) et site/rapports/ (captures des rapports de bug) y
   # vivent, ne sont jamais envoyes par l'archive, et ne se reconstruisent pas
   # tout seuls. On les epargne explicitement.
+  # ⚠ Et leurs fichiers ANNEXES aussi : en mode WAL, SQLite tient ouverts
+  # narwhal.db-wal et narwhal.db-shm a cote de la base. Les effacer sous un
+  # service en marche corrompt la base ; « *.db » ne les attrape pas, d'ou
+  # les deux motifs « *.db-* » et « *.sqlite3-* » ci-dessous.
   $razCode = @()
   if (Test-Path (Join-Path $PROJET "Fusion\marvel-lcg-src\src")) {
     $razCode += "rm -rf $DIST/Fusion/marvel-lcg-src/src"
@@ -133,6 +137,7 @@ if ($faireCode) {
     # reste de la commande distante.
     $razCode += "([ -d $DIST/site ] && find $DIST/site -mindepth 1 -maxdepth 1 " +
       "! -name 'comptes.json' ! -name '*.db' ! -name '*.sqlite3' " +
+      "! -name '*.db-*' ! -name '*.sqlite3-*' " +
       "! -name 'rapports' -exec rm -rf {} + ; true)"
   }
   $razage = if ($razCode.Count -gt 0) { ($razCode -join " && ") + " && " } else { "" }
