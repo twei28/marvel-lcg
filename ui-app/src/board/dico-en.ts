@@ -311,6 +311,21 @@ export const DICO_EN_BASE: Record<string, string> = {
   'par': 'by',
   'via': 'via',
   'Historique de la partie': 'Game history',
+  // Deroule detaille de la phase du mechant.
+  'Menace sur la manigance principale': 'Threat on the main scheme',
+  'complote contre': 'schemes against',
+  'Point 1 : chaque joueur ajoute 1 menace à la manigance principale.':
+    'Step 1: each player adds 1 threat to the main scheme.',
+  'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.':
+    'Step 2: each enemy activates against the hero engaged with it.',
+  'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.':
+    'Step 4: each player reveals their encounter card and resolves it.',
+  // Tchat sur la table (PanneauSalon).
+  'Tchat': 'Chat',
+  'Parler aux autres joueurs': 'Talk to the other players',
+  'Ton message': 'Your message',
+  'Envoyer': 'Send',
+  'Rien encore. Dis quelque chose.': 'Nothing yet. Say something.',
   'Historique': 'History',
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',
