@@ -1,0 +1,151 @@
+# Caddyfile — NarwhalChampions
+# Le domaine est injecté au lancement : DOMAINE=narwhalchampions.com dans
+# /etc/caddy/cloudflare.env. Ne pas écrire le domaine en dur ici.
+#
+# Deux blocs seulement :
+#   - l'apex, servi par l'orchestrateur (127.0.0.1:8080), certificat HTTP-01 ;
+#   - le wildcard *.domaine, certificat obtenu par challenge DNS Cloudflare,
+#     qui contient les 20 routes statiques p1..p20 vers les ports 2351..2370.
+#
+# Les 20 routes ne bougent jamais : c'est l'orchestrateur qui alloue les tables.
+# Aucune reconfiguration de Caddy en vol.
+#
+# Le WebSocket (/ws) n'exige aucune directive : reverse_proxy relaie
+# nativement l'Upgrade HTTP/1.1 et ne coupe pas les connexions longues.
+
+{
+	email {$EMAIL_ACME}
+}
+
+# --- Accueil, comptes, création de parties ------------------------------------
+{$DOMAINE}, www.{$DOMAINE} {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080
+
+	log {
+		output file /var/log/caddy/accueil.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}
+
+# --- Les 20 tables ------------------------------------------------------------
+*.{$DOMAINE} {
+	tls {
+		dns cloudflare {$CF_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+
+	@p1 host p1.{$DOMAINE}
+	handle @p1 {
+		reverse_proxy 127.0.0.1:2351
+	}
+
+	@p2 host p2.{$DOMAINE}
+	handle @p2 {
+		reverse_proxy 127.0.0.1:2352
+	}
+
+	@p3 host p3.{$DOMAINE}
+	handle @p3 {
+		reverse_proxy 127.0.0.1:2353
+	}
+
+	@p4 host p4.{$DOMAINE}
+	handle @p4 {
+		reverse_proxy 127.0.0.1:2354
+	}
+
+	@p5 host p5.{$DOMAINE}
+	handle @p5 {
+		reverse_proxy 127.0.0.1:2355
+	}
+
+	@p6 host p6.{$DOMAINE}
+	handle @p6 {
+		reverse_proxy 127.0.0.1:2356
+	}
+
+	@p7 host p7.{$DOMAINE}
+	handle @p7 {
+		reverse_proxy 127.0.0.1:2357
+	}
+
+	@p8 host p8.{$DOMAINE}
+	handle @p8 {
+		reverse_proxy 127.0.0.1:2358
+	}
+
+	@p9 host p9.{$DOMAINE}
+	handle @p9 {
+		reverse_proxy 127.0.0.1:2359
+	}
+
+	@p10 host p10.{$DOMAINE}
+	handle @p10 {
+		reverse_proxy 127.0.0.1:2360
+	}
+
+	@p11 host p11.{$DOMAINE}
+	handle @p11 {
+		reverse_proxy 127.0.0.1:2361
+	}
+
+	@p12 host p12.{$DOMAINE}
+	handle @p12 {
+		reverse_proxy 127.0.0.1:2362
+	}
+
+	@p13 host p13.{$DOMAINE}
+	handle @p13 {
+		reverse_proxy 127.0.0.1:2363
+	}
+
+	@p14 host p14.{$DOMAINE}
+	handle @p14 {
+		reverse_proxy 127.0.0.1:2364
+	}
+
+	@p15 host p15.{$DOMAINE}
+	handle @p15 {
+		reverse_proxy 127.0.0.1:2365
+	}
+
+	@p16 host p16.{$DOMAINE}
+	handle @p16 {
+		reverse_proxy 127.0.0.1:2366
+	}
+
+	@p17 host p17.{$DOMAINE}
+	handle @p17 {
+		reverse_proxy 127.0.0.1:2367
+	}
+
+	@p18 host p18.{$DOMAINE}
+	handle @p18 {
+		reverse_proxy 127.0.0.1:2368
+	}
+
+	@p19 host p19.{$DOMAINE}
+	handle @p19 {
+		reverse_proxy 127.0.0.1:2369
+	}
+
+	@p20 host p20.{$DOMAINE}
+	handle @p20 {
+		reverse_proxy 127.0.0.1:2370
+	}
+
+	# Tout autre sous-domaine retombe sur l'accueil.
+	handle {
+		redir https://{$DOMAINE}{uri} permanent
+	}
+
+	log {
+		output file /var/log/caddy/tables.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}

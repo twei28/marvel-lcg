@@ -1,0 +1,9 @@
+[Unit]
+Description=NarwhalChampions — purge des fichiers de partie anciens
+
+[Service]
+Type=oneshot
+User=@UTILISATEUR@
+Group=@UTILISATEUR@
+Environment=RACINE=@RACINE@
+ExecStart=/usr/local/bin/narwhal-purge

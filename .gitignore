@@ -106,3 +106,12 @@ Fusion/marvel-lcg-src/assets/pics-proxy/
 Fusion/marvel-lcg-src/.site/
 site/comptes.json
 site/comptes.json.tmp
+
+# Cle SSH de deploiement NarwhalChampions - ne jamais commiter
+deploiement/cle_narwhal
+deploiement/cle_narwhal.pub
+deploiement/installer-serveur.ps1
+sauvegardes-serveur/
+
+# Restes d une livraison manuelle, gardes sur le disque, hors du depot
+deploiement/_a_supprimer/

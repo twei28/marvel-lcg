@@ -1,0 +1,9 @@
+[Unit]
+Description=NarwhalChampions — sauvegarde des comptes
+
+[Service]
+Type=oneshot
+User=@UTILISATEUR@
+Group=@UTILISATEUR@
+Environment=RACINE=@RACINE@
+ExecStart=/usr/local/bin/narwhal-sauvegarde

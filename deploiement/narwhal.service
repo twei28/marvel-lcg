@@ -1,0 +1,48 @@
+[Unit]
+Description=NarwhalChampions — orchestrateur et moteurs de parties
+Documentation=https://@DOMAINE@/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=@UTILISATEUR@
+Group=@UTILISATEUR@
+WorkingDirectory=@RACINE@/site
+
+# Les trois variables attendues par l'orchestrateur.
+Environment=RACINE_JEU=@RACINE@/Fusion/marvel-lcg-src
+Environment=PYTHON=@RACINE@/venv310/bin/python
+Environment=DOMAINE=@DOMAINE@
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=@RACINE@/venv310/bin/python @RACINE@/site/orchestrateur.py
+
+Restart=always
+RestartSec=3
+
+# L'orchestrateur tue ses moteurs par groupe de processus : il doit rester
+# maître de l'arrêt. KillMode=mixed envoie SIGTERM au seul processus principal,
+# lui laisse TimeoutStopSec pour ranger ses moteurs, puis systemd achève au
+# SIGKILL ce qui traîne encore dans le cgroup. Aucun moteur orphelin, et rien
+# qui empêche setsid() ni killpg().
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# 20 moteurs simultanés, chacun avec ses fils et ses sockets.
+LimitNOFILE=65535
+TasksMax=4096
+
+# Durcissement mesuré : rien ici n'interfère avec les groupes de processus.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=@RACINE@ /var/backups/narwhal
+
+[Install]
+WantedBy=multi-user.target
