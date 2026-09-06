@@ -166,12 +166,15 @@ class CanScheme(CardFace):
         # Journal du bilan de phase (ajout local, lu par ui-app), sous garde :
         # un journal d'affichage n'a pas a pouvoir interrompre une activation.
         try:
-            CanAttack.JournaliserManigance(
+            journalise = CanAttack.JournaliserManigance(
                 this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
                 activation_id=annonce_id,
             )
-            # L'intention est CONSOMMEE : le fait resolu a pris sa place.
-            annonce_id = 0
+            # L'intention n'est CONSOMMEE que si un fait resolu a vraiment pris
+            # sa place : `JournaliserManigance` a ses propres gardes et sort
+            # alors sans rien inscrire. Meme raison que dans can_attack.py.
+            if journalise:
+                annonce_id = 0
         except Exception:
             pass
 

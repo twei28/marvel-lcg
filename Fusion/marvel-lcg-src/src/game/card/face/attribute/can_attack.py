@@ -380,6 +380,17 @@ class CanAttack(CardFace):
                 recalculate.Send()
                 calculated_damage = recalculate.will_take_damage
 
+            # LA VALEUR AVANT DEFENSE, retenue pour le journal du bilan.
+            #
+            # C'est la seule qui redonne le calcul que le joueur refait a la
+            # main : `base + boost - defense = inflige`. La deduire apres coup
+            # etait faux deux fois — `inflige` est plafonne a zero (une defense
+            # superieure a l'attaque rendait une base trop grande), et la
+            # valeur imprimee lue a la declaration ne connait ni
+            # `additional_value` (applique par le constructeur de
+            # `WhenUnitWouldAttack`), ni `temp_additional_value`, ni
+            # `WhenRecalculateAttackDamage`. Ici, tout est deja compte.
+            total_avant_defense = calculated_damage
             calculated_damage = max(0, calculated_damage - defense)
 
             # unit_health = target.health
@@ -480,16 +491,20 @@ class CanAttack(CardFace):
             # raison de pouvoir interrompre une resolution de combat. S'il
             # echoue, la partie continue et il ne manque qu'une ligne de bilan.
             try:
-                CanAttack.JournaliserActivation(
+                journalise = CanAttack.JournaliserActivation(
                     this, atk_target, is_base_attack,
                     boost_apports, defense, calculated_damage, took_damage,
                     by_effect, activation_id=annonce_id,
-                    base_annoncee=annonce_base if annonce_id else None,
+                    total_avant_defense=total_avant_defense,
                 )
-                # L'intention est CONSOMMEE : le fait resolu vient de prendre
-                # sa place. Sans cette remise a zero, la cloture d'apres boucle
-                # l'annulerait juste apres l'avoir resolue.
-                annonce_id = 0
+                # L'intention est CONSOMMEE, mais SEULEMENT si un fait resolu a
+                # vraiment pris sa place : `JournaliserActivation` a ses propres
+                # gardes (l'auteur n'est pas un ennemi, ce n'est pas une attaque
+                # de base) et sort alors sans rien inscrire. La remettre a zero
+                # dans ce cas laisserait une intention orpheline, que le filet
+                # de fin de boucle ne pourrait plus clore.
+                if journalise:
+                    annonce_id = 0
             except Exception:
                 pass
 
@@ -650,7 +665,7 @@ class CanAttack(CardFace):
                               defense: int, inflige: int, subi: int,
                               by_effect: 'Effect|None'=None,
                               activation_id: int=0,
-                              base_annoncee: 'int|None'=None) -> None:
+                              total_avant_defense: 'int|None'=None) -> bool:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -660,20 +675,32 @@ class CanAttack(CardFace):
 
             inflige = base + boost - defense
 
-        `base_annoncee` est l'attaque LUE avant les boosts, a la declaration
-        (voir `AnnoncerActivation`). Quand elle est connue, elle fait foi.
+        `total_avant_defense` est la valeur que le moteur a REELLEMENT calculee
+        juste avant de retrancher la defense (voir `AttackInternal`). C'est la
+        seule source qui satisfasse l'egalite ci-dessus, et il en a fallu deux
+        essais pour arriver la :
 
-        Sinon `base` se DEDUIT, et la deduction a une limite qu'il faut
-        connaitre : `inflige` est plafonne a zero (`max(0, ... - defense)`), si
-        bien qu'une defense superieure a l'attaque rendait une base trop
-        grande — mesure du 06/09/2026, Rhino ATQ 2 contre une defense de 3
-        journalisait « base 3 ». Le joueur lisait alors deux valeurs
-        differentes pour le meme coup, l'annoncee et la deduite.
+         - la DEDUCTION (`inflige + defense - boost`) se trompait des que
+           `inflige` etait plafonne a zero — mesure du 06/09/2026, Rhino ATQ 2
+           contre une defense de 3 journalisait « base 3 » ;
+         - la valeur IMPRIMEE lue a la declaration (`this.attack`) ignore tout
+           ce qui modifie l'attaque autrement qu'avec une carte de boost :
+           `property.additional_value`, applique par le constructeur de
+           `WhenUnitWouldAttack`, `temp_additional_value`, `gain_divided_attack`
+           et `WhenRecalculateAttackDamage`. Sur un ennemi renforce, elle
+           faisait mentir le recap (« N de base » pour une frappe plus forte).
+
+        La valeur imprimee, elle, garde son seul emploi legitime : le fait
+        d'INTENTION (`AnnoncerActivation`), qui annonce ce qui est ecrit sur la
+        carte parce que rien d'autre n'est encore connu.
+
+        Rend True si un fait a ete inscrit : l'appelant ne consomme son
+        intention que dans ce cas.
         """
         from game.card.face.base import Enemy
 
         if not Enemy.IsType(attaquant) or not is_base_attack:
-            return
+            return False
 
         world = attaquant.card.world
         boost_total = sum(valeur for _, _, valeur in boost_apports)
@@ -697,7 +724,9 @@ class CanAttack(CardFace):
             'auteur_id': attaquant.card.object_id,
             'cible': cible.name,
             'cible_id': cible.card.object_id,
-            'base': base_annoncee if base_annoncee is not None else inflige + defense - boost_total,
+            'base': (total_avant_defense - boost_total
+                     if total_avant_defense is not None
+                     else inflige + defense - boost_total),
             'boost': boost_total,
             'defense': defense,
             'inflige': inflige,
@@ -711,12 +740,13 @@ class CanAttack(CardFace):
                 for nom, object_id, valeur in boost_apports
             ],
         })
+        return True
 
     @staticmethod
     def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,
                              boost_apports: 'List[Tuple[str, int, int]]', pose: int,
                              by_effect: 'Effect|None'=None,
-                             activation_id: int=0) -> None:
+                             activation_id: int=0) -> bool:
         """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
 
         Elle vit ici, a cote de son attaque, parce que les deux forment une
@@ -724,13 +754,20 @@ class CanAttack(CardFace):
         qui cherche « comment le bilan est-il nourri ? » doit trouver les deux
         moities au meme endroit.
 
-        Pas de defense sur une manigance : la menace posee est deja le total,
-        d'ou `base = pose - boost`.
+        Pas de defense sur une manigance : la menace posee (`pose`) est le total
+        REELLEMENT place, apres `WhenRecalculateSchemeValue`, d'ou
+        `base = pose - boost` — la meme egalite que l'attaque
+        (`base + boost - defense = inflige`), avec une defense toujours nulle,
+        et sans plafonnement a zero qui puisse la fausser. La valeur imprimee
+        de la carte, elle, ne parait que dans le fait d'INTENTION.
+
+        Rend True si un fait a ete inscrit : l'appelant ne consomme son
+        intention que dans ce cas.
         """
         from game.card.face.base import Enemy
 
         if not Enemy.IsType(auteur) or not is_base_scheme:
-            return
+            return False
 
         world = auteur.card.world
         boost_total = sum(valeur for _, _, valeur in boost_apports)
@@ -760,6 +797,7 @@ class CanAttack(CardFace):
                 for nom, object_id, valeur in boost_apports
             ],
         })
+        return True
 
     @staticmethod
     # Cannot use `Filter.FilterByType(units, Unit2)` because of ultron facedown drone

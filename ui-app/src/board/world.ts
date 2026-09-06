@@ -122,8 +122,6 @@ type FaitActivationCommun = FaitMechantCommun & {
   auteur_id: number
   cible: string
   cible_id: number
-  /** Attaque (ou manigance) imprimée, avant les cartes de boost. */
-  base: number
 }
 
 /**
@@ -136,6 +134,17 @@ type FaitActivationCommun = FaitMechantCommun & {
  */
 export type FaitActivationAnnonce = FaitActivationCommun & {
   etat: 'annonce' | 'annule'
+  /**
+   * Attaque (ou manigance) IMPRIMÉE, avant les cartes de boost et avant tout ce
+   * qui renforce l'activation après la déclaration : c'est ce que le moteur
+   * sait au moment où il annonce, et rien d'autre.
+   *
+   * Optionnelle, parce qu'une activation ANNULÉE n'en porte pas : la clôture
+   * (`CanAttack.AnnulerActivation`) n'inscrit que de quoi identifier
+   * l'activation qui n'a pas eu lieu. Le type l'exigeait, et mentait donc sur
+   * la moitié des faits de cette forme.
+   */
+  base?: number
 }
 
 /**
@@ -150,6 +159,12 @@ export type FaitActivationAnnonce = FaitActivationCommun & {
  */
 export type FaitActivationResolue = FaitActivationCommun & {
   etat?: 'resolu'
+  /**
+   * La valeur RÉELLEMENT calculée par le moteur avant la défense, boosts
+   * déduits — jamais la valeur imprimée annoncée, qui ignore tout ce qui
+   * renforce l'activation entre la déclaration et la résolution.
+   */
+  base: number
   /** Apport total des cartes de boost. */
   boost: number
   defense: number
