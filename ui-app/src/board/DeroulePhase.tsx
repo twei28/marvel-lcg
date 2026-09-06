@@ -42,6 +42,14 @@ import { useDerouleScene } from './useDerouleScene'
 const DELAI_BOOST_MS = 1500
 
 /**
+ * Le pas du defilement apres Echap (« Tout derouler ») : le temps de VOIR
+ * passer une etape, pas de la lire. Assez court pour que la phase file, assez
+ * long pour que chaque etape soit peinte une fois et que le journal, la mise
+ * en scene et le moteur la voient passer dans l'ordre.
+ */
+export const DELAI_DEFILEMENT_MS = 120
+
+/**
  * L'ancre du cartouche sur la table, posee sur le body en variables CSS que
  * `.deroule-phase` (board.css) lit comme ses proprietes `left`, `bottom` et
  * `width`. Sans elles, le CSS reprend son repli (en bas au centre, a 16 px du
@@ -86,7 +94,6 @@ export function DeroulePhase({
   delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
   onTerminer,
-  onToutDerouler,
   onVisible,
 }: {
   etapes: EtapeDeroule[]
@@ -184,8 +191,6 @@ export function DeroulePhase({
   onSuivant?: () => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
-  /** « Tout derouler » : les etapes restantes defilent sans attendre. */
-  onToutDerouler?: () => void
   /**
    * Appele des que le cartouche apparait ou disparait de l'ecran.
    *
@@ -220,6 +225,14 @@ export function DeroulePhase({
   // motif a deja vecu dans ce fichier (enchainement des etapes techniques,
   // retire avec elles) : il revient pour la meme raison.
   const [suspendu, setSuspendu] = useState(false)
+  // Vrai apres Echap (« Tout derouler ») : les etapes defilent sans delai de
+  // lecture, jusqu'au bilan, qui attend un vrai clic. C'est le CARTOUCHE qui
+  // defile, par la meme fonction que « Suivant » : le moteur suit, une trame
+  // a la fois, il ne precede jamais. Avant, Echap relachait le moteur pour
+  // tout le reste de la phase (`passerToutLaPhase`, `phaseSautee`) et le
+  // cartouche restait sur son etape pendant que le moteur filait : le joueur
+  // n'avait plus aucune autorite sur le rythme. Un « Precedent » y met fin.
+  const [defilement, setDefilement] = useState(false)
 
   // La derniere trame pour laquelle un accuse de reception est parti. C'est LA
   // garde contre la rafale d'accuses : l'etat du cartouche se recalcule
@@ -269,6 +282,7 @@ export function DeroulePhase({
     setTermine(false)
     setEnAttente(false)
     setSuspendu(false)
+    setDefilement(false)
     derniereTrameAcquittee.current = undefined
   }, [identitePhase])
 
@@ -342,11 +356,20 @@ export function DeroulePhase({
     // au bouton « Suivant », comme apres tout « Precedent ».
     setEnAttente(false)
     setSuspendu(true)
+    setDefilement(false)
     setIndex(index - 1)
   }
 
-  // La version la plus recente de `avancer`, pour le minuteur de l'avance auto
-  // (plus bas). `avancer` est recreee a chaque rendu et lit `index`,
+  // Echap : tout derouler. Une intention d'aller de l'avant, qui leve donc la
+  // suspension d'un « Precedent » anterieur.
+  const derouler = () => {
+    setSuspendu(false)
+    setDefilement(true)
+  }
+
+  // La version la plus recente de `avancer`, pour l'horloge du cartouche
+  // (plus bas : avance auto et defilement d'Echap). `avancer` est recreee a
+  // chaque rendu et lit `index`,
   // `etapesAffichees` et `phaseMechantEnCours` du rendu courant : un minuteur
   // qui la capturerait a l'armement jouerait, a l'echeance, sur un etat vieux
   // de tout le delai de lecture (une etape arrivee entre-temps, par exemple).
@@ -467,9 +490,9 @@ export function DeroulePhase({
         avancer()
         return
       }
-      if (evenement.key === 'Escape' && onToutDerouler) {
+      if (evenement.key === 'Escape') {
         evenement.preventDefault()
-        onToutDerouler()
+        derouler()
       }
     }
     document.addEventListener('keydown', auClavier)
@@ -514,7 +537,13 @@ export function DeroulePhase({
   // bilan se reconnait a son temps : `avecBilan` est le seul a le produire.
   const etapeAttendUnClic = etape?.temps === 'bilan' || Boolean(etape?.defaite)
 
-  // L'HORLOGE de l'avance auto, la seule de toute la phase.
+  // Le delai avant que l'etape courante ne se valide seule, ou `undefined`
+  // quand elle attend un clic. Le defilement d'Echap l'emporte sur l'avance
+  // auto : il ne lit pas, il fait voir passer.
+  const delaiAvant = defilement ? DELAI_DEFILEMENT_MS : avanceAuto ? delaiAvanceMs : undefined
+
+  // L'HORLOGE du cartouche, la seule de toute la phase. Elle sert a l'avance
+  // auto (delai de lecture) comme au defilement d'Echap (pas de lecture).
   //
   // Un minuteur par etape affichee, nettoye au demontage et a chaque
   // changement d'etape (c'est `etape?.cle` dans les dependances qui le
@@ -524,7 +553,7 @@ export function DeroulePhase({
   // se superposeraient et une etape serait sautee.
   //
   // Aucun minuteur :
-  //  - sans avance auto, evidemment ;
+  //  - sans avance auto ni defilement, evidemment ;
   //  - hors ecran (`visible`) : rien a avancer ;
   //  - `suspendu` : le joueur relit, apres un « Precedent » ;
   //  - `enAttente` : le cartouche est au bout de ce qu'il sait et attend que
@@ -535,20 +564,11 @@ export function DeroulePhase({
   //    moteur, il n'a plus de bouton, donc plus d'horloge non plus ;
   //  - `etapeAttendUnClic` : voir ci-dessus.
   useEffect(() => {
-    if (!avanceAuto || !visible || suspendu || enAttente || questionAuJoueur) return
-    if (etapeAttendUnClic) return
-    const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvanceMs)
+    if (delaiAvant === undefined) return
+    if (!visible || suspendu || enAttente || questionAuJoueur || etapeAttendUnClic) return
+    const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvant)
     return () => window.clearTimeout(minuteur)
-  }, [
-    avanceAuto,
-    delaiAvanceMs,
-    etape?.cle,
-    visible,
-    suspendu,
-    enAttente,
-    questionAuJoueur,
-    etapeAttendUnClic,
-  ])
+  }, [delaiAvant, etape?.cle, visible, suspendu, enAttente, questionAuJoueur, etapeAttendUnClic])
 
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait

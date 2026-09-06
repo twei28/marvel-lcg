@@ -1571,7 +1571,6 @@ function PagePartie({
     reglerDelaiPasAPas,
     avancerPasAPas,
     basculerPausePasAPas,
-    passerToutLaPhase,
   } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
@@ -2478,7 +2477,6 @@ function PagePartie({
             // sans trame en attente, moteur.ts, avancerMaintenant).
             onSuivant={avancerPasAPas}
             onTerminer={avancerPasAPas}
-            onToutDerouler={passerToutLaPhase}
             // `setCartoucheOuvert` est stable : le cartouche exige une
             // fonction qui ne change pas d'un rendu a l'autre.
             onVisible={setCartoucheOuvert}

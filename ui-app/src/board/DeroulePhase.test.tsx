@@ -6,7 +6,7 @@
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { DeroulePhase } from './DeroulePhase'
+import { DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import { CLE_REGLE_DEPLIEE } from './moteur'
 
@@ -275,15 +275,6 @@ describe('cartouche du deroule', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.keyDown(document, { key: ' ' })
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
-  })
-
-  it('deroule tout a la touche Echap', () => {
-    const onToutDerouler = vi.fn()
-    render(
-      <DeroulePhase etapes={etapes} onTerminer={() => {}} onToutDerouler={onToutDerouler} />
-    )
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-    expect(onToutDerouler).toHaveBeenCalledTimes(1)
   })
 
   it('supporte de passer de zero etape a plusieurs sans tomber', () => {
@@ -1162,6 +1153,144 @@ describe('cartouche du deroule', () => {
     })
   })
 
+  // --- Echap : « Tout derouler » fait defiler le CARTOUCHE ------------------
+  //
+  // Avant, Echap relachait le moteur pour tout le reste de la phase
+  // (`passerToutLaPhase`, `phaseSautee`) : le moteur filait, le cartouche
+  // restait sur son etape, et le joueur n'avait plus aucune autorite sur le
+  // rythme. Desormais Echap fait defiler les etapes du cartouche, vite et
+  // sans delai de lecture, par la MEME fonction que « Suivant » : l'accuse
+  // part par le chemin ordinaire, le moteur suit, il ne precede jamais. Le
+  // bilan, lui, attend toujours un vrai clic.
+  describe('Echap : tout derouler', () => {
+    const troisEtapes: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+      {
+        cle: 'b',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Ultron',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+      {
+        cle: 'c',
+        temps: 'sbires',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Drone',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+    ]
+    const echap = () =>
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    // Une echeance par act, meme raison que pour l'avance auto ci-dessus.
+    const defiler = async (etapes: number) => {
+      for (let i = 0; i < etapes; i += 1) {
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(DELAI_DEFILEMENT_MS)
+        })
+      }
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('fait defiler les etapes jusqu au bilan, qui attend un vrai clic', async () => {
+      const onTerminer = vi.fn()
+      render(<DeroulePhase etapes={troisEtapes} identitePhase={3} onTerminer={onTerminer} />)
+      echap()
+      await defiler(3)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      await defiler(5)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      expect(onTerminer).not.toHaveBeenCalled()
+      fireEvent.click(aToiDeJouer())
+      expect(onTerminer).toHaveBeenCalledTimes(1)
+    })
+
+    it('ne relache le moteur que par le chemin ordinaire, une trame a la fois', async () => {
+      // Le moteur SUIT le cartouche : une trame acquittee quand le cartouche
+      // est a jour, jamais un « laissez passer » pour toute la phase. La
+      // preuve : entre deux trames, le cartouche attend la suite comme
+      // d'habitude, et repart de lui-meme sur l'etape qui arrive.
+      const onSuivant = vi.fn()
+      const onTerminer = vi.fn()
+      const cartouche = (liste: EtapeDeroule[], trame: number, enCours: boolean) => (
+        <DeroulePhase
+          etapes={liste}
+          identitePhase={3}
+          phaseMechantEnCours={enCours}
+          trameRetenue={trame}
+          onSuivant={onSuivant}
+          onTerminer={onTerminer}
+        />
+      )
+      const { rerender } = render(cartouche(etapes, 11, true))
+      echap()
+      await defiler(2)
+      expect(document.querySelector('.deroule-attente')).not.toBeNull()
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      await defiler(3)
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      rerender(cartouche(troisEtapes, 12, true))
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+      await defiler(1)
+      expect(onSuivant).toHaveBeenCalledTimes(2)
+      rerender(cartouche(troisEtapes, 13, false))
+      await defiler(3)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      expect(onTerminer).not.toHaveBeenCalled()
+    })
+
+    it('ignore le delai de lecture de l avance auto', async () => {
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          avanceAuto
+          delaiAvanceMs={1000}
+          onTerminer={() => {}}
+        />
+      )
+      echap()
+      await defiler(3)
+      expect(aToiDeJouer()).toBeInTheDocument()
+    })
+
+    it('s arrete sur un « Precedent » : le joueur reprend la main', async () => {
+      render(<DeroulePhase etapes={troisEtapes} identitePhase={3} onTerminer={() => {}} />)
+      echap()
+      await defiler(3)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+      await defiler(5)
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+    })
+
+    it('ne fait rien quand le moteur pose une question au joueur', async () => {
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          questionAuJoueur
+          onTerminer={() => {}}
+        />
+      )
+      echap()
+      await defiler(5)
+      expect(vi.getTimerCount()).toBe(0)
+    })
+  })
+
   describe('depliant de la regle', () => {
     const regle = () => screen.getByRole('button', { name: /la règle/i })
 
@@ -1849,19 +1978,30 @@ describe('le bilan de fin de phase', () => {
       expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
     })
 
-    it('ne demande pas de tout derouler a Echap pendant une question', () => {
-      const onToutDerouler = vi.fn()
-      render(
-        <DeroulePhase
-          etapes={etapes}
-          phaseMechantEnCours
-          questionAuJoueur
-          onTerminer={() => {}}
-          onToutDerouler={onToutDerouler}
-        />
-      )
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-      expect(onToutDerouler).not.toHaveBeenCalled()
+    it('ne deroule rien a Echap pendant une question, meme une fois celle-ci resolue', async () => {
+      // Echap appartient a la question tant qu'elle est posee : le cartouche
+      // n'en retient rien, et ne se met pas a defiler apres coup.
+      vi.useFakeTimers()
+      try {
+        const cartouche = (questionAuJoueur: boolean) => (
+          <DeroulePhase
+            etapes={etapes}
+            phaseMechantEnCours
+            questionAuJoueur={questionAuJoueur}
+            onTerminer={() => {}}
+          />
+        )
+        const { rerender } = render(cartouche(true))
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        rerender(cartouche(false))
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(DELAI_DEFILEMENT_MS * 5)
+        })
+        expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+        expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
     })
   })
 })
