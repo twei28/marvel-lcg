@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Sauvegarde des comptes NarwhalChampions.
+# Sauvegarde des comptes NarwhalChampions, et des donnees des joueurs.
 # Lancé chaque nuit par narwhal-sauvegarde.timer, et à la main quand on veut :
 #     sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde
+#     sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verifier
 #
 # Le fichier des comptes est la seule donnée du site qui ne se régénère pas.
 # On ne cherche pas à deviner son nom : on archive tous les petits fichiers
@@ -13,34 +14,128 @@
 # disque et seraient perdues à la restauration — /admin afficherait alors des
 # rapports dont la capture manque. Le plafond de -size 20M les couvre : une
 # capture réduite par le navigateur pèse moins d'un mégaoctet.
+#
+# ⚠ AJOUTÉ LE 06/09/2026 (audit E, points 3 et B) : les DECKS, CAMPAGNES,
+# HAUTS FAITS (achievements) et REPLAYS des joueurs, qui vivent sous
+# Fusion/marvel-lcg-src/ et non sous site/ (deck/serveur-*, campagnes-
+# serveur-*, achievements-serveur-*.json, games_history-serveur-*.json,
+# statistics-serveur-*.json, replays/serveur-*). Avant ce jour, purge.sh
+# effaçait les replays et logs de plus de 30 jours sans qu'ils aient jamais
+# été sauvegardés : une partie en cours ou une campagne pouvait disparaître
+# définitivement, sans aucun filet.
+#
+# ⚠ AJOUTÉ LE 06/09/2026 : narwhal.db est en mode WAL (le moteur y écrit sans
+# arrêt). Une copie brute du fichier pendant une écriture peut manquer des
+# pages encore dans le journal WAL et produire une sauvegarde incohérente.
+# `sqlite3 <base> ".backup <fichier>"` prend un instantané cohérent, verrou
+# SQLite compris — c'est pour ça qu'on passe par une zone de montage
+# temporaire ($stage) plutôt que d'archiver les fichiers en place.
 # ==============================================================================
 set -euo pipefail
 
 RACINE="${RACINE:-@RACINE@}"
 DESTINATION="${DESTINATION:-/var/backups/narwhal}"
 CONSERVER="${CONSERVER:-30}"   # nombre d'archives quotidiennes gardées
+MOTEUR="$RACINE/Fusion/marvel-lcg-src"
 
+# --- Mode vérification --------------------------------------------------------
+# Restaure la dernière archive dans un dossier temporaire et compte ce qu'elle
+# contient. Une sauvegarde jamais restaurée n'est pas une sauvegarde.
+if [ "${1:-}" = "--verifier" ]; then
+  archive="$DESTINATION/comptes-dernier.tar.gz"
+  [ -f "$archive" ] || { echo "Aucune sauvegarde à vérifier : $archive introuvable." >&2; exit 1; }
+
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' EXIT
+  tar -xzf "$archive" -C "$tmp"
+
+  compter() { find "$tmp" -path "$1" -type f 2>/dev/null | wc -l; }
+
+  echo "Vérification de $archive (restaurée dans $tmp) :"
+  echo "  fichiers au total            : $(find "$tmp" -type f | wc -l)"
+  echo "  captures de rapports de bug  : $(compter '*/site/rapports/*')"
+  echo "  decks serveur                : $(compter '*/deck/serveur-*/*')"
+  echo "  campagnes serveur            : $(compter '*/campagnes-serveur-*/*')"
+  echo "  replays serveur              : $(compter '*/replays/serveur-*/*')"
+  echo "  hauts faits (achievements)   : $(compter '*achievements-serveur-*.json')"
+
+  base="$(find "$tmp" -name 'narwhal.db' -print -quit)"
+  if [ -n "$base" ]; then
+    n="$(sqlite3 "$base" 'SELECT count(*) FROM comptes;' 2>/dev/null || echo '?')"
+    echo "  comptes dans narwhal.db restaurée : $n"
+  else
+    echo "  ⚠ narwhal.db absente de l'archive restaurée"
+  fi
+  exit 0
+fi
+
+# --- Sauvegarde ----------------------------------------------------------------
 horodatage="$(date +%Y-%m-%d)"
 archive="$DESTINATION/comptes-$horodatage.tar.gz"
 
 mkdir -p "$DESTINATION"
+stage="$(mktemp -d)"
+trap 'rm -rf "$stage"' EXIT
 
-# -maxdepth 2 : l'état vit à la racine de site/, pas au fond de l'arborescence.
-mapfile -t fichiers < <(
+# Fichiers d'état de site/ (comptes, base, captures de rapports). -maxdepth 2 :
+# l'état vit à la racine de site/, pas au fond de l'arborescence.
+mapfile -t fichiers_site < <(
   find "$RACINE/site" -maxdepth 2 -type f \
        \( -name '*.json' -o -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \
           -o -name '*.png' -o -name '*.jpg' -o -name '*.webp' \) \
        -size -20M -print
 )
 
-if [ "${#fichiers[@]}" -eq 0 ]; then
+if [ "${#fichiers_site[@]}" -eq 0 ]; then
   echo "Aucun fichier d'état trouvé dans $RACINE/site — sauvegarde annulée." >&2
   exit 1
 fi
 
-tar -czf "$archive" -C / "${fichiers[@]#/}"
+for f in "${fichiers_site[@]}"; do
+  rel="${f#"$RACINE"/}"
+  dest="$stage/$rel"
+  mkdir -p "$(dirname "$dest")"
+  case "$f" in
+    *.db|*.sqlite|*.sqlite3)
+      # Instantané cohérent malgré le mode WAL : voir la note en tête de fichier.
+      sqlite3 "$f" ".backup $dest"
+      ;;
+    *)
+      cp -p "$f" "$dest"
+      ;;
+  esac
+done
+
+# Données des joueurs sous Fusion/marvel-lcg-src/ : jamais sauvegardées avant
+# le 06/09/2026, alors que purge.sh efface les replays et logs après 30 jours
+# sans filet (voir la note en tête de fichier).
+shopt -s nullglob
+for dossier in \
+  "$MOTEUR"/deck/serveur-*/ \
+  "$MOTEUR"/campagnes-serveur-*/ \
+  "$MOTEUR"/replays/serveur-*/ ; do
+  for d in $dossier; do
+    d="${d%/}"
+    rel="${d#"$RACINE"/}"
+    mkdir -p "$stage/$rel"
+    cp -a "$d/." "$stage/$rel/"
+  done
+done
+for motif in \
+  "$MOTEUR"/achievements-serveur-*.json \
+  "$MOTEUR"/games_history-serveur-*.json \
+  "$MOTEUR"/statistics-serveur-*.json ; do
+  for f in $motif; do
+    rel="${f#"$RACINE"/}"
+    mkdir -p "$(dirname "$stage/$rel")"
+    cp -p "$f" "$stage/$rel"
+  done
+done
+shopt -u nullglob
+
+tar -czf "$archive" -C "$stage" .
 chmod 600 "$archive"
-echo "Sauvegarde : $archive ($(du -h "$archive" | cut -f1), ${#fichiers[@]} fichiers)"
+echo "Sauvegarde : $archive ($(du -h "$archive" | cut -f1), $(find "$stage" -type f | wc -l) fichiers)"
 
 # Une copie « courante », toujours au même nom, que le script de déploiement
 # rapatrie sur le poste sans avoir à deviner la date.

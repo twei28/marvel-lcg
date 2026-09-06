@@ -20,9 +20,11 @@ echo "==> 1/8  Base système"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get -y -qq upgrade
+# sqlite3 : CLI necessaire a sauvegarde.sh (".backup", instantane coherent
+# de narwhal.db malgre le mode WAL).
 apt-get -y -qq install \
   rsync ufw curl ca-certificates gnupg git unzip \
-  imagemagick jq \
+  imagemagick jq sqlite3 \
   python3.10 python3.10-venv python3.10-dev python3-pip \
   debian-keyring debian-archive-keyring apt-transport-https
 python3.10 --version
