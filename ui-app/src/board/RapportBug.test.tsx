@@ -36,6 +36,7 @@ function pressePapier(reponse: 'ok' | 'refus') {
 const fauxOutils = (): OutilsRapport => ({
   copier: vi.fn().mockResolvedValue(undefined),
   telecharger: vi.fn(),
+  envoyer: vi.fn(async () => ({ ok: true })),
   message: null,
 })
 

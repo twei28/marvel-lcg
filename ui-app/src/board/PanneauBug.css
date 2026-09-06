@@ -1,0 +1,195 @@
+/* Styles du panneau « Signaler un bug ».
+ *
+ * Feuille à PART plutôt qu'ajoutés à board.css : ce fichier-là est le plus
+ * disputé du plateau, et une feuille dédiée s'importe, se lit et se retire
+ * d'un bloc. Les couleurs reprennent celles de board.css à la main, faute de
+ * variables partagées à ce niveau. */
+
+.pbug-bouton {
+  cursor: pointer;
+}
+
+.pbug-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(3, 4, 7, 0.78);
+  backdrop-filter: blur(5px);
+}
+
+.pbug-panneau {
+  width: min(520px, 96vw);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #4a4a4a;
+  border-radius: 12px;
+  background: #1b1f26;
+  color: #e2e8f0;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6);
+  font-size: 0.88rem;
+  /* La gouttière est réservée en permanence : sans elle, l'apparition de la
+     barre au fil de la frappe rétrécit le contenu et le panneau a l'air de
+     bouger — le même défaut que la modale des decks. */
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.pbug-titre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #2c323b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+}
+
+.pbug-fermer {
+  background: none;
+  border: 0;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+}
+.pbug-fermer:hover {
+  color: #fff;
+}
+
+.pbug-corps {
+  overflow-y: auto;
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pbug-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pbug-champ > span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  color: #94a3b8;
+}
+.pbug-champ small {
+  color: #7c8797;
+  font-size: 0.72rem;
+}
+
+.pbug-panneau input[type='text'],
+.pbug-panneau textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #11151b;
+  border: 1px solid #39414d;
+  border-radius: 6px;
+  color: #e2e8f0;
+  padding: 8px 10px;
+  font: inherit;
+}
+.pbug-panneau textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+.pbug-panneau input[type='text']:focus,
+.pbug-panneau textarea:focus,
+.pbug-zone:focus {
+  outline: none;
+  border-color: #e62429;
+}
+
+.pbug-zone {
+  border: 1px dashed #444c58;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  color: #7c8797;
+  font-size: 0.78rem;
+  cursor: pointer;
+  background: #151a21;
+}
+.pbug-zone:hover {
+  border-color: #6b7684;
+  color: #b8c2cf;
+}
+
+.pbug-apercu img {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #39414d;
+  display: block;
+}
+
+.pbug-joint {
+  color: #7c8797;
+  font-size: 0.75rem;
+  border-left: 2px solid #39414d;
+  padding-left: 9px;
+}
+
+.pbug-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pbug-panneau button.pbug-action {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.83rem;
+  cursor: pointer;
+  border-radius: 7px;
+  padding: 8px 14px;
+  border: 1px solid #4a5461;
+  background: #262d36;
+  color: #e2e8f0;
+}
+.pbug-panneau button.pbug-action:hover {
+  background: #313a45;
+}
+.pbug-panneau button.pbug-envoi {
+  border-color: #e62429;
+  background: #e62429;
+  color: #fff;
+}
+.pbug-panneau button.pbug-envoi:hover {
+  filter: brightness(1.12);
+}
+.pbug-panneau button.pbug-action[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pbug-mot {
+  font-size: 0.8rem;
+  padding: 9px 11px;
+  border-radius: 6px;
+}
+.pbug-mot.ok {
+  background: #12301c;
+  color: #7ee2a0;
+  border: 1px solid #24603a;
+}
+.pbug-mot.non {
+  background: #3a1416;
+  color: #ff9a9a;
+  border: 1px solid #6d2226;
+}
+.pbug-mot.info {
+  background: #14212e;
+  color: #9ccaf5;
+  border: 1px solid #24455f;
+}

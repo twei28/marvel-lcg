@@ -49,6 +49,7 @@ import { traduireMoteur } from './board/vocabulaire-moteur'
 import { finDePartie } from './board/fin-partie'
 import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
+import { PanneauBug } from './board/PanneauBug'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -2432,6 +2433,9 @@ function PagePartie({
               <span aria-hidden="true">🧾</span> {t('Log')}
             </button>
             <MessageRapport message={rapport.message} />
+            {/* Signaler un bug : le journal de toute la partie part avec la
+                description et la capture. Ne s'affiche que si un site ecoute. */}
+            <PanneauBug outils={rapport} />
             {/* Tchat des comptes, le MEME qu'a la preparation : il ne s'affiche
                 que la ou il a un sens (siege du titulaire, site derriere). */}
             <PanneauSalon />

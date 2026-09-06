@@ -23,8 +23,22 @@ import {
 } from './rapport-bug'
 import type { World } from './world'
 
+export type ResultatEnvoi = { ok: boolean; erreur?: string }
+
+export type DetailsEnvoi = {
+  nom: string
+  description: string
+  /** data URL de la capture, ou '' si la personne n'en a pas jointe. */
+  capture: string
+}
+
 export type OutilsRapport = {
   copier: (portee: PorteeRapport) => Promise<void>
+  /** Envoie le rapport au site, qui le range pour l'administrateur.
+   *  La portée est TOUJOURS 'partie' : un bug se comprend souvent par ce qui
+   *  s'est passé trois tours plus tôt, et on ne va pas demander à quelqu'un qui
+   *  vient de tomber sur un bug de choisir une profondeur de journal. */
+  envoyer: (details: DetailsEnvoi) => Promise<ResultatEnvoi>
   /** `format` par défaut 'json' : le bouton historique ne change pas de
    *  comportement. 'txt' rend la version LISIBLE, celle qu'on relit ou qu'on
    *  colle dans une conversation. */
@@ -125,7 +139,36 @@ export function useRapportBug(
     [construire, annoncer]
   )
 
-  return { copier, telecharger, message }
+  const envoyer = useCallback(
+    async (details: DetailsEnvoi): Promise<ResultatEnvoi> => {
+      const rapport = construire('partie')
+      try {
+        const reponse = await fetch('/post_rapport_bug', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nom: details.nom,
+            description: details.description,
+            ecran: 'plateau',
+            siege: siege === undefined ? '' : String(siege),
+            // Le monde peut manquer (partie pas encore installée) : on envoie
+            // alors la description seule plutôt que de refuser le rapport.
+            journal: rapport ? rapportEnTexte(rapport) : '',
+            capture: details.capture,
+          }),
+        })
+        const corps = (await reponse.json().catch(() => ({}))) as { error?: string }
+        if (!reponse.ok) return { ok: false, erreur: corps.error || String(reponse.status) }
+        annoncer(t('Rapport envoyé'))
+        return { ok: true }
+      } catch (e) {
+        return { ok: false, erreur: e instanceof Error ? e.message : 'échec réseau' }
+      }
+    },
+    [construire, siege, annoncer]
+  )
+
+  return { copier, telecharger, envoyer, message }
 }
 
 const PORTEES: Array<{ valeur: PorteeRapport; libelle: string }> = [

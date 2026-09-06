@@ -32,7 +32,12 @@ class WebServer:
     HandleNonAsyncType: TypeAlias = Callable[["web.Request"], "web.StreamResponse"]
 
     def __init__(self) -> None:
-        self.web_app = web.Application()
+        # aiohttp refuse au-dela de 1 Mio par defaut, et un rapport de bug
+        # porte une capture d'ecran plus le journal de la partie. La capture
+        # est deja reduite par le navigateur avant l'envoi (panneau-bug.js)
+        # et le site a son propre plafond : ce chiffre-ci est la marge, pas
+        # une autorisation d'envoyer n'importe quoi.
+        self.web_app = web.Application(client_max_size=8 * 1024 * 1024)
         self.runner = web.AppRunner(self.web_app)
 
         if PASSWORD.value:

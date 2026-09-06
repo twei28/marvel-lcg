@@ -442,7 +442,7 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
-    async def _appeler_site(self, chemin: str, champs: dict):
+    async def _appeler_site(self, chemin: str, champs: dict, secondes: int = 5):
         """Relaie un appel au site, en 127.0.0.1, avec le jeton de la partie.
 
         Le navigateur est servi depuis `p<N>.<domaine>` et le site depuis
@@ -459,7 +459,7 @@ class GameServerGet(GameServerBase):
         corps = dict(champs, jeton=jeton)
         try:
             import aiohttp
-            temps = aiohttp.ClientTimeout(total=5)
+            temps = aiohttp.ClientTimeout(total=secondes)
             async with aiohttp.ClientSession(timeout=temps) as session:
                 async with session.post(base + chemin,
                                         data=urllib.parse.urlencode(corps)) as reponse:
@@ -507,6 +507,47 @@ class GameServerGet(GameServerBase):
         if donnees is None:
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
+
+    async def get_rapport_actif(self, request: web.Request) -> web.Response:
+        """Un site ecoute-t-il derriere ce moteur ?
+
+        Le formulaire s'en sert pour savoir s'il peut ENVOYER, ou s'il doit se
+        rabattre sur le presse-papier et le fichier. En partie locale il n'y a
+        aucun site : promettre un envoi qui n'arrivera nulle part serait pire
+        que de ne rien proposer.
+        """
+        from engine.device.web.server.server_base import SITE_INTERNE, SITE_JETON
+        actif = bool(SITE_INTERNE.value) and bool(SITE_JETON.value)
+        return web.json_response({'actif': actif})
+
+    async def post_rapport_bug(self, request: web.Request) -> web.Response:
+        """Relaie un rapport de bug vers le site, qui le rangera pour l'admin.
+
+        ⚠ AUCUNE RESERVE DE SIEGE ICI, a la difference du tchat. N'importe qui
+        joue a cette table peut signaler un bug, invite compris — ce sont
+        justement ceux qui n'ont aucun autre moyen de le dire. Le site tient le
+        plafond de debit, et le siege part avec le rapport.
+        """
+        data = await request.json()
+        description = str(data.get('description', '') or '')
+        if not description.strip():
+            return web.json_response({'error': 'description vide'}, status=400)
+        champs = {
+            'nom': str(data.get('nom', '') or ''),
+            'description': description,
+            'journal': str(data.get('journal', '') or ''),
+            'ecran': str(data.get('ecran', '') or ''),
+            'siege': str(data.get('siege', '') or ''),
+            'capture': str(data.get('capture', '') or ''),
+        }
+        # Vingt secondes, et non cinq : la capture pese mille fois un message
+        # de tchat, et le site l'ecrit sur disque avant de repondre.
+        donnees = await self._appeler_site('/api/bug', champs, secondes=20)
+        if donnees is None:
+            return web.json_response({'error': 'site injoignable'}, status=503)
+        if donnees.get('error'):
+            return web.json_response({'error': donnees['error']}, status=429)
+        return web.json_response({'ok': True, 'numero': donnees.get('numero')})
 
     async def set_language(self, request: web.Request) -> web.Response:
         # Bascule FR/EN de la narration a chaud (bouton langue du client) :
@@ -620,6 +661,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_documents', self.get_documents)
         self.AddAwaitGetSecurity(r'/{path:.+\.pdf}', self.get_document_pdf)
         self.AddPostSecurity('/post_salon_message', self.post_salon_message)
+        self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
+        self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)
