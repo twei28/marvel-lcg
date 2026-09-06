@@ -2680,6 +2680,91 @@
     stroke-dashoffset: 0;
   }
 
+  /* --- Annonce de la phase du mechant --------------------------------------
+     Un bandeau qui traverse l'ecran. Il ne coute aucun clic : la premiere
+     etape est deja derriere lui.
+     z-index 560 : au-dessus du voile (110), des cartes mises en scene (130),
+     du trait (530) et du cartouche (540), puisque cette annonce doit
+     recouvrir tout le debut du deroule pendant sa courte duree de vie. */
+  .bandeau-phase {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 38%;
+    z-index: 560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #F0131E 12%,
+      #F0131E 88%,
+      transparent
+    );
+    box-shadow: 0 0 40px rgba(240, 19, 30, 0.6);
+    pointer-events: none;
+    animation: bandeau-traverse 520ms ease-out;
+  }
+
+  .bandeau-phase-texte {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+  }
+
+  .bandeau-phase-texte em {
+    font-style: normal;
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  /* L'eclair : un trait clair qui file en travers du bandeau. */
+  .bandeau-phase-eclair {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.85) 50%,
+      transparent 60%
+    );
+    animation: bandeau-eclair 620ms ease-out;
+  }
+
+  @keyframes bandeau-traverse {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bandeau-eclair {
+    from {
+      transform: translateX(-60%);
+    }
+    to {
+      transform: translateX(160%);
+    }
+  }
+
+  body.plateau-sans-animations .bandeau-phase,
+  body.plateau-sans-animations .bandeau-phase-eclair {
+    animation: none;
+  }
+
   .deroule-temps {
     display: flex;
     gap: 10px;
@@ -5367,5 +5452,10 @@
   .deroule-trait line {
     animation: none;
     stroke-dashoffset: 0;
+  }
+
+  .bandeau-phase,
+  .bandeau-phase-eclair {
+    animation: none;
   }
 }

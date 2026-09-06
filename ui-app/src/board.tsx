@@ -53,6 +53,7 @@ import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { DeroulePhase } from './board/DeroulePhase'
+import { BandeauPhase } from './board/BandeauPhase'
 import { etapesDeroule } from './board/deroule-phase'
 import { SplashTour } from './board/SplashTour'
 import {
@@ -2198,7 +2199,13 @@ function PagePartie({
           Le recap ci-dessous garde son role de bilan de fin, pour les modes
           rapides ou l'on n'a rien vu passer. */}
       {modePhase === 'detaille' ? (
-        <DeroulePhase etapes={etapesPhaseMechant} onTerminer={() => undefined} />
+        <>
+          <BandeauPhase
+            round={etat.monde?.round_id ?? 1}
+            actif={etapesPhaseMechant.length > 0}
+          />
+          <DeroulePhase etapes={etapesPhaseMechant} onTerminer={() => undefined} />
+        </>
       ) : null}
       <RecapPhaseMechant
         entrees={historique.entrees}
