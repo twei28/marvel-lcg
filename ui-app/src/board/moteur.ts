@@ -278,13 +278,9 @@ export const PHASES_DU_MECHANT = new Set([
  * soit la phase illisible (on n'attend jamais), soit la partie bloquee (on
  * attend toujours).
  */
-export type DecisionAccuse = 'immediat' | 'attendre-clic' | 'attendre-delai'
+export type DecisionAccuse = 'immediat' | 'attendre-clic'
 
-export function decisionAccuse(
-  mode: ModePhaseMechant,
-  monde: World | undefined,
-  phaseSautee: boolean
-): DecisionAccuse {
+export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined): DecisionAccuse {
   if (mode === 'instantane') return 'immediat'
   // « detaille » retient l'accuse de reception sur TOUTES les trames des quatre
   // phases du mechant, sans regarder ce que la trame raconte.
@@ -302,9 +298,11 @@ export function decisionAccuse(
   // etape (DeroulePhase.tsx, `cartoucheAJour`). Les deux unites de mesure
   // n'ont plus a se correspondre.
   //
-  // « Tout passer » (phaseSautee) court-circuite tout ca.
+  // Il n'y a plus de « laissez passer » pour toute la phase non plus (l'ancien
+  // `phaseSautee`, pose par Echap) : Echap fait defiler le cartouche, qui
+  // acquitte une trame a la fois par ce meme chemin.
   const phase = monde?.phase ?? ''
-  if (phaseSautee || !PHASES_DU_MECHANT.has(phase)) return 'immediat'
+  if (!PHASES_DU_MECHANT.has(phase)) return 'immediat'
   // « Detaille » attend TOUJOURS que le cartouche relache la trame, que
   // l'avance auto soit active ou non : l'avance auto est une horloge du
   // CARTOUCHE (DeroulePhase, prop `avanceAuto`), qui appelle la meme fonction
@@ -320,26 +318,18 @@ export function decisionAccuse(
  * Filet anti-blocage : au bout de combien de temps sans reponse le moteur
  * reprend-il tout seul. Il protege la table entiere contre un onglet fantome
  * (deconnecte, en arriere-plan, ferme sans prevenir) qui gelerait sinon la
- * phase du mechant pour tout le monde en multijoueur ; ce filet doit donc
- * rester COURT quand l'attente n'est qu'un delai de lecture deja pilote par
- * nous (`attendre-delai`, cf `programmerAvance`).
+ * phase du mechant pour tout le monde en multijoueur.
  *
- * Mais quand le moteur attend un CLIC (`attendre-clic`), c'est un etre humain
- * qui doit avoir le temps de LIRE l'etape affichee par le cartouche avant
- * d'etre double : 6 secondes, c'est moins que le temps de lire une seule
- * etape, un joueur attentif se ferait donc rattraper par son propre filet de
- * securite. On choisit l'ordre de la minute et demie : tres au-dela du temps
- * de lecture le plus lent, tout en restant borne pour qu'une table ne reste
- * jamais bloquee indefiniment.
+ * Le moteur n'attend jamais qu'un CLIC (`attendre-clic`), c'est-a-dire un
+ * etre humain qui doit avoir le temps de LIRE l'etape affichee par le
+ * cartouche avant d'etre double : 6 secondes (l'ancien filet, du temps ou le
+ * moteur tenait lui-meme un minuteur de lecture), c'est moins que le temps de
+ * lire une seule etape, un joueur attentif se ferait donc rattraper par son
+ * propre filet de securite. On choisit l'ordre de la minute et demie : tres
+ * au-dela du temps de lecture le plus lent, tout en restant borne pour qu'une
+ * table ne reste jamais bloquee indefiniment.
  */
 export const DELAI_FILET_ANTI_BLOCAGE_CLIC_MS = 90_000
-export const DELAI_FILET_ANTI_BLOCAGE_DELAI_MS = 6000
-
-export function delaiFiletAntiBlocage(decision: DecisionAccuse): number {
-  return decision === 'attendre-clic'
-    ? DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
-    : DELAI_FILET_ANTI_BLOCAGE_DELAI_MS
-}
 
 /**
  * Une notification poussee par le moteur (Notify.Show, cote Python). Elle arrive
@@ -545,12 +535,6 @@ export type EtatMoteur = {
    * numero, qui change a chaque rendu du moteur, l'interdit par construction.
    */
   trameRetenue?: number
-  /**
-   * Pas a pas : une etape est affichee et son echeance court. `enPause` fige
-   * l'echeance jusqu'a nouvel ordre. Sert au plateau pour le clic « suite »,
-   * l'indicateur de pause et le bouton « Tout passer ».
-   */
-  pasAPas: { actif: boolean; enPause: boolean }
   /** Reconnexion : horodatage (ms) de la prochaine tentative, si programmee. */
   prochaineTentative?: number
   /** Nombre de tentatives de reconnexion depuis la coupure. */
@@ -589,7 +573,6 @@ export class Moteur {
     aNous: false,
     connecte: false,
     validationRequise: false,
-    pasAPas: { actif: false, enPause: false },
     tentatives: 0,
     hautsFaits: [],
     siegesAbsents: [],
@@ -619,11 +602,6 @@ export class Moteur {
    * suite, plus personne ne retient personne.
    */
   private mode: ModePhaseMechant = 'detaille'
-  private delaiPasAPas = DELAI_PAS_A_PAS_DEFAUT
-  private minuteurPasAPas: number | undefined
-  private enPause = false
-  /** « Tout passer » : vrai jusqu'a la SORTIE de la phase du mechant. */
-  private phaseSautee = false
 
   setModePhaseMechant(mode: ModePhaseMechant) {
     this.mode = mode
@@ -634,43 +612,17 @@ export class Moteur {
     if (this.trameEnAttente) void this.continuer()
   }
 
-  setDelaiPasAPas(ms: number) {
-    this.delaiPasAPas = bornerDelai(ms)
-  }
-
-  /** Clic du joueur : l'etape affichee a ete lue, on passe a la suivante. */
+  /**
+   * Le cartouche du deroule a rendu la main (clic « Suivant », avance auto,
+   * defilement d'Echap : tous passent par lui) : la trame retenue est
+   * relachee. Sans trame en attente, ne fait rien.
+   *
+   * C'est le SEUL chemin par lequel le moteur repart pendant la phase du
+   * mechant, filet anti-blocage mis a part. Il n'a plus de minuteur de
+   * lecture a lui, ni de pause, ni de « laissez passer » pour toute la phase.
+   */
   avancerMaintenant(): void {
     if (this.trameEnAttente) void this.continuer()
-  }
-
-  /**
-   * Espace : fige (ou relance) l'echeance. En pause on ne programme rien ; le
-   * moteur attend, sans qu'aucune echeance ne coure.
-   */
-  basculerPause(): boolean {
-    this.enPause = !this.enPause
-    this.publier({ pasAPas: { actif: this.trameEnAttente !== undefined, enPause: this.enPause } })
-    if (this.enPause) {
-      if (this.minuteurPasAPas !== undefined) window.clearTimeout(this.minuteurPasAPas)
-      this.minuteurPasAPas = undefined
-    } else {
-      this.programmerAvance()
-    }
-    return this.enPause
-  }
-
-  /** « Tout passer » : le reste de la phase defile sans s'arreter. */
-  passerToutLaPhase(): void {
-    this.phaseSautee = true
-    this.enPause = false
-    this.avancerMaintenant()
-  }
-
-  private programmerAvance(): void {
-    if (this.minuteurPasAPas !== undefined) window.clearTimeout(this.minuteurPasAPas)
-    this.minuteurPasAPas = undefined
-    if (this.enPause || !this.trameEnAttente) return
-    this.minuteurPasAPas = window.setTimeout(() => void this.continuer(), this.delaiPasAPas)
   }
 
   constructor(private readonly playerId: number) {}
@@ -873,40 +825,21 @@ export class Moteur {
       // sans trier sur ce qu'elles racontent : c'est le cartouche du deroule
       // qui rend la main des qu'il est a jour, donc une trame qui ne lui
       // fabrique aucune etape est relachee dans la foulee (voir
-      // `decisionAccuse`). « Tout passer » ne vaut que pour LA phase en cours :
-      // des qu'on en sort, le pas a pas reprend au round suivant sans rien
-      // demander.
-      const dansLaPhase = PHASES_DU_MECHANT.has(monde?.phase ?? '')
-      if (!dansLaPhase && this.phaseSautee) this.phaseSautee = false
-
-      const decision = decisionAccuse(this.mode, monde, this.phaseSautee)
+      // `decisionAccuse`). Le moteur attend sans limite (max_timeout = 0),
+      // c'est donc le cartouche qui donne le rythme : aucun monde n'est
+      // bufferise, aucune desynchronisation possible.
+      const decision = decisionAccuse(this.mode, monde)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true, trameRetenue: this.trame.render_id })
         // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
         // client fantome bloque la phase ennemie pour tout le monde). Voir
-        // `delaiFiletAntiBlocage` pour le choix de la duree.
+        // `DELAI_FILET_ANTI_BLOCAGE_CLIC_MS` pour le choix de la duree.
         if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
         this.minuteurAutoContinue = window.setTimeout(
           () => void this.continuer(),
-          delaiFiletAntiBlocage(decision)
+          DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
         )
-      } else if (this.trame && decision === 'attendre-delai') {
-        // On retient l'accuse le temps que l'etape se lise. Le moteur attend
-        // sans limite (max_timeout = 0), c'est donc NOUS qui donnons le rythme :
-        // aucun monde n'est bufferise, aucune desynchronisation possible.
-        this.trameEnAttente = this.trame
-        // L'identite est publiee ici AUSSI, alors que c'est le minuteur de
-        // lecture qui relachera la trame : sans elle, une trame qui ne
-        // fabrique aucune etape couterait le delai de lecture complet en
-        // avance auto, alors qu'il n'y a rien a lire. Le cartouche, lui,
-        // acquitte des qu'il est a jour ; le minuteur reste le filet quand
-        // c'est lui qui arrive le premier.
-        this.publier({
-          pasAPas: { actif: true, enPause: this.enPause },
-          trameRetenue: this.trame.render_id,
-        })
-        this.programmerAvance()
       } else if (this.trame) {
         await accuserReception(this.playerId, this.trame)
       }
@@ -949,20 +882,12 @@ export class Moteur {
       window.clearTimeout(this.minuteurAutoContinue)
       this.minuteurAutoContinue = undefined
     }
-    if (this.minuteurPasAPas !== undefined) {
-      window.clearTimeout(this.minuteurPasAPas)
-      this.minuteurPasAPas = undefined
-    }
     const trame = this.trameEnAttente
     if (!trame) return
     this.trameEnAttente = undefined
     // `trameRetenue` repasse a undefined : plus rien n'est retenu, et le
     // cartouche ne doit pas croire qu'il reste une trame a acquitter.
-    this.publier({
-      validationRequise: false,
-      trameRetenue: undefined,
-      pasAPas: { actif: false, enPause: this.enPause },
-    })
+    this.publier({ validationRequise: false, trameRetenue: undefined })
     await accuserReception(this.playerId, trame)
   }
 }

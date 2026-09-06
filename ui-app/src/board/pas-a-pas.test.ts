@@ -3,13 +3,11 @@ import { describe, expect, it } from 'vitest'
 import {
   bornerDelai,
   decisionAccuse,
-  delaiFiletAntiBlocage,
   ecrireModePhaseMechant,
   lireAvanceAuto,
   lireModePhaseMechant,
   migrerReglagesPhase,
   DELAI_FILET_ANTI_BLOCAGE_CLIC_MS,
-  DELAI_FILET_ANTI_BLOCAGE_DELAI_MS,
   DELAI_PAS_A_PAS_DEFAUT,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
@@ -193,8 +191,19 @@ describe('qui retient l’accusé de réception', () => {
   it('ne rend jamais « attendre-delai » en detaille : l’avance auto ne le regarde pas', () => {
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
+      expect(decisionAccuse('detaille', m)).toBe('attendre-clic')
     }
+  })
+
+  // Le type lui-meme ne connait plus que deux valeurs : le moteur attend un
+  // clic du cartouche, ou n'attend pas. Ce test ne compile que tant que c'est
+  // vrai.
+  it('ne connait que deux decisions : immediat ou attendre-clic', () => {
+    const decisions: Record<ReturnType<typeof decisionAccuse>, true> = {
+      immediat: true,
+      'attendre-clic': true,
+    }
+    expect(Object.keys(decisions)).toHaveLength(2)
   })
 
   it('attend un clic en detaille sans avance auto, sur les quatre phases', () => {
@@ -205,18 +214,16 @@ describe('qui retient l’accusé de réception', () => {
     // « Suivant » du cartouche), pas un delai automatique.
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
+      expect(decisionAccuse('detaille', m)).toBe('attendre-clic')
     }
   })
 
-  // « Tout passer » ne vaut que pour LA phase en cours : sans ce drapeau, le
-  // joueur qui saute une phase les sauterait toutes.
-  it('n’attend plus rien quand la phase a été sautée', () => {
-    expect(decisionAccuse('detaille', degats, true)).toBe('immediat')
-  })
+  // Il n'y a plus de « laissez passer » pour toute la phase (l'ancien
+  // `phaseSautee`, pose par Echap) : Echap fait defiler le cartouche, qui
+  // acquitte une trame a la fois. Le moteur ne peut donc plus partir devant.
 
   it('n’attend jamais en instantané, même en pleine phase du méchant', () => {
-    expect(decisionAccuse('instantane', degats, false)).toBe('immediat')
+    expect(decisionAccuse('instantane', degats)).toBe('immediat')
   })
 
   // Le filtre `evenementAMontrer` a été RETIRÉ, et c'est le cœur de la
@@ -233,8 +240,7 @@ describe('qui retient l’accusé de réception', () => {
     expect(
       decisionAccuse(
         'detaille',
-        monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' }),
-        false
+        monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' })
       )
     ).toBe('attendre-clic')
   })
@@ -242,20 +248,18 @@ describe('qui retient l’accusé de réception', () => {
   // Une trame sans prompt ni event_name ne dit rien du tout : elle est retenue
   // comme les autres, tant qu'elle appartient à la phase du méchant.
   it('retient une trame muette de la phase du méchant', () => {
-    expect(decisionAccuse('detaille', monde({ phase: 'Enemy Activation' }), false)).toBe(
-      'attendre-clic'
-    )
+    expect(decisionAccuse('detaille', monde({ phase: 'Enemy Activation' }))).toBe('attendre-clic')
   })
 
   // Le monde n'est pas encore chargé : aucune phase, donc rien à retenir.
   it('ne retient rien sans monde', () => {
-    expect(decisionAccuse('detaille', undefined, false)).toBe('immediat')
+    expect(decisionAccuse('detaille', undefined)).toBe('immediat')
   })
 
   // Le tour du joueur ne doit JAMAIS être ralenti : c'est lui qui agit.
   it('laisse filer le tour du joueur', () => {
     const tour = monde({ phase: 'Player 1 Turn', prompt: 'subit 3 dégât(s)' })
-    expect(decisionAccuse('detaille', tour, false)).toBe('immediat')
+    expect(decisionAccuse('detaille', tour)).toBe('immediat')
   })
 })
 
@@ -263,22 +267,13 @@ describe('qui retient l’accusé de réception', () => {
 // temps de lire une étape du cartouche, un joueur attentif se faisait donc
 // doubler par son propre garde-fou.
 describe('le filet anti-blocage', () => {
-  it('attend beaucoup plus longtemps quand le moteur attend un CLIC', () => {
-    expect(delaiFiletAntiBlocage('attendre-clic')).toBe(DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
+  // Le moteur n'attend jamais qu'un CLIC du cartouche : le filet n'a plus
+  // qu'une seule durée (l'ancien délai court de 6 s accompagnait un minuteur
+  // de lecture que le moteur ne tient plus).
+  it('laisse largement le temps de lire une étape avant de doubler le joueur', () => {
     // De l'ordre de la minute et demie, largement au-dessus du temps de
     // lecture d'une étape.
-    expect(delaiFiletAntiBlocage('attendre-clic')).toBeGreaterThanOrEqual(60_000)
-  })
-
-  it('garde l’ancien délai, court, quand le moteur attend un DELAI', () => {
-    // Ce cas n'a pas besoin d'être long : l'attente est déjà pilotée par
-    // `programmerAvance` / `delaiPasAPas`, ce filet n'est qu'un garde-fou
-    // supplémentaire.
-    expect(delaiFiletAntiBlocage('attendre-delai')).toBe(DELAI_FILET_ANTI_BLOCAGE_DELAI_MS)
-  })
-
-  it('n’attend rien de plus en immédiat non plus (repli sur l’ancien délai)', () => {
-    expect(delaiFiletAntiBlocage('immediat')).toBe(DELAI_FILET_ANTI_BLOCAGE_DELAI_MS)
+    expect(DELAI_FILET_ANTI_BLOCAGE_CLIC_MS).toBeGreaterThanOrEqual(60_000)
   })
 })
 

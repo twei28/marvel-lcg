@@ -806,7 +806,6 @@ function usePartieEnCours(playerId: number) {
     aNous: false,
     connecte: false,
     validationRequise: false,
-    pasAPas: { actif: false, enPause: false },
     tentatives: 0,
   })
 
@@ -832,14 +831,11 @@ function usePartieEnCours(playerId: number) {
     continuer: () => moteur.continuer(),
     reconnecter: () => moteur.reconnecterMaintenant(),
     reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
-    reglerDelaiPasAPas: (ms: number) => moteur.setDelaiPasAPas(ms),
     // Branche sur le cartouche du deroule detaille (DeroulePhase, plus bas) :
-    // c'est lui qui relache desormais le moteur, etape par etape.
-    // CouchePasAPas ne l'appelle plus (voir plus bas), mais le clic-suite y
-    // reste disponible si on la rallume.
+    // c'est lui qui relache le moteur, etape par etape, et lui seul. La
+    // vitesse de l'avance auto ne se regle plus ici : c'est une horloge du
+    // cartouche (prop delaiAvanceMs), le moteur n'en a plus.
     avancerPasAPas: () => moteur.avancerMaintenant(),
-    basculerPausePasAPas: () => moteur.basculerPause(),
-    passerToutLaPhase: () => moteur.passerToutLaPhase(),
   }
 }
 
@@ -1568,9 +1564,7 @@ function PagePartie({
     continuer,
     reconnecter,
     reglerModePhase,
-    reglerDelaiPasAPas,
     avancerPasAPas,
-    basculerPausePasAPas,
   } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
@@ -2054,37 +2048,26 @@ function PagePartie({
     ecrireDelaiPasAPas(ms)
   }, [])
 
-  // Les reglages vivent dans le composant, mais c'est le Moteur qui retient (ou
-  // non) l'accuse de reception : il faut les lui redire a chaque changement.
+  // Le mode vit dans le composant, mais c'est le Moteur qui retient (ou non)
+  // l'accuse de reception : il faut le lui redire a chaque changement. Avance
+  // auto et vitesse, eux, ne le regardent pas : ils vont au cartouche.
   useEffect(() => {
     reglerModePhase(modePhase)
   }, [modePhase, reglerModePhase])
-  useEffect(() => {
-    reglerDelaiPasAPas(delaiPasAPas)
-  }, [delaiPasAPas, reglerDelaiPasAPas])
 
   // usePasAPas (halo teinte + chiffre flottant sur la carte de l'etape en
   // cours) : DEBRANCHEE a la demande de l'utilisateur - double emploi avec le
   // cartouche du deroule (MENACE / ACTIVATIONS / DISTRIBUTION / RÉVÉLATION),
   // exactement le defaut corrige entre le bandeau et le splash. pas-a-pas.ts
   // reste en place : il suffit de reimporter `usePasAPas` depuis
-  // './board/pas-a-pas' et de remettre la ligne suivante pour la rallumer.
-  // usePasAPas(historique.entrees, etat.pasAPas.actif)
+  // './board/pas-a-pas' et de remettre la ligne suivante pour la rallumer,
+  // avec pour second argument « une trame est retenue »
+  // (etat.trameRetenue !== undefined).
+  // usePasAPas(historique.entrees, etat.trameRetenue !== undefined)
 
-  // Espace : pause / reprise. Ailleurs qu'en avance auto la touche ne fait
-  // rien, et on ne la vole jamais a un champ de saisie.
-  useEffect(() => {
-    if (!etat.pasAPas.actif) return
-    const surTouche = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' || e.repeat) return
-      const cible = e.target as HTMLElement | null
-      if (cible && /^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName)) return
-      e.preventDefault()
-      basculerPausePasAPas()
-    }
-    window.addEventListener('keydown', surTouche)
-    return () => window.removeEventListener('keydown', surTouche)
-  }, [etat.pasAPas.actif, basculerPausePasAPas])
+  // Espace n'a plus de role ici : la pause du moteur a disparu avec son
+  // minuteur de lecture (le cartouche tient la seule horloge de la phase), et
+  // c'est DeroulePhase qui prend Espace pour avancer d'une etape.
 
   // Le recap de fin de phase sert DANS LES DEUX MODES.
   //
@@ -2406,14 +2389,15 @@ function PagePartie({
           deroule juste en dessous, qui porte deja MENACE / ACTIVATIONS /
           DISTRIBUTION / RÉVÉLATION : exactement le defaut corrige entre le
           bandeau et le splash. Le « Tout passer » qu'elle portait est repris
-          par DeroulePhase (prop onToutDerouler, ci-dessous). CouchePasAPas.tsx
-          reste en place : il suffit de reimporter `CouchePasAPas` depuis
-          './board/CouchePasAPas' et de remettre
-          <CouchePasAPas actif={etat.pasAPas.actif} enPause={etat.pasAPas.enPause}
-            phase={etat.monde?.phase} onAvancer={avancerPasAPas}
-            onBasculerPause={basculerPausePasAPas} onToutPasser={passerToutLaPhase} />
-          ici pour la rallumer (avancerPasAPas est deja destructure plus haut,
-          desormais utilise par DeroulePhase ci-dessous). */}
+          par DeroulePhase (touche Echap, qui fait defiler le cartouche).
+          CouchePasAPas.tsx reste en place, mais deux de ses props n'ont PLUS
+          de contrepartie dans le moteur : la pause (`enPause`,
+          `onBasculerPause`) et le « Tout passer » moteur (`onToutPasser`) ont
+          disparu avec le minuteur de lecture du moteur, le cartouche tenant
+          desormais la seule horloge de la phase. La rallumer demanderait de
+          lui retirer ces deux commandes ; `actif` vaudrait
+          `etat.trameRetenue !== undefined` et `onAvancer` = avancerPasAPas
+          (deja destructure plus haut, utilise par DeroulePhase ci-dessous). */}
       {/* Banniere des hauts faits : DEBRANCHEE a la demande de l'utilisateur.
           Moteur.enregistrerHautsFaits() continue de les accumuler dans
           etat.hautsFaits, et CoucheHautsFaits.tsx reste en place : il suffit de
