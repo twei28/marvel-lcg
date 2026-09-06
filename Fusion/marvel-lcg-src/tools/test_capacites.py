@@ -22303,6 +22303,74 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"forme": "Hero", "en_jeu": ["sf015"]},
     },
+    # ---------------------------------------------------------------- A2 ----
+    # DEBUT DU BLOC A2 (06/09/2026) — NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
+    #
+    # Ces quatre cas ne testent AUCUNE carte : ils testent le JOURNAL DES FAITS
+    # DU MECHANT (`WorldStat.RecordFaitMechant`), que le cartouche du plateau
+    # lit pour raconter la phase du mechant. Jusqu'ici le moteur n'y inscrivait
+    # que les ACTIVATIONS ennemies (can_attack.py) ; la menace de l'etape 1, la
+    # distribution de l'etape 3 et les revelations de l'etape 4 venaient d'un
+    # journal reconstruit dans le navigateur, perdu au moindre rechargement de
+    # page. Un fait par evenement, a l'endroit exact ou le moteur le produit.
+    #
+    # Filtre pour les rejouer seuls :
+    #     python3.10 tools/test_capacites.py .game-src 40000 /tmp/a2.json "A2 faits"
+    {
+        "nom": "A2 faits — l'etape 1 journalise la menace posee sur la manigance",
+        "pourquoi": ("le cartouche du plateau tirait son etape MENACE d'un journal "
+                     "local reconstruit par difference entre deux photos du monde : "
+                     "un rechargement de page en pleine phase la faisait disparaitre. "
+                     "Le fait porte la manigance, la quantite, le restant et le seuil"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a2_fait_menace",
+    },
+    {
+        "nom": "A2 faits — l'etape 3 journalise la carte distribuee a chaque joueur",
+        "pourquoi": ("le temps DISTRIBUTION du cartouche etait STRUCTURELLEMENT "
+                     "toujours vide (constat M3 de l'audit) : rien ne le renseignait. "
+                     "Le fait porte le siege du joueur et son heros.\n"
+                     "Le cas prouve AUSSI le garde-fou : une carte distribuee hors de "
+                     "l'etape 3 (ici pendant le tour du joueur) n'inscrit rien"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a2_fait_distribution",
+    },
+    {
+        "nom": "A2 faits — l'etape 4 journalise chaque carte revelee, avec son joueur",
+        "pourquoi": ("meme cause que la menace : les revelations venaient du journal "
+                     "local, perdu au rechargement. Le fait porte le siege du joueur, "
+                     "le nom de la carte et son identifiant d'objet"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a2_fait_revelation",
+    },
+    {
+        "nom": "A2 faits — une carte revelee qui fait attaquer le vilain : UN fait de chaque",
+        "pourquoi": ("01106 Stampede — « When Revealed (Hero): Rhino attacks you ». "
+                     "Le meme evenement produit une revelation ET une activation : "
+                     "il faut EXACTEMENT un fait de chaque genre, ni doublon (la "
+                     "revelation comptee deux fois) ni oubli (l'attaque avalee par la "
+                     "revelation). C'est le cas qui garde les deux sites d'appel "
+                     "independants.\n"
+                     "⚠ FORME HEROS OBLIGATOIRE : la partie s'ouvre en ALTER-EGO "
+                     "(mesure du 06/09/2026 : le fait portait « Peter Parker »), et "
+                     "Stampede n'y gagne que du Deferlement — aucune attaque, donc "
+                     "aucun doublon a mesurer"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a2_pas_de_doublon_revelation_attaque",
+    },
+    # FIN DU BLOC A2 -----------------------------------------------------------
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -26835,6 +26903,192 @@ def yd_attachements(monde, aides):
         return False, " ; ".join(soucis)
     return True, f"attachements conformes ; {message}"
 
+
+# ============================ BLOC A2 (06/09/2026) ==========================
+# Le journal des faits du mechant : menace, distribution, revelation.
+# Voir les quatre cas « A2 faits — ... » dans CAS. Ces fonctions ne verifient
+# aucune carte : elles rejouent une etape de la phase du mechant a la main et
+# lisent `monde.stat.faits_mechant`.
+# ----------------------------------------------------------------------------
+
+def _a2_vider_le_journal(monde):
+    """Repart d'un journal vide SANS declencher la purge de changement de round.
+
+    `RecordFaitMechant` vide la liste des qu'il voit un round different du
+    dernier vu. On aligne donc le round temoin sur le round courant : sans
+    cela le premier fait du cas effacerait ce que le cas vient de poser.
+    """
+    monde.stat.faits_mechant = []
+    monde.stat._faits_mechant_round = monde.round_id
+
+def _a2_faits(monde, genre):
+    return [f for f in monde.stat.faits_mechant if f.get('genre') == genre]
+
+def _a2_siege(monde, joueur):
+    return monde.const_seat_order_players.index(joueur)
+
+def a2_fait_menace(monde, aides):
+    """Etape 1 : `MainScheme.Phase()` inscrit un fait `menace` par manigance."""
+    from game.world.phase import Phase
+    from game.operate.worlds import Worlds
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.PlaceThreat)
+    monde.current_player = None
+
+    maniganes = Worlds.GetAllMainSchemes(monde)
+    if not maniganes:
+        return False, "aucune manigance principale en jeu"
+    for manigance in maniganes:
+        manigance.Phase()
+
+    faits = _a2_faits(monde, 'menace')
+    if len(faits) != len(maniganes):
+        return False, (f"{len(faits)} fait(s) de menace pour {len(maniganes)} "
+                       f"manigance(s) (journal = {monde.stat.faits_mechant})")
+
+    manigance = maniganes[0]
+    fait = faits[0]
+    manques = [c for c in ('phase', 'cible', 'cible_id', 'montant', 'restant', 'round_id')
+               if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if fait['phase'] != 'Main Scheme Place Threat':
+        return False, f"phase = {fait['phase']!r} (attendu 'Main Scheme Place Threat')"
+    if fait['cible_id'] != manigance.card.object_id:
+        return False, f"cible_id = {fait['cible_id']} (attendu {manigance.card.object_id})"
+    if fait['cible'] != manigance.name:
+        return False, f"cible = {fait['cible']!r} (attendu {manigance.name!r})"
+    if not isinstance(fait['montant'], int) or fait['montant'] <= 0:
+        return False, f"montant = {fait['montant']!r} (attendu un entier > 0)"
+    if fait['restant'] != manigance.threat:
+        return False, f"restant = {fait['restant']} (menace reelle {manigance.threat})"
+    if fait['round_id'] != monde.round_id:
+        return False, f"round_id = {fait['round_id']} (attendu {monde.round_id})"
+    return True, (f"fait menace : {fait['cible']} +{fait['montant']} -> "
+                  f"{fait['restant']}/{fait.get('plafond')}")
+
+def a2_fait_distribution(monde, aides):
+    """Etape 3 : chaque carte distribuee inscrit un fait `distribution`.
+
+    Le cas mesure AUSSI le garde-fou : hors de l'etape 3, la meme distribution
+    n'inscrit rien. Sans lui, un `surge` ou une carte qui distribue pendant le
+    tour d'un joueur noierait le cartouche.
+    """
+    from game.world.phase import Phase
+    from game.effect.rule import GameRule
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+
+    # 1. HORS etape 3 : rien ne doit s'inscrire.
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    joueur.DealEncounterCards(1, GameRule(joueur.GetIdentity()))
+    parasites = _a2_faits(monde, 'distribution')
+    if parasites:
+        return False, (f"{len(parasites)} fait(s) de distribution inscrit(s) PENDANT "
+                       f"le tour du joueur : {parasites}")
+
+    # 2. Etape 3 : un fait, avec le siege du joueur.
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.DealEncounterCards)
+    joueur.DealEncounterCards(1, GameRule(joueur.GetIdentity()))
+
+    faits = _a2_faits(monde, 'distribution')
+    if len(faits) != 1:
+        return False, (f"{len(faits)} fait(s) de distribution (attendu 1) ; "
+                       f"journal = {monde.stat.faits_mechant}")
+    fait = faits[0]
+    manques = [c for c in ('phase', 'joueur', 'round_id') if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if fait['phase'] != 'Deal Encounter Cards':
+        return False, f"phase = {fait['phase']!r} (attendu 'Deal Encounter Cards')"
+    if fait['joueur'] != _a2_siege(monde, joueur):
+        return False, f"joueur = {fait['joueur']} (siege attendu {_a2_siege(monde, joueur)})"
+    return True, f"fait distribution : siege {fait['joueur']} ({fait.get('joueur_nom')})"
+
+def a2_fait_revelation(monde, aides):
+    """Etape 4 : chaque carte revelee inscrit un fait `revelation`."""
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+
+    # Distribuee PENDANT LE TOUR DU JOUEUR : la distribution ne doit rien
+    # inscrire ici, seule la revelation nous interesse.
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    PuzzleHelper.Exec(["Puzzle.Deal('01101')"], monde)
+    attendues = [(f.name, f.card.object_id) for f in joueur.dealt_encounter_cards.Get(True)]
+    if not attendues:
+        return False, "01101 n'a pas ete distribuee"
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.RevealsEncounterCards)
+    joueur.RevealEncounterCards()
+
+    faits = _a2_faits(monde, 'revelation')
+    if len(faits) != len(attendues):
+        return False, (f"{len(faits)} fait(s) de revelation pour {len(attendues)} "
+                       f"carte(s) distribuee(s) ; journal = {monde.stat.faits_mechant}")
+    fait = faits[0]
+    manques = [c for c in ('phase', 'joueur', 'carte', 'carte_id', 'round_id')
+               if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if fait['phase'] != 'Reveal Encounter Cards':
+        return False, f"phase = {fait['phase']!r} (attendu 'Reveal Encounter Cards')"
+    if fait['joueur'] != _a2_siege(monde, joueur):
+        return False, f"joueur = {fait['joueur']} (siege attendu {_a2_siege(monde, joueur)})"
+    if (fait['carte'], fait['carte_id']) != attendues[0]:
+        return False, (f"carte = {(fait['carte'], fait['carte_id'])} "
+                       f"(attendu {attendues[0]})")
+    return True, f"fait revelation : {fait['carte']} (#{fait['carte_id']}) par le siege {fait['joueur']}"
+
+def a2_pas_de_doublon_revelation_attaque(monde, aides):
+    """01106 Stampede : UN fait de revelation, UN fait d'attaque, pas plus.
+
+    La carte revelee fait attaquer Rhino. Les deux faits naissent de deux
+    sites d'appel independants (player_action.RevealEncounterCards pour la
+    revelation, can_attack.JournaliserActivation pour l'attaque) : ce cas
+    est ce qui interdit a l'un de recouvrir l'autre.
+    """
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    PuzzleHelper.Exec(["Puzzle.Deal('01106')"], monde)
+    distribuees = [getattr(f.paper, "card_id", None)
+                   for f in joueur.dealt_encounter_cards.Get(True)]
+    if "01106" not in distribuees:
+        return False, f"01106 n'a pas ete distribuee (distribuees = {distribuees})"
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.RevealsEncounterCards)
+    joueur.RevealEncounterCards()
+
+    revelations = _a2_faits(monde, 'revelation')
+    attaques = _a2_faits(monde, 'attaque')
+    stampede = [f for f in revelations if f.get('carte') == 'Stampede']
+    if len(stampede) != 1:
+        return False, (f"{len(stampede)} fait(s) de revelation pour Stampede "
+                       f"(attendu 1) ; journal = {monde.stat.faits_mechant}")
+    if len(attaques) != 1:
+        return False, (f"{len(attaques)} fait(s) d'attaque (attendu 1) ; "
+                       f"journal = {monde.stat.faits_mechant}")
+    if attaques[0].get('phase') != 'Reveal Encounter Cards':
+        return False, (f"l'attaque est datee {attaques[0].get('phase')!r} "
+                       f"(attendu 'Reveal Encounter Cards')")
+    return True, (f"1 revelation ({stampede[0]['carte']}) + 1 attaque "
+                  f"({attaques[0]['auteur']} -> {attaques[0]['cible']}), "
+                  f"{len(revelations)} revelation(s) au total")
+
+# ========================== FIN DU BLOC A2 ==================================
 '''
 
 

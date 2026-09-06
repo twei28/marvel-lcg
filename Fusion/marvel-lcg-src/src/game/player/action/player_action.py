@@ -24,6 +24,56 @@ class PlayerAction:
         return Cast(Player, self)
 
     ################################################################################
+    # Journal de la phase du mechant (voir game/world/world_stat.py).
+    #
+    # Le client (ui-app) raconte la phase du mechant etape par etape. Les
+    # ACTIVATIONS ennemies lui venaient deja du moteur ; la distribution et les
+    # revelations, elles, etaient reconstituees dans le navigateur en comparant
+    # deux photos du monde — une reconstitution perdue au moindre rechargement
+    # de page, et incapable de dire QUI recoit quoi. Les deux methodes
+    # ci-dessous inscrivent ces deux evenements la ou le moteur les produit.
+    @staticmethod
+    def _SiegeDuJoueur(player: 'Player') -> 'int|None':
+        """L'indice de SIEGE du joueur, celui que le client retrouve.
+
+        `World.players`, cote client, est rempli dans l'ordre de
+        `world.const_seat_order_players` (game/render/to_descriptor.py) : c'est
+        donc ce meme indice qui permet au client de nommer le heros concerne.
+        `None` quand le joueur n'y figure pas, plutot qu'un indice invente.
+        """
+        try:
+            return player.world.const_seat_order_players.index(player)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _JournaliserPhaseDuMechant(player: 'Player', phase_attendue: str,
+                                   fait: 'Dict[str, Any]') -> None:
+        """Inscrit un fait au journal, SI le moteur est bien a l'etape annoncee.
+
+        Le filtre par phase distingue ces deux evenements des activations, que
+        `can_attack.py` journalise sans condition. Un ennemi qui frappe hors de
+        l'etape 2 reste un fait de la phase du mechant ; une carte rencontre
+        distribuee pendant le tour d'un joueur (Deferlement, capacite de carte,
+        danger) n'en est pas un, et noierait le cartouche d'etapes qui
+        n'appartiennent a aucun point de la carte de reference.
+
+        Le dictionnaire recu n'est jamais mute : on en construit un nouveau,
+        que `RecordFaitMechant` recopie a son tour.
+        """
+        world = player.world
+        phase = world.GetPhaseText()
+        if phase != phase_attendue:
+            return
+        identite = player.GetIdentity()
+        world.stat.RecordFaitMechant(world.round_id, {
+            'phase': phase,
+            'joueur': PlayerAction._SiegeDuJoueur(player),
+            'joueur_nom': getattr(identite, 'name', None),
+            **fait,
+        })
+
+    ################################################################################
     # Encounter
     def DealEncounterCard(self, face: 'CardFace', by_effect: 'Effect', *, by_surge: bool=False):
         from game.message import Message
@@ -49,6 +99,15 @@ class PlayerAction:
 
         message = Message.AfterPlayerDealEncounterCard(player, would_message)
         message.Send()
+
+        # POINT 3 de la carte de reference : « distribuer une carte rencontre a
+        # chaque joueur ». Un fait par CARTE distribuee, et non par joueur : la
+        # carte est l'evenement, le mode Heroique en donne deux, et un danger
+        # (Hazard) en ajoute une de plus — le cartouche doit toutes les
+        # montrer. La carte reste face cachee : le fait ne dit pas laquelle,
+        # seulement a qui.
+        PlayerAction._JournaliserPhaseDuMechant(
+            player, 'Deal Encounter Cards', {'genre': 'distribution'})
 
     # facedown
     def DealEncounterCards(self, size: int, by_effect: 'Effect', *, by_surge: bool=False) -> None:
@@ -78,6 +137,23 @@ class PlayerAction:
             target = message.trigger
             target.Discard(effect)
             """
+            # POINT 4 de la carte de reference : « chaque joueur revele sa carte
+            # rencontre ». Un fait par carte revelee ; le Deferlement en
+            # ajoute une, la boucle la reveille au tour suivant, et elle a donc
+            # son propre fait.
+            #
+            # AVANT `Reveal`, et c'est le point important : une carte qui met le
+            # heros a terre en se revelant sort de la boucle par `is_game_over`
+            # ou `is_eliminated` juste apres, et son etape n'existerait jamais —
+            # or c'est precisement le coup que le joueur veut voir. Le nom et
+            # l'identifiant se lisent aussi avant : la carte quitte la zone du
+            # joueur pendant sa propre resolution.
+            PlayerAction._JournaliserPhaseDuMechant(
+                player, 'Reveal Encounter Cards', {
+                    'genre': 'revelation',
+                    'carte': face.name,
+                    'carte_id': face.card.object_id,
+                })
             face.Reveal(player, GameRule(face))
             if player.world.is_game_over:
                 break

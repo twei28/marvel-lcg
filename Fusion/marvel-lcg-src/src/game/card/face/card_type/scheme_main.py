@@ -133,7 +133,43 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
         message = Message.CalcMainSchemeEscalation(self, self.escalation_threat, acceleration_icons, acceleration_tokens)
         message.Send()
 
-        self.PlaceThreatInternal(message.escalation_threat, MainSchemePhasePlaceThreat(self))
+        place_message = self.PlaceThreatInternal(message.escalation_threat, MainSchemePhasePlaceThreat(self))
+
+        # Journal de la phase du mechant (voir WorldStat.RecordFaitMechant) :
+        # le POINT 1 de la carte de reference y inscrit sa pose de menace.
+        #
+        # ICI, et nulle part ailleurs. `Phase()` n'a qu'un seul appelant,
+        # `place_threat()` dans world.VillainPhase (game/world/world.py), qui
+        # la joue une fois par manigance principale a l'etape 1 : un fait par
+        # evenement, sans doublon possible. Les autres poses de menace (une
+        # carte revelee, un sbire qui complote) passent par
+        # `PlaceThreatInternal` sans passer par `Phase()` — elles
+        # n'appartiennent pas au point 1, et le journal les couvre deja par
+        # ailleurs (`can_attack.JournaliserManigance`).
+        #
+        # `place_message` est absent quand rien n'a ete pose (escalade nulle,
+        # ou pose remplacee par un autre effet) : pas de menace, pas de fait,
+        # et le cartouche du plateau se tait plutot que d'annoncer un « +0 ».
+        #
+        # Le dictionnaire est construit POUR CET APPEL : `RecordFaitMechant`
+        # en fait sa propre copie, rien n'est mute ici.
+        if place_message is not None:
+            world = self.card.world
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': 'menace',
+                'phase': world.GetPhaseText(),
+                'cible': self.name,
+                'cible_id': self.card.object_id,
+                # La menace REELLEMENT posee, apres remplacements et
+                # modificateurs : `AfterSchemePlaceThreat.value`, pas la
+                # valeur demandee.
+                'montant': place_message.value,
+                # L'etat de la manigance APRES la pose, seuil compris : le
+                # client affiche « 3/12 » sans relire la carte, qui a pu
+                # avancer de stade dans la foulee de cette meme pose.
+                'restant': self.threat,
+                'plafond': self.target_threat,
+            })
 
     def Advance(self, to_face: Literal["2A", "3A"]|CardFace|None, by_effect: 'Effect') -> None:
         self.card.world.AdvanceMainScheme(self, to_face, by_effect)

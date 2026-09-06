@@ -15,7 +15,7 @@ class WorldStat:
         self.this_turn_made_thwart: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         # self.played_cards_this_turn: List[Tuple['Player', 'CardFace']] = []
 
-        # --- Journal des activations ennemies (ajout local, lu par ui-app) ----
+        # --- Journal de la phase du mechant (ajout local, lu par ui-app) ------
         #
         # Le bilan de la phase du mechant reconstituait ce qui s'etait passe en
         # COMPARANT deux photos du monde : une perte de PV devenait « subit 3
@@ -27,6 +27,23 @@ class WorldStat:
         # Ici on publie ce que le moteur SAIT, une fois, au moment ou il le
         # calcule. Le journal ne garde que le round en cours : le bilan ne parle
         # jamais d'un autre, et rien n'a a grossir sans fin.
+        #
+        # QUATRE GENRES DE FAITS, un par evenement, et un seul site d'appel
+        # chacun (la liste vaut contrat avec le client) :
+        #
+        #   'menace'       point 1 — game/card/face/card_type/scheme_main.py,
+        #                  MainScheme.Phase()
+        #   'attaque'      point 2 — game/card/face/attribute/can_attack.py,
+        #   'manigance'             JournaliserActivation / JournaliserManigance
+        #   'distribution' point 3 — game/player/action/player_action.py,
+        #                  PlayerAction.DealEncounterCard
+        #   'revelation'   point 4 — game/player/action/player_action.py,
+        #                  PlayerAction.RevealEncounterCards
+        #
+        # Les activations (points 2) sont inscrites QUELLE QUE SOIT la phase :
+        # une carte revelee peut faire frapper le vilain, et le client range le
+        # fait grace a son champ `phase`. Les trois autres genres n'ont de sens
+        # qu'a leur etape et sont filtres a l'inscription.
         self.faits_mechant: List[Dict[str, Any]] = []
         self._faits_mechant_round: int = -1
 
@@ -66,7 +83,10 @@ class WorldStat:
         self.once_per_phase_effects.append(effect)
 
     def RecordFaitMechant(self, round_id: int, fait: 'Dict[str, Any]') -> None:
-        """Inscrit une activation ennemie au journal du round en cours.
+        """Inscrit un fait de la phase du mechant au journal du round en cours.
+
+        Les genres et leurs sites d'appel sont listes plus haut, a la
+        declaration de `faits_mechant`.
 
         Le changement de round vide le journal : on ne le purge pas a la fin
         d'un round, parce que le bilan s'affiche APRES la phase et lirait alors
