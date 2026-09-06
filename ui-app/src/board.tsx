@@ -2450,6 +2450,15 @@ function PagePartie({
             // l'occasion. Constate en partie : l'ecran de defaite etait la et
             // le cartouche annonçait encore « La suite arrive… ».
             partieFinie={Boolean(etat.monde?.game_over)}
+            // Le moteur pose une question au joueur local, dans son panneau
+            // central : le cartouche s'efface devant elle. C'est la condition
+            // MEME qui affiche ce panneau (DemandeCentrale, plus haut), pas une
+            // seconde ecrite pour l'occasion : les deux ne peuvent pas se
+            // contredire. Elle ne couvre que le panneau central : la question
+            // de la barre du bas (le tour libre du joueur, « Passer » /
+            // « Jouer ») arrive quand la phase du mechant est finie et que le
+            // cartouche montre son bilan, qu'il doit garder deploye.
+            questionAuJoueur={afficherDemandeCentrale}
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}

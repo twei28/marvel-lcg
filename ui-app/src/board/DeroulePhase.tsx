@@ -1,11 +1,18 @@
 // Le cartouche du deroule detaille : une etape a la fois.
 //
-// FIXE en bas au centre, il ne bouge jamais d'une etape a l'autre : l'oeil sait
-// ou lire et la main ou cliquer des le deuxieme tour. Un cartouche colle a la
-// carte concernee aurait deplace le bouton a chaque clic.
+// FIXE sur le cote droit de la table, il ne bouge jamais d'une etape a
+// l'autre : l'oeil sait ou lire et la main ou cliquer des le deuxieme tour. Un
+// cartouche colle a la carte concernee aurait deplace le bouton a chaque clic.
+// Sa place exacte est MESUREE sur la table (voir plus bas), jamais ecrite en
+// dur.
 //
 // « Precedent » RELIT, il ne rejoue rien : le monde du moteur ne recule pas.
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
+//
+// Quand le moteur pose une QUESTION au joueur (dans quel ordre activer deux
+// sbires, defendre ou non), le cartouche s'efface : il se replie sur sa seule
+// chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
+// attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
@@ -35,14 +42,19 @@ import { useDerouleScene } from './useDerouleScene'
 const DELAI_BOOST_MS = 1500
 
 /**
- * De combien le cartouche se tient au-dessus de la main, et le plancher qu'il
- * garde quand aucune main n'est mesurable.
+ * L'ancre du cartouche sur la table, posee sur le body en variables CSS que
+ * `.deroule-phase` (board.css) lit comme ses proprietes `left`, `bottom` et
+ * `width`. Sans elles, le CSS reprend son repli (en bas au centre, a 16 px du
+ * bord), qui sert quand aucune table n'est mesurable (plateau mobile,
+ * premiere frame).
  *
- * `--deroule-bas` est lue par `.deroule-phase` (board.css) comme sa propriete
- * `bottom`. Le repli du CSS (16 px) est le meme que BAS_MINIMUM : le cartouche
- * retombe alors exactement ou il etait avant cette correction.
+ * ECART_MAIN : le jour que le cartouche garde a droite de la main.
+ * BAS_MINIMUM : le plancher de `bottom`, le meme que le repli du CSS.
  */
+const VARIABLE_GAUCHE = '--deroule-gauche'
+const VARIABLE_LARGEUR = '--deroule-largeur'
 const VARIABLE_BAS = '--deroule-bas'
+const VARIABLE_DECALAGE = '--deroule-decalage'
 const ECART_MAIN = 10
 const BAS_MINIMUM = 16
 
@@ -67,6 +79,7 @@ export function DeroulePhase({
   identitePhase,
   phaseMechantEnCours = false,
   partieFinie = false,
+  questionAuJoueur = false,
   pvMaxParNom,
   trameRetenue,
   onSuivant,
@@ -101,6 +114,23 @@ export function DeroulePhase({
    * partie est finie, le cartouche s'efface.
    */
   partieFinie?: boolean
+  /**
+   * Le moteur pose une question au joueur LOCAL, dans son panneau central
+   * (board.tsx : `afficherDemandeCentrale`, la condition meme qui affiche ce
+   * panneau ; on la recoit, on ne la recalcule pas).
+   *
+   * Constate en partie (Bruce Banner contre Ultron) : le moteur demandait dans
+   * quel ordre activer deux sbires, et le cartouche disait « La suite
+   * arrive… » par-dessus la question, bouton compris. Le joueur attendait le
+   * moteur, qui l'attendait. Tant que c'est vrai, le cartouche se replie sur
+   * sa chronologie, sans titre ni bouton, et dit que le moteur attend la
+   * reponse. Il ne disparait pas : le joueur doit encore savoir ou il en est.
+   * Une fois la question resolue, il se redeploie la ou il en etait.
+   *
+   * A ne JAMAIS confondre avec `enAttente` (voir plus bas) : la, c'est le
+   * joueur qui attend le moteur.
+   */
+  questionAuJoueur?: boolean
   /**
    * Les PV maximum des personnages, par nom (board.tsx, qui lit le monde) :
    * sans eux le bilan de fin de phase dit « 8 » au lieu de « 8/14 ». Ils ne
@@ -358,6 +388,11 @@ export function DeroulePhase({
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
+      // Le cartouche est replie devant une question du moteur : il n'a plus de
+      // bouton, il n'a donc plus de touche non plus. Entree appartient a la
+      // question, et Echap ne doit pas demander de derouler une phase que le
+      // moteur ne fait pas avancer tant qu'on ne lui a pas repondu.
+      if (questionAuJoueur) return
       // On ecrit peut-etre ailleurs : le tchat est a portee de main pendant la
       // phase, et un espace tape dedans ne doit pas la faire avancer.
       const cible = evenement.target
@@ -438,61 +473,98 @@ export function DeroulePhase({
     return () => onVisible?.(false)
   }, [visible, onVisible])
 
-  // Le cartouche ne recouvre JAMAIS la main du joueur.
+  // OU SE TIENT LE CARTOUCHE : a droite de la main, dans la colonne du
+  // journal, le bas au bas du journal.
   //
-  // Mesure faite en partie : le cartouche occupait 715 a 873 px, la main 623 a
-  // 806, soit 91 px de recouvrement, et l'utilisateur ne voyait plus ses
-  // cartes. Des trois issues possibles (remonter le cartouche, le decaler sur
-  // un cote, reduire sa hauteur), une seule tient :
+  // Trois choses qu'il ne doit JAMAIS recouvrir, meme replie : la main du
+  // joueur, le panneau central ou le moteur pose ses questions, et la carte
+  // que la mise en scene agrandit. Mesures faites en partie (fenetre de
+  // 1920 x 889, table a l'echelle 0,814 ; les rangees de la grille font alors
+  // 183 px, voir board.css `.plateau-scene`) :
   //
-  //  - le DECALER SUR UN COTE ne sert a rien : la main occupe toute la largeur
-  //    du bas de la table (`--place: 1850px`, board.css), donc aucune colonne
-  //    n'est libre a cette hauteur ;
-  //  - REDUIRE SA HAUTEUR ne suffirait pas : sous la main il ne reste que 83 px
-  //    de fond d'ecran, et le cartouche en demande le double rien que pour ses
-  //    quatre lignes. Le raccourcir jusqu'a tenir la reviendrait a ne plus rien
-  //    y ecrire ;
-  //  - le REMONTER au-dessus de la main est donc le seul choix, et c'est aussi
-  //    le plus stable : il ne touche ni a l'echelle de la table ni au contenu
-  //    du cartouche.
+  //  - la main (`.zone-main`, rangee du bas, colonne centrale) : 623 a 806 de
+  //    haut, 133 a 1468 de large ;
+  //  - le panneau central (`.demande-centrale`, 660 px de large, centre a 45 %
+  //    de la hauteur) : 334 a 466 de haut, 630 a 1290 de large ;
+  //  - la carte agrandie (x 2,36 sur place) : le vilain, rangee 1, deborde de
+  //    0 a 320 ; un sbire, rangee 2, de 169 a 511 ; une manigance annexe
+  //    revelee, calee en haut de la colonne de droite, de 202 a 445. Toutes
+  //    s'arretent au-dessus de 583 ;
+  //  - le journal (`.journal-heros`, rangee du bas, colonne de droite) : 623 a
+  //    806 de haut, 1600 a 1912 de large. Il n'est pas une zone de cartes, et
+  //    pendant la phase du mechant c'est le cartouche qui raconte ce qu'il
+  //    ecrit.
   //
-  // On ne remonte pas d'une valeur en dur : on lit la position REELLE de la
-  // zone de main. `.zone-main` est une case de la grille de la scene, donc sa
-  // boite ne bouge ni avec le nombre de cartes (elles sont rognees a
-  // l'interieur, voir `overflow: hidden` sur `.zone-main`) ni avec la taille de
-  // l'ecran (la scene se met a l'echelle, et le rect suit l'echelle). C'est la
-  // meme facon de lire le plateau que `useDerouleScene` et `placement/boites`.
+  // Un cartouche de 223 px de haut (sa hauteur courante) pose au bas du
+  // journal occupe donc 583 a 806 de haut et 1478 a 1912 de large : a droite
+  // de la main (1468 + 10 de jour), sous tout ce que la mise en scene
+  // agrandit, loin du panneau central. La colonne centrale, elle, ne pouvait
+  // pas tenir ces trois contraintes : entre le panneau (466) et la main (623)
+  // il reste 157 px, et le cartouche en demande 223. C'est ce qui l'avait
+  // pose SUR la question du moteur quand on l'a remonte au-dessus de la main.
   //
-  // Aucune zone de main trouvee (plateau mobile, plateau pas encore monte) : on
-  // ne devine pas une geometrie absente, la variable est retiree et le CSS
-  // reprend sa valeur de repli.
+  // AU-DESSUS du journal (rangees 2-3 de la colonne de droite) aurait ete
+  // pire : c'est la zone des manigances annexes, ou une carte revelee peut
+  // etre agrandie par la mise en scene, sous le cartouche.
+  //
+  // On ne pose rien en dur : on lit la position REELLE de la main et du
+  // journal. Ce sont deux cases de la grille de la scene, donc leurs boites ne
+  // bougent ni avec le nombre de cartes (rognees a l'interieur) ni avec la
+  // taille de l'ecran (la scene se met a l'echelle, et le rect suit). Le
+  // cartouche prend toute la largeur entre le bord droit de la main et le bord
+  // droit du journal : 434 px sur la mesure ci-dessus, et il retrecit avec la
+  // table sur un ecran plus petit (sa chronologie passe alors a la ligne).
+  // C'est la meme facon de lire le plateau que `useDerouleScene` et
+  // `placement/boites`.
+  //
+  // Main ou journal introuvable (plateau mobile, plateau pas encore monte) :
+  // on ne devine pas une geometrie absente, les variables sont retirees et le
+  // CSS reprend son repli.
   useLayoutEffect(() => {
     const corps = document.body
-    const oublier = () => corps.style.removeProperty(VARIABLE_BAS)
+    const oublier = () => {
+      corps.style.removeProperty(VARIABLE_GAUCHE)
+      corps.style.removeProperty(VARIABLE_LARGEUR)
+      corps.style.removeProperty(VARIABLE_BAS)
+      corps.style.removeProperty(VARIABLE_DECALAGE)
+    }
     if (!visible) {
       oublier()
       return
     }
     const mesurer = () => {
       const main = document.querySelector('.plateau-scene .zone-main')
-      if (!main) {
+      const journal = document.querySelector('.plateau-scene .journal-heros')
+      if (!main || !journal) {
         oublier()
         return
       }
-      const boite = main.getBoundingClientRect()
-      // Hauteur nulle : la mise en page n'a pas encore eu lieu (ou l'on est
-      // dans un environnement sans mise en page). Une mesure fausse serait pire
-      // que pas de mesure du tout.
-      if (boite.height === 0) {
+      const boiteMain = main.getBoundingClientRect()
+      const boiteJournal = journal.getBoundingClientRect()
+      // Boite vide : la mise en page n'a pas encore eu lieu (ou l'on est dans
+      // un environnement sans mise en page). Une mesure fausse serait pire que
+      // pas de mesure du tout.
+      if (boiteMain.height === 0 || boiteJournal.height === 0 || boiteJournal.width === 0) {
         oublier()
         return
       }
-      const bas = Math.round(window.innerHeight - boite.top + ECART_MAIN)
+      const gauche = Math.round(boiteMain.right + ECART_MAIN)
+      const largeur = Math.round(boiteJournal.right) - gauche
+      const bas = Math.round(window.innerHeight - boiteJournal.bottom)
+      if (largeur <= 0) {
+        oublier()
+        return
+      }
+      corps.style.setProperty(VARIABLE_GAUCHE, `${gauche}px`)
+      corps.style.setProperty(VARIABLE_LARGEUR, `${largeur}px`)
       corps.style.setProperty(VARIABLE_BAS, `${Math.max(bas, BAS_MINIMUM)}px`)
+      // Le repli du CSS centre le cartouche par une translation de -50 % : une
+      // fois ancre par `left`, cette translation doit tomber.
+      corps.style.setProperty(VARIABLE_DECALAGE, '0px')
     }
     mesurer()
-    // La scene se remet a l'echelle a chaque redimensionnement : la main change
-    // alors de place, et le cartouche doit la suivre.
+    // La scene se remet a l'echelle a chaque redimensionnement : la main et le
+    // journal changent alors de place, et le cartouche doit les suivre.
     window.addEventListener('resize', mesurer)
     return () => {
       window.removeEventListener('resize', mesurer)
@@ -530,32 +602,56 @@ export function DeroulePhase({
   const compteur = compteurEtape(etape)
   const regle = regleEtape(etape)
 
+  // La chronologie des cinq temps : la seule chose que le cartouche garde
+  // quand il se replie devant une question du moteur.
+  const chronologie = (
+    <ol className="deroule-temps">
+      {TEMPS.map((temps, position) => {
+        // Vide : aucune etape de la phase ne porte ce temps. Il n'a
+        // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
+        // lui) ; le joueur doit seulement voir qu'il a ete saute, et
+        // pourquoi.
+        const estVide = !etapesAffichees.some((e) => e.temps === temps.cle)
+        const estCourant = !estVide && temps.cle === etape.temps
+        const estPasse = !estVide && !estCourant && position < positionCourante
+        const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
+        return (
+          <li key={temps.cle} className={classe}>
+            {t(temps.libelle)}
+            {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
+                symbole colle au texte, pas une traduction a part. */}
+            {estPasse ? ' ✓' : null}
+            {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
+          </li>
+        )
+      })}
+    </ol>
+  )
+
+  // Le moteur pose une question au joueur : le cartouche s'efface devant
+  // elle. Ni titre, ni bouton, ni « La suite arrive… » (ce serait un
+  // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
+  // joueur sache toujours ou il en est, et la mention dit qui attend qui.
+  if (questionAuJoueur) {
+    return (
+      <>
+        <TraitCible etape={etape} actif={!termine} />
+        <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
+          <div className="deroule-chrono">{chronologie}</div>
+          <p className="deroule-question" aria-live="polite">
+            {t('Le moteur attend ta réponse')}
+          </p>
+        </section>
+      </>
+    )
+  }
+
   return (
     <>
       <TraitCible etape={etape} actif={!termine} />
       <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
         <div className="deroule-chrono">
-          <ol className="deroule-temps">
-            {TEMPS.map((temps, position) => {
-              // Vide : aucune etape de la phase ne porte ce temps. Il n'a
-              // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
-              // lui) ; le joueur doit seulement voir qu'il a ete saute, et
-              // pourquoi.
-              const estVide = !etapesAffichees.some((e) => e.temps === temps.cle)
-              const estCourant = !estVide && temps.cle === etape.temps
-              const estPasse = !estVide && !estCourant && position < positionCourante
-              const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
-              return (
-                <li key={temps.cle} className={classe}>
-                  {t(temps.libelle)}
-                  {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
-                      symbole colle au texte, pas une traduction a part. */}
-                  {estPasse ? ' ✓' : null}
-                  {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
-                </li>
-              )
-            })}
-          </ol>
+          {chronologie}
           {rang ? (
             <span className="deroule-rang">
               {/* Cle a trous plutot qu'une concatenation : « sur » se traduit

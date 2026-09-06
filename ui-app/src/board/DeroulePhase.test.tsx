@@ -1272,72 +1272,237 @@ describe('le bilan de fin de phase', () => {
     })
   })
 
-  // --- Le cartouche ne recouvre jamais la main ------------------------------
-  // Mesure en partie reelle : cartouche 715-873, main 623-806, soit 91 px de
-  // recouvrement. « La petite modale en bas avec les phases cachent les
-  // cartes. »
-  describe('place du cartouche par rapport a la main', () => {
+  // --- Le cartouche ne recouvre ni la main, ni la question du moteur, ni la
+  // carte agrandie ------------------------------------------------------------
+  // Mesures en partie reelle (fenetre 1920 x 889, table a l'echelle 0,814) :
+  // main 133-1468 x 623-806, journal 1600-1912 x 623-806, panneau central du
+  // moteur 630-1290 x 334-466. Remonte au-dessus de la main, le cartouche
+  // (390-613) etait tombe SUR la question du moteur, dont seul le titre
+  // depassait. Il se tient desormais a DROITE de la main, dans la colonne du
+  // journal, le bas au bas du journal (voir la mesure dans DeroulePhase.tsx).
+  describe('place du cartouche sur la table', () => {
+    type Boite = { gauche: number; haut: number; largeur: number; hauteur: number }
+
+    const rect = ({ gauche, haut, largeur, hauteur }: Boite): DOMRect =>
+      ({
+        top: haut,
+        bottom: haut + hauteur,
+        left: gauche,
+        right: gauche + largeur,
+        width: largeur,
+        height: hauteur,
+        x: gauche,
+        y: haut,
+        toJSON: () => ({}),
+      }) as DOMRect
+
     /**
-     * Pose une zone de main mesurable. jsdom ne fait aucune mise en page : on
-     * lui souffle la boite que le vrai navigateur avait mesuree.
+     * Pose une table mesurable : la main et, si on la donne, la case du
+     * journal. jsdom ne fait aucune mise en page : on lui souffle les boites
+     * que le vrai navigateur avait mesurees.
      */
-    const poserMain = (haut: number, hauteur: number) => {
+    const poserTable = (main: Boite, journal?: Boite) => {
       const scene = document.createElement('div')
       scene.className = 'plateau-scene'
-      const main = document.createElement('div')
-      main.className = 'zone-main'
-      main.getBoundingClientRect = () =>
-        ({ top: haut, bottom: haut + hauteur, height: hauteur, left: 0, right: 0, width: 0, x: 0, y: haut, toJSON: () => ({}) }) as DOMRect
-      scene.append(main)
+      const zoneMain = document.createElement('div')
+      zoneMain.className = 'zone-main'
+      zoneMain.getBoundingClientRect = () => rect(main)
+      scene.append(zoneMain)
+      if (journal) {
+        const zoneJournal = document.createElement('section')
+        zoneJournal.className = 'journal-heros'
+        zoneJournal.getBoundingClientRect = () => rect(journal)
+        scene.append(zoneJournal)
+      }
       document.body.append(scene)
-      return main
     }
 
+    const VARIABLES = ['--deroule-gauche', '--deroule-largeur', '--deroule-bas', '--deroule-decalage']
+    const lire = (nom: string) => Number.parseInt(document.body.style.getPropertyValue(nom), 10)
+    const aucuneVariable = () => VARIABLES.every((nom) => document.body.style.getPropertyValue(nom) === '')
+
+    const mainMesuree: Boite = { gauche: 133, haut: 623, largeur: 1335, hauteur: 183 }
+    const journalMesure: Boite = { gauche: 1600, haut: 623, largeur: 312, hauteur: 183 }
+
     afterEach(() => {
-      document.body.style.removeProperty('--deroule-bas')
+      for (const nom of VARIABLES) document.body.style.removeProperty(nom)
       for (const scene of document.querySelectorAll('.plateau-scene')) scene.remove()
     })
 
-    it('remonte le cartouche au-dessus de la main', () => {
-      // Fenetre et main de la mesure reelle : main a 623, fenetre de 889 de
-      // haut. Le cartouche doit donc partir d'au moins 889 - 623 = 266 px du
-      // bas, pour que son sommet soit au-dessus de 623.
+    it('se tient a droite de la main, dans la colonne du journal, le bas au bas du journal', () => {
       vi.stubGlobal('innerHeight', 889)
-      poserMain(623, 183)
+      poserTable(mainMesuree, journalMesure)
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      const bas = Number.parseInt(document.body.style.getPropertyValue('--deroule-bas'), 10)
-      expect(bas).toBeGreaterThanOrEqual(889 - 623)
+      const gauche = lire('--deroule-gauche')
+      const largeur = lire('--deroule-largeur')
+      // A droite de la main : son bord gauche passe le bord droit de la main.
+      expect(gauche).toBeGreaterThanOrEqual(133 + 1335)
+      // Dans la colonne du journal : son bord droit ne depasse pas celui du
+      // journal, et il y a de quoi ecrire.
+      expect(gauche + largeur).toBeLessThanOrEqual(1600 + 312)
+      expect(largeur).toBeGreaterThan(300)
+      // Le bas au bas du journal : 889 - 806.
+      expect(lire('--deroule-bas')).toBe(889 - (623 + 183))
+      // Ancre par `left`, il ne se centre plus par translation.
+      expect(document.body.style.getPropertyValue('--deroule-decalage')).toBe('0px')
       vi.unstubAllGlobals()
     })
 
-    it('suit la main quand elle change de place, sans valeur en dur', () => {
-      // Le meme cartouche sur un autre ecran : la main est ailleurs, le
-      // cartouche aussi. Une valeur en dur donnerait deux fois la meme.
+    it('ne recouvre pas la question du moteur', () => {
+      // Le panneau central mesure : 630-1290 de large, 334-466 de haut. Le
+      // cartouche commence a droite de 1468, donc a droite du panneau ; il
+      // n'a aucun pixel en commun avec lui, quelle que soit sa hauteur.
+      vi.stubGlobal('innerHeight', 889)
+      poserTable(mainMesuree, journalMesure)
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(lire('--deroule-gauche')).toBeGreaterThan(1290)
+      vi.unstubAllGlobals()
+    })
+
+    it('suit la table quand elle change de place, sans valeur en dur', () => {
+      // Le meme cartouche sur un autre ecran : la main et le journal sont
+      // ailleurs, le cartouche aussi. Une valeur en dur donnerait deux fois
+      // la meme.
       vi.stubGlobal('innerHeight', 1200)
-      poserMain(900, 240)
+      poserTable(
+        { gauche: 100, haut: 900, largeur: 900, hauteur: 240 },
+        { gauche: 1100, haut: 900, largeur: 260, hauteur: 240 }
+      )
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      const bas = Number.parseInt(document.body.style.getPropertyValue('--deroule-bas'), 10)
-      expect(bas).toBeGreaterThanOrEqual(1200 - 900)
+      const gauche = lire('--deroule-gauche')
+      expect(gauche).toBeGreaterThanOrEqual(1000)
+      expect(gauche + lire('--deroule-largeur')).toBeLessThanOrEqual(1360)
+      expect(lire('--deroule-bas')).toBe(1200 - 1140)
       vi.unstubAllGlobals()
     })
 
-    it('ne devine rien quand aucune main n est mesurable', () => {
+    it('ne devine rien quand aucune table n est mesurable', () => {
       // Plateau mobile, ou premiere frame : pas de geometrie, pas de variable,
       // et le CSS reprend son repli.
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(document.body.style.getPropertyValue('--deroule-bas')).toBe('')
+      expect(aucuneVariable()).toBe(true)
+    })
+
+    it('ne devine rien quand la main est la sans le journal', () => {
+      // Une moitie de geometrie n'en est pas une : sans le journal, on ne sait
+      // ni ou s'arreter a droite, ni ou poser le bas.
+      vi.stubGlobal('innerHeight', 889)
+      poserTable(mainMesuree)
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(aucuneVariable()).toBe(true)
+      vi.unstubAllGlobals()
     })
 
     it('rend sa place au cartouche disparu', () => {
-      // Sans ce nettoyage, la variable resterait posee sur le body pour le
-      // reste de la partie.
+      // Sans ce nettoyage, les variables resteraient posees sur le body pour
+      // le reste de la partie.
       vi.stubGlobal('innerHeight', 889)
-      poserMain(623, 183)
+      poserTable(mainMesuree, journalMesure)
       const { unmount } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(document.body.style.getPropertyValue('--deroule-bas')).not.toBe('')
+      expect(aucuneVariable()).toBe(false)
       unmount()
-      expect(document.body.style.getPropertyValue('--deroule-bas')).toBe('')
+      expect(aucuneVariable()).toBe(true)
       vi.unstubAllGlobals()
+    })
+  })
+
+  // --- Le cartouche s'efface devant la question du moteur -------------------
+  // Constate en partie (Bruce Banner contre Ultron) : le moteur demandait dans
+  // quel ordre activer deux sbires, et le cartouche disait « La suite
+  // arrive… » par-dessus la question, bouton compris. Le joueur attendait le
+  // moteur, qui l'attendait.
+  //
+  // Deux attentes, a ne jamais confondre : le moteur retient une trame (le
+  // joueur attend le moteur, « La suite arrive… ») ; le moteur pose une
+  // question (le moteur attend le joueur, « Le moteur attend ta réponse »).
+  describe('question du moteur au joueur', () => {
+    const menaceSeule: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+    ]
+
+    it('se replie sur sa chronologie et dit que le moteur attend le joueur', () => {
+      const { container } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours questionAuJoueur onTerminer={() => {}} />
+      )
+      expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(5)
+      expect(screen.getByText('Le moteur attend ta réponse')).toBeInTheDocument()
+      // Ni titre, ni bouton : rien a lire ni a cliquer ici, c'est la question
+      // du moteur qui a la main.
+      expect(container.querySelector('.deroule-titre')).toBeNull()
+      expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button')).toBeNull()
+    })
+
+    it('se redeploie sur la meme etape une fois la question resolue', () => {
+      const cartouche = (questionAuJoueur: boolean) => (
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          questionAuJoueur={questionAuJoueur}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(false))
+      fireEvent.click(suivant())
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+
+      rerender(cartouche(true))
+      expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
+
+      // Pas de remise a zero : on revient sur la deuxieme etape, pas la
+      // premiere.
+      rerender(cartouche(false))
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+      expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
+      expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
+    })
+
+    it('ne dit JAMAIS que le moteur attend le joueur quand c est le joueur qui attend le moteur', () => {
+      // Le moteur retient une trame et calcule la suite : c'est « La suite
+      // arrive… », et rien d'autre. Dire ici que le moteur attend une reponse
+      // enverrait le joueur chercher une question qui n'existe pas.
+      render(
+        <DeroulePhase
+          etapes={menaceSeule}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          onTerminer={() => {}}
+        />
+      )
+      fireEvent.click(suivant())
+      expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
+      expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
+    })
+
+    it('laisse le clavier a la question : Entree n avance pas un cartouche replie', () => {
+      const cartouche = (questionAuJoueur: boolean) => (
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          questionAuJoueur={questionAuJoueur}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(true))
+      fireEvent.keyDown(document, { key: 'Enter' })
+      rerender(cartouche(false))
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    })
+
+    it('ne demande pas de tout derouler a Echap pendant une question', () => {
+      const onToutDerouler = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          questionAuJoueur
+          onTerminer={() => {}}
+          onToutDerouler={onToutDerouler}
+        />
+      )
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      expect(onToutDerouler).not.toHaveBeenCalled()
     })
   })
 })

@@ -2590,26 +2590,31 @@
   }
 
   /* --- Deroule detaille de la phase du mechant -------------------------------
-     Cartouche FIXE en bas au centre : il ne bouge jamais d'une etape a l'autre.
-     La mise en scene (bandeau, trait, secousses) viendra en livraison 2 ; ici,
-     rien ne bouge. */
+     Cartouche FIXE : il ne bouge jamais d'une etape a l'autre. Il se tient a
+     DROITE de la main, dans la colonne du journal, le bas au bas du journal :
+     c'est la seule place qui ne recouvre ni la main, ni le panneau central ou
+     le moteur pose ses questions, ni la carte que la mise en scene agrandit.
+     Les chiffres et le raisonnement sont dans DeroulePhase.tsx, a la mesure. */
   .deroule-phase {
     position: fixed;
-    left: 50%;
-    /* JAMAIS par-dessus la main du joueur. `--deroule-bas` est posee sur le
-       body par DeroulePhase, a partir de la position REELLE de `.zone-main` :
-       une valeur en dur marcherait sur un ecran et casserait sur le suivant.
-       Le repli (16px) est celui d'avant la correction, et sert quand aucune
-       main n'est mesurable (plateau mobile, premiere frame). */
+    /* JAMAIS une valeur en dur : elle marcherait sur un ecran et casserait sur
+       le suivant. Les quatre variables sont posees sur le body par
+       DeroulePhase, a partir de la position REELLE de `.zone-main` et de
+       `.journal-heros`. Les replis (en bas au centre, a 16px du bord, 560px de
+       large) servent quand aucune table n'est mesurable (plateau mobile,
+       premiere frame) : c'est la place du cartouche d'avant les mesures. */
+    left: var(--deroule-gauche, 50%);
     bottom: var(--deroule-bas, 16px);
-    /* Sur un ecran bas, la place au-dessus de la main peut ne pas suffire : le
+    width: var(--deroule-largeur, min(560px, calc(100vw - 24px)));
+    /* Le repli se centre par cette translation ; ancre par `left`, le
+       cartouche la met a zero. */
+    transform: translateX(var(--deroule-decalage, -50%));
+    /* Sur un ecran bas, la place au-dessus du journal peut ne pas suffire : le
        cartouche defile en lui-meme plutot que de deborder hors de l'ecran, ou
        ses boutons deviendraient inatteignables. */
     max-height: calc(100dvh - var(--deroule-bas, 16px) - 12px);
     overflow-y: auto;
-    transform: translateX(-50%);
     z-index: 540;
-    width: min(560px, calc(100vw - 24px));
     padding: 12px 14px;
     color: #f8fafc;
     background: rgba(8, 10, 14, 0.96);
@@ -2809,7 +2814,10 @@
 
   .deroule-temps {
     display: flex;
-    gap: 10px;
+    /* Le cartouche a la largeur de la colonne de droite, qui retrecit avec la
+       table : les cinq temps passent a la ligne plutot que de deborder. */
+    flex-wrap: wrap;
+    gap: 2px 10px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -3053,6 +3061,25 @@
     font-size: 0.78rem;
     font-style: italic;
     color: rgba(248, 250, 252, 0.55);
+  }
+
+  /* Replie devant une question du moteur : la chronologie seule, et la
+     mention « Le moteur attend ta réponse ». Ce n'est PAS l'attente grise
+     ci-dessus : ici c'est au joueur d'agir, ailleurs que dans le cartouche, et
+     la mention prend le jaune de « À toi de jouer » (.plateau-eyebrow). */
+  .deroule-phase.est-replie {
+    padding: 10px 14px;
+  }
+
+  .deroule-phase.est-replie .deroule-chrono {
+    margin-bottom: 6px;
+  }
+
+  .deroule-question {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffd45a;
   }
 
   .salon-fil {

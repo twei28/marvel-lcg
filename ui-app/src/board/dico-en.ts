@@ -338,6 +338,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Précédent': 'Previous',
   'Suivant': 'Next',
   'La suite arrive…': 'More coming…',
+  // Le cartouche replie devant une question du moteur : c'est le joueur qu'on
+  // attend, pas le moteur.
+  'Le moteur attend ta réponse': 'The game is waiting for your answer',
   'la règle': 'the rule',
   // Bilan de fin de phase, derniere etape du cartouche. ('À toi de jouer' est
   // deja defini plus haut, pour l'assistant d'action.)
