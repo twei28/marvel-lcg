@@ -24,11 +24,14 @@ export function DeroulePhase({
   etapes,
   noms,
   onTerminer,
+  onToutDerouler,
 }: {
   etapes: EtapeDeroule[]
   noms: (id: number) => string
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
+  /** « Tout derouler » : les etapes restantes defilent sans attendre. */
+  onToutDerouler?: () => void
 }) {
   const [index, setIndex] = useState(0)
 
@@ -47,6 +50,31 @@ export function DeroulePhase({
     }
     setIndex(index + 1)
   }
+
+  useEffect(() => {
+    const auClavier = (evenement: KeyboardEvent) => {
+      // On ecrit peut-etre ailleurs : le tchat est a portee de main pendant la
+      // phase, et un espace tape dedans ne doit pas la faire avancer.
+      const cible = evenement.target
+      if (
+        cible instanceof HTMLElement &&
+        (cible.tagName === 'INPUT' || cible.tagName === 'TEXTAREA' || cible.isContentEditable)
+      ) {
+        return
+      }
+      if (evenement.key === 'Enter' || evenement.key === ' ') {
+        evenement.preventDefault()
+        avancer()
+        return
+      }
+      if (evenement.key === 'Escape' && onToutDerouler) {
+        evenement.preventDefault()
+        onToutDerouler()
+      }
+    }
+    document.addEventListener('keydown', auClavier)
+    return () => document.removeEventListener('keydown', auClavier)
+  })
 
   return (
     <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>

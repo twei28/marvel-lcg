@@ -74,4 +74,40 @@ describe('cartouche du deroule', () => {
     expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(4)
     expect(container.querySelector('.deroule-temps li.est-courant')?.textContent).toMatch(/Menace/i)
   })
+
+  it('avance a la touche Entree', () => {
+    // fireEvent (et non document.dispatchEvent) : setIndex declenche un
+    // rendu, et fireEvent l'enveloppe dans un act() pour eviter
+    // l'avertissement React sur une mise a jour hors act().
+    render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+    fireEvent.keyDown(document, { key: 'Enter' })
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
+
+  it('avance aussi a la barre d espace', () => {
+    render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+    fireEvent.keyDown(document, { key: ' ' })
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
+
+  it('deroule tout a la touche Echap', () => {
+    const onToutDerouler = vi.fn()
+    render(
+      <DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} onToutDerouler={onToutDerouler} />
+    )
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(onToutDerouler).toHaveBeenCalledTimes(1)
+  })
+
+  it('laisse le clavier tranquille quand on ecrit ailleurs', () => {
+    // Le tchat est a portee de main pendant la phase : taper un espace dans son
+    // champ ne doit pas faire avancer la phase du mechant.
+    render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+    const champ = document.createElement('input')
+    document.body.append(champ)
+    champ.focus()
+    champ.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    champ.remove()
+  })
 })
