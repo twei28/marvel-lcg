@@ -100,7 +100,13 @@ export type EtapeDeroule = {
   regle: string
   /** Carte a mettre en avant sur le plateau. */
   carteId?: number
-  /** Cible de l'action, pour le trait de la livraison 2. */
+  /**
+   * Cible de l'action, pour le trait de la livraison 2.
+   *
+   * Peut etre presente SANS `carteId` : l'etape de menace vise une manigance
+   * sans avoir d'auteur (c'est une regle du jeu qui pose la menace). La mise en
+   * scene met alors la cible elle-meme en avant, faute d'auteur (`sceneDe`).
+   */
   cibleId?: number
   /**
    * Noms de l'auteur et de la cible, portes par l'ETAPE elle-meme, pas
@@ -261,6 +267,20 @@ export function etapesDeroule(
       // (voir EntreeHistorique.nomCarte) : le decouper du titre traduit
       // marcherait dans une langue sur deux.
       cibleNom: e.nomCarte,
+      // La manigance visee, pour que la mise en scene l'agrandisse et
+      // assombrisse le reste (voir `sceneDe`). Sans elle, l'etape de menace
+      // etait le seul temps de la phase a laisser sa carte noyee dans la table
+      // pendant qu'on parlait d'elle.
+      //
+      // L'identifiant vient de la MEME entree que `restant` et `plafond`
+      // ci-dessous (`EntreeHistorique.cibleId`, l'identifiant d'objet de la
+      // carte dont le compteur a bouge), pas d'une recherche dans le monde :
+      // ce module ne voit pas le monde, et une manigance vaincue pendant la
+      // phase n'y serait de toute facon plus.
+      //
+      // Pas de `carteId` : la menace est une REGLE du jeu, aucun personnage ne
+      // l'inflige, donc il n'y a ni auteur a mettre en avant ni trait a tracer.
+      cibleId: e.cibleId,
       // `valeur` est la variation SIGNEE du compteur : seule une POSE de
       // menace se met en phrase ici. Un retrait, qui n'a pas lieu a ce temps
       // de la phase, laisserait « gagne -1 menaces » ; sans montant, le titre

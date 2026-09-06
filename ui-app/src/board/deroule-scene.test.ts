@@ -42,6 +42,18 @@ describe('mise en scene d une etape', () => {
     expect(sceneDe(etape({ carteId: 50 })).voile).toBe(true)
   })
 
+  it('met la cible en avant quand l etape n a pas d auteur', () => {
+    // L'etape de menace : c'est une regle du jeu qui pose la menace, aucun
+    // personnage ne l'inflige. La manigance visee doit quand meme sortir de la
+    // table pendant qu'on parle d'elle.
+    const scene = sceneDe(etape({ temps: 'menace', titre: 'menace', cibleId: 77 }))
+    expect(scene.carteEnAvant).toBe(77)
+    expect(scene.voile).toBe(true)
+    // Aucun trait : il faut deux cartes pour en tracer un.
+    expect(scene.trait).toBe(false)
+    expect(scene.cible).toBeUndefined()
+  })
+
   it('n assombrit rien sur une etape sans carte', () => {
     // « Aucun sbire en jeu », le passage du premier joueur : le cartouche parle
     // seul, l'ecran ne bouge pas pour rien.

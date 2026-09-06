@@ -121,6 +121,16 @@ describe('etapesDeroule', () => {
     expect(etape.plafond).toBe(8)
   })
 
+  it('designe la manigance visee comme cible de l etape de menace', () => {
+    // Sans cible, l'etape de menace etait le seul temps de la phase sans mise
+    // en scene : la manigance dont on parlait restait noyee dans la table.
+    // L'identifiant vient de la MEME entree que le compteur affiche a cote.
+    const [etape] = etapesDeroule([], [entree({ cibleId: 77 })], 1, AUCUN_MECHANT)
+    expect(etape.cibleId).toBe(77)
+    // Pas d'auteur : la menace est une regle du jeu, personne ne l'inflige.
+    expect(etape.carteId).toBeUndefined()
+  })
+
   it('ne met pas en phrase un RETRAIT de menace', () => {
     // `valeur` est la variation SIGNEE du compteur : « gagne -1 menaces »
     // n'aurait aucun sens. Sans montant, le titre se replie sur le generique.
