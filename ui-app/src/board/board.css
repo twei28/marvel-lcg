@@ -2645,6 +2645,41 @@
     transition: none;
   }
 
+  /* Le trait traverse la table : il est POSE PAR-DESSUS, jamais dessine dans
+     une carte, dont le cadre rogne son contenu.
+     z-index 530 : au-dessus du voile (110) et des cartes mises en scene
+     (130), sous le cartouche du deroule (540) qui doit rester lisible. */
+  .deroule-trait {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 530;
+    pointer-events: none;
+  }
+
+  .deroule-trait line {
+    stroke: #F0131E;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 4px rgba(240, 19, 30, 0.7));
+    /* Le trait se TRACE de l'attaquant vers sa cible : on lit le sens de
+       l'attaque, on ne le devine pas. */
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: deroule-tracer 260ms ease-out forwards;
+  }
+
+  @keyframes deroule-tracer {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  body.plateau-sans-animations .deroule-trait line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
   .deroule-temps {
     display: flex;
     gap: 10px;
@@ -5327,5 +5362,10 @@
 
   .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
     transition: none;
+  }
+
+  .deroule-trait line {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }

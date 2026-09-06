@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import { regleEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
+import { TraitCible } from './TraitCible'
 import { useDerouleScene } from './useDerouleScene'
 
 /** Le temps de voir passer une etape technique, sans la lire. */
@@ -157,36 +158,39 @@ export function DeroulePhase({
   if (!etape || termine) return null
 
   return (
-    <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
-      <ol className="deroule-temps">
-        {TEMPS.map((temps) => (
-          <li key={temps.cle} className={temps.cle === etape.temps ? 'est-courant' : ''}>
-            {t(temps.libelle)}
-          </li>
-        ))}
-      </ol>
-
-      <p className="deroule-titre">{titreEtape(etape)}</p>
-      {etape.consequences.length > 0 ? (
-        <ul className="deroule-consequences">
-          {etape.consequences.map((consequence) => (
-            <li key={consequence.cle}>{consequence.texte}</li>
+    <>
+      <TraitCible etape={etape} actif={!termine} />
+      <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
+        <ol className="deroule-temps">
+          {TEMPS.map((temps) => (
+            <li key={temps.cle} className={temps.cle === etape.temps ? 'est-courant' : ''}>
+              {t(temps.libelle)}
+            </li>
           ))}
-        </ul>
-      ) : null}
-      <p className="deroule-regle">{regleEtape(etape)}</p>
-      {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
+        </ol>
 
-      <div className="deroule-boutons">
-        {index > 0 ? (
-          <button type="button" className="bh-bouton" onClick={reculer}>
-            {t('Précédent')}
-          </button>
+        <p className="deroule-titre">{titreEtape(etape)}</p>
+        {etape.consequences.length > 0 ? (
+          <ul className="deroule-consequences">
+            {etape.consequences.map((consequence) => (
+              <li key={consequence.cle}>{consequence.texte}</li>
+            ))}
+          </ul>
         ) : null}
-        <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
-          {t('Suivant')}
-        </button>
-      </div>
-    </section>
+        <p className="deroule-regle">{regleEtape(etape)}</p>
+        {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
+
+        <div className="deroule-boutons">
+          {index > 0 ? (
+            <button type="button" className="bh-bouton" onClick={reculer}>
+              {t('Précédent')}
+            </button>
+          ) : null}
+          <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
+            {t('Suivant')}
+          </button>
+        </div>
+      </section>
+    </>
   )
 }
