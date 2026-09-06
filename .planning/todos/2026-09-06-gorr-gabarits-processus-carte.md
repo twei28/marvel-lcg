@@ -229,30 +229,32 @@ substitution uniquement.
       MORD (un moteur laissant Gorr attaquer une 3e fois serait passé quand
       même). Corrigé pour vérifier une égalité stricte à chaque étape
       (`== 4` puis `== 6`, jamais `>=`).
-- [ ] **Étape 7 bis : limite imprimée OUI, et elle NE MORD PAS.** Le témoin
-      corrigé (`gorr_deux_attaques`) est **ROUGE** :
+- [x] **Étape 7 bis : limite imprimée OUI, et elle MORD DESORMAIS.**
+      **CORRIGÉ le 07/09/2026 (audit C, point 2, suite, commit `ea980b97`).**
+      Le témoin (`gorr_deux_attaques`) était **ROUGE** :
       `test_capacites.py … "gb020 You Are My God"` → « 10 degat(s) subis
       apres la 1ere activation (attendu EXACTEMENT 4) », identité à **-1/10
       PV** après UNE SEULE activation du vilain (5 attaques de 2, pas 2).
       Cause identifiée par lecture de code : la condition maison de
       `gb020.py` (`effect.world.stat.IsOncePerPhasePerPlayer(...)`, imposée
       par l'incompatibilité de `.LimitOncePerPhasePerPlayer()` avec
-      `AfterUnitAttackEnd`, voir en-tête du module) ne fait que LIRE le
-      registre — elle n'appelle jamais `world.stat.RecordEffectWithPlayer(...)`
+      `AfterUnitAttackEnd`, voir en-tête du module) ne faisait que LIRE le
+      registre : elle n'appelait jamais `world.stat.RecordEffectWithPlayer(...)`
       pour l'alimenter, et le moteur ne le fait pas non plus pour elle
       (`SetHasSpellInPhase`, `effect/effect.py:172`, ne s'applique qu'aux
       `TriggerNonePlayerMessage`, exactement ce que `gb020` a dû écarter).
-      La Réponse Forcée s'auto-redéclenche donc sans fin, en test comme en
-      partie réelle. **Détail complet, preuve et non-correctif volontaire
-      dans `.superpowers/audit-2026-09-06/C-corrections-report.md` point 2**
-      — bug moteur/carte réel, signalé et non traité ici (hors périmètre des
-      quatre points confiés à cet audit).
+      La Réponse Forcée s'auto-redéclenchait donc sans fin, en test comme en
+      partie réelle. **Corrigé dans le pack** (pas dans le moteur) : `il_frappe_encore`
+      appelle désormais `effect.world.stat.RecordEffectWithPlayer(effect, joueur)`
+      AVANT de déclencher la seconde attaque. Témoin passé au **VERT**
+      (`6 degats au total (4 puis +2)`), et repassé au **ROUGE**, message
+      identique à l'origine, en retirant temporairement cet appel
+      (contre-preuve). Batterie complète du pack (filtre `gb0`) : **32/32**.
+      Détail complet dans `.superpowers/audit-2026-09-06/C-gb020-report.md`.
 
-**Carte terminée : NON.** Le témoin d'épuisement prouve que la limite
-imprimée est inerte : la carte n'accomplit pas ce qu'elle annonce
-(« attaque une seconde fois » devient « attaque jusqu'à mettre le joueur à
-terre »). Étapes 2/5/6/7 restent valides ; seule l'étape 7 bis échoue, et
-c'est elle qui compte pour la case finale.
+**Carte terminée : OUI.** Le témoin d'épuisement prouve désormais que la
+limite imprimée mord : Gorr attaque exactement deux fois par activation,
+une seule fois par joueur et par phase, jamais plus.
 
 ### gb021 : Heroes' Labor
 - [x] Étape 7 : `gb021 … revelee, elle pose 1 timer sur la Godbomb` +
@@ -276,14 +278,14 @@ atteint) : preuve par le cas et la substitution uniquement.
 
 ## Bilan
 
-**25 cartes sur 26 sont terminées** (cas de test sujet, preuve par
+**26 cartes sur 26 sont terminées** (cas de test sujet, preuve par
 substitution ou contre-cas d'absence assumé, preuve commune d'autoplay au
-niveau du pack). **`gb020` reste NON** : son témoin d'épuisement, corrigé le
-06/09/2026 pour prouver une égalité et non un plancher, révèle que sa limite
-imprimée (« Limit once per player per phase ») est **inerte** — voir sa
-propre section ci-dessus et `.superpowers/audit-2026-09-06/C-corrections-report.md`
-point 2 pour la preuve complète et la cause. Non corrigé ici, signalé comme
-un vrai bug à traiter à part.
+niveau du pack). `gb020` était restée NON : son témoin d'épuisement, corrigé
+le 06/09/2026 pour prouver une égalité et non un plancher, avait révélé que
+sa limite imprimée (« Limit once per player per phase ») était **inerte**.
+**Corrigé le 07/09/2026** (voir sa propre section ci-dessus et
+`.superpowers/audit-2026-09-06/C-gb020-report.md`) : la carte appelle
+maintenant `world.stat.RecordEffectWithPlayer` elle-même, et la limite mord.
 
 Reste dû, écrit noir sur blanc et non caché : **aucune partie n'a été jouée
 par un humain dans le navigateur**, pour Gorr ni pour ses deux sets
