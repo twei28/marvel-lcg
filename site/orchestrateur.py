@@ -105,6 +105,26 @@ MAX_DESCRIPTION_CARACTERES = 4_000
 RAPPORTS_PAR_HEURE = int(os.environ.get("RAPPORTS_PAR_HEURE", "12"))
 ETATS_RAPPORT = ("nouveau", "en cours", "traite")
 
+# Plafond du CORPS d'une requete POST, avant toute lecture.
+# ⚠ `Content-Length` EST UNE DECLARATION DU CLIENT, PAS UN FAIT. Sans plafond,
+# n'importe qui, sans compte et sans cookie, fait allouer au serveur ce qu'il
+# annonce — y compris sur une route qui finira en 404. Le moteur, lui, a le
+# sien depuis toujours (`client_max_size=8 Mio`, `web_server.py`) ; c'est le
+# site qui n'en avait pas. Meme chiffre pour la meme raison : le plus gros
+# envoi legitime est un rapport de bug, capture de 4 Mio encodee en base64
+# (+33 %) plus le journal de la partie.
+MAX_CORPS_OCTETS = int(os.environ.get("MAX_CORPS_OCTETS", str(8 * 1024 * 1024)))
+
+# Frein sur les tentatives de connexion.
+# ⚠ CE N'EST PAS LA DEVINETTE DU MOT DE PASSE QUI INQUIETE, C'EST LA MACHINE.
+# `_empreinte` fait du scrypt a n=2^14, soit 16 Mio et plusieurs dizaines de
+# millisecondes PAR TENTATIVE, et `ThreadingHTTPServer` cree un fil par requete
+# sans plafond. Le cout du hachage, qui protege du vol de la base, devient une
+# amplification des qu'on peut le declencher a volonte : un flot de tentatives
+# toutes fausses suffit a epuiser un VPS a deux vCPU.
+TENTATIVES_CONNEXION = int(os.environ.get("TENTATIVES_CONNEXION", "10"))
+FENETRE_CONNEXION = int(os.environ.get("FENETRE_CONNEXION", "900"))
+
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur  # noqa: E402  (dependant de sys.path ci-dessus)
 
@@ -704,6 +724,64 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
                 "UPDATE invitations SET utilise_par = ?, utilise_le = ? WHERE jeton = ?",
                 (pseudo, _maintenant(), jeton))
     return pseudo
+
+
+# Horodatage des tentatives de connexion, par cle. Meme compteur glissant que
+# `debit_rapport_ok`, avec un verrou en plus : ici deux fils peuvent tomber sur
+# la meme cle en meme temps, et c'est meme le scenario qu'on redoute.
+# En memoire : un redemarrage remet les compteurs a zero, ce qui est sans
+# consequence — le frein protege d'un flot, pas d'un adversaire patient.
+_TENTATIVES: dict[str, list[float]] = {}
+_VERROU_TENTATIVES = threading.Lock()
+
+
+def attente_connexion(cle: str) -> int:
+    """Secondes restant a patienter pour cette cle, 0 si la voie est libre.
+
+    Ne compte RIEN : c'est une lecture. Compter ici obligerait a compter aussi
+    les tentatives qu'on refuse, et le frein ne se relacherait jamais.
+    """
+    maintenant = time.time()
+    with _VERROU_TENTATIVES:
+        recents = [t for t in _TENTATIVES.get(cle, []) if maintenant - t < FENETRE_CONNEXION]
+        _TENTATIVES[cle] = recents
+        if len(recents) < TENTATIVES_CONNEXION:
+            return 0
+        return max(1, int(FENETRE_CONNEXION - (maintenant - recents[0])) + 1)
+
+
+def compter_tentative(cle: str) -> None:
+    """Retient une tentative de connexion pour cette cle."""
+    with _VERROU_TENTATIVES:
+        _TENTATIVES.setdefault(cle, []).append(time.time())
+
+
+def oublier_tentatives(cle: str) -> None:
+    """Efface le compteur : une connexion REUSSIE ne doit pas laisser derriere
+    elle un frein que ses propres fautes de frappe ont serre."""
+    with _VERROU_TENTATIVES:
+        _TENTATIVES.pop(cle, None)
+
+
+def cles_frein(adresse: str, identifiant: str) -> tuple:
+    """Les cles a freiner pour cette tentative.
+
+    ⚠ DEUX CLES, ET IL EN FAUT DEUX. Par ADRESSE contre le flot qui vient d'un
+    seul endroit ; par COMPTE contre celui qui change d'adresse pour s'acharner
+    sur une personne. L'une sans l'autre laisse une porte ouverte.
+    """
+    cles = ["ip:" + (adresse or "?")]
+    if identifiant:
+        cles.append("compte:" + identifiant)
+    return tuple(cles)
+
+
+def delai_lisible(secondes: int) -> str:
+    """« 40 secondes », « 3 minutes » : ce qu'on annonce a quelqu'un qui
+    attend. Un nombre de secondes a quatre chiffres ne dit rien a personne."""
+    if secondes < 90:
+        return "%d secondes" % max(1, secondes)
+    return "%d minutes" % round(secondes / 60)
 
 
 def verifier(identifiant: str, mot_de_passe: str) -> str:
@@ -1371,11 +1449,54 @@ class Handler(BaseHTTPRequestHandler):
                     return pseudo
         return None
 
+    def _taille_corps(self) -> int:
+        """Le `Content-Length` annonce, ou -1 s'il est illisible ou trop gros.
+
+        ⚠ ON JUGE L'ANNONCE, PAS LE CORPS, ET C'EST LE POINT. Lire d'abord
+        pour mesurer ensuite revient a faire exactement ce qu'on veut eviter :
+        allouer ce qu'un inconnu declare.
+        """
+        try:
+            taille = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return -1
+        if taille < 0 or taille > MAX_CORPS_OCTETS:
+            return -1
+        return taille
+
+    def _corps_refuse(self) -> None:
+        """Repond 413 et RACCROCHE. Les octets annonces n'ont pas ete lus : ils
+        seraient sinon relus comme la requete suivante sur la meme connexion."""
+        self.close_connection = True
+        self._repondre(413, b"Requete trop volumineuse.", "text/plain; charset=utf-8")
+
+    def _raccrocher(self) -> None:
+        """A appeler AVANT de repondre sans avoir lu le corps. Ses octets sont
+        toujours dans la prise : gardee ouverte, la connexion les relirait
+        comme s'ils etaient la requete suivante."""
+        self.close_connection = True
+
     def _champs(self) -> dict:
+        """Les champs du formulaire. Le corps est deja plafonne : `do_POST`
+        refuse au-dela de `MAX_CORPS_OCTETS` avant d'arriver ici."""
         import urllib.parse
-        taille = int(self.headers.get("Content-Length") or 0)
+        taille = max(0, self._taille_corps())
         brut = self.rfile.read(taille).decode("utf-8", "replace")
         return {k: v[0] for k, v in urllib.parse.parse_qs(brut).items()}
+
+    def _adresse_client(self) -> str:
+        """L'adresse du visiteur, telle que Caddy la rapporte.
+
+        ⚠ ON PREND LA DERNIERE VALEUR DE `X-Forwarded-For`, PAS LA PREMIERE.
+        Caddy AJOUTE au bout de la liste l'adresse du pair qu'il voit ; tout ce
+        qui precede a ete ecrit par le client et se falsifie librement. Prendre
+        la premiere donnerait un frein qu'il suffit de contourner en changeant
+        un en-tete.
+        """
+        relais = (self.headers.get("X-Forwarded-For") or "").strip()
+        if relais:
+            return relais.split(",")[-1].strip()
+        return self.client_address[0] if self.client_address else "?"
 
     def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
         inscription = quoi == "inscription"
@@ -1615,10 +1736,20 @@ class Handler(BaseHTTPRequestHandler):
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
     def do_POST(self):
-        champs = self._champs()
+        # ⚠ L'ORDRE DE CES TROIS LIGNES EST LE CORRECTIF. On plafonne le corps
+        # AVANT de le lire, et on identifie qui parle AVANT de le lire aussi.
+        # Le code precedent lisait `Content-Length` octets en premier, sans
+        # plafond et sans savoir qui envoyait : de quoi faire allouer ce qu'on
+        # declare, sans compte ni cookie, y compris sur une route qui finira
+        # en 404. Chaque branche appelle `_champs()` elle-meme, et seulement
+        # apres avoir verifie ce qu'elle pouvait verifier.
+        if self._taille_corps() < 0:
+            self._corps_refuse()
+            return
         pseudo = self._session()
 
         if self.path == "/inscription":
+            champs = self._champs()
             try:
                 jeton = champs.get("i", "")
                 invite = invitation_valide(jeton)
@@ -1638,11 +1769,30 @@ class Handler(BaseHTTPRequestHandler):
                       "qu'elle est faite.")).encode("utf-8"))
 
         elif self.path == "/connexion":
+            champs = self._champs()
+            identifiant = (champs.get("pseudo", "") or "").strip().lower()
+            cles = cles_frein(self._adresse_client(), identifiant)
+            # ⚠ ON LIT LES DEUX COMPTEURS AVANT D'EN INCREMENTER UN SEUL.
+            # Compter au fil de la lecture ferait qu'une adresse deja bloquee
+            # continuerait de charger le compteur du compte vise, et le frein
+            # ne se relacherait jamais.
+            reste = max(attente_connexion(cle) for cle in cles)
+            if reste:
+                self._repondre(429, self._formulaire(
+                    "connexion", "Trop de tentatives. Reessaie dans %s."
+                                 % delai_lisible(reste)))
+                return
+            for cle in cles:
+                compter_tentative(cle)
             try:
                 qui = verifier(champs.get("pseudo", ""), champs.get("mdp", ""))
             except ValueError as erreur:
                 self._repondre(400, self._formulaire("connexion", str(erreur)))
                 return
+            # Reussite : on relache le frein, pour que ses propres fautes de
+            # frappe ne poursuivent pas quelqu'un qui a fini par entrer.
+            for cle in cles:
+                oublier_tentatives(cle)
             jeton = ouvrir_session(qui)
             # Sans ceci, « en ligne » n'apparaitrait presque jamais : la
             # presence n'etait rafraichie que par le MOTEUR, donc uniquement
@@ -1660,9 +1810,14 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
 
         elif self.path == "/admin":
+            # Le controle passe AVANT la lecture du corps : un inconnu n'a pas
+            # a faire allouer un octet sur une route qui va le refuser.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._raccrocher()
+                self._repondre(403, b"Reserve a l'administrateur.",
+                               "text/plain; charset=utf-8")
                 return
+            champs = self._champs()
             action = champs.get("action", "")
             if action == "inviter":
                 creer_invitation()
@@ -1689,6 +1844,12 @@ class Handler(BaseHTTPRequestHandler):
             # partie plutot que par le cookie de session : le navigateur est sur
             # p<N>.<domaine> et son cookie de site ne voyagerait pas jusqu'ici.
             # Le jeton dit de quel compte il s'agit ; il meurt avec la partie.
+            #
+            # Ces trois routes-ci lisent le corps AVANT de savoir qui parle, et
+            # il n'y a pas moyen de faire autrement : leur laissez-passer est
+            # dans le corps, pas dans un cookie. C'est justement pour elles que
+            # `MAX_CORPS_OCTETS` existe, deja verifie en tete de `do_POST`.
+            champs = self._champs()
             qui = JETONS_SITE.get(champs.get("jeton", ""))
             if not qui:
                 self._repondre(403, b'{"error":"jeton inconnu"}',
@@ -1740,9 +1901,13 @@ class Handler(BaseHTTPRequestHandler):
                            "application/json; charset=utf-8")
 
         elif self.path == "/eteindre":
+            # Aucun champ a lire ici : le bouton n'envoie rien, et le pseudo
+            # vient du cookie. On ne touche donc pas au corps du tout.
             if not pseudo:
+                self._raccrocher()
                 self._rediriger("/")
                 return
+            self._raccrocher()
             # On n'eteint QUE son propre jeu : le code est le pseudo.
             if eteindre_jeu(pseudo):
                 journal_partie_fermee(pseudo)
@@ -1759,6 +1924,10 @@ class Handler(BaseHTTPRequestHandler):
             self._rediriger("/arret")
 
         else:
+            # ⚠ ON NE LIT PAS LE CORPS D'UNE ROUTE QUI N'EXISTE PAS. C'etait le
+            # pire des cas : faire allouer plusieurs mega-octets pour rendre un
+            # 404 de onze caracteres.
+            self._raccrocher()
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
 

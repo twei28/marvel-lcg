@@ -399,6 +399,96 @@ verifier("un anonyme ne peut rien eteindre",
          _code == 303 and _tetes.get("Location") == "/" and
          o.mot_de_passe_jeu("hote") == _avant, str(_code))
 
+# --- S3 : le corps d'une requete est plafonne AVANT d'etre lu ---------------
+# ⚠ LE CAS NE VAUT QUE PARCE QU'IL MENT. On annonce plus que le plafond, on
+# n'envoie pas un octet, et on attend la reponse. Un serveur qui lirait
+# d'abord resterait a attendre des octets qui n'arriveront jamais : le cas
+# echouerait alors sur le delai, ce qui est exactement ce qu'on veut voir.
+_enorme = o.MAX_CORPS_OCTETS + 1
+try:
+    _code, _, _ = appel("POST", "/connexion", annonce=_enorme, delai=4)
+except OSError as _erreur:
+    _code = repr(_erreur)
+verifier("un corps trop gros est refuse, et sans etre lu", _code == 413, str(_code))
+
+# Sous le plafond, mais toujours pas envoye : les routes qui n'ont rien a lire
+# ne doivent pas s'y mettre non plus.
+_gros = 1_000_000
+try:
+    _code404, _, _ = appel("POST", "/route-qui-nexiste-pas", annonce=_gros, delai=4)
+except OSError as _erreur:
+    _code404 = repr(_erreur)
+verifier("une route inconnue ne lit pas le corps avant de rendre son 404",
+         _code404 == 404, str(_code404))
+
+try:
+    _code403, _, _ = appel("POST", "/admin", annonce=_gros,
+                           entetes=cookie_de("invitee"), delai=4)
+except OSError as _erreur:
+    _code403 = repr(_erreur)
+verifier("l'administration refuse un inconnu avant de lire son corps",
+         _code403 == 403, str(_code403))
+
+# Non-regression : un envoi normal passe toujours.
+_code, _, _corps = appel("POST", "/connexion",
+                         b"pseudo=hote&mdp=motdepasse123")
+verifier("un formulaire de taille normale passe toujours", _code == 303, str(_code))
+
+# --- S2 : le frein sur les tentatives de connexion --------------------------
+# ⚠ LE CAS QUI COMPTE EST CELUI DU REFUS. Compter les tentatives acceptees ne
+# prouverait rien ; c'est la N+1e, refusee, qui dit que le frein existe.
+o._TENTATIVES.clear()
+_dernier = 0
+for _i in range(o.TENTATIVES_CONNEXION):
+    _dernier, _, _ = appel("POST", "/connexion", b"pseudo=inconnu-x&mdp=faux")
+verifier("les tentatives permises passent (et echouent normalement)",
+         _dernier == 400, str(_dernier))
+_code, _, _corps = appel("POST", "/connexion", b"pseudo=inconnu-x&mdp=faux")
+_texte = _corps.decode("utf-8", "replace")
+verifier("la tentative suivante est REFUSEE", _code == 429, str(_code))
+verifier("et on dit au joueur combien de temps attendre",
+         "Trop de tentatives" in _texte and "Reessaie dans" in _texte,
+         _texte[:300])
+
+# Par ADRESSE : changer de compte ne relache rien, le flot vient du meme
+# endroit.
+_code, _, _ = appel("POST", "/connexion", b"pseudo=un-autre-compte&mdp=faux")
+verifier("changer de compte ne desserre pas le frein d'adresse", _code == 429, str(_code))
+
+# Par COMPTE : changer d'adresse non plus, sinon on s'acharne sur une personne
+# depuis autant d'adresses qu'on veut.
+o._TENTATIVES.clear()
+for _i in range(o.TENTATIVES_CONNEXION):
+    appel("POST", "/connexion", b"pseudo=hote&mdp=faux",
+          entetes={"X-Forwarded-For": "10.0.0.%d" % _i})
+_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=faux",
+                    entetes={"X-Forwarded-For": "10.0.0.200"})
+verifier("changer d'adresse ne desserre pas le frein de compte",
+         _code == 429, str(_code))
+
+# ⚠ ET IL FAUT QUE L'ADRESSE VIENNE DE CADDY, PAS DU CLIENT. `X-Forwarded-For`
+# est une liste a laquelle le proxy AJOUTE : c'est la derniere valeur qui vaut
+# quelque chose, la premiere s'ecrit a la main.
+o._TENTATIVES.clear()
+for _i in range(o.TENTATIVES_CONNEXION):
+    appel("POST", "/connexion", b"pseudo=inconnu-y&mdp=faux",
+          entetes={"X-Forwarded-For": "9.9.9.%d, 203.0.113.7" % _i})
+_code, _, _ = appel("POST", "/connexion", b"pseudo=inconnu-z&mdp=faux",
+                    entetes={"X-Forwarded-For": "1.2.3.4, 203.0.113.7"})
+verifier("une adresse falsifiee en tete de liste ne contourne pas le frein",
+         _code == 429, str(_code))
+
+# Une connexion REUSSIE relache le frein : les fautes de frappe de quelqu'un
+# qui finit par entrer ne doivent pas le poursuivre.
+o._TENTATIVES.clear()
+for _i in range(o.TENTATIVES_CONNEXION - 1):
+    appel("POST", "/connexion", b"pseudo=hote&mdp=faux")
+_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=motdepasse123")
+verifier("apres tatonnements, le bon mot de passe entre", _code == 303, str(_code))
+_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=faux")
+verifier("et la reussite a relache le frein", _code == 400, str(_code))
+o._TENTATIVES.clear()
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
