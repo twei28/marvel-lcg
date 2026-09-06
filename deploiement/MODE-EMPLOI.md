@@ -220,3 +220,17 @@ est volontairement figé (`apt-mark hold caddy`) pour cette raison.
 
 `cle_narwhal` (la clé privée du serveur) et `installer-serveur.ps1` (il contient
 le jeton Cloudflare). Les deux sont déjà dans le `.gitignore` du projet.
+
+## Les originaux des scans fan-made
+
+Les scans livrés par les auteurs (1500 x 2150, 2,3 Go pour 2492 fichiers) ne
+sont pas dans le dépôt et ne sont plus servis tels quels : `outils/uniformiser-scans.py`
+les réduit à 615 px de petit côté avant envoi. Ils existent à deux endroits :
+
+- sur le poste, `sauvegardes-serveur/scans-originaux/` (ignoré par git) ;
+- sur le serveur, `/var/backups/narwhal/scans-originaux/`, copie faite le
+  07/09/2026 par `rsync`, à refaire après tout nouvel import d'images
+  (`rsync -a --partial -e "ssh -i deploiement/cle_narwhal" sauvegardes-serveur/scans-originaux/ root@<ip>:/var/backups/narwhal/scans-originaux/`).
+
+Sans eux, une nouvelle réduction (autre cible que 615) serait impossible sans
+perte : l'outil refuse d'ailleurs de tourner si la sauvegarde est incomplète.
