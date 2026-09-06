@@ -1,0 +1,12 @@
+# Fins de ligne normalisees en LF pour tout ce que git detecte comme texte
+# (detection automatique : les binaires, images, polices, etc. ne sont pas
+# touches). Le depot est deja tout en LF (verifie le 06/09/2026, aucun
+# fichier suivi ne contient de CRLF) : cette regle fige l'existant, elle ne
+# convertit rien de nouveau.
+* text=auto eol=lf
+
+# Exceptions : scripts Windows natifs, attendus en CRLF par cmd.exe et
+# l'ISE PowerShell. On ne force pas leur conversion en LF.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
