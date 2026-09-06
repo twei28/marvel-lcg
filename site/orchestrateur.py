@@ -1199,6 +1199,11 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
     laisserait l'image grossir le disque sans que rien n'y renvoie plus. C'est
     la meme regle que `supprimer_rapport`, appliquee en gros.
 
+    ⚠ MAIS DANS CET ORDRE : LES LIGNES, LA VALIDATION, PUIS LE DISQUE. Effacer
+    un fichier au milieu d'une transaction, c'est promettre au disque ce que la
+    base peut encore annuler : la moindre erreur en fin de boucle rendait les
+    lignes et laissait les images parties.
+
     Rend le nombre de rapports effaces.
     """
     from datetime import datetime, timedelta
@@ -1207,26 +1212,45 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
     # Meme format que `_maintenant()` : la comparaison de chaines suffit, ces
     # horodatages se trient dans l'ordre alphabetique comme dans le temps.
     limite = (datetime.now() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
-    efface = 0
     with _cx() as cx:
         # ⚠ TOLERER UNE BASE PAS ENCORE MIGREE. Cette fonction est appelee par
         # la purge hebdomadaire, dans un AUTRE processus que le service : lui
         # faire lancer la migration ferait deux `ALTER TABLE` concurrents pour
         # rien. Sans la colonne, on retombe sur la date d'envoi.
         colonnes = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
-        champ = "COALESCE(traite_le, quand)" if "traite_le" in colonnes else "quand"
-        lignes = cx.execute(
-            "SELECT id, capture FROM rapports WHERE etat = 'traite'"
-            " AND %s < ?" % champ, (limite,)).fetchall()
+        # ⚠ LES DEUX REQUETES SONT ECRITES EN TOUTES LETTRES. Composer un nom
+        # de colonne avec un « % » n'etait pas exploitable ici, le code
+        # choisissant lui-meme les deux valeurs possibles ; mais l'invariant
+        # « aucun % dans une chaine SQL » se verifie d'un coup d'oeil, et une
+        # exception, meme sure, oblige a les relire toutes.
+        if "traite_le" in colonnes:
+            lignes = cx.execute(
+                "SELECT id, capture FROM rapports WHERE etat = 'traite'"
+                " AND COALESCE(traite_le, quand) < ?", (limite,)).fetchall()
+        else:
+            lignes = cx.execute(
+                "SELECT id, capture FROM rapports WHERE etat = 'traite'"
+                " AND quand < ?", (limite,)).fetchall()
         for r in lignes:
-            if r["capture"]:
-                try:
-                    os.remove(os.path.join(DOSSIER_RAPPORTS, os.path.basename(r["capture"])))
-                except OSError:
-                    pass
             cx.execute("DELETE FROM rapports WHERE id = ?", (r["id"],))
-            efface += 1
-    return efface
+
+    # La transaction est validee : ce qui suit ne peut plus etre annule, et le
+    # disque ne perdra donc rien que la base ait garde.
+    for r in lignes:
+        if not r["capture"]:
+            continue
+        chemin = os.path.join(DOSSIER_RAPPORTS, os.path.basename(r["capture"]))
+        try:
+            os.remove(chemin)
+        except FileNotFoundError:
+            pass                      # deja parti : c'est le resultat voulu
+        except OSError as erreur:
+            # ⚠ NE PAS AVALER CELLE-CI. Une capture restee seule sur le disque
+            # n'apparait sur aucune page : sans cette ligne, personne ne
+            # l'apprend jamais, et le dossier grossit en silence.
+            print("purge : capture non effacee %s (%s)" % (chemin, erreur),
+                  file=sys.stderr)
+    return len(lignes)
 
 
 def supprimer_rapport(numero: int) -> None:
@@ -1659,6 +1683,14 @@ class Handler(BaseHTTPRequestHandler):
         qui precede a ete ecrit par le client et se falsifie librement. Prendre
         la premiere donnerait un frein qu'il suffit de contourner en changeant
         un en-tete.
+
+        ⚠ ET CE QUI TIENT ICI, C'EST QUE PERSONNE D'AUTRE QUE CADDY NE PARLE AU
+        SERVICE. On ne verifie pas le pair, on ne le pourrait pas : derriere le
+        proxy, il est toujours 127.0.0.1. La surete vient d'ailleurs, et de deux
+        choses seulement : `main` ecoute sur `127.0.0.1` et non sur `0.0.0.0`,
+        et le pare-feu de la machine n'ouvre que 80 et 443. Le jour ou l'une des
+        deux tombe, n'importe qui choisit son adresse d'un en-tete et le frein
+        de `/connexion` ne freine plus rien.
         """
         relais = (self.headers.get("X-Forwarded-For") or "").strip()
         if relais:
@@ -1671,18 +1703,25 @@ class Handler(BaseHTTPRequestHandler):
         ⚠ POURQUOI PAS EN DUR. Le site EST servi en HTTPS seulement : le
         `Caddyfile` declare ses deux blocs par leur nom d'hote, sans schema et
         sans `auto_https off`, ce qui fait que Caddy sert le 443 et redirige le
-        80 vers lui de lui-meme. En production l'attribut est donc toujours
-        pose. Mais le meme fichier tourne en local sur `http://127.0.0.1:8080`,
-        sans proxy devant : `Secure` en dur y ferait jeter le cookie par le
-        navigateur, et la connexion tournerait en rond sans rien dire.
+        80 vers lui de lui-meme. Mais le meme fichier tourne en local sur
+        `http://127.0.0.1:8080`, sans proxy devant : `Secure` en dur y ferait
+        jeter le cookie par le navigateur, et la connexion tournerait en rond
+        sans rien dire.
 
-        ⚠ ET LA FALSIFICATION NE RAPPORTE RIEN ICI. Un client qui mentirait sur
+        ⚠ ET `DOMAINE` NE VAUT PAS PREUVE. Il l'a valu, et c'etait un piege :
+        sur le serveur meme, `curl http://127.0.0.1:8080` ou un coup d'oeil au
+        service sans passer par Caddy recevaient un cookie que le navigateur
+        jette, pour la seule raison qu'une variable d'environnement est
+        renseignee. Seul `X-Forwarded-Proto: https` dit quelque chose de la
+        requete en cours, et c'est Caddy qui l'ecrit.
+
+        ⚠ LA FALSIFICATION NE RAPPORTE RIEN ICI. Un client qui mentirait sur
         `X-Forwarded-Proto` ne ferait que durcir SON PROPRE cookie, ou le
         rendre inutilisable pour lui seul. Rien a y gagner.
         """
         if (self.headers.get("X-Forwarded-Proto") or "").strip().lower() == "https":
             return "; Secure"
-        return "; Secure" if DOMAINE else ""
+        return ""
 
     def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
         inscription = quoi == "inscription"
@@ -1896,7 +1935,8 @@ class Handler(BaseHTTPRequestHandler):
             # ressembler a celui qu'il remplace, sans quoi certains navigateurs
             # gardent l'ancien a cote.
             self.send_header("Set-Cookie",
-                             "nc_session=; Max-Age=0; Path=/" + self._secure())
+                             "nc_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
+                             + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
         elif self.path == "/admin":

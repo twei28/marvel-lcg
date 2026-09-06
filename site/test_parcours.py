@@ -573,13 +573,31 @@ verifier("derriere HTTPS, le cookie de session porte Secure",
 verifier("sans rien perdre de HttpOnly ni de SameSite",
          "HttpOnly" in _pose and "SameSite=Lax" in _pose, _pose)
 
-# Et en production le domaine suffit, meme si l'en-tete manque.
+# ⚠ ET LE DOMAINE, LUI, NE PROUVE RIEN. Le service repond aussi en direct sur
+# `http://127.0.0.1:8080`, sur le serveur meme, ne serait-ce que pour verifier
+# qu'il tourne : `Secure` pose sur la foi du seul `DOMAINE` y faisait jeter le
+# cookie par le navigateur, et la connexion tournait en rond sans rien dire.
+# Seul `X-Forwarded-Proto: https`, que Caddy ajoute lui-meme, vaut preuve.
 _vrai_domaine = o.DOMAINE
 o.DOMAINE = "narwhalchampions.test"
 _pose = _pose_le_cookie()
+_pose_derriere_caddy = _pose_le_cookie({"X-Forwarded-Proto": "https"})
 o.DOMAINE = _vrai_domaine
-verifier("un site sur son domaine pose Secure meme sans en-tete",
-         "Secure" in _pose, _pose)
+verifier("un acces direct au port du site garde un cookie utilisable",
+         "Secure" not in _pose, _pose)
+verifier("et le meme site derriere Caddy le durcit quand meme",
+         "Secure" in _pose_derriere_caddy, _pose_derriere_caddy)
+
+# ⚠ ET LE COOKIE EFFACE RESSEMBLE A CELUI QU'IL REMPLACE. Son commentaire le
+# promettait, la ligne ne le tenait pas : ni `HttpOnly` ni `SameSite`. Certains
+# navigateurs gardent alors l'ancien a cote du nouveau, et la deconnexion ne
+# deconnecte rien.
+_code, _tetes, _ = appel("GET", "/deconnexion", entetes=cookie_de("hote"))
+_efface = _tetes.get("Set-Cookie") or ""
+verifier("le cookie efface porte les memes attributs qu'a la pose",
+         "HttpOnly" in _efface and "SameSite=Lax" in _efface and "Path=/" in _efface,
+         _efface)
+verifier("et il expire sur-le-champ", "Max-Age=0" in _efface, _efface)
 o._TENTATIVES.clear()
 
 # Cote MOTEUR, le meme defaut venait de l'amont : `secure=True` et
@@ -597,6 +615,45 @@ for _fichier, _combien in (
     verifier("les cookies de %s ne partent plus en clair" % os.path.basename(_fichier),
              _src.count("secure=") >= _combien and "# secure=True" not in _src,
              "%d secure= trouves" % _src.count("secure="))
+
+# --- Deux invariants qui se lisent dans la source ---------------------------
+_source_site = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "orchestrateur.py"), encoding="utf-8").read()
+
+# ⚠ AUCUNE REQUETE SQL COMPOSEE A L'EXECUTION. Celle qui restait ne collait
+# qu'un nom de colonne choisi par le code lui-meme, donc sans danger ; mais un
+# invariant qui souffre une exception ne se verifie plus d'un coup d'oeil, il
+# se relit requete par requete. On demande donc que le premier argument de
+# chaque `execute` soit litteral, morceaux colles bout a bout compris.
+import ast                                                  # noqa: E402
+
+
+def _sql_litterale(noeud):
+    if isinstance(noeud, ast.Constant) and isinstance(noeud.value, str):
+        return True
+    if isinstance(noeud, ast.BinOp) and isinstance(noeud.op, ast.Add):
+        return _sql_litterale(noeud.left) and _sql_litterale(noeud.right)
+    return False
+
+
+_composees = [_n.lineno for _n in ast.walk(ast.parse(_source_site))
+              if isinstance(_n, ast.Call) and isinstance(_n.func, ast.Attribute)
+              and _n.func.attr in ("execute", "executemany") and _n.args
+              and not _sql_litterale(_n.args[0])]
+verifier("aucune requete SQL n'est composee a l'execution",
+         not _composees, "lignes " + str(_composees))
+
+# ⚠ ET L'ADRESSE DU VISITEUR SE CROIT SUR PAROLE. `_adresse_client` lit
+# `X-Forwarded-For` sans verifier qui parle : ce qui tient, c'est que personne
+# d'autre que Caddy ne puisse parler au service. Le jour ou le service
+# ecouterait ailleurs que sur la boucle locale, le frein se contournerait d'un
+# en-tete.
+verifier("le service n'ecoute que sur la boucle locale",
+         'ThreadingHTTPServer(("127.0.0.1"' in _source_site,
+         "la ligne de `main` a change")
+verifier("et _adresse_client dit sur quoi repose sa surete",
+         "pare-feu" in (o.Handler._adresse_client.__doc__ or ""),
+         str(o.Handler._adresse_client.__doc__)[:200])
 
 # --- Le Caddyfile : ce que le navigateur retient du site --------------------
 # ⚠ CADDY N'EST PAS LANCE ICI, on lit donc son fichier. Le cas garde la porte
@@ -821,6 +878,65 @@ with o._cx() as cx:
 o.changer_etat_rapport(_ouvert, "traite")
 verifier("un vieux rapport tout juste classe n'est pas emporte",
          o.purger_rapports_traites(30) == 0)
+
+# ⚠ ET LE DISQUE N'EST TOUCHE QU'UNE FOIS LA TRANSACTION VALIDEE. Effacer un
+# fichier au milieu d'une transaction, c'est promettre au disque ce que la base
+# peut encore annuler. Le cas le prouve depuis l'interieur de l'effacement : au
+# moment ou la capture part, la ligne a deja disparu POUR QUI REGARDE
+# D'AILLEURS, et seule une transaction validee se voit d'ailleurs.
+_hors = o.enregistrer_rapport("hote", {"nom": "hors", "description": "hors transaction",
+                                       "capture": _png})
+o.changer_etat_rapport(_hors, "traite")
+with o._cx() as cx:
+    cx.execute("UPDATE rapports SET traite_le=? WHERE id=?", (_il_y_a_40, _hors))
+_vu_pendant = {}
+_vrai_remove = os.remove
+
+
+def _remove_observe(chemin):
+    # Une AUTRE connexion : elle ne voit que ce qui est valide.
+    with o._cx() as _autre:
+        _vu_pendant["reste"] = _autre.execute(
+            "SELECT COUNT(*) FROM rapports WHERE id=?", (_hors,)).fetchone()[0]
+    return _vrai_remove(chemin)
+
+
+os.remove = _remove_observe
+try:
+    o.purger_rapports_traites(30)
+finally:
+    os.remove = _vrai_remove
+verifier("la capture ne part qu'une fois la ligne vraiment validee",
+         _vu_pendant.get("reste") == 0, str(_vu_pendant))
+
+# ⚠ UNE CAPTURE QUI RESISTE N'EMPORTE PAS SA LIGNE AVEC ELLE. Les fichiers
+# partaient DANS la transaction, et l'`OSError` etait avalee en silence : un
+# disque plein ou un droit refuse laissait une ligne effacee, un fichier
+# vivant, et personne pour l'apprendre. On efface les lignes, on valide, puis
+# seulement on touche au disque, et l'echec est dit.
+_coince = o.enregistrer_rapport("hote", {"nom": "coince", "description": "bug coince",
+                                         "capture": _png})
+with o._cx() as cx:
+    _capture_coincee = cx.execute("SELECT capture FROM rapports WHERE id=?",
+                                  (_coince,)).fetchone()["capture"]
+o.changer_etat_rapport(_coince, "traite")
+with o._cx() as cx:
+    cx.execute("UPDATE rapports SET traite_le=? WHERE id=?", (_il_y_a_40, _coince))
+# Un DOSSIER a la place du fichier : `os.remove` ne peut rien contre lui.
+_chemin_coince = os.path.join(_bac_rapports, _capture_coincee)
+os.remove(_chemin_coince)
+os.mkdir(_chemin_coince)
+import contextlib                                           # noqa: E402
+import io as _flux                                          # noqa: E402
+_plainte = _flux.StringIO()
+with contextlib.redirect_stderr(_plainte):
+    _efface = o.purger_rapports_traites(30)
+verifier("la ligne part meme quand sa capture resiste",
+         _efface == 1 and _coince not in {r["id"] for r in o.liste_rapports()},
+         "%d efface(s)" % _efface)
+verifier("et l'echec de l'effacement est dit, pas avale",
+         "capture" in _plainte.getvalue().lower(), repr(_plainte.getvalue()))
+os.rmdir(_chemin_coince)
 
 # Rouvrir un rapport efface sa date de classement : le compte a rebours
 # repart de zero le jour ou on le reclasse.
