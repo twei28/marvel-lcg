@@ -12,6 +12,8 @@
 ## Je veux jouer ou faire tourner le jeu
 
 - Lancer une partie en ligne à plusieurs : `reference/MULTIJOUEUR.md`
+- Administrer le serveur, lire les rapports de bug reçus, ajouter un livret
+  de règles au panneau « Documents » : `../deploiement/MODE-EMPLOI.md`
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :
   `reference/GUIDE-STRATEGIE-JEU.md`
 

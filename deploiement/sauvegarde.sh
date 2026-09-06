@@ -7,6 +7,12 @@
 # Le fichier des comptes est la seule donnée du site qui ne se régénère pas.
 # On ne cherche pas à deviner son nom : on archive tous les petits fichiers
 # d'état de site/ (json, db, sqlite), ce qui le contient forcément.
+#
+# S'y ajoutent les CAPTURES DES RAPPORTS DE BUG (site/rapports/). Le texte des
+# rapports vit dans narwhal.db, donc déjà pris ; les images, elles, sont sur
+# disque et seraient perdues à la restauration — /admin afficherait alors des
+# rapports dont la capture manque. Le plafond de -size 20M les couvre : une
+# capture réduite par le navigateur pèse moins d'un mégaoctet.
 # ==============================================================================
 set -euo pipefail
 
@@ -22,7 +28,8 @@ mkdir -p "$DESTINATION"
 # -maxdepth 2 : l'état vit à la racine de site/, pas au fond de l'arborescence.
 mapfile -t fichiers < <(
   find "$RACINE/site" -maxdepth 2 -type f \
-       \( -name '*.json' -o -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \) \
+       \( -name '*.json' -o -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \
+          -o -name '*.png' -o -name '*.jpg' -o -name '*.webp' \) \
        -size -20M -print
 )
 

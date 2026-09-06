@@ -35,9 +35,16 @@ le pare-feu (22, 80, 443 et **rien d'autre**), les services et les minuteries.
 
 Clic droit sur **`deployer.ps1`** → *Exécuter avec PowerShell*.
 
-Il envoie le code du moteur, l'orchestrateur **et les images custom** (elles ne
-sont pas dans le dépôt), installe les dépendances Python, redémarre le service,
-rapatrie la sauvegarde des comptes et vérifie que le site répond.
+Il envoie le code du moteur, l'orchestrateur, **les images custom** et **les
+livrets PDF** (ni les unes ni les autres ne sont dans le dépôt), installe les
+dépendances Python, redémarre le service, rapatrie la sauvegarde des comptes et
+vérifie que le site répond.
+
+L'étape **Documents PDF** tourne à chaque fois, `-Code` compris : ce ne sont pas
+des images, et le panneau « Documents » du site serait vide sans elles. Elle
+compare les tailles, n'envoie que ce qui manque — et **efface du serveur ce qui
+a disparu en local**. C'est voulu, et c'est la différence avec les images : un
+scan en trop ne gêne personne, un livret de règles périmé induit en erreur.
 
 Le premier passage envoie 1,9 Go d'images, par lots de 100 Mo : c'est long, mais
 une coupure ne fait perdre qu'un lot. Les fois suivantes, seules les images
@@ -85,6 +92,59 @@ ssh -i $cle $srv "bash /opt/narwhal/redimensionner-images.sh 800"
 Sauvegarde des comptes : automatique chaque nuit à 4 h 30, 30 archives gardées
 dans `/var/backups/narwhal/`, plus une copie rapatriée dans
 `Marvel LCG\sauvegardes-serveur\` à chaque déploiement.
+
+---
+
+## Les rapports de bug
+
+Depuis n'importe quel écran du jeu, un bouton **« Signaler un bug »** ouvre un
+formulaire : un nom (obligatoire), une description, une capture d'écran collée
+en Ctrl+V ou choisie en fichier. Depuis le **plateau**, le journal de toute la
+partie part avec, sans que la personne ait rien à faire.
+
+Tout arrive sur **`https://narwhalchampions.com/admin`**, section *Rapports de
+bug* : les 60 derniers, le plus récent en haut, dépliables. Trois états —
+*Nouveau*, *En cours*, *Traité* — et une pastille rouge en titre tant qu'il
+reste des nouveaux.
+
+Ce qu'il faut savoir :
+
+| | |
+|---|---|
+| Qui peut envoyer | **tout le monde**, y compris un invité arrivé par un lien de siège : ce sont eux qui tombent sur les bugs sans autre moyen de le dire |
+| Plafond | 12 rapports par heure et par table, puis le formulaire répond « trop de rapports » |
+| Texte et journal | dans `narwhal.db`, tronqués plutôt que refusés |
+| Captures | fichiers dans `/opt/narwhal/site/rapports/`, un nom au hasard, servis uniquement à l'administrateur |
+| Sauvegarde | les deux sont pris par la sauvegarde de nuit |
+| Suppression | le bouton *Supprimer* d'un rapport efface aussi sa capture |
+
+En **partie locale** (`JOUER-SOLO.bat`), il n'y a aucun site derrière le moteur :
+le formulaire le dit et propose le presse-papier ou un fichier. Sur le plateau,
+le bouton ne s'affiche pas du tout — « Log » télécharge déjà tout le déroulé.
+
+⚠ `sauvegarde.sh` et `purge.sh` sont installés par `installer-serveur.ps1`, pas
+par `deployer.ps1`. Les modifier ici ne suffit pas : il faut les réinstaller.
+
+```powershell
+scp -i $cle .\sauvegarde.sh "${srv}:/tmp/s.sh"
+ssh -i $cle $srv "sed -i 's|@RACINE@|/opt/narwhal|g' /tmp/s.sh && install -m 755 /tmp/s.sh /usr/local/bin/narwhal-sauvegarde && rm /tmp/s.sh"
+```
+
+---
+
+## Les livrets de règles
+
+Les 27 PDF (livrets et carnets de campagne) vivent dans
+`Fusion\marvel-lcg-src\assets\docs\`, hors du dépôt comme les scans. Pour en
+ajouter un, déposez-le dans ce dossier et relancez `deployer.ps1` : le panneau
+« Documents » le fera apparaître tout seul.
+
+Le nom compte. Le panneau rattache un fichier à sa boîte par le **nom
+d'extension qu'il contient** (`mc32_mutant_genesis_...` → Mutant Genesis), et
+retombe sur le numéro `mcNN` quand le nom ne dit rien (`mc55_rulebook-web.pdf`).
+Un fichier dont le nom contient `campaign-log`, `campaign_log` ou `campaignlog`
+est classé comme carnet de campagne. Un PDF que rien ne rattache s'affiche
+quand même, sous son nom de fichier nettoyé.
 
 ---
 

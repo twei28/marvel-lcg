@@ -100,6 +100,9 @@ Fusion/marvel-lcg-src/assets/pics-proxy/
 
 # Ressources non versionnees ramenees a la racine le 31/08/2026 (fusion des deux niveaux)
 /A créer/
+# Captures d'ecran du jeu, refaites a la demande par un script jetable :
+# des images lourdes que rien dans le code ne reference.
+/captures/
 # /regles-officielles/ : dossier supprime le 06/09/2026, ses 27 PDF ayant
 # rejoint Fusion/marvel-lcg-src/assets/docs/ (ignore plus haut), d'ou le
 # panneau « Documents » les sert et d'ou deployer.ps1 les envoie.
