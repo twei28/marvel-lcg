@@ -43,8 +43,19 @@ vérifie que le site répond.
 L'étape **Documents PDF** tourne à chaque fois, `-Code` compris : ce ne sont pas
 des images, et le panneau « Documents » du site serait vide sans elles. Elle
 compare les tailles, n'envoie que ce qui manque — et **efface du serveur ce qui
-a disparu en local**. C'est voulu, et c'est la différence avec les images : un
-scan en trop ne gêne personne, un livret de règles périmé induit en erreur.
+a disparu en local**. C'est voulu : un livret de règles périmé induit en
+erreur.
+
+L'étape **Images custom** fait de même depuis le passage du 06/09/2026 : une
+image disparue ou renommée en local (par exemple après une renumérotation de
+prefixe fan-made) est effacée du serveur, sa liste affichée avant suppression.
+
+Le déploiement du code rase aussi, côté serveur et juste avant d'extraire
+l'archive fraîche : `Fusion/marvel-lcg-src/src`, `Fusion/marvel-lcg-src/public`
+(y compris `public/app`) et les fichiers de code à la racine de `site/`
+(jamais `comptes.json`, `narwhal.db` ni `site/rapports/`, qui ne voyagent
+jamais dans l'archive). Sans ce rasage, un fichier renommé ou supprimé en
+local serait resté sur le serveur indéfiniment.
 
 Le premier passage envoie 1,9 Go d'images, par lots de 100 Mo : c'est long, mais
 une coupure ne fait perdre qu'un lot. Les fois suivantes, seules les images

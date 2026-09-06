@@ -93,16 +93,46 @@ if ($faireCode) {
 
   & scp -i $CLE $tgz "root@${IP}:/tmp/narwhal-code.tgz"
   if ($LASTEXITCODE -ne 0) { throw "Envoi du code en echec." }
-  # ⚠ public/app EST RASE AVANT L'EXTRACTION. L'archive s'extrait par-dessus
-  # l'existant sans rien effacer, or les fichiers du plateau portent une
-  # EMPREINTE dans leur nom : chaque construction en cree de nouveaux et les
-  # anciens restaient la pour toujours. Dix fichiers pour quatre utiles au
-  # dernier comptage. Le dossier est entierement reconstruit par
-  # ui-app/deployer.sh, donc l'archive en porte toujours une copie complete —
-  # on ne rase que ce qu'on remplace dans la seconde qui suit.
-  $appLocal = Join-Path $PROJET "Fusion\marvel-lcg-src\public\app"
-  $razApp = if (Test-Path $appLocal) { "rm -rf $DIST/Fusion/marvel-lcg-src/public/app && " } else { "" }
-  Ssh-Exec "mkdir -p $DIST && ${razApp}tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
+  # ⚠ LES DOSSIERS DE CODE SONT RASES AVANT L'EXTRACTION. L'archive s'extrait
+  # par-dessus l'existant sans rien effacer : un fichier renomme ou supprime
+  # en local (Python, JS, HTML...) restait sinon sur le serveur pour toujours
+  # (audit E, point 2 ; deja constate sur public/app, ou les fichiers du
+  # plateau portent une EMPREINTE dans leur nom et s'accumulaient — dix
+  # fichiers pour quatre utiles au dernier comptage).
+  #
+  # Dossiers rases, et pourquoi c'est sans risque :
+  #   - Fusion/marvel-lcg-src/src    : uniquement du code Python, rien n'y
+  #                                    ecrit a l'execution.
+  #   - Fusion/marvel-lcg-src/public : pages, JS, CSS, images de campagne et
+  #                                    le plateau compile (public/app) ;
+  #                                    tout est reconstruit par l'archive qui
+  #                                    suit immediatement.
+  #   - site (partiellement)         : uniquement les fichiers de CODE a la
+  #                                    racine de site/ (orchestrateur.py,
+  #                                    Caddyfile...).
+  # ⚠ NE JAMAIS raser tout "site" : comptes.json, la base narwhal.db (et tout
+  # *.db/*.sqlite3) et site/rapports/ (captures des rapports de bug) y
+  # vivent, ne sont jamais envoyes par l'archive, et ne se reconstruisent pas
+  # tout seuls. On les epargne explicitement.
+  $razCode = @()
+  if (Test-Path (Join-Path $PROJET "Fusion\marvel-lcg-src\src")) {
+    $razCode += "rm -rf $DIST/Fusion/marvel-lcg-src/src"
+  }
+  if (Test-Path (Join-Path $PROJET "Fusion\marvel-lcg-src\public")) {
+    $razCode += "rm -rf $DIST/Fusion/marvel-lcg-src/public"
+  }
+  if (Test-Path (Join-Path $PROJET "site")) {
+    # "-mindepth 1 -maxdepth 1" : uniquement la racine de site/, jamais dans
+    # rapports/ (on l'epargne en bloc, sans y regarder dedans). Le tout entre
+    # parentheses et suivi de "; true" : si site/ n'existe pas encore sur le
+    # serveur (tout premier deploiement), le "find" echoue sans arreter le
+    # reste de la commande distante.
+    $razCode += "([ -d $DIST/site ] && find $DIST/site -mindepth 1 -maxdepth 1 " +
+      "! -name 'comptes.json' ! -name '*.db' ! -name '*.sqlite3' " +
+      "! -name 'rapports' -exec rm -rf {} + ; true)"
+  }
+  $razage = if ($razCode.Count -gt 0) { ($razCode -join " && ") + " && " } else { "" }
+  Ssh-Exec "mkdir -p $DIST && ${razage}tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
   Remove-Item $tgz -Force
   Write-Host "   code deploye"
 }
@@ -121,13 +151,31 @@ if ($faireImages -and (Test-Path $PICS)) {
 
   # Ce qui manque ou differe.
   $prefixe = (Resolve-Path $PICS).Path.TrimEnd('\') + '\'
+  $ici = @{}
   $aEnvoyer = @()
   $poids = 0
   foreach ($f in Get-ChildItem -Path $PICS -Recurse -File) {
     $rel = $f.FullName.Substring($prefixe.Length).Replace('\','/')
+    $ici[$rel] = $true
     if (-not $distant.ContainsKey($rel) -or $distant[$rel] -ne $f.Length) {
       $aEnvoyer += [pscustomobject]@{ Rel = $rel; Taille = $f.Length }
       $poids += $f.Length
+    }
+  }
+
+  # ⚠ ON EFFACE CE QUI A DISPARU EN LOCAL, comme le fait deja l'etape
+  # « Documents PDF » plus bas. Sans ca, un fan-made dont l'ID change (deja
+  # vecu sur ce projet, cf. renumerotations de prefixes) laisse une image
+  # morte sur le serveur indefiniment : rien ne la reclame jamais
+  # (audit E, point 2). On affiche toujours la liste avant de supprimer.
+  $aEffacerPics = @($distant.Keys | Where-Object { -not $ici.ContainsKey($_) })
+  if ($aEffacerPics.Count -gt 0) {
+    Write-Host "   a effacer : $($aEffacerPics.Count) image(s) disparue(s) en local"
+    foreach ($rel in $aEffacerPics) { Write-Host "     - $rel" }
+    foreach ($rel in $aEffacerPics) {
+      # Le chemin vient de l'inventaire du serveur lui-meme, jamais d'une saisie.
+      $echappe = $rel -replace "'", "'''"
+      Ssh-Exec "rm -f '$PICS_DIST/$echappe'"
     }
   }
 
