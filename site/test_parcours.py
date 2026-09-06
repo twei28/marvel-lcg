@@ -598,6 +598,23 @@ for _fichier, _combien in (
              _src.count("secure=") >= _combien and "# secure=True" not in _src,
              "%d secure= trouves" % _src.count("secure="))
 
+# --- Le Caddyfile : ce que le navigateur retient du site --------------------
+# ⚠ CADDY N'EST PAS LANCE ICI, on lit donc son fichier. Le cas garde la porte
+# fermee sur la regression exacte : quelqu'un qui retire l'en-tete du bloc de
+# l'accueil. Sans HSTS, une premiere visite tapee en `http://` part en clair
+# jusqu'a la redirection, et le cookie de session avec elle.
+_caddyfile = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "deploiement", "Caddyfile")
+if os.path.isfile(_caddyfile):
+    _cf = open(_caddyfile, encoding="utf-8").read()
+    # Le bloc de l'accueil va de sa ligne d'ouverture au premier bloc suivant.
+    _apex = _cf.split("{$DOMAINE}, www.{$DOMAINE} {", 1)[-1].split("\n*.{$DOMAINE}", 1)[0]
+    verifier("l'accueil annonce HSTS",
+             "Strict-Transport-Security" in _apex, _apex[:200])
+    verifier("pour un an, sous-domaines compris",
+             "max-age=31536000" in _apex and "includeSubDomains" in _apex,
+             _apex[:400])
+
 # --- S7 : ce qui vit a l'execution ne doit pas pouvoir etre commite ---------
 # ⚠ UN SECRET COMMITE NE SE CHANGE PLUS : il reste dans l'historique pour
 # toujours. `narwhal.db` porte les empreintes, les adresses e-mail, les jetons

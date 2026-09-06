@@ -22,6 +22,13 @@
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:8080
 
+	# HSTS. Un navigateur qui a vu cet en-tête une fois ne retente plus jamais le
+	# http:// sur ce domaine : il part directement en https, sans la redirection
+	# pendant laquelle un intermédiaire pouvait lire le cookie de session au vol.
+	# `includeSubDomains` couvre du même coup les vingt tables p1..p20, dont les
+	# URL portent les clés de siège. Un an, la valeur d'usage.
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
 	log {
 		output file /var/log/caddy/accueil.log {
 			roll_size 20MiB
