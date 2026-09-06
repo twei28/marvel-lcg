@@ -13,6 +13,10 @@
 #  bougent plus ; un scan francais AJOUTE ici n'y montera pas tout seul.
 #
 #  N'utilise que ssh, scp et tar, tous fournis avec Windows 10/11.
+#
+#  EXCEPTION : l'etape « Uniformisation des scans », qui appelle
+#  outils/uniformiser-scans.py cote WSL (wsl + python3 + Pillow), le script
+#  ayant des chemins /mnt/c/... code en dur pour ce poste.
 # =============================================================================
 param(
   [switch]$Code,
@@ -135,6 +139,29 @@ if ($faireCode) {
   Ssh-Exec "mkdir -p $DIST && ${razage}tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
   Remove-Item $tgz -Force
   Write-Host "   code deploye"
+}
+
+# --- Uniformisation des scans -------------------------------------------------
+# ⚠ AJOUTE LE 06/09/2026 (audit E, point 4). Sans ce passage, un pack fan-made
+# livre en 1500x2150 montait sur le serveur tel quel : deux fois plus lourd
+# que les 615 px des cartes officielles, sans jamais etre averti. L'outil ne
+# fait rien si tout est deja a la bonne taille, et REFUSE (code de sortie 1)
+# si la sauvegarde des originaux d'un fichier a traiter est incomplete —
+# dans ce cas, on arrete tout le deploiement plutot que de laisser un
+# original irrecuperable se faire ecraser.
+if ($faireImages -and (Test-Path $PICS)) {
+  Write-Host "== Uniformisation des scans" -ForegroundColor Cyan
+  if (-not (Get-Command wsl -ErrorAction SilentlyContinue)) {
+    throw "wsl introuvable : necessaire a outils/uniformiser-scans.py."
+  }
+  $outilWin = Join-Path $PROJET "outils\uniformiser-scans.py"
+  $outilWSL = (& wsl wslpath -a "$outilWin").Trim()
+  & wsl python3 "$outilWSL" --appliquer
+  if ($LASTEXITCODE -ne 0) {
+    throw ("outils/uniformiser-scans.py --appliquer a refuse (code $LASTEXITCODE). " +
+           "Sauvegarde des originaux probablement incomplete : lancez " +
+           "'wsl python3 outils/uniformiser-scans.py --sauvegarde' puis relancez.")
+  }
 }
 
 # --- Images custom -----------------------------------------------------------

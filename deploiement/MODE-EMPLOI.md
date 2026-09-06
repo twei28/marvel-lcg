@@ -46,9 +46,18 @@ compare les tailles, n'envoie que ce qui manque — et **efface du serveur ce qu
 a disparu en local**. C'est voulu : un livret de règles périmé induit en
 erreur.
 
-L'étape **Images custom** fait de même depuis le passage du 06/09/2026 : une
-image disparue ou renommée en local (par exemple après une renumérotation de
-prefixe fan-made) est effacée du serveur, sa liste affichée avant suppression.
+Juste avant, l'étape **Uniformisation des scans** appelle
+`outils/uniformiser-scans.py --appliquer` (via `wsl python3` : l'outil a des
+chemins WSL codés en dur) pour ramener tout scan encore en 1500x2150 à
+615 px, comme les cartes officielles. Elle ne fait rien s'il n'y a rien à
+réduire, et **arrête tout le déploiement** si la sauvegarde des originaux
+d'un fichier à traiter est incomplète — dans ce cas, lancez d'abord
+`wsl python3 outils/uniformiser-scans.py --sauvegarde`.
+
+L'étape **Images custom** efface aussi, depuis le passage du 06/09/2026, ce
+qui a disparu en local : une image disparue ou renommée (par exemple après
+une renumérotation de prefixe fan-made) est effacée du serveur, sa liste
+affichée avant suppression.
 
 Le déploiement du code rase aussi, côté serveur et juste avant d'extraire
 l'archive fraîche : `Fusion/marvel-lcg-src/src`, `Fusion/marvel-lcg-src/public`
@@ -100,9 +109,17 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal JOURS=30 narwhal-purge"
 ssh -i $cle $srv "bash /opt/narwhal/redimensionner-images.sh 800"
 ```
 
-Sauvegarde des comptes : automatique chaque nuit à 4 h 30, 30 archives gardées
-dans `/var/backups/narwhal/`, plus une copie rapatriée dans
-`Marvel LCG\sauvegardes-serveur\` à chaque déploiement.
+Sauvegarde : automatique chaque nuit à 4 h 30, 30 archives gardées dans
+`/var/backups/narwhal/`, plus une copie rapatriée dans
+`Marvel LCG\sauvegardes-serveur\` à chaque déploiement. Depuis le 06/09/2026,
+elle couvre aussi les decks, campagnes, hauts faits et replays des joueurs
+(pas seulement `site/`), et prend `narwhal.db` par un instantané SQLite
+cohérent plutôt qu'une copie brute (le moteur y écrit sans arrêt, en mode
+WAL). Vérifier qu'une sauvegarde restaure vraiment quelque chose :
+
+```
+ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verifier"
+```
 
 ---
 

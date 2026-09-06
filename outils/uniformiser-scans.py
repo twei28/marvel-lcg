@@ -49,12 +49,21 @@ def source(chemin):
 
 
 def a_traiter():
-    """Les images dont le petit cote depasse la cible, avec leurs dimensions."""
+    """Les images dont le petit cote depasse la cible, avec leurs dimensions.
+
+    ⚠ On mesure le fichier EN PLACE (`chemin`), pas `source(chemin)`. Une
+    image deja reduite reste en place a 615 px ou moins, mais son original
+    sauvegarde, lui, fait toujours 1500x2150 : mesurer l'original aurait
+    fait reapparaitre indefiniment les 897 fan-made deja traites (constate
+    le 06/09/2026 : --etat en trouvait 1946 alors qu'aucun fichier reel ne
+    depassait 615 px). `source()` reste reserve a la LECTURE DES PIXELS au
+    moment de redimensionner, dans `appliquer()`.
+    """
     sorties = []
     for chemin in sorted(glob.glob(os.path.join(PICS, "*.jpg"))
                          + glob.glob(os.path.join(PICS, "*.png"))):
         try:
-            with Image.open(source(chemin)) as im:
+            with Image.open(chemin) as im:
                 largeur, hauteur = im.size
         except Exception:
             continue
@@ -104,9 +113,21 @@ def sauvegarder():
 
 def appliquer():
     liste = a_traiter()
-    if not os.path.isdir(SAUVEGARDE) or len(os.listdir(SAUVEGARDE)) < len(liste):
-        print("REFUS : la sauvegarde est absente ou incomplete. "
-              "Lance --sauvegarde d'abord.", file=sys.stderr)
+    if not liste:
+        print("rien a reduire : toutes les images sont deja a "
+              f"{PETIT_COTE} px ou moins.")
+        return
+
+    # ⚠ Verification FICHIER PAR FICHIER, pas un comptage global. Compter
+    # juste `len(os.listdir(SAUVEGARDE)) < len(liste)` laissait passer un
+    # pack tout neuf des que la sauvegarde cumulee d'anciens packs suffisait
+    # en NOMBRE, sans que les nouveaux fichiers y soient pour autant : la
+    # sauvegarde etait "assez grande" sans etre la bonne.
+    manquants = [chemin for chemin, _, _ in liste
+                 if not os.path.exists(os.path.join(SAUVEGARDE, os.path.basename(chemin)))]
+    if manquants:
+        print(f"REFUS : {len(manquants)} original(aux) sur {len(liste)} non "
+              "sauvegarde(s). Lance --sauvegarde d'abord.", file=sys.stderr)
         raise SystemExit(1)
 
     avant = sum(os.path.getsize(c) for c, _, _ in liste)
