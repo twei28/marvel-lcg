@@ -1747,12 +1747,22 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._servir_capture()
         elif self.path == "/etat":
+            # ⚠ LES NOMS NE SORTENT PAS SANS COMPTE. `code` EST le pseudo
+            # (`lancer_jeu` : `Partie(emplacement, pseudo, ...)`) et
+            # `emplacement` donne le sous-domaine : servis a un visiteur
+            # anonyme, ils composaient la liste nominative des personnes en
+            # train de jouer et l'adresse de leur table. Le COMPTEUR, lui, ne
+            # nomme personne et reste public : il ne dit que « c'est plein ».
             with VERROU:
                 etat = {"libres": NB_EMPLACEMENTS - len(EMPLACEMENTS),
                         "total": NB_EMPLACEMENTS,
-                        "jeux": [{"code": p.code, "nom": p.nom,
-                                    "emplacement": p.emplacement,
-                                    "vivant": p.vivant()} for p in PARTIES.values()]}
+                        "occupes": len(EMPLACEMENTS)}
+                if pseudo:
+                    etat["jeux"] = [{"code": p.code, "nom": p.nom,
+                                     "emplacement": p.emplacement,
+                                     "vivant": p.vivant()} for p in PARTIES.values()]
+                else:
+                    etat["jeux"] = []
             self._repondre(200, json.dumps(etat, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
         else:

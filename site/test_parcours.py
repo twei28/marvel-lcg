@@ -559,6 +559,26 @@ else:
     verifier("la base et les captures sont hors du depot", not _oublies,
              "toujours commitables : " + ", ".join(_oublies))
 
+# --- S6 : /etat ne nomme personne a un visiteur anonyme ---------------------
+# ⚠ LE CAS QUI COMPTE EST CELUI DU REFUS. Verifier qu'un compte connecte voit
+# la liste ne prouverait rien du trou : c'est l'anonyme qui ne doit RIEN voir.
+import json                                                 # noqa: E402
+allumer("hote", 3)
+_code, _, _corps = appel("GET", "/etat")
+_anonyme = json.loads(_corps.decode("utf-8"))
+verifier("un anonyme obtient bien l'etat des places",
+         _code == 200 and _anonyme.get("total") == o.NB_EMPLACEMENTS, str(_anonyme))
+verifier("mais il n'apprend le nom de PERSONNE",
+         "hote" not in _corps.decode("utf-8"), str(_anonyme))
+verifier("ni le numero d'une table, donc son sous-domaine",
+         _anonyme.get("jeux") == [], str(_anonyme))
+
+_code, _, _corps = appel("GET", "/etat", entetes=cookie_de("hote"))
+_connu = json.loads(_corps.decode("utf-8"))
+verifier("un compte connecte, lui, voit qui joue",
+         any(j.get("code") == "hote" for j in _connu.get("jeux", [])), str(_connu))
+o.PARTIES.clear()
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
