@@ -100,12 +100,16 @@ export function DeroulePhase({
 }: {
   etapes: EtapeDeroule[]
   /**
-   * L'identite de la phase en cours, et le SEUL declencheur legitime de la
-   * remise a zero du cartouche. board.tsx y passe `etat.monde.round_id` : il y
-   * a une phase du mechant par round, donc le round suffit a distinguer deux
-   * phases. La longueur de la liste ne peut PAS jouer ce role, puisqu'elle
+   * L'identite de la phase en cours. board.tsx y passe `etat.monde.round_id` :
+   * il y a une phase du mechant par round, donc le round suffit a distinguer
+   * deux phases. La longueur de la liste ne peut PAS jouer ce role, puisqu'elle
    * grossit legitimement pendant la phase (chaque validation relache une trame
    * du moteur, qui produit l'etape suivante).
+   *
+   * Elle ne remet PAS le cartouche a zero a elle seule : le moteur incremente
+   * le round au moment meme ou il quitte la phase du mechant, et le cartouche a
+   * encore son bilan a montrer. C'est `phaseRacontee` (dans le corps du
+   * composant) qui filtre, et c'est lui le declencheur de la remise a zero.
    */
   identitePhase?: number
   /**
@@ -257,6 +261,32 @@ export function DeroulePhase({
   // provoquer aucun rendu, sans quoi la garde se declencherait elle-meme.
   const derniereTrameAcquittee = useRef<number | undefined>(undefined)
 
+  // LA PHASE QUE LE CARTOUCHE RACONTE, et le seul declencheur de sa remise a
+  // zero. Ce n'est pas `identitePhase` telle qu'elle arrive : board.tsx y passe
+  // le round du monde, et le moteur incremente ce round au moment MEME ou il
+  // quitte la phase du mechant. Suivre `identitePhase` sans filtre effacerait
+  // donc le cartouche a la seconde ou il a enfin son bilan a montrer.
+  //
+  // Elle ne change que dans deux cas : une NOUVELLE phase du mechant s'ouvre
+  // (une autre identite arrive alors que la phase du mechant court), ou le
+  // cartouche a deja rendu la main (`termine`) et n'a donc plus rien a
+  // raconter. Entre les deux, il finit de raconter la sienne, bilan compris.
+  //
+  // Un `ref` et non un `useState` : la remise a zero doit avoir lieu dans le
+  // MEME passage d'effets que le rendu qui l'a decidee. Un etat aurait ajoute
+  // un rendu, et l'accuse de reception (plus bas, sur ses propres dependances)
+  // serait passe entre les deux sans repartir.
+  const phaseRacontee = useRef(identitePhase)
+  if (identitePhase !== phaseRacontee.current && (phaseMechantEnCours || termine)) {
+    phaseRacontee.current = identitePhase
+  }
+  const cleDeLaPhase = phaseRacontee.current
+
+  // Les dernieres etapes connues de la phase racontee. Voir plus bas pour la
+  // raison : les faits du round disparaissent avant que le bilan ait pu etre
+  // calcule.
+  const memoireEtapes = useRef<EtapeDeroule[]>([])
+
   // Le dépliant de la règle sous l'étape : un choix qu'on ne fait qu'une
   // fois (voir lireRegleDepliee dans moteur.ts). Lu une seule fois a l'etat
   // initial, PAS reinitialise a chaque nouvelle phase (contrairement a
@@ -300,23 +330,46 @@ export function DeroulePhase({
     setDefilement(false)
     setValidee(undefined)
     derniereTrameAcquittee.current = undefined
-  }, [identitePhase])
+    memoireEtapes.current = []
+  }, [cleDeLaPhase])
+
+  // Les etapes de la phase RACONTEE, memorisees.
+  //
+  // Le moteur quitte la phase du mechant et incremente le round dans la MEME
+  // foulee : il ne retient aucune trame entre les deux, donc le plateau ne voit
+  // jamais l'etat intermediaire « phase finie, round inchange ». Or les etapes
+  // sont filtrees sur le round du monde (`etapesDeroule`, deroule-phase.ts) :
+  // a la premiere trame d'apres, la liste retombe a zero. Sans cette memoire,
+  // `avecBilan` n'a plus rien a compter et le bilan de fin de phase ne
+  // s'affiche JAMAIS (constat 5 du rapport A3-fix, mesure en partie reelle).
+  //
+  // La memoire est ecrite pendant le rendu, comme `avancerRef` plus bas : elle
+  // ne doit provoquer aucun rendu, elle suit celui qui a lieu.
+  if (identitePhase === cleDeLaPhase && etapes.length > 0) memoireEtapes.current = etapes
+  const etapesDeLaPhase =
+    identitePhase === cleDeLaPhase && etapes.length > 0 ? etapes : memoireEtapes.current
+
+  // La phase RACONTEE court-elle encore ? `phaseMechantEnCours` seul ne suffit
+  // plus : la phase du mechant du round suivant peut s'ouvrir avant que le
+  // joueur ait valide le bilan de la precedente, et le cartouche raconte
+  // encore celle-la jusqu'a ce que la remise a zero ci-dessus ait joue.
+  const phaseRaconteeEnCours = phaseMechantEnCours && identitePhase === cleDeLaPhase
 
   // Les etapes REELLEMENT parcourues : celles du moteur, plus le bilan de fin
   // de phase quand la phase est finie.
   //
-  // `phaseMechantEnCours` est la seule chose qui distingue proprement une phase
-  // en cours d'une phase terminee (board.tsx la calcule sur `monde.phase`) :
-  // arriver au bout des etapes CONNUES ne dit rien, puisque la liste s'allonge
-  // pendant la phase. Le bilan n'existe donc que quand la phase est finie, et
-  // c'est ce qui en fait le terminateur naturel du cartouche : il est toujours
-  // la derniere etape, et le valider, c'est finir.
+  // `phaseRaconteeEnCours` est la seule chose qui distingue proprement une
+  // phase en cours d'une phase terminee (board.tsx calcule `phaseMechantEnCours`
+  // sur `monde.phase`) : arriver au bout des etapes CONNUES ne dit rien,
+  // puisque la liste s'allonge pendant la phase. Le bilan n'existe donc que
+  // quand la phase est finie, et c'est ce qui en fait le terminateur naturel du
+  // cartouche : il est toujours la derniere etape, et le valider, c'est finir.
   //
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
   const etapesAffichees = arreterSurDefaite(
-    phaseMechantEnCours ? etapes : avecBilan(etapes, pvMaxParNom)
+    phaseRaconteeEnCours ? etapesDeLaPhase : avecBilan(etapesDeLaPhase, pvMaxParNom)
   )
 
   const etape = etapesAffichees[index]
@@ -381,7 +434,7 @@ export function DeroulePhase({
     // Bout des etapes CONNUES, mais la phase du mechant court encore : le
     // moteur vient d'etre relache et va produire la suite. On reste sur place
     // en attente, sans appeler `onTerminer` et sans masquer le cartouche.
-    if (phaseMechantEnCours) {
+    if (phaseRaconteeEnCours) {
       setEnAttente(true)
       return
     }
@@ -415,7 +468,7 @@ export function DeroulePhase({
   // La version la plus recente de `avancer`, pour l'horloge du cartouche
   // (plus bas : avance auto et defilement d'Echap). `avancer` est recreee a
   // chaque rendu et lit `index`,
-  // `etapesAffichees` et `phaseMechantEnCours` du rendu courant : un minuteur
+  // `etapesAffichees` et `phaseRaconteeEnCours` du rendu courant : un minuteur
   // qui la capturerait a l'armement jouerait, a l'echeance, sur un etat vieux
   // de tout le delai de lecture (une etape arrivee entre-temps, par exemple).
   // La ref donne au minuteur la fonction du DERNIER rendu, sans que l'identite
@@ -455,7 +508,7 @@ export function DeroulePhase({
       setEnAttente(false)
       return
     }
-    if (!phaseMechantEnCours) {
+    if (!phaseRaconteeEnCours) {
       setEnAttente(false)
       setTermine(true)
       onTerminer()
@@ -465,7 +518,7 @@ export function DeroulePhase({
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
     // cinq dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, etapesAffichees.length, etapeValidee, phaseMechantEnCours])
+  }, [enAttente, index, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours])
 
   // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
   //

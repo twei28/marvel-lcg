@@ -1427,6 +1427,119 @@ describe('le bilan de fin de phase', () => {
     expect(screen.getByText('6/8')).toBeInTheDocument()
   })
 
+  // LE CAS REEL DE FIN DE PHASE, celui que la partie produit vraiment.
+  //
+  // Le moteur quitte la phase du mechant et incremente le round dans la meme
+  // foulee, sans retenir aucune trame entre les deux : le plateau ne voit donc
+  // jamais l'etat intermediaire « phase finie, round inchange ». Or
+  // `etapesDeroule` (deroule-phase.ts) filtre les faits sur le round du monde,
+  // et `identitePhase` vaut ce meme round : a la premiere trame d'apres,
+  // `etapes` retombe a zero ET la remise a zero du cartouche se declenche.
+  // Sans memoire de la phase racontee, le bilan n'a plus rien a compter et le
+  // joueur ne le voit jamais (constat 5 du rapport A3-fix).
+  it('montre son bilan alors que le round a deja tourne et que les faits ont disparu', () => {
+    const onTerminer = vi.fn()
+    const { rerender } = render(
+      <DeroulePhase
+        etapes={troisCoupsSurColossus}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(document.querySelector('.deroule-attente')).not.toBeNull()
+
+    // La trame suivante : plus de phase du mechant, plus de faits du round, et
+    // un round de plus.
+    rerender(
+      <DeroulePhase
+        etapes={[]}
+        identitePhase={4}
+        phaseMechantEnCours={false}
+        onTerminer={onTerminer}
+      />
+    )
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+    expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(1)
+    expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
+    expect(onTerminer).not.toHaveBeenCalled()
+  })
+
+  it('rend la main sur « À toi de jouer » une fois le round tourne', () => {
+    const onTerminer = vi.fn()
+    const { container, rerender } = render(
+      <DeroulePhase
+        etapes={troisCoupsSurColossus}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    rerender(
+      <DeroulePhase
+        etapes={[]}
+        identitePhase={4}
+        phaseMechantEnCours={false}
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(aToiDeJouer())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  // Le filet de la memoire : elle ne doit pas faire revivre la phase
+  // precedente. Quand la phase du mechant SUIVANTE s'ouvre, le cartouche
+  // repart de sa premiere etape, sur les etapes du nouveau round.
+  it('oublie la phase racontee des que la suivante s ouvre', () => {
+    const onTerminer = vi.fn()
+    const { rerender } = render(
+      <DeroulePhase
+        etapes={troisCoupsSurColossus}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    rerender(
+      <DeroulePhase etapes={[]} identitePhase={4} phaseMechantEnCours={false} onTerminer={onTerminer} />
+    )
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+
+    // La phase du mechant du round 4 s'ouvre avec sa propre menace.
+    rerender(
+      <DeroulePhase
+        etapes={[
+          {
+            cle: 'm4',
+            temps: 'menace',
+            titre: 'menace',
+            regle: 'regle:menace',
+            cibleNom: 'L’Effraction !',
+            montant: 1,
+            restant: 7,
+            boosts: [],
+          },
+        ]}
+        identitePhase={4}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    expect(screen.queryByText('Fin de la phase du méchant')).not.toBeInTheDocument()
+    expect(screen.getByText('L’Effraction ! gagne 1 menace')).toBeInTheDocument()
+    expect(screen.queryByText('Colossus a pris 6 dégâts')).not.toBeInTheDocument()
+  })
+
   it('n annonce aucun bilan tant que la phase du mechant court', () => {
     // Le point le plus important : arriver au bout des etapes CONNUES n'est pas
     // la fin de la phase. Le cartouche attend, il ne fait pas les comptes.
