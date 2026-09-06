@@ -392,6 +392,31 @@ verifier("l'extinction renvoie vers la page d'arret",
 verifier("et la route /eteindre a bien perime le laissez-passer",
          o.mot_de_passe_jeu("hote") != _avant)
 
+# ⚠ ET LA REVOCATION PASSE AVANT L'EXTINCTION, PAS APRES. `eteindre_jeu`
+# bloque jusqu'a quinze secondes ; la page d'attente, elle, rappelle `/entrer`
+# toute seule par son `meta refresh`. Un `/entrer` tombe pendant ce temps-la
+# rallumait un moteur avec l'ANCIEN mot de passe, que la revocation, arrivee
+# ensuite, ne voyait meme pas.
+_avant = o.mot_de_passe_jeu("hote")
+_vu = {}
+_vrai_eteindre = o.eteindre_jeu
+
+
+def _eteindre_observe(code):
+    # Ce que verrait un `/entrer` arrive au beau milieu de l'extinction.
+    _vu["mdp"] = o.mot_de_passe_jeu(code)
+    return _vrai_eteindre(code)
+
+
+o.eteindre_jeu = _eteindre_observe
+try:
+    appel("POST", "/eteindre", entetes=cookie_de("hote"))
+finally:
+    o.eteindre_jeu = _vrai_eteindre
+verifier("un /entrer pendant l'extinction ne garde pas l'ancien mot de passe",
+         _vu.get("mdp") is not None and _vu["mdp"] != _avant,
+         "le moteur relance aurait garde l'ancien laissez-passer")
+
 # Un anonyme n'eteint rien du tout, et surtout pas le jeu de quelqu'un d'autre.
 _avant = o.mot_de_passe_jeu("hote")
 _code, _tetes, _ = appel("POST", "/eteindre")
@@ -617,39 +642,69 @@ verifier("un compte connecte, lui, voit qui joue",
 o.PARTIES.clear()
 
 # --- Le moteur zombie qui bloquait une table pour toujours ------------------
-# ⚠ RIEN DE CE QUI SUIT N'EST SIMULE. On lance un VRAI processus dans son
-# propre groupe, comme le fait `lancer_jeu`, et on occupe le port avec une
-# VRAIE prise en ecoute. Un faux processus ne prouverait pas que `os.killpg`
-# atteint sa cible, et un port « occupe » declare a la main ne prouverait pas
-# qu'on sait le voir.
+# ⚠ RIEN DE CE QUI SUIT N'EST SIMULE. Un VRAI lanceur, lance dans son propre
+# groupe comme le fait `lancer_jeu`, qui SORT en laissant un enfant tenir un
+# port. C'est le cas reel, et c'est celui que l'ancien code manquait : il ne
+# tuait le groupe que si le lanceur vivait encore, or ici `poll()` n'est pas
+# nul. Une sous-classe qui ment sur `vivant()` ne prouvait rien de tout ca.
 import socket                                               # noqa: E402
-
-
-class MoteurZombie(o.Partie):
-    """Le moteur dont le parent est mort mais dont les enfants tiennent encore
-    le port : `vivant()` dit faux, le processus, lui, tourne toujours."""
-
-    def vivant(self):
-        return False
-
 
 _place = o.emplacement_de("hote")
 _port = o.PORT_BASE + _place
 
+# --- La prise, pas la reponse ----------------------------------------------
 _libre = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 _libre.bind(("127.0.0.1", 0))
 _port_a_nous = _libre.getsockname()[1]
+_libre.close()
 verifier("un port sans personne dessus est vu libre",
          o._port_libre(_port_a_nous) is True)
-_libre.listen(1)
-verifier("un port tenu par quelqu'un est vu pris",
-         o._port_libre(_port_a_nous) is False)
-_libre.close()
 
-_zombie = MoteurZombie(_place, "hote", "Jeu de hote")
-_zombie.processus = subprocess.Popen(
-    [sys.executable, "-c", "import time; time.sleep(120)"], start_new_session=True)
+_tenu = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+_tenu.bind(("127.0.0.1", _port_a_nous))
+# ⚠ PRIS SANS ECOUTER, ET C'EST LE CAS QUI COMPTE. Juger par `connect()`
+# declarait libre tout port dont personne n'accepte : celui qu'on vient de
+# reserver sans avoir encore appele `listen`, celui dont la file d'acceptation
+# est pleine. Le `Popen` suivant mourait alors sur « Address already in use ».
+# On juge donc par `bind()`, exactement ce que fera le moteur.
+verifier("un port pris mais pas encore en ecoute est vu pris",
+         o._port_libre(_port_a_nous) is False)
+_tenu.listen(1)
+verifier("un port tenu en ecoute est vu pris",
+         o._port_libre(_port_a_nous) is False)
+_tenu.close()
+
+# --- Le lanceur sorti, l'enfant qui tient le port ---------------------------
+_reserve = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+_reserve.bind(("127.0.0.1", 0))
+_port_enfant = _reserve.getsockname()[1]
+_reserve.close()
+
+_code_enfant = (
+    "import socket, sys, time\n"
+    "s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+    "s.bind(('127.0.0.1', %d))\n"
+    "s.listen(1)\n"
+    "sys.stdout.write('pret\\n')\n"
+    "sys.stdout.flush()\n"
+    "time.sleep(120)\n" % _port_enfant)
+_code_lanceur = (
+    "import subprocess, sys\n"
+    "p = subprocess.Popen([sys.executable, '-c', %r], stdout=subprocess.PIPE)\n"
+    "p.stdout.readline()\n" % _code_enfant)
+
+_zombie = o.Partie(_place, "hote", "Jeu de hote")
+_zombie.processus = subprocess.Popen([sys.executable, "-c", _code_lanceur],
+                                     start_new_session=True)
+_zombie.processus.wait(timeout=30)
+verifier("le lanceur est sorti, comme le vrai le fait",
+         _zombie.processus.poll() is not None, str(_zombie.processus.poll()))
+verifier("et son enfant, lui, tient toujours son port",
+         o._port_libre(_port_enfant) is False)
+verifier("la partie se dit donc morte", _zombie.vivant() is False)
+
 o.PARTIES["hote"] = _zombie
+o.EMPLACEMENTS[_place] = "hote"
 
 _prise = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 _prise.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -663,18 +718,17 @@ except RuntimeError as _erreur:
 finally:
     _prise.close()
 
-# ⚠ LE CAS QUI COMPTE : le groupe du precedent est ACHEVE avant qu'on tente
-# de recreer. Sans lui, l'ancien moteur gardait le port et le nouveau mourait
-# a chaque essai, sans issue automatique.
-try:
-    _zombie.processus.wait(timeout=10)
-    _acheve = True
-except subprocess.TimeoutExpired:
-    _acheve = False
-    _zombie.processus.kill()      # un test ne laisse pas de processus derriere
-    _zombie.processus.wait(timeout=10)
-verifier("le moteur precedent est acheve avant qu'on relance", _acheve,
-         "il tourne encore : c'est le defaut du moteur zombie")
+# ⚠ LE CAS QUI COMPTE : le groupe du precedent est ACHEVE avant qu'on tente de
+# recreer, MEME QUAND SON LANCEUR EST DEJA SORTI. Sans lui, l'enfant gardait le
+# port et le nouveau moteur mourait a chaque essai, sans issue automatique.
+_rendu = o._port_libre(_port_enfant)
+if not _rendu:                    # un test ne laisse pas de processus derriere
+    try:
+        os.killpg(_zombie.processus.pid, o.signal.SIGKILL)
+    except OSError:
+        pass
+verifier("le groupe du lanceur sorti est acheve, son port est rendu", _rendu,
+         "l'enfant tient encore le port %d" % _port_enfant)
 
 verifier("un port deja pris fait refuser le demarrage",
          str(_port) in _dit, _dit or "aucune erreur levee")

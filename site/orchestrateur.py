@@ -274,15 +274,24 @@ def _port_libre(port: int) -> bool:
     processus survivant qui tient la prise sans rien servir passerait au
     travers, et c'est precisement celui-la qui fait echouer le demarrage
     suivant sur « Address already in use ».
+
+    ⚠ ET ON TESTE PAR `bind`, PAS PAR `connect`. Se connecter ne dit que ceci :
+    quelqu'un accepte. Un port reserve dont le `listen` n'est pas encore venu,
+    ou dont la file d'acceptation deborde, refuse la connexion et se donnait
+    donc pour libre, alors que le `Popen` suivant allait mourir dessus. Poser
+    la prise, c'est demander a l'OS exactement ce qu'il repondra au moteur.
+
+    `SO_REUSEADDR` parce que c'est ce que fait `asyncio`, donc le moteur : sans
+    lui, un port en TIME_WAIT se donnerait pour pris alors qu'il ne l'est plus.
     """
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as prise:
-        prise.settimeout(1)
+        prise.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
-            prise.connect(("127.0.0.1", port))
+            prise.bind(("127.0.0.1", port))
         except OSError:
-            return True
-    return False
+            return False
+    return True
 
 
 def _nettoyer_emplacement(emplacement: int) -> None:
@@ -433,6 +442,19 @@ def demarrer_en_fond(pseudo: str) -> None:
     threading.Thread(target=travail, daemon=True).start()
 
 
+def _groupe_vivant(groupe: int) -> bool:
+    """Reste-t-il quelqu'un dans ce groupe de processus ?
+
+    Le signal 0 n'est pas envoye : il ne sert qu'a demander si la cible
+    existe et si l'on aurait le droit de la viser.
+    """
+    try:
+        os.killpg(groupe, 0)
+    except OSError:
+        return False
+    return True
+
+
 def eteindre_jeu(code: str) -> bool:
     """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
     compte et doivent etre la au prochain allumage."""
@@ -442,21 +464,48 @@ def eteindre_jeu(code: str) -> bool:
             return False
         EMPLACEMENTS.pop(partie.emplacement, None)
         JETONS_SITE.pop(partie.jeton_site, None)
-    if partie.processus is not None and partie.processus.poll() is None:
+    processus = partie.processus
+    if processus is not None:
         # `start_new_session` a mis le moteur dans son propre groupe : on tue
         # LE GROUPE, sinon les sous-processus du lanceur survivraient et le
         # port resterait pris.
+        #
+        # ⚠ ET ON LE TUE MEME QUAND LE LANCEUR EST DEJA SORTI. C'est meme le
+        # seul cas qui arrive : `launcher_fast.py` rend la main, ses enfants
+        # tiennent le port. `poll()` n'est alors pas nul, et l'ancien code ne
+        # faisait plus rien du tout. Le `pgid` vaut le `pid` du lanceur, que
+        # `start_new_session` a fait chef de groupe, et il reste valide tant
+        # qu'un membre du groupe vit ; `os.getpgid`, lui, ne repond deja plus.
+        # Le risque residuel est celui du numero recycle, contre lequel il n'y
+        # a rien a faire ici : le port bloque a coup sur est le mal certain.
+        lanceur_vivant = processus.poll() is None
+        groupe = processus.pid
         try:
-            os.killpg(os.getpgid(partie.processus.pid), signal.SIGTERM)
+            os.killpg(groupe, signal.SIGTERM)
         except OSError:
-            partie.processus.terminate()
-        try:
-            partie.processus.wait(timeout=15)
-        except subprocess.TimeoutExpired:
+            if lanceur_vivant:
+                processus.terminate()
+        if lanceur_vivant:
             try:
-                os.killpg(os.getpgid(partie.processus.pid), signal.SIGKILL)
+                processus.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                pass
+        # Les petits-enfants ne sont PAS nos fils : `wait` ne les voit pas. On
+        # demande donc au groupe s'il vit encore, avec le signal 0, qui ne fait
+        # rien d'autre que poser la question.
+        fin = time.time() + 5
+        while _groupe_vivant(groupe) and time.time() < fin:
+            time.sleep(0.1)
+        if _groupe_vivant(groupe):
+            try:
+                os.killpg(groupe, signal.SIGKILL)
             except OSError:
-                partie.processus.kill()
+                pass
+        if lanceur_vivant:
+            try:
+                processus.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                processus.kill()
     return True
 
 
@@ -2059,17 +2108,22 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             self._raccrocher()
+            # ⚠ ON COUPE LES ACCES D'ABORD, ON ETEINT ENSUITE, ET L'ORDRE EST
+            # TOUT. C'est le seul geste du site qui soit VOLONTAIRE : la
+            # personne dit qu'elle a fini. On perime donc le laissez-passer du
+            # moteur, sans quoi les invites de la soiree gardent un cookie
+            # valable un an. Ni le faucheur ni un plantage ne passent par ici :
+            # une table qui redemarre toute seule ne doit pas laisser son
+            # proprietaire dehors.
+            #
+            # Et si l'on revoquait APRES, `eteindre_jeu` tenant la main jusqu'a
+            # quinze secondes, le `meta refresh` de la page d'attente aurait
+            # tout le temps de rappeler `/entrer` : un moteur repartait avec
+            # l'ANCIEN mot de passe et la revocation le manquait.
+            revoquer_mot_de_passe_jeu(pseudo)
             # On n'eteint QUE son propre jeu : le code est le pseudo.
             if eteindre_jeu(pseudo):
                 journal_partie_fermee(pseudo)
-            # ⚠ ET ON COUPE LES ACCES, ICI SEULEMENT. C'est le seul geste du
-            # site qui soit VOLONTAIRE : la personne dit qu'elle a fini. On en
-            # profite pour perimer le laissez-passer du moteur, sans quoi les
-            # invites de la soiree gardent un cookie valable un an. Ni le
-            # faucheur ni un plantage ne passent par ici : une table qui
-            # redemarre toute seule ne doit pas laisser son proprietaire
-            # dehors.
-            revoquer_mot_de_passe_jeu(pseudo)
             # Vers /arret et surtout PAS vers / : cette derniere rallumerait
             # aussitot ce qu'on vient d'eteindre.
             self._rediriger("/arret")
