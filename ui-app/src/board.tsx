@@ -2437,6 +2437,12 @@ function PagePartie({
             // liste d'etapes peut encore s'allonger : arriver au bout de
             // celles qu'on connait ne veut pas dire que la phase est finie.
             phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
+            // La partie est finie : le cartouche s'efface. Meme source que
+            // l'ecran de fin de partie (`EcranFinPartie`, plus bas, monte sur
+            // `etat.monde.game_over`), pas une seconde inventee pour
+            // l'occasion. Constate en partie : l'ecran de defaite etait la et
+            // le cartouche annonçait encore « La suite arrive… ».
+            partieFinie={Boolean(etat.monde?.game_over)}
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}

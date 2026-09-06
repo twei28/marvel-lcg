@@ -66,6 +66,7 @@ export function DeroulePhase({
   etapes,
   identitePhase,
   phaseMechantEnCours = false,
+  partieFinie = false,
   pvMaxParNom,
   onSuivant,
   onTerminer,
@@ -88,6 +89,16 @@ export function DeroulePhase({
    * le cartouche attend la suite au lieu de se masquer.
    */
   phaseMechantEnCours?: boolean
+  /**
+   * La partie est finie (board.tsx : `etat.monde.game_over`, la SEULE source
+   * de cet etat, celle-la meme dont l'ecran de fin de partie se sert).
+   *
+   * Constate en partie : la manigance principale etait allee au bout, l'ecran
+   * de defaite etait affiche, et le cartouche restait par-dessus le plateau a
+   * annoncer « La suite arrive… » indefiniment. Il n'y a plus de suite : la
+   * partie est finie, le cartouche s'efface.
+   */
+  partieFinie?: boolean
   /**
    * Les PV maximum des personnages, par nom (board.tsx, qui lit le monde) :
    * sans eux le bilan de fin de phase dit « 8 » au lieu de « 8/14 ». Ils ne
@@ -175,6 +186,9 @@ export function DeroulePhase({
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
     if (!etape) return
+    // Partie finie : le cartouche n'est plus a l'ecran, sa touche Entree ne
+    // doit pas continuer a relacher le moteur derriere l'ecran de fin.
+    if (partieFinie) return
     // Relache le moteur AVANT de savoir si c'est la derniere etape : chaque
     // validation (clic ou clavier) correspond au plus a une trame retenue
     // cote moteur (`avancerMaintenant` ne fait rien sans trame en attente),
@@ -314,13 +328,13 @@ export function DeroulePhase({
   // Le cartouche est-il a l'ecran ? Calcule ICI parce que les hooks ci-dessous
   // en dependent, et que la sortie `return null` qui l'applique vient bien plus
   // bas : un hook place apres elle ferait tomber tout le plateau.
-  const visible = Boolean(etape) && !termine
+  const visible = Boolean(etape) && !termine && !partieFinie
 
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
   // tomber tout le plateau (React compte alors un hook de plus au rendu
   // suivant).
-  useDerouleScene(etape, !termine)
+  useDerouleScene(etape, visible)
 
   // Le cartouche ne recouvre JAMAIS la main du joueur.
   //
@@ -394,7 +408,8 @@ export function DeroulePhase({
   // (bout des etapes connues et phase du mechant terminee) ; il est remis a
   // false des que l'identite de phase change (voir le useEffect ci-dessus),
   // donc le deroule reapparait bien a la phase du mechant suivante.
-  if (!etape || termine) return null
+  // `partieFinie` le fait disparaitre pour de bon : plus rien n'arrive apres.
+  if (!etape || termine || partieFinie) return null
 
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
   // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.

@@ -929,6 +929,71 @@ describe('le bilan de fin de phase', () => {
     expect(screen.queryByText(/vaincu/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Continuer/i })).toBeNull()
   })
+  // --- La fin de la partie l'emporte sur tout -------------------------------
+  // Constate en partie : la manigance principale etait allee au bout, l'ecran
+  // de defaite etait affiche, et le cartouche restait par-dessus le plateau a
+  // annoncer « La suite arrive… » indefiniment.
+  describe('fin de partie', () => {
+    it('efface le cartouche', () => {
+      const { container } = render(
+        <DeroulePhase etapes={etapes} partieFinie onTerminer={() => {}} />
+      )
+      expect(container).toBeEmptyDOMElement()
+    })
+
+    it('efface le cartouche meme au milieu de la phase du mechant', () => {
+      // C'est le cas reel : la phase du mechant courait encore, le cartouche
+      // attendait « La suite arrive… », et la partie etait finie.
+      const { container } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours partieFinie onTerminer={() => {}} />
+      )
+      expect(container).toBeEmptyDOMElement()
+      expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
+    })
+
+    it('efface aussi la mise en scene laissee sur le plateau', () => {
+      // Sans cela, le plateau resterait assombri sous l'ecran de fin.
+      const scene = document.createElement('div')
+      scene.className = 'plateau-scene'
+      const carte = document.createElement('article')
+      carte.className = 'scan-card'
+      carte.setAttribute('data-card-id', '50')
+      scene.append(carte)
+      document.body.append(scene)
+
+      const { rerender } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours onTerminer={() => {}} />
+      )
+      fireEvent.click(suivant())
+      expect(carte.classList.contains('deroule-en-avant')).toBe(true)
+      expect(document.body.classList.contains('deroule-voile')).toBe(true)
+
+      rerender(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours partieFinie onTerminer={() => {}} />
+      )
+      expect(carte.classList.contains('deroule-en-avant')).toBe(false)
+      expect(document.body.classList.contains('deroule-voile')).toBe(false)
+      scene.remove()
+    })
+
+    it('ne relache plus le moteur au clavier une fois la partie finie', () => {
+      // Le cartouche n'est plus a l'ecran : sa touche Entree ne doit pas
+      // continuer a faire avancer le moteur derriere l'ecran de fin.
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          partieFinie
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      fireEvent.keyDown(document, { key: 'Enter' })
+      expect(onSuivant).not.toHaveBeenCalled()
+    })
+  })
+
   // --- Le cartouche ne recouvre jamais la main ------------------------------
   // Mesure en partie reelle : cartouche 715-873, main 623-806, soit 91 px de
   // recouvrement. « La petite modale en bas avec les phases cachent les
