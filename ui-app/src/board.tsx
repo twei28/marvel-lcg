@@ -2453,11 +2453,16 @@ function PagePartie({
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}
-            // Chaque « Suivant » relache AU PLUS une trame cote moteur : ce
-            // dernier n'a rien a avancer sans trame en attente
-            // (moteur.ts, avancerMaintenant), un clic de trop est donc sans
-            // effet. onTerminer rappelle la meme fonction pour ne jamais
-            // laisser le moteur bloque une fois la derniere etape validee.
+            // L'identite de la trame que le moteur retient. Elle donne au
+            // cartouche de quoi n'acquitter qu'UNE fois par trame, plutot que
+            // de se fier a un booleen qui se recalcule sans cesse.
+            trameRetenue={etat.trameRetenue}
+            // L'accuse de reception. Il ne part plus a chaque « Suivant » : le
+            // cartouche le declenche quand il n'a plus rien a montrer, donc
+            // quand le joueur a valide tout ce qu'il sait deja. onTerminer
+            // rappelle la meme fonction pour ne jamais laisser le moteur
+            // bloque une fois la derniere etape validee (elle ne fait rien
+            // sans trame en attente, moteur.ts, avancerMaintenant).
             onSuivant={avancerPasAPas}
             onTerminer={avancerPasAPas}
             onToutDerouler={passerToutLaPhase}

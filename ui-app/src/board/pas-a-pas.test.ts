@@ -5,7 +5,6 @@ import {
   decisionAccuse,
   delaiFiletAntiBlocage,
   ecrireModePhaseMechant,
-  evenementAMontrer,
   lireAvanceAuto,
   lireModePhaseMechant,
   migrerReglagesPhase,
@@ -135,26 +134,6 @@ describe('la migration ne se refait pas a chaque lecture', () => {
   })
 })
 
-describe('les événements montrés', () => {
-  it('retient les statuts, que le mode manuel ignorait', () => {
-    expect(evenementAMontrer(monde({ event_name: 'AfterUnitGainStatus' }))).toBe(true)
-    expect(evenementAMontrer(monde({ event_name: 'AfterUnitLostStatus' }))).toBe(true)
-  })
-
-  it('retient les dégâts, la menace et les révélations', () => {
-    expect(evenementAMontrer(monde({ prompt: 'Gorr subit 5 dégât(s)' }))).toBe(true)
-    expect(evenementAMontrer(monde({ prompt: 'gagne 1 menace' }))).toBe(true)
-    expect(evenementAMontrer(monde({ prompt: 'is being revealed' }))).toBe(true)
-  })
-
-  // Sans ce filtre, chaque déplacement de carte deviendrait une étape et la
-  // phase durerait des minutes : c'est le « trop d'infos » d'avant.
-  it('laisse filer les étapes techniques', () => {
-    expect(evenementAMontrer(monde({ prompt: 'cards were placed on table' }))).toBe(false)
-    expect(evenementAMontrer(undefined)).toBe(false)
-  })
-})
-
 describe('les phases concernées', () => {
   it('couvre les quatre points de la carte de référence', () => {
     for (const phase of [
@@ -205,8 +184,9 @@ describe('le recentrage', () => {
 describe('qui retient l’accusé de réception', () => {
   const degats = monde({ phase: 'Enemy Activation', prompt: 'Doom subit 3 dégât(s)' })
 
-  // Ex-« pas à pas » : desormais l'avance auto du mode detaille. Meme regle,
-  // meme quatre phases, meme filtre d'evenements - seul le nom a change.
+  // Ex-« pas à pas » : desormais l'avance auto du mode detaille. Meme regle et
+  // memes quatre phases que la validation au clic ; c'est le minuteur de
+  // lecture, et non le clic, qui relache la trame.
   it('attend le délai en detaille avec avance auto, sur les quatre phases', () => {
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
@@ -239,7 +219,17 @@ describe('qui retient l’accusé de réception', () => {
     expect(decisionAccuse('instantane', degats, false, true)).toBe('immediat')
   })
 
-  it('n’attend rien en detaille hors evenement a montrer', () => {
+  // Le filtre `evenementAMontrer` a été RETIRÉ, et c'est le cœur de la
+  // correction du rythme. Un micro-événement « technique » fait quand même
+  // grandir le journal, donc il fabrique une étape du cartouche : le laisser
+  // filer, c'était laisser le moteur prendre de l'avance sur ce que le joueur
+  // a lu. Mesuré en partie réelle : menace, activation, accomplissement de la
+  // manigance principale et défaite exécutés pendant que le cartouche en était
+  // à sa deuxième étape.
+  //
+  // Retenir cette trame ne coûte rien : le cartouche l'acquitte aussitôt si
+  // elle ne lui fabrique aucune étape (DeroulePhase, `cartoucheAJour`).
+  it('retient aussi les trames « techniques » de la phase du méchant', () => {
     expect(
       decisionAccuse(
         'detaille',
@@ -247,7 +237,20 @@ describe('qui retient l’accusé de réception', () => {
         false,
         false
       )
-    ).toBe('immediat')
+    ).toBe('attendre-clic')
+  })
+
+  // Une trame sans prompt ni event_name ne dit rien du tout : elle est retenue
+  // comme les autres, tant qu'elle appartient à la phase du méchant.
+  it('retient une trame muette de la phase du méchant', () => {
+    expect(decisionAccuse('detaille', monde({ phase: 'Enemy Activation' }), false, false)).toBe(
+      'attendre-clic'
+    )
+  })
+
+  // Le monde n'est pas encore chargé : aucune phase, donc rien à retenir.
+  it('ne retient rien sans monde', () => {
+    expect(decisionAccuse('detaille', undefined, false, false)).toBe('immediat')
   })
 
   // Le tour du joueur ne doit JAMAIS être ralenti : c'est lui qui agit.

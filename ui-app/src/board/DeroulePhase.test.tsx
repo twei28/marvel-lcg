@@ -389,17 +389,13 @@ describe('cartouche du deroule', () => {
     expect(container.querySelector('.deroule-boosts')).toBeNull()
   })
 
-  // Defaut 1 (voir brief) : rien ne reliait le bouton « Suivant » au moteur.
-  // onSuivant est la porte que board.tsx doit brancher sur
-  // moteur.avancerMaintenant() ; ces tests verifient le cote DeroulePhase de
-  // ce branchement (qu'il est bien appele, au bon moment), pas ce que
-  // board.tsx en fait reellement une fois cable (voir le rapport a ce sujet).
-  it('appelle onSuivant une fois par clic sur Suivant, et avance', () => {
+  it('avance d une etape a l autre au clic, sans rien acquitter', () => {
     const onSuivant = vi.fn()
     render(<DeroulePhase etapes={etapes} onSuivant={onSuivant} onTerminer={() => {}} />)
     fireEvent.click(suivant())
-    expect(onSuivant).toHaveBeenCalledTimes(1)
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+    // Aucune trame retenue : il n'y a rien a acquitter, donc rien ne part.
+    expect(onSuivant).not.toHaveBeenCalled()
   })
 
   it('appelle onTerminer quand la derniere etape est validee', () => {
@@ -410,17 +406,238 @@ describe('cartouche du deroule', () => {
     fireEvent.click(suivant())
     fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
-    // onSuivant est appele a CHAQUE validation, la derniere y compris : c'est
-    // ce qui permet a board.tsx de brancher onSuivant et onTerminer sur la
-    // meme fonction (avancerMaintenant ne fait rien sans trame en attente,
-    // l'appel surnumeraire de la derniere etape est donc sans effet).
-    expect(onSuivant).toHaveBeenCalledTimes(3)
+    // Sans trame retenue, aucun accuse de reception ne part : onTerminer et
+    // onSuivant sont deux portes distinctes, board.tsx les branche seulement
+    // sur la meme fonction.
+    expect(onSuivant).not.toHaveBeenCalled()
   })
 
   it('onSuivant absent ne casse rien : la prop est optionnelle', () => {
-    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    render(<DeroulePhase etapes={etapes} phaseMechantEnCours trameRetenue={11} onTerminer={() => {}} />)
     expect(() => fireEvent.click(suivant())).not.toThrow()
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
+
+  // --- Le rythme de la phase : qui dit « reçu » au moteur, et quand --------
+  //
+  // Defaut mesure en partie reelle : le moteur avait execute la menace, une
+  // activation, l'accomplissement de la manigance principale et la defaite
+  // pendant que le cartouche en etait a sa DEUXIEME etape. Deux causes, toutes
+  // les deux corrigees ici :
+  //  - le moteur laissait filer les micro-evenements « pas interessants », qui
+  //    fabriquaient pourtant des etapes (voir pas-a-pas.test.ts) ;
+  //  - le cartouche acquittait a CHAQUE clic, donc des l'etape 1 sur 4.
+  //
+  // La regle qui remplace : le plateau ne dit « reçu » que lorsque le joueur a
+  // valide tout ce que le cartouche sait deja.
+  describe('le rythme de la phase', () => {
+    const troisEtapes: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+      {
+        cle: 'b',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Ultron',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+      {
+        cle: 'c',
+        temps: 'sbires',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Drone',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+    ]
+
+    it('acquitte tout de suite une trame qui ne fabrique aucune etape', () => {
+      // Le moteur redessine le plateau des dizaines de fois par phase, et la
+      // plupart de ces trames ne racontent rien qui devienne une etape. Le
+      // cartouche reste a jour : ça file, exactement comme avant la reprise.
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={[]}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+    })
+
+    it('n acquitte pas une trame qui fabrique une etape non validee', () => {
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      expect(onSuivant).not.toHaveBeenCalled()
+    })
+
+    // LE test central de la reprise : c'est le RETARD du cartouche qui decide
+    // du rythme, pas la nature de l'evenement. Tant qu'il reste une etape que
+    // le joueur n'a pas lue, le moteur attend.
+    it('acquitte au clic qui epuise les etapes connues, jamais aux precedents', () => {
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      expect(onSuivant).not.toHaveBeenCalled()
+      fireEvent.click(suivant())
+      expect(onSuivant).not.toHaveBeenCalled()
+      fireEvent.click(suivant())
+      expect(onSuivant).not.toHaveBeenCalled()
+      // Le troisieme clic epuise les etapes connues : le cartouche entre en
+      // attente, il est a jour, et c'est LA qu'il dit « reçu ».
+      fireEvent.click(suivant())
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      expect(document.querySelector('.deroule-attente')).not.toBeNull()
+    })
+
+    // Second chemin, indispensable : sans lui la phase se figerait sur le
+    // premier micro-evenement muet qui suit une attente.
+    it('acquitte la trame muette qui arrive pendant l attente', () => {
+      const onSuivant = vi.fn()
+      const cartouche = (trameRetenue: number | undefined) => (
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={trameRetenue}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(11))
+      fireEvent.click(suivant())
+      fireEvent.click(suivant())
+      fireEvent.click(suivant())
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      // Le moteur relache la trame 11, puis en retient une nouvelle qui ne
+      // fabrique aucune etape de plus.
+      rerender(cartouche(undefined))
+      rerender(cartouche(12))
+      expect(onSuivant).toHaveBeenCalledTimes(2)
+    })
+
+    // Le piege symetrique : une trame qui apporte une etape de PLUS ne doit
+    // surtout pas etre acquittee, meme si le cartouche etait en attente juste
+    // avant. Sinon le moteur repartirait pendant que le joueur lit.
+    it('n acquitte pas la trame qui apporte une etape de plus', () => {
+      const onSuivant = vi.fn()
+      const deuxEtapes = troisEtapes.slice(0, 2)
+      const cartouche = (liste: EtapeDeroule[], trameRetenue: number | undefined) => (
+        <DeroulePhase
+          etapes={liste}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={trameRetenue}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(deuxEtapes, 11))
+      fireEvent.click(suivant())
+      fireEvent.click(suivant())
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      rerender(cartouche(deuxEtapes, undefined))
+      rerender(cartouche(troisEtapes, 12))
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      // Le joueur atterrit tout seul sur l'etape de plus : il a deja clique
+      // pour l'obtenir, il ne doit pas avoir a recliquer.
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+    })
+
+    // La garde contre la rafale d'accuses. Elle se lie a l'IDENTITE de la
+    // trame et non a un booleen : l'etat du cartouche se recalcule a chaque
+    // publication du moteur, et un booleen ferait repartir l'accuse a chaque
+    // fois, donc en boucle.
+    it('n envoie qu un seul accuse par trame, meme recalcule plusieurs fois', () => {
+      const onSuivant = vi.fn()
+      const cartouche = (trameRetenue: number | undefined, pv: number) => (
+        <DeroulePhase
+          etapes={[]}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={trameRetenue}
+          pvMaxParNom={new Map([['Shuri', pv]])}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(11, 14))
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      // Le plateau se redessine, la trame retenue est toujours la meme.
+      rerender(cartouche(11, 13))
+      rerender(cartouche(11, 12))
+      rerender(cartouche(11, 11))
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      // Une AUTRE trame, elle, obtient bien son propre accuse.
+      rerender(cartouche(12, 11))
+      expect(onSuivant).toHaveBeenCalledTimes(2)
+    })
+
+    // Anti-gel : le moteur attend l'accuse de CHAQUE client. Un cartouche qui
+    // n'a plus rien a montrer ne doit retenir personne, sinon toute la table
+    // patiente jusqu'au filet anti-blocage (90 s par trame).
+    it('acquitte encore une fois la partie finie', () => {
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          partieFinie
+          trameRetenue={11}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+    })
+
+    // Une nouvelle phase remet le compteur de trames a zero : les `render_id`
+    // du moteur repartent de zero avec une nouvelle partie, et un numero deja
+    // vu ne doit pas faire sauter son accuse.
+    it('oublie la derniere trame acquittee quand la phase change', () => {
+      const onSuivant = vi.fn()
+      const cartouche = (identitePhase: number, trameRetenue: number | undefined) => (
+        <DeroulePhase
+          etapes={[]}
+          identitePhase={identitePhase}
+          phaseMechantEnCours
+          trameRetenue={trameRetenue}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(3, 11))
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      // Le moteur relache la trame, puis une NOUVELLE partie recommence a
+      // numeroter ses rendus : le numero 11 revient sur une autre phase.
+      rerender(cartouche(3, undefined))
+      rerender(cartouche(4, 11))
+      expect(onSuivant).toHaveBeenCalledTimes(2)
+    })
   })
   // Defaut 2 (voir brief) : « arriver au bout des etapes CONNUES » n'est pas
   // « la phase est finie ». Depuis que chaque « Suivant » relache une trame du
@@ -564,8 +781,8 @@ describe('cartouche du deroule', () => {
     expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
   })
 
-  it('relache le moteur meme sur le clic qui met en attente', () => {
-    // Sans cet appel, le clic qui met en attente ne relacherait aucune trame :
+  it('relache le moteur sur le clic qui met en attente', () => {
+    // Sans cet accuse, le clic qui met en attente ne relacherait aucune trame :
     // le moteur ne produirait jamais l'etape attendue, et l'attente serait
     // sans fin.
     const onSuivant = vi.fn()
@@ -574,6 +791,7 @@ describe('cartouche du deroule', () => {
         etapes={menaceSeule}
         identitePhase={3}
         phaseMechantEnCours
+        trameRetenue={11}
         onSuivant={onSuivant}
         onTerminer={() => {}}
       />

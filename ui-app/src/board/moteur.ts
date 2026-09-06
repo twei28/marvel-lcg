@@ -273,16 +273,6 @@ export const PHASES_DU_MECHANT = new Set([
 ])
 
 /**
- * Ce qu'on montre en detaille, avance auto ou pas. Plus LARGE que
- * `evenementNarreImportant`, qui ne sert plus qu'a decider le bandeau central
- * de phase ennemie (board.tsx, `afficherEvenementCentrale`) : celui-ci ignore
- * les cartes de boost/rencontre et les statuts, qu'on veut pourtant voir
- * passer ici.
- *
- * Les statuts (etourdi/confus/tenace) s'ajoutent donc a la liste, et ils ne se
- * lisent PAS dans le texte : ils ont leurs propres evenements.
- */
-/**
  * QUI retient l'accuse de reception, et pourquoi. Extrait de `lire()` pour etre
  * testable : c'est la seule regle qui decide du rythme, et une erreur ici rend
  * soit la phase illisible (on n'attend jamais), soit la partie bloquee (on
@@ -297,12 +287,25 @@ export function decisionAccuse(
   avanceAuto: boolean
 ): DecisionAccuse {
   if (mode === 'instantane') return 'immediat'
-  // « detaille » retient l'accuse de reception sur les quatre phases du
-  // mechant, et seulement sur un evenement a montrer (sans ce filtre, chaque
-  // deplacement de carte deviendrait une etape et la phase durerait des
-  // minutes). « Tout passer » (phaseSautee) court-circuite tout ca.
+  // « detaille » retient l'accuse de reception sur TOUTES les trames des quatre
+  // phases du mechant, sans regarder ce que la trame raconte.
+  //
+  // Il y avait ici un filtre (`evenementAMontrer`) qui laissait filer les
+  // micro-evenements « pas interessants ». Il etait faux : ces trames-la font
+  // quand meme grandir le journal, donc elles fabriquent des etapes du
+  // cartouche que le joueur n'a pas lues. Mesure en partie reelle : le moteur
+  // avait execute la menace, une activation, l'accomplissement de la manigance
+  // principale et la defaite pendant que le cartouche en etait a sa deuxieme
+  // etape.
+  //
+  // Retenir tout ne ralentit rien : c'est le CARTOUCHE qui decide quand
+  // acquitter, et il acquitte aussitot une trame qui ne lui fabrique aucune
+  // etape (DeroulePhase.tsx, `cartoucheAJour`). Les deux unites de mesure
+  // n'ont plus a se correspondre.
+  //
+  // « Tout passer » (phaseSautee) court-circuite tout ca.
   const phase = monde?.phase ?? ''
-  if (phaseSautee || !PHASES_DU_MECHANT.has(phase) || !evenementAMontrer(monde)) return 'immediat'
+  if (phaseSautee || !PHASES_DU_MECHANT.has(phase)) return 'immediat'
   // Avance auto : l'etape se lit puis rend la main toute seule, sans manipuler
   // (l'ancien mode « pas-a-pas »). Sans elle, « detaille » VALIDE chaque etape
   // au clic (bouton « Suivant » du cartouche).
@@ -332,13 +335,6 @@ export function delaiFiletAntiBlocage(decision: DecisionAccuse): number {
   return decision === 'attendre-clic'
     ? DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
     : DELAI_FILET_ANTI_BLOCAGE_DELAI_MS
-}
-
-export function evenementAMontrer(monde: World | undefined): boolean {
-  if (!monde) return false
-  const nom = monde.event_name ?? ''
-  if (nom === 'AfterUnitGainStatus' || nom === 'AfterUnitLostStatus') return true
-  return evenementNarreImportant(monde)
 }
 
 /**
@@ -534,6 +530,17 @@ export type EtatMoteur = {
   connecte: boolean
   /** Le moteur attend une validation visuelle avant de poursuivre. */
   validationRequise: boolean
+  /**
+   * IDENTITE de la trame actuellement retenue (`render_id`), ou `undefined`
+   * quand rien n'est retenu.
+   *
+   * C'est l'ancre du rythme de la phase du mechant : le cartouche du deroule
+   * n'acquitte que lorsqu'il est a jour, et il doit alors n'acquitter QU'UNE
+   * FOIS par trame. Se lier a un booleen (« quelque chose est retenu ») ferait
+   * repartir l'accuse a chaque recalcul d'etat, donc en rafale ; se lier a ce
+   * numero, qui change a chaque rendu du moteur, l'interdit par construction.
+   */
+  trameRetenue?: number
   /**
    * Pas a pas : une etape est affichee et son echeance court. `enPause` fige
    * l'echeance jusqu'a nouvel ordre. Sert au plateau pour le clic « suite »,
@@ -864,19 +871,20 @@ export class Moteur {
       this.publier({ monde, demande, aNous, joueurDemande: interroge, erreur: undefined })
 
       // APRES avoir lu : le moteur peut repartir. Pendant la phase ennemie, on
-      // retient volontairement cet accuse de reception jusqu'au bouton Continue,
-      // MAIS seulement pour les evenements IMPORTANTS (activation/attaque, boost,
-      // degats, menace). Les etapes de detail (deplacements, exhaust, melanges,
-      // effets, marqueurs) sont accusees tout de suite -> passees sans Continue.
-      // « Tout passer » ne vaut que pour LA phase en cours : des qu'on en sort,
-      // le pas a pas reprend au round suivant sans rien demander.
+      // retient volontairement cet accuse de reception pour TOUTES les trames,
+      // sans trier sur ce qu'elles racontent : c'est le cartouche du deroule
+      // qui rend la main des qu'il est a jour, donc une trame qui ne lui
+      // fabrique aucune etape est relachee dans la foulee (voir
+      // `decisionAccuse`). « Tout passer » ne vaut que pour LA phase en cours :
+      // des qu'on en sort, le pas a pas reprend au round suivant sans rien
+      // demander.
       const dansLaPhase = PHASES_DU_MECHANT.has(monde?.phase ?? '')
       if (!dansLaPhase && this.phaseSautee) this.phaseSautee = false
 
       const decision = decisionAccuse(this.mode, monde, this.phaseSautee, this.avanceAuto)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
-        this.publier({ validationRequise: true })
+        this.publier({ validationRequise: true, trameRetenue: this.trame.render_id })
         // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
         // client fantome bloque la phase ennemie pour tout le monde). Voir
         // `delaiFiletAntiBlocage` pour le choix de la duree.
@@ -890,7 +898,16 @@ export class Moteur {
         // sans limite (max_timeout = 0), c'est donc NOUS qui donnons le rythme :
         // aucun monde n'est bufferise, aucune desynchronisation possible.
         this.trameEnAttente = this.trame
-        this.publier({ pasAPas: { actif: true, enPause: this.enPause } })
+        // L'identite est publiee ici AUSSI, alors que c'est le minuteur de
+        // lecture qui relachera la trame : sans elle, une trame qui ne
+        // fabrique aucune etape couterait le delai de lecture complet en
+        // avance auto, alors qu'il n'y a rien a lire. Le cartouche, lui,
+        // acquitte des qu'il est a jour ; le minuteur reste le filet quand
+        // c'est lui qui arrive le premier.
+        this.publier({
+          pasAPas: { actif: true, enPause: this.enPause },
+          trameRetenue: this.trame.render_id,
+        })
         this.programmerAvance()
       } else if (this.trame) {
         await accuserReception(this.playerId, this.trame)
@@ -941,7 +958,13 @@ export class Moteur {
     const trame = this.trameEnAttente
     if (!trame) return
     this.trameEnAttente = undefined
-    this.publier({ validationRequise: false, pasAPas: { actif: false, enPause: this.enPause } })
+    // `trameRetenue` repasse a undefined : plus rien n'est retenu, et le
+    // cartouche ne doit pas croire qu'il reste une trame a acquitter.
+    this.publier({
+      validationRequise: false,
+      trameRetenue: undefined,
+      pasAPas: { actif: false, enPause: this.enPause },
+    })
     await accuserReception(this.playerId, trame)
   }
 }

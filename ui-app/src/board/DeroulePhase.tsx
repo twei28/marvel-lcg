@@ -7,7 +7,7 @@
 // « Precedent » RELIT, il ne rejoue rien : le monde du moteur ne recule pas.
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -68,6 +68,7 @@ export function DeroulePhase({
   phaseMechantEnCours = false,
   partieFinie = false,
   pvMaxParNom,
+  trameRetenue,
   onSuivant,
   onTerminer,
   onToutDerouler,
@@ -108,10 +109,25 @@ export function DeroulePhase({
    */
   pvMaxParNom?: Map<string, number>
   /**
-   * Appele a CHAQUE etape validee (clic ou clavier), avant de passer a la
-   * suivante. C'est lui qui relache le moteur cote reseau
-   * (`avancerMaintenant`) : optionnel pour ne pas casser les appelants qui ne
-   * pilotent pas le moteur (tests, previsualisation).
+   * L'identite (`render_id`) de la trame que le moteur retient en ce moment,
+   * ou `undefined` quand il n'en retient aucune (board.tsx :
+   * `etat.trameRetenue`).
+   *
+   * Le cartouche s'en sert pour n'envoyer QU'UN accuse de reception par trame.
+   * Un booleen (« le moteur attend ») ne suffirait pas : l'etat du cartouche
+   * se recalcule plusieurs fois pour une meme trame, et l'accuse partirait
+   * alors en rafale.
+   */
+  trameRetenue?: number
+  /**
+   * L'accuse de reception : il autorise le moteur a poursuivre son rendu
+   * (board.tsx le branche sur `avancerMaintenant`).
+   *
+   * Il ne part PLUS a chaque etape validee. Il part quand le cartouche n'a
+   * plus rien a montrer, c'est-a-dire quand le joueur a valide tout ce que le
+   * cartouche sait deja (voir `cartoucheAJour` plus bas). Optionnel pour ne pas
+   * casser les appelants qui ne pilotent pas le moteur (tests,
+   * previsualisation).
    */
   onSuivant?: () => void
   /** Appele une fois la derniere etape validee. */
@@ -147,6 +163,14 @@ export function DeroulePhase({
   // n'annonce surtout pas la fin de la phase.
   const [enAttente, setEnAttente] = useState(false)
 
+  // La derniere trame pour laquelle un accuse de reception est parti. C'est LA
+  // garde contre la rafale d'accuses : l'etat du cartouche se recalcule
+  // plusieurs fois pour une meme trame (chaque publication du moteur redessine
+  // le plateau), et sans cette memoire l'effet ci-dessous relacherait le moteur
+  // autant de fois. Un `ref` et non un `useState` : le retenir ne doit
+  // provoquer aucun rendu, sans quoi la garde se declencherait elle-meme.
+  const derniereTrameAcquittee = useRef<number | undefined>(undefined)
+
   // Le dépliant de la règle sous l'étape : un choix qu'on ne fait qu'une
   // fois (voir lireRegleDepliee dans moteur.ts). Lu une seule fois a l'etat
   // initial, PAS reinitialise a chaque nouvelle phase (contrairement a
@@ -172,10 +196,16 @@ export function DeroulePhase({
   // `termine` doit se reinitialiser ICI, pas seulement `index` : sinon le
   // cartouche ne reapparaitrait plus jamais a la phase du mechant suivante, ce
   // qui est le piege symetrique et pire que le defaut d'origine.
+  //
+  // La derniere trame acquittee est oubliee ICI aussi : les `render_id` du
+  // moteur repartent de zero avec une nouvelle partie, et un numero deja vu
+  // ferait sauter l'accuse de la trame homonyme, donc gelerait la phase
+  // jusqu'au filet anti-blocage.
   useEffect(() => {
     setIndex(0)
     setTermine(false)
     setEnAttente(false)
+    derniereTrameAcquittee.current = undefined
   }, [identitePhase])
 
   // Les etapes REELLEMENT parcourues : celles du moteur, plus le bilan de fin
@@ -204,12 +234,12 @@ export function DeroulePhase({
     // Partie finie : le cartouche n'est plus a l'ecran, sa touche Entree ne
     // doit pas continuer a relacher le moteur derriere l'ecran de fin.
     if (partieFinie) return
-    // Relache le moteur AVANT de savoir si c'est la derniere etape : chaque
-    // validation (clic ou clavier) correspond au plus a une trame retenue
-    // cote moteur (`avancerMaintenant` ne fait rien sans trame en attente),
-    // donc l'appeler ici a chaque fois est sans risque, y compris sur la
-    // derniere etape ou `onTerminer` l'appelle une seconde fois juste apres.
-    onSuivant?.()
+    // Aucun accuse de reception ici, et c'est tout le sujet de cette reprise :
+    // valider l'etape 1 sur 4 relachait le moteur, qui repartait produire la
+    // suite pendant que le joueur lisait. L'accuse ne part que lorsque le
+    // cartouche n'a plus rien a montrer (voir `cartoucheAJour` plus bas), ce
+    // que le clic ci-dessous provoque en entrant en attente.
+    //
     // Un heros est tombe : le deroule s'arrete la, et « Continuer » rend la
     // main tout de suite. Sans ce court-circuit, la validation aurait bascule
     // le cartouche en « La suite arrive… » tant que la phase du mechant court
@@ -276,6 +306,55 @@ export function DeroulePhase({
     // quatre dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
   }, [enAttente, index, etapesAffichees.length, phaseMechantEnCours])
+
+  // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
+  //
+  // « A jour » ne veut pas dire « le cartouche affiche sa derniere etape ». Il
+  // veut dire « le joueur a valide tout ce que le cartouche sait deja ». Sans
+  // cette nuance, le moteur repartirait pendant que le joueur lit.
+  //
+  // Les quatre facons de n'avoir plus rien a montrer :
+  //  - `termine` : le cartouche a rendu la main (bilan valide, ou heros tombe
+  //    alors que la phase court encore pour les autres). Il ne montrera plus
+  //    rien de cette phase, donc il ne doit plus retenir le moteur ;
+  //  - `partieFinie` : il n'y a plus de suite du tout, et le cartouche s'est
+  //    efface derriere l'ecran de fin. Le laisser retenir figerait la table ;
+  //  - aucune etape : la trame n'a rien fabrique a lire, elle file ;
+  //  - `enAttente` sur la derniere etape connue : le joueur a valide, et rien
+  //    de nouveau n'est arrive depuis. Si une etape est arrivee entre-temps,
+  //    `index + 1 < etapesAffichees.length` et la sortie d'attente ci-dessus
+  //    va l'afficher : on n'est PAS a jour, et l'ordre des effets n'y change
+  //    rien puisque le calcul se fait sur les valeurs de ce rendu-ci.
+  const cartoucheAJour =
+    termine ||
+    partieFinie ||
+    etapesAffichees.length === 0 ||
+    (enAttente && index + 1 >= etapesAffichees.length)
+
+  // L'accuse de reception, seul endroit d'ou il part.
+  //
+  // Deux chemins y menent, et les deux sont necessaires :
+  //  - le clic qui epuise les etapes connues : il met `enAttente`, donc rend le
+  //    cartouche a jour, donc relance cet effet ;
+  //  - l'arrivee d'une trame qui ne fabrique AUCUNE etape alors que le
+  //    cartouche etait deja a jour : `trameRetenue` change, l'effet repart.
+  //    Sans ce second chemin, la phase se figerait sur le premier
+  //    micro-evenement muet.
+  //
+  // La garde contre la rafale est l'IDENTITE de la trame, pas un booleen : une
+  // trame deja acquittee ne peut pas l'etre une seconde fois, quel que soit le
+  // nombre de fois ou l'etat se recalcule pendant qu'elle est retenue.
+  useEffect(() => {
+    if (trameRetenue === undefined) return
+    if (!cartoucheAJour) return
+    if (derniereTrameAcquittee.current === trameRetenue) return
+    derniereTrameAcquittee.current = trameRetenue
+    onSuivant?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `onSuivant` est
+    // recree a chaque rendu par board.tsx : en dependre relancerait cet effet
+    // a chaque trame du moteur. Les deux dependances ci-dessous sont des
+    // primitifs et decrivent a elles seules la decision d'acquitter.
+  }, [trameRetenue, cartoucheAJour])
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
