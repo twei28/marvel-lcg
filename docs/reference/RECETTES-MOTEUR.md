@@ -42,6 +42,25 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 > par `an001a`, donc le montage cassé s'est recopié tout seul. Chacune a
 > désormais son **témoin d'épuisement** dans `test_capacites.py`, exigé par
 > l'étape 7 bis de `PROCESSUS-CARTE.md`.
+
+> ⚠ **`world.stat.IsOncePerPhasePerPlayer` ne s'alimente pas tout seul.**
+> Une carte qui écrit sa propre condition « Limit once per player per phase »
+> sur ce registre (faute de pouvoir passer par le générateur du moteur, cf.
+> `once_per.py`) doit appeler `world.stat.RecordEffectWithPlayer(effect,
+> joueur)` **elle-même**, au moment où elle consomme son unique usage — sinon
+> la limite est inerte : LIRE le registre sans jamais l'ALIMENTER revient à
+> ne poser aucune limite. Le moteur le fait tout seul dans
+> `Effect.SetHasSpellInPhase` (`effect.py:172-177`), mais UNIQUEMENT quand
+> `self.bind_message` est une `TriggerNonePlayerMessage` — un message comme
+> `AfterUnitAttackEnd` (hérité de `TriggerUnitMessage`) n'en est pas.
+>
+> Payé sur `gb020` You Are My God (pack Gorr) : sans l'appel, la Réponse
+> Forcée se redéclenchait sur elle-même sans fin (10 dégâts constatés en une
+> seule activation au lieu de 4). Corrigé en appelant
+> `RecordEffectWithPlayer` **avant** de déclencher la seconde attaque (le
+> moteur ne peut pas le faire à la place de la carte pour ce type de
+> message). Commit `ea980b97`, témoin `tools/test_capacites.py` « gb020 You
+> Are My God ».
 | After <allié> enters play | `AfterCardEnterPlay(Response, "This", op)` | 01083 Mockingbird, ho002 | — |
 | Hero Action (attack/thwart) sur événement | `WhenInYourPlayTurn(HeroAction, op).SetPlay().SetLabel('attack')` | 05015 Tackle, ho003 | le label alimente Sonné/Désorienté |
 | Hero Interrupt: When you play an [[ATTACK]] event | `WhenPlayerPlayCard(HeroInterrupt, "You", CardFinder2("ATTACK", Event), op)` | ho006 (37006, 05011 pour le message) | ≠ « when you SPEND » (32047/54002 : paiement) |
