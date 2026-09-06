@@ -2,7 +2,7 @@
 //
 // Deux sources, et aucune n'est une relecture du monde :
 //
-// 1. `FaitMechant` — les activations que le moteur a deja resolues. Lui seul
+// 1. `FaitMechant` : les activations que le moteur a deja resolues. Lui seul
 //    connait la composition d'un coup (base, boost, defense) ; une deduction
 //    verrait le resultat sans jamais pouvoir dire « 5 = 3 + 2 », et compterait
 //    plusieurs fois ce que le moteur rend plusieurs fois autour d'une seule
@@ -52,7 +52,11 @@ export type EtapeDeroule = {
   /** Identifiant stable, pour la cle React et le « Precedent ». */
   cle: string
   temps: TempsPhase
-  /** Deja mis en phrase par le composant : ici, le texte brut de l'action. */
+  /**
+   * Cle de texte ('attaque', 'manigance', 'menace') que le composant traduit
+   * en phrase, ou titre deja redige repris tel quel du journal (cartes
+   * revelees) quand la source n'est pas un fait du moteur.
+   */
   titre: string
   /** Rappel de la regle appliquee. */
   regle: string

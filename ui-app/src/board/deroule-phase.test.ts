@@ -1,8 +1,8 @@
 // Le decoupage de la phase du mechant en ETAPES a valider une par une.
 //
 // La source n'est pas une relecture du monde : le moteur envoie deja ses
-// activations resolues (`FaitMechant`), avec la composition du coup — base,
-// boost, defense — qu'aucune deduction ne saurait reconstituer. Le journal
+// activations resolues (`FaitMechant`), avec la composition du coup (base,
+// boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
 import { etapesDeroule } from './deroule-phase'
