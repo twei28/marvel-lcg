@@ -19,24 +19,33 @@ import type { FaitMechant } from './world'
 
 export type TempsPhase =
   | 'menace'
-  | 'activations'
+  | 'mechant'
+  | 'sbires'
   | 'distribution'
   | 'revelation'
   | 'premier-joueur'
 
-/** Ordre des quatre temps de la carte de reference. */
+/** Ordre des cinq temps de la carte de reference. */
 const ORDRE: TempsPhase[] = [
   'menace',
-  'activations',
+  'mechant',
+  'sbires',
   'distribution',
   'revelation',
   'premier-joueur',
 ]
 
-/** Phase du moteur -> temps de la carte de reference. */
+/**
+ * Phase du moteur -> temps de la carte de reference, pour les entrees dont le
+ * temps ne depend pas de l'auteur (menace, distribution, revelation).
+ *
+ * « Enemy Activation » n'y figure PAS : le vilain et ses sbires s'activent
+ * tous les deux pendant cette meme phase moteur, donc son temps ('mechant' ou
+ * 'sbires') se decide sur l'AUTEUR du fait, pas sur son nom de phase. Voir
+ * `etapesDeroule`.
+ */
 const TEMPS_PAR_PHASE: Record<string, TempsPhase> = {
   'Main Scheme Place Threat': 'menace',
-  'Enemy Activation': 'activations',
   'Deal Encounter Cards': 'distribution',
   'Reveal Encounter Cards': 'revelation',
 }
@@ -99,13 +108,21 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  * Les etapes de la phase, dans l'ordre de la carte de reference.
  *
  * Un fait porte SA phase : un vilain qu'une carte revelee fait frapper une
- * seconde fois se range sous la revelation, pas sous les activations, sans quoi
- * il paraissait attaquer deux fois sans raison.
+ * seconde fois se range sous la revelation, pas sous mechant ou sbires, sans
+ * quoi il paraissait attaquer deux fois sans raison.
+ *
+ * `mechantIds` distingue le vilain de ses sbires pour les activations
+ * ordinaires : `etapesDeroule` ne voit pas le monde, seulement les faits et le
+ * journal, donc c'est l'appelant (board.tsx, qui lit `cartesMondeParId`) qui
+ * lui dit qui est le camp du vilain. Un auteur absent de l'ensemble (inconnu
+ * ou deja hors table) se range sous sbires : c'est le cas le plus frequent, et
+ * s'y tromper coute une pastille, pas une regle du jeu.
  */
 export function etapesDeroule(
   faits: FaitMechant[],
   entrees: EntreeHistorique[],
-  round: number
+  round: number,
+  mechantIds: Set<number>
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -140,12 +157,16 @@ export function etapesDeroule(
   }
 
   faitsDuRound.forEach((fait, index) => {
-    const temps = tempsDe(fait.phase) ?? 'activations'
+    // Une phase deja connue (distribution, revelation) garde son temps
+    // propre. Sinon, c'est une activation ordinaire : son temps depend de
+    // l'AUTEUR du coup, pas de son nom de phase, puisque le vilain et ses
+    // sbires s'activent tous deux pendant « Enemy Activation ».
+    const temps = tempsDe(fait.phase) ?? (mechantIds.has(fait.auteur_id) ? 'mechant' : 'sbires')
     etapes.push({
       cle: `fait:${index}:${fait.auteur_id}`,
       temps,
       titre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
-      regle: temps === 'activations' ? 'regle:activations' : 'regle:revelation',
+      regle: temps === 'mechant' || temps === 'sbires' ? 'regle:activations' : 'regle:revelation',
       carteId: fait.auteur_id,
       cibleId: fait.cible_id,
       // Nettoyage applique partout ailleurs sur les noms de heros (icones,

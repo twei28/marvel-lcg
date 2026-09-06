@@ -38,15 +38,27 @@ const entree = (extra: Partial<EntreeHistorique> = {}): EntreeHistorique =>
     ...extra,
   }) as EntreeHistorique
 
+// Aucune de ces cartes n'est le vilain : les tests generiques (qui ne
+// s'interessent pas a la distinction mechant/sbires) passent un ensemble vide
+// et retrouvent leurs etapes sous « sbires », le cas le plus frequent.
+const AUCUN_MECHANT = new Set<number>()
+
 describe('etapesDeroule', () => {
   it('fait une etape par activation du moteur', () => {
-    const etapes = etapesDeroule([attaque(), attaque({ auteur: 'Drone', auteur_id: 60 })], [], 1)
-    const activations = etapes.filter((e) => e.temps === 'activations')
+    const etapes = etapesDeroule(
+      [attaque(), attaque({ auteur: 'Drone', auteur_id: 60 })],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const activations = etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
     expect(activations).toHaveLength(2)
   })
 
   it('met la carte qui agit en avant et retient sa cible', () => {
-    const [etape] = etapesDeroule([attaque()], [], 1).filter((e) => e.temps === 'activations')
+    const [etape] = etapesDeroule([attaque()], [], 1, AUCUN_MECHANT).filter(
+      (e) => e.temps === 'mechant' || e.temps === 'sbires'
+    )
     expect(etape.carteId).toBe(50)
     expect(etape.cibleId).toBe(12)
   })
@@ -55,9 +67,10 @@ describe('etapesDeroule', () => {
     const etapes = etapesDeroule(
       [attaque({ boosts: [{ nom: 'Boost A', id: 91, apport: 1 }, { nom: 'Boost B', id: 92, apport: 1 }] })],
       [],
-      1
+      1,
+      AUCUN_MECHANT
     )
-    const [etape] = etapes.filter((e) => e.temps === 'activations')
+    const [etape] = etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
     expect(etape.boosts.map((b) => b.nom)).toEqual(['Boost A', 'Boost B'])
     expect(etape.boosts.map((b) => b.cle)).toEqual(['boost:0:91', 'boost:1:92'])
   })
@@ -65,34 +78,58 @@ describe('etapesDeroule', () => {
   it('range une activation declenchee par une carte revelee sous la revelation', () => {
     // Un vilain peut frapper une seconde fois hors de l'etape des activations :
     // le fait porte sa propre phase, on la suit plutot que de tout ranger sous
-    // « activations ».
-    const etapes = etapesDeroule([attaque({ phase: 'Reveal Encounter Cards' })], [], 1)
+    // « mechant » ou « sbires ».
+    const etapes = etapesDeroule([attaque({ phase: 'Reveal Encounter Cards' })], [], 1, new Set([50]))
     expect(etapes.filter((e) => e.temps === 'revelation')).toHaveLength(1)
-    expect(etapes.filter((e) => e.temps === 'activations')).toHaveLength(0)
+    expect(etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(0)
   })
 
   it('fait une etape de menace a partir du journal', () => {
-    const etapes = etapesDeroule([], [entree()], 1)
+    const etapes = etapesDeroule([], [entree()], 1, AUCUN_MECHANT)
     expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
   })
 
   it('donne une cle stable et unique a chaque etape', () => {
-    const etapes = etapesDeroule([attaque(), attaque({ auteur_id: 60 })], [entree()], 1)
+    const etapes = etapesDeroule([attaque(), attaque({ auteur_id: 60 })], [entree()], 1, AUCUN_MECHANT)
     const cles = etapes.map((e) => e.cle)
     expect(new Set(cles).size).toBe(cles.length)
   })
 
-  it('rend les etapes dans l ordre des quatre temps', () => {
+  it('range sous mechant un fait dont l auteur est dans l ensemble mechant', () => {
+    const etapes = etapesDeroule([attaque({ auteur_id: 50 })], [], 1, new Set([50]))
+    expect(etapes.map((e) => e.temps)).toEqual(['mechant'])
+  })
+
+  it('range sous sbires un fait dont l auteur n est pas dans l ensemble mechant', () => {
+    const etapes = etapesDeroule([attaque({ auteur_id: 60 })], [], 1, new Set([50]))
+    expect(etapes.map((e) => e.temps)).toEqual(['sbires'])
+  })
+
+  it('range sous sbires un fait dont l auteur est introuvable', () => {
+    // Une carte deja partie de la table (minion tue par sa propre cible) n'a
+    // pas d'entree dans l'ensemble mechant, quel qu'il soit : mieux vaut la
+    // ranger sous le cas le plus frequent (sbires) qu'inventer un troisieme
+    // etat.
+    const etapes = etapesDeroule([attaque({ auteur_id: 999 })], [], 1, new Set([50]))
+    expect(etapes.map((e) => e.temps)).toEqual(['sbires'])
+  })
+
+  it('rend les etapes dans l ordre des cinq temps', () => {
     const etapes = etapesDeroule(
-      [attaque(), attaque({ phase: 'Reveal Encounter Cards', auteur_id: 60 })],
+      [
+        attaque({ auteur_id: 50 }),
+        attaque({ auteur_id: 60 }),
+        attaque({ phase: 'Reveal Encounter Cards', auteur_id: 60 }),
+      ],
       [entree()],
-      1
+      1,
+      new Set([50])
     )
-    expect(etapes.map((e) => e.temps)).toEqual(['menace', 'activations', 'revelation'])
+    expect(etapes.map((e) => e.temps)).toEqual(['menace', 'mechant', 'sbires', 'revelation'])
   })
 
   it('ne rend aucune etape quand la phase n a rien produit', () => {
-    expect(etapesDeroule([], [], 1)).toEqual([])
+    expect(etapesDeroule([], [], 1, AUCUN_MECHANT)).toEqual([])
   })
 
   it('fait une etape par carte revelee', () => {
@@ -104,7 +141,7 @@ describe('etapesDeroule', () => {
         titre: 'Icy Grip revelee',
         cibleId: 77,
       }),
-    ], 1)
+    ], 1, AUCUN_MECHANT)
     const revelations = etapes.filter((e) => e.temps === 'revelation')
     expect(revelations).toHaveLength(1)
     expect(revelations[0].carteId).toBe(77)
@@ -121,7 +158,7 @@ describe('etapesDeroule', () => {
         titre: '',
         brut: '[(50,01113) Klaw] would deal 2 damage',
       }),
-    ], 1)
+    ], 1, AUCUN_MECHANT)
     // Assertion sur la liste complete, pas un some() : celui-ci restait vert
     // meme si le code produisait en plus une etape parasite.
     expect(etapes).toHaveLength(1)
@@ -133,21 +170,21 @@ describe('etapesDeroule', () => {
     // place dans le journal, pas dans un deroule qu'on lit etape par etape.
     const etapes = etapesDeroule([], [
       entree({ cle: 'c3', type: 'text', phase: 'Reveal Encounter Cards', titre: 'Main scheme phase start' }),
-    ], 1)
+    ], 1, AUCUN_MECHANT)
     expect(etapes).toEqual([])
   })
 
   it('marque la narration technique comme defilant seule', () => {
     const etapes = etapesDeroule([], [
       entree({ cle: 'c9', type: 'text', phase: 'Reveal Encounter Cards', titre: '', brut: '[(50,01113) Klaw] would deal 2 damage' }),
-    ], 1)
+    ], 1, AUCUN_MECHANT)
     expect(etapes[0]?.auto).toBe(true)
   })
 
   it('ne fait pas defiler seule une carte revelee', () => {
     const etapes = etapesDeroule([], [
       entree({ cle: 'c8', type: 'card', phase: 'Reveal Encounter Cards', titre: 'Icy Grip revelee', cibleId: 77 }),
-    ], 1)
+    ], 1, AUCUN_MECHANT)
     expect(etapes[0]?.auto).toBeFalsy()
   })
 
@@ -165,21 +202,21 @@ describe('etapesDeroule', () => {
     ]
 
     it('ne rend que les etapes du round demande', () => {
-      const etapes = etapesDeroule([], journalTroisRounds, 3)
+      const etapes = etapesDeroule([], journalTroisRounds, 3, AUCUN_MECHANT)
       expect(etapes.map((e) => e.titre)).toEqual(['Carte R3-A', 'Carte R3-B'])
     })
 
     it('rend ces etapes dans l ordre chronologique, pas l ordre du journal', () => {
       // Le journal les stocke la plus recente en tete (r3-b avant r3-a) : le
       // deroule doit les montrer dans l'ordre ou elles ont eu lieu.
-      const etapes = etapesDeroule([], journalTroisRounds, 3)
+      const etapes = etapesDeroule([], journalTroisRounds, 3, AUCUN_MECHANT)
       expect(etapes.map((e) => e.cle)).toEqual(['carte:r3-a', 'carte:r3-b'])
     })
 
     it('ne melange pas un autre round dans le decompte', () => {
-      const etapes1 = etapesDeroule([], journalTroisRounds, 1)
+      const etapes1 = etapesDeroule([], journalTroisRounds, 1, AUCUN_MECHANT)
       expect(etapes1.map((e) => e.titre)).toEqual(['menace'])
-      const etapes2 = etapesDeroule([], journalTroisRounds, 2)
+      const etapes2 = etapesDeroule([], journalTroisRounds, 2, AUCUN_MECHANT)
       expect(etapes2.map((e) => e.titre)).toEqual(['Carte R2'])
     })
 
@@ -191,8 +228,8 @@ describe('etapesDeroule', () => {
         attaque({ round_id: 1, auteur: 'Ultron', auteur_id: 50 }),
         attaque({ round_id: 2, auteur: 'Drone', auteur_id: 60 }),
       ]
-      const etapes = etapesDeroule(faitsDeuxRounds, [], 2)
-      const activations = etapes.filter((e) => e.temps === 'activations')
+      const etapes = etapesDeroule(faitsDeuxRounds, [], 2, AUCUN_MECHANT)
+      const activations = etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
       expect(activations).toHaveLength(1)
       expect(activations[0]?.auteurNom).toBe('Drone')
     })
@@ -204,10 +241,10 @@ describe('etapesDeroule', () => {
     it('garde un fait SANS round_id, quel que soit le round demande', () => {
       const faitSansRound = attaque({ auteur: 'Ultron', auteur_id: 50 })
       expect(faitSansRound.round_id).toBeUndefined()
-      const etapes1 = etapesDeroule([faitSansRound], [], 1)
-      const etapes5 = etapesDeroule([faitSansRound], [], 5)
-      expect(etapes1.filter((e) => e.temps === 'activations')).toHaveLength(1)
-      expect(etapes5.filter((e) => e.temps === 'activations')).toHaveLength(1)
+      const etapes1 = etapesDeroule([faitSansRound], [], 1, AUCUN_MECHANT)
+      const etapes5 = etapesDeroule([faitSansRound], [], 5, AUCUN_MECHANT)
+      expect(etapes1.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
+      expect(etapes5.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
     })
   })
 })

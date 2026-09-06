@@ -35,7 +35,7 @@ import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
-import { toScanCard, type ContexteCarte } from './board/card-model'
+import { kindOf, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
@@ -1766,10 +1766,29 @@ function PagePartie({
   // Les etapes du deroule detaille : `etapesDeroule` parcourt tous les faits
   // et toutes les entrees du journal, donc on ne la relance pas a chaque
   // rendu (meme motif que `cartesMondeParId` plus haut).
-  const etapesPhaseMechant = useMemo(
-    () => etapesDeroule(etat.monde?.faits_mechant ?? [], historique.entrees, etat.monde?.round_id ?? 0),
-    [etat.monde?.faits_mechant, historique.entrees, etat.monde?.round_id]
-  )
+  //
+  // `etapesDeroule` ne voit pas le monde, seulement les faits et le journal :
+  // c'est ici qu'on lui dit qui est le vilain, pour distinguer ses coups de
+  // ceux de ses sbires. `cartesMondeParId` porte deja le `card_type` de
+  // chaque carte ; `kindOf()` le traduit en famille visuelle, et 'villain'
+  // (EncounterVillain) distingue le vilain lui-meme d'un sbire ('minion',
+  // Minion). Ajouter `cartesMondeParId` aux dependances ne change rien au
+  // rythme de recalcul : `etat.monde` se re-parse en JSON a chaque trame du
+  // moteur (meme piege que dans DeroulePhase.tsx), donc `faits_mechant`
+  // change deja d'identite a chaque trame et relancait deja ce useMemo aussi
+  // souvent.
+  const etapesPhaseMechant = useMemo(() => {
+    const mechantIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    return etapesDeroule(
+      etat.monde?.faits_mechant ?? [],
+      historique.entrees,
+      etat.monde?.round_id ?? 0,
+      mechantIds
+    )
+  }, [cartesMondeParId, etat.monde?.faits_mechant, historique.entrees, etat.monde?.round_id])
 
   // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
   // du moment, et le journal ci-dessus pour le passé. Aucun tampon d'états n'est

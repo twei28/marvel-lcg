@@ -2805,6 +2805,23 @@
     font-weight: 900;
   }
 
+  /* Passe : la coche suffit, pas besoin de changer la couleur de base. */
+  .deroule-temps li.est-passe {
+    color: rgba(248, 250, 252, 0.75);
+  }
+
+  /* Vide : aucune etape de la phase ne porte ce temps. Grise ET barre, pour
+     qu'on le distingue d'un coup d'oeil d'un temps simplement a venir
+     (discret, mais pas barre). */
+  .deroule-temps li.est-vide {
+    color: rgba(248, 250, 252, 0.32);
+    text-decoration: line-through;
+  }
+
+  .deroule-temps-vide-detail {
+    text-decoration: none;
+  }
+
   .deroule-titre {
     margin: 0 0 4px;
     font-size: 1rem;

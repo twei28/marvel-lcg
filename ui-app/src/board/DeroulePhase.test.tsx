@@ -12,7 +12,7 @@ const etapes: EtapeDeroule[] = [
   { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
   {
     cle: 'b',
-    temps: 'activations',
+    temps: 'mechant',
     titre: 'attaque',
     regle: 'regle:activations',
     carteId: 50,
@@ -137,10 +137,51 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('montre les quatre temps, celui en cours mis en avant', () => {
+  it('montre les cinq temps, celui en cours mis en avant', () => {
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(4)
+    expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(5)
     expect(container.querySelector('.deroule-temps li.est-courant')?.textContent).toMatch(/Menace/i)
+  })
+
+  it('marque comme passe un temps deja valide', () => {
+    // `etapes` : menace puis mechant. Une fois la menace validee, elle doit
+    // porter la marque de validation, pas rester « a venir ».
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    const menaceLi = [...document.querySelectorAll('.deroule-temps li')].find((li) =>
+      li.textContent?.match(/Menace/i)
+    )
+    expect(menaceLi?.className).toContain('est-passe')
+  })
+
+  it('marque un temps sans aucune etape comme vide dans la chronologie', () => {
+    // `etapes` ne porte que menace et mechant : sbires, distribution et
+    // revelation n'ont produit aucune etape cette phase-ci.
+    const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    const sbiresLi = [...container.querySelectorAll('.deroule-temps li')].find((li) =>
+      li.textContent?.match(/Sbires/i)
+    )
+    expect(sbiresLi?.className).toContain('est-vide')
+    expect(sbiresLi?.textContent).toMatch(/Aucun/i)
+  })
+
+  it('ne coute aucun clic pour un temps vide : le compte de clics suit le nombre d etapes', () => {
+    // La phase brute (voir brief) : menace, mechant, distribution ; ni
+    // sbires, ni revelation ne produisent d'etape ici. Le joueur doit
+    // traverser la phase en exactement 3 clics, pas 5 : un temps vide ne
+    // consomme jamais de clic pour lui-meme.
+    const onTerminer = vi.fn()
+    const sansSbiresNiRevelation: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+      { cle: 'b', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
+      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [], consequences: [] },
+    ]
+    render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(onTerminer).not.toHaveBeenCalled()
+    fireEvent.click(suivant())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
   })
 
   it('avance a la touche Entree', () => {
@@ -342,7 +383,7 @@ describe('cartouche du deroule', () => {
     // technique n'attend plus le clic qu'elle est censee eviter.
     const premierePhase: EtapeDeroule[] = [
       { cle: 'a1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
-      { cle: 'a2', temps: 'activations', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
+      { cle: 'a2', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
     ]
     const deuxiemePhase: EtapeDeroule[] = [
       { cle: 'b1', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
@@ -371,7 +412,7 @@ describe('cartouche du deroule', () => {
     const avecBoosts: EtapeDeroule[] = [
       {
         cle: 'a',
-        temps: 'activations',
+        temps: 'mechant',
         titre: 'attaque',
         regle: 'regle:activations',
         carteId: 50,
@@ -403,7 +444,7 @@ describe('cartouche du deroule', () => {
     const avecBoosts: EtapeDeroule[] = [
       {
         cle: 'a',
-        temps: 'activations',
+        temps: 'mechant',
         titre: 'attaque',
         regle: 'regle:activations',
         carteId: 50,

@@ -320,9 +320,10 @@ export const DICO_EN_BASE: Record<string, string> = {
     'Step 2: each enemy activates against the hero engaged with it.',
   'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.':
     'Step 4: each player reveals their encounter card and resolves it.',
-  // Cartouche du deroule (DeroulePhase.tsx). 'Menace', 'Activations' et
+  // Cartouche du deroule (DeroulePhase.tsx). 'Menace', 'Méchant' (zones.ts) et
   // 'Phase du méchant' sont deja definis plus haut, pour le bilan de fin de
   // phase et le splash de tour.
+  'Sbires': 'Minions',
   'Distribution': 'Dealing',
   'Révélation': 'Reveal',
   'Précédent': 'Previous',

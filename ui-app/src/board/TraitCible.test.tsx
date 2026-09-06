@@ -9,7 +9,7 @@ import type { EtapeDeroule } from './deroule-phase'
 
 const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   cle: 'k',
-  temps: 'activations',
+  temps: 'sbires',
   titre: 'attaque',
   regle: 'regle:activations',
   boosts: [],

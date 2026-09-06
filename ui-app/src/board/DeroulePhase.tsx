@@ -20,10 +20,18 @@ const DELAI_AUTO_MS = 500
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
 
-/** Les quatre temps de la carte de reference, dans l'ordre. */
+/**
+ * Les cinq temps de la carte de reference, dans l'ordre.
+ *
+ * Le mechant et ses sbires sont deux moments distincts du tour (le vilain
+ * s'active AVANT ses sbires) : les fondre dans un seul « Activations »
+ * cachait ou l'on en etait. Arbitrage de l'utilisateur, qui a decrit la
+ * phase exactement dans ces termes.
+ */
 const TEMPS: { cle: TempsPhase; libelle: string }[] = [
   { cle: 'menace', libelle: 'Menace' },
-  { cle: 'activations', libelle: 'Activations' },
+  { cle: 'mechant', libelle: 'Méchant' },
+  { cle: 'sbires', libelle: 'Sbires' },
   { cle: 'distribution', libelle: 'Distribution' },
   { cle: 'revelation', libelle: 'Révélation' },
 ]
@@ -214,16 +222,34 @@ export function DeroulePhase({
   // ci-dessus), donc le deroule reapparait bien a la phase suivante.
   if (!etape || termine) return null
 
+  // Position du temps COURANT dans la chronologie : elle seule dit qui est
+  // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.
+  const positionCourante = TEMPS.findIndex((item) => item.cle === etape.temps)
+
   return (
     <>
       <TraitCible etape={etape} actif={!termine} />
       <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
         <ol className="deroule-temps">
-          {TEMPS.map((temps) => (
-            <li key={temps.cle} className={temps.cle === etape.temps ? 'est-courant' : ''}>
-              {t(temps.libelle)}
-            </li>
-          ))}
+          {TEMPS.map((temps, position) => {
+            // Vide : aucune etape de la phase ne porte ce temps. Il n'a
+            // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
+            // lui) ; le joueur doit seulement voir qu'il a ete saute, et
+            // pourquoi.
+            const estVide = !etapes.some((e) => e.temps === temps.cle)
+            const estCourant = !estVide && temps.cle === etape.temps
+            const estPasse = !estVide && !estCourant && position < positionCourante
+            const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
+            return (
+              <li key={temps.cle} className={classe}>
+                {t(temps.libelle)}
+                {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
+                    symbole colle au texte, pas une traduction a part. */}
+                {estPasse ? ' ✓' : null}
+                {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
+              </li>
+            )
+          })}
         </ol>
 
         <p className="deroule-titre">{titreEtape(etape)}</p>
