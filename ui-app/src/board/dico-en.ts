@@ -343,6 +343,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'a pris': 'took',
   'a gagné': 'gained',
   'Aucun dégât, aucune menace.': 'No damage, no threat.',
+  // Un heros tombe : le deroule s'arrete net sur cette etape.
+  // ('Continuer' est deja defini plus haut, pour la demande centrale.)
+  '%1 est vaincu': '%1 is defeated',
+  'La phase s\'arrête ici.': 'The phase stops here.',
   // Tchat sur la table (PanneauSalon).
   'Tchat': 'Chat',
   'Parler aux autres joueurs': 'Talk to the other players',

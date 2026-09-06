@@ -862,4 +862,107 @@ describe('le bilan de fin de phase', () => {
     const { container } = render(<DeroulePhase etapes={[]} onTerminer={() => {}} />)
     expect(container).toBeEmptyDOMElement()
   })
+
+  // --- Un heros tombe -------------------------------------------------------
+  // Le moment le plus important d'une partie : il ne doit pas defiler comme
+  // les autres. L'etape qui a mis le heros a terre reste affichee, marquee, et
+  // le deroule n'affiche RIEN au-dela.
+  const chuteDeColossus: EtapeDeroule[] = [
+    { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+    {
+      cle: 'y',
+      temps: 'mechant',
+      titre: 'attaque',
+      regle: 'regle:activations',
+      carteId: 50,
+      cibleId: 12,
+      auteurNom: 'Klaw',
+      cibleNom: 'Colossus',
+      montant: 6,
+      restant: 0,
+      defaite: true,
+      boosts: [],
+      consequences: [],
+    },
+    {
+      cle: 'z',
+      temps: 'sbires',
+      titre: 'attaque',
+      regle: 'regle:activations',
+      carteId: 60,
+      cibleId: 13,
+      auteurNom: 'Drone',
+      cibleNom: 'Spider-Man',
+      montant: 2,
+      boosts: [],
+      consequences: [],
+    },
+  ]
+
+  it('annonce la chute du heros sur l etape qui l a mis a terre', () => {
+    const { container } = render(
+      <DeroulePhase etapes={chuteDeColossus} onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
+    expect(screen.getByText(/Colossus est vaincu/)).toBeInTheDocument()
+    expect(screen.getByText(/La phase s.arrête ici/)).toBeInTheDocument()
+    expect(container.querySelector('.deroule-defaite')).not.toBeNull()
+  })
+
+  it('n affiche aucune etape au-dela de la defaite', () => {
+    render(<DeroulePhase etapes={chuteDeColossus} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    // L'etape suivante existe pourtant bien dans la liste recue : le cartouche
+    // s'arrete quand meme.
+    expect(screen.queryByText('Drone attaque Spider-Man')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+  })
+
+  it('dit « Continuer », et non « Suivant », sur l etape de defaite', () => {
+    render(<DeroulePhase etapes={chuteDeColossus} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    expect(screen.getByRole('button', { name: /Continuer/i })).toBeInTheDocument()
+  })
+
+  it('la defaite l emporte sur le bilan de fin de phase', () => {
+    // Le deroule s'arrete net a la chute : il n'y a plus de fin de phase a
+    // raconter derriere elle.
+    const onTerminer = vi.fn()
+    const { container } = render(
+      <DeroulePhase etapes={chuteDeColossus} onTerminer={onTerminer} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.queryByText('Fin de la phase du méchant')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('rend la main tout de suite meme si la phase du mechant court encore', () => {
+    // Sans cela, « Continuer » aurait bascule le cartouche en « La suite
+    // arrive… » sur une suite qu'il ne montrera jamais.
+    const onTerminer = vi.fn()
+    const { container } = render(
+      <DeroulePhase etapes={chuteDeColossus} phaseMechantEnCours onTerminer={onTerminer} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  // LE cas negatif, le plus important : une marque posee trop largement
+  // s'afficherait a tort sans que rien ne le signale.
+  it('ne pose AUCUNE marque de defaite sur une etape ordinaire', () => {
+    const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    expect(container.querySelector('.deroule-defaite')).toBeNull()
+    expect(screen.queryByText(/vaincu/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/La phase s.arrête ici/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Suivant/i })).toBeInTheDocument()
+    fireEvent.click(suivant())
+    expect(container.querySelector('.deroule-defaite')).toBeNull()
+    expect(screen.queryByText(/vaincu/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Continuer/i })).toBeNull()
+  })
 })

@@ -8,13 +8,21 @@
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
 import { useEffect, useState } from 'react'
-import { avecBilan, rangDansLeTemps, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import {
+  arreterSurDefaite,
+  avecBilan,
+  rangDansLeTemps,
+  type EtapeDeroule,
+  type TempsPhase,
+} from './deroule-phase'
 import {
   compteurEtape,
   compteurLigneBilan,
   regleEtape,
   resultatEtape,
+  texteArretDefaite,
   texteBilanVide,
+  texteDefaite,
   texteLigneBilan,
   titreEtape,
 } from './deroule-textes'
@@ -133,7 +141,11 @@ export function DeroulePhase({
   // pendant la phase. Le bilan n'existe donc que quand la phase est finie, et
   // c'est ce qui en fait le terminateur naturel du cartouche : il est toujours
   // la derniere etape, et le valider, c'est finir.
-  const etapesAffichees = phaseMechantEnCours ? etapes : avecBilan(etapes)
+  //
+  // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
+  // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
+  // phase ne s'affiche donc jamais derriere une defaite.
+  const etapesAffichees = arreterSurDefaite(phaseMechantEnCours ? etapes : avecBilan(etapes))
 
   const etape = etapesAffichees[index]
 
@@ -147,6 +159,16 @@ export function DeroulePhase({
     // donc l'appeler ici a chaque fois est sans risque, y compris sur la
     // derniere etape ou `onTerminer` l'appelle une seconde fois juste apres.
     onSuivant?.()
+    // Un heros est tombe : le deroule s'arrete la, et « Continuer » rend la
+    // main tout de suite. Sans ce court-circuit, la validation aurait bascule
+    // le cartouche en « La suite arrive… » tant que la phase du mechant court
+    // encore (elle continue pour les autres joueurs), sur une suite que
+    // `arreterSurDefaite` ne lui donnera jamais.
+    if (etape.defaite) {
+      setTermine(true)
+      onTerminer()
+      return
+    }
     // Une etape suivante est deja connue : on y va.
     if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
@@ -350,6 +372,16 @@ export function DeroulePhase({
           {compteur ? <span className="deroule-compteur">{compteur}</span> : null}
         </div>
         {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+        {/* La chute du heros. Elle ne ressemble a aucune autre ligne du
+            cartouche, et c'est voulu : c'est le moment le plus important d'une
+            partie, il ne doit pas defiler comme les autres. Le crane est
+            decoratif (aria-hidden) : la phrase dit deja tout, et un lecteur
+            d'ecran n'a pas a epeler un symbole. */}
+        {etape.defaite ? (
+          <p className="deroule-defaite">
+            <span aria-hidden="true">☠</span> {texteDefaite(etape)}
+          </p>
+        ) : null}
         {etape.boosts.length > 0 ? (
           <ul className="deroule-boosts">
             {etape.boosts.slice(0, boostsMontres).map((boost) => (
@@ -416,15 +448,25 @@ export function DeroulePhase({
               {t('La suite arrive…')}
             </span>
           ) : null}
+          {/* Dit pourquoi il n'y a plus rien apres, a la place meme ou l'on
+              lit d'ordinaire « La suite arrive… ». Les deux ne se croisent
+              jamais : une defaite ne fait plus attendre de suite. */}
+          {etape.defaite ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
           {index > 0 ? (
             <button type="button" className="bh-bouton" onClick={reculer}>
               {t('Précédent')}
             </button>
           ) : null}
           {/* Sur le bilan, le bouton ne dit plus « Suivant » : il n'y a plus
-              rien apres, et c'est lui qui rend la main au joueur. */}
+              rien apres, et c'est lui qui rend la main au joueur. Sur une
+              defaite, il dit « Continuer » : ce n'est pas une etape de plus
+              qu'on demande, c'est le droit de reprendre la partie. */}
           <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
-            {etape.temps === 'bilan' ? t('À toi de jouer') : t('Suivant')}
+            {etape.defaite
+              ? t('Continuer')
+              : etape.temps === 'bilan'
+                ? t('À toi de jouer')
+                : t('Suivant')}
           </button>
         </div>
       </section>

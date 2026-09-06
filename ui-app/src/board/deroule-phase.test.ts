@@ -5,7 +5,14 @@
 // boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
-import { avecBilan, etapesDeroule, lignesBilan, rangDansLeTemps } from './deroule-phase'
+import {
+  arreterSurDefaite,
+  avecBilan,
+  etapesDeroule,
+  lignesBilan,
+  rangDansLeTemps,
+  type EtapeDeroule,
+} from './deroule-phase'
 import type { FaitMechant } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
@@ -501,6 +508,127 @@ describe('le bilan de fin de phase', () => {
         AUCUN_MECHANT
       )
       expect(lignesBilan(avecBilan(etapes))).toEqual(lignesBilan(etapes))
+    })
+  })
+})
+
+// Un heros qui tombe au milieu de la phase. C'est le moment le plus important
+// d'une partie, et le seul ou le deroule s'arrete net.
+//
+// La marque ne se devine pas : elle exige DEUX accords, l'un sur le monde
+// (le moteur a bien elimine ce joueur, `WorldPlayer.is_eliminated`), l'autre
+// sur le coup lui-meme (`restant` tombe a zero). Annoncer une defaite qui n'a
+// pas eu lieu serait pire que de ne rien annoncer.
+describe('la defaite d un heros', () => {
+  // L'identite de Colossus, telle que board.tsx la donne : la carte de heros
+  // d'un joueur que le monde declare elimine.
+  const COLOSSUS_TOMBE = new Set([12])
+
+  const activation = (etapes: EtapeDeroule[]) =>
+    etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
+
+  it('marque le coup qui met le heros a terre', () => {
+    const [etape] = activation(
+      etapesDeroule(
+        [attaque({ cible: 'Colossus', cible_id: 12, subi: 6, restant: 0 })],
+        [],
+        1,
+        AUCUN_MECHANT,
+        COLOSSUS_TOMBE
+      )
+    )
+    expect(etape.defaite).toBe(true)
+  })
+
+  // LE cas negatif, le plus important de la serie : une marque posee trop
+  // largement s'afficherait a tort sans que rien ne le signale.
+  it('ne marque AUCUNE etape ordinaire', () => {
+    const etapes = etapesDeroule(
+      [
+        // Le meme heros, encore debout : le monde le dira tombe plus tard,
+        // ce coup-ci ne l'a pas mis a terre.
+        attaque({ cible: 'Colossus', cible_id: 12, subi: 3, restant: 5 }),
+        // Une manigance : sa menace « restante » monte, elle ne tombe pas.
+        attaque({ genre: 'manigance', cible: 'L’Effraction !', cible_id: 90, restant: 3 }),
+      ],
+      [entree()],
+      1,
+      AUCUN_MECHANT,
+      COLOSSUS_TOMBE
+    )
+    for (const etape of etapes) expect(etape.defaite).toBeUndefined()
+  })
+
+  it('ne marque pas une cible a zero qui n est pas un heros', () => {
+    // Un sbire abattu par son propre defenseur tombe lui aussi a zero. Sans
+    // l'accord du monde, chaque sbire mort aurait coupe le deroule.
+    const [etape] = activation(
+      etapesDeroule(
+        [attaque({ cible: 'Drone', cible_id: 88, restant: 0 })],
+        [],
+        1,
+        AUCUN_MECHANT,
+        COLOSSUS_TOMBE
+      )
+    )
+    expect(etape.defaite).toBeUndefined()
+  })
+
+  it('ne marque pas un heros elimine dont CE coup ne dit pas la chute', () => {
+    // Le monde le declare tombe, mais ce fait-la porte un compteur intact :
+    // c'est un coup precedent qui l'a eu, pas celui-ci.
+    const [etape] = activation(
+      etapesDeroule(
+        [attaque({ cible: 'Colossus', cible_id: 12, restant: undefined })],
+        [],
+        1,
+        AUCUN_MECHANT,
+        COLOSSUS_TOMBE
+      )
+    )
+    expect(etape.defaite).toBeUndefined()
+  })
+
+  it('ne marque rien quand l appelant ne dit rien du monde', () => {
+    // Le cinquieme argument est optionnel : sans lui, aucune defaite. C'est le
+    // repli sur : ne rien annoncer plutot qu'annoncer a tort.
+    const [etape] = activation(
+      etapesDeroule([attaque({ cible_id: 12, restant: 0 })], [], 1, AUCUN_MECHANT)
+    )
+    expect(etape.defaite).toBeUndefined()
+  })
+
+  describe('arreterSurDefaite', () => {
+    const coup = (cle: string, defaite?: true): EtapeDeroule => ({
+      cle,
+      temps: 'sbires',
+      titre: 'attaque',
+      regle: 'regle:activations',
+      boosts: [],
+      consequences: [],
+      ...(defaite ? { defaite } : {}),
+    })
+
+    it('garde l etape de defaite et coupe tout ce qui suit', () => {
+      const coupe = arreterSurDefaite([coup('a'), coup('b', true), coup('c'), coup('d')])
+      expect(coupe.map((e) => e.cle)).toEqual(['a', 'b'])
+    })
+
+    it('ne touche a rien sans defaite', () => {
+      const liste = [coup('a'), coup('b')]
+      expect(arreterSurDefaite(liste)).toBe(liste)
+    })
+
+    it('emporte aussi le bilan de fin de phase', () => {
+      // La defaite gagne sur le bilan : le deroule s'arrete a la chute, donc
+      // il n'y a plus de fin de phase a raconter derriere.
+      const coupe = arreterSurDefaite(avecBilan([coup('a', true), coup('b')]))
+      expect(coupe.some((e) => e.temps === 'bilan')).toBe(false)
+      expect(coupe.map((e) => e.cle)).toEqual(['a'])
+    })
+
+    it('laisse une liste vide vide', () => {
+      expect(arreterSurDefaite([])).toEqual([])
     })
   })
 })

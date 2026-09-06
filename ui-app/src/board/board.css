@@ -2886,6 +2886,34 @@
     color: rgba(248, 250, 252, 0.9);
   }
 
+  /* La chute d'un heros. La seule ligne du cartouche qui ne ressemble a aucune
+     autre : c'est le moment le plus important d'une partie, il ne doit pas
+     defiler comme les autres. Meme rouge que le trait de cible et les boosts
+     (#F0131E), mais en bandeau plein largeur, et en capitales. */
+  .deroule-defaite {
+    margin: 0 0 8px;
+    padding: 6px 10px;
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ffe3e3;
+    background: rgba(240, 19, 30, 0.22);
+    border-left: 3px solid #F0131E;
+    border-radius: 4px;
+  }
+
+  /* « La phase s'arrête ici. » : meme place et meme discretion que
+     « La suite arrive… », a gauche des boutons. Les deux ne paraissent jamais
+     ensemble, une defaite ne fait plus attendre de suite. */
+  .deroule-arret {
+    align-self: center;
+    margin-right: auto;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.7);
+  }
+
   /* Les cartes de boost, retournees une par une : c'est le moment de tension
      du jeu, il merite d'etre montre. */
   .deroule-boosts {

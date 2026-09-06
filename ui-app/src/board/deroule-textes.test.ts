@@ -11,6 +11,7 @@ import {
   regleEtape,
   resultatEtape,
   texteBilanVide,
+  texteDefaite,
   texteLigneBilan,
   titreEtape,
 } from './deroule-textes'
@@ -214,5 +215,22 @@ describe('les phrases du bilan', () => {
 
   it('dit qu il ne s est rien passe plutot que de rester vide', () => {
     expect(texteBilanVide()).toBe('Aucun dégât, aucune menace.')
+  })
+
+  it('annonce la chute du heros, en le nommant', () => {
+    expect(texteDefaite(etape({ defaite: true, cibleNom: 'Colossus' }))).toBe(
+      'Colossus est vaincu'
+    )
+  })
+
+  it('ne dit rien sur une etape ordinaire', () => {
+    // Le cas negatif : sans la marque, pas un mot. Une phrase de defaite
+    // glissee sous un coup ordinaire ferait douter le joueur de tout le reste
+    // du cartouche.
+    expect(texteDefaite(etape())).toBe('')
+  })
+
+  it('se tait plutot que de nommer un heros qu il ne connait pas', () => {
+    expect(texteDefaite(etape({ defaite: true, cibleNom: undefined }))).toBe('')
   })
 })

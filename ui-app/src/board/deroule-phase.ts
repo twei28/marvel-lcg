@@ -140,6 +140,24 @@ export type EtapeDeroule = {
   boosts: BoostDeroule[]
   consequences: { cle: string; texte: string }[]
   /**
+   * Ce coup a mis un HEROS a terre. Absent partout ailleurs, y compris sur
+   * l'etape ordinaire qui l'a precede.
+   *
+   * La marque exige DEUX accords, et jamais un seul :
+   *
+   * 1. le monde dit ce heros elimine (`WorldPlayer.is_eliminated`, pose par
+   *    `Player.Eliminate` cote moteur). C'est l'etat, il ne dit pas QUEL coup ;
+   * 2. le fait dit `restant <= 0` (`cible.health` apres coup, cote moteur, et
+   *    `IsDefeated()` s'y ramene : `health <= 0`). C'est le coup, il ne dit pas
+   *    si la cible est un heros : un sbire abattu tombe lui aussi a zero.
+   *
+   * L'un sans l'autre marquerait a tort : tous les coups de la phase sur un
+   * heros qui finira par tomber, ou chaque sbire mort. Annoncer une defaite qui
+   * n'a pas eu lieu serait pire que de ne rien annoncer : c'est le faux positif
+   * qui ferait douter le joueur de tout le reste du cartouche.
+   */
+  defaite?: boolean
+  /**
    * Le bilan de la phase, porte par la seule etape de temps `bilan`. Une
    * liste VIDE est un etat legitime, et pas la meme chose qu'un champ absent :
    * elle dit « la phase n'a rien coute », que l'affichage annonce en toutes
@@ -165,12 +183,19 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  * lui dit qui est le camp du vilain. Un auteur absent de l'ensemble (inconnu
  * ou deja hors table) se range sous sbires : c'est le cas le plus frequent, et
  * s'y tromper coute une pastille, pas une regle du jeu.
+ *
+ * `herosVaincusIds` suit la meme regle, pour la meme raison : ce module ne voit
+ * pas le monde, donc c'est board.tsx qui lui donne les cartes d'identite des
+ * heros que le monde declare ELIMINES. L'ensemble est optionnel et vide par
+ * defaut : sans lui, aucune etape n'est marquee, ce qui est le bon repli (ne
+ * rien annoncer plutot qu'annoncer a tort).
  */
 export function etapesDeroule(
   faits: FaitMechant[],
   entrees: EntreeHistorique[],
   round: number,
-  mechantIds: Set<number>
+  mechantIds: Set<number>,
+  herosVaincusIds: Set<number> = new Set()
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -225,6 +250,11 @@ export function etapesDeroule(
     // l'AUTEUR du coup, pas de son nom de phase, puisque le vilain et ses
     // sbires s'activent tous deux pendant « Enemy Activation ».
     const temps = tempsDe(fait.phase) ?? (mechantIds.has(fait.auteur_id) ? 'mechant' : 'sbires')
+    // `restant` vaut `null` quand la cible n'a pas de compteur : on le ramene a
+    // l'absence, seul etat que l'affichage sait taire.
+    const restant = fait.restant ?? undefined
+    // Les deux accords exiges par `EtapeDeroule.defaite`, et rien de moins.
+    const defaite = restant !== undefined && restant <= 0 && herosVaincusIds.has(fait.cible_id)
     etapes.push({
       cle: `fait:${index}:${fait.auteur_id}`,
       temps,
@@ -239,9 +269,10 @@ export function etapesDeroule(
       cibleNom: fait.cible.replace(/^\W*/, ''),
       // `subi` et non `inflige` : voir le commentaire de `montant`.
       montant: fait.subi,
-      // `restant` vaut `null` quand la cible n'a pas de compteur : on le
-      // ramene a l'absence, seul etat que l'affichage sait taire.
-      restant: fait.restant ?? undefined,
+      restant,
+      // Absent, et non `false`, sur une etape ordinaire : le champ ne parait
+      // que la ou il dit quelque chose.
+      defaite: defaite ? true : undefined,
       boosts: fait.boosts.map((boost, rang) => ({
         cle: `boost:${rang}:${boost.id}`,
         nom: boost.nom,
@@ -395,4 +426,26 @@ export function avecBilan(etapes: EtapeDeroule[]): EtapeDeroule[] {
   // Le tri, plutot qu'un simple `push` : `bilan` est le dernier de ORDRE, donc
   // l'etape finit derniere quel que soit l'ordre d'arrivee des faits.
   return [...etapes, bilan].sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
+}
+
+/**
+ * Le deroule, coupe NET a l'etape ou un heros est tombe.
+ *
+ * L'etape qui l'a mis a terre reste affichee, marquee ; rien ne s'affiche
+ * au-dela, meme si des faits plus tardifs existent (en multijoueur la phase
+ * continue pour les autres, et le moteur produit encore des activations). Le
+ * cartouche raconte une phase du mechant, et cette phase-la vient de basculer
+ * dans autre chose.
+ *
+ * Cette coupe s'applique APRES `avecBilan`, et c'est ce qui tranche entre les
+ * deux : la defaite l'emporte, le bilan de fin de phase ne s'affiche pas
+ * derriere elle. Un « voici ce que la phase vous a coute » apres un heros a
+ * terre serait un contresens.
+ *
+ * Rend la liste RECUE quand aucune etape n'est marquee : le cas ordinaire ne
+ * doit rien recopier.
+ */
+export function arreterSurDefaite(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  const index = etapes.findIndex((etape) => etape.defaite)
+  return index === -1 ? etapes : etapes.slice(0, index + 1)
 }

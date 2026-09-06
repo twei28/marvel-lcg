@@ -1783,13 +1783,40 @@ function PagePartie({
     for (const carte of cartesMondeParId.values()) {
       if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
     }
+    // Les heros que le MONDE declare tombes. C'est l'etat que le moteur pose
+    // lui-meme (`Player.Eliminate` -> `is_eliminated`), pas une deduction :
+    // l'identite d'un joueur elimine reste dans `area_hero` (le moteur exclut
+    // le type Identity de la defausse, voir joueur-elimine.test.ts), donc on la
+    // retrouve, PV a zero.
+    //
+    // Il ne dit pas QUEL coup a mis le heros a terre : c'est `etapesDeroule`
+    // qui croise cet ensemble avec le `restant` du fait. Les deux ensemble, et
+    // jamais l'un sans l'autre.
+    const herosVaincusIds = new Set<number>()
+    for (const joueur of etat.monde?.players ?? []) {
+      if (!joueur.is_eliminated) continue
+      for (const carte of joueur.area_hero ?? []) {
+        // Les DEUX faces : un heros peut tomber en alter ego (une obligation,
+        // une manigance qui frappe). `area_hero` porte aussi ses ameliorations,
+        // qui ne sont ni l'une ni l'autre.
+        const famille = kindOf(carte)
+        if (famille === 'hero' || famille === 'alter-ego') herosVaincusIds.add(carte.id)
+      }
+    }
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
       historique.entrees,
       etat.monde?.round_id ?? 0,
-      mechantIds
+      mechantIds,
+      herosVaincusIds
     )
-  }, [cartesMondeParId, etat.monde?.faits_mechant, historique.entrees, etat.monde?.round_id])
+  }, [
+    cartesMondeParId,
+    etat.monde?.faits_mechant,
+    etat.monde?.players,
+    historique.entrees,
+    etat.monde?.round_id,
+  ])
 
   // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
   // du moment, et le journal ci-dessus pour le passé. Aucun tampon d'états n'est

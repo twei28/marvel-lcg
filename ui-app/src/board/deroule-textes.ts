@@ -106,6 +106,32 @@ export function compteurLigneBilan(ligne: LigneBilan): string {
   return compteur(ligne.restant, ligne.plafond)
 }
 
+/**
+ * L'annonce de la chute d'un heros : « Colossus est vaincu ».
+ *
+ * Rien du tout sans la marque posee par `etapesDeroule` (voir
+ * `EtapeDeroule.defaite`), et rien du tout sans nom : une defaite anonyme
+ * n'apprendrait rien, et une defaite annoncee a tort ferait douter le joueur de
+ * tout le reste du cartouche.
+ *
+ * Accord au masculin, comme partout ailleurs sur le plateau (« Les heros sont
+ * vaincus », « Heros vaincu : il ne participe pas... ») : le monde ne publie
+ * pas le genre d'un heros, et l'inventer se tromperait une fois sur deux.
+ */
+export function texteDefaite(etape: EtapeDeroule): string {
+  if (!etape.defaite) return ''
+  const nom = etape.cibleNom ?? ''
+  if (!nom) return ''
+  // Cle a trous plutot qu'une concatenation : l'anglais ne place pas le verbe
+  // au meme endroit (« Colossus is defeated »).
+  return t('%1 est vaincu').replace('%1', nom)
+}
+
+/** La phrase qui dit que le deroule s'arrete la. */
+export function texteArretDefaite(): string {
+  return t('La phase s\'arrête ici.')
+}
+
 /** Ce que dit le bilan quand la phase n'a rien coute du tout. */
 export function texteBilanVide(): string {
   return t('Aucun dégât, aucune menace.')
