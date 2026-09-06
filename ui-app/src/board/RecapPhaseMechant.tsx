@@ -23,6 +23,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CarteApercu } from './Board'
 import { toScanCard, type ContexteCarte } from './card-model'
 import type { Catalogue } from './catalogue'
+import { estActivation, estResolue } from './deroule-phase'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -31,7 +32,7 @@ import {
   PHASES_DU_MECHANT_ORDONNEES,
   type PhaseDuMechant,
 } from './moteur'
-import type { FaitActivationResolue, FaitMechant, World, WorldCard } from './world'
+import type { FaitMechant, World, WorldCard } from './world'
 
 /**
  * Les étapes de la phase du méchant, dans l'ordre de la carte de référence.
@@ -113,26 +114,27 @@ type Ligne = {
  * les envoie sans phase : elles retournent alors à l'étape des activations,
  * qui reste le cas de très loin le plus fréquent.
  */
-function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitActivationResolue[] {
-  return faits.filter(
-    (fait): fait is FaitActivationResolue =>
-      // Les ACTIVATIONS seulement. Le moteur inscrit aussi la menace, la
-      // distribution et les révélations depuis la tâche A2 : le bilan, lui,
-      // continue de les déduire du journal (`lignesDeLEtape`), et verser les
-      // deux dans la même liste ferait paraître chaque menace deux fois. Le
-      // cartouche, lui, lit tout depuis les faits (voir deroule-phase.ts) ;
-      // c'est le récap qui reste à convertir.
-      (fait.genre === 'attaque' || fait.genre === 'manigance') &&
-      // Les activations RÉSOLUES seulement. Depuis la tâche A3, une activation
-      // s'annonce avant de se résoudre : ce récap est un bilan d'APRÈS-phase,
-      // il ne raconte que ce qui a eu lieu. Une intention y aurait paru comme
-      // un coup à zéro dégât, et une activation annulée aurait compté pour un
-      // coup qui n'a jamais été porté. (Un fait sans `etat` est une résolution :
-      // c'est tout ce que le moteur savait produire avant les deux temps.)
-      (fait.etat === undefined || fait.etat === 'resolu') &&
-      (fait.phase ?? 'Enemy Activation') === phase
-  )
+const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
+  menace: 'Main Scheme Place Threat',
+  attaque: 'Enemy Activation',
+  manigance: 'Enemy Activation',
+  distribution: 'Deal Encounter Cards',
+  revelation: 'Reveal Encounter Cards',
 }
+
+function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
+  return faits.filter((fait) => {
+    // Les activations RÉSOLUES seulement. Depuis la tâche A3, une activation
+    // s'annonce avant de se résoudre : ce récap est un bilan d'APRÈS-phase, il
+    // ne raconte que ce qui a eu lieu. Une intention y aurait paru comme un
+    // coup à zéro dégât, et une activation annulée aurait compté pour un coup
+    // qui n'a jamais été porté. (Un fait sans `etat` est une résolution :
+    // c'est tout ce que le moteur savait produire avant les deux temps.)
+    if (estActivation(fait) && !estResolue(fait)) return false
+    return (fait.phase ?? PHASE_PAR_GENRE[fait.genre]) === phase
+  })
+}
+
 
 /** Insère chaque activation déclenchée juste sous la carte qui l'a causée. */
 function rattacherAuxCauses(cartes: Ligne[], activations: Ligne[]): Ligne[] {
@@ -376,35 +378,95 @@ function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
 }
 
 /**
- * Les activations telles que le MOTEUR les a résolues.
+ * La phase telle que le MOTEUR l'a enregistrée, genre par genre.
  *
  * C'est la seule source qui connaisse la composition d'un coup : la comparaison
  * de photos voit « 5 dégâts » mais ne saura jamais que c'était 3 d'attaque et
  * 2 de boost, et elle recompte ce que le moteur rend plusieurs fois autour
- * d'une même résolution. Quand le journal est là, il remplace la déduction —
- * il ne la complète pas, sinon chaque activation paraîtrait deux fois.
+ * d'une même résolution. Elle est aussi la seule à survivre à un rechargement
+ * de page. Quand elle est là, elle remplace la déduction — elle ne la complète
+ * pas, sinon chaque fait paraîtrait deux fois.
+ *
+ * Les quatre genres y sont, comme dans le cartouche du déroulé
+ * (`etapesDeroule`, deroule-phase.ts) : la menace du point 1, les activations
+ * du point 2, la distribution du point 3, les révélations du point 4. Le récap
+ * n'en lisait que les activations et déduisait le reste du journal — deux
+ * sources pour une seule phase, que l'audit F6 du 06/09/2026 reprochait.
  */
-function lignesDuMoteur(faits: FaitActivationResolue[], noms: Noms): Ligne[] {
-  return faits.map((fait, index) => ({
-    cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
-    genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
-    cause: fait.cause || undefined,
-    titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
-    cibleId: fait.cible_id,
-    acteur: fait.auteur,
-    // Les dégâts se comptent en négatif comme partout ailleurs ici : c'est la
-    // variation du compteur de la cible (voir HistoriquePartie).
-    valeur: fait.genre === 'attaque' ? -fait.subi : fait.subi,
-    restant: fait.restant ?? undefined,
-    plafond: noms.plafond(fait.cible_id),
-    calcul: { base: fait.base, boost: fait.boost, defense: fait.defense },
-    boosts: fait.boosts.map((boost, rang) => ({
-      cle: `moteur:${index}:boost:${rang}:${boost.id}`,
-      nom: boost.nom,
-      cibleId: boost.id,
-      apport: boost.apport,
-    })),
-  }))
+function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
+  return faits.map((fait, index): Ligne => {
+    if (fait.genre === 'menace') {
+      return {
+        cle: `moteur:${index}:menace:${fait.cible_id}`,
+        genre: 'menace',
+        // Le nom que porte la table AUJOURD'HUI quand elle le connaît encore :
+        // une manigance qui a changé de stade a changé de nom, et le fait garde
+        // celui qu'elle avait. Repli sur le nom du fait, qui ne s'efface pas.
+        titre: noms.carte(fait.cible_id) ?? fait.cible,
+        cibleId: fait.cible_id,
+        valeur: fait.montant,
+        restant: fait.restant ?? undefined,
+        // Le seuil du fait d'abord : c'est celui du moment de la pose. La carte
+        // ne sert que de repli, pour un moteur qui ne l'inscrivait pas encore.
+        plafond: fait.plafond ?? noms.plafond(fait.cible_id),
+      }
+    }
+
+    if (fait.genre === 'distribution') {
+      return {
+        cle: `moteur:${index}:distribution:${fait.joueur ?? 'x'}`,
+        genre: 'carte',
+        // La carte est FACE CACHÉE : on ne nomme que le héros qui la reçoit.
+        // Même formule que le cartouche (deroule-textes.ts, `titreEtape`).
+        titre: t('Carte rencontre distribuée'),
+        heros: fait.joueur_nom ?? noms.heros(fait.joueur ?? undefined),
+      }
+    }
+
+    if (fait.genre === 'revelation') {
+      return {
+        cle: `moteur:${index}:revelation:${fait.carte_id}`,
+        genre: 'carte',
+        titre: fait.carte,
+        heros: fait.joueur_nom ?? noms.heros(fait.joueur ?? undefined),
+        cibleId: fait.carte_id,
+      }
+    }
+
+    // Reste les activations. Une intention n'arrive jamais jusqu'ici
+    // (`faitsDeLEtape` ne garde que les résolutions), mais le type ne le sait
+    // pas : le repli garde la forme d'une ligne juste plutôt que de mentir.
+    if (!estResolue(fait)) {
+      return {
+        cle: `moteur:${index}:annonce:${fait.auteur_id}:${fait.cible_id}`,
+        genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
+        titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
+        cibleId: fait.cible_id,
+        acteur: fait.auteur,
+      }
+    }
+
+    return {
+      cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
+      genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
+      cause: fait.cause || undefined,
+      titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
+      cibleId: fait.cible_id,
+      acteur: fait.auteur,
+      // Les dégâts se comptent en négatif comme partout ailleurs ici : c'est la
+      // variation du compteur de la cible (voir HistoriquePartie).
+      valeur: fait.genre === 'attaque' ? -fait.subi : fait.subi,
+      restant: fait.restant ?? undefined,
+      plafond: noms.plafond(fait.cible_id),
+      calcul: { base: fait.base, boost: fait.boost, defense: fait.defense },
+      boosts: fait.boosts.map((boost, rang) => ({
+        cle: `moteur:${index}:boost:${rang}:${boost.id}`,
+        nom: boost.nom,
+        cibleId: boost.id,
+        apport: boost.apport,
+      })),
+    }
+  })
 }
 
 function etapeDe(
@@ -414,7 +476,12 @@ function etapeDe(
   faitsMoteur: FaitMechant[]
 ): Etape | undefined {
   const brut = entrees.filter((e) => e.phase === definition.phase && e.type !== 'phase')
-  if (brut.length === 0) return undefined
+  const duMoteur = faitsDeLEtape(faitsMoteur, definition.phase)
+  // Une étape n'existe que si QUELQUE CHOSE s'y est passé. Les faits du moteur
+  // suffisent : le journal local ne couvre pas la distribution (les cartes
+  // partent face cachée, aucune photo ne change), et l'étape 3 restait donc
+  // barrée en toutes circonstances (constat M3 de l'audit du 06/09/2026).
+  if (brut.length === 0 && duMoteur.length === 0) return undefined
 
   // Le déroulé BRUT garde tout, y compris les rendus répétés du moteur : c'est
   // la vérité de ce qui s'est passé, et on vient l'y chercher. Les faits, eux,
@@ -434,22 +501,59 @@ function etapeDe(
     if (e.type === 'card' && !e.boost) cartes += 1
   }
 
-  // Partage du travail quand le moteur a parlé : les COUPS viennent de lui,
-  // qui seul en connaît la composition et ne les compte qu'une fois ; les
-  // CARTES restent déduites, le journal ne les couvrant pas.
+  // UNE SEULE SOURCE, LES FAITS DU MOTEUR, avec un REPLI PAR GENRE.
   //
-  // Sans ce partage, les dégâts d'une attaque déclenchée par une carte révélée
-  // paraissaient deux fois — une fois dans le journal, une fois collés à la
-  // carte révélée juste avant, qui n'y était souvent pour rien.
-  const duMoteur = faitsDeLEtape(faitsMoteur, definition.phase)
+  // Le moteur enregistre les quatre points de la carte de référence. Le récap
+  // en lisait les activations et déduisait tout le reste du journal local :
+  // deux sources pour une seule phase, avec deux durées de vie (le journal ne
+  // survit pas à un rechargement). Il lit désormais comme le cartouche.
+  //
+  // Le repli est le même que celui d'`etapesDeroule` : un genre ABSENT des
+  // faits de l'étape se relit dans le journal, pour ce genre-là seulement.
+  // C'est ce qui garde un bilan lisible face à un moteur pas encore à jour ou
+  // à une sauvegarde plus ancienne, sans jamais compter deux fois un fait que
+  // les deux sources connaissent.
   const deduites = lignesDeLEtape(faits, noms)
-  const lignes =
-    duMoteur.length === 0
-      ? deduites
-      : rattacherAuxCauses(
-          deduites.filter((l) => l.genre === 'carte').map((l) => ({ ...l, effets: undefined })),
-          lignesDuMoteur(duMoteur, noms)
-        )
+  const lignesMoteur = lignesDuMoteur(duMoteur, noms)
+
+  const aDuMoteur = (genre: Ligne['genre']) => lignesMoteur.some((l) => l.genre === genre)
+  const activationsMoteur = duMoteur.some(estActivation)
+  const cartesMoteur = duMoteur.some(
+    (f) => f.genre === 'distribution' || f.genre === 'revelation'
+  )
+  const deduitesDeGenre = (garder: (genre: Ligne['genre']) => boolean) =>
+    deduites.filter((l) => garder(l.genre))
+
+  // Les CARTES d'abord, parce que les activations qu'elles déclenchent se
+  // rangent dessous (`rattacherAuxCauses`). Une carte venue des faits ne porte
+  // pas les `effets` que le journal collait sous elle : ils sont repris de la
+  // ligne déduite de la même carte, la seule à les connaître. Ce n'est pas une
+  // seconde source du FAIT, c'est le même détail que le déroulé brut déjà
+  // consultable sous le repli.
+  const effetsDeduits = new Map<number | undefined, string[] | undefined>(
+    deduites.filter((l) => l.genre === 'carte').map((l) => [l.cibleId, l.effets])
+  )
+  const lignesCarte = cartesMoteur
+    ? lignesMoteur
+        .filter((l) => l.genre === 'carte')
+        .map((l) => ({ ...l, effets: activationsMoteur ? undefined : effetsDeduits.get(l.cibleId) }))
+    : deduitesDeGenre((genre) => genre === 'carte').map((l) =>
+        activationsMoteur ? { ...l, effets: undefined } : l
+      )
+  const activations = activationsMoteur
+    ? lignesMoteur.filter((l) => l.genre === 'attaque' || l.genre === 'manigance')
+    : deduitesDeGenre((genre) => genre === 'attaque' || genre === 'manigance')
+  const menaces = aDuMoteur('menace')
+    ? lignesMoteur.filter((l) => l.genre === 'menace')
+    : deduitesDeGenre((genre) => genre === 'menace')
+
+  // Rien du moteur du tout : on garde la liste déduite TELLE QUELLE, ordre
+  // compris. La recomposition par genre ci-dessous mélangerait sinon l'ordre du
+  // journal, qui est celui du jeu.
+  const rienDuMoteur = lignesMoteur.length === 0
+  const lignes = rienDuMoteur
+    ? deduites
+    : [...menaces, ...rattacherAuxCauses(lignesCarte, activations)]
 
   // Les totaux suivent CE QUI EST AFFICHÉ : un total calculé sur les entrées
   // déduites pendant qu'on montre le journal du moteur annoncerait un autre
@@ -474,8 +578,15 @@ export function bilanDeLaPhase(
   const dedans = entrees.filter((e) => e.round === round && PHASES_DU_MECHANT.has(e.phase))
   // Ordre du jeu : l'historique empile les plus récentes en tête.
   const ordonnees = [...dedans].reverse()
+  // Le MÊME filtre que sur les entrées, et le même que celui d'`etapesDeroule`
+  // (deroule-phase.ts) : sans lui, un fait du round précédent reparaîtrait dans
+  // le bilan du suivant. Un fait sans `round_id` (moteur ou sauvegarde
+  // antérieurs à ce champ) est gardé quel que soit le round demandé.
+  const faitsDuRound = faitsMoteur.filter(
+    (f) => f.round_id === undefined || f.round_id === round
+  )
   const etapes = ETAPES.map((definition) =>
-    etapeDe(ordonnees, definition, noms, faitsMoteur)
+    etapeDe(ordonnees, definition, noms, faitsDuRound)
   ).filter((e): e is Etape => e !== undefined)
   if (etapes.length === 0) return undefined
   return { cle: `${round}`, round, etapes }
@@ -485,6 +596,7 @@ export function RecapPhaseMechant({
   entrees,
   monde,
   actif,
+  phaseMechantEnCours,
   suspendu = false,
   cartesMonde,
   catalogue,
@@ -493,6 +605,19 @@ export function RecapPhaseMechant({
   entrees: EntreeHistorique[]
   monde: World | undefined
   actif: boolean
+  /**
+   * Le moteur est-il encore dans une des quatre phases du méchant ?
+   *
+   * C'est board.tsx qui la calcule, sur `PHASES_DU_MECHANT` (moteur.ts),
+   * L'UNIQUE définition côté plateau, et le cartouche du déroulé la reçoit
+   * déjà. Ce panneau la comparait de son côté, sur sa propre photo de
+   * `monde.phase` : deux façons de savoir qu'une phase est finie, pour une
+   * seule notion (constat F6 de l'audit du 06/09/2026).
+   *
+   * Absente (montage plus ancien, test) : on retombe sur `monde.phase`, lue
+   * avec la même définition unique.
+   */
+  phaseMechantEnCours?: boolean
   /**
    * Un autre panneau occupe l'ecran : le bilan est RETENU, pas perdu.
    *
@@ -513,7 +638,16 @@ export function RecapPhaseMechant({
 }) {
   const [bilan, setBilan] = useState<Bilan | undefined>(undefined)
   const [depliees, setDepliees] = useState<Set<number>>(() => new Set())
-  const phasePrecedente = useRef<string | undefined>(undefined)
+  // Le OUI/NON du rendu precedent, pour ne declencher qu'a la SORTIE de la
+  // phase. Il ne compare plus deux photos du monde : il suit le meme booleen
+  // que le cartouche.
+  const dansLaPhaseAvant = useRef<boolean | undefined>(undefined)
+  // Le round de la phase RACONTEE. Le moteur quitte la phase du mechant et
+  // incremente le round dans la meme foulee : lire `monde.round_id` a la sortie
+  // rend parfois le round SUIVANT, et le bilan ne trouve alors ni entree ni
+  // fait (meme piege que dans DeroulePhase.tsx). On retient donc le round vu
+  // PENDANT la phase.
+  const roundDeLaPhase = useRef<number | undefined>(undefined)
 
   // Les noms sont lus au moment du bilan, sur le monde tel qu'il est alors. Une
   // carte partie (toute carte de boost l'est) n'y répond plus : les entrées
@@ -537,19 +671,30 @@ export function RecapPhaseMechant({
   const nomsRef = useRef(noms)
   nomsRef.current = noms
 
-  useEffect(() => {
-    const phase = monde?.phase
-    const avant = phasePrecedente.current
-    phasePrecedente.current = phase
+  // Une seule definition de « la phase du mechant » : celle que board.tsx
+  // calcule sur `PHASES_DU_MECHANT` et passe en prop. Le repli sur
+  // `monde.phase` consomme la MEME liste, il n'en invente pas une seconde.
+  const dedans =
+    phaseMechantEnCours ?? (monde?.phase !== undefined && PHASES_DU_MECHANT.has(monde.phase))
+  if (dedans && monde?.round_id !== undefined) roundDeLaPhase.current = monde.round_id
 
-    if (!actif || phase === undefined || avant === undefined) return
+  useEffect(() => {
+    const avant = dansLaPhaseAvant.current
+    dansLaPhaseAvant.current = dedans
+
+    if (!actif || monde?.phase === undefined || avant === undefined) return
     // On ne déclenche qu'à la SORTIE de la phase du méchant.
-    if (!PHASES_DU_MECHANT.has(avant) || PHASES_DU_MECHANT.has(phase)) return
+    if (!avant || dedans) return
     setDepliees(new Set())
     setBilan(
-      bilanDeLaPhase(entrees, monde?.round_id ?? 0, nomsRef.current, monde?.faits_mechant ?? [])
+      bilanDeLaPhase(
+        entrees,
+        roundDeLaPhase.current ?? monde?.round_id ?? 0,
+        nomsRef.current,
+        monde?.faits_mechant ?? []
+      )
     )
-  }, [monde?.phase, monde?.round_id, monde?.faits_mechant, actif, entrees])
+  }, [dedans, monde?.phase, monde?.round_id, monde?.faits_mechant, actif, entrees])
 
   // La carte survolée, montrée dans le MÊME agrandissement que sur la table.
   //

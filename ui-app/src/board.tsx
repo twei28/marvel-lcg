@@ -2481,6 +2481,10 @@ function PagePartie({
         // la phase. Ce n'est plus le cas : la cause racine est corrigee
         // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
         actif={modePhase !== 'detaille'}
+        // La MEME definition de « la phase du mechant » que le cartouche, et la
+        // meme valeur deja calculee : le recap avait son propre detecteur de
+        // transition, sur sa propre photo de `monde.phase` (constat F6).
+        phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
         // De quoi montrer la carte au survol d'une ligne : le même index et le
         // même catalogue que la table, donc le même agrandissement qu'elle.
         cartesMonde={cartesMondeParId}

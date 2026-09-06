@@ -507,3 +507,194 @@ describe('recap retenu tant qu un autre panneau occupe l ecran', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
+
+// UNE SEULE SOURCE : les faits du moteur, avec un repli par genre.
+//
+// Le récap lisait les activations dans les faits et déduisait tout le reste
+// (menace, distribution, révélations) du journal local, reconstruit par
+// comparaison de photos et perdu au premier rechargement de page. Deux sources
+// pour une seule phase, deux durées de vie (constat F6 de l'audit du
+// 06/09/2026). Il lit désormais comme le cartouche du déroulé.
+describe('bilanDeLaPhase — les quatre points viennent des faits', () => {
+  const faitsDeLaPhase: FaitMechant[] = [
+    {
+      genre: 'menace',
+      round_id: 2,
+      cible: 'Underground Distribution',
+      cible_id: 7,
+      montant: 2,
+      restant: 3,
+      plafond: 6,
+    },
+    {
+      genre: 'attaque',
+      round_id: 2,
+      auteur: 'Klaw',
+      auteur_id: 3,
+      cible: 'Black Panther',
+      cible_id: 9,
+      base: 3,
+      boost: 0,
+      defense: 0,
+      inflige: 3,
+      subi: 3,
+      restant: 8,
+      boosts: [],
+    },
+    { genre: 'distribution', round_id: 2, joueur: 0, joueur_nom: 'Colossus' },
+    {
+      genre: 'revelation',
+      round_id: 2,
+      joueur: 0,
+      joueur_nom: 'Colossus',
+      carte: 'Gang-Up',
+      carte_id: 44,
+    },
+  ]
+
+  it('construit les quatre étapes SANS aucune entrée de journal', () => {
+    // Le cas du rechargement de page en pleine phase : le journal local est
+    // vide, les faits, eux, voyagent avec le monde.
+    const bilan = bilanDeLaPhase([], 2, noms, faitsDeLaPhase)
+    expect(bilan?.etapes.map((e) => e.numero)).toEqual([1, 2, 3, 4])
+    const titres = bilan?.etapes.flatMap((e) => e.lignes.map((l) => l.titre))
+    expect(titres).toEqual([
+      'Carte#7',
+      'Klaw attaque Black Panther',
+      'Carte rencontre distribuée',
+      'Gang-Up',
+    ])
+  })
+
+  it('donne à la menace le montant, le restant et le seuil du FAIT', () => {
+    const bilan = bilanDeLaPhase([], 2, noms, faitsDeLaPhase)
+    const menace = bilan?.etapes[0].lignes[0]
+    expect(menace?.genre).toBe('menace')
+    expect(menace?.valeur).toBe(2)
+    expect(menace?.restant).toBe(3)
+    expect(menace?.plafond).toBe(6)
+    expect(bilan?.etapes[0].menace).toBe(2)
+  })
+
+  it('nomme le héros qui reçoit et celui qui révèle', () => {
+    const bilan = bilanDeLaPhase([], 2, noms, faitsDeLaPhase)
+    expect(bilan?.etapes[2].lignes[0].heros).toBe('Colossus')
+    expect(bilan?.etapes[3].lignes[0].heros).toBe('Colossus')
+  })
+
+  it('REPLI par genre : sans fait de menace, la menace se relit dans le journal', () => {
+    // Un moteur pas encore à jour, ou une sauvegarde plus ancienne, n'inscrit
+    // que les activations. Le reste doit rester lisible, sans jamais compter
+    // deux fois ce que les deux sources connaissent.
+    const bilan = bilanDeLaPhase(
+      commeDansLHistorique(
+        entree({
+          phase: 'Main Scheme Place Threat',
+          type: 'threat',
+          valeur: 1,
+          restant: 1,
+          plafond: 6,
+          cibleId: 7,
+        })
+      ),
+      2,
+      noms,
+      [faitsDeLaPhase[1]]
+    )
+    expect(bilan?.etapes[0].lignes).toHaveLength(1)
+    expect(bilan?.etapes[0].lignes[0].valeur).toBe(1)
+  })
+
+  it('ne compte pas DEUX FOIS la menace que les deux sources connaissent', () => {
+    const bilan = bilanDeLaPhase(
+      commeDansLHistorique(
+        entree({
+          phase: 'Main Scheme Place Threat',
+          type: 'threat',
+          valeur: 2,
+          restant: 3,
+          plafond: 6,
+          cibleId: 7,
+        })
+      ),
+      2,
+      noms,
+      faitsDeLaPhase
+    )
+    expect(bilan?.etapes[0].lignes).toHaveLength(1)
+    expect(bilan?.etapes[0].menace).toBe(2)
+  })
+
+  it('ignore les faits d un AUTRE round', () => {
+    const bilan = bilanDeLaPhase(
+      [],
+      3,
+      noms,
+      faitsDeLaPhase.map((f) => ({ ...f }))
+    )
+    expect(bilan).toBeUndefined()
+  })
+
+  it('garde un fait SANS round_id, quel que soit le round demandé', () => {
+    const sansRound = faitsDeLaPhase.map(({ round_id: _round, ...reste }) => reste as FaitMechant)
+    expect(bilanDeLaPhase([], 9, noms, sansRound)?.etapes).toHaveLength(4)
+  })
+
+  it('n inscrit jamais une activation seulement ANNONCÉE', () => {
+    const bilan = bilanDeLaPhase([], 2, noms, [
+      {
+        genre: 'attaque',
+        etat: 'annonce',
+        round_id: 2,
+        auteur: 'Klaw',
+        auteur_id: 3,
+        cible: 'Black Panther',
+        cible_id: 9,
+        base: 3,
+      },
+    ])
+    expect(bilan).toBeUndefined()
+  })
+})
+
+describe('le recap suit la definition unique de la phase du mechant', () => {
+  it('parait a la sortie annoncee par la PROP, pas par sa propre photo du monde', () => {
+    // Le monde ne change pas de phase ici : seule la prop bascule. C'est elle
+    // qui fait foi, et elle vient de `PHASES_DU_MECHANT` (moteur.ts).
+    const entrees = phaseQuiACoute()
+    const monde = mondeEnPhase('Enemy Activation')
+    const { rerender } = render(
+      <RecapPhaseMechant entrees={entrees} monde={monde} actif phaseMechantEnCours />
+    )
+    expect(screen.queryByRole('dialog')).toBeNull()
+    rerender(
+      <RecapPhaseMechant entrees={entrees} monde={monde} actif phaseMechantEnCours={false} />
+    )
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('fait son bilan sur le round de la PHASE, meme si le round a deja tourne', () => {
+    // Le moteur quitte la phase du mechant et incremente le round dans la meme
+    // foulee : lire `monde.round_id` a la sortie rend parfois le round suivant,
+    // et le bilan ne trouverait alors ni entree ni fait.
+    const entrees = phaseQuiACoute()
+    const { rerender } = render(
+      <RecapPhaseMechant
+        entrees={entrees}
+        monde={mondeEnPhase('Enemy Activation')}
+        actif
+        phaseMechantEnCours
+      />
+    )
+    const roundSuivant: World = { ...mondeEnPhase('Player Turn'), round_id: 3 }
+    rerender(
+      <RecapPhaseMechant
+        entrees={entrees}
+        monde={roundSuivant}
+        actif
+        phaseMechantEnCours={false}
+      />
+    )
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+})

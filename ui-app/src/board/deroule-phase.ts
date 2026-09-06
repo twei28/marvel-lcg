@@ -81,7 +81,7 @@ const PHASES_CONNUES: ReadonlySet<string> = new Set<string>(PHASES_DU_MECHANT_OR
 // Gardes de type sur le genre d'un fait. `FaitMechant` est une union discriminee
 // (voir world.ts) : sans elles, `fait.montant` ou `fait.carte` ne compilent pas,
 // et c'est exactement ce qu'on veut — un genre oublie se voit a la compilation.
-function estActivation(fait: FaitMechant): fait is FaitActivation {
+export function estActivation(fait: FaitMechant): fait is FaitActivation {
   return fait.genre === 'attaque' || fait.genre === 'manigance'
 }
 /**
@@ -90,7 +90,7 @@ function estActivation(fait: FaitMechant): fait is FaitActivation {
  * savait produire avant les deux temps, et c'est ce que les sauvegardes
  * anterieures portent.
  */
-function estResolue(fait: FaitActivation): fait is FaitActivationResolue {
+export function estResolue(fait: FaitActivation): fait is FaitActivationResolue {
   return fait.etat === undefined || fait.etat === 'resolu'
 }
 function estMenace(fait: FaitMechant): fait is FaitMenace {
