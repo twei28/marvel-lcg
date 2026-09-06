@@ -128,7 +128,7 @@ attend une réponse à sa question, posée ailleurs (le panneau central). Un
 l'intention et la mention « tu peux défendre ou répondre », puis se complète
 tout seul une fois la question résolue ; le joueur clique une fois, sur l'étape
 complète. Dans le cas où rien n'est jouable, l'accusé part immédiatement sur
-l'intention et l'étape n'est vue qu'une fois, complète — exactement ce que
+l'intention et l'étape n'est vue qu'une fois, complète, exactement ce que
 cette décision demande.
 
 Une activation annoncée qui n'a finalement pas lieu (un « ... instead » qui la
