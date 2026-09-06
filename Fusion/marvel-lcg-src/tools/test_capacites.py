@@ -19464,10 +19464,2887 @@ CAS = [
         "attendu": {"pose_sous": [["br012", "br010"]],
                     "compteurs": [["br012", "unworthy", 1]]},
     },
+    # ===================================================================
+    # PACK THROG (set 159, Rainy, prefixe `tg`) — 05/09/2026
+    # ===================================================================
+    {
+        "nom": "tg001a Froglike Stamina — apres une attaque de base, le marteau revient en main et Throg se redresse",
+        "pourquoi": ("modele `14001a` Quicksilver, mot pour mot le meme declencheur "
+                     "(`AfterUnitUseBasicPower`, powers ATK/THW/DEF) et le meme effet. "
+                     "Seul le cout change : « return Frogjolnir to your hand » est DEVANT "
+                     "la fleche.\n"
+                     "L'attaque de base incline Throg ; c'est le redressement qui prouve "
+                     "que la Reponse est partie"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["tg009"], "pret": ["tg001a"]},
+    },
+    {
+        "nom": "tg001a Froglike Stamina — TEMOIN D'EPUISEMENT : le second pouvoir de base de la phase ne redresse plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « Limit once per PHASE » : deux "
+                     "pouvoirs de base dans la MEME phase, et un chiffre mesure au second. "
+                     "Le marteau est remis en jeu entre les deux pour que le cout du second "
+                     "declenchement soit PAYABLE — sans ca le cas ne prouverait rien de la "
+                     "limite, seulement de l'absence de marteau.\n"
+                     "Si la limite mord, Throg reste INCLINE apres le contre. Si elle est "
+                     "inerte, il est redresse une seconde fois"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')",
+                       "Puzzle.PutIntoPlay('tg009', under_control=True)",
+                       "Puzzle.Thwart('tg001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["tg001a"]},
+    },
+    {
+        "nom": "tg001b Worthy — en civil, Frogjolnir est rappele DEPUIS LE DECK",
+        "pourquoi": ("modele `br001b` Starfarer, meme auteur, meme structure. "
+                     "⚠ Contrairement au `Worthy` de `br001a`, AUCUN effet secondaire : "
+                     "le texte s'arrete a « add it to your hand »"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('tg009')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.Action('tg001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["tg009"]},
+    },
+    {
+        "nom": "tg001b Worthy — DEPUIS LE JEU aussi : « find » couvre le terrain",
+        "pourquoi": ("mot-piege « FIND » : ce n'est pas « search your deck ». Le marteau "
+                     "pose sur l'identite doit revenir en main, et c'est le cas utile en "
+                     "civil (on remonte le marteau pour le rejouer)"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tg009', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('01090')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.Action('tg001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["tg009"]},
+    },
+    {
+        "nom": "tg001b Worthy — TEMOIN D'EPUISEMENT : deux Actions dans le round n'en rendent qu'une",
+        "pourquoi": ("etape 7 bis. « Limit once per ROUND » : le deck contient DEUX "
+                     "Frogjolnir, deux Actions sont declenchees, et c'est la TAILLE DE LA "
+                     "MAIN qui tranche. 01090 Strength est la ligne de base (1 carte), "
+                     "plus UN marteau si la limite mord, DEUX si elle est inerte.\n"
+                     "⚠ `ne_pas_depenser` sur 01090 : sans elle le pilote paie le marteau "
+                     "repeche et le joue, et la main ne compte plus rien"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('tg009', 'tg009')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.Action('tg001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('tg001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "tg002 Airborne Amphibian — redresse Throg ET Frogjolnir",
+        "pourquoi": ("les deux cartes sont NOMMEES, on les incline donc toutes les deux "
+                     "d'avance.\n"
+                     "⚠ La seconde phrase (« a minion engaged with ANOTHER player ») ne "
+                     "fait JAMAIS rien en solo : il n'y a pas d'autre joueur. Ce cas ne "
+                     "l'exerce donc pas, et c'est normal — c'est ecrit dans le module"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)",
+                          "Puzzle.Exhaust('tg001a')",
+                          "Puzzle.Exhaust('tg009')"],
+        "main_exclusive": ["tg002", "01090"],
+        "declencher": [],
+        "jouer": ["tg002"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tg001a", "tg009"]},
+    },
+    {
+        "nom": "tg003 Great Courage — 2 menaces, plus 2 par sbire engage",
+        "pourquoi": ("deux sbires DEJA engages : 2 (phrase 1) + 2x2 (phrase 2) = 6 menaces "
+                     "retirees. Menace 20 -> 14.\n"
+                     "⚠ Le decompte porte sur TOUS les sbires engages avec vous, pas "
+                     "seulement ceux engages PAR la carte : le texte ne dit pas « engaged "
+                     "this way ». Mot-piege « each »"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 20)",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.PutIntoPlay('01130')"],
+        "main_exclusive": ["tg003", "01090"],
+        "declencher": [],
+        "jouer": ["tg003"],
+        "cibles": ["01107", "01107", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 14]]},
+    },
+    {
+        "nom": "tg003 Great Courage — TEMOIN DU PLAFOND : un quatrieme sbire n'ajoute rien",
+        "pourquoi": ("« (to a maximum of 3) ». Avec QUATRE sbires engages : 2 + 3x2 = 8, "
+                     "pas 2 + 4x2 = 10. Menace 20 -> 12.\n"
+                     "Sans ce cas, un module qui ignorerait le plafond passerait le "
+                     "precedent : c'est le seul chiffre qui les separe"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 20)",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.PutIntoPlay('01130')",
+                          "Puzzle.PutIntoPlay('01131')",
+                          "Puzzle.PutIntoPlay('01132')"],
+        "main_exclusive": ["tg003", "01090"],
+        "declencher": [],
+        "jouer": ["tg003"],
+        "cibles": ["01107", "01107", "01107", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 12]]},
+    },
+    {
+        "nom": "tg004 Hammer Throw — incline le marteau, le rend a la main, et frappe pour 6",
+        "pourquoi": ("modele `06005` / `br003`. La carte inclinee est reprise par "
+                     "`return_exhausted_cards`, pas par une recherche.\n"
+                     "⚠ TROISIEME homonyme du depot : 06005 fait 8, br003 fait 6 et "
+                     "CHERCHE le marteau, celle-ci fait 6 et le RENVOIE"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)"],
+        "main_exclusive": ["tg004", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["tg004"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "en_main": ["tg009"]},
+    },
+    {
+        "nom": "tg005 Lightning Leap — l'attaque de base touche le vilain ET chaque sbire engage",
+        "pourquoi": ("modele `25013` * Thor, le jumeau structurel. Throg frappe a 2 sans "
+                     "marteau en jeu : le sbire vise, l'autre sbire engage ET le vilain "
+                     "prennent chacun 2.\n"
+                     "⚠ « INSTEAD » n'exclut pas le sbire vise : il fait partie de « each "
+                     "minion engaged with that player ». On AJOUTE, on ne remplace pas — et "
+                     "jamais un doublon, la resolution multiplierait les degats"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.PutIntoPlay('01130')"],
+        "main_exclusive": ["tg005", "01088"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "cibles": ["01129"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["01129", 2], ["01130", 2]]},
+    },
+    {
+        "nom": "tg006 Thunderous Charge — le contre frappe CHAQUE manigance, crise ignoree",
+        "pourquoi": ("CTR 1 applique a chaque manigance en jeu. 01125 Defense Network porte "
+                     "une CRISE : sans elle, ce cas ne prouverait pas la moitie « ignoring "
+                     "the crisis icon ».\n"
+                     "⚠ La crise n'est lue QUE par `MainScheme.RemoveThreatInternal` : le "
+                     "complot principal qui perd 1 menace EST la preuve. Le complot annexe "
+                     "qui en perd 1 prouve le « each scheme »"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.PutIntoPlay('01125')",
+                          "Puzzle.SetThreat('01125', 5)"],
+        "main_exclusive": ["tg006", "01090"],
+        "declencher": ["Puzzle.Thwart('tg001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5], ["01125", 4]]},
+    },
+    {
+        "nom": "tg006 Thunderous Charge — CONTRE-CAS : sans elle, la crise bloque le complot principal",
+        "pourquoi": ("la ligne de base. Meme position, main VIDE : le contre de base ne "
+                     "retire RIEN du complot principal (crise en jeu) et rien du complot "
+                     "annexe (il n'etait pas vise).\n"
+                     "Sans ce cas, un module qui ne ferait rien du tout passerait le "
+                     "precedent le jour ou la crise cesserait d'etre appliquee"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.SetThreat('01097b', 6)",
+                          "Puzzle.PutIntoPlay('01125')",
+                          "Puzzle.SetThreat('01125', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('tg001a')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 6], ["01125", 5]]},
+    },
+    {
+        "nom": "tg007 Foreverglade — apres une recuperation de base, Puddlegulp se redresse et pioche",
+        "pourquoi": ("modele `45015` Sidekick pour `AfterUnitMakeRecovery(..., "
+                     "is_basic_recovery=True)`.\n"
+                     "⚠ ALTER-EGO Response : la capacite ne doit pas exister en forme "
+                     "heros. La recuperation incline l'identite ; c'est le redressement "
+                     "qui prouve que la Reponse est partie, et la pioche qu'elle est "
+                     "allee au bout"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tg007', under_control=True)",
+                          "Puzzle.Damage('tg001b', 6)",
+                          "Puzzle.CreatePlayerDeck('01089')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.Action('tg001b', 'BasicPower')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["tg001b"], "taille_main": 2},
+    },
+    {
+        "nom": "tg008 Frog of Thunder — payer une carte THROG avec sa ressource inflige 1 degat",
+        "pourquoi": ("modele `54002` * Cybernetic Arm : `ex_operation` se declenche quand la "
+                     "ressource EST DEPENSEE, et lit la carte payee sur "
+                     "`message.for_effect`.\n"
+                     "⚠ « a THROG card » = `IsDeckBuildingClass`, pas une comparaison de "
+                     "nom : « Throg » est aussi le nom de la face heros. tg002 (cout 2) est "
+                     "paye par la ressource de tg008 plus 01090 Strength"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg008', under_control=True)"],
+        "main_exclusive": ["tg002", "01090"],
+        "declencher": [],
+        "jouer": ["tg002"],
+        "payer_avec": ["tg008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "tg008 Frog of Thunder — CONTRE-CAS : payer une carte NON Throg ne frappe personne",
+        "pourquoi": ("« if you paid for a THROG card this way ». 14022 Adrenaline Rush est "
+                     "une carte BASIQUE a cout 1 : la ressource la paie, et aucun degat ne "
+                     "doit tomber.\n"
+                     "⚠ Contre-cas d'ABSENCE d'effet : il reste VERT sous substitution, "
+                     "c'est assume (convention vp014/vp015, ho017)"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg008', under_control=True)"],
+        "main_exclusive": ["14022"],
+        "declencher": [],
+        "jouer": ["14022"],
+        "payer_avec": ["tg008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "tg009 Frogjolnir — +1 au pouvoir de base utilise",
+        "pourquoi": ("modele `20010` Venom's Pistol, mot pour mot la meme carte a l'arme "
+                     "pres. `GainValue(+1)` route lui-meme vers le bon pouvoir.\n"
+                     "Throg frappe a 2 ; avec le marteau incline, 3"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "tg009 Frogjolnir — Throg gagne le trait AERIAL",
+        "pourquoi": "« THROG gains the AERIAL trait » : en forme heros, le trait est la",
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"]},
+    },
+    {
+        "nom": "tg009 Frogjolnir — CONTRE-CAS : Puddlegulp n'a PAS le trait AERIAL",
+        "pourquoi": ("RECETTES-MOTEUR §3 : « tout bonus continu d'identite exige un "
+                     "contre-cas dans l'AUTRE forme ». Regle nee du defaut `an002` Sera, "
+                     "trouve EN PARTIE REELLE par le joueur et jamais par les tests.\n"
+                     "⚠ Ici le mot imprime est un NOM PROPRE, « Throg », et les deux faces "
+                     "de ce heros ont des noms DIFFERENTS (contrairement a beta_ray_bill). "
+                     "Un `GiveKeywordToAttached` sans filtre donnerait AERIAL a la "
+                     "grenouille en civil. C'est ce cas, et lui seul, qui le voit"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tg009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits_absents": ["AERIAL"]},
+    },
+    {
+        "nom": "tg010 Throg's Armor — « YOU get +2 hit points » vaut en forme HEROS",
+        "pourquoi": "modele `43009` Adamantium Lacing. PV imprimes 12, donc 14",
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg010', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2}},
+    },
+    {
+        "nom": "tg010 Throg's Armor — CONTRE-CAS de portee : « YOU » vaut AUSSI en alter-ego",
+        "pourquoi": ("le pendant du contre-cas de tg009, et le contraste est imprime sur la "
+                     "MEME carte : « YOU get +2 hit points » (l'identite, donc les deux "
+                     "faces) contre « give THROG a tough status card » (un nom propre, donc "
+                     "une seule face). Sans ce cas, coder les +2 PV sur la face heros "
+                     "passerait le precedent"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tg010', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2}},
+    },
+    {
+        "nom": "tg010 Throg's Armor — engager un sbire donne un Tenace a Throg",
+        "pourquoi": ("modele `56041` * Patriot pour `AfterPlayerEngageMinion`. "
+                     "tg002 Airborne Amphibian ne peut pas servir en solo : on engage donc "
+                     "par tg003 Great Courage, qui engage n'importe quel nombre de sbires"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg010', under_control=True)",
+                          ],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01129')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["tg001a", "Tough"]]},
+    },
+    {
+        "nom": "tg010 Throg's Armor — CONTRE-CAS + TEMOIN D'EPUISEMENT : deja Tenace, une SEULE pioche par phase",
+        "pourquoi": ("les deux moities d'un coup. « If you cannot, draw 1 card » : Throg "
+                     "est deja Tenace, donc la pioche.\n"
+                     "⚠ « (Limit once per PHASE) » : DEUX sbires engages dans la meme "
+                     "phase, une SEULE carte piochee. La main vaut donc 1 (01090 est "
+                     "consomme pour payer tg003), pas 2. Etape 7 bis.\n"
+                     "⚠ Le repli n'est PAS declare en `SetTarget(canbe_tough=True)` : "
+                     "l'abilite n'aurait alors aucune cible legale et ne partirait jamais, "
+                     "tuant la seule branche qu'on mesure ici (piege `ah007`)"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg010', under_control=True)",
+                          "Puzzle.Tough('tg001a')",
+                          "Puzzle.CreatePlayerDeck('01088', '01089')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01129')",
+                       "Puzzle.PutIntoPlay('01130')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "tg011 Trouble in Central Park — convoque un sbire, retire un pion, et le sbire vous attaque",
+        "pourquoi": ("modele `61033a` Suggestion pour la `Forced Action` sur obligation a "
+                     "`Uses`, et `br005` Star Jump pour la convocation depuis le deck de "
+                     "rencontre.\n"
+                     "⚠ LA FLECHE EST APRES « put it into play » : convoquer est le COUT, "
+                     "retirer un pion la recompense. Les 3 pions viennent de `desc.Uses`, "
+                     "lu NATIVEMENT : en retirer un doit laisser 2.\n"
+                     "Hydra Mercenary frappe a 1 : les degats sur l'identite prouvent le "
+                     "« That enemy attacks you ».\n"
+                     "⚠ L'identite est INCLINEE d'avance : prete, le pilote declare une "
+                     "defense de base, et la DEF 2 de Throg annule l'ATQ 1 du sbire. Le cas "
+                     "lisait alors 0 degat — et passait quand meme, la cle "
+                     "`degats_identite_min` n'existant pas dans `etat_attendu` avant le "
+                     "05/09/2026"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.Exhaust('tg001a')",
+                          "Puzzle.CreateEncounterDeck('01101')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('tg011')",
+                       "Puzzle.Action('tg011', 'ForcedAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["tg011", "foe", 2]],
+                    "en_jeu": ["01101"],
+                    "degats_identite_min": 1},
+    },
+    {
+        "nom": "tg011 Trouble in Central Park — TEMOIN D'EPUISEMENT : la seconde Action du round ne retire pas de pion",
+        "pourquoi": ("etape 7 bis. « (Limit once per round.) » : deux Actions forcees dans "
+                     "le meme round, et le NOMBRE DE PIONS tranche. 2 si la limite mord, 1 "
+                     "si elle est inerte.\n"
+                     "Deux sbires sont poses dans le deck de rencontre pour que le COUT du "
+                     "second declenchement soit payable — sans ca le cas prouverait "
+                     "l'absence de sbire, pas la limite"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.CreateEncounterDeck('01101', '01110')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('tg011')",
+                       "Puzzle.Action('tg011', 'ForcedAction')"],
+        "declencher_tolerant": ["Puzzle.Action('tg011', 'ForcedAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["tg011", "foe", 2]]},
+    },
+    {
+        "nom": "tg012 Adorable Distraction — Alligator Loki ne peut pas etre attaque",
+        "pourquoi": ("modele `th012` * Puppet Master, mais la carte protege UNE AUTRE carte "
+                     "et non elle-meme : le litteral `\"This\"` serait faux, il faut un "
+                     "`CardFinder(name=...)`.\n"
+                     "Throg frappe a 2 ; le sbire a 5 PV et doit en garder 5"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg013')",
+                          "Puzzle.Remove('tg016')",
+                          "Puzzle.PutIntoPlay('tg012')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "cibles": ["tg013"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tg013", 0]]},
+    },
+    {
+        "nom": "tg012 Adorable Distraction — CONTRE-CAS : sans le complot, Alligator Loki encaisse",
+        "pourquoi": ("la ligne de base, sans laquelle « 0 degat » ne prouve rien — c'est "
+                     "exactement le piege du §7bis de RECETTES-MOTEUR (« quatre facons de "
+                     "mesurer RIEN et de le croire vert »). Meme position, complot retire : "
+                     "le sbire prend bien 2"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg013')",
+                          "Puzzle.Remove('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "cibles": ["tg013"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["tg013", 2]]},
+    },
+    {
+        "nom": "tg013 Alligator Loki — a son entree en jeu, Chomped s'accroche a l'identite",
+        "pourquoi": ("modele `56137` pour `Find.FindAndAttachTo`. « find » couvre le deck "
+                     "de rencontre, sa defausse et le terrain.\n"
+                     "⚠ « attach it to YOUR identity » sur une carte de RENCONTRE : c'est "
+                     "le joueur ENGAGE avec ce sbire, pas le premier joueur"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.CreateEncounterDeck('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('tg013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["tg016"]},
+    },
+    {
+        "nom": "tg013 Alligator Loki — sa menace se repand sur CHAQUE manigance annexe",
+        "pourquoi": ("MNG 1 : 1 menace sur le complot principal par la manigance normale, "
+                     "PUIS 1 sur chaque complot annexe.\n"
+                     "⚠ « on EACH SIDE SCHEME » : `\"EachSideScheme\"`, jamais "
+                     "`\"EachScheme\"`, qui doublerait la mise sur le principal.\n"
+                     "⚠ « place THAT MUCH threat » : la quantite REELLEMENT posee "
+                     "(`message.placed_threat`), pas la MNG imprimee"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 1)",
+                          "Puzzle.PutIntoPlay('tg013')",
+                          "Puzzle.Remove('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Scheme('tg013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1], ["01107", 2]]},
+    },
+    {
+        "nom": "tg013 Alligator Loki — ses attaques ont Perforation",
+        "pourquoi": ("mot-cle `piercing` : les degats ignorent le statut Tenace, qui est "
+                     "defausse AVANT. Throg est Tenace et prend quand meme les 3 degats.\n"
+                     "Sans Perforation, le Tenace absorberait tout et l'identite serait "
+                     "intacte : c'est le chiffre qui separe les deux"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg013')",
+                          "Puzzle.Tough('tg001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 3,
+                    "statuts_absents": [["tg001a", "Tough"]]},
+    },
+    {
+        "nom": "tg013 Alligator Loki — LIGNE DE BASE : un sbire SANS Perforation ne passe pas le Tenace",
+        "pourquoi": ("⚠ CE CAS EXISTE PARCE QUE LE PRECEDENT NE PROUVAIT RIEN. Sous "
+                     "substitution, `tg013` prive de son module infligeait quand meme ses "
+                     "3 degats a un Throg Tenace : le cas restait VERT sans la Perforation, "
+                     "et ne mesurait donc pas ce qu'il annoncait (§7bis de RECETTES-MOTEUR, "
+                     "« quatre facons de mesurer RIEN et de le croire vert »).\n"
+                     "01131 * Tiger Shark a exactement la meme ATQ 3 et AUCUNE Perforation. "
+                     "C'est le chiffre de CE cas — 0 degat — qui donne son sens aux 3 degats "
+                     "du precedent. Si les deux lisaient la meme chose, le Tenace ne serait "
+                     "pas applique du tout et les deux cas seraient a jeter"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('01131')",
+                          "Puzzle.Tough('tg001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "tg014 Causing a Commotion — 1 menace ICI par type de carte different defausse",
+        "pourquoi": ("modele `06030` Trickster, le complot nemesis de THOR, a deux "
+                     "differences pres : « EACH PLAYER » et « places 1 threat HERE » au "
+                     "lieu du complot principal.\n"
+                     "⚠ `Puzzle.CreatePlayerDeck` AJOUTE au deck, il ne le remplace PAS : le "
+                     "dessus restait celui du deck de depart (01057, une amelioration), et "
+                     "les trois cartes defaussees ne faisaient que DEUX types. On remonte "
+                     "donc explicitement les trois cartes avec `Puzzle.PutIntoDeck`, en "
+                     "ordre inverse — la derniere appelee finit sur le dessus. Les trois "
+                     "sont ETRANGERES au deck de Throg, sans quoi `FindCommandCards` "
+                     "attraperait un autre exemplaire du meme card_id.\n"
+                     "Evenement (05015 Tackle), amelioration (03009) et allie (01083) : "
+                     "TROIS types differents. Menace de depart 1 (1 par heros, solo) + 3 = 4.\n"
+                     "⚠ On compte les TYPES, pas les cartes : trois evenements ne "
+                     "poseraient qu'une menace"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.CreatePlayerDeck('05015', '03009', '01083')",
+                          "Puzzle.PutIntoDeck('01083')",
+                          "Puzzle.PutIntoDeck('03009')",
+                          "Puzzle.PutIntoDeck('05015')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('tg014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["tg014", 4]]},
+    },
+    {
+        "nom": "tg015 « Lost » Property — Frogjolnir est glissee dessous et devient introuvable",
+        "pourquoi": ("modele `br012` Unworthy pour `TuckCardUnderHere`, qui vit sur "
+                     "`CardFace` et marche donc aussi bien sur un complot annexe.\n"
+                     "⚠ « an identity-specific upgrade they CONTROL » : EN JEU, pas dans le "
+                     "deck — c'est la difference avec `40059`.\n"
+                     "⚠ « It cannot be found while under here » : AUCUN CODE. La seconde "
+                     "moitie du cas le prouve — `Worthy` (tg001b) fouille le terrain, le "
+                     "deck ET la defausse, et ne rapporte RIEN"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.PutIntoPlay('tg009', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('01089')"],
+        "main_exclusive": ["01090"],
+        "ne_pas_depenser": ["01090"],
+        "declencher": ["Puzzle.Reveal('tg015')",
+                       "Puzzle.Action('tg001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["tg015", "tg009"]], "taille_main": 1},
+    },
+    {
+        "nom": "tg015 « Lost » Property — une fois vaincue, la carte revient a la main de son proprietaire",
+        "pourquoi": ("« When Defeated: Add each card under here to ITS OWNER'S hand », et "
+                     "non au joueur qui vainc. `AbilityType.WhenDefeated` porte la "
+                     "distinction avec « leaves play ».\n"
+                     "Le complot est vide de sa menace pour etre vaincu"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg009', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('01090')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('tg015')",
+                       "Puzzle.SetThreat('tg015', 1)",
+                       "Puzzle.Thwart('tg001a')"],
+        "cibles": ["tg015"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["tg009"]},
+    },
+    {
+        "nom": "tg016 Chomped — a la fin du round, l'identite prend 1 degat",
+        "pourquoi": "`WhenRoundEnd(ForcedInterrupt)` : la premiere des deux Interruptions forcees",
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "throg_chomped_fin_de_round",
+        "attendu": {},
+    },
+    {
+        "nom": "tg016 Chomped — une ATTAQUE de base est remplacee : Chomped part, 1 degat, le vilain intact",
+        "pourquoi": ("« ... INSTEAD » : le pouvoir n'a PAS lieu. Les trois chiffres "
+                     "ensemble — 0 degat sur Rhino, Chomped en defausse, 1 degat sur "
+                     "l'identite — sont les seuls a separer « remplace » de « en plus ».\n"
+                     "⚠ Le declencheur est branche sur `WhenUnitWouldAttack`, PAS sur "
+                     "`WhenUnitUseBasicPower` : ce dernier est envoye APRES le test de "
+                     "remplacement (can_attack.py:151), un `SetBeInstead` pose depuis lui "
+                     "arriverait toujours trop tard"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('tg001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]],
+                    "hors_jeu": ["tg016"],
+                    "degats_identite_min": 1},
+    },
+    {
+        "nom": "tg016 Chomped — la DEFENSE de base aussi : le correctif moteur du 05/09/2026",
+        "pourquoi": ("⚠ CE CAS EXISTE POUR UN CORRECTIF MOTEUR. "
+                     "`Message.WhenUnitWouldDefend` portait le commentaire « No "
+                     "`CanBeInstead` » et n'heritait pas de la classe : la defense de base "
+                     "etait le SEUL des quatre pouvoirs de base qu'aucune carte ne pouvait "
+                     "remplacer. Chomped laissait donc passer un pouvoir sur quatre, en "
+                     "silence.\n"
+                     "Deux lignes, calquees sur can_attack.py:151 : `CanBeInstead` ajoute "
+                     "aux bases du message, et `if would_defense_message.is_be_instead: "
+                     "return None` dans `CanDefense.DefenseInternal`, AVANT `SetDefender`.\n"
+                     "L'identite est INCLINEE pour que l'attaque de Rhino arrive jusqu'a "
+                     "elle (montage `ma011` / `br004`). Chomped en defausse et 1 degat "
+                     "prouvent que le remplacement a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')",
+                          "Puzzle.PutIntoPlay('tg016')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Defend('tg001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["tg016"], "degats_identite_min": 1},
+    },
+    {
+        "nom": "tg016 Chomped — [star] Boost : la carte se revele au lieu d'etre defaussee",
+        "pourquoi": ("modele `ls017` Love Concoction / `ho017` : "
+                     "`WhenCardBecomeBoost(\"This\", RevealThisCard)`. Sans cette capacite "
+                     "le moteur ne voit AUCUNE etoile, quoi que dise le texte "
+                     "(`has_boost_icon.py` cherche une `AbilityType.Boost`).\n"
+                     "La carte sort du paquet de boost et entre en jeu attachee a "
+                     "l'identite"),
+        "scenario": "rhino",
+        "heros": "throg",
+        "mise_en_place": ["Puzzle.ChangeToFace('tg001b', 'tg001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('tg016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["tg016"]},
+    },
+    # ===================================================================
+    # PACK SPIDER-MAN NOIR (set 160, Rainy, prefixe `sn`) — 05/09/2026
+    #
+    # ⚠ TOUT LE PACK REPOSE SUR LA PILE GLISSEE SOUS L'IDENTITE, et le harnais
+    # n'a AUCUNE commande pour y poser une carte. On la remplit donc PAR LE JEU,
+    # avec `Puzzle.Reveal('<traitrise>')` : la Reponse Spider-Sense de `sn001a`
+    # glisse la traitrise resolue. Consequence a garder en tete en lisant les
+    # cas : la mise en place de presque tous exerce deja `sn001a`.
+    # Traitrises employees comme remplissage, choisies pour leurs effets
+    # secondaires inoffensifs et leurs icones connues :
+    #   `01186` Advance          0 icone chiffree, 0 etoile  (le vilain manigance)
+    #   `01105` "I'm Tough"      0 icone chiffree, 0 etoile  (Rhino gagne Robuste)
+    #   `24050` Dark Dealings    1 icone chiffree, 1 etoile  (le vilain manigance)
+    # ===================================================================
+    {
+        "nom": "sn001a Spider-Sense — la traitrise resolue est glissee sous le heros",
+        "pourquoi": ("modele `31015` * Spider-Man Noir, L'ALLIE OFFICIEL DU MEME NOM, qui "
+                     "porte mot pour mot la meme mecanique. C'est le moteur entier du pack : "
+                     "sans pile, le heros a ATQ 0 et CTR 0 imprimes et ne fait RIEN.\n"
+                     "Preuve directe : la carte revelee doit se retrouver dans la zone "
+                     "`GetPlacedCardArea` de l'identite"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('01186')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["sn001a", "01186"]],
+                    "taille_pose_sous": [["sn001a", 1]]},
+    },
+    {
+        "nom": "sn001a [star] +X ATQ et +X CTR — deux cartes glissees valent +2 aux DEUX",
+        "pourquoi": ("« gets +X ATK AND THW » : LES DEUX, sur le meme `ThisGainKeyword`. "
+                     "⚠ ATQ 0 et CTR 0 sont IMPRIMES sur la carte : sans pile ce heros ne "
+                     "frappe ni ne contre, le bonus n'est pas un supplement mais son "
+                     "moteur.\n"
+                     "Deux traitrises glissees en mise en place, donc `attack: 2` et "
+                     "`thwart: 2` d'ecart sur la valeur IMPRIMEE"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.Reveal('01105')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 2, "thwart": 2},
+                    "taille_pose_sous": [["sn001a", 2]]},
+    },
+    {
+        "nom": "sn001a Spider-Sense — CONTRE-CAS : pile pleine, la quatrieme traitrise n'est pas glissee",
+        "pourquoi": ("« (to a maximum of 3) » : le plafond est imprime. Sans contre-cas, "
+                     "un plafond absent passerait inapercu — la pile monterait a 4 et le "
+                     "bonus a +4, ce qu'aucun autre cas ne verrait.\n"
+                     "Trois traitrises glissees en mise en place, une quatrieme revelee au "
+                     "declenchement : la pile doit rester a 3"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.Reveal('01105')",
+                          "Puzzle.Reveal('24050')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('01104')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["sn001a", 3]],
+                    "attributs": {"attack": 3, "thwart": 3}},
+    },
+    {
+        "nom": "sn004 Web Shot — la carte de boost est detournee sous le heros au lieu d'etre retournee",
+        "pourquoi": ("⚠ CARTE A BOUCLE INFINIE SI ON LA CODE DE TRAVERS : "
+                     "`ResolveBoostCards` (can_boost.py:51) fait `continue` sur "
+                     "`is_be_instead` SANS retirer la carte du paquet. Poser `SetBeInstead` "
+                     "sans faire quitter la carte fige la partie, et le harnais ne "
+                     "rendrait qu'un timeout.\n"
+                     "Le cas prouve les deux moities a la fois : la partie ne se fige pas, "
+                     "ET la carte de boost finit sous le heros"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')"],
+        "main_exclusive": ["sn004", "01090"],
+        "declencher": ["Puzzle.Boost('01188')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["sn001a", "01188"]],
+                    "defausse": ["sn004"]},
+    },
+    {
+        "nom": "sn001b Gumshoe — branche « tuck » : la carte defaussee du deck rencontre part sous l'identite",
+        "pourquoi": ("⚠ LA FLECHE EST APRES « Discard the top card of the encounter deck » : "
+                     "defausser est le COUT, le choix est l'effet. Et « tuck THAT card » "
+                     "designe la carte qu'on vient de defausser, pas une autre "
+                     "(mot-piege « that », wd022).\n"
+                     "Le deck rencontre est truque pour que le dessus soit `24050`, "
+                     "identifiable : c'est elle, et pas une autre, qui doit finir sous "
+                     "l'identite"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn001b', 'Action')"],
+        "preferer_option": "Tuck that card",
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["sn001b", "24050"]],
+                    "taille_pose_sous": [["sn001b", 1]]},
+    },
+    {
+        "nom": "sn001b Gumshoe — branche « menace » : autant de menace retiree que d'icones de boost defaussees",
+        "pourquoi": ("« CHOOSE TO EITHER ... OR ... » : deux branches exclusives. Le pilote "
+                     "prend la premiere par defaut, `preferer_option` force la seconde.\n"
+                     "« equal to the number of boost icons DISCARDED » : celles de LA carte "
+                     "defaussee. `24050` en porte UNE chiffree, le complot annexe doit donc "
+                     "passer de 3 a 2 — et la pile doit rester VIDE, la carte etant partie "
+                     "en defausse et non sous l'identite"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 3)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn001b', 'Action')"],
+        "preferer_option": "Remove threat",
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 2]],
+                    "taille_pose_sous": [["sn001b", 0]]},
+    },
+    {
+        "nom": "sn001b Gumshoe — TEMOIN D'EPUISEMENT : la seconde Action du round ne glisse rien de plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per round.) » : deux "
+                     "activations dans le meme round, et un chiffre mesure au second. "
+                     "`declencher_tolerant` autorise l'echec de la seconde commande, qui "
+                     "EST le resultat attendu — `Puzzle.Action` leve sinon un "
+                     "AssertionError des que le moteur refuse l'action.\n"
+                     "Si la limite mord, la pile reste a UNE carte. Si elle est inerte, "
+                     "elle en compte deux"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('sn001b', 'Action')"],
+        "preferer_option": "Tuck that card",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["sn001b", 1]]},
+    },
+    {
+        "nom": "sn002 Guns Blazing — 4 degats a un ennemi, et Dual Pistols redressee",
+        "pourquoi": ("« and ready DUAL PISTOLS » est INCONDITIONNEL : la phrase n'est pas "
+                     "dans la branche « if this attack defeats a minion ». Ici l'attaque ne "
+                     "vainc personne (Rhino a 14 PV) et le redressement doit tomber quand "
+                     "meme.\n"
+                     "Les pistolets sont poses INCLINES pour que le redressement soit "
+                     "observable"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn007', under_control=True, exhaust=True)"],
+        "main_exclusive": ["sn002", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sn002"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "pret": ["sn007"]},
+    },
+    {
+        "nom": "sn002 Guns Blazing — le sbire vaincu est glisse sous le heros depuis la defausse rencontre",
+        "pourquoi": ("modele `th009` Sock 'Em / `ag006` Takedown : `if_this_attack_defeats` "
+                     "est appele PAR UNITE VAINCUE, seule facon de rendre « if THIS ATTACK "
+                     "defeats ». Et modele `52001a` * Silk pour le repechage depuis la "
+                     "defausse de rencontre.\n"
+                     "`01101` Hydra Mercenary a 3 PV, les 4 degats le vainquent"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["sn002", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sn002"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["sn001a", "01101"]],
+                    "taille_pose_sous": [["sn001a", 1]]},
+    },
+    {
+        "nom": "sn002 Guns Blazing — CONTRE-CAS : pile pleine, le sbire vaincu reste en defausse",
+        "pourquoi": ("« (to a maximum of 3 cards) » : le plafond est imprime sur la carte. "
+                     "Sans ce contre-cas, un plafond absent ne se verrait nulle part — la "
+                     "pile monterait a 4 et le heros a +4 ATQ/CTR.\n"
+                     "Trois traitrises glissees d'avance, le sbire vaincu ne doit pas "
+                     "entrer : la pile reste a 3"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.Reveal('01105')",
+                          "Puzzle.Reveal('24050')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["sn002", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sn002"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["sn001a", 3]]},
+    },
+    {
+        "nom": "sn003 Webs Within Webs — 3 menaces PLUS les icones de boost defaussees, et la carte est glissee",
+        "pourquoi": ("« equal to 3 PLUS the number of boost icons discarded this way » : 3 "
+                     "est un PLANCHER, pas un plafond. `24050` porte UNE icone chiffree, on "
+                     "attend donc 4 menaces retirees, pas 3.\n"
+                     "⚠ « Tuck the discarded card under your hero » est une SECONDE phrase, "
+                     "pas une branche : elle tombe toujours. Les deux moities sont mesurees "
+                     "dans le meme cas"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["sn003", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sn003"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 2]],
+                    "pose_sous": [["sn001a", "24050"]]},
+    },
+    {
+        "nom": "sn005 Web Swinging — apres un pouvoir de base, une carte glissee est defaussee et le heros se redresse",
+        "pourquoi": ("⚠ « discard a card tucked under Spider-Man Noir » est DEVANT LA "
+                     "FLECHE : c'est un COUT, paye sur la MEME pile que l'effet remplit. "
+                     "L'ordre compte, et c'est ce qui rend le cycle soutenable.\n"
+                     "La pile part a 1 (`01186`), le cout la vide, la seconde phrase y "
+                     "remet `24050` : elle doit rester a 1 mais avoir CHANGE de contenu, "
+                     "et le heros doit etre redresse apres son attaque"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')"],
+        "main_exclusive": ["sn005", "01090"],
+        "declencher": ["Puzzle.Attack('sn001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sn001a"],
+                    "pose_sous": [["sn001a", "24050"]],
+                    "taille_pose_sous": [["sn001a", 1]],
+                    "defausse": ["sn005"]},
+    },
+    {
+        "nom": "sn005 Web Swinging — CONTRE-CAS : pile vide, la carte n'est pas jouable et le heros reste incline",
+        "pourquoi": ("⚠ CE CAS A TROUVE UN VRAI DEFAUT le 05/09/2026. Sans condition, la "
+                     "capacite etait proposee pile vide, l'evenement etait JOUE et "
+                     "DEFAUSSE, `CostFunc.Custom` rendait False, l'effet ne tombait pas — "
+                     "et le joueur perdait sa carte pour rien. Le moteur n'annule pas la "
+                     "mise en jeu sur un cout impaye (`CostFunc.Base.HasTargets`, "
+                     "cost_func.py:47, rend True des que le selecteur a une cible, et "
+                     "`Custom(None, ...)` se rabat sur la carte elle-meme). Corrige par "
+                     "`conditions=[PileNonVide]`, modele `58008` Ionic Belt.\n"
+                     "Meme position, pile vide : `sn005` doit rester EN MAIN et le heros "
+                     "INCLINE apres son attaque"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')"],
+        "main_exclusive": ["sn005", "01090"],
+        "declencher": ["Puzzle.Attack('sn001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["sn001a"], "en_main": ["sn005"]},
+    },
+    {
+        "nom": "sn006 The Black Cat Club — branche « piocher » : 2 cartes, au prix d'une inclinaison et d'une carte glissee",
+        "pourquoi": ("⚠ DEUX COUTS, tous deux devant la fleche : incliner le club ET "
+                     "defausser une carte glissee. Oublier le second rendrait le club "
+                     "gratuit (piege `wd005`, ou une moitie de cout avait ete perdue).\n"
+                     "La pile part a 1 et doit finir a 0, le club incline, la main a 3 "
+                     "(la carte de carburant plus les deux piochees)"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.ChangeToFace('sn001a', 'sn001b')",
+                          "Puzzle.PutIntoPlay('sn006', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn006', 'AlterEgoAction')"],
+        "preferer_option": "Draw 2 cards",
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["sn006"],
+                    "taille_pose_sous": [["sn001b", 0]],
+                    "taille_main": 3},
+    },
+    {
+        "nom": "sn006 The Black Cat Club — branche « soigner » : 4 degats retires de l'identite",
+        "pourquoi": ("« CHOOSE TO EITHER ... OR ... » : la seconde branche, atteinte par "
+                     "`preferer_option`. « heal 4 damage FROM YOUR IDENTITY » et non d'un "
+                     "allie.\n"
+                     "L'identite recoit 6 degats d'avance : il doit en rester 2"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.ChangeToFace('sn001a', 'sn001b')",
+                          "Puzzle.PutIntoPlay('sn006', under_control=True)",
+                          "Puzzle.Damage('sn001b', 6)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn006', 'AlterEgoAction')"],
+        "preferer_option": "Heal 4 damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "taille_pose_sous": [["sn001b", 0]]},
+    },
+    {
+        "nom": "sn007 Dual Pistols — 3 degats, l'arme s'incline et une carte glissee est defaussee",
+        "pourquoi": ("⚠ DEUX COUTS devant la fleche : incliner ET defausser une carte "
+                     "glissee. Le second est ce qui relie l'arme au moteur du pack — sans "
+                     "pile, les pistolets ne tirent pas.\n"
+                     "Les trois chiffres sont mesures ensemble : 3 degats sur Rhino, l'arme "
+                     "inclinee, la pile revenue a 0"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn007', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn007', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "exhausted": ["sn007"],
+                    "taille_pose_sous": [["sn001a", 0]]},
+    },
+    {
+        "nom": "sn007 Dual Pistols — « this attack gains ranged » : Electro Noir riposte dans le vide",
+        "pourquoi": ("mot-cle `ranged` : une attaque a distance ignore Riposte. `sn013` "
+                     "Electro Noir porte Riposte 1, il encaisse les 3 degats et ne rend "
+                     "RIEN.\n"
+                     "C'est le zero de l'identite qui prouve le mot-cle, pas les 3 degats"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn007', under_control=True)",
+                          "Puzzle.PutIntoPlay('sn013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn007', 'HeroAction')"],
+        "cibles": ["sn013"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sn013", 3]], "degats_identite": 0},
+    },
+    {
+        "nom": "sn007 Dual Pistols — LIGNE DE BASE : l'attaque de base, elle, se prend la Riposte",
+        "pourquoi": ("⚠ CE CAS EXISTE PARCE QUE LE PRECEDENT NE PROUVAIT RIEN TOUT SEUL "
+                     "(§7bis de RECETTES-MOTEUR). Un zero peut venir du mot-cle comme d'une "
+                     "Riposte jamais appliquee.\n"
+                     "Meme position, meme cible, mais l'attaque de base du heros (ATQ 0 + 1 "
+                     "carte glissee = 1 degat) : l'identite doit prendre 1 degat de Riposte. "
+                     "C'est ce 1-la qui donne son sens au 0 du cas precedent"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sn001a')"],
+        "cibles": ["sn013"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sn013", 1]], "degats_identite": 1},
+    },
+    {
+        "nom": "sn008 Enhanced Spider-Sense — quand le VILAIN declenche une attaque, on pioche 1 carte",
+        "pourquoi": ("⚠ « When THE VILLAIN initiates an attack » : le VILAIN, pas « un "
+                     "ennemi ». Et « draw 1 card » DANS UNE INTERRUPTION, donc avant la "
+                     "resolution de l'attaque.\n"
+                     "Le heros est incline d'avance pour qu'il ne declare aucune defense et "
+                     "que le chiffre mesure soit la MAIN, pas les degats. Main videe a une "
+                     "carte : elle doit finir a deux"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn008', under_control=True)",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "sn008 Enhanced Spider-Sense — CONTRE-CAS : l'attaque d'un SBIRE ne fait rien piocher",
+        "pourquoi": ("le mot-piege releve a la relecture : la carte dit « the villain », pas "
+                     "« an enemy ». Sans ce contre-cas, un filtre `Enemy` au lieu de "
+                     "`Villain` passerait inapercu.\n"
+                     "Meme position, mais c'est `01101` Hydra Mercenary qui frappe : la main "
+                     "doit rester a UNE carte"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn008', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1},
+    },
+    {
+        "nom": "sn009 Fancy Fedora — Action : 2 menaces retirees contre une inclinaison et une carte glissee",
+        "pourquoi": ("⚠ DEUX COUTS devant la fleche (piege `wd005`). Le complot annexe part "
+                     "de 6 menaces et doit tomber a 4, l'amelioration doit etre inclinee et "
+                     "la pile videe.\n"
+                     "Menace haute exprès : un complot vaincu declencherait l'AUTRE "
+                     "capacite de la carte et brouillerait la mesure"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn009', 'HeroAction')"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 4]],
+                    "exhausted": ["sn009"],
+                    "taille_pose_sous": [["sn001a", 0]]},
+    },
+    {
+        "nom": "sn009 Fancy Fedora — Response : le complot annexe CONTRE ET VAINCU passe sous l'identite",
+        "pourquoi": ("modele `52001a` * Silk, plus `is_from_thwart=True` : « After you "
+                     "THWART AND DEFEAT a side scheme » et non « defeat » tout court. "
+                     "Le complot vaincu est en defausse de rencontre quand la Reponse part, "
+                     "d'ou le filtre `is_encounter_discard_pile`.\n"
+                     "Deux cartes glissees donnent CTR 2 au heros ; `01107` est mis a 2 "
+                     "menaces, le contre le vainc, et la pile doit passer a 3"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.Reveal('01105')",
+                          "Puzzle.PutIntoPlay('sn009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 2)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('sn001a')"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["sn001a", "01107"]],
+                    "taille_pose_sous": [["sn001a", 3]]},
+    },
+    {
+        "nom": "sn010 Organic Webbing — le heros se redresse et gagne le trait AERIAL",
+        "pourquoi": ("« UNTIL THE END OF THE ROUND » : `GainUntilRoundEnd`, pas un bonus "
+                     "permanent et pas « for this use » (piege `tt001a`, ou la difference "
+                     "etait imprimee).\n"
+                     "Le heros est incline d'avance : redressement, trait et pile videe sont "
+                     "mesures ensemble"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn010', under_control=True)",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sn010', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sn001a"],
+                    "traits": ["AERIAL"],
+                    "exhausted": ["sn010"],
+                    "taille_pose_sous": [["sn001a", 0]]},
+    },
+    {
+        "nom": "sn011 In Walks Trouble — branche « incliner Peter Parker » : l'obligation quitte la partie",
+        "pourquoi": ("« DISCARD this obligation » pour la seconde branche, « remove from the "
+                     "game » pour la premiere : deux sorties differentes, et c'est tout "
+                     "l'arbitrage offert au joueur.\n"
+                     "En forme civile, Peter Parker est pret : la premiere branche est "
+                     "offerte. Il doit finir INCLINE et l'obligation hors du jeu"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn011')"],
+        "preferer_option": "Exhaust Peter Parker",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sn011"], "exhausted": ["sn001b"]},
+    },
+    {
+        "nom": "sn011 In Walks Trouble — branche « reveler au hasard » : pile vide, la carte gagne Deferlement",
+        "pourquoi": ("⚠ « If you cannot, this card gains SURGE » : « you cannot » = la pile "
+                     "est VIDE. Mot-piege « if you cannot » (`wd028`) — le cas doit prouver "
+                     "que la branche est ATTEIGNABLE, donc pile vide.\n"
+                     "Le Deferlement revele une carte de plus : le deck rencontre est truque "
+                     "avec `01186` Advance, dont la resolution fait maniganter le vilain. La "
+                     "menace posee sur le complot principal, remis a 0 d'avance, est la "
+                     "preuve que le Deferlement a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn011')"],
+        "preferer_option": "Reveal a random card",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sn011"], "menace_min": [["01097b", 1]]},
+    },
+    {
+        "nom": "sn012 Power Struggle — le personnage qui contre ce complot subit 1 degat",
+        "pourquoi": ("⚠ « FORCED INTERRUPT » : le degat tombe AVANT que la menace ne parte. "
+                     "Et « THEY take 1 damage » vise CELUI QUI CONTRE, pas le joueur.\n"
+                     "Une carte glissee donne CTR 1 au heros : le complot passe de 2 a 1, "
+                     "et l'identite prend 1"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn012')",
+                          "Puzzle.SetThreat('sn012', 2)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('sn001a')"],
+        "cibles": ["sn012"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["sn012", 1]], "degats_identite": 1},
+    },
+    {
+        "nom": "sn012 Power Struggle — CONTRE-CAS : contrer un AUTRE complot ne fait rien subir",
+        "pourquoi": ("la fabrique porte le litteral `\"This\"` : le degat ne doit tomber que "
+                     "pour un contre dirige sur CE complot-la. Sans ce contre-cas, un "
+                     "filtre absent (`None` au lieu de `\"This\"`) punirait tous les contres "
+                     "de la table sans que rien ne le voie.\n"
+                     "Meme position, mais le heros contre `01107` : l'identite doit rester "
+                     "intacte"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn012')",
+                          "Puzzle.SetThreat('sn012', 2)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 4)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('sn001a')"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 3], ["sn012", 2]], "degats_identite": 0},
+    },
+    {
+        "nom": "sn013 Electro Noir — il prend une carte de rencontre glissee sous l'identite comme carte de boost",
+        "pourquoi": ("⚠ LA CARTE QUI RETOURNE LE PACK CONTRE LUI-MEME : chaque carte glissee "
+                     "vaut +1 ATQ et +1 CTR au heros, Electro la lui PREND.\n"
+                     "La pile part a UNE carte et doit finir VIDE : c'est le seul chiffre "
+                     "qui separe cette branche du repli « Otherwise ». Le heros est incline "
+                     "d'avance pour ne pas declarer de defense"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.PutIntoPlay('sn013')",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sn013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["sn001a", 0]],
+                    "degats_identite": 1},
+    },
+    {
+        "nom": "sn013 Electro Noir — branche « Otherwise » : pile vide, la carte de boost vient du deck rencontre",
+        "pourquoi": ("⚠ « OTHERWISE » n'est PAS un choix : le repli tombe quand la pile ne "
+                     "contient aucune carte de rencontre. Mot-piege « otherwise » (branche "
+                     "alternative non codee), releve a l'etape 5.\n"
+                     "Le dessus du deck rencontre est truque avec `01103` * Shocker, qui "
+                     "porte DEUX icones de boost : Electro frappe alors a 1+2 = 3. Sans le "
+                     "repli il frapperait a 1, un sbire ne recevant aucune carte de boost "
+                     "de lui-meme. C'est l'ecart entre 1 et 3 qui prouve la branche"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.CreateEncounterDeck('01103')",
+                          "Puzzle.PutIntoDeck('01103')",
+                          "Puzzle.PutIntoPlay('sn013')",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sn013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "taille_pose_sous": [["sn001a", 0]]},
+    },
+    {
+        "nom": "sn014 Lightning Strikes Twice — glisse le dessus du deck, puis fait subir 1 degat par icone",
+        "pourquoi": ("⚠ ORDRE IMPRIME : on glisse D'ABORD, on compte ENSUITE — la carte "
+                     "qu'on vient de glisser compte dans les degats.\n"
+                     "⚠ ET « for each icon ([star] AND [boost]) » exige "
+                     "`CountTotalBoostStarAndBoost`, pas `CountTotalBoostIcons` qui ignore "
+                     "l'etoile (faces_counter.py:142). La pile part a DEUX cartes sans "
+                     "aucune icone (`01186`, `01105`), `24050` Dark Dealings y ajoute UNE "
+                     "icone chiffree ET UNE etoile : 2 degats exactement. Ecrite d'abord "
+                     "avec la mauvaise fonction, la carte en aurait inflige 1"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Reveal('01186')",
+                          "Puzzle.Reveal('01105')",
+                          "Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["sn001a", 3]],
+                    "pose_sous": [["sn001a", "24050"]],
+                    "degats_identite": 2},
+    },
+    {
+        "nom": "sn014 Lightning Strikes Twice — CONTRE-CAS : pile vide et deck sans icone, aucun degat",
+        "pourquoi": ("le pendant du precedent (§7bis de RECETTES-MOTEUR) : sans lui, "
+                     "« 2 degats » pourrait venir d'un nombre fixe ecrit en dur.\n"
+                     "Meme carte revelee, mais la seule carte glissee est `01186` Advance, "
+                     "qui ne porte NI icone chiffree NI etoile : zero degat, et la pile a 1"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "sn014 [star] Boost — apres cette activation, le vilain s'active une seconde fois",
+        "pourquoi": ("⚠ « AFTER THIS ACTIVATION » et non « maintenant » : la seconde "
+                     "activation doit attendre la fin de la premiere, d'ou "
+                     "`RunAt.AfterEnemyActivationEnd` (run_at.py:175) plutot qu'un "
+                     "`DoActivate` immediat.\n"
+                     "⚠ IL N'EXISTE AUCUN HELPER `ThisEnemyActivatesAgain` : API inventee, "
+                     "ecartee au grep avant d'etre ecrite.\n"
+                     "Rhino frappe a 2. Le heros est incline pour ne declarer aucune "
+                     "defense : deux activations valent donc AU MOINS 4 degats"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('sn014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 4},
+    },
+    {
+        "nom": "sn014 [star] Boost — LIGNE DE BASE : une carte de boost SANS etoile ne fait qu'une activation",
+        "pourquoi": ("⚠ CE CAS EXISTE PARCE QUE LE PRECEDENT NE PROUVAIT RIEN TOUT SEUL. "
+                     "`degats_identite_min` accepterait 4 degats venus d'ailleurs (icones "
+                     "de boost, attachement). `01186` Advance ne porte ni icone chiffree ni "
+                     "etoile : Rhino frappe UNE fois, a 2 exactement.\n"
+                     "C'est l'ecart entre 2 et 4 qui prouve la seconde activation"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('01186')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "sn015 Thunderstorm — le Deferlement accorde au set fait subir 1 degat indirect en forme de heros",
+        "pourquoi": ("« Cards from THIS SET gain surge » : le filtre est le `set_name` du "
+                     "set nemesis, `GiveKeywordToInPlayWhenApplyThis(..., surge=1)`. "
+                     "`sn012` en fait partie et n'a AUCUN Deferlement imprime : s'il "
+                     "declenche, c'est que l'environnement le lui a donne.\n"
+                     "Le dessus du deck rencontre est truque avec `01105`, inoffensive, "
+                     "pour que la carte supplementaire revelee ne brouille pas la mesure. "
+                     "1 degat indirect, et un seul"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn015')",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "en_jeu": ["sn012"]},
+    },
+    {
+        "nom": "sn015 Thunderstorm — CONTRE-CAS : en forme civile, le Deferlement ne fait rien subir",
+        "pourquoi": ("⚠ « IF THEY ARE IN HERO FORM » : mot-piege « if ». La branche existe, "
+                     "et un cas doit prouver le ZERO en alter-ego, sans quoi la condition "
+                     "pourrait etre absente sans que rien ne le voie.\n"
+                     "Position identique, joueur reste en civil : zero degat"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sn015')",
+                          "Puzzle.CreateEncounterDeck('01105')",
+                          "Puzzle.PutIntoDeck('01105')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sn012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "en_jeu": ["sn012"]},
+    },
+    {
+        "nom": "sn015 Thunderstorm — Hero Action : deux energies defaussent la carte",
+        "pourquoi": ("`PlayerActionToDiscardThis(...).SetCost(Cost(\"YY\"))`, modele `01100` "
+                     "/ `04072`. Cout releve sur le scan, pas devine.\n"
+                     "La main est reduite a deux cartes a icone [energy] (`01088` Energy et "
+                     "`sn004` Web Shot) : ce sont elles, et rien d'autre, qui peuvent payer. "
+                     "L'environnement doit quitter le jeu"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn015')"],
+        "main_exclusive": ["01088", "sn004"],
+        "declencher": ["Puzzle.Action('sn015', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sn015"]},
+    },
+    {
+        "nom": "sn006 The Black Cat Club — CONTRE-CAS : pile vide, l'Action n'est pas offerte et le club reste pret",
+        "pourquoi": ("meme famille que le contre-cas de `sn005` : un cout « discard a card "
+                     "tucked » impaye n'annule RIEN dans le moteur. Ici le club se serait "
+                     "incline pour rien.\n"
+                     "`declencher_tolerant` autorise l'echec de la commande, qui EST le "
+                     "resultat attendu : le club doit rester PRET et la main inchangee"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sn006', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('sn006', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sn006"], "taille_main": 1},
+    },
+    {
+        "nom": "sn007 Dual Pistols — CONTRE-CAS : pile vide, l'arme ne tire pas et ne s'incline pas",
+        "pourquoi": ("« sans pile, les pistolets ne tirent pas » : c'est le second cout, "
+                     "celui qui relie l'arme au moteur du pack. Sans condition, l'arme "
+                     "s'inclinait sans infliger le moindre degat.\n"
+                     "Rhino doit rester intact et l'arme prete"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn007', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('sn007', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "pret": ["sn007"]},
+    },
+    {
+        "nom": "sn009 Fancy Fedora — CONTRE-CAS : pile vide, l'Action ne retire aucune menace",
+        "pourquoi": ("meme garde que `sn005`, `sn006`, `sn007` et `sn010` : les CINQ "
+                     "capacites du set qui paient sur la pile la partagent.\n"
+                     "⚠ La Response de la meme carte, elle, N'A PAS cette condition : elle "
+                     "ne coute rien. Le contre-cas mesure donc bien la seule Action — "
+                     "le complot garde ses 6 menaces et le chapeau reste pret"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('sn009', 'HeroAction')"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 6]], "pret": ["sn009"]},
+    },
+    {
+        "nom": "sn010 Organic Webbing — CONTRE-CAS : pile vide, le heros ne se redresse pas et n'est pas AERIAL",
+        "pourquoi": ("dernier membre de la famille des cinq couts payes sur la pile. Deux "
+                     "mesures negatives valent mieux qu'une : le heros reste INCLINE, et "
+                     "`traits_absents` prouve qu'aucun trait AERIAL n'a fuite malgre "
+                     "l'echec du cout"),
+        "scenario": "rhino",
+        "heros": "spider_man_noir",
+        "mise_en_place": ["Puzzle.ChangeToFace('sn001b', 'sn001a')",
+                          "Puzzle.PutIntoPlay('sn010', under_control=True)",
+                          "Puzzle.Exhaust('sn001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('sn010', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["sn001a"], "pret": ["sn010"],
+                    "traits_absents": ["AERIAL"]},
+    },
+    # ===================================================================
+    # PACK BLACK CAT (set 161, Rainy, prefixe `bc`) — 05/09/2026
+    #
+    # ⚠ COMMENT ON REMPLIT LA PILE. Le harnais n'a aucune commande pour glisser
+    # une carte sous une identite. On passe donc PAR LE JEU, avec l'Action
+    # « Cat Burglary » de `bc001b` — qui regarde les DEUX cartes du dessus du
+    # deck de rencontre et en glisse une. Le pilote prend la premiere, on truque
+    # donc le dessus du deck avec le couple habituel
+    # `CreateEncounterDeck` + `PutIntoDeck` (le premier AJOUTE, seul le second
+    # remonte sur le dessus).
+    # ⚠ L'Action est en forme ALTER-EGO et limitee a une fois par round : les
+    # cas qui ont besoin de plus d'une carte glissee passent par les cartes
+    # signature (bc005, bc006, bc007), jamais par deux Cat Burglary.
+    # Cartes de remplissage, choisies pour leurs icones connues et leurs effets
+    # inoffensifs TANT QU'ELLES NE SONT PAS REVELEES :
+    #   `01186` Advance          0 icone chiffree, 0 etoile
+    #   `01190` Shadow of the Past  2 icones chiffrees, 0 etoile
+    #   `24050` Dark Dealings    1 icone chiffree, 1 etoile
+    # ===================================================================
+    {
+        "nom": "bc001b Cat Burglary — l'Action glisse sous l'identite une des 2 cartes du dessus",
+        "pourquoi": ("modele `48021` * Gambit : `LookAtDeck(\"EncounterDeck\", n)` puis "
+                     "`AskChooseFace` puis `TuckCardUnderHere`. C'est la seule carte du "
+                     "pack qui alimente la pile sans rien depenser, donc le point de "
+                     "depart de tout le reste.\n"
+                     "⚠ « LOOK AT » et non « discard » : la carte non choisie doit RESTER "
+                     "sur le deck. Le dessus est truque avec `01190` pour que la carte "
+                     "glissee soit identifiable"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bc001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["bc001b", "01190"]],
+                    "taille_pose_sous": [["bc001b", 1]]},
+    },
+    {
+        "nom": "bc001a Tychokinesis — les icones d'une carte glissee remplacent celles de la carte de bonus",
+        "pourquoi": ("modele `15001a` * Scarlet Witch, « Chaos Control » : MOT POUR MOT le "
+                     "meme montage — `WhenBoostIconsWouldBeCount`, `SetBeInstead`, "
+                     "`SetBoostIcon`. Seule la provenance change : le dessus du deck chez "
+                     "elle, la PILE ici.\n"
+                     "`01186` Advance sert de carte de bonus et ne porte AUCUNE icone ; "
+                     "`01190`, glissee d'avance, en porte DEUX. Rhino frappe a 2 : "
+                     "sans substitution il ferait 2 degats, avec elle 4. L'heroine est "
+                     "inclinee d'avance pour ne declarer aucune defense"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.Action('bc001b', 'Action')",
+                          "Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('01186')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4,
+                    "taille_pose_sous": [["bc001a", 0]]},
+    },
+    {
+        "nom": "bc001a Tychokinesis — LIGNE DE BASE : pile vide, la carte de bonus compte pour elle-meme",
+        "pourquoi": ("⚠ SANS CE CAS, LE PRECEDENT NE PROUVE RIEN (§7bis de "
+                     "RECETTES-MOTEUR) : 4 degats pourraient venir d'ailleurs. Meme "
+                     "position, pile VIDE : `01186` ne porte aucune icone, Rhino frappe "
+                     "donc a 2 exactement.\n"
+                     "C'est l'ecart entre 2 et 4 qui mesure la substitution"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('01186')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "bc002 * Spider-Man SYMBIOTE — +1 au pouvoir et +1 degat consecutif par icone de boost",
+        "pourquoi": ("⚠ CETTE CARTE N'A AUCUN DEGAT CONSECUTIF IMPRIME (bloc « 2★ », pas "
+                     "d'eclat) : `WhenAllyWouldTakeConsequentialDamage` n'aurait JAMAIS "
+                     "ete envoye (garde `> 0`, ally.py:41). On augmente donc la VALEUR, "
+                     "modele `33016` Coordinated Attack.\n"
+                     "`01190` porte DEUX icones chiffrees : l'attaque passe de 2 a 4 sur "
+                     "Rhino, et l'allie encaisse 2 sur ses 4 PV. Les deux chiffres sont "
+                     "mesures ensemble"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc002', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bc002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4], ["bc002", 2]]},
+    },
+    {
+        "nom": "bc003 * Spider-Man AVENGER — 2 pions toile a l'entree, et une activation annulee",
+        "pourquoi": ("modele `av002` * Spider-Man (pack agent_anti_venom) : "
+                     "`WhenEnemyWouldActivate` + `SetBeInstead`, qui couvre d'un coup "
+                     "l'attaque ET la manigance. Montage d'origine `27006` Web Binding.\n"
+                     "Trois chiffres mesures ensemble : l'identite ne prend RIEN, il ne "
+                     "reste qu'UN pion toile sur deux, et la pile est retombee a zero — "
+                     "les deux couts sont donc bien payes. L'heroine est inclinee pour "
+                     "qu'un zero ne puisse pas venir d'une defense"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')",
+                          "Puzzle.Action('bc001b', 'Action')",
+                          "Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc003', under_control=True)",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "compteurs": [["bc003", "web", 1]],
+                    "taille_pose_sous": [["bc001a", 0]]},
+    },
+    {
+        "nom": "bc001b Cat Burglary — TEMOIN D'EPUISEMENT : la seconde Action du round ne glisse rien de plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per round.) » : deux "
+                     "activations dans le meme round, et un chiffre mesure au second. "
+                     "`declencher_tolerant` autorise l'echec de la seconde commande, qui "
+                     "EST le resultat attendu.\n"
+                     "Si la limite mord, la pile reste a UNE carte ; si elle est inerte, "
+                     "elle en compte deux"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bc001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('bc001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["bc001b", 1]]},
+    },
+    {
+        "nom": "bc001a et bc001b regle des 3 cartes — une QUATRIEME carte glissee ramene la pile a 3",
+        "pourquoi": ("⚠ CE PLAFOND N'EST PAS CELUI DU PACK `spider_man_noir`. Les deux "
+                     "faces impriment « If there are MORE THAN 3 tucked cards here, "
+                     "discard all but 3 » : la carte entre TOUJOURS, et une regle continue "
+                     "nettoie apres — la joueuse choisissant lesquelles garder. Un "
+                     "`GlisserSousIdentite` qui REFUSE la pose, comme chez Noir, serait "
+                     "faux.\n"
+                     "⚠ LE CHEMIN EST IMPOSE PAR TYCHOKINESIS. Premiere ecriture du cas : "
+                     "glisser par `bc005` et `bc006`. Elle ne marche PAS, et le journal "
+                     "le montre — ces deux cartes COMPTENT des icones, ce qui envoie "
+                     "`WhenBoostIconsWouldBeCount`, ce qui declenche Tychokinesis, ce qui "
+                     "VIDE la pile qu'on essaie de remplir. La seule carte du pack qui "
+                     "glisse sans jamais compter est la Response de `bc010`, d'ou les "
+                     "quatre attachements defausses ici.\n"
+                     "Quatre attachements du vilain voles coup sur coup : la pile doit "
+                     "redescendre a 3"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc010', under_control=True)",
+                          "Puzzle.PutIntoPlay('01100')",
+                          "Puzzle.PutIntoPlay('04072')",
+                          "Puzzle.PutIntoPlay('04073')",
+                          "Puzzle.PutIntoPlay('04074')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Discard('01100')",
+                       "Puzzle.Discard('04072')",
+                       "Puzzle.Discard('04073')",
+                       "Puzzle.Discard('04074')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["bc001a", 3]]},
+    },
+    {
+        "nom": "bc002 * Spider-Man SYMBIOTE — CONTRE-CAS : sans icone, aucun bonus et aucun degat consecutif",
+        "pourquoi": ("le pendant du cas nominal (§7bis de RECETTES-MOTEUR) : sans lui, "
+                     "« 4 degats » pourrait venir d'un +2 ecrit en dur. `01186` Advance ne "
+                     "porte NI icone chiffree NI etoile.\n"
+                     "L'allie frappe donc a 2 exactement et n'encaisse RIEN — sa valeur de "
+                     "degats consecutifs IMPRIMEE etant zero, la garde `> 0` d'ally.py "
+                     "empeche le message de partir"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc002', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bc002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["bc002", 0]]},
+    },
+    {
+        "nom": "bc003 * Spider-Man AVENGER — CONTRE-CAS : pile vide, l'activation n'est pas annulee",
+        "pourquoi": ("⚠ `CostFunc.Custom` ne sait PAS se rendre indisponible tout seul "
+                     "(RECETTES §5) : sans `PileNonVide`, la capacite serait proposee pile "
+                     "vide, l'activation ne serait PAS annulee et le pion toile serait "
+                     "perdu pour rien.\n"
+                     "Meme position, pile vide : Rhino frappe, l'identite encaisse, et les "
+                     "DEUX pions toile sont encore la.\n"
+                     "⚠ L'ALLIE EST INCLINE D'AVANCE. Premiere ecriture sans cela : le "
+                     "pilote le declarait DEFENSEUR, l'allie encaissait les 2 degats a la "
+                     "place de l'identite, et le cas lisait 0 — un zero qui ne prouvait "
+                     "rien du tout"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc003', under_control=True)",
+                          "Puzzle.Exhaust('bc001a')",
+                          "Puzzle.Exhaust('bc003')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 2,
+                    "compteurs": [["bc003", "web", 2]]},
+    },
+    {
+        "nom": "bc004 * Big Heist — l'heroine VOLEUR retire bien de la menace",
+        "pourquoi": ("modele `40006` * Technovirus Purge : "
+                     "`ThreatCannotBeRemovedFromWhile(\"This\", by_character=CardFinder(...))`. "
+                     "Le filtre est la NEGATION du trait, `non_trait=\"THIEF\"`.\n"
+                     "Black Cat porte THIEF et contre a 2 : le complot passe de 4 a 2. "
+                     "C'est le chiffre qui donne son sens au contre-cas suivant"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc004', under_control=True)",
+                          "Puzzle.SetThreat('bc004', 4)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('bc001a')"],
+        "cibles": ["bc004"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["bc004", 2]]},
+    },
+    {
+        "nom": "bc004 * Big Heist — CONTRE-CAS : un allie NON VOLEUR ne retire rien",
+        "pourquoi": ("« Only THIEF characters can remove threat from this scheme. » Sans "
+                     "ce contre-cas, le verrou pourrait etre absent sans que rien ne le "
+                     "voie — le cas precedent resterait vert.\n"
+                     "`01084` * Nick Fury contre a 2 et ne porte PAS le trait THIEF : le "
+                     "complot doit garder ses 4 menaces"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc004', under_control=True)",
+                          "Puzzle.SetThreat('bc004', 4)",
+                          "Puzzle.PutIntoPlay('01084', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('01084')"],
+        "cibles": ["bc004"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["bc004", 4]]},
+    },
+    {
+        "nom": "bc004 * Big Heist — branche « piocher 3 cartes »",
+        "pourquoi": ("« When Defeated: CHOOSE ONE » : trois branches exclusives, le pilote "
+                     "prend la premiere par defaut (RECETTES §2), `preferer_option` force "
+                     "celle qu'on mesure.\n"
+                     "⚠ ON NE PEUT PAS BAISSER LA MENACE AVEC `Puzzle.SetThreat` : le "
+                     "verrou de la carte elle-meme (« Only THIEF characters can remove "
+                     "threat ») refuse le retrait, et le journal l'ecrit noir sur blanc "
+                     "(« Threat cannot be removed from Big Heist »). L'heroine contre donc "
+                     "DEUX fois, redressee entre les deux, pour venir a bout des 4 menaces "
+                     "de depart avec sa CTR 2.\n"
+                     "Main videe a une carte : elle doit finir a quatre"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc004', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('bc001a')",
+                       "Puzzle.Ready('bc001a')",
+                       "Puzzle.Thwart('bc001a')"],
+        "cibles": ["bc004"],
+        "preferer_option": "Draw 3 cards",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 4},
+    },
+    {
+        "nom": "bc004 * Big Heist — branche « chercher dans la collection » : une amelioration arrive en jeu sans etre payee",
+        "pourquoi": ("⚠ BRIQUE 4 DU PLAN DE PORTAGE : « recherche dans toute la "
+                     "COLLECTION », donnee pour la difficulte majeure du pack. Elle est "
+                     "en fait DEJA IMPLEMENTEE : `Search.Collection` (search.py:371) "
+                     "interroge `CardsDB.GetPapers`, FABRIQUE la carte choisie dans la "
+                     "defausse du joueur et la rend. Mecanique officielle, portee par "
+                     "`44009` Armed to the Teeth, `50171` Baron Zemo et `dz031` Tribute.\n"
+                     "⚠ Le journal de `wd029` Multiverse Recruit assume au contraire un "
+                     "ECART sur ce meme texte, faute d'avoir vu cette fonction : l'ecart "
+                     "y est donc EVITABLE, et c'est note ici pour qu'on y revienne.\n"
+                     "⚠ « and PLAY IT » : la carte fabriquee arrive dans la DEFAUSSE et "
+                     "n'y est PAS jouable (`is_like_in_hand`, ability.py:235) — elle doit "
+                     "passer par la MAIN d'abord, piege paye par `dz031`. Le chiffre "
+                     "mesure est donc qu'une amelioration de plus est EN JEU, sans qu'un "
+                     "seul point de ressource ait ete depense.\n"
+                     "⚠ `01057` Combat Training n'est PAS choisie au hasard : elle est la "
+                     "PREMIERE amelioration non-identite du catalogue, et le pilote prend "
+                     "toujours la premiere option legale. Le chiffre est donc "
+                     "deterministe, et la main reste a UNE carte — la carte trouvee "
+                     "n'y a fait que passer"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc004', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('bc001a')",
+                       "Puzzle.Ready('bc001a')",
+                       "Puzzle.Thwart('bc001a')"],
+        "cibles": ["bc004"],
+        "preferer_option": "Search your collection",
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01057"], "taille_main": 1},
+    },
+    {
+        "nom": "bc004 * Big Heist — branche « voler un attachement » : l'equipement du vilain passe sous l'heroine",
+        "pourquoi": ("⚠ BRIQUE 3 DU PLAN DE PORTAGE : « selection d'une carte par son "
+                     "TEXTE ». Aucune primitive moteur — on lit `face.paper.text` et on y "
+                     "cherche « Hero Action » ou « Hero Response ». 132 attachements du "
+                     "depot en portent, ce sont exactement ceux qu'on peut normalement "
+                     "PAYER pour defausser ; Black Cat les vole au lieu de les payer.\n"
+                     "`01100` Enhanced Ivory Horn porte « Hero Action: Spend [physical] "
+                     "[physical] [physical] resources -> discard this card » : il doit "
+                     "finir sous l'identite"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc004', under_control=True)",
+                          "Puzzle.PutIntoPlay('01100')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('bc001a')",
+                       "Puzzle.Ready('bc001a')",
+                       "Puzzle.Thwart('bc001a')"],
+        "cibles": ["bc004"],
+        "preferer_option": "Tuck an attachment",
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["bc001a", "01100"]]},
+    },
+    {
+        "nom": "bc005 Cat Burglary — 1 menace PLUS les icones de la carte defaussee, et la carte est glissee",
+        "pourquoi": ("« Remove 1 threat ... PLUS 1 additional for each icon » : 1 est un "
+                     "PLANCHER. `01190` porte DEUX icones chiffrees, on attend donc 3 "
+                     "menaces retirees, pas 1.\n"
+                     "⚠ « discard 1 » puis « TUCK IT » designe la MEME carte (mot-piege "
+                     "« it », wd022) : les deux moities sont mesurees dans le meme cas"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["bc005", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["bc005"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 3]],
+                    "pose_sous": [["bc001a", "01190"]]},
+    },
+    {
+        "nom": "bc006 Lucky Hit — 1 degat par icone des DEUX cartes defaussees, et une seule glissee",
+        "pourquoi": ("« for each icon DISCARDED THIS WAY » : le total des DEUX cartes, pas "
+                     "de la meilleure. Le deck est truque avec `01190` (2 icones) puis "
+                     "`24050` (1 icone chiffree + 1 etoile) : on attend 4 degats.\n"
+                     "⚠ « Tuck ONE OF THOSE CARDS » : une seule des deux, pas les deux. "
+                     "La pile doit donc valoir 1"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["bc006", "01090"],
+        "declencher": [],
+        "jouer": ["bc006"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]],
+                    "taille_pose_sous": [["bc001a", 1]]},
+    },
+    {
+        "nom": "bc007 Misfortune — la carte de bonus est detournee sous l'heroine et l'ennemi frappe moins fort",
+        "pourquoi": ("⚠ CARTE A BOUCLE INFINIE SI ON LA CODE DE TRAVERS : "
+                     "`ResolveBoostCards` (can_boost.py:51) fait `continue` sur "
+                     "`is_be_instead` SANS retirer la carte du paquet. Le cas prouve les "
+                     "deux moities a la fois : la partie ne se fige pas, ET la carte finit "
+                     "sous l'heroine.\n"
+                     "`01188` Caught Off Guard porte UNE icone : Rhino passe de 2 a 1 "
+                     "d'ATQ, et son icone de bonus ne compte pas non plus puisque la carte "
+                     "n'est jamais retournee. L'heroine est inclinee pour ne pas defendre"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["bc007", "01090"],
+        "declencher": ["Puzzle.Boost('01188')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "pose_sous": [["bc001a", "01188"]],
+                    "defausse": ["bc007"]},
+    },
+    {
+        "nom": "bc007 Misfortune — LIGNE DE BASE : sans elle, la carte de bonus AJOUTE une icone",
+        "pourquoi": ("⚠ SANS CE CAS, LE PRECEDENT NE PROUVE RIEN : 1 degat pourrait venir "
+                     "d'ailleurs. Meme position, `bc007` absente de la main : `01188` est "
+                     "retournee normalement, son icone s'ajoute a l'ATQ 2 de Rhino, et "
+                     "l'identite prend 3.\n"
+                     "C'est l'ecart entre 3 et 1 qui mesure la carte"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('01188')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "bc008 * Black Cat's Claws — autant de degats que d'icones CHIFFREES de la carte defaussee",
+        "pourquoi": ("⚠ « the number of ICONS », SANS « ([star] and [boost]) » : c'est la "
+                     "SEULE carte du set avec `bc002` a ne pas preciser. On code ce qui "
+                     "est imprime, donc `CountTotalBoostIcons` et non "
+                     "`CountTotalBoostStarAndBoost`.\n"
+                     "`01190` porte 2 icones chiffrees et aucune etoile : 2 degats, l'arme "
+                     "inclinee, et RIEN de glisse puisque le nombre n'etait pas 0"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc008', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bc008', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "exhausted": ["bc008"],
+                    "taille_pose_sous": [["bc001a", 0]]},
+    },
+    {
+        "nom": "bc008 * Black Cat's Claws — « If that number was 0, tuck it » : zero degat n'est pas un coup perdu",
+        "pourquoi": ("la branche de consolation, atteignable UNIQUEMENT avec une carte "
+                     "sans icone chiffree. `01186` Advance n'en a aucune : 0 degat sur "
+                     "Rhino, et la carte rejoint la pile.\n"
+                     "⚠ C'est ici que l'ecart de comptage avec le reste du set devient "
+                     "OBSERVABLE : une carte a etoile seule vaudrait 1 ailleurs et "
+                     "declenche cette branche-ci"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc008', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bc008', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]],
+                    "pose_sous": [["bc001a", "01186"]]},
+    },
+    {
+        "nom": "bc009 Grappling Hook — une carte glissee defaussee, l'heroine redressee, une autre glissee",
+        "pourquoi": ("modele `sn005` Web Swinging : le cout se paie sur la MEME pile que "
+                     "l'effet remplit. L'ordre compte, et c'est ce qui rend le cycle "
+                     "soutenable.\n"
+                     "La pile part a 1 (`01186`), le cout la vide, la seconde phrase y "
+                     "remet `24050` : elle doit rester a 1 mais avoir CHANGE de contenu, "
+                     "et l'heroine doit etre redressee"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')",
+                          "Puzzle.Action('bc001b', 'Action')",
+                          "Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc009', under_control=True)",
+                          "Puzzle.Exhaust('bc001a')",
+                          "Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bc009', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bc001a"],
+                    "exhausted": ["bc009"],
+                    "pose_sous": [["bc001a", "24050"]],
+                    "taille_pose_sous": [["bc001a", 1]]},
+    },
+    {
+        "nom": "bc009 Grappling Hook — CONTRE-CAS : pile vide, rien ne se redresse et le grappin reste pret",
+        "pourquoi": ("meme garde que `bc003` : `CostFunc.Custom` ne sait pas se rendre "
+                     "indisponible seul (RECETTES §5). Sans `PileNonVide`, le grappin "
+                     "s'inclinerait sans rien redresser.\n"
+                     "`declencher_tolerant` autorise l'echec de la commande, qui EST le "
+                     "resultat attendu"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc009', under_control=True)",
+                          "Puzzle.Exhaust('bc001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('bc009', 'HeroAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bc001a"], "pret": ["bc009"]},
+    },
+    {
+        "nom": "bc010 Ill Gotten Gains — la Ressource paie vraiment une carte de la main",
+        "pourquoi": ("`CanGenerateResources` a cout d'inclinaison, modele `tg008` Frog of "
+                     "Thunder. ⚠ AUCUN `for_card` : le texte ne restreint pas ce que la "
+                     "carte peut payer, il donne seulement DEUX ressources pour un "
+                     "attachement.\n"
+                     "Main videe a la seule `bc009`, qui coute 1 : si l'amelioration "
+                     "entre en jeu, c'est bien Ill Gotten Gains qui l'a payee, et elle "
+                     "doit finir inclinee"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc010', under_control=True)"],
+        "main_exclusive": ["bc009"],
+        "declencher": [],
+        "jouer": ["bc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bc009"], "exhausted": ["bc010"]},
+    },
+    {
+        "nom": "bc010 Ill Gotten Gains — Response : l'attachement defausse du jeu passe sous l'identite",
+        "pourquoi": ("⚠ BRIQUE 3 : le filtre est le TEXTE IMPRIME, lu sur "
+                     "`face.paper.text`. `01100` Enhanced Ivory Horn porte « Hero Action: "
+                     "Spend ... -> discard this card ».\n"
+                     "L'attachement est pose sur Rhino puis defausse : il doit finir sous "
+                     "l'identite, pas dans la defausse de rencontre"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc010', under_control=True)",
+                          "Puzzle.PutIntoPlay('01100')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Discard('01100')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["bc001a", "01100"]]},
+    },
+    {
+        "nom": "bc010 Ill Gotten Gains — CONTRE-CAS : un attachement SANS « Hero Action » n'est pas ramasse",
+        "pourquoi": ("le filtre par texte est la moitie fragile de la carte : sans "
+                     "contre-cas, un filtre absent ramasserait TOUS les attachements et "
+                     "le cas precedent resterait vert.\n"
+                     "`01098` Armored Rhino Suit est un attachement de Rhino dont le texte "
+                     "ne contient ni « Hero Action » ni « Hero Response » : la pile doit "
+                     "rester VIDE"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc010', under_control=True)",
+                          "Puzzle.PutIntoPlay('01098')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Discard('01098')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["bc001a", 0]]},
+    },
+    {
+        "nom": "bc011 Nine Lives — autant de degats prevenus que d'icones de la carte defaussee",
+        "pourquoi": ("`Message.WhenUnitWouldTakeDamage.PreventDamage` (sender_damage.py:133).\n"
+                     "⚠ L'attaquant est `01103` * Shocker, un SBIRE : un sbire ne recoit "
+                     "AUCUNE carte de bonus, le dessus du deck de rencontre reste donc "
+                     "celui qu'on a truque et c'est bien lui que le cout defausse. Avec le "
+                     "vilain, la carte aurait ete consommee comme carte de bonus avant "
+                     "d'arriver au cout — piege trouve a l'ecriture.\n"
+                     "`01190` porte 2 icones, Shocker frappe a 2 : l'identite ne prend RIEN"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc011', under_control=True)",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Exhaust('bc001a')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "exhausted": ["bc011"]},
+    },
+    {
+        "nom": "bc011 Nine Lives — CONTRE-CAS : une carte sans icone ne previent rien, et l'inclinaison est perdue",
+        "pourquoi": ("c'est le PARI imprime sur la carte : la prevention est aleatoire. "
+                     "Sans ce contre-cas, un « prevent All » ecrit par erreur passerait "
+                     "inapercu.\n"
+                     "`01186` Advance n'a aucune icone : Shocker inflige ses 2 degats "
+                     "entiers, et `bc011` est quand meme inclinee — le cout, lui, a bien "
+                     "ete paye"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.ChangeToFace('bc001b', 'bc001a')",
+                          "Puzzle.PutIntoPlay('bc011', under_control=True)",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Exhaust('bc001a')",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["bc011"]},
+    },
+    {
+        "nom": "bc012 Luck's Ran Out — une carte glissee au hasard est REVELEE, et la pile se vide",
+        "pourquoi": ("⚠ « REVEAL a random card » et non « discard » : la carte est "
+                     "RESOLUE comme une carte de rencontre. La punition d'avoir range "
+                     "n'importe quoi sous son identite.\n"
+                     "`01186` Advance est glissee d'avance ; revelee, elle fait maniganter "
+                     "le vilain, ce que mesure la menace posee sur le complot principal "
+                     "remis a 0. La pile doit finir vide"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')",
+                          "Puzzle.Action('bc001b', 'Action')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bc012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["01097b", 1]],
+                    "taille_pose_sous": [["bc001b", 0]],
+                    "hors_jeu": ["bc012"]},
+    },
+    {
+        "nom": "bc012 Luck's Ran Out — CONTRE-CAS : pile vide, la carte gagne Deferlement",
+        "pourquoi": ("⚠ « If you cannot, this card gains SURGE » : « you cannot » = la "
+                     "pile est VIDE. Mot-piege « if you cannot » (`wd028`) — le cas doit "
+                     "prouver que la branche est ATTEIGNABLE.\n"
+                     "Le Deferlement revele une carte de plus : le deck est truque avec "
+                     "`01186`, dont la resolution fait maniganter le vilain. La menace sur "
+                     "le complot principal, remis a 0, est la preuve que le Deferlement a "
+                     "eu lieu"),
+        "scenario": "rhino",
+        "heros": "black_cat",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)",
+                          "Puzzle.CreateEncounterDeck('01186')",
+                          "Puzzle.PutIntoDeck('01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bc012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["01097b", 1]], "hors_jeu": ["bc012"]},
+    },
+    # ===================================================================
+    # PACK CAMEO COMPLIMENT (set 162, BlueRiver, prefixe `cc`) — 05/09/2026
+    #
+    # ⚠ CE N'EST PAS UN PACK DE HEROS : trois cartes d'ASPECT, une par aspect,
+    # complements de la carte OFFICIELLE `58031` Cameo (Meneur).
+    #
+    # ⚠ LES TROIS PASSENT PAR UNE VERIFICATION DEDIEE, pas par `etat_attendu`.
+    # Elles sont branchees sur `AfterGameSetup`, donc sur
+    # `Message.WhenGameWouldBegin`, envoye UNE SEULE FOIS a la fin de la mise
+    # en place (world.py:611) — avant que le harnais ne prenne la main. Aucune
+    # commande `Puzzle.*` ne le renvoie ; la verification l'envoie a la main,
+    # comme `throg_chomped_fin_de_round` pour `WhenRoundEnd`.
+    # Et un `etat_attendu` ne suffirait pas : `hors_jeu: [cc00x]` passerait au
+    # vert meme si la carte n'avait RIEN cherche, « remove this card from the
+    # game » etant la derniere phrase.
+    #
+    # Le heros du cas est `spider_man` : la verification exige que la carte
+    # trouvee vienne d'une identite qui n'est PAS a la table, elle controle
+    # donc que `Spider-Man` a bien ete ecarte des candidats.
+    # ===================================================================
+    {
+        "nom": "cc001 Lock It Down — un soutien LOCATION d'une identite absente est melange dans le deck",
+        "pourquoi": ("modele integral : `58031` Cameo, la carte OFFICIELLE dont les trois "
+                     "cartes de ce set sont les complements d'aspect. Meme texte a un mot "
+                     "pres, meme montage, seul le filtre change.\n"
+                     "⚠ « SEARCH YOUR COLLECTION » N'EST PAS UN ECART A ASSUMER : le "
+                     "moteur sait le faire, `CardsDB.papers` porte le catalogue entier et "
+                     "`CardFactory.GenerateCard` fabrique une carte qui n'etait dans aucune "
+                     "zone. Le journal de `wd029` Multiverse Recruit assume pourtant un "
+                     "ecart sur ce meme texte.\n"
+                     "Quatre choses mesurees d'un coup : la carte trouvee est bien un "
+                     "SOUTIEN, avec le trait LOCATION, specifique a une identite "
+                     "(`Class: Hero`) et venant d'un set ABSENT de la partie ; le deck en "
+                     "gagne exactement UNE ; la main en perd exactement DEUX ; et "
+                     "`cc001` quitte le jeu"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc001', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_lock_it_down",
+        "attendu": {},
+    },
+    {
+        "nom": "cc002 New Suit? — une amelioration ARMOR d'une identite absente est melangee dans le deck",
+        "pourquoi": ("meme montage que `cc001`, filtre different : type `Upgrade` et trait "
+                     "ARMOR.\n"
+                     "⚠ PAS de clause « non-permanent » ici, contrairement a `cc003`, et "
+                     "ce n'est pas un oubli de l'auteur : c'est imprime. La verification "
+                     "ne teste donc PAS la permanence — elle mesure ce que la carte dit, "
+                     "pas ce qu'on trouverait cohérent"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc002', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_new_suit",
+        "attendu": {},
+    },
+    {
+        "nom": "cc003 Ye Be Worthy — une amelioration WEAPON NON PERMANENTE d'une identite absente",
+        "pourquoi": ("⚠ « NON-PERMANENT » EST LA SEULE CLAUSE QUI DISTINGUE CETTE CARTE DE "
+                     "SES DEUX SOEURS, et la verification l'exige explicitement. Mesure sur "
+                     "le catalogue du 05/09/2026 : elle ecarte SIX ameliorations WEAPON — "
+                     "`35002` et `wx002` * Wolverine's Claws, `41002a` Psi-Knife, `41002b` "
+                     "Psi-Katana, `43002` * X-23's Claws, `nt003b` * Battle Board. Toutes "
+                     "sont des armes de signature qui ne peuvent PAS quitter le jeu.\n"
+                     "Sans le test, une carte permanente melangee dans le deck passerait "
+                     "inapercue : elle a le bon type et le bon trait"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc003', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_ye_be_worthy",
+        "attendu": {},
+    },
+    {
+        "nom": "cc001 Lock It Down — CONTRE-CAS : l'identite A LA TABLE est ecartee des candidats",
+        "pourquoi": ("⚠ SANS CE CAS, « from an identity NOT IN THIS GAME » n'est pas "
+                     "mesure. Avec Spider-Man aux commandes, la carte choisie est `01015` "
+                     "* Alpha Flight Station, PREMIERE candidate du catalogue et carte de "
+                     "CAPTAIN MARVEL — le pilote prend toujours la premiere option legale.\n"
+                     "Le meme cas joue par CAPTAIN MARVEL doit donc rendre une AUTRE "
+                     "carte. Si le filtre etait absent, la premiere candidate serait "
+                     "exactement la meme, et c'est la verification dediee qui le dit : "
+                     "elle refuse toute carte dont le `set_name` est celui d'une identite "
+                     "presente"),
+        "scenario": "rhino",
+        "heros": "captain_marvel",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc001', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_lock_it_down",
+        "attendu": {},
+    },
+    {
+        "nom": "cc002 New Suit? — CONTRE-CAS : l'identite A LA TABLE est ecartee des candidats",
+        "pourquoi": ("meme raisonnement que pour `cc001`. Avec Spider-Man, la carte "
+                     "choisie est `01016` * Captain Marvel's Helmet ; jouee par CAPTAIN "
+                     "MARVEL, elle doit etre ecartee et une autre prise a sa place"),
+        "scenario": "rhino",
+        "heros": "captain_marvel",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc002', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_new_suit",
+        "attendu": {},
+    },
+    {
+        "nom": "cc003 Ye Be Worthy — CONTRE-CAS : l'identite A LA TABLE est ecartee des candidats",
+        "pourquoi": ("meme raisonnement. Avec Spider-Man, la carte choisie est `01046` "
+                     "Energy Daggers, carte de BLACK PANTHER ; jouee par Black Panther, "
+                     "elle doit etre ecartee.\n"
+                     "⚠ Ce cas mesure DEUX filtres a la fois, puisque la verification "
+                     "exige aussi que la carte trouvee soit NON PERMANENTE"),
+        "scenario": "rhino",
+        "heros": "black_panther",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cc003', under_control=True)"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": [],
+        "verifier": "cameo_ye_be_worthy",
+        "attendu": {},
+    },
+    # ===================================================================
+    # PACK SUNFIRE (set 163, Rainy, prefixe `sf`) — 06/09/2026
+    #
+    # ⚠ LE DECK DE DEPART N'A AUCUNE CARTE D'ASPECT (`player_deck` vide,
+    # consigne utilisateur du 06/09/2026) : la main de depart ne contient que
+    # des cartes signature. `main_exclusive` reste donc indispensable pour
+    # savoir avec quoi le pilote paie.
+    #
+    # ⚠ LES SIX BURNING VIVENT DANS LA RESERVE (`set_aside_deck`), posees la
+    # par `sf001b` a la mise en place. Aucune commande `Puzzle.*` ne les
+    # attache : ce sont les cartes du pack qui le font, et c'est ce que les cas
+    # mesurent.
+    # ===================================================================
+    {
+        "nom": "sf001b Shiro Yoshida — la partie commence avec 6 Burning mises de cote",
+        "pourquoi": ("⚠ « begins the game with 6 Burning upgrades set aside » : ce n'est "
+                     "PAS le champ `set_aside` du deck de depart, que le moteur NE LIT PAS "
+                     "en vraie partie (§3 de PROCESSUS-HEROS). Les six exemplaires doivent "
+                     "etre crees par l'identite elle-meme, via "
+                     "`AbilityFactory.BeginGameWithSetAside`.\n"
+                     "Sans ce cas, tout le pack reposerait sur une reserve vide et les "
+                     "huit cartes qui posent une brulure seraient inertes — sans qu'aucune "
+                     "gate statique ne le voie"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_mis_de_cote": 6},
+    },
+    {
+        "nom": "sf001a Burning Aura — l'attaque de base pose une Burning sur la cible",
+        "pourquoi": ("⚠ LA CAPACITE QUI ALIMENTE TOUT LE PACK. Huit cartes sur seize "
+                     "posent, lisent ou recyclent une Burning, et c'est celle-ci qui en "
+                     "pose le plus souvent.\n"
+                     "« makes a BASIC attack » -> `is_basic_attack=True`. ⚠ Le parametre "
+                     "ne s'appelle PAS `is_basic_power` sur cette fabrique "
+                     "(do_attack.py:38) : l'ecrire leve un TypeError attrape par "
+                     "`test_cards`, pas par la lecture.\n"
+                     "La reserve doit passer de 6 a 5, et Rhino porter la Burning"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sf001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sf009"], "taille_mis_de_cote": 5},
+    },
+    {
+        "nom": "sf001a Burning Aura — la DEFENSE de base aussi, et c'est l'ATTAQUANT qui brule",
+        "pourquoi": ("⚠ « basic attack OR BASIC DEFENSE » : les deux moities sont "
+                     "imprimees, et elles ne nomment PAS la meme carte — la cible d'un "
+                     "cote, l'ATTAQUANT de l'autre. D'ou deux operations et non une.\n"
+                     "Sans ce cas, la moitie defensive du kit (avec `sf008` Sunfire's "
+                     "Suit, qui redresse apres une defense) ne serait jamais exercee"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Defend('sf001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sf009"], "taille_mis_de_cote": 5},
+    },
+    {
+        "nom": "sf009 Burning — a la fin de la phase des joueurs : 1 degat, puis retour dans la reserve",
+        "pourquoi": ("⚠ LA CARTE QUI PORTE LE PACK, et la brique 6 du plan de portage : "
+                     "une amelioration JOUEUR attachee a un ENNEMI, qui revient dans la "
+                     "reserve au lieu de partir en defausse.\n"
+                     "⚠ VERIFICATION DEDIEE : `Puzzle.BeginVillainPhase()` OUVRE la phase "
+                     "du vilain, elle ne TERMINE pas celle des joueurs. Ni `WhenPhaseEnd` "
+                     "ni `AfterPhaseEnd` ne partent, et la brulure ne mordrait jamais. Les "
+                     "deux messages sont envoyes a la main.\n"
+                     "⚠ ET « PERMANENT » EST LE MECANISME, PAS L'OBSTACLE : "
+                     "`HasPermanent.OnWhenCardLeavePlay` (has_permanent.py:34) refuse la "
+                     "sortie de jeu SAUF si l'effet vient du MEME `set_name`. La brulure "
+                     "sort donc parce que c'est elle-meme qui la range"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.Attack('sf001a')"],
+        "main_exclusive": ["01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "verifier": "sunfire_fin_de_phase_joueur",
+        "attendu": {},
+    },
+    {
+        "nom": "sf006 Atomic Samurai — la Burning inflige 2 degats au lieu de 1",
+        "pourquoi": ("⚠ « from the TRIGGERED ABILITY of Burning » et non « from Burning » : "
+                     "la distinction est imprimee. Le filtre porte sur la SOURCE des "
+                     "degats, qui vaut la brulure elle-meme.\n"
+                     "⚠ `message.IncreaseDamage` et NON `UpdateDamage` : ce dernier existe "
+                     "sur un AUTRE message (sender_damage.py:932) et ne compte que les "
+                     "degats EXCEDENTAIRES — l'employer ici n'aurait rien fait.\n"
+                     "C'est l'ecart avec le cas precedent, 1 degat contre 2, qui mesure la "
+                     "carte"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf006', under_control=True)",
+                          "Puzzle.Attack('sf001a')"],
+        "main_exclusive": ["01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "verifier": "sunfire_fin_de_phase_avec_samourai",
+        "attendu": {},
+    },
+    {
+        "nom": "sf001b Hot-Headed — 5 cartes defaussees, une seule remonte en main",
+        "pourquoi": ("⚠ PAS DE FLECHE : defausser cinq cartes n'est pas un cout, c'est la "
+                     "premiere moitie de l'effet. Et « one card DISCARDED THIS WAY » ne "
+                     "designe que ces cinq-la, pas toute la defausse — d'ou "
+                     "`Player.DiscardDeckTopCards`, qui REND la liste (modele `aa001a`).\n"
+                     "Main videe a une carte : elle doit finir a deux"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sf001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "sf001b Hot-Headed — TEMOIN D'EPUISEMENT : la seconde Action du round ne pioche plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per round.) » : deux "
+                     "activations dans le meme round, un chiffre mesure au second. "
+                     "`declencher_tolerant` autorise l'echec de la seconde commande, qui "
+                     "EST le resultat attendu.\n"
+                     "Si la limite mord, la main reste a deux cartes"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sf001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('sf001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "sf001a Burning Aura — CONTRE-CAS : l'attaque d'un ALLIE ne pose aucune Burning",
+        "pourquoi": ("le litteral `\"This\"` : la capacite est portee par Sunfire et ne "
+                     "regarde que SES pouvoirs de base. Sans ce contre-cas, un filtre "
+                     "absent ferait bruler a chaque attaque de la table.\n"
+                     "`01084` * Nick Fury frappe le vilain : la reserve doit rester a SIX"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01084', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01084')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_mis_de_cote": 6, "hors_jeu": ["sf009"]},
+    },
+    {
+        "nom": "sf002 Atomic Fire — brule le vilain ET les sbires engages, puis frappe tout ce qui brule",
+        "pourquoi": ("⚠ DEUX PORTEES DIFFERENTES DANS LA MEME CARTE : la premiere phrase "
+                     "vise « the villain and each minion engaged WITH THAT PLAYER », la "
+                     "seconde « EACH ENEMY with a copy of Burning attached » — tout le "
+                     "terrain. C'est imprime, et c'est ce que le cas mesure.\n"
+                     "⚠ ORDRE : on attache D'ABORD, on frappe ENSUITE, donc les ennemis "
+                     "qu'on vient d'allumer prennent les 3 degats eux aussi.\n"
+                     "`01101` Hydra Mercenary a 3 PV et meurt ; sa Burning retourne alors "
+                     "dans la reserve par la seconde Reponse forcee de `sf009`, d'ou 6 - 2 "
+                     "+ 1 = 5"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["sf002", "01088", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["sf002"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "hors_jeu": ["01101"],
+                    "taille_mis_de_cote": 5},
+    },
+    {
+        "nom": "sf003 Burning Hands — 3 menaces retirees, et l'attachement du vilain arrache",
+        "pourquoi": ("⚠ BRIQUE 3 DU PLAN DE PORTAGE : selection d'une carte par son TEXTE. "
+                     "Aucune primitive moteur, on lit `face.paper.text`. `01100` Enhanced "
+                     "Ivory Horn porte « Hero Action: Spend ... -> discard this card ».\n"
+                     "MOT-CLE `Requirement` : base automatique, `desc.Requirement = \"Y\"`, "
+                     "le moteur exige l'energie au paiement. `01088` Energy la fournit.\n"
+                     "Quand un attachement est arrache, AUCUNE Burning n'est posee : la "
+                     "reserve reste a six. C'est la moitie « Otherwise » qui ne tombe pas"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01100')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["sf003", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sf003"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 3]],
+                    "hors_jeu": ["01100"],
+                    "taille_mis_de_cote": 6},
+    },
+    {
+        "nom": "sf003 Burning Hands — branche « Otherwise » : sans attachement, une Burning est posee",
+        "pourquoi": ("⚠ « OTHERWISE » N'EST PAS UN CHOIX : le repli tombe quand il n'y a "
+                     "AUCUN attachement eligible. Mot-piege releve a l'etape 5, deja paye "
+                     "sur `sn013`. La joueuse ne peut pas preferer la brulure.\n"
+                     "Meme position sans `01100` : les 3 menaces partent quand meme, et la "
+                     "reserve descend a cinq"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["sf003", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sf003"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 3]],
+                    "en_jeu": ["sf009"],
+                    "taille_mis_de_cote": 5},
+    },
+    {
+        "nom": "sf004 Hot Pursuit — chaque Burning posee redresse Sunfire",
+        "pourquoi": ("⚠ La fenetre est `AfterCardAttachTo`, que SEUL `AttachTo2` emet : "
+                     "c'est pour ca que tout le pack passe par `AttacherUneBrulure`. Un "
+                     "module qui poserait la brulure autrement priverait cette carte de "
+                     "son declencheur.\n"
+                     "L'attaque de base incline Sunfire ET pose une Burning : c'est le "
+                     "redressement qui prouve que la Reponse est partie"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')"],
+        "main_exclusive": ["sf004", "01090"],
+        "declencher": ["Puzzle.Attack('sf001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sf001a"], "defausse": ["sf004"]},
+    },
+    {
+        "nom": "sf005 Solar Blast — 3 degats, et l'attachement DE CET ENNEMI arrache",
+        "pourquoi": ("« attached TO THAT ENEMY » : la carte ne regarde que les "
+                     "attachements de l'ennemi frappe.\n"
+                     "⚠ ORDRE : les 3 degats tombent AVANT l'arrachage. Rhino a 14 PV, il "
+                     "survit et perd son Enhanced Ivory Horn"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01100')"],
+        "main_exclusive": ["sf005", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sf005"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "hors_jeu": ["01100"],
+                    "taille_mis_de_cote": 6},
+    },
+    {
+        "nom": "sf005 Solar Blast — CONTRE-CAS : un attachement sur un AUTRE ennemi n'est pas arrache",
+        "pourquoi": ("⚠⚠ C'EST LA SEULE DIFFERENCE IMPRIMEE ENTRE `sf005` ET `sf003`, et "
+                     "sans ce cas elle ne serait mesuree nulle part. `sf003` Burning Hands "
+                     "regarde TOUT le terrain, `sf005` seulement « that enemy ».\n"
+                     "`01100` est attache a Rhino, mais c'est `01131` * Tiger Shark qu'on "
+                     "frappe : l'attachement doit RESTER, et le repli « Otherwise » poser "
+                     "une Burning sur le requin.\n"
+                     "⚠ Tiger Shark et ses SIX PV, et pas Hand Ninja : le ninja n'en a que "
+                     "DEUX et mourait des 3 degats, si bien que le repli ne trouvait plus "
+                     "d'ennemi en jeu ou poser la brulure. Le cas mesurait alors l'absence "
+                     "de cible, pas le filtre. Trouve le 06/09/2026"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01100')",
+                          "Puzzle.PutIntoPlay('01131')"],
+        "main_exclusive": ["sf005", "01088", "01090"],
+        "declencher": [],
+        "jouer": ["sf005"],
+        "cibles": ["01131"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01100"], "taille_mis_de_cote": 5},
+    },
+    {
+        "nom": "sf007 * Sunfire's Mask — +2 points de vie sur l'IDENTITE",
+        "pourquoi": ("⚠ « YOU get +2 hit points » -> le litteral `\"You\"`, donc les DEUX "
+                     "faces de l'identite, pas seulement le heros. C'est l'inverse de "
+                     "`sf008` Sunfire's Suit, qui dit « SUNFIRE gets +1 DEF ». Les deux "
+                     "ecritures cohabitent dans le meme pack.\n"
+                     "PV imprimes 11, donc 13 avec le masque"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf007', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2}},
+    },
+    {
+        "nom": "sf007 * Sunfire's Mask — CONTRE-CAS : le bonus de PV vaut AUSSI en forme civile",
+        "pourquoi": ("RECETTES §3 exige un contre-cas dans l'AUTRE forme pour tout bonus "
+                     "continu d'identite — regle nee du defaut `an002` Sera, trouve en "
+                     "partie reelle et jamais par les tests.\n"
+                     "Ici le contre-cas confirme le bonus au lieu de l'infirmer : « YOU » "
+                     "couvre les deux faces, et Shiro Yoshida a lui aussi 11 PV imprimes. "
+                     "C'est la preuve que le litteral employe est le bon"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sf007', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 2}, "forme": "AlterEgo"},
+    },
+    {
+        "nom": "sf008 Sunfire's Suit — +1 DEF, et un redressement apres la defense",
+        "pourquoi": ("⚠ « SUNFIRE gets +1 DEF » nomme la face HEROS, d'ou `Hero` et non "
+                     "`\"You\"` : difference imprimee avec `sf007`.\n"
+                     "⚠ DEUX COUTS derriere le declencheur : incliner l'armure ET depenser "
+                     "1 ressource de n'importe quel type. Le litteral est `Cost(\"1\")` — "
+                     "les lettres imposeraient une COULEUR, les chiffres ne demandent qu'un "
+                     "NOMBRE (element/cost.py:35-41), et `Cost(\"*\")` n'existe pas.\n"
+                     "La defense incline Sunfire ; c'est le redressement qui prouve la "
+                     "Reponse"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Defend('sf001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1},
+                    "pret": ["sf001a"],
+                    "exhausted": ["sf008"]},
+    },
+    {
+        "nom": "sf008 Sunfire's Suit — CONTRE-CAS : en forme civile, aucun bonus de DEF ne fuit",
+        "pourquoi": ("le pendant negatif du cas precedent, exige par RECETTES §3. "
+                     "`GiveKeywordToInPlayWhenApplyThis(Hero, ...)` ne doit RIEN donner a "
+                     "Shiro Yoshida, qui n'a d'ailleurs pas de DEF imprimee.\n"
+                     "Sans ce cas, un `\"You\"` ecrit par erreur passerait inapercu"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sf008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "pret": ["sf008"]},
+    },
+    {
+        "nom": "sf010 Shame — -1 a la taille de main, et l'obligation reste en jeu",
+        "pourquoi": ("⚠ OBLIGATION QUI RESTE EN JEU, ce qui n'est pas le cas general : la "
+                     "plupart se defaussent en se resolvant. Modele `04165` Martial Law, "
+                     "meme phrase (« Your hand size is reduced by 1 ») et meme structure.\n"
+                     "Shiro Yoshida a une main de 6 imprimee : elle doit tomber a 5, et "
+                     "l'obligation etre encore la"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sf010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": -1}, "en_jeu": ["sf010"]},
+    },
+    {
+        "nom": "sf010 Shame — l'Action d'alter ego RETIRE l'obligation DE LA PARTIE",
+        "pourquoi": ("⚠ « REMOVE Shame FROM THE GAME » et non « discard » : c'est "
+                     "`PlayerActionToRemoveThisFromGame`, pas "
+                     "`PlayerActionToDiscardThis`. La difference est reelle — une "
+                     "obligation defaussee revient dans le deck de rencontre du joueur, "
+                     "une obligation retiree ne revient jamais. `04165`, la carte modele, "
+                     "dit « discard » : ne pas la recopier sans la relire.\n"
+                     "⚠ DEUX COUTS : incliner Shiro Yoshida ET defausser 1 carte de la "
+                     "main. La main passe donc de 2 a 1"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": [],
+        "main_exclusive": ["01089", "01090"],
+        "declencher": ["Puzzle.Reveal('sf010')",
+                       "Puzzle.Action('sf010', 'AlterEgoAction')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sf010"],
+                    "exhausted": ["sf001b"],
+                    "taille_main": 1},
+    },
+    {
+        "nom": "sf009 Burning — quand l'hote quitte le jeu, la brulure retourne dans la reserve",
+        "pourquoi": ("⚠ LA SECONDE REPONSE FORCEE, SANS LAQUELLE LE PACK S'ETEINDRAIT. Une "
+                     "brulure posee sur un sbire vaincu resterait accrochee a un fantome "
+                     "et serait perdue pour la partie : six sbires tues, et la reserve "
+                     "serait vide.\n"
+                     "⚠ LE SBIRE EST `01131` * Tiger Shark, ETRANGER au scenario Rhino, "
+                     "et ce n'est pas un detail : `Puzzle.Damage` passe par "
+                     "`FindOrCreateFace`, qui fouille le deck AVANT le terrain. Avec "
+                     "`01110` Hydra Bomber, present en DEUX exemplaires dans le deck de "
+                     "Rhino, la commande frappait une copie face cachee et celui du "
+                     "terrain restait intact. Piege `FindFaceInPlay` documente dans "
+                     "puzzle.py, paye ici le 06/09/2026"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01131')",
+                          "Puzzle.Attack('sf001a')"],
+        "main_exclusive": ["01090"],
+        "cibles": ["01131"],
+        "declencher": ["Puzzle.Damage('01131', 9)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01131", "sf009"], "taille_mis_de_cote": 6},
+    },
+    {
+        "nom": "sf011 Hand Ambush — chaque ennemi qui entre en jeu recoit une carte de bonus",
+        "pourquoi": ("⚠ UN SBIRE NE RECOIT NORMALEMENT AUCUNE CARTE DE BONUS : seules les "
+                     "activations de VILAIN en distribuent. C'est ce qui rend le chiffre "
+                     "lisible — `01103` * Shocker frappe a 2 tout seul, et a 2 + les "
+                     "icones de la carte de bonus avec ce complot en jeu.\n"
+                     "Le dessus du deck rencontre est truque avec `01190` (2 icones "
+                     "chiffrees), et le complot porte lui-meme l'icone AMPLIFY, qui ajoute "
+                     "1 icone a chaque carte de bonus retournee (`ResolveAmplify`, "
+                     "can_boost.py:71). On attend donc 2 + 2 + 1 = **5** degats. ⚠ La "
+                     "premiere ecriture du cas attendait 4 en oubliant l'Amplify : c'est "
+                     "le cas qui a rappele que l'icone du complot compte, pas la lecture. "
+                     "L'heroine est inclinee pour ne declarer aucune defense"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf011')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Exhaust('sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5},
+    },
+    {
+        "nom": "sf011 Hand Ambush — LIGNE DE BASE : sans le complot, le sbire frappe a 2",
+        "pourquoi": ("⚠ SANS CE CAS, LE PRECEDENT NE PROUVE RIEN (§7bis de "
+                     "RECETTES-MOTEUR) : 4 degats pourraient venir d'ailleurs. Meme "
+                     "position, complot absent : Shocker n'a aucune carte de bonus et "
+                     "frappe a 2 exactement.\n"
+                     "C'est l'ecart entre 2 et 4 qui mesure la carte"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.Exhaust('sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "sf011 Hand Ambush — un sbire HAND vaincu revient sur le DESSUS du deck rencontre",
+        "pourquoi": ("⚠ « place it ON TOP OF the encounter deck » : sur le dessus, pas "
+                     "melange. Le sbire revient donc au prochain tour du mechant, et c'est "
+                     "le piege du set — la Main est intarissable tant que le complot "
+                     "tient.\n"
+                     "⚠ Le filtre est le TRAIT `HAND`, pas le nom : `sf012` Silver Samurai "
+                     "et `sf013` Hand Ninja le portent tous les deux"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf011')",
+                          "Puzzle.PutIntoPlay('sf013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Damage('sf013', 9)"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["sf013"], "hors_jeu": ["sf013"]},
+    },
+    {
+        "nom": "sf012 * Silver Samurai — a son entree en jeu, il cherche et attache sa Katana",
+        "pourquoi": ("modele `tg013` * Alligator Loki : `Find.FindAndAttachTo(effect, "
+                     "<cible>, who_perform=<joueur>, name=..., card_type=Attachment)`.\n"
+                     "⚠ « IF IT IS NOT IN PLAY » designe LA KATANA, pas le samourai qui "
+                     "vient d'entrer : sans ce test, un Silver Samurai qui revient par "
+                     "`sf011` chercherait une seconde katana"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('sf012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sf012", "sf014"]},
+    },
+    {
+        "nom": "sf014 * Silver Samurai's Katana — le samourai ne subit AUCUN degat d'attaque",
+        "pourquoi": ("« Silver Samurai cannot take damage FROM ATTACKS » -> "
+                     "`PreventAllDamageTo` filtre sur `message.IsFromAttack()`.\n"
+                     "Sunfire frappe a 1 (ATQ imprimee) : le samourai doit rester intact. "
+                     "⚠ Ses Burning s'attachent quand meme — Burning Aura est une "
+                     "INTERRUPTION, elle part avant que l'attaque ne soit annulee.\n"
+                     "⚠ LA RESERVE TOMBE A 4, PAS A 5, ET C'EST JUSTE : le samourai a "
+                     "Coup Rapide, il attaque des son entree en jeu, Sunfire DEFEND, et "
+                     "Burning Aura pose une SECONDE brulure — celle de l'attaque, celle de "
+                     "la defense. C'est le cas qui l'a montre, pas la lecture"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf012')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sf001a')"],
+        "cibles": ["sf012"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sf012", 0]], "taille_mis_de_cote": 4},
+    },
+    {
+        "nom": "sf014 * Silver Samurai's Katana — mais la BRULURE, elle, passe",
+        "pourquoi": ("⚠ « cannot take damage FROM ATTACKS » : des ATTAQUES seulement. Les "
+                     "degats de `sf009` Burning viennent d'une Reponse forcee, pas d'une "
+                     "attaque — ils PASSENT. C'est la reponse du pack a ce sbire, et sans "
+                     "ce cas le filtre `is_from_attack` pourrait etre absent sans que rien "
+                     "ne le voie.\n"
+                     "Meme position que le cas precedent, mais on termine la phase des "
+                     "joueurs : le samourai doit alors perdre des points de vie"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('sf012')",
+                          "Puzzle.Attack('sf001a')"],
+        "main_exclusive": ["01090"],
+        "cibles": ["sf012"],
+        "declencher": [],
+        "verifier": "sunfire_fin_de_phase_joueur",
+        "attendu": {},
+    },
+    {
+        "nom": "sf013 Hand Ninja — ses attaques ont Perforation, et il s'active des son entree",
+        "pourquoi": ("mot-cle `piercing` : les degats ignorent le statut Tenace. "
+                     "`UnitAttackGainKeyword(\"This\", piercing=True)`, modeles `43009` / "
+                     "`27078` / `tg013`.\n"
+                     "⚠ DEUX capacites mesurees d'un coup : le ninja s'active TOUT SEUL en "
+                     "entrant en jeu (Reponse forcee), et son attaque traverse le Tenace. "
+                     "Sunfire est Tenace ET incline : sans Perforation il ne prendrait "
+                     "rien"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.Exhaust('sf001a')",
+                          "Puzzle.Tough('sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('sf013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 1,
+                    "statuts_absents": [["sf001a", "Tough"]]},
+    },
+    {
+        "nom": "sf013 Hand Ninja — LIGNE DE BASE : un sbire SANS Perforation ne passe pas le Tenace",
+        "pourquoi": ("⚠ CE CAS EXISTE PARCE QUE LE PRECEDENT NE PROUVE RIEN TOUT SEUL "
+                     "(§7bis de RECETTES-MOTEUR) : le degat pourrait venir d'ailleurs. "
+                     "`01101` Hydra Mercenary a la meme ATQ 1 et AUCUNE Perforation.\n"
+                     "C'est le ZERO de ce cas qui donne son sens au degat du precedent"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Exhaust('sf001a')",
+                          "Puzzle.Tough('sf001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "sf015 Tachyon Whip — s'attache au heros, puis mord a chaque pouvoir de base",
+        "pourquoi": ("« Attach to your hero » puis « Forced Response: After you use a basic "
+                     "power, take 2 damage ».\n"
+                     "L'attaque de base fait donc DEUX choses : elle pose une Burning "
+                     "(`sf001a`) et elle coute 2 points de vie. C'est la carte qui punit "
+                     "le moteur du pack"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.Reveal('sf015')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sf001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sf015"], "degats_identite_min": 2},
+    },
+    {
+        "nom": "sf015 Tachyon Whip — le passage en forme civile est INTERDIT",
+        "pourquoi": ("« You cannot change to ALTER-EGO form » -> `to_form=AlterEgo` : le "
+                     "passage EN CIVIL est interdit, le retour en heros ne l'est pas. La "
+                     "direction est imprimee, et un filtre absent bloquerait les deux.\n"
+                     "`declencher_tolerant` autorise l'echec de la bascule, qui EST le "
+                     "resultat attendu : le joueur doit rester en forme de heros"),
+        "scenario": "rhino",
+        "heros": "sunfire",
+        "mise_en_place": ["Puzzle.ChangeToFace('sf001b', 'sf001a')",
+                          "Puzzle.Reveal('sf015')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.ChangeForm('sf001a', 'Identity')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "en_jeu": ["sf015"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+
+# --- SONDE TEMPORAIRE (portage throg, 05/09/2026) ---------------------------
+def throg_sonde(monde, aides):
+    """Ne verifie rien : elle DECRIT le monde, pour diagnostiquer un cas rouge."""
+    en_jeu = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None:
+            continue
+        cid = getattr(face.paper, "card_id", None)
+        if face.IsInPlay():
+            menace = getattr(face, "threat", None)
+            pv = getattr(face, "health", None)
+            pvmax = getattr(face, "max_health", None)
+            bout = cid
+            if menace is not None:
+                bout += "/m" + str(menace)
+            if pv is not None and pvmax is not None:
+                bout += f"/pv{pv}-{pvmax}"
+            en_jeu.append(bout)
+    joueur = monde.players[0]
+    main = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.Get()]
+    defausse = [getattr(f.paper, "card_id", None) for f in joueur.discard_pile.Get(True)]
+    identite = joueur.GetIdentity()
+    renc = []
+    for objet in monde.object_manager.card_dict.values():
+        f2 = objet.face
+        if f2 is None:
+            continue
+        zone = str(getattr(f2.card, "area", ""))
+        if "encounter" in zone.lower() and "discard" in zone.lower():
+            renc.append(getattr(f2.paper, "card_id", None))
+    return False, (f"EN JEU={sorted(en_jeu)} | MAIN={main} | DEFAUSSE={defausse} | "
+                   f"DEF_RENC={renc} | "
+                   f"identite={getattr(identite.paper,'card_id',None)} "
+                   f"pv={identite.health}/{identite.max_health} "
+                   f"incline={identite.IsExhaust()}")
+
 def tt001b_remelange(monde, aides):
     """tt001b : les cartes SUPERPOWER ont bien QUITTE la defausse.
 
@@ -19722,6 +22599,210 @@ def brawn_gamma_strike_recyclee(monde, aides):
         return False, ("Gamma Strike est en defausse : le recyclage vers la reserve "
                        "n'a pas eu lieu apres un paiement entierement [mental]")
     return False, f"Gamma Strike introuvable (reserve={reserve}, defausse={defausse})"
+
+def throg_chomped_fin_de_round(monde, aides):
+    """tg016 : « Forced Interrupt: When the round ends, take 1 damage. »
+
+    ⚠ `Puzzle.BeginVillainPhase()` OUVRE la phase du vilain, elle ne TERMINE
+    pas le round : le message `WhenRoundEnd` n'etait jamais envoye et l'identite
+    ne prenait aucun degat. Le cas passait quand meme, parce que la cle
+    `degats_identite_min` n'existait pas dans `etat_attendu` (reparee le
+    05/09/2026) — une assertion morte au-dessus d'un declencheur muet.
+
+    On envoie donc le message a la main, exactement comme
+    `brawn_hulk_out_fin_de_round` le fait pour bw015.
+    """
+    from game.message import Message
+
+    chomped = aides["par_id"](monde, "tg016")
+    if chomped is None:
+        return False, "Chomped (tg016) n'est pas en jeu"
+
+    identite = aides["identite"](monde)
+    avant = identite.max_health - identite.health
+
+    Message.WhenRoundEnd(monde).Send()
+
+    identite = aides["identite"](monde)
+    apres = identite.max_health - identite.health
+    if apres <= avant:
+        return False, (f"l'identite n'a pris aucun degat a la fin du round "
+                       f"({avant} -> {apres})")
+    return True, f"degats sur l'identite {avant} -> {apres} a la fin du round"
+
+def _cameo_compliment(monde, aides, card_id, type_de_carte, trait, non_permanent):
+    """Le corps commun aux trois cartes du set « Cameo Compliment ».
+
+    ⚠ POURQUOI UNE VERIFICATION DEDIEE PLUTOT QU'UN `etat_attendu`.
+    Ces trois cartes sont branchees sur `AfterGameSetup`, c'est-a-dire sur
+    `Message.WhenGameWouldBegin`, envoye UNE SEULE FOIS par `world.py:611` a
+    la toute fin de la mise en place — donc AVANT que le harnais ne prenne la
+    main. Aucune commande `Puzzle.*` ne peut le renvoyer. On l'envoie donc a la
+    main, exactement comme `throg_chomped_fin_de_round` le fait pour
+    `WhenRoundEnd`.
+
+    ⚠ ET C'EST LA SEULE FACON DE MESURER CES CARTES. Un `etat_attendu` sur
+    `hors_jeu: [cc001]` passerait au vert meme si la carte n'avait rien
+    cherche du tout : « remove this card from the game » est la DERNIERE
+    phrase. Les trois chiffres qui comptent sont ailleurs — une carte de plus
+    dans le deck, deux de moins en main, et la carte trouvee doit REELLEMENT
+    repondre au filtre imprime.
+    """
+    from game.message import Message
+
+    carte = aides["par_id"](monde, card_id)
+    if carte is None:
+        return False, f"{card_id} n'est pas en jeu avant le declenchement"
+
+    joueur = monde.players[0]
+    ids_avant = [getattr(f.paper, "card_id", None) for f in joueur.player_deck.GetAll()]
+    main_avant = len(list(joueur.hand_cards.Get()))
+    if main_avant < 2:
+        return False, f"main de {main_avant} carte(s) : le cas ne peut pas mesurer la defausse de 2"
+
+    # Les sets d'identites presentes, pour verifier « not in this game ».
+    sets_en_partie = set()
+    for pl in monde.players:
+        for face in pl.GetAllIdentityFace():
+            if face.paper.set_name:
+                sets_en_partie.add(face.paper.set_name)
+
+    Message.WhenGameWouldBegin(monde).Send()
+
+    soucis = []
+
+    # 1. « remove this card from the game »
+    if aides["par_id"](monde, card_id) is not None:
+        soucis.append(f"{card_id} est encore en jeu")
+
+    # 2. « Shuffle that card into your deck » : exactement UNE carte de plus,
+    #    et elle doit repondre au filtre imprime.
+    apres = list(joueur.player_deck.GetAll())
+    ids_apres = [getattr(f.paper, "card_id", None) for f in apres]
+    restants = list(ids_avant)
+    nouvelles = []
+    for f in apres:
+        cid = getattr(f.paper, "card_id", None)
+        if cid in restants:
+            restants.remove(cid)
+        else:
+            nouvelles.append(f)
+    if len(nouvelles) != 1:
+        soucis.append(f"{len(nouvelles)} carte(s) ajoutee(s) au deck (attendu 1)")
+    else:
+        paper = nouvelles[0].paper
+        if paper.type != type_de_carte:
+            soucis.append(f"la carte trouvee est un {paper.type} (attendu {type_de_carte})")
+        if trait not in (paper.traits or []):
+            soucis.append(f"la carte trouvee n'a pas le trait {trait} (traits = {paper.traits})")
+        if "Hero" not in (paper.desc.get("Class") or "").split(";"):
+            soucis.append(f"la carte trouvee n'est PAS specifique a une identite "
+                          f"(Class = {paper.desc.get('Class')!r})")
+        if paper.set_name in sets_en_partie:
+            soucis.append(f"la carte trouvee vient d'une identite EN PARTIE ({paper.set_name})")
+        if non_permanent and paper.desc.get("Permanent"):
+            soucis.append(f"la carte trouvee est PERMANENTE ({paper.name})")
+
+    # 3. « Discard 2 cards from your hand »
+    main_apres = len(list(joueur.hand_cards.Get()))
+    if main_avant - main_apres != 2:
+        soucis.append(f"main {main_avant} -> {main_apres} (attendu -2)")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    trouvee = nouvelles[0].paper
+    return True, (f"{trouvee.card_id} « {trouvee.name} » ({trouvee.set_name}) melangee "
+                  f"dans le deck, main {main_avant} -> {main_apres}, {card_id} hors du jeu")
+
+
+def cameo_lock_it_down(monde, aides):
+    """cc001 : un soutien LOCATION specifique a une identite absente."""
+    return _cameo_compliment(monde, aides, "cc001", "Support", "LOCATION", False)
+
+
+def cameo_new_suit(monde, aides):
+    """cc002 : une amelioration ARMOR specifique a une identite absente."""
+    return _cameo_compliment(monde, aides, "cc002", "Upgrade", "ARMOR", False)
+
+
+def cameo_ye_be_worthy(monde, aides):
+    """cc003 : une amelioration WEAPON NON PERMANENTE, identite absente."""
+    return _cameo_compliment(monde, aides, "cc003", "Upgrade", "WEAPON", True)
+
+
+def sunfire_fin_de_phase_joueur(monde, aides):
+    """sf009 Burning : « After the PLAYER phase ends, deal 1 damage to attached
+    enemy. Set this card aside. »
+
+    ⚠ `Puzzle.BeginVillainPhase()` OUVRE la phase du vilain, elle ne TERMINE
+    pas celle des joueurs : ni `WhenPhaseEnd` ni `AfterPhaseEnd` ne partent, et
+    la brulure ne mordrait jamais. On envoie donc les deux messages a la main,
+    exactement comme `throg_chomped_fin_de_round` le fait pour `WhenRoundEnd`.
+
+    Deux chiffres mesures, et il faut les deux : l'ennemi PERD des points de
+    vie, ET la brulure RETOURNE dans la reserve. Sans le second, une brulure
+    qui resterait accrochee brulerait a chaque phase et le pack serait faux.
+    """
+    from game.message import Message
+
+    brulure = aides["par_id"](monde, "sf009")
+    if brulure is None:
+        return False, "aucune Burning (sf009) en jeu avant le declenchement"
+    hote = getattr(brulure, "bind_face", None)
+    if hote is None:
+        return False, "la Burning n'est attachee a personne"
+    avant = hote.max_health - hote.health
+    reserve_avant = len(list(monde.players[0].set_aside_deck.Get()))
+
+    fin = Message.WhenPhaseEnd(monde.phase_id, "Player", monde)
+    fin.Send()
+    Message.AfterPhaseEnd(monde.phase_id, "Player", fin).Send()
+
+    soucis = []
+    apres = hote.max_health - hote.health
+    if apres <= avant:
+        soucis.append(f"l'hote n'a pris aucun degat ({avant} -> {apres})")
+    reserve_apres = len(list(monde.players[0].set_aside_deck.Get()))
+    if reserve_apres <= reserve_avant:
+        soucis.append(f"la Burning n'est pas retournee dans la reserve "
+                      f"({reserve_avant} -> {reserve_apres})")
+    if aides["par_id"](monde, "sf009") is not None:
+        soucis.append("la Burning est encore en jeu")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, (f"degats sur l'hote {avant} -> {apres}, reserve "
+                  f"{reserve_avant} -> {reserve_apres}, Burning hors du jeu")
+
+
+def sunfire_fin_de_phase_avec_samourai(monde, aides):
+    """sf006 Atomic Samurai : « +1 additional damage » sur la MEME fenetre.
+
+    Meme declenchement que `sunfire_fin_de_phase_joueur`, mais on exige DEUX
+    degats au lieu d'un. C'est l'ecart entre les deux verifications qui mesure
+    l'amelioration, pas un chiffre isole.
+    """
+    from game.message import Message
+
+    brulure = aides["par_id"](monde, "sf009")
+    if brulure is None:
+        return False, "aucune Burning (sf009) en jeu avant le declenchement"
+    if aides["par_id"](monde, "sf006") is None:
+        return False, "Atomic Samurai (sf006) n'est pas en jeu"
+    hote = getattr(brulure, "bind_face", None)
+    if hote is None:
+        return False, "la Burning n'est attachee a personne"
+    avant = hote.max_health - hote.health
+
+    fin = Message.WhenPhaseEnd(monde.phase_id, "Player", monde)
+    fin.Send()
+    Message.AfterPhaseEnd(monde.phase_id, "Player", fin).Send()
+
+    apres = hote.max_health - hote.health
+    if apres - avant != 2:
+        return False, (f"l'hote a pris {apres - avant} degat(s) (attendu 2 : "
+                       f"1 de Burning + 1 d'Atomic Samurai)")
+    return True, f"degats sur l'hote {avant} -> {apres}, soit 1 + 1"
+
 
 def brawn_hulk_out_fin_de_round(monde, aides):
     """bw015 : « When the round ends, remove 1 rage counter from here ».
@@ -20373,6 +23454,16 @@ def etat_attendu(monde, aides):
         if not identite.HasTrait(trait):
             soucis.append(f"trait {trait} absent de l'identite")
 
+    # AJOUTEE le 05/09/2026 (pack throg). Le pendant negatif de `traits`, sans
+    # lequel on ne peut PAS prouver qu'un trait accorde par une carte ne fuit
+    # pas sur l'autre face. RECETTES-MOTEUR §3 l'exige pourtant : « tout bonus
+    # continu d'identite exige un contre-cas dans l'AUTRE forme » — regle nee
+    # du defaut `an002` Sera, trouve en partie reelle par le joueur le
+    # 1/9/2026 et JAMAIS par les tests, faute de cette cle.
+    for trait in attendu.get("traits_absents") or []:
+        if identite.HasTrait(trait):
+            soucis.append(f"trait {trait} PRESENT sur l'identite, il ne devrait pas y etre")
+
     for card_id in attendu.get("en_jeu") or []:
         if aides["par_id"](monde, card_id) is None:
             soucis.append(f"{card_id} n'est pas en jeu")
@@ -20463,6 +23554,22 @@ def etat_attendu(monde, aides):
         if subis != attendu["degats_identite"]:
             soucis.append(f"degats sur l'identite = {subis} "
                           f"(attendu {attendu['degats_identite']})")
+
+    # ⚠ CORRECTIF DU 05/09/2026 (pack throg). `degats_identite_min` etait
+    # ecrite dans des cas depuis longtemps, mais n'existait QUE dans
+    # `al_frogjolnir_sur_throg`, une verification propre au pack
+    # alligator_loki. Tout cas qui l'employait avec `"verifier":
+    # "etat_attendu"` voyait donc sa cle SILENCIEUSEMENT IGNOREE : une
+    # assertion qui ne mesure rien, et un cas vert qui ne prouve rien.
+    # Trouve parce que le cas Perforation de `tg013` restait vert sous
+    # substitution alors que la sonde mesurait 3 degats avec le module et
+    # 0 sans, trois fois de suite. Meme famille que les quatre facons de
+    # mesurer RIEN du §7bis de RECETTES-MOTEUR.
+    if "degats_identite_min" in attendu:
+        subis = identite.max_health - identite.health
+        if subis < attendu["degats_identite_min"]:
+            soucis.append(f"degats sur l'identite = {subis} "
+                          f"(attendu au moins {attendu['degats_identite_min']})")
 
     if attendu.get("dans_deck_rencontre"):
         from game.operate.worlds import Worlds
@@ -23930,6 +27037,24 @@ def executer_un_cas(game_dir, port, index):
             # existant ne la definit, aucun n'est modifie.
             if cas.get("declencher_apres"):
                 PuzzleHelper.Exec(cas["declencher_apres"], monde)
+            # `declencher_tolerant` : commandes Puzzle.* dont l'ECHEC EST LE
+            # RESULTAT ATTENDU. Ajoutee le 05/09/2026 (pack throg).
+            #
+            # ⚠ POURQUOI ELLE MANQUAIT. L'etape 7 bis de PROCESSUS-CARTE exige,
+            # pour toute limite imprimee, un temoin qui monte DEUX declenchements
+            # dans le meme round. Or `Puzzle.Action` leve un `AssertionError`
+            # (« n'offre aucune action disponible ») quand le moteur REFUSE le
+            # second — c'est-a-dire exactement quand la limite MORD. Le temoin
+            # ne pouvait donc pas etre vert : toute limite « once per round »
+            # portee par une ACTION etait hors de portee du harnais.
+            # La preuve reste un CHIFFRE, mesure dans `attendu` : la commande
+            # tolerante ne fait qu'autoriser la tentative.
+            for commande in cas.get("declencher_tolerant") or []:
+                try:
+                    PuzzleHelper.Exec([commande], monde)
+                except Exception as exc:
+                    print(f"TOLERE: {commande} -> {type(exc).__name__}: {exc}",
+                          flush=True)
         except Exception as exc:
             import traceback
             traceback.print_exc()

@@ -1435,4 +1435,56 @@ export const HEROS_INFO = {
         apparition: "The Mighty Thor #337 (1983)",
     },
 
+    "tg001a": {
+        bio: "Simon Walterson etait un homme change en grenouille par une sorciere. Coince dans Central Park, il prend la tete d'un peuple de batraciens en guerre contre les rats, et se fait appeler Puddlegulp. Quand Thor lui-meme est transforme en grenouille par Loki, un eclat de Mjolnir tombe a portee de Simon : il le souleve, se revele digne, et devient Throg, le Dieu Grenouille du Tonnerre. Minuscule, ridicule, et parfaitement serieux — il a depuis combattu aux cotes des Vengeurs et du Pet Avengers.",
+        bioEn: "Simon Walterson was a man turned into a frog by a witch. Stranded in Central Park, he came to lead a nation of frogs at war with the rats, and took the name Puddlegulp. When Loki turned Thor himself into a frog, a splinter of Mjolnir fell within Simon's reach: he lifted it, proved worthy, and became Throg, the Frog God of Thunder. Tiny, ridiculous, and entirely serious — he has since fought alongside the Avengers and the Pet Avengers.",
+        civil: "Simon Walterson",
+        base: "Central Park, New York",
+        baseEn: "Central Park, New York",
+        equipes: "Pet Avengers, Vengeurs",
+        equipesEn: "Pet Avengers, Avengers",
+        ennemis: "Alligator Loki, le Roi des Rats",
+        ennemisEn: "Alligator Loki, the Rat King",
+        apparition: "Thor #364 (1986)",
+    },
+
+    "sn001a": {
+        bio: "Sur la Terre-90214, en pleine Grande Depression, Peter Parker est un jeune journaliste de New York qui enquete sur la pegre de Manhattan. Mordu par une araignee sortie d'une idole volee, il herite d'une force et d'un instinct surnaturels, et se met a hanter les toits en trench-coat et chapeau mou. Le Spider-Man Noir ne lance pas de toiles mecaniques : il porte deux pistolets, et il n'est pas toujours certain de s'arreter a temps. Le Bouffon, le Vautour et le Caid version 1933 ont appris a le craindre.",
+        bioEn: "On Earth-90214, in the depths of the Great Depression, Peter Parker is a young New York reporter digging into the Manhattan underworld. Bitten by a spider that crawled out of a stolen idol, he inherits uncanny strength and instinct, and takes to haunting the rooftops in a trench coat and fedora. This Spider-Man fires no mechanical webs: he carries two pistols, and he is not always sure he will stop in time. The 1933 Goblin, Vulture and Kingpin have all learned to fear him.",
+        civil: "Peter Parker",
+        base: "New York, Terre-90214",
+        baseEn: "New York City, Earth-90214",
+        equipes: "Spider-Army, Web-Warriors",
+        equipesEn: "Spider-Army, Web-Warriors",
+        ennemis: "le Bouffon, le Vautour, le Caid",
+        ennemisEn: "the Goblin, the Vulture, the Kingpin",
+        apparition: "Spider-Man Noir #1 (2009)",
+    },
+
+    "bc001a": {
+        bio: "Felicia Hardy est la fille de Walter Hardy, cambrioleur legendaire. Pour marcher dans ses pas, elle s'entraine jusqu'a devenir une acrobate hors pair, se donne le nom de Black Cat, et se met a devaliser New York avec un flair qui ressemble a de la magie. Ce n'est pas qu'une image : elle porte la tychokinese, un pouvoir qui detourne la chance et fait s'effondrer les echafaudages sous ses adversaires. Voleuse, mercenaire, parfois heroine, souvent l'alliee de Spider-Man et rarement du meme cote que lui bien longtemps.",
+        bioEn: "Felicia Hardy is the daughter of Walter Hardy, a legendary cat burglar. To follow in his footsteps she trains herself into a peerless acrobat, takes the name Black Cat, and starts robbing New York with a flair that looks a lot like magic. It is not only a look: she carries tychokinesis, a power that bends probability and drops scaffolding on whoever crosses her. Thief, mercenary, occasional hero, frequent ally of Spider-Man and rarely on his side for long.",
+        civil: "Felicia Hardy",
+        base: "New York",
+        baseEn: "New York City",
+        equipes: "Heroes for Hire, Defenders",
+        equipesEn: "Heroes for Hire, Defenders",
+        ennemis: "le Chapardeur, Kingpin, Hammerhead",
+        ennemisEn: "the Prowler, Kingpin, Hammerhead",
+        apparition: "The Amazing Spider-Man #194 (1979)",
+    },
+
+    "sf001a": {
+        bio: "Shiro Yoshida est ne a Hiroshima, d'un pere diplomate japonais et d'une mere irradiee par la bombe. Son pouvoir mutant se reveille en meme temps que sa colere : il absorbe le rayonnement solaire et le rend en plasma. Manipule par un oncle nationaliste qui le lance contre les Etats-Unis, il change de camp, devient Sunfire, et rejoint brievement les X-Men — assez longtemps pour se faire detester de la moitie d'entre eux. Fier, cassant, loyal a son pays avant de l'etre a quiconque, il brule tout ce qu'il approche, au sens propre.",
+        bioEn: "Shiro Yoshida was born in Hiroshima to a Japanese diplomat and a mother irradiated by the bomb. His mutant power wakes with his anger: he absorbs solar radiation and returns it as plasma. Manipulated by a nationalist uncle into striking at the United States, he switches sides, becomes Sunfire, and briefly joins the X-Men, long enough to be disliked by half of them. Proud, abrasive, loyal to his country before anyone else, he burns everything he comes near, quite literally.",
+        civil: "Shiro Yoshida",
+        base: "Tokyo, Japon",
+        baseEn: "Tokyo, Japan",
+        equipes: "X-Men, Vengeurs",
+        equipesEn: "X-Men, Avengers",
+        ennemis: "Silver Samurai, la Main",
+        ennemisEn: "Silver Samurai, the Hand",
+        apparition: "X-Men #64 (1970)",
+    },
+
 };

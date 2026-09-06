@@ -26,6 +26,26 @@ verifier_tous_les_decks) : chaque processus fils reecrit
 ⚠ Le stub est pose sur le FICHIER SOURCE puis restaure : ne pas interrompre
 brutalement ; en cas de doute, `git status` doit rester propre a la fin.
 
+⚠⚠ ET `git status` NE SUFFIT PAS POUR UN PACK NEUF. Un pack pas encore commite
+est UNTRACKED : git ne montre alors aucune modification, et un stub laisse par
+une execution interrompue passe INAPERCU. C'est arrive le 06/09/2026 sur
+`sunfire` — la premiere execution, lancee au premier plan, a ete coupee par une
+limite de temps de l'outil appelant et a laisse `sf014.py` reduit a
+`GetAbilities -> []`. Les executions suivantes de `test_capacites` ont alors
+mesure un module VIDE : un seul cas rouge, qui ressemblait a une regression, et
+trois corrections ecrites pour rien avant que le fichier ne soit relu.
+
+PROCEDURE SURE, a appliquer pour un pack non commite :
+
+    S=/tmp/sauvegarde_pack && rm -rf $S && mkdir -p $S
+    cp -r src/cards/pack/<pack> $S/
+    md5sum src/cards/pack/<pack>/*/*.py | md5sum      # empreinte AVANT
+    python3.10 tools/substituer_pack.py <game_dir> <port> <prefixe>
+    md5sum src/cards/pack/<pack>/*/*.py | md5sum      # doit etre IDENTIQUE
+
+Un ecart d'empreinte, ou un fichier de moins de 10 lignes, veut dire qu'un stub
+est reste : restaurer depuis $S avant toute autre mesure.
+
 Origine : le script jetable substitutions.sh du portage harry_osborn
 (31/08/2026), promu ici en outil du projet.
 """

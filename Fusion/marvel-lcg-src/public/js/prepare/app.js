@@ -1,6 +1,6 @@
 // app.js - Assistant "Preparer une partie" : briefing Marvel Champions.
 "use strict";
-import { cardImageUrl, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=8b2b67ef";
+import { cardImageUrl, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=12431d13";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";

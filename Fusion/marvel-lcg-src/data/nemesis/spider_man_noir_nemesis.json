@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Spider-Man Noir Nemesis",
+    "encounters": [
+        "sn012",
+        "sn013",
+        "sn014",
+        "sn014",
+        "sn015"
+    ]
+}

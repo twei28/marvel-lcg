@@ -1,0 +1,42 @@
+{
+    "version": "0.5.8",
+    "name": "Sunfire",
+    "metadata": {
+        "url": "",
+        "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : on n'invente plus de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit — et le zip de Sunfire n'a aucune decklist (pas de dossier Extras). Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis. Le joueur choisit un deck d'aspect existant ou en construit un au lancement. ⚠ Le fichier reste indispensable malgre tout : `catalog.heroes()` (public/js/prepare/catalog.js:231-237) construit la liste des heros A PARTIR de deck/starter/*.json. Sans lui, Sunfire n'apparaitrait nulle part, pas meme dans le deckbuilder.",
+        "burning_note": "⚠ LES 6 EXEMPLAIRES DE BURNING (sf009) NE SONT PAS DANS `set_aside`. Ce champ n'est lu que par les clients, jamais par le moteur en vraie partie (§3 de PROCESSUS-HEROS) : c'est `sf001b` Shiro Yoshida qui les cree, par `AbilityFactory.BeginGameWithSetAside`, comme le texte imprime le dit (« begins the game with 6 Burning upgrades set aside »).",
+        "homonymes_note": "⚠ « * Sunfire » est DEJA `35014`, un ALLIE du pack wolverine ; « Hot Pursuit » est DEJA `24058`, une manigance annexe du set State of Emergency. Aucune carte du pack ne cherche par le NOM."
+    },
+    "hero": [
+        "sf001a,sf001b"
+    ],
+    "hero_deck": [
+        "sf002",
+        "sf002",
+        "sf003",
+        "sf003",
+        "sf003",
+        "sf004",
+        "sf004",
+        "sf004",
+        "sf004",
+        "sf005",
+        "sf005",
+        "sf005",
+        "sf006",
+        "sf007",
+        "sf008"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "sf010"
+    ],
+    "nemesis_set": [
+        "sf011",
+        "sf012",
+        "sf013",
+        "sf014",
+        "sf015"
+    ],
+    "player_deck": []
+}

@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Sunfire Nemesis",
+    "encounters": [
+        "sf011",
+        "sf012",
+        "sf013",
+        "sf014",
+        "sf015"
+    ]
+}

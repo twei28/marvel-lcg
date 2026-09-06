@@ -1,0 +1,69 @@
+{
+    "version": "0.5.8",
+    "name": "Throg",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aspect AGRESSIVITE, arbitrage utilisateur du 05/09/2026 : le zip n'a AUCUN dossier Extras, donc aucune decklist. Le kit ATTIRE les sbires (tg003 Great Courage en engage n'importe quel nombre, tg002 en vole un a un autre joueur, l'obligation tg011 en met un en jeu engage avec vous, tg010 Throg's Armor donne un Tenace a chaque engagement) : le deck est monte pour rentabiliser cette foule. 16043 Looking for Trouble en tire encore un, 19030 \"Bring It!\" pioche une carte par sbire engage, et 42029 Bombs Away frappe le vilain ET tous les sbires en inclinant un personnage AERIAL — trait que tg009 Frogjolnir accorde justement a Throg.",
+        "thor_note": "25013 * Thor est un ALLIE d'Agressivite, pas une carte signature : il est legal dans n'importe quel deck. Il porte l'Interruption dont tg005 Lightning Leap est le calque (« resolve this attack against each minion engaged with that player »), et Throg est litteralement Thor transforme en grenouille. Aucune carte signature d'un autre heros n'entre dans ce deck (gate du §10 de PROCESSUS-HEROS).",
+        "frogjolnir_note": "TOUT LE SET HEROS LIT tg009 FROGJOLNIR, unique et Restreinte. CINQ cartes la citent nommement : tg001a la renvoie en main pour redresser Throg, tg001b va la chercher ou qu'elle soit, tg002 la redresse avec le heros, tg004 l'incline et la rappelle pour frapper a 6, et elle-meme s'incline pour +1 a un pouvoir de base. Le marteau fait l'aller-retour main <-> jeu en permanence.",
+        "noms_note": "⚠ LES DEUX FACES ONT DES NOMS DIFFERENTS, contrairement a beta_ray_bill : « Throg » en heros, « Puddlegulp » en alter-ego. L'obligation dit « Give to the PUDDLEGULP player ». Et tg004 Hammer Throw est le TROISIEME homonyme du depot apres 06005 (Thor, 8 degats) et br003 (Beta Ray Bill, 6 degats)."
+    },
+    "hero": [
+        "tg001a,tg001b"
+    ],
+    "hero_deck": [
+        "tg002",
+        "tg002",
+        "tg002",
+        "tg003",
+        "tg003",
+        "tg004",
+        "tg004",
+        "tg005",
+        "tg005",
+        "tg006",
+        "tg006",
+        "tg007",
+        "tg008",
+        "tg009",
+        "tg010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "tg011"
+    ],
+    "nemesis_set": [
+        "tg012",
+        "tg013",
+        "tg014",
+        "tg015",
+        "tg016"
+    ],
+    "player_deck": [
+        "01053",
+        "01053",
+        "01054",
+        "01054",
+        "01054",
+        "01055",
+        "01055",
+        "01057",
+        "16043",
+        "16043",
+        "19030",
+        "19030",
+        "42029",
+        "42029",
+        "25013",
+        "01087",
+        "01087",
+        "14022",
+        "14022",
+        "01092",
+        "01084",
+        "01088",
+        "01089",
+        "01090",
+        "13024"
+    ]
+}

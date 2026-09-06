@@ -2091,4 +2091,138 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'br011': "Alliance. Équipe (Beta Ray Bill et Thor). Max 1 par deck.\n<b>Action de héros</b> <i>(attaque)</i> : cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → infligez-lui 10 dégâts. Cette attaque gagne Déferlement.",
   // beta_ray_bill — Unworthy (Obligation)
   'br012': "<b><i>Donnez-la au joueur de Beta Ray Bill.</i></b>\nUtilisations (2 pions indignité). Victoire 0.\n<b>Une fois révélée</b> : cherchez Stormbreaker et glissez-la sous cette carte. Tant qu'elle y est, Stormbreaker ne peut pas être cherchée.\n<b>Réponse forcée</b> : après que vous vainquez un ennemi ou une manigance, retirez 1 pion indignité d'ici.",
+
+  // ===== throg (set 159, Rainy) — 17 cartes ==============================
+  // ⚠ Les deux faces ont des NOMS DIFFERENTS : « Throg » en héros,
+  // « Puddlegulp » en alter-ego. Contrairement à beta_ray_bill.
+  // throg — * Throg (Hero)
+  'tg001a': "[star] <i>Endurance de grenouille</i> — <b>Réponse</b> : après que Throg utilise un pouvoir de base, renvoyez Frogjolnir dans votre main → redressez Throg. <i>(Limite d'une fois par phase.)</i>",
+  // throg — * Puddlegulp (AlterEgo)
+  'tg001b': "<i>Digne</i> — <b>Action</b> : cherchez Frogjolnir et ajoutez-la à votre main. <i>(Limite d'une fois par round.)</i>",
+  // throg — Airborne Amphibian (Event, x3)
+  'tg002': "<b>Action de héros</b> : redressez Throg et Frogjolnir. Vous pouvez choisir un sbire engagé avec un autre joueur et l'engager pour piocher 1 carte.",
+  // throg — Great Courage (Event, x2)
+  'tg003': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Engagez n'importe quel nombre de sbires en jeu. Pour chaque sbire engagé avec vous <i>(jusqu'à un maximum de 3)</i>, retirez 2 menaces d'une manigance.",
+  // throg — Hammer Throw (Event, x2) — ⚠ HOMONYME de 06005 (Thor) et br003 (Beta Ray Bill)
+  'tg004': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Frogjolnir et renvoyez-la dans votre main → infligez 6 dégâts à un ennemi. Cette attaque gagne Déferlement.",
+  // throg — Lightning Leap (Event, x2)
+  'tg005': "<b>Interruption de héros</b> : quand vous faites une attaque de base contre un sbire engagé avec un joueur, résolvez plutôt cette attaque contre le vilain et chaque sbire engagé avec ce joueur, en ignorant le mot-clé Garde.",
+  // throg — Thunderous Charge (Event, x2)
+  'tg006': "<b>Interruption de héros</b> : quand vous faites un contre de base contre une manigance, résolvez plutôt ce contre contre chaque manigance en jeu, en ignorant l'icône de crise ([crisis]) <i>(dans l'ordre de votre choix, bonus de CTR compris pour ce contre)</i>.",
+  // throg — * Foreverglade (Support)
+  'tg007': "<b>Réponse d'alter-ego</b> : après que vous faites une récupération de base, inclinez Foreverglade → redressez Puddlegulp et piochez 1 carte.",
+  // throg — Frog of Thunder (Upgrade)
+  'tg008': "<b>Ressource de héros</b> : inclinez Frog of Thunder → générez une ressource [energy]. Si vous avez payé une carte Throg de cette façon, infligez 1 dégât à un ennemi.",
+  // throg — * Frogjolnir (Upgrade) — la carte que tout le pack cite
+  'tg009': "Restreinte.\nThrog gagne le trait [[AERIAL]].\n<b>Interruption de héros</b> : quand Throg utilise un pouvoir de base, inclinez Frogjolnir → Throg gagne +1 à ce pouvoir pour cette utilisation.",
+  // throg — * Throg's Armor (Upgrade)
+  'tg010': "Vous gagnez +2 points de vie.\n<b>Réponse de héros</b> : après que vous engagez un sbire, donnez à Throg une carte de statut Robuste. Si vous ne pouvez pas, piochez 1 carte. <i>(Limite d'une fois par phase.)</i>",
+  // throg — Trouble in Central Park (Obligation) — bandeau THROG, set du héros
+  'tg011': "<b><i>Donnez-la au joueur de Puddlegulp.</i></b>\nUtilisations (3 pions ennemi). Victoire 0.\n<b>Action forcée</b> : cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → retirez 1 pion ennemi d'ici. Cet ennemi vous attaque. <i>(Limite d'une fois par round.)</i>",
+  // throg — Adorable Distraction (SideScheme némésis)
+  'tg012': "<i>Alligator Loki distrait tout le monde par sa bouille adorable. Que quelqu'un le caresse, qu'on puisse revenir à nos affaires !</i>\nEntrave 1[per_hero].\nAlligator Loki ne peut pas être attaqué.\n<i>(Manigance annexe némésis de Throg.)</i>",
+  // throg — * Alligator Loki (Minion némésis) — ⚠ HOMONYME du HEROS al001a (set 140)
+  'tg013': "<b>Réponse forcée</b> : après qu'Alligator Loki entre en jeu, cherchez Chomped et attachez-la à votre identité.\n[star] <b>Interruption forcée</b> : quand Alligator Loki manigance et place de la menace, placez autant de menace sur chaque manigance annexe.\n[star] Les attaques d'Alligator Loki gagnent Perforation.\n<i>(Sbire némésis de Throg.)</i>",
+  // throg — Causing a Commotion (SideScheme némésis)
+  'tg014': "<i>Alligator Loki fait un scandale et met la pagaille ! Que quelqu'un l'attrape avant qu'il n'en fasse davantage !</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 3 premières cartes de son deck et place 1 menace ici pour chaque type de carte différent défaussé de cette façon.",
+  // throg — "Lost" Property (SideScheme némésis)
+  'tg015': "<i>Ce garnement a pris nos affaires ! Attrapez-le et récupérez-les, aussi mignon soit-il avec.</i>\n<b>Une fois révélée</b> : chaque joueur glisse sous cette carte une amélioration spécifique à son identité qu'il contrôle. Elle ne peut pas être cherchée tant qu'elle est dessous.\n<b>Une fois vaincue</b> : ajoutez chaque carte glissée dessous à la main de son propriétaire.",
+  // throg — Chomped (Attachment némésis)
+  'tg016': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand le round se termine, subissez 1 dégât.\n<b>Interruption forcée</b> : quand vous utiliseriez un pouvoir de base, défaussez Chomped et subissez plutôt 1 dégât.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  // spider_man_noir — * Spider-Man Noir (Hero)
+  'sn001a': "[star] Spider-Man Noir gagne +X ATQ et +X CTR, X étant égal au nombre de cartes glissées sous lui.\n<i>Sens d'araignée</i> — <b>Réponse</b> : après que vous résolvez une traîtrise, glissez cette carte ici <i>(jusqu'à un maximum de 3)</i>.",
+  // spider_man_noir — * Peter Parker (AlterEgo) — ⚠ HOMONYME de 01001b, sr001b, as001b et de l'allié bt014
+  'sn001b': "<i>Fin limier</i> — <b>Action</b> : défaussez la carte du dessus du deck rencontre → choisissez soit de glisser cette carte ici <i>(jusqu'à un maximum de 3)</i>, soit de retirer d'une manigance un nombre de menaces égal au nombre d'icônes de boost défaussées. <i>(Limite d'une fois par round.)</i>",
+  // spider_man_noir — Guns Blazing (Event, x3)
+  'sn002': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi et redressez Dual Pistols. Si cette attaque vainc un sbire, glissez-le sous Spider-Man Noir depuis la pile de défausse rencontre <i>(jusqu'à un maximum de 3 cartes)</i>.",
+  // spider_man_noir — Webs Within Webs (Event, x2)
+  'sn003': "<b>Action de héros</b> <i>(contre)</i> : défaussez la carte du dessus du deck rencontre → retirez d'une manigance un nombre de menaces égal à 3 plus le nombre d'icônes de boost défaussées de cette façon. Glissez la carte défaussée sous votre héros <i>(jusqu'à un maximum de 3)</i>.",
+  // spider_man_noir — Web Shot (Event, x2)
+  'sn004': "<b>Interruption de héros</b> : quand une carte de boost est retournée face visible pendant l'activation d'un ennemi, défaussez-la à la place et glissez-la sous Spider-Man Noir <i>(jusqu'à un maximum de 3)</i>.",
+  // spider_man_noir — Web Swinging (Event, x3)
+  'sn005': "<b>Réponse de héros</b> : après que Spider-Man Noir utilise un pouvoir de base, défaussez une carte glissée sous Spider-Man Noir → redressez Spider-Man Noir. Défaussez la carte du dessus du deck rencontre et glissez-la sous Spider-Man Noir <i>(jusqu'à un maximum de 3)</i>.",
+  // spider_man_noir — * The Black Cat Club (Support)
+  'sn006': "<b>Action d'alter ego</b> : inclinez The Black Cat Club et défaussez une carte glissée sous votre identité → choisissez soit de piocher 2 cartes, soit de soigner 4 dégâts de votre identité.",
+  // spider_man_noir — Dual Pistols (Upgrade)
+  'sn007': "Restreinte.\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Dual Pistols et défaussez une carte glissée sous votre héros → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // spider_man_noir — Enhanced Spider-Sense (Upgrade) — ⚠ HOMONYME de l'événement 01004
+  'sn008': "<b>Interruption de héros</b> : quand un autre joueur révèle une traîtrise, révélez-la à sa place et piochez 1 carte.\n<b>Interruption de héros</b> : quand le vilain déclenche une attaque contre vous, piochez 1 carte.",
+  // spider_man_noir — Fancy Fedora (Upgrade)
+  'sn009': "<b>Action de héros</b> : inclinez cette carte et défaussez une carte glissée sous votre héros → retirez 2 menaces d'une manigance.\n<b>Réponse</b> : après que vous contrez et vainquez une manigance annexe, glissez-la sous votre identité depuis la pile de défausse rencontre <i>(jusqu'à un maximum de 3 cartes)</i>.",
+  // spider_man_noir — Organic Webbing (Upgrade) — ⚠ HOMONYME de 30011 et 52009
+  'sn010': "<b>Action de héros</b> : inclinez Organic Webbing et défaussez une carte glissée sous Spider-Man Noir → redressez Spider-Man Noir. Il gagne le trait [[AERIAL]] jusqu'à la fin du round.",
+  // spider_man_noir — In Walks Trouble (Obligation)
+  'sn011': "<b><i>Donnez-la au joueur de Peter Parker.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Inclinez Peter Parker → retirez In Walks Trouble de la partie.\n• Révélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // spider_man_noir — Power Struggle (SideScheme némésis)
+  'sn012': "<i>Electro draine les réserves d'énergie de la ville. Il crépite d'étincelles et devient plus fort de minute en minute : arrêtez-le avant qu'il ne soit trop tard !</i>\n<b>Interruption forcée</b> : quand un personnage contre cette manigance, il subit 1 dégât.",
+  // spider_man_noir — * Electro Noir (Minion némésis)
+  'sn013': "Riposte 1.\n[star] <b>Interruption forcée</b> : quand Electro Noir s'active contre vous, donnez-lui comme carte de boost une carte de rencontre au hasard glissée sous votre identité. Sinon, donnez-lui une carte de boost face cachée du dessus du deck rencontre.\n<i>(Sbire némésis de Spider-Man Noir.)</i>",
+  // spider_man_noir — Lightning Strikes Twice (Treachery némésis, x2)
+  'sn014': "<b>Une fois révélée</b> : glissez la carte du dessus du deck rencontre sous votre identité <i>(jusqu'à un maximum de 3 cartes)</i>. Pour chaque icône ([star] et [boost]) dans la zone de boost des cartes glissées sous votre identité, subissez 1 dégât <i>(jusqu'à un maximum de 4 dégâts)</i>.\n<hr />\n[star] <b>Boost</b> : après cette activation, cet ennemi s'active de nouveau.",
+  // spider_man_noir — Thunderstorm (Environment némésis) — ⚠ HOMONYME de 36004
+  'sn015': "Les cartes de ce set gagnent Déferlement.\n<b>Réponse forcée</b> : après que le mot-clé Déferlement d'une carte de rencontre est résolu <i>(y compris celui de cette carte)</i>, le joueur qui le résout subit 1 dégât indirect s'il est en forme de héros.\n<b>Action de héros</b> : dépensez des ressources [energy] [energy] → défaussez cette carte.",
+  // black_cat — * Black Cat (Hero) — ⚠ HOMONYME de 01002, wd045 et vp002
+  'bc001a': "S'il y a plus de 3 cartes glissées ici, défaussez-les toutes sauf 3.\n<i>Tychokinésie</i> — <b>Interruption</b> : quand les icônes ([star] et [boost]) d'une carte de rencontre devraient être comptées, comptez à la place celles d'une carte glissée ici. Puis défaussez-la.",
+  // black_cat — * Felicia Hardy (AlterEgo)
+  'bc001b': "S'il y a plus de 3 cartes glissées ici, défaussez-les toutes sauf 3.\n<i>Cambriolage</i> — <b>Action</b> : regardez les 2 cartes du dessus du deck rencontre et glissez-en 1 sous votre identité. <i>(Limite d'une fois par round.)</i>",
+  // black_cat — * Spider-Man version SYMBIOTE (Ally, carte 1/15)
+  'bc002': "[star] <b>Interruption forcée</b> : quand Spider-Man utilise un pouvoir de base, défaussez la carte du dessus du deck rencontre. Pour chaque icône de boost ([boost]) défaussée de cette façon, il gagne +1 à ce pouvoir pour cette utilisation et subit +1 dégât consécutif.",
+  // black_cat — * Spider-Man version AVENGER (Ally, carte 1/15, Multiverse)
+  'bc003': "Multivers. Entre en jeu avec 2 pions toile.\n<b>Interruption</b> : quand un ennemi s'active, retirez 1 pion toile d'ici et défaussez une carte glissée sous votre identité → annulez cette activation.",
+  // black_cat — * Big Heist (manigance annexe JOUEUR)
+  'bc004': "Seuls les personnages [[THIEF]] peuvent retirer de la menace de cette manigance.\n<b>Une fois vaincue</b> : choisissez :\n• Cherchez dans votre collection une amélioration basique ou d'aspect et jouez-la sans payer son coût en ressources.\n• Glissez sous Black Cat une amélioration attachée en jeu portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\".\n• Piochez 3 cartes.",
+  // black_cat — Cat Burglary (Event, x2) — ⚠ HOMONYME de la capacité de bc001b
+  'bc005': "<b>Action de héros</b> <i>(contre)</i> : regardez les 3 cartes du dessus du deck rencontre et défaussez-en 1. Retirez 1 menace d'une manigance, plus 1 menace supplémentaire par icône ([star] et [boost]) dans la zone de boost de cette carte. Glissez-la sous Black Cat.",
+  // black_cat — Lucky Hit (Event, x2)
+  'bc006': "<b>Action de héros</b> <i>(attaque)</i> : défaussez les 2 cartes du dessus du deck rencontre et infligez 1 dégât à un ennemi par icône ([star] et [boost]) défaussée de cette façon. Glissez une de ces cartes sous Black Cat.",
+  // black_cat — Misfortune (Event, x2)
+  'bc007': "<b>Interruption de héros</b> : quand une carte de boost est retournée pendant l'activation d'un ennemi, glissez-la plutôt sous votre héros. Cet ennemi gagne -1 ATQ et -1 MNG pour cette activation par icône ([star] et [boost]) dans la zone de boost de cette carte.",
+  // black_cat — * Black Cat's Claws (Upgrade)
+  'bc008': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Black Cat's Claws et défaussez la carte du dessus du deck rencontre → infligez à un ennemi autant de dégâts qu'il y a d'icônes dans la zone de boost de cette carte. Si ce nombre était 0, glissez-la sous Black Cat.",
+  // black_cat — Grappling Hook (Upgrade, x2) — ⚠ HOMONYME de 08008 et 50069
+  'bc009': "<b>Action de héros</b> : inclinez Grappling Hook et défaussez une carte glissée sous Black Cat → redressez Black Cat et glissez sous elle la carte du dessus du deck rencontre.",
+  // black_cat — Ill Gotten Gains (Upgrade, x2)
+  'bc010': "<b>Ressource</b> : inclinez cette carte → générez une ressource [wild] <i>([wild][wild] à la place pour une amélioration attachée)</i>.\n<b>Réponse</b> : après que vous défaussez du jeu une amélioration attachée portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\", glissez-la sous votre identité.",
+  // black_cat — Nine Lives (Upgrade, x2)
+  'bc011': "<b>Interruption de héros</b> : quand Black Cat subirait des dégâts, quel qu'en soit le nombre, inclinez Nine Lives et défaussez la carte du dessus du deck rencontre → prévenez 1 de ces dégâts par icône ([star] et [boost]) dans la zone de boost de cette carte.",
+  // black_cat — Luck's Ran Out (Obligation)
+  'bc012': "<b><i>Donnez-la au joueur de Felicia Hardy.</i></b>\nRévélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette carte.",
+  // cameo_compliment — Lock It Down (Support, aspect JUSTICE)
+  'cc001': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection un soutien spécifique à une identité portant le trait [[LOCATION]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  // cameo_compliment — New Suit? (Support, aspect PROTECTION)
+  'cc002': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration spécifique à une identité portant le trait [[ARMOR]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  // cameo_compliment — Ye Be Worthy (Support, aspect AGRESSIVITÉ)
+  'cc003': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration NON PERMANENTE spécifique à une identité portant le trait [[WEAPON]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  // sunfire — * Sunfire (Hero) — ⚠ HOMONYME de l'allié 35014
+  'sf001a': "[star] <i>Aura brûlante</i> — <b>Interruption</b> : quand Sunfire fait une attaque de base ou une défense de base contre un ennemi, attachez à cet ennemi un exemplaire de Burning mis de côté.",
+  // sunfire — * Shiro Yoshida (AlterEgo)
+  'sf001b': "Shiro Yoshida commence la partie avec 6 améliorations Burning mises de côté.\n<i>Tête brûlée</i> — <b>Action</b> : défaussez les 5 cartes du dessus de votre deck. Choisissez une carte défaussée de cette façon et ajoutez-la à votre main. <i>(Limite d'une fois par round.)</i>",
+  // sunfire — Atomic Fire (Event, x2)
+  'sf002': "<b>Action de héros</b> : choisissez un joueur et attachez un exemplaire de Burning mis de côté au vilain et à chaque sbire engagé avec ce joueur. Infligez 3 dégâts à chaque ennemi portant un exemplaire de Burning.",
+  // sunfire — Burning Hands (Event, x3)
+  'sf003': "<b><i>Exigence</i></b> ([energy]).\n<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Puis choisissez une amélioration attachée portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\" et défaussez-la. Sinon, attachez un exemplaire de Burning mis de côté à un ennemi.",
+  // sunfire — Hot Pursuit (Event, x4) — ⚠ HOMONYME de la manigance annexe 24058
+  'sf004': "<b>Réponse de héros</b> : après que vous attachez un exemplaire de Burning à un ennemi, redressez Sunfire.",
+  // sunfire — Solar Blast (Event, x3)
+  'sf005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis choisissez une amélioration attachée portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\" attachée à cet ennemi et défaussez-la. Sinon, attachez à cet ennemi un exemplaire de Burning mis de côté.",
+  // sunfire — * Atomic Samurai (Upgrade)
+  'sf006': "<b>Interruption</b> : quand un ennemi subirait des dégâts de la capacité déclenchée de Burning, il subit 1 dégât supplémentaire.",
+  // sunfire — * Sunfire's Mask (Upgrade)
+  'sf007': "Vous gagnez +2 points de vie.\n<b>Réponse de héros</b> : après qu'un ennemi portant un exemplaire de Burning est vaincu, piochez 1 carte. <i>(Limite d'une fois par phase.)</i>",
+  // sunfire — Sunfire's Suit (Upgrade)
+  'sf008': "Sunfire gagne +1 DEF.\n<b>Réponse de héros</b> : après que Sunfire se défend contre une attaque, inclinez Sunfire's Suit et dépensez 1 ressource de n'importe quel type → redressez Sunfire.",
+  // sunfire — Burning (Upgrade, 6 exemplaires MIS DE CÔTÉ)
+  'sf009': "Permanent.\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, infligez 1 dégât à l'ennemi auquel cette carte est attachée. Mettez cette carte de côté.\n<b>Réponse forcée</b> : après que l'ennemi auquel cette carte est attachée quitte le jeu, mettez cette carte de côté.",
+  // sunfire — Shame (Obligation)
+  'sf010': "<b><i>Donnez-la au joueur de Shiro Yoshida.</i></b>\nVous avez -1 à votre taille de main. Le nombre de cartes dans votre main ne peut pas dépasser votre taille de main <i>(défaussez jusqu'à votre taille de main après avoir pioché des cartes)</i>.\n<b>Action d'alter ego</b> : inclinez Shiro Yoshida et défaussez 1 carte de votre main → retirez Shame de la partie.",
+  // sunfire — Hand Ambush (SideScheme némésis)
+  'sf011': "<i>La Main nous attendait en embuscade !</i>\n<b>Interruption forcée</b> : quand un ennemi entre en jeu, donnez-lui une carte de boost face cachée.\n<b>Réponse forcée</b> : après qu'un sbire [[HAND]] est vaincu, placez-le sur le dessus du deck rencontre.",
+  // sunfire — * Silver Samurai (Minion némésis)
+  'sf012': "Coup Rapide. Riposte 1.\n<b>Interruption forcée</b> : quand Silver Samurai entre en jeu, si elle n'est pas en jeu, cherchez Silver Samurai's Katana et attachez-la-lui.\n<i>(Sbire némésis de Sunfire.)</i>",
+  // sunfire — Hand Ninja (Minion némésis)
+  'sf013': "[star] Les attaques de Hand Ninja gagnent Perforation.\n<b>Réponse forcée</b> : après que Hand Ninja entre en jeu, il s'active contre vous.\n<hr />\n[star] <b>Boost</b> : mettez ce sbire en jeu, engagé avec vous.",
+  // sunfire — * Silver Samurai's Katana (Attachment némésis)
+  'sf014': "Attachez-la à Silver Samurai. Si vous ne pouvez pas, cherchez Silver Samurai et mettez-le en jeu engagé avec vous, cette carte attachée.\nSilver Samurai ne peut pas subir de dégâts provenant d'attaques.\n<b>Action de héros</b> : dépensez 3 ressources de n'importe quel type → défaussez cette carte.",
+  // sunfire — Tachyon Whip (Attachment némésis)
+  'sf015': "Attachez-la à votre héros. Sinon, cette carte gagne <b><i>Déferlement</i></b>. Vous ne pouvez pas passer en forme d'alter ego.\n<b>Réponse forcée</b> : après que vous utilisez un pouvoir de base, subissez 2 dégâts.\n<b>Action de héros</b> : dépensez des ressources [physical][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, révélez cette carte.",
 }
