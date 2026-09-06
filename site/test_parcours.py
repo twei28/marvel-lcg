@@ -74,6 +74,10 @@ o.ERREURS_DEMARRAGE.pop("chloe", None)
 arret = o.page_arret("chloe").decode("utf-8")
 verifier("l'arret rassure sur les donnees", "Rien n'est perdu" in arret)
 verifier("l'arret propose de rallumer", "/entrer" in arret)
+# Le geste a un effet que personne ne devinerait : il coupe les acces des
+# invites. Une page qui le fait sans le dire vaut un piege.
+verifier("l'arret annonce que les invites sont mis dehors",
+         "ne rouvrent plus" in arret and "invites" in arret, arret[-500:])
 
 # --- Le bouton Administration n'est pose QUE pour l'administrateur ---------
 # ⚠ On appelle VRAIMENT `_config_partie`. Se contenter de poser la cle
@@ -167,6 +171,34 @@ verifier("apres redemarrage, le cookie du navigateur reste valable",
          p1.mot_de_passe == p2.mot_de_passe)
 verifier("mais un lien d'invitation d'hier ne rouvre rien",
          p1.cles_sieges != p2.cles_sieges)
+
+# --- ... et l'extinction volontaire, elle, doit le PERIMER -------------------
+# ⚠ L'AUTRE MOITIE DU MEME PROBLEME. Stable, ce mot de passe l'est pour de
+# bonnes raisons ; jamais renouvele, il laissait le cookie `session_token`
+# d'un invite d'hier (md5 de ce mot de passe, valable un an) rouvrir l'espace
+# de jeu de son hote. Le cas qui compte est celui du REFUS : apres extinction
+# volontaire, l'ancien mot de passe ne doit plus valoir.
+avant_extinction = o.mot_de_passe_jeu("chloe")
+o.revoquer_mot_de_passe_jeu("chloe")
+apres_extinction = o.mot_de_passe_jeu("chloe")
+verifier("l'extinction volontaire perime le laissez-passer du moteur",
+         apres_extinction != avant_extinction,
+         "%r puis %r" % (avant_extinction, apres_extinction))
+verifier("et le nouveau est aussitot disponible", bool(apres_extinction))
+verifier("les autres comptes ne sont pas touches",
+         o.mot_de_passe_jeu("hugo") not in ("", apres_extinction))
+
+# ⚠ ET SEULE L'EXTINCTION VOLONTAIRE LE FAIT. Un moteur qui plante, ou que le
+# faucheur ramasse, passe par `eteindre_jeu` et par lui seul : si celui-ci
+# touchait au mot de passe, un incident laisserait son proprietaire devant une
+# demande qu'aucune page du site ne lui affiche.
+stable = o.mot_de_passe_jeu("chloe")
+plante = allumer("chloe", 2)
+plante.processus = None                   # le moteur est mort tout seul
+o.eteindre_jeu("chloe")
+verifier("un plantage n'ejecte PAS le proprietaire de sa table",
+         o.mot_de_passe_jeu("chloe") == stable)
+o.PARTIES.clear()
 
 # --- Tchat prive : qui voit quoi --------------------------------------------
 with o._cx() as cx:
@@ -286,6 +318,86 @@ verifier("et il repasse une fois revalide... non : son jeton est revoque",
 
 # Un jeton inconnu ne vaut rien.
 verifier("un jeton inconnu est refuse", o.pseudo_de_session("nimportequoi") is None)
+
+
+# ==========================================================================
+# Un vrai serveur HTTP, le temps de quelques cas
+# ==========================================================================
+# ⚠ TOUT CE QUI PRECEDE APPELLE LES FONCTIONS SANS PASSER PAR HTTP, et c'etait
+# un trou reel : le plafond du corps d'une requete, les attributs du cookie de
+# session, le frein sur les tentatives de connexion et l'ouverture de `/etat`
+# ne se voient d'aucune fonction pure. On monte donc un vrai
+# `ThreadingHTTPServer` sur un port libre, avec le VRAI `Handler`, et on lui
+# parle en HTTP. Rien n'est simule.
+import http.client                                          # noqa: E402
+import threading                                            # noqa: E402
+from http.server import ThreadingHTTPServer                 # noqa: E402
+
+_serveur = ThreadingHTTPServer(("127.0.0.1", 0), o.Handler)
+_port = _serveur.server_address[1]
+threading.Thread(target=_serveur.serve_forever, daemon=True).start()
+
+
+def appel(methode, chemin, corps=b"", entetes=None, annonce=None, delai=5):
+    """Une requete HTTP reelle. Rend (code, entetes, corps).
+
+    `annonce` permet de MENTIR sur `Content-Length` : declarer huit mega-octets
+    puis n'en envoyer aucun est le seul moyen de prouver qu'on refuse AVANT de
+    lire le corps, et non apres. `delai` borne l'attente : un serveur qui se
+    mettrait a lire ces octets qui n'arrivent jamais ferait echouer le cas au
+    lieu de bloquer le fichier de test pour toujours.
+    """
+    lien = http.client.HTTPConnection("127.0.0.1", _port, timeout=delai)
+    tetes = dict(entetes or {})
+    if methode == "POST":
+        tetes.setdefault("Content-Type", "application/x-www-form-urlencoded")
+        tetes["Content-Length"] = str(len(corps) if annonce is None else annonce)
+    try:
+        lien.putrequest(methode, chemin, skip_accept_encoding=True)
+        for nom, valeur in tetes.items():
+            lien.putheader(nom, valeur)
+        lien.endheaders()
+        if corps:
+            try:
+                lien.send(corps)
+            except OSError:
+                pass          # le serveur a deja repondu et raccroche : normal
+        reponse = lien.getresponse()
+        return reponse.status, reponse.msg, reponse.read()
+    finally:
+        lien.close()
+
+
+def cookie_de(pseudo):
+    """Le cookie d'un compte connecte, pret a etre presente."""
+    return {"Cookie": "nc_session=" + o.ouvrir_session(pseudo)}
+
+
+for _p, _e in (("hote", "hote@exemple.fr"), ("invitee", "invitee@exemple.fr")):
+    try:
+        o.inscrire(_p, _e, "motdepasse123")
+    except ValueError:
+        pass
+    o.changer_statut(_p, "valide")
+
+# --- S1 : le bouton « Terminer » coupe vraiment les acces -------------------
+# ⚠ LE CAS QUI COMPTE, ET IL PASSE PAR LA ROUTE. Prouver que
+# `revoquer_mot_de_passe_jeu` change une colonne ne dirait rien de l'endroit
+# ou elle est appelee : c'est `/eteindre` qui doit le faire, et lui seul.
+_avant = o.mot_de_passe_jeu("hote")
+_code, _tetes, _ = appel("POST", "/eteindre", entetes=cookie_de("hote"))
+verifier("l'extinction renvoie vers la page d'arret",
+         _code == 303 and _tetes.get("Location") == "/arret",
+         "%s %s" % (_code, _tetes.get("Location")))
+verifier("et la route /eteindre a bien perime le laissez-passer",
+         o.mot_de_passe_jeu("hote") != _avant)
+
+# Un anonyme n'eteint rien du tout, et surtout pas le jeu de quelqu'un d'autre.
+_avant = o.mot_de_passe_jeu("hote")
+_code, _tetes, _ = appel("POST", "/eteindre")
+verifier("un anonyme ne peut rien eteindre",
+         _code == 303 and _tetes.get("Location") == "/" and
+         o.mot_de_passe_jeu("hote") == _avant, str(_code))
 
 print()
 print("ECHECS : %d" % len(echecs))

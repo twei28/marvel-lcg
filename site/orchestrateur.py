@@ -568,6 +568,30 @@ def mot_de_passe_jeu(pseudo: str) -> str:
     return nouveau
 
 
+def revoquer_mot_de_passe_jeu(pseudo: str) -> None:
+    """Perime le laissez-passer du moteur de ce compte.
+
+    ⚠ LE SEUL MOYEN DE FERMER LA PORTE A UN INVITE D'HIER. Le cookie
+    `session_token` que le moteur pose pour UN AN est une fonction
+    deterministe de `mdp_jeu` (`web_server.py` : `md5(password)`), et c'est le
+    seul controle sur le plateau, les decks, le catalogue et le WebSocket. Les
+    cles de SIEGE tournent bien a chaque allumage, mais elles ne protegent
+    qu'un siege : `allowed_seats` accorde tout siege que personne ne tient, si
+    bien qu'un invite revenu seul dans une table vide les obtient tous. Tant
+    que `mdp_jeu` ne tourne jamais, son cookie de la semaine derniere ouvre
+    encore l'espace de jeu aujourd'hui.
+
+    ⚠ A N'APPELER QU'A L'EXTINCTION VOLONTAIRE. Le faucheur et les plantages
+    ne doivent PAS y toucher : une table qui redemarre apres un incident
+    remettrait sinon son proprietaire devant une demande de mot de passe que
+    le site ne lui affiche nulle part (c'est la regression que `3271e6f` a
+    corrigee). Mettre la colonne a NULL suffit : `mot_de_passe_jeu` en tire un
+    nouveau au prochain allumage.
+    """
+    with _cx() as cx:
+        cx.execute("UPDATE comptes SET mdp_jeu=NULL WHERE pseudo=?", (pseudo,))
+
+
 def emplacement_de(pseudo: str):
     ligne = compte(pseudo)
     return ligne["emplacement"] if ligne else None
@@ -1193,6 +1217,9 @@ def page_arret(pseudo: str) -> bytes:
              '<div class="entete"><strong>Ton jeu est eteint</strong></div>'
              '<p class="mdp">Rien n\'est perdu : tes decks, tes campagnes et tes '
              'hauts faits t\'attendent au prochain allumage.</p>'
+             '<p class="mdp">Eteindre ferme aussi la porte aux invites de la '
+             'partie precedente : leur lien et leur navigateur ne rouvrent plus '
+             'ta table. Toi, tu rentres par ce bouton, comme d\'habitude.</p>'
              '<form method="get" action="/entrer" style="margin-top:1rem">'
              '<button type="submit">Rallumer mon jeu</button></form></div>')
     return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
@@ -1719,6 +1746,14 @@ class Handler(BaseHTTPRequestHandler):
             # On n'eteint QUE son propre jeu : le code est le pseudo.
             if eteindre_jeu(pseudo):
                 journal_partie_fermee(pseudo)
+            # ⚠ ET ON COUPE LES ACCES, ICI SEULEMENT. C'est le seul geste du
+            # site qui soit VOLONTAIRE : la personne dit qu'elle a fini. On en
+            # profite pour perimer le laissez-passer du moteur, sans quoi les
+            # invites de la soiree gardent un cookie valable un an. Ni le
+            # faucheur ni un plantage ne passent par ici : une table qui
+            # redemarre toute seule ne doit pas laisser son proprietaire
+            # dehors.
+            revoquer_mot_de_passe_jeu(pseudo)
             # Vers /arret et surtout PAS vers / : cette derniere rallumerait
             # aussitot ce qu'on vient d'eteindre.
             self._rediriger("/arret")
