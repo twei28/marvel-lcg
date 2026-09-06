@@ -2929,6 +2929,30 @@
 
   .deroule-regle {
     margin: 0 0 10px;
+  }
+
+  /* Le bouton du dépliant : meme discretion que `.recap-mechant-repli`, seul
+     autre dépliant du plateau (RecapPhaseMechant.tsx). */
+  .deroule-regle-bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 2px 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: rgba(248, 250, 252, 0.62);
+    cursor: pointer;
+  }
+
+  .deroule-regle-bouton:hover {
+    color: #fff;
+  }
+
+  .deroule-regle-texte {
+    margin: 4px 0 0;
     font-size: 0.8rem;
     color: rgba(248, 250, 252, 0.62);
   }

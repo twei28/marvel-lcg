@@ -336,6 +336,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Précédent': 'Previous',
   'Suivant': 'Next',
   'La suite arrive…': 'More coming…',
+  'la règle': 'the rule',
   // Tchat sur la table (PanneauSalon).
   'Tchat': 'Chat',
   'Parler aux autres joueurs': 'Talk to the other players',

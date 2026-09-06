@@ -154,6 +154,35 @@ export function ecrireAvanceAuto(actif: boolean): void {
 }
 
 /**
+ * Le dépliant de la règle sous chaque étape du déroulé (DeroulePhase.tsx) :
+ * un réglage personnel, donc localStorage, sur le même modèle que
+ * lireAvanceAuto/ecrireAvanceAuto ci-dessus. Sans rapport avec le rythme de
+ * la phase : ce dépliant reste ouvert ou fermé quel que soit le mode.
+ */
+export const CLE_REGLE_DEPLIEE = 'marvel-board-regle-deroule-depliee'
+
+/**
+ * Bete elle aussi, comme lireAvanceAuto, mais rend VRAI si la cle est
+ * absente : un joueur qui decouvre la phase doit voir la regle sans avoir a
+ * la chercher, c'est celui qui connait qui fera le geste de la replier.
+ */
+export function lireRegleDepliee(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_REGLE_DEPLIEE) !== 'off'
+  } catch {
+    return true
+  }
+}
+
+export function ecrireRegleDepliee(depliee: boolean): void {
+  try {
+    window.localStorage.setItem(CLE_REGLE_DEPLIEE, depliee ? 'on' : 'off')
+  } catch {
+    /* idem */
+  }
+}
+
+/**
  * Le libelle affiche dans le panneau Options pour CE mode precis.
  *
  * Une seule source pour l'affichage et pour le test : l'ancien ternaire a

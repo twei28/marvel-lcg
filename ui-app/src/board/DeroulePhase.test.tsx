@@ -3,10 +3,11 @@
 // Il est FIXE en bas au centre et ne bouge jamais : l'oeil sait ou lire et la
 // main ou cliquer des le deuxieme tour. On peut revenir en arriere pour relire,
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
+import { CLE_REGLE_DEPLIEE } from './moteur'
 
 const etapes: EtapeDeroule[] = [
   { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
@@ -27,6 +28,14 @@ const etapes: EtapeDeroule[] = [
 const suivant = () => screen.getByRole('button', { name: /Suivant/i })
 
 describe('cartouche du deroule', () => {
+  // Le depliant de la regle lit et ecrit son reglage dans localStorage
+  // (lireRegleDepliee/ecrireRegleDepliee, moteur.ts) : chaque test repart
+  // d'un stockage vide, sinon un reglage ecrit par un test en polluerait un
+  // autre.
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
   it('montre la premiere etape et rien d autre', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
@@ -735,5 +744,72 @@ describe('cartouche du deroule', () => {
     fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
     expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
+  })
+
+  describe('depliant de la regle', () => {
+    const regle = () => screen.getByRole('button', { name: /la règle/i })
+
+    it('montre la regle par defaut, sans rien avoir stocke', () => {
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(screen.getByText(/Point 1/)).toBeInTheDocument()
+      expect(regle()).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    it('un clic la replie et ecrit le reglage dans le stockage', () => {
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      fireEvent.click(regle())
+      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
+      expect(regle()).toHaveAttribute('aria-expanded', 'false')
+      expect(window.localStorage.getItem(CLE_REGLE_DEPLIEE)).toBe('off')
+    })
+
+    it('reste repliee au premier rendu quand le reglage est deja stocke replie', () => {
+      window.localStorage.setItem(CLE_REGLE_DEPLIEE, 'off')
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
+      expect(regle()).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('le repli survit au passage a l etape suivante', () => {
+      // Le coeur de la decision : un seul rendu ne prouve rien, il faut voir
+      // le reglage tenir quand le moteur produit l'etape suivante (meme
+      // motif que les tests ci-dessus qui font grossir `etapes` via
+      // `rerender`, a identite de phase inchangee).
+      const menaceSeule: EtapeDeroule[] = [etapes[0]]
+      const { rerender } = render(
+        <DeroulePhase etapes={menaceSeule} identitePhase={7} phaseMechantEnCours onTerminer={() => {}} />
+      )
+      fireEvent.click(regle())
+      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
+
+      fireEvent.click(suivant())
+      rerender(
+        <DeroulePhase etapes={etapes} identitePhase={7} phaseMechantEnCours onTerminer={() => {}} />
+      )
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+      expect(screen.queryByText(/Point 2/)).not.toBeInTheDocument()
+      expect(regle()).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('un stockage qui leve ne fait pas tomber le composant', () => {
+      const espionLecture = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => {
+        throw new Error('localStorage access denied')
+      })
+      const espionEcriture = vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
+        throw new Error('localStorage access denied')
+      })
+      try {
+        render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+        // Lecture en echec : repli sur le defaut (depliee).
+        expect(screen.getByText(/Point 1/)).toBeInTheDocument()
+        expect(() => fireEvent.click(regle())).not.toThrow()
+        // Ecriture en echec elle aussi : le clic replie quand meme l'affichage,
+        // seul le stockage ne suit pas.
+        expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
+      } finally {
+        espionLecture.mockRestore()
+        espionEcriture.mockRestore()
+      }
+    })
   })
 })

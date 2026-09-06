@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { rangDansLeTemps, type EtapeDeroule, type TempsPhase } from './deroule-phase'
 import { compteurEtape, regleEtape, resultatEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
+import { ecrireRegleDepliee, lireRegleDepliee } from './moteur'
 import { TraitCible } from './TraitCible'
 import { useDerouleScene } from './useDerouleScene'
 
@@ -91,6 +92,21 @@ export function DeroulePhase({
   // train de calculer la suite. Le cartouche reste alors affiche sur place et
   // n'annonce surtout pas la fin de la phase.
   const [enAttente, setEnAttente] = useState(false)
+
+  // Le dépliant de la règle sous l'étape : un choix qu'on ne fait qu'une
+  // fois (voir lireRegleDepliee dans moteur.ts). Lu une seule fois a l'etat
+  // initial, PAS reinitialise a chaque nouvelle phase (contrairement a
+  // `index`, `termine`, etc. ci-dessous) : il doit rester replie sur toutes
+  // les etapes et toutes les parties, jusqu'a ce que le joueur le replie.
+  const [regleDepliee, setRegleDepliee] = useState(() => lireRegleDepliee())
+
+  const basculerRegle = () => {
+    setRegleDepliee((avant) => {
+      const apres = !avant
+      ecrireRegleDepliee(apres)
+      return apres
+    })
+  }
 
   // Une nouvelle phase repart de sa premiere etape, et RIEN D'AUTRE ne remet
   // le cartouche a zero. La remise a zero suivait auparavant le contenu de la
@@ -290,6 +306,7 @@ export function DeroulePhase({
   const rang = rangDansLeTemps(etapes, index)
   const resultat = resultatEtape(etape)
   const compteur = compteurEtape(etape)
+  const regle = regleEtape(etape)
 
   return (
     <>
@@ -352,7 +369,23 @@ export function DeroulePhase({
             ))}
           </ul>
         ) : null}
-        <p className="deroule-regle">{regleEtape(etape)}</p>
+        {regle ? (
+          <div className="deroule-regle">
+            {/* Vrai bouton, pas un <span> cliquable : atteignable au Tab et a
+                Entree/Espace nativement, et `aria-expanded` annonce l'etat au
+                lecteur d'ecran. Meme motif que `.recap-mechant-repli`
+                (RecapPhaseMechant.tsx), le seul autre dépliant du plateau. */}
+            <button
+              type="button"
+              className="deroule-regle-bouton"
+              aria-expanded={regleDepliee}
+              onClick={basculerRegle}
+            >
+              <span aria-hidden="true">{regleDepliee ? '▾' : '▸'}</span> {t('la règle')}
+            </button>
+            {regleDepliee ? <p className="deroule-regle-texte">{regle}</p> : null}
+          </div>
+        ) : null}
         {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
 
         <div className="deroule-boutons">
