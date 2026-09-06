@@ -394,7 +394,13 @@ deck**.
   paraît libre alors qu'une passe complète tourne. Le rapport JSON n'est écrit
   qu'à la FIN : son absence ne prouve pas non plus que rien ne tourne. Payé le
   31/08/2026, deux batteries lancées en parallèle pendant 8 minutes
-  (journal `.planning/todos/2026-08-31-portage-beast.md` §5).
+  (journal `.planning/todos/2026-08-31-portage-beast.md` §5). Le piège a
+  continué à se reproduire malgré la prose (`.game-src` / `yd0`, 06/09/2026,
+  audit C) : `main()` porte désormais son **propre garde-fou**
+  (`_verifier_aucun_autre_harnais_en_cours`, ajouté le 06/09/2026), qui refuse
+  de démarrer si un autre `test_capacites.py` / `verifier_tous_les_decks.py` /
+  `autoplay.py` cible déjà le même dossier de jeu ; le `pgrep` manuel reste
+  utile pour diagnostiquer, il n'est plus la seule protection.
 - Clés : `main_exclusive`, `jouer`, `cibles`, `payer_avec`, `ne_pas_depenser`,
   `surpayer` (obligatoire pour un coût X), `accepter_choix`, `heros2`.
   **Il n'existe PAS de clé `action`** : une capacité de carte en jeu se
