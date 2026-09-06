@@ -3,11 +3,14 @@ import { describe, expect, it } from 'vitest'
 import {
   bornerDelai,
   decisionAccuse,
+  delaiFiletAntiBlocage,
   ecrireModePhaseMechant,
   evenementAMontrer,
   lireAvanceAuto,
   lireModePhaseMechant,
   migrerReglagesPhase,
+  DELAI_FILET_ANTI_BLOCAGE_CLIC_MS,
+  DELAI_FILET_ANTI_BLOCAGE_DELAI_MS,
   DELAI_PAS_A_PAS_DEFAUT,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
@@ -252,6 +255,29 @@ describe('qui retient l’accusé de réception', () => {
     const tour = monde({ phase: 'Player 1 Turn', prompt: 'subit 3 dégât(s)' })
     expect(decisionAccuse('detaille', tour, false, false)).toBe('immediat')
     expect(decisionAccuse('detaille', tour, false, true)).toBe('immediat')
+  })
+})
+
+// Défaut 1 (voir brief) : le filet anti-blocage (6s) était plus court que le
+// temps de lire une étape du cartouche, un joueur attentif se faisait donc
+// doubler par son propre garde-fou.
+describe('le filet anti-blocage', () => {
+  it('attend beaucoup plus longtemps quand le moteur attend un CLIC', () => {
+    expect(delaiFiletAntiBlocage('attendre-clic')).toBe(DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
+    // De l'ordre de la minute et demie, largement au-dessus du temps de
+    // lecture d'une étape.
+    expect(delaiFiletAntiBlocage('attendre-clic')).toBeGreaterThanOrEqual(60_000)
+  })
+
+  it('garde l’ancien délai, court, quand le moteur attend un DELAI', () => {
+    // Ce cas n'a pas besoin d'être long : l'attente est déjà pilotée par
+    // `programmerAvance` / `delaiPasAPas`, ce filet n'est qu'un garde-fou
+    // supplémentaire.
+    expect(delaiFiletAntiBlocage('attendre-delai')).toBe(DELAI_FILET_ANTI_BLOCAGE_DELAI_MS)
+  })
+
+  it('n’attend rien de plus en immédiat non plus (repli sur l’ancien délai)', () => {
+    expect(delaiFiletAntiBlocage('immediat')).toBe(DELAI_FILET_ANTI_BLOCAGE_DELAI_MS)
   })
 })
 

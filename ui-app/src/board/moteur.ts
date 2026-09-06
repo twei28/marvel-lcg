@@ -243,6 +243,31 @@ export function decisionAccuse(
   return avanceAuto ? 'attendre-delai' : 'attendre-clic'
 }
 
+/**
+ * Filet anti-blocage : au bout de combien de temps sans reponse le moteur
+ * reprend-il tout seul. Il protege la table entiere contre un onglet fantome
+ * (deconnecte, en arriere-plan, ferme sans prevenir) qui gelerait sinon la
+ * phase du mechant pour tout le monde en multijoueur ; ce filet doit donc
+ * rester COURT quand l'attente n'est qu'un delai de lecture deja pilote par
+ * nous (`attendre-delai`, cf `programmerAvance`).
+ *
+ * Mais quand le moteur attend un CLIC (`attendre-clic`), c'est un etre humain
+ * qui doit avoir le temps de LIRE l'etape affichee par le cartouche avant
+ * d'etre double : 6 secondes, c'est moins que le temps de lire une seule
+ * etape, un joueur attentif se ferait donc rattraper par son propre filet de
+ * securite. On choisit l'ordre de la minute et demie : tres au-dela du temps
+ * de lecture le plus lent, tout en restant borne pour qu'une table ne reste
+ * jamais bloquee indefiniment.
+ */
+export const DELAI_FILET_ANTI_BLOCAGE_CLIC_MS = 90_000
+export const DELAI_FILET_ANTI_BLOCAGE_DELAI_MS = 6000
+
+export function delaiFiletAntiBlocage(decision: DecisionAccuse): number {
+  return decision === 'attendre-clic'
+    ? DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
+    : DELAI_FILET_ANTI_BLOCAGE_DELAI_MS
+}
+
 export function evenementAMontrer(monde: World | undefined): boolean {
   if (!monde) return false
   const nom = monde.event_name ?? ''
@@ -787,9 +812,13 @@ export class Moteur {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true })
         // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
-        // client fantome bloque la phase ennemie pour tout le monde).
+        // client fantome bloque la phase ennemie pour tout le monde). Voir
+        // `delaiFiletAntiBlocage` pour le choix de la duree.
         if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
-        this.minuteurAutoContinue = window.setTimeout(() => void this.continuer(), 6000)
+        this.minuteurAutoContinue = window.setTimeout(
+          () => void this.continuer(),
+          delaiFiletAntiBlocage(decision)
+        )
       } else if (this.trame && decision === 'attendre-delai') {
         // On retient l'accuse le temps que l'etape se lise. Le moteur attend
         // sans limite (max_timeout = 0), c'est donc NOUS qui donnons le rythme :

@@ -419,4 +419,37 @@ describe('cartouche du deroule', () => {
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     expect(container.querySelector('.deroule-boosts')).toBeNull()
   })
+
+  // Defaut 1 (voir brief) : rien ne reliait le bouton « Suivant » au moteur.
+  // onSuivant est la porte que board.tsx doit brancher sur
+  // moteur.avancerMaintenant() ; ces tests verifient le cote DeroulePhase de
+  // ce branchement (qu'il est bien appele, au bon moment), pas ce que
+  // board.tsx en fait reellement une fois cable (voir le rapport a ce sujet).
+  it('appelle onSuivant une fois par clic sur Suivant, et avance', () => {
+    const onSuivant = vi.fn()
+    render(<DeroulePhase etapes={etapes} onSuivant={onSuivant} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    expect(onSuivant).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
+
+  it('appelle onTerminer quand la derniere etape est validee', () => {
+    const onSuivant = vi.fn()
+    const onTerminer = vi.fn()
+    render(<DeroulePhase etapes={etapes} onSuivant={onSuivant} onTerminer={onTerminer} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    // onSuivant est appele a CHAQUE validation, la derniere y compris : c'est
+    // ce qui permet a board.tsx de brancher onSuivant et onTerminer sur la
+    // meme fonction (avancerMaintenant ne fait rien sans trame en attente,
+    // l'appel surnumeraire de la derniere etape est donc sans effet).
+    expect(onSuivant).toHaveBeenCalledTimes(2)
+  })
+
+  it('onSuivant absent ne casse rien : la prop est optionnelle', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    expect(() => fireEvent.click(suivant())).not.toThrow()
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
 })

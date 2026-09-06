@@ -828,8 +828,10 @@ function usePartieEnCours(playerId: number) {
     reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
     reglerDelaiPasAPas: (ms: number) => moteur.setDelaiPasAPas(ms),
     reglerAvanceAuto: (actif: boolean) => moteur.setAvanceAuto(actif),
-    // Toujours expose : CouchePasAPas ne l'appelle plus (voir plus bas), mais
-    // le clic-suite reste au moteur si on rallume la couche.
+    // Branche sur le cartouche du deroule detaille (DeroulePhase, plus bas) :
+    // c'est lui qui relache desormais le moteur, etape par etape.
+    // CouchePasAPas ne l'appelle plus (voir plus bas), mais le clic-suite y
+    // reste disponible si on la rallume.
     avancerPasAPas: () => moteur.avancerMaintenant(),
     basculerPausePasAPas: () => moteur.basculerPause(),
     passerToutLaPhase: () => moteur.passerToutLaPhase(),
@@ -1540,6 +1542,7 @@ function PagePartie({
     reglerModePhase,
     reglerDelaiPasAPas,
     reglerAvanceAuto,
+    avancerPasAPas,
     basculerPausePasAPas,
     passerToutLaPhase,
   } = usePartieEnCours(playerId)
@@ -2105,10 +2108,14 @@ function PagePartie({
     !interaction.option &&
     !carteMenu &&
     demandeDoitApparaitreAuCentre(etat.demande)
+  // etat.validationRequise n'entre plus dans cette condition : c'est
+  // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
+  // validation, ce panneau ne fait plus que narrer. Ses deux autres raisons
+  // d'apparaitre (un effet en cours, ou un evenement narre important pendant
+  // l'activation ennemie) doivent continuer de marcher telles quelles.
   const afficherEvenementCentrale =
     etat.connecte &&
-    (etat.validationRequise ||
-      effets.size > 0 ||
+    (effets.size > 0 ||
       (etat.monde.phase === 'Enemy Activation' && evenementNarreImportant(etat.monde))) &&
     !afficherDemandeCentrale &&
     !interaction.option &&
@@ -2181,7 +2188,10 @@ function PagePartie({
           prompt={etat.monde.prompt}
           eventName={etat.monde.event_name}
           message={effetCentrale}
-          validationRequise={etat.validationRequise}
+          // En mode Détaillé, la validation appartient au cartouche
+          // (DeroulePhase) : ce panneau ne doit plus jamais montrer de bouton
+          // « Continuer », quelle que soit la valeur de etat.validationRequise.
+          validationRequise={modePhase === 'detaille' ? false : etat.validationRequise}
           continuer={continuer}
           // Les cartes citees par l'evenement en cours : le bandeau raconte ce
           // qui leur arrive, il ne doit surtout pas les cacher.
@@ -2246,8 +2256,8 @@ function PagePartie({
           <CouchePasAPas actif={etat.pasAPas.actif} enPause={etat.pasAPas.enPause}
             phase={etat.monde?.phase} onAvancer={avancerPasAPas}
             onBasculerPause={basculerPausePasAPas} onToutPasser={passerToutLaPhase} />
-          ici pour la rallumer (avancerPasAPas est deja expose par
-          usePartieEnCours, mais plus destructure ici). */}
+          ici pour la rallumer (avancerPasAPas est deja destructure plus haut,
+          desormais utilise par DeroulePhase ci-dessous). */}
       {/* Banniere des hauts faits : DEBRANCHEE a la demande de l'utilisateur.
           Moteur.enregistrerHautsFaits() continue de les accumuler dans
           etat.hautsFaits, et CoucheHautsFaits.tsx reste en place : il suffit de
@@ -2264,7 +2274,13 @@ function PagePartie({
           />
           <DeroulePhase
             etapes={etapesPhaseMechant}
-            onTerminer={() => undefined}
+            // Chaque « Suivant » relache AU PLUS une trame cote moteur : ce
+            // dernier n'a rien a avancer sans trame en attente
+            // (moteur.ts, avancerMaintenant), un clic de trop est donc sans
+            // effet. onTerminer rappelle la meme fonction pour ne jamais
+            // laisser le moteur bloque une fois la derniere etape validee.
+            onSuivant={avancerPasAPas}
+            onTerminer={avancerPasAPas}
             onToutDerouler={passerToutLaPhase}
           />
         </>

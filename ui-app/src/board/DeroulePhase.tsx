@@ -30,10 +30,18 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 
 export function DeroulePhase({
   etapes,
+  onSuivant,
   onTerminer,
   onToutDerouler,
 }: {
   etapes: EtapeDeroule[]
+  /**
+   * Appele a CHAQUE etape validee (clic, clavier ou enchainement auto), avant
+   * de passer a la suivante. C'est lui qui relache le moteur cote reseau
+   * (`avancerMaintenant`) : optionnel pour ne pas casser les appelants qui ne
+   * pilotent pas le moteur (tests, previsualisation).
+   */
+  onSuivant?: () => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
   /** « Tout derouler » : les etapes restantes defilent sans attendre. */
@@ -46,10 +54,11 @@ export function DeroulePhase({
   // « Precedent » serait inutilisable dessus.
   const [suspendu, setSuspendu] = useState(false)
   // Vrai une fois la derniere etape validee : le cartouche doit alors
-  // disparaitre de lui-meme. On ne peut pas compter sur l'appelant pour cela
-  // (board.tsx passe un `onTerminer` qui ne fait rien), donc le composant se
-  // masque lui-meme plutot que de rester affiche indefiniment sur la
-  // derniere etape, y compris pendant le tour du joueur suivant.
+  // disparaitre de lui-meme. `onTerminer` relache desormais vraiment le
+  // moteur (board.tsx), mais cela ne le fait pas disparaitre de l'ecran pour
+  // autant : c'est toujours au composant de se masquer, plutot que de rester
+  // affiche indefiniment sur la derniere etape, y compris pendant le tour du
+  // joueur suivant.
   const [termine, setTermine] = useState(false)
 
   // Signature STABLE du contenu, pas l'identite du tableau : board.tsx
@@ -86,6 +95,13 @@ export function DeroulePhase({
     // touche pressee ne doit alors rien declencher.
     if (!etape) return
     setSuspendu(false)
+    // Relache le moteur AVANT de savoir si c'est la derniere etape : chaque
+    // validation (clic, clavier, enchainement auto) correspond au plus a une
+    // trame retenue cote moteur (`avancerMaintenant` ne fait rien sans trame
+    // en attente), donc l'appeler ici a chaque fois est sans risque, y
+    // compris sur la derniere etape ou `onTerminer` l'appelle une seconde
+    // fois juste apres.
+    onSuivant?.()
     if (index + 1 >= etapes.length) {
       setTermine(true)
       onTerminer()
