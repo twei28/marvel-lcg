@@ -263,15 +263,21 @@ dépôt ne l'enveloppait encore).
 - [x] Étape 7 : 2 cas, un par capacité. Substitution : 2/2.
 - [x] Étape 7 bis : « once per round » borne le REDRESSEMENT, pas la carte
       elle-même comme une action répétable par le joueur (c'est une Réponse
-      automatique après épuisement du héros, pas une Action). Aucun témoin
-      d'épuisement écrit : l'audit C (point 1) ne liste pas `vv009` parmi
-      les cartes concernées, et la carte n'a pas été revue pour cette
-      exigence dans le cadre de cet audit. **Non vérifié ici** : à traiter
-      séparément si jugé utile, hors du périmètre des quatre points demandés.
+      automatique après épuisement du héros, pas une Action). **Témoin
+      d'épuisement écrit le 07/09/2026** (audit C, suite) : `test_capacites.py
+      … "vv009 Insubstantial Flight — TEMOIN D'EPUISEMENT"`, deux inclinaisons
+      du héros dans le même round via `Puzzle.Exhaust('vv001a')` répété. Le
+      cas est **VERT** avec la carte telle quelle (vv009 s'incline une fois
+      pour redresser le héros, puis reste inclinée et ne peut plus payer son
+      propre coût à la 2e inclinaison). Contre-preuve faite en retirant
+      temporairement `SetCostFunc(CostFunc.Exhaust("This"))` : le cas repasse
+      au **ROUGE** (plus aucune des deux cartes n'est inclinée), donc le
+      témoin n'est pas vacant. **Aucune correction de carte nécessaire** :
+      la limite naturelle mordait déjà, elle manquait seulement de témoin.
+      Détail dans `.superpowers/audit-2026-09-06/C-gb020-report.md`.
 - [x] Étape 8 : preuve commune.
 
-**Carte terminée : OUI** pour les étapes couvertes ; l'étape 7 bis de cette
-carte précise n'a pas été auditée dans ce passage (voir ci-dessus).
+**Carte terminée : OUI.**
 
 ### vv010 : ★ Viv's Solar Gem
 - [x] Étape 2 : `sd015` Never Ending Spark (même carte à un déclencheur
