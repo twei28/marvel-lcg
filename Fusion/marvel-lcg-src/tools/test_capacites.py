@@ -14733,6 +14733,27 @@ CAS = [
         "attendu": {"pret": ["vv001a"], "exhausted": ["vv009"]},
     },
     {
+        "nom": "vv009 Insubstantial Flight — TEMOIN D'EPUISEMENT : la seconde inclinaison du round ne redresse plus personne",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE (gabarit Viv Vision, 06/09/2026, "
+                     "audit C) : aucun temoin n'existait pour la limite de cette carte. "
+                     "PAS une « Limit once per X » imprimee : la limite vient du COUT de "
+                     "la Reponse elle-meme (« exhaust Insubstantial Flight -> ») qui ne "
+                     "peut plus etre paye tant que vv009 n'a pas ete redressee. Deux "
+                     "inclinaisons du heros dans le MEME round (aucune Ready step entre "
+                     "les deux) : la 1ere paye le cout (vv009 s'incline, le heros se "
+                     "redresse), la 2e ne doit PLUS RIEN faire, vv009 etant deja inclinee "
+                     "et ne pouvant plus payer son propre cout. Si la limite etait "
+                     "inerte, la seconde inclinaison redresserait quand meme le heros "
+                     "sans que vv009 change d'etat"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('vv009')"],
+        "declencher": ["Puzzle.Exhaust('vv001a')", "Puzzle.Exhaust('vv001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["vv001a", "vv009"]},
+    },
+    {
         "nom": "vv010 Viv's Solar Gem — la gemme inclinee finance un cout en energie",
         "pourquoi": ("`CanGenerateResources(AbilityType.Resource, Resources('Y'))"
                      ".SetCostFunc(CostFunc.Exhaust('This'))` (modele sd015 Never "
