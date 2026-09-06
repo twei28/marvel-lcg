@@ -2596,7 +2596,17 @@
   .deroule-phase {
     position: fixed;
     left: 50%;
-    bottom: 16px;
+    /* JAMAIS par-dessus la main du joueur. `--deroule-bas` est posee sur le
+       body par DeroulePhase, a partir de la position REELLE de `.zone-main` :
+       une valeur en dur marcherait sur un ecran et casserait sur le suivant.
+       Le repli (16px) est celui d'avant la correction, et sert quand aucune
+       main n'est mesurable (plateau mobile, premiere frame). */
+    bottom: var(--deroule-bas, 16px);
+    /* Sur un ecran bas, la place au-dessus de la main peut ne pas suffire : le
+       cartouche defile en lui-meme plutot que de deborder hors de l'ecran, ou
+       ses boutons deviendraient inatteignables. */
+    max-height: calc(100dvh - var(--deroule-bas, 16px) - 12px);
+    overflow-y: auto;
     transform: translateX(-50%);
     z-index: 540;
     width: min(560px, calc(100vw - 24px));

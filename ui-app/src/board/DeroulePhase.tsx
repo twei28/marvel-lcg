@@ -7,7 +7,7 @@
 // « Precedent » RELIT, il ne rejoue rien : le monde du moteur ne recule pas.
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -33,6 +33,18 @@ import { useDerouleScene } from './useDerouleScene'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
+
+/**
+ * De combien le cartouche se tient au-dessus de la main, et le plancher qu'il
+ * garde quand aucune main n'est mesurable.
+ *
+ * `--deroule-bas` est lue par `.deroule-phase` (board.css) comme sa propriete
+ * `bottom`. Le repli du CSS (16 px) est le meme que BAS_MINIMUM : le cartouche
+ * retombe alors exactement ou il etait avant cette correction.
+ */
+const VARIABLE_BAS = '--deroule-bas'
+const ECART_MAIN = 10
+const BAS_MINIMUM = 16
 
 /**
  * Les cinq temps de la carte de reference, dans l'ordre.
@@ -299,11 +311,78 @@ export function DeroulePhase({
     // minuteur, l'identite de `etape` ne doit pas le redeclencher.
   }, [boostsMontres, etape?.cle, etape?.boosts.length])
 
+  // Le cartouche est-il a l'ecran ? Calcule ICI parce que les hooks ci-dessous
+  // en dependent, et que la sortie `return null` qui l'applique vient bien plus
+  // bas : un hook place apres elle ferait tomber tout le plateau.
+  const visible = Boolean(etape) && !termine
+
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
   // tomber tout le plateau (React compte alors un hook de plus au rendu
   // suivant).
   useDerouleScene(etape, !termine)
+
+  // Le cartouche ne recouvre JAMAIS la main du joueur.
+  //
+  // Mesure faite en partie : le cartouche occupait 715 a 873 px, la main 623 a
+  // 806, soit 91 px de recouvrement, et l'utilisateur ne voyait plus ses
+  // cartes. Des trois issues possibles (remonter le cartouche, le decaler sur
+  // un cote, reduire sa hauteur), une seule tient :
+  //
+  //  - le DECALER SUR UN COTE ne sert a rien : la main occupe toute la largeur
+  //    du bas de la table (`--place: 1850px`, board.css), donc aucune colonne
+  //    n'est libre a cette hauteur ;
+  //  - REDUIRE SA HAUTEUR ne suffirait pas : sous la main il ne reste que 83 px
+  //    de fond d'ecran, et le cartouche en demande le double rien que pour ses
+  //    quatre lignes. Le raccourcir jusqu'a tenir la reviendrait a ne plus rien
+  //    y ecrire ;
+  //  - le REMONTER au-dessus de la main est donc le seul choix, et c'est aussi
+  //    le plus stable : il ne touche ni a l'echelle de la table ni au contenu
+  //    du cartouche.
+  //
+  // On ne remonte pas d'une valeur en dur : on lit la position REELLE de la
+  // zone de main. `.zone-main` est une case de la grille de la scene, donc sa
+  // boite ne bouge ni avec le nombre de cartes (elles sont rognees a
+  // l'interieur, voir `overflow: hidden` sur `.zone-main`) ni avec la taille de
+  // l'ecran (la scene se met a l'echelle, et le rect suit l'echelle). C'est la
+  // meme facon de lire le plateau que `useDerouleScene` et `placement/boites`.
+  //
+  // Aucune zone de main trouvee (plateau mobile, plateau pas encore monte) : on
+  // ne devine pas une geometrie absente, la variable est retiree et le CSS
+  // reprend sa valeur de repli.
+  useLayoutEffect(() => {
+    const corps = document.body
+    const oublier = () => corps.style.removeProperty(VARIABLE_BAS)
+    if (!visible) {
+      oublier()
+      return
+    }
+    const mesurer = () => {
+      const main = document.querySelector('.plateau-scene .zone-main')
+      if (!main) {
+        oublier()
+        return
+      }
+      const boite = main.getBoundingClientRect()
+      // Hauteur nulle : la mise en page n'a pas encore eu lieu (ou l'on est
+      // dans un environnement sans mise en page). Une mesure fausse serait pire
+      // que pas de mesure du tout.
+      if (boite.height === 0) {
+        oublier()
+        return
+      }
+      const bas = Math.round(window.innerHeight - boite.top + ECART_MAIN)
+      corps.style.setProperty(VARIABLE_BAS, `${Math.max(bas, BAS_MINIMUM)}px`)
+    }
+    mesurer()
+    // La scene se remet a l'echelle a chaque redimensionnement : la main change
+    // alors de place, et le cartouche doit la suivre.
+    window.addEventListener('resize', mesurer)
+    return () => {
+      window.removeEventListener('resize', mesurer)
+      oublier()
+    }
+  }, [visible])
 
   // Le `return null` vient APRES tous les hooks, jamais avant : React exige
   // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant

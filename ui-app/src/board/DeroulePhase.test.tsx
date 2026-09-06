@@ -1,9 +1,10 @@
 // Le cartouche du deroule : une etape a la fois, validee avant la suivante.
 //
-// Il est FIXE en bas au centre et ne bouge jamais : l'oeil sait ou lire et la
-// main ou cliquer des le deuxieme tour. On peut revenir en arriere pour relire,
+// Il est FIXE en bas au centre et ne bouge jamais d'une etape a l'autre :
+// l'oeil sait ou lire et la main ou cliquer des le deuxieme tour. « En bas »
+// s'entend au-dessus de la MAIN du joueur, jamais par-dessus elle. On peut revenir en arriere pour relire,
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
@@ -927,5 +928,73 @@ describe('le bilan de fin de phase', () => {
     expect(container.querySelector('.deroule-defaite')).toBeNull()
     expect(screen.queryByText(/vaincu/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Continuer/i })).toBeNull()
+  })
+  // --- Le cartouche ne recouvre jamais la main ------------------------------
+  // Mesure en partie reelle : cartouche 715-873, main 623-806, soit 91 px de
+  // recouvrement. « La petite modale en bas avec les phases cachent les
+  // cartes. »
+  describe('place du cartouche par rapport a la main', () => {
+    /**
+     * Pose une zone de main mesurable. jsdom ne fait aucune mise en page : on
+     * lui souffle la boite que le vrai navigateur avait mesuree.
+     */
+    const poserMain = (haut: number, hauteur: number) => {
+      const scene = document.createElement('div')
+      scene.className = 'plateau-scene'
+      const main = document.createElement('div')
+      main.className = 'zone-main'
+      main.getBoundingClientRect = () =>
+        ({ top: haut, bottom: haut + hauteur, height: hauteur, left: 0, right: 0, width: 0, x: 0, y: haut, toJSON: () => ({}) }) as DOMRect
+      scene.append(main)
+      document.body.append(scene)
+      return main
+    }
+
+    afterEach(() => {
+      document.body.style.removeProperty('--deroule-bas')
+      for (const scene of document.querySelectorAll('.plateau-scene')) scene.remove()
+    })
+
+    it('remonte le cartouche au-dessus de la main', () => {
+      // Fenetre et main de la mesure reelle : main a 623, fenetre de 889 de
+      // haut. Le cartouche doit donc partir d'au moins 889 - 623 = 266 px du
+      // bas, pour que son sommet soit au-dessus de 623.
+      vi.stubGlobal('innerHeight', 889)
+      poserMain(623, 183)
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      const bas = Number.parseInt(document.body.style.getPropertyValue('--deroule-bas'), 10)
+      expect(bas).toBeGreaterThanOrEqual(889 - 623)
+      vi.unstubAllGlobals()
+    })
+
+    it('suit la main quand elle change de place, sans valeur en dur', () => {
+      // Le meme cartouche sur un autre ecran : la main est ailleurs, le
+      // cartouche aussi. Une valeur en dur donnerait deux fois la meme.
+      vi.stubGlobal('innerHeight', 1200)
+      poserMain(900, 240)
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      const bas = Number.parseInt(document.body.style.getPropertyValue('--deroule-bas'), 10)
+      expect(bas).toBeGreaterThanOrEqual(1200 - 900)
+      vi.unstubAllGlobals()
+    })
+
+    it('ne devine rien quand aucune main n est mesurable', () => {
+      // Plateau mobile, ou premiere frame : pas de geometrie, pas de variable,
+      // et le CSS reprend son repli.
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(document.body.style.getPropertyValue('--deroule-bas')).toBe('')
+    })
+
+    it('rend sa place au cartouche disparu', () => {
+      // Sans ce nettoyage, la variable resterait posee sur le body pour le
+      // reste de la partie.
+      vi.stubGlobal('innerHeight', 889)
+      poserMain(623, 183)
+      const { unmount } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(document.body.style.getPropertyValue('--deroule-bas')).not.toBe('')
+      unmount()
+      expect(document.body.style.getPropertyValue('--deroule-bas')).toBe('')
+      vi.unstubAllGlobals()
+    })
   })
 })
