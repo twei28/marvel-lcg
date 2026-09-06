@@ -54,6 +54,7 @@ export function DeroulePhase({
   etapes,
   identitePhase,
   phaseMechantEnCours = false,
+  pvMaxParNom,
   onSuivant,
   onTerminer,
   onToutDerouler,
@@ -75,6 +76,13 @@ export function DeroulePhase({
    * le cartouche attend la suite au lieu de se masquer.
    */
   phaseMechantEnCours?: boolean
+  /**
+   * Les PV maximum des personnages, par nom (board.tsx, qui lit le monde) :
+   * sans eux le bilan de fin de phase dit « 8 » au lieu de « 8/14 ». Ils ne
+   * peuvent pas venir des etapes, le moteur ne les publie pas a cote de ses
+   * faits. Absents, ou muets sur une cible : le bilan montre le restant seul.
+   */
+  pvMaxParNom?: Map<string, number>
   /**
    * Appele a CHAQUE etape validee (clic ou clavier), avant de passer a la
    * suivante. C'est lui qui relache le moteur cote reseau
@@ -145,7 +153,9 @@ export function DeroulePhase({
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
-  const etapesAffichees = arreterSurDefaite(phaseMechantEnCours ? etapes : avecBilan(etapes))
+  const etapesAffichees = arreterSurDefaite(
+    phaseMechantEnCours ? etapes : avecBilan(etapes, pvMaxParNom)
+  )
 
   const etape = etapesAffichees[index]
 

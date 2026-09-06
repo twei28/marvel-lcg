@@ -105,9 +105,10 @@ export function texteLigneBilan(ligne: LigneBilan): string {
  * Le compteur de la cible a droite de sa ligne de bilan, meme regle qu'ailleurs
  * dans le cartouche : rien du tout quand la source n'en donne pas.
  *
- * Les points de vie s'affichent donc SEULS (« 8 »), pas « 8/14 » : le moteur ne
- * publie pas les PV maximum du heros a cote de ses faits, et un maximum invente
- * serait pire que pas de maximum.
+ * Les points de vie s'affichent « 8/14 » quand l'appelant du bilan a pu donner
+ * les PV maximum (board.tsx, qui lit le monde), et « 8 » tout seul sinon : le
+ * moteur ne les publie pas a cote de ses faits, et un maximum invente serait
+ * pire que pas de maximum.
  */
 export function compteurLigneBilan(ligne: LigneBilan): string {
   return compteur(ligne.restant, ligne.plafond)

@@ -82,7 +82,11 @@ export type LigneBilan = {
   total: number
   /** Le compteur de la cible apres le DERNIER coup connu, s'il y en a un. */
   restant?: number
-  /** Son seuil, quand elle en a un (la menace maximale d'une manigance). */
+  /**
+   * Son seuil, quand il est connu : la menace maximale d'une manigance, qui
+   * vient des etapes, ou les PV maximum d'un personnage, que l'appelant
+   * fournit (voir `lignesBilan`). Absent des que le seuil n'est pas sur.
+   */
   plafond?: number
 }
 
@@ -314,8 +318,8 @@ export function etapesDeroule(
       // Nettoyage applique partout ailleurs sur les noms de heros (icones,
       // symboles) : sans lui, le deroule affichait des prefixes que personne
       // d'autre n'affiche.
-      auteurNom: fait.auteur.replace(/^\W*/, ''),
-      cibleNom: fait.cible.replace(/^\W*/, ''),
+      auteurNom: nomNettoye(fait.auteur),
+      cibleNom: nomNettoye(fait.cible),
       // `subi` et non `inflige` : voir le commentaire de `montant`.
       montant: fait.subi,
       restant,
@@ -374,7 +378,7 @@ export function etapesDeroule(
       // Nettoyage identique a celui des faits plus haut : le moteur prefixe
       // les identites d'un marqueur decoratif que le plateau retire partout
       // ailleurs.
-      auteurNom: nomHerosNettoye(nomsHerosParJoueur[e.joueur ?? -1]),
+      auteurNom: nomNettoye(nomsHerosParJoueur[e.joueur ?? -1]),
       // Le nom NU de la carte (voir `cibleNom` de l'etape de menace, meme
       // raison) : `titre` n'est plus une phrase toute faite, `titreEtape` la
       // construit a partir de `auteurNom` et `cibleNom`.
@@ -388,12 +392,16 @@ export function etapesDeroule(
 }
 
 /**
- * Nettoyage du nom d'un heros, identique a celui applique aux faits du
- * mechant (`fait.auteur.replace(...)`) : le moteur prefixe les identites d'un
- * marqueur decoratif que le plateau retire partout ailleurs (icones,
+ * Nettoyage du nom d'une carte : le moteur prefixe les identites d'un marqueur
+ * decoratif (« * Doctor Doom ») que le plateau retire partout ailleurs (icones,
  * symboles).
+ *
+ * Exportee parce que le nom nettoye sert de CLE hors de ce module : le bilan de
+ * fin de phase regroupe ses lignes sur lui, et board.tsx doit nettoyer de la
+ * meme facon les noms qu'il releve sur le monde, sans quoi aucune cle ne se
+ * retrouverait. Une seule regle, a un seul endroit.
  */
-function nomHerosNettoye(nom: string | undefined): string | undefined {
+export function nomNettoye(nom: string | undefined): string | undefined {
   return nom ? nom.replace(/^\W*/, '') : undefined
 }
 
@@ -474,8 +482,19 @@ const GENRE_PAR_TITRE: Record<string, 'degats' | 'menaces'> = {
  *
  * Le compteur retenu est celui du DERNIER coup connu pour cette cible : les
  * etapes arrivent dans l'ordre du jeu, c'est donc l'etat le plus recent.
+ *
+ * `pvMaxParNom` donne les PV MAXIMUM des personnages, par nom nettoye (voir
+ * `nomNettoye`), pour que le bilan dise « 8/14 » et plus seulement « 8 ». Il
+ * vient de l'appelant parce qu'il n'est nulle part dans les sources de ce
+ * module : le moteur ne publie pas les PV maximum a cote de ses faits (voir
+ * `FaitMechant`), seul le monde les connait. Absent, ou muet sur une cible : le
+ * restant s'affiche seul, comme avant. Un plafond invente serait pire qu'un
+ * chiffre nu.
  */
-export function lignesBilan(etapes: EtapeDeroule[]): LigneBilan[] {
+export function lignesBilan(
+  etapes: EtapeDeroule[],
+  pvMaxParNom?: Map<string, number>
+): LigneBilan[] {
   const lignes = new Map<string, LigneBilan>()
 
   for (const etape of etapes) {
@@ -509,6 +528,15 @@ export function lignesBilan(etapes: EtapeDeroule[]): LigneBilan[] {
     })
   }
 
+  // Les PV maximum en dernier, et seulement la ou les etapes n'ont rien dit :
+  // une manigance porte deja son seuil (`plafond`, venu de son entree de
+  // journal), et ce seuil-la fait foi puisqu'il date du coup lui-meme.
+  for (const ligne of lignes.values()) {
+    if (ligne.genre !== 'degats' || ligne.plafond !== undefined) continue
+    const max = pvMaxParNom?.get(ligne.cibleNom)
+    if (max !== undefined && max > 0) ligne.plafond = max
+  }
+
   return [...lignes.values()]
 }
 
@@ -523,7 +551,10 @@ export function lignesBilan(etapes: EtapeDeroule[]): LigneBilan[] {
  * Une liste vide reste vide : hors phase du mechant, le cartouche ne doit
  * annoncer la fin de rien du tout.
  */
-export function avecBilan(etapes: EtapeDeroule[]): EtapeDeroule[] {
+export function avecBilan(
+  etapes: EtapeDeroule[],
+  pvMaxParNom?: Map<string, number>
+): EtapeDeroule[] {
   if (etapes.length === 0) return etapes
   const bilan: EtapeDeroule = {
     cle: 'bilan',
@@ -534,7 +565,7 @@ export function avecBilan(etapes: EtapeDeroule[]): EtapeDeroule[] {
     regle: '',
     boosts: [],
     consequences: [],
-    bilan: lignesBilan(etapes),
+    bilan: lignesBilan(etapes, pvMaxParNom),
   }
   // Le tri, plutot qu'un simple `push` : `bilan` est le dernier de ORDRE, donc
   // l'etape finit derniere quel que soit l'ordre d'arrivee des faits.

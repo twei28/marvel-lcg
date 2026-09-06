@@ -114,6 +114,29 @@ function nombre(valeur: number | undefined): number | undefined {
 }
 
 /**
+ * Le maximum de points de vie d'un personnage, quand il est CONNU.
+ *
+ * Le maximum COURANT du moteur d'abord : il suit les ameliorations qui relevent
+ * le plafond (« +2 points de vie »). Le catalogue ne connait que le PV imprime
+ * sur la carte, qui ne bouge jamais : un allie ainsi renforce s'affichait
+ * « 5/3 ». Zero n'est pas un maximum : le moteur l'envoie pour les PV infinis.
+ *
+ * `undefined` quand aucune source ne le donne (PV variables selon le nombre de
+ * joueurs, carte absente du catalogue, PV infinis) : tout lecteur montre alors
+ * le courant seul plutot qu'un faux rapport.
+ *
+ * Exportee parce que le plateau n'est pas seul a en avoir besoin : le bilan de
+ * fin de phase du mechant y lit le meme plafond, et deux regles differentes
+ * pour un meme chiffre se contrediraient a l'ecran.
+ */
+export function pvMaximum(card: WorldCard, catalogue: Catalogue): number | undefined {
+  if (card.info.is_infinite_health) return undefined
+  const duMoteur = nombre(card.info.max_health)
+  if (duMoteur !== undefined && duMoteur > 0) return duMoteur
+  return catalogue.pvMax(card.card_id)
+}
+
+/**
  * Pastille PV.
  *
  * ECART ASSUME avec la vitrine, qui n'affichait les PV que sur les allies :
@@ -129,13 +152,7 @@ function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
   const courants = nombre(card.info.health)
   if (courants === undefined) return undefined
 
-  // Le maximum COURANT du moteur d'abord : il suit les ameliorations qui
-  // relevent le plafond (« +2 points de vie »). Le catalogue ne connait que le
-  // PV imprime sur la carte, qui ne bouge jamais : un allie ainsi renforce
-  // s'affichait « 5/3 ». Zero n'est pas un maximum : le moteur l'envoie pour les
-  // PV infinis, traites juste au-dessus.
-  const duMoteur = nombre(card.info.max_health)
-  const max = duMoteur !== undefined && duMoteur > 0 ? duMoteur : catalogue.pvMax(card.card_id)
+  const max = pvMaximum(card, catalogue)
   // Pas de maximum fiable (PV variables selon le nombre de joueurs, ou carte
   // absente du catalogue) : on montre le courant seul plutot qu'un faux rapport.
   return max === undefined ? `${courants}` : `${courants}/${max}`
@@ -183,8 +200,7 @@ function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undef
     // Meme maximum que la pastille, aux memes conditions : sans maximum fiable
     // (PV variables selon le nombre de joueurs, carte hors catalogue), une bande
     // remplie a une fraction inventee mentirait plus qu'elle n'informerait.
-    const duMoteur = nombre(card.info.max_health)
-    const max = duMoteur !== undefined && duMoteur > 0 ? duMoteur : catalogue.pvMax(card.card_id)
+    const max = pvMaximum(card, catalogue)
     if (max === undefined || max <= 0) return undefined
     return { remplissage: borne(courants / max), genre: 'pv', alarme: campDe(card) === 'player' }
   }

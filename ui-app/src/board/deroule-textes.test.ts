@@ -202,7 +202,13 @@ describe('les phrases du bilan', () => {
     expect(compteurLigneBilan(ligne({ restant: 6, plafond: 8 }))).toBe('6/8')
   })
 
-  it('affiche les points de vie seuls : le moteur n en publie pas le maximum', () => {
+  it('affiche les points de vie sur leur maximum quand il est connu', () => {
+    // Le maximum ne vient pas des faits du moteur mais du monde (board.tsx) :
+    // quand il l'a fourni, le bilan dit « 8/14 » au lieu de « 8 ».
+    expect(compteurLigneBilan(ligne({ restant: 8, plafond: 14 }))).toBe('8/14')
+  })
+
+  it('affiche les points de vie seuls quand le maximum est inconnu', () => {
     expect(compteurLigneBilan(ligne({ restant: 8 }))).toBe('8')
   })
 

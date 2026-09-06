@@ -35,7 +35,7 @@ import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
-import { kindOf, toScanCard, type ContexteCarte } from './board/card-model'
+import { kindOf, pvMaximum, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
@@ -55,7 +55,7 @@ import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
-import { etapesDeroule } from './board/deroule-phase'
+import { etapesDeroule, nomNettoye } from './board/deroule-phase'
 import { SplashTour } from './board/SplashTour'
 import {
   CLE_AUTO_CIBLE,
@@ -111,7 +111,7 @@ import type { Demande, Option, Reponse } from './board/ask'
 import {
   chargerEtat,
 } from './board/sources'
-import { isScheme, isVisibleFor, type World, type WorldCard } from './board/world'
+import { isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 // Migration EXPLICITE des anciens reglages de la phase du mechant (voir
 // moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
@@ -1841,6 +1841,35 @@ function PagePartie({
     etat.monde?.round_id,
   ])
 
+  // Les PV MAXIMUM des personnages, par nom, pour le bilan de fin de phase du
+  // mechant : sans eux il dit « 8 » la ou il pourrait dire « 8/14 ».
+  //
+  // Par NOM, parce que c'est la cle du bilan : ses lignes regroupent ce qu'UNE
+  // cible a encaisse, et le regroupement se fait sur le nom (voir lignesBilan).
+  // Le nom passe par `nomNettoye`, la meme fonction que le deroule applique aux
+  // noms venus des faits : sans cela, « * Colossus » ne retrouverait jamais
+  // « Colossus ».
+  //
+  // Le plafond vient de `pvMaximum`, exactement comme la pastille de PV des
+  // cartes : `info.max_health` du moteur, ameliorations comprises, et le PV
+  // imprime du catalogue en secours. Deux regles differentes pour un meme
+  // chiffre se contrediraient a l'ecran.
+  //
+  // Une carte sans maximum sur (PV variables selon le nombre de joueurs, PV
+  // infinis, carte hors catalogue) n'entre PAS dans la table : le bilan montre
+  // alors le restant seul. Un plafond faux serait pire qu'un chiffre nu.
+  const pvMaxParNom = useMemo(() => {
+    const parNom = new Map<string, number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (!isUnit(carte)) continue
+      const max = pvMaximum(carte, catalogue)
+      if (max === undefined || max <= 0) continue
+      const nom = nomNettoye(carte.name)
+      if (nom) parNom.set(nom, max)
+    }
+    return parNom
+  }, [cartesMondeParId, catalogue])
+
   // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
   // du moment, et le journal ci-dessus pour le passé. Aucun tampon d'états n'est
   // gardé, donc une partie qui ne signale rien n'en porte aucun coût.
@@ -2354,6 +2383,9 @@ function PagePartie({
             // liste d'etapes peut encore s'allonger : arriver au bout de
             // celles qu'on connait ne veut pas dire que la phase est finie.
             phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
+            // Les PV maximum, que seul le monde connait : le bilan de fin de
+            // phase dit alors « 8/14 » plutot que « 8 » tout seul.
+            pvMaxParNom={pvMaxParNom}
             // Chaque « Suivant » relache AU PLUS une trame cote moteur : ce
             // dernier n'a rien a avancer sans trame en attente
             // (moteur.ts, avancerMaintenant), un clic de trop est donc sans

@@ -542,6 +542,55 @@ describe('le bilan de fin de phase', () => {
     expect(lignes[0]).toMatchObject({ restant: 7, plafond: 8 })
   })
 
+  it('affiche les PV maximum quand l appelant les connait', () => {
+    // Les PV maximum ne sont nulle part dans les faits du moteur : c'est
+    // board.tsx qui les releve sur le monde et les passe ici, par nom.
+    const etapes = etapesDeroule(
+      [attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3, restant: 11 })],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const lignes = lignesBilan(etapes, new Map([['Colossus', 14]]))
+    expect(lignes[0]).toMatchObject({ restant: 11, plafond: 14 })
+  })
+
+  it('laisse les PV nus quand le maximum est inconnu', () => {
+    // Un plafond invente serait pire qu'un chiffre nu : sans entree pour cette
+    // cible, la ligne reste sans plafond.
+    const etapes = etapesDeroule(
+      [attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3, restant: 11 })],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(lignesBilan(etapes, new Map([['Thor', 12]]))[0].plafond).toBeUndefined()
+    expect(lignesBilan(etapes)[0].plafond).toBeUndefined()
+  })
+
+  it('n ecrase pas le seuil d une manigance avec un PV maximum homonyme', () => {
+    // Le seuil d'une manigance vient de son entree de journal, et il date du
+    // coup lui-meme : il fait foi.
+    const etapes = etapesDeroule(
+      [],
+      [entree({ nomCarte: 'L’Effraction !', valeur: 3, restant: 6, plafond: 8 })],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(lignesBilan(etapes, new Map([['L’Effraction !', 99]]))[0].plafond).toBe(8)
+  })
+
+  it('porte les PV maximum jusqu au bilan de fin de phase', () => {
+    const etapes = etapesDeroule(
+      [attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3, restant: 11 })],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const bilan = avecBilan(etapes, new Map([['Colossus', 14]])).at(-1)
+    expect(bilan?.bilan?.[0]).toMatchObject({ restant: 11, plafond: 14 })
+  })
+
   it('ne compte pas une carte revelee, qui n encaisse rien', () => {
     const etapes = etapesDeroule(
       [],
