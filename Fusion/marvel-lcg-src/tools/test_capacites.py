@@ -14308,6 +14308,27 @@ CAS = [
         "attendu": {"menace": [["01097b", 4]]},
     },
     {
+        "nom": "hk009 The Other Guy — TEMOIN D'EPUISEMENT : les DEUX branches, une seule fois par phase chacune",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. Les deux Reponses portent CHACUNE "
+                     "leur propre « Limit once per phase », separement. Quatre bascules "
+                     "dans la MEME phase (heros, civil, heros, civil) exercent les deux "
+                     "limites a la fois : la 1ere bascule en heros inflige 1 degat, la "
+                     "1ere en civil retire 1 menace, et les DEUX suivantes ne doivent plus "
+                     "rien faire si les limites mordent. Si l'une des deux est inerte, le "
+                     "degat monte a 2 ou la menace descend a 3"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay(\'hk009\', under_control=True)",
+                          "Puzzle.SetThreat(\'01097b\', 5)"],
+        "declencher": ["Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')",
+                       "Puzzle.ChangeToFace(\'hk001a\', \'hk001b\')",
+                       "Puzzle.ChangeToFace(\'hk001b\', \'hk001a\')",
+                       "Puzzle.ChangeToFace(\'hk001a\', \'hk001b\')"],
+        "cibles": ["01094", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]], "menace": [["01097b", 4]]},
+    },
+    {
         "nom": "hk010 Intimidating Roar — 2 menaces retirees quand Hulk encaisse 3 degats ou plus",
         "pourquoi": ("`AfterUnitTookDamage(HeroResponse, \'You\', is_from_attack=True)` "
                      "+ `CostFunc.Exhaust(\'This\')`. ⚠ Le montant se lit sur "
@@ -14412,6 +14433,26 @@ CAS = [
         "attendu": {"attributs": {"thwart": 2}},
     },
     {
+        "nom": "vv001a Density Manipulation — TEMOIN D'EPUISEMENT : la seconde Action du round ne cumule pas le bonus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per round.) » : deux "
+                     "energies payees, deux activations dans le meme round. Si la "
+                     "limite mord, un seul +2 s'applique (CTR 1 -> 3). Si elle est "
+                     "inerte, les deux bonus s'additionnent (CTR 1 -> 5). ⚠ `type="
+                     "'Action'` EXPLICITE : sans lui, une fois la limite consommee, "
+                     "`Puzzle.Action` peut retomber sur un AUTRE candidat "
+                     "WhenPlayerInTurn de l'identite (la bascule de forme) au lieu de "
+                     "voir son offre refusee, piege deja rencontre sur ls001b et "
+                     "im001b"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')"],
+        "main_exclusive": ["01088", "01088"],
+        "declencher": ["Puzzle.Action('vv001a', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('vv001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 2}},
+    },
+    {
         "nom": "vv001b Recharge — une carte a energie IMPRIMEE remonte de la defausse sur le deck",
         "pourquoi": ("`AskChooseFace` sur `CardFinder(has_printed_res='Y').Checks("
                      "joueur.discard_pile.Get(True))` puis `Faces.MoveAllToDeck(..., "
@@ -14437,6 +14478,21 @@ CAS = [
         "declencher": [],
         "verifier": "etat_attendu",
         "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "vv001b Recharge — TEMOIN D'EPUISEMENT : la seconde Action du round ne remonte plus rien",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per round.) » : DEUX "
+                     "cartes a energie imprimee en defausse, deux activations dans le "
+                     "meme round. Si la limite mord, une seule remonte au deck et l'autre "
+                     "reste en defausse. Si elle est inerte, les deux remontent. ⚠ `type="
+                     "'Action'` EXPLICITE, meme piege que ci-dessus sur vv001a"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01088', '01088')"],
+        "declencher": ["Puzzle.Action('vv001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('vv001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["01088"], "defausse_joueur": 1},
     },
     {
         "nom": "vv002 Hologram Projection — l'activation du vilain est annulee et le vilain desoriente",
@@ -14800,6 +14856,34 @@ CAS = [
         "attendu": {"pret": ["ls001b"]},
     },
     {
+        "nom": "ls001b Shieldmaiden — TEMOIN D'EPUISEMENT : la seconde Action du round ne redresse personne",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : deux "
+                     "activations dans le meme round, sur DEUX cibles ASGARD inclinees "
+                     "distinctes (l'alter-ego, puis l'allie ls002, deja pose en jeu pour "
+                     "eviter le piege ho009 de `Puzzle.Exhaust` qui irait chercher au "
+                     "deck). `cibles` force la premiere activation sur ls001b : sans "
+                     "cible restante dans la liste, la seconde retombe sur le minimum "
+                     "legal, donc ls002 si et seulement si le moteur l'offre encore. "
+                     "⚠ `type='Action'` EXPLICITE sur les deux appels : sans lui, une "
+                     "fois Shieldmaiden epuisee, `Puzzle.Action` retombe sur un AUTRE "
+                     "candidat WhenPlayerInTurn de l'identite (la bascule de forme), et "
+                     "l'execute a la place : la partie basculait alors en heros au lieu "
+                     "de refuser la seconde activation, brouillant completement le "
+                     "temoin.\n"
+                     "Si la limite mord, ls002 reste incline. Si elle est inerte, il se "
+                     "redresse aussi"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.Exhaust('ls001b')",
+                          "Puzzle.PutIntoPlay('ls002', under_control=True)",
+                          "Puzzle.Exhaust('ls002')"],
+        "declencher": ["Puzzle.Action('ls001b', 'Action')"],
+        "cibles": ["ls001b"],
+        "declencher_tolerant": ["Puzzle.Action('ls001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ls001b"], "exhausted": ["ls002"]},
+    },
+    {
         "nom": "ls002 Thor — apres son attaque, 1 degat a chaque sbire du joueur choisi",
         "pourquoi": ("`AfterUnitAttackEnd(Response, 'This', op)` puis un choix de "
                      "JOUEUR (`SetTarget('Players')` + `Players.ForEachTargets`, "
@@ -15016,6 +15100,27 @@ CAS = [
         "attendu": {"en_main": ["01088"]},
     },
     {
+        "nom": "ls009 Sif's Crest — TEMOIN D'EPUISEMENT : le second pouvoir de base de la phase ne pioche plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per PHASE) » : deux "
+                     "pouvoirs de base dans la MEME phase (une Contre puis une Attaque), "
+                     "et c'est la MAIN qui tranche. Deck a deux cartes connues : la "
+                     "premiere doit etre piochee, la seconde doit rester au deck si la "
+                     "limite mord. ⚠ `CreatePlayerDeck` empile en donnant le DERNIER "
+                     "argument au sommet (verifie par SONDE) : 01088 est cite en "
+                     "dernier pour etre la carte piochee en premier"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls009')",
+                          "Puzzle.CreatePlayerDeck('01089', '01088')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('ls001a')", "Puzzle.Attack('ls001a')"],
+        "cibles": ["01097b", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"], "dans_deck_joueur": ["01089"], "taille_main": 2},
+    },
+    {
         "nom": "ls010 Sif's Spear — +1 DEF et Riposte 1, en forme de heros",
         "pourquoi": ("jumeau de `03009` * Captain America's Shield : "
                      "`GiveKeywordToAttached(Hero, defense=1, retaliate=1)`. La cible "
@@ -15155,6 +15260,35 @@ CAS = [
         "cibles": ["ls014", "01097b"],
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "ls014 Enchantress — TEMOIN D'EPUISEMENT : la seconde attaque de la phase ne declare plus de defenseur",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per phase.) » : deux "
+                     "attaques contre Enchantress dans la MEME phase. La premiere suit "
+                     "le cas nominal (-2 : l'attaque puis la defense forcee tirent "
+                     "chacune Valiant Warrior). Si la limite mord, la seconde attaque "
+                     "est ORDINAIRE : Enchantress se defend seule, aucun defenseur "
+                     "declare, donc Valiant Warrior ne tire qu'une fois pour elle "
+                     "(-1). Total attendu : 4 - 2 - 1 = 1. Si la limite est inerte, "
+                     "la seconde attaque redeclare un defenseur et retire 2 de plus (0). "
+                     "⚠ La principale (« The Break-In! ») a une cible de 7 : rester "
+                     "SOUS ce seuil est indispensable, une menace posee a 10 la fait "
+                     "COMPLETER (« players lose the game ») et efface tout le reste du "
+                     "cas sans le moindre message d'erreur.\n"
+                     "⚠ `Puzzle.Ready('ls001a')` ENTRE les deux attaques : une attaque "
+                     "de base incline l'attaquant, la seconde serait sinon illegale et "
+                     "ne partirait pas du tout, ce qui aurait aussi mesure 0 sans rien "
+                     "prouver sur la limite"),
+        "scenario": "rhino",
+        "heros": "lady_sif",
+        "mise_en_place": ["Puzzle.ChangeToFace('ls001b', 'ls001a')",
+                          "Puzzle.PutIntoPlay('ls014')",
+                          "Puzzle.SetThreat('01097b', 4)"],
+        "declencher": ["Puzzle.Attack('ls001a')", "Puzzle.Ready('ls001a')",
+                       "Puzzle.Attack('ls001a')"],
+        "cibles": ["ls014", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
     },
     {
         "nom": "ls015 Skurge — il frappe l'allie le plus bas en PV, et le deferlement passe",
@@ -15455,6 +15589,24 @@ CAS = [
         "jouer": ["im010"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im001b Inventor — TEMOIN D'EPUISEMENT : la seconde Action du round ne reduit rien de plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND.) » : deux "
+                     "activations dans le meme round, puis UNE SEULE amelioration jouee "
+                     "(im009, cout 2, aucune ressource en main). Verificateur dedie "
+                     "(et non `etat_attendu`) : la DSL `declencher`/`jouer` ne permet "
+                     "pas d'intercaler un second declenchement entre deux `jouer`. Si "
+                     "la limite mord, une seule reduction s'applique (cout residuel 1, "
+                     "impayable, im009 reste en main). Si elle est inerte, les deux "
+                     "activations offertes cumulent leurs reductions sur la MEME carte "
+                     "(cout 0, elle entre en jeu gratuitement)"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "main_exclusive": ["im009"],
+        "declencher": [],
+        "verifier": "im001b_temoin_epuisement",
     },
     {
         "nom": "im002 Repulsor Barrage — le compteur depense double les degats",
@@ -16096,6 +16248,22 @@ CAS = [
         "jouer": ["as011"],
         "verifier": "etat_attendu",
         "attendu": {"exhausted": ["as010"], "en_jeu": ["as011"]},
+    },
+    {
+        "nom": "as010 Gwen Stacy — TEMOIN D'EPUISEMENT : la seconde carte a cout 2+ du round ne la redresse plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) », limite "
+                     "GLOBALE. Deux cartes a cout imprime 2+ entrent en jeu sous controle "
+                     "dans le MEME round (01002 * Black Cat, puis, apres l'avoir "
+                     "reinclinee, 01034 * Stark Tower) : Gwen se redresse a la premiere, "
+                     "et doit rester inclinee a la seconde si la limite mord"),
+        "scenario": "rhino",
+        "heros": "armored_spidey",
+        "mise_en_place": ["Puzzle.PutIntoPlay('as010', under_control=True, exhaust=True)"],
+        "declencher": ["Puzzle.PutIntoPlay('01002', under_control=True)",
+                       "Puzzle.Exhaust('as010')",
+                       "Puzzle.PutIntoPlay('01034', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["as010"], "en_jeu": ["01002", "01034"]},
     },
     {
         "nom": "as011 Parker Industries — 3 cartes regardees, 1 gardee, 2 defaussees",
@@ -16775,6 +16943,23 @@ CAS = [
         "attendu": {"en_jeu": ["nt003b", "04047"], "hors_jeu": ["nt003a"]},
     },
     {
+        "nom": "nt001a Varial Heelflip — TEMOIN D'EPUISEMENT : la seconde carte SKILL de la phase ne retourne pas la planche une seconde fois",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per PHASE) » : deux "
+                     "cartes SKILL jouees dans la MEME phase. Si la limite mord, la "
+                     "planche reste sur WEAPON apres la seconde carte. Si elle est "
+                     "inerte, la seconde carte la retourne une seconde fois, ramenant "
+                     "nt003a en jeu : 17017 Target Practice (SKILL, cout 0, Support "
+                     "sans effet d'entree) est un second declencheur propre"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": ["Puzzle.ChangeToFace('nt001b', 'nt001a')"],
+        "main_exclusive": ["04047", "17017"],
+        "declencher": [],
+        "jouer": ["04047", "17017"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["nt003b", "04047", "17017"], "hors_jeu": ["nt003a"]},
+    },
+    {
         "nom": "nt001b Manual — 2 cartes SKILL remelangees, 2 cartes piochees",
         "pourquoi": ("« Shuffle X SKILL cards from your hand into your deck -> draw X "
                      "cards » : X est le NOMBRE DE CARTES CHOISIES, pas un cout en "
@@ -16792,6 +16977,24 @@ CAS = [
         "cibles": ["04047", "01065"],
         "verifier": "etat_attendu",
         "attendu": {"taille_main": 2, "dans_deck_joueur": ["04047", "01065"]},
+    },
+    {
+        "nom": "nt001b Manual — TEMOIN D'EPUISEMENT : la seconde Action du round ne remelange rien de plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : deux "
+                     "Actions dans le meme round. `cibles` force la premiere sur 04047 "
+                     "et 17017, laissant 01065 seul candidat legal pour la seconde : sans "
+                     "correspondance dans `cibles`, le pilote prend le minimum legal par "
+                     "defaut (etape 27bis du harnais). Si la limite mord, 01065 reste en "
+                     "main. Si elle est inerte, il rejoint aussi le deck"),
+        "scenario": "rhino",
+        "heros": "night_thrasher",
+        "mise_en_place": [],
+        "main_exclusive": ["04047", "17017", "01065"],
+        "declencher": ["Puzzle.Action('nt001b', 'Action')"],
+        "cibles": ["04047", "17017"],
+        "declencher_tolerant": ["Puzzle.Action('nt001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01065"], "dans_deck_joueur": ["04047", "17017"]},
     },
     {
         "nom": "nt002 Disaster — planche sur VEHICLE apres bascule : 3 menaces retirees",
@@ -17295,6 +17498,22 @@ CAS = [
         "declencher": ["Puzzle.Action('yd001b', 'Action', 0)"],
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["yd011"]},
+    },
+    {
+        "nom": "yd001b Crew Cut — TEMOIN D'EPUISEMENT : la seconde Action du round ne convoque plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » sur "
+                     "Crew Cut, distincte de Whistlin' qui n'a AUCUNE limite. Le deck "
+                     "contient DEUX Tahlei, pour que le second essai ait un candidat "
+                     "possible si la limite echoue a le retenir. Si elle mord, une "
+                     "Tahlei reste au deck. Si elle est inerte, les deux rejoignent la "
+                     "main"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('yd011', 'yd011')"],
+        "declencher": ["Puzzle.Action('yd001b', 'Action', 0)"],
+        "declencher_tolerant": ["Puzzle.Action('yd001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd011"], "dans_deck_joueur": ["yd011"]},
     },
     {
         "nom": "yd001b Whistlin' — la fleche convoquee, l'alter-ego incline",
@@ -17846,6 +18065,24 @@ CAS = [
         "attendu": {"degats_identite": 1, "degats": [["01094", 4]]},
     },
     {
+        "nom": "dr001a Doctor Druid — TEMOIN D'EPUISEMENT : la seconde Action du round ne prend plus de degat",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : le "
+                     "cout (« Take 1 damage ») ne tombe QUE si l'Action est offerte. "
+                     "Deux activations dans le meme round : si la limite mord, la "
+                     "seconde n'est pas offerte du tout, et l'identite ne prend qu'1 "
+                     "degat en tout. Si elle est inerte, la seconde paie aussi son cout "
+                     "et l'identite en prend 2. Pas de defausse fournie : la suite de "
+                     "la capacite ne trouve rien a rejouer et ne fait rien de plus, ce "
+                     "qui isole proprement le cout comme seule mesure"),
+        "scenario": "rhino",
+        "heros": "doctor_druid",
+        "mise_en_place": ["Puzzle.ChangeToFace('dr001b', 'dr001a')"],
+        "declencher": ["Puzzle.Action('dr001a', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('dr001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
         "nom": "dr001b Anthony Druid — Psychiatric Care ajoute sa propre REC",
         "pourquoi": ("l'alter-ego n'avait AUCUN cas sujet non plus.\n"
                      "« +X REC, where X is equal to Anthony Druid's REC » : REC imprimee "
@@ -18310,6 +18547,25 @@ CAS = [
         "attendu": {"en_main": ["bk009"]},
     },
     {
+        "nom": "bk001a Blink — TEMOIN D'EPUISEMENT : la seconde Action du round ne rend plus de portail",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : deux "
+                     "portails plantes (sur 01094 et 01101), deux activations dans le "
+                     "meme round. Si la limite mord, un seul portail revient en main et "
+                     "l'autre reste attache. Si elle est inerte, les deux reviennent"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["bk009", "bk009"],
+        "declencher": [],
+        "jouer": ["bk009", "bk009"],
+        "cibles": ["01094", "01101"],
+        "declencher_apres": ["Puzzle.Action('bk001a', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('bk001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bk009"], "en_jeu": ["bk009"]},
+    },
+    {
         "nom": "bk001b Clarice Ferguson — passer en civil remelange TOUS les portails et soigne d'autant",
         "pourquoi": ("« EACH ... from play » et « heal 1 for each upgrade SHUFFLED THIS "
                      "WAY » : le soin se compte sur ce qui a REELLEMENT ete remelange. "
@@ -18352,6 +18608,33 @@ CAS = [
         "declencher_apres": ["Puzzle.Gain('bk002')"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["bk002"]},
+    },
+    {
+        "nom": "bk002 Sabretooth — TEMOIN D'EPUISEMENT : la seconde arrivee en main du round n'entre plus en jeu",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : deux "
+                     "exemplaires de Sabretooth arrivent en main l'un apres l'autre, un "
+                     "portail deja en jeu. Si la limite mord, le premier entre en jeu et "
+                     "le second reste en main. Si elle est inerte, les deux entrent.\n"
+                     "⚠ `Puzzle.CreatePlayerDeck('bk002', 'bk002')` (DEUX exemplaires) "
+                     "est indispensable : `Puzzle.Gain('bk002')` passe par "
+                     "`FindOrCreateFace`, qui cherche D'ABORD dans le deck, PUIS parmi "
+                     "les cartes DEJA EN JEU portant ce nom, avant d'en creer une "
+                     "nouvelle. Sans un second exemplaire au deck, le second `Gain` "
+                     "retrouve donc le PREMIER Sabretooth (deja en jeu depuis le premier "
+                     "appel) et le fait REVENIR en main au lieu d'en amener un second : "
+                     "le cas mesurait alors 0 exemplaire en jeu quelle que soit la "
+                     "limite, faute d'objet distinct pour la seconde arrivee"),
+        "scenario": "rhino",
+        "heros": "blink",
+        "mise_en_place": ["Puzzle.ChangeToFace('bk001b', 'bk001a')",
+                          "Puzzle.CreatePlayerDeck('bk002', 'bk002')"],
+        "main_exclusive": ["bk009"],
+        "declencher": [],
+        "jouer": ["bk009"],
+        "cibles": ["01094"],
+        "declencher_apres": ["Puzzle.Gain('bk002')", "Puzzle.Gain('bk002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bk002"], "en_main": ["bk002"]},
     },
     {
         "nom": "bk008 Blink's Quiver — l'action cherche un portail dans le deck",
@@ -19221,6 +19504,35 @@ CAS = [
         "attendu": {"en_main": ["br010"], "degats": [["01094", 0]]},
     },
     {
+        "nom": "br001a Worthy — TEMOIN D'EPUISEMENT : la seconde Action du round ne frappe plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : un "
+                     "marteau EN JEU, une premiere activation qui le rend en main et "
+                     "frappe pour 3, un SECOND marteau repose en jeu, puis une seconde "
+                     "activation dans le MEME round. Si la limite mord, ce second "
+                     "marteau reste en jeu et le total s'arrete a 3. Si elle est inerte, "
+                     "il revient aussi et le total monte a 6.\n"
+                     "⚠ `Puzzle.PutIntoPlay('br010', ...)` DEUX FOIS D'AFFILEE (en mise "
+                     "en place) ne cree PAS deux marteaux distincts : `FindOrCreateFace` "
+                     "retrouve le premier exemplaire DEJA EN JEU et le repose sur "
+                     "lui-meme, il n'y en a jamais eu qu'un. Le second "
+                     "`Puzzle.PutIntoPlay` doit donc venir APRES que le premier ait "
+                     "QUITTE le jeu (ici, apres la premiere activation, qui le renvoie "
+                     "en main) : a ce moment le nom ne correspond plus a rien EN JEU, et "
+                     "`FindOrCreateFace` en fabrique un vrai second exemplaire — meme "
+                     "piege que celui trouve sur bk002, meme remede que `tg001a` (qui "
+                     "reinjecte Frogjolnir ENTRE ses deux activations)"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "declencher": ["Puzzle.Action('br001a', 'Action')",
+                       "Puzzle.PutIntoPlay('br010', under_control=True)"],
+        "cibles": ["01094"],
+        "declencher_tolerant": ["Puzzle.Action('br001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "en_jeu": ["br010"]},
+    },
+    {
         "nom": "br001b Starfarer — en civil, il va chercher un Star Jump dans le deck",
         "pourquoi": ("⚠ LES DEUX FACES PORTENT LE MEME NOM. Le filtre est donc le TYPE, "
                      "et la capacite civile est bien distincte de `Worthy`"),
@@ -19230,6 +19542,20 @@ CAS = [
         "declencher": ["Puzzle.Action('br001b', 'Action')"],
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["br005"]},
+    },
+    {
+        "nom": "br001b Starfarer — TEMOIN D'EPUISEMENT : la seconde Action du round ne trouve plus rien",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » : le "
+                     "deck contient LES DEUX exemplaires reels de Star Jump. Si la "
+                     "limite mord, un seul rejoint la main et l'autre reste au deck. Si "
+                     "elle est inerte, les deux rejoignent la main"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('br005', 'br005')"],
+        "declencher": ["Puzzle.Action('br001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('br001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["br005"], "dans_deck_joueur": ["br005"]},
     },
     {
         "nom": "br002 Eye of the Storm — une menace retiree de chaque manigance",
@@ -19422,6 +19748,24 @@ CAS = [
         "declencher": ["Puzzle.PutIntoPlay('01101')"],
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["br003"]},
+    },
+    {
+        "nom": "br009 Oathbrother — TEMOIN D'EPUISEMENT : le second sbire de la phase ne fait plus chercher d'evenement",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per PHASE.) » : DEUX "
+                     "sbires entrent en jeu dans la MEME phase, et le deck contient DEUX "
+                     "evenements pour que le second essai ait un candidat si la limite "
+                     "echoue a le retenir. La main de base (01090, 1 carte) sert de "
+                     "ligne de base : elle doit monter a 2 si la limite mord, 3 si elle "
+                     "est inerte"),
+        "scenario": "rhino",
+        "heros": "beta_ray_bill",
+        "mise_en_place": ["Puzzle.ChangeToFace('br001b', 'br001a')",
+                          "Puzzle.PutIntoPlay('br009', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('br002', 'br005')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01101')", "Puzzle.PutIntoPlay('01110')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
     },
     {
         "nom": "br010 Stormbreaker — le heros gagne le trait AERIAL",
@@ -22303,6 +22647,7 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"forme": "Hero", "en_jeu": ["sf015"]},
     },
+
     # ---------------------------------------------------------------- A2 ----
     # DEBUT DU BLOC A2 (06/09/2026) — NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
     #
@@ -26972,6 +27317,86 @@ def yd_attachements(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, f"attachements conformes ; {message}"
+
+
+def im001b_temoin_epuisement(monde, aides):
+    """im001b Inventor : TEMOIN D'EPUISEMENT (etape 7 bis) de « Limit once
+    per round » sur l'Action.
+
+    La DSL declencher/jouer ne permet pas d'intercaler un second
+    declenchement ENTRE deux `jouer` : `jouer` ne s'execute qu'UNE fois par
+    cas, toujours apres `declencher` et avant `declencher_tolerant`. Or c'est
+    exactement l'ordre qu'il faudrait pour ce cas (activer, jouer, activer a
+    nouveau, jouer a nouveau). Ce verificateur pilote donc lui-meme les deux
+    activations, EXACTEMENT comme `Puzzle.Action` (puzzle.py:558), pour
+    pouvoir laisser la seconde echouer sans que cela fasse planter le cas.
+
+    `Worlds.UpdateNextCardPlayCost` (worlds.py:808) enregistre, a CHAQUE
+    appel, un modificateur INDEPENDANT qui reste actif jusqu'a la premiere
+    carte compatible jouee ensuite. Consequence verifiee en lisant le code :
+    si les DEUX activations passent, la MEME amelioration jouee apres cumule
+    les deux reductions (-1 et -1). im009 * Repulsor Core One coute 2 et
+    aucune ressource n'est en main : avec une seule reduction il reste a 1,
+    impayable ; avec deux, il tombe a 0 et entre en jeu gratuitement.
+    """
+    from game.event.manager import EventManager
+    from game.message import Message
+    from game.effect.rule import DebugRule
+
+    joueur = monde.players[0]
+    im001b = aides["par_id"](monde, "im001b")
+    if im001b is None:
+        return False, "im001b n'est pas en jeu"
+
+    # ⚠ `im001b.effect.Find(when=Message.WhenPlayerInTurn)` rend TOUS les
+    # candidats WhenPlayerInTurn de l'identite, pas seulement Inventor : la
+    # bascule de forme (Change Form) en fait partie, et n'est PAS limitee.
+    # Sans se restreindre a LA MEME ability des le premier appel, la seconde
+    # activation peut trouver ce candidat de repli, croire la limite percee,
+    # et basculer la forme au lieu de reduire quoi que ce soit : exactement
+    # le piege deja rencontre sur ls001b (voir son propre temoin, plus haut).
+    def activer_inventor(ability_visee=None):
+        candidats = [x for x in im001b.effect.Find(when=Message.WhenPlayerInTurn)
+                    if not x.ability.is_play]
+        if ability_visee is not None:
+            candidats = [x for x in candidats if x.ability is ability_visee]
+        message = Message.WhenPlayerLikeInTurn(joueur, DebugRule(im001b))
+        message.Send()
+        effects = EventManager.FilterAvailableEffects(
+            message, candidats, joueur, monde, None)
+        if not effects:
+            return False, None
+        ability = effects[0].ability
+        joueur.ChooseEffects([effects[0]], message, forced=True)
+        return True, ability
+
+    premiere_offerte, ability_inventor = activer_inventor()
+    if not premiere_offerte:
+        return False, "la premiere activation de l'Action n'a meme pas ete offerte"
+    seconde_offerte, _ = activer_inventor(ability_visee=ability_inventor)
+
+    face = next((f for f in joueur.hand_cards.Get(True)
+                if getattr(f.paper, "card_id", None) == "im009"), None)
+    if face is None:
+        return False, "im009 introuvable en main avant de jouer"
+    joueur.PlayCardsLikeInTurn([face], DebugRule(im001b))
+    entree_en_jeu = aides["par_id"](monde, "im009") is not None
+
+    if seconde_offerte and entree_en_jeu:
+        return False, ("LIMITE CASSEE : la seconde activation a ete offerte dans le "
+                       "meme round, et im009 (cout imprime 2, aucune ressource en "
+                       "main) est quand meme entree en jeu : les deux reductions se "
+                       "sont cumulees")
+    if seconde_offerte and not entree_en_jeu:
+        return False, ("la seconde activation a ete offerte mais im009 n'est "
+                       "pourtant pas entree en jeu : verifier le montage du cas")
+    if entree_en_jeu:
+        return False, ("im009 est entree en jeu avec une SEULE reduction active "
+                       "(cout residuel 1, impayable sans ressource) : verifier le "
+                       "montage du cas")
+    return True, ("seconde activation refusee ; im009 (cout 2, residuel 1) reste "
+                  "impayable et en main")
+
 
 
 # ============================ BLOC A2 (06/09/2026) ==========================
