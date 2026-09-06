@@ -27,6 +27,17 @@
 			roll_size 20MiB
 			roll_keep 5
 		}
+		# Les clés de siège et d'invitation voyagent dans la query string : sans
+		# ce filtre, elles finissaient en clair dans les journaux (audit B, S5).
+		# Le filtre « query » demande Caddy 2.5 ou plus récent.
+		format filter {
+			wrap json
+			fields {
+				request>uri query {
+					replace key REDACTED
+				}
+			}
+		}
 	}
 }
 
@@ -142,10 +153,24 @@
 		redir https://{$DOMAINE}{uri} permanent
 	}
 
+	# Une page de table ne doit pas transmettre son URL (clé de siège incluse)
+	# aux sites qu'elle lierait : le Referer s'arrête au même domaine.
+	header Referrer-Policy "same-origin"
+
 	log {
 		output file /var/log/caddy/tables.log {
 			roll_size 20MiB
 			roll_keep 5
+		}
+		# Même filtre que l'accueil : les clés de siège ne s'écrivent plus dans
+		# les journaux (audit B, S5). Demande Caddy 2.5 ou plus récent.
+		format filter {
+			wrap json
+			fields {
+				request>uri query {
+					replace key REDACTED
+				}
+			}
 		}
 	}
 }
