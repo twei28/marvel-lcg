@@ -260,6 +260,25 @@ def _moteur_repond(port: int) -> bool:
         return False
 
 
+def _port_libre(port: int) -> bool:
+    """Vrai si personne ne tient ce port en ecoute.
+
+    ⚠ ON TESTE LA PRISE, PAS LA REPONSE HTTP, et c'est toute la difference.
+    `_moteur_repond` ne voit qu'un moteur qui sert encore des pages ; un
+    processus survivant qui tient la prise sans rien servir passerait au
+    travers, et c'est precisement celui-la qui fait echouer le demarrage
+    suivant sur « Address already in use ».
+    """
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as prise:
+        prise.settimeout(1)
+        try:
+            prise.connect(("127.0.0.1", port))
+        except OSError:
+            return True
+    return False
+
+
 def _nettoyer_emplacement(emplacement: int) -> None:
     """Efface les donnees de la partie precedente sur cet emplacement.
 
@@ -299,6 +318,20 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
     ouverture, ce qui detruisait decks et campagnes entre deux visites.
     """
     joueurs = max(1, min(4, joueurs))
+    # ⚠ ACHEVER LE PRECEDENT AVANT DE RECREER. Une partie morte etait
+    # simplement ECRASEE dans `PARTIES` : `eteindre_jeu` n'etait jamais appele
+    # sur elle, donc `os.killpg` non plus, et les enfants du lanceur
+    # survivaient a leur parent en gardant le port. Le nouveau moteur mourait
+    # alors sur « Address already in use », l'utilisateur lisait « Le moteur
+    # s'est arrete au demarrage », et le cycle se repetait a chaque `/entrer`
+    # sans issue automatique. Le faucheur ne voyait rien : il ne juge que
+    # `partie.vivant()`.
+    # ⚠ HORS DU VERROU : `eteindre_jeu` prend `VERROU`, qui n'est pas
+    # reentrant. L'appeler dedans figerait le service.
+    deja = PARTIES.get(pseudo)
+    if deja is not None and not deja.vivant():
+        eteindre_jeu(pseudo)
+
     with VERROU:
         deja = PARTIES.get(pseudo)
         if deja is not None and deja.vivant():
@@ -325,6 +358,16 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
         PARTIES[pseudo] = partie
 
     try:
+        # ⚠ ET VERIFIER QUE LA PLACE EST VRAIMENT LIBRE. `_moteur_repond`
+        # n'etait interroge qu'APRES le `Popen` : le moteur mourait alors sur
+        # « Address already in use » et le message ne disait pas pourquoi. On
+        # regarde donc avant, et on le dit en toutes lettres, parce que ce
+        # cas-la demande un geste a la main.
+        if not _port_libre(partie.port):
+            raise RuntimeError(
+                f"Le port {partie.port} est deja pris par un processus que le "
+                f"site ne controle pas. Il faut l'achever a la main "
+                f"(sudo fuser -k {partie.port}/tcp) avant de rouvrir cette table.")
         chemin_config = _config_partie(emplacement, partie)
         journal = open(os.path.join(RACINE_JEU, ".site", f"moteur-{emplacement}.log"),
                        "w", encoding="utf-8")

@@ -579,6 +579,75 @@ verifier("un compte connecte, lui, voit qui joue",
          any(j.get("code") == "hote" for j in _connu.get("jeux", [])), str(_connu))
 o.PARTIES.clear()
 
+# --- Le moteur zombie qui bloquait une table pour toujours ------------------
+# ⚠ RIEN DE CE QUI SUIT N'EST SIMULE. On lance un VRAI processus dans son
+# propre groupe, comme le fait `lancer_jeu`, et on occupe le port avec une
+# VRAIE prise en ecoute. Un faux processus ne prouverait pas que `os.killpg`
+# atteint sa cible, et un port « occupe » declare a la main ne prouverait pas
+# qu'on sait le voir.
+import socket                                               # noqa: E402
+
+
+class MoteurZombie(o.Partie):
+    """Le moteur dont le parent est mort mais dont les enfants tiennent encore
+    le port : `vivant()` dit faux, le processus, lui, tourne toujours."""
+
+    def vivant(self):
+        return False
+
+
+_place = o.emplacement_de("hote")
+_port = o.PORT_BASE + _place
+
+_libre = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+_libre.bind(("127.0.0.1", 0))
+_port_a_nous = _libre.getsockname()[1]
+verifier("un port sans personne dessus est vu libre",
+         o._port_libre(_port_a_nous) is True)
+_libre.listen(1)
+verifier("un port tenu par quelqu'un est vu pris",
+         o._port_libre(_port_a_nous) is False)
+_libre.close()
+
+_zombie = MoteurZombie(_place, "hote", "Jeu de hote")
+_zombie.processus = subprocess.Popen(
+    [sys.executable, "-c", "import time; time.sleep(120)"], start_new_session=True)
+o.PARTIES["hote"] = _zombie
+
+_prise = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+_prise.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+_prise.bind(("127.0.0.1", _port))
+_prise.listen(1)
+try:
+    o.lancer_jeu("hote")
+    _dit = ""
+except RuntimeError as _erreur:
+    _dit = str(_erreur)
+finally:
+    _prise.close()
+
+# ⚠ LE CAS QUI COMPTE : le groupe du precedent est ACHEVE avant qu'on tente
+# de recreer. Sans lui, l'ancien moteur gardait le port et le nouveau mourait
+# a chaque essai, sans issue automatique.
+try:
+    _zombie.processus.wait(timeout=10)
+    _acheve = True
+except subprocess.TimeoutExpired:
+    _acheve = False
+    _zombie.processus.kill()      # un test ne laisse pas de processus derriere
+    _zombie.processus.wait(timeout=10)
+verifier("le moteur precedent est acheve avant qu'on relance", _acheve,
+         "il tourne encore : c'est le defaut du moteur zombie")
+
+verifier("un port deja pris fait refuser le demarrage",
+         str(_port) in _dit, _dit or "aucune erreur levee")
+verifier("et le message dit quoi faire", "a la main" in _dit, _dit)
+verifier("la table n'est pas laissee a moitie ouverte",
+         "hote" not in o.PARTIES and _place not in o.EMPLACEMENTS,
+         "%s / %s" % (list(o.PARTIES), list(o.EMPLACEMENTS)))
+o.PARTIES.clear()
+o.EMPLACEMENTS.clear()
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
