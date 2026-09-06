@@ -2616,7 +2616,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    z-index: 60;
+    /* Au-dessus de .plateau-unite:hover (100) : sinon une carte survolee,
+       meme hors-jeu ici, passerait par-dessus le voile. */
+    z-index: 110;
     background: rgba(4, 6, 10, 0.55);
     pointer-events: none;
   }
@@ -2624,7 +2626,8 @@
   .plateau-scene .scan-card.deroule-en-avant,
   .plateau-scene .scan-card.deroule-cible {
     position: relative;
-    z-index: 70;
+    /* Au-dessus du voile (110) : la carte mise en scene doit rester lisible. */
+    z-index: 130;
   }
 
   .plateau-scene .scan-card.deroule-en-avant .scan-visuel {

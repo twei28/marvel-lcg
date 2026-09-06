@@ -24,6 +24,13 @@ function carteDe(id: number): HTMLElement | null {
 }
 
 export function useDerouleScene(etape: EtapeDeroule | undefined, actif: boolean): void {
+  // On depend de la CLE, pas de l'objet `etape` : celui-ci vient de
+  // `etapes[index]` dans DeroulePhase, et `etapes` est reconstruit a chaque
+  // re-parse du monde par le moteur, meme quand rien n'a change. Deja corrige
+  // une fois dans pas-a-pas.ts pour la meme raison (« le meme rendu peut etre
+  // republie plusieurs fois ») : sans cela, l'effet se demonterait et se
+  // remonterait a chaque trame, retirant puis reposant les classes.
+  const cle = etape?.cle
   useEffect(() => {
     if (!actif || !etape) return
     const scene = sceneDe(etape)
@@ -40,5 +47,8 @@ export function useDerouleScene(etape: EtapeDeroule | undefined, actif: boolean)
       cible?.classList.remove(CIBLE)
       document.body.classList.remove(VOILE)
     }
-  }, [etape, actif])
+    // `cle` suffit : une etape est immuable, sa cle l'identifie (meme choix
+    // que usePasAPas).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cle, actif])
 }

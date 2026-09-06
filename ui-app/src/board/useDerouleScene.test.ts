@@ -3,7 +3,7 @@
 // Imperatif, comme halo-statut.ts et pas-a-pas.ts : on ajoute des classes sur
 // l'element reel, on les retire ensuite. Passer par React ferait re-rendre le
 // plateau entier a chaque etape, pour une decoration transitoire.
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useDerouleScene } from './useDerouleScene'
 import type { EtapeDeroule } from './deroule-phase'
@@ -83,6 +83,31 @@ describe('pose de la mise en scene', () => {
     const carte = poserCarte(50)
     renderHook(() => useDerouleScene(etape({ carteId: 50 }), false))
     expect(carte.classList.contains('deroule-en-avant')).toBe(false)
+  })
+
+  it('ne retire et ne repose rien quand l etape garde sa cle mais change d identite', () => {
+    // `etape` vient de `etapes[index]`, reconstruit a chaque re-parse du
+    // monde meme quand rien n'a change : un objet NEUF mais equivalent (meme
+    // cle) ne doit pas faire retirer puis reposer les classes, sinon l'effet
+    // se demonte/remonte a chaque trame (piege deja corrige dans
+    // pas-a-pas.ts). On verrouille via un espion sur classList : aucun appel
+    // add/remove ne doit survenir au second rendu.
+    const carte = poserCarte(50)
+    const { rerender } = renderHook(
+      ({ e }: { e: EtapeDeroule | undefined }) => useDerouleScene(e, true),
+      { initialProps: { e: etape({ carteId: 50 }) as EtapeDeroule | undefined } }
+    )
+    expect(carte.classList.contains('deroule-en-avant')).toBe(true)
+
+    const ajoute = vi.spyOn(carte.classList, 'add')
+    const retire = vi.spyOn(carte.classList, 'remove')
+
+    // Meme cle ('k' par defaut), meme carteId, mais objet neuf.
+    rerender({ e: etape({ carteId: 50 }) })
+
+    expect(retire).not.toHaveBeenCalled()
+    expect(ajoute).not.toHaveBeenCalled()
+    expect(carte.classList.contains('deroule-en-avant')).toBe(true)
   })
 
   it('ne tombe pas sur une carte absente du plateau', () => {
