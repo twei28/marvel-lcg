@@ -20,9 +20,6 @@ export type SceneEtape = {
 const RIEN: SceneEtape = { trait: false, voile: false }
 
 export function sceneDe(etape: EtapeDeroule): SceneEtape {
-  // Une etape technique defile en une demi-seconde : agrandir une carte pour
-  // la reduire aussitot donnerait un clignotement, pas une mise en scene.
-  if (etape.auto) return RIEN
   if (etape.carteId === undefined) return RIEN
 
   // Un trait qui part d'une carte pour y revenir ne montre rien.

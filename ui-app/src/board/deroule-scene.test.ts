@@ -49,12 +49,4 @@ describe('mise en scene d une etape', () => {
     expect(scene.voile).toBe(false)
     expect(scene.carteEnAvant).toBeUndefined()
   })
-
-  it('ne met rien en avant pour une etape technique qui defile seule', () => {
-    // Elle passe en une demi-seconde : agrandir une carte pour la reduire
-    // aussitot donnerait un clignotement.
-    const scene = sceneDe(etape({ carteId: 50, auto: true }))
-    expect(scene.carteEnAvant).toBeUndefined()
-    expect(scene.voile).toBe(false)
-  })
 })

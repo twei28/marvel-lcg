@@ -193,9 +193,21 @@ describe('etapesDeroule', () => {
     expect(revelations[0].carteId).toBe(77)
   })
 
-  it('garde le texte brut du moteur quand le fait n a pas de phrase', () => {
-    // Une carte fan-made a l'effet inattendu : mieux vaut un texte technique
-    // qu'un silence. On voit au moins qu'il s'est passe quelque chose.
+  it('ne fait pas d etape d une narration deja mise en phrase ailleurs', () => {
+    // Le type `text` est la narration interne du moteur : elle a sa place
+    // dans le journal, pas dans un deroule qu'on lit etape par etape.
+    const etapes = etapesDeroule([], [
+      entree({ cle: 'c3', type: 'text', phase: 'Reveal Encounter Cards', titre: 'Main scheme phase start' }),
+    ], 1, AUCUN_MECHANT)
+    expect(etapes).toEqual([])
+  })
+
+  it('ne produit aucune etape pour une entree de texte brut du moteur', () => {
+    // La narration technique du moteur (defausses, fins d'activation,
+    // « DiscardPile<3> »), en anglais et illisible, noyait les etapes utiles
+    // du cartouche (8 sur 12 en partie reelle). Elle quitte le cartouche mais
+    // reste entiere dans le journal et le Log, qui la rendent sur `brut` sans
+    // passer par `etapesDeroule`.
     const etapes = etapesDeroule([], [
       entree({
         cle: 'c2',
@@ -205,33 +217,7 @@ describe('etapesDeroule', () => {
         brut: '[(50,01113) Klaw] would deal 2 damage',
       }),
     ], 1, AUCUN_MECHANT)
-    // Assertion sur la liste complete, pas un some() : celui-ci restait vert
-    // meme si le code produisait en plus une etape parasite.
-    expect(etapes).toHaveLength(1)
-    expect(etapes[0]?.brut).toBe('[(50,01113) Klaw] would deal 2 damage')
-  })
-
-  it('ne fait pas d etape d une narration deja mise en phrase ailleurs', () => {
-    // Le type `text` sans `brut` est la narration interne du moteur : elle a sa
-    // place dans le journal, pas dans un deroule qu'on lit etape par etape.
-    const etapes = etapesDeroule([], [
-      entree({ cle: 'c3', type: 'text', phase: 'Reveal Encounter Cards', titre: 'Main scheme phase start' }),
-    ], 1, AUCUN_MECHANT)
     expect(etapes).toEqual([])
-  })
-
-  it('marque la narration technique comme defilant seule', () => {
-    const etapes = etapesDeroule([], [
-      entree({ cle: 'c9', type: 'text', phase: 'Reveal Encounter Cards', titre: '', brut: '[(50,01113) Klaw] would deal 2 damage' }),
-    ], 1, AUCUN_MECHANT)
-    expect(etapes[0]?.auto).toBe(true)
-  })
-
-  it('ne fait pas defiler seule une carte revelee', () => {
-    const etapes = etapesDeroule([], [
-      entree({ cle: 'c8', type: 'card', phase: 'Reveal Encounter Cards', titre: 'Icy Grip revelee', cibleId: 77 }),
-    ], 1, AUCUN_MECHANT)
-    expect(etapes[0]?.auto).toBeFalsy()
   })
 
   describe('le rang dans le temps', () => {

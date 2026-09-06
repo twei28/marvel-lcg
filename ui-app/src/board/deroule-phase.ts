@@ -110,16 +110,6 @@ export type EtapeDeroule = {
   plafond?: number
   boosts: BoostDeroule[]
   consequences: { cle: string; texte: string }[]
-  /** Texte du moteur quand on ne sait pas mettre le fait en phrase. */
-  brut?: string
-  /**
-   * Cette etape defile SEULE, sans attendre de validation.
-   *
-   * Vrai pour la narration technique du moteur (defausses, fins d'activation,
-   * « DiscardPile<3> ») : elle ne se lit pas, mais on ne la cache pas pour
-   * autant. Constate en partie : 8 etapes de ce genre sur 12, une phase noyee.
-   */
-  auto?: boolean
 }
 
 function tempsDe(phase: string | undefined): TempsPhase | undefined {
@@ -228,6 +218,12 @@ export function etapesDeroule(
 
   // Les cartes revelees, que les faits du moteur ne couvrent pas : lui ne rend
   // que les activations resolues.
+  //
+  // Les entrees de type `text` (narration technique du moteur, defausses,
+  // fins d'activation, « DiscardPile<3> ») ne produisent PLUS d'etape ici :
+  // constate en partie, 8 etapes de ce genre sur 12, en anglais et
+  // illisibles, noyaient les quatre etapes utiles. Elles restent entieres
+  // dans le journal a droite et dans le Log, qui les affichent deja.
   for (const e of duRound) {
     if (tempsDe(e.phase) !== 'revelation') continue
     if (e.type === 'card') {
@@ -239,23 +235,6 @@ export function etapesDeroule(
         carteId: e.cibleId,
         boosts: [],
         consequences: [],
-      })
-      continue
-    }
-    // Narration que personne n'a su mettre en phrase : on la montre telle
-    // quelle plutot que de la taire. Sans `brut`, c'est la narration interne
-    // du moteur, qui reste au journal.
-    if (e.type === 'text' && e.brut) {
-      etapes.push({
-        cle: `brut:${e.cle}`,
-        temps: 'revelation',
-        titre: e.titre,
-        regle: 'regle:revelation',
-        boosts: [],
-        consequences: [],
-        brut: e.brut,
-        // Narration technique du moteur : elle ne se lit pas, elle defile seule.
-        auto: true,
       })
     }
   }

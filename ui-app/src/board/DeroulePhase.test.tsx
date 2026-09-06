@@ -267,8 +267,8 @@ describe('cartouche du deroule', () => {
 
   it('affiche les consequences de l etape, pas seulement le titre et la regle', () => {
     // deroule-phase.ts construit bien `consequences` (« +1 pour Shuri, +1 pour
-    // Thor ») mais le composant ne rendait que le titre, la regle et le brut :
-    // la donnee etait calculee puis jetee.
+    // Thor ») mais le composant ne rendait que le titre et la regle : la
+    // donnee etait calculee puis jetee.
     const avecConsequences: EtapeDeroule[] = [
       {
         cle: 'a',
@@ -350,134 +350,6 @@ describe('cartouche du deroule', () => {
   it('n encombre pas le cartouche quand le temps n a qu une etape', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     expect(document.querySelector('.deroule-rang')).toBeNull()
-  })
-
-  it('enchaine seule une etape technique', async () => {
-    // Le charabia du moteur se voit passer, il ne se clique pas.
-    const avecAuto: EtapeDeroule[] = [
-      { cle: 'a', temps: 'revelation', titre: 'Rage of Ultron were discarded', regle: '', boosts: [], consequences: [], auto: true },
-      { cle: 'b', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
-    ]
-    vi.useFakeTimers()
-    try {
-      render(<DeroulePhase etapes={avecAuto} onTerminer={() => {}} />)
-      expect(screen.getByText('Rage of Ultron were discarded')).toBeInTheDocument()
-      // act() : le setState declenche par le minuteur (un setTimeout natif,
-      // hors evenement React) n'est sinon pas garanti applique avant l'assertion.
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(600)
-      })
-      expect(screen.getByText('Fin')).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-
-  it('enchaine quand meme une etape technique si l objet etape est RECREE avant l echeance', async () => {
-    // board.tsx recalcule `etapes` (donc l'objet `etape`) a chaque trame du
-    // moteur, meme quand rien n'a change. Mesure en partie reelle : la phase
-    // du mechant peut emettre des trames plus vite que les 500ms du minuteur
-    // (52 entrees de journal en 750ms). Si l'effet depend de l'IDENTITE de
-    // `etape`, chaque trame annule le minuteur en cours et en repose un
-    // nouveau : l'etape technique n'a alors plus jamais le temps de defiler
-    // seule.
-    const avecAuto: EtapeDeroule[] = [
-      { cle: 'a', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
-      { cle: 'b', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
-    ]
-    vi.useFakeTimers()
-    try {
-      const { rerender } = render(<DeroulePhase etapes={avecAuto} onTerminer={() => {}} />)
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(300)
-      })
-      // Meme contenu, mais nouvelle identite de tableau ET de l'objet `etape`
-      // en cours : exactement ce que produit board.tsx a chaque trame.
-      const memeContenuIdentiteNeuve: EtapeDeroule[] = avecAuto.map((e) => ({ ...e }))
-      rerender(<DeroulePhase etapes={memeContenuIdentiteNeuve} onTerminer={() => {}} />)
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(300)
-      })
-      // 600ms se sont ecoulees depuis le premier rendu, largement plus que
-      // les 500ms du minuteur : l'etape technique doit avoir defile seule.
-      expect(screen.getByText('Fin')).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-
-  it('n enchaine PAS une etape ordinaire', async () => {
-    vi.useFakeTimers()
-    try {
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(3000)
-      })
-      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-
-  it('suspend l enchainement des qu on revient en arriere', async () => {
-    // Sinon « Precedent » serait inutilisable sur une etape automatique : elle
-    // repartirait en avant aussitot.
-    const suite: EtapeDeroule[] = [
-      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
-      { cle: 'b', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
-      { cle: 'c', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
-    ]
-    vi.useFakeTimers()
-    try {
-      render(<DeroulePhase etapes={suite} onTerminer={() => {}} />)
-      fireEvent.click(screen.getByRole('button', { name: /Suivant/i }))
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(600)
-      })
-      expect(screen.getByText('Fin')).toBeInTheDocument()
-      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
-      expect(screen.getByText('technique')).toBeInTheDocument()
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(3000)
-      })
-      expect(screen.getByText('technique')).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-
-  it('ne laisse pas un Precedent de la phase precedente suspendre la phase suivante', async () => {
-    // Le joueur clique « Precedent » (donc `suspendu` passe a vrai), puis ne
-    // reclique plus « Suivant » : la phase se termine autrement (le moteur
-    // avance de lui-meme). A la phase du mechant suivante, `suspendu` doit
-    // etre remis a zero comme `index` et `termine`, sinon sa premiere etape
-    // technique n'attend plus le clic qu'elle est censee eviter.
-    const premierePhase: EtapeDeroule[] = [
-      { cle: 'a1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
-      { cle: 'a2', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
-    ]
-    const deuxiemePhase: EtapeDeroule[] = [
-      { cle: 'b1', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
-      { cle: 'b2', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
-    ]
-    vi.useFakeTimers()
-    try {
-      const { rerender } = render(
-        <DeroulePhase etapes={premierePhase} identitePhase={1} onTerminer={() => {}} />
-      )
-      fireEvent.click(suivant())
-      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
-      // La phase se termine ici sans reclic sur « Suivant » (le moteur passe
-      // seul a la phase suivante) : c'est le round qui change, et lui seul.
-      rerender(<DeroulePhase etapes={deuxiemePhase} identitePhase={2} onTerminer={() => {}} />)
-      expect(screen.getByText('technique')).toBeInTheDocument()
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(600)
-      })
-      expect(screen.getByText('Fin')).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
   })
 
   it('retourne les boosts un par un', async () => {

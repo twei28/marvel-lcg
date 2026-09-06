@@ -15,9 +15,6 @@ import { ecrireRegleDepliee, lireRegleDepliee } from './moteur'
 import { TraitCible } from './TraitCible'
 import { useDerouleScene } from './useDerouleScene'
 
-/** Le temps de voir passer une etape technique, sans la lire. */
-const DELAI_AUTO_MS = 500
-
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
 
@@ -63,8 +60,8 @@ export function DeroulePhase({
    */
   phaseMechantEnCours?: boolean
   /**
-   * Appele a CHAQUE etape validee (clic, clavier ou enchainement auto), avant
-   * de passer a la suivante. C'est lui qui relache le moteur cote reseau
+   * Appele a CHAQUE etape validee (clic ou clavier), avant de passer a la
+   * suivante. C'est lui qui relache le moteur cote reseau
    * (`avancerMaintenant`) : optionnel pour ne pas casser les appelants qui ne
    * pilotent pas le moteur (tests, previsualisation).
    */
@@ -75,11 +72,6 @@ export function DeroulePhase({
   onToutDerouler?: () => void
 }) {
   const [index, setIndex] = useState(0)
-  // Vrai juste apres un « Precedent » : suspend l'enchainement automatique
-  // jusqu'au prochain « Suivant ». Sans cela, revenir en arriere sur une
-  // etape technique la ferait repartir en avant aussitot, et le bouton
-  // « Precedent » serait inutilisable dessus.
-  const [suspendu, setSuspendu] = useState(false)
   // Vrai une fois la derniere etape validee : le cartouche doit alors
   // disparaitre de lui-meme. `onTerminer` relache desormais vraiment le
   // moteur (board.tsx), mais cela ne le fait pas disparaitre de l'ecran pour
@@ -117,16 +109,10 @@ export function DeroulePhase({
   //
   // `termine` doit se reinitialiser ICI, pas seulement `index` : sinon le
   // cartouche ne reapparaitrait plus jamais a la phase du mechant suivante, ce
-  // qui est le piege symetrique et pire que le defaut d'origine. `suspendu`
-  // doit s'y remettre a zero aussi : un « Precedent » clique sur la phase
-  // precedente le met a vrai, et si la phase se termine autrement qu'en
-  // revalidant jusqu'au bout (le moteur peut avancer seul), rien d'autre ne le
-  // redescend. Sans cette reinitialisation, la premiere etape technique de la
-  // phase suivante n'attendrait plus son minuteur.
+  // qui est le piege symetrique et pire que le defaut d'origine.
   useEffect(() => {
     setIndex(0)
     setTermine(false)
-    setSuspendu(false)
     setEnAttente(false)
   }, [identitePhase])
 
@@ -136,13 +122,11 @@ export function DeroulePhase({
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
     if (!etape) return
-    setSuspendu(false)
     // Relache le moteur AVANT de savoir si c'est la derniere etape : chaque
-    // validation (clic, clavier, enchainement auto) correspond au plus a une
-    // trame retenue cote moteur (`avancerMaintenant` ne fait rien sans trame
-    // en attente), donc l'appeler ici a chaque fois est sans risque, y
-    // compris sur la derniere etape ou `onTerminer` l'appelle une seconde
-    // fois juste apres.
+    // validation (clic ou clavier) correspond au plus a une trame retenue
+    // cote moteur (`avancerMaintenant` ne fait rien sans trame en attente),
+    // donc l'appeler ici a chaque fois est sans risque, y compris sur la
+    // derniere etape ou `onTerminer` l'appelle une seconde fois juste apres.
     onSuivant?.()
     // Une etape suivante est deja connue : on y va.
     if (index + 1 < etapes.length) {
@@ -163,11 +147,10 @@ export function DeroulePhase({
   }
 
   const reculer = () => {
-    setSuspendu(true)
-    // Relire, c'est renoncer a l'avance automatique, l'attente comprise : sans
-    // cela, la sortie d'attente ci-dessous repousserait aussitot le joueur en
-    // avant et « Precedent » n'aurait aucun effet visible. La suite reste
-    // atteignable au bouton « Suivant », comme apres tout « Precedent ».
+    // Relire, c'est renoncer a l'attente en cours : sans cela, la sortie
+    // d'attente ci-dessous repousserait aussitot le joueur en avant et
+    // « Precedent » n'aurait aucun effet visible. La suite reste atteignable
+    // au bouton « Suivant », comme apres tout « Precedent ».
     setEnAttente(false)
     setIndex(index - 1)
   }
@@ -197,24 +180,6 @@ export function DeroulePhase({
     // quatre dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
   }, [enAttente, index, etapes.length, phaseMechantEnCours])
-
-  // Enchainement automatique des etapes techniques (`auto`) : la narration
-  // du moteur ne se lit pas, elle defile seule apres un court delai. Le
-  // minuteur est nettoye au demontage et a chaque changement d'etape (deps
-  // ci-dessous), sinon deux minuteurs se superposeraient et la phase
-  // sauterait une etape.
-  useEffect(() => {
-    if (!etape?.auto || suspendu) return
-    const minuteur = setTimeout(avancer, DELAI_AUTO_MS)
-    return () => clearTimeout(minuteur)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
-    // reconstruit a chaque trame du moteur (meme piege que dans
-    // useDerouleScene.ts et TraitCible.tsx) : en dependre remettrait ce
-    // minuteur a zero en boucle, plus vite qu'il ne peut arriver a echeance,
-    // et l'etape technique ne defilerait jamais seule. `etape?.cle` identifie
-    // l'etape, `avancer` est recree a chaque rendu et n'a pas a piloter le
-    // (re)declenchement.
-  }, [etape?.cle, suspendu])
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
@@ -386,8 +351,6 @@ export function DeroulePhase({
             {regleDepliee ? <p className="deroule-regle-texte">{regle}</p> : null}
           </div>
         ) : null}
-        {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
-
         <div className="deroule-boutons">
           {/* Dire qu'on attend, sans rien bloquer : une mention grise a cote du
               bouton, qui reste cliquable. Ni modale ni bouton desactive, parce
