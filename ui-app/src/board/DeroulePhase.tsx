@@ -42,10 +42,20 @@ export function DeroulePhase({
   // etape technique la ferait repartir en avant aussitot, et le bouton
   // « Precedent » serait inutilisable dessus.
   const [suspendu, setSuspendu] = useState(false)
+  // Vrai une fois la derniere etape validee : le cartouche doit alors
+  // disparaitre de lui-meme. On ne peut pas compter sur l'appelant pour cela
+  // (board.tsx passe un `onTerminer` qui ne fait rien), donc le composant se
+  // masque lui-meme plutot que de rester affiche indefiniment sur la
+  // derniere etape, y compris pendant le tour du joueur suivant.
+  const [termine, setTermine] = useState(false)
 
-  // Une nouvelle phase repart de sa premiere etape.
+  // Une nouvelle phase repart de sa premiere etape. `termine` doit se
+  // reinitialiser ICI, pas seulement `index` : sinon le cartouche ne
+  // reapparaitrait plus jamais a la phase du mechant suivante, ce qui est le
+  // piege symetrique et pire que le defaut d'origine.
   useEffect(() => {
     setIndex(0)
+    setTermine(false)
   }, [etapes])
 
   const etape = etapes[index]
@@ -56,6 +66,7 @@ export function DeroulePhase({
     if (!etape) return
     setSuspendu(false)
     if (index + 1 >= etapes.length) {
+      setTermine(true)
       onTerminer()
       return
     }
@@ -112,7 +123,10 @@ export function DeroulePhase({
   // mechant avec `etapes` vide, puis se remplit sans etre demonte quand la
   // phase commence. Un `return null` place plus haut sauterait le second
   // useEffect a un rendu et le rajouterait au suivant, ce que React refuse.
-  if (!etape) return null
+  // `termine` fait disparaitre le cartouche des la derniere etape validee ;
+  // il est remis a false des que `etapes` change (voir le useEffect
+  // ci-dessus), donc le deroule reapparait bien a la phase suivante.
+  if (!etape || termine) return null
 
   return (
     <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>

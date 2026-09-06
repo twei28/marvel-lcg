@@ -69,6 +69,34 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
+  it('disparait une fois la derniere etape validee', () => {
+    // Defaut constate en partie reelle : onTerminer ne suffit pas a faire
+    // disparaitre le cartouche si l'appelant n'en fait rien (board.tsx passe
+    // un no-op). Le composant doit se masquer lui-meme.
+    const { container } = render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('reapparait sur sa premiere etape a la phase suivante', () => {
+    // Le piege symetrique et pire : si « termine » ne se reinitialise pas
+    // quand une nouvelle liste d'etapes arrive, le deroule ne reapparaitrait
+    // plus jamais pour aucune phase du mechant suivante.
+    const { container, rerender } = render(
+      <DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(container).toBeEmptyDOMElement()
+
+    const etapesSuivantes: EtapeDeroule[] = [
+      { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+    ]
+    rerender(<DeroulePhase etapes={etapesSuivantes} noms={noms} onTerminer={() => {}} />)
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+  })
+
   it('montre les quatre temps, celui en cours mis en avant', () => {
     const { container } = render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
     expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(4)
