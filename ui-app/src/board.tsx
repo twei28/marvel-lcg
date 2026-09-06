@@ -86,6 +86,7 @@ import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
   Moteur,
+  PHASES_DU_MECHANT,
   evenementNarreImportant,
   ecrireAvanceAuto,
   ecrireDelaiPasAPas,
@@ -2293,6 +2294,16 @@ function PagePartie({
           />
           <DeroulePhase
             etapes={etapesPhaseMechant}
+            // L'identite de la phase en cours, seule chose qui remet le
+            // cartouche a zero. Il y a une phase du mechant par round, donc le
+            // round suffit a distinguer deux phases ; la liste d'etapes, elle,
+            // s'allonge PENDANT la phase (chaque validation relache une trame
+            // qui produit l'etape suivante) et ne peut donc pas jouer ce role.
+            identitePhase={etat.monde?.round_id ?? 0}
+            // Tant que le moteur est dans une des quatre phases du mechant, la
+            // liste d'etapes peut encore s'allonger : arriver au bout de
+            // celles qu'on connait ne veut pas dire que la phase est finie.
+            phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
             // Chaque « Suivant » relache AU PLUS une trame cote moteur : ce
             // dernier n'a rien a avancer sans trame en attente
             // (moteur.ts, avancerMaintenant), un clic de trop est donc sans

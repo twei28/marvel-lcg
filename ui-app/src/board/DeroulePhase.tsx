@@ -38,11 +38,29 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 
 export function DeroulePhase({
   etapes,
+  identitePhase,
+  phaseMechantEnCours = false,
   onSuivant,
   onTerminer,
   onToutDerouler,
 }: {
   etapes: EtapeDeroule[]
+  /**
+   * L'identite de la phase en cours, et le SEUL declencheur legitime de la
+   * remise a zero du cartouche. board.tsx y passe `etat.monde.round_id` : il y
+   * a une phase du mechant par round, donc le round suffit a distinguer deux
+   * phases. La longueur de la liste ne peut PAS jouer ce role, puisqu'elle
+   * grossit legitimement pendant la phase (chaque validation relache une trame
+   * du moteur, qui produit l'etape suivante).
+   */
+  identitePhase?: number
+  /**
+   * Vrai tant que le moteur est encore dans la phase du mechant (board.tsx :
+   * `PHASES_DU_MECHANT.has(etat.monde.phase)`). Arriver au bout des etapes
+   * CONNUES ne veut pas dire que la phase est finie : tant que celle-ci court,
+   * le cartouche attend la suite au lieu de se masquer.
+   */
+  phaseMechantEnCours?: boolean
   /**
    * Appele a CHAQUE etape validee (clic, clavier ou enchainement auto), avant
    * de passer a la suivante. C'est lui qui relache le moteur cote reseau
@@ -68,33 +86,33 @@ export function DeroulePhase({
   // affiche indefiniment sur la derniere etape, y compris pendant le tour du
   // joueur suivant.
   const [termine, setTermine] = useState(false)
+  // Vrai quand le joueur a valide la derniere etape CONNUE alors que la phase
+  // du mechant court encore : le moteur, relache par cette validation, est en
+  // train de calculer la suite. Le cartouche reste alors affiche sur place et
+  // n'annonce surtout pas la fin de la phase.
+  const [enAttente, setEnAttente] = useState(false)
 
-  // Signature STABLE du contenu, pas l'identite du tableau : board.tsx
-  // recalcule `etapes` par useMemo, mais ses dependances (le monde re-parse en
-  // JSON a chaque trame) changent d'identite en permanence meme quand rien
-  // n'a bouge. Suivre `etapes` directement aurait reinitialise le cartouche
-  // (donc rouvert une phase deja terminee) a chaque carte jouee au tour
-  // suivant, pile par-dessus le bouton de fin de tour.
-  const signature = etapes.map((e) => e.cle).join('|')
-
-  // Une nouvelle phase repart de sa premiere etape. `termine` doit se
-  // reinitialiser ICI, pas seulement `index` : sinon le cartouche ne
-  // reapparaitrait plus jamais a la phase du mechant suivante, ce qui est le
-  // piege symetrique et pire que le defaut d'origine. `suspendu` doit s'y
-  // remettre a zero aussi : un « Precedent » cliqué sur la phase precedente
-  // le met a vrai, et si la phase se termine autrement qu'en revalidant
-  // jusqu'au bout (le moteur peut avancer seul), rien d'autre ne le
-  // redescend. Sans cette reinitialisation, la premiere etape technique de
-  // la phase suivante n'attendrait plus son minuteur.
+  // Une nouvelle phase repart de sa premiere etape, et RIEN D'AUTRE ne remet
+  // le cartouche a zero. La remise a zero suivait auparavant le contenu de la
+  // liste d'etapes : depuis que chaque validation relache une trame du moteur,
+  // cette liste s'allonge PENDANT la phase, et le cartouche repartait donc de
+  // la premiere etape a chaque nouvelle activation. Le joueur relisait en
+  // boucle des etapes deja validees.
+  //
+  // `termine` doit se reinitialiser ICI, pas seulement `index` : sinon le
+  // cartouche ne reapparaitrait plus jamais a la phase du mechant suivante, ce
+  // qui est le piege symetrique et pire que le defaut d'origine. `suspendu`
+  // doit s'y remettre a zero aussi : un « Precedent » clique sur la phase
+  // precedente le met a vrai, et si la phase se termine autrement qu'en
+  // revalidant jusqu'au bout (le moteur peut avancer seul), rien d'autre ne le
+  // redescend. Sans cette reinitialisation, la premiere etape technique de la
+  // phase suivante n'attendrait plus son minuteur.
   useEffect(() => {
     setIndex(0)
     setTermine(false)
     setSuspendu(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `signature`
-    // resume `etapes` a son CONTENU (les cles, dans l'ordre) ; c'est elle qui
-    // doit piloter la reinitialisation, pas l'identite du tableau qui la
-    // porte.
-  }, [signature])
+    setEnAttente(false)
+  }, [identitePhase])
 
   const etape = etapes[index]
 
@@ -110,18 +128,59 @@ export function DeroulePhase({
     // compris sur la derniere etape ou `onTerminer` l'appelle une seconde
     // fois juste apres.
     onSuivant?.()
-    if (index + 1 >= etapes.length) {
-      setTermine(true)
-      onTerminer()
+    // Une etape suivante est deja connue : on y va.
+    if (index + 1 < etapes.length) {
+      setEnAttente(false)
+      setIndex(index + 1)
       return
     }
-    setIndex(index + 1)
+    // Bout des etapes CONNUES, mais la phase du mechant court encore : le
+    // moteur vient d'etre relache et va produire la suite. On reste sur place
+    // en attente, sans appeler `onTerminer` et sans masquer le cartouche.
+    if (phaseMechantEnCours) {
+      setEnAttente(true)
+      return
+    }
+    // Bout des etapes ET phase terminee : la, c'est vraiment fini.
+    setTermine(true)
+    onTerminer()
   }
 
   const reculer = () => {
     setSuspendu(true)
+    // Relire, c'est renoncer a l'avance automatique, l'attente comprise : sans
+    // cela, la sortie d'attente ci-dessous repousserait aussitot le joueur en
+    // avant et « Precedent » n'aurait aucun effet visible. La suite reste
+    // atteignable au bouton « Suivant », comme apres tout « Precedent ».
+    setEnAttente(false)
     setIndex(index - 1)
   }
+
+  // Sortie d'attente. Deux issues, et deux seulement :
+  //  - une etape de plus arrive : on avance dessus TOUT SEUL. Le joueur a deja
+  //    clique pour l'obtenir, il ne doit pas avoir a recliquer ;
+  //  - la phase du mechant se termine sans rien produire de plus : c'etait
+  //    donc bien la derniere etape, on termine ici. Sans cette seconde issue,
+  //    le cartouche resterait affiche par-dessus le plateau pendant tout le
+  //    tour du joueur.
+  useEffect(() => {
+    if (!enAttente) return
+    if (index + 1 < etapes.length) {
+      setEnAttente(false)
+      setIndex(index + 1)
+      return
+    }
+    if (!phaseMechantEnCours) {
+      setEnAttente(false)
+      setTermine(true)
+      onTerminer()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `onTerminer` est
+    // recree a chaque rendu par board.tsx : en dependre relancerait cet effet
+    // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
+    // quatre dependances ci-dessous sont des primitifs et decrivent a elles
+    // seules la sortie d'attente.
+  }, [enAttente, index, etapes.length, phaseMechantEnCours])
 
   // Enchainement automatique des etapes techniques (`auto`) : la narration
   // du moteur ne se lit pas, elle defile seule apres un court delai. Le
@@ -133,12 +192,12 @@ export function DeroulePhase({
     const minuteur = setTimeout(avancer, DELAI_AUTO_MS)
     return () => clearTimeout(minuteur)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
-    // reconstruit a chaque trame du moteur (meme piege que plus haut avec
-    // `signature`, et que useDerouleScene.ts et TraitCible.tsx) : en
-    // dependre remettrait ce minuteur a zero en boucle, plus vite qu'il ne
-    // peut arriver a echeance, et l'etape technique ne defilerait jamais
-    // seule. `etape?.cle` identifie l'etape, `avancer` est recree a chaque
-    // rendu et n'a pas a piloter le (re)declenchement.
+    // reconstruit a chaque trame du moteur (meme piege que dans
+    // useDerouleScene.ts et TraitCible.tsx) : en dependre remettrait ce
+    // minuteur a zero en boucle, plus vite qu'il ne peut arriver a echeance,
+    // et l'etape technique ne defilerait jamais seule. `etape?.cle` identifie
+    // l'etape, `avancer` est recree a chaque rendu et n'a pas a piloter le
+    // (re)declenchement.
   }, [etape?.cle, suspendu])
 
   useEffect(() => {
@@ -185,10 +244,9 @@ export function DeroulePhase({
   useEffect(() => {
     setBoostsMontres(etape?.boosts.length ? 1 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
-    // reconstruit a chaque trame du moteur (meme piege que plus haut avec
-    // `signature`, et que useDerouleScene.ts et TraitCible.tsx) : en
-    // dependre remettrait `boostsMontres` a 1 en boucle et aucun boost ne
-    // s'enchainerait jamais. `etape?.cle` identifie l'etape, et
+    // reconstruit a chaque trame du moteur (meme piege que dans
+    // useDerouleScene.ts et TraitCible.tsx) : en dependre remettrait
+    // `boostsMontres` a 1 en boucle et aucun boost ne s'enchainerait jamais. `etape?.cle` identifie l'etape, et
     // `etape?.boosts.length` reagit si son compte de boosts change.
   }, [etape?.cle, etape?.boosts.length])
 
@@ -217,9 +275,10 @@ export function DeroulePhase({
   // mechant avec `etapes` vide, puis se remplit sans etre demonte quand la
   // phase commence. Un `return null` place plus haut sauterait le second
   // useEffect a un rendu et le rajouterait au suivant, ce que React refuse.
-  // `termine` fait disparaitre le cartouche des la derniere etape validee ;
-  // il est remis a false des que `etapes` change (voir le useEffect
-  // ci-dessus), donc le deroule reapparait bien a la phase suivante.
+  // `termine` fait disparaitre le cartouche une fois la phase VRAIMENT finie
+  // (bout des etapes connues et phase du mechant terminee) ; il est remis a
+  // false des que l'identite de phase change (voir le useEffect ci-dessus),
+  // donc le deroule reapparait bien a la phase du mechant suivante.
   if (!etape || termine) return null
 
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
@@ -274,6 +333,17 @@ export function DeroulePhase({
         {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
 
         <div className="deroule-boutons">
+          {/* Dire qu'on attend, sans rien bloquer : une mention grise a cote du
+              bouton, qui reste cliquable. Ni modale ni bouton desactive, parce
+              que l'attente dure une fraction de seconde en temps normal et
+              qu'un bouton qui s'eteint puis se rallume attire l'oeil plus que
+              l'etape elle-meme. Un reclic pendant l'attente est sans danger :
+              il relache au plus une trame de plus. */}
+          {enAttente ? (
+            <span className="deroule-attente" aria-live="polite">
+              {t('La suite arrive…')}
+            </span>
+          ) : null}
           {index > 0 ? (
             <button type="button" className="bh-bouton" onClick={reculer}>
               {t('Précédent')}

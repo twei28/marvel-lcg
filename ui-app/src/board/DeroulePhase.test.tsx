@@ -91,10 +91,12 @@ describe('cartouche du deroule', () => {
 
   it('reapparait sur sa premiere etape a la phase suivante', () => {
     // Le piege symetrique et pire : si « termine » ne se reinitialise pas
-    // quand une nouvelle liste d'etapes arrive, le deroule ne reapparaitrait
-    // plus jamais pour aucune phase du mechant suivante.
+    // quand la phase suivante arrive, le deroule ne reapparaitrait plus jamais
+    // pour aucune phase du mechant suivante. C'est desormais l'identite de
+    // phase (le round) qui dit « phase suivante », plus le contenu de la liste
+    // d'etapes : celle-ci s'allonge aussi au sein d'une meme phase.
     const { container, rerender } = render(
-      <DeroulePhase etapes={etapes} onTerminer={() => {}} />
+      <DeroulePhase etapes={etapes} identitePhase={1} onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
     fireEvent.click(suivant())
@@ -103,7 +105,7 @@ describe('cartouche du deroule', () => {
     const etapesSuivantes: EtapeDeroule[] = [
       { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
     ]
-    rerender(<DeroulePhase etapes={etapesSuivantes} onTerminer={() => {}} />)
+    rerender(<DeroulePhase etapes={etapesSuivantes} identitePhase={2} onTerminer={() => {}} />)
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
   })
 
@@ -391,12 +393,14 @@ describe('cartouche du deroule', () => {
     ]
     vi.useFakeTimers()
     try {
-      const { rerender } = render(<DeroulePhase etapes={premierePhase} onTerminer={() => {}} />)
+      const { rerender } = render(
+        <DeroulePhase etapes={premierePhase} identitePhase={1} onTerminer={() => {}} />
+      )
       fireEvent.click(suivant())
       fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
       // La phase se termine ici sans reclic sur « Suivant » (le moteur passe
-      // seul a la phase suivante).
-      rerender(<DeroulePhase etapes={deuxiemePhase} onTerminer={() => {}} />)
+      // seul a la phase suivante) : c'est le round qui change, et lui seul.
+      rerender(<DeroulePhase etapes={deuxiemePhase} identitePhase={2} onTerminer={() => {}} />)
       expect(screen.getByText('technique')).toBeInTheDocument()
       await act(async () => {
         await vi.advanceTimersByTimeAsync(600)
@@ -492,5 +496,184 @@ describe('cartouche du deroule', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     expect(() => fireEvent.click(suivant())).not.toThrow()
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+  })
+  // Defaut 2 (voir brief) : « arriver au bout des etapes CONNUES » n'est pas
+  // « la phase est finie ». Depuis que chaque « Suivant » relache une trame du
+  // moteur, la liste s'allonge PENDANT la phase : le cartouche doit attendre
+  // la suite au lieu de se croire au bout, et la remise a zero doit suivre
+  // l'identite de la phase (le round), jamais la longueur de la liste.
+  const menaceSeule: EtapeDeroule[] = [
+    { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+  ]
+
+  it('attend la suite au lieu de se croire fini quand la liste s allonge', () => {
+    // Le cas central. Une seule etape connue au depart (la menace), le joueur
+    // valide, le moteur relache la premiere activation : le cartouche doit
+    // afficher cette activation, sans jamais avoir dit que la phase etait
+    // finie.
+    const onTerminer = vi.fn()
+    const { rerender } = render(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    expect(onTerminer).not.toHaveBeenCalled()
+
+    rerender(
+      <DeroulePhase
+        etapes={etapes}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+    expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
+    expect(onTerminer).not.toHaveBeenCalled()
+  })
+
+  it('termine bien quand la phase du mechant est terminee', () => {
+    // Meme situation, mais le moteur a quitte la phase du mechant : il n'y a
+    // plus rien a attendre, la derniere etape connue est vraiment la derniere.
+    const onTerminer = vi.fn()
+    const { container } = render(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours={false}
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('se referme si la phase du mechant se termine pendant l attente', () => {
+    // Le joueur valide la derniere etape alors que la phase court encore : le
+    // cartouche attend. Si le moteur passe au tour du joueur sans rien
+    // produire de plus, l'attente ne doit pas laisser le cartouche affiche
+    // par-dessus le plateau pour le reste du tour.
+    const onTerminer = vi.fn()
+    const { container, rerender } = render(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={onTerminer}
+      />
+    )
+    fireEvent.click(suivant())
+    expect(container).not.toBeEmptyDOMElement()
+
+    rerender(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours={false}
+        onTerminer={onTerminer}
+      />
+    )
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('repart de la premiere etape au round suivant', () => {
+    // La remise a zero suit l'identite de la phase, et elle seule.
+    const { rerender } = render(
+      <DeroulePhase etapes={etapes} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+
+    const roundSuivant: EtapeDeroule[] = [
+      { cle: 'z1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+      { cle: 'z2', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
+    ]
+    rerender(
+      <DeroulePhase
+        etapes={roundSuivant}
+        identitePhase={4}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+  })
+
+  it('ne revient pas a la premiere etape quand la liste s allonge dans le meme round', () => {
+    // Le defaut d'origine : la liste qui grossit pendant la phase faisait
+    // repartir le cartouche au debut, et le joueur relisait en boucle des
+    // etapes deja validees.
+    const { rerender } = render(
+      <DeroulePhase etapes={etapes} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+
+    const plusLongue: EtapeDeroule[] = [
+      ...etapes,
+      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [], consequences: [] },
+    ]
+    rerender(
+      <DeroulePhase
+        etapes={plusLongue}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+    expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
+  })
+
+  it('relache le moteur meme sur le clic qui met en attente', () => {
+    // Sans cet appel, le clic qui met en attente ne relacherait aucune trame :
+    // le moteur ne produirait jamais l'etape attendue, et l'attente serait
+    // sans fin.
+    const onSuivant = vi.fn()
+    render(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours
+        onSuivant={onSuivant}
+        onTerminer={() => {}}
+      />
+    )
+    fireEvent.click(suivant())
+    expect(onSuivant).toHaveBeenCalledTimes(1)
+  })
+
+  it('dit qu il attend la suite, sans bloquer le bouton', () => {
+    render(
+      <DeroulePhase
+        etapes={menaceSeule}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(document.querySelector('.deroule-attente')).toBeNull()
+    fireEvent.click(suivant())
+    expect(document.querySelector('.deroule-attente')).not.toBeNull()
+    expect(screen.getByRole('button', { name: /Suivant/i })).toBeInTheDocument()
+  })
+  it('laisse relire en arriere pendant l attente', () => {
+    // « Precedent » RELIT : il doit rester utilisable meme quand le cartouche
+    // attend la suite, sinon la sortie d'attente le repousserait aussitot en
+    // avant et le bouton serait mort a l'ecran.
+    render(
+      <DeroulePhase etapes={etapes} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
   })
 })

@@ -2898,6 +2898,17 @@
     gap: 8px;
   }
 
+  /* « La suite arrive… » : le moteur calcule l'etape suivante. Discret et
+     collé aux boutons. Ce n'est jamais un blocage : l'attente ne dure qu'une
+     fraction de seconde en temps normal. */
+  .deroule-attente {
+    align-self: center;
+    margin-right: auto;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.55);
+  }
+
   .salon-fil {
     max-height: min(46dvh, 360px);
     overflow-y: auto;
