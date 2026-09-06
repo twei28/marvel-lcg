@@ -131,4 +131,18 @@ describe('etapesDeroule', () => {
     ])
     expect(etapes).toEqual([])
   })
+
+  it('marque la narration technique comme defilant seule', () => {
+    const etapes = etapesDeroule([], [
+      entree({ cle: 'c9', type: 'text', phase: 'Reveal Encounter Cards', titre: '', brut: '[(50,01113) Klaw] would deal 2 damage' }),
+    ])
+    expect(etapes[0]?.auto).toBe(true)
+  })
+
+  it('ne fait pas defiler seule une carte revelee', () => {
+    const etapes = etapesDeroule([], [
+      entree({ cle: 'c8', type: 'card', phase: 'Reveal Encounter Cards', titre: 'Icy Grip revelee', cibleId: 77 }),
+    ])
+    expect(etapes[0]?.auto).toBeFalsy()
+  })
 })

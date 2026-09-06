@@ -68,6 +68,14 @@ export type EtapeDeroule = {
   consequences: { cle: string; texte: string }[]
   /** Texte du moteur quand on ne sait pas mettre le fait en phrase. */
   brut?: string
+  /**
+   * Cette etape defile SEULE, sans attendre de validation.
+   *
+   * Vrai pour la narration technique du moteur (defausses, fins d'activation,
+   * « DiscardPile<3> ») : elle ne se lit pas, mais on ne la cache pas pour
+   * autant. Constate en partie : 8 etapes de ce genre sur 12, une phase noyee.
+   */
+  auto?: boolean
 }
 
 function tempsDe(phase: string | undefined): TempsPhase | undefined {
@@ -148,6 +156,8 @@ export function etapesDeroule(
         boosts: [],
         consequences: [],
         brut: e.brut,
+        // Narration technique du moteur : elle ne se lit pas, elle defile seule.
+        auto: true,
       })
     }
   }

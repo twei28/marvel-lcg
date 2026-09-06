@@ -12,6 +12,9 @@ import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import { regleEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
 
+/** Le temps de voir passer une etape technique, sans la lire. */
+const DELAI_AUTO_MS = 500
+
 /** Les quatre temps de la carte de reference, dans l'ordre. */
 const TEMPS: { cle: TempsPhase; libelle: string }[] = [
   { cle: 'menace', libelle: 'Menace' },
@@ -34,6 +37,11 @@ export function DeroulePhase({
   onToutDerouler?: () => void
 }) {
   const [index, setIndex] = useState(0)
+  // Vrai juste apres un « Precedent » : suspend l'enchainement automatique
+  // jusqu'au prochain « Suivant ». Sans cela, revenir en arriere sur une
+  // etape technique la ferait repartir en avant aussitot, et le bouton
+  // « Precedent » serait inutilisable dessus.
+  const [suspendu, setSuspendu] = useState(false)
 
   // Une nouvelle phase repart de sa premiere etape.
   useEffect(() => {
@@ -46,12 +54,32 @@ export function DeroulePhase({
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
     if (!etape) return
+    setSuspendu(false)
     if (index + 1 >= etapes.length) {
       onTerminer()
       return
     }
     setIndex(index + 1)
   }
+
+  const reculer = () => {
+    setSuspendu(true)
+    setIndex(index - 1)
+  }
+
+  // Enchainement automatique des etapes techniques (`auto`) : la narration
+  // du moteur ne se lit pas, elle defile seule apres un court delai. Le
+  // minuteur est nettoye au demontage et a chaque changement d'etape (deps
+  // ci-dessous), sinon deux minuteurs se superposeraient et la phase
+  // sauterait une etape.
+  useEffect(() => {
+    if (!etape?.auto || suspendu) return
+    const minuteur = setTimeout(avancer, DELAI_AUTO_MS)
+    return () => clearTimeout(minuteur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `avancer` est
+    // recree a chaque rendu ; c'est `etape` et `suspendu` qui doivent piloter
+    // le (re)declenchement du minuteur, pas l'identite de la fonction.
+  }, [etape, suspendu])
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
@@ -102,7 +130,7 @@ export function DeroulePhase({
 
       <div className="deroule-boutons">
         {index > 0 ? (
-          <button type="button" className="bh-bouton" onClick={() => setIndex(index - 1)}>
+          <button type="button" className="bh-bouton" onClick={reculer}>
             {t('Précédent')}
           </button>
         ) : null}

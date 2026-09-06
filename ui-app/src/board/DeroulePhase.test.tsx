@@ -4,7 +4,7 @@
 // main ou cliquer des le deuxieme tour. On peut revenir en arriere pour relire,
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 
@@ -119,5 +119,66 @@ describe('cartouche du deroule', () => {
     champ.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
     champ.remove()
+  })
+
+  it('enchaine seule une etape technique', async () => {
+    // Le charabia du moteur se voit passer, il ne se clique pas.
+    const avecAuto: EtapeDeroule[] = [
+      { cle: 'a', temps: 'revelation', titre: 'Rage of Ultron were discarded', regle: '', boosts: [], consequences: [], auto: true },
+      { cle: 'b', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
+    ]
+    vi.useFakeTimers()
+    try {
+      render(<DeroulePhase etapes={avecAuto} noms={noms} onTerminer={() => {}} />)
+      expect(screen.getByText('Rage of Ultron were discarded')).toBeInTheDocument()
+      // act() : le setState declenche par le minuteur (un setTimeout natif,
+      // hors evenement React) n'est sinon pas garanti applique avant l'assertion.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(600)
+      })
+      expect(screen.getByText('Fin')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('n enchaine PAS une etape ordinaire', async () => {
+    vi.useFakeTimers()
+    try {
+      render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000)
+      })
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('suspend l enchainement des qu on revient en arriere', async () => {
+    // Sinon « Precedent » serait inutilisable sur une etape automatique : elle
+    // repartirait en avant aussitot.
+    const suite: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+      { cle: 'b', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
+      { cle: 'c', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
+    ]
+    vi.useFakeTimers()
+    try {
+      render(<DeroulePhase etapes={suite} noms={noms} onTerminer={() => {}} />)
+      fireEvent.click(screen.getByRole('button', { name: /Suivant/i }))
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(600)
+      })
+      expect(screen.getByText('Fin')).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+      expect(screen.getByText('technique')).toBeInTheDocument()
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000)
+      })
+      expect(screen.getByText('technique')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
