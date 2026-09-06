@@ -48,8 +48,8 @@ Créer `ui-app/src/board/deroule-phase.test.ts` :
 // Le decoupage de la phase du mechant en ETAPES a valider une par une.
 //
 // La source n'est pas une relecture du monde : le moteur envoie deja ses
-// activations resolues (`FaitMechant`), avec la composition du coup — base,
-// boost, defense — qu'aucune deduction ne saurait reconstituer. Le journal
+// activations resolues (`FaitMechant`), avec la composition du coup (base,
+// boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
 import { etapesDeroule } from './deroule-phase'
@@ -156,7 +156,7 @@ Créer `ui-app/src/board/deroule-phase.ts` :
 //
 // Deux sources, et aucune n'est une relecture du monde :
 //
-// 1. `FaitMechant` — les activations que le moteur a deja resolues. Lui seul
+// 1. `FaitMechant` : les activations que le moteur a deja resolues. Lui seul
 //    connait la composition d'un coup (base, boost, defense) ; une deduction
 //    verrait le resultat sans jamais pouvoir dire « 5 = 3 + 2 », et compterait
 //    plusieurs fois ce que le moteur rend plusieurs fois autour d'une seule
@@ -588,7 +588,7 @@ Créer `ui-app/src/board/DeroulePhase.test.tsx` :
 //
 // Il est FIXE en bas au centre et ne bouge jamais : l'oeil sait ou lire et la
 // main ou cliquer des le deuxieme tour. On peut revenir en arriere pour relire,
-// ce qui ne rejoue rien dans la partie — c'est une relecture, pas un undo.
+// ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { DeroulePhase } from './DeroulePhase'
@@ -845,7 +845,7 @@ git add ui-app/src/board/DeroulePhase.tsx ui-app/src/board/DeroulePhase.test.tsx
 git commit -m "feat(deroule): le cartouche fixe, une etape a la fois
 
 Fixe en bas au centre : l'oeil sait ou lire et la main ou cliquer des le
-deuxieme tour. « Precedent » relit sans rien rejouer — c'est « Annuler »
+deuxieme tour. « Precedent » relit sans rien rejouer : c'est « Annuler »
 qui fait reculer la partie, et il reste disponible."
 ```
 
@@ -924,12 +924,26 @@ export function DeroulePhase({
 }) {
 ```
 
+⚠ CORRECTION APPORTEE EN COURS D'EXECUTION (06/09/2026). Le texte ci-dessous
+disait « après la déclaration de `avancer` », ce qui plaçait ce `useEffect`
+APRES le `if (!etape) return null` de la tâche 4. C'est une violation des règles
+des hooks React, et elle n'est pas théorique : le plateau monte ce composant dès
+que le mode « détaillé » est actif, donc hors phase du méchant, avec une liste
+d'étapes VIDE. React enregistre alors deux hooks et sort par le `return null` ;
+quand la phase commence, la liste se remplit, le composant va jusqu'au bout et
+appelle un troisième hook. React lève « Rendered more hooks than during the
+previous render » et fait tomber tout le plateau, à chaque partie.
+
+Le `return null` doit donc passer APRES tous les hooks, et `avancer` doit porter
+une garde `if (!etape) return`. Signalé par l'implémenteur de la tâche 5, qui a
+suivi le brief et a eu raison de le faire remonter.
+
 Puis, après la déclaration de `avancer` :
 
 ```tsx
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
-      // On ecrit peut-etre ailleurs — le tchat est a portee de main pendant la
+      // On ecrit peut-etre ailleurs : le tchat est a portee de main pendant la
       // phase, et un espace tape dedans ne doit pas la faire avancer.
       const cible = evenement.target
       if (
