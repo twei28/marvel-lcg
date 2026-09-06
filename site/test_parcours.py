@@ -455,16 +455,53 @@ verifier("et on dit au joueur combien de temps attendre",
 _code, _, _ = appel("POST", "/connexion", b"pseudo=un-autre-compte&mdp=faux")
 verifier("changer de compte ne desserre pas le frein d'adresse", _code == 429, str(_code))
 
-# Par COMPTE : changer d'adresse non plus, sinon on s'acharne sur une personne
-# depuis autant d'adresses qu'on veut.
+# ⚠ ET LE BON MOT DE PASSE N'EST JAMAIS REFUSE PAR LA FAUTE D'UN AUTRE. Le
+# frein comptait aussi par COMPTE, et rendait un 429 : dix tentatives fausses
+# lancees depuis dix adresses sur le pseudo de quelqu'un le mettaient dehors
+# de sa propre table un quart d'heure, renouvelable a volonte. Le frein par
+# adresse suffit a proteger le processeur ; celui par compte ne servait qu'a
+# verrouiller sa victime.
 o._TENTATIVES.clear()
-for _i in range(o.TENTATIVES_CONNEXION):
+for _i in range(o.TENTATIVES_CONNEXION * 2):
     appel("POST", "/connexion", b"pseudo=hote&mdp=faux",
           entetes={"X-Forwarded-For": "10.0.0.%d" % _i})
-_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=faux",
+_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=motdepasse123",
                     entetes={"X-Forwarded-For": "10.0.0.200"})
-verifier("changer d'adresse ne desserre pas le frein de compte",
-         _code == 429, str(_code))
+verifier("dix echecs venus d'ailleurs ne bloquent pas le bon mot de passe",
+         _code == 303, str(_code))
+# Et une adresse encore vierge garde le droit de se tromper, elle aussi.
+_code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=faux",
+                    entetes={"X-Forwarded-For": "10.0.0.201"})
+verifier("une adresse vierge peut encore se tromper", _code == 400, str(_code))
+
+# ⚠ ET LE FREIN NE SE PAIE PAS EN MEMOIRE. Chaque lecture creait son entree,
+# meme pour une requete deja refusee, et l'identifiant tape formait une cle
+# que rien ne bornait sinon le plafond de corps, soit huit mega-octets par
+# cle. Vingt requetes suffisaient a faire retenir vingt mega-octets, sans
+# compte et sans cout pour qui les envoie.
+o._TENTATIVES.clear()
+for _i in range(o.TENTATIVES_CONNEXION):
+    appel("POST", "/connexion", b"pseudo=inconnu-m&mdp=faux")
+_cles_avant = len(o._TENTATIVES)
+for _i in range(1000):
+    # Un identifiant different a chaque fois : c'est ainsi qu'on fait naitre
+    # une cle par requete, et vingt mega-octets pour mille requetes.
+    appel("POST", "/connexion",
+          b"pseudo=" + b"z" * 20_000 + b"%d" % _i + b"&mdp=faux")
+verifier("mille requetes freinees ne font pas grossir le compteur",
+         len(o._TENTATIVES) == _cles_avant, "%d cles" % len(o._TENTATIVES))
+verifier("et aucune cle ne porte ce qu'un inconnu a tape",
+         all(len(_c) <= 80 for _c in o._TENTATIVES),
+         "cle la plus longue : %d caracteres"
+         % max([len(_c) for _c in o._TENTATIVES] or [0]))
+
+# Une fenetre que le temps a videe ne laisse pas sa cle derriere elle.
+import time                                                  # noqa: E402
+o._TENTATIVES.clear()
+o._TENTATIVES["ip:1.2.3.4"] = [time.time() - o.FENETRE_CONNEXION - 1]
+o.attente_connexion("ip:1.2.3.4")
+verifier("une fenetre vide ne laisse pas sa cle derriere elle",
+         "ip:1.2.3.4" not in o._TENTATIVES, str(list(o._TENTATIVES)))
 
 # ⚠ ET IL FAUT QUE L'ADRESSE VIENNE DE CADDY, PAS DU CLIENT. `X-Forwarded-For`
 # est une liste a laquelle le proxy AJOUTE : c'est la derniere valeur qui vaut

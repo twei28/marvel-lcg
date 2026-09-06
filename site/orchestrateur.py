@@ -802,7 +802,14 @@ def attente_connexion(cle: str) -> int:
     maintenant = time.time()
     with _VERROU_TENTATIVES:
         recents = [t for t in _TENTATIVES.get(cle, []) if maintenant - t < FENETRE_CONNEXION]
-        _TENTATIVES[cle] = recents
+        # ⚠ UNE LECTURE NE CREE RIEN. Ecrire la cle a chaque passage faisait
+        # retenir une entree PAR REQUETE, y compris pour celles qu'on refuse :
+        # mille requetes freinees, mille cles. Et une fenetre que le temps a
+        # videe s'en va, sinon le compteur ne redescendrait jamais.
+        if recents:
+            _TENTATIVES[cle] = recents
+        else:
+            _TENTATIVES.pop(cle, None)
         if len(recents) < TENTATIVES_CONNEXION:
             return 0
         return max(1, int(FENETRE_CONNEXION - (maintenant - recents[0])) + 1)
@@ -821,17 +828,27 @@ def oublier_tentatives(cle: str) -> None:
         _TENTATIVES.pop(cle, None)
 
 
-def cles_frein(adresse: str, identifiant: str) -> tuple:
-    """Les cles a freiner pour cette tentative.
+def cle_frein(adresse: str) -> str:
+    """La cle a freiner pour cette tentative : l'ADRESSE, et elle seule.
 
-    ⚠ DEUX CLES, ET IL EN FAUT DEUX. Par ADRESSE contre le flot qui vient d'un
-    seul endroit ; par COMPTE contre celui qui change d'adresse pour s'acharner
-    sur une personne. L'une sans l'autre laisse une porte ouverte.
+    ⚠ PLUS DE FREIN PAR COMPTE, ET C'EST VOLONTAIRE. Il en existait un, qui
+    rendait un 429 des dix tentatives fausses sur un pseudo, d'ou qu'elles
+    viennent. Il retournait l'arme : dix requetes lancees depuis dix adresses
+    sur le pseudo de quelqu'un lui fermaient SA porte un quart d'heure,
+    renouvelable a volonte, avec son bon mot de passe entre les mains. Un
+    frein ne doit jamais refuser un mot de passe correct.
+
+    Ce qu'on defend ici, c'est le PROCESSEUR : `_empreinte` fait du scrypt, et
+    la limiter par adresse suffit pour ca. Ce que le frein par compte pretendait
+    ajouter, l'attaquant reparti sur mille adresses, un delai ne le lui prend
+    pas non plus : il envoie en parallele et n'attend pas la reponse, pendant
+    que le delai, lui, nous couterait un fil par tentative.
+
+    ⚠ ET LA CLE EST BORNEE. Ce qui entre dans un dictionnaire qui vit aussi
+    longtemps que le service ne doit jamais avoir la taille que veut celui qui
+    l'envoie.
     """
-    cles = ["ip:" + (adresse or "?")]
-    if identifiant:
-        cles.append("compte:" + identifiant)
-    return tuple(cles)
+    return "ip:" + (adresse or "?")[:64]
 
 
 def delai_lisible(secondes: int) -> str:
@@ -1904,20 +1921,17 @@ class Handler(BaseHTTPRequestHandler):
 
         elif self.path == "/connexion":
             champs = self._champs()
-            identifiant = (champs.get("pseudo", "") or "").strip().lower()
-            cles = cles_frein(self._adresse_client(), identifiant)
-            # ⚠ ON LIT LES DEUX COMPTEURS AVANT D'EN INCREMENTER UN SEUL.
-            # Compter au fil de la lecture ferait qu'une adresse deja bloquee
-            # continuerait de charger le compteur du compte vise, et le frein
-            # ne se relacherait jamais.
-            reste = max(attente_connexion(cle) for cle in cles)
+            cle = cle_frein(self._adresse_client())
+            # ⚠ ON LIT LE COMPTEUR AVANT DE L'INCREMENTER. Compter au fil de la
+            # lecture ferait qu'une adresse deja bloquee continuerait de charger
+            # son propre compteur, et le frein ne se relacherait jamais.
+            reste = attente_connexion(cle)
             if reste:
                 self._repondre(429, self._formulaire(
                     "connexion", "Trop de tentatives. Reessaie dans %s."
                                  % delai_lisible(reste)))
                 return
-            for cle in cles:
-                compter_tentative(cle)
+            compter_tentative(cle)
             try:
                 qui = verifier(champs.get("pseudo", ""), champs.get("mdp", ""))
             except ValueError as erreur:
@@ -1925,8 +1939,7 @@ class Handler(BaseHTTPRequestHandler):
                 return
             # Reussite : on relache le frein, pour que ses propres fautes de
             # frappe ne poursuivent pas quelqu'un qui a fini par entrer.
-            for cle in cles:
-                oublier_tentatives(cle)
+            oublier_tentatives(cle)
             jeton = ouvrir_session(qui)
             # Sans ceci, « en ligne » n'apparaitrait presque jamais : la
             # presence n'etait rafraichie que par le MOTEUR, donc uniquement
