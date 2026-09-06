@@ -9,7 +9,7 @@ import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 import { t } from './langue'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
-const REDIGES = new Set(['attaque', 'manigance', 'menace', 'bilan'])
+const REDIGES = new Set(['attaque', 'manigance', 'menace', 'revelation', 'bilan'])
 
 /**
  * Accord du pluriel francais : « 1 degat », « 2 degats ». L'anglais rend le
@@ -38,6 +38,13 @@ export function titreEtape(etape: EtapeDeroule): string {
     // « gagne undefined menaces » serait pire que tout.
     if (!cible || etape.montant === undefined) return t('Menace sur la manigance principale')
     return `${cible} ${t('gagne')} ${etape.montant} ${pluriel(etape.montant, 'menace', 'menaces')}`
+  }
+
+  if (etape.titre === 'revelation') {
+    // Sans heros connu (joueur introuvable, ou l'appelant ne l'a pas fourni),
+    // repli sur l'ancienne formule generique : une carte revelee anonyme vaut
+    // mieux qu'un « undefined révèle ».
+    return auteur ? `${auteur} ${t('révèle')} ${cible}` : `${cible} ${t('révélée')}`
   }
 
   return etape.titre === 'attaque'

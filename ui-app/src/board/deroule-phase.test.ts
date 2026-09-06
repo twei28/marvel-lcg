@@ -200,6 +200,117 @@ describe('etapesDeroule', () => {
     expect(revelations[0].carteId).toBe(77)
   })
 
+  // Regle officielle : chaque joueur revele et resout sa carte dans l'ordre
+  // du tour, en commencant par le premier joueur. Ce module ne voit pas le
+  // monde (voir l'en-tete du fichier) : c'est l'appelant qui lui donne le
+  // siege du premier joueur et le nom de chaque heros (voir le rapport de la
+  // tache pour le champ retenu, `k_first_player_token`).
+  describe('l ordre du tour des revelations', () => {
+    // Le moteur revele une carte des qu'elle QUITTE le paquet de rencontre,
+    // ce qui a lieu a l'etape de DISTRIBUTION ('Deal Encounter Cards') : voir
+    // le rapport de la tache. Sans cet accueil, aucune carte revelee ne
+    // remontait jamais en partie reelle.
+    it('accueille aussi les cartes marquees sous la distribution', () => {
+      const etapes = etapesDeroule(
+        [],
+        [entree({ cle: 'c1', type: 'card', phase: 'Deal Encounter Cards', nomCarte: 'Sonic Boom', cibleId: 77 })],
+        1,
+        AUCUN_MECHANT
+      )
+      const revelations = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelations).toHaveLength(1)
+      expect(revelations[0].cibleNom).toBe('Sonic Boom')
+    })
+
+    it('range trois revelations arrivees dans le desordre selon l ordre du tour', () => {
+      // Le journal les livre dans un ordre qui n'est ni l'ordre d'arrivee ni
+      // l'ordre chronologique (B, C, A une fois inverse) : avec le siege 2
+      // pour premier joueur, l'ordre attendu est C (siege 2), A (siege 0),
+      // B (siege 1).
+      const etapes = etapesDeroule(
+        [],
+        [
+          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+          entree({ cle: 'c', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte C', joueur: 2 }),
+          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+        ],
+        1,
+        AUCUN_MECHANT,
+        undefined,
+        2,
+        ['Joueur0', 'Joueur1', 'Joueur2']
+      )
+      const revelations = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelations.map((e) => e.cibleNom)).toEqual(['Carte C', 'Carte A', 'Carte B'])
+    })
+
+    it('le premier joueur passe en premier, meme s il n est pas le joueur 1', () => {
+      const etapes = etapesDeroule(
+        [],
+        [
+          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+        ],
+        1,
+        AUCUN_MECHANT,
+        undefined,
+        1,
+        ['Joueur0', 'Joueur1']
+      )
+      const revelations = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelations.map((e) => e.cibleNom)).toEqual(['Carte B', 'Carte A'])
+    })
+
+    it('en solo, l ordre ne bouge pas et aucun compteur n apparait', () => {
+      const etapes = etapesDeroule(
+        [],
+        [entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 })],
+        1,
+        AUCUN_MECHANT,
+        undefined,
+        0,
+        ['★Colossus']
+      )
+      const revelations = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelations).toHaveLength(1)
+      // Une seule etape dans ce temps : aucun compteur « 1 sur 1 ».
+      expect(rangDansLeTemps(etapes, etapes.indexOf(revelations[0]))).toBeUndefined()
+    })
+
+    it('nomme le heros qui revele, nettoye de son prefixe decoratif', () => {
+      const etapes = etapesDeroule(
+        [],
+        [entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Bombe à retardement', joueur: 0 })],
+        1,
+        AUCUN_MECHANT,
+        undefined,
+        0,
+        ['★Colossus']
+      )
+      const [revelation] = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelation.auteurNom).toBe('Colossus')
+      expect(revelation.cibleNom).toBe('Bombe à retardement')
+    })
+
+    it('garde l ordre du journal sans premier joueur connu', () => {
+      // Ancien moteur sans jeton, ou source muette sur l'ordre : mieux vaut
+      // l'ordre du journal qu'un ordre invente.
+      const etapes = etapesDeroule(
+        [],
+        [
+          // Le plus recent en tete, comme le vrai journal : b est arrivee
+          // apres a.
+          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+        ],
+        1,
+        AUCUN_MECHANT
+      )
+      const revelations = etapes.filter((e) => e.temps === 'revelation')
+      expect(revelations.map((e) => e.cibleNom)).toEqual(['Carte A', 'Carte B'])
+    })
+  })
+
   it('ne fait pas d etape d une narration deja mise en phrase ailleurs', () => {
     // Le type `text` est la narration interne du moteur : elle a sa place
     // dans le journal, pas dans un deroule qu'on lit etape par etape.
@@ -274,15 +385,18 @@ describe('etapesDeroule', () => {
     // vieilles cartes s'afficheraient en plus a l'envers.
     const journalTroisRounds: EntreeHistorique[] = [
       // Le plus recent d'abord, comme le fait vraiment historique.entrees.
-      entree({ cle: 'r3-b', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-B', cibleId: 3 }),
-      entree({ cle: 'r3-a', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-A', cibleId: 2 }),
-      entree({ cle: 'r2', round: 2, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R2', cibleId: 1 }),
+      entree({ cle: 'r3-b', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-B', nomCarte: 'Carte R3-B', cibleId: 3 }),
+      entree({ cle: 'r3-a', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-A', nomCarte: 'Carte R3-A', cibleId: 2 }),
+      entree({ cle: 'r2', round: 2, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R2', nomCarte: 'Carte R2', cibleId: 1 }),
       entree({ cle: 'r1', round: 1, type: 'threat', phase: 'Main Scheme Place Threat', titre: 'Menace R1' }),
     ]
 
     it('ne rend que les etapes du round demande', () => {
+      // `titre` porte desormais la cle 'revelation' (voir plus haut) : c'est
+      // `cibleNom`, le nom NU de la carte, qui distingue les etapes entre
+      // elles ici.
       const etapes = etapesDeroule([], journalTroisRounds, 3, AUCUN_MECHANT)
-      expect(etapes.map((e) => e.titre)).toEqual(['Carte R3-A', 'Carte R3-B'])
+      expect(etapes.map((e) => e.cibleNom)).toEqual(['Carte R3-A', 'Carte R3-B'])
     })
 
     it('rend ces etapes dans l ordre chronologique, pas l ordre du journal', () => {
@@ -296,7 +410,7 @@ describe('etapesDeroule', () => {
       const etapes1 = etapesDeroule([], journalTroisRounds, 1, AUCUN_MECHANT)
       expect(etapes1.map((e) => e.titre)).toEqual(['menace'])
       const etapes2 = etapesDeroule([], journalTroisRounds, 2, AUCUN_MECHANT)
-      expect(etapes2.map((e) => e.titre)).toEqual(['Carte R2'])
+      expect(etapes2.map((e) => e.cibleNom)).toEqual(['Carte R2'])
     })
 
     // Defaut 2 (voir brief) : les FAITS ne portaient aucun round, seul le

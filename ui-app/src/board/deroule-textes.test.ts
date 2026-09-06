@@ -82,11 +82,29 @@ describe('phrases du deroule', () => {
     expect(regleEtape(etape())).toBe('Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.')
   })
 
-  it('laisse passer un titre deja redige', () => {
-    // Une carte revelee arrive avec son titre venu du journal : on ne le
-    // reecrit pas.
+  it('laisse passer un titre libre, non repertorie', () => {
+    // Repli general de titreEtape pour toute cle absente de REDIGES. Ce n'est
+    // PAS ainsi qu'une carte revelee se construit reellement (voir
+    // deroule-phase.ts, cle 'revelation', juste en dessous) : ce test verifie
+    // seulement le filet de securite.
     expect(titreEtape(etape({ temps: 'revelation', titre: 'Icy Grip révélée' })))
       .toBe('Icy Grip révélée')
+  })
+
+  it('nomme le heros qui revele sa carte', () => {
+    expect(
+      titreEtape(
+        etape({ temps: 'revelation', titre: 'revelation', auteurNom: 'Colossus', cibleNom: 'Bombe à retardement' })
+      )
+    ).toBe('Colossus révèle Bombe à retardement')
+  })
+
+  it('se replie sur l ancienne formule sans heros connu', () => {
+    // Joueur introuvable, ou l'appelant n'a pas fourni les noms : une carte
+    // revelee anonyme vaut mieux qu'un « undefined révèle ».
+    expect(
+      titreEtape(etape({ temps: 'revelation', titre: 'revelation', auteurNom: undefined, cibleNom: 'Bombe à retardement' }))
+    ).toBe('Bombe à retardement révélée')
   })
 
   it('rappelle la regle des cartes revelees', () => {

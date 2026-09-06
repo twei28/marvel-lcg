@@ -1804,12 +1804,34 @@ function PagePartie({
         if (famille === 'hero' || famille === 'alter-ego') herosVaincusIds.add(carte.id)
       }
     }
+    // Le premier joueur du round, pour l'ordre du tour des revelations
+    // (regle officielle : chaque joueur revele en commencant par lui).
+    //
+    // Le monde ne publie pas de champ dedie a l'ordre des joueurs : le jeton
+    // de premier joueur vit comme un COMPTEUR generique sur l'identite de son
+    // detenteur (`k_first_player_token`, meme convention que `k_threat` sur
+    // une manigance), pose par le moteur des `SetActive()`
+    // (game/card/face/card_type/identity.py). `findIndex` rend -1 si personne
+    // ne le porte (ancien moteur sans le jeton) : on rend alors `undefined`,
+    // et `etapesDeroule` garde l'ordre du journal plutot que d'en inventer un.
+    const premierJoueurId = (etat.monde?.players ?? []).findIndex(
+      (joueur) => ((joueur.area_hero ?? [])[0]?.info['k_first_player_token'] ?? 0) > 0
+    )
+    // Le heros de chaque joueur, dans le MEME ordre que `World.players` :
+    // c'est l'indice que porte deja `EntreeHistorique.joueur`. Brut, prefixe
+    // decoratif compris : `etapesDeroule` le nettoie elle-meme, comme elle le
+    // fait deja pour les faits du mechant.
+    const nomsHerosParJoueur = (etat.monde?.players ?? []).map(
+      (joueur) => (joueur.area_hero ?? [])[0]?.name
+    )
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
       historique.entrees,
       etat.monde?.round_id ?? 0,
       mechantIds,
-      herosVaincusIds
+      herosVaincusIds,
+      premierJoueurId === -1 ? undefined : premierJoueurId,
+      nomsHerosParJoueur
     )
   }, [
     cartesMondeParId,

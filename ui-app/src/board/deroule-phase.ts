@@ -112,6 +112,11 @@ export type EtapeDeroule = {
    * ou l'etape s'affiche ; y chercher son nom affichait « Ultron attaque #88 »
    * a la place. Meme raison que RecapPhaseMechant, qui fait ce choix pour la
    * meme cause.
+   *
+   * Sur une etape de revelation, les deux changent de sens : `auteurNom` est
+   * le HEROS qui revele (absent si le journal n'a pas pu le rattacher a un
+   * joueur, ou si l'appelant n'a pas fourni les noms), `cibleNom` le nom NU
+   * de la carte revelee.
    */
   auteurNom?: string
   cibleNom?: string
@@ -189,13 +194,37 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  * heros que le monde declare ELIMINES. L'ensemble est optionnel et vide par
  * defaut : sans lui, aucune etape n'est marquee, ce qui est le bon repli (ne
  * rien annoncer plutot qu'annoncer a tort).
+ *
+ * `premierJoueurId` et `nomsHerosParJoueur` servent l'ordre du tour des
+ * revelations (regle officielle : chaque joueur revele dans l'ordre du tour,
+ * en commencant par le premier joueur). Meme motif que les deux ensembles
+ * ci-dessus : ce module ne voit pas le monde, donc c'est l'appelant qui lui
+ * donne ce qu'il faut.
+ *
+ * - `premierJoueurId` est l'indice de SIEGE (le meme que celui que porte
+ *   `EntreeHistorique.joueur`, tous deux venant de `World.players`) du joueur
+ *   qui a le jeton de premier joueur ce round. Le monde ne publie pas de
+ *   champ dedie a l'ordre des joueurs : le jeton vit comme un COMPTEUR
+ *   generique sur l'identite du joueur (`WorldCard.info['k_first_player_token']`,
+ *   pose par le moteur des `SetActive()`, cote Python
+ *   game/card/face/card_type/identity.py). Absent (aucun joueur ne le
+ *   porte : ancien moteur, ou source muette) -> `undefined`, et les
+ *   revelations gardent alors l'ordre du journal plutot que d'inventer un
+ *   ordre.
+ * - `nomsHerosParJoueur` est le nom de heros de chaque joueur, dans le MEME
+ *   ordre que `World.players`, brut (prefixe decoratif compris : nettoye ICI,
+ *   comme le reste du fichier le fait deja pour `auteurNom`/`cibleNom` des
+ *   faits). Vide par defaut : sans lui, une etape de revelation ne porte
+ *   aucun nom d'auteur.
  */
 export function etapesDeroule(
   faits: FaitMechant[],
   entrees: EntreeHistorique[],
   round: number,
   mechantIds: Set<number>,
-  herosVaincusIds: Set<number> = new Set()
+  herosVaincusIds: Set<number> = new Set(),
+  premierJoueurId?: number,
+  nomsHerosParJoueur: (string | undefined)[] = []
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -286,27 +315,91 @@ export function etapesDeroule(
   // Les cartes revelees, que les faits du moteur ne couvrent pas : lui ne rend
   // que les activations resolues.
   //
+  // Cote moteur, la carte quitte le paquet de rencontre AU MOMENT OU ELLE EST
+  // DISTRIBUEE (`encounter_deck -> dealt_encounter_cards`), donc c'est LA que
+  // le journal note « revelee », sous la phase 'Deal Encounter Cards' (temps
+  // 'distribution'). Le passage suivant, de la main du joueur vers la zone
+  // commune de revelation (`Reveal Encounter Cards`), ne change plus rien que
+  // ce module puisse observer : les deux zones sont deja « en jeu ». Se
+  // limiter au seul temps 'revelation' aurait donc laisse ce temps muet en
+  // partie reelle (aucune carte n'y arrive jamais) : on accepte les DEUX
+  // phases, et on les affiche toutes comme des revelations, ce qui
+  // correspond a ce que le joueur voit vraiment (le nom de la carte, des
+  // qu'elle quitte le paquet). Voir le rapport de la tache pour la mesure qui
+  // etablit ce point.
+  //
   // Les entrees de type `text` (narration technique du moteur, defausses,
   // fins d'activation, « DiscardPile<3> ») ne produisent PLUS d'etape ici :
   // constate en partie, 8 etapes de ce genre sur 12, en anglais et
   // illisibles, noyaient les quatre etapes utiles. Elles restent entieres
   // dans le journal a droite et dans le Log, qui les affichent deja.
-  for (const e of duRound) {
-    if (tempsDe(e.phase) !== 'revelation') continue
-    if (e.type === 'card') {
-      etapes.push({
-        cle: `carte:${e.cle}`,
-        temps: 'revelation',
-        titre: e.titre,
-        regle: 'regle:revelation',
-        carteId: e.cibleId,
-        boosts: [],
-        consequences: [],
-      })
-    }
+  const cartesRevelees = duRound.filter(
+    (e) =>
+      e.type === 'card' &&
+      (tempsDe(e.phase) === 'revelation' || tempsDe(e.phase) === 'distribution')
+  )
+
+  // Regle officielle : chaque joueur revele et resout sa carte DANS L'ORDRE
+  // DU TOUR, en commencant par le premier joueur. `cartesRevelees` arrive
+  // dans l'ordre chronologique du journal (voir `duRound` plus haut), pas
+  // forcement celui du tour : on la retrie avant de construire les etapes,
+  // et le tri final sur `ORDRE` (stable) preserve ensuite cet ordre relatif.
+  for (const e of trierParOrdreDuTour(cartesRevelees, premierJoueurId, nomsHerosParJoueur.length)) {
+    etapes.push({
+      cle: `carte:${e.cle}`,
+      temps: 'revelation',
+      titre: 'revelation',
+      regle: 'regle:revelation',
+      carteId: e.cibleId,
+      // Nettoyage identique a celui des faits plus haut : le moteur prefixe
+      // les identites d'un marqueur decoratif que le plateau retire partout
+      // ailleurs.
+      auteurNom: nomHerosNettoye(nomsHerosParJoueur[e.joueur ?? -1]),
+      // Le nom NU de la carte (voir `cibleNom` de l'etape de menace, meme
+      // raison) : `titre` n'est plus une phrase toute faite, `titreEtape` la
+      // construit a partir de `auteurNom` et `cibleNom`.
+      cibleNom: e.nomCarte,
+      boosts: [],
+      consequences: [],
+    })
   }
 
   return etapes.sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
+}
+
+/**
+ * Nettoyage du nom d'un heros, identique a celui applique aux faits du
+ * mechant (`fait.auteur.replace(...)`) : le moteur prefixe les identites d'un
+ * marqueur decoratif que le plateau retire partout ailleurs (icones,
+ * symboles).
+ */
+function nomHerosNettoye(nom: string | undefined): string | undefined {
+  return nom ? nom.replace(/^\W*/, '') : undefined
+}
+
+/**
+ * Trie une liste d'entrees rattachees a un joueur (`joueur`, un indice de
+ * siege) dans l'ordre du tour a partir du premier joueur.
+ *
+ * Sans premier joueur connu, ou a moins de deux joueurs (solo, ou source
+ * muette sur leur nombre), la liste ressort INCHANGEE : le solo ne doit rien
+ * voir bouger, et un ordre invente serait pire que l'ordre du journal (voir
+ * le rapport de la tache).
+ *
+ * Le tri est STABLE (`Array.prototype.sort`) : deux entrees du meme joueur,
+ * ou toutes deux sans joueur connu, gardent leur ordre d'arrivee entre elles.
+ */
+function trierParOrdreDuTour<T extends { joueur?: number }>(
+  entrees: T[],
+  premierJoueurId: number | undefined,
+  nbJoueurs: number
+): T[] {
+  if (premierJoueurId === undefined || nbJoueurs < 2) return entrees
+  // Une entree sans joueur connu se range apres tout le monde plutot que de
+  // fausser l'ordre des autres (rang hors plage, jamais atteint sinon).
+  const rang = (joueur: number | undefined): number =>
+    joueur === undefined ? nbJoueurs : (joueur - premierJoueurId + nbJoueurs) % nbJoueurs
+  return [...entrees].sort((a, b) => rang(a.joueur) - rang(b.joueur))
 }
 
 /**

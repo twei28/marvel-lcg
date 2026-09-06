@@ -333,6 +333,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Sbires': 'Minions',
   'Distribution': 'Dealing',
   'Révélation': 'Reveal',
+  // Titre d'une etape de revelation : « Colossus révèle Bombe à retardement ».
+  'révèle': 'reveals',
   'Précédent': 'Previous',
   'Suivant': 'Next',
   'La suite arrive…': 'More coming…',
