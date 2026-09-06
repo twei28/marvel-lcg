@@ -536,6 +536,29 @@ for _fichier, _combien in (
              _src.count("secure=") >= _combien and "# secure=True" not in _src,
              "%d secure= trouves" % _src.count("secure="))
 
+# --- S7 : ce qui vit a l'execution ne doit pas pouvoir etre commite ---------
+# ⚠ UN SECRET COMMITE NE SE CHANGE PLUS : il reste dans l'historique pour
+# toujours. `narwhal.db` porte les empreintes, les adresses e-mail, les jetons
+# de session en clair et les mots de passe des moteurs ; `site/rapports/`
+# porte les ecrans des joueurs. Un seul `git add -A` apres un essai en local
+# suffisait. On le demande a git lui-meme, plutot que de relire le fichier.
+import subprocess                                           # noqa: E402
+_depot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_a_ignorer = ["site/narwhal.db", "site/narwhal.db-wal", "site/rapports/capture.png"]
+try:
+    # `--quiet` n'accepte qu'un chemin a la fois : on demande la liste, et on
+    # verifie que git nous les rend TOUS.
+    _vus = subprocess.run(["git", "check-ignore"] + _a_ignorer, cwd=_depot,
+                          capture_output=True, text=True).stdout.split()
+except OSError:
+    _vus = None
+if _vus is None:
+    print("  (git absent : verification du .gitignore sautee)")
+else:
+    _oublies = [c for c in _a_ignorer if c not in _vus]
+    verifier("la base et les captures sont hors du depot", not _oublies,
+             "toujours commitables : " + ", ".join(_oublies))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

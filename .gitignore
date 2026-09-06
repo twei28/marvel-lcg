@@ -116,6 +116,23 @@ Fusion/marvel-lcg-src/assets/pics-proxy/
 Fusion/marvel-lcg-src/.site/
 site/comptes.json
 site/comptes.json.tmp
+# `narwhal.db` a remplace `comptes.json` le 05/09/2026 et l'exclusion n'avait
+# pas suivi. Il porte tout ce que portait le fichier JSON, PLUS les adresses
+# e-mail, les jetons de session en clair (table `sessions`) et les mots de
+# passe des moteurs en clair (colonne `mdp_jeu`, indispensable puisque le
+# moteur en a besoin tel quel). Les trois voisins `-wal`, `-shm` et `-journal`
+# sont la base elle-meme : en mode WAL, les dernieres transactions y vivent.
+site/narwhal.db
+site/narwhal.db-wal
+site/narwhal.db-shm
+site/narwhal.db-journal
+# Les captures d'ecran envoyees avec les rapports de bug. Ce sont les ecrans
+# des joueurs, et rien dans le depot n'y renvoie.
+site/rapports/
+# Bases jetables des tests du site.
+site/*.db
+site/*.db-wal
+site/*.db-shm
 
 # Cle SSH de deploiement NarwhalChampions - ne jamais commiter
 deploiement/cle_narwhal
