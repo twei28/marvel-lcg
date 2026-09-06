@@ -2732,7 +2732,12 @@
     opacity: 0.85;
   }
 
-  /* L'eclair : un trait clair qui file en travers du bandeau. */
+  /* L'eclair : un trait clair qui file en travers du bandeau. `forwards`
+     retient l'etat final (translateX(160%), hors du bandeau) une fois les
+     620ms ecoulees. Sans lui, l'element reprend sa position de base -
+     transform nul, donc au centre - et la bande blanche reste peinte
+     par-dessus le texte pour le reste des 2s de l'annonce. Meme motif que
+     .deroule-trait line (forwards, ligne 2669 ci-dessus). */
   .bandeau-phase-eclair {
     position: absolute;
     inset: 0;
@@ -2742,7 +2747,7 @@
       rgba(255, 255, 255, 0.85) 50%,
       transparent 60%
     );
-    animation: bandeau-eclair 620ms ease-out;
+    animation: bandeau-eclair 620ms ease-out forwards;
   }
 
   @keyframes bandeau-traverse {
@@ -2765,9 +2770,22 @@
     }
   }
 
-  body.plateau-sans-animations .bandeau-phase,
+  /* .bandeau-phase : la base (transform nul, opacite 1) EST deja la valeur
+     finale de bandeau-traverse (voir le commentaire de .splash-tour,
+     ligne 4358 plus bas) : couper l'animation suffit. */
+  body.plateau-sans-animations .bandeau-phase {
+    animation: none;
+  }
+
+  /* .bandeau-phase-eclair : sa base (transform nul) n'est NI le depart NI
+     l'arrivee de bandeau-eclair, c'est le milieu de la course - la bande
+     blanche exactement sur le texte. Couper l'animation ne suffit donc pas,
+     contrairement a .bandeau-phase ci-dessus : il faut aussi le rendre
+     invisible, sinon la bande blanche reste peinte en permanence sur le
+     titre quand les animations sont coupees. */
   body.plateau-sans-animations .bandeau-phase-eclair {
     animation: none;
+    opacity: 0;
   }
 
   .deroule-temps {
@@ -5506,8 +5524,15 @@
     animation: none;
   }
 
-  .bandeau-phase,
+  .bandeau-phase {
+    animation: none;
+  }
+
+  /* Meme raison que body.plateau-sans-animations plus haut (board.css) :
+     la base de l'eclair n'est pas sa valeur finale, `animation: none` seul
+     le figerait par-dessus le texte du bandeau. */
   .bandeau-phase-eclair {
     animation: none;
+    opacity: 0;
   }
 }
