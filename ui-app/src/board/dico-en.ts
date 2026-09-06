@@ -358,8 +358,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Manuel': 'Manual',
   'Pas à pas': 'Step by step',
   'Instantané': 'Instant',
-  'Rythme de la phase du méchant : un clic par étape, déroulé automatique, ou tout d’un coup':
-    'Villain phase pacing: one click per step, automatic playback, or all at once',
+  'Rythme de la phase du méchant : une étape validée à la fois, un clic par étape, déroulé automatique, ou tout d’un coup':
+    'Villain phase pacing: one validated step at a time, one click per step, automatic playback, or all at once',
   'Vitesse du déroulé': 'Playback speed',
   'Temps d’affichage de chaque étape': 'How long each step stays on screen',
   'En pause': 'Paused',

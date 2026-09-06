@@ -88,6 +88,40 @@ export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
   }
 }
 
+/**
+ * Le libelle affiche dans le panneau Options pour CE mode precis.
+ *
+ * Une seule source pour l'affichage et pour le test : l'ancien ternaire a
+ * trois branches (`manuel` / `pas-a-pas` / sinon « Instantane ») retombait
+ * sur « Instantane » des que le mode valait « detaille », qui est pourtant
+ * le defaut. Toute nouvelle partie affichait donc un mode faux.
+ */
+export function libelleModePhase(mode: ModePhaseMechant): string {
+  switch (mode) {
+    case 'detaille':
+      return 'Détaillé'
+    case 'manuel':
+      return 'Manuel'
+    case 'pas-a-pas':
+      return 'Pas à pas'
+    case 'instantane':
+      return 'Instantané'
+  }
+}
+
+/**
+ * Le mode suivant dans le cycle du bouton Options.
+ *
+ * Ordre de lisibilite decroissante, le meme que `MODES` : Detaille (une
+ * etape a la fois) -> Manuel (un clic par evenement important) -> Pas a pas
+ * (delai automatique) -> Instantane (rien n'attend), puis on reboucle. Le
+ * cycle a trois positions d'avant ne repassait jamais par « detaille » : un
+ * seul clic desactivait la fonctionnalite pour toute la session.
+ */
+export function modeSuivant(mode: ModePhaseMechant): ModePhaseMechant {
+  return MODES[(MODES.indexOf(mode) + 1) % MODES.length]
+}
+
 /** Borne le delai : une valeur hors plage rendrait la phase injouable. */
 export function bornerDelai(valeur: number): number {
   if (!Number.isFinite(valeur)) return DELAI_PAS_A_PAS_DEFAUT
@@ -153,8 +187,19 @@ export function decisionAccuse(
       ? 'attendre-clic'
       : 'immediat'
   }
-  if (mode === 'pas-a-pas' && !phaseSautee) {
-    return PHASES_DU_MECHANT.has(phase) && evenementAMontrer(monde) ? 'attendre-delai' : 'immediat'
+  // « detaille » suit la meme regle que « pas-a-pas » (memes quatre phases,
+  // meme filtre d'evenements, meme respect de « Tout passer ») : sans cela le
+  // moteur ne retenait jamais l'accuse de reception pour ce mode, resolvait
+  // la phase a pleine vitesse, et le cartouche etape par etape racontait
+  // ensuite un passe deja joue.
+  //
+  // Seul le type d'attente differe. « pas-a-pas » est fait pour ETRE REGARDE
+  // sans manipuler : un delai suffit. « detaille » VALIDE chaque etape (bouton
+  // « Suivant » du cartouche) : lui faire attendre un delai en plus du clic
+  // ferait attendre deux fois, on lui laisse donc 'attendre-clic'.
+  if ((mode === 'pas-a-pas' || mode === 'detaille') && !phaseSautee) {
+    if (!PHASES_DU_MECHANT.has(phase) || !evenementAMontrer(monde)) return 'immediat'
+    return mode === 'detaille' ? 'attendre-clic' : 'attendre-delai'
   }
   return 'immediat'
 }

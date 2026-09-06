@@ -155,6 +155,28 @@ describe('qui retient l’accusé de réception', () => {
     expect(decisionAccuse('instantane', degats, false)).toBe('immediat')
   })
 
+  it('attend un clic en detaille, sur les quatre phases', () => {
+    // Decision explicite du proprietaire : le mode detaille doit lui aussi
+    // retenir l'accuse de reception, sinon le moteur resout la phase a pleine
+    // vitesse et le cartouche etape par etape ne fait que raconter un passe.
+    // Il differe de « pas-a-pas » sur un seul point : il attend un CLIC (la
+    // validation « Suivant » du cartouche), pas un delai automatique.
+    for (const phase of PHASES_DU_MECHANT) {
+      const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
+      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
+    }
+  })
+
+  it('n’attend plus rien en detaille quand la phase a ete sautee', () => {
+    expect(decisionAccuse('detaille', degats, true)).toBe('immediat')
+  })
+
+  it('n’attend rien en detaille hors evenement a montrer', () => {
+    expect(
+      decisionAccuse('detaille', monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' }), false)
+    ).toBe('immediat')
+  })
+
   it('attend un clic en manuel, et seulement sur les activations', () => {
     expect(decisionAccuse('manuel', degats, false)).toBe('attendre-clic')
     expect(
