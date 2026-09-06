@@ -737,7 +737,14 @@ export function DeroulePhase({
               que l'attente dure une fraction de seconde en temps normal et
               qu'un bouton qui s'eteint puis se rallume attire l'oeil plus que
               l'etape elle-meme. Un reclic pendant l'attente est sans danger :
-              il relache au plus une trame de plus. */}
+              il relache au plus une trame de plus.
+
+              Elle ne parle que du MOTEUR qu'on attend. Quand c'est le joueur
+              qu'on attend (`questionAuJoueur`), le cartouche est replie plus
+              haut et cette ligne n'existe pas : « La suite arrive… » par-dessus
+              une question du moteur etait exactement le mensonge constate en
+              partie. Le test « ne dit pas La suite arrive… quand c est au
+              joueur d agir » le verrouille. */}
           {enAttente ? (
             <span className="deroule-attente" aria-live="polite">
               {t('La suite arrive…')}

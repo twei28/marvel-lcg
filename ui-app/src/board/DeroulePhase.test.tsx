@@ -1475,6 +1475,31 @@ describe('le bilan de fin de phase', () => {
       expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
     })
 
+    it('ne dit pas « La suite arrive… » quand c est au joueur d agir', () => {
+      // Le cas de la partie reelle, dans l'ordre ou il s'est produit : le
+      // joueur a valide tout ce que le cartouche savait (il attend la suite),
+      // et la suite est... une question du moteur. « La suite arrive… »
+      // mentirait : rien n'arrivera tant que le joueur n'a pas repondu. Le
+      // texte d'attente ne s'affiche que lorsque c'est le MOTEUR qu'on attend.
+      const cartouche = (questionAuJoueur: boolean) => (
+        <DeroulePhase
+          etapes={menaceSeule}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          questionAuJoueur={questionAuJoueur}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(false))
+      fireEvent.click(suivant())
+      expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
+
+      rerender(cartouche(true))
+      expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
+      expect(screen.getByText('Le moteur attend ta réponse')).toBeInTheDocument()
+    })
+
     it('laisse le clavier a la question : Entree n avance pas un cartouche replie', () => {
       const cartouche = (questionAuJoueur: boolean) => (
         <DeroulePhase
