@@ -41,9 +41,11 @@ export function DeroulePhase({
   }, [etapes])
 
   const etape = etapes[index]
-  if (!etape) return null
 
   const avancer = () => {
+    // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
+    // touche pressee ne doit alors rien declencher.
+    if (!etape) return
     if (index + 1 >= etapes.length) {
       onTerminer()
       return
@@ -75,6 +77,14 @@ export function DeroulePhase({
     document.addEventListener('keydown', auClavier)
     return () => document.removeEventListener('keydown', auClavier)
   })
+
+  // Le `return null` vient APRES tous les hooks, jamais avant : React exige
+  // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant
+  // est monte des que le mode "detaille" est actif, donc hors phase du
+  // mechant avec `etapes` vide, puis se remplit sans etre demonte quand la
+  // phase commence. Un `return null` place plus haut sauterait le second
+  // useEffect a un rendu et le rajouterait au suivant, ce que React refuse.
+  if (!etape) return null
 
   return (
     <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>

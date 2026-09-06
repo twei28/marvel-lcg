@@ -99,6 +99,16 @@ describe('cartouche du deroule', () => {
     expect(onToutDerouler).toHaveBeenCalledTimes(1)
   })
 
+  it('supporte de passer de zero etape a plusieurs sans tomber', () => {
+    // Le plateau monte ce composant des que le mode « detaille » est actif,
+    // donc hors phase du mechant, avec une liste vide. Si le `return null`
+    // court-circuite un hook, React compte un hook de plus au rendu suivant
+    // et fait tomber tout le plateau.
+    const { rerender } = render(<DeroulePhase etapes={[]} noms={noms} onTerminer={() => {}} />)
+    rerender(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+  })
+
   it('laisse le clavier tranquille quand on ecrit ailleurs', () => {
     // Le tchat est a portee de main pendant la phase : taper un espace dans son
     // champ ne doit pas faire avancer la phase du mechant.
