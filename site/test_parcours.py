@@ -489,6 +489,53 @@ _code, _, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=faux")
 verifier("et la reussite a relache le frein", _code == 400, str(_code))
 o._TENTATIVES.clear()
 
+# --- S4 : le cookie de session ne part pas en clair -------------------------
+def _pose_le_cookie(entetes=None):
+    o._TENTATIVES.clear()
+    _c, _t, _ = appel("POST", "/connexion", b"pseudo=hote&mdp=motdepasse123",
+                      entetes=entetes)
+    return _t.get("Set-Cookie") or ""
+
+
+# En local, sans proxy et sans domaine, l'attribut ne doit PAS y etre : un
+# navigateur jetterait le cookie sur `http://127.0.0.1`, et la connexion
+# tournerait en rond sans rien dire.
+_pose = _pose_le_cookie()
+verifier("en local, le cookie reste utilisable (pas de Secure)",
+         "Secure" not in _pose and "HttpOnly" in _pose, _pose)
+
+# Derriere Caddy, qui annonce le schema, l'attribut apparait.
+_pose = _pose_le_cookie({"X-Forwarded-Proto": "https"})
+verifier("derriere HTTPS, le cookie de session porte Secure",
+         "Secure" in _pose, _pose)
+verifier("sans rien perdre de HttpOnly ni de SameSite",
+         "HttpOnly" in _pose and "SameSite=Lax" in _pose, _pose)
+
+# Et en production le domaine suffit, meme si l'en-tete manque.
+_vrai_domaine = o.DOMAINE
+o.DOMAINE = "narwhalchampions.test"
+_pose = _pose_le_cookie()
+o.DOMAINE = _vrai_domaine
+verifier("un site sur son domaine pose Secure meme sans en-tete",
+         "Secure" in _pose, _pose)
+o._TENTATIVES.clear()
+
+# Cote MOTEUR, le meme defaut venait de l'amont : `secure=True` et
+# `samesite='Lax'` etaient ecrits en COMMENTAIRE, jamais decommentes. Les
+# exercer pour de vrai demande d'allumer un moteur, ce que fait
+# `tools/test_authentification.py` ; ici on garde la porte fermee sur la
+# regression exacte, qui est de les voir repasser en commentaire.
+_moteur = os.path.join(o.RACINE_JEU, "src", "engine")
+for _fichier, _combien in (
+        (os.path.join(_moteur, "network", "web_server.py"), 1),
+        (os.path.join(_moteur, "device", "web", "server", "server_html.py"), 2)):
+    if not os.path.isfile(_fichier):
+        continue
+    _src = open(_fichier, encoding="utf-8").read()
+    verifier("les cookies de %s ne partent plus en clair" % os.path.basename(_fichier),
+             _src.count("secure=") >= _combien and "# secure=True" not in _src,
+             "%d secure= trouves" % _src.count("secure="))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

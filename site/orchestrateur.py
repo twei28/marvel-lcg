@@ -1498,6 +1498,25 @@ class Handler(BaseHTTPRequestHandler):
             return relais.split(",")[-1].strip()
         return self.client_address[0] if self.client_address else "?"
 
+    def _secure(self) -> str:
+        """« ; Secure » quand la requete est arrivee par HTTPS, sinon rien.
+
+        ⚠ POURQUOI PAS EN DUR. Le site EST servi en HTTPS seulement : le
+        `Caddyfile` declare ses deux blocs par leur nom d'hote, sans schema et
+        sans `auto_https off`, ce qui fait que Caddy sert le 443 et redirige le
+        80 vers lui de lui-meme. En production l'attribut est donc toujours
+        pose. Mais le meme fichier tourne en local sur `http://127.0.0.1:8080`,
+        sans proxy devant : `Secure` en dur y ferait jeter le cookie par le
+        navigateur, et la connexion tournerait en rond sans rien dire.
+
+        ⚠ ET LA FALSIFICATION NE RAPPORTE RIEN ICI. Un client qui mentirait sur
+        `X-Forwarded-Proto` ne ferait que durcir SON PROPRE cookie, ou le
+        rendre inutilisable pour lui seul. Rien a y gagner.
+        """
+        if (self.headers.get("X-Forwarded-Proto") or "").strip().lower() == "https":
+            return "; Secure"
+        return "; Secure" if DOMAINE else ""
+
     def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
         inscription = quoi == "inscription"
         champs = ('<input type="hidden" name="i" value="%s">'
@@ -1706,7 +1725,11 @@ class Handler(BaseHTTPRequestHandler):
                     fermer_session(valeur)
             self.send_response(303)
             self.send_header("Location", "/")
-            self.send_header("Set-Cookie", "nc_session=; Max-Age=0; Path=/")
+            # Les memes attributs qu'a la pose : un cookie efface doit
+            # ressembler a celui qu'il remplace, sans quoi certains navigateurs
+            # gardent l'ancien a cote.
+            self.send_header("Set-Cookie",
+                             "nc_session=; Max-Age=0; Path=/" + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
         elif self.path == "/admin":
@@ -1803,9 +1826,13 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Location", "/entrer")
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
+            # Secure : il ne part pas en clair. Sans lui, une premiere visite
+            # tapee en `http://` envoyait le cookie sur le reseau avant meme que
+            # Caddy n'ait eu le temps de rediriger vers HTTPS.
             self.send_header("Set-Cookie",
                              f"nc_session={jeton}; HttpOnly; SameSite=Lax; Path=/;"
-                             f" Max-Age={DUREE_SESSION_JOURS * 86400}")
+                             f" Max-Age={DUREE_SESSION_JOURS * 86400}"
+                             + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
 

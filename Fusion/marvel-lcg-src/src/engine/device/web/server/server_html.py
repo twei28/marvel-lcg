@@ -66,6 +66,12 @@ class GameServerHTML(GameServerBase):
         if expected and key != expected:
             return web.Response(status=403, text='Wrong seat password')
         response = web.HTTPFound(destination)
+        # `secure` et `samesite` manquaient aux deux cookies poses ici : sur une
+        # premiere visite tapee en `http://`, la cle de siege comme le
+        # laissez-passer du moteur partaient en clair avant meme que Caddy
+        # n'ait redirige. `CookieSecure` deduit le schema de la requete, ce qui
+        # laisse l'usage en local (127.0.0.1, sans proxy) intact.
+        sur = self.CookieSecure(request)
         if expected:
             response.set_cookie(
                 f'seat_token_{seat}',
@@ -73,6 +79,8 @@ class GameServerHTML(GameServerBase):
                 max_age=31536000,
                 path='/',
                 httponly=True,
+                secure=sur,
+                samesite='Lax',
             )
             # LE LIEN VAUT LE MOT DE PASSE.
             #
@@ -93,6 +101,8 @@ class GameServerHTML(GameServerBase):
                     max_age=31536000,
                     path='/',
                     httponly=True,
+                    secure=sur,
+                    samesite='Lax',
                 )
         return response
 

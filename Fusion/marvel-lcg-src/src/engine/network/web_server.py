@@ -82,6 +82,25 @@ class WebServer:
         self.web_app.router.add_get(path, new_handle)
 
     @final
+    def CookieSecure(self, request: "web.Request") -> bool:
+        """Vrai si la requete est arrivee par HTTPS, directement ou par un proxy.
+
+        ⚠ ON NE PEUT PAS METTRE `secure=True` EN DUR. En production le moteur
+        est servi sous `pN.<domaine>` par Caddy, qui n'ecoute qu'en HTTPS ; mais
+        le meme code tourne en local sur `http://127.0.0.1:2351`, ou l'attribut
+        ferait jeter le cookie par le navigateur. On regarde donc ce que la
+        requete dit d'elle-meme : Caddy pose `X-Forwarded-Proto`, et un acces
+        direct en HTTPS se voit dans le schema de l'URL.
+
+        Falsifier cet en-tete ne rapporte rien : cela ne durcit ou n'abime que
+        le cookie de celui qui ment, et pour lui seul.
+        """
+        entete = request.headers.get('X-Forwarded-Proto', '')
+        if entete.split(',')[0].strip().lower() == 'https':
+            return True
+        return request.url.scheme == 'https'
+
+    @final
     def IsAuthenticate(self, request: web.Request) -> bool:
         if not self.hash_password:
             return True
@@ -216,8 +235,13 @@ class WebServer:
                 max_age=31536000, # 1 year
                 path='/',
                 httponly=True, # VERY IMPORTANT: Prevents JavaScript access to the cookie
-                # secure=True, # IMPORTANT: Use this flag ONLY if serving over HTTPS
-                # samesite='Lax' # Recommended: 'Lax' or 'Strict'
+                # Les deux lignes suivantes etaient en commentaire depuis
+                # l'amont. `secure` n'est plus pose a l'aveugle mais deduit de
+                # la requete (voir `CookieSecure`) : en HTTPS il y est, en local
+                # il n'y est pas, et le cookie ne part plus en clair sur une
+                # premiere visite tapee en `http://`.
+                secure=self.CookieSecure(request),
+                samesite='Lax',
             )
             return response
 
