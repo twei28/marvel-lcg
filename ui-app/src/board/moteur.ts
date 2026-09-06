@@ -283,8 +283,7 @@ export type DecisionAccuse = 'immediat' | 'attendre-clic' | 'attendre-delai'
 export function decisionAccuse(
   mode: ModePhaseMechant,
   monde: World | undefined,
-  phaseSautee: boolean,
-  avanceAuto: boolean
+  phaseSautee: boolean
 ): DecisionAccuse {
   if (mode === 'instantane') return 'immediat'
   // « detaille » retient l'accuse de reception sur TOUTES les trames des quatre
@@ -306,10 +305,15 @@ export function decisionAccuse(
   // « Tout passer » (phaseSautee) court-circuite tout ca.
   const phase = monde?.phase ?? ''
   if (phaseSautee || !PHASES_DU_MECHANT.has(phase)) return 'immediat'
-  // Avance auto : l'etape se lit puis rend la main toute seule, sans manipuler
-  // (l'ancien mode « pas-a-pas »). Sans elle, « detaille » VALIDE chaque etape
-  // au clic (bouton « Suivant » du cartouche).
-  return avanceAuto ? 'attendre-delai' : 'attendre-clic'
+  // « Detaille » attend TOUJOURS que le cartouche relache la trame, que
+  // l'avance auto soit active ou non : l'avance auto est une horloge du
+  // CARTOUCHE (DeroulePhase, prop `avanceAuto`), qui appelle la meme fonction
+  // que le clic « Suivant ». Le moteur en a tenu une lui-meme
+  // (`attendre-delai`, un minuteur qui relachait la trame toutes les 1200 ms)
+  // pendant que le cartouche attendait des clics : deux horloges, qui
+  // divergeaient a la premiere etape. Constate en partie reelle : le joueur
+  // lisait la menace, le mechant et ses sbires avaient deja frappe.
+  return 'attendre-clic'
 }
 
 /**
@@ -615,8 +619,6 @@ export class Moteur {
    * suite, plus personne ne retient personne.
    */
   private mode: ModePhaseMechant = 'detaille'
-  /** Avance auto : reglage independant, ne vaut que sous « detaille ». */
-  private avanceAuto = false
   private delaiPasAPas = DELAI_PAS_A_PAS_DEFAUT
   private minuteurPasAPas: number | undefined
   private enPause = false
@@ -634,10 +636,6 @@ export class Moteur {
 
   setDelaiPasAPas(ms: number) {
     this.delaiPasAPas = bornerDelai(ms)
-  }
-
-  setAvanceAuto(actif: boolean) {
-    this.avanceAuto = actif
   }
 
   /** Clic du joueur : l'etape affichee a ete lue, on passe a la suivante. */
@@ -881,7 +879,7 @@ export class Moteur {
       const dansLaPhase = PHASES_DU_MECHANT.has(monde?.phase ?? '')
       if (!dansLaPhase && this.phaseSautee) this.phaseSautee = false
 
-      const decision = decisionAccuse(this.mode, monde, this.phaseSautee, this.avanceAuto)
+      const decision = decisionAccuse(this.mode, monde, this.phaseSautee)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true, trameRetenue: this.trame.render_id })

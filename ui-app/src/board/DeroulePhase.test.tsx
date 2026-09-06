@@ -881,6 +881,287 @@ describe('cartouche du deroule', () => {
     expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
   })
 
+  // --- L'avance auto : une seule horloge, et c'est le cartouche ----------
+  //
+  // Defaut constate en partie reelle (brief « une seule horloge ») : « avance
+  // toute seule » faisait avancer le MOTEUR toutes les 1200 ms pendant que le
+  // cartouche attendait des clics. Le joueur lisait la menace, le mechant et
+  // ses sbires avaient deja frappe. Desormais c'est le cartouche qui s'avance
+  // lui-meme, par la MEME fonction que « Suivant » : l'accuse de reception
+  // part par le meme chemin, et le moteur ne peut plus partir devant.
+  describe('avance auto du cartouche', () => {
+    const DELAI = 1000
+    const troisEtapes: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+      {
+        cle: 'b',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Ultron',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+      {
+        cle: 'c',
+        temps: 'sbires',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Drone',
+        cibleNom: 'Shuri',
+        boosts: [],
+      },
+    ]
+    const attendre = async (ms: number) => {
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(ms)
+      })
+    }
+    // Une echeance a la fois : le minuteur de l'etape suivante n'est arme
+    // qu'au rendu qui suit l'echeance de la precedente, et un seul `act` qui
+    // avancerait de deux delais d'un coup ne laisserait pas React faire ce
+    // rendu entre les deux. C'est une limite du temps simule, pas du
+    // cartouche.
+    const attendreEtapes = async (n: number) => {
+      for (let i = 0; i < n; i += 1) await attendre(DELAI)
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('passe une etape toute seule apres le delai, et acquitte par le meme chemin que Suivant', async () => {
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+      // Pas avant le delai : c'est un temps de lecture.
+      await attendre(DELAI - 1)
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+      expect(onSuivant).not.toHaveBeenCalled()
+      await attendre(1)
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+      // Le cartouche n'est pas encore a jour (il lui reste l'etape b a faire
+      // lire) : rien n'est parti au moteur.
+      expect(onSuivant).not.toHaveBeenCalled()
+      // Le bout des etapes connues, atteint tout seul : le cartouche entre en
+      // attente et acquitte, exactement comme au clic.
+      await attendre(DELAI)
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      expect(document.querySelector('.deroule-attente')).not.toBeNull()
+    })
+
+    it('ne bouge pas tout seul sans avance auto, meme apres plusieurs delais', async () => {
+      const onSuivant = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          delaiAvanceMs={DELAI}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      await attendre(DELAI * 4)
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+      expect(onSuivant).not.toHaveBeenCalled()
+    })
+
+    it('ne pose aucun minuteur pendant l attente de la suite', async () => {
+      // Au bout des etapes connues, il n'y a rien a avancer : un minuteur qui
+      // « validerait » l'attente ne ferait que rappeler avancer() dans le
+      // vide. On le prouve par le moteur : une seule trame acquittee, quel que
+      // soit le temps qui passe.
+      const onSuivant = vi.fn()
+      const onTerminer = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onSuivant={onSuivant}
+          onTerminer={onTerminer}
+        />
+      )
+      await attendreEtapes(2)
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      expect(vi.getTimerCount()).toBe(0)
+      await attendreEtapes(5)
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      expect(onTerminer).not.toHaveBeenCalled()
+    })
+
+    it('repart tout seul sur l etape que le moteur vient de produire', async () => {
+      // Le cartouche s'est mis en attente, le moteur a produit la suite : la
+      // sortie d'attente l'affiche, et le minuteur repart dessus.
+      const onSuivant = vi.fn()
+      const cartouche = (liste: EtapeDeroule[], trame: number) => (
+        <DeroulePhase
+          etapes={liste}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={trame}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(etapes, 11))
+      await attendreEtapes(2)
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      rerender(cartouche(troisEtapes, 12))
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+      expect(onSuivant).toHaveBeenCalledTimes(1)
+      await attendre(DELAI)
+      expect(onSuivant).toHaveBeenCalledTimes(2)
+    })
+
+    it('« Precedent » suspend l avance : l etape relue ne repart pas en avant', async () => {
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onTerminer={() => {}}
+        />
+      )
+      await attendre(DELAI)
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+      await attendre(DELAI * 4)
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    })
+
+    it('« Suivant » apres un « Precedent » relance l avance', async () => {
+      render(
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onTerminer={() => {}}
+        />
+      )
+      await attendre(DELAI)
+      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+      fireEvent.click(suivant())
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+      await attendre(DELAI)
+      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+    })
+
+    it('ne valide jamais le bilan de fin de phase tout seul', async () => {
+      // C'est le moment ou le joueur reprend la main : il doit le voir.
+      const onTerminer = vi.fn()
+      render(
+        <DeroulePhase
+          etapes={etapes}
+          identitePhase={3}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onTerminer={onTerminer}
+        />
+      )
+      await attendreEtapes(2)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      await attendreEtapes(5)
+      expect(aToiDeJouer()).toBeInTheDocument()
+      expect(onTerminer).not.toHaveBeenCalled()
+      fireEvent.click(aToiDeJouer())
+      expect(onTerminer).toHaveBeenCalledTimes(1)
+    })
+
+    it('ne valide jamais la chute d un heros tout seul', async () => {
+      // Le moment le plus important d'une partie ne defile pas comme les
+      // autres : « Continuer » attend un vrai clic.
+      const onTerminer = vi.fn()
+      const chute: EtapeDeroule[] = [
+        troisEtapes[0],
+        { ...troisEtapes[1], montant: 4, restant: 0, defaite: true },
+      ]
+      render(
+        <DeroulePhase
+          etapes={chute}
+          identitePhase={3}
+          phaseMechantEnCours
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onTerminer={onTerminer}
+        />
+      )
+      await attendre(DELAI)
+      expect(screen.getByRole('button', { name: /Continuer/i })).toBeInTheDocument()
+      await attendreEtapes(5)
+      expect(screen.getByRole('button', { name: /Continuer/i })).toBeInTheDocument()
+      expect(onTerminer).not.toHaveBeenCalled()
+    })
+
+    it('n avance pas pendant que le moteur pose une question au joueur', async () => {
+      // Le cartouche est replie, sans bouton : il n'a pas de minuteur non
+      // plus. Une fois la question resolue, il repart de la ou il en etait.
+      const cartouche = (questionAuJoueur: boolean) => (
+        <DeroulePhase
+          etapes={troisEtapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          questionAuJoueur={questionAuJoueur}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender } = render(cartouche(true))
+      await attendre(DELAI * 4)
+      rerender(cartouche(false))
+      expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+      await attendre(DELAI)
+      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
+    })
+
+    it('nettoie son minuteur au demontage', async () => {
+      const onSuivant = vi.fn()
+      const { unmount } = render(
+        <DeroulePhase
+          etapes={etapes}
+          identitePhase={3}
+          phaseMechantEnCours
+          trameRetenue={11}
+          avanceAuto
+          delaiAvanceMs={DELAI}
+          onSuivant={onSuivant}
+          onTerminer={() => {}}
+        />
+      )
+      unmount()
+      expect(vi.getTimerCount()).toBe(0)
+      await attendre(DELAI * 3)
+      expect(onSuivant).not.toHaveBeenCalled()
+    })
+  })
+
   describe('depliant de la regle', () => {
     const regle = () => screen.getByRole('button', { name: /la règle/i })
 

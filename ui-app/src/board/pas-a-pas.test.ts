@@ -184,13 +184,16 @@ describe('le recentrage', () => {
 describe('qui retient l’accusé de réception', () => {
   const degats = monde({ phase: 'Enemy Activation', prompt: 'Doom subit 3 dégât(s)' })
 
-  // Ex-« pas à pas » : desormais l'avance auto du mode detaille. Meme regle et
-  // memes quatre phases que la validation au clic ; c'est le minuteur de
-  // lecture, et non le clic, qui relache la trame.
-  it('attend le délai en detaille avec avance auto, sur les quatre phases', () => {
+  // « Avance toute seule » n'est PAS l'affaire du moteur : c'est le cartouche
+  // qui s'avance lui-meme (DeroulePhase, prop `avanceAuto`) et relache la
+  // trame par le meme chemin que le clic « Suivant ». Le moteur, lui, attend
+  // toujours ce relachement : il n'a plus d'horloge propre. Il en avait une
+  // (`attendre-delai`), et les deux divergeaient a la premiere etape : le
+  // joueur lisait la menace, le mechant et ses sbires avaient deja frappe.
+  it('ne rend jamais « attendre-delai » en detaille : l’avance auto ne le regarde pas', () => {
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('detaille', m, false, true)).toBe('attendre-delai')
+      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
     }
   })
 
@@ -202,21 +205,18 @@ describe('qui retient l’accusé de réception', () => {
     // « Suivant » du cartouche), pas un delai automatique.
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('detaille', m, false, false)).toBe('attendre-clic')
+      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
     }
   })
 
   // « Tout passer » ne vaut que pour LA phase en cours : sans ce drapeau, le
-  // joueur qui saute une phase les sauterait toutes. Vrai avec ou sans avance
-  // auto : « Tout passer » l'emporte sur les deux.
-  it('n’attend plus rien quand la phase a été sautée, avec ou sans avance auto', () => {
-    expect(decisionAccuse('detaille', degats, true, true)).toBe('immediat')
-    expect(decisionAccuse('detaille', degats, true, false)).toBe('immediat')
+  // joueur qui saute une phase les sauterait toutes.
+  it('n’attend plus rien quand la phase a été sautée', () => {
+    expect(decisionAccuse('detaille', degats, true)).toBe('immediat')
   })
 
   it('n’attend jamais en instantané, même en pleine phase du méchant', () => {
-    expect(decisionAccuse('instantane', degats, false, false)).toBe('immediat')
-    expect(decisionAccuse('instantane', degats, false, true)).toBe('immediat')
+    expect(decisionAccuse('instantane', degats, false)).toBe('immediat')
   })
 
   // Le filtre `evenementAMontrer` a été RETIRÉ, et c'est le cœur de la
@@ -234,7 +234,6 @@ describe('qui retient l’accusé de réception', () => {
       decisionAccuse(
         'detaille',
         monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' }),
-        false,
         false
       )
     ).toBe('attendre-clic')
@@ -243,21 +242,20 @@ describe('qui retient l’accusé de réception', () => {
   // Une trame sans prompt ni event_name ne dit rien du tout : elle est retenue
   // comme les autres, tant qu'elle appartient à la phase du méchant.
   it('retient une trame muette de la phase du méchant', () => {
-    expect(decisionAccuse('detaille', monde({ phase: 'Enemy Activation' }), false, false)).toBe(
+    expect(decisionAccuse('detaille', monde({ phase: 'Enemy Activation' }), false)).toBe(
       'attendre-clic'
     )
   })
 
   // Le monde n'est pas encore chargé : aucune phase, donc rien à retenir.
   it('ne retient rien sans monde', () => {
-    expect(decisionAccuse('detaille', undefined, false, false)).toBe('immediat')
+    expect(decisionAccuse('detaille', undefined, false)).toBe('immediat')
   })
 
   // Le tour du joueur ne doit JAMAIS être ralenti : c'est lui qui agit.
-  it('laisse filer le tour du joueur, avec ou sans avance auto', () => {
+  it('laisse filer le tour du joueur', () => {
     const tour = monde({ phase: 'Player 1 Turn', prompt: 'subit 3 dégât(s)' })
-    expect(decisionAccuse('detaille', tour, false, false)).toBe('immediat')
-    expect(decisionAccuse('detaille', tour, false, true)).toBe('immediat')
+    expect(decisionAccuse('detaille', tour, false)).toBe('immediat')
   })
 })
 

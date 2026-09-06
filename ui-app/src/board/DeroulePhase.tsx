@@ -34,7 +34,7 @@ import {
   titreEtape,
 } from './deroule-textes'
 import { t } from './langue'
-import { ecrireRegleDepliee, lireRegleDepliee } from './moteur'
+import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
 import { TraitCible } from './TraitCible'
 import { useDerouleScene } from './useDerouleScene'
 
@@ -82,6 +82,8 @@ export function DeroulePhase({
   questionAuJoueur = false,
   pvMaxParNom,
   trameRetenue,
+  avanceAuto = false,
+  delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
   onTerminer,
   onToutDerouler,
@@ -150,6 +152,26 @@ export function DeroulePhase({
    */
   trameRetenue?: number
   /**
+   * « Avance toute seule » (reglage du panneau Options, board.tsx) : chaque
+   * etape se valide d'elle-meme au bout de `delaiAvanceMs`, par la MEME
+   * fonction que le clic « Suivant », donc par le meme accuse de reception.
+   *
+   * C'est le CARTOUCHE qui tient cette horloge, et lui seul. Elle a d'abord
+   * ete tenue par le moteur (`attendre-delai`, un minuteur qui relachait la
+   * trame de lui-meme) pendant que le cartouche, lui, attendait des clics :
+   * deux horloges qui divergeaient a la premiere etape. Constate en partie
+   * reelle : le joueur lisait la menace, le mechant et ses sbires avaient
+   * deja frappe. Le moteur n'a plus aucune horloge propre.
+   *
+   * Ce que l'avance auto ne valide JAMAIS a la place du joueur : le bilan de
+   * fin de phase (c'est la qu'il reprend la main, il doit le voir) et la
+   * chute d'un heros (« Continuer »). Un « Precedent » la suspend jusqu'au
+   * prochain « Suivant », sans quoi l'etape relue repartirait aussitot.
+   */
+  avanceAuto?: boolean
+  /** Le temps de lire une etape avant qu'elle ne se valide seule (ms). */
+  delaiAvanceMs?: number
+  /**
    * L'accuse de reception : il autorise le moteur a poursuivre son rendu
    * (board.tsx le branche sur `avancerMaintenant`).
    *
@@ -192,6 +214,12 @@ export function DeroulePhase({
   // train de calculer la suite. Le cartouche reste alors affiche sur place et
   // n'annonce surtout pas la fin de la phase.
   const [enAttente, setEnAttente] = useState(false)
+  // Vrai juste apres un « Precedent » : suspend l'avance auto jusqu'au
+  // prochain « Suivant ». Sans cela, revenir en arriere ferait repartir
+  // l'etape relue en avant aussitot, et le bouton serait inutilisable. Ce
+  // motif a deja vecu dans ce fichier (enchainement des etapes techniques,
+  // retire avec elles) : il revient pour la meme raison.
+  const [suspendu, setSuspendu] = useState(false)
 
   // La derniere trame pour laquelle un accuse de reception est parti. C'est LA
   // garde contre la rafale d'accuses : l'etat du cartouche se recalcule
@@ -231,10 +259,16 @@ export function DeroulePhase({
   // moteur repartent de zero avec une nouvelle partie, et un numero deja vu
   // ferait sauter l'accuse de la trame homonyme, donc gelerait la phase
   // jusqu'au filet anti-blocage.
+  //
+  // `suspendu` aussi : un « Precedent » sur la phase precedente le met a vrai,
+  // et si elle se termine autrement qu'en revalidant jusqu'au bout, rien
+  // d'autre ne le redescend. La premiere etape de la phase suivante
+  // n'avancerait alors plus toute seule.
   useEffect(() => {
     setIndex(0)
     setTermine(false)
     setEnAttente(false)
+    setSuspendu(false)
     derniereTrameAcquittee.current = undefined
   }, [identitePhase])
 
@@ -264,6 +298,9 @@ export function DeroulePhase({
     // Partie finie : le cartouche n'est plus a l'ecran, sa touche Entree ne
     // doit pas continuer a relacher le moteur derriere l'ecran de fin.
     if (partieFinie) return
+    // Un « Suivant » (clic, clavier, ou le minuteur de l'avance auto lui-meme)
+    // leve la suspension posee par « Precedent ».
+    setSuspendu(false)
     // Aucun accuse de reception ici, et c'est tout le sujet de cette reprise :
     // valider l'etape 1 sur 4 relachait le moteur, qui repartait produire la
     // suite pendant que le joueur lisait. L'accuse ne part que lorsque le
@@ -304,8 +341,20 @@ export function DeroulePhase({
     // « Precedent » n'aurait aucun effet visible. La suite reste atteignable
     // au bouton « Suivant », comme apres tout « Precedent ».
     setEnAttente(false)
+    setSuspendu(true)
     setIndex(index - 1)
   }
+
+  // La version la plus recente de `avancer`, pour le minuteur de l'avance auto
+  // (plus bas). `avancer` est recreee a chaque rendu et lit `index`,
+  // `etapesAffichees` et `phaseMechantEnCours` du rendu courant : un minuteur
+  // qui la capturerait a l'armement jouerait, a l'echeance, sur un etat vieux
+  // de tout le delai de lecture (une etape arrivee entre-temps, par exemple).
+  // La ref donne au minuteur la fonction du DERNIER rendu, sans que l'identite
+  // de `avancer` ait a figurer dans les dependances de l'effet, ce qui le
+  // relancerait a chaque trame.
+  const avancerRef = useRef(avancer)
+  avancerRef.current = avancer
 
   // Sortie d'attente. Deux issues, et deux seulement :
   //  - une etape de plus arrive : on avance dessus TOUT SEUL. Le joueur a deja
@@ -458,6 +507,48 @@ export function DeroulePhase({
   // en dependent, et que la sortie `return null` qui l'applique vient bien plus
   // bas : un hook place apres elle ferait tomber tout le plateau.
   const visible = Boolean(etape) && !termine && !partieFinie
+
+  // Les etapes qui attendent un VRAI clic, avance auto ou pas : le bilan de
+  // fin de phase (le joueur reprend la main, il doit le voir) et la chute
+  // d'un heros (le moment le plus important d'une partie ne defile pas). Le
+  // bilan se reconnait a son temps : `avecBilan` est le seul a le produire.
+  const etapeAttendUnClic = etape?.temps === 'bilan' || Boolean(etape?.defaite)
+
+  // L'HORLOGE de l'avance auto, la seule de toute la phase.
+  //
+  // Un minuteur par etape affichee, nettoye au demontage et a chaque
+  // changement d'etape (c'est `etape?.cle` dans les dependances qui le
+  // re-arme, pas l'objet `etape`, reconstruit a chaque trame du moteur : en
+  // dependre remettrait le minuteur a zero plus vite qu'il n'arrive a
+  // echeance, et rien n'avancerait jamais). Sans ce nettoyage, deux minuteurs
+  // se superposeraient et une etape serait sautee.
+  //
+  // Aucun minuteur :
+  //  - sans avance auto, evidemment ;
+  //  - hors ecran (`visible`) : rien a avancer ;
+  //  - `suspendu` : le joueur relit, apres un « Precedent » ;
+  //  - `enAttente` : le cartouche est au bout de ce qu'il sait et attend que
+  //    le moteur produise la suite. Il n'y a rien a avancer, et la sortie
+  //    d'attente affichera d'elle-meme l'etape qui arrive, ce qui re-armera
+  //    le minuteur dessus ;
+  //  - `questionAuJoueur` : le cartouche est replie devant la question du
+  //    moteur, il n'a plus de bouton, donc plus d'horloge non plus ;
+  //  - `etapeAttendUnClic` : voir ci-dessus.
+  useEffect(() => {
+    if (!avanceAuto || !visible || suspendu || enAttente || questionAuJoueur) return
+    if (etapeAttendUnClic) return
+    const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvanceMs)
+    return () => window.clearTimeout(minuteur)
+  }, [
+    avanceAuto,
+    delaiAvanceMs,
+    etape?.cle,
+    visible,
+    suspendu,
+    enAttente,
+    questionAuJoueur,
+    etapeAttendUnClic,
+  ])
 
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait

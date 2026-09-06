@@ -833,7 +833,6 @@ function usePartieEnCours(playerId: number) {
     reconnecter: () => moteur.reconnecterMaintenant(),
     reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
     reglerDelaiPasAPas: (ms: number) => moteur.setDelaiPasAPas(ms),
-    reglerAvanceAuto: (actif: boolean) => moteur.setAvanceAuto(actif),
     // Branche sur le cartouche du deroule detaille (DeroulePhase, plus bas) :
     // c'est lui qui relache desormais le moteur, etape par etape.
     // CouchePasAPas ne l'appelle plus (voir plus bas), mais le clic-suite y
@@ -1570,7 +1569,6 @@ function PagePartie({
     reconnecter,
     reglerModePhase,
     reglerDelaiPasAPas,
-    reglerAvanceAuto,
     avancerPasAPas,
     basculerPausePasAPas,
     passerToutLaPhase,
@@ -2039,7 +2037,9 @@ function PagePartie({
 
   // Avance auto : reglage independant (case a cocher du panneau Options), qui
   // ne veut rien dire hors du mode « detaille ». Remplace l'ancien mode a part
-  // entiere « pas-a-pas ».
+  // entiere « pas-a-pas ». Le moteur ne le connait PAS : c'est le cartouche
+  // du deroule (DeroulePhase, plus bas) qui s'avance tout seul, et qui
+  // relache le moteur par le meme chemin que le clic « Suivant ».
   const [avanceAuto, setAvanceAuto] = useState(lireAvanceAuto)
   const basculerAvanceAuto = useCallback(() => {
     setAvanceAuto((a) => {
@@ -2060,9 +2060,6 @@ function PagePartie({
   useEffect(() => {
     reglerModePhase(modePhase)
   }, [modePhase, reglerModePhase])
-  useEffect(() => {
-    reglerAvanceAuto(avanceAuto)
-  }, [avanceAuto, reglerAvanceAuto])
   useEffect(() => {
     reglerDelaiPasAPas(delaiPasAPas)
   }, [delaiPasAPas, reglerDelaiPasAPas])
@@ -2466,6 +2463,13 @@ function PagePartie({
             // cartouche de quoi n'acquitter qu'UNE fois par trame, plutot que
             // de se fier a un booleen qui se recalcule sans cesse.
             trameRetenue={etat.trameRetenue}
+            // « Avance toute seule » et sa vitesse (panneau Options) : c'est le
+            // cartouche qui tient cette horloge, pas le moteur. Il s'avance
+            // par la meme fonction que le clic « Suivant », donc l'accuse
+            // ci-dessous part par le meme chemin, et le moteur ne peut pas
+            // partir devant.
+            avanceAuto={avanceAuto}
+            delaiAvanceMs={delaiPasAPas}
             // L'accuse de reception. Il ne part plus a chaque « Suivant » : le
             // cartouche le declenche quand il n'a plus rien a montrer, donc
             // quand le joueur a valide tout ce qu'il sait deja. onTerminer
