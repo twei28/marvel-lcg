@@ -31,7 +31,7 @@ import {
   PHASES_DU_MECHANT_ORDONNEES,
   type PhaseDuMechant,
 } from './moteur'
-import type { FaitActivation, FaitMechant, World, WorldCard } from './world'
+import type { FaitActivationResolue, FaitMechant, World, WorldCard } from './world'
 
 /**
  * Les étapes de la phase du méchant, dans l'ordre de la carte de référence.
@@ -113,9 +113,9 @@ type Ligne = {
  * les envoie sans phase : elles retournent alors à l'étape des activations,
  * qui reste le cas de très loin le plus fréquent.
  */
-function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitActivation[] {
+function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitActivationResolue[] {
   return faits.filter(
-    (fait): fait is FaitActivation =>
+    (fait): fait is FaitActivationResolue =>
       // Les ACTIVATIONS seulement. Le moteur inscrit aussi la menace, la
       // distribution et les révélations depuis la tâche A2 : le bilan, lui,
       // continue de les déduire du journal (`lignesDeLEtape`), et verser les
@@ -123,6 +123,13 @@ function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitActivation[] {
       // cartouche, lui, lit tout depuis les faits (voir deroule-phase.ts) ;
       // c'est le récap qui reste à convertir.
       (fait.genre === 'attaque' || fait.genre === 'manigance') &&
+      // Les activations RÉSOLUES seulement. Depuis la tâche A3, une activation
+      // s'annonce avant de se résoudre : ce récap est un bilan d'APRÈS-phase,
+      // il ne raconte que ce qui a eu lieu. Une intention y aurait paru comme
+      // un coup à zéro dégât, et une activation annulée aurait compté pour un
+      // coup qui n'a jamais été porté. (Un fait sans `etat` est une résolution :
+      // c'est tout ce que le moteur savait produire avant les deux temps.)
+      (fait.etat === undefined || fait.etat === 'resolu') &&
       (fait.phase ?? 'Enemy Activation') === phase
   )
 }
@@ -377,7 +384,7 @@ function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
  * d'une même résolution. Quand le journal est là, il remplace la déduction —
  * il ne la complète pas, sinon chaque activation paraîtrait deux fois.
  */
-function lignesDuMoteur(faits: FaitActivation[], noms: Noms): Ligne[] {
+function lignesDuMoteur(faits: FaitActivationResolue[], noms: Noms): Ligne[] {
   return faits.map((fait, index) => ({
     cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
     genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',

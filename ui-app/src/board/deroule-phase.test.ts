@@ -14,7 +14,8 @@ import {
   type EtapeDeroule,
 } from './deroule-phase'
 import type {
-  FaitActivation,
+  FaitActivationAnnonce,
+  FaitActivationResolue,
   FaitDistribution,
   FaitMechant,
   FaitMenace,
@@ -22,7 +23,7 @@ import type {
 } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
-const attaque = (extra: Partial<FaitActivation> = {}): FaitActivation => ({
+const attaque = (extra: Partial<FaitActivationResolue> = {}): FaitActivationResolue => ({
   genre: 'attaque',
   phase: 'Enemy Activation',
   auteur: 'Ultron',
@@ -997,5 +998,135 @@ describe('la defaite d un heros', () => {
     it('laisse une liste vide vide', () => {
       expect(arreterSurDefaite([])).toEqual([])
     })
+  })
+})
+
+// ---------------------------------------------------------------------- A3 --
+// L'ANNONCE avant la resolution : une activation ennemie produit deux faits.
+//
+// Avant la tache A3, une etape naissait d'un fait que le moteur avait DEJA
+// resolu (`subi`, `defense`, `restant`) : il n'existait a aucun moment un etat
+// « le mechant va attaquer » que le cartouche puisse montrer, et la fenetre ou
+// le joueur peut defendre ou repondre passait sans qu'il la voie venir
+// (constat F1 de l'audit du 06/09/2026).
+describe("l'annonce d'une activation, puis sa resolution", () => {
+  const annonce = (extra: Partial<FaitActivationAnnonce> = {}): FaitActivationAnnonce => ({
+    genre: 'attaque',
+    etat: 'annonce',
+    activation_id: 1,
+    phase: 'Enemy Activation',
+    round_id: 1,
+    auteur: 'Klaw',
+    auteur_id: 50,
+    cible: 'Colossus',
+    cible_id: 12,
+    base: 4,
+    ...extra,
+  })
+
+  const resolution = (extra: Partial<FaitActivationResolue> = {}): FaitActivationResolue =>
+    attaque({
+      etat: 'resolu',
+      activation_id: 1,
+      round_id: 1,
+      auteur: 'Klaw',
+      auteur_id: 50,
+      cible: 'Colossus',
+      cible_id: 12,
+      base: 4,
+      boost: 0,
+      defense: 0,
+      inflige: 4,
+      subi: 4,
+      restant: 8,
+      ...extra,
+    })
+
+  const activationsDe = (etapes: EtapeDeroule[]) =>
+    etapes.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')
+
+  it("montre l'intention comme une etape, sans montant ni compteur", () => {
+    const etapes = activationsDe(etapesDeroule([annonce()], [], 1, new Set([50])))
+    expect(etapes).toHaveLength(1)
+    expect(etapes[0]?.etat).toBe('annonce')
+    expect(etapes[0]?.auteurNom).toBe('Klaw')
+    expect(etapes[0]?.cibleNom).toBe('Colossus')
+    // La valeur IMPRIMEE, et rien de ce qui n'existe pas encore.
+    expect(etapes[0]?.valeurAnnoncee).toBe(4)
+    expect(etapes[0]?.montant).toBeUndefined()
+    expect(etapes[0]?.restant).toBeUndefined()
+    expect(etapes[0]?.boosts).toEqual([])
+  })
+
+  // LE point de la tache : l'etape se COMPLETE, elle ne se remplace pas. Une
+  // cle ou un index qui bougeraient feraient reculer le joueur d'une etape a
+  // chaque coup resolu.
+  it("complete l'etape sans changer ni sa cle ni son index quand la resolution arrive", () => {
+    const avant = etapesDeroule([annonce()], [], 1, new Set([50]))
+    const apres = etapesDeroule([resolution()], [], 1, new Set([50]))
+    const iAvant = avant.findIndex((e) => e.etat === 'annonce')
+    const iApres = apres.findIndex((e) => e.etat === 'resolu')
+    expect(iAvant).toBeGreaterThanOrEqual(0)
+    expect(iApres).toBe(iAvant)
+    expect(apres[iApres]?.cle).toBe(avant[iAvant]?.cle)
+    expect(apres[iApres]?.montant).toBe(4)
+    expect(apres[iApres]?.restant).toBe(8)
+  })
+
+  // La cle vient de l'identifiant d'activation, pas d'un rang dans un tableau
+  // filtre : c'est ce qui la rend insensible a ce que la phase produit par
+  // ailleurs entre les deux temps.
+  it("tire la cle de l'identifiant d'activation", () => {
+    const [etape] = activationsDe(etapesDeroule([annonce({ activation_id: 7 })], [], 1, new Set([50])))
+    expect(etape?.cle).toContain('7')
+    const [autre] = activationsDe(etapesDeroule([annonce({ activation_id: 8 })], [], 1, new Set([50])))
+    expect(autre?.cle).not.toBe(etape?.cle)
+  })
+
+  it("garde l'ancienne cle pour un fait sans identifiant (moteur anterieur)", () => {
+    const ancien = attaque({ round_id: 1, auteur_id: 50 })
+    const [etape] = activationsDe(etapesDeroule([ancien], [], 1, new Set([50])))
+    expect(etape?.cle).toBe('fait:0:50')
+    // Un fait sans `etat` est une RESOLUTION : c'est ce qu'il a toujours ete.
+    expect(etape?.etat).toBe('resolu')
+    expect(etape?.montant).toBe(5)
+  })
+
+  it("marque l'activation annulee, sans montant", () => {
+    const [etape] = activationsDe(
+      etapesDeroule([annonce({ etat: 'annule' })], [], 1, new Set([50]))
+    )
+    expect(etape?.etat).toBe('annule')
+    expect(etape?.montant).toBeUndefined()
+    expect(etape?.valeurAnnoncee).toBe(4)
+  })
+
+  // Une annonce n'a rien coute : elle ne doit rien peser dans le bilan de fin
+  // de phase, sans quoi la meme activation compterait deux fois.
+  it('ne fait entrer ni une annonce ni une annulation dans le bilan', () => {
+    const etapes = etapesDeroule(
+      [annonce({ activation_id: 1 }), annonce({ activation_id: 2, etat: 'annule' })],
+      [],
+      1,
+      new Set([50])
+    )
+    expect(lignesBilan(etapes)).toEqual([])
+  })
+
+  it('ne compte le coup qu\'une fois quand la resolution a remplace son annonce', () => {
+    const etapes = etapesDeroule([resolution()], [], 1, new Set([50]))
+    expect(lignesBilan(etapes)).toEqual([
+      { cle: 'degats:Colossus', genre: 'degats', cibleNom: 'Colossus', total: 4, restant: 8, plafond: undefined },
+    ])
+  })
+
+  // Une activation annoncee ne peut pas porter la defaite : rien n'a encore
+  // ete subi. Annoncer une chute qui n'a pas eu lieu serait le pire des faux
+  // positifs (voir EtapeDeroule.defaite).
+  it('ne marque jamais la defaite sur une annonce', () => {
+    const [etape] = activationsDe(
+      etapesDeroule([annonce({ cible_id: 12 })], [], 1, new Set([50]), new Set([12]))
+    )
+    expect(etape?.defaite).toBeUndefined()
   })
 })

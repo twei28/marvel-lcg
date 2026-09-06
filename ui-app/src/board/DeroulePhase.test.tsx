@@ -2005,3 +2005,144 @@ describe('le bilan de fin de phase', () => {
     })
   })
 })
+
+// ---------------------------------------------------------------------- A3 --
+// L'ANNONCE avant la resolution, et le cout en clics qu'elle ne doit PAS
+// ajouter.
+//
+// « Deux temps SEULEMENT quand on peut vraiment agir » (decision 7 de la
+// spec) : sans question posee au joueur, l'etape ne doit etre vue qu'une fois,
+// complete. C'est le mecanisme d'accuse qui en decide — s'il faisait attendre
+// un clic sur l'intention, le joueur cliquerait deux fois par activation.
+describe("l'annonce d'une activation", () => {
+  const annonce: EtapeDeroule = {
+    cle: 'activation:1',
+    temps: 'mechant',
+    titre: 'attaque',
+    regle: 'regle:activations',
+    etat: 'annonce',
+    carteId: 50,
+    cibleId: 12,
+    auteurNom: 'Klaw',
+    cibleNom: 'Colossus',
+    valeurAnnoncee: 4,
+    boosts: [],
+  }
+  // LA MEME etape, completee : meme cle, meme place dans la liste.
+  const resolue: EtapeDeroule = {
+    ...annonce,
+    etat: 'resolu',
+    valeurAnnoncee: undefined,
+    montant: 4,
+    restant: 8,
+  }
+
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it("dit l'intention au futur proche, avec sa valeur imprimee", () => {
+    render(<DeroulePhase etapes={[annonce]} onTerminer={() => {}} />)
+    expect(screen.getByText('Klaw va attaquer Colossus')).toBeInTheDocument()
+    expect(screen.getByText('→ 4 dégâts annoncés')).toBeInTheDocument()
+  })
+
+  // Le cas central : l'etape se COMPLETE sous les yeux du joueur. Il ne recule
+  // pas d'une etape, il n'en valide pas une de plus.
+  it("complete l'etape sur place, sans faire bouger le joueur", () => {
+    const { rerender } = render(
+      <DeroulePhase etapes={[annonce]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Klaw va attaquer Colossus')).toBeInTheDocument()
+    rerender(
+      <DeroulePhase etapes={[resolue]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
+    expect(screen.queryByText('Klaw va attaquer Colossus')).not.toBeInTheDocument()
+    expect(screen.getByText('→ 4 dégâts')).toBeInTheDocument()
+  })
+
+  // Le test que la decision 7 reclame mot pour mot : UN accuse, pas deux.
+  it("acquitte l'intention tout de suite quand aucune question n'est posee", () => {
+    const onSuivant = vi.fn()
+    const cartouche = (liste: EtapeDeroule[], trameRetenue: number | undefined) => (
+      <DeroulePhase
+        etapes={liste}
+        identitePhase={3}
+        phaseMechantEnCours
+        trameRetenue={trameRetenue}
+        onSuivant={onSuivant}
+        onTerminer={() => {}}
+      />
+    )
+    // Le moteur retient la trame ou il vient d'annoncer l'attaque. Le joueur
+    // n'a rien a y faire : le cartouche dit « reçu » sans attendre un clic.
+    const { rerender } = render(cartouche([annonce], 11))
+    expect(onSuivant).toHaveBeenCalledTimes(1)
+    // Le moteur resout et retient la trame suivante : LA, il attend le joueur.
+    rerender(cartouche([annonce], undefined))
+    rerender(cartouche([resolue], 12))
+    expect(onSuivant).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
+    // Un seul clic pour toute l'activation, comme avant les deux temps.
+    fireEvent.click(suivant())
+    expect(onSuivant).toHaveBeenCalledTimes(2)
+  })
+
+  it("ne dit pas « tu peux défendre » quand le moteur ne pose aucune question", () => {
+    render(<DeroulePhase etapes={[annonce]} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(screen.queryByText(/tu peux défendre/i)).not.toBeInTheDocument()
+  })
+
+  // Le second temps, celui qui compte : le moteur attend une reponse, et le
+  // cartouche dit ce qui va arriver pendant qu'on peut encore s'y opposer.
+  it("dit la fenetre de reponse quand le moteur pose une question", () => {
+    render(
+      <DeroulePhase etapes={[annonce]} phaseMechantEnCours questionAuJoueur onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Klaw va attaquer Colossus')).toBeInTheDocument()
+    expect(screen.getByText('tu peux défendre ou répondre')).toBeInTheDocument()
+    // Pas de bouton : c'est ailleurs qu'on repond, et « La suite arrive… »
+    // serait un mensonge (c'est le moteur qui attend).
+    expect(screen.queryByRole('button', { name: /Suivant/i })).not.toBeInTheDocument()
+  })
+
+  // Sur une etape ordinaire, le cartouche se replie comme avant : la fenetre
+  // de reponse ne s'invite pas partout.
+  it("garde le repli ordinaire devant une question sur une etape resolue", () => {
+    render(
+      <DeroulePhase etapes={[resolue]} phaseMechantEnCours questionAuJoueur onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Le moteur attend ta réponse')).toBeInTheDocument()
+    expect(screen.queryByText(/tu peux défendre/i)).not.toBeInTheDocument()
+  })
+
+  it("dit que l'attaque n'a pas lieu quand l'activation est annulee", () => {
+    const annulee: EtapeDeroule = { ...annonce, etat: 'annule' }
+    render(<DeroulePhase etapes={[annulee]} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(screen.getByText("L'attaque n'a pas lieu.")).toBeInTheDocument()
+  })
+
+  // L'avance automatique ne doit pas depasser une etape qui n'a pas fini de se
+  // completer : le joueur manquerait le seul moment ou elle dit quelque chose.
+  it("ne fait pas defiler une intention a l'avance auto", () => {
+    vi.useFakeTimers()
+    try {
+      render(
+        <DeroulePhase
+          etapes={[annonce, { ...resolue, cle: 'activation:2', auteurNom: 'Drone' }]}
+          phaseMechantEnCours
+          avanceAuto
+          delaiAvanceMs={50}
+          onTerminer={() => {}}
+        />
+      )
+      act(() => {
+        vi.advanceTimersByTime(500)
+      })
+      expect(screen.getByText('Klaw va attaquer Colossus')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

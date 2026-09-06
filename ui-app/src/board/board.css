@@ -3082,6 +3082,36 @@
     color: #ffd45a;
   }
 
+  /* « tu peux défendre ou répondre » : la fenetre de reponse, sous une etape
+     d'INTENTION (« Klaw va attaquer Colossus »). Meme jaune que la mention
+     ci-dessus — c'est la meme chose, en plus precis : le moteur attend, et on
+     dit ce qu'on peut faire pendant qu'il attend. Replie, le cartouche garde
+     donc ici un titre et son chiffre, contrairement aux autres etapes. */
+  .deroule-fenetre {
+    margin: 4px 0 0;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffd45a;
+  }
+
+  .deroule-phase.est-replie .deroule-titre {
+    margin: 0;
+  }
+
+  .deroule-phase.est-replie .deroule-resultat {
+    margin: 2px 0 0;
+  }
+
+  /* « L'attaque n'a pas lieu. » : l'activation annoncee qui n'a pas eu lieu.
+     Grise et en italique, comme les autres mentions du cartouche qui disent
+     qu'il ne se passera rien de plus. */
+  .deroule-annulee {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.7);
+  }
+
   .salon-fil {
     max-height: min(46dvh, 360px);
     overflow-y: auto;

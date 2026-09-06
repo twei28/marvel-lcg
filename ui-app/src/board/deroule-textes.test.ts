@@ -10,8 +10,10 @@ import {
   compteurLigneBilan,
   regleEtape,
   resultatEtape,
+  texteActivationAnnulee,
   texteBilanVide,
   texteDefaite,
+  texteFenetreReponse,
   texteLigneBilan,
   titreEtape,
 } from './deroule-textes'
@@ -274,5 +276,62 @@ describe('les phrases du bilan', () => {
 
   it('se tait plutot que de nommer un heros qu il ne connait pas', () => {
     expect(texteDefaite(etape({ defaite: true, cibleNom: undefined }))).toBe('')
+  })
+})
+
+// ---------------------------------------------------------------------- A3 --
+describe("les deux temps d'une activation", () => {
+  const annonce = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule =>
+    etape({ etat: 'annonce', valeurAnnoncee: 4, auteurNom: 'Klaw', cibleNom: 'Colossus', ...extra })
+
+  it("dit l'intention au futur proche, jamais au passe", () => {
+    expect(titreEtape(annonce())).toBe('Klaw va attaquer Colossus')
+    expect(titreEtape(annonce({ titre: 'manigance', cibleNom: 'L’Effraction !' }))).toBe(
+      'Klaw va comploter contre L’Effraction !'
+    )
+  })
+
+  it("montre la valeur imprimee, dite pour ce qu'elle est", () => {
+    expect(resultatEtape(annonce())).toBe('→ 4 dégâts annoncés')
+    expect(resultatEtape(annonce({ valeurAnnoncee: 1 }))).toBe('→ 1 dégât annoncé')
+    expect(resultatEtape(annonce({ titre: 'manigance', valeurAnnoncee: 2 }))).toBe(
+      '→ 2 menaces annoncées'
+    )
+  })
+
+  // L'annonce ne doit JAMAIS parler comme une resolution : sans cela, le
+  // joueur lirait « → 4 dégâts » sur un coup qui n'a pas encore eu lieu, et il
+  // n'apprendrait rien de plus quand il aurait lieu.
+  it("ne montre aucun compteur de cible sur une annonce", () => {
+    expect(compteurEtape(annonce())).toBe('')
+  })
+
+  it("dit que l'activation annulee n'a pas lieu, et garde son titre d'annonce", () => {
+    const annulee = annonce({ etat: 'annule' })
+    expect(titreEtape(annulee)).toBe('Klaw va attaquer Colossus')
+    expect(texteActivationAnnulee(annulee)).toBe("L'attaque n'a pas lieu.")
+    expect(texteActivationAnnulee(annonce({ etat: 'annule', titre: 'manigance' }))).toBe(
+      "La manigance n'a pas lieu."
+    )
+    // Plus rien a attendre : la valeur annoncee ne s'affiche plus.
+    expect(resultatEtape(annulee)).toBe('')
+  })
+
+  it('ne dit rien sur une etape qui n est pas annulee', () => {
+    expect(texteActivationAnnulee(etape({ etat: 'resolu', montant: 4 }))).toBe('')
+    expect(texteActivationAnnulee(annonce())).toBe('')
+  })
+
+  it('a une phrase pour la fenetre de reponse', () => {
+    expect(texteFenetreReponse()).toBe('tu peux défendre ou répondre')
+  })
+
+  // La resolution, elle, ne change pas d'un mot : c'est ce que le joueur lit
+  // depuis toujours, et l'annonce ne doit rien lui prendre.
+  it('laisse la resolution intacte', () => {
+    const resolue = etape({ etat: 'resolu', montant: 4, restant: 8 })
+    expect(titreEtape(resolue)).toBe('Ultron attaque Shuri')
+    expect(resultatEtape(resolue)).toBe('→ 4 dégâts')
+    expect(compteurEtape(resolue)).toBe('8')
   })
 })

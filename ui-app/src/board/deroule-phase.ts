@@ -20,6 +20,7 @@ import type { EntreeHistorique } from './HistoriquePartie'
 import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
 import type {
   FaitActivation,
+  FaitActivationResolue,
   FaitDistribution,
   FaitMechant,
   FaitMenace,
@@ -82,6 +83,15 @@ const PHASES_CONNUES: ReadonlySet<string> = new Set<string>(PHASES_DU_MECHANT_OR
 // et c'est exactement ce qu'on veut — un genre oublie se voit a la compilation.
 function estActivation(fait: FaitMechant): fait is FaitActivation {
   return fait.genre === 'attaque' || fait.genre === 'manigance'
+}
+/**
+ * Une activation RESOLUE : le coup a eu lieu et le moteur en connait le
+ * resultat. Un fait sans `etat` en est une — c'est tout ce que le moteur
+ * savait produire avant les deux temps, et c'est ce que les sauvegardes
+ * anterieures portent.
+ */
+function estResolue(fait: FaitActivation): fait is FaitActivationResolue {
+  return fait.etat === undefined || fait.etat === 'resolu'
 }
 function estMenace(fait: FaitMechant): fait is FaitMenace {
   return fait.genre === 'menace'
@@ -186,6 +196,29 @@ export type EtapeDeroule = {
    */
   plafond?: number
   boosts: BoostDeroule[]
+  /**
+   * Ou en est une etape d'ACTIVATION, et rien d'autre : les autres temps
+   * (menace, distribution, revelation) n'ont qu'un seul etat et n'en portent
+   * pas.
+   *
+   *  - `annonce` : le mechant VA frapper. C'est la fenetre ou le joueur peut
+   *    encore defendre ou jouer une interruption. L'etape ne porte alors que
+   *    ce qui est connu d'avance (`valeurAnnoncee`), jamais un resultat ;
+   *  - `resolu` : le coup a eu lieu, l'etape porte son montant et ses boosts.
+   *    La MEME etape, sous la meme cle : elle se complete sous les yeux du
+   *    joueur au lieu de le faire reculer ;
+   *  - `annule` : l'activation annoncee n'a pas eu lieu (un « ... instead »
+   *    l'a remplacee, la cible a quitte la table). Sans cet etat, le cartouche
+   *    resterait sur « va attaquer » jusqu'a la fin de la phase.
+   */
+  etat?: 'annonce' | 'resolu' | 'annule'
+  /**
+   * La valeur IMPRIMEE annoncee, avant boosts et avant defense. Portee par les
+   * seules etapes d'activation annoncees ou annulees : sur une resolution,
+   * c'est `montant` qui dit ce qui a ete encaisse, et afficher les deux
+   * ferait lire deux nombres pour un seul coup.
+   */
+  valeurAnnoncee?: number
   /**
    * Ce coup a mis un HEROS a terre. Absent partout ailleurs, y compris sur
    * l'etape ordinaire qui l'a precede.
@@ -382,13 +415,17 @@ export function etapesDeroule(
     // l'AUTEUR du coup, pas de son nom de phase, puisque le vilain et ses
     // sbires s'activent tous deux pendant « Enemy Activation ».
     const temps = tempsDe(fait.phase) ?? (mechantIds.has(fait.auteur_id) ? 'mechant' : 'sbires')
-    // `restant` vaut `null` quand la cible n'a pas de compteur : on le ramene a
-    // l'absence, seul etat que l'affichage sait taire.
-    const restant = fait.restant ?? undefined
-    // Les deux accords exiges par `EtapeDeroule.defaite`, et rien de moins.
-    const defaite = restant !== undefined && restant <= 0 && herosVaincusIds.has(fait.cible_id)
-    etapes.push({
-      cle: `fait:${index}:${fait.auteur_id}`,
+    // L'IDENTITE de l'etape. Elle vient de l'identifiant d'activation quand le
+    // moteur en donne un : c'est ce qui permet a l'intention et a sa
+    // resolution d'etre LA MEME etape, qui se complete sous les yeux du
+    // joueur. Sans identifiant (moteur ou sauvegarde anterieurs), on garde
+    // l'ancienne identite pour ne rien casser de ce qui existe deja.
+    const cle =
+      fait.activation_id !== undefined
+        ? `activation:${fait.activation_id}`
+        : `fait:${index}:${fait.auteur_id}`
+    const commun = {
+      cle,
       temps,
       titre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
       regle: temps === 'mechant' || temps === 'sbires' ? 'regle:activations' : 'regle:revelation',
@@ -399,6 +436,30 @@ export function etapesDeroule(
       // d'autre n'affiche.
       auteurNom: nomNettoye(fait.auteur),
       cibleNom: nomNettoye(fait.cible),
+    }
+
+    // L'INTENTION (ou son annulation) : le coup n'a pas eu lieu, et l'etape ne
+    // doit donc porter AUCUN resultat. Pas de montant, pas de compteur, pas de
+    // boost (les cartes ne sont meme pas retournees), et surtout pas de
+    // defaite : rien n'a encore ete subi.
+    if (!estResolue(fait)) {
+      etapes.push({
+        ...commun,
+        etat: fait.etat,
+        valeurAnnoncee: fait.base,
+        boosts: [],
+      })
+      return
+    }
+
+    // `restant` vaut `null` quand la cible n'a pas de compteur : on le ramene a
+    // l'absence, seul etat que l'affichage sait taire.
+    const restant = fait.restant ?? undefined
+    // Les deux accords exiges par `EtapeDeroule.defaite`, et rien de moins.
+    const defaite = restant !== undefined && restant <= 0 && herosVaincusIds.has(fait.cible_id)
+    etapes.push({
+      ...commun,
+      etat: 'resolu',
       // `subi` et non `inflige` : voir le commentaire de `montant`.
       montant: fait.subi,
       restant,

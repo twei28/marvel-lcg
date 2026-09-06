@@ -27,9 +27,11 @@ import {
   compteurLigneBilan,
   regleEtape,
   resultatEtape,
+  texteActivationAnnulee,
   texteArretDefaite,
   texteBilanVide,
   texteDefaite,
+  texteFenetreReponse,
   texteLigneBilan,
   titreEtape,
 } from './deroule-textes'
@@ -426,12 +428,31 @@ export function DeroulePhase({
   //    de nouveau n'est arrive depuis. Si une etape est arrivee entre-temps,
   //    `index + 1 < etapesAffichees.length` et la sortie d'attente ci-dessus
   //    va l'afficher : on n'est PAS a jour, et l'ordre des effets n'y change
-  //    rien puisque le calcul se fait sur les valeurs de ce rendu-ci.
+  //    rien puisque le calcul se fait sur les valeurs de ce rendu-ci ;
+  //  - une ANNONCE sur laquelle le joueur ne peut rien : voir juste dessous.
+  //
+  // DEUX TEMPS SEULEMENT QUAND ON PEUT VRAIMENT AGIR (decision 7 de la spec).
+  // Une etape d'intention n'est pas une etape a valider : c'est la meme etape
+  // que sa resolution, montree avant qu'elle se complete. Si on la faisait
+  // acquitter comme les autres, le joueur cliquerait DEUX fois par activation
+  // — une fois pour laisser le mechant frapper, une fois pour lire le
+  // resultat — ce que la decision refuse expressement.
+  //
+  // On acquitte donc tout de suite : le moteur resout, le fait resolu remplace
+  // le fait d'intention sous la meme cle, et l'etape se complete sur place
+  // sans que le joueur ait rien a faire. Il n'aura qu'un clic a donner, sur
+  // l'etape complete.
+  //
+  // SAUF si le moteur pose une question : la, il ne rendra pas la main avant
+  // qu'on lui reponde, l'annonce reste affichee tout le temps de la fenetre,
+  // et c'est exactement le second temps que la decision 7 reclame.
+  const etapeEstAnnonce = etape?.etat === 'annonce'
   const cartoucheAJour =
     termine ||
     partieFinie ||
     etapesAffichees.length === 0 ||
-    (enAttente && index + 1 >= etapesAffichees.length)
+    (enAttente && index + 1 >= etapesAffichees.length) ||
+    (etapeEstAnnonce && !questionAuJoueur)
 
   // L'accuse de reception, seul endroit d'ou il part.
   //
@@ -562,13 +583,28 @@ export function DeroulePhase({
   //    le minuteur dessus ;
   //  - `questionAuJoueur` : le cartouche est replie devant la question du
   //    moteur, il n'a plus de bouton, donc plus d'horloge non plus ;
+  //  - `etapeEstAnnonce` : l'etape n'a pas fini de se completer. La depasser
+  //    ferait manquer au joueur le seul moment ou elle dit quelque chose,
+  //    c'est-a-dire sa resolution. Elle se completera sur place (l'accuse est
+  //    deja parti, voir `cartoucheAJour`) et le minuteur repartira alors ;
   //  - `etapeAttendUnClic` : voir ci-dessus.
   useEffect(() => {
     if (delaiAvant === undefined) return
-    if (!visible || suspendu || enAttente || questionAuJoueur || etapeAttendUnClic) return
+    if (!visible || suspendu || enAttente || questionAuJoueur || etapeEstAnnonce) return
+    if (etapeAttendUnClic) return
     const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvant)
     return () => window.clearTimeout(minuteur)
-  }, [delaiAvant, etape?.cle, visible, suspendu, enAttente, questionAuJoueur, etapeAttendUnClic])
+  }, [
+    delaiAvant,
+    etape?.cle,
+    etape?.etat,
+    visible,
+    suspendu,
+    enAttente,
+    questionAuJoueur,
+    etapeEstAnnonce,
+    etapeAttendUnClic,
+  ])
 
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
@@ -712,6 +748,7 @@ export function DeroulePhase({
   const resultat = resultatEtape(etape)
   const compteur = compteurEtape(etape)
   const regle = regleEtape(etape)
+  const annulee = texteActivationAnnulee(etape)
 
   // La chronologie des cinq temps : la seule chose que le cartouche garde
   // quand il se replie devant une question du moteur.
@@ -762,9 +799,29 @@ export function DeroulePhase({
         <TraitCible etape={etape} actif={!termine} />
         <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
           <div className="deroule-chrono">{chronologie}</div>
-          <p className="deroule-question" aria-live="polite">
-            {t('Le moteur attend ta réponse')}
-          </p>
+          {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
+              le second temps de la decision 7 : « Klaw va attaquer Colossus,
+              tu peux defendre ou repondre ». Sur toute autre etape, le
+              cartouche se tait — le moteur attend le joueur, et rien de ce que
+              le cartouche pourrait ajouter n'aiderait a repondre.
+
+              La mention de la fenetre ne parait QUE la : c'est la seule
+              condition qui prouve que le moteur pose vraiment une question au
+              joueur local. L'ecrire sur une annonce muette inviterait a
+              chercher une reponse qui n'existe pas. */}
+          {etapeEstAnnonce ? (
+            <>
+              <p className="deroule-titre">{titreEtape(etape)}</p>
+              {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+              <p className="deroule-fenetre" aria-live="polite">
+                {texteFenetreReponse()}
+              </p>
+            </>
+          ) : (
+            <p className="deroule-question" aria-live="polite">
+              {t('Le moteur attend ta réponse')}
+            </p>
+          )}
         </section>
       </>
     )
@@ -798,6 +855,10 @@ export function DeroulePhase({
           {compteur ? <span className="deroule-compteur">{compteur}</span> : null}
         </div>
         {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+        {/* L'activation annoncee qui n'a pas lieu. Sans cette ligne, l'etape
+            resterait sur « Klaw va attaquer Colossus » et le joueur
+            attendrait un coup qui ne vient pas. */}
+        {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
         {/* La chute du heros. Elle ne ressemble a aucune autre ligne du
             cartouche, et c'est voulu : c'est le moment le plus important d'une
             partie, il ne doit pas defiler comme les autres. Le crane est

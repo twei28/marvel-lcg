@@ -321,6 +321,17 @@ export const DICO_EN_BASE: Record<string, string> = {
   // « 1 on 3 » ne veut rien dire.
   '%1 sur %2': '%1 of %2',
   'complote contre': 'schemes against',
+  // Les DEUX TEMPS d'une activation. Le premier est au futur proche : c'est
+  // l'intention, la fenetre ou le joueur peut encore defendre ou repondre.
+  'va attaquer': 'is about to attack',
+  'va comploter contre': 'is about to scheme against',
+  'dégât annoncé': 'damage announced',
+  'dégâts annoncés': 'damage announced',
+  'menace annoncée': 'threat announced',
+  'menaces annoncées': 'threat announced',
+  'tu peux défendre ou répondre': 'you can defend or respond',
+  'L\'attaque n\'a pas lieu.': 'The attack does not happen.',
+  'La manigance n\'a pas lieu.': 'The scheme does not happen.',
   'Point 1 : chaque joueur ajoute 1 menace à la manigance principale.':
     'Step 1: each player adds 1 threat to the main scheme.',
   'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.':

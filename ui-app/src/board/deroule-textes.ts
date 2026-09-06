@@ -63,6 +63,17 @@ export function titreEtape(etape: EtapeDeroule): string {
     return auteur ? `${auteur} ${t('révèle')} ${cible}` : `${cible} ${t('révélée')}`
   }
 
+  // L'INTENTION, au futur proche : « Klaw VA attaquer Colossus ». C'est le
+  // temps ou le joueur peut encore defendre ou repondre, et le seul endroit du
+  // cartouche ou l'on parle d'un coup qui n'a pas eu lieu. Une activation
+  // annulee garde ce meme titre : elle a bien ete annoncee, c'est la suite qui
+  // manque, et `texteActivationAnnulee` la dit juste en dessous.
+  if (etape.etat === 'annonce' || etape.etat === 'annule') {
+    return etape.titre === 'attaque'
+      ? `${auteur} ${t('va attaquer')} ${cible}`
+      : `${auteur} ${t('va comploter contre')} ${cible}`
+  }
+
   return etape.titre === 'attaque'
     ? `${auteur} ${t('attaque')} ${cible}`
     : `${auteur} ${t('complote contre')} ${cible}`
@@ -75,6 +86,20 @@ export function titreEtape(etape: EtapeDeroule): string {
  * pour toute etape dont la source ne donne pas de montant.
  */
 export function resultatEtape(etape: EtapeDeroule): string {
+  // Sur une ANNONCE, la valeur imprimee, et dite pour ce qu'elle est : ni la
+  // defense ni les cartes de boost ne sont encore connues, donc ce nombre-la
+  // n'est pas un resultat. Une annulation ne le montre pas : il n'y a plus
+  // rien a attendre, et `texteActivationAnnulee` prend sa place.
+  if (etape.etat === 'annonce') {
+    if (etape.valeurAnnoncee === undefined) return ''
+    if (etape.titre === 'attaque') {
+      return `→ ${etape.valeurAnnoncee} ${pluriel(etape.valeurAnnoncee, 'dégât annoncé', 'dégâts annoncés')}`
+    }
+    if (etape.titre === 'manigance') {
+      return `→ ${etape.valeurAnnoncee} ${pluriel(etape.valeurAnnoncee, 'menace annoncée', 'menaces annoncées')}`
+    }
+    return ''
+  }
   if (etape.montant === undefined) return ''
   if (etape.titre === 'attaque') {
     return `→ ${etape.montant} ${pluriel(etape.montant, 'dégât', 'dégâts')}`
@@ -149,6 +174,32 @@ export function texteDefaite(etape: EtapeDeroule): string {
   // Cle a trous plutot qu'une concatenation : l'anglais ne place pas le verbe
   // au meme endroit (« Colossus is defeated »).
   return t('%1 est vaincu').replace('%1', nom)
+}
+
+/**
+ * Ce que dit une activation ANNULEE : le coup annonce n'a pas eu lieu.
+ *
+ * Vide sur toute autre etape. Sans cette phrase, l'etape resterait sur son
+ * « Klaw va attaquer Colossus » et le joueur attendrait un coup qui ne vient
+ * pas.
+ */
+export function texteActivationAnnulee(etape: EtapeDeroule): string {
+  if (etape.etat !== 'annule') return ''
+  return etape.titre === 'attaque'
+    ? t('L\'attaque n\'a pas lieu.')
+    : t('La manigance n\'a pas lieu.')
+}
+
+/**
+ * La mention de la fenetre de reponse, sous une etape d'INTENTION.
+ *
+ * Elle ne s'affiche QUE quand le moteur pose effectivement une question au
+ * joueur local (voir DeroulePhase, `questionAuJoueur`) : l'ecrire quand rien
+ * n'est jouable inviterait a chercher une reponse qui n'existe pas, et le
+ * joueur cesserait de la lire.
+ */
+export function texteFenetreReponse(): string {
+  return t('tu peux défendre ou répondre')
 }
 
 /** La phrase qui dit que le deroule s'arrete la. */

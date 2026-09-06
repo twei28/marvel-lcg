@@ -95,13 +95,27 @@ type FaitMechantCommun = {
 }
 
 /**
- * Une activation ennemie, décomposée par le moteur au moment où il la résout.
+ * Ce qu'une activation ennemie porte à ses DEUX temps.
  *
- * `inflige = base + boost - defense`, et `subi` peut être plus petit encore
- * quand la cible absorbe autrement (résistance, PV insuffisants).
+ * Une activation s'annonce avant de se résoudre : le moteur inscrit d'abord
+ * une INTENTION à la déclaration (`etat: 'annonce'`), puis sa RÉSOLUTION
+ * (`etat: 'resolu'`), qui remplace la première sous le même `activation_id`.
+ * Entre les deux se tient la fenêtre où le joueur peut défendre ou jouer une
+ * interruption : sans ce premier temps, le cartouche ne pouvait raconter qu'un
+ * passé déjà résolu et le joueur ne voyait jamais le coup venir.
  */
-export type FaitActivation = FaitMechantCommun & {
+type FaitActivationCommun = FaitMechantCommun & {
   genre: 'attaque' | 'manigance'
+  /**
+   * Le numéro de l'activation dans le round (`WorldStat.NouvelleActivation`).
+   * Il LIE l'intention à sa résolution, et c'est lui qui donne son identité
+   * stable à l'étape du cartouche : l'étape se complète sous les yeux du
+   * joueur au lieu de changer de clé.
+   *
+   * Absent des faits d'un moteur pas encore mis à jour (ou d'une sauvegarde
+   * plus ancienne) : l'étape retombe alors sur son ancienne identité.
+   */
+  activation_id?: number
   /** Carte qui a déclenché l'activation, vide quand c'est l'ennemi lui-même. */
   cause?: string
   auteur: string
@@ -110,6 +124,32 @@ export type FaitActivation = FaitMechantCommun & {
   cible_id: number
   /** Attaque (ou manigance) imprimée, avant les cartes de boost. */
   base: number
+}
+
+/**
+ * L'INTENTION : « Klaw va attaquer Colossus ».
+ *
+ * Elle ne porte QUE ce que le moteur sait avant le coup. `subi`, `defense`,
+ * `restant`, les boosts : aucun n'existe encore quand elle part, et les cartes
+ * de boost ne sont même pas retournées. Un fait `annule` a exactement la même
+ * forme : l'activation n'a pas eu lieu, donc elle n'a rien produit non plus.
+ */
+export type FaitActivationAnnonce = FaitActivationCommun & {
+  etat: 'annonce' | 'annule'
+}
+
+/**
+ * La RÉSOLUTION, décomposée par le moteur au moment où il la calcule.
+ *
+ * `inflige = base + boost - defense`, et `subi` peut être plus petit encore
+ * quand la cible absorbe autrement (résistance, PV insuffisants).
+ *
+ * `etat` est absent des faits d'un moteur antérieur aux deux temps : un fait
+ * d'activation sans état est une résolution, ce qui est exactement ce qu'il
+ * était.
+ */
+export type FaitActivationResolue = FaitActivationCommun & {
+  etat?: 'resolu'
   /** Apport total des cartes de boost. */
   boost: number
   defense: number
@@ -121,6 +161,8 @@ export type FaitActivation = FaitMechantCommun & {
   restant?: number | null
   boosts: { nom: string; id: number; apport: number }[]
 }
+
+export type FaitActivation = FaitActivationAnnonce | FaitActivationResolue
 
 /**
  * La menace du POINT 1, posée par la règle du jeu sur une manigance principale.

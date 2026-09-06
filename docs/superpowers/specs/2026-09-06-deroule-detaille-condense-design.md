@@ -114,6 +114,28 @@ en un seul temps.
 
 On ne clique deux fois que là où ça compte.
 
+**Implémenté le 06/09/2026 (tâche A3), avec une nuance sur le nombre de clics.**
+Le moteur inscrit désormais deux faits par activation : une intention à la
+déclaration (`etat: 'annonce'`, avant `WhenUnitWouldAttack`, donc avant les
+boosts et avant les questions au joueur), puis la résolution (`etat: 'resolu'`),
+qui remplace la première sous le même `activation_id`. L'étape du cartouche ne
+change donc pas de clé : elle se complète sur place.
+
+La nuance : dans le cas où l'on peut agir, l'intention ne porte PAS de bouton
+« Suivant ». Le moteur n'attend pas un accusé de réception à ce moment-là, il
+attend une réponse à sa question, posée ailleurs (le panneau central). Un
+« Suivant » y aurait été un bouton sans effet. Le cartouche affiche donc
+l'intention et la mention « tu peux défendre ou répondre », puis se complète
+tout seul une fois la question résolue ; le joueur clique une fois, sur l'étape
+complète. Dans le cas où rien n'est jouable, l'accusé part immédiatement sur
+l'intention et l'étape n'est vue qu'une fois, complète — exactement ce que
+cette décision demande.
+
+Une activation annoncée qui n'a finalement pas lieu (un « ... instead » qui la
+remplace, une cible qui quitte la table) se clôt par un fait `etat: 'annule'`,
+et l'étape dit « L'attaque n'a pas lieu. » : une intention sans suite laisserait
+le cartouche sur « va attaquer » jusqu'à la fin de la phase.
+
 ## 8. Une étape par sbire, avec un compteur
 
     SBIRES                                          1 sur 3
