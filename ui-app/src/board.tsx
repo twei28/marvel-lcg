@@ -81,6 +81,7 @@ import {
   type ApercuMeteo,
   lireMeteoActive,
 } from './board/CoucheMeteo'
+import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
@@ -92,15 +93,18 @@ import {
   ecrireAvanceAuto,
   ecrireDelaiPasAPas,
   ecrireModePhaseMechant,
+  ecrireReponseAmbiance,
   libelleModePhase,
   lireAvanceAuto,
   lireDelaiPasAPas,
   lireModePhaseMechant,
+  lireReponseAmbiance,
   migrerReglagesPhase,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
   type ModePhaseMechant,
+  type ReponseAmbiance,
 } from './board/moteur'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
@@ -1142,6 +1146,8 @@ function PanneauOptions({
   basculerMeteo,
   apercuMeteo,
   reglerApercuMeteo,
+  reponseAmbiance,
+  cyclerReponseAmbiance,
   revelation,
   cyclerRevelation,
   autoCible,
@@ -1176,6 +1182,8 @@ function PanneauOptions({
   apercuMeteo: ApercuMeteo
   reglerApercuMeteo: (valeur: ApercuMeteo) => void
   basculerMeteo: () => void
+  reponseAmbiance: ReponseAmbiance
+  cyclerReponseAmbiance: () => void
   revelation: ModeRevelation
   cyclerRevelation: () => void
   autoCible: boolean
@@ -1383,6 +1391,25 @@ function PanneauOptions({
               )
             })}
           </div>
+          {/* Le garde-fou de la modale d'ambiance : sans cette ligne, une case
+              « ne plus me montrer ca » cochee par erreur serait definitive.
+              Un cycle plutot qu'un simple bouton « redemander », parce que les
+              trois etats sont utiles a qui sait ce qu'il veut. */}
+          <button
+            type="button"
+            className="ligne-option"
+            onClick={cyclerReponseAmbiance}
+            title={t('Quand une carte allume une ambiance : poser la question, la garder sans demander, ou la couper sans demander')}
+          >
+            <span className="ligne-option-libelle">{t('Demande d’ambiance')}</span>
+            <span className="ligne-option-etat" aria-hidden="true">
+              {reponseAmbiance === 'demander'
+                ? t('Demander')
+                : reponseAmbiance === 'toujours'
+                  ? t('Toujours')
+                  : t('Jamais')}
+            </span>
+          </button>
           <button
             type="button"
             className="ligne-option"
@@ -1914,6 +1941,19 @@ function PagePartie({
   const [apercuMeteo, setApercuMeteo] = useState<ApercuMeteo>(undefined)
   const reglerApercuMeteo = useCallback((valeur: ApercuMeteo) => setApercuMeteo(valeur), [])
 
+  // La reponse figee a la question « une ambiance s'allume, on la garde ? ».
+  // Elle DOIT rester revocable : une case « ne plus me montrer ca » cochee par
+  // erreur, sans ligne pour la remettre en marche, serait un piege definitif.
+  const [reponseAmbiance, setReponseAmbiance] = useState<ReponseAmbiance>(lireReponseAmbiance)
+  const cyclerReponseAmbiance = useCallback(() => {
+    setReponseAmbiance((r) => {
+      const suivant: ReponseAmbiance =
+        r === 'demander' ? 'toujours' : r === 'toujours' ? 'jamais' : 'demander'
+      ecrireReponseAmbiance(suivant)
+      return suivant
+    })
+  }, [])
+
   const [succes, setSucces] = useState(lireSuccesActifs)
   const basculerSucces = useCallback(() => {
     setSucces((v) => {
@@ -2332,6 +2372,20 @@ function PagePartie({
       />
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
+      {/* Explique l'ambiance qui s'allume, au lieu de la subir sans un mot.
+          Reglage PERSONNEL : elle ne change rien pour les autres joueurs et
+          ne retient pas le moteur, la partie continue derriere. */}
+      <ModaleAmbiance
+        // Change de cle quand le joueur touche au reglage : le composant se
+        // remonte, et une question remise en marche depuis les Options se
+        // repose des la partie EN COURS, sans attendre la suivante.
+        key={reponseAmbiance}
+        monde={etat.monde}
+        ambianceActive={meteo}
+        apercu={apercuMeteo}
+        reglerApercu={reglerApercuMeteo}
+        onReponseFigee={setReponseAmbiance}
+      />
       <CoucheSucces monde={etat.monde} demande={etat.demande} actif={succes} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
@@ -2565,6 +2619,8 @@ function PagePartie({
               meteo={meteo}
               apercuMeteo={apercuMeteo}
               reglerApercuMeteo={reglerApercuMeteo}
+              reponseAmbiance={reponseAmbiance}
+              cyclerReponseAmbiance={cyclerReponseAmbiance}
               basculerMeteo={basculerMeteo}
               revelation={revelation}
               cyclerRevelation={cyclerRevelation}

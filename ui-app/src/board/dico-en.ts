@@ -622,6 +622,26 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Sitcom': 'Sitcom',
   'Sépia': 'Sepia',
   'Tempête de sable': 'Sandstorm',
+  // --- board/ModaleAmbiance.tsx : « une ambiance s'allume, tu la gardes ? » ---
+  // Le nom de la carte n'est PAS traduit : il vient du moteur, qui le donne
+  // deja dans la langue des scans.
+  'Une ambiance s’allume': 'An ambience is coming on',
+  'change l’atmosphère du plateau': 'changes the mood of the board',
+  'Tu peux la garder, la couper, ou en choisir une autre à tout moment dans Options › Aperçu d’ambiance.':
+    'You can keep it, turn it off, or pick another one at any time from Options › Ambience preview.',
+  'Ne plus me montrer ça': 'Do not show me this again',
+  // « Oui » et « Non » seuls sont deja pris par le panneau d'options, ou ils
+  // valent « On » et « Off ». Des libelles entiers evitent la collision et se
+  // lisent mieux comme reponses.
+  'Non, couper': 'No, turn it off',
+  'Oui, garder': 'Yes, keep it',
+  'Demande d’ambiance': 'Ambience prompt',
+  'Demander': 'Ask',
+  'Toujours': 'Always',
+  'Jamais': 'Never',
+  'Quand une carte allume une ambiance : poser la question, la garder sans demander, ou la couper sans demander':
+    'When a card brings on an ambience: ask the question, keep it without asking, or turn it off without asking',
+
   'Météo de Storm affichée : cliquer pour la couper': 'Storm weather shown: click to turn it off',
   'Météo coupée : cliquer pour afficher pluie/orage/neige': 'Weather off: click to show rain/storm/snow',
   'Musique': 'Music',
@@ -652,7 +672,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Auto-ciblage': 'Auto-target',
   'Sélectionne d’office la cible quand une seule est légale':
     'Automatically selects the target when only one is legal',
-  'Curseurs des autres joueurs': 'Other players\u2019 cursors',
+  'Curseurs des autres joueurs': 'Other players’ cursors',
   'Carte de héros': 'Hero card',
   'Art alternatif — mêmes valeurs de jeu': 'Alternate art \u2014 same game values',
   'En multijoueur, montre où pointent les autres': 'In multiplayer, shows where the others are pointing',

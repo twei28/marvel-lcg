@@ -183,6 +183,43 @@ export function ecrireRegleDepliee(depliee: boolean): void {
 }
 
 /**
+ * La reponse figee a la question « une ambiance s'allume, on la garde ? »
+ * (voir ModaleAmbiance.tsx). Reglage PERSONNEL, donc localStorage, sur le
+ * meme modele que lireAvanceAuto/ecrireAvanceAuto ci-dessus.
+ *
+ * Trois valeurs, et la valeur par defaut compte :
+ *   'demander' -> la question est posee une fois par partie, c'est le defaut ;
+ *   'toujours' -> les ambiances s'allument sans qu'on redemande jamais ;
+ *   'jamais'   -> elles restent eteintes, sans qu'on redemande jamais.
+ *
+ * 'demander' est aussi le repli quand la cle contient autre chose : une valeur
+ * inconnue ne doit pas enfermer le joueur dans un choix qu'il n'a pas fait.
+ */
+export const CLE_AMBIANCE_DEMANDE = 'marvel-board-ambiance-demande'
+
+export type ReponseAmbiance = 'demander' | 'toujours' | 'jamais'
+
+export function lireReponseAmbiance(): ReponseAmbiance {
+  try {
+    const brut = window.localStorage.getItem(CLE_AMBIANCE_DEMANDE)
+    return brut === 'toujours' || brut === 'jamais' ? brut : 'demander'
+  } catch {
+    return 'demander'
+  }
+}
+
+export function ecrireReponseAmbiance(valeur: ReponseAmbiance): void {
+  try {
+    // 'demander' EFFACE la cle au lieu de l'ecrire : c'est le defaut, et une
+    // cle absente se relit sans dependre d'une valeur ecrite un jour.
+    if (valeur === 'demander') window.localStorage.removeItem(CLE_AMBIANCE_DEMANDE)
+    else window.localStorage.setItem(CLE_AMBIANCE_DEMANDE, valeur)
+  } catch {
+    /* idem */
+  }
+}
+
+/**
  * Le libelle affiche dans le panneau Options pour CE mode precis.
  *
  * Une seule source pour l'affichage et pour le test : l'ancien ternaire a

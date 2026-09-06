@@ -36,6 +36,18 @@ export function lireLeconCourante(): string | null {
   }
 }
 
+/**
+ * Vrai pendant une partie du mode Decouverte, terminee ou non : la cle existe
+ * des le lancement du tutoriel et vaut 'fini' apres la derniere lecon.
+ *
+ * Sert aux couches qui doivent SE TAIRE pendant le tutoriel. Une modale de
+ * plus par-dessus une lecon est du bruit, et le tutoriel montre deja ou se
+ * trouvent les reglages.
+ */
+export function enModeDecouverte(): boolean {
+  return lireLeconCourante() !== null
+}
+
 function ecrireLeconCourante(valeur: string): void {
   try {
     window.localStorage.setItem(CLE_TUTORIEL, valeur)

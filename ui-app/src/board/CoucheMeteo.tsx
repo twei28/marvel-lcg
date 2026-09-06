@@ -174,6 +174,22 @@ function cartesDe(source: unknown, zones: readonly string[]): WorldCard[] {
 }
 
 /**
+ * Les cartes EN JEU, dans l'ordre de PEINTURE : le décor du scénario d'abord,
+ * donc en dessous, puis les cartes des joueurs par-dessus, siège par siège.
+ *
+ * Sortie en un seul endroit parce que deux lectures s'en servent, `meteosDuMonde`
+ * et `premiereCarteAmbiance` : elles doivent voir exactement les mêmes zones,
+ * sans quoi la modale nommerait une carte dont l'ambiance ne s'allume pas, ou
+ * l'inverse.
+ */
+function cartesEnJeu(world: World | undefined): WorldCard[] {
+  if (!world) return []
+  const enJeu: WorldCard[] = [...cartesDe(world, ZONES_MONDE)]
+  for (const joueur of world.players ?? []) enJeu.push(...cartesDe(joueur, ZONES_JOUEUR))
+  return enJeu
+}
+
+/**
  * TOUTES les ambiances dictées par les cartes en jeu, sans doublon.
  *
  * Elles se superposent au lieu de se disputer l'affichage. Le choix n'est pas
@@ -181,19 +197,45 @@ function cartesDe(source: unknown, zones: readonly string[]): WorldCard[] {
  * par seconde. Ce qui coûtait, c'était le `filter: blur()` de cinq d'entre
  * eux, remplacé depuis par un masque.
  *
- * L'ordre est l'ordre de PEINTURE : le décor du scénario d'abord, donc en
- * dessous, puis les cartes des joueurs par-dessus, siège par siège.
+ * L'ordre est l'ordre de PEINTURE, celui de `cartesEnJeu`.
  */
 export function meteosDuMonde(world: World | undefined): string[] {
-  if (!world) return []
-  const enJeu: WorldCard[] = [...cartesDe(world, ZONES_MONDE)]
-  for (const joueur of world.players ?? []) enJeu.push(...cartesDe(joueur, ZONES_JOUEUR))
   const sortie: string[] = []
-  for (const carte of enJeu) {
+  for (const carte of cartesEnJeu(world)) {
     const effet = carte && typeof carte.card_id === 'string' ? METEO_PAR_CARTE[carte.card_id] : undefined
     if (effet && !sortie.includes(effet)) sortie.push(effet)
   }
   return sortie
+}
+
+/** La CAUSE d'une ambiance : la carte qui l'allume, et ce qu'elle allume. */
+export type CarteAmbiance = {
+  /** L'identifiant de la carte, tel qu'il figure dans METEO_PAR_CARTE. */
+  cardId: string
+  /** Le nom affichable de la carte, celui que le moteur donne. */
+  nom: string
+  effet: EffetMeteo
+}
+
+/**
+ * La première carte en jeu qui allume une ambiance, ou `undefined`.
+ *
+ * `meteosDuMonde` rend des effets, jamais leur cause : « noir » ne dit rien à
+ * personne. Pour expliquer au joueur ce qui vient de repeindre sa table, il
+ * faut pouvoir écrire « Dial M for Mojo ».
+ *
+ * « Première » au sens de l'ordre de peinture : le décor du scénario passe
+ * avant la carte d'un joueur, et c'est bien lui la cause visible.
+ */
+export function premiereCarteAmbiance(world: World | undefined): CarteAmbiance | undefined {
+  for (const carte of cartesEnJeu(world)) {
+    if (!carte || typeof carte.card_id !== 'string') continue
+    const effet = METEO_PAR_CARTE[carte.card_id]
+    // Le nom peut manquer d'une vieille sauvegarde : l'identifiant vaut mieux
+    // qu'une phrase trouée.
+    if (effet) return { cardId: carte.card_id, nom: carte.name || carte.card_id, effet }
+  }
+  return undefined
 }
 
 /** L'ambiance DOMINANTE, celle peinte en premier. */

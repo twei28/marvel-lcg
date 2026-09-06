@@ -19,6 +19,7 @@ import {
   libelleApercu,
   meteoDuMonde,
   meteosDuMonde,
+  premiereCarteAmbiance,
 } from './CoucheMeteo'
 
 const carte = (cardId: string) => ({
@@ -274,5 +275,57 @@ describe('plusieurs ambiances a la fois', () => {
     const { container } = render(createElement(CoucheMeteo, { world: m, active: true }))
     const sources = [...container.querySelectorAll('iframe')].map((f) => f.getAttribute('src'))
     expect(sources).toEqual(['/effects/weather/snow.html', '/effects/weather/rain.html'])
+  })
+})
+
+// La modale d'ambiance doit pouvoir NOMMER la carte qui allume l'effet : dire
+// « noir et blanc » sans dire « Dial M for Mojo » n'explique rien. D'ou une
+// fonction qui rend la CAUSE et non le seul effet, sur les memes zones que
+// meteosDuMonde : ce qui n'allume pas l'ambiance ne doit pas la justifier non
+// plus.
+describe('premiereCarteAmbiance', () => {
+  const nommee = (cardId: string, nom: string) => ({ ...carte(cardId), name: nom })
+
+  it('trouve la carte en jeu qui allume l ambiance, avec son nom', () => {
+    const m = monde({}, { area_environment: [nommee('39035', 'Dial M for Mojo')] })
+    expect(premiereCarteAmbiance(m)).toEqual({
+      cardId: '39035',
+      nom: 'Dial M for Mojo',
+      effet: 'noir',
+    })
+  })
+
+  it('ignore une carte restee en MAIN, l ambiance appartient au scenario', () => {
+    // Meme regle que meteosDuMonde : le deck d'un joueur ne repeint pas la
+    // table. Les zones lues sont les memes, ce cas empeche qu'elles divergent.
+    const m = monde({ hand_cards: [nommee('39035', 'Dial M for Mojo')] })
+    expect(premiereCarteAmbiance(m)).toBeUndefined()
+  })
+
+  it('ignore aussi le deck meteo de Storm', () => {
+    const m = monde({ additional_deck: [nommee('36003', 'Hurricane')] })
+    expect(premiereCarteAmbiance(m)).toBeUndefined()
+  })
+
+  it('rend undefined quand aucune carte n allume rien', () => {
+    expect(premiereCarteAmbiance(monde({ supports: [nommee('01034', 'Toile')] }))).toBeUndefined()
+    expect(premiereCarteAmbiance(undefined)).toBeUndefined()
+  })
+
+  it('rend la PREMIERE dans l ordre de peinture, le decor du scenario d abord', () => {
+    // Meme ordre que meteosDuMonde : le monde, puis les joueurs siege par
+    // siege. La modale parle donc du decor, pas de la carte d'un joueur.
+    const m = monde(
+      { supports: [nommee('36003', 'Hurricane')] },
+      { area_environment: [nommee('04081', 'Snowy Hillside')] }
+    )
+    expect(premiereCarteAmbiance(m)?.nom).toBe('Snowy Hillside')
+  })
+
+  it('se rabat sur l identifiant quand le moteur ne donne pas de nom', () => {
+    // Une sauvegarde ancienne peut ne pas porter `name` : mieux vaut un
+    // identifiant affiche qu'une phrase trouee.
+    const m = monde({}, { area_environment: [{ ...carte('39035'), name: '' }] })
+    expect(premiereCarteAmbiance(m)?.nom).toBe('39035')
   })
 })
