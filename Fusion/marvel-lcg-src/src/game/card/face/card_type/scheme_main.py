@@ -214,6 +214,18 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
         from game.effect.rule import Advance
         from game.message import Message
         place_message = super().PlaceThreatInternal(value, by_effect, sch_message)
+        # Defaut corrige le 07/09/2026 (audit A4, Important 1 releve par la
+        # relecture d'A2) : cette methode rendait `None` des que
+        # `target_threat` valait `None`, MEME quand la menace avait bien ete
+        # posee (`place_message` non vide). `MainScheme.Phase()`
+        # (scheme_main.py plus haut) se fie a ce retour pour savoir s'il faut
+        # inscrire le fait de menace du journal (`RecordFaitMechant`) : le
+        # garde sautait alors l'ecriture pour les manigances SANS seuil (pas
+        # de `TargetThreat` imprime), par exemple `32063b` Stalked by
+        # Sabretooth. Le controle du seuil reste EXCLUSIVEMENT conditionne a
+        # `target_threat`, qui garde tout son sens (pas de seuil, pas
+        # d'accomplissement) : seul le RETOUR reflete desormais ce que la
+        # pose a reellement fait, seuil ou non.
         if place_message and self.target_threat != None:
             if self.threat >= self.target_threat and not self.is_completed:
                 would_complete_message = Message.WhenMainSchemeStageWouldBeCompleted(self, sch_message)
@@ -226,8 +238,7 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
                     self.Advance(None, effect)
                     after_message = Message.AfterMainSchemeCompleted(self, when_complete_message)
                     after_message.Send()
-            return place_message
-        return None
+        return place_message
 
     @staticmethod
     def GetPatrolFaces(effect: 'Effect') -> Sequence['CardFace']:

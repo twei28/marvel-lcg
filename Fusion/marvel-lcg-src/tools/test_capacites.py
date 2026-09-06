@@ -22862,6 +22862,38 @@ CAS = [
         "verifier": "a3_base_manigance",
     },
     # FIN DU BLOC A3-BIS -------------------------------------------------------
+
+    # DEBUT DU BLOC A4 (07/09/2026) — NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
+    #
+    # Defaut trouve par la relecture d'A2 (`.superpowers/sdd/...progress.md`,
+    # revue A2, Important 1) : `MainScheme.PlaceThreatInternal`
+    # (scheme_main.py) rendait `None` des que `target_threat` valait `None`,
+    # MEME quand la menace avait bien ete posee — le garde de `Phase()`
+    # sautait alors l'ecriture du fait de menace du journal. Cinq manigances
+    # officielles n'ont pas de seuil : `32063b` Stalked by Sabretooth,
+    # `32087b` Night of the Sentinels, `40139b` Sinister Intent, `50168b`
+    # The Accusation, `11008b` The Master of Time. Le cas ci-dessous en joue
+    # une (Sabretooth) et prouve que le fait existe quand meme, avec sa
+    # quantite et son restant. Le cas « A2 faits — l'etape 1... » (rhino,
+    # AVEC seuil, plus haut) reste la contre-epreuve : il doit rester vert a
+    # l'identique.
+    #
+    # Filtre pour le rejouer seul :
+    #     python3.10 tools/test_capacites.py .game-src 40000 /tmp/a4.json "A4 faits"
+    {
+        "nom": "A4 faits — une manigance SANS seuil journalise aussi sa menace posee",
+        "pourquoi": ("`target_threat` a None (pas de seuil, pas d'accomplissement) "
+                     "faisait rendre `None` a `PlaceThreatInternal` MEME quand la "
+                     "menace avait ete posee : le fait de l'etape 1 disparaissait "
+                     "pour les manigances sans seuil. Stalked by Sabretooth (32063b) "
+                     "en est une"),
+        "scenario": "sabretooth",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a4_fait_menace_sans_seuil",
+    },
+    # FIN DU BLOC A4 -------------------------------------------------------
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -28094,6 +28126,70 @@ def a3_base_manigance(monde, aides):
                   f"{resolu.get('inflige')}")
 
 # ========================== FIN DU BLOC A3-BIS ==============================
+
+# ============================ BLOC A4 (07/09/2026) ===========================
+# Le fait de menace d'une manigance SANS seuil. Voir le cas « A4 faits — ... »
+# dans CAS, et `a2_fait_menace` (bloc A2 ci-dessus) pour la contre-epreuve
+# AVEC seuil : les deux partagent `_a2_vider_le_journal` et `_a2_faits`.
+# ----------------------------------------------------------------------------
+
+def a4_fait_menace_sans_seuil(monde, aides):
+    """Etape 1, manigance SANS seuil : le fait de menace existe quand meme.
+
+    Avant correctif, `MainScheme.PlaceThreatInternal` rendait `None` des que
+    `target_threat` valait `None`, MEME quand la menace avait bien ete posee
+    (garde de `Phase()` : `if place_message is not None`). Cinq manigances
+    officielles n'ont pas de seuil ; celle du cas est Stalked by Sabretooth
+    (`32063b`).
+    """
+    from game.world.phase import Phase
+    from game.operate.worlds import Worlds
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.PlaceThreat)
+    monde.current_player = None
+
+    maniganes = Worlds.GetAllMainSchemes(monde)
+    if not maniganes:
+        return False, "aucune manigance principale en jeu"
+    if len(maniganes) != 1:
+        return False, f"{len(maniganes)} manigance(s) en jeu (attendu 1)"
+    manigance = maniganes[0]
+    if manigance.target_threat is not None:
+        return False, (f"target_threat = {manigance.target_threat!r} (attendu None : "
+                       f"le montage du cas ne teste plus une manigance SANS seuil, "
+                       f"verifier le scenario 'sabretooth')")
+
+    manigance.Phase()
+
+    faits = _a2_faits(monde, 'menace')
+    if len(faits) != 1:
+        return False, (f"{len(faits)} fait(s) de menace pour 1 manigance SANS seuil "
+                       f"(journal = {monde.stat.faits_mechant})")
+
+    fait = faits[0]
+    manques = [c for c in ('phase', 'cible', 'cible_id', 'montant', 'restant', 'round_id')
+               if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if fait['cible_id'] != manigance.card.object_id:
+        return False, f"cible_id = {fait['cible_id']} (attendu {manigance.card.object_id})"
+    if fait['cible'] != manigance.name:
+        return False, f"cible = {fait['cible']!r} (attendu {manigance.name!r})"
+    if not isinstance(fait['montant'], int) or fait['montant'] <= 0:
+        return False, f"montant = {fait['montant']!r} (attendu un entier > 0)"
+    if fait['restant'] != manigance.threat:
+        return False, f"restant = {fait['restant']} (menace reelle {manigance.threat})"
+    # Le seuil absent doit rester absent DANS LE FAIT : ce n'est pas un oubli
+    # a corriger, c'est ce que la carte imprime (pas de seuil, pas
+    # d'accomplissement).
+    if fait.get('plafond') is not None:
+        return False, (f"plafond = {fait.get('plafond')!r} (attendu None : cette "
+                       f"manigance n'a pas de seuil imprime)")
+    return True, (f"fait menace sans seuil : {fait['cible']} +{fait['montant']} -> "
+                  f"{fait['restant']}/{fait.get('plafond')}")
+
+# ========================== FIN DU BLOC A4 ===================================
 '''
 
 
