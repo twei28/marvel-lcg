@@ -92,4 +92,43 @@ describe('etapesDeroule', () => {
   it('ne rend aucune etape quand la phase n a rien produit', () => {
     expect(etapesDeroule([], [])).toEqual([])
   })
+
+  it('fait une etape par carte revelee', () => {
+    const etapes = etapesDeroule([], [
+      entree({
+        cle: 'c1',
+        type: 'card',
+        phase: 'Reveal Encounter Cards',
+        titre: 'Icy Grip revelee',
+        cibleId: 77,
+      }),
+    ])
+    const revelations = etapes.filter((e) => e.temps === 'revelation')
+    expect(revelations).toHaveLength(1)
+    expect(revelations[0].carteId).toBe(77)
+  })
+
+  it('garde le texte brut du moteur quand le fait n a pas de phrase', () => {
+    // Une carte fan-made a l'effet inattendu : mieux vaut un texte technique
+    // qu'un silence. On voit au moins qu'il s'est passe quelque chose.
+    const etapes = etapesDeroule([], [
+      entree({
+        cle: 'c2',
+        type: 'text',
+        phase: 'Reveal Encounter Cards',
+        titre: '',
+        brut: '[(50,01113) Klaw] would deal 2 damage',
+      }),
+    ])
+    expect(etapes.some((e) => e.brut === '[(50,01113) Klaw] would deal 2 damage')).toBe(true)
+  })
+
+  it('ne fait pas d etape d une narration deja mise en phrase ailleurs', () => {
+    // Le type `text` sans `brut` est la narration interne du moteur : elle a sa
+    // place dans le journal, pas dans un deroule qu'on lit etape par etape.
+    const etapes = etapesDeroule([], [
+      entree({ cle: 'c3', type: 'text', phase: 'Reveal Encounter Cards', titre: 'Main scheme phase start' }),
+    ])
+    expect(etapes).toEqual([])
+  })
 })

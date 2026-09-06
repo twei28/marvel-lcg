@@ -120,5 +120,37 @@ export function etapesDeroule(
     })
   })
 
+  // Les cartes revelees, que les faits du moteur ne couvrent pas : lui ne rend
+  // que les activations resolues.
+  for (const e of entrees) {
+    if (tempsDe(e.phase) !== 'revelation') continue
+    if (e.type === 'card') {
+      etapes.push({
+        cle: `carte:${e.cle}`,
+        temps: 'revelation',
+        titre: e.titre,
+        regle: 'regle:revelation',
+        carteId: e.cibleId,
+        boosts: [],
+        consequences: [],
+      })
+      continue
+    }
+    // Narration que personne n'a su mettre en phrase : on la montre telle
+    // quelle plutot que de la taire. Sans `brut`, c'est la narration interne
+    // du moteur, qui reste au journal.
+    if (e.type === 'text' && e.brut) {
+      etapes.push({
+        cle: `brut:${e.cle}`,
+        temps: 'revelation',
+        titre: e.titre,
+        regle: 'regle:revelation',
+        boosts: [],
+        consequences: [],
+        brut: e.brut,
+      })
+    }
+  }
+
   return etapes.sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
 }
