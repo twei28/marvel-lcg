@@ -177,15 +177,68 @@ describe('cartouche du deroule', () => {
     expect(menaceLi?.className).toContain('est-passe')
   })
 
-  it('marque un temps sans aucune etape comme vide dans la chronologie', () => {
-    // `etapes` ne porte que menace et mechant : sbires, distribution et
-    // revelation n'ont produit aucune etape cette phase-ci.
+  // --- Un temps n'est « vide » que lorsqu'il est passe ----------------------
+  // Constate en partie : la chronologie affichait « Sbires (aucun) » barre
+  // pendant que le moteur demandait dans quel ordre activer DEUX sbires. Leurs
+  // faits n'existaient pas encore, donc le temps etait marque vide : la marque
+  // etait prematuree et disait le contraire de la verite. Un temps se juge par
+  // rapport au temps COURANT, celui de l'etape affichee : avant lui et sans
+  // etape, vide ; lui, courant ; apres lui, a venir, jamais vide.
+  const temps = (container: HTMLElement, nom: RegExp) =>
+    [...container.querySelectorAll('.deroule-temps li')].find((li) => li.textContent?.match(nom))
+
+  it('marque un temps sans aucune etape comme vide, une fois la phase finie', () => {
+    // `etapes` ne porte que menace et mechant, et la phase est finie
+    // (phaseMechantEnCours a false) : sur le bilan, tous les temps sont
+    // passes, et sbires n'a produit aucune etape.
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    const sbiresLi = [...container.querySelectorAll('.deroule-temps li')].find((li) =>
-      li.textContent?.match(/Sbires/i)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+    const sbires = temps(container, /Sbires/i)
+    expect(sbires?.className).toContain('est-vide')
+    expect(sbires?.textContent).toMatch(/Aucun/i)
+  })
+
+  it('dit « a venir », pas « vide », d un temps qui n est pas encore passe', () => {
+    // Deux sbires pas encore actives : le cartouche est sur l'activation du
+    // mechant, la phase court, et aucune etape de sbire n'existe encore. Le
+    // temps est A VENIR : ni barre, ni « aucun ».
+    const { container } = render(
+      <DeroulePhase etapes={etapes} phaseMechantEnCours onTerminer={() => {}} />
     )
-    expect(sbiresLi?.className).toContain('est-vide')
-    expect(sbiresLi?.textContent).toMatch(/Aucun/i)
+    fireEvent.click(suivant())
+    expect(temps(container, /Méchant/i)?.className).toContain('est-courant')
+    const sbires = temps(container, /Sbires/i)
+    expect(sbires?.className).not.toContain('est-vide')
+    expect(sbires?.className).not.toContain('est-passe')
+    expect(sbires?.textContent).not.toMatch(/Aucun/i)
+  })
+
+  it('marque vide un temps deja passe sans etape, meme si la phase court encore', () => {
+    // La phase a saute la menace (aucune etape) et en est au mechant : la
+    // menace est derriere nous, et elle etait vide.
+    const sansMenace: EtapeDeroule[] = [
+      { cle: 'b', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [] },
+    ]
+    const { container } = render(
+      <DeroulePhase etapes={sansMenace} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    const menace = temps(container, /Menace/i)
+    expect(menace?.className).toContain('est-vide')
+    expect(menace?.textContent).toMatch(/Aucun/i)
+  })
+
+  it('met en avant le temps de l etape affichee, et lui seul', () => {
+    const { container } = render(
+      <DeroulePhase etapes={etapes} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    expect(container.querySelectorAll('.deroule-temps li.est-courant')).toHaveLength(1)
+    expect(temps(container, /Menace/i)?.className).toContain('est-courant')
+    fireEvent.click(suivant())
+    expect(container.querySelectorAll('.deroule-temps li.est-courant')).toHaveLength(1)
+    expect(temps(container, /Méchant/i)?.className).toContain('est-courant')
+    expect(temps(container, /Menace/i)?.className).toContain('est-passe')
   })
 
   it('ne coute aucun clic pour un temps vide : le compte de clics suit le nombre d etapes', () => {

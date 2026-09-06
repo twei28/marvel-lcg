@@ -607,13 +607,26 @@ export function DeroulePhase({
   const chronologie = (
     <ol className="deroule-temps">
       {TEMPS.map((temps, position) => {
-        // Vide : aucune etape de la phase ne porte ce temps. Il n'a
-        // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
-        // lui) ; le joueur doit seulement voir qu'il a ete saute, et
-        // pourquoi.
-        const estVide = !etapesAffichees.some((e) => e.temps === temps.cle)
-        const estCourant = !estVide && temps.cle === etape.temps
-        const estPasse = !estVide && !estCourant && position < positionCourante
+        // Un temps se juge par rapport au temps COURANT, celui de l'etape
+        // affichee, et par rapport a lui seul :
+        //  - avant lui et sans etape : VIDE (barre, « aucun »). Il n'a coute
+        //    aucun clic (etapesDeroule ne cree pas de placeholder pour lui),
+        //    le joueur doit seulement voir qu'il a ete saute, et pourquoi ;
+        //  - avant lui avec des etapes : passe, coche ;
+        //  - lui : mis en avant ;
+        //  - apres lui : A VENIR, jamais vide, quel que soit le nombre
+        //    d'etapes connues. Constate en partie : le moteur demandait dans
+        //    quel ordre activer DEUX sbires, dont les faits n'existaient donc
+        //    pas encore, et la chronologie affichait « Sbires (aucun) »
+        //    barre. La marque etait prematuree et disait le contraire de la
+        //    verite.
+        // Sur le bilan, tous les temps sont passes (`positionCourante` vaut
+        // alors TEMPS.length) : ceux sans etape sont vides, c'est exact.
+        const estCourant = temps.cle === etape.temps
+        const estAvant = !estCourant && position < positionCourante
+        const aDesEtapes = etapesAffichees.some((e) => e.temps === temps.cle)
+        const estVide = estAvant && !aDesEtapes
+        const estPasse = estAvant && aDesEtapes
         const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
         return (
           <li key={temps.cle} className={classe}>
