@@ -10,7 +10,7 @@ import type { EtapeDeroule } from './deroule-phase'
 import { CLE_REGLE_DEPLIEE } from './moteur'
 
 const etapes: EtapeDeroule[] = [
-  { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+  { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
   {
     cle: 'b',
     temps: 'mechant',
@@ -21,7 +21,6 @@ const etapes: EtapeDeroule[] = [
     auteurNom: 'Ultron',
     cibleNom: 'Shuri',
     boosts: [],
-    consequences: [],
   },
 ]
 
@@ -123,7 +122,7 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
 
     const etapesSuivantes: EtapeDeroule[] = [
-      { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+      { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
     ]
     rerender(<DeroulePhase etapes={etapesSuivantes} identitePhase={2} onTerminer={() => {}} />)
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
@@ -196,9 +195,9 @@ describe('cartouche du deroule', () => {
     // ajoute un quatrieme, et un seul, quel que soit le nombre de temps vides.
     const onTerminer = vi.fn()
     const sansSbiresNiRevelation: EtapeDeroule[] = [
-      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
-      { cle: 'b', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
-      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [], consequences: [] },
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+      { cle: 'b', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [] },
+      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [] },
     ]
     render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
     fireEvent.click(suivant())
@@ -279,33 +278,6 @@ describe('cartouche du deroule', () => {
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
   })
 
-  it('affiche les consequences de l etape, pas seulement le titre et la regle', () => {
-    // deroule-phase.ts construit bien `consequences` (« +1 pour Shuri, +1 pour
-    // Thor ») mais le composant ne rendait que le titre et la regle : la
-    // donnee etait calculee puis jetee.
-    const avecConsequences: EtapeDeroule[] = [
-      {
-        cle: 'a',
-        temps: 'menace',
-        titre: 'menace',
-        regle: 'regle:menace',
-        boosts: [],
-        consequences: [
-          { cle: 'c1', texte: '+1 pour Shuri' },
-          { cle: 'c2', texte: '+1 pour Thor' },
-        ],
-      },
-    ]
-    render(<DeroulePhase etapes={avecConsequences} onTerminer={() => {}} />)
-    expect(screen.getByText('+1 pour Shuri')).toBeInTheDocument()
-    expect(screen.getByText('+1 pour Thor')).toBeInTheDocument()
-  })
-
-  it('n affiche rien de plus quand l etape n a pas de consequence', () => {
-    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    expect(document.querySelector('.deroule-consequences')).toBeNull()
-  })
-
   it('affiche le chiffre du coup et le compteur de la cible', () => {
     // Une seule phrase concrete, son chiffre en dessous et le compteur de la
     // cible a droite : le titre generique disait moins que la ligne qu'il
@@ -321,7 +293,6 @@ describe('cartouche du deroule', () => {
         montant: 4,
         restant: 5,
         boosts: [],
-        consequences: [],
       },
     ]
     render(<DeroulePhase etapes={attaque} onTerminer={() => {}} />)
@@ -342,7 +313,6 @@ describe('cartouche du deroule', () => {
         cibleNom: 'Colossus',
         montant: 4,
         boosts: [],
-        consequences: [],
       },
     ]
     render(<DeroulePhase etapes={sansRestant} onTerminer={() => {}} />)
@@ -352,8 +322,8 @@ describe('cartouche du deroule', () => {
 
   it('dit combien d etapes compte le temps courant', () => {
     const deuxSbires: EtapeDeroule[] = [
-      { cle: 'a', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Shuri', boosts: [], consequences: [] },
-      { cle: 'b', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Thor', boosts: [], consequences: [] },
+      { cle: 'a', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Shuri', boosts: [] },
+      { cle: 'b', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Thor', boosts: [] },
     ]
     render(<DeroulePhase etapes={deuxSbires} onTerminer={() => {}} />)
     expect(screen.getByText('1 sur 2')).toBeInTheDocument()
@@ -382,7 +352,6 @@ describe('cartouche du deroule', () => {
           { cle: 'b0', nom: 'Boost A', cibleId: 91, apport: 1 },
           { cle: 'b1', nom: 'Boost B', cibleId: 92, apport: 2 },
         ],
-        consequences: [],
       },
     ]
     vi.useFakeTimers()
@@ -408,7 +377,6 @@ describe('cartouche du deroule', () => {
         regle: 'regle:activations',
         carteId: 50,
         boosts: [{ cle: 'b0', nom: 'Boost A', cibleId: 91, apport: 1 }],
-        consequences: [],
       },
     ]
     render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} />)
@@ -459,7 +427,7 @@ describe('cartouche du deroule', () => {
   // la suite au lieu de se croire au bout, et la remise a zero doit suivre
   // l'identite de la phase (le round), jamais la longueur de la liste.
   const menaceSeule: EtapeDeroule[] = [
-    { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+    { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
   ]
 
   it('attend la suite au lieu de se croire fini quand la liste s allonge', () => {
@@ -555,8 +523,8 @@ describe('cartouche du deroule', () => {
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
 
     const roundSuivant: EtapeDeroule[] = [
-      { cle: 'z1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
-      { cle: 'z2', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
+      { cle: 'z1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+      { cle: 'z2', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [] },
     ]
     rerender(
       <DeroulePhase
@@ -581,7 +549,7 @@ describe('cartouche du deroule', () => {
 
     const plusLongue: EtapeDeroule[] = [
       ...etapes,
-      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [], consequences: [] },
+      { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [] },
     ]
     rerender(
       <DeroulePhase
@@ -730,7 +698,6 @@ describe('le bilan de fin de phase', () => {
     cibleNom: 'Colossus',
     montant: 3,
     boosts: [],
-    consequences: [],
     ...extra,
   })
 
@@ -766,7 +733,6 @@ describe('le bilan de fin de phase', () => {
         restant: 6,
         plafond: 8,
         boosts: [],
-        consequences: [],
       },
       coup({ cle: 'a', montant: 6, restant: 8 }),
     ]
@@ -821,7 +787,6 @@ describe('le bilan de fin de phase', () => {
         regle: 'regle:revelation',
         carteId: 77,
         boosts: [],
-        consequences: [],
       },
     ]
     render(<DeroulePhase etapes={rienDuTout} onTerminer={() => {}} />)
@@ -868,7 +833,7 @@ describe('le bilan de fin de phase', () => {
   // les autres. L'etape qui a mis le heros a terre reste affichee, marquee, et
   // le deroule n'affiche RIEN au-dela.
   const chuteDeColossus: EtapeDeroule[] = [
-    { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+    { cle: 'x', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
     {
       cle: 'y',
       temps: 'mechant',
@@ -882,7 +847,6 @@ describe('le bilan de fin de phase', () => {
       restant: 0,
       defaite: true,
       boosts: [],
-      consequences: [],
     },
     {
       cle: 'z',
@@ -895,7 +859,6 @@ describe('le bilan de fin de phase', () => {
       cibleNom: 'Spider-Man',
       montant: 2,
       boosts: [],
-      consequences: [],
     },
   ]
 

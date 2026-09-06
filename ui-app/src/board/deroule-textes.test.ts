@@ -27,7 +27,6 @@ const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   auteurNom: 'Ultron',
   cibleNom: 'Shuri',
   boosts: [],
-  consequences: [],
   ...extra,
 })
 
@@ -225,7 +224,6 @@ describe('les phrases du bilan', () => {
       titre: 'bilan',
       regle: '',
       boosts: [],
-      consequences: [],
       bilan: [],
     }
     expect(titreEtape(etapeBilan)).toBe('Fin de la phase du méchant')

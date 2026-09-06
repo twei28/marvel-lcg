@@ -13,7 +13,6 @@ const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   titre: 'attaque',
   regle: 'regle:activations',
   boosts: [],
-  consequences: [],
   ...extra,
 })
 

@@ -69,9 +69,8 @@ export type BoostDeroule = {
 /**
  * Une ligne du bilan de fin de phase : ce qu'UNE cible a encaisse en tout.
  *
- * Sa propre forme, distincte de `consequences` : une consequence est un texte
- * deja redige, alors qu'une ligne de bilan porte des NOMBRES, que le bilan
- * additionne et que l'affichage met en langue au dernier moment.
+ * Elle porte des NOMBRES, jamais un texte deja redige : le bilan les
+ * additionne, et l'affichage les met en langue au dernier moment.
  */
 export type LigneBilan = {
   cle: string
@@ -153,7 +152,6 @@ export type EtapeDeroule = {
    */
   plafond?: number
   boosts: BoostDeroule[]
-  consequences: { cle: string; texte: string }[]
   /**
    * Ce coup a mis un HEROS a terre. Absent partout ailleurs, y compris sur
    * l'etape ordinaire qui l'a precede.
@@ -257,10 +255,10 @@ export function etapesDeroule(
   const menace = duRound.filter(
     (e) => tempsDe(e.phase) === 'menace' && e.type === 'threat'
   )
-  // Une etape PAR manigance touchee. Une seule etape suivie de la liste de ses
-  // consequences disait deux fois la meme chose : « Menace sur la manigance
-  // principale », puis « L'Effraction ! gagne 2 menaces ». Le fait tient en
-  // une phrase, et chaque manigance a son propre compteur.
+  // Une etape PAR manigance touchee. Une seule etape suivie d'une liste disait
+  // deux fois la meme chose : « Menace sur la manigance principale », puis
+  // « L'Effraction ! gagne 2 menaces ». Le fait tient en une phrase, et chaque
+  // manigance a son propre compteur.
   for (const e of menace) {
     etapes.push({
       cle: `menace:${e.cle}`,
@@ -293,7 +291,6 @@ export function etapesDeroule(
       restant: e.restant,
       plafond: e.plafond,
       boosts: [],
-      consequences: [],
     })
   }
 
@@ -332,7 +329,6 @@ export function etapesDeroule(
         cibleId: boost.id,
         apport: boost.apport,
       })),
-      consequences: [],
     })
   })
 
@@ -384,7 +380,6 @@ export function etapesDeroule(
       // construit a partir de `auteurNom` et `cibleNom`.
       cibleNom: e.nomCarte,
       boosts: [],
-      consequences: [],
     })
   }
 
@@ -564,7 +559,6 @@ export function avecBilan(
     // reference, c'est le compte de ce qui vient de se passer.
     regle: '',
     boosts: [],
-    consequences: [],
     bilan: lignesBilan(etapes, pvMaxParNom),
   }
   // Le tri, plutot qu'un simple `push` : `bilan` est le dernier de ORDRE, donc

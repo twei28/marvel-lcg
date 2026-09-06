@@ -402,13 +402,6 @@ export function DeroulePhase({
             ))}
           </ul>
         ) : null}
-        {etape.consequences.length > 0 ? (
-          <ul className="deroule-consequences">
-            {etape.consequences.map((consequence) => (
-              <li key={consequence.cle}>{consequence.texte}</li>
-            ))}
-          </ul>
-        ) : null}
         {/* Le bilan de fin de phase : ce que le joueur vient d'encaisser, en
             deux lignes, au moment ou il decide de son tour. Une liste VIDE
             n'est pas une absence : elle dit que la phase n'a rien coute, et le

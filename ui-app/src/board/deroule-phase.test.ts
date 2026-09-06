@@ -101,7 +101,7 @@ describe('etapesDeroule', () => {
 
   it('fait une etape PAR manigance touchee par la menace', () => {
     // Une seule etape a deux lignes disait deux fois la meme chose : le titre
-    // generique, puis la liste des consequences. Une etape par manigance dit
+    // generique, puis le detail juste en dessous. Une etape par manigance dit
     // chaque fait une fois, avec son propre compteur.
     // Le journal empile la PLUS RECENTE en tete (« Le Braquage » ici) : les
     // etapes doivent ressortir dans l'ordre ou les menaces ont ete posees.
@@ -778,7 +778,6 @@ describe('la defaite d un heros', () => {
       titre: 'attaque',
       regle: 'regle:activations',
       boosts: [],
-      consequences: [],
       ...(defaite ? { defaite } : {}),
     })
 
