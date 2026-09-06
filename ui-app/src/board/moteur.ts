@@ -624,11 +624,24 @@ export class Moteur {
   private mode: ModePhaseMechant = 'detaille'
 
   setModePhaseMechant(mode: ModePhaseMechant) {
+    // UN MODE INCHANGE N'EST PAS UN CHANGEMENT DE MODE, et cette ligne est le
+    // rythme de toute la phase du mechant.
+    //
+    // Mesure en partie reelle (07/09/2026, She-Hulk contre Rhino, pile
+    // d'appels relevee dans le navigateur) : board.tsx redit le mode au moteur
+    // dans un effet, et cet effet rejoue a CHAQUE rendu du plateau, donc a
+    // chaque trame. Chaque trame retenue etait ainsi relachee dans la
+    // milliseconde, par ce chemin-ci et par lui seul : le cartouche du deroule
+    // n'avait aucune autorite sur le rythme, quoi qu'il decide. Toute la phase
+    // du mechant defilait d'un coup, sans un clic.
+    //
+    // La stabilite de l'appelant a ete corrigee aussi (board.tsx,
+    // `reglerModePhase` memorise), mais la garde reste ici : c'est ici que la
+    // regle se dit — on ne relache une trame retenue que lorsque le mode
+    // CHANGE VRAIMENT, parce qu'un mode qui n'attend plus ne doit pas laisser
+    // une trame en attente d'un geste qui n'arrivera jamais.
+    if (this.mode === mode) return
     this.mode = mode
-    // Un accuse deja retenu ne doit pas rester en attente d'un geste qui
-    // n'arrivera plus : changer de mode le libere immediatement. (L'ancien
-    // mode « manuel », seul a devoir survivre a un changement de mode, a
-    // disparu : plus rien n'exempte donc ce cas.)
     if (this.trameEnAttente) void this.continuer()
   }
 

@@ -393,4 +393,44 @@ describe('le cartouche branche sur un vrai moteur', () => {
     await laisserTourner()
     expect(serveur.accuses).toEqual([101, 102, 103])
   })
+
+  // LE DEFAUT LE PLUS COUTEUX DE LA JOURNEE, et le seul qu'aucun test du
+  // cartouche ne pouvait voir : ce n'est pas le cartouche qui relachait le
+  // moteur, c'est le plateau qui redisait son MODE.
+  //
+  // board.tsx redit le mode au moteur dans un effet. Cet effet dependait d'une
+  // fonction recreee a chaque rendu, donc il rejouait a chaque trame — et
+  // `setModePhaseMechant` relachait la trame retenue « pour ne pas la laisser
+  // en attente d'un geste qui n'arrivera plus ». Mesure en partie reelle
+  // (07/09/2026, pile d'appels relevee dans le navigateur) : la phase du
+  // mechant entiere defilait sans un clic, quoi que le cartouche decide.
+  it('ne relache rien quand on redit au moteur le mode qu il a deja', async () => {
+    await ouvrir()
+    expect(serveur.accuses).toEqual([])
+    // Le plateau redit son mode, dix fois, comme le faisait son effet.
+    for (let n = 0; n < 10; n += 1) {
+      await act(async () => {
+        moteur.setModePhaseMechant('detaille')
+      })
+      await laisserTourner()
+    }
+    // Le moteur n'a pas bouge d'une trame, et le joueur lit toujours la meme
+    // etape.
+    expect(serveur.accuses).toEqual([])
+    expect(serveur.rang).toBe(0)
+    expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+  })
+
+  // Le contre-cas, qui garde la raison d'etre du relachement : passer en
+  // Instantane, c'est dire qu'on n'attendra plus rien, et une trame retenue ne
+  // doit pas rester suspendue a un geste qui n'arrivera jamais.
+  it('relache la trame retenue quand le mode CHANGE vraiment', async () => {
+    await ouvrir()
+    expect(serveur.accuses).toEqual([])
+    await act(async () => {
+      moteur.setModePhaseMechant('instantane')
+    })
+    await laisserTourner()
+    expect(serveur.accuses[0]).toBe(101)
+  })
 })

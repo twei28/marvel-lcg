@@ -826,17 +826,31 @@ function usePartieEnCours(playerId: number) {
     [moteur]
   )
 
+  // STABLES d'un rendu a l'autre, et ce n'est pas un detail de style : le
+  // plateau se redessine a chaque trame du moteur, et `reglerModePhase` est
+  // la dependance d'un effet (plus bas) qui redit le mode au moteur. Recreee a
+  // chaque rendu, elle relancait cet effet a chaque trame — et
+  // `setModePhaseMechant` relachait alors la trame retenue. Mesure en partie
+  // reelle le 07/09/2026 : la phase du mechant entiere defilait sans un clic.
+  const continuer = useCallback(() => moteur.continuer(), [moteur])
+  const reconnecter = useCallback(() => moteur.reconnecterMaintenant(), [moteur])
+  const reglerModePhase = useCallback(
+    (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
+    [moteur]
+  )
+  const avancerPasAPas = useCallback(() => moteur.avancerMaintenant(), [moteur])
+
   return {
     etat,
     repondre,
-    continuer: () => moteur.continuer(),
-    reconnecter: () => moteur.reconnecterMaintenant(),
-    reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
+    continuer,
+    reconnecter,
+    reglerModePhase,
     // Branche sur le cartouche du deroule detaille (DeroulePhase, plus bas) :
     // c'est lui qui relache le moteur, etape par etape, et lui seul. La
     // vitesse de l'avance auto ne se regle plus ici : c'est une horloge du
     // cartouche (prop delaiAvanceMs), le moteur n'en a plus.
-    avancerPasAPas: () => moteur.avancerMaintenant(),
+    avancerPasAPas,
   }
 }
 
