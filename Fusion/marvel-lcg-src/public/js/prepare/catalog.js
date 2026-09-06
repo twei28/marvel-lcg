@@ -262,13 +262,41 @@ export const catalog = {
                                        && !(x.d.metadata && x.d.metadata.indisponible)).map(({ id, d }) => {
             const heroCardId = d.hero[0].split(",")[0];
             const c = cards.get(heroCardId);
+            // La face ALTER-EGO, deuxieme id de l'entree « recto,verso ». Ses
+            // traits ne sont pas ceux du heros — Spider-Man est AVENGER, Peter
+            // Parker est GENIUS — et la recherche de la grille mord sur les
+            // deux : on cherche un heros par ce qu'il EST des deux cotes.
+            const alterEgoCardId = String(d.hero[0]).split(",")[1] || "";
+            const ae = alterEgoCardId ? cards.get(alterEgoCardId) : null;
+            const traitsHeros = c ? c.traits || [] : [];
+            const traitsAlterEgo = ae ? ae.traits || [] : [];
+            const traitsDesDeuxFaces = [...traitsHeros, ...traitsAlterEgo];
+            const traitsCherchables = traitsDesDeuxFaces.concat(
+                traitsDesDeuxFaces
+                    .map((x) => String(x).replace(/[^0-9a-zA-Z]+/g, ""))
+                    .filter((x, i) => x !== traitsDesDeuxFaces[i]));
             const extension = heroExt[id] || "";
+            const nom = cleanName(c && c.name) || cleanName(d.name) || titleize(id);
             return {
                 id, heroCardId, baseDeckId: id, deck: d,
-                name: cleanName(c && c.name) || cleanName(d.name) || titleize(id),
+                name: nom,
                 hp: c ? c.hp : undefined,
                 handSize: cards.handSizeOf(heroCardId),
-                traits: c ? c.traits || [] : [],
+                traits: traitsHeros,
+                alterEgoCardId,
+                traitsAlterEgo,
+                // Botte de foin de la recherche, en minuscules et calculee une
+                // seule fois : refaire un toLowerCase() sur deux cents heros a
+                // chaque frappe pour un resultat toujours identique serait du
+                // travail jete. Les traits restent en anglais dans les deux
+                // langues (les textes francais disent « le trait AVENGER »),
+                // donc rien a traduire ici.
+                //
+                // Chaque trait ponctue est range DEUX fois, avec et sans sa
+                // ponctuation : personne ne tape « S.H.I.E.L.D » avec ses
+                // points, et « webwarrior » doit trouver WEB-WARRIOR autant que
+                // « web-warrior ». Meme geste que teamFromTraits plus haut.
+                recherche: [nom, ...traitsCherchables].join(" ").toLowerCase(),
                 team: teamFromTraits(c),
                 extension,
                 vague: vagueDeLExtension(extension),

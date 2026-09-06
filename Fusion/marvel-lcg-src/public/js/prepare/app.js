@@ -966,7 +966,7 @@ function stepTeam() {
     wrap.append(el("div", { class: "filterbar" },
         el("input", {
             class: "search",
-            placeholder: t("Rechercher un héros"),
+            placeholder: t("Rechercher un héros ou un trait"),
             value: f.q,
             oninput: (e) => { f.q = e.target.value; refreshHeroGrid(); },
         }),
@@ -1055,7 +1055,11 @@ async function refreshHeroGrid(pre) {
     const q = f.q.toLowerCase();
     const favs = prefs.favHeroes();
     const list = heroes.filter((h) =>
-        (!q || h.name.toLowerCase().includes(q)) &&
+        // Le nom ET les traits des deux faces (voir `recherche` dans
+        // catalog.js) : « avenger » ne rend que les Avengers, « genius » que
+        // les alter-ego savants. Sans les traits, monter une equipe thematique
+        // obligeait a connaitre par coeur qui porte quoi.
+        (!q || h.recherche.includes(q)) &&
         (!f.vague || String(h.vague) === f.vague) &&
         (!f.fav || favs.includes(h.id)) &&
         // Le homebrew est masqué par défaut et s'affiche seul quand on le coche.

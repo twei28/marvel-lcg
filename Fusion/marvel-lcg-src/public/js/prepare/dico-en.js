@@ -40,6 +40,7 @@ export const DICO_EN_BASE = {
     "Rassemble tes héros": "Assemble your heroes",
     "Sélection prête": "Selection ready",
     "Rechercher un héros": "Search for a hero",
+    "Rechercher un héros ou un trait": "Search by hero or trait",
     "Favoris": "Favorites",
     "Toutes les vagues": "All waves",
     // Le mot « Vague » se traduit, pas le titre de la boite qui suit : celui-ci
