@@ -122,8 +122,17 @@ class SenderUnit:
             return self.pre_message
 
     # DefendAgainstAttack
-    # No `CanBeInstead`
-    class WhenUnitWouldDefend(TriggerUnitMessage, AttackerMessage, CanGainValueMessage, DefenderMessage):
+    # CORRECTIF (05/09/2026, pack throg) : `CanBeInstead` AJOUTE. La defense de
+    # base etait le SEUL des quatre pouvoirs de base a ne pas pouvoir etre
+    # remplace — `WhenUnitWouldAttack`, `WhenUnitWouldThwart`,
+    # `WhenUnitWouldRecovery` et `WhenUnitWouldScheme` portent tous
+    # `CanBeInstead` depuis toujours. Une carte qui dit « When you would use a
+    # basic power, ... instead » (tg016 Chomped) n'avait donc aucune prise sur
+    # la defense, et le pouvoir passait en silence.
+    # Le traitement est desormais IDENTIQUE aux trois autres : le cout
+    # d'inclinaison de `ThisCanDefense` (friend.py:236) est paye, comme celui
+    # de `ThisCanAttack` (friend.py:99), et seul l'EFFET est remplace.
+    class WhenUnitWouldDefend(TriggerUnitMessage, AttackerMessage, CanGainValueMessage, DefenderMessage, CanBeInstead):
         def __init__(self, unit: 'Unit2', by_effect: 'Effect', property: 'DefenseProperty', being_atk_message: 'Message.WhenUnitBeingAttack', ) -> None:
             from game.message import Message
             self.by_effect: Final = by_effect

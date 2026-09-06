@@ -50,6 +50,13 @@ class CanDefense(CardFace):
         would_defense_message = Message.WhenUnitWouldDefend(unit, by_effect, property, being_atk_message)
         would_defense_message.Send()
 
+        # CORRECTIF (05/09/2026, pack throg) : « ... instead » sur une defense.
+        # Calque exact de can_attack.py et can_thwart.py:105. Sans `SetDefender`,
+        # `being_atk_message.defense_messages` reste vide : la DEF ne reduit
+        # donc rien (can_attack.py:231) et aucun `AfterUnitDefendEnd` ne part.
+        if would_defense_message.is_be_instead:
+            return None
+
         if would_defense_message.property.is_basic_power:
             use_basic_power_message = Message.WhenUnitUseBasicPower(self.card.CastTo(Unit2), "DEF", would_defense_message)
             use_basic_power_message.Send()
