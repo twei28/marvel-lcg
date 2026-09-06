@@ -235,6 +235,19 @@ export function DeroulePhase({
   // cartouche restait sur son etape pendant que le moteur filait : le joueur
   // n'avait plus aucune autorite sur le rythme. Un « Precedent » y met fin.
   const [defilement, setDefilement] = useState(false)
+  // La derniere etape que le joueur a VALIDEE, et l'ETAT dans lequel il l'a
+  // validee. Les deux comptent, et c'est tout le sujet de la reprise : une
+  // activation s'annonce d'abord (`etat: 'annonce'`) puis se resout, et le
+  // fait resolu REMPLACE l'intention sous la meme cle, sans allonger la liste.
+  // Une etape validee en `annonce` n'est donc PAS validee en `resolu` : c'est
+  // le meme numero d'etape, mais ce n'est plus la meme chose a lire.
+  //
+  // Mesure en partie reelle (Bishop contre Ultron, mode Detaille) : sans
+  // l'etat, un clic donne pendant la fenetre d'annonce laissait le cartouche
+  // « a jour » pour toutes les trames suivantes, et le journal a saute de 192 a
+  // 262 en deux secondes — deux activations de sbires, la distribution et la
+  // revelation resolues sans qu'aucune etape n'ait ete validee.
+  const [validee, setValidee] = useState<{ cle: string; etat?: EtapeDeroule['etat'] }>()
 
   // La derniere trame pour laquelle un accuse de reception est parti. C'est LA
   // garde contre la rafale d'accuses : l'etat du cartouche se recalcule
@@ -285,6 +298,7 @@ export function DeroulePhase({
     setEnAttente(false)
     setSuspendu(false)
     setDefilement(false)
+    setValidee(undefined)
     derniereTrameAcquittee.current = undefined
   }, [identitePhase])
 
@@ -307,6 +321,27 @@ export function DeroulePhase({
 
   const etape = etapesAffichees[index]
 
+  // LES DEUX MESURES DU « PLUS RIEN A MONTRER », calculees ici parce que la
+  // sortie d'attente comme l'accuse de reception s'y appuient.
+  //
+  //  - `surLaDerniereEtape` : rien de NEUF n'est arrive depuis. C'est une
+  //    garde de fraicheur, et elle porte sur la liste entiere, pas sur l'etat
+  //    de l'etape courante. Le fait resolu n'est journalise qu'a la toute fin
+  //    de l'activation (cote moteur : apres les degats, les defaites, la
+  //    riposte) : entre l'intention et lui, le moteur rend plusieurs trames,
+  //    dont certaines fabriquent des etapes neuves (l'accomplissement de la
+  //    manigance principale, par exemple). La premiere d'entre elles doit
+  //    remettre le cartouche en retard ;
+  //  - `etapeValidee` : le joueur a valide CETTE etape DANS CET ETAT. Une
+  //    intention validee ne vaut pas validation de la resolution qui prend sa
+  //    place sous la meme cle.
+  const surLaDerniereEtape = etapesAffichees.length > 0 && index === etapesAffichees.length - 1
+  const etapeValidee =
+    etape !== undefined &&
+    validee !== undefined &&
+    validee.cle === etape.cle &&
+    validee.etat === etape.etat
+
   const avancer = () => {
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
@@ -317,6 +352,10 @@ export function DeroulePhase({
     // Un « Suivant » (clic, clavier, ou le minuteur de l'avance auto lui-meme)
     // leve la suspension posee par « Precedent ».
     setSuspendu(false)
+    // L'etape courante est validee, DANS L'ETAT OU ELLE EST AU MOMENT DU CLIC.
+    // Une intention validee ici ne vaudra pas validation de la resolution qui
+    // prendra sa place (voir `validee` et `cartoucheAJour`).
+    setValidee({ cle: etape.cle, etat: etape.etat })
     // Aucun accuse de reception ici, et c'est tout le sujet de cette reprise :
     // valider l'etape 1 sur 4 relachait le moteur, qui repartait produire la
     // suite pendant que le joueur lisait. L'accuse ne part que lorsque le
@@ -359,6 +398,10 @@ export function DeroulePhase({
     setEnAttente(false)
     setSuspendu(true)
     setDefilement(false)
+    // Relire, c'est n'etre plus a jour : le moteur doit attendre de nouveau
+    // qu'on revienne au bout. Sans cet oubli, « Precedent » relachait le
+    // moteur pendant que le joueur relisait.
+    setValidee(undefined)
     setIndex(index - 1)
   }
 
@@ -381,9 +424,15 @@ export function DeroulePhase({
   const avancerRef = useRef(avancer)
   avancerRef.current = avancer
 
-  // Sortie d'attente. Deux issues, et deux seulement :
+  // Sortie d'attente. Trois issues, et trois seulement :
   //  - une etape de plus arrive : on avance dessus TOUT SEUL. Le joueur a deja
   //    clique pour l'obtenir, il ne doit pas avoir a recliquer ;
+  //  - l'etape sur laquelle on attend CHANGE sous les yeux du joueur : une
+  //    intention qui se resout ne fait pas grandir la liste (le fait resolu
+  //    remplace le fait d'intention sous la meme cle), donc la premiere issue
+  //    ne se declenche jamais. Sans celle-ci, un clic donne sur l'intention
+  //    laissait le joueur sur « La suite arrive… » par-dessus une resolution
+  //    qu'il ne voyait pas, et il ne reprenait pied qu'a l'etape suivante ;
   //  - la phase du mechant se termine sans rien produire de plus : le
   //    cartouche ne doit pas rester affiche par-dessus le plateau pendant tout
   //    le tour du joueur.
@@ -399,6 +448,13 @@ export function DeroulePhase({
       setIndex(index + 1)
       return
     }
+    // L'etape validee n'est plus celle qu'on avait validee : elle s'est
+    // completee sur place. On sort de l'attente SANS bouger d'index, et le
+    // joueur lit la resolution la ou il lisait l'intention.
+    if (!etapeValidee) {
+      setEnAttente(false)
+      return
+    }
     if (!phaseMechantEnCours) {
       setEnAttente(false)
       setTermine(true)
@@ -407,9 +463,9 @@ export function DeroulePhase({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `onTerminer` est
     // recree a chaque rendu par board.tsx : en dependre relancerait cet effet
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
-    // quatre dependances ci-dessous sont des primitifs et decrivent a elles
+    // cinq dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, etapesAffichees.length, phaseMechantEnCours])
+  }, [enAttente, index, etapesAffichees.length, etapeValidee, phaseMechantEnCours])
 
   // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
   //
@@ -417,19 +473,22 @@ export function DeroulePhase({
   // veut dire « le joueur a valide tout ce que le cartouche sait deja ». Sans
   // cette nuance, le moteur repartirait pendant que le joueur lit.
   //
-  // Les quatre facons de n'avoir plus rien a montrer :
+  // Les facons de n'avoir plus rien a montrer :
   //  - `termine` : le cartouche a rendu la main (bilan valide, ou heros tombe
   //    alors que la phase court encore pour les autres). Il ne montrera plus
   //    rien de cette phase, donc il ne doit plus retenir le moteur ;
   //  - `partieFinie` : il n'y a plus de suite du tout, et le cartouche s'est
   //    efface derriere l'ecran de fin. Le laisser retenir figerait la table ;
   //  - aucune etape : la trame n'a rien fabrique a lire, elle file ;
-  //  - `enAttente` sur la derniere etape connue : le joueur a valide, et rien
-  //    de nouveau n'est arrive depuis. Si une etape est arrivee entre-temps,
-  //    `index + 1 < etapesAffichees.length` et la sortie d'attente ci-dessus
-  //    va l'afficher : on n'est PAS a jour, et l'ordre des effets n'y change
-  //    rien puisque le calcul se fait sur les valeurs de ce rendu-ci ;
-  //  - une ANNONCE sur laquelle le joueur ne peut rien : voir juste dessous.
+  //  - pose sur la DERNIERE etape connue (rien de neuf n'est arrive depuis) et
+  //    cette etape est validee DANS SON ETAT COURANT ;
+  //  - pose sur la derniere etape connue et c'est une ANNONCE sur laquelle le
+  //    joueur ne peut rien : voir juste dessous.
+  //
+  // Les deux dernieres portent la meme garde de fraicheur, et c'est elle qui
+  // manquait : `surLaDerniereEtape` redevient faux des qu'une etape NEUVE
+  // arrive, y compris pendant la fenetre d'annonce, ou le moteur rend
+  // plusieurs trames avant de journaliser sa resolution.
   //
   // DEUX TEMPS SEULEMENT QUAND ON PEUT VRAIMENT AGIR (decision 7 de la spec).
   // Une etape d'intention n'est pas une etape a valider : c'est la meme etape
@@ -443,6 +502,11 @@ export function DeroulePhase({
   // sans que le joueur ait rien a faire. Il n'aura qu'un clic a donner, sur
   // l'etape complete.
   //
+  // MAIS L'ETAPE COMPLETE, ELLE, SE VALIDE. C'est la nuance qui manquait : une
+  // etape validee en `annonce` ne compte pas comme validee en `resolu`, sans
+  // quoi le premier clic donne pendant la fenetre d'annonce rendait le
+  // cartouche a jour pour tout ce qui suivait.
+  //
   // SAUF si le moteur pose une question : la, il ne rendra pas la main avant
   // qu'on lui reponde, l'annonce reste affichee tout le temps de la fenetre,
   // et c'est exactement le second temps que la decision 7 reclame.
@@ -451,8 +515,7 @@ export function DeroulePhase({
     termine ||
     partieFinie ||
     etapesAffichees.length === 0 ||
-    (enAttente && index + 1 >= etapesAffichees.length) ||
-    (etapeEstAnnonce && !questionAuJoueur)
+    (surLaDerniereEtape && (etapeValidee || (etapeEstAnnonce && !questionAuJoueur)))
 
   // L'accuse de reception, seul endroit d'ou il part.
   //

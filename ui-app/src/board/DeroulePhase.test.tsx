@@ -2146,3 +2146,171 @@ describe("l'annonce d'une activation", () => {
     }
   })
 })
+
+// LE RYTHME, mesure en accuses de reception.
+//
+// Constate en partie reelle (Bishop contre Ultron, mode Detaille, avance auto
+// sur Non) : le journal a saute de 192 a 262 en moins de deux secondes, deux
+// activations de sbires, la distribution et la revelation resolues sur UN seul
+// clic. Le cartouche se croyait a jour parce que le fait RESOLU remplace le
+// fait d'intention sous la meme cle, sans allonger la liste : rien ne le
+// remettait « en retard ».
+//
+// La regle que ces cas verrouillent : le cartouche n'est a jour que s'il est
+// pose sur la DERNIERE etape connue, et que celle-ci est soit validee DANS SON
+// ETAT COURANT, soit une intention sur laquelle le joueur ne peut rien.
+describe('le rythme des accuses de reception', () => {
+  const annonce: EtapeDeroule = {
+    cle: 'activation:1',
+    temps: 'sbires',
+    titre: 'manigance',
+    regle: 'regle:activations',
+    etat: 'annonce',
+    carteId: 50,
+    cibleId: 12,
+    auteurNom: 'Drone',
+    cibleNom: 'Assault on NORAD',
+    valeurAnnoncee: 1,
+    boosts: [],
+  }
+  // LA MEME etape, completee : meme cle, meme place dans la liste.
+  const resolue: EtapeDeroule = {
+    ...annonce,
+    etat: 'resolu',
+    valeurAnnoncee: undefined,
+    montant: 1,
+    restant: 5,
+  }
+  const menace: EtapeDeroule = {
+    cle: 'menace:0:9',
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    cibleNom: 'Assault on NORAD',
+    montant: 1,
+    boosts: [],
+  }
+
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  /** Le cartouche branche sur un moteur qui retient ses trames une par une. */
+  const cartouche = (
+    onSuivant: () => void,
+    questionAuJoueur = false
+  ) => (liste: EtapeDeroule[], trameRetenue: number | undefined) => (
+    <DeroulePhase
+      etapes={liste}
+      identitePhase={3}
+      phaseMechantEnCours
+      questionAuJoueur={questionAuJoueur}
+      trameRetenue={trameRetenue}
+      onSuivant={onSuivant}
+      onTerminer={() => {}}
+    />
+  )
+
+  // LE CAS CENTRAL. L'intention est acquittee toute seule (decision 7) ; le
+  // fait resolu qui prend sa place est une etape a valider, comme n'importe
+  // quelle activation. Sans cela, un clic donne sur l'intention laissait le
+  // cartouche « a jour » pour toutes les trames suivantes.
+  it("redemande une validation quand le fait resolu remplace l'intention", () => {
+    const accuses = vi.fn()
+    const vue = cartouche(accuses)
+    const { rerender } = render(vue([annonce], 11))
+    // L'intention ne coute rien au joueur : elle part toute seule.
+    expect(accuses).toHaveBeenCalledTimes(1)
+    // Le joueur clique pendant la fenetre d'annonce. Cela ne doit pas valider
+    // par avance la resolution, qui n'est pas encore arrivee.
+    fireEvent.click(suivant())
+    rerender(vue([annonce], undefined))
+    rerender(vue([resolue], 12))
+    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(accuses).toHaveBeenCalledTimes(1)
+    // C'est LE clic de l'activation : le joueur a lu le resultat.
+    fireEvent.click(suivant())
+    expect(accuses).toHaveBeenCalledTimes(2)
+  })
+
+  // Le fait resolu n'est journalise qu'a la TOUTE FIN de l'activation (cote
+  // moteur : apres les degats, les defaites, la riposte). Entre l'intention et
+  // lui, le moteur rend plusieurs trames, dont certaines fabriquent des etapes
+  // NEUVES (l'accomplissement de la manigance principale, par exemple). Le
+  // cartouche doit redevenir en retard des la premiere.
+  it("ne relache plus rien des qu'une etape neuve arrive pendant la fenetre d'annonce", () => {
+    const accuses = vi.fn()
+    const vue = cartouche(accuses)
+    const { rerender } = render(vue([annonce], 11))
+    expect(accuses).toHaveBeenCalledTimes(1)
+    // Une etape de plus, alors que l'intention n'est toujours pas resolue.
+    rerender(vue([annonce], undefined))
+    rerender(vue([annonce, { ...menace, cle: 'menace:1:9' }], 12))
+    expect(accuses).toHaveBeenCalledTimes(1)
+    rerender(vue([annonce, { ...menace, cle: 'menace:1:9' }], undefined))
+    rerender(vue([annonce, { ...menace, cle: 'menace:1:9' }], 13))
+    expect(accuses).toHaveBeenCalledTimes(1)
+  })
+
+  // Trois activations d'affilee : trois clics, trois accuses « d'apres
+  // resolution », jamais plus.
+  it('demande exactement un clic par activation resolue', () => {
+    const accuses = vi.fn()
+    const vue = cartouche(accuses)
+    const inten = (n: number): EtapeDeroule => ({ ...annonce, cle: `activation:${n}` })
+    const finie = (n: number): EtapeDeroule => ({ ...resolue, cle: `activation:${n}` })
+    let trame = 10
+    let liste: EtapeDeroule[] = []
+    const trameSuivante = (suite: EtapeDeroule[]) => {
+      liste = suite
+      rerender(vue(liste, undefined))
+      rerender(vue(liste, ++trame))
+    }
+    const { rerender } = render(vue([inten(1)], trame))
+    // Chaque intention part toute seule ; chaque resolution attend son clic.
+    const accusesApresClic: number[] = []
+    for (let n = 1; n <= 3; n += 1) {
+      const debut = liste.slice(0, n - 1).map((_, rang) => finie(rang + 1))
+      if (n > 1) trameSuivante([...debut, inten(n)])
+      trameSuivante([...debut, finie(n)])
+      fireEvent.click(suivant())
+      accusesApresClic.push(accuses.mock.calls.length)
+    }
+    // 3 intentions acquittees toutes seules + 3 clics = 6 accuses, pas un de
+    // plus : aucune trame n'est passee sans etre lue.
+    expect(accusesApresClic).toEqual([2, 4, 6])
+  })
+
+  // Un clic donne sur l'intention ne doit pas FAIRE PERDRE la resolution : le
+  // cartouche restait sinon sur « La suite arrive… » (la sortie d'attente ne
+  // reagissait qu'a l'allongement de la liste, et la resolution n'allonge
+  // rien) et le joueur ne reprenait pied qu'a l'etape suivante.
+  it("montre la resolution meme quand le joueur a clique sur l'intention", () => {
+    const accuses = vi.fn()
+    const vue = cartouche(accuses)
+    const { rerender } = render(vue([annonce], 11))
+    fireEvent.click(suivant())
+    expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
+    rerender(vue([annonce], undefined))
+    rerender(vue([resolue], 12))
+    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('→ 1 menace')).toBeInTheDocument()
+    expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
+  })
+
+  // Avec une question posee au joueur local, l'intention n'est PAS acquittee :
+  // le moteur ne rendra pas la main avant qu'on lui reponde, et le cartouche
+  // dit ce qui va arriver pendant qu'on peut encore s'y opposer.
+  it("n'acquitte pas une intention quand le moteur attend une reponse", () => {
+    const accuses = vi.fn()
+    const { rerender } = render(cartouche(accuses, true)([annonce], 11))
+    expect(accuses).not.toHaveBeenCalled()
+    expect(screen.getByText('tu peux défendre ou répondre')).toBeInTheDocument()
+    // La reponse donnee, le moteur resout : une seule validation demandee.
+    rerender(cartouche(accuses, false)([annonce], 11))
+    rerender(cartouche(accuses, false)([resolue], 12))
+    expect(accuses).toHaveBeenCalledTimes(1)
+    fireEvent.click(suivant())
+    expect(accuses).toHaveBeenCalledTimes(2)
+  })
+})
