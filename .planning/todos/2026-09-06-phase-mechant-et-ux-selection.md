@@ -37,6 +37,52 @@ Passer par `superpowers:brainstorming` avant de toucher au code : les deux
 sujets sont des refontes, pas des correctifs, et le périmètre est à fixer avec
 l'utilisateur avant d'écrire quoi que ce soit.
 
+## Où en est le chantier 1, au soir du 06/09
+
+**Spec validée** (54 décisions, une par question) :
+`docs/superpowers/specs/2026-09-06-phase-mechant-deroule-detaille-design.md`.
+
+**Livraison 1, le squelette : faite.** Le mode « Détaillé » existe, le cartouche
+découpe la phase en étapes, chacune avec son titre, sa règle du jeu, ses
+conséquences, et un bouton « Suivant ». Les étapes de narration technique du
+moteur défilent seules, sans clic.
+
+**Livraison 2, la mise en scène : faite.** Un bandeau rouge traverse l'écran
+avec un éclair à l'ouverture de la phase (deux secondes, une seule à partir du
+round 4), la carte qui agit grandit sur un plateau assombri, un trait fléché
+part vers sa cible, les cartes de boost se retournent une par une. Tout se
+débraye quand on coupe les animations. 662 tests.
+
+**Contrôle en partie réelle : six points sur huit sont bons.** Rapport complet
+dans `.superpowers/sdd/2026-09-06-deroule-phase-mechant-mise-en-scene/task-7-report.md`.
+
+**Le défaut qui commande la livraison 3 : le moteur n'attend pas le cartouche.**
+Mesuré en jeu : cinquante-deux entrées de journal en sept cent cinquante
+millisecondes pendant que le cartouche en est encore à sa première étape. La
+phase entière est jouée avant qu'on ait lu une ligne, et le cartouche raconte
+ensuite un passé révolu. On a vu le moteur poser sa question sur l'ordre des
+sbires avant que le cartouche ait annoncé la moindre activation, et le cartouche
+commenter une manigance déjà vaincue et remplacée.
+
+Cause exacte : `ui-app/src/board.tsx:2209` passe `onTerminer={() => undefined}`,
+et le cartouche n'a aucun rappel « Suivant ». Le moteur SAIT attendre
+(`decisionAccuse` rend `attendre-clic` pour le mode détaillé,
+`moteur.ts:200-202`) et la méthode qui le relâche existe déjà
+(`moteur.avancerMaintenant()`, exposée en `board.tsx:815`). La porte est là,
+personne ne tient la clé : seul le filet anti-blocage à six secondes la rouvre.
+
+Ce n'est pas un branchement d'une ligne. Le cartouche construit ses étapes
+depuis le journal, le moteur retient ses trames sur un autre critère : la
+correspondance entre une étape lue et une trame retenue est à concevoir. C'est
+la première chose à trancher avec l'utilisateur pour la livraison 3.
+
+**Reste aussi pour la livraison 3** (déjà cadré dans la spec, jamais commencé) :
+les cas particuliers (ennemi étourdi, étape vide, héros vaincu, défaite en
+pleine phase, sbire qui arrive en cours de phase), le récap raccourci et sa
+réintroduction en mode détaillé, le menu Options avec ses quatre choix
+expliqués, la version mobile, les étapes de distribution et de premier joueur,
+et le déroulé des effets pendant le tour du joueur.
+
 ## Reste ouvert de la session du 05/09
 
 - **Trois decks custom gardés par prudence** : `Doctor_Doom_custom.json`,
