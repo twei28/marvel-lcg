@@ -11,13 +11,16 @@ import { t } from './langue'
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
 const REDIGES = new Set(['attaque', 'manigance', 'menace'])
 
-export function titreEtape(etape: EtapeDeroule, noms: (id: number) => string): string {
+export function titreEtape(etape: EtapeDeroule): string {
   if (!REDIGES.has(etape.titre)) return etape.titre
 
   if (etape.titre === 'menace') return t('Menace sur la manigance principale')
 
-  const auteur = etape.carteId !== undefined ? noms(etape.carteId) : ''
-  const cible = etape.cibleId !== undefined ? noms(etape.cibleId) : ''
+  // Les noms viennent du FAIT (voir deroule-phase.ts), pas d'une recherche
+  // dans l'index du monde courant : une carte morte pendant la phase n'y est
+  // plus, et l'etape affichait alors « Ultron attaque #88 ».
+  const auteur = etape.auteurNom ?? ''
+  const cible = etape.cibleNom ?? ''
   return etape.titre === 'attaque'
     ? `${auteur} ${t('attaque')} ${cible}`
     : `${auteur} ${t('complote contre')} ${cible}`

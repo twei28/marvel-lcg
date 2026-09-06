@@ -25,12 +25,10 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 
 export function DeroulePhase({
   etapes,
-  noms,
   onTerminer,
   onToutDerouler,
 }: {
   etapes: EtapeDeroule[]
-  noms: (id: number) => string
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
   /** « Tout derouler » : les etapes restantes defilent sans attendre. */
@@ -49,6 +47,14 @@ export function DeroulePhase({
   // derniere etape, y compris pendant le tour du joueur suivant.
   const [termine, setTermine] = useState(false)
 
+  // Signature STABLE du contenu, pas l'identite du tableau : board.tsx
+  // recalcule `etapes` par useMemo, mais ses dependances (le monde re-parse en
+  // JSON a chaque trame) changent d'identite en permanence meme quand rien
+  // n'a bouge. Suivre `etapes` directement aurait reinitialise le cartouche
+  // (donc rouvert une phase deja terminee) a chaque carte jouee au tour
+  // suivant, pile par-dessus le bouton de fin de tour.
+  const signature = etapes.map((e) => e.cle).join('|')
+
   // Une nouvelle phase repart de sa premiere etape. `termine` doit se
   // reinitialiser ICI, pas seulement `index` : sinon le cartouche ne
   // reapparaitrait plus jamais a la phase du mechant suivante, ce qui est le
@@ -56,7 +62,11 @@ export function DeroulePhase({
   useEffect(() => {
     setIndex(0)
     setTermine(false)
-  }, [etapes])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `signature`
+    // resume `etapes` a son CONTENU (les cles, dans l'ordre) ; c'est elle qui
+    // doit piloter la reinitialisation, pas l'identite du tableau qui la
+    // porte.
+  }, [signature])
 
   const etape = etapes[index]
 
@@ -103,6 +113,17 @@ export function DeroulePhase({
       ) {
         return
       }
+      // On ne confisque pas Entree/Espace a un bouton du PLATEAU : seul un
+      // element interactif EXTERIEUR au cartouche doit garder son activation
+      // au clavier normale. Un bouton du cartouche lui-meme (Suivant,
+      // Precedent) reste pris en charge ici, comme avant.
+      if (
+        cible instanceof HTMLElement &&
+        cible.closest('button, a, select, [role="button"]') &&
+        !cible.closest('.deroule-phase')
+      ) {
+        return
+      }
       if (evenement.key === 'Enter' || evenement.key === ' ') {
         evenement.preventDefault()
         avancer()
@@ -138,7 +159,14 @@ export function DeroulePhase({
         ))}
       </ol>
 
-      <p className="deroule-titre">{titreEtape(etape, noms)}</p>
+      <p className="deroule-titre">{titreEtape(etape)}</p>
+      {etape.consequences.length > 0 ? (
+        <ul className="deroule-consequences">
+          {etape.consequences.map((consequence) => (
+            <li key={consequence.cle}>{consequence.texte}</li>
+          ))}
+        </ul>
+      ) : null}
       <p className="deroule-regle">{regleEtape(etape)}</p>
       {etape.brut ? <p className="deroule-brut">{etape.brut}</p> : null}
 

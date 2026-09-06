@@ -8,8 +8,6 @@ import { describe, expect, it } from 'vitest'
 import { regleEtape, titreEtape } from './deroule-textes'
 import type { EtapeDeroule } from './deroule-phase'
 
-const noms = (id: number) => ({ 50: 'Ultron', 12: 'Shuri' })[id] ?? `Carte ${id}`
-
 const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   cle: 'k',
   temps: 'activations',
@@ -17,6 +15,8 @@ const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   regle: 'regle:activations',
   carteId: 50,
   cibleId: 12,
+  auteurNom: 'Ultron',
+  cibleNom: 'Shuri',
   boosts: [],
   consequences: [],
   ...extra,
@@ -24,16 +24,17 @@ const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
 
 describe('phrases du deroule', () => {
   it('nomme l attaquant et sa cible', () => {
-    expect(titreEtape(etape(), noms)).toBe('Ultron attaque Shuri')
+    expect(titreEtape(etape())).toBe('Ultron attaque Shuri')
   })
 
   it('dit la manigance autrement que l attaque', () => {
-    expect(titreEtape(etape({ titre: 'manigance' }), noms)).toBe('Ultron complote contre Shuri')
+    expect(titreEtape(etape({ titre: 'manigance' }))).toBe('Ultron complote contre Shuri')
   })
 
   it('annonce la menace sans nommer de cible', () => {
-    expect(titreEtape(etape({ temps: 'menace', titre: 'menace', carteId: undefined, cibleId: undefined }), noms))
-      .toBe('Menace sur la manigance principale')
+    expect(
+      titreEtape(etape({ temps: 'menace', titre: 'menace', carteId: undefined, cibleId: undefined, auteurNom: undefined, cibleNom: undefined }))
+    ).toBe('Menace sur la manigance principale')
   })
 
   it('rappelle la regle du point 1', () => {
@@ -48,7 +49,15 @@ describe('phrases du deroule', () => {
   it('laisse passer un titre deja redige', () => {
     // Une carte revelee arrive avec son titre venu du journal : on ne le
     // reecrit pas.
-    expect(titreEtape(etape({ temps: 'revelation', titre: 'Icy Grip révélée' }), noms))
+    expect(titreEtape(etape({ temps: 'revelation', titre: 'Icy Grip révélée' })))
       .toBe('Icy Grip révélée')
+  })
+
+  it('nomme d apres le fait, pas d apres une recherche externe', () => {
+    // Une carte morte pendant la phase n'est plus dans l'index du monde au
+    // moment ou l'etape s'affiche : le titre doit rester juste puisqu'il lit
+    // le nom porte par l'etape elle-meme, jamais une resolution a l'affichage.
+    expect(titreEtape(etape({ auteurNom: 'Klaw', cibleNom: 'Drone détruit' })))
+      .toBe('Klaw attaque Drone détruit')
   })
 })

@@ -88,8 +88,10 @@ import {
   evenementNarreImportant,
   ecrireDelaiPasAPas,
   ecrireModePhaseMechant,
+  libelleModePhase,
   lireDelaiPasAPas,
   lireModePhaseMechant,
+  modeSuivant,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
@@ -1233,23 +1235,23 @@ function PanneauOptions({
             actif={autoCible}
             onBascule={basculerAutoCible}
           />
-          {/* TROIS positions, plus une case a cocher : « Instantane » enchainait
-              tout si vite qu'on ne voyait plus ce qu'on encaissait, et « Manuel »
-              demandait un clic a chaque fois. « Pas a pas » est le chainon
-              manquant, et le defaut. */}
+          {/* QUATRE positions : « Detaille » (une etape a la fois, le defaut)
+              -> « Manuel » (un clic par evenement important) -> « Pas a pas »
+              (delai automatique) -> « Instantane » (rien n'attend), puis on
+              reboucle. Un cycle a trois positions qui ne repassait jamais par
+              « detaille » desactivait la fonctionnalite pour toute la session
+              des le premier clic. */}
           <button
             type="button"
             className="ligne-option"
             onClick={cyclerModePhase}
-            title={t('Rythme de la phase du méchant : un clic par étape, déroulé automatique, ou tout d’un coup')}
+            title={t(
+              'Rythme de la phase du méchant : une étape validée à la fois, un clic par étape, déroulé automatique, ou tout d’un coup'
+            )}
           >
             <span className="ligne-option-libelle">{t('Phase du méchant')}</span>
             <span className="ligne-option-etat" aria-hidden="true">
-              {modePhase === 'manuel'
-                ? t('Manuel')
-                : modePhase === 'pas-a-pas'
-                  ? t('Pas à pas')
-                  : t('Instantané')}
+              {t(libelleModePhase(modePhase))}
             </span>
           </button>
           {modePhase === 'pas-a-pas' ? (
@@ -1717,8 +1719,8 @@ function PagePartie({
   // et toutes les entrees du journal, donc on ne la relance pas a chaque
   // rendu (meme motif que `cartesMondeParId` plus haut).
   const etapesPhaseMechant = useMemo(
-    () => etapesDeroule(etat.monde?.faits_mechant ?? [], historique.entrees),
-    [etat.monde?.faits_mechant, historique.entrees]
+    () => etapesDeroule(etat.monde?.faits_mechant ?? [], historique.entrees, etat.monde?.round_id ?? 0),
+    [etat.monde?.faits_mechant, historique.entrees, etat.monde?.round_id]
   )
 
   // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
@@ -1848,12 +1850,11 @@ function PagePartie({
     ecrireModePhaseMechant(mode)
   }, [])
 
-  // Le panneau Options fait tourner les trois positions dans l'ordre de la
-  // lisibilite decroissante : Manuel -> Pas a pas -> Instantane.
+  // Le panneau Options fait tourner les quatre positions dans l'ordre de la
+  // lisibilite decroissante : Detaille -> Manuel -> Pas a pas -> Instantane.
   const cyclerModePhase = useCallback(() => {
     setModePhase((m) => {
-      const suivant: ModePhaseMechant =
-        m === 'manuel' ? 'pas-a-pas' : m === 'pas-a-pas' ? 'instantane' : 'manuel'
+      const suivant = modeSuivant(m)
       ecrireModePhaseMechant(suivant)
       return suivant
     })
@@ -2197,11 +2198,7 @@ function PagePartie({
           Le recap ci-dessous garde son role de bilan de fin, pour les modes
           rapides ou l'on n'a rien vu passer. */}
       {modePhase === 'detaille' ? (
-        <DeroulePhase
-          etapes={etapesPhaseMechant}
-          noms={(id) => cartesMondeParId.get(id)?.name ?? `#${id}`}
-          onTerminer={() => undefined}
-        />
+        <DeroulePhase etapes={etapesPhaseMechant} onTerminer={() => undefined} />
       ) : null}
       <RecapPhaseMechant
         entrees={historique.entrees}

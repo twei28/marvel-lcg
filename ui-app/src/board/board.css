@@ -2631,6 +2631,13 @@
     font-weight: 700;
   }
 
+  .deroule-consequences {
+    margin: 0 0 8px;
+    padding: 0 0 0 18px;
+    font-size: 0.82rem;
+    color: rgba(248, 250, 252, 0.82);
+  }
+
   .deroule-regle {
     margin: 0 0 10px;
     font-size: 0.8rem;

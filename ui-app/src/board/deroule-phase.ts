@@ -64,6 +64,19 @@ export type EtapeDeroule = {
   carteId?: number
   /** Cible de l'action, pour le trait de la livraison 2. */
   cibleId?: number
+  /**
+   * Noms de l'auteur et de la cible, portes par l'ETAPE elle-meme, pas
+   * resolus a l'affichage via l'index du monde courant.
+   *
+   * `FaitMechant` les porte deja en clair (`auteur`, `cible`) : le moteur les
+   * connait au moment du coup. Une carte morte pendant la phase (ex. un
+   * minion tue par sa propre cible) a disparu de l'index du monde au moment
+   * ou l'etape s'affiche ; y chercher son nom affichait « Ultron attaque #88 »
+   * a la place. Meme raison que RecapPhaseMechant, qui fait ce choix pour la
+   * meme cause.
+   */
+  auteurNom?: string
+  cibleNom?: string
   boosts: BoostDeroule[]
   consequences: { cle: string; texte: string }[]
   /** Texte du moteur quand on ne sait pas mettre le fait en phrase. */
@@ -91,11 +104,20 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  */
 export function etapesDeroule(
   faits: FaitMechant[],
-  entrees: EntreeHistorique[]
+  entrees: EntreeHistorique[],
+  round: number
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
-  const menace = entrees.filter(
+  // `entrees` accumule TOUTE la partie, pas seulement la phase en cours : sans
+  // ce filtre sur le round, la phase du round 4 faisait revoir les cartes
+  // rencontre des rounds 1 a 3. Et l'historique empile la plus recente EN
+  // TETE : sans le `.reverse()`, ces vieilles cartes s'affichaient en plus a
+  // l'envers. Meme choix que RecapPhaseMechant.bilanDeLaPhase, qui a le meme
+  // besoin.
+  const duRound = [...entrees.filter((e) => e.round === round)].reverse()
+
+  const menace = duRound.filter(
     (e) => tempsDe(e.phase) === 'menace' && e.type === 'threat'
   )
   if (menace.length > 0) {
@@ -118,6 +140,11 @@ export function etapesDeroule(
       regle: temps === 'activations' ? 'regle:activations' : 'regle:revelation',
       carteId: fait.auteur_id,
       cibleId: fait.cible_id,
+      // Nettoyage applique partout ailleurs sur les noms de heros (icones,
+      // symboles) : sans lui, le deroule affichait des prefixes que personne
+      // d'autre n'affiche.
+      auteurNom: fait.auteur.replace(/^\W*/, ''),
+      cibleNom: fait.cible.replace(/^\W*/, ''),
       boosts: fait.boosts.map((boost, rang) => ({
         cle: `boost:${rang}:${boost.id}`,
         nom: boost.nom,
@@ -130,7 +157,7 @@ export function etapesDeroule(
 
   // Les cartes revelees, que les faits du moteur ne couvrent pas : lui ne rend
   // que les activations resolues.
-  for (const e of entrees) {
+  for (const e of duRound) {
     if (tempsDe(e.phase) !== 'revelation') continue
     if (e.type === 'card') {
       etapes.push({

@@ -40,13 +40,13 @@ const entree = (extra: Partial<EntreeHistorique> = {}): EntreeHistorique =>
 
 describe('etapesDeroule', () => {
   it('fait une etape par activation du moteur', () => {
-    const etapes = etapesDeroule([attaque(), attaque({ auteur: 'Drone', auteur_id: 60 })], [])
+    const etapes = etapesDeroule([attaque(), attaque({ auteur: 'Drone', auteur_id: 60 })], [], 1)
     const activations = etapes.filter((e) => e.temps === 'activations')
     expect(activations).toHaveLength(2)
   })
 
   it('met la carte qui agit en avant et retient sa cible', () => {
-    const [etape] = etapesDeroule([attaque()], []).filter((e) => e.temps === 'activations')
+    const [etape] = etapesDeroule([attaque()], [], 1).filter((e) => e.temps === 'activations')
     expect(etape.carteId).toBe(50)
     expect(etape.cibleId).toBe(12)
   })
@@ -54,7 +54,8 @@ describe('etapesDeroule', () => {
   it('porte les boosts de l activation, dans l ordre', () => {
     const etapes = etapesDeroule(
       [attaque({ boosts: [{ nom: 'Boost A', id: 91, apport: 1 }, { nom: 'Boost B', id: 92, apport: 1 }] })],
-      []
+      [],
+      1
     )
     const [etape] = etapes.filter((e) => e.temps === 'activations')
     expect(etape.boosts.map((b) => b.nom)).toEqual(['Boost A', 'Boost B'])
@@ -65,18 +66,18 @@ describe('etapesDeroule', () => {
     // Un vilain peut frapper une seconde fois hors de l'etape des activations :
     // le fait porte sa propre phase, on la suit plutot que de tout ranger sous
     // « activations ».
-    const etapes = etapesDeroule([attaque({ phase: 'Reveal Encounter Cards' })], [])
+    const etapes = etapesDeroule([attaque({ phase: 'Reveal Encounter Cards' })], [], 1)
     expect(etapes.filter((e) => e.temps === 'revelation')).toHaveLength(1)
     expect(etapes.filter((e) => e.temps === 'activations')).toHaveLength(0)
   })
 
   it('fait une etape de menace a partir du journal', () => {
-    const etapes = etapesDeroule([], [entree()])
+    const etapes = etapesDeroule([], [entree()], 1)
     expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
   })
 
   it('donne une cle stable et unique a chaque etape', () => {
-    const etapes = etapesDeroule([attaque(), attaque({ auteur_id: 60 })], [entree()])
+    const etapes = etapesDeroule([attaque(), attaque({ auteur_id: 60 })], [entree()], 1)
     const cles = etapes.map((e) => e.cle)
     expect(new Set(cles).size).toBe(cles.length)
   })
@@ -84,13 +85,14 @@ describe('etapesDeroule', () => {
   it('rend les etapes dans l ordre des quatre temps', () => {
     const etapes = etapesDeroule(
       [attaque(), attaque({ phase: 'Reveal Encounter Cards', auteur_id: 60 })],
-      [entree()]
+      [entree()],
+      1
     )
     expect(etapes.map((e) => e.temps)).toEqual(['menace', 'activations', 'revelation'])
   })
 
   it('ne rend aucune etape quand la phase n a rien produit', () => {
-    expect(etapesDeroule([], [])).toEqual([])
+    expect(etapesDeroule([], [], 1)).toEqual([])
   })
 
   it('fait une etape par carte revelee', () => {
@@ -102,7 +104,7 @@ describe('etapesDeroule', () => {
         titre: 'Icy Grip revelee',
         cibleId: 77,
       }),
-    ])
+    ], 1)
     const revelations = etapes.filter((e) => e.temps === 'revelation')
     expect(revelations).toHaveLength(1)
     expect(revelations[0].carteId).toBe(77)
@@ -119,7 +121,7 @@ describe('etapesDeroule', () => {
         titre: '',
         brut: '[(50,01113) Klaw] would deal 2 damage',
       }),
-    ])
+    ], 1)
     expect(etapes.some((e) => e.brut === '[(50,01113) Klaw] would deal 2 damage')).toBe(true)
   })
 
@@ -128,21 +130,54 @@ describe('etapesDeroule', () => {
     // place dans le journal, pas dans un deroule qu'on lit etape par etape.
     const etapes = etapesDeroule([], [
       entree({ cle: 'c3', type: 'text', phase: 'Reveal Encounter Cards', titre: 'Main scheme phase start' }),
-    ])
+    ], 1)
     expect(etapes).toEqual([])
   })
 
   it('marque la narration technique comme defilant seule', () => {
     const etapes = etapesDeroule([], [
       entree({ cle: 'c9', type: 'text', phase: 'Reveal Encounter Cards', titre: '', brut: '[(50,01113) Klaw] would deal 2 damage' }),
-    ])
+    ], 1)
     expect(etapes[0]?.auto).toBe(true)
   })
 
   it('ne fait pas defiler seule une carte revelee', () => {
     const etapes = etapesDeroule([], [
       entree({ cle: 'c8', type: 'card', phase: 'Reveal Encounter Cards', titre: 'Icy Grip revelee', cibleId: 77 }),
-    ])
+    ], 1)
     expect(etapes[0]?.auto).toBeFalsy()
+  })
+
+  describe('le round', () => {
+    // L'historique accumule TOUTE la partie, pas seulement la phase en cours.
+    // Sans filtre, la phase du round 4 ferait revoir les cartes des rounds
+    // precedents. Et il empile la plus recente EN TETE : sans inversion, ces
+    // vieilles cartes s'afficheraient en plus a l'envers.
+    const journalTroisRounds: EntreeHistorique[] = [
+      // Le plus recent d'abord, comme le fait vraiment historique.entrees.
+      entree({ cle: 'r3-b', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-B', cibleId: 3 }),
+      entree({ cle: 'r3-a', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-A', cibleId: 2 }),
+      entree({ cle: 'r2', round: 2, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R2', cibleId: 1 }),
+      entree({ cle: 'r1', round: 1, type: 'threat', phase: 'Main Scheme Place Threat', titre: 'Menace R1' }),
+    ]
+
+    it('ne rend que les etapes du round demande', () => {
+      const etapes = etapesDeroule([], journalTroisRounds, 3)
+      expect(etapes.map((e) => e.titre)).toEqual(['Carte R3-A', 'Carte R3-B'])
+    })
+
+    it('rend ces etapes dans l ordre chronologique, pas l ordre du journal', () => {
+      // Le journal les stocke la plus recente en tete (r3-b avant r3-a) : le
+      // deroule doit les montrer dans l'ordre ou elles ont eu lieu.
+      const etapes = etapesDeroule([], journalTroisRounds, 3)
+      expect(etapes.map((e) => e.cle)).toEqual(['carte:r3-a', 'carte:r3-b'])
+    })
+
+    it('ne melange pas un autre round dans le decompte', () => {
+      const etapes1 = etapesDeroule([], journalTroisRounds, 1)
+      expect(etapes1.map((e) => e.titre)).toEqual(['menace'])
+      const etapes2 = etapesDeroule([], journalTroisRounds, 2)
+      expect(etapes2.map((e) => e.titre)).toEqual(['Carte R2'])
+    })
   })
 })
