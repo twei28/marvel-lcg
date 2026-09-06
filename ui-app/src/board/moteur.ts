@@ -18,6 +18,7 @@
 import { lireDemande, type Demande, type Reponse } from './ask'
 import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
+import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
 
 /** Phase du mechant acceleree : plus de « Continue » a chaque activation. */
 export const CLE_PHASE_RAPIDE = 'marvel-board-phase-rapide'
@@ -184,15 +185,37 @@ function lireNotifications(brut: unknown): Notification[] {
   return sorties
 }
 
+
 /** Ce que le socket pousse a chaque rendu du moteur. */
 export type Trame = {
   render_id: number
   game_id: number
+  /**
+   * Identifiant UNIQUE de la partie, tire au demarrage par le moteur.
+   *
+   * `game_id` ne suffit pas : il repart a 1 dans chaque processus moteur
+   * (`game_session.py`), et le serveur en allume un par partie. Deux parties
+   * successives portaient donc le meme numero, et le journal de la premiere
+   * restait affiche sur la seconde. Vide sur un moteur qui ne l'envoie pas
+   * encore : on retombe alors sur `game_id` seul.
+   */
+  game_uid: string
   ask_players: number[]
   total_players: number
   notifications: Notification[]
   /** Sièges dont plus aucun client ne tient la place. */
   siegesAbsents: number[]
+}
+
+/**
+ * L'etiquette qui dit « c'est encore la meme partie ».
+ *
+ * Les deux morceaux comptent : `game_uid` distingue deux moteurs successifs,
+ * `game_id` distingue deux parties dans un MEME moteur (« Rejouer » sans
+ * quitter). Un moteur qui n'envoie pas encore l'uid retombe sur le numero seul.
+ */
+export function clePartie(trame: Pick<Trame, 'game_id' | 'game_uid'>): string {
+  return `${trame.game_uid}:${trame.game_id}`
 }
 
 function lireTrame(brut: unknown): Trame | undefined {
@@ -203,6 +226,7 @@ function lireTrame(brut: unknown): Trame | undefined {
   return {
     render_id: o.render_id,
     game_id: o.game_id,
+    game_uid: typeof o.game_uid === 'string' ? o.game_uid : '',
     ask_players: Array.isArray(o.ask_players)
       ? o.ask_players.filter((x): x is number => typeof x === 'number')
       : [],
@@ -350,7 +374,7 @@ export type EtatMoteur = {
    * partie, mais PAS sur un retour en arrière — c'est ce qui permet à
    * l'historique de survivre à un « Annuler ».
    */
-  partieId?: number
+  partieId?: string
 }
 
 type Ecouteur = (etat: EtatMoteur) => void
@@ -478,7 +502,11 @@ export class Moteur {
    */
   private hautsFaits: string[] = []
   /** Partie a laquelle se rapporte la liste ci-dessus. */
-  private partieDesHautsFaits: number | undefined
+  private partieDesHautsFaits: string | undefined
+  /** Les sieges ont deja ete reclames une fois : on ne recommence pas. */
+  private siegesRattrapes = false
+  /** Minuteur qui guette le silence apres l'ouverture du socket. */
+  private guetteurSieges: number | undefined
 
   /**
    * Le recapitulatif de fin doit porter sur LA partie qui vient de finir. Sans
@@ -486,11 +514,12 @@ export class Moteur {
    * reapparaitre les hauts faits de la premiere sur l'ecran de fin de la
    * seconde.
    */
-  private oublierSiNouvellePartie(gameId: number) {
-    if (this.partieDesHautsFaits === gameId) return
-    this.partieDesHautsFaits = gameId
+  private oublierSiNouvellePartie(trame: Trame) {
+    const cle = clePartie(trame)
+    if (this.partieDesHautsFaits === cle) return
+    this.partieDesHautsFaits = cle
     this.hautsFaits = []
-    this.publier({ hautsFaits: this.hautsFaits, partieId: gameId })
+    this.publier({ hautsFaits: this.hautsFaits, partieId: cle })
   }
 
   private enregistrerHautsFaits(notifications: Notification[]) {
@@ -540,6 +569,30 @@ export class Moteur {
       // Le serveur n'envoie la premiere trame qu'apres ce message (voir
       // websocket_handler : il attend un texte commencant par « Connected »).
       socket.send(`Connected ${window.location.href}`)
+
+      // GUETTEUR DE SILENCE. Connecte avant que la partie soit montee, le
+      // client ne tient AUCUN siege — et le moteur n'envoie ses trames qu'aux
+      // clients d'un siege : le socket reste ouvert et parfaitement muet. On
+      // rouvre alors une fois pour les reclamer. Voir sieges-hot-seat.ts.
+      if (this.guetteurSieges !== undefined) window.clearTimeout(this.guetteurSieges)
+      this.guetteurSieges = window.setTimeout(() => {
+        this.guetteurSieges = undefined
+        if (
+          !doitRattraperLesSieges({
+            multijoueur: estMultijoueur(),
+            trameRecue: this.trame !== undefined,
+            dejaRattrape: this.siegesRattrapes,
+          })
+        ) {
+          return
+        }
+        if (!this.vivant) return
+        this.siegesRattrapes = true
+        socket.close()
+        this.ouvrirSocket()
+      }, DELAI_PREMIERE_TRAME_MS)
+      // (le minuteur est annule des la premiere trame, a la fermeture du socket
+      //  et a l'arret du moteur)
       this.publier({ connecte: true, erreur: undefined, tentatives: 0, prochaineTentative: undefined })
       // Rattrapage : tout ce qui s'est passe pendant la coupure.
       void this.lire()
@@ -556,7 +609,15 @@ export class Moteur {
       const trame = lireTrame(brut)
       if (!trame) return
       this.trame = trame
-      this.oublierSiNouvellePartie(trame.game_id)
+      this.oublierSiNouvellePartie(trame)
+
+      // Une trame est arrivee : les sieges sont bien tenus (voir le guetteur
+      // de silence pose a l'ouverture).
+      if (this.guetteurSieges !== undefined) {
+        window.clearTimeout(this.guetteurSieges)
+        this.guetteurSieges = undefined
+      }
+
       this.enregistrerHautsFaits(trame.notifications)
       this.publier({ siegesAbsents: trame.siegesAbsents })
       void this.lire()
@@ -564,6 +625,10 @@ export class Moteur {
 
     socket.onclose = () => {
       this.trameEnAttente = undefined
+      if (this.guetteurSieges !== undefined) {
+        window.clearTimeout(this.guetteurSieges)
+        this.guetteurSieges = undefined
+      }
       if (this.minuteurAutoContinue !== undefined) {
         window.clearTimeout(this.minuteurAutoContinue)
         this.minuteurAutoContinue = undefined

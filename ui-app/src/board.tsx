@@ -43,6 +43,8 @@ import {
   demandeDoitApparaitreAuCentre,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { PanneauSalon } from './board/PanneauSalon'
+import { peutSuivre } from './board/suivi-vue'
 import { traduireMoteur } from './board/vocabulaire-moteur'
 import { finDePartie } from './board/fin-partie'
 import { installerCollecteErreurs } from './board/erreurs-console'
@@ -76,7 +78,6 @@ import {
   lireMeteoActive,
 } from './board/CoucheMeteo'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
-import { CoucheHautsFaits } from './board/CoucheHautsFaits'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
@@ -1371,7 +1372,6 @@ function EcranFinPartie({
   raison,
   bataille,
   monde,
-  hautsFaits,
   siege,
   onMenu,
 }: {
@@ -1384,8 +1384,6 @@ function EcranFinPartie({
    */
   bataille?: { nul: boolean }
   monde?: World
-  /** Titres débloqués pendant cette session, accumulés par Moteur. */
-  hautsFaits: string[]
   /**
    * Siège de CE navigateur (`?p=`), et non la vue affichée : regarder la table
    * d'un autre ne fait pas de nous ce joueur. Le panneau de récompenses s'en
@@ -1444,21 +1442,8 @@ function EcranFinPartie({
             {rounds ? ` · ${rounds} ${t('round(s)')}` : ''}
           </span>
         ) : null}
-        {hautsFaits.length ? (
-          <section className="fin-partie-hauts-faits">
-            <span className="fin-partie-eyebrow">
-              {t('Hauts faits débloqués')} · {hautsFaits.length}
-            </span>
-            <ul>
-              {hautsFaits.map((titre) => (
-                <li key={titre}>
-                  <span aria-hidden="true">{'\u{1F396}'}</span>
-                  {titre}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        {/* Liste des hauts faits debloques : DEBRANCHEE, comme la banniere.
+            Le style .fin-partie-hauts-faits reste dans board.css. */}
         {/* Campagne : ce que le scenario vient de rapporter. Ne s'affiche qu'a
             la VICTOIRE d'une partie lancee depuis l'ecran des campagnes — le
             livret veut qu'une defaite se rejoue sans rien reporter. */}
@@ -1558,13 +1543,18 @@ function PagePartie({
   useEffect(() => {
     const cible = etat.joueurDemande
     if (cible === undefined || cible === joueurSuivi) return
+    // On ne suit pas un joueur dont on ne verrait RIEN. Pendant les mulligans,
+    // le moteur interroge chaque siege a son tour : la vue partait chez le
+    // voisin, dont la main nous est cachee, et l'ecran sans main passait pour
+    // une partie bloquee. Voir suivi-vue.ts.
+    if (!peutSuivre(etat.monde, cible, playerId)) return
     if (joueurSuivi === undefined || demandeJouable) {
       setJoueurSuivi(cible)
       return
     }
     const attente = window.setTimeout(() => setJoueurSuivi(cible), DELAI_SUIVI_VUE)
     return () => window.clearTimeout(attente)
-  }, [etat.joueurDemande, joueurSuivi, demandeJouable])
+  }, [etat.joueurDemande, joueurSuivi, demandeJouable, etat.monde, playerId])
 
   const joueurActif = vueForcee ?? joueurSuivi ?? etat.joueurDemande ?? playerId
   const effets = useEffetsCartes(etat.monde)
@@ -1579,9 +1569,17 @@ function PagePartie({
   const plateau = useMemo(
     () =>
       etat.monde
-        ? construirePlateau(etat.monde, { playerId: joueurActif, catalogue })
+        ? construirePlateau(etat.monde, {
+            playerId: joueurActif,
+            catalogue,
+            // Vue braquee sur un joueur PAR UN CLIC : on ne pose que sa table.
+            // En « Auto » (vueForcee === null), la vue suit celui qui doit agir
+            // et la table montre tout le monde, comme une vraie partie a
+            // plusieurs.
+            seulCeJoueur: vueForcee !== null,
+          })
         : undefined,
-    [etat.monde, joueurActif, catalogue, scansFr]
+    [etat.monde, joueurActif, catalogue, scansFr, vueForcee]
   )
   const interaction = useInteraction(
     etat.monde,
@@ -2175,7 +2173,11 @@ function PagePartie({
         onBasculerPause={basculerPausePasAPas}
         onToutPasser={passerToutLaPhase}
       />
-      <CoucheHautsFaits hautsFaits={etat.hautsFaits} />
+      {/* Banniere des hauts faits : DEBRANCHEE a la demande de l'utilisateur.
+          Moteur.enregistrerHautsFaits() continue de les accumuler dans
+          etat.hautsFaits, et CoucheHautsFaits.tsx reste en place : il suffit de
+          remettre <CoucheHautsFaits hautsFaits={etat.hautsFaits} /> ici pour la
+          rallumer. */}
       <RecapPhaseMechant
         entrees={historique.entrees}
         monde={etat.monde}
@@ -2266,6 +2268,9 @@ function PagePartie({
               <span aria-hidden="true">🧾</span> {t('Log')}
             </button>
             <MessageRapport message={rapport.message} />
+            {/* Tchat des comptes, le MEME qu'a la preparation : il ne s'affiche
+                que la ou il a un sens (siege du titulaire, site derriere). */}
+            <PanneauSalon />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
@@ -2463,7 +2468,6 @@ function PagePartie({
           {...finDePartie(etat.monde, playerId)}
           raison={etat.monde.game_over_reason}
           monde={etat.monde}
-          hautsFaits={etat.hautsFaits}
           siege={playerId}
           onMenu={retourMenu}
         />

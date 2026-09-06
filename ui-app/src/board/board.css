@@ -202,6 +202,10 @@
        Le retrait bas est le meme partout (4px), c'est ce qui fait la ligne. */
     align-items: flex-end;
     justify-content: center;
+    /* Les cartes se posaient a 4 px du bas, ce qui ne laissait pas de quoi
+       loger la bande de jauge glissee sous le cadre. On les remonte du strict
+       necessaire, sans toucher a la ligne de pose commune ci-dessus. */
+    padding-bottom: 10px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.022);
     border: 1px solid rgba(255, 255, 255, 0.055);
@@ -1920,7 +1924,12 @@
        On retranche la moitie de ce debord pour retomber au centre de la carte. */
     left: calc(50% - var(--nb, 0) * var(--attach-step-x, 63px) / 2);
     top: 100%;
-    transform: translate(-50%, -46%);
+    /* REMONTES sur la carte (c'etait -46 %, donc a moitie dessous). La bande de
+       jauge occupe desormais le dessous du cadre, et un statut de 35 px de haut
+       la recouvrait entierement. Le descendre sous elle aurait demande 25 px et
+       l'aurait entierement decolle de la carte ; le remonter degage la bande et
+       supprime au passage le debord des statuts sous la zone. */
+    transform: translate(-50%, -101%);
     display: flex;
     gap: 4px;
     z-index: 40;
@@ -1967,9 +1976,11 @@
   }
 
   /* Dans l'aperçu, le statut est ENTIEREMENT sous la carte (pas a cheval comme sur
-     la table) : on annule la remontee, on le pose juste sous le bord bas. */
+     la table) : on annule la remontee, on le pose juste sous le bord bas. Le
+     retrait est passe de 6 a 16 px pour laisser passer la bande de jauge, qui
+     descend de 8 px sous le cadre. */
   .carte-apercu .statuts {
-    transform: translate(-50%, 6px);
+    transform: translate(-50%, 16px);
   }
 
   /* Chaque upgrade : DERRIERE le porteur, decalee d'un cran en bas-droite. La
@@ -2537,6 +2548,104 @@
   .bh-history.est-ouvert em {
     color: #f8fafc;
     background: #111827;
+  }
+
+  /* --- Tchat sur la table ---------------------------------------------------
+     Meme grammaire que le panneau Historique juste en dessous : ancre sous son
+     bouton, fond sombre, lisere. Il ne se montre que la ou le tchat repond
+     (voir PanneauSalon.tsx). */
+  .salon-partie {
+    position: relative;
+  }
+
+  .salon-pastille {
+    margin-left: 6px;
+    padding: 0 6px;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 0.72rem;
+    color: #17130a;
+    background: #ffd24a;
+    border-radius: 999px;
+  }
+
+  .salon-panneau {
+    position: absolute;
+    z-index: 520;
+    top: calc(100% + 8px);
+    left: 0;
+    width: min(420px, calc(100vw - 24px));
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 10px;
+    color: #f8fafc;
+    background: rgba(8, 10, 14, 0.96);
+    border: 1px solid rgba(255, 210, 74, 0.48);
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 3px rgba(0, 0, 0, 0.72),
+      0 24px 58px rgba(0, 0, 0, 0.64);
+    backdrop-filter: blur(10px);
+  }
+
+  .salon-fil {
+    max-height: min(46dvh, 360px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .salon-vide {
+    margin: 0;
+    padding: 12px 4px;
+    text-align: center;
+    color: rgba(248, 250, 252, 0.6);
+  }
+
+  .salon-message {
+    margin: 0;
+    display: grid;
+    gap: 1px;
+    padding: 6px 8px;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    /* Un message peut etre une longue phrase sans espace : il se coupe plutot
+       que d'elargir le panneau. */
+    overflow-wrap: anywhere;
+  }
+
+  /* Les notres, cotes a droite : on retrouve d'un coup d'oeil qui a dit quoi. */
+  .salon-message.est-moi {
+    background: rgba(255, 210, 74, 0.14);
+  }
+
+  .salon-message b {
+    font-size: 0.72rem;
+    color: #ffd24a;
+  }
+
+  .salon-saisie {
+    display: flex;
+    gap: 6px;
+  }
+
+  .salon-saisie input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 9px;
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+  }
+
+  .salon-saisie input:focus-visible {
+    outline: 2px solid rgba(255, 210, 74, 0.7);
+    outline-offset: 1px;
   }
 
   .historique-panneau {

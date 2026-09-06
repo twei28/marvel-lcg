@@ -119,6 +119,16 @@ type Options = {
   catalogue: Catalogue
   /** Rafraichi quand le joueur change de collection d'arts (cosmetique). */
   artsVersion?: number
+  /**
+   * La vue est BRAQUEE sur `playerId` : on ne pose que SA table. Les aires des
+   * autres joueurs (heros, allies, soutiens, ennemis engages, piles) sortent du
+   * plateau ; la table commune — mechant, complots, environnement, deck
+   * rencontre — reste, elle n'est a personne.
+   *
+   * Sert le mode « Vue : un joueur » de la barre du haut. En « Auto », la table
+   * montre tout le monde, comme une vraie partie a plusieurs.
+   */
+  seulCeJoueur?: boolean
 }
 
 /** Contexte de rendu : la traduction des cartes, plus le compte des ecarts. */
@@ -434,9 +444,9 @@ export function construirePlateau(world: World, options: Options): Plateau {
   const notre: WorldPlayer | undefined = surLaTable(joueurs[options.playerId])
     ? joueurs[options.playerId]
     : undefined
-  const autres = joueurs.filter(
-    (joueur, index) => index !== options.playerId && surLaTable(joueur)
-  )
+  const autres = options.seulCeJoueur
+    ? []
+    : joueurs.filter((joueur, index) => index !== options.playerId && surLaTable(joueur))
   // En multi, les allies/sbires des deux camps cohabitent dans la meme zone :
   // chaque carte porte alors le NOM de son heros proprietaire en badge.
   const multi = joueurs.length > 1
