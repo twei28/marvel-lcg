@@ -75,6 +75,13 @@ export type WorldPlayer = {
 export type FaitMechant = {
   genre: 'attaque' | 'manigance'
   /**
+   * Round auquel l'activation a eu lieu. Absent des faits enregistrés par un
+   * moteur pas encore mis à jour (ou d'une sauvegarde plus ancienne) : dans ce
+   * cas, `etapesDeroule` garde le fait plutôt que de le jeter, quel que soit le
+   * round demandé (mieux vaut une étape de trop qu'un déroulé muet).
+   */
+  round_id?: number
+  /**
    * L'étape de la phase du méchant où l'activation a eu lieu, dans les mêmes
    * termes que `World.phase`.
    *

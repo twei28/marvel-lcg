@@ -117,6 +117,14 @@ export function etapesDeroule(
   // besoin.
   const duRound = [...entrees.filter((e) => e.round === round)].reverse()
 
+  // Meme filtre que ci-dessus, mais sur les FAITS : sans lui, un fait du
+  // round precedent restait affiche pendant le tour du joueur suivant, avant
+  // de ressurgir a la vraie phase du mechant du round 2 (defaut constate en
+  // partie reelle). Un fait SANS round_id (moteur ou sauvegarde anterieurs a
+  // ce champ) est GARDE quel que soit le round demande : mieux vaut une etape
+  // de trop qu'un deroule muet.
+  const faitsDuRound = faits.filter((f) => f.round_id === undefined || f.round_id === round)
+
   const menace = duRound.filter(
     (e) => tempsDe(e.phase) === 'menace' && e.type === 'threat'
   )
@@ -131,7 +139,7 @@ export function etapesDeroule(
     })
   }
 
-  faits.forEach((fait, index) => {
+  faitsDuRound.forEach((fait, index) => {
     const temps = tempsDe(fait.phase) ?? 'activations'
     etapes.push({
       cle: `fait:${index}:${fait.auteur_id}`,

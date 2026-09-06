@@ -182,5 +182,32 @@ describe('etapesDeroule', () => {
       const etapes2 = etapesDeroule([], journalTroisRounds, 2)
       expect(etapes2.map((e) => e.titre)).toEqual(['Carte R2'])
     })
+
+    // Defaut 2 (voir brief) : les FAITS ne portaient aucun round, seul le
+    // journal etait filtre. Le cartouche rouvrait donc au round suivant, en
+    // plein tour du joueur, sur une manigance deja vaincue.
+    it('ne rend que les faits du round demande', () => {
+      const faitsDeuxRounds = [
+        attaque({ round_id: 1, auteur: 'Ultron', auteur_id: 50 }),
+        attaque({ round_id: 2, auteur: 'Drone', auteur_id: 60 }),
+      ]
+      const etapes = etapesDeroule(faitsDeuxRounds, [], 2)
+      const activations = etapes.filter((e) => e.temps === 'activations')
+      expect(activations).toHaveLength(1)
+      expect(activations[0]?.auteurNom).toBe('Drone')
+    })
+
+    // Un fait sans round_id vient d'un moteur pas encore mis a jour, ou d'une
+    // sauvegarde rechargee anterieure a ce champ : mieux vaut le montrer en
+    // trop (une etape de plus) que de rendre le deroule muet en le jetant a
+    // tort.
+    it('garde un fait SANS round_id, quel que soit le round demande', () => {
+      const faitSansRound = attaque({ auteur: 'Ultron', auteur_id: 50 })
+      expect(faitSansRound.round_id).toBeUndefined()
+      const etapes1 = etapesDeroule([faitSansRound], [], 1)
+      const etapes5 = etapesDeroule([faitSansRound], [], 5)
+      expect(etapes1.filter((e) => e.temps === 'activations')).toHaveLength(1)
+      expect(etapes5.filter((e) => e.temps === 'activations')).toHaveLength(1)
+    })
   })
 })

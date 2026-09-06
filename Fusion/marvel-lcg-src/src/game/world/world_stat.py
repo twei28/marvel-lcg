@@ -71,11 +71,18 @@ class WorldStat:
         Le changement de round vide le journal : on ne le purge pas a la fin
         d'un round, parce que le bilan s'affiche APRES la phase et lirait alors
         un journal vide. On attend donc le premier fait du round suivant.
+
+        Le fait recoit ICI son `round_id` : sans lui, ui-app (etapesDeroule)
+        ne peut pas distinguer un fait du round en cours d'un fait perime, et
+        le cartouche de la phase du mechant rouvrait au round suivant en
+        plein tour du joueur, sur une manigance deja vaincue. On copie le
+        dict plutot que de le muter : l'appelant (can_attack.py) le construit
+        pour cet appel, mais rien ne garantit qu'il ne le reutilise pas.
         """
         if round_id != self._faits_mechant_round:
             self._faits_mechant_round = round_id
             self.faits_mechant = []
-        self.faits_mechant.append(fait)
+        self.faits_mechant.append({**fait, 'round_id': round_id})
         # Garde-fou : une partie pathologique ne doit pas faire enfler le
         # descripteur envoye a chaque rendu.
         if len(self.faits_mechant) > 200:
