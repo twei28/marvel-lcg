@@ -648,6 +648,85 @@ verifier("la table n'est pas laissee a moitie ouverte",
 o.PARTIES.clear()
 o.EMPLACEMENTS.clear()
 
+# --- Les rapports de bug, et le disque qu'ils remplissaient ------------------
+# ⚠ `site/rapports/` N'ETAIT PURGE PAR RIEN. Le plafond est de 12 rapports par
+# heure et par TABLE, avec une capture jusqu'a 4 Mio, et la sauvegarde de nuit
+# multipliait le total par trente. Les captures partent avec leur ligne, jamais
+# l'une sans l'autre : une image seule pese pour rien, une ligne seule renvoie
+# vers un fichier absent.
+import shutil                                               # noqa: E402
+from datetime import datetime, timedelta                    # noqa: E402
+
+_bac_rapports = tempfile.mkdtemp(prefix="nc-rapports-")
+_vrai_dossier = o.DOSSIER_RAPPORTS
+o.DOSSIER_RAPPORTS = _bac_rapports
+# Un vrai PNG minuscule, pour que `_ecrire_capture` l'accepte sur signature.
+_png = ("data:image/png;base64,"
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
+with o._cx() as cx:
+    cx.execute("DELETE FROM rapports")
+
+_vieux = o.enregistrer_rapport("hote", {"nom": "ancien", "description": "vieux bug",
+                                        "capture": _png})
+_recent = o.enregistrer_rapport("hote", {"nom": "recent", "description": "bug d'hier",
+                                         "capture": _png})
+_ouvert = o.enregistrer_rapport("hote", {"nom": "ouvert", "description": "pas encore vu",
+                                         "capture": _png})
+with o._cx() as cx:
+    _fichiers = {r["id"]: r["capture"] for r in
+                 cx.execute("SELECT id, capture FROM rapports")}
+verifier("les trois captures sont bien sur le disque",
+         all(f and os.path.isfile(os.path.join(_bac_rapports, f))
+             for f in _fichiers.values()), str(_fichiers))
+
+o.changer_etat_rapport(_vieux, "traite")
+o.changer_etat_rapport(_recent, "traite")
+# Le vieux a ete classe il y a quarante jours ; le recent, a l'instant.
+_il_y_a_40 = (datetime.now() - timedelta(days=40)).strftime("%Y-%m-%d %H:%M")
+with o._cx() as cx:
+    cx.execute("UPDATE rapports SET traite_le=? WHERE id=?", (_il_y_a_40, _vieux))
+
+_efface = o.purger_rapports_traites(30)
+verifier("un seul rapport part", _efface == 1, str(_efface))
+
+_restants = {r["id"] for r in o.liste_rapports()}
+verifier("le rapport traite depuis longtemps a disparu de la base",
+         _vieux not in _restants, str(_restants))
+verifier("sa capture aussi",
+         not os.path.isfile(os.path.join(_bac_rapports, _fichiers[_vieux])))
+
+# ⚠ LES DEUX CAS DE REFUS, ET CE SONT EUX QUI COMPTENT. Une purge qui emporte
+# ce qu'on n'a pas fini de lire est pire que pas de purge du tout.
+verifier("un rapport traite d'hier reste", _recent in _restants, str(_restants))
+verifier("et sa capture reste avec lui",
+         os.path.isfile(os.path.join(_bac_rapports, _fichiers[_recent])))
+verifier("un rapport jamais traite reste, meme tres ancien",
+         _ouvert in _restants, str(_restants))
+
+# ⚠ LE COMPTE A REBOURS PART DU CLASSEMENT, PAS DE L'ENVOI. Un rapport vieux
+# de six mois qu'on vient de traiter garde ses trente jours : on vient
+# justement de s'en servir.
+with o._cx() as cx:
+    cx.execute("UPDATE rapports SET quand=? WHERE id=?",
+               ((datetime.now() - timedelta(days=200)).strftime("%Y-%m-%d %H:%M"),
+                _ouvert))
+o.changer_etat_rapport(_ouvert, "traite")
+verifier("un vieux rapport tout juste classe n'est pas emporte",
+         o.purger_rapports_traites(30) == 0)
+
+# Rouvrir un rapport efface sa date de classement : le compte a rebours
+# repart de zero le jour ou on le reclasse.
+o.changer_etat_rapport(_recent, "en cours")
+with o._cx() as cx:
+    _date = cx.execute("SELECT traite_le FROM rapports WHERE id=?",
+                       (_recent,)).fetchone()["traite_le"]
+verifier("rouvrir un rapport efface sa date de classement", _date is None, str(_date))
+
+o.DOSSIER_RAPPORTS = _vrai_dossier
+shutil.rmtree(_bac_rapports, ignore_errors=True)
+with o._cx() as cx:
+    cx.execute("DELETE FROM rapports")
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

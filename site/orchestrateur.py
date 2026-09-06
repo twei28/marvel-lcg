@@ -104,6 +104,12 @@ MAX_DESCRIPTION_CARACTERES = 4_000
 # invite peut envoyer : sans plafond, une boucle remplirait le disque.
 RAPPORTS_PAR_HEURE = int(os.environ.get("RAPPORTS_PAR_HEURE", "12"))
 ETATS_RAPPORT = ("nouveau", "en cours", "traite")
+# Au-dela de ce delai, un rapport CLASSE « traite » n'a plus rien a apprendre a
+# personne et sa capture ne fait que peser. Le plafond de debit est de 12
+# rapports par heure ET PAR TABLE, avec une capture jusqu'a 4 Mio : vingt
+# tables donnent une borne de l'ordre du gigaoctet par heure, et la sauvegarde
+# de nuit multipliait le total par trente en gardant trente archives.
+JOURS_RAPPORTS_TRAITES = int(os.environ.get("JOURS_RAPPORTS_TRAITES", "30"))
 
 # Plafond du CORPS d'une requete POST, avant toute lecture.
 # ⚠ `Content-Length` EST UNE DECLARATION DU CLIENT, PAS UN FAIT. Sans plafond,
@@ -556,7 +562,12 @@ CREATE TABLE IF NOT EXISTS rapports (
     description TEXT NOT NULL,
     journal     TEXT,
     capture     TEXT,
-    etat        TEXT NOT NULL DEFAULT 'nouveau'
+    etat        TEXT NOT NULL DEFAULT 'nouveau',
+    -- Quand le rapport a ete CLASSE, pas quand il a ete ecrit. La purge se
+    -- compte a partir de la, sans quoi un rapport vieux de six mois qu'on
+    -- vient tout juste de traiter partirait le lendemain, capture comprise,
+    -- avant meme qu'on ait pu s'en reservir.
+    traite_le   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 """
@@ -596,6 +607,10 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE messages ADD COLUMN destinataire TEXT")
         if "mdp_jeu" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN mdp_jeu TEXT")
+        # Meme precaution pour les bases creees avant la purge des rapports.
+        colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
+        if "traite_le" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN traite_le TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -1101,8 +1116,51 @@ def nb_rapports_nouveaux() -> int:
 def changer_etat_rapport(numero: int, etat: str) -> None:
     if etat not in ETATS_RAPPORT:
         return
+    # `traite_le` est pose au classement et efface si l'on rouvre : c'est de
+    # cette date que part le compte a rebours de la purge, jamais de celle de
+    # l'envoi. Un vieux rapport qu'on vient de traiter garde ses trente jours.
+    quand = _maintenant() if etat == "traite" else None
     with _cx() as cx:
-        cx.execute("UPDATE rapports SET etat = ? WHERE id = ?", (etat, numero))
+        cx.execute("UPDATE rapports SET etat = ?, traite_le = ? WHERE id = ?",
+                   (etat, quand, numero))
+
+
+def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
+    """Efface les rapports classes « traite » depuis plus de `jours`.
+
+    ⚠ LA CAPTURE ET LA LIGNE PARTENT ENSEMBLE. Effacer l'image seule
+    laisserait la base renvoyer vers un fichier absent ; effacer la ligne seule
+    laisserait l'image grossir le disque sans que rien n'y renvoie plus. C'est
+    la meme regle que `supprimer_rapport`, appliquee en gros.
+
+    Rend le nombre de rapports effaces.
+    """
+    from datetime import datetime, timedelta
+    if jours < 0:
+        return 0
+    # Meme format que `_maintenant()` : la comparaison de chaines suffit, ces
+    # horodatages se trient dans l'ordre alphabetique comme dans le temps.
+    limite = (datetime.now() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
+    efface = 0
+    with _cx() as cx:
+        # ⚠ TOLERER UNE BASE PAS ENCORE MIGREE. Cette fonction est appelee par
+        # la purge hebdomadaire, dans un AUTRE processus que le service : lui
+        # faire lancer la migration ferait deux `ALTER TABLE` concurrents pour
+        # rien. Sans la colonne, on retombe sur la date d'envoi.
+        colonnes = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
+        champ = "COALESCE(traite_le, quand)" if "traite_le" in colonnes else "quand"
+        lignes = cx.execute(
+            "SELECT id, capture FROM rapports WHERE etat = 'traite'"
+            " AND %s < ?" % champ, (limite,)).fetchall()
+        for r in lignes:
+            if r["capture"]:
+                try:
+                    os.remove(os.path.join(DOSSIER_RAPPORTS, os.path.basename(r["capture"])))
+                except OSError:
+                    pass
+            cx.execute("DELETE FROM rapports WHERE id = ?", (r["id"],))
+            efface += 1
+    return efface
 
 
 def supprimer_rapport(numero: int) -> None:
@@ -2049,5 +2107,29 @@ def main() -> int:
     return 0
 
 
+def purge_en_ligne_de_commande(arguments: list) -> int:
+    """`orchestrateur.py purger-rapports [jours]`, pour `deploiement/purge.sh`.
+
+    ⚠ LA PURGE NE PASSE PAS PAR LE SHELL POUR LA BASE. Effacer les fichiers
+    avec `find` et laisser les lignes derriere donnerait une page
+    d'administration qui renvoie vers des captures disparues. L'orchestrateur
+    est le seul qui sache faire les deux d'un coup : le script l'appelle plutot
+    que de recopier la regle.
+    """
+    try:
+        jours = int(arguments[0]) if arguments else JOURS_RAPPORTS_TRAITES
+    except ValueError:
+        print(f"Nombre de jours invalide : {arguments[0]}", file=sys.stderr)
+        return 2
+    if not os.path.isfile(BASE):
+        print(f"  (base absente, rien a purger) {BASE}")
+        return 0
+    efface = purger_rapports_traites(jours)
+    print(f"  rapports traites depuis plus de {jours} jours : {efface} efface(s)")
+    return 0
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "purger-rapports":
+        sys.exit(purge_en_ligne_de_commande(sys.argv[2:]))
     sys.exit(main())

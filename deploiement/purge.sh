@@ -34,6 +34,30 @@ for dossier in "${DOSSIERS_PURGEABLES[@]}"; do
   echo "  $dossier : $supprimes fichiers supprimés ($avant -> $apres)"
 done
 
+# --- Rapports de bug classés « traité » ---------------------------------------
+# ⚠ CE DOSSIER N'ÉTAIT PURGÉ PAR RIEN, et il est le seul du site à recevoir des
+# octets d'inconnus. Le plafond est de 12 rapports par heure ET PAR TABLE, avec
+# une capture jusqu'à 4 Mio : vingt tables donnent une borne de l'ordre du
+# gigaoctet par heure, et la sauvegarde de nuit multipliait le total par trente
+# en gardant trente archives.
+#
+# ⚠ ET ON NE LE FAIT PAS AVEC `find`. Effacer les fichiers en laissant les
+# lignes derrière donnerait une page d'administration qui renvoie vers des
+# captures disparues. L'orchestrateur sait faire les deux d'un coup : on
+# l'appelle plutôt que de recopier la règle ici.
+PYTHON="${PYTHON:-$RACINE/venv310/bin/python}"
+ORCHESTRATEUR="$RACINE/site/orchestrateur.py"
+echo
+echo "Rapports de bug traités depuis plus de $JOURS jours :"
+if [ ! -f "$ORCHESTRATEUR" ]; then
+  echo "  (orchestrateur absent, ignoré) $ORCHESTRATEUR"
+elif [ ! -x "$PYTHON" ]; then
+  echo "  (python introuvable, ignoré) $PYTHON"
+else
+  "$PYTHON" "$ORCHESTRATEUR" purger-rapports "$JOURS" \
+    || echo "  ⚠ la purge des rapports a échoué, rien n'a été supprimé"
+fi
+
 echo
 echo "État du disque :"
 df -h / | tail -n +1
