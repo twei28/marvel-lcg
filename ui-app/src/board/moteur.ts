@@ -260,17 +260,37 @@ export function ecrireDelaiPasAPas(valeur: number): void {
 }
 
 /**
- * Les quatre etapes de la phase du mechant, telles que le moteur les nomme
- * (game/world/phase.py). Memes cles que RecapPhaseMechant : c'est la carte de
- * reference, et le pas a pas doit raconter la meme histoire que le bilan.
- * Le point 5 (jeton de premier joueur) ne produit rien a montrer.
+ * LA definition de « la phase du mechant » cote plateau, et la seule.
+ *
+ * Les quatre etapes telles que le moteur les nomme (game/world/phase.py,
+ * `Phase.State`), DANS L'ORDRE de la carte de reference. Le point 5 (passer le
+ * jeton de premier joueur) ne produit rien a montrer : il n'a pas d'etape.
+ *
+ * Il y en avait trois definitions concurrentes (constat F6 de l'audit du
+ * 06/09/2026) : celle-ci, celle de RecapPhaseMechant (reconstruite depuis ses
+ * titres) et celle de deroule-phase (trois phases sur quatre). Elles
+ * consomment toutes celle-ci desormais. Ajouter ou retirer une phase ICI est
+ * le seul geste a faire, et le typage force chaque lecteur a en tenir compte :
+ * `TEMPS_PAR_PHASE` (deroule-phase.ts) et `ETAPES` (RecapPhaseMechant.tsx)
+ * sont indexes par `PhaseDuMechant`, donc exhaustifs par construction.
+ *
+ * ORDONNEES et non un Set : le cartouche et le bilan racontent une
+ * chronologie, et un Set ne promet pas d'ordre.
  */
-export const PHASES_DU_MECHANT = new Set([
+export const PHASES_DU_MECHANT_ORDONNEES = [
   'Main Scheme Place Threat',
   'Enemy Activation',
   'Deal Encounter Cards',
   'Reveal Encounter Cards',
-])
+] as const
+
+/** Une des quatre phases du mechant, au sens du moteur. */
+export type PhaseDuMechant = (typeof PHASES_DU_MECHANT_ORDONNEES)[number]
+
+/** La meme chose, pour un test d'appartenance. */
+export const PHASES_DU_MECHANT: ReadonlySet<string> = new Set<string>(
+  PHASES_DU_MECHANT_ORDONNEES
+)
 
 /**
  * QUI retient l'accuse de reception, et pourquoi. Extrait de `lire()` pour etre

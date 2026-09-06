@@ -325,8 +325,14 @@ export const DICO_EN_BASE: Record<string, string> = {
     'Step 1: each player adds 1 threat to the main scheme.',
   'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.':
     'Step 2: each enemy activates against the hero engaged with it.',
+  'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.':
+    'Step 3: each player is dealt an encounter card, facedown.',
   'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.':
     'Step 4: each player reveals their encounter card and resolves it.',
+  // Titre d'une etape de distribution : « Colossus reçoit sa carte rencontre ».
+  // La carte est face cachee : on ne la nomme pas.
+  'reçoit sa carte rencontre': 'is dealt an encounter card',
+  'Carte rencontre distribuée': 'Encounter card dealt',
   // Cartouche du deroule (DeroulePhase.tsx). 'Menace', 'Méchant' (zones.ts) et
   // 'Phase du méchant' sont deja definis plus haut, pour le bilan de fin de
   // phase et le splash de tour.

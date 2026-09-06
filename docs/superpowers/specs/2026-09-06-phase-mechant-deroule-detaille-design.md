@@ -221,6 +221,18 @@ du code, la formulation « le journal seul » était incomplète :
 On ne relit pas le monde pour déduire, et **on n'ajoute aucun flux d'événements
 au moteur Python** : ces deux sources existent et sont déjà consommées.
 
+> ⚠ **DÉPASSÉ le 06/09/2026 (tâche A2 de l'audit de la phase du méchant).** Les
+> deux sources n'avaient pas la même durée de vie : les faits voyagent avec le
+> monde, le journal est reconstruit dans le navigateur et un F5 en pleine phase
+> le perdait pour de bon (constat F4). Et le temps DISTRIBUTION n'avait aucune
+> source du tout (constat M3). Le moteur enregistre donc DÉSORMAIS aussi la
+> menace du point 1, la distribution du point 3 et les révélations du point 4,
+> aux trois endroits où il les produit (`MainScheme.Phase`,
+> `PlayerAction.DealEncounterCard`, `PlayerAction.RevealEncounterCards`).
+> `etapesDeroule` lit tout depuis `faits_mechant` ; le journal ne lui sert plus
+> que d'un repli de compatibilité, temporaire, pour un moteur pas encore mis à
+> jour. « Aucun flux ajouté au moteur » ne vaut plus.
+
 **Un composant nouveau, séparé** du récap. Le récap garde son rôle — le bilan de
 fin, **conservé mais raccourci** — et les deux partagent la lecture des faits,
 extraite dans un module commun.

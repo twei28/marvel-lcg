@@ -9,7 +9,14 @@ import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 import { t } from './langue'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
-const REDIGES = new Set(['attaque', 'manigance', 'menace', 'revelation', 'bilan'])
+const REDIGES = new Set([
+  'attaque',
+  'manigance',
+  'menace',
+  'distribution',
+  'revelation',
+  'bilan',
+])
 
 /**
  * Accord du pluriel francais : « 1 degat », « 2 degats ». L'anglais rend le
@@ -38,6 +45,15 @@ export function titreEtape(etape: EtapeDeroule): string {
     // « gagne undefined menaces » serait pire que tout.
     if (!cible || etape.montant === undefined) return t('Menace sur la manigance principale')
     return `${cible} ${t('gagne')} ${etape.montant} ${pluriel(etape.montant, 'menace', 'menaces')}`
+  }
+
+  if (etape.titre === 'distribution') {
+    // La carte est FACE CACHEE : on ne nomme que le heros qui la recoit. Sans
+    // heros connu, repli sur une formule impersonnelle, comme partout ailleurs
+    // ici : mieux vaut une phrase vague qu'un « undefined recoit ».
+    return auteur
+      ? `${auteur} ${t('reçoit sa carte rencontre')}`
+      : t('Carte rencontre distribuée')
   }
 
   if (etape.titre === 'revelation') {
@@ -148,6 +164,7 @@ export function texteBilanVide(): string {
 const REGLES: Record<string, string> = {
   'regle:menace': 'Point 1 : chaque joueur ajoute 1 menace à la manigance principale.',
   'regle:activations': 'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.',
+  'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
 }
 

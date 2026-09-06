@@ -106,6 +106,26 @@ describe('phrases du deroule', () => {
     ).toBe('Bombe à retardement révélée')
   })
 
+  // Le temps DISTRIBUTION n'avait jamais d'etape avant la tache A2 : rien ne
+  // le renseignait. Sa carte est FACE CACHEE, d'ou un titre qui ne nomme que
+  // le heros qui la recoit.
+  it('nomme le heros qui recoit sa carte rencontre, sans nommer la carte', () => {
+    expect(
+      titreEtape(etape({ temps: 'distribution', titre: 'distribution', auteurNom: 'Colossus' }))
+    ).toBe('Colossus reçoit sa carte rencontre')
+  })
+
+  it('se replie sur une formule impersonnelle sans heros connu', () => {
+    expect(
+      titreEtape(etape({ temps: 'distribution', titre: 'distribution', auteurNom: undefined }))
+    ).toBe('Carte rencontre distribuée')
+  })
+
+  it('rappelle la regle de la distribution', () => {
+    expect(regleEtape(etape({ regle: 'regle:distribution' })))
+      .toBe('Point 3 : chaque joueur reçoit une carte rencontre, face cachée.')
+  })
+
   it('rappelle la regle des cartes revelees', () => {
     expect(regleEtape(etape({ regle: 'regle:revelation' })))
       .toBe('Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.')

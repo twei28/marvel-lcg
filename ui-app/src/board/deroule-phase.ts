@@ -1,21 +1,30 @@
 // La phase du mechant, decoupee en ETAPES a valider une par une.
 //
-// Deux sources, et aucune n'est une relecture du monde :
+// UNE SEULE SOURCE : `FaitMechant`, le journal que le MOTEUR tient du round en
+// cours (`WorldStat.RecordFaitMechant`, cote Python). Il couvre les quatre
+// points de la carte de reference — la menace, les activations, la
+// distribution, les revelations — et il voyage avec le monde, donc il survit a
+// un rechargement de page en pleine phase.
 //
-// 1. `FaitMechant` : les activations que le moteur a deja resolues. Lui seul
-//    connait la composition d'un coup (base, boost, defense) ; une deduction
-//    verrait le resultat sans jamais pouvoir dire « 5 = 3 + 2 », et compterait
-//    plusieurs fois ce que le moteur rend plusieurs fois autour d'une seule
-//    resolution.
-// 2. Les entrees du journal, pour ce que les faits ne couvrent pas : la menace
-//    posee, les cartes revelees.
+// Le journal local (`EntreeHistorique`, reconstruit dans le navigateur en
+// comparant deux photos du monde) ne sert plus qu'au REPLI de compatibilite
+// decrit dans `etapesDeroule`. C'etait la seconde source, et elle avait une
+// autre duree de vie : au premier F5 le cartouche perdait sa menace et ses
+// cartes revelees, definitivement (constat F4 de l'audit du 06/09/2026).
 //
 // Ce module est PUR : aucun DOM, aucune traduction. Il rend des cles de texte
 // que le composant met en langue. C'est ce qui le rend testable sans navigateur
 // et verifiable dans les deux langues.
 
 import type { EntreeHistorique } from './HistoriquePartie'
-import type { FaitMechant } from './world'
+import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
+import type {
+  FaitActivation,
+  FaitDistribution,
+  FaitMechant,
+  FaitMenace,
+  FaitRevelation,
+} from './world'
 
 export type TempsPhase =
   | 'menace'
@@ -45,18 +54,43 @@ const ORDRE: TempsPhase[] = [
 ]
 
 /**
- * Phase du moteur -> temps de la carte de reference, pour les entrees dont le
- * temps ne depend pas de l'auteur (menace, distribution, revelation).
+ * Phase du moteur -> temps de la carte de reference, pour les faits dont le
+ * temps ne depend pas de l'auteur.
  *
- * « Enemy Activation » n'y figure PAS : le vilain et ses sbires s'activent
- * tous les deux pendant cette meme phase moteur, donc son temps ('mechant' ou
- * 'sbires') se decide sur l'AUTEUR du fait, pas sur son nom de phase. Voir
- * `etapesDeroule`.
+ * `undefined` sur « Enemy Activation », et c'est une reponse, pas un trou : le
+ * vilain et ses sbires s'activent tous les deux pendant cette meme phase
+ * moteur, donc le temps ('mechant' ou 'sbires') se decide sur l'AUTEUR du
+ * fait. Voir `etapesDeroule`.
+ *
+ * Indexe par `PhaseDuMechant` (moteur.ts), donc EXHAUSTIF par construction :
+ * une phase ajoutee a la liste unique force une decision ici, au lieu de
+ * retomber en silence sur le repli. C'est ce que l'audit F6 reprochait a
+ * l'ancienne table, qui n'en connaissait que trois sur quatre.
  */
-const TEMPS_PAR_PHASE: Record<string, TempsPhase> = {
+const TEMPS_PAR_PHASE: Record<PhaseDuMechant, TempsPhase | undefined> = {
   'Main Scheme Place Threat': 'menace',
+  'Enemy Activation': undefined,
   'Deal Encounter Cards': 'distribution',
   'Reveal Encounter Cards': 'revelation',
+}
+
+/** Les memes cles, pour reconnaitre une phase inconnue sans caster a l'aveugle. */
+const PHASES_CONNUES: ReadonlySet<string> = new Set<string>(PHASES_DU_MECHANT_ORDONNEES)
+
+// Gardes de type sur le genre d'un fait. `FaitMechant` est une union discriminee
+// (voir world.ts) : sans elles, `fait.montant` ou `fait.carte` ne compilent pas,
+// et c'est exactement ce qu'on veut — un genre oublie se voit a la compilation.
+function estActivation(fait: FaitMechant): fait is FaitActivation {
+  return fait.genre === 'attaque' || fait.genre === 'manigance'
+}
+function estMenace(fait: FaitMechant): fait is FaitMenace {
+  return fait.genre === 'menace'
+}
+function estDistribution(fait: FaitMechant): fait is FaitDistribution {
+  return fait.genre === 'distribution'
+}
+function estRevelation(fait: FaitMechant): fait is FaitRevelation {
+  return fait.genre === 'revelation'
 }
 
 export type BoostDeroule = {
@@ -180,11 +214,17 @@ export type EtapeDeroule = {
 }
 
 function tempsDe(phase: string | undefined): TempsPhase | undefined {
-  return phase ? TEMPS_PAR_PHASE[phase] : undefined
+  if (!phase || !PHASES_CONNUES.has(phase)) return undefined
+  return TEMPS_PAR_PHASE[phase as PhaseDuMechant]
 }
 
 /**
  * Les etapes de la phase, dans l'ordre de la carte de reference.
+ *
+ * LES CINQ TEMPS VIENNENT DES FAITS DU MOTEUR, et d'eux seuls : la menace du
+ * point 1, les activations du point 2, la distribution du point 3, les
+ * revelations du point 4. `entrees` (le journal local) n'est plus lu que par le
+ * REPLI de compatibilite, decrit dans le corps, et qui disparaitra.
  *
  * Un fait porte SA phase : un vilain qu'une carte revelee fait frapper une
  * seconde fois se range sous la revelation, pas sous mechant ou sbires, sans
@@ -223,7 +263,8 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  *   ordre que `World.players`, brut (prefixe decoratif compris : nettoye ICI,
  *   comme le reste du fichier le fait deja pour `auteurNom`/`cibleNom` des
  *   faits). Vide par defaut : sans lui, une etape de revelation ne porte
- *   aucun nom d'auteur.
+ *   aucun nom d'auteur — sauf si le fait en porte un lui-meme, ce qui est
+ *   desormais le cas ordinaire (`joueur_nom`).
  */
 export function etapesDeroule(
   faits: FaitMechant[],
@@ -242,6 +283,9 @@ export function etapesDeroule(
   // TETE : sans le `.reverse()`, ces vieilles cartes s'affichaient en plus a
   // l'envers. Meme choix que RecapPhaseMechant.bilanDeLaPhase, qui a le meme
   // besoin.
+  //
+  // Le journal ne sert plus qu'au REPLI (voir plus bas) : la source ordinaire
+  // du cartouche, ce sont les faits.
   const duRound = [...entrees.filter((e) => e.round === round)].reverse()
 
   // Meme filtre que ci-dessus, mais sur les FAITS : sans lui, un fait du
@@ -252,49 +296,87 @@ export function etapesDeroule(
   // de trop qu'un deroule muet.
   const faitsDuRound = faits.filter((f) => f.round_id === undefined || f.round_id === round)
 
-  const menace = duRound.filter(
-    (e) => tempsDe(e.phase) === 'menace' && e.type === 'threat'
-  )
+  const faitsMenace = faitsDuRound.filter(estMenace)
+  const faitsDistribution = faitsDuRound.filter(estDistribution)
+  const faitsRevelation = faitsDuRound.filter(estRevelation)
+
+  // ------------------------------------------------------------------ REPLI
+  //
+  // Un moteur pas encore mis a jour, ou une sauvegarde plus ancienne, ne porte
+  // AUCUN fait de ces trois genres : le cartouche se retrouverait sans menace,
+  // sans distribution et sans revelation, c'est a dire quasiment vide. On
+  // relit alors le journal local, exactement comme avant, et pour ce genre-la
+  // seulement.
+  //
+  // Le critere est « aucun fait de ce genre POUR CE ROUND », et pas « le monde
+  // vient d'un vieux moteur » : on ne sait pas distinguer les deux, et cette
+  // formulation-ci se referme d'elle-meme des que le premier fait arrive. Une
+  // phase qui n'a legitimement pose aucune menace (escalade nulle) lit donc le
+  // journal, qui n'en trouve pas davantage : meme resultat, aucun etat faux.
+  //
+  // ⚠ CE REPLI EST TEMPORAIRE. Il disparaitra quand tous les moteurs en
+  // service auront ces faits ; il ne reste que le temps de la transition, et
+  // rien de neuf ne doit s'appuyer dessus.
+  const repliMenace = faitsMenace.length === 0
+  const repliCartes = faitsDistribution.length === 0 && faitsRevelation.length === 0
+
+  // ---------------------------------------------------------- POINT 1 : menace
+  //
   // Une etape PAR manigance touchee. Une seule etape suivie d'une liste disait
   // deux fois la meme chose : « Menace sur la manigance principale », puis
   // « L'Effraction ! gagne 2 menaces ». Le fait tient en une phrase, et chaque
   // manigance a son propre compteur.
-  for (const e of menace) {
+  for (const [rang, fait] of faitsMenace.entries()) {
     etapes.push({
-      cle: `menace:${e.cle}`,
+      cle: `menace:${rang}:${fait.cible_id}`,
       temps: 'menace',
       titre: 'menace',
       regle: 'regle:menace',
-      // Le nom NU de la carte, que l'entree porte deja a cote de sa phrase
-      // (voir EntreeHistorique.nomCarte) : le decouper du titre traduit
-      // marcherait dans une langue sur deux.
-      cibleNom: e.nomCarte,
-      // La manigance visee, pour que la mise en scene l'agrandisse et
-      // assombrisse le reste (voir `sceneDe`). Sans elle, l'etape de menace
-      // etait le seul temps de la phase a laisser sa carte noyee dans la table
-      // pendant qu'on parlait d'elle.
-      //
-      // L'identifiant vient de la MEME entree que `restant` et `plafond`
-      // ci-dessous (`EntreeHistorique.cibleId`, l'identifiant d'objet de la
-      // carte dont le compteur a bouge), pas d'une recherche dans le monde :
-      // ce module ne voit pas le monde, et une manigance vaincue pendant la
-      // phase n'y serait de toute facon plus.
-      //
       // Pas de `carteId` : la menace est une REGLE du jeu, aucun personnage ne
-      // l'inflige, donc il n'y a ni auteur a mettre en avant ni trait a tracer.
-      cibleId: e.cibleId,
-      // `valeur` est la variation SIGNEE du compteur : seule une POSE de
-      // menace se met en phrase ici. Un retrait, qui n'a pas lieu a ce temps
-      // de la phase, laisserait « gagne -1 menaces » ; sans montant, le titre
-      // se replie sur sa formule generique.
-      montant: e.valeur !== undefined && e.valeur > 0 ? e.valeur : undefined,
-      restant: e.restant,
-      plafond: e.plafond,
+      // l'inflige, donc il n'y a ni auteur a mettre en avant ni trait a
+      // tracer. `cibleId` suffit a la mise en scene (`sceneDe`), qui agrandit
+      // alors la manigance dont on parle.
+      cibleId: fait.cible_id,
+      cibleNom: nomNettoye(fait.cible),
+      // Une pose de zero ne se met pas en phrase (« gagne 0 menaces ») : sans
+      // montant, le titre se replie sur sa formule generique.
+      montant: fait.montant > 0 ? fait.montant : undefined,
+      restant: fait.restant ?? undefined,
+      plafond: fait.plafond ?? undefined,
       boosts: [],
     })
   }
 
+  if (repliMenace) {
+    for (const e of duRound.filter((e) => tempsDe(e.phase) === 'menace' && e.type === 'threat')) {
+      etapes.push({
+        cle: `menace:${e.cle}`,
+        temps: 'menace',
+        titre: 'menace',
+        regle: 'regle:menace',
+        // Le nom NU de la carte, que l'entree porte deja a cote de sa phrase
+        // (voir EntreeHistorique.nomCarte) : le decouper du titre traduit
+        // marcherait dans une langue sur deux.
+        cibleNom: e.nomCarte,
+        cibleId: e.cibleId,
+        // `valeur` est la variation SIGNEE du compteur : seule une POSE de
+        // menace se met en phrase ici. Un retrait, qui n'a pas lieu a ce temps
+        // de la phase, laisserait « gagne -1 menaces ».
+        montant: e.valeur !== undefined && e.valeur > 0 ? e.valeur : undefined,
+        restant: e.restant,
+        plafond: e.plafond,
+        boosts: [],
+      })
+    }
+  }
+
+  // --------------------------------------------------- POINT 2 : activations
+  //
+  // L'index parcourt TOUS les faits du round, genres nouveaux compris : la cle
+  // d'une activation ne change donc pas selon ce que la phase a produit par
+  // ailleurs.
   faitsDuRound.forEach((fait, index) => {
+    if (!estActivation(fait)) return
     // Une phase deja connue (distribution, revelation) garde son temps
     // propre. Sinon, c'est une activation ordinaire : son temps depend de
     // l'AUTEUR du coup, pas de son nom de phase, puisque le vilain et ses
@@ -332,55 +414,92 @@ export function etapesDeroule(
     })
   })
 
-  // Les cartes revelees, que les faits du moteur ne couvrent pas : lui ne rend
-  // que les activations resolues.
+  // ---------------------------------------------------- POINT 3 : distribution
   //
-  // Cote moteur, la carte quitte le paquet de rencontre AU MOMENT OU ELLE EST
-  // DISTRIBUEE (`encounter_deck -> dealt_encounter_cards`), donc c'est LA que
-  // le journal note « revelee », sous la phase 'Deal Encounter Cards' (temps
-  // 'distribution'). Le passage suivant, de la main du joueur vers la zone
-  // commune de revelation (`Reveal Encounter Cards`), ne change plus rien que
-  // ce module puisse observer : les deux zones sont deja « en jeu ». Se
-  // limiter au seul temps 'revelation' aurait donc laisse ce temps muet en
-  // partie reelle (aucune carte n'y arrive jamais) : on accepte les DEUX
-  // phases, et on les affiche toutes comme des revelations, ce qui
-  // correspond a ce que le joueur voit vraiment (le nom de la carte, des
-  // qu'elle quitte le paquet). Voir le rapport de la tache pour la mesure qui
-  // etablit ce point.
+  // Ce temps etait STRUCTURELLEMENT toujours vide (constat M3 de l'audit) :
+  // rien ne le renseignait, et la chronologie affichait « DISTRIBUTION (Aucun) »
+  // barre a presque toutes les phases de toutes les parties. Le joueur
+  // apprenait a ignorer un cinquieme du fil de progression.
   //
-  // Les entrees de type `text` (narration technique du moteur, defausses,
-  // fins d'activation, « DiscardPile<3> ») ne produisent PLUS d'etape ici :
-  // constate en partie, 8 etapes de ce genre sur 12, en anglais et
-  // illisibles, noyaient les quatre etapes utiles. Elles restent entieres
-  // dans le journal a droite et dans le Log, qui les affichent deja.
-  const cartesRevelees = duRound.filter(
-    (e) =>
-      e.type === 'card' &&
-      (tempsDe(e.phase) === 'revelation' || tempsDe(e.phase) === 'distribution')
-  )
-
-  // Regle officielle : chaque joueur revele et resout sa carte DANS L'ORDRE
-  // DU TOUR, en commencant par le premier joueur. `cartesRevelees` arrive
-  // dans l'ordre chronologique du journal (voir `duRound` plus haut), pas
-  // forcement celui du tour : on la retrie avant de construire les etapes,
-  // et le tri final sur `ORDRE` (stable) preserve ensuite cet ordre relatif.
-  for (const e of trierParOrdreDuTour(cartesRevelees, premierJoueurId, nomsHerosParJoueur.length)) {
+  // Le moteur ordonne deja ses distributions par tour de table, mais le tri
+  // s'applique quand meme : il est stable, il ne coute rien, et il tient si la
+  // source change d'ordre.
+  for (const [rang, fait] of trierParOrdreDuTour(
+    faitsDistribution.map((f) => ({ ...f, joueur: f.joueur ?? undefined })),
+    premierJoueurId,
+    nomsHerosParJoueur.length
+  ).entries()) {
     etapes.push({
-      cle: `carte:${e.cle}`,
+      cle: `distribution:${rang}:${fait.joueur ?? -1}`,
+      temps: 'distribution',
+      titre: 'distribution',
+      regle: 'regle:distribution',
+      // Le heros qui recoit. Le nom du FAIT d'abord : il date du moment de la
+      // distribution, donc il tient meme si le joueur a depuis change de forme
+      // ou quitte la table. L'index du monde ne sert que de repli.
+      auteurNom: nomNettoye(fait.joueur_nom ?? undefined)
+        ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
+      // Pas de carte : elle est FACE CACHEE, et la nommer ici revelerait au
+      // joueur ce que la regle lui cache jusqu'au point 4.
+      boosts: [],
+    })
+  }
+
+  // ----------------------------------------------------- POINT 4 : revelations
+  //
+  // Regle officielle : chaque joueur revele et resout sa carte DANS L'ORDRE
+  // DU TOUR, en commencant par le premier joueur.
+  for (const [rang, fait] of trierParOrdreDuTour(
+    faitsRevelation.map((f) => ({ ...f, joueur: f.joueur ?? undefined })),
+    premierJoueurId,
+    nomsHerosParJoueur.length
+  ).entries()) {
+    etapes.push({
+      cle: `revelation:${rang}:${fait.carte_id}`,
       temps: 'revelation',
       titre: 'revelation',
       regle: 'regle:revelation',
-      carteId: e.cibleId,
-      // Nettoyage identique a celui des faits plus haut : le moteur prefixe
-      // les identites d'un marqueur decoratif que le plateau retire partout
-      // ailleurs.
-      auteurNom: nomNettoye(nomsHerosParJoueur[e.joueur ?? -1]),
-      // Le nom NU de la carte (voir `cibleNom` de l'etape de menace, meme
-      // raison) : `titre` n'est plus une phrase toute faite, `titreEtape` la
-      // construit a partir de `auteurNom` et `cibleNom`.
-      cibleNom: e.nomCarte,
+      carteId: fait.carte_id,
+      auteurNom: nomNettoye(fait.joueur_nom ?? undefined)
+        ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
+      cibleNom: fait.carte,
       boosts: [],
     })
+  }
+
+  if (repliCartes) {
+    // Ancien chemin, garde le temps de la transition (voir le REPLI ci-dessus).
+    //
+    // Cote moteur, la carte quitte le paquet de rencontre AU MOMENT OU ELLE
+    // EST DISTRIBUEE (`encounter_deck -> dealt_encounter_cards`), donc c'est LA
+    // que le journal local note « revelee », sous la phase 'Deal Encounter
+    // Cards' (temps 'distribution'). Le passage suivant, vers la zone commune
+    // de revelation, ne change plus rien qu'il puisse observer : les deux
+    // zones sont deja « en jeu ». Se limiter au seul temps 'revelation' aurait
+    // donc laisse ce temps muet en partie reelle : on accepte les DEUX phases,
+    // et on les affiche toutes comme des revelations.
+    //
+    // Les entrees de type `text` (narration technique du moteur, defausses,
+    // « DiscardPile<3> ») ne produisent PAS d'etape : constate en partie,
+    // 8 etapes de ce genre sur 12, en anglais et illisibles, noyaient les
+    // quatre etapes utiles. Elles restent entieres dans le journal a droite.
+    const cartesRevelees = duRound.filter(
+      (e) =>
+        e.type === 'card' &&
+        (tempsDe(e.phase) === 'revelation' || tempsDe(e.phase) === 'distribution')
+    )
+    for (const e of trierParOrdreDuTour(cartesRevelees, premierJoueurId, nomsHerosParJoueur.length)) {
+      etapes.push({
+        cle: `carte:${e.cle}`,
+        temps: 'revelation',
+        titre: 'revelation',
+        regle: 'regle:revelation',
+        carteId: e.cibleId,
+        auteurNom: nomNettoye(nomsHerosParJoueur[e.joueur ?? -1]),
+        cibleNom: e.nomCarte,
+        boosts: [],
+      })
+    }
   }
 
   return etapes.sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))

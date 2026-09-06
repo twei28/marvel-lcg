@@ -67,22 +67,23 @@ export type WorldPlayer = {
 }
 
 /**
- * Une activation ennemie, décomposée par le moteur au moment où il la résout.
+ * Ce que TOUT fait du méchant porte, quel que soit son genre.
  *
- * `inflige = base + boost - defense`, et `subi` peut être plus petit encore
- * quand la cible absorbe autrement (résistance, PV insuffisants).
+ * Le journal du moteur (`WorldStat.RecordFaitMechant`, côté Python) raconte la
+ * phase du méchant point par point : la menace du point 1, les activations du
+ * point 2, la distribution du point 3, les révélations du point 4. Un fait par
+ * événement, inscrit là où le moteur le produit.
  */
-export type FaitMechant = {
-  genre: 'attaque' | 'manigance'
+type FaitMechantCommun = {
   /**
-   * Round auquel l'activation a eu lieu. Absent des faits enregistrés par un
+   * Round auquel le fait a eu lieu. Absent des faits enregistrés par un
    * moteur pas encore mis à jour (ou d'une sauvegarde plus ancienne) : dans ce
    * cas, `etapesDeroule` garde le fait plutôt que de le jeter, quel que soit le
    * round demandé (mieux vaut une étape de trop qu'un déroulé muet).
    */
   round_id?: number
   /**
-   * L'étape de la phase du méchant où l'activation a eu lieu, dans les mêmes
+   * L'étape de la phase du méchant où le fait a eu lieu, dans les mêmes
    * termes que `World.phase`.
    *
    * Un vilain ne s'active pas qu'à l'étape des activations : une carte de
@@ -91,6 +92,16 @@ export type FaitMechant = {
    * paraissait attaquer deux fois sans raison.
    */
   phase?: string
+}
+
+/**
+ * Une activation ennemie, décomposée par le moteur au moment où il la résout.
+ *
+ * `inflige = base + boost - defense`, et `subi` peut être plus petit encore
+ * quand la cible absorbe autrement (résistance, PV insuffisants).
+ */
+export type FaitActivation = FaitMechantCommun & {
+  genre: 'attaque' | 'manigance'
   /** Carte qui a déclenché l'activation, vide quand c'est l'ennemi lui-même. */
   cause?: string
   auteur: string
@@ -110,6 +121,76 @@ export type FaitMechant = {
   restant?: number | null
   boosts: { nom: string; id: number; apport: number }[]
 }
+
+/**
+ * La menace du POINT 1, posée par la règle du jeu sur une manigance principale.
+ *
+ * Elle n'a pas d'auteur : aucun personnage ne l'inflige, c'est la phase qui la
+ * pose. D'où l'absence de `auteur` et de `boosts`, que les activations
+ * portent toutes les deux.
+ *
+ * Enregistrée côté moteur par `MainScheme.Phase()`
+ * (game/card/face/card_type/scheme_main.py), le seul appelé par l'étape 1.
+ */
+export type FaitMenace = FaitMechantCommun & {
+  genre: 'menace'
+  /** Nom de la manigance visée, tel que le moteur le connaît à cet instant. */
+  cible: string
+  cible_id: number
+  /** La menace RÉELLEMENT posée, après remplacements et modificateurs. */
+  montant: number
+  /** Menace portée par la manigance après la pose. */
+  restant?: number | null
+  /** Son seuil (`target_threat`), absent quand la manigance n'en affiche pas. */
+  plafond?: number | null
+}
+
+/**
+ * Une carte rencontre distribuée à un joueur au POINT 3, face cachée.
+ *
+ * Le fait ne dit pas LAQUELLE : elle est face cachée, et l'annoncer ici
+ * révélerait au joueur ce que la règle lui cache. Il dit à qui.
+ *
+ * Enregistré côté moteur par `PlayerAction.DealEncounterCard`
+ * (game/player/action/player_action.py), une fois par carte distribuée.
+ */
+export type FaitDistribution = FaitMechantCommun & {
+  genre: 'distribution'
+  /**
+   * Indice de SIÈGE du joueur, celui de `World.players`. `null` quand le
+   * moteur n'a pas su le déterminer : on n'invente pas un siège.
+   */
+  joueur?: number | null
+  /** Son identité au moment du fait, alter ego compris. */
+  joueur_nom?: string | null
+}
+
+/**
+ * Une carte rencontre révélée par un joueur au POINT 4.
+ *
+ * Enregistré côté moteur par `PlayerAction.RevealEncounterCards`, AVANT la
+ * révélation elle-même : une carte qui met le héros à terre en se révélant
+ * doit avoir son étape, et c'est même le coup que le joueur veut voir.
+ */
+export type FaitRevelation = FaitMechantCommun & {
+  genre: 'revelation'
+  /** Indice de siège du joueur qui révèle. Voir `FaitDistribution.joueur`. */
+  joueur?: number | null
+  joueur_nom?: string | null
+  /** Nom NU de la carte révélée. */
+  carte: string
+  /** Son identifiant d'objet, pour la mise en scène sur la table. */
+  carte_id: number
+}
+
+/**
+ * Un fait de la phase du méchant, tel que le MOTEUR l'a enregistré.
+ *
+ * Union discriminée par `genre` : chaque genre porte ses propres champs, et
+ * rien d'autre. Un lecteur qui oublie un genre ne compile pas, ce qui est tout
+ * l'intérêt — c'est ce qui a manqué quand le cartouche lisait deux sources.
+ */
+export type FaitMechant = FaitActivation | FaitMenace | FaitDistribution | FaitRevelation
 
 export type World = {
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */

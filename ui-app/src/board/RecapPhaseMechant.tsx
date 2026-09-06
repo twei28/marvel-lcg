@@ -26,26 +26,38 @@ import type { Catalogue } from './catalogue'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
-import type { FaitMechant, World, WorldCard } from './world'
+import {
+  PHASES_DU_MECHANT,
+  PHASES_DU_MECHANT_ORDONNEES,
+  type PhaseDuMechant,
+} from './moteur'
+import type { FaitActivation, FaitMechant, World, WorldCard } from './world'
 
 /**
  * Les étapes de la phase du méchant, dans l'ordre de la carte de référence.
  *
- * Les clés sont les états que le moteur nomme lui-même (voir game/world/phase.py,
- * Phase.State) : il n'a pas d'état unique pour « phase du méchant », il la
- * découpe exactement comme la carte.
+ * Les phases NE SONT PLUS RECOPIÉES ICI : elles viennent de
+ * `PHASES_DU_MECHANT_ORDONNEES` (moteur.ts), l'unique définition côté plateau.
+ * Ce fichier en avait sa propre copie, et l'audit F6 du 06/09/2026 comptait
+ * trois listes concurrentes pour une seule notion. Ce tableau ne dit plus que
+ * ce qui lui appartient : le NUMÉRO et le TITRE de chaque étape.
  *
  * Le point 5 de la carte (« passer le jeton de premier joueur ») ne produit
- * aucun fait à raconter : il n'a pas d'étape ici.
+ * aucun fait à raconter : il n'a pas d'étape, d'où l'absence d'une cinquième
+ * phase dans la liste unique.
  */
-const ETAPES = [
-  { phase: 'Main Scheme Place Threat', numero: 1, titre: 'Menace sur la manigance' },
-  { phase: 'Enemy Activation', numero: 2, titre: 'Activations' },
-  { phase: 'Deal Encounter Cards', numero: 3, titre: 'Cartes distribuées' },
-  { phase: 'Reveal Encounter Cards', numero: 4, titre: 'Cartes révélées' },
-] as const
+const TITRES_ETAPES: Record<PhaseDuMechant, string> = {
+  'Main Scheme Place Threat': 'Menace sur la manigance',
+  'Enemy Activation': 'Activations',
+  'Deal Encounter Cards': 'Cartes distribuées',
+  'Reveal Encounter Cards': 'Cartes révélées',
+}
 
-const PHASES_MECHANT = new Set<string>(ETAPES.map((e) => e.phase))
+const ETAPES = PHASES_DU_MECHANT_ORDONNEES.map((phase, rang) => ({
+  phase,
+  numero: rang + 1,
+  titre: TITRES_ETAPES[phase],
+}))
 
 /**
  * Les seuls types qui racontent un FAIT de jeu.
@@ -101,8 +113,18 @@ type Ligne = {
  * les envoie sans phase : elles retournent alors à l'étape des activations,
  * qui reste le cas de très loin le plus fréquent.
  */
-function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
-  return faits.filter((fait) => (fait.phase ?? 'Enemy Activation') === phase)
+function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitActivation[] {
+  return faits.filter(
+    (fait): fait is FaitActivation =>
+      // Les ACTIVATIONS seulement. Le moteur inscrit aussi la menace, la
+      // distribution et les révélations depuis la tâche A2 : le bilan, lui,
+      // continue de les déduire du journal (`lignesDeLEtape`), et verser les
+      // deux dans la même liste ferait paraître chaque menace deux fois. Le
+      // cartouche, lui, lit tout depuis les faits (voir deroule-phase.ts) ;
+      // c'est le récap qui reste à convertir.
+      (fait.genre === 'attaque' || fait.genre === 'manigance') &&
+      (fait.phase ?? 'Enemy Activation') === phase
+  )
 }
 
 /** Insère chaque activation déclenchée juste sous la carte qui l'a causée. */
@@ -355,7 +377,7 @@ function lignesDeLEtape(faits: EntreeHistorique[], noms: Noms): Ligne[] {
  * d'une même résolution. Quand le journal est là, il remplace la déduction —
  * il ne la complète pas, sinon chaque activation paraîtrait deux fois.
  */
-function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
+function lignesDuMoteur(faits: FaitActivation[], noms: Noms): Ligne[] {
   return faits.map((fait, index) => ({
     cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
     genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
@@ -442,7 +464,7 @@ export function bilanDeLaPhase(
   noms: Noms = { carte: () => undefined, heros: () => undefined, plafond: () => undefined },
   faitsMoteur: FaitMechant[] = []
 ): Bilan | undefined {
-  const dedans = entrees.filter((e) => e.round === round && PHASES_MECHANT.has(e.phase))
+  const dedans = entrees.filter((e) => e.round === round && PHASES_DU_MECHANT.has(e.phase))
   // Ordre du jeu : l'historique empile les plus récentes en tête.
   const ordonnees = [...dedans].reverse()
   const etapes = ETAPES.map((definition) =>
@@ -515,7 +537,7 @@ export function RecapPhaseMechant({
 
     if (!actif || phase === undefined || avant === undefined) return
     // On ne déclenche qu'à la SORTIE de la phase du méchant.
-    if (!PHASES_MECHANT.has(avant) || PHASES_MECHANT.has(phase)) return
+    if (!PHASES_DU_MECHANT.has(avant) || PHASES_DU_MECHANT.has(phase)) return
     setDepliees(new Set())
     setBilan(
       bilanDeLaPhase(entrees, monde?.round_id ?? 0, nomsRef.current, monde?.faits_mechant ?? [])

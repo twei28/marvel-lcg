@@ -13,10 +13,16 @@ import {
   rangDansLeTemps,
   type EtapeDeroule,
 } from './deroule-phase'
-import type { FaitMechant } from './world'
+import type {
+  FaitActivation,
+  FaitDistribution,
+  FaitMechant,
+  FaitMenace,
+  FaitRevelation,
+} from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
-const attaque = (extra: Partial<FaitMechant> = {}): FaitMechant => ({
+const attaque = (extra: Partial<FaitActivation> = {}): FaitActivation => ({
   genre: 'attaque',
   phase: 'Enemy Activation',
   auteur: 'Ultron',
@@ -449,6 +455,195 @@ describe('etapesDeroule', () => {
       expect(etapes1.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
       expect(etapes5.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
     })
+  })
+})
+
+// ---------------------------------------------------------------------- A2 --
+// Les cinq temps viennent des FAITS DU MOTEUR, et d'eux seuls.
+//
+// Avant la tache A2, les activations venaient des faits (persistants, portes
+// par le monde) mais la menace et les cartes revelees venaient du journal
+// local, reconstruit dans le navigateur en comparant deux photos du monde. Un
+// F5 en pleine phase les perdait definitivement (constat F4 de l'audit), et le
+// temps DISTRIBUTION n'avait aucune source du tout (constat M3).
+describe('les cinq temps depuis les faits du moteur', () => {
+  const faitMenace = (extra: Partial<FaitMenace> = {}): FaitMenace => ({
+    genre: 'menace',
+    phase: 'Main Scheme Place Threat',
+    round_id: 1,
+    cible: 'L’Effraction !',
+    cible_id: 20,
+    montant: 2,
+    restant: 5,
+    plafond: 8,
+    ...extra,
+  })
+
+  const faitDistribution = (extra: Partial<FaitDistribution> = {}): FaitDistribution => ({
+    genre: 'distribution',
+    phase: 'Deal Encounter Cards',
+    round_id: 1,
+    joueur: 0,
+    joueur_nom: '★Colossus',
+    ...extra,
+  })
+
+  const faitRevelation = (extra: Partial<FaitRevelation> = {}): FaitRevelation => ({
+    genre: 'revelation',
+    phase: 'Reveal Encounter Cards',
+    round_id: 1,
+    joueur: 0,
+    joueur_nom: '★Colossus',
+    carte: 'Bombe à retardement',
+    carte_id: 88,
+    ...extra,
+  })
+
+  /** Une phase complete, telle que le moteur la publie desormais. */
+  const phaseComplete = (): FaitMechant[] => [
+    faitMenace(),
+    attaque({ round_id: 1, auteur: 'Klaw', auteur_id: 50, cible: 'Colossus', cible_id: 12 }),
+    attaque({ round_id: 1, auteur: 'Drone', auteur_id: 60, cible: 'Colossus', cible_id: 12 }),
+    faitDistribution(),
+    faitRevelation(),
+  ]
+
+  it('produit les cinq temps SANS aucune entree de journal', () => {
+    const etapes = etapesDeroule(phaseComplete(), [], 1, new Set([50]))
+    expect(etapes.map((e) => e.temps)).toEqual([
+      'menace',
+      'mechant',
+      'sbires',
+      'distribution',
+      'revelation',
+    ])
+  })
+
+  it('rend le MEME cartouche apres un rechargement, journal vide', () => {
+    // Le rechargement de page, simule : le monde revient avec ses faits (ils
+    // voyagent avec lui), le journal local repart de zero. C'est exactement
+    // ce que F4 decrivait, et le cartouche ne doit plus rien y perdre.
+    const avant = etapesDeroule(phaseComplete(), [entree()], 1, new Set([50]))
+    const apres = etapesDeroule(phaseComplete(), [], 1, new Set([50]))
+    expect(apres).toEqual(avant)
+  })
+
+  it('lit la menace sur le fait : manigance, montant, compteur et seuil', () => {
+    const [etape] = etapesDeroule([faitMenace()], [], 1, AUCUN_MECHANT)
+    expect(etape.temps).toBe('menace')
+    expect(etape.cibleNom).toBe('L’Effraction !')
+    expect(etape.cibleId).toBe(20)
+    expect(etape.montant).toBe(2)
+    expect(etape.restant).toBe(5)
+    expect(etape.plafond).toBe(8)
+    // La menace est une REGLE du jeu : personne ne l'inflige, donc pas d'auteur
+    // a mettre en avant.
+    expect(etape.carteId).toBeUndefined()
+  })
+
+  it('fait une etape de DISTRIBUTION par carte distribuee, nommee par son heros', () => {
+    // Le temps qui n'avait jamais d'etape (M3) : la chronologie affichait
+    // « DISTRIBUTION (Aucun) » barre a presque toutes les phases.
+    const etapes = etapesDeroule(
+      [faitDistribution(), faitDistribution({ joueur: 1, joueur_nom: '★Spider-Man' })],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const distributions = etapes.filter((e) => e.temps === 'distribution')
+    expect(distributions).toHaveLength(2)
+    // Prefixe decoratif retire, comme partout ailleurs sur le plateau.
+    expect(distributions.map((e) => e.auteurNom)).toEqual(['Colossus', 'Spider-Man'])
+    // La carte est FACE CACHEE : rien ne la nomme.
+    expect(distributions[0].cibleNom).toBeUndefined()
+    expect(distributions[0].carteId).toBeUndefined()
+  })
+
+  it('lit la revelation sur le fait : le heros, la carte et son identifiant', () => {
+    const [etape] = etapesDeroule([faitRevelation()], [], 1, AUCUN_MECHANT)
+    expect(etape.temps).toBe('revelation')
+    expect(etape.auteurNom).toBe('Colossus')
+    expect(etape.cibleNom).toBe('Bombe à retardement')
+    expect(etape.carteId).toBe(88)
+  })
+
+  it('range les revelations dans l ordre du tour, comme les entrees du journal', () => {
+    const etapes = etapesDeroule(
+      [
+        faitRevelation({ joueur: 0, joueur_nom: 'Heros0', carte: 'Carte A', carte_id: 1 }),
+        faitRevelation({ joueur: 1, joueur_nom: 'Heros1', carte: 'Carte B', carte_id: 2 }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT,
+      undefined,
+      1,
+      ['Heros0', 'Heros1']
+    )
+    const revelations = etapes.filter((e) => e.temps === 'revelation')
+    expect(revelations.map((e) => e.cibleNom)).toEqual(['Carte B', 'Carte A'])
+  })
+
+  it('ne lit PAS le journal quand les faits couvrent le genre', () => {
+    // Le doublon que la double source produisait : la meme menace vue une fois
+    // par le moteur et une fois par la comparaison de photos.
+    const etapes = etapesDeroule([faitMenace()], [entree()], 1, AUCUN_MECHANT)
+    expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
+    expect(etapes[0].cibleNom).toBe('L’Effraction !')
+  })
+
+  it('ne lit PAS le journal pour les cartes quand un SEUL des deux genres est la', () => {
+    // Une phase ou personne ne revele encore : le fait de distribution suffit a
+    // dire que le moteur sait tenir ce journal, donc on ne repasse pas par la
+    // reconstruction locale.
+    const etapes = etapesDeroule(
+      [faitDistribution()],
+      [entree({ cle: 'c1', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(etapes.filter((e) => e.temps === 'revelation')).toHaveLength(0)
+    expect(etapes.filter((e) => e.temps === 'distribution')).toHaveLength(1)
+  })
+
+  // ⚠ REPLI TEMPORAIRE. Un moteur pas encore mis a jour, ou une sauvegarde
+  // plus ancienne, ne porte aucun de ces trois genres : le cartouche relit
+  // alors le journal local, exactement comme avant. Ces deux cas disparaitront
+  // avec le repli lui-meme.
+  it('replie sur le journal quand AUCUN fait de menace n existe pour le round', () => {
+    const etapes = etapesDeroule([attaque({ round_id: 1 })], [entree()], 1, AUCUN_MECHANT)
+    const menaces = etapes.filter((e) => e.temps === 'menace')
+    expect(menaces).toHaveLength(1)
+    expect(menaces[0].cibleNom).toBe('L’Effraction !')
+  })
+
+  it('replie sur le journal quand AUCUN fait de carte n existe pour le round', () => {
+    const etapes = etapesDeroule(
+      [faitMenace()],
+      [entree({ cle: 'c1', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
+      1,
+      AUCUN_MECHANT
+    )
+    const revelations = etapes.filter((e) => e.temps === 'revelation')
+    expect(revelations).toHaveLength(1)
+    expect(revelations[0].cibleNom).toBe('Sonic Boom')
+  })
+
+  it('ne replie pas sur les faits d un AUTRE round', () => {
+    // Le repli se juge round par round : un fait de menace du round 1 ne doit
+    // pas fermer le repli du round 2, qui n'en a pas encore.
+    const etapes = etapesDeroule(
+      [faitMenace({ round_id: 1 })],
+      [entree({ round: 2 })],
+      2,
+      AUCUN_MECHANT
+    )
+    const menaces = etapes.filter((e) => e.temps === 'menace')
+    expect(menaces).toHaveLength(1)
+    expect(menaces[0].cibleNom).toBe('L’Effraction !')
+    // Et c'est bien l'entree du journal du round 2, pas le fait du round 1.
+    expect(menaces[0].restant).toBe(5)
+    expect(menaces[0].cle.startsWith('menace:k1')).toBe(true)
   })
 })
 
