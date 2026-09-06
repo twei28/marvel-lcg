@@ -247,6 +247,107 @@
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
+  /* --- BANDE DE JAUGE -------------------------------------------------------
+     PV et menace, plaquee contre le bord gauche HORS du cadre : le bord gauche
+     interieur du scan porte deja les bulles de stats calees (a 1 % du bord), et
+     `.scan-frame` rogne son contenu. Elle vit donc dans `.scan-visuel`, comme le
+     marqueur de morsure, et grandit avec la carte au survol.
+
+     La teinte vient du composant (`--jauge-teinte`, 140deg vert -> 0deg rouge) :
+     la couleur GLISSE avec la valeur au lieu de sauter par paliers. */
+  .jauge-carte {
+    /* Taille voulue A L'ECRAN, et non en fraction de carte. La scene du plateau
+       est REDUITE (`--echelle`, 0.67 sur une table ordinaire et moins sur une
+       table chargee) : une bande exprimee en fraction de --card-w y tombait a
+       3 px, indiscernable de l'ombre de la carte. On divise donc par l'echelle,
+       comme board.css le fait deja pour --inspect-scale. Hors du plateau
+       (vitrine, apercu), --echelle vaut 1 et la formule se lit telle quelle. */
+    --jauge-epaisseur: calc(7px / var(--echelle, 1));
+    /* Posee dans la ZONE « scan » de la grille, et NON en absolu sur toute la
+       couche : `.scan-visuel` empile l'etiquette de type, un gap de 5 px, puis
+       le cadre. Un pourcentage sur la couche entiere decalait la bande de la
+       hauteur de l'etiquette. Ici elle se cale sur le cadre seul, quelle que
+       soit l'etiquette, et c'est la marge negative qui la sort du cadre. */
+    grid-area: scan;
+    align-self: end;
+    justify-self: center;
+    width: 92%;
+    height: var(--jauge-epaisseur);
+    /* Juste sous le cadre : chaque pixel de sortie est un pixel de hauteur en
+       plus pour la carte, et la place manque deja en bas des zones. */
+    margin-bottom: calc(var(--jauge-epaisseur) * -1.15);
+    z-index: 4;
+    border-radius: 999px;
+    background: rgba(4, 7, 11, 0.9);
+    /* Un cerne net : la bande longe le halo de camp (vert ou rouge) de la carte,
+       et sans lui les deux se confondaient. */
+    box-shadow:
+      0 0 0 calc(1px / var(--echelle, 1)) rgba(0, 0, 0, 0.9),
+      0 0 calc(4px / var(--echelle, 1)) rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    pointer-events: none;
+    /* La bande se remplit DEPUIS LA GAUCHE : elle se vide vers la gauche quand
+       on perd des PV, elle s'etend vers la droite quand la menace grimpe. */
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .jauge-remplissage {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--jauge-teinte, 140deg) 90% 56%),
+      hsl(var(--jauge-teinte, 140deg) 85% 38%)
+    );
+    box-shadow:
+      0 0 calc(6px / var(--echelle, 1)) hsl(var(--jauge-teinte, 140deg) 90% 50% / 0.7),
+      inset 0 0 0 calc(1px / var(--echelle, 1)) rgba(255, 255, 255, 0.22);
+    transition:
+      width 320ms ease,
+      background 320ms ease;
+  }
+
+  /* --- PULSATION D'ALERTE ----------------------------------------------------
+     Deux niveaux, poses sur le CADRE (jamais un overlay : le scan doit rester
+     lisible), meme vocabulaire que `.is-target-pulse`. Ces regles sont placees
+     AVANT elle a dessein : a specificite egale, la carte designee comme cible
+     garde sa pulsation doree, qui guide l'action en cours. */
+  .scan-card.a-alerte-douce .scan-frame {
+    animation: alerte-respire 1600ms ease-in-out infinite;
+  }
+
+  .scan-card.a-alerte-forte .scan-frame {
+    animation: alerte-respire 800ms ease-in-out infinite;
+  }
+
+  @keyframes alerte-respire {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 2px rgba(255, 70, 60, 0.32),
+        0 0 12px rgba(255, 50, 40, 0.22),
+        0 18px 32px rgba(0, 0, 0, 0.52);
+    }
+    50% {
+      box-shadow:
+        0 0 0 3px rgba(255, 70, 60, 0.85),
+        0 0 26px 6px rgba(255, 50, 40, 0.6),
+        0 18px 32px rgba(0, 0, 0, 0.52);
+    }
+  }
+
+  /* Reglage « animations » du plateau : tout se coupe, la bande coloree reste. */
+  body.plateau-sans-animations .scan-card.a-alerte-douce .scan-frame,
+  body.plateau-sans-animations .scan-card.a-alerte-forte .scan-frame {
+    animation: none;
+  }
+
+  body.plateau-sans-animations .jauge-remplissage {
+    transition: none;
+  }
+
   .scan-card.is-target-pulse .scan-frame {
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
@@ -956,6 +1057,15 @@
 
     .scan-card.is-target-pulse .scan-frame {
       animation: none;
+    }
+
+    .scan-card.a-alerte-douce .scan-frame,
+    .scan-card.a-alerte-forte .scan-frame {
+      animation: none;
+    }
+
+    .jauge-remplissage {
+      transition: none;
     }
   }
 }

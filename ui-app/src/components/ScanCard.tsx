@@ -115,6 +115,19 @@ export type CardState =
   | 'disabled'
   | 'hidden'
 
+/**
+ * Bande de jauge posee au bord gauche de la carte.
+ *
+ * `remplissage` (0 -> 1) est la part de bande peinte, `genre` dit dans quel sens
+ * la lire (plein = intact pour les PV, plein = perdu pour la menace) et
+ * `alarme` autorise — ou non — la pulsation quand la carte devient critique.
+ */
+export type CardGauge = {
+  remplissage: number
+  genre: 'pv' | 'menace'
+  alarme: boolean
+}
+
 export type CardEffectDelta = {
   value: number
   kind: 'damage' | 'heal' | 'threat'
@@ -249,6 +262,12 @@ export type ScanCardProps = {
   aspect?: string
   /** Variation temporaire d'un compteur, affichee directement sur la carte. */
   effectDelta?: CardEffectDelta
+  /**
+   * Bande de PV ou de menace au bord de la carte, doublant la pastille
+   * chiffree. Absente = aucune bande (carte sans PV, sans menace, ou dont le
+   * maximum n'est pas connu de facon fiable).
+   */
+  jauge?: CardGauge
 }
 
 // Etiquettes courtes : les cartes sont petites. Ce sont les termes du jeu,
@@ -271,6 +290,39 @@ export const kindLabel: Record<CardKind, string> = {
   obligation: 'Obligation',
   status: 'État',
   unknown: 'Carte',
+}
+
+// Echelle de TEINTE, du vert (140) au rouge (0), indexee sur la SECURITE
+// (1 = intact, 0 = critique). Une interpolation lineaire simple traine dans le
+// jaune : un personnage a un tiers de ses PV en sortait dore, ce qui se lit
+// « ca va ». L'echelle tient donc le vert haut tant que la carte est peu
+// entamee, puis plonge vers le rouge. Points de controle, securite decroissante.
+const ECHELLE_TEINTE: Array<[securite: number, teinte: number]> = [
+  [1, 140],
+  [0.7, 95],
+  [0.5, 55],
+  [0.3, 25],
+  [0, 0],
+]
+
+function teinteDepuisSecurite(securite: number): number {
+  for (let i = 1; i < ECHELLE_TEINTE.length; i += 1) {
+    const [hautS, hautT] = ECHELLE_TEINTE[i - 1]!
+    const [basS, basT] = ECHELLE_TEINTE[i]!
+    if (securite >= basS) {
+      const part = hautS === basS ? 1 : (securite - basS) / (hautS - basS)
+      return Math.round(basT + part * (hautT - basT))
+    }
+  }
+  return 0
+}
+
+// Seuils de PULSATION, exprimes en danger (voir plus bas). Ils different par
+// genre : perdre la moitie de ses PV inquiete deja, alors qu'un complot a 50 %
+// de sa cible est encore une partie ordinaire.
+const SEUILS_ALERTE: Record<'pv' | 'menace', { douce: number; forte: number }> = {
+  pv: { douce: 0.5, forte: 0.75 },
+  menace: { douce: 0.6, forte: 0.85 },
 }
 
 export function ScanCard({
@@ -306,6 +358,7 @@ export function ScanCard({
   spentCount,
   targetPulse = false,
   effectDelta,
+  jauge,
 }: ScanCardProps) {
   // Une carte qui montre son dos n'annonce ni son type ni ses compteurs :
   // ce serait donner au joueur une information que le moteur lui cache. Le set
@@ -327,6 +380,26 @@ export function ScanCard({
   const statsCalees = facedown ? undefined : positionsStats(kind, picId)
   const aDesStats = !facedown && stats !== undefined && stats.length > 0
 
+  // Une carte face cachee ne montre pas plus sa jauge que ses pastilles : la
+  // bande trahirait l'etat d'une carte que le moteur nous cache.
+  const bande = facedown ? undefined : jauge
+  // Le DANGER, et non le remplissage : les deux genres se lisent en sens
+  // inverse, et tout ce qui suit (teinte, seuils d'alerte) ne parle plus que de
+  // lui. 0 = tout va bien, 1 = critique.
+  const danger = bande ? (bande.genre === 'pv' ? 1 - bande.remplissage : bande.remplissage) : 0
+  // Teinte HSL continue, du vert au rouge. Pas de paliers visibles : la couleur
+  // glisse avec la valeur, et le CSS anime la transition.
+  const teinte = teinteDepuisSecurite(1 - danger)
+  const seuils = SEUILS_ALERTE[bande?.genre ?? 'pv']
+  const alerte =
+    !bande || !bande.alarme
+      ? ''
+      : danger >= seuils.forte
+        ? 'forte'
+        : danger >= seuils.douce
+          ? 'douce'
+          : ''
+
   const classes = [
     'scan-card',
     `kind-${facedown ? 'unknown' : kind}`,
@@ -342,6 +415,7 @@ export function ScanCard({
     // vie), le CSS ne s'anime que si les animations sont actives.
     effectDelta ? `a-delta-${effectDelta.kind}` : '',
     onSelect ? 'est-agissante' : '',
+    alerte ? `a-alerte-${alerte}` : '',
     // Halo de camp, jamais sur une carte face cachee (n'en revele pas le camp).
     !facedown && camp ? `camp-${camp}` : '',
     !facedown && estNemesis ? 'est-nemesis' : '',
@@ -509,6 +583,25 @@ export function ScanCard({
             rogne son contenu (`overflow: hidden`), et le marqueur doit mordre
             le bord droit en debordant. Il grandit avec la carte puisqu'il est
             dans `.scan-visuel`, la couche qui porte le zoom au survol. */}
+        {/* BANDE DE JAUGE, hors de `.scan-frame` a dessein : le cadre rogne son
+            contenu. Elle est posee SOUS la carte — le long du bord gauche, deux
+            cartes voisines d'une meme rangee se serraient trop pour qu'on sache
+            a laquelle appartenait la bande. Comme le marqueur de morsure, elle
+            vit dans `.scan-visuel`, donc elle grandit avec la carte au survol. */}
+        {bande ? (
+          <div className={`jauge-carte jauge-${bande.genre}`} aria-hidden="true">
+            <span
+              className="jauge-remplissage"
+              style={
+                {
+                  width: `${Math.round(bande.remplissage * 1000) / 10}%`,
+                  '--jauge-teinte': `${teinte}deg`,
+                } as CSSProperties
+              }
+            />
+          </div>
+        ) : null}
+
         {mordu && !facedown && IMAGE_MORSURE ? (
           <img
             className="marque-morsure"

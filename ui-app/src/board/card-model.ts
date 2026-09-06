@@ -3,12 +3,13 @@
 // Tout ce que le plateau sait du moteur passe par ici. Le composant ScanCard ne
 // connait aucun card_type, aucun champ info, aucune route serveur.
 
-import type { CardKind, CardState, ScanCardProps } from '../components/ScanCard'
+import type { CardGauge, CardKind, CardState, ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
 import { picIdFr } from './scans-fr'
+import { referenceMenace } from './jauge-reference'
 
 /**
  * card_type du moteur -> famille visuelle.
@@ -156,6 +157,55 @@ function menaceAffichee(card: WorldCard): string | undefined {
 
   const cible = nombre(card.info.target_threat)
   return cible !== undefined && cible > 0 ? `${courante}/${cible}` : `${courante}`
+}
+
+/** Une part de jauge ne sort jamais de [0, 1] : un sur-soin ne deborde pas. */
+function borne(part: number): number {
+  return Math.min(1, Math.max(0, part))
+}
+
+/**
+ * Bande de jauge posee au bord de la carte, en plus de la pastille chiffree :
+ * le chiffre donne la valeur exacte, la bande donne l'etat d'un coup d'oeil sur
+ * un plateau entier.
+ *
+ * `alarme` dit si la carte a le DROIT de pulser quand elle devient critique.
+ * Elle suit le camp, et non le genre de jauge : nos PV qui s'effondrent et la
+ * menace du mechant qui monte sont des alertes, un vilain a l'agonie ou un
+ * complot annexe A NOUS charge de menace n'en sont pas.
+ */
+function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undefined {
+  if (isUnit(card)) {
+    // Des PV infinis ne se jaugent pas : la pastille dit deja « INF ».
+    if (card.info.is_infinite_health) return undefined
+    const courants = nombre(card.info.health)
+    if (courants === undefined) return undefined
+    // Meme maximum que la pastille, aux memes conditions : sans maximum fiable
+    // (PV variables selon le nombre de joueurs, carte hors catalogue), une bande
+    // remplie a une fraction inventee mentirait plus qu'elle n'informerait.
+    const duMoteur = nombre(card.info.max_health)
+    const max = duMoteur !== undefined && duMoteur > 0 ? duMoteur : catalogue.pvMax(card.card_id)
+    if (max === undefined || max <= 0) return undefined
+    return { remplissage: borne(courants / max), genre: 'pv', alarme: campDe(card) === 'player' }
+  }
+
+  if (isScheme(card)) {
+    const courante = nombre(card.info.k_threat)
+    if (courante === undefined) return undefined
+    // Complot principal : la cible imprimee. Complot annexe : la plus haute
+    // menace vue sur cette carte posee (voir jauge-reference.ts).
+    const cible = nombre(card.info.target_threat)
+    const reference =
+      cible !== undefined && cible > 0 ? cible : referenceMenace(card.id, courante)
+    if (reference <= 0) return undefined
+    return {
+      remplissage: borne(courante / reference),
+      genre: 'menace',
+      alarme: campDe(card) === 'encounter',
+    }
+  }
+
+  return undefined
 }
 
 /**
@@ -324,6 +374,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     scanIsPortrait: true,
     allyHp: pvAffiches(card, contexte.catalogue),
     schemeThreat: menaceAffichee(card),
+    jauge: jaugeAffichee(card, contexte.catalogue),
     counters: compteursAffiches(card),
     // Prise de Lock Jaws (Alligator Loki) : le moteur marque l'ennemi tenu
     // (`held_by_hero`, numero du joueur, 0 = personne) et le heros accroche.

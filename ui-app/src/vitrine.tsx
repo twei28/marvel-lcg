@@ -22,6 +22,9 @@ const cards: ScanCardProps[] = [
     kind: 'hero',
     state: 'selected',
     imageUrl: grootScan,
+    allyHp: '7/14',
+    // Bande a mi-hauteur : alerte douce, la carte respire lentement.
+    jauge: { remplissage: 0.5, genre: 'pv', alarme: true },
   },
   {
     id: 'daredevil',
@@ -30,6 +33,8 @@ const cards: ScanCardProps[] = [
     state: 'exhausted',
     imageUrl: daredevilScan,
     allyHp: '1/3',
+    // Un tiers de PV : alerte forte, bande rouge.
+    jauge: { remplissage: 0.3333, genre: 'pv', alarme: true },
   },
   {
     id: 'ronan',
@@ -37,6 +42,9 @@ const cards: ScanCardProps[] = [
     kind: 'minion',
     state: 'targetable',
     imageUrl: ronanScan,
+    allyHp: '4/6',
+    // Un ennemi n'a pas droit a l'alarme : bande coloree, mais aucune pulsation.
+    jauge: { remplissage: 0.6667, genre: 'pv', alarme: false },
   },
   {
     id: 'judge-jury-executioner',
@@ -46,6 +54,8 @@ const cards: ScanCardProps[] = [
     imageUrl: ronanSchemeScan,
     isLandscape: true,
     schemeThreat: '3',
+    // Complot du mechant a menace haute : bande presque pleine et alerte forte.
+    jauge: { remplissage: 0.9, genre: 'menace', alarme: true },
   },
   {
     id: 'the-accused',
