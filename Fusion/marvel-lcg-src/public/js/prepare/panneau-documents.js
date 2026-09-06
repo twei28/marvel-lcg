@@ -21,24 +21,27 @@ import { t, langueActuelle, enregistrerTraductions } from "/public/js/prepare/la
    distinguerait pas. Tous les autres se nomment tout seuls. */
 const TITRES = {
     "mc01_learn_to_play.pdf": {
+        ordre: 1,
         titre: "Apprendre à jouer",
         titreEn: "Learn to Play",
-        detail: "Set de base · 24 p.",
-        detailEn: "Core Set · 24 pp.",
+        detail: "24 p.",
+        detailEn: "24 pp.",
     },
-    "mc01_rules_reference_v15.pdf": {
-        titre: "Guide de référence des règles (v1.5, anglais)",
-        titreEn: "Rules Reference (v1.5)",
-        detail: "Set de base · 56 p. · le document qui tranche",
-        detailEn: "Core Set · 56 pp. · the document that settles arguments",
+    "mc01_rules_reference_v18.pdf": {
+        ordre: 2,
+        titre: "Guide de référence des règles (v1.8, anglais)",
+        titreEn: "Rules Reference (v1.8)",
+        detail: "71 p. · le document qui tranche",
+        detailEn: "71 pp. · the document that settles arguments",
     },
     "mc01_guide_de_reference_fr.pdf": {
-        // Édition 2021 : elle a une version de retard sur la v1.5 anglaise.
+        ordre: 3,
+        // Édition 2021 : elle a plusieurs versions de retard sur l'anglaise.
         // Le dire dans le libellé, sinon on l'oppose de bonne foi à la bonne.
-        titre: "Guide de référence des règles (français, édition 2021)",
+        titre: "Guide de référence (français, édition 2021)",
         titreEn: "Rules Reference (French, 2021 edition)",
-        detail: "Set de base · plus ancien que la v1.5 anglaise",
-        detailEn: "Core Set · older than the English v1.5",
+        detail: "plus ancien que la v1.8 anglaise",
+        detailEn: "older than the English v1.8",
     },
 };
 
@@ -126,7 +129,13 @@ function extensionDuFichier(fichier, extensions) {
     return extensions.find((e) => parseInt(String(e.key), 10) === numero) || null;
 }
 
-/** Décrit chaque fichier : titre, sous-titre, section, extension d'origine. */
+/** Décrit chaque fichier : le GROUPE dont il relève (son extension) et la
+ *  LIGNE qui le désigne à l'intérieur.
+ *
+ *  Le classement est par extension, et non par catégorie : les règles d'une
+ *  campagne et son carnet doivent se suivre. Séparés en deux sections, il
+ *  fallait descendre huit lignes plus bas pour trouver le carnet du livret
+ *  qu'on venait d'ouvrir. */
 function decrire(documents, extensions) {
     const en = enAnglais();
     return documents.map((d) => {
@@ -135,25 +144,24 @@ function decrire(documents, extensions) {
         const ext = extensionDuFichier(fichier, extensions);
         const carnet = estCarnet(fichier);
         const forcee = TITRES[fichier];
-        let titre, detail;
-        if (forcee) {
-            titre = en ? forcee.titreEn : forcee.titre;
-            detail = en ? forcee.detailEn : forcee.detail;
-        } else if (ext) {
-            titre = nomDExtension(ext.key);
-            detail = carnet ? t("Carnet de campagne") : t("Règles");
-        } else {
-            titre = titreDeSecours(fichier);
-            detail = carnet ? t("Carnet de campagne") : t("Règles");
-        }
+        const type = carnet ? t("Carnet de campagne") : t("Règles");
         return {
-            fichier, titre,
-            detail: detail + " · " + poids(d.octets),
+            fichier,
+            // Le groupe porte le nom de la boite ; la ligne ne redit donc que
+            // ce qui distingue le document a l'interieur.
+            groupe: ext ? nomDExtension(ext.key) : titreDeSecours(fichier),
+            ligne: forcee ? (en ? forcee.titreEn : forcee.titre) : type,
+            detail: (forcee ? ((en ? forcee.detailEn : forcee.detail) + " · ") : "") + poids(d.octets),
             section: carnet ? "campagne" : "regles",
             code: ext ? ext.code : "",
             numero: numero == null ? 9999 : numero,
+            ordre: forcee && forcee.ordre ? forcee.ordre : 0,
         };
-    }).sort((a, b) => a.numero - b.numero || a.titre.localeCompare(b.titre));
+    }).sort((a, b) => a.numero - b.numero
+        || a.ordre - b.ordre
+        // Les regles avant le carnet, a l'interieur d'une meme boite.
+        || (a.section === b.section ? 0 : a.section === "regles" ? -1 : 1)
+        || a.ligne.localeCompare(b.ligne));
 }
 
 /* ---------------- Rendu ---------------- */
@@ -206,33 +214,31 @@ function construire(fiches) {
 
     const corps = document.createElement("div");
     corps.className = "pd-corps";
-    const sections = [
-        ["regles", t("Règles")],
-        ["campagne", t("Carnets de campagne")],
-    ];
-    for (const [cle, libelle] of sections) {
-        const dedans = fiches.filter((f) => f.section === cle);
-        if (!dedans.length) continue;
-        const entete = document.createElement("div");
-        entete.className = "pd-section";
-        entete.textContent = libelle + " (" + dedans.length + ")";
-        corps.append(entete);
-        for (const f of dedans) {
-            const a = document.createElement("a");
-            a.className = "pd-lien";
-            // `encodeURIComponent` et pas `encodeURI` : un nom de fichier peut
-            // contenir une parenthese ou une espace, et le moteur ne retient
-            // de toute facon que le nom de base.
-            a.href = "/" + encodeURIComponent(f.fichier);
-            a.target = "_blank";
-            a.rel = "noopener";
-            const b = document.createElement("b");
-            b.textContent = f.titre;
-            const s = document.createElement("small");
-            s.textContent = f.detail;
-            a.append(b, s);
-            corps.append(a);
+    // Un en-tete par boite, dans l'ordre de parution, et sous lui ses
+    // documents : les regles d'abord, le carnet juste apres.
+    let groupeCourant = null;
+    for (const f of fiches) {
+        if (f.groupe !== groupeCourant) {
+            groupeCourant = f.groupe;
+            const entete = document.createElement("div");
+            entete.className = "pd-section";
+            entete.textContent = groupeCourant;
+            corps.append(entete);
         }
+        const a = document.createElement("a");
+        a.className = "pd-lien";
+        // `encodeURIComponent` et pas `encodeURI` : un nom de fichier peut
+        // contenir une parenthese ou une espace, et le moteur ne retient
+        // de toute facon que le nom de base.
+        a.href = "/" + encodeURIComponent(f.fichier);
+        a.target = "_blank";
+        a.rel = "noopener";
+        const b = document.createElement("b");
+        b.textContent = f.ligne;
+        const petit = document.createElement("small");
+        petit.textContent = f.detail;
+        a.append(b, petit);
+        corps.append(a);
     }
     if (!fiches.length) {
         const vide = document.createElement("div");

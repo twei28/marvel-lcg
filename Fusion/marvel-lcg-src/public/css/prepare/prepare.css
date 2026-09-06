@@ -944,11 +944,28 @@ button{cursor:pointer}
 .do-view:hover{color:#fff}
 
 /* 4b) visionneuse de cartes d'un deck */
-.deck-modal{position:fixed;inset:0;z-index:200;background:rgba(3,4,7,.86);backdrop-filter:blur(6px);display:grid;place-items:center;padding:28px}
-.deck-modal-panel{width:min(1120px,94vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,var(--steel),var(--ink2));border:1px solid var(--line);border-radius:12px;padding:18px}
+/* `--barre-defilement` vaut la largeur de la barre de la page, posee par
+   ouvrirModale() le temps ou la page est bloquee. Bloquer la page elargit la
+   fenetre de cette largeur, et une modale centree se decalait donc de la
+   moitie au moment de l'ouverture. On la rend ici, du bon cote. */
+.deck-modal{position:fixed;inset:0;z-index:200;background:rgba(3,4,7,.86);backdrop-filter:blur(6px);display:grid;place-items:center;
+  padding:28px;padding-right:calc(28px + var(--barre-defilement, 0px))}
+.deck-modal-panel{width:min(1120px,94vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,var(--steel),var(--ink2));border:1px solid var(--line);border-radius:12px;padding:18px;
+  /* La gouttiere est reservee MEME quand la barre est inutile. Sans cela,
+     elle apparait des que les cartes depassent 88vh, prend sa largeur au
+     contenu, et la grille en auto-fill se recompose : les cartes changent de
+     colonne et la modale a l'air de sauter. Le blocage de la page, lui, est
+     fait en JS (ouvrirModale dans app.js), avec la marge qui compense. */
+  scrollbar-gutter:stable;
+  /* La molette ne poursuit pas sur la page derriere une fois le panneau au bout. */
+  overscroll-behavior:contain}
 .dm-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.dm-head b{font-size:26px;color:#fff}
-.dm-sub{color:var(--mute);font-size:13px}
+/* MAJUSCULES partout dans l'en-tete. MarvelFan dessine ses minuscules en
+   petites capitales : « Ant-Man (Scott Lang) — Prebuilt » sortait avec deux
+   hauteurs de lettres, comme si deux polices se melaient. Et le sous-titre,
+   lui, etait en bas de casse dans la police du corps. */
+.dm-head b{font-size:26px;color:#fff;text-transform:uppercase}
+.dm-sub{color:var(--mute);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
 .dm-close{margin-left:auto;background:var(--steel2);border:1px solid var(--line);color:var(--txt);width:36px;height:36px;border-radius:8px;font-size:15px;cursor:pointer}
 .dm-edit{
   margin-left:auto;

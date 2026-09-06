@@ -1650,11 +1650,55 @@ function showCardHover(id, anchorEl) {
  *  gagne un bouton qui ouvre le deck-builder DEJA CHARGE sur ce deck-la
  *  (parametre `?deck=`, voir js/deckbuilder/app.js). Sans eux, la modale reste
  *  un simple apercu, comme avant. */
+/* Ouvrir et fermer une modale sans que rien ne bouge a l'ecran.
+ *
+ * Deux barres de defilement s'en melaient :
+ *
+ * 1. Celle du PANNEAU. Elle apparait des que les cartes depassent 88vh, prend
+ *    sa largeur au contenu, et la grille en `auto-fill` se recompose : les
+ *    cartes changent de colonne, la modale a l'air de sauter. `scrollbar-gutter`
+ *    la reserve en permanence (voir prepare.css), donc plus rien ne bouge.
+ *
+ * 2. Celle de la PAGE. On la bloque le temps de la modale, sinon la molette
+ *    fait defiler l'ecran derriere. Mais la retirer decale de sa largeur tout
+ *    ce qui est centre — la modale comprise. On rend donc au document, en
+ *    marge, exactement la largeur qu'on lui prend.
+ */
+let _modalesOuvertes = 0;
+
+function ouvrirModale(overlay) {
+    if (_modalesOuvertes === 0) {
+        // ⚠ LA MARGE VA SUR L'OVERLAY, PAS SUR <html>. L'overlay est en
+        // `position:fixed` : il se cale sur la fenetre, que le document ait
+        // une marge ou non. Poser la compensation sur <html> ne le recentrait
+        // donc pas, et la modale sautait de la moitie de la barre au moment ou
+        // on la bloquait. La variable est lue par .deck-modal (prepare.css).
+        const barre = window.innerWidth - document.documentElement.clientWidth;
+        document.documentElement.style.setProperty("--barre-defilement", barre + "px");
+        document.documentElement.style.overflow = "hidden";
+    }
+    _modalesOuvertes += 1;
+    document.body.append(overlay);
+}
+
+function fermerModale(overlay) {
+    // `isConnected` : sans lui, deux fermetures de suite (le clic dehors qui
+    // suit le bouton) decompteraient deux fois et libereraient la page trop
+    // tot, ou jamais.
+    if (!overlay || !overlay.isConnected) return;
+    overlay.remove();
+    _modalesOuvertes = Math.max(0, _modalesOuvertes - 1);
+    if (_modalesOuvertes === 0) {
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.removeProperty("--barre-defilement");
+    }
+}
+
 function showDeckCards(deck, hero, deckId) {
     const ids = [...(deck.hero || []).flatMap((x) => String(x).split(",")), ...(deck.hero_deck || []), ...(deck.player_deck || [])];
     const counts = {};
     for (const id of ids) counts[id] = (counts[id] || 0) + 1;
-    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); overlay.remove(); } } },
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
         el("div", { class: "deck-modal-panel" },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, deck.name || "Deck"),
@@ -1669,7 +1713,7 @@ function showDeckCards(deck, hero, deckId) {
                         window.open(q, "_blank");
                     },
                 }, t("Modifier")) : null,
-                el("button", { class: "dm-close", onclick: () => { hideHover(); overlay.remove(); } }, "✕"),
+                el("button", { class: "dm-close", onclick: () => { hideHover(); fermerModale(overlay); } }, "✕"),
             ),
             el("div", { class: "dm-grid" }, ...Object.keys(counts).map((id) =>
                 el("div", { class: "dm-card" },
@@ -1677,7 +1721,7 @@ function showDeckCards(deck, hero, deckId) {
                     counts[id] > 1 ? el("span", { class: "dm-count" }, "x" + counts[id]) : null,
                 ))),
         ));
-    document.body.append(overlay);
+    ouvrirModale(overlay);
 }
 
 /* ---- Panneau : parcourir les decks MarvelCDB indexés ---- */
@@ -1715,7 +1759,7 @@ async function ouvrirPanneauCdb(i) {
                 return;
             }
             p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
-            overlay.remove();
+            fermerModale(overlay);
             render();
         };
 
@@ -1749,12 +1793,12 @@ async function ouvrirPanneauCdb(i) {
 
     const opt = (v, libelle) => el("option", { value: v }, libelle);
 
-    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) overlay.remove(); } },
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermerModale(overlay); } },
         el("div", { class: "deck-modal-panel" },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, `${t("Decks MarvelCDB")} — ${p.hero.name}`),
                 compte,
-                el("button", { class: "dm-close", onclick: () => overlay.remove() }, "✕"),
+                el("button", { class: "dm-close", onclick: () => fermerModale(overlay) }, "✕"),
             ),
             el("div", { class: "cdb-filtres" },
                 el("input", {
@@ -1778,7 +1822,7 @@ async function ouvrirPanneauCdb(i) {
         ));
 
     rendre();
-    document.body.append(overlay);
+    ouvrirModale(overlay);
 }
 
 function stepDecks() {
