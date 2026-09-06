@@ -14,12 +14,16 @@ import {
   PHASES_DU_MECHANT,
   CLE_AVANCE_AUTO,
   CLE_MODE_PHASE,
-  CLE_PHASE_RAPIDE,
 } from './moteur'
 import { estBienVisible, montrerEtape, texteFlottant } from './pas-a-pas'
 import { pointDeLaPhase } from './CouchePasAPas'
 import type { EntreeHistorique } from './HistoriquePartie'
 import type { World } from './world'
+
+// L'ancienne case a cocher, d'avant les quatre modes. Le code n'a plus aucun
+// lecteur de cette cle : elle ne vit plus que dans le stockage des navigateurs
+// d'anciens joueurs, et ces cas-la prouvent qu'elle n'y reveille rien.
+const CLE_PHASE_RAPIDE = 'marvel-board-phase-rapide'
 
 const monde = (p: Partial<World>): World => p as World
 

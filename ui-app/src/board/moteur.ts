@@ -20,17 +20,6 @@ import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
 import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
 
-/** Phase du mechant acceleree : plus de « Continue » a chaque activation. */
-export const CLE_PHASE_RAPIDE = 'marvel-board-phase-rapide'
-
-export function lirePhaseRapide(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_PHASE_RAPIDE) !== 'off'
-  } catch {
-    return true
-  }
-}
-
 /**
  * Le rythme de la phase du mechant, en DEUX positions.
  *
@@ -87,11 +76,12 @@ export const MODES: ModePhaseMechant[] = ['detaille', 'instantane']
  * enregistre sous `CLE_MODE_PHASE`. Tout le reste donne « detaille » SANS
  * avance auto.
  *
- * L'ancienne case a cocher `CLE_PHASE_RAPIDE` ne le dit pas : elle etait
- * COCHEE PAR DEFAUT, et son seul role etait de ne plus demander « Continue » a
- * chaque activation. La lire comme un « fais defiler tout seul » allumait
- * l'avance auto chez tous les anciens joueurs qui n'avaient jamais touche a
- * rien - c'est a dire presque tous. Elle n'est donc plus consultee.
+ * L'ancienne case a cocher (« marvel-board-phase-rapide ») ne le dit pas :
+ * elle etait COCHEE PAR DEFAUT, et son seul role etait de ne plus demander
+ * « Continue » a chaque activation. La lire comme un « fais defiler tout
+ * seul » allumait l'avance auto chez tous les anciens joueurs qui n'avaient
+ * jamais touche a rien - c'est a dire presque tous. Elle n'est donc plus
+ * consultee du tout, et le code n'a plus aucun lecteur de cette cle.
  *
  * Un joueur DEJA MIGRE (`CLE_MODE_PHASE` porte « detaille » ou « instantane »)
  * n'est jamais retouche : ni son mode, ni son avance auto.

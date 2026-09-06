@@ -469,7 +469,7 @@ const phaseQuiACoute = (): EntreeHistorique[] =>
     })
   )
 
-describe('recap retenu tant qu un autre panneau occupe l ecran', () => {
+describe('quand le recap parait', () => {
   it('s affiche a la sortie de la phase du mechant', () => {
     const entrees = phaseQuiACoute()
     const { rerender } = render(
@@ -479,32 +479,18 @@ describe('recap retenu tant qu un autre panneau occupe l ecran', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
-  it('ne s affiche pas tant qu il est suspendu', () => {
+  it('ne s affiche pas quand il n est pas actif : le mode detaille a son cartouche', () => {
+    // C'est board.tsx qui tranche (`actif={modePhase !== 'detaille'}`) : en
+    // detaille, le cartouche du deroule raconte la phase et la clot par son
+    // propre bilan. Deux bilans qui se suivent, c'etait le constat M7.
     const entrees = phaseQuiACoute()
     const { rerender } = render(
-      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif suspendu />
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif={false} />
     )
     rerender(
-      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif suspendu />
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif={false} />
     )
     expect(screen.queryByRole('dialog')).toBeNull()
-  })
-
-  it('ne PERD pas le bilan retenu : il parait des que la place se libere', () => {
-    // Le point qui compte. La sortie de la phase du mechant est un instant qui
-    // ne repasse pas : couper le recap a ce moment-la reviendrait a ne jamais
-    // l'afficher. Il attend, il ne disparait pas.
-    const entrees = phaseQuiACoute()
-    const { rerender } = render(
-      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif suspendu />
-    )
-    rerender(
-      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif suspendu />
-    )
-    expect(screen.queryByRole('dialog')).toBeNull()
-
-    rerender(<RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif />)
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
 
