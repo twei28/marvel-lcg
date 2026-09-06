@@ -203,9 +203,23 @@ les autres héros. C'est déjà le fonctionnement du hot-seat.
 
 ## Architecture
 
-**Fondation : les entrées du journal.** Elles portent déjà la cible, la valeur,
-le type et la phase, elles sont testées, et le récap s'en sert. Une seule
-vérité. On ne relit pas le monde, on ne touche pas au moteur Python.
+**Fondation : ce que le plateau reçoit déjà**, et rien de neuf côté moteur.
+
+Deux sources, et le récap les combine déjà — précision apportée à la relecture
+du code, la formulation « le journal seul » était incomplète :
+
+1. **Les faits structurés du moteur** (`World.faits_mechant`, type `FaitMechant`
+   dans `world.ts`). Pour chaque activation résolue : `auteur`, `cible`, `base`,
+   `boost`, `defense`, `inflige`, `subi`, `restant`, la `phase` où elle a eu
+   lieu, la `cause` éventuelle, et le détail des boosts avec leur apport. Une
+   déduction ne saurait pas dire « 5 dégâts = 3 de base + 2 de boost », et
+   compterait plusieurs fois ce que le moteur rend plusieurs fois autour d'une
+   seule résolution.
+2. **Les entrées du journal** pour tout ce que les faits ne couvrent pas : les
+   cartes révélées, la menace posée, les statuts.
+
+On ne relit pas le monde pour déduire, et **on n'ajoute aucun flux d'événements
+au moteur Python** : ces deux sources existent et sont déjà consommées.
 
 **Un composant nouveau, séparé** du récap. Le récap garde son rôle — le bilan de
 fin, **conservé mais raccourci** — et les deux partagent la lecture des faits,
