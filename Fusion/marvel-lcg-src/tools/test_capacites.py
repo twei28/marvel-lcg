@@ -22371,6 +22371,76 @@ CAS = [
         "verifier": "a2_pas_de_doublon_revelation_attaque",
     },
     # FIN DU BLOC A2 -----------------------------------------------------------
+
+    # ---------------------------------------------------------------- A3 ----
+    # DEBUT DU BLOC A3 (06/09/2026) — NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
+    #
+    # Ces quatre cas ne testent AUCUNE carte : ils testent l'ANNONCE des
+    # activations ennemies. Jusqu'ici le moteur n'inscrivait un fait qu'une
+    # fois le coup RESOLU (`subi`, `defense`, `restant` : autant de valeurs qui
+    # n'existent qu'apres coup), donc il n'existait a aucun moment un etat
+    # « le mechant VA attaquer » que le plateau puisse montrer, et la fenetre
+    # ou le joueur peut defendre ou interrompre passait sans qu'il la voie
+    # venir (constat F1 de l'audit du 06/09/2026).
+    #
+    # Une activation produit desormais DEUX faits, du meme `activation_id` :
+    # l'INTENTION a la declaration (`etat: 'annonce'`), puis la RESOLUTION
+    # (`etat: 'resolu'`), qui REMPLACE la premiere dans `faits_mechant`.
+    #
+    # Filtre pour les rejouer seuls :
+    #     python3.10 tools/test_capacites.py .game-src 40000 /tmp/a3.json "A3 annonce"
+    {
+        "nom": "A3 annonce — l'intention est inscrite AVANT la resolution, sous le meme identifiant",
+        "pourquoi": ("le cartouche du plateau ne pouvait montrer qu'un passe deja "
+                     "resolu : le fait naissait avec `subi` et `defense`. L'intention "
+                     "part maintenant AVANT `WhenUnitWouldAttack`, donc avant que le "
+                     "moteur pose ses questions au joueur, et la resolution la remplace "
+                     "sous le meme `activation_id` — le plateau complete son etape sans "
+                     "en changer la cle"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_annonce_puis_resolution",
+    },
+    {
+        "nom": "A3 annonce — une defense entre les deux temps change `subi`",
+        "pourquoi": ("c'est LA raison d'etre des deux temps (decision 7 de la spec) : "
+                     "entre l'annonce et la resolution, le joueur peut defendre. Le cas "
+                     "prouve que la fenetre est reelle — la defense s'intercale APRES "
+                     "l'annonce et le fait resolu porte une valeur differente de celle "
+                     "annoncee"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_defense_entre_les_deux",
+    },
+    {
+        "nom": "A3 annonce — une activation annulee laisse un fait `annule`, jamais une intention orpheline",
+        "pourquoi": ("un « ... instead » remplace l'attaque apres que l'intention est "
+                     "partie. Sans cloture, le cartouche resterait sur « Klaw va "
+                     "attaquer Colossus » pour toujours. Le fait resolu porte alors "
+                     "`etat: 'annule'` et le plateau dit que l'attaque n'a pas lieu"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_activation_annulee",
+    },
+    {
+        "nom": "A3 annonce — deux activations du meme auteur dans le round ont deux identifiants",
+        "pourquoi": ("l'identifiant est un compteur par round, pas une identite de "
+                     "carte : sans cela la seconde activation du vilain REMPLACERAIT la "
+                     "premiere dans le journal et le joueur n'en verrait qu'une. Le cas "
+                     "couvre AUSSI le second site d'appel, la manigance (can_scheme.py)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_deux_activations_deux_identifiants",
+    },
+    # FIN DU BLOC A3 -----------------------------------------------------------
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -27089,6 +27159,281 @@ def a2_pas_de_doublon_revelation_attaque(monde, aides):
                   f"{len(revelations)} revelation(s) au total")
 
 # ========================== FIN DU BLOC A2 ==================================
+
+# ============================ BLOC A3 (06/09/2026) ==========================
+# L'ANNONCE avant la resolution. Voir les quatre cas « A3 annonce — ... » dans
+# CAS. Ces fonctions ne verifient aucune carte : elles declenchent une
+# activation ennemie a la main et lisent la TRACE des appels a
+# `WorldStat.RecordFaitMechant`.
+#
+# Pourquoi une trace et pas seulement `monde.stat.faits_mechant` : le fait
+# resolu REMPLACE le fait d'intention (meme `activation_id`), donc a la fin il
+# n'en reste qu'un. Seule la trace des appels peut prouver l'ORDRE des deux
+# temps, qui est tout le sujet.
+# ----------------------------------------------------------------------------
+
+def _a3_journal_neuf(monde):
+    """Repart d'un journal vide, sans declencher la purge de changement de round."""
+    monde.stat.faits_mechant = []
+    monde.stat._faits_mechant_round = monde.round_id
+
+def _a3_tracer(monde):
+    """Espionne `RecordFaitMechant` et rend la liste des faits, dans l'ordre d'appel."""
+    trace = []
+    original = monde.stat.RecordFaitMechant
+
+    def espion(round_id, fait):
+        trace.append(dict(fait))
+        return original(round_id, fait)
+
+    monde.stat.RecordFaitMechant = espion
+    return trace
+
+def _a3_vilain(monde):
+    from game.operate.worlds import Worlds
+    vilains = Worlds.GetAllVillains(monde)
+    return vilains[0] if vilains else None
+
+def _a3_preparer(monde):
+    """Le decor commun aux quatre cas : phase des activations, vilain, heros.
+
+    Rend `(vilain, heros, regle, erreur)`. `erreur` non vide = le decor n'a pas
+    pu etre monte, le cas doit echouer en le disant plutot qu'en plantant.
+    """
+    from game.world.phase import Phase
+    from game.effect.rule import GameRule
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+    monde.phase.SetState(Phase.State.EnemyActivation)
+
+    vilain = _a3_vilain(monde)
+    if not vilain:
+        return None, None, None, "aucun vilain en jeu"
+    heros = joueur.GetIdentity()
+    if not heros:
+        return None, None, None, "le joueur n'a pas d'identite en jeu"
+    return vilain, heros, GameRule(vilain), ""
+
+def _a3_attaquer(vilain, heros, regle):
+    """Une attaque de base SANS boost : le calcul reste lisible d'un bout a l'autre.
+
+    Les cartes de boost sortent du paquet de rencontre, donc leur apport n'est
+    pas reproductible ; ce qu'on mesure ici, c'est l'ordre des deux faits et le
+    lien entre eux, pas le montant des degats.
+    """
+    from game.card.face.attribute.can_attack import AttackProperty
+    vilain.BasicAttack([heros], regle,
+                       property=AttackProperty(do_not_give_boost=True))
+
+def _a3_activations(trace):
+    return [f for f in trace if f.get('genre') in ('attaque', 'manigance')]
+
+def a3_annonce_puis_resolution(monde, aides):
+    """L'intention part avant la resolution, et la resolution la REMPLACE."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    attaque_imprimee = vilain.attack
+    _a3_attaquer(vilain, heros, regle)
+
+    faits = _a3_activations(trace)
+    if len(faits) != 2:
+        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 2 : une "
+                       f"annonce puis une resolution) ; trace = {faits}")
+    annonce, resolu = faits
+    if annonce.get('etat') != 'annonce':
+        return False, f"le PREMIER fait porte etat={annonce.get('etat')!r} (attendu 'annonce')"
+    if resolu.get('etat') != 'resolu':
+        return False, f"le SECOND fait porte etat={resolu.get('etat')!r} (attendu 'resolu')"
+    if annonce.get('activation_id') is None:
+        return False, f"l'annonce n'a pas d'activation_id ({annonce})"
+    if annonce['activation_id'] != resolu.get('activation_id'):
+        return False, (f"identifiants differents : annonce {annonce['activation_id']}, "
+                       f"resolution {resolu.get('activation_id')}")
+
+    # L'annonce ne porte QUE ce qui est connu avant le coup.
+    manques = [c for c in ('genre', 'auteur', 'auteur_id', 'cible', 'cible_id', 'base')
+               if c not in annonce]
+    if manques:
+        return False, f"champs absents de l'annonce : {manques} ({annonce})"
+    interdits = [c for c in ('subi', 'inflige', 'defense', 'boost', 'boosts', 'restant')
+                 if c in annonce]
+    if interdits:
+        return False, (f"l'annonce porte des champs de RESOLUTION : {interdits} — ils "
+                       f"n'existent pas encore quand elle part ({annonce})")
+    if annonce['base'] != attaque_imprimee:
+        return False, (f"base annoncee = {annonce['base']} (attaque imprimee "
+                       f"{attaque_imprimee})")
+    if annonce['auteur_id'] != vilain.card.object_id:
+        return False, f"auteur_id = {annonce['auteur_id']} (attendu {vilain.card.object_id})"
+    if annonce['cible_id'] != heros.card.object_id:
+        return False, f"cible_id = {annonce['cible_id']} (attendu {heros.card.object_id})"
+
+    # Et le journal n'en garde QU'UN : la resolution a pris la place de l'annonce.
+    gardes = [f for f in monde.stat.faits_mechant if f.get('genre') == 'attaque']
+    if len(gardes) != 1:
+        return False, (f"{len(gardes)} fait(s) d'attaque dans le journal (attendu 1 : "
+                       f"la resolution REMPLACE l'annonce) ; journal = {monde.stat.faits_mechant}")
+    if gardes[0].get('etat') != 'resolu':
+        return False, f"le fait garde porte etat={gardes[0].get('etat')!r} (attendu 'resolu')"
+    if gardes[0].get('activation_id') != annonce['activation_id']:
+        return False, (f"le fait garde porte activation_id={gardes[0].get('activation_id')} "
+                       f"(attendu {annonce['activation_id']})")
+    return True, (f"annonce #{annonce['activation_id']} ({annonce['auteur']} -> "
+                  f"{annonce['cible']}, base {annonce['base']}) puis resolution "
+                  f"(subi {gardes[0].get('subi')}), 1 seul fait garde")
+
+def a3_defense_entre_les_deux(monde, aides):
+    """Une defense s'intercale entre l'annonce et la resolution, et `subi` en change.
+
+    La defense n'est pas forcee ici : le pilote du harnais repond de lui-meme
+    a la question « qui defend ? » que le moteur pose sur `WhenUnitBeingAttack`,
+    c'est a dire APRES l'annonce. C'est exactement la fenetre que la decision 7
+    de la spec veut rendre visible, jouee par le chemin ordinaire du moteur —
+    une capacite temporaire ecrite pour l'occasion aurait prouve moins.
+    """
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    _a3_attaquer(vilain, heros, regle)
+
+    faits = _a3_activations(trace)
+    if len(faits) != 2:
+        return False, f"{len(faits)} fait(s) d'activation traces (attendu 2) ; trace = {faits}"
+    annonce, resolu = faits
+    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
+        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
+                       f"{resolu.get('etat')!r}")
+    if resolu.get('defense', 0) <= 0:
+        return False, (f"la defense n'a pas eu lieu : defense={resolu.get('defense')} "
+                       f"dans le fait resolu ({resolu})")
+    if resolu.get('subi') == annonce['base']:
+        return False, (f"`subi` ({resolu.get('subi')}) vaut la valeur ANNONCEE "
+                       f"({annonce['base']}) : la defense n'a rien change entre les "
+                       f"deux temps, le cas ne prouve rien")
+    attendu = max(0, annonce['base'] - resolu['defense'])
+    if resolu.get('inflige') != attendu:
+        return False, (f"inflige = {resolu.get('inflige')} (attendu {attendu} = base "
+                       f"{annonce['base']} - defense {resolu['defense']})")
+    # La MEME base des deux cotes. Elle etait DEDUITE de `inflige + defense`,
+    # or `inflige` est plafonne a zero : une defense superieure a l'attaque
+    # rendait une base trop grande, et le joueur lisait deux valeurs
+    # differentes pour un seul coup (l'annoncee, puis la deduite).
+    if resolu.get('base') != annonce['base']:
+        return False, (f"base annoncee {annonce['base']} mais base resolue "
+                       f"{resolu.get('base')} : le meme coup afficherait deux "
+                       f"valeurs differentes")
+    return True, (f"annonce base {annonce['base']}, puis defense {resolu['defense']} "
+                  f"-> subi {resolu.get('subi')} (meme activation "
+                  f"#{annonce.get('activation_id')})")
+
+def a3_activation_annulee(monde, aides):
+    """Un « ... instead » apres l'annonce : le fait resolu porte `etat: 'annule'`."""
+    from game.ability import AbilityType
+    from game.ability.factory import AbilityFactory
+    from game.operate.effects import Effects
+
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    # Remplace l'attaque APRES que l'intention est partie : c'est exactement le
+    # cas que le moteur doit savoir clore (une carte « au lieu d'attaquer... »,
+    # un etourdissement pose en reaction).
+    effets = vilain.effect.RegisterTemp(
+        AbilityFactory.WhenUnitWouldAttack(
+            AbilityType.Temp0,
+            None,
+            lambda effect, message: message.SetBeInstead(effect),
+        ),
+        unregister_after_exec=True,
+    )
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    try:
+        _a3_attaquer(vilain, heros, regle)
+    finally:
+        # `unregister_after_exec=True` a deja pu retirer l'effet : le retirer
+        # une seconde fois leve un ValueError qui n'apprend rien sur le cas.
+        try:
+            Effects.UnRegister(effets)
+        except ValueError:
+            pass
+
+    faits = _a3_activations(trace)
+    if len(faits) != 2:
+        return False, (f"{len(faits)} fait(s) traces (attendu 2 : l'annonce puis sa "
+                       f"cloture) ; trace = {faits}")
+    annonce, cloture = faits
+    if annonce.get('etat') != 'annonce':
+        return False, f"le PREMIER fait porte etat={annonce.get('etat')!r} (attendu 'annonce')"
+    if cloture.get('etat') != 'annule':
+        return False, (f"le SECOND fait porte etat={cloture.get('etat')!r} (attendu "
+                       f"'annule') : une intention sans suite laisserait le cartouche "
+                       f"sur « va attaquer » pour toujours")
+    if cloture.get('activation_id') != annonce.get('activation_id'):
+        return False, (f"identifiants differents : {annonce.get('activation_id')} puis "
+                       f"{cloture.get('activation_id')}")
+    gardes = _a3_activations(monde.stat.faits_mechant)
+    if len(gardes) != 1 or gardes[0].get('etat') != 'annule':
+        return False, (f"journal = {monde.stat.faits_mechant} (attendu UN fait, "
+                       f"etat 'annule')")
+    if 'subi' in gardes[0]:
+        return False, f"le fait annule porte `subi` : rien n'a ete subi ({gardes[0]})"
+    return True, (f"annonce #{annonce.get('activation_id')} puis annulation sous le "
+                  f"meme identifiant, 1 seul fait garde")
+
+def a3_deux_activations_deux_identifiants(monde, aides):
+    """Deux activations du meme auteur dans le round : deux identifiants distincts.
+
+    La seconde est une MANIGANCE : le cas couvre du meme coup le second site
+    d'appel (can_scheme.py), qui doit numeroter sur le meme compteur.
+    """
+    from game.card.face.attribute.can_scheme import SchemeProperty
+
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    _a3_attaquer(vilain, heros, regle)
+    vilain.BasicSchemes(regle, property=SchemeProperty(do_not_give_boost=True))
+
+    faits = _a3_activations(trace)
+    if len(faits) != 4:
+        return False, (f"{len(faits)} fait(s) traces (attendu 4 : deux annonces et "
+                       f"deux resolutions) ; trace = "
+                       f"{[(f.get('genre'), f.get('etat'), f.get('activation_id')) for f in faits]}")
+    identifiants = [f.get('activation_id') for f in faits]
+    if None in identifiants:
+        return False, f"un fait sans activation_id : {identifiants}"
+    attaques = {f['activation_id'] for f in faits if f.get('genre') == 'attaque'}
+    manigances = {f['activation_id'] for f in faits if f.get('genre') == 'manigance'}
+    if len(attaques) != 1 or len(manigances) != 1:
+        return False, (f"identifiants : attaque {sorted(attaques)}, manigance "
+                       f"{sorted(manigances)} (attendu un seul de chaque)")
+    if attaques == manigances:
+        return False, (f"les deux activations partagent l'identifiant "
+                       f"{attaques} : la seconde effacerait la premiere du journal")
+    gardes = _a3_activations(monde.stat.faits_mechant)
+    if len(gardes) != 2:
+        return False, (f"{len(gardes)} fait(s) gardes (attendu 2, un par activation) ; "
+                       f"journal = {monde.stat.faits_mechant}")
+    if any(f.get('etat') != 'resolu' for f in gardes):
+        return False, f"un fait garde n'est pas resolu : {[f.get('etat') for f in gardes]}"
+    return True, (f"activations #{sorted(attaques)[0]} (attaque) et "
+                  f"#{sorted(manigances)[0]} (manigance), 2 faits gardes")
+
+# ========================== FIN DU BLOC A3 ==================================
 '''
 
 

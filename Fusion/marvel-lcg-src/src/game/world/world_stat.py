@@ -44,8 +44,25 @@ class WorldStat:
         # une carte revelee peut faire frapper le vilain, et le client range le
         # fait grace a son champ `phase`. Les trois autres genres n'ont de sens
         # qu'a leur etape et sont filtres a l'inscription.
+        #
+        # DEUX TEMPS PAR ACTIVATION. Une activation ennemie inscrit d'abord une
+        # INTENTION (`etat: 'annonce'`), a la declaration, puis sa RESOLUTION
+        # (`etat: 'resolu'`), qui REMPLACE la premiere : meme `activation_id`,
+        # meme place dans la liste. Sans ce premier temps, il n'existait a
+        # aucun moment un etat « le mechant va attaquer » que le plateau puisse
+        # montrer, et la fenetre ou le joueur peut defendre ou interrompre
+        # passait sans qu'il la voie venir.
+        #
+        # Une activation qui n'a finalement pas lieu (un « ... instead » qui la
+        # remplace, une cible qui disparait) se clot par un fait
+        # `etat: 'annule'`, sous le meme identifiant : une intention sans suite
+        # laisserait le cartouche sur « va attaquer » jusqu'a la fin de la phase.
         self.faits_mechant: List[Dict[str, Any]] = []
         self._faits_mechant_round: int = -1
+        # Le compteur des activations du round. Il numerote, il ne compte pas :
+        # sa seule fonction est de lier l'intention a sa resolution. Reparti de
+        # zero a chaque round, comme le journal lui-meme.
+        self._activation_suivante: int = 0
 
     def OnTurnBegin(self):
         self.this_turn_made_attack = []
@@ -99,14 +116,51 @@ class WorldStat:
         dict plutot que de le muter : l'appelant (can_attack.py) le construit
         pour cet appel, mais rien ne garantit qu'il ne le reutilise pas.
         """
-        if round_id != self._faits_mechant_round:
-            self._faits_mechant_round = round_id
-            self.faits_mechant = []
-        self.faits_mechant.append({**fait, 'round_id': round_id})
+        self._DemarrerLeRound(round_id)
+        complet = {**fait, 'round_id': round_id}
+
+        # REMPLACEMENT plutot qu'ajout quand le fait porte un identifiant
+        # d'activation deja vu : c'est la resolution qui prend la place de son
+        # intention. A LA MEME PLACE, et cela compte — le plateau lit les faits
+        # dans l'ordre de la liste, et une activation qui sauterait en fin de
+        # journal ferait reculer le joueur d'une etape a chaque coup resolu.
+        activation_id = complet.get('activation_id')
+        if activation_id is not None:
+            for rang, ancien in enumerate(self.faits_mechant):
+                if ancien.get('activation_id') == activation_id:
+                    self.faits_mechant[rang] = complet
+                    return
+
+        self.faits_mechant.append(complet)
         # Garde-fou : une partie pathologique ne doit pas faire enfler le
         # descripteur envoye a chaque rendu.
         if len(self.faits_mechant) > 200:
             del self.faits_mechant[:-200]
+
+    def _DemarrerLeRound(self, round_id: int) -> None:
+        """Vide le journal au premier fait d'un round different du dernier vu.
+
+        On ne purge pas a la FIN d'un round : le bilan s'affiche apres la
+        phase et lirait alors un journal vide. On attend donc le premier fait
+        du round suivant.
+        """
+        if round_id != self._faits_mechant_round:
+            self._faits_mechant_round = round_id
+            self.faits_mechant = []
+            self._activation_suivante = 0
+
+    def NouvelleActivation(self, round_id: int) -> int:
+        """Le numero de la prochaine activation ennemie de ce round.
+
+        Un COMPTEUR, et non une identite de carte : le meme vilain s'active
+        plusieurs fois dans un round (une carte de rencontre peut le faire
+        frapper une seconde fois), et deux activations qui partageraient un
+        identifiant se remplaceraient l'une l'autre dans le journal — le joueur
+        n'en verrait qu'une.
+        """
+        self._DemarrerLeRound(round_id)
+        self._activation_suivante += 1
+        return self._activation_suivante
 
     def RecordAttack(self, end_message: 'Message.AfterUnitAttackEnd'):
         self.this_turn_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))

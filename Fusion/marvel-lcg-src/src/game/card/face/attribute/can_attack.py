@@ -145,10 +145,47 @@ class CanAttack(CardFace):
         world = this.card.world
         this = this.card.CastTo(Unit2)
 
+        # ANNONCE de l'activation (fait d'INTENTION, lu par ui-app).
+        #
+        # « Klaw va attaquer Colossus », AVANT que le coup soit resolu. Sa
+        # place est le sujet meme de la correction : elle part ICI, juste avant
+        # `WhenUnitWouldAttack`, parce que c'est ce message-la qui ouvre la
+        # fenetre ou le joueur peut interrompre, et `WhenUnitBeingAttack` (plus
+        # bas, dans la boucle) celle ou il peut defendre. Une intention posee
+        # apres eux arriverait apres les questions, donc trop tard pour que le
+        # cartouche montre ce qui va se passer pendant qu'on y repond.
+        #
+        # Les cartes de boost sont retournees ENTRE les deux temps : l'annonce
+        # ne les porte pas, le fait resolu oui.
+        #
+        # `annonce_id` vaut 0 des qu'il n'y a rien a annoncer (l'attaquant
+        # n'est pas un ennemi, ce n'est pas une attaque de base, aucune cible) :
+        # tout ce qui suit devient alors sans effet.
+        annonce_cible = units[0] if units else None
+        annonce_base = this.attack if HasAttack.IsType(this) else 0
+        annonce_id = CanAttack.AnnoncerActivation(
+            this, annonce_cible, 'attaque', annonce_base,
+            is_base_attack, by_effect,
+        )
+
+        def cloturer_annonce_non_resolue() -> None:
+            """L'attaque annoncee n'a pas eu lieu : on ferme l'intention.
+
+            Sans cette cloture, le cartouche resterait sur « Klaw va attaquer
+            Colossus » jusqu'a la fin de la phase. Le fait de cloture porte le
+            MEME identifiant, donc il remplace l'intention au lieu de s'ajouter.
+            """
+            nonlocal annonce_id
+            if not annonce_id:
+                return
+            identifiant, annonce_id = annonce_id, 0
+            CanAttack.AnnulerActivation(this, annonce_cible, 'attaque', identifiant, by_effect)
+
         # Q: If Ebony Maw is prevented from attacking or scheming by a status card, he removes the status gard instead of resolving his activation.
         would_atk_message = Message.WhenUnitWouldAttack(this, units, by_effect, property=property)
         would_atk_message.Send()
         if would_atk_message.is_be_instead:
+            cloturer_annonce_non_resolue()
             return None
 
         if Enemy.IsType(this):
@@ -205,6 +242,14 @@ class CanAttack(CardFace):
         for target in unit_dict:
 
             gain_divided_attack = 0
+
+            # L'annonce ne vaut que pour la cible ANNONCEE. Une redirection, ou
+            # une seconde cible dans la meme attaque, ferme l'intention en
+            # cours : elle n'a rien anticipe de ce coup-ci, et la resolution qui
+            # vient repartira d'un identifiant neuf.
+            if annonce_id and annonce_cible is not None and \
+                target.card.object_id != annonce_cible.card.object_id:
+                cloturer_annonce_non_resolue()
 
             if not this.IsInPlay():
                 break
@@ -293,6 +338,7 @@ class CanAttack(CardFace):
                         )
                     this.ResolveBoostCards(being_atk_message, gain_att)
                     if Worlds.IsGameOver(by_effect):
+                        cloturer_annonce_non_resolue()
                         return None
 
                 this = this.card.CastTo(Unit2)
@@ -437,8 +483,13 @@ class CanAttack(CardFace):
                 CanAttack.JournaliserActivation(
                     this, atk_target, is_base_attack,
                     boost_apports, defense, calculated_damage, took_damage,
-                    by_effect,
+                    by_effect, activation_id=annonce_id,
+                    base_annoncee=annonce_base if annonce_id else None,
                 )
+                # L'intention est CONSOMMEE : le fait resolu vient de prendre
+                # sa place. Sans cette remise a zero, la cloture d'apres boucle
+                # l'annulerait juste apres l'avoir resolue.
+                annonce_id = 0
             except Exception:
                 pass
 
@@ -448,6 +499,11 @@ class CanAttack(CardFace):
             atk_end_messages.append(atk_end_message)
 
             damage_targets += took_damage_targets
+
+        # Le filet : toutes les sorties de boucle passent par ici (attaquant
+        # sorti du jeu, cible vaincue avant les degats, aucune cible retenue).
+        # Sans effet quand la resolution a deja consomme l'annonce.
+        cloturer_annonce_non_resolue()
 
         Effects.UnRegister(temp_effects)
 
@@ -512,10 +568,89 @@ class CanAttack(CardFace):
         return nom
 
     @staticmethod
+    def AnnoncerActivation(auteur: 'CardFace', cible: 'CardFace|None', genre: str,
+                           base: int, is_base_power: bool,
+                           by_effect: 'Effect|None'=None) -> int:
+        """Inscrit l'INTENTION d'une activation ennemie, et rend son identifiant.
+
+        Rend 0 quand il n'y a rien a annoncer (pas un ennemi, pas une
+        activation de base, pas de cible) : l'appelant n'a alors rien a clore
+        ni a consommer.
+
+        Le fait ne porte QUE ce qui est connu avant le coup — qui, contre qui,
+        et la valeur imprimee. `subi`, `defense`, `restant`, les boosts :
+        aucun n'existe encore, et en inventer un serait pire que se taire. Le
+        fait de resolution les apportera tous, sous le meme identifiant.
+
+        SOUS GARDE, comme le reste de ce journal : un journal d'affichage n'a
+        aucune raison de pouvoir interrompre une resolution de combat.
+        """
+        from game.card.face.base import Enemy
+
+        if cible is None or not is_base_power or not Enemy.IsType(auteur):
+            return 0
+        try:
+            world = auteur.card.world
+            phase = world.GetPhaseText()
+            activation_id = world.stat.NouvelleActivation(world.round_id)
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': genre,
+                'etat': 'annonce',
+                'activation_id': activation_id,
+                'phase': phase,
+                'cause': CanAttack.CauseDeLActivation(auteur, cible, phase, by_effect),
+                'auteur': auteur.name,
+                'auteur_id': auteur.card.object_id,
+                'cible': cible.name,
+                'cible_id': cible.card.object_id,
+                # La valeur IMPRIMEE : l'attaque ou la manigance de l'auteur
+                # avant les cartes de boost, qui ne sont pas encore retournees.
+                'base': base,
+            })
+            return activation_id
+        except Exception:
+            return 0
+
+    @staticmethod
+    def AnnulerActivation(auteur: 'CardFace', cible: 'CardFace|None', genre: str,
+                          activation_id: int, by_effect: 'Effect|None'=None) -> None:
+        """Clot une intention qui n'a pas eu de resolution.
+
+        Meme identifiant que l'annonce, donc le fait la REMPLACE : le
+        cartouche du plateau voit son etape se completer en « l'attaque n'a pas
+        lieu » plutot que de rester sur « va attaquer » jusqu'a la fin de la
+        phase.
+
+        Trois facons connues d'y arriver : un « ... instead » qui remplace
+        l'activation, une cible qui quitte la table avant les degats, un
+        attaquant qui sort du jeu entre-temps.
+        """
+        if not activation_id or cible is None:
+            return
+        try:
+            world = auteur.card.world
+            phase = world.GetPhaseText()
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': genre,
+                'etat': 'annule',
+                'activation_id': activation_id,
+                'phase': phase,
+                'cause': CanAttack.CauseDeLActivation(auteur, cible, phase, by_effect),
+                'auteur': auteur.name,
+                'auteur_id': auteur.card.object_id,
+                'cible': cible.name,
+                'cible_id': cible.card.object_id,
+            })
+        except Exception:
+            pass
+
+    @staticmethod
     def JournaliserActivation(attaquant: 'CardFace', cible: 'CardFace', is_base_attack: bool,
                               boost_apports: 'List[Tuple[str, int, int]]',
                               defense: int, inflige: int, subi: int,
-                              by_effect: 'Effect|None'=None) -> None:
+                              by_effect: 'Effect|None'=None,
+                              activation_id: int=0,
+                              base_annoncee: 'int|None'=None) -> None:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -525,11 +660,15 @@ class CanAttack(CardFace):
 
             inflige = base + boost - defense
 
-        `base` s'en deduit plutot qu'il ne se lit — l'attaque courante de
-        l'attaquant a DEJA absorbe les boosts au moment ou on arrive ici (voir
-        `gain_att` plus haut, qui appelle GainForThisActive). La soustraction
-        est donc la seule facon juste de retrouver la valeur d'avant, et elle
-        reste exacte meme quand une autre capacite a modifie l'attaque.
+        `base_annoncee` est l'attaque LUE avant les boosts, a la declaration
+        (voir `AnnoncerActivation`). Quand elle est connue, elle fait foi.
+
+        Sinon `base` se DEDUIT, et la deduction a une limite qu'il faut
+        connaitre : `inflige` est plafonne a zero (`max(0, ... - defense)`), si
+        bien qu'une defense superieure a l'attaque rendait une base trop
+        grande — mesure du 06/09/2026, Rhino ATQ 2 contre une defense de 3
+        journalisait « base 3 ». Le joueur lisait alors deux valeurs
+        differentes pour le meme coup, l'annoncee et la deduite.
         """
         from game.card.face.base import Enemy
 
@@ -545,13 +684,20 @@ class CanAttack(CardFace):
 
         world.stat.RecordFaitMechant(world.round_id, {
             'genre': 'attaque',
+            # Le fait de RESOLUTION. Il remplace l'intention de meme
+            # identifiant (voir WorldStat.RecordFaitMechant) ; sans intention
+            # annoncee — une attaque qu'aucun de nos deux sites n'a pu voir
+            # venir — il en prend un neuf, pour que TOUTE activation soit
+            # identifiee de la meme facon cote client.
+            'etat': 'resolu',
+            'activation_id': activation_id or world.stat.NouvelleActivation(world.round_id),
             'phase': phase,
             'cause': CanAttack.CauseDeLActivation(attaquant, cible, phase, by_effect),
             'auteur': attaquant.name,
             'auteur_id': attaquant.card.object_id,
             'cible': cible.name,
             'cible_id': cible.card.object_id,
-            'base': inflige + defense - boost_total,
+            'base': base_annoncee if base_annoncee is not None else inflige + defense - boost_total,
             'boost': boost_total,
             'defense': defense,
             'inflige': inflige,
@@ -569,7 +715,8 @@ class CanAttack(CardFace):
     @staticmethod
     def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,
                              boost_apports: 'List[Tuple[str, int, int]]', pose: int,
-                             by_effect: 'Effect|None'=None) -> None:
+                             by_effect: 'Effect|None'=None,
+                             activation_id: int=0) -> None:
         """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
 
         Elle vit ici, a cote de son attaque, parce que les deux forment une
@@ -591,6 +738,9 @@ class CanAttack(CardFace):
 
         world.stat.RecordFaitMechant(world.round_id, {
             'genre': 'manigance',
+            # Meme regle que l'attaque, juste au-dessus.
+            'etat': 'resolu',
+            'activation_id': activation_id or world.stat.NouvelleActivation(world.round_id),
             'phase': phase,
             'cause': CanAttack.CauseDeLActivation(auteur, manigance, phase, by_effect),
             'auteur': auteur.name,

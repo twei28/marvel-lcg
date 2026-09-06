@@ -70,9 +70,31 @@ class CanScheme(CardFace):
             if check_scheme_message.target_scheme:
                 target_scheme = check_scheme_message.target_scheme
 
+        # ANNONCE de l'activation (fait d'INTENTION, lu par ui-app). Meme place
+        # et meme raison que dans can_attack.py : juste avant le message qui
+        # ouvre la fenetre d'interruption, et avant que les boosts soient
+        # retournes. Les deux moities de la meme notion cote joueur — un ennemi
+        # qui s'active — vivent aux memes endroits des deux cotes.
+        from game.card.face.attribute.can_attack import CanAttack
+        annonce_cible = target_scheme or Worlds.FindMainScheme(self)
+        annonce_id = CanAttack.AnnoncerActivation(
+            this, annonce_cible, 'manigance',
+            this.scheme if HasScheme.IsType(this) else 0,
+            is_base_scheme, by_effect,
+        )
+
+        def cloturer_annonce_non_resolue() -> None:
+            """La manigance annoncee n'a pas eu lieu : on ferme l'intention."""
+            nonlocal annonce_id
+            if not annonce_id:
+                return
+            identifiant, annonce_id = annonce_id, 0
+            CanAttack.AnnulerActivation(this, annonce_cible, 'manigance', identifiant, by_effect)
+
         would_sch_message = Message.WhenUnitWouldScheme(this, by_effect, property=property)
         would_sch_message.Send()
         if would_sch_message.is_be_instead:
+            cloturer_annonce_non_resolue()
             return None
 
         if Enemy.IsType(this):
@@ -94,6 +116,7 @@ class CanScheme(CardFace):
 
         main_scheme = Worlds.FindMainScheme(self)
         if not main_scheme:
+            cloturer_annonce_non_resolue()
             return None
 
         boost_cards: List['CardFace'] = []
@@ -119,6 +142,7 @@ class CanScheme(CardFace):
             if CanBoost.IsType(this):
                 this.ResolveBoostCards(being_sch_message, gain_sch)
                 if Worlds.IsGameOver(by_effect):
+                    cloturer_annonce_non_resolue()
                     return None
 
         this = this.CastTo(Unit2)
@@ -127,6 +151,7 @@ class CanScheme(CardFace):
         if not target_scheme:
             target_scheme = Worlds.FindMainScheme(self)
         if not target_scheme:
+            cloturer_annonce_non_resolue()
             return None
 
         recalculate = Message.WhenRecalculateSchemeValue(this, target_scheme, value, would_sch_message)
@@ -141,10 +166,12 @@ class CanScheme(CardFace):
         # Journal du bilan de phase (ajout local, lu par ui-app), sous garde :
         # un journal d'affichage n'a pas a pouvoir interrompre une activation.
         try:
-            from game.card.face.attribute.can_attack import CanAttack
             CanAttack.JournaliserManigance(
                 this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
+                activation_id=annonce_id,
             )
+            # L'intention est CONSOMMEE : le fait resolu a pris sa place.
+            annonce_id = 0
         except Exception:
             pass
 
