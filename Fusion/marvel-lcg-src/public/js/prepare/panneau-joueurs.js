@@ -1,4 +1,5 @@
-// panneau-joueurs.js — bouton « 👥 Joueurs » sur l'écran de préparation, qui
+// panneau-joueurs.js — bouton « 👥 Joueurs & tchat » sur l'écran de
+// préparation, qui
 // ouvre la liste des titulaires de compte, le tchat général et les tchats
 // privés. Le panneau se déplace à la souris et retient sa place.
 //
@@ -24,8 +25,11 @@
     catch (e) { return 'fr'; }
   })();
   var DICO_EN_LOCAL = {
-    'Joueurs': 'Players',
-    'Qui est là, et le tchat': 'Who is around, and the chat',
+    // « Joueurs » seul se lisait comme un reglage du nombre de heros, juste
+    // sous les tuiles de mode. Le libelle nomme donc les DEUX choses que le
+    // panneau contient : qui est connecte, et de quoi leur ecrire.
+    'Joueurs & tchat': 'Players & chat',
+    'Qui est connecté, et le tchat': 'Who is connected, and the chat',
     'Général': 'General',
     'Tout le monde': 'Everyone',
     'Personne d’autre pour l’instant.': 'Nobody else yet.',
@@ -197,7 +201,7 @@
     var titre = document.createElement('div');
     titre.className = 'pj-titre';
     var nom = document.createElement('span');
-    nom.textContent = '👥 ' + t('Joueurs');
+    nom.textContent = '👥 ' + t('Joueurs & tchat');
     var fermer = document.createElement('button');
     fermer.className = 'pj-fermer';
     fermer.type = 'button';
@@ -378,8 +382,8 @@
     construirePanneau();
     var bouton = document.createElement('button');
     bouton.type = 'button';
-    bouton.textContent = '👥 ' + t('Joueurs');
-    bouton.title = t('Qui est là, et le tchat');
+    bouton.textContent = '👥 ' + t('Joueurs & tchat');
+    bouton.title = t('Qui est connecté, et le tchat');
     bouton.addEventListener('click', function () { basculer(!etat.ouvert); });
     rangeeBoutons().append(bouton);
     battre();

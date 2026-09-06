@@ -881,10 +881,24 @@ button{cursor:pointer}
 .brand-lockup.logo{flex-direction:row;align-items:center;gap:10px}
 .brand-lockup.logo .brand-sub{align-self:center}
 
-/* 2) modes à droite du titre */
-.team-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:20px}
-.team-header .step-head{margin-bottom:0}
-.team-header .command-band{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+/* 2) modes à droite du titre
+   La bande de modes se met a HAUTEUR du titre, pas en dessous : les six
+   tuiles a leur taille normale (min-width:160px) faisaient toujours plus
+   large que la place restante, donc `flex-wrap` les renvoyait sur une ligne
+   entiere sous « Rassemble tes heros » — une bande de 80 pixels perdue avant
+   meme de voir un heros. Ici elles sont compactees (pas de largeur plancher,
+   marque et textes reduits) et la bande prend la place restante : elles
+   tiennent a droite du titre, sur une ou deux rangees selon la fenetre. */
+.team-header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px}
+.team-header .step-head{margin-bottom:0;flex:0 1 auto}
+.team-header .command-band{display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+  flex:1 1 320px;min-width:0;margin-bottom:0;padding:8px}
+.team-header .mode-strip{justify-content:flex-end;gap:8px}
+.team-header .mode-pill{min-width:0;padding:7px 9px;gap:8px}
+.team-header .mode-mark{width:28px;height:28px;font-size:20px;border-width:1px}
+.team-header .mode-copy b{font-size:12px}
+.team-header .mode-copy small{font-size:10px}
+.team-header .count-btn{width:30px;height:30px}
 
 /* 3) hover héros nu (juste la carte, plus grande) */
 .card-hover.bare{width:auto!important;max-width:none;max-height:none;overflow:visible;padding:0;background:none;border:none;box-shadow:none}

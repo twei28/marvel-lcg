@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prepare a game — Marvel Champions</title>
-    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=3ad8d436">
+    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=9daf1829">
 </head>
 <body>
     <div id="app">
@@ -12,9 +12,14 @@
     </div>
     <script type="module" src="/public/js/prepare/app.js?v=64cb8b85"></script>
     <script src="/public/js/prepare/reprise.js?v=2" defer></script>
+    <!-- Bouton « 🃏 Galerie » : DEBRANCHE a la demande de l'utilisateur, la
+         barre du haut etant trop chargee. lien-galerie.js reste dans
+         js/prepare/ et /galerie.html reste servie (le salon y renvoie
+         toujours) : decommenter cette ligne suffit a le rallumer.
     <script src="/public/js/prepare/lien-galerie.js?v=1" defer></script>
+    -->
     <script src="/public/js/prepare/lien-admin.js?v=1" defer></script>
-    <script src="/public/js/prepare/panneau-joueurs.js?v=1" defer></script>
+    <script src="/public/js/prepare/panneau-joueurs.js?v=2" defer></script>
     <!-- Bouton et panneau « 🧩 Puzzles » : DEBRANCHES a la demande de
          l'utilisateur. puzzles.js reste dans js/prepare/, les routes du moteur
          (/list_puzzle_files, /load_puzzle) aussi : decommenter cette ligne
