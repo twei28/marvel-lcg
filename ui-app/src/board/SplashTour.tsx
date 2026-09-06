@@ -36,7 +36,7 @@ function nomPropre(nom: string | undefined): string | undefined {
   return propre ? propre : undefined
 }
 
-function tourCourant(monde: World | undefined): Tour | undefined {
+function tourCourant(monde: World | undefined, annonceMechantAilleurs: boolean): Tour | undefined {
   if (!monde) return undefined
 
   const surtitre = `${t('Round')} ${monde.round_id}`
@@ -56,6 +56,13 @@ function tourCourant(monde: World | undefined): Tour | undefined {
   }
 
   if (monde.phase === DEBUT_PHASE_MECHANT) {
+    // Cette branche est la SEULE que `annonceMechantAilleurs` neutralise : en
+    // mode detaille, BandeauPhase.tsx annonce deja la phase du mechant, sur ce
+    // meme declencheur, avec un effet plus fort. Sans ce garde-fou, les deux
+    // annonces se superposaient a chaque round. Le tour d'un joueur, ci-dessus,
+    // n'a pas d'equivalent ailleurs : il n'est jamais concerne.
+    if (annonceMechantAilleurs) return undefined
+
     return {
       cle,
       camp: 'mechant',
@@ -68,8 +75,21 @@ function tourCourant(monde: World | undefined): Tour | undefined {
   return undefined
 }
 
-export function SplashTour({ monde }: { monde: World | undefined }) {
-  const tour = tourCourant(monde)
+export function SplashTour({
+  monde,
+  annonceMechantAilleurs = false,
+}: {
+  monde: World | undefined
+  /**
+   * Neutralise la seule branche « phase du mechant » de ce splash. Sert
+   * quand une autre annonce prend deja le relais sur le meme declencheur
+   * (le bandeau du mode detaille, plus fort) : sans ce garde-fou, les deux
+   * s'affichaient en meme temps et leurs textes se chevauchaient. Le splash
+   * du tour d'un joueur reste toujours affiche, dans tous les modes.
+   */
+  annonceMechantAilleurs?: boolean
+}) {
+  const tour = tourCourant(monde, annonceMechantAilleurs)
   const [affiche, setAffiche] = useState<Tour | undefined>(undefined)
   const dernier = useRef<string | undefined>(undefined)
 
