@@ -22796,6 +22796,51 @@ CAS = [
         "verifier": "a3_deux_activations_deux_identifiants",
     },
     # FIN DU BLOC A3 -----------------------------------------------------------
+
+    # DEBUT DU BLOC A3-BIS (07/09/2026) — NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
+    #
+    # La `base` du fait RESOLU. Le bilan de fin de phase la montre (« N de
+    # base ») et le joueur refait le calcul a la main :
+    #
+    #     inflige = base + boost - defense
+    #
+    # Deux sources l'ont fausse tour a tour, et les deux cas ci-dessous les
+    # ferment :
+    #  - la DEDUCTION (`inflige + defense - boost`) se trompe des que `inflige`
+    #    est plafonne a zero (defense superieure a l'attaque) ;
+    #  - la valeur IMPRIMEE lue a la declaration ignore tout ce qui renforce
+    #    l'attaque autrement qu'avec une carte de boost (`additional_value`,
+    #    applique par le constructeur de `WhenUnitWouldAttack`).
+    #
+    # Filtre pour les rejouer seuls :
+    #     python3.10 tools/test_capacites.py .game-src 40000 /tmp/a3b.json "A3 base"
+    {
+        "nom": "A3 base — un ennemi renforce journalise la base REELLE, pas la valeur imprimee",
+        "pourquoi": ("`additional_value` renforce l'attaque APRES la declaration : la "
+                     "valeur imprimee lue a l'annonce ne la connait pas. Si le fait "
+                     "resolu la reprenait telle quelle, `base + boost - defense` ne "
+                     "redonnerait plus `inflige` et le recap mentirait sur un coup que "
+                     "le joueur vient de subir"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_base_attaque_renforcee",
+    },
+    {
+        "nom": "A3 base — la manigance verifie la meme egalite que l'attaque",
+        "pourquoi": ("les deux moities de l'activation ennemie doivent se lire de la "
+                     "meme facon dans le bilan. La manigance n'a pas de defense et sa "
+                     "menace n'est jamais plafonnee a zero, mais elle a les memes "
+                     "modificateurs : sa base doit venir du total REELLEMENT pose, "
+                     "boosts deduits"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a3_base_manigance",
+    },
+    # FIN DU BLOC A3-BIS -------------------------------------------------------
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -27908,6 +27953,125 @@ def a3_deux_activations_deux_identifiants(monde, aides):
                   f"#{sorted(manigances)[0]} (manigance), 2 faits gardes")
 
 # ========================== FIN DU BLOC A3 ==================================
+
+# ========================= DEBUT DU BLOC A3-BIS =============================
+# LA BASE DU FAIT RESOLU. Voir les deux cas « A3 base — ... » dans CAS.
+#
+# L'egalite que le bilan de fin de phase donne a lire au joueur :
+#
+#     inflige = base + boost - defense
+#
+# Elle doit tenir sur le fait RESOLU, quoi qu'il arrive entre la declaration et
+# la resolution. Le fait d'INTENTION, lui, garde la valeur imprimee : c'est ce
+# qui est ecrit sur la carte, et c'est tout ce qu'on sait a ce moment-la.
+# ----------------------------------------------------------------------------
+
+#: Le renfort pose sur l'attaque du cas, en dehors de toute carte de boost.
+_A3B_RENFORT = 3
+
+def _a3b_egalite(fait):
+    """Rend (True, '') si `base + boost - defense` redonne `inflige`.
+
+    Le seul ecart tolere est le PLAFOND a zero : `inflige` ne descend jamais
+    sous zero, donc un coup entierement absorbe rend 0 la ou le calcul brut
+    serait negatif. C'est le moteur qui plafonne, pas le journal.
+    """
+    base = fait.get('base')
+    boost = fait.get('boost')
+    defense = fait.get('defense')
+    inflige = fait.get('inflige')
+    if None in (base, boost, defense, inflige):
+        return False, f"champ manquant dans le fait resolu : {fait}"
+    brut = base + boost - defense
+    if inflige == max(0, brut):
+        return True, ""
+    return False, (f"base {base} + boost {boost} - defense {defense} = {brut}, "
+                   f"mais inflige = {inflige}")
+
+def a3_base_attaque_renforcee(monde, aides):
+    """Un ennemi renforce : la base resolue est la valeur REELLE, pas l'imprimee."""
+    from game.card.face.attribute.can_attack import AttackProperty
+
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    imprimee = vilain.attack
+    vilain.BasicAttack([heros], regle,
+                       property=AttackProperty(do_not_give_boost=True,
+                                               additional_value=_A3B_RENFORT))
+
+    faits = _a3_activations(trace)
+    if len(faits) != 2:
+        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 2) ; "
+                       f"trace = {faits}")
+    annonce, resolu = faits
+    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
+        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
+                       f"{resolu.get('etat')!r}")
+
+    # L'INTENTION annonce ce qui est ecrit sur la carte : le renfort n'est pas
+    # encore applique quand elle part, et l'inventer serait pire que se taire.
+    if annonce.get('base') != imprimee:
+        return False, (f"l'annonce porte base={annonce.get('base')} (attaque imprimee "
+                       f"{imprimee}) : elle doit dire la valeur imprimee, rien d'autre")
+
+    # LA RESOLUTION, elle, doit compter le renfort.
+    attendue = imprimee + _A3B_RENFORT
+    if resolu.get('base') != attendue:
+        return False, (f"le fait resolu porte base={resolu.get('base')} (attendu "
+                       f"{attendue} = imprimee {imprimee} + renfort {_A3B_RENFORT}) : "
+                       f"le recap afficherait « {resolu.get('base')} de base » pour un "
+                       f"coup de {attendue}")
+    ok, detail = _a3b_egalite(resolu)
+    if not ok:
+        return False, detail
+    return True, (f"annonce base {annonce.get('base')} (imprimee), resolution base "
+                  f"{resolu.get('base')} = {imprimee} + {_A3B_RENFORT}, defense "
+                  f"{resolu.get('defense')} -> inflige {resolu.get('inflige')}")
+
+def a3_base_manigance(monde, aides):
+    """La manigance verifie la meme egalite, et son intention dit l'imprimee."""
+    from game.card.face.attribute.can_scheme import SchemeProperty
+
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    imprimee = vilain.scheme
+    vilain.BasicSchemes(regle, property=SchemeProperty(do_not_give_boost=True,
+                                                       additional_value=_A3B_RENFORT))
+
+    faits = [f for f in _a3_activations(trace) if f.get('genre') == 'manigance']
+    if len(faits) != 2:
+        return False, (f"{len(faits)} fait(s) de manigance traces (attendu 2) ; "
+                       f"trace = {faits}")
+    annonce, resolu = faits
+    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
+        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
+                       f"{resolu.get('etat')!r}")
+    if annonce.get('base') != imprimee:
+        return False, (f"l'annonce porte base={annonce.get('base')} (manigance imprimee "
+                       f"{imprimee})")
+    attendue = imprimee + _A3B_RENFORT
+    if resolu.get('base') != attendue:
+        return False, (f"le fait resolu porte base={resolu.get('base')} (attendu "
+                       f"{attendue} = imprimee {imprimee} + renfort {_A3B_RENFORT})")
+    if resolu.get('defense') != 0:
+        return False, (f"defense={resolu.get('defense')} sur une manigance : personne "
+                       f"ne defend une manigance")
+    ok, detail = _a3b_egalite(resolu)
+    if not ok:
+        return False, detail
+    return True, (f"annonce base {annonce.get('base')} (imprimee), resolution base "
+                  f"{resolu.get('base')} + boost {resolu.get('boost')} = menace posee "
+                  f"{resolu.get('inflige')}")
+
+# ========================== FIN DU BLOC A3-BIS ==============================
 '''
 
 
