@@ -358,7 +358,7 @@ function ajouterNouvellesEntrees(
 // jeter sur nouvelle partie. C'est ce que l'etiquette permet de distinguer.
 const CLE_HISTORIQUE = 'marvel-historique-partie'
 
-type HistoriquePersiste = { partieId?: number; entrees: EntreeHistorique[] }
+type HistoriquePersiste = { partieId?: string; entrees: EntreeHistorique[] }
 
 function lireHistoriquePersiste(): HistoriquePersiste {
   try {
@@ -374,7 +374,7 @@ function lireHistoriquePersiste(): HistoriquePersiste {
     }
     const objet = donnees as Partial<HistoriquePersiste>
     return {
-      partieId: typeof objet?.partieId === 'number' ? objet.partieId : undefined,
+      partieId: typeof objet?.partieId === 'string' ? objet.partieId : undefined,
       entrees: Array.isArray(objet?.entrees) ? objet.entrees.slice(0, MAX_ENTREES) : [],
     }
   } catch {
@@ -382,7 +382,7 @@ function lireHistoriquePersiste(): HistoriquePersiste {
   }
 }
 
-function persisterHistorique(entrees: EntreeHistorique[], partieId?: number): void {
+function persisterHistorique(entrees: EntreeHistorique[], partieId?: string): void {
   try {
     const charge: HistoriquePersiste = { partieId, entrees }
     window.sessionStorage.setItem(CLE_HISTORIQUE, JSON.stringify(charge))
@@ -394,14 +394,14 @@ function persisterHistorique(entrees: EntreeHistorique[], partieId?: number): vo
 export function useHistoriquePartie(
   monde: World | undefined,
   demande: Demande | undefined,
-  partieId?: number
+  partieId?: string
 ) {
   // Lu UNE fois : la partie a laquelle appartient le journal restaure.
   const restaure = useRef(lireHistoriquePersiste())
   const [entrees, setEntrees] = useState<EntreeHistorique[]>(() => restaure.current.entrees)
   const precedent = useRef<World | undefined>(undefined)
   const causes = useRef<MemoireCauses>(creerMemoireCauses())
-  const partieNotee = useRef<number | undefined>(undefined)
+  const partieNotee = useRef<string | undefined>(undefined)
 
   // Remise à zéro sur NOUVELLE PARTIE seulement.
   //

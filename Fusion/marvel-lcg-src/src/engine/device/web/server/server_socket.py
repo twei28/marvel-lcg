@@ -58,6 +58,7 @@ class GameServerSocket(GameServerBase):
             data = FrameDescriptor(
                 render_id           = world.render.last_render_id if world else 0,
                 game_id             = game.session.game_id,
+                game_uid            = getattr(game.session, "game_uid", ""),
                 ask_players         = self.device_manager.asking_players,
                 remaining_time      = remaining_time,
                 max_timeout         = self.device_manager.timer.max_timeout,

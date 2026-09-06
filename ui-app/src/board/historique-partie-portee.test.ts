@@ -24,7 +24,7 @@ const entree = (titre: string) => ({
 })
 
 /** Ce que sessionStorage contient après une partie déjà jouée. */
-function semer(partieId: number | undefined, titres: string[]): void {
+function semer(partieId: string | undefined, titres: string[]): void {
   const entrees = titres.map(entree)
   window.sessionStorage.setItem(
     CLE,
@@ -32,7 +32,7 @@ function semer(partieId: number | undefined, titres: string[]): void {
   )
 }
 
-const monter = (partieId: number | undefined) =>
+const monter = (partieId: string | undefined) =>
   renderHook(() => useHistoriquePartie(undefined, undefined, partieId))
 
 const titres = (resultat: { current: { entrees: { titre: string }[] } }) =>
@@ -42,14 +42,14 @@ afterEach(() => window.sessionStorage.clear())
 
 describe('portée du journal', () => {
   it('garde le journal quand on recharge LA MÊME partie (F5)', () => {
-    semer(77, ['Round 1', 'Batroc attaque'])
-    const { result } = monter(77)
+    semer('a1:1', ['Round 1', 'Batroc attaque'])
+    const { result } = monter('a1:1')
     expect(titres(result)).toEqual(['Round 1', 'Batroc attaque'])
   })
 
   it("jette le journal d'une partie PRÉCÉDENTE", () => {
-    semer(77, ['Round 1', 'Batroc attaque'])
-    const { result } = monter(78)
+    semer('a1:1', ['Round 1', 'Batroc attaque'])
+    const { result } = monter('b2:1')
     expect(titres(result)).toEqual([])
   })
 
@@ -57,27 +57,40 @@ describe('portée du journal', () => {
     // On ne peut pas savoir à quelle partie il appartenait : le garder
     // risquerait de recoller le journal d'hier sur la partie d'aujourd'hui.
     semer(undefined, ['Round 1'])
-    const { result } = monter(77)
+    const { result } = monter('a1:1')
     expect(titres(result)).toEqual([])
   })
 
   it('jette le journal quand une nouvelle partie démarre SANS rechargement', () => {
-    semer(77, ['Round 1'])
+    semer('a1:1', ['Round 1'])
     const { result, rerender } = renderHook(
-      ({ partie }: { partie: number }) => useHistoriquePartie(undefined, undefined, partie),
-      { initialProps: { partie: 77 } }
+      ({ partie }: { partie: string }) => useHistoriquePartie(undefined, undefined, partie),
+      { initialProps: { partie: 'a1:1' } }
     )
     expect(titres(result)).toEqual(['Round 1'])
-    rerender({ partie: 78 })
+    rerender({ partie: 'a1:2' })
     expect(titres(result)).toEqual([])
   })
 
   it("réétiquette ce qu'il garde, pour que la partie SUIVANTE le jette", () => {
     // Sans réécriture, un journal d'ancien format survivrait au premier
     // rechargement puis resterait éternellement non étiqueté.
-    semer(77, ['Round 1'])
-    monter(77)
+    semer('a1:1', ['Round 1'])
+    monter('a1:1')
     const brut = JSON.parse(window.sessionStorage.getItem(CLE) ?? 'null')
-    expect(brut.partieId).toBe(77)
+    expect(brut.partieId).toBe('a1:1')
+  })
+
+  it('jette le journal de la partie precedente MEME a game_id identique', () => {
+    // LE cas signale en jeu. `game.session.game_id` repart a 1 dans chaque
+    // processus moteur (game_session.py : `self.game_id = 0`, incremente a la
+    // mise en place). Or le serveur relance un moteur par partie : deux parties
+    // successives portaient donc toutes les deux le numero 1, l'etiquette
+    // paraissait identique, et le journal de la partie finie restait affiche
+    // au-dessus de la nouvelle. L'etiquette porte desormais AUSSI l'identifiant
+    // tire au demarrage de la partie (`game_uid`), unique d'un moteur a l'autre.
+    semer('a1:1', ['Round 1', 'Batroc attaque'])
+    const { result } = monter('b2:1')
+    expect(titres(result)).toEqual([])
   })
 })

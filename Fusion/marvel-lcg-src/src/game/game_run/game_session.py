@@ -23,6 +23,14 @@ class GameSession:
     def __init__(self, game: 'Game') -> None:
         self.scene: Scene|None = None
         self.game_id = 0 # Undo will not update it
+        # Ajout local : identifiant UNIQUE d'une partie a l'autre.
+        #
+        # `game_id` ne l'est pas : il repart de zero dans chaque processus, et
+        # le serveur allume un moteur par partie. Deux parties successives
+        # portaient donc le meme numero, et le plateau, qui s'en sert pour
+        # savoir si son journal appartient encore a la partie affichee, gardait
+        # celui de la partie precedente. Tire une fois, a la mise en place.
+        self.game_uid = ""
         self.timeout = 0
         self.cheat = False
         self.version: Ver
@@ -57,6 +65,9 @@ class GameSession:
         self.version = Ver(scene.version)
         self.game_id += 1
         self.start_time = Time.GetTime()
+        # Pris ICI et nulle part ailleurs : `start_time` ne ferait pas l'affaire,
+        # GetPlayTime et Undo le reecrivent en cours de partie.
+        self.game_uid = "%x" % int(self.start_time * 1000)
         self.game.state.SetStartState(state)
 
     ################################################################################

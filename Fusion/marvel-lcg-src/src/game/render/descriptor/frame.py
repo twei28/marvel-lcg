@@ -20,5 +20,8 @@ class FrameDescriptor:
     # monde voyait la partie s'arreter sans un mot. Ce champ permet d'afficher
     # « X est deconnecte » et de proposer de jouer a sa place.
     sieges_absents      : List[int] = field(default_factory=lambda: [])
+    # Ajout local : identifiant unique de LA partie (voir GameSession).
+    # `game_id` repart a 1 dans chaque processus moteur ; celui-ci, non.
+    game_uid            : str = ""
     # is_skipping         : bool
 

@@ -36,14 +36,14 @@ afterEach(() => window.sessionStorage.clear())
 
 describe('le texte brut du journal', () => {
   it('garde les identifiants du moteur a cote du texte affiche', () => {
-    const { result } = renderHook(() => useHistoriquePartie(AVEC_IDENTIFIANTS, undefined, 1))
+    const { result } = renderHook(() => useHistoriquePartie(AVEC_IDENTIFIANTS, undefined, 'a1:1'))
     const narration = result.current.entrees.find((e) => e.type === 'text')
     expect(narration?.titre).toBe('Klaw would deal 2 damage')
     expect(narration?.brut).toBe('[(50,01113) Klaw] would deal 2 damage')
   })
 
   it("laisse brut absent sur les entrees qui ne viennent pas d'une narration", () => {
-    const { result } = renderHook(() => useHistoriquePartie(SANS_NARRATION, undefined, 1))
+    const { result } = renderHook(() => useHistoriquePartie(SANS_NARRATION, undefined, 'a1:1'))
     const phase = result.current.entrees.find((e) => e.type === 'phase')
     expect(phase?.brut).toBeUndefined()
   })
