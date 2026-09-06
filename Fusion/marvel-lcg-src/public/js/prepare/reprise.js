@@ -336,11 +336,16 @@
   }
   rangee.append(
     el('button', { onclick: ouvrirReprise, title: t('Reprendre ou revoir une partie sauvegardee') }, '⏵ ' + t('Reprendre')),
-    el('button', { onclick: ouvrirStats, title: t('Statistiques et journal des parties') }, '\u{1F4CA} Stats'),
-    // Hauts faits : page a part entiere (grille complete + progression).
-    el('button', {
-      onclick: () => { window.location.href = '/achievements.html'; },
-      title: t('Hauts faits debloques et progression'),
-    }, '\u{1F3C6} ' + t('Hauts faits')));
+    el('button', { onclick: ouvrirStats, title: t('Statistiques et journal des parties') }, '\u{1F4CA} Stats'));
+
+  // Hauts faits : DEBRANCHE a la demande de l'utilisateur, comme la banniere
+  // du plateau. La page /achievements.html reste en place et continue d'etre
+  // alimentee : il suffit de remettre ce bouton dans le append ci-dessus pour
+  // la rallumer.
+  //
+  // el('button', {
+  //   onclick: () => { window.location.href = '/achievements.html'; },
+  //   title: t('Hauts faits debloques et progression'),
+  // }, '\u{1F3C6} ' + t('Hauts faits'))
 
 })();
