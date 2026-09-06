@@ -34,6 +34,18 @@ from . import *
 #   La condition est donc ecrite a la main sur le meme registre du moteur
 #   (`world.stat.IsOncePerPhasePerPlayer`), avec le joueur pris sur le message
 #   d'attaque (`GetAgainstPlayer`) au lieu de `GetToPlayer`.
+#   ⚠ CORRECTIF DU 07/09/2026 (audit C, point 2) : lire le registre ne suffit
+#   pas, il faut aussi l'ALIMENTER. Le moteur le fait tout seul dans
+#   `Effect.SetHasSpellInPhase` (effect.py:172-177), mais UNIQUEMENT quand
+#   `self.bind_message` est une `TriggerNonePlayerMessage`, ce que
+#   `AfterUnitAttackEnd` n'est pas (sender_damage.py:558, herite de
+#   `TriggerUnitMessage`). L'ecriture au registre est donc faite A LA MAIN,
+#   ici meme, par `world.stat.RecordEffectWithPlayer(effect, joueur)`, AVANT
+#   de declencher la seconde attaque : sans cet ordre, la seconde attaque
+#   emet elle-meme un `AfterUnitAttackEnd`, la condition le relit alors que
+#   rien n'est encore inscrit, et la Reponse Forcee se redeclenche sur
+#   elle-meme sans fin (bug constate : 10 degats en une seule activation).
+#   Preuve : `tools/test_capacites.py … "gb020"`.
 #
 # ---------------------------------------------------------------------------
 # TEXTE CONTRE CODE
@@ -65,6 +77,12 @@ def GetAbilities() -> Sequence['Ability']:
         vilain = TrouverGorr(effect)
         joueur = message.GetAgainstPlayer()
         if vilain and isinstance(joueur, Player):
+            # Inscription AVANT de declencher la seconde attaque : c'est elle
+            # qui alimente le registre lu par `une_fois_par_joueur_par_phase`.
+            # Faite trop tard (apres `DoActivate`), la seconde attaque
+            # redeclencherait cette meme Reponse Forcee sans que rien ne
+            # l'arrete (voir note ci-dessus).
+            effect.world.stat.RecordEffectWithPlayer(effect, joueur)
             vilain.DoActivate(joueur, effect, do_not_give_boost=True)
 
     return [

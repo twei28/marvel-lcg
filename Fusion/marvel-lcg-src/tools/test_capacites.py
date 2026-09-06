@@ -27176,13 +27176,14 @@ def gorr_deux_attaques(monde, aides):
         +2 exactement, total 6. Si la limite est inerte, la Reponse repart et
         ajoute une quatrieme attaque : +4, total 8, et `!= 6` l'attrape.
 
-    ⚠ CE CAS EST ROUGE EN L'ETAT (voir rapport de l'audit C, point 2) : la
-    limite de gb020 est reellement inerte (condition maison qui lit
-    `world.stat.IsOncePerPhasePerPlayer` mais n'appelle jamais
-    `RecordEffectWithPlayer` pour l'alimenter). Signale, non corrige ici :
-    corriger `gb020.py` est un chantier a part, hors du perimetre de cet
-    audit. Ne PAS assouplir ce test pour le faire passer : le rouge est la
-    preuve exacte du defaut.
+    CORRECTIF DU 07/09/2026 (audit C, point 2, suite) : ce cas etait ROUGE
+    (10 degats des la 1ere activation) tant que `gb020.py` ne faisait que
+    LIRE `world.stat.IsOncePerPhasePerPlayer` sans jamais appeler
+    `world.stat.RecordEffectWithPlayer` pour l'alimenter. Corrige dans
+    `gb020.py` (l'appel manque au moteur pour ce type de message, ajoute
+    donc dans la carte, pas dans `src/game/`). Le cas est maintenant VERT.
+    Contre-preuve faite en retirant l'appel a `RecordEffectWithPlayer` : le
+    cas repasse au rouge, meme message qu'avant le correctif.
 
     Sans cartes de boost, pour que les degats restent deterministes : ATQ 2
     par attaque. Le heros est incline en mise en place, il ne defend pas.
