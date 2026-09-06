@@ -35,8 +35,32 @@ imprimées ; ATK/THW/DEF/REC de base sont automatiques).
   "set_aside": [],
   "obligations": ["..."],
   "nemesis_set": ["...5 cartes..."],
-  "player_deck": ["...~25 cartes d'aspect..."] }
+  "player_deck": [] }
 ```
+
+⚠⚠ **`player_deck` RESTE VIDE POUR UN HÉROS HOMEBREW**, sauf si **l'auteur
+fournit une decklist** dans son zip (dossier `Extras`, liste imprimée) : on la
+recopie alors telle quelle. **Consigne utilisateur du 06/09/2026**, donnée
+pendant le portage de Sunfire, après trois arbitrages d'aspect successifs
+(Throg → Agressivité, Spider-Man Noir → Justice, Black Cat → Protection).
+
+La raison : les ~25 cartes d'aspect étaient une **invention du portage**, pas du
+contenu de l'auteur. Le joueur choisit un deck d'aspect existant ou en construit
+un dans le deckbuilder au lancement. Ne plus poser la question de l'aspect.
+
+⚠ **Le fichier reste indispensable malgré tout.** `catalog.heroes()`
+(`public/js/prepare/catalog.js:231-237`) construit la liste des héros **à partir
+de `deck/starter/*.json`** : sans ce fichier, le héros n'apparaît **nulle part**,
+pas même dans le deckbuilder. On écrit donc toujours le fichier, avec **ce qui
+est imprimé et rien d'autre** — identité, cartes signature, obligation, set
+némésis.
+
+Vérifié le 06/09/2026 : un deck à `player_deck` vide **monte bien une partie**
+(`DECK_NOM=sunfire` → « identite sf001a, main 6, deck 9 »).
+
+⚠ Les décks livrés **avant** cette date gardent leurs 25 cartes d'aspect
+(`throg`, `spider_man_noir`, `black_cat`…) : la consigne vaut pour la suite, pas
+rétroactivement.
 
 ⚠ `set_aside` ne sert qu'aux clients (catalogue, lanceur) : le moteur ne lit
 pas ce champ en vraie partie (`HeroDescriptor` ne l'a pas, la génération est
@@ -48,7 +72,17 @@ carte absente en jeu réel : ne pas s'y fier (Alligator Loki, 01/09/2026).
 
 ## Étape 4 : `data/nemesis/<hero>_nemesis.json`
 
-Facultatif, pour l'UI.
+Facultatif. ⚠ **Et pas « pour l'UI »** (formulation corrigée le 05/09/2026,
+vérifiée au grep) : ni le wizard ni `ui-app/` ne lisent ce dossier. Le
+`nemesis_set` affiché vient du **deck de départ** (`catalog.js:254`), et le
+moteur le lit au même endroit (`loader.py:106`).
+
+Ce que le fichier sert vraiment : `data/nemesis/` figure dans
+`ENCOUNTER_SETS_FOLDERS` (`engine/file/manager.py:12`), il permet donc de
+charger le set némésis **comme un set de rencontre nommé**. Utile le jour où
+une carte ou un scénario le réclame par son nom. Cinq packs récents
+(`lady_sif`, `texas_twister`, `blink`, `yondu`, `night_thrasher`) n'en ont
+pas et fonctionnent : 70 fichiers pour 122 decks.
 
 ## Étape 5 : Référencer dans `data/sets_info.json`
 
