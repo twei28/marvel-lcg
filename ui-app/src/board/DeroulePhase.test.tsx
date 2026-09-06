@@ -4,7 +4,7 @@
 // main ou cliquer des le deuxieme tour. On peut revenir en arriere pour relire,
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 
@@ -35,7 +35,7 @@ describe('cartouche du deroule', () => {
 
   it('avance d une etape au clic sur Suivant', () => {
     render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
-    suivant().click()
+    fireEvent.click(suivant())
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
   })
 
@@ -46,8 +46,8 @@ describe('cartouche du deroule', () => {
 
   it('revient en arriere sans rien rejouer', () => {
     render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={() => {}} />)
-    suivant().click()
-    screen.getByRole('button', { name: /Précédent/i }).click()
+    fireEvent.click(suivant())
+    fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
     expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
   })
 
@@ -59,8 +59,8 @@ describe('cartouche du deroule', () => {
   it('previent quand la derniere etape est validee', () => {
     const onTerminer = vi.fn()
     render(<DeroulePhase etapes={etapes} noms={noms} onTerminer={onTerminer} />)
-    suivant().click()
-    suivant().click()
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
     expect(onTerminer).toHaveBeenCalledTimes(1)
   })
 

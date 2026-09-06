@@ -8,7 +8,6 @@
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
 import { useEffect, useState } from 'react'
-import { flushSync } from 'react-dom'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import { regleEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
@@ -41,16 +40,12 @@ export function DeroulePhase({
   const etape = etapes[index]
   if (!etape) return null
 
-  // flushSync : le clic doit se voir tout de suite dans le DOM, y compris pour
-  // un clic double rapide en fin de deroule (Precedent puis Suivant relu vite).
-  // Sans lui, React 19 peut regrouper la mise a jour hors du tour d'evenement
-  // courant, et l'etape affichee resterait en retard d'un clic.
   const avancer = () => {
     if (index + 1 >= etapes.length) {
       onTerminer()
       return
     }
-    flushSync(() => setIndex(index + 1))
+    setIndex(index + 1)
   }
 
   return (
@@ -69,7 +64,7 @@ export function DeroulePhase({
 
       <div className="deroule-boutons">
         {index > 0 ? (
-          <button type="button" className="bh-bouton" onClick={() => flushSync(() => setIndex(index - 1))}>
+          <button type="button" className="bh-bouton" onClick={() => setIndex(index - 1)}>
             {t('Précédent')}
           </button>
         ) : null}
