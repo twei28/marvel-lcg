@@ -94,6 +94,7 @@ import {
   lireAvanceAuto,
   lireDelaiPasAPas,
   lireModePhaseMechant,
+  migrerReglagesPhase,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
@@ -109,6 +110,19 @@ import {
   chargerEtat,
 } from './board/sources'
 import { isScheme, isVisibleFor, type World, type WorldCard } from './board/world'
+
+// Migration EXPLICITE des anciens reglages de la phase du mechant (voir
+// moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
+// module. C'est le plus tot possible : avant meme le montage du composant,
+// donc forcement avant les `useState(lireModePhaseMechant)` /
+// `useState(lireAvanceAuto)` plus bas, qui n'appellent leur lecteur qu'a
+// l'initialisation du premier rendu. Un appel loge dans le corps du composant
+// aurait couru un risque inutile (React StrictMode invoque deux fois le corps
+// du composant en developpement), alors qu'ici l'evaluation du module n'a
+// lieu qu'une fois par chargement de page - et la fonction est de toute facon
+// sans effet des la deuxieme fois (elle ne fait rien si la cle porte deja une
+// valeur du nouveau schema).
+migrerReglagesPhase()
 
 /** L'ancien plateau. Le serveur sert marvel.html des que l'adresse a une query. */
 
@@ -1258,7 +1272,7 @@ function PanneauOptions({
           <div
             className="mode-actions ligne-option-mode-phase"
             role="group"
-            aria-label={t('Rythme de la phase du méchant')}
+            aria-label={t('Phase du méchant')}
           >
             <button
               type="button"

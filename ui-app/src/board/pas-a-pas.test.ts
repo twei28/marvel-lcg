@@ -3,9 +3,11 @@ import { describe, expect, it } from 'vitest'
 import {
   bornerDelai,
   decisionAccuse,
+  ecrireModePhaseMechant,
   evenementAMontrer,
   lireAvanceAuto,
   lireModePhaseMechant,
+  migrerReglagesPhase,
   DELAI_PAS_A_PAS_DEFAUT,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
@@ -43,9 +45,12 @@ describe('le mode', () => {
   // deux etats : decochee -> un Continue a chaque fois (l'ancien « manuel »),
   // cochee -> tout defile (l'ancien « pas-a-pas »). Les deux atterrissent
   // desormais sur « detaille », seule l'avance auto les distingue encore.
+  // La migration est EXPLICITE (`migrerReglagesPhase`) : les lecteurs ne
+  // devinent plus rien tout seuls, voir le describe suivant pour la raison.
   it('migre l’ancienne case décochée : detaille, sans avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'off')
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(false)
   })
@@ -55,6 +60,7 @@ describe('le mode', () => {
   it('migre l’ancienne case cochée : detaille, AVEC avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'on')
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(true)
   })
@@ -63,11 +69,13 @@ describe('le mode', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'off')
     window.localStorage.setItem(CLE_MODE_PHASE, 'instantane')
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('instantane')
   })
 
   it('vaut « detaille » sur une installation neuve, sans avance auto', () => {
     window.localStorage.clear()
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(false)
   })
@@ -79,6 +87,7 @@ describe('le mode', () => {
   it('migre l’ancien mode « manuel » stocké : detaille, sans avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_MODE_PHASE, 'manuel')
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(false)
   })
@@ -86,8 +95,40 @@ describe('le mode', () => {
   it('migre l’ancien mode « pas-a-pas » stocké : detaille, AVEC avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_MODE_PHASE, 'pas-a-pas')
+    migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(true)
+  })
+})
+
+describe('la migration ne se refait pas a chaque lecture', () => {
+  // Le défaut trouvé en revue : `CLE_MODE_PHASE` est réécrite par l'usage
+  // normal (les boutons Détaillé/Instantané), et perd alors la trace de
+  // l'ancien réglage. Une lecture croisée qui retente sa chance à chaque
+  // appel de `lireAvanceAuto` retombe donc sur le défaut dès que le joueur
+  // change de mode sans jamais toucher à la case « Avance auto » : elle
+  // affichait déjà ce qu'il voulait, il n'y a pas touché. La migration doit
+  // donc être faite UNE FOIS, tôt, et écrire les DEUX clés.
+  it('garde l’avance auto migrée après un aller-retour Instantané -> Détaillé (pas-a-pas)', () => {
+    window.localStorage.clear()
+    window.localStorage.setItem(CLE_MODE_PHASE, 'pas-a-pas')
+    migrerReglagesPhase()
+    expect(lireAvanceAuto()).toBe(true)
+    ecrireModePhaseMechant('instantane')
+    ecrireModePhaseMechant('detaille')
+    expect(lireAvanceAuto()).toBe(true)
+  })
+
+  // Cas symétrique : l'ancien « manuel » ne doit pas se remettre à cocher
+  // l'avance auto pour autant.
+  it('garde l’absence d’avance auto après un aller-retour Instantané -> Détaillé (manuel)', () => {
+    window.localStorage.clear()
+    window.localStorage.setItem(CLE_MODE_PHASE, 'manuel')
+    migrerReglagesPhase()
+    expect(lireAvanceAuto()).toBe(false)
+    ecrireModePhaseMechant('instantane')
+    ecrireModePhaseMechant('detaille')
+    expect(lireAvanceAuto()).toBe(false)
   })
 })
 

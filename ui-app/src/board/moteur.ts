@@ -42,7 +42,7 @@ export function lirePhaseRapide(): boolean {
  * « Avance auto » (voir `lireAvanceAuto` / `ecrireAvanceAuto` plus bas) est
  * un REGLAGE, pas un troisieme mode : coche a l'interieur de « detaille », il
  * fait defiler chaque etape toute seule apres un delai au lieu d'attendre un
- * clic — c'est l'ancien mode « pas-a-pas ». L'ancien mode « manuel » (un
+ * clic. C'est l'ancien mode « pas-a-pas ». L'ancien mode « manuel » (un
  * « Continue » a chaque evenement important, sans jamais rien montrer) a
  * simplement disparu : « detaille » fait la meme chose, en mieux, puisqu'il
  * montre l'evenement en plus d'attendre le clic.
@@ -65,44 +65,67 @@ export const DELAI_PAS_A_PAS_MAX = 3000
 export const MODES: ModePhaseMechant[] = ['detaille', 'instantane']
 
 /**
- * MIGRATION de tout ce qui a existe avant les deux modes actuels. Deux cles
- * plus anciennes, dans l'ordre ou on les consulte :
+ * MIGRATION EXPLICITE de tout ce qui a existe avant les deux modes actuels,
+ * a faire UNE SEULE FOIS, avant que `lireModePhaseMechant` et `lireAvanceAuto`
+ * ne servent (voir l'appel dans board.tsx).
+ *
+ * Ecrit les DEUX cles (`CLE_MODE_PHASE` et `CLE_AVANCE_AUTO`) d'un coup :
+ * une lecture croisee qui retenterait sa chance a chaque appel ne peut pas
+ * marcher, puisque l'usage normal (les boutons Detaille/Instantane) reecrit
+ * `CLE_MODE_PHASE` sans jamais toucher a `CLE_AVANCE_AUTO`. Un joueur qui
+ * revient sur « Detaille » sans avoir touche a la case « Avance auto »
+ * perdait ainsi le reglage devine a la premiere migration, `CLE_MODE_PHASE`
+ * ne portant plus alors qu'une valeur moderne qui ne dit plus rien de
+ * l'ancien choix.
+ *
+ * Ne fait rien si `CLE_MODE_PHASE` contient deja une valeur du nouveau
+ * schema (« detaille » ou « instantane ») : la migration est deja passee, ou
+ * l'installation est neuve et n'a rien a migrer.
+ *
+ * Anciennes sources, dans l'ordre ou on les consulte :
  *
  *  1. `CLE_MODE_PHASE` pouvait deja contenir un des QUATRE anciens modes.
- *     « detaille » et « instantane » sont gardes tels quels. « manuel »
- *     devient « detaille » avec l'avance auto FAUSSE (ce joueur cliquait pour
- *     avancer, il continuera de cliquer). « pas-a-pas » devient « detaille »
- *     avec l'avance auto VRAIE (ce joueur regardait defiler, il continuera
- *     de regarder defiler).
+ *     « manuel » devient « detaille » avec l'avance auto FAUSSE (ce joueur
+ *     cliquait pour avancer, il continuera de cliquer). « pas-a-pas » devient
+ *     « detaille » avec l'avance auto VRAIE (ce joueur regardait defiler, il
+ *     continuera de regarder defiler).
  *  2. A defaut (cle absente ou valeur non reconnue), `CLE_PHASE_RAPIDE` -
  *     l'ancienne case a cocher d'avant les quatre modes : « off » menait a
  *     « manuel », donc desormais « detaille » sans avance auto ; toute autre
  *     valeur non nulle menait a « pas-a-pas », donc « detaille » AVEC avance
  *     auto ; son absence ne dit rien du tout, et retombe sur le vrai defaut.
- *
- * PURE (aucune ecriture) : `lireModePhaseMechant` et `lireAvanceAuto` y
- * puisent chacun leur part, sans qu'aucun des deux ne decide - ni n'ecrive -
- * a la place de l'autre.
  */
-function migrerAncienReglage(): { mode: ModePhaseMechant; avanceAuto: boolean } {
+export function migrerReglagesPhase(): void {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
-    if (brut === 'manuel') return { mode: 'detaille', avanceAuto: false }
-    if (brut === 'pas-a-pas') return { mode: 'detaille', avanceAuto: true }
-    if (brut && (MODES as string[]).includes(brut)) {
-      return { mode: brut as ModePhaseMechant, avanceAuto: false }
+    if (brut !== null && (MODES as string[]).includes(brut)) return
+
+    let avanceAuto: boolean
+    if (brut === 'manuel') {
+      avanceAuto = false
+    } else if (brut === 'pas-a-pas') {
+      avanceAuto = true
+    } else {
+      const ancienne = window.localStorage.getItem(CLE_PHASE_RAPIDE)
+      avanceAuto = ancienne !== null && ancienne !== 'off'
     }
-    const ancienne = window.localStorage.getItem(CLE_PHASE_RAPIDE)
-    if (ancienne === 'off') return { mode: 'detaille', avanceAuto: false }
-    if (ancienne !== null) return { mode: 'detaille', avanceAuto: true }
-    return { mode: 'detaille', avanceAuto: false }
+
+    window.localStorage.setItem(CLE_MODE_PHASE, 'detaille')
+    window.localStorage.setItem(CLE_AVANCE_AUTO, avanceAuto ? 'on' : 'off')
   } catch {
-    return { mode: 'detaille', avanceAuto: false }
+    /* stockage refuse : les lecteurs retomberont sur leurs defauts, tant pis */
   }
 }
 
+/** Bete : lit sa propre cle, rend son defaut si elle est absente ou invalide. */
 export function lireModePhaseMechant(): ModePhaseMechant {
-  return migrerAncienReglage().mode
+  try {
+    const brut = window.localStorage.getItem(CLE_MODE_PHASE)
+    if (brut && (MODES as string[]).includes(brut)) return brut as ModePhaseMechant
+    return 'detaille'
+  } catch {
+    return 'detaille'
+  }
 }
 
 export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
@@ -113,21 +136,13 @@ export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
   }
 }
 
-/**
- * Avance toute seule : meme regle de migration que `lireModePhaseMechant`,
- * lue de l'autre cote - si `CLE_AVANCE_AUTO` est absente, on retombe sur ce
- * que l'ancien reglage impliquait deja, plutot que sur le defaut FAUX qui
- * priverait un joueur d'un choix qu'il avait deja fait.
- */
+/** Bete elle aussi : lit sa propre cle, rend FAUX si elle est absente. */
 export function lireAvanceAuto(): boolean {
   try {
-    const brut = window.localStorage.getItem(CLE_AVANCE_AUTO)
-    if (brut === 'on') return true
-    if (brut === 'off') return false
+    return window.localStorage.getItem(CLE_AVANCE_AUTO) === 'on'
   } catch {
     return false
   }
-  return migrerAncienReglage().avanceAuto
 }
 
 export function ecrireAvanceAuto(actif: boolean): void {
@@ -534,7 +549,7 @@ export class Moteur {
 
   /**
    * Espace : fige (ou relance) l'echeance. En pause on ne programme rien ; le
-   * moteur attend, exactement comme en mode manuel.
+   * moteur attend, sans qu'aucune echeance ne coure.
    */
   basculerPause(): boolean {
     this.enPause = !this.enPause
