@@ -2090,7 +2090,9 @@ function PagePartie({
         </p>
       ) : null}
 
-      <SplashTour monde={etat.monde} />
+      {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
+          mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
+      <SplashTour monde={etat.monde} annonceMechantAilleurs={modePhase === 'detaille'} />
 
 
       <SelecteurCibles
