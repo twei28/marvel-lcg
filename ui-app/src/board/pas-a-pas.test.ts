@@ -12,6 +12,7 @@ import {
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   PHASES_DU_MECHANT,
+  CLE_AVANCE_AUTO,
   CLE_MODE_PHASE,
   CLE_PHASE_RAPIDE,
 } from './moteur'
@@ -43,8 +44,10 @@ describe('le délai', () => {
 describe('le mode', () => {
   // L'ancienne case a cocher (avant meme les quatre modes) ne connaissait que
   // deux etats : decochee -> un Continue a chaque fois (l'ancien « manuel »),
-  // cochee -> tout defile (l'ancien « pas-a-pas »). Les deux atterrissent
-  // desormais sur « detaille », seule l'avance auto les distingue encore.
+  // cochee -> plus de Continue du tout. Les deux atterrissent desormais sur
+  // « detaille » SANS avance auto : la case etait COCHEE PAR DEFAUT, et la
+  // lire comme un « fais defiler tout seul » allumait l'avance auto chez tous
+  // les anciens joueurs qui n'avaient jamais rien demande.
   // La migration est EXPLICITE (`migrerReglagesPhase`) : les lecteurs ne
   // devinent plus rien tout seuls, voir le describe suivant pour la raison.
   it('migre l’ancienne case décochée : detaille, sans avance auto', () => {
@@ -55,22 +58,24 @@ describe('le mode', () => {
     expect(lireAvanceAuto()).toBe(false)
   })
 
-  // Celui qui avait coché « rapide » subissait précisément le défaut qu'on
-  // corrige : on le fait atterrir sur l'avance auto, pas sur « instantane ».
-  it('migre l’ancienne case cochée : detaille, AVEC avance auto', () => {
+  it('migre l’ancienne case cochée : detaille, SANS avance auto non plus', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'on')
     migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('detaille')
-    expect(lireAvanceAuto()).toBe(true)
+    expect(lireAvanceAuto()).toBe(false)
   })
 
-  it('préfère le réglage explicite quand il existe', () => {
+  it('ne retouche RIEN chez un joueur deja migre', () => {
+    // Ni le mode, ni l'avance auto : la nouvelle cle est la, la migration est
+    // deja passee, et son reglage lui appartient.
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'off')
     window.localStorage.setItem(CLE_MODE_PHASE, 'instantane')
+    window.localStorage.setItem(CLE_AVANCE_AUTO, 'on')
     migrerReglagesPhase()
     expect(lireModePhaseMechant()).toBe('instantane')
+    expect(lireAvanceAuto()).toBe(true)
   })
 
   it('vaut « detaille » sur une installation neuve, sans avance auto', () => {

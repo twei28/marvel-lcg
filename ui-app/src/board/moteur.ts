@@ -82,33 +82,29 @@ export const MODES: ModePhaseMechant[] = ['detaille', 'instantane']
  * schema (« detaille » ou « instantane ») : la migration est deja passee, ou
  * l'installation est neuve et n'a rien a migrer.
  *
- * Anciennes sources, dans l'ordre ou on les consulte :
+ * L'AVANCE AUTO NE S'HERITE QUE D'UN CHOIX EXPLICITE : le seul ancien reglage
+ * qui disait « je regarde defiler tout seul » est le mode « pas-a-pas »,
+ * enregistre sous `CLE_MODE_PHASE`. Tout le reste donne « detaille » SANS
+ * avance auto.
  *
- *  1. `CLE_MODE_PHASE` pouvait deja contenir un des QUATRE anciens modes.
- *     « manuel » devient « detaille » avec l'avance auto FAUSSE (ce joueur
- *     cliquait pour avancer, il continuera de cliquer). « pas-a-pas » devient
- *     « detaille » avec l'avance auto VRAIE (ce joueur regardait defiler, il
- *     continuera de regarder defiler).
- *  2. A defaut (cle absente ou valeur non reconnue), `CLE_PHASE_RAPIDE` -
- *     l'ancienne case a cocher d'avant les quatre modes : « off » menait a
- *     « manuel », donc desormais « detaille » sans avance auto ; toute autre
- *     valeur non nulle menait a « pas-a-pas », donc « detaille » AVEC avance
- *     auto ; son absence ne dit rien du tout, et retombe sur le vrai defaut.
+ * L'ancienne case a cocher `CLE_PHASE_RAPIDE` ne le dit pas : elle etait
+ * COCHEE PAR DEFAUT, et son seul role etait de ne plus demander « Continue » a
+ * chaque activation. La lire comme un « fais defiler tout seul » allumait
+ * l'avance auto chez tous les anciens joueurs qui n'avaient jamais touche a
+ * rien - c'est a dire presque tous. Elle n'est donc plus consultee.
+ *
+ * Un joueur DEJA MIGRE (`CLE_MODE_PHASE` porte « detaille » ou « instantane »)
+ * n'est jamais retouche : ni son mode, ni son avance auto.
  */
 export function migrerReglagesPhase(): void {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
     if (brut !== null && (MODES as string[]).includes(brut)) return
 
-    let avanceAuto: boolean
-    if (brut === 'manuel') {
-      avanceAuto = false
-    } else if (brut === 'pas-a-pas') {
-      avanceAuto = true
-    } else {
-      const ancienne = window.localStorage.getItem(CLE_PHASE_RAPIDE)
-      avanceAuto = ancienne !== null && ancienne !== 'off'
-    }
+    // « pas-a-pas » : ce joueur regardait defiler, il continuera de regarder
+    // defiler. « manuel », l'ancienne case a cocher, une cle absente ou une
+    // valeur inconnue : il cliquait, ou il n'a jamais rien demande.
+    const avanceAuto = brut === 'pas-a-pas'
 
     window.localStorage.setItem(CLE_MODE_PHASE, 'detaille')
     window.localStorage.setItem(CLE_AVANCE_AUTO, avanceAuto ? 'on' : 'off')
