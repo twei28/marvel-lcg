@@ -32,52 +32,77 @@ export function lirePhaseRapide(): boolean {
 }
 
 /**
- * Le rythme de la phase du mechant, en QUATRE positions et non plus une case.
+ * Le rythme de la phase du mechant, en DEUX positions.
  *
- *  - « detaille »   : une etape a la fois, validee avant la suivante. Le
- *                     nouveau, et le defaut : c'est celui qu'on a en arrivant.
- *  - « manuel »     : un « Continue » a chaque evenement important. L'ancien
- *                     etat decoche.
- *  - « pas-a-pas »  : chaque evenement s'affiche puis rend la main tout seul
- *                     apres `delai`.
+ *  - « detaille »   : une etape a la fois, validee avant la suivante (clic
+ *                     sur « Suivant » du cartouche). Le defaut.
  *  - « instantane » : rien ne retient le moteur ; le bilan de fin de phase
- *                     raconte apres coup. L'ancien etat coche.
+ *                     raconte apres coup.
+ *
+ * « Avance auto » (voir `lireAvanceAuto` / `ecrireAvanceAuto` plus bas) est
+ * un REGLAGE, pas un troisieme mode : coche a l'interieur de « detaille », il
+ * fait defiler chaque etape toute seule apres un delai au lieu d'attendre un
+ * clic — c'est l'ancien mode « pas-a-pas ». L'ancien mode « manuel » (un
+ * « Continue » a chaque evenement important, sans jamais rien montrer) a
+ * simplement disparu : « detaille » fait la meme chose, en mieux, puisqu'il
+ * montre l'evenement en plus d'attendre le clic.
  *
  * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
  * personnel (localStorage), et en multijoueur chacun le sien.
  */
-export type ModePhaseMechant = 'detaille' | 'manuel' | 'pas-a-pas' | 'instantane'
+export type ModePhaseMechant = 'detaille' | 'instantane'
 
 export const CLE_MODE_PHASE = 'marvel-board-mode-phase-mechant'
 export const CLE_DELAI_PAS_A_PAS = 'marvel-board-delai-pas-a-pas'
+/** Avance auto : reglage independant, qui ne veut rien dire hors de « detaille ». */
+export const CLE_AVANCE_AUTO = 'marvel-board-avance-auto'
 
 export const DELAI_PAS_A_PAS_DEFAUT = 1200
 export const DELAI_PAS_A_PAS_MIN = 300
 export const DELAI_PAS_A_PAS_MAX = 3000
 
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
-export const MODES: ModePhaseMechant[] = ['detaille', 'manuel', 'pas-a-pas', 'instantane']
+export const MODES: ModePhaseMechant[] = ['detaille', 'instantane']
 
 /**
- * MIGRATION de l'ancienne case a cocher. Elle ne connaissait que deux etats :
- * « off » = un Continue a chaque fois, tout le reste = instantane. Un joueur
- * qui avait coche la case subissait justement le defaut qu'on corrige ici : on
- * le fait donc atterrir sur « pas-a-pas », pas sur « instantane ». Celui qui
- * avait DECOCHE, lui, avait choisi le mode manuel en connaissance de cause : on
- * le lui laisse. Son ABSENCE en revanche ne dit rien du tout : elle ne doit
- * pas priver un nouveau venu du mode detaille, qui est le vrai defaut.
+ * MIGRATION de tout ce qui a existe avant les deux modes actuels. Deux cles
+ * plus anciennes, dans l'ordre ou on les consulte :
+ *
+ *  1. `CLE_MODE_PHASE` pouvait deja contenir un des QUATRE anciens modes.
+ *     « detaille » et « instantane » sont gardes tels quels. « manuel »
+ *     devient « detaille » avec l'avance auto FAUSSE (ce joueur cliquait pour
+ *     avancer, il continuera de cliquer). « pas-a-pas » devient « detaille »
+ *     avec l'avance auto VRAIE (ce joueur regardait defiler, il continuera
+ *     de regarder defiler).
+ *  2. A defaut (cle absente ou valeur non reconnue), `CLE_PHASE_RAPIDE` -
+ *     l'ancienne case a cocher d'avant les quatre modes : « off » menait a
+ *     « manuel », donc desormais « detaille » sans avance auto ; toute autre
+ *     valeur non nulle menait a « pas-a-pas », donc « detaille » AVEC avance
+ *     auto ; son absence ne dit rien du tout, et retombe sur le vrai defaut.
+ *
+ * PURE (aucune ecriture) : `lireModePhaseMechant` et `lireAvanceAuto` y
+ * puisent chacun leur part, sans qu'aucun des deux ne decide - ni n'ecrive -
+ * a la place de l'autre.
  */
-export function lireModePhaseMechant(): ModePhaseMechant {
+function migrerAncienReglage(): { mode: ModePhaseMechant; avanceAuto: boolean } {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
-    if (brut && (MODES as string[]).includes(brut)) return brut as ModePhaseMechant
+    if (brut === 'manuel') return { mode: 'detaille', avanceAuto: false }
+    if (brut === 'pas-a-pas') return { mode: 'detaille', avanceAuto: true }
+    if (brut && (MODES as string[]).includes(brut)) {
+      return { mode: brut as ModePhaseMechant, avanceAuto: false }
+    }
     const ancienne = window.localStorage.getItem(CLE_PHASE_RAPIDE)
-    if (ancienne === 'off') return 'manuel'
-    if (ancienne !== null) return 'pas-a-pas'
-    return 'detaille'
+    if (ancienne === 'off') return { mode: 'detaille', avanceAuto: false }
+    if (ancienne !== null) return { mode: 'detaille', avanceAuto: true }
+    return { mode: 'detaille', avanceAuto: false }
   } catch {
-    return 'detaille'
+    return { mode: 'detaille', avanceAuto: false }
   }
+}
+
+export function lireModePhaseMechant(): ModePhaseMechant {
+  return migrerAncienReglage().mode
 }
 
 export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
@@ -85,6 +110,31 @@ export function ecrireModePhaseMechant(mode: ModePhaseMechant): void {
     window.localStorage.setItem(CLE_MODE_PHASE, mode)
   } catch {
     /* stockage refuse : le mode vaudra pour la session, c'est tout */
+  }
+}
+
+/**
+ * Avance toute seule : meme regle de migration que `lireModePhaseMechant`,
+ * lue de l'autre cote - si `CLE_AVANCE_AUTO` est absente, on retombe sur ce
+ * que l'ancien reglage impliquait deja, plutot que sur le defaut FAUX qui
+ * priverait un joueur d'un choix qu'il avait deja fait.
+ */
+export function lireAvanceAuto(): boolean {
+  try {
+    const brut = window.localStorage.getItem(CLE_AVANCE_AUTO)
+    if (brut === 'on') return true
+    if (brut === 'off') return false
+  } catch {
+    return false
+  }
+  return migrerAncienReglage().avanceAuto
+}
+
+export function ecrireAvanceAuto(actif: boolean): void {
+  try {
+    window.localStorage.setItem(CLE_AVANCE_AUTO, actif ? 'on' : 'off')
+  } catch {
+    /* idem */
   }
 }
 
@@ -100,26 +150,9 @@ export function libelleModePhase(mode: ModePhaseMechant): string {
   switch (mode) {
     case 'detaille':
       return 'Détaillé'
-    case 'manuel':
-      return 'Manuel'
-    case 'pas-a-pas':
-      return 'Pas à pas'
     case 'instantane':
       return 'Instantané'
   }
-}
-
-/**
- * Le mode suivant dans le cycle du bouton Options.
- *
- * Ordre de lisibilite decroissante, le meme que `MODES` : Detaille (une
- * etape a la fois) -> Manuel (un clic par evenement important) -> Pas a pas
- * (delai automatique) -> Instantane (rien n'attend), puis on reboucle. Le
- * cycle a trois positions d'avant ne repassait jamais par « detaille » : un
- * seul clic desactivait la fonctionnalite pour toute la session.
- */
-export function modeSuivant(mode: ModePhaseMechant): ModePhaseMechant {
-  return MODES[(MODES.indexOf(mode) + 1) % MODES.length]
 }
 
 /** Borne le delai : une valeur hors plage rendrait la phase injouable. */
@@ -159,11 +192,11 @@ export const PHASES_DU_MECHANT = new Set([
 ])
 
 /**
- * Ce que le pas a pas s'arrete pour montrer. Plus LARGE que
- * `evenementNarreImportant`, qui sert au mode manuel : celui-ci ne retient que
- * les moments ou l'on doit CLIQUER, alors qu'ici on veut voir passer les quatre
- * familles demandees — cartes de boost, cartes de rencontre, menace, degats et
- * statuts.
+ * Ce qu'on montre en detaille, avance auto ou pas. Plus LARGE que
+ * `evenementNarreImportant`, qui ne sert plus qu'a decider le bandeau central
+ * de phase ennemie (board.tsx, `afficherEvenementCentrale`) : celui-ci ignore
+ * les cartes de boost/rencontre et les statuts, qu'on veut pourtant voir
+ * passer ici.
  *
  * Les statuts (etourdi/confus/tenace) s'ajoutent donc a la liste, et ils ne se
  * lisent PAS dans le texte : ils ont leurs propres evenements.
@@ -179,29 +212,20 @@ export type DecisionAccuse = 'immediat' | 'attendre-clic' | 'attendre-delai'
 export function decisionAccuse(
   mode: ModePhaseMechant,
   monde: World | undefined,
-  phaseSautee: boolean
+  phaseSautee: boolean,
+  avanceAuto: boolean
 ): DecisionAccuse {
+  if (mode === 'instantane') return 'immediat'
+  // « detaille » retient l'accuse de reception sur les quatre phases du
+  // mechant, et seulement sur un evenement a montrer (sans ce filtre, chaque
+  // deplacement de carte deviendrait une etape et la phase durerait des
+  // minutes). « Tout passer » (phaseSautee) court-circuite tout ca.
   const phase = monde?.phase ?? ''
-  if (mode === 'manuel') {
-    return phase === 'Enemy Activation' && evenementNarreImportant(monde)
-      ? 'attendre-clic'
-      : 'immediat'
-  }
-  // « detaille » suit la meme regle que « pas-a-pas » (memes quatre phases,
-  // meme filtre d'evenements, meme respect de « Tout passer ») : sans cela le
-  // moteur ne retenait jamais l'accuse de reception pour ce mode, resolvait
-  // la phase a pleine vitesse, et le cartouche etape par etape racontait
-  // ensuite un passe deja joue.
-  //
-  // Seul le type d'attente differe. « pas-a-pas » est fait pour ETRE REGARDE
-  // sans manipuler : un delai suffit. « detaille » VALIDE chaque etape (bouton
-  // « Suivant » du cartouche) : lui faire attendre un delai en plus du clic
-  // ferait attendre deux fois, on lui laisse donc 'attendre-clic'.
-  if ((mode === 'pas-a-pas' || mode === 'detaille') && !phaseSautee) {
-    if (!PHASES_DU_MECHANT.has(phase) || !evenementAMontrer(monde)) return 'immediat'
-    return mode === 'detaille' ? 'attendre-clic' : 'attendre-delai'
-  }
-  return 'immediat'
+  if (phaseSautee || !PHASES_DU_MECHANT.has(phase) || !evenementAMontrer(monde)) return 'immediat'
+  // Avance auto : l'etape se lit puis rend la main toute seule, sans manipuler
+  // (l'ancien mode « pas-a-pas »). Sans elle, « detaille » VALIDE chaque etape
+  // au clic (bouton « Suivant » du cartouche).
+  return avanceAuto ? 'attendre-delai' : 'attendre-clic'
 }
 
 export function evenementAMontrer(monde: World | undefined): boolean {
@@ -477,7 +501,9 @@ export class Moteur {
    * ne clique jamais gelait la phase pour tout le monde. En accusant tout de
    * suite, plus personne ne retient personne.
    */
-  private mode: ModePhaseMechant = 'pas-a-pas'
+  private mode: ModePhaseMechant = 'detaille'
+  /** Avance auto : reglage independant, ne vaut que sous « detaille ». */
+  private avanceAuto = false
   private delaiPasAPas = DELAI_PAS_A_PAS_DEFAUT
   private minuteurPasAPas: number | undefined
   private enPause = false
@@ -487,12 +513,18 @@ export class Moteur {
   setModePhaseMechant(mode: ModePhaseMechant) {
     this.mode = mode
     // Un accuse deja retenu ne doit pas rester en attente d'un geste qui
-    // n'arrivera plus : changer de mode le libere immediatement.
-    if (mode !== 'manuel' && this.trameEnAttente) void this.continuer()
+    // n'arrivera plus : changer de mode le libere immediatement. (L'ancien
+    // mode « manuel », seul a devoir survivre a un changement de mode, a
+    // disparu : plus rien n'exempte donc ce cas.)
+    if (this.trameEnAttente) void this.continuer()
   }
 
   setDelaiPasAPas(ms: number) {
     this.delaiPasAPas = bornerDelai(ms)
+  }
+
+  setAvanceAuto(actif: boolean) {
+    this.avanceAuto = actif
   }
 
   /** Clic du joueur : l'etape affichee a ete lue, on passe a la suivante. */
@@ -735,7 +767,7 @@ export class Moteur {
       const dansLaPhase = PHASES_DU_MECHANT.has(monde?.phase ?? '')
       if (!dansLaPhase && this.phaseSautee) this.phaseSautee = false
 
-      const decision = decisionAccuse(this.mode, monde, this.phaseSautee)
+      const decision = decisionAccuse(this.mode, monde, this.phaseSautee, this.avanceAuto)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
         this.publier({ validationRequise: true })

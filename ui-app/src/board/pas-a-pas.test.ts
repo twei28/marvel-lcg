@@ -4,6 +4,7 @@ import {
   bornerDelai,
   decisionAccuse,
   evenementAMontrer,
+  lireAvanceAuto,
   lireModePhaseMechant,
   DELAI_PAS_A_PAS_DEFAUT,
   DELAI_PAS_A_PAS_MAX,
@@ -38,18 +39,24 @@ describe('le délai', () => {
 })
 
 describe('le mode', () => {
-  it('migre l’ancienne case décochée vers « manuel »', () => {
+  // L'ancienne case a cocher (avant meme les quatre modes) ne connaissait que
+  // deux etats : decochee -> un Continue a chaque fois (l'ancien « manuel »),
+  // cochee -> tout defile (l'ancien « pas-a-pas »). Les deux atterrissent
+  // desormais sur « detaille », seule l'avance auto les distingue encore.
+  it('migre l’ancienne case décochée : detaille, sans avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'off')
-    expect(lireModePhaseMechant()).toBe('manuel')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(false)
   })
 
   // Celui qui avait coché « rapide » subissait précisément le défaut qu'on
-  // corrige : on le fait atterrir sur « pas-a-pas », pas sur « instantane ».
-  it('migre l’ancienne case cochée vers « pas à pas »', () => {
+  // corrige : on le fait atterrir sur l'avance auto, pas sur « instantane ».
+  it('migre l’ancienne case cochée : detaille, AVEC avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem(CLE_PHASE_RAPIDE, 'on')
-    expect(lireModePhaseMechant()).toBe('pas-a-pas')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(true)
   })
 
   it('préfère le réglage explicite quand il existe', () => {
@@ -59,12 +66,28 @@ describe('le mode', () => {
     expect(lireModePhaseMechant()).toBe('instantane')
   })
 
-  // Depuis le mode « detaille », c'est lui le defaut d'une installation neuve
-  // (voir mode-detaille.test.ts) : « pas-a-pas » reste un choix disponible,
-  // plus le defaut.
-  it('vaut « detaille » sur une installation neuve', () => {
+  it('vaut « detaille » sur une installation neuve, sans avance auto', () => {
     window.localStorage.clear()
     expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(false)
+  })
+
+  // Migration plus recente : un joueur deja passe par les QUATRE anciens
+  // modes avait pu enregistrer « manuel » ou « pas-a-pas » directement sous
+  // la cle actuelle (CLE_MODE_PHASE). Meme regle que la case a cocher, lue
+  // sur la cle qui l'a remplacee.
+  it('migre l’ancien mode « manuel » stocké : detaille, sans avance auto', () => {
+    window.localStorage.clear()
+    window.localStorage.setItem(CLE_MODE_PHASE, 'manuel')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(false)
+  })
+
+  it('migre l’ancien mode « pas-a-pas » stocké : detaille, AVEC avance auto', () => {
+    window.localStorage.clear()
+    window.localStorage.setItem(CLE_MODE_PHASE, 'pas-a-pas')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(true)
   })
 })
 
@@ -138,57 +161,56 @@ describe('le recentrage', () => {
 describe('qui retient l’accusé de réception', () => {
   const degats = monde({ phase: 'Enemy Activation', prompt: 'Doom subit 3 dégât(s)' })
 
-  it('attend le délai en pas à pas, sur les quatre phases', () => {
+  // Ex-« pas à pas » : desormais l'avance auto du mode detaille. Meme regle,
+  // meme quatre phases, meme filtre d'evenements - seul le nom a change.
+  it('attend le délai en detaille avec avance auto, sur les quatre phases', () => {
     for (const phase of PHASES_DU_MECHANT) {
       const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('pas-a-pas', m, false)).toBe('attendre-delai')
+      expect(decisionAccuse('detaille', m, false, true)).toBe('attendre-delai')
+    }
+  })
+
+  it('attend un clic en detaille sans avance auto, sur les quatre phases', () => {
+    // Decision explicite du proprietaire : le mode detaille retient l'accuse
+    // de reception, sinon le moteur resout la phase a pleine vitesse et le
+    // cartouche etape par etape ne fait que raconter un passe. Il differe de
+    // l'avance auto sur un seul point : il attend un CLIC (la validation
+    // « Suivant » du cartouche), pas un delai automatique.
+    for (const phase of PHASES_DU_MECHANT) {
+      const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
+      expect(decisionAccuse('detaille', m, false, false)).toBe('attendre-clic')
     }
   })
 
   // « Tout passer » ne vaut que pour LA phase en cours : sans ce drapeau, le
-  // joueur qui saute une phase les sauterait toutes.
-  it('n’attend plus rien quand la phase a été sautée', () => {
-    expect(decisionAccuse('pas-a-pas', degats, true)).toBe('immediat')
+  // joueur qui saute une phase les sauterait toutes. Vrai avec ou sans avance
+  // auto : « Tout passer » l'emporte sur les deux.
+  it('n’attend plus rien quand la phase a été sautée, avec ou sans avance auto', () => {
+    expect(decisionAccuse('detaille', degats, true, true)).toBe('immediat')
+    expect(decisionAccuse('detaille', degats, true, false)).toBe('immediat')
   })
 
-  it('n’attend jamais en instantané', () => {
-    expect(decisionAccuse('instantane', degats, false)).toBe('immediat')
-  })
-
-  it('attend un clic en detaille, sur les quatre phases', () => {
-    // Decision explicite du proprietaire : le mode detaille doit lui aussi
-    // retenir l'accuse de reception, sinon le moteur resout la phase a pleine
-    // vitesse et le cartouche etape par etape ne fait que raconter un passe.
-    // Il differe de « pas-a-pas » sur un seul point : il attend un CLIC (la
-    // validation « Suivant » du cartouche), pas un delai automatique.
-    for (const phase of PHASES_DU_MECHANT) {
-      const m = monde({ phase, prompt: 'subit 3 dégât(s)' })
-      expect(decisionAccuse('detaille', m, false)).toBe('attendre-clic')
-    }
-  })
-
-  it('n’attend plus rien en detaille quand la phase a ete sautee', () => {
-    expect(decisionAccuse('detaille', degats, true)).toBe('immediat')
+  it('n’attend jamais en instantané, même en pleine phase du méchant', () => {
+    expect(decisionAccuse('instantane', degats, false, false)).toBe('immediat')
+    expect(decisionAccuse('instantane', degats, false, true)).toBe('immediat')
   })
 
   it('n’attend rien en detaille hors evenement a montrer', () => {
     expect(
-      decisionAccuse('detaille', monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' }), false)
-    ).toBe('immediat')
-  })
-
-  it('attend un clic en manuel, et seulement sur les activations', () => {
-    expect(decisionAccuse('manuel', degats, false)).toBe('attendre-clic')
-    expect(
-      decisionAccuse('manuel', monde({ phase: 'Deal Encounter Cards', prompt: 'subit 3 dégât(s)' }), false)
+      decisionAccuse(
+        'detaille',
+        monde({ phase: 'Enemy Activation', prompt: 'cards were placed on table' }),
+        false,
+        false
+      )
     ).toBe('immediat')
   })
 
   // Le tour du joueur ne doit JAMAIS être ralenti : c'est lui qui agit.
-  it('laisse filer le tour du joueur dans tous les modes', () => {
+  it('laisse filer le tour du joueur, avec ou sans avance auto', () => {
     const tour = monde({ phase: 'Player 1 Turn', prompt: 'subit 3 dégât(s)' })
-    expect(decisionAccuse('pas-a-pas', tour, false)).toBe('immediat')
-    expect(decisionAccuse('manuel', tour, false)).toBe('immediat')
+    expect(decisionAccuse('detaille', tour, false, false)).toBe('immediat')
+    expect(decisionAccuse('detaille', tour, false, true)).toBe('immediat')
   })
 })
 

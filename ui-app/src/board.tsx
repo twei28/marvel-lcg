@@ -87,19 +87,20 @@ import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
   Moteur,
   evenementNarreImportant,
+  ecrireAvanceAuto,
   ecrireDelaiPasAPas,
   ecrireModePhaseMechant,
   libelleModePhase,
+  lireAvanceAuto,
   lireDelaiPasAPas,
   lireModePhaseMechant,
-  modeSuivant,
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
   type ModePhaseMechant,
 } from './board/moteur'
-import { CouchePasAPas } from './board/CouchePasAPas'
-import { usePasAPas } from './board/pas-a-pas'
+// CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
+// les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
@@ -812,6 +813,9 @@ function usePartieEnCours(playerId: number) {
     reconnecter: () => moteur.reconnecterMaintenant(),
     reglerModePhase: (mode: ModePhaseMechant) => moteur.setModePhaseMechant(mode),
     reglerDelaiPasAPas: (ms: number) => moteur.setDelaiPasAPas(ms),
+    reglerAvanceAuto: (actif: boolean) => moteur.setAvanceAuto(actif),
+    // Toujours expose : CouchePasAPas ne l'appelle plus (voir plus bas), mais
+    // le clic-suite reste au moteur si on rallume la couche.
     avancerPasAPas: () => moteur.avancerMaintenant(),
     basculerPausePasAPas: () => moteur.basculerPause(),
     passerToutLaPhase: () => moteur.passerToutLaPhase(),
@@ -1133,7 +1137,9 @@ function PanneauOptions({
   succes,
   basculerSucces,
   modePhase,
-  cyclerModePhase,
+  changerModePhase,
+  avanceAuto,
+  basculerAvanceAuto,
   delaiPasAPas,
   reglerDelaiPasAPas,
   validationCourte,
@@ -1165,7 +1171,9 @@ function PanneauOptions({
   succes: boolean
   basculerSucces: () => void
   modePhase: ModePhaseMechant
-  cyclerModePhase: () => void
+  changerModePhase: (mode: ModePhaseMechant) => void
+  avanceAuto: boolean
+  basculerAvanceAuto: () => void
   delaiPasAPas: number
   reglerDelaiPasAPas: (ms: number) => void
   validationCourte: boolean
@@ -1236,41 +1244,63 @@ function PanneauOptions({
             actif={autoCible}
             onBascule={basculerAutoCible}
           />
-          {/* QUATRE positions : « Detaille » (une etape a la fois, le defaut)
-              -> « Manuel » (un clic par evenement important) -> « Pas a pas »
-              (delai automatique) -> « Instantane » (rien n'attend), puis on
-              reboucle. Un cycle a trois positions qui ne repassait jamais par
-              « detaille » desactivait la fonctionnalite pour toute la session
-              des le premier clic. */}
-          <button
-            type="button"
-            className="ligne-option"
-            onClick={cyclerModePhase}
-            title={t(
-              'Rythme de la phase du méchant : une étape validée à la fois, un clic par étape, déroulé automatique, ou tout d’un coup'
-            )}
-          >
+          {/* DEUX positions, sur le modele exact du choix Simple/Detaille du
+              mode d'action (ModeActionsBoutons plus haut) : deux boutons cote
+              a cote, celui qui est actif porte la classe est-actif. Les
+              anciens « Manuel » (un clic par evenement important, sans jamais
+              rien montrer) et « Pas a pas » (mode a part entiere) ont
+              disparu : le premier n'apportait rien que « Detaille » ne fasse
+              deja mieux, le second est devenu le reglage « avance auto »
+              ci-dessous, a l'interieur de « Detaille ». */}
+          <div className="ligne-option est-etabli">
             <span className="ligne-option-libelle">{t('Phase du méchant')}</span>
-            <span className="ligne-option-etat" aria-hidden="true">
-              {t(libelleModePhase(modePhase))}
-            </span>
-          </button>
-          {modePhase === 'pas-a-pas' ? (
-            <label className="ligne-option ligne-option-curseur">
-              <span className="ligne-option-libelle">{t('Vitesse du déroulé')}</span>
-              <input
-                type="range"
-                min={DELAI_PAS_A_PAS_MIN}
-                max={DELAI_PAS_A_PAS_MAX}
-                step={100}
-                value={delaiPasAPas}
-                onChange={(e) => reglerDelaiPasAPas(Number(e.target.value))}
-                title={t('Temps d’affichage de chaque étape')}
+          </div>
+          <div
+            className="mode-actions ligne-option-mode-phase"
+            role="group"
+            aria-label={t('Rythme de la phase du méchant')}
+          >
+            <button
+              type="button"
+              className={modePhase === 'detaille' ? 'est-actif' : ''}
+              onClick={() => changerModePhase('detaille')}
+            >
+              {t(libelleModePhase('detaille'))}
+            </button>
+            <button
+              type="button"
+              className={modePhase === 'instantane' ? 'est-actif' : ''}
+              onClick={() => changerModePhase('instantane')}
+            >
+              {t(libelleModePhase('instantane'))}
+            </button>
+          </div>
+          {modePhase === 'detaille' ? (
+            <>
+              <LigneOption
+                libelle={t('Avance toute seule')}
+                detail={t('Chaque étape se termine seule après un délai, sans attendre un clic')}
+                actif={avanceAuto}
+                onBascule={basculerAvanceAuto}
               />
-              <span className="ligne-option-etat" aria-hidden="true">
-                {(delaiPasAPas / 1000).toFixed(1).replace('.', ',')} s
-              </span>
-            </label>
+              {avanceAuto ? (
+                <label className="ligne-option ligne-option-curseur">
+                  <span className="ligne-option-libelle">{t('Vitesse du déroulé')}</span>
+                  <input
+                    type="range"
+                    min={DELAI_PAS_A_PAS_MIN}
+                    max={DELAI_PAS_A_PAS_MAX}
+                    step={100}
+                    value={delaiPasAPas}
+                    onChange={(e) => reglerDelaiPasAPas(Number(e.target.value))}
+                    title={t('Temps d’affichage de chaque étape')}
+                  />
+                  <span className="ligne-option-etat" aria-hidden="true">
+                    {(delaiPasAPas / 1000).toFixed(1).replace('.', ',')} s
+                  </span>
+                </label>
+              ) : null}
+            </>
           ) : null}
           <LigneOption
             libelle={t('Validation courte')}
@@ -1495,7 +1525,7 @@ function PagePartie({
     reconnecter,
     reglerModePhase,
     reglerDelaiPasAPas,
-    avancerPasAPas,
+    reglerAvanceAuto,
     basculerPausePasAPas,
     passerToutLaPhase,
   } = usePartieEnCours(playerId)
@@ -1851,13 +1881,15 @@ function PagePartie({
     ecrireModePhaseMechant(mode)
   }, [])
 
-  // Le panneau Options fait tourner les quatre positions dans l'ordre de la
-  // lisibilite decroissante : Detaille -> Manuel -> Pas a pas -> Instantane.
-  const cyclerModePhase = useCallback(() => {
-    setModePhase((m) => {
-      const suivant = modeSuivant(m)
-      ecrireModePhaseMechant(suivant)
-      return suivant
+  // Avance auto : reglage independant (case a cocher du panneau Options), qui
+  // ne veut rien dire hors du mode « detaille ». Remplace l'ancien mode a part
+  // entiere « pas-a-pas ».
+  const [avanceAuto, setAvanceAuto] = useState(lireAvanceAuto)
+  const basculerAvanceAuto = useCallback(() => {
+    setAvanceAuto((a) => {
+      const nouveau = !a
+      ecrireAvanceAuto(nouveau)
+      return nouveau
     })
   }, [])
 
@@ -1873,16 +1905,22 @@ function PagePartie({
     reglerModePhase(modePhase)
   }, [modePhase, reglerModePhase])
   useEffect(() => {
+    reglerAvanceAuto(avanceAuto)
+  }, [avanceAuto, reglerAvanceAuto])
+  useEffect(() => {
     reglerDelaiPasAPas(delaiPasAPas)
   }, [delaiPasAPas, reglerDelaiPasAPas])
 
-  // Halo et chiffre flottant sur la carte de l'etape en cours. N'a de sens que
-  // pendant le pas a pas : ailleurs les rendus defilent trop vite pour qu'un
-  // halo veuille dire quoi que ce soit.
-  usePasAPas(historique.entrees, etat.pasAPas.actif)
+  // usePasAPas (halo teinte + chiffre flottant sur la carte de l'etape en
+  // cours) : DEBRANCHEE a la demande de l'utilisateur - double emploi avec le
+  // cartouche du deroule (MENACE / ACTIVATIONS / DISTRIBUTION / RÉVÉLATION),
+  // exactement le defaut corrige entre le bandeau et le splash. pas-a-pas.ts
+  // reste en place : il suffit de reimporter `usePasAPas` depuis
+  // './board/pas-a-pas' et de remettre la ligne suivante pour la rallumer.
+  // usePasAPas(historique.entrees, etat.pasAPas.actif)
 
-  // Espace : pause / reprise. Ailleurs qu'en pas a pas la touche ne fait rien,
-  // et on ne la vole jamais a un champ de saisie.
+  // Espace : pause / reprise. Ailleurs qu'en avance auto la touche ne fait
+  // rien, et on ne la vole jamais a un champ de saisie.
   useEffect(() => {
     if (!etat.pasAPas.actif) return
     const surTouche = (e: KeyboardEvent) => {
@@ -1897,13 +1935,12 @@ function PagePartie({
   }, [etat.pasAPas.actif, basculerPausePasAPas])
 
   // Le bilan de fin de phase ne vaut que quand on n'a PAS deroule l'action :
-  // en mode manuel chaque etape a deja ete vue une par une (bouton Continue).
-  // En detaille non plus : on vient de voir chaque etape passer une par une
-  // dans le deroule ci-dessous, et surtout le bilan s'affiche en panneau
-  // PAR-DESSUS ce deroule et le rend illisible (constate en partie reelle).
-  // La spec prevoit de le reintroduire plus tard sous une forme raccourcie ;
-  // pas dans cette livraison.
-  const phaseRapide = modePhase !== 'manuel' && modePhase !== 'detaille'
+  // en detaille, chaque etape a deja ete vue une par une (clic ou avance
+  // auto) dans le deroule ci-dessous, et surtout le bilan s'affiche en
+  // panneau PAR-DESSUS ce deroule et le rend illisible (constate en partie
+  // reelle). La spec prevoit de le reintroduire plus tard sous une forme
+  // raccourcie ; pas dans cette livraison.
+  const phaseRapide = modePhase === 'instantane'
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
@@ -2184,14 +2221,19 @@ function PagePartie({
         />
       ) : null}
 
-      <CouchePasAPas
-        actif={etat.pasAPas.actif}
-        enPause={etat.pasAPas.enPause}
-        phase={etat.monde?.phase}
-        onAvancer={avancerPasAPas}
-        onBasculerPause={basculerPausePasAPas}
-        onToutPasser={passerToutLaPhase}
-      />
+      {/* CouchePasAPas (barre « où on en est » + Tout passer) : DEBRANCHEE a
+          la demande de l'utilisateur - double emploi avec le cartouche du
+          deroule juste en dessous, qui porte deja MENACE / ACTIVATIONS /
+          DISTRIBUTION / RÉVÉLATION : exactement le defaut corrige entre le
+          bandeau et le splash. Le « Tout passer » qu'elle portait est repris
+          par DeroulePhase (prop onToutDerouler, ci-dessous). CouchePasAPas.tsx
+          reste en place : il suffit de reimporter `CouchePasAPas` depuis
+          './board/CouchePasAPas' et de remettre
+          <CouchePasAPas actif={etat.pasAPas.actif} enPause={etat.pasAPas.enPause}
+            phase={etat.monde?.phase} onAvancer={avancerPasAPas}
+            onBasculerPause={basculerPausePasAPas} onToutPasser={passerToutLaPhase} />
+          ici pour la rallumer (avancerPasAPas est deja expose par
+          usePartieEnCours, mais plus destructure ici). */}
       {/* Banniere des hauts faits : DEBRANCHEE a la demande de l'utilisateur.
           Moteur.enregistrerHautsFaits() continue de les accumuler dans
           etat.hautsFaits, et CoucheHautsFaits.tsx reste en place : il suffit de
@@ -2206,7 +2248,11 @@ function PagePartie({
             round={etat.monde?.round_id ?? 1}
             actif={etapesPhaseMechant.length > 0}
           />
-          <DeroulePhase etapes={etapesPhaseMechant} onTerminer={() => undefined} />
+          <DeroulePhase
+            etapes={etapesPhaseMechant}
+            onTerminer={() => undefined}
+            onToutDerouler={passerToutLaPhase}
+          />
         </>
       ) : null}
       <RecapPhaseMechant
@@ -2388,7 +2434,9 @@ function PagePartie({
               succes={succes}
               basculerSucces={basculerSucces}
               modePhase={modePhase}
-              cyclerModePhase={cyclerModePhase}
+              changerModePhase={choisirModePhase}
+              avanceAuto={avanceAuto}
+              basculerAvanceAuto={basculerAvanceAuto}
               delaiPasAPas={delaiPasAPas}
               reglerDelaiPasAPas={choisirDelaiPasAPas}
               validationCourte={validationCourte}

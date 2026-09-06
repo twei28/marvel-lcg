@@ -2,9 +2,10 @@
 //
 // Il remplace « manuel » comme defaut : la phase du mechant se deroule
 // desormais etape par etape a moins qu'on ne demande explicitement d'aller
-// plus vite. Les trois anciens modes restent disponibles.
+// plus vite. Les anciens modes « manuel » et « pas-a-pas » ont disparu : il ne
+// reste que « detaille » (avec son reglage « avance auto ») et « instantane ».
 import { describe, expect, it } from 'vitest'
-import { libelleModePhase, lireModePhaseMechant, modeSuivant, MODES } from './moteur'
+import { lireAvanceAuto, libelleModePhase, lireModePhaseMechant, MODES } from './moteur'
 
 describe('mode detaille', () => {
   it('figure dans la liste des modes', () => {
@@ -16,33 +17,26 @@ describe('mode detaille', () => {
     expect(lireModePhaseMechant()).toBe('detaille')
   })
 
-  it('respecte encore l ancienne case a cocher de ceux qui l avaient reglee', () => {
-    // Migration : son ABSENCE ne dit rien et ne doit pas priver un nouveau venu
-    // du mode detaille ; sa presence, elle, est un choix a honorer.
+  // Migration : « manuel » (case decochee) devient « detaille » SANS avance
+  // auto - ce joueur cliquait pour avancer, il continue de cliquer.
+  it('respecte encore l ancienne case a cocher decochee : detaille, sans avance auto', () => {
     window.localStorage.clear()
     window.localStorage.setItem('marvel-board-phase-rapide', 'off')
-    expect(lireModePhaseMechant()).toBe('manuel')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireAvanceAuto()).toBe(false)
   })
 
-  it('laisse les trois anciens modes disponibles', () => {
-    expect(MODES).toEqual(expect.arrayContaining(['manuel', 'pas-a-pas', 'instantane']))
+  // Ne garde plus que DEUX positions : « manuel » et « pas-a-pas » ont
+  // disparu (le premier n'apportait rien que « detaille » ne fasse deja
+  // mieux, le second est devenu le reglage « avance auto »).
+  it('ne garde que deux positions', () => {
+    expect(MODES).toEqual(['detaille', 'instantane'])
   })
 
   it('affiche son propre libelle, pas celui d un autre mode', () => {
     // Le panneau Options affichait « Instantane » pour le mode detaille,
     // pourtant le defaut : un ternaire a trois branches sans branche pour lui.
     expect(libelleModePhase('detaille')).toBe('Détaillé')
-    expect(libelleModePhase('manuel')).toBe('Manuel')
-    expect(libelleModePhase('pas-a-pas')).toBe('Pas à pas')
     expect(libelleModePhase('instantane')).toBe('Instantané')
-  })
-
-  it('repasse par detaille dans le cycle du bouton Options', () => {
-    // Le cycle a trois positions ne repassait jamais par « detaille » : un
-    // seul clic desactivait la fonctionnalite pour toute la session.
-    expect(modeSuivant('detaille')).toBe('manuel')
-    expect(modeSuivant('manuel')).toBe('pas-a-pas')
-    expect(modeSuivant('pas-a-pas')).toBe('instantane')
-    expect(modeSuivant('instantane')).toBe('detaille')
   })
 })

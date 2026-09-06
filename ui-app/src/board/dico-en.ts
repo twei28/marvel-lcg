@@ -355,11 +355,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Copier un rapport de bug': 'Copy a bug report',
   'Télécharger le rapport complet': 'Download the full report',
   'Log': 'Log',
-  'Manuel': 'Manual',
-  'Pas à pas': 'Step by step',
   'Instantané': 'Instant',
-  'Rythme de la phase du méchant : une étape validée à la fois, un clic par étape, déroulé automatique, ou tout d’un coup':
-    'Villain phase pacing: one validated step at a time, one click per step, automatic playback, or all at once',
+  'Rythme de la phase du méchant': 'Villain phase pacing',
+  'Avance toute seule': 'Play automatically',
+  'Chaque étape se termine seule après un délai, sans attendre un clic':
+    'Each step finishes on its own after a delay, without waiting for a click',
   'Vitesse du déroulé': 'Playback speed',
   'Temps d’affichage de chaque étape': 'How long each step stays on screen',
   'En pause': 'Paused',

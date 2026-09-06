@@ -4138,6 +4138,13 @@
     background: #7fd77f;
     border-color: #7fd77f;
   }
+
+  /* Meme espacement que .apercu-pastilles : une ligne-option "etabli" au
+     dessus annonce le reglage, ce groupe de boutons (.mode-actions, style du
+     choix Simple/Detaille) le change juste en dessous. */
+  .ligne-option-mode-phase {
+    margin: 0 11px 6px;
+  }
 }
 
 @layer utilitaires {
