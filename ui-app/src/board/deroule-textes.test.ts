@@ -5,7 +5,7 @@
 // rattraper les traductions apres coup coute plus cher que de les poser tout
 // de suite.
 import { describe, expect, it } from 'vitest'
-import { regleEtape, titreEtape } from './deroule-textes'
+import { compteurEtape, regleEtape, resultatEtape, titreEtape } from './deroule-textes'
 import type { EtapeDeroule } from './deroule-phase'
 
 const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
@@ -22,6 +22,18 @@ const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   ...extra,
 })
 
+const menace = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule =>
+  etape({
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    carteId: undefined,
+    cibleId: undefined,
+    auteurNom: undefined,
+    cibleNom: undefined,
+    ...extra,
+  })
+
 describe('phrases du deroule', () => {
   it('nomme l attaquant et sa cible', () => {
     expect(titreEtape(etape())).toBe('Ultron attaque Shuri')
@@ -31,10 +43,25 @@ describe('phrases du deroule', () => {
     expect(titreEtape(etape({ titre: 'manigance' }))).toBe('Ultron complote contre Shuri')
   })
 
-  it('annonce la menace sans nommer de cible', () => {
+  it('nomme la manigance et son gain de menace', () => {
+    // Le titre generique « Menace sur la manigance principale » disait moins
+    // que la ligne qui le suivait : une seule phrase concrete le remplace.
     expect(
-      titreEtape(etape({ temps: 'menace', titre: 'menace', carteId: undefined, cibleId: undefined, auteurNom: undefined, cibleNom: undefined }))
-    ).toBe('Menace sur la manigance principale')
+      titreEtape(menace({ cibleNom: 'L’Effraction !', montant: 2 }))
+    ).toBe('L’Effraction ! gagne 2 menaces')
+  })
+
+  it('accorde la menace au singulier', () => {
+    expect(titreEtape(menace({ cibleNom: 'L’Effraction !', montant: 1 })))
+      .toBe('L’Effraction ! gagne 1 menace')
+  })
+
+  it('se replie sur le titre generique quand l entree ne dit ni nom ni montant', () => {
+    // Une phrase vague vaut mieux qu'une phrase fausse : « gagne undefined
+    // menaces » serait pire que l'ancien titre.
+    expect(titreEtape(menace())).toBe('Menace sur la manigance principale')
+    expect(titreEtape(menace({ cibleNom: 'L’Effraction !' })))
+      .toBe('Menace sur la manigance principale')
   })
 
   it('rappelle la regle du point 1', () => {
@@ -60,6 +87,53 @@ describe('phrases du deroule', () => {
 
   it('ne dit rien d une regle inconnue plutot que d inventer', () => {
     expect(regleEtape(etape({ regle: 'regle:inexistante' }))).toBe('')
+  })
+
+  it('dit les degats reellement subis, sous le titre', () => {
+    expect(titreEtape(etape({ auteurNom: 'Klaw', cibleNom: 'Colossus', montant: 4 })))
+      .toBe('Klaw attaque Colossus')
+    expect(resultatEtape(etape({ montant: 4 }))).toBe('→ 4 dégâts')
+  })
+
+  it('accorde le degat au singulier', () => {
+    expect(resultatEtape(etape({ montant: 1 }))).toBe('→ 1 dégât')
+  })
+
+  it('compte en menaces quand l ennemi complote', () => {
+    expect(resultatEtape(etape({ titre: 'manigance', montant: 2 }))).toBe('→ 2 menaces')
+    expect(resultatEtape(etape({ titre: 'manigance', montant: 1 }))).toBe('→ 1 menace')
+  })
+
+  it('ne dit aucun resultat sans montant', () => {
+    expect(resultatEtape(etape())).toBe('')
+  })
+
+  it('ne repete pas le chiffre de la menace, deja dans son titre', () => {
+    expect(resultatEtape(menace({ cibleNom: 'L’Effraction !', montant: 2 }))).toBe('')
+  })
+
+  it('affiche le compteur de la cible, seuil compris', () => {
+    expect(compteurEtape(etape({ restant: 5, plafond: 8 }))).toBe('5/8')
+  })
+
+  it('affiche le compteur seul quand la cible n a pas de seuil', () => {
+    // Les PV d'un heros n'ont pas de plafond publie par le moteur.
+    expect(compteurEtape(etape({ restant: 7 }))).toBe('7')
+  })
+
+  it('n invente aucun compteur quand le fait n en porte pas', () => {
+    // Une cible sans compteur : rien vaut mieux qu'un « undefined » ou un
+    // « 0/0 » affiche au joueur.
+    const sansRestant = etape({ montant: 4 })
+    expect(compteurEtape(sansRestant)).toBe('')
+    const textes = [titreEtape(sansRestant), resultatEtape(sansRestant), compteurEtape(sansRestant)]
+    for (const texte of textes) {
+      expect(texte).not.toMatch(/undefined|NaN/)
+    }
+  })
+
+  it('laisse tomber un seuil nul plutot que d afficher 0/0', () => {
+    expect(compteurEtape(etape({ restant: 0, plafond: 0 }))).toBe('0')
   })
 
   it('nomme d apres le fait, pas d apres une recherche externe', () => {

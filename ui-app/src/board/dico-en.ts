@@ -313,6 +313,13 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Historique de la partie': 'Game history',
   // Deroule detaille de la phase du mechant.
   'Menace sur la manigance principale': 'Threat on the main scheme',
+  // Pluriels du deroule : le francais accorde, l'anglais garde le meme mot.
+  // ('menace' et 'dégâts' sont deja definis ailleurs dans ce fichier.)
+  'menaces': 'threat',
+  'dégât': 'damage',
+  // Cle a trous : « sur » seul se traduit deja par « on » plus haut, et
+  // « 1 on 3 » ne veut rien dire.
+  '%1 sur %2': '%1 of %2',
   'complote contre': 'schemes against',
   'Point 1 : chaque joueur ajoute 1 menace à la manigance principale.':
     'Step 1: each player adds 1 threat to the main scheme.',

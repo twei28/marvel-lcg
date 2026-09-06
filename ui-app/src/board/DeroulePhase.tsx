@@ -8,8 +8,8 @@
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
 import { useEffect, useState } from 'react'
-import type { EtapeDeroule, TempsPhase } from './deroule-phase'
-import { regleEtape, titreEtape } from './deroule-textes'
+import { rangDansLeTemps, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import { compteurEtape, regleEtape, resultatEtape, titreEtape } from './deroule-textes'
 import { t } from './langue'
 import { TraitCible } from './TraitCible'
 import { useDerouleScene } from './useDerouleScene'
@@ -285,33 +285,56 @@ export function DeroulePhase({
   // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.
   const positionCourante = TEMPS.findIndex((item) => item.cle === etape.temps)
 
+  // « 1 sur 3 » : combien d'etapes ce temps compte, et ou l'on en est.
+  // `undefined` quand il n'en compte qu'une, et rien ne s'affiche alors.
+  const rang = rangDansLeTemps(etapes, index)
+  const resultat = resultatEtape(etape)
+  const compteur = compteurEtape(etape)
+
   return (
     <>
       <TraitCible etape={etape} actif={!termine} />
       <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
-        <ol className="deroule-temps">
-          {TEMPS.map((temps, position) => {
-            // Vide : aucune etape de la phase ne porte ce temps. Il n'a
-            // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
-            // lui) ; le joueur doit seulement voir qu'il a ete saute, et
-            // pourquoi.
-            const estVide = !etapes.some((e) => e.temps === temps.cle)
-            const estCourant = !estVide && temps.cle === etape.temps
-            const estPasse = !estVide && !estCourant && position < positionCourante
-            const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
-            return (
-              <li key={temps.cle} className={classe}>
-                {t(temps.libelle)}
-                {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
-                    symbole colle au texte, pas une traduction a part. */}
-                {estPasse ? ' ✓' : null}
-                {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
-              </li>
-            )
-          })}
-        </ol>
+        <div className="deroule-chrono">
+          <ol className="deroule-temps">
+            {TEMPS.map((temps, position) => {
+              // Vide : aucune etape de la phase ne porte ce temps. Il n'a
+              // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
+              // lui) ; le joueur doit seulement voir qu'il a ete saute, et
+              // pourquoi.
+              const estVide = !etapes.some((e) => e.temps === temps.cle)
+              const estCourant = !estVide && temps.cle === etape.temps
+              const estPasse = !estVide && !estCourant && position < positionCourante
+              const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
+              return (
+                <li key={temps.cle} className={classe}>
+                  {t(temps.libelle)}
+                  {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
+                      symbole colle au texte, pas une traduction a part. */}
+                  {estPasse ? ' ✓' : null}
+                  {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
+                </li>
+              )
+            })}
+          </ol>
+          {rang ? (
+            <span className="deroule-rang">
+              {/* Cle a trous plutot qu'une concatenation : « sur » se traduit
+                  deja par « on » ailleurs dans le dictionnaire, et « 1 on 3 »
+                  ne veut rien dire. */}
+              {t('%1 sur %2').replace('%1', String(rang.rang)).replace('%2', String(rang.total))}
+            </span>
+          ) : null}
+        </div>
 
-        <p className="deroule-titre">{titreEtape(etape)}</p>
+        {/* Le titre dit le fait, et le compteur de la cible se lit a sa
+            droite. Un titre generique suivi de la meme chose en dessous
+            faisait dire une seule chose a trois lignes. */}
+        <div className="deroule-entete">
+          <p className="deroule-titre">{titreEtape(etape)}</p>
+          {compteur ? <span className="deroule-compteur">{compteur}</span> : null}
+        </div>
+        {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
         {etape.boosts.length > 0 ? (
           <ul className="deroule-boosts">
             {etape.boosts.slice(0, boostsMontres).map((boost) => (

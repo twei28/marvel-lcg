@@ -283,6 +283,66 @@ describe('cartouche du deroule', () => {
     expect(document.querySelector('.deroule-consequences')).toBeNull()
   })
 
+  it('affiche le chiffre du coup et le compteur de la cible', () => {
+    // Une seule phrase concrete, son chiffre en dessous et le compteur de la
+    // cible a droite : le titre generique disait moins que la ligne qu'il
+    // surplombait.
+    const attaque: EtapeDeroule[] = [
+      {
+        cle: 'a',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Klaw',
+        cibleNom: 'Colossus',
+        montant: 4,
+        restant: 5,
+        boosts: [],
+        consequences: [],
+      },
+    ]
+    render(<DeroulePhase etapes={attaque} onTerminer={() => {}} />)
+    expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
+    expect(screen.getByText('→ 4 dégâts')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
+  })
+
+  it('n affiche aucun compteur quand le fait n en porte pas', () => {
+    // Un compteur faux serait pire que pas de compteur.
+    const sansRestant: EtapeDeroule[] = [
+      {
+        cle: 'a',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        auteurNom: 'Klaw',
+        cibleNom: 'Colossus',
+        montant: 4,
+        boosts: [],
+        consequences: [],
+      },
+    ]
+    render(<DeroulePhase etapes={sansRestant} onTerminer={() => {}} />)
+    expect(document.querySelector('.deroule-compteur')).toBeNull()
+    expect(document.body.textContent ?? '').not.toMatch(/undefined|NaN/)
+  })
+
+  it('dit combien d etapes compte le temps courant', () => {
+    const deuxSbires: EtapeDeroule[] = [
+      { cle: 'a', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Shuri', boosts: [], consequences: [] },
+      { cle: 'b', temps: 'sbires', titre: 'attaque', regle: 'regle:activations', auteurNom: 'Drone', cibleNom: 'Thor', boosts: [], consequences: [] },
+    ]
+    render(<DeroulePhase etapes={deuxSbires} onTerminer={() => {}} />)
+    expect(screen.getByText('1 sur 2')).toBeInTheDocument()
+    fireEvent.click(suivant())
+    expect(screen.getByText('2 sur 2')).toBeInTheDocument()
+  })
+
+  it('n encombre pas le cartouche quand le temps n a qu une etape', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    expect(document.querySelector('.deroule-rang')).toBeNull()
+  })
+
   it('enchaine seule une etape technique', async () => {
     // Le charabia du moteur se voit passer, il ne se clique pas.
     const avecAuto: EtapeDeroule[] = [

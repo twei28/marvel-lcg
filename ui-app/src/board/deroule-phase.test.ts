@@ -5,7 +5,7 @@
 // boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
-import { etapesDeroule } from './deroule-phase'
+import { etapesDeroule, rangDansLeTemps } from './deroule-phase'
 import type { FaitMechant } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
@@ -35,6 +35,9 @@ const entree = (extra: Partial<EntreeHistorique> = {}): EntreeHistorique =>
     phase: 'Main Scheme Place Threat',
     titre: 'Menace posee',
     valeur: 1,
+    nomCarte: 'L’Effraction !',
+    restant: 5,
+    plafond: 8,
     ...extra,
   }) as EntreeHistorique
 
@@ -87,6 +90,49 @@ describe('etapesDeroule', () => {
   it('fait une etape de menace a partir du journal', () => {
     const etapes = etapesDeroule([], [entree()], 1, AUCUN_MECHANT)
     expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
+  })
+
+  it('fait une etape PAR manigance touchee par la menace', () => {
+    // Une seule etape a deux lignes disait deux fois la meme chose : le titre
+    // generique, puis la liste des consequences. Une etape par manigance dit
+    // chaque fait une fois, avec son propre compteur.
+    // Le journal empile la PLUS RECENTE en tete (« Le Braquage » ici) : les
+    // etapes doivent ressortir dans l'ordre ou les menaces ont ete posees.
+    const etapes = etapesDeroule([], [
+      entree({ cle: 'm2', nomCarte: 'Le Braquage', valeur: 1, restant: 3, plafond: 6 }),
+      entree({ cle: 'm1', nomCarte: 'L’Effraction !', valeur: 2, restant: 5, plafond: 8 }),
+    ], 1, AUCUN_MECHANT)
+    const menaces = etapes.filter((e) => e.temps === 'menace')
+    expect(menaces).toHaveLength(2)
+    expect(menaces.map((e) => e.cibleNom)).toEqual(['L’Effraction !', 'Le Braquage'])
+    expect(menaces.map((e) => e.montant)).toEqual([2, 1])
+  })
+
+  it('reprend le compteur de la manigance sur l entree du journal', () => {
+    const [etape] = etapesDeroule([], [entree()], 1, AUCUN_MECHANT)
+    expect(etape.restant).toBe(5)
+    expect(etape.plafond).toBe(8)
+  })
+
+  it('ne met pas en phrase un RETRAIT de menace', () => {
+    // `valeur` est la variation SIGNEE du compteur : « gagne -1 menaces »
+    // n'aurait aucun sens. Sans montant, le titre se replie sur le generique.
+    const [etape] = etapesDeroule([], [entree({ valeur: -1 })], 1, AUCUN_MECHANT)
+    expect(etape.montant).toBeUndefined()
+  })
+
+  it('retient les degats REELLEMENT subis, pas ceux portes', () => {
+    // `inflige` est ce qui a ete porte defense deduite, `subi` ce que la cible
+    // a encaisse : une reduction de degats separe les deux, et le joueur lit
+    // ce qui s'est passe.
+    const [etape] = etapesDeroule([attaque({ inflige: 5, subi: 4, restant: 3 })], [], 1, AUCUN_MECHANT)
+    expect(etape.montant).toBe(4)
+    expect(etape.restant).toBe(3)
+  })
+
+  it('ne porte aucun compteur quand le fait n en donne pas', () => {
+    const [etape] = etapesDeroule([attaque({ restant: null })], [], 1, AUCUN_MECHANT)
+    expect(etape.restant).toBeUndefined()
   })
 
   it('donne une cle stable et unique a chaque etape', () => {
@@ -186,6 +232,46 @@ describe('etapesDeroule', () => {
       entree({ cle: 'c8', type: 'card', phase: 'Reveal Encounter Cards', titre: 'Icy Grip revelee', cibleId: 77 }),
     ], 1, AUCUN_MECHANT)
     expect(etapes[0]?.auto).toBeFalsy()
+  })
+
+  describe('le rang dans le temps', () => {
+    // Le joueur doit savoir combien d'etapes ce temps compte encore, sans
+    // etre encombre par un « 1 sur 1 » qui n'apprend rien.
+    it('compte les etapes du temps courant', () => {
+      const etapes = etapesDeroule(
+        [attaque({ auteur_id: 60 }), attaque({ auteur: 'Drone', auteur_id: 61 })],
+        [],
+        1,
+        new Set([50])
+      )
+      expect(etapes.map((e) => e.temps)).toEqual(['sbires', 'sbires'])
+      expect(rangDansLeTemps(etapes, 0)).toEqual({ rang: 1, total: 2 })
+      expect(rangDansLeTemps(etapes, 1)).toEqual({ rang: 2, total: 2 })
+    })
+
+    it('ne compte rien quand le temps n a qu une etape', () => {
+      const etapes = etapesDeroule([attaque({ auteur_id: 60 })], [], 1, new Set([50]))
+      expect(rangDansLeTemps(etapes, 0)).toBeUndefined()
+    })
+
+    it('compte dans le temps de l etape, pas dans toute la phase', () => {
+      const etapes = etapesDeroule(
+        [attaque({ auteur_id: 50 }), attaque({ auteur_id: 60 }), attaque({ auteur_id: 61 })],
+        [],
+        1,
+        new Set([50])
+      )
+      expect(etapes.map((e) => e.temps)).toEqual(['mechant', 'sbires', 'sbires'])
+      // L'unique etape du temps « mechant » n'affiche rien, les deux du temps
+      // « sbires » se comptent entre elles.
+      expect(rangDansLeTemps(etapes, 0)).toBeUndefined()
+      expect(rangDansLeTemps(etapes, 1)).toEqual({ rang: 1, total: 2 })
+      expect(rangDansLeTemps(etapes, 2)).toEqual({ rang: 2, total: 2 })
+    })
+
+    it('ne compte rien hors des etapes connues', () => {
+      expect(rangDansLeTemps([], 0)).toBeUndefined()
+    })
   })
 
   describe('le round', () => {

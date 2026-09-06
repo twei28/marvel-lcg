@@ -2788,10 +2788,19 @@
     opacity: 0;
   }
 
+  /* La chronologie et, a sa droite, le rang de l'etape dans son temps. */
+  .deroule-chrono {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+
   .deroule-temps {
     display: flex;
     gap: 10px;
-    margin: 0 0 8px;
+    margin: 0;
     padding: 0;
     list-style: none;
     font-size: 0.72rem;
@@ -2822,10 +2831,50 @@
     text-decoration: none;
   }
 
-  .deroule-titre {
+  /* « 1 sur 3 » : combien d'etapes reste-t-il dans ce temps. Absent quand le
+     temps n'en compte qu'une, ou il n'apprendrait rien. Discret, au meme
+     niveau que la chronologie a laquelle il se rapporte. */
+  .deroule-rang {
+    flex: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: rgba(248, 250, 252, 0.5);
+    white-space: nowrap;
+  }
+
+  /* Le titre du fait, et le compteur de la cible aligne a sa droite. */
+  .deroule-entete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
     margin: 0 0 4px;
+  }
+
+  .deroule-titre {
+    margin: 0;
     font-size: 1rem;
     font-weight: 700;
+  }
+
+  /* « 5/8 » : les points de vie ou la menace de la cible APRES le coup. En
+     chiffres a chasse fixe, pour qu'il ne danse pas d'une etape a l'autre. */
+  .deroule-compteur {
+    flex: none;
+    font-size: 0.95rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #ffd24a;
+    white-space: nowrap;
+  }
+
+  /* « → 4 dégâts » : le chiffre du coup, sous le titre qui dit qui frappe
+     qui. */
+  .deroule-resultat {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(248, 250, 252, 0.9);
   }
 
   /* Les cartes de boost, retournees une par une : c'est le moment de tension

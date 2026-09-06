@@ -86,6 +86,28 @@ export type EtapeDeroule = {
    */
   auteurNom?: string
   cibleNom?: string
+  /**
+   * Le nombre du coup : les degats ou les menaces que la cible a encaisses,
+   * les menaces posees pour l'etape de menace.
+   *
+   * Sur un fait, c'est `subi` et JAMAIS `inflige` : `inflige` est ce qui a ete
+   * porte une fois la defense deduite, `subi` ce que la cible a reellement
+   * encaisse. Une reduction de degats ou des derniers points de vie depasses
+   * separent les deux, et le joueur lit ce qui s'est passe.
+   */
+  montant?: number
+  /**
+   * Compteur de la CIBLE apres le coup : ses points de vie restants, ou la
+   * menace sur la manigance. Absent quand la source n'en donne pas (le moteur
+   * laisse `restant` vide pour une cible qui n'a pas de compteur) : mieux vaut
+   * n'afficher aucun compteur qu'un nombre invente.
+   */
+  restant?: number
+  /**
+   * Le seuil du compteur, quand la cible en a un : la menace maximale d'une
+   * manigance. Les points de vie n'en ont pas, d'ou l'absence frequente.
+   */
+  plafond?: number
   boosts: BoostDeroule[]
   consequences: { cle: string; texte: string }[]
   /** Texte du moteur quand on ne sait pas mettre le fait en phrase. */
@@ -145,14 +167,29 @@ export function etapesDeroule(
   const menace = duRound.filter(
     (e) => tempsDe(e.phase) === 'menace' && e.type === 'threat'
   )
-  if (menace.length > 0) {
+  // Une etape PAR manigance touchee. Une seule etape suivie de la liste de ses
+  // consequences disait deux fois la meme chose : « Menace sur la manigance
+  // principale », puis « L'Effraction ! gagne 2 menaces ». Le fait tient en
+  // une phrase, et chaque manigance a son propre compteur.
+  for (const e of menace) {
     etapes.push({
-      cle: 'menace',
+      cle: `menace:${e.cle}`,
       temps: 'menace',
       titre: 'menace',
       regle: 'regle:menace',
+      // Le nom NU de la carte, que l'entree porte deja a cote de sa phrase
+      // (voir EntreeHistorique.nomCarte) : le decouper du titre traduit
+      // marcherait dans une langue sur deux.
+      cibleNom: e.nomCarte,
+      // `valeur` est la variation SIGNEE du compteur : seule une POSE de
+      // menace se met en phrase ici. Un retrait, qui n'a pas lieu a ce temps
+      // de la phase, laisserait « gagne -1 menaces » ; sans montant, le titre
+      // se replie sur sa formule generique.
+      montant: e.valeur !== undefined && e.valeur > 0 ? e.valeur : undefined,
+      restant: e.restant,
+      plafond: e.plafond,
       boosts: [],
-      consequences: menace.map((e) => ({ cle: e.cle, texte: e.titre })),
+      consequences: [],
     })
   }
 
@@ -174,6 +211,11 @@ export function etapesDeroule(
       // d'autre n'affiche.
       auteurNom: fait.auteur.replace(/^\W*/, ''),
       cibleNom: fait.cible.replace(/^\W*/, ''),
+      // `subi` et non `inflige` : voir le commentaire de `montant`.
+      montant: fait.subi,
+      // `restant` vaut `null` quand la cible n'a pas de compteur : on le
+      // ramene a l'absence, seul etat que l'affichage sait taire.
+      restant: fait.restant ?? undefined,
       boosts: fait.boosts.map((boost, rang) => ({
         cle: `boost:${rang}:${boost.id}`,
         nom: boost.nom,
@@ -219,4 +261,26 @@ export function etapesDeroule(
   }
 
   return etapes.sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
+}
+
+/**
+ * Rang de l'etape courante DANS SON TEMPS, et nombre d'etapes de ce temps.
+ *
+ * Rend `undefined` quand le temps n'en compte qu'une : « 1 sur 1 » n'apprend
+ * rien et encombre un cartouche qui tient en quatre lignes. Le joueur doit
+ * savoir combien il lui en reste dans ce temps, pas lire un compteur inutile.
+ *
+ * Le rang se compte par les etapes qui PRECEDENT l'index, pas par un
+ * `indexOf` : deux etapes peuvent etre egales sans etre le meme objet.
+ */
+export function rangDansLeTemps(
+  etapes: EtapeDeroule[],
+  index: number
+): { rang: number; total: number } | undefined {
+  const etape = etapes[index]
+  if (!etape) return undefined
+  const total = etapes.filter((e) => e.temps === etape.temps).length
+  if (total < 2) return undefined
+  const rang = etapes.slice(0, index + 1).filter((e) => e.temps === etape.temps).length
+  return { rang, total }
 }
