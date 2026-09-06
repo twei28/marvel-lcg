@@ -261,6 +261,39 @@ describe('cartouche du deroule', () => {
     }
   })
 
+  it('enchaine quand meme une etape technique si l objet etape est RECREE avant l echeance', async () => {
+    // board.tsx recalcule `etapes` (donc l'objet `etape`) a chaque trame du
+    // moteur, meme quand rien n'a change. Mesure en partie reelle : la phase
+    // du mechant peut emettre des trames plus vite que les 500ms du minuteur
+    // (52 entrees de journal en 750ms). Si l'effet depend de l'IDENTITE de
+    // `etape`, chaque trame annule le minuteur en cours et en repose un
+    // nouveau : l'etape technique n'a alors plus jamais le temps de defiler
+    // seule.
+    const avecAuto: EtapeDeroule[] = [
+      { cle: 'a', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
+      { cle: 'b', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
+    ]
+    vi.useFakeTimers()
+    try {
+      const { rerender } = render(<DeroulePhase etapes={avecAuto} onTerminer={() => {}} />)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300)
+      })
+      // Meme contenu, mais nouvelle identite de tableau ET de l'objet `etape`
+      // en cours : exactement ce que produit board.tsx a chaque trame.
+      const memeContenuIdentiteNeuve: EtapeDeroule[] = avecAuto.map((e) => ({ ...e }))
+      rerender(<DeroulePhase etapes={memeContenuIdentiteNeuve} onTerminer={() => {}} />)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300)
+      })
+      // 600ms se sont ecoulees depuis le premier rendu, largement plus que
+      // les 500ms du minuteur : l'etape technique doit avoir defile seule.
+      expect(screen.getByText('Fin')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('n enchaine PAS une etape ordinaire', async () => {
     vi.useFakeTimers()
     try {

@@ -102,10 +102,14 @@ export function DeroulePhase({
     if (!etape?.auto || suspendu) return
     const minuteur = setTimeout(avancer, DELAI_AUTO_MS)
     return () => clearTimeout(minuteur)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `avancer` est
-    // recree a chaque rendu ; c'est `etape` et `suspendu` qui doivent piloter
-    // le (re)declenchement du minuteur, pas l'identite de la fonction.
-  }, [etape, suspendu])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
+    // reconstruit a chaque trame du moteur (meme piege que plus haut avec
+    // `signature`, et que useDerouleScene.ts et TraitCible.tsx) : en
+    // dependre remettrait ce minuteur a zero en boucle, plus vite qu'il ne
+    // peut arriver a echeance, et l'etape technique ne defilerait jamais
+    // seule. `etape?.cle` identifie l'etape, `avancer` est recree a chaque
+    // rendu et n'a pas a piloter le (re)declenchement.
+  }, [etape?.cle, suspendu])
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
