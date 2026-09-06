@@ -27101,11 +27101,36 @@ def gorr_setup_range_les_cartes(monde, aides):
     return True, "Necroverse mis de cote, Gestalt et environnement hors jeu, complot en 1B"
 
 def gorr_deux_attaques(monde, aides):
-    """gb020 : Gorr attaque, puis attaque une seconde fois.
+    """gb020 : Gorr attaque, puis attaque une seconde fois, et TEMOIN
+    D'EPUISEMENT (etape 7 bis de PROCESSUS-CARTE, correctif du 06/09/2026,
+    audit C point 2).
 
-    L'attaque est declenchee ICI, sans cartes de boost, pour que les degats
-    soient deterministes : ATQ 2 par attaque, donc 2 degats pour une attaque
-    et 4 pour deux. Le heros est incline en mise en place, il ne defend pas.
+    CORRECTIF : la version precedente ne verifiait que `subis >= 4` (au moins
+    deux attaques), ce qui prouve seulement que l'effet PART, pas que la
+    limite « once per player per phase » MORD. Un moteur qui laisserait Gorr
+    attaquer une TROISIEME fois (6 degats) passait encore ce test au vert.
+
+    Le verificateur declenche donc lui-meme DEUX activations completes du
+    vilain (chacune capable, si le module marche, de produire deux attaques
+    par la Reponse Forcee « il frappe encore ») :
+      - 1ere activation : ATQ 2 (l'activation elle-meme) + ATQ 2 (la Reponse,
+        premiere fois cette phase) = 4 exactement. Si la limite est deja
+        cassee ICI, une troisieme attaque s'ajoute (6) : `!= 4` l'attrape.
+      - 2eme activation, MEME phase : ATQ 2 (l'activation) puis la Reponse
+        DEVRAIT etre refusee (limite deja consommee par la 1ere activation) :
+        +2 exactement, total 6. Si la limite est inerte, la Reponse repart et
+        ajoute une quatrieme attaque : +4, total 8, et `!= 6` l'attrape.
+
+    ⚠ CE CAS EST ROUGE EN L'ETAT (voir rapport de l'audit C, point 2) : la
+    limite de gb020 est reellement inerte (condition maison qui lit
+    `world.stat.IsOncePerPhasePerPlayer` mais n'appelle jamais
+    `RecordEffectWithPlayer` pour l'alimenter). Signale, non corrige ici :
+    corriger `gb020.py` est un chantier a part, hors du perimetre de cet
+    audit. Ne PAS assouplir ce test pour le faire passer : le rouge est la
+    preuve exacte du defaut.
+
+    Sans cartes de boost, pour que les degats restent deterministes : ATQ 2
+    par attaque. Le heros est incline en mise en place, il ne defend pas.
     """
     from game.effect.rule import GameRule
     vilain = aides["par_id"](monde, "gb001")
@@ -27117,10 +27142,24 @@ def gorr_deux_attaques(monde, aides):
     vilain.DoActivate(monde.players[0], GameRule(vilain), do_not_give_boost=True)
 
     subis = (identite.max_health - identite.health) - avant
-    if subis < 4:
-        return False, (f"{subis} degat(s) subis : une seule attaque de 2 "
-                       f"(la seconde attaque n'a pas eu lieu)")
-    return True, f"{subis} degats : Gorr a bien attaque deux fois"
+    if subis != 4:
+        return False, (f"{subis} degat(s) subis apres la 1ere activation (attendu "
+                       f"EXACTEMENT 4 : une attaque de 2 plus la Reponse Forcee, "
+                       f"pas plus, pas moins)")
+
+    # TEMOIN D'EPUISEMENT : une SECONDE activation, dans la MEME phase, ne
+    # doit produire QU'UNE SEULE attaque (la limite ayant deja ete consommee
+    # par la 1ere activation), pas une seconde Reponse Forcee.
+    vilain.DoActivate(monde.players[0], GameRule(vilain), do_not_give_boost=True)
+
+    subis_total = (identite.max_health - identite.health) - avant
+    if subis_total != 6:
+        return False, (f"{subis_total} degat(s) subis au total apres la 2eme "
+                       f"activation (attendu EXACTEMENT 6 : la limite "
+                       f"« once per player per phase » aurait du refuser la "
+                       f"Reponse Forcee de cette 2eme activation)")
+    return True, (f"{subis_total} degats au total (4 puis +2) : Gorr attaque deux "
+                  f"fois par activation UNE SEULE fois cette phase, la limite mord")
 
 def gorr_necroverse_remelange(monde, aides):
     """gb006a : le set modulaire Necroverse, mis de cote au Setup, revient
