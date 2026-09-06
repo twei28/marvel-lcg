@@ -93,7 +93,16 @@ if ($faireCode) {
 
   & scp -i $CLE $tgz "root@${IP}:/tmp/narwhal-code.tgz"
   if ($LASTEXITCODE -ne 0) { throw "Envoi du code en echec." }
-  Ssh-Exec "mkdir -p $DIST && tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
+  # ⚠ public/app EST RASE AVANT L'EXTRACTION. L'archive s'extrait par-dessus
+  # l'existant sans rien effacer, or les fichiers du plateau portent une
+  # EMPREINTE dans leur nom : chaque construction en cree de nouveaux et les
+  # anciens restaient la pour toujours. Dix fichiers pour quatre utiles au
+  # dernier comptage. Le dossier est entierement reconstruit par
+  # ui-app/deployer.sh, donc l'archive en porte toujours une copie complete —
+  # on ne rase que ce qu'on remplace dans la seconde qui suit.
+  $appLocal = Join-Path $PROJET "Fusion\marvel-lcg-src\public\app"
+  $razApp = if (Test-Path $appLocal) { "rm -rf $DIST/Fusion/marvel-lcg-src/public/app && " } else { "" }
+  Ssh-Exec "mkdir -p $DIST && ${razApp}tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
   Remove-Item $tgz -Force
   Write-Host "   code deploye"
 }
