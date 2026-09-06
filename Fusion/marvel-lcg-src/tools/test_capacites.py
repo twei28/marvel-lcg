@@ -50,6 +50,16 @@ poser son port avant de demarrer le moteur, qui le RELIT ensuite. Deux passes
 simultanees se marchent dessus quelle que soit la plage de ports choisie —
 c'est la cause reelle des 16 « AssertionError: ip/port » du 31/08/2026
 (91/107 decks), pas une collision de plages.
+
+⚠ CETTE REGLE EST DESORMAIS UN GARDE-FOU DE CODE, PAS SEULEMENT DE PROSE
+(06/09/2026, audit C point 4) : `main()` appelle
+`_verifier_aucun_autre_harnais_en_cours()`, qui refuse de demarrer si un
+AUTRE `test_capacites.py` / `verifier_tous_les_decks.py` / `autoplay.py` cible
+deja le meme `game_dir` (ou un de ses dossiers `-par*`). Elle ne bloque PAS
+deux passes sur des dossiers DIFFERENTS (`.game-src` et `.game-src-a2`, deux
+agents sur deux packs distincts) : c'est le cas normal. Reproduit une nouvelle
+fois PENDANT l'audit du 06/09/2026 (`PARALLELES=4` sur `yd0`, 33/34 avec un
+faux echec ip/port, 34/34 en sequentiel) avant l'ajout du garde-fou.
 """
 import json
 import os
@@ -28519,6 +28529,91 @@ def preparer_dossiers_paralleles(game_dir, nombre):
     return dossiers
 
 
+def _pids_ancetres():
+    """Les PID de ce processus et de TOUS ses ancetres (le shell qui l'a
+    lance, et le shell qui a lance ce shell...). Sert a ne jamais confondre
+    NOTRE PROPRE ligne de commande (qui cite forcement `test_capacites.py`
+    et notre `game_dir`, puisque c'est ainsi qu'on nous a lances) avec un
+    AUTRE processus. Lire `/proc` plutot que ne comparer que `os.getppid()` :
+    l'outil de lancement interpose souvent un ou plusieurs `bash -c` entre le
+    terminal et nous, et chacun de ces intermediaires matche aussi bien le
+    grep qu'un vrai concurrent."""
+    pids = set()
+    pid = os.getpid()
+    while pid and pid not in pids:
+        pids.add(pid)
+        try:
+            with open(f"/proc/{pid}/stat") as f:
+                # Le nom du process (2e champ) peut contenir parentheses et
+                # espaces ; on repart du dernier ')' pour ne pas s'y tromper.
+                champs = f.read().rsplit(")", 1)[-1].split()
+            pid = int(champs[1])  # PPID
+        except (FileNotFoundError, IndexError, ValueError):
+            break
+    return pids
+
+
+def _verifier_aucun_autre_harnais_en_cours(dossiers):
+    """GARDE-FOU (06/09/2026, audit C point 4). JAMAIS deux harnais visant le
+    MEME dossier de jeu en meme temps (celui-ci, `verifier_tous_les_decks.py`,
+    `autoplay.py`) : chacun REECRIT `<game_dir>/launch.json` avec son port
+    avant de demarrer le moteur, qui le RELIT ensuite (voir l'entete de ce
+    fichier). Deux passes qui ciblent le MEME dossier se marchent dessus quelle
+    que soit la plage de ports choisie.
+
+    La regle etait deja ECRITE (ici meme, et RECETTES-MOTEUR.md §7bis) mais
+    seulement en prose : le faux rouge continuait a se produire, pris pour une
+    vraie regression du contenu, et reproduit une nouvelle fois PENDANT cet
+    audit (`PARALLELES=4` sur le pack `yd0` : 33/34 avec une `AssertionError`
+    ip/port, la meme passe en sequentiel donnant 34/34). On refuse maintenant
+    de demarrer plutot que de laisser la collision produire un resultat qui
+    ressemble a un vrai echec.
+
+    Ne bloque PAS deux passes sur des dossiers DIFFERENTS (`.game-src` et
+    `.game-src-a2`, par exemple) : c'est le cas normal de deux agents qui
+    travaillent chacun sur leurs propres packs en meme temps. ⚠ `.game-src`
+    est un PREFIXE litteral de `.game-src-a2` : une simple sous-chaine
+    confondrait les deux (constate a l'ecriture de ce garde-fou meme, contre
+    un autre agent qui tournait sur `.game-src-a2` pendant cet audit). On
+    exige donc qu'apres le dossier vise, le caractere suivant ne prolonge PAS
+    le meme segment de chemin.
+    """
+    def contient_dossier(reste, cible):
+        idx = reste.find(cible)
+        while idx != -1:
+            fin = idx + len(cible)
+            suivant = reste[fin:fin + 1]
+            if suivant == "" or not (suivant.isalnum() or suivant in "-_."):
+                return True
+            idx = reste.find(cible, idx + 1)
+        return False
+
+    motifs = ("test_capacites.py", "verifier_tous_les_decks.py", "autoplay.py")
+    try:
+        sortie = subprocess.run(["pgrep", "-af", "python"],
+                                capture_output=True, text=True, timeout=5)
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return  # pas de pgrep ici (pas Linux) : pas de garde-fou possible
+    exclus = _pids_ancetres()
+    cibles = {os.path.abspath(d) for d in dossiers}
+    autres = []
+    for ligne in sortie.stdout.splitlines():
+        pid_str, _, reste = ligne.partition(" ")
+        if not pid_str.isdigit() or int(pid_str) in exclus:
+            continue
+        if not any(motif in reste for motif in motifs):
+            continue
+        if any(contient_dossier(reste, cible) for cible in cibles):
+            autres.append(ligne.strip())
+    if autres:
+        sys.exit("REFUS DE DEMARRER : un autre harnais tourne deja sur un des "
+                 "dossiers de jeu vises (" + ", ".join(sorted(cibles)) + ") :\n  "
+                 + "\n  ".join(autres) +
+                 "\nAttendre qu'il se termine, ou dedier a cette passe un "
+                 "`game_dir` totalement distinct (jamais le meme dossier, ni "
+                 "un dossier `-par*` derive du meme dossier).")
+
+
 def main():
     game_dir = os.path.expanduser(sys.argv[1])
     port = int(sys.argv[2])
@@ -28546,6 +28641,11 @@ def main():
     if paralleles > 1:
         print(f"PARALLELE : {paralleles} cas a la fois, "
               f"un dossier de jeu par fils ({', '.join(os.path.basename(d) for d in dossiers)})")
+
+    # ⚠ GARDE-FOU (06/09/2026, audit C point 4) : refuser de demarrer si un
+    # AUTRE harnais tourne deja sur un des dossiers vises, plutot que de
+    # produire un faux rouge par collision de `launch.json`.
+    _verifier_aucun_autre_harnais_en_cours(dossiers)
 
     # ⚠ GARDE-FOU (01/09/2026) : le port d'un cas vaut `port + rang`, donc
     # jusqu'a `port + len(selection) - 1`. Au-dela de 65535 le serveur web du
