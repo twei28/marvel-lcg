@@ -456,6 +456,7 @@ export function RecapPhaseMechant({
   entrees,
   monde,
   actif,
+  suspendu = false,
   cartesMonde,
   catalogue,
   playerId,
@@ -463,6 +464,19 @@ export function RecapPhaseMechant({
   entrees: EntreeHistorique[]
   monde: World | undefined
   actif: boolean
+  /**
+   * Un autre panneau occupe l'ecran : le bilan est RETENU, pas perdu.
+   *
+   * Le recap se remplit a la SORTIE de la phase du mechant, un instant qui ne
+   * repasse pas : le couper a ce moment-la reviendrait a ne jamais l'afficher.
+   * On le garde donc en etat et on ne le dessine pas, jusqu'a ce que la place
+   * se libere.
+   *
+   * En mode detaille, ce panneau est le cartouche du deroule (DeroulePhase),
+   * qui raconte la phase pendant qu'elle se joue. Deux panneaux qui se
+   * disputent l'ecran ont deja coute un tour de correction sur ce chantier.
+   */
+  suspendu?: boolean
   /** Les cartes du monde par object id, pour retrouver celle d'une ligne. */
   cartesMonde?: Map<number, WorldCard>
   catalogue?: Catalogue
@@ -551,7 +565,9 @@ export function RecapPhaseMechant({
     return toScanCard(carte, contexte)
   }, [survolId, cartesMonde, contexte])
 
-  if (!bilan) return null
+  // Retenu tant qu'un autre panneau occupe l'ecran : le bilan reste en etat et
+  // paraitra des que la place se libere (voir `suspendu`).
+  if (!bilan || suspendu) return null
 
   const totaux = (etape: Etape) => {
     const morceaux: string[] = []

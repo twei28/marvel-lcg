@@ -929,6 +929,66 @@ describe('le bilan de fin de phase', () => {
     expect(screen.queryByText(/vaincu/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Continuer/i })).toBeNull()
   })
+  // --- Un seul panneau a la fois --------------------------------------------
+  // Le cartouche annonce sa presence pour que le recap de fin de phase
+  // (RecapPhaseMechant) attende son tour. Deux panneaux qui se disputent
+  // l'ecran ont deja coute un tour de correction sur ce chantier.
+  describe('annonce de presence a l ecran', () => {
+    it('dit qu il est la des qu il s affiche', () => {
+      const onVisible = vi.fn()
+      render(<DeroulePhase etapes={etapes} onVisible={onVisible} onTerminer={() => {}} />)
+      expect(onVisible).toHaveBeenLastCalledWith(true)
+    })
+
+    it('dit qu il est parti une fois la derniere etape validee', () => {
+      const onVisible = vi.fn()
+      render(<DeroulePhase etapes={etapes} onVisible={onVisible} onTerminer={() => {}} />)
+      // Trois etapes affichees hors phase du mechant : les deux recues, plus
+      // le bilan de fin ajoute par le cartouche.
+      fireEvent.click(suivant())
+      fireEvent.click(suivant())
+      fireEvent.click(aToiDeJouer())
+      expect(onVisible).toHaveBeenLastCalledWith(false)
+    })
+
+    it('dit qu il est parti quand la partie se termine', () => {
+      const onVisible = vi.fn()
+      const { rerender } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours onVisible={onVisible} onTerminer={() => {}} />
+      )
+      expect(onVisible).toHaveBeenLastCalledWith(true)
+      rerender(
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          partieFinie
+          onVisible={onVisible}
+          onTerminer={() => {}}
+        />
+      )
+      expect(onVisible).toHaveBeenLastCalledWith(false)
+    })
+
+    it('dit qu il est parti au demontage', () => {
+      // Sortie du mode detaille en pleine phase : sans cela, le recap
+      // resterait retenu pour le reste de la partie.
+      const onVisible = vi.fn()
+      const { unmount } = render(
+        <DeroulePhase etapes={etapes} onVisible={onVisible} onTerminer={() => {}} />
+      )
+      unmount()
+      expect(onVisible).toHaveBeenLastCalledWith(false)
+    })
+
+    it('ne dit rien quand il n a aucune etape a montrer', () => {
+      // Hors phase du mechant : le cartouche est monte mais invisible, et il ne
+      // doit retenir personne.
+      const onVisible = vi.fn()
+      render(<DeroulePhase etapes={[]} onVisible={onVisible} onTerminer={() => {}} />)
+      expect(onVisible).toHaveBeenLastCalledWith(false)
+    })
+  })
+
   // --- La fin de la partie l'emporte sur tout -------------------------------
   // Constate en partie : la manigance principale etait allee au bout, l'ecran
   // de defaite etait affiche, et le cartouche restait par-dessus le plateau a

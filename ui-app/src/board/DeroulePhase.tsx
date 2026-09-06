@@ -71,6 +71,7 @@ export function DeroulePhase({
   onSuivant,
   onTerminer,
   onToutDerouler,
+  onVisible,
 }: {
   etapes: EtapeDeroule[]
   /**
@@ -117,6 +118,20 @@ export function DeroulePhase({
   onTerminer: () => void
   /** « Tout derouler » : les etapes restantes defilent sans attendre. */
   onToutDerouler?: () => void
+  /**
+   * Appele des que le cartouche apparait ou disparait de l'ecran.
+   *
+   * Il sert a EMPECHER QUE DEUX PANNEAUX SE DISPUTENT L'ECRAN : le recap de
+   * fin de phase (RecapPhaseMechant) est un bilan d'apres-phase, le cartouche
+   * un guide pendant la phase, et les deux se recouvriraient sans cela. C'est
+   * le cartouche qui parle, parce que lui seul sait s'il est a l'ecran
+   * (`etape`, `termine`, `partieFinie` sont son etat interne) ; board.tsx s'en
+   * sert pour retenir le recap tant que le cartouche est la.
+   *
+   * Doit etre STABLE d'un rendu a l'autre (board.tsx passe un `setState`) :
+   * une fonction recreee a chaque rendu relancerait l'effet a chaque trame.
+   */
+  onVisible?: (visible: boolean) => void
 }) {
   const [index, setIndex] = useState(0)
   // Vrai une fois la derniere etape validee : le cartouche doit alors
@@ -335,6 +350,14 @@ export function DeroulePhase({
   // tomber tout le plateau (React compte alors un hook de plus au rendu
   // suivant).
   useDerouleScene(etape, visible)
+
+  // Un seul panneau a la fois : on dit a l'exterieur si l'on est a l'ecran.
+  // Le nettoyage annonce la disparition, sans quoi un demontage (sortie du
+  // mode detaille, fin de partie) laisserait le recap retenu pour toujours.
+  useEffect(() => {
+    onVisible?.(visible)
+    return () => onVisible?.(false)
+  }, [visible, onVisible])
 
   // Le cartouche ne recouvre JAMAIS la main du joueur.
   //

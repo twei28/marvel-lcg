@@ -2090,13 +2090,20 @@ function PagePartie({
     return () => window.removeEventListener('keydown', surTouche)
   }, [etat.pasAPas.actif, basculerPausePasAPas])
 
-  // Le bilan de fin de phase ne vaut que quand on n'a PAS deroule l'action :
-  // en detaille, chaque etape a deja ete vue une par une (clic ou avance
-  // auto) dans le deroule ci-dessous, et surtout le bilan s'affiche en
-  // panneau PAR-DESSUS ce deroule et le rend illisible (constate en partie
-  // reelle). La spec prevoit de le reintroduire plus tard sous une forme
-  // raccourcie ; pas dans cette livraison.
-  const phaseRapide = modePhase === 'instantane'
+  // Le recap de fin de phase sert DANS LES DEUX MODES.
+  //
+  // Il avait ete coupe en detaille au motif que le cartouche le remplacait.
+  // C'etait une erreur : le cartouche ne raconte pas encore toute la phase (le
+  // moteur va plus loin que lui), donc le joueur en detaille n'avait NI l'un
+  // NI l'autre. Il revient.
+  //
+  // Le motif d'origine reste vrai, lui : le recap s'affiche en panneau et
+  // recouvrirait le cartouche. Ce n'est plus un motif de le couper, c'est un
+  // motif de ne jamais les montrer ensemble — d'ou `cartoucheOuvert`, que le
+  // cartouche annonce lui-meme et qui RETIENT le recap au lieu de le jeter.
+  // Le recap est un bilan d'apres-phase, le cartouche un guide pendant la
+  // phase : ils se suivent, ils ne se superposent pas.
+  const [cartoucheOuvert, setCartoucheOuvert] = useState(false)
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
@@ -2454,13 +2461,20 @@ function PagePartie({
             onSuivant={avancerPasAPas}
             onTerminer={avancerPasAPas}
             onToutDerouler={passerToutLaPhase}
+            // `setCartoucheOuvert` est stable : le cartouche exige une
+            // fonction qui ne change pas d'un rendu a l'autre.
+            onVisible={setCartoucheOuvert}
           />
         </>
       ) : null}
       <RecapPhaseMechant
         entrees={historique.entrees}
         monde={etat.monde}
-        actif={phaseRapide}
+        // En service dans les deux modes : voir `cartoucheOuvert` plus haut.
+        actif
+        // ... mais retenu tant que le cartouche du deroule est a l'ecran. Hors
+        // mode detaille, le cartouche n'est pas monte et cet etat reste faux.
+        suspendu={cartoucheOuvert}
         // De quoi montrer la carte au survol d'une ligne : le même index et le
         // même catalogue que la table, donc le même agrandissement qu'elle.
         cartesMonde={cartesMondeParId}

@@ -9,9 +9,10 @@
 // menace RETIRÉE comme une menace posée — un bilan faux dans le sens qui
 // exagère le danger.
 import { describe, expect, it } from 'vitest'
-import { bilanDeLaPhase, detailDuCalcul, type Noms } from './RecapPhaseMechant'
+import { render, screen } from '@testing-library/react'
+import { bilanDeLaPhase, detailDuCalcul, RecapPhaseMechant, type Noms } from './RecapPhaseMechant'
 import type { EntreeHistorique } from './HistoriquePartie'
-import type { FaitMechant } from './world'
+import type { FaitMechant, World } from './world'
 
 let compteur = 0
 const entree = (partiel: Partial<EntreeHistorique>): EntreeHistorique => ({
@@ -431,5 +432,78 @@ describe('detailDuCalcul', () => {
     expect(detailDuCalcul({ base: 3, boost: 2, defense: 1 })).toBe(
       '3 de base + 2 de boost − 1 de défense'
     )
+  })
+})
+
+// --- Deux panneaux ne se disputent pas l'ecran --------------------------------
+// Le recap est un bilan d'APRES-phase, le cartouche du deroule un guide PENDANT
+// la phase. En mode detaille les deux existent : ils doivent se suivre, jamais
+// se superposer. Un doublon d'affichage a deja coute un tour de correction sur
+// ce chantier (bandeau de phase contre splash de tour).
+const ZONES = {
+  area_schemes_main: [], main_schemes_deck: [], area_schemes_side: [],
+  additional_decks: [], additional_discard_piles: [], area_villain: [],
+  villain_deck: [], encounter_deck: [], encounter_discard_pile: [],
+  area_boost: [], area_environment: [], area_evidence: [], area_rule: [],
+  area_processing: [], area_revealing: [], area_resources: [],
+  area_removed: [], area_insert: [], area_set_aside: [],
+  victory_display: [], area_status_cards: [], players: [],
+  active_card_ids: [],
+}
+
+/** Le monde a une phase donnee du round 2, le seul reglage qui compte ici. */
+const mondeEnPhase = (phase: string): World => ({
+  render_id: 1, round_id: 2, phase, prompt: '', event_name: '', ...ZONES,
+})
+
+/** Une phase du mechant qui a coute quelque chose, et rien d'autre. */
+const phaseQuiACoute = (): EntreeHistorique[] =>
+  commeDansLHistorique(
+    entree({
+      phase: 'Main Scheme Place Threat',
+      type: 'threat',
+      valeur: 1,
+      restant: 1,
+      plafond: 6,
+      cibleId: 7,
+    })
+  )
+
+describe('recap retenu tant qu un autre panneau occupe l ecran', () => {
+  it('s affiche a la sortie de la phase du mechant', () => {
+    const entrees = phaseQuiACoute()
+    const { rerender } = render(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif />
+    )
+    rerender(<RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif />)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('ne s affiche pas tant qu il est suspendu', () => {
+    const entrees = phaseQuiACoute()
+    const { rerender } = render(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif suspendu />
+    )
+    rerender(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif suspendu />
+    )
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('ne PERD pas le bilan retenu : il parait des que la place se libere', () => {
+    // Le point qui compte. La sortie de la phase du mechant est un instant qui
+    // ne repasse pas : couper le recap a ce moment-la reviendrait a ne jamais
+    // l'afficher. Il attend, il ne disparait pas.
+    const entrees = phaseQuiACoute()
+    const { rerender } = render(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif suspendu />
+    )
+    rerender(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif suspendu />
+    )
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    rerender(<RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif />)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
