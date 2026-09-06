@@ -115,4 +115,46 @@ describe('pose de la mise en scene', () => {
       renderHook(() => useDerouleScene(etape({ carteId: 999 }), true))
     ).not.toThrow()
   })
+
+  // --- La regle de surete ---------------------------------------------------
+  // Elle vaut pour TOUTES les etapes : si rien n'est mis en avant, le voile ne
+  // s'allume pas. Constate en partie a l'etape de menace : le plateau
+  // s'assombrissait, `.deroule-en-avant` et `.deroule-cible` etaient vides, et
+  // le joueur ne savait plus sur quoi cliquer.
+  describe('le voile ne s allume pas pour rien', () => {
+    it('n assombrit pas quand l auteur a quitte la table', () => {
+      renderHook(() => useDerouleScene(etape({ carteId: 999 }), true))
+      expect(document.querySelectorAll('.deroule-en-avant')).toHaveLength(0)
+      expect(document.body.classList.contains('deroule-voile')).toBe(false)
+    })
+
+    it('n assombrit pas quand la manigance visee a quitte la table', () => {
+      // L'etape de MENACE : pas d'auteur (c'est une regle du jeu), une cible
+      // mise en avant faute d'auteur. Si cette carte n'est plus la, il ne
+      // reste rien a montrer.
+      renderHook(() =>
+        useDerouleScene(etape({ temps: 'menace', titre: 'menace', cibleId: 404 }), true)
+      )
+      expect(document.querySelectorAll('.deroule-en-avant')).toHaveLength(0)
+      expect(document.body.classList.contains('deroule-voile')).toBe(false)
+    })
+
+    it('assombrit des qu une seule carte est trouvee', () => {
+      // Le cas symetrique, et il compte autant : la cible manque, l'auteur est
+      // la. Il y a bien quelque chose a designer, le voile s'allume.
+      const auteur = poserCarte(50)
+      renderHook(() => useDerouleScene(etape({ carteId: 50, cibleId: 404 }), true))
+      expect(auteur.classList.contains('deroule-en-avant')).toBe(true)
+      expect(document.body.classList.contains('deroule-voile')).toBe(true)
+    })
+
+    it('assombrit pour la manigance de l etape de menace quand elle est la', () => {
+      const manigance = poserCarte(7)
+      renderHook(() =>
+        useDerouleScene(etape({ temps: 'menace', titre: 'menace', cibleId: 7 }), true)
+      )
+      expect(manigance.classList.contains('deroule-en-avant')).toBe(true)
+      expect(document.body.classList.contains('deroule-voile')).toBe(true)
+    })
+  })
 })

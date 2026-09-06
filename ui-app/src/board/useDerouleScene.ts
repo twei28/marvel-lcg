@@ -8,6 +8,9 @@
 // Le nettoyage est fait a CHAQUE changement d'etape et au demontage : sans
 // lui, quitter la phase laisserait une carte agrandie et un plateau assombri
 // pour le reste de la partie.
+//
+// Et le voile ne s'allume QUE si une carte a ete trouvee : voir la regle de
+// surete plus bas.
 
 import { useEffect } from 'react'
 import type { EtapeDeroule } from './deroule-phase'
@@ -40,7 +43,17 @@ export function useDerouleScene(etape: EtapeDeroule | undefined, actif: boolean)
 
     auteur?.classList.add(EN_AVANT)
     cible?.classList.add(CIBLE)
-    if (scene.voile) document.body.classList.add(VOILE)
+    // REGLE DE SURETE, et elle vaut pour TOUTES les etapes, pas pour une seule :
+    // le voile ne s'allume que si quelque chose ressort dessous. Assombrir le
+    // plateau sans rien y designer ne rend jamais service, et c'est exactement
+    // ce que le joueur a vu en partie a l'etape de menace : « il assombrit
+    // tout, on sait pas sur quoi on doit cliquer ».
+    //
+    // `sceneDe` decide de la mise en scene sans voir le plateau : elle ne peut
+    // pas savoir qu'une carte a quitte la table. C'est donc ICI, la ou l'on
+    // sait ce qu'on a trouve, que la regle se pose.
+    const misEnAvant = auteur !== null || cible !== null
+    if (scene.voile && misEnAvant) document.body.classList.add(VOILE)
 
     return () => {
       auteur?.classList.remove(EN_AVANT)
