@@ -24,8 +24,16 @@ export type TempsPhase =
   | 'distribution'
   | 'revelation'
   | 'premier-joueur'
+  | 'bilan'
 
-/** Ordre des cinq temps de la carte de reference. */
+/**
+ * Ordre des cinq temps de la carte de reference, puis le bilan.
+ *
+ * `bilan` n'est PAS un temps de la carte de reference : c'est le point final
+ * du cartouche, et il vient donc apres tout le reste, quel que soit l'ordre
+ * d'arrivee des faits. La chronologie affichee ne le montre pas (elle s'en
+ * tient aux cinq temps), elle les montre alors tous valides.
+ */
 const ORDRE: TempsPhase[] = [
   'menace',
   'mechant',
@@ -33,6 +41,7 @@ const ORDRE: TempsPhase[] = [
   'distribution',
   'revelation',
   'premier-joueur',
+  'bilan',
 ]
 
 /**
@@ -55,6 +64,26 @@ export type BoostDeroule = {
   nom: string
   cibleId: number
   apport: number
+}
+
+/**
+ * Une ligne du bilan de fin de phase : ce qu'UNE cible a encaisse en tout.
+ *
+ * Sa propre forme, distincte de `consequences` : une consequence est un texte
+ * deja redige, alors qu'une ligne de bilan porte des NOMBRES, que le bilan
+ * additionne et que l'affichage met en langue au dernier moment.
+ */
+export type LigneBilan = {
+  cle: string
+  /** Ce que la cible a encaisse : des degats, ou de la menace. */
+  genre: 'degats' | 'menaces'
+  cibleNom: string
+  /** Le total de la phase pour cette cible, toutes sources confondues. */
+  total: number
+  /** Le compteur de la cible apres le DERNIER coup connu, s'il y en a un. */
+  restant?: number
+  /** Son seuil, quand elle en a un (la menace maximale d'une manigance). */
+  plafond?: number
 }
 
 export type EtapeDeroule = {
@@ -110,6 +139,13 @@ export type EtapeDeroule = {
   plafond?: number
   boosts: BoostDeroule[]
   consequences: { cle: string; texte: string }[]
+  /**
+   * Le bilan de la phase, porte par la seule etape de temps `bilan`. Une
+   * liste VIDE est un etat legitime, et pas la meme chose qu'un champ absent :
+   * elle dit « la phase n'a rien coute », que l'affichage annonce en toutes
+   * lettres. Absent sur toutes les autres etapes.
+   */
+  bilan?: LigneBilan[]
 }
 
 function tempsDe(phase: string | undefined): TempsPhase | undefined {
@@ -262,4 +298,101 @@ export function rangDansLeTemps(
   if (total < 2) return undefined
   const rang = etapes.slice(0, index + 1).filter((e) => e.temps === etape.temps).length
   return { rang, total }
+}
+
+/**
+ * Le genre de compteur qu'une etape fait bouger, d'apres sa cle de titre.
+ * Un titre libre (carte revelee) n'y figure pas : il ne compte rien.
+ */
+const GENRE_PAR_TITRE: Record<string, 'degats' | 'menaces'> = {
+  attaque: 'degats',
+  manigance: 'menaces',
+  menace: 'menaces',
+}
+
+/**
+ * Le bilan de la phase : une ligne par cible touchee, avec son TOTAL.
+ *
+ * Les totaux se lisent sur les etapes, qui tiennent elles-memes leurs nombres
+ * des faits du moteur et des entrees de menace (voir l'en-tete de ce
+ * module) : jamais en comparant deux photos du monde. Une comparaison voit le
+ * resultat sans sa composition, et compte plusieurs fois ce que le moteur rend
+ * plusieurs fois autour d'une seule resolution. RecapPhaseMechant a tranche la
+ * meme question dans le meme sens.
+ *
+ * GROUPE, et c'est tout l'interet : si le vilain et deux sbires frappent le
+ * meme heros, cela fait UNE ligne « Colossus a pris 6 degats », pas trois. Le
+ * regroupement se fait sur le NOM de la cible plutot que sur son identifiant,
+ * parce que la menace posee au point 1 vient du journal (qui donne un nom, pas
+ * d'identifiant) et qu'une manigance du meme temps vient d'un fait : sur
+ * l'identifiant, la meme manigance ressortirait sur deux lignes. Deux cibles
+ * distinctes ne partagent pas un nom sur une table.
+ *
+ * Le compteur retenu est celui du DERNIER coup connu pour cette cible : les
+ * etapes arrivent dans l'ordre du jeu, c'est donc l'etat le plus recent.
+ */
+export function lignesBilan(etapes: EtapeDeroule[]): LigneBilan[] {
+  const lignes = new Map<string, LigneBilan>()
+
+  for (const etape of etapes) {
+    if (etape.temps === 'bilan') continue
+    const genre = GENRE_PAR_TITRE[etape.titre]
+    if (!genre) continue
+    // Sans montant, rien a additionner ; un montant negatif ou nul n'est pas
+    // un coup encaisse (un retrait de menace n'a pas sa place dans un bilan
+    // de ce que la phase a coute).
+    if (etape.montant === undefined || etape.montant <= 0) continue
+    const nom = etape.cibleNom ?? ''
+    if (!nom) continue
+
+    const cle = `${genre}:${nom}`
+    const deja = lignes.get(cle)
+    if (deja) {
+      deja.total += etape.montant
+      // On ne remplace un compteur deja connu que par un compteur connu : une
+      // etape qui n'en porte pas ne doit pas effacer celui de la precedente.
+      if (etape.restant !== undefined) deja.restant = etape.restant
+      if (etape.plafond !== undefined) deja.plafond = etape.plafond
+      continue
+    }
+    lignes.set(cle, {
+      cle,
+      genre,
+      cibleNom: nom,
+      total: etape.montant,
+      restant: etape.restant,
+      plafond: etape.plafond,
+    })
+  }
+
+  return [...lignes.values()]
+}
+
+/**
+ * Les etapes suivies de leur bilan, TOUJOURS en dernier.
+ *
+ * Ce module ne sait pas si la phase est finie : il ne voit ni le monde ni la
+ * phase du moteur. C'est l'appelant qui decide d'ajouter le bilan ou non
+ * (DeroulePhase, sur `phaseMechantEnCours`), et c'est voulu : un bilan affiche
+ * au milieu de la phase mentirait sur ce qu'elle a coute.
+ *
+ * Une liste vide reste vide : hors phase du mechant, le cartouche ne doit
+ * annoncer la fin de rien du tout.
+ */
+export function avecBilan(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  if (etapes.length === 0) return etapes
+  const bilan: EtapeDeroule = {
+    cle: 'bilan',
+    temps: 'bilan',
+    titre: 'bilan',
+    // Aucune regle a rappeler : le bilan n'est pas un point de la carte de
+    // reference, c'est le compte de ce qui vient de se passer.
+    regle: '',
+    boosts: [],
+    consequences: [],
+    bilan: lignesBilan(etapes),
+  }
+  // Le tri, plutot qu'un simple `push` : `bilan` est le dernier de ORDRE, donc
+  // l'etape finit derniere quel que soit l'ordre d'arrivee des faits.
+  return [...etapes, bilan].sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
 }

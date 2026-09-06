@@ -337,6 +337,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Suivant': 'Next',
   'La suite arrive…': 'More coming…',
   'la règle': 'the rule',
+  // Bilan de fin de phase, derniere etape du cartouche. ('À toi de jouer' est
+  // deja defini plus haut, pour l'assistant d'action.)
+  'Fin de la phase du méchant': 'End of the villain phase',
+  'a pris': 'took',
+  'a gagné': 'gained',
+  'Aucun dégât, aucune menace.': 'No damage, no threat.',
   // Tchat sur la table (PanneauSalon).
   'Tchat': 'Chat',
   'Parler aux autres joueurs': 'Talk to the other players',

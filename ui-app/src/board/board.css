@@ -2857,6 +2857,15 @@
     font-weight: 700;
   }
 
+  /* Le titre du bilan : en capitales, parce qu'il n'annonce pas un coup mais
+     la fin de la phase. Le texte lui-meme reste ecrit normalement. */
+  .deroule-titre.est-bilan {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.86rem;
+    color: rgba(248, 250, 252, 0.72);
+  }
+
   /* « 5/8 » : les points de vie ou la menace de la cible APRES le coup. En
      chiffres a chasse fixe, pour qu'il ne danse pas d'une etape a l'autre. */
   .deroule-compteur {
@@ -2925,6 +2934,47 @@
     padding: 0 0 0 18px;
     font-size: 0.82rem;
     color: rgba(248, 250, 252, 0.82);
+  }
+
+  /* Le bilan de fin de phase : une ligne par cible touchee, son compteur
+     aligne a droite comme celui de l'entete. C'est la derniere chose que le
+     joueur lit avant de decider de son tour, elle doit se prendre d'un coup
+     d'oeil. */
+  .deroule-bilan {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .deroule-bilan li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.9rem;
+  }
+
+  .deroule-bilan-fait {
+    font-weight: 700;
+  }
+
+  /* Meme jaune et memes chiffres a chasse fixe que `.deroule-compteur` : c'est
+     le meme compteur, lu au meme endroit de la ligne. */
+  .deroule-bilan-compteur {
+    flex: none;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #ffd24a;
+    white-space: nowrap;
+  }
+
+  /* Rien n'a touche personne : on le dit, on ne laisse pas un vide. */
+  .deroule-bilan-rien {
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.7);
   }
 
   .deroule-regle {

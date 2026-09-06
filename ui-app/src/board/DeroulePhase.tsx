@@ -8,8 +8,16 @@
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
 
 import { useEffect, useState } from 'react'
-import { rangDansLeTemps, type EtapeDeroule, type TempsPhase } from './deroule-phase'
-import { compteurEtape, regleEtape, resultatEtape, titreEtape } from './deroule-textes'
+import { avecBilan, rangDansLeTemps, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import {
+  compteurEtape,
+  compteurLigneBilan,
+  regleEtape,
+  resultatEtape,
+  texteBilanVide,
+  texteLigneBilan,
+  titreEtape,
+} from './deroule-textes'
 import { t } from './langue'
 import { ecrireRegleDepliee, lireRegleDepliee } from './moteur'
 import { TraitCible } from './TraitCible'
@@ -116,7 +124,18 @@ export function DeroulePhase({
     setEnAttente(false)
   }, [identitePhase])
 
-  const etape = etapes[index]
+  // Les etapes REELLEMENT parcourues : celles du moteur, plus le bilan de fin
+  // de phase quand la phase est finie.
+  //
+  // `phaseMechantEnCours` est la seule chose qui distingue proprement une phase
+  // en cours d'une phase terminee (board.tsx la calcule sur `monde.phase`) :
+  // arriver au bout des etapes CONNUES ne dit rien, puisque la liste s'allonge
+  // pendant la phase. Le bilan n'existe donc que quand la phase est finie, et
+  // c'est ce qui en fait le terminateur naturel du cartouche : il est toujours
+  // la derniere etape, et le valider, c'est finir.
+  const etapesAffichees = phaseMechantEnCours ? etapes : avecBilan(etapes)
+
+  const etape = etapesAffichees[index]
 
   const avancer = () => {
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
@@ -129,7 +148,7 @@ export function DeroulePhase({
     // derniere etape ou `onTerminer` l'appelle une seconde fois juste apres.
     onSuivant?.()
     // Une etape suivante est deja connue : on y va.
-    if (index + 1 < etapes.length) {
+    if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
       setIndex(index + 1)
       return
@@ -158,13 +177,17 @@ export function DeroulePhase({
   // Sortie d'attente. Deux issues, et deux seulement :
   //  - une etape de plus arrive : on avance dessus TOUT SEUL. Le joueur a deja
   //    clique pour l'obtenir, il ne doit pas avoir a recliquer ;
-  //  - la phase du mechant se termine sans rien produire de plus : c'etait
-  //    donc bien la derniere etape, on termine ici. Sans cette seconde issue,
-  //    le cartouche resterait affiche par-dessus le plateau pendant tout le
-  //    tour du joueur.
+  //  - la phase du mechant se termine sans rien produire de plus : le
+  //    cartouche ne doit pas rester affiche par-dessus le plateau pendant tout
+  //    le tour du joueur.
+  //
+  // En pratique, la fin de la phase fait apparaitre le bilan, donc c'est la
+  // PREMIERE issue qui joue : le joueur atterrit sur le bilan et le valide.
+  // La seconde reste un filet, pour le cas ou la phase se terminerait sans
+  // qu'aucune etape n'ait ete produite.
   useEffect(() => {
     if (!enAttente) return
-    if (index + 1 < etapes.length) {
+    if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
       setIndex(index + 1)
       return
@@ -179,7 +202,7 @@ export function DeroulePhase({
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
     // quatre dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, etapes.length, phaseMechantEnCours])
+  }, [enAttente, index, etapesAffichees.length, phaseMechantEnCours])
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
@@ -264,11 +287,17 @@ export function DeroulePhase({
 
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
   // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.
-  const positionCourante = TEMPS.findIndex((item) => item.cle === etape.temps)
+  //
+  // Un temps absent de la chronologie (le bilan) compte comme place APRES tous
+  // les autres : sur la derniere etape, les cinq temps s'affichent alors tous
+  // valides, ce qui est exactement ce qui vient de se passer. Sans cela, le
+  // `-1` rendu par findIndex n'en aurait marque aucun.
+  const trouve = TEMPS.findIndex((item) => item.cle === etape.temps)
+  const positionCourante = trouve === -1 ? TEMPS.length : trouve
 
   // « 1 sur 3 » : combien d'etapes ce temps compte, et ou l'on en est.
   // `undefined` quand il n'en compte qu'une, et rien ne s'affiche alors.
-  const rang = rangDansLeTemps(etapes, index)
+  const rang = rangDansLeTemps(etapesAffichees, index)
   const resultat = resultatEtape(etape)
   const compteur = compteurEtape(etape)
   const regle = regleEtape(etape)
@@ -284,7 +313,7 @@ export function DeroulePhase({
               // coute aucun clic (etapesDeroule ne cree pas de placeholder pour
               // lui) ; le joueur doit seulement voir qu'il a ete saute, et
               // pourquoi.
-              const estVide = !etapes.some((e) => e.temps === temps.cle)
+              const estVide = !etapesAffichees.some((e) => e.temps === temps.cle)
               const estCourant = !estVide && temps.cle === etape.temps
               const estPasse = !estVide && !estCourant && position < positionCourante
               const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
@@ -313,7 +342,11 @@ export function DeroulePhase({
             droite. Un titre generique suivi de la meme chose en dessous
             faisait dire une seule chose a trois lignes. */}
         <div className="deroule-entete">
-          <p className="deroule-titre">{titreEtape(etape)}</p>
+          {/* Le bilan porte le meme titre que les autres etapes, en capitales :
+              il annonce la fin de la phase, pas un coup de plus. */}
+          <p className={`deroule-titre${etape.temps === 'bilan' ? ' est-bilan' : ''}`}>
+            {titreEtape(etape)}
+          </p>
           {compteur ? <span className="deroule-compteur">{compteur}</span> : null}
         </div>
         {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
@@ -332,6 +365,26 @@ export function DeroulePhase({
             {etape.consequences.map((consequence) => (
               <li key={consequence.cle}>{consequence.texte}</li>
             ))}
+          </ul>
+        ) : null}
+        {/* Le bilan de fin de phase : ce que le joueur vient d'encaisser, en
+            deux lignes, au moment ou il decide de son tour. Une liste VIDE
+            n'est pas une absence : elle dit que la phase n'a rien coute, et le
+            cartouche le dit plutot que de rester muet. */}
+        {etape.bilan ? (
+          <ul className="deroule-bilan">
+            {etape.bilan.length === 0 ? (
+              <li className="deroule-bilan-rien">{texteBilanVide()}</li>
+            ) : (
+              etape.bilan.map((ligne) => (
+                <li key={ligne.cle}>
+                  <span className="deroule-bilan-fait">{texteLigneBilan(ligne)}</span>
+                  {compteurLigneBilan(ligne) ? (
+                    <span className="deroule-bilan-compteur">{compteurLigneBilan(ligne)}</span>
+                  ) : null}
+                </li>
+              ))
+            )}
           </ul>
         ) : null}
         {regle ? (
@@ -368,8 +421,10 @@ export function DeroulePhase({
               {t('Précédent')}
             </button>
           ) : null}
+          {/* Sur le bilan, le bouton ne dit plus « Suivant » : il n'y a plus
+              rien apres, et c'est lui qui rend la main au joueur. */}
           <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
-            {t('Suivant')}
+            {etape.temps === 'bilan' ? t('À toi de jouer') : t('Suivant')}
           </button>
         </div>
       </section>

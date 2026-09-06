@@ -5,8 +5,16 @@
 // rattraper les traductions apres coup coute plus cher que de les poser tout
 // de suite.
 import { describe, expect, it } from 'vitest'
-import { compteurEtape, regleEtape, resultatEtape, titreEtape } from './deroule-textes'
-import type { EtapeDeroule } from './deroule-phase'
+import {
+  compteurEtape,
+  compteurLigneBilan,
+  regleEtape,
+  resultatEtape,
+  texteBilanVide,
+  texteLigneBilan,
+  titreEtape,
+} from './deroule-textes'
+import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 
 const etape = (extra: Partial<EtapeDeroule> = {}): EtapeDeroule => ({
   cle: 'k',
@@ -142,5 +150,69 @@ describe('phrases du deroule', () => {
     // le nom porte par l'etape elle-meme, jamais une resolution a l'affichage.
     expect(titreEtape(etape({ auteurNom: 'Klaw', cibleNom: 'Drone détruit' })))
       .toBe('Klaw attaque Drone détruit')
+  })
+})
+
+describe('les phrases du bilan', () => {
+  const ligne = (extra: Partial<LigneBilan> = {}): LigneBilan => ({
+    cle: 'degats:Colossus',
+    genre: 'degats',
+    cibleNom: 'Colossus',
+    total: 6,
+    ...extra,
+  })
+
+  it('dit ce que la cible a pris, en un total', () => {
+    expect(texteLigneBilan(ligne())).toBe('Colossus a pris 6 dégâts')
+  })
+
+  it('accorde le degat au singulier', () => {
+    expect(texteLigneBilan(ligne({ total: 1 }))).toBe('Colossus a pris 1 dégât')
+  })
+
+  it('dit la menace autrement que les degats', () => {
+    expect(
+      texteLigneBilan(ligne({ genre: 'menaces', cibleNom: 'L’Effraction !', total: 3 }))
+    ).toBe('L’Effraction ! a gagné 3 menaces')
+    expect(
+      texteLigneBilan(ligne({ genre: 'menaces', cibleNom: 'L’Effraction !', total: 1 }))
+    ).toBe('L’Effraction ! a gagné 1 menace')
+  })
+
+  it('affiche le compteur de la cible, seuil compris', () => {
+    expect(compteurLigneBilan(ligne({ restant: 6, plafond: 8 }))).toBe('6/8')
+  })
+
+  it('affiche les points de vie seuls : le moteur n en publie pas le maximum', () => {
+    expect(compteurLigneBilan(ligne({ restant: 8 }))).toBe('8')
+  })
+
+  it('n invente aucun compteur quand la ligne n en porte pas', () => {
+    const sansCompteur = ligne()
+    expect(compteurLigneBilan(sansCompteur)).toBe('')
+    expect(texteLigneBilan(sansCompteur)).not.toMatch(/undefined|NaN/)
+  })
+
+  it('titre l etape de bilan par la fin de la phase, pas par un coup', () => {
+    const etapeBilan: EtapeDeroule = {
+      cle: 'bilan',
+      temps: 'bilan',
+      titre: 'bilan',
+      regle: '',
+      boosts: [],
+      consequences: [],
+      bilan: [],
+    }
+    expect(titreEtape(etapeBilan)).toBe('Fin de la phase du méchant')
+    // Pas de regle a rappeler : le bilan n'est pas un point de la carte de
+    // reference.
+    expect(regleEtape(etapeBilan)).toBe('')
+    // Ni chiffre ni compteur au-dessus des lignes : tout est dans les lignes.
+    expect(resultatEtape(etapeBilan)).toBe('')
+    expect(compteurEtape(etapeBilan)).toBe('')
+  })
+
+  it('dit qu il ne s est rien passe plutot que de rester vide', () => {
+    expect(texteBilanVide()).toBe('Aucun dégât, aucune menace.')
   })
 })

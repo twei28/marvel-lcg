@@ -26,6 +26,9 @@ const etapes: EtapeDeroule[] = [
 ]
 
 const suivant = () => screen.getByRole('button', { name: /Suivant/i })
+// Le bouton de la DERNIERE etape, celle du bilan : il ne dit plus « Suivant »
+// et c'est lui qui rend la main au joueur.
+const aToiDeJouer = () => screen.getByRole('button', { name: /À toi de jouer/i })
 
 describe('cartouche du deroule', () => {
   // Le depliant de la regle lit et ecrit son reglage dans localStorage
@@ -66,10 +69,15 @@ describe('cartouche du deroule', () => {
   })
 
   it('previent quand la derniere etape est validee', () => {
+    // La derniere etape est desormais le BILAN, ajoute parce que la phase du
+    // mechant est terminee (phaseMechantEnCours par defaut a false) : c'est son
+    // bouton qui previent.
     const onTerminer = vi.fn()
     render(<DeroulePhase etapes={etapes} onTerminer={onTerminer} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    expect(onTerminer).not.toHaveBeenCalled()
+    fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
   })
 
@@ -85,6 +93,7 @@ describe('cartouche du deroule', () => {
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    fireEvent.click(aToiDeJouer())
     expect(container).toBeEmptyDOMElement()
   })
 
@@ -93,6 +102,7 @@ describe('cartouche du deroule', () => {
     // le cartouche : ce chemin n'etait verifie qu'au clic, jamais au clavier,
     // alors que les deux passent par la meme fonction.
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    fireEvent.keyDown(document, { key: 'Enter' })
     fireEvent.keyDown(document, { key: 'Enter' })
     fireEvent.keyDown(document, { key: 'Enter' })
     expect(document.querySelector('.deroule-phase')).toBeNull()
@@ -109,6 +119,7 @@ describe('cartouche du deroule', () => {
     )
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    fireEvent.click(aToiDeJouer())
     expect(container).toBeEmptyDOMElement()
 
     const etapesSuivantes: EtapeDeroule[] = [
@@ -141,6 +152,7 @@ describe('cartouche du deroule', () => {
     )
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    fireEvent.click(aToiDeJouer())
     expect(container).toBeEmptyDOMElement()
 
     const memeContenuIdentiteNeuve: EtapeDeroule[] = etapes.map((e) => ({ ...e }))
@@ -180,7 +192,8 @@ describe('cartouche du deroule', () => {
     // La phase brute (voir brief) : menace, mechant, distribution ; ni
     // sbires, ni revelation ne produisent d'etape ici. Le joueur doit
     // traverser la phase en exactement 3 clics, pas 5 : un temps vide ne
-    // consomme jamais de clic pour lui-meme.
+    // consomme jamais de clic pour lui-meme. Le bilan de fin de phase en
+    // ajoute un quatrieme, et un seul, quel que soit le nombre de temps vides.
     const onTerminer = vi.fn()
     const sansSbiresNiRevelation: EtapeDeroule[] = [
       { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
@@ -190,8 +203,9 @@ describe('cartouche du deroule', () => {
     render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
-    expect(onTerminer).not.toHaveBeenCalled()
     fireEvent.click(suivant())
+    expect(onTerminer).not.toHaveBeenCalled()
+    fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
   })
 
@@ -425,12 +439,13 @@ describe('cartouche du deroule', () => {
     render(<DeroulePhase etapes={etapes} onSuivant={onSuivant} onTerminer={onTerminer} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
     // onSuivant est appele a CHAQUE validation, la derniere y compris : c'est
     // ce qui permet a board.tsx de brancher onSuivant et onTerminer sur la
     // meme fonction (avancerMaintenant ne fait rien sans trame en attente,
     // l'appel surnumeraire de la derniere etape est donc sans effet).
-    expect(onSuivant).toHaveBeenCalledTimes(2)
+    expect(onSuivant).toHaveBeenCalledTimes(3)
   })
 
   it('onSuivant absent ne casse rien : la prop est optionnelle', () => {
@@ -479,7 +494,7 @@ describe('cartouche du deroule', () => {
 
   it('termine bien quand la phase du mechant est terminee', () => {
     // Meme situation, mais le moteur a quitte la phase du mechant : il n'y a
-    // plus rien a attendre, la derniere etape connue est vraiment la derniere.
+    // plus rien a attendre, et le bilan de fin de phase clot le cartouche.
     const onTerminer = vi.fn()
     const { container } = render(
       <DeroulePhase
@@ -490,15 +505,18 @@ describe('cartouche du deroule', () => {
       />
     )
     fireEvent.click(suivant())
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+    fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('se referme si la phase du mechant se termine pendant l attente', () => {
+  it('sort de l attente sur le bilan quand la phase du mechant se termine', () => {
     // Le joueur valide la derniere etape alors que la phase court encore : le
-    // cartouche attend. Si le moteur passe au tour du joueur sans rien
-    // produire de plus, l'attente ne doit pas laisser le cartouche affiche
-    // par-dessus le plateau pour le reste du tour.
+    // cartouche attend. Quand le moteur passe au tour du joueur, l'attente ne
+    // doit pas laisser le cartouche affiche indefiniment : la fin de phase fait
+    // apparaitre le bilan, sur lequel le cartouche avance tout seul, et c'est
+    // ce bilan qui le referme.
     const onTerminer = vi.fn()
     const { container, rerender } = render(
       <DeroulePhase
@@ -519,6 +537,11 @@ describe('cartouche du deroule', () => {
         onTerminer={onTerminer}
       />
     )
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+    expect(document.querySelector('.deroule-attente')).toBeNull()
+    expect(onTerminer).not.toHaveBeenCalled()
+
+    fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
     expect(container).toBeEmptyDOMElement()
   })
@@ -683,5 +706,160 @@ describe('cartouche du deroule', () => {
         espionEcriture.mockRestore()
       }
     })
+  })
+})
+
+// Le bilan de fin de phase : la derniere etape, celle ou le joueur lit en deux
+// lignes ce qu'il vient d'encaisser avant de decider de son tour.
+//
+// Il n'existe QUE quand la phase est finie : `phaseMechantEnCours` est la seule
+// chose qui distingue proprement une phase en cours d'une phase terminee (voir
+// board.tsx, qui la calcule sur `monde.phase`). Un bilan affiche au milieu de la
+// phase mentirait sur ce qu'elle a coute.
+describe('le bilan de fin de phase', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  const coup = (extra: Partial<EtapeDeroule>): EtapeDeroule => ({
+    cle: 'k',
+    temps: 'sbires',
+    titre: 'attaque',
+    regle: 'regle:activations',
+    auteurNom: 'Drone',
+    cibleNom: 'Colossus',
+    montant: 3,
+    boosts: [],
+    consequences: [],
+    ...extra,
+  })
+
+  const troisCoupsSurColossus: EtapeDeroule[] = [
+    coup({ cle: 'v', temps: 'mechant', auteurNom: 'Ultron', montant: 3, restant: 11 }),
+    coup({ cle: 's1', montant: 2, restant: 9 }),
+    coup({ cle: 's2', montant: 1, restant: 8 }),
+  ]
+
+  it('groupe en UNE ligne les coups portes sur le meme heros', () => {
+    // Le piege du comptage : trois attaquants, un seul heros touche, une seule
+    // ligne avec le total.
+    render(<DeroulePhase etapes={troisCoupsSurColossus} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
+    expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(1)
+    expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
+    // Le compteur de la cible apres le dernier coup, a droite de sa ligne.
+    expect(document.querySelector('.deroule-bilan-compteur')?.textContent).toBe('8')
+  })
+
+  it('fait deux lignes d une attaque et d une menace', () => {
+    const attaqueEtMenace: EtapeDeroule[] = [
+      {
+        cle: 'm',
+        temps: 'menace',
+        titre: 'menace',
+        regle: 'regle:menace',
+        cibleNom: 'L’Effraction !',
+        montant: 3,
+        restant: 6,
+        plafond: 8,
+        boosts: [],
+        consequences: [],
+      },
+      coup({ cle: 'a', montant: 6, restant: 8 }),
+    ]
+    render(<DeroulePhase etapes={attaqueEtMenace} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(2)
+    expect(screen.getByText('L’Effraction ! a gagné 3 menaces')).toBeInTheDocument()
+    expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
+    expect(screen.getByText('6/8')).toBeInTheDocument()
+  })
+
+  it('n annonce aucun bilan tant que la phase du mechant court', () => {
+    // Le point le plus important : arriver au bout des etapes CONNUES n'est pas
+    // la fin de la phase. Le cartouche attend, il ne fait pas les comptes.
+    render(
+      <DeroulePhase
+        etapes={troisCoupsSurColossus}
+        identitePhase={3}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.queryByText('Fin de la phase du méchant')).not.toBeInTheDocument()
+    expect(document.querySelector('.deroule-bilan')).toBeNull()
+    expect(document.querySelector('.deroule-attente')).not.toBeNull()
+  })
+
+  it('rend la main au joueur, sans jamais dire « Suivant » sur le bilan', () => {
+    const onTerminer = vi.fn()
+    const { container } = render(
+      <DeroulePhase etapes={[coup({ cle: 'a' })]} onTerminer={onTerminer} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+    fireEvent.click(aToiDeJouer())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('dit qu il ne s est rien passe plutot que de rester vide', () => {
+    // Une carte revelee sans effet chiffre : la phase a bien eu lieu, elle n'a
+    // rien coute. Le bilan doit le dire.
+    const rienDuTout: EtapeDeroule[] = [
+      {
+        cle: 'c',
+        temps: 'revelation',
+        titre: 'Icy Grip révélée',
+        regle: 'regle:revelation',
+        carteId: 77,
+        boosts: [],
+        consequences: [],
+      },
+    ]
+    render(<DeroulePhase etapes={rienDuTout} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    expect(screen.getByText('Aucun dégât, aucune menace.')).toBeInTheDocument()
+  })
+
+  it('montre les cinq temps tous valides sur le bilan', () => {
+    // Le bilan n'est pas un des cinq temps de la carte de reference : il vient
+    // apres, et la chronologie les montre alors tous passes ou vides.
+    const { container } = render(
+      <DeroulePhase etapes={troisCoupsSurColossus} onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    const items = [...container.querySelectorAll('.deroule-temps li')]
+    expect(items).toHaveLength(5)
+    for (const item of items) {
+      expect(item.className).toMatch(/est-passe|est-vide/)
+    }
+    expect(container.querySelector('.deroule-temps li.est-courant')).toBeNull()
+  })
+
+  it('laisse relire l etape precedente depuis le bilan', () => {
+    render(<DeroulePhase etapes={troisCoupsSurColossus} onTerminer={() => {}} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+    expect(screen.queryByText('Fin de la phase du méchant')).not.toBeInTheDocument()
+    expect(screen.getByText('Drone attaque Colossus')).toBeInTheDocument()
+  })
+
+  it('ne rend toujours rien hors phase du mechant, sans etape', () => {
+    // Le composant est monte des que le mode « detaille » est actif : sans
+    // etape, il n'y a aucune fin de phase a annoncer.
+    const { container } = render(<DeroulePhase etapes={[]} onTerminer={() => {}} />)
+    expect(container).toBeEmptyDOMElement()
   })
 })

@@ -5,7 +5,7 @@
 // boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
-import { etapesDeroule, rangDansLeTemps } from './deroule-phase'
+import { avecBilan, etapesDeroule, lignesBilan, rangDansLeTemps } from './deroule-phase'
 import type { FaitMechant } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
@@ -317,6 +317,190 @@ describe('etapesDeroule', () => {
       const etapes5 = etapesDeroule([faitSansRound], [], 5, AUCUN_MECHANT)
       expect(etapes1.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
       expect(etapes5.filter((e) => e.temps === 'mechant' || e.temps === 'sbires')).toHaveLength(1)
+    })
+  })
+})
+
+describe('le bilan de fin de phase', () => {
+  // Le moment ou le joueur decide de son tour : ce que la phase vient de lui
+  // couter, en deux lignes, sans remonter le journal.
+  //
+  // Les totaux se lisent sur les etapes, qui tiennent leurs nombres des faits
+  // du moteur : jamais d'une comparaison entre deux photos du monde. Meme
+  // arbitrage que RecapPhaseMechant, pour la meme raison.
+
+  it('groupe en UNE ligne les coups portes sur la meme cible', () => {
+    // LE piege du comptage : le vilain et deux sbires frappent tous Colossus.
+    // Cela fait une ligne « Colossus a pris 6 degats », pas trois.
+    const etapes = etapesDeroule(
+      [
+        attaque({ auteur: 'Ultron', auteur_id: 50, cible: 'Colossus', cible_id: 12, subi: 3, restant: 11 }),
+        attaque({ auteur: 'Drone', auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 2, restant: 9 }),
+        attaque({ auteur: 'Drone', auteur_id: 61, cible: 'Colossus', cible_id: 12, subi: 1, restant: 8 }),
+      ],
+      [],
+      1,
+      new Set([50])
+    )
+    const lignes = lignesBilan(etapes)
+    expect(lignes).toHaveLength(1)
+    expect(lignes[0].cibleNom).toBe('Colossus')
+    expect(lignes[0].total).toBe(6)
+    // Le compteur retenu est celui du DERNIER coup : c'est l'etat courant de
+    // la cible, pas celui d'apres le premier coup.
+    expect(lignes[0].restant).toBe(8)
+  })
+
+  it('fait une ligne par cible touchee', () => {
+    const etapes = etapesDeroule(
+      [
+        attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3 }),
+        attaque({ auteur_id: 61, cible: 'Thor', cible_id: 13, subi: 2 }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(lignesBilan(etapes).map((l) => [l.cibleNom, l.total])).toEqual([
+      ['Colossus', 3],
+      ['Thor', 2],
+    ])
+  })
+
+  it('distingue les degats de la menace : une attaque et une menace font deux lignes', () => {
+    const etapes = etapesDeroule(
+      [attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3 })],
+      [entree({ nomCarte: 'L’Effraction !', valeur: 3, restant: 6, plafond: 8 })],
+      1,
+      AUCUN_MECHANT
+    )
+    const lignes = lignesBilan(etapes)
+    expect(lignes).toHaveLength(2)
+    expect(lignes.map((l) => l.genre)).toEqual(['menaces', 'degats'])
+    expect(lignes.find((l) => l.genre === 'menaces')).toMatchObject({
+      cibleNom: 'L’Effraction !',
+      total: 3,
+      restant: 6,
+      plafond: 8,
+    })
+  })
+
+  it('additionne la menace posee et celle d une manigance sur la meme carte', () => {
+    // Le point 1 vient du journal (qui donne un nom), la manigance d'un fait :
+    // sans regroupement par nom, la meme manigance ressortirait deux fois.
+    const etapes = etapesDeroule(
+      [
+        attaque({
+          genre: 'manigance',
+          auteur: 'Drone',
+          auteur_id: 60,
+          cible: 'L’Effraction !',
+          cible_id: 77,
+          subi: 2,
+          restant: 7,
+        }),
+      ],
+      [entree({ nomCarte: 'L’Effraction !', valeur: 1, restant: 5, plafond: 8 })],
+      1,
+      AUCUN_MECHANT
+    )
+    const lignes = lignesBilan(etapes)
+    expect(lignes).toHaveLength(1)
+    expect(lignes[0].total).toBe(3)
+    // Le fait n'apporte pas de plafond : celui de l'entree de menace tient.
+    expect(lignes[0]).toMatchObject({ restant: 7, plafond: 8 })
+  })
+
+  it('ne compte pas une carte revelee, qui n encaisse rien', () => {
+    const etapes = etapesDeroule(
+      [],
+      [
+        entree({
+          cle: 'c1',
+          type: 'card',
+          phase: 'Reveal Encounter Cards',
+          titre: 'Icy Grip révélée',
+          cibleId: 77,
+        }),
+      ],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(etapes).toHaveLength(1)
+    expect(lignesBilan(etapes)).toEqual([])
+  })
+
+  it('ne compte pas un coup sans montant, ni un retrait de menace', () => {
+    const etapes = etapesDeroule(
+      [attaque({ auteur_id: 60, subi: 0 })],
+      [entree({ valeur: -1 })],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(lignesBilan(etapes)).toEqual([])
+  })
+
+  describe('avecBilan', () => {
+    it('met le bilan en DERNIER, quel que soit l ordre d arrivee des faits', () => {
+      // Les faits arrivent ici a l'envers de l'ordre de la carte de reference :
+      // une revelation, puis un sbire, puis le vilain. Le bilan reste dernier.
+      const etapes = etapesDeroule(
+        [
+          attaque({ phase: 'Reveal Encounter Cards', auteur_id: 60 }),
+          attaque({ auteur_id: 61 }),
+          attaque({ auteur_id: 50 }),
+        ],
+        [entree()],
+        1,
+        new Set([50])
+      )
+      const avec = avecBilan(etapes)
+      expect(avec.map((e) => e.temps)).toEqual([
+        'menace',
+        'mechant',
+        'sbires',
+        'revelation',
+        'bilan',
+      ])
+      expect(avec[avec.length - 1].bilan).toBeDefined()
+    })
+
+    it('n ajoute rien a une liste vide : hors phase, il n y a pas de fin a annoncer', () => {
+      expect(avecBilan([])).toEqual([])
+    })
+
+    it('donne un bilan VIDE, et non absent, a une phase qui n a rien coute', () => {
+      // Une carte revelee sans effet chiffre : la phase a bien eu lieu, elle
+      // n'a rien coute. Le bilan doit le dire, pas disparaitre.
+      const etapes = etapesDeroule(
+        [],
+        [
+          entree({
+            cle: 'c1',
+            type: 'card',
+            phase: 'Reveal Encounter Cards',
+            titre: 'Icy Grip révélée',
+            cibleId: 77,
+          }),
+        ],
+        1,
+        AUCUN_MECHANT
+      )
+      const dernier = avecBilan(etapes).at(-1)
+      expect(dernier?.temps).toBe('bilan')
+      expect(dernier?.bilan).toEqual([])
+    })
+
+    it('ne compte pas l etape de bilan elle-meme', () => {
+      // Le bilan porte des nombres, mais ce n'est pas un coup : le recompter
+      // doublerait les totaux si la liste lui repassait sous le nez.
+      const etapes = etapesDeroule(
+        [attaque({ auteur_id: 60, cible: 'Colossus', cible_id: 12, subi: 3 })],
+        [],
+        1,
+        AUCUN_MECHANT
+      )
+      expect(lignesBilan(avecBilan(etapes))).toEqual(lignesBilan(etapes))
     })
   })
 })

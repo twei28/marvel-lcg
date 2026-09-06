@@ -5,11 +5,11 @@
 // deux se testent separement, et le decoupage reste verifiable sans toucher
 // au dictionnaire.
 
-import type { EtapeDeroule } from './deroule-phase'
+import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 import { t } from './langue'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
-const REDIGES = new Set(['attaque', 'manigance', 'menace'])
+const REDIGES = new Set(['attaque', 'manigance', 'menace', 'bilan'])
 
 /**
  * Accord du pluriel francais : « 1 degat », « 2 degats ». L'anglais rend le
@@ -21,6 +21,10 @@ function pluriel(nombre: number, singulier: string, pluriels: string): string {
 
 export function titreEtape(etape: EtapeDeroule): string {
   if (!REDIGES.has(etape.titre)) return etape.titre
+
+  // Le bilan n'a ni auteur ni cible : c'est le point final de la phase, pas un
+  // coup de plus. Son detail se lit sur ses lignes, juste en dessous.
+  if (etape.titre === 'bilan') return t('Fin de la phase du méchant')
 
   // Les noms viennent du FAIT (voir deroule-phase.ts), pas d'une recherche
   // dans l'index du monde courant : une carte morte pendant la phase n'y est
@@ -66,14 +70,45 @@ export function resultatEtape(etape: EtapeDeroule): string {
  * l'absence, et un compteur faux serait pire que pas de compteur. Aucun
  * passage par le dictionnaire ici, il n'y a que des chiffres.
  */
-export function compteurEtape(etape: EtapeDeroule): string {
-  if (typeof etape.restant !== 'number' || !Number.isFinite(etape.restant)) return ''
+function compteur(restant: number | undefined, plafond: number | undefined): string {
+  if (typeof restant !== 'number' || !Number.isFinite(restant)) return ''
   // Le seuil ne s'affiche que s'il en est un : un plafond absent ou nul ne dit
   // rien et donnerait un « 0/0 ».
-  if (typeof etape.plafond === 'number' && etape.plafond > 0) {
-    return `${etape.restant}/${etape.plafond}`
+  if (typeof plafond === 'number' && plafond > 0) return `${restant}/${plafond}`
+  return `${restant}`
+}
+
+export function compteurEtape(etape: EtapeDeroule): string {
+  return compteur(etape.restant, etape.plafond)
+}
+
+/**
+ * Une ligne du bilan : « Colossus a pris 6 dégâts », « L’Effraction ! a gagné
+ * 3 menaces ». Le total est deja fait (voir `lignesBilan`), on le met en
+ * phrase et rien de plus.
+ */
+export function texteLigneBilan(ligne: LigneBilan): string {
+  if (ligne.genre === 'degats') {
+    return `${ligne.cibleNom} ${t('a pris')} ${ligne.total} ${pluriel(ligne.total, 'dégât', 'dégâts')}`
   }
-  return `${etape.restant}`
+  return `${ligne.cibleNom} ${t('a gagné')} ${ligne.total} ${pluriel(ligne.total, 'menace', 'menaces')}`
+}
+
+/**
+ * Le compteur de la cible a droite de sa ligne de bilan, meme regle qu'ailleurs
+ * dans le cartouche : rien du tout quand la source n'en donne pas.
+ *
+ * Les points de vie s'affichent donc SEULS (« 8 »), pas « 8/14 » : le moteur ne
+ * publie pas les PV maximum du heros a cote de ses faits, et un maximum invente
+ * serait pire que pas de maximum.
+ */
+export function compteurLigneBilan(ligne: LigneBilan): string {
+  return compteur(ligne.restant, ligne.plafond)
+}
+
+/** Ce que dit le bilan quand la phase n'a rien coute du tout. */
+export function texteBilanVide(): string {
+  return t('Aucun dégât, aucune menace.')
 }
 
 const REGLES: Record<string, string> = {
