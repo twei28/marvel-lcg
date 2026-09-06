@@ -52,6 +52,8 @@ import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
+import { DeroulePhase } from './board/DeroulePhase'
+import { etapesDeroule } from './board/deroule-phase'
 import { SplashTour } from './board/SplashTour'
 import {
   CLE_AUTO_CIBLE,
@@ -1711,6 +1713,14 @@ function PagePartie({
   }, [])
   const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId)
 
+  // Les etapes du deroule detaille : `etapesDeroule` parcourt tous les faits
+  // et toutes les entrees du journal, donc on ne la relance pas a chaque
+  // rendu (meme motif que `cartesMondeParId` plus haut).
+  const etapesPhaseMechant = useMemo(
+    () => etapesDeroule(etat.monde?.faits_mechant ?? [], historique.entrees),
+    [etat.monde?.faits_mechant, historique.entrees]
+  )
+
   // Le rapport de bug. Il ne capture qu'AU CLIC : il lit le monde et la demande
   // du moment, et le journal ci-dessus pour le passé. Aucun tampon d'états n'est
   // gardé, donc une partie qui ne signale rien n'en porte aucun coût.
@@ -2178,6 +2188,16 @@ function PagePartie({
           etat.hautsFaits, et CoucheHautsFaits.tsx reste en place : il suffit de
           remettre <CoucheHautsFaits hautsFaits={etat.hautsFaits} /> ici pour la
           rallumer. */}
+      {/* Deroule detaille : une etape a la fois, validee avant la suivante.
+          Le recap ci-dessous garde son role de bilan de fin, pour les modes
+          rapides ou l'on n'a rien vu passer. */}
+      {modePhase === 'detaille' ? (
+        <DeroulePhase
+          etapes={etapesPhaseMechant}
+          noms={(id) => cartesMondeParId.get(id)?.name ?? `#${id}`}
+          onTerminer={() => undefined}
+        />
+      ) : null}
       <RecapPhaseMechant
         entrees={historique.entrees}
         monde={etat.monde}

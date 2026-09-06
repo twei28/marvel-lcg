@@ -59,9 +59,12 @@ describe('le mode', () => {
     expect(lireModePhaseMechant()).toBe('instantane')
   })
 
-  it('vaut « pas à pas » sur une installation neuve', () => {
+  // Depuis le mode « detaille », c'est lui le defaut d'une installation neuve
+  // (voir mode-detaille.test.ts) : « pas-a-pas » reste un choix disponible,
+  // plus le defaut.
+  it('vaut « detaille » sur une installation neuve', () => {
     window.localStorage.clear()
-    expect(lireModePhaseMechant()).toBe('pas-a-pas')
+    expect(lireModePhaseMechant()).toBe('detaille')
   })
 })
 

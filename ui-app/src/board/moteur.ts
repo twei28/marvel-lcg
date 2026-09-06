@@ -32,19 +32,21 @@ export function lirePhaseRapide(): boolean {
 }
 
 /**
- * Le rythme de la phase du mechant, en TROIS positions et non plus une case.
+ * Le rythme de la phase du mechant, en QUATRE positions et non plus une case.
  *
+ *  - « detaille »   : une etape a la fois, validee avant la suivante. Le
+ *                     nouveau, et le defaut : c'est celui qu'on a en arrivant.
  *  - « manuel »     : un « Continue » a chaque evenement important. L'ancien
  *                     etat decoche.
  *  - « pas-a-pas »  : chaque evenement s'affiche puis rend la main tout seul
- *                     apres `delai`. Le nouveau, et le defaut.
+ *                     apres `delai`.
  *  - « instantane » : rien ne retient le moteur ; le bilan de fin de phase
  *                     raconte apres coup. L'ancien etat coche.
  *
  * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
  * personnel (localStorage), et en multijoueur chacun le sien.
  */
-export type ModePhaseMechant = 'manuel' | 'pas-a-pas' | 'instantane'
+export type ModePhaseMechant = 'detaille' | 'manuel' | 'pas-a-pas' | 'instantane'
 
 export const CLE_MODE_PHASE = 'marvel-board-mode-phase-mechant'
 export const CLE_DELAI_PAS_A_PAS = 'marvel-board-delai-pas-a-pas'
@@ -53,7 +55,8 @@ export const DELAI_PAS_A_PAS_DEFAUT = 1200
 export const DELAI_PAS_A_PAS_MIN = 300
 export const DELAI_PAS_A_PAS_MAX = 3000
 
-const MODES: ModePhaseMechant[] = ['manuel', 'pas-a-pas', 'instantane']
+// « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
+export const MODES: ModePhaseMechant[] = ['detaille', 'manuel', 'pas-a-pas', 'instantane']
 
 /**
  * MIGRATION de l'ancienne case a cocher. Elle ne connaissait que deux etats :
@@ -61,15 +64,19 @@ const MODES: ModePhaseMechant[] = ['manuel', 'pas-a-pas', 'instantane']
  * qui avait coche la case subissait justement le defaut qu'on corrige ici : on
  * le fait donc atterrir sur « pas-a-pas », pas sur « instantane ». Celui qui
  * avait DECOCHE, lui, avait choisi le mode manuel en connaissance de cause : on
- * le lui laisse.
+ * le lui laisse. Son ABSENCE en revanche ne dit rien du tout : elle ne doit
+ * pas priver un nouveau venu du mode detaille, qui est le vrai defaut.
  */
 export function lireModePhaseMechant(): ModePhaseMechant {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
     if (brut && (MODES as string[]).includes(brut)) return brut as ModePhaseMechant
-    return window.localStorage.getItem(CLE_PHASE_RAPIDE) === 'off' ? 'manuel' : 'pas-a-pas'
+    const ancienne = window.localStorage.getItem(CLE_PHASE_RAPIDE)
+    if (ancienne === 'off') return 'manuel'
+    if (ancienne !== null) return 'pas-a-pas'
+    return 'detaille'
   } catch {
-    return 'pas-a-pas'
+    return 'detaille'
   }
 }
 
