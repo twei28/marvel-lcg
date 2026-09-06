@@ -2685,7 +2685,12 @@
      etape est deja derriere lui.
      z-index 560 : au-dessus du voile (110), des cartes mises en scene (130),
      du trait (530) et du cartouche (540), puisque cette annonce doit
-     recouvrir tout le debut du deroule pendant sa courte duree de vie. */
+     recouvrir tout le debut du deroule pendant sa courte duree de vie.
+     Aussi au-dessus du splash de tour (550) et des curseurs multijoueur
+     (550) : en mode detaille, ce bandeau REMPLACE le splash de tour pour la
+     phase du mechant (voir annonceMechantAilleurs sur SplashTour), il ne
+     doit donc jamais passer dessous. Reste sous la fin de partie (600),
+     qui doit toujours gagner. */
   .bandeau-phase {
     position: fixed;
     left: 0;
