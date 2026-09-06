@@ -390,8 +390,11 @@ def faucheur() -> None:
 # --------------------------------------------------------------------------
 # Comptes
 # --------------------------------------------------------------------------
-SESSIONS: dict[str, str] = {}            # jeton -> pseudo
 VERROU_COMPTES = threading.Lock()
+
+# Une session dure trois mois. Le but est de ne PLUS retaper son mot de passe
+# d'une soiree de jeu a l'autre ; c'est un site prive, a inscription fermee.
+DUREE_SESSION_JOURS = 90
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS comptes (
@@ -444,6 +447,17 @@ CREATE TABLE IF NOT EXISTS messages (
     -- prive, visible du seul couple expediteur/destinataire.
     destinataire TEXT
 );
+-- ⚠ LES SESSIONS SONT SUR DISQUE, ET C'EST TOUT L'INTERET.
+-- Elles vivaient dans un dictionnaire en memoire : le moindre redemarrage du
+-- service — donc chaque deploiement — deconnectait tout le monde, alors que le
+-- cookie pose dans le navigateur annonce plusieurs semaines. On retapait son
+-- mot de passe sans comprendre pourquoi.
+CREATE TABLE IF NOT EXISTS sessions (
+    jeton  TEXT PRIMARY KEY,
+    pseudo TEXT NOT NULL,
+    cree   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_sessions_pseudo ON sessions(pseudo);
 CREATE TABLE IF NOT EXISTS invitations (
     jeton       TEXT PRIMARY KEY,
     cree_le     TEXT NOT NULL,
@@ -659,9 +673,7 @@ def changer_statut(pseudo: str, statut: str) -> None:
         cx.execute("UPDATE comptes SET statut = ? WHERE pseudo = ?", (statut, pseudo))
     if statut != "valide":
         # Un compte devalide ne doit pas continuer sa session en cours.
-        for jeton, qui in list(SESSIONS.items()):
-            if qui == pseudo:
-                SESSIONS.pop(jeton, None)
+        fermer_sessions_de(pseudo)
 
 
 def liste_comptes():
@@ -880,8 +892,47 @@ def derniers_prives(moi: str) -> dict:
 
 def ouvrir_session(pseudo: str) -> str:
     jeton = secrets.token_urlsafe(24)
-    SESSIONS[jeton] = pseudo
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("INSERT INTO sessions (jeton, pseudo, cree) VALUES (?, ?, ?)",
+                   (jeton, pseudo, _maintenant()))
     return jeton
+
+
+def pseudo_de_session(jeton: str) -> str | None:
+    """Le pseudo derriere un jeton, ou None s'il ne vaut plus rien.
+
+    Trois raisons de refuser : jeton inconnu, session trop vieille, compte qui
+    n'est plus valide. Le statut est relu EN BASE a chaque fois — devalider un
+    compte doit couper sa session en cours, pas seulement ses connexions
+    futures.
+    """
+    from datetime import datetime, timedelta
+    if not jeton:
+        return None
+    with _cx() as cx:
+        ligne = cx.execute("SELECT pseudo, cree FROM sessions WHERE jeton = ?",
+                           (jeton,)).fetchone()
+    if not ligne:
+        return None
+    try:
+        nee = datetime.fromisoformat(ligne["cree"])
+    except (TypeError, ValueError):
+        nee = None
+    if nee is not None and datetime.now() - nee > timedelta(days=DUREE_SESSION_JOURS):
+        fermer_session(jeton)
+        return None
+    pseudo = ligne["pseudo"]
+    return pseudo if statut_de(pseudo) == "valide" else None
+
+
+def fermer_session(jeton: str) -> None:
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("DELETE FROM sessions WHERE jeton = ?", (jeton,))
+
+
+def fermer_sessions_de(pseudo: str) -> None:
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("DELETE FROM sessions WHERE pseudo = ?", (pseudo,))
 
 
 # --------------------------------------------------------------------------
@@ -1108,18 +1159,16 @@ class Handler(BaseHTTPRequestHandler):
     def _session(self):
         """Le pseudo connecte, ou None.
 
-        ⚠ Les sessions vivent EN MEMOIRE : un redemarrage du service les perd
-        et chacun se reconnecte. C'est assume — la seule donnee qui doit
-        survivre est le fichier des comptes, qui, lui, est ecrit sur disque.
+        Les sessions sont EN BASE (table `sessions`) : elles survivent aux
+        redemarrages du service, sans quoi chaque deploiement redemandait le
+        mot de passe a tout le monde.
         """
         brut = self.headers.get("Cookie") or ""
         for morceau in brut.split(";"):
             nom, _, valeur = morceau.strip().partition("=")
             if nom == "nc_session":
-                pseudo = SESSIONS.get(valeur)
-                # Un compte devalide en cours de route ne doit plus passer :
-                # le statut est relu EN BASE, pas garde en memoire.
-                if pseudo and statut_de(pseudo) == "valide":
+                pseudo = pseudo_de_session(valeur)
+                if pseudo:
                     return pseudo
         return None
 
@@ -1252,7 +1301,7 @@ class Handler(BaseHTTPRequestHandler):
             for morceau in brut.split(";"):
                 nom, _, valeur = morceau.strip().partition("=")
                 if nom == "nc_session":
-                    SESSIONS.pop(valeur, None)
+                    fermer_session(valeur)
             self.send_response(303)
             self.send_header("Location", "/")
             self.send_header("Set-Cookie", "nc_session=; Max-Age=0; Path=/")
@@ -1315,7 +1364,8 @@ class Handler(BaseHTTPRequestHandler):
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
             self.send_header("Set-Cookie",
-                             f"nc_session={jeton}; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800")
+                             f"nc_session={jeton}; HttpOnly; SameSite=Lax; Path=/;"
+                             f" Max-Age={DUREE_SESSION_JOURS * 86400}")
             self.send_header("Content-Length", "0")
             self.end_headers()
 

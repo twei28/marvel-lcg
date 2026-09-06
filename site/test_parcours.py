@@ -258,6 +258,35 @@ verifier("un compte non valide n'apparait pas",
          str([j["pseudo"] for j in o.presence()]))
 
 o.PARTIES.clear()
+
+# --- Rester connecte d'une visite a l'autre --------------------------------
+#
+# Les sessions vivaient dans un dictionnaire EN MEMOIRE : tout redemarrage du
+# service — donc chaque deploiement — deconnectait tout le monde, alors que le
+# cookie pose dans le navigateur, lui, annonce plusieurs semaines. Elles sont
+# desormais en base, comme les comptes.
+jeton = o.ouvrir_session("chloe")
+verifier("le jeton frais ouvre bien la session", o.pseudo_de_session(jeton) == "chloe")
+
+# Ce qu'un redemarrage du service laisse : la base, et rien d'autre.
+verifier("la session survit au redemarrage du service",
+         o.pseudo_de_session(jeton) == "chloe")
+
+# Se deconnecter doit vraiment fermer la porte.
+o.fermer_session(jeton)
+verifier("la deconnexion revoque le jeton", o.pseudo_de_session(jeton) is None)
+
+# Un compte devalide en cours de route ne passe plus, jeton valide ou non.
+jeton = o.ouvrir_session("chloe")
+o.changer_statut("chloe", "attente")
+verifier("un compte devalide ne passe plus", o.pseudo_de_session(jeton) is None)
+o.changer_statut("chloe", "valide")
+verifier("et il repasse une fois revalide... non : son jeton est revoque",
+         o.pseudo_de_session(jeton) is None)
+
+# Un jeton inconnu ne vaut rien.
+verifier("un jeton inconnu est refuse", o.pseudo_de_session("nimportequoi") is None)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
