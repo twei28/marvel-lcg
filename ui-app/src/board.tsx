@@ -2084,20 +2084,9 @@ function PagePartie({
   // minuteur de lecture (le cartouche tient la seule horloge de la phase), et
   // c'est DeroulePhase qui prend Espace pour avancer d'une etape.
 
-  // Le recap de fin de phase sert DANS LES DEUX MODES.
-  //
-  // Il avait ete coupe en detaille au motif que le cartouche le remplacait.
-  // C'etait une erreur : le cartouche ne raconte pas encore toute la phase (le
-  // moteur va plus loin que lui), donc le joueur en detaille n'avait NI l'un
-  // NI l'autre. Il revient.
-  //
-  // Le motif d'origine reste vrai, lui : le recap s'affiche en panneau et
-  // recouvrirait le cartouche. Ce n'est plus un motif de le couper, c'est un
-  // motif de ne jamais les montrer ensemble — d'ou `cartoucheOuvert`, que le
-  // cartouche annonce lui-meme et qui RETIENT le recap au lieu de le jeter.
-  // Le recap est un bilan d'apres-phase, le cartouche un guide pendant la
-  // phase : ils se suivent, ils ne se superposent pas.
-  const [cartoucheOuvert, setCartoucheOuvert] = useState(false)
+  // Le recap de fin de phase ne sert QU'EN INSTANTANE (voir son montage plus
+  // bas). En detaille, c'est le cartouche du deroule qui raconte la phase et
+  // qui la clot par son propre bilan.
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
@@ -2474,20 +2463,24 @@ function PagePartie({
             // sans trame en attente, moteur.ts, avancerMaintenant).
             onSuivant={avancerPasAPas}
             onTerminer={avancerPasAPas}
-            // `setCartoucheOuvert` est stable : le cartouche exige une
-            // fonction qui ne change pas d'un rendu a l'autre.
-            onVisible={setCartoucheOuvert}
           />
         </>
       ) : null}
       <RecapPhaseMechant
         entrees={historique.entrees}
         monde={etat.monde}
-        // En service dans les deux modes : voir `cartoucheOuvert` plus haut.
-        actif
-        // ... mais retenu tant que le cartouche du deroule est a l'ecran. Hors
-        // mode detaille, le cartouche n'est pas monte et cet etat reste faux.
-        suspendu={cartoucheOuvert}
+        // EN INSTANTANE SEULEMENT. En detaille, le cartouche du deroule
+        // (DeroulePhase, juste au-dessus) raconte la phase etape par etape et
+        // la termine par son propre bilan, valide au clic : le recap disait
+        // ensuite la meme chose une seconde plus tard, calculee par un autre
+        // chemin. Deux bilans qui se suivent, et qui pouvaient diverger
+        // (constat M7 de l'audit du 06/09/2026).
+        //
+        // Il avait ete remis en detaille « par securite » (c27bb07) a un moment
+        // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
+        // la phase. Ce n'est plus le cas : la cause racine est corrigee
+        // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
+        actif={modePhase !== 'detaille'}
         // De quoi montrer la carte au survol d'une ligne : le même index et le
         // même catalogue que la table, donc le même agrandissement qu'elle.
         cartesMonde={cartesMondeParId}
