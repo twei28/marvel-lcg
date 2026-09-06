@@ -53,6 +53,15 @@ describe('phrases du deroule', () => {
       .toBe('Icy Grip révélée')
   })
 
+  it('rappelle la regle des cartes revelees', () => {
+    expect(regleEtape(etape({ regle: 'regle:revelation' })))
+      .toBe('Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.')
+  })
+
+  it('ne dit rien d une regle inconnue plutot que d inventer', () => {
+    expect(regleEtape(etape({ regle: 'regle:inexistante' }))).toBe('')
+  })
+
   it('nomme d apres le fait, pas d apres une recherche externe', () => {
     // Une carte morte pendant la phase n'est plus dans l'index du monde au
     // moment ou l'etape s'affiche : le titre doit rester juste puisqu'il lit

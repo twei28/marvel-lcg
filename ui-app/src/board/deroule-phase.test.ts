@@ -122,7 +122,10 @@ describe('etapesDeroule', () => {
         brut: '[(50,01113) Klaw] would deal 2 damage',
       }),
     ], 1)
-    expect(etapes.some((e) => e.brut === '[(50,01113) Klaw] would deal 2 damage')).toBe(true)
+    // Assertion sur la liste complete, pas un some() : celui-ci restait vert
+    // meme si le code produisait en plus une etape parasite.
+    expect(etapes).toHaveLength(1)
+    expect(etapes[0]?.brut).toBe('[(50,01113) Klaw] would deal 2 damage')
   })
 
   it('ne fait pas d etape d une narration deja mise en phrase ailleurs', () => {

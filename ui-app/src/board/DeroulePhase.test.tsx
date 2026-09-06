@@ -79,6 +79,16 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
+  it('ferme le cartouche quand la derniere etape est validee au CLAVIER', () => {
+    // Depuis le correctif de fermeture, c'est avancer() qui fait disparaitre
+    // le cartouche : ce chemin n'etait verifie qu'au clic, jamais au clavier,
+    // alors que les deux passent par la meme fonction.
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    fireEvent.keyDown(document, { key: 'Enter' })
+    fireEvent.keyDown(document, { key: 'Enter' })
+    expect(document.querySelector('.deroule-phase')).toBeNull()
+  })
+
   it('reapparait sur sa premiere etape a la phase suivante', () => {
     // Le piege symetrique et pire : si « termine » ne se reinitialise pas
     // quand une nouvelle liste d'etapes arrive, le deroule ne reapparaitrait
