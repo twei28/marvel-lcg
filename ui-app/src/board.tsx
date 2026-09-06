@@ -1895,8 +1895,13 @@ function PagePartie({
   }, [etat.pasAPas.actif, basculerPausePasAPas])
 
   // Le bilan de fin de phase ne vaut que quand on n'a PAS deroule l'action :
-  // en mode manuel chaque etape a deja ete vue une par une.
-  const phaseRapide = modePhase !== 'manuel'
+  // en mode manuel chaque etape a deja ete vue une par une (bouton Continue).
+  // En detaille non plus : on vient de voir chaque etape passer une par une
+  // dans le deroule ci-dessous, et surtout le bilan s'affiche en panneau
+  // PAR-DESSUS ce deroule et le rend illisible (constate en partie reelle).
+  // La spec prevoit de le reintroduire plus tard sous une forme raccourcie ;
+  // pas dans cette livraison.
+  const phaseRapide = modePhase !== 'manuel' && modePhase !== 'detaille'
 
   const [musique, setMusique] = useState(lireMusiqueActive)
   const basculerMusique = useCallback(() => {
