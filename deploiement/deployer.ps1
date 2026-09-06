@@ -192,6 +192,23 @@ if (Test-Path $DOCS) {
     }
   }
 
+  # ⚠ ON EFFACE CE QUI A DISPARU EN LOCAL, a la difference des images.
+  # Un scan en trop sur le serveur ne fait de mal a personne ; un LIVRET DE
+  # REGLES perime, si. La v1.5 du guide de reference, remplacee par la 1.8 en
+  # local, etait restee la-bas et le panneau la proposait toujours.
+  $ici = @{}
+  foreach ($f in Get-ChildItem -Path $DOCS -File -Filter *.pdf) { $ici[$f.Name] = $true }
+  $aEffacer = @($dejaLa.Keys | Where-Object { -not $ici.ContainsKey($_) })
+  if ($aEffacer.Count -gt 0) {
+    Write-Host "   a effacer : $($aEffacer.Count) document(s) disparu(s) en local"
+    foreach ($nom in $aEffacer) {
+      Write-Host "     - $nom"
+      # Le nom vient de l'inventaire du serveur lui-meme, jamais d'une saisie.
+      $echappe = $nom -replace "'", "'''"
+      Ssh-Exec "rm -f '$DOCS_DIST/$echappe'"
+    }
+  }
+
   if ($manquants.Count -eq 0) {
     Write-Host "   rien a envoyer, tout est a jour"
   } else {
