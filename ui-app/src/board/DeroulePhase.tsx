@@ -63,10 +63,16 @@ export function DeroulePhase({
   // Une nouvelle phase repart de sa premiere etape. `termine` doit se
   // reinitialiser ICI, pas seulement `index` : sinon le cartouche ne
   // reapparaitrait plus jamais a la phase du mechant suivante, ce qui est le
-  // piege symetrique et pire que le defaut d'origine.
+  // piege symetrique et pire que le defaut d'origine. `suspendu` doit s'y
+  // remettre a zero aussi : un « Precedent » cliqué sur la phase precedente
+  // le met a vrai, et si la phase se termine autrement qu'en revalidant
+  // jusqu'au bout (le moteur peut avancer seul), rien d'autre ne le
+  // redescend. Sans cette reinitialisation, la premiere etape technique de
+  // la phase suivante n'attendrait plus son minuteur.
   useEffect(() => {
     setIndex(0)
     setTermine(false)
+    setSuspendu(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `signature`
     // resume `etapes` a son CONTENU (les cles, dans l'ordre) ; c'est elle qui
     // doit piloter la reinitialisation, pas l'identite du tableau qui la

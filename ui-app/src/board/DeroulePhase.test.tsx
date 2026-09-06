@@ -334,6 +334,38 @@ describe('cartouche du deroule', () => {
     }
   })
 
+  it('ne laisse pas un Precedent de la phase precedente suspendre la phase suivante', async () => {
+    // Le joueur clique « Precedent » (donc `suspendu` passe a vrai), puis ne
+    // reclique plus « Suivant » : la phase se termine autrement (le moteur
+    // avance de lui-meme). A la phase du mechant suivante, `suspendu` doit
+    // etre remis a zero comme `index` et `termine`, sinon sa premiere etape
+    // technique n'attend plus le clic qu'elle est censee eviter.
+    const premierePhase: EtapeDeroule[] = [
+      { cle: 'a1', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [], consequences: [] },
+      { cle: 'a2', temps: 'activations', titre: 'attaque', regle: 'regle:activations', boosts: [], consequences: [] },
+    ]
+    const deuxiemePhase: EtapeDeroule[] = [
+      { cle: 'b1', temps: 'revelation', titre: 'technique', regle: '', boosts: [], consequences: [], auto: true },
+      { cle: 'b2', temps: 'revelation', titre: 'Fin', regle: '', boosts: [], consequences: [] },
+    ]
+    vi.useFakeTimers()
+    try {
+      const { rerender } = render(<DeroulePhase etapes={premierePhase} onTerminer={() => {}} />)
+      fireEvent.click(suivant())
+      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
+      // La phase se termine ici sans reclic sur « Suivant » (le moteur passe
+      // seul a la phase suivante).
+      rerender(<DeroulePhase etapes={deuxiemePhase} onTerminer={() => {}} />)
+      expect(screen.getByText('technique')).toBeInTheDocument()
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(600)
+      })
+      expect(screen.getByText('Fin')).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('retourne les boosts un par un', async () => {
     // Le moment de tension du jeu : chaque carte se lit avant la suivante.
     const avecBoosts: EtapeDeroule[] = [
