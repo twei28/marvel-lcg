@@ -6,6 +6,10 @@ import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
+// Panneau « Documents ». Importe ICI plutot que pose en balise dans
+// prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
+// module deux fois et poseraient deux boutons dans l'en-tete.
+import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-documents.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
@@ -2128,7 +2132,33 @@ function targetBanner() {
             el("span", { class: "target-k" }, t("Cible actuelle")),
             el("strong", { class: "mvl" }, sc ? sc.name : t("Cible non définie")),
             el("span", {}, sc && sc.villainNames.length ? sc.villainNames.join(", ") : t("Aucun scénario verrouillé")),
+            documentsDeLaCible(sc),
         ),
+    );
+}
+
+/** Les documents de l'extension du scénario choisi, à même la bannière : c'est
+ *  là qu'on se demande comment se joue une boîte, pas dans une liste de 27.
+ *
+ *  Rend null tant que le panneau n'a pas fini de charger sa liste, et quand
+ *  l'extension n'a pas de livret. L'attente est bornée : le Briefing 03 arrive
+ *  plusieurs clics après le chargement de la page. */
+function documentsDeLaCible(sc) {
+    if (!sc || !sc.extension) return null;
+    const livret = livretDExtension(sc.extension);
+    const carnet = carnetDExtension(sc.extension);
+    if (!livret && !carnet) return null;
+    const lien = (fiche, libelle) => fiche
+        ? el("a", {
+            class: "target-doc",
+            href: "/" + encodeURIComponent(fiche.fichier),
+            target: "_blank",
+            rel: "noopener",
+        }, "📖 " + t(libelle))
+        : null;
+    return el("div", { class: "target-docs" },
+        lien(livret, "Livret de règles"),
+        lien(carnet, "Carnet de campagne"),
     );
 }
 

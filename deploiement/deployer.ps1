@@ -77,6 +77,10 @@ if ($faireCode) {
     # renvoyes a chaque deploiement alors qu'ils ne changent jamais.
     "--exclude=assets/pics","--exclude=assets/pics-fr",
     "--exclude=assets/pics-proxy",
+    # Livrets de regles et carnets de campagne : 169 Mo. Meme raison que les
+    # scans — ils ne changent presque jamais, et l'etape « Documents » plus
+    # bas ne monte que ce qui manque.
+    "--exclude=assets/docs",
     "--exclude=sauvegardes","--exclude=saves","--exclude=decks",
     "--exclude=campagnes","--exclude=statistiques","--exclude=achievements",
     "--exclude=replays","--exclude=logs",
@@ -157,6 +161,54 @@ if ($faireImages -and (Test-Path $PICS)) {
       Envoyer-Lot $lot $numero
     }
     Write-Host "   images deployees"
+  }
+}
+
+# --- Documents PDF -----------------------------------------------------------
+# Livrets de regles et carnets de campagne (assets/docs), servis par la route
+# /get_documents du moteur. Cette etape tourne a CHAQUE deploiement, y compris
+# avec -Code : ce ne sont pas des images, et le panneau « Documents » du site
+# serait vide sans elles. Quand rien ne manque, elle coute un aller-retour ssh.
+$DOCS      = Join-Path $PROJET "Fusion\marvel-lcg-src\assets\docs"
+$DOCS_DIST = "$DIST/Fusion/marvel-lcg-src/assets/docs"
+if (Test-Path $DOCS) {
+  Write-Host "== Documents PDF" -ForegroundColor Cyan
+
+  # Inventaire distant : nom et taille, comme pour les images. La taille suffit
+  # a reperer un fichier remplace ; une empreinte ferait lire 169 Mo pour rien.
+  $dejaLa = @{}
+  $lignes = & ssh -i $CLE "root@$IP" "cd $DOCS_DIST 2>/dev/null && find . -type f -name '*.pdf' -printf '%P|%s\n' || true"
+  foreach ($l in $lignes) {
+    if ($l -match '^(.*)\|(\d+)$') { $dejaLa[$Matches[1]] = [int64]$Matches[2] }
+  }
+  Write-Host "   deja sur le serveur : $($dejaLa.Count) documents"
+
+  $manquants = @()
+  $poidsDocs = 0
+  foreach ($f in Get-ChildItem -Path $DOCS -File -Filter *.pdf) {
+    if (-not $dejaLa.ContainsKey($f.Name) -or $dejaLa[$f.Name] -ne $f.Length) {
+      $manquants += $f
+      $poidsDocs += $f.Length
+    }
+  }
+
+  if ($manquants.Count -eq 0) {
+    Write-Host "   rien a envoyer, tout est a jour"
+  } else {
+    Write-Host "   a envoyer : $($manquants.Count) documents, $([math]::Round($poidsDocs/1MB,1)) Mo"
+    Ssh-Exec "mkdir -p $DOCS_DIST"
+    $liste = Join-Path $env:TEMP "narwhal-docs.txt"
+    $tgzD  = Join-Path $env:TEMP "narwhal-docs.tgz"
+    # -T avec un fichier de noms : un nom contenant une espace ou une
+    # parenthese passerait mal en ligne de commande.
+    [IO.File]::WriteAllLines($liste, ($manquants | ForEach-Object { $_.Name }), (New-Object Text.UTF8Encoding $false))
+    & tar -czf $tgzD -C $DOCS -T $liste
+    if ($LASTEXITCODE -ne 0) { throw "Creation de l'archive des documents en echec." }
+    & scp -i $CLE $tgzD "root@${IP}:/tmp/narwhal-docs.tgz"
+    if ($LASTEXITCODE -ne 0) { throw "Envoi des documents en echec." }
+    Ssh-Exec "tar -xzf /tmp/narwhal-docs.tgz -C $DOCS_DIST && rm -f /tmp/narwhal-docs.tgz && chown -R narwhal:narwhal $DOCS_DIST"
+    Remove-Item $liste, $tgzD -Force -ErrorAction SilentlyContinue
+    Write-Host "   documents deployes"
   }
 }
 

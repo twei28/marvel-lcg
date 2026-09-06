@@ -43,6 +43,11 @@ Fusion/marvel-lcg-src/assets/pics/
 Fusion/marvel-lcg-src/assets/pics-fr/
 Fusion/marvel-lcg-src/assets/cache/
 
+# Livrets de regles et carnets de campagne : 169 Mo de PDF officiels, meme
+# nature que les scans ci-dessus. Ils montent au serveur par l'etape
+# « Documents » de deployer.ps1, jamais par le depot.
+Fusion/marvel-lcg-src/assets/docs/
+
 # Cache telecharge depuis marvelcdb : 27 Mo, reconstructible.
 Fusion/marvel-lcg-src/data/marvelcdb/
 

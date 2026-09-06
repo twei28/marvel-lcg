@@ -18,6 +18,11 @@ CUSTOM_SCENARIOS_FOLDER = ConfigVariables.Folder('custom_scenario_folder')
 PUZZLE_FOLDER           = ConfigVariables.Folder('puzzle_folder')
 PUZZLE_TEST_FOLDER      = ConfigVariables.Folder('puzzle_test_folder')
 
+# Livrets de regles et carnets de campagne. Hors de public/ a dessein : 169 Mo
+# que l'archive de deploiement n'a pas a reexpedier a chaque fois. deployer.ps1
+# les exclut du code et les synchronise a part, comme les scans de cartes.
+DOSSIER_DOCUMENTS = './assets/docs'
+
 class GameServerGet(GameServerBase):
 
     def ListFile(self, *folders: str, ext: str|None=None) -> web.Response:
@@ -533,6 +538,42 @@ class GameServerGet(GameServerBase):
             num = "0"
         return web.Response(text=num)
 
+    async def get_documents(self, request: web.Request) -> web.Response:
+        """Les PDF disponibles : nom de fichier et taille, rien de plus.
+
+        Le classement se fait cote navigateur a partir du nom de fichier : le
+        numero mcNN d'un livret est celui que porte son extension dans
+        sets_info.json (« 56. Civil War » <-> mc56). Le moteur n'a donc aucune
+        table a tenir, et un PDF depose dans le dossier apparait tout seul.
+        """
+        import os
+        fichiers = []
+        if FileManager.Exists(DOSSIER_DOCUMENTS):
+            for nom in sorted(FileManager.ListDir(DOSSIER_DOCUMENTS)):
+                chemin = FileManager.JoinPath(DOSSIER_DOCUMENTS, nom)
+                if not nom.lower().endswith('.pdf') or not FileManager.IsFile(chemin):
+                    continue
+                fichiers.append({'fichier': nom, 'octets': os.path.getsize(chemin)})
+        return web.json_response({'documents': fichiers})
+
+    async def get_document_pdf(self, request: web.Request) -> web.Response:
+        """Sert UN pdf de assets/docs, designe par son seul nom de fichier.
+
+        ⚠ On ne passe PAS par ReadFile(request.path) comme le font les autres
+        types de fichiers : cette recherche-la commence par './', donc un '..'
+        bien place dans l'adresse sortirait du dossier et servirait n'importe
+        quel fichier du serveur. Ici on ne retient que le nom de base, et on ne
+        lit que dans DOSSIER_DOCUMENTS.
+        """
+        import urllib.parse
+        nom = FileManager.GetBaseName(urllib.parse.unquote(request.path))
+        if not nom.lower().endswith('.pdf'):
+            return web.Response(status=404)
+        chemin = FileManager.JoinPath(DOSSIER_DOCUMENTS, nom)
+        if not FileManager.Exists(chemin) or not FileManager.IsFile(chemin):
+            return web.Response(status=404)
+        return self.ReadFile(chemin)
+
     @override
     def __init__(self) -> None:
         super().__init__()
@@ -576,6 +617,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
+        self.AddAwaitGetSecurity('/get_documents', self.get_documents)
+        self.AddAwaitGetSecurity(r'/{path:.+\.pdf}', self.get_document_pdf)
         self.AddPostSecurity('/post_salon_message', self.post_salon_message)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
