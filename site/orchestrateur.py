@@ -23,6 +23,7 @@ Aucune dependance : bibliotheque standard uniquement.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import html
 import json
@@ -89,6 +90,20 @@ ADMIN = os.environ.get("ADMIN", "arnaud").strip().lower()
 # qui reste en attente de validation. La mettre a "0" ferme cette porte : seul
 # un LIEN D'INVITATION permet alors de creer un compte.
 INSCRIPTION_LIBRE = os.environ.get("INSCRIPTION_LIBRE", "1") != "0"
+
+# Rapports de bug. Les captures d'ecran vont sur DISQUE et non dans la base :
+# une image de 400 Ko par rapport ferait grossir narwhal.db sans raison, et un
+# fichier se sert directement.
+DOSSIER_RAPPORTS = os.environ.get("DOSSIER_RAPPORTS", os.path.join(RACINE_SITE, "rapports"))
+# Plafonds. La capture est deja reduite par le navigateur avant l'envoi (voir
+# panneau-bug.js) ; ce plafond-ci est la ceinture, pas la bretelle.
+MAX_CAPTURE_OCTETS = int(os.environ.get("MAX_CAPTURE_OCTETS", str(4 * 1024 * 1024)))
+MAX_JOURNAL_CARACTERES = 400_000
+MAX_DESCRIPTION_CARACTERES = 4_000
+# Limite de debit, par compte hote. L'adresse est publique et n'importe quel
+# invite peut envoyer : sans plafond, une boucle remplirait le disque.
+RAPPORTS_PAR_HEURE = int(os.environ.get("RAPPORTS_PAR_HEURE", "12"))
+ETATS_RAPPORT = ("nouveau", "en cours", "traite")
 
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur  # noqa: E402  (dependant de sys.path ci-dessus)
@@ -464,6 +479,23 @@ CREATE TABLE IF NOT EXISTS invitations (
     utilise_par TEXT,
     utilise_le  TEXT
 );
+-- Rapports de bug. `hote` est le compte proprietaire de la table (celui que
+-- designe le jeton de partie) ; `nom` est ce que la personne a tape, et c'est
+-- le seul identifiant d'un invite arrive par un lien de siege. Les deux sont
+-- gardes : l'un dit ou le bug s'est produit, l'autre a qui repondre.
+CREATE TABLE IF NOT EXISTS rapports (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    quand       TEXT NOT NULL,
+    hote        TEXT,
+    nom         TEXT NOT NULL,
+    siege       INTEGER,
+    ecran       TEXT,
+    description TEXT NOT NULL,
+    journal     TEXT,
+    capture     TEXT,
+    etat        TEXT NOT NULL DEFAULT 'nouveau'
+);
+CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 """
 
 
@@ -826,6 +858,121 @@ PRIVES_GARDES = 500
 TAILLE_MESSAGE = 500
 
 
+# --------------------------------------------------------------------------
+# Rapports de bug
+# --------------------------------------------------------------------------
+
+# Horodatage des derniers envois, par compte hote. En memoire : un redemarrage
+# remet les compteurs a zero, ce qui est sans consequence — la limite protege
+# d'une boucle, pas d'un adversaire patient.
+_ENVOIS_RAPPORTS: dict[str, list[float]] = {}
+
+
+def debit_rapport_ok(hote: str) -> bool:
+    """Vrai si `hote` peut encore envoyer un rapport dans l'heure qui court."""
+    maintenant = time.time()
+    recents = [t for t in _ENVOIS_RAPPORTS.get(hote, []) if maintenant - t < 3600]
+    _ENVOIS_RAPPORTS[hote] = recents
+    if len(recents) >= RAPPORTS_PAR_HEURE:
+        return False
+    recents.append(maintenant)
+    return True
+
+
+def enregistrer_rapport(hote: str, champs: dict) -> int:
+    """Range un rapport et rend son numero. La capture part sur disque.
+
+    Rien n'est refuse pour cause de champ trop long : on TRONQUE. Un rapport
+    ampute vaut mieux qu'un rapport perdu, et la personne qui l'envoie n'a
+    aucun moyen de savoir ce qui passe.
+    """
+    nom = " ".join(str(champs.get("nom") or "").split())[:80] or "anonyme"
+    description = str(champs.get("description") or "").strip()[:MAX_DESCRIPTION_CARACTERES]
+    journal = str(champs.get("journal") or "")[:MAX_JOURNAL_CARACTERES]
+    ecran = " ".join(str(champs.get("ecran") or "").split())[:120]
+    try:
+        siege = int(champs.get("siege") or 0)
+    except (TypeError, ValueError):
+        siege = 0
+
+    capture = None
+    brut = champs.get("capture") or ""
+    if brut:
+        capture = _ecrire_capture(brut)
+
+    with _cx() as cx:
+        cur = cx.execute(
+            "INSERT INTO rapports (quand, hote, nom, siege, ecran, description,"
+            " journal, capture, etat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'nouveau')",
+            (_maintenant(), hote, nom, siege, ecran, description, journal, capture))
+        return int(cur.lastrowid or 0)
+
+
+def _ecrire_capture(donnee: str) -> str | None:
+    """Decode une capture « data:image/... ;base64,... » vers un fichier.
+
+    Rend le nom du fichier, ou None si l'image est illisible ou trop lourde.
+    On ne fait CONFIANCE A RIEN de ce qui arrive : ni au type annonce, ni a la
+    taille. Le type est deduit des premiers octets, pas de l'etiquette.
+    """
+    try:
+        entete, _, corps = donnee.partition(",")
+        if "base64" not in entete or not corps:
+            return None
+        image = base64.b64decode(corps, validate=True)
+    except Exception:
+        return None
+    if not image or len(image) > MAX_CAPTURE_OCTETS:
+        return None
+    # Signature du fichier, jamais l'etiquette annoncee : c'est elle qui decide
+    # de l'extension, donc du type que le navigateur se verra servir.
+    if image[1:4] == b"PNG":
+        ext = "png"
+    elif image[:2] == bytes((0xFF, 0xD8)):
+        ext = "jpg"
+    elif image[:4] == b"RIFF" and image[8:12] == b"WEBP":
+        ext = "webp"
+    else:
+        return None
+    os.makedirs(DOSSIER_RAPPORTS, exist_ok=True)
+    nom = secrets.token_hex(16) + "." + ext
+    with open(os.path.join(DOSSIER_RAPPORTS, nom), "wb") as f:
+        f.write(image)
+    return nom
+
+
+def liste_rapports(limite: int = 60) -> list[dict]:
+    with _cx() as cx:
+        return [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports ORDER BY id DESC LIMIT ?", (limite,))]
+
+
+def nb_rapports_nouveaux() -> int:
+    with _cx() as cx:
+        r = cx.execute("SELECT COUNT(*) AS n FROM rapports WHERE etat = 'nouveau'").fetchone()
+    return int(r["n"] if r else 0)
+
+
+def changer_etat_rapport(numero: int, etat: str) -> None:
+    if etat not in ETATS_RAPPORT:
+        return
+    with _cx() as cx:
+        cx.execute("UPDATE rapports SET etat = ? WHERE id = ?", (etat, numero))
+
+
+def supprimer_rapport(numero: int) -> None:
+    """Efface le rapport ET sa capture : laisser l'image seule sur le disque
+    ferait grossir le dossier sans que rien n'y renvoie plus."""
+    with _cx() as cx:
+        r = cx.execute("SELECT capture FROM rapports WHERE id = ?", (numero,)).fetchone()
+        if r and r["capture"]:
+            try:
+                os.remove(os.path.join(DOSSIER_RAPPORTS, r["capture"]))
+            except OSError:
+                pass
+        cx.execute("DELETE FROM rapports WHERE id = ?", (numero,))
+
+
 def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
     """Ecrit un message. `destinataire` vide = tchat general."""
     texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
@@ -1106,6 +1253,26 @@ PAGE_ADMIN = """<!doctype html>
          font-size:.8rem; word-break:break-all; }}
   form {{ display:inline; margin-right:.3rem; }}
   a {{ color:#58a6ff; }}
+  .rapport {{ border:1px solid #21262d; border-radius:.5rem; margin-bottom:.6rem;
+             background:#11161d; }}
+  .rapport[open] {{ border-color:#30363d; }}
+  .rapport > summary {{ cursor:pointer; padding:.6rem .8rem; list-style:none;
+                       display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }}
+  .rapport > summary::-webkit-details-marker {{ display:none; }}
+  .rapport .quoi {{ flex:1; min-width:12rem; }}
+  .rapport .meta {{ color:#9aa7b4; font-size:.8rem; }}
+  .rapport .corps {{ padding:0 .8rem .8rem; }}
+  .rapport pre {{ background:#0b0f14; border:1px solid #21262d; border-radius:.4rem;
+                 padding:.6rem; max-height:22rem; overflow:auto; font-size:.78rem;
+                 white-space:pre-wrap; word-break:break-word; }}
+  .rapport img {{ max-width:100%; border:1px solid #30363d; border-radius:.4rem; }}
+  .etat {{ font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;
+          border-radius:.3rem; padding:.1rem .45rem; border:1px solid; }}
+  .etat.nouveau {{ color:#f0b429; border-color:#f0b429; }}
+  .etat.encours {{ color:#58a6ff; border-color:#58a6ff; }}
+  .etat.traite {{ color:#3fb950; border-color:#3fb950; }}
+  .pastille {{ font-size:.8rem; vertical-align:middle; background:#f85149;
+              color:#0e1116; border-radius:1rem; padding:.05rem .5rem; }}
 </style>
 <main>
   <h1>Comptes</h1>
@@ -1126,6 +1293,11 @@ PAGE_ADMIN = """<!doctype html>
     <tr><th>Lien</th><th>Cree le</th><th>Utilise par</th><th></th></tr>
     {invitations}
   </table>
+
+  <h1 style="margin-top:2.5rem">Rapports de bug {pastille}</h1>
+  <p class="sous">Les 60 derniers, le plus recent en haut. Deplie pour voir la
+  capture et le journal de la partie.</p>
+  {rapports}
 
   <h1 style="margin-top:2.5rem">Parties</h1>
   <p class="sous">Les 25 dernieres, la plus recente en haut.</p>
@@ -1202,6 +1374,38 @@ class Handler(BaseHTTPRequestHandler):
                   'Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
         ).encode("utf-8")
 
+    def _servir_capture(self) -> None:
+        """L'image d'un rapport, designee par le NUMERO du rapport.
+
+        Le nom du fichier vient de la base, jamais de l'adresse : c'est ce qui
+        rend la traversee de dossier impossible ici.
+        """
+        import urllib.parse
+        requete = urllib.parse.urlparse(self.path).query
+        try:
+            numero = int(urllib.parse.parse_qs(requete).get("id", ["0"])[0])
+        except ValueError:
+            numero = 0
+        nom = None
+        if numero:
+            with _cx() as cx:
+                r = cx.execute("SELECT capture FROM rapports WHERE id = ?",
+                               (numero,)).fetchone()
+            nom = r["capture"] if r else None
+        if not nom:
+            self._repondre(404, b"Aucune capture.", "text/plain; charset=utf-8")
+            return
+        chemin = os.path.join(DOSSIER_RAPPORTS, os.path.basename(nom))
+        try:
+            with open(chemin, "rb") as f:
+                image = f.read()
+        except OSError:
+            self._repondre(404, b"Capture introuvable.", "text/plain; charset=utf-8")
+            return
+        types = {"png": "image/png", "jpg": "image/jpeg", "webp": "image/webp"}
+        mime = types.get(nom.rsplit(".", 1)[-1].lower(), "application/octet-stream")
+        self._repondre(200, image, mime)
+
     def _page_admin(self) -> bytes:
         lignes = []
         for c in liste_comptes():
@@ -1240,6 +1444,12 @@ class Handler(BaseHTTPRequestHandler):
         if not inv:
             inv.append('<tr><td colspan="4">Aucune invitation. '
                        'Cree-en une ci-dessus.</td></tr>')
+        rapports = "".join(self._bloc_rapport(r) for r in liste_rapports())
+        if not rapports:
+            rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
+        nouveaux = nb_rapports_nouveaux()
+        pastille = ('<span class="pastille">%d nouveau%s</span>'
+                    % (nouveaux, "x" if nouveaux > 1 else "")) if nouveaux else ""
         parties = "".join(
             "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
@@ -1251,7 +1461,51 @@ class Handler(BaseHTTPRequestHandler):
         return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
+                                 rapports=rapports, pastille=pastille,
                                  parties=parties).encode("utf-8")
+
+    @staticmethod
+    def _bloc_rapport(r: dict) -> str:
+        """Un rapport replie. TOUT ce qui vient du rapport passe par
+        html.escape : la description, le nom et le journal sont ecrits par
+        n'importe qui, y compris par un invite qu'on ne connait pas."""
+        etat = r["etat"] or "nouveau"
+        classe = {"nouveau": "nouveau", "en cours": "encours", "traite": "traite"}.get(etat, "nouveau")
+        boutons = ""
+        for cible, libelle in (("en cours", "Prendre"), ("traite", "Classer")):
+            if etat != cible:
+                boutons += ('<form method="post" action="/admin">'
+                            '<input type="hidden" name="action" value="rapport">'
+                            '<input type="hidden" name="id" value="%d">'
+                            '<input type="hidden" name="etat" value="%s">'
+                            '<button type="submit">%s</button></form>'
+                            % (r["id"], html.escape(cible), libelle))
+        boutons += ('<form method="post" action="/admin">'
+                    '<input type="hidden" name="action" value="rapport_supprimer">'
+                    '<input type="hidden" name="id" value="%d">'
+                    '<button class="non" type="submit">Supprimer</button></form>' % r["id"])
+        image = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
+                 '<img src="/admin/capture?id=%d" alt="capture"></a></p>'
+                 % (r["id"], r["id"])) if r["capture"] else "<p class=\"sous\">Aucune capture.</p>"
+        if r["journal"]:
+            journal = ('<details><summary class="sous">Journal de la partie</summary>'
+                       '<pre>%s</pre></details>' % html.escape(r["journal"]))
+        else:
+            journal = '<p class="sous">Aucun journal (rapport envoye hors partie).</p>'
+        ou = r["ecran"] or "?"
+        if r["siege"]:
+            ou += " · siege %d" % r["siege"]
+        return ('<details class="rapport">'
+                '<summary><span class="etat %s">%s</span>'
+                '<span class="quoi">%s</span>'
+                '<span class="meta">%s &middot; %s &middot; %s</span></summary>'
+                '<div class="corps"><p>%s</p>%s%s<p>%s</p></div></details>'
+                % (classe, html.escape(etat),
+                   html.escape((r["description"] or "")[:110]),
+                   html.escape(r["nom"] or "?"), html.escape(ou),
+                   html.escape(r["quand"] or ""),
+                   html.escape(r["description"] or "").replace("\n", "<br>"),
+                   image, journal, boutons))
 
     def do_GET(self):
         pseudo = self._session()
@@ -1312,6 +1566,15 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_admin())
+        elif self.path.startswith("/admin/capture"):
+            # La capture d'un rapport, reservee a l'administrateur comme la
+            # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de
+            # l'adresse : on lit celui que la base associe au numero demande,
+            # sans quoi n'importe quel chemin sortirait du dossier.
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._servir_capture()
         elif self.path == "/etat":
             with VERROU:
                 etat = {"libres": NB_EMPLACEMENTS - len(EMPLACEMENTS),
@@ -1378,12 +1641,22 @@ class Handler(BaseHTTPRequestHandler):
                 creer_invitation()
             elif action == "annuler":
                 supprimer_invitation(champs.get("jeton", ""))
+            elif action in ("rapport", "rapport_supprimer"):
+                try:
+                    numero = int(champs.get("id", "0"))
+                except ValueError:
+                    numero = 0
+                if numero:
+                    if action == "rapport":
+                        changer_etat_rapport(numero, champs.get("etat", ""))
+                    else:
+                        supprimer_rapport(numero)
             else:
                 changer_statut(champs.get("pseudo", "").strip().lower(),
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path in ("/api/vue", "/api/dire"):
+        elif self.path in ("/api/vue", "/api/dire", "/api/bug"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -1392,6 +1665,24 @@ class Handler(BaseHTTPRequestHandler):
             qui = JETONS_SITE.get(champs.get("jeton", ""))
             if not qui:
                 self._repondre(403, b'{"error":"jeton inconnu"}',
+                               "application/json; charset=utf-8")
+                return
+            if self.path == "/api/bug":
+                # ⚠ N'IMPORTE QUI PEUT ARRIVER ICI. Le jeton dit de quelle
+                # TABLE vient le rapport, pas qui l'ecrit : un invite entre par
+                # un lien de siege et n'a pas de compte. D'ou le plafond de
+                # debit, compte par table, et les troncatures dans
+                # enregistrer_rapport().
+                if not debit_rapport_ok(qui):
+                    self._repondre(429, b'{"error":"trop de rapports, reessaie plus tard"}',
+                                   "application/json; charset=utf-8")
+                    return
+                if not str(champs.get("description") or "").strip():
+                    self._repondre(400, b'{"error":"description vide"}',
+                                   "application/json; charset=utf-8")
+                    return
+                numero = enregistrer_rapport(qui, champs)
+                self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
             if self.path == "/api/dire":
