@@ -94,6 +94,44 @@ export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boo
   return demande.event_name !== 'WhenPlayerInTurn' || demande.ability_type !== 'Normal'
 }
 
+/**
+ * LE MOTEUR ATTEND-IL UNE REPONSE DU JOUEUR LOCAL ?
+ *
+ * A ne pas confondre avec « le panneau central est affiche ». Le panneau cede
+ * la place a d'autres facons de repondre a la MEME question : un ciblage
+ * (`interaction.option`, ou le joueur clique les cartes sur la table puis
+ * « Valider »), le menu d'une carte, une animation d'effet en cours. Constate
+ * en partie reelle : pendant le choix des deux sbires a activer, le panneau
+ * disparaissait et le cartouche du deroule se redeployait pour annoncer « La
+ * suite arrive… » alors que le moteur attendait le joueur. Le signal vient donc
+ * de l'etat du MOTEUR, pas de la visibilite d'un panneau.
+ *
+ * `validationRequise` reste dedans, et pour une raison de securite : quand le
+ * moteur retient encore sa trame, c'est le cartouche qui doit la relacher, et
+ * un cartouche replie n'a plus de bouton. Le dire trop tot le replierait devant
+ * un panneau qui n'est pas encore affiche, et plus personne ne relacherait
+ * rien.
+ *
+ * `demandeDoitApparaitreAuCentre` reste dedans aussi : la question de la barre
+ * du bas (le tour libre du joueur, « Passer » / « Jouer ») arrive quand la
+ * phase du mechant est finie et que le cartouche montre son bilan, qu'il doit
+ * garder deploye.
+ */
+export function moteurAttendUneReponse(etat: {
+  aNous: boolean
+  connecte: boolean
+  demande?: Demande
+  validationRequise: boolean
+}): boolean {
+  return (
+    etat.aNous &&
+    etat.connecte &&
+    etat.demande !== undefined &&
+    !etat.validationRequise &&
+    demandeDoitApparaitreAuCentre(etat.demande)
+  )
+}
+
 function libelleEvenement(eventName: string): string {
   const decoupe = eventName
     .replace(/^When/, '')

@@ -41,6 +41,7 @@ import {
   DemandeCentrale,
   EvenementCentrale,
   demandeDoitApparaitreAuCentre,
+  moteurAttendUneReponse,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
 import { PanneauSalon } from './board/PanneauSalon'
@@ -2224,18 +2225,18 @@ function PagePartie({
     etat.demande?.event_name === 'WhenPlayerInTurn' && etat.demande.ability_type === 'Normal'
       ? t('Fin du tour')
       : t('Passer')
+  // Le moteur attend une reponse du joueur LOCAL. Etat du MOTEUR, sans un mot
+  // sur la facon dont on repond : c'est ce que le cartouche du deroule doit
+  // savoir (voir moteurAttendUneReponse).
+  const moteurAttendLeJoueur = moteurAttendUneReponse(etat)
+  // Le PANNEAU central, lui, cede la place a toutes les autres facons de
+  // repondre a cette meme question : un ciblage sur la table, le menu d'une
+  // carte, une animation d'effet en cours.
   const afficherDemandeCentrale =
-    etat.aNous &&
-    etat.connecte &&
-    etat.demande !== undefined &&
-    effets.size === 0 &&
-    !etat.validationRequise &&
-    !interaction.option &&
-    !carteMenu &&
-    demandeDoitApparaitreAuCentre(etat.demande)
-  // etat.validationRequise n'entre plus dans cette condition : c'est
+    moteurAttendLeJoueur && effets.size === 0 && !interaction.option && !carteMenu
+  // etat.validationRequise n'entre pas dans la condition ci-dessous : c'est
   // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
-  // validation, ce panneau ne fait plus que narrer. Ses deux autres raisons
+  // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
   // d'apparaitre (un effet en cours, ou un evenement narre important pendant
   // l'activation ennemie) doivent continuer de marcher telles quelles.
   const afficherEvenementCentrale =
@@ -2430,15 +2431,13 @@ function PagePartie({
             // l'occasion. Constate en partie : l'ecran de defaite etait la et
             // le cartouche annonçait encore « La suite arrive… ».
             partieFinie={Boolean(etat.monde?.game_over)}
-            // Le moteur pose une question au joueur local, dans son panneau
-            // central : le cartouche s'efface devant elle. C'est la condition
-            // MEME qui affiche ce panneau (DemandeCentrale, plus haut), pas une
-            // seconde ecrite pour l'occasion : les deux ne peuvent pas se
-            // contredire. Elle ne couvre que le panneau central : la question
-            // de la barre du bas (le tour libre du joueur, « Passer » /
-            // « Jouer ») arrive quand la phase du mechant est finie et que le
-            // cartouche montre son bilan, qu'il doit garder deploye.
-            questionAuJoueur={afficherDemandeCentrale}
+            // Le moteur pose une question au joueur local : le cartouche
+            // s'efface devant elle. On lit l'etat du MOTEUR, pas la visibilite
+            // du panneau central : pendant un ciblage (choisir les deux sbires
+            // a activer), le panneau cede la place au selecteur de cibles et le
+            // cartouche se redeployait pour annoncer « La suite arrive… » alors
+            // que le moteur attendait le joueur.
+            questionAuJoueur={moteurAttendLeJoueur}
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}
