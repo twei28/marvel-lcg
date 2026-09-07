@@ -158,8 +158,8 @@
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
       0 0 0 5px rgba(255, 255, 255, 0.1),
-      0 0 0 8px var(--camp-ring, transparent),
-      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+      0 0 11px 2px var(--camp-glow, transparent),
       0 0 0 11px rgba(255, 90, 216, 0.62),
       0 0 30px rgba(255, 210, 74, 0.5),
       0 18px 32px rgba(0, 0, 0, 0.52);
@@ -208,8 +208,8 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       /* Anneau + halo de CAMP (vert joueur / rouge mechant). Transparents par
          defaut : une carte sans camp n'a aucun halo. */
-      0 0 0 8px var(--camp-ring, transparent),
-      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+      0 0 11px 2px var(--camp-glow, transparent),
       0 0 24px var(--state-glow),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
@@ -217,26 +217,27 @@
   /* Halo de camp : on distingue d'un coup d'oeil les cartes du joueur de celles
      du mechant, surtout dans la zone qui melange allies / sbires / environnement
      / treacheries, et pour les complots (joueur vs mechant). */
-  /* Contour de camp DIVISE PAR DEUX (07/09/2026). A pleine intensite, les
-     quatorze cartes de la table etaient cerclees en permanence, vert ou rouge :
-     plus rien ne ressortait, et surtout pas ce qui etait jouable maintenant.
-     Le camp reste lisible, il ne crie plus. */
+  /* Contour de camp DEUX FOIS PLUS FIN (07/09/2026) : l'anneau passe de 8 a
+     4 px et le halo de 22 a 11 px (`--camp-epaisseur`, reglable). A 8 px, les
+     quatorze cartes de la table etaient cerclees d'un bandeau vert ou rouge :
+     plus rien ne ressortait. L'opacite, elle, reste celle d'origine : un
+     contour fin et net dit le camp mieux qu'un contour large et delave. */
   .scan-card.camp-player {
-    --camp-ring: rgba(60, 205, 120, 0.42);
-    --camp-glow: rgba(60, 205, 120, 0.25);
+    --camp-ring: rgba(60, 205, 120, 0.85);
+    --camp-glow: rgba(60, 205, 120, 0.5);
   }
 
   .scan-card.camp-encounter {
-    --camp-ring: rgba(228, 66, 66, 0.42);
-    --camp-glow: rgba(228, 66, 66, 0.25);
+    --camp-ring: rgba(228, 66, 66, 0.85);
+    --camp-glow: rgba(228, 66, 66, 0.5);
   }
 
   .state-playable .scan-frame {
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
       0 0 0 5px rgba(255, 255, 255, 0.1),
-      0 0 0 8px var(--camp-ring, transparent),
-      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+      0 0 11px 2px var(--camp-glow, transparent),
       0 0 26px rgba(71, 220, 139, 0.48),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
@@ -245,8 +246,8 @@
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
       0 0 0 5px rgba(255, 255, 255, 0.1),
-      0 0 0 8px var(--camp-ring, transparent),
-      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+      0 0 11px 2px var(--camp-glow, transparent),
       0 0 28px rgba(255, 210, 74, 0.58),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
@@ -356,8 +357,8 @@
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
       0 0 0 5px rgba(255, 255, 255, 0.1),
-      0 0 0 8px var(--camp-ring, transparent),
-      0 0 22px 4px var(--camp-glow, transparent),
+      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+      0 0 11px 2px var(--camp-glow, transparent),
       0 0 0 13px rgba(255, 210, 74, 0.86),
       0 0 42px 12px rgba(255, 210, 74, 0.62),
       0 18px 32px rgba(0, 0, 0, 0.52);

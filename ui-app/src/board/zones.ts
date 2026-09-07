@@ -14,7 +14,7 @@
 
 import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
-import { representantNemesis, toPileCard, toScanCard, type ContexteCarte } from './card-model'
+import { representantNemesis, scanUrl, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
@@ -50,6 +50,9 @@ export function pastilleRedondante(titreZone: string, carte: ScanCardProps): boo
   return zone === type || zone.split(' ').includes(type) || zone.includes(' ' + type) || zone.startsWith(type + ' ')
 }
 
+/** Un groupe dans une pile ouverte : d'où viennent ces cartes. */
+export type GroupeDePile = { cle: string; titre: string; cartes: ScanCardProps[] }
+
 export type UniteAffichee = {
   cle: string
   carte: ScanCardProps
@@ -62,6 +65,11 @@ export type UniteAffichee = {
   pileContenu?: ScanCardProps[]
   /** Titre de la pile regardable (« Discard pile »...). */
   pileTitre?: string
+  /**
+   * Une pile faite de PLUSIEURS piles (« autres piles ») : à l'ouverture, les
+   * cartes se lisent groupées par origine, un titre par groupe.
+   */
+  pileGroupes?: GroupeDePile[]
   /**
    * Phases A VENIR (vilain ou complot) : posees en petit tas DERRIERE la carte
    * actuelle, pour dire qu'il en reste, sans les etaler sur la table.
@@ -292,6 +300,59 @@ function piles(
     }
     return [unite]
   })
+}
+
+/**
+ * Plusieurs piles fondues en UNE, dessinee comme un dos de carte avec son
+ * compteur (07/09/2026). La zone « Mises de côté / autres piles » dessinait
+ * chaque pile a part, et la premiere visible posait sa pastille de type sur le
+ * titre de la zone. Elle n'a plus que deux paquets : ce qu'on a le droit de
+ * regarder, et ce qui reste cache.
+ *
+ * La pile VISIBLE s'ouvre sur ses cartes groupees par origine (« Pile de
+ * victoire », « Retirées de la partie »...) : voir `pileGroupes`. La pile
+ * CACHEE ne s'ouvre pas : on n'y voit que le nombre.
+ *
+ * Aucune perte pour le moteur : chaque carte contenue est rattachee au
+ * representant (`representantsDePile`), donc ciblable par le selecteur hors
+ * table comme avant.
+ */
+function pileFondue(
+  cle: string,
+  titre: string,
+  listes: Array<{ cle: string; cartes: readonly unknown[] | undefined; titre: string }>,
+  rendu: Rendu,
+  visible: boolean
+): UniteAffichee[] {
+  const groupes = listes
+    .map((pile) => ({ cle: pile.cle, titre: pile.titre, contenu: cartes(pile.cartes, rendu) }))
+    .filter((pile) => pile.contenu.length > 0)
+  if (groupes.length === 0) return []
+  const tout = groupes.flatMap((pile) => pile.contenu)
+  const carte = toPileCard(tout, rendu.ctx)
+  if (!carte) return []
+  const representant = tout.at(-1)
+  const representantId = Number(carte.id)
+  for (const contenue of tout) rendu.representantsDePile.set(contenue.id, representantId)
+  // Un dos de carte, toujours : le contenu se lit en ouvrant la pile, pas sur
+  // la table. Le dos est celui de la derniere carte arrivee.
+  carte.isLandscape = false
+  carte.facedown = true
+  carte.kind = 'unknown'
+  carte.name = titre
+  carte.imageUrl = scanUrl(representant?.down_card_ids[0] ?? 'no_image')
+  const unite: UniteAffichee = { cle: `${cle}-${visible ? 'visibles' : 'cachees'}`, carte, attachees: [] }
+  if (visible) {
+    unite.pileTitre = titre
+    unite.pileGroupes = groupes.map((pile) => ({
+      cle: pile.cle,
+      titre: pile.titre,
+      // Du dessus vers le fond, comme une pile qu'on etale.
+      cartes: [...pile.contenu].reverse().map((c) => toScanCard(c, rendu.ctx)),
+    }))
+    unite.pileContenu = unite.pileGroupes.flatMap((groupe) => groupe.cartes)
+  }
+  return [unite]
 }
 
 /**
@@ -680,51 +741,45 @@ export function construirePlateau(world: World, options: Options): Plateau {
       posees(world.area_evidence, rendu),
       posees(world.area_rule, rendu),
       posees(world.area_resources, rendu),
-      piles(
+      // DEUX paquets, pas une pile par origine (07/09/2026) : chaque pile
+      // dessinee a part posait sa pastille sur le titre de la zone, et la
+      // colonne de 253 px n'en tient que deux par ligne. Le paquet VISIBLE
+      // s'ouvre, groupe par origine ; le paquet CACHE ne montre que son nombre.
+      //
+      // Les vilains mis de cote (Sinister Six) sont montres a cote du vilain
+      // actif (pile « Waiting »), pas ici : on les retire des mises de cote.
+      // Le deck special (Invocation...) et sa defausse sont a gauche du heros.
+      pileFondue(
         'annexes',
+        t('Cartes visibles'),
         [
-          // Les mises de cote du SCENARIO : une PILE, pas des cartes posees.
-          //
-          // Elles etaient dessinees une par une, et Batroc en met QUATRE
-          // identiques (« Rescued Captive ») : dans une colonne de 300 px qui
-          // n'en tient que deux par ligne, la zone debordait sur ses voisines.
-          // Rien ne justifiait ce traitement de faveur — ce sont des cartes en
-          // attente, comme la pile de victoire ou les cartes retirees, qui sont
-          // deja des piles juste a cote.
-          //
-          // Aucune perte : une carte que la table ne dessine pas et que le
-          // moteur propose en cible passe automatiquement par le selecteur hors
-          // table (voir ciblesHorsTable dans interaction.ts, qui filtre sur
-          // idsAffiches). Elles restent donc ciblables, et la pile s'ouvre pour
-          // les regarder.
-          //
-          // Les vilains mis de cote (Sinister Six) sont montres a cote du vilain
-          // actif (pile « Waiting »), pas ici : on les retire de cette pile.
           {
             cle: 'set-aside-scenario',
             cartes: (world.area_set_aside ?? []).filter((carte) => !estVilain(carte)),
-            regardable: true,
             titre: t('Mises de côté du scénario'),
           },
-          // Le deck special (Invocation...) ET sa defausse sont poses a gauche du
-          // heros (voir terrain-soutien), plus ici.
-          { cle: 'mise-de-cote', cartes: notre?.set_aside_deck },
-          {
-            cle: 'victoire',
-            cartes: world.victory_display,
-            regardable: true,
-            titre: t('Pile de victoire'),
-          },
-          {
-            cle: 'retirees',
-            cartes: world.area_removed,
-            regardable: true,
-            titre: t('Retirées de la partie'),
-          },
-          ...decksSupplementaires,
-          ...defaussesSupplementaires,
+          { cle: 'victoire', cartes: world.victory_display, titre: t('Pile de victoire') },
+          { cle: 'retirees', cartes: world.area_removed, titre: t('Retirées de la partie') },
+          ...defaussesSupplementaires.map((pile, index) => ({
+            ...pile,
+            titre: `${t('Défausse supplémentaire')} ${index + 1}`,
+          })),
         ],
-        rendu
+        rendu,
+        true
+      ),
+      pileFondue(
+        'annexes',
+        t('Cartes cachées'),
+        [
+          { cle: 'mise-de-cote', cartes: notre?.set_aside_deck, titre: t('Deck mis de côté') },
+          ...decksSupplementaires.map((pile, index) => ({
+            ...pile,
+            titre: `${t('Deck supplémentaire')} ${index + 1}`,
+          })),
+        ],
+        rendu,
+        false
       ),
     ]),
 

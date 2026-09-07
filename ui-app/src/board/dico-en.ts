@@ -766,4 +766,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Log de la partie': 'Game log',
   'Musique': 'Music',
   'Journal, musique, langue': 'Log, music, language',
+  // ---- Zone « autres piles » : deux paquets (zones.ts, pileFondue) ----
+  'Cartes visibles': 'Face-up cards',
+  'Cartes cachées': 'Face-down cards',
+  'Deck mis de côté': 'Set-aside deck',
+  'Deck supplémentaire': 'Additional deck',
+  'Défausse supplémentaire': 'Additional discard pile',
 }

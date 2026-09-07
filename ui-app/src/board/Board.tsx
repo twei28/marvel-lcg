@@ -26,7 +26,7 @@ import { usePlacement } from './placement/usePlacement'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
-import { pastilleRedondante, type EmplacementAffiche, type Plateau, type UniteAffichee } from './zones'
+import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
 import './board.css'
@@ -161,7 +161,7 @@ function Unite({
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
   effets: Map<number, CardEffectDelta>
-  ouvrirPile: (titre: string, cartes: ScanCardProps[]) => void
+  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
   /** Le nom de la zone qui accueille l'unité, pour taire la pastille qui le
@@ -194,7 +194,7 @@ function Unite({
     !bloquerActionsPassives && !porteur.onSelect && unite.pileContenu
       ? {
           ...porteur,
-          onSelect: () => ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!),
+          onSelect: () => ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!, unite.pileGroupes),
         }
       : porteur
 
@@ -269,7 +269,7 @@ function Emplacement({
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
   effets: Map<number, CardEffectDelta>
-  ouvrirPile: (titre: string, cartes: ScanCardProps[]) => void
+  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
 }) {
@@ -646,9 +646,11 @@ export function Board({
   const [pileRegardee, setPileRegardee] = useState<{
     titre: string
     cartes: ScanCardProps[]
+    groupes?: GroupeDePile[]
   } | null>(null)
   const ouvrirPile = useCallback(
-    (titre: string, cartes: ScanCardProps[]) => setPileRegardee({ titre, cartes }),
+    (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) =>
+      setPileRegardee({ titre, cartes, groupes }),
     []
   )
 
@@ -758,6 +760,7 @@ export function Board({
         <PileRegardee
           titre={pileRegardee.titre}
           cartes={pileRegardee.cartes}
+          groupes={pileRegardee.groupes}
           fermer={() => setPileRegardee(null)}
         />
       ) : null}
@@ -775,10 +778,13 @@ export function Board({
 function PileRegardee({
   titre,
   cartes,
+  groupes,
   fermer,
 }: {
   titre: string
   cartes: ScanCardProps[]
+  /** Une pile faite de plusieurs : un titre par origine (voir pileFondue). */
+  groupes?: GroupeDePile[]
   fermer: () => void
 }) {
   // Survol -> aperçu dans le panneau fixe habituel (a droite), comme sur le
@@ -814,11 +820,26 @@ function PileRegardee({
         </header>
 
         <div className="plateau-regardees-corps">
-          <div className="plateau-regardees-cartes">
-            {cartes.map((carte) => (
-              <ScanCard {...carte} key={carte.id} />
-            ))}
-          </div>
+          {groupes && groupes.length > 0 ? (
+            groupes.map((groupe) => (
+              <section className="plateau-regardees-groupe" key={groupe.cle}>
+                <h2>
+                  {groupe.titre} · {groupe.cartes.length}
+                </h2>
+                <div className="plateau-regardees-cartes">
+                  {groupe.cartes.map((carte) => (
+                    <ScanCard {...carte} key={carte.id} />
+                  ))}
+                </div>
+              </section>
+            ))
+          ) : (
+            <div className="plateau-regardees-cartes">
+              {cartes.map((carte) => (
+                <ScanCard {...carte} key={carte.id} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
       {apercu ? <CarteApercu carte={apercu} /> : null}
