@@ -625,7 +625,14 @@ export function ScanCard({
                     title={`${compteur.value} ${compteur.label}`}
                   >
                     {acceleration && compteur.value <= 1 ? null : <b>{compteur.value}</b>}
-                    {acceleration ? null : <span className="jeton-nom">{compteur.label}</span>}
+                    {acceleration ? null : (
+                      <span
+                        className="jeton-nom"
+                        style={{ '--nom-longueur': String(compteur.label.length) } as CSSProperties}
+                      >
+                        {compteur.label}
+                      </span>
+                    )}
                   </span>
                 )
               })}

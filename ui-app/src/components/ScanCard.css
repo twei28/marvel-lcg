@@ -676,14 +676,19 @@
     aspect-ratio: 246 / 256;
   }
 
+  /* Le nom du compteur tient TOUJOURS dans le jeton (demande de l'utilisateur,
+     7 septembre 2026) : sa taille descend avec sa longueur (`--nom-longueur`,
+     posee par ScanCard), un caractere valant ~0,6 em, dans les 90 % de la
+     largeur du jeton (0,3 carte). Plus de points de suspension. */
   .jeton-nom {
-    font-size: calc(var(--card-w) * 0.062);
+    font-size: min(
+      calc(var(--card-w) * 0.062),
+      calc(var(--card-w) * 0.3 * 0.9 / (var(--nom-longueur, 8) * 0.6))
+    );
     line-height: 1;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
     padding-bottom: 6%;
   }
