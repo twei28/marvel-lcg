@@ -1059,7 +1059,18 @@ export function DeroulePhase({
   // ligne s'allonge d'un terme quand une carte de boost parait.
   const resultat = detailEtape({ ...etape, boosts: etape.boosts.slice(0, boostsMontres) })
   // Avant → apres. Le maximum de PV vient du monde, par le nom de la cible.
-  const compteur = evolutionEtape(etape, etape.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined)
+  // Le seuil d'une manigance vient de l'etape de MENACE qui la vise (le fait
+  // d'activation ne le porte pas) : « 7 → 9 / 12 » plutot que « 7 → 9 ».
+  const plafondConnu =
+    etape.plafond ??
+    etapesAffichees.find(
+      (autre) =>
+        autre.plafond !== undefined && autre.cibleId !== undefined && autre.cibleId === etape.cibleId
+    )?.plafond
+  const compteur = evolutionEtape(
+    { ...etape, plafond: plafondConnu },
+    etape.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined
+  )
   const regle = regleEtape(etape)
   const annulee = texteActivationAnnulee(etape)
 
@@ -1191,6 +1202,7 @@ export function DeroulePhase({
             allyHp={undefined}
             stats={undefined}
             labelType={undefined}
+            camp={undefined}
             masquerType
           />
         ) : (
