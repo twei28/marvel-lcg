@@ -14,6 +14,7 @@
    Pour ajuster une couleur ou une taille : modifier la valeur ci-dessous, rien
    d'autre à toucher, tout le fichier lit ces variables. */
 :root{
+  --ink:#07080c;
   /* Le jaune du plateau (board.css), même valeur : un seul jaune partout. */
   --agir:#ffd45a;
   --agir-encre:#1a1500;                 /* texte posé sur du jaune */
@@ -41,6 +42,13 @@
      méchants ; la bannière « cible actuelle » se réduit à une ligne. */
   --boite-w:72px;
   --boite-h:96px;
+  /* Le Face à face : hauteur de la scène, largeur d'un héros, fond clair de
+     notre camp, fond sombre du leur, et la pente de la diagonale. */
+  --fo-h:340px;
+  --fo-heros-w:190px;
+  --fo-nous-fond:#eceae4;
+  --fo-eux-fond:#2a0b0e;
+  --fo-pente:70px;
   /* La scène en haut de la fiche : hauteur, zoom et cadrage de l'art. */
   --scene-h:min(300px,36dvh);
   --scene-zoom:178%;
@@ -894,33 +902,57 @@ button{cursor:pointer}
 }
 .mod-chip.on{color:var(--agir);border-color:var(--agir);background:rgba(255,212,90,.14)}
 
+/* Le Face à face en diagonale (refonte du 7 septembre). Le bloc entier est
+   le fond du méchant ; notre camp est un panneau clair posé dessus, coupé en
+   biais sur son bord droit, qui empiète de `--fo-pente` sur l'autre moitié.
+   Le tampon VS est centré sur la coupe. Sous 900 px, tout s'empile. */
 .faceoff{
   position:relative;
   display:grid;
-  grid-template-columns:minmax(0,1fr) 120px minmax(0,1fr);
-  align-items:start;
-  gap:18px;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  min-height:var(--fo-h);
   margin-bottom:20px;
+  overflow:hidden;
+  border:1px solid var(--eux-halo);
+  background:
+    radial-gradient(ellipse at 80% 20%,rgba(230,36,41,.28),transparent 55%),
+    linear-gradient(160deg,var(--fo-eux-fond),#0b0608 70%);
 }
-.fo-side{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.fo-side{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px 18px}
+.fo-side.heroes-side{
+  position:relative;
+  z-index:1;
+  width:calc(100% + var(--fo-pente));
+  padding-right:calc(18px + var(--fo-pente));
+  color:var(--ink);
+  background:
+    radial-gradient(circle,rgba(0,0,0,.10) 0 1px,transparent 1.4px) 0 0/9px 9px,
+    var(--fo-nous-fond);
+  clip-path:polygon(0 0,100% 0,calc(100% - var(--fo-pente)) 100%,0 100%);
+}
+.fo-side.villain-side{padding-left:calc(18px + var(--fo-pente) / 2)}
 .fo-label{font-size:40px;line-height:.9;text-transform:uppercase}
-.fo-label.heroes{color:var(--nous);text-shadow:2px 2px 0 #000}
-.fo-label.villain{color:var(--red2);text-shadow:2px 2px 0 #000}
+.fo-label.heroes{color:var(--ink);text-shadow:2px 2px 0 rgba(0,0,0,.14)}
+.fo-label.villain{color:var(--eux2);text-shadow:2px 2px 0 #000}
 .fo-cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.fo-card{width:174px;text-align:center}
-.fo-card img{
-  display:block;
+.fo-card{width:var(--fo-heros-w);text-align:center}
+/* Plus de deux héros : chacun se resserre pour tenir dans la moitié. */
+.faceoff.large .fo-card{width:calc(var(--fo-heros-w) * .78)}
+.fo-scene{
   width:100%;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 16px 34px rgba(0,0,0,.62);
+  aspect-ratio:3/4;
+  background:#10141f center 24%/195% no-repeat;   /* au-dessus du bandeau de titre, au-dessus de la ligne de traits */
+  border:1px solid rgba(0,0,0,.25);
+  box-shadow:0 16px 34px rgba(0,0,0,.35);
+  cursor:zoom-in;
 }
-.fo-card.villain img{border-color:rgba(230,36,41,.55)}
-.fo-cap{margin-top:8px;font-size:23px;line-height:.9;text-transform:uppercase;text-shadow:1px 1px 0 #000}
-.fo-cap span{display:block;margin-top:4px;color:var(--mute);font:400 11px "Segoe UI",system-ui,sans-serif;text-transform:none}
+.fo-scene.villain{border-color:var(--eux-halo);box-shadow:0 16px 34px rgba(0,0,0,.62);background-size:185%;background-position:center 22%}
+.fo-card.villain{width:calc(var(--fo-heros-w) * 1.15)}
+.fo-cap{margin-top:8px;font-size:23px;line-height:.9;text-transform:uppercase}
+.fo-cap span{display:block;margin-top:4px;color:rgba(0,0,0,.6);font:400 11px "Segoe UI",system-ui,sans-serif;text-transform:none}
 .fo-empty{
-  width:174px;
-  height:244px;
+  width:var(--fo-heros-w);
+  aspect-ratio:3/4;
   display:grid;
   place-items:center;
   color:var(--mute);
@@ -928,18 +960,21 @@ button{cursor:pointer}
   background:rgba(16,18,25,.6);
 }
 .fo-vs{
-  align-self:center;
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
   display:grid;
   place-items:center;
-  width:116px;
-  height:116px;
+  width:104px;
+  height:104px;
   color:#fff;
-  font-size:78px;
+  font-size:70px;
   line-height:.8;
-  background:var(--red);
+  background:var(--eux);
   border:4px solid #fff;
   box-shadow:6px 6px 0 #000;
-  transform:rotate(-5deg);
+  transform:translate(-50%,-50%) rotate(-5deg);
 }
 .fo-vname{font-size:36px;line-height:.9;text-align:center;text-transform:uppercase;color:#fff;text-shadow:2px 2px 0 #000}
 .fo-vsub{text-align:center;color:var(--dim);font-size:12px}
@@ -969,8 +1004,10 @@ button{cursor:pointer}
   .step-head h1{font-size:42px}
   .command-band{align-items:flex-start;flex-direction:column}
   .search{min-width:100%;width:100%}
-  .faceoff{grid-template-columns:1fr;gap:20px}
-  .fo-vs{margin:0 auto;transform:rotate(-5deg)}
+  .faceoff{grid-template-columns:1fr;gap:0}
+  .fo-side.heroes-side{width:100%;padding-right:18px;clip-path:none}
+  .fo-side.villain-side{padding-left:18px}
+  .fo-vs{position:static;margin:-52px auto;transform:rotate(-5deg)}
 }
 @media(max-width:560px){
   .brand-title{font-size:27px}
@@ -984,7 +1021,6 @@ button{cursor:pointer}
   .target-art{width:120px}
   .target-copy strong{font-size:34px}
   .fo-card,.fo-empty{width:146px}
-  .fo-empty{height:204px}
 }
 
 

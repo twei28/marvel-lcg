@@ -2451,17 +2451,23 @@ function stepSummary() {
     );
     const v = validate(state);
     const sc = state.scenario;
+    // Le Face à face « en scène » (refonte du 7 septembre) : l'écran est coupé
+    // en diagonale, notre camp à gauche sur fond clair, le méchant à droite
+    // sur fond sombre, chacun en ART recadré plein cadre plutôt qu'en petite
+    // carte. La carte reste à un survol de distance.
+    const scene = (idImage, nom, classe) => el("div", {
+        class: "fo-scene " + (classe || ""),
+        style: { backgroundImage: `url("${cardImageUrl(idImage)}")` },
+        title: nom,
+        onmouseenter: (e) => showCardHover(idImage, e.currentTarget),
+        onmouseleave: scheduleHide,
+    });
     const heroCards = el("div", { class: "fo-cards" });
     for (let i = 0; i < state.playerCount; i++) {
         const p = state.players[i];
         heroCards.append(p.hero
             ? el("div", { class: "fo-card" },
-                el("img", {
-                    src: cardImageUrl(picIdHeros(p.hero.heroCardId)),
-                    alt: p.hero.name,
-                    onmouseenter: (e) => showCardHover(picIdHeros(p.hero.heroCardId), e.currentTarget),
-                    onmouseleave: scheduleHide,
-                }),
+                scene(picIdHeros(p.hero.heroCardId), p.hero.name),
                 el("div", { class: "fo-cap mvl" }, p.hero.name, el("span", {}, p.deckSource === "base" ? t("Deck de base") : (p.deck ? p.deck.name : ""))),
             )
             : el("div", { class: "fo-empty" }, t("Joueur") + " " + (i + 1)));
@@ -2469,9 +2475,9 @@ function stepSummary() {
     const villCards = el("div", { class: "fo-cards villain-cards" });
     const vc = sc ? ((sc.villainCards && sc.villainCards.length) ? sc.villainCards : [sc.tileImage].filter(Boolean)) : [];
     (vc.length ? vc : [null]).forEach((id) => villCards.append(id
-        ? el("div", { class: "fo-card villain" }, el("img", { src: cardImageUrl(id), alt: sc.name }))
+        ? el("div", { class: "fo-card villain" }, scene(id, sc.name, "villain"))
         : el("div", { class: "fo-empty" }, "-")));
-    wrap.append(el("div", { class: "faceoff" },
+    wrap.append(el("div", { class: "faceoff" + (state.playerCount > 2 ? " large" : "") },
         el("div", { class: "fo-side heroes-side" }, el("div", { class: "fo-label heroes mvl" }, t("Héros")), heroCards),
         el("div", { class: "fo-vs mvl" }, "VS"),
         el("div", { class: "fo-side villain-side" },
