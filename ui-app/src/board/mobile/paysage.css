@@ -10,20 +10,46 @@
   /* --- Le plateau ------------------------------------------------------------
      Deux rangees de hauteur egale, la main qui flotte par-dessus (hors flux,
      voir .main-eventail dans medaillon.css), la barre du bas. La largeur de
-     carte se DEDUIT de la hauteur : meme formule que taille-carte.ts. */
-  .plateau-paysage {
+     carte se DEDUIT de la hauteur : meme formule que taille-carte.ts.
+
+     medaillon.css pose SA PROPRE grille sur `.plateau-mobile.est-paysage`
+     (colonnes piles/rangees, aires nommees) pour l'ancien rendu a medaillons ;
+     il reste en place jusqu'au sous-projet 3, on ne le touche pas. Ce
+     selecteur-ci doit donc etre au moins aussi specifique (0-3-0) pour gagner
+     dans la meme couche, et neutraliser explicitement colonnes et aires. */
+  .plateau-mobile.plateau-paysage.est-paysage,
+  .plateau-mobile.plateau-paysage.est-portrait {
     --pp-etiquette-h: 14px;
     --pp-main-h: 90px;
-    --pm-barre-h: 48px;
     --pp-card-w: clamp(84px, calc((100dvh - 166px) / 2 * 63 / 88), 150px);
     box-sizing: border-box;
     position: relative;
     display: grid;
+    grid-template-columns: none;
     grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: none;
     height: 100dvh;
     padding-top: env(safe-area-inset-top, 0px);
     overflow: hidden;
     background: var(--fond, #0d0f13);
+  }
+
+  /* Hauteur de barre deterministe : medaillon.css pose --pm-barre-h a la
+     meme specificite (0-1-0, ordre d'emission incertain) et l'ecrase a 92px
+     avec :has(.pm-onglets) (0-2-0). On la reprend ici a specificite egale. */
+  .plateau-mobile.plateau-paysage {
+    --pm-barre-h: 48px;
+  }
+
+  .plateau-mobile.plateau-paysage:has(.pm-onglets) {
+    --pm-barre-h: 92px;
+  }
+
+  /* medaillon.css case la main et la barre dans ses aires nommees ; les
+     aires sont neutralisees ci-dessus, mais grid-area doit l'etre aussi. */
+  .plateau-mobile.plateau-paysage .main-eventail,
+  .plateau-mobile.plateau-paysage .pm-barre {
+    grid-area: auto;
   }
 
   .pp-rangees {
@@ -37,12 +63,17 @@
   /* Le cartouche du deroule (DeroulePhase, board.css) est pose en fixed a
      31vh du bas pour la scene PC. Ici il prend la place de la main : elle n'est
      pas jouable pendant la phase du mechant, et la hauteur ne permet pas les
-     deux. */
+     deux. Valeurs figees (pas var(--pm-barre-h)) : ce cartouche est pose sur
+     BODY, qui ne voit pas la variable posee sur .plateau-mobile. */
   body.mode-plateau-paysage .deroule-phase {
-    bottom: var(--pm-barre-h, 48px);
+    bottom: 48px;
     width: calc(100vw - 24px);
     max-height: calc(100dvh - 48px - 16px);
     padding: 10px 14px 12px;
+  }
+
+  body.mode-plateau-paysage:has(.pm-onglets) .deroule-phase {
+    bottom: 92px;
   }
 
   /* --- Une carte posee ------------------------------------------------------ */

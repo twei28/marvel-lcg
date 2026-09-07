@@ -133,6 +133,15 @@ export function PlateauPaysage({
   const [ennemie, heros] = rangees
   const joueurActif = joueurDeLIdentite(heros, heroActifId, playerId)
 
+  // Memorises : sans quoi RangeeCartes recevrait un nouveau tableau de
+  // groupes a chaque rendu du parent, et son ResizeObserver se deconnecterait
+  // et se reconnecterait a chaque fois (son effet depend de `groupes`).
+  const groupesEnnemie = useMemo(
+    () => [{ cle: 'ennemie', unites: unitesDe(ennemie.defilants) }],
+    [ennemie]
+  )
+  const groupesDeHeros = useMemo(() => groupesHeros(heros, joueurActif), [heros, joueurActif])
+
   const ciblesDe = (rangee: RangeeAffichee): number =>
     unitesDe(rangee.defilants).filter((unite) => {
       const etat = interactifs.get(Number(unite.carte.id))
@@ -178,7 +187,7 @@ export function PlateauPaysage({
         <RangeeCartes
           cle="ennemie"
           titre={ennemie.titre}
-          groupes={[{ cle: 'ennemie', unites: unitesDe(ennemie.defilants) }]}
+          groupes={groupesEnnemie}
           piles={unitesDe(ennemie.epingles)}
           cibles={ciblesEnnemie || undefined}
           effets={effets}
@@ -188,7 +197,7 @@ export function PlateauPaysage({
         <RangeeCartes
           cle="heros"
           titre={`${heros.titre} · ${phaseAffichee(world.phase)}`}
-          groupes={groupesHeros(heros, joueurActif)}
+          groupes={groupesDeHeros}
           piles={unitesDe(heros.epingles)}
           cibles={ciblesHeros || undefined}
           effets={effets}
