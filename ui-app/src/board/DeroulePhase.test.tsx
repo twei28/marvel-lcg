@@ -2077,6 +2077,53 @@ describe('le bilan de fin de phase', () => {
       expect(screen.queryByRole('button')).toBeNull()
     })
 
+    it('garde la scene et y loge la question quand on la lui donne', () => {
+      // Livraison C de la spec du 7 septembre 2026 : « Defendre ? » se decide
+      // en voyant l'attaque, dans la scene, a la place de Suivant.
+      const annonce: EtapeDeroule[] = [
+        {
+          cle: 'activation:1',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Ultron',
+          cibleNom: 'Shuri',
+          etat: 'annonce',
+          valeurAnnoncee: 3,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase
+          etapes={annonce}
+          phaseMechantEnCours
+          questionAuJoueur
+          question={<button type="button">Défendre</button>}
+          onTerminer={() => {}}
+        />
+      )
+      // La scene entiere : chronologie, cartes de l'etape, titre de
+      // l'intention, et la question a la place des boutons du cartouche.
+      expect(container.querySelector('.deroule-phase.est-replie')).toBeNull()
+      expect(container.querySelector('.deroule-cartes')).not.toBeNull()
+      expect(screen.getByText('Ultron va attaquer Shuri')).toBeInTheDocument()
+      expect(container.querySelector('.deroule-question-scene')).not.toBeNull()
+      expect(screen.getByRole('button', { name: 'Défendre' })).toBeInTheDocument()
+      expect(screen.queryByText('Suivant')).not.toBeInTheDocument()
+      expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
+    })
+
+    it('se replie comme avant quand la question ne lui est pas donnee', () => {
+      // Un ciblage sur la table : la scene laisse la place, la table doit
+      // rester cliquable.
+      const { container } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours questionAuJoueur onTerminer={() => {}} />
+      )
+      expect(container.querySelector('.deroule-phase.est-replie')).not.toBeNull()
+    })
+
     it('se redeploie sur la meme etape une fois la question resolue', () => {
       const cartouche = (questionAuJoueur: boolean) => (
         <DeroulePhase

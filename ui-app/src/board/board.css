@@ -877,6 +877,22 @@
     pointer-events: none;
   }
 
+  /* Le panneau loge dans la scene du deroule (DeroulePhase, prop `question`) :
+     il coule dans la scene, a la place de ses boutons. */
+  .demande-centrale.est-en-scene {
+    position: static;
+    transform: none;
+    width: auto;
+    z-index: auto;
+    pointer-events: auto;
+  }
+
+  .deroule-question-scene {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
   .evenement-centrale {
     position: fixed;
     z-index: 91;

@@ -16,7 +16,7 @@
 // chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import {
   arreterSurDefaite,
@@ -95,6 +95,7 @@ export function DeroulePhase({
   questionAuJoueur = false,
   carteScene,
   dosRencontre,
+  question,
   herosLocauxIds,
   attendUnAutreJoueur = false,
   nomJoueurAttendu,
@@ -181,6 +182,15 @@ export function DeroulePhase({
   carteScene?: (id: number, faceVisible: boolean) => ScanCardProps | undefined
   /** Le dos d'une carte rencontre, pour l'etape de distribution. */
   dosRencontre?: ScanCardProps
+  /**
+   * LA QUESTION DU MOTEUR, RENDUE PAR LE PLATEAU (board.tsx : le panneau
+   * `DemandeCentrale` en mode scene). Quand elle est donnee, la scene reste
+   * entiere (chronologie, cartes, intention) et la loge a la place de ses
+   * boutons : « Defendre ? » se decide en voyant l'attaque. Sans elle, la
+   * scene se replie comme avant, parce que la question se joue sur la table
+   * (un ciblage) et que la table doit rester cliquable.
+   */
+  question?: ReactNode
   /**
    * LES DEUX FACES DU HEROS DE CE SIEGE (board.tsx : `herosLocauxIds`, lu sur
    * `?p=` et non sur la vue affichee).
@@ -1128,44 +1138,6 @@ export function DeroulePhase({
       <p className="deroule-timeout">{texteTempsParDecision()}</p>
     ) : null
 
-  // Le moteur pose une question au joueur : le cartouche s'efface devant
-  // elle. Ni titre, ni bouton, ni « La suite arrive… » (ce serait un
-  // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
-  // joueur sache toujours ou il en est, et la mention dit qui attend qui.
-  if (questionAuJoueur) {
-    return (
-      <>
-        <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
-          <div className="deroule-chrono">{chronologie}</div>
-          {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
-              le second temps de la decision 7 : « Klaw va attaquer Colossus,
-              tu peux defendre ou repondre ». Sur toute autre etape, le
-              cartouche se tait — le moteur attend le joueur, et rien de ce que
-              le cartouche pourrait ajouter n'aiderait a repondre.
-
-              La mention de la fenetre ne parait QUE la : c'est la seule
-              condition qui prouve que le moteur pose vraiment une question au
-              joueur local. L'ecrire sur une annonce muette inviterait a
-              chercher une reponse qui n'existe pas. */}
-          {etapeEstAnnonce ? (
-            <>
-              <p className="deroule-titre">{titreEtape(etape)}</p>
-              {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
-              <p className="deroule-fenetre" aria-live="polite">
-                {texteFenetreReponse()}
-              </p>
-            </>
-          ) : (
-            <p className="deroule-question" aria-live="polite">
-              {t('Le moteur attend ta réponse')}
-            </p>
-          )}
-          {mentionTempsParDecision}
-        </section>
-      </>
-    )
-  }
-
   // LES CARTES DE LA SCENE. Toutes a la meme taille (board.css,
   // `.deroule-cartes` fixe `--card-w`), face visible, lues dans l'index du
   // monde par `carteScene` : la carte revelee et les boosts sont encore face
@@ -1238,6 +1210,65 @@ export function DeroulePhase({
         ) : null}
       </div>
     ) : null
+
+  // Le moteur pose une question au joueur : le cartouche s'efface devant
+  // elle. Ni titre, ni bouton, ni « La suite arrive… » (ce serait un
+  // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
+  // joueur sache toujours ou il en est, et la mention dit qui attend qui.
+  if (questionAuJoueur && question) {
+    return (
+      <section className="deroule-phase est-question" role="dialog" aria-label={t('Phase du méchant')}>
+        <div className="deroule-chrono">{chronologie}</div>
+        {cartesScene}
+        {/* L'intention reste dite au-dessus de la question : « Ultron va
+            attaquer Shuri », et le joueur decide en voyant le coup. Sur toute
+            autre etape (l'ordre des sbires se demande avant tout fait), la
+            scene garde ses cartes et se tait : la question dit tout. */}
+        {etapeEstAnnonce ? (
+          <div className="deroule-entete">
+            <p className="deroule-titre">{titreEtape(etape)}</p>
+          </div>
+        ) : null}
+        {etapeEstAnnonce && resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+        <div className="deroule-question-scene">{question}</div>
+        {mentionTempsParDecision}
+      </section>
+    )
+  }
+
+  if (questionAuJoueur) {
+    return (
+      <>
+        <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
+          <div className="deroule-chrono">{chronologie}</div>
+          {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
+              le second temps de la decision 7 : « Klaw va attaquer Colossus,
+              tu peux defendre ou repondre ». Sur toute autre etape, le
+              cartouche se tait — le moteur attend le joueur, et rien de ce que
+              le cartouche pourrait ajouter n'aiderait a repondre.
+
+              La mention de la fenetre ne parait QUE la : c'est la seule
+              condition qui prouve que le moteur pose vraiment une question au
+              joueur local. L'ecrire sur une annonce muette inviterait a
+              chercher une reponse qui n'existe pas. */}
+          {etapeEstAnnonce ? (
+            <>
+              <p className="deroule-titre">{titreEtape(etape)}</p>
+              {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+              <p className="deroule-fenetre" aria-live="polite">
+                {texteFenetreReponse()}
+              </p>
+            </>
+          ) : (
+            <p className="deroule-question" aria-live="polite">
+              {t('Le moteur attend ta réponse')}
+            </p>
+          )}
+          {mentionTempsParDecision}
+        </section>
+      </>
+    )
+  }
 
   return (
     <>

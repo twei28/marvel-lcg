@@ -26,6 +26,12 @@ type DemandeCentraleProps = {
    * carteNommeeParOption dans board.tsx.
    */
   carteDeLOption?: (option: Option) => ScanCardProps | undefined
+  /**
+   * Loge dans la scene du deroule detaille (DeroulePhase, prop `question`)
+   * plutot que pose au centre de la table : plus de placement, plus de
+   * position fixe, le panneau coule dans la scene a la place de ses boutons.
+   */
+  enScene?: boolean
 }
 
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
@@ -213,6 +219,7 @@ export function DemandeCentrale({
   annuler,
   survolerOption,
   carteDeLOption,
+  enScene = false,
 }: DemandeCentraleProps) {
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
   // Carte regardee : l'agrandissement s'ouvre au survol du bouton, comme au
@@ -233,7 +240,7 @@ export function DemandeCentrale({
   // l'attend. Quand une carte agrandie le recouvre, c'est ELLE qui passe devant
   // (z-index 400 contre 92) — le panneau est permanent, l'agrandissement non.
   const panneau = useRef<HTMLElement | null>(null)
-  const { style } = usePlacement(panneau, { candidats: ['centre'], signature })
+  const { style } = usePlacement(panneau, { candidats: ['centre'], signature, actif: !enScene })
 
   useEffect(() => {
     setRaisonVisible(undefined)
@@ -266,8 +273,8 @@ export function DemandeCentrale({
   return (
     <section
       ref={panneau}
-      className="demande-centrale"
-      style={style}
+      className={`demande-centrale${enScene ? ' est-en-scene' : ''}`}
+      style={enScene ? undefined : style}
       role="dialog"
       aria-label="Game decision"
       aria-live="polite"

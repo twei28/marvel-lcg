@@ -2428,6 +2428,14 @@ function PagePartie({
   // carte, une animation d'effet en cours.
   const afficherDemandeCentrale =
     moteurAttendLeJoueur && effets.size === 0 && !interaction.option && !carteMenu
+  // Pendant la phase du mechant en Detaille, la question du moteur se joue
+  // DANS la scene du deroule (livraison C de la spec du 7 septembre 2026) :
+  // « Defendre ? » se decide en voyant l'attaque. Le panneau central se tait
+  // alors, et DeroulePhase recoit la meme question par sa prop `question`.
+  // Un ciblage (`interaction.option`) n'est pas concerne : le panneau cede
+  // deja la place a la table, et la scene se replie pour la laisser cliquable.
+  const questionEnScene =
+    modePhase === 'detaille' && phaseMechantEnCours && afficherDemandeCentrale && etat.demande !== undefined
   // etat.validationRequise n'entre pas dans la condition ci-dessous : c'est
   // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
   // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
@@ -2491,7 +2499,7 @@ function PagePartie({
         />
       ) : null}
 
-      {afficherDemandeCentrale && etat.demande ? (
+      {afficherDemandeCentrale && etat.demande && !questionEnScene ? (
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
@@ -2654,6 +2662,21 @@ function PagePartie({
             // l'etape de distribution (voir `carteScene` plus haut).
             carteScene={carteScene}
             dosRencontre={dosRencontre}
+            // La question du moteur, logee dans la scene (voir `questionEnScene`).
+            question={
+              questionEnScene && etat.demande ? (
+                <DemandeCentrale
+                  demande={etat.demande}
+                  options={interaction.options}
+                  cartesParId={cartesMondeParId}
+                  choisirOption={choisirOptionDepuisMenu}
+                  annuler={interaction.annuler}
+                  survolerOption={setOptionSurvolee}
+                  carteDeLOption={carteDeLOption}
+                  enScene
+                />
+              ) : undefined
+            }
             // Les deux faces de NOTRE heros : la chute d'un autre joueur ne
             // coupe plus le deroule de ce siege-ci, elle y reste une etape
             // marquee et la phase continue (constat F5).
