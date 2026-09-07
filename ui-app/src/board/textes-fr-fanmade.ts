@@ -32,7 +32,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // fne — Daredevil (Hero)
   '60001a': "<i>Sens surhumains</i> — <b>Action</b> : jouez la carte du dessus du deck [[Sense]] comme si elle était dans votre main <i>(en payant son coût)</i>.",
   // fne — Matt Murdock (AlterEgo)
-  '60001b': "Matt Murdock commence la partie avec un deck [[Sense]]. <i>(Voir le livret de règles p. 26.)</i>\n<b>Interruption Obligatoire</b> : quand une amélioration [[Sense]] devrait quitter le jeu, placez-la plutôt sous le deck [[Sense]].",
+  '60001b': "Matt Murdock commence la partie avec un deck [[Sense]]. <i>(Voir le livret de règles p. 26.)</i>\n<b>Interruption forcée</b> : quand une amélioration [[Sense]] devrait quitter le jeu, placez-la plutôt sous le deck [[Sense]].",
   // fne — Acute Tactility (Upgrade)
   '60002': "Attachez-la à un ennemi ou à une manigance.\n<b>Interruption</b> : quand vous mettez K.O. l'ennemi attaché ou retirez la dernière menace de la manigance attachée, défaussez cette carte → redressez votre identité.",
   // fne — Enhanced Olfaction (Upgrade)
@@ -44,21 +44,21 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // fne — Superior Taste (Upgrade)
   '60006': "Attachez-la à une manigance.\n<b>Réponse</b> <i>(contre)</i> : après avoir contré la manigance attachée, défaussez cette carte → retirez 2 menaces de cette manigance.",
   // fne — Elektra (Ally)
-  '60007': "[star] <b>Interruption Obligatoire (Héros)</b> : quand Elektra devrait subir des dégâts consécutifs, Daredevil les subit à sa place.",
+  '60007': "[star] <b>Interruption forcée (Héros)</b> : quand Elektra devrait subir des dégâts consécutifs, Daredevil les subit à sa place.",
   // fne — Cross-Examination (Event)
   '60008': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Pour chaque amélioration attachée à cet ennemi, vous pouvez lui infliger 1 dégât supplémentaire.",
   // fne — Deposition (Event)
-  '60009': "<b>Action d'identité civile</b> <i>(contre)</i> : vous pouvez choisir n'importe quelle amélioration du deck [[Sense]] et la jouer en ignorant son coût en ressources. <i>(Ne mélangez pas.)</i> Retirez 2 menaces d'une manigance.",
+  '60009': "<b>Action d'alter ego</b> <i>(contre)</i> : vous pouvez choisir n'importe quelle amélioration du deck [[Sense]] et la jouer en ignorant son coût en ressources. <i>(Ne mélangez pas.)</i> Retirez 2 menaces d'une manigance.",
   // fne — Living Lie Detector (Event)
   '60010': "<b>Action</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Pour chaque amélioration attachée à cette manigance, vous pouvez en retirer 1 menace supplémentaire.",
   // fne — Raising Hell (Event)
   '60011': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à chaque ennemi par amélioration attachée à cet ennemi (3 dégâts à la place si Daredevil a le trait [[Aerial]]).",
   // fne — Focus the Senses (PlayerSideScheme)
-  '60012': "La menace de cette manigance ne peut être retirée que par Daredevil ou Matt Murdock.\n<b>Quand déjouée</b> : vous pouvez déplacer autant d'améliorations [[Sense]] en jeu que vous le souhaitez vers d'autres cartes auxquelles elles peuvent s'attacher. Choisissez autant d'améliorations du deck [[Sense]] que vous le souhaitez et mettez-les en jeu. <i>(Ne mélangez pas.)</i>",
+  '60012': "La menace de cette manigance ne peut être retirée que par Daredevil ou Matt Murdock.\n<b>Une fois déjouée</b> : vous pouvez déplacer autant d'améliorations [[Sense]] en jeu que vous le souhaitez vers d'autres cartes auxquelles elles peuvent s'attacher. Choisissez autant d'améliorations du deck [[Sense]] que vous le souhaitez et mettez-les en jeu. <i>(Ne mélangez pas.)</i>",
   // fne — Foggy Nelson (Support)
-  '60013': "<b>Action d'identité civile</b> : inclinez Foggy Nelson → retirez 2 menaces d'une manigance.",
+  '60013': "<b>Action d'alter ego</b> : inclinez Foggy Nelson → retirez 2 menaces d'une manigance.",
   // fne — Karen Page (Support)
-  '60014': "<b>Action</b> : inclinez Karen Page → mélangez 1 carte Daredevil de votre pile de défausse dans votre deck. Si vous êtes en forme d'identité civile, piochez 1 carte.",
+  '60014': "<b>Action</b> : inclinez Karen Page → mélangez 1 carte Daredevil de votre pile de défausse dans votre deck. Si vous êtes sous forme d'alter ego, piochez 1 carte.",
   // fne — Nelson and Murdock (Support)
   '60015': "<b>Réponse</b> : après qu'un personnage ou un soutien [[Attorney]] a déjoué une manigance annexe, désorientez un ennemi.",
   // fne — Sister Maggie (Support)
@@ -78,51 +78,51 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // fne — Know Your Enemy (Event)
   '60023': "[star] Réduction 1 ([[Martial Artist]]).\n<b>Action de héros</b> <i>(contre)</i> : retirez 1 menace d'une manigance. Retirez 1 menace d'une manigance.",
   // fne — De-escalation (PlayerSideScheme)
-  '60024': "Victoire 0.\n<b>Quand déjouée</b> : retirez un jeton d'accélération du jeu.",
+  '60024': "Victoire 0.\n<b>Une fois déjouée</b> : retirez un jeton d'accélération du jeu.",
   // fne — Legal Trouble (Upgrade)
-  '60026': "[star] Réduction 1 ([[Attorney]] ou [[Police]]).\nAttachez-la à un sbire. Maximum 1 par sbire.\nLe sbire attaché subit -2 MNG.",
+  '60026': "[star] Réduction 1 ([[Attorney]] ou [[Police]]).\nAttachez-la à un sbire. 1 max par sbire.\nLe sbire attaché subit -2 MNG.",
   // fne — Move in Shadow (Upgrade)
-  '60027': "[star] Réduction 1 ([[Martial Artist]] ou [[Spy]]).\nTemporaire. Maximum 1 par joueur.\n<b>Réponse</b> <i>(contre)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, retirez 1 menace d'une manigance.",
+  '60027': "[star] Réduction 1 ([[Martial Artist]] ou [[Spy]]).\nTemporaire. 1 max par joueur.\n<b>Réponse</b> <i>(contre)</i> : après avoir joué une carte <i>(y compris celle-ci)</i>, retirez 1 menace d'une manigance.",
   // fne — Stealth Training (Upgrade)
-  '60028': "Jouez-la sous le contrôle de n'importe quel joueur. Maximum 1 par joueur.\n<b>Réponse</b> : après avoir contré et déjoué exactement une manigance annexe, inclinez Stealth Training → sonnez un ennemi.",
+  '60028': "Jouez-la sous le contrôle de n'importe quel joueur. 1 max par joueur.\n<b>Réponse</b> : après avoir contré et déjoué exactement une manigance annexe, inclinez Stealth Training → sonnez un ennemi.",
   // fne — Stick (Support)
   '60029': "<b>Interruption</b> : quand un personnage allié [[Martial Artist]] utilise un pouvoir de base, choisissez :\n• Inclinez Stick → ce personnage gagne +1 à ce pouvoir de base pour cette utilisation.\n• Ce personnage subit -1 à ce pouvoir de base pour cette utilisation. Redressez Stick.",
   // fne — Contingency Planning (Upgrade)
-  '60030': "Maximum 1 par joueur.\nVous pouvez jouer l'amélioration glissée sous cette carte comme si elle était dans votre main.\n<b>Action</b> : choisissez 1 amélioration de votre main pouvant s'attacher à un sbire ou à une manigance annexe. Glissez cette amélioration sous cette carte (maximum 1).",
+  '60030': "1 max par joueur.\nVous pouvez jouer l'amélioration glissée sous cette carte comme si elle était dans votre main.\n<b>Action</b> : choisissez 1 amélioration de votre main pouvant s'attacher à un sbire ou à une manigance annexe. Glissez cette amélioration sous cette carte (maximum 1).",
   // fne — Dance with the Devil (Upgrade)
-  '60031': "Team-Up (Daredevil et Elektra). Maximum 1 par deck.\nAttachez-la à un ennemi.\n<b>Action de héros</b> <i>(attaque)</i> : défaussez cette carte → infligez 3 dégâts à l'ennemi attaché.",
+  '60031': "En Équipe (Daredevil et Elektra). 1 max par deck.\nAttachez-la à un ennemi.\n<b>Action de héros</b> <i>(attaque)</i> : défaussez cette carte → infligez 3 dégâts à l'ennemi attaché.",
   // fne — Sensory Overload (Obligation)
-  '60032': "<b><i>Donnez-la au joueur Matt Murdock.</i></b>\n<b>Réponse Obligatoire</b> : après qu'une amélioration [[Sense]] est entrée en jeu, subissez 1 dégât.\n<b>Réponse d'identité civile</b> : après avoir récupéré, défaussez cette carte.",
+  '60032': "<b><i>Donnez-la au joueur Matt Murdock.</i></b>\n<b>Réponse forcée</b> : après qu'une amélioration [[Sense]] est entrée en jeu, subissez 1 dégât.\n<b>Réponse d'alter ego</b> : après avoir récupéré, défaussez cette carte.",
   // fne — Bullseye (Minion)
-  '60033': "<b>Une fois révélée</b> : choisissez :\n• Défaussez un soutien [[Persona]] que vous contrôlez.\n• Bullseye vous attaque <i>(même en forme d'identité civile)</i>.",
+  '60033': "<b>Une fois révélée</b> : choisissez :\n• Défaussez un soutien [[Persona]] que vous contrôlez.\n• Bullseye vous attaque <i>(même sous forme d'alter ego)</i>.",
   // fne — Deadliest Man Alive (SideScheme)
-  '60034': "<b>Interruption Obligatoire</b> : quand Bullseye attaque, donnez-lui une carte de boost face cachée.",
+  '60034': "<b>Interruption forcée</b> : quand Bullseye attaque, donnez-lui une carte de boost face cachée.",
   // fne — Stolen Sai (Attachment)
   '60035': "Attachez-la à l'ennemi ayant l'ATQ la plus élevée.\n[star] Les attaques du personnage attaché gagnent perçant.\n<b>Action de héros</b> : dépensez des ressources [physical] [physical] → choisissez soit d'attacher cette carte à Elektra, soit de la défausser.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne perçant.",
   // fne — Eye on the Target (Treachery)
-  '60036': "<b>Une fois révélée</b> : choisissez :\n• Retirez de la partie un allié ou un soutien [[Persona]] que vous contrôlez.\n• Bullseye vous attaque <i>(même en forme d'identité civile)</i>. S'il n'est pas en jeu, trouvez-le et révélez-le.",
+  '60036': "<b>Une fois révélée</b> : choisissez :\n• Retirez de la partie un allié ou un soutien [[Persona]] que vous contrôlez.\n• Bullseye vous attaque <i>(même sous forme d'alter ego)</i>. S'il n'est pas en jeu, trouvez-le et révélez-le.",
   // fne — Echo (Hero)
   '60037a': "<i>Observer et apprendre</i> — <b>Réponse</b> : après qu'un joueur a joué un événement d'aspect ou de base, glissez cet événement sous cette carte depuis la pile de défausse de ce joueur. Puis, s'il y a plus de 3 cartes glissées ici, défaussez-les toutes sauf 3.",
   // fne — Maya Lopez (AlterEgo)
-  '60037b': "<i>C'est en forgeant qu'on devient forgeron</i> — <b>Interruption</b> : quand vous passez en forme de héros, cherchez un événement d'aspect ou de base dans votre deck et ajoutez-le à votre main. <i>(Mélangez.)</i>",
+  '60037b': "<i>C'est en forgeant qu'on devient forgeron</i> — <b>Interruption</b> : quand vous passez sous forme de héros, cherchez un événement d'aspect ou de base dans votre deck et ajoutez-le à votre main. <i>(Mélangez.)</i>",
   // fne — Innate Reflexes (Upgrade)
-  '60038': "Départ. <i>(Vous pouvez ajouter cette carte à votre main avant de piocher votre main de départ.)</i>\nVotre héros gagne +1 DEF.",
+  '60038': "Mise en place.\nVotre héros gagne +1 DEF.",
   // fne — Daredevil (Ally)
   '60039': "[star] <b>Réponse</b> : après que Daredevil a utilisé un pouvoir de base, réduisez de 1 le coût du prochain événement que vous jouez ce round.",
   // fne — Photographic Reflexes (Event)
-  '60040a': "[star] Si vous êtes en forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
+  '60040a': "[star] Si vous êtes sous forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
   // fne — Photographic Reflexes (Event)
-  '60040b': "[star] Si vous êtes en forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
+  '60040b': "[star] Si vous êtes sous forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
   // fne — Photographic Reflexes (Event)
-  '60040c': "[star] Si vous êtes en forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
+  '60040c': "[star] Si vous êtes sous forme de héros, vous pouvez défausser Photographic Reflexes de votre main pour jouer un événement glissé sous Echo comme s'il était dans votre main. Réduisez de 2 le coût pour jouer cet événement. Vous ne pouvez pas déclencher la capacité <i>\"Observer et apprendre\"</i> d'Echo pour cet événement.",
   // fne — Study the Tape (Event)
   '60041': "<b>Action</b> : cherchez dans la pile de défausse de n'importe quel joueur 1 événement d'aspect, 1 événement de base ou 1 exemplaire de Photographic Reflexes, et ajoutez cette carte à votre main.",
   // fne — The Rez (Support)
-  '60042': "<b>Action d'identité civile</b> : inclinez The Rez → soignez X dégâts de Maya Lopez, où X est le coût le plus élevé parmi les cartes glissées sous elle.",
+  '60042': "<b>Action d'alter ego</b> : inclinez The Rez → soignez X dégâts de Maya Lopez, où X est le coût le plus élevé parmi les cartes glissées sous elle.",
   // fne — American Sign Language (Upgrade)
   '60043': "<b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild] pour un événement joué par n'importe quel joueur.",
   // fne — Choreography (Upgrade)
-  '60044': "<b>Action</b> : inclinez cette carte → mélangez 1 événement d'aspect ou de base de votre pile de défausse dans votre deck. Si vous êtes en forme d'identité civile, piochez 1 carte.",
+  '60044': "<b>Action</b> : inclinez cette carte → mélangez 1 événement d'aspect ou de base de votre pile de défausse dans votre deck. Si vous êtes sous forme d'alter ego, piochez 1 carte.",
   // fne — Echo's Katana (Upgrade)
   '60045': "Restreint.\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir joué un événement, inclinez Echo's Katana → infligez à un ennemi un nombre de dégâts égal au coût imprimé de cet événement. Cette attaque gagne perçant.",
   // fne — Improvisation (Upgrade)
@@ -140,19 +140,19 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // fne — Ronin (Upgrade)
   '60053': "Tant que vous ne contrôlez aucun allié, votre héros gagne +1 DEF et riposte 1.",
   // fne — Stand Alone (Upgrade)
-  '60054': "Maximum 1 par joueur.\n<b>Interruption de héros</b> : quand un ennemi vous attaque <i>(avant qu'un défenseur ne soit déclaré)</i>, si vous ne contrôlez aucun allié, inclinez Stand Alone → redressez votre héros.",
+  '60054': "1 max par joueur.\n<b>Interruption de héros</b> : quand un ennemi vous attaque <i>(avant qu'un défenseur ne soit déclaré)</i>, si vous ne contrôlez aucun allié, inclinez Stand Alone → redressez votre héros.",
   // fne — See No Evil, Hear No Evil (Event)
-  '60055': "Team-Up (Daredevil et Echo). Maximum 1 par deck.\n<b>Action de héros</b> <i>(attaque/contre)</i> : choisissez 2 des options suivantes (vous pouvez choisir deux fois la même) :\n• Infligez 3 dégâts à un ennemi.\n• Retirez 3 menaces d'une manigance.",
+  '60055': "En Équipe (Daredevil et Echo). 1 max par deck.\n<b>Action de héros</b> <i>(attaque/contre)</i> : choisissez 2 des options suivantes (vous pouvez choisir deux fois la même) :\n• Infligez 3 dégâts à un ennemi.\n• Retirez 3 menaces d'une manigance.",
   // fne — Raised by the Kingpin (Obligation)
   '60060': "<b><i>Donnez-la au joueur Maya Lopez.</i></b>\nVous ne pouvez pas infliger de dégâts à Kingpin.\n<b>Une fois révélée</b> : trouvez Kingpin et mettez-le en jeu, engagé avec vous.\n<b>Réponse</b> : après avoir contré, placez cette menace ici. S'il y a 4 menaces ou plus ici, retirez cette carte de la partie.",
   // fne — Kingpin (Minion)
-  '60061': "[star] <b>Interruption Obligatoire</b> : quand Kingpin devrait attaquer le joueur Maya Lopez, il manigance à la place.\n<i>(Sbire nemesis d'Echo.)</i>",
+  '60061': "[star] <b>Interruption forcée</b> : quand Kingpin devrait attaquer le joueur Maya Lopez, il manigance à la place.\n<i>(Sbire nemesis d'Echo.)</i>",
   // fne — Master Manipulator (SideScheme)
   '60062': "Kingpin ne peut pas subir de dégâts.\n<b>Une fois révélée</b> : trouvez Kingpin et mettez-le en jeu, engagé avec vous.\n<hr />\n[star] <b>Boost</b> : si Kingpin est en jeu, révélez cette manigance.",
   // fne — Kingpin's Henchman (Minion)
   '60063': "Garde.\nKingpin ne peut pas subir de dégâts.",
   // fne — Pawn of the Kingpin (Treachery)
-  '60064': "<b>Une fois révélée (identité civile)</b> : si Kingpin est en jeu, il manigance. Sinon, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : infligez à un héros un nombre de dégâts égal à l'ATQ de votre héros.",
+  '60064': "<b>Une fois révélée (alter ego)</b> : si Kingpin est en jeu, il manigance. Sinon, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : infligez à un héros un nombre de dégâts égal à l'ATQ de votre héros.",
   // rainy — Thor (Hero)
   'ra001a': "Digne — <b>Action</b> : cherchez l'amélioration Mjolnir dans votre deck et votre pile de défausse, et ajoutez-la à votre main. Mélangez votre deck. (Limite d'une fois par round.)",
   // rainy — Jane Foster (AlterEgo)
@@ -172,9 +172,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Unyielding (Upgrade)
   'ra008': "<b>Réponse de héros</b> <i>(contre)</i> : après avoir été attaqué sans subir de dégâts, inclinez Unyielding → retirez 2 menaces d'une manigance. Vous pouvez dépenser 1 ressource de n'importe quel type pour redresser votre héros.",
   // rainy — Congress of Worlds (Support)
-  'ra009': "<b>Action d'identité civile</b> : inclinez Congress of Worlds et dépensez 1 ressource de n'importe quel type → retirez 2 menaces de la manigance principale ou 3 menaces d'une manigance annexe.",
+  'ra009': "<b>Action d'alter ego</b> : inclinez Congress of Worlds et dépensez 1 ressource de n'importe quel type → retirez 2 menaces de la manigance principale ou 3 menaces d'une manigance annexe.",
   // rainy — Medical Clinic (Support)
-  'ra010': "Jane Foster gagne +2 REC.\n<b>Action d'identité civile</b> : inclinez Medical Clinic et dépensez 1 ressource → soignez 3 dégâts d'une identité.",
+  'ra010': "Jane Foster gagne +2 REC.\n<b>Action d'alter ego</b> : inclinez Medical Clinic et dépensez 1 ressource → soignez 3 dégâts d'une identité.",
   // rainy — Scrying Pool (Support)
   'ra011': "<b>Action de héros</b> : inclinez Scrying Pool → regardez la carte du dessus d'un deck. Vous pouvez défausser cette carte. Si une traîtrise a été regardée de cette façon, retirez 1 menace d'une manigance. Si un événement a été regardé de cette façon depuis un deck de joueur, ce joueur pioche 1 carte.",
   // rainy — Goddess of Thunder (Upgrade)
@@ -182,13 +182,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Mighty (Upgrade)
   'ra013': "Vous gagnez +2 points de vie.\nThor gagne +1 DEF et riposte 1.",
   // rainy — Chemotherapy (Obligation)
-  'ra026': "Donnez-la au joueur Jane Foster.\nPassez en forme d'identité civile. Choisissez :\n- Inclinez Jane Foster et Medical Clinic → retirez Chimiothérapie de la partie.\n- Choisissez soit de défausser 2 cartes, soit de subir 2 dégâts. Défaussez cette obligation.",
+  'ra026': "Donnez-la au joueur Jane Foster.\nPassez sous forme d'alter ego. Choisissez :\n- Inclinez Jane Foster et Medical Clinic → retirez Chimiothérapie de la partie.\n- Choisissez soit de défausser 2 cartes, soit de subir 2 dégâts. Défaussez cette obligation.",
   // rainy — War of the Realms (SideScheme)
   'ra027': "<b>Une fois révélée</b> : chaque joueur subit 1 dégât indirect par personnage qu'il contrôle.",
   // rainy — Malekith (Minion)
-  'ra028': "[star] <b>Réponse Obligatoire</b> : après que Malekith s'est activé, chaque joueur subit 1 dégât indirect.",
+  'ra028': "[star] <b>Réponse forcée</b> : après que Malekith s'est activé, chaque joueur subit 1 dégât indirect.",
   // rainy — War Witches (Minion)
-  'ra029': "[star] <b>Interruption Obligatoire</b> : quand War Witches devraient attaquer, elles manigancent à la place.\n<b>Réponse Obligatoire</b> : après que de la menace a été placée sur la manigance principale, le joueur engagé subit 1 dégât indirect.",
+  'ra029': "[star] <b>Interruption forcée</b> : quand War Witches devraient attaquer, elles manigancent à la place.\n<b>Réponse forcée</b> : après que de la menace a été placée sur la manigance principale, le joueur engagé subit 1 dégât indirect.",
   // rainy — Execute (Treachery)
   'ra030': "<b>Une fois révélée</b> : mettez K.O. l'allié en jeu ayant le plus de points de vie restants. Si aucun allié n'a été mis K.O. de cette façon, cette carte gagne renfort.",
   // rainy — Hostile Takeover (Treachery)
@@ -200,33 +200,33 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // albert — Elsie-Dee (Ally)
   'ab002': "<b>Interruption</b> : quand Elsie-Dee devrait être mise K.O. en subissant des dégâts en excès, répartissez X dégâts entre les ennemis en jeu, où X est égal à l'excédent.",
   // albert — Guard Protocol (Event)
-  'ab003': "<b>Action de héros</b> : jusqu'à la fin du round, Albert gagne riposte 1 tant qu'il est en forme de héros. Donnez une carte d'état Tenace à Albert. S'il en a déjà une, résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
+  'ab003': "<b>Action de héros</b> : jusqu'à la fin du round, Albert gagne riposte 1 tant qu'il est sous forme de héros. Donnez une carte d'état Tenace à Albert. S'il en a déjà une, résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
   // albert — Lethal Directive (Event)
   'ab004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cet ennemi est mis K.O. par cette attaque, résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
   // albert — Sabotage Sequence (Event)
   'ab005': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si ce contre retire la dernière menace de cette manigance, résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
   // albert — System Relaunch (Event)
-  'ab006': "<b>Action d'identité civile</b> : soignez un nombre de dégâts d'Albert égal à votre REC et passez en forme de héros → résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
+  'ab006': "<b>Action d'alter ego</b> : soignez un nombre de dégâts d'Albert égal à votre REC et passez sous forme de héros → résolvez la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.",
   // albert — Donald Pierce (Support)
   'ab007': "<b>Ressource</b> : inclinez Donald Pierce → générez une ressource [wild].\n<b>Réponse</b> : après avoir résolu la capacité \"<i>Protocole d'initialisation</i>\" d'Albert, redressez cette carte.",
   // albert — Adamantium Claws (Upgrade)
-  'ab008': "Tant qu'il est en forme de héros, Albert gagne +1 ATQ et ses attaques de base gagnent perçant.",
+  'ab008': "Tant qu'il est sous forme de héros, Albert gagne +1 ATQ et ses attaques de base gagnent perçant.",
   // albert — Genius-Level Intellect (Upgrade)
-  'ab009': "Vous gagnez le trait [[Genius]].\nTant qu'il est en forme de héros, Albert gagne +1 CTR.",
+  'ab009': "Vous gagnez le trait [[Genius]].\nTant qu'il est sous forme de héros, Albert gagne +1 CTR.",
   // albert — Kevlar Shell (Upgrade)
-  'ab010': "Tant qu'il est en forme de héros, Albert gagne +1 DEF et riposte 1.",
+  'ab010': "Tant qu'il est sous forme de héros, Albert gagne +1 DEF et riposte 1.",
   // albert — Counterpart Elimination (Obligation)
   'ab011': "Donnez-la au joueur Albert.\nVous ne pouvez pas résoudre la capacité \"<i>Protocole d'initialisation</i>\" d'Albert.\n<b>Une fois révélée</b> : trouvez un sbire [[Wolverine]] et révélez-le.\n<b>Réponse</b> : après qu'un sbire [[Wolverine]] a été mis K.O., défaussez cette carte.",
   // albert — Wolverine (Minion)
-  'ab012': "<b>Réponse Obligatoire</b> : après que vous avez attaqué Wolverine, soignez 1 dégât de ce dernier.\n<i>(Sbire nemesis d'Albert.)</i>\n[star] <b>Boost</b> : mettez ce sbire en jeu, engagé avec le joueur Albert.",
+  'ab012': "<b>Réponse forcée</b> : après que vous avez attaqué Wolverine, soignez 1 dégât de ce dernier.\n<i>(Sbire nemesis d'Albert.)</i>\n[star] <b>Boost</b> : mettez ce sbire en jeu, engagé avec le joueur Albert.",
   // albert — Crack in the Multiverse (SideScheme)
-  'ab013': "Entrave 2[per_hero].\n<b>Réponse Obligatoire</b> : après la fin de la phase des joueurs, le premier joueur trouve un sbire [[Wolverine]] et le révèle.",
+  'ab013': "Entrave 2[per_hero].\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, le premier joueur trouve un sbire [[Wolverine]] et le révèle.",
   // albert — Patch (Minion)
   'ab014': "Riposte 1.\n<b>Une fois révélée</b> : infligez 1 dégât à chaque joueur.",
   // albert — Weapon X (Minion)
   'ab015': "Coup Rapide.\n<b>Une fois révélée</b> : défaussez 1 carte au hasard de votre main.",
   // albert — Zombie Wolvie (Minion)
-  'ab016': "<b>Quand vaincu</b> : mélangez Zombie Wolvie dans le deck rencontre.",
+  'ab016': "<b>Une fois vaincu</b> : mélangez Zombie Wolvie dans le deck rencontre.",
   // gwenpool — Gwenpool (Hero)
   'gp001a': "<i>Conscience du support</i> — <b>Interruption</b> : quand vous résolvez une capacité d'une carte Gwenpool, remplacez \"____\" par une phrase issue d'une bulle de dialogue. (Utilisez les bulles d'une carte que vous jouez, d'une carte que vous dépensez, ou d'une carte en jeu.) (Limite de chaque bulle une fois par phase.)\n<i>Bulle de dialogue : « Piochez 1 carte. »</i>",
   // gwenpool — Gwendolyn Poole (AlterEgo)
@@ -242,17 +242,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // gwenpool — Endless Storylines (Resource)
   'gp006': "<b>Réponse de héros</b> : après avoir dépensé cette carte, ____ et ____.\n<i>Bulles de dialogue : « Retirez 1 menace d'une manigance. » / « Soignez 1 dégât de Gwenpool. » / « Infligez 1 dégât à un ennemi. »</i>",
   // gwenpool — Gwen's Room (Support)
-  'gp007': "Vous gagnez +1 REC.\n<b>Action d'identité civile</b> : inclinez Gwen's Room → soignez 1 dégât de Gwendolyn Poole. Puis, trouvez Unbelievable Gwenpool et ajoutez-la à votre main.\n<i>Bulle de dialogue : « Soignez 1 dégât de Gwenpool. »</i>",
+  'gp007': "Vous gagnez +1 REC.\n<b>Action d'alter ego</b> : inclinez Gwen's Room → soignez 1 dégât de Gwendolyn Poole. Puis, trouvez Unbelievable Gwenpool et ajoutez-la à votre main.\n<i>Bulle de dialogue : « Soignez 1 dégât de Gwenpool. »</i>",
   // gwenpool — Comicbook Panels (Upgrade)
   'gp008': "<b>Ressource de héros</b> : inclinez Comicbook Panels → générez une ressource [wild] et ____.\n<b>Action de héros</b> : inclinez Comicbook Panels et Unbelievable Gwenpool → ____ et ____.\n<i>Bulle de dialogue : « Regardez la carte du dessus de n'importe quel deck. »</i>",
   // gwenpool — Unbelievable Gwenpool (Upgrade)
-  'gp009': "<b>Action d'identité civile</b> : inclinez Unbelievable Gwenpool → cherchez une carte Gwenpool dans votre deck et attachez-la ici face visible (maximum 1). <i>(Mélangez.)</i> Vous pouvez utiliser les bulles de dialogue de la carte attachée.\n<b>Action de héros</b> : piochez 2 cartes et ____. Défaussez Unbelievable Gwenpool.\n<i>Bulle de dialogue : « Redressez Gwenpool. »</i>",
+  'gp009': "<b>Action d'alter ego</b> : inclinez Unbelievable Gwenpool → cherchez une carte Gwenpool dans votre deck et attachez-la ici face visible (maximum 1). <i>(Mélangez.)</i> Vous pouvez utiliser les bulles de dialogue de la carte attachée.\n<b>Action de héros</b> : piochez 2 cartes et ____. Défaussez Unbelievable Gwenpool.\n<i>Bulle de dialogue : « Redressez Gwenpool. »</i>",
   // gwenpool — THE END (Obligation)
-  'gp010': "Donnez-la au joueur Gwendolyn Poole.\nVous ne pouvez pas utiliser les bulles de dialogue des cartes Gwenpool.\n<b>Action d'identité civile</b> : inclinez Gwendolyn Poole et défaussez Unbelievable Gwenpool → retirez THE END de la partie.",
+  'gp010': "Donnez-la au joueur Gwendolyn Poole.\nVous ne pouvez pas utiliser les bulles de dialogue des cartes Gwenpool.\n<b>Action d'alter ego</b> : inclinez Gwendolyn Poole et défaussez Unbelievable Gwenpool → retirez THE END de la partie.",
   // gwenpool — Rules of the Universe (SideScheme)
-  'gp011': "Permanent.\nTant qu'il n'y a pas de menace ici, cette manigance perd l'icône [hazard].\n<b>Interruption Obligatoire</b> : quand vous résolvez une capacité d'une carte Gwenpool, remplacez \"____\" par la phrase de la bulle de dialogue d'Evil Gwenpool.",
+  'gp011': "Permanent.\nTant qu'il n'y a pas de menace ici, cette manigance perd l'icône [hazard].\n<b>Interruption forcée</b> : quand vous résolvez une capacité d'une carte Gwenpool, remplacez \"____\" par la phrase de la bulle de dialogue d'Evil Gwenpool.",
   // gwenpool — Evil Gwenpool (Minion)
-  'gp012': "Solide. Vilenie.\n<b>Quand vaincue</b> : mélangez Evil Gwenpool dans le deck rencontre.\n<i>(Sbire nemesis de Gwenpool.)</i>\n[star] <b>Boost</b> : mettez Evil Gwenpool en jeu, engagée avec vous.\n<i>Bulle de dialogue : « Gwenpool subit 1 dégât. »</i>",
+  'gp012': "Solide. Vilenie.\n<b>Une fois vaincue</b> : mélangez Evil Gwenpool dans le deck rencontre.\n<i>(Sbire nemesis de Gwenpool.)</i>\n[star] <b>Boost</b> : mettez Evil Gwenpool en jeu, engagée avec vous.\n<i>Bulle de dialogue : « Gwenpool subit 1 dégât. »</i>",
   // gwenpool — Break Reality (Treachery)
   'gp013': "Incitation 1.\n<b>Une fois révélée</b> : cherchez Evil Gwenpool dans le deck rencontre et révélez-la. <i>(Mélangez.)</i> Si Unbelievable Gwenpool est en jeu, elle gagne coup rapide. Si Evil Gwenpool était déjà en jeu, ajoutez 2[per_hero] menaces sur Rules of the Universe.",
   // gwenpool — "Future Me Scares Me" (Treachery)
@@ -280,12 +280,12 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // human_torch — Nova Flame (Event)
   'ht010': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Human Torch → placez jusqu'à 3 compteurs de flamme sur un ennemi, puis infligez 7 dégâts à cet ennemi. Cette attaque gagne déferlement.",
   // human_torch — Flame Off (Obligation)
-  'ht011': "Donnez-la au joueur Johnny Storm.\nPassez en forme d'identité civile et retirez tous les compteurs de flamme des ennemis en jeu. Puis :\n- Si jusqu'à 3 compteurs ont été retirés de cette façon, défaussez cette obligation.\n- Si 4 compteurs de flamme ou plus ont été retirés de cette façon, retirez Flame Off de la partie.",
+  'ht011': "Donnez-la au joueur Johnny Storm.\nPassez sous forme d'alter ego et retirez tous les compteurs de flamme des ennemis en jeu. Puis :\n- Si jusqu'à 3 compteurs ont été retirés de cette façon, défaussez cette obligation.\n- Si 4 compteurs de flamme ou plus ont été retirés de cette façon, retirez Flame Off de la partie.",
   // human_torch — Hydro-Man (Minion)
   'ht012': "Aucun compteur de flamme ne peut être placé sur Hydro-Man.\n[star] <b>Boost</b> : mettez Hydro-Man en jeu, engagé avec vous.",
   // human_torch — Dam It (SideScheme)
   'ht013': "Hydro-Man est apparu et a éteint toutes les flammes !\n<b>Une fois révélée</b> : retirez tous les compteurs de flamme des ennemis en jeu. Puis, placez 1 menace supplémentaire ici par compteur de flamme retiré de cette façon.",
-  // human_torch — Tidal Surge (Treachery)
+  // human_torch — Tidal Renfort (Treachery)
   'ht014': "Renfort.\n<b>Une fois révélée</b> : si Hydro-Man est en jeu, chaque joueur doit choisir soit d'incliner son identité, soit de subir 3 dégâts indirects.",
   // mister_fantastic — Mister Fantastic (Hero)
   'mf001a': "<i>Flexibilité</i> — <b>Réponse</b> : après avoir dépensé une carte [[SUPERPOWER]] comme ressource ou l'avoir défaussée de votre main sans la jouer, renvoyez-la dans votre main. (Limite d'une fois par phase.)",
@@ -296,9 +296,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // mister_fantastic — H.E.R.B.I.E. (Support)
   'mf003': "<b>Action</b> : inclinez H.E.R.B.I.E. → défaussez X cartes de votre main, puis piochez X cartes.\n<b>Action</b> : inclinez puis défaussez H.E.R.B.I.E. → piochez X cartes, puis défaussez X cartes de votre main.",
   // mister_fantastic — Baxter Building (Support)
-  'mf004': "<b>Action d'identité civile</b> : inclinez Baxter Building → soignez 2 dégâts d'une identité.\n<b>Action de héros</b> : inclinez Baxter Building → cherchez une carte Mister Fantastic parmi les 4 cartes du dessus de votre deck, puis ajoutez-la à votre main (les 8 premières à la place si votre héros a 10 points de vie restants ou plus).",
+  'mf004': "<b>Action d'alter ego</b> : inclinez Baxter Building → soignez 2 dégâts d'une identité.\n<b>Action de héros</b> : inclinez Baxter Building → cherchez une carte Mister Fantastic parmi les 4 cartes du dessus de votre deck, puis ajoutez-la à votre main (les 8 premières à la place si votre héros a 10 points de vie restants ou plus).",
   // mister_fantastic — Fantasticar (Support)
-  'mf005': "Mister Fantastic gagne +1 en taille de main.\n<b>Action de héros</b> : inclinez Fantasticar → choisissez un joueur en forme de héros. Réduisez de 1 le coût de la prochaine carte d'événement que ce joueur joue durant cette phase.",
+  'mf005': "Mister Fantastic gagne +1 en taille de main.\n<b>Action de héros</b> : inclinez Fantasticar → choisissez un joueur sous forme de héros. Réduisez de 1 le coût de la prochaine carte d'événement que ce joueur joue durant cette phase.",
   // mister_fantastic — Unstable Uniform (Upgrade)
   'mf006': "Mister Fantastic gagne +1 DEF.\n<b>Réponse de héros</b> : après vous être défendu contre une attaque, renvoyez dans votre main la carte Mister Fantastic la plus profonde de votre pile de défausse.",
   // mister_fantastic — Fantasti-Flare (Upgrade)
@@ -314,7 +314,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // mister_fantastic — Mental Gymnastics (Event)
   'mf012': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 + X dégâts à un ennemi. Puis, s'il ne vous reste aucune carte en main, désorientez cet ennemi.",
   // mister_fantastic — Ben's Cure (Obligation)
-  'mf013': "Donnez-la au joueur Reed Richards.\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Inclinez Reed Richards et défaussez une carte ayant une ressource [mental] imprimée → retirez Ben's Cure de la partie.\n- Subissez 1 dégât et placez 1 menace sur la manigance principale → défaussez cette obligation.",
+  'mf013': "Donnez-la au joueur Reed Richards.\nVous pouvez passer sous forme d'alter ego. Choisissez :\n- Inclinez Reed Richards et défaussez une carte ayant une ressource [mental] imprimée → retirez Ben's Cure de la partie.\n- Subissez 1 dégât et placez 1 menace sur la manigance principale → défaussez cette obligation.",
   // mister_fantastic — Wizard (Minion)
   'mf014': "Chaque héros subit -1 CTR.",
   // mister_fantastic — Hubris (SideScheme)
@@ -324,7 +324,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // mister_fantastic — Execution (Treachery)
   'mf017': "<b>Une fois révélée</b> : défaussez chaque attachement Projection en jeu. Pour chaque attachement défaussé de cette façon, chaque joueur doit choisir soit de défausser 2 cartes de sa main, soit de subir 2 dégâts indirects. Si aucun attachement Projection n'a été défaussé de cette façon, remélangez Execution dans le deck rencontre et cette carte gagne renfort.",
   // invisible_woman — Invisible Woman (Hero)
-  'iw001a': "<i>Bouh !</i> — <b>Réponse Obligatoire</b> : après avoir attaqué un ennemi, passez à votre autre forme de héros.",
+  'iw001a': "<i>Bouh !</i> — <b>Réponse forcée</b> : après avoir attaqué un ennemi, passez à votre autre forme de héros.",
   // invisible_woman — Sue Storm (AlterEgo)
   'iw001b': "<i>Grands esprits</i> — <b>Ressource</b> : inclinez Sue Storm → générez une ressource [mental] ([mental][mental] à la place si Reed Richards est en jeu). Si vous avez payé une carte [[TECH]] avec les ressources de cette capacité, redressez Sue Storm. (Limite d'une fois par round.)",
   // invisible_woman — Invisible Woman (Hero)
@@ -332,35 +332,35 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // invisible_woman — Mister Fantastic (Ally)
   'iw002': "<b>Réponse</b> : après que Mister Fantastic est entré en jeu, retirez 1 menace de chaque manigance ou ajoutez la carte du dessus de votre pile de défausse à votre main.",
   // invisible_woman — Central City Estate (Support)
-  'iw003': "Vous gagnez +1 REC.\n<b>Action d'identité civile</b> : inclinez Central City Estate → redressez Sue Storm.",
+  'iw003': "Vous gagnez +1 REC.\n<b>Action d'alter ego</b> : inclinez Central City Estate → redressez Sue Storm.",
   // invisible_woman — Unstable Uniform (Upgrade)
-  'iw004': "Invisible Woman gagne +1 DEF.\n<b>Réponse de héros</b> : après être passé en forme de héros [[INVISIBLE]], vous gagnez +1 CTR jusqu'à la fin de ce tour.\n<b>Réponse de héros</b> : après être passé en forme de héros [[PSIONIC]], vous gagnez +1 ATQ jusqu'à la fin de ce tour.",
+  'iw004': "Invisible Woman gagne +1 DEF.\n<b>Réponse de héros</b> : après être passé sous forme de héros [[INVISIBLE]], vous gagnez +1 CTR jusqu'à la fin de ce tour.\n<b>Réponse de héros</b> : après être passé sous forme de héros [[PSIONIC]], vous gagnez +1 ATQ jusqu'à la fin de ce tour.",
   // invisible_woman — Flying Disk (Upgrade)
-  'iw005': "Si vous êtes en forme de héros [[PSIONIC]], vous gagnez le trait [[AERIAL]] et vos attaques gagnent à distance.\n<b>Action de héros</b> : défaussez Flying Disk → infligez 4 dégâts à un ennemi.",
+  'iw005': "Si vous êtes sous forme de héros [[PSIONIC]], vous gagnez le trait [[AERIAL]] et vos attaques gagnent à distance.\n<b>Action de héros</b> : défaussez Flying Disk → infligez 4 dégâts à un ennemi.",
   // invisible_woman — Vanishing Act (Upgrade)
-  'iw006': "<b>Action de héros</b> : si vous êtes en forme de héros [[INVISIBLE]], inclinez Vanishing Act et dépensez des ressources [mental][energy] → désorientez un ennemi.",
+  'iw006': "<b>Action de héros</b> : si vous êtes sous forme de héros [[INVISIBLE]], inclinez Vanishing Act et dépensez des ressources [mental][energy] → désorientez un ennemi.",
   // invisible_woman — Force Shields (Upgrade)
-  'iw007': "<b>Action de héros</b> : si vous êtes en forme de héros [[PSIONIC]], inclinez Force Shields et défaussez X cartes ayant une ressource [physical] imprimée → donnez une carte d'état Tenace à X personnages alliés.",
+  'iw007': "<b>Action de héros</b> : si vous êtes sous forme de héros [[PSIONIC]], inclinez Force Shields et défaussez X cartes ayant une ressource [physical] imprimée → donnez une carte d'état Tenace à X personnages alliés.",
   // invisible_woman — Incognito (Event)
-  'iw008': "Jouez-la uniquement si vous êtes en forme de héros [[INVISIBLE]].\n<b>Action de héros</b> : regardez les 4 cartes du dessus du deck rencontre. Pour chaque icône étoile vue de cette façon, piochez 1 carte.",
+  'iw008': "Jouez-la uniquement si vous êtes sous forme de héros [[INVISIBLE]].\n<b>Action de héros</b> : regardez les 4 cartes du dessus du deck rencontre. Pour chaque icône étoile vue de cette façon, piochez 1 carte.",
   // invisible_woman — Infiltrate (Event)
-  'iw009': "Jouez-la uniquement si vous êtes en forme de héros [[INVISIBLE]].\n<b>Action de héros</b> <i>(contre)</i> : retirez jusqu'à 4 menaces d'une manigance ou jusqu'à 2 menaces de chaque manigance.",
+  'iw009': "Jouez-la uniquement si vous êtes sous forme de héros [[INVISIBLE]].\n<b>Action de héros</b> <i>(contre)</i> : retirez jusqu'à 4 menaces d'une manigance ou jusqu'à 2 menaces de chaque manigance.",
   // invisible_woman — Forceful (Event)
-  'iw010': "Jouez-la uniquement si vous êtes en forme de héros [[PSIONIC]].\n<b>Action de héros</b> <i>(attaque)</i> : défaussez autant de cartes d'état Tenace que vous le souhaitez des personnages que vous contrôlez → infligez 3 dégâts au méchant par carte d'état Tenace défaussée de cette façon.",
+  'iw010': "Jouez-la uniquement si vous êtes sous forme de héros [[PSIONIC]].\n<b>Action de héros</b> <i>(attaque)</i> : défaussez autant de cartes d'état Tenace que vous le souhaitez des personnages que vous contrôlez → infligez 3 dégâts au méchant par carte d'état Tenace défaussée de cette façon.",
   // invisible_woman — Psionic Fields (Event)
-  'iw011': "Jouez-la uniquement si vous êtes en forme de héros [[PSIONIC]].\n<b>Action de héros</b> <i>(attaque)</i> : choisissez 2 des options suivantes (vous pouvez choisir deux fois la même) :\n• Infligez 4 dégâts à un ennemi.\n• Sonnez un ennemi.",
+  'iw011': "Jouez-la uniquement si vous êtes sous forme de héros [[PSIONIC]].\n<b>Action de héros</b> <i>(attaque)</i> : choisissez 2 des options suivantes (vous pouvez choisir deux fois la même) :\n• Infligez 4 dégâts à un ennemi.\n• Sonnez un ennemi.",
   // invisible_woman — Spectral Shift (Event)
-  'iw012': "<b>Action</b> : changez de forme. Puis, si vous êtes passé :\nen forme de héros [[INVISIBLE]] - Piochez 2 cartes.\nen forme de héros [[PSIONIC]] - Piochez 1 carte.",
+  'iw012': "<b>Action</b> : changez de forme. Puis, si vous êtes passé :\nsous forme de héros [[INVISIBLE]] - Piochez 2 cartes.\nsous forme de héros [[PSIONIC]] - Piochez 1 carte.",
   // invisible_woman — Family Time (Obligation)
-  'iw013': "<b><i>Donnez-la au joueur Sue Storm.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Sue Storm → retirez Family Time de la partie.\n• Défaussez une carte de votre main → défaussez cette obligation.",
+  'iw013': "<b><i>Donnez-la au joueur Sue Storm.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Sue Storm → retirez Family Time de la partie.\n• Défaussez une carte de votre main → défaussez cette obligation.",
   // invisible_woman — Psycho-Man (Minion)
-  'iw014': "<b>Réponse Obligatoire</b> : après que Psycho-Man s'est activé, défaussez 4 cartes du deck rencontre. Si des cartes Nemesis d'Invisible Woman ont été défaussées de cette façon, révélez-les à la place.",
+  'iw014': "<b>Réponse forcée</b> : après que Psycho-Man s'est activé, défaussez 4 cartes du deck rencontre. Si des cartes Nemesis d'Invisible Woman ont été défaussées de cette façon, révélez-les à la place.",
   // invisible_woman — Emotional Masterplan (SideScheme)
   'iw015': "Les héros ne peuvent pas changer de forme.\n<b>Action</b> : défaussez 2 cartes de votre main → considérez que la zone de texte imprimée de cette carte est vierge jusqu'à la fin de votre tour.",
   // invisible_woman — Microversal Maneuvers (Attachment)
-  'iw016': "Attachez-la à Psycho-Man. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Réponse Obligatoire</b> : après que Psycho-Man a manigancé contre vous, subissez 1 dégât indirect.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  'iw016': "Attachez-la à Psycho-Man. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Réponse forcée</b> : après que Psycho-Man a manigancé contre vous, subissez 1 dégât indirect.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // invisible_woman — Titanic Terror (Attachment)
-  'iw017': "Attachez-la à Psycho-Man. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Réponse Obligatoire</b> : après que Psycho-Man a attaqué, placez 1 menace sur la manigance principale.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  'iw017': "Attachez-la à Psycho-Man. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Réponse forcée</b> : après que Psycho-Man a attaqué, placez 1 menace sur la manigance principale.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // invisible_woman — End of the Line (Treachery)
   'iw018': "<b>Une fois révélée</b> : défaussez les 8 cartes du dessus du deck rencontre. Si Microversal Maneuvers ou Titanic Terror sont défaussées de cette façon, révélez-les.",
   // the_thing — The Thing (Hero)
@@ -374,7 +374,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // the_thing — Human Torch (Ally)
   'th002': "<b>Réponse</b> : après que Human Torch est entré en jeu, choisissez l'un ou l'autre :\n- Infligez 1 dégât à The Thing, puis donnez-lui une carte d'état Tenace.\n- Infligez 3 dégâts au méchant.",
   // the_thing — Alicia Masters (Support)
-  'th003': "<b>Action d'identité civile</b> : inclinez Alicia Masters → piochez 2 cartes.",
+  'th003': "<b>Action d'alter ego</b> : inclinez Alicia Masters → piochez 2 cartes.",
   // the_thing — Yancy Street Gang (Support)
   'th004': "<b>Action</b> : inclinez Yancy Street Gang → infligez 1 dégât à un personnage. Ces dégâts gagnent perçant. Si une carte d'état Tenace a été défaussée de cette façon, redressez Yancy Street Gang.",
   // the_thing — Unstable Uniform (Upgrade)
@@ -390,9 +390,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // the_thing — It's Clobberin' Time! (Event)
   'th010': "<b>Action de héros</b> : faites les 2 attaques suivantes :\n- Infligez 4 dégâts à un ennemi.\n- Infligez 4 dégâts à un ennemi.",
   // the_thing — Annual Shedding (Obligation)
-  'th011': "Donnez-la au joueur Ben Grimm.\nPassez en forme d'identité civile. Choisissez l'un ou l'autre :\n- Défaussez une carte d'état Tenace de Ben Grimm → défaussez cette obligation.\n- Sonnez ou désorientez Ben Grimm → défaussez cette obligation.",
+  'th011': "Donnez-la au joueur Ben Grimm.\nPassez sous forme d'alter ego. Choisissez l'un ou l'autre :\n- Défaussez une carte d'état Tenace de Ben Grimm → défaussez cette obligation.\n- Sonnez ou désorientez Ben Grimm → défaussez cette obligation.",
   // the_thing — Puppet Master (Minion)
-  'th012': "Puppet Master ne peut pas être attaqué tant que Hulk est en jeu.\n<b>Réponse Obligatoire</b> : après que Puppet Master a été révélé, cherchez Hulk dans le deck rencontre et révélez-le.\n<i>(Sbire nemesis de The Thing.)</i>",
+  'th012': "Puppet Master ne peut pas être attaqué tant que Hulk est en jeu.\n<b>Réponse forcée</b> : après que Puppet Master a été révélé, cherchez Hulk dans le deck rencontre et révélez-le.\n<i>(Sbire nemesis de The Thing.)</i>",
   // the_thing — Pulling The Strings (SideScheme)
   'th013': "Le beau-père malgré lui de Ben Grimm a pris le contrôle de l'Incroyable Hulk !\nLe sbire en jeu ayant le MNG le plus faible gagne +1 ATQ et +1 MNG.",
   // the_thing — Hulk (Minion)
@@ -400,7 +400,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // the_thing — Friendly Fire (Treachery)
   'th015': "<b>Une fois révélée</b> : vous subissez X dégâts, où X est l'ATQ du personnage allié ayant l'ATQ la plus élevée. Si votre identité est le seul personnage allié en jeu, cette carte gagne renfort.",
   // totally_awesome_hulk — Totally Awesome Hulk (Hero)
-  'ah001a': "<i>Perte de contrôle</i> — Vous ne pouvez passer en forme de héros [[BRUTE]] qu'en résolvant les effets du soutien \"The Trunk\".\n<i>Hyper-esprit</i> — Considérez toutes les ressources que vous générez comme des ressources [wild].",
+  'ah001a': "<i>Perte de contrôle</i> — Vous ne pouvez passer sous forme de héros [[BRUTE]] qu'en résolvant les effets du soutien \"The Trunk\".\n<i>Hyper-esprit</i> — Considérez toutes les ressources que vous générez comme des ressources [wild].",
   // totally_awesome_hulk — Amadeus Cho (AlterEgo)
   'ah001b': "<i>Rétro-ingénierie</i> — <b>Action</b> : défaussez une carte spécifique à votre héros de votre main → piochez X cartes, où X est le coût imprimé de la carte défaussée de cette façon. (Limite d'une fois par round.)",
   // totally_awesome_hulk — Uncontrollable Hulk (Hero)
@@ -426,19 +426,19 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // totally_awesome_hulk — Kinetic Stomp (Event)
   'ah011': "<b>Interruption de héros</b> : quand vous faites une attaque de base, vous gagnez +6 ATQ pour cette attaque. Si cette attaque inflige 10 dégâts ou plus, redressez votre héros.",
   // totally_awesome_hulk — "The Trunk" (Support)
-  'ah012a': "<b>Réponse Obligatoire</b> : après que Totally Awesome Hulk a subi des dégâts, quel qu'en soit le nombre, ajoutez un compteur de rage ici.\n<b>Interruption Obligatoire</b> : quand il y a 4 compteurs de rage ici, retournez cette carte et passez en forme d'Uncontrollable Hulk.",
+  'ah012a': "<b>Réponse forcée</b> : après que Totally Awesome Hulk a subi des dégâts, quel qu'en soit le nombre, ajoutez un compteur de rage ici.\n<b>Interruption forcée</b> : quand il y a 4 compteurs de rage ici, retournez cette carte et passez en forme d'Uncontrollable Hulk.",
   // totally_awesome_hulk — "The Trunk" (Support)
-  'ah012b': "<b>Réponse Obligatoire</b> : après qu'Uncontrollable Hulk a attaqué, retirez un compteur de rage de cette carte.\n<b>Interruption Obligatoire</b> : quand il n'y a plus de compteur de rage ici, retournez cette carte et passez en forme d'Amadeus Cho.",
+  'ah012b': "<b>Réponse forcée</b> : après qu'Uncontrollable Hulk a attaqué, retirez un compteur de rage de cette carte.\n<b>Interruption forcée</b> : quand il n'y a plus de compteur de rage ici, retournez cette carte et passez en forme d'Amadeus Cho.",
   // totally_awesome_hulk — Get Under Control (Obligation)
-  'ah013': "<b><i>Donnez-la au joueur Amadeus Cho.</i></b>\nVous ne pouvez pas mettre d'alliés en jeu.\n<b>Action d'identité civile</b> : considérez que la zone de texte imprimée de \"The Trunk\" est vierge, puis retirez \"The Trunk\" de la partie → retirez cette obligation de la partie.",
+  'ah013': "<b><i>Donnez-la au joueur Amadeus Cho.</i></b>\nVous ne pouvez pas mettre d'alliés en jeu.\n<b>Action d'alter ego</b> : considérez que la zone de texte imprimée de \"The Trunk\" est vierge, puis retirez \"The Trunk\" de la partie → retirez cette obligation de la partie.",
   // totally_awesome_hulk — Lady Hellbender (Minion)
   'ah014': "<b>Action de héros</b> : dépensez un nombre de ressources [wild] égal aux points de vie restants de Lady Hellbender → considérez Lady Hellbender comme une alliée que vous contrôlez, avec du CTR au lieu du MNG.\n<i>(Sbire nemesis de Totally Awesome Hulk.)</i>",
   // totally_awesome_hulk — For The Queen! (SideScheme)
   'ah015': "Tant que Lady Hellbender est en jeu, les sbires [[MONSTER]] gagnent vilenie.",
   // totally_awesome_hulk — Fin Fang Foom (Minion)
-  'ah016': "<b>Une fois révélée</b> : Fin Fang Foom gagne +2 points de vie par joueur.\n<b>Interruption Obligatoire</b> : quand il reste à Fin Fang Foom 2 points de vie par joueur ou moins, ses attaques gagnent déferlement.",
+  'ah016': "<b>Une fois révélée</b> : Fin Fang Foom gagne +2 points de vie par joueur.\n<b>Interruption forcée</b> : quand il reste à Fin Fang Foom 2 points de vie par joueur ou moins, ses attaques gagnent déferlement.",
   // totally_awesome_hulk — Krackalakassian (Minion)
-  'ah017': "<b>Une fois révélée</b> : Krackalakassian gagne +2 points de vie par joueur.\n<b>Interruption Obligatoire</b> : quand Krackalakassian attaque, subissez 2 dégâts indirects.",
+  'ah017': "<b>Une fois révélée</b> : Krackalakassian gagne +2 points de vie par joueur.\n<b>Interruption forcée</b> : quand Krackalakassian attaque, subissez 2 dégâts indirects.",
   // totally_awesome_hulk — Threat Assessment (Treachery)
   'ah018': "<b>Une fois révélée</b> : infligez 3 dégâts à l'identité ayant le plus de points de vie restants.",
   // madame_web — Madame Web (Hero)
@@ -448,7 +448,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // madame_web — Spider-Woman (Ally)
   'mw002': "Spider-Woman entre en jeu avec 2 compteurs de toile psionique.\n<b>Réponse</b> : après qu'une manigance annexe est entrée en jeu, retirez 1 compteur de toile psionique de Spider-Woman → retirez 2 menaces de cette manigance annexe.",
   // madame_web — Webb's Apartment (Support)
-  'mw003': "<b>Action d'identité civile</b> : inclinez Webb's Apartment → soignez 1 dégât d'un personnage que vous contrôlez.",
+  'mw003': "<b>Action d'alter ego</b> : inclinez Webb's Apartment → soignez 1 dégât d'un personnage que vous contrôlez.",
   // madame_web — Clairvoyance (Upgrade)
   'mw004': "<b>Interruption de héros</b> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, inclinez Clairvoyance → prévenez 1 de ces dégâts.",
   // madame_web — Astral Form (Upgrade)
@@ -466,21 +466,21 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // madame_web — Web of Fate (Resource)
   'mw011': "<b>Réponse</b> : après avoir dépensé cette carte, regardez les 5 cartes du dessus de votre deck. Ajoutez-en 1 à votre main et remettez les autres dans le même ordre.",
   // madame_web — Neurological Deterioration (Obligation)
-  'mw012': "Vous ne pouvez pas redresser votre identité.\n<b>Action d'identité civile</b> : dépensez des ressources [energy] [mental] [physical] → retirez Neurological Deterioration de la partie.",
+  'mw012': "Vous ne pouvez pas redresser votre identité.\n<b>Action d'alter ego</b> : dépensez des ressources [energy] [mental] [physical] → retirez Neurological Deterioration de la partie.",
   // madame_web — Spider-Woman (Minion)
   'mw013': "<b>Une fois révélée</b> : choisissez soit de subir 2 dégâts indirects, soit d'incliner votre identité.\n<i>(Sbire nemesis de Madame Web.)</i>",
   // madame_web — Spider-Women Hunt (SideScheme)
   'mw014': "En prenant le nom de \"Spider-Woman\", Witter a orchestré des attaques contre les autres femmes ayant porté ce nom avant elle, et absorbé leurs pouvoirs.\n<b>Une fois révélée</b> : placez 2 menaces supplémentaires ici par personnage en jeu dont le titre contient \"Spider\".",
   // madame_web — Power Absorption (Treachery)
-  'mw015': "<b>Une fois révélée</b> : défaussez un allié que vous contrôlez. Si aucun allié n'a été défaussé de cette façon, passez en forme d'identité civile et inclinez votre identité.",
+  'mw015': "<b>Une fois révélée</b> : défaussez un allié que vous contrôlez. Si aucun allié n'a été défaussé de cette façon, passez sous forme d'alter ego et inclinez votre identité.",
   // madame_web — Hypnosis (Treachery)
   'mw016': "Renfort.\n<b>Une fois révélée</b> : sonnez et désorientez un personnage que vous contrôlez.",
   // madame_web — Ana Kraven (Minion)
-  'mw017': "[star] <b>Réponse Obligatoire</b> : après qu'Ana Kraven vous a attaqué, placez 1 menace sur la manigance annexe The Grim Hunt. Si The Grim Hunt n'est pas en jeu, placez 1 menace sur la manigance principale.\n<i>(Sbire nemesis de Madame Web.)</i>",
+  'mw017': "[star] <b>Réponse forcée</b> : après qu'Ana Kraven vous a attaqué, placez 1 menace sur la manigance annexe The Grim Hunt. Si The Grim Hunt n'est pas en jeu, placez 1 menace sur la manigance principale.\n<i>(Sbire nemesis de Madame Web.)</i>",
   // madame_web — The Grim Hunt (SideScheme)
   'mw018': "Quand Sasha Kraven envoya sa fille Ana enlever la médium connue sous le nom de Madame Web, ce fut le début d'une chasse à tous ceux qui portent la marque de l'araignée.\n<b>Une fois révélée</b> : mettez Kraven the Hunter de côté, hors jeu.\nThe Grim Hunt gagne 1 menace par joueur à la fin de chaque phase du méchant. Si cette manigance est accomplie (5 menaces par joueur), mettez en jeu Kraven the Hunter mis de côté, engagé avec le premier joueur.",
   // madame_web — Kraven the Hunter (Minion)
-  'mw019': "Riposte 1. Vilenie.\n<b>Quand vaincu</b> : mettez Kraven the Hunter de côté, hors jeu.",
+  'mw019': "Riposte 1. Vilenie.\n<b>Une fois vaincu</b> : mettez Kraven the Hunter de côté, hors jeu.",
   // madame_web — One Spyder Down (Treachery)
   'mw020': "<b>Une fois révélée</b> : défaussez un allié que vous contrôlez. Si vous ne pouvez pas, cette carte gagne renfort.",
   // madame_web — Hunting Spyders (Treachery)
@@ -492,9 +492,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // madame_web — Spider-Woman (Ally)
   'mw024': "<b>Interruption de héros</b> : quand le méchant initie une attaque contre vous, piochez 1 carte.",
   // madame_web — Spider-Woman (Ally)
-  'mw025': "<b>Interruption Obligatoire</b> : quand Spider-Woman arrive dans votre main, payez son coût imprimé → mettez Spider-Woman en jeu sous votre contrôle. Si vous ne pouvez pas, défaussez Spider-Woman.",
+  'mw025': "<b>Interruption forcée</b> : quand Spider-Woman arrive dans votre main, payez son coût imprimé → mettez Spider-Woman en jeu sous votre contrôle. Si vous ne pouvez pas, défaussez Spider-Woman.",
   // madame_web — Spider-Woman (Ally)
-  'mw026': "<b>Interruption Obligatoire</b> : quand Spider-Woman devrait être mise K.O., soignez plutôt tous ses dégâts et engagez-la comme un sbire. Considérez Spider-Woman comme un sbire à la zone de texte vierge <i>(à l'exception de ses <b>traits</b>)</i>. Son MNG est égal à son CTR imprimé et elle ne subit pas de dégâts consécutifs.",
+  'mw026': "<b>Interruption forcée</b> : quand Spider-Woman devrait être mise K.O., soignez plutôt tous ses dégâts et engagez-la comme un sbire. Considérez Spider-Woman comme un sbire à la zone de texte vierge <i>(à l'exception de ses <b>traits</b>)</i>. Son MNG est égal à son CTR imprimé et elle ne subit pas de dégâts consécutifs.",
   // madame_web — Order of the Web (Support)
   'mw027': "Jouez-la sous le contrôle de n'importe quel joueur. Maximum 1 carte <b>TEAM</b> par joueur.\n<b>Action</b> : inclinez Order of the Web → choisissez dans votre pile de défausse un allié dont le titre contient \"Spider\" et mélangez-le dans votre deck.",
   // madame_web — Advice (Event)
@@ -532,15 +532,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // cloak_dagger — Darkforce Absorption (Upgrade)
   'cd013': "<b>Réponse</b> : après avoir joué une carte [[DARKFORCE]], inclinez Darkforce Absorption → mélangez une carte [[DARKFORCE]] de la pile de défausse de Cloak dans le deck de Cloak.",
   // cloak_dagger — Lovers Quarrel (Obligation)
-  'cd014': "<b><i>Donnez-la au joueur Cloak & Dagger.</i></b>\nPassez les deux identités en forme d'identité civile, puis choisissez l'un ou l'autre :\n• Inclinez Tandy Bowen et Tyrone Johnson → retirez Lovers Quarrel de la partie.\n• Tyrone Johnson ne peut ni changer de forme, ni jouer de cartes, ni utiliser de pouvoirs de base au round suivant → défaussez cette obligation.",
+  'cd014': "<b><i>Donnez-la au joueur Cloak & Dagger.</i></b>\nPassez les deux identités sous forme d'alter ego, puis choisissez l'un ou l'autre :\n• Inclinez Tandy Bowen et Tyrone Johnson → retirez Lovers Quarrel de la partie.\n• Tyrone Johnson ne peut ni changer de forme, ni jouer de cartes, ni utiliser de pouvoirs de base au round suivant → défaussez cette obligation.",
   // cloak_dagger — Mister Negative (Minion)
-  'cd015': "<b>Réponse Obligatoire</b> : après que Mister Negative a attaqué votre héros, passez-le en forme d'identité civile.",
+  'cd015': "<b>Réponse forcée</b> : après que Mister Negative a attaqué votre héros, passez-le sous forme d'alter ego.",
   // cloak_dagger — Bigger Fish (SideScheme)
-  'cd016': "<b>Interruption Obligatoire</b> : quand le méchant ou Mister Negative devraient attaquer, ils manigancent à la place.",
+  'cd016': "<b>Interruption forcée</b> : quand le méchant ou Mister Negative devraient attaquer, ils manigancent à la place.",
   // cloak_dagger — Inner Demon (Minion)
   'cd017': "Garde. Ténacité.",
   // cloak_dagger — Opposites Attack (Treachery)
-  'cd018': "<b>Une fois révélée</b> : passez chaque héros en forme d'identité civile. Puis, placez 1 menace sur la manigance principale par héros retourné de cette façon.",
+  'cd018': "<b>Une fois révélée</b> : passez chaque héros sous forme d'alter ego. Puis, placez 1 menace sur la manigance principale par héros retourné de cette façon.",
   // spider_man_rainy — Spider-Man (Hero)
   'sr001a': "Comme des mouches — <b>Interruption</b> : quand un sbire s'engage avec vous, entoilez-le. (Limite de deux fois par round.)\n<b>Réponse</b> : après qu'un ennemi entoilé a été mis K.O., retirez 1 menace d'une manigance.",
   // spider_man_rainy — Peter Parker (AlterEgo)
@@ -560,19 +560,19 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // spider_man_rainy — Great Responsibility (Resource)
   'sr008': "<b>Réponse de héros</b> <i>(contre)</i> : après avoir dépensé cette carte, retirez 2 menaces d'une manigance.",
   // spider_man_rainy — J. Jonah Jameson (Support)
-  'sr009': "<b>Action d'identité civile</b> : inclinez J. Jonah Jameson → piochez 1 carte. Si cette carte comportait une image de Spider-Man, piochez une autre carte.",
+  'sr009': "<b>Action d'alter ego</b> : inclinez J. Jonah Jameson → piochez 1 carte. Si cette carte comportait une image de Spider-Man, piochez une autre carte.",
   // spider_man_rainy — Spider-Sense (Upgrade)
   'sr010': "<b>Interruption de héros</b> : quand le méchant ou un sbire ayant vilenie initie une attaque contre vous, piochez 1 carte.\n<b>Interruption de héros</b> : quand une carte de boost est retournée face visible pendant une attaque contre vous, défaussez 1 carte de votre main → annulez la capacité de boost de cette carte.",
   // spider_man_rainy — Web-Shooters (Upgrade)
   'sr011': "Votre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : inclinez Web-Shooters → générez une ressource [wild] pour une carte WEB.\n<b>Action de héros</b> : inclinez Web-Shooters → entoilez un ennemi.",
   // spider_man_rainy — Impact Webbing (Upgrade)
-  'sr012': "Permanent. Mise en place.\n<b>Interruption Obligatoire</b> : quand un ennemi entoilé s'active, retirez tous les compteurs de toile de cet ennemi → cet ennemi subit -1 MNG et -1 ATQ par compteur de toile retiré de cette façon, pour cette activation.",
+  'sr012': "Permanent. Mise en place.\n<b>Interruption forcée</b> : quand un ennemi entoilé s'active, retirez tous les compteurs de toile de cet ennemi → cet ennemi subit -1 MNG et -1 ATQ par compteur de toile retiré de cette façon, pour cette activation.",
   // spider_man_rainy — Bad Publicity (Obligation)
   'sr013': "Donnez-la au joueur Peter Parker.\nUtilisations (3 compteurs de menace).\n<b>Réponse de héros</b> : après avoir mis un ennemi K.O. ou déjoué une manigance, retirez 1 compteur de menace d'ici.",
   // spider_man_rainy — For My Next Trick... (SideScheme)
-  'sr014': "<i>Mysterio a l'air de préparer un mauvais coup !</i>\nUtilisations (2 compteurs d'illusion).\n<b>Réponse Obligatoire</b> : après le début de la phase du méchant, retirez 1 compteur d'illusion d'ici.\n<b>Interruption Obligatoire</b> : quand cette carte devrait quitter le jeu sans avoir été déjouée, attribuez à chaque joueur une carte rencontre face cachée.",
+  'sr014': "<i>Mysterio a l'air de préparer un mauvais coup !</i>\nUtilisations (2 compteurs d'illusion).\n<b>Réponse forcée</b> : après le début de la phase du méchant, retirez 1 compteur d'illusion d'ici.\n<b>Interruption forcée</b> : quand cette carte devrait quitter le jeu sans avoir été déjouée, attribuez à chaque joueur une carte rencontre face cachée.",
   // spider_man_rainy — Mysterio (Minion)
-  'sr015': "Entre en jeu avec 2 compteurs d'illusion.\n<b>Interruption Obligatoire</b> : quand Mysterio devrait subir des dégâts, retirez plutôt un compteur d'illusion d'ici.\n[star] <b>Réponse Obligatoire</b> : après que Mysterio s'est activé contre vous et a infligé des dégâts ou placé de la menace, attribuez-vous une carte rencontre face cachée.",
+  'sr015': "Entre en jeu avec 2 compteurs d'illusion.\n<b>Interruption forcée</b> : quand Mysterio devrait subir des dégâts, retirez plutôt un compteur d'illusion d'ici.\n[star] <b>Réponse forcée</b> : après que Mysterio s'est activé contre vous et a infligé des dégâts ou placé de la menace, attribuez-vous une carte rencontre face cachée.",
   // spider_man_rainy — Jump Scare (Treachery)
   'sr016': "<b>Une fois révélée</b> : attribuez-vous une carte rencontre face cachée. Subissez 1 dégât par carte rencontre face cachée devant vous.\n[star] <b>Boost</b> : attribuez-vous une carte rencontre face cachée.",
   // spider_man_rainy — Smoke and Mirrors (Treachery)
@@ -598,17 +598,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venom_rainy — Lethal Protector (Upgrade)
   'vr009': "Venom gagne +1 DEF.\n<b>Interruption de héros</b> <i>(attaque/défense)</i> : quand un ennemi initie une attaque, inclinez Lethal Protector → infligez 2 dégâts à cet ennemi. Si un ennemi a été mis K.O. de cette façon, redressez Lethal Protector.",
   // venom_rainy — Regeneration (Upgrade)
-  'vr010': "Vous gagnez +2 points de vie.\n<b>Réponse d'identité civile</b> : après avoir utilisé votre REC, inclinez Regeneration → redressez Eddie Brock.",
+  'vr010': "Vous gagnez +2 points de vie.\n<b>Réponse d'alter ego</b> : après avoir utilisé votre REC, inclinez Regeneration → redressez Eddie Brock.",
   // venom_rainy — Sharp Teeth (Upgrade)
   'vr011': "Venom gagne +1 ATQ.\nLes attaques de base de Venom gagnent déferlement et perçant.",
   // venom_rainy — We Hunger (Obligation)
-  'vr012': "Donnez-la au joueur Eddie Brock.\nPassez en forme de héros. Choisissez :\n- Subissez 3 dégâts → défaussez cette obligation.\n- Placez 3 menaces sur la manigance principale → soignez 1 dégât de Venom et défaussez cette obligation.",
+  'vr012': "Donnez-la au joueur Eddie Brock.\nPassez sous forme de héros. Choisissez :\n- Subissez 3 dégâts → défaussez cette obligation.\n- Placez 3 menaces sur la manigance principale → soignez 1 dégât de Venom et défaussez cette obligation.",
   // venom_rainy — Paint The Town Red (SideScheme)
   'vr013': "<i>Carnage a lâché sur la ville une horde déchaînée de symbiotes violents ! Arrêtez-les avant que la ville ne sombre dans le chaos absolu !</i>\nEntrave 2[per_hero].",
   // venom_rainy — Carnage (Minion)
-  'vr014': "Coup Rapide. Riposte 1.\n<b>Réponse Obligatoire</b> : après avoir soigné des dégâts, subissez 1 dégât.\n<i>(Sbire nemesis de Venom.)</i>",
+  'vr014': "Coup Rapide. Riposte 1.\n<b>Réponse forcée</b> : après avoir soigné des dégâts, subissez 1 dégât.\n<i>(Sbire nemesis de Venom.)</i>",
   // venom_rainy — Symbiote Rioter (Minion)
-  'vr015': "Garde. Patrouille.\n<b>Réponse Obligatoire</b> : après avoir attaqué un autre ennemi, subissez 1 dégât.",
+  'vr015': "Garde. Patrouille.\n<b>Réponse forcée</b> : après avoir attaqué un autre ennemi, subissez 1 dégât.",
   // jessica_jones — Jessica Jones (Hero)
   'jj001a': "Enquête musclée — <b>Réponse</b> <i>(attaque)</i> : après avoir déjoué une manigance annexe, infligez à un ennemi un nombre de dégâts égal à votre ATQ.",
   // jessica_jones — Jessica Jones (AlterEgo)
@@ -632,29 +632,29 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // jessica_jones — Jessica's Jacket (Upgrade)
   'jj010': "Vous gagnez +2 points de vie.\n<b>Interruption</b> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, inclinez Jessica's Jacket → prévenez 1 de ces dégâts et retirez 1 menace d'une manigance.",
   // jessica_jones — Private Investigator (Upgrade)
-  'jj011': "<b>Action d'identité civile</b> : inclinez Private Investigator → déplacez 1 menace d'une manigance vers cette carte.\n<b>Action de héros</b> : retirez toute la menace d'ici → infligez 1 dégât à un sbire par menace retirée de cette façon.",
+  'jj011': "<b>Action d'alter ego</b> : inclinez Private Investigator → déplacez 1 menace d'une manigance vers cette carte.\n<b>Action de héros</b> : retirez toute la menace d'ici → infligez 1 dégât à un sbire par menace retirée de cette façon.",
   // jessica_jones — Always a Bigger Conspiracy (SideScheme)
-  'jj012': "<i>« Il y a toujours deux histoires derrière une histoire. » — Jessica Jones</i>\nQuand Jessica Jones contre une manigance annexe, elle peut utiliser son ATQ au lieu de son CTR.\n<b>Quand déjouée</b> : défaussez les cartes du dessus du deck rencontre jusqu'à défausser une manigance annexe. Révélez cette manigance annexe.",
+  'jj012': "<i>« Il y a toujours deux histoires derrière une histoire. » — Jessica Jones</i>\nQuand Jessica Jones contre une manigance annexe, elle peut utiliser son ATQ au lieu de son CTR.\n<b>Une fois déjouée</b> : défaussez les cartes du dessus du deck rencontre jusqu'à défausser une manigance annexe. Révélez cette manigance annexe.",
   // jessica_jones — Chase Down a Lead (SideScheme)
-  'jj013': "Investigation 2. <i>(Une fois révélée, déplacez 2 menaces de la manigance principale vers cette carte.)</i>\n<b>Quand déjouée</b> : le joueur Jessica Jones cherche une carte spécifique à son héros parmi les 5 cartes du dessus de son deck et l'ajoute à sa main. <i>(Mélangez.)</i>",
+  'jj013': "Investigation 2. <i>(Une fois révélée, déplacez 2 menaces de la manigance principale vers cette carte.)</i>\n<b>Une fois déjouée</b> : le joueur Jessica Jones cherche une carte spécifique à son héros parmi les 5 cartes du dessus de son deck et l'ajoute à sa main. <i>(Mélangez.)</i>",
   // jessica_jones — Hang Back and Watch (SideScheme)
-  'jj014': "Investigation 2[per_hero]. <i>(Une fois révélée, déplacez 2[per_hero] menaces de la manigance principale vers cette carte.)</i>\n<b>Quand déjouée</b> : soignez 2 dégâts de Jessica Jones.",
+  'jj014': "Investigation 2[per_hero]. <i>(Une fois révélée, déplacez 2[per_hero] menaces de la manigance principale vers cette carte.)</i>\n<b>Une fois déjouée</b> : soignez 2 dégâts de Jessica Jones.",
   // jessica_jones — Pore Over the Evidence (SideScheme)
-  'jj015': "Investigation 1[per_hero]. <i>(Une fois révélée, déplacez 1[per_hero] menace de la manigance principale vers cette carte.)</i>\n<b>Quand déjouée</b> : réduisez de 2 le coût de la prochaine carte que le joueur Jessica Jones joue durant cette phase.",
+  'jj015': "Investigation 1[per_hero]. <i>(Une fois révélée, déplacez 1[per_hero] menace de la manigance principale vers cette carte.)</i>\n<b>Une fois déjouée</b> : réduisez de 2 le coût de la prochaine carte que le joueur Jessica Jones joue durant cette phase.",
   // jessica_jones — Sneak Into the Crime Scene (SideScheme)
-  'jj016': "Investigation 2. <i>(Une fois révélée, déplacez 2 menaces de la manigance principale vers cette carte.)</i>\n<b>Quand déjouée</b> : donnez une carte d'état Tenace à Jessica Jones.",
+  'jj016': "Investigation 2. <i>(Une fois révélée, déplacez 2 menaces de la manigance principale vers cette carte.)</i>\n<b>Une fois déjouée</b> : donnez une carte d'état Tenace à Jessica Jones.",
   // jessica_jones — Stable Home Life (Obligation)
-  'jj017': "<i>Donnez-la au joueur Jessica Jones.</i>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Inclinez votre identité civile → retirez Stable Home Life de la partie.\n- Défaussez du jeu une manigance annexe On the Job. Si vous ne pouvez pas, cette carte gagne renfort. Défaussez cette obligation.",
+  'jj017': "<i>Donnez-la au joueur Jessica Jones.</i>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n- Inclinez votre alter ego → retirez Stable Home Life de la partie.\n- Défaussez du jeu une manigance annexe On the Job. Si vous ne pouvez pas, cette carte gagne renfort. Défaussez cette obligation.",
   // jessica_jones — "Look At Me!" (SideScheme)
-  'jj018': "Purple Man ne peut pas subir de dégâts.\n<b>Réponse Obligatoire</b> : après qu'une manigance annexe a été déjouée, placez X menaces sur la manigance principale, où X est égal au nombre de manigances annexes en jeu.\n<hr /> [star] <b>Boost</b> : après la fin de cette activation, révélez cette carte.",
+  'jj018': "Purple Man ne peut pas subir de dégâts.\n<b>Réponse forcée</b> : après qu'une manigance annexe a été déjouée, placez X menaces sur la manigance principale, où X est égal au nombre de manigances annexes en jeu.\n<hr /> [star] <b>Boost</b> : après la fin de cette activation, révélez cette carte.",
   // jessica_jones — Purple Man (Minion)
-  'jj019': "[star] <b>Interruption Obligatoire</b> : quand Purple Man devrait attaquer, placez plutôt 2 menaces sur chaque manigance annexe. S'il n'y a aucune manigance annexe en jeu, révélez la carte du dessus du deck rencontre.\n<i>(Son ATQ imprimée est une [star] : sa valeur est définie par sa capacité, le 0 affiché ne sert jamais.)</i>\n<hr /> [star] <b>Boost</b> : vous êtes désorienté.\n<i>(Sbire nemesis de Jessica Jones.)</i>",
+  'jj019': "[star] <b>Interruption forcée</b> : quand Purple Man devrait attaquer, placez plutôt 2 menaces sur chaque manigance annexe. S'il n'y a aucune manigance annexe en jeu, révélez la carte du dessus du deck rencontre.\n<i>(Son ATQ imprimée est une [star] : sa valeur est définie par sa capacité, le 0 affiché ne sert jamais.)</i>\n<hr /> [star] <b>Boost</b> : vous êtes désorienté.\n<i>(Sbire nemesis de Jessica Jones.)</i>",
   // jessica_jones — "I've Got Everyone" (Treachery)
   'jj020': "<b>Une fois révélée</b> : répartissez X dégâts indirects entre les joueurs <i>(comme vous le souhaitez)</i>, où X est égal au nombre de manigances annexes en jeu. Désorientez chaque personnage blessé de cette façon. S'il n'y a aucune manigance annexe en jeu, cette carte gagne renfort.",
   // jessica_jones — The Purple Children (Treachery)
   'jj021': "Incitation 1 <i>(incitation 2 à la place si Purple Man est en jeu)</i>.\n<b>Une fois révélée</b> : placez 2 menaces sur chaque manigance annexe en jeu. S'il n'y a aucune manigance annexe en jeu, vous êtes désorienté.",
   // jessica_jones — Power Couple (Event)
-  'jj022': "Team-Up (Jessica Jones et Luke Cage). Maximum 1 par deck.\n<b>Action de héros</b> : donnez une carte d'état Tenace à Jessica Jones et à Luke Cage. Puis, piochez autant de cartes qu'il y a de cartes d'état Tenace parmi les personnages alliés.",
+  'jj022': "En Équipe (Jessica Jones et Luke Cage). 1 max par deck.\n<b>Action de héros</b> : donnez une carte d'état Tenace à Jessica Jones et à Luke Cage. Puis, piochez autant de cartes qu'il y a de cartes d'état Tenace parmi les personnages alliés.",
   // agent_anti_venom — Agent Anti-Venom (Hero)
   'av001a': "[star] <i>Dix sur dix !</i> — Tant qu'il reste exactement 10 points de vie à Agent Anti-Venom, il gagne +1 CTR, +1 ATQ, +1 DEF, et ses attaques gagnent perçant.",
   // agent_anti_venom — Flash Thompson (AlterEgo)
@@ -676,23 +676,23 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // agent_anti_venom — Bear Arms (Upgrade)
   'av009': "<b>Action de héros</b> : inclinez Bear Arms → la prochaine attaque d'Agent Anti-Venom gagne à distance.\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Bear Arms → drainez 1 du méchant.",
   // agent_anti_venom — Heroic Will (Upgrade)
-  'av010': "<b>Action d'identité civile</b> : inclinez Heroic Will → changez de forme.\n<b>Action de héros</b> : inclinez Heroic Will → redressez Agent Anti-Venom.",
+  'av010': "<b>Action d'alter ego</b> : inclinez Heroic Will → changez de forme.\n<b>Action de héros</b> : inclinez Heroic Will → redressez Agent Anti-Venom.",
   // agent_anti_venom — One Man Army (Upgrade)
   'av011': "<b>Interruption</b> : quand Agent Anti-Venom utilise un pouvoir de base, s'il n'y a aucun allié sous votre contrôle, piochez 1 carte et soignez 1 dégât d'Agent Anti-Venom. <i>(Limite d'une fois par round.)</i>",
   // agent_anti_venom — Spread Too Thin (Obligation)
-  'av012': "<i>Donnez-la au joueur Flash Thompson.</i>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Infligez 3 dégâts à votre identité → retirez Spread Too Thin de la partie.\n- Retirez de la partie une amélioration que vous contrôlez. Défaussez cette obligation.",
+  'av012': "<i>Donnez-la au joueur Flash Thompson.</i>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n- Infligez 3 dégâts à votre identité → retirez Spread Too Thin de la partie.\n- Retirez de la partie une amélioration que vous contrôlez. Défaussez cette obligation.",
   // agent_anti_venom — Maniac (Minion)
-  'av013': "<b>Réponse Obligatoire</b> : après que Maniac a attaqué un allié que vous contrôlez, infligez X dégâts à votre héros, où X est l'ATQ imprimée de cet allié.\n<i>(Sbire nemesis d'Agent Anti-Venom.)</i>",
+  'av013': "<b>Réponse forcée</b> : après que Maniac a attaqué un allié que vous contrôlez, infligez X dégâts à votre héros, où X est l'ATQ imprimée de cet allié.\n<i>(Sbire nemesis d'Agent Anti-Venom.)</i>",
   // agent_anti_venom — The Made Men (SideScheme)
-  'av014': "<b>Interruption Obligatoire</b> : après que Maniac a manigancé ou attaqué, l'allié ayant l'ATQ imprimée la plus élevée sous le contrôle de chaque joueur gagne traître <i>(considérez cet allié comme un sbire engagé avec son propriétaire. Il a 1 MNG, une zone de texte imprimée vierge, et ne subit pas de dégâts consécutifs.)</i>",
+  'av014': "<b>Interruption forcée</b> : après que Maniac a manigancé ou attaqué, l'allié ayant l'ATQ imprimée la plus élevée sous le contrôle de chaque joueur gagne traître <i>(considérez cet allié comme un sbire engagé avec son propriétaire. Il a 1 MNG, une zone de texte imprimée vierge, et ne subit pas de dégâts consécutifs.)</i>",
   // agent_anti_venom — Infected Scorpion (Minion)
-  'av015': "Coup Rapide.\n<b>Interruption Obligatoire</b> : quand Infected Scorpion attaque un allié, prévenez tous les dégâts infligés à cet allié. Cet allié gagne traître <i>(considérez cet allié comme un sbire engagé avec son propriétaire. Il a 1 MNG, une zone de texte imprimée vierge, et ne subit pas de dégâts consécutifs.)</i>",
+  'av015': "Coup Rapide.\n<b>Interruption forcée</b> : quand Infected Scorpion attaque un allié, prévenez tous les dégâts infligés à cet allié. Cet allié gagne traître <i>(considérez cet allié comme un sbire engagé avec son propriétaire. Il a 1 MNG, une zone de texte imprimée vierge, et ne subit pas de dégâts consécutifs.)</i>",
   // agent_anti_venom — Infected (Attachment)
   'av016': "Attachez-la au sbire ayant le plus de points de vie imprimés. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.\nLes attaques du sbire attaché gagnent déferlement.",
   // squirrel_girl — Squirrel Girl (Hero)
   'sg001a': "<i>Armée imbattable</i> — <b>Réponse de héros</b> : après avoir dépensé un Écureuil, infligez 1 dégât à un ennemi ou retirez 1 menace d'une manigance. (Limite d'une fois par phase.)\n<i>Aide d'Écureuil</i> — <b>Ressource</b> : défaussez un allié [[SQUIRREL]] que vous contrôlez → générez 1 ressource [wild]. Ne la dépensez que pour payer une carte Squirrel Girl. (Limite d'1 Écureuil par carte jouée.)",
   // squirrel_girl — Doreen Green (AlterEgo)
-  'sg001b': "Doreen Green commence la partie avec un deck d'Écureuils. <i>(Mettez les 6 alliés [[SQUIRREL]] de côté, mélangés. Quand un effet appelle un Écureuil, révélez la carte du dessus du deck d'Écureuils et mettez-la en jeu inclinée, sous votre contrôle. Si le deck d'Écureuils est vide, mélangez la pile de défausse des Écureuils pour en former un nouveau.)</i>\n<i>Langage des écureuils</i> — <b>Action d'identité civile</b> : inclinez Doreen Green → appelez 1 Écureuil. (Limite d'une fois par round.)\n<i>Aide d'Écureuil</i> — <b>Ressource</b> : défaussez un allié [[SQUIRREL]] que vous contrôlez → générez 1 ressource [wild]. Ne la dépensez que pour payer une carte Squirrel Girl. (Limite d'1 Écureuil par carte jouée.)",
+  'sg001b': "Doreen Green commence la partie avec un deck d'Écureuils. <i>(Mettez les 6 alliés [[SQUIRREL]] de côté, mélangés. Quand un effet appelle un Écureuil, révélez la carte du dessus du deck d'Écureuils et mettez-la en jeu inclinée, sous votre contrôle. Si le deck d'Écureuils est vide, mélangez la pile de défausse des Écureuils pour en former un nouveau.)</i>\n<i>Langage des écureuils</i> — <b>Action d'alter ego</b> : inclinez Doreen Green → appelez 1 Écureuil. (Limite d'une fois par round.)\n<i>Aide d'Écureuil</i> — <b>Ressource</b> : défaussez un allié [[SQUIRREL]] que vous contrôlez → générez 1 ressource [wild]. Ne la dépensez que pour payer une carte Squirrel Girl. (Limite d'1 Écureuil par carte jouée.)",
   // squirrel_girl — Tippy-Toe (Ally)
   'sg002': "<i>Écureuil. (Ne compte pas dans votre limite d'alliés. Ne peut pas se défendre. Ne peut pas recevoir d'améliorations. Ne peut être ni choisi ni renforcé par des cartes joueur autres que Squirrel Girl. Quand il quitte le jeu, mettez-le dans la pile de défausse des Écureuils. Peut être dépensé pour l'Aide d'Écureuil.)</i>\n<b>Réponse</b> : après que Tippy-Toe est entrée en jeu, regardez les 2 cartes du dessus du deck d'Écureuils. Remettez-les dans l'ordre de votre choix.",
   // squirrel_girl — Monkey Joe (Ally)
@@ -726,15 +726,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // squirrel_girl — Nuts! (Resource)
   'sg017': "<b>Réponse</b> : après avoir dépensé cette carte pour payer une carte Squirrel Girl, appelez 1 Écureuil.",
   // squirrel_girl — Surprise Exam (Obligation)
-  'sg018': "<b><i>Donnez-la au joueur Doreen Green.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → retirez Surprise Exam de la partie.\n• Défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte au hasard de votre main. Défaussez cette obligation.",
+  'sg018': "<b><i>Donnez-la au joueur Doreen Green.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → retirez Surprise Exam de la partie.\n• Défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte au hasard de votre main. Défaussez cette obligation.",
   // squirrel_girl — Ratatoskr (Minion)
-  'sg019': "<b>Interruption Obligatoire</b> : quand Ratatoskr s'active contre vous, défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, Ratatoskr reçoit 1 carte de boost supplémentaire pour cette activation.",
+  'sg019': "<b>Interruption forcée</b> : quand Ratatoskr s'active contre vous, défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, Ratatoskr reçoit 1 carte de boost supplémentaire pour cette activation.",
   // squirrel_girl — Discord in the Branches (SideScheme)
-  'sg020': "<i>(Icône de crise : tant que cette manigance est en jeu, les joueurs ne peuvent pas réduire la valeur de manigance du méchant.)</i>\nTant que cette manigance est en jeu, les capacités imprimées des alliés [[SQUIRREL]] sont considérées comme vierges. Leur CTR, leur ATQ et leurs points de vie ne sont pas affectés.\n<b>Réponse Obligatoire</b> : après qu'un allié [[SQUIRREL]] est entré en jeu, placez 1 menace ici. (Limite d'une fois par round.)",
+  'sg020': "<i>(Icône de crise : tant que cette manigance est en jeu, les joueurs ne peuvent pas réduire la valeur de manigance du méchant.)</i>\nTant que cette manigance est en jeu, les capacités imprimées des alliés [[SQUIRREL]] sont considérées comme vierges. Leur CTR, leur ATQ et leurs points de vie ne sont pas affectés.\n<b>Réponse forcée</b> : après qu'un allié [[SQUIRREL]] est entré en jeu, placez 1 menace ici. (Limite d'une fois par round.)",
   // squirrel_girl — Poisoned Rumors (Treachery)
   'sg021': "<b>Une fois révélée</b> : défaussez 2 alliés [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, placez 2 menaces sur Discord in the Branches. Si cette manigance n'est pas en jeu, placez plutôt ces menaces sur la manigance principale.\n[star] <b>Boost</b> : après la fin de cette activation, inclinez 1 allié [[SQUIRREL]] que vous contrôlez.",
   // squirrel_girl — Ratatoskr's Whispers (Attachment)
-  'sg022': "Attachez-la à votre carte d'identité.\nVous ne pouvez pas dépenser d'alliés [[SQUIRREL]].\n<b>Action d'identité civile</b> : inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → défaussez Ratatoskr's Whispers.\n[star] <b>Boost</b> : défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, cette activation gagne +1 ATQ et +1 MNG.",
+  'sg022': "Attachez-la à votre carte d'identité.\nVous ne pouvez pas dépenser d'alliés [[SQUIRREL]].\n<b>Action d'alter ego</b> : inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → défaussez Ratatoskr's Whispers.\n[star] <b>Boost</b> : défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, cette activation gagne +1 ATQ et +1 MNG.",
   // moon_knight — Moon Knight (Hero)
   'mk001a': "<i>La meilleure défense, c'est l'attaque</i> — Réduisez de 1 le coût des cartes Agressivité <i>(rouges)</i> que vous jouez.",
   // moon_knight — Marc Spector (AlterEgo)
@@ -746,7 +746,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // moon_knight — Jake Lockley (AlterEgo)
   'mk001e': "<i>Juste parce que</i> — Réduisez de 1 le coût des cartes Justice <i>(jaunes)</i> que vous jouez.",
   // moon_knight — Echo (Ally)
-  'mk002': "[star] Echo a un CTR et une ATQ égaux au CTR et à l'ATQ de votre héros actif. Si vous êtes en forme d'identité civile, Echo ne peut ni attaquer ni contrer.",
+  'mk002': "[star] Echo a un CTR et une ATQ égaux au CTR et à l'ATQ de votre héros actif. Si vous êtes sous forme d'alter ego, Echo ne peut ni attaquer ni contrer.",
   // moon_knight — Khonshu (Support)
   'mk003': "<b>Action</b> : inclinez Khonshu → passez à la forme Moon Knight.\n<b>Réponse</b> : après avoir changé de forme, inclinez Khonshu → piochez une carte.",
   // moon_knight — Frenchie (Support)
@@ -754,7 +754,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // moon_knight — Different Folks (Upgrade)
   'mk005': "Après avoir changé de forme, placez un compteur de folie ici.\n<b>Action de héros</b> : retirez 6 compteurs de folie de Different Folks → sonnez un ennemi.",
   // moon_knight — Different Strokes (Upgrade)
-  'mk006': "<b>Interruption</b> : quand vous jouez une carte d'aspect, placez un compteur de folie ici. <i>(Limite d'une fois par round pour chaque aspect.)</i>\n<b>Action</b> : retirez 3 compteurs de folie de Different Strokes → redressez votre identité ou changez de forme.\n<b>Interruption Obligatoire</b> : quand la phase des joueurs se termine, retirez tous les compteurs de folie de Different Strokes.",
+  'mk006': "<b>Interruption</b> : quand vous jouez une carte d'aspect, placez un compteur de folie ici. <i>(Limite d'une fois par round pour chaque aspect.)</i>\n<b>Action</b> : retirez 3 compteurs de folie de Different Strokes → redressez votre identité ou changez de forme.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, retirez tous les compteurs de folie de Different Strokes.",
   // moon_knight — Deck and Cover (Event)
   'mk007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si cet ennemi est mis K.O., changez de forme.\n<i>(Cette carte est à la fois une carte Moon Knight et une carte Agressivité.)</i>",
   // moon_knight — Fight or Foil (Event)
@@ -762,13 +762,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // moon_knight — Gear Up (Event)
   'mk009': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous vous défendez contre une attaque, vous gagnez +2 DEF et riposte 2 jusqu'à la fin du round. Après la résolution de cette attaque, changez de forme.\n<i>(Cette carte est à la fois une carte Moon Knight et une carte Protection.)</i>",
   // moon_knight — Where'd He Go? (Event)
-  'mk010': "Choisissez l'une ou l'autre :\n• <b>Action</b> : passez en forme de héros → désorientez un ennemi.\n• <b>Action</b> : passez en forme d'identité civile → sonnez un ennemi.\n<i>(Cette carte est à la fois une carte Moon Knight et une carte Leadership.)</i>",
+  'mk010': "Choisissez l'une ou l'autre :\n• <b>Action</b> : passez sous forme de héros → désorientez un ennemi.\n• <b>Action</b> : passez sous forme d'alter ego → sonnez un ennemi.\n<i>(Cette carte est à la fois une carte Moon Knight et une carte Leadership.)</i>",
   // moon_knight — Versatility (Event)
   'mk011': "Considérez cette carte comme appartenant à l'aspect de votre choix.\n<b>Action de héros</b> : si l'aspect de la carte du dessus de votre pile de défausse est :\n• Agressivité - Infligez 4 dégâts à un ennemi.\n• Justice - Retirez 3 menaces d'une manigance.\n• Leadership - Désorientez un ennemi.\n• Protection - Sonnez un ennemi.",
   // moon_knight — Seek Help (Obligation)
   'mk012': "<b><i>Donnez-la au joueur Marc Spector.</i></b>\nVous pouvez passer à Marc Spector. Choisissez :\n• Inclinez Marc Spector → retirez Seek Help de la partie.\n• Subissez 2 dégâts indirects → défaussez cette obligation.",
   // moon_knight — Bushman (Minion)
-  'mk013': "<b>Interruption Obligatoire</b> : quand Bushman devrait être mis K.O., s'il n'y a aucun compteur de folie ici, soignez plutôt tous ses dégâts et placez un compteur de folie sur lui.\n[star] Bushman gagne +2 ATQ s'il y a un compteur de folie ici.",
+  'mk013': "<b>Interruption forcée</b> : quand Bushman devrait être mis K.O., s'il n'y a aucun compteur de folie ici, soignez plutôt tous ses dégâts et placez un compteur de folie sur lui.\n[star] Bushman gagne +2 ATQ s'il y a un compteur de folie ici.",
   // moon_knight — Mano a Mano (SideScheme)
   'mk014': "Moon Knight et Mr. Knight subissent -1 ATQ.",
   // moon_knight — Cull the Weak (Treachery)
@@ -776,15 +776,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // moon_knight — Bushman's Knife (Attachment)
   'mk016': "Attachez-la à Bushman si possible. Sinon, attachez-la au sbire ayant le plus de points de vie restants.\n[star] Les attaques du personnage attaché gagnent perçant.\n<b>Action de héros</b> : dépensez une ressource [physical] → défaussez cette carte.",
   // moon_knight — Doctor Strange (Minion)
-  'mk017': "Victoire 1. Vilenie.\n<b>Réponse Obligatoire</b> : après que Doctor Strange a blessé votre héros, défaussez 1 carte au hasard de votre main.\n<b>Quand vaincu</b> : le joueur qui a mis Doctor Strange K.O. met The Eye of Agamotto en jeu sous son contrôle.",
+  'mk017': "Victoire 1. Vilenie.\n<b>Réponse forcée</b> : après que Doctor Strange a blessé votre héros, défaussez 1 carte au hasard de votre main.\n<b>Une fois vaincu</b> : le joueur qui a mis Doctor Strange K.O. met The Eye of Agamotto en jeu sous son contrôle.",
   // moon_knight — Ghost Rider (Minion)
-  'mk018': "Victoire 1. Vilenie.\n[star] Les attaques de Ghost Rider gagnent perçant et déferlement.\n<b>Quand vaincu</b> : le joueur qui met Ghost Rider K.O. met The Hell Charger en jeu sous son contrôle.",
+  'mk018': "Victoire 1. Vilenie.\n[star] Les attaques de Ghost Rider gagnent perçant et déferlement.\n<b>Une fois vaincu</b> : le joueur qui met Ghost Rider K.O. met The Hell Charger en jeu sous son contrôle.",
   // moon_knight — Iron Fist (Minion)
-  'mk019': "Victoire 1. Vilenie.\n<b>Réponse Obligatoire</b> : après qu'Iron Fist a blessé un personnage que vous contrôlez, sonnez ce personnage.\n<b>Quand vaincu</b> : le joueur qui a mis Iron Fist K.O. met The Iron Fist en jeu sous son contrôle.",
+  'mk019': "Victoire 1. Vilenie.\n<b>Réponse forcée</b> : après qu'Iron Fist a blessé un personnage que vous contrôlez, sonnez ce personnage.\n<b>Une fois vaincu</b> : le joueur qui a mis Iron Fist K.O. met The Iron Fist en jeu sous son contrôle.",
   // moon_knight — Thor (Minion)
-  'mk020': "Victoire 1. Vilenie.\n<b>Réponse Obligatoire</b> : après que Thor a blessé un personnage que vous contrôlez, attribuez-vous 1 carte rencontre.\n<b>Quand vaincu</b> : le joueur qui a mis Thor K.O. met Mjolnir en jeu sous son contrôle.",
+  'mk020': "Victoire 1. Vilenie.\n<b>Réponse forcée</b> : après que Thor a blessé un personnage que vous contrôlez, attribuez-vous 1 carte rencontre.\n<b>Une fois vaincu</b> : le joueur qui a mis Thor K.O. met Mjolnir en jeu sous son contrôle.",
   // moon_knight — Mjolnir (Upgrade)
-  'mk021': "Lié (Thor).\nVotre héros gagne +1 ATQ et le trait [[AERIAL]].\n<b>Réponse Obligatoire</b> : après vous être engagé avec un sbire, inclinez Mjolnir et retirez-lui 1 compteur d'attaque → piochez 2 cartes.",
+  'mk021': "Lié (Thor).\nVotre héros gagne +1 ATQ et le trait [[AERIAL]].\n<b>Réponse forcée</b> : après vous être engagé avec un sbire, inclinez Mjolnir et retirez-lui 1 compteur d'attaque → piochez 2 cartes.",
   // moon_knight — The Eye of Agamotto (Upgrade)
   'mk022': "Lié (Doctor Strange).\n<b>Ressource</b> : inclinez The Eye of Agamotto et retirez-lui 1 compteur mystique → générez 2 ressources [wild].",
   // moon_knight — The Hell Charger (Upgrade)
@@ -816,49 +816,49 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // brawn — Shockwave (Event)
   'bw011': "<b>Action de héros</b> : défaussez les X cartes du dessus de votre deck <i>(maximum 5)</i>. Pour chaque ressource [physical] défaussée de cette façon, infligez 2 dégâts à chaque ennemi. Pour chaque ressource [mental] défaussée de cette façon, retirez 2 menaces de chaque manigance.",
   // brawn — Cho's Lab (Support)
-  'bw012': "<b>Réponse de héros</b> : après avoir changé de forme, inclinez Cho's Lab → placez la carte du dessous de votre deck dans votre réserve.\n<b>Action d'identité civile</b> : inclinez Cho's Lab → mélangez une carte Brawn de votre pile de défausse dans votre deck.",
+  'bw012': "<b>Réponse de héros</b> : après avoir changé de forme, inclinez Cho's Lab → placez la carte du dessous de votre deck dans votre réserve.\n<b>Action d'alter ego</b> : inclinez Cho's Lab → mélangez une carte Brawn de votre pile de défausse dans votre deck.",
   // brawn — Brawn's Suit (Upgrade)
   'bw013': "Vous gagnez +2 points de vie.\n<b>Réponse de héros</b> : après avoir joué une carte depuis votre réserve, infligez 1 dégât à un ennemi.",
   // brawn — Forward-Thinking (Upgrade)
   'bw014': "<b>Réponse</b> : après avoir joué une carte depuis votre réserve, redressez votre identité.",
   // brawn — Hulk Out (Upgrade)
-  'bw015': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption Obligatoire</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
+  'bw015': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption forcée</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
   // brawn — Hulk Out (Upgrade)
-  'bw016': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption Obligatoire</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
+  'bw016': "Utilisations <i>(2 compteurs de rage)</i>.\nPour chaque compteur de rage ici, Brawn gagne +1 ATQ et +1 DEF, et gagne riposte 1.\n<b>Interruption forcée</b> : quand le round se termine, retirez 1 compteur de rage d'ici.",
   // brawn — Totally Awesome (Upgrade)
   'bw017': "<b>Réponse de héros</b> : après avoir joué une carte depuis votre réserve, retirez 1 menace d'une manigance.",
   // brawn — Analysis Paralysis (Obligation)
-  'bw018': "<b><i>Donnez-la au joueur Amadeus Cho.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Amadeus Cho → retirez Analysis Paralysis de la partie.\n• Vous êtes sonné et désorienté. Si vous étiez déjà sonné et désorienté, cette carte gagne renfort. Défaussez cette obligation.",
+  'bw018': "<b><i>Donnez-la au joueur Amadeus Cho.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Amadeus Cho → retirez Analysis Paralysis de la partie.\n• Vous êtes sonné et désorienté. Si vous étiez déjà sonné et désorienté, cette carte gagne renfort. Défaussez cette obligation.",
   // brawn — Rising Tide (SideScheme)
-  'bw019': "<i>Outré par le mépris des habitants de la surface pour l'océan, Namor invoque un raz-de-marée colossal pour balayer l'œuvre des hommes.</i>\nEntrave 2[per_hero].\n<b>Une fois révélée</b> : placez 1 jeton d'accélération ici.\n<b>Interruption Obligatoire</b> : quand la phase du Méchant commence, placez 1 jeton d'accélération ici.",
+  'bw019': "<i>Outré par le mépris des habitants de la surface pour l'océan, Namor invoque un raz-de-marée colossal pour balayer l'œuvre des hommes.</i>\nEntrave 2[per_hero].\n<b>Une fois révélée</b> : placez 1 jeton d'accélération ici.\n<b>Interruption forcée</b> : quand la phase du Méchant commence, placez 1 jeton d'accélération ici.",
   // brawn — Namor (Minion)
-  'bw020': "Patrouille. Ténacité.\n[star] Namor gagne +X ATQ et +X MNG, où X est égal au nombre de jetons d'accélération en jeu.\n<b>Interruption Obligatoire</b> : quand Namor manigance, placez cette menace sur Rising Tide à la place.",
+  'bw020': "Patrouille. Ténacité.\n[star] Namor gagne +X ATQ et +X MNG, où X est égal au nombre de jetons d'accélération en jeu.\n<b>Interruption forcée</b> : quand Namor manigance, placez cette menace sur Rising Tide à la place.",
   // brawn — Imperius Rex! (Treachery)
   'bw021': "<b>Une fois révélée</b> : Namor s'active contre vous. S'il n'est pas en jeu, cherchez Namor, mettez-le en jeu engagé avec vous et donnez-lui 1 carte de boost face cachée.\n<hr />\n[star] <b>Boost</b> : attribuez-vous cette carte comme carte Rencontre face cachée.",
-  // brawn — Tidal Surge (Treachery)
+  // brawn — Tidal Renfort (Treachery)
   'bw022': "Renfort.\n<b>Une fois révélée</b> : placez 1 jeton d'accélération sur Rising Tide. Si Namor est en jeu, donnez-lui une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez à l'ennemi qui s'active 1 carte de boost supplémentaire.",
-  // brawn — Tidal Surge (Treachery)
+  // brawn — Tidal Renfort (Treachery)
   'bw023': "Renfort.\n<b>Une fois révélée</b> : placez 1 jeton d'accélération sur Rising Tide. Si Namor est en jeu, donnez-lui une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez à l'ennemi qui s'active 1 carte de boost supplémentaire.",
   // brawn — Strong as Silk (Event, Team-Up)
-  'bw024': "Team-Up (Brawn et Silk). Maximum 1 par deck.\n<b>Action de héros</b> : Brawn et Silk gagnent +1 ATQ jusqu'à la fin du round. Brawn et Silk peuvent chacun effectuer une attaque de base sans s'incliner.",
+  'bw024': "En Équipe (Brawn et Silk). 1 max par deck.\n<b>Action de héros</b> : Brawn et Silk gagnent +1 ATQ jusqu'à la fin du round. Brawn et Silk peuvent chacun effectuer une attaque de base sans s'incliner.",
   // brawn — Brains and Brawn (Event, Team-Up)
-  'bw025': "Team-Up (Brawn et Ironheart). Maximum 1 par deck.\n<b>Action de héros</b> : pour chaque ressource imprimée dans votre main et votre réserve, si c'est une :\n[physical] - infligez 1 dégât à un ennemi.\n[mental] - retirez 1 menace d'une manigance.",
+  'bw025': "En Équipe (Brawn et Ironheart). 1 max par deck.\n<b>Action de héros</b> : pour chaque ressource imprimée dans votre main et votre réserve, si c'est une :\n[physical] - infligez 1 dégât à un ennemi.\n[mental] - retirez 1 menace d'une manigance.",
   // lockjaw — Lockjaw (Hero)
   'lj001a': "<i>Rapporte !</i> — <b>Action</b> : inclinez Lockjaw et dépensez une ressource [mental] → choisissez une carte qui n'est pas une ressource dans la pile de défausse de n'importe quel joueur et ajoutez-la à la main de son propriétaire. <i>(Limite d'une fois par round.)</i>",
   // lockjaw — Lockjaw (AlterEgo)
   'lj001b': "<b>Mise en place</b> : cherchez Tuning Fork dans votre deck, votre main et votre pile de défausse, et mettez-la en jeu.\n<i>Réconfort</i> — <b>Réponse</b> : après être passé à cette forme, redressez un personnage allié.",
   // lockjaw — Black Bolt (Ally)
-  'lj002': "[star] <b>Interruption Obligatoire</b> : quand Black Bolt attaque, défaussez X cartes du deck de chaque joueur et du deck rencontre. X est égal à l'ATQ de Black Bolt.",
+  'lj002': "[star] <b>Interruption forcée</b> : quand Black Bolt attaque, défaussez X cartes du deck de chaque joueur et du deck rencontre. X est égal à l'ATQ de Black Bolt.",
   // lockjaw — Tuning Fork (Upgrade)
   'lj003': "Vous pouvez jouer des soutiens [[LOCATION]] depuis votre pile de défausse pendant votre tour <i>(en payant leur coût en ressources)</i>.\n<b>Ressource</b> : inclinez Tuning Fork → générez une ressource [wild].",
   // lockjaw — Jaw Lock (Upgrade)
   'lj004': "Attachez-la à un ennemi. Forme de héros uniquement.\n<b>Réponse</b> : après avoir joué un événement [[TELEPORT]], infligez 1 dégât à l'ennemi attaché.\n<b>Interruption</b> : quand l'ennemi attaché devrait s'activer, défaussez plutôt Jaw Lock.",
   // lockjaw — Kamala's Room (Support)
-  'lj005': "Votre identité civile gagne +1 REC.\n<b>Action d'identité civile</b> : inclinez Kamala's Room → regardez les 3 cartes du dessus de votre deck. Ajoutez-en 1 à votre main et défaussez les autres.",
+  'lj005': "Votre alter ego gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Kamala's Room → regardez les 3 cartes du dessus de votre deck. Ajoutez-en 1 à votre main et défaussez les autres.",
   // lockjaw — New Attilan (Support)
-  'lj006': "<b>Action d'identité civile</b> : inclinez New Attilan → défaussez les cartes du dessus de votre deck jusqu'à défausser une carte Lockjaw. Puis, ajoutez cette carte à votre main.",
+  'lj006': "<b>Action d'alter ego</b> : inclinez New Attilan → défaussez les cartes du dessus de votre deck jusqu'à défausser une carte Lockjaw. Puis, ajoutez cette carte à votre main.",
   // lockjaw — Doc Jaw's Lab (Support)
-  'lj007': "<b>Action d'identité civile</b> : inclinez Doc Jaw's Lab → redressez Tuning Fork.",
+  'lj007': "<b>Action d'alter ego</b> : inclinez Doc Jaw's Lab → redressez Tuning Fork.",
   // lockjaw — Teleport To Safety (Event)
   'lj008': "<b>Interruption</b> : quand une identité devrait subir des dégâts d'une attaque, quel qu'en soit le nombre, changez la forme de cette identité → prévenez tous ces dégâts.",
   // lockjaw — Fast Travel (Event)
@@ -866,19 +866,19 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lockjaw — Zooming Around (Event)
   'lj010': "<b>Action de héros</b> : choisissez un joueur. Infligez 1 dégât à chaque ennemi engagé avec ce joueur. Retirez 1 menace de chaque manigance. Si vous avez payé cette carte avec une ressource [mental], vous pouvez changer de forme.",
   // lockjaw — Ruff Ambush (Event)
-  'lj011': "<b>Réponse de héros</b> <i>(attaque)</i> : après être passé en forme de héros, infligez 5 dégâts à un ennemi <i>(7 dégâts à la place si vous avez payé cette carte avec une ressource [mental])</i>.",
+  'lj011': "<b>Réponse de héros</b> <i>(attaque)</i> : après être passé sous forme de héros, infligez 5 dégâts à un ennemi <i>(7 dégâts à la place si vous avez payé cette carte avec une ressource [mental])</i>.",
   // lockjaw — Psionic Tracking (Event)
-  'lj012': "<b>Action d'identité civile</b> : choisissez un joueur. Cherchez n'importe quelle carte dans le deck de ce joueur et défaussez-la.",
+  'lj012': "<b>Action d'alter ego</b> : choisissez un joueur. Cherchez n'importe quelle carte dans le deck de ce joueur et défaussez-la.",
   // lockjaw — Canine Urges (Obligation)
-  'lj013': "<b><i>Donnez-la au joueur Lockjaw.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Lockjaw et Tuning Fork → retirez Canine Urges de la partie.\n• Défaussez tous les événements [[TELEPORT]] de votre main. Si aucun événement n'a été défaussé de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  'lj013': "<b><i>Donnez-la au joueur Lockjaw.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Lockjaw et Tuning Fork → retirez Canine Urges de la partie.\n• Défaussez tous les événements [[TELEPORT]] de votre main. Si aucun événement n'a été défaussé de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
   // lockjaw — Dognapped! (SideScheme)
-  'lj014': "<b>Réponse Obligatoire</b> : après qu'un événement [[TELEPORT]] a été joué, placez 1 menace ici.",
+  'lj014': "<b>Réponse forcée</b> : après qu'un événement [[TELEPORT]] a été joué, placez 1 menace ici.",
   // lockjaw — Annihilus (Minion)
-  'lj015': "<b>Interruption Obligatoire</b> : quand Annihilus devrait être mis K.O., mélangez-le plutôt dans le deck rencontre.\n[star] <b>Boost</b> : après la fin de cette activation, mélangez cette carte dans le deck rencontre.",
+  'lj015': "<b>Interruption forcée</b> : quand Annihilus devrait être mis K.O., mélangez-le plutôt dans le deck rencontre.\n[star] <b>Boost</b> : après la fin de cette activation, mélangez cette carte dans le deck rencontre.",
   // lockjaw — Dog Catcher (Minion)
-  'lj016': "Renfort.\n[star] <b>Interruption Obligatoire</b> : quand Dog Catcher devrait manigancer, il attaque à la place.",
+  'lj016': "Renfort.\n[star] <b>Interruption forcée</b> : quand Dog Catcher devrait manigancer, il attaque à la place.",
   // lockjaw — Provoked (Attachment)
-  'lj017': "Attachez-la à votre carte d'identité.\nLe personnage attaché ne peut pas passer en forme d'identité civile.\n[star] <b>Réponse</b> : après que le personnage attaché a attaqué, placez 1 compteur de calme ici.\n<b>Interruption Obligatoire</b> : quand il y a 3 compteurs de calme ou plus ici, défaussez cette carte.",
+  'lj017': "Attachez-la à votre carte d'identité.\nLe personnage attaché ne peut pas passer sous forme d'alter ego.\n[star] <b>Réponse</b> : après que le personnage attaché a attaqué, placez 1 compteur de calme ici.\n<b>Interruption forcée</b> : quand il y a 3 compteurs de calme ou plus ici, défaussez cette carte.",
   // lockjaw — Zabu (Ally)
   'lj018': "Compagnon. <i>(Cet allié ne compte pas dans la limite d'alliés et ne peut pas servir à se défendre contre les attaques.)</i>\n[star] Les attaques de Zabu gagnent perçant.",
   // lockjaw — Throg (Ally)
@@ -898,25 +898,25 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lockjaw — Ms. Marvel (Ally)
   'lj026': "[star] <b>Interruption</b> : quand Ms. Marvel contre, elle gagne +1 CTR et subit +1 dégât consécutif pour ce contre.\n[star] <b>Interruption</b> : quand Ms. Marvel attaque, elle gagne +1 ATQ et subit +1 dégât consécutif pour cette attaque.",
   // lockjaw — Animals Unleashed (Event)
-  'lj027': "Maximum 1 par deck.\n<b>Action de héros</b> : chaque joueur peut chercher un allié [[PET AVENGER]] dans son deck, sa main et sa pile de défausse, et le mettre en jeu. Chaque [[PET AVENGER]] gagne +1 ATQ jusqu'à la fin du round.",
+  'lj027': "1 max par deck.\n<b>Action de héros</b> : chaque joueur peut chercher un allié [[PET AVENGER]] dans son deck, sa main et sa pile de défausse, et le mettre en jeu. Chaque [[PET AVENGER]] gagne +1 ATQ jusqu'à la fin du round.",
   // lockjaw — Companionship (Event)
   'lj028': "<b>Action</b> : inclinez un [[PET AVENGER]] que vous contrôlez → choisissez un joueur. Ce joueur pioche 2 cartes.",
   // lockjaw — Inhuman's Best Friend (Event)
-  'lj029': "Team-Up <i>(Lockjaw et Ms. Marvel)</i>. Maximum 1 par deck.\n<b>Action d'identité civile</b> : redressez jusqu'à 4 soutiens que vous contrôlez.",
+  'lj029': "Team-Up <i>(Lockjaw et Ms. Marvel)</i>. 1 max par deck.\n<b>Action d'alter ego</b> : redressez jusqu'à 4 soutiens que vous contrôlez.",
   // lockjaw — Central Park (Support)
-  'lj030': "<b>Action d'identité civile</b> : inclinez Central Park → soignez 1 dégât d'un [[PET AVENGER]] ou d'un [[GOOD BOY]].",
+  'lj030': "<b>Action d'alter ego</b> : inclinez Central Park → soignez 1 dégât d'un [[PET AVENGER]] ou d'un [[GOOD BOY]].",
   // stanlee — Stan Lee (Hero)
   '90101a': "Stan Lee possède les zones de texte de chaque héros utilisé avec la capacité <i>Marvelous</i>.",
   // stanlee — Stan Lee (AlterEgo)
-  '90101b': "Stan Lee possède les zones de texte de chaque identité civile utilisée avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
+  '90101b': "Stan Lee possède les zones de texte de chaque alter ego utilisée avec la capacité <i>Marvelous</i>.\n<i>Marvelous</i> — Pendant la construction du deck, votre deck doit inclure 15 cartes spécifiques à un héros, prises parmi les autres sets de héros de votre collection.",
   // rainy — Hulk (Hero)
   '90102a': "Colère — <b>Réponse</b> : après que Hulk a subi des dégâts, infligez 1 dégât à un ennemi.",
   // rainy — Bruce Banner (AlterEgo)
-  '90102b': "Sortez le gros bras — <b>Interruption</b> : quand un ennemi devrait manigancer, dépensez une ressource [physical] → passez en forme de héros. Cet ennemi vous attaque à la place.",
+  '90102b': "Sortez le gros bras — <b>Interruption</b> : quand un ennemi devrait manigancer, dépensez une ressource [physical] → passez sous forme de héros. Cet ennemi vous attaque à la place.",
   // rainy — Black Widow (Ally)
-  '90103': "[star] <b>Réponse</b> : après que Black Widow a contré, retirez 1 menace d'une autre manigance.\n<b>Action de héros</b> : inclinez Black Widow → passez en forme d'identité civile.",
+  '90103': "[star] <b>Réponse</b> : après que Black Widow a contré, retirez 1 menace d'une autre manigance.\n<b>Action de héros</b> : inclinez Black Widow → passez sous forme d'alter ego.",
   // rainy — Brilliant Mind (Event)
-  '90104': "<b>Action d'identité civile</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous avez payé cette carte en n'utilisant que des ressources [mental], choisissez soit de retirer 2 menaces supplémentaires de cette manigance, soit de désorienter un ennemi.",
+  '90104': "<b>Action d'alter ego</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous avez payé cette carte en n'utilisant que des ressources [mental], choisissez soit de retirer 2 menaces supplémentaires de cette manigance, soit de désorienter un ennemi.",
   // rainy — Hulk Smash (Event)
   '90105': "<b>Action de héros</b> : faites les attaques suivantes contre la même cible :\n• <i>(attaque)</i> : infligez 3 dégâts.\n• <i>(attaque)</i> : infligez 3 dégâts.\n• <i>(attaque)</i> : infligez 3 dégâts.",
   // rainy — Interception (Event)
@@ -924,11 +924,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Reckless Charge (Event)
   '90107': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à Hulk → infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec une ressource [physical], cette attaque gagne déferlement.",
   // rainy — Natural Genius (Resource)
-  '90108': "Ne dépensez cette carte qu'en forme d'identité civile.",
+  '90108': "Ne dépensez cette carte qu'sous forme d'alter ego.",
   // rainy — Unnatural Strength (Resource)
-  '90109': "Ne dépensez cette carte qu'en forme de héros.",
+  '90109': "Ne dépensez cette carte qu'sous forme de héros.",
   // rainy — The Other Guy (Support)
-  '90110': "<b>Réponse d'identité civile</b> <i>(contre)</i> : après avoir changé de forme, retirez 1 menace d'une manigance. <i>(Limite d'une fois par phase.)</i>\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 1 dégât à un ennemi. <i>(Limite d'une fois par phase.)</i>",
+  '90110': "<b>Réponse d'alter ego</b> <i>(contre)</i> : après avoir changé de forme, retirez 1 menace d'une manigance. <i>(Limite d'une fois par phase.)</i>\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 1 dégât à un ennemi. <i>(Limite d'une fois par phase.)</i>",
   // rainy — Intimidating Roar (Upgrade)
   '90111': "<b>Réponse de héros</b> <i>(contre)</i> : après que Hulk a subi des dégâts d'une attaque, inclinez Intimidating Roar → retirez 1 menace d'une manigance (2 menaces à la place si vous avez subi 3 dégâts ou plus).",
   // rainy — Limitless Endurance (Upgrade)
@@ -962,11 +962,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Repulsor Gauntlets (Upgrade)
   '90125': "Rescue gagne +1 ATQ.\n<b>Interruption de héros</b> : quand Rescue fait une attaque de base, inclinez Repulsor Gauntlets → cette attaque gagne à distance.",
   // rainy — Board Meeting (Obligation)
-  '90126': "<b><i>Donnez-la au joueur Pepper Potts.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Pepper Potts → retirez Board Meeting de la partie.\n• Défaussez 1 amélioration [[TECH]] que vous contrôlez. Si aucune amélioration n'a été défaussée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  '90126': "<b><i>Donnez-la au joueur Pepper Potts.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Pepper Potts → retirez Board Meeting de la partie.\n• Défaussez 1 amélioration [[TECH]] que vous contrôlez. Si aucune amélioration n'a été défaussée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
   // rainy — Helicopter Crash (SideScheme)
   '90127': "Un hélicoptère de presse s'est écrasé dans une zone très peuplée et des civils sont en danger ! Évacuez-les avant que l'appareil n'explose et que d'autres vies ne soient perdues.",
   // rainy — Burning Building (Environment)
-  '90128': "<b>Réponse Obligatoire</b> : après le début de la phase du méchant, infligez 1 dégât indirect à chaque joueur.\n<b>Action de héros</b> : inclinez votre héros et dépensez une ressource [physical] → défaussez Burning Building.",
+  '90128': "<b>Réponse forcée</b> : après le début de la phase du méchant, infligez 1 dégât indirect à chaque joueur.\n<b>Action de héros</b> : inclinez votre héros et dépensez une ressource [physical] → défaussez Burning Building.",
   // rainy — Wounded Civilians (Obligation)
   '90129': "Utilisations (1 [per_player] compteurs de civil).\n<b>Interruption</b> : quand un joueur devrait soigner des dégâts d'un personnage, retirez plutôt 1 compteur de civil d'ici.",
   // rainy — Catastrophic Collision (Treachery)
@@ -984,11 +984,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Infiltrate (Event)
   'ag004': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Regardez la carte du dessus du deck rencontre et retirez 1 menace supplémentaire par icône de boost sur cette carte. Puis, vous pouvez défausser cette carte de rencontre.",
   // rainy — Parting Shots (Event)
-  'ag005': "<b>Interruption de héros</b> <i>(attaque)</i> : quand un ennemi devrait initier une attaque contre vous, infligez 2 dégâts à cet ennemi. Cette attaque gagne à distance. Vous pouvez passer en forme d'identité civile → cet ennemi manigance à la place.",
+  'ag005': "<b>Interruption de héros</b> <i>(attaque)</i> : quand un ennemi devrait initier une attaque contre vous, infligez 2 dégâts à cet ennemi. Cette attaque gagne à distance. Vous pouvez passer sous forme d'alter ego → cet ennemi manigance à la place.",
   // rainy — Takedown (Event)
   'ag006': "<b>Réponse de héros</b> <i>(attaque)</i> : après avoir attaqué un ennemi, infligez 2 dégâts à un ennemi. Si cet ennemi est mis K.O. par cette attaque, piochez 1 carte.",
   // rainy — Briefing Room (Support)
-  'ag007': "<b>Réponse de héros</b> : après qu'un sbire ou une manigance annexe est révélé, inclinez Briefing Room → chaque joueur en forme de héros pioche 1 carte.",
+  'ag007': "<b>Réponse de héros</b> : après qu'un sbire ou une manigance annexe est révélé, inclinez Briefing Room → chaque joueur sous forme de héros pioche 1 carte.",
   // rainy — Agent 13's Pistol (Upgrade)
   'ag008': "Restreint.\n<b>Réponse de héros</b> : après qu'Agent 13 attaque, inclinez Agent 13's Pistol et défaussez la carte du dessus du deck rencontre → infligez 1 dégât à un ennemi par icône de boost défaussée de cette façon.",
   // rainy — Physical Training (Upgrade)
@@ -998,13 +998,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // rainy — Assassination Plot (SideScheme)
   'ag011': "<b>Une fois révélée</b> : défaussez l'allié que vous contrôlez ayant le plus de points de vie restants. Si vous ne pouvez pas, placez 2 menaces sur cette manigance.",
   // rainy — Doctor Faustus (Minion)
-  'ag012': "Doctor Faustus ne peut pas subir de dégâts tant que vous êtes engagé avec un autre sbire.\n[star] <b>Interruption Obligatoire</b> : quand Doctor Faustus devrait vous attaquer alors que vous contrôlez un allié, cet allié vous inflige des dégâts égaux à son ATQ à la place.",
+  'ag012': "Doctor Faustus ne peut pas subir de dégâts tant que vous êtes engagé avec un autre sbire.\n[star] <b>Interruption forcée</b> : quand Doctor Faustus devrait vous attaquer alors que vous contrôlez un allié, cet allié vous inflige des dégâts égaux à son ATQ à la place.",
   // rainy — Hallucination (Attachment)
-  'ag013': "<b>Une fois révélée</b> : défaussez des cartes du deck rencontre jusqu'à défausser un sbire. Révélez ce sbire et attachez cette carte à lui. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption Obligatoire</b> : quand le sbire attaché devrait subir des dégâts, quel qu'en soit le nombre, défaussez-le et placez 3 menaces sur la manigance principale.",
+  'ag013': "<b>Une fois révélée</b> : défaussez des cartes du deck rencontre jusqu'à défausser un sbire. Révélez ce sbire et attachez cette carte à lui. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand le sbire attaché devrait subir des dégâts, quel qu'en soit le nombre, défaussez-le et placez 3 menaces sur la manigance principale.",
   // rainy — Hypnotic Suggestion (Treachery)
-  'ag014': "<b>Une fois révélée (identité civile)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre CTR.",
+  'ag014': "<b>Une fois révélée (alter ego)</b> : vous êtes désorienté. Cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : désorientez votre héros et placez sur la manigance principale un nombre de menaces égal à votre CTR.",
   // rainy — Sleeper Agent (Obligation)
-  'ag015': "<b><i>Donnez-la au joueur Sharon Carter.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
+  'ag015': "<b><i>Donnez-la au joueur Sharon Carter.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n- Retirez l'allié Captain America de la partie → retirez Sleeper Agent de la partie.\n- Défaussez 1 carte de votre main et placez 2 menaces sur la manigance principale. Défaussez cette obligation.",
 
   // okoye — Okoye (Hero)
   'ok001a': "<i>L'Art de la guerre</i> — <b>Réponse</b> : après avoir effectué une attaque de base ou un contre de base, les alliés [[DORA MILAJE]] que vous contrôlez subissent 1 dégât consécutif de moins lorsqu'ils effectuent le même pouvoir de base jusqu'à la fin de la phase. <i>(Limite d'une fois par round.)</i>",
@@ -1026,30 +1026,30 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // okoye — Close Ranks (Support)
   'ok010': "<b>Réponse</b> : après qu'un allié [[DORA MILAJE]] que vous contrôlez a été mis K.O., placez 1 compteur de phalange ici <i>(jusqu'à un maximum de 3)</i>.\n<b>Ressource</b> : inclinez Close Ranks et retirez n'importe quel nombre de compteurs de phalange ici → générez autant de ressources [physical].",
   // okoye — Upanga (Support)
-  'ok011': "Chaque allié [[DORA MILAJE]] que vous contrôlez gagne +1 point de vie.\n<b>Action d'identité civile</b> : inclinez Upanga → mélangez 1 carte [[ARMOR]], [[TECH]] ou [[WEAPON]] de votre pile de défausse dans votre deck.",
+  'ok011': "Chaque allié [[DORA MILAJE]] que vous contrôlez gagne +1 point de vie.\n<b>Action d'alter ego</b> : inclinez Upanga → mélangez 1 carte [[ARMOR]], [[TECH]] ou [[WEAPON]] de votre pile de défausse dans votre deck.",
   // okoye — Midnight Angel Armor (Upgrade) x2
-  'ok012': "Attachez-la à un personnage [[DORA MILAJE]] allié. Maximum 1 par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
-  'ok013': "Attachez-la à un personnage [[DORA MILAJE]] allié. Maximum 1 par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
+  'ok012': "Attachez-la à un personnage [[DORA MILAJE]] allié. 1 max par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
+  'ok013': "Attachez-la à un personnage [[DORA MILAJE]] allié. 1 max par personnage.\nLe personnage attaché gagne +2 points de vie, gagne le trait [[AERIAL]], et perd le mot-clé fragile.",
   // okoye — Royal Protector (Upgrade)
-  'ok014': "Votre limite d'alliés augmente de 1. Okoye gagne +1 CTR en forme de héros.\n<b>Réponse de héros</b> : après qu'un allié [[WAKANDA]] a été mis K.O., inclinez Royal Protector → redressez Okoye.",
+  'ok014': "Votre limite d'alliés augmente de 1. Okoye gagne +1 CTR sous forme de héros.\n<b>Réponse de héros</b> : après qu'un allié [[WAKANDA]] a été mis K.O., inclinez Royal Protector → redressez Okoye.",
   // okoye — Vibranium Spear (Upgrade) x2
-  'ok015': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. Maximum 1 par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
-  'ok016': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. Maximum 1 par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
+  'ok015': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. 1 max par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
+  'ok016': "Attachez-la à un personnage [[WAKANDA]] allié.\nRestreint. 1 max par personnage.\nLe personnage attaché gagne +1 ATQ (+2 ATQ à la place si attaché à un allié) et ses attaques de base gagnent perçant.",
   // okoye — Dora Milaje (jeton Created Ally)
   'ok017': "Fragile. <i>(Les attaques contre ce personnage gagnent déferlement.)</i>\nLégion. <i>(2 alliés ayant le mot-clé légion comptent comme 1 allié pour votre limite d'alliés.)</i>",
   // okoye — Midnight Angel (jeton Created Ally)
   'ok018': "Fragile. <i>(Les attaques contre ce personnage gagnent déferlement.)</i>\nLégion. <i>(2 alliés ayant le mot-clé légion comptent comme 1 allié pour votre limite d'alliés.)</i>",
   // okoye — Funeral Rites (Obligation)
-  'ok019': "<b><i>Donnez-la au joueur Okoye.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité civile et tous les alliés [[DORA MILAJE]] que vous contrôlez → retirez Funeral Rites de la partie.\n• Inclinez 3 alliés [[DORA MILAJE]] que vous contrôlez. Si aucun allié n'a été incliné de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  'ok019': "<b><i>Donnez-la au joueur Okoye.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego et tous les alliés [[DORA MILAJE]] que vous contrôlez → retirez Funeral Rites de la partie.\n• Inclinez 3 alliés [[DORA MILAJE]] que vous contrôlez. Si aucun allié n'a été incliné de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
   // okoye — Malevolent Mimic (SideScheme, nemesis)
-  'ok020': "<i>Nakia a détourné une arme secrète wakandaise — un mimique. Elle l'a empoisonnée pour semer le chaos parmi les civils innocents !</i>\n<b>Réponse Obligatoire</b> : après qu'un allié a été mis K.O., placez 2 menaces ici.",
+  'ok020': "<i>Nakia a détourné une arme secrète wakandaise — un mimique. Elle l'a empoisonnée pour semer le chaos parmi les civils innocents !</i>\n<b>Réponse forcée</b> : après qu'un allié a été mis K.O., placez 2 menaces ici.",
   // okoye — Malice (Minion, nemesis)
-  'ok021': "Solide.\n<b>Réponse Obligatoire</b> : après qu'un allié a été mis K.O., Malice manigance.\n<i>(Sbire némésis d'Okoye.)</i>",
+  'ok021': "Solide.\n<b>Réponse forcée</b> : après qu'un allié a été mis K.O., Malice manigance.\n<i>(Sbire némésis d'Okoye.)</i>",
   // okoye — Mimic-27 (Minion, nemesis)
-  'ok022': "X est égal à votre ATQ (X est égal à 0 à la place si vous êtes en forme d'identité civile).\n<b>Interruption Obligatoire</b> : quand Mimic-27 attaque, vous devez choisir un allié pour défendre contre son attaque, si possible.\n<b>Réponse Obligatoire</b> : après que Mimic-27 a attaqué et mis K.O. un personnage, elle attaque à nouveau. <i>(Limite d'une fois par round.)</i>",
+  'ok022': "X est égal à votre ATQ (X est égal à 0 à la place si vous êtes sous forme d'alter ego).\n<b>Interruption forcée</b> : quand Mimic-27 attaque, vous devez choisir un allié pour défendre contre son attaque, si possible.\n<b>Réponse forcée</b> : après que Mimic-27 a attaqué et mis K.O. un personnage, elle attaque à nouveau. <i>(Limite d'une fois par round.)</i>",
   // okoye — War Drumming (Treachery, nemesis) x2
-  'ok023': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
-  'ok024': "<b>Une fois révélée (identité civile)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
+  'ok023': "<b>Une fois révélée (alter ego)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
+  'ok024': "<b>Une fois révélée (alter ego)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : choisissez un sbire en jeu. Ce sbire vous attaque. Si l'ATQ de l'ennemi attaquant est de 2 ou moins, il gagne vilenie pour cette attaque. Si son ATQ est de 3 ou plus, il gagne déferlement pour cette attaque. S'il n'y a aucun sbire en jeu, cette carte gagne renfort.",
 
   // iron_lad — Iron Lad (Hero)
   'il001a': "<i>Destin</i> — <b>Action</b> : nommez un type de ressource et regardez les 4 cartes du dessus de votre deck. Ajoutez jusqu'à 2 cartes portant le type de ressource choisi à votre main et défaussez les autres. <i>(Limite d'une fois par round.)</i>",
@@ -1064,10 +1064,10 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'il005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
   'il006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Vous pouvez défausser 5 cartes de votre deck pour infliger 6 dégâts à la place.",
   // iron_lad — Seeking Solutions (Event) x2
-  'il007': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
-  'il008': "<b>Action d'identité civile</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  'il007': "<b>Action d'alter ego</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
+  'il008': "<b>Action d'alter ego</b> : mélangez 2 cartes de votre défausse dans votre deck. Piochez 1 carte par carte [[TECH]] mélangée dans votre deck de cette façon.",
   // iron_lad — Vision AI (Support)
-  'il009': "<b>Action d'identité civile</b> : inclinez Vision AI → mélangez la carte du dessus de votre défausse dans votre deck. Retournez la carte du dessous de votre défausse dans votre main.",
+  'il009': "<b>Action d'alter ego</b> : inclinez Vision AI → mélangez la carte du dessus de votre défausse dans votre deck. Retournez la carte du dessous de votre défausse dans votre main.",
   // iron_lad — Hack (Upgrade)
   'il010': "<b>Interruption</b> <i>(contre)</i> : quand une menace serait placée sur un plan, défaussez Hack → retirez ce montant de ce plan à la place. De plus, vous pouvez défausser 5 cartes de votre deck pour retirer le même montant d'un plan différent.",
   // iron_lad — Ion Amplifiers (Upgrade) x2
@@ -1082,18 +1082,18 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // iron_lad — Neurokinetic Interface (Upgrade)
   'il016': "<b>Réponse de héros</b> : après avoir révélé une carte de rencontre, inclinez Neurokinetic Interface → si cette carte était :\n• Une traîtrise ou un sbire, infligez 2 dégâts à un ennemi.\n• Un plan secondaire ou une pièce jointe, retirez 2 menaces d'un plan.",
   // iron_lad — Shadow of the Future (Obligation)
-  'il017': "<b><i>Donnez-la au joueur Nathaniel Richards.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Retirez les 3 cartes du dessus de votre deck de la partie → retirez Shadow of the Future de la partie.\n• Défaussez 1 carte [[TECH]] que vous contrôlez. Défaussez 3 cartes de votre deck. Défaussez cette obligation.",
+  'il017': "<b><i>Donnez-la au joueur Nathaniel Richards.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Retirez les 3 cartes du dessus de votre deck de la partie → retirez Shadow of the Future de la partie.\n• Défaussez 1 carte [[TECH]] que vous contrôlez. Défaussez 3 cartes de votre deck. Défaussez cette obligation.",
   // iron_lad — Early Start (SideScheme, nemesis)
   'il018': "<b>Une fois révélée</b> : inclinez chaque amélioration Iron Lad en jeu.\nTant que ce plan est en jeu, les améliorations Iron Lad ne peuvent pas être redressées.",
   // iron_lad — Kang the Conqueror (Minion, nemesis)
-  'il019': "Robustesse. Vilenie.\n<b>Une fois révélée</b> : placez l'amélioration Iron Lad au coût le plus élevé en jeu sous Kang the Conqueror.\n<b>Quand vaincu</b> : renvoyez l'amélioration placée ici dans la main de son propriétaire. Mettez Kang the Conqueror de côté.",
+  'il019': "Robustesse. Vilenie.\n<b>Une fois révélée</b> : placez l'amélioration Iron Lad au coût le plus élevé en jeu sous Kang the Conqueror.\n<b>Une fois vaincu</b> : renvoyez l'amélioration placée ici dans la main de son propriétaire. Mettez Kang the Conqueror de côté.",
   // iron_lad — Taking Responsability (Obligation, nemesis)
-  'il020': "<b>Réponse Obligatoire</b> : après que vous avez attaqué ou contré, défaussez la carte du dessus de votre deck.\n<b>Action</b> : retirez la carte du dessus de votre deck de la partie → défaussez cette obligation.",
+  'il020': "<b>Réponse forcée</b> : après que vous avez attaqué ou contré, défaussez la carte du dessus de votre deck.\n<b>Action</b> : retirez la carte du dessus de votre deck de la partie → défaussez cette obligation.",
   // iron_lad — Pay the Price (Treachery, nemesis) x2
   'il021': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
   'il022': "<b>Une fois révélée</b> : défaussez 8 cartes de votre deck. Si moins de 8 cartes ont été défaussées de cette façon, cette carte gagne renfort.",
   // iron_lad — Sudden Plan Change (Event, Basic, Team-Up)
-  'il023': "Team-Up (Stature et Iron Lad). Maximum 1 par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
+  'il023': "En Équipe (Stature et Iron Lad). 1 max par deck.\n<b>Action de héros</b> : changez vers l'autre forme. Vous gagnez +1 taille de main jusqu'à la fin de la phase.",
 
   // superior_iron_man — Superior Iron Man (Hero)
   'si001a': "<i>« Quoi les autres ? »</i> — <b>Ressource</b> : infligez 1 dégât à un personnage ami → générez une ressource [wild]. <i>(Limite d'une fois par phase.)</i>",
@@ -1102,13 +1102,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // superior_iron_man — Endo-Sym Armor (Upgrade)
   'si002': "Permanent. Mise en place.\n<b>Action de héros</b> <i>(attaque)</i> : dépensez X ressources [physical] (minimum 1) → infligez 2 + X dégâts à un ennemi. <i>(Limite d'une fois par phase.)</i>\n<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts, dépensez X ressources [energy] (minimum 1) → prévenez 1 + X de ces dégâts. <i>(Limite d'une fois par phase.)</i>",
   // superior_iron_man — Teen Abomination (Jammy) (Ally)
-  'si003': "Teen Abomination entre en jeu avec 4 jetons Rage sur lui.\n<b>Réponse Obligatoire</b> : après que Teen Abomination a fait une attaque de base, retirez-lui 1 jeton Rage.\n[star] Teen Abomination gagne +1 ATQ pour chaque jeton Rage sur lui.",
+  'si003': "Teen Abomination entre en jeu avec 4 jetons Rage sur lui.\n<b>Réponse forcée</b> : après que Teen Abomination a fait une attaque de base, retirez-lui 1 jeton Rage.\n[star] Teen Abomination gagne +1 ATQ pour chaque jeton Rage sur lui.",
   // superior_iron_man — Daniel Hall (Support)
-  'si004': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Daniel Hall et inclinez-le → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Daniel Hall, choisissez une carte de votre main et défaussez-la.",
+  'si004': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Daniel Hall et inclinez-le → générez une ressource [wild].\n<b>Interruption forcée</b> : quand vous êtes censé retirer le dernier jeton Flouze de Daniel Hall, choisissez une carte de votre main et défaussez-la.",
   // superior_iron_man — Claire Mooney (Support)
-  'si005': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Claire Mooney et inclinez-la → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Claire Mooney, choisissez une carte de votre main et défaussez-la.",
+  'si005': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Claire Mooney et inclinez-la → générez une ressource [wild].\n<b>Interruption forcée</b> : quand vous êtes censé retirer le dernier jeton Flouze de Claire Mooney, choisissez une carte de votre main et défaussez-la.",
   // superior_iron_man — Mason Thomas (Support)
-  'si006': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Mason Thomas et inclinez-le → générez une ressource [wild].\n<b>Interruption Obligatoire</b> : quand vous êtes censé retirer le dernier jeton Flouze de Mason Thomas, choisissez une carte de votre main et défaussez-la.",
+  'si006': "Utilisation (3 jetons Flouze).\n<b>Ressource</b> : retirez 1 jeton Flouze de Mason Thomas et inclinez-le → générez une ressource [wild].\n<b>Interruption forcée</b> : quand vous êtes censé retirer le dernier jeton Flouze de Mason Thomas, choisissez une carte de votre main et défaussez-la.",
   // superior_iron_man — Pepper Potts (Support)
   'si007': "<b>Action</b> : inclinez Pepper Potts → retirez 1 menace d'une manigance en ignorant son icône de crise.",
   // superior_iron_man — Stark Island (Support)
@@ -1149,7 +1149,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ss009': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
   'ss010': "<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si le vilain subit un déferlement de dégâts de cette attaque, sonnez et désorientez le vilain.",
   // scarlet_spider — Four Seasons' Room (Support)
-  'ss011': "<b>Action d'identité civile</b> : inclinez Four Seasons' Room → piochez 1 carte <i>(2 à la place si vous donnez une carte boost face cachée au vilain)</i>.",
+  'ss011': "<b>Action d'alter ego</b> : inclinez Four Seasons' Room → piochez 1 carte <i>(2 à la place si vous donnez une carte boost face cachée au vilain)</i>.",
   // scarlet_spider — Mark of Kaine (Upgrade) x3
   'ss012': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
   'ss013': "Attachez-la à un sbire. Les attaques contre ce sbire gagnent déferlement.\n<b>Interruption de héros</b> : quand Scarlet Spider inflige un excès de dégâts à ce sbire, augmentez ce montant de 2.",
@@ -1159,15 +1159,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // scarlet_spider — Stings of Kaine (Upgrade)
   'ss016': "Scarlet Spider gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous attaquez, inclinez Stings of Kaine → cette attaque gagne perçant et déferlement.",
   // scarlet_spider — Murderer's Guilt (Obligation)
-  'ss017': "<b><i>Donnez-la au joueur Kaine Parker.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Kaine Parker et subissez 2 dégâts → retirez Murderer's Guilt de la partie.\n• Subissez 1 dégât par événement dans votre main. Si moins de 3 dégâts ont été subis de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  'ss017': "<b><i>Donnez-la au joueur Kaine Parker.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Kaine Parker et subissez 2 dégâts → retirez Murderer's Guilt de la partie.\n• Subissez 1 dégât par événement dans votre main. Si moins de 3 dégâts ont été subis de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
   // scarlet_spider — Assassins Guild (SideScheme, nemesis)
   'ss018': "<i>Kaine avait autrefois accepté des contrats d'assassinat sur le territoire de la Guilde des Assassins. Elle veut sa part !</i>\nChaque ennemi [[ASSASSIN]] gagne +1 ATQ.",
   // scarlet_spider — Bella Donna (Minion, nemesis)
-  'ss019': "Machination. <i>(Après que ce sbire s'est engagé avec votre identité, il manigance.)</i>\n<b>Interruption Obligatoire</b> : quand Bella Donna est mise K.O., cherchez dans le deck de rencontre un autre sbire [[ASSASSIN]] et révélez-le.\n<i>(Sbire némésis de Scarlet Spider.)</i>",
+  'ss019': "Machination. <i>(Après que ce sbire s'est engagé avec votre identité, il manigance.)</i>\n<b>Interruption forcée</b> : quand Bella Donna est mise K.O., cherchez dans le deck de rencontre un autre sbire [[ASSASSIN]] et révélez-le.\n<i>(Sbire némésis de Scarlet Spider.)</i>",
   // scarlet_spider — Harvester (Minion, nemesis)
-  'ss020': "Coup rapide.\nLes attaques de Harvester gagnent perçant.\n<b>Réponse Obligatoire</b> : après que Harvester a attaqué et blessé un personnage, infligez 1 dégât à ce personnage.",
+  'ss020': "Coup rapide.\nLes attaques de Harvester gagnent perçant.\n<b>Réponse forcée</b> : après que Harvester a attaqué et blessé un personnage, infligez 1 dégât à ce personnage.",
   // scarlet_spider — Undead Hand Ninja (Minion, nemesis)
-  'ss021': "Incitation 1.\n<b>Interruption Obligatoire</b> : quand ce sbire serait mis K.O., remélangez-le dans le deck de rencontre à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  'ss021': "Incitation 1.\n<b>Interruption forcée</b> : quand ce sbire serait mis K.O., remélangez-le dans le deck de rencontre à la place.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // scarlet_spider — Forced Contract (Treachery, nemesis)
   'ss022': "Renfort.\n<b>Une fois révélée</b> : l'allié ayant l'ATQ la plus élevée subit des dégâts égaux à l'ATQ de Scarlet Spider. S'il n'y a aucun allié en jeu, vous subissez 2 dégâts.\n<hr />\n[star] <b>Boost</b> : chaque personnage ami subit 1 dégât.",
 
@@ -1189,13 +1189,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // howard_the_duck — Quack and Burn (Event)
   'hd009': "<b>Action de héros</b> <i>(attaque/contre)</i> : cherchez Man-Thing et ajoutez-le à votre main. Infligez à un ennemi des dégâts égaux à l'ATQ de Man-Thing et retirez d'une manigance une menace égale au CTR de Howard the Duck.",
   // howard_the_duck — Trapped (PlayerSideScheme)
-  'hd010': "Victoire 0.\nTant que Trapped est dans la zone de victoire, Howard the Duck gagne +1 ATQ.\n<b>Quand déjouée</b> : chaque joueur peut chercher un allié dans son deck et sa pile de défausse, et l'ajouter à sa main. Le joueur qui a déjoué cette manigance peut mettre cet allié en jeu.",
+  'hd010': "Victoire 0.\nTant que Trapped est dans la zone de victoire, Howard the Duck gagne +1 ATQ.\n<b>Une fois déjouée</b> : chaque joueur peut chercher un allié dans son deck et sa pile de défausse, et l'ajouter à sa main. Le joueur qui a déjoué cette manigance peut mettre cet allié en jeu.",
   // howard_the_duck — In a World (PlayerSideScheme)
-  'hd011': "Victoire 0.\nTant que In a World est dans la zone de victoire, Howard the Duck gagne +1 DEF.\n<b>Quand déjouée</b> : donnez une carte d'état Tenace à chaque joueur. Le joueur qui a déjoué cette manigance peut soigner 2 dégâts de son identité.",
+  'hd011': "Victoire 0.\nTant que In a World est dans la zone de victoire, Howard the Duck gagne +1 DEF.\n<b>Une fois déjouée</b> : donnez une carte d'état Tenace à chaque joueur. Le joueur qui a déjoué cette manigance peut soigner 2 dégâts de son identité.",
   // howard_the_duck — He Never Made (PlayerSideScheme)
-  'hd012': "Victoire 0.\nTant que He Never Made est dans la zone de victoire, Howard the Duck gagne +1 CTR.\n<b>Quand déjouée</b> : chaque joueur peut mélanger jusqu'à 3 cartes de sa pile de défausse dans son deck. Le joueur qui a déjoué cette manigance peut à la place ajouter 1 de ces cartes à sa main.",
+  'hd012': "Victoire 0.\nTant que He Never Made est dans la zone de victoire, Howard the Duck gagne +1 CTR.\n<b>Une fois déjouée</b> : chaque joueur peut mélanger jusqu'à 3 cartes de sa pile de défausse dans son deck. Le joueur qui a déjoué cette manigance peut à la place ajouter 1 de ces cartes à sa main.",
   // howard_the_duck — Beverly Switzler (Support)
-  'hd013': "<b>Action d'identité civile</b> : inclinez Beverly Switzler → remettez dans votre main la carte Howard the Duck la plus basse de votre pile de défausse. Soignez 1 dégât de votre identité.",
+  'hd013': "<b>Action d'alter ego</b> : inclinez Beverly Switzler → remettez dans votre main la carte Howard the Duck la plus basse de votre pile de défausse. Soignez 1 dégât de votre identité.",
   // howard_the_duck — Ducktective Agency (Support)
   'hd014': "<b>Ressource</b> : inclinez Ducktective Agency → générez 1 ressource [mental] pour un événement.\n<b>Réponse de héros</b> : après que vous avez retiré la dernière menace d'une manigance, redressez Ducktective Agency.",
   // howard_the_duck — Duckpool Suit (Upgrade)
@@ -1205,25 +1205,25 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // howard_the_duck — Nexus of all Realities (Upgrade)
   'hd017': "Mise en place. Permanent.\n<b>Interruption</b> : quand un personnage entre en jeu, choisissez la zone de jeu dans laquelle il est joué.\n<b>Interruption</b> : quand un allié que vous contrôlez quitte le jeu, cherchez une carte événement dans votre deck et ajoutez-la à votre main.",
   // howard_the_duck — Energy / Genius / Strength (Resource, re-skins de 01088/01089/01090)
-  'hd018': "Maximum 1 par deck.",
-  'hd019': "Maximum 1 par deck.",
-  'hd020': "Maximum 1 par deck.",
+  'hd018': "1 max par deck.",
+  'hd019': "1 max par deck.",
+  'hd020': "1 max par deck.",
   // howard_the_duck — Waddle it Be? (Obligation)
-  'hd021': "<b><i>Donnez-la au joueur Howard Duckson.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Howard Duckson → retirez Waddle it Be? de la partie.\n• Retirez de la zone de victoire toutes les manigances annexes Howard the Duck et mélangez-les dans votre deck. Si aucune manigance n'a été retirée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
+  'hd021': "<b><i>Donnez-la au joueur Howard Duckson.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Howard Duckson → retirez Waddle it Be? de la partie.\n• Retirez de la zone de victoire toutes les manigances annexes Howard the Duck et mélangez-les dans votre deck. Si aucune manigance n'a été retirée de cette façon, cette carte gagne renfort. Défaussez cette obligation.",
   // howard_the_duck — Duck and Cover! (SideScheme, nemesis)
   'hd022': "<i>Quack-tastrophe ! Howard the Duck s'est encore mis dans un pétrin qui le dépasse. C'est aux héros de le sauver d'un groupe de chasseurs de primes interdimensionnels.</i>\n<b>Une fois révélée</b> : chaque joueur doit défausser de sa main les cartes ayant une ressource [mental] imprimée. Placez 1 menace supplémentaire ici pour chaque carte défaussée de cette façon.",
   // howard_the_duck — Collector (Minion, nemesis)
   'hd023': "Vilenie. <i>(Quand ce sbire s'active, donnez-lui une carte boost.)</i>\n<b>Une fois révélé</b> : défaussez un allié ou un soutien que vous contrôlez. Si vous ne pouvez pas, mettez en jeu la manigance la plus proche du dessus du deck de rencontre.\n<i>(Sbire némésis de Howard the Duck.)</i>",
   // howard_the_duck — Hellcow (Minion, nemesis alternatif)
-  'hd024': "Coup Rapide.\n<b>Interruption Obligatoire</b> : quand la phase du méchant commence, soignez 1 dégât de Hellcow.\n<b>Interruption</b> : quand Hellcow devrait être mise K.O., remélangez-la dans le deck de rencontre à la place.",
+  'hd024': "Coup Rapide.\n<b>Interruption forcée</b> : quand la phase du méchant commence, soignez 1 dégât de Hellcow.\n<b>Interruption</b> : quand Hellcow devrait être mise K.O., remélangez-la dans le deck de rencontre à la place.",
   // howard_the_duck — Duck, Duck, Doom! (SideScheme, nemesis)
-  'hd025': "<i>Doctor Bong a tendu un piège pour capturer Howard the Duck.</i>\n<b>Une fois révélée</b> : placez un allié que vous contrôlez sous cette carte. Si vous ne pouvez pas, désorientez votre identité.\n<b>Quand déjouée</b> : rendez l'allié placé sous cette carte à la main de son propriétaire.",
+  'hd025': "<i>Doctor Bong a tendu un piège pour capturer Howard the Duck.</i>\n<b>Une fois révélée</b> : placez un allié que vous contrôlez sous cette carte. Si vous ne pouvez pas, désorientez votre identité.\n<b>Une fois déjouée</b> : rendez l'allié placé sous cette carte à la main de son propriétaire.",
   // howard_the_duck — A Fowl Plot (SideScheme, nemesis)
   'hd026': "<i>Le Collectionneur compte ajouter Howard the Duck à sa collection d'objets rares et uniques.</i>\n<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, placez 1 menace sur la manigance principale et subissez 1 dégât.\n<i>(Manigance annexe némésis de Howard the Duck.)</i>",
   // howard_the_duck — Duck Hunt (Treachery, nemesis)
-  'hd027': "<b>Une fois révélée (identité civile)</b> : le méchant manigance. S'il y a des manigances annexes en jeu, répartissez et placez plutôt parmi elles la menace de cette activation.\n<b>Une fois révélée (héros)</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, soignez plutôt 3 dégâts de celui-ci.",
+  'hd027': "<b>Une fois révélée (alter ego)</b> : le méchant manigance. S'il y a des manigances annexes en jeu, répartissez et placez plutôt parmi elles la menace de cette activation.\n<b>Une fois révélée (héros)</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, soignez plutôt 3 dégâts de celui-ci.",
   // wiccan — Wiccan (Hero)
-  'wc001a': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Interruption Obligatoire</b> : au début de la phase du méchant, défaussez la carte du dessus du deck de rencontre.",
+  'wc001a': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Interruption forcée</b> : au début de la phase du méchant, défaussez la carte du dessus du deck de rencontre.",
   // wiccan — Billy Kaplan (AlterEgo)
   'wc001b': "<i>Clairvoyance</i> — durant la phase des joueurs, jouez avec la carte du dessus du deck de rencontre face visible.\n<b>Action</b> : regardez les 2 cartes du dessus du deck de rencontre, vous pouvez en défausser une. <i>(Limite d'une fois par round.)</i>",
   // wiccan — Hulkling (Ally)
@@ -1236,7 +1236,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'wc006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
   'wc007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → infligez 3 dégâts à un ennemi. Cette attaque gagne à distance.",
   // wiccan — Magic Manipulation (Event)
-  'wc008': "<b>Action d'identité civile</b> : remélangez 1 carte de votre pile de défausse dans votre deck pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, piochez 1 carte.",
+  'wc008': "<b>Action d'alter ego</b> : remélangez 1 carte de votre pile de défausse dans votre deck pour chaque icône de boost sur la carte du dessus du deck de rencontre. Puis, piochez 1 carte.",
   // wiccan — Magic Portal (Event, x2)
   'wc009': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
   'wc010': "<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance. Puis, si la carte du dessus du deck de rencontre a :\n• 0 ou 1 icône de boost → piochez 1 carte.\n• 2 icônes de boost ou plus → retirez 2 menaces de chaque manigance en jeu.",
@@ -1252,15 +1252,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // wiccan — Wiccan's Cloak (Upgrade)
   'wc016': "<b>Réponse</b> : après avoir joué un événement [[SPELL]] qui compte le nombre d'icônes de boost sur une carte de rencontre, inclinez Wiccan's Cloak et défaussez la carte du dessus du deck de rencontre → résolvez à nouveau cet événement.",
   // wiccan — Royal Couple (Event, Basic)
-  'wc017': "Team-Up (Hulkling et Wiccan). Maximum 1 par deck.\n<b>Action de héros</b> : choisissez une carte dans la pile de défausse de rencontre et placez-la sur le dessus du deck de rencontre. Redressez votre héros.",
+  'wc017': "En Équipe (Hulkling et Wiccan). 1 max par deck.\n<b>Action de héros</b> : choisissez une carte dans la pile de défausse de rencontre et placez-la sur le dessus du deck de rencontre. Redressez votre héros.",
   // wiccan — Avoiding the Demiurge (Obligation)
-  'wc018': "<b><i>Donnez-la au joueur Billy Kaplan.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité → retirez Avoiding the Demiurge de la partie.\n• Les icônes de boost ne peuvent plus être comptées pour les effets des cartes Wiccan jusqu'à la fin de la prochaine phase des joueurs. Défaussez cette obligation.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+  'wc018': "<b><i>Donnez-la au joueur Billy Kaplan.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre identité → retirez Avoiding the Demiurge de la partie.\n• Les icônes de boost ne peuvent plus être comptées pour les effets des cartes Wiccan jusqu'à la fin de la prochaine phase des joueurs. Défaussez cette obligation.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // wiccan — New Vessel (SideScheme, nemesis)
-  'wc019a': "<i>Moridun a infecté Wiccan et se trouve désormais dans son esprit. L'emprise du sorcier maléfique sur Wiccan ne cesse de grandir.</i>\nSeul le joueur Billy Kaplan peut retirer de la menace de cette manigance.\n<b>Quand déjouée</b> : retirez 2 menaces de la manigance principale. Puis, mettez de côté New Vessel et Moridun.\n<b>Une fois accomplie</b> : mettez Moridun de côté et retournez cette carte. <i>(8 menaces.)</i>",
+  'wc019a': "<i>Moridun a infecté Wiccan et se trouve désormais dans son esprit. L'emprise du sorcier maléfique sur Wiccan ne cesse de grandir.</i>\nSeul le joueur Billy Kaplan peut retirer de la menace de cette manigance.\n<b>Une fois déjouée</b> : retirez 2 menaces de la manigance principale. Puis, mettez de côté New Vessel et Moridun.\n<b>Une fois accomplie</b> : mettez Moridun de côté et retournez cette carte. <i>(8 menaces.)</i>",
   // wiccan — The Demiurge (Environment, verso de wc019a)
-  'wc019b': "Permanent.\n<b>Réponse Obligatoire</b> : après qu'un deck de joueur se retrouve à court de cartes, placez 1 menace sur la manigance principale.",
+  'wc019b': "Permanent.\n<b>Réponse forcée</b> : après qu'un deck de joueur se retrouve à court de cartes, placez 1 menace sur la manigance principale.",
   // wiccan — Moridun (Attachment, nemesis)
-  'wc020': "Attachez-la à l'identité du joueur Billy Kaplan.\n<b>Une fois révélée</b> : révélez votre manigance annexe New Vessel mise de côté.\n<b>Interruption Obligatoire</b> : quand Wiccan devrait infliger des dégâts à un ennemi ou retirer de la menace d'une manigance, placez 1 menace sur la manigance annexe New Vessel.\n<i>(Sbire némésis de Wiccan.)</i>",
+  'wc020': "Attachez-la à l'identité du joueur Billy Kaplan.\n<b>Une fois révélée</b> : révélez votre manigance annexe New Vessel mise de côté.\n<b>Interruption forcée</b> : quand Wiccan devrait infliger des dégâts à un ennemi ou retirer de la menace d'une manigance, placez 1 menace sur la manigance annexe New Vessel.\n<i>(Sbire némésis de Wiccan.)</i>",
   // wiccan — Inescapable Horror (Treachery, nemesis, x2)
   'wc021': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
   'wc022': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage ami. Si Moridun est en jeu, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât à chaque personnage ami que vous contrôlez.",
@@ -1296,17 +1296,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // speed — Quick Adaptation (Upgrade)
   'sd016': "<b>Interruption de héros</b> : quand vous attaquez ou contrez, avec un pouvoir de base, un ennemi ou une manigance portant un compteur explosif, vous gagnez +1 ATQ et +1 CTR pour cette utilisation.",
   // speed — No Outrunning This (Obligation)
-  'sd017': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Thomas Shepherd → retirez No Outrunning This de la partie.\n• Vous ne pouvez pas résoudre l'<b>Interruption</b> <i>Hyperkinetic Fuel</i> de Speed jusqu'à la fin du prochain round. Défaussez cette obligation.",
+  'sd017': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Thomas Shepherd → retirez No Outrunning This de la partie.\n• Vous ne pouvez pas résoudre l'<b>Interruption</b> <i>Hyperkinetic Fuel</i> de Speed jusqu'à la fin du prochain round. Défaussez cette obligation.",
   // speed — The Real Question (SideScheme, nemesis)
   'sd018': "<i>\"Les super-héros, c'est bien ?\"</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck de rencontre jusqu'à ce qu'un attachement soit défaussé. Révélez cet attachement.\nTant que cette manigance est en jeu, les attachements gagnent <b><i>Permanent</i></b>.",
   // speed — Coat of Arms (Minion, nemesis)
   'sd019': "Coup Rapide.\n[star] Quand Coat of Arms attaque, si elle inflige des dégâts, infligez 1 dégât supplémentaire à chaque personnage que vous contrôlez.\n<i>(Sbire némésis de Speed.)</i>",
   // speed — Inspirational Art (Attachment, nemesis)
-  'sd020': "Attachez-la au vilain.\n<b>Interruption Obligatoire</b> : quand une carte de boost est retournée face visible durant une activation du vilain, chaque carte de boost gagne +1 icône de boost ([boost]).\n<b>Action de héros</b> : dépensez des ressources [energy][physical] → défaussez cette carte.",
+  'sd020': "Attachez-la au vilain.\n<b>Interruption forcée</b> : quand une carte de boost est retournée face visible durant une activation du vilain, chaque carte de boost gagne +1 icône de boost ([boost]).\n<b>Action de héros</b> : dépensez des ressources [energy][physical] → défaussez cette carte.",
   // speed — Magic Chains (Attachment, nemesis)
-  'sd021': "Attachez-la à Coat of Arms, si possible. Sinon, attachez-la au vilain.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché attaque, si l'attaque inflige des dégâts, sonnez votre héros → défaussez cette carte.",
+  'sd021': "Attachez-la à Coat of Arms, si possible. Sinon, attachez-la au vilain.\n<b>Réponse forcée</b> : après que l'ennemi attaché attaque, si l'attaque inflige des dégâts, sonnez votre héros → défaussez cette carte.",
   // speed — Conflicted Feelings (Obligation, nemesis)
-  'sd022': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nTant que cette obligation est en jeu, Coat of Arms ne peut pas subir de dégâts.\n<b>Action d'identité civile</b> : dépensez des ressources [energy][mental] → défaussez cette carte.",
+  'sd022': "<b><i>Donnez-la au joueur Thomas Shepherd.</i></b>\nTant que cette obligation est en jeu, Coat of Arms ne peut pas subir de dégâts.\n<b>Action d'alter ego</b> : dépensez des ressources [energy][mental] → défaussez cette carte.",
   // patriot — Patriot (Hero)
   'pt001a': "<i>Will to Protect</i> — <b>Interruption</b> : quand un allié que vous contrôlez devrait subir des dégâts consécutifs, déplacez ces dégâts sur Patriot. <i>(Limite d'une fois par round.)</i>",
   // patriot — Elijah Bradley (AlterEgo)
@@ -1320,7 +1320,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'pt005': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
   'pt006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, choisissez un allié que vous contrôlez → infligez à un ennemi un nombre de dégâts égal à l'ATQ de cet allié, ou retirez d'une manigance un nombre de menaces égal au CTR de cet allié.",
   // patriot — Isaiah Bradley (Support)
-  'pt007': "Vous gagnez +1 REC.\n<b>Action d'identité civile</b> : inclinez Isaiah Bradley → soignez 2 dégâts sur Elijah Bradley.",
+  'pt007': "Vous gagnez +1 REC.\n<b>Action d'alter ego</b> : inclinez Isaiah Bradley → soignez 2 dégâts sur Elijah Bradley.",
   // patriot — Commandeer (Upgrade)
   'pt008': "<b>Action de héros</b> : inclinez et défaussez Commandeer, choisissez un allié → déplacez 1 attachement d'un ennemi vers cet allié jusqu'à la fin du round. Considérez que la zone de texte de cet attachement est vierge, et que son MNG est un CTR.",
   // patriot — Commander's Orders (Upgrade)
@@ -1332,15 +1332,15 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // patriot — Patriot's Shield (Upgrade)
   'pt012': "Vous gagnez +1 DEF.\n<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, vous pouvez déplacer 1 de ces dégâts ici. Quand Patriot's Shield atteint 3 dégâts, défaussez-la.",
   // patriot — Revenge (Upgrade)
-  'pt013': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand Patriot subit des dégâts d'une attaque, quel qu'en soit le nombre, défaussez Revenge → l'allié attaché gagne +2 ATQ jusqu'à la fin du prochain round.",
+  'pt013': "Attachez-la à un allié. 1 max par allié.\n<b>Interruption</b> : quand Patriot subit des dégâts d'une attaque, quel qu'en soit le nombre, défaussez Revenge → l'allié attaché gagne +2 ATQ jusqu'à la fin du prochain round.",
   // patriot — The Chosen Leader (Upgrade)
-  'pt014': "<b>Réponse</b> : après qu'un allié que vous contrôlez est mis K.O. par des dégâts consécutifs, cherchez un allié dans votre deck et ajoutez-le à votre main.\n<b>Réponse Obligatoire</b> : quand un allié que vous contrôlez est utilisé pour se défendre, infligez 1 dégât à votre identité.",
+  'pt014': "<b>Réponse</b> : après qu'un allié que vous contrôlez est mis K.O. par des dégâts consécutifs, cherchez un allié dans votre deck et ajoutez-le à votre main.\n<b>Réponse forcée</b> : quand un allié que vous contrôlez est utilisé pour se défendre, infligez 1 dégât à votre identité.",
   // patriot — Throwing Stars (Upgrade)
-  'pt015': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> <i>(attaque)</i> : quand l'allié attaché attaque, défaussez Throwing Stars → infligez 3 dégâts répartis comme vous le souhaitez. Cette attaque gagne <b><i>Perforation</i></b> et <b><i>Distance</i></b>.",
+  'pt015': "Attachez-la à un allié. 1 max par allié.\n<b>Interruption</b> <i>(attaque)</i> : quand l'allié attaché attaque, défaussez Throwing Stars → infligez 3 dégâts répartis comme vous le souhaitez. Cette attaque gagne <b><i>Perçant</i></b> et <b><i>Distance</i></b>.",
   // patriot — Working Together (Upgrade)
-  'pt016': "Attachez-la à un allié. Max 1 par allié.\n<b>Interruption</b> : quand l'allié attaché devrait contrer, choisissez un autre personnage ami et défaussez Working Together → ajoutez la valeur de CTR de ce personnage ami au contre de cet allié.",
+  'pt016': "Attachez-la à un allié. 1 max par allié.\n<b>Interruption</b> : quand l'allié attaché devrait contrer, choisissez un autre personnage ami et défaussez Working Together → ajoutez la valeur de CTR de ce personnage ami au contre de cet allié.",
   // patriot — MGH Addiction (Obligation)
-  'pt017': "<b><i>Donnez-la au joueur Elijah Bradley.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Défaussez la carte de soutien Isaiah Bradley → retirez MGH Addiction de la partie.\n• Inclinez tous les alliés sous votre contrôle. Si aucun allié n'a été incliné de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  'pt017': "<b><i>Donnez-la au joueur Elijah Bradley.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Défaussez la carte de soutien Isaiah Bradley → retirez MGH Addiction de la partie.\n• Inclinez tous les alliés sous votre contrôle. Si aucun allié n'a été incliné de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
   // patriot — Mr. Hyde's Lab (SideScheme, nemesis)
   'pt018': "<i>\"Vous faites juste du lèche-vitrine... ou vous voulez entrer ?\" – Mr. Hyde</i>\n<b>Une fois K.O.</b> : Mr. Hyde vous attaque. Si aucune attaque n'a eu lieu de cette façon, cherchez Mr. Hyde dans le deck de rencontre et la pile de défausse de rencontre, et mettez-le en jeu.",
   // patriot — Mr. Hyde (Minion, nemesis)
@@ -1362,9 +1362,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // ms_america — Alloy (Ally)
   'ma002': "<b><i>Robuste</i></b>.\n<b>Réponse de héros</b> : après avoir résolu « Star-Gaze », Alloy gagne +1 ATQ jusqu'à la fin du tour.",
   // ms_america — Hawkeye / Kate Bishop (Ally)
-  'ma003': "[star] L'attaque de Hawkeye gagne <b><i>Perforation</i></b> et <b><i>Distance</i></b>.\n<b>Interruption</b> : quand Hawkeye devrait être mise K.O. par des dégâts consécutifs, si vous avez résolu « Star-Gaze » ce tour-ci, mélangez-la dans votre deck à la place.",
+  'ma003': "[star] L'attaque de Hawkeye gagne <b><i>Perçant</i></b> et <b><i>Distance</i></b>.\n<b>Interruption</b> : quand Hawkeye devrait être mise K.O. par des dégâts consécutifs, si vous avez résolu « Star-Gaze » ce tour-ci, mélangez-la dans votre deck à la place.",
   // ms_america — Santana Family (Support)
-  'ma004': "Les événements attachés à Santana Family peuvent être joués comme s'ils étaient dans votre main.\n<b>Action d'identité civile</b> : inclinez Santana Family → cherchez un événement dans votre pile de défausse et attachez-le face cachée à cette carte <i>(maximum 2)</i>.",
+  'ma004': "Les événements attachés à Santana Family peuvent être joués comme s'ils étaient dans votre main.\n<b>Action d'alter ego</b> : inclinez Santana Family → cherchez un événement dans votre pile de défausse et attachez-le face cachée à cette carte <i>(maximum 2)</i>.",
   // ms_america — Star Light (Upgrade)
   'ma005': "<b>Ressource de héros</b> : inclinez Star Light → générez une ressource [wild]. Vous pouvez remplacer la ressource imprimée de la carte jouée par une ressource [wild].",
   // ms_america — Star Flight (Upgrade)
@@ -1417,7 +1417,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venompool — Talk About Armed Assault (Event, x3)
   'vp003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts répartis entre les ennemis comme vous le souhaitez <i>(6 dégâts à la place si l'amélioration True Form est en jeu)</i>.",
   // venompool — Tasty Meal (Event, x2)
-  'vp004': "<b>Action de héros</b> <i>(attaque/contrer)</i> : infligez 2 dégâts à un ennemi. Retirez 1 menace d'une manigance. Venompool gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin de la manche. Si True Form est en jeu, cette attaque gagne <b><i>Perforation</i></b>.",
+  'vp004': "<b>Action de héros</b> <i>(attaque/contrer)</i> : infligez 2 dégâts à un ennemi. Retirez 1 menace d'une manigance. Venompool gagne +1 CTR, +1 ATQ et +1 DEF jusqu'à la fin de la manche. Si True Form est en jeu, cette attaque gagne <b><i>Perçant</i></b>.",
   // venompool — Thwip! (Event, x2)
   'vp005': "<b>Action de héros</b> <i>(contrer)</i> : étourdissez le vilain. Si le vilain est déjà étourdi, retirez 3 menace d'une manigance à la place.",
   // venompool — Whack-a-Rabbit (Event, x3)
@@ -1504,7 +1504,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // harry_osborn — Goblin Glider (Upgrade, signature)
   'ho011': "Green Goblin gagne +1 ATQ et le trait [[AERIAL]].\n<b>Action de héros</b> : inclinez Goblin Glider → redressez Green Goblin.",
   // harry_osborn — "That Had to Hurt" (Upgrade, x2)
-  'ho012': "Temporaire. Forme héros seulement. Attachez à un ennemi. Maximum 1 par ennemi.\nLe personnage attaché perd le mot-clé Robuste ou Solide.\n<b>Réponse</b> : après que le personnage attaché a reçu une carte de statut, infligez-lui 1 dégât.",
+  'ho012': "Temporaire. Forme héros seulement. Attachez à un ennemi. 1 max par ennemi.\nLe personnage attaché perd le mot-clé Robuste ou Solide.\n<b>Réponse</b> : après que le personnage attaché a reçu une carte de statut, infligez-lui 1 dégât.",
   // harry_osborn — Risky Business (Obligation)
   'ho013': "<b><i>Donnez au joueur Harry Osborn.</i></b>\nVous êtes étourdi.\n<b>Action d'alter ego</b> : inclinez Harry Osborn → défaussez cette carte. Renvoyez dans votre main l'amélioration [[TECH]] la plus au-dessus de votre pile de défausse.",
   // harry_osborn — Ruler of Manhattan (SideScheme nemesis)
@@ -1519,7 +1519,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // agatha_harkness — Agatha Harkness (Hero)
   'aa001a': "<i>Power Absorption</i> — <b>Réponse</b> : après qu'Agatha Harkness a subi des dégâts d'une attaque, défaussez autant de cartes du dessus de votre deck. Ajoutez à votre main 1 carte [[SPELL]] défaussée de cette façon. <i>(Limite une fois par phase.)</i>",
   // agatha_harkness — Agatha Harkness (AlterEgo)
-  'aa001b': "<b>Mise en place</b> : mettez Ghost Agatha de côté. Cherchez la manigance-joueur Agatha All Along et ajoutez-la à votre main.\n<i>Ghost Form</i> — <b>Réponse Obligatoire</b> : après que vous avez été éliminé de la partie, mettez en jeu le soutien Ghost Agatha mis de côté.",
+  'aa001b': "<b>Mise en place</b> : mettez Ghost Agatha de côté. Cherchez la manigance-joueur Agatha All Along et ajoutez-la à votre main.\n<i>Ghost Form</i> — <b>Réponse forcée</b> : après que vous avez été éliminé de la partie, mettez en jeu le soutien Ghost Agatha mis de côté.",
   // agatha_harkness — Scarlet Witch (Ally, signature)
   'aa002': "Vous pouvez jouer l'événement attaché à Scarlet Witch comme s'il était dans votre main, en réduisant son coût de 1.\n<b>Réponse</b> : après que Scarlet Witch est entrée en jeu, choisissez un événement [[SPELL]] dans votre pile de défausse et attachez-le à elle face cachée.",
   // agatha_harkness — Ebony (Support, signature)
@@ -1535,9 +1535,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // agatha_harkness — Agatha All Along (PlayerSideScheme, signature)
   'aa008': "Victoire 0.\n<b>Réponse</b> : après qu'Agatha Harkness a subi des dégâts d'une attaque, retirez autant de menaces d'ici.\nTant qu'Agatha All Along est au tableau des victoires, Agatha Harkness gagne +1 à chacun de ses pouvoirs de base et +3 points de vie.",
   // agatha_harkness — The Witches' Road (Support, signature)
-  'aa009': "<b>Réponse</b> : après qu'un alter ego [[MYSTIC]] est passé en forme de héros, inclinez The Witches' Road → réduisez de 1 le coût en ressources de la prochaine carte [[SPELL]] que ce héros joue cette phase. Mélangez 2 cartes de la défausse de ce héros dans son deck.",
+  'aa009': "<b>Réponse</b> : après qu'un alter ego [[MYSTIC]] est passé sous forme de héros, inclinez The Witches' Road → réduisez de 1 le coût en ressources de la prochaine carte [[SPELL]] que ce héros joue cette phase. Mélangez 2 cartes de la défausse de ce héros dans son deck.",
   // agatha_harkness — Mirror Image (Upgrade, signature)
-  'aa010': "Tant que vous êtes en forme de héros, Agatha Harkness gagne +1 CTR.\n<b>Interruption</b> : quand vous devriez subir des dégâts qui vous mettraient K.O., défaussez plutôt cette carte.",
+  'aa010': "Tant que vous êtes sous forme de héros, Agatha Harkness gagne +1 CTR.\n<b>Interruption</b> : quand vous devriez subir des dégâts qui vous mettraient K.O., défaussez plutôt cette carte.",
   // agatha_harkness — Runic Magician (Upgrade, signature)
   'aa011': "<b>Ressource</b> : inclinez Runic Magician → générez une ressource [wild] pour une carte [[SPELL]] ou [[MYSTIC]].\n<b>Interruption de héros</b> : quand vous résolvez la capacité « Power Absorption » d'Agatha Harkness, ignorez l'exigence du trait [[SPELL]].",
   // agatha_harkness — Regained Youth (Upgrade, signature)
@@ -1563,7 +1563,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // beast — Beast (Hero)
   'bt001a': "<i>Thick Skinned</i> — <b>Réponse</b> : quand vous subissez 0 dégât en vous défendant, cherchez n'importe quelle carte dans votre deck ou votre pile de défausse et ajoutez-la à votre main.",
   // beast — Dr Hank McCoy (AlterEgo)
-  'bt001b': "<i>Scientific Discovery</i> — <b>Réponse Obligatoire</b> : après que vous êtes passé sous cette forme, mélangez 1 carte de découverte au hasard dans votre deck.\n<b>Mise en place</b> : toutes les cartes que vous écartez de votre main au mulligan pendant la mise en place sont remélangées dans votre deck.",
+  'bt001b': "<i>Scientific Discovery</i> — <b>Réponse forcée</b> : après que vous êtes passé sous cette forme, mélangez 1 carte de découverte au hasard dans votre deck.\n<b>Mise en place</b> : toutes les cartes que vous écartez de votre main au mulligan pendant la mise en place sont remélangées dans votre deck.",
   // beast — Wonder Man (Ally, signature)
   'bt002': "<b>Une fois vaincu</b> : infligez 2 dégâts à un ennemi.",
   // beast — Phoenix (Ally, signature)
@@ -1593,11 +1593,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // beast — Peter Parker (Ally, découverte mise de côté)
   'bt014': "<b>Action</b> : inclinez cette carte → générez une ressource [wild].",
   // beast — Space Hand Grenade (Upgrade, découverte mise de côté)
-  'bt015': "Attachez-la à un sbire.\n<b>Interruption Obligatoire</b> : quand ce sbire devrait attaquer, annulez cette attaque et infligez 4 dégâts à ce sbire.",
+  'bt015': "Attachez-la à un sbire.\n<b>Interruption forcée</b> : quand ce sbire devrait attaquer, annulez cette attaque et infligez 4 dégâts à ce sbire.",
   // beast — Ambush (Event, découverte mise de côté)
-  'bt016': "<b>Interruption Obligatoire</b> <i>(attaque/défense)</i> : quand le vilain devrait vous attaquer, inclinez une carte de soutien en jeu → annulez cette attaque.",
+  'bt016': "<b>Interruption forcée</b> <i>(attaque/défense)</i> : quand le vilain devrait vous attaquer, inclinez une carte de soutien en jeu → annulez cette attaque.",
   // beast — Automated Life-Support (Upgrade, découverte mise de côté)
-  'bt017': "Attachez-la à un allié. Maximum 1 par allié.\n<b>Interruption Obligatoire</b> : quand l'allié devrait être vaincu, soignez 1 dégât et donnez-lui une carte de statut Robuste.",
+  'bt017': "Attachez-la à un allié. 1 max par allié.\n<b>Interruption forcée</b> : quand l'allié devrait être vaincu, soignez 1 dégât et donnez-lui une carte de statut Robuste.",
   // beast — Mecha-Beast (Upgrade, découverte mise de côté)
   'bt018': "Attachez-la à Beast.\nBeast gagne +1 CTR et +2 points de vie.",
   // beast — Unfinished Projects (Obligation)
@@ -1609,7 +1609,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // beast — Dark Beast (Minion nemesis)
   'bt022': "<b><i>Robuste</i></b>. <i>(Ce personnage ne peut être ni étourdi ni désorienté.)</i>\n<b>Une fois révélé</b> : tous les alliés sont désorientés.\n<i>(Sbire némésis de Beast.)</i>",
   // beast — Mutant Science Program (SideScheme nemesis)
-  'bt023': "<i>« Beast enlève des mutants et pratique sur eux des tests dangereux. »</i>\n<b>Une fois révélée</b> : placez 1 compteur de test sur cette manigance annexe pour chaque allié dans votre pile de défausse. S'il n'y a aucun allié dans votre pile de défausse, placez plutôt 2[per_hero] compteurs de test.\n<b>Réponse Obligatoire</b> : chaque fois que vous piochez un allié dans votre main → retirez 1 compteur de test, défaussez l'allié, puis cherchez le sbire Lizard-Fied dans le deck de rencontre ou la pile de défausse et mettez-le en jeu.",
+  'bt023': "<i>« Beast enlève des mutants et pratique sur eux des tests dangereux. »</i>\n<b>Une fois révélée</b> : placez 1 compteur de test sur cette manigance annexe pour chaque allié dans votre pile de défausse. S'il n'y a aucun allié dans votre pile de défausse, placez plutôt 2[per_hero] compteurs de test.\n<b>Réponse forcée</b> : chaque fois que vous piochez un allié dans votre main → retirez 1 compteur de test, défaussez l'allié, puis cherchez le sbire Lizard-Fied dans le deck de rencontre ou la pile de défausse et mettez-le en jeu.",
   // doctor_doom — Doctor Doom (Hero)
   'dd001a': "<i>Power Syphon</i> — <b>Réponse</b> : après que vous avez payé un événement [[SPELL]] avec une ressource [mental], placez 1 compteur de pouvoir ici (maximum 3).\n<i>Overwhelming Power</i> — <b>Action</b> : retirez 3 compteurs de pouvoir → vous gagnez <b><i>Vilain</i></b> jusqu'à la fin du round. Ignorez les effets de boost des cartes de boost qui vous sont distribuées.",
   // doctor_doom — Victor von Doom (AlterEgo)
@@ -1646,9 +1646,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'dd016': "<b>Une fois révélée</b> : Mister Fantastic s'active. Si Mister Fantastic ne s'est pas activé de cette façon, cherchez-le et révélez-le.",
 
   // alligator_loki — Alligator Loki (Hero)
-  'al001a': "L'ennemi attaché gagne -1 MNG et -1 ATQ.\n<i>Lock Jaws</i> — <b>Interruption</b> : quand Alligator Loki effectue une attaque ou une défense de base contre un ennemi, attachez Alligator Loki à cet ennemi.\n<b>Réponse Obligatoire</b> : après que l'ennemi attaché s'est activé, détachez Alligator Loki.",
+  'al001a': "L'ennemi attaché gagne -1 MNG et -1 ATQ.\n<i>Lock Jaws</i> — <b>Interruption</b> : quand Alligator Loki effectue une attaque ou une défense de base contre un ennemi, attachez Alligator Loki à cet ennemi.\n<b>Réponse forcée</b> : après que l'ennemi attaché s'est activé, détachez Alligator Loki.",
   // alligator_loki — Alligator Loki (AlterEgo)
-  'al001b': "<b>Mise en place</b> : cherchez Throg et ajoutez-le à votre main.\n<i>Nap Time</i> — <b>Réponse Obligatoire</b> : après que vous êtes passé sous cette forme, détachez Alligator Loki. Vous pouvez effectuer une récupération de base sans vous incliner.",
+  'al001b': "<b>Mise en place</b> : cherchez Throg et ajoutez-le à votre main.\n<i>Nap Time</i> — <b>Réponse forcée</b> : après que vous êtes passé sous cette forme, détachez Alligator Loki. Vous pouvez effectuer une récupération de base sans vous incliner.",
   // alligator_loki — Throg (Minion de joueur, signature)
   'al002': "<b><i>Patrouille</i></b>.\n<b>Interruption</b> : quand Alligator Loki attaque Throg, cette attaque gagne <b><i>Déferlement</i></b>.\n<b>Une fois vaincu</b> : retirez 3 menaces d'une manigance. Mélangez Throg dans le deck du joueur Alligator Loki.",
   // alligator_loki — Chomp! (Event, x4)
@@ -1662,37 +1662,37 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // alligator_loki — Alligator Antics (Event, signature)
   'al009': "<b>Action</b> : redressez votre identité. Cherchez le sbire Throg dans n'importe quel deck ou pile de défausse et mettez-le en jeu. Cherchez dans la zone de mise de côté, le deck de rencontre et sa pile de défausse un attachement qui peut être attaché à un sbire, et attachez-le à Throg.",
   // alligator_loki — Loki (Support persona, signature)
-  'al010': "Alligator Loki gagne le trait [[MYSTIC]].\nTant que vous êtes en forme de héros, Alligator Loki gagne +1 CTR.\n<b>Ressource d'alter ego</b> : inclinez Loki → générez une ressource [wild].",
+  'al010': "Alligator Loki gagne le trait [[MYSTIC]].\nTant que vous êtes sous forme de héros, Alligator Loki gagne +1 CTR.\n<b>Ressource d'alter ego</b> : inclinez Loki → générez une ressource [wild].",
   // alligator_loki — Butterfly Swamp (Support, signature)
   'al011': "Tant que vous êtes en forme d'alter ego, Alligator Loki gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Butterfly Swamp → mélangez 1 carte [[PREPARATION]] de votre pile de défausse dans votre deck. Piochez 1 carte.",
   // alligator_loki — Gator Aid (Upgrade, signature)
   'al012': "<b>Interruption</b> : quand le personnage attaché utilise un pouvoir de base, inclinez Gator Aid → ce personnage gagne +1 à ce pouvoir pour cette utilisation. Après cette utilisation, vous pouvez attacher cette carte à un autre personnage ami.",
   // alligator_loki — Unbreakable Grip (Upgrade, signature)
-  'al013': "Tant que vous êtes en forme de héros, Alligator Loki gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous devriez détacher Alligator Loki d'un ennemi en jeu, inclinez plutôt Unbreakable Grip.",
+  'al013': "Tant que vous êtes sous forme de héros, Alligator Loki gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous devriez détacher Alligator Loki d'un ennemi en jeu, inclinez plutôt Unbreakable Grip.",
   // alligator_loki — Lurking (Upgrade, x3)
-  'al014': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
-  'al015': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
-  'al016': "Max 1 par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  'al014': "1 max par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  'al015': "1 max par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
+  'al016': "1 max par joueur.\n<b>Réponse de héros</b> : après qu'un sbire est entré en jeu, défaussez Lurking → Alligator Loki effectue une attaque de base contre ce sbire sans s'incliner. Alligator Loki gagne +1 ATQ pour cette attaque.",
   // alligator_loki — Time Out (Obligation)
-  'al017': "<b><i>Donnez-la au joueur Alligator Loki.</i></b>\nCherchez Frogjolnir dans la zone de mise de côté et mélangez-le dans le deck de rencontre.\nVous gagnez -2 ATQ tant que vous êtes en forme de héros.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Time Out de la partie.",
+  'al017': "<b><i>Donnez-la au joueur Alligator Loki.</i></b>\nCherchez Frogjolnir dans la zone de mise de côté et mélangez-le dans le deck de rencontre.\nVous gagnez -2 ATQ tant que vous êtes sous forme de héros.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Time Out de la partie.",
   // alligator_loki — Throg and Loki (SideScheme nemesis)
   'al018': "<i>« SMAK ! SHLORP ! RAWR ! KLONK ! SPLOOSH ! »</i>\nAlligator Loki ne peut attaquer que Throg.\n<b>Une fois révélée</b> : si Throg n'est pas en jeu, cherchez-le dans le deck de rencontre et sa pile de défausse et révélez-le.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
   // alligator_loki — Throg (Minion nemesis)
-  'al019': "<b>Interruption Obligatoire</b> : quand ce sbire devrait entrer en jeu, défaussez tout autre Throg en jeu. Placez ici, face cachée, une carte de votre main au hasard.\n<b>Une fois vaincu</b> : rendez chaque carte face cachée placée ici à la main de son propriétaire.\n<i>(Sbire némésis d'Alligator Loki.)</i>",
+  'al019': "<b>Interruption forcée</b> : quand ce sbire devrait entrer en jeu, défaussez tout autre Throg en jeu. Placez ici, face cachée, une carte de votre main au hasard.\n<b>Une fois vaincu</b> : rendez chaque carte face cachée placée ici à la main de son propriétaire.\n<i>(Sbire némésis d'Alligator Loki.)</i>",
   // alligator_loki — Lightning Bolt (Treachery nemesis, x2)
   'al020': "<b>Une fois révélée</b> : défaussez 2 cartes du deck de rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck de rencontre.",
   'al021': "<b>Une fois révélée</b> : défaussez 2 cartes du deck de rencontre. Subissez 1 dégât indirect pour chaque icône de boost défaussée de cette façon.\n<hr />\n[star] <b>Boost</b> : défaussez 3 cartes du deck de rencontre.",
   // alligator_loki — Frogjolnir (Attachment nemesis, mise de côté)
-  'al022': "Si Throg n'est pas en jeu, trouvez-le et révélez-le. Attachez cette carte à Throg. Puis Throg s'active contre vous.\nThrog gagne le trait [[AERIAL]].\n[star] <b>Réponse Obligatoire</b> : après que Throg vous a attaqué, subissez 1 dégât indirect.",
+  'al022': "Si Throg n'est pas en jeu, trouvez-le et révélez-le. Attachez cette carte à Throg. Puis Throg s'active contre vous.\nThrog gagne le trait [[AERIAL]].\n[star] <b>Réponse forcée</b> : après que Throg vous a attaqué, subissez 1 dégât indirect.",
   // alligator_loki — Little Rascals (Event Team-Up, carte bonus)
-  'al023': "Team-Up (Alligator Loki et Honey Badger/Gabby Kinney). Max 1 par deck.\n<b>Action</b> : étourdissez et désorientez le vilain. Si vous ne le pouvez pas, redressez Alligator Loki ou Honey Badger.",
+  'al023': "En Équipe (Alligator Loki et Honey Badger/Gabby Kinney). 1 max par deck.\n<b>Action</b> : étourdissez et désorientez le vilain. Si vous ne le pouvez pas, redressez Alligator Loki ou Honey Badger.",
 
   // hulk_rainy — Hulk (Hero) [set 148, Rainy]
   'hk001a': "<i>Anger</i> — <b>Réponse</b> : après que Hulk a subi des dégâts, infligez 1 dégât à un ennemi.",
   // hulk_rainy — Bruce Banner (AlterEgo)
-  'hk001b': "<i>Bring Out The Big Guy</i> — <b>Interruption</b> : quand un ennemi devrait manigancer, dépensez une ressource [physical] → passez en forme de héros. Cet ennemi vous attaque à la place.",
+  'hk001b': "<i>Bring Out The Big Guy</i> — <b>Interruption</b> : quand un ennemi devrait manigancer, dépensez une ressource [physical] → passez sous forme de héros. Cet ennemi vous attaque à la place.",
   // hulk_rainy — Black Widow (Ally)
-  'hk002': "[star] <b>Réponse</b> : après que Black Widow a contré, retirez 1 menace d'une AUTRE manigance.\n<b>Action de héros</b> : inclinez Black Widow → passez en forme d'identité civile.",
+  'hk002': "[star] <b>Réponse</b> : après que Black Widow a contré, retirez 1 menace d'une AUTRE manigance.\n<b>Action de héros</b> : inclinez Black Widow → passez sous forme d'alter ego.",
   // hulk_rainy — Brilliant Mind (Event, x2)
   'hk003': "<b>Action d'alter ego</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si vous avez payé cette carte uniquement avec des ressources [mental], choisissez de retirer 2 menaces supplémentaires de cette manigance OU de désorienter un ennemi.",
   // hulk_rainy — Hulk Smash (Event, x2)
@@ -1702,9 +1702,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // hulk_rainy — Reckless Charge (Event, x2)
   'hk006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à Hulk → infligez 3 dégâts à un ennemi. Si vous avez payé cette carte avec une ressource [physical], cette attaque gagne Déferlement.",
   // hulk_rainy — Natural Genius (Resource)
-  'hk007': "Ne dépensez cette carte qu'en forme d'identité civile.",
+  'hk007': "Ne dépensez cette carte qu'sous forme d'alter ego.",
   // hulk_rainy — Unnatural Strength (Resource)
-  'hk008': "Ne dépensez cette carte qu'en forme de héros.",
+  'hk008': "Ne dépensez cette carte qu'sous forme de héros.",
   // hulk_rainy — The Other Guy (Support)
   'hk009': "<b>Réponse d'alter ego</b> <i>(contre)</i> : après avoir changé de forme, retirez 1 menace d'une manigance. <i>(Limite d'une fois par phase.)</i>\n<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 1 dégât à un ennemi. <i>(Limite d'une fois par phase.)</i>",
   // hulk_rainy — Intimidating Roar (Upgrade)
@@ -1744,7 +1744,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // viv_vision — Viv's Solar Gem (Upgrade)
   'vv010': "<b>Ressource</b> : inclinez Viv's Solar Gem → générez une ressource [energy].\n<b>Réponse</b> : après la fin de la phase du Méchant, redressez Viv's Solar Gem.",
   // viv_vision — Grounded (Obligation)
-  'vv011': "<b><i>Donnez-la au joueur Viv Vision.</i></b>\nPassez en forme d'identité civile.\nVous ne pouvez pas changer de forme.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Grounded de la partie.",
+  'vv011': "<b><i>Donnez-la au joueur Viv Vision.</i></b>\nPassez sous forme d'alter ego.\nVous ne pouvez pas changer de forme.\n<b>Action d'alter ego</b> : inclinez votre alter ego → retirez Grounded de la partie.",
 
   // lady_sif — Lady Sif (Hero) [set 150, Rainy]
   'ls001a': "<i>Valiant Warrior</i> — <b>Réponse</b> <i>(contre)</i> : après que Lady Sif a utilisé un pouvoir de base, retirez 1 menace d'une manigance.",
@@ -1753,11 +1753,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lady_sif — Thor, Odinson (Ally)
   'ls002': "[star] <b>Réponse</b> : après que Thor a attaqué, choisissez un joueur. Infligez 1 dégât à chaque sbire engagé avec ce joueur.",
   // lady_sif — Impale (Event, x2)
-  'ls003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Choisissez de faire gagner à cette attaque SOIT Déferlement, SOIT Perforation.",
+  'ls003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Choisissez de faire gagner à cette attaque SOIT Déferlement, SOIT Perçant.",
   // lady_sif — Lead The Charge (Event, x3)
   'ls004': "<b>Action de héros</b> <i>(attaque)</i> : Lady Sif effectue une attaque de base SANS s'incliner. Choisissez un AUTRE personnage amical. Ce personnage gagne +1 ATQ jusqu'à la fin du round.",
   // lady_sif — To Arms! (Event)
-  'ls005': "<b>Action d'alter ego</b> : passez en forme de héros. Vous pouvez dépenser 1 ressource pour redresser votre héros.\n<b>Action de héros</b> : cherchez une amélioration [[WEAPON]] dans votre deck ET dans votre défausse, et ajoutez-la à votre main. Mélangez votre deck.",
+  'ls005': "<b>Action d'alter ego</b> : passez sous forme de héros. Vous pouvez dépenser 1 ressource pour redresser votre héros.\n<b>Action de héros</b> : cherchez une amélioration [[WEAPON]] dans votre deck ET dans votre défausse, et ajoutez-la à votre main. Mélangez votre deck.",
   // lady_sif — Valiant Defense (Event, x3)
   'ls006': "<b>Interruption de héros</b> <i>(défense)</i> : quand un ennemi attaque, effectuez une défense de base SANS incliner votre héros. Vous gagnez +1 DEF pour cette attaque (+2 DEF à la place si vous avez payé cette carte avec une ressource [energy]).",
   // lady_sif — Sif's Chambers (Support)
@@ -1767,17 +1767,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lady_sif — Sif's Crest (Upgrade)
   'ls009': "Vous gagnez +2 points de vie.\n<b>Interruption de héros</b> : quand Lady Sif utilise un pouvoir de base, piochez 1 carte. <i>(Limite d'une fois par phase.)</i>",
   // lady_sif — Sif's Spear (Upgrade)
-  'ls010': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 DEF en forme de héros et gagne Riposte 1.",
+  'ls010': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 DEF sous forme de héros et gagne Riposte 1.",
   // lady_sif — Sif's Sword (Upgrade)
-  'ls011': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 ATQ en forme de héros. En forme de héros, les attaques de BASE de Lady Sif gagnent Perforation.",
+  'ls011': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 ATQ sous forme de héros. En forme de héros, les attaques de BASE de Lady Sif gagnent Perçant.",
   // lady_sif — Unrequited Love (Obligation)
-  'ls012': "<b><i>Donnez-la au joueur Lady Sif.</i></b>\nVous pouvez passer en forme d'identité civile.\nÉtourdissez Lady Sif. Étourdissez OU désorientez Thor. Si vous ne le pouvez pas, désorientez Lady Sif. Défaussez cette obligation.",
+  'ls012': "<b><i>Donnez-la au joueur Lady Sif.</i></b>\nVous pouvez passer sous forme d'alter ego.\nÉtourdissez Lady Sif. Étourdissez OU désorientez Thor. Si vous ne le pouvez pas, désorientez Lady Sif. Défaussez cette obligation.",
   // lady_sif_nemesis — Captivating Wiles (SideScheme)
   'ls013': "<i>L'Enchanteresse nous manipule pour que nous fassions son sale travail !</i>\n<b>Interruption forcée</b> : quand la phase du joueur commence, inclinez l'identité du PREMIER joueur et placez 2 menaces sur la manigance principale.\n<hr />[star] <b>Boost</b> : placez 2 menaces sur la manigance principale.",
   // lady_sif_nemesis — Enchantress (Minion)
   'ls014': "<b>Interruption forcée</b> : quand Enchantress est attaquée, déclarez le héros engagé défenseur (sans l'incliner). Si vous ne le pouvez pas, annulez cette attaque et placez 2 menaces sur la manigance principale à la place. <i>(Limite d'une fois par phase.)</i>\n<i>(Sbire némésis de Lady Sif.)</i>",
   // lady_sif_nemesis — Skurge (Minion)
-  'ls015': "<b><i>Travail d'équipe</i></b> ([[ASGARD]]). <b><i>Robustesse.</i></b>\n[star] <b>Interruption forcée</b> : quand Skurge vous attaque, il attaque le personnage que VOUS contrôlez ayant le moins de points de vie restants. Cette attaque gagne Déferlement et Perforation.\n<hr />[star] <b>Boost</b> : détruisez un allié que vous contrôlez.",
+  'ls015': "<b><i>Travail d'équipe</i></b> ([[ASGARD]]). <b><i>Robustesse.</i></b>\n[star] <b>Interruption forcée</b> : quand Skurge vous attaque, il attaque le personnage que VOUS contrôlez ayant le moins de points de vie restants. Cette attaque gagne Déferlement et Perçant.\n<hr />[star] <b>Boost</b> : détruisez un allié que vous contrôlez.",
   // lady_sif_nemesis — Hypnotic Suggestion (Attachment)
   'ls016': "Attachez-la à votre identité.\n<b>Action forcée</b> : inclinez cette carte → piochez 1 carte, puis jouez cette carte (en payant son coût). Si vous ne le pouvez pas, placez 2 menaces sur la manigance principale.\n<b>Action d'alter ego</b> : inclinez cette carte et dépensez une ressource [mental] → défaussez cette carte.",
   // lady_sif_nemesis — Love Concoction (Attachment)
@@ -1812,7 +1812,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // iron_man_model_42 — Tactical Interface (Upgrade)
   'im013': "<b>Interruption de héros</b> : quand Iron Man effectue une menée de BASE, retirez-lui 1 pion réacteur → cette menée retire 2 menaces supplémentaires et ignore le mot-clé Patrouille.",
   // iron_man_model_42 — Technical Issues (Obligation)
-  'im014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Tony Stark ET Tony's Workshop → retirez Technical Issues de la partie.\n• Retirez 2 pions réacteur de votre identité. Si AUCUN pion réacteur n'a été retiré de cette façon, cette carte gagne Déchaînement. Défaussez cette obligation.",
+  'im014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Tony Stark ET Tony's Workshop → retirez Technical Issues de la partie.\n• Retirez 2 pions réacteur de votre identité. Si AUCUN pion réacteur n'a été retiré de cette façon, cette carte gagne Déchaînement. Défaussez cette obligation.",
   // armored_spidey — Armored Spidey (Hero) [set 152, Kajislav]
   'as001a': "<i>Armor Protection</i> — <b>Interruption</b> : quand vous devriez subir des dégâts, quels qu'ils soient, provenant d'une attaque, retirez 1 pion métal de Spider Armor → prévenez jusqu'à 2 de ces dégâts.",
   // armored_spidey — Peter Parker (AlterEgo)
@@ -1844,7 +1844,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // armored_spidey — Vibranium Enhancement (Upgrade)
   'as013': "Tant que Spider Armor a le trait [[OPERATIONAL]], Armored Spidey gagne Riposte 1 et Stoïque.\n<b>Réponse</b> : après avoir joué cette carte, si Spider Armor a le trait [[OPERATIONAL]], placez 1 pion métal dessus <i>(maximum 3)</i>.",
   // armored_spidey — Corporate Expansion (Obligation)
-  'as014': "<b><i>Donnez-la au joueur Peter Parker.</i></b>\nVous ne pouvez pas jouer de cartes d'ÉVÉNEMENT tant que vous êtes en forme de héros.\n<b>Réponse d'alter ego</b> : après qu'une carte de coût IMPRIMÉ 2 ou plus est entrée en jeu sous votre contrôle, défaussez cette obligation.",
+  'as014': "<b><i>Donnez-la au joueur Peter Parker.</i></b>\nVous ne pouvez pas jouer de cartes d'ÉVÉNEMENT tant que vous êtes sous forme de héros.\n<b>Réponse d'alter ego</b> : après qu'une carte de coût IMPRIMÉ 2 ou plus est entrée en jeu sous votre contrôle, défaussez cette obligation.",
   // armored_spidey — Scarlet Spider (Ally, Protection)
   'as015': "Scarlet Spider entre en jeu avec 3 pions sens sur lui.\n<b>Interruption</b> : quand le méchant s'active contre vous, retirez 1 pion sens de Scarlet Spider → réduisez de 1 le nombre d'icônes de boost ([boost]) de CHAQUE carte de boost pour cette activation.",
   // armored_spidey — Six-Armed Spider-Man (Ally, Protection)
@@ -1856,7 +1856,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // armored_spidey — The Daily Bugle (Support, Protection)
   'as019': "<b>Réponse</b> : après qu'un personnage ou une manigance annexe a été vaincu, inclinez The Daily Bugle → placez 1 pion article ici.\n<b>Action d'alter ego</b> : retirez TOUS les pions article d'ici → soignez 1 dégât d'un personnage que vous contrôlez par pion article retiré de cette façon.",
   // armored_spidey — Double Defense (Upgrade, Protection, x2)
-  'as020': "Maximum 1 par joueur.\n<b>Interruption de héros</b> : quand un personnage AUTRE que votre identité devrait subir des dégâts, quels qu'ils soient, provenant d'une attaque, défaussez Double Defense → réduisez ce montant de la DEF de votre héros.",
+  'as020': "1 max par joueur.\n<b>Interruption de héros</b> : quand un personnage AUTRE que votre identité devrait subir des dégâts, quels qu'ils soient, provenant d'une attaque, défaussez Double Defense → réduisez ce montant de la DEF de votre héros.",
   // armored_spidey — Octo Spidey (Ally, Basic)
   'as021': "[star] <b>Interruption</b> : quand Octo Spidey utilise un pouvoir de base, défaussez les 4 premières cartes de votre deck. Octo Spidey gagne +1 à CE pouvoir pour cette utilisation par type de ressource DIFFÉRENT défaussé de cette façon.",
   // armored_spidey — Spider-Verse (Support, Basic)
@@ -1866,9 +1866,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // armored_spidey_nemesis — "The Kingpin of Crime" (SideScheme)
   'as024': "<b><i>Entrave 1.</i></b>\nTraitez la zone de texte imprimée de CHAQUE soutien NON permanent comme si elle était vierge.",
   // armored_spidey_nemesis — Underworld Impact (Treachery, x2)
-  'as025': "<b>Quand elle est révélée</b> : choisissez de subir 1 dégât OU de placer 1 menace sur la manigance principale, par soutien que vous contrôlez. Si vous ne contrôlez AUCUN soutien, cette carte gagne Déchaînement.\n<hr />[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) par soutien que vous contrôlez.",
+  'as025': "<b>Une fois révélée</b> : choisissez de subir 1 dégât OU de placer 1 menace sur la manigance principale, par soutien que vous contrôlez. Si vous ne contrôlez AUCUN soutien, cette carte gagne Déchaînement.\n<hr />[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) par soutien que vous contrôlez.",
   // armored_spidey_nemesis — Behind the Scenes (Treachery)
-  'as026': "<b>Quand elle est révélée</b> : défaussez la première carte de votre deck. Puis défaussez de votre main CHAQUE carte du même type que la carte défaussée. Si AUCUNE carte n'a été défaussée de votre main de cette façon, cette carte gagne Déchaînement.",
+  'as026': "<b>Une fois révélée</b> : défaussez la première carte de votre deck. Puis défaussez de votre main CHAQUE carte du même type que la carte défaussée. Si AUCUNE carte n'a été défaussée de votre main de cette façon, cette carte gagne Déchaînement.",
   // night_thrasher — Night Thrasher (Hero) [set 153, DESIGNHACKER]
   'nt001a': "<i>Varial Heelflip</i> — <b>Réponse</b> : après avoir joué une carte [[SKILL]], retournez l'amélioration Battle Board. <i>(Limite d'une fois par phase.)</i>",
   // night_thrasher — Dwayne Taylor (AlterEgo)
@@ -1884,25 +1884,25 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // night_thrasher — Kickflip (Event, x4)
   'nt005': "Si la DERNIÈRE carte que vous avez jouée ce round était un événement Night Thrasher, réduisez de 1 le coût de cette carte.\n<b>Action de héros</b> <i>(attaque)</i> : retournez l'amélioration Battle Board ET infligez 1 dégât à un ennemi. Piochez 1 carte.",
   // night_thrasher — Melon Grab (Event)
-  'nt006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], les dégâts de cette attaque peuvent être répartis entre les ennemis comme vous voulez.\n• [[WEAPON]], cette attaque gagne Perforation et Déferlement.",
+  'nt006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], les dégâts de cette attaque peuvent être répartis entre les ennemis comme vous voulez.\n• [[WEAPON]], cette attaque gagne Perçant et Déferlement.",
   // night_thrasher — Tailblock (Event, x2)
   'nt007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quels qu'ils soient, si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], prévenez 1 de ces dégâts et piochez 2 cartes.\n• [[WEAPON]], prévenez 3 de ces dégâts.",
   // night_thrasher — The Mancave (Support)
   'nt008': "<b>Réponse d'alter ego</b> : après avoir changé de forme, soignez 1 dégât de votre identité.\n<b>Réponse de héros</b> : après avoir changé de forme, réduisez de 1 le coût en ressources de la PROCHAINE carte [[SKILL]] que vous jouez ce tour.",
   // night_thrasher — Escrima Sticks (Upgrade)
-  'nt009': "Tant que l'amélioration Battle Board a le trait [[VEHICLE]], vos attaques gagnent Perforation et Déferlement.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Remélangez cette carte dans votre deck.",
+  'nt009': "Tant que l'amélioration Battle Board a le trait [[VEHICLE]], vos attaques gagnent Perçant et Déferlement.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Remélangez cette carte dans votre deck.",
   // night_thrasher — Multi-Skilled (Upgrade)
   'nt010': "<b>Ressource</b> : inclinez Multi-Skilled → générez une ressource [wild] pour une carte [[SKILL]].",
   // night_thrasher — Prewind Stance (Upgrade)
   'nt011': "Night Thrasher gagne +1 DEF et Riposte 1.\n<b>Interruption de héros</b> : quand votre tour OU la phase du méchant commence, inclinez Prewind Stance → retournez l'amélioration Battle Board.",
   // night_thrasher_nemesis — Practice (Obligation)
-  'nt012': "<b><i>Donnez-la au joueur Night Thrasher.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre identité OU défaussez 1 carte de votre main → retirez Practice de la partie.\n• Vous ne pouvez pas retourner l'amélioration Battle Board jusqu'au début de la prochaine phase du méchant. Défaussez cette obligation.",
+  'nt012': "<b><i>Donnez-la au joueur Night Thrasher.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre identité OU défaussez 1 carte de votre main → retirez Practice de la partie.\n• Vous ne pouvez pas retourner l'amélioration Battle Board jusqu'au début de la prochaine phase du méchant. Défaussez cette obligation.",
   // night_thrasher_nemesis — Terrax the Tamer (Minion)
   'nt013': "<b>Réponse forcée</b> : après que Terrax the Tamer s'est activé, défaussez les 8 premières cartes du deck de rencontre. Si l'attachement Cosmic Ax a été défaussé de cette façon, révélez-le.\n<i>(Sbire némésis de Night Thrasher.)</i>",
   // night_thrasher_nemesis — Cemented (SideScheme)
   'nt014': "<b><i>Entrave 1[per_hero].</i></b>\nLes joueurs ne peuvent pas effectuer d'attaque de BASE avec un héros ou un allié, ni retourner d'améliorations ou d'identités.\n<b>Action</b> : chaque joueur PEUT défausser 1 carte de sa main → jusqu'à la fin de la phase, chaque joueur ayant défaussé une carte de cette façon peut traiter la zone de texte imprimée de cette carte comme si elle était vierge.",
   // night_thrasher_nemesis — Cosmic Connection (Treachery, x2)
-  'nt015': "<b>Quand elle est révélée</b> : si l'attachement Cosmic Ax est en jeu ET que votre héros contrôle une carte [[WEAPON]], subissez 3 dégâts INDIRECTS. Si AUCUN dégât n'a été subi de cette façon, cette carte gagne Déchaînement.",
+  'nt015': "<b>Une fois révélée</b> : si l'attachement Cosmic Ax est en jeu ET que votre héros contrôle une carte [[WEAPON]], subissez 3 dégâts INDIRECTS. Si AUCUN dégât n'a été subi de cette façon, cette carte gagne Déchaînement.",
   // night_thrasher_nemesis — Cosmic Ax (Attachment)
   'nt016': "Attachez-le à Terrax the Tamer. Si vous ne le pouvez pas, défaussez les 8 premières cartes du deck de rencontre. Si Terrax the Tamer a été défaussé de cette façon, révélez-le et attachez-lui Cosmic Ax.\n<hr />[star] <b>Boost</b> : si Terrax the Tamer est en jeu, révélez cette carte.",
   // yondu — Yondu (Hero) [set 154, BLUEHG + DESIGNHACKER]
@@ -1932,17 +1932,17 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // yondu — Yaka Arrow (Upgrade)
   'yd012': "La Yaka Arrow ne peut être attachée à une carte que si elle est EN JEU. Tant qu'elle est attachée à Yondu, il gagne +1 CTR et +1 ATQ.\n<b>Interruption forcée</b> : quand l'ennemi auquel elle est attachée devrait être vaincu, attachez la Yaka Arrow à un ennemi, à votre identité, ou ajoutez-la à votre main.",
   // yondu — Banished (Obligation)
-  'yd013': "<b><i>Donnez-la au joueur Yondu Udonta.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez votre alter ego → retirez Banished de la partie.\n• Défaussez l'amélioration Yaka Arrow ET inclinez l'amélioration Tahlei. Défaussez cette obligation.",
+  'yd013': "<b><i>Donnez-la au joueur Yondu Udonta.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Banished de la partie.\n• Défaussez l'amélioration Yaka Arrow ET inclinez l'amélioration Tahlei. Défaussez cette obligation.",
   // yondu_nemesis — Price on Your Head (SideScheme)
   'yd014': "<b>Réponse forcée</b> : après qu'un personnage AMICAL a été vaincu, soignez 1 dégât de Sav'rkk. Si Sav'rkk n'est PAS en jeu, soignez 1 dégât du méchant À LA PLACE.",
   // yondu_nemesis — Sav'rkk (Minion)
-  'yd015': "Les améliorations ne peuvent PAS être retirées de Sav'rkk.\n<b>Quand il est révélé</b> : convoquez l'attachement Sword-Gun-Arm et attachez-le à Sav'rkk.\n<i>(Sbire némésis de Yondu.)</i>",
+  'yd015': "Les améliorations ne peuvent PAS être retirées de Sav'rkk.\n<b>Une fois révélé</b> : convoquez l'attachement Sword-Gun-Arm et attachez-le à Sav'rkk.\n<i>(Sbire némésis de Yondu.)</i>",
   // yondu_nemesis — Sword-Gun-Arm (Attachment)
   'yd016': "Attachez-le à Sav'rkk. Si vous ne le pouvez pas, attachez-le au sbire ayant la plus forte ATQ. Si vous ne le pouvez pas, cette carte gagne Déchaînement.\n[star] Les attaques du personnage auquel il est attaché gagnent Déferlement.\n<b>Réponse forcée</b> : quand le personnage auquel il est attaché a 2 points de vie restants ou moins, défaussez Sword-Gun-Arm.",
   // yondu_nemesis — Hard to Kill (Treachery)
-  'yd017': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il soigne 2 dégâts. SINON, convoquez Sav'rkk et révélez-le.\n<hr />[star] <b>Boost</b> : le MÉCHANT soigne 2 dégâts.",
+  'yd017': "<b>Une fois révélée</b> : si Sav'rkk est en jeu, il soigne 2 dégâts. SINON, convoquez Sav'rkk et révélez-le.\n<hr />[star] <b>Boost</b> : le MÉCHANT soigne 2 dégâts.",
   // yondu_nemesis — Savage Destruction (Treachery)
-  'yd018': "<b>Quand elle est révélée</b> : si Sav'rkk est en jeu, il vous ATTAQUE. SINON, convoquez Sav'rkk et révélez-le.",
+  'yd018': "<b>Une fois révélée</b> : si Sav'rkk est en jeu, il vous ATTAQUE. SINON, convoquez Sav'rkk et révélez-le.",
   // doctor_druid — * Doctor Druid (Hero) [set 155, Kajislav]
   'dr001a': "<i>Rituel druidique</i> — <b>Action</b> : subissez 1 dégât → jouez l'événement le plus haut de votre défausse portant une capacité « Action » ou « Action de héros » <i>(en payant son coût)</i>. <i>(Limite d'une fois par round.)</i>",
   // doctor_druid — * Anthony Druid (AlterEgo)
@@ -1950,7 +1950,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // doctor_druid — * Doctor Strange (Ally)
   'dr002': "Tant que cette carte est dans votre MAIN, Doctor Druid ignore le mot-clé Garde, le mot-clé Patrouille et l'icône de crise ([crisis]).\n<b>Réponse</b> : après que Doctor Strange attaque ou contre, rendez à votre main l'événement le plus haut de votre défausse.",
   // doctor_druid — * Ancient One (Support)
-  'dr003': "Tant que cette carte est dans votre MAIN, vos attaques de base gagnent Déferlement, Perforation et Portée.\n<b>Action d'alter-ego</b> : inclinez Ancient One → regardez les 3 premières cartes de votre deck, ajoutez chaque carte Doctor Druid à votre main et défaussez les autres.",
+  'dr003': "Tant que cette carte est dans votre MAIN, vos attaques de base gagnent Déferlement, Perçant et Portée.\n<b>Action d'alter ego</b> : inclinez Ancient One → regardez les 3 premières cartes de votre deck, ajoutez chaque carte Doctor Druid à votre main et défaussez les autres.",
   // doctor_druid — Fellow Druid (Support, x2)
   'dr004': "Tant que cette carte est dans votre MAIN, vous gagnez +1 en taille de main.\n<b>Ressource</b> : inclinez Fellow Druid → générez une ressource [wild] pour une carte Doctor Druid.",
   // doctor_druid — Astral Travel (Event, x2)
@@ -1964,13 +1964,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // doctor_druid — Practice of Druidry (Event, x3)
   'dr009': "Tant que cette carte est dans votre MAIN, votre identité gagne +1 à chacun de ses pouvoirs de base.\n<b>Action de héros</b> : redressez Doctor Druid.",
   // doctor_druid — Ancient Order of Druids (Obligation)
-  'dr010': "<b><i>Donnez-la au joueur Anthony Druid.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Anthony Druid → retirez Ancient Order of Druids de la partie.\n• Défaussez chaque événement spécifique à l'identité de votre main. Si aucun événement n'a été défaussé de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
+  'dr010': "<b><i>Donnez-la au joueur Anthony Druid.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Anthony Druid → retirez Ancient Order of Druids de la partie.\n• Défaussez chaque événement spécifique à l'identité de votre main. Si aucun événement n'a été défaussé de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
   // doctor_druid_nemesis — * Nekra (Minion)
   'dr011': "Nekra gagne +1 ATQ et +1 PV pour chaque pion haine sur elle.\n<b>Réponse forcée</b> : après que Nekra attaque ou subit des dégâts, placez 1 pion haine sur elle <i>(maximum 5)</i>.\n<i>(Sbire némésis de Doctor Druid.)</i>",
   // doctor_druid_nemesis — Harness Violent Emotions (SideScheme)
   'dr012': "<i>Plus les émotions de Nekra sont violentes, plus elle devient forte.</i>\n<b>Une fois révélée</b> : cherchez Nekra dans le deck ET la défausse de rencontre, et révélez-la.\n<b>Interruption forcée</b> : quand Nekra vous attaque, défaussez 1 carte spécifique à l'identité de votre main.",
   // doctor_druid_nemesis — Emotionally Overwhelmed (Attachment, x2)
-  'dr013': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand votre tour commence, défaussez un événement spécifique à l'identité de votre main.\n<b>Action d'alter-ego</b> : étourdissez votre identité → défaussez cette carte.",
+  'dr013': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand votre tour commence, défaussez un événement spécifique à l'identité de votre main.\n<b>Action d'alter ego</b> : étourdissez votre identité → défaussez cette carte.",
   // doctor_druid_nemesis — Resurrection of Nekra (Treachery)
   'dr014': "<b>Une fois révélée</b> : si Nekra est en jeu, elle s'active contre vous. SINON, cherchez Nekra dans le deck ET la défausse de rencontre, et révélez-la.",
   // blink — * Blink (Hero) [set 156, Kajislav]
@@ -1988,7 +1988,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // blink — Multiple 'Porting (Event)
   'bk006': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance, plus 2 menaces supplémentaires par amélioration [[PORTAL]] qui lui est attachée.",
   // blink — * Crystal Palace (Support)
-  'bk007': "<b>Réponse</b> : après qu'une amélioration [[PORTAL]] est défaussée du jeu, inclinez Crystal Palace → attachez-la ici face cachée.\n<b>Action d'alter-ego</b> : inclinez Crystal Palace → ajoutez à votre main chaque amélioration [[PORTAL]] attachée ici.",
+  'bk007': "<b>Réponse</b> : après qu'une amélioration [[PORTAL]] est défaussée du jeu, inclinez Crystal Palace → attachez-la ici face cachée.\n<b>Action d'alter ego</b> : inclinez Crystal Palace → ajoutez à votre main chaque amélioration [[PORTAL]] attachée ici.",
   // blink — * Blink's Quiver (Upgrade)
   'bk008': "<b>Action de héros</b> : inclinez Blink's Quiver → cherchez une amélioration [[PORTAL]] dans votre deck et ajoutez-la à votre main.\n<b>Action de héros</b> : mettez en jeu une amélioration [[PORTAL]] de votre main.",
   // blink — Portal (Upgrade, x5)
@@ -2002,13 +2002,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // blink — * Morph (Ally, Basic)
   'bk013': "<b>Action</b> : remélangez Morph dans le deck de rencontre.\n<b>Une fois révélée</b> : défaussez Morph.",
   // blink — Proper Funeral (Event, Basic, x2)
-  'bk014': "Alliance. Max 1 par phase.\n<b>Réponse</b> : après qu'un allié est vaincu, retirez cet allié de la partie → piochez 3 cartes.",
+  'bk014': "Alliance. 1 max par phase.\n<b>Réponse</b> : après qu'un allié est vaincu, retirez cet allié de la partie → piochez 3 cartes.",
   // blink — * Earth-295 (Support, Basic)
   'bk015': "<b>Action</b> : inclinez Earth-295 et dépensez 1 ressource de n'importe quel type → redressez un allié, un soutien ou une amélioration unique ([star]) en jeu.",
   // blink — * Tallus (Upgrade, Basic)
   'bk016': "<b>Action</b> : inclinez Tallus → regardez la carte du dessus de votre deck. Si c'est un événement, vous pouvez le jouer <i>(en payant son coût)</i>. Remélangez votre deck.\n<b>Réponse</b> : après qu'un soutien [[LOCATION]] entre en jeu, redressez Tallus.",
   // blink — Stranger in This Reality (Obligation)
-  'bk017': "<b><i>Donnez-la au joueur Clarice Ferguson.</i></b>\nVous pouvez passer en forme d'identité civile. Choisissez :\n• Inclinez Clarice Ferguson → retirez Stranger in This Reality de la partie.\n• Défaussez chaque amélioration [[PORTAL]] en jeu. Si aucune amélioration [[PORTAL]] n'a été défaussée de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
+  'bk017': "<b><i>Donnez-la au joueur Clarice Ferguson.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Clarice Ferguson → retirez Stranger in This Reality de la partie.\n• Défaussez chaque amélioration [[PORTAL]] en jeu. Si aucune amélioration [[PORTAL]] n'a été défaussée de cette façon, cette carte gagne Renfort. Défaussez cette obligation.",
   // blink_nemesis — * Timebroker (Minion)
   'bk018': "Timebroker ne peut pas subir de dégâts.\n[star] <b>Réponse forcée</b> : après l'activation de Timebroker, placez 2 menaces sur la manigance annexe Damaged Reality.\n<b>Réponse forcée</b> : après que Timebroker entre en jeu, trouvez la manigance annexe Damaged Reality et révélez-la.\n<i>(Sbire némésis de Blink.)</i>",
   // blink_nemesis — Damaged Reality (SideScheme)
@@ -2026,7 +2026,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // texas_twister — Keep Spinning (Event, x5)
   'tt004': "<b>Réponse de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister <i>(CTR, ATQ ou DEF)</i>, redressez Texas Twister.",
   // texas_twister — * Pine Ridge Reservation (Support)
-  'tt005': "Drew Daniels gagne +1 REC.\n<b>Action d'alter-ego</b> : inclinez Pine Ridge Reservation → rendez à votre main la carte du dessus de votre défausse.",
+  'tt005': "Drew Daniels gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Pine Ridge Reservation → rendez à votre main la carte du dessus de votre défausse.",
   // texas_twister — * Agent T (Upgrade)
   'tt006': "Votre identité gagne le trait [[S.H.I.E.L.D.]].\n<b>Ressource</b> : inclinez Agent T → générez une ressource [wild].",
   // texas_twister — Cyclonic Suction (Upgrade)
@@ -2036,7 +2036,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // texas_twister — Spin It to the Right! (Upgrade)
   'tt009': "Texas Twister gagne +1 ATQ et +1 DEF.\n<b>Interruption forcée</b> : quand une carte [[ROTATION]] entre en jeu, défaussez cette carte.\n<b>Réponse forcée</b> : après que vous faites un contre de base, défaussez cette carte.",
   // texas_twister — * Texas Twister's Hat (Upgrade)
-  'tt010': "Texas Twister gagne <b><i>Solide</i></b>.\n<b>Action d'alter-ego</b> : inclinez Texas Twister's Hat → redressez Drew Daniels.",
+  'tt010': "Texas Twister gagne <b><i>Solide</i></b>.\n<b>Action d'alter ego</b> : inclinez Texas Twister's Hat → redressez Drew Daniels.",
   // texas_twister — Whirling Debris (Upgrade)
   'tt011': "Texas Twister gagne <b><i>Riposte 1</i></b>.\n<b>Interruption de héros</b> : quand vous faites une attaque de base, inclinez Whirling Debris → les dégâts de cette attaque peuvent être répartis entre les ennemis de votre choix.",
   // texas_twister — * Armadillo (Ally, Protection)
@@ -2054,9 +2054,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // texas_twister — * Red Wolf (Ally, Basic)
   'tt018': "<b>Réponse</b> : après qu'un allié entre en jeu sous votre contrôle, réduisez de 1 tous les dégâts consécutifs que Red Wolf subit jusqu'à la fin de la phase.",
   // texas_twister — Twist Again (Event, Basic, max 1)
-  'tt019': "Équipe (Texas Twister et Shooting Star). Max 1 par deck.\n<b>Action de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister ou de Shooting Star, redressez-les tous les deux.",
+  'tt019': "Équipe (Texas Twister et Shooting Star). 1 max par deck.\n<b>Action de héros</b> : après que vous utilisez l'un des pouvoirs de base de Texas Twister ou de Shooting Star, redressez-les tous les deux.",
   // texas_twister — Rodeo Extravaganza (Obligation)
-  'tt020': "<b><i>Donnez-la au joueur de Drew Daniels.</i></b>\nVotre identité ne peut pas être redressée par des effets de cartes joueur.\n<b>Action d'alter-ego</b> : inclinez Drew Daniels → retirez Rodeo Extravaganza de la partie.",
+  'tt020': "<b><i>Donnez-la au joueur de Drew Daniels.</i></b>\nVotre identité ne peut pas être redressée par des effets de cartes joueur.\n<b>Action d'alter ego</b> : inclinez Drew Daniels → retirez Rodeo Extravaganza de la partie.",
   // texas_twister_nemesis — * Master Pandemonium (Minion)
   'tt021': "[star] <b>Interruption forcée</b> : quand Master Pandemonium s'apprête à s'activer contre vous, choisissez de dépenser une ressource [energy] ou d'incliner votre identité.\n<i>(Sbire némésis de Texas Twister.)</i>",
   // texas_twister_nemesis — Portal to Hell (SideScheme)
@@ -2088,13 +2088,13 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // beta_ray_bill — * Stormbreaker (Upgrade)
   'br010': "Restreinte.\nVotre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : défaussez Stormbreaker du jeu → générez [wild][wild] pour un événement.",
   // beta_ray_bill — Hammer Time (Event, Basic, max 1)
-  'br011': "Alliance. Équipe (Beta Ray Bill et Thor). Max 1 par deck.\n<b>Action de héros</b> <i>(attaque)</i> : cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → infligez-lui 10 dégâts. Cette attaque gagne Déferlement.",
+  'br011': "Alliance. Équipe (Beta Ray Bill et Thor). 1 max par deck.\n<b>Action de héros</b> <i>(attaque)</i> : cherchez un sbire dans le deck de rencontre et mettez-le en jeu engagé avec vous → infligez-lui 10 dégâts. Cette attaque gagne Déferlement.",
   // beta_ray_bill — Unworthy (Obligation)
   'br012': "<b><i>Donnez-la au joueur de Beta Ray Bill.</i></b>\nUtilisations (2 pions indignité). Victoire 0.\n<b>Une fois révélée</b> : cherchez Stormbreaker et glissez-la sous cette carte. Tant qu'elle y est, Stormbreaker ne peut pas être cherchée.\n<b>Réponse forcée</b> : après que vous vainquez un ennemi ou une manigance, retirez 1 pion indignité d'ici.",
 
   // ===== throg (set 159, Rainy) — 17 cartes ==============================
   // ⚠ Les deux faces ont des NOMS DIFFERENTS : « Throg » en héros,
-  // « Puddlegulp » en alter-ego. Contrairement à beta_ray_bill.
+  // « Puddlegulp » en alter ego. Contrairement à beta_ray_bill.
   // throg — * Throg (Hero)
   'tg001a': "[star] <i>Endurance de grenouille</i> — <b>Réponse</b> : après que Throg utilise un pouvoir de base, renvoyez Frogjolnir dans votre main → redressez Throg. <i>(Limite d'une fois par phase.)</i>",
   // throg — * Puddlegulp (AlterEgo)
@@ -2110,7 +2110,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // throg — Thunderous Charge (Event, x2)
   'tg006': "<b>Interruption de héros</b> : quand vous faites un contre de base contre une manigance, résolvez plutôt ce contre contre chaque manigance en jeu, en ignorant l'icône de crise ([crisis]) <i>(dans l'ordre de votre choix, bonus de CTR compris pour ce contre)</i>.",
   // throg — * Foreverglade (Support)
-  'tg007': "<b>Réponse d'alter-ego</b> : après que vous faites une récupération de base, inclinez Foreverglade → redressez Puddlegulp et piochez 1 carte.",
+  'tg007': "<b>Réponse d'alter ego</b> : après que vous faites une récupération de base, inclinez Foreverglade → redressez Puddlegulp et piochez 1 carte.",
   // throg — Frog of Thunder (Upgrade)
   'tg008': "<b>Ressource de héros</b> : inclinez Frog of Thunder → générez une ressource [energy]. Si vous avez payé une carte Throg de cette façon, infligez 1 dégât à un ennemi.",
   // throg — * Frogjolnir (Upgrade) — la carte que tout le pack cite
@@ -2122,7 +2122,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // throg — Adorable Distraction (SideScheme némésis)
   'tg012': "<i>Alligator Loki distrait tout le monde par sa bouille adorable. Que quelqu'un le caresse, qu'on puisse revenir à nos affaires !</i>\nEntrave 1[per_hero].\nAlligator Loki ne peut pas être attaqué.\n<i>(Manigance annexe némésis de Throg.)</i>",
   // throg — * Alligator Loki (Minion némésis) — ⚠ HOMONYME du HEROS al001a (set 140)
-  'tg013': "<b>Réponse forcée</b> : après qu'Alligator Loki entre en jeu, cherchez Chomped et attachez-la à votre identité.\n[star] <b>Interruption forcée</b> : quand Alligator Loki manigance et place de la menace, placez autant de menace sur chaque manigance annexe.\n[star] Les attaques d'Alligator Loki gagnent Perforation.\n<i>(Sbire némésis de Throg.)</i>",
+  'tg013': "<b>Réponse forcée</b> : après qu'Alligator Loki entre en jeu, cherchez Chomped et attachez-la à votre identité.\n[star] <b>Interruption forcée</b> : quand Alligator Loki manigance et place de la menace, placez autant de menace sur chaque manigance annexe.\n[star] Les attaques d'Alligator Loki gagnent Perçant.\n<i>(Sbire némésis de Throg.)</i>",
   // throg — Causing a Commotion (SideScheme némésis)
   'tg014': "<i>Alligator Loki fait un scandale et met la pagaille ! Que quelqu'un l'attrape avant qu'il n'en fasse davantage !</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 3 premières cartes de son deck et place 1 menace ici pour chaque type de carte différent défaussé de cette façon.",
   // throg — "Lost" Property (SideScheme némésis)
@@ -2160,7 +2160,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // spider_man_noir — Lightning Strikes Twice (Treachery némésis, x2)
   'sn014': "<b>Une fois révélée</b> : glissez la carte du dessus du deck rencontre sous votre identité <i>(jusqu'à un maximum de 3 cartes)</i>. Pour chaque icône ([star] et [boost]) dans la zone de boost des cartes glissées sous votre identité, subissez 1 dégât <i>(jusqu'à un maximum de 4 dégâts)</i>.\n<hr />\n[star] <b>Boost</b> : après cette activation, cet ennemi s'active de nouveau.",
   // spider_man_noir — Thunderstorm (Environment némésis) — ⚠ HOMONYME de 36004
-  'sn015': "Les cartes de ce set gagnent Déferlement.\n<b>Réponse forcée</b> : après que le mot-clé Déferlement d'une carte de rencontre est résolu <i>(y compris celui de cette carte)</i>, le joueur qui le résout subit 1 dégât indirect s'il est en forme de héros.\n<b>Action de héros</b> : dépensez des ressources [energy] [energy] → défaussez cette carte.",
+  'sn015': "Les cartes de ce set gagnent Déferlement.\n<b>Réponse forcée</b> : après que le mot-clé Déferlement d'une carte de rencontre est résolu <i>(y compris celui de cette carte)</i>, le joueur qui le résout subit 1 dégât indirect s'il est sous forme de héros.\n<b>Action de héros</b> : dépensez des ressources [energy] [energy] → défaussez cette carte.",
   // black_cat — * Black Cat (Hero) — ⚠ HOMONYME de 01002, wd045 et vp002
   'bc001a': "S'il y a plus de 3 cartes glissées ici, défaussez-les toutes sauf 3.\n<i>Tychokinésie</i> — <b>Interruption</b> : quand les icônes ([star] et [boost]) d'une carte de rencontre devraient être comptées, comptez à la place celles d'une carte glissée ici. Puis défaussez-la.",
   // black_cat — * Felicia Hardy (AlterEgo)
@@ -2188,11 +2188,11 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // black_cat — Luck's Ran Out (Obligation)
   'bc012': "<b><i>Donnez-la au joueur de Felicia Hardy.</i></b>\nRévélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette carte.",
   // cameo_compliment — Lock It Down (Support, aspect JUSTICE)
-  'cc001': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection un soutien spécifique à une identité portant le trait [[LOCATION]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  'cc001': "Mise en place. 1 max par deck.\n<b>Mise en place</b> : cherchez dans votre collection un soutien spécifique à une identité portant le trait [[LOCATION]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
   // cameo_compliment — New Suit? (Support, aspect PROTECTION)
-  'cc002': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration spécifique à une identité portant le trait [[ARMOR]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  'cc002': "Mise en place. 1 max par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration spécifique à une identité portant le trait [[ARMOR]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
   // cameo_compliment — Ye Be Worthy (Support, aspect AGRESSIVITÉ)
-  'cc003': "Mise en place. Maximum 1 par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration NON PERMANENTE spécifique à une identité portant le trait [[WEAPON]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
+  'cc003': "Mise en place. 1 max par deck.\n<b>Mise en place</b> : cherchez dans votre collection une amélioration NON PERMANENTE spécifique à une identité portant le trait [[WEAPON]] appartenant à une identité absente de cette partie. Mélangez cette carte dans votre deck. Défaussez 2 cartes de votre main et retirez cette carte de la partie.",
   // sunfire — * Sunfire (Hero) — ⚠ HOMONYME de l'allié 35014
   'sf001a': "[star] <i>Aura brûlante</i> — <b>Interruption</b> : quand Sunfire fait une attaque de base ou une défense de base contre un ennemi, attachez à cet ennemi un exemplaire de Burning mis de côté.",
   // sunfire — * Shiro Yoshida (AlterEgo)
@@ -2220,7 +2220,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sunfire — * Silver Samurai (Minion némésis)
   'sf012': "Coup Rapide. Riposte 1.\n<b>Interruption forcée</b> : quand Silver Samurai entre en jeu, si elle n'est pas en jeu, cherchez Silver Samurai's Katana et attachez-la-lui.\n<i>(Sbire némésis de Sunfire.)</i>",
   // sunfire — Hand Ninja (Minion némésis)
-  'sf013': "[star] Les attaques de Hand Ninja gagnent Perforation.\n<b>Réponse forcée</b> : après que Hand Ninja entre en jeu, il s'active contre vous.\n<hr />\n[star] <b>Boost</b> : mettez ce sbire en jeu, engagé avec vous.",
+  'sf013': "[star] Les attaques de Hand Ninja gagnent Perçant.\n<b>Réponse forcée</b> : après que Hand Ninja entre en jeu, il s'active contre vous.\n<hr />\n[star] <b>Boost</b> : mettez ce sbire en jeu, engagé avec vous.",
   // sunfire — * Silver Samurai's Katana (Attachment némésis)
   'sf014': "Attachez-la à Silver Samurai. Si vous ne pouvez pas, cherchez Silver Samurai et mettez-le en jeu engagé avec vous, cette carte attachée.\nSilver Samurai ne peut pas subir de dégâts provenant d'attaques.\n<b>Action de héros</b> : dépensez 3 ressources de n'importe quel type → défaussez cette carte.",
   // sunfire — Tachyon Whip (Attachment némésis)
