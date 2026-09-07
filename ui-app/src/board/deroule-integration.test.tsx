@@ -20,6 +20,7 @@ import { DeroulePhase } from './DeroulePhase'
 import { etapesDeroule } from './deroule-phase'
 import { Moteur, PHASES_DU_MECHANT, type EtatMoteur } from './moteur'
 import { moteurAttendUneReponse } from './DemandeCentrale'
+import type { Demande } from './ask'
 import type { FaitMechant, World } from './world'
 
 const SBIRE_ID = 70
@@ -162,6 +163,15 @@ class FauxServeur {
    * clic — le geste meme qui a fait defiler toute la phase en partie reelle.
    */
   automatique = true
+  /**
+   * La QUESTION que le moteur pose au joueur, ou rien.
+   *
+   * Cote Python, elle n'arrive pas avec une nouvelle trame : `IsInputReady`
+   * repousse la MEME (`WebSendRender(..., "GetInput")`) avec `ask_players`
+   * rempli, pendant que le fil du jeu attend la reponse. C'est ce protocole-la
+   * qui est rejoue ici.
+   */
+  question: Demande | undefined
   private socket: FauxSocket | undefined
 
   brancher(socket: FauxSocket) {
@@ -179,7 +189,7 @@ class FauxServeur {
         render_id: monde.render_id,
         game_id: 1,
         game_uid: 'test',
-        ask_players: [],
+        ask_players: this.question ? [0] : [],
         total_players: 1,
         notify_texts: [],
       }),
@@ -211,7 +221,17 @@ function fauxFetch(url: string): Promise<Response> {
     )
   }
   if (url.startsWith('/get_ask')) {
-    return Promise.resolve(new Response('', { status: 200 }))
+    // Le moteur rend le corps de la question, ou rien du tout.
+    const brut = serveur.question
+      ? JSON.stringify({
+          options_json: JSON.stringify(serveur.question.options),
+          prompt_text: serveur.question.prompt_text,
+          event_name: serveur.question.event_name,
+          show_cancel: serveur.question.show_cancel,
+          ability_type: serveur.question.ability_type,
+        })
+      : ''
+    return Promise.resolve(new Response(brut, { status: 200 }))
   }
   if (url.startsWith('/client_updated')) {
     const renderId = Number(new URLSearchParams(url.split('?')[1] ?? '').get('r'))
@@ -426,6 +446,87 @@ describe('le cartouche branche sur un vrai moteur', () => {
     expect(serveur.accuses).toEqual([])
     expect(serveur.rang).toBe(0)
     expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+  })
+
+  // LE PIEGE NOMME PAR LA REVUE D'A3-FIX, ET SA SORTIE.
+  //
+  // Le jour ou `!validationRequise` quitte le signal « le moteur attend le
+  // joueur », deux choses arrivent en meme temps pendant la fenetre d'annonce :
+  // le cartouche se REPLIE devant la question (il n'a donc plus de bouton
+  // « Suivant ») et, si `!questionAuJoueur` restait dans `cartoucheAJour`,
+  // l'accuse de reception ne partirait plus. Plus personne ne relacherait la
+  // trame : blocage jusqu'au filet de 90 s.
+  //
+  // La sortie : une question posee au joueur est une RAISON D'ACQUITTER, pas
+  // une raison de retenir. Elle ne coute rien au rythme, parce que le moteur ne
+  // peut de toute facon rien produire de plus tant qu'on ne lui a pas repondu
+  // (Python : `Render` -> `WaitSync` -> `GetInput`, les trois a la suite sur le
+  // meme fil). Elle ferme le blocage par construction : cartouche replie
+  // implique cartouche a jour, donc trame relachee.
+  it('ne bloque pas quand le moteur pose sa question pendant la fenetre d annonce', async () => {
+    await ouvrir()
+    serveur.automatique = false
+    // Le joueur valide la menace ; l'intention arrive.
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    await act(async () => {
+      serveur.libererLaSuite()
+    })
+    await laisserTourner()
+    expect(screen.getByText('Drone va comploter contre Assault on NORAD')).toBeInTheDocument()
+    expect(serveur.accuses).toEqual([101, 102])
+
+    // LE MOTEUR POSE SA QUESTION, sur la MEME trame : il repousse la trame 102
+    // avec `ask_players` rempli, exactement comme `IsInputReady`.
+    serveur.question = {
+      options: [
+        {
+          id: 1,
+          name: 'Defend',
+          bind_id: 0,
+          bind_player_id: 0,
+          all_legal_targets: [],
+          target_num_range: [0, 0],
+          target_payment: {},
+          select_rule: '',
+          target_must_include_traits: [],
+          failure_reason: '',
+          is_search: false,
+        },
+      ],
+      prompt_text: 'Bishop is being attacked by Drone',
+      event_name: 'WhenUnitBeingAttack',
+      show_cancel: true,
+      ability_type: 'Normal',
+    }
+    await act(async () => {
+      serveur.pousser()
+    })
+    await laisserTourner()
+    // Le cartouche se replie : plus de bouton « Suivant », et la fenetre de
+    // reponse est dite.
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+    expect(screen.getByText('tu peux défendre ou répondre')).toBeInTheDocument()
+
+    // ET LA TRAME SUIVANTE PART QUAND MEME. C'est le point : sans bouton, c'est
+    // le seul chemin qui reste, et il doit rester ouvert.
+    await act(async () => {
+      serveur.libererLaSuite()
+    })
+    await laisserTourner()
+    expect(serveur.accuses).toEqual([101, 102, 103])
+
+    // La question repondue, le cartouche se redeploie sur la resolution et
+    // redemande un clic : le rythme n'a rien perdu.
+    serveur.question = undefined
+    await act(async () => {
+      serveur.pousser()
+    })
+    await laisserTourner()
+    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(serveur.accuses).toEqual([101, 102, 103])
   })
 
   // Le contre-cas, qui garde la raison d'etre du relachement : passer en

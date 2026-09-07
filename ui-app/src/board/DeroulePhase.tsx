@@ -687,15 +687,36 @@ export function DeroulePhase({
   // quoi le premier clic donne pendant la fenetre d'annonce rendait le
   // cartouche a jour pour tout ce qui suivait.
   //
-  // SAUF si le moteur pose une question : la, il ne rendra pas la main avant
-  // qu'on lui reponde, l'annonce reste affichee tout le temps de la fenetre,
-  // et c'est exactement le second temps que la decision 7 reclame.
+  // ET UNE QUESTION DU MOTEUR EST UNE RAISON D'ACQUITTER, jamais de retenir.
+  //
+  // C'est la SORTIE DU PIEGE nomme par la revue du correctif A3, et elle se
+  // conçoit avant de se coder. Le signal « le moteur attend le joueur » couvre
+  // desormais les questions posees pendant qu'une trame est retenue (la barre
+  // du bas : « Defendre / Passer »). Deux choses arrivent alors ensemble : le
+  // cartouche se REPLIE devant la question, donc il n'a plus de bouton
+  // « Suivant », et l'ancien terme `!questionAuJoueur` — mort jusqu'ici parce
+  // que `validationRequise` et `trameRetenue` etaient poses ensemble — aurait
+  // repris vie et rendu `cartoucheAJour` faux. Plus personne n'aurait relache
+  // la trame : blocage jusqu'au filet.
+  //
+  // Retenir pendant une question ne protege d'ailleurs RIEN. Ce n'est pas
+  // l'accuse de reception qui garde l'annonce a l'ecran pendant la fenetre de
+  // reponse, c'est le moteur : il ne produit rien de plus tant qu'on ne lui a
+  // pas repondu (cote Python, `Render` puis `WaitSync` puis `GetInput`, a la
+  // suite sur le meme fil ; c'est meme notre accuse qui lui permet d'ARRIVER a
+  // sa question). Acquitter pendant une question ne coute donc aucun rythme, et
+  // ferme le blocage par construction : cartouche replie implique cartouche a
+  // jour, donc trame relachee.
+  //
+  // L'annonce, elle, garde sa raison d'acquitter toute seule (decision 7 : pas
+  // de clic sur « va attaquer »), sans plus avoir a s'inquieter des questions.
   const etapeEstAnnonce = etape?.etat === 'annonce'
   const cartoucheAJour =
     termine ||
     partieFinie ||
     etapesAffichees.length === 0 ||
-    (surLaDerniereEtape && (etapeValidee || (etapeEstAnnonce && !questionAuJoueur)))
+    questionAuJoueur ||
+    (surLaDerniereEtape && (etapeValidee || etapeEstAnnonce))
 
   // L'accuse de reception, seul endroit d'ou il part.
   //

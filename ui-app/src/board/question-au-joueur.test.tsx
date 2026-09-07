@@ -64,12 +64,24 @@ describe('le signal « le moteur attend le joueur »', () => {
     expect(moteurAttendUneReponse({ ...etatMoteur, demande: tourLibre })).toBe(false)
   })
 
-  // Filet : tant que le moteur retient sa trame, c'est le cartouche qui doit la
-  // relacher, et un cartouche replie n'a plus de bouton. Le replier avant que
-  // le panneau ne soit affiche ne laisserait plus personne relacher quoi que ce
-  // soit.
-  it('attend que la trame soit relachee avant de replier le cartouche', () => {
-    expect(moteurAttendUneReponse({ ...etatMoteur, validationRequise: true })).toBe(false)
+  // LE CAS DE LA BARRE DU BAS. Le moteur pose sa question PENDANT qu'une trame
+  // est retenue : « Black Widow is being attacked by Ultron · Defendre /
+  // Passer » s'affichait dans la barre du bas et le cartouche continuait
+  // d'annoncer « La suite arrive… » par-dessus (doute 1 du rapport A3-fix,
+  // doute 3 du rapport A4, releve trois fois en partie reelle).
+  //
+  // La garde `!validationRequise` avait ete gardee comme filet : un cartouche
+  // replie n'a plus de bouton, et le replier pendant qu'une trame est retenue
+  // ne laisserait plus personne la relacher. Ce filet est desormais porte la ou
+  // il doit l'etre — dans `cartoucheAJour`, ou une question du moteur est une
+  // RAISON D'ACQUITTER (voir DeroulePhase.tsx) — et le signal, lui, dit
+  // simplement la verite.
+  it('reste vrai quand le moteur pose sa question en retenant sa trame', () => {
+    // Une variable, et non un litteral passe directement : le champ ne fait
+    // meme plus partie de ce que le signal demande, et c'est le fond de la
+    // correction.
+    const trameRetenue = { ...etatMoteur, validationRequise: true }
+    expect(moteurAttendUneReponse(trameRetenue)).toBe(true)
   })
 
   it('fait dire au cartouche que le moteur attend, jamais que la suite arrive', () => {

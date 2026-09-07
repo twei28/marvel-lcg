@@ -2557,7 +2557,12 @@ function PagePartie({
             // a activer), le panneau cede la place au selecteur de cibles et le
             // cartouche se redeployait pour annoncer « La suite arrive… » alors
             // que le moteur attendait le joueur.
-            questionAuJoueur={moteurAttendLeJoueur}
+            // ...et SEULEMENT quand c'est nous. Sans mot de passe de siege, le
+            // serveur laisse ce navigateur lire la question d'un autre joueur
+            // (`allowed_seats` rend `None`) : replier le cartouche sur « Le
+            // moteur attend ta reponse » serait alors faux. C'est la mention
+            // d'attente ci-dessous qui prend le relais dans ce cas.
+            questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
             // La table attend quelqu'un d'AUTRE : le cartouche le dit a la
             // place de « La suite arrive… », qui parle du moteur. Le nom n'est
             // connu que lorsque le moteur interroge ce siege-la ; sinon la

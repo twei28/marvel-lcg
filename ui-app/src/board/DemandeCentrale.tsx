@@ -106,30 +106,31 @@ export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boo
  * suite arrive… » alors que le moteur attendait le joueur. Le signal vient donc
  * de l'etat du MOTEUR, pas de la visibilite d'un panneau.
  *
- * `validationRequise` reste dedans, et pour une raison de securite : quand le
- * moteur retient encore sa trame, c'est le cartouche qui doit la relacher, et
- * un cartouche replie n'a plus de bouton. Le dire trop tot le replierait devant
- * un panneau qui n'est pas encore affiche, et plus personne ne relacherait
- * rien.
+ * `validationRequise` N'EST PLUS DEDANS, et c'est le correctif d'A6. Il y etait
+ * comme filet : un cartouche replie n'a plus de bouton, et le replier pendant
+ * qu'une trame est retenue ne laisserait plus personne la relacher. Mais la
+ * garde mentait sur tout le reste du temps : le moteur pose ses questions de la
+ * phase du mechant PENDANT qu'une trame est retenue (« Black Widow is being
+ * attacked by Ultron · Defendre / Passer », `WhenUnitBeingAttack`, releve
+ * plusieurs fois en partie), le panneau central ne paraissait pas, la question
+ * tombait dans la barre du bas et le cartouche annoncait « La suite arrive… »
+ * par-dessus. Le filet est desormais porte la ou il doit l'etre : dans
+ * `cartoucheAJour` (DeroulePhase.tsx), ou une question posee au joueur est une
+ * RAISON D'ACQUITTER. Cartouche replie implique donc cartouche a jour, donc
+ * trame relachee, et le blocage est ferme par construction.
  *
- * `demandeDoitApparaitreAuCentre` reste dedans aussi : la question de la barre
- * du bas (le tour libre du joueur, « Passer » / « Jouer ») arrive quand la
- * phase du mechant est finie et que le cartouche montre son bilan, qu'il doit
- * garder deploye.
+ * `demandeDoitApparaitreAuCentre` reste dedans, lui, et ce n'est pas un oubli :
+ * la question du TOUR LIBRE (`WhenPlayerInTurn` + `Normal`, « Passer » /
+ * « Jouer X ») arrive quand la phase du mechant est finie et que le cartouche
+ * montre son bilan, qu'il doit garder deploye jusqu'a « A toi de jouer ». Les
+ * questions de la phase du mechant, elles, ont toutes leur propre evenement.
  */
 export function moteurAttendUneReponse(etat: {
   aNous: boolean
   connecte: boolean
   demande?: Demande
-  validationRequise: boolean
 }): boolean {
-  return (
-    etat.aNous &&
-    etat.connecte &&
-    etat.demande !== undefined &&
-    !etat.validationRequise &&
-    demandeDoitApparaitreAuCentre(etat.demande)
-  )
+  return etat.aNous && etat.connecte && demandeDoitApparaitreAuCentre(etat.demande)
 }
 
 function libelleEvenement(eventName: string): string {

@@ -2479,20 +2479,35 @@ describe('le rythme des accuses de reception', () => {
     expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
   })
 
-  // Avec une question posee au joueur local, l'intention n'est PAS acquittee :
-  // le moteur ne rendra pas la main avant qu'on lui reponde, et le cartouche
-  // dit ce qui va arriver pendant qu'on peut encore s'y opposer.
-  it("n'acquitte pas une intention quand le moteur attend une reponse", () => {
+  // LA SORTIE DU PIEGE NOMME PAR LA REVUE D'A3-FIX.
+  //
+  // Le cartouche se REPLIE devant une question du moteur : il n'a alors plus de
+  // bouton, donc plus aucun moyen manuel de relacher la trame. Si la question
+  // le rendait en meme temps « pas a jour », plus personne n'acquitterait et la
+  // phase se figerait jusqu'au filet.
+  //
+  // Une question est donc une RAISON D'ACQUITTER. Cela ne coute aucun rythme :
+  // le moteur ne produit rien de plus tant qu'on ne lui a pas repondu, et c'est
+  // meme cet accuse-la qui lui permet d'ARRIVER a sa question (Python :
+  // `Render` puis `WaitSync` puis `GetInput`).
+  it("acquitte, sans bouton, quand le moteur attend une reponse", () => {
     const accuses = vi.fn()
     const { rerender } = render(cartouche(accuses, true)([annonce], 11))
-    expect(accuses).not.toHaveBeenCalled()
-    expect(screen.getByText('tu peux défendre ou répondre')).toBeInTheDocument()
-    // La reponse donnee, le moteur resout : une seule validation demandee.
-    rerender(cartouche(accuses, false)([annonce], 11))
-    rerender(cartouche(accuses, false)([resolue], 12))
     expect(accuses).toHaveBeenCalledTimes(1)
-    fireEvent.click(suivant())
+    // Replie : la fenetre de reponse est dite, et il n'y a plus de bouton.
+    expect(screen.getByText('tu peux défendre ou répondre')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+    // Une trame de plus pendant la meme question : elle part aussi, sinon le
+    // blocage revient par la porte de derriere.
+    rerender(cartouche(accuses, true)([annonce], 12))
     expect(accuses).toHaveBeenCalledTimes(2)
+    // La reponse donnee, le moteur resout : le cartouche se redeploie et
+    // redemande un clic. Le rythme n'a rien perdu.
+    rerender(cartouche(accuses, false)([resolue], 13))
+    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(accuses).toHaveBeenCalledTimes(2)
+    fireEvent.click(suivant())
+    expect(accuses).toHaveBeenCalledTimes(3)
   })
 })
 
