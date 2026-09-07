@@ -23,12 +23,17 @@ import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer
 /** Réduit un libellé à sa substance : sans accents, sans ponctuation, sans
  *  casse. « Némésis » et « nemesis » doivent se rejoindre. */
 function reduire(texte: string): string {
-  return texte
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
+  return (
+    texte
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+      // Le pluriel ne compte pas : « Manigances annexes » nomme bien une
+      // « Manigance annexe ».
+      .replace(/(\w{3,})s\b/g, '$1')
+  )
 }
 
 /**

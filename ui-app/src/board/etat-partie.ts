@@ -1,0 +1,48 @@
+// etat-partie.ts — où en est la partie, en une ligne pour la barre du haut.
+//
+// Le moteur publie `round_id` et `phase`, cette dernière en anglais et dans
+// ses propres termes (« Player 1 Turn », « Enemy Activation »). La barre du
+// haut n'en disait rien : dix boutons, et aucune information de jeu. Cette
+// ligne répond à la question qu'on se pose en revenant à l'écran : « on en
+// est où ? ».
+
+import { t } from './langue'
+import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
+import { traduireMoteur } from './vocabulaire-moteur'
+import type { World } from './world'
+
+const ETAPES_DU_MECHANT: Record<PhaseDuMechant, string> = {
+  'Main Scheme Place Threat': 'Menace',
+  'Enemy Activation': 'Activations',
+  'Deal Encounter Cards': 'Distribution',
+  'Reveal Encounter Cards': 'Révélation',
+}
+
+/** Le nom du héros au siège donné (numéro de joueur du moteur, à partir de 1). */
+function nomDuHeros(monde: World, numero: number): string | undefined {
+  const joueur = monde.players?.[numero - 1]
+  return joueur?.area_hero?.[0]?.name?.replace(/^\W*/, '').trim() || undefined
+}
+
+/** La phase en cours, dite au joueur. */
+export function libellePhase(monde: World | undefined): string {
+  if (!monde) return ''
+  const phase = monde.phase ?? ''
+  const tour = phase.match(/^Player (\d+) Turn$/)
+  if (tour) {
+    const heros = nomDuHeros(monde, Number(tour[1]))
+    return heros ? `${t('Tour de')} ${heros}` : `${t('Tour du joueur')} ${tour[1]}`
+  }
+  if (phase === 'Player Turn End') return t('Fin du tour')
+  if (phase === 'Resolve Mulligans') return t('Mulligans')
+  if ((PHASES_DU_MECHANT_ORDONNEES as readonly string[]).includes(phase)) {
+    return `${t('Phase du méchant')} · ${t(ETAPES_DU_MECHANT[phase as PhaseDuMechant])}`
+  }
+  return phase ? traduireMoteur(phase) : ''
+}
+
+/** « Round 3 », ou rien tant que la partie n'a pas commencé. */
+export function libelleRound(monde: World | undefined): string {
+  if (!monde || typeof monde.round_id !== 'number' || monde.round_id <= 0) return ''
+  return `${t('Round')} ${monde.round_id}`
+}

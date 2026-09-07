@@ -758,4 +758,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/mobile : vue d'etat degradee et marquage des cibles ----
   // ('cartes' et 'Actif' sont deja definis plus haut)
   'cibles ici': 'targets here',
+
+  // ---- Barre du haut : ou on en est, et le popover « … » (etat-partie.ts) ----
+  'Tour de': 'Turn of',
+  'Tour du joueur': 'Player turn',
+  'Mulligans': 'Mulligans',
+  'Log de la partie': 'Game log',
+  'Musique': 'Music',
+  'Journal, musique, langue': 'Log, music, language',
 }

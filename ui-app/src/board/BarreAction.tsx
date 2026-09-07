@@ -160,11 +160,16 @@ export function BarreAction({
 
   return (
     <footer className={`plateau-action plateau-action-secondaire${option ? ' a-action-en-cours' : ''}`}>
-      <div className="pa-legende" aria-label={t('Légende des surbrillances')}>
-        <span className="pa-leg pa-leg-play">{t('Jouable')}</span>
-        <span className="pa-leg pa-leg-target">{t('Cible')}</span>
-        <span className="pa-leg pa-leg-chosen">{t('Choisie')}</span>
-      </div>
+      {/* La légende des couleurs n'a de sens que pendant une action, quand il y
+          a des cibles à distinguer d'une source. Au repos, elle était un
+          élément permanent de plus en bas de l'écran. */}
+      {option ? (
+        <div className="pa-legende" aria-label={t('Légende des surbrillances')}>
+          <span className="pa-leg pa-leg-play">{t('Jouable')}</span>
+          <span className="pa-leg pa-leg-target">{t('Cible')}</span>
+          <span className="pa-leg pa-leg-chosen">{t('Choisie')}</span>
+        </div>
+      ) : null}
 
       <div className="plateau-action-texte">
         <span className="plateau-eyebrow">{t('À toi de jouer')}</span>

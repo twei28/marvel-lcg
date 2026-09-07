@@ -2500,6 +2500,41 @@
      regler, partir — et sans marque visible l'ordre ne se lit pas : on voit une
      file de boutons, pas quatre groupes. Un simple filet, assez discret pour ne
      pas devenir un element de plus a regarder. */
+  /* Ou on en est : round et phase, en tete de barre (07/09/2026). */
+  .bh-etat {
+    display: grid;
+    line-height: 1.15;
+    margin-right: 6px;
+    padding-right: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .bh-etat strong {
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffd45a;
+    white-space: nowrap;
+  }
+
+  .bh-etat span {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    white-space: nowrap;
+  }
+
+  /* Le popover « … » : trois boutons en colonne, pleine largeur. */
+  .popover-plus {
+    min-width: 220px;
+  }
+
+  .popover-plus .bh-bouton {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
   .bh-separateur {
     align-self: stretch;
     width: 1px;

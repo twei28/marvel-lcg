@@ -26,6 +26,10 @@ describe('pastilleRedondante', () => {
     expect(pastilleRedondante('Méchant', carte({ kind: 'villain', labelType: '' }))).toBe(true)
   })
 
+  it('se tait au pluriel : « Manigances annexes » nomme une manigance annexe', () => {
+    expect(pastilleRedondante('Manigances annexes', carte({ kind: 'side-scheme' }))).toBe(true)
+  })
+
   it('parle quand la zone dit autre chose', () => {
     expect(pastilleRedondante('Ta main', carte({ kind: 'ally' }))).toBe(false)
   })

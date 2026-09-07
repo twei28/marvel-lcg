@@ -83,7 +83,8 @@ import {
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
-import { CLE_TEXTES_CDB, lireTextesCdb } from './board/marvelcdb'
+import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
+import { libellePhase, libelleRound } from './board/etat-partie'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
@@ -894,6 +895,33 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * client original), chacun avec Save / Load, plus l'export en fichier.
  * Les fichiers vivent dans replays/ (hors .game : ils survivent aux rebuilds).
  */
+/**
+ * Les trois boutons qu'on touche une fois par partie, ou jamais : le journal
+ * en fichier, la musique, la langue. Ils prenaient trois places dans la barre
+ * du haut, au meme poids qu'Annuler. Un seul bouton « … » les replie.
+ */
+function PopoverPlus({ children }: { children: React.ReactNode }) {
+  const [ouvert, setOuvert] = useState(false)
+  return (
+    <span className="popover-sauvegardes-ancre">
+      <button
+        type="button"
+        className={`bh-bouton bh-plus${ouvert ? ' est-actif' : ''}`}
+        onClick={() => setOuvert((o) => !o)}
+        aria-expanded={ouvert}
+        title={t('Journal, musique, langue')}
+      >
+        <span aria-hidden="true">…</span>
+      </button>
+      {ouvert ? (
+        <div className="popover-sauvegardes popover-plus" role="menu">
+          {children}
+        </div>
+      ) : null}
+    </span>
+  )
+}
+
 function PopoverSauvegardes() {
   const confirmer = useConfirmation()
   const [ouvert, setOuvert] = useState(false)
@@ -1944,6 +1972,51 @@ function PagePartie({
   }, [])
 
   const [textesCdb, setTextesCdb] = useState(lireTextesCdb)
+
+  // Noms FRANÇAIS des cartes que la barre d'action propose (« Jouer Acier
+  // Organique » et non « Organic Steel »). Le monde du moteur ne porte que
+  // l'anglais : les cartes de la table paraissent françaises parce que leurs
+  // SCANS le sont. La seule source d'un nom français est fr.marvelcdb.com, via
+  // le proxy du serveur, un code à la fois et mis en cache. Hors ligne, la
+  // requête échoue une fois par code et le nom anglais reste.
+  const [nomsFr, setNomsFr] = useState<ReadonlyMap<string, string>>(() => new Map())
+  useEffect(() => {
+    if (langueActuelle() !== 'fr' || !etat.demande || !etat.monde) return
+    const index = indexerCartesMonde(etat.monde)
+    const codes = new Set<string>()
+    for (const option of etat.demande.options) {
+      const carte = index.get(option.bind_id)
+      const code = codeMarvelcdb(carte?.card_id)
+      if (code && !nomsFr.has(code)) codes.add(code)
+    }
+    if (codes.size === 0) return
+    let vivant = true
+    void Promise.all(
+      [...codes].map(async (code) => [code, (await texteMarvelcdb(code))?.name] as const)
+    ).then((paires) => {
+      if (!vivant) return
+      setNomsFr((avant) => {
+        const suivant = new Map(avant)
+        for (const [code, nom] of paires) suivant.set(code, nom ?? '')
+        return suivant
+      })
+    })
+    return () => {
+      vivant = false
+    }
+    // Seules les options en cours comptent : le monde change à chaque rendu.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [etat.demande, etat.monde?.render_id])
+
+  const nomPorteurFr = useCallback(
+    (bindId: number): string | undefined => {
+      const carte = indexerCartesMonde(etat.monde).get(bindId)
+      const code = codeMarvelcdb(carte?.card_id)
+      const nom = code ? nomsFr.get(code) : undefined
+      return nom || nomDeCarte(etat.monde, bindId)
+    },
+    [etat.monde, nomsFr]
+  )
   const basculerTextesCdb = useCallback(() => {
     setTextesCdb((v) => {
       const nouveau = !v
@@ -2674,6 +2747,15 @@ function PagePartie({
               couper le son ou changer de langue doit se faire d'un geste (voir
               le commentaire du bouton musique). */
           <div className="board-actions">
+            {/* OÙ ON EN EST. La barre n'avait que des boutons : le round et
+                la phase n'étaient écrits nulle part une fois le cartouche
+                refermé. Deux lignes, à gauche, avant tout le reste. */}
+            {libelleRound(etat.monde) ? (
+              <div className="bh-etat" role="status">
+                <strong>{libelleRound(etat.monde)}</strong>
+                <span>{libellePhase(etat.monde)}</span>
+              </div>
+            ) : null}
             <button
               type="button"
               className="bh-bouton bh-undo"
@@ -2699,14 +2781,6 @@ function PagePartie({
                 trouvait — et c'est au moment où un bug vient de se produire
                 qu'on a le moins envie de chercher. Toute la partie, en texte
                 lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
-            <button
-              type="button"
-              className="bh-bouton bh-log"
-              onClick={() => rapport.telecharger('partie', 'txt')}
-              title={t('Télécharger tout le déroulé de la partie en fichier texte')}
-            >
-              <span aria-hidden="true">🧾</span> {t('Log')}
-            </button>
             <MessageRapport message={rapport.message} />
             {/* Signaler un bug : le journal de toute la partie part avec la
                 description et la capture. Ne s'affiche que si un site ecoute. */}
@@ -2746,36 +2820,6 @@ function PagePartie({
             <span className="bh-separateur" aria-hidden="true" />
 
             <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
-            {/* Couper la musique doit se faire d'UN geste, sans ouvrir les
-                réglages : c'est ce qu'on cherche quand quelqu'un entre dans la
-                pièce. Le bouton sert aussi à la lancer — un navigateur refuse
-                l'autoplay tant que la page n'a pas été cliquée, et ce clic-là
-                fait justement office de geste. */}
-            <button
-              type="button"
-              className={`bh-bouton bh-musique${musique ? ' est-actif' : ''}`}
-              onClick={basculerMusique}
-              aria-pressed={musique}
-              title={
-                musique
-                  ? t('Couper la musique')
-                  : t('Remettre la musique (nécessite un fichier dans assets/sounds)')
-              }
-            >
-              <span aria-hidden="true">{musique ? '🔊' : '🔇'}</span>
-            </button>
-            <button
-              type="button"
-              className="bh-bouton bh-langue"
-              onClick={() => void basculerLangue()}
-              title={
-                langueActuelle() === 'fr'
-                  ? 'Interface et narration en français — cliquer pour passer en anglais'
-                  : 'Interface and narration in English — click to switch to French'
-              }
-            >
-              <span aria-hidden="true">🌐</span> {langueActuelle() === 'fr' ? 'FR' : 'EN'}
-            </button>
             <PanneauOptions
               animations={animations}
               basculerAnimations={basculerAnimations}
@@ -2812,6 +2856,48 @@ function PagePartie({
               cyclerReglageMode={cyclerReglageMode}
               montrerDisposition={surAppareilMobile}
             />
+
+            <PopoverPlus>
+              {/* « Log » : le rapport complet en UN clic. Toute la partie, en
+                  texte lisible, parce que c'est ce qu'on relit et ce qu'on
+                  transmet quand un bug vient de se produire. */}
+              <button
+                type="button"
+                className="bh-bouton bh-log"
+                onClick={() => rapport.telecharger('partie', 'txt')}
+                title={t('Télécharger tout le déroulé de la partie en fichier texte')}
+              >
+                {t('Log de la partie')}
+              </button>
+              {/* Le bouton musique sert aussi à la lancer : un navigateur refuse
+                  l'autoplay tant que la page n'a pas été cliquée, et ce clic-là
+                  fait office de geste. */}
+              <button
+                type="button"
+                className={`bh-bouton bh-musique${musique ? ' est-actif' : ''}`}
+                onClick={basculerMusique}
+                aria-pressed={musique}
+                title={
+                  musique
+                    ? t('Couper la musique')
+                    : t('Remettre la musique (nécessite un fichier dans assets/sounds)')
+                }
+              >
+                {musique ? t('Couper la musique') : t('Musique')}
+              </button>
+              <button
+                type="button"
+                className="bh-bouton bh-langue"
+                onClick={() => void basculerLangue()}
+                title={
+                  langueActuelle() === 'fr'
+                    ? 'Interface et narration en français — cliquer pour passer en anglais'
+                    : 'Interface and narration in English — click to switch to French'
+                }
+              >
+                {langueActuelle() === 'fr' ? 'Français → English' : 'English → Français'}
+              </button>
+            </PopoverPlus>
 
             <span className="bh-separateur" aria-hidden="true" />
 
@@ -2872,7 +2958,7 @@ function PagePartie({
               interaction={interaction}
               aNous={etat.aNous}
               connecte={etat.connecte}
-              nomPorteur={(bindId) => nomDeCarte(etat.monde, bindId)}
+              nomPorteur={nomPorteurFr}
             />
           ) : undefined
         }
