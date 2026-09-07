@@ -5,20 +5,20 @@
 }
 
 /* ===== REFONTE DU 7 SEPTEMBRE 2026 : LES RÉGLAGES SONT ICI =================
-   Trois couleurs et une règle. Le JAUNE dit « tu peux agir ici » : sélection,
-   bouton principal, étape en cours, survol. Le BLANC est notre camp. Le ROUGE
-   n'appartient qu'au méchant : badges Expert et Défi, cible verrouillée, VS.
-   Plus de bleu ni de vert : ils disaient « clique ici » avec trois voix.
+   Une couleur et une règle. Le ROUGE Marvel, celui du logo, dit « tu peux
+   agir ici » : sélection, bouton principal, étape en cours. Le BLANC sert au
+   survol. Plus de bleu, de vert ni de jaune : ils disaient « clique ici »
+   avec trois voix.
 
    Pour revenir à l'ancien rendu d'un coup : `git switch master`.
    Pour ajuster une couleur ou une taille : modifier la valeur ci-dessous, rien
    d'autre à toucher, tout le fichier lit ces variables. */
 :root{
   --ink:#07080c;
-  /* Le jaune du plateau (board.css), même valeur : un seul jaune partout. */
-  --agir:#ffd45a;
-  --agir-encre:#1a1500;                 /* texte posé sur du jaune */
-  --agir-halo:rgba(255,212,90,.42);     /* anneau autour d'un élément choisi */
+  /* Le rouge du logo Marvel. */
+  --agir:#e62429;
+  --agir-encre:#ffffff;                 /* texte posé sur du rouge */
+  --agir-halo:rgba(230,36,41,.45);      /* anneau autour d'un élément choisi */
   --nous:#ffffff;                       /* notre camp, et le survol */
   --nous-halo:rgba(255,255,255,.18);
   --eux:#e62429;                        /* le méchant, et lui seul */
@@ -49,10 +49,6 @@
   --fo-nous-fond:#eceae4;
   --fo-eux-fond:#2a0b0e;
   --fo-pente:70px;
-  /* La scène en haut de la fiche : hauteur, zoom et cadrage de l'art. */
-  --scene-h:min(300px,36dvh);
-  --scene-zoom:178%;
-  --scene-cadrage:center 26%;
 
   /* Anciens noms, conservés pour ne rien casser : ils pointent vers les rôles
      ci-dessus. `--blue`, `--cyan` et `--green` n'ont plus aucun usage dans ce
@@ -227,7 +223,7 @@ button{cursor:pointer}
   display:inline-flex;
   padding:3px 9px;
   margin-bottom:8px;
-  color:#08090e;
+  color:var(--agir-encre);
   background:var(--gold);
   font-size:11px;
   font-weight:900;
@@ -323,7 +319,7 @@ button{cursor:pointer}
 }
 .btn.ghost{background:var(--steel);border-color:var(--line);color:var(--dim)}
 .btn.ghost:hover{color:#fff;border-color:var(--nous)}
-.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(255,212,90,.22)}
+.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(230,36,41,.28)}
 .btn.primary:hover,.btn.launch:hover{filter:brightness(1.08)}
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.5);transform:none;box-shadow:none}
@@ -391,7 +387,7 @@ button{cursor:pointer}
   background:var(--steel);
   font-weight:900;
 }
-.count-btn.sel{border-color:var(--gold);color:#0e0b02;background:var(--gold)}
+.count-btn.sel{border-color:var(--gold);color:var(--agir-encre);background:var(--gold)}
 
 .slots{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .slot{
@@ -435,7 +431,7 @@ button{cursor:pointer}
   font-weight:900;
   text-transform:uppercase;
 }
-.chip.on{color:#120f02;border-color:var(--gold);background:var(--gold)}
+.chip.on{color:var(--agir-encre);border-color:var(--gold);background:var(--gold)}
 
 /* --grille-haut : la distance entre le haut de la page et le haut de la
    grille, posee par ajusterGrilles() dans js/prepare/app.js.
@@ -572,7 +568,7 @@ button{cursor:pointer}
   transition:opacity var(--dur),color var(--dur),background var(--dur);
 }
 .hero-card:hover .hc-fav,.hc-fav.on{opacity:1}
-.hc-fav.on{color:#0e0b02;background:var(--gold);border-color:var(--gold)}
+.hc-fav.on{color:var(--agir-encre);background:var(--gold);border-color:var(--gold)}
 
 /* « Voir le deck » : meme pastille que l'etoile, rangee juste dessous pour ne
    pas empieter sur les PV (en haut a droite) ni sur le nom (en bas). */
@@ -593,7 +589,7 @@ button{cursor:pointer}
   transition:opacity var(--dur),color var(--dur),background var(--dur);
 }
 .hero-card:hover .hc-deck{opacity:1}
-.hc-deck:hover{color:#0e0b02;background:var(--gold);border-color:var(--gold)}
+.hc-deck:hover{color:var(--agir-encre);background:var(--gold);border-color:var(--gold)}
 
 /* Pastille « ce héros a un art alternatif » : pendant discret de l'étoile
    de favori, en haut à droite pour ne pas se marcher dessus. */
@@ -601,7 +597,7 @@ button{cursor:pointer}
   position:absolute;z-index:3;top:31px;right:7px;
   padding:3px 6px;
   font-size:9px;font-weight:900;letter-spacing:.4px;
-  color:#0e0b02;background:var(--gold);border:1px solid var(--gold);
+  color:var(--agir-encre);background:var(--gold);border:1px solid var(--gold);
   pointer-events:none;
 }
 
@@ -647,13 +643,12 @@ button{cursor:pointer}
   animation:fade .12s ease;
 }
 .recap-apercu .hh-card{display:block;width:auto;max-width:100%;max-height:none;margin:0 auto 12px;border-radius:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 24px rgba(0,0,0,.6)}
-.recap.apercu .recap-apercu .hh-scene,
+.recap.apercu .recap-apercu .hh-card,
+.recap.apercu .recap-apercu .hh-duo{flex:0 40 auto;min-height:128px}
 .recap.apercu .recap-apercu .hh-name,
 .recap.apercu .recap-apercu .hh-ext,
-.recap.apercu .recap-apercu .hh-chiffres,
-.recap.apercu .recap-apercu .hh-tags{flex:0 0 auto}
-.recap.apercu .recap-apercu .hh-plus{flex:1 1 auto;min-height:0;overflow:auto}
-.recap.apercu .recap-apercu .hh-plus .hh-card{max-height:none}
+.recap.apercu .recap-apercu .detail-row{flex:0 0 auto}
+.recap.apercu .recap-apercu .hh-bio{flex:0 1 auto;min-height:0;overflow:hidden}
 
 /* Les DEUX cartes d'un heros qui en compte deux, entieres, en demi-largeur.
    Ici la largeur ne manque pas — c'est la hauteur qui est comptee — donc on ne
@@ -663,43 +658,8 @@ button{cursor:pointer}
 .hh-duo{display:flex;gap:8px;align-items:flex-start;justify-content:center;margin-bottom:12px}
 .hh-duo .hh-card{min-width:0;flex:1 1 0;height:auto;max-height:100%;margin:0}
 
-.recap-apercu .hh-name{font-size:40px;line-height:.88;text-transform:uppercase;color:#fff}
+.recap-apercu .hh-name{font-size:30px;line-height:.9;text-transform:uppercase;color:#fff}
 
-/* La scène : l'art recadré en grand, en tête de la fiche (voir sceneHeros et
-   ficheVilain dans app.js). Un cadre blanc pour nous, rouge pour eux. */
-.hh-scene{
-  position:relative;
-  height:var(--scene-h);
-  flex:0 0 auto;
-  overflow:hidden;
-  margin-bottom:10px;
-  border:1px solid rgba(255,255,255,.28);
-  background:var(--ink);
-}
-.hh-scene.eux{border-color:var(--eux-halo)}
-.hh-scene .portrait.scene{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:none;background-size:var(--scene-zoom);background-position:var(--scene-cadrage)}
-.hh-scene .portrait-duo .portrait.duo{background-size:220%}
-.hh-scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(transparent,rgba(7,8,12,.82))}
-.hh-chiffres{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.hh-chiffre{
-  display:inline-flex;align-items:baseline;gap:5px;
-  min-height:30px;padding:4px 10px;
-  border:1px solid var(--line);background:var(--steel);
-}
-.hh-chiffre b{font-size:17px;line-height:1;color:#fff}
-.hh-chiffre b.texte{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
-.hh-chiffre small{font-size:10px;font-weight:900;text-transform:uppercase;color:var(--mute)}
-.hh-chiffre.eux{border-color:var(--eux-halo)}
-.hh-chiffre.eux b{color:var(--eux2)}
-.hh-trait{color:var(--txt);border-color:rgba(255,255,255,.22)}
-.hh-trait.alter{color:var(--mute);border-color:rgba(255,255,255,.1)}
-.hh-trait.eux{color:#ffd9da;border-color:var(--eux-halo);background:rgba(230,36,41,.12)}
-.hh-trait.eux.alter{color:var(--mute);background:transparent;border-color:rgba(230,36,41,.22)}
-.hh-plus{margin-top:12px;border-top:1px solid var(--soft);padding-top:4px}
-.hh-plus summary{cursor:pointer;padding:8px 0;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.hh-plus summary:hover{color:var(--txt)}
-.hh-plus[open] summary{color:var(--agir)}
-.hh-plus .hh-card{margin-top:8px}
 .recap-apercu .hh-bio{font-size:12.5px}
 .hh-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .hh-row{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
@@ -900,7 +860,7 @@ button{cursor:pointer}
   font-size:12px;
   font-weight:800;
 }
-.mod-chip.on{color:var(--agir);border-color:var(--agir);background:rgba(255,212,90,.14)}
+.mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(230,36,41,.22)}
 
 /* Le Face à face en diagonale (refonte du 7 septembre). Le bloc entier est
    le fond du méchant ; notre camp est un panneau clair posé dessus, coupé en
@@ -1106,7 +1066,7 @@ button{cursor:pointer}
   font-weight:900;
   letter-spacing:.4px;
   text-transform:uppercase;
-  color:#0e0b02;
+  color:var(--agir-encre);
   background:var(--gold);
   border:1px solid var(--gold);
   cursor:pointer;
@@ -1126,7 +1086,7 @@ button{cursor:pointer}
 .recap-block.team{gap:9px}
 .recap-slot{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:9px 11px;background:var(--steel);border:1px solid var(--line);color:var(--txt);transition:border-color var(--dur),background var(--dur),transform var(--dur)}
 .recap-slot:hover{border-color:var(--nous);transform:translateY(-1px)}
-.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(255,212,90,.16),var(--steel))}
+.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(230,36,41,.18),var(--steel))}
 .portrait.team{width:62px;height:62px;flex:none;background:#10141f center 20%/158% no-repeat;border:1px solid var(--line);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
 .recap-slot.active .portrait.team{border-color:var(--agir);box-shadow:0 0 0 1px var(--agir-halo)}
 .portrait.team.empty{display:grid;place-items:center;background:var(--ink)}
@@ -1170,7 +1130,7 @@ button{cursor:pointer}
   background:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer;
   font-size:10px;font-weight:700;color:var(--mute);font-family:inherit;text-align:center;line-height:1.15}
 .ra-option:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
-.ra-option.sel{border-color:var(--gold);color:var(--gold);background:rgba(255,210,74,.12)}
+.ra-option.sel{border-color:var(--gold);color:#fff;background:rgba(230,36,41,.14)}
 .ra-vignette{width:100%;border-radius:4px;display:block;aspect-ratio:225/326;object-fit:cover}
 .ra-hasard{display:flex;align-items:center;justify-content:center;background:#1a1e27;
   color:var(--gold);font-size:24px;font-weight:900}
