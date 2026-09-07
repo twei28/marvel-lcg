@@ -512,6 +512,16 @@ describe('le cartouche branche sur un vrai moteur', () => {
 
     // ET LA TRAME SUIVANTE PART QUAND MEME. C'est le point : sans bouton, c'est
     // le seul chemin qui reste, et il doit rester ouvert.
+    //
+    // ⚠ CETTE ETAPE EST UN STIMULUS PLUS FORT QUE LE VRAI SERVEUR. Le moteur
+    // reste GARE dans `DoGetInput` tant que la question n'a pas de reponse
+    // (engine/device/manager/base.py) : il ne produit pas de `render_id` neuf
+    // pendant ce temps-la, il repousse la MEME trame (`IsInputReady`), ce que
+    // fait le `serveur.pousser()` ci-dessus. `libererLaSuite`, lui, fabrique
+    // une trame de plus au milieu de la question, ce que le moteur ne fait
+    // jamais. C'est delibere : si le cartouche tient devant PLUS que le reel,
+    // il tient devant le reel. Mais ce cas ne prouve donc rien sur le rythme
+    // d'une partie ordinaire, seulement l'absence de blocage.
     await act(async () => {
       serveur.libererLaSuite()
     })

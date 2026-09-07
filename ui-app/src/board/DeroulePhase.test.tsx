@@ -2934,4 +2934,32 @@ describe('une partie neuve n herite pas des etapes de la precedente', () => {
     )
     expect(screen.getByText('Assault on NORAD gagne 1 menace')).toBeInTheDocument()
   })
+
+  // LE GARDE-FOU. Tant que la garde court, le cartouche est MUET, et rien ne la
+  // releve qu'une liste d'etapes vide. Si cette liste ne venait jamais (le monde
+  // perime porte des etapes, et la partie neuve enchaine), la reposer a chaque
+  // bascule la rendrait definitive : cartouche eteint pour le reste de la
+  // session. Elle tombe donc a la deuxieme bascule.
+  it('ne reste pas armee quand deux parties s enchainent sans liste vide', () => {
+    const vue = (partie: string) => (
+      <DeroulePhase
+        etapes={[menace]}
+        identitePhase={3}
+        identitePartie={partie}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    const { container, rerender } = render(vue('partie-A'))
+    expect(screen.getByText('The Break-In! gagne 1 menace')).toBeInTheDocument()
+
+    // Premiere bascule : la garde s'arme, le cartouche se tait.
+    rerender(vue('partie-B'))
+    expect(container).toBeEmptyDOMElement()
+
+    // Deuxieme bascule sans que la liste vide attendue ne soit jamais venue :
+    // la garde tombe plutot que de se reposer.
+    rerender(vue('partie-C'))
+    expect(screen.getByText('The Break-In! gagne 1 menace')).toBeInTheDocument()
+  })
 })

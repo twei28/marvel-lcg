@@ -58,7 +58,12 @@ import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { PanneauBug } from './board/PanneauBug'
 import { AttenteTable } from './board/AttenteTable'
-import { joueurAttendu, joueurEnRetard, useTableSilencieuse } from './board/attente-table'
+import {
+  joueurAttendu,
+  joueurEnRetard,
+  tablePartagee,
+  useTableSilencieuse,
+} from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -2062,12 +2067,21 @@ function PagePartie({
       ),
     [etat.monde?.players]
   )
+  // Y A-T-IL SEULEMENT QUELQU'UN D'AUTRE ? Le drapeau `?multi=1` dit d'ou
+  // vient la table, pas combien de joueurs y sont assis : le salon lance tres
+  // bien une table a UN siege, et ce joueur-la lisait « En attente d'un autre
+  // joueur » des que le plateau restait muet deux secondes et demie. On compte
+  // donc les sieges (regle pure et testee, `tablePartagee`).
+  const tableAPlusieurs = tablePartagee({
+    multijoueur: estMultijoueur(),
+    nombreDeSieges: etat.monde?.players?.length ?? 0,
+  })
   // Cas 1 : le moteur interroge un AUTRE siege. La seule attente dont il dise
   // le nom (`ask_players[0]`, pousse a tous les clients).
   const autreJoueurInterroge = joueurAttendu({
     joueurDemande: etat.joueurDemande,
     playerId,
-    multijoueur: estMultijoueur(),
+    multijoueur: tableAPlusieurs,
     nomsHerosParJoueur,
   })
   // Cas 2 : un autre siege n'a pas encore accuse reception de la trame
@@ -2076,7 +2090,7 @@ function PagePartie({
   const autreJoueurEnRetard = joueurEnRetard({
     siegesNonAcquittes: etat.siegesNonAcquittes,
     playerId,
-    multijoueur: estMultijoueur(),
+    multijoueur: tableAPlusieurs,
     nomsHerosParJoueur,
   })
   // Cas 3 : plus rien n'arrive, et le moteur ne dit pas encore qui est en
@@ -2086,7 +2100,7 @@ function PagePartie({
   // cours, et aucune des deux reponses precedentes.
   const tableSilencieuse = useTableSilencieuse(
     etat.monde?.render_id,
-    estMultijoueur() &&
+    tableAPlusieurs &&
       etat.connecte &&
       phaseMechantEnCours &&
       etat.trameRetenue === undefined &&

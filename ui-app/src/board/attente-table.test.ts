@@ -10,6 +10,7 @@ import {
   DELAI_SILENCE_TABLE_MS,
   joueurAttendu,
   joueurEnRetard,
+  tablePartagee,
   useTableSilencieuse,
 } from './attente-table'
 
@@ -145,5 +146,33 @@ describe('le silence de la table', () => {
       vi.advanceTimersByTime(DELAI_SILENCE_TABLE_MS * 4)
     })
     expect(result.current).toBe(false)
+  })
+})
+
+// UNE TABLE A UN SEUL SIEGE LANCEE PAR LE SALON.
+//
+// `?multi=1` dit d'ou vient la table, pas combien de joueurs y sont assis. Ce
+// joueur-la lisait « En attente d'un autre joueur » des que le plateau restait
+// deux secondes et demie sans nouvelle trame, c'est-a-dire tout le temps.
+describe('la table est-elle vraiment partagee', () => {
+  it('ne l est pas hors multijoueur, quel que soit le nombre de heros', () => {
+    expect(tablePartagee({ multijoueur: false, nombreDeSieges: 1 })).toBe(false)
+    // Hot-seat a trois heros : un seul navigateur les tient tous.
+    expect(tablePartagee({ multijoueur: false, nombreDeSieges: 3 })).toBe(false)
+  })
+
+  it('ne l est pas sur une table a UN siege lancee par le salon', () => {
+    expect(tablePartagee({ multijoueur: true, nombreDeSieges: 1 })).toBe(false)
+  })
+
+  it('l est des qu un second siege existe', () => {
+    expect(tablePartagee({ multijoueur: true, nombreDeSieges: 2 })).toBe(true)
+    expect(tablePartagee({ multijoueur: true, nombreDeSieges: 4 })).toBe(true)
+  })
+
+  // Avant la premiere lecture du monde : personne a attendre, et surtout pas
+  // une mention posee sur une table qu'on ne connait pas encore.
+  it('ne l est pas tant que le monde n est pas lu', () => {
+    expect(tablePartagee({ multijoueur: true, nombreDeSieges: 0 })).toBe(false)
   })
 })

@@ -434,12 +434,24 @@ export function DeroulePhase({
   // On attend donc que le monde ait RATTRAPE l'etiquette, ce qui se reconnait
   // a une liste d'etapes vide : une partie neuve commence a sa mise en place,
   // sans aucun fait de phase du mechant.
+  //
+  // GARDE-FOU : cette attente ne se repose pas deux fois de suite. Tant qu'elle
+  // court, le cartouche est MUET (`etapesDeCettePartie` est vide, plus bas), et
+  // rien ne la releve qu'une liste d'etapes vide. Si cette liste ne venait
+  // jamais, une deuxieme partie neuve la reposerait et le cartouche resterait
+  // muet pour le reste de la session. On la laisse donc tomber a la deuxieme
+  // bascule : une partie entiere a passe, le monde d'avant est loin.
+  //
+  // L'autre relachement possible (« une phase du mechant s'ouvre ») a ete
+  // ECARTE : le monde perime peut lui-meme etre dans une phase du mechant, une
+  // partie se terminant souvent sur le coup fatal, et la garde tomberait alors
+  // au premier rendu, c'est-a-dire sans rien garder du tout.
   const mondeDeLaPartiePrecedente = useRef(false)
   if (identitePartie !== partieRacontee.current) {
     partieRacontee.current = identitePartie
     phaseRacontee.current = identitePhase
     memoireEtapes.current = []
-    mondeDeLaPartiePrecedente.current = true
+    mondeDeLaPartiePrecedente.current = !mondeDeLaPartiePrecedente.current
   }
   if (mondeDeLaPartiePrecedente.current && etapes.length === 0) {
     mondeDeLaPartiePrecedente.current = false

@@ -43,6 +43,33 @@ export const DELAI_SILENCE_TABLE_MS = 2500
 export type JoueurAttendu = { numero: number; nom?: string }
 
 /**
+ * Y A-T-IL QUELQU'UN D'AUTRE A ATTENDRE ?
+ *
+ * Le drapeau `?multi=1` dit d'ou vient la table (le salon l'a posee), pas
+ * combien de joueurs y sont assis : le salon sait tres bien lancer une table
+ * a UN siege, et ce joueur-la voyait alors « En attente d'un autre joueur »
+ * des que le plateau restait deux secondes et demie sans nouvelle trame,
+ * c'est-a-dire tout le temps. On compte donc les SIEGES, pas le drapeau.
+ *
+ * `nombreDeSieges` est la longueur de `monde.players` : un siege par heros de
+ * la partie. Zero avant la premiere lecture du monde, et c'est le bon repli :
+ * on n'a encore personne a attendre.
+ *
+ * Un siege deconnecte reste compte, volontairement : c'est justement celui-la
+ * qu'on peut avoir a attendre. Le cas ou il ne reviendra jamais est dit par
+ * ailleurs (`siegesAbsents`, BandeauAbsent).
+ */
+export function tablePartagee({
+  multijoueur,
+  nombreDeSieges,
+}: {
+  multijoueur: boolean
+  nombreDeSieges: number
+}): boolean {
+  return multijoueur && nombreDeSieges > 1
+}
+
+/**
  * Le moteur interroge-t-il QUELQU'UN D'AUTRE ?
  *
  * `joueurDemande` est `ask_players[0]`, pousse a TOUS les clients (voir
