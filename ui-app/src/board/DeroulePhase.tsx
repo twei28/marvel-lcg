@@ -1,6 +1,6 @@
 // Le cartouche du deroule detaille : une etape a la fois.
 //
-// FIXE sur le cote droit de la table, il ne bouge jamais d'une etape a
+// FIXE au milieu de la main du joueur, il ne bouge jamais d'une etape a
 // l'autre : l'oeil sait ou lire et la main ou cliquer des le deuxieme tour. Un
 // cartouche colle a la carte concernee aurait deplace le bouton a chaque clic.
 // Sa place exacte est MESUREE sur la table (voir plus bas), jamais ecrite en
