@@ -29,6 +29,7 @@ import iconeSch from './stat-bubbles/scheme.png'
 import jetonMenaceImage from './jetons/menace.png'
 import jetonCompteurImage from './jetons/compteur.png'
 import jetonAccelerationImage from './jetons/acceleration.png'
+import jetonDegatsImage from './jetons/degats.png'
 import {
   STAT_BUBBLE_POSITIONS,
   type StatBubbleLabel,
@@ -586,7 +587,11 @@ export function ScanCard({
             </span>
           ) : null}
           {!facedown && jetonDegats ? (
-            <span className="jeton-carte jeton-degats" aria-label={`${t('Dégâts :')} ${jetonDegats}`}>
+            <span
+              className="jeton-carte jeton-degats"
+              style={{ backgroundImage: `url(${jetonDegatsImage})` }}
+              aria-label={`${t('Dégâts :')} ${jetonDegats}`}
+            >
               <b>{jetonDegats}</b>
             </span>
           ) : null}

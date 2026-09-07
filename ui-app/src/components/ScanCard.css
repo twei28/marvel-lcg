@@ -634,17 +634,12 @@
     padding-top: 2%;
   }
 
-  /* Le jeton de degats attend son image : un rond rouge en attendant. */
+  /* Le jeton de degats (rond rouge de l'utilisateur), en haut a gauche. */
   .jeton-degats {
     top: 4%;
     left: 3%;
-    width: 26%;
+    width: 28%;
     aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ff5a62, #b3000c 70%);
-    box-shadow:
-      0 0 0 2px rgba(0, 0, 0, 0.75),
-      0 4px 10px rgba(0, 0, 0, 0.6);
   }
 
   .jetons-compteurs {
