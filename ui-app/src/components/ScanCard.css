@@ -611,10 +611,13 @@
     pointer-events: none;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: #0b0d12;
-    text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.9),
-      0 0 6px rgba(255, 255, 255, 0.6);
+    /* Le chiffre : noir, cerne de blanc, sur tous les jetons (demande de
+       l'utilisateur). `paint-order` peint le contour SOUS le remplissage,
+       sinon le trait blanc ronge les lettres. */
+    color: #000;
+    -webkit-text-stroke: calc(var(--card-w) * 0.014) #fff;
+    paint-order: stroke fill;
+    text-shadow: 0 0 calc(var(--card-w) * 0.02) rgba(255, 255, 255, 0.7);
   }
 
   .jeton-carte b {
@@ -627,8 +630,8 @@
     right: 3%;
     width: 32%;
     aspect-ratio: 256 / 228;
-    /* Le chiffre dans le triangle, un peu sous son centre geometrique. */
-    padding-top: 12%;
+    /* Le chiffre dans le triangle : un peu au-dessus du centre. */
+    padding-top: 2%;
   }
 
   /* Le jeton de degats attend son image : un rond rouge en attendant. */
@@ -642,8 +645,6 @@
     box-shadow:
       0 0 0 2px rgba(0, 0, 0, 0.75),
       0 4px 10px rgba(0, 0, 0, 0.6);
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
   }
 
   .jetons-compteurs {
@@ -666,16 +667,10 @@
 
   .jeton-compteur {
     aspect-ratio: 256 / 248;
-    color: #fff;
-    text-shadow:
-      0 0 2px rgba(0, 0, 0, 0.95),
-      0 1px 3px rgba(0, 0, 0, 0.9);
   }
 
   .jeton-acceleration {
     aspect-ratio: 246 / 256;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
   }
 
   .jeton-nom {
