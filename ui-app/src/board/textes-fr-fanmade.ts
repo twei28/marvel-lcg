@@ -1431,7 +1431,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // venompool — True Form (Upgrade)
   'vp010': "Défaussez cette carte du jeu si vous ne contrôlez pas Klyntar Suit.\n<b>Interruption de héros</b> : quand Venompool fait une attaque de base contre un ennemi, inclinez True Form → cette attaque gagne <b><i>Surpuissance</i></b>. Drainez 1 à cet ennemi.",
   // venompool — One Too Many Voices (Obligation)
-  'vp011': "<b><i>Donnez cette carte au joueur de Wade Wilson.</i></b>\nVous devez passer en forme alter ego. Choisissez :\n• Inclinez Wade Wilson → retirez One Too Many Voices de la partie.\n• Défaussez Klyntar Suit. Si Klyntar Suit n'a pas été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  'vp011': "<b><i>Donnez cette carte au joueur de Wade Wilson.</i></b>\nVous devez passer sous forme d'alter ego. Choisissez :\n• Inclinez Wade Wilson → retirez One Too Many Voices de la partie.\n• Défaussez Klyntar Suit. Si Klyntar Suit n'a pas été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
   // venompool — Shocking Entrance (SideScheme, nemesis)
   'vp012': "<b>Une fois révélée</b> : infligez 3 dégâts indirects au premier joueur.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>\n<hr />\n[star] <b>Boost</b> : infligez 1 dégât indirect au premier joueur.",
   // venompool — Killer Thrill (Minion, nemesis)
@@ -1467,7 +1467,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // angela — Xiphos, Sword of the Stars (Upgrade)
   'an009': "<b><i>Limité</i></b>.\nAngela gagne +1 ATQ.\n<b>Réponse</b> : après qu'Angela a mis un sbire K.O., piochez une carte. <i>(Limite une fois par manche.)</i>",
   // angela — Banished from Asgard (Obligation)
-  'an010': "<b><i>Donnez cette carte au joueur d'Aldrif Odinsdottir.</i></b>\nVous pouvez passer en forme alter ego. Choisissez :\n• Inclinez Aldrif Odinsdottir → retirez Banished from Asgard de la partie.\n• Défaussez 1 carte [[ASGARD]] que vous contrôlez. Vous êtes étourdi. Si aucune carte n'a été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  'an010': "<b><i>Donnez cette carte au joueur d'Aldrif Odinsdottir.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Aldrif Odinsdottir → retirez Banished from Asgard de la partie.\n• Défaussez 1 carte [[ASGARD]] que vous contrôlez. Vous êtes étourdi. Si aucune carte n'a été défaussée de cette façon, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
   // angela — Hel's Retribution (SideScheme, nemesis)
   'an011': "<b>Une fois révélée</b> : le joueur actif défausse de son deck autant de cartes qu'il y a de cartes [[ASGARD]] en jeu.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
   // angela — Hela (Minion, nemesis)
@@ -1880,7 +1880,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // night_thrasher — Battle Board, face WEAPON (Upgrade permanente)
   'nt003b': "Permanente.\nNight Thrasher gagne +1 ATQ et +1 DEF.\n<b>Réponse de héros</b> : après que vous êtes passé sur cette face, infligez 1 dégât à un ennemi.",
   // night_thrasher — Drop In (Event, x2)
-  'nt004': "<b>Réponse de héros</b> : après être passé en forme de HÉROS, si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], désorientez un ennemi.\n• [[WEAPON]], étourdissez un ennemi.",
+  'nt004': "<b>Réponse de héros</b> : après être passé sous forme de héros, si l'amélioration Battle Board a le trait :\n• [[VEHICLE]], désorientez un ennemi.\n• [[WEAPON]], étourdissez un ennemi.",
   // night_thrasher — Kickflip (Event, x4)
   'nt005': "Si la DERNIÈRE carte que vous avez jouée ce round était un événement Night Thrasher, réduisez de 1 le coût de cette carte.\n<b>Action de héros</b> <i>(attaque)</i> : retournez l'amélioration Battle Board ET infligez 1 dégât à un ennemi. Piochez 1 carte.",
   // night_thrasher — Melon Grab (Event)
