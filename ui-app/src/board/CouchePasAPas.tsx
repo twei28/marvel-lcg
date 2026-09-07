@@ -1,5 +1,10 @@
 // La barre du pas à pas : où on en est de la phase, et de quoi reprendre la main.
 //
+// ⚠ DÉBRANCHÉE, à la demande de l'utilisateur : ce composant n'est monté nulle
+// part. Le mode d'emploi du remontage est dans board.tsx, au commentaire qui
+// explique pourquoi (double emploi avec le cartouche du déroulé) et quelles
+// deux props n'ont plus de contrepartie dans le moteur.
+//
 // Elle ne capte PAS les clics elle-même, hors ses propres boutons : l'écoute se
 // fait sur la fenêtre, en capture. Une nappe transparente plein écran aurait
 // mangé le survol des cartes — et pendant la phase du méchant, lire une carte

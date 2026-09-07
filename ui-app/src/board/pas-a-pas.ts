@@ -1,5 +1,9 @@
 // Le pas à pas : mettre en lumière ce que l'étape courante vient de faire.
 //
+// ⚠ DÉBRANCHÉ, à la demande de l'utilisateur : `usePasAPas` n'a plus aucun
+// appelant. Le mode d'emploi du remontage est dans board.tsx, au commentaire
+// qui explique pourquoi (double emploi avec le cartouche du déroulé).
+//
 // Le RYTHME ne vit pas ici — il est dans moteur.ts, qui retient l'accusé de
 // réception (`/client_updated`) le temps qu'une étape se lise. Le moteur attend
 // sans limite, c'est donc le client qui donne le tempo, et AUCUN monde n'est

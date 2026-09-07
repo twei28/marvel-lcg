@@ -2477,6 +2477,11 @@ function PagePartie({
             // s'allonge PENDANT la phase (chaque validation relache une trame
             // qui produit l'etape suivante) et ne peut donc pas jouer ce role.
             identitePhase={etat.monde?.round_id ?? 0}
+            // La partie, que le moteur renumerote a chaque nouvelle partie :
+            // une partie neuve peut commencer SANS rechargement de page, et le
+            // round retombe alors a 1 sans que rien d'autre ne le dise au
+            // cartouche.
+            identitePartie={etat.partieId}
             // Tant que le moteur est dans une des quatre phases du mechant, la
             // liste d'etapes peut encore s'allonger : arriver au bout de
             // celles qu'on connait ne veut pas dire que la phase est finie.

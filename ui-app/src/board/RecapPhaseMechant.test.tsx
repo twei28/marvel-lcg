@@ -492,6 +492,23 @@ describe('quand le recap parait', () => {
     )
     expect(screen.queryByRole('dialog')).toBeNull()
   })
+
+  it('disparait quand on passe en detaille alors qu il est deja constitue', () => {
+    // Le bilan reste en etat une fois fabrique : `actif` n'etait lu que par le
+    // detecteur de transition qui le fabrique, donc un recap ouvert en
+    // Instantane survivait au changement de mode et le joueur retrouvait les
+    // deux bilans que A5 avait separes.
+    const entrees = phaseQuiACoute()
+    const { rerender } = render(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Enemy Activation')} actif />
+    )
+    rerender(<RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif />)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    rerender(
+      <RecapPhaseMechant entrees={entrees} monde={mondeEnPhase('Player 1 Turn')} actif={false} />
+    )
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
 })
 
 // UNE SEULE SOURCE : les faits du moteur, avec un repli par genre.

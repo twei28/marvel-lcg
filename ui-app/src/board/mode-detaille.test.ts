@@ -17,11 +17,13 @@ describe('mode detaille', () => {
     expect(lireModePhaseMechant()).toBe('detaille')
   })
 
-  // Migration : « manuel » (case decochee) devient « detaille » SANS avance
-  // auto - ce joueur cliquait pour avancer, il continue de cliquer.
-  it('respecte encore l ancienne case a cocher decochee : detaille, sans avance auto', () => {
+  // L'avance auto est ETEINTE par defaut : ce joueur cliquait pour avancer, il
+  // continue de cliquer. La migration depuis l'ancienne case a cocher
+  // (« marvel-board-phase-rapide ») ne se joue plus ici : cette cle n'est plus
+  // lue du tout depuis 56c0e530, et c'est pas-a-pas.test.ts qui prouve qu'elle
+  // ne reveille plus rien.
+  it('n allume pas l avance auto par defaut', () => {
     window.localStorage.clear()
-    window.localStorage.setItem('marvel-board-phase-rapide', 'off')
     expect(lireModePhaseMechant()).toBe('detaille')
     expect(lireAvanceAuto()).toBe(false)
   })

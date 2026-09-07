@@ -683,6 +683,100 @@ describe('cartouche du deroule', () => {
       expect(onSuivant).toHaveBeenCalledTimes(2)
     })
 
+    // UNE PARTIE NEUVE SANS RECHARGEMENT DE PAGE (« Rejouer », ou retour au
+    // menu puis autre partie). Le heros tombe au round 3, la partie finie
+    // masque le cartouche, puis le monde revient au round 1 EN PLEIN TOUR DU
+    // JOUEUR : ni `phaseMechantEnCours` ni `termine`, donc rien ne remettait le
+    // cartouche a zero. Il reapparaissait avec le bilan de la partie morte.
+    it('efface tout quand une nouvelle partie commence sans rechargement', () => {
+      const chute: EtapeDeroule[] = [
+        {
+          cle: 'y',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Klaw',
+          cibleNom: 'Colossus',
+          montant: 6,
+          restant: 0,
+          defaite: true,
+          boosts: [],
+        },
+      ]
+      const { container, rerender } = render(
+        <DeroulePhase
+          etapes={chute}
+          identitePhase={3}
+          identitePartie="partie-A"
+          phaseMechantEnCours
+          onTerminer={() => {}}
+        />
+      )
+      expect(screen.getByText(/Colossus est vaincu/)).toBeInTheDocument()
+      // La partie finie masque le cartouche sans qu'il se dise `termine`.
+      rerender(
+        <DeroulePhase
+          etapes={chute}
+          identitePhase={3}
+          identitePartie="partie-A"
+          phaseMechantEnCours
+          partieFinie
+          onTerminer={() => {}}
+        />
+      )
+      expect(container).toBeEmptyDOMElement()
+      // La partie neuve : round 1, tour du joueur, plus aucun fait.
+      rerender(
+        <DeroulePhase
+          etapes={[]}
+          identitePhase={1}
+          identitePartie="partie-B"
+          onTerminer={() => {}}
+        />
+      )
+      expect(container).toBeEmptyDOMElement()
+      // Et la memoire est vide : sans quoi le bilan de la partie morte
+      // reparaitrait des que le cartouche se croirait hors phase du mechant.
+      expect(screen.queryByText(/Colossus/)).not.toBeInTheDocument()
+      expect(screen.queryByText('Fin de la phase du méchant')).not.toBeInTheDocument()
+    })
+
+    it('repart de zero meme quand la partie neuve rouvre au MEME round', () => {
+      // Deux parties peuvent s'arreter et repartir au meme round : la remise a
+      // zero par la seule identite de phase ne jouerait alors pas.
+      const menace: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'menace',
+          titre: 'menace',
+          regle: 'regle:menace',
+          cibleNom: 'L’Effraction !',
+          montant: 3,
+          boosts: [],
+        },
+      ]
+      const { container, rerender } = render(
+        <DeroulePhase
+          etapes={menace}
+          identitePhase={1}
+          identitePartie="partie-A"
+          phaseMechantEnCours
+          onTerminer={() => {}}
+        />
+      )
+      expect(screen.getByText('L’Effraction ! gagne 3 menaces')).toBeInTheDocument()
+      rerender(
+        <DeroulePhase
+          etapes={[]}
+          identitePhase={1}
+          identitePartie="partie-B"
+          onTerminer={() => {}}
+        />
+      )
+      expect(container).toBeEmptyDOMElement()
+    })
   })
   // Defaut 2 (voir brief) : « arriver au bout des etapes CONNUES » n'est pas
   // « la phase est finie ». Depuis que chaque « Suivant » relache une trame du

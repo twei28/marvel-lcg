@@ -1,5 +1,9 @@
 // Bannière des hauts faits débloqués en cours de partie.
 //
+// ⚠ DÉBRANCHÉE, à la demande de l'utilisateur : ce composant n'est monté nulle
+// part. Le mode d'emploi du remontage est dans board.tsx, à côté de l'endroit
+// où il se posait ; le moteur, lui, continue d'accumuler `etat.hautsFaits`.
+//
 // À ne pas confondre avec CoucheSucces, qui affiche les séries de K.O. du
 // moteur (« Achievement: DOUBLE_KILL ») repérées dans la narration. Ici il
 // s'agit des 48 hauts faits de game/achievements.py, annoncés par Notify.Game

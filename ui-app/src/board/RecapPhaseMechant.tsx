@@ -725,7 +725,11 @@ export function RecapPhaseMechant({
     return toScanCard(carte, contexte)
   }, [survolId, cartesMonde, contexte])
 
-  if (!bilan) return null
+  // `actif` autant que le bilan : un recap CONSTITUE en Instantane survivait
+  // au passage en Detaille (le bilan reste en etat, et `actif` n'etait lu que
+  // par le detecteur de transition qui le fabrique). Le joueur voyait alors
+  // les deux bilans, celui-la meme qu'A5 a supprime.
+  if (!bilan || !actif) return null
 
   const totaux = (etape: Etape) => {
     const morceaux: string[] = []

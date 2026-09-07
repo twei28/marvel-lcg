@@ -87,6 +87,7 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 export function DeroulePhase({
   etapes,
   identitePhase,
+  identitePartie,
   phaseMechantEnCours = false,
   partieFinie = false,
   questionAuJoueur = false,
@@ -112,6 +113,16 @@ export function DeroulePhase({
    * composant) qui filtre, et c'est lui le declencheur de la remise a zero.
    */
   identitePhase?: number
+  /**
+   * La PARTIE en cours (board.tsx : `etat.partieId`, que le moteur renumerote
+   * a chaque nouvelle partie mais PAS sur un « Annuler »).
+   *
+   * Elle existe parce qu'une nouvelle partie peut commencer SANS rechargement
+   * de page (« Rejouer », retour au menu puis autre partie) : le monde revient
+   * alors au round 1 en plein tour du joueur, et aucune des deux portes de
+   * `phaseRacontee` ne s'ouvre. Voir le corps du composant.
+   */
+  identitePartie?: string
   /**
    * Vrai tant que le moteur est encore dans la phase du mechant (board.tsx :
    * `PHASES_DU_MECHANT.has(etat.monde.phase)`). Arriver au bout des etapes
@@ -293,6 +304,27 @@ export function DeroulePhase({
   // calcule.
   const memoireEtapes = useRef<EtapeDeroule[]>([])
 
+  // UNE NOUVELLE PARTIE, elle, efface tout, sans condition.
+  //
+  // Les deux portes ci-dessus ne s'ouvrent ni l'une ni l'autre quand une
+  // partie neuve commence sans rechargement de page (« Rejouer », ou un retour
+  // au menu suivi d'une autre partie) : le monde revient au round 1 en plein
+  // tour du joueur, donc `phaseMechantEnCours` est faux, et le cartouche n'a
+  // jamais eu l'occasion de se dire `termine` puisque la partie finie l'avait
+  // masque (`partieFinie`). `phaseRacontee` restait alors collee sur le round
+  // de la partie morte et `memoireEtapes` gardait ses etapes : le cartouche
+  // reapparaissait avec le bilan perime (« Colossus a pris 6 degats »)
+  // par-dessus la partie neuve, le temps d'un tour.
+  //
+  // La memoire est videe ICI, et pas seulement l'identite : deux parties
+  // peuvent s'arreter et repartir au MEME round, et la remise a zero par
+  // `cleDeLaPhase` ne jouerait alors pas.
+  const partieRacontee = useRef(identitePartie)
+  if (identitePartie !== partieRacontee.current) {
+    partieRacontee.current = identitePartie
+    phaseRacontee.current = identitePhase
+    memoireEtapes.current = []
+  }
 
   const cleDeLaPhase = phaseRacontee.current
 
@@ -340,7 +372,10 @@ export function DeroulePhase({
     setValidee(undefined)
     derniereTrameAcquittee.current = undefined
     memoireEtapes.current = []
-  }, [cleDeLaPhase])
+    // `identitePartie` autant que la phase : deux parties peuvent s'arreter et
+    // repartir au meme round, et le cartouche doit repartir de zero dans les
+    // deux cas.
+  }, [cleDeLaPhase, identitePartie])
 
   // Les etapes de la phase RACONTEE, memorisees.
   //
