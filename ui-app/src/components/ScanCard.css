@@ -217,14 +217,18 @@
   /* Halo de camp : on distingue d'un coup d'oeil les cartes du joueur de celles
      du mechant, surtout dans la zone qui melange allies / sbires / environnement
      / treacheries, et pour les complots (joueur vs mechant). */
+  /* Contour de camp DIVISE PAR DEUX (07/09/2026). A pleine intensite, les
+     quatorze cartes de la table etaient cerclees en permanence, vert ou rouge :
+     plus rien ne ressortait, et surtout pas ce qui etait jouable maintenant.
+     Le camp reste lisible, il ne crie plus. */
   .scan-card.camp-player {
-    --camp-ring: rgba(60, 205, 120, 0.85);
-    --camp-glow: rgba(60, 205, 120, 0.5);
+    --camp-ring: rgba(60, 205, 120, 0.42);
+    --camp-glow: rgba(60, 205, 120, 0.25);
   }
 
   .scan-card.camp-encounter {
-    --camp-ring: rgba(228, 66, 66, 0.85);
-    --camp-glow: rgba(228, 66, 66, 0.5);
+    --camp-ring: rgba(228, 66, 66, 0.42);
+    --camp-glow: rgba(228, 66, 66, 0.25);
   }
 
   .state-playable .scan-frame {

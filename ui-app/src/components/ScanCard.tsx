@@ -211,6 +211,9 @@ export type ScanCardProps = {
   schemeThreat?: string
   /** Compteurs poses sur la carte (supply, pym...) : pastilles en bas du cadre. */
   counters?: Array<{ label: string; value: number }>
+  /** Tait la pastille de type : la zone qui accueille la carte dit déjà la
+   *  même chose. Posé par `zones.ts`. */
+  masquerType?: boolean
   /**
    * Nom du heros PROPRIETAIRE (multi) : badge en bas de la carte, pour savoir a
    * qui appartient cet allie / avec qui ce sbire est engage.
@@ -359,6 +362,7 @@ export function ScanCard({
   targetPulse = false,
   effectDelta,
   jauge,
+  masquerType,
 }: ScanCardProps) {
   // Une carte qui montre son dos n'annonce ni son type ni ses compteurs :
   // ce serait donner au joueur une information que le moteur lui cache. Le set
@@ -372,6 +376,10 @@ export function ScanCard({
       : estNemesis
         ? t('Némésis')
         : t(kindLabel[kind])
+  // La zone porte déjà ce nom-là (« Méchant » posé dans la zone Méchant) : la
+  // pastille le répétait, et dans les zones étroites elle se posait PAR-DESSUS
+  // le titre. Voir `pastilleRedondante` dans board/zones.ts.
+  const typeMuet = masquerType === true
   const hp = facedown ? undefined : allyHp
   const threat = facedown ? undefined : schemeThreat
   const compteurs = facedown ? [] : (counters ?? [])
@@ -464,7 +472,7 @@ export function ScanCard({
           normale de la carte. */}
       <div className="scan-visuel">
         <div className="top-strip">
-          <span className="kind-pill">{label}</span>
+          {typeMuet ? null : <span className="kind-pill">{label}</span>}
           {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
           {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}

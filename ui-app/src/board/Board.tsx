@@ -26,7 +26,7 @@ import { usePlacement } from './placement/usePlacement'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
-import type { EmplacementAffiche, Plateau, UniteAffichee } from './zones'
+import { pastilleRedondante, type EmplacementAffiche, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
 import './board.css'
@@ -156,6 +156,7 @@ function Unite({
   ouvrirPile,
   bloquerActionsPassives,
   heroActifId,
+  titreZone,
 }: {
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
@@ -163,6 +164,9 @@ function Unite({
   ouvrirPile: (titre: string, cartes: ScanCardProps[]) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
+  /** Le nom de la zone qui accueille l'unité, pour taire la pastille qui le
+   *  répéterait. */
+  titreZone?: string
 }) {
   // Les statuts (Stunned/Confused/Tough) ne sont PAS des ameliorations : dans le
   // vrai jeu ce sont de petits marqueurs. On les sort de la cascade d'upgrades
@@ -173,7 +177,14 @@ function Unite({
   // Carte du porteur, avec l'interaction en cours superposee. Si le moteur ne la
   // rend PAS agissante et que c'est une pile publique, un clic l'ouvre pour la
   // regarder (la defausse, la victoire...). L'interaction garde la priorite.
-  const porteurBrut = avecInteraction(unite.carte, interactifs, effets)
+  // La zone dit déjà le type de cette carte ? On tait la pastille, qui le
+  // répétait et se posait par-dessus le titre dans les zones étroites.
+  const taire = (carte: ScanCardProps): ScanCardProps =>
+    titreZone !== undefined && pastilleRedondante(titreZone, carte)
+      ? { ...carte, masquerType: true }
+      : carte
+  const carteNommee = taire(unite.carte)
+  const porteurBrut = avecInteraction(carteNommee, interactifs, effets)
   // Badge « Active » sur l'identite du joueur dont c'est le tour (hot-seat).
   const porteur =
     heroActifId !== undefined && Number(unite.carte.id) === heroActifId
@@ -205,7 +216,7 @@ function Unite({
               aria-hidden="true"
             >
               <ScanCard
-                {...stage}
+                {...taire(stage)}
                 effectDelta={effets.get(Number(stage.id))}
                 onSelect={undefined}
                 highlight={false}
@@ -262,9 +273,10 @@ function Emplacement({
   bloquerActionsPassives: boolean
   heroActifId?: number
 }) {
+  const vide = emplacement.groupes.every((groupe) => groupe.length === 0)
   return (
     <section
-      className={`plateau-emplacement zone-${emplacement.cle}`}
+      className={`plateau-emplacement zone-${emplacement.cle}${vide ? ' est-vide' : ''}`}
       style={{ '--n': emplacement.nombreSurLaLigne } as CSSProperties}
       aria-label={emplacement.titre}
     >
@@ -280,6 +292,7 @@ function Emplacement({
                 ouvrirPile={ouvrirPile}
                 bloquerActionsPassives={bloquerActionsPassives}
                 heroActifId={heroActifId}
+                titreZone={emplacement.titre}
                 key={unite.cle}
               />
             ))}

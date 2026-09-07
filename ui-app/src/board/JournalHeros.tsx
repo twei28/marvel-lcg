@@ -66,6 +66,7 @@ export function JournalHeros({
 }) {
   const liste = entreesDuHeros(entrees, monde, joueur)
   const bas = useRef<HTMLDivElement>(null)
+  const vide = liste.length === 0
 
   // Les entrées arrivent les plus récentes EN TÊTE (voir ajouterNouvellesEntrees).
   // La colonne les lit dans l'ordre du jeu, donc on les remet à l'endroit et on
@@ -75,6 +76,11 @@ export function JournalHeros({
   useEffect(() => {
     bas.current?.scrollIntoView({ block: 'nearest' })
   }, [liste.length])
+
+  // Rien à raconter, rien à dessiner : un cadre de 324 px qui dit « Rien
+  // encore » prend la place de la table sans rien apprendre. Il revient de
+  // lui-même à la première entrée.
+  if (vide) return null
 
   return (
     <section className="journal-heros" aria-label={t('Journal du héros')}>
@@ -89,9 +95,7 @@ export function JournalHeros({
         </span>
       </header>
 
-      {ordreDuJeu.length === 0 ? (
-        <p className="journal-heros-vide">{t('Rien encore.')}</p>
-      ) : (
+      {(
         <ol className="journal-heros-liste">
           {ordreDuJeu.map((entree) => (
             <li className={`journal-heros-entree type-${entree.type}`} key={entree.cle}>

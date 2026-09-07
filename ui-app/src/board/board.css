@@ -207,17 +207,29 @@
        necessaire, sans toucher a la ligne de pose commune ci-dessus. */
     padding-bottom: 10px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.022);
-    border: 1px solid rgba(255, 255, 255, 0.055);
+    /* PLUS DE CADRE AUTOUR DES CARTES (07/09/2026). Huit rectangles bordes,
+       dont trois de 1315 px pour une ou deux cartes, encadraient surtout du
+       vide : les cartes n'occupaient que 15 % de l'ecran. Une zone qui porte
+       des cartes se reconnait a ses cartes. */
   }
 
-  /* L'etiquette de zone ne coute aucune place : elle flotte dans le coin. */
+  /* Une zone VIDE, elle, garde un contour en pointille : c'est le seul moment
+     ou elle a quelque chose a dire — ce qui va s'y poser. */
+  .plateau-emplacement.est-vide {
+    background: rgba(255, 255, 255, 0.014);
+    border: 1px dashed rgba(255, 255, 255, 0.07);
+  }
+
+  /* L'etiquette de zone ne coute aucune place : elle flotte dans le coin.
+     C'est ELLE qui nomme la zone ; la pastille de la carte se tait quand elle
+     dirait la meme chose (voir `pastilleRedondante` dans zones.ts), ce qui
+     supprime du meme coup le recouvrement dans les zones etroites. */
   .plateau-emplacement-titre {
     position: absolute;
     top: 4px;
     left: 8px;
     margin: 0;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -4772,6 +4784,7 @@
      min-height: 0 est indispensable : sans lui une piste de grille refuse de
      se comprimer sous son contenu, la liste ne défile pas et le panneau
      déborde la table. */
+  /* Le journal ne s'affiche que s'il a des entrees (voir JournalHeros.tsx). */
   .journal-heros {
     grid-area: journal;
     display: flex;

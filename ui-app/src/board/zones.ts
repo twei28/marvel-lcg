@@ -12,7 +12,7 @@
 // Les piles (decks, defausses) sont resumees a une carte porteuse de leur
 // hauteur : 38 dos de deck de rencontre cote a cote n'apprennent rien.
 
-import type { ScanCardProps } from '../components/ScanCard'
+import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { representantNemesis, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
@@ -20,6 +20,31 @@ import { collectionPourJoueur, lireArtsRessources } from './variantes'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
 
 /** Une carte posee, avec ce qui lui est attache (ameliorations, statuts). */
+/** Réduit un libellé à sa substance : sans accents, sans ponctuation, sans
+ *  casse. « Némésis » et « nemesis » doivent se rejoindre. */
+function reduire(texte: string): string {
+  return texte
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+/**
+ * La pastille de type de cette carte dit-elle déjà ce que dit le titre de sa
+ * zone ? « Méchant » dans la zone Méchant, « Environnement » dans la zone
+ * « Alliés, sbires et environnement ». Le dos d'une carte (« Carte ») n'apprend
+ * rien non plus : une pile de deck se reconnaît à sa zone.
+ */
+export function pastilleRedondante(titreZone: string, carte: ScanCardProps): boolean {
+  if (carte.facedown === true) return true
+  const type = reduire(carte.labelType || (carte.estNemesis === true ? t('Némésis') : t(kindLabel[carte.kind])))
+  if (!type) return false
+  const zone = reduire(titreZone)
+  return zone === type || zone.split(' ').includes(type) || zone.includes(' ' + type) || zone.startsWith(type + ' ')
+}
+
 export type UniteAffichee = {
   cle: string
   carte: ScanCardProps
