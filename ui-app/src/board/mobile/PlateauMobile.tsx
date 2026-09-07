@@ -12,6 +12,7 @@
 
 import type { BoardProps } from '../Board'
 import { PlateauMedaillons } from './PlateauMedaillons'
+import { PlateauPaysage } from './PlateauPaysage'
 
 export function veutLesMedaillons(recherche: string): boolean {
   return new URLSearchParams(recherche).has('medaillons')
@@ -19,6 +20,5 @@ export function veutLesMedaillons(recherche: string): boolean {
 
 export function PlateauMobile(props: BoardProps) {
   if (veutLesMedaillons(window.location.search)) return <PlateauMedaillons {...props} />
-  // PlateauPaysage arrive a la tache 11 ; d'ici la, l'ancien rendu reste le seul.
-  return <PlateauMedaillons {...props} />
+  return <PlateauPaysage {...props} />
 }
