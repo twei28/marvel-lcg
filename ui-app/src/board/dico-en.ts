@@ -368,6 +368,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   // Le filet anti-blocage va relacher la phase : on le dit avant, pour qu'elle
   // ne reparte pas toute seule sans explication.
   'La phase reprend dans %1 s': 'The phase resumes in %1 s',
+  // « Temps par décision » réglé à la préparation (max_timeout) : le moteur
+  // expire ses attentes et poursuit sans nous, ce que le mode Détaillé suppose
+  // pourtant impossible.
+  'Temps par décision réglé : le moteur n’attend pas':
+    'Time per decision is set: the game does not wait',
   // Le cartouche replie devant une question du moteur : c'est le joueur qu'on
   // attend, pas le moteur.
   'Le moteur attend ta réponse': 'The game is waiting for your answer',

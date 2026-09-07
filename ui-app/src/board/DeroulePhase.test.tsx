@@ -2798,6 +2798,54 @@ describe('le compte a rebours du filet', () => {
   })
 })
 
+// « TEMPS PAR DECISION » NON NUL : l'hypothese du mode Detaille tombe.
+//
+// Le mode suppose que le moteur ne produit rien tant qu'on ne lui a pas
+// repondu. Un `max_timeout` regle a la preparation fait expirer `DoWaitSync` et
+// `DoGetInput`, et le moteur poursuit sans notre accuse ni notre reponse. Le
+// cartouche ne change RIEN a son rythme : il le dit, et c'est tout.
+describe('la mention du temps par decision', () => {
+  const etape: EtapeDeroule = {
+    cle: 'a',
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    boosts: [],
+  }
+
+  const MENTION = /Temps par décision réglé/
+
+  const vue = (tempsParDecision?: number, questionAuJoueur = false) => (
+    <DeroulePhase
+      etapes={[etape]}
+      phaseMechantEnCours
+      questionAuJoueur={questionAuJoueur}
+      tempsParDecision={tempsParDecision}
+      onTerminer={() => {}}
+    />
+  )
+
+  it('ne dit rien quand le champ est nul, ni quand il est absent', () => {
+    const { unmount } = render(vue(0))
+    expect(screen.queryByText(MENTION)).not.toBeInTheDocument()
+    unmount()
+    render(vue(undefined))
+    expect(screen.queryByText(MENTION)).not.toBeInTheDocument()
+  })
+
+  it('le dit quand le champ est non nul', () => {
+    render(vue(30))
+    expect(screen.getByText(MENTION)).toBeInTheDocument()
+  })
+
+  // Le cartouche replie devant une question du moteur est justement le moment
+  // ou `DoGetInput` expire : la mention y a le plus de sens.
+  it('le dit aussi quand le cartouche est replie devant une question', () => {
+    render(vue(30, true))
+    expect(screen.getByText(MENTION)).toBeInTheDocument()
+  })
+})
+
 // LE CARTOUCHE FANTOME DE LA PARTIE MORTE, mesure en jeu le 07/09/2026.
 //
 // Le moteur publie l'etiquette de partie (`partieId`) des la reception de la

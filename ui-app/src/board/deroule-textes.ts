@@ -244,6 +244,20 @@ export function texteFiletProche(secondes: number): string {
   return t('La phase reprend dans %1 s').replace('%1', String(secondes))
 }
 
+/**
+ * « TEMPS PAR DECISION » REGLE : le moteur n'attend pas.
+ *
+ * Le mode Detaille repose sur une hypothese : le moteur ne produit rien tant
+ * qu'on ne lui a pas repondu, donc le cartouche donne le rythme. Elle tombe des
+ * que la preparation de mission regle un « Temps par decision » non nul
+ * (`max_timeout`, publie dans la trame) : `DoWaitSync` et `DoGetInput`
+ * expirent, et le moteur poursuit sans notre accuse ni notre reponse. On le
+ * dit, sobrement, plutot que de laisser le joueur croire a un defaut.
+ */
+export function texteTempsParDecision(): string {
+  return t('Temps par décision réglé : le moteur n’attend pas')
+}
+
 /** La phrase qui dit que le deroule s'arrete la. */
 export function texteArretDefaite(): string {
   return t('La phase s\'arrête ici.')

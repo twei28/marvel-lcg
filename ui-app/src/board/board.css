@@ -3093,6 +3093,18 @@
     color: rgba(255, 212, 90, 0.72);
   }
 
+  /* « Temps par décision réglé : le moteur n'attend pas ». Une mention, pas une
+     alerte : le mode Détaillé n'a plus la main sur le rythme, et le joueur doit
+     le savoir sans que cela lui saute au visage. Sur sa propre ligne, au-dessus
+     des boutons, pour ne pas se disputer la place avec « La suite arrive… » et
+     le compte à rebours du filet, qui eux vont et viennent. */
+  .deroule-timeout {
+    margin: 6px 0 0;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.5);
+  }
+
   /* Replie devant une question du moteur : la chronologie seule, et la
      mention « Le moteur attend ta réponse ». Ce n'est PAS l'attente grise
      ci-dessus : ici c'est au joueur d'agir, ailleurs que dans le cartouche, et
@@ -4436,6 +4448,17 @@
      choix Simple/Detaille) le change juste en dessous. */
   .ligne-option-mode-phase {
     margin: 0 11px 6px;
+  }
+
+  /* « Temps par décision réglé : le moteur n'attend pas », sous les deux
+     boutons de mode. Même gouttière que le groupe ci-dessus, et le ton d'un
+     détail de ligne-option : c'est une précision sur le mode choisi, pas un
+     réglage de plus ni une alerte. */
+  .ligne-option-note {
+    margin: 0 11px 6px;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: #8fa0b2;
   }
 }
 

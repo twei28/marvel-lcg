@@ -5,7 +5,13 @@
 // plus vite. Les anciens modes « manuel » et « pas-a-pas » ont disparu : il ne
 // reste que « detaille » (avec son reglage « avance auto ») et « instantane ».
 import { describe, expect, it } from 'vitest'
-import { lireAvanceAuto, libelleModePhase, lireModePhaseMechant, MODES } from './moteur'
+import {
+  lireAvanceAuto,
+  libelleModePhase,
+  lireModePhaseMechant,
+  lireTrame,
+  MODES,
+} from './moteur'
 
 describe('mode detaille', () => {
   it('figure dans la liste des modes', () => {
@@ -40,5 +46,34 @@ describe('mode detaille', () => {
     // pourtant le defaut : un ternaire a trois branches sans branche pour lui.
     expect(libelleModePhase('detaille')).toBe('Détaillé')
     expect(libelleModePhase('instantane')).toBe('Instantané')
+  })
+})
+
+// L'HYPOTHESE DU MODE DETAILLE, ET CE QUI LA CASSE.
+//
+// Le mode suppose que le moteur ne produit rien tant qu'on ne lui a pas
+// repondu : `DoWaitSync` et `DoGetInput` attendent alors sans limite. C'est
+// vrai tant que « Temps par decision » vaut 0 (le defaut de la preparation de
+// mission). Non nul, les deux attentes EXPIRENT et le moteur poursuit seul,
+// sans notre accuse ni notre reponse. La trame le publie sous `max_timeout`,
+// en secondes : c'est la seule chose que le plateau peut en savoir.
+describe('le temps par decision publie par la trame', () => {
+  const trame = (extra: Record<string, unknown> = {}) =>
+    lireTrame({ render_id: 7, game_id: 1, ask_players: [], ...extra })
+
+  it('vaut zero par defaut, c est-a-dire sans limite', () => {
+    expect(trame()?.maxTimeout).toBe(0)
+    expect(trame({ max_timeout: 0 })?.maxTimeout).toBe(0)
+  })
+
+  it('rend le delai regle a la preparation', () => {
+    expect(trame({ max_timeout: 30 })?.maxTimeout).toBe(30)
+  })
+
+  // Un moteur ancien, ou un champ abime : on retombe sur « sans limite »
+  // plutot que sur une mention qui ne serait pas vraie.
+  it('retombe sur zero devant une valeur qui n est pas un nombre', () => {
+    expect(trame({ max_timeout: '30' })?.maxTimeout).toBe(0)
+    expect(trame({ max_timeout: null })?.maxTimeout).toBe(0)
   })
 })

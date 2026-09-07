@@ -386,6 +386,19 @@ export type Trame = {
   game_uid: string
   ask_players: number[]
   total_players: number
+  /**
+   * « TEMPS PAR DECISION », en SECONDES, tel que la preparation de mission le
+   * regle (`timeoutInput`, public/js/prepare/app.js). Zero veut dire « sans
+   * limite », et c'est le reglage par defaut.
+   *
+   * Il compte ici parce qu'il casse l'hypothese du mode Detaille : « le moteur
+   * ne produit rien tant qu'on ne lui a pas repondu ». Non nul, `DoWaitSync`
+   * et `DoGetInput` (engine/device/manager/base.py) attendent avec ce delai au
+   * lieu d'attendre sans limite, expirent, et le moteur poursuit tout seul,
+   * sans notre accuse et sans notre reponse. Le cartouche le DIT plutot que de
+   * laisser le joueur croire a un defaut.
+   */
+  maxTimeout: number
   notifications: Notification[]
   /** Sièges dont plus aucun client ne tient la place. */
   siegesAbsents: number[]
@@ -411,7 +424,12 @@ export function clePartie(trame: Pick<Trame, 'game_id' | 'game_uid'>): string {
   return `${trame.game_uid}:${trame.game_id}`
 }
 
-function lireTrame(brut: unknown): Trame | undefined {
+/**
+ * Lecture d'un descripteur de trame. EXPORTE pour etre testable seul : c'est le
+ * seul endroit ou les champs du moteur (`max_timeout` compris) entrent dans le
+ * plateau, et une faute ici ne se verrait qu'en partie.
+ */
+export function lireTrame(brut: unknown): Trame | undefined {
   if (typeof brut !== 'object' || brut === null) return undefined
   const o = brut as Record<string, unknown>
   // Les messages de position de souris passent par le meme socket.
@@ -424,6 +442,9 @@ function lireTrame(brut: unknown): Trame | undefined {
       ? o.ask_players.filter((x): x is number => typeof x === 'number')
       : [],
     total_players: typeof o.total_players === 'number' ? o.total_players : 1,
+    // Zero sur un moteur qui ne l'envoie pas : c'est la valeur qui dit « sans
+    // limite », donc le repli ne raconte rien de faux.
+    maxTimeout: typeof o.max_timeout === 'number' ? o.max_timeout : 0,
     notifications: lireNotifications(o.notify_texts),
     siegesAbsents: Array.isArray(o.sieges_absents)
       ? o.sieges_absents.filter((x): x is number => typeof x === 'number')
@@ -588,6 +609,12 @@ export type EtatMoteur = {
    */
   siegesNonAcquittes?: number[]
   /**
+   * « Temps par décision » en secondes, `0` voulant dire « sans limite » (voir
+   * `Trame.maxTimeout`). Non nul, le moteur n'attend NI notre accusé NI notre
+   * réponse au-delà de ce délai : le mode Détaillé le mentionne.
+   */
+  maxTimeout: number
+  /**
    * Partie en cours, telle que le moteur la numérote. Change à chaque NOUVELLE
    * partie, mais PAS sur un retour en arrière — c'est ce qui permet à
    * l'historique de survivre à un « Annuler ».
@@ -617,6 +644,7 @@ export class Moteur {
     tentatives: 0,
     hautsFaits: [],
     siegesAbsents: [],
+    maxTimeout: 0,
   }
   private ecouteurs = new Set<Ecouteur>()
   private relance: number | undefined
@@ -881,7 +909,11 @@ export class Moteur {
       }
 
       this.enregistrerHautsFaits(trame.notifications)
-      this.publier({ siegesAbsents: trame.siegesAbsents, siegesNonAcquittes: trame.siegesNonAcquittes })
+      this.publier({
+        siegesAbsents: trame.siegesAbsents,
+        siegesNonAcquittes: trame.siegesNonAcquittes,
+        maxTimeout: trame.maxTimeout,
+      })
       void this.lire()
     }
 

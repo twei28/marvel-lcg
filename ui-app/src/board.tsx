@@ -65,6 +65,7 @@ import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
 import { etapesDeroule, nomNettoye } from './board/deroule-phase'
+import { texteTempsParDecision } from './board/deroule-textes'
 import { SplashTour } from './board/SplashTour'
 import {
   CLE_AUTO_CIBLE,
@@ -812,6 +813,9 @@ function usePartieEnCours(playerId: number) {
   const [etat, setEtat] = useState<EtatMoteur>({
     hautsFaits: [],
     siegesAbsents: [],
+    // Zero, c'est-a-dire « sans limite » : c'est le defaut du moteur, et la
+    // seule valeur qui ne raconte rien de faux avant la premiere trame.
+    maxTimeout: 0,
     aNous: false,
     connecte: false,
     validationRequise: false,
@@ -1182,6 +1186,7 @@ function PanneauOptions({
   basculerSucces,
   modePhase,
   changerModePhase,
+  tempsParDecision,
   avanceAuto,
   basculerAvanceAuto,
   delaiPasAPas,
@@ -1216,6 +1221,8 @@ function PanneauOptions({
   basculerSucces: () => void
   modePhase: ModePhaseMechant
   changerModePhase: (mode: ModePhaseMechant) => void
+  /** « Temps par decision » du moteur, en secondes ; 0 = sans limite. */
+  tempsParDecision: number
   avanceAuto: boolean
   basculerAvanceAuto: () => void
   delaiPasAPas: number
@@ -1315,6 +1322,14 @@ function PanneauOptions({
           </div>
           {modePhase === 'detaille' ? (
             <>
+              {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
+                  decision » regle a la preparation fait expirer les attentes du
+                  moteur, qui poursuit sans nous. Une mention, rien de plus. Le
+                  mode Instantane ne la porte pas : il ne retient rien, donc
+                  l'hypothese ne lui sert a rien. */}
+              {tempsParDecision > 0 ? (
+                <p className="ligne-option-note">{texteTempsParDecision()}</p>
+              ) : null}
               <LigneOption
                 libelle={t('Avance toute seule')}
                 detail={t('Chaque étape se termine seule après un délai, sans attendre un clic')}
@@ -2545,6 +2560,11 @@ function PagePartie({
             // cartouche n'en montre que les quinze dernieres secondes : la
             // phase qui repart toute seule ne doit pas ressembler a un bug.
             echeanceFilet={etat.echeanceFilet}
+            // « Temps par decision » regle a la preparation : le moteur expire
+            // ses attentes et poursuit sans nous, ce que le mode Detaille
+            // suppose pourtant impossible. Le cartouche le DIT, il ne corrige
+            // rien.
+            tempsParDecision={etat.maxTimeout}
             // « Avance toute seule » et sa vitesse (panneau Options) : c'est le
             // cartouche qui tient cette horloge, pas le moteur. Il s'avance
             // par la meme fonction que le clic « Suivant », donc l'accuse
@@ -2767,6 +2787,7 @@ function PagePartie({
               basculerSucces={basculerSucces}
               modePhase={modePhase}
               changerModePhase={choisirModePhase}
+              tempsParDecision={etat.maxTimeout}
               avanceAuto={avanceAuto}
               basculerAvanceAuto={basculerAvanceAuto}
               delaiPasAPas={delaiPasAPas}

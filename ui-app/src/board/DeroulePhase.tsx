@@ -36,6 +36,7 @@ import {
   texteDefaite,
   texteFenetreReponse,
   texteLigneBilan,
+  texteTempsParDecision,
   titreEtape,
 } from './deroule-textes'
 import { t } from './langue'
@@ -112,6 +113,7 @@ export function DeroulePhase({
   pvMaxParNom,
   trameRetenue,
   echeanceFilet,
+  tempsParDecision = 0,
   avanceAuto = false,
   delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
@@ -244,6 +246,19 @@ export function DeroulePhase({
    * pendant une minute et demie.
    */
   echeanceFilet?: number
+  /**
+   * « TEMPS PAR DECISION » regle a la preparation de mission, en secondes
+   * (board.tsx : `etat.maxTimeout`, lu sur `max_timeout` dans la trame). Zero,
+   * la valeur par defaut, veut dire « sans limite ».
+   *
+   * Il n'est la que pour etre DIT. Le mode Detaille repose sur une hypothese :
+   * le moteur ne produit rien tant qu'on ne lui a pas repondu, donc le
+   * cartouche donne le rythme. Non nul, cette hypothese tombe (`DoWaitSync` et
+   * `DoGetInput` expirent, engine/device/manager/base.py) et le moteur poursuit
+   * seul. Le cartouche ne change rien a son rythme pour autant : il le mentionne,
+   * et c'est tout.
+   */
+  tempsParDecision?: number
   /**
    * « Avance toute seule » (reglage du panneau Options, board.tsx) : chaque
    * etape se valide d'elle-meme au bout de `delaiAvanceMs`, par la MEME
@@ -1168,6 +1183,21 @@ export function DeroulePhase({
     </ol>
   )
 
+  // L'HYPOTHESE DU MODE DETAILLE, DITE QUAND ELLE NE TIENT PLUS.
+  //
+  // Le mode repose sur ceci : le moteur ne produit rien tant qu'on ne lui a pas
+  // repondu, donc le cartouche donne le rythme. Un « Temps par decision » regle
+  // a la preparation (`max_timeout`) fait expirer `DoWaitSync` et `DoGetInput`,
+  // et le moteur poursuit sans notre accuse ni notre reponse. Le cartouche ne
+  // change RIEN a son rythme pour autant : il le mentionne, sobrement, dans ses
+  // deux etats, pour que la partie qui avance seule ne ressemble pas a un
+  // defaut. Pas d'`aria-live` : cette mention ne survient pas, elle est vraie
+  // pour toute la partie.
+  const mentionTempsParDecision =
+    tempsParDecision > 0 ? (
+      <p className="deroule-timeout">{texteTempsParDecision()}</p>
+    ) : null
+
   // Le moteur pose une question au joueur : le cartouche s'efface devant
   // elle. Ni titre, ni bouton, ni « La suite arrive… » (ce serait un
   // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
@@ -1201,6 +1231,7 @@ export function DeroulePhase({
               {t('Le moteur attend ta réponse')}
             </p>
           )}
+          {mentionTempsParDecision}
         </section>
       </>
     )
@@ -1295,6 +1326,7 @@ export function DeroulePhase({
             {regleDepliee ? <p className="deroule-regle-texte">{regle}</p> : null}
           </div>
         ) : null}
+        {mentionTempsParDecision}
         <div className="deroule-boutons">
           {/* Dire qu'on attend, sans rien bloquer : une mention grise a cote du
               bouton, qui reste cliquable. Ni modale ni bouton desactive, parce
