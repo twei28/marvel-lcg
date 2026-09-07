@@ -21,7 +21,13 @@
   .plateau-mobile.plateau-paysage.est-portrait {
     --pp-etiquette-h: 14px;
     --pp-main-h: 90px;
-    --pp-card-w: clamp(84px, calc((100dvh - 166px) / 2 * 63 / 88), 150px);
+    /* -166px : barre + main + 2 etiquettes (taille-carte.ts, HAUTEUR_FIXE
+       avant marge). -80px : MARGE_SCANCARD (voir son commentaire complet
+       dans taille-carte.ts, qui DOIT rester lu avant de changer ce chiffre) :
+       la bande de jauge PV/menace qui deborde sous le cadre, et le pire cas
+       mesure de la hauteur reelle de .pm-barre sur les 34 etats de la page
+       de fixtures. */
+    --pp-card-w: clamp(84px, calc((100dvh - 166px - 80px) / 2 * 63 / 88), 150px);
     box-sizing: border-box;
     position: relative;
     display: grid;
@@ -170,18 +176,36 @@
   }
 
   /* La boite de positionnement du voile : sa largeur EST celle de la zone
-     qui defile, jamais une largeur de piles devinee. */
+     qui defile, jamais une largeur de piles devinee.
+     min-height:0 est INDISPENSABLE ici, comme sur .rangee-cartes-corps et
+     .rangee-cartes juste au-dessus : un item de grille garde par defaut
+     min-height:auto (son propre contenu), qui l'empeche de retrecir sous
+     cette taille meme si sa piste ne lui laisse pas la place. Sans cette
+     ligne, .rangee-cartes-defilement grandissait pour loger la carte ENTIERE
+     (jauge de PV/menace comprise) au lieu de tenir dans la piste minmax(0,1fr)
+     qui lui est reservee : c'est ce qui rendait MARGE_SCANCARD inoperant
+     avant ce correctif (tache 12, fix round 1), aucun retrecissement de
+     carte ne pouvant liberer de place dans une boite qui refusait de
+     retrecir elle-meme. */
   .rangee-cartes-fenetre {
     position: relative;
     display: grid;
     min-width: 0;
+    min-height: 0;
   }
 
   .rangee-cartes-defilement {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    padding: 4px 8px 0;
+    /* Pas de padding vertical : la rangee est deja au ras de la hauteur
+       disponible (voir taille-carte.ts), le moindre px vertical ici se
+       reperc mesure sur toute la carte plus bas. */
+    padding: 0 8px;
+    /* Meme piege que .rangee-cartes-fenetre juste au-dessus : cet element
+       est lui-meme l'unique item de la grille de .rangee-cartes-fenetre, et
+       garde donc le meme min-height:auto par defaut sans cette ligne. */
+    min-height: 0;
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;
@@ -197,12 +221,14 @@
     display: flex;
     flex: none;
     gap: 8px;
-    padding-bottom: 3px;
-    border-bottom: 3px solid transparent;
   }
 
+  /* Le trait du heros actif (solo a deux heros) EN INCRUSTATION : un
+     box-shadow interieur ne prend aucune place, contrairement a la paire
+     padding-bottom + border-bottom d'origine (6 px reserves sur CHAQUE
+     groupe, actif ou non, pour un trait qui ne se voit que sur l'actif). */
   .rangee-cartes-groupe.est-actif {
-    border-bottom-color: #34d399;
+    box-shadow: inset 0 -3px 0 #34d399;
   }
 
   .rangee-cartes-separateur {
@@ -356,6 +382,22 @@
   .plateau-paysage .carte-posee .scan-card {
     --card-w: var(--pp-card-w);
     --inspect-scale: 1;
+  }
+
+  /* Le bandeau de type ("Allie", "Sbire"...) coute 24 px de hauteur qu'une
+     carte posee n'a pas a l'echelle du paysage : l'etiquette de la rangee
+     (aria-label de .rangee-cartes) dit deja la zone. */
+  .plateau-paysage .carte-posee .scan-card .top-strip {
+    display: none;
+  }
+
+  /* .scan-visuel separe le bandeau de type du cadre par un gap de 5 px : sans
+     bandeau (regle ci-dessus), ce gap ne separe plus rien, mais reste
+     applique entre les deux rangees de la grille et gonfle quand meme la
+     hauteur de la carte. Neutralise ici plutot que dans ScanCard.css, qui
+     sert aussi le plateau PC et l'ancien rendu a medaillons. */
+  .plateau-paysage .carte-posee .scan-card .scan-visuel {
+    gap: 0;
   }
 
   /* Une manigance se pose en paysage : meme HAUTEUR que ses voisines. ScanCard

@@ -2,10 +2,14 @@
 //
 // Sur les 34 etats enregistres, en 1050 x 480 (projet s24-paysage) :
 //   1. le plateau ne deborde JAMAIS verticalement ;
-//   2. chaque carte posee mesure au moins 84 px de large (le plancher de
+//   2. aucune rangee ne rogne ses cartes en silence (voir plus bas) ;
+//   3. chaque carte posee mesure au moins 84 px de large (le plancher de
 //      lisibilite de la spec) ;
-//   3. toute cible tactile mesure au moins 44 px dans les deux axes ;
-//   4. aucun ecran portrait n'est affiche.
+//   4. toute cible tactile mesure au moins 44 px dans les deux axes ;
+//   5. aucun ecran portrait n'est affiche ;
+//   6. le voile « +N » (cartes hors champ) est bien exerce au moins une fois,
+//      quitte a forcer le debordement sur l'etat le plus charge s'il n'est
+//      jamais apparu tout seul.
 // Et en 480 x 1050 (projet s24), sur trois etats : l'ecran « Tourne ton
 // telephone » couvre toute la fenetre.
 //
@@ -39,7 +43,13 @@ test('En paysage, deux rangees de vraies cartes qui tiennent a l\'ecran', async 
   });
   page.on('pageerror', (erreur) => erreurs.push(`[page] ${erreur.message}`));
 
-  for (const entree of await catalogue(page)) {
+  // Nombre d'etats ou le voile « +N » est apparu tout seul (sans le forcer) :
+  // si ce compteur reste a 0 apres la boucle, sa cible tactile de 44 px n'a
+  // jamais ete exercee, et un pas dedie force le debordement plus bas.
+  let etatsAvecVoile = 0;
+  const entrees = await catalogue(page);
+
+  for (const entree of entrees) {
     await test.step(entree.titre, async () => {
       await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}`, {
         waitUntil: 'networkidle',
@@ -59,7 +69,32 @@ test('En paysage, deux rangees de vraies cartes qui tiennent a l\'ecran', async 
         `Le plateau deborde de ${debordement.contenu - debordement.visible} px`
       ).toBeLessThanOrEqual(debordement.visible + TOLERANCE_ARRONDI);
 
-      // 2. Chaque carte posee se lit : au moins 84 px de large.
+      // 2. Aucune rangee ne rogne ses cartes en silence. .plateau-paysage a
+      // lui-meme overflow:hidden, min-height:0 dans toute sa chaine de
+      // conteneurs : une grille CSS qui manque de place les laisse toujours
+      // EXACTEMENT a la taille disponible (jamais plus), donc l'assertion 1
+      // ci-dessus ne peut, par construction, JAMAIS detecter un debordement
+      // qui se produit plus bas dans l'arbre. Le vrai bord de decoupe
+      // silencieux est .rangee-cartes-defilement (une rangee a la fois,
+      // overflow-y:hidden) : si son scrollHeight depasse son clientHeight,
+      // la carte posee est plus haute que sa case et se fait rogner en bas,
+      // sans aucune pastille pour le dire. Meme principe que la bande de
+      // tuiles du plateau a medaillons (plateau-mobile.spec.ts).
+      const rangees = page.locator('.rangee-cartes-defilement');
+      const nombreRangees = await rangees.count();
+      for (let index = 0; index < nombreRangees; index += 1) {
+        const mesure = await rangees.nth(index).evaluate((element) => ({
+          contenu: element.scrollHeight,
+          visible: element.clientHeight,
+          nom: element.closest('.rangee-cartes')?.getAttribute('aria-label') ?? '?',
+        }));
+        expect(
+          mesure.contenu,
+          `Rangee "${mesure.nom}" : ${mesure.contenu - mesure.visible} px de carte rognes en bas`
+        ).toBeLessThanOrEqual(mesure.visible + TOLERANCE_ARRONDI);
+      }
+
+      // 3. Chaque carte posee se lit : au moins 84 px de large.
       const cartes = page.locator('.carte-posee > .scan-card');
       const nombreCartes = await cartes.count();
       expect(nombreCartes, 'Aucune carte posee dessinee').toBeGreaterThan(0);
@@ -69,7 +104,7 @@ test('En paysage, deux rangees de vraies cartes qui tiennent a l\'ecran', async 
         expect(boite.width, `Carte trop etroite (${Math.round(boite.width)} px)`).toBeGreaterThanOrEqual(CARTE_MINIMUM);
       }
 
-      // 3. Toute cible tactile respecte le plancher de 44 px.
+      // 4. Toute cible tactile respecte le plancher de 44 px.
       const cibles = page.locator('[data-tactile]');
       const nombre = await cibles.count();
       for (let index = 0; index < nombre; index += 1) {
@@ -80,10 +115,54 @@ test('En paysage, deux rangees de vraies cartes qui tiennent a l\'ecran', async 
           `Cible tactile trop petite (${Math.round(boite.width)}x${Math.round(boite.height)})`
         ).toBeGreaterThanOrEqual(CIBLE_MINIMUM);
       }
+
+      if (await page.locator('.rangee-cartes-suite').count() > 0) etatsAvecVoile += 1;
     });
   }
 
   expect(erreurs, `Erreurs signalees par le navigateur :\n${erreurs.join('\n')}`).toHaveLength(0);
+
+  // 6. Le voile « +N » : sa cible tactile de 44 px doit avoir ete mesuree au
+  // moins une fois. Il ne s'affiche que quand une rangee deborde
+  // (RangeeCartes.tsx, horsChamp > 0) : rien ne garantit qu'un des 34 etats
+  // enregistres en produise un tout seul en 1050 x 480.
+  await test.step(`Le voile "+N" est exerce (${etatsAvecVoile}/${entrees.length} etats)`, async () => {
+    if (etatsAvecVoile > 0) {
+      expect(etatsAvecVoile, 'Le voile +N ne s\'est affiche sur aucun etat').toBeGreaterThan(0);
+      return;
+    }
+
+    // Aucun etat ne l'a produit tout seul : on force le debordement sur
+    // l'etat qui a le plus de cartes posees dans la rangee ennemie, en
+    // retrecissant la fenetre pour que sa rangee deborde a coup sur.
+    let etatLePlusCharge = entrees[0];
+    let plusDeCartes = -1;
+    for (const entree of entrees) {
+      await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}`, {
+        waitUntil: 'networkidle',
+      });
+      const nombre = await page.locator('.rangee-ennemie .carte-posee').count();
+      if (nombre > plusDeCartes) {
+        plusDeCartes = nombre;
+        etatLePlusCharge = entree;
+      }
+    }
+
+    const largeurOrigine = page.viewportSize()!;
+    await page.setViewportSize({ width: 600, height: 480 });
+    try {
+      await page.goto(`/app/board.html?etat=${encodeURIComponent(etatLePlusCharge.fichier)}`, {
+        waitUntil: 'networkidle',
+      });
+      const voile = page.locator('.rangee-cartes-suite').first();
+      await expect(voile, `Voile +N absent meme force sur "${etatLePlusCharge.titre}"`).toBeVisible();
+      const boite = await voile.boundingBox();
+      expect(boite?.width, 'Voile +N trop etroit').toBeGreaterThanOrEqual(CIBLE_MINIMUM);
+      expect(boite?.height, 'Voile +N trop bas').toBeGreaterThanOrEqual(CIBLE_MINIMUM);
+    } finally {
+      await page.setViewportSize(largeurOrigine);
+    }
+  });
 });
 
 test('En portrait, l\'ecran « Tourne ton telephone » couvre tout', async ({ page }, testInfo) => {
