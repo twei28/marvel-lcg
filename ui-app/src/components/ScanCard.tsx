@@ -12,7 +12,7 @@
 //
 // Il ne connait ni le descripteur du jeu ni les zones : c'est card-model.ts qui
 // traduit une carte de partie en props d'ici.
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { t } from '../board/langue'
 import { IMAGE_MORSURE } from './morsure'
 import './ScanCard.css'
@@ -380,6 +380,31 @@ export function ScanCard({
   // pastille le répétait, et dans les zones étroites elle se posait PAR-DESSUS
   // le titre. Voir `pastilleRedondante` dans board/zones.ts.
   const typeMuet = masquerType === true
+
+  // LE RETOURNEMENT (07/09/2026). Une carte rencontre arrive face cachée dans
+  // la zone de révélation, puis le moteur la retourne au rendu suivant : le
+  // même élément changeait d'image d'un coup. Ici elle pivote sur place, à sa
+  // taille : le dos tourne jusqu'à la tranche (280 ms), puis la face revient
+  // de la tranche (280 ms). Le dos est retenu tant que la carte est cachée.
+  const dosRetenu = useRef<string | undefined>(undefined)
+  const [retournement, setRetournement] = useState<{ phase: 'dos' | 'face'; dos: string } | null>(null)
+  useEffect(() => {
+    if (facedown) {
+      dosRetenu.current = imageUrl
+      return
+    }
+    const dos = dosRetenu.current
+    dosRetenu.current = undefined
+    if (dos === undefined || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setRetournement({ phase: 'dos', dos })
+    const versLaFace = window.setTimeout(() => setRetournement({ phase: 'face', dos }), 280)
+    const fin = window.setTimeout(() => setRetournement(null), 560)
+    return () => {
+      window.clearTimeout(versLaFace)
+      window.clearTimeout(fin)
+    }
+  }, [facedown, imageUrl])
+  const imageAffichee = retournement?.phase === 'dos' ? retournement.dos : imageUrl
   const hp = facedown ? undefined : allyHp
   const threat = facedown ? undefined : schemeThreat
   const compteurs = facedown ? [] : (counters ?? [])
@@ -478,14 +503,14 @@ export function ScanCard({
           {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}
         </div>
 
-        <div className="scan-frame">
+        <div className={`scan-frame${retournement ? ` retourne-${retournement.phase}` : ''}`}>
           {/* Sans imageUrl, un <img src=""> fait recharger la PAGE au
               navigateur et fait crier React. Le rendu ne change pas pour
               autant : l'image vide etait de toute facon masquee par
               data-missing, et .scan-fallback reste dessous. */}
-          {imageUrl ? (
+          {imageAffichee ? (
             <img
-              src={imageUrl}
+              src={imageAffichee}
               alt=""
               draggable="false"
               onError={(event) => {
