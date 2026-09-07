@@ -7,12 +7,20 @@
 // main, elles, agissent directement. Ces tests verrouillent le fait que le
 // chemin du medaillon mene bien jusqu'au paiement.
 
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { PlateauMobile } from './PlateauMobile'
 import type { EtatInteractif } from '../interaction'
 import type { Plateau } from '../zones'
 import type { World } from '../world'
+
+// Ce test verrouille le chemin MEDAILLON (docstring ci-dessus) : depuis la
+// tache 11 de la refonte paysage, PlateauMobile rend PlateauPaysage par
+// defaut (de vraies cartes, sans classe .medaillon). On demande donc
+// explicitement l'ancien rendu, comme le filet Playwright depuis la tache 1.
+beforeEach(() => {
+  window.history.pushState({}, '', '/?medaillons')
+})
 
 class ResizeObserverBouchon {
   observe() {}
