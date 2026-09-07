@@ -23,5 +23,9 @@ class FrameDescriptor:
     # Ajout local : identifiant unique de LA partie (voir GameSession).
     # `game_id` repart a 1 dans chaque processus moteur ; celui-ci, non.
     game_uid            : str = ""
+    # Ajout local : sieges qui n'ont PAS encore accuse reception de CETTE
+    # trame (client_synced, voir ClientManager). Permet au plateau de nommer
+    # le retardataire au lieu du silence de la table.
+    sieges_non_acquittes: List[int] = field(default_factory=lambda: [])
     # is_skipping         : bool
 

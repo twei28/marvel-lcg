@@ -75,6 +75,14 @@ class GameServerSocket(GameServerBase):
                     siege
                     for siege in range(world.started_player_num if world else 0)
                     if not device_manager.client_manager.GetClients(siege)
+                ],
+                # Sieges qui n'ont pas encore accuse reception de CETTE trame
+                # (client_synced, lu ici sans jamais le muter) : nomme le
+                # retardataire au lieu du silence de la table.
+                sieges_non_acquittes = [
+                    siege
+                    for siege in range(world.started_player_num if world else 0)
+                    if device_manager.client_manager.client_synced[siege] < (world.render.last_render_id if world else 0)
                 ]
                 # game.controller_manager.skip.is_skipping,
             )
