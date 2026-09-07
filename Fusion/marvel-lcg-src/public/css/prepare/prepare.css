@@ -3,6 +3,20 @@
   src:url("/public/fonts/MarvelRegular-Dj83.ttf") format("truetype");
   font-display:swap;
 }
+/* La police Marvel ne contient que les 26 capitales, l'espace et le point
+   (30 glyphes, verifie le 7 septembre 2026) : ni chiffres, ni tiret, ni
+   accents. « X-23 » tombait donc en Arial Narrow pour « -23 ». Ces
+   caracteres viennent d'Anton, la police des titres, deja embarquee : meme
+   graisse, meme etroitesse, et `size-adjust` ramene ses capitales (0,86 em)
+   a la hauteur de celles de Marvel (0,70 em). Declaree sous le MEME nom de
+   famille, avec une plage Unicode : le navigateur pioche seul le bon glyphe. */
+@font-face{
+  font-family:"MarvelFan";
+  src:url("/public/fonts/Anton-Regular.ttf") format("truetype");
+  font-display:swap;
+  size-adjust:81%;
+  unicode-range:U+0030-0039,U+002D,U+0027,U+0026,U+002F,U+003A,U+0021,U+003F,U+0028-0029,U+00C0-00DC;
+}
 /* Direction « Affiche » (7 septembre) : Anton pour les noms géants en
    italique, Bangers pour les onomatopées et les cartouches. Toutes deux sous
    licence OFL, livrées dans public/fonts. */
