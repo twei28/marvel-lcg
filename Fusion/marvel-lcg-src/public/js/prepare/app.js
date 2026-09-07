@@ -498,7 +498,7 @@ function progressBar() {
             const done = i < state.step && stepComplete(i);
             const cls = "pstep" + (i === state.step ? " active" : "") + (done ? " done" : "");
             return el("button", { class: cls, onclick: () => goto(i) },
-                el("span", { class: "pnum" }, done ? "OK" : String(i + 1)),
+                el("span", { class: "pnum" }, done ? "\u2713" : String(i + 1)),
                 el("span", { class: "plabel" }, label));
         })),
     );
@@ -2416,13 +2416,13 @@ function stepSummary() {
             el("span", { class: "meta-pill" }, t("Sets :") + " " + [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize).join(", ")),
         ));
     }
+    // Plus de barre verte « Tout est prêt » : le bouton « Lancer la partie »,
+    // seul élément jaune de la barre du bas, dit déjà que tout est prêt.
     if (!v.ok) {
         wrap.append(el("div", { class: "errors" },
             el("h3", { class: "mvl" }, t("À compléter")),
             ...v.errors.map((e) => el("div", { class: "err", onclick: () => goto(e.step) }, e.message + " >")),
         ));
-    } else {
-        wrap.append(el("div", { class: "ready mvl" }, t("Tout est prêt")));
     }
     wrap.append(blocAvance());
     return wrap;
