@@ -6,6 +6,7 @@
 import type { CardGauge, CardKind, CardState, ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
+import { nomDeCompteur } from './compteurs-fr'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
 import { picIdFr } from './scans-fr'
@@ -336,7 +337,7 @@ function compteursAffiches(card: WorldCard): Array<{ label: string; value: numbe
     if (typeof valeur !== 'number') continue
     const imprime = card.info[`${cle}_printed`]
     if (valeur === 0 && typeof imprime !== 'number') continue
-    compteurs.push({ label: cle.slice(2).replace(/_/g, ' '), value: valeur })
+    compteurs.push({ label: nomDeCompteur(cle.slice(2)), value: valeur })
   }
   return compteurs
 }
