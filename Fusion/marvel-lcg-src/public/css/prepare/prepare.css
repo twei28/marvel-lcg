@@ -57,6 +57,7 @@
   --affiche-portrait-h:148px;        /* sa hauteur : le rectangle des anciennes tuiles */
   --affiche-portrait-zoom:154%;
   --affiche-siege:88px;
+  --affiche-eclair:2.4s;             /* le temps que la carte et le cri restent a l'ecran */
   --affiche-siege-petit:60px;        /* les sièges de la table, écran cible */
   --affiche-cible:148px;             /* largeur d'une tuile de scénario */
   --affiche-cible-h:124px;           /* sa hauteur */
@@ -1374,7 +1375,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .team-b.eux .tb-defi ~ .tb-nomg{bottom:236px}
 .tb-tampons .tampon{cursor:default}
 /* La carte qui surgit au recrutement, avec son onomatopée. */
-.tb-eclair{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;animation:eclair-carte 1.2s cubic-bezier(.2,.8,.2,1) forwards}
+.tb-eclair{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;animation:eclair-carte var(--affiche-eclair,2.4s) cubic-bezier(.2,.8,.2,1) forwards}
 .tb-eclair img{width:min(46%,340px);border-radius:12px;box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 0 2px #fff;transform:rotateY(18deg) rotateZ(-5deg)}
 .tb-eclair .ono{
   position:absolute;left:50%;top:16%;
@@ -1387,8 +1388,8 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 @keyframes eclair-carte{
   0%{opacity:0;transform:scale(.5) translateY(60px)}
-  18%{opacity:1;transform:scale(1) translateY(0)}
-  62%{opacity:1;transform:scale(1) translateY(0)}
+  10%{opacity:1;transform:scale(1) translateY(0)}
+  82%{opacity:1;transform:scale(1) translateY(0)}
   100%{opacity:0;transform:scale(.7) translateX(-40%) translateY(-10%)}
 }
 @keyframes ono-claque{from{opacity:0;transform:translateX(-50%) rotate(-10deg) scale(.2)}to{opacity:1;transform:translateX(-50%) rotate(-10deg) scale(1)}}

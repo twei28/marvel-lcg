@@ -1353,7 +1353,7 @@ function recruter(h, portraitEl) {
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
-        setTimeout(() => eclair.remove(), 1400);
+        setTimeout(() => eclair.remove(), 2800);   // filet, un peu apres la fin de l'animation
     }
     document.querySelectorAll(".tb-port").forEach((b) => {
         b.classList.toggle("chosen", activePlayers().some((p) => p.hero && p.hero.id === b.dataset.hero));
@@ -2496,7 +2496,7 @@ function verrouillerCible(sc) {
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
-        setTimeout(() => eclair.remove(), 1400);
+        setTimeout(() => eclair.remove(), 2800);   // filet, un peu apres la fin de l'animation
     }
     const nav = document.querySelector(".nav");
     if (nav) nav.replaceWith(navBar());
