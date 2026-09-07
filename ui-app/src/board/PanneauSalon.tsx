@@ -31,7 +31,16 @@ export function PanneauSalon() {
   const [nonLus, setNonLus] = useState(0)
   /** Le tchat a repondu qu'il n'existe pas ici : on cesse de le deranger. */
   const [muet, setMuet] = useState(false)
+  /**
+   * Vrai des que le tchat a repondu present au moins une fois. Sert a
+   * distinguer une coupure (reseau tombe en cours de partie) d'une table qui
+   * n'a jamais eu de tchat (partie locale, siege d'invite) : la premiere
+   * merite un mot a l'utilisateur, la seconde reste muette comme avant.
+   */
+  const futActif = useRef(false)
   const curseur = useRef(0)
+  /** Identifiants deja recus, pour dedoublonner (voir la boucle plus bas). */
+  const idsConnus = useRef<Set<number>>(new Set())
   const ref = useRef<HTMLDivElement>(null)
   const filRef = useRef<HTMLDivElement>(null)
   const ouvertRef = useRef(ouvert)
@@ -59,13 +68,21 @@ export function PanneauSalon() {
         setMuet(true)
         return
       }
+      futActif.current = true
       if (vue.pseudo) setMoi(vue.pseudo)
       curseur.current = vue.dernier
       if (vue.messages.length === 0) return
-      setMessages((courants) => [...courants, ...vue.messages].slice(-MAX_MESSAGES))
+      // Dedoublonne par identifiant : un curseur decale ou un effet relance
+      // (l'ouverture du panneau change `ouvert`, donc les deps de cet effet)
+      // peut renvoyer un message deja recu. Sans ca, React se plaint de cles
+      // dupliquees et le fil peut afficher deux fois le meme message.
+      const inedits = vue.messages.filter((m) => !idsConnus.current.has(m.id))
+      if (inedits.length === 0) return
+      for (const m of inedits) idsConnus.current.add(m.id)
+      setMessages((courants) => [...courants, ...inedits].slice(-MAX_MESSAGES))
       if (!ouvertRef.current) {
         // Les notres ne comptent pas : on sait ce qu'on vient d'ecrire.
-        const desAutres = vue.messages.filter((m) => m.pseudo !== vue.pseudo).length
+        const desAutres = inedits.filter((m) => m.pseudo !== vue.pseudo).length
         if (desAutres) setNonLus((n) => n + desAutres)
       }
     }
@@ -105,7 +122,26 @@ export function PanneauSalon() {
     filRef.current.scrollTop = filRef.current.scrollHeight
   }, [ouvert, messages])
 
-  if (!actif) return null
+  // Une table qui n'a jamais eu de tchat (partie locale, siege d'invite) ne
+  // montre toujours rien : c'est la regle qui porte tout ce composant. Mais
+  // une coupure APRES coup (reseau tombe en cours de partie) le disait
+  // seulement en silence, indiscernable pour le joueur d'« il n'y a jamais eu
+  // de tchat ici ». Un mot sobre, et un moyen de reessayer : remettre `muet`
+  // a faux relance l'effet ci-dessus (il est dans ses dependances), qui
+  // reprend le fil la ou `curseur` l'a laisse.
+  if (!actif) {
+    if (!futActif.current) return null
+    return (
+      <div className="salon-partie salon-deconnecte">
+        <span className="bh-bouton bh-salon-etat" role="status">
+          <span aria-hidden="true">💬</span> {t('Tchat déconnecté')}
+        </span>
+        <button type="button" className="bh-bouton" onClick={() => setMuet(false)}>
+          {t('Réessayer')}
+        </button>
+      </div>
+    )
+  }
 
   const envoyer = async () => {
     const texte = brouillon.trim()

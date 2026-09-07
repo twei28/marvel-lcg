@@ -388,6 +388,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Ton message': 'Your message',
   'Envoyer': 'Send',
   'Rien encore. Dis quelque chose.': 'Nothing yet. Say something.',
+  'Tchat déconnecté': 'Chat disconnected',
+  'Réessayer': 'Retry',
   'Historique': 'History',
   'Aucune entrée pour le moment': 'No entries yet',
   'Effacer': 'Clear',

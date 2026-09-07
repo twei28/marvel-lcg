@@ -2558,6 +2558,24 @@
     position: relative;
   }
 
+  /* Coupure reseau APRES un tchat qui repondait : sobre, pas d'alarme, mais
+     dit clairement ce qui se passe plutot que de disparaitre en silence (voir
+     PanneauSalon.tsx, futActif). */
+  .salon-deconnecte {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bh-salon-etat {
+    color: #b8c2cc;
+    cursor: default;
+  }
+
+  .bh-salon-etat:hover {
+    background: #1f2937;
+  }
+
   .salon-pastille {
     margin-left: 6px;
     padding: 0 6px;
