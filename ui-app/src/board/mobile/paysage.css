@@ -61,6 +61,120 @@
   .carte-posee-etat.est-sonne { background: #f59e0b; }
   .carte-posee-etat.est-desoriente { background: #a78bfa; }
 
+  /* --- Une rangee ----------------------------------------------------------- */
+
+  .rangee-cartes {
+    display: grid;
+    grid-template-rows: var(--pp-etiquette-h, 14px) minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .rangee-cartes-titre {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: var(--pp-etiquette-h, 14px);
+  }
+
+  .rangee-ennemie .rangee-cartes-titre { color: rgba(248, 113, 113, 0.8); }
+  .rangee-heros .rangee-cartes-titre { color: rgba(96, 165, 250, 0.85); }
+
+  .rangee-cartes-cibles {
+    min-width: 16px;
+    padding: 0 5px;
+    border-radius: 99px;
+    text-align: center;
+    color: var(--fond);
+    background: var(--menace);
+  }
+
+  .rangee-cartes-corps {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+  }
+
+  .rangee-cartes-defilement {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 8px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .rangee-cartes-defilement::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rangee-cartes-groupe {
+    display: flex;
+    flex: none;
+    gap: 8px;
+    padding-bottom: 3px;
+    border-bottom: 3px solid transparent;
+  }
+
+  .rangee-cartes-groupe.est-actif {
+    border-bottom-color: #34d399;
+  }
+
+  .rangee-cartes-separateur {
+    flex: none;
+    align-self: stretch;
+    width: 2px;
+    margin: 0 4px;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .rangee-cartes-vide {
+    align-self: center;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Le voile au bord droit de la zone defilante, AVANT les piles epinglees. */
+  .rangee-cartes-suite {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: var(--pp-piles-w, 0px);
+    width: 48px;
+    border: 0;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(90deg, transparent, rgba(13, 15, 19, 0.96) 55%);
+    cursor: pointer;
+  }
+
+  .rangee-cartes-corps:has(.piles-epinglees) {
+    --pp-piles-w: 140px;
+  }
+
+  /* Pendant un ciblage ou un paiement, tout ce qui n'est pas visable s'eteint. */
+  .plateau-paysage.est-en-ciblage .carte-posee {
+    opacity: 0.28;
+  }
+
+  .plateau-paysage.est-en-ciblage .carte-posee:has(.scan-card.state-targetable),
+  .plateau-paysage.est-en-ciblage .carte-posee:has(.scan-card.state-playable),
+  .plateau-paysage.est-en-ciblage .carte-posee:has(.scan-card.state-selected) {
+    opacity: 1;
+  }
+
   /* --- Piles epinglees au bout d'une rangee --------------------------------- */
 
   .piles-epinglees {
