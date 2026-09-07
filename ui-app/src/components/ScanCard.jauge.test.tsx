@@ -128,3 +128,31 @@ describe('pulsation d alerte', () => {
     expect(classes(menace(1, false))).not.toMatch(/a-alerte/)
   })
 })
+
+describe('le texte dans la bande', () => {
+  it('ecrit le texte de la jauge dans la bande', () => {
+    const { container } = render(
+      <ScanCard id="1" name="Spider-Man" kind="hero" imageUrl="" jauge={{ ...pv(0.5), texte: '6 / 12' }} />
+    )
+    expect(container.querySelector('.jauge-texte')?.textContent).toBe('6 / 12')
+  })
+
+  it('n affiche plus la pastille ronde quand la bande porte le chiffre', () => {
+    const { container } = render(
+      <ScanCard
+        id="1"
+        name="Spider-Man"
+        kind="hero"
+        imageUrl=""
+        allyHp="6/12"
+        jauge={{ ...pv(0.5), texte: '6 / 12' }}
+      />
+    )
+    expect(container.querySelector('.ally-hp-badge')).toBeNull()
+  })
+
+  it('garde la pastille quand il n y a pas de bande', () => {
+    const { container } = render(<ScanCard id="1" name="Spider-Man" kind="hero" imageUrl="" allyHp="6" />)
+    expect(container.querySelector('.ally-hp-badge')).not.toBeNull()
+  })
+})

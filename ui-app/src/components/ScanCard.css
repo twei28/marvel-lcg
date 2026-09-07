@@ -287,7 +287,9 @@
        3 px, indiscernable de l'ombre de la carte. On divise donc par l'echelle,
        comme board.css le fait deja pour --inspect-scale. Hors du plateau
        (vitrine, apercu), --echelle vaut 1 et la formule se lit telle quelle. */
-    --jauge-epaisseur: calc(7px / var(--echelle, 1));
+    /* Assez haute pour porter son chiffre (« 8 / 12 ») : demande de
+       l'utilisateur, 7 septembre 2026. */
+    --jauge-epaisseur: calc(16px / var(--echelle, 1));
     /* Posee dans la ZONE « scan » de la grille, et NON en absolu sur toute la
        couche : `.scan-visuel` empile l'etiquette de type, un gap de 5 px, puis
        le cadre. Un pourcentage sur la couche entiere decalait la bande de la
@@ -315,6 +317,26 @@
        on perd des PV, elle s'etend vers la droite quand la menace grimpe. */
     display: flex;
     justify-content: flex-start;
+    position: relative;
+  }
+
+  /* Le chiffre, centre par-dessus le remplissage, lisible sur le vert comme
+     sur le noir grace a son ombre. */
+  .jauge-texte {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: calc(11px / var(--echelle, 1));
+    line-height: 1;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-shadow:
+      0 0 calc(3px / var(--echelle, 1)) rgba(0, 0, 0, 0.95),
+      0 calc(1px / var(--echelle, 1)) calc(2px / var(--echelle, 1)) rgba(0, 0, 0, 0.9);
+    pointer-events: none;
   }
 
   .jauge-remplissage {

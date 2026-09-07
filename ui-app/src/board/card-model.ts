@@ -203,7 +203,12 @@ function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undef
     // remplie a une fraction inventee mentirait plus qu'elle n'informerait.
     const max = pvMaximum(card, catalogue)
     if (max === undefined || max <= 0) return undefined
-    return { remplissage: borne(courants / max), genre: 'pv', alarme: campDe(card) === 'player' }
+    return {
+      remplissage: borne(courants / max),
+      genre: 'pv',
+      alarme: campDe(card) === 'player',
+      texte: `${courants} / ${max}`,
+    }
   }
 
   if (isScheme(card)) {
@@ -219,6 +224,7 @@ function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undef
       remplissage: borne(courante / reference),
       genre: 'menace',
       alarme: campDe(card) === 'encounter',
+      texte: `${courante} / ${reference}`,
     }
   }
 

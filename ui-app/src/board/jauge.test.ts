@@ -49,7 +49,7 @@ beforeEach(() => {
 describe('jauge de points de vie', () => {
   it('remplit la bande a la part de PV restants', () => {
     const c = toScanCard(carte('Ally', { health: 5, max_health: 10 }), contexte())
-    expect(c.jauge).toEqual({ remplissage: 0.5, genre: 'pv', alarme: true })
+    expect(c.jauge).toEqual({ remplissage: 0.5, genre: 'pv', alarme: true, texte: '5 / 10' })
   })
 
   it('donne une bande pleine a un personnage intact', () => {
@@ -90,7 +90,7 @@ describe('jauge de points de vie', () => {
 describe('jauge de menace', () => {
   it('monte vers la cible du complot principal', () => {
     const c = toScanCard(carte('MainScheme', { k_threat: 9, target_threat: 12 }), contexte())
-    expect(c.jauge).toEqual({ remplissage: 0.75, genre: 'menace', alarme: true })
+    expect(c.jauge).toEqual({ remplissage: 0.75, genre: 'menace', alarme: true, texte: '9 / 12' })
   })
 
   it('plafonne a la bande pleine quand la menace deborde la cible', () => {
@@ -100,7 +100,7 @@ describe('jauge de menace', () => {
 
   it('part pleine sur un complot annexe, faute de cible a atteindre', () => {
     const c = toScanCard(carte('EncounterSideScheme', { k_threat: 4 }), contexte())
-    expect(c.jauge).toEqual({ remplissage: 1, genre: 'menace', alarme: true })
+    expect(c.jauge).toEqual({ remplissage: 1, genre: 'menace', alarme: true, texte: '4 / 4' })
   })
 
   it('vide la bande d un complot annexe a mesure qu on le contre', () => {
@@ -133,5 +133,25 @@ describe('jauge de menace', () => {
   it('ne pose aucune bande sur un complot vide de menace et de reference', () => {
     const c = toScanCard(carte('EncounterSideScheme', { k_threat: 0 }), contexte())
     expect(c.jauge).toBeUndefined()
+  })
+})
+
+// --- Le texte de la bande ----------------------------------------------------
+// Demande de l'utilisateur (7 septembre 2026) : la bande porte « 8 / 12 »
+// elle-meme, la pastille ronde disparait.
+describe('texte de la jauge', () => {
+  it('ecrit les PV restants sur le maximum', () => {
+    const c = toScanCard(carte('Hero', { health: 8, max_health: 12 }), contexte())
+    expect(c.jauge?.texte).toBe('8 / 12')
+  })
+
+  it('ecrit la menace sur le seuil de la manigance principale', () => {
+    const c = toScanCard(carte('MainScheme', { k_threat: 3, target_threat: 7 }), contexte())
+    expect(c.jauge?.texte).toBe('3 / 7')
+  })
+
+  it('ecrit la menace sur la reference vue pour une manigance annexe', () => {
+    const c = toScanCard(carte('EncounterSideScheme', { k_threat: 4 }), contexte())
+    expect(c.jauge?.texte).toBe('4 / 4')
   })
 })

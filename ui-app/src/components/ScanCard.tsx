@@ -126,6 +126,8 @@ export type CardGauge = {
   remplissage: number
   genre: 'pv' | 'menace'
   alarme: boolean
+  /** « 8 / 12 » : la valeur courante sur le maximum, ecrite dans la bande. */
+  texte?: string
 }
 
 export type CardEffectDelta = {
@@ -405,8 +407,11 @@ export function ScanCard({
     }
   }, [facedown, imageUrl])
   const imageAffichee = retournement?.phase === 'dos' ? retournement.dos : imageUrl
-  const hp = facedown ? undefined : allyHp
-  const threat = facedown ? undefined : schemeThreat
+  // Quand la bande porte deja le chiffre (« 8 / 12 »), la pastille ronde
+  // n'a plus rien a dire : demande de l'utilisateur, 7 septembre 2026.
+  const bandeChiffree = !facedown && jauge?.texte !== undefined
+  const hp = facedown || bandeChiffree ? undefined : allyHp
+  const threat = facedown || bandeChiffree ? undefined : schemeThreat
   const compteurs = facedown ? [] : (counters ?? [])
   // Ce type de carte a-t-il des positions de stats mesurees ? Sinon, aucune stat
   // n'est ajoutee : les autres types de cartes ne portent pas ces bulles.
@@ -632,6 +637,7 @@ export function ScanCard({
                 } as CSSProperties
               }
             />
+            {bande.texte ? <span className="jauge-texte">{bande.texte}</span> : null}
           </div>
         ) : null}
 
