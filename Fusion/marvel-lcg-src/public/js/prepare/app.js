@@ -652,77 +652,6 @@ function validerEquipeCampagne() {
     window.location.href = "/campagne.html";
 }
 
-function recapPanel() {
-    const p = el("aside", { class: "recap" },
-        // Aperçu du héros survolé : prend toute la colonne à la place de la
-        // fiche de mission (classe `apercu` sur .recap), puis s'efface.
-        el("div", { class: "recap-apercu", id: "recap-apercu" }),
-        el("div", { class: "recap-title mvl" }, t("Fiche de mission")),
-        creationCampagne()
-            ? recapRow("Mode", state.mode ? libelleMode(state.mode) + " - " + state.playerCount + "p" : "-")
-            : el("button", {
-                class: "recap-row recap-mode",
-                title: t("Changer de mode de jeu"),
-                onclick: () => { hideHover(); state.accueil = true; render(); },
-            },
-                el("span", { class: "recap-k" }, "Mode"),
-                el("span", { class: "recap-v" }, (state.mode ? libelleMode(state.mode) + " - " + state.playerCount + "p" : "-") + " \u203A"),
-            ),
-    );
-    const players = el("div", { class: "recap-block team" }, el("div", { class: "recap-k" }, t("Équipe")));
-    for (let i = 0; i < state.playerCount; i++) {
-        const pl = state.players[i];
-        const on = state.step === 0 && state.activeSlot === i;
-        // En multi, un siege d'invite appartient a son occupant : l'hote ne
-        // peut pas lui choisir son heros a sa place.
-        const pilotable = !(enLigne() && i > 0);
-        players.append(el("button", {
-            class: "recap-slot cut" + (on ? " active" : "") + (pl.hero ? " filled" : "") + (pilotable ? "" : " salon-invite"),
-            disabled: pilotable ? undefined : "",
-            title: pilotable ? undefined : t("Ce joueur choisit depuis son propre écran"),
-            onclick: () => { if (!pilotable) return; state.activeSlot = i; goto(0); },
-        },
-            pl.hero
-                ? portrait(pl.hero.heroCardId, "team")
-                : el("div", { class: "portrait team empty" }, el("span", { class: "plus mvl" }, "+")),
-            el("div", { class: "rs-meta" },
-                el("div", { class: "rh-name" }, pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)),
-                el("div", { class: "rh-sub" }, pl.hero
-                    ? (pl.deck ? (pl.deckSource === "base" ? t("Deck de base") : pl.deck.name) : t("Deck à choisir"))
-                    : t("Emplacement vide")),
-            ),
-        ));
-    }
-    p.append(players);
-
-    const sc = state.scenario;
-    p.append(el("div", { class: "recap-block target" },
-        el("div", { class: "recap-k" }, t("Cible")),
-        el("div", { class: "recap-scn" },
-            portrait(sc ? sc.tileImage : null, "mini villain"),
-            el("div", {},
-                el("div", { class: "rh-name" }, sc ? sc.name : "-"),
-                el("div", { class: "rh-sub" }, sc && sc.villainNames.length ? sc.villainNames.join(", ") : t("Méchant non défini")),
-            ),
-        ),
-    ));
-    if (sc) {
-        const d = state.difficulty;
-        const tags = [d.base === "expert" ? "Expert" : "Standard"];
-        if (d.skirmish) tags.push("Skirmish");
-        if (d.heroic > 0) tags.push(t("Héroïque") + " " + d.heroic);
-        p.append(recapRow(t("Menace"), tags.join(" - ")));
-        p.append(recapRow(t("Sets modulaires"), String(d.selectedModularSets.length)));
-    }
-    return p;
-}
-function recapRow(k, v) {
-    return el("div", { class: "recap-row" },
-        el("span", { class: "recap-k" }, k),
-        el("span", { class: "recap-v" }, v),
-    );
-}
-
 function stepView() {
     switch (state.step) {
         case 0: return stepTeam();
@@ -730,14 +659,6 @@ function stepView() {
         case 2: return stepScenario();
         case 3: return stepSummary();
     }
-}
-
-function stepHead(kicker, title, sub) {
-    return el("div", { class: "step-head" },
-        el("div", { class: "kicker" }, kicker),
-        el("h1", { class: "mvl" }, title),
-        sub ? el("p", {}, sub) : null,
-    );
 }
 
 /**
@@ -1196,6 +1117,27 @@ function stepTeam() {
     return wrap;
 }
 
+/** Le pli du bas de scène : la biographie et l'état civil, repliés. Un écran
+ *  de sélection n'a pas à les imposer, mais les perdre appauvrirait le jeu.
+ *
+ *  Le pli se RETIENT (la scène se reconstruit à chaque survol : sans cela, la
+ *  biographie se refermerait au moindre mouvement de souris), et pendant qu'il
+ *  est ouvert la scène efface son nom géant, que le panneau recouvrirait. */
+let bioDepliee = false;
+
+function pliBio(titre, lignes) {
+    const contenu = lignes.filter(Boolean);
+    if (!contenu.length) return null;
+    const pli = el("details", { class: "tb-bio", open: bioDepliee || undefined },
+        el("summary", {}, titre), ...contenu);
+    pli.addEventListener("toggle", () => {
+        bioDepliee = pli.open;
+        const scene = pli.closest(".tb-scene");
+        if (scene) scene.classList.toggle("bio-ouverte", pli.open);
+    });
+    return pli;
+}
+
 /** La moitié gauche : l'art, le nom, les chiffres du héros donné (ou l'appel
  *  à en choisir un). Reconstruite à chaque survol et à chaque choix. */
 function rendreScene(h) {
@@ -1229,7 +1171,25 @@ function rendreScene(h) {
             vague ? el("span", { class: "tampon" }, vague) : null,
             arts ? el("span", { class: "tampon jaune" }, t("Art alt")) : null,
         ),
+        el("div", { class: "tb-bas" }, bioDuHeros(h)),
     );
+    scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
+}
+
+/** La fiche encyclopédique d'un héros, repliée au pied de sa scène. */
+function bioDuHeros(h) {
+    const info = HEROS_INFO[h.heroCardId];
+    if (!info) return null;
+    const en = langueActuelle() === "en";
+    const champ = (fr, versionEn) => (en && versionEn) || fr;
+    return pliBio(t("Biographie"), [
+        el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
+        info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
+        info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
+        info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
+        info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
+        info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
+    ]);
 }
 
 /** Les sièges de l'équipe, en bas de la colonne de droite. */
@@ -1466,155 +1426,7 @@ function scheduleHide() {
     clearTimeout(_hideTimer);
     _hideTimer = setTimeout(() => {
         if (_hoverPop) _hoverPop.classList.remove("show");
-        cacherApercuHeros();
     }, 160);
-}
-
-/** Visuel en tête de fiche : une carte, ou les DEUX côte à côte.
- *
- *  Dans la fiche il y a la largeur qu'il n'y a pas sur la tuile : plutôt que de
- *  redécouper les deux cartes en diagonale, on les montre entières, en
- *  demi-largeur. La hauteur consommée reste celle d'une seule carte, donc la
- *  biographie et l'état civil gardent leur place — et le panneau tient toujours
- *  dans l'écran, comme réglé dans `.recap`. */
-function visuelFiche(h) {
-    const carteDe = (cardId, nom) =>
-        el("img", { class: "hh-card", src: cardImageUrl(picIdHeros(cardId)), alt: nom || "" });
-    if (!h.lie) return carteDe(h.heroCardId, h.name);
-    return el("div", { class: "hh-duo" },
-        carteDe(h.heroCardId, h.name),
-        carteDe(h.lie.heroCardId, h.lie.name),
-    );
-}
-
-/** Contenu de la fiche d'un héros : carte, nom, extension, bio, état civil.
- *  Servi soit dans la colonne de droite, soit dans l'infobulle. */
-function ficheHeros(h) {
-    const info = HEROS_INFO[h.heroCardId];
-    const carte = visuelFiche(h);
-    if (!info) return [carte];      // héros sans biographie rédigée : visuel seul
-
-    // En anglais, on prefere la version *En quand elle existe.
-    const en = langueActuelle() === "en";
-    const champ = (fr, versionEn) => (en && versionEn) || fr;
-
-    return [
-        carte,
-        el("div", { class: "hh-name mvl" }, nomAffiche(h)),
-        el("div", { class: "hh-ext" }, (h.extension || "").replace(/^\d+\.\s*/, "")),
-        el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
-        info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
-        info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
-        info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
-        info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
-        info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
-    ];
-}
-
-/** La colonne de droite est-elle réellement à côté de la grille ?
- *  Sous 1180px le layout passe sur une seule colonne (voir prepare.css) : la
- *  fiche s'y afficherait hors écran, on garde alors l'infobulle. */
-function colonneApercuDisponible() {
-    return window.matchMedia("(min-width:1181px)").matches
-        && !!document.getElementById("recap-apercu");
-}
-
-function showHeroHover(h, cardEl) {
-    // Affichage préféré : dans la colonne de droite, à la place de la fiche de
-    // mission. Rien ne recouvre la grille, et la place permet une carte plus
-    // grande que dans l'infobulle.
-    if (colonneApercuDisponible()) {
-        clearTimeout(_hideTimer);
-        const zone = document.getElementById("recap-apercu");
-        poser(zone,...ficheHeros(h).filter(Boolean));
-        const recap = zone.closest(".recap");
-        if (recap) recap.classList.add("apercu");
-        hideHover();                 // pas d'infobulle en plus
-        return;
-    }
-
-    const box = hoverPop();
-    const info = HEROS_INFO[h.heroCardId];
-    box.classList.remove("trio");
-    box.classList.toggle("bare", !info);
-    box.classList.toggle("wide", !!info);
-    box.replaceChildren(...ficheHeros(h).filter(Boolean));
-    popShow(box, cardEl);
-}
-
-/** Rend la fiche de mission à la colonne de droite (fin du survol). */
-function cacherApercuHeros() {
-    const zone = document.getElementById("recap-apercu");
-    const recap = zone && zone.closest(".recap");
-    if (recap) recap.classList.remove("apercu");
-}
-
-/** Contenu de la fiche d'un scénario : cartes vilain, nom, bio, détails.
- *  Servi soit dans la colonne de droite, soit dans l'infobulle. */
-function ficheVilain(sc) {
-    const vcards = (sc.villainCards && sc.villainCards.length) ? sc.villainCards : [sc.tileImage].filter(Boolean);
-    const multi = vcards.length > 1;
-    const cardsEl = multi
-        ? el("div", { class: "hh-row" }, ...vcards.map((id) => el("img", { class: "hh-rowcard", src: cardImageUrl(id), alt: sc.name })))
-        : el("img", { class: "hh-card", src: cardImageUrl(vcards[0] || sc.tileImage), alt: sc.name });
-
-    const info = MECHANTS_INFO[vcards[0]];
-    const en = langueActuelle() === "en";
-    const champ = (fr, versionEn) => (en && versionEn) || fr;
-
-    return {
-        multi,
-        elements: [
-            cardsEl,
-            multi ? el("div", { class: "hh-rowhint" }, vcards.length + " " + t("méchants")) : null,
-            el("div", { class: "hh-name mvl" }, sc.name),
-            el("div", { class: "hh-ext" }, sc.extension.replace(/^\d+\.\s*/, "")),
-            info ? el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)) : null,
-            detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
-            multi ? detailRow(t("Nombre de méchants"), String(vcards.length)) : detailRow(t("Stades du méchant"), String(sc.villains.length || "-")),
-            detailRow(t("Manigances"), String(sc.schemes.length)),
-            detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
-            detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
-            ...defiRows(sc),
-            sc.hasExpertVariant ? el("div", { class: "sd-badge" }, t("Expert disponible")) : null,
-        ],
-    };
-}
-
-function showScnHover(sc, tileEl) {
-    const { multi, elements } = ficheVilain(sc);
-
-    // Même préférence que showHeroHover : colonne de droite quand la place
-    // le permet, infobulle flottante sinon.
-    if (colonneApercuDisponible()) {
-        clearTimeout(_hideTimer);
-        const zone = document.getElementById("recap-apercu");
-        poser(zone,...elements.filter(Boolean));
-        const recap = zone.closest(".recap");
-        if (recap) recap.classList.add("apercu");
-        hideHover();
-        return;
-    }
-
-    const box = hoverPop();
-    box.classList.remove("bare", "trio");
-    box.classList.toggle("wide", multi);
-    box.replaceChildren(...elements.filter(Boolean));
-    popShow(box, tileEl);
-}
-
-/** Lignes « règle du défi » du panneau de survol d'un scénario-défi. */
-function defiRows(sc) {
-    if (!sc.challenges || !sc.challenges.length) return [];
-    const info = DEFIS_INFO[sc.challenges[0]];
-    if (!info) return [];
-    // En anglais, on prefere la reformulation officielle (regleEn/contrainteEn).
-    const en = langueActuelle() === "en";
-    const regle = (en && info.regleEn) || info.regle;
-    const contrainte = (en && info.contrainteEn) || info.contrainte;
-    const lignes = [detailRow(t("Règle du défi"), regle)];
-    if (contrainte) lignes.push(detailRow(t("Contrainte"), contrainte));
-    return lignes;
 }
 
 function showExtHover(ext, tabEl) {
@@ -2522,7 +2334,36 @@ function rendreSceneMechant(sc) {
             sc.schemes.length ? el("span", { class: "tampon" }, sc.schemes.length + " " + t(sc.schemes.length > 1 ? "manigances" : "manigance")) : null,
             sc.hasExpertVariant ? el("span", { class: "tampon rouge" }, "Expert") : null,
         ),
-        documentsDeLaCible(sc),
+        // La règle d'un défi n'est PAS décorative : elle change la partie.
+        // Elle s'affiche, quand les livrets et la biographie se replient.
+        regleDuDefi(sc),
+        el("div", { class: "tb-bas" }, bioDuMechant(sc), documentsDeLaCible(sc)),
+    );
+    scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
+}
+
+/** La fiche encyclopédique d'un méchant, repliée au pied de sa scène. */
+function bioDuMechant(sc) {
+    const info = MECHANTS_INFO[(sc.villainCards || [])[0]];
+    const en = langueActuelle() === "en";
+    return pliBio(t("Biographie"), [
+        info ? el("p", { class: "hh-bio" }, (en && info.bioEn) || info.bio) : null,
+        detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
+        detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
+        detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
+    ]);
+}
+
+/** Le bandeau d'un scénario-défi : sa règle spéciale, en clair. */
+function regleDuDefi(sc) {
+    if (!sc.challenges || !sc.challenges.length) return null;
+    const info = DEFIS_INFO[sc.challenges[0]];
+    if (!info) return null;
+    const en = langueActuelle() === "en";
+    return el("div", { class: "tb-defi" },
+        el("b", {}, t("Règle du défi")),
+        el("span", {}, (en && info.regleEn) || info.regle),
+        info.contrainte ? el("span", { class: "tb-defi-c" }, (en && info.contrainteEn) || info.contrainte) : null,
     );
 }
 

@@ -14,6 +14,7 @@ export const DICO_EN_BASE = {
     "Roster": "Roster",
     "Cibles": "Targets",
     "Arsenal de": "Arsenal of",
+    "Biographie": "Biography",
     "Aucun héros": "No hero",
     "Identité et arts": "Identity and art",
     "Deck à choisir": "Deck to pick",
