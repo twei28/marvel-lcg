@@ -58,6 +58,7 @@
   --affiche-portrait-zoom:154%;
   --affiche-siege:88px;
   --affiche-eclair:2.4s;             /* le temps que la carte et le cri restent a l'ecran */
+  --affiche-cri:84px;                /* la taille du cri, la meme pour tous */
   --affiche-siege-petit:60px;        /* les sièges de la table, écran cible */
   --affiche-cible:148px;             /* largeur d'une tuile de scénario */
   --affiche-cible-h:124px;           /* sa hauteur */
@@ -1380,7 +1381,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-eclair .ono{
   position:absolute;left:50%;top:16%;
   max-width:86%;
-  font-family:"Bangers",Impact,sans-serif;font-size:96px;line-height:.98;
+  font-family:"Bangers",Impact,sans-serif;font-size:var(--affiche-cri,84px);line-height:.98;
   text-align:center;text-wrap:balance;
   color:var(--affiche-jaune);-webkit-text-stroke:3px #111;text-shadow:6px 6px 0 #111;
   transform:translateX(-50%) rotate(-10deg);
@@ -1466,6 +1467,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-droite.vue-cartes > .tb-filtres,
 .tb-droite.vue-cartes > .tb-roster{display:none}
 .tb-vue-cartes{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.tb-vue-cartes[hidden]{display:none}
 .tb-cartes-grille{
   flex:1;min-height:0;overflow:auto;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--affiche-carte,116px),1fr));
@@ -1480,6 +1482,11 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-carte img:hover{transform:translateY(-3px);box-shadow:3px 3px 0 var(--affiche-jaune)}
 /* Les faces de l'identité ouvrent la liste : elles se voient tout de suite. */
 .tb-carte.identite img{border-color:var(--affiche-jaune);box-shadow:3px 3px 0 var(--affiche-jaune)}
+/* L'art en usage, dans le choix des arts. */
+.tb-carte.choisie img{border-color:var(--affiche-jaune);box-shadow:3px 3px 0 var(--affiche-jaune)}
+.tb-arts .tb-carte img{cursor:pointer}
+.tb-arts{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.tb-choix-art{cursor:pointer}
 /* L'obligation et le set némésis : ce qui joue CONTRE le héros. Liseré ambre
    pour l'une, rouge pour l'autre, et une étiquette en pied de carte. */
 .tb-carte.obligation img{border-color:#e0a21a;box-shadow:3px 3px 0 #e0a21a}

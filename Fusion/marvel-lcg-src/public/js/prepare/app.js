@@ -1051,14 +1051,6 @@ function onomatopee(hero) {
     return ONOMATOPEES[hero.id] || "BAM !";
 }
 
-/** La taille d'un cri : « SNIKT ! » claque en grand, « TICKET TO THE
- *  MULTIVERSE ! » se replie sur deux lignes en plus petit. Le mot le plus long
- *  compte autant que la longueur totale : c'est lui qui ne peut pas se couper. */
-function tailleDuCri(cri) {
-    const motLePlusLong = Math.max(...cri.split(" ").map((m) => m.length));
-    const parLigne = Math.max(cri.length / 2, motLePlusLong);
-    return Math.max(34, Math.min(96, Math.round(560 / parLigne))) + "px";
-}
 
 /** Le héros en scène : celui du siège actif, sauf pendant un survol. */
 let herosSurvole = null;
@@ -1181,7 +1173,11 @@ function rendreScene(h) {
             pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
             h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
             vague ? el("span", { class: "tampon" }, vague) : null,
-            arts ? el("span", { class: "tampon jaune" }, t("Art alt")) : null,
+            arts ? el("button", {
+                class: "tampon jaune tb-choix-art",
+                title: t("Choisir l'art de la carte"),
+                onclick: () => ouvrirArtsHeros(h),
+            }, t("Art alt") + (prefs.heroArt(h.heroCardId) !== "standard" && prefs.heroArt(h.heroCardId) ? " ✓" : "")) : null,
         ),
         el("div", { class: "tb-bas" },
             el("button", {
@@ -1268,6 +1264,45 @@ function ouvrirCartesHeros(h) {
             ...[...nbSignatures].map(([id, n]) => vignette(id, "", n)),
             ...obligations.map((id) => vignette(id, "obligation", 0, t("Obligation"))),
             ...[...nbNemesis].map(([id, n]) => vignette(id, "nemesis", n, t("Némésis"))),
+        ),
+    );
+    zone.hidden = false;
+    basculerVueCartes(true);
+}
+
+/** Le choix de l'art de la carte de héros, à la place du roster : la carte
+ *  standard et chaque art alternatif, en grand, celui en usage cerclé de jaune.
+ *  Un clic choisit et la scène suit ; c'est le réglage que l'étape Arsenal
+ *  proposait déjà en vignettes, rendu visible là où l'on regarde le héros. */
+function ouvrirArtsHeros(h) {
+    const zone = document.getElementById("tb-vue-cartes");
+    if (!zone) return;
+    const base = String(h.heroCardId || "").split(",")[0];
+    const arts = ARTS_HEROS[base] || [];
+    const choix = prefs.heroArt(h.heroCardId) || "standard";
+    const options = [{ code: "standard", nom: t("Standard"), image: base }]
+        .concat(arts.map((a) => ({ code: a.code, nom: a.nom, image: `${base}_${a.code}` })));
+    poser(zone,
+        el("div", { class: "tb-entete" },
+            el("b", { class: "mvl" }, nomAffiche(h)),
+            el("span", { class: "tb-compte" }, t("Art de la carte") + " · " + t("mêmes valeurs de jeu")),
+            el("button", { class: "tb-mode", onclick: fermerCartesHeros }, "‹ " + t("Retour au roster")),
+        ),
+        el("div", { class: "tb-cartes-grille tb-arts" },
+            ...options.map((o) => el("div", { class: "tb-carte" + (o.code === choix ? " choisie" : "") },
+                el("img", {
+                    src: cardImageUrl(o.image), loading: "lazy", alt: o.nom,
+                    onmouseenter: () => loupe(o.image),
+                    onmouseleave: () => loupe(null),
+                    onclick: () => {
+                        prefs.setHeroArt(h.heroCardId, o.code);
+                        loupe(null);
+                        ouvrirArtsHeros(h);
+                        rendreScene(h);
+                    },
+                }),
+                el("span", { class: "tb-carte-etiquette" }, o.nom + (o.code === choix ? " ✓" : "")),
+            )),
         ),
     );
     zone.hidden = false;
@@ -1368,7 +1403,7 @@ function recruter(h, portraitEl) {
     if (scene) {
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
-            el("span", { class: "ono", style: { fontSize: tailleDuCri(onomatopee(h)) } }, onomatopee(h)),
+            el("span", { class: "ono" }, onomatopee(h)),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
@@ -2511,7 +2546,7 @@ function verrouillerCible(sc) {
         const cri = criDuMechant(sc);
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl((sc.villainCards || [])[0] || sc.tileImage), alt: "" }),
-            el("span", { class: "ono rouge", style: { fontSize: tailleDuCri(cri) } }, cri),
+            el("span", { class: "ono rouge" }, cri),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
