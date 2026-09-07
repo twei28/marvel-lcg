@@ -24,6 +24,12 @@
   --eux2:#ff4048;
   --eux-halo:rgba(230,36,41,.42);
 
+  /* Tailles. Le titre d'étape a perdu 8 px au profit des tuiles ; les modes
+     ont une largeur plancher par tuile (cinq tuiles à 150 px tiennent sur
+     un écran de 1180 px). */
+  --titre-etape:44px;
+  --tuile-mode-min:150px;
+
   /* Anciens noms, conservés pour ne rien casser : ils pointent vers les rôles
      ci-dessus. `--blue`, `--cyan` et `--green` n'ont plus aucun usage dans ce
      fichier ; s'il en réapparaît un, c'est une régression de la règle. */
@@ -204,7 +210,7 @@ button{cursor:pointer}
   text-transform:uppercase;
 }
 .step-head h1{
-  font-size:52px;
+  font-size:var(--titre-etape,44px);
   line-height:.88;
   text-transform:uppercase;
   color:#fff;
@@ -921,24 +927,25 @@ button{cursor:pointer}
 .brand-lockup.logo{flex-direction:row;align-items:center;gap:10px}
 .brand-lockup.logo .brand-sub{align-self:center}
 
-/* 2) modes à droite du titre
-   La bande de modes se met a HAUTEUR du titre, pas en dessous : les six
-   tuiles a leur taille normale (min-width:160px) faisaient toujours plus
-   large que la place restante, donc `flex-wrap` les renvoyait sur une ligne
-   entiere sous « Rassemble tes heros » — une bande de 80 pixels perdue avant
-   meme de voir un heros. Ici elles sont compactees (pas de largeur plancher,
-   marque et textes reduits) et la bande prend la place restante : elles
-   tiennent a droite du titre, sur une ou deux rangees selon la fenetre. */
-.team-header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px}
-.team-header .step-head{margin-bottom:0;flex:0 1 auto}
-.team-header .command-band{display:flex;flex-direction:column;gap:8px;align-items:flex-end;
-  flex:1 1 320px;min-width:0;margin-bottom:0;padding:8px}
-.team-header .mode-strip{justify-content:flex-end;gap:8px}
-.team-header .mode-pill{min-width:0;padding:7px 9px;gap:8px}
-.team-header .mode-mark{width:28px;height:28px;font-size:20px;border-width:1px}
-.team-header .mode-copy b{font-size:12px}
-.team-header .mode-copy small{font-size:10px}
-.team-header .count-btn{width:30px;height:30px}
+/* 2) Les modes EN TÊTE, sur toute la largeur (refonte du 7 septembre).
+   Avant, la bande de modes se serrait à droite du titre, au même poids qu'un
+   filtre. C'est pourtant le PREMIER choix du joueur : solo, à plusieurs,
+   campagne... Elle occupe donc sa propre rangée, en tuiles égales, sous un
+   titre réduit d'autant. Le compte de joueurs se range à droite de la rangée.
+   Hauteur totale inchangée à quelques pixels près : la grille ne descend pas. */
+.team-header{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-bottom:12px}
+.team-header .step-head{margin-bottom:0}
+.team-header .step-head p{display:none}          /* « Sélection prête » ne disait rien */
+.team-header .command-band{display:flex;flex-direction:row;align-items:center;gap:14px;
+  margin-bottom:0;padding:0;border:0;background:transparent}
+.team-header .mode-strip{flex:1 1 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--tuile-mode-min,150px),1fr));gap:8px}
+.team-header .mode-pill{min-width:0;min-height:54px;padding:8px 10px;gap:10px}
+.team-header .mode-mark{width:34px;height:34px;font-size:24px;border-width:1px}
+.team-header .mode-copy b{font-size:12.5px}
+.team-header .mode-copy small{font-size:10.5px}
+.team-header .count-row{flex:none}
+.team-header .count-btn{width:34px;height:34px}
+.team-header .campagne-bandeau{grid-column:1/-1}
 
 /* 3) hover héros nu (juste la carte, plus grande) */
 .card-hover.bare{width:auto!important;max-width:none;max-height:none;overflow:visible;padding:0;background:none;border:none;box-shadow:none}
