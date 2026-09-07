@@ -680,6 +680,29 @@
      7 septembre 2026) : sa taille descend avec sa longueur (`--nom-longueur`,
      posee par ScanCard), un caractere valant ~0,6 em, dans les 90 % de la
      largeur du jeton (0,3 carte). Plus de points de suspension. */
+  /* Sur la carte AGRANDIE (la loupe), les jetons quittent le coin bas gauche,
+     qui est celui du texte de la carte (demande de l'utilisateur, 7 sept.
+     2026) : les compteurs se rangent en colonne sur le bord droit de
+     l'illustration, les degats sur le bord gauche, la menace reste en haut a
+     droite. Le texte et le cout restent lisibles. */
+  .carte-apercu .jetons-compteurs {
+    left: auto;
+    right: 3%;
+    bottom: auto;
+    top: 30%;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 34%;
+  }
+
+  .carte-apercu .jetons-compteurs .jeton-carte {
+    width: calc(var(--card-w) * 0.22);
+  }
+
+  .carte-apercu .jeton-degats {
+    top: 30%;
+  }
+
   .jeton-nom {
     font-size: min(
       calc(var(--card-w) * 0.062),

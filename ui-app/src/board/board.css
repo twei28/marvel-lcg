@@ -2458,8 +2458,8 @@
   .zone-complot-principal .plateau-cartes,
   .zone-complots-secondaires .plateau-cartes {
     align-items: flex-start;
-    /* 22 en haut : l'etiquette de zone (4 + 12 px) et un jour de 6 px. */
-    padding-top: 22px;
+    /* 28 en haut : l'etiquette de zone (4 + 12 px) et un jour de 12 px. */
+    padding-top: 28px;
   }
 
   /* Une carte SANS etiquette de type (la pastille est retiree quand la zone
@@ -2488,7 +2488,7 @@
     align-items: flex-start;
     align-content: flex-start;
     justify-content: flex-end;
-    padding: 22px 0 4px 4px;
+    padding: 28px 0 4px 4px;
   }
 
   .zone-complot-principal .plateau-emplacement-titre,
