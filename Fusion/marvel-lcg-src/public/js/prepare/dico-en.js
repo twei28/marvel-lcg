@@ -10,6 +10,12 @@ export const DICO_EN_BASE = {
     /* ---- Wizard : général, étapes, navigation ---- */
     "Préparation de mission": "Mission prep",
     "Comment veux-tu jouer ?": "How do you want to play?",
+    "Épisode": "Episode",
+    "Roster": "Roster",
+    "Siège": "Seat",
+    "Choisis un héros": "Pick a hero",
+    "Main": "Hand",
+    "Art alt": "Alt art",
     "Changer de mode de jeu": "Change game mode",
     "Équipe": "Team",
     "Méchant": "Villain",

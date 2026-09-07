@@ -489,6 +489,17 @@ function render() {
                 el("main", { class: "stage accueil-stage" }, accueilView()),
             ),
         );
+    } else if (state.step === 0) {
+        // L'étape des héros (direction « Affiche ») prend tout l'écran : la
+        // moitié gauche est le héros en scène, la droite le roster et
+        // l'équipe. La fiche de mission n'y a plus rien à dire.
+        root.replaceChildren(
+            progressBar(),
+            el("div", { class: "layout accueil-layout" },
+                el("main", { class: "stage stage-affiche" }, stepView()),
+            ),
+            navBar(),
+        );
     } else {
         root.replaceChildren(
             progressBar(),
@@ -1032,8 +1043,8 @@ function accueilView() {
 
     return el("section", { class: "step accueil" },
         el("div", { class: "acc-titre" },
-            el("div", { class: "kicker" }, t("Préparation de mission")),
-            el("h1", { class: "mvl" }, "Marvel Champions"),
+            el("div", { class: "recitatif" }, t("Préparation de mission")),
+            el("h1", { class: "affiche" }, "Marvel", el("br"), "Champions"),
             el("p", {}, t("Comment veux-tu jouer ?")),
         ),
         grille,
@@ -1061,52 +1072,185 @@ function playerCountRow() {
     return row;
 }
 
+/* ---- Étape 1, direction « Affiche » (7 septembre) --------------------------
+   La moitié gauche est le héros EN SCÈNE : son art plein cadre, son nom en
+   italique géant, ses chiffres en tampons. La droite est le roster : un mur
+   de portraits carrés, tous visibles, et l'équipe en bas. Survoler un portrait
+   le met en scène ; cliquer le recrute, avec le geste de la carte qui surgit
+   (l'emprunt à la direction « Vitrine ») et son onomatopée. */
+
+/** L'onomatopée de chaque héros, par identifiant de deck. Repli : « BAM ! ». */
+const ONOMATOPEES = {
+    spider_man: "THWIP !", ghost_spider: "THWIP !", spider_woman: "THWIP !", miles_morales: "THWIP !",
+    wolverine: "SNIKT !", x_23: "SNIKT !", hulk: "SMASH !", she_hulk: "SMASH !",
+    thor: "KRAKOOM !", valkyrie: "KRAKOOM !", iron_man: "PEW !", war_machine: "BRATATAT !",
+    captain_america: "KLANG !", captain_marvel: "WHOOSH !", black_panther: "SLASH !",
+    black_widow: "ZAP !", hawkeye: "TWANG !", doctor_strange: "SHAZOOM !",
+    ant_man: "ZOOM !", wasp: "BZZZ !", quicksilver: "ZIP !", scarlet_witch: "SHAZOOM !",
+    deadpool: "BANG !", cyclops: "ZARK !", storm: "KRAKOOM !", colossus: "KLANG !",
+    daredevil: "WHAM !", venom: "BLAM !", groot: "I AM GROOT !", rocket_raccoon: "BRATATAT !",
+    gamora: "SLASH !", drax: "THUD !", star_lord: "PEW !", nebula: "ZAP !",
+    ms_marvel: "EMBIGGEN !", nova: "ZOOM !", ironheart: "PEW !", spider_ham: "OINK !",
+    magneto: "VRRMM !", phoenix: "FWOOSH !", rogue: "WHAM !", gambit: "KABOOM !",
+    nightcrawler: "BAMF !", shadowcat: "PHASE !", jubilee: "PAF !", iceman: "KRRRK !",
+    psylocke: "SHING !", bishop: "BZZT !", cable: "BRATATAT !", domino: "BANG !",
+    magik: "SHING !", angel: "WHOOSH !", silk: "THWIP !", echo: "WHAM !",
+};
+function onomatopee(hero) {
+    return ONOMATOPEES[hero.id] || "BAM !";
+}
+
+/** Le héros en scène : celui du siège actif, sauf pendant un survol. */
+let herosSurvole = null;
+
+function herosDuSiegeActif() {
+    const p = state.players[state.activeSlot];
+    return (p && p.hero) || null;
+}
+
 function stepTeam() {
-    // Le mode et le nombre de héros se choisissent sur l'ACCUEIL : ici ne
-    // restent que le titre, le bandeau de campagne (mode figé) et, en ligne,
-    // les liens d'invitation.
-    const wrap = el("section", { class: "step team-step" },
-        el("div", { class: "team-header" },
-            stepHead("Briefing 01", t("Rassemble tes héros"), t("Sélection prête")),
-            bandeauEnLigne(),
-            creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
-            choixCoop(),
-        ),
+    const wrap = el("section", { class: "step team-b" },
+        el("div", { class: "tb-scene", id: "tb-scene" }),
+        el("div", { class: "recitatif" }, t("Épisode") + " 1 · " + t("Rassemble tes héros")),
     );
     const f = state.heroFilters;
-    wrap.append(el("div", { class: "filterbar" },
-        el("input", {
-            class: "search",
-            placeholder: t("Rechercher un héros ou un trait"),
-            value: f.q,
-            oninput: (e) => { f.q = e.target.value; refreshHeroGrid(); },
-        }),
-        el("button", {
-            class: "chip" + (f.fav ? " on" : ""),
-            onclick: () => { f.fav = !f.fav; refreshHeroGrid(); },
-        }, t("Favoris")),
-        el("select", {
-            class: "sel vague-select",
-            onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
-        }, el("option", { value: "" }, t("Toutes les vagues"))),
-        el("button", {
-            class: "chip" + (f.homebrew ? " on" : ""),
-            title: t("Héros fan-made, hors de toute extension officielle"),
-            onclick: (e) => {
-                f.homebrew = !f.homebrew;
-                e.currentTarget.classList.toggle("on", f.homebrew);
-                // Les fan-made n'appartiennent a aucune vague : garder un filtre
-                // de vague actif en passant de l'un a l'autre ne rendrait jamais
-                // rien. On le relache, et le menu se cache (voir majMenuVagues).
-                f.vague = "";
-                majMenuVagues();
-                refreshHeroGrid();
-            },
-        }, "Fan-made"),
-    ));
-    wrap.append(el("div", { class: "hero-grid full", id: "hero-grid" }, el("div", { class: "loading" }, t("Chargement des héros..."))));
+    const droite = el("div", { class: "tb-droite" },
+        bandeauEnLigne(),
+        creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
+        choixCoop(),
+        el("div", { class: "tb-entete" },
+            el("b", { class: "mvl" }, t("Roster")),
+            el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+            creationCampagne() ? null : el("button", {
+                class: "tb-mode",
+                title: t("Changer de mode de jeu"),
+                onclick: () => { hideHover(); state.accueil = true; render(); },
+            }, libelleMode(state.mode) + " · " + state.playerCount + " " + t("héros") + " ›"),
+        ),
+        el("div", { class: "tb-filtres" },
+            el("input", {
+                class: "search tb-search",
+                placeholder: t("Rechercher un héros ou un trait"),
+                value: f.q,
+                oninput: (e) => { f.q = e.target.value; refreshHeroGrid(); },
+            }),
+            el("button", {
+                class: "tampon" + (f.fav ? " on" : ""),
+                onclick: (e) => { f.fav = !f.fav; e.currentTarget.classList.toggle("on", f.fav); refreshHeroGrid(); },
+            }, t("Favoris")),
+            el("select", {
+                class: "sel vague-select tampon",
+                onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
+            }, el("option", { value: "" }, t("Toutes les vagues"))),
+            el("button", {
+                class: "tampon" + (f.homebrew ? " on" : ""),
+                title: t("Héros fan-made, hors de toute extension officielle"),
+                onclick: (e) => {
+                    f.homebrew = !f.homebrew;
+                    e.currentTarget.classList.toggle("on", f.homebrew);
+                    f.vague = "";
+                    majMenuVagues();
+                    refreshHeroGrid();
+                },
+            }, "Fan-made"),
+        ),
+        el("div", { class: "hero-grid tb-roster", id: "hero-grid" }, el("div", { class: "loading" }, t("Chargement des héros..."))),
+        el("div", { class: "tb-equipe", id: "tb-equipe" }),
+    );
+    wrap.append(droite);
+    herosSurvole = null;
     loadHeroes();
+    // La scène et l'équipe se dessinent une fois la section DANS la page :
+    // elles se retrouvent par identifiant.
+    Promise.resolve().then(() => { rendreEquipe(); rendreScene(herosDuSiegeActif()); });
     return wrap;
+}
+
+/** La moitié gauche : l'art, le nom, les chiffres du héros donné (ou l'appel
+ *  à en choisir un). Reconstruite à chaque survol et à chaque choix. */
+function rendreScene(h) {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    if (!h) {
+        scene.replaceChildren(
+            el("div", { class: "tb-art vide" }),
+            el("div", { class: "tb-trame" }),
+            el("div", { class: "tb-nomg" },
+                el("small", {}, t("Siège") + " " + (state.activeSlot + 1)),
+                t("Choisis un héros")),
+        );
+        return;
+    }
+    const traits = [...(h.traits || []), ...(h.traitsAlterEgo || [])].slice(0, 4).join(" · ");
+    const vague = h.homebrew ? t("Fan-made")
+        : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
+    const arts = (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length;
+    scene.replaceChildren(
+        h.lie
+            ? el("div", { class: "tb-art" }, portraitDuo(h))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(picIdHeros(h.heroCardId))}")` } }),
+        el("div", { class: "tb-trame" }),
+        el("div", { class: "tb-nomg" },
+            el("small", {}, traits || (h.extension || "").replace(/^\d+\.\s*/, "")),
+            nomAffiche(h)),
+        el("div", { class: "tb-tampons" },
+            pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
+            h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
+            vague ? el("span", { class: "tampon" }, vague) : null,
+            arts ? el("span", { class: "tampon jaune" }, t("Art alt")) : null,
+        ),
+    );
+}
+
+/** Les sièges de l'équipe, en bas de la colonne de droite. */
+function rendreEquipe() {
+    const zone = document.getElementById("tb-equipe");
+    if (!zone) return;
+    const sieges = [];
+    for (let i = 0; i < state.playerCount; i++) {
+        const pl = state.players[i];
+        const pilotable = !(enLigne() && i > 0);
+        sieges.push(el("button", {
+            class: "tb-siege" + (state.activeSlot === i ? " actif" : "") + (pl.hero ? " plein" : "") + (pilotable ? "" : " salon-invite"),
+            disabled: pilotable ? undefined : "",
+            title: pilotable ? (pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
+            onclick: () => { if (!pilotable) return; state.activeSlot = i; rendreEquipe(); rendreScene(herosDuSiegeActif()); },
+        },
+            pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
+            el("span", { class: "tb-siege-nom" }, pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)),
+        ));
+    }
+    zone.replaceChildren(
+        el("span", { class: "tb-equipe-k" }, t("Équipe")),
+        ...sieges,
+    );
+}
+
+/** Recruter : le geste de la carte qui surgit, l'onomatopée, puis la scène. */
+function recruter(h, portraitEl) {
+    assignHero(state.activeSlot, h);
+    autoAdvanceSlot();
+    herosSurvole = null;
+    // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
+    // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
+    rendreScene(herosDuSiegeActif());
+    rendreEquipe();
+    const scene = document.getElementById("tb-scene");
+    if (scene) {
+        const eclair = el("div", { class: "tb-eclair" },
+            el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
+            el("span", { class: "ono" }, onomatopee(h)),
+        );
+        scene.append(eclair);
+        eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
+        setTimeout(() => eclair.remove(), 1400);
+    }
+    document.querySelectorAll(".tb-port").forEach((b) => {
+        b.classList.toggle("chosen", activePlayers().some((p) => p.hero && p.hero.id === b.dataset.hero));
+    });
+    // La barre du bas suit (Continuer s'allume) sans reconstruire l'écran.
+    const nav = document.querySelector(".nav");
+    if (nav) nav.replaceWith(navBar());
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -1168,13 +1312,14 @@ async function refreshHeroGrid(pre) {
     const list = heroes.filter((h) =>
         // Le nom ET les traits des deux faces (voir `recherche` dans
         // catalog.js) : « avenger » ne rend que les Avengers, « genius » que
-        // les alter-ego savants. Sans les traits, monter une equipe thematique
-        // obligeait a connaitre par coeur qui porte quoi.
+        // les alter-ego savants.
         (!q || h.recherche.includes(q)) &&
         (!f.vague || String(h.vague) === f.vague) &&
         (!f.fav || favs.includes(h.id)) &&
         // Le homebrew est masqué par défaut et s'affiche seul quand on le coche.
         (!!h.homebrew === f.homebrew));
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = list.length + " " + t("héros");
     if (!list.length) {
         grid.replaceChildren(el("div", { class: "empty-state" }, t("Aucun héros trouvé")));
         return;
@@ -1182,18 +1327,15 @@ async function refreshHeroGrid(pre) {
     grid.replaceChildren(...list.map((h) => {
         const chosen = activePlayers().some((p) => p.hero && p.hero.id === h.id);
         return el("button", {
-            class: "hero-card cut" + (chosen ? " chosen" : ""),
-            onclick: () => { assignHero(state.activeSlot, h); autoAdvanceSlot(); render(); },
-            onmouseenter: (e) => showHeroHover(h, e.currentTarget),
-            onmouseleave: scheduleHide,
+            class: "tb-port" + (chosen ? " chosen" : ""),
+            "data-hero": h.id,
+            title: nomAffiche(h),
+            onclick: (e) => recruter(h, e.currentTarget),
+            onmouseenter: () => { herosSurvole = h; rendreScene(h); },
+            onmouseleave: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
         },
             portraitHeros(h),
-            el("span", { class: "hc-name mvl" }, nomAffiche(h)),
-            pvAffiches(h) ? el("span", { class: "hc-hp" }, t("PV") + " " + pvAffiches(h)) : null,
-            // Pastille discrète : ce héros a au moins un art alternatif.
-            (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length
-                ? el("span", { class: "hc-art", title: t("Art alternatif disponible") }, t("ART ALT"))
-                : null,
+            el("span", { class: "tb-port-nom" }, nomAffiche(h)),
             el("span", {
                 class: "hc-fav" + (prefs.isFavHero(h.id) ? " on" : ""),
                 title: t("Favori"),
@@ -1204,16 +1346,10 @@ async function refreshHeroGrid(pre) {
                     e.currentTarget.classList.toggle("on", on);
                 },
             }, "★"),
-            // Pendant de l'etoile : voir le deck du heros sans avoir a le
-            // choisir et a descendre jusqu'au Briefing 02.
             el("span", {
                 class: "hc-deck",
                 title: t("Voir le deck"),
-                onclick: (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    ouvrirDeckDuHeros(h);
-                },
+                onclick: (e) => { e.stopPropagation(); e.preventDefault(); ouvrirDeckDuHeros(h); },
             }, "▤"),
         );
     }));
