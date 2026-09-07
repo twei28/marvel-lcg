@@ -112,6 +112,20 @@ rangée, comme `board.css` le fait déjà pour la scène PC (`board.css:893`).
 La manigance principale reste en format paysage : même hauteur, largeur
 88/63 fois plus grande.
 
+⚠ Ruling du 07/09/2026 (tâche 12) : une carte posée ne se dimensionne plus
+depuis une estimation en hauteur d'écran. Elle se dimensionne depuis la
+hauteur RÉELLE de sa rangée, en unités de container query
+(`.rangee-cartes-fenetre { container-type: size }`,
+`--card-w: clamp(84px, (100cqh - 18px) * 63/88, 150px)`, 18 px étant la
+jauge PV/menace qui déborde sous le cadre). La formule `100dvh - 166px` de
+cette section est conservée seulement pour la main (`--pp-card-w`) et comme
+estimation de conception dans `taille-carte.ts`
+(`HAUTEUR_JAUGE = 18`). Raison : une estimation en `dvh` doit deviner la
+hauteur de la barre du bas, et la page de fixtures la gonfle à 88 px à
+cause de son bandeau « Saved state ». Mesurer la rangée fait tenir les
+cartes quelle que soit la hauteur que prennent la barre, la zone de sécurité
+ou une bannière.
+
 ### 4.3 Défilement d'une rangée
 
 Une rangée qui ne tient pas défile horizontalement avec `scroll-snap` carte
@@ -184,6 +198,10 @@ affirmations portrait de `plateau-mobile.spec.ts`. Le projet Playwright `s24`
 
 Conservés : `MainEventail`, `BarreBas`, `CarteOuverte`, `useAppuiLong`,
 `couches.ts`, `joueurs.ts`, `useModeMobile`, `useOrientation`.
+
+⚠ Ruling du 07/09/2026 (tâche 12) : le filet `plateau-mobile.spec.ts` de
+l'ancien rendu est rouge depuis `a1de7adb` (`.tiroir-languette` 18 x 56 px),
+antérieur à ce chantier ; laissé tel quel jusqu'à la suppression.
 
 ## 5. Architecture du plateau
 
