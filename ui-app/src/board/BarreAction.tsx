@@ -7,6 +7,7 @@
 import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
+import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
 import { traduireMoteur } from './vocabulaire-moteur'
 
 /**
@@ -47,14 +48,10 @@ export function sansIdentifiants(texte: string): string {
  */
 export function remplacerSymboles(texte: string): string {
   return (
-    texte
+    // Les ressources deviennent des marqueurs d'icones (icones-ressources.tsx),
+    // rendus par `avecIcones` la ou le texte s'affiche.
+    marquerRessources(texte)
       .replace(/\[\[boost\]\]/g, '★')
-      // Les jetons de ressources arrivent colles (« [[physical]][[energy]] ») :
-      // les remplacer un par un souderait les mots en « physicalenergy ». On
-      // traite donc la suite entiere d'un coup, pour l'articuler.
-      .replace(/(?:\[\[(?:physical|mental|energy|wild)\]\])+/g, (suite) =>
-        (suite.match(/physical|mental|energy|wild/g) ?? []).join('+')
-      )
       // Le moteur espace ses jetons de boost irregulierement (« ★ ★★ ») : on
       // regroupe les etoiles consecutives pour qu'elles se lisent d'un bloc.
       .replace(/★\s+(?=★)/g, '★')
@@ -173,13 +170,13 @@ export function BarreAction({
 
       <div className="plateau-action-texte">
         <span className="plateau-eyebrow">{t('À toi de jouer')}</span>
-        <strong>{demande.prompt_text ? sansIdentifiants(demande.prompt_text) : t('Choisis une action')}</strong>
+        <strong>{demande.prompt_text ? avecIcones(nettoyerNarration(demande.prompt_text)) : t('Choisis une action')}</strong>
         <span className="pa-etape">{etape}</span>
       </div>
 
       {option ? (
         <div className="plateau-action-encours">
-          <span className="plateau-action-nom">{nomLisible(option)}</span>
+          <span className="plateau-action-nom">{avecIcones(marquerRessources(nomLisible(option)))}</span>
           {optionAvecCibles ? (
             <span className="pa-compteur">
               <em>{t('Cibles')}</em>
@@ -194,11 +191,11 @@ export function BarreAction({
           {interaction.coutAffiche ? (
             <span className="pa-compteur pa-cost">
               <em>{t('Coût payé')}</em>
-              <b>{interaction.coutAffiche}</b>
+              <b>{avecIcones(coutEnIcones(interaction.coutAffiche))}</b>
             </span>
           ) : null}
           {interaction.raison ? (
-            <span className="plateau-action-raison">{sansIdentifiants(interaction.raison)}</span>
+            <span className="plateau-action-raison">{avecIcones(marquerRessources(sansIdentifiants(interaction.raison)))}</span>
           ) : null}
         </div>
       ) : (
@@ -213,7 +210,7 @@ export function BarreAction({
                 title={candidate.failure_reason || undefined}
                 onClick={() => interaction.choisirOption(candidate)}
               >
-                {nomLisible(candidate)}
+                {avecIcones(marquerRessources(nomLisible(candidate)))}
                 {porteur ? <em>{porteur}</em> : null}
               </button>
             )

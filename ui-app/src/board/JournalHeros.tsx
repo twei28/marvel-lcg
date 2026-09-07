@@ -20,6 +20,7 @@
 import { useEffect, useRef } from 'react'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
+import { avecIcones } from './icones-ressources'
 import type { World } from './world'
 
 /** Noms des cartes que ce joueur contrôle. Sert à reconnaître ses actions. */
@@ -108,8 +109,8 @@ export function JournalHeros({
             <li className={`journal-heros-entree type-${entree.type}`} key={entree.cle}>
               <span className="jh-round">R{entree.round}</span>
               <span className="jh-texte">
-                <b>{entree.titre}</b>
-                {entree.detail ? <small>{entree.detail}</small> : null}
+                <b>{avecIcones(entree.titre)}</b>
+                {entree.detail ? <small>{avecIcones(entree.detail)}</small> : null}
               </span>
             </li>
           ))}

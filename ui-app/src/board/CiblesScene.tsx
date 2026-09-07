@@ -9,6 +9,7 @@
 
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { t } from './langue'
+import { avecIcones, marquerRessources } from './icones-ressources'
 
 export type CibleScene = {
   props: ScanCardProps
@@ -47,7 +48,7 @@ export function CiblesScene({
     <div className="cibles-scene" role="group" aria-label={`${t('Cibles possibles :')} ${titre}`}>
       <div className="cibles-scene-entete">
         <span className="plateau-eyebrow">{t('Choisir la cible')}</span>
-        <strong>{titre}</strong>
+        <strong>{avecIcones(marquerRessources(titre))}</strong>
         {/* « 1 / 2 » : combien de cibles sont prises sur combien il en faut.
             Le minimum et le maximum ne s'ecrivent que s'ils different. */}
         <span className="cibles-scene-compte">

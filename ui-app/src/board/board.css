@@ -2717,6 +2717,35 @@
     backdrop-filter: blur(10px);
   }
 
+  /* --- Les icones de ressources dans les textes ------------------------------
+     Police ChampionsIcons (celle du jeu, servie par le moteur) : P poing, M
+     cerveau, E eclair, W etoile. Colorees par ressource, cernees d'un trait
+     plus fonce de la meme couleur (demande de l'utilisateur, 7 sept. 2026).
+     Rendues par `avecIcones` (icones-ressources.tsx). */
+  @font-face {
+    font-family: 'ChampionsIcons';
+    src: url('/public/fonts/ChampionsIcons.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  .icone-res {
+    font-family: 'ChampionsIcons';
+    font-style: normal;
+    font-size: 1.15em;
+    line-height: 1;
+    vertical-align: -0.1em;
+    margin: 0 0.06em;
+    color: var(--res, #fff);
+    -webkit-text-stroke: 0.06em color-mix(in srgb, var(--res, #fff) 55%, #000);
+    paint-order: stroke fill;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  }
+
+  .icone-res.res-physical { --res: #e74c3c; }
+  .icone-res.res-mental { --res: #3498db; }
+  .icone-res.res-energy { --res: #f1c40f; }
+  .icone-res.res-wild { --res: #2ecc71; }
+
   /* --- Deroule detaille de la phase du mechant : la scene centrale ---------
      FIXE au centre de l'ecran, elle ne bouge jamais d'une etape a l'autre.
      Elle montre les cartes de l'etape, toutes a la MEME taille, face visible ;

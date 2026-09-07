@@ -5,6 +5,7 @@ import type { Demande, Option } from './ask'
 import { CarteApercu } from './Board'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
+import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { traduireMoteur } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
@@ -201,7 +202,7 @@ export function EvenementCentrale({
       aria-label={t('Événement de jeu')}
     >
       <span className="plateau-eyebrow">{libelleEvenement(eventName)}</span>
-      <strong>{texte}</strong>
+      <strong>{avecIcones(texte)}</strong>
       {validationRequise && continuer ? (
         <button type="button" className="dc-continue" onClick={continuer}>
           {t('Continuer')}
@@ -281,7 +282,7 @@ export function DemandeCentrale({
     >
       <div className="dc-texte">
         <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>
-        <strong>{titreDepuisSource(demande, options, cartesParId)}</strong>
+        <strong>{avecIcones(marquerRessources(titreDepuisSource(demande, options, cartesParId)))}</strong>
       </div>
 
       <div className="af-boutons dc-boutons">
@@ -324,7 +325,7 @@ export function DemandeCentrale({
                 onBlur={() => desactiverOption(option)}
                 onClick={() => choisirOuInformer(option)}
               >
-                <span>{nom}</span>
+                <span>{avecIcones(marquerRessources(nom))}</span>
                 {source ? <small>{source}</small> : null}
                 {cibles ? <small className="af-cibles">{cibles}</small> : null}
               </button>

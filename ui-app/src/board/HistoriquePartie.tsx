@@ -9,6 +9,7 @@ import {
   type MemoireCauses,
 } from './causalite'
 import { t } from './langue'
+import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 
@@ -576,8 +577,8 @@ export function HistoriquePartie({
                   <span className="hp-round">R{entree.round}</span>
                   <span className="hp-type">{libelleType(entree.type)}</span>
                   <span className="hp-texte">
-                    <b>{entree.titre}</b>
-                    {entree.detail ? <small>{entree.detail}</small> : null}
+                    <b>{avecIcones(entree.titre)}</b>
+                    {entree.detail ? <small>{avecIcones(entree.detail)}</small> : null}
                   </span>
                 </li>
               ))}
