@@ -231,6 +231,44 @@
     text-overflow: ellipsis;
     color: rgba(255, 255, 255, 0.7);
   }
+
+  /* --- L'ecran portrait ------------------------------------------------------ */
+
+  .ecran-portrait {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 18px;
+    padding: 24px;
+    text-align: center;
+    color: #f8fafc;
+    background: #0d0f13;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .ecran-portrait-icone {
+    width: 34px;
+    height: 62px;
+    border: 3px solid #f8fafc;
+    border-radius: 8px;
+    animation: ecran-portrait-tourne 1.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes ecran-portrait-tourne {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-90deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ecran-portrait-icone {
+      animation: none;
+      transform: rotate(-90deg);
+    }
+  }
 }
 
 /* --- Taille des cartes : DOIT etre dans `utilitaires` ---------------------

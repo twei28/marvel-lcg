@@ -10,6 +10,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Partagé (boutons, libellés courts) ----
   'autres': 'others',
   'Fermer': 'Close',
+  // ---- Plateau paysage (mobile/) ----
+  'Tourne ton téléphone': 'Turn your phone',
+  'Le plateau se joue en paysage.': 'The board is played in landscape.',
+  'cartes hors champ': 'cards out of view',
   'Annuler': 'Cancel',
   'Confirmer': 'Confirm',
   'Passer': 'Pass',
