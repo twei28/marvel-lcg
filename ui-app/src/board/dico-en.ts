@@ -110,6 +110,8 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- board/card-model.ts ----
   'Carte face cachée': 'Facedown card',
+  'Carte rencontre': 'Encounter card',
+  Boost: 'Boost',
 
   // ---- components/ScanCard.tsx : types de cartes et badges ----
   'Héros': 'Hero',

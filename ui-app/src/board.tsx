@@ -35,7 +35,7 @@ import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
-import { kindOf, pvMaximum, toScanCard, type ContexteCarte } from './board/card-model'
+import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
@@ -1685,6 +1685,32 @@ function PagePartie({
     (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
   )
+  // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
+  // jamais sur la table. Face visible sur demande : la carte revelee et les
+  // boosts sont encore face cachee dans le monde de la trame retenue (le fait
+  // est journalise avant le retournement, player_action.py) et le joueur doit
+  // pourtant les lire. Meme forcage que `ciblesHorsTable` (interaction.ts).
+  const carteScene = useCallback(
+    (id: number, faceVisible: boolean): ScanCardProps | undefined => {
+      const carte = cartesMondeParId.get(id)
+      if (!carte) return undefined
+      return toScanCard(
+        faceVisible ? { ...carte, visible_for_players: [joueurActif], is_face_up: true } : carte,
+        { playerId: joueurActif, actives: new Set(), catalogue }
+      )
+    },
+    [cartesMondeParId, joueurActif, catalogue]
+  )
+  const dosRencontre = useMemo<ScanCardProps>(
+    () => ({
+      id: 'dos-rencontre',
+      name: t('Carte rencontre'),
+      kind: 'unknown',
+      imageUrl: scanUrl('encounter'),
+      facedown: true,
+    }),
+    []
+  )
   const [optionSurvolee, setOptionSurvolee] = useState<Option | undefined>(undefined)
   const [pulseTemporaire, setPulseTemporaire] = useState<Set<number>>(() => new Set())
   const [ciblesMenu, setCiblesMenu] = useState<{ titre: string; cartes: ScanCardProps[] } | undefined>(
@@ -2624,6 +2650,10 @@ function PagePartie({
             // moteur attend ta reponse » serait alors faux. C'est la mention
             // d'attente ci-dessous qui prend le relais dans ce cas.
             questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
+            // Les cartes de la scene, et le dos d'une carte rencontre pour
+            // l'etape de distribution (voir `carteScene` plus haut).
+            carteScene={carteScene}
+            dosRencontre={dosRencontre}
             // Les deux faces de NOTRE heros : la chute d'un autre joueur ne
             // coupe plus le deroule de ce siege-ci, elle y reste une etape
             // marquee et la phase continue (constat F5).

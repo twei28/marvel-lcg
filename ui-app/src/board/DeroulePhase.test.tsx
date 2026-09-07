@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { DELAI_ALERTE_FILET_MS, DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
+import type { ScanCardProps } from '../components/ScanCard'
 import { CLE_REGLE_DEPLIEE } from './moteur'
 
 const etapes: EtapeDeroule[] = [
@@ -402,12 +403,14 @@ describe('cartouche du deroule', () => {
     vi.useFakeTimers()
     try {
       render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} />)
-      expect(screen.getByText('Boost A')).toBeInTheDocument()
-      expect(screen.queryByText('Boost B')).not.toBeInTheDocument()
+      // Le nom parait deux fois : sur la carte de la scene et sur sa ligne.
+      // Les deux se retournent ensemble.
+      expect(screen.getAllByText('Boost A').length).toBeGreaterThan(0)
+      expect(screen.queryAllByText('Boost B')).toHaveLength(0)
       await act(async () => {
         await vi.advanceTimersByTimeAsync(1600)
       })
-      expect(screen.getByText('Boost B')).toBeInTheDocument()
+      expect(screen.getAllByText('Boost B').length).toBeGreaterThan(0)
     } finally {
       vi.useRealTimers()
     }
@@ -1887,13 +1890,14 @@ describe('le bilan de fin de phase', () => {
         <DeroulePhase etapes={etapes} phaseMechantEnCours onTerminer={() => {}} />
       )
       fireEvent.click(suivant())
-      expect(carte.classList.contains('deroule-en-avant')).toBe(true)
+      // Plus aucune carte de la table n'est touchee : la scene porte les
+      // siennes. Seul le voile reste, et il doit tomber avec l'ecran de fin.
+      expect(carte.className).toBe('scan-card')
       expect(document.body.classList.contains('deroule-voile')).toBe(true)
 
       rerender(
         <DeroulePhase etapes={etapes} phaseMechantEnCours partieFinie onTerminer={() => {}} />
       )
-      expect(carte.classList.contains('deroule-en-avant')).toBe(false)
       expect(document.body.classList.contains('deroule-voile')).toBe(false)
       scene.remove()
     })
@@ -1916,139 +1920,126 @@ describe('le bilan de fin de phase', () => {
     })
   })
 
-  // --- Le cartouche ne recouvre ni la main, ni la question du moteur, ni la
-  // carte agrandie ------------------------------------------------------------
-  // Mesures en partie reelle (fenetre 1920 x 889, table a l'echelle 0,814) :
-  // main 133-1468 x 623-806, journal 1600-1912 x 623-806, panneau central du
-  // moteur 630-1290 x 334-466. Remonte au-dessus de la main, le cartouche
-  // (390-613) etait tombe SUR la question du moteur, dont seul le titre
-  // depassait. Il se tient desormais a DROITE de la main, dans la colonne du
-  // journal, le bas au bas du journal (voir la mesure dans DeroulePhase.tsx).
-  describe('place du cartouche sur la table', () => {
-    type Boite = { gauche: number; haut: number; largeur: number; hauteur: number }
+  // --- Les cartes de la scene ------------------------------------------------
+  // La scene montre les cartes de l'etape ELLE-MEME, lues dans l'index du
+  // monde par `carteScene`, jamais sur la table : la table peut etre en
+  // avance sur le recit, et la carte revelee y est encore face cachee.
+  describe('les cartes de la scene', () => {
+    const scan = (id: number, nom: string): ScanCardProps => ({
+      id: String(id),
+      name: nom,
+      kind: 'minion',
+      imageUrl: `/scan/${id}`,
+    })
 
-    const rect = ({ gauche, haut, largeur, hauteur }: Boite): DOMRect =>
-      ({
-        top: haut,
-        bottom: haut + hauteur,
-        left: gauche,
-        right: gauche + largeur,
-        width: largeur,
-        height: hauteur,
-        x: gauche,
-        y: haut,
-        toJSON: () => ({}),
-      }) as DOMRect
-
-    /**
-     * Pose une table mesurable : la main et, si on la donne, la case du
-     * journal. jsdom ne fait aucune mise en page : on lui souffle les boites
-     * que le vrai navigateur avait mesurees.
-     */
-    const poserTable = (main: Boite, journal?: Boite) => {
-      const scene = document.createElement('div')
-      scene.className = 'plateau-scene'
-      const zoneMain = document.createElement('div')
-      zoneMain.className = 'zone-main'
-      zoneMain.getBoundingClientRect = () => rect(main)
-      scene.append(zoneMain)
-      if (journal) {
-        const zoneJournal = document.createElement('section')
-        zoneJournal.className = 'journal-heros'
-        zoneJournal.getBoundingClientRect = () => rect(journal)
-        scene.append(zoneJournal)
+    it('montre l auteur, ses boosts et la cible, tous par leur scan', () => {
+      const appels: [number, boolean][] = []
+      const carteScene = (id: number, faceVisible: boolean) => {
+        appels.push([id, faceVisible])
+        return scan(id, id === 50 ? 'Klaw' : id === 12 ? 'Colossus' : 'Boost')
       }
-      document.body.append(scene)
-    }
-
-    const VARIABLES = ['--deroule-gauche', '--deroule-largeur', '--deroule-bas', '--deroule-decalage']
-    const lire = (nom: string) => Number.parseInt(document.body.style.getPropertyValue(nom), 10)
-    const aucuneVariable = () => VARIABLES.every((nom) => document.body.style.getPropertyValue(nom) === '')
-
-    const mainMesuree: Boite = { gauche: 133, haut: 623, largeur: 1335, hauteur: 183 }
-    const journalMesure: Boite = { gauche: 1600, haut: 623, largeur: 312, hauteur: 183 }
-
-    afterEach(() => {
-      for (const nom of VARIABLES) document.body.style.removeProperty(nom)
-      for (const scene of document.querySelectorAll('.plateau-scene')) scene.remove()
+      const resolue: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Klaw',
+          cibleNom: 'Colossus',
+          montant: 4,
+          boosts: [{ cle: 'b', nom: 'Whip', cibleId: 77, apport: 1 }],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={resolue} carteScene={carteScene} onTerminer={() => {}} />
+      )
+      expect(container.querySelectorAll('.deroule-carte .scan-card')).toHaveLength(3)
+      // L'auteur et la cible tels qu'ils sont ; le boost face visible, il est
+      // encore face cachee dans le monde de cette trame.
+      expect(appels).toEqual(
+        expect.arrayContaining([
+          [50, false],
+          [77, true],
+          [12, false],
+        ])
+      )
+      expect(container.querySelector('.deroule-fleche')).not.toBeNull()
+      expect(screen.getByText('Boost +1')).toBeInTheDocument()
     })
 
-    it('se centre sur la main, le bas au bas de la main', () => {
-      vi.stubGlobal('innerHeight', 889)
-      poserTable(mainMesuree, journalMesure)
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      const gauche = lire('--deroule-gauche')
-      const largeur = lire('--deroule-largeur')
-      // `left` vise le milieu de la main (133 + 1335 / 2), et la translation
-      // de -50 % ramene le cartouche sur ce milieu.
-      expect(gauche).toBe(Math.round(133 + 1335 / 2))
-      expect(document.body.style.getPropertyValue('--deroule-decalage')).toBe('-50%')
-      // Jamais plus large que le repli du CSS (560), pour rester lisible d'un
-      // coup d'oeil.
-      expect(largeur).toBe(560)
-      // Le bas au bas de la main : 889 - 806.
-      expect(lire('--deroule-bas')).toBe(889 - (623 + 183))
-      vi.unstubAllGlobals()
+    it('montre la carte revelee face visible', () => {
+      const appels: [number, boolean][] = []
+      const carteScene = (id: number, faceVisible: boolean) => {
+        appels.push([id, faceVisible])
+        return scan(id, 'Captured by Hydra')
+      }
+      const revelation: EtapeDeroule[] = [
+        {
+          cle: 'r',
+          temps: 'revelation',
+          titre: 'revelation',
+          regle: 'regle:revelation',
+          carteId: 40,
+          auteurNom: 'Scott Lang',
+          cibleNom: 'Captured by Hydra',
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={revelation} carteScene={carteScene} onTerminer={() => {}} />
+      )
+      // Autant d'appels que de rendus, mais toujours la carte 40, face visible.
+      expect(appels.length).toBeGreaterThan(0)
+      expect(appels.every(([id, faceVisible]) => id === 40 && faceVisible)).toBe(true)
+      expect(container.querySelector('.deroule-carte.est-revelee .scan-card')).not.toBeNull()
+      expect(container.querySelector('.deroule-fleche')).toBeNull()
     })
 
-    it('ne part jamais dans la colonne du journal, meme quand la main est tres large', () => {
-      // Constate en partie : ancre a droite d'une main de 1335 px, le
-      // cartouche finissait tout a droite de l'ecran, sous la manigance
-      // principale agrandie, et devenait illisible.
-      vi.stubGlobal('innerHeight', 889)
-      poserTable(mainMesuree, journalMesure)
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      const droite = lire('--deroule-gauche') + lire('--deroule-largeur') / 2
-      expect(droite).toBeLessThan(1600)
-      vi.unstubAllGlobals()
+    it('montre un dos de carte pour la distribution', () => {
+      const dos: ScanCardProps = {
+        id: 'dos',
+        name: 'Carte rencontre',
+        kind: 'unknown',
+        imageUrl: '/scan/encounter',
+        facedown: true,
+      }
+      const distribution: EtapeDeroule[] = [
+        {
+          cle: 'd',
+          temps: 'distribution',
+          titre: 'distribution',
+          regle: 'regle:distribution',
+          auteurNom: 'Scott Lang',
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={distribution} dosRencontre={dos} onTerminer={() => {}} />
+      )
+      expect(container.querySelector('.deroule-carte.est-dos .scan-card')).not.toBeNull()
     })
 
-    it('suit la table quand elle change de place, sans valeur en dur', () => {
-      // Le meme cartouche sur un autre ecran : la main est ailleurs, le
-      // cartouche aussi. Une valeur en dur donnerait deux fois la meme.
-      vi.stubGlobal('innerHeight', 1200)
-      poserTable({ gauche: 100, haut: 900, largeur: 900, hauteur: 240 })
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(lire('--deroule-gauche')).toBe(550)
-      expect(lire('--deroule-bas')).toBe(1200 - 1140)
-      vi.unstubAllGlobals()
+    it('ecrit le nom a la place d une carte dont le scan manque', () => {
+      const { container } = render(
+        <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />
+      )
+      // L'etape de menace n'a pas de carte connue ; la suivante a un auteur.
+      fireEvent.click(suivant())
+      const absentes = container.querySelectorAll('.deroule-carte-absente')
+      expect(absentes).toHaveLength(2)
+      expect(absentes[0]?.textContent).toBe('Ultron')
+      expect(absentes[1]?.textContent).toBe('Shuri')
     })
 
-    it('retrecit avec une main etroite, sans jamais la deborder', () => {
-      vi.stubGlobal('innerHeight', 800)
-      poserTable({ gauche: 200, haut: 600, largeur: 400, hauteur: 150 })
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(lire('--deroule-largeur')).toBe(400 - 20)
-      vi.unstubAllGlobals()
-    })
-
-    it('ne devine rien quand aucune table n est mesurable', () => {
-      // Plateau mobile, ou premiere frame : pas de geometrie, pas de variable,
-      // et le CSS reprend son repli.
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(aucuneVariable()).toBe(true)
-    })
-
-    it('se tient sur la main meme sans journal', () => {
-      // Le journal disparait quand il est vide : le cartouche ne depend plus
-      // de lui pour se placer.
-      vi.stubGlobal('innerHeight', 889)
-      poserTable(mainMesuree)
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(aucuneVariable()).toBe(false)
-      vi.unstubAllGlobals()
-    })
-
-    it('rend sa place au cartouche disparu', () => {
-      // Sans ce nettoyage, les variables resteraient posees sur le body pour
-      // le reste de la partie.
-      vi.stubGlobal('innerHeight', 889)
-      poserTable(mainMesuree, journalMesure)
-      const { unmount } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(aucuneVariable()).toBe(false)
-      unmount()
-      expect(aucuneVariable()).toBe(true)
-      vi.unstubAllGlobals()
+    it('ne montre aucune carte sur le bilan', () => {
+      const { container } = render(
+        <DeroulePhase etapes={etapes} phaseMechantEnCours={false} onTerminer={() => {}} />
+      )
+      // Jusqu'au bilan.
+      while (screen.queryByText('À toi de jouer') === null) fireEvent.click(suivant())
+      expect(container.querySelector('.deroule-cartes')).toBeNull()
     })
   })
 

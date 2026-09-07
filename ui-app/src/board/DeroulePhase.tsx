@@ -1,10 +1,12 @@
-// Le cartouche du deroule detaille : une etape a la fois.
+// La scene centrale du deroule detaille : une etape a la fois.
 //
-// FIXE au milieu de la main du joueur, il ne bouge jamais d'une etape a
-// l'autre : l'oeil sait ou lire et la main ou cliquer des le deuxieme tour. Un
-// cartouche colle a la carte concernee aurait deplace le bouton a chaque clic.
-// Sa place exacte est MESUREE sur la table (voir plus bas), jamais ecrite en
-// dur.
+// FIXE au centre de l'ecran, elle ne bouge jamais d'une etape a l'autre :
+// l'oeil sait ou lire et la main ou cliquer des le deuxieme tour. Elle montre
+// les cartes de l'etape (auteur, boosts, cible, carte revelee) toutes a la
+// MEME taille, face visible, tirees de l'index du monde et jamais de la table
+// : la table derriere est assombrie et n'est plus a lire pendant la phase,
+// elle peut etre en avance sur le recit (spec du 7 septembre 2026,
+// docs/superpowers/specs/2026-09-07-scene-phase-mechant-design.md).
 //
 // « Precedent » RELIT, il ne rejoue rien : le monde du moteur ne recule pas.
 // C'est « Annuler la derniere action » qui fait cela, et il reste disponible.
@@ -14,7 +16,8 @@
 // chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -41,7 +44,7 @@ import {
 } from './deroule-textes'
 import { t } from './langue'
 import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
-import { TraitCible } from './TraitCible'
+import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
@@ -68,26 +71,6 @@ export const DELAI_DEFILEMENT_MS = 120
 export const DELAI_ALERTE_FILET_MS = 15_000
 
 /**
- * L'ancre du cartouche sur la table, posee sur le body en variables CSS que
- * `.deroule-phase` (board.css) lit comme ses proprietes `left`, `bottom` et
- * `width`. Sans elles, le CSS reprend son repli (en bas au centre, a 16 px du
- * bord), qui sert quand aucune table n'est mesurable (plateau mobile,
- * premiere frame).
- *
- * ECART_MAIN : le jour que le cartouche garde de chaque cote, quand la main
- * est plus etroite que lui.
- * LARGEUR_MAXIMUM : sa largeur de croisiere, la meme que le repli du CSS.
- * BAS_MINIMUM : le plancher de `bottom`, le meme que le repli du CSS.
- */
-const VARIABLE_GAUCHE = '--deroule-gauche'
-const VARIABLE_LARGEUR = '--deroule-largeur'
-const VARIABLE_BAS = '--deroule-bas'
-const VARIABLE_DECALAGE = '--deroule-decalage'
-const ECART_MAIN = 10
-const LARGEUR_MAXIMUM = 560
-const BAS_MINIMUM = 16
-
-/**
  * Les cinq temps de la carte de reference, dans l'ordre.
  *
  * Le mechant et ses sbires sont deux moments distincts du tour (le vilain
@@ -110,6 +93,8 @@ export function DeroulePhase({
   phaseMechantEnCours = false,
   partieFinie = false,
   questionAuJoueur = false,
+  carteScene,
+  dosRencontre,
   herosLocauxIds,
   attendUnAutreJoueur = false,
   nomJoueurAttendu,
@@ -182,6 +167,20 @@ export function DeroulePhase({
    * joueur qui attend le moteur.
    */
   questionAuJoueur?: boolean
+  /**
+   * LES CARTES DE LA SCENE (board.tsx : `carteScene`).
+   *
+   * Donne le scan d'une carte du monde par son identifiant, face visible
+   * quand on le demande : la carte revelee et les boosts sont encore face
+   * cachee dans le monde de la trame retenue (le fait est journalise AVANT
+   * le retournement, player_action.py), et le joueur doit pourtant les lire.
+   * Lue dans l'index du monde, jamais sur la table : une carte partie a la
+   * defausse (un boost) se montre quand meme. Absente, ou muette sur une
+   * carte : la scene montre le nom seul.
+   */
+  carteScene?: (id: number, faceVisible: boolean) => ScanCardProps | undefined
+  /** Le dos d'une carte rencontre, pour l'etape de distribution. */
+  dosRencontre?: ScanCardProps
   /**
    * LES DEUX FACES DU HEROS DE CE SIEGE (board.tsx : `herosLocauxIds`, lu sur
    * `?p=` et non sur la vue affichee).
@@ -1029,88 +1028,6 @@ export function DeroulePhase({
   // suivant).
   useDerouleScene(etape, visible)
 
-  // OU SE TIENT LE CARTOUCHE : centre sur la main du joueur, le bas au bas de
-  // la main.
-  //
-  // Il a d'abord ete ancre A DROITE de la main, dans la colonne du journal,
-  // pour ne recouvrir ni la main, ni le panneau central des questions du
-  // moteur, ni la carte que la mise en scene agrandit. Constate en partie
-  // (fenetre de 1920 x 900) : la main fait 1335 px de large, le cartouche
-  // finissait donc tout a droite de l'ecran, dans la colonne des manigances,
-  // juste sous la manigance principale agrandie par la mise en scene, et le
-  // joueur le trouvait « decale sur la droite, illisible ». Un cartouche que
-  // l'on ne lit pas ne sert a rien : il revient au milieu, la ou le regard va.
-  //
-  // Ce qu'il recouvre alors : le bas de la main. C'est acceptable, parce que
-  // pendant la phase du mechant la main n'est pas jouable, et que devant une
-  // question du moteur (defendre, interrompre) le cartouche se replie sur sa
-  // seule chronologie, deux lignes en bas de l'ecran. Le panneau central
-  // (centre a 45 % de la hauteur) reste au-dessus de lui.
-  //
-  // On ne pose rien en dur : on lit la position REELLE de la main, une case
-  // de la grille de la scene, dont la boite ne bouge ni avec le nombre de
-  // cartes (rognees a l'interieur) ni avec la taille de l'ecran (la scene se
-  // met a l'echelle, et le rect suit). Le cartouche prend sa largeur de
-  // croisiere (560 px) ou, sur une main plus etroite, la largeur de la main
-  // moins un jour de chaque cote. C'est la meme facon de lire le plateau que
-  // `useDerouleScene` et `placement/boites`.
-  //
-  // Le journal ne sert plus de repere : il disparait quand il est vide, et un
-  // cartouche qui dependait de lui changeait de place selon que le heros
-  // avait deja ecrit une ligne ou non.
-  //
-  // Main introuvable (plateau mobile, plateau pas encore monte) : on ne
-  // devine pas une geometrie absente, les variables sont retirees et le CSS
-  // reprend son repli (au centre de l'ecran, a 16 px du bas).
-  useLayoutEffect(() => {
-    const corps = document.body
-    const oublier = () => {
-      corps.style.removeProperty(VARIABLE_GAUCHE)
-      corps.style.removeProperty(VARIABLE_LARGEUR)
-      corps.style.removeProperty(VARIABLE_BAS)
-      corps.style.removeProperty(VARIABLE_DECALAGE)
-    }
-    if (!visible) {
-      oublier()
-      return
-    }
-    const mesurer = () => {
-      const main = document.querySelector('.plateau-scene .zone-main')
-      if (!main) {
-        oublier()
-        return
-      }
-      const boiteMain = main.getBoundingClientRect()
-      // Boite vide : la mise en page n'a pas encore eu lieu (ou l'on est dans
-      // un environnement sans mise en page). Une mesure fausse serait pire que
-      // pas de mesure du tout.
-      if (boiteMain.height === 0 || boiteMain.width === 0) {
-        oublier()
-        return
-      }
-      const largeur = Math.min(LARGEUR_MAXIMUM, Math.round(boiteMain.width) - 2 * ECART_MAIN)
-      if (largeur <= 0) {
-        oublier()
-        return
-      }
-      const milieu = Math.round(boiteMain.left + boiteMain.width / 2)
-      const bas = Math.round(window.innerHeight - boiteMain.bottom)
-      corps.style.setProperty(VARIABLE_GAUCHE, `${milieu}px`)
-      corps.style.setProperty(VARIABLE_LARGEUR, `${largeur}px`)
-      corps.style.setProperty(VARIABLE_BAS, `${Math.max(bas, BAS_MINIMUM)}px`)
-      // `left` vise le milieu de la main : la translation de -50 % du repli
-      // reste la bonne pour centrer le cartouche dessus.
-      corps.style.setProperty(VARIABLE_DECALAGE, '-50%')
-    }
-    mesurer()
-    // La scene se remet a l'echelle a chaque redimensionnement : la main
-    // change alors de place, et le cartouche doit la suivre.
-    window.addEventListener('resize', mesurer)
-    return () => {
-      window.removeEventListener('resize', mesurer)
-      oublier()
-    }
-  }, [visible])
 
   // Le `return null` vient APRES tous les hooks, jamais avant : React exige
   // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant
@@ -1204,7 +1121,6 @@ export function DeroulePhase({
   if (questionAuJoueur) {
     return (
       <>
-        <TraitCible etape={etape} actif={!termine} />
         <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
           <div className="deroule-chrono">{chronologie}</div>
           {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
@@ -1236,9 +1152,80 @@ export function DeroulePhase({
     )
   }
 
+  // LES CARTES DE LA SCENE. Toutes a la meme taille (board.css,
+  // `.deroule-cartes` fixe `--card-w`), face visible, lues dans l'index du
+  // monde par `carteScene` : la carte revelee et les boosts sont encore face
+  // cachee dans le monde de cette trame, on force leur face. Une carte
+  // introuvable (fait degrade, index pas encore lu) laisse sa place a son nom
+  // seul, jamais a un trou muet.
+  const scene = sceneDe(etape)
+  const nomDe = (carte: CarteDeScene): string => {
+    if (carte.role === 'dos') return t('Carte rencontre')
+    if (carte.role === 'auteur') return etape.auteurNom ?? ''
+    if (carte.role === 'boost') return etape.boosts.find((b) => b.cibleId === carte.id)?.nom ?? ''
+    return etape.cibleNom ?? ''
+  }
+  const rendreCarte = (carte: CarteDeScene, position: number) => {
+    const props =
+      carte.role === 'dos'
+        ? dosRencontre
+        : carteScene?.(carte.id, carte.role === 'revelee' || carte.role === 'boost')
+    const apport =
+      carte.role === 'boost' ? etape.boosts.find((b) => b.cibleId === carte.id)?.apport : undefined
+    return (
+      <figure key={`${carte.role}-${position}`} className={`deroule-carte est-${carte.role}`}>
+        {props ? (
+          // Rien de ce que le monde COURANT dit de la carte : ni compteur, ni
+          // PV, ni pastille de type. La table peut etre en avance sur le
+          // recit ; c'est la scene qui donne les chiffres de l'etape, et un
+          // « 9/12 » sur la carte contredisait le « 7/12 » de l'etape.
+          <ScanCard
+            {...props}
+            state={undefined}
+            exhausted={false}
+            counters={undefined}
+            schemeThreat={undefined}
+            allyHp={undefined}
+            stats={undefined}
+            labelType={undefined}
+            masquerType
+          />
+        ) : (
+          <div className="deroule-carte-absente">{nomDe(carte)}</div>
+        )}
+        {apport !== undefined ? (
+          <figcaption className="deroule-carte-legende">
+            {t('Boost')} +{apport}
+          </figcaption>
+        ) : null}
+      </figure>
+    )
+  }
+  // A gauche l'auteur et ses boosts (ou la carte seule), a droite la cible.
+  // Les boosts se retournent UN PAR UN (`boostsMontres`, plus haut), comme
+  // leurs lignes dans le texte : la carte parait quand sa ligne parait.
+  const boostsVisibles = new Set(etape.boosts.slice(0, boostsMontres).map((b) => b.cibleId))
+  const gauche = scene.cartes.filter(
+    (carte) => carte.role !== 'cible' && (carte.role !== 'boost' || boostsVisibles.has(carte.id))
+  )
+  const droite = scene.cartes.filter((carte) => carte.role === 'cible')
+  const cartesScene =
+    scene.cartes.length > 0 ? (
+      <div className="deroule-cartes">
+        {gauche.length > 0 ? <div className="deroule-groupe">{gauche.map(rendreCarte)}</div> : null}
+        {scene.fleche ? (
+          <span className="deroule-fleche" aria-hidden="true">
+            ➜
+          </span>
+        ) : null}
+        {droite.length > 0 ? (
+          <div className="deroule-groupe">{droite.map((carte) => rendreCarte(carte, gauche.length))}</div>
+        ) : null}
+      </div>
+    ) : null
+
   return (
     <>
-      <TraitCible etape={etape} actif={!termine} />
       <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
         <div className="deroule-chrono">
           {chronologie}
@@ -1251,6 +1238,8 @@ export function DeroulePhase({
             </span>
           ) : null}
         </div>
+
+        {cartesScene}
 
         {/* Le titre dit le fait, et le compteur de la cible se lit a sa
             droite. Un titre generique suivi de la meme chose en dessous

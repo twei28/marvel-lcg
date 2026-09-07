@@ -1,67 +1,28 @@
-// Pose la mise en scene d'une etape sur les vraies cartes du plateau.
+// Le voile sur la table pendant qu'une etape est a l'ecran.
 //
-// IMPERATIF, comme halo-statut.ts et pas-a-pas.ts : classes ajoutees puis
-// retirees sur l'element reel. Passer par React ferait re-rendre le plateau
-// entier a chaque etape pour une decoration transitoire, et le plateau est
-// lourd (plusieurs dizaines de cartes).
-//
-// Le nettoyage est fait a CHAQUE changement d'etape et au demontage : sans
-// lui, quitter la phase laisserait une carte agrandie et un plateau assombri
-// pour le reste de la partie.
-//
-// Et le voile ne s'allume QUE si une carte a ete trouvee : voir la regle de
-// surete plus bas.
+// Imperatif, sur le body, comme halo-statut.ts : une classe posee, une classe
+// retiree. La scene centrale (DeroulePhase) montre les cartes elle-meme, a
+// partir de l'index du monde ; ce hook ne touche plus aux cartes de la table,
+// qui n'est plus a lire pendant la phase (voir la spec du 7 septembre 2026,
+// docs/superpowers/specs/2026-09-07-scene-phase-mechant-design.md).
 
 import { useEffect } from 'react'
 import type { EtapeDeroule } from './deroule-phase'
 import { sceneDe } from './deroule-scene'
 
-const EN_AVANT = 'deroule-en-avant'
-const CIBLE = 'deroule-cible'
 const VOILE = 'deroule-voile'
 
-function carteDe(id: number): HTMLElement | null {
-  return document.querySelector<HTMLElement>(
-    `.plateau-scene .scan-card[data-card-id="${id}"]`
-  )
-}
-
 export function useDerouleScene(etape: EtapeDeroule | undefined, actif: boolean): void {
-  // On depend de la CLE, pas de l'objet `etape` : celui-ci vient de
-  // `etapes[index]` dans DeroulePhase, et `etapes` est reconstruit a chaque
-  // re-parse du monde par le moteur, meme quand rien n'a change. Deja corrige
-  // une fois dans pas-a-pas.ts pour la meme raison (« le meme rendu peut etre
-  // republie plusieurs fois ») : sans cela, l'effet se demonterait et se
-  // remonterait a chaque trame, retirant puis reposant les classes.
+  // Dependre de la CLE de l'etape, jamais de l'objet : la liste d'etapes est
+  // recreee a chaque trame, l'etape courante aussi, et un effet qui en
+  // dependrait retirerait et reposerait le voile a chaque rendu.
   const cle = etape?.cle
+  const voile = etape !== undefined && sceneDe(etape).voile
   useEffect(() => {
-    if (!actif || !etape) return
-    const scene = sceneDe(etape)
-
-    const auteur = scene.carteEnAvant !== undefined ? carteDe(scene.carteEnAvant) : null
-    const cible = scene.cible !== undefined ? carteDe(scene.cible) : null
-
-    auteur?.classList.add(EN_AVANT)
-    cible?.classList.add(CIBLE)
-    // REGLE DE SURETE, et elle vaut pour TOUTES les etapes, pas pour une seule :
-    // le voile ne s'allume que si quelque chose ressort dessous. Assombrir le
-    // plateau sans rien y designer ne rend jamais service, et c'est exactement
-    // ce que le joueur a vu en partie a l'etape de menace : « il assombrit
-    // tout, on sait pas sur quoi on doit cliquer ».
-    //
-    // `sceneDe` decide de la mise en scene sans voir le plateau : elle ne peut
-    // pas savoir qu'une carte a quitte la table. C'est donc ICI, la ou l'on
-    // sait ce qu'on a trouve, que la regle se pose.
-    const misEnAvant = auteur !== null || cible !== null
-    if (scene.voile && misEnAvant) document.body.classList.add(VOILE)
-
+    if (!actif || !voile) return
+    document.body.classList.add(VOILE)
     return () => {
-      auteur?.classList.remove(EN_AVANT)
-      cible?.classList.remove(CIBLE)
       document.body.classList.remove(VOILE)
     }
-    // `cle` suffit : une etape est immuable, sa cle l'identifie (meme choix
-    // que usePasAPas).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cle, actif])
+  }, [cle, actif, voile])
 }

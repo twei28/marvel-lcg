@@ -2654,109 +2654,111 @@
     backdrop-filter: blur(10px);
   }
 
-  /* --- Deroule detaille de la phase du mechant -------------------------------
-     Cartouche FIXE : il ne bouge jamais d'une etape a l'autre. Il se tient au
-     MILIEU de la main, le bas au bas de la main : la ou le regard va. Ancre
-     a droite de la main, il finissait tout a droite de l'ecran sous la
-     manigance principale, illisible. Le raisonnement est dans
-     DeroulePhase.tsx, a la mesure. */
+  /* --- Deroule detaille de la phase du mechant : la scene centrale ---------
+     FIXE au centre de l'ecran, elle ne bouge jamais d'une etape a l'autre.
+     Elle montre les cartes de l'etape, toutes a la MEME taille, face visible ;
+     la table derriere est assombrie (`.deroule-voile`) et n'est plus a lire
+     pendant la phase. Spec du 7 septembre 2026 :
+     docs/superpowers/specs/2026-09-07-scene-phase-mechant-design.md. */
   .deroule-phase {
     position: fixed;
-    /* JAMAIS une valeur en dur : elle marcherait sur un ecran et casserait sur
-       le suivant. Les quatre variables sont posees sur le body par
-       DeroulePhase, a partir de la position REELLE de `.zone-main`. Les
-       replis (en bas au centre, a 16px du bord, 560px de large) servent quand
-       aucune table n'est mesurable (plateau mobile, premiere frame). */
-    left: var(--deroule-gauche, 50%);
-    bottom: var(--deroule-bas, 16px);
-    width: var(--deroule-largeur, min(560px, calc(100vw - 24px)));
-    /* `left` vise un milieu (celui de l'ecran en repli, celui de la main
-       une fois mesure) : la translation ramene le cartouche dessus. */
-    transform: translateX(var(--deroule-decalage, -50%));
-    /* Sur un ecran bas, la place au-dessus du bas de la main peut ne pas suffire : le
-       cartouche defile en lui-meme plutot que de deborder hors de l'ecran, ou
-       ses boutons deviendraient inatteignables. */
-    max-height: calc(100dvh - var(--deroule-bas, 16px) - 12px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(940px, calc(100vw - 48px));
+    /* Sur un ecran bas, la scene defile en elle-meme plutot que de deborder,
+       ou ses boutons deviendraient inatteignables. */
+    max-height: calc(100dvh - 32px);
     overflow-y: auto;
     z-index: 540;
-    padding: 12px 14px;
+    padding: 14px 22px 16px;
     color: #f8fafc;
-    background: rgba(8, 10, 14, 0.96);
+    background: rgba(8, 10, 14, 0.94);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.64);
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
   }
 
-  /* --- Mise en scene d'une etape du deroule -------------------------------
-     La carte qui agit grandit sur place, le reste du plateau s'assombrit sans
-     devenir illisible : on doit continuer a voir la manigance monter ou un
-     heros encaisser ailleurs. Tout ceci est debraye plus bas. */
+  /* Le voile : la table derriere la scene n'est plus a lire, elle peut etre
+     en avance sur le recit. Assez sombre pour que l'oeil reste sur la scene,
+     pas opaque : la table reste un decor, et une carte qui bouge s'y devine.
+     Au-dessus de .plateau-unite:hover (100) : sinon une carte survolee, meme
+     hors-jeu ici, passerait par-dessus le voile. */
   .deroule-voile .plateau-scene::after {
     content: '';
     position: absolute;
     inset: 0;
-    /* Au-dessus de .plateau-unite:hover (100) : sinon une carte survolee,
-       meme hors-jeu ici, passerait par-dessus le voile. */
     z-index: 110;
-    background: rgba(4, 6, 10, 0.55);
+    background: rgba(4, 6, 10, 0.72);
     pointer-events: none;
   }
 
-  .plateau-scene .scan-card.deroule-en-avant,
-  .plateau-scene .scan-card.deroule-cible {
-    position: relative;
-    /* Au-dessus du voile (110) : la carte mise en scene doit rester lisible. */
-    z-index: 130;
+  /* Les cartes de l'etape : une seule taille pour toutes, 2,5 fois une carte
+     de la table. `--card-w` est la variable que ScanCard lit. */
+  .deroule-cartes {
+    --card-w: 236px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    margin: 8px 0 12px;
   }
 
-  .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
-    transform: scale(2.36);
-    transition: transform 220ms ease;
+  .deroule-groupe {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
   }
 
-  .plateau-scene .scan-card.deroule-cible .scan-frame {
-    box-shadow:
-      0 0 0 3px #F0131E,
-      0 0 22px 6px rgba(240, 19, 30, 0.55);
+  .deroule-carte {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
   }
 
-  body.plateau-sans-animations .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
-    transition: none;
-  }
-
-  /* Le trait traverse la table : il est POSE PAR-DESSUS, jamais dessine dans
-     une carte, dont le cadre rogne son contenu.
-     z-index 530 : au-dessus du voile (110) et des cartes mises en scene
-     (130), sous le cartouche du deroule (540) qui doit rester lisible. */
-  .deroule-trait {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 530;
+  /* Les cartes de la scene ne sont pas jouables : ni curseur, ni survol. */
+  .deroule-carte .scan-card {
     pointer-events: none;
   }
 
-  .deroule-trait line {
-    stroke: #F0131E;
-    stroke-width: 2.5;
-    filter: drop-shadow(0 0 4px rgba(240, 19, 30, 0.7));
-    /* Le trait se TRACE de l'attaquant vers sa cible : on lit le sens de
-       l'attaque, on ne le devine pas. */
-    stroke-dasharray: 1200;
-    stroke-dashoffset: 1200;
-    animation: deroule-tracer 260ms ease-out forwards;
+  /* Une carte dont le scan manque (fait degrade, index pas encore lu) : son
+     nom seul, a la place et a la taille de la carte. */
+  .deroule-carte-absente {
+    width: var(--card-w);
+    aspect-ratio: 5 / 7;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+    text-align: center;
+    font-weight: 700;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
   }
 
-  @keyframes deroule-tracer {
-    to {
-      stroke-dashoffset: 0;
+  .deroule-carte-legende {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffd24a;
+  }
+
+  .deroule-fleche {
+    font-size: 2.6rem;
+    line-height: 1;
+    color: #F0131E;
+    text-shadow: 0 0 18px rgba(240, 19, 30, 0.6);
+  }
+
+  /* Ecran etroit : les cartes retrecissent avant de passer a la ligne. */
+  @media (max-width: 900px) {
+    .deroule-cartes {
+      --card-w: 150px;
+      flex-wrap: wrap;
     }
-  }
-
-  body.plateau-sans-animations .deroule-trait line {
-    animation: none;
-    stroke-dashoffset: 0;
   }
 
   /* --- Annonce de la phase du mechant --------------------------------------
@@ -3155,7 +3157,13 @@
      mention « Le moteur attend ta réponse ». Ce n'est PAS l'attente grise
      ci-dessus : ici c'est au joueur d'agir, ailleurs que dans le cartouche, et
      la mention prend le jaune de « À toi de jouer » (.plateau-eyebrow). */
+  /* Replie devant une question du moteur : la scene laisse le centre au
+     panneau de la question et descend en bas, sur sa seule chronologie. */
   .deroule-phase.est-replie {
+    top: auto;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: min(560px, calc(100vw - 24px));
     padding: 10px 14px;
   }
 
@@ -5900,15 +5908,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pas-a-pas-halo, .pas-a-pas-chiffre { animation: none; }
-
-  .plateau-scene .scan-card.deroule-en-avant .scan-visuel {
-    transition: none;
-  }
-
-  .deroule-trait line {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
 
   .deroule-boosts li {
     animation: none;
