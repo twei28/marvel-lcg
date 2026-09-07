@@ -344,6 +344,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   // La carte est face cachee : on ne la nomme pas.
   'reçoit sa carte rencontre': 'is dealt an encounter card',
   'Carte rencontre distribuée': 'Encounter card dealt',
+  // Le mode Heroique en distribue plusieurs par joueur : « Colossus reçoit
+  // 2 cartes rencontre ».
+  'reçoit': 'is dealt',
+  'cartes rencontre': 'encounter cards',
+  'cartes rencontre distribuées': 'encounter cards dealt',
   // Cartouche du deroule (DeroulePhase.tsx). 'Menace', 'Méchant' (zones.ts) et
   // 'Phase du méchant' sont deja definis plus haut, pour le bilan de fin de
   // phase et le splash de tour.

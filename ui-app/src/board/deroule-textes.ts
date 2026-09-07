@@ -51,6 +51,17 @@ export function titreEtape(etape: EtapeDeroule): string {
     // La carte est FACE CACHEE : on ne nomme que le heros qui la recoit. Sans
     // heros connu, repli sur une formule impersonnelle, comme partout ailleurs
     // ici : mieux vaut une phrase vague qu'un « undefined recoit ».
+    //
+    // L'etape porte le nombre de cartes du joueur (`montant`, une etape par
+    // joueur) : en Heroique chacun en recoit deux, et « recoit sa carte
+    // rencontre » aurait alors menti sur ce qui vient d'arriver. Un montant
+    // absent (moteur ou sauvegarde anterieurs au regroupement) vaut une carte.
+    const cartes = etape.montant ?? 1
+    if (cartes > 1) {
+      return auteur
+        ? `${auteur} ${t('reçoit')} ${cartes} ${t('cartes rencontre')}`
+        : `${cartes} ${t('cartes rencontre distribuées')}`
+    }
     return auteur
       ? `${auteur} ${t('reçoit sa carte rencontre')}`
       : t('Carte rencontre distribuée')

@@ -123,6 +123,25 @@ describe('phrases du deroule', () => {
     ).toBe('Carte rencontre distribuée')
   })
 
+  // Le mode Heroique en distribue plusieurs par joueur : une seule etape,
+  // qui dit combien. « Colossus recoit sa carte rencontre » deux fois de suite
+  // aurait dit deux fois la meme chose.
+  it('compte les cartes quand un joueur en recoit plusieurs', () => {
+    expect(
+      titreEtape(
+        etape({ temps: 'distribution', titre: 'distribution', auteurNom: 'Colossus', montant: 2 })
+      )
+    ).toBe('Colossus reçoit 2 cartes rencontre')
+  })
+
+  it('compte les cartes meme sans heros connu', () => {
+    expect(
+      titreEtape(
+        etape({ temps: 'distribution', titre: 'distribution', auteurNom: undefined, montant: 3 })
+      )
+    ).toBe('3 cartes rencontre distribuées')
+  })
+
   it('rappelle la regle de la distribution', () => {
     expect(regleEtape(etape({ regle: 'regle:distribution' })))
       .toBe('Point 3 : chaque joueur reçoit une carte rencontre, face cachée.')

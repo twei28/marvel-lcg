@@ -53,6 +53,19 @@ describe('mise en scene d une etape', () => {
     expect(scene.cible).toBeUndefined()
   })
 
+  it('ne montre RIEN sur une etape de distribution', () => {
+    // La carte distribuee est FACE CACHEE : l'etape n'a ni auteur ni cible a
+    // designer sur la table. Assombrir le plateau pour ne rien montrer aurait
+    // ete un voile sur du vide.
+    const scene = sceneDe(
+      etape({ temps: 'distribution', titre: 'distribution', auteurNom: 'Colossus', montant: 2 })
+    )
+    expect(scene.carteEnAvant).toBeUndefined()
+    expect(scene.cible).toBeUndefined()
+    expect(scene.trait).toBe(false)
+    expect(scene.voile).toBe(false)
+  })
+
   it('n assombrit rien sur une etape sans carte', () => {
     // « Aucun sbire en jeu », le passage du premier joueur : le cartouche parle
     // seul, l'ecran ne bouge pas pour rien.

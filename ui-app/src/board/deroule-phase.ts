@@ -211,12 +211,18 @@ export type EtapeDeroule = {
   cibleNom?: string
   /**
    * Le nombre du coup : les degats ou les menaces que la cible a encaisses,
-   * les menaces posees pour l'etape de menace.
+   * les menaces posees pour l'etape de menace, et le nombre de CARTES recues
+   * pour l'etape de distribution (« Colossus recoit 2 cartes rencontre » en
+   * Heroique).
    *
    * Sur un fait, c'est `subi` et JAMAIS `inflige` : `inflige` est ce qui a ete
    * porte une fois la defense deduite, `subi` ce que la cible a reellement
    * encaisse. Une reduction de degats ou des derniers points de vie depasses
    * separent les deux, et le joueur lit ce qui s'est passe.
+   *
+   * Le bilan de fin de phase n'y touche pas sur une distribution : il ne
+   * compte que ce qu'une cible ENCAISSE (voir `GENRE_PAR_TITRE`), et des
+   * cartes recues n'en sont pas.
    */
   montant?: number
   /**
@@ -533,13 +539,42 @@ export function etapesDeroule(
   // Le moteur ordonne deja ses distributions par tour de table, mais le tri
   // s'applique quand meme : il est stable, il ne coute rien, et il tient si la
   // source change d'ordre.
-  for (const { fait, rang } of trierParOrdreDuTour(
-    faitsDistribution.map(({ fait, rang }) => ({ fait, rang, joueur: fait.joueur ?? undefined })),
+  //
+  // UNE ETAPE PAR JOUEUR, et non par carte distribuee : en mode Heroique
+  // chacun en recoit deux, et deux etapes « Colossus recoit sa carte
+  // rencontre » a la suite auraient dit deux fois la meme chose sans que rien
+  // ne les distingue. Le compte tient dans la phrase (« recoit 2 cartes
+  // rencontre »), et c'est `montant` qui le porte.
+  //
+  // Le regroupement se fait sur le SIEGE. Un fait dont le moteur n'a pas su
+  // determiner le siege garde son etape a lui : deux cartes anonymes ne sont
+  // pas forcement pour le meme joueur, et les fondre inventerait un fait que
+  // personne n'a enregistre.
+  type GroupeDistribution = FaitRange<FaitDistribution> & { joueur?: number; cartes: number }
+  const parSiege = new Map<number, GroupeDistribution>()
+  const groupes: GroupeDistribution[] = []
+  for (const { fait, rang } of faitsDistribution) {
+    const joueur = fait.joueur ?? undefined
+    const deja = joueur === undefined ? undefined : parSiege.get(joueur)
+    if (deja) {
+      deja.cartes += 1
+      continue
+    }
+    const groupe: GroupeDistribution = { fait, rang, joueur, cartes: 1 }
+    if (joueur !== undefined) parSiege.set(joueur, groupe)
+    groupes.push(groupe)
+  }
+
+  for (const { fait, rang, joueur, cartes } of trierParOrdreDuTour(
+    groupes,
     premierJoueurId,
     nomsHerosParJoueur.length
   )) {
     etapes.push({
-      cle: cleDuFait('distribution', fait.round_id ?? round, rang, fait.joueur ?? -1),
+      // Le rang du PREMIER fait du groupe : les suivants s'ajoutent derriere
+      // lui dans `faits_mechant`, donc il ne bouge pas quand la deuxieme carte
+      // du meme joueur arrive.
+      cle: cleDuFait('distribution', fait.round_id ?? round, rang, joueur ?? -1),
       temps: 'distribution',
       titre: 'distribution',
       regle: 'regle:distribution',
@@ -547,9 +582,14 @@ export function etapesDeroule(
       // distribution, donc il tient meme si le joueur a depuis change de forme
       // ou quitte la table. L'index du monde ne sert que de repli.
       auteurNom: nomNettoye(fait.joueur_nom ?? undefined)
-        ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
+        ?? nomNettoye(nomsHerosParJoueur[joueur ?? -1]),
+      // Le nombre de cartes recues, jamais un compteur de la table : voir
+      // `EtapeDeroule.montant`.
+      montant: cartes,
       // Pas de carte : elle est FACE CACHEE, et la nommer ici revelerait au
-      // joueur ce que la regle lui cache jusqu'au point 4.
+      // joueur ce que la regle lui cache jusqu'au point 4. Pas de cible non
+      // plus : la mise en scene (`sceneDe`) ne doit RIEN mettre en avant ni
+      // assombrir pour une etape qui n'a rien a montrer sur la table.
       boosts: [],
     })
   }

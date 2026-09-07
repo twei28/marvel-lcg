@@ -542,7 +542,7 @@ describe('les cinq temps depuis les faits du moteur', () => {
     expect(etape.carteId).toBeUndefined()
   })
 
-  it('fait une etape de DISTRIBUTION par carte distribuee, nommee par son heros', () => {
+  it('fait une etape de DISTRIBUTION par joueur, nommee par son heros', () => {
     // Le temps qui n'avait jamais d'etape (M3) : la chronologie affichait
     // « DISTRIBUTION (Aucun) » barre a presque toutes les phases.
     const etapes = etapesDeroule(
@@ -555,9 +555,67 @@ describe('les cinq temps depuis les faits du moteur', () => {
     expect(distributions).toHaveLength(2)
     // Prefixe decoratif retire, comme partout ailleurs sur le plateau.
     expect(distributions.map((e) => e.auteurNom)).toEqual(['Colossus', 'Spider-Man'])
-    // La carte est FACE CACHEE : rien ne la nomme.
+    // Une carte chacun.
+    expect(distributions.map((e) => e.montant)).toEqual([1, 1])
+    // La carte est FACE CACHEE : rien ne la nomme, et rien ne la met en avant
+    // sur la table.
     expect(distributions[0].cibleNom).toBeUndefined()
     expect(distributions[0].carteId).toBeUndefined()
+    expect(distributions[0].cibleId).toBeUndefined()
+  })
+
+  it('groupe en UNE etape les deux cartes d un meme joueur (Heroique)', () => {
+    const etapes = etapesDeroule(
+      [
+        faitDistribution(),
+        faitDistribution({ joueur: 1, joueur_nom: '★Spider-Man' }),
+        faitDistribution(),
+        faitDistribution({ joueur: 1, joueur_nom: '★Spider-Man' }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const distributions = etapes.filter((e) => e.temps === 'distribution')
+    expect(distributions).toHaveLength(2)
+    expect(distributions.map((e) => e.auteurNom)).toEqual(['Colossus', 'Spider-Man'])
+    expect(distributions.map((e) => e.montant)).toEqual([2, 2])
+  })
+
+  it('ne fond PAS deux distributions dont le siege est inconnu', () => {
+    // Deux cartes anonymes ne sont pas forcement pour le meme joueur : les
+    // regrouper inventerait un fait que personne n'a enregistre.
+    const etapes = etapesDeroule(
+      [
+        faitDistribution({ joueur: null, joueur_nom: null }),
+        faitDistribution({ joueur: null, joueur_nom: null }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const distributions = etapes.filter((e) => e.temps === 'distribution')
+    expect(distributions).toHaveLength(2)
+    expect(distributions.map((e) => e.montant)).toEqual([1, 1])
+  })
+
+  it('range les distributions groupees dans l ordre du tour', () => {
+    const etapes = etapesDeroule(
+      [
+        faitDistribution({ joueur: 0, joueur_nom: 'Heros0' }),
+        faitDistribution({ joueur: 1, joueur_nom: 'Heros1' }),
+        faitDistribution({ joueur: 1, joueur_nom: 'Heros1' }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT,
+      undefined,
+      1,
+      ['Heros0', 'Heros1']
+    )
+    const distributions = etapes.filter((e) => e.temps === 'distribution')
+    expect(distributions.map((e) => e.auteurNom)).toEqual(['Heros1', 'Heros0'])
+    expect(distributions.map((e) => e.montant)).toEqual([2, 1])
   })
 
   it('lit la revelation sur le fait : le heros, la carte et son identifiant', () => {
