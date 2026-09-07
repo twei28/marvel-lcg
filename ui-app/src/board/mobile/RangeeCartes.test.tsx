@@ -54,8 +54,8 @@ describe('RangeeCartes', () => {
   })
 
   it('ramene la premiere cible dans le champ quand un ciblage commence', () => {
-    const { rerender } = rendre([{ cle: 'g', unites: [unite('1', 'A'), unite('2', 'B', 'targetable')] }])
-    const cible = document.querySelector('.state-targetable')?.closest('.carte-posee')
+    // Rien n'est ciblable au depart : le ciblage n'a pas encore commence.
+    const { rerender } = rendre([{ cle: 'g', unites: [unite('1', 'A'), unite('2', 'B')] }])
     const recentrer = vi.fn()
     // jsdom n'implemente pas scrollIntoView ; on verifie l'APPEL, pas le defilement.
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { value: recentrer, configurable: true })
@@ -70,6 +70,7 @@ describe('RangeeCartes', () => {
         onOuvrirPile={() => {}}
       />
     )
+    const cible = document.querySelector('.state-targetable')?.closest('.carte-posee')
     expect(recentrer).toHaveBeenCalled()
     expect(cible).not.toBeNull()
   })
@@ -90,5 +91,27 @@ describe('RangeeCartes', () => {
     defilement.scrollBy = scrollBy
     fireEvent.click(voile)
     expect(scrollBy).toHaveBeenCalledWith({ left: 400, behavior: 'smooth' })
+  })
+
+  it('se recale sur la nouvelle cible meme quand le compte de cibles ne change pas', () => {
+    const recentrer = vi.fn()
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { value: recentrer, configurable: true })
+    const { rerender } = rendre(
+      [{ cle: 'g', unites: [unite('1', 'A'), unite('2', 'B', 'targetable')] }],
+      { cibles: 1 }
+    )
+    expect(recentrer).toHaveBeenCalledTimes(1)
+    rerender(
+      <RangeeCartes
+        cle="heros"
+        titre="Ton héros"
+        groupes={[{ cle: 'g', unites: [unite('1', 'A', 'targetable'), unite('2', 'B')] }]}
+        piles={[]}
+        cibles={1}
+        onOuvrirCarte={() => {}}
+        onOuvrirPile={() => {}}
+      />
+    )
+    expect(recentrer).toHaveBeenCalledTimes(2)
   })
 })

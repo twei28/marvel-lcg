@@ -67,14 +67,24 @@ export function RangeeCartes({
     return () => observateur.disconnect()
   }, [mesurer, groupes])
 
-  // Un ciblage commence : la premiere cible revient dans le champ.
+  // La liste des cibles legales EN COURS, pas juste leur compte : un ciblage a
+  // plusieurs etapes peut garder le meme nombre de cibles (souvent 1) tout en
+  // deplacant LAQUELLE est ciblable. Sans cette cle, la rangee ne se recale
+  // que sur la premiere etape.
+  const cleCibles = groupes
+    .flatMap((groupe) => groupe.unites)
+    .filter((unite) => unite.carte.state === 'targetable')
+    .map((unite) => unite.carte.id)
+    .join(',')
+
+  // Une nouvelle cible apparait : elle revient dans le champ.
   useEffect(() => {
-    if (!cibles || !defilement.current) return
+    if (!cleCibles || !defilement.current) return
     const cible = defilement.current.querySelector<HTMLElement>('.state-targetable')?.closest<HTMLElement>('.carte-posee')
     if (cible && typeof cible.scrollIntoView === 'function') {
       cible.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' })
     }
-  }, [cibles])
+  }, [cleCibles])
 
   const avancer = () => {
     const element = defilement.current
@@ -92,38 +102,40 @@ export function RangeeCartes({
         ) : null}
       </div>
       <div className="rangee-cartes-corps">
-        <div className="rangee-cartes-defilement" ref={defilement} onScroll={mesurer}>
-          {vide ? (
-            <span className="rangee-cartes-vide">{t('Vide')}</span>
-          ) : (
-            groupes.map((groupe, index) => (
-              <Fragment key={groupe.cle}>
-                {index > 0 ? <span className="rangee-cartes-separateur" role="separator" /> : null}
-                <div className={`rangee-cartes-groupe${groupe.actif ? ' est-actif' : ''}`}>
-                  {groupe.unites.map((unite) => (
-                    <CartePosee
-                      key={unite.cle}
-                      unite={unite}
-                      effet={effets?.get(Number(unite.carte.id))}
-                      onOuvrir={onOuvrirCarte}
-                    />
-                  ))}
-                </div>
-              </Fragment>
-            ))
-          )}
+        <div className="rangee-cartes-fenetre">
+          <div className="rangee-cartes-defilement" ref={defilement} onScroll={mesurer}>
+            {vide ? (
+              <span className="rangee-cartes-vide">{t('Vide')}</span>
+            ) : (
+              groupes.map((groupe, index) => (
+                <Fragment key={groupe.cle}>
+                  {index > 0 ? <span className="rangee-cartes-separateur" role="separator" /> : null}
+                  <div className={`rangee-cartes-groupe${groupe.actif ? ' est-actif' : ''}`}>
+                    {groupe.unites.map((unite) => (
+                      <CartePosee
+                        key={unite.cle}
+                        unite={unite}
+                        effet={effets?.get(Number(unite.carte.id))}
+                        onOuvrir={onOuvrirCarte}
+                      />
+                    ))}
+                  </div>
+                </Fragment>
+              ))
+            )}
+          </div>
+          {horsChamp > 0 ? (
+            <button
+              type="button"
+              className="rangee-cartes-suite"
+              data-tactile="suite"
+              aria-label={`${horsChamp} ${t('cartes hors champ')}`}
+              onClick={avancer}
+            >
+              +{horsChamp}
+            </button>
+          ) : null}
         </div>
-        {horsChamp > 0 ? (
-          <button
-            type="button"
-            className="rangee-cartes-suite"
-            data-tactile="suite"
-            aria-label={`${horsChamp} ${t('cartes hors champ')}`}
-            onClick={avancer}
-          >
-            +{horsChamp}
-          </button>
-        ) : null}
         {piles.length > 0 ? <PilesEpinglees piles={piles} onOuvrirPile={onOuvrirPile} /> : null}
       </div>
     </section>
