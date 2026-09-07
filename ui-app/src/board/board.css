@@ -2138,7 +2138,11 @@
     left: 50%;
     top: 52%;
     transform: translate(-50%, -50%);
-    z-index: 400;
+    /* Au-dessus de la scene de la phase du mechant (540) : une carte de la
+       table survolee pendant la phase doit se lire par-dessus la case, pas
+       derriere (demande de l'utilisateur, 7 septembre 2026). Le splash de
+       tour (550) et la fin de partie (600) gardent la priorite. */
+    z-index: 545;
     pointer-events: none;
     filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.62));
     animation: carte-apercu-entre 130ms ease-out;
