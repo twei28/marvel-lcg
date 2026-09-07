@@ -2751,14 +2751,47 @@
     position: absolute;
     inset: 0;
     z-index: 110;
-    background: rgba(4, 6, 10, 0.72);
+    /* Assez clair pour que la table reste lisible derriere la bande : le
+       joueur veut continuer a voir sa manigance monter et son heros. */
+    background: rgba(4, 6, 10, 0.45);
     pointer-events: none;
+  }
+
+  /* LE MOMENT OU L'ON PEUT AGIR (body.deroule-question, pose par
+     DeroulePhase tant que la question du moteur est logee dans la scene) :
+     la main sort du voile, eclairee, et la scene remonte pour la degager. */
+  .deroule-question .plateau-scene .zone-main {
+    position: relative;
+    z-index: 120;
+    box-shadow: 0 -18px 40px rgba(240, 19, 30, 0.28);
+    background: rgba(240, 19, 30, 0.06);
+    border-radius: 10px;
+  }
+
+  .deroule-phase.est-question {
+    bottom: 34vh;
+    border-color: rgba(240, 19, 30, 0.7);
+    box-shadow:
+      0 0 0 2px rgba(240, 19, 30, 0.45),
+      0 30px 80px rgba(0, 0, 0, 0.7);
+  }
+
+  .deroule-a-toi {
+    margin: -14px -22px 10px;
+    padding: 6px 22px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #F0131E;
+    border-radius: 12px 12px 0 0;
   }
 
   /* Les cartes de l'etape : une seule taille pour toutes, 2,5 fois une carte
      de la table. `--card-w` est la variable que ScanCard lit. */
   .deroule-cartes {
-    --card-w: 236px;
+    --card-w: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3222,9 +3255,7 @@
   /* Replie devant une question du moteur : la scene laisse le centre au
      panneau de la question et descend en bas, sur sa seule chronologie. */
   .deroule-phase.est-replie {
-    top: auto;
     bottom: 16px;
-    transform: translateX(-50%);
     width: min(560px, calc(100vw - 24px));
     padding: 10px 14px;
   }

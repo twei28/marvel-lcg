@@ -2113,6 +2113,31 @@ describe('le bilan de fin de phase', () => {
       expect(screen.getByRole('button', { name: 'Défendre' })).toBeInTheDocument()
       expect(screen.queryByText('Suivant')).not.toBeInTheDocument()
       expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
+      // Le moment ou l'on peut agir change d'aspect : un bandeau « A toi »
+      // dans la scene, et la main sort du voile (classe sur le body, lue par
+      // board.css).
+      expect(container.querySelector('.deroule-a-toi')).not.toBeNull()
+      expect(screen.getByText('À toi de jouer')).toBeInTheDocument()
+      expect(document.body.classList.contains('deroule-question')).toBe(true)
+    })
+
+    it('rend la main au voile une fois la question resolue', () => {
+      const scene = (questionAuJoueur: boolean) => (
+        <DeroulePhase
+          etapes={etapes}
+          phaseMechantEnCours
+          questionAuJoueur={questionAuJoueur}
+          question={questionAuJoueur ? <button type="button">Défendre</button> : undefined}
+          onTerminer={() => {}}
+        />
+      )
+      const { rerender, unmount } = render(scene(true))
+      expect(document.body.classList.contains('deroule-question')).toBe(true)
+      rerender(scene(false))
+      expect(document.body.classList.contains('deroule-question')).toBe(false)
+      rerender(scene(true))
+      unmount()
+      expect(document.body.classList.contains('deroule-question')).toBe(false)
     })
 
     it('se replie comme avant quand la question ne lui est pas donnee', () => {

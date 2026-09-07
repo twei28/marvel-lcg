@@ -1038,6 +1038,20 @@ export function DeroulePhase({
   // suivant).
   useDerouleScene(etape, visible)
 
+  // LE MOMENT OU L'ON PEUT AGIR change d'aspect : tant que la question du
+  // moteur est logee dans la scene, le body porte `deroule-question` et
+  // board.css sort la main du voile, eclairee, ses cartes jouables en
+  // surbrillance. Demande de l'utilisateur : « si on peut defendre ou jouer
+  // une carte, j'ai envie que ce soit bien visible ».
+  const questionLogee = visible && questionAuJoueur && question !== undefined
+  useEffect(() => {
+    if (!questionLogee) return
+    document.body.classList.add('deroule-question')
+    return () => {
+      document.body.classList.remove('deroule-question')
+    }
+  }, [questionLogee])
+
 
   // Le `return null` vient APRES tous les hooks, jamais avant : React exige
   // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant
@@ -1218,6 +1232,10 @@ export function DeroulePhase({
   if (questionAuJoueur && question) {
     return (
       <section className="deroule-phase est-question" role="dialog" aria-label={t('Phase du méchant')}>
+        {/* Le bandeau rouge : impossible a confondre avec une etape a lire. */}
+        <p className="deroule-a-toi" aria-live="assertive">
+          {t('À toi de jouer')}
+        </p>
         <div className="deroule-chrono">{chronologie}</div>
         {cartesScene}
         {/* L'intention reste dite au-dessus de la question : « Ultron va
