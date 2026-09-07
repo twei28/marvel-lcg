@@ -436,9 +436,14 @@ export function DeroulePhase({
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
-  const etapesAffichees = arreterSurDefaite(
-    phaseRaconteeEnCours ? etapesDeLaPhase : avecBilan(etapesDeLaPhase, pvMaxParNom)
-  )
+  const etapesConnues = phaseRaconteeEnCours
+    ? etapesDeLaPhase
+    : avecBilan(etapesDeLaPhase, pvMaxParNom)
+  const etapesAffichees = arreterSurDefaite(etapesConnues)
+  // La coupe a-t-elle vraiment emporte quelque chose ? C'est ce qui distingue
+  // « la liste a change d'ordre » de « un heros vient de tomber », et le repli
+  // ci-dessous n'est pas le meme dans les deux cas.
+  const coupeParDefaite = etapesAffichees.length < etapesConnues.length
 
   // L'INDEX, retrouve a partir de la cle retenue, a chaque rendu.
   //
@@ -447,11 +452,27 @@ export function DeroulePhase({
   // plus pour un autre joueur retrie les etapes, une intention se complete en
   // place, un fait arrive en amont : rien de tout cela ne deplace le joueur.
   //
-  // REPLI, quand la cle a disparu de la liste (le seul cas connu : une defaite
-  // survenue plus tot vient de couper le deroule derriere elle) : la premiere
-  // etape NON VALIDEE. Les etapes se valident dans l'ordre, donc c'est celle
-  // qui suit la derniere validee, et la premiere de toutes quand rien ne l'a
-  // encore ete. Jamais un retour a zero, qui ferait tout relire.
+  // REPLI, quand la cle a disparu de la liste : la premiere etape NON VALIDEE.
+  // Les etapes se valident dans l'ordre, donc c'est celle qui suit la derniere
+  // validee.
+  //
+  // ET QUAND MEME LA VALIDEE A DISPARU, apres une coupe de defaite : la
+  // DERNIERE etape, c'est-a-dire celle qui porte le coup fatal. C'est le seul
+  // endroit du cartouche ou l'on saute en avant, et c'est voulu.
+  // `arreterSurDefaite` coupe sur l'ORDRE DES TEMPS et non sur l'ordre
+  // d'arrivee des faits : une activation journalisee sous « Reveal Encounter
+  // Cards » (une attaque declenchee par la carte que l'on vient de reveler)
+  // garde le temps `revelation` et reste DEVANT les etapes de revelation apres
+  // le tri stable. La coupe emporte alors l'etape lue ET l'etape validee, et
+  // un repli sur zero renvoyait le joueur a la MENACE, sans jamais lui montrer
+  // le coup qui l'a tue, pendant que le filet de 20 s de l'ecran de fin
+  // courait (relecture A4).
+  //
+  // Corriger l'ordre de la coupe elle-meme (couper sur le rang du fait dans
+  // `faits_mechant` plutot que sur le temps) demanderait de faire voyager ce
+  // rang jusqu'a l'etape, alors qu'il ne sert aujourd'hui qu'a fabriquer sa
+  // cle. Le repli, lui, se lit et se teste ici, et il rend au joueur ce qu'il
+  // doit voir : l'etape de la defaite.
   const rangDeLaCle =
     cleCourante === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === cleCourante)
   const rangValidee =
@@ -459,9 +480,11 @@ export function DeroulePhase({
   const index =
     rangDeLaCle !== -1
       ? rangDeLaCle
-      : rangValidee === -1
-        ? 0
-        : Math.min(rangValidee + 1, etapesAffichees.length - 1)
+      : rangValidee !== -1
+        ? Math.min(rangValidee + 1, etapesAffichees.length - 1)
+        : coupeParDefaite
+          ? etapesAffichees.length - 1
+          : 0
 
   const etape = etapesAffichees[index]
 

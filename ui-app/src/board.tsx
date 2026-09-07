@@ -2145,11 +2145,22 @@ function PagePartie({
   const coupFatalAMontrer =
     modePhase === 'detaille' && coupFatalLocal(etapesPhaseMechant, herosLocauxIds)
   // Le joueur a valide l'etape du coup fatal (« Continuer »), et le filet de
-  // temps qui laisse paraitre l'ecran de fin quoi qu'il arrive. Aucun des deux
-  // ne se remet a faux : une partie finie ne recommence pas, et une nouvelle
-  // partie remonte tout le plateau.
+  // temps qui laisse paraitre l'ecran de fin quoi qu'il arrive.
+  //
+  // Les deux se remettent a faux a chaque NOUVELLE PARTIE, et il a fallu le
+  // dire : « une nouvelle partie remonte tout le plateau » etait faux.
+  // `PagePartie` n'est monte qu'une fois par chargement de page, sans `key`
+  // (voir la fin de ce fichier) ; « Rejouer » enchaine donc une seconde partie
+  // sur le meme etat. `coupFatalVu` restait vrai, `afficherFinDePartie` rendait
+  // vrai des la trame de `game_over`, et le coup fatal n'etait plus jamais
+  // montre a partir de la deuxieme partie (relecture A4). Meme motif et meme
+  // source que la remise a zero du cartouche : `etat.partieId`.
   const [coupFatalVu, setCoupFatalVu] = useState(false)
   const [filetFinEcoule, setFiletFinEcoule] = useState(false)
+  useEffect(() => {
+    setCoupFatalVu(false)
+    setFiletFinEcoule(false)
+  }, [etat.partieId])
   const finPartieAffichee = afficherFinDePartie({
     partieFinie: partieFinieMoteur,
     coupFatalAMontrer,

@@ -2553,8 +2553,52 @@ describe('l identite de l etape courante', () => {
     expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
   })
 
-  // Le repli, quand la cle retenue disparait : la premiere etape NON VALIDEE,
-  // jamais un retour a zero qui ferait tout relire.
+  // LE REPLI QUAND LA COUPE DE DEFAITE EMPORTE TOUT CE QU'ON LISAIT.
+  //
+  // `arreterSurDefaite` coupe sur l'ORDRE DES TEMPS, pas sur l'ordre d'arrivee
+  // des faits : une activation journalisee sous « Reveal Encounter Cards »
+  // (une attaque declenchee par une carte revelee, vu en partie reelle) garde
+  // le temps `revelation` et reste DEVANT les etapes de revelation apres le
+  // tri stable. La coupe emporte donc les deux revelations, dont celle que le
+  // joueur lisait ET celle qu'il avait validee. Le repli « premiere etape non
+  // validee » renvoyait alors a l'etape 0 : le joueur revenait a la MENACE et
+  // ne voyait jamais le coup qui l'a tue (relecture A4).
+  it('montre le coup fatal quand la coupe emporte l etape qu on lisait', () => {
+    const mortelle: EtapeDeroule = {
+      cle: 'fait:9:50',
+      temps: 'revelation',
+      titre: 'attaque',
+      regle: 'regle:activations',
+      carteId: 50,
+      cibleId: 12,
+      auteurNom: 'Ultron',
+      cibleNom: 'Shuri',
+      etat: 'resolu',
+      montant: 6,
+      restant: -4,
+      defaite: true,
+      boosts: [],
+    }
+    const { rerender } = render(
+      <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+    // La carte revelee frappe, et le heros tombe.
+    rerender(
+      <DeroulePhase
+        etapes={[menace, mortelle, carteA, carteB]}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('Shuri est vaincu')).toBeInTheDocument()
+    expect(screen.queryByText('Menace sur la manigance principale')).not.toBeInTheDocument()
+  })
+
+  // Le repli ORDINAIRE, quand la cle retenue disparait sans coupe de defaite :
+  // la premiere etape NON VALIDEE.
   it('se replie sur la premiere etape non validee quand sa cle disparait', () => {
     const { rerender } = render(
       <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
