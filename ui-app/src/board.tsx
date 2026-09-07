@@ -2294,6 +2294,8 @@ function PagePartie({
   }, [])
 
   const [revelation, setRevelation] = useState<ModeRevelation>(lireRevelation)
+  // Le panneau du journal du heros, ouvert depuis le menu « … ».
+  const [journalOuvert, setJournalOuvert] = useState(false)
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'
@@ -2812,14 +2814,9 @@ function PagePartie({
         // partie au milieu d'un ciblage.
         selecteurOuvert={interaction.ciblesHorsTable.length > 0}
         onFermerSelecteur={interaction.abandonnerOption}
-        journal={
-          <JournalHeros
-            entrees={historique.entrees}
-            monde={etat.monde}
-            joueur={joueurActif}
-            nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
-          />
-        }
+        // Le journal du heros ne vit plus sur la table : la colonne de droite
+        // est aux manigances (demande de l'utilisateur, 7 septembre 2026).
+        // Il s'ouvre depuis le menu « … » (voir `journalOuvert`).
         actionsPartie={
           /* ORDRE : par intention, et il se lit comme une phrase —
               ce que je FAIS, ce que je REGARDE, comment c'est REGLE, je PARS.
@@ -2944,6 +2941,18 @@ function PagePartie({
             />
 
             <PopoverPlus>
+              {/* Le journal du heros, en panneau : ce qui est arrive a CE
+                  heros, dans l'ordre. Il vivait sur la table, dans la colonne
+                  des manigances, qu'il rognait. */}
+              <button
+                type="button"
+                className={`bh-bouton bh-journal${journalOuvert ? ' est-actif' : ''}`}
+                onClick={() => setJournalOuvert((o) => !o)}
+                aria-pressed={journalOuvert}
+                title={t('Ce qui est arrivé à ton héros, dans l’ordre')}
+              >
+                {t('Journal du héros')}
+              </button>
               {/* « Log » : le rapport complet en UN clic. Toute la partie, en
                   texte lisible, parce que c'est ce qu'on relit et ce qu'on
                   transmet quand un bug vient de se produire. */}
@@ -3065,15 +3074,42 @@ function PagePartie({
         </button>
       ) : null}
 
+      {journalOuvert ? (
+        <aside className="panneau-journal" aria-label={t('Journal du héros')}>
+          <button
+            type="button"
+            className="bh-bouton panneau-journal-fermer"
+            onClick={() => setJournalOuvert(false)}
+            aria-label={t('Fermer')}
+          >
+            ×
+          </button>
+          <JournalHeros
+            entrees={historique.entrees}
+            monde={etat.monde}
+            joueur={joueurActif}
+            nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+            toujoursVisible
+          />
+        </aside>
+      ) : null}
       <BandeauConnexion etat={etat} reconnecter={reconnecter} />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
       <CoucheAnimations renderId={etat.monde.render_id} actif={animations} />
       <CoucheTriche actif={triche.actif} couche={triche.couche} />
-      <CoucheRevelation
-        monde={etat.monde}
-        duree={DUREES_REVELATION[revelation]}
-        joueurId={joueurActif}
-      />
+      {/* En Detaille, pendant la phase du mechant, la scene montre deja la
+          carte revelee face visible, avec ce qu'elle a fait : la couche a
+          duree la remontrait en grand par-dessus, une seconde fois. Constate
+          par l'utilisateur : « il montre quand meme encore la derniere carte
+          en grand, en dehors de la modale ». Hors de cette phase (une carte
+          revelee par un effet pendant le tour du heros), elle garde son role. */}
+      {modePhase === 'detaille' && phaseMechantEnCours ? null : (
+        <CoucheRevelation
+          monde={etat.monde}
+          duree={DUREES_REVELATION[revelation]}
+          joueurId={joueurActif}
+        />
+      )}
       <CoucheCharge
         renderId={etat.monde.render_id}
         eventName={etat.monde.event_name ?? ''}

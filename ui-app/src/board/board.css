@@ -171,7 +171,7 @@
       "piles-rencontre rencontre       complot-principal"
       "nemesis         terrain-combat  complots-secondaires"
       "piles-joueur    terrain-soutien complots-secondaires"
-      "annexes         main            journal";
+      "annexes         main            complots-secondaires";
     /* Zones rapprochees : moins d'espace perdu entre elles. */
     gap: 7px;
     padding: 10px;
@@ -5032,9 +5032,42 @@
      min-height: 0 est indispensable : sans lui une piste de grille refuse de
      se comprimer sous son contenu, la liste ne défile pas et le panneau
      déborde la table. */
-  /* Le journal ne s'affiche que s'il a des entrees (voir JournalHeros.tsx). */
+  /* Le journal ne vit plus sur la table : il s'ouvre en panneau depuis le
+     menu « … » (board.tsx, `journalOuvert`). La colonne de droite est aux
+     manigances. */
+  .panneau-journal {
+    position: fixed;
+    top: 56px;
+    right: 12px;
+    z-index: 560;
+    width: min(360px, calc(100vw - 24px));
+    max-height: calc(100dvh - 72px);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 8px 8px;
+    border-radius: 10px;
+    background: rgba(8, 10, 14, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 24px 58px rgba(0, 0, 0, 0.64);
+  }
+
+  .panneau-journal .journal-heros {
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .panneau-journal-fermer {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
+    padding: 0 8px;
+    line-height: 1.4;
+  }
+
   .journal-heros {
-    grid-area: journal;
     display: flex;
     flex-direction: column;
     min-height: 0;

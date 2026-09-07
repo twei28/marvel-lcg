@@ -58,11 +58,18 @@ export function JournalHeros({
   monde,
   joueur,
   nomHeros,
+  toujoursVisible = false,
 }: {
   entrees: EntreeHistorique[]
   monde: World | undefined
   joueur: number
   nomHeros?: string
+  /**
+   * En panneau (menu « … »), le journal se montre meme vide, avec sa mention
+   * « rien pour l'instant » : un panneau qu'on vient d'ouvrir et qui ne
+   * contient rien serait pris pour un bug.
+   */
+  toujoursVisible?: boolean
 }) {
   const liste = entreesDuHeros(entrees, monde, joueur)
   const bas = useRef<HTMLDivElement>(null)
@@ -80,7 +87,7 @@ export function JournalHeros({
   // Rien à raconter, rien à dessiner : un cadre de 324 px qui dit « Rien
   // encore » prend la place de la table sans rien apprendre. Il revient de
   // lui-même à la première entrée.
-  if (vide) return null
+  if (vide && !toujoursVisible) return null
 
   return (
     <section className="journal-heros" aria-label={t('Journal du héros')}>
