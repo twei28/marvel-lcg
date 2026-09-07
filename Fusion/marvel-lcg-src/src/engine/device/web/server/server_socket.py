@@ -82,7 +82,12 @@ class GameServerSocket(GameServerBase):
                 sieges_non_acquittes = [
                     siege
                     for siege in range(world.started_player_num if world else 0)
-                    if device_manager.client_manager.client_synced[siege] < (world.render.last_render_id if world else 0)
+                    # Garde : client_synced est une liste FIXE de 4, mais une
+                    # identite liee (Cloak & Dagger) porte started_player_num
+                    # a 5. Sans elle, IndexError HORS du try, le client reste
+                    # « busy » a jamais et plus aucune trame ne part.
+                    if siege < len(device_manager.client_manager.client_synced)
+                    and device_manager.client_manager.client_synced[siege] < (world.render.last_render_id if world else 0)
                 ]
                 # game.controller_manager.skip.is_skipping,
             )
