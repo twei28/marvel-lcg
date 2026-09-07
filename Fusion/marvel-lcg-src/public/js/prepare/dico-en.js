@@ -47,6 +47,7 @@ export const DICO_EN_BASE = {
     "Art alt": "Alt art",
     "Changer de mode de jeu": "Change game mode",
     "Équipe": "Team",
+    "Ton équipe": "Your team",
     "Méchant": "Villain",
     "Menace": "Threat",
     "Coop locale": "Local co-op",

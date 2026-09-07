@@ -538,8 +538,10 @@ function progressBar() {
         el("div", { class: "steps" }, STEPS.map((label, i) => {
             const done = i < state.step && stepComplete(i);
             const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
+            // Sans numero devant (demande de l'utilisateur) : la coche seule
+            // marque une etape faite, rien ne marque les autres.
             return el("button", { class: cls, onclick: () => goto(i) },
-                el("span", { class: "pnum" }, done ? "\u2713" : String(i + 1)),
+                done ? el("span", { class: "pnum" }, "\u2713") : null,
                 el("span", { class: "plabel" }, label));
         })),
     );
@@ -1065,7 +1067,6 @@ function herosDuSiegeActif() {
 function stepTeam() {
     const wrap = el("section", { class: "step team-b" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
-        el("div", { class: "recitatif" }, t("Épisode") + " 1 · " + t("Rassemble tes héros")),
     );
     const f = state.heroFilters;
     const droite = el("div", { class: "tb-droite" },
@@ -1076,7 +1077,7 @@ function stepTeam() {
         // ouvrirCartesHeros) ; les deux vivent côte à côte, une seule visible.
         el("div", { class: "tb-vue-cartes", id: "tb-vue-cartes", hidden: true }),
         el("div", { class: "tb-entete" },
-            el("b", { class: "mvl" }, t("Roster")),
+            el("b", { class: "mvl" }, t("Héros")),
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
             creationCampagne() ? null : el("button", {
                 class: "tb-mode",
@@ -1428,7 +1429,7 @@ function rendreEquipe() {
         ));
     }
     poser(zone,
-        el("span", { class: "tb-equipe-k" }, t("Équipe")),
+        el("span", { class: "tb-equipe-k" }, t("Ton équipe")),
         ...sieges,
     );
 }
@@ -2139,7 +2140,6 @@ function stepDecks() {
     if (enLigne()) state.activeSlot = 0;
     const wrap = el("section", { class: "step team-b arsenal" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
-        el("div", { class: "recitatif" }, t("Épisode") + " 2 · " + t("Arsenal")),
     );
     const droite = el("div", { class: "tb-droite" },
         el("div", { class: "tb-entete" },
@@ -2486,11 +2486,10 @@ function criDuMechant(sc) {
 function stepScenario() {
     const wrap = el("section", { class: "step team-b eux" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
-        el("div", { class: "recitatif" }, t("Épisode") + " 3 · " + t("Identifie la cible")),
     );
     const droite = el("div", { class: "tb-droite" },
         el("div", { class: "tb-entete" },
-            el("b", { class: "mvl" }, t("Cibles")),
+            el("b", { class: "mvl" }, t("Scénarios")),
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
             el("span", { class: "tb-mode" }, navStatus()),
         ),
@@ -2661,7 +2660,7 @@ function rendreTable() {
     }, portraitHeros(p.hero), el("span", { class: "tb-siege-nom" }, p.hero.name)));
     const sc = state.scenario;
     poser(zone,
-        el("span", { class: "tb-equipe-k" }, t("Ta table")),
+        el("span", { class: "tb-equipe-k" }, t("Face à face")),
         ...membres,
         el("span", { class: "tb-vs mvl" }, "VS"),
         sc
@@ -2911,7 +2910,6 @@ function stepSummary() {
     return el("section", { class: "step face-a-face" },
         el("div", { class: "faceoff" + (state.playerCount > 2 ? " large" : "") },
             el("div", { class: "fo-side heroes-side" },
-                el("div", { class: "recitatif" }, t("Épisode") + " 4 · " + t("Face à face")),
                 heros,
                 el("div", { class: "fo-reglages" },
                     ...reglages.map((x) => el("span", { class: "tampon" }, x))),
