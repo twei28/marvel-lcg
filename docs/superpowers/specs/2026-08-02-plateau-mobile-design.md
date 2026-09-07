@@ -1,7 +1,7 @@
 # Plateau jouable au doigt sur téléphone
 
 **Date :** 2026-08-02
-**Statut :** conçu, validé, non planifié
+**Statut :** livré le 03/08/2026, puis **remplacé le 07/09/2026** par `2026-09-07-parcours-solo-mobile-design.md` : le portrait et les médaillons sont abandonnés au profit de vraies cartes en deux rangées, en paysage obligatoire. Le §1 (pourquoi la scène à l'échelle ne convient pas) reste valable.
 **Rapport à la roadmap :** couvre MOB-01, MOB-02, MOB-03 et le critère 5 de la phase 6 (dézoom sémantique). Ne couvre pas BOARD-11 ni BOARD-12.
 
 ---
