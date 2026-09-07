@@ -1218,6 +1218,11 @@ export function DeroulePhase({
         stats={undefined}
         labelType={undefined}
         camp={undefined}
+        // Carte NUE (decide avec l'utilisateur) : ni barre ni jeton, le
+        // chiffre de l'etape est a droite et le jeton qui tombe est le geste.
+        jauge={undefined}
+        jetonMenace={undefined}
+        jetonDegats={undefined}
         masquerType
       />
     ) : (

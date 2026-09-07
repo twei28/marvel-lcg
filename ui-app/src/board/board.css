@@ -2784,6 +2784,21 @@
      la table derriere est assombrie (`.deroule-voile`) et n'est plus a lire
      pendant la phase. Spec du 7 septembre 2026 :
      docs/superpowers/specs/2026-09-07-scene-phase-mechant-design.md. */
+  /* Les polices de l'assistant, servies par le moteur comme la police
+     d'icones : la scene de la phase du mechant parle la meme langue que la
+     preparation (decide avec l'utilisateur, 7 septembre 2026). */
+  @font-face {
+    font-family: 'Anton';
+    src: url('/public/fonts/Anton-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Bangers';
+    src: url('/public/fonts/Bangers-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+
   .deroule-phase {
     position: fixed;
     left: 50%;
@@ -2802,10 +2817,116 @@
     z-index: 540;
     padding: 14px 22px 16px;
     color: #f8fafc;
-    background: rgba(30, 30, 30, 0.94);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    /* Une CASE de bande dessinee : fond Charcoul trame de points, bord noir
+       epais, ombre portee decalee rouge Iron Man, bande oblique en haut. */
+    background:
+      radial-gradient(circle, rgba(255, 255, 255, 0.075) 0 1px, transparent 1.6px) 0 0 / 7px 7px,
+      linear-gradient(160deg, #262626, var(--fond) 60%);
+    border: 3px solid #0b0b0b;
+    border-radius: 6px;
+    box-shadow:
+      8px 8px 0 var(--rouge),
+      0 30px 80px rgba(0, 0, 0, 0.7);
+  }
+
+  /* La bande oblique en haut de la case, sous la chronologie. */
+  .deroule-phase::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 40px;
+    background: linear-gradient(100deg, var(--rouge) 0, var(--rouge) 52%, transparent 52.1%);
+    opacity: 0.95;
+    pointer-events: none;
+  }
+
+  .deroule-phase > * {
+    position: relative;
+  }
+
+  .deroule-phase .deroule-chrono {
+    margin: -14px -22px 10px;
+    padding: 8px 22px 6px;
+  }
+
+  .deroule-phase .deroule-temps {
+    font-family: 'Bangers', 'Anton', Impact, sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    color: rgba(248, 250, 252, 0.55);
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .deroule-phase .deroule-temps li.est-courant {
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  .deroule-phase .deroule-rang {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* Le titre de l'etape : en grand, en Anton penche, ombre rouge, comme le
+     nom du heros dans l'assistant. C'est la chose qu'on lit en premier. */
+  .deroule-phase .deroule-titre {
+    font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 4px 4px 0 var(--rouge-vif);
+  }
+
+  .deroule-phase .deroule-titre.est-bilan {
+    font-size: 1.5rem;
+    color: #fff;
+  }
+
+  /* Le chiffre de l'etape (« 1 → 2 / 6 ») : en Bangers jaune Pepper Potts. */
+  .deroule-phase .deroule-compteur {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.04em;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  .deroule-phase .deroule-resultat {
+    font-size: 1.05rem;
+  }
+
+  /* Les boutons : blocs comics, bord noir, ombre decalee ; Suivant en rouge. */
+  .deroule-phase .deroule-boutons .bh-bouton {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.06em;
+    padding: 8px 18px;
+    border: 3px solid #0b0b0b;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 #0b0b0b;
+    transform: skewX(-6deg);
+  }
+
+  .deroule-phase .deroule-boutons .deroule-suivant {
+    background: var(--rouge);
+    color: #fff;
+  }
+
+  .deroule-phase .deroule-boutons .deroule-suivant:hover {
+    background: var(--rouge-vif);
+  }
+
+  /* Le bandeau « A toi de jouer » reprend le meme rouge que la bande. */
+  .deroule-a-toi {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.14em;
   }
 
   /* Le voile : la table derriere la scene n'est plus a lire, elle peut etre
