@@ -96,6 +96,34 @@ describe('les cibles dans la scene', () => {
     expect(valider).toHaveBeenCalledTimes(1)
   })
 
+  it('ouvre l agrandissement habituel au survol, a cote et pas sur place', () => {
+    class ResizeObserverBouchon {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+    const { container } = render(
+      <CiblesScene
+        titre="t"
+        cibles={cibles(() => {})}
+        choisies={0}
+        minimum={1}
+        maximum={1}
+        prete={false}
+        raison=""
+        valider={() => {}}
+        annuler={() => {}}
+      />
+    )
+    const carte = container.querySelector('.cibles-scene-carte') as Element
+    fireEvent.mouseEnter(carte)
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+    fireEvent.mouseLeave(carte)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+    vi.unstubAllGlobals()
+  })
+
   it('annuler rend la main', () => {
     const annuler = vi.fn()
     render(

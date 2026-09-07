@@ -7,7 +7,9 @@
 // derriere (le voile ne capte pas les clics) : les deux chemins menent au
 // meme `agir`.
 
+import { useState } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import { CarteApercu } from './Board'
 import { t } from './langue'
 import { avecIcones, marquerRessources } from './icones-ressources'
 
@@ -44,6 +46,10 @@ export function CiblesScene({
   valider,
   annuler,
 }: CiblesSceneProps) {
+  // Le survol ouvre l'agrandissement HABITUEL (CarteApercu, a cote), pas un
+  // zoom sur place dans la scene qui recouvrait ses voisines (constat de
+  // l'utilisateur, 7 septembre 2026). Le zoom sur place est coupe en CSS.
+  const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
   return (
     <div className="cibles-scene" role="group" aria-label={`${t('Cibles possibles :')} ${titre}`}>
       <div className="cibles-scene-entete">
@@ -59,7 +65,12 @@ export function CiblesScene({
       {cibles.length > 0 ? (
         <div className="cibles-scene-cartes">
           {cibles.map((cible) => (
-            <span key={cible.props.id} className="cibles-scene-carte">
+            <span
+              key={cible.props.id}
+              className="cibles-scene-carte"
+              onMouseEnter={() => setCarteRegardee(cible.props)}
+              onMouseLeave={() => setCarteRegardee(undefined)}
+            >
               <ScanCard
                 {...cible.props}
                 state={cible.choisie ? 'selected' : 'targetable'}
@@ -77,6 +88,7 @@ export function CiblesScene({
           ))}
         </div>
       ) : null}
+      {carteRegardee ? <CarteApercu carte={carteRegardee} classe="au-dessus-du-deroule" /> : null}
       <div className="cibles-scene-boutons">
         {!prete && raison ? <span className="cibles-scene-raison">{raison}</span> : null}
         <button type="button" className="bh-bouton" onClick={annuler}>

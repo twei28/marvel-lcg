@@ -915,6 +915,12 @@
     gap: 14px;
   }
 
+  /* Pas de zoom sur place dans la scene : l'agrandissement se fait a cote
+     (CarteApercu), comme pour une carte de la table. */
+  .cibles-scene .scan-card:hover .scan-visuel {
+    transform: none;
+  }
+
   .cibles-scene-boutons {
     display: flex;
     align-items: center;
