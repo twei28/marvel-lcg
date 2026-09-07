@@ -795,6 +795,11 @@ export function construirePlateau(world: World, options: Options): Plateau {
             cartes: notre?.set_aside_nemesis_sets,
             representant: representantNemesis,
             nemesis: true,
+            // Le set nemesis est CONNU du joueur : il est imprime dans le pack
+            // du heros. Tant qu'il n'est pas en jeu, on doit pouvoir le
+            // consulter pour savoir ce qui nous attend (07/09/2026).
+            regardable: true,
+            titre: t('Set némésis'),
           },
         ],
         rendu

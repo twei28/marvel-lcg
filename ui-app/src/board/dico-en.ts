@@ -772,4 +772,5 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Deck mis de côté': 'Set-aside deck',
   'Deck supplémentaire': 'Additional deck',
   'Défausse supplémentaire': 'Additional discard pile',
+  'Set némésis': 'Nemesis set',
 }
