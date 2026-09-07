@@ -44,6 +44,12 @@ const creationCampagne = () => !!BROUILLON_CAMPAGNE;
 // revenir sans ressortir de l'ecran.
 const DECKS_CAMPAGNE = new Map();
 
+/** `replaceChildren` transforme un null en TEXTE « null » (contrairement à
+ *  el(), qui l'ignore). Tout ce qui peut être absent passe par ici. */
+function poser(hote, ...enfants) {
+    hote.replaceChildren(...enfants.flat().filter((x) => x != null && x !== false));
+}
+
 function el(tag, props, ...kids) {
     const n = document.createElement(tag);
     if (props) for (const k in props) {
@@ -95,7 +101,10 @@ const MODES = [
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
 ];
-const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Menace", "Final"])
+// QUATRE étapes, plus cinq : le niveau de menace et les sets modulaires se
+// choisissent sur l'écran de la cible, sous la grille des scénarios. C'est là
+// qu'on décide de la difficulté, en voyant le méchant.
+const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Cible", "Final"])
     .map((s) => t(s));
 const LAST_STEP = STEPS.length - 1;
 const rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -231,8 +240,7 @@ function stepComplete(step) {
         case 0: return !!state.mode && (enLigne() ? !!active[0] && !!active[0].hero : active.every((p) => p.hero));
         case 1: return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
         case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
-        case 3: return true;
-        case 4: return validate(state).ok;
+        case 3: return validate(state).ok;
         default: return false;
     }
 }
@@ -271,10 +279,6 @@ async function randomize() {
             const scs = await catalog.scenariosForExtension(state.extensionTab);
             if (scs.length) selectScenario(rnd(scs));
         }
-        render();
-    } else if (state.step === 3) {
-        state.difficulty.modularConfig = "random";
-        applyModularConfig();
         render();
     }
 }
@@ -489,10 +493,10 @@ function render() {
                 el("main", { class: "stage accueil-stage" }, accueilView()),
             ),
         );
-    } else if (state.step === 0) {
-        // L'étape des héros (direction « Affiche ») prend tout l'écran : la
-        // moitié gauche est le héros en scène, la droite le roster et
-        // l'équipe. La fiche de mission n'y a plus rien à dire.
+    } else if (state.step === 0 || state.step === 2) {
+        // Les étapes des héros et de la cible (direction « Affiche ») prennent
+        // tout l'écran : la moitié gauche est la scène, la droite le roster.
+        // La fiche de mission n'y a plus rien à dire.
         root.replaceChildren(
             progressBar(),
             el("div", { class: "layout accueil-layout" },
@@ -549,7 +553,7 @@ function progressBar() {
 }
 
 function navBar() {
-    const showRandom = [0, 2, 3].includes(state.step);
+    const showRandom = [0, 2].includes(state.step);
     return el("footer", { class: "nav" },
         el("button", { class: "btn ghost", disabled: (state.step === 0 && creationCampagne()) || undefined, onclick: prev }, t("Retour")),
         el("div", { class: "nav-status" }, navStatus()),
@@ -732,8 +736,7 @@ function stepView() {
         case 0: return stepTeam();
         case 1: return stepDecks();
         case 2: return stepScenario();
-        case 3: return stepDifficulty();
-        case 4: return stepSummary();
+        case 3: return stepSummary();
     }
 }
 
@@ -1198,7 +1201,7 @@ function rendreScene(h) {
     const scene = document.getElementById("tb-scene");
     if (!scene) return;
     if (!h) {
-        scene.replaceChildren(
+        poser(scene,
             el("div", { class: "tb-art vide" }),
             el("div", { class: "tb-trame" }),
             el("div", { class: "tb-nomg" },
@@ -1211,7 +1214,7 @@ function rendreScene(h) {
     const vague = h.homebrew ? t("Fan-made")
         : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
     const arts = (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length;
-    scene.replaceChildren(
+    poser(scene,
         h.lie
             ? el("div", { class: "tb-art" }, portraitDuo(h))
             : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(picIdHeros(h.heroCardId))}")` } }),
@@ -1246,7 +1249,7 @@ function rendreEquipe() {
             el("span", { class: "tb-siege-nom" }, pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)),
         ));
     }
-    zone.replaceChildren(
+    poser(zone,
         el("span", { class: "tb-equipe-k" }, t("Équipe")),
         ...sieges,
     );
@@ -1512,7 +1515,7 @@ function showHeroHover(h, cardEl) {
     if (colonneApercuDisponible()) {
         clearTimeout(_hideTimer);
         const zone = document.getElementById("recap-apercu");
-        zone.replaceChildren(...ficheHeros(h).filter(Boolean));
+        poser(zone,...ficheHeros(h).filter(Boolean));
         const recap = zone.closest(".recap");
         if (recap) recap.classList.add("apercu");
         hideHover();                 // pas d'infobulle en plus
@@ -1575,7 +1578,7 @@ function showScnHover(sc, tileEl) {
     if (colonneApercuDisponible()) {
         clearTimeout(_hideTimer);
         const zone = document.getElementById("recap-apercu");
-        zone.replaceChildren(...elements.filter(Boolean));
+        poser(zone,...elements.filter(Boolean));
         const recap = zone.closest(".recap");
         if (recap) recap.classList.add("apercu");
         hideHover();
@@ -2368,20 +2371,191 @@ function aspectBar(st) {
     return el("div", { class: "aspect-bar" }, ...segs);
 }
 
+/* ---- Étape 3, la cible : même mise en scène, en rouge ----------------------
+   À gauche le méchant en scène, à droite les boîtes d'extension, la grille des
+   scénarios, puis le NIVEAU DE MENACE (qui n'a plus son étape) et la table qui
+   se compose. Voir stepTeam() : les deux écrans partagent leurs classes. */
+
+/** Le cri du méchant quand on verrouille la cible. Repli : « RAAAH ! ». */
+const CRIS_MECHANTS = {
+    rhino: "RAAAH !", klaw: "BWAAAM !", ultron: "I AM ULTRON !",
+    green_goblin: "HA HA HA !", risky_business: "HA HA HA !", mutagen_formula: "HA HA HA !",
+    wrecking_crew: "WRECK IT !", crossbones: "BOOM !", absorbing_man: "CRUNCH !", taskmaster: "COPIED !",
+    zola: "SUBJECT !", red_skull: "HAIL HYDRA !", kang: "TIME OUT !", thanos: "INEVITABLE !",
+    hela: "DEATH !", loki: "TRICKED !", ronan: "JUDGMENT !", drang: "RAID !", collector: "MINE !",
+    nebula: "UPGRADE !", sandman: "FWOOSH !", venom: "WE ARE VENOM !", mysterio: "ILLUSION !",
+    sinister_six: "SIX !", venom_goblin: "GRAAAH !", doctor_octopus: "TENTACLES !",
+    sabretooth: "SNIKT !", project_wideawake: "SENTINEL !", master_mold: "MOLD !",
+    mansion_attack: "ATTACK !", magneto: "VRRMM !", morlock_siege: "SIEGE !", on_the_run: "RUN !",
+    juggernaut: "UNSTOPPABLE !", mister_sinister: "SINISTER !", stryfe: "STRYFE !",
+    apocalypse: "APOCALYPSE !", dark_beast: "BEAST !", en_sabah_nur: "SURVIVE !",
+    hydra_patrol: "HAIL HYDRA !", hydra_assault: "HAIL HYDRA !", the_hood: "HOOD !",
+    mojo: "RATINGS !", spiral: "SPIRAL !", brood: "SKREEE !",
+};
+function criDuMechant(sc) {
+    return CRIS_MECHANTS[sc.id] || "RAAAH !";
+}
+
 function stepScenario() {
-    const wrap = el("section", { class: "step scenario-step" },
-        stepHead("Briefing 03", t("Identifie la cible"), t("Scénario et adversaire")),
+    const wrap = el("section", { class: "step team-b eux" },
+        el("div", { class: "tb-scene", id: "tb-scene" }),
+        el("div", { class: "recitatif" }, t("Épisode") + " 3 · " + t("Identifie la cible")),
     );
-    wrap.append(targetBanner());
-    // Bataille : il faut DEUX cibles, une par table. La grille du dessus reste
-    // celle du camp 0 ; ce bloc choisit celle du camp adverse.
-    if (estBataille()) wrap.append(blocSecondeTable());
-    wrap.append(
+    const droite = el("div", { class: "tb-droite" },
+        el("div", { class: "tb-entete" },
+            el("b", { class: "mvl" }, t("Cibles")),
+            el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+            el("span", { class: "tb-mode" }, navStatus()),
+        ),
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
-        el("div", { class: "scn-grid full", id: "scn-grid" }),
+        el("div", { class: "hero-grid tb-roster tb-roster-scn", id: "scn-grid" }),
+        // Le niveau de menace, ici même : c'est en voyant le méchant qu'on
+        // décide de la difficulté, pas un écran plus loin.
+        el("div", { class: "tb-menace", id: "tb-menace" }),
+        el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
+    wrap.append(droite);
     loadExtTabs();
+    Promise.resolve().then(() => {
+        rendreSceneMechant(state.scenario);
+        rendreMenace();
+        rendreTable();
+    });
     return wrap;
+}
+
+/** La moitié gauche : le méchant en scène, ses chiffres imprimés, ses livrets. */
+function rendreSceneMechant(sc) {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    if (!sc) {
+        poser(scene,
+            el("div", { class: "tb-art vide" }),
+            el("div", { class: "tb-trame" }),
+            el("div", { class: "tb-nomg" }, el("small", {}, t("Cible")), t("Choisis un méchant")),
+        );
+        return;
+    }
+    const carte = cards.get((sc.villainCards || [])[0] || sc.tileImage);
+    const d = (carte && carte.desc) || {};
+    // Les valeurs imprimées sur la carte : « 14* » veut dire 14 par joueur.
+    const pv = String(d.HP || "").replace("*", "");
+    const parJoueur = String(d.HP || "").includes("*");
+    const multi = (sc.villainCards || []).length > 1;
+    poser(scene,
+        el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+        el("div", { class: "tb-trame" }),
+        el("div", { class: "tb-nomg" },
+            el("small", {}, (sc.extension || "").replace(/^\d+\.\s*/, "")),
+            sc.name),
+        el("div", { class: "tb-tampons" },
+            pv ? el("span", { class: "tampon rouge" }, t("PV") + " " + pv + (parJoueur ? " / " + t("joueur") : "")) : null,
+            d.ATK ? el("span", { class: "tampon" }, t("ATQ") + " " + d.ATK) : null,
+            d.SCH ? el("span", { class: "tampon" }, t("MEN") + " " + d.SCH) : null,
+            multi
+                ? el("span", { class: "tampon" }, sc.villainCards.length + " " + t("méchants"))
+                : (sc.villains.length ? el("span", { class: "tampon" }, sc.villains.length + " " + t(sc.villains.length > 1 ? "stades" : "stade")) : null),
+            sc.schemes.length ? el("span", { class: "tampon" }, sc.schemes.length + " " + t(sc.schemes.length > 1 ? "manigances" : "manigance")) : null,
+            sc.hasExpertVariant ? el("span", { class: "tampon rouge" }, "Expert") : null,
+        ),
+        documentsDeLaCible(sc),
+    );
+}
+
+/** Verrouiller une cible : le cri, puis la scène et la table. */
+function verrouillerCible(sc) {
+    selectScenario(sc);
+    rendreSceneMechant(sc);
+    rendreMenace();
+    rendreTable();
+    document.querySelectorAll(".tb-port").forEach((b) => {
+        b.classList.toggle("chosen", b.dataset.scn === sc.id);
+    });
+    const scene = document.getElementById("tb-scene");
+    if (scene) {
+        const cri = criDuMechant(sc);
+        const eclair = el("div", { class: "tb-eclair" },
+            el("img", { src: cardImageUrl((sc.villainCards || [])[0] || sc.tileImage), alt: "" }),
+            el("span", {
+                class: "ono rouge",
+                style: { fontSize: Math.max(40, Math.min(96, Math.round(760 / cri.length))) + "px" },
+            }, cri),
+        );
+        scene.append(eclair);
+        eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
+        setTimeout(() => eclair.remove(), 1400);
+    }
+    const nav = document.querySelector(".nav");
+    if (nav) nav.replaceWith(navBar());
+}
+
+/** Le niveau de menace, sous la grille : règles en tampons, sets en chips. */
+function rendreMenace() {
+    const zone = document.getElementById("tb-menace");
+    if (!zone) return;
+    const sc = state.scenario;
+    if (!sc) {
+        poser(zone,el("div", { class: "tb-menace-vide" }, t("Choisis une cible pour régler la menace.")));
+        return;
+    }
+    const d = state.difficulty;
+    const regle = (libelle, actif, action) => el("button", {
+        class: "tampon" + (actif ? " on" : ""),
+        onclick: () => { action(); rendreMenace(); rendreTable(); },
+    }, libelle);
+
+    const heroique = el("div", { class: "tb-heroique" },
+        el("span", { class: "tb-menace-k" }, t("Héroïque")),
+        el("input", {
+            type: "range", min: "0", max: "8", value: String(d.heroic),
+            oninput: (e) => {
+                d.heroic = +e.target.value;
+                const n = zone.querySelector(".tb-heroique b");
+                if (n) n.textContent = d.heroic > 0 ? String(d.heroic) : "0";
+            },
+        }),
+        el("b", {}, d.heroic > 0 ? String(d.heroic) : "0"),
+    );
+
+    poser(zone,
+        el("div", { class: "tb-menace-ligne" },
+            el("span", { class: "tb-menace-k" }, t("Menace")),
+            regle("Standard", d.base === "standard", () => { d.base = "standard"; }),
+            sc.hasExpertVariant ? regle("Expert", d.base === "expert", () => { d.base = "expert"; }) : null,
+            regle("Skirmish", d.skirmish, () => { d.skirmish = !d.skirmish; }),
+            heroique,
+        ),
+        el("div", { class: "tb-menace-ligne" },
+            el("span", { class: "tb-menace-k" }, t("Sets modulaires")),
+            regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
+            regle(t("Personnalisés"), d.modularConfig === "custom", () => { d.modularConfig = "custom"; }),
+            regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
+        ),
+        el("div", { class: "mod-chips", id: "modular-box" }),
+        estBataille() ? blocSecondeTable() : null,
+    );
+    renderModular();
+}
+
+/** La table qui se compose : l'équipe, puis la cible verrouillée. */
+function rendreTable() {
+    const zone = document.getElementById("tb-equipe");
+    if (!zone) return;
+    const membres = activePlayers().filter((p) => p.hero).map((p) => el("div", {
+        class: "tb-siege plein petit",
+        title: p.hero.name,
+    }, portraitHeros(p.hero), el("span", { class: "tb-siege-nom" }, p.hero.name)));
+    const sc = state.scenario;
+    poser(zone,
+        el("span", { class: "tb-equipe-k" }, t("Ta table")),
+        ...membres,
+        el("span", { class: "tb-vs mvl" }, "VS"),
+        sc
+            ? el("div", { class: "tb-siege plein petit eux", title: sc.name },
+                el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+                el("span", { class: "tb-siege-nom" }, sc.name))
+            : el("div", { class: "tb-siege petit eux" }, el("span", { class: "plus" }, "?")),
+    );
 }
 
 /** Les scenarios de bataille : ceux dont l'adversaire est un LEADER.
@@ -2436,23 +2610,6 @@ async function remplirSecondeTable() {
     hote.replaceChildren(sel);
 }
 
-function targetBanner() {
-    const sc = state.scenario;
-    // Sans cible, rien : la fiche de droite dit déjà « Méchant non défini »,
-    // et la place va aux tuiles de méchants.
-    if (!sc) return null;
-    const style = sc.tileImage ? { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } : {};
-    return el("div", { class: "target-banner cut" },
-        el("div", { class: "target-art", style }),
-        el("div", { class: "target-copy" },
-            el("span", { class: "target-k" }, t("Cible actuelle")),
-            el("strong", { class: "mvl" }, sc ? sc.name : t("Cible non définie")),
-            el("span", {}, sc && sc.villainNames.length ? sc.villainNames.join(", ") : t("Aucun scénario verrouillé")),
-            documentsDeLaCible(sc),
-        ),
-    );
-}
-
 /** Les documents de l'extension du scénario choisi, à même la bannière : c'est
  *  là qu'on se demande comment se joue une boîte, pas dans une liste de 27.
  *
@@ -2497,7 +2654,7 @@ async function preselectionDernierScenario() {
 }
 
 async function loadExtTabs() {
-    if (await preselectionDernierScenario()) { render(); return; }
+    await preselectionDernierScenario();
     const exts = (await catalog.extensions()).filter((e) => e.scenarios.length);
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
@@ -2528,23 +2685,25 @@ async function loadScnGrid() {
     const scs = await catalog.scenariosForExtension(state.extensionTab);
     grid = document.getElementById("scn-grid");
     if (!grid) return;
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = scs.length + " " + t("scénarios");
     grid.replaceChildren(...scs.map((sc) => {
         const on = state.scenario && state.scenario.id === sc.id;
         return el("button", {
-            class: "scn-tile cut" + (on ? " sel" : ""),
-            onclick: () => { selectScenario(sc); render(); },
-            onmouseenter: (e) => showScnHover(sc, e.currentTarget),
-            onmouseleave: scheduleHide,
+            class: "tb-port" + (on ? " chosen" : ""),
+            "data-scn": sc.id,
+            title: sc.name,
+            onclick: () => verrouillerCible(sc),
+            onmouseenter: () => rendreSceneMechant(sc),
+            onmouseleave: () => rendreSceneMechant(state.scenario),
         },
-            el("div", { class: "st-illus", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
-            el("div", { class: "st-name mvl" }, sc.name),
-            el("div", { class: "st-meta" }, sc.villainNames.slice(0, 2).join(", ") || t("Scénario")),
+            el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+            el("span", { class: "tb-port-nom" }, sc.name),
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
             sc.hasExpertVariant ? el("span", { class: "st-exp" }, "EXPERT") : null,
         );
     }));
 }
-
 
 
 function detailRow(k, v) {
@@ -2554,66 +2713,6 @@ function detailRow(k, v) {
     );
 }
 
-function stepDifficulty() {
-    const wrap = el("section", { class: "step difficulty-step" },
-        stepHead("Briefing 04", t("Niveau de menace"), t("Règles et sets modulaires")),
-    );
-    if (!state.scenario) {
-        wrap.append(el("p", { class: "muted" }, t("Sélectionne un scénario.")));
-        return wrap;
-    }
-    const d = state.difficulty;
-    wrap.append(el("div", { class: "presets" },
-        preset("standard", "Standard", t("Expérience standard."), d.base === "standard" && !d.skirmish && !d.heroic),
-        state.scenario.hasExpertVariant ? preset("expert", "Expert", t("Méchant expert + set expert."), d.base === "expert") : null,
-        toggleCard("skirmish", "Skirmish", t("Partie plus courte."), d.skirmish),
-        heroicCard(d.heroic),
-    ));
-    wrap.append(el("div", { class: "cfg-head" }, t("Sets modulaires") + " - " + (state.scenario.modularSlots.min || 0) + " " + t("recommandés")));
-    wrap.append(el("div", { class: "cfg-modes" },
-        cfgBtn("recommended", t("Recommandés")),
-        cfgBtn("custom", t("Personnalisés")),
-        cfgBtn("random", t("Aléatoire")),
-    ));
-    wrap.append(el("div", { class: "modular-box", id: "modular-box" }));
-    renderModular();
-    return wrap;
-}
-function preset(id, title, desc, on) {
-    return el("button", {
-        class: "preset cut" + (on ? " on" : ""),
-        onclick: () => { state.difficulty.base = id; render(); },
-    }, el("div", { class: "p-title mvl" }, title), el("div", { class: "p-desc" }, desc));
-}
-function toggleCard(key, title, desc, on) {
-    return el("button", {
-        class: "preset cut" + (on ? " on" : ""),
-        onclick: () => { state.difficulty[key] = !state.difficulty[key]; render(); },
-    }, el("div", { class: "p-title mvl" }, title), el("div", { class: "p-desc" }, desc));
-}
-function heroicCard(level) {
-    return el("div", { class: "preset heroic cut" + (level > 0 ? " on" : "") },
-        el("div", { class: "p-title mvl" }, t("Héroïque") + " " + (level > 0 ? level : "")),
-        el("input", {
-            type: "range",
-            min: "0",
-            max: "8",
-            value: String(level),
-            oninput: (e) => {
-                state.difficulty.heroic = +e.target.value;
-                document.querySelectorAll(".preset.heroic .p-title").forEach((n) => {
-                    n.textContent = t("Héroïque") + " " + (e.target.value > 0 ? e.target.value : "");
-                });
-            },
-        }),
-    );
-}
-function cfgBtn(id, label) {
-    return el("button", {
-        class: "cfg-btn" + (state.difficulty.modularConfig === id ? " on" : ""),
-        onclick: () => { state.difficulty.modularConfig = id; applyModularConfig(); render(); },
-    }, label);
-}
 async function renderModular() {
     await Promise.resolve();
     const box = document.getElementById("modular-box");

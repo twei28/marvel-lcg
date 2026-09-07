@@ -26,7 +26,7 @@ export function validate(state) {
         const slots = state.scenario.modularSlots || { min: 0, max: 99 };
         const modularSelected = [...selected].filter((s) => !mandatory.includes(s));
         if (modularSelected.length > slots.max) {
-            errors.push({ code: "TOO_MANY_MODULAR", message: `${t("Trop de sets modulaires")} (${modularSelected.length}/${slots.max})`, step: 3 });
+            errors.push({ code: "TOO_MANY_MODULAR", message: `${t("Trop de sets modulaires")} (${modularSelected.length}/${slots.max})`, step: 2 });
         }
     }
 
