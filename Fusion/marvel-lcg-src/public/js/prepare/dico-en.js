@@ -30,6 +30,8 @@ export const DICO_EN_BASE = {
     "Deck à choisir": "Deck to pick",
     "decks": "decks",
     "Cible": "Target",
+    "Choisis un méchant pour régler la menace.": "Pick a villain to set the threat level.",
+    "Méchant inconnu": "Unknown villain",
     "Choisis un méchant": "Pick a villain",
     "Ta table": "Your table",
     "ATQ": "ATK",

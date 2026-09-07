@@ -104,7 +104,7 @@ const MODES = [
 // QUATRE étapes, plus cinq : le niveau de menace et les sets modulaires se
 // choisissent sur l'écran de la cible, sous la grille des scénarios. C'est là
 // qu'on décide de la difficulté, en voyant le méchant.
-const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Cible", "Final"])
+const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Final"])
     .map((s) => t(s));
 const LAST_STEP = STEPS.length - 1;
 const rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -590,7 +590,7 @@ function navStatus() {
     if (creationCampagne()) {
         return `${heroes}/${state.playerCount} ${t("héros")} - ${t("équipe de campagne")}`;
     }
-    const sc = state.scenario ? state.scenario.name : t("Cible inconnue");
+    const sc = state.scenario ? state.scenario.name : t("Méchant inconnu");
     return `${heroes}/${state.playerCount} ${t("héros")} - ${sc}`;
 }
 
@@ -2518,7 +2518,7 @@ function rendreSceneMechant(sc) {
         poser(scene,
             el("div", { class: "tb-art vide" }),
             el("div", { class: "tb-trame" }),
-            el("div", { class: "tb-nomg" }, el("small", {}, t("Cible")), t("Choisis un méchant")),
+            el("div", { class: "tb-nomg" }, el("small", {}, t("Méchant")), t("Choisis un méchant")),
         );
         return;
     }
@@ -2608,7 +2608,7 @@ function rendreMenace() {
     if (!zone) return;
     const sc = state.scenario;
     if (!sc) {
-        poser(zone,el("div", { class: "tb-menace-vide" }, t("Choisis une cible pour régler la menace.")));
+        poser(zone,el("div", { class: "tb-menace-vide" }, t("Choisis un méchant pour régler la menace.")));
         return;
     }
     const d = state.difficulty;
@@ -2920,7 +2920,7 @@ function stepSummary() {
                 el("span", {}, "VS")),
             el("div", { class: "fo-side villain-side" },
                 vilain,
-                sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Cible non définie")),
+                sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Méchant non défini")),
                 sc ? el("div", { class: "fo-vsub" }, sousTitre(sc.villainNames.join(" · "), sc.name)) : null,
             ),
         ),
