@@ -666,6 +666,10 @@
     position: static;
     width: calc(var(--card-w) * 0.3);
     grid-template-rows: 1fr auto;
+    /* Le nom se mesure a la largeur REELLE du jeton (unites cqw), qui change
+       dans la loupe : « OPERATIV » y debordait, calcule sur la largeur de la
+       table. */
+    container-type: inline-size;
   }
 
   .jeton-compteur {
@@ -706,7 +710,7 @@
   .jeton-nom {
     font-size: min(
       calc(var(--card-w) * 0.062),
-      calc(var(--card-w) * 0.3 * 0.9 / (var(--nom-longueur, 8) * 0.6))
+      calc(92cqw / (var(--nom-longueur, 8) * 0.6))
     );
     line-height: 1;
     text-transform: uppercase;
