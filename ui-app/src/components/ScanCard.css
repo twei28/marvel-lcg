@@ -599,6 +599,97 @@
     box-shadow: 0 0 0 2px #22e07a, 0 0 16px rgba(40, 230, 130, 0.7);
   }
 
+  /* --- Les jetons poses sur la carte ----------------------------------------
+     Images de l'utilisateur (7 septembre 2026), le chiffre ecrit dessus. Tailles
+     en fraction de la carte : le jeton grandit avec elle au survol. */
+  .jeton-carte {
+    position: absolute;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    background: center / contain no-repeat;
+    pointer-events: none;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #0b0d12;
+    text-shadow:
+      0 0 2px rgba(255, 255, 255, 0.9),
+      0 0 6px rgba(255, 255, 255, 0.6);
+  }
+
+  .jeton-carte b {
+    font-size: calc(var(--card-w) * 0.13);
+    line-height: 1;
+  }
+
+  .jeton-menace {
+    top: 4%;
+    right: 3%;
+    width: 32%;
+    aspect-ratio: 256 / 228;
+    /* Le chiffre dans le triangle, un peu sous son centre geometrique. */
+    padding-top: 12%;
+  }
+
+  /* Le jeton de degats attend son image : un rond rouge en attendant. */
+  .jeton-degats {
+    top: 4%;
+    left: 3%;
+    width: 26%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff5a62, #b3000c 70%);
+    box-shadow:
+      0 0 0 2px rgba(0, 0, 0, 0.75),
+      0 4px 10px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .jetons-compteurs {
+    position: absolute;
+    left: 3%;
+    bottom: 4%;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+    max-width: 94%;
+    pointer-events: none;
+  }
+
+  .jetons-compteurs .jeton-carte {
+    position: static;
+    width: calc(var(--card-w) * 0.3);
+    grid-template-rows: 1fr auto;
+  }
+
+  .jeton-compteur {
+    aspect-ratio: 256 / 248;
+    color: #fff;
+    text-shadow:
+      0 0 2px rgba(0, 0, 0, 0.95),
+      0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+
+  .jeton-acceleration {
+    aspect-ratio: 246 / 256;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+
+  .jeton-nom {
+    font-size: calc(var(--card-w) * 0.062);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-bottom: 6%;
+  }
+
   .kind-pill,
   .ally-hp-badge,
   .scheme-threat-badge,

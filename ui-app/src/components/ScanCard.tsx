@@ -26,6 +26,9 @@ import iconeDef from './stat-bubbles/defense.png'
 import iconeRec from './stat-bubbles/recover.png'
 import iconeThw from './stat-bubbles/thwart.png'
 import iconeSch from './stat-bubbles/scheme.png'
+import jetonMenaceImage from './jetons/menace.png'
+import jetonCompteurImage from './jetons/compteur.png'
+import jetonAccelerationImage from './jetons/acceleration.png'
 import {
   STAT_BUBBLE_POSITIONS,
   type StatBubbleLabel,
@@ -212,7 +215,14 @@ export type ScanCardProps = {
   /** Deja formate, par exemple « 9/12 » ou « 3 ». Vide = pas de pastille. */
   schemeThreat?: string
   /** Compteurs poses sur la carte (supply, pym...) : pastilles en bas du cadre. */
-  counters?: Array<{ label: string; value: number }>
+  counters?: Array<{ label: string; value: number; cle?: string }>
+  /**
+   * LES JETONS poses sur la carte (images de l'utilisateur) : la menace
+   * posee sur une manigance, les degats SUBIS par un personnage. Absents ou
+   * a zero : pas de jeton, comme sur la table reelle.
+   */
+  jetonMenace?: number
+  jetonDegats?: number
   /** Tait la pastille de type : la zone qui accueille la carte dit déjà la
    *  même chose. Posé par `zones.ts`. */
   masquerType?: boolean
@@ -351,6 +361,8 @@ export function ScanCard({
   scanIsPortrait = false,
   allyHp,
   schemeThreat,
+  jetonMenace,
+  jetonDegats,
   counters,
   proprietaire,
   camp,
@@ -561,14 +573,41 @@ export function ScanCard({
             </span>
           ) : null}
 
-          {compteurs.length > 0 ? (
-            <span className="counter-badges" aria-label={t('Compteurs')}>
-              {compteurs.map((compteur) => (
-                <span className="counter-badge" key={compteur.label}>
-                  <b>{compteur.value}</b>
-                  <span>{compteur.label}</span>
-                </span>
-              ))}
+          {/* LES JETONS : la menace d'une manigance en haut a droite, les
+              degats subis d'un personnage en haut a gauche, les compteurs en
+              bas. Le chiffre est ecrit sur l'image du jeton. */}
+          {!facedown && jetonMenace ? (
+            <span
+              className="jeton-carte jeton-menace"
+              style={{ backgroundImage: `url(${jetonMenaceImage})` }}
+              aria-label={`${t('Menace :')} ${jetonMenace}`}
+            >
+              <b>{jetonMenace}</b>
+            </span>
+          ) : null}
+          {!facedown && jetonDegats ? (
+            <span className="jeton-carte jeton-degats" aria-label={`${t('Dégâts :')} ${jetonDegats}`}>
+              <b>{jetonDegats}</b>
+            </span>
+          ) : null}
+          {!facedown && compteurs.length > 0 ? (
+            <span className="jetons-compteurs" aria-label={t('Compteurs')}>
+              {compteurs.map((compteur) => {
+                const acceleration = compteur.cle === 'acceleration'
+                return (
+                  <span
+                    className={`jeton-carte ${acceleration ? 'jeton-acceleration' : 'jeton-compteur'}`}
+                    key={compteur.label}
+                    style={{
+                      backgroundImage: `url(${acceleration ? jetonAccelerationImage : jetonCompteurImage})`,
+                    }}
+                    title={`${compteur.value} ${compteur.label}`}
+                  >
+                    {acceleration && compteur.value <= 1 ? null : <b>{compteur.value}</b>}
+                    {acceleration ? null : <span className="jeton-nom">{compteur.label}</span>}
+                  </span>
+                )
+              })}
             </span>
           ) : null}
 

@@ -336,14 +336,35 @@ function autresFacesUrls(card: WorldCard): string[] {
  * imprime (« Uses (2 supply) » epuise = information utile), mais pas les cles
  * purement techniques restees a zero sans version imprimee.
  */
-function compteursAffiches(card: WorldCard): Array<{ label: string; value: number }> {
-  const compteurs: Array<{ label: string; value: number }> = []
+/**
+ * Les JETONS poses sur la carte (images de l'utilisateur, 7 septembre 2026).
+ * Sur une manigance : la menace posee. Sur un personnage : les degats SUBIS
+ * (maximum moins courant), comme sur la table reelle, donc rien tant qu'il
+ * est intact. Les PV restants, eux, se lisent dans la bande « 8 / 12 ».
+ */
+function jetonMenace(card: WorldCard): number | undefined {
+  if (!isScheme(card)) return undefined
+  const courante = nombre(card.info.k_threat)
+  return courante !== undefined && courante > 0 ? courante : undefined
+}
+
+function jetonDegats(card: WorldCard, catalogue: Catalogue): number | undefined {
+  if (!isUnit(card) || card.info.is_infinite_health) return undefined
+  const courants = nombre(card.info.health)
+  const max = pvMaximum(card, catalogue)
+  if (courants === undefined || max === undefined) return undefined
+  const degats = max - courants
+  return degats > 0 ? degats : undefined
+}
+
+function compteursAffiches(card: WorldCard): Array<{ label: string; value: number; cle: string }> {
+  const compteurs: Array<{ label: string; value: number; cle: string }> = []
   for (const [cle, valeur] of Object.entries(card.info)) {
     if (!cle.startsWith('c_') || cle.endsWith('_printed')) continue
     if (typeof valeur !== 'number') continue
     const imprime = card.info[`${cle}_printed`]
     if (valeur === 0 && typeof imprime !== 'number') continue
-    compteurs.push({ label: nomDeCompteur(cle.slice(2)), value: valeur })
+    compteurs.push({ label: nomDeCompteur(cle.slice(2)), value: valeur, cle: cle.slice(2) })
   }
   return compteurs
 }
@@ -397,6 +418,8 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     scanIsPortrait: true,
     allyHp: pvAffiches(card, contexte.catalogue),
     schemeThreat: menaceAffichee(card),
+    jetonMenace: jetonMenace(card),
+    jetonDegats: jetonDegats(card, contexte.catalogue),
     jauge: jaugeAffichee(card, contexte.catalogue),
     counters: compteursAffiches(card),
     // Prise de Lock Jaws (Alligator Loki) : le moteur marque l'ennemi tenu
