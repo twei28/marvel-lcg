@@ -9,6 +9,7 @@
     "captures:valider": "node scripts/valider.mjs",
     "fixtures": "playwright test tests/fixtures.spec.ts",
     "plateau-mobile": "playwright test tests/plateau-mobile.spec.ts --project=s24",
+    "plateau-paysage": "playwright test tests/plateau-paysage.spec.ts --project=s24-paysage --project=s24",
     "lancement": "playwright test tests/lancement-partie.spec.ts --project=pc",
     "campagne-decks": "playwright test tests/campagne-decks.spec.ts --project=pc",
     "campagne-defaite": "playwright test tests/campagne-defaite.spec.ts --project=pc",

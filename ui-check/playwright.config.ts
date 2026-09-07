@@ -24,8 +24,12 @@ const GABARITS = {
   pc: { width: 1920, height: 1080 }, // Ordinateur
   tablette: { width: 1180, height: 820 }, // iPad Air, paysage
   mobile: { width: 390, height: 844 }, // iPhone 12/13/14
-  // Samsung S24 Ultra en portrait, l'appareil de reference du plateau mobile.
+  // Samsung S24 Ultra en portrait : sert a verifier l'ecran « Tourne ton
+  // telephone » du plateau paysage, et l'ancien rendu a medaillons (?medaillons).
   s24: { width: 480, height: 1050 },
+  // Samsung S24 Ultra en PAYSAGE, plein ecran : l'appareil de reference du
+  // plateau paysage (spec du 07/09/2026).
+  s24paysage: { width: 1050, height: 480 },
 };
 
 export default defineConfig({
@@ -69,7 +73,7 @@ export default defineConfig({
     // projets nommes "s24" (un simple, un tactile) : il a son propre projet
     // juste apres, avec les options que son test teste vraiment.
     ...Object.entries(GABARITS)
-      .filter(([name]) => name !== 's24')
+      .filter(([name]) => name !== 's24' && name !== 's24paysage')
       .map(([name, viewport]) => ({
         name,
         use: { viewport },
@@ -81,9 +85,27 @@ export default defineConfig({
       // qui n'existent pas (references/<ecran>/s24.png). Ce ne serait pas une
       // regression detectee (aucune reference existante ne bouge), mais ca
       // ferait echouer la commande pour une raison hors sujet.
-      testMatch: /plateau-mobile\.spec\.ts$/,
+      testMatch: /plateau-(mobile|paysage)\.spec\.ts$/,
+      // 34 vraies navigations reseau (une par etat enregistre) depassent le
+      // budget par defaut de 30s : mesure sur ce poste, la boucle complete
+      // prend environ 30s a elle seule, sans marge pour une machine plus
+      // lente. N'assouplit aucun seuil d'assertion, seulement le temps
+      // alloue pour les executer toutes dans un seul test.
+      timeout: 90_000,
       use: {
         viewport: GABARITS.s24,
+        hasTouch: true,
+        isMobile: true,
+        deviceScaleFactor: 1,
+      },
+    },
+    {
+      name: 's24-paysage',
+      testMatch: /plateau-paysage\.spec\.ts$/,
+      // Voir le commentaire sur le projet s24 : meme boucle sur 34 etats.
+      timeout: 90_000,
+      use: {
+        viewport: GABARITS.s24paysage,
         hasTouch: true,
         isMobile: true,
         deviceScaleFactor: 1,
