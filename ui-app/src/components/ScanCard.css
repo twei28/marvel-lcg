@@ -160,8 +160,11 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 0 11px rgba(201, 166, 255, 0.62),
-      0 0 30px rgba(240, 185, 95, 0.5),
+      /* Le liseré mauve de la carte qui agit (le héros, sa source) : 11 px
+         faisaient un cadre plus large que le contour de camp, réduit de
+         moitié à la demande de l'utilisateur (7 septembre 2026). */
+      0 0 0 6px rgba(201, 166, 255, 0.62),
+      0 0 18px rgba(240, 185, 95, 0.45),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
