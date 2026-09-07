@@ -46,4 +46,17 @@ describe('PilesEpinglees', () => {
     fireEvent.click(pile)
     expect(ouvrir).not.toHaveBeenCalled()
   })
+
+  it('ne repete pas « Defausse » sous le nom d\'une pile de defausse', () => {
+    const grimoireDiscard: UniteAffichee = {
+      cle: 'grimoire-discard',
+      carte: { id: '20', name: 'Grimoire', kind: 'ally', imageUrl: '', discard: true },
+      attachees: [],
+      pileTitre: 'Grimoire discard',
+      pileContenu: [{ id: '20', name: 'Grimoire', kind: 'ally', imageUrl: '' }],
+    }
+    render(<PilesEpinglees piles={[grimoireDiscard]} onOuvrirPile={() => {}} />)
+    expect(screen.getAllByText(/discard/i)).toHaveLength(1)
+    expect(document.querySelector('.pastille-discard')).not.toBeInTheDocument()
+  })
 })

@@ -35,10 +35,12 @@ export function PilesEpinglees({ piles, onOuvrirPile }: PilesEpingleesProps) {
             ouvrir()
           }
         }
-        // pileCount n'est pas transmis a ScanCard : le compte affiche est
-        // celui de .pile-epinglee-compte ci-dessous, pas le badge interne de
-        // ScanCard (double affichage sinon, voir PilesEpinglees.test.tsx).
-        const { onSelect: _onSelect, pileCount: _pileCount, ...carte } = unite.carte
+        // pileCount et discard ne sont pas transmis a ScanCard : le compte
+        // affiche est celui de .pile-epinglee-compte ci-dessous, et le nom
+        // de la pile (.pile-epinglee-nom) dit deja qu'elle est une defausse
+        // (ex. « Grimoire discard ») ; la pastille interne de ScanCard fait
+        // double emploi et, a 56 px, ne rentre de toute facon pas.
+        const { onSelect: _onSelect, pileCount: _pileCount, discard: _discard, ...carte } = unite.carte
         return (
           <div
             className={`pile-epinglee${consultable ? '' : ' est-secrete'}`}
