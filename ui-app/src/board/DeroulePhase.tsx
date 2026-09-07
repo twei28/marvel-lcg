@@ -18,6 +18,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import jetonMenaceImage from '../components/jetons/menace.png'
+import jetonDegatsImage from '../components/jetons/degats.png'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -97,6 +99,7 @@ export function DeroulePhase({
   questionAuJoueur = false,
   carteScene,
   dosRencontre,
+  nomFr,
   question,
   herosLocauxIds,
   attendUnAutreJoueur = false,
@@ -184,6 +187,14 @@ export function DeroulePhase({
   carteScene?: (id: number, faceVisible: boolean) => ScanCardProps | undefined
   /** Le dos d'une carte rencontre, pour l'etape de distribution. */
   dosRencontre?: ScanCardProps
+  /**
+   * LE NOM FRANCAIS d'une carte du monde, par son identifiant (board.tsx :
+   * `nomPorteurFr`, qui lit fr.marvelcdb par le proxy du serveur). Les faits
+   * du moteur portent les noms ANGLAIS ; sans lui, la scene disait
+   * « Thunderball complote contre Thunderstruck » sous des scans qui disent
+   * « Le Boulet » et « Envoyer Bouler ». Absent, ou muet : le nom du fait.
+   */
+  nomFr?: (id: number) => string | undefined
   /**
    * LA QUESTION DU MOTEUR, RENDUE PAR LE PLATEAU (board.tsx : le panneau
    * `DemandeCentrale` en mode scene). Quand elle est donnee, la scene reste
@@ -1077,6 +1088,23 @@ export function DeroulePhase({
   // `partieFinie` le fait disparaitre pour de bon : plus rien n'arrive apres.
   if (!etape || termine || partieFinie) return null
 
+  // L'etape TELLE QU'ON LA LIT : noms francais quand le plateau les connait.
+  // `etape` reste la source pour ce qui se cherche par nom anglais (les PV
+  // maximum, indexes par le nom du monde).
+  const enFrancais = (id: number | undefined, nom: string | undefined) =>
+    (id !== undefined ? nomFr?.(id) : undefined) || nom
+  const etapeLue: EtapeDeroule = {
+    ...etape,
+    auteurNom: enFrancais(etape.carteId, etape.auteurNom),
+    cibleNom: enFrancais(etape.temps === 'revelation' ? etape.carteId : etape.cibleId, etape.cibleNom),
+    boosts: etape.boosts.map((boost) => ({ ...boost, nom: enFrancais(boost.cibleId, boost.nom) ?? boost.nom })),
+    effets: etape.effets?.map((effet) =>
+      effet.genre === 'entree'
+        ? { ...effet, carte: enFrancais(effet.carte_id, effet.carte) ?? effet.carte }
+        : { ...effet, cible: enFrancais(effet.cible_id, effet.cible) ?? effet.cible }
+    ),
+  }
+
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
   // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.
   //
@@ -1092,7 +1120,7 @@ export function DeroulePhase({
   const rang = rangDansLeTemps(etapesAffichees, index)
   // Le detail du coup suit les boosts deja retournes (`boostsMontres`) : la
   // ligne s'allonge d'un terme quand une carte de boost parait.
-  const resultat = detailEtape({ ...etape, boosts: etape.boosts.slice(0, boostsMontres) })
+  const resultat = detailEtape({ ...etapeLue, boosts: etapeLue.boosts.slice(0, boostsMontres) })
   // Avant → apres. Le maximum de PV vient du monde, par le nom de la cible.
   // Le seuil d'une manigance vient de l'etape de MENACE qui la vise (le fait
   // d'activation ne le porte pas) : « 7 → 9 / 12 » plutot que « 7 → 9 ».
@@ -1103,11 +1131,11 @@ export function DeroulePhase({
         autre.plafond !== undefined && autre.cibleId !== undefined && autre.cibleId === etape.cibleId
     )?.plafond
   const compteur = evolutionEtape(
-    { ...etape, plafond: plafondConnu },
+    { ...etapeLue, plafond: plafondConnu },
     etape.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined
   )
-  const regle = regleEtape(etape)
-  const annulee = texteActivationAnnulee(etape)
+  const regle = regleEtape(etapeLue)
+  const annulee = texteActivationAnnulee(etapeLue)
 
   // La chronologie des cinq temps : la seule chose que le cartouche garde
   // quand il se replie devant une question du moteur.
@@ -1172,9 +1200,9 @@ export function DeroulePhase({
   const scene = sceneDe(etape)
   const nomDe = (carte: CarteDeScene): string => {
     if (carte.role === 'dos') return t('Carte rencontre')
-    if (carte.role === 'auteur') return etape.auteurNom ?? ''
-    if (carte.role === 'boost') return etape.boosts.find((b) => b.cibleId === carte.id)?.nom ?? ''
-    return etape.cibleNom ?? ''
+    if (carte.role === 'auteur') return etapeLue.auteurNom ?? ''
+    if (carte.role === 'boost') return etapeLue.boosts.find((b) => b.cibleId === carte.id)?.nom ?? ''
+    return etapeLue.cibleNom ?? ''
   }
   // LE GESTE PHYSIQUE (decide avec l'utilisateur le 7 septembre 2026) : un
   // jeton qui tombe sur la carte visee (menace ou degats), un boost qui
@@ -1249,7 +1277,16 @@ export function DeroulePhase({
           scan
         )}
         {jeton && porteLeJeton(carte) ? (
-          <span key={etape.cle} className={`deroule-jeton ${jeton.classe}`} aria-hidden="true">
+          <span
+            key={etape.cle}
+            className={`deroule-jeton ${jeton.classe}`}
+            // Le VRAI jeton (images de l'utilisateur), pas un rond dessine :
+            // le triangle de menace ou le rond de degats, le chiffre dessus.
+            style={{
+              backgroundImage: `url(${jeton.classe === 'est-menace' ? jetonMenaceImage : jetonDegatsImage})`,
+            }}
+            aria-hidden="true"
+          >
             {jeton.texte}
           </span>
         ) : null}
@@ -1311,7 +1348,7 @@ export function DeroulePhase({
             scene garde ses cartes et se tait : la question dit tout. */}
         {etapeEstAnnonce ? (
           <div className="deroule-entete">
-            <p className="deroule-titre">{titreEtape(etape)}</p>
+            <p className="deroule-titre">{titreEtape(etapeLue)}</p>
           </div>
         ) : null}
         {etapeEstAnnonce && resultat ? <p className="deroule-resultat">{resultat}</p> : null}
@@ -1338,7 +1375,7 @@ export function DeroulePhase({
               chercher une reponse qui n'existe pas. */}
           {etapeEstAnnonce ? (
             <>
-              <p className="deroule-titre">{titreEtape(etape)}</p>
+              <p className="deroule-titre">{titreEtape(etapeLue)}</p>
               {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
               <p className="deroule-fenetre" aria-live="polite">
                 {texteFenetreReponse()}
@@ -1379,7 +1416,7 @@ export function DeroulePhase({
           {/* Le bilan porte le meme titre que les autres etapes, en capitales :
               il annonce la fin de la phase, pas un coup de plus. */}
           <p className={`deroule-titre${etape.temps === 'bilan' ? ' est-bilan' : ''}`}>
-            {titreEtape(etape)}
+            {titreEtape(etapeLue)}
           </p>
           {compteur ? (
             <span key={etape.cle} className={`deroule-compteur${jeton ? ' est-apres-jeton' : ''}`}>
@@ -1394,9 +1431,9 @@ export function DeroulePhase({
         {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
         {/* Ce que la carte revelee a fait, mesure par le moteur. Sans lui, la
             scene ne dit rien de plus : le joueur voit la table au clic suivant. */}
-        {etape.effets && etape.effets.length > 0 ? (
+        {etapeLue.effets && etapeLue.effets.length > 0 ? (
           <ul className="deroule-effets">
-            {etape.effets.map((effet, rang) => (
+            {etapeLue.effets.map((effet, rang) => (
               <li key={rang}>{texteEffet(effet)}</li>
             ))}
           </ul>
@@ -1408,7 +1445,7 @@ export function DeroulePhase({
             d'ecran n'a pas a epeler un symbole. */}
         {etape.defaite ? (
           <p className="deroule-defaite">
-            <span aria-hidden="true">☠</span> {texteDefaite(etape)}
+            <span aria-hidden="true">☠</span> {texteDefaite(etapeLue)}
           </p>
         ) : null}
         {/* Le bilan de fin de phase : ce que le joueur vient d'encaisser, en

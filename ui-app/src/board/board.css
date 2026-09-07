@@ -3028,34 +3028,34 @@
     position: relative;
   }
 
+  /* Le jeton qui tombe : les VRAIES images de jetons (celles des cartes,
+     jetons/menace.png et degats.png), le chiffre noir cerne de blanc dessus,
+     comme sur la table. Demande de l'utilisateur, 7 septembre 2026. */
   .deroule-jeton {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 6px;
+    right: 6px;
     z-index: 3;
-    min-width: 46px;
-    height: 46px;
-    padding: 0 8px;
+    width: 64px;
+    height: 64px;
     display: grid;
     place-items: center;
-    border-radius: 50%;
-    font-size: 1.15rem;
+    background: center / contain no-repeat;
+    font-size: 1.5rem;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: var(--fond);
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.55),
-      0 10px 22px rgba(0, 0, 0, 0.6);
+    color: #000;
+    -webkit-text-stroke: 1px #fff;
+    paint-order: stroke fill;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+    filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.6));
     animation: deroule-jeton-tombe 500ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
   }
 
+  /* Le chiffre du triangle de menace, un peu au-dessus de son centre. */
   .deroule-jeton.est-menace {
-    background: var(--menace);
-  }
-
-  .deroule-jeton.est-degats {
-    background: var(--rouge-vif);
-    color: #fff;
+    padding-top: 6px;
+    height: 57px;
   }
 
   @keyframes deroule-jeton-tombe {

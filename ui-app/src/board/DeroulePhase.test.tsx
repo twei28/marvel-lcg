@@ -2210,6 +2210,31 @@ describe('le bilan de fin de phase', () => {
       ])
     })
 
+    it('nomme les cartes en francais quand le plateau connait leur nom', () => {
+      // Les faits du moteur portent les noms anglais ; sous des scans
+      // francais, la scene disait « Thunderball complote contre Thunderstruck ».
+      const nomFr = (id: number) => ({ 50: 'Le Boulet', 12: 'Envoyer Bouler', 77: 'Chaos dans la Prison' })[id]
+      const resolue: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'manigance',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Thunderball',
+          cibleNom: 'Thunderstruck',
+          etat: 'resolu',
+          base: 3,
+          montant: 4,
+          boosts: [{ cle: 'b', nom: 'Chaos In the Prison', cibleId: 77, apport: 1 }],
+        },
+      ]
+      render(<DeroulePhase etapes={resolue} nomFr={nomFr} onTerminer={() => {}} />)
+      expect(screen.getByText('Le Boulet complote contre Envoyer Bouler')).toBeInTheDocument()
+      expect(screen.getByText('3 imprimé + 1 (Chaos dans la Prison) = 4 menaces')).toBeInTheDocument()
+    })
+
     it('ecrit le nom a la place d une carte dont le scan manque', () => {
       const { container } = render(
         <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />

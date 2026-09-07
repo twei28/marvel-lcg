@@ -2009,13 +2009,26 @@ function PagePartie({
   // requête échoue une fois par code et le nom anglais reste.
   const [nomsFr, setNomsFr] = useState<ReadonlyMap<string, string>>(() => new Map())
   useEffect(() => {
-    if (langueActuelle() !== 'fr' || !etat.demande || !etat.monde) return
+    // Sans question en cours (toute la phase du mechant), il reste les cartes
+    // de la scene a nommer : le monde suffit.
+    if (langueActuelle() !== 'fr' || !etat.monde) return
     const index = indexerCartesMonde(etat.monde)
     const codes = new Set<string>()
-    for (const option of etat.demande.options) {
+    for (const option of etat.demande?.options ?? []) {
       const carte = index.get(option.bind_id)
       const code = codeMarvelcdb(carte?.card_id)
       if (code && !nomsFr.has(code)) codes.add(code)
+    }
+    // Les cartes de la phase du mechant (scene du deroule) : auteur, cible,
+    // boosts et carte revelee de chaque etape, pour que la scene les nomme
+    // en francais comme les scans qu'elle montre.
+    for (const etape of etapesPhaseMechant) {
+      const ids = [etape.carteId, etape.cibleId, ...etape.boosts.map((boost) => boost.cibleId)]
+      for (const id of ids) {
+        if (id === undefined) continue
+        const code = codeMarvelcdb(index.get(id)?.card_id)
+        if (code && !nomsFr.has(code)) codes.add(code)
+      }
     }
     if (codes.size === 0) return
     let vivant = true
@@ -2034,7 +2047,7 @@ function PagePartie({
     }
     // Seules les options en cours comptent : le monde change à chaque rendu.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [etat.demande, etat.monde?.render_id])
+  }, [etat.demande, etat.monde?.render_id, etapesPhaseMechant.length])
 
   const nomPorteurFr = useCallback(
     (bindId: number): string | undefined => {
@@ -2671,6 +2684,7 @@ function PagePartie({
             // l'etape de distribution (voir `carteScene` plus haut).
             carteScene={carteScene}
             dosRencontre={dosRencontre}
+            nomFr={nomPorteurFr}
             // La question du moteur, logee dans la scene (voir `questionEnScene`).
             question={
               ciblageEnScene && interaction.option ? (
