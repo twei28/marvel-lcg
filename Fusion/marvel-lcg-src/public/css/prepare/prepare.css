@@ -1487,7 +1487,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 /* La carte survolée, en grand sur la scène. */
 .tb-loupe{
-  position:absolute;inset:0;z-index:4;
+  position:absolute;inset:0;z-index:5;
   display:flex;align-items:center;justify-content:center;
   min-height:0;
   padding:12px;
@@ -1502,7 +1502,10 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-scene.loupe-ouverte .tb-nomg,
 .tb-scene.loupe-ouverte .tb-tampons,
 .tb-scene.loupe-ouverte .tb-bas,
-.tb-scene.loupe-ouverte .tb-defi{opacity:0;pointer-events:none}
+.tb-scene.loupe-ouverte .tb-defi,
+/* Le cartouche de récitatif est un FRÈRE de la scène, pas un enfant : il
+   flottait par-dessus le coin de la carte. Il s'efface avec le reste. */
+.tb-scene.loupe-ouverte ~ .recitatif{opacity:0;pointer-events:none}
 .tb-voir{cursor:pointer}
 .tb-voir:hover{background:#fff}
 
