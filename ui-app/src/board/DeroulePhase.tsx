@@ -31,6 +31,7 @@ import {
   texteActivationAnnulee,
   texteArretDefaite,
   texteAttente,
+  texteFiletProche,
   texteBilanVide,
   texteDefaite,
   texteFenetreReponse,
@@ -52,6 +53,18 @@ const DELAI_BOOST_MS = 1500
  * en scene et le moteur la voient passer dans l'ordre.
  */
 export const DELAI_DEFILEMENT_MS = 120
+
+/**
+ * A partir de quand le cartouche annonce le filet anti-blocage.
+ *
+ * Le filet relache la phase au bout de `DELAI_FILET_ANTI_BLOCAGE_CLIC_MS`
+ * (moteur.ts) pour qu'un onglet fantome ne gele pas la table entiere. Sans un
+ * mot, le joueur voit la phase repartir toute seule et n'a aucun moyen de
+ * comprendre pourquoi. Quinze secondes : le temps de finir de lire l'etape et
+ * de cliquer, jamais assez pour devenir un compte a rebours anxiogene affiche
+ * pendant une minute et demie.
+ */
+export const DELAI_ALERTE_FILET_MS = 15_000
 
 /**
  * L'ancre du cartouche sur la table, posee sur le body en variables CSS que
@@ -98,6 +111,7 @@ export function DeroulePhase({
   nomJoueurAttendu,
   pvMaxParNom,
   trameRetenue,
+  echeanceFilet,
   avanceAuto = false,
   delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
@@ -216,6 +230,17 @@ export function DeroulePhase({
    * alors en rafale.
    */
   trameRetenue?: number
+  /**
+   * L'ECHEANCE du filet anti-blocage de la phase (board.tsx :
+   * `etat.echeanceFilet`, un horodatage en ms), ou `undefined` quand aucun
+   * filet n'est arme.
+   *
+   * Une seule par phase, cote moteur. Le cartouche n'en montre que les
+   * dernieres secondes (`DELAI_ALERTE_FILET_MS`) : le joueur doit comprendre
+   * que la phase va repartir sans lui, pas regarder un compte a rebours
+   * pendant une minute et demie.
+   */
+  echeanceFilet?: number
   /**
    * « Avance toute seule » (reglage du panneau Options, board.tsx) : chaque
    * etape se valide d'elle-meme au bout de `delaiAvanceMs`, par la MEME
@@ -893,6 +918,32 @@ export function DeroulePhase({
     etapeAttendUnClic,
   ])
 
+  // LE COMPTE A REBOURS DU FILET, en secondes, ou `undefined` tant que
+  // l'echeance est loin (ou qu'aucun filet n'est arme).
+  //
+  // Un battement par seconde, et seulement pendant que le cartouche est a
+  // l'ecran : rien a compter derriere un ecran de fin de partie. La dependance
+  // est l'echeance elle-meme, un NOMBRE : elle ne change qu'au (re)armement du
+  // filet, donc le battement n'est pas remis a zero a chaque trame.
+  const [secondesFilet, setSecondesFilet] = useState<number>()
+  useEffect(() => {
+    if (echeanceFilet === undefined || !visible) {
+      setSecondesFilet(undefined)
+      return
+    }
+    const calculer = () => {
+      const reste = echeanceFilet - Date.now()
+      if (reste > DELAI_ALERTE_FILET_MS) {
+        setSecondesFilet(undefined)
+        return
+      }
+      setSecondesFilet(Math.max(0, Math.ceil(reste / 1000)))
+    }
+    calculer()
+    const battement = window.setInterval(calculer, 1000)
+    return () => window.clearInterval(battement)
+  }, [echeanceFilet, visible])
+
   // Mise en scene de l'etape courante. Appele ici, avec les autres hooks :
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
   // tomber tout le plateau (React compte alors un hook de plus au rendu
@@ -1213,6 +1264,14 @@ export function DeroulePhase({
           {enAttente ? (
             <span className="deroule-attente" aria-live="polite">
               {texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu })}
+            </span>
+          ) : null}
+          {/* Le filet va jouer. On le dit AVANT, pour que la phase qui repart
+              toute seule ne ressemble pas a un bug. Meme discretion que la
+              mention d'attente, a la meme place. */}
+          {secondesFilet !== undefined ? (
+            <span className="deroule-filet" aria-live="polite">
+              {texteFiletProche(secondesFilet)}
             </span>
           ) : null}
           {/* Dit pourquoi il n'y a plus rien apres, a la place meme ou l'on

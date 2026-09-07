@@ -541,6 +541,16 @@ export type EtatMoteur = {
    * numero, qui change a chaque rendu du moteur, l'interdit par construction.
    */
   trameRetenue?: number
+  /**
+   * L'ECHEANCE du filet anti-blocage de la phase du mechant (horodatage ms),
+   * ou `undefined` quand aucune n'est armee.
+   *
+   * Une seule par PHASE : armee au premier accuse retenu, desarmee a la sortie
+   * de la phase. Publiee pour que le cartouche puisse en montrer les dernieres
+   * secondes, et que le joueur comprenne ce qui va se passer plutot que de voir
+   * la phase repartir sans raison.
+   */
+  echeanceFilet?: number
   /** Reconnexion : horodatage (ms) de la prochaine tentative, si programmee. */
   prochaineTentative?: number
   /** Nombre de tentatives de reconnexion depuis la coupure. */
@@ -598,6 +608,25 @@ export class Moteur {
    * ce qui casse le deadlock (et sert d'auto-avance si le joueur ne clique pas).
    */
   private minuteurAutoContinue: number | undefined
+  /** L'echeance du minuteur ci-dessus, telle qu'elle est publiee. */
+  private echeanceFilet: number | undefined
+
+  /**
+   * Desarme le filet : on sort de la phase du mechant, ou la partie s'arrete.
+   *
+   * Ne rien publier quand il n'y avait rien d'arme : `publier` reveille tous
+   * les ecouteurs, donc redessine le plateau, et le faire a chaque trame hors
+   * phase du mechant ne servirait a personne.
+   */
+  private desarmerFilet() {
+    if (this.minuteurAutoContinue !== undefined) {
+      window.clearTimeout(this.minuteurAutoContinue)
+      this.minuteurAutoContinue = undefined
+    }
+    if (this.echeanceFilet === undefined) return
+    this.echeanceFilet = undefined
+    this.publier({ echeanceFilet: undefined })
+  }
 
   /**
    * Phase du mechant acceleree : on n'attend plus le bouton « Continue ».
@@ -795,10 +824,7 @@ export class Moteur {
         window.clearTimeout(this.guetteurSieges)
         this.guetteurSieges = undefined
       }
-      if (this.minuteurAutoContinue !== undefined) {
-        window.clearTimeout(this.minuteurAutoContinue)
-        this.minuteurAutoContinue = undefined
-      }
+      this.desarmerFilet()
       if (!this.vivant) {
         this.publier({ connecte: false, validationRequise: false })
         return
@@ -850,16 +876,45 @@ export class Moteur {
       const decision = decisionAccuse(this.mode, monde)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
-        this.publier({ validationRequise: true, trameRetenue: this.trame.render_id })
-        // Filet anti-blocage : auto-continue si personne ne clique (evite qu'un
-        // client fantome bloque la phase ennemie pour tout le monde). Voir
-        // `DELAI_FILET_ANTI_BLOCAGE_CLIC_MS` pour le choix de la duree.
-        if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
-        this.minuteurAutoContinue = window.setTimeout(
-          () => void this.continuer(),
-          DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
-        )
+        // FILET ANTI-BLOCAGE : UNE SEULE ECHEANCE PAR PHASE.
+        //
+        // Il etait re-arme a chaque trame retenue, donc repousse de 90 s par
+        // chaque micro-evenement : une table vraiment bloquee ne l'atteignait
+        // jamais tant que le moteur produisait quelque chose, et une table qui
+        // l'atteignait payait 90 s par trame (constat F2). On n'arme donc que
+        // s'il ne l'est pas deja, et c'est la SORTIE DE LA PHASE qui desarme
+        // (branche `else` ci-dessous, ou `decisionAccuse` rend « immediat »).
+        //
+        // Le minuteur se retire lui-meme a l'echeance : le filet joue, et la
+        // trame suivante en rearme un neuf. Un filet qui ne se rearmerait plus
+        // apres avoir joue une fois laisserait la fin de la phase sans
+        // protection.
+        if (this.minuteurAutoContinue === undefined) {
+          this.echeanceFilet = Date.now() + DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
+          this.minuteurAutoContinue = window.setTimeout(() => {
+            this.minuteurAutoContinue = undefined
+            this.echeanceFilet = undefined
+            void this.continuer()
+          }, DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
+        }
+        this.publier({
+          validationRequise: true,
+          trameRetenue: this.trame.render_id,
+          echeanceFilet: this.echeanceFilet,
+        })
       } else if (this.trame) {
+        // Hors phase du mechant : plus rien a retenir, plus rien a proteger.
+        //
+        // La retenue precedente est oubliee ICI aussi. L'accuse qui suit porte
+        // un `render_id` PLUS RECENT, et le moteur compare (`client_synced >=
+        // last_render_id`) : la trame d'avant est donc acquittee du meme coup,
+        // et laisser `trameRetenue` renseigne ferait croire au cartouche qu'il
+        // reste quelque chose a relacher pendant tout le tour du joueur.
+        this.desarmerFilet()
+        this.trameEnAttente = undefined
+        if (this.etat.validationRequise || this.etat.trameRetenue !== undefined) {
+          this.publier({ validationRequise: false, trameRetenue: undefined })
+        }
         await accuserReception(this.playerId, this.trame)
       }
     } catch (cause: unknown) {
@@ -897,10 +952,10 @@ export class Moteur {
 
   /** Autorise le moteur a poursuivre le rendu ennemi actuellement affiche. */
   async continuer(): Promise<void> {
-    if (this.minuteurAutoContinue !== undefined) {
-      window.clearTimeout(this.minuteurAutoContinue)
-      this.minuteurAutoContinue = undefined
-    }
+    // LE FILET N'EST PAS DESARME ICI, et c'est le changement : il protege la
+    // PHASE, pas la trame. Valider une etape ne remet pas le compteur a zero,
+    // sinon un joueur qui clique regulierement pendant qu'un autre client est
+    // fantome repousserait indefiniment le seul secours de la table.
     const trame = this.trameEnAttente
     if (!trame) return
     this.trameEnAttente = undefined

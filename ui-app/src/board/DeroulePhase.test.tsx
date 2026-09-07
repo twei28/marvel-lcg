@@ -6,7 +6,7 @@
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
+import { DELAI_ALERTE_FILET_MS, DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import { CLE_REGLE_DEPLIEE } from './moteur'
 
@@ -2739,5 +2739,61 @@ describe('la chute du heros d un autre joueur', () => {
     expect(screen.getByText("La phase s'arrête ici.")).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
     expect(onDefaiteVue).toHaveBeenCalledTimes(1)
+  })
+})
+
+// LE COMPTE A REBOURS DU FILET ANTI-BLOCAGE.
+//
+// Le filet relache la phase au bout de 90 s pour qu'un onglet fantome ne gele
+// pas la table entiere. Sans un mot, le joueur voit la phase repartir seule et
+// ne comprend pas pourquoi : le cartouche annonce donc les quinze dernieres
+// secondes, discretement.
+describe('le compte a rebours du filet', () => {
+  const etape: EtapeDeroule = {
+    cle: 'a',
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    boosts: [],
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+    window.localStorage.clear()
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  const vue = (echeanceFilet?: number) => (
+    <DeroulePhase
+      etapes={[etape]}
+      phaseMechantEnCours
+      echeanceFilet={echeanceFilet}
+      onTerminer={() => {}}
+    />
+  )
+
+  it('ne dit rien tant que l echeance est loin', () => {
+    render(vue(Date.now() + DELAI_ALERTE_FILET_MS + 5_000))
+    expect(screen.queryByText(/La phase reprend dans/)).not.toBeInTheDocument()
+  })
+
+  it('annonce les dernieres secondes', () => {
+    render(vue(Date.now() + 12_000))
+    expect(screen.getByText('La phase reprend dans 12 s')).toBeInTheDocument()
+  })
+
+  it('descend de seconde en seconde', () => {
+    render(vue(Date.now() + 12_000))
+    act(() => {
+      vi.advanceTimersByTime(3_000)
+    })
+    expect(screen.getByText('La phase reprend dans 9 s')).toBeInTheDocument()
+  })
+
+  it('ne dit rien quand aucun filet n est arme', () => {
+    render(vue(undefined))
+    expect(screen.queryByText(/La phase reprend dans/)).not.toBeInTheDocument()
   })
 })

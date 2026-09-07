@@ -232,6 +232,18 @@ export function texteAttente(attente: { autreJoueur?: boolean; nom?: string }): 
   return t('En attente d\'un autre joueur')
 }
 
+/**
+ * LE FILET VA JOUER : « La phase reprend dans 12 s ».
+ *
+ * Le moteur relache la phase tout seul au bout d'un temps borne, pour qu'un
+ * onglet fantome ne gele pas la table (voir `DELAI_FILET_ANTI_BLOCAGE_CLIC_MS`,
+ * moteur.ts). Le dire avant evite que la phase qui repart seule ressemble a un
+ * bug.
+ */
+export function texteFiletProche(secondes: number): string {
+  return t('La phase reprend dans %1 s').replace('%1', String(secondes))
+}
+
 /** La phrase qui dit que le deroule s'arrete la. */
 export function texteArretDefaite(): string {
   return t('La phase s\'arrête ici.')

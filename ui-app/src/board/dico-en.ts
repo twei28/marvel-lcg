@@ -365,6 +365,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   // plateau fige et muet (voir attente-table.ts).
   'En attente de %1': 'Waiting for %1',
   'En attente d\'un autre joueur': 'Waiting for another player',
+  // Le filet anti-blocage va relacher la phase : on le dit avant, pour qu'elle
+  // ne reparte pas toute seule sans explication.
+  'La phase reprend dans %1 s': 'The phase resumes in %1 s',
   // Le cartouche replie devant une question du moteur : c'est le joueur qu'on
   // attend, pas le moteur.
   'Le moteur attend ta réponse': 'The game is waiting for your answer',

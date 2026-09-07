@@ -3063,6 +3063,18 @@
     color: rgba(248, 250, 252, 0.55);
   }
 
+  /* « La phase reprend dans 12 s » : le filet anti-blocage va jouer. Meme place
+     et meme discretion que « La suite arrive… », en un peu plus chaud — c'est
+     un compte a rebours, pas une alarme, et il ne parait que dans les quinze
+     dernieres secondes. */
+  .deroule-filet {
+    align-self: center;
+    margin-right: auto;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: rgba(255, 212, 90, 0.72);
+  }
+
   /* Replie devant une question du moteur : la chronologie seule, et la
      mention « Le moteur attend ta réponse ». Ce n'est PAS l'attente grise
      ci-dessus : ici c'est au joueur d'agir, ailleurs que dans le cartouche, et

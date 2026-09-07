@@ -2580,6 +2580,11 @@ function PagePartie({
             // cartouche de quoi n'acquitter qu'UNE fois par trame, plutot que
             // de se fier a un booleen qui se recalcule sans cesse.
             trameRetenue={etat.trameRetenue}
+            // L'echeance du filet anti-blocage de la PHASE (une seule, armee
+            // au premier accuse retenu). Le cartouche n'en montre que les
+            // quinze dernieres secondes : la phase qui repart toute seule ne
+            // doit pas ressembler a un bug.
+            echeanceFilet={etat.echeanceFilet}
             // « Avance toute seule » et sa vitesse (panneau Options) : c'est le
             // cartouche qui tient cette horloge, pas le moteur. Il s'avance
             // par la meme fonction que le clic « Suivant », donc l'accuse
