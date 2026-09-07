@@ -154,6 +154,11 @@ function pvAffiches(hero) {
 }
 
 const state = {
+    // L'ACCUEIL (refonte du 7 septembre) : avant l'étape 1, un écran qui ne
+    // demande qu'une chose, comment on joue. Le choix du mode quittait ainsi
+    // l'écran des héros, où il prenait une rangée entière. Faux en création
+    // d'équipe de campagne : le mode y est déjà décidé.
+    accueil: !creationCampagne(),
     step: 0,
     mode: MODES[0],
     playerCount: 1,
@@ -238,11 +243,15 @@ function goto(step) {
         for (let s = state.step; s < step; s++) if (!stepComplete(s)) return;
     }
     hideHover();
+    state.accueil = false;
     state.step = step;
     render();
 }
 const next = () => { if (canContinue()) goto(state.step + 1); };
-const prev = () => goto(state.step - 1);
+const prev = () => {
+    if (state.step === 0 && !creationCampagne()) { hideHover(); state.accueil = true; render(); return; }
+    goto(state.step - 1);
+};
 
 async function randomize() {
     if (state.step === 0) {
@@ -473,14 +482,23 @@ function surveillerGrilles() {
 }
 
 function render() {
-    root.replaceChildren(
-        progressBar(),
-        el("div", { class: "layout" },
-            el("main", { class: "stage" }, stepView()),
-            recapPanel(),
-        ),
-        navBar(),
-    );
+    if (state.accueil) {
+        root.replaceChildren(
+            progressBar(),
+            el("div", { class: "layout accueil-layout" },
+                el("main", { class: "stage accueil-stage" }, accueilView()),
+            ),
+        );
+    } else {
+        root.replaceChildren(
+            progressBar(),
+            el("div", { class: "layout" },
+                el("main", { class: "stage" }, stepView()),
+                recapPanel(),
+            ),
+            navBar(),
+        );
+    }
     fixMarvelText();
     ajusterGrilles();
     surveillerGrilles();
@@ -501,7 +519,7 @@ function progressBar() {
         boutonLangue("btn ghost btn-langue"),
         el("div", { class: "steps" }, STEPS.map((label, i) => {
             const done = i < state.step && stepComplete(i);
-            const cls = "pstep" + (i === state.step ? " active" : "") + (done ? " done" : "");
+            const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
             return el("button", { class: cls, onclick: () => goto(i) },
                 el("span", { class: "pnum" }, done ? "\u2713" : String(i + 1)),
                 el("span", { class: "plabel" }, label));
@@ -522,7 +540,7 @@ function progressBar() {
 function navBar() {
     const showRandom = [0, 2, 3].includes(state.step);
     return el("footer", { class: "nav" },
-        el("button", { class: "btn ghost", disabled: state.step === 0 || undefined, onclick: prev }, t("Retour")),
+        el("button", { class: "btn ghost", disabled: (state.step === 0 && creationCampagne()) || undefined, onclick: prev }, t("Retour")),
         el("div", { class: "nav-status" }, navStatus()),
         el("div", { class: "spacer" }),
         showRandom ? el("button", { class: "btn ghost", onclick: randomize }, t("Aléatoire")) : el("span"),
@@ -633,7 +651,16 @@ function recapPanel() {
         // fiche de mission (classe `apercu` sur .recap), puis s'efface.
         el("div", { class: "recap-apercu", id: "recap-apercu" }),
         el("div", { class: "recap-title mvl" }, t("Fiche de mission")),
-        recapRow("Mode", state.mode ? libelleMode(state.mode) + " - " + state.playerCount + "p" : "-"),
+        creationCampagne()
+            ? recapRow("Mode", state.mode ? libelleMode(state.mode) + " - " + state.playerCount + "p" : "-")
+            : el("button", {
+                class: "recap-row recap-mode",
+                title: t("Changer de mode de jeu"),
+                onclick: () => { hideHover(); state.accueil = true; render(); },
+            },
+                el("span", { class: "recap-k" }, "Mode"),
+                el("span", { class: "recap-v" }, (state.mode ? libelleMode(state.mode) + " - " + state.playerCount + "p" : "-") + " \u203A"),
+            ),
     );
     const players = el("div", { class: "recap-block team" }, el("div", { class: "recap-k" }, t("Équipe")));
     for (let i = 0; i < state.playerCount; i++) {
@@ -941,6 +968,77 @@ function bandeauEnLigne() {
     );
 }
 
+/**
+ * L'écran d'accueil : le titre, et une seule question, comment on joue.
+ *
+ * Une tuile par mode. Les modes à plusieurs (coop locale, coop en ligne,
+ * bataille) portent leurs nombres de héros à même la tuile : choisir « 3 »
+ * choisit le mode ET le nombre, en un clic. Solo et bac à sable partent au
+ * clic sur la tuile. Campagne renvoie à son propre écran, comme avant.
+ */
+function accueilView() {
+    const tuiles = [];
+    for (const m of MODES) {
+        if (m.id === "hotseat" && state.salon.multi) {
+            tuiles.push({ mode: m, distant: false, mark: m.mark, libelle: m.label, detail: m.desc });
+            tuiles.push({ mode: m, distant: true, mark: "@", libelle: t("Coop en ligne"),
+                          detail: t("2 à 4 héros, chacun choisit le sien") });
+            continue;
+        }
+        tuiles.push({ mode: m, distant: null, mark: m.mark, libelle: m.label, detail: m.desc });
+    }
+
+    const partir = (tuile, nombre) => {
+        const m = tuile.mode;
+        if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
+        if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
+        const wasCampaign = isCampaignMode();
+        state.mode = m;
+        if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
+        state.playerCount = m.fixed ? 1
+            : Math.max(m.min || 1, Math.min(m.max || 4, nombre || state.playerCount));
+        if (state.activeSlot >= state.playerCount) state.activeSlot = state.playerCount - 1;
+        goto(0);
+    };
+
+    const grille = el("div", { class: "acc-modes" });
+    for (const tuile of tuiles) {
+        const m = tuile.mode;
+        const nombres = [];
+        if (!m.fixed && m.id !== "campaign") {
+            for (let n = (m.min || 1); n <= (m.max || 4); n++) {
+                if (m.id === "bataille" && n % 2 !== 0) continue;
+                nombres.push(el("button", {
+                    class: "acc-nombre",
+                    title: n + " " + t("héros"),
+                    onclick: (e) => { e.stopPropagation(); partir(tuile, n); },
+                }, m.id === "bataille" ? (n / 2) + "v" + (n / 2) : String(n)));
+            }
+        }
+        grille.append(el("button", {
+            class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
+            onclick: () => partir(tuile, null),
+        },
+            el("span", { class: "mode-mark mvl" }, tuile.mark),
+            el("span", { class: "acc-copy" },
+                el("b", { class: "mvl" }, tuile.libelle),
+                el("small", {}, tuile.detail),
+            ),
+            nombres.length ? el("span", { class: "acc-nombres" },
+                el("small", {}, t("héros")), ...nombres) : null,
+        ));
+    }
+
+    return el("section", { class: "step accueil" },
+        el("div", { class: "acc-titre" },
+            el("div", { class: "kicker" }, t("Préparation de mission")),
+            el("h1", { class: "mvl" }, "Marvel Champions"),
+            el("p", {}, t("Comment veux-tu jouer ?")),
+        ),
+        grille,
+    );
+}
+
 function playerCountRow() {
     if (state.mode.fixed) return null;
     // Le nombre de héros d'une campagne est arrêté à sa création : le changer
@@ -963,11 +1061,14 @@ function playerCountRow() {
 }
 
 function stepTeam() {
+    // Le mode et le nombre de héros se choisissent sur l'ACCUEIL : ici ne
+    // restent que le titre, le bandeau de campagne (mode figé) et, en ligne,
+    // les liens d'invitation.
     const wrap = el("section", { class: "step team-step" },
         el("div", { class: "team-header" },
             stepHead("Briefing 01", t("Rassemble tes héros"), t("Sélection prête")),
             bandeauEnLigne(),
-            el("div", { class: "command-band" }, modeStrip(), playerCountRow()),
+            creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
             choixCoop(),
         ),
     );
