@@ -1165,6 +1165,26 @@ export function DeroulePhase({
     if (carte.role === 'boost') return etape.boosts.find((b) => b.cibleId === carte.id)?.nom ?? ''
     return etape.cibleNom ?? ''
   }
+  // LE GESTE PHYSIQUE (decide avec l'utilisateur le 7 septembre 2026) : un
+  // jeton qui tombe sur la carte visee (menace ou degats), un boost qui
+  // arrive dos visible et se retourne, la carte revelee qui se retourne sur
+  // place. Les animations sont dans board.css, coupees avec les autres
+  // (`body.plateau-sans-animations`). Les cles portent la cle de l'ETAPE :
+  // React remonte l'element a chaque etape, et l'animation rejoue.
+  const jeton = (() => {
+    if (etape.etat === 'annonce' || etape.etat === 'annule') return undefined
+    if (etape.montant === undefined || etape.montant <= 0) return undefined
+    if (etape.titre === 'menace' || etape.titre === 'manigance') {
+      return { classe: 'est-menace', texte: `+${etape.montant}` }
+    }
+    if (etape.titre === 'attaque') return { classe: 'est-degats', texte: String(etape.montant) }
+    return undefined
+  })()
+  // La menace du debut de phase n'a pas d'auteur : sa cible est alors la
+  // seule carte, rangee a gauche. Le jeton tombe sur elle quand meme.
+  const porteLeJeton = (carte: CarteDeScene) =>
+    carte.role === 'cible' || (carte.role === 'auteur' && etape.cibleId === etape.carteId)
+
   const rendreCarte = (carte: CarteDeScene, position: number) => {
     const props =
       carte.role === 'dos'
@@ -1172,28 +1192,46 @@ export function DeroulePhase({
         : carteScene?.(carte.id, carte.role === 'revelee' || carte.role === 'boost')
     const apport =
       carte.role === 'boost' ? etape.boosts.find((b) => b.cibleId === carte.id)?.apport : undefined
+    const scan = props ? (
+      // Rien de ce que le monde COURANT dit de la carte : ni compteur, ni
+      // PV, ni pastille de type. La table peut etre en avance sur le
+      // recit ; c'est la scene qui donne les chiffres de l'etape, et un
+      // « 9/12 » sur la carte contredisait le « 7/12 » de l'etape.
+      <ScanCard
+        {...props}
+        state={undefined}
+        exhausted={false}
+        counters={undefined}
+        schemeThreat={undefined}
+        allyHp={undefined}
+        stats={undefined}
+        labelType={undefined}
+        camp={undefined}
+        masquerType
+      />
+    ) : (
+      <div className="deroule-carte-absente">{nomDe(carte)}</div>
+    )
+    // Le boost et la carte revelee se RETOURNENT : dos de carte rencontre
+    // derriere, la face devant, une rotation a l'arrivee.
+    const seRetourne = (carte.role === 'boost' || carte.role === 'revelee') && dosRencontre !== undefined
     return (
       <figure key={`${carte.role}-${position}`} className={`deroule-carte est-${carte.role}`}>
-        {props ? (
-          // Rien de ce que le monde COURANT dit de la carte : ni compteur, ni
-          // PV, ni pastille de type. La table peut etre en avance sur le
-          // recit ; c'est la scene qui donne les chiffres de l'etape, et un
-          // « 9/12 » sur la carte contredisait le « 7/12 » de l'etape.
-          <ScanCard
-            {...props}
-            state={undefined}
-            exhausted={false}
-            counters={undefined}
-            schemeThreat={undefined}
-            allyHp={undefined}
-            stats={undefined}
-            labelType={undefined}
-            camp={undefined}
-            masquerType
-          />
+        {seRetourne ? (
+          <div className="deroule-retourne" key={`${etape.cle}-${carte.role}-${position}`}>
+            <div className="deroule-retourne-dos" aria-hidden="true">
+              <img src={dosRencontre?.imageUrl} alt="" />
+            </div>
+            <div className="deroule-retourne-face">{scan}</div>
+          </div>
         ) : (
-          <div className="deroule-carte-absente">{nomDe(carte)}</div>
+          scan
         )}
+        {jeton && porteLeJeton(carte) ? (
+          <span key={etape.cle} className={`deroule-jeton ${jeton.classe}`} aria-hidden="true">
+            {jeton.texte}
+          </span>
+        ) : null}
         {apport !== undefined ? (
           <figcaption className="deroule-carte-legende">
             {t('Boost')} +{apport}
@@ -1314,7 +1352,11 @@ export function DeroulePhase({
           <p className={`deroule-titre${etape.temps === 'bilan' ? ' est-bilan' : ''}`}>
             {titreEtape(etape)}
           </p>
-          {compteur ? <span className="deroule-compteur">{compteur}</span> : null}
+          {compteur ? (
+            <span key={etape.cle} className={`deroule-compteur${jeton ? ' est-apres-jeton' : ''}`}>
+              {compteur}
+            </span>
+          ) : null}
         </div>
         {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
         {/* L'activation annoncee qui n'a pas lieu. Sans cette ligne, l'etape

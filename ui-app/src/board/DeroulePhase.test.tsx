@@ -2028,6 +2028,139 @@ describe('le bilan de fin de phase', () => {
       expect(container.querySelector('.deroule-carte.est-dos .scan-card')).not.toBeNull()
     })
 
+    // --- Le geste physique --------------------------------------------------
+    // Decide avec l'utilisateur le 7 septembre 2026 : un jeton qui tombe sur
+    // la carte visee (menace, degats), un boost qui arrive dos visible et se
+    // retourne, la carte rencontre qui se retourne sur place.
+    it('pose un jeton de menace sur la manigance', () => {
+      const menace: EtapeDeroule[] = [
+        {
+          cle: 'm',
+          temps: 'menace',
+          titre: 'menace',
+          regle: 'regle:menace',
+          cibleId: 12,
+          cibleNom: 'Hunting Down Heroes',
+          montant: 2,
+          restant: 7,
+          plafond: 12,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={menace} carteScene={(id) => scan(id, 'Hunting Down Heroes')} onTerminer={() => {}} />
+      )
+      const jeton = container.querySelector('.deroule-carte.est-cible .deroule-jeton.est-menace')
+      expect(jeton).not.toBeNull()
+      expect(jeton?.textContent).toBe('+2')
+    })
+
+    it('pose un jeton de degats sur le heros attaque', () => {
+      const attaque: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Klaw',
+          cibleNom: 'Colossus',
+          etat: 'resolu',
+          montant: 3,
+          restant: 9,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={attaque} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
+      )
+      const jeton = container.querySelector('.deroule-carte.est-cible .deroule-jeton.est-degats')
+      expect(jeton?.textContent).toBe('3')
+    })
+
+    it('ne pose aucun jeton sur une annonce, ni sur un coup a zero', () => {
+      const etapes2: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          etat: 'annonce',
+          valeurAnnoncee: 2,
+          boosts: [],
+        },
+        {
+          cle: 'b',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          etat: 'resolu',
+          montant: 0,
+          restant: 9,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={etapes2} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
+      )
+      expect(container.querySelector('.deroule-jeton')).toBeNull()
+      fireEvent.click(suivant())
+      expect(container.querySelector('.deroule-jeton')).toBeNull()
+    })
+
+    it('retourne le boost et la carte revelee, jamais l auteur ni la cible', () => {
+      const dos: ScanCardProps = {
+        id: 'dos',
+        name: 'Carte rencontre',
+        kind: 'unknown',
+        imageUrl: '/scan/encounter',
+        facedown: true,
+      }
+      const etapes2: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          etat: 'resolu',
+          montant: 3,
+          boosts: [{ cle: 'b', nom: 'Whip', cibleId: 77, apport: 1 }],
+        },
+        {
+          cle: 'r',
+          temps: 'revelation',
+          titre: 'revelation',
+          regle: 'regle:revelation',
+          carteId: 40,
+          cibleNom: 'Captured by Hydra',
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase
+          etapes={etapes2}
+          carteScene={(id) => scan(id, String(id))}
+          dosRencontre={dos}
+          onTerminer={() => {}}
+        />
+      )
+      expect(container.querySelector('.deroule-carte.est-boost .deroule-retourne')).not.toBeNull()
+      expect(container.querySelector('.deroule-carte.est-auteur .deroule-retourne')).toBeNull()
+      expect(container.querySelector('.deroule-carte.est-cible .deroule-retourne')).toBeNull()
+      // Le dos du retournement est le dos d'une carte rencontre.
+      const dosBoost = container.querySelector('.deroule-carte.est-boost .deroule-retourne-dos img')
+      expect(dosBoost?.getAttribute('src')).toBe('/scan/encounter')
+      fireEvent.click(suivant())
+      expect(container.querySelector('.deroule-carte.est-revelee .deroule-retourne')).not.toBeNull()
+    })
+
     it('ecrit le nom a la place d une carte dont le scan manque', () => {
       const { container } = render(
         <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />
