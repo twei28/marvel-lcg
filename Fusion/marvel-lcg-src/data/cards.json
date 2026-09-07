@@ -90197,5 +90197,272 @@
    "custom": "Rainy"
   }
  ],
- "checksum": "95676f3b22b23fe1fc090ece05b3e1583c7a564cb7ab7684ed3bdd2f319c89a0"
+ "ares": [
+  {
+   "card_id": "ar001a",
+   "type": "Hero",
+   "name": "* Ares",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "ATK": "3",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "AVENGER",
+    "OLYMPUS"
+   ],
+   "text": "<i>Bring the War</i> — <b>Action</b>: Seek a minion from the encounter deck and put it into play engaged with you → draw 2 cards or play an event from your hand, ignoring its resource cost. <i>(Limit once per round.)</i>",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar001b",
+   "type": "AlterEgo",
+   "name": "* Ares",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "REC": "4",
+    "HS": "5"
+   },
+   "traits": [
+    "OLYMPUS",
+    "SOLDIER"
+   ],
+   "text": "<i>Lord of War</i> — You may include up to 5 [[TACTIC]] upgrades in your deck from aspects other than your chosen aspect.\n<b>Interrupt</b>: When you change form, search your deck for a [[TACTIC]] card and add it to your hand.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar002",
+   "type": "Event",
+   "name": "Spray and Pray",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Make the following attack 5 times against any targets you choose:\n<i>(attack)</i>: Deal 1 damage to an enemy.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar003",
+   "type": "Event",
+   "name": "To Battle!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Choose two of the following:\n• Search your deck and discard pile for a [[TACTIC]] or [[WEAPON]] upgrade and add it to your hand.\n• Ready a hero-specific upgrade you control.\n• Ready Ares.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar004",
+   "type": "Upgrade",
+   "name": "* Ares' Axe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "OLYMPUS",
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When Ares makes a basic attack against an enemy, exhaust Ares' Axe → you get +1 ATK for this attack for each upgrade attached to that enemy. That attack gains piercing.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar005",
+   "type": "Upgrade",
+   "name": "* Ares' Battle Helm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "OLYMPUS"
+   ],
+   "text": "<b>Hero Response</b>: After Ares attacks and defeats an enemy, exhaust Ares' Battle Helm and choose a scheme → remove 1 threat from that scheme for each point of excess damage dealt to that enemy by that attack.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar006",
+   "type": "Upgrade",
+   "name": "Feint",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PREPARATION",
+    "TACTIC"
+   ],
+   "text": "Attach to an enemy. Max 1 per enemy.\n<b>Forced Hero Interrupt</b> <i>(attack/defense)</i>: When attached enemy initiates an attack, discard Feint → that enemy gets -2 ATK for that attack. Deal 2 damage to that enemy.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar007",
+   "type": "Upgrade",
+   "name": "God of War",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "OLYMPUS",
+    "TITLE"
+   ],
+   "text": "<b>Hero Response</b>: After a minion enters play, search your deck for a [[TACTIC]] upgrade that can be attached to that minion and play it on that minion. <i>(Limit once per phase.)</i>",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar008",
+   "type": "Upgrade",
+   "name": "Reeling",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "TACTIC"
+   ],
+   "text": "Attach to a minion. Max 1 per enemy.\nAttacks against attached minion gain overkill. Increase the amount of excess damage this enemy is dealt by 2.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar009",
+   "type": "Upgrade",
+   "name": "Sundered",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "MaxPerUnit": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "TACTIC"
+   ],
+   "text": "Attach to a minion. Max 1 per enemy.\nIncrease the amount of damage attached enemy takes from each attack by 1.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar010",
+   "type": "Obligation",
+   "name": "Ire of Athena",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Ares"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Ares player.</i></b>\nIncrease the cost of each [[TACTIC]] you play by 1.\n<b>Alter-Ego Action</b>: Exhaust your alter-ego or discard a [[TACTIC]] card from your hand → discard this card.",
+   "set_name": "Ares",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar011",
+   "type": "SideScheme",
+   "name": "Athena's Guidance",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "3*"
+   },
+   "traits": [],
+   "text": "<i>Feeling spurned from her rivalry with Ares as the other god of war, Athena is offering her wisdom and tactics to the enemy.</i>\nMinions gain quickstrike and toughness.\n<hr />\n[star] <b>Boost</b>: Give the activating enemy an additional boost card.",
+   "set_name": "Ares Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar012",
+   "type": "Minion",
+   "name": "* Athena",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "3",
+    "ATK": "2",
+    "Boost": "1",
+    "Retaliate": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ELITE",
+    "OLYMPUS"
+   ],
+   "text": "Retaliate 1. Toughness.\nAthena cannot have [[TACTIC]] upgrades attached to her.\n<i>(Ares' nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation, deal yourself 1 facedown encounter card.",
+   "set_name": "Ares Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar013",
+   "type": "Attachment",
+   "name": "* Aegis Breastplate",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "ARMOR",
+    "OLYMPUS"
+   ],
+   "text": "Attach to a minion. Otherwise, attach to the villain.\n<b>Forced Interrupt</b>: When attached enemy would take any amount of damage, place it here instead and deal that much damage to the attacker. If there is 5 or more damage here, discard this card.",
+   "set_name": "Ares Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "ar014",
+   "type": "Treachery",
+   "name": "Lead the Charge",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>When Revealed</b>: Each minion engaged with a player activates against them. Each player who was not activated against this way searches the encounter deck and discard pile for a minion and puts it into play engaged with them. Give each minion a facedown boost card.",
+   "set_name": "Ares Nemesis",
+   "custom": "Rainy"
+  }
+ ],
+ "checksum": "85f7793dba723ef5c93ddafd8faba8ec5711bfd391475a923d13d64384fa047a"
 }

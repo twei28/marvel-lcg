@@ -189,6 +189,7 @@ function maxParDeck(carte) {
  *      "deckbuilding": {
  *          "aspects":         { "min": 1, "max": 1, "label": "…" },
  *          "hors_aspect":     { "max": 6, "traits": ["TECH", "SPELL"], "label": "…" },
+ *          // + "types": ["Upgrade"] pour ne compter que certains types (Ares, 07/09/2026)
  *          "types_interdits": ["Ally"]
  *      }
  *
@@ -299,11 +300,16 @@ function quotaHorsAspect(hero) {
     const max = Number(q.max);
     if (!Number.isFinite(max) || max <= 0) return null;
     const traits = (Array.isArray(q.traits) ? q.traits : []).map((x) => String(x).toUpperCase());
+    // `types` (ajoute le 07/09/2026 pour Ares, « up to 5 TACTIC UPGRADES ») :
+    // restreint le quota a certains TYPES de carte. Sans lui, un evenement
+    // TACTIC d'aspect serait compte comme une amelioration TACTIC.
+    const types = (Array.isArray(q.types) ? q.types : []).map((x) => String(x));
     return {
         max,
-        // Sans liste de traits, le quota porte sur N cartes hors aspect QUELLES
-        // QU'ELLES SOIENT : c'est le cas degenere, pas une erreur.
-        test: (c) => !traits.length || (c.traits || []).some((tr) => traits.includes(String(tr).toUpperCase())),
+        // Sans liste de traits ni de types, le quota porte sur N cartes hors
+        // aspect QUELLES QU'ELLES SOIENT : c'est le cas degenere, pas une erreur.
+        test: (c) => (!traits.length || (c.traits || []).some((tr) => traits.includes(String(tr).toUpperCase())))
+            && (!types.length || types.includes(String(c.type))),
         label: q.label || `${max} ${t("cartes")} ${traits.join("/")} ${t("d’autres aspects")}`,
     };
 }

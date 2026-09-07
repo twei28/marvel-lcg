@@ -459,6 +459,7 @@ Les trois clés sont facultatives :
 |---|---|
 | `aspects` | `min` / `max` d'aspects distincts. `max: 99` = aspects libres. `label` remplace le libellé calculé |
 | `hors_aspect` | Quota de cartes empruntées à d'AUTRES aspects. `traits` restreint aux cartes portant l'un d'eux ; liste vide ou absente = n'importe quelle carte |
+| `hors_aspect.types` | *(ajouté le 07/09/2026, Ares)* Restreint en plus le quota à certains types de carte (`["Upgrade"]` pour « up to 5 TACTIC **upgrades** ») ; absent = tous les types |
 | `types_interdits` | Types de cartes que le héros refuse (`"Ally"`, `"Upgrade"`…). Ne touche PAS les cartes signature, qui vivent dans `hero_deck` et non dans la sélection |
 
 Deux points de sémantique à connaître, tous deux dans `valider()` :

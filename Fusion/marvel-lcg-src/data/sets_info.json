@@ -1433,5 +1433,14 @@
   "encounters": [],
   "max_id": "sf015"
  },
- "checksum": "f20d685b399b3a82eee894dff1ada239103ecb26e6acc26d7614d534924a2dc1"
+ "164. Custom (Ares)": {
+  "name": "ares",
+  "scenarios": [],
+  "heroes": [
+   "ares"
+  ],
+  "encounters": [],
+  "max_id": "ar014"
+ },
+ "checksum": "05fe9ead84902219c84d4c0114ed9641147812e5b306d60c2f6370abd5e124a3"
 }

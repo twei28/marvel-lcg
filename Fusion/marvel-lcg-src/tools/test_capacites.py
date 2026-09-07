@@ -22918,6 +22918,607 @@ CAS = [
         "verifier": "a4_fait_menace_sans_seuil",
     },
     # FIN DU BLOC A4 -------------------------------------------------------
+    # ================================================================ ARES ==
+    # Pack `ares` (Rainy, set 164, prefixe ar). Journal :
+    # .planning/todos/2026-09-07-ares-gabarits-processus-carte.md
+    # Ares commence en ALTER-EGO (ar001b) : `Puzzle.ChangeToFace('ar001b',
+    # 'ar001a')` le passe en heros. Cartes du scenario Rhino employees : 01094
+    # Rhino (ATK 2), 01097a The Break-In!, 01110 Hydra Bomber (2 PV, ATK 1),
+    # 01101 Hydra Mercenary (3 PV), 01182 Hydra Soldier (4 PV, ATK 2), 01130
+    # Whirlwind (6 PV, ATK 2), 39043 Goblin (1 PV), 01107 Breakin' & Takin'
+    # (manigance annexe, 2 boost), 01088/01089/01090 ressources doubles.
+    {
+        "nom": "ar001a Ares — Bring the War : le sbire convoque est le COUT, puis « piocher 2 cartes »",
+        "pourquoi": ("« Seek a minion from the encounter deck and put it into play engaged "
+                     "with you → draw 2 cards or ... » : la convocation est le COUT "
+                     "(`CostFunc.SearchForCard`, modele 56007 Hunted), la pioche la "
+                     "premiere branche. Sans ce cas, l'action-signature du heros n'a "
+                     "aucun cas sujet"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.CreateEncounterDeck('01110')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('ar001a', 'Action')"],
+        "preferer_option": ["Draw 2 cards"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "taille_main": 3},
+    },
+    {
+        "nom": "ar001a Ares — Bring the War : branche « jouer un evenement en ignorant son cout »",
+        "pourquoi": ("Spray and Pray coute 3 et la main n'a AUCUNE ressource : si les 5 "
+                     "degats tombent, c'est que le cout a ete ignore "
+                     "(`PlayCardsLikeInTurn(..., ignore_resources_cost=True)`, modele 15003)"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.CreateEncounterDeck('01110')"],
+        "main_exclusive": ["ar002"],
+        "declencher": ["Puzzle.Action('ar001a', 'Action')"],
+        "preferer_option": ["Play an event"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "defausse": ["ar002"], "en_jeu": ["01110"]},
+    },
+    {
+        "nom": "ar001a Ares — Bring the War : TEMOIN D'EPUISEMENT, la limite « once per round » mord au second appel",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis : deux declenchements dans le meme round, un "
+                     "chiffre au second. Le second `Puzzle.Action` doit etre REFUSE "
+                     "(`declencher_tolerant`) : un seul sbire convoque, le second reste "
+                     "dans le deck rencontre, la main ne gagne que 2 cartes"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.CreateEncounterDeck('01110', '01101')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('ar001a', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('ar001a', 'Action')"],
+        "preferer_option": ["Draw 2 cards"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "dans_deck_rencontre": ["01101"], "taille_main": 3},
+    },
+    # ⚠ Pas de contre-cas « deck rencontre sans sbire » : `Puzzle.CreateEncounterDeck`
+    # AJOUTE au deck du vilain (puzzle.py:83), il ne le remplace pas, et le deck
+    # de Rhino a toujours des sbires. La condition `deck_rencontre_a_un_sbire`
+    # reste sans temoin outille : consigne dans le journal du pack.
+    {
+        "nom": "ar001b Ares — Interrupt au changement de forme : une carte TACTIC du deck arrive en main",
+        "pourquoi": ("« When you change form, search your deck for a TACTIC card » : "
+                     "`WhenUnitWouldChangeForm(Interrupt, \"You\", op)` + `Search.PlayerCard`"
+                     " + `GainCard`. Le deck est fige a deux cartes dont une seule TACTIC"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.ChangeForm('ar001b')"],
+        "cibles": ["ar006"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ar006"], "taille_main": 2},
+    },
+    # ⚠ Pas de contre-cas « aucune TACTIC dans le deck » : constate le 07/09/2026,
+    # `SearchInternal.SearchForCardsInternal` (search_internal.py:44-46) retombe
+    # sur TOUTES les cartes quand aucune ne passe le filtre (`select_face =
+    # all_faces`), et le pilote en prend une : la main gagne une carte quand
+    # meme. C'est un comportement du MOTEUR, partage par toutes les recherches
+    # du depot, consigne dans le journal du pack (pas corrige ici).
+    {
+        "nom": "ar002 Spray and Pray — cinq tirs d'1 sur Rhino : 5 degats",
+        "pourquoi": ("« Make the following attack 5 times » : cinq attaques d'1 du HEROS "
+                     "(`hero.DealDamage(..., property=AttackProperty())`, modele 01053), "
+                     "toutes sur la meme cible ici"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')"],
+        "main_exclusive": ["ar002", "01088", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["ar002"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "defausse": ["ar002"]},
+    },
+    {
+        "nom": "ar002 Spray and Pray — cinq attaques DISTINCTES : deux sbires tombent l'un apres l'autre",
+        "pourquoi": ("Hydra Bomber (2 PV) puis Hydra Mercenary (3 PV) : 2 + 3 = 5 tirs, le "
+                     "selecteur est repose a chaque tir et une cible morte n'est plus "
+                     "proposee. Une attaque unique de 5 ne pourrait pas les tuer tous deux"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01110')", "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["ar002", "01088", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["ar002"],
+        "cibles": ["01110", "01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110", "01101"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "ar003 To Battle! — deux premieres branches : chercher une TACTIC/WEAPON, redresser une amelioration du heros",
+        "pourquoi": ("« Choose two of the following » : le pilote prend la premiere branche "
+                     "a chaque fois, la branche prise est RETIREE du second choix "
+                     "(arbitrage utilisateur du 07/09 : deux options differentes). Feint "
+                     "(TACTIC) sort du deck, la hache (Hero, inclinee) est redressee, Ares "
+                     "reste incline"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('ar004', under_control=True)",
+                          "Puzzle.Exhaust('ar004')", "Puzzle.Exhaust('ar001a')",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["ar003", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["ar003"],
+        "cibles": ["ar006", "ar004"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ar006"], "pret": ["ar004"], "exhausted": ["ar001a"]},
+    },
+    {
+        "nom": "ar003 To Battle! — « Ready Ares » puis, la branche epuisee, la recherche : deux options DIFFERENTES",
+        "pourquoi": ("`preferer_option` ne prefere que « Ready Ares » : si la repetition "
+                     "etait permise, le second choix reprendrait Ares et Feint resterait "
+                     "dans le deck. Ici Ares est redresse ET Feint arrive en main"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('ar004', under_control=True)",
+                          "Puzzle.Exhaust('ar004')", "Puzzle.Exhaust('ar001a')",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["ar003", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["ar003"],
+        "preferer_option": ["Ready Ares"],
+        "cibles": ["ar006"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ar001a"], "en_main": ["ar006"], "exhausted": ["ar004"]},
+    },
+    {
+        "nom": "ar004 Ares' Axe — +1 ATQ par amelioration attachee a la cible : 3 + 2 (Feint, Sundered) + 1 (Sundered) = 6",
+        "pourquoi": ("Whirlwind a 6 PV. Sans la hache, l'attaque de base fait 3 + 1 "
+                     "(Sundered) = 4 et il survit ; avec, il tombe. La hache s'incline "
+                     "(cout). Une amelioration attachee compte, quelle qu'elle soit"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar009', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar004', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01130"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01130"], "exhausted": ["ar004"]},
+    },
+    {
+        "nom": "ar004 Ares' Axe — CONTRE-CAS sans la hache : 3 + 1 = 4, Whirlwind survit",
+        "pourquoi": "ligne de base du cas precedent : l'ecart de 2 est bien celui de la hache",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01130"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01130"], "degats": [["01130", 4]]},
+    },
+    {
+        "nom": "ar004 Ares' Axe — « That attack gains piercing » : le Tenace de Hydra Soldier ne bloque rien",
+        "pourquoi": ("sans percant, une carte Tenace absorbe toute l'attaque (0 degat). "
+                     "Avec la hache (aucune amelioration sur la cible : +0), les 3 degats "
+                     "passent et le sbire de 4 PV en garde 1"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01182')", "Puzzle.Tough('01182')",
+                          "Puzzle.PutIntoPlay('ar004', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01182"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01182", 3]], "statuts_absents": [["01182", "Tough"]]},
+    },
+    {
+        "nom": "ar005 Ares' Battle Helm — 1 degat excedentaire sur Hydra Bomber : 1 menace retiree, le casque s'incline",
+        "pourquoi": ("« for each point of excess damage » : Hydra Bomber a 2 PV, l'attaque "
+                     "de base fait 3, exces 1. `AfterUnitDefeatedUnit(..., is_from_attack=True, "
+                     "has_excess_damage=True)` + `message.excess_damage`. La menace de "
+                     "Breakin' & Takin' (manigance annexe mise en jeu) est figee a 5. "
+                     "⚠ Pas Goblin (39043) : le journal du 07/09 montre que ce sbire retire "
+                     "lui-meme 2 menaces en mourant, ce qui doublait la mesure"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('ar005', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01110", "01107"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "menace": [["01107", 4]], "exhausted": ["ar005"]},
+    },
+    {
+        "nom": "ar005 Ares' Battle Helm — CONTRE-CAS : coup pile (3 sur 3 PV), aucun exces, la Reponse n'est pas offerte",
+        "pourquoi": ("`has_excess_damage=True` : a exces nul, rien a retirer et rien a payer. "
+                     "La menace reste a 5 et le casque reste pret"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('ar005', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01101", "01107"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01101"], "menace": [["01107", 5]], "pret": ["ar005"]},
+    },
+    {
+        "nom": "ar005 + ar008 — Reeling gonfle l'exces de 2 : 3 menaces retirees ET 3 degats deverses sur Rhino",
+        "pourquoi": ("la synergie du pack : Reeling donne overkill (le deversement va au "
+                     "vilain) et +2 a l'exces (`WhenCalcDealExcessDamage.IncreaseDamage`), "
+                     "le casque lit le meme `excess_damage`. Hydra Bomber 2 PV, attaque 3 : "
+                     "exces 1 + 2 = 3"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar005', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01110", "01107"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "menace": [["01107", 2]], "degats": [["01094", 3]]},
+    },
+    {
+        "nom": "ar006 Feint — l'ennemi attache attaque : -2 ATQ (0 degat a Ares), 2 degats au sbire, Feint defaussee",
+        "pourquoi": ("« Forced Hero Interrupt: When attached enemy initiates an attack » : "
+                     "Hydra Soldier (ATK 2) frappe Ares en forme heros. "
+                     "`WhenUnitWouldAttack(ForcedInterruptHero, Enemy, ..., conditions=[mon "
+                     "hote])` + `GainATKForThisAttack(-2)` + `DealDamage` + `DiscardAll`"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01182')"],
+        "cibles": ["01182"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "degats": [["01182", 2]], "defausse": ["ar006"]},
+    },
+    {
+        "nom": "ar006 Feint — CONTRE-CAS en forme civile : une interruption de HEROS ne part pas",
+        "pourquoi": ("« Forced HERO Interrupt » : posee sur le sbire mais Ares en alter-ego, "
+                     "la feinte reste en jeu, Hydra Soldier frappe a 2 et ne prend rien"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01182')"],
+        "cibles": ["01182"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "degats": [["01182", 0]], "en_jeu": ["ar006"]},
+    },
+    {
+        "nom": "ar007 God of War — un sbire entre en jeu : Feint sort du deck et se joue SUR CE SBIRE",
+        "pourquoi": ("« search your deck for a TACTIC upgrade that can be attached to that "
+                     "minion and play it on that minion » : `Search.PlayerCard(finder=..., "
+                     "check_face_fn=PeutSAttacherA)` puis `PlayCardsLikeInTurn` sous un "
+                     "`AttachTo2(sbire)` si elle a atterri ailleurs (le journal du 07/09 montre "
+                     "Feint jouee sur Rhino puis deplacee). Hydra Bomber est deja en jeu "
+                     "AVANT God of War, sinon c'est lui qui declenche la Reponse. Cout 0 : "
+                     "rien a payer (arbitrage du 07/09 : le cout est du)"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01110')",
+                          "Puzzle.PutIntoPlay('ar007', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01182')"],
+        "cibles": ["ar006", "01182"],
+        "accepter_choix": True,
+        "verifier": "ares_hotes",
+        "attendu": {"hotes": [["ar006", "01182"]], "en_jeu": ["ar006"]},
+    },
+    {
+        "nom": "ar007 God of War — TEMOIN D'EPUISEMENT : deux sbires dans la meme phase, une seule amelioration jouee",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis, « Limit once per phase » : le second sbire "
+                     "n'appelle pas Sundered, qui reste dans le deck"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('ar007', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('ar006', 'ar009')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01182')", "Puzzle.PutIntoPlay('01130')"],
+        "cibles": ["ar006", "01182", "ar009", "01130"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ar006"], "dans_deck_joueur": ["ar009"]},
+    },
+    {
+        "nom": "ar007 + ar012 — Athena refuse les TACTIC : God of War ne trouve rien a lui attacher",
+        "pourquoi": ("« Athena cannot have TACTIC upgrades attached to her » : la regle "
+                     "repond a `CheckIfFaceCanAttachTo`, que `PeutSAttacherA` interroge. "
+                     "Feint reste dans le deck"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('ar007', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('ar012')"],
+        "cibles": ["ar006", "ar012"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["ar006"], "en_jeu": ["ar012"]},
+    },
+    {
+        "nom": "ar008 Reeling — attaques contre le sbire attache : overkill, et l'exces gonfle de 2 se deverse sur Rhino",
+        "pourquoi": ("Goblin 1 PV, attaque de base 3 : exces 2, +2 = 4 deverses sur le "
+                     "vilain grace a l'overkill (modele exact ss012 Mark of Kaine)"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "ar008 Reeling — CONTRE-CAS sans Reeling : pas d'overkill, Rhino ne prend rien",
+        "pourquoi": "ligne de base : sans la carte, l'exces de 2 est perdu",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('39043')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "ar009 Sundered — le sbire attache prend +1 de chaque attaque : 3 + 1 = 4",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, Enemy, ..., "
+                     "is_from_attack=True, conditions=[mon hote])` + `IncreaseDamage(1)`"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')",
+                          "Puzzle.PutIntoPlay('ar009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01130"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01130", 4]]},
+    },
+    {
+        "nom": "ar009 Sundered — CONTRE-CAS : les 2 degats de Feint ne sont pas une attaque, ils restent 2",
+        "pourquoi": ("« from each ATTACK » : Feint inflige 2 degats hors attaque au sbire "
+                     "sondere quand il attaque. Sundered ne les alourdit pas : 2, pas 3"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')",
+                          "Puzzle.PutIntoPlay('ar009', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01130')"],
+        "cibles": ["01130"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01130", 2]], "defausse": ["ar006"]},
+    },
+    {
+        "nom": "ar010 Ire of Athena — chaque TACTIC coute +1 : To Battle! (2) devient injouable avec 2 icones",
+        "pourquoi": ("`IncreaseResourceCostToPlay(CardFinder(trait=TACTIC), 1, \"You\")`. "
+                     "Genius donne BB = 2 icones, assez pour 2, pas pour 3 : la carte est "
+                     "injouable (le harnais la defausse) et Genius, jamais depense, reste "
+                     "seul en main. SUBSTITUTION du 07/09 : l'attendu initial "
+                     "(« Feint reste dans le deck ») restait VERT sans le module, parce "
+                     "que le deck naturel d'Ares contient trois Feint : To Battle! jouee "
+                     "en sortait une, il en restait deux. On lit donc la MAIN : jouee, "
+                     "Genius est defausse et Feint arrive ; refusee, Genius reste"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')", "Puzzle.Reveal('ar010')",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["ar003", "01089"],
+        "declencher": [],
+        "jouer": ["ar003"],
+        "cibles": ["ar006"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01089"], "taille_main": 1, "defausse": ["ar003"],
+                    "en_jeu": ["ar010"]},
+    },
+    {
+        "nom": "ar010 Ire of Athena — CONTRE-CAS sans l'obligation : To Battle! se joue avec les memes 2 icones",
+        "pourquoi": "ligne de base du cas precedent : le +1 vient bien de l'obligation",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.CreatePlayerDeck('ar006', '01088')"],
+        "main_exclusive": ["ar003", "01089"],
+        "declencher": [],
+        "jouer": ["ar003"],
+        "cibles": ["ar006"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["ar003"], "en_main": ["ar006"]},
+    },
+    {
+        "nom": "ar010 Ire of Athena — Alter-Ego Action, premier cout : incliner l'alter ego defausse l'obligation",
+        "pourquoi": ("« Exhaust your alter-ego OR discard a TACTIC card » : deux capacites "
+                     "(RECETTES §5), celle-ci paye en inclinant l'identite"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.Reveal('ar010')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('ar010', 'AlterEgoAction', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ar010"], "exhausted": ["ar001b"]},
+    },
+    {
+        "nom": "ar010 Ire of Athena — Alter-Ego Action, second cout : defausser une TACTIC de la main, Ares reste pret",
+        "pourquoi": "la seconde capacite du « or » : Spray and Pray (TACTIC) part a la defausse, l'identite n'est pas inclinee",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.Reveal('ar010')"],
+        "main_exclusive": ["ar002", "01090"],
+        "declencher": ["Puzzle.Action('ar010', 'AlterEgoAction', 1)"],
+        "cibles": ["ar002"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ar010"], "defausse": ["ar002"], "pret": ["ar001b"]},
+    },
+    {
+        "nom": "ar011 Athena's Guidance — les sbires gagnent Tenace : Hydra Bomber entre en jeu avec sa carte",
+        "pourquoi": ("« Minions gain quickstrike and toughness » : `GiveKeywordToInPlayWhenApplyThis"
+                     "(CardFinder(card_type=Minion), quickstrike=1, toughness=1)`. Un sbire "
+                     "qui ENTRE en jeu recoit sa carte Tenace (regle du mot-cle)"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.Reveal('ar011')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01110')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01110", "Tough"]], "en_jeu": ["ar011"]},
+    },
+    {
+        "nom": "ar011 Athena's Guidance — [star] Boost : une carte de boost EN PLUS pour l'ennemi qui active (2 + 2 + 2 = 6)",
+        "pourquoi": ("Rhino ATK 2, ar011 en boost = 2 icones, la carte supplementaire est "
+                     "Breakin' & Takin' (2 icones, dessus du deck rencontre) : 6 degats a "
+                     "l'identite. Sans l'etoile : 4. ⚠ Ares est INCLINE avant, sinon le "
+                     "pilote defend (DEF 2) et la mesure perd 2 (vu le 07/09)"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')", "Puzzle.Exhaust('ar001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('ar011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 6},
+    },
+    {
+        "nom": "ar012 Athena — [star] Boost : apres l'activation, le joueur recoit 1 carte rencontre face cachee",
+        "pourquoi": ("`WhenCardBecomeBoost` + `message.AfterThisActivation(effect, fn)` + "
+                     "`DealEncounterCards(1)` : la carte du dessus du deck rencontre arrive "
+                     "dans `dealt_encounter_cards` du joueur, apres les degats (2 + 1 boost). "
+                     "Ares est incline pour ne pas defendre"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')", "Puzzle.Exhaust('ar001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('ar012')"],
+        "verifier": "ares_cartes_rencontre_distribuees",
+        "attendu": {"distribuees": 1, "degats_identite": 3},
+    },
+    {
+        "nom": "ar013 Aegis Breastplate — attachee a un sbire : l'attaque d'Ares est absorbee (3 compteurs) et renvoyee (3 degats a Ares)",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, Enemy, ..., conditions=[mon "
+                     "hote])` + `SetBeInstead` + `PlaceCountersOn('damage')` + `DealDamage` a "
+                     "l'attaquant (modele 04065 Crossbones' Armor). Whirlwind ne prend rien"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')", "Puzzle.PutIntoPlay('ar013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["01130"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01130", 0]], "compteurs": [["ar013", "damage", 3]],
+                    "degats_identite": 3},
+    },
+    {
+        "nom": "ar013 Aegis Breastplate — 5 degats ou plus : la cuirasse se defausse (3 + 3)",
+        "pourquoi": "deux attaques de base (Ares redresse entre les deux) : 6 compteurs, seuil 5 atteint, carte defaussee, 6 degats renvoyes",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01130')", "Puzzle.PutIntoPlay('ar013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')", "Puzzle.Ready('ar001a')", "Puzzle.Attack('ar001a')"],
+        "cibles": ["01130"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ar013"], "degats_identite": 6, "degats": [["01130", 0]]},
+    },
+    {
+        "nom": "ar013 Aegis Breastplate — degats HORS attaque (Feint) : absorbes et renvoyes a l'IDENTITE (arbitrage du 07/09)",
+        "pourquoi": ("Hydra Soldier attaque (2 - 2 = 0 a Ares), Feint lui inflige 2 : la "
+                     "cuirasse absorbe (2 compteurs) et renvoie 2 a l'identite du joueur a "
+                     "l'origine. Ares prend donc 2, uniquement par le renvoi"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.PutIntoPlay('ar006', under_control=True)",
+                          "Puzzle.PutIntoPlay('ar013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01182')"],
+        "cibles": ["01182"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01182", 0]], "compteurs": [["ar013", "damage", 2]],
+                    "degats_identite": 2, "defausse": ["ar006"]},
+    },
+    {
+        "nom": "ar013 Aegis Breastplate — « Otherwise, attach to the villain » : sans sbire, elle va sur Rhino",
+        "pourquoi": "`AttachToFaceWhenPutIntoPlay(CardFinder(card_type=Minion), if_cannot_attach_to=Villain)` (modele 04029)",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('ar013')"],
+        "verifier": "ares_hotes",
+        "attendu": {"hotes": [["ar013", "01094"]]},
+    },
+    {
+        "nom": "ar014 Lead the Charge — le sbire engage active contre son joueur : Hydra Soldier frappe Ares (2)",
+        "pourquoi": ("« Each minion engaged with a player activates against them » : "
+                     "`minion.DoActivate(joueur, effect)` (modele 04070). Ares en forme heros "
+                     "et INCLINE (sinon le pilote defend, DEF 2) : 2 degats. En civil, le "
+                     "sbire COMPLOTERAIT"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')", "Puzzle.Exhaust('ar001a')",
+                          "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('ar014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "ar014 Lead the Charge — joueur sans sbire engage : un sbire du deck rencontre est mis en jeu engage",
+        "pourquoi": ("« Each player who was not activated against this way searches the "
+                     "encounter deck and discard pile for a minion » : `Search.EncounterCard`"
+                     " (modele 04111) + `PutIntoPlay` + `EngagePlayer`"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110', '01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('ar014')"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "degats_identite": 0},
+    },
+    # ============================================================ FIN ARES ==
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -28274,6 +28875,55 @@ def a4_fait_menace_sans_seuil(monde, aides):
                   f"{fait['restant']}/{fait.get('plafond')}")
 
 # ========================== FIN DU BLOC A4 ===================================
+
+def ares_hotes(monde, aides):
+    """Pack ares : « attendu.hotes » = [[carte, hote], ...]. Chaque carte doit
+    etre EN JEU et accrochee (bind_face) exactement a l'hote nomme. Sert a
+    God of War (« play it ON THAT MINION ») et a l'Aegis Breastplate
+    (« Otherwise, attach to the villain »). Delegue le reste de `attendu`
+    (en_jeu...) a `etat_attendu`."""
+    attendu = aides["cas"]["attendu"]
+    soucis = []
+    for carte_id, hote_id in attendu.get("hotes") or []:
+        carte = aides["par_id"](monde, carte_id)
+        if carte is None:
+            soucis.append(f"{carte_id} n'est pas en jeu")
+            continue
+        hote = getattr(carte, "bind_face", None)
+        hote_reel = getattr(getattr(hote, "paper", None), "card_id", None)
+        if hote_reel != hote_id:
+            soucis.append(f"{carte_id} est accrochee a {hote_reel}, attendu {hote_id}")
+    if soucis:
+        return False, " ; ".join(soucis)
+    reste = {k: v for k, v in attendu.items() if k != "hotes"}
+    if reste:
+        aides2 = dict(aides)
+        aides2["cas"] = dict(aides["cas"], attendu=reste)
+        ok, msg = etat_attendu(monde, aides2)
+        if not ok:
+            return False, msg
+    return True, "hotes conformes : " + ", ".join(f"{c} sur {h}" for c, h in attendu.get("hotes") or [])
+
+
+def ares_cartes_rencontre_distribuees(monde, aides):
+    """Pack ares, ar012 Athena : « After this activation, deal yourself 1
+    facedown encounter card ». Compte les cartes de `dealt_encounter_cards`
+    du joueur 0 (la zone ou `DealEncounterCards` les depose, player.py:82),
+    puis delegue le reste de `attendu` a `etat_attendu`."""
+    attendu = aides["cas"]["attendu"]
+    voulu = int(attendu.get("distribuees", 0))
+    n = len(list(monde.players[0].dealt_encounter_cards.GetAll()))
+    if n != voulu:
+        return False, f"{n} carte(s) rencontre distribuee(s), attendu {voulu}"
+    reste = {k: v for k, v in attendu.items() if k != "distribuees"}
+    if reste:
+        aides2 = dict(aides)
+        aides2["cas"] = dict(aides["cas"], attendu=reste)
+        ok, msg = etat_attendu(monde, aides2)
+        if not ok:
+            return False, msg
+    return True, f"{n} carte(s) rencontre distribuee(s)"
+
 '''
 
 

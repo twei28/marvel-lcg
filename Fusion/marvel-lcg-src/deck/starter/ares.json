@@ -1,0 +1,51 @@
+{
+    "version": "0.5.8",
+    "name": "Ares",
+    "metadata": {
+        "url": "",
+        "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : on n'invente plus de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit — et le zip d'Ares (Rainy) n'a aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis. Le joueur choisit un deck d'aspect existant ou en construit un au lancement. ⚠ Le fichier reste indispensable malgre tout : `catalog.heroes()` (public/js/prepare/catalog.js:231-237) construit la liste des heros A PARTIR de deck/starter/*.json.",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 5,
+                "traits": ["TACTIC"],
+                "types": ["Upgrade"],
+                "label": "5 améliorations TACTIC d’autres aspects (Lord of War)"
+            }
+        },
+        "deckbuilding_note": "Lord of War (ar001b) : « You may include up to 5 TACTIC upgrades in your deck from aspects other than your chosen aspect. » Declare ici (GUIDE-CREATION-CONTENU §5.4) et non dans le deck-builder. La cle `types` est NEUVE (07/09/2026) : `hors_aspect` ne filtrait que par trait, or le texte dit « TACTIC UPGRADES » — un evenement TACTIC d'aspect ne compte pas.",
+        "homonymes_note": "⚠ « * Ares » est DEJA `59036` (Hercules Nemesis) et « God of War » est DEJA `59040` (meme set). Aucune carte du pack ne cherche par le NOM : l'identite se retrouve par le TYPE (les deux faces s'appellent Ares, comme Beta Ray Bill), les ameliorations par card_id ou par trait.",
+        "nemesis_note": "5 cartes nemesis pour 4 card_id : Lead the Charge (ar014) est livree en deux exemplaires."
+    },
+    "hero": [
+        "ar001a,ar001b"
+    ],
+    "hero_deck": [
+        "ar002",
+        "ar002",
+        "ar003",
+        "ar003",
+        "ar003",
+        "ar004",
+        "ar005",
+        "ar006",
+        "ar006",
+        "ar006",
+        "ar007",
+        "ar008",
+        "ar008",
+        "ar009",
+        "ar009"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "ar010"
+    ],
+    "nemesis_set": [
+        "ar011",
+        "ar012",
+        "ar013",
+        "ar014",
+        "ar014"
+    ],
+    "player_deck": []
+}

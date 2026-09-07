@@ -1487,4 +1487,17 @@ export const HEROS_INFO = {
         apparition: "X-Men #64 (1970)",
     },
 
+    "ar001a": {
+        bio: "Ares est le dieu grec de la guerre, fils de Zeus et frere ennemi d'Athena, qui prefere la strategie a la boucherie. Las de l'Olympe, il descend vivre parmi les mortels comme ouvrier du batiment, eleve seul son fils Alexander, puis rejoint les Vengeurs de Tony Stark avec sa hache et son casque. Brutal, franc, sans la moindre patience pour les regles d'engagement, il est celui qu'on envoie quand il faut que ca cogne, et il meurt en Vengeur, dechire en deux par le Sentry pendant le Siege d'Asgard.",
+        bioEn: "Ares is the Greek god of war, son of Zeus and rival brother of Athena, who favors strategy over slaughter. Weary of Olympus, he comes down to live among mortals as a construction worker, raises his son Alexander alone, then joins Tony Stark's Avengers with his axe and helm. Brutal, blunt, with no patience for rules of engagement, he is the one you send in when things need to get hit, and he dies an Avenger, torn in two by the Sentry during the Siege of Asgard.",
+        civil: "Ares",
+        base: "New York, Olympe",
+        baseEn: "New York, Olympus",
+        equipes: "Vengeurs, Vengeurs Noirs, Olympiens",
+        equipesEn: "Avengers, Dark Avengers, Olympians",
+        ennemis: "Athena, Hercule, Pluton",
+        ennemisEn: "Athena, Hercules, Pluto",
+        apparition: "Thor #129 (1966)",
+    },
+
 };

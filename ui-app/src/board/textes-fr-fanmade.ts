@@ -2225,4 +2225,35 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sf014': "Attachez-la à Silver Samurai. Si vous ne pouvez pas, cherchez Silver Samurai et mettez-le en jeu engagé avec vous, cette carte attachée.\nSilver Samurai ne peut pas subir de dégâts provenant d'attaques.\n<b>Action de héros</b> : dépensez 3 ressources de n'importe quel type → défaussez cette carte.",
   // sunfire — Tachyon Whip (Attachment némésis)
   'sf015': "Attachez-la à votre héros. Sinon, cette carte gagne <b><i>Déferlement</i></b>. Vous ne pouvez pas passer sous forme d'alter ego.\n<b>Réponse forcée</b> : après que vous utilisez un pouvoir de base, subissez 2 dégâts.\n<b>Action de héros</b> : dépensez des ressources [physical][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, révélez cette carte.",
+
+  // ares — * Ares (Hero)
+  'ar001a': "<i>Apporter la guerre</i> — <b>Action</b> : cherchez un sbire dans le deck rencontre et mettez-le en jeu engagé avec vous → piochez 2 cartes ou jouez un événement de votre main en ignorant son coût en ressources. <i>(Limite d'une fois par round.)</i>",
+  // ares — * Ares (AlterEgo)
+  'ar001b': "<i>Seigneur de la guerre</i> — Vous pouvez inclure dans votre deck jusqu'à 5 améliorations [[TACTIC]] d'aspects autres que votre aspect choisi.\n<b>Interruption</b> : quand vous changez de forme, cherchez une carte [[TACTIC]] dans votre deck et ajoutez-la à votre main.",
+  // ares — Spray and Pray (Event, x2)
+  'ar002': "<b>Action de héros</b> : effectuez l'attaque suivante 5 fois contre les cibles de votre choix :\n<i>(attaque)</i> : infligez 1 dégât à un ennemi.",
+  // ares — To Battle! (Event, x3)
+  'ar003': "<b>Action de héros</b> : choisissez deux des options suivantes :\n• Cherchez une amélioration [[TACTIC]] ou [[WEAPON]] dans votre deck et votre défausse et ajoutez-la à votre main.\n• Redressez une amélioration spécifique au héros que vous contrôlez.\n• Redressez Ares.",
+  // ares — * Ares' Axe (Upgrade)
+  'ar004': "Restreinte.\n<b>Interruption de héros</b> : quand Ares effectue une attaque de base contre un ennemi, inclinez la Hache d'Ares → vous gagnez +1 ATQ pour cette attaque pour chaque amélioration attachée à cet ennemi. Cette attaque gagne <b><i>Perforation</i></b>.",
+  // ares — * Ares' Battle Helm (Upgrade)
+  'ar005': "<b>Réponse de héros</b> : après qu'Ares attaque et vainc un ennemi, inclinez le Casque de guerre d'Ares et choisissez une manigance → retirez 1 menace de cette manigance pour chaque point de dégât excédentaire infligé à cet ennemi par cette attaque.",
+  // ares — Feint (Upgrade, x3)
+  'ar006': "Attachez-la à un ennemi. Max. 1 par ennemi.\n<b>Interruption de héros forcée</b> <i>(attaque/défense)</i> : quand l'ennemi auquel cette carte est attachée initie une attaque, défaussez Feinte → cet ennemi a -2 ATQ pour cette attaque. Infligez 2 dégâts à cet ennemi.",
+  // ares — God of War (Upgrade)
+  'ar007': "<b>Réponse de héros</b> : après qu'un sbire entre en jeu, cherchez dans votre deck une amélioration [[TACTIC]] qui peut être attachée à ce sbire et jouez-la sur ce sbire. <i>(Limite d'une fois par phase.)</i>",
+  // ares — Reeling (Upgrade, x2)
+  'ar008': "Attachez-la à un sbire. Max. 1 par ennemi.\nLes attaques contre le sbire auquel cette carte est attachée gagnent <b><i>Déferlement</i></b>. Augmentez de 2 le montant des dégâts excédentaires infligés à cet ennemi.",
+  // ares — Sundered (Upgrade, x2)
+  'ar009': "Attachez-la à un sbire. Max. 1 par ennemi.\nAugmentez de 1 le montant des dégâts que l'ennemi auquel cette carte est attachée subit de chaque attaque.",
+  // ares — Ire of Athena (Obligation)
+  'ar010': "<b><i>Donnez-la au joueur d'Ares.</i></b>\nAugmentez de 1 le coût de chaque carte [[TACTIC]] que vous jouez.\n<b>Action d'alter ego</b> : inclinez votre alter ego ou défaussez une carte [[TACTIC]] de votre main → défaussez cette carte.",
+  // ares — Athena's Guidance (SideScheme némésis)
+  'ar011': "<i>Piquée au vif par sa rivalité avec Ares, l'autre dieu de la guerre, Athéna offre sa sagesse et ses tactiques à l'ennemi.</i>\nLes sbires gagnent <b><i>Attaque éclair</i></b> et <b><i>Robustesse</i></b>.\n<hr />\n[star] <b>Boost</b> : donnez une carte de boost supplémentaire à l'ennemi qui s'active.",
+  // ares — * Athena (Minion némésis)
+  'ar012': "<b><i>Riposte 1. Robustesse.</i></b>\nAthéna ne peut pas avoir d'améliorations [[TACTIC]] attachées.\n<i>(Sbire némésis d'Ares.)</i>\n<hr />\n[star] <b>Boost</b> : après cette activation, distribuez-vous 1 carte rencontre face cachée.",
+  // ares — * Aegis Breastplate (Attachment némésis)
+  'ar013': "Attachez-la à un sbire. Sinon, attachez-la au vilain.\n<b>Interruption forcée</b> : quand l'ennemi auquel cette carte est attachée devrait subir des dégâts, quel qu'en soit le montant, placez-les ici à la place et infligez autant de dégâts à l'attaquant. S'il y a 5 dégâts ou plus ici, défaussez cette carte.",
+  // ares — Lead the Charge (Treachery némésis, x2)
+  'ar014': "<b>Une fois révélée</b> : chaque sbire engagé avec un joueur s'active contre lui. Chaque joueur contre qui aucun sbire ne s'est activé de cette façon cherche un sbire dans le deck rencontre et sa défausse et le met en jeu engagé avec lui. Donnez une carte de boost face cachée à chaque sbire.",
 }

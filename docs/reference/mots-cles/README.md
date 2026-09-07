@@ -61,6 +61,7 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
+- [x] seek.md
 - [x] drain-x.md (pack `agent_anti_venom`)
 - [x] traitor.md (pack `agent_anti_venom`)
 - [x] companion.md (pack `lockjaw`)
