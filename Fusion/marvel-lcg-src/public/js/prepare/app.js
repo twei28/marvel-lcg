@@ -487,8 +487,17 @@ function surveillerGrilles() {
 
 function render() {
     if (state.accueil) {
+        // Pas d'en-tête sur l'accueil : logo, langue et onglets d'étapes n'y
+        // disent rien, la page EST le titre. Les outils annexes (Reprendre,
+        // Stats, Documents, Signaler un bug) gardent leur rangée flottante en
+        // haut à droite, posée par leurs scripts quand l'en-tête est absent.
+        document.title = t("Préparation de mission") + " — Marvel Champions";
+        const rangee = document.querySelector(".reprise-boutons");
+        if (rangee && !rangee.classList.contains("est-flottante")) {
+            rangee.classList.add("est-flottante");
+            document.body.append(rangee);
+        }
         root.replaceChildren(
-            progressBar(),
             el("div", { class: "layout accueil-layout" },
                 el("main", { class: "stage accueil-stage" }, accueilView()),
             ),

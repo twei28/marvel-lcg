@@ -1589,7 +1589,9 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
    Plein écran, sans colonne de droite ni barre du bas. Les tuiles sont
    grandes ; celles des modes à plusieurs portent leurs nombres de héros. */
 .accueil-layout{grid-template-columns:1fr}
-.accueil-stage{display:flex;align-items:center;justify-content:center;padding-bottom:40px}
+.accueil-stage{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:40px 30px}
+/* Sans en-tête, la rangée d'outils flotte en haut à droite : même habillage que dans la barre. */
+.reprise-boutons.est-flottante{top:14px!important;right:16px!important;gap:8px}
 .accueil{width:min(1080px,100%)}
 .acc-titre{margin-bottom:28px}
 .acc-titre .recitatif{margin-bottom:16px}
