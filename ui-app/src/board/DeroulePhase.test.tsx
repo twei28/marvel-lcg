@@ -1973,50 +1973,52 @@ describe('le bilan de fin de phase', () => {
       for (const scene of document.querySelectorAll('.plateau-scene')) scene.remove()
     })
 
-    it('se tient a droite de la main, dans la colonne du journal, le bas au bas du journal', () => {
+    it('se centre sur la main, le bas au bas de la main', () => {
       vi.stubGlobal('innerHeight', 889)
       poserTable(mainMesuree, journalMesure)
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
       const gauche = lire('--deroule-gauche')
       const largeur = lire('--deroule-largeur')
-      // A droite de la main : son bord gauche passe le bord droit de la main.
-      expect(gauche).toBeGreaterThanOrEqual(133 + 1335)
-      // Dans la colonne du journal : son bord droit ne depasse pas celui du
-      // journal, et il y a de quoi ecrire.
-      expect(gauche + largeur).toBeLessThanOrEqual(1600 + 312)
-      expect(largeur).toBeGreaterThan(300)
-      // Le bas au bas du journal : 889 - 806.
+      // `left` vise le milieu de la main (133 + 1335 / 2), et la translation
+      // de -50 % ramene le cartouche sur ce milieu.
+      expect(gauche).toBe(Math.round(133 + 1335 / 2))
+      expect(document.body.style.getPropertyValue('--deroule-decalage')).toBe('-50%')
+      // Jamais plus large que le repli du CSS (560), pour rester lisible d'un
+      // coup d'oeil.
+      expect(largeur).toBe(560)
+      // Le bas au bas de la main : 889 - 806.
       expect(lire('--deroule-bas')).toBe(889 - (623 + 183))
-      // Ancre par `left`, il ne se centre plus par translation.
-      expect(document.body.style.getPropertyValue('--deroule-decalage')).toBe('0px')
       vi.unstubAllGlobals()
     })
 
-    it('ne recouvre pas la question du moteur', () => {
-      // Le panneau central mesure : 630-1290 de large, 334-466 de haut. Le
-      // cartouche commence a droite de 1468, donc a droite du panneau ; il
-      // n'a aucun pixel en commun avec lui, quelle que soit sa hauteur.
+    it('ne part jamais dans la colonne du journal, meme quand la main est tres large', () => {
+      // Constate en partie : ancre a droite d'une main de 1335 px, le
+      // cartouche finissait tout a droite de l'ecran, sous la manigance
+      // principale agrandie, et devenait illisible.
       vi.stubGlobal('innerHeight', 889)
       poserTable(mainMesuree, journalMesure)
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(lire('--deroule-gauche')).toBeGreaterThan(1290)
+      const droite = lire('--deroule-gauche') + lire('--deroule-largeur') / 2
+      expect(droite).toBeLessThan(1600)
       vi.unstubAllGlobals()
     })
 
     it('suit la table quand elle change de place, sans valeur en dur', () => {
-      // Le meme cartouche sur un autre ecran : la main et le journal sont
-      // ailleurs, le cartouche aussi. Une valeur en dur donnerait deux fois
-      // la meme.
+      // Le meme cartouche sur un autre ecran : la main est ailleurs, le
+      // cartouche aussi. Une valeur en dur donnerait deux fois la meme.
       vi.stubGlobal('innerHeight', 1200)
-      poserTable(
-        { gauche: 100, haut: 900, largeur: 900, hauteur: 240 },
-        { gauche: 1100, haut: 900, largeur: 260, hauteur: 240 }
-      )
+      poserTable({ gauche: 100, haut: 900, largeur: 900, hauteur: 240 })
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      const gauche = lire('--deroule-gauche')
-      expect(gauche).toBeGreaterThanOrEqual(1000)
-      expect(gauche + lire('--deroule-largeur')).toBeLessThanOrEqual(1360)
+      expect(lire('--deroule-gauche')).toBe(550)
       expect(lire('--deroule-bas')).toBe(1200 - 1140)
+      vi.unstubAllGlobals()
+    })
+
+    it('retrecit avec une main etroite, sans jamais la deborder', () => {
+      vi.stubGlobal('innerHeight', 800)
+      poserTable({ gauche: 200, haut: 600, largeur: 400, hauteur: 150 })
+      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+      expect(lire('--deroule-largeur')).toBe(400 - 20)
       vi.unstubAllGlobals()
     })
 
@@ -2027,13 +2029,13 @@ describe('le bilan de fin de phase', () => {
       expect(aucuneVariable()).toBe(true)
     })
 
-    it('ne devine rien quand la main est la sans le journal', () => {
-      // Une moitie de geometrie n'en est pas une : sans le journal, on ne sait
-      // ni ou s'arreter a droite, ni ou poser le bas.
+    it('se tient sur la main meme sans journal', () => {
+      // Le journal disparait quand il est vide : le cartouche ne depend plus
+      // de lui pour se placer.
       vi.stubGlobal('innerHeight', 889)
       poserTable(mainMesuree)
       render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(aucuneVariable()).toBe(true)
+      expect(aucuneVariable()).toBe(false)
       vi.unstubAllGlobals()
     })
 

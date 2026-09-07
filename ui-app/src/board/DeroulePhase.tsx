@@ -74,7 +74,9 @@ export const DELAI_ALERTE_FILET_MS = 15_000
  * bord), qui sert quand aucune table n'est mesurable (plateau mobile,
  * premiere frame).
  *
- * ECART_MAIN : le jour que le cartouche garde a droite de la main.
+ * ECART_MAIN : le jour que le cartouche garde de chaque cote, quand la main
+ * est plus etroite que lui.
+ * LARGEUR_MAXIMUM : sa largeur de croisiere, la meme que le repli du CSS.
  * BAS_MINIMUM : le plancher de `bottom`, le meme que le repli du CSS.
  */
 const VARIABLE_GAUCHE = '--deroule-gauche'
@@ -82,6 +84,7 @@ const VARIABLE_LARGEUR = '--deroule-largeur'
 const VARIABLE_BAS = '--deroule-bas'
 const VARIABLE_DECALAGE = '--deroule-decalage'
 const ECART_MAIN = 10
+const LARGEUR_MAXIMUM = 560
 const BAS_MINIMUM = 16
 
 /**
@@ -1026,53 +1029,39 @@ export function DeroulePhase({
   // suivant).
   useDerouleScene(etape, visible)
 
-  // OU SE TIENT LE CARTOUCHE : a droite de la main, dans la colonne du
-  // journal, le bas au bas du journal.
+  // OU SE TIENT LE CARTOUCHE : centre sur la main du joueur, le bas au bas de
+  // la main.
   //
-  // Trois choses qu'il ne doit JAMAIS recouvrir, meme replie : la main du
-  // joueur, le panneau central ou le moteur pose ses questions, et la carte
-  // que la mise en scene agrandit. Mesures faites en partie (fenetre de
-  // 1920 x 889, table a l'echelle 0,814 ; les rangees de la grille font alors
-  // 183 px, voir board.css `.plateau-scene`) :
+  // Il a d'abord ete ancre A DROITE de la main, dans la colonne du journal,
+  // pour ne recouvrir ni la main, ni le panneau central des questions du
+  // moteur, ni la carte que la mise en scene agrandit. Constate en partie
+  // (fenetre de 1920 x 900) : la main fait 1335 px de large, le cartouche
+  // finissait donc tout a droite de l'ecran, dans la colonne des manigances,
+  // juste sous la manigance principale agrandie par la mise en scene, et le
+  // joueur le trouvait « decale sur la droite, illisible ». Un cartouche que
+  // l'on ne lit pas ne sert a rien : il revient au milieu, la ou le regard va.
   //
-  //  - la main (`.zone-main`, rangee du bas, colonne centrale) : 623 a 806 de
-  //    haut, 133 a 1468 de large ;
-  //  - le panneau central (`.demande-centrale`, 660 px de large, centre a 45 %
-  //    de la hauteur) : 334 a 466 de haut, 630 a 1290 de large ;
-  //  - la carte agrandie (x 2,36 sur place) : le vilain, rangee 1, deborde de
-  //    0 a 320 ; un sbire, rangee 2, de 169 a 511 ; une manigance annexe
-  //    revelee, calee en haut de la colonne de droite, de 202 a 445. Toutes
-  //    s'arretent au-dessus de 583 ;
-  //  - le journal (`.journal-heros`, rangee du bas, colonne de droite) : 623 a
-  //    806 de haut, 1600 a 1912 de large. Il n'est pas une zone de cartes, et
-  //    pendant la phase du mechant c'est le cartouche qui raconte ce qu'il
-  //    ecrit.
+  // Ce qu'il recouvre alors : le bas de la main. C'est acceptable, parce que
+  // pendant la phase du mechant la main n'est pas jouable, et que devant une
+  // question du moteur (defendre, interrompre) le cartouche se replie sur sa
+  // seule chronologie, deux lignes en bas de l'ecran. Le panneau central
+  // (centre a 45 % de la hauteur) reste au-dessus de lui.
   //
-  // Un cartouche de 223 px de haut (sa hauteur courante) pose au bas du
-  // journal occupe donc 583 a 806 de haut et 1478 a 1912 de large : a droite
-  // de la main (1468 + 10 de jour), sous tout ce que la mise en scene
-  // agrandit, loin du panneau central. La colonne centrale, elle, ne pouvait
-  // pas tenir ces trois contraintes : entre le panneau (466) et la main (623)
-  // il reste 157 px, et le cartouche en demande 223. C'est ce qui l'avait
-  // pose SUR la question du moteur quand on l'a remonte au-dessus de la main.
+  // On ne pose rien en dur : on lit la position REELLE de la main, une case
+  // de la grille de la scene, dont la boite ne bouge ni avec le nombre de
+  // cartes (rognees a l'interieur) ni avec la taille de l'ecran (la scene se
+  // met a l'echelle, et le rect suit). Le cartouche prend sa largeur de
+  // croisiere (560 px) ou, sur une main plus etroite, la largeur de la main
+  // moins un jour de chaque cote. C'est la meme facon de lire le plateau que
+  // `useDerouleScene` et `placement/boites`.
   //
-  // AU-DESSUS du journal (rangees 2-3 de la colonne de droite) aurait ete
-  // pire : c'est la zone des manigances annexes, ou une carte revelee peut
-  // etre agrandie par la mise en scene, sous le cartouche.
+  // Le journal ne sert plus de repere : il disparait quand il est vide, et un
+  // cartouche qui dependait de lui changeait de place selon que le heros
+  // avait deja ecrit une ligne ou non.
   //
-  // On ne pose rien en dur : on lit la position REELLE de la main et du
-  // journal. Ce sont deux cases de la grille de la scene, donc leurs boites ne
-  // bougent ni avec le nombre de cartes (rognees a l'interieur) ni avec la
-  // taille de l'ecran (la scene se met a l'echelle, et le rect suit). Le
-  // cartouche prend toute la largeur entre le bord droit de la main et le bord
-  // droit du journal : 434 px sur la mesure ci-dessus, et il retrecit avec la
-  // table sur un ecran plus petit (sa chronologie passe alors a la ligne).
-  // C'est la meme facon de lire le plateau que `useDerouleScene` et
-  // `placement/boites`.
-  //
-  // Main ou journal introuvable (plateau mobile, plateau pas encore monte) :
-  // on ne devine pas une geometrie absente, les variables sont retirees et le
-  // CSS reprend son repli.
+  // Main introuvable (plateau mobile, plateau pas encore monte) : on ne
+  // devine pas une geometrie absente, les variables sont retirees et le CSS
+  // reprend son repli (au centre de l'ecran, a 16 px du bas).
   useLayoutEffect(() => {
     const corps = document.body
     const oublier = () => {
@@ -1087,37 +1076,35 @@ export function DeroulePhase({
     }
     const mesurer = () => {
       const main = document.querySelector('.plateau-scene .zone-main')
-      const journal = document.querySelector('.plateau-scene .journal-heros')
-      if (!main || !journal) {
+      if (!main) {
         oublier()
         return
       }
       const boiteMain = main.getBoundingClientRect()
-      const boiteJournal = journal.getBoundingClientRect()
       // Boite vide : la mise en page n'a pas encore eu lieu (ou l'on est dans
       // un environnement sans mise en page). Une mesure fausse serait pire que
       // pas de mesure du tout.
-      if (boiteMain.height === 0 || boiteJournal.height === 0 || boiteJournal.width === 0) {
+      if (boiteMain.height === 0 || boiteMain.width === 0) {
         oublier()
         return
       }
-      const gauche = Math.round(boiteMain.right + ECART_MAIN)
-      const largeur = Math.round(boiteJournal.right) - gauche
-      const bas = Math.round(window.innerHeight - boiteJournal.bottom)
+      const largeur = Math.min(LARGEUR_MAXIMUM, Math.round(boiteMain.width) - 2 * ECART_MAIN)
       if (largeur <= 0) {
         oublier()
         return
       }
-      corps.style.setProperty(VARIABLE_GAUCHE, `${gauche}px`)
+      const milieu = Math.round(boiteMain.left + boiteMain.width / 2)
+      const bas = Math.round(window.innerHeight - boiteMain.bottom)
+      corps.style.setProperty(VARIABLE_GAUCHE, `${milieu}px`)
       corps.style.setProperty(VARIABLE_LARGEUR, `${largeur}px`)
       corps.style.setProperty(VARIABLE_BAS, `${Math.max(bas, BAS_MINIMUM)}px`)
-      // Le repli du CSS centre le cartouche par une translation de -50 % : une
-      // fois ancre par `left`, cette translation doit tomber.
-      corps.style.setProperty(VARIABLE_DECALAGE, '0px')
+      // `left` vise le milieu de la main : la translation de -50 % du repli
+      // reste la bonne pour centrer le cartouche dessus.
+      corps.style.setProperty(VARIABLE_DECALAGE, '-50%')
     }
     mesurer()
-    // La scene se remet a l'echelle a chaque redimensionnement : la main et le
-    // journal changent alors de place, et le cartouche doit les suivre.
+    // La scene se remet a l'echelle a chaque redimensionnement : la main
+    // change alors de place, et le cartouche doit la suivre.
     window.addEventListener('resize', mesurer)
     return () => {
       window.removeEventListener('resize', mesurer)

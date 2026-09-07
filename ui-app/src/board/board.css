@@ -2655,26 +2655,25 @@
   }
 
   /* --- Deroule detaille de la phase du mechant -------------------------------
-     Cartouche FIXE : il ne bouge jamais d'une etape a l'autre. Il se tient a
-     DROITE de la main, dans la colonne du journal, le bas au bas du journal :
-     c'est la seule place qui ne recouvre ni la main, ni le panneau central ou
-     le moteur pose ses questions, ni la carte que la mise en scene agrandit.
-     Les chiffres et le raisonnement sont dans DeroulePhase.tsx, a la mesure. */
+     Cartouche FIXE : il ne bouge jamais d'une etape a l'autre. Il se tient au
+     MILIEU de la main, le bas au bas de la main : la ou le regard va. Ancre
+     a droite de la main, il finissait tout a droite de l'ecran sous la
+     manigance principale, illisible. Le raisonnement est dans
+     DeroulePhase.tsx, a la mesure. */
   .deroule-phase {
     position: fixed;
     /* JAMAIS une valeur en dur : elle marcherait sur un ecran et casserait sur
        le suivant. Les quatre variables sont posees sur le body par
-       DeroulePhase, a partir de la position REELLE de `.zone-main` et de
-       `.journal-heros`. Les replis (en bas au centre, a 16px du bord, 560px de
-       large) servent quand aucune table n'est mesurable (plateau mobile,
-       premiere frame) : c'est la place du cartouche d'avant les mesures. */
+       DeroulePhase, a partir de la position REELLE de `.zone-main`. Les
+       replis (en bas au centre, a 16px du bord, 560px de large) servent quand
+       aucune table n'est mesurable (plateau mobile, premiere frame). */
     left: var(--deroule-gauche, 50%);
     bottom: var(--deroule-bas, 16px);
     width: var(--deroule-largeur, min(560px, calc(100vw - 24px)));
-    /* Le repli se centre par cette translation ; ancre par `left`, le
-       cartouche la met a zero. */
+    /* `left` vise un milieu (celui de l'ecran en repli, celui de la main
+       une fois mesure) : la translation ramene le cartouche dessus. */
     transform: translateX(var(--deroule-decalage, -50%));
-    /* Sur un ecran bas, la place au-dessus du journal peut ne pas suffire : le
+    /* Sur un ecran bas, la place au-dessus du bas de la main peut ne pas suffire : le
        cartouche defile en lui-meme plutot que de deborder hors de l'ecran, ou
        ses boutons deviendraient inatteignables. */
     max-height: calc(100dvh - var(--deroule-bas, 16px) - 12px);
