@@ -2241,7 +2241,10 @@ async function remplirSecondeTable() {
 
 function targetBanner() {
     const sc = state.scenario;
-    const style = sc && sc.tileImage ? { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } : {};
+    // Sans cible, rien : la fiche de droite dit déjà « Méchant non défini »,
+    // et la place va aux tuiles de méchants.
+    if (!sc) return null;
+    const style = sc.tileImage ? { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } : {};
     return el("div", { class: "target-banner cut" },
         el("div", { class: "target-art", style }),
         el("div", { class: "target-copy" },

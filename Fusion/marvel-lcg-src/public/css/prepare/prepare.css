@@ -33,6 +33,14 @@
      Plus grand, c'est moins de tuiles par rangée et plus de personnage. */
   --tuile-heros-min:180px;
   --tuile-heros-h:252px;
+  /* Les méchants : 184 x 218 avant, l'art n'occupait que le haut de la tuile.
+     Il la remplit maintenant, le nom se pose dessus comme pour les héros. */
+  --tuile-mechant-min:236px;
+  --tuile-mechant-h:280px;
+  /* Les boîtes d'extension (92 x 122 avant) : plus petites, la place va aux
+     méchants ; la bannière « cible actuelle » se réduit à une ligne. */
+  --boite-w:72px;
+  --boite-h:96px;
   /* La scène en haut de la fiche : hauteur, zoom et cadrage de l'art. */
   --scene-h:min(300px,36dvh);
   --scene-zoom:178%;
@@ -717,36 +725,41 @@ button{cursor:pointer}
 
 .target-banner{
   position:relative;
-  min-height:148px;
+  min-height:56px;
   display:flex;
   align-items:stretch;
-  margin-bottom:16px;
+  margin-bottom:12px;
   overflow:hidden;
-  border:1px solid rgba(230,36,41,.42);
+  border:1px solid var(--eux-halo);
   background:#0b0c10;
 }
 .target-art{
-  width:180px;
+  width:72px;
   flex:none;
   background:var(--steel) center 22%/150% no-repeat;
   filter:saturate(1.08);
 }
+/* Une seule ligne : « CIBLE ACTUELLE · RHINO · Rhino · [Livret] ». La fiche
+   de droite et la tuile choisie disent déjà tout le reste. */
 .target-copy{
   min-width:0;
+  flex:1;
   display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:16px 20px;
+  flex-direction:row;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px 14px;
+  padding:8px 16px;
   background:linear-gradient(90deg,rgba(7,8,12,.74),rgba(7,8,12,.96));
 }
-.target-k{color:var(--red2);font-size:11px;font-weight:900;text-transform:uppercase}
-.target-copy strong{font-size:44px;line-height:.9;text-transform:uppercase;text-shadow:2px 2px 0 #000}
+.target-k{color:var(--eux2);font-size:11px;font-weight:900;text-transform:uppercase}
+.target-copy strong{font-size:28px;line-height:.9;text-transform:uppercase;text-shadow:2px 2px 0 #000}
 /* `last-of-type` et non `last-child` : la banniere porte desormais un bloc de
    liens (.target-docs) APRES cette ligne, et `last-child` cessait alors de la
    designer — le nom du mechant perdait sa couleur des qu'un livret existait. */
-.target-copy span:last-of-type{color:var(--dim);font-size:13px;margin-top:6px}
+.target-copy span:last-of-type{color:var(--dim);font-size:13px}
 /* Livret de regles et carnet de campagne de l'extension du scenario choisi. */
-.target-docs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.target-docs{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
 .target-doc{
   display:inline-flex;
   align-items:center;
@@ -761,12 +774,12 @@ button{cursor:pointer}
 }
 .target-doc:hover{border-color:var(--nous);background:var(--steel2)}
 
-.ext-tabs{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px}
+.ext-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
 .ext-tab{
   position:relative;
   flex:none;
-  width:92px;
-  height:122px;
+  width:var(--boite-w);
+  height:var(--boite-h);
   overflow:hidden;
   border:1px solid var(--line);
   background:var(--steel);
@@ -782,27 +795,28 @@ button{cursor:pointer}
   right:0;
   bottom:0;
   z-index:2;
-  padding:18px 5px 5px;
+  padding:14px 4px 4px;
   color:#fff;
   background:linear-gradient(transparent,rgba(0,0,0,.94));
   text-align:center;
   line-height:1.05;
-  font-size:10px;
+  font-size:9px;
   font-weight:900;
 }
 /* Meme bornage que .hero-grid : la grille des scenarios souffrait du meme
    defaut, sa derniere rangee passant sous la barre du bas. */
 .scn-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(184px,1fr));
-  gap:14px;
-  max-height:max(240px,min(56vh,calc(100dvh - var(--grille-haut,300px) - 100px)));
+  grid-template-columns:repeat(auto-fill,minmax(var(--tuile-mechant-min),1fr));
+  grid-auto-rows:var(--tuile-mechant-h);
+  gap:12px;
+  max-height:max(240px,min(62vh,calc(100dvh - var(--grille-haut,300px) - 100px)));
   overflow:auto;
   padding-right:4px;
 }
 .scn-tile{
   position:relative;
-  min-height:218px;
+  height:var(--tuile-mechant-h);
   overflow:hidden;
   color:var(--txt);
   border:1px solid var(--soft);
@@ -811,11 +825,17 @@ button{cursor:pointer}
 }
 .scn-tile:hover{transform:translateY(-4px);border-color:var(--nous);box-shadow:0 12px 24px rgba(0,0,0,.42)}
 .scn-tile.sel{border-color:var(--agir);box-shadow:0 0 0 2px var(--agir),0 12px 24px rgba(0,0,0,.42)}
-.st-illus{height:146px;background:center 25%/150% no-repeat}
-.st-name{padding:8px 9px 0;font-size:25px;line-height:.9;text-align:left;text-transform:uppercase}
-.st-meta{padding:4px 9px 10px;color:var(--mute);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-illus{position:absolute;inset:0;background:center 22%/150% no-repeat}
+.scn-tile::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:42%;
+  background:linear-gradient(transparent,rgba(0,0,0,.92));
+}
+.st-name{position:absolute;left:9px;right:9px;bottom:24px;z-index:2;font-size:25px;line-height:.9;text-align:left;text-transform:uppercase;text-shadow:2px 2px 0 #000}
+.st-meta{position:absolute;left:9px;right:9px;bottom:9px;z-index:2;color:var(--dim);font-size:11px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:1px 1px 0 #000}
 .st-exp{
   position:absolute;
+  z-index:2;
   top:7px;
   right:7px;
   padding:3px 7px;
@@ -825,6 +845,7 @@ button{cursor:pointer}
   font-size:10px;
   font-weight:900;
 }
+.st-exp + .st-exp{top:31px}
 .detail-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--soft);font-size:12px}
 .dr-k{color:var(--mute)}
 .dr-v{font-weight:800;text-align:right}
