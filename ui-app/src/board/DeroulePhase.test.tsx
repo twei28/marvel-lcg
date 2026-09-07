@@ -2367,3 +2367,76 @@ describe('le rythme des accuses de reception', () => {
     expect(accuses).toHaveBeenCalledTimes(2)
   })
 })
+
+// L'IDENTITE DE L'ETAPE COURANTE. Le cartouche retenait un NUMERO d'etape :
+// une revelation qui s'inserait en amont (un Deferlement, par exemple) le
+// faisait silencieusement reculer d'un cran, sur une etape deja validee
+// (constat F3 de l'audit du 06/09/2026). Il retient desormais la CLE et
+// retrouve son index a chaque rendu.
+describe('l identite de l etape courante', () => {
+  const menace: EtapeDeroule = {
+    cle: 'menace:1:0:20',
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    cibleNom: 'L’Effraction !',
+    montant: 1,
+    boosts: [],
+  }
+  const revelation = (cle: string, heros: string, carte: string): EtapeDeroule => ({
+    cle,
+    temps: 'revelation',
+    titre: 'revelation',
+    regle: 'regle:revelation',
+    auteurNom: heros,
+    cibleNom: carte,
+    boosts: [],
+  })
+  const carteB = revelation('revelation:1:0:2', 'Heros1', 'Carte B')
+  const carteA = revelation('revelation:1:1:1', 'Heros0', 'Carte A')
+
+  it('reste sur son etape quand une autre s insere en amont', () => {
+    const { rerender } = render(
+      <DeroulePhase etapes={[menace, carteB]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+    // Le Deferlement : une revelation de plus, qui passe DEVANT celle qu'on
+    // lit parce qu'elle appartient a un joueur plus avance dans l'ordre du
+    // tour. Le joueur ne doit pas reculer d'un cran pour autant.
+    rerender(
+      <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+    expect(screen.queryByText('Heros0 révèle Carte A')).not.toBeInTheDocument()
+  })
+
+  it('garde son etape quand la liste est reordonnee sans rien gagner', () => {
+    const { rerender } = render(
+      <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+    // Meme liste, autre ordre : rien n'a ete produit, rien ne doit bouger.
+    rerender(
+      <DeroulePhase etapes={[menace, carteB, carteA]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+  })
+
+  // Le repli, quand la cle retenue disparait : la premiere etape NON VALIDEE,
+  // jamais un retour a zero qui ferait tout relire.
+  it('se replie sur la premiere etape non validee quand sa cle disparait', () => {
+    const { rerender } = render(
+      <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    fireEvent.click(suivant())
+    expect(screen.getByText('Heros0 révèle Carte A')).toBeInTheDocument()
+    // Carte A s'en va (une defaite survenue plus tot coupe le deroule derriere
+    // elle) : la menace reste la seule etape validee, donc on repart de celle
+    // qui la suit.
+    rerender(<DeroulePhase etapes={[menace, carteB]} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
+  })
+})

@@ -103,6 +103,42 @@ function estRevelation(fait: FaitMechant): fait is FaitRevelation {
   return fait.genre === 'revelation'
 }
 
+/**
+ * Un fait accompagne de son RANG dans `faits_mechant` du monde.
+ *
+ * Le rang voyage avec le fait d'un bout a l'autre de `etapesDeroule` parce
+ * qu'il fait partie de l'IDENTITE de l'etape (voir `cleDuFait`) : il doit donc
+ * survivre aux filtres par genre et aux tris par ordre du tour, qui changent
+ * tous deux la position d'un fait sans changer le fait.
+ */
+type FaitRange<T extends FaitMechant = FaitMechant> = { fait: T; rang: number }
+
+/**
+ * L'IDENTITE d'une etape batie sur un fait du moteur : son round, son genre,
+ * son rang dans `faits_mechant` du monde, et ce que l'etape vise (une cible,
+ * un joueur, une carte).
+ *
+ * JAMAIS un rang dans un tableau filtre ou retrie, et c'est tout le sujet : le
+ * cartouche retient la CLE de l'etape que le joueur lit, pas son numero. Une
+ * revelation de plus pour un autre joueur (un Deferlement, par exemple)
+ * reordonne la liste ; avec un rang de tableau, la cle de l'etape affichee
+ * changeait, son minuteur d'avance repartait, et une etape qui s'inserait en
+ * amont faisait reculer le joueur d'un cran (constat F3 de l'audit du
+ * 06/09/2026, et Important 3 de la relecture d'A2).
+ *
+ * Le rang d'origine est stable pendant tout un round : le moteur AJOUTE ses
+ * faits en fin de liste et REMPLACE une intention par sa resolution a la meme
+ * place (`WorldStat.RecordFaitMechant`, cote Python). Il ne bougerait que sur
+ * le garde-fou des 200 faits d'un meme round, qu'aucune partie n'atteint.
+ *
+ * Le round entre dans la cle parce que le moteur vide `faits_mechant` au
+ * premier fait d'un round nouveau : sans lui, les rangs des deux rounds se
+ * ressembleraient.
+ */
+function cleDuFait(genre: string, round: number, rang: number, vise: number | string): string {
+  return `${genre}:${round}:${rang}:${vise}`
+}
+
 export type BoostDeroule = {
   cle: string
   nom: string
@@ -327,11 +363,23 @@ export function etapesDeroule(
   // partie reelle). Un fait SANS round_id (moteur ou sauvegarde anterieurs a
   // ce champ) est GARDE quel que soit le round demande : mieux vaut une etape
   // de trop qu'un deroule muet.
-  const faitsDuRound = faits.filter((f) => f.round_id === undefined || f.round_id === round)
+  //
+  // Chaque fait garde son RANG D'ORIGINE dans `faits_mechant` (voir
+  // `cleDuFait`) : c'est de lui que vient l'identite des etapes, et il ne doit
+  // donc jamais etre celui d'un tableau filtre ou retrie.
+  const faitsDuRound = faits
+    .map((fait, rang) => ({ fait, rang }))
+    .filter(({ fait }) => fait.round_id === undefined || fait.round_id === round)
 
-  const faitsMenace = faitsDuRound.filter(estMenace)
-  const faitsDistribution = faitsDuRound.filter(estDistribution)
-  const faitsRevelation = faitsDuRound.filter(estRevelation)
+  const faitsMenace = faitsDuRound.filter(
+    (porte): porte is FaitRange<FaitMenace> => estMenace(porte.fait)
+  )
+  const faitsDistribution = faitsDuRound.filter(
+    (porte): porte is FaitRange<FaitDistribution> => estDistribution(porte.fait)
+  )
+  const faitsRevelation = faitsDuRound.filter(
+    (porte): porte is FaitRange<FaitRevelation> => estRevelation(porte.fait)
+  )
 
   // ------------------------------------------------------------------ REPLI
   //
@@ -359,9 +407,9 @@ export function etapesDeroule(
   // deux fois la meme chose : « Menace sur la manigance principale », puis
   // « L'Effraction ! gagne 2 menaces ». Le fait tient en une phrase, et chaque
   // manigance a son propre compteur.
-  for (const [rang, fait] of faitsMenace.entries()) {
+  for (const { fait, rang } of faitsMenace) {
     etapes.push({
-      cle: `menace:${rang}:${fait.cible_id}`,
+      cle: cleDuFait('menace', fait.round_id ?? round, rang, fait.cible_id),
       temps: 'menace',
       titre: 'menace',
       regle: 'regle:menace',
@@ -405,10 +453,10 @@ export function etapesDeroule(
 
   // --------------------------------------------------- POINT 2 : activations
   //
-  // L'index parcourt TOUS les faits du round, genres nouveaux compris : la cle
+  // Le rang parcourt TOUS les faits du monde, genres nouveaux compris : la cle
   // d'une activation ne change donc pas selon ce que la phase a produit par
   // ailleurs.
-  faitsDuRound.forEach((fait, index) => {
+  faitsDuRound.forEach(({ fait, rang }) => {
     if (!estActivation(fait)) return
     // Une phase deja connue (distribution, revelation) garde son temps
     // propre. Sinon, c'est une activation ordinaire : son temps depend de
@@ -423,7 +471,7 @@ export function etapesDeroule(
     const cle =
       fait.activation_id !== undefined
         ? `activation:${fait.activation_id}`
-        : `fait:${index}:${fait.auteur_id}`
+        : `fait:${rang}:${fait.auteur_id}`
     const commun = {
       cle,
       temps,
@@ -485,13 +533,13 @@ export function etapesDeroule(
   // Le moteur ordonne deja ses distributions par tour de table, mais le tri
   // s'applique quand meme : il est stable, il ne coute rien, et il tient si la
   // source change d'ordre.
-  for (const [rang, fait] of trierParOrdreDuTour(
-    faitsDistribution.map((f) => ({ ...f, joueur: f.joueur ?? undefined })),
+  for (const { fait, rang } of trierParOrdreDuTour(
+    faitsDistribution.map(({ fait, rang }) => ({ fait, rang, joueur: fait.joueur ?? undefined })),
     premierJoueurId,
     nomsHerosParJoueur.length
-  ).entries()) {
+  )) {
     etapes.push({
-      cle: `distribution:${rang}:${fait.joueur ?? -1}`,
+      cle: cleDuFait('distribution', fait.round_id ?? round, rang, fait.joueur ?? -1),
       temps: 'distribution',
       titre: 'distribution',
       regle: 'regle:distribution',
@@ -510,13 +558,13 @@ export function etapesDeroule(
   //
   // Regle officielle : chaque joueur revele et resout sa carte DANS L'ORDRE
   // DU TOUR, en commencant par le premier joueur.
-  for (const [rang, fait] of trierParOrdreDuTour(
-    faitsRevelation.map((f) => ({ ...f, joueur: f.joueur ?? undefined })),
+  for (const { fait, rang } of trierParOrdreDuTour(
+    faitsRevelation.map(({ fait, rang }) => ({ fait, rang, joueur: fait.joueur ?? undefined })),
     premierJoueurId,
     nomsHerosParJoueur.length
-  ).entries()) {
+  )) {
     etapes.push({
-      cle: `revelation:${rang}:${fait.carte_id}`,
+      cle: cleDuFait('revelation', fait.round_id ?? round, rang, fait.carte_id),
       temps: 'revelation',
       titre: 'revelation',
       regle: 'regle:revelation',

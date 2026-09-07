@@ -197,7 +197,18 @@ export function DeroulePhase({
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
 }) {
-  const [index, setIndex] = useState(0)
+  // LA CLE de l'etape que le joueur lit, jamais son numero. L'index se
+  // retrouve a partir d'elle a chaque rendu (voir plus bas) : une etape qui
+  // s'insere en amont ne fait donc plus reculer le joueur d'un cran, et
+  // l'etape affichee ne change pas d'identite sous ses yeux (constat F3 de
+  // l'audit du 06/09/2026).
+  //
+  // `undefined` veut dire « la premiere etape » : le cartouche n'a pas encore
+  // d'etape a retenir tant que la liste est vide. Un effet plus bas adopte la
+  // cle de la premiere etape des qu'elle existe, sans quoi une etape qui
+  // s'insererait AVANT elle (une menace journalisee apres une activation)
+  // changerait ce que le joueur lit.
+  const [cleCourante, setCleCourante] = useState<string>()
   // Vrai une fois la derniere etape validee : le cartouche doit alors
   // disparaitre de lui-meme. `onTerminer` relache desormais vraiment le
   // moteur (board.tsx), mais cela ne le fait pas disparaitre de l'ecran pour
@@ -308,7 +319,7 @@ export function DeroulePhase({
   // d'autre ne le redescend. La premiere etape de la phase suivante
   // n'avancerait alors plus toute seule.
   useEffect(() => {
-    setIndex(0)
+    setCleCourante(undefined)
     setTermine(false)
     setEnAttente(false)
     setSuspendu(false)
@@ -357,7 +368,40 @@ export function DeroulePhase({
     phaseRaconteeEnCours ? etapesDeLaPhase : avecBilan(etapesDeLaPhase, pvMaxParNom)
   )
 
+  // L'INDEX, retrouve a partir de la cle retenue, a chaque rendu.
+  //
+  // La cle est la seule chose que le cartouche garde d'un rendu a l'autre :
+  // c'est ce qui le rend insensible a l'ordre de la liste. Une revelation de
+  // plus pour un autre joueur retrie les etapes, une intention se complete en
+  // place, un fait arrive en amont : rien de tout cela ne deplace le joueur.
+  //
+  // REPLI, quand la cle a disparu de la liste (le seul cas connu : une defaite
+  // survenue plus tot vient de couper le deroule derriere elle) : la premiere
+  // etape NON VALIDEE. Les etapes se valident dans l'ordre, donc c'est celle
+  // qui suit la derniere validee, et la premiere de toutes quand rien ne l'a
+  // encore ete. Jamais un retour a zero, qui ferait tout relire.
+  const rangDeLaCle =
+    cleCourante === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === cleCourante)
+  const rangValidee =
+    validee === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === validee.cle)
+  const index =
+    rangDeLaCle !== -1
+      ? rangDeLaCle
+      : rangValidee === -1
+        ? 0
+        : Math.min(rangValidee + 1, etapesAffichees.length - 1)
+
   const etape = etapesAffichees[index]
+
+  // Adoption de la premiere cle. Tant que le cartouche n'en retient aucune, il
+  // lit l'etape 0 : une etape qui s'insererait devant elle changerait alors ce
+  // qu'il montre. Des que la liste existe, il retient donc la cle de ce qu'il
+  // affiche. L'effet ne se declenche qu'une fois par phase (il se rendort
+  // aussitot que la cle est posee) et la remise a zero ci-dessus le reveille.
+  const premiereCle = etapesAffichees[0]?.cle
+  useEffect(() => {
+    if (cleCourante === undefined && premiereCle !== undefined) setCleCourante(premiereCle)
+  }, [cleCourante, premiereCle])
 
   // LES DEUX MESURES DU « PLUS RIEN A MONTRER », calculees ici parce que la
   // sortie d'attente comme l'accuse de reception s'y appuient.
@@ -413,7 +457,7 @@ export function DeroulePhase({
     // Une etape suivante est deja connue : on y va.
     if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
-      setIndex(index + 1)
+      setCleCourante(etapesAffichees[index + 1].cle)
       return
     }
     // Bout des etapes CONNUES, mais la phase du mechant court encore : le
@@ -440,7 +484,7 @@ export function DeroulePhase({
     // qu'on revienne au bout. Sans cet oubli, « Precedent » relachait le
     // moteur pendant que le joueur relisait.
     setValidee(undefined)
-    setIndex(index - 1)
+    setCleCourante(etapesAffichees[index - 1]?.cle)
   }
 
   // Echap : tout derouler. Une intention d'aller de l'avant, qui leve donc la
@@ -483,7 +527,7 @@ export function DeroulePhase({
     if (!enAttente) return
     if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
-      setIndex(index + 1)
+      setCleCourante(etapesAffichees[index + 1].cle)
       return
     }
     // L'etape validee n'est plus celle qu'on avait validee : elle s'est

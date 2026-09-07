@@ -585,6 +585,48 @@ describe('les cinq temps depuis les faits du moteur', () => {
     expect(revelations.map((e) => e.cibleNom)).toEqual(['Carte B', 'Carte A'])
   })
 
+  // IDENTITE DES ETAPES. La cle venait d'un rang dans une liste RETRIEE par
+  // ordre du tour : un Deferlement (une revelation de plus pour un autre
+  // joueur) reordonnait la liste, la cle de l'etape en cours de lecture
+  // changeait, son minuteur d'avance repartait, et une etape qui s'inserait en
+  // amont faisait reculer le joueur d'un cran (constat F3 de l'audit, et
+  // Important 3 de la relecture d'A2).
+  it('garde la cle d une revelation quand une autre s insere avant elle', () => {
+    const deja = faitRevelation({ joueur: 1, joueur_nom: 'Heros1', carte: 'Carte B', carte_id: 2 })
+    const tard = faitRevelation({ joueur: 0, joueur_nom: 'Heros0', carte: 'Carte A', carte_id: 1 })
+    const noms = ['Heros0', 'Heros1']
+    const avant = etapesDeroule([deja], [], 1, AUCUN_MECHANT, undefined, 0, noms)
+    const apres = etapesDeroule([deja, tard], [], 1, AUCUN_MECHANT, undefined, 0, noms)
+    // La revelation arrivee en dernier passe DEVANT (ordre du tour)...
+    expect(apres.map((e) => e.cibleNom)).toEqual(['Carte A', 'Carte B'])
+    // ... et pourtant celle que le joueur lisait garde sa cle.
+    expect(apres[1].cle).toBe(avant[0].cle)
+  })
+
+  it('garde la cle d une distribution quand une autre s insere avant elle', () => {
+    const deja = faitDistribution({ joueur: 1, joueur_nom: 'Heros1' })
+    const tard = faitDistribution({ joueur: 0, joueur_nom: 'Heros0' })
+    const noms = ['Heros0', 'Heros1']
+    const avant = etapesDeroule([deja], [], 1, AUCUN_MECHANT, undefined, 0, noms)
+    const apres = etapesDeroule([deja, tard], [], 1, AUCUN_MECHANT, undefined, 0, noms)
+    expect(apres.map((e) => e.auteurNom)).toEqual(['Heros0', 'Heros1'])
+    expect(apres[1].cle).toBe(avant[0].cle)
+  })
+
+  it('tire le rang de la cle des faits du monde, pas du tableau filtre', () => {
+    // Un fait d'un AUTRE round precede l'activation : il est ecarte du round
+    // demande, mais il occupe bel et bien le rang 0 de `faits_mechant`. La cle
+    // de repli (moteur sans identifiant d'activation) doit le refleter, sans
+    // quoi elle changerait au gre de ce que le filtre laisse passer.
+    const [etape] = etapesDeroule(
+      [faitMenace({ round_id: 0 }), attaque({ round_id: 1, auteur_id: 50 })],
+      [],
+      1,
+      new Set([50])
+    )
+    expect(etape.cle).toBe('fait:1:50')
+  })
+
   it('ne lit PAS le journal quand les faits couvrent le genre', () => {
     // Le doublon que la double source produisait : la meme menace vue une fois
     // par le moteur et une fois par la comparaison de photos.
