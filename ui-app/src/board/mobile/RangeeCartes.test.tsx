@@ -87,6 +87,12 @@ describe('RangeeCartes', () => {
     fireEvent.scroll(defilement)
     const voile = screen.getByRole('button', { name: /cartes hors champ/ })
     expect(voile).toHaveClass('rangee-cartes-suite')
+    // 6 cartes de 100 px au pas de 108 px, fenetre de 400 px : bords droits a
+    // 100, 208, 316, 424, 532, 640. La 4e depasse de 24 px (moins de la
+    // moitie, cf. hors-champ.test.ts) : elle reste visible. Seules les
+    // cartes 5 et 6 depassent de plus de la moitie (132 et 240 px) : 2
+    // cartes hors champ, pas 3 (verifie par le calcul et par le test).
+    expect(voile).toHaveTextContent('+2')
     const scrollBy = vi.fn()
     defilement.scrollBy = scrollBy
     fireEvent.click(voile)

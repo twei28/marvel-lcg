@@ -88,6 +88,10 @@ défausse, en dos de carte réduit avec leur compte.
 existent. Les améliorations et états attachés se glissent derrière leur
 porteur, comme sur PC. À droite, épinglées : `piles-joueur` et `annexes`.
 
+⚠ Ruling du 07/09/2026 (revue finale) : `annexes` porte aussi des cartes
+posées (preuves, règles, ressources) ; seules ses piles sont épinglées, ses
+cartes rejoignent la zone défilante de la rangée héros.
+
 **Main** : `MainEventail` repris tel quel, mêmes gestes (appui pour ouvrir,
 appui court pour agrandir, appui maintenu sur la grande carte pour jouer).
 
@@ -202,6 +206,11 @@ Conservés : `MainEventail`, `BarreBas`, `CarteOuverte`, `useAppuiLong`,
 ⚠ Ruling du 07/09/2026 (tâche 12) : le filet `plateau-mobile.spec.ts` de
 l'ancien rendu est rouge depuis `a1de7adb` (`.tiroir-languette` 18 x 56 px),
 antérieur à ce chantier ; laissé tel quel jusqu'à la suppression.
+
+⚠ Ruling du 07/09/2026 (revue finale) : `PlateauPaysage` dépend de
+`medaillon.css` pour la main, la barre, le bouton Payer et la carte ouverte.
+Le sous-projet 3 DÉCOUPE `medaillon.css` (ces règles migrent dans
+`paysage.css`) et ne le supprime qu'ensuite.
 
 ## 5. Architecture du plateau
 

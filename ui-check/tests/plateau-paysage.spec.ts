@@ -128,7 +128,10 @@ test('En paysage, deux rangees de vraies cartes qui tiennent a l\'ecran', async 
   // enregistres en produise un tout seul en 1050 x 480.
   await test.step(`Le voile "+N" est exerce (${etatsAvecVoile}/${entrees.length} etats)`, async () => {
     if (etatsAvecVoile > 0) {
-      expect(etatsAvecVoile, 'Le voile +N ne s\'est affiche sur aucun etat').toBeGreaterThan(0);
+      // Le titre du pas ci-dessus porte deja le compte : rien a affirmer de
+      // plus, le test aurait echoue avant d'arriver ici si le voile n'etait
+      // jamais apparu.
+      test.info().annotations.push({ type: 'voile', description: `${etatsAvecVoile}/${entrees.length} etats` });
       return;
     }
 

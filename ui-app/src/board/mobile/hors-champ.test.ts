@@ -16,7 +16,7 @@ describe('nombreHorsChamp', () => {
   })
 
   it('ne compte pas une carte qui ne depasse que d\'un peu', () => {
-    // La 4e carte (316 a 416) depasse de 16 px sur 100 : elle se lit encore.
+    // La 4e carte (324 a 424) depasse de 24 px sur 100 : elle se lit encore.
     expect(nombreHorsChamp(cartes(4), 0, 400)).toBe(0)
   })
 

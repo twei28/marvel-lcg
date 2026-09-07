@@ -17,9 +17,9 @@ import { defineConfig } from '@playwright/test';
 //   export UI_CHECK_BASE=http://127.0.0.1:2346 WSLENV=UI_CHECK_BASE
 export const ADRESSE_JEU = process.env.UI_CHECK_BASE || 'http://127.0.0.1:2345';
 
-// Les 3 formats d'ecran captures pour chaque page, plus s24 (voir plus bas :
-// il ne participe pas aux captures de reference, seulement au filet du
-// plateau mobile).
+// Les 3 formats d'ecran captures pour chaque page, plus s24 et s24paysage
+// (voir plus bas : ils ne participent pas aux captures de reference,
+// seulement au filet du plateau mobile).
 const GABARITS = {
   pc: { width: 1920, height: 1080 }, // Ordinateur
   tablette: { width: 1180, height: 820 }, // iPad Air, paysage
