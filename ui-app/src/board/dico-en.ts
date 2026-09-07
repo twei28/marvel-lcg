@@ -533,7 +533,6 @@ export const DICO_EN_BASE: Record<string, string> = {
   'carte(s)': 'card(s)',
   // Les verbes d'une activation : le jeu dit « attacks » / « schemes ».
   'attaque': 'attacks',
-  'manigance sur': 'schemes against',
   'boost': 'boost',
   'de base': 'base',
   'de boost': 'from boost',
