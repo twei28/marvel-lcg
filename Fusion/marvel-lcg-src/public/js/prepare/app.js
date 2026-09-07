@@ -137,6 +137,25 @@ function portraitDuo(hero, cls, url = cardImageUrl) {
     );
 }
 
+/** Les cartes des méchants d'un scénario (une par méchant, vide sans méchant fixe). */
+function mechantsDe(sc) {
+    return (sc && sc.villainCards) || [];
+}
+
+/** Portrait d'un scénario : l'image de sa tuile s'il n'a qu'un méchant, sinon
+ *  la vignette PARTAGÉE entre ses méchants (deux moitiés, quatre quarts), pour
+ *  qu'on voie d'un coup d'oeil que c'est un scénario à plusieurs (Wrecking
+ *  Crew). Demande de l'utilisateur, 7 septembre 2026. */
+function portraitScenario(sc, cls) {
+    const ids = mechantsDe(sc);
+    if (ids.length < 2) {
+        return el("div", { class: "portrait " + (cls || ""), style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } });
+    }
+    const n = Math.min(ids.length, 4);
+    return el("div", { class: `portrait portrait-multi n${n} ` + (cls || "") },
+        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrl(id)}")` } })));
+}
+
 /** Portrait d'un héros dans la grille : double si le deck porte une identité
  *  liée, simple sinon. Un seul point de décision pour tous les appelants. */
 function portraitHeros(hero, cls) {
@@ -2662,11 +2681,23 @@ function rendreTable() {
         el("span", { class: "tb-equipe-k" }, t("Face à face")),
         ...membres,
         el("span", { class: "tb-vs mvl" }, "VS"),
-        sc
-            ? el("div", { class: "tb-siege plein petit eux", title: sc.name },
-                el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
-                el("span", { class: "tb-siege-nom" }, sc.name))
-            : el("div", { class: "tb-siege petit eux" }, el("span", { class: "plus" }, "?")),
+        // Un scénario à plusieurs méchants (Wrecking Crew) : un siège par
+        // méchant, en rangée, même taille que ceux des héros. Demande de
+        // l'utilisateur, 7 septembre 2026.
+        ...(sc && mechantsDe(sc).length > 1
+            ? mechantsDe(sc).map((id) => {
+                const carte = cards.get(id);
+                // Sans le symbole d'unicite qui ouvre le nom de la carte (« ✦ Wrecker »).
+                const nom = ((carte && carte.name) || sc.name).replace(/^\W+\s*/, "");
+                return el("div", { class: "tb-siege plein petit eux", title: nom },
+                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(id)}")` } }),
+                    el("span", { class: "tb-siege-nom" }, nom));
+            })
+            : [sc
+                ? el("div", { class: "tb-siege plein petit eux", title: sc.name },
+                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+                    el("span", { class: "tb-siege-nom" }, sc.name))
+                : el("div", { class: "tb-siege petit eux" }, el("span", { class: "plus" }, "?"))]),
     );
 }
 
@@ -2809,7 +2840,7 @@ async function loadScnGrid() {
             onmouseenter: () => rendreSceneMechant(sc),
             onmouseleave: () => rendreSceneMechant(state.scenario),
         },
-            el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+            portraitScenario(sc),
             el("span", { class: "tb-port-nom" }, sc.name),
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
             sc.hasExpertVariant ? el("span", { class: "st-exp" }, "EXPERT") : null,
