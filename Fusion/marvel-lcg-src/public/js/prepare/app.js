@@ -1079,22 +1079,48 @@ function playerCountRow() {
    le met en scène ; cliquer le recrute, avec le geste de la carte qui surgit
    (l'emprunt à la direction « Vitrine ») et son onomatopée. */
 
-/** L'onomatopée de chaque héros, par identifiant de deck. Repli : « BAM ! ». */
+/** Le cri de chaque héros, par identifiant de deck : sa réplique fétiche
+ *  quand il en a une (« Flame on ! », « Sweet Christmas ! »), sinon le bruit
+ *  de son pouvoir tel que les comics l'écrivent (SNIKT, BAMF, THWIP).
+ *  Repli : « BAM ! ». Liste du 7 septembre 2026, à corriger librement. */
 const ONOMATOPEES = {
-    spider_man: "THWIP !", ghost_spider: "THWIP !", spider_woman: "THWIP !", miles_morales: "THWIP !",
-    wolverine: "SNIKT !", x_23: "SNIKT !", hulk: "SMASH !", she_hulk: "SMASH !",
-    thor: "KRAKOOM !", valkyrie: "KRAKOOM !", iron_man: "PEW !", war_machine: "BRATATAT !",
-    captain_america: "KLANG !", captain_marvel: "WHOOSH !", black_panther: "SLASH !",
-    black_widow: "ZAP !", hawkeye: "TWANG !", doctor_strange: "SHAZOOM !",
-    ant_man: "ZOOM !", wasp: "BZZZ !", quicksilver: "ZIP !", scarlet_witch: "SHAZOOM !",
-    deadpool: "BANG !", cyclops: "ZARK !", storm: "KRAKOOM !", colossus: "KLANG !",
-    daredevil: "WHAM !", venom: "BLAM !", groot: "I AM GROOT !", rocket_raccoon: "BRATATAT !",
-    gamora: "SLASH !", drax: "THUD !", star_lord: "PEW !", nebula: "ZAP !",
-    ms_marvel: "EMBIGGEN !", nova: "ZOOM !", ironheart: "PEW !", spider_ham: "OINK !",
-    magneto: "VRRMM !", phoenix: "FWOOSH !", rogue: "WHAM !", gambit: "KABOOM !",
-    nightcrawler: "BAMF !", shadowcat: "PHASE !", jubilee: "PAF !", iceman: "KRRRK !",
-    psylocke: "SHING !", bishop: "BZZT !", cable: "BRATATAT !", domino: "BANG !",
-    magik: "SHING !", angel: "WHOOSH !", silk: "THWIP !", echo: "WHAM !",
+    /* --- officiels --- */
+    adam_warlock: "SOUL GEM !", angel: "WHOOSH !", ant_man: "ZOOM !", bishop: "BZZT !",
+    black_panther: "WAKANDA FOREVER !", black_panther_shuri: "WAKANDA FOREVER !",
+    black_widow: "ZZAP !", cable: "BODYSLIDE !", captain_america: "AVENGERS, ASSEMBLE !",
+    captain_marvel: "HIGHER, FURTHER, FASTER !", colossus: "KLANG !", cyclops: "ZRAKK !",
+    daredevil: "WHAM !", deadpool: "CHIMICHANGA !", doctor_strange: "BY THE VISHANTI !",
+    domino: "BANG !", drax: "THUD !", echo: "WHAM !", falcon: "ON YOUR LEFT !",
+    gambit: "MON AMI !", gamora: "SLASH !", ghost_spider: "THWIP !", groot: "I AM GROOT !",
+    hawkeye: "TWANG !", hercules: "HAVE AT THEE !", hulk: "HULK SMASH !", hulkling: "WHUMP !",
+    iceman: "CHILL !", iron_man: "I AM IRON MAN !", ironheart: "FWOOSH !", jessica_jones: "CRACK !",
+    jubilee: "PAF !", luke_cage: "SWEET CHRISTMAS !", magik: "SHING !", magneto: "VRRMM !",
+    maria_hill: "COPY THAT !", ms_marvel: "EMBIGGEN !", nebula: "ZAP !", nick_fury: "WAHOO !",
+    nightcrawler: "BAMF !", nova: "WHOOSH !", phoenix: "FIRE AND LIFE !", psylocke: "SHING !",
+    quicksilver: "ZIP !", rocket_raccoon: "BLAM !", rogue: "SUGAH !", scarlet_witch: "HEX !",
+    shadowcat: "PHASE !", she_hulk: "SMASH !", silk: "THWIP !", sp_dr: "BZZT !", spectrum: "FLASH !",
+    spider_ham: "OINK !", spider_man: "THWIP !", spider_man_miles_morales: "ZZAP !",
+    spider_woman: "ZZAP !", star_lord: "PEW PEW !", storm: "KRAKOOM !", thor: "FOR ASGARD !",
+    tigra: "RAWR !", valkyrie: "FOR VALHALLA !", venom: "WE ARE VENOM !", vision: "WHIRR !",
+    war_machine: "BRATATAT !", wasp: "BZZZ !", winter_soldier: "BLAM !", wolverine: "SNIKT !",
+    wonder_man: "WHAM !", x_23: "SNIKT !",
+    /* --- fan-made --- */
+    agatha_harkness: "HEX !", agent_13: "BLAM !", agent_anti_venom: "WE ARE VENOM !", albert: "SNIKT !",
+    alligator_loki: "CHOMP !", angela: "SLASH !", armored_spidey: "THWIP !",
+    beast: "OH MY STARS AND GARTERS !", beta_ray_bill: "FOR ASGARD !", black_cat: "BAD LUCK !",
+    blink: "BLINK !", brawn: "SMASH !", cloak_dagger: "FLASH !", dazzler: "SPARKLE !",
+    doctor_doom: "DOOM !", doctor_druid: "MYSTIC !", harry_osborn: "HA HA HA !", gwenpool: "GWEN !",
+    kate_bishop: "TWANG !", howard_the_duck: "WAUGH !", hulk_rainy: "SMASH !", human_torch: "FLAME ON !",
+    invisible_woman: "FORCE FIELD !", iron_lad: "PEW !", iron_man_model_42: "I AM IRON MAN !",
+    jessica_jones_custom: "CRACK !", lady_sif: "FOR ASGARD !", lockjaw: "WOOF !", madame_web: "I SEE !",
+    mister_fantastic: "STRETCH !", moon_knight: "KHONSHU !", ms_america: "PUNCH !",
+    night_thrasher: "WHAM !", okoye: "WAKANDA FOREVER !", patriot: "KLANG !", red_guardian: "SLAM !",
+    rescue_rainy: "PEW !", scarlet_spider: "THWIP !", speed: "ZIP !", spider_man_rainy: "THWIP !",
+    spider_man_noir: "THWIP !", stan_lee: "EXCELSIOR !", sunfire: "FWOOSH !",
+    superior_iron_man: "I AM IRON MAN !", texas_twister: "YEEHAW !", the_thing: "IT'S CLOBBERIN' TIME !",
+    thor_jane_foster: "FOR ASGARD !", throg: "RIBBIT !", totally_awesome_hulk: "SMASH !",
+    venom_rainy: "WE ARE VENOM !", venompool: "CHIMICHANGA !", viv_vision: "WHIRR !", wiccan: "SPELL !",
+    wolverine_x23: "SNIKT !", yondu: "FWEEET !",
 };
 function onomatopee(hero) {
     return ONOMATOPEES[hero.id] || "BAM !";
@@ -1239,7 +1265,7 @@ function recruter(h, portraitEl) {
     if (scene) {
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
-            el("span", { class: "ono" }, onomatopee(h)),
+            el("span", { class: "ono", style: { fontSize: Math.max(40, Math.min(96, Math.round(760 / onomatopee(h).length))) + "px" } }, onomatopee(h)),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });

@@ -53,8 +53,9 @@
   --affiche-cadrage:18%;
   --affiche-nom:132px;
   --affiche-recitatif:22px;
-  --affiche-portrait:104px;
-  --affiche-portrait-zoom:250%;
+  --affiche-portrait:104px;          /* largeur d'un portrait du roster */
+  --affiche-portrait-h:148px;        /* sa hauteur : le rectangle des anciennes tuiles */
+  --affiche-portrait-zoom:154%;
   --affiche-siege:88px;
   /* L'accueil : taille du titre et des tuiles de mode. */
   --titre-accueil:120px;
@@ -1328,7 +1329,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-search:focus{border-color:var(--affiche-jaune);box-shadow:4px 4px 0 #111}
 .tb-roster{
   flex:1 1 auto;min-height:0;max-height:none;
-  display:grid;grid-template-columns:repeat(auto-fill,var(--affiche-portrait,104px));grid-auto-rows:var(--affiche-portrait,104px);justify-content:space-between;gap:8px;
+  display:grid;grid-template-columns:repeat(auto-fill,var(--affiche-portrait,104px));grid-auto-rows:var(--affiche-portrait-h,148px);justify-content:space-between;gap:8px;
   overflow:auto;padding:4px 6px 4px 0;
 }
 .tb-port{
@@ -1338,8 +1339,10 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   filter:saturate(.55) brightness(.72);
   transition:filter var(--dur),transform var(--dur);
 }
-.tb-port .portrait{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:none;background-position:center 16%;background-size:var(--affiche-portrait-zoom,250%)}
-.tb-port .portrait-duo .portrait.duo{background-size:300%}
+/* Le même cadrage que les anciennes tuiles (154 %, centre 25 %) : en carré,
+   certains héros sortaient du cadre. */
+.tb-port .portrait{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:none;background-position:center 25%;background-size:var(--affiche-portrait-zoom,154%)}
+.tb-port .portrait-duo .portrait.duo{background-size:210%}
 .tb-port:hover{filter:none;transform:scale(1.04);z-index:1}
 .tb-port.chosen{filter:none;box-shadow:inset 0 0 0 3px var(--affiche-jaune)}
 .tb-port.chosen::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 3px var(--affiche-jaune);pointer-events:none}
