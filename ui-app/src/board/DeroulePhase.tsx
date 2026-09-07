@@ -386,10 +386,27 @@ export function DeroulePhase({
   // peuvent s'arreter et repartir au MEME round, et la remise a zero par
   // `cleDeLaPhase` ne jouerait alors pas.
   const partieRacontee = useRef(identitePartie)
+  // LE MONDE ARRIVE APRES L'ETIQUETTE DE PARTIE, et cette garde vient de la
+  // mesure en jeu : `partieId` est publie des la reception de la trame (le
+  // socket, `oublierSiNouvellePartie`), le monde a la fin de la lecture qui
+  // suit. Il y a donc au moins un rendu ou la partie est NEUVE et le monde
+  // encore celui d'avant. Sans cela, la memoire se remplissait a nouveau des
+  // etapes de la partie morte juste apres avoir ete videe, et le cartouche les
+  // affichait par-dessus la partie neuve : « The Break-In! gagne 1 menace 3/7 »
+  // avec son bouton « Suivant », en plein tour du joueur d'une autre partie.
+  //
+  // On attend donc que le monde ait RATTRAPE l'etiquette, ce qui se reconnait
+  // a une liste d'etapes vide : une partie neuve commence a sa mise en place,
+  // sans aucun fait de phase du mechant.
+  const mondeDeLaPartiePrecedente = useRef(false)
   if (identitePartie !== partieRacontee.current) {
     partieRacontee.current = identitePartie
     phaseRacontee.current = identitePhase
     memoireEtapes.current = []
+    mondeDeLaPartiePrecedente.current = true
+  }
+  if (mondeDeLaPartiePrecedente.current && etapes.length === 0) {
+    mondeDeLaPartiePrecedente.current = false
   }
 
   const cleDeLaPhase = phaseRacontee.current
@@ -455,9 +472,14 @@ export function DeroulePhase({
   //
   // La memoire est ecrite pendant le rendu, comme `avancerRef` plus bas : elle
   // ne doit provoquer aucun rendu, elle suit celui qui a lieu.
-  if (identitePhase === cleDeLaPhase && etapes.length > 0) memoireEtapes.current = etapes
+  const etapesDeCettePartie = mondeDeLaPartiePrecedente.current ? [] : etapes
+  if (identitePhase === cleDeLaPhase && etapesDeCettePartie.length > 0) {
+    memoireEtapes.current = etapesDeCettePartie
+  }
   const etapesDeLaPhase =
-    identitePhase === cleDeLaPhase && etapes.length > 0 ? etapes : memoireEtapes.current
+    identitePhase === cleDeLaPhase && etapesDeCettePartie.length > 0
+      ? etapesDeCettePartie
+      : memoireEtapes.current
 
   // La phase RACONTEE court-elle encore ? `phaseMechantEnCours` seul ne suffit
   // plus : la phase du mechant du round suivant peut s'ouvrir avant que le

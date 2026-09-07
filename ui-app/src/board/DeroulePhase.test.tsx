@@ -2797,3 +2797,93 @@ describe('le compte a rebours du filet', () => {
     expect(screen.queryByText(/La phase reprend dans/)).not.toBeInTheDocument()
   })
 })
+
+// LE CARTOUCHE FANTOME DE LA PARTIE MORTE, mesure en jeu le 07/09/2026.
+//
+// Le moteur publie l'etiquette de partie (`partieId`) des la reception de la
+// trame, et le monde a la fin de la lecture qui suit : il y a donc au moins un
+// rendu ou la partie est NEUVE et le monde encore celui d'avant. La memoire des
+// etapes, videe par le changement de partie, se remplissait a nouveau dans ce
+// rendu-la, et le cartouche affichait « The Break-In! gagne 1 menace 3/7 » avec
+// son bouton « Suivant » en plein tour du joueur d'une AUTRE partie.
+describe('une partie neuve n herite pas des etapes de la precedente', () => {
+  const menace: EtapeDeroule = {
+    cle: 'menace:3:0:20',
+    temps: 'menace',
+    titre: 'menace',
+    regle: 'regle:menace',
+    cibleNom: 'The Break-In!',
+    montant: 1,
+    boosts: [],
+  }
+
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('ignore les etapes du monde perime arrive apres la nouvelle etiquette', () => {
+    const { container, rerender } = render(
+      <DeroulePhase
+        etapes={[menace]}
+        identitePhase={3}
+        identitePartie="partie-A"
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('The Break-In! gagne 1 menace')).toBeInTheDocument()
+
+    // LE RENDU INTERMEDIAIRE : etiquette neuve, monde encore celui d'avant.
+    rerender(
+      <DeroulePhase
+        etapes={[menace]}
+        identitePhase={3}
+        identitePartie="partie-B"
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    // Puis le monde de la partie neuve : round 1, tour du joueur, aucune etape.
+    rerender(
+      <DeroulePhase etapes={[]} identitePhase={1} identitePartie="partie-B" onTerminer={() => {}} />
+    )
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('raconte normalement la premiere phase de la partie neuve', () => {
+    const neuve: EtapeDeroule = { ...menace, cle: 'menace:1:0:20', cibleNom: 'Assault on NORAD' }
+    const { rerender } = render(
+      <DeroulePhase
+        etapes={[menace]}
+        identitePhase={3}
+        identitePartie="partie-A"
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    rerender(
+      <DeroulePhase
+        etapes={[menace]}
+        identitePhase={3}
+        identitePartie="partie-B"
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    rerender(
+      <DeroulePhase etapes={[]} identitePhase={1} identitePartie="partie-B" onTerminer={() => {}} />
+    )
+    // La phase du mechant de la partie neuve : le cartouche revient, sur SES
+    // etapes. La garde ne doit pas l'avoir eteint pour de bon.
+    rerender(
+      <DeroulePhase
+        etapes={[neuve]}
+        identitePhase={1}
+        identitePartie="partie-B"
+        phaseMechantEnCours
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('Assault on NORAD gagne 1 menace')).toBeInTheDocument()
+  })
+})
