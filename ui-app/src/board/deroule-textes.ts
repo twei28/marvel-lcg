@@ -220,9 +220,9 @@ export function texteFenetreReponse(): string {
  * phrase servait a dire « le moteur calcule » et « la table attend un
  * coequipier parti chercher un cafe » (constat F5 de l'audit du 06/09/2026).
  *
- * Le nom manque quand le moteur ne dit pas QUI il attend : il ne publie pas
- * quel client est en retard sur son accuse de reception (voir l'en-tete de
- * `attente-table.ts`). On le dit alors sans en inventer un.
+ * Le nom manque encore quand le moteur ne dit pas QUI il attend : un moteur
+ * ancien ne publie pas quel client est en retard sur son accuse de reception
+ * (voir l'en-tete de `attente-table.ts`). On le dit alors sans en inventer un.
  */
 export function texteAttente(attente: { autreJoueur?: boolean; nom?: string }): string {
   if (!attente.autreJoueur) return t('La suite arrive…')

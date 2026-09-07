@@ -383,6 +383,15 @@ export type Trame = {
   notifications: Notification[]
   /** Sièges dont plus aucun client ne tient la place. */
   siegesAbsents: number[]
+  /**
+   * Sièges qui n'ont PAS encore accusé réception de CETTE trame.
+   *
+   * `undefined` sur un moteur qui ne l'envoie pas encore (voir l'en-tête de
+   * `attente-table.ts`) : on distingue ce cas d'une liste vide, qui dit elle
+   * « personne n'est en retard » avec autant de certitude que la présence
+   * d'un nom.
+   */
+  siegesNonAcquittes: number[] | undefined
 }
 
 /**
@@ -413,6 +422,9 @@ function lireTrame(brut: unknown): Trame | undefined {
     siegesAbsents: Array.isArray(o.sieges_absents)
       ? o.sieges_absents.filter((x): x is number => typeof x === 'number')
       : [],
+    siegesNonAcquittes: Array.isArray(o.sieges_non_acquittes)
+      ? o.sieges_non_acquittes.filter((x): x is number => typeof x === 'number')
+      : undefined,
   }
 }
 
@@ -562,6 +574,12 @@ export type EtatMoteur = {
    * partie s'arrête sans un mot : c'est ce champ qui permet de le dire.
    */
   siegesAbsents: number[]
+  /**
+   * Sièges qui n'ont pas encore accusé réception de la trame retenue.
+   * `undefined` sur un moteur qui ne le publie pas encore : voir `Trame` et
+   * l'en-tête de `attente-table.ts`.
+   */
+  siegesNonAcquittes?: number[]
   /**
    * Partie en cours, telle que le moteur la numérote. Change à chaque NOUVELLE
    * partie, mais PAS sur un retour en arrière — c'est ce qui permet à
@@ -814,7 +832,7 @@ export class Moteur {
       }
 
       this.enregistrerHautsFaits(trame.notifications)
-      this.publier({ siegesAbsents: trame.siegesAbsents })
+      this.publier({ siegesAbsents: trame.siegesAbsents, siegesNonAcquittes: trame.siegesNonAcquittes })
       void this.lire()
     }
 

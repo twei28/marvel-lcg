@@ -192,24 +192,26 @@ export function DeroulePhase({
    */
   herosLocauxIds?: ReadonlySet<number>
   /**
-   * LA TABLE ATTEND QUELQU'UN D'AUTRE (board.tsx : `joueurAttendu` et
-   * `useTableSilencieuse`, dans `attente-table.ts`).
+   * LA TABLE ATTEND QUELQU'UN D'AUTRE (board.tsx : `joueurAttendu`,
+   * `joueurEnRetard` et `useTableSilencieuse`, dans `attente-table.ts`).
    *
-   * Deux causes, une seule consequence a l'ecran : le moteur interroge un
+   * Trois causes, une seule consequence a l'ecran : le moteur interroge un
    * autre siege, ou il retient sa trame parce qu'un autre client n'a pas
-   * encore acquitte (`WaitSync`, cote Python). Dans les deux cas le plateau
-   * local n'a plus rien a faire, et « La suite arrive… » parlait du MOTEUR :
-   * la decision 12 (« on attend tout le monde ») etait tenue par le moteur et
-   * jamais dite a l'ecran (constat F5 de l'audit du 06/09/2026).
+   * encore acquitte (`WaitSync`, cote Python), et ce retard est nomme sur un
+   * moteur a jour, devine au silence sur un moteur ancien. Dans tous les cas
+   * le plateau local n'a plus rien a faire, et « La suite arrive… » parlait
+   * du MOTEUR : la decision 12 (« on attend tout le monde ») etait tenue par
+   * le moteur et jamais dite a l'ecran (constat F5 de l'audit du 06/09/2026).
    */
   attendUnAutreJoueur?: boolean
   /**
    * Le NOM du joueur attendu, quand le moteur le donne.
    *
-   * Il ne le donne que dans un cas : celui qu'il interroge (`ask_players[0]`,
-   * publie a tous les clients). Le retard d'un accuse de reception, lui, n'est
-   * pas publie du tout — voir l'en-tete de `attente-table.ts`. Absent, la
-   * mention reste vraie mais vague (« En attente d'un autre joueur »).
+   * Deux cas le donnent : celui qu'il interroge (`ask_players[0]`) et celui
+   * qui n'a pas encore accuse reception de la trame retenue
+   * (`sieges_non_acquittes`, moteur a jour). Absent (moteur ancien qui ne
+   * publie pas encore ce second champ), la mention reste vraie mais vague
+   * (« En attente d'un autre joueur »). Voir l'en-tete de `attente-table.ts`.
    */
   nomJoueurAttendu?: string
   /**

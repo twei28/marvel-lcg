@@ -9,6 +9,7 @@ import { act, renderHook } from '@testing-library/react'
 import {
   DELAI_SILENCE_TABLE_MS,
   joueurAttendu,
+  joueurEnRetard,
   useTableSilencieuse,
 } from './attente-table'
 
@@ -47,6 +48,53 @@ describe('le joueur que le moteur interroge', () => {
   // joueur » plutot que d'inventer un nom.
   it('rend le siege sans nom quand le monde n en donne pas', () => {
     expect(joueurAttendu({ ...base, nomsHerosParJoueur: [], joueurDemande: 1 })).toEqual({
+      numero: 2,
+      nom: undefined,
+    })
+  })
+})
+
+describe('le siege qui n a pas encore acquitte', () => {
+  const base = {
+    playerId: 0,
+    multijoueur: true,
+    nomsHerosParJoueur: ['Colossus', 'Spider-Man'],
+  }
+
+  it('nomme le siege en retard quand ce n est pas nous', () => {
+    expect(joueurEnRetard({ ...base, siegesNonAcquittes: [1] })).toEqual({
+      numero: 2,
+      nom: 'Spider-Man',
+    })
+  })
+
+  // Moteur ancien qui ne publie pas encore `sieges_non_acquittes` : on ne
+  // devine rien, l'appelant retombe sur le silence de la table.
+  it('ne nomme personne quand le moteur ne publie pas le champ', () => {
+    expect(joueurEnRetard({ ...base, siegesNonAcquittes: undefined })).toBeUndefined()
+  })
+
+  // C'est A NOUS de cliquer, pas a la table d'attendre : on ne s'attend
+  // jamais soi-meme, meme quand notre propre siege figure dans la liste.
+  it('ne se nomme jamais soi-meme', () => {
+    expect(joueurEnRetard({ ...base, siegesNonAcquittes: [0] })).toBeUndefined()
+  })
+
+  it('nomme le premier retardataire qui n est pas nous, notre siege ecarte', () => {
+    expect(joueurEnRetard({ ...base, siegesNonAcquittes: [0, 1] })).toEqual({
+      numero: 2,
+      nom: 'Spider-Man',
+    })
+  })
+
+  it('ne nomme personne en hot-seat, ou l on repond pour tout le monde', () => {
+    expect(
+      joueurEnRetard({ ...base, multijoueur: false, siegesNonAcquittes: [1] })
+    ).toBeUndefined()
+  })
+
+  it('rend le siege sans nom quand le monde n en donne pas', () => {
+    expect(joueurEnRetard({ ...base, nomsHerosParJoueur: [], siegesNonAcquittes: [1] })).toEqual({
       numero: 2,
       nom: undefined,
     })

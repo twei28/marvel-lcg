@@ -8,17 +8,20 @@
 // occupe ou qu'un coequipier soit parti chercher un cafe (constat F5 de l'audit
 // du 06/09/2026).
 //
-// CE QUE LE MOTEUR NE DIT PAS. Le serveur sait exactement quel client est en
-// retard (`client_manager.client_synced`, engine/device/manager/web/client.py),
-// mais ce tableau n'entre PAS dans la trame poussee au plateau
-// (`FrameDescriptor`, game/render/descriptor/frame.py, qui ne porte que
-// `ask_players`, `total_players` et `sieges_absents`). Aucun client ne peut
-// donc nommer celui qui n'a pas encore acquitte. On sait seulement, ici :
+// LE RETARD D'UN ACCUSE DE RECEPTION EST DESORMAIS NOMME. Le serveur sait
+// exactement quel client est en retard (`client_manager.client_synced`,
+// engine/device/manager/web/client.py) et le publie dans la trame sous
+// `sieges_non_acquittes` (`FrameDescriptor`, game/render/descriptor/frame.py).
+// Un moteur qui ne l'envoie pas encore laisse ce champ `undefined` (voir
+// `lireTrame`, moteur.ts) : c'est le SEUL cas ou l'on retombe encore sur le
+// silence de la table, faute de mieux. On sait donc, ici :
 //
 //  - QUI le moteur interroge (`ask_players[0]`, publie sous `joueurDemande`) :
 //    la, on peut nommer le joueur ;
-//  - que plus rien n'arrive depuis un moment : la, on ne peut dire que
-//    « un autre joueur ».
+//  - QUI n'a pas encore acquitte (`sieges_non_acquittes`) : la aussi, sur un
+//    moteur a jour ;
+//  - a defaut (moteur ancien), que plus rien n'arrive depuis un moment : la,
+//    on ne peut dire que « un autre joueur ».
 //
 // Ce module est PUR (a l'exception de son hook, qui n'est qu'un minuteur) :
 // aucune lecture du DOM, aucune traduction, de quoi le verifier sans plateau.
@@ -69,6 +72,35 @@ export function joueurAttendu({
   // Le nom peut manquer (monde pas encore lu, siege vide) : on rend le numero
   // seul, et l'affichage retombe sur « un autre joueur » plutot que d'inventer.
   return { numero: joueurDemande + 1, nom: nomsHerosParJoueur[joueurDemande] || undefined }
+}
+
+/**
+ * LE SIEGE QUI N'A PAS ENCORE ACQUITTE la trame retenue, nomme des que le
+ * moteur le publie (`sieges_non_acquittes`, voir l'en-tete de ce fichier).
+ *
+ * `siegesNonAcquittes` vaut `undefined` sur un moteur qui ne l'envoie pas
+ * encore : on rend alors `undefined` sans deviner, et l'appelant retombe sur
+ * `useTableSilencieuse`.
+ *
+ * NE JAMAIS S'ATTENDRE SOI-MEME : quand la seule entree restante est notre
+ * propre siege, c'est que c'est A NOUS de cliquer, pas a la table d'attendre.
+ */
+export function joueurEnRetard({
+  siegesNonAcquittes,
+  playerId,
+  multijoueur,
+  nomsHerosParJoueur = [],
+}: {
+  siegesNonAcquittes?: number[]
+  playerId: number
+  multijoueur: boolean
+  nomsHerosParJoueur?: readonly (string | undefined)[]
+}): JoueurAttendu | undefined {
+  if (!multijoueur) return undefined
+  if (siegesNonAcquittes === undefined) return undefined
+  const siege = siegesNonAcquittes.find((s) => s !== playerId)
+  if (siege === undefined) return undefined
+  return { numero: siege + 1, nom: nomsHerosParJoueur[siege] || undefined }
 }
 
 /**

@@ -57,7 +57,7 @@ import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { PanneauBug } from './board/PanneauBug'
 import { AttenteTable } from './board/AttenteTable'
-import { joueurAttendu, useTableSilencieuse } from './board/attente-table'
+import { joueurAttendu, joueurEnRetard, useTableSilencieuse } from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -2094,9 +2094,9 @@ function PagePartie({
   // QUI L'ON ATTEND, quand le plateau ne bouge plus (constat F5).
   //
   // Le moteur n'avance qu'une fois TOUS les clients a jour (`WaitSync`) et
-  // n'interroge qu'un joueur a la fois. Deux facons d'attendre quelqu'un
-  // d'autre, une seule mention a l'ecran. Les regles sont pures et testees
-  // dans `board/attente-table.ts` ; ici, on ne fait que les alimenter.
+  // n'interroge qu'un joueur a la fois. Trois facons de le savoir, une seule
+  // mention a l'ecran. Les regles sont pures et testees dans
+  // `board/attente-table.ts` ; ici, on ne fait que les alimenter.
   const phaseMechantEnCours = PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
   const nomsHerosParJoueur = useMemo(
     () =>
@@ -2113,10 +2113,20 @@ function PagePartie({
     multijoueur: estMultijoueur(),
     nomsHerosParJoueur,
   })
-  // Cas 2 : plus rien n'arrive. C'est tout ce qu'un client peut savoir du
-  // retard d'un autre sur son accuse de reception — le moteur ne publie pas
-  // `client_synced`. On ne guette QUE lorsqu'on n'a plus rien a faire de notre
-  // cote : trame relachee, aucune question en cours.
+  // Cas 2 : un autre siege n'a pas encore accuse reception de la trame
+  // retenue (`sieges_non_acquittes`). Sur un moteur qui le publie, on nomme
+  // le retardataire sans attendre le silence ci-dessous.
+  const autreJoueurEnRetard = joueurEnRetard({
+    siegesNonAcquittes: etat.siegesNonAcquittes,
+    playerId,
+    multijoueur: estMultijoueur(),
+    nomsHerosParJoueur,
+  })
+  // Cas 3 : plus rien n'arrive, et le moteur ne dit pas encore qui est en
+  // retard (`siegesNonAcquittes` absent, moteur ancien). C'est alors tout ce
+  // qu'un client peut savoir du retard d'un autre. On ne guette QUE lorsqu'on
+  // n'a plus rien a faire de notre cote : trame relachee, aucune question en
+  // cours, et aucune des deux reponses precedentes.
   const tableSilencieuse = useTableSilencieuse(
     etat.monde?.render_id,
     estMultijoueur() &&
@@ -2124,9 +2134,11 @@ function PagePartie({
       phaseMechantEnCours &&
       etat.trameRetenue === undefined &&
       etat.demande === undefined &&
-      autreJoueurInterroge === undefined
+      autreJoueurInterroge === undefined &&
+      etat.siegesNonAcquittes === undefined
   )
-  const attendUnAutreJoueur = autreJoueurInterroge !== undefined || tableSilencieuse
+  const attendUnAutreJoueur =
+    autreJoueurInterroge !== undefined || autreJoueurEnRetard !== undefined || tableSilencieuse
 
   // Les deux faces du heros de CE navigateur (`?p=`), et non de la vue
   // affichee : regarder la table d'un autre ne fait pas de nous ce joueur.
@@ -2568,11 +2580,12 @@ function PagePartie({
             // marquee et la phase continue (constat F5).
             herosLocauxIds={herosLocauxIds}
             // La table attend quelqu'un d'AUTRE : le cartouche le dit a la
-            // place de « La suite arrive… », qui parle du moteur. Le nom n'est
-            // connu que lorsque le moteur interroge ce siege-la ; sinon la
-            // mention reste vraie mais vague (voir board/attente-table.ts).
+            // place de « La suite arrive… », qui parle du moteur. Le nom est
+            // connu quand le moteur interroge ce siege-la OU quand il publie
+            // le retard de son accuse de reception ; sinon la mention reste
+            // vraie mais vague (voir board/attente-table.ts).
             attendUnAutreJoueur={attendUnAutreJoueur}
-            nomJoueurAttendu={autreJoueurInterroge?.nom}
+            nomJoueurAttendu={autreJoueurInterroge?.nom ?? autreJoueurEnRetard?.nom}
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}
