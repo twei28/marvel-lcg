@@ -206,7 +206,12 @@
        l'utilisateur, 7 septembre 2026 : des icônes, plus des mots ni des lettres. */
     @font-face { font-family: "ChampionsIcons"; src: url("/public/fonts/ChampionsIcons.ttf") format("truetype"); font-display: swap; }
     .icone-res { font-family: "ChampionsIcons"; font-style: normal; font-size: 1.15em; line-height: 1;
-        color: var(--res, #fff); text-shadow: 0 0 2px rgba(0, 0, 0, .8); }
+        color: var(--res, #fff);
+        /* Un trait de la meme couleur, plus fonce, autour du dessin (demande de
+           l'utilisateur) : `paint-order` peint le trait SOUS le remplissage. */
+        -webkit-text-stroke: .06em color-mix(in srgb, var(--res, #fff) 55%, #000);
+        paint-order: stroke fill;
+        text-shadow: 0 0 2px rgba(0, 0, 0, .6); }
     .db-chip-res { display: inline-flex; align-items: center; gap: 6px; }
     .db-chip-res .icone-res { font-size: 1.3em; }
     .db-chip-res.est-actif { border-color: var(--or); }

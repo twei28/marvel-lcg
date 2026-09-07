@@ -531,7 +531,6 @@ function progressBar() {
             el("span", { class: "brand-back" }, "<"),
             el("span", { class: "brand-lockup logo" },
                 el("img", { class: "brand-logo", src: "/mvc_logo.svg", alt: "Marvel Champions" }),
-                el("span", { class: "brand-sub" }, t("Préparation de mission")),
             ),
         ),
         boutonLangue("btn ghost btn-langue"),
