@@ -44,6 +44,7 @@ import {
 } from './deroule-textes'
 import { t } from './langue'
 import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
+import { CarteApercu } from './Board'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 
@@ -925,6 +926,15 @@ export function DeroulePhase({
   // carte. Une attaque a trois boosts couterait sinon quatre clics.
   const [boostsMontres, setBoostsMontres] = useState(0)
 
+  // LA LOUPE : la carte de la scene survolee, ouverte en grand a cote avec
+  // son texte, comme une carte de la table (CarteApercu). Decide avec
+  // l'utilisateur : « pour lire vraiment une carte rencontre ». Se referme
+  // toute seule quand l'etape change.
+  const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
+  useEffect(() => {
+    setCarteRegardee(undefined)
+  }, [etape?.cle])
+
   useEffect(() => {
     setBoostsMontres(etape?.boosts.length ? 1 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
@@ -1216,7 +1226,12 @@ export function DeroulePhase({
     // derriere, la face devant, une rotation a l'arrivee.
     const seRetourne = (carte.role === 'boost' || carte.role === 'revelee') && dosRencontre !== undefined
     return (
-      <figure key={`${carte.role}-${position}`} className={`deroule-carte est-${carte.role}`}>
+      <figure
+        key={`${carte.role}-${position}`}
+        className={`deroule-carte est-${carte.role}`}
+        onMouseEnter={() => setCarteRegardee(props)}
+        onMouseLeave={() => setCarteRegardee(undefined)}
+      >
         {seRetourne ? (
           <div className="deroule-retourne" key={`${etape.cle}-${carte.role}-${position}`}>
             <div className="deroule-retourne-dos" aria-hidden="true">
@@ -1248,9 +1263,17 @@ export function DeroulePhase({
     (carte) => carte.role !== 'cible' && (carte.role !== 'boost' || boostsVisibles.has(carte.id))
   )
   const droite = scene.cartes.filter((carte) => carte.role === 'cible')
+  // L'apercu est monte dans <body> (portail) : `au-dessus-du-deroule` le
+  // fait passer devant la scene (540), comme `au-dessus-du-bilan` pour le
+  // recap. Le dos de la distribution n'a rien a montrer en grand.
+  const loupe =
+    carteRegardee && !carteRegardee.facedown ? (
+      <CarteApercu carte={carteRegardee} classe="au-dessus-du-deroule" />
+    ) : null
   const cartesScene =
     scene.cartes.length > 0 ? (
       <div className="deroule-cartes">
+        {loupe}
         {gauche.length > 0 ? <div className="deroule-groupe">{gauche.map(rendreCarte)}</div> : null}
         {scene.fleche ? (
           <span className="deroule-fleche" aria-hidden="true">

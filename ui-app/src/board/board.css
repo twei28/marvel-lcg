@@ -2153,7 +2153,8 @@
      avant la specificite, et c'est exactement ce qui s'est passe la premiere
      fois. On ne monte que d'un cran : le splash de tour (550) et la fin de
      partie (600) gardent la priorite. */
-  .carte-apercu.au-dessus-du-bilan {
+  .carte-apercu.au-dessus-du-bilan,
+  .carte-apercu.au-dessus-du-deroule {
     z-index: 545;
   }
 

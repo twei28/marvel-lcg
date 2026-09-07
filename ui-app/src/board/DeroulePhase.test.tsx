@@ -2161,6 +2161,30 @@ describe('le bilan de fin de phase', () => {
       expect(container.querySelector('.deroule-carte.est-revelee .deroule-retourne')).not.toBeNull()
     })
 
+    it('ouvre la loupe au survol d une carte de la scene, et la referme', () => {
+      // Comme sur la table : pour lire vraiment une carte rencontre.
+      // jsdom n'implemente pas ResizeObserver, que l'apercu observe pour se
+      // placer : un bouchon inerte suffit ici.
+      class ResizeObserverBouchon {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      }
+      vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+      const { container } = render(
+        <DeroulePhase etapes={etapes} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
+      )
+      fireEvent.click(suivant())
+      const figure = container.querySelector('.deroule-carte.est-auteur')
+      expect(figure).not.toBeNull()
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+      fireEvent.mouseEnter(figure as Element)
+      expect(document.querySelector('.carte-apercu')).not.toBeNull()
+      fireEvent.mouseLeave(figure as Element)
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+      vi.unstubAllGlobals()
+    })
+
     it('ecrit le nom a la place d une carte dont le scan manque', () => {
       const { container } = render(
         <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />
