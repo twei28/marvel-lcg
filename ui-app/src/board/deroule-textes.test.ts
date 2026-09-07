@@ -54,7 +54,7 @@ describe('phrases du deroule', () => {
   })
 
   it('dit la manigance autrement que l attaque', () => {
-    expect(titreEtape(etape({ titre: 'manigance' }))).toBe('Ultron complote contre Shuri')
+    expect(titreEtape(etape({ titre: 'manigance' }))).toBe('Ultron manigance sur Shuri')
   })
 
   it('nomme la manigance et son gain de menace', () => {
@@ -310,7 +310,7 @@ describe("les deux temps d'une activation", () => {
   it("dit l'intention au futur proche, jamais au passe", () => {
     expect(titreEtape(annonce())).toBe('Klaw va attaquer Colossus')
     expect(titreEtape(annonce({ titre: 'manigance', cibleNom: 'L’Effraction !' }))).toBe(
-      'Klaw va comploter contre L’Effraction !'
+      'Klaw va manigancer sur L’Effraction !'
     )
   })
 

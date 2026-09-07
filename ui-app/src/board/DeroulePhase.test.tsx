@@ -2212,7 +2212,7 @@ describe('le bilan de fin de phase', () => {
 
     it('nomme les cartes en francais quand le plateau connait leur nom', () => {
       // Les faits du moteur portent les noms anglais ; sous des scans
-      // francais, la scene disait « Thunderball complote contre Thunderstruck ».
+      // francais, la scene disait « Thunderball manigance sur Thunderstruck ».
       const nomFr = (id: number) => ({ 50: 'Le Boulet', 12: 'Envoyer Bouler', 77: 'Chaos dans la Prison' })[id]
       const resolue: EtapeDeroule[] = [
         {
@@ -2231,7 +2231,7 @@ describe('le bilan de fin de phase', () => {
         },
       ]
       render(<DeroulePhase etapes={resolue} nomFr={nomFr} onTerminer={() => {}} />)
-      expect(screen.getByText('Le Boulet complote contre Envoyer Bouler')).toBeInTheDocument()
+      expect(screen.getByText('Le Boulet manigance sur Envoyer Bouler')).toBeInTheDocument()
       expect(screen.getByText('3 imprimé + 1 (Chaos dans la Prison) = 4 menaces')).toBeInTheDocument()
     })
 
@@ -2686,7 +2686,7 @@ describe('le rythme des accuses de reception', () => {
     fireEvent.click(suivant())
     rerender(vue([annonce], undefined))
     rerender(vue([resolue], 12))
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
     expect(accuses).toHaveBeenCalledTimes(1)
     // C'est LE clic de l'activation : le joueur a lu le resultat.
     fireEvent.click(suivant())
@@ -2753,7 +2753,7 @@ describe('le rythme des accuses de reception', () => {
     expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
     rerender(vue([annonce], undefined))
     rerender(vue([resolue], 12))
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
     expect(screen.getByText('→ 1 menace')).toBeInTheDocument()
     expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
   })
@@ -2783,7 +2783,7 @@ describe('le rythme des accuses de reception', () => {
     // La reponse donnee, le moteur resout : le cartouche se redeploie et
     // redemande un clic. Le rythme n'a rien perdu.
     rerender(cartouche(accuses, false)([resolue], 13))
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
     expect(accuses).toHaveBeenCalledTimes(2)
     fireEvent.click(suivant())
     expect(accuses).toHaveBeenCalledTimes(3)

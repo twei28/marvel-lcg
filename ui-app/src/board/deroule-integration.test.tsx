@@ -329,7 +329,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.rang).toBe(2)
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
 
     // Deuxieme clic : meme chose pour le second sbire.
     await act(async () => {
@@ -337,7 +337,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.rang).toBe(4)
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
 
     // Troisieme clic : la distribution. Elle n'a pas de second temps, le
     // moteur s'arrete donc dessus.
@@ -392,7 +392,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone va comploter contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
     // L'intention a ete acquittee toute seule (decision 7), et c'est bien.
     expect(serveur.accuses).toEqual([101, 102])
 
@@ -409,7 +409,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
     expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
     expect(serveur.accuses).toEqual([101, 102])
 
@@ -475,7 +475,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone va comploter contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
     expect(serveur.accuses).toEqual([101, 102])
 
     // LE MOTEUR POSE SA QUESTION, sur la MEME trame : il repousse la trame 102
@@ -535,7 +535,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.pousser()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
     expect(serveur.accuses).toEqual([101, 102, 103])
   })
 
@@ -730,7 +730,7 @@ describe('deux clients, un en Instantane et un en Detaille', () => {
     })
     await laisserTourner()
     expect(serveurMulti.rang).toBe(2)
-    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
 
     for (let clic = 0; clic < 4; clic += 1) {
       await act(async () => {

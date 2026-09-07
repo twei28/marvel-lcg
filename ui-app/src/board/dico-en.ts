@@ -332,11 +332,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   // Cle a trous : « sur » seul se traduit deja par « on » plus haut, et
   // « 1 on 3 » ne veut rien dire.
   '%1 sur %2': '%1 of %2',
-  'complote contre': 'schemes against',
+  'manigance sur': 'schemes on',
   // Les DEUX TEMPS d'une activation. Le premier est au futur proche : c'est
   // l'intention, la fenetre ou le joueur peut encore defendre ou repondre.
   'va attaquer': 'is about to attack',
-  'va comploter contre': 'is about to scheme against',
+  'va manigancer sur': 'is about to scheme on',
   'dégât annoncé': 'damage announced',
   'dégâts annoncés': 'damage announced',
   'menace annoncée': 'threat announced',

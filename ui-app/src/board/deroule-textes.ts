@@ -83,12 +83,12 @@ export function titreEtape(etape: EtapeDeroule): string {
   if (etape.etat === 'annonce' || etape.etat === 'annule') {
     return etape.titre === 'attaque'
       ? `${auteur} ${t('va attaquer')} ${cible}`
-      : `${auteur} ${t('va comploter contre')} ${cible}`
+      : `${auteur} ${t('va manigancer sur')} ${cible}`
   }
 
   return etape.titre === 'attaque'
     ? `${auteur} ${t('attaque')} ${cible}`
-    : `${auteur} ${t('complote contre')} ${cible}`
+    : `${auteur} ${t('manigance sur')} ${cible}`
 }
 
 /**
