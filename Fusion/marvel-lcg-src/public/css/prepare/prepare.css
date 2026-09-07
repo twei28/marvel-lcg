@@ -91,7 +91,7 @@
      notre camp, fond sombre du leur, et la pente de la diagonale. */
   --fo-h:340px;
   --fo-heros-w:320px;
-  --fo-nous-fond:#eceae4;
+  --fo-nous-fond:#004191;               /* Spangly Sky (palette Avengers) : le camp des heros */
   --fo-eux-fond:#2a0b0e;
   --fo-pente:70px;
 
@@ -934,10 +934,11 @@ button{cursor:pointer}
   z-index:1;
   width:calc(100% + var(--fo-pente));
   padding-right:calc(22px + var(--fo-pente));
-  color:var(--ink);
+  color:#fff;
   background:
-    radial-gradient(circle,rgba(0,0,0,.12) 0 1px,transparent 1.4px) 0 0/9px 9px,
-    var(--fo-nous-fond);
+    radial-gradient(circle,rgba(0,0,0,.18) 0 1px,transparent 1.4px) 0 0/9px 9px,
+    radial-gradient(ellipse at 22% 25%,rgba(150,235,255,.22),transparent 55%),
+    linear-gradient(160deg,var(--fo-nous-fond),#021a3d 70%);
   clip-path:polygon(0 0,100% 0,calc(100% - var(--fo-pente)) 100%,0 100%);
 }
 .fo-side.villain-side{padding-left:calc(22px + var(--fo-pente) / 2)}
@@ -960,13 +961,13 @@ button{cursor:pointer}
   margin-top:10px;
   font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:24px;line-height:.92;text-transform:uppercase;
 }
-.fo-cap span{display:block;margin-top:5px;color:rgba(0,0,0,.62);font:400 11px "Segoe UI",system-ui,sans-serif;font-style:normal;text-transform:none}
+.fo-cap span{display:block;margin-top:5px;color:rgba(255,255,255,.72);font:400 11px "Segoe UI",system-ui,sans-serif;font-style:normal;text-transform:none}
 .fo-empty{
   width:var(--fo-heros-w);
   aspect-ratio:3/4;
   display:grid;place-items:center;
-  color:var(--mute);font-size:40px;
-  border:3px dashed rgba(0,0,0,.3);
+  color:rgba(255,255,255,.6);font-size:40px;
+  border:3px dashed rgba(255,255,255,.35);
 }
 .fo-reglages{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92%}
 .heroes-side .tampon{color:#fff;background:#2d3746;cursor:default}
@@ -974,7 +975,10 @@ button{cursor:pointer}
    fait le contour, l'étoile de couleur par-dessus en dégradé, le mot en
    Bangers, et quatre éclats projetés autour. */
 .fo-vs{
-  position:absolute;z-index:3;left:50%;top:50%;
+  /* Sur la LIGNE DE PARTAGE, pas au milieu de l'ecran : le camp des heros
+     deborde de la moitie de --fo-pente (sa pente va de 50 % + pente en haut a
+     50 % en bas), donc la bande oblique passe a 50 % + pente / 2 a mi-hauteur. */
+  position:absolute;z-index:3;left:calc(50% + var(--fo-pente) / 2);top:50%;
   width:var(--fo-etoile,240px);height:var(--fo-etoile,240px);
   transform:translate(-50%,-50%) rotate(-9deg);
   display:grid;place-items:center;
@@ -1011,7 +1015,7 @@ button{cursor:pointer}
 .fo-eclat.e4{right:4%;bottom:-8%;width:calc(var(--fo-etoile,240px) * .06);height:calc(var(--fo-etoile,240px) * .06)}
 .fo-nomg{
   font-family:"Anton",Impact,sans-serif;font-style:italic;font-weight:400;
-  font-size:var(--fo-nom,72px);line-height:.88;text-transform:uppercase;text-align:center;
+  font-size:var(--fo-nom,72px);line-height:1.02;text-transform:uppercase;text-align:center;
   color:#fff;text-shadow:6px 6px 0 #000;
   max-width:100%;overflow-wrap:anywhere;
 }
@@ -1340,7 +1344,9 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   /* Jamais un mot coupe en deux : c'est la taille qui cede (ajusterNomGeant,
      app.js), pas le mot. */
   overflow-wrap:normal;
-  line-height:.9;
+  /* Assez d'interligne pour les accents des capitales (« MÉCHANT » sous
+     « CHOISIS ») : a .86, l'accent du E passait sur le O. */
+  line-height:1.02;
 }
 .tb-nomg small{
   display:block;margin-bottom:10px;
