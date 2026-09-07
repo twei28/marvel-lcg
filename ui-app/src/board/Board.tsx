@@ -73,6 +73,15 @@ export function phaseAffichee(phase: string): string {
  * scene est etiree pour occuper la place restante : les rangees respirent au lieu
  * de laisser du vide. Elle ne descend jamais sous la hauteur minimale, sinon les
  * cartes ne tiendraient plus dans leur rangee.
+ *
+ * L'echelle est aussi plafonnee a 1 : au-dela, la scene ne grossit plus, elle
+ * s'etire (largeur/hauteur ci-dessous) pour occuper le surplus d'ecran. Plusieurs
+ * formules CSS divisent par --echelle pour garder une taille fixe a l'ecran
+ * (epaisseur de la jauge de PV dans ScanCard.css, --inspect-scale dans board.css) ;
+ * les laisser recevoir une echelle superieure a 1 leur ferait retomber sous leur
+ * taille minimale sur un tres grand ecran. Plafonner ici, a la source, les corrige
+ * toutes d'un coup plutot que de rajouter un clamp() dans chaque fichier CSS qui
+ * consomme la variable.
  */
 function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
   const [mise, setMise] = useState({
@@ -88,7 +97,7 @@ function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
     const recalculer = () => {
       const { width, height } = element.getBoundingClientRect()
       if (width === 0 || height === 0) return
-      const echelle = Math.min(width / SCENE.largeur, height / SCENE.hauteur)
+      const echelle = Math.min(1, width / SCENE.largeur, height / SCENE.hauteur)
       setMise({
         echelle,
         largeur: Math.max(SCENE.largeur, width / echelle),
