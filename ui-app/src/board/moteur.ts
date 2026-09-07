@@ -334,6 +334,12 @@ export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined)
  * propre filet de securite. On choisit l'ordre de la minute et demie : tres
  * au-dela du temps de lecture le plus lent, tout en restant borne pour qu'une
  * table ne reste jamais bloquee indefiniment.
+ *
+ * C'est un delai d'INACTIVITE, pas une duree de phase : chaque accuse du
+ * joueur le remet a zero (voir `continuer`). Une phase lue en cinq minutes,
+ * un clic toutes les minutes, ne l'atteint donc jamais ; un onglet laisse a
+ * l'abandon avance d'une trame toutes les 90 s, et un onglet ferme ne retient
+ * plus rien du tout (le moteur cesse de l'attendre, `CheckSync`).
  */
 export const DELAI_FILET_ANTI_BLOCAGE_CLIC_MS = 90_000
 
@@ -557,10 +563,11 @@ export type EtatMoteur = {
    * L'ECHEANCE du filet anti-blocage de la phase du mechant (horodatage ms),
    * ou `undefined` quand aucune n'est armee.
    *
-   * Une seule par PHASE : armee au premier accuse retenu, desarmee a la sortie
-   * de la phase. Publiee pour que le cartouche puisse en montrer les dernieres
-   * secondes, et que le joueur comprenne ce qui va se passer plutot que de voir
-   * la phase repartir sans raison.
+   * Elle mesure une INACTIVITE : armee au premier accuse retenu, desarmee par
+   * tout accuse du joueur (`continuer`), re-armee au retenu suivant. Publiee
+   * pour que le cartouche puisse en montrer les dernieres secondes, et que le
+   * joueur comprenne ce qui va se passer plutot que de voir la phase repartir
+   * sans raison.
    */
   echeanceFilet?: number
   /** Reconnexion : horodatage (ms) de la prochaine tentative, si programmee. */
@@ -629,6 +636,14 @@ export class Moteur {
   /** L'echeance du minuteur ci-dessus, telle qu'elle est publiee. */
   private echeanceFilet: number | undefined
 
+  /** Arrete le minuteur du filet, sans rien publier ni oublier l'echeance. */
+  private annulerMinuteurFilet() {
+    if (this.minuteurAutoContinue !== undefined) {
+      window.clearTimeout(this.minuteurAutoContinue)
+      this.minuteurAutoContinue = undefined
+    }
+  }
+
   /**
    * Desarme le filet : on sort de la phase du mechant, ou la partie s'arrete.
    *
@@ -637,10 +652,7 @@ export class Moteur {
    * phase du mechant ne servirait a personne.
    */
   private desarmerFilet() {
-    if (this.minuteurAutoContinue !== undefined) {
-      window.clearTimeout(this.minuteurAutoContinue)
-      this.minuteurAutoContinue = undefined
-    }
+    this.annulerMinuteurFilet()
     if (this.echeanceFilet === undefined) return
     this.echeanceFilet = undefined
     this.publier({ echeanceFilet: undefined })
@@ -894,14 +906,14 @@ export class Moteur {
       const decision = decisionAccuse(this.mode, monde)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
-        // FILET ANTI-BLOCAGE : UNE SEULE ECHEANCE PAR PHASE.
+        // FILET ANTI-BLOCAGE : 90 s D'INACTIVITE PENDANT UNE TRAME RETENUE.
         //
-        // Il etait re-arme a chaque trame retenue, donc repousse de 90 s par
-        // chaque micro-evenement : une table vraiment bloquee ne l'atteignait
-        // jamais tant que le moteur produisait quelque chose, et une table qui
-        // l'atteignait payait 90 s par trame (constat F2). On n'arme donc que
-        // s'il ne l'est pas deja, et c'est la SORTIE DE LA PHASE qui desarme
-        // (branche `else` ci-dessous, ou `decisionAccuse` rend « immediat »).
+        // On n'arme que s'il ne l'est pas deja : le moteur repousse la MEME
+        // trame a chaque fois qu'il pose sa question (`IsInputReady`), et
+        // re-armer la ferait repousser de 90 s sans qu'aucun humain n'ait rien
+        // fait. Le compteur ne repart donc QUE sur un geste du joueur, qui
+        // passe par `continuer` (c'est lui qui desarme), et la sortie de la
+        // phase desarme aussi (branche `else` ci-dessous).
         //
         // Le minuteur se retire lui-meme a l'echeance : le filet joue, et la
         // trame suivante en rearme un neuf. Un filet qui ne se rearmerait plus
@@ -970,16 +982,28 @@ export class Moteur {
 
   /** Autorise le moteur a poursuivre le rendu ennemi actuellement affiche. */
   async continuer(): Promise<void> {
-    // LE FILET N'EST PAS DESARME ICI, et c'est le changement : il protege la
-    // PHASE, pas la trame. Valider une etape ne remet pas le compteur a zero,
-    // sinon un joueur qui clique regulierement pendant qu'un autre client est
-    // fantome repousserait indefiniment le seul secours de la table.
     const trame = this.trameEnAttente
     if (!trame) return
     this.trameEnAttente = undefined
+    // LE FILET EST DESARME ICI, et c'est ce qui en fait un filet d'INACTIVITE.
+    //
+    // Il a d'abord protege la PHASE : une seule echeance, jamais remise a zero
+    // par les accuses du joueur. Consequence relevee en jeu : un joueur ACTIF
+    // qui mettait plus de 90 s a lire sa phase se faisait doubler par son
+    // propre secours, compte a rebours anxiogene compris, et un accuse partait
+    // sans qu'il l'ait demande. L'echeance affichee etait d'ailleurs armee bien
+    // avant l'etape qu'il lisait, ce qui la rendait illisible.
+    //
+    // La regle tenue est donc : 90 s D'INACTIVITE PENDANT UNE TRAME RETENUE.
+    // Armee au premier retenu, desarmee par tout accuse du joueur, re-armee au
+    // retenu suivant (voir `lire`). Un onglet inactif avance ainsi d'une trame
+    // toutes les 90 s, ce qui est le comportement voulu ; un onglet FERME ne
+    // bloque rien du tout, le moteur ne l'attend plus (`CheckSync`).
+    this.annulerMinuteurFilet()
+    this.echeanceFilet = undefined
     // `trameRetenue` repasse a undefined : plus rien n'est retenu, et le
     // cartouche ne doit pas croire qu'il reste une trame a acquitter.
-    this.publier({ validationRequise: false, trameRetenue: undefined })
+    this.publier({ validationRequise: false, trameRetenue: undefined, echeanceFilet: undefined })
     await accuserReception(this.playerId, trame)
   }
 }
