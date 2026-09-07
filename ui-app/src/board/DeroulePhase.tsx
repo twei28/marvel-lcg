@@ -29,6 +29,7 @@ import {
   resultatEtape,
   texteActivationAnnulee,
   texteArretDefaite,
+  texteAttente,
   texteBilanVide,
   texteDefaite,
   texteFenetreReponse,
@@ -91,6 +92,8 @@ export function DeroulePhase({
   phaseMechantEnCours = false,
   partieFinie = false,
   questionAuJoueur = false,
+  attendUnAutreJoueur = false,
+  nomJoueurAttendu,
   pvMaxParNom,
   trameRetenue,
   avanceAuto = false,
@@ -157,6 +160,27 @@ export function DeroulePhase({
    * joueur qui attend le moteur.
    */
   questionAuJoueur?: boolean
+  /**
+   * LA TABLE ATTEND QUELQU'UN D'AUTRE (board.tsx : `joueurAttendu` et
+   * `useTableSilencieuse`, dans `attente-table.ts`).
+   *
+   * Deux causes, une seule consequence a l'ecran : le moteur interroge un
+   * autre siege, ou il retient sa trame parce qu'un autre client n'a pas
+   * encore acquitte (`WaitSync`, cote Python). Dans les deux cas le plateau
+   * local n'a plus rien a faire, et « La suite arrive… » parlait du MOTEUR :
+   * la decision 12 (« on attend tout le monde ») etait tenue par le moteur et
+   * jamais dite a l'ecran (constat F5 de l'audit du 06/09/2026).
+   */
+  attendUnAutreJoueur?: boolean
+  /**
+   * Le NOM du joueur attendu, quand le moteur le donne.
+   *
+   * Il ne le donne que dans un cas : celui qu'il interroge (`ask_players[0]`,
+   * publie a tous les clients). Le retard d'un accuse de reception, lui, n'est
+   * pas publie du tout — voir l'en-tete de `attente-table.ts`. Absent, la
+   * mention reste vraie mais vague (« En attente d'un autre joueur »).
+   */
+  nomJoueurAttendu?: string
   /**
    * Les PV maximum des personnages, par nom (board.tsx, qui lit le monde) :
    * sans eux le bilan de fin de phase dit « 8 » au lieu de « 8/14 ». Ils ne
@@ -1112,15 +1136,16 @@ export function DeroulePhase({
               l'etape elle-meme. Un reclic pendant l'attente est sans danger :
               il relache au plus une trame de plus.
 
-              Elle ne parle que du MOTEUR qu'on attend. Quand c'est le joueur
-              qu'on attend (`questionAuJoueur`), le cartouche est replie plus
-              haut et cette ligne n'existe pas : « La suite arrive… » par-dessus
-              une question du moteur etait exactement le mensonge constate en
-              partie. Le test « ne dit pas La suite arrive… quand c est au
-              joueur d agir » le verrouille. */}
+              Elle ne parle du MOTEUR que lorsqu'on attend vraiment le moteur.
+              Quand c'est le joueur LOCAL qu'on attend (`questionAuJoueur`), le
+              cartouche est replie plus haut et cette ligne n'existe pas : « La
+              suite arrive… » par-dessus une question du moteur etait exactement
+              le mensonge constate en partie. Et quand c'est un AUTRE joueur que
+              la table attend, elle le dit et le nomme quand elle le peut
+              (`texteAttente`, constat F5). */}
           {enAttente ? (
             <span className="deroule-attente" aria-live="polite">
-              {t('La suite arrive…')}
+              {texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu })}
             </span>
           ) : null}
           {/* Dit pourquoi il n'y a plus rien apres, a la place meme ou l'on

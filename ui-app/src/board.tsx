@@ -56,6 +56,8 @@ import {
 import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { PanneauBug } from './board/PanneauBug'
+import { AttenteTable } from './board/AttenteTable'
+import { joueurAttendu, useTableSilencieuse } from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -95,6 +97,7 @@ import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
   Moteur,
   PHASES_DU_MECHANT,
+  estMultijoueur,
   evenementNarreImportant,
   ecrireAvanceAuto,
   ecrireDelaiPasAPas,
@@ -2088,6 +2091,43 @@ function PagePartie({
   // Instantane n'a pas d'etape a montrer. La decision elle-meme est pure
   // (`afficherFinDePartie`, board/fin-partie.ts), avec son filet de temps.
 
+  // QUI L'ON ATTEND, quand le plateau ne bouge plus (constat F5).
+  //
+  // Le moteur n'avance qu'une fois TOUS les clients a jour (`WaitSync`) et
+  // n'interroge qu'un joueur a la fois. Deux facons d'attendre quelqu'un
+  // d'autre, une seule mention a l'ecran. Les regles sont pures et testees
+  // dans `board/attente-table.ts` ; ici, on ne fait que les alimenter.
+  const phaseMechantEnCours = PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
+  const nomsHerosParJoueur = useMemo(
+    () =>
+      (etat.monde?.players ?? []).map((joueur) =>
+        joueur.area_hero?.[0]?.name?.replace(/^\W*/, '')
+      ),
+    [etat.monde?.players]
+  )
+  // Cas 1 : le moteur interroge un AUTRE siege. La seule attente dont il dise
+  // le nom (`ask_players[0]`, pousse a tous les clients).
+  const autreJoueurInterroge = joueurAttendu({
+    joueurDemande: etat.joueurDemande,
+    playerId,
+    multijoueur: estMultijoueur(),
+    nomsHerosParJoueur,
+  })
+  // Cas 2 : plus rien n'arrive. C'est tout ce qu'un client peut savoir du
+  // retard d'un autre sur son accuse de reception — le moteur ne publie pas
+  // `client_synced`. On ne guette QUE lorsqu'on n'a plus rien a faire de notre
+  // cote : trame relachee, aucune question en cours.
+  const tableSilencieuse = useTableSilencieuse(
+    etat.monde?.render_id,
+    estMultijoueur() &&
+      etat.connecte &&
+      phaseMechantEnCours &&
+      etat.trameRetenue === undefined &&
+      etat.demande === undefined &&
+      autreJoueurInterroge === undefined
+  )
+  const attendUnAutreJoueur = autreJoueurInterroge !== undefined || tableSilencieuse
+
   // Les deux faces du heros de CE navigateur (`?p=`), et non de la vue
   // affichee : regarder la table d'un autre ne fait pas de nous ce joueur.
   // Meme lecture que `herosVaincusIds` plus haut, meme motif : `area_hero`
@@ -2463,6 +2503,12 @@ function PagePartie({
       {/* Deroule detaille : une etape a la fois, validee avant la suivante.
           Le recap ci-dessous garde son role de bilan de fin, pour les modes
           rapides ou l'on n'a rien vu passer. */}
+      {/* Le joueur SANS cartouche (mode Instantane) : une ligne discrete, pas
+          un plateau fige et muet. Le reglage est personnel, mais le rythme est
+          celui de la table — c'est exactement ce que F5 reprochait. */}
+      {modePhase !== 'detaille' && attendUnAutreJoueur && phaseMechantEnCours ? (
+        <AttenteTable nom={autreJoueurInterroge?.nom} />
+      ) : null}
       {modePhase === 'detaille' ? (
         <>
           <BandeauPhase
@@ -2485,7 +2531,7 @@ function PagePartie({
             // Tant que le moteur est dans une des quatre phases du mechant, la
             // liste d'etapes peut encore s'allonger : arriver au bout de
             // celles qu'on connait ne veut pas dire que la phase est finie.
-            phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
+            phaseMechantEnCours={phaseMechantEnCours}
             // La partie est finie ET l'ecran de fin est a l'ecran : le
             // cartouche s'efface. Meme valeur que cet ecran (`EcranFinPartie`,
             // plus bas), pas une seconde inventee pour l'occasion. Constate en
@@ -2501,6 +2547,12 @@ function PagePartie({
             // cartouche se redeployait pour annoncer « La suite arrive… » alors
             // que le moteur attendait le joueur.
             questionAuJoueur={moteurAttendLeJoueur}
+            // La table attend quelqu'un d'AUTRE : le cartouche le dit a la
+            // place de « La suite arrive… », qui parle du moteur. Le nom n'est
+            // connu que lorsque le moteur interroge ce siege-la ; sinon la
+            // mention reste vraie mais vague (voir board/attente-table.ts).
+            attendUnAutreJoueur={attendUnAutreJoueur}
+            nomJoueurAttendu={autreJoueurInterroge?.nom}
             // Les PV maximum, que seul le monde connait : le bilan de fin de
             // phase dit alors « 8/14 » plutot que « 8 » tout seul.
             pvMaxParNom={pvMaxParNom}
@@ -2546,7 +2598,7 @@ function PagePartie({
         // La MEME definition de « la phase du mechant » que le cartouche, et la
         // meme valeur deja calculee : le recap avait son propre detecteur de
         // transition, sur sa propre photo de `monde.phase` (constat F6).
-        phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
+        phaseMechantEnCours={phaseMechantEnCours}
         // De quoi montrer la carte au survol d'une ligne : le même index et le
         // même catalogue que la table, donc le même agrandissement qu'elle.
         cartesMonde={cartesMondeParId}

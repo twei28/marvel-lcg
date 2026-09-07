@@ -360,6 +360,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Précédent': 'Previous',
   'Suivant': 'Next',
   'La suite arrive…': 'More coming…',
+  // Multijoueur : le moteur n'avance qu'une fois TOUS les clients a jour, et
+  // il n'interroge qu'un joueur a la fois. Dire lequel vaut mieux qu'un
+  // plateau fige et muet (voir attente-table.ts).
+  'En attente de %1': 'Waiting for %1',
+  'En attente d\'un autre joueur': 'Waiting for another player',
   // Le cartouche replie devant une question du moteur : c'est le joueur qu'on
   // attend, pas le moteur.
   'Le moteur attend ta réponse': 'The game is waiting for your answer',

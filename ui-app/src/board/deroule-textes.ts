@@ -213,6 +213,25 @@ export function texteFenetreReponse(): string {
   return t('tu peux défendre ou répondre')
 }
 
+/**
+ * CE QU'ON ATTEND, a la place meme ou l'on lisait « La suite arrive… ».
+ *
+ * Trois phrases pour trois attentes, et c'etait tout le defaut : la meme
+ * phrase servait a dire « le moteur calcule » et « la table attend un
+ * coequipier parti chercher un cafe » (constat F5 de l'audit du 06/09/2026).
+ *
+ * Le nom manque quand le moteur ne dit pas QUI il attend : il ne publie pas
+ * quel client est en retard sur son accuse de reception (voir l'en-tete de
+ * `attente-table.ts`). On le dit alors sans en inventer un.
+ */
+export function texteAttente(attente: { autreJoueur?: boolean; nom?: string }): string {
+  if (!attente.autreJoueur) return t('La suite arrive…')
+  // Cle a trous plutot qu'une concatenation : l'anglais ne place pas le nom au
+  // meme endroit selon la tournure, comme pour « %1 est vaincu ».
+  if (attente.nom) return t('En attente de %1').replace('%1', attente.nom)
+  return t('En attente d\'un autre joueur')
+}
+
 /** La phrase qui dit que le deroule s'arrete la. */
 export function texteArretDefaite(): string {
   return t('La phase s\'arrête ici.')

@@ -5023,6 +5023,27 @@
 @layer composants {
   /* Bandeau « untel est deconnecte ». Il ne parait QUE quand le moteur
      interroge un siege abandonne : le reste du temps la partie avance. */
+  /* « En attente de Spider-Man » pour le joueur SANS cartouche (mode
+     Instantane). Meme ancre que le bandeau du siege absent juste dessous, mais
+     tout l'inverse en poids : pas de cadre, pas de bouton, pas d'alerte. La
+     table n'est pas en panne, elle attend quelqu'un, et l'attente dure
+     d'ordinaire quelques secondes. */
+  .attente-table {
+    position: fixed;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 620;
+    margin: 0;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: rgba(248, 250, 252, 0.65);
+    background: rgba(12, 15, 20, 0.72);
+    border-radius: 99px;
+    pointer-events: none;
+  }
+
   .bandeau-absent {
     position: fixed;
     top: 58px;

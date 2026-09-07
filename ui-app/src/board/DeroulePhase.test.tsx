@@ -2568,3 +2568,46 @@ describe('l identite de l etape courante', () => {
     expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
   })
 })
+
+// LE MULTIJOUEUR DIT CE QU'IL ATTEND (constat F5 de l'audit du 06/09/2026).
+//
+// Le moteur n'avance qu'une fois TOUS les clients a jour, et il n'interroge
+// qu'un joueur a la fois. « La suite arrive… » disait la meme chose dans les
+// deux cas, et dans un troisieme : le moteur qui calcule.
+describe("l'attente d'un autre joueur", () => {
+  const deux: EtapeDeroule[] = [
+    { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
+  ]
+
+  /** Valide la derniere etape connue : le cartouche entre alors en attente. */
+  const epuiser = () => fireEvent.click(suivant())
+
+  it('nomme le joueur que la table attend, au lieu de parler du moteur', () => {
+    render(
+      <DeroulePhase
+        etapes={deux}
+        phaseMechantEnCours
+        attendUnAutreJoueur
+        nomJoueurAttendu="Spider-Man"
+        onTerminer={() => {}}
+      />
+    )
+    epuiser()
+    expect(screen.getByText('En attente de Spider-Man')).toBeInTheDocument()
+    expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
+  })
+
+  it('dit au moins qu on attend quelqu un quand le moteur ne dit pas qui', () => {
+    render(
+      <DeroulePhase etapes={deux} phaseMechantEnCours attendUnAutreJoueur onTerminer={() => {}} />
+    )
+    epuiser()
+    expect(screen.getByText("En attente d'un autre joueur")).toBeInTheDocument()
+  })
+
+  it('parle du moteur quand on n attend personne d autre', () => {
+    render(<DeroulePhase etapes={deux} phaseMechantEnCours onTerminer={() => {}} />)
+    epuiser()
+    expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
+  })
+})

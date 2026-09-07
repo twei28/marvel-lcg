@@ -11,6 +11,7 @@ import {
   regleEtape,
   resultatEtape,
   texteActivationAnnulee,
+  texteAttente,
   texteBilanVide,
   texteDefaite,
   texteFenetreReponse,
@@ -352,5 +353,25 @@ describe("les deux temps d'une activation", () => {
     expect(titreEtape(resolue)).toBe('Ultron attaque Shuri')
     expect(resultatEtape(resolue)).toBe('→ 4 dégâts')
     expect(compteurEtape(resolue)).toBe('8')
+  })
+
+  // ATTENTE : de qui parle-t-on ? « La suite arrive… » parlait du moteur, quoi
+  // qu'il arrive, y compris quand la table entiere attendait un coequipier
+  // (constat F5).
+  it('dit qu on attend le moteur quand on n attend personne d autre', () => {
+    expect(texteAttente({})).toBe('La suite arrive…')
+    expect(texteAttente({ autreJoueur: false, nom: 'Spider-Man' })).toBe('La suite arrive…')
+  })
+
+  it('nomme le joueur que la table attend', () => {
+    expect(texteAttente({ autreJoueur: true, nom: 'Spider-Man' })).toBe(
+      'En attente de Spider-Man'
+    )
+  })
+
+  // Le moteur ne publie pas quel client est en retard (voir attente-table.ts) :
+  // sans nom, on le dit sans en inventer un.
+  it('reste vague quand le nom du joueur en retard n est pas connu', () => {
+    expect(texteAttente({ autreJoueur: true })).toBe("En attente d'un autre joueur")
   })
 })

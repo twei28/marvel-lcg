@@ -424,7 +424,7 @@ function lireTrame(brut: unknown): Trame | undefined {
  * la reprise, qui passe `?p=0` : la seule presence de `p` ne suffit donc PAS
  * a distinguer les deux cas, d'ou un drapeau explicite.
  */
-function estMultijoueur(): boolean {
+export function estMultijoueur(): boolean {
   return new URLSearchParams(window.location.search).has('multi')
 }
 

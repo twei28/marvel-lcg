@@ -14,6 +14,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useEffect, useState } from 'react'
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import { AttenteTable } from './AttenteTable'
+import { DELAI_SILENCE_TABLE_MS, useTableSilencieuse } from './attente-table'
 import { DeroulePhase } from './DeroulePhase'
 import { etapesDeroule } from './deroule-phase'
 import { Moteur, PHASES_DU_MECHANT, type EtatMoteur } from './moteur'
@@ -132,8 +134,11 @@ class FauxSocket {
   onmessage: ((evenement: { data: unknown }) => void) | null = null
   onclose: (() => void) | null = null
   onerror: (() => void) | null = null
+  /** Tous les sockets ouverts, dans l'ordre : le cas multi en veut deux. */
+  static tous: FauxSocket[] = []
   constructor(public readonly url: string) {
     FauxSocket.dernier = this
+    FauxSocket.tous.push(this)
   }
   send() {
     /* le faux serveur n'ecoute rien : il pousse quand on l'accuse */
@@ -246,7 +251,9 @@ function Table({ moteur }: { moteur: Moteur }) {
 /** Laisse les lectures asynchrones du moteur (fetch) se terminer. */
 async function laisserTourner() {
   await act(async () => {
-    for (let tour = 0; tour < 12; tour += 1) await Promise.resolve()
+    // Deux clients enchainent deux fois plus de lectures : le compte est
+    // large a dessein, il ne coute rien et evite un rendu hors `act`.
+    for (let tour = 0; tour < 32; tour += 1) await Promise.resolve()
   })
 }
 
@@ -432,5 +439,200 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.accuses[0]).toBe(101)
+  })
+})
+
+// ------------------------------------------------------------------ MULTI
+//
+// LE CAS F5 DE L'AUDIT, monte pour de vrai : deux clients sur le meme faux
+// serveur, l'un en Instantane, l'autre en Detaille. Le moteur Python n'avance
+// qu'une fois que TOUS les clients ont accuse reception (`WaitSync`) : le
+// premier acquitte donc tout de suite et attend le second, sans rien pour le
+// lui dire. « Le joueur en Instantane voit son plateau se figer sans aucun
+// cartouche, aucun bouton, aucun message. »
+
+/** Le meme faux moteur, mais qui compte les accuses de CHAQUE siege. */
+class FauxServeurMulti {
+  rang = 0
+  accuses: { siege: number; trame: number }[] = []
+  private sockets: FauxSocket[] = []
+  private synchronises = new Map<number, number>()
+
+  constructor(private readonly sieges: number[]) {}
+
+  brancher(sockets: FauxSocket[]) {
+    this.sockets = sockets
+  }
+
+  mondeCourant(): World {
+    return PHASE[this.rang]!
+  }
+
+  pousser() {
+    const monde = this.mondeCourant()
+    const message = {
+      data: JSON.stringify({
+        render_id: monde.render_id,
+        game_id: 1,
+        game_uid: 'test',
+        ask_players: [],
+        total_players: this.sieges.length,
+        notify_texts: [],
+      }),
+    }
+    for (const socket of this.sockets) socket.onmessage?.(message)
+  }
+
+  accuser(siege: number, trame: number) {
+    this.accuses.push({ siege, trame })
+    this.synchronises.set(siege, Math.max(this.synchronises.get(siege) ?? 0, trame))
+    const courante = this.mondeCourant().render_id
+    // `WaitSync` : la trame n'est franchie que lorsque TOUS les sieges l'ont
+    // acquittee. Un seul retardataire tient la table entiere.
+    if (!this.sieges.every((s) => (this.synchronises.get(s) ?? 0) >= courante)) return
+    if (this.rang + 1 >= PHASE.length) return
+    this.rang += 1
+    this.pousser()
+  }
+}
+
+let serveurMulti: FauxServeurMulti
+
+function fauxFetchMulti(url: string): Promise<Response> {
+  if (url.startsWith('/get_world')) {
+    return Promise.resolve(new Response(JSON.stringify(serveurMulti.mondeCourant()), { status: 200 }))
+  }
+  if (url.startsWith('/get_ask')) return Promise.resolve(new Response('', { status: 200 }))
+  if (url.startsWith('/client_updated')) {
+    const parametres = new URLSearchParams(url.split('?')[1] ?? '')
+    serveurMulti.accuser(Number(parametres.get('p')), Number(parametres.get('r')))
+    return Promise.resolve(new Response('', { status: 200 }))
+  }
+  return Promise.resolve(new Response('', { status: 404 }))
+}
+
+/**
+ * Un client, dans SON mode. Le meme cablage que board.tsx pour ce que la phase
+ * du mechant met en jeu, y compris la mention d'attente du joueur qui n'a pas
+ * de cartouche.
+ */
+function TableMulti({ moteur, mode }: { moteur: Moteur; mode: 'detaille' | 'instantane' }) {
+  const [etat, setEtat] = useState<EtatMoteur>()
+  useEffect(() => moteur.ecouter(setEtat), [moteur])
+  const monde = etat?.monde
+  // Les hooks AVANT toute sortie : ce composant en a un `return null`.
+  const silencieuse = useTableSilencieuse(
+    monde?.render_id,
+    Boolean(etat?.connecte) &&
+      PHASES_DU_MECHANT.has(monde?.phase ?? '') &&
+      etat?.trameRetenue === undefined
+  )
+  if (!etat || !monde) return null
+  if (mode === 'instantane') return silencieuse ? <AttenteTable /> : null
+  const etapes = etapesDeroule(monde.faits_mechant ?? [], [], monde.round_id, new Set([MECHANT_ID]))
+  return (
+    <DeroulePhase
+      etapes={etapes}
+      identitePhase={monde.round_id}
+      phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase)}
+      questionAuJoueur={moteurAttendUneReponse(etat)}
+      trameRetenue={etat.trameRetenue}
+      onSuivant={() => moteur.avancerMaintenant()}
+      onTerminer={() => moteur.avancerMaintenant()}
+    />
+  )
+}
+
+describe('deux clients, un en Instantane et un en Detaille', () => {
+  let rapide: Moteur
+  let lent: Moteur
+
+  beforeEach(() => {
+    window.localStorage.clear()
+    FauxSocket.tous = []
+    serveurMulti = new FauxServeurMulti([0, 1])
+    vi.stubGlobal('WebSocket', FauxSocket as unknown as typeof WebSocket)
+    vi.stubGlobal('fetch', vi.fn((url: string) => fauxFetchMulti(url)))
+    rapide = new Moteur(0)
+    rapide.setModePhaseMechant('instantane')
+    lent = new Moteur(1)
+    lent.setModePhaseMechant('detaille')
+  })
+
+  afterEach(() => {
+    rapide.arreter()
+    lent.arreter()
+    vi.unstubAllGlobals()
+    vi.useRealTimers()
+  })
+
+  async function ouvrir() {
+    render(
+      <>
+        <TableMulti moteur={rapide} mode="instantane" />
+        <TableMulti moteur={lent} mode="detaille" />
+      </>
+    )
+    await act(async () => {
+      rapide.demarrer()
+      lent.demarrer()
+    })
+    expect(FauxSocket.tous).toHaveLength(2)
+    serveurMulti.brancher(FauxSocket.tous)
+    await act(async () => {
+      for (const socket of FauxSocket.tous) socket.onopen?.()
+    })
+    serveurMulti.pousser()
+    await laisserTourner()
+  }
+
+  const suivant = () => screen.getByRole('button', { name: /Suivant/i })
+
+  it('le joueur en Instantane ne bloque rien et voit qu on attend quelqu un', async () => {
+    vi.useFakeTimers()
+    await ouvrir()
+    // Le rapide a acquitte tout de suite ; le lent retient. La table n'a donc
+    // pas franchi sa premiere trame.
+    expect(serveurMulti.accuses).toEqual([{ siege: 0, trame: 101 }])
+    expect(serveurMulti.rang).toBe(0)
+    // Son plateau ne dit encore rien : l'attente ordinaire dure une fraction
+    // de seconde, et une mention qui clignote serait pire que rien.
+    expect(screen.queryByText("En attente d'un autre joueur")).not.toBeInTheDocument()
+
+    await act(async () => {
+      vi.advanceTimersByTime(DELAI_SILENCE_TABLE_MS)
+    })
+    expect(screen.getByText("En attente d'un autre joueur")).toBeInTheDocument()
+
+    // Et le cartouche du joueur en Detaille, lui, montre bien son etape.
+    expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+  })
+
+  it('la phase avance au rythme du joueur en Detaille', async () => {
+    await ouvrir()
+    expect(serveurMulti.rang).toBe(0)
+
+    // Le lent valide la menace : la table franchit sa trame, et le rapide
+    // acquitte la suivante sans qu'on lui demande rien.
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    expect(serveurMulti.rang).toBe(2)
+    expect(screen.getByText('Drone complote contre Assault on NORAD')).toBeInTheDocument()
+
+    for (let clic = 0; clic < 4; clic += 1) {
+      await act(async () => {
+        fireEvent.click(suivant())
+      })
+      await laisserTourner()
+    }
+    expect(serveurMulti.rang).toBe(PHASE.length - 1)
+    // Le siege rapide a acquitte CHAQUE trame, et n'en a jamais retenu une :
+    // le rythme est celui du lent, pas une course entre les deux.
+    const parLeRapide = serveurMulti.accuses
+      .filter((a) => a.siege === 0)
+      .map((a) => a.trame)
+    expect(parLeRapide).toEqual([101, 102, 103, 104, 105, 106, 107])
   })
 })
