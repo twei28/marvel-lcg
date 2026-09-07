@@ -1015,11 +1015,12 @@ function accueilView() {
                 }, m.id === "bataille" ? (n / 2) + "v" + (n / 2) : String(n)));
             }
         }
+        // Pas de lettre ni de chiffre devant le nom : sur une grande tuile, le
+        // nom se suffit.
         grille.append(el("button", {
             class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
             onclick: () => partir(tuile, null),
         },
-            el("span", { class: "mode-mark mvl" }, tuile.mark),
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, tuile.libelle),
                 el("small", {}, tuile.detail),

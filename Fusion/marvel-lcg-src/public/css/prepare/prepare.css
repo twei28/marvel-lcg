@@ -1204,11 +1204,9 @@ button{cursor:pointer}
   background:linear-gradient(180deg,var(--steel2),var(--steel));
   transition:transform var(--dur),border-color var(--dur),box-shadow var(--dur);
 }
-.acc-mode:hover{transform:translateY(-3px);border-color:var(--nous);box-shadow:0 14px 28px rgba(0,0,0,.45)}
-.acc-mode .mode-mark{width:56px;height:56px;font-size:40px;flex:none}
-.acc-mode:hover .mode-mark{color:var(--agir-encre);background:var(--agir);border-color:var(--agir)}
+.acc-mode:hover{transform:translateY(-3px);border-color:var(--agir);box-shadow:0 14px 28px rgba(0,0,0,.45)}
 .acc-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
-.acc-copy b{font-size:28px;line-height:.9;text-transform:uppercase;white-space:nowrap}
+.acc-copy b{font-size:32px;line-height:.9;text-transform:uppercase;white-space:nowrap}
 .acc-copy small{color:var(--dim);font-size:12px}
 .acc-nombres{display:flex;align-items:center;gap:6px;flex:none}
 .acc-nombres small{color:var(--mute);font-size:10px;font-weight:900;text-transform:uppercase;margin-right:2px}
