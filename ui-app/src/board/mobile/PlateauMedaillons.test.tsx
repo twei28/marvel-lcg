@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { PlateauMobile } from './PlateauMobile'
+import { PlateauMedaillons } from './PlateauMedaillons'
 import type { EtatInteractif } from '../interaction'
 import type { CardEffectDelta } from '../../components/ScanCard'
 import type { Plateau } from '../zones'
 import type { World } from '../world'
 
-// jsdom n'implemente pas ResizeObserver (aucune mise en page reelle). PlateauMobile
+// jsdom n'implemente pas ResizeObserver (aucune mise en page reelle). PlateauMedaillons
 // en observe le cadre pour recalculer sa largeur de condensation : sans ce bouchon,
 // tout rendu leverait une ReferenceError des le premier effet.
 class ResizeObserverBouchon {
@@ -62,10 +62,10 @@ function rangee(nom: string): HTMLElement {
   return titre
 }
 
-describe('PlateauMobile', () => {
+describe('PlateauMedaillons', () => {
   it('rend une rangee de medaillons par zone peuplee', () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
+      <PlateauMedaillons world={MONDE} playerId={0} plateau={PLATEAU} />
     )
     expect(rangee('Méchant')).toBeInTheDocument()
     // La carte posee est un MEDAILLON : pas de nom ecrit, l'identite passe par
@@ -75,7 +75,7 @@ describe('PlateauMobile', () => {
 
   it('ne dessine aucune bande vide', () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
+      <PlateauMedaillons world={MONDE} playerId={0} plateau={PLATEAU} />
     )
     expect(screen.queryByText('Manigances')).not.toBeInTheDocument()
     expect(screen.queryByText('Ta main')).not.toBeInTheDocument()
@@ -83,7 +83,7 @@ describe('PlateauMobile', () => {
 
   it("la pastille porte les PV, et rien d'autre", () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
+      <PlateauMedaillons world={MONDE} playerId={0} plateau={PLATEAU} />
     )
     // Une SEULE pastille : les PV. Attaque, contre et defense s'affichent a
     // l'ouverture de la carte, pas sur le medaillon.
@@ -97,7 +97,7 @@ describe('PlateauMobile', () => {
       [1, { role: 'porteur', choisie: false, agir }],
     ])
     render(
-      <PlateauMobile
+      <PlateauMedaillons
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
@@ -123,7 +123,7 @@ describe('PlateauMobile', () => {
       [1, { role: 'cible', choisie: false, agir: () => {} }],
     ])
     render(
-      <PlateauMobile
+      <PlateauMedaillons
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
@@ -143,7 +143,7 @@ describe('PlateauMobile', () => {
     // avecInteraction : il faut donc que la carte soit dans l'interaction.
     const interactifs = new Map<number, EtatInteractif>([[1, { role: 'cible', choisie: false, agir: () => {} }]])
     render(
-      <PlateauMobile
+      <PlateauMedaillons
         world={MONDE}
         playerId={0}
         plateau={PLATEAU}
@@ -160,7 +160,7 @@ describe('PlateauMobile', () => {
 
   it("sans action possible, l'appui ouvre quand meme la carte pour la lire", () => {
     render(
-      <PlateauMobile world={MONDE} playerId={0} plateau={PLATEAU} />
+      <PlateauMedaillons world={MONDE} playerId={0} plateau={PLATEAU} />
     )
     fireEvent.click(medaillon('1'))
     // La carte s'ouvre pour etre LUE, sans bouton d'action : le moteur n'en

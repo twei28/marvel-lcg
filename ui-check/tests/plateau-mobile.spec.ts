@@ -41,7 +41,9 @@ test('La vue d\'etat tient a l\'ecran et se joue au doigt', async ({ page }) => 
 
   for (const entree of catalogue) {
     await test.step(entree.titre, async () => {
-      await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}`, {
+      // `medaillons` : l'ancien rendu, que ce filet continue de mesurer
+      // jusqu'a sa suppression (sous-projet 3 de la spec du 07/09/2026).
+      await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}&medaillons`, {
         waitUntil: 'networkidle',
       });
 
