@@ -2,8 +2,8 @@
 // deux tables. Sans lecture par siège, l'écran de fin annoncerait la même
 // chose au vainqueur et au vaincu.
 import { describe, expect, it } from 'vitest'
-import { afficherFinDePartie, coupFatalLocal, finDePartie } from './fin-partie'
-import type { World } from './world'
+import { afficherFinDePartie, coupFatalLocal, finDePartie, herosLocaux } from './fin-partie'
+import type { World, WorldPlayer } from './world'
 
 const monde = (champs: Partial<World>) => champs as World
 
@@ -55,6 +55,54 @@ describe('coupFatalLocal', () => {
 
   it('ignore une defaite sans cible identifiee', () => {
     expect(coupFatalLocal([etape(true, undefined)], new Set([12]))).toBe(false)
+  })
+
+  // ENSEMBLE VIDE : la defaite compte comme la notre, et c'est assume (voir la
+  // documentation de la fonction). `area_hero` se vide quand l'identite quitte
+  // la table : rendre faux ici ferait paraitre l'ecran de fin sur la trame meme
+  // de `game_over`, c'est-a-dire le defaut que cette fonction empeche.
+  it('retient l ecran de fin quand aucun heros local n est connu', () => {
+    expect(coupFatalLocal([etape(true, 13)], new Set())).toBe(true)
+    // Sans defaite, un ensemble vide ne retient toujours rien.
+    expect(coupFatalLocal([etape(undefined, 13)], new Set())).toBe(false)
+  })
+})
+
+// LE HOT-SEAT : hors multijoueur, ce navigateur tient TOUS les sieges. Ne lire
+// que `?p=` faisait manquer le coup fatal des qu'une partie a deux heros sur un
+// ecran se terminait sur la chute de l'AUTRE heros.
+describe('herosLocaux', () => {
+  const identite = (id: number, type: string) => ({ id, card_type: type })
+  const joueur = (...cartes: ReturnType<typeof identite>[]) =>
+    ({ area_hero: cartes }) as unknown as WorldPlayer
+
+  const table = [
+    joueur(identite(12, 'Hero'), identite(112, 'Upgrade')),
+    joueur(identite(21, 'AlterEgo')),
+  ]
+
+  it('prend les DEUX sieges hors multijoueur, quel que soit le notre', () => {
+    expect(herosLocaux({ joueurs: table, playerId: 0, multijoueur: false })).toEqual(
+      new Set([12, 21])
+    )
+    expect(herosLocaux({ joueurs: table, playerId: 1, multijoueur: false })).toEqual(
+      new Set([12, 21])
+    )
+  })
+
+  it('ne prend QUE notre siege en multijoueur', () => {
+    expect(herosLocaux({ joueurs: table, playerId: 0, multijoueur: true })).toEqual(new Set([12]))
+    expect(herosLocaux({ joueurs: table, playerId: 1, multijoueur: true })).toEqual(new Set([21]))
+  })
+
+  it('ecarte les ameliorations attachees a l identite', () => {
+    const ids = herosLocaux({ joueurs: table, playerId: 0, multijoueur: true })
+    expect(ids.has(112)).toBe(false)
+  })
+
+  it('rend un ensemble vide sans monde, ou sur un siege inconnu', () => {
+    expect(herosLocaux({ playerId: 0, multijoueur: false }).size).toBe(0)
+    expect(herosLocaux({ joueurs: table, playerId: 7, multijoueur: true }).size).toBe(0)
   })
 })
 

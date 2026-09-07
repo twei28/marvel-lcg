@@ -52,6 +52,7 @@ import {
   coupFatalLocal,
   DELAI_FILET_FIN_PARTIE_MS,
   finDePartie,
+  herosLocaux,
 } from './board/fin-partie'
 import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
@@ -2076,18 +2077,23 @@ function PagePartie({
   const attendUnAutreJoueur =
     autreJoueurInterroge !== undefined || autreJoueurEnRetard !== undefined || tableSilencieuse
 
-  // Les deux faces du heros de CE navigateur (`?p=`), et non de la vue
-  // affichee : regarder la table d'un autre ne fait pas de nous ce joueur.
-  // Meme lecture que `herosVaincusIds` plus haut, meme motif : `area_hero`
-  // porte aussi les ameliorations, qui ne sont ni l'une ni l'autre.
-  const herosLocauxIds = useMemo(() => {
-    const ids = new Set<number>()
-    for (const carte of etat.monde?.players?.[playerId]?.area_hero ?? []) {
-      const famille = kindOf(carte)
-      if (famille === 'hero' || famille === 'alter-ego') ids.add(carte.id)
-    }
-    return ids
-  }, [etat.monde?.players, playerId])
+  // Les deux faces des heros de CE NAVIGATEUR, et non de la vue affichee :
+  // regarder la table d'un autre ne fait pas de nous ce joueur.
+  //
+  // Hors multijoueur, ce navigateur tient TOUS les sieges (meme regle que
+  // `joueurAttendu` ci-dessus) : ne lire que `?p=` faisait manquer le coup
+  // fatal des qu'une partie a deux heros sur un ecran se terminait sur la
+  // chute de l'autre. La regle est pure et testee (`herosLocaux`,
+  // board/fin-partie.ts) ; ici, on ne fait que l'alimenter.
+  const herosLocauxIds = useMemo(
+    () =>
+      herosLocaux({
+        joueurs: etat.monde?.players,
+        playerId,
+        multijoueur: estMultijoueur(),
+      }),
+    [etat.monde?.players, playerId]
+  )
 
   const partieFinieMoteur = Boolean(etat.monde?.game_over)
   const coupFatalAMontrer =

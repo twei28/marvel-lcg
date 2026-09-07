@@ -1,5 +1,48 @@
+import { kindOf } from './card-model'
 import { estDefaiteLocale } from './deroule-phase'
-import type { World } from './world'
+import type { World, WorldPlayer } from './world'
+
+/**
+ * LES HÉROS QUE CE NAVIGATEUR TIENT, les deux faces de chacun.
+ *
+ * Hors multijoueur, ce navigateur tient TOUS les sièges : il ouvre son socket
+ * en `hot_seat` et répond pour chaque joueur (voir `adresseSocket`, moteur.ts,
+ * et la même règle déjà appliquée par `joueurAttendu`). Ne lire que le siège
+ * `?p=` était donc faux dès qu'une partie comptait plus d'un héros sur un
+ * écran : si le dernier héros à tomber n'était pas celui-là, `coupFatalLocal`
+ * rendait faux et le coup fatal n'était JAMAIS montré, l'écran de fin
+ * paraissant sur la trame même de `game_over` (le défaut M5, revenu par la
+ * porte du hot-seat).
+ *
+ * En multijoueur, au contraire, chaque navigateur ne tient QUE son siège :
+ * la chute du héros d'un autre joueur ne retient l'écran de fin de personne
+ * d'autre que lui.
+ *
+ * `area_hero` porte aussi les améliorations attachées à l'identité : elles ne
+ * sont ni héros ni alter ego, d'où le tri sur `kindOf`. Les deux faces
+ * comptent, un héros pouvant tomber sous l'une comme sous l'autre.
+ */
+export function herosLocaux({
+  joueurs = [],
+  playerId,
+  multijoueur,
+}: {
+  joueurs?: readonly WorldPlayer[]
+  playerId: number
+  multijoueur: boolean
+}): Set<number> {
+  const sieges = multijoueur
+    ? [joueurs[playerId]]
+    : joueurs
+  const ids = new Set<number>()
+  for (const joueur of sieges) {
+    for (const carte of joueur?.area_hero ?? []) {
+      const famille = kindOf(carte)
+      if (famille === 'hero' || famille === 'alter-ego') ids.add(carte.id)
+    }
+  }
+  return ids
+}
 
 /**
  * Ce que l'écran de fin doit annoncer À CE SIÈGE.
@@ -45,7 +88,18 @@ export const DELAI_FILET_FIN_PARTIE_MS = 20_000
  * d'autre que lui.
  *
  * `herosLocauxIds` porte les deux faces (héros et alter ego) : un héros peut
- * tomber sous l'une comme sous l'autre.
+ * tomber sous l'une comme sous l'autre. Il se calcule par `herosLocaux`
+ * ci-dessus, qui prend TOUS les sièges hors multijoueur.
+ *
+ * ENSEMBLE VIDE : la défaite compte comme la nôtre, donc l'écran de fin
+ * attend. C'est un changement de `5a46f428` (la règle vivait avant ici, et
+ * exigeait une cible connue), et il est ASSUMÉ : `area_hero` se vide quand
+ * l'identité quitte la table, si bien que l'ensemble peut être vide au moment
+ * exact où le coup fatal doit être montré. Rendre faux là ferait paraître
+ * l'écran de fin sur la trame même de `game_over`, c'est-à-dire le défaut M5
+ * que cette fonction existe pour empêcher. Le risque inverse (retenir l'écran
+ * de fin d'un joueur que rien ne concerne) est borné par le filet de temps
+ * ci-dessus et par le bouton « Continuer » du cartouche.
  */
 export function coupFatalLocal(
   etapes: { defaite?: boolean; cibleId?: number }[],
