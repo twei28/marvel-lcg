@@ -682,6 +682,7 @@ describe('cartouche du deroule', () => {
       rerender(cartouche(4, 11))
       expect(onSuivant).toHaveBeenCalledTimes(2)
     })
+
   })
   // Defaut 2 (voir brief) : « arriver au bout des etapes CONNUES » n'est pas
   // « la phase est finie ». Depuis que chaque « Suivant » relache une trame du
@@ -1708,6 +1709,39 @@ describe('le bilan de fin de phase', () => {
     fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
     expect(onTerminer).toHaveBeenCalledTimes(1)
     expect(container).toBeEmptyDOMElement()
+  })
+
+  // LE COUP FATAL SE VOIT AVANT L'ECRAN DE FIN. C'est ce signal-la qui
+  // autorise board.tsx a le laisser paraitre (voir `afficherFinDePartie`) :
+  // sans lui, le cartouche et l'ecran basculaient sur la meme trame et l'etape
+  // qui avait tue n'etait jamais lue.
+  it('previent que le coup fatal a ete vu, au clic sur Continuer', () => {
+    const onDefaiteVue = vi.fn()
+    render(
+      <DeroulePhase
+        etapes={chuteDeColossus}
+        phaseMechantEnCours
+        onTerminer={() => {}}
+        onDefaiteVue={onDefaiteVue}
+      />
+    )
+    fireEvent.click(suivant())
+    // Pas avant : le joueur lit encore l'etape.
+    expect(onDefaiteVue).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
+    expect(onDefaiteVue).toHaveBeenCalledTimes(1)
+  })
+
+  it('ne previent d aucun coup fatal a la fin d une phase ordinaire', () => {
+    // Le piege qu'evite une prop dediee : `onTerminer` part a la fin de CHAQUE
+    // phase du mechant, et s'en servir aurait declare le coup fatal vu des la
+    // premiere phase de la partie.
+    const onDefaiteVue = vi.fn()
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} onDefaiteVue={onDefaiteVue} />)
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    fireEvent.click(aToiDeJouer())
+    expect(onDefaiteVue).not.toHaveBeenCalled()
   })
 
   // LE cas negatif, le plus important : une marque posee trop largement

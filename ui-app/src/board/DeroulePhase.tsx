@@ -96,6 +96,7 @@ export function DeroulePhase({
   delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
   onTerminer,
+  onDefaiteVue,
 }: {
   etapes: EtapeDeroule[]
   /**
@@ -196,6 +197,16 @@ export function DeroulePhase({
   onSuivant?: () => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
+  /**
+   * Le joueur vient de valider l'etape qui porte la chute d'un heros
+   * (« Continuer »). Il l'a donc VUE, et board.tsx peut enfin laisser paraitre
+   * l'ecran de fin de partie, qui l'attendait (voir `afficherFinDePartie`).
+   *
+   * Distinct de `onTerminer`, qui part a la fin de CHAQUE phase du mechant :
+   * s'en servir aurait declare le coup fatal vu des la premiere phase de la
+   * partie, donc bien avant qu'il existe.
+   */
+  onDefaiteVue?: () => void
 }) {
   // LA CLE de l'etape que le joueur lit, jamais son numero. L'index se
   // retrouve a partir d'elle a chaque rendu (voir plus bas) : une etape qui
@@ -276,12 +287,14 @@ export function DeroulePhase({
   if (identitePhase !== phaseRacontee.current && (phaseMechantEnCours || termine)) {
     phaseRacontee.current = identitePhase
   }
-  const cleDeLaPhase = phaseRacontee.current
 
   // Les dernieres etapes connues de la phase racontee. Voir plus bas pour la
   // raison : les faits du round disparaissent avant que le bilan ait pu etre
   // calcule.
   const memoireEtapes = useRef<EtapeDeroule[]>([])
+
+
+  const cleDeLaPhase = phaseRacontee.current
 
   // Le dépliant de la règle sous l'étape : un choix qu'on ne fait qu'une
   // fois (voir lireRegleDepliee dans moteur.ts). Lu une seule fois a l'etat
@@ -451,6 +464,9 @@ export function DeroulePhase({
     // `arreterSurDefaite` ne lui donnera jamais.
     if (etape.defaite) {
       setTermine(true)
+      // Dit AVANT de rendre la main : c'est ce clic-ci qui autorise l'ecran de
+      // fin de partie a paraitre, et le joueur vient de voir le coup.
+      onDefaiteVue?.()
       onTerminer()
       return
     }

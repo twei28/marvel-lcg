@@ -47,7 +47,12 @@ import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
 import { PanneauSalon } from './board/PanneauSalon'
 import { peutSuivre } from './board/suivi-vue'
 import { traduireMoteur } from './board/vocabulaire-moteur'
-import { finDePartie } from './board/fin-partie'
+import {
+  afficherFinDePartie,
+  coupFatalLocal,
+  DELAI_FILET_FIN_PARTIE_MS,
+  finDePartie,
+} from './board/fin-partie'
 import { installerCollecteErreurs } from './board/erreurs-console'
 import { MessageRapport, useRapportBug } from './board/RapportBug'
 import { PanneauBug } from './board/PanneauBug'
@@ -2070,6 +2075,54 @@ function PagePartie({
     reglerModePhase(modePhase)
   }, [modePhase, reglerModePhase])
 
+  // LE COUP FATAL SE VOIT AVANT L'ECRAN DE FIN.
+  //
+  // « Defaite en pleine phase : le coup fatal s'affiche normalement et c'est
+  // APRES validation que vient l'ecran de fin. On comprend ce qui nous a
+  // tues. » Le code faisait l'inverse : le cartouche et l'ecran de fin
+  // basculaient sur la MEME trame (`monde.game_over`), et l'etape qui avait tue
+  // n'etait jamais lue (constat M5 de l'audit du 06/09/2026).
+  //
+  // La retenue ne vaut QUE pour le siege dont le heros est tombe, et qu'en
+  // mode Detaille : la table des autres joueurs n'attend rien, et le mode
+  // Instantane n'a pas d'etape a montrer. La decision elle-meme est pure
+  // (`afficherFinDePartie`, board/fin-partie.ts), avec son filet de temps.
+
+  // Les deux faces du heros de CE navigateur (`?p=`), et non de la vue
+  // affichee : regarder la table d'un autre ne fait pas de nous ce joueur.
+  // Meme lecture que `herosVaincusIds` plus haut, meme motif : `area_hero`
+  // porte aussi les ameliorations, qui ne sont ni l'une ni l'autre.
+  const herosLocauxIds = useMemo(() => {
+    const ids = new Set<number>()
+    for (const carte of etat.monde?.players?.[playerId]?.area_hero ?? []) {
+      const famille = kindOf(carte)
+      if (famille === 'hero' || famille === 'alter-ego') ids.add(carte.id)
+    }
+    return ids
+  }, [etat.monde?.players, playerId])
+
+  const partieFinieMoteur = Boolean(etat.monde?.game_over)
+  const coupFatalAMontrer =
+    modePhase === 'detaille' && coupFatalLocal(etapesPhaseMechant, herosLocauxIds)
+  // Le joueur a valide l'etape du coup fatal (« Continuer »), et le filet de
+  // temps qui laisse paraitre l'ecran de fin quoi qu'il arrive. Aucun des deux
+  // ne se remet a faux : une partie finie ne recommence pas, et une nouvelle
+  // partie remonte tout le plateau.
+  const [coupFatalVu, setCoupFatalVu] = useState(false)
+  const [filetFinEcoule, setFiletFinEcoule] = useState(false)
+  const finPartieAffichee = afficherFinDePartie({
+    partieFinie: partieFinieMoteur,
+    coupFatalAMontrer,
+    coupFatalVu,
+    filetEcoule: filetFinEcoule,
+  })
+
+  useEffect(() => {
+    if (!partieFinieMoteur || !coupFatalAMontrer || coupFatalVu || filetFinEcoule) return
+    const minuteur = window.setTimeout(() => setFiletFinEcoule(true), DELAI_FILET_FIN_PARTIE_MS)
+    return () => window.clearTimeout(minuteur)
+  }, [partieFinieMoteur, coupFatalAMontrer, coupFatalVu, filetFinEcoule])
+
   // usePasAPas (halo teinte + chiffre flottant sur la carte de l'etape en
   // cours) : DEBRANCHEE a la demande de l'utilisateur - double emploi avec le
   // cartouche du deroule (MENACE / ACTIVATIONS / DISTRIBUTION / RÉVÉLATION),
@@ -2428,12 +2481,14 @@ function PagePartie({
             // liste d'etapes peut encore s'allonger : arriver au bout de
             // celles qu'on connait ne veut pas dire que la phase est finie.
             phaseMechantEnCours={PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')}
-            // La partie est finie : le cartouche s'efface. Meme source que
-            // l'ecran de fin de partie (`EcranFinPartie`, plus bas, monte sur
-            // `etat.monde.game_over`), pas une seconde inventee pour
-            // l'occasion. Constate en partie : l'ecran de defaite etait la et
-            // le cartouche annonçait encore « La suite arrive… ».
-            partieFinie={Boolean(etat.monde?.game_over)}
+            // La partie est finie ET l'ecran de fin est a l'ecran : le
+            // cartouche s'efface. Meme valeur que cet ecran (`EcranFinPartie`,
+            // plus bas), pas une seconde inventee pour l'occasion. Constate en
+            // partie : l'ecran de defaite etait la et le cartouche annonçait
+            // encore « La suite arrive… ». Tant que le coup fatal n'a pas ete
+            // valide, `finPartieAffichee` reste faux et le cartouche montre
+            // l'etape qui a tue (voir `afficherFinDePartie`).
+            partieFinie={finPartieAffichee}
             // Le moteur pose une question au joueur local : le cartouche
             // s'efface devant elle. On lit l'etat du MOTEUR, pas la visibilite
             // du panneau central : pendant un ciblage (choisir les deux sbires
@@ -2463,6 +2518,8 @@ function PagePartie({
             // sans trame en attente, moteur.ts, avancerMaintenant).
             onSuivant={avancerPasAPas}
             onTerminer={avancerPasAPas}
+            // Le coup fatal est vu : l'ecran de fin de partie peut paraitre.
+            onDefaiteVue={() => setCoupFatalVu(true)}
           />
         </>
       ) : null}
@@ -2773,7 +2830,11 @@ function PagePartie({
         actif={animations}
       />
 
-      {etat.monde?.game_over ? (
+      {/* L'ecran de fin attend que le coup fatal ait ete vu (mode Detaille,
+          heros de ce siege), avec un filet de 20 s : voir
+          `afficherFinDePartie`. Hors de ce cas, il parait sur la trame meme ou
+          le moteur declare la partie finie, comme avant. */}
+      {finPartieAffichee && etat.monde ? (
         <EcranFinPartie
           {...finDePartie(etat.monde, playerId)}
           raison={etat.monde.game_over_reason}
