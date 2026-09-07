@@ -717,6 +717,8 @@
     letter-spacing: 0;
     max-width: 100%;
     white-space: nowrap;
+    text-align: center;
+    justify-self: center;
     padding-bottom: 6%;
   }
 
