@@ -887,6 +887,52 @@
     pointer-events: auto;
   }
 
+  /* Le choix d'une cible dans la scene : les candidats en cartes, a la
+     taille des cartes de la scene, puis la validation a la place de Suivant. */
+  .cibles-scene {
+    --card-w: 150px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .cibles-scene-entete {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .cibles-scene-compte {
+    margin-left: auto;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #ffd24a;
+  }
+
+  .cibles-scene-cartes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .cibles-scene-boutons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .cibles-scene-raison {
+    margin-right: auto;
+    font-size: 0.85rem;
+    color: rgba(248, 250, 252, 0.7);
+  }
+
+  .cibles-scene-boutons button[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
   .deroule-question-scene {
     margin-top: 10px;
     padding-top: 10px;

@@ -67,6 +67,7 @@ import {
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
+import { CiblesScene } from './board/CiblesScene'
 import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
 import { etapesDeroule, nomNettoye } from './board/deroule-phase'
@@ -2436,6 +2437,11 @@ function PagePartie({
   // deja la place a la table, et la scene se replie pour la laisser cliquable.
   const questionEnScene =
     modePhase === 'detaille' && phaseMechantEnCours && afficherDemandeCentrale && etat.demande !== undefined
+  // Un CIBLAGE pendant la phase du mechant en Detaille (livraison D) : les
+  // candidats se montrent aussi dans la scene, en cartes cliquables, avec la
+  // validation. Ceux de la table gardent leur halo et restent cliquables
+  // derriere le voile : les deux chemins menent au meme `agir`.
+  const ciblageEnScene = modePhase === 'detaille' && phaseMechantEnCours && interaction.option !== undefined
   // etat.validationRequise n'entre pas dans la condition ci-dessous : c'est
   // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
   // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
@@ -2664,7 +2670,34 @@ function PagePartie({
             dosRencontre={dosRencontre}
             // La question du moteur, logee dans la scene (voir `questionEnScene`).
             question={
-              questionEnScene && etat.demande ? (
+              ciblageEnScene && interaction.option ? (
+                <CiblesScene
+                  titre={nomLisible(interaction.option)}
+                  cibles={[
+                    ...[...interaction.cartes.entries()]
+                      .filter(([, e]) => e.role === 'cible')
+                      .map(([id, e]) => ({
+                        props: carteScene(id, true) ?? {
+                          id: String(id),
+                          name: cartesMondeParId.get(id)?.name ?? '',
+                          kind: 'unknown' as const,
+                          imageUrl: '',
+                        },
+                        choisie: e.choisie,
+                        fois: e.fois,
+                        agir: e.agir,
+                      })),
+                    ...interaction.ciblesHorsTable,
+                  ]}
+                  choisies={interaction.cibles.length}
+                  minimum={interaction.option.target_num_range[0]}
+                  maximum={interaction.option.target_num_range[1]}
+                  prete={interaction.prete}
+                  raison={interaction.raison}
+                  valider={interaction.valider}
+                  annuler={interaction.annuler}
+                />
+              ) : questionEnScene && etat.demande ? (
                 <DemandeCentrale
                   demande={etat.demande}
                   options={interaction.options}
