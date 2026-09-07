@@ -78,7 +78,7 @@
   .scan-card.kind-hero,
   .scan-card.kind-alter-ego {
     --accent: #f1f4f7;
-    --label-bg: #101317;
+    --label-bg: var(--fond);
   }
 
   .scan-card.kind-ally,
@@ -87,7 +87,7 @@
   .scan-card.kind-event,
   .scan-card.kind-resource {
     --accent: #dfe6ee;
-    --label-bg: #101317;
+    --label-bg: var(--fond);
   }
 
   .scan-card.kind-villain,
@@ -99,7 +99,7 @@
   .scan-card.kind-environment,
   .scan-card.kind-obligation,
   .scan-card.kind-status {
-    --accent: #8ddff2;
+    --accent: var(--info);
     --label-bg: #071820;
     --label-text: #effcff;
   }
@@ -151,7 +151,7 @@
   }
 
   .scan-card.state-source {
-    --state-glow: rgba(255, 90, 216, 0.62);
+    --state-glow: rgba(201, 166, 255, 0.62);
   }
 
   .scan-card.state-source .scan-frame {
@@ -160,17 +160,17 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 0 11px rgba(255, 90, 216, 0.62),
-      0 0 30px rgba(255, 210, 74, 0.5),
+      0 0 0 11px rgba(201, 166, 255, 0.62),
+      0 0 30px rgba(240, 185, 95, 0.5),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
   .scan-card.state-targetable {
-    --state-glow: rgba(255, 210, 74, 0.52);
+    --state-glow: rgba(240, 185, 95, 0.52);
   }
 
   .scan-card.state-playable {
-    --state-glow: rgba(71, 220, 139, 0.48);
+    --state-glow: rgba(140, 155, 60, 0.48);
   }
 
   .scan-card.state-disabled {
@@ -221,7 +221,7 @@
     aspect-ratio: 127 / 176;
     overflow: hidden;
     border-radius: inherit;
-    background: #111827;
+    background: var(--fond);
     border: 2px solid var(--accent);
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
@@ -258,7 +258,7 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 26px rgba(71, 220, 139, 0.48),
+      0 0 26px rgba(140, 155, 60, 0.48),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
@@ -268,7 +268,7 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 28px rgba(255, 210, 74, 0.58),
+      0 0 28px rgba(240, 185, 95, 0.58),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
@@ -305,7 +305,7 @@
     margin-bottom: calc(var(--jauge-epaisseur) * -1.15);
     z-index: 4;
     border-radius: 999px;
-    background: rgba(4, 7, 11, 0.9);
+    background: rgba(20, 20, 20, 0.9);
     /* Un cerne net : la bande longe le halo de camp (vert ou rouge) de la carte,
        et sans lui les deux se confondaient. */
     box-shadow:
@@ -401,8 +401,8 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 0 13px rgba(255, 210, 74, 0.86),
-      0 0 42px 12px rgba(255, 210, 74, 0.62),
+      0 0 0 13px rgba(240, 185, 95, 0.86),
+      0 0 42px 12px rgba(240, 185, 95, 0.62),
       0 18px 32px rgba(0, 0, 0, 0.52);
     animation: cible-pulse 760ms ease-in-out infinite;
   }
@@ -415,8 +415,8 @@
         0 0 0 5px rgba(255, 255, 255, 0.1),
         0 0 0 8px var(--camp-ring, transparent),
         0 0 22px 4px var(--camp-glow, transparent),
-        0 0 0 11px rgba(255, 210, 74, 0.72),
-        0 0 28px 8px rgba(255, 210, 74, 0.45),
+        0 0 0 11px rgba(240, 185, 95, 0.72),
+        0 0 28px 8px rgba(240, 185, 95, 0.45),
         0 18px 32px rgba(0, 0, 0, 0.52);
     }
     50% {
@@ -425,8 +425,8 @@
         0 0 0 5px rgba(255, 255, 255, 0.1),
         0 0 0 8px var(--camp-ring, transparent),
         0 0 22px 4px var(--camp-glow, transparent),
-        0 0 0 15px rgba(255, 210, 74, 0.98),
-        0 0 54px 16px rgba(255, 210, 74, 0.78),
+        0 0 0 15px rgba(240, 185, 95, 0.98),
+        0 0 54px 16px rgba(240, 185, 95, 0.78),
         0 18px 32px rgba(0, 0, 0, 0.52);
     }
   }
@@ -505,7 +505,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.09em;
-    color: #17130a;
+    color: var(--fond);
     background: linear-gradient(180deg, #e8c85a, #c9a227);
     border-radius: 6px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
@@ -542,7 +542,7 @@
     color: #05200f;
     background: linear-gradient(180deg, #6bf7a8, #17b45f);
     border-radius: 6px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(40, 230, 130, 0.45);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(140, 155, 60, 0.45);
   }
 
   /* Ennemi MORDU : pastille texte en bas a gauche du scan, tant qu'aucune
@@ -590,13 +590,13 @@
   /* Halo VERT sur l'ennemi mordu : la meme couleur que le contour de
      l'alligator, pour que les deux marques se repondent. */
   .scan-card.est-mordu .scan-frame {
-    box-shadow: 0 0 0 2px #22e07a, 0 0 16px rgba(40, 230, 130, 0.7);
+    box-shadow: 0 0 0 2px var(--camp-nous), 0 0 16px rgba(140, 155, 60, 0.7);
   }
 
   /* Le heros accroche porte le meme vert : d'un coup d'oeil, les deux cartes
      liees sont de la meme couleur. */
   .scan-card.est-accroche .scan-frame {
-    box-shadow: 0 0 0 2px #22e07a, 0 0 16px rgba(40, 230, 130, 0.7);
+    box-shadow: 0 0 0 2px var(--camp-nous), 0 0 16px rgba(140, 155, 60, 0.7);
   }
 
   /* --- Les jetons poses sur la carte ----------------------------------------
@@ -621,7 +621,7 @@
   }
 
   .jeton-carte b {
-    font-size: calc(var(--card-w) * 0.13);
+    font-size: calc(var(--card-w) * 0.17);
     line-height: 1;
   }
 
@@ -727,8 +727,8 @@
   }
 
   .scan-card.est-deck-special .kind-pill {
-    background: linear-gradient(180deg, #7a52c8, #45287f);
-    border-color: #c9a6ff;
+    background: linear-gradient(180deg, var(--statut), var(--statut));
+    border-color: var(--statut-clair);
     color: #f3ecff;
     letter-spacing: 0.06em;
   }
@@ -748,8 +748,8 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #f3ecff;
-    background: linear-gradient(180deg, #7a52c8, #45287f);
-    border: 1px solid #c9a6ff;
+    background: linear-gradient(180deg, var(--statut), var(--statut));
+    border: 1px solid var(--statut-clair);
     border-radius: 5px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   }
@@ -773,8 +773,8 @@
   }
 
   .scheme-threat-badge {
-    color: #17130a;
-    background: #ffd24a;
+    color: var(--fond);
+    background: var(--menace);
     border-color: rgba(48, 39, 10, 0.55);
     text-shadow: none;
   }
@@ -787,7 +787,7 @@
   }
 
   .scheme-threat-badge b {
-    color: #17130a;
+    color: var(--fond);
   }
 
   .ally-hp-badge span,
@@ -999,7 +999,7 @@
   }
 
   .card-effect-threat {
-    color: #17130a;
+    color: var(--fond);
     background: #f3c623;
     border-color: #fff2a6;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65);
@@ -1093,7 +1093,7 @@
     line-height: 1;
     pointer-events: none;
     color: #052d17;
-    background: #47dc8b;
+    background: var(--camp-nous);
     border-color: rgba(5, 45, 23, 0.55);
     text-shadow: none;
   }

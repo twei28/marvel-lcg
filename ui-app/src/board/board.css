@@ -21,9 +21,9 @@
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", sans-serif;
     background:
-      linear-gradient(135deg, rgba(230, 36, 41, 0.16), transparent 28%),
+      linear-gradient(135deg, rgba(166, 0, 0, 0.16), transparent 28%),
       linear-gradient(315deg, rgba(53, 167, 255, 0.12), transparent 30%),
-      #0b0c10;
+      var(--fond);
   }
 }
 
@@ -48,7 +48,7 @@
     flex: 0 0 auto;
     padding: 6px 12px;
     color: #f8fafc;
-    background: rgba(10, 12, 16, 0.9);
+    background: rgba(30, 30, 30, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
@@ -72,7 +72,7 @@
     font-size: 0.66rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -119,7 +119,7 @@
     font-weight: 700;
     color: #f8fafc;
     text-decoration: none;
-    background: #1f2937;
+    background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 6px;
     white-space: nowrap;
@@ -180,7 +180,7 @@
     background:
       linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(23, 31, 41, 0.96), rgba(10, 12, 16, 0.98));
+      linear-gradient(180deg, rgba(45, 55, 70, 0.96), rgba(30, 30, 30, 0.98));
     background-size: 32px 32px, 32px 32px, auto;
     box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
   }
@@ -283,9 +283,9 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    border: 1px solid rgba(255, 210, 74, 0.48);
+    border: 1px solid rgba(240, 185, 95, 0.48);
     border-radius: 8px;
-    background: rgba(8, 10, 14, 0.98);
+    background: rgba(30, 30, 30, 0.98);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.68);
   }
 
@@ -312,7 +312,7 @@
     font-size: 0.8rem;
     font-weight: 800;
     color: #f8fafc;
-    background: #1f2937;
+    background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 6px;
     cursor: pointer;
@@ -382,9 +382,9 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px 14px;
-    border: 1px solid rgba(255, 210, 74, 0.55);
+    border: 1px solid rgba(240, 185, 95, 0.55);
     border-radius: 12px;
-    background: rgba(8, 10, 14, 0.98);
+    background: rgba(30, 30, 30, 0.98);
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.6),
       0 24px 60px rgba(0, 0, 0, 0.7);
@@ -430,7 +430,7 @@
     gap: 10px;
     padding: 12px;
     color: #f8fafc;
-    background: rgba(8, 10, 14, 0.88);
+    background: rgba(30, 30, 30, 0.88);
     border: 1px solid rgba(141, 223, 242, 0.34);
     border-radius: 8px;
     box-shadow:
@@ -446,7 +446,7 @@
   }
 
   .menu-actions-carte.mode-cible-focus {
-    border-color: rgba(255, 210, 74, 0.44);
+    border-color: rgba(240, 185, 95, 0.44);
   }
 
   @media (min-width: 861px) and (pointer: fine) {
@@ -489,9 +489,9 @@
     font: inherit;
     font-size: 0.9rem;
     font-weight: 900;
-    color: #101317;
-    background: #ffd45a;
-    border: 1px solid #fff1ad;
+    color: var(--fond);
+    background: var(--menace);
+    border: 1px solid var(--menace-clair);
     border-radius: 50%;
     cursor: pointer;
   }
@@ -533,7 +533,7 @@
   }
 
   .ma-ciblage.est-bloque .ma-ciblage-titre {
-    color: #ffb4a8;
+    color: var(--rouge-clair);
   }
 
   .ma-ciblage.est-possible {
@@ -561,7 +561,7 @@
   }
 
   .ma-groupe-titre {
-    color: #8ddff2;
+    color: var(--info);
     font-size: 0.68rem;
     font-weight: 900;
     line-height: 1;
@@ -579,7 +579,7 @@
     background: rgba(31, 41, 55, 0.78);
     border: 1px solid rgba(141, 223, 242, 0.32);
     border-radius: 8px;
-    box-shadow: inset 4px 0 0 #47dc8b;
+    box-shadow: inset 4px 0 0 var(--camp-nous);
     cursor: pointer;
     user-select: none;
   }
@@ -587,10 +587,10 @@
   .ma-action:hover,
   .ma-action:focus-visible {
     outline: none;
-    border-color: rgba(255, 210, 74, 0.86);
+    border-color: rgba(240, 185, 95, 0.86);
     box-shadow:
-      inset 4px 0 0 #ffd45a,
-      0 0 0 2px rgba(255, 210, 74, 0.22);
+      inset 4px 0 0 var(--menace),
+      0 0 0 2px rgba(240, 185, 95, 0.22);
   }
 
   .ma-action.est-indisponible {
@@ -633,7 +633,7 @@
     height: 4px;
     margin: 0 8px 1px 0;
     border-radius: 50%;
-    background: #ffd45a;
+    background: var(--menace);
   }
 
   .ma-cibles {
@@ -687,7 +687,7 @@
   }
 
   .ma-cible-raison {
-    color: #ffb4a8;
+    color: var(--rouge-clair);
   }
 
   button.ma-cible {
@@ -695,7 +695,7 @@
   }
 
   .ma-cible.est-hors-table {
-    border-color: rgba(255, 210, 74, 0.56);
+    border-color: rgba(240, 185, 95, 0.56);
   }
 
   .ma-cibles-verrouillees {
@@ -724,17 +724,17 @@
   .ma-cible.est-hors-table:hover,
   .ma-cible.est-hors-table:focus-visible {
     outline: none;
-    color: #101317;
-    background: #fff1ad;
+    color: var(--fond);
+    background: var(--menace-clair);
     border-color: #ffffff;
-    box-shadow: 0 0 0 2px rgba(255, 210, 74, 0.22);
+    box-shadow: 0 0 0 2px rgba(240, 185, 95, 0.22);
   }
 
   .ma-action.a-cibles-actives .ma-cible {
-    color: #101317;
-    background: #ffd45a;
-    border-color: #fff1ad;
-    box-shadow: 0 0 16px rgba(255, 210, 74, 0.42);
+    color: var(--fond);
+    background: var(--menace);
+    border-color: var(--menace-clair);
+    box-shadow: 0 0 16px rgba(240, 185, 95, 0.42);
   }
 
   .ma-action.a-cibles-actives .ma-cible.est-non-legale {
@@ -746,7 +746,7 @@
 
   .ma-action.a-cibles-actives .ma-cible b {
     color: #ffffff;
-    background: #101317;
+    background: var(--fond);
   }
 
   .ma-cible span {
@@ -765,9 +765,9 @@
     flex: 0 0 auto;
     min-width: 22px;
     padding: 1px 4px;
-    color: #101317;
+    color: var(--fond);
     text-align: center;
-    background: #ffd45a;
+    background: var(--menace);
     border-radius: 999px;
     font-size: 0.68rem;
     font-variant-numeric: tabular-nums;
@@ -780,9 +780,9 @@
     min-width: 32px;
     min-height: 26px;
     padding: 2px 6px;
-    color: #101317;
-    background: #ffd45a;
-    border: 1px solid #fff1ad;
+    color: var(--fond);
+    background: var(--menace);
+    border: 1px solid var(--menace-clair);
     border-radius: 6px;
   }
 
@@ -810,8 +810,8 @@
   }
 
   .mode-actions button.est-actif {
-    color: #111827;
-    background: #ffd45a;
+    color: var(--fond);
+    background: var(--menace);
   }
 
   .ma-cout-pips {
@@ -823,7 +823,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #101317;
+    background: var(--fond);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.42);
   }
 
@@ -836,7 +836,7 @@
   .ma-action-raison {
     display: none;
     padding-top: 3px;
-    color: #ffb4a8;
+    color: var(--rouge-clair);
     font-size: 0.74rem;
     font-weight: 800;
     line-height: 1.25;
@@ -905,7 +905,7 @@
     margin-left: auto;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: #ffd24a;
+    color: var(--menace);
   }
 
   .cibles-scene-cartes {
@@ -953,8 +953,8 @@
     padding: 11px 16px 13px;
     color: #f8fafc;
     text-align: center;
-    background: rgba(8, 10, 14, 0.86);
-    border: 1px solid rgba(255, 210, 74, 0.58);
+    background: rgba(30, 30, 30, 0.86);
+    border: 1px solid rgba(240, 185, 95, 0.58);
     border-radius: 8px;
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.68),
@@ -981,14 +981,14 @@
     min-height: 42px;
     margin-top: 5px;
     padding: 8px 18px;
-    color: #17130a;
+    color: var(--fond);
     font-family: Impact, Haettenschweiler, "Arial Black", ui-sans-serif, sans-serif;
     font-size: 1.04rem;
     font-weight: 900;
     line-height: 1;
     text-transform: uppercase;
-    background: #ffd24a;
-    border: 2px solid #fff1ad;
+    background: var(--menace);
+    border: 2px solid var(--menace-clair);
     border-radius: 7px;
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.68), 0 6px 16px rgba(0, 0, 0, 0.42);
     cursor: pointer;
@@ -1019,8 +1019,8 @@
     padding: 9px 13px 10px;
     color: #f8fafc;
     text-align: center;
-    background: rgba(8, 10, 14, 0.84);
-    border: 1px solid rgba(255, 210, 74, 0.52);
+    background: rgba(30, 30, 30, 0.84);
+    border: 1px solid rgba(240, 185, 95, 0.52);
     border-radius: 8px;
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.68),
@@ -1189,7 +1189,7 @@
     color: #cbd5e1;
     font-size: 0.82rem;
     font-weight: 900;
-    background: rgba(8, 10, 14, 0.74);
+    background: rgba(30, 30, 30, 0.74);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 7px;
   }
@@ -1200,7 +1200,7 @@
     height: 28px;
     display: inline-grid;
     place-items: center;
-    color: #101317;
+    color: var(--fond);
     background: #f8fafc;
     border: 1px solid rgba(255, 255, 255, 0.74);
     border-radius: 50%;
@@ -1216,49 +1216,49 @@
   }
 
   .tonalite-attack {
-    --action-bg: #d93632;
-    --action-border: #ffb0a8;
+    --action-bg: var(--rouge-vif);
+    --action-border: var(--rouge-clair);
   }
 
   .tonalite-thwart {
-    --action-bg: #2477d8;
-    --action-border: #a9d5ff;
+    --action-bg: var(--info-fonce);
+    --action-border: var(--info);
   }
 
   .tonalite-recover {
-    --action-bg: #2f9d62;
-    --action-border: #a8f0c4;
+    --action-bg: var(--soin);
+    --action-border: var(--soin-clair);
   }
 
   .tonalite-defense {
-    --action-bg: #168f9f;
-    --action-border: #a6f1f7;
+    --action-bg: var(--fond-nuit);
+    --action-border: var(--info);
   }
 
   .tonalite-play {
-    --action-bg: #ffd45a;
-    --action-border: #fff1ad;
+    --action-bg: var(--menace);
+    --action-border: var(--menace-clair);
     color: #14100a;
   }
 
   .tonalite-change {
     --action-bg: #f8fafc;
     --action-border: #ffffff;
-    color: #111827;
+    color: var(--fond);
   }
 
   .tonalite-play .assistant-simple-action,
   .tonalite-change .assistant-simple-action {
-    color: #111827;
+    color: var(--fond);
   }
 
   .tonalite-ability {
-    --action-bg: #7c4fd6;
-    --action-border: #d9c6ff;
+    --action-bg: var(--statut);
+    --action-border: var(--statut-clair);
   }
 
   .tonalite-general {
-    --action-bg: #374151;
+    --action-bg: var(--cadre);
     --action-border: #cbd5e1;
   }
 
@@ -1275,7 +1275,7 @@
     min-height: 58px;
     padding: 8px 12px;
     color: #f8fafc;
-    background: rgba(10, 12, 16, 0.94);
+    background: rgba(30, 30, 30, 0.94);
     border-top: 1px solid rgba(255, 255, 255, 0.14);
   }
 
@@ -1283,7 +1283,7 @@
     min-height: 46px;
     padding: 6px 10px;
     gap: 6px 12px;
-    background: rgba(8, 10, 14, 0.86);
+    background: rgba(30, 30, 30, 0.86);
   }
 
   .plateau-action-secondaire .plateau-action-texte strong {
@@ -1342,7 +1342,7 @@
 
   .plateau-action-nom {
     font-weight: 800;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .plateau-action-detail {
@@ -1382,11 +1382,11 @@
   }
 
   .pa-leg-play::before {
-    background: #47dc8b;
+    background: var(--camp-nous);
   }
 
   .pa-leg-target::before {
-    background: #ffd24a;
+    background: var(--menace);
   }
 
   .pa-leg-chosen::before {
@@ -1397,7 +1397,7 @@
   .pa-etape {
     font-size: 0.78rem;
     font-weight: 700;
-    color: #8ddff2;
+    color: var(--info);
   }
 
   /* Compteurs cibles / cout, chiffres bien lisibles. */
@@ -1431,7 +1431,7 @@
   }
 
   .pa-cost b {
-    color: #ffd24a;
+    color: var(--menace);
   }
 
   .plateau-action-boutons {
@@ -1451,7 +1451,7 @@
     font-size: 0.84rem;
     font-weight: 800;
     color: #f8fafc;
-    background: #1f2937;
+    background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 8px;
     cursor: pointer;
@@ -1471,13 +1471,13 @@
 
   .plateau-action button.primaire {
     color: #1b1300;
-    background: #ffd45a;
-    border-color: #fff1ad;
+    background: var(--menace);
+    border-color: var(--menace-clair);
   }
 
   .plateau-action button.primaire:disabled {
     color: #f8fafc;
-    background: #1f2937;
+    background: var(--cadre);
     border-color: rgba(255, 255, 255, 0.22);
   }
 
@@ -1509,8 +1509,8 @@
     padding: 10px 14px;
     color: #f8fafc;
     text-align: center;
-    background: rgba(8, 10, 14, 0.9);
-    border: 1px solid rgba(255, 210, 74, 0.66);
+    background: rgba(30, 30, 30, 0.9);
+    border: 1px solid rgba(240, 185, 95, 0.66);
     border-radius: 8px;
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
@@ -1547,14 +1547,14 @@
     font-weight: 900;
     line-height: 1.2;
     text-align: center;
-    background: rgba(8, 10, 14, 0.78);
+    background: rgba(30, 30, 30, 0.78);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 7px;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
   }
 
   .assistant-simple-indication {
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .assistant-action.mode-simple .assistant-boutons {
@@ -1575,7 +1575,7 @@
   }
 
   .assistant-eyebrow {
-    color: #8ddff2;
+    color: var(--info);
     font-size: 0.68rem;
     font-weight: 900;
     line-height: 1;
@@ -1597,7 +1597,7 @@
   }
 
   .assistant-resume {
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   /* ---- Coach du mode Découverte -----------------------------------------
@@ -1614,12 +1614,12 @@
     padding: 12px 14px;
     background: rgba(16, 18, 25, 0.94);
     border: 1px solid #2c313c;
-    border-left: 3px solid #8ddff2;
+    border-left: 3px solid var(--info);
     border-radius: 10px;
     pointer-events: none;
   }
   .coach-eyebrow {
-    color: #8ddff2;
+    color: var(--info);
     font-size: 0.66rem;
     font-weight: 900;
     line-height: 1;
@@ -1627,7 +1627,7 @@
   }
   .coach strong { color: #ffffff; font-size: 1rem; line-height: 1.15; }
   .coach p { margin: 2px 0 0; color: #cbd5e1; font-size: 0.82rem; line-height: 1.35; }
-  .coach-bravo { color: #ffd45a; font-weight: 900; font-size: 0.82rem; }
+  .coach-bravo { color: var(--menace); font-weight: 900; font-size: 0.82rem; }
   .coach-boutons { pointer-events: auto; display: flex; gap: 6px; margin-top: 8px; }
   .coach-boutons button {
     font: inherit;
@@ -1647,8 +1647,8 @@
     font: inherit;
     font-size: 0.76rem;
     font-weight: 900;
-    color: #0a0c10;
-    background: #8ddff2;
+    color: var(--fond);
+    background: var(--info);
     border: none;
     border-radius: 8px;
     padding: 6px 11px;
@@ -1658,7 +1658,7 @@
   /* Aide des actions reparties : une meme carte se clique plusieurs fois.
      Discrete mais lisible, elle n'apparait que quand c'est le cas. */
   .assistant-indice {
-    color: #8ddff2;
+    color: var(--info);
     font-size: 0.72rem;
     font-weight: 700;
     line-height: 1.2;
@@ -1695,9 +1695,9 @@
   }
 
   .assistant-confirmer {
-    color: #101317;
-    background: #ffd45a;
-    border-color: #fff1ad;
+    color: var(--fond);
+    background: var(--menace);
+    border-color: var(--menace-clair);
   }
 
   .assistant-confirmer:hover:not(:disabled) {
@@ -1731,10 +1731,10 @@
   }
 
   .assistant-slot.est-rempli {
-    color: #101317;
-    background: #ffd45a;
+    color: var(--fond);
+    background: var(--menace);
     border-style: solid;
-    border-color: #fff1ad;
+    border-color: var(--menace-clair);
   }
 
   .assistant-slot.est-r {
@@ -1748,13 +1748,13 @@
   }
 
   .assistant-slot.est-y {
-    background: #ffd45a;
-    color: #101317;
+    background: var(--menace);
+    color: var(--fond);
   }
 
   .assistant-slot.est-g {
     background: #8ddf8f;
-    color: #101317;
+    color: var(--fond);
   }
 
   .assistant-regles {
@@ -1809,7 +1809,7 @@
       transform: none;
       box-shadow:
         0 0 0 3px rgba(0, 0, 0, 0.7),
-        0 -8px 0 rgba(230, 36, 41, 0.34),
+        0 -8px 0 rgba(166, 0, 0, 0.34),
         0 -18px 44px rgba(0, 0, 0, 0.58);
     }
 
@@ -1910,7 +1910,7 @@
 
   .plateau-regardees .scan-card:hover,
   .plateau-regardees .scan-card:focus-visible {
-    --state-glow: rgba(120, 200, 255, 0.6);
+    --state-glow: rgba(150, 235, 255, 0.6);
   }
 
   /* Une UNITE = un porteur et ses upgrades glissees derriere lui. L'unite garde
@@ -1970,7 +1970,7 @@
     font-weight: 800;
     line-height: 1;
     color: #fff;
-    background: rgba(10, 12, 16, 0.92);
+    background: rgba(30, 30, 30, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 999px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1984,7 +1984,7 @@
 
   .stages-bouton:hover {
     background: rgba(34, 46, 62, 0.96);
-    border-color: #8ddff2;
+    border-color: var(--info);
   }
 
   /* --- Marqueurs de STATUT (Stunned / Confused / Tough) ---------------------
@@ -2122,7 +2122,7 @@
   }
 
   .plateau-scene .scan-card:hover {
-    --state-glow: rgba(120, 200, 255, 0.6);
+    --state-glow: rgba(150, 235, 255, 0.6);
   }
 
   /* --- Apercu au survol : grand, fixe, sur le cote droit --------------------
@@ -2347,7 +2347,7 @@
     --place: 1078px;
     --mc-zoom-origine: center top;
     /* Accent « menace » : le vilain fait partie du camp adverse. */
-    border-color: rgba(230, 36, 41, 0.28);
+    border-color: rgba(166, 0, 0, 0.28);
   }
 
   /* Aire joueur, rangee haute : la ligne de combat, teintee comme la menace
@@ -2356,8 +2356,8 @@
     grid-area: terrain-combat;
     --place: 1078px;
     --mc-zoom-origine: center bottom;
-    border-color: rgba(230, 36, 41, 0.24);
-    background: rgba(230, 36, 41, 0.045);
+    border-color: rgba(166, 0, 0, 0.24);
+    background: rgba(166, 0, 0, 0.045);
   }
 
   /* Aire joueur, rangee basse : soutiens, permanents, ameliorations. */
@@ -2473,8 +2473,8 @@
     grid-area: nemesis;
     --mc-zoom-origine: left center;
     /* Menace personnelle en attente : accent rouge sombre, comme le camp adverse. */
-    border-color: rgba(230, 36, 41, 0.3);
-    background: rgba(230, 36, 41, 0.05);
+    border-color: rgba(166, 0, 0, 0.3);
+    background: rgba(166, 0, 0, 0.05);
   }
 
   .zone-main {
@@ -2577,7 +2577,7 @@
     font-weight: 900;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
     white-space: nowrap;
   }
 
@@ -2616,7 +2616,7 @@
     font-size: 0.78rem;
     font-weight: 800;
     color: #e8edf3;
-    background: #1f2937;
+    background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 6px;
     cursor: pointer;
@@ -2638,26 +2638,26 @@
   }
 
   .bh-history.est-ouvert {
-    color: #101317;
-    background: #ffd45a;
-    border-color: #fff1ad;
+    color: var(--fond);
+    background: var(--menace);
+    border-color: var(--menace-clair);
   }
 
   .bh-history em {
     min-width: 18px;
     padding: 1px 5px;
-    color: #101317;
+    color: var(--fond);
     font-size: 0.68rem;
     font-style: normal;
     font-weight: 900;
     text-align: center;
-    background: #ffd45a;
+    background: var(--menace);
     border-radius: 999px;
   }
 
   .bh-history.est-ouvert em {
     color: #f8fafc;
-    background: #111827;
+    background: var(--fond);
   }
 
   /* --- Tchat sur la table ---------------------------------------------------
@@ -2683,7 +2683,7 @@
   }
 
   .bh-salon-etat:hover {
-    background: #1f2937;
+    background: var(--cadre);
   }
 
   .salon-pastille {
@@ -2692,8 +2692,8 @@
     font-style: normal;
     font-weight: 900;
     font-size: 0.72rem;
-    color: #17130a;
-    background: #ffd24a;
+    color: var(--fond);
+    background: var(--menace);
     border-radius: 999px;
   }
 
@@ -2708,8 +2708,8 @@
     gap: 8px;
     padding: 10px;
     color: #f8fafc;
-    background: rgba(8, 10, 14, 0.96);
-    border: 1px solid rgba(255, 210, 74, 0.48);
+    background: rgba(30, 30, 30, 0.96);
+    border: 1px solid rgba(240, 185, 95, 0.48);
     border-radius: 8px;
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
@@ -2741,7 +2741,7 @@
     z-index: 540;
     padding: 14px 22px 16px;
     color: #f8fafc;
-    background: rgba(8, 10, 14, 0.94);
+    background: rgba(30, 30, 30, 0.94);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 12px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
@@ -2759,7 +2759,7 @@
     z-index: 110;
     /* Assez clair pour que la table reste lisible derriere la bande : le
        joueur veut continuer a voir sa manigance monter et son heros. */
-    background: rgba(4, 6, 10, 0.45);
+    background: rgba(20, 20, 20, 0.45);
     pointer-events: none;
   }
 
@@ -2769,16 +2769,16 @@
   .deroule-question .plateau-scene .zone-main {
     position: relative;
     z-index: 120;
-    box-shadow: 0 -18px 40px rgba(240, 19, 30, 0.28);
-    background: rgba(240, 19, 30, 0.06);
+    box-shadow: 0 -18px 40px rgba(166, 0, 0, 0.28);
+    background: rgba(166, 0, 0, 0.06);
     border-radius: 10px;
   }
 
   .deroule-phase.est-question {
     bottom: 34vh;
-    border-color: rgba(240, 19, 30, 0.7);
+    border-color: rgba(166, 0, 0, 0.7);
     box-shadow:
-      0 0 0 2px rgba(240, 19, 30, 0.45),
+      0 0 0 2px rgba(166, 0, 0, 0.45),
       0 30px 80px rgba(0, 0, 0, 0.7);
   }
 
@@ -2790,7 +2790,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #fff;
-    background: #F0131E;
+    background: var(--rouge-vif);
     border-radius: 12px 12px 0 0;
   }
 
@@ -2860,7 +2860,7 @@
     font-size: 1.15rem;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: #0b0d12;
+    color: var(--fond);
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.55),
       0 10px 22px rgba(0, 0, 0, 0.6);
@@ -2868,11 +2868,11 @@
   }
 
   .deroule-jeton.est-menace {
-    background: #ffd24a;
+    background: var(--menace);
   }
 
   .deroule-jeton.est-degats {
-    background: #F0131E;
+    background: var(--rouge-vif);
     color: #fff;
   }
 
@@ -2951,14 +2951,14 @@
     font-weight: 900;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #ffd24a;
+    color: var(--menace);
   }
 
   .deroule-fleche {
     font-size: 2.6rem;
     line-height: 1;
-    color: #F0131E;
-    text-shadow: 0 0 18px rgba(240, 19, 30, 0.6);
+    color: var(--rouge-vif);
+    text-shadow: 0 0 18px rgba(166, 0, 0, 0.6);
   }
 
   /* Ecran etroit : les cartes retrecissent avant de passer a la ligne. */
@@ -2993,11 +2993,11 @@
     background: linear-gradient(
       90deg,
       transparent,
-      #F0131E 12%,
-      #F0131E 88%,
+      var(--rouge-vif) 12%,
+      var(--rouge-vif) 88%,
       transparent
     );
-    box-shadow: 0 0 40px rgba(240, 19, 30, 0.6);
+    box-shadow: 0 0 40px rgba(166, 0, 0, 0.6);
     pointer-events: none;
     animation: bandeau-traverse 520ms ease-out;
   }
@@ -3165,7 +3165,7 @@
     font-size: 0.95rem;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: #ffd24a;
+    color: var(--menace);
     white-space: nowrap;
   }
 
@@ -3181,7 +3181,7 @@
   /* La chute d'un heros. La seule ligne du cartouche qui ne ressemble a aucune
      autre : c'est le moment le plus important d'une partie, il ne doit pas
      defiler comme les autres. Meme rouge que le trait de cible et les boosts
-     (#F0131E), mais en bandeau plein largeur, et en capitales. */
+     (var(--rouge-vif)), mais en bandeau plein largeur, et en capitales. */
   .deroule-defaite {
     margin: 0 0 8px;
     padding: 6px 10px;
@@ -3190,8 +3190,8 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #ffe3e3;
-    background: rgba(240, 19, 30, 0.22);
-    border-left: 3px solid #F0131E;
+    background: rgba(166, 0, 0, 0.22);
+    border-left: 3px solid var(--rouge-vif);
     border-radius: 4px;
   }
 
@@ -3223,15 +3223,15 @@
     gap: 6px;
     padding: 4px 8px;
     font-size: 0.82rem;
-    background: rgba(240, 19, 30, 0.16);
-    border: 1px solid rgba(240, 19, 30, 0.5);
+    background: rgba(166, 0, 0, 0.16);
+    border: 1px solid rgba(166, 0, 0, 0.5);
     border-radius: 6px;
     animation: deroule-boost-entre 220ms ease-out;
   }
 
   .deroule-boosts li span {
     font-weight: 900;
-    color: #ffd24a;
+    color: var(--menace);
   }
 
   @keyframes deroule-boost-entre {
@@ -3280,7 +3280,7 @@
     flex: none;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: #ffd24a;
+    color: var(--menace);
     white-space: nowrap;
   }
 
@@ -3346,7 +3346,7 @@
     margin-right: auto;
     font-size: 0.78rem;
     font-style: italic;
-    color: rgba(255, 212, 90, 0.72);
+    color: rgba(240, 185, 95, 0.72);
   }
 
   /* « Temps par décision réglé : le moteur n'attend pas ». Une mention, pas une
@@ -3381,7 +3381,7 @@
     margin: 0;
     font-size: 0.82rem;
     font-weight: 800;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   /* « tu peux défendre ou répondre » : la fenetre de reponse, sous une etape
@@ -3393,7 +3393,7 @@
     margin: 4px 0 0;
     font-size: 0.82rem;
     font-weight: 800;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .deroule-phase.est-replie .deroule-titre {
@@ -3445,12 +3445,12 @@
 
   /* Les notres, cotes a droite : on retrouve d'un coup d'oeil qui a dit quoi. */
   .salon-message.est-moi {
-    background: rgba(255, 210, 74, 0.14);
+    background: rgba(240, 185, 95, 0.14);
   }
 
   .salon-message b {
     font-size: 0.72rem;
-    color: #ffd24a;
+    color: var(--menace);
   }
 
   .salon-saisie {
@@ -3469,7 +3469,7 @@
   }
 
   .salon-saisie input:focus-visible {
-    outline: 2px solid rgba(255, 210, 74, 0.7);
+    outline: 2px solid rgba(240, 185, 95, 0.7);
     outline-offset: 1px;
   }
 
@@ -3483,8 +3483,8 @@
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     color: #f8fafc;
-    background: rgba(8, 10, 14, 0.96);
-    border: 1px solid rgba(255, 210, 74, 0.48);
+    background: rgba(30, 30, 30, 0.96);
+    border: 1px solid rgba(240, 185, 95, 0.48);
     border-radius: 8px;
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
@@ -3562,7 +3562,7 @@
     background: rgba(31, 41, 55, 0.62);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 7px;
-    box-shadow: inset 3px 0 0 var(--hp-accent, #8ddff2);
+    box-shadow: inset 3px 0 0 var(--hp-accent, var(--info));
   }
 
   .hp-round,
@@ -3572,7 +3572,7 @@
     place-items: center;
     padding: 0 5px;
     color: #cbd5e1;
-    background: rgba(8, 10, 14, 0.6);
+    background: rgba(30, 30, 30, 0.6);
     border-radius: 5px;
     font-size: 0.64rem;
     font-weight: 900;
@@ -3580,8 +3580,8 @@
   }
 
   .hp-type {
-    color: #101317;
-    background: var(--hp-accent, #8ddff2);
+    color: var(--fond);
+    background: var(--hp-accent, var(--info));
   }
 
   .hp-texte {
@@ -3605,7 +3605,7 @@
   }
 
   .hp-entree.type-card {
-    --hp-accent: #ffd45a;
+    --hp-accent: var(--menace);
   }
 
   .hp-entree.type-damage {
@@ -3613,7 +3613,7 @@
   }
 
   .hp-entree.type-heal {
-    --hp-accent: #47dc8b;
+    --hp-accent: var(--camp-nous);
   }
 
   .hp-entree.type-threat {
@@ -3621,7 +3621,7 @@
   }
 
   .hp-entree.type-phase {
-    --hp-accent: #d9c6ff;
+    --hp-accent: var(--statut-clair);
   }
 
   .bh-bouton span {
@@ -3640,14 +3640,14 @@
   }
 
   .bh-save.est-erreur {
-    color: #ffb4a8;
+    color: var(--rouge-clair);
     background: rgba(190, 60, 42, 0.28);
     border-color: rgba(255, 120, 96, 0.5);
   }
 
   .bh-anim.est-actif {
-    color: #ffd45a;
-    border-color: rgba(255, 212, 90, 0.4);
+    color: var(--menace);
+    border-color: rgba(240, 185, 95, 0.4);
   }
 
   /* Selecteur de VUE (hot-seat) : Auto suit le joueur qui doit agir ; un bouton
@@ -3669,9 +3669,9 @@
   }
 
   .bh-vue .bh-bouton.est-actif {
-    color: #ffd45a;
-    border-color: rgba(255, 212, 90, 0.5);
-    background: rgba(255, 212, 90, 0.12);
+    color: var(--menace);
+    border-color: rgba(240, 185, 95, 0.5);
+    background: rgba(240, 185, 95, 0.12);
   }
 
   /* Coupe-son du header. L'etat MUET est le plus important a lire d'un coup
@@ -3684,9 +3684,9 @@
   }
 
   .bh-musique.est-actif {
-    color: #ffd45a;
-    border-color: rgba(255, 212, 90, 0.5);
-    background: rgba(255, 212, 90, 0.12);
+    color: var(--menace);
+    border-color: rgba(240, 185, 95, 0.5);
+    background: rgba(240, 185, 95, 0.12);
   }
 
   .bh-musique:not(.est-actif) {
@@ -4140,9 +4140,9 @@
     font: inherit;
     font-weight: 900;
     letter-spacing: 0.02em;
-    color: #101317;
-    background: #ffd45a;
-    border: 1px solid #fff1ad;
+    color: var(--fond);
+    background: var(--menace);
+    border: 1px solid var(--menace-clair);
     border-radius: 9px;
     cursor: pointer;
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
@@ -4160,7 +4160,7 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(4, 6, 10, 0.82);
+    background: rgba(20, 20, 20, 0.82);
     backdrop-filter: blur(5px);
   }
 
@@ -4172,7 +4172,7 @@
     gap: 12px;
     padding: 16px 18px;
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(22, 27, 35, 0.99), rgba(10, 12, 16, 0.99));
+    background: linear-gradient(180deg, rgba(45, 55, 70, 0.99), rgba(30, 30, 30, 0.99));
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.6), 0 26px 70px rgba(0, 0, 0, 0.7);
   }
@@ -4208,7 +4208,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .arts-choix {
@@ -4244,9 +4244,9 @@
   }
 
   .arts-option.est-actif {
-    color: #ffd45a;
-    border-color: #ffd45a;
-    background: rgba(255, 212, 90, 0.14);
+    color: var(--menace);
+    border-color: var(--menace);
+    background: rgba(240, 185, 95, 0.14);
   }
 
   /* --- Ecran de fin de partie ---------------------------------------------- */
@@ -4257,7 +4257,7 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgba(4, 6, 10, 0.82);
+    background: rgba(20, 20, 20, 0.82);
     backdrop-filter: blur(6px);
     animation: fin-partie-fond 200ms ease-out;
   }
@@ -4270,17 +4270,17 @@
     padding: 34px 40px;
     text-align: center;
     border-radius: 16px;
-    background: linear-gradient(180deg, rgba(22, 27, 35, 0.98), rgba(10, 12, 16, 0.98));
-    border: 2px solid var(--fin-accent, #ffd45a);
+    background: linear-gradient(180deg, rgba(45, 55, 70, 0.98), rgba(30, 30, 30, 0.98));
+    border: 2px solid var(--fin-accent, var(--menace));
     box-shadow:
       0 0 0 4px rgba(0, 0, 0, 0.5),
       0 30px 80px rgba(0, 0, 0, 0.6),
-      0 0 60px -10px var(--fin-accent, #ffd45a);
+      0 0 60px -10px var(--fin-accent, var(--menace));
     animation: fin-partie-entre 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
   }
 
   .fin-partie.est-victoire {
-    --fin-accent: #ffd45a;
+    --fin-accent: var(--menace);
   }
 
   .fin-partie.est-defaite {
@@ -4314,7 +4314,7 @@
     padding: 11px 26px;
     font: inherit;
     font-weight: 900;
-    color: #101317;
+    color: var(--fond);
     background: var(--fin-accent);
     border: none;
     border-radius: 9px;
@@ -4628,7 +4628,7 @@
   }
 
   .ligne-option.est-actif .ligne-option-etat {
-    color: #7fd77f;
+    color: var(--camp-nous-clair);
   }
 
   /* L'apercu d'ambiance n'est pas un interrupteur : c'est un etabli. Sa ligne
@@ -4648,7 +4648,7 @@
   .ligne-option.est-desactive,
   .ligne-option.est-desactive:hover,
   .ligne-option.est-desactive .ligne-option-etat {
-    color: #5b6672;
+    color: var(--cadre-clair);
     cursor: not-allowed;
   }
 
@@ -4657,18 +4657,18 @@
   }
 
   .apercu-pastilles.est-desactive .pastille {
-    color: #5b6672;
+    color: var(--cadre-clair);
     cursor: not-allowed;
   }
 
   .apercu-pastilles.est-desactive .pastille:hover {
     background: rgba(255, 255, 255, 0.04);
-    color: #5b6672;
+    color: var(--cadre-clair);
   }
 
   .apercu-pastilles.est-desactive .pastille.est-actif {
     background: rgba(255, 255, 255, 0.08);
-    color: #5b6672;
+    color: var(--cadre-clair);
     border-color: rgba(255, 255, 255, 0.1);
   }
 
@@ -4698,9 +4698,9 @@
   }
 
   .pastille.est-actif {
-    color: #0b0c10;
-    background: #7fd77f;
-    border-color: #7fd77f;
+    color: var(--fond);
+    background: var(--camp-nous-clair);
+    border-color: var(--camp-nous-clair);
   }
 
   /* Meme espacement que .apercu-pastilles : une ligne-option "etabli" au
@@ -4842,11 +4842,11 @@
     gap: 10px;
     padding: 10px 22px;
     font-weight: 900;
-    color: #ffd45a;
+    color: var(--menace);
     background: linear-gradient(180deg, rgba(30, 26, 8, 0.97), rgba(16, 13, 4, 0.97));
-    border: 1px solid #ffd45a;
+    border: 1px solid var(--menace);
     border-radius: 99px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px #ffd45a;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px var(--menace);
     animation: succes-entre 300ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
   }
 
@@ -4880,21 +4880,21 @@
     pointer-events: none;
     background: radial-gradient(
       ellipse at center,
-      rgba(4, 6, 10, 0.74),
-      rgba(4, 6, 10, 0.34) 58%,
+      rgba(20, 20, 20, 0.74),
+      rgba(20, 20, 20, 0.34) 58%,
       transparent 78%
     );
     animation: splash-tour-fond 2200ms ease-out both;
   }
 
   .splash-tour.est-heros {
-    --splash-accent: #ffd45a;
-    --splash-lueur: rgba(255, 212, 90, 0.42);
+    --splash-accent: var(--menace);
+    --splash-lueur: rgba(240, 185, 95, 0.42);
   }
 
   .splash-tour.est-mechant {
-    --splash-accent: #e5484d;
-    --splash-lueur: rgba(229, 72, 77, 0.42);
+    --splash-accent: var(--rouge-vif);
+    --splash-lueur: rgba(166, 0, 0, 0.42);
   }
 
   .splash-tour-carte {
@@ -4903,13 +4903,13 @@
     gap: 10px;
     padding: 30px clamp(36px, 8vw, 90px);
     text-align: center;
-    border-top: 2px solid var(--splash-accent, #ffd45a);
-    border-bottom: 2px solid var(--splash-accent, #ffd45a);
+    border-top: 2px solid var(--splash-accent, var(--menace));
+    border-bottom: 2px solid var(--splash-accent, var(--menace));
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(10, 12, 16, 0.94) 16%,
-      rgba(10, 12, 16, 0.94) 84%,
+      rgba(30, 30, 30, 0.94) 16%,
+      rgba(30, 30, 30, 0.94) 84%,
       transparent
     );
     animation: splash-tour-entre 2200ms cubic-bezier(0.16, 0.84, 0.44, 1) both;
@@ -4920,7 +4920,7 @@
     font-weight: 800;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--splash-accent, #ffd45a);
+    color: var(--splash-accent, var(--menace));
   }
 
   .splash-tour-titre {
@@ -4930,7 +4930,7 @@
     letter-spacing: 0.015em;
     text-transform: uppercase;
     color: #fff;
-    text-shadow: 0 0 28px var(--splash-lueur, rgba(255, 212, 90, 0.42));
+    text-shadow: 0 0 28px var(--splash-lueur, rgba(240, 185, 95, 0.42));
   }
 
   .splash-tour-soustitre {
@@ -4976,10 +4976,10 @@
      du moteur — mais en cyan : deux systèmes distincts, deux couleurs, pour
      qu'on sache d'un coup d'oeil lequel vient de se déclencher. */
   .banniere-succes.est-haut-fait {
-    color: #7fe3ff;
+    color: var(--info);
     background: linear-gradient(180deg, rgba(8, 26, 32, 0.97), rgba(4, 14, 18, 0.97));
-    border-color: #7fe3ff;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px #7fe3ff;
+    border-color: var(--info);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 24px -6px var(--info);
   }
 
   .banniere-succes.est-haut-fait .banniere-succes-eyebrow {
@@ -5015,7 +5015,7 @@
     gap: 8px;
     padding: 6px 12px;
     font-weight: 700;
-    color: #7fe3ff;
+    color: var(--info);
     background: rgba(127, 227, 255, 0.08);
     border: 1px solid rgba(127, 227, 255, 0.3);
     border-radius: 99px;
@@ -5046,7 +5046,7 @@
     flex-direction: column;
     padding: 8px 8px 8px;
     border-radius: 10px;
-    background: rgba(8, 10, 14, 0.96);
+    background: rgba(30, 30, 30, 0.96);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 24px 58px rgba(0, 0, 0, 0.64);
   }
@@ -5127,9 +5127,9 @@
     line-height: 1.25;
   }
 
-  .journal-heros-entree.type-damage { --jh-teinte: #e5484d; }
+  .journal-heros-entree.type-damage { --jh-teinte: var(--rouge-vif); }
   .journal-heros-entree.type-heal { --jh-teinte: #35a865; }
-  .journal-heros-entree.type-threat { --jh-teinte: #ffd45a; }
+  .journal-heros-entree.type-threat { --jh-teinte: var(--menace); }
   .journal-heros-entree.type-card { --jh-teinte: #4aa8ff; }
   .journal-heros-entree.type-phase { --jh-teinte: rgba(255, 255, 255, 0.4); }
 
@@ -5180,7 +5180,7 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgba(4, 6, 10, 0.72);
+    background: rgba(20, 20, 20, 0.72);
     backdrop-filter: blur(4px);
   }
 
@@ -5193,7 +5193,7 @@
     padding: 22px 26px;
     border-radius: 14px;
     background: linear-gradient(180deg, rgba(26, 18, 20, 0.98), rgba(12, 9, 10, 0.98));
-    border: 2px solid #e5484d;
+    border: 2px solid var(--rouge-vif);
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
   }
 
@@ -5224,7 +5224,7 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: rgba(229, 72, 77, 0.9);
+    background: rgba(166, 0, 0, 0.9);
     color: #fff;
     font-style: normal;
     font-size: 0.62rem;
@@ -5233,7 +5233,7 @@
 
   .recap-mechant-total {
     margin-left: auto;
-    color: #ffd45a;
+    color: var(--menace);
     font-size: 0.72rem;
     font-weight: 900;
     letter-spacing: 0;
@@ -5296,7 +5296,7 @@
 
   .recap-ligne.est-manigance > .recap-mechant-fait b,
   .recap-ligne.est-menace > .recap-mechant-fait b {
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   /* Une activation qu'une carte a provoquée se range SOUS elle, décalée : on
@@ -5375,7 +5375,7 @@
   }
 
   .recap-mechant-chiffre {
-    color: #ffd45a;
+    color: var(--menace);
     font-size: 0.78rem;
     font-weight: 900;
     white-space: nowrap;
@@ -5387,7 +5387,7 @@
     padding: 9px 26px;
     font-weight: 800;
     color: #0d0d0f;
-    background: #e5484d;
+    background: var(--rouge-vif);
     border: none;
     border-radius: 99px;
     cursor: pointer;
@@ -5440,15 +5440,15 @@
   }
 
   .bandeau-absent-texte { color: #f4d08a; font-size: 0.9rem; }
-  .bandeau-absent-texte b { color: #ffd45a; }
+  .bandeau-absent-texte b { color: var(--menace); }
   .bandeau-absent-detail { color: rgba(255, 255, 255, 0.5); font-size: 0.74rem; }
 
   .bandeau-absent-agir {
     flex: none;
     padding: 6px 14px;
     font-weight: 800;
-    color: #0d0f13;
-    background: #ffd45a;
+    color: var(--fond);
+    background: var(--menace);
     border: none;
     border-radius: 99px;
     cursor: pointer;
@@ -5665,7 +5665,7 @@
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .camp-recomp-titre {
@@ -5701,8 +5701,8 @@
   /* Un relevé du moteur n'est pas une question posée au joueur : il se lit
      comme un constat, en retrait. Un vrai choix, lui, s'assume. */
   .camp-champ.est-choix {
-    border-color: rgba(255, 212, 90, 0.45);
-    background: rgba(255, 212, 90, 0.07);
+    border-color: rgba(240, 185, 95, 0.45);
+    background: rgba(240, 185, 95, 0.07);
   }
 
   .camp-champ-tete {
@@ -5725,7 +5725,7 @@
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: #7fe3ff;
+    color: var(--info);
     padding: 2px 7px;
     border-radius: 99px;
     border: 1px solid rgba(127, 227, 255, 0.35);
@@ -5805,8 +5805,8 @@
 
   .camp-carte.sel {
     opacity: 1;
-    border-color: #ffd45a;
-    box-shadow: 0 0 16px -2px rgba(255, 212, 90, 0.7);
+    border-color: var(--menace);
+    box-shadow: 0 0 16px -2px rgba(240, 185, 95, 0.7);
   }
 
   .camp-recomp-actions {
@@ -5818,8 +5818,8 @@
   .camp-recomp-valider {
     padding: 13px 26px;
     border-radius: 8px;
-    border: 1px solid #ffd45a;
-    background: linear-gradient(160deg, rgba(255, 212, 90, 0.9), rgba(200, 150, 20, 0.9));
+    border: 1px solid var(--menace);
+    background: linear-gradient(160deg, rgba(240, 185, 95, 0.9), rgba(200, 150, 20, 0.9));
     color: #14100a;
     font-weight: 900;
     font-size: 13px;
@@ -5865,9 +5865,9 @@
   .camp-recomp-reprise {
     margin: 0;
     padding: 10px 12px;
-    border: 1px solid rgba(255, 212, 90, 0.35);
-    border-left: 3px solid #ffd45a;
-    background: rgba(255, 212, 90, 0.08);
+    border: 1px solid rgba(240, 185, 95, 0.35);
+    border-left: 3px solid var(--menace);
+    background: rgba(240, 185, 95, 0.08);
     font-size: 13px;
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.85);
@@ -5876,7 +5876,7 @@
   .camp-recomp-reprise-compte {
     margin-top: 8px !important;
     font-weight: 700;
-    color: #ffd45a;
+    color: var(--menace);
   }
 }
 
@@ -5923,7 +5923,7 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(4, 6, 10, 0.78);
+    background: rgba(20, 20, 20, 0.78);
     backdrop-filter: blur(5px);
     animation: confirm-voile-entre 120ms ease-out;
   }
@@ -5934,7 +5934,7 @@
     gap: 10px;
     padding: 18px 20px 16px;
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(22, 27, 35, 0.99), rgba(10, 12, 16, 0.99));
+    background: linear-gradient(180deg, rgba(45, 55, 70, 0.99), rgba(30, 30, 30, 0.99));
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.6), 0 26px 70px rgba(0, 0, 0, 0.7);
     animation: confirm-modale-entre 150ms ease-out;
@@ -5983,8 +5983,8 @@
   }
 
   .confirm-oui {
-    border: 1px solid rgba(255, 212, 90, 0.55);
-    background: linear-gradient(180deg, #ffd45a, #e5a713);
+    border: 1px solid rgba(240, 185, 95, 0.55);
+    background: linear-gradient(180deg, var(--menace), #e5a713);
     color: #221a04;
   }
 
@@ -5999,7 +5999,7 @@
   /* Action perdante (quitter, écraser une partie) : le bouton cesse d'être
      doré. La couleur porte l'avertissement que le texte énonce. */
   .confirm-modale.est-danger .confirm-oui {
-    border-color: rgba(230, 36, 41, 0.6);
+    border-color: rgba(166, 0, 0, 0.6);
     background: linear-gradient(180deg, #e94a4e, #b31d21);
     color: #ffffff;
   }
@@ -6085,7 +6085,7 @@
 }
 .pas-a-pas-degats { --pap-teinte: #ff5a4e; }
 .pas-a-pas-soin { --pap-teinte: #5ce08a; }
-.pas-a-pas-menace { --pap-teinte: #ffd24a; }
+.pas-a-pas-menace { --pap-teinte: var(--menace); }
 .pas-a-pas-revelation { --pap-teinte: #5ab6ff; }
 
 .pas-a-pas-chiffre {
@@ -6121,7 +6121,7 @@
   gap: 12px;
   padding: 7px 14px;
   color: var(--txt, #e8edf3);
-  background: rgba(10, 12, 16, 0.92);
+  background: rgba(30, 30, 30, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 10px;
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.6);
@@ -6143,7 +6143,7 @@
 
 /* Curseur de vitesse, dans le panneau Options. */
 .ligne-option-curseur { display: flex; align-items: center; gap: 10px; }
-.ligne-option-curseur input[type='range'] { flex: 1; min-width: 90px; accent-color: var(--gold, #ffd24a); }
+.ligne-option-curseur input[type='range'] { flex: 1; min-width: 90px; accent-color: var(--gold, var(--menace)); }
 
 @media (prefers-reduced-motion: reduce) {
   .pas-a-pas-halo, .pas-a-pas-chiffre { animation: none; }
@@ -6193,7 +6193,7 @@
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(4, 6, 10, 0.7);
+    background: rgba(20, 20, 20, 0.7);
     backdrop-filter: blur(4px);
     animation: confirm-voile-entre 120ms ease-out;
   }
@@ -6204,7 +6204,7 @@
     gap: 8px;
     padding: 18px 20px 16px;
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(22, 27, 35, 0.99), rgba(10, 12, 16, 0.99));
+    background: linear-gradient(180deg, rgba(45, 55, 70, 0.99), rgba(30, 30, 30, 0.99));
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.6), 0 26px 70px rgba(0, 0, 0, 0.7);
     animation: confirm-modale-entre 150ms ease-out;
@@ -6230,7 +6230,7 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .ambiance-texte {
@@ -6251,7 +6251,7 @@
   }
 
   .ambiance-case input {
-    accent-color: #ffd45a;
+    accent-color: var(--menace);
     cursor: pointer;
   }
 
@@ -6285,8 +6285,8 @@
   }
 
   .ambiance-oui {
-    border: 1px solid rgba(255, 212, 90, 0.55);
-    background: linear-gradient(180deg, #ffd45a, #e5a713);
+    border: 1px solid rgba(240, 185, 95, 0.55);
+    background: linear-gradient(180deg, var(--menace), #e5a713);
     color: #221a04;
   }
 

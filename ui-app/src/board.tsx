@@ -22,6 +22,7 @@ import {
 } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import '../styles/tokens.css'
+import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { BarreAction } from './board/BarreAction'

@@ -29,14 +29,14 @@
 :root{
   --ink:#07080c;
   /* Le rouge du logo Marvel. */
-  --agir:#e62429;
+  --agir:#780000;                       /* Hot Rod Red (palette Avengers, 7 sept. 2026) */
   --agir-encre:#ffffff;                 /* texte posé sur du rouge */
-  --agir-halo:rgba(230,36,41,.45);      /* anneau autour d'un élément choisi */
+  --agir-halo:rgba(166,0,0,.55);      /* anneau autour d'un élément choisi */
   --nous:#ffffff;                       /* notre camp, et le survol */
   --nous-halo:rgba(255,255,255,.18);
-  --eux:#e62429;                        /* le méchant, et lui seul */
-  --eux2:#ff4048;
-  --eux-halo:rgba(230,36,41,.42);
+  --eux:#a60000;                        /* le méchant, et lui seul */
+  --eux2:#c84b19;
+  --eux-halo:rgba(166,0,0,.5);
 
   /* Tailles. Le titre d'étape a perdu 8 px au profit des tuiles ; les modes
      ont une largeur plancher par tuile (cinq tuiles à 150 px tiennent sur
@@ -46,8 +46,8 @@
   /* Direction « Affiche » : le jaune d'énergie (tampons, sélection), l'ombre
      rouge des noms géants, la part de l'écran prise par la scène, la pente
      de la coupe, le cadrage vertical de l'art, la taille des portraits. */
-  --affiche-jaune:#ffd45a;
-  --affiche-ombre:8px 8px 0 #e62429;
+  --affiche-jaune:#f0b95f;
+  --affiche-ombre:8px 8px 0 #780000;
   --affiche-scene-w:58%;
   --affiche-pente:90px;
   --affiche-cadrage:18%;
@@ -322,7 +322,7 @@ button{cursor:pointer}
 .recap-k{color:var(--mute);text-transform:uppercase;font-size:11px;font-weight:900}
 .recap-v{color:var(--txt);font-weight:700;text-align:right}
 .recap-block{display:flex;flex-direction:column;gap:9px;padding-top:11px;border-top:1px solid var(--soft)}
-.recap-block.target{border-color:rgba(230,36,41,.36)}
+.recap-block.target{border-color:rgba(166,0,0,.36)}
 .recap-hero,.recap-scn{display:flex;gap:10px;align-items:center;min-width:0}
 .rh-name{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
 .rh-sub{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
@@ -331,12 +331,12 @@ button{cursor:pointer}
   width:48px;
   height:48px;
   flex:none;
-  background:#10141f center 22%/154% no-repeat;
+  background:#1e1e1e center 22%/154% no-repeat;
   border:1px solid var(--line);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
 }
 .portrait.mini{width:36px;height:36px}
-.portrait.villain{border-color:var(--red);box-shadow:0 0 0 1px rgba(230,36,41,.55)}
+.portrait.villain{border-color:var(--red);box-shadow:0 0 0 1px rgba(166,0,0,.55)}
 
 .nav{
   position:fixed;
@@ -366,7 +366,7 @@ button{cursor:pointer}
 }
 .btn.ghost{background:var(--steel);border-color:var(--line);color:var(--dim)}
 .btn.ghost:hover{color:#fff;border-color:var(--nous)}
-.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(230,36,41,.28)}
+.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(166,0,0,.28)}
 .btn.primary:hover,.btn.launch:hover{filter:brightness(1.08)}
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.5);transform:none;box-shadow:none}
@@ -864,7 +864,7 @@ button{cursor:pointer}
 .detail-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--soft);font-size:12px}
 .dr-k{color:var(--mute)}
 .dr-v{font-weight:800;text-align:right}
-.sd-badge{margin-top:9px;padding:7px;color:#fff;background:rgba(230,36,41,.18);border:1px solid var(--red)}
+.sd-badge{margin-top:9px;padding:7px;color:#fff;background:rgba(166,0,0,.18);border:1px solid var(--red)}
 
 .presets{
   display:grid;
@@ -907,7 +907,7 @@ button{cursor:pointer}
   font-size:12px;
   font-weight:800;
 }
-.mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(230,36,41,.22)}
+.mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(166,0,0,.22)}
 
 /* Le face à face : une splash page (7 septembre). L'écran entier est le fond
    du méchant ; notre camp est un panneau clair posé dessus, coupé en biais.
@@ -919,7 +919,7 @@ button{cursor:pointer}
   margin:0;overflow:hidden;
   border:0;
   background:
-    radial-gradient(ellipse at 78% 25%,rgba(230,36,41,.32),transparent 55%),
+    radial-gradient(ellipse at 78% 25%,rgba(166,0,0,.32),transparent 55%),
     linear-gradient(160deg,var(--fo-eux-fond),#0b0608 70%);
 }
 .face-a-face .faceoff::after{
@@ -948,9 +948,9 @@ button{cursor:pointer}
 .fo-scene{
   width:100%;
   aspect-ratio:3/4;
-  background:#10141f center 22%/215% no-repeat;
-  border:3px solid #111;
-  box-shadow:6px 6px 0 #111;
+  background:#1e1e1e center 22%/215% no-repeat;
+  border:3px solid #1e1e1e;
+  box-shadow:6px 6px 0 #1e1e1e;
   cursor:zoom-in;
 }
 .fo-scene.villain{background-size:205%;background-position:center 20%}
@@ -969,7 +969,7 @@ button{cursor:pointer}
   border:3px dashed rgba(0,0,0,.3);
 }
 .fo-reglages{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92%}
-.heroes-side .tampon{color:#fff;background:#1b2028;cursor:default}
+.heroes-side .tampon{color:#fff;background:#2d3746;cursor:default}
 /* L'étoile VS, dessinée comme sur une planche : une étoile noire dessous qui
    fait le contour, l'étoile de couleur par-dessus en dégradé, le mot en
    Bangers, et quatre éclats projetés autour. */
@@ -985,14 +985,14 @@ button{cursor:pointer}
   content:"";position:absolute;inset:0;
   clip-path:polygon(50% 0,60% 30%,88% 14%,79% 43%,100% 50%,79% 57%,88% 86%,60% 70%,50% 100%,40% 70%,12% 86%,21% 57%,0 50%,21% 43%,12% 14%,40% 30%);
 }
-.fo-vs::before{transform:scale(1.09);background:#111}
+.fo-vs::before{transform:scale(1.09);background:#1e1e1e}
 .fo-vs::after{background:radial-gradient(circle at 38% 32%,#fff3c4,var(--affiche-jaune) 45%,#e8a51c 100%)}
 .fo-vs span{
   position:relative;z-index:1;
   font-family:"Bangers",Impact,sans-serif;
   font-size:calc(var(--fo-etoile,240px) * .36);line-height:1;letter-spacing:.02em;
   color:var(--eux);
-  -webkit-text-stroke:3px #111;
+  -webkit-text-stroke:3px #1e1e1e;
   paint-order:stroke fill;
   text-shadow:0 4px 0 rgba(0,0,0,.35);
   transform:rotate(3deg);
@@ -1002,7 +1002,7 @@ button{cursor:pointer}
   position:absolute;z-index:0;
   width:calc(var(--fo-etoile,240px) * .12);height:calc(var(--fo-etoile,240px) * .12);
   background:var(--affiche-jaune);
-  border:3px solid #111;
+  border:3px solid #1e1e1e;
   transform:rotate(45deg);
 }
 .fo-eclat.e1{left:-14%;top:8%}
@@ -1017,14 +1017,14 @@ button{cursor:pointer}
 }
 .fo-vsub{text-align:center;color:var(--eux2);font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase}
 /* Les erreurs et le bloc « Avancé », sous la splash. */
-.face-a-face .errors{flex:none;margin:0;border:0;border-top:3px solid var(--eux);background:rgba(230,36,41,.14)}
-.face-a-face .avance{flex:none;max-width:none;margin:0;padding:0 22px;background:#0b0d12}
+.face-a-face .errors{flex:none;margin:0;border:0;border-top:3px solid var(--eux);background:rgba(166,0,0,.14)}
+.face-a-face .avance{flex:none;max-width:none;margin:0;padding:0 22px;background:#1e1e1e}
 .face-a-face .avance summary{padding:8px 0;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
 .face-a-face .avance[open] summary{color:var(--affiche-jaune)}
 .face-a-face .avance .cj-body{max-height:var(--affiche-avance-h,180px);overflow:auto;padding-bottom:10px}
 .sum-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .meta-pill{padding:8px 12px;color:var(--dim);border:1px solid var(--line);background:var(--steel);font-size:12px}
-.errors{padding:16px;border:1px solid var(--red);background:rgba(230,36,41,.12)}
+.errors{padding:16px;border:1px solid var(--red);background:rgba(166,0,0,.12)}
 .errors h3{font-size:30px;line-height:.9;color:var(--red2);text-transform:uppercase}
 .err{padding:7px 0;color:#fff;cursor:pointer;font-size:14px}
 .err:hover{color:var(--gold)}
@@ -1172,8 +1172,8 @@ button{cursor:pointer}
 .recap-block.team{gap:9px}
 .recap-slot{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:9px 11px;background:var(--steel);border:1px solid var(--line);color:var(--txt);transition:border-color var(--dur),background var(--dur),transform var(--dur)}
 .recap-slot:hover{border-color:var(--nous);transform:translateY(-1px)}
-.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(230,36,41,.18),var(--steel))}
-.portrait.team{width:62px;height:62px;flex:none;background:#10141f center 20%/158% no-repeat;border:1px solid var(--line);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(166,0,0,.18),var(--steel))}
+.portrait.team{width:62px;height:62px;flex:none;background:#1e1e1e center 20%/158% no-repeat;border:1px solid var(--line);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
 .recap-slot.active .portrait.team{border-color:var(--agir);box-shadow:0 0 0 1px var(--agir-halo)}
 .portrait.team.empty{display:grid;place-items:center;background:var(--ink)}
 .portrait.team.empty .plus{font-size:30px;line-height:1;color:var(--agir)}
@@ -1198,7 +1198,7 @@ button{cursor:pointer}
 .cn-num{position:absolute;top:8px;left:8px;z-index:2;width:30px;height:30px;display:grid;place-items:center;font-size:15px;font-weight:900;color:#fff;background:rgba(7,8,12,.82);border:1px solid var(--line);border-radius:50%}
 .camp-node.current .cn-num{background:var(--agir);border-color:var(--agir);color:var(--agir-encre)}
 .camp-node.done .cn-num{background:transparent;border-color:rgba(255,255,255,.45);color:var(--nous)}
-.cn-illus{height:150px;background:#10141f center 24%/150% no-repeat;border-bottom:1px solid var(--line)}
+.cn-illus{height:150px;background:#1e1e1e center 24%/150% no-repeat;border-bottom:1px solid var(--line)}
 .cn-name{padding:10px 12px 2px;font-size:19px;line-height:.92;text-transform:uppercase;color:#fff}
 .cn-meta{padding:0 12px;font-size:11px;color:var(--mute)}
 
@@ -1216,7 +1216,7 @@ button{cursor:pointer}
   background:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer;
   font-size:10px;font-weight:700;color:var(--mute);font-family:inherit;text-align:center;line-height:1.15}
 .ra-option:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
-.ra-option.sel{border-color:var(--gold);color:#fff;background:rgba(230,36,41,.14)}
+.ra-option.sel{border-color:var(--gold);color:#fff;background:rgba(166,0,0,.14)}
 .ra-vignette{width:100%;border-radius:4px;display:block;aspect-ratio:225/326;object-fit:cover}
 .ra-hasard{display:flex;align-items:center;justify-content:center;background:#1a1e27;
   color:var(--gold);font-size:24px;font-weight:900}
@@ -1273,25 +1273,25 @@ button{cursor:pointer}
   font-size:var(--affiche-recitatif,22px);
   letter-spacing:.06em;
   text-transform:uppercase;
-  color:#111;
+  color:#1e1e1e;
   background:var(--affiche-jaune);
-  border:3px solid #111;
-  box-shadow:4px 4px 0 #111;
+  border:3px solid #1e1e1e;
+  box-shadow:4px 4px 0 #1e1e1e;
 }
 .tampon{
   display:inline-flex;align-items:center;gap:6px;
   min-height:36px;padding:4px 14px;
   font-family:"Segoe UI",system-ui,sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.02em;
-  color:#fff;background:#1b2028;
-  border:3px solid #111;box-shadow:4px 4px 0 #111;
+  color:#fff;background:#2d3746;
+  border:3px solid #1e1e1e;box-shadow:4px 4px 0 #1e1e1e;
   transform:skewX(-10deg);
   cursor:pointer;
 }
 .tampon > *{transform:skewX(10deg)}
-.tampon.jaune,.tampon.on{color:#111;background:var(--affiche-jaune)}
-.tampon:hover{background:#fff;color:#111}
+.tampon.jaune,.tampon.on{color:#1e1e1e;background:var(--affiche-jaune)}
+.tampon:hover{background:#fff;color:#1e1e1e}
 select.tampon{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,#fff 50%),linear-gradient(135deg,#fff 50%,transparent 50%);background-position:calc(100% - 16px) 14px,calc(100% - 11px) 14px;background-size:5px 5px;background-repeat:no-repeat}
-select.tampon:hover{background-color:#fff;background-image:linear-gradient(45deg,transparent 50%,#111 50%),linear-gradient(135deg,#111 50%,transparent 50%)}
+select.tampon:hover{background-color:#fff;background-image:linear-gradient(45deg,transparent 50%,#1e1e1e 50%),linear-gradient(135deg,#1e1e1e 50%,transparent 50%)}
 h1.affiche,.tb-nomg{
   font-family:"Anton",Impact,"Arial Narrow",sans-serif;
   font-style:italic;
@@ -1306,16 +1306,16 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 
 /* --- L'étape des héros, plein écran --- */
 .stage-affiche{padding:0;overflow:hidden}
-.team-b{position:relative;height:calc(100dvh - 140px);min-height:520px;overflow:hidden;background:#101317}
+.team-b{position:relative;height:calc(100dvh - 140px);min-height:520px;overflow:hidden;background:#1e1e1e}
 .tb-scene{
   position:absolute;left:0;top:0;bottom:0;width:var(--affiche-scene-w,58%);
   overflow:hidden;
   clip-path:polygon(0 0,100% 0,calc(100% - var(--affiche-pente,90px)) 100%,0 100%);
-  background:#0b0d12;
+  background:#1e1e1e;
 }
-.tb-art{position:absolute;inset:0;background:#0b0d12 center var(--affiche-cadrage,18%)/cover no-repeat;animation:entre-en-scene .35s ease}
+.tb-art{position:absolute;inset:0;background:#1e1e1e center var(--affiche-cadrage,18%)/cover no-repeat;animation:entre-en-scene .35s ease}
 .tb-art .portrait-duo .portrait.duo{background-size:cover}
-.tb-art.vide{background:radial-gradient(ellipse at 40% 45%,#1d2430,#0b0d12 70%)}
+.tb-art.vide{background:radial-gradient(ellipse at 40% 45%,#1d2430,#1e1e1e 70%)}
 @keyframes entre-en-scene{from{opacity:0;transform:translateX(-30px) scale(1.03)}to{opacity:1;transform:none}}
 /* Le voile et la trame : l'art fond vers le noir à droite et en bas, avec les
    points de demi-teinte des comics dans la partie sombre. */
@@ -1323,7 +1323,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   content:"";position:absolute;inset:0;pointer-events:none;
   /* Le premier dégradé efface la colonne de chiffres imprimée à gauche des
      cartes (CTR / ATQ / DEF) : ce n'est pas le personnage. */
-  background:linear-gradient(90deg,#101317 0 5%,rgba(16,19,23,.92) 12%,transparent 24%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#101317 100%),linear-gradient(0deg,#101317 0,rgba(16,19,23,.6) 30%,transparent 55%);
+  background:linear-gradient(90deg,#1e1e1e 0 5%,rgba(16,19,23,.92) 12%,transparent 24%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#1e1e1e 100%),linear-gradient(0deg,#1e1e1e 0,rgba(16,19,23,.6) 30%,transparent 55%);
 }
 .tb-trame{
   position:absolute;inset:0;pointer-events:none;z-index:1;
@@ -1349,7 +1349,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-bas{position:absolute;left:40px;bottom:24px;z-index:3;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;max-width:calc(var(--affiche-scene-w,58%) - 60px)}
 .tb-bio{
   min-width:0;flex:0 1 auto;
-  background:rgba(8,10,14,.9);border:3px solid #111;
+  background:rgba(8,10,14,.9);border:3px solid #1e1e1e;
 }
 .tb-bio summary{cursor:pointer;padding:5px 12px;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 .tb-bio summary:hover{color:#fff}
@@ -1368,7 +1368,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   max-width:calc(var(--affiche-scene-w,58%) - 60px);
   display:flex;flex-direction:column;gap:3px;
   padding:8px 14px;
-  background:rgba(230,36,41,.16);border:3px solid var(--eux);
+  background:rgba(166,0,0,.16);border:3px solid var(--eux);
   font-size:13px;line-height:1.35;
 }
 .tb-defi b{font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--eux2)}
@@ -1383,7 +1383,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   max-width:86%;
   font-family:"Bangers",Impact,sans-serif;font-size:var(--affiche-cri,84px);line-height:.98;
   text-align:center;text-wrap:balance;
-  color:var(--affiche-jaune);-webkit-text-stroke:3px #111;text-shadow:6px 6px 0 #111;
+  color:var(--affiche-jaune);-webkit-text-stroke:3px #1e1e1e;text-shadow:6px 6px 0 #1e1e1e;
   transform:translateX(-50%) rotate(-10deg);
   animation:ono-claque .5s cubic-bezier(.2,1.4,.4,1) both;
 }
@@ -1409,8 +1409,8 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-mode{margin-left:auto;padding:4px 0;font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);background:none;border:0;cursor:pointer}
 .tb-mode:hover{color:#fff}
 .tb-filtres{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.tb-search{flex:1 1 200px;min-width:0;min-height:36px;border:3px solid #111;background:#0b0d12;box-shadow:4px 4px 0 #111}
-.tb-search:focus{border-color:var(--affiche-jaune);box-shadow:4px 4px 0 #111}
+.tb-search{flex:1 1 200px;min-width:0;min-height:36px;border:3px solid #1e1e1e;background:#1e1e1e;box-shadow:4px 4px 0 #1e1e1e}
+.tb-search:focus{border-color:var(--affiche-jaune);box-shadow:4px 4px 0 #1e1e1e}
 .tb-roster{
   flex:1 1 auto;min-height:0;max-height:none;
   display:grid;grid-template-columns:repeat(auto-fill,var(--affiche-portrait,104px));grid-auto-rows:var(--affiche-portrait-h,148px);justify-content:space-between;gap:8px;
@@ -1418,7 +1418,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 .tb-port{
   position:relative;overflow:hidden;
-  color:#fff;border:0;background:#1b2028;
+  color:#fff;border:0;background:#2d3746;
   clip-path:polygon(0 0,100% 0,100% 84%,84% 100%,0 100%);
   filter:saturate(.55) brightness(.72);
   transition:filter var(--dur),transform var(--dur);
@@ -1439,7 +1439,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-port .hc-fav{top:4px;left:4px;width:22px;height:22px;font-size:12px}
 .tb-port .hc-deck{top:29px;left:4px;width:22px;height:22px;font-size:11px}
 .tb-port:hover .hc-fav,.tb-port:hover .hc-deck,.tb-port .hc-fav.on{opacity:1}
-.tb-equipe{display:flex;align-items:flex-end;gap:10px;flex:none;padding-top:6px;border-top:3px solid #111}
+.tb-equipe{display:flex;align-items:flex-end;gap:10px;flex:none;padding-top:6px;border-top:3px solid #1e1e1e}
 .tb-equipe-k{align-self:center;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-right:4px}
 .tb-siege{
   position:relative;width:var(--affiche-siege,88px);aspect-ratio:4/5;overflow:hidden;
@@ -1476,7 +1476,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-carte{position:relative}
 .tb-carte img{
   display:block;width:100%;
-  border:3px solid #111;box-shadow:3px 3px 0 #111;
+  border:3px solid #1e1e1e;box-shadow:3px 3px 0 #1e1e1e;
   transition:transform var(--dur),box-shadow var(--dur);
 }
 .tb-carte img:hover{transform:translateY(-3px);box-shadow:3px 3px 0 var(--affiche-jaune)}
@@ -1489,20 +1489,20 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-choix-art{cursor:pointer}
 /* L'obligation et le set némésis : ce qui joue CONTRE le héros. Liseré ambre
    pour l'une, rouge pour l'autre, et une étiquette en pied de carte. */
-.tb-carte.obligation img{border-color:#e0a21a;box-shadow:3px 3px 0 #e0a21a}
+.tb-carte.obligation img{border-color:var(--affiche-jaune);box-shadow:3px 3px 0 var(--affiche-jaune)}
 .tb-carte.nemesis img{border-color:var(--eux);box-shadow:3px 3px 0 var(--eux)}
 .tb-carte-etiquette{
   position:absolute;left:0;right:0;bottom:0;
   padding:3px 6px;
   font:800 10px "Segoe UI",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;text-align:center;
-  color:#fff;background:rgba(8,10,14,.86);border-top:2px solid #111;
+  color:#fff;background:rgba(8,10,14,.86);border-top:2px solid #1e1e1e;
 }
-.tb-carte.obligation .tb-carte-etiquette{color:#e0a21a}
+.tb-carte.obligation .tb-carte-etiquette{color:var(--affiche-jaune)}
 .tb-carte.nemesis .tb-carte-etiquette{color:var(--eux2)}
 .tb-carte-n{
   position:absolute;top:6px;right:6px;
   padding:2px 7px;
-  color:#111;background:var(--affiche-jaune);border:2px solid #111;
+  color:#1e1e1e;background:var(--affiche-jaune);border:2px solid #1e1e1e;
   font-weight:900;font-size:12px;
 }
 /* La carte survolée, en grand sur la scène. */
@@ -1517,7 +1517,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-loupe img{
   max-height:100%;max-width:100%;width:auto;height:auto;
   object-fit:contain;
-  border:4px solid #111;box-shadow:10px 10px 0 #111,0 30px 60px rgba(0,0,0,.7);
+  border:4px solid #1e1e1e;box-shadow:10px 10px 0 #1e1e1e,0 30px 60px rgba(0,0,0,.7);
 }
 .tb-scene.loupe-ouverte .tb-nomg,
 .tb-scene.loupe-ouverte .tb-tampons,
@@ -1538,15 +1538,15 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-deck{
   padding:12px 14px;
   color:var(--txt);text-align:left;
-  border:3px solid #111;background:linear-gradient(180deg,var(--steel2),var(--steel));
-  box-shadow:4px 4px 0 #111;
+  border:3px solid #1e1e1e;background:linear-gradient(180deg,var(--steel2),var(--steel));
+  box-shadow:4px 4px 0 #1e1e1e;
   transition:transform var(--dur),box-shadow var(--dur);
 }
 .tb-deck:hover{transform:translateY(-2px);box-shadow:4px 4px 0 var(--nous)}
 .tb-deck.chosen{box-shadow:4px 4px 0 var(--affiche-jaune);border-color:var(--affiche-jaune)}
 .tb-deck .do-name{font-weight:900;font-size:14px;margin-bottom:7px;line-height:1.15}
 .tb-deck .do-foot{margin-top:6px}
-.tb-arsenal-outils{flex:none;display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:3px solid #111}
+.tb-arsenal-outils{flex:none;display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:3px solid #1e1e1e}
 .tb-arsenal-outils .tb-search{flex:1 1 200px}
 .tb-cosmetiques{max-height:var(--affiche-cosmetiques-h,190px);overflow:auto}
 .tb-cosmetiques summary{cursor:pointer;padding:6px 0;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
@@ -1563,7 +1563,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .team-b.eux .tb-scene{background:#12080a}
 .team-b.eux .tb-art.vide{background:radial-gradient(ellipse at 40% 45%,#3a1216,#0b0608 70%)}
 .team-b.eux .tb-scene::after{
-  background:linear-gradient(90deg,#101317 0 9%,rgba(16,19,23,.94) 17%,transparent 32%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#101317 100%),linear-gradient(0deg,#101317 0,rgba(16,19,23,.6) 30%,transparent 55%),radial-gradient(ellipse at 55% 40%,rgba(230,36,41,.28),transparent 60%);
+  background:linear-gradient(90deg,#1e1e1e 0 9%,rgba(16,19,23,.94) 17%,transparent 32%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#1e1e1e 100%),linear-gradient(0deg,#1e1e1e 0,rgba(16,19,23,.6) 30%,transparent 55%),radial-gradient(ellipse at 55% 40%,rgba(166,0,0,.28),transparent 60%);
 }
 .team-b.eux .tb-nomg{text-shadow:8px 8px 0 #000}
 .team-b.eux .tb-nomg small{color:var(--eux2)}
@@ -1571,22 +1571,22 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .team-b.eux .tb-compte{color:var(--eux2)}
 .team-b.eux .tb-port.chosen,
 .team-b.eux .tb-port.chosen::after{box-shadow:inset 0 0 0 3px var(--eux)}
-.team-b.eux .tampon.on{color:#fff;background:var(--eux);border-color:#111}
+.team-b.eux .tampon.on{color:#fff;background:var(--eux);border-color:#1e1e1e}
 .tampon.rouge{color:#fff;background:var(--eux)}
-.ono.rouge{color:var(--eux);-webkit-text-stroke:3px #111}
+.ono.rouge{color:var(--eux);-webkit-text-stroke:3px #1e1e1e}
 /* Les boîtes d'extension, en rangée d'onglets au-dessus de la grille. */
 .team-b .ext-tabs{flex:none;margin:0;padding-bottom:6px}
-.team-b .ext-tab{width:var(--boite-w);height:var(--boite-h);border:3px solid #111;box-shadow:3px 3px 0 #111}
+.team-b .ext-tab{width:var(--boite-w);height:var(--boite-h);border:3px solid #1e1e1e;box-shadow:3px 3px 0 #1e1e1e}
 .team-b .ext-tab.on{border-color:var(--eux);box-shadow:3px 3px 0 var(--eux)}
 .team-b .ext-tab:hover{border-color:#fff;box-shadow:3px 3px 0 #fff}
 /* La grille des scénarios : des portraits plus larges (les visuels de méchant
    sont des cartes paysage recadrées, un carré les coupe). */
 .tb-roster-scn{grid-template-columns:repeat(auto-fill,minmax(var(--affiche-cible,148px),1fr));grid-auto-rows:var(--affiche-cible-h,124px)}
 .tb-roster-scn .portrait{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:none;background-position:center 22%;background-size:150%}
-.tb-roster-scn .st-exp{z-index:2;top:5px;right:5px;padding:2px 6px;font-size:9px;border:2px solid #111;background:var(--eux)}
+.tb-roster-scn .st-exp{z-index:2;top:5px;right:5px;padding:2px 6px;font-size:9px;border:2px solid #1e1e1e;background:var(--eux)}
 .tb-roster-scn .st-exp + .st-exp{top:27px}
 /* Le niveau de menace, sous la grille. */
-.tb-menace{flex:none;display:flex;flex-direction:column;gap:8px;max-height:var(--affiche-menace-h,190px);overflow:auto;padding:10px 0;border-top:3px solid #111}
+.tb-menace{flex:none;display:flex;flex-direction:column;gap:8px;max-height:var(--affiche-menace-h,190px);overflow:auto;padding:10px 0;border-top:3px solid #1e1e1e}
 .tb-menace-ligne{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tb-menace-k{font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-right:2px}
 .tb-menace-vide{color:var(--mute);font-size:13px;font-style:italic}
@@ -1595,7 +1595,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-heroique b{min-width:14px;font-size:15px;color:#fff}
 .tb-menace .mod-chips{gap:6px}
 .tb-menace .mod-chip{border:2px solid #2a313d;font-size:11px;padding:5px 9px}
-.tb-menace .mod-chip.on{color:#fff;border-color:var(--eux);background:rgba(230,36,41,.24)}
+.tb-menace .mod-chip.on{color:#fff;border-color:var(--eux);background:rgba(166,0,0,.24)}
 .team-b.eux .tb-equipe{align-items:center}
 .tb-siege.petit{width:var(--affiche-siege-petit,60px)}
 .tb-siege.petit .tb-siege-nom{font-size:8px;padding:8px 3px 3px}
@@ -1603,7 +1603,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-siege.eux.plein{box-shadow:inset 0 0 0 3px var(--eux)}
 .tb-vs{font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:26px;color:#fff;margin:0 4px;text-shadow:3px 3px 0 var(--eux)}
 .team-b .target-docs{position:absolute;left:40px;bottom:6px;z-index:2;margin:0}
-.team-b .target-doc{border:2px solid #111;box-shadow:3px 3px 0 #111;background:#1b2028;font-size:11px}
+.team-b .target-doc{border:2px solid #1e1e1e;box-shadow:3px 3px 0 #1e1e1e;background:#2d3746;font-size:11px}
 
 /* --- L'accueil (refonte du 7 septembre) : le titre, et le choix du mode ---
    Plein écran, sans colonne de droite ni barre du bas. Les tuiles sont
@@ -1631,7 +1631,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   background:linear-gradient(180deg,var(--steel2),var(--steel));
   transition:transform var(--dur),border-color var(--dur),box-shadow var(--dur);
 }
-.acc-mode{border:3px solid #111;box-shadow:6px 6px 0 #111}
+.acc-mode{border:3px solid #1e1e1e;box-shadow:6px 6px 0 #1e1e1e}
 .acc-mode:hover{transform:translateY(-3px);border-color:var(--affiche-jaune);box-shadow:6px 6px 0 var(--affiche-jaune)}
 .acc-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
 .acc-copy b{font-size:32px;line-height:.9;text-transform:uppercase;white-space:nowrap}
@@ -1643,7 +1643,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   color:var(--txt);border:1px solid var(--line);background:var(--ink);
   font-weight:900;
 }
-.acc-nombre:hover{color:#111;border-color:var(--affiche-jaune);background:var(--affiche-jaune)}
+.acc-nombre:hover{color:#1e1e1e;border-color:var(--affiche-jaune);background:var(--affiche-jaune)}
 @media(max-width:700px){
   .acc-titre h1{font-size:56px}
   .acc-mode{flex-wrap:wrap}
@@ -1717,13 +1717,13 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     gap: 4px 10px;
     margin: 0 0 10px;
     padding: 9px 12px;
-    border: 1px solid rgba(255, 212, 90, 0.45);
+    border: 1px solid rgba(240, 185, 95, 0.45);
     border-left-width: 4px;
     border-radius: 6px;
-    background: rgba(255, 212, 90, 0.1);
+    background: rgba(240, 185, 95, 0.1);
     line-height: 1.35;
 }
-.salon-bandeau b { color: #ffd45a; }
+.salon-bandeau b { color: var(--affiche-jaune); }
 .salon-bandeau span { font-size: 13px; }
 
 /* Qui tient les autres sieges : a distance, ou tout le monde sur cet ecran.
@@ -1745,7 +1745,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     cursor: pointer;
 }
 .coop-choix:hover { background: rgba(255, 255, 255, 0.08); }
-.coop-choix.sel { border-color: #ffd45a; background: rgba(255, 212, 90, 0.12); }
+.coop-choix.sel { border-color: var(--affiche-jaune); background: rgba(240, 185, 95, 0.12); }
 .coop-choix small { opacity: 0.72; font-size: 12px; }
 
 /* Les liens d'invitation, sous la bascule : c'est la qu'on decide d'attendre
@@ -1754,14 +1754,14 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .liens-invites { margin-top: 10px; }
 .liens-bouton {
     font: inherit;
-    color: #ffd45a;
-    background: rgba(255, 212, 90, 0.10);
-    border: 1px solid rgba(255, 212, 90, 0.45);
+    color: var(--affiche-jaune);
+    background: rgba(240, 185, 95, 0.10);
+    border: 1px solid rgba(240, 185, 95, 0.45);
     border-radius: 6px;
     padding: 7px 14px;
     cursor: pointer;
 }
-.liens-bouton:hover { background: rgba(255, 212, 90, 0.18); }
+.liens-bouton:hover { background: rgba(240, 185, 95, 0.18); }
 .liens-erreur { display: block; margin-top: 6px; color: #ff8a80; font-size: 12px; }
 .liens-invites.ouvert {
     display: flex;
@@ -1824,7 +1824,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .salon-siege.est-pret,
 .salon-siege.est-pret b { color: var(--txt); }
 .salon-siege.est-pret .salon-siege-marque { color: var(--agir); }
-.salon-siege.est-pret .salon-siege-choix { color: #ffd45a; font-weight: 700; }
+.salon-siege.est-pret .salon-siege-choix { color: var(--affiche-jaune); font-weight: 700; }
 
 /* --- Panneau de recherche MarvelCDB (réutilise .deck-modal) --------------- */
 .cdb-filtres{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}

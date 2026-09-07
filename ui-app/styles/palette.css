@@ -1,0 +1,62 @@
+/* La palette du jeu : « Avengers Colour Chart » (ChaosNDisaster), choisie par
+   l'utilisateur le 7 septembre 2026. Douze couleurs nommees, et le role que
+   chacune tient sur le plateau. Les feuilles de style lisent les ROLES, jamais
+   les couleurs brutes : changer de palette se fait ici, une fois.
+
+   Roles decides avec l'utilisateur :
+   - action et camp rencontre : Hot Rod Red (Iron Man) ;
+   - camp des heros : Angreen (Hulk) ;
+   - fonds : Charcoul (Coulson) pour la table et les panneaux, Cerulean
+     Thunder (Thor) pour les zones et les cadres ;
+   - menace et compteurs de carte : Strawberry Sulphur (Pepper Potts) ;
+   - information d'interface : Binary Blue (J.A.R.V.I.S.).
+   Les autres tiennent des roles secondaires, notes en face. */
+:root {
+  --av-hot-rod-red: #780000;
+  --av-tasty-tangerine: #c84b19;
+  --av-angreen: #8c9b3c;
+  --av-mischief-malachite: #1e4b1e;
+  --av-binary-blue: #96ebff;
+  --av-spangly-sky: #004191;
+  --av-smuldering-sapphire: #1e2846;
+  --av-marksman-mauve: #372341;
+  --av-strawberry-sulphur: #f0b95f;
+  --av-cerulean-thunder: #2d3746;
+  --av-charcoul: #1e1e1e;
+  --av-secretive-zero: #000000;
+
+  /* L'action : boutons Continuer / Suivant / Confirmer, accents des titres.
+     Le rouge Iron Man est sombre : `--rouge-vif` est sa version eclaircie,
+     pour un texte ou un halo sur fond noir. */
+  --rouge: var(--av-hot-rod-red);
+  --rouge-vif: #a60000;
+  --rouge-clair: #d98c8c;
+
+  /* Les camps. */
+  --camp-nous: var(--av-angreen);
+  --camp-nous-clair: #c5d27a;
+  --camp-eux: var(--av-hot-rod-red);
+  --camp-eux-vif: var(--rouge-vif);
+
+  /* La menace et les compteurs de carte. */
+  --menace: var(--av-strawberry-sulphur);
+  --menace-clair: #f7d7a3;
+
+  /* L'information d'interface : chronologie, rangs, mots-cles, selection. */
+  --info: var(--av-binary-blue);
+  --info-fonce: var(--av-spangly-sky);
+
+  /* Les fonds. */
+  --fond: var(--av-charcoul);
+  --fond-nuit: var(--av-smuldering-sapphire);
+  --cadre: var(--av-cerulean-thunder);
+  --cadre-clair: #4a5a70;
+
+  /* Roles secondaires : le soin (Loki), les statuts et capacites (Hawkeye),
+     l'alerte (Black Widow). */
+  --soin: var(--av-mischief-malachite);
+  --soin-clair: #8fc48f;
+  --statut: var(--av-marksman-mauve);
+  --statut-clair: #c9a6ff;
+  --alerte: var(--av-tasty-tangerine);
+}

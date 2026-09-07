@@ -86,7 +86,7 @@
   }
 
   .tuile-menace {
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .tuile-pile,
@@ -105,11 +105,11 @@
   }
 
   .tuile-delta-heal {
-    color: #7ee787;
+    color: var(--camp-nous-clair);
   }
 
   .tuile-delta-threat {
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .tuile-actif {
@@ -118,26 +118,26 @@
     font-size: 0.6rem;
     font-weight: 900;
     text-transform: uppercase;
-    color: #0a0c10;
-    background: #7ee787;
+    color: var(--fond);
+    background: var(--camp-nous-clair);
     border-radius: 4px;
   }
 
   /* L'interaction en cours, sur la tuile. Les couleurs sont celles de
      ScanCard.css : jaune = jouable, vert = ciblable, bleu = source. */
   .tuile[data-etat='playable'] {
-    border-color: #ffd45a;
-    box-shadow: inset 0 0 0 1px rgba(255, 212, 90, 0.6);
+    border-color: var(--menace);
+    box-shadow: inset 0 0 0 1px rgba(240, 185, 95, 0.6);
   }
 
   .tuile[data-etat='targetable'] {
-    border-color: #7ee787;
+    border-color: var(--camp-nous-clair);
     box-shadow: inset 0 0 0 1px rgba(126, 231, 135, 0.6);
   }
 
   .tuile[data-etat='selected'] {
-    border-color: #7ee787;
-    box-shadow: inset 0 0 0 2px #7ee787;
+    border-color: var(--camp-nous-clair);
+    box-shadow: inset 0 0 0 2px var(--camp-nous-clair);
   }
 
   .tuile[data-etat='source'] {
@@ -175,7 +175,7 @@
     font-weight: 800;
     text-align: left;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
     background: none;
     border: 0;
     cursor: pointer;
@@ -198,9 +198,9 @@
     padding: 2px 6px;
     font-size: 0.7rem;
     font-weight: 900;
-    color: #0a0c10;
+    color: var(--fond);
     text-align: center;
-    background: #7ee787;
+    background: var(--camp-nous-clair);
     border-radius: 999px;
   }
 
@@ -277,9 +277,9 @@
     font: inherit;
     font-size: 0.9rem;
     font-weight: 900;
-    color: #ffd45a;
-    background: rgba(255, 212, 90, 0.1);
-    border: 1px dashed rgba(255, 212, 90, 0.45);
+    color: var(--menace);
+    background: rgba(240, 185, 95, 0.1);
+    border: 1px dashed rgba(240, 185, 95, 0.45);
     border-radius: 10px;
     cursor: pointer;
   }
@@ -399,7 +399,7 @@
     font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .focus-cartes {
@@ -449,7 +449,7 @@
     gap: 10px;
     min-height: 52px;
     padding: 6px 10px;
-    background: rgba(10, 12, 16, 0.94);
+    background: rgba(30, 30, 30, 0.94);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
@@ -470,7 +470,7 @@
     font-size: 0.66rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #ffd45a;
+    color: var(--menace);
   }
 
   .pm-outils {
@@ -529,7 +529,7 @@
 
   .pm-barre-action {
     padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
-    background: rgba(10, 12, 16, 0.96);
+    background: rgba(30, 30, 30, 0.96);
     border-top: 1px solid rgba(255, 255, 255, 0.14);
   }
 }

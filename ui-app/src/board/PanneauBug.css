@@ -93,7 +93,7 @@
   width: 100%;
   box-sizing: border-box;
   background: #11151b;
-  border: 1px solid #39414d;
+  border: 1px solid var(--cadre);
   border-radius: 6px;
   color: #e2e8f0;
   padding: 8px 10px;
@@ -107,7 +107,7 @@
 .pbug-panneau textarea:focus,
 .pbug-zone:focus {
   outline: none;
-  border-color: #e62429;
+  border-color: var(--rouge-vif);
 }
 
 .pbug-zone {
@@ -128,14 +128,14 @@
 .pbug-apercu img {
   width: 100%;
   border-radius: 6px;
-  border: 1px solid #39414d;
+  border: 1px solid var(--cadre);
   display: block;
 }
 
 .pbug-joint {
   color: #7c8797;
   font-size: 0.75rem;
-  border-left: 2px solid #39414d;
+  border-left: 2px solid var(--cadre);
   padding-left: 9px;
 }
 
@@ -161,8 +161,8 @@
   background: #313a45;
 }
 .pbug-panneau button.pbug-envoi {
-  border-color: #e62429;
-  background: #e62429;
+  border-color: var(--rouge-vif);
+  background: var(--rouge-vif);
   color: #fff;
 }
 .pbug-panneau button.pbug-envoi:hover {
