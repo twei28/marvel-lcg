@@ -21,18 +21,8 @@
 
 import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
+import { etatDe } from './etats'
 import './mobile.css'
-
-/** Les états que le moteur pose en cartes attachées sur le personnage. */
-const ETATS: Record<string, { lettre: string; classe: string; nom: string }> = {
-  tough: { lettre: 'T', classe: 'est-coriace', nom: 'Coriace' },
-  stunned: { lettre: 'S', classe: 'est-sonne', nom: 'Sonné' },
-  confused: { lettre: 'C', classe: 'est-desoriente', nom: 'Désorienté' },
-}
-
-function etatDe(carte: ScanCardProps) {
-  return ETATS[carte.name.trim().toLowerCase()]
-}
 
 export type MedaillonProps = {
   carte: ScanCardProps
