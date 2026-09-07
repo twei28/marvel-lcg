@@ -2444,6 +2444,23 @@
     padding-right: 0;
   }
 
+  /* Les manigances se posent EN HAUT de leur zone, juste sous l'etiquette, et
+     non sur la ligne basse commune : en paysage elles sont moins hautes que
+     les personnages de leur rangee, et le vide entre « Manigance principale »
+     et la carte se lisait comme une case vide (constat de l'utilisateur,
+     7 septembre 2026). Meme regle pour les annexes, dont la colonne est
+     devenue haute depuis que le journal l'a quittee. */
+  .zone-complot-principal,
+  .zone-complots-secondaires {
+    align-items: flex-start;
+    padding-top: 22px;
+  }
+
+  .zone-complot-principal .plateau-cartes,
+  .zone-complots-secondaires .plateau-cartes {
+    align-items: flex-start;
+  }
+
   .zone-complots-secondaires {
     grid-area: complots-secondaires;
     --mc-zoom-origine: right center;
