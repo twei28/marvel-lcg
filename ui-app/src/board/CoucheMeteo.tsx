@@ -315,13 +315,13 @@ export function CoucheMeteo({
  * Les lignes du panneau Options qui dependent de l'apercu d'ambiance
  * (« Aperçu d’ambiance » et ses pastilles, « Demande d’ambiance ») : extraites
  * de PanneauOptions (board.tsx) pour vivre a cote du reste du domaine ambiance
- * et pouvoir etre testees seules — board.tsx se monte lui-meme sur #plateau
+ * et pouvoir etre testees seules : board.tsx se monte lui-meme sur #plateau
  * des son import et ne peut pas etre importe tel quel dans un test.
  *
  * Grisees et inertes tant que « Ambiance » (meteo) est coupee : un apercu ou
- * une reponse figes n'ont plus de sens quand l'ambiance elle-meme est
- * coupee (voir `basculerAmbiance` ci-dessus, qui remet deja l'apercu sur Auto
- * au moment de la coupure — cette ligne grisee dit au joueur pourquoi les
+ * une reponse figes n'ont plus de sens quand l'ambiance elle-meme est coupee
+ * (voir `basculerAmbiance` ci-dessus, qui remet deja l'apercu sur Auto au
+ * moment de la coupure ; cette ligne grisee dit au joueur pourquoi les
  * pastilles ne repondent plus).
  */
 export function ReglagesApercuAmbiance({
