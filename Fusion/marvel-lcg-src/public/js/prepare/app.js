@@ -1090,35 +1090,35 @@ const ONOMATOPEES = {
     /* --- officiels --- */
     adam_warlock: "SOUL GEM !", angel: "WHOOSH !", ant_man: "ZOOM !", bishop: "BZZT !",
     black_panther: "WAKANDA FOREVER !", black_panther_shuri: "WAKANDA FOREVER !",
-    black_widow: "ZZAP !", cable: "BODYSLIDE !", captain_america: "AVENGERS, ASSEMBLE !",
-    captain_marvel: "HIGHER, FURTHER, FASTER !", colossus: "KLANG !", cyclops: "ZRAKK !",
-    daredevil: "WHAM !", deadpool: "CHIMICHANGA !", doctor_strange: "BY THE VISHANTI !",
-    domino: "BANG !", drax: "THUD !", echo: "WHAM !", falcon: "ON YOUR LEFT !",
-    gambit: "MON AMI !", gamora: "SLASH !", ghost_spider: "THWIP !", groot: "I AM GROOT !",
-    hawkeye: "TWANG !", hercules: "HAVE AT THEE !", hulk: "HULK SMASH !", hulkling: "WHUMP !",
+    black_widow: "WIDOW'S BITE !", cable: "BODYSLIDE BY ONE !", captain_america: "AVENGERS, ASSEMBLE !",
+    captain_marvel: "HIGHER, FURTHER, FASTER, MORE !", colossus: "KLANG !", cyclops: "ZRAKK !",
+    daredevil: "THE MAN WITHOUT FEAR !", deadpool: "CHIMICHANGA !", doctor_strange: "BY THE VISHANTI !",
+    domino: "BANG !", drax: "DESTROY !", echo: "WHAM !", falcon: "ON YOUR LEFT !",
+    gambit: "MON AMI !", gamora: "DEADLIEST WOMAN !", ghost_spider: "THWIP !", groot: "I AM GROOT !",
+    hawkeye: "TWANG !", hercules: "HAVE AT THEE !", hulk: "HULK SMASH !", hulkling: "EXCELSIOR !",
     iceman: "CHILL !", iron_man: "I AM IRON MAN !", ironheart: "FWOOSH !", jessica_jones: "CRACK !",
-    jubilee: "PAF !", luke_cage: "SWEET CHRISTMAS !", magik: "SHING !", magneto: "VRRMM !",
-    maria_hill: "COPY THAT !", ms_marvel: "EMBIGGEN !", nebula: "ZAP !", nick_fury: "WAHOO !",
-    nightcrawler: "BAMF !", nova: "WHOOSH !", phoenix: "FIRE AND LIFE !", psylocke: "SHING !",
+    jubilee: "PAF !", luke_cage: "SWEET CHRISTMAS !", magik: "SHING !", magneto: "MASTER OF MAGNETISM !",
+    maria_hill: "COPY THAT !", ms_marvel: "EMBIGGEN !", nebula: "ZAP !", nick_fury: "WAH-HOOO !",
+    nightcrawler: "BAMF !", nova: "BLUE BLAZES !", phoenix: "I AM PHOENIX !", psylocke: "PSYCHIC KNIFE !",
     quicksilver: "ZIP !", rocket_raccoon: "BLAM !", rogue: "SUGAH !", scarlet_witch: "HEX !",
     shadowcat: "PHASE !", she_hulk: "SMASH !", silk: "THWIP !", sp_dr: "BZZT !", spectrum: "FLASH !",
-    spider_ham: "OINK !", spider_man: "THWIP !", spider_man_miles_morales: "ZZAP !",
-    spider_woman: "ZZAP !", star_lord: "PEW PEW !", storm: "KRAKOOM !", thor: "FOR ASGARD !",
-    tigra: "RAWR !", valkyrie: "FOR VALHALLA !", venom: "WE ARE VENOM !", vision: "WHIRR !",
-    war_machine: "BRATATAT !", wasp: "BZZZ !", winter_soldier: "BLAM !", wolverine: "SNIKT !",
+    spider_ham: "OINK !", spider_man: "THWIP !", spider_man_miles_morales: "VENOM BLAST !",
+    spider_woman: "VENOM BLAST !", star_lord: "PEW PEW !", storm: "KRAKOOM !", thor: "I SAY THEE NAY !",
+    tigra: "RAWR !", valkyrie: "FOR VALHALLA !", venom: "WE ARE VENOM !", vision: "I AM UNIQUE !",
+    war_machine: "BRATATAT !", wasp: "WASP STING !", winter_soldier: "BLAM !", wolverine: "SNIKT !",
     wonder_man: "WHAM !", x_23: "SNIKT !",
     /* --- fan-made --- */
     agatha_harkness: "HEX !", agent_13: "BLAM !", agent_anti_venom: "WE ARE VENOM !", albert: "SNIKT !",
-    alligator_loki: "CHOMP !", angela: "SLASH !", armored_spidey: "THWIP !",
-    beast: "OH MY STARS AND GARTERS !", beta_ray_bill: "FOR ASGARD !", black_cat: "BAD LUCK !",
+    alligator_loki: "CHOMP !", angela: "NOTHING FOR NOTHING !", armored_spidey: "THWIP !",
+    beast: "STARS AND GARTERS !", beta_ray_bill: "FOR ASGARD !", black_cat: "BAD LUCK !",
     blink: "BLINK !", brawn: "SMASH !", cloak_dagger: "FLASH !", dazzler: "SPARKLE !",
-    doctor_doom: "DOOM !", doctor_druid: "MYSTIC !", harry_osborn: "HA HA HA !", gwenpool: "GWEN !",
+    doctor_doom: "DOOM !", doctor_druid: "MASTER OF THE UNKNOWN !", harry_osborn: "HA HA HA !", gwenpool: "GWEN !",
     kate_bishop: "TWANG !", howard_the_duck: "WAUGH !", hulk_rainy: "SMASH !", human_torch: "FLAME ON !",
     invisible_woman: "FORCE FIELD !", iron_lad: "PEW !", iron_man_model_42: "I AM IRON MAN !",
     jessica_jones_custom: "CRACK !", lady_sif: "FOR ASGARD !", lockjaw: "WOOF !", madame_web: "I SEE !",
-    mister_fantastic: "STRETCH !", moon_knight: "KHONSHU !", ms_america: "PUNCH !",
+    mister_fantastic: "STRETCH !", moon_knight: "KHONSHU !", ms_america: "TICKET TO THE MULTIVERSE !",
     night_thrasher: "WHAM !", okoye: "WAKANDA FOREVER !", patriot: "KLANG !", red_guardian: "SLAM !",
-    rescue_rainy: "PEW !", scarlet_spider: "THWIP !", speed: "ZIP !", spider_man_rainy: "THWIP !",
+    rescue_rainy: "MAG-FIELD !", scarlet_spider: "THWIP !", speed: "ZIP !", spider_man_rainy: "THWIP !",
     spider_man_noir: "THWIP !", stan_lee: "EXCELSIOR !", sunfire: "FWOOSH !",
     superior_iron_man: "I AM IRON MAN !", texas_twister: "YEEHAW !", the_thing: "IT'S CLOBBERIN' TIME !",
     thor_jane_foster: "FOR ASGARD !", throg: "RIBBIT !", totally_awesome_hulk: "SMASH !",
@@ -1127,6 +1127,15 @@ const ONOMATOPEES = {
 };
 function onomatopee(hero) {
     return ONOMATOPEES[hero.id] || "BAM !";
+}
+
+/** La taille d'un cri : « SNIKT ! » claque en grand, « TICKET TO THE
+ *  MULTIVERSE ! » se replie sur deux lignes en plus petit. Le mot le plus long
+ *  compte autant que la longueur totale : c'est lui qui ne peut pas se couper. */
+function tailleDuCri(cri) {
+    const motLePlusLong = Math.max(...cri.split(" ").map((m) => m.length));
+    const parLigne = Math.max(cri.length / 2, motLePlusLong);
+    return Math.max(34, Math.min(96, Math.round(560 / parLigne))) + "px";
 }
 
 /** Le héros en scène : celui du siège actif, sauf pendant un survol. */
@@ -1210,7 +1219,7 @@ function rendreScene(h) {
         );
         return;
     }
-    const traits = [...(h.traits || []), ...(h.traitsAlterEgo || [])].slice(0, 4).join(" · ");
+    const traits = [...new Set([...(h.traits || []), ...(h.traitsAlterEgo || [])])].slice(0, 4).join(" · ");
     const vague = h.homebrew ? t("Fan-made")
         : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
     const arts = (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length;
@@ -1268,7 +1277,7 @@ function recruter(h, portraitEl) {
     if (scene) {
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
-            el("span", { class: "ono", style: { fontSize: Math.max(40, Math.min(96, Math.round(760 / onomatopee(h).length))) + "px" } }, onomatopee(h)),
+            el("span", { class: "ono", style: { fontSize: tailleDuCri(onomatopee(h)) } }, onomatopee(h)),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
@@ -2476,10 +2485,7 @@ function verrouillerCible(sc) {
         const cri = criDuMechant(sc);
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl((sc.villainCards || [])[0] || sc.tileImage), alt: "" }),
-            el("span", {
-                class: "ono rouge",
-                style: { fontSize: Math.max(40, Math.min(96, Math.round(760 / cri.length))) + "px" },
-            }, cri),
+            el("span", { class: "ono rouge", style: { fontSize: tailleDuCri(cri) } }, cri),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });

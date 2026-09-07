@@ -1301,10 +1301,12 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-eclair{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;animation:eclair-carte 1.2s cubic-bezier(.2,.8,.2,1) forwards}
 .tb-eclair img{width:min(46%,340px);border-radius:12px;box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 0 2px #fff;transform:rotateY(18deg) rotateZ(-5deg)}
 .tb-eclair .ono{
-  position:absolute;left:52%;top:22%;
-  font-family:"Bangers",Impact,sans-serif;font-size:96px;line-height:1;
+  position:absolute;left:50%;top:16%;
+  max-width:86%;
+  font-family:"Bangers",Impact,sans-serif;font-size:96px;line-height:.98;
+  text-align:center;text-wrap:balance;
   color:var(--affiche-jaune);-webkit-text-stroke:3px #111;text-shadow:6px 6px 0 #111;
-  transform:rotate(-10deg);
+  transform:translateX(-50%) rotate(-10deg);
   animation:ono-claque .5s cubic-bezier(.2,1.4,.4,1) both;
 }
 @keyframes eclair-carte{
@@ -1313,7 +1315,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   62%{opacity:1;transform:scale(1) translateY(0)}
   100%{opacity:0;transform:scale(.7) translateX(-40%) translateY(-10%)}
 }
-@keyframes ono-claque{from{opacity:0;transform:rotate(-10deg) scale(.2)}to{opacity:1;transform:rotate(-10deg) scale(1)}}
+@keyframes ono-claque{from{opacity:0;transform:translateX(-50%) rotate(-10deg) scale(.2)}to{opacity:1;transform:translateX(-50%) rotate(-10deg) scale(1)}}
 @media (prefers-reduced-motion:reduce){.tb-eclair{animation-duration:.4s}.tb-eclair .ono{animation:none}}
 
 /* --- La droite : roster et équipe --- */
