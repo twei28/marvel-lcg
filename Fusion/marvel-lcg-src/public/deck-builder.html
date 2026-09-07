@@ -199,7 +199,19 @@
     .db-stat-barre span { position: relative; font-size: .66rem; color: var(--sourdine); }
     .db-stats-ressources, .db-stats-types { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     .db-stat-res { padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700;
-        border: 1px solid var(--res); color: var(--res); }
+        border: 1px solid var(--res); color: var(--res); display: inline-flex; align-items: center; gap: 4px; }
+
+    /* Les icônes de ressources du jeu (police ChampionsIcons : P poing, M
+       cerveau, E éclair, W étoile), colorées par ressource. Demande de
+       l'utilisateur, 7 septembre 2026 : des icônes, plus des mots ni des lettres. */
+    @font-face { font-family: "ChampionsIcons"; src: url("/public/fonts/ChampionsIcons.ttf") format("truetype"); font-display: swap; }
+    .icone-res { font-family: "ChampionsIcons"; font-style: normal; font-size: 1.15em; line-height: 1;
+        color: var(--res, #fff); text-shadow: 0 0 2px rgba(0, 0, 0, .8); }
+    .db-chip-res { display: inline-flex; align-items: center; gap: 6px; }
+    .db-chip-res .icone-res { font-size: 1.3em; }
+    .db-chip-res.est-actif { border-color: var(--or); }
+    .db-carte-res { display: inline-flex; gap: 2px; margin-left: auto; }
+    .db-carte-res .icone-res { font-size: 1em; }
     .db-stat-type { padding: 2px 8px; border-radius: 999px; font-size: .72rem;
         border: 1px solid #555; color: var(--sourdine); }
 

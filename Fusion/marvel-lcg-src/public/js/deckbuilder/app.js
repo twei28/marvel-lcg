@@ -24,6 +24,59 @@ import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination"];
 // Classes non-aspect jouables : Basic, et les cartes de recompense de Campagne.
 const CLASSES_NEUTRES = ["Basic", "Campaign"];
+
+/** Les quatre ressources, dans l'ordre des cartes : lettre du moteur (`desc.RES`),
+ *  glyphe de la police d'icônes du jeu (ChampionsIcons : P poing, M cerveau,
+ *  E éclair, W étoile), nom français et couleur. */
+const RESSOURCES = [
+    { lettre: "R", glyphe: "P", nom: "physique", couleur: "#e74c3c" },
+    { lettre: "B", glyphe: "M", nom: "mentale", couleur: "#3498db" },
+    { lettre: "Y", glyphe: "E", nom: "énergie", couleur: "#f1c40f" },
+    { lettre: "G", glyphe: "W", nom: "libre", couleur: "#2ecc71" },
+];
+const RESSOURCE_PAR_LETTRE = Object.fromEntries(RESSOURCES.map((r) => [r.lettre, r]));
+
+/** Les mots-clés des cartes joueur (vocabulaire officiel FR, releve sur les
+ *  cartes traduites le 7 septembre 2026), avec la forme anglaise pour les
+ *  cartes non traduites. Cherchés dans le texte de la carte, insensibles à la
+ *  casse ; seuls ceux présents dans le pool du héros sont proposés. */
+const MOTS_CLES = [
+    ["Riposte", /\briposte\b|\bretaliate\b/i],
+    ["Perçant", /\bperçant\b|\bpiercing\b/i],
+    ["À distance", /\bà distance\b|\branged\b/i],
+    ["Déferlement", /\bdéferlement\b|\boverkill\b/i],
+    ["Restreint", /\brestreint\b|\brestricted\b/i],
+    ["Utilisations", /\butilisations?\b|\buses\b/i],
+    ["Ténacité", /\bténacité\b|\btoughness\b/i],
+    ["Permanent", /\bpermanent\b/i],
+    ["Mise en place", /\bmise en place\b|\bsetup\b/i],
+    ["Temporaire", /\btemporaire\b|\btemporary\b/i],
+    ["Aérien", /\baérien\b|\baerial\b/i],
+    ["Robuste", /\brobuste\b|\bstalwart\b/i],
+    ["Solide", /\bsolide\b|\bsteady\b/i],
+    ["Alliance", /\balliance\b/i],
+    ["En Équipe", /\ben équipe\b|\bteam-up\b/i],
+    ["Percée", /\bpercée\b|\bbreakthrough\b/i],
+    ["Garde", /\bgarde\b|\bguard\b/i],
+];
+
+/** Les lettres de ressources d'une carte (« RBY »), vides si elle n'en génère aucune. */
+function ressourcesDe(carte) {
+    return String((carte.desc && carte.desc.RES) || "").toUpperCase().split("").filter((l) => l in RESSOURCE_PAR_LETTRE);
+}
+
+/** Une icône de ressource, dans la police du jeu, avec son nom en infobulle. */
+function iconeRessource(lettre) {
+    const r = RESSOURCE_PAR_LETTRE[lettre];
+    if (!r) return null;
+    return el("i", { class: "icone-res", style: `--res:${r.couleur}`, title: t(r.nom), "aria-label": t(r.nom) }, r.glyphe);
+}
+
+/** Les mots-clés qu'une carte porte, d'après son texte (français s'il existe). */
+function motsClesDe(carte) {
+    const texte = `${texteFr(carte) || ""} ${carte.text || ""}`;
+    return MOTS_CLES.filter(([, re]) => re.test(texte)).map(([nom]) => nom);
+}
 const TYPES_JOUEUR = ["Ally", "Event", "Support", "Upgrade", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
 // Libellés FR affichés pour les types de cartes (les identifiants restent en anglais).
 const LIBELLES_TYPES = {
@@ -44,7 +97,7 @@ const etat = {
     nomDeck: "",
     // cardId -> nombre de copies choisies (player_deck uniquement).
     choisies: new Map(),
-    filtres: { texte: "", aspects: new Set(), types: new Set(), couts: new Set() },
+    filtres: { texte: "", aspects: new Set(), types: new Set(), couts: new Set(), ressources: new Set(), motsCles: new Set() },
     brouillonId: null,
 };
 
@@ -445,7 +498,33 @@ function rendreFiltres() {
                 class: `db-chip${etat.filtres.couts.has(c) ? " est-actif" : ""}`,
                 onclick: () => { basculer(etat.filtres.couts, c); rendreFiltres(); rendreGrille(); },
             }, `${t("Coût")} ${c}`))),
+        // Les ressources que la carte génère : quatre icônes, cumulables (l'une
+        // OU l'autre). Demande de l'utilisateur, 7 septembre 2026.
+        el("div", { class: "db-chips db-chips-res" },
+            RESSOURCES.map((r) => el("button", {
+                class: `db-chip db-chip-res${etat.filtres.ressources.has(r.lettre) ? " est-actif" : ""}`,
+                title: `${t("Génère")} ${t(r.nom)}`,
+                onclick: () => { basculer(etat.filtres.ressources, r.lettre); rendreFiltres(); rendreGrille(); },
+            }, iconeRessource(r.lettre), el("span", {}, t(r.nom))))),
+        // Les mots-clés présents dans le pool du héros, et eux seuls.
+        el("div", { class: "db-chips db-chips-mots" },
+            motsClesDuPool().map((mot) => el("button", {
+                class: `db-chip${etat.filtres.motsCles.has(mot) ? " est-actif" : ""}`,
+                onclick: () => { basculer(etat.filtres.motsCles, mot); rendreFiltres(); rendreGrille(); },
+            }, t(mot)))),
     );
+}
+
+/** Le pool déjà chargé pour le héros courant (vide tant que `poolJoueur` n'a pas répondu). */
+function poolCourant() {
+    return _pools.get(estStanLee(etat.hero)) || [];
+}
+
+/** Les mots-clés portés par au moins une carte du pool courant, dans l'ordre de la table. */
+function motsClesDuPool() {
+    const presents = new Set();
+    for (const { carte } of poolCourant()) for (const mot of motsClesDe(carte)) presents.add(mot);
+    return MOTS_CLES.map(([nom]) => nom).filter((nom) => presents.has(nom));
 }
 function basculer(set, valeur) { set.has(valeur) ? set.delete(valeur) : set.add(valeur); }
 
@@ -457,6 +536,11 @@ function passeFiltres(carte) {
         const cout = Number(carte.cost);
         const cle = Number.isFinite(cout) ? (cout >= 4 ? "4+" : String(cout)) : "";
         if (!f.couts.has(cle)) return false;
+    }
+    if (f.ressources.size && !ressourcesDe(carte).some((l) => f.ressources.has(l))) return false;
+    if (f.motsCles.size) {
+        const siens = motsClesDe(carte);
+        if (![...f.motsCles].every((mot) => siens.includes(mot))) return false;
     }
     if (f.texte) {
         const t = f.texte.toLowerCase();
@@ -482,6 +566,10 @@ function badgeCustom(carte) {
 
 async function rendreGrille() {
     const pool = await poolJoueur(estStanLee(etat.hero));
+    // Le premier rendu des filtres a lieu AVANT que le pool soit chargé : les
+    // pastilles de mots-clés, qui en dépendent, sont alors posées ici.
+    const pastillesMots = document.querySelector("#db-filtres .db-chips-mots");
+    if (pastillesMots && pastillesMots.children.length === 0 && motsClesDuPool().length) rendreFiltres();
     const zone = $("#db-grille");
     const visibles = pool.filter((x) => passeFiltres(x.carte)).slice(0, 400);
     remplacer(zone, 
@@ -496,6 +584,8 @@ async function rendreGrille() {
                 el("div", { class: "db-carte-pied" },
                     el("span", { class: `db-aspect-point aspect-${classeCss(carte.class)}` }),
                     el("b", {}, nomFr(carte)),
+                    // Ce que la carte génère, en icônes du jeu.
+                    el("span", { class: "db-carte-res" }, ressourcesDe(carte).map(iconeRessource)),
                     n ? el("span", { class: "db-count" }, `x${n}`) : null,
                 ),
                 el("div", { class: "db-carte-boutons" },
@@ -554,11 +644,10 @@ function rendreStatsDeck(lignes) {
             el("span", {}, cle));
     });
 
-    const NOMS_RES = { R: ["physique", "#e74c3c"], B: ["mentale", "#3498db"], Y: ["énergie", "#f1c40f"], G: ["libre", "#2ecc71"] };
     const pastilles = Object.entries(ressources)
         .filter(([, total]) => total > 0)
-        .map(([lettre, total]) => el("span", { class: "db-stat-res", style: `--res:${NOMS_RES[lettre][1]}` },
-            `${total} ${t(NOMS_RES[lettre][0])}`));
+        .map(([lettre, total]) => el("span", { class: "db-stat-res", style: `--res:${RESSOURCE_PAR_LETTRE[lettre].couleur}`, title: t(RESSOURCE_PAR_LETTRE[lettre].nom) },
+            iconeRessource(lettre), ` ${total}`));
 
     const types = [...parType.entries()].sort((a, b) => b[1] - a[1])
         .map(([type, total]) => el("span", { class: "db-stat-type" }, `${total} ${libelleType(type)}`));

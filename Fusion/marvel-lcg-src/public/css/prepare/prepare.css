@@ -971,6 +971,15 @@ button{cursor:pointer}
 .fo-scene.villain{background-size:205%;background-position:center 20%}
 .fo-card.villain{width:calc(var(--fo-heros-w) * 1.25)}
 .faceoff.large .fo-card.villain{width:calc(var(--fo-heros-w) * 1.1)}
+/* Plusieurs mechants (Wrecking Crew : quatre) : ils se partagent la largeur
+   sur UNE ligne au lieu de passer a la ligne et de sortir de l'ecran. La
+   largeur ci-dessus devient un maximum. Constat de l'utilisateur, 7 sept. 2026. */
+.villain-cards{flex-wrap:nowrap;width:100%;justify-content:center}
+.villain-cards .fo-card.villain{flex:0 1 auto;min-width:0;max-width:calc(var(--fo-heros-w) * 1.25);width:calc((100% - 14px * 3) / 4);container-type:inline-size}
+.villain-cards:has(.fo-card:only-child) .fo-card.villain{width:calc(var(--fo-heros-w) * 1.25)}
+.villain-cards:has(.fo-card:nth-child(2):last-child) .fo-card.villain{width:calc((100% - 14px) / 2)}
+.villain-cards:has(.fo-card:nth-child(3):last-child) .fo-card.villain{width:calc((100% - 14px * 2) / 3)}
+.villain-cards .fo-card.villain .fo-nomg{font-size:min(var(--fo-nom,72px),12cqw)}
 .fo-cap{
   margin-top:10px;
   font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:24px;line-height:.92;text-transform:uppercase;
