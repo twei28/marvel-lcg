@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EMPLACEMENT_MAIN, RANGEES, mainDe, repartirEnRangees, unitesDe } from './rangees'
+import { EMPLACEMENT_MAIN, RANGEES, estUnePile, mainDe, repartirEnRangees, separerEpingles, unitesDe } from './rangees'
 import type { CleEmplacement, EmplacementAffiche, Plateau, UniteAffichee } from '../zones'
 
 function unite(id: string): UniteAffichee {
@@ -82,5 +82,29 @@ describe('unitesDe et mainDe', () => {
     expect(mainDe(plateau([]))).toEqual([])
     const main = mainDe(plateau([emplacement('main', [unite('7')])]))
     expect(main.map((u) => u.carte.id)).toEqual(['7'])
+  })
+})
+
+// `annexes` (zones.ts) melange des piles fondues et des cartes posees isolees
+// (preuves, regle, ressources) : seules les premieres doivent etre epinglees.
+describe('estUnePile et separerEpingles', () => {
+  it('une unite avec pileCount, pileContenu ou pileGroupes est une pile ; une carte simple ne l\'est pas', () => {
+    const parPileCount: UniteAffichee = { ...unite('1'), carte: { ...unite('1').carte, pileCount: 3 } }
+    const parPileContenu: UniteAffichee = { ...unite('2'), pileContenu: [] }
+    const parPileGroupes: UniteAffichee = { ...unite('3'), pileGroupes: [] }
+    expect(estUnePile(parPileCount)).toBe(true)
+    expect(estUnePile(parPileContenu)).toBe(true)
+    expect(estUnePile(parPileGroupes)).toBe(true)
+    expect(estUnePile(unite('4'))).toBe(false)
+  })
+
+  it('separerEpingles garde l\'ordre de lecture dans chaque groupe', () => {
+    const a = unite('1')
+    const pileB: UniteAffichee = { ...unite('2'), pileContenu: [] }
+    const c = unite('3')
+    const pileD: UniteAffichee = { ...unite('4'), pileGroupes: [] }
+    const { piles, posees } = separerEpingles([a, pileB, c, pileD])
+    expect(piles.map((u) => u.carte.id)).toEqual(['2', '4'])
+    expect(posees.map((u) => u.carte.id)).toEqual(['1', '3'])
   })
 })

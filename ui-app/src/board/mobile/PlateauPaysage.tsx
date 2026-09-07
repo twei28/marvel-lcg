@@ -13,7 +13,7 @@
 // couvre tout sans rien demonter. Il accepte exactement les BoardProps du
 // plateau PC : c'est ce qui permet a board.tsx de choisir l'un ou l'autre.
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { avecInteraction, phaseAffichee, type BoardProps } from '../Board'
 import { t } from '../langue'
 import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
@@ -27,7 +27,7 @@ import { RangeeCartes, type GroupeRangee } from './RangeeCartes'
 import { useCouches, useCouchesBoard } from './couches'
 import { carteIdentite, groupesParJoueur, ordreDAffichage } from './joueurs'
 import { doitMontrerEcranPortrait, usePleinEcranAuPremierGeste } from './plein-ecran'
-import { mainDe, repartirEnRangees, unitesDe, type RangeeAffichee } from './rangees'
+import { mainDe, repartirEnRangees, separerEpingles, unitesDe, type RangeeAffichee } from './rangees'
 import { useOrientation } from './useOrientation'
 import './medaillon.css'
 import './paysage.css'
@@ -47,11 +47,12 @@ function decorerUnite(
 
 /**
  * La rangee heros, groupe par groupe : un groupe par joueur (le joueur actif
- * d'abord), puis les annexes (deck special, reserve, nemesis). En solo a un
- * heros, `proprietaires` est absent et tout revient au joueur 0 : un seul
- * groupe, comme avant.
+ * d'abord), puis les annexes (deck special, reserve, nemesis, et les cartes
+ * posees d'`annexes` qui ne sont pas des piles : voir `separerEpingles`). En
+ * solo a un heros, `proprietaires` est absent et tout revient au joueur 0 :
+ * un seul groupe, comme avant.
  */
-function groupesHeros(rangee: RangeeAffichee, joueurActif: number): GroupeRangee[] {
+function groupesHeros(rangee: RangeeAffichee, joueurActif: number, poseesEpinglees: UniteAffichee[]): GroupeRangee[] {
   const aire = rangee.defilants.find((emplacement) => emplacement.cle === 'terrain-soutien')
   const groupes: GroupeRangee[] = []
   if (aire) {
@@ -64,7 +65,10 @@ function groupesHeros(rangee: RangeeAffichee, joueurActif: number): GroupeRangee
       })
     }
   }
-  const annexes = unitesDe(rangee.defilants.filter((emplacement) => ANNEXES_HEROS.has(emplacement.cle)))
+  const annexes = [
+    ...unitesDe(rangee.defilants.filter((emplacement) => ANNEXES_HEROS.has(emplacement.cle))),
+    ...poseesEpinglees,
+  ]
   if (annexes.length > 0) groupes.push({ cle: 'annexes-heros', unites: annexes })
   return groupes
 }
@@ -101,12 +105,34 @@ export function PlateauPaysage({
   useCouchesBoard(carteFocalisee, selecteurOuvert, couches, onFermerCarte, onFermerSelecteur)
   usePleinEcranAuPremierGeste(true)
 
+  const racine = useRef<HTMLDivElement>(null)
+
   // Le cartouche du deroule (DeroulePhase, rendu par la page a cote du
   // plateau) s'adosse a la barre du bas quand cette classe est la : voir
   // paysage.css. Posee sur body parce que le cartouche n'est pas dans cet arbre.
+  //
+  // La hauteur de cet adossement (--pp-barre-h) est MESUREE, pas devinee : la
+  // barre passe de BarreBas (48px nominal, plus si .pm-outils passe a la
+  // ligne) a la bande « Payer » sans le meme gabarit. Un seul ResizeObserver
+  // sur la racine du plateau, qui reinterroge `.pm-barre` a chaque callback :
+  // c'est le plus simple qui suive les deux visages de la barre sans
+  // observer un element qui peut disparaitre et reapparaitre.
   useEffect(() => {
     document.body.classList.add('mode-plateau-paysage')
-    return () => document.body.classList.remove('mode-plateau-paysage')
+    const noeud = racine.current
+    if (!noeud || typeof ResizeObserver === 'undefined') {
+      return () => document.body.classList.remove('mode-plateau-paysage')
+    }
+    const observateur = new ResizeObserver(() => {
+      const barre = noeud.querySelector<HTMLElement>('.pm-barre')
+      if (barre) document.body.style.setProperty('--pp-barre-h', `${barre.offsetHeight}px`)
+    })
+    observateur.observe(noeud)
+    return () => {
+      observateur.disconnect()
+      document.body.style.removeProperty('--pp-barre-h')
+      document.body.classList.remove('mode-plateau-paysage')
+    }
   }, [])
 
   const [pileRegardee, setPileRegardee] = useState<{ titre: string; cartes: ScanCardProps[] } | undefined>()
@@ -133,14 +159,24 @@ export function PlateauPaysage({
   const [ennemie, heros] = rangees
   const joueurActif = joueurDeLIdentite(heros, heroActifId, playerId)
 
+  // `epingles` melange des PILES (deck, defausse) et, pour `annexes`, des
+  // cartes posees isolees (preuves, regle permanente, ressources) : seules
+  // les piles restent epinglees hors du defilement, les cartes posees
+  // rejoignent la zone qui defile (voir `separerEpingles`).
+  const epinglesEnnemie = useMemo(() => separerEpingles(unitesDe(ennemie.epingles)), [ennemie])
+  const epinglesHeros = useMemo(() => separerEpingles(unitesDe(heros.epingles)), [heros])
+
   // Memorises : sans quoi RangeeCartes recevrait un nouveau tableau de
   // groupes a chaque rendu du parent, et son ResizeObserver se deconnecterait
   // et se reconnecterait a chaque fois (son effet depend de `groupes`).
   const groupesEnnemie = useMemo(
-    () => [{ cle: 'ennemie', unites: unitesDe(ennemie.defilants) }],
-    [ennemie]
+    () => [{ cle: 'ennemie', unites: [...unitesDe(ennemie.defilants), ...epinglesEnnemie.posees] }],
+    [ennemie, epinglesEnnemie]
   )
-  const groupesDeHeros = useMemo(() => groupesHeros(heros, joueurActif), [heros, joueurActif])
+  const groupesDeHeros = useMemo(
+    () => groupesHeros(heros, joueurActif, epinglesHeros.posees),
+    [heros, joueurActif, epinglesHeros]
+  )
 
   const ciblesDe = (rangee: RangeeAffichee): number =>
     unitesDe(rangee.defilants).filter((unite) => {
@@ -177,6 +213,7 @@ export function PlateauPaysage({
 
   return (
     <div
+      ref={racine}
       className={
         `plateau-mobile plateau-paysage est-${orientation}` +
         (enCiblage || enPaiement ? ' est-en-ciblage' : '') +
@@ -188,7 +225,7 @@ export function PlateauPaysage({
           cle="ennemie"
           titre={ennemie.titre}
           groupes={groupesEnnemie}
-          piles={unitesDe(ennemie.epingles)}
+          piles={epinglesEnnemie.piles}
           cibles={ciblesEnnemie || undefined}
           effets={effets}
           onOuvrirCarte={setCarteOuverte}
@@ -198,7 +235,7 @@ export function PlateauPaysage({
           cle="heros"
           titre={`${heros.titre} · ${phaseAffichee(world.phase)}`}
           groupes={groupesDeHeros}
-          piles={unitesDe(heros.epingles)}
+          piles={epinglesHeros.piles}
           cibles={ciblesHeros || undefined}
           effets={effets}
           onOuvrirCarte={setCarteOuverte}

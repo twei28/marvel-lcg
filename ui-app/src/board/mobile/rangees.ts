@@ -72,3 +72,22 @@ export function mainDe(plateau: Plateau): UniteAffichee[] {
   const main = plateau.emplacements.find((emplacement) => emplacement.cle === EMPLACEMENT_MAIN)
   return main ? unitesDe([main]) : []
 }
+
+/**
+ * `annexes` (zones.ts) porte a la fois des PILES fondues (mises de cote,
+ * defausses supplementaires...) et des cartes posees isolees (preuves, regle
+ * permanente, ressources) : seules les premieres doivent etre epinglees.
+ */
+export function estUnePile(unite: UniteAffichee): boolean {
+  return unite.pileContenu !== undefined || unite.carte.pileCount !== undefined || unite.pileGroupes !== undefined
+}
+
+/** Separe les piles (a epingler) des cartes posees (a rendre dans la rangee qui defile). */
+export function separerEpingles(unites: UniteAffichee[]): { piles: UniteAffichee[]; posees: UniteAffichee[] } {
+  const piles: UniteAffichee[] = []
+  const posees: UniteAffichee[] = []
+  for (const uniteCourante of unites) {
+    ;(estUnePile(uniteCourante) ? piles : posees).push(uniteCourante)
+  }
+  return { piles, posees }
+}

@@ -74,8 +74,8 @@ export function CartePosee({ unite, effet, onOuvrir }: CartePoseeProps) {
 
       {etats.length > 0 ? (
         <span className="carte-posee-etats">
-          {etats.map((etat) => (
-            <span className={`carte-posee-etat ${etat.classe}`} key={etat.lettre} title={t(etat.nom)}>
+          {etats.map((etat, index) => (
+            <span className={`carte-posee-etat ${etat.classe}`} key={`${etat.classe}-${index}`} title={t(etat.nom)}>
               {etat.lettre}
             </span>
           ))}

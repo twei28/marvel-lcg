@@ -52,10 +52,17 @@
     --pm-barre-h: 92px;
   }
 
-  /* medaillon.css case la main et la barre dans ses aires nommees ; les
-     aires sont neutralisees ci-dessus, mais grid-area doit l'etre aussi. */
-  .plateau-mobile.plateau-paysage .main-eventail,
-  .plateau-mobile.plateau-paysage .pm-barre {
+  /* medaillon.css case la main et la barre dans ses aires nommees
+     (medaillon.css:549, `.plateau-mobile.est-paysage .main-eventail` /
+     `.pm-barre`, specificite 0-3-0) ; les aires sont neutralisees ci-dessus,
+     mais grid-area doit l'etre aussi. Sans `.est-paysage`/`.est-portrait`
+     ici, ce selecteur serait lui aussi a 0-3-0 : egalite avec medaillon.css,
+     departagee seulement par l'ordre d'emission (fragile). Le 0-4-0
+     ci-dessous gagne sans ambiguite, quel que soit l'ordre des imports. */
+  .plateau-mobile.plateau-paysage.est-paysage .main-eventail,
+  .plateau-mobile.plateau-paysage.est-paysage .pm-barre,
+  .plateau-mobile.plateau-paysage.est-portrait .main-eventail,
+  .plateau-mobile.plateau-paysage.est-portrait .pm-barre {
     grid-area: auto;
   }
 
@@ -64,23 +71,22 @@
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     min-height: 0;
     /* La main en eventail recouvre ce bas de plateau : on le laisse vide. */
-    padding-bottom: var(--pp-main-h);
+    padding-bottom: var(--pp-main-h, 90px);
   }
 
   /* Le cartouche du deroule (DeroulePhase, board.css) est pose en fixed a
      31vh du bas pour la scene PC. Ici il prend la place de la main : elle n'est
      pas jouable pendant la phase du mechant, et la hauteur ne permet pas les
-     deux. Valeurs figees (pas var(--pm-barre-h)) : ce cartouche est pose sur
-     BODY, qui ne voit pas la variable posee sur .plateau-mobile. */
+     deux. --pp-barre-h (pas --pm-barre-h, une variable de .plateau-mobile que
+     BODY ne voit pas) est posee en JS sur BODY par PlateauPaysage.tsx : un
+     ResizeObserver sur la VRAIE `.pm-barre`, qui peut faire plus que sa
+     hauteur nominale de 48px (ses `.pm-outils` passent a la ligne). 48px reste
+     le repli avant la premiere mesure. */
   body.mode-plateau-paysage .deroule-phase {
-    bottom: 48px;
+    bottom: var(--pp-barre-h, 48px);
     width: calc(100vw - 24px);
     max-height: calc(100dvh - 48px - 16px);
     padding: 10px 14px 12px;
-  }
-
-  body.mode-plateau-paysage:has(.pm-onglets) .deroule-phase {
-    bottom: 92px;
   }
 
   /* --- Une carte posee ------------------------------------------------------ */
@@ -207,7 +213,7 @@
     gap: 8px;
     /* Pas de padding vertical : la rangee est deja au ras de la hauteur
        disponible (voir taille-carte.ts), le moindre px vertical ici se
-       reperc mesure sur toute la carte plus bas. */
+       repercute sur toute la carte plus bas. */
     padding: 0 8px;
     /* Meme piege que .rangee-cartes-fenetre juste au-dessus : cet element
        est lui-meme l'unique item de la grille de .rangee-cartes-fenetre, et
@@ -283,12 +289,22 @@
 
   /* --- Piles epinglees au bout d'une rangee --------------------------------- */
 
+  /* Plafonnee : six piles epinglees (deck, defausse, mises de cote...) ne
+     doivent jamais pousser la zone qui defile a zero largeur. Au-dela du
+     plafond, la colonne des piles defile a son tour, sans scrollbar visible. */
   .piles-epinglees {
     display: flex;
     align-items: flex-start;
     gap: 6px;
+    max-width: clamp(120px, 30vw, 280px);
     padding: 0 8px 0 6px;
+    overflow-x: auto;
     border-left: 1px solid rgba(255, 255, 255, 0.14);
+    scrollbar-width: none;
+  }
+
+  .piles-epinglees::-webkit-scrollbar {
+    display: none;
   }
 
   .pile-epinglee {
@@ -432,5 +448,15 @@
      boite de rangee a mesurer comme les cartes posees ci-dessus. */
   .plateau-paysage .main-eventail {
     --main-carte-w: var(--pp-card-w);
+  }
+
+  /* Repli explicite : sans unites de conteneur (cqh), l'estimation de la
+     main (--pp-card-w, en dvh) sert aussi aux cartes posees. Moins juste
+     qu'une mesure reelle, mais jamais 0px sur un moteur qui ignore
+     container-type. */
+  @supports not (container-type: size) {
+    .plateau-paysage .carte-posee .scan-card {
+      --card-w: var(--pp-card-w);
+    }
   }
 }

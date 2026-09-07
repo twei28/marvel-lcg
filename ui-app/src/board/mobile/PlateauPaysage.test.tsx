@@ -134,4 +134,56 @@ describe('PlateauPaysage', () => {
     fireEvent.click(screen.getByRole('button', { name: /Défausse/ }))
     expect(screen.getByRole('dialog', { name: 'Défausse' })).toBeInTheDocument()
   })
+
+  // `annexes` melange des piles fondues et des cartes posees isolees
+  // (preuves, regle, ressources) : seules les piles restent epinglees, les
+  // cartes posees rejoignent la rangee heros qui defile.
+  it('separe piles et cartes posees d\'annexes : la pile s\'epingle, la carte rejoint la rangee', () => {
+    orienter(true)
+    const annexes: EmplacementAffiche = {
+      cle: 'annexes', titre: 'Annexes', nombreSurLaLigne: 2,
+      groupes: [[
+        { ...unite('40', 'Mise de côté', 'villain', { pileCount: 3 }), pileTitre: 'Mise de côté' },
+        unite('41', 'Règle permanente', 'environment'),
+      ]],
+    }
+    render(<PlateauPaysage world={MONDE} playerId={0} plateau={plateau([...PLATEAU.emplacements, annexes])} />)
+    expect(document.querySelector('.rangee-heros .pile-epinglee')).toHaveTextContent('Mise de côté')
+    expect(cartePosee('41')).not.toBeNull()
+  })
+
+  it('ancre le cartouche du deroule sur la vraie hauteur mesuree de la barre', () => {
+    orienter(true)
+    let rappel: (() => void) | undefined
+    class ResizeObserverBouchon {
+      constructor(callback: () => void) {
+        rappel = callback
+      }
+      observe() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+    const { unmount } = render(
+      <PlateauPaysage world={MONDE} playerId={0} plateau={PLATEAU} actionsPartie={<span>Actions</span>} />
+    )
+    const barre = document.querySelector<HTMLElement>('.pm-barre')!
+    Object.defineProperty(barre, 'offsetHeight', { value: 88, configurable: true })
+    rappel?.()
+    expect(document.body.style.getPropertyValue('--pp-barre-h')).toBe('88px')
+    unmount()
+    expect(document.body.style.getPropertyValue('--pp-barre-h')).toBe('')
+  })
+
+  it('un paiement par une identite posee', () => {
+    orienter(true)
+    const agir = vi.fn()
+    // La carte id 2 (Spider-Man, terrain-soutien) porte le role « ressource » :
+    // c'est une identite posee, pas une carte de la main.
+    const interactifs = new Map<number, EtatInteractif>([[2, { role: 'ressource', choisie: false, agir }]])
+    render(<PlateauPaysage world={MONDE} playerId={0} plateau={PLATEAU} interactifs={interactifs} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Payer' }))
+    fireEvent.click(cartePosee('2')!)
+    fireEvent.click(screen.getByRole('button', { name: /Utiliser/ }))
+    expect(agir).toHaveBeenCalledOnce()
+  })
 })
