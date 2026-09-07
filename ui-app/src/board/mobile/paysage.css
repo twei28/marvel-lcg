@@ -1,0 +1,63 @@
+/* Le plateau en PAYSAGE : deux rangees de vraies cartes.
+   Spec : docs/superpowers/specs/2026-09-07-parcours-solo-mobile-design.md §4.
+
+   Les tailles ici sont des pixels CSS reels, pas des pixels de scene : ce rendu
+   n'est PAS mis a l'echelle, contrairement a board.css. La main, la barre du bas
+   et la carte ouverte gardent leurs regles dans medaillon.css jusqu'au
+   sous-projet 3. */
+
+@layer composants {
+  /* --- Une carte posee ------------------------------------------------------ */
+
+  .carte-posee {
+    position: relative;
+    flex: none;
+    scroll-snap-align: start;
+    /* Les ameliorations glissees derriere depassent a DROITE de 14 px chacune :
+       la carte reserve cette place pour ne pas les poser sur sa voisine. */
+    padding-right: calc(var(--nb, 0) * 14px);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .carte-posee > .scan-card {
+    position: relative;
+    z-index: 1;
+  }
+
+  .carte-posee-attachee {
+    position: absolute;
+    top: 0;
+    left: calc(var(--i, 1) * 14px);
+    z-index: 0;
+    filter: brightness(0.75);
+  }
+
+  /* Pastilles d'etat, au coin superieur droit du PORTEUR (pas du dernier
+     jeton glisse derriere). */
+  .carte-posee-etats {
+    position: absolute;
+    top: -6px;
+    right: calc(var(--nb, 0) * 14px - 6px);
+    z-index: 2;
+    display: flex;
+    gap: 2px;
+  }
+
+  .carte-posee-etat {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #0b0b0b;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #111;
+    background: #e5e7eb;
+  }
+
+  .carte-posee-etat.est-coriace { background: #9ca3af; }
+  .carte-posee-etat.est-sonne { background: #f59e0b; }
+  .carte-posee-etat.est-desoriente { background: #a78bfa; }
+}
