@@ -2725,12 +2725,17 @@
   .deroule-phase {
     position: fixed;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: min(940px, calc(100vw - 48px));
+    /* Une BANDE posee au-dessus de la main, pas un rideau au centre : la
+       rangee du haut (mechant, manigance principale) reste lisible derriere,
+       la scene ne couvre que le milieu. La main occupe le bas de l'ecran sur
+       environ 30 % de sa hauteur (grille de la scene, board.css). */
+    top: auto;
+    bottom: 31vh;
+    transform: translateX(-50%);
+    width: min(860px, calc(100vw - 48px));
     /* Sur un ecran bas, la scene defile en elle-meme plutot que de deborder,
        ou ses boutons deviendraient inatteignables. */
-    max-height: calc(100dvh - 32px);
+    max-height: calc(69vh - 24px);
     overflow-y: auto;
     z-index: 540;
     padding: 14px 22px 16px;
