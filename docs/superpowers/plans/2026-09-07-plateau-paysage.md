@@ -1,5 +1,7 @@
 # Plateau paysage (sous-projet 1 du parcours solo mobile) : plan d'implémentation
 
+> ⚠ **Plan exécuté le 07/09/2026 (22 commits, b60ba9fe..a3c84357), puis modèle abandonné le soir même** après le premier terrain : la spec est passée en version 2 (portrait, quatre rangées). Ce plan reste comme trace ; le suivant est `2026-09-07-plateau-portrait.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Sur un téléphone tenu en paysage, le plateau montre deux rangées de vraies cartes (ennemie, héros) avec piles épinglées, main en éventail et barre basse ; en portrait, un écran couvre le plateau et demande de tourner l'appareil.
