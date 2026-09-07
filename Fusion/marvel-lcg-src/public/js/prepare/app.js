@@ -1069,6 +1069,9 @@ function stepTeam() {
         bandeauEnLigne(),
         creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
         choixCoop(),
+        // La vue « cartes du héros » prend la place du roster (voir
+        // ouvrirCartesHeros) ; les deux vivent côte à côte, une seule visible.
+        el("div", { class: "tb-vue-cartes", id: "tb-vue-cartes", hidden: true }),
         el("div", { class: "tb-entete" },
             el("b", { class: "mvl" }, t("Roster")),
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
@@ -1171,9 +1174,107 @@ function rendreScene(h) {
             vague ? el("span", { class: "tampon" }, vague) : null,
             arts ? el("span", { class: "tampon jaune" }, t("Art alt")) : null,
         ),
-        el("div", { class: "tb-bas" }, bioDuHeros(h)),
+        el("div", { class: "tb-bas" },
+            el("button", {
+                class: "tampon jaune tb-voir",
+                title: t("Identité recto/verso et cartes signature"),
+                onclick: () => ouvrirCartesHeros(h),
+            }, t("Voir ses cartes")),
+            bioDuHeros(h)),
     );
     scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
+    scene.classList.remove("loupe-ouverte");
+}
+
+/* ---- Les cartes d'un héros : identité recto/verso, puis les signatures -----
+   Le roster cède sa place à la liste ; survoler une carte l'agrandit sur la
+   scène, à gauche. Ce sont les cartes que le héros apporte lui-même, jamais
+   celles de son aspect : elles se choisissent à l'étape suivante. */
+
+/** Les cartes d'un héros, dans l'ordre : identité(s), puis paquet signature. */
+function cartesDuHeros(h) {
+    const identites = [];
+    for (const entree of (h.deck && h.deck.hero) || []) {
+        for (const face of String(entree).split(",")) if (face) identites.push(face);
+    }
+    // Cloak & Dagger : la seconde identité est jouée en même temps.
+    if (h.lie) {
+        for (const entree of h.lie.hero || []) {
+            for (const face of String(entree).split(",")) if (face) identites.push(face);
+        }
+    }
+    const signatures = [
+        ...((h.deck && h.deck.hero_deck) || []),
+        ...((h.lie && h.lie.deck && h.lie.deck.hero_deck) || []),
+    ];
+    return { identites, signatures };
+}
+
+function ouvrirCartesHeros(h) {
+    const zone = document.getElementById("tb-vue-cartes");
+    if (!zone) return;
+    const { identites, signatures } = cartesDuHeros(h);
+    const nombres = new Map();
+    for (const id of signatures) nombres.set(id, (nombres.get(id) || 0) + 1);
+
+    const vignette = (id, classe) => {
+        const n = nombres.get(id) || 0;
+        return el("div", { class: "tb-carte " + (classe || "") },
+            el("img", {
+                src: cardImageUrl(id), loading: "lazy", alt: "",
+                onmouseenter: () => loupe(id),
+                onmouseleave: () => loupe(null),
+            }),
+            n > 1 ? el("span", { class: "tb-carte-n" }, "×" + n) : null,
+        );
+    };
+
+    // Tout d'un bloc, identité en premier : une seule grille, sans onglet.
+    poser(zone,
+        el("div", { class: "tb-entete" },
+            el("b", { class: "mvl" }, nomAffiche(h)),
+            el("span", { class: "tb-compte" },
+                identites.length + " " + t("faces") + " · " + signatures.length + " " + t("cartes")),
+            el("button", { class: "tb-mode", onclick: fermerCartesHeros }, "‹ " + t("Retour au roster")),
+        ),
+        el("div", { class: "tb-cartes-grille" },
+            ...identites.map((id) => vignette(id, "identite")),
+            ...[...nombres.keys()].map((id) => vignette(id)),
+        ),
+    );
+    zone.hidden = false;
+    basculerVueCartes(true);
+}
+
+function fermerCartesHeros() {
+    const zone = document.getElementById("tb-vue-cartes");
+    if (zone) zone.hidden = true;
+    loupe(null);
+    basculerVueCartes(false);
+}
+
+/** Cache ou rend le roster et ses filtres pendant que les cartes sont là. */
+function basculerVueCartes(actif) {
+    const droite = document.querySelector(".tb-droite");
+    if (droite) droite.classList.toggle("vue-cartes", actif);
+}
+
+/** La carte survolée, en grand sur la scène. `null` la retire. */
+function loupe(cardId) {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    let boite = scene.querySelector(".tb-loupe");
+    if (!cardId) {
+        if (boite) boite.remove();
+        scene.classList.remove("loupe-ouverte");
+        return;
+    }
+    if (!boite) {
+        boite = el("div", { class: "tb-loupe" });
+        scene.append(boite);
+    }
+    poser(boite, el("img", { src: cardImageUrl(cardId), alt: "" }));
+    scene.classList.add("loupe-ouverte");
 }
 
 /** La fiche encyclopédique d'un héros, repliée au pied de sa scène. */
@@ -1333,6 +1434,7 @@ async function refreshHeroGrid(pre) {
             onclick: (e) => recruter(h, e.currentTarget),
             onmouseenter: () => { herosSurvole = h; rendreScene(h); },
             onmouseleave: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
+            onfocus: () => { herosSurvole = h; rendreScene(h); },
         },
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
@@ -2704,7 +2806,10 @@ function stepSummary() {
                 el("div", { class: "fo-reglages" },
                     ...reglages.map((x) => el("span", { class: "tampon" }, x))),
             ),
-            el("div", { class: "fo-vs" }, el("span", {}, "VS")),
+            el("div", { class: "fo-vs" },
+                el("i", { class: "fo-eclat e1" }), el("i", { class: "fo-eclat e2" }),
+                el("i", { class: "fo-eclat e3" }), el("i", { class: "fo-eclat e4" }),
+                el("span", {}, "VS")),
             el("div", { class: "fo-side villain-side" },
                 vilain,
                 sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Cible non définie")),

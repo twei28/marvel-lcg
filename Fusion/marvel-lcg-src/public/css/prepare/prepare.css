@@ -64,10 +64,11 @@
   --affiche-deck:232px;              /* largeur d'une tuile de deck */
   --affiche-cosmetiques-h:190px;     /* le bloc « Identité et arts », déplié */
   --affiche-nom-arsenal:104px;       /* le nom du héros sur l'écran des decks */
-  --fo-etoile:190px;                 /* le diamètre de l'étoile VS */
+  --fo-etoile:240px;                 /* le diamètre de l'étoile VS */
   --fo-nom:72px;                     /* le nom du méchant sur le face à face */
   --affiche-avance-h:180px;          /* le bloc « Avancé », déplié */
   --affiche-bio-h:190px;             /* la biographie, dépliée */
+  --affiche-carte:116px;             /* largeur d'une carte dans la liste du héros */
   /* L'accueil : taille du titre et des tuiles de mode. */
   --titre-accueil:120px;
   --tuile-accueil-min:340px;
@@ -87,7 +88,7 @@
   /* Le Face à face : hauteur de la scène, largeur d'un héros, fond clair de
      notre camp, fond sombre du leur, et la pente de la diagonale. */
   --fo-h:340px;
-  --fo-heros-w:190px;
+  --fo-heros-w:320px;
   --fo-nous-fond:#eceae4;
   --fo-eux-fond:#2a0b0e;
   --fo-pente:70px;
@@ -941,7 +942,7 @@ button{cursor:pointer}
 .heroes-side .recitatif{position:absolute;left:28px;top:22px}
 .fo-cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
 .fo-card{width:var(--fo-heros-w);text-align:center}
-.faceoff.large .fo-card{width:calc(var(--fo-heros-w) * .72)}
+.faceoff.large .fo-card{width:calc(var(--fo-heros-w) * .56)}
 .fo-scene{
   width:100%;
   aspect-ratio:3/4;
@@ -952,6 +953,7 @@ button{cursor:pointer}
 }
 .fo-scene.villain{background-size:205%;background-position:center 20%}
 .fo-card.villain{width:calc(var(--fo-heros-w) * 1.25)}
+.faceoff.large .fo-card.villain{width:calc(var(--fo-heros-w) * 1.1)}
 .fo-cap{
   margin-top:10px;
   font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:24px;line-height:.92;text-transform:uppercase;
@@ -966,20 +968,45 @@ button{cursor:pointer}
 }
 .fo-reglages{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92%}
 .heroes-side .tampon{color:#fff;background:#1b2028;cursor:default}
-/* L'étoile VS : le seul morceau franchement comics de l'écran. */
+/* L'étoile VS, dessinée comme sur une planche : une étoile noire dessous qui
+   fait le contour, l'étoile de couleur par-dessus en dégradé, le mot en
+   Bangers, et quatre éclats projetés autour. */
 .fo-vs{
   position:absolute;z-index:3;left:50%;top:50%;
-  width:var(--fo-etoile,190px);height:var(--fo-etoile,190px);
-  transform:translate(-50%,-50%) rotate(-8deg);
-  background:var(--affiche-jaune);
-  clip-path:polygon(50% 0,61% 32%,95% 20%,73% 47%,100% 68%,66% 66%,58% 100%,45% 70%,10% 82%,32% 55%,0 38%,35% 36%);
+  width:var(--fo-etoile,240px);height:var(--fo-etoile,240px);
+  transform:translate(-50%,-50%) rotate(-9deg);
   display:grid;place-items:center;
-  filter:drop-shadow(5px 5px 0 #111);
+  filter:drop-shadow(8px 10px 0 rgba(0,0,0,.55));
 }
+.fo-vs::before,
+.fo-vs::after{
+  content:"";position:absolute;inset:0;
+  clip-path:polygon(50% 0,60% 30%,88% 14%,79% 43%,100% 50%,79% 57%,88% 86%,60% 70%,50% 100%,40% 70%,12% 86%,21% 57%,0 50%,21% 43%,12% 14%,40% 30%);
+}
+.fo-vs::before{transform:scale(1.09);background:#111}
+.fo-vs::after{background:radial-gradient(circle at 38% 32%,#fff3c4,var(--affiche-jaune) 45%,#e8a51c 100%)}
 .fo-vs span{
-  font-family:"Bangers",Impact,sans-serif;font-size:calc(var(--fo-etoile,190px) * .38);line-height:1;
-  color:var(--eux);-webkit-text-stroke:2px #111;
+  position:relative;z-index:1;
+  font-family:"Bangers",Impact,sans-serif;
+  font-size:calc(var(--fo-etoile,240px) * .36);line-height:1;letter-spacing:.02em;
+  color:var(--eux);
+  -webkit-text-stroke:3px #111;
+  paint-order:stroke fill;
+  text-shadow:0 4px 0 rgba(0,0,0,.35);
+  transform:rotate(3deg);
 }
+/* Les éclats : quatre petits losanges projetés, comme l'encre d'un impact. */
+.fo-eclat{
+  position:absolute;z-index:0;
+  width:calc(var(--fo-etoile,240px) * .12);height:calc(var(--fo-etoile,240px) * .12);
+  background:var(--affiche-jaune);
+  border:3px solid #111;
+  transform:rotate(45deg);
+}
+.fo-eclat.e1{left:-14%;top:8%}
+.fo-eclat.e2{right:-16%;top:26%;width:calc(var(--fo-etoile,240px) * .08);height:calc(var(--fo-etoile,240px) * .08)}
+.fo-eclat.e3{left:2%;bottom:-14%;width:calc(var(--fo-etoile,240px) * .09);height:calc(var(--fo-etoile,240px) * .09)}
+.fo-eclat.e4{right:4%;bottom:-8%;width:calc(var(--fo-etoile,240px) * .06);height:calc(var(--fo-etoile,240px) * .06)}
 .fo-nomg{
   font-family:"Anton",Impact,sans-serif;font-style:italic;font-weight:400;
   font-size:var(--fo-nom,72px);line-height:.88;text-transform:uppercase;text-align:center;
@@ -1432,6 +1459,52 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   .tb-nomg{font-size:80px}
   .tb-droite{position:relative;width:100%;padding:16px 16px 100px}
 }
+
+/* --- Les cartes d'un héros : la liste à droite, la loupe à gauche ---------- */
+.tb-droite.vue-cartes > .tb-entete,
+.tb-droite.vue-cartes > .tb-filtres,
+.tb-droite.vue-cartes > .tb-roster{display:none}
+.tb-vue-cartes{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.tb-cartes-grille{
+  flex:1;min-height:0;overflow:auto;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--affiche-carte,116px),1fr));
+  align-content:start;gap:10px;padding-right:6px;
+}
+.tb-carte{position:relative}
+.tb-carte img{
+  display:block;width:100%;
+  border:3px solid #111;box-shadow:3px 3px 0 #111;
+  transition:transform var(--dur),box-shadow var(--dur);
+}
+.tb-carte img:hover{transform:translateY(-3px);box-shadow:3px 3px 0 var(--affiche-jaune)}
+/* Les faces de l'identité ouvrent la liste : elles se voient tout de suite. */
+.tb-carte.identite img{border-color:var(--affiche-jaune);box-shadow:3px 3px 0 var(--affiche-jaune)}
+.tb-carte-n{
+  position:absolute;top:6px;right:6px;
+  padding:2px 7px;
+  color:#111;background:var(--affiche-jaune);border:2px solid #111;
+  font-weight:900;font-size:12px;
+}
+/* La carte survolée, en grand sur la scène. */
+.tb-loupe{
+  position:absolute;inset:0;z-index:4;
+  display:flex;align-items:center;justify-content:center;
+  min-height:0;
+  padding:26px;
+  background:rgba(6,8,12,.9);
+  animation:fade .12s ease;
+}
+.tb-loupe img{
+  max-height:100%;max-width:100%;width:auto;height:auto;
+  object-fit:contain;
+  border:4px solid #111;box-shadow:10px 10px 0 #111,0 30px 60px rgba(0,0,0,.7);
+}
+.tb-scene.loupe-ouverte .tb-nomg,
+.tb-scene.loupe-ouverte .tb-tampons,
+.tb-scene.loupe-ouverte .tb-bas,
+.tb-scene.loupe-ouverte .tb-defi{opacity:0;pointer-events:none}
+.tb-voir{cursor:pointer}
+.tb-voir:hover{background:#fff}
 
 /* --- L'arsenal : les decks du siège actif --------------------------------- */
 .tb-roster-deck{
