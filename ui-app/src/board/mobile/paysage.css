@@ -21,13 +21,14 @@
   .plateau-mobile.plateau-paysage.est-portrait {
     --pp-etiquette-h: 14px;
     --pp-main-h: 90px;
-    /* -166px : barre + main + 2 etiquettes (taille-carte.ts, HAUTEUR_FIXE
-       avant marge). -80px : MARGE_SCANCARD (voir son commentaire complet
-       dans taille-carte.ts, qui DOIT rester lu avant de changer ce chiffre) :
-       la bande de jauge PV/menace qui deborde sous le cadre, et le pire cas
-       mesure de la hauteur reelle de .pm-barre sur les 34 etats de la page
-       de fixtures. */
-    --pp-card-w: clamp(84px, calc((100dvh - 166px - 80px) / 2 * 63 / 88), 150px);
+    /* Estimation pour la MAIN SEULEMENT (elle flotte hors des rangees, une
+       taille de conteneur n'existe pas pour elle) : -166px = barre + main +
+       2 etiquettes (taille-carte.ts, HAUTEUR_FIXE), -18px = la bande de
+       jauge PV/menace qui deborde sous le cadre (HAUTEUR_JAUGE). Suppose une
+       barre a sa hauteur NOMINALE (48px) : les cartes POSEES, elles, ne
+       devinent rien, elles mesurent la vraie hauteur de leur rangee (voir
+       .rangee-cartes-fenetre et les regles --card-w plus bas). */
+    --pp-card-w: clamp(84px, calc(((100dvh - 166px) / 2 - 18px) * 63 / 88), 150px);
     box-sizing: border-box;
     position: relative;
     display: grid;
@@ -183,15 +184,21 @@
      cette taille meme si sa piste ne lui laisse pas la place. Sans cette
      ligne, .rangee-cartes-defilement grandissait pour loger la carte ENTIERE
      (jauge de PV/menace comprise) au lieu de tenir dans la piste minmax(0,1fr)
-     qui lui est reservee : c'est ce qui rendait MARGE_SCANCARD inoperant
-     avant ce correctif (tache 12, fix round 1), aucun retrecissement de
-     carte ne pouvant liberer de place dans une boite qui refusait de
-     retrecir elle-meme. */
+     qui lui est reservee : aucun retrecissement de carte ne peut liberer de
+     place dans une boite qui refuse de retrecir elle-meme.
+     container-type:size fait de cette boite LA reference de taille des
+     cartes posees (unites cqh plus bas) : quelle que soit la hauteur reelle
+     que la barre du bas, le bandeau de fixtures ou la zone de securite lui
+     laissent, la carte se mesure sur cette hauteur-la, jamais sur une
+     estimation en dvh qui devine la hauteur de la barre. Elle est le seul
+     item de sa colonne minmax(0,1fr) (.rangee-cartes-corps) : c'est bien
+     l'exterieur qui decide sa taille, condition d'un container de taille. */
   .rangee-cartes-fenetre {
     position: relative;
     display: grid;
     min-width: 0;
     min-height: 0;
+    container-type: size;
   }
 
   .rangee-cartes-defilement {
@@ -379,8 +386,17 @@
     display: none;
   }
 
+  /* La carte posee se mesure sur la vraie hauteur de sa rangee (100cqh, la
+     hauteur du conteneur de taille .rangee-cartes-fenetre), pas sur une
+     estimation en dvh qui devine la hauteur de la barre du bas : que la
+     barre fasse 48px (nominal) ou 88px (bandeau "Aucune partie derriere
+     cette vue" de la page de fixtures), la carte s'accorde a la place qui
+     lui reste REELLEMENT. -18px (HAUTEUR_JAUGE, taille-carte.ts) : la bande
+     de jauge PV/menace qui deborde SOUS le cadre (ScanCard.css, marge basse
+     negative) n'est pas dans la boite de la carte, mais prend quand meme de
+     la hauteur dans la rangee. */
   .plateau-paysage .carte-posee .scan-card {
-    --card-w: var(--pp-card-w);
+    --card-w: clamp(84px, calc((100cqh - 18px) * 63 / 88), 150px);
     --inspect-scale: 1;
   }
 
@@ -401,14 +417,19 @@
   }
 
   /* Une manigance se pose en paysage : meme HAUTEUR que ses voisines. ScanCard
-     donne a une carte paysage une hauteur de --card-w * 127 / 176 ; pour
-     retrouver la hauteur d'une carte portrait (--pp-card-w * 176 / 127), la
-     largeur vaut donc --pp-card-w * (176 / 127)². */
+     donne a une carte paysage (is-landscape) une hauteur de --card-w * 127 / 176 :
+     pour une hauteur cible de (100cqh - 18px), la largeur vaut donc
+     (100cqh - 18px) * 176 / 127. Plafond porte a 220px : une carte paysage
+     posee cote large peut legitimement depasser 150px (largeur des cartes
+     portrait du plateau PC) sans devenir illisible. */
   .plateau-paysage .carte-posee .scan-card.is-landscape {
-    --card-w: calc(var(--pp-card-w) * 176 / 127 * 176 / 127);
+    --card-w: clamp(84px, calc((100cqh - 18px) * 176 / 127), 220px);
   }
 
-  /* La main s'aligne sur la largeur des cartes posees. */
+  /* La main s'aligne sur la largeur des cartes posees. --pp-card-w reste une
+     ESTIMATION (en dvh, barre supposee a sa hauteur nominale) : la main flotte
+     hors des rangees (position hors flux, medaillon.css), elle n'a pas de
+     boite de rangee a mesurer comme les cartes posees ci-dessus. */
   .plateau-paysage .main-eventail {
     --main-carte-w: var(--pp-card-w);
   }
