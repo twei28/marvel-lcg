@@ -1146,6 +1146,44 @@ function pliBio(titre, lignes) {
 
 /** La moitié gauche : l'art, le nom, les chiffres du héros donné (ou l'appel
  *  à en choisir un). Reconstruite à chaque survol et à chaque choix. */
+/** Le nom géant d'une scène : jamais coupé, jamais sur les tampons.
+ *
+ *  Deux réglages, mesurés après le rendu :
+ *  - la HAUTEUR DE POSE : le nom se cale juste au-dessus de ce qui est sous
+ *    lui (les tampons, la règle du défi), quelle que soit la hauteur que
+ *    ceux-ci prennent (les tampons passent sur deux lignes dès que le méchant
+ *    a des PV par joueur) ;
+ *  - la TAILLE : elle descend, par pas, tant qu'un mot déborde la largeur ou
+ *    que le nom sort par le haut de la scène. Un mot n'est jamais brisé.
+ *  Constat de l'utilisateur : « des fois leur nom est coupé, car trop long »,
+ *  et « ça ne doit jamais passer en dessous ou au-dessus des infos ». */
+function ajusterNomGeant(scene) {
+    const nom = scene && scene.querySelector(".tb-nomg");
+    if (!nom) return;
+    const mesurer = () => {
+        const dessous = [".tb-tampons", ".tb-defi"]
+            .map((sel) => scene.querySelector(sel))
+            .filter((e) => e && e.offsetParent !== null);
+        const bas = scene.getBoundingClientRect().bottom;
+        const hautDuDessous = dessous.length
+            ? Math.min(...dessous.map((e) => e.getBoundingClientRect().top))
+            : bas - 110;
+        nom.style.bottom = Math.round(bas - hautDuDessous + 14) + "px";
+        const max = parseFloat(getComputedStyle(nom).fontSize) || 132;
+        let taille = max;
+        nom.style.fontSize = "";
+        const debordeLargeur = () => nom.scrollWidth > nom.clientWidth + 1;
+        const debordeHaut = () => nom.getBoundingClientRect().top < scene.getBoundingClientRect().top + 16;
+        while (taille > 44 && (debordeLargeur() || debordeHaut())) {
+            taille -= 4;
+            nom.style.fontSize = taille + "px";
+        }
+    };
+    // Deux images : les polices web et la mise en page des tampons doivent
+    // être là avant de mesurer.
+    requestAnimationFrame(() => requestAnimationFrame(mesurer));
+}
+
 function rendreScene(h) {
     const scene = document.getElementById("tb-scene");
     if (!scene) return;
@@ -1192,6 +1230,7 @@ function rendreScene(h) {
             bioDuHeros(h)),
     );
     scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
+    ajusterNomGeant(scene);
     scene.classList.remove("loupe-ouverte");
 }
 
@@ -2157,6 +2196,7 @@ function rendreSceneDeck() {
             }, x)),
         ),
     );
+    ajusterNomGeant(scene);
 }
 
 /** Sous la liste : importer, parcourir, construire, et les cosmétiques. */
@@ -2511,6 +2551,7 @@ function rendreSceneMechant(sc) {
         el("div", { class: "tb-bas" }, bioDuMechant(sc), documentsDeLaCible(sc)),
     );
     scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
+    ajusterNomGeant(scene);
 }
 
 /** La fiche encyclopédique d'un méchant, repliée au pied de sa scène. */

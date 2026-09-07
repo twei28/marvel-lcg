@@ -29,14 +29,14 @@
 :root{
   --ink:#07080c;
   /* Le rouge du logo Marvel. */
-  --agir:#780000;                       /* Hot Rod Red (palette Avengers, 7 sept. 2026) */
+  --agir:#e62429;                       /* le rouge Marvel : sur l'accueil et la selection, il se voit ; le plateau, lui, joue le rouge Iron Man (palette Avengers) */
   --agir-encre:#ffffff;                 /* texte posé sur du rouge */
-  --agir-halo:rgba(166,0,0,.55);      /* anneau autour d'un élément choisi */
+  --agir-halo:rgba(230,36,41,.45);      /* anneau autour d'un élément choisi */
   --nous:#ffffff;                       /* notre camp, et le survol */
   --nous-halo:rgba(255,255,255,.18);
-  --eux:#a60000;                        /* le méchant, et lui seul */
-  --eux2:#c84b19;
-  --eux-halo:rgba(166,0,0,.5);
+  --eux:#e62429;                        /* le méchant, et lui seul */
+  --eux2:#ff4048;
+  --eux-halo:rgba(230,36,41,.42);
 
   /* Tailles. Le titre d'étape a perdu 8 px au profit des tuiles ; les modes
      ont une largeur plancher par tuile (cinq tuiles à 150 px tiennent sur
@@ -47,7 +47,7 @@
      rouge des noms géants, la part de l'écran prise par la scène, la pente
      de la coupe, le cadrage vertical de l'art, la taille des portraits. */
   --affiche-jaune:#f0b95f;
-  --affiche-ombre:8px 8px 0 #780000;
+  --affiche-ombre:8px 8px 0 #e62429;
   --affiche-scene-w:58%;
   --affiche-pente:90px;
   --affiche-cadrage:18%;
@@ -322,7 +322,7 @@ button{cursor:pointer}
 .recap-k{color:var(--mute);text-transform:uppercase;font-size:11px;font-weight:900}
 .recap-v{color:var(--txt);font-weight:700;text-align:right}
 .recap-block{display:flex;flex-direction:column;gap:9px;padding-top:11px;border-top:1px solid var(--soft)}
-.recap-block.target{border-color:rgba(166,0,0,.36)}
+.recap-block.target{border-color:rgba(230,36,41,.36)}
 .recap-hero,.recap-scn{display:flex;gap:10px;align-items:center;min-width:0}
 .rh-name{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
 .rh-sub{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
@@ -336,7 +336,7 @@ button{cursor:pointer}
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
 }
 .portrait.mini{width:36px;height:36px}
-.portrait.villain{border-color:var(--red);box-shadow:0 0 0 1px rgba(166,0,0,.55)}
+.portrait.villain{border-color:var(--red);box-shadow:0 0 0 1px rgba(230,36,41,.55)}
 
 .nav{
   position:fixed;
@@ -366,7 +366,7 @@ button{cursor:pointer}
 }
 .btn.ghost{background:var(--steel);border-color:var(--line);color:var(--dim)}
 .btn.ghost:hover{color:#fff;border-color:var(--nous)}
-.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(166,0,0,.28)}
+.btn.primary,.btn.launch{color:var(--agir-encre);background:var(--agir);box-shadow:0 10px 22px rgba(230,36,41,.28)}
 .btn.primary:hover,.btn.launch:hover{filter:brightness(1.08)}
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.5);transform:none;box-shadow:none}
@@ -864,7 +864,7 @@ button{cursor:pointer}
 .detail-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--soft);font-size:12px}
 .dr-k{color:var(--mute)}
 .dr-v{font-weight:800;text-align:right}
-.sd-badge{margin-top:9px;padding:7px;color:#fff;background:rgba(166,0,0,.18);border:1px solid var(--red)}
+.sd-badge{margin-top:9px;padding:7px;color:#fff;background:rgba(230,36,41,.18);border:1px solid var(--red)}
 
 .presets{
   display:grid;
@@ -907,7 +907,7 @@ button{cursor:pointer}
   font-size:12px;
   font-weight:800;
 }
-.mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(166,0,0,.22)}
+.mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(230,36,41,.22)}
 
 /* Le face à face : une splash page (7 septembre). L'écran entier est le fond
    du méchant ; notre camp est un panneau clair posé dessus, coupé en biais.
@@ -919,7 +919,7 @@ button{cursor:pointer}
   margin:0;overflow:hidden;
   border:0;
   background:
-    radial-gradient(ellipse at 78% 25%,rgba(166,0,0,.32),transparent 55%),
+    radial-gradient(ellipse at 78% 25%,rgba(230,36,41,.32),transparent 55%),
     linear-gradient(160deg,var(--fo-eux-fond),#0b0608 70%);
 }
 .face-a-face .faceoff::after{
@@ -1017,14 +1017,14 @@ button{cursor:pointer}
 }
 .fo-vsub{text-align:center;color:var(--eux2);font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase}
 /* Les erreurs et le bloc « Avancé », sous la splash. */
-.face-a-face .errors{flex:none;margin:0;border:0;border-top:3px solid var(--eux);background:rgba(166,0,0,.14)}
+.face-a-face .errors{flex:none;margin:0;border:0;border-top:3px solid var(--eux);background:rgba(230,36,41,.14)}
 .face-a-face .avance{flex:none;max-width:none;margin:0;padding:0 22px;background:#1e1e1e}
 .face-a-face .avance summary{padding:8px 0;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
 .face-a-face .avance[open] summary{color:var(--affiche-jaune)}
 .face-a-face .avance .cj-body{max-height:var(--affiche-avance-h,180px);overflow:auto;padding-bottom:10px}
 .sum-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .meta-pill{padding:8px 12px;color:var(--dim);border:1px solid var(--line);background:var(--steel);font-size:12px}
-.errors{padding:16px;border:1px solid var(--red);background:rgba(166,0,0,.12)}
+.errors{padding:16px;border:1px solid var(--red);background:rgba(230,36,41,.12)}
 .errors h3{font-size:30px;line-height:.9;color:var(--red2);text-transform:uppercase}
 .err{padding:7px 0;color:#fff;cursor:pointer;font-size:14px}
 .err:hover{color:var(--gold)}
@@ -1172,7 +1172,7 @@ button{cursor:pointer}
 .recap-block.team{gap:9px}
 .recap-slot{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:9px 11px;background:var(--steel);border:1px solid var(--line);color:var(--txt);transition:border-color var(--dur),background var(--dur),transform var(--dur)}
 .recap-slot:hover{border-color:var(--nous);transform:translateY(-1px)}
-.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(166,0,0,.18),var(--steel))}
+.recap-slot.active{border-color:var(--agir);background:linear-gradient(160deg,rgba(230,36,41,.18),var(--steel))}
 .portrait.team{width:62px;height:62px;flex:none;background:#1e1e1e center 20%/158% no-repeat;border:1px solid var(--line);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
 .recap-slot.active .portrait.team{border-color:var(--agir);box-shadow:0 0 0 1px var(--agir-halo)}
 .portrait.team.empty{display:grid;place-items:center;background:var(--ink)}
@@ -1216,7 +1216,7 @@ button{cursor:pointer}
   background:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer;
   font-size:10px;font-weight:700;color:var(--mute);font-family:inherit;text-align:center;line-height:1.15}
 .ra-option:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
-.ra-option.sel{border-color:var(--gold);color:#fff;background:rgba(166,0,0,.14)}
+.ra-option.sel{border-color:var(--gold);color:#fff;background:rgba(230,36,41,.14)}
 .ra-vignette{width:100%;border-radius:4px;display:block;aspect-ratio:225/326;object-fit:cover}
 .ra-hasard{display:flex;align-items:center;justify-content:center;background:#1a1e27;
   color:var(--gold);font-size:24px;font-weight:900}
@@ -1337,7 +1337,10 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   position:absolute;left:36px;bottom:158px;z-index:2;
   max-width:calc(var(--affiche-scene-w,58%) - 40px);
   font-size:var(--affiche-nom,132px);
-  overflow-wrap:anywhere;
+  /* Jamais un mot coupe en deux : c'est la taille qui cede (ajusterNomGeant,
+     app.js), pas le mot. */
+  overflow-wrap:normal;
+  line-height:.9;
 }
 .tb-nomg small{
   display:block;margin-bottom:10px;
@@ -1368,7 +1371,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   max-width:calc(var(--affiche-scene-w,58%) - 60px);
   display:flex;flex-direction:column;gap:3px;
   padding:8px 14px;
-  background:rgba(166,0,0,.16);border:3px solid var(--eux);
+  background:rgba(230,36,41,.16);border:3px solid var(--eux);
   font-size:13px;line-height:1.35;
 }
 .tb-defi b{font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--eux2)}
@@ -1563,7 +1566,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .team-b.eux .tb-scene{background:#12080a}
 .team-b.eux .tb-art.vide{background:radial-gradient(ellipse at 40% 45%,#3a1216,#0b0608 70%)}
 .team-b.eux .tb-scene::after{
-  background:linear-gradient(90deg,#1e1e1e 0 9%,rgba(16,19,23,.94) 17%,transparent 32%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#1e1e1e 100%),linear-gradient(0deg,#1e1e1e 0,rgba(16,19,23,.6) 30%,transparent 55%),radial-gradient(ellipse at 55% 40%,rgba(166,0,0,.28),transparent 60%);
+  background:linear-gradient(90deg,#1e1e1e 0 9%,rgba(16,19,23,.94) 17%,transparent 32%),linear-gradient(90deg,transparent 45%,rgba(16,19,23,.85) 88%,#1e1e1e 100%),linear-gradient(0deg,#1e1e1e 0,rgba(16,19,23,.6) 30%,transparent 55%),radial-gradient(ellipse at 55% 40%,rgba(230,36,41,.28),transparent 60%);
 }
 .team-b.eux .tb-nomg{text-shadow:8px 8px 0 #000}
 .team-b.eux .tb-nomg small{color:var(--eux2)}
@@ -1595,7 +1598,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-heroique b{min-width:14px;font-size:15px;color:#fff}
 .tb-menace .mod-chips{gap:6px}
 .tb-menace .mod-chip{border:2px solid #2a313d;font-size:11px;padding:5px 9px}
-.tb-menace .mod-chip.on{color:#fff;border-color:var(--eux);background:rgba(166,0,0,.24)}
+.tb-menace .mod-chip.on{color:#fff;border-color:var(--eux);background:rgba(230,36,41,.24)}
 .team-b.eux .tb-equipe{align-items:center}
 .tb-siege.petit{width:var(--affiche-siege-petit,60px)}
 .tb-siege.petit .tb-siege-nom{font-size:8px;padding:8px 3px 3px}

@@ -242,14 +242,16 @@
      quatorze cartes de la table etaient cerclees d'un bandeau vert ou rouge :
      plus rien ne ressortait. L'opacite, elle, reste celle d'origine : un
      contour fin et net dit le camp mieux qu'un contour large et delave. */
+  /* Les camps dans la palette Avengers : Angreen pour nous, Hot Rod Red pour
+     la rencontre (voir ui-app/styles/palette.css). */
   .scan-card.camp-player {
-    --camp-ring: rgba(60, 205, 120, 0.85);
-    --camp-glow: rgba(60, 205, 120, 0.5);
+    --camp-ring: rgba(140, 155, 60, 0.9);
+    --camp-glow: rgba(140, 155, 60, 0.45);
   }
 
   .scan-card.camp-encounter {
-    --camp-ring: rgba(228, 66, 66, 0.85);
-    --camp-glow: rgba(228, 66, 66, 0.5);
+    --camp-ring: rgba(166, 0, 0, 0.9);
+    --camp-glow: rgba(166, 0, 0, 0.5);
   }
 
   .state-playable .scan-frame {
@@ -258,7 +260,10 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 26px rgba(140, 155, 60, 0.48),
+      /* Le halo « jouable » etait de 26 px : en main, quinze cartes cote a
+         cote en faisaient un bandeau vert continu (constat de l'utilisateur,
+         7 septembre 2026). Reduit de moitie, comme le contour de camp. */
+      0 0 12px rgba(140, 155, 60, 0.5),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
@@ -268,7 +273,7 @@
       0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
-      0 0 28px rgba(240, 185, 95, 0.58),
+      0 0 14px rgba(240, 185, 95, 0.6),
       0 18px 32px rgba(0, 0, 0, 0.52);
   }
 
