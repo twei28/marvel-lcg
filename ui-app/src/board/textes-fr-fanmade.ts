@@ -1124,7 +1124,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // superior_iron_man — Endo-Sym Matter (Resource)
   'si013': "Doublez le nombre de ressources générées par cette carte lorsque vous payez pour les cartes spécifiques à votre identité (y compris pour le coût des capacités sur ces cartes).",
   // superior_iron_man — Alone (Obligation)
-  'si014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Inclinez Tony Stark → retirez Alone de la partie.\n• Dépensez 3 ressources de n'importe quel type. Si vous ne le pouvez pas, cette carte gagne renfort. Défaussez cette obligation.",
+  'si014': "<b><i>Donnez-la au joueur Tony Stark.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Tony Stark → retirez Alone de la partie.\n• Dépensez 3 ressources de n'importe quel type. Si vous ne le pouvez pas, cette carte gagne renfort. Défaussez cette obligation.",
   // superior_iron_man — Massive Attack (SideScheme)
   'si015': "Entrave 2.\n<b>Une fois révélée</b> : infligez 1 dégât au joueur Tony Stark.\n[star] <b>Boost</b> : mettez Massive Attack en jeu.",
   // superior_iron_man — Tony Stark A.I. (Minion)
@@ -1523,7 +1523,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // agatha_harkness — Scarlet Witch (Ally, signature)
   'aa002': "Vous pouvez jouer l'événement attaché à Scarlet Witch comme s'il était dans votre main, en réduisant son coût de 1.\n<b>Réponse</b> : après que Scarlet Witch est entrée en jeu, choisissez un événement [[SPELL]] dans votre pile de défausse et attachez-le à elle face cachée.",
   // agatha_harkness — Ebony (Support, signature)
-  'aa003': "Tant que vous êtes en forme d'alter ego, Agatha Harkness gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Ebony → regardez les 2 cartes du dessus de votre deck. Ajoutez-en 1 à votre main.",
+  'aa003': "Tant que vous êtes sous forme d'alter ego, Agatha Harkness gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Ebony → regardez les 2 cartes du dessus de votre deck. Ajoutez-en 1 à votre main.",
   // agatha_harkness — Wake Thy Power (Event, x2)
   'aa004': "<b>Action de héros</b> : défaussez les 2 cartes du dessus de votre deck. Pour chaque icône de ressource défaussée de cette façon :\n• [energy] – retirez 2 menaces d'une manigance.\n• [mental] – piochez 1 carte.\n• [physical] – soignez 2 dégâts de votre héros.\n• [wild] – choisissez 1 des options ci-dessus.",
   // agatha_harkness — Witchcraft (Event, x3)
@@ -1545,7 +1545,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // agatha_harkness — Ghost Agatha (Support persona, mise de côté)
   'aa013': "Permanente. Le premier joueur contrôle Ghost Agatha.\n<b>Action</b> : inclinez Ghost Agatha → regardez les 3 cartes du dessus de votre deck. Piochez-en 1, défaussez-en 1 et remettez-en 1 sur le dessus de votre deck.",
   // agatha_harkness — Chaotic Forces (Obligation)
-  'aa014': "<b><i>Donnez-la au joueur Agatha Harkness.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Cherchez Agatha All Along au tableau des victoires et mettez-la en jeu → retirez Chaotic Forces de la partie.\n• Défaussez cette carte et la carte du dessus du deck de rencontre. Pour chaque icône de boost défaussée de cette façon, subissez 1 dégât indirect.",
+  'aa014': "<b><i>Donnez-la au joueur Agatha Harkness.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Cherchez Agatha All Along au tableau des victoires et mettez-la en jeu → retirez Chaotic Forces de la partie.\n• Défaussez cette carte et la carte du dessus du deck de rencontre. Pour chaque icône de boost défaussée de cette façon, subissez 1 dégât indirect.",
   // agatha_harkness — Burned at the Stake (SideScheme nemesis)
   'aa015': "Death gagne <b><i>Robuste</i></b>.\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>",
   // agatha_harkness — Death (Minion nemesis)
@@ -1601,7 +1601,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // beast — Mecha-Beast (Upgrade, découverte mise de côté)
   'bt018': "Attachez-la à Beast.\nBeast gagne +1 CTR et +2 points de vie.",
   // beast — Unfinished Projects (Obligation)
-  'bt019': "<b><i>Donnez-la au joueur Hank McCoy.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Défaussez 2 cartes d'amélioration/soutien en jeu → retirez Mutation Degeneration de la partie.\n• Inclinez votre identité et subissez 2 dégâts. Défaussez cette obligation.",
+  'bt019': "<b><i>Donnez-la au joueur Hank McCoy.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Défaussez 2 cartes d'amélioration/soutien en jeu → retirez Mutation Degeneration de la partie.\n• Inclinez votre identité et subissez 2 dégâts. Défaussez cette obligation.",
   // beast — Lizard-Fied Mutants (Minion nemesis, x2)
   'bt020': "<b><i>Garde</i></b>. <b><i>Patrouille</i></b>. <i>(Tant que ce sbire est engagé avec vous, vous ne pouvez pas attaquer le vilain, et vous ne pouvez pas contrer la manigance principale.)</i>\n<i>(Sbire némésis de Beast.)</i>",
   // beast — Dark Transformation (Treachery nemesis)
@@ -1635,7 +1635,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // doctor_doom — Doom's Mask (Upgrade, signature)
   'dd011': "Doctor Doom gagne <b><i>Constance</i></b>.\n<b>Ressource</b> : inclinez Doom's Mask → générez une ressource [mental] (plutôt [mental][mental] si vous payez un événement [[SPELL]]).",
   // doctor_doom — Rescue Cynthia von Doom (Obligation)
-  'dd012': "<b><i>Donnez-la au joueur Victor von Doom.</i></b>\nPassez en forme d'alter ego. Vous ne pouvez pas changer de forme.\n• <b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte [[TECH]] que vous contrôlez → retirez cette carte de la partie.\n• <b>Action d'alter ego</b> : inclinez votre identité → défaussez cette carte.",
+  'dd012': "<b><i>Donnez-la au joueur Victor von Doom.</i></b>\nPassez sous forme d'alter ego. Vous ne pouvez pas changer de forme.\n• <b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte [[TECH]] que vous contrôlez → retirez cette carte de la partie.\n• <b>Action d'alter ego</b> : inclinez votre identité → défaussez cette carte.",
   // doctor_doom — Incomparable Ego (Obligation)
   'dd013': "<b><i>Donnez-la au joueur Victor von Doom.</i></b>\nInclinez chaque allié que vous contrôlez. Les alliés que vous contrôlez ne peuvent pas se redresser.\n<b>Action d'alter ego</b> : inclinez votre identité et défaussez une carte [mental] de votre main → défaussez cette carte.\n<i>(Icône d'accélération : placez 1 menace supplémentaire sur la manigance principale durant la phase du vilain.)</i>\n<i>(Icône de danger : distribuez +1 carte de rencontre durant la phase du vilain.)</i>\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
   // doctor_doom — Meddlesome Heroes! (SideScheme nemesis)
@@ -1657,14 +1657,14 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'al005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
   'al006': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi (6 dégâts à la place si Alligator Loki est attaché à cet ennemi). Si cette attaque vainc un ennemi, redressez Alligator Loki. Sinon, vous pouvez attacher Alligator Loki à cet ennemi.",
   // alligator_loki — See You Later! (Event, x2)
-  'al007': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez en forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
-  'al008': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez en forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
+  'al007': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez sous forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
+  'al008': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Passez sous forme d'alter ego. Vous pouvez mélanger Throg de votre pile de défausse dans votre deck.",
   // alligator_loki — Alligator Antics (Event, signature)
   'al009': "<b>Action</b> : redressez votre identité. Cherchez le sbire Throg dans n'importe quel deck ou pile de défausse et mettez-le en jeu. Cherchez dans la zone de mise de côté, le deck de rencontre et sa pile de défausse un attachement qui peut être attaché à un sbire, et attachez-le à Throg.",
   // alligator_loki — Loki (Support persona, signature)
   'al010': "Alligator Loki gagne le trait [[MYSTIC]].\nTant que vous êtes sous forme de héros, Alligator Loki gagne +1 CTR.\n<b>Ressource d'alter ego</b> : inclinez Loki → générez une ressource [wild].",
   // alligator_loki — Butterfly Swamp (Support, signature)
-  'al011': "Tant que vous êtes en forme d'alter ego, Alligator Loki gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Butterfly Swamp → mélangez 1 carte [[PREPARATION]] de votre pile de défausse dans votre deck. Piochez 1 carte.",
+  'al011': "Tant que vous êtes sous forme d'alter ego, Alligator Loki gagne +1 REC.\n<b>Action d'alter ego</b> : inclinez Butterfly Swamp → mélangez 1 carte [[PREPARATION]] de votre pile de défausse dans votre deck. Piochez 1 carte.",
   // alligator_loki — Gator Aid (Upgrade, signature)
   'al012': "<b>Interruption</b> : quand le personnage attaché utilise un pouvoir de base, inclinez Gator Aid → ce personnage gagne +1 à ce pouvoir pour cette utilisation. Après cette utilisation, vous pouvez attacher cette carte à un autre personnage ami.",
   // alligator_loki — Unbreakable Grip (Upgrade, signature)
@@ -1769,7 +1769,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // lady_sif — Sif's Spear (Upgrade)
   'ls010': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 DEF sous forme de héros et gagne Riposte 1.",
   // lady_sif — Sif's Sword (Upgrade)
-  'ls011': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 ATQ sous forme de héros. En forme de héros, les attaques de BASE de Lady Sif gagnent Perçant.",
+  'ls011': "<b><i>Restreinte.</i></b>\nLady Sif gagne +1 ATQ sous forme de héros. Sous forme de héros, les attaques de BASE de Lady Sif gagnent Perçant.",
   // lady_sif — Unrequited Love (Obligation)
   'ls012': "<b><i>Donnez-la au joueur Lady Sif.</i></b>\nVous pouvez passer sous forme d'alter ego.\nÉtourdissez Lady Sif. Étourdissez OU désorientez Thor. Si vous ne le pouvez pas, désorientez Lady Sif. Défaussez cette obligation.",
   // lady_sif_nemesis — Captivating Wiles (SideScheme)
@@ -2152,7 +2152,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // spider_man_noir — Organic Webbing (Upgrade) — ⚠ HOMONYME de 30011 et 52009
   'sn010': "<b>Action de héros</b> : inclinez Organic Webbing et défaussez une carte glissée sous Spider-Man Noir → redressez Spider-Man Noir. Il gagne le trait [[AERIAL]] jusqu'à la fin du round.",
   // spider_man_noir — In Walks Trouble (Obligation)
-  'sn011': "<b><i>Donnez-la au joueur de Peter Parker.</i></b>\nVous pouvez passer en forme d'alter ego. Choisissez :\n• Inclinez Peter Parker → retirez In Walks Trouble de la partie.\n• Révélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  'sn011': "<b><i>Donnez-la au joueur de Peter Parker.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Peter Parker → retirez In Walks Trouble de la partie.\n• Révélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
   // spider_man_noir — Power Struggle (SideScheme némésis)
   'sn012': "<i>Electro draine les réserves d'énergie de la ville. Il crépite d'étincelles et devient plus fort de minute en minute : arrêtez-le avant qu'il ne soit trop tard !</i>\n<b>Interruption forcée</b> : quand un personnage contre cette manigance, il subit 1 dégât.",
   // spider_man_noir — * Electro Noir (Minion némésis)
@@ -2224,5 +2224,5 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // sunfire — * Silver Samurai's Katana (Attachment némésis)
   'sf014': "Attachez-la à Silver Samurai. Si vous ne pouvez pas, cherchez Silver Samurai et mettez-le en jeu engagé avec vous, cette carte attachée.\nSilver Samurai ne peut pas subir de dégâts provenant d'attaques.\n<b>Action de héros</b> : dépensez 3 ressources de n'importe quel type → défaussez cette carte.",
   // sunfire — Tachyon Whip (Attachment némésis)
-  'sf015': "Attachez-la à votre héros. Sinon, cette carte gagne <b><i>Déferlement</i></b>. Vous ne pouvez pas passer en forme d'alter ego.\n<b>Réponse forcée</b> : après que vous utilisez un pouvoir de base, subissez 2 dégâts.\n<b>Action de héros</b> : dépensez des ressources [physical][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, révélez cette carte.",
+  'sf015': "Attachez-la à votre héros. Sinon, cette carte gagne <b><i>Déferlement</i></b>. Vous ne pouvez pas passer sous forme d'alter ego.\n<b>Réponse forcée</b> : après que vous utilisez un pouvoir de base, subissez 2 dégâts.\n<b>Action de héros</b> : dépensez des ressources [physical][physical] → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, révélez cette carte.",
 }
