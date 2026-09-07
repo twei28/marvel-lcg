@@ -677,10 +677,7 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   'Météo de Storm affichée : cliquer pour la couper': 'Storm weather shown: click to turn it off',
   'Météo coupée : cliquer pour afficher pluie/orage/neige': 'Weather off: click to show rain/storm/snow',
-  'Musique': 'Music',
   'Musique d’ambiance active : cliquer pour couper': 'Ambient music on: click to mute',
-  'Musique coupée : déposer musique-<méchant>.mp3 dans assets/sounds puis activer':
-    'Music off: drop musique-<villain>.mp3 into assets/sounds then enable',
   'contre': 'vs',
   'round(s)': 'round(s)',
 
@@ -692,8 +689,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cartes révélées': 'Revealed cards',
   '2,6 s': '2.6 s',
   '5 s': '5 s',
-  'Tous les réglages du plateau (animations, sons, musique, ambiance, révélation)':
-    'All board settings (animations, sounds, music, ambience, reveal)',
+  'Tous les réglages du plateau (animations, sons, ambiance, révélation)':
+    'All board settings (animations, sounds, ambience, reveal)',
   'Déplacements de cartes, secousse d’impact, halo de statut':
     'Card movement, impact shake, status halo',
   'Effets sonores du moteur': 'Engine sound effects',

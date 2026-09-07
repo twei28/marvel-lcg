@@ -1158,8 +1158,6 @@ function PanneauOptions({
   basculerAnimations,
   sons,
   basculerSons,
-  musique,
-  basculerMusique,
   meteo,
   basculerMeteo,
   apercuMeteo,
@@ -1194,8 +1192,6 @@ function PanneauOptions({
   basculerAnimations: () => void
   sons: boolean
   basculerSons: () => void
-  musique: boolean
-  basculerMusique: () => void
   meteo: boolean
   apercuMeteo: ApercuMeteo
   reglerApercuMeteo: (valeur: ApercuMeteo) => void
@@ -1234,7 +1230,7 @@ function PanneauOptions({
         className={`bh-bouton bh-options${ouvert ? ' est-actif' : ''}`}
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
-        title={t('Tous les réglages du plateau (animations, sons, musique, ambiance, révélation)')}
+        title={t('Tous les réglages du plateau (animations, sons, ambiance, révélation)')}
       >
         <span aria-hidden="true">{'\u2699'}</span> {t('Options')}
       </button>
@@ -1251,12 +1247,6 @@ function PanneauOptions({
             detail={t('Effets sonores du moteur')}
             actif={sons}
             onBascule={basculerSons}
-          />
-          <LigneOption
-            libelle={t('Musique')}
-            detail={t('Musique coupée : déposer musique-<méchant>.mp3 dans assets/sounds puis activer')}
-            actif={musique}
-            onBascule={basculerMusique}
           />
           <LigneOption
             libelle={t('Succès')}
@@ -2796,8 +2786,6 @@ function PagePartie({
               basculerAnimations={basculerAnimations}
               sons={sons}
               basculerSons={basculerSons}
-              musique={musique}
-              basculerMusique={basculerMusique}
               meteo={meteo}
               apercuMeteo={apercuMeteo}
               reglerApercuMeteo={reglerApercuMeteo}
