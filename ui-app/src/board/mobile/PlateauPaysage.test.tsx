@@ -155,17 +155,23 @@ describe('PlateauPaysage', () => {
   it('ancre le cartouche du deroule sur la vraie hauteur mesuree de la barre', () => {
     orienter(true)
     let rappel: (() => void) | undefined
+    let cibleObservee: Element | undefined
     class ResizeObserverBouchon {
       constructor(callback: () => void) {
         rappel = callback
       }
-      observe() {}
+      observe(cible: Element) {
+        cibleObservee = cible
+      }
       disconnect() {}
     }
     vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
     const { unmount } = render(
       <PlateauPaysage world={MONDE} playerId={0} plateau={PLATEAU} actionsPartie={<span>Actions</span>} />
     )
+    // L'element observe doit etre la piste des rangees (`.pp-rangees`), pas la
+    // racine du plateau : elle seule bouge quand la barre du bas change de taille.
+    expect(cibleObservee).toHaveClass('pp-rangees')
     const barre = document.querySelector<HTMLElement>('.pm-barre')!
     Object.defineProperty(barre, 'offsetHeight', { value: 88, configurable: true })
     rappel?.()

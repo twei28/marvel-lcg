@@ -113,21 +113,24 @@ export function PlateauPaysage({
   //
   // La hauteur de cet adossement (--pp-barre-h) est MESUREE, pas devinee : la
   // barre passe de BarreBas (48px nominal, plus si .pm-outils passe a la
-  // ligne) a la bande « Payer » sans le meme gabarit. Un seul ResizeObserver
-  // sur la racine du plateau, qui reinterroge `.pm-barre` a chaque callback :
-  // c'est le plus simple qui suive les deux visages de la barre sans
-  // observer un element qui peut disparaitre et reapparaitre.
+  // ligne) a la bande « Payer » sans le meme gabarit. On observe `.pp-rangees`
+  // (la piste `minmax(0, 1fr)` juste au-dessus de la barre, voir paysage.css),
+  // pas la racine : la racine est fixee a 100dvh et ne bouge jamais, alors que
+  // la piste 1fr se redimensionne exactement quand la barre change de taille.
+  // `.pm-barre` est reinterroge a chaque callback pour suivre les deux visages
+  // de la barre sans observer un element qui peut disparaitre et reapparaitre.
   useEffect(() => {
     document.body.classList.add('mode-plateau-paysage')
     const noeud = racine.current
-    if (!noeud || typeof ResizeObserver === 'undefined') {
+    const rangees = noeud?.querySelector<HTMLElement>('.pp-rangees')
+    if (!noeud || !rangees || typeof ResizeObserver === 'undefined') {
       return () => document.body.classList.remove('mode-plateau-paysage')
     }
     const observateur = new ResizeObserver(() => {
       const barre = noeud.querySelector<HTMLElement>('.pm-barre')
       if (barre) document.body.style.setProperty('--pp-barre-h', `${barre.offsetHeight}px`)
     })
-    observateur.observe(noeud)
+    observateur.observe(rangees)
     return () => {
       observateur.disconnect()
       document.body.style.removeProperty('--pp-barre-h')
