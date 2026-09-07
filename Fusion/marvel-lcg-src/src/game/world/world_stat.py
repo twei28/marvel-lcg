@@ -130,6 +130,16 @@ class WorldStat:
                 if ancien.get('activation_id') == activation_id:
                     self.faits_mechant[rang] = complet
                     return
+        # Meme regle pour `fait_id`, l'identifiant des faits qui ne sont pas
+        # des activations : la revelation d'une carte rencontre est inscrite
+        # AVANT son effet (pour survivre a une defaite), puis reinscrite avec
+        # ce que l'effet a change (`effets`), a la meme place.
+        fait_id = complet.get('fait_id')
+        if fait_id is not None:
+            for rang, ancien in enumerate(self.faits_mechant):
+                if ancien.get('fait_id') == fait_id:
+                    self.faits_mechant[rang] = complet
+                    return
 
         self.faits_mechant.append(complet)
         # Garde-fou : une partie pathologique ne doit pas faire enfler le

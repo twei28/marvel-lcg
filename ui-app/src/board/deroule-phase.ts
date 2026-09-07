@@ -19,6 +19,7 @@
 import type { EntreeHistorique } from './HistoriquePartie'
 import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
 import type {
+  EffetRevelation,
   FaitActivation,
   FaitActivationResolue,
   FaitDistribution,
@@ -262,6 +263,12 @@ export type EtapeDeroule = {
    */
   base?: number
   defense?: number
+  /**
+   * Sur une revelation : ce que la carte a change, mesure par le moteur
+   * (menace posee, degats, carte entree en jeu). Absent quand le moteur ne
+   * le dit pas.
+   */
+  effets?: EffetRevelation[]
   /**
    * La valeur IMPRIMEE annoncee, avant boosts et avant defense. Portee par les
    * seules etapes d'activation annoncees ou annulees : sur une resolution,
@@ -623,6 +630,7 @@ export function etapesDeroule(
         ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
       cibleNom: fait.carte,
       boosts: [],
+      effets: fait.effets && fait.effets.length > 0 ? fait.effets : undefined,
     })
   }
 

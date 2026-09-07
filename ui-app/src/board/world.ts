@@ -238,7 +238,20 @@ export type FaitRevelation = FaitMechantCommun & {
   carte: string
   /** Son identifiant d'objet, pour la mise en scène sur la table. */
   carte_id: number
+  /**
+   * Ce que la carte a CHANGÉ en se révélant, mesuré par le moteur entre une
+   * photo de la table avant et après (`PlayerAction._EffetsDeLaRevelation`).
+   * Absent sur un moteur ancien, ou quand la carte n'a rien changé de
+   * mesurable : la scène se tait plutôt que d'inventer.
+   */
+  effets?: EffetRevelation[]
 }
+
+/** Un changement mesuré par le moteur à la révélation d'une carte rencontre. */
+export type EffetRevelation =
+  | { genre: 'menace'; cible: string; cible_id: number; montant: number; restant?: number | null }
+  | { genre: 'degats'; cible: string; cible_id: number; montant: number; restant?: number | null }
+  | { genre: 'entree'; carte: string; carte_id: number; type: 'sbire' | 'manigance' | 'environnement' | string }
 
 /**
  * Un fait de la phase du méchant, tel que le MOTEUR l'a enregistré.

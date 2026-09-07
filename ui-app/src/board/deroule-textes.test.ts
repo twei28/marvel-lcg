@@ -10,6 +10,7 @@ import {
   compteurLigneBilan,
   detailEtape,
   evolutionEtape,
+  texteEffet,
   regleEtape,
   resultatEtape,
   texteActivationAnnulee,
@@ -485,5 +486,30 @@ describe('l evolution du compteur', () => {
     // Un coup de 6 sur 4 PV : la cible avait 4, pas 6. Le maximum plafonne
     // l'avant reconstitue.
     expect(evolutionEtape(etape({ montant: 6, restant: 0 }), 4)).toBe('Shuri 4 → 0 / 4 PV')
+  })
+})
+
+// --- Ce que la carte revelee a fait ------------------------------------------
+describe('les effets d une revelation', () => {
+  it('dit la menace posee sur une manigance', () => {
+    expect(
+      texteEffet({ genre: 'menace', cible: "Patrouille d'Hydra", cible_id: 3, montant: 2, restant: 5 })
+    ).toBe("→ Patrouille d'Hydra gagne 2 menaces (5)")
+  })
+
+  it('dit les degats subis et le restant', () => {
+    expect(texteEffet({ genre: 'degats', cible: 'Scott Lang', cible_id: 9, montant: 1, restant: 10 }))
+      .toBe('→ Scott Lang subit 1 dégât (10 PV)')
+  })
+
+  it('dit la carte entree en jeu, avec son type', () => {
+    expect(texteEffet({ genre: 'entree', carte: 'Hydra Mercenary', carte_id: 4, type: 'sbire' }))
+      .toBe('→ Hydra Mercenary entre en jeu (sbire)')
+    expect(texteEffet({ genre: 'entree', carte: 'Breakin & Takin', carte_id: 5, type: 'manigance' }))
+      .toBe('→ Breakin & Takin entre en jeu (manigance)')
+  })
+
+  it('ne dit pas de restant quand le moteur ne le donne pas', () => {
+    expect(texteEffet({ genre: 'menace', cible: 'X', cible_id: 3, montant: 1 })).toBe('→ X gagne 1 menace')
   })
 })

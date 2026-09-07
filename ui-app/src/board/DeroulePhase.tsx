@@ -37,6 +37,7 @@ import {
   texteFiletProche,
   texteBilanVide,
   texteDefaite,
+  texteEffet,
   texteFenetreReponse,
   texteLigneBilan,
   texteTempsParDecision,
@@ -1386,6 +1387,15 @@ export function DeroulePhase({
             resterait sur « Klaw va attaquer Colossus » et le joueur
             attendrait un coup qui ne vient pas. */}
         {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
+        {/* Ce que la carte revelee a fait, mesure par le moteur. Sans lui, la
+            scene ne dit rien de plus : le joueur voit la table au clic suivant. */}
+        {etape.effets && etape.effets.length > 0 ? (
+          <ul className="deroule-effets">
+            {etape.effets.map((effet, rang) => (
+              <li key={rang}>{texteEffet(effet)}</li>
+            ))}
+          </ul>
+        ) : null}
         {/* La chute du heros. Elle ne ressemble a aucune autre ligne du
             cartouche, et c'est voulu : c'est le moment le plus important d'une
             partie, il ne doit pas defiler comme les autres. Le crane est

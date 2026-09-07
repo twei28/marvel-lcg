@@ -111,6 +111,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/card-model.ts ----
   'Carte face cachée': 'Facedown card',
   'Carte rencontre': 'Encounter card',
+  environnement: 'environment',
+  sbire: 'minion',
+  'entre en jeu': 'enters play',
   min: 'min',
   imprimé: 'printed',
   'bloqué par la défense': 'blocked by the defense',

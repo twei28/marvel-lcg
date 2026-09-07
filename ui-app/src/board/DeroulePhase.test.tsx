@@ -2185,6 +2185,31 @@ describe('le bilan de fin de phase', () => {
       vi.unstubAllGlobals()
     })
 
+    it('dit ce que la carte revelee a fait, quand le moteur le sait', () => {
+      const revelation: EtapeDeroule[] = [
+        {
+          cle: 'r',
+          temps: 'revelation',
+          titre: 'revelation',
+          regle: 'regle:revelation',
+          carteId: 40,
+          auteurNom: 'Scott Lang',
+          cibleNom: 'Explosion',
+          boosts: [],
+          effets: [
+            { genre: 'degats', cible: 'Scott Lang', cible_id: 9, montant: 1, restant: 10 },
+            { genre: 'entree', carte: 'Hydra Mercenary', carte_id: 4, type: 'sbire' },
+          ],
+        },
+      ]
+      const { container } = render(<DeroulePhase etapes={revelation} onTerminer={() => {}} />)
+      const lignes = [...container.querySelectorAll('.deroule-effets li')].map((li) => li.textContent)
+      expect(lignes).toEqual([
+        '→ Scott Lang subit 1 dégât (10 PV)',
+        '→ Hydra Mercenary entre en jeu (sbire)',
+      ])
+    })
+
     it('ecrit le nom a la place d une carte dont le scan manque', () => {
       const { container } = render(
         <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />

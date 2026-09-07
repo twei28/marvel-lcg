@@ -1,4 +1,4 @@
-from typing import TypeAlias
+from typing import Any, Dict, List, Tuple, TypeAlias
 from core import *
 from build import Build
 from engine.log import Log
@@ -72,6 +72,81 @@ class PlayerAction:
             'joueur_nom': getattr(identite, 'name', None),
             **fait,
         })
+
+    @staticmethod
+    def _PhotoDeLaTable(world: 'World') -> 'Dict[str, Any]':
+        """Ce qu'une carte revelee peut changer, photographie AVANT puis APRES.
+
+        Trois registres, par identifiant d'objet :
+        - `menaces` : la menace de chaque manigance (principales et annexes) ;
+        - `pv` : les points de vie des vilains, des identites et des allies ;
+        - `en_jeu` : les cartes rencontre presentes sur la table (sbires,
+          manigances annexes, environnements), avec leur type en clair.
+
+        La difference entre les deux photos (`_EffetsDeLaRevelation`) dit ce
+        que la carte a fait, sans rien connaitre de son texte : c'est le seul
+        moyen general, une carte rencontre pouvant tout faire.
+        """
+        from game.operate.worlds import Worlds
+        menaces: Dict[int, Tuple[str, Any]] = {}
+        for manigance in Worlds.GetOnAllFieldScheme(world):
+            menaces[manigance.card.object_id] = (manigance.name, getattr(manigance, 'threat', None))
+        pv: Dict[int, Tuple[str, Any]] = {}
+        for vilain in Worlds.GetAllVillains(world):
+            pv[vilain.card.object_id] = (vilain.name, getattr(vilain, 'health', None))
+        en_jeu: Dict[int, Tuple[str, str]] = {}
+        for manigance in Worlds.GetAllSideSchemes(world):
+            en_jeu[manigance.card.object_id] = (manigance.name, 'manigance')
+        for environnement in world.area_environment.Get():
+            en_jeu[environnement.card.object_id] = (environnement.name, 'environnement')
+        for joueur in world.const_seat_order_players:
+            try:
+                identite = joueur.GetIdentity()
+            except Exception:
+                identite = None
+            if identite is not None:
+                pv[identite.card.object_id] = (identite.name, getattr(identite, 'health', None))
+            for allie in joueur.allies.Get():
+                pv[allie.card.object_id] = (allie.name, getattr(allie, 'health', None))
+            for sbire in joueur.engaged_minions.Get():
+                en_jeu[sbire.card.object_id] = (sbire.name, 'sbire')
+            for environnement in joueur.area_environment.Get():
+                en_jeu[environnement.card.object_id] = (environnement.name, 'environnement')
+        return {'menaces': menaces, 'pv': pv, 'en_jeu': en_jeu}
+
+    @staticmethod
+    def _EffetsDeLaRevelation(avant: 'Dict[str, Any]', world: 'World') -> 'List[Dict[str, Any]]':
+        """La difference entre la photo d'avant et la table d'apres, en faits.
+
+        Trois genres : `menace` (une manigance deja en jeu a monte), `degats`
+        (un personnage a perdu des points de vie) et `entree` (une carte
+        rencontre est arrivee sur la table). Une manigance qui ENTRE en jeu
+        n'est comptee qu'une fois, comme une entree : sa menace de depart n'est
+        pas un gain. Une carte qui ne change rien de mesurable (defausse,
+        epuisement) ne produit aucun effet, et le client se tait plutot que
+        d'inventer.
+        """
+        apres = PlayerAction._PhotoDeLaTable(world)
+        effets: List[Dict[str, Any]] = []
+        for object_id, (nom, menace) in apres['menaces'].items():
+            if object_id not in avant['menaces']:
+                continue
+            menace_avant = avant['menaces'][object_id][1]
+            if isinstance(menace, int) and isinstance(menace_avant, int) and menace > menace_avant:
+                effets.append({'genre': 'menace', 'cible': nom, 'cible_id': object_id,
+                               'montant': menace - menace_avant, 'restant': menace})
+        for object_id, (nom, pv) in apres['pv'].items():
+            if object_id not in avant['pv']:
+                continue
+            pv_avant = avant['pv'][object_id][1]
+            if isinstance(pv, int) and isinstance(pv_avant, int) and pv < pv_avant:
+                effets.append({'genre': 'degats', 'cible': nom, 'cible_id': object_id,
+                               'montant': pv_avant - pv, 'restant': pv})
+        for object_id, (nom, genre) in apres['en_jeu'].items():
+            if object_id in avant['en_jeu']:
+                continue
+            effets.append({'genre': 'entree', 'carte': nom, 'carte_id': object_id, 'type': genre})
+        return effets
 
     ################################################################################
     # Encounter
@@ -148,13 +223,25 @@ class PlayerAction:
             # or c'est precisement le coup que le joueur veut voir. Le nom et
             # l'identifiant se lisent aussi avant : la carte quitte la zone du
             # joueur pendant sa propre resolution.
-            PlayerAction._JournaliserPhaseDuMechant(
-                player, 'Reveal Encounter Cards', {
-                    'genre': 'revelation',
-                    'carte': face.name,
-                    'carte_id': face.card.object_id,
-                })
+            # `fait_id` : le fait est REINSCRIT a la meme place apres l'effet,
+            # enrichi de ce que la carte a change (`effets`, voir
+            # `_EffetsDeLaRevelation`). Le rang dans le journal le rend
+            # unique dans le round.
+            world = player.world
+            fait_id = f"revelation:{world.round_id}:{face.card.object_id}:{len(world.stat.faits_mechant)}"
+            revelation = {
+                'genre': 'revelation',
+                'carte': face.name,
+                'carte_id': face.card.object_id,
+                'fait_id': fait_id,
+            }
+            PlayerAction._JournaliserPhaseDuMechant(player, 'Reveal Encounter Cards', revelation)
+            avant = PlayerAction._PhotoDeLaTable(world)
             face.Reveal(player, GameRule(face))
+            effets = PlayerAction._EffetsDeLaRevelation(avant, world)
+            if effets:
+                PlayerAction._JournaliserPhaseDuMechant(
+                    player, 'Reveal Encounter Cards', {**revelation, 'effets': effets})
             if player.world.is_game_over:
                 break
             if player.is_eliminated:

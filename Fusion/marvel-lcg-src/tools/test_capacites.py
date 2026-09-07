@@ -22729,6 +22729,30 @@ CAS = [
         "verifier": "a2_fait_revelation",
     },
     {
+        "nom": "A2 faits — la revelation dit ce qu'elle a change : un sbire entre en jeu",
+        "pourquoi": ("le cartouche nommait la carte revelee sans dire ce qu'elle avait "
+                     "fait. Le fait est reinscrit APRES l'effet, a la meme place "
+                     "(`fait_id`), avec `effets` : ici l'entree en jeu du sbire "
+                     "01101 Hydra Mercenary"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a2_revelation_effet_entree",
+    },
+    {
+        "nom": "A2 faits — la revelation dit ce qu'elle a change : des degats ou de la menace",
+        "pourquoi": ("meme mecanisme, sur une traitrise : 01124 Sound Manipulation "
+                     "(Klaw), « deal 2 damage to your hero ». Le fait reinscrit porte "
+                     "un effet `degats` (ou `menace`), avec la cible et le restant, et "
+                     "il n'y a toujours qu'UN fait de revelation"),
+        "scenario": "klaw",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a2_revelation_effet_mesure",
+    },
+    {
         "nom": "A2 faits — une carte revelee qui fait attaquer le vilain : UN fait de chaque",
         "pourquoi": ("01106 Stampede — « When Revealed (Hero): Rhino attacks you ». "
                      "Le meme evenement produit une revelation ET une activation : "
@@ -27689,6 +27713,66 @@ def a2_fait_revelation(monde, aides):
         return False, (f"carte = {(fait['carte'], fait['carte_id'])} "
                        f"(attendu {attendues[0]})")
     return True, f"fait revelation : {fait['carte']} (#{fait['carte_id']}) par le siege {fait['joueur']}"
+
+def _a2_revele_et_lit_le_fait(monde, code):
+    """Distribue `code` pendant le tour du joueur, le revele a l'etape 4, et
+    rend l'unique fait de revelation (ou un message d'erreur)."""
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    PuzzleHelper.Exec([f"Puzzle.Deal('{code}')"], monde)
+    distribuees = [getattr(f.paper, "card_id", None)
+                   for f in joueur.dealt_encounter_cards.Get(True)]
+    if code not in distribuees:
+        return None, f"{code} n'a pas ete distribuee (distribuees = {distribuees})"
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.RevealsEncounterCards)
+    joueur.RevealEncounterCards()
+
+    faits = _a2_faits(monde, 'revelation')
+    if len(faits) != 1:
+        return None, (f"{len(faits)} fait(s) de revelation (attendu 1 : le fait enrichi "
+                      f"REMPLACE le premier) ; journal = {monde.stat.faits_mechant}")
+    return faits[0], ""
+
+def a2_revelation_effet_entree(monde, aides):
+    """01101 Hydra Mercenary : le fait de revelation porte l'entree du sbire."""
+    fait, erreur = _a2_revele_et_lit_le_fait(monde, '01101')
+    if fait is None:
+        return False, erreur
+    if 'fait_id' not in fait:
+        return False, f"fait_id absent ({fait})"
+    effets = fait.get('effets')
+    if not effets:
+        return False, f"aucun effet sur le fait ({fait})"
+    entrees = [e for e in effets if e.get('genre') == 'entree']
+    if len(entrees) != 1:
+        return False, f"{len(entrees)} entree(s) (attendu 1) ; effets = {effets}"
+    entree = entrees[0]
+    if entree.get('type') != 'sbire' or entree.get('carte_id') != fait['carte_id']:
+        return False, f"entree = {entree} (attendu le sbire {fait['carte']} #{fait['carte_id']})"
+    return True, f"revelation {fait['carte']} → entree du sbire, effets = {effets}"
+
+def a2_revelation_effet_mesure(monde, aides):
+    """01124 Sound Manipulation : le fait porte un effet mesure (degats ou menace)."""
+    fait, erreur = _a2_revele_et_lit_le_fait(monde, '01124')
+    if fait is None:
+        return False, erreur
+    effets = fait.get('effets') or []
+    mesures = [e for e in effets if e.get('genre') in ('degats', 'menace')]
+    if not mesures:
+        return False, f"aucun effet mesure (degats ou menace) ; effets = {effets}, fait = {fait}"
+    for e in mesures:
+        manques = [c for c in ('cible', 'cible_id', 'montant', 'restant') if c not in e]
+        if manques:
+            return False, f"champs absents de l'effet {e} : {manques}"
+        if not isinstance(e['montant'], int) or e['montant'] <= 0:
+            return False, f"montant = {e['montant']!r} (attendu un entier > 0) dans {e}"
+    return True, f"revelation {fait['carte']} → {mesures}"
 
 def a2_pas_de_doublon_revelation_attaque(monde, aides):
     """01106 Stampede : UN fait de revelation, UN fait d'attaque, pas plus.

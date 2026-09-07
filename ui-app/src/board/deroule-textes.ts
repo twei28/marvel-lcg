@@ -7,6 +7,7 @@
 
 import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 import { t } from './langue'
+import type { EffetRevelation } from './world'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
 const REDIGES = new Set([
@@ -324,6 +325,24 @@ const REGLES: Record<string, string> = {
   'regle:activations': 'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.',
   'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
+}
+
+/**
+ * Ce que la carte revelee a FAIT, un effet par ligne : « → Patrouille d'Hydra
+ * gagne 2 menaces (5) », « → Scott Lang subit 1 degat (10 PV) », « → Hydra
+ * Mercenary entre en jeu (sbire) ». Les chiffres viennent du moteur, qui a
+ * mesure la table avant et apres (voir `EffetRevelation`).
+ */
+export function texteEffet(effet: EffetRevelation): string {
+  const restant = (valeur: number | null | undefined, suffixe = '') =>
+    typeof valeur === 'number' && Number.isFinite(valeur) ? ` (${valeur}${suffixe})` : ''
+  if (effet.genre === 'menace') {
+    return `→ ${effet.cible} ${t('gagne')} ${effet.montant} ${pluriel(effet.montant, 'menace', 'menaces')}${restant(effet.restant)}`
+  }
+  if (effet.genre === 'degats') {
+    return `→ ${effet.cible} ${t('subit')} ${effet.montant} ${pluriel(effet.montant, 'dégât', 'dégâts')}${restant(effet.restant, ` ${t('PV')}`)}`
+  }
+  return `→ ${effet.carte} ${t('entre en jeu')} (${t(effet.type)})`
 }
 
 export function regleEtape(etape: EtapeDeroule): string {
