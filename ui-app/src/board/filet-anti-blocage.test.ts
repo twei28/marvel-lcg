@@ -177,6 +177,36 @@ describe('le filet anti-blocage de la phase du mechant', () => {
     expect(etat?.echeanceFilet).toBe(Date.now() + DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
   })
 
+  // MESURE EN JEU (07/09/2026, Spider-Man contre Rhino) : une SEULE trame
+  // retenue peut porter deux etapes (la distribution puis la revelation). Le
+  // « Suivant » qui passe de l'une a l'autre n'acquitte rien, le cartouche
+  // n'etant pas encore a jour. Le filet ne voyait donc rien de ce clic-la :
+  // clics a 60 s et 120 s, compte a rebours a 136 s, filet joue a 151 s.
+  it('repousse l echeance sur un geste du joueur qui n acquitte rien', async () => {
+    await ouvrir()
+    const premiere = etat?.echeanceFilet
+    vi.advanceTimersByTime(40_000)
+    moteur.signalerActiviteDuJoueur()
+    expect(etat?.trameRetenue).toBe(101)
+    expect(accuses).toEqual([])
+    expect(etat?.echeanceFilet).toBe((premiere ?? 0) + 40_000)
+    // Et le filet ne joue donc pas a l'echeance d'origine.
+    await vi.advanceTimersByTimeAsync(51_000)
+    expect(accuses).toEqual([])
+    await vi.advanceTimersByTimeAsync(40_000)
+    expect(accuses).toEqual([101])
+  })
+
+  it('ne s arme pas sur un geste du joueur quand rien n est retenu', async () => {
+    await ouvrir()
+    courant = monde('Player 1 Turn', 102)
+    pousser()
+    await laisserTourner()
+    expect(etat?.echeanceFilet).toBeUndefined()
+    moteur.signalerActiviteDuJoueur()
+    expect(etat?.echeanceFilet).toBeUndefined()
+  })
+
   it('relache la trame quand l echeance tombe, sans aucun clic', async () => {
     await ouvrir()
     expect(accuses).toEqual([])

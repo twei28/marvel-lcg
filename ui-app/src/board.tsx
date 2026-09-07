@@ -847,6 +847,9 @@ function usePartieEnCours(playerId: number) {
     [moteur]
   )
   const avancerPasAPas = useCallback(() => moteur.avancerMaintenant(), [moteur])
+  // Le joueur a agi sur le cartouche, meme quand cela ne relache aucune trame :
+  // le filet anti-blocage, qui mesure une INACTIVITE, doit repartir de zero.
+  const signalerActivite = useCallback(() => moteur.signalerActiviteDuJoueur(), [moteur])
 
   return {
     etat,
@@ -859,6 +862,7 @@ function usePartieEnCours(playerId: number) {
     // vitesse de l'avance auto ne se regle plus ici : c'est une horloge du
     // cartouche (prop delaiAvanceMs), le moteur n'en a plus.
     avancerPasAPas,
+    signalerActivite,
   }
 }
 
@@ -1520,6 +1524,7 @@ function PagePartie({
     reconnecter,
     reglerModePhase,
     avancerPasAPas,
+    signalerActivite,
   } = usePartieEnCours(playerId)
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
@@ -2535,10 +2540,10 @@ function PagePartie({
             // cartouche de quoi n'acquitter qu'UNE fois par trame, plutot que
             // de se fier a un booleen qui se recalcule sans cesse.
             trameRetenue={etat.trameRetenue}
-            // L'echeance du filet anti-blocage de la PHASE (une seule, armee
-            // au premier accuse retenu). Le cartouche n'en montre que les
-            // quinze dernieres secondes : la phase qui repart toute seule ne
-            // doit pas ressembler a un bug.
+            // L'echeance du filet anti-blocage : 90 s d'INACTIVITE pendant une
+            // trame retenue, remise a zero par chaque accuse du joueur. Le
+            // cartouche n'en montre que les quinze dernieres secondes : la
+            // phase qui repart toute seule ne doit pas ressembler a un bug.
             echeanceFilet={etat.echeanceFilet}
             // « Avance toute seule » et sa vitesse (panneau Options) : c'est le
             // cartouche qui tient cette horloge, pas le moteur. Il s'avance
@@ -2554,6 +2559,10 @@ function PagePartie({
             // bloque une fois la derniere etape validee (elle ne fait rien
             // sans trame en attente, moteur.ts, avancerMaintenant).
             onSuivant={avancerPasAPas}
+            // Le joueur a bouge dans le cartouche, sans forcement acquitter :
+            // une seule trame retenue peut porter deux etapes. Le filet mesure
+            // une inactivite, il doit donc voir ces clics-la aussi.
+            onActivite={signalerActivite}
             onTerminer={avancerPasAPas}
             // Le coup fatal est vu : l'ecran de fin de partie peut paraitre.
             onDefaiteVue={() => setCoupFatalVu(true)}

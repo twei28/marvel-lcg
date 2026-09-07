@@ -636,6 +636,43 @@ export class Moteur {
   /** L'echeance du minuteur ci-dessus, telle qu'elle est publiee. */
   private echeanceFilet: number | undefined
 
+  /**
+   * Arme le filet pour 90 s de plus, en remplacant celui qui court.
+   *
+   * Le minuteur se retire lui-meme a l'echeance : le filet joue, et la trame
+   * suivante en rearme un neuf. Un filet qui ne se rearmerait plus apres avoir
+   * joue une fois laisserait la fin de la phase sans protection.
+   */
+  private armerFilet() {
+    this.annulerMinuteurFilet()
+    this.echeanceFilet = Date.now() + DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
+    this.minuteurAutoContinue = window.setTimeout(() => {
+      this.minuteurAutoContinue = undefined
+      this.echeanceFilet = undefined
+      void this.continuer()
+    }, DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
+  }
+
+  /**
+   * LE JOUEUR VIENT D'AGIR SUR LE CARTOUCHE, sans que cela relache la trame.
+   *
+   * Le cas est ordinaire et il a ete mesure en jeu : une seule trame retenue
+   * peut porter DEUX etapes (la distribution et la revelation, par exemple).
+   * Le joueur clique alors « Suivant » pour passer de l'une a l'autre, et ce
+   * clic-la ne passe pas par `continuer` : le cartouche n'est pas encore a
+   * jour, donc il n'acquitte pas. Sans cette methode, le filet ne voyait rien
+   * de ce clic et doublait un joueur qui venait pourtant d'agir, ce que ce
+   * correctif existe justement pour empecher.
+   *
+   * Ne fait rien quand aucun filet ne court : il n'y a alors aucune trame
+   * retenue, donc rien a proteger ni personne a rassurer.
+   */
+  signalerActiviteDuJoueur(): void {
+    if (this.minuteurAutoContinue === undefined) return
+    this.armerFilet()
+    this.publier({ echeanceFilet: this.echeanceFilet })
+  }
+
   /** Arrete le minuteur du filet, sans rien publier ni oublier l'echeance. */
   private annulerMinuteurFilet() {
     if (this.minuteurAutoContinue !== undefined) {
@@ -919,14 +956,7 @@ export class Moteur {
         // trame suivante en rearme un neuf. Un filet qui ne se rearmerait plus
         // apres avoir joue une fois laisserait la fin de la phase sans
         // protection.
-        if (this.minuteurAutoContinue === undefined) {
-          this.echeanceFilet = Date.now() + DELAI_FILET_ANTI_BLOCAGE_CLIC_MS
-          this.minuteurAutoContinue = window.setTimeout(() => {
-            this.minuteurAutoContinue = undefined
-            this.echeanceFilet = undefined
-            void this.continuer()
-          }, DELAI_FILET_ANTI_BLOCAGE_CLIC_MS)
-        }
+        if (this.minuteurAutoContinue === undefined) this.armerFilet()
         this.publier({
           validationRequise: true,
           trameRetenue: this.trame.render_id,

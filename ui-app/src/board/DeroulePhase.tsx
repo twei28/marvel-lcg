@@ -115,6 +115,7 @@ export function DeroulePhase({
   avanceAuto = false,
   delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
   onSuivant,
+  onActivite,
   onTerminer,
   onDefaiteVue,
 }: {
@@ -274,6 +275,24 @@ export function DeroulePhase({
    * previsualisation).
    */
   onSuivant?: () => void
+  /**
+   * LE JOUEUR VIENT D'AGIR SUR LE CARTOUCHE (board.tsx :
+   * `signalerActiviteDuJoueur`, moteur.ts), meme quand cela ne relache aucune
+   * trame.
+   *
+   * Distinct de `onSuivant`, et il a fallu le separer : une seule trame retenue
+   * peut porter DEUX etapes, le joueur clique alors « Suivant » pour passer de
+   * l'une a l'autre, et ce clic-la n'acquitte rien puisque le cartouche n'est
+   * pas encore a jour. Le filet anti-blocage, qui mesure une inactivite, ne
+   * voyait donc rien de ces clics et doublait un joueur qui venait pourtant
+   * d'agir (mesure en jeu, 07/09/2026 : clics a 60 s et 120 s, filet joue a
+   * 151 s).
+   *
+   * Appele aussi par l'avance auto et par le defilement d'Echap, qui passent
+   * par la meme fonction. C'est sans consequence : ces deux-la acquittent des
+   * que le cartouche est a jour, donc le filet se desarme aussitot apres.
+   */
+  onActivite?: () => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
   /**
@@ -598,6 +617,9 @@ export function DeroulePhase({
     // Partie finie : le cartouche n'est plus a l'ecran, sa touche Entree ne
     // doit pas continuer a relacher le moteur derriere l'ecran de fin.
     if (partieFinie) return
+    // Le joueur est vivant, et le filet anti-blocage doit le savoir meme quand
+    // ce clic n'acquitte rien (voir `onActivite`).
+    onActivite?.()
     // Un « Suivant » (clic, clavier, ou le minuteur de l'avance auto lui-meme)
     // leve la suspension posee par « Precedent ».
     setSuspendu(false)
@@ -643,6 +665,9 @@ export function DeroulePhase({
   }
 
   const reculer = () => {
+    // Relire est un geste de joueur comme un autre : le filet anti-blocage
+    // repart de zero (voir `onActivite`).
+    onActivite?.()
     // Relire, c'est renoncer a l'attente en cours : sans cela, la sortie
     // d'attente ci-dessous repousserait aussitot le joueur en avant et
     // « Precedent » n'aurait aucun effet visible. La suite reste atteignable
