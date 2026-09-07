@@ -722,11 +722,29 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         Correctif strictement ADDITIF : un terme de plus ne peut que SEPARER
         des situations jusque-la confondues, jamais en confondre de nouvelles.
         Il ne peut donc pas creer de blocage la ou il n'y en avait pas.
+
+        CORRECTIF (07/09/2026, pack ares) : les PV du vilain et des sbires
+        entrent aussi dans la signature. `pv_ratio` est celui du HEROS ; une
+        suite d'attaques identiques d'un meme evenement (Spray and Pray,
+        `ar002` : « make the following attack 5 times », cinq fois « Deal 1
+        damage to an enemy » avec les memes cibles legales) ne bougeait donc
+        AUCUN terme, et `MAX_REPETITIONS` (2) tombait au TROISIEME tir alors
+        que Rhino perdait bel et bien 1 PV a chaque fois : **7 parties
+        bloquees sur 8**, question fautive toujours forcee (`plage=[1, 1]`).
+        Burst Fire (`ag003`) et It's Clobberin' Time! (`th010`) passaient
+        seulement parce que leurs DEUX attaques tiennent dans le budget.
+
+        Meme remede que ci-dessus : `progres` comptait deja ces PV, on aligne
+        `empreinte` dessus. Toujours additif.
         """
         return (ctx["round"], ctx.get("taille_main", 0),
                 round(ctx["pv_ratio"], 2), round(ctx["menace_ratio"], 2),
                 tuple(sorted(nombre(getattr(sc, "threat", 0))
                              for sc in ctx.get("schemes_secondaires") or [])),
+                tuple(sorted(nombre(getattr(v, "health", 0))
+                             for v in ctx.get("vilains") or [])),
+                tuple(sorted(nombre(getattr(s, "health", 0))
+                             for s in ctx.get("sbires") or [])),
                 compteurs_du_joueur(ctx),
                 tuple(sorted(str(o.get("id")) for o in options)))
 
