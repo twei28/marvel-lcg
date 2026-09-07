@@ -1204,27 +1204,87 @@ function visuelFiche(h) {
     );
 }
 
-/** Contenu de la fiche d'un héros : carte, nom, extension, bio, état civil.
- *  Servi soit dans la colonne de droite, soit dans l'infobulle. */
+/* ---- La fiche « en scène » (refonte du 7 septembre) -----------------------
+   Avant, la fiche montrait la carte entière, puis le nom, puis une biographie.
+   Le personnage y était petit. Elle ouvre maintenant sur son ART, recadré en
+   grand comme sur la tuile, puis le nom en gros, trois chiffres, ses traits en
+   pastilles ; la carte et la biographie restent là, repliées sous un pli qui
+   se retient (localStorage) : qui veut lire la carte l'ouvre une fois pour
+   toutes, qui la connaît ne la revoit pas. */
+const CLE_FICHE_DEPLIEE = "prepare.fiche.depliee";
+
+function ficheDepliee() {
+    try { return localStorage.getItem(CLE_FICHE_DEPLIEE) === "1"; } catch (e) { return false; }
+}
+
+/** Le pli « Carte et biographie », commun aux héros et aux méchants. */
+function pliFiche(...contenu) {
+    const pli = el("details", { class: "hh-plus", open: ficheDepliee() || undefined },
+        el("summary", {}, t("Carte et biographie")),
+        ...contenu.filter(Boolean),
+    );
+    pli.addEventListener("toggle", () => {
+        try { localStorage.setItem(CLE_FICHE_DEPLIEE, pli.open ? "1" : "0"); } catch (e) { /* stockage indisponible */ }
+    });
+    return pli;
+}
+
+/** Une pastille chiffrée de la fiche : « PV 10 », « Main 5 ». */
+function chiffreFiche(libelle, valeur) {
+    if (valeur == null || valeur === "") return null;
+    return el("span", { class: "hh-chiffre" }, el("b", {}, String(valeur)), el("small", {}, libelle));
+}
+
+/** La scène d'un héros : son art plein cadre, en haut de la fiche. Deux héros
+ *  liés (Cloak & Dagger) se partagent la scène en diagonale, comme la tuile. */
+function sceneHeros(h) {
+    const idImage = (cardId) => picIdHeros(cardId);
+    if (h.lie) {
+        return el("div", { class: "hh-scene" },
+            el("div", { class: "portrait-duo" },
+                portrait(idImage(h.heroCardId), "duo duo-a"),
+                portrait(idImage(h.lie.heroCardId), "duo duo-b")));
+    }
+    return el("div", { class: "hh-scene" }, portrait(idImage(h.heroCardId), "scene"));
+}
+
+/** Contenu de la fiche d'un héros : scène, nom, chiffres, traits, puis la
+ *  carte et la biographie sous le pli. Servi soit dans la colonne de droite,
+ *  soit dans l'infobulle. */
 function ficheHeros(h) {
     const info = HEROS_INFO[h.heroCardId];
     const carte = visuelFiche(h);
-    if (!info) return [carte];      // héros sans biographie rédigée : visuel seul
 
     // En anglais, on prefere la version *En quand elle existe.
     const en = langueActuelle() === "en";
     const champ = (fr, versionEn) => (en && versionEn) || fr;
 
+    const vague = h.homebrew ? t("Fan-made")
+        : (h.vague == null ? null : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
+    const traits = [
+        ...(h.traits || []).map((x) => el("span", { class: "tag hh-trait" }, x)),
+        ...(h.traitsAlterEgo || []).map((x) => el("span", { class: "tag hh-trait alter" }, x)),
+    ];
+
     return [
-        carte,
+        sceneHeros(h),
         el("div", { class: "hh-name mvl" }, nomAffiche(h)),
         el("div", { class: "hh-ext" }, (h.extension || "").replace(/^\d+\.\s*/, "")),
-        el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
-        info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
-        info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
-        info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
-        info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
-        info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
+        el("div", { class: "hh-chiffres" },
+            chiffreFiche(t("PV"), pvAffiches(h)),
+            chiffreFiche(t("Main"), h.handSize),
+            vague ? el("span", { class: "hh-chiffre" }, el("b", { class: "texte" }, vague)) : null,
+        ),
+        traits.length ? el("div", { class: "hh-tags" }, ...traits) : null,
+        pliFiche(
+            carte,
+            info ? el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)) : null,
+            info && info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
+            info && info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
+            info && info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
+            info && info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
+            info && info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
+        ),
     ];
 }
 
@@ -1251,10 +1311,8 @@ function showHeroHover(h, cardEl) {
     }
 
     const box = hoverPop();
-    const info = HEROS_INFO[h.heroCardId];
-    box.classList.remove("trio");
-    box.classList.toggle("bare", !info);
-    box.classList.toggle("wide", !!info);
+    box.classList.remove("trio", "bare");
+    box.classList.add("wide");
     box.replaceChildren(...ficheHeros(h).filter(Boolean));
     popShow(box, cardEl);
 }
@@ -1279,21 +1337,35 @@ function ficheVilain(sc) {
     const en = langueActuelle() === "en";
     const champ = (fr, versionEn) => (en && versionEn) || fr;
 
+    // Même scène que le héros : l'art du méchant en grand, ses chiffres, ses
+    // sets en pastilles rouges (c'est SON camp), le reste sous le pli.
+    const carteVilain = cards.get(vcards[0]);
+    const pv = carteVilain && carteVilain.hp != null ? carteVilain.hp : null;
+    const sets = [
+        ...sc.mandatoryEncounterSets.map((x) => el("span", { class: "tag hh-trait eux" }, titleize(x))),
+        ...sc.recommendedModularSets.map((x) => el("span", { class: "tag hh-trait eux alter" }, titleize(x))),
+    ];
+
     return {
         multi,
         elements: [
-            cardsEl,
-            multi ? el("div", { class: "hh-rowhint" }, vcards.length + " " + t("méchants")) : null,
+            el("div", { class: "hh-scene eux" }, portrait(vcards[0] || sc.tileImage, "scene villain")),
             el("div", { class: "hh-name mvl" }, sc.name),
             el("div", { class: "hh-ext" }, sc.extension.replace(/^\d+\.\s*/, "")),
-            info ? el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)) : null,
-            detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
-            multi ? detailRow(t("Nombre de méchants"), String(vcards.length)) : detailRow(t("Stades du méchant"), String(sc.villains.length || "-")),
-            detailRow(t("Manigances"), String(sc.schemes.length)),
-            detailRow(t("Sets requis"), sc.mandatoryEncounterSets.map(titleize).join(", ") || "-"),
-            detailRow(t("Sets recommandés"), sc.recommendedModularSets.map(titleize).join(", ") || "-"),
-            ...defiRows(sc),
-            sc.hasExpertVariant ? el("div", { class: "sd-badge" }, t("Expert disponible")) : null,
+            el("div", { class: "hh-chiffres" },
+                chiffreFiche(t("PV"), pv),
+                multi ? chiffreFiche(t("Méchants"), vcards.length) : chiffreFiche(t("Stades"), sc.villains.length || null),
+                chiffreFiche(t("Manigances"), sc.schemes.length),
+                sc.hasExpertVariant ? el("span", { class: "hh-chiffre eux" }, el("b", { class: "texte" }, "Expert")) : null,
+            ),
+            sets.length ? el("div", { class: "hh-tags" }, ...sets) : null,
+            pliFiche(
+                cardsEl,
+                multi ? el("div", { class: "hh-rowhint" }, vcards.length + " " + t("méchants")) : null,
+                info ? el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)) : null,
+                detailRow(t("Méchant(s)"), sc.villainNames.length ? sc.villainNames.join(", ") : t("Pas de méchant fixe")),
+                ...defiRows(sc),
+            ),
         ],
     };
 }

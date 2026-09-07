@@ -444,6 +444,11 @@ export const DICO_EN_BASE = {
     "Télécharger le deck en fichier JSON": "Download the deck as a JSON file",
     "Sauvegarder dans le jeu (apparaît dans la préparation)": "Save to the game (shows up in game prep)",
     "Carte de héros": "Hero card",
+    /* Fiche en scène (refonte du 7 septembre) */
+    "Carte et biographie": "Card and biography",
+    "Main": "Hand",
+    "Stades": "Stages",
+    "Méchants": "Villains",
     "Art alternatif — mêmes valeurs de jeu": "Alternate art \u2014 same game values",
     "Standard": "Standard",
 
