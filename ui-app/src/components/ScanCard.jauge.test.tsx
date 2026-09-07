@@ -76,6 +76,21 @@ describe('bande de jauge', () => {
     expect(teinte).toBe('0deg')
   })
 
+  // La menace ne passe JAMAIS par le vert (decide avec l'utilisateur, 7
+  // septembre 2026) : une barre verte sous une manigance se lisait comme des
+  // PV. Elle va du jaune Pepper Potts a l'orange puis au rouge.
+  it('tient la menace basse en jaune, jamais en vert', () => {
+    const teinte = teinteDe(rendre(menace(0.1)))
+    expect(teinte).toBeGreaterThanOrEqual(34)
+    expect(teinte).toBeLessThanOrEqual(45)
+  })
+
+  it('passe la menace a mi-chemin en orange', () => {
+    const teinte = teinteDe(rendre(menace(0.5)))
+    expect(teinte).toBeGreaterThanOrEqual(14)
+    expect(teinte).toBeLessThanOrEqual(30)
+  })
+
   it('distingue les deux genres par une classe', () => {
     const { container } = rendre(menace(0.5))
     expect(container.querySelector('.jauge-carte')).toHaveClass('jauge-menace')

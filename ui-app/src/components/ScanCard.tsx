@@ -321,10 +321,23 @@ const ECHELLE_TEINTE: Array<[securite: number, teinte: number]> = [
   [0, 0],
 ]
 
-function teinteDepuisSecurite(securite: number): number {
-  for (let i = 1; i < ECHELLE_TEINTE.length; i += 1) {
-    const [hautS, hautT] = ECHELLE_TEINTE[i - 1]!
-    const [basS, basT] = ECHELLE_TEINTE[i]!
+// La MENACE ne passe jamais par le vert (decide avec l'utilisateur, 7
+// septembre 2026) : une barre verte sous une manigance se lisait comme des PV,
+// et a l'envers (« la manigance va bien »). Elle part du jaune Pepper Potts
+// de la palette (teinte 38), vire a l'orange a mi-chemin et finit rouge au
+// seuil. Meme forme de table, indexee sur la securite (1 = menace nulle).
+const ECHELLE_TEINTE_MENACE: Array<[securite: number, teinte: number]> = [
+  [1, 40],
+  [0.6, 30],
+  [0.4, 20],
+  [0.2, 10],
+  [0, 0],
+]
+
+function teinteDepuisSecurite(securite: number, echelle = ECHELLE_TEINTE): number {
+  for (let i = 1; i < echelle.length; i += 1) {
+    const [hautS, hautT] = echelle[i - 1]!
+    const [basS, basT] = echelle[i]!
     if (securite >= basS) {
       const part = hautS === basS ? 1 : (securite - basS) / (hautS - basS)
       return Math.round(basT + part * (hautT - basT))
@@ -440,7 +453,10 @@ export function ScanCard({
   const danger = bande ? (bande.genre === 'pv' ? 1 - bande.remplissage : bande.remplissage) : 0
   // Teinte HSL continue, du vert au rouge. Pas de paliers visibles : la couleur
   // glisse avec la valeur, et le CSS anime la transition.
-  const teinte = teinteDepuisSecurite(1 - danger)
+  const teinte = teinteDepuisSecurite(
+    1 - danger,
+    bande?.genre === 'menace' ? ECHELLE_TEINTE_MENACE : ECHELLE_TEINTE
+  )
   const seuils = SEUILS_ALERTE[bande?.genre ?? 'pv']
   const alerte =
     !bande || !bande.alarme
