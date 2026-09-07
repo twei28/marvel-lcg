@@ -60,4 +60,71 @@
   .carte-posee-etat.est-coriace { background: #9ca3af; }
   .carte-posee-etat.est-sonne { background: #f59e0b; }
   .carte-posee-etat.est-desoriente { background: #a78bfa; }
+
+  /* --- Piles epinglees au bout d'une rangee --------------------------------- */
+
+  .piles-epinglees {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 0 8px 0 6px;
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .pile-epinglee {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    /* 56 px de carte, mais 44 px de cible au minimum dans les deux axes. */
+    min-width: 44px;
+    min-height: 44px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pile-epinglee.est-secrete {
+    cursor: default;
+  }
+
+  .pile-epinglee-compte {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 22px;
+    padding: 1px 5px;
+    border: 2px solid #0b0b0b;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-align: center;
+    color: #111;
+    background: #f8fafc;
+  }
+
+  .pile-epinglee-nom {
+    max-width: 64px;
+    overflow: hidden;
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* --- Taille des cartes : DOIT etre dans `utilitaires` ---------------------
+   ScanCard.css y impose ses propres --card-w selon la largeur d'ecran. Une
+   couche posterieure l'emporte sur toute specificite. */
+@layer utilitaires {
+  .pile-epinglee .scan-card {
+    --card-w: 56px;
+    --inspect-scale: 1;
+  }
+
+  .pile-epinglee .scan-card .top-strip {
+    display: none;
+  }
 }
