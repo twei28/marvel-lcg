@@ -61,6 +61,14 @@ export function cardImageUrl(cardId) {
     if (!cardId) return "";
     return "/" + picIdLangue(String(cardId).split(",")[0]);
 }
+/** La même image, mais TOUJOURS le scan anglais, quelle que soit la langue.
+ *  Pour les grands visuels d'ambiance (la scène du héros dans le wizard) : le
+ *  scan FR porte un filigrane qui salit l'illustration une fois agrandie, le
+ *  scan EN non. Le texte de la carte n'y est pas lu, seule l'image compte. */
+export function cardImageUrlEn(cardId) {
+    if (!cardId) return "";
+    return "/" + String(cardId).split(",")[0];
+}
 /** Image d'une boîte d'extension : /sets/<clé>. encodeURI (pas ...Component)
  *  pour garder les apostrophes intactes (ex. "Galaxy's Most Wanted"). */
 export function extensionImageUrl(key) {

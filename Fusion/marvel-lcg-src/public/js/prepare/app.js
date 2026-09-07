@@ -1,6 +1,6 @@
 // app.js - Assistant "Preparer une partie" : briefing Marvel Champions.
 "use strict";
-import { cardImageUrl, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=12431d13";
+import { cardImageUrl, cardImageUrlEn, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=90b5e628";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
@@ -113,10 +113,12 @@ const isCampaignMode = () => state.mode && state.mode.id === "campaign";
 
 const playerLogKey = (field, i) => field.perPlayer ? ("Player " + (i + 1) + " " + field.key) : field.key;
 
-function portrait(cardId, cls) {
+/** `url` : la fonction qui donne l'image (par défaut celle de la langue ; la
+ *  scène du héros passe `cardImageUrlEn` pour éviter le filigrane FR). */
+function portrait(cardId, cls, url = cardImageUrl) {
     return el("div", {
         class: "portrait " + (cls || ""),
-        style: cardId ? { backgroundImage: `url(${cardImageUrl(cardId)})` } : {},
+        style: cardId ? { backgroundImage: `url(${url(cardId)})` } : {},
     });
 }
 
@@ -128,10 +130,10 @@ function portrait(cardId, cls) {
  *  commun (centre, 154 %) couperait chaque personnage en plein sur la diagonale.
  *  On tire donc le cadrage de chacun VERS SON TRIANGLE — d'où les deux classes
  *  `duo-a` / `duo-b`, dont les valeurs sont réglées dans prepare.css. */
-function portraitDuo(hero, cls) {
+function portraitDuo(hero, cls, url = cardImageUrl) {
     return el("div", { class: "portrait-duo " + (cls || "") },
-        portrait(hero.heroCardId, "duo duo-a"),
-        portrait(hero.lie.heroCardId, "duo duo-b"),
+        portrait(hero.heroCardId, "duo duo-a", url),
+        portrait(hero.lie.heroCardId, "duo duo-b", url),
     );
 }
 
@@ -1162,9 +1164,11 @@ function rendreScene(h) {
         : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
     const arts = (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length;
     poser(scene,
+        // Scan anglais même en français : le scan FR porte un filigrane, très
+        // visible à cette taille. Demande de l'utilisateur.
         h.lie
-            ? el("div", { class: "tb-art" }, portraitDuo(h))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(picIdHeros(h.heroCardId))}")` } }),
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlEn))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlEn(picIdHeros(h.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
             el("small", {}, traits || (h.extension || "").replace(/^\d+\.\s*/, "")),
@@ -2135,9 +2139,11 @@ function rendreSceneDeck() {
     const st = p.deck ? deckStats(p.deck) : null;
     const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
     poser(scene,
+        // Scan anglais même en français : le scan FR porte un filigrane, très
+        // visible à cette taille. Demande de l'utilisateur.
         h.lie
-            ? el("div", { class: "tb-art" }, portraitDuo(h))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(picIdHeros(h.heroCardId))}")` } }),
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlEn))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlEn(picIdHeros(h.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
             el("small", {}, t("Arsenal de")),
