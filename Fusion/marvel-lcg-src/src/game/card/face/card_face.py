@@ -191,6 +191,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "tic_tac_toe_1_3", "tic_tac_toe_2_3", "tic_tac_toe_3_3",
 
         'shift', 'pursuit', 'chi', 'ratings', 'clue', 'stake',
+        'blood', 'thirst', # CORRECTIF : compteurs du pack custom blade (Rainy), 07/09/2026. 'blood' sur l'identite, 'thirst' sur l'obligation (Uses). 'stake' existait deja (Mojo 39048).
         'invocation', 'teleport', 'sword', 'mangetic',
         'power', 'backup', 'soul', 'fatigue', 'research', 'psi', 'leadership', 'boom',
         'freeze', 'operative', 'judo', 'magnet', 'knock', 'momentum',

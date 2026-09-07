@@ -90464,5 +90464,316 @@
    "custom": "Rainy"
   }
  ],
- "checksum": "85f7793dba723ef5c93ddafd8faba8ec5711bfd391475a923d13d64384fa047a"
+ "blade": [
+  {
+   "card_id": "bl001a",
+   "type": "Hero",
+   "name": "* Blade",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "VAMPIRE"
+   ],
+   "text": "[star] <i>Blood Rush</i> — <b>Response</b>: After Blade uses a basic power, remove 1 blood counter from him → ready Blade. <i>(Limit once per phase.)</i>",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl001b",
+   "type": "AlterEgo",
+   "name": "* Eric Brooks",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "text": "<i>Slayer</i> — <b>Setup</b>: Shuffle each card in your nemesis set other than Dracula into the encounter deck.\n<i>Serum Injection</i> — <b>Action</b>: Spend a [physical] resource → place 2 blood counters on Eric Brooks. <i>(Limit once per round.)</i>",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl002",
+   "type": "Event",
+   "name": "Gear Up",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Reduce the cost to play this card by 1 if you are in alter-ego form.\n<b>Action</b>: Search your deck and discard pile for an [[ATTACK]], [[ITEM]], [[TACTIC]], or [[WEAPON]] card and add it to your hand.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl003",
+   "type": "Event",
+   "name": "Go for the Heart",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. This attack gains piercing. You may exhaust a [[WEAPON]] upgrade you control to stun that enemy.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl004",
+   "type": "Event",
+   "name": "On the Hunt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Search the encounter deck for a minion and put it into play engaged with you → remove 3 threat from a scheme. If that minion has the [[VAMPIRE]] trait, draw 1 card.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl005",
+   "type": "Event",
+   "name": "Vampire Bite",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Choose to either heal 2 damage from Blade or place 1 blood counter on him (do both instead if this attack defeats that enemy).",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl006",
+   "type": "Event",
+   "name": "Vampiric Reflexes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage from an attack, prevent all of that damage. You may exhaust a [[WEAPON]] upgrade you control to gain retaliate 1 until the end of the round.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl007",
+   "type": "Upgrade",
+   "name": "Bandolier of Stakes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Uses": "3,stake",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "WEAPON"
+   ],
+   "text": "Uses (3 stake counters).\n<b>Hero Interrupt</b>: When a hero attacks, remove 1 stake counter from here → that attack deals 1 additional damage and gains piercing.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl008",
+   "type": "Upgrade",
+   "name": "* Blade's Sword",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Interrupt</b>: When Blade makes an attack with piercing, increase the amount of damage that attack deals by 1.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl009",
+   "type": "Upgrade",
+   "name": "Daywalker",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER",
+    "TITLE"
+   ],
+   "text": "You get +3 hit points and your Vampire Bite attacks gain piercing.\n<b>Hero Interrupt</b>: When you would trigger Blade's <i>Blood Rush</i> ability, take 2 damage → resolve that ability without paying its cost instead.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl010",
+   "type": "Upgrade",
+   "name": "Predatory Instincts",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "text": "Blade gets +1 DEF.\n<b>Hero Response</b>: After an enemy enters play, exhaust Predatory Instincts → search your deck and discard pile for a copy of Vampire Bite and add it to your hand.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl011",
+   "type": "Obligation",
+   "name": "The Thirst",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Eric Brooks",
+    "Uses": "3,thirst"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Eric Brooks player.</i></b>\nUses (3 thirst counters).\n<b>Forced Interrupt</b>: When your turn begins, remove 1 blood counter from your identity to remove 1 thirst counter from here. If you cannot, take 2 damage.",
+   "set_name": "Blade",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl012",
+   "type": "SideScheme",
+   "name": "Blood Hunt",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "4*"
+   },
+   "traits": [],
+   "text": "<i>Dracula has unleashed a horde of new vampires, and they're hungry for blood.</i>\nNon-[[VAMPIRE]] minions gain the [[VAMPIRE]] trait and the following text: \"Attacks with piercing deal double damage to this minion.\" [[VAMPIRE]] minions get +3 hit points and gain teamwork ([[VAMPIRE]]).\n<b>Response</b>: After a [[VAMPIRE]] minion is defeated, remove 2 threat from this scheme.",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl013",
+   "type": "Minion",
+   "name": "* Dracula",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "SCH": "3",
+    "ATK": "3",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "VAMPIRE"
+   ],
+   "text": "Attacks with piercing deal double damage to Dracula.\n[star] <b>Forced Response</b>: After Dracula attacks and damages a character, heal all damage from Dracula. If you cannot, give him a tough status card.\n<i>(Blade's nemesis minion.)</i>",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl014",
+   "type": "Minion",
+   "name": "Vampire",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "VAMPIRE"
+   ],
+   "text": "Attacks with piercing deal double damage to Vampire.\n[star] <b>Forced Response</b>: After Vampire attacks and damages a character, heal all damage from Vampire. If no damage was healed this way, give Vampire a tough status card.",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl015",
+   "type": "Attachment",
+   "name": "Bandolier of Stakes",
+   "subtitle": "",
+   "desc": {
+    "Uses": "3,stake",
+    "Surge": "1"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "text": "Surge. Uses (3 stake counters).\n<b>When Revealed</b>: You may spend 1 resource of any type to attach this card to your identity. Otherwise, discard this card.\n<b>Hero Interrupt</b>: When your hero makes a basic attack, remove 1 stake counter from here → your hero gets +1 ATK for that attack and that attack gains piercing.",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl016",
+   "type": "Attachment",
+   "name": "Embraced",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "Attached minion gains the [[VAMPIRE]] trait and gets +X hit points where X is equal to their printed hit points. Attacks with piercing deal double damage to attached minion.\n<b>When Revealed</b>: Seek a non-[[VAMPIRE]] minion from the encounter deck, reveal it and attach Embraced to it.",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  },
+  {
+   "card_id": "bl017",
+   "type": "Attachment",
+   "name": "Turned",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "Attached ally gains traitor, the [[VAMPIRE]] trait and the following text: \"Attacks with piercing deal double damage to this enemy.\" and gets +3 hit points.\n<b>When Revealed</b>: Attach to the ally with the fewest remaining hit points. If you cannot, this card gains surge. Heal all damage from that ally.",
+   "set_name": "Blade Nemesis",
+   "custom": "Rainy"
+  }
+ ],
+ "checksum": "2cb1a7e32a2eb5aa34a861ad04fdabc26a717dc59dc121e7c53f2a358dc218d0"
 }

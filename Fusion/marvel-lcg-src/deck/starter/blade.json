@@ -1,0 +1,27 @@
+{
+ "version": "0.5.8",
+ "name": "Blade",
+ "metadata": {
+  "url": "",
+  "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : pas de deck d'aspect invente pour un heros homebrew, le joueur choisit ou construit son deck au lancement. Le zip de Rainy ne fournit aucune decklist.",
+  "collision_note": "Homonymes au depot : Bandolier of Stakes existe trois fois (39048 attachement Horror de Mojo, bl007 amelioration signature, bl015 attachement nemesis) ; Vampire (39051 Mojo et bl014) ; Gear Up (mk009 Moon Knight, 40192a) ; On the Hunt (16184 traitrise Badoon) ; Blade (21019 et dt052 allies). Aucun module du pack ne cherche par nom sauf Predatory Instincts (« Vampire Bite », sans homonyme) et le Setup d'Eric Brooks (« Dracula », sans homonyme).",
+  "nemesis_note": "Set nemesis de 8 cartes, pas 5 : Blood Hunt, Dracula, Vampire x2, Bandolier of Stakes (attachement), Embraced x2, Turned. Le Setup d'Eric Brooks (Slayer) melange tout le set SAUF Dracula dans le deck rencontre des la mise en place ; Shadow of the Past ne trouve alors plus que Dracula dans la pile mise de cote.",
+  "auteur": "Rainy"
+ },
+ "hero": ["bl001a,bl001b"],
+ "hero_deck": [
+  "bl002", "bl002",
+  "bl003", "bl003", "bl003",
+  "bl004", "bl004",
+  "bl005", "bl005",
+  "bl006", "bl006",
+  "bl007",
+  "bl008",
+  "bl009",
+  "bl010"
+ ],
+ "set_aside": [],
+ "obligations": ["bl011"],
+ "nemesis_set": ["bl012", "bl013", "bl014", "bl014", "bl015", "bl016", "bl016", "bl017"],
+ "player_deck": []
+}

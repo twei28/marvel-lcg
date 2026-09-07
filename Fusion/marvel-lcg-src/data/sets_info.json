@@ -1442,5 +1442,14 @@
   "encounters": [],
   "max_id": "ar014"
  },
- "checksum": "05fe9ead84902219c84d4c0114ed9641147812e5b306d60c2f6370abd5e124a3"
+ "165. Custom (Blade)": {
+  "name": "blade",
+  "scenarios": [],
+  "heroes": [
+   "blade"
+  ],
+  "encounters": [],
+  "max_id": "bl017"
+ },
+ "checksum": "0f67aae6039618adee4958db4ecd47926e5025ea1cf694e5682da5a5dc4e5bbd"
 }

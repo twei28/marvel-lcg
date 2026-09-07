@@ -1499,5 +1499,16 @@ export const HEROS_INFO = {
         ennemisEn: "Athena, Hercules, Pluto",
         apparition: "Thor #129 (1966)",
     },
+    "bl001a": {
+        bio: "Eric Brooks est ne dans un bordel de Londres tandis qu'un vampire vidait sa mere : le sang du monstre l'a fait naitre a moitie vampire, immunise au soleil, d'ou son surnom de Daywalker. Forme par le chasseur Jamal Afari, il traque les morts-vivants avec ses epees de titane, ses pieux et un serum qui tient sa soif en laisse. Il a affronte Dracula, Deacon Frost et Morbius, rejoint les Vengeurs de Luke Cage et le Conseil des Nations, et reste le tueur de vampires le plus efficace de la Terre, que les autres heros appellent quand la nuit devient trop longue.",
+        bioEn: "Eric Brooks was born in a London brothel while a vampire drained his mother: the monster's blood made him half-vampire and immune to sunlight, hence his nickname, the Daywalker. Trained by the hunter Jamal Afari, he stalks the undead with titanium swords, stakes and a serum that keeps his thirst on a leash. He has fought Dracula, Deacon Frost and Morbius, joined Luke Cage's Avengers and the Council of Nations, and remains Earth's most effective vampire slayer, the one other heroes call when the night grows too long.",
+        civil: "Eric Brooks",
+        base: "Londres, New York",
+        baseEn: "London, New York",
+        equipes: "Vengeurs, Nightstalkers, MI-13",
+        equipesEn: "Avengers, Nightstalkers, MI-13",
+        ennemis: "Dracula, Deacon Frost, Morbius",
+        apparition: "The Tomb of Dracula #10 (1973)",
+    },
 
 };

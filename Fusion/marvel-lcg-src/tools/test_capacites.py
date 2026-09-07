@@ -23519,6 +23519,793 @@ CAS = [
         "attendu": {"en_jeu": ["01110"], "degats_identite": 0},
     },
     # ============================================================ FIN ARES ==
+    # ------------------------------------------------------------------------
+    # Pack « blade » : Eric Brooks / Blade, set 165, bl001a-bl017 (Rainy).
+    #
+    # Deux fils : les PIONS DE SANG sur l'identite (poses en civil, depenses en
+    # heros : un cas traverse le changement de forme) et les ATTAQUES PERCANTES
+    # que tout le set nemesis DOUBLE (« bonus puis doublement », arbitrage du
+    # 07/09/2026 : 4 + 1 = 5 -> 10, et non 9). Blood Rush et Daywalker partagent
+    # une seule limite « once per phase » : un cas le prouve.
+    # Temoins : Rhino 01094 (14 PV, ATQ 2), Whirlwind 01130 (6 PV), Hydra
+    # Soldier 01182 (4 PV, Guard), Hydra Bomber 01110 (2 PV, When Revealed),
+    # Strength 01090 (RR), Energy 01088 (YY).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "bl001a Blade — Blood Rush : apres une attaque de base, 1 pion de sang -> Blade se redresse",
+        "pourquoi": ("« After Blade uses a basic power, remove 1 blood counter from him -> ready "
+                     "Blade » : `AfterUnitUseBasicPower(Response, \"You\")` + "
+                     "`CostFunc.Counter(\"This\", 1, 'blood')` (modeles ls001a, 61033a)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PlaceCounters('bl001a', 'blood', 1)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bl001a"], "compteurs": [["bl001a", "blood", 0]],
+                    "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "bl001a Blade — CONTRE-CAS Blood Rush sans pion de sang : Blade reste incline",
+        "pourquoi": "le pion est le COUT : sans lui, la Response n'est pas offerte",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bl001a"], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "bl001a Blade — TEMOIN D'EPUISEMENT Blood Rush : deux attaques, un seul redressement par phase",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis : avec 2 pions, la premiere attaque redresse Blade "
+                     "(pion 1), la seconde ne peut plus (limite par phase) : Blade finit "
+                     "incline avec 1 pion, Rhino a pris 4"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PlaceCounters('bl001a', 'blood', 2)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')", "Puzzle.Attack('bl001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bl001a"], "compteurs": [["bl001a", "blood", 1]],
+                    "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "bl001a + bl001b — les pions de sang poses en civil SURVIVENT au changement de forme",
+        "pourquoi": ("Serum Injection pose 2 pions sur Eric Brooks, puis le joueur passe heros : "
+                     "Blade les porte encore (compteurs sur la CARTE, pas la face). Sans ce "
+                     "cas, tout le kit peut etre vert avec des pions perdus au flip"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bl001b', 'Action')", "Puzzle.ChangeForm('bl001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bl001a", "blood", 2]], "forme": "Hero", "defausse": ["01090"]},
+    },
+    {
+        "nom": "bl001b Eric Brooks — Serum Injection : depenser une ressource physique pose 2 pions de sang",
+        "pourquoi": ("« Spend a [physical] resource -> place 2 blood counters » : "
+                     "`CostFunc.Spend(Cost(\"R\"))`, Strength (RR) paie"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('bl001b', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bl001b", "blood", 2]], "defausse": ["01090"]},
+    },
+    {
+        "nom": "bl001b Eric Brooks — TEMOIN D'EPUISEMENT Serum Injection : la limite once per round refuse le second appel",
+        "pourquoi": ("deux ressources physiques en main, deux appels : le second est REFUSE "
+                     "(`declencher_tolerant`), 2 pions et non 4, une carte reste en main"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": [],
+        "main_exclusive": ["01090", "bl003"],
+        "declencher": ["Puzzle.Action('bl001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('bl001b', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["bl001b", "blood", 2]], "taille_main": 1},
+    },
+    {
+        "nom": "bl001b Eric Brooks — Slayer (Setup) : le set nemesis SAUF Dracula est dans le deck rencontre des la mise en place",
+        "pourquoi": ("« Shuffle each card in your nemesis set other than Dracula into the "
+                     "encounter deck » : `WhenCardSetup(\"This\")` + `Faces.ShuffleAllTo`. Sept "
+                     "cartes (Blood Hunt, Vampire x2, Bandolier, Embraced x2, Turned) dans le "
+                     "deck, Dracula seul dans la pile mise de cote"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "blade_nemesis_melange",
+        "attendu": {},
+    },
+    {
+        "nom": "bl002 Gear Up — en forme heros elle coute 1 : Energy paie, une carte WEAPON du deck arrive en main",
+        "pourquoi": ("« Search your deck and discard pile for an ATTACK, ITEM, TACTIC, or WEAPON "
+                     "card » : `CardFinder(traits=[...])` (OU) ; deck fige a une arme et un "
+                     "Energy ; cout 1 paye par l'Energy en main"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreatePlayerDeck('bl007', '01088')"],
+        "main_exclusive": ["bl002", "01088"],
+        "declencher": [],
+        "jouer": ["bl002"],
+        "cibles": ["bl007"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bl007"], "defausse": ["bl002"], "taille_main": 1},
+    },
+    {
+        "nom": "bl002 Gear Up — en forme ALTER-EGO elle coute 0 : jouee seule en main",
+        "pourquoi": ("« Reduce the cost to play this card by 1 if you are in alter-ego form » : "
+                     "`ReduceCostToPlayThis(1, conditions=[en_forme_civile])`. La main n'a "
+                     "que Gear Up : si elle se joue, c'est qu'elle coute 0"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.CreatePlayerDeck('bl007', '01088')"],
+        "main_exclusive": ["bl002"],
+        "declencher": [],
+        "jouer": ["bl002"],
+        "cibles": ["bl007"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bl007"], "defausse": ["bl002"], "taille_main": 1},
+    },
+    {
+        "nom": "bl002 Gear Up — CONTRE-CAS en forme heros, seule en main : injouable (cout 1, rien pour payer)",
+        "pourquoi": "ligne de base du cas precedent : la reduction ne vaut qu'en civil",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreatePlayerDeck('bl007', '01088')"],
+        "main_exclusive": ["bl002"],
+        "declencher": [],
+        "jouer": ["bl002"],
+        "cibles": ["bl007"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0, "defausse": ["bl002"]},
+    },
+    {
+        "nom": "bl003 Go for the Heart — 4 degats PERCANTS : le Tenace de Whirlwind ne bloque rien",
+        "pourquoi": ("« Deal 4 damage to an enemy. This attack gains piercing » : "
+                     "`AttackProperty(piercing=True)` a la source"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('01130')", "Puzzle.Tough('01130')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01130"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01130", 4]], "statuts_absents": [["01130", "Tough"]],
+                    "defausse": ["bl003"]},
+    },
+    {
+        "nom": "bl003 + bl008 — « exhaust a WEAPON upgrade to stun » : l'epee s'incline, Rhino est etourdi (et prend 4 + 1)",
+        "pourquoi": ("l'option facultative (`ChooseAbilities(forced=False)` + `canbe_exhaust`) ; "
+                     "Blade's Sword est l'arme, et elle ajoute aussi son +1 percant : 5"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl008', under_control=True)"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "statuts": [["01094", "Stunned"]],
+                    "exhausted": ["bl008"]},
+    },
+    {
+        "nom": "bl003 Go for the Heart — CONTRE-CAS sans arme : pas d'etourdissement, 4 degats",
+        "pourquoi": "sans WEAPON prete l'option n'est pas offerte",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "statuts_absents": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "bl003 + bl014 — « Attacks with piercing deal double damage » : 4 x 2 = 8, le Vampire (6 PV) tombe",
+        "pourquoi": ("`UpdateAttacksDealDamage(with_piercing=True, deal_damage_to=\"This\", "
+                     "update_damage_rule=\"Double\")`, modele 39051"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl014')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["bl014"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["bl014"]},
+    },
+    {
+        "nom": "bl003 + bl008 + bl013 — ARBITRAGE « bonus puis doublement » : (4 + 1) x 2 = 10 sur Dracula, et non 9",
+        "pourquoi": ("arbitrage utilisateur du 07/09/2026. L'epee ajoute son +1 au "
+                     "`WhenUnitMakeKeyWordAttack`, le doublement vient au "
+                     "`WhenRecalculateAttackDamage`, envoye apres (can_attack.py:374)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl013')",
+                          "Puzzle.PutIntoPlay('bl008', under_control=True)"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["bl013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["bl013", 10]], "en_jeu": ["bl013"]},
+    },
+    {
+        "nom": "bl004 On the Hunt — le sbire convoque est le COUT, puis 3 menaces retirees ; pas de pioche (Hydra Bomber n'est pas VAMPIRE)",
+        "pourquoi": ("modele ar001a Bring the War : `CostFunc.SearchForCard(Minion, "
+                     "\"PutIntoPlayEngagedYou\", include_encounter_deck=True)` ; la "
+                     "manigance en cible de l'abilite (`SetTarget(Scheme2)`)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreateEncounterDeck('01110')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["bl004"],
+        "declencher": [],
+        "jouer": ["bl004"],
+        "cibles": ["01110", "01107"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "menace": [["01107", 2]], "taille_main": 0},
+    },
+    {
+        "nom": "bl004 On the Hunt — « If that minion has the VAMPIRE trait, draw 1 card » : un Vampire convoque fait piocher",
+        "pourquoi": "le trait est lu sur le sbire convoque, apres son entree en jeu",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreateEncounterDeck('bl014')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["bl004"],
+        "declencher": [],
+        "jouer": ["bl004"],
+        "cibles": ["bl014", "01107"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bl014"], "menace": [["01107", 2]], "taille_main": 1},
+    },
+    {
+        "nom": "bl005 Vampire Bite — 2 degats, branche « heal 2 damage from Blade » : 3 blessures -> 1",
+        "pourquoi": ("« Choose to either heal 2 damage from Blade or place 1 blood counter » : "
+                     "deux `ForChoiceAbility`, ici la premiere"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Damage('bl001a', 3)"],
+        "main_exclusive": ["bl005", "01090"],
+        "declencher": [],
+        "jouer": ["bl005"],
+        "cibles": ["01094"],
+        "preferer_option": ["Heal 2 damage"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "degats_identite": 1,
+                    "compteurs": [["bl001a", "blood", 0]]},
+    },
+    {
+        "nom": "bl005 Vampire Bite — branche « place 1 blood counter on him » : 1 pion, aucun soin",
+        "pourquoi": "la seconde branche, seule (l'ennemi survit)",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Damage('bl001a', 3)"],
+        "main_exclusive": ["bl005", "01090"],
+        "declencher": [],
+        "jouer": ["bl005"],
+        "cibles": ["01094"],
+        "preferer_option": ["Place 1 blood"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "compteurs": [["bl001a", "blood", 1]]},
+    },
+    {
+        "nom": "bl005 Vampire Bite — « do both instead if this attack defeats that enemy » : Hydra Bomber (2 PV) tombe, soin ET pion",
+        "pourquoi": "l'etat de la cible est lu APRES les degats : plus en jeu -> les deux effets, sans question",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Damage('bl001a', 3)",
+                          "Puzzle.PutIntoPlay('01110')"],
+        "main_exclusive": ["bl005", "01090"],
+        "declencher": [],
+        "jouer": ["bl005"],
+        "cibles": ["01110"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "degats_identite": 1,
+                    "compteurs": [["bl001a", "blood", 1]]},
+    },
+    {
+        "nom": "bl005 + bl009 — « your Vampire Bite attacks gain piercing » : avec Daywalker, le Tenace de Rhino ne bloque rien",
+        "pourquoi": "`piercing=ControleDaywalker(...)` a la source de l'attaque (code dans bl005)",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Tough('01094')",
+                          "Puzzle.PutIntoPlay('bl009', under_control=True)"],
+        "main_exclusive": ["bl005", "01090"],
+        "declencher": [],
+        "jouer": ["bl005"],
+        "cibles": ["01094"],
+        "preferer_option": ["Heal 2 damage"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "statuts_absents": [["01094", "Tough"]]},
+    },
+    {
+        "nom": "bl005 Vampire Bite — CONTRE-CAS sans Daywalker : le Tenace absorbe la morsure (0 degat)",
+        "pourquoi": "ligne de base : sans Daywalker, pas de percant",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Tough('01094')"],
+        "main_exclusive": ["bl005", "01090"],
+        "declencher": [],
+        "jouer": ["bl005"],
+        "cibles": ["01094"],
+        "preferer_option": ["Heal 2 damage"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "statuts_absents": [["01094", "Tough"]]},
+    },
+    {
+        "nom": "bl006 Vampiric Reflexes — Rhino attaque, Blade defend : tout est prevenu, la carte est jouee",
+        "pourquoi": ("`WhenUnitWouldTakeDamage(HeroInterrupt, \"You\", is_from_attack=True)` + "
+                     "`PreventDamage(\"All\")`, modele 03005 / br004"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')"],
+        "main_exclusive": ["bl006", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["bl006"]},
+    },
+    {
+        "nom": "bl006 + bl008 — « exhaust a WEAPON upgrade to gain retaliate 1 until the end of the round » : l'epee s'incline, Rhino saigne",
+        "pourquoi": ("`hero.GainUntilRoundEnd(effect, retaliate=1)` ; Rhino attaque deux fois "
+                     "dans le round, la riposte lui rend au moins 1"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')",
+                          "Puzzle.PutIntoPlay('bl008', under_control=True)"],
+        "main_exclusive": ["bl006", "01090"],
+        "declencher": ["Puzzle.Attack('01094')", "Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bl008"], "degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "bl007 Bandolier of Stakes — attaque de base : un pieu (3 -> 2), +1 degat et percant sur Rhino Tenace",
+        "pourquoi": ("modele 39048 : `WhenUnitMakeAttack(HeroInterrupt, Hero)` + "
+                     "`CostFunc.Counter(\"This\", 1, 'stake')` ; `DealAdditionalDamage(1)` et "
+                     "`GainPiercing`. Uses pose les 3 pions (desc)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Tough('01094')",
+                          "Puzzle.PutIntoPlay('bl007', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "statuts_absents": [["01094", "Tough"]],
+                    "compteurs": [["bl007", "stake", 2]]},
+    },
+    {
+        "nom": "bl007 Bandolier of Stakes — Uses : le dernier pieu fait sortir la carte du jeu",
+        "pourquoi": "fiche uses.md : sortie native au dernier pion (`RemoveCountersInternal`), pas codee",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl007', under_control=True)",
+                          "Puzzle.Counter('bl007', 'stake', -2)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["bl007"], "degats": [["01094", 3]]},
+    },
+    {
+        "nom": "bl007 + bl003 — « When A HERO attacks » couvre une attaque d'EVENEMENT : Go for the Heart fait 4 + 1",
+        "pourquoi": ("c'est l'ecart avec le Bandolier de Mojo (39048, « basic attack ») : ici "
+                     "toute attaque, d'ou `DealAdditionalDamage` et non `GainATKForThisAttack`"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl007', under_control=True)"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "compteurs": [["bl007", "stake", 2]]},
+    },
+    {
+        "nom": "bl008 Blade's Sword — CONTRE-CAS : une attaque de base SANS percant ne gagne rien (2)",
+        "pourquoi": "« an attack WITH PIERCING » : `WhenUnitMakeKeyWordAttack(has_keyword=\"Piercing\")`",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "bl008 + bl007 — le pieu rend l'attaque de base percante, l'epee ajoute son +1 : 2 + 1 + 1 = 4",
+        "pourquoi": ("l'ordre des messages : le Bandolier agit au `WhenUnitWouldAttack`, l'epee "
+                     "au `WhenUnitMakeKeyWordAttack` envoye apres (can_attack.py:358)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl007', under_control=True)",
+                          "Puzzle.PutIntoPlay('bl008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "compteurs": [["bl007", "stake", 2]]},
+    },
+    {
+        "nom": "bl009 Daywalker — Blood Rush sans pion : « take 2 damage -> resolve without paying its cost », Blade se redresse",
+        "pourquoi": ("ecrit comme une seconde Response au meme declencheur, cout "
+                     "`CostFunc.TakeDamage(2, \"YourIdentity\")` ; sans pion de sang, seule "
+                     "cette version est offerte"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["bl001a"], "degats_identite": 2, "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "bl009 + bl001a — la limite « once per phase » est PARTAGEE : apres Daywalker, Blood Rush est refuse dans la meme phase",
+        "pourquoi": ("`BloodRushPasEncoreResolue` lit `once_per_phase_effects` par le nom "
+                     "« Blood Rush » ; un pion arrive entre les deux attaques et n'est PAS depense"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl001a')", "Puzzle.PlaceCounters('bl001a', 'blood', 1)",
+                       "Puzzle.Attack('bl001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["bl001a"], "compteurs": [["bl001a", "blood", 1]],
+                    "degats_identite": 2, "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "bl009 Daywalker — « You get +3 hit points »",
+        "pourquoi": "`GiveKeywordToInPlayWhenApplyThis(\"You\", health=3)` (modele aa008)",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl009', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"health": 3}},
+    },
+    {
+        "nom": "bl010 Predatory Instincts — « Blade gets +1 DEF »",
+        "pourquoi": "`GiveKeywordToInPlayWhenApplyThis(\"You\", defense=1)`",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl010', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}},
+    },
+    {
+        "nom": "bl010 Predatory Instincts — Response : un ennemi entre en jeu, la carte s'incline, Vampire Bite sort du deck",
+        "pourquoi": ("`AfterCardEnterPlay(HeroResponse, Enemy)` + `Exhaust(\"This\")` + "
+                     "`Search.PlayerCard(name=\"Vampire Bite\", include_discard_pile=True)`"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('bl010', under_control=True)",
+                          "Puzzle.CreatePlayerDeck('bl005', '01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01110')"],
+        "cibles": ["bl005"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["bl005"], "exhausted": ["bl010"], "en_jeu": ["01110"]},
+    },
+    {
+        "nom": "bl011 The Thirst — debut de tour avec 1 pion de sang : le pion part, la soif recule (3 -> 2), aucun degat",
+        "pourquoi": ("`WhenPlayerTurnBegin(ForcedInterrupt, \"You\")`. Aucune commande Puzzle "
+                     "ne commence un tour : le verificateur ENVOIE le message "
+                     "`WhenPlayerTurnBegin(joueur)` puis delegue a `etat_attendu`"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl011')",
+                          "Puzzle.PlaceCounters('bl001a', 'blood', 1)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "blade_debut_de_tour",
+        "attendu": {"compteurs": [["bl011", "thirst", 2], ["bl001a", "blood", 0]],
+                    "degats_identite": 0, "en_jeu": ["bl011"]},
+    },
+    {
+        "nom": "bl011 The Thirst — debut de tour SANS pion de sang : 2 degats, la soif ne recule pas",
+        "pourquoi": "« If you cannot, take 2 damage »",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl011')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "blade_debut_de_tour",
+        "attendu": {"compteurs": [["bl011", "thirst", 3]], "degats_identite": 2, "en_jeu": ["bl011"]},
+    },
+    {
+        "nom": "bl011 The Thirst — Uses : le dernier pion de soif retire fait partir l'obligation",
+        "pourquoi": "sortie native au dernier pion (fiche uses.md)",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl011')",
+                          "Puzzle.Counter('bl011', 'thirst', -2)",
+                          "Puzzle.PlaceCounters('bl001a', 'blood', 1)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "blade_debut_de_tour",
+        "attendu": {"hors_jeu": ["bl011"], "compteurs": [["bl001a", "blood", 0]], "degats_identite": 0},
+    },
+    {
+        "nom": "bl012 Blood Hunt — Whirlwind devient VAMPIRE (+3 PV : 9) et prend double des attaques percantes : 8, il survit",
+        "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(CardFinder(card_type=Minion), trait=, "
+                     "health=3, teamwork=)` + doublement pour les sbires sans texte propre. "
+                     "Sans le +3, Whirlwind (6 PV) mourrait a 8"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl012')",
+                          "Puzzle.PutIntoPlay('01130')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01130"],
+        "accepter_choix": True,
+        "verifier": "blade_hotes_et_traits",
+        "attendu": {"traits_de": [["01130", "VAMPIRE"]], "degats": [["01130", 8]],
+                    "en_jeu": ["01130", "bl012"], "menace": [["bl012", 4]]},
+    },
+    {
+        "nom": "bl012 Blood Hunt — Response : un sbire VAMPIRE (Hydra Soldier, 4 + 3 PV) tombe a 8 percants, 2 menaces retirees (4 -> 2)",
+        "pourquoi": "`AfterUnitBeDefeated(Response, CardFinder(card_type=Minion, trait=\"VAMPIRE\"))`",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl012')",
+                          "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["01182"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01182"], "menace": [["bl012", 2]]},
+    },
+    {
+        "nom": "bl012 + bl014 — un Vampire IMPRIME n'est pas double deux fois : 9 PV, 8 degats, il survit",
+        "pourquoi": ("le texte de doublement n'est donne qu'aux non-VAMPIRE imprimes "
+                     "(`paper.traits`) ; x4 le tuerait (16)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Reveal('bl012')",
+                          "Puzzle.PutIntoPlay('bl014')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["bl014"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["bl014", 8]], "en_jeu": ["bl014"]},
+    },
+    {
+        "nom": "bl012 Blood Hunt — teamwork (VAMPIRE) : un second sbire qui entre en jeu active contre Blade",
+        "pourquoi": ("fiche teamwork.md : natif par `desc`/`GiveKeyword`, le NOUVEAU venu "
+                     "s'active si un autre sbire porte le trait ; Blade incline ne defend pas"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')",
+                          "Puzzle.Reveal('bl012')", "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PutIntoPlay('01110')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 1, "en_jeu": ["01110", "01182"]},
+    },
+    {
+        "nom": "bl013 Dracula — Forced Response : apres avoir blesse Blade, il soigne TOUS ses degats (5 -> 0)",
+        "pourquoi": "copie de 39051 : `AfterUnitAttackAndDamageUnit(ForcedResponse, \"This\")` + `HealHealth(sustained)`",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')",
+                          "Puzzle.PutIntoPlay('bl013')", "Puzzle.Damage('bl013', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["bl013", 0]], "degats_identite": 3},
+    },
+    {
+        "nom": "bl013 Dracula — « If you cannot » (rien a soigner) : il gagne une carte Tenace",
+        "pourquoi": "la branche Tenace, quand `soin.value` est nul",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')",
+                          "Puzzle.PutIntoPlay('bl013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["bl013", "Tough"]], "degats_identite": 3},
+    },
+    {
+        "nom": "bl013 Dracula — une attaque percante de 4 lui fait 8 (12 PV, il survit)",
+        "pourquoi": "le doublement sans bonus : 4 x 2, a comparer au cas « bonus puis doublement » (10)",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.PutIntoPlay('bl013')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": [],
+        "jouer": ["bl003"],
+        "cibles": ["bl013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["bl013", 8]], "en_jeu": ["bl013"]},
+    },
+    {
+        "nom": "bl014 Vampire — blesse (3), il attaque Blade et se soigne entierement",
+        "pourquoi": "copie de 39051 ; Blade incline ne defend pas, 2 degats",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Exhaust('bl001a')",
+                          "Puzzle.PutIntoPlay('bl014')", "Puzzle.Damage('bl014', 3)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('bl014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["bl014", 0]], "degats_identite": 2},
+    },
+    {
+        "nom": "bl015 Bandolier of Stakes (attachement) — revele, une ressource depensee : il s'accroche a Blade, puis un pieu donne +1 ATQ et percant",
+        "pourquoi": ("copie de 39048 : `AskSpendResources(Cost(\"1\"))` puis `AttachTo2(identite)` ; "
+                     "`WhenUnitMakeAttack(HeroInterrupt, \"YourHero\", is_basic_attack=True)` + pion"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')", "Puzzle.Tough('01094')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bl015')", "Puzzle.Attack('bl001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "blade_hotes_et_traits",
+        "attendu": {"hotes": [["bl015", "bl001a"]], "degats": [["01094", 3]],
+                    "statuts_absents": [["01094", "Tough"]], "compteurs": [["bl015", "stake", 2]]},
+    },
+    # ⚠ Pas de cas « revele sans rien a depenser -> defausse » (bl015) : le
+    # harnais ne sait pas VIDER la main. `main_exclusive: []` est falsy et laisse
+    # la main de depart ; `Puzzle.Discard('01090')` CREE une nouvelle carte et la
+    # defausse (journal du 07/09 : « [(60,01090) Strength] created / discarded »
+    # pendant que la (59) reste en main) ; et le pilote DEPENSE des qu'il a une
+    # carte, `accepter_choix` ou non. La branche est la copie de 39048 (Mojo),
+    # consigne dans le journal du pack.
+    {
+        "nom": "bl016 Embraced — revele : un sbire non-VAMPIRE sort du deck rencontre, entre en jeu et porte Embraced (trait VAMPIRE)",
+        "pourquoi": ("`Search.EncounterCard(finder=CardFinder(card_type=Minion, non_trait=\"VAMPIRE\"))` "
+                     "+ `face.Reveal(joueur, effect, if_entered_play=attacher)`"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreateEncounterDeck('01130')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bl016')"],
+        "cibles": ["01130"],
+        "accepter_choix": True,
+        "verifier": "blade_hotes_et_traits",
+        "attendu": {"hotes": [["bl016", "01130"]], "traits_de": [["01130", "VAMPIRE"]],
+                    "en_jeu": ["01130"]},
+    },
+    {
+        "nom": "bl016 Embraced — « +X hit points where X = printed hit points » et doublement : Whirlwind (6 + 6) prend 8 percants et survit",
+        "pourquoi": "`GiveKeywordToAttached(Minion, health=<PV imprimes de l'hote>)` ; sans le +6 il mourrait",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreateEncounterDeck('01130')"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": ["Puzzle.Reveal('bl016')"],
+        "jouer": ["bl003"],
+        "cibles": ["01130", "01130"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01130", 8]], "en_jeu": ["01130", "bl016"]},
+    },
+    {
+        "nom": "bl017 Turned — revele : l'allie aux PV restants les plus bas devient un sbire VAMPIRE soigne, +3 PV, engage avec Blade",
+        "pourquoi": ("`TreatAttachedCardAsMinion(Ally, \"Traitor Minion\", process)` + "
+                     "`Filter.One(allies, fewest_remaining_hp=True)` + `HealHealth(\"All\")` ; "
+                     "Tigra (3 PV, 2 de degats) est choisie devant Jessica Jones (3 PV intacte)"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('01051', under_control=True)",
+                          "Puzzle.PutIntoPlay('01059', under_control=True)",
+                          "Puzzle.Damage('01051', 2)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bl017')"],
+        "accepter_choix": True,
+        "verifier": "blade_traitre",
+        "attendu": {"traitre": "Tigra", "pv_max": 6, "en_jeu": ["01059"]},
+    },
+    {
+        "nom": "bl017 Turned — le traitre prend double des attaques percantes : Go for the Heart (8) l'acheve",
+        "pourquoi": ("`DoubleDegatsPercants(\"AttachedMinion\")` sur le sbire converti (6 PV). "
+                     "⚠ La cible se nomme par le card_id du GABARIT (`aav_traitor_minion`) : "
+                     "la face convertie ne porte plus le paper de l'allie"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.PutIntoPlay('01051', under_control=True)"],
+        "main_exclusive": ["bl003", "01090"],
+        "declencher": ["Puzzle.Reveal('bl017')"],
+        "jouer": ["bl003"],
+        "cibles": ["aav_traitor_minion"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01051", "bl017"]},
+    },
+    {
+        "nom": "bl017 Turned — aucun allie : la carte gagne surge et part en defausse",
+        "pourquoi": "« If you cannot, this card gains surge »",
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('bl017')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["bl017"]},
+    },
+    # FIN DU BLOC BLADE
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -28923,6 +29710,111 @@ def ares_cartes_rencontre_distribuees(monde, aides):
         if not ok:
             return False, msg
     return True, f"{n} carte(s) rencontre distribuee(s)"
+
+
+def blade_hotes_et_traits(monde, aides):
+    """Pack blade : « attendu.hotes » = [[carte, hote]] (bind_face exact, comme
+    ares_hotes) et « attendu.traits_de » = [[carte, trait]] (HasTrait sur une
+    carte EN JEU qui n'est pas l'identite). Delegue le reste a `etat_attendu`."""
+    attendu = aides["cas"]["attendu"]
+    soucis = []
+    for carte_id, hote_id in attendu.get("hotes") or []:
+        carte = aides["par_id"](monde, carte_id)
+        if carte is None:
+            soucis.append(f"{carte_id} n'est pas en jeu")
+            continue
+        hote = getattr(carte, "bind_face", None)
+        hote_reel = getattr(getattr(hote, "paper", None), "card_id", None)
+        if hote_reel != hote_id:
+            soucis.append(f"{carte_id} est accrochee a {hote_reel}, attendu {hote_id}")
+    for carte_id, trait in attendu.get("traits_de") or []:
+        carte = aides["par_id"](monde, carte_id)
+        if carte is None:
+            soucis.append(f"{carte_id} n'est pas en jeu (trait {trait})")
+        elif not carte.HasTrait(trait):
+            soucis.append(f"{carte_id} ne porte pas le trait {trait}")
+    if soucis:
+        return False, " ; ".join(soucis)
+    reste = {k: v for k, v in attendu.items() if k not in ("hotes", "traits_de")}
+    if reste:
+        aides2 = dict(aides)
+        aides2["cas"] = dict(aides["cas"], attendu=reste)
+        ok, msg = etat_attendu(monde, aides2)
+        if not ok:
+            return False, msg
+    return True, "hotes et traits conformes"
+
+
+def blade_nemesis_melange(monde, aides):
+    """bl001b Slayer : a la mise en place, le set nemesis SAUF Dracula a rejoint le
+    deck rencontre ; Dracula est le seul encore dans `set_aside_nemesis_sets`."""
+    joueur = monde.players[0]
+    pile = [getattr(f.paper, "card_id", None)
+            for f in joueur.set_aside_nemesis_sets.GetAll()]
+    scenario = monde.GetScenario()
+    deck = [getattr(f.paper, "card_id", None)
+            for f in scenario.encounter_deck.GetAll()]
+    voulus = {"bl012": 1, "bl014": 2, "bl015": 1, "bl016": 2, "bl017": 1}
+    soucis = []
+    for cid, n in voulus.items():
+        if deck.count(cid) != n:
+            soucis.append(f"{cid} x{deck.count(cid)} dans le deck rencontre (attendu x{n})")
+    if pile != ["bl013"]:
+        soucis.append(f"pile nemesis = {pile} (attendu ['bl013'] seul)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"7 cartes nemesis dans le deck rencontre ({len(deck)} cartes), Dracula seul de cote"
+
+
+def blade_debut_de_tour(monde, aides):
+    """bl011 The Thirst : aucune commande Puzzle ne COMMENCE un tour de joueur.
+    On envoie donc nous-memes `Message.WhenPlayerTurnBegin(joueur)` (c'est
+    exactement ce que fait `player_phase.py:54`), puis on delegue a
+    `etat_attendu`."""
+    from game.message import Message
+    joueur = monde.players[0]
+    message = Message.WhenPlayerTurnBegin(joueur)
+    message.Send()
+    return etat_attendu(monde, aides)
+
+
+def blade_traitre(monde, aides):
+    """bl017 Turned : « attendu.traitre » = NOM de l'allie converti. Il doit
+    etre EN JEU comme SBIRE (type Minion), engage avec le joueur, sans degats
+    (soigne), avec le trait VAMPIRE et, si « pv_max » est donne, ce maximum de
+    PV (imprimes + 3). Delegue le reste a `etat_attendu`."""
+    attendu = aides["cas"]["attendu"]
+    cid = attendu.get("traitre")
+    # ⚠ Par NOM et non par card_id : la face convertie porte le paper du gabarit
+    # « Traitor Minion » (aav_traitor_minion), plus celui de l'allie.
+    face = aides["par_nom"](monde, cid)
+    if face is None:
+        return False, f"{cid} n'est plus en jeu"
+    from game.card.face.card_type.minion import Minion
+    soucis = []
+    if not Minion.IsType(face):
+        soucis.append(f"{cid} n'est pas un sbire ({type(face).__name__})")
+    else:
+        engage = getattr(face, "GetEngagedPlayer", lambda: None)()
+        if engage is not monde.players[0]:
+            soucis.append(f"{cid} n'est pas engage avec le joueur")
+    if not face.HasTrait("VAMPIRE"):
+        soucis.append(f"{cid} n'a pas le trait VAMPIRE")
+    pv, pv_max = getattr(face, "health", None), getattr(face, "max_health", None)
+    if pv != pv_max:
+        soucis.append(f"{cid} n'est pas soigne ({pv}/{pv_max})")
+    if "pv_max" in attendu and pv_max != attendu["pv_max"]:
+        soucis.append(f"{cid} a {pv_max} PV max (attendu {attendu['pv_max']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    reste = {k: v for k, v in attendu.items() if k not in ("traitre", "pv_max")}
+    if reste:
+        aides2 = dict(aides)
+        aides2["cas"] = dict(aides["cas"], attendu=reste)
+        ok, msg = etat_attendu(monde, aides2)
+        if not ok:
+            return False, msg
+    return True, f"{cid} est un sbire VAMPIRE engage, {pv}/{pv_max} PV, ATQ {getattr(face, 'attack', '?')}"
 
 '''
 
