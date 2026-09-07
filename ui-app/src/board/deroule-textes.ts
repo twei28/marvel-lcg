@@ -129,6 +129,57 @@ export function resultatEtape(etape: EtapeDeroule): string {
  * l'absence, et un compteur faux serait pire que pas de compteur. Aucun
  * passage par le dictionnaire ici, il n'y a que des chiffres.
  */
+/**
+ * D'ou vient le chiffre du coup : l'imprime, les boosts un par un, le total,
+ * puis ce que la defense a bloque et ce qui a ete subi. Livraison B de la
+ * spec du 7 septembre 2026. Sans imprime connu, ou sans boost ni defense (le
+ * detail n'apprendrait rien), c'est le resultat simple.
+ */
+export function detailEtape(etape: EtapeDeroule): string {
+  if (etape.etat !== 'resolu' || etape.montant === undefined || etape.base === undefined) {
+    return resultatEtape(etape)
+  }
+  if (etape.titre !== 'attaque' && etape.titre !== 'manigance') return resultatEtape(etape)
+  const defense = etape.defense ?? 0
+  if (etape.boosts.length === 0 && defense <= 0) return resultatEtape(etape)
+  const brut = etape.base + etape.boosts.reduce((somme, boost) => somme + boost.apport, 0)
+  const unite = (n: number) =>
+    etape.titre === 'attaque' ? pluriel(n, 'dégât', 'dégâts') : pluriel(n, 'menace', 'menaces')
+  const termes = [`${etape.base} ${t('imprimé')}`]
+  for (const boost of etape.boosts) termes.push(`+ ${boost.apport} (${boost.nom})`)
+  let texte = `${termes.join(' ')} = ${brut} ${unite(brut)}`
+  if (defense > 0) {
+    texte += ` · ${defense} ${t('bloqué par la défense')} · ${etape.montant} ${pluriel(etape.montant, 'subi', 'subis')}`
+  }
+  return texte
+}
+
+/**
+ * Ce que le coup a change : « 5 → 7 / 12 » sur une manigance, « Shuri 12 → 8
+ * PV » sur un personnage. L'AVANT se deduit du restant et du montant : le
+ * fait ne le porte pas, et la table ne peut pas le donner (elle est deja
+ * apres). `pvMax` vient du monde (DeroulePhase, `pvMaxParNom`) : le fait
+ * d'attaque ne connait pas le maximum de sa cible.
+ */
+export function evolutionEtape(etape: EtapeDeroule, pvMax?: number): string {
+  if (typeof etape.restant !== 'number' || !Number.isFinite(etape.restant)) return ''
+  if (etape.montant === undefined) return compteur(etape.restant, etape.plafond)
+  const menace = etape.titre === 'menace' || etape.titre === 'manigance'
+  if (menace) {
+    const avant = Math.max(0, etape.restant - etape.montant)
+    const seuil = typeof etape.plafond === 'number' && etape.plafond > 0 ? ` / ${etape.plafond}` : ''
+    return `${avant} → ${etape.restant}${seuil}`
+  }
+  if (etape.titre !== 'attaque') return compteur(etape.restant, etape.plafond)
+  // Le maximum plafonne l'avant reconstitue : un coup de 6 sur 4 PV laisse
+  // la cible a 0, elle n'avait pas 6 PV.
+  const connu = typeof pvMax === 'number' && pvMax > 0
+  const avant = connu ? Math.min(etape.restant + etape.montant, pvMax) : etape.restant + etape.montant
+  const seuil = connu ? ` / ${pvMax}` : ''
+  const nom = etape.cibleNom ? `${etape.cibleNom} ` : ''
+  return `${nom}${avant} → ${etape.restant}${seuil} ${t('PV')}`
+}
+
 function compteur(restant: number | undefined, plafond: number | undefined): string {
   if (typeof restant !== 'number' || !Number.isFinite(restant)) return ''
   // Le seuil ne s'affiche que s'il en est un : un plafond absent ou nul ne dit

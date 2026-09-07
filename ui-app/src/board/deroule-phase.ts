@@ -255,6 +255,14 @@ export type EtapeDeroule = {
    */
   etat?: 'annonce' | 'resolu' | 'annule'
   /**
+   * Sur une resolution : la valeur IMPRIMEE du coup et ce que la defense en
+   * a bloque, pour que la scene dise d'ou vient le chiffre
+   * (« 2 imprime + 1 (Whip) = 3 degats · 1 bloque par la defense · 2 subis »).
+   * Absents sur un fait degrade : la scene se replie sur le resultat seul.
+   */
+  base?: number
+  defense?: number
+  /**
    * La valeur IMPRIMEE annoncee, avant boosts et avant defense. Portee par les
    * seules etapes d'activation annoncees ou annulees : sur une resolution,
    * c'est `montant` qui dit ce qui a ete encaisse, et afficher les deux
@@ -516,6 +524,8 @@ export function etapesDeroule(
       etat: 'resolu',
       // `subi` et non `inflige` : voir le commentaire de `montant`.
       montant: fait.subi,
+      base: fait.base,
+      defense: fait.defense,
       restant,
       // Absent, et non `false`, sur une etape ordinaire : le champ ne parait
       // que la ou il dit quelque chose.

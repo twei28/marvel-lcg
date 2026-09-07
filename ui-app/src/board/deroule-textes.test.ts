@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest'
 import {
   compteurEtape,
   compteurLigneBilan,
+  detailEtape,
+  evolutionEtape,
   regleEtape,
   resultatEtape,
   texteActivationAnnulee,
@@ -373,5 +375,115 @@ describe("les deux temps d'une activation", () => {
   // sans nom, on le dit sans en inventer un.
   it('reste vague quand le nom du joueur en retard n est pas connu', () => {
     expect(texteAttente({ autreJoueur: true })).toBe("En attente d'un autre joueur")
+  })
+})
+
+// --- Le detail du coup et l'evolution du compteur ---------------------------
+// Livraison B de la spec du 7 septembre 2026 : la scene dit d'ou vient le
+// chiffre (« 1 imprime + 2 (Photographic Reflexes) = 3 menaces ») et ce
+// qu'il a change (« 2 → 5 / 12 »).
+describe('le detail du coup', () => {
+  it('additionne l imprime et les boosts, en menaces', () => {
+    expect(
+      detailEtape(
+        etape({
+          titre: 'manigance',
+          etat: 'resolu',
+          base: 1,
+          montant: 3,
+          boosts: [{ cle: 'b', nom: 'Photographic Reflexes', cibleId: 9, apport: 2 }],
+        })
+      )
+    ).toBe('1 imprimé + 2 (Photographic Reflexes) = 3 menaces')
+  })
+
+  it('additionne plusieurs boosts, en degats', () => {
+    expect(
+      detailEtape(
+        etape({
+          etat: 'resolu',
+          base: 2,
+          montant: 4,
+          boosts: [
+            { cle: 'a', nom: 'Whip', cibleId: 9, apport: 1 },
+            { cle: 'b', nom: 'Sword', cibleId: 10, apport: 1 },
+          ],
+        })
+      )
+    ).toBe('2 imprimé + 1 (Whip) + 1 (Sword) = 4 dégâts')
+  })
+
+  it('dit ce que la defense a bloque et ce qui a ete subi', () => {
+    expect(
+      detailEtape(
+        etape({
+          etat: 'resolu',
+          base: 2,
+          defense: 1,
+          montant: 2,
+          boosts: [{ cle: 'a', nom: 'Whip', cibleId: 9, apport: 1 }],
+        })
+      )
+    ).toBe('2 imprimé + 1 (Whip) = 3 dégâts · 1 bloqué par la défense · 2 subis')
+  })
+
+  it('accorde le subi au singulier', () => {
+    expect(detailEtape(etape({ etat: 'resolu', base: 2, defense: 1, montant: 1 })))
+      .toBe('2 imprimé = 2 dégâts · 1 bloqué par la défense · 1 subi')
+  })
+
+  it('se replie sur le resultat simple sans imprime connu', () => {
+    // Fait degrade (moteur ancien) : pas de `base`, on dit ce qu'on sait.
+    expect(detailEtape(etape({ etat: 'resolu', montant: 4 }))).toBe('→ 4 dégâts')
+  })
+
+  it('se replie sur le resultat simple sans boost ni defense', () => {
+    // « 2 imprime = 2 degats » n'apprendrait rien.
+    expect(detailEtape(etape({ etat: 'resolu', base: 2, montant: 2 }))).toBe('→ 2 dégâts')
+  })
+
+  it('dit l annonce comme avant', () => {
+    expect(detailEtape(etape({ etat: 'annonce', valeurAnnoncee: 3 }))).toBe('→ 3 dégâts annoncés')
+  })
+
+  it('ne dit rien sur une menace, dont le titre porte deja le chiffre', () => {
+    expect(detailEtape(menace({ montant: 2, restant: 7, plafond: 12 }))).toBe('')
+  })
+})
+
+describe('l evolution du compteur', () => {
+  it('menace : avant, apres, sur le seuil', () => {
+    expect(evolutionEtape(menace({ montant: 2, restant: 7, plafond: 12 }))).toBe('5 → 7 / 12')
+  })
+
+  it('manigance : la menace monte', () => {
+    expect(evolutionEtape(etape({ titre: 'manigance', montant: 3, restant: 5, plafond: 12 })))
+      .toBe('2 → 5 / 12')
+  })
+
+  it('attaque : les PV descendent, avec le nom de la cible', () => {
+    expect(evolutionEtape(etape({ montant: 4, restant: 8 }), 12)).toBe('Shuri 12 → 8 / 12 PV')
+  })
+
+  it('attaque sans maximum connu : les PV seuls', () => {
+    expect(evolutionEtape(etape({ montant: 4, restant: 8 }))).toBe('Shuri 12 → 8 PV')
+  })
+
+  it('attaque avec maximum : sur le maximum', () => {
+    expect(evolutionEtape(etape({ montant: 4, restant: 8 }), 14)).toBe('Shuri 12 → 8 / 14 PV')
+  })
+
+  it('rien sans restant', () => {
+    expect(evolutionEtape(etape({ montant: 4 }))).toBe('')
+  })
+
+  it('le compteur seul sans montant', () => {
+    expect(evolutionEtape(etape({ restant: 5, plafond: 8 }))).toBe('5/8')
+  })
+
+  it('ne descend jamais sous zero', () => {
+    // Un coup de 6 sur 4 PV : la cible avait 4, pas 6. Le maximum plafonne
+    // l'avant reconstitue.
+    expect(evolutionEtape(etape({ montant: 6, restant: 0 }), 4)).toBe('Shuri 4 → 0 / 4 PV')
   })
 })

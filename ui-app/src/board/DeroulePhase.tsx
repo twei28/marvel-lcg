@@ -27,10 +27,10 @@ import {
   type TempsPhase,
 } from './deroule-phase'
 import {
-  compteurEtape,
   compteurLigneBilan,
+  detailEtape,
+  evolutionEtape,
   regleEtape,
-  resultatEtape,
   texteActivationAnnulee,
   texteArretDefaite,
   texteAttente,
@@ -1055,8 +1055,11 @@ export function DeroulePhase({
   // « 1 sur 3 » : combien d'etapes ce temps compte, et ou l'on en est.
   // `undefined` quand il n'en compte qu'une, et rien ne s'affiche alors.
   const rang = rangDansLeTemps(etapesAffichees, index)
-  const resultat = resultatEtape(etape)
-  const compteur = compteurEtape(etape)
+  // Le detail du coup suit les boosts deja retournes (`boostsMontres`) : la
+  // ligne s'allonge d'un terme quand une carte de boost parait.
+  const resultat = detailEtape({ ...etape, boosts: etape.boosts.slice(0, boostsMontres) })
+  // Avant → apres. Le maximum de PV vient du monde, par le nom de la cible.
+  const compteur = evolutionEtape(etape, etape.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined)
   const regle = regleEtape(etape)
   const annulee = texteActivationAnnulee(etape)
 
@@ -1266,16 +1269,6 @@ export function DeroulePhase({
           <p className="deroule-defaite">
             <span aria-hidden="true">☠</span> {texteDefaite(etape)}
           </p>
-        ) : null}
-        {etape.boosts.length > 0 ? (
-          <ul className="deroule-boosts">
-            {etape.boosts.slice(0, boostsMontres).map((boost) => (
-              <li key={boost.cle}>
-                <b>{boost.nom}</b>
-                <span>+{boost.apport}</span>
-              </li>
-            ))}
-          </ul>
         ) : null}
         {/* Le bilan de fin de phase : ce que le joueur vient d'encaisser, en
             deux lignes, au moment ou il decide de son tour. Une liste VIDE

@@ -341,10 +341,17 @@ describe('cartouche du deroule', () => {
         boosts: [],
       },
     ]
-    render(<DeroulePhase etapes={attaque} onTerminer={() => {}} />)
+    render(
+      <DeroulePhase
+        etapes={attaque}
+        pvMaxParNom={new Map([['Colossus', 14]])}
+        onTerminer={() => {}}
+      />
+    )
     expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
     expect(screen.getByText('→ 4 dégâts')).toBeInTheDocument()
-    expect(screen.getByText('5')).toBeInTheDocument()
+    // Avant → apres, sur le maximum que le monde connait.
+    expect(screen.getByText('Colossus 9 → 5 / 14 PV')).toBeInTheDocument()
   })
 
   it('n affiche aucun compteur quand le fait n en porte pas', () => {
