@@ -1480,6 +1480,18 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-carte img:hover{transform:translateY(-3px);box-shadow:3px 3px 0 var(--affiche-jaune)}
 /* Les faces de l'identité ouvrent la liste : elles se voient tout de suite. */
 .tb-carte.identite img{border-color:var(--affiche-jaune);box-shadow:3px 3px 0 var(--affiche-jaune)}
+/* L'obligation et le set némésis : ce qui joue CONTRE le héros. Liseré ambre
+   pour l'une, rouge pour l'autre, et une étiquette en pied de carte. */
+.tb-carte.obligation img{border-color:#e0a21a;box-shadow:3px 3px 0 #e0a21a}
+.tb-carte.nemesis img{border-color:var(--eux);box-shadow:3px 3px 0 var(--eux)}
+.tb-carte-etiquette{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:3px 6px;
+  font:800 10px "Segoe UI",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;text-align:center;
+  color:#fff;background:rgba(8,10,14,.86);border-top:2px solid #111;
+}
+.tb-carte.obligation .tb-carte-etiquette{color:#e0a21a}
+.tb-carte.nemesis .tb-carte-etiquette{color:var(--eux2)}
 .tb-carte-n{
   position:absolute;top:6px;right:6px;
   padding:2px 7px;

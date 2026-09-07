@@ -1216,39 +1216,58 @@ function cartesDuHeros(h) {
         ...((h.deck && h.deck.hero_deck) || []),
         ...((h.lie && h.lie.deck && h.lie.deck.hero_deck) || []),
     ];
-    return { identites, signatures };
+    // Ce que le héros apporte AUSSI, et qui se retourne contre lui : son
+    // obligation et son set némésis. Ils font partie du paquet, on les montre.
+    const obligations = [
+        ...((h.deck && h.deck.obligations) || []),
+        ...((h.lie && h.lie.deck && h.lie.deck.obligations) || []),
+    ];
+    const nemesis = [
+        ...((h.deck && h.deck.nemesis_set) || []),
+        ...((h.lie && h.lie.deck && h.lie.deck.nemesis_set) || []),
+    ];
+    return { identites, signatures, obligations, nemesis };
 }
 
 function ouvrirCartesHeros(h) {
     const zone = document.getElementById("tb-vue-cartes");
     if (!zone) return;
-    const { identites, signatures } = cartesDuHeros(h);
-    const nombres = new Map();
-    for (const id of signatures) nombres.set(id, (nombres.get(id) || 0) + 1);
-
-    const vignette = (id, classe) => {
-        const n = nombres.get(id) || 0;
-        return el("div", { class: "tb-carte " + (classe || "") },
-            el("img", {
-                src: cardImageUrl(id), loading: "lazy", alt: "",
-                onmouseenter: () => loupe(id),
-                onmouseleave: () => loupe(null),
-            }),
-            n > 1 ? el("span", { class: "tb-carte-n" }, "×" + n) : null,
-        );
+    const { identites, signatures, obligations, nemesis } = cartesDuHeros(h);
+    const compter = (liste) => {
+        const nombres = new Map();
+        for (const id of liste) nombres.set(id, (nombres.get(id) || 0) + 1);
+        return nombres;
     };
+    const nbSignatures = compter(signatures);
+    const nbNemesis = compter(nemesis);
+
+    const vignette = (id, classe, n, etiquette) => el("div", { class: "tb-carte " + (classe || "") },
+        el("img", {
+            src: cardImageUrl(id), loading: "lazy", alt: "",
+            onmouseenter: () => loupe(id),
+            onmouseleave: () => loupe(null),
+        }),
+        etiquette ? el("span", { class: "tb-carte-etiquette" }, etiquette) : null,
+        n > 1 ? el("span", { class: "tb-carte-n" }, "×" + n) : null,
+    );
 
     // Tout d'un bloc, identité en premier : une seule grille, sans onglet.
+    // Puis les signatures, puis ce qui se retourne contre le héros : son
+    // obligation (liseré ambre) et son set némésis (liseré rouge), étiquetés.
     poser(zone,
         el("div", { class: "tb-entete" },
             el("b", { class: "mvl" }, nomAffiche(h)),
             el("span", { class: "tb-compte" },
-                identites.length + " " + t("faces") + " · " + signatures.length + " " + t("cartes")),
+                identites.length + " " + t("faces") + " · " + signatures.length + " " + t("cartes")
+                + (obligations.length ? " · " + t("obligation") : "")
+                + (nemesis.length ? " · " + nemesis.length + " " + t("némésis") : "")),
             el("button", { class: "tb-mode", onclick: fermerCartesHeros }, "‹ " + t("Retour au roster")),
         ),
         el("div", { class: "tb-cartes-grille" },
-            ...identites.map((id) => vignette(id, "identite")),
-            ...[...nombres.keys()].map((id) => vignette(id)),
+            ...identites.map((id) => vignette(id, "identite", 0)),
+            ...[...nbSignatures].map(([id, n]) => vignette(id, "", n)),
+            ...obligations.map((id) => vignette(id, "obligation", 0, t("Obligation"))),
+            ...[...nbNemesis].map(([id, n]) => vignette(id, "nemesis", n, t("Némésis"))),
         ),
     );
     zone.hidden = false;
