@@ -493,23 +493,15 @@ function render() {
                 el("main", { class: "stage accueil-stage" }, accueilView()),
             ),
         );
-    } else if (state.step === 0 || state.step === 2) {
-        // Les étapes des héros et de la cible (direction « Affiche ») prennent
-        // tout l'écran : la moitié gauche est la scène, la droite le roster.
-        // La fiche de mission n'y a plus rien à dire.
+    } else {
+        // Les quatre étapes prennent tout l'écran (direction « Affiche ») : la
+        // moitié gauche est la scène, la droite ce qu'on choisit. La colonne
+        // « fiche de mission » n'a plus lieu d'être : la scène et la rangée du
+        // bas disent déjà où l'on en est.
         root.replaceChildren(
             progressBar(),
             el("div", { class: "layout accueil-layout" },
                 el("main", { class: "stage stage-affiche" }, stepView()),
-            ),
-            navBar(),
-        );
-    } else {
-        root.replaceChildren(
-            progressBar(),
-            el("div", { class: "layout" },
-                el("main", { class: "stage" }, stepView()),
-                recapPanel(),
             ),
             navBar(),
         );
@@ -1252,10 +1244,20 @@ function rendreEquipe() {
             class: "tb-siege" + (state.activeSlot === i ? " actif" : "") + (pl.hero ? " plein" : "") + (pilotable ? "" : " salon-invite"),
             disabled: pilotable ? undefined : "",
             title: pilotable ? (pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
-            onclick: () => { if (!pilotable) return; state.activeSlot = i; rendreEquipe(); rendreScene(herosDuSiegeActif()); },
+            onclick: () => {
+                if (!pilotable) return;
+                state.activeSlot = i;
+                rendreEquipe();
+                // Chaque étape a sa scène : les héros la remplissent avec le
+                // héros du siège, l'arsenal avec son deck.
+                if (state.step === 1) { rendreSceneDeck(); rendreOutilsDeck(); loadDecks(i); }
+                else rendreScene(herosDuSiegeActif());
+            },
         },
             pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
-            el("span", { class: "tb-siege-nom" }, pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)),
+            el("span", { class: "tb-siege-nom" }, state.step === 1 && pl.deck
+                ? cleanNomDeck(pl.deck.name)
+                : (pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1))),
         ));
     }
     poser(zone,
@@ -2106,61 +2108,107 @@ async function ouvrirPanneauCdb(i) {
     ouvrirModale(overlay);
 }
 
+/* ---- Étape 2, l'arsenal : un joueur à la fois -------------------------------
+   Avant, les quatre joueurs empilaient leurs blocs de decks sur une page qui
+   défilait. Ici, un seul siège à la fois : sa scène à gauche, ses decks à
+   droite, et la rangée des sièges en bas pour passer de l'un à l'autre. */
+
 function stepDecks() {
-    const wrap = el("section", { class: "step decks-step" },
-        stepHead("Briefing 02", "Arsenal", t("Decks assignés")),
+    // En ligne, l'hôte ne pilote que son siège : les invités choisissent
+    // depuis le leur. On revient donc toujours sur le siège 0.
+    if (enLigne()) state.activeSlot = 0;
+    const wrap = el("section", { class: "step team-b arsenal" },
+        el("div", { class: "tb-scene", id: "tb-scene" }),
+        el("div", { class: "recitatif" }, t("Épisode") + " 2 · " + t("Arsenal")),
     );
-    for (let i = 0; i < state.playerCount; i++) {
-        const p = state.players[i];
-        // Siege d'invite en multi : son occupant choisit depuis le salon. On
-        // montre son choix, on ne le modifie pas ; et tant qu'il n'a rien
-        // choisi on dit qu'on l'attend, au lieu de sauter la ligne en silence.
-        if (enLigne() && i > 0) {
-            wrap.append(p.duSalon && p.hero
-                ? el("div", { class: "deck-block cut salon-choix" },
-                    el("div", { class: "db-head" },
-                        portrait(p.hero.heroCardId, "mini"),
-                        el("div", {},
-                            el("b", { class: "mvl" }, `${t("Joueur")} ${i + 1} — ${p.hero.name}`),
-                            el("span", {}, `${p.deck ? p.deck.name : ""} ✓`)),
-                    ),
-                    el("div", { class: "salon-note" }, t("Choisi par le joueur depuis son écran")))
-                : el("div", { class: "deck-block cut salon-attente" },
-                    el("b", { class: "mvl" }, `${t("Joueur")} ${i + 1}`),
-                    el("span", {}, t("en attente de son choix…"))));
-            continue;
-        }
-        if (!p.hero) continue;
-        const idt = identiteChoisie(p);
-        const block = el("div", { class: "deck-block cut" },
-            el("div", { class: "db-head" },
-                portrait(idt.heroCardId || p.hero.heroCardId, "mini"),
-                el("div", {}, el("b", { class: "mvl" }, p.hero.name), el("span", {}, t("Deck prêt"))),
-            ),
-            blocIdentiteHeros(p, i),
-            el("div", { class: "db-list", id: "db-" + i }, el("div", { class: "loading" }, t("Chargement des decks..."))),
-            el("div", { class: "deck-import" },
-                el("input", { class: "mcdb-input", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
-                el("button", { class: "btn-ghost", onclick: () => doImport(i) }, "Import"),
-                el("button", {
-                    class: "btn-ghost",
-                    title: t("Parcourir les decks publiés sur MarvelCDB"),
-                    onclick: () => ouvrirPanneauCdb(i),
-                }, t("Decks MarvelCDB")),
-                el("button", {
-                    class: "btn-ghost",
-                    title: t("Construire un deck personnalisé pour ce héros"),
-                    onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id), "_blank"); },
-                }, t("Éditeur de deck")),
-                el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
-            ),
-            blocArtHeros(p.hero),
-            blocRessources(p.hero),
-        );
-        wrap.append(block);
-        loadDecks(i);
-    }
+    const droite = el("div", { class: "tb-droite" },
+        el("div", { class: "tb-entete" },
+            el("b", { class: "mvl" }, t("Decks")),
+            el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+            el("span", { class: "tb-mode" }, navStatus()),
+        ),
+        el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
+            el("div", { class: "loading" }, t("Chargement des decks..."))),
+        el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
+        el("div", { class: "tb-equipe", id: "tb-equipe" }),
+    );
+    wrap.append(droite);
+    Promise.resolve().then(() => {
+        rendreSceneDeck();
+        rendreOutilsDeck();
+        rendreEquipe();
+        loadDecks(state.activeSlot);
+    });
     return wrap;
+}
+
+/** La moitié gauche : le héros du siège actif, et ce que son deck contient. */
+function rendreSceneDeck() {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    const p = state.players[state.activeSlot];
+    const h = p && p.hero;
+    if (!h) {
+        poser(scene,
+            el("div", { class: "tb-art vide" }),
+            el("div", { class: "tb-trame" }),
+            el("div", { class: "tb-nomg" }, el("small", {}, t("Arsenal")), t("Aucun héros")));
+        return;
+    }
+    const st = p.deck ? deckStats(p.deck) : null;
+    const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
+    poser(scene,
+        h.lie
+            ? el("div", { class: "tb-art" }, portraitDuo(h))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(picIdHeros(h.heroCardId))}")` } }),
+        el("div", { class: "tb-trame" }),
+        el("div", { class: "tb-nomg" },
+            el("small", {}, t("Arsenal de")),
+            nomAffiche(h)),
+        el("div", { class: "tb-tampons" },
+            p.deck ? el("span", { class: "tampon jaune" }, cleanNomDeck(p.deck.name) || t("Deck de base")) : null,
+            st ? el("span", { class: "tampon" }, st.total + " " + t("cartes")) : null,
+            ...aspects.map((x) => el("span", {
+                class: "tampon aspect",
+                style: { background: ASPECTS[x] || "#555", borderColor: "#111" },
+            }, x)),
+        ),
+    );
+}
+
+/** Sous la liste : importer, parcourir, construire, et les cosmétiques. */
+function rendreOutilsDeck() {
+    const zone = document.getElementById("deck-outils");
+    if (!zone) return;
+    const i = state.activeSlot;
+    const p = state.players[i];
+    if (!p || !p.hero) { poser(zone); return; }
+    const cosmetiques = [blocIdentiteHeros(p, i), blocArtHeros(p.hero), blocRessources(p.hero)].filter(Boolean);
+    poser(zone,
+        el("div", { class: "tb-menace-ligne" },
+            el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
+            el("button", { class: "tampon", onclick: () => doImport(i) }, "Import"),
+            el("button", {
+                class: "tampon",
+                title: t("Parcourir les decks publiés sur MarvelCDB"),
+                onclick: () => ouvrirPanneauCdb(i),
+            }, t("Decks MarvelCDB")),
+            el("button", {
+                class: "tampon",
+                title: t("Construire un deck personnalisé pour ce héros"),
+                onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id), "_blank"); },
+            }, t("Éditeur de deck")),
+            el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
+        ),
+        // Identité, art alternatif, arts des ressources : du cosmétique (sauf
+        // l'identité, qui change les traits), replié pour ne pas enterrer les
+        // decks sous quarante vignettes.
+        cosmetiques.length
+            ? el("details", { class: "tb-cosmetiques" },
+                el("summary", {}, t("Identité et arts")),
+                ...cosmetiques)
+            : null,
+    );
 }
 
 async function doImport(i) {
@@ -2215,12 +2263,15 @@ async function loadDecks(i) {
         if (dk && dk.deck !== p.deck) {
             p.deck = dk.deck;
             p.deckSource = dk.source;
-            render();
-            return;
+            rendreSceneDeck();
         }
     }
-    const box = document.getElementById("db-" + i);
-    if (!box) return;
+    const box = document.getElementById("deck-liste");
+    // Le siège a pu changer pendant la lecture : on ne peint pas la liste d'un
+    // joueur dans l'écran d'un autre.
+    if (!box || i !== state.activeSlot) return;
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = decks.length + " " + t("decks");
 
     const option = (dk) => {
         const on = p.deckSource === dk.source && p.deck && p.deck.name === dk.deck.name;
@@ -2232,16 +2283,20 @@ async function loadDecks(i) {
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         return el("button", {
-            class: "deck-opt cut" + (on ? " sel" : ""),
+            class: "tb-deck" + (on ? " chosen" : ""),
             onclick: () => {
                 p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
                 // « campagne » n'existe que sur cet ecran-ci : le retenir comme
                 // dernier deck du heros ne designerait plus rien demain.
                 if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
-                render();
+                loadDecks(i);
+                rendreSceneDeck();
+                rendreEquipe();
+                const nav = document.querySelector(".nav");
+                if (nav) nav.replaceWith(navBar());
             },
         },
-            el("div", { class: "do-name" }, dk.name),
+            el("div", { class: "do-name" }, cleanNomDeck(dk.name)),
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
@@ -2747,68 +2802,81 @@ async function renderModular() {
     }
 }
 
+/* ---- Étape 4, le face à face : la splash page -------------------------------
+   L'écran est coupé en diagonale, notre camp à gauche sur fond clair, le
+   méchant à droite sur fond sombre, chacun en art plein cadre. L'étoile VS est
+   posée sur la coupe. Les réglages de la partie sont en tampons sous les noms,
+   et le bloc « Avancé » reste replié dans le coin. */
+/** Un sous-titre qui répète son titre ne dit rien : on l'efface. */
+function sousTitre(texte, titre) {
+    const propre = String(texte || "").trim();
+    return propre && propre.toLowerCase() !== String(titre || "").trim().toLowerCase() ? propre : "";
+}
+
 function stepSummary() {
-    const wrap = el("section", { class: "step summary-step" },
-        stepHead("Briefing 05", t("Face à face"), t("Prêt au combat")),
-    );
     const v = validate(state);
     const sc = state.scenario;
-    // Le Face à face « en scène » (refonte du 7 septembre) : l'écran est coupé
-    // en diagonale, notre camp à gauche sur fond clair, le méchant à droite
-    // sur fond sombre, chacun en ART recadré plein cadre plutôt qu'en petite
-    // carte. La carte reste à un survol de distance.
-    const scene = (idImage, nom, classe) => el("div", {
+    const d = state.difficulty;
+
+    const scene = (idImage, classe) => el("div", {
         class: "fo-scene " + (classe || ""),
         style: { backgroundImage: `url("${cardImageUrl(idImage)}")` },
-        title: nom,
         onmouseenter: (e) => showCardHover(idImage, e.currentTarget),
         onmouseleave: scheduleHide,
     });
-    const heroCards = el("div", { class: "fo-cards" });
+
+    const heros = el("div", { class: "fo-cards" });
     for (let i = 0; i < state.playerCount; i++) {
         const p = state.players[i];
-        heroCards.append(p.hero
+        heros.append(p.hero
             ? el("div", { class: "fo-card" },
-                scene(picIdHeros(p.hero.heroCardId), p.hero.name),
-                el("div", { class: "fo-cap mvl" }, p.hero.name, el("span", {}, p.deckSource === "base" ? t("Deck de base") : (p.deck ? p.deck.name : ""))),
+                scene(picIdHeros(p.hero.heroCardId)),
+                el("div", { class: "fo-cap" }, nomAffiche(p.hero),
+                    el("span", {}, sousTitre(p.deck ? cleanNomDeck(p.deck.name) : t("Deck à choisir"), nomAffiche(p.hero)))),
             )
             : el("div", { class: "fo-empty" }, t("Joueur") + " " + (i + 1)));
     }
-    const villCards = el("div", { class: "fo-cards villain-cards" });
-    const vc = sc ? ((sc.villainCards && sc.villainCards.length) ? sc.villainCards : [sc.tileImage].filter(Boolean)) : [];
-    (vc.length ? vc : [null]).forEach((id) => villCards.append(id
-        ? el("div", { class: "fo-card villain" }, scene(id, sc.name, "villain"))
-        : el("div", { class: "fo-empty" }, "-")));
-    wrap.append(el("div", { class: "faceoff" + (state.playerCount > 2 ? " large" : "") },
-        el("div", { class: "fo-side heroes-side" }, el("div", { class: "fo-label heroes mvl" }, t("Héros")), heroCards),
-        el("div", { class: "fo-vs mvl" }, "VS"),
-        el("div", { class: "fo-side villain-side" },
-            el("div", { class: "fo-label villain mvl" }, t("Méchant")),
-            villCards,
-            sc ? el("div", { class: "fo-vname mvl" }, sc.name) : null,
-            sc ? el("div", { class: "fo-vsub" }, sc.villainNames.join(", ") || t("Scénario")) : null,
-        ),
-    ));
+
+    const cartesVilain = sc
+        ? ((sc.villainCards && sc.villainCards.length) ? sc.villainCards : [sc.tileImage].filter(Boolean))
+        : [];
+    const vilain = el("div", { class: "fo-cards villain-cards" });
+    (cartesVilain.length ? cartesVilain : [null]).forEach((id) => vilain.append(id
+        ? el("div", { class: "fo-card villain" }, scene(id, "villain"))
+        : el("div", { class: "fo-empty" }, "?")));
+
+    const reglages = [];
     if (sc) {
-        const d = state.difficulty;
-        const tags = [libelleMode(state.mode) + " - " + state.playerCount + "p", d.base === "expert" ? "Expert" : "Standard"];
-        if (d.skirmish) tags.push("Skirmish");
-        if (d.heroic > 0) tags.push(t("Héroïque") + " " + d.heroic);
-        wrap.append(el("div", { class: "sum-meta" },
-            ...tags.map((t) => el("span", { class: "meta-pill" }, t)),
-            el("span", { class: "meta-pill" }, t("Sets :") + " " + [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize).join(", ")),
-        ));
+        reglages.push(libelleMode(state.mode) + " · " + state.playerCount + (state.playerCount > 1 ? " héros" : " héros"));
+        reglages.push(d.base === "expert" ? "Expert" : "Standard");
+        if (d.skirmish) reglages.push("Skirmish");
+        if (d.heroic > 0) reglages.push(t("Héroïque") + " " + d.heroic);
+        const sets = [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize);
+        if (sets.length) reglages.push(sets.join(" · "));
     }
-    // Plus de barre verte « Tout est prêt » : le bouton « Lancer la partie »,
-    // seul élément jaune de la barre du bas, dit déjà que tout est prêt.
-    if (!v.ok) {
-        wrap.append(el("div", { class: "errors" },
-            el("h3", { class: "mvl" }, t("À compléter")),
-            ...v.errors.map((e) => el("div", { class: "err", onclick: () => goto(e.step) }, e.message + " >")),
-        ));
-    }
-    wrap.append(blocAvance());
-    return wrap;
+
+    return el("section", { class: "step face-a-face" },
+        el("div", { class: "faceoff" + (state.playerCount > 2 ? " large" : "") },
+            el("div", { class: "fo-side heroes-side" },
+                el("div", { class: "recitatif" }, t("Épisode") + " 4 · " + t("Face à face")),
+                heros,
+                el("div", { class: "fo-reglages" },
+                    ...reglages.map((x) => el("span", { class: "tampon" }, x))),
+            ),
+            el("div", { class: "fo-vs" }, el("span", {}, "VS")),
+            el("div", { class: "fo-side villain-side" },
+                vilain,
+                sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Cible non définie")),
+                sc ? el("div", { class: "fo-vsub" }, sousTitre(sc.villainNames.join(" · "), sc.name)) : null,
+            ),
+        ),
+        !v.ok
+            ? el("div", { class: "errors" },
+                el("h3", { class: "mvl" }, t("À compléter")),
+                ...v.errors.map((e) => el("div", { class: "err", onclick: () => goto(e.step) }, e.message + " >")))
+            : null,
+        blocAvance(),
+    );
 }
 
 /* ---- Bloc « Avancé » : seed, temps par décision, premier joueur, règles ----

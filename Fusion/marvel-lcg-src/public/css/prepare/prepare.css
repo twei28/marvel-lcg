@@ -61,6 +61,12 @@
   --affiche-cible:148px;             /* largeur d'une tuile de scénario */
   --affiche-cible-h:124px;           /* sa hauteur */
   --affiche-menace-h:190px;          /* la hauteur du bloc « niveau de menace » */
+  --affiche-deck:232px;              /* largeur d'une tuile de deck */
+  --affiche-cosmetiques-h:190px;     /* le bloc « Identité et arts », déplié */
+  --affiche-nom-arsenal:104px;       /* le nom du héros sur l'écran des decks */
+  --fo-etoile:190px;                 /* le diamètre de l'étoile VS */
+  --fo-nom:72px;                     /* le nom du méchant sur le face à face */
+  --affiche-avance-h:180px;          /* le bloc « Avancé », déplié */
   /* L'accueil : taille du titre et des tuiles de mode. */
   --titre-accueil:120px;
   --tuile-accueil-min:340px;
@@ -899,82 +905,93 @@ button{cursor:pointer}
 }
 .mod-chip.on{color:#fff;border-color:var(--agir);background:rgba(230,36,41,.22)}
 
-/* Le Face à face en diagonale (refonte du 7 septembre). Le bloc entier est
-   le fond du méchant ; notre camp est un panneau clair posé dessus, coupé en
-   biais sur son bord droit, qui empiète de `--fo-pente` sur l'autre moitié.
-   Le tampon VS est centré sur la coupe. Sous 900 px, tout s'empile. */
-.faceoff{
-  position:relative;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  min-height:var(--fo-h);
-  margin-bottom:20px;
-  overflow:hidden;
-  border:1px solid var(--eux-halo);
+/* Le face à face : une splash page (7 septembre). L'écran entier est le fond
+   du méchant ; notre camp est un panneau clair posé dessus, coupé en biais.
+   L'étoile VS est centrée sur la coupe. Sous 900 px, tout s'empile. */
+.face-a-face{position:relative;height:calc(100dvh - 140px);min-height:520px;display:flex;flex-direction:column}
+.face-a-face .faceoff{
+  position:relative;flex:1;min-height:0;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  margin:0;overflow:hidden;
+  border:0;
   background:
-    radial-gradient(ellipse at 80% 20%,rgba(230,36,41,.28),transparent 55%),
+    radial-gradient(ellipse at 78% 25%,rgba(230,36,41,.32),transparent 55%),
     linear-gradient(160deg,var(--fo-eux-fond),#0b0608 70%);
 }
-.fo-side{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px 18px}
+.face-a-face .faceoff::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle,rgba(0,0,0,.55) 0 1.1px,transparent 1.5px) 0 0/6px 6px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 45%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 45%,#000 100%);
+  opacity:.6;
+}
+.fo-side{min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px 22px}
 .fo-side.heroes-side{
-  position:relative;
   z-index:1;
   width:calc(100% + var(--fo-pente));
-  padding-right:calc(18px + var(--fo-pente));
+  padding-right:calc(22px + var(--fo-pente));
   color:var(--ink);
   background:
-    radial-gradient(circle,rgba(0,0,0,.10) 0 1px,transparent 1.4px) 0 0/9px 9px,
+    radial-gradient(circle,rgba(0,0,0,.12) 0 1px,transparent 1.4px) 0 0/9px 9px,
     var(--fo-nous-fond);
   clip-path:polygon(0 0,100% 0,calc(100% - var(--fo-pente)) 100%,0 100%);
 }
-.fo-side.villain-side{padding-left:calc(18px + var(--fo-pente) / 2)}
-.fo-label{font-size:40px;line-height:.9;text-transform:uppercase}
-.fo-label.heroes{color:var(--ink);text-shadow:2px 2px 0 rgba(0,0,0,.14)}
-.fo-label.villain{color:var(--eux2);text-shadow:2px 2px 0 #000}
-.fo-cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.fo-side.villain-side{padding-left:calc(22px + var(--fo-pente) / 2)}
+.heroes-side .recitatif{position:absolute;left:28px;top:22px}
+.fo-cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
 .fo-card{width:var(--fo-heros-w);text-align:center}
-/* Plus de deux héros : chacun se resserre pour tenir dans la moitié. */
-.faceoff.large .fo-card{width:calc(var(--fo-heros-w) * .78)}
+.faceoff.large .fo-card{width:calc(var(--fo-heros-w) * .72)}
 .fo-scene{
   width:100%;
   aspect-ratio:3/4;
-  background:#10141f center 24%/195% no-repeat;   /* au-dessus du bandeau de titre, au-dessus de la ligne de traits */
-  border:1px solid rgba(0,0,0,.25);
-  box-shadow:0 16px 34px rgba(0,0,0,.35);
+  background:#10141f center 22%/215% no-repeat;
+  border:3px solid #111;
+  box-shadow:6px 6px 0 #111;
   cursor:zoom-in;
 }
-.fo-scene.villain{border-color:var(--eux-halo);box-shadow:0 16px 34px rgba(0,0,0,.62);background-size:185%;background-position:center 22%}
-.fo-card.villain{width:calc(var(--fo-heros-w) * 1.15)}
-.fo-cap{margin-top:8px;font-size:23px;line-height:.9;text-transform:uppercase}
-.fo-cap span{display:block;margin-top:4px;color:rgba(0,0,0,.6);font:400 11px "Segoe UI",system-ui,sans-serif;text-transform:none}
+.fo-scene.villain{background-size:205%;background-position:center 20%}
+.fo-card.villain{width:calc(var(--fo-heros-w) * 1.25)}
+.fo-cap{
+  margin-top:10px;
+  font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:24px;line-height:.92;text-transform:uppercase;
+}
+.fo-cap span{display:block;margin-top:5px;color:rgba(0,0,0,.62);font:400 11px "Segoe UI",system-ui,sans-serif;font-style:normal;text-transform:none}
 .fo-empty{
   width:var(--fo-heros-w);
   aspect-ratio:3/4;
-  display:grid;
-  place-items:center;
-  color:var(--mute);
-  border:1px dashed var(--line);
-  background:rgba(16,18,25,.6);
+  display:grid;place-items:center;
+  color:var(--mute);font-size:40px;
+  border:3px dashed rgba(0,0,0,.3);
 }
+.fo-reglages{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92%}
+.heroes-side .tampon{color:#fff;background:#1b2028;cursor:default}
+/* L'étoile VS : le seul morceau franchement comics de l'écran. */
 .fo-vs{
-  position:absolute;
-  z-index:2;
-  left:50%;
-  top:50%;
-  display:grid;
-  place-items:center;
-  width:104px;
-  height:104px;
-  color:#fff;
-  font-size:70px;
-  line-height:.8;
-  background:var(--eux);
-  border:4px solid #fff;
-  box-shadow:6px 6px 0 #000;
-  transform:translate(-50%,-50%) rotate(-5deg);
+  position:absolute;z-index:3;left:50%;top:50%;
+  width:var(--fo-etoile,190px);height:var(--fo-etoile,190px);
+  transform:translate(-50%,-50%) rotate(-8deg);
+  background:var(--affiche-jaune);
+  clip-path:polygon(50% 0,61% 32%,95% 20%,73% 47%,100% 68%,66% 66%,58% 100%,45% 70%,10% 82%,32% 55%,0 38%,35% 36%);
+  display:grid;place-items:center;
+  filter:drop-shadow(5px 5px 0 #111);
 }
-.fo-vname{font-size:36px;line-height:.9;text-align:center;text-transform:uppercase;color:#fff;text-shadow:2px 2px 0 #000}
-.fo-vsub{text-align:center;color:var(--dim);font-size:12px}
+.fo-vs span{
+  font-family:"Bangers",Impact,sans-serif;font-size:calc(var(--fo-etoile,190px) * .38);line-height:1;
+  color:var(--eux);-webkit-text-stroke:2px #111;
+}
+.fo-nomg{
+  font-family:"Anton",Impact,sans-serif;font-style:italic;font-weight:400;
+  font-size:var(--fo-nom,72px);line-height:.88;text-transform:uppercase;text-align:center;
+  color:#fff;text-shadow:6px 6px 0 #000;
+  max-width:100%;overflow-wrap:anywhere;
+}
+.fo-vsub{text-align:center;color:var(--eux2);font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+/* Les erreurs et le bloc « Avancé », sous la splash. */
+.face-a-face .errors{flex:none;margin:0;border:0;border-top:3px solid var(--eux);background:rgba(230,36,41,.14)}
+.face-a-face .avance{flex:none;max-width:none;margin:0;padding:0 22px;background:#0b0d12}
+.face-a-face .avance summary{padding:8px 0;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.face-a-face .avance[open] summary{color:var(--affiche-jaune)}
+.face-a-face .avance .cj-body{max-height:var(--affiche-avance-h,180px);overflow:auto;padding-bottom:10px}
 .sum-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .meta-pill{padding:8px 12px;color:var(--dim);border:1px solid var(--line);background:var(--steel);font-size:12px}
 .errors{padding:16px;border:1px solid var(--red);background:rgba(230,36,41,.12)}
@@ -1001,10 +1018,11 @@ button{cursor:pointer}
   .step-head h1{font-size:42px}
   .command-band{align-items:flex-start;flex-direction:column}
   .search{min-width:100%;width:100%}
-  .faceoff{grid-template-columns:1fr;gap:0}
-  .fo-side.heroes-side{width:100%;padding-right:18px;clip-path:none}
-  .fo-side.villain-side{padding-left:18px}
-  .fo-vs{position:static;margin:-52px auto;transform:rotate(-5deg)}
+  .face-a-face{height:auto}
+  .faceoff{grid-template-columns:1fr}
+  .fo-side.heroes-side{width:100%;padding-right:22px;clip-path:none}
+  .fo-side.villain-side{padding-left:22px}
+  .fo-vs{top:50%;left:50%}
 }
 @media(max-width:560px){
   .brand-title{font-size:27px}
@@ -1018,6 +1036,7 @@ button{cursor:pointer}
   .target-art{width:120px}
   .target-copy strong{font-size:34px}
   .fo-card,.fo-empty{width:146px}
+  .fo-nomg{font-size:48px}
 }
 
 
@@ -1384,6 +1403,33 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   .tb-droite{position:relative;width:100%;padding:16px 16px 100px}
 }
 
+/* --- L'arsenal : les decks du siège actif --------------------------------- */
+.tb-roster-deck{
+  grid-template-columns:repeat(auto-fill,minmax(var(--affiche-deck,232px),1fr));
+  grid-auto-rows:min-content;
+  align-content:start;
+}
+.tb-deck{
+  padding:12px 14px;
+  color:var(--txt);text-align:left;
+  border:3px solid #111;background:linear-gradient(180deg,var(--steel2),var(--steel));
+  box-shadow:4px 4px 0 #111;
+  transition:transform var(--dur),box-shadow var(--dur);
+}
+.tb-deck:hover{transform:translateY(-2px);box-shadow:4px 4px 0 var(--nous)}
+.tb-deck.chosen{box-shadow:4px 4px 0 var(--affiche-jaune);border-color:var(--affiche-jaune)}
+.tb-deck .do-name{font-weight:900;font-size:14px;margin-bottom:7px;line-height:1.15}
+.tb-deck .do-foot{margin-top:6px}
+.tb-arsenal-outils{flex:none;display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:3px solid #111}
+.tb-arsenal-outils .tb-search{flex:1 1 200px}
+.tb-cosmetiques{max-height:var(--affiche-cosmetiques-h,190px);overflow:auto}
+.tb-cosmetiques summary{cursor:pointer;padding:6px 0;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.tb-cosmetiques summary:hover{color:var(--txt)}
+.tb-cosmetiques[open] summary{color:var(--affiche-jaune)}
+.tb-cosmetiques .res-art{border-top:0;margin-top:6px}
+.tampon.aspect{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.arsenal .tb-nomg{font-size:var(--affiche-nom-arsenal,104px)}
+
 /* --- L'écran de la cible : le même, en rouge -------------------------------
    Le méchant est l'autre camp : sa scène a l'ombre noire et le halo rouge, ses
    tampons et sa sélection sont rouges. Tout le reste est partagé avec
@@ -1496,6 +1542,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
    La bascule occupe une ligne entière pour séparer nettement les deux groupes. */
 .deck-aspects-bascule{
   flex:0 0 100%;
+  grid-column:1/-1;          /* la liste des decks est une grille */
   display:flex;
   align-items:center;
   gap:8px;
