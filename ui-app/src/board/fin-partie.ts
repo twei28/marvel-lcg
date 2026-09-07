@@ -1,3 +1,4 @@
+import { estDefaiteLocale } from './deroule-phase'
 import type { World } from './world'
 
 /**
@@ -50,9 +51,10 @@ export function coupFatalLocal(
   etapes: { defaite?: boolean; cibleId?: number }[],
   herosLocauxIds: Set<number>
 ): boolean {
-  return etapes.some(
-    (etape) => etape.defaite && etape.cibleId !== undefined && herosLocauxIds.has(etape.cibleId)
-  )
+  // La MEME regle que la coupe du deroule (`arreterSurDefaite`), et une seule
+  // definition : les deux repondent a la question « est-ce NOTRE heros qui
+  // vient de tomber ».
+  return etapes.some((etape) => estDefaiteLocale(etape, herosLocauxIds))
 }
 
 /**

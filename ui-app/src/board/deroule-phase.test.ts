@@ -1068,11 +1068,12 @@ describe('la defaite d un heros', () => {
   })
 
   describe('arreterSurDefaite', () => {
-    const coup = (cle: string, defaite?: true): EtapeDeroule => ({
+    const coup = (cle: string, defaite?: true, cibleId = 12): EtapeDeroule => ({
       cle,
       temps: 'sbires',
       titre: 'attaque',
       regle: 'regle:activations',
+      cibleId,
       boosts: [],
       ...(defaite ? { defaite } : {}),
     })
@@ -1097,6 +1098,31 @@ describe('la defaite d un heros', () => {
 
     it('laisse une liste vide vide', () => {
       expect(arreterSurDefaite([])).toEqual([])
+    })
+
+    // MULTIJOUEUR : la phase continue pour les autres. Le deroule ne s'arrete
+    // que chez le joueur dont le heros est tombe ; ailleurs, la chute est une
+    // etape marquee de plus, et le cartouche montre l'attaque suivante — celle
+    // que ce joueur-la a subie (constat F5).
+    it('ne coupe pas chez un joueur dont le heros n est pas tombe', () => {
+      const liste = [coup('a'), coup('b', true, 77), coup('c')]
+      expect(arreterSurDefaite(liste, new Set([12]))).toBe(liste)
+    })
+
+    it('coupe chez le joueur dont le heros est tombe', () => {
+      const coupe = arreterSurDefaite([coup('a'), coup('b', true, 77), coup('c')], new Set([77]))
+      expect(coupe.map((e) => e.cle)).toEqual(['a', 'b'])
+    })
+
+    // Sans siege connu (solo, previsualisation, appelant qui ne lit pas le
+    // monde), toute defaite est traitee comme la notre : c'est le comportement
+    // d'avant, et le seul sur lequel on puisse se replier sans mentir.
+    it('traite toute defaite comme la notre quand le siege est inconnu', () => {
+      const coupe = arreterSurDefaite([coup('a'), coup('b', true, 77), coup('c')])
+      expect(coupe.map((e) => e.cle)).toEqual(['a', 'b'])
+      expect(
+        arreterSurDefaite([coup('a'), coup('b', true, 77)], new Set<number>()).map((e) => e.cle)
+      ).toEqual(['a', 'b'])
     })
   })
 })

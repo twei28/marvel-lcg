@@ -835,23 +835,52 @@ export function avecBilan(
 }
 
 /**
- * Le deroule, coupe NET a l'etape ou un heros est tombe.
+ * Cette etape porte-t-elle la chute d'un heros de CE siege ?
+ *
+ * `defaite` est deja posee par `etapesDeroule`, qui croise le compteur du fait
+ * et les heros que le monde declare elimines (voir `EtapeDeroule.defaite`) : on
+ * ne la recalcule pas. On ne fait que trancher si c'est le NOTRE.
+ *
+ * `herosLocauxIds` porte les deux faces (heros et alter ego) : un heros peut
+ * tomber sous l'une comme sous l'autre. ABSENT ou VIDE, toute defaite compte
+ * comme la notre : c'est le cas du solo, de la previsualisation et de tout
+ * appelant qui ne lit pas le monde, et c'est le seul repli qui ne mente pas.
+ */
+export function estDefaiteLocale(
+  etape: { defaite?: boolean; cibleId?: number },
+  herosLocauxIds?: ReadonlySet<number>
+): boolean {
+  if (!etape.defaite) return false
+  if (herosLocauxIds === undefined || herosLocauxIds.size === 0) return true
+  return etape.cibleId !== undefined && herosLocauxIds.has(etape.cibleId)
+}
+
+/**
+ * Le deroule, coupe NET a l'etape ou NOTRE heros est tombe.
  *
  * L'etape qui l'a mis a terre reste affichee, marquee ; rien ne s'affiche
- * au-dela, meme si des faits plus tardifs existent (en multijoueur la phase
- * continue pour les autres, et le moteur produit encore des activations). Le
- * cartouche raconte une phase du mechant, et cette phase-la vient de basculer
- * dans autre chose.
+ * au-dela. Le cartouche raconte une phase du mechant, et cette phase-la vient
+ * de basculer dans autre chose.
+ *
+ * MAIS SEULEMENT CHEZ LUI. La coupe portait sur la liste entiere, donc sur
+ * TOUS les clients : si le heros du joueur A tombait a la deuxieme activation,
+ * le cartouche de B ne montrait jamais l'attaque que B a subie ensuite. La
+ * decision 13 (« la phase s'arrete ici ») avait ete ecrite en pensant au solo
+ * (constat F5 de l'audit du 06/09/2026). Chez les autres, la chute d'un heros
+ * reste une etape MARQUEE — crane et « X est vaincu » — et la phase continue.
  *
  * Cette coupe s'applique APRES `avecBilan`, et c'est ce qui tranche entre les
  * deux : la defaite l'emporte, le bilan de fin de phase ne s'affiche pas
  * derriere elle. Un « voici ce que la phase vous a coute » apres un heros a
  * terre serait un contresens.
  *
- * Rend la liste RECUE quand aucune etape n'est marquee : le cas ordinaire ne
- * doit rien recopier.
+ * Rend la liste RECUE quand rien n'est coupe : le cas ordinaire ne doit rien
+ * recopier.
  */
-export function arreterSurDefaite(etapes: EtapeDeroule[]): EtapeDeroule[] {
-  const index = etapes.findIndex((etape) => etape.defaite)
+export function arreterSurDefaite(
+  etapes: EtapeDeroule[],
+  herosLocauxIds?: ReadonlySet<number>
+): EtapeDeroule[] {
+  const index = etapes.findIndex((etape) => estDefaiteLocale(etape, herosLocauxIds))
   return index === -1 ? etapes : etapes.slice(0, index + 1)
 }

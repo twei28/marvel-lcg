@@ -2670,3 +2670,74 @@ describe("l'attente d'un autre joueur", () => {
     expect(screen.getByText('La suite arrive…')).toBeInTheDocument()
   })
 })
+
+// LA DEFAITE D'UN AUTRE JOUEUR (constat F5 de l'audit du 06/09/2026).
+//
+// `arreterSurDefaite` coupait le deroule chez TOUS les clients. Si le heros du
+// joueur A tombait a la deuxieme activation, le cartouche de B ne montrait
+// jamais l'attaque que B a subie ensuite : la decision 13 (« la phase s'arrete
+// ici ») avait ete ecrite en pensant au solo.
+describe('la chute du heros d un autre joueur', () => {
+  const NOTRE_HEROS = 12
+  const SON_HEROS = 77
+
+  const attaque = (cle: string, cibleId: number, nom: string, defaite?: true): EtapeDeroule => ({
+    cle,
+    temps: 'sbires',
+    titre: 'attaque',
+    regle: 'regle:activations',
+    carteId: 50,
+    cibleId,
+    auteurNom: 'Drone',
+    cibleNom: nom,
+    etat: 'resolu',
+    montant: 4,
+    restant: defaite ? -1 : 5,
+    boosts: [],
+    ...(defaite ? { defaite } : {}),
+  })
+
+  const liste = [
+    attaque('a', SON_HEROS, 'Colossus', true),
+    attaque('b', NOTRE_HEROS, 'Shuri'),
+  ]
+
+  it('marque l etape mais laisse la phase continuer', () => {
+    const onDefaiteVue = vi.fn()
+    render(
+      <DeroulePhase
+        etapes={liste}
+        phaseMechantEnCours
+        herosLocauxIds={new Set([NOTRE_HEROS])}
+        onDefaiteVue={onDefaiteVue}
+        onTerminer={() => {}}
+      />
+    )
+    // La chute est DITE : elle reste le moment le plus important de la partie,
+    // meme quand elle n'est pas la notre.
+    expect(screen.getByText('Colossus est vaincu')).toBeInTheDocument()
+    // Mais rien ne s'arrete : ni la mention d'arret, ni le bouton « Continuer ».
+    expect(screen.queryByText("La phase s'arrête ici.")).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Continuer/i })).toBeNull()
+    fireEvent.click(suivant())
+    expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
+    expect(onDefaiteVue).not.toHaveBeenCalled()
+  })
+
+  it('arrete tout chez le joueur dont le heros est tombe', () => {
+    const onDefaiteVue = vi.fn()
+    render(
+      <DeroulePhase
+        etapes={liste}
+        phaseMechantEnCours
+        herosLocauxIds={new Set([SON_HEROS])}
+        onDefaiteVue={onDefaiteVue}
+        onTerminer={() => {}}
+      />
+    )
+    expect(screen.getByText('Colossus est vaincu')).toBeInTheDocument()
+    expect(screen.getByText("La phase s'arrête ici.")).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Continuer/i }))
+    expect(onDefaiteVue).toHaveBeenCalledTimes(1)
+  })
+})

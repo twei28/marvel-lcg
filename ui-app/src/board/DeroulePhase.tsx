@@ -18,6 +18,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   arreterSurDefaite,
   avecBilan,
+  estDefaiteLocale,
   rangDansLeTemps,
   type EtapeDeroule,
   type TempsPhase,
@@ -92,6 +93,7 @@ export function DeroulePhase({
   phaseMechantEnCours = false,
   partieFinie = false,
   questionAuJoueur = false,
+  herosLocauxIds,
   attendUnAutreJoueur = false,
   nomJoueurAttendu,
   pvMaxParNom,
@@ -160,6 +162,21 @@ export function DeroulePhase({
    * joueur qui attend le moteur.
    */
   questionAuJoueur?: boolean
+  /**
+   * LES DEUX FACES DU HEROS DE CE SIEGE (board.tsx : `herosLocauxIds`, lu sur
+   * `?p=` et non sur la vue affichee).
+   *
+   * Elles ne servent qu'a une chose : savoir si la chute d'un heros est LA
+   * NOTRE. La coupe du deroule (`arreterSurDefaite`) portait sur la liste
+   * entiere, donc sur tous les clients : le cartouche d'un joueur s'arretait
+   * quand le heros d'un AUTRE tombait, et ce joueur ne voyait jamais l'attaque
+   * qu'il subissait ensuite (constat F5). Chez les autres, la chute reste une
+   * etape marquee et la phase continue.
+   *
+   * Absentes ou vides (solo, previsualisation, monde pas encore lu) : toute
+   * defaite compte comme la notre, c'est-a-dire le comportement d'avant.
+   */
+  herosLocauxIds?: ReadonlySet<number>
   /**
    * LA TABLE ATTEND QUELQU'UN D'AUTRE (board.tsx : `joueurAttendu` et
    * `useTableSilencieuse`, dans `attente-table.ts`).
@@ -439,7 +456,7 @@ export function DeroulePhase({
   const etapesConnues = phaseRaconteeEnCours
     ? etapesDeLaPhase
     : avecBilan(etapesDeLaPhase, pvMaxParNom)
-  const etapesAffichees = arreterSurDefaite(etapesConnues)
+  const etapesAffichees = arreterSurDefaite(etapesConnues, herosLocauxIds)
   // La coupe a-t-elle vraiment emporte quelque chose ? C'est ce qui distingue
   // « la liste a change d'ordre » de « un heros vient de tomber », et le repli
   // ci-dessous n'est pas le meme dans les deux cas.
@@ -487,6 +504,12 @@ export function DeroulePhase({
           : 0
 
   const etape = etapesAffichees[index]
+
+  // EST-CE NOTRE HEROS QUI EST TOMBE ? La chute d'un autre joueur se DIT (le
+  // crane et « X est vaincu » restent), mais elle n'arrete rien ici : pas de
+  // « La phase s'arrete ici. », pas de bouton « Continuer », pas d'ecran de fin
+  // retenu. La phase continue, et ce joueur-ci a encore des coups a lire.
+  const defaiteLocale = etape !== undefined && estDefaiteLocale(etape, herosLocauxIds)
 
   // Adoption de la premiere cle. Tant que le cartouche n'en retient aucune, il
   // lit l'etape 0 : une etape qui s'insererait devant elle changerait alors ce
@@ -544,7 +567,7 @@ export function DeroulePhase({
     // le cartouche en « La suite arrive… » tant que la phase du mechant court
     // encore (elle continue pour les autres joueurs), sur une suite que
     // `arreterSurDefaite` ne lui donnera jamais.
-    if (etape.defaite) {
+    if (defaiteLocale) {
       setTermine(true)
       // Dit AVANT de rendre la main : c'est ce clic-ci qui autorise l'ecran de
       // fin de partie a paraitre, et le joueur vient de voir le coup.
@@ -1195,7 +1218,7 @@ export function DeroulePhase({
           {/* Dit pourquoi il n'y a plus rien apres, a la place meme ou l'on
               lit d'ordinaire « La suite arrive… ». Les deux ne se croisent
               jamais : une defaite ne fait plus attendre de suite. */}
-          {etape.defaite ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
+          {defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
           {index > 0 ? (
             <button type="button" className="bh-bouton" onClick={reculer}>
               {t('Précédent')}
@@ -1206,7 +1229,7 @@ export function DeroulePhase({
               defaite, il dit « Continuer » : ce n'est pas une etape de plus
               qu'on demande, c'est le droit de reprendre la partie. */}
           <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
-            {etape.defaite
+            {defaiteLocale
               ? t('Continuer')
               : etape.temps === 'bilan'
                 ? t('À toi de jouer')

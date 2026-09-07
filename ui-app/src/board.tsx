@@ -2563,6 +2563,10 @@ function PagePartie({
             // moteur attend ta reponse » serait alors faux. C'est la mention
             // d'attente ci-dessous qui prend le relais dans ce cas.
             questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
+            // Les deux faces de NOTRE heros : la chute d'un autre joueur ne
+            // coupe plus le deroule de ce siege-ci, elle y reste une etape
+            // marquee et la phase continue (constat F5).
+            herosLocauxIds={herosLocauxIds}
             // La table attend quelqu'un d'AUTRE : le cartouche le dit a la
             // place de « La suite arrive… », qui parle du moteur. Le nom n'est
             // connu que lorsque le moteur interroge ce siege-la ; sinon la
