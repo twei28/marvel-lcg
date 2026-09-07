@@ -62,6 +62,11 @@ function el(tag, props, ...kids) {
     return n;
 }
 
+/** Un picto Font Awesome (public/css/font-awesome.css), à la place d'un émoji. */
+function picto(nom) {
+    return el("i", { class: "fa " + nom, "aria-hidden": "true" });
+}
+
 const ASPECTS = {
     aggression: "#d83b32",
     justice: "#efc34a",
@@ -2273,7 +2278,7 @@ function documentsDeLaCible(sc) {
             href: "/" + encodeURIComponent(fiche.fichier),
             target: "_blank",
             rel: "noopener",
-        }, "📖 " + t(libelle))
+        }, picto("fa-book"), " " + t(libelle))
         : null;
     return el("div", { class: "target-docs" },
         lien(livret, "Livret de règles"),
@@ -2317,7 +2322,7 @@ async function loadExtTabs() {
         onmouseleave: scheduleHide,
     },
         e.key === "defis"
-            ? el("div", { class: "box box-defis" }, "\u{1F3C6}")
+            ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : e.key.replace(/^\d+\.\s*/, "")),
     )));
@@ -2552,7 +2557,7 @@ function blocAvance() {
                 state.seed = 1 + Math.floor(Math.random() * 2147483647); // 1..2^31
                 seedInput.value = String(state.seed);
             },
-        }, "\u{1F3B2}"),
+        }, picto("fa-random")),
         btnCopier,
     );
 

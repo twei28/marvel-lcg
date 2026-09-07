@@ -59,7 +59,7 @@ export async function basculerLangue() {
     location.reload();
 }
 
-/** Bouton 🌐 FR/EN prêt à poser dans un header (élément DOM autonome). */
+/** Bouton FR/EN prêt à poser dans un header (élément DOM autonome). */
 export function boutonLangue(classe) {
     const bouton = document.createElement("button");
     bouton.type = "button";
@@ -67,7 +67,7 @@ export function boutonLangue(classe) {
     bouton.title = langueActuelle() === "fr"
         ? "Interface et narration en français : cliquer pour passer en anglais"
         : "Interface and narration in English: click to switch to French";
-    bouton.textContent = "🌐 " + (langueActuelle() === "fr" ? "FR" : "EN");
+    bouton.textContent = langueActuelle() === "fr" ? "FR" : "EN";
     bouton.addEventListener("click", () => { basculerLangue(); });
     return bouton;
 }

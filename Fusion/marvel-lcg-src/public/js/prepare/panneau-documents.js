@@ -16,6 +16,14 @@
 import { catalog } from "/public/js/prepare/catalog.js";
 import { t, langueActuelle, enregistrerTraductions } from "/public/js/prepare/langue.js";
 
+/** Un picto Font Awesome (public/css/font-awesome.css), à la place d'un émoji. */
+function picto(nom) {
+    const i = document.createElement("i");
+    i.className = "fa " + nom;
+    i.setAttribute("aria-hidden", "true");
+    return i;
+}
+
 /* Les seuls titres qu'on écrit à la main : les documents du Set de base, qui
    sont trois pour une seule extension et que « Set de base — Règles » ne
    distinguerait pas. Tous les autres se nomment tout seuls. */
@@ -204,7 +212,7 @@ function construire(fiches) {
     const titre = document.createElement("div");
     titre.className = "pd-titre";
     const nom = document.createElement("span");
-    nom.textContent = "📖 " + t("Documents");
+    nom.replaceChildren(picto("fa-book"), " " + t("Documents"));
     const fermer = document.createElement("button");
     fermer.className = "pd-fermer";
     fermer.type = "button";
@@ -322,7 +330,7 @@ export function carnetDExtension(cleExtension) {
 
     const bouton = document.createElement("button");
     bouton.type = "button";
-    bouton.textContent = "📖 " + t("Documents");
+    bouton.replaceChildren(picto("fa-book"), " " + t("Documents"));
     bouton.title = t("Livrets de règles et carnets de campagne");
     bouton.addEventListener("click", () => basculer(!ouvert));
     rangeeBoutons().append(bouton);

@@ -15,6 +15,14 @@
 "use strict";
 import { t, enregistrerTraductions } from "/public/js/prepare/langue.js";
 
+/** Un picto Font Awesome (public/css/font-awesome.css), à la place d'un émoji. */
+function picto(nom) {
+    const i = document.createElement("i");
+    i.className = "fa " + nom;
+    i.setAttribute("aria-hidden", "true");
+    return i;
+}
+
 enregistrerTraductions({
     "Signaler un bug": "Report a bug",
     "Dis-moi ce qui ne va pas": "Tell me what went wrong",
@@ -140,7 +148,7 @@ function construire() {
     const titre = document.createElement("div");
     titre.className = "pb-titre";
     const nomTitre = document.createElement("span");
-    nomTitre.textContent = "🐞 " + t("Signaler un bug");
+    nomTitre.replaceChildren(picto("fa-bug"), " " + t("Signaler un bug"));
     const fermer = document.createElement("button");
     fermer.className = "pb-fermer";
     fermer.type = "button";
@@ -394,7 +402,7 @@ function rangeeBoutons() {
     construire();
     const bouton = document.createElement("button");
     bouton.type = "button";
-    bouton.textContent = "🐞 " + t("Signaler un bug");
+    bouton.replaceChildren(picto("fa-bug"), " " + t("Signaler un bug"));
     bouton.title = t("Dis-moi ce qui ne va pas");
     bouton.addEventListener("click", () => basculer(!ouvert));
     rangeeBoutons().append(bouton);

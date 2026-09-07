@@ -335,8 +335,10 @@
     else { rangee.classList.add('est-flottante'); document.body.append(rangee); }
   }
   rangee.append(
-    el('button', { onclick: ouvrirReprise, title: t('Reprendre ou revoir une partie sauvegardee') }, '⏵ ' + t('Reprendre')),
-    el('button', { onclick: ouvrirStats, title: t('Statistiques et journal des parties') }, '\u{1F4CA} Stats'));
+    el('button', { onclick: ouvrirReprise, title: t('Reprendre ou revoir une partie sauvegardee') },
+       el('i', { class: 'fa fa-play', 'aria-hidden': 'true' }), ' ' + t('Reprendre')),
+    el('button', { onclick: ouvrirStats, title: t('Statistiques et journal des parties') },
+       el('i', { class: 'fa fa-bar-chart', 'aria-hidden': 'true' }), ' Stats'));
 
   // Hauts faits : DEBRANCHE a la demande de l'utilisateur, comme la banniere
   // du plateau. La page /achievements.html reste en place et continue d'etre
