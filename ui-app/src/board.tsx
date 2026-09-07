@@ -81,13 +81,12 @@ import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
   CLE_METEO,
-  EFFETS_METEO,
-  LIBELLE_EFFET,
   EFFETS_DELAVANTS,
   effetsAffiches,
-  libelleApercu,
   type ApercuMeteo,
   lireMeteoActive,
+  basculerAmbiance,
+  ReglagesApercuAmbiance,
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
@@ -1348,76 +1347,18 @@ function PanneauOptions({
             actif={meteo}
             onBascule={basculerMeteo}
           />
-          {/* L'apercu n'est pas un interrupteur mais un ETABLI : les ambiances
-              se superposant en jeu, il faut pouvoir en essayer plusieurs a la
-              fois. D'ou des pastilles a cocher plutot qu'un cycle, qui
-              n'aurait jamais montre qu'un effet. */}
-          <div className="ligne-option est-etabli">
-            <span className="ligne-option-libelle">{t('Aperçu d’ambiance')}</span>
-            <span className="ligne-option-etat" aria-hidden="true">
-              {t(libelleApercu(apercuMeteo))}
-            </span>
-          </div>
-          <div
-            className="apercu-pastilles"
-            role="group"
-            aria-label={t('Aperçu d’ambiance')}
-            title={t('Force ces effets à l écran pour les voir, sans partie ni carte')}
-          >
-            <button
-              type="button"
-              className={`pastille${apercuMeteo === undefined ? ' est-actif' : ''}`}
-              onClick={() => reglerApercuMeteo(undefined)}
-            >
-              {t('Auto')}
-            </button>
-            <button
-              type="button"
-              className={`pastille${apercuMeteo?.length === 0 ? ' est-actif' : ''}`}
-              onClick={() => reglerApercuMeteo([])}
-            >
-              {t('Aucun')}
-            </button>
-            {EFFETS_METEO.map((effet) => {
-              const choisi = apercuMeteo?.includes(effet) ?? false
-              return (
-                <button
-                  key={effet}
-                  type="button"
-                  className={`pastille${choisi ? ' est-actif' : ''}`}
-                  aria-pressed={choisi}
-                  onClick={() =>
-                    reglerApercuMeteo(
-                      choisi
-                        ? (apercuMeteo ?? []).filter((e) => e !== effet)
-                        : [...(apercuMeteo ?? []), effet]
-                    )
-                  }
-                >
-                  {t(LIBELLE_EFFET[effet])}
-                </button>
-              )
-            })}
-          </div>
-          {/* Le garde-fou de la modale d'ambiance : sans cette ligne, une case
-              « ne plus me montrer ca » cochee par erreur serait definitive.
-              Un cycle plutot qu'un simple bouton « redemander », parce que les
-              trois etats sont utiles a qui sait ce qu'il veut. */}
-          <button
-            type="button"
-            className="ligne-option"
-            onClick={cyclerReponseAmbiance}
-            title={t('Quand une carte allume une ambiance : poser la question, la garder sans demander, ou la couper sans demander')}
-          >
-            <span className="ligne-option-libelle">{t('Demande d’ambiance')}</span>
-            <span className="ligne-option-etat" aria-hidden="true">
-              {reponseAmbiance === 'demander'
-                ? t('Demander')
-                : reponseAmbiance === 'toujours'
-                  ? t('Toujours')
-                  : t('Jamais')}
-            </span>
-          </button>
+          {/* Aperçu d'ambiance et Demande d'ambiance : extraits dans
+              CoucheMeteo.tsx (ReglagesApercuAmbiance), grises et inertes tant
+              que « Ambiance » est coupee (voir ce composant et
+              basculerAmbiance, qui remet deja l'apercu sur Auto au moment de
+              la coupure). */}
+          <ReglagesApercuAmbiance
+            meteo={meteo}
+            apercuMeteo={apercuMeteo}
+            reglerApercuMeteo={reglerApercuMeteo}
+            reponseAmbiance={reponseAmbiance}
+            cyclerReponseAmbiance={cyclerReponseAmbiance}
+          />
           <button
             type="button"
             className="ligne-option"
@@ -1926,14 +1867,19 @@ function PagePartie({
   }, [])
 
   const [meteo, setMeteo] = useState(lireMeteoActive)
+  // Couper « Ambiance » remet l'apercu sur Auto (voir basculerAmbiance) : sinon
+  // un apercu fige (pose un jour pour essayer un effet) continue de forcer cet
+  // effet a l'ecran malgre l'interrupteur general coupe, sans que rien ne le
+  // signale au joueur (voir la ligne « Aperçu d’ambiance », grisee dans ce cas).
   const basculerMeteo = useCallback(() => {
     setMeteo((m) => {
-      const nouveau = !m
+      const { meteo: nouveau, reinitialiserApercu } = basculerAmbiance(m)
       try {
         window.localStorage.setItem(CLE_METEO, nouveau ? 'on' : 'off')
       } catch {
         /* preference non critique */
       }
+      if (reinitialiserApercu) setApercuMeteo(undefined)
       return nouveau
     })
   }, [])

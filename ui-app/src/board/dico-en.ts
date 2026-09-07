@@ -619,6 +619,7 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // --- Météo, musique, écran de fin (vague 8) ---
   'Ambiance': 'Ambience',
+  'Ambiance coupée': 'Ambience off',
   'Aperçu d’ambiance': 'Ambience preview',
   'Force ces effets à l écran pour les voir, sans partie ni carte': 'Forces these effects on screen so you can see them, with no game and no card',
   'Auto': 'Auto',

@@ -4,8 +4,8 @@
 // d'une carte qui n'est pas sur la table. Le code d'origine parcourait tout
 // l'objet joueur, main et decks compris, et ne s'en sortait que parce que
 // `supports` précède `additional_deck` dans l'ordre des clés du descripteur.
-import { describe, expect, it } from 'vitest'
-import { render } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { createElement } from 'react'
 import type { World } from './world'
 import { existsSync, readFileSync } from 'node:fs'
@@ -16,6 +16,8 @@ import {
   EFFETS_METEO,
   LIBELLE_EFFET,
   METEO_PAR_CARTE,
+  ReglagesApercuAmbiance,
+  basculerAmbiance,
   libelleApercu,
   meteoDuMonde,
   meteosDuMonde,
@@ -103,6 +105,60 @@ describe('CoucheMeteo, apercu et interrupteur', () => {
     const m = monde({ supports: [carte('36005')] })
     const { container } = render(createElement(CoucheMeteo, { world: m, active: true }))
     expect(src(container)).toBe('/effects/weather/snow.html')
+  })
+})
+
+// Couper « Ambiance » ne doit plus laisser un apercu fige continuer de forcer
+// un effet a l'ecran en silence (audit D, Fragile 4) : le panneau Options
+// grise « Aperçu d'ambiance » quand meteo est faux, mais il faut aussi que
+// l'apercu retombe reellement sur Auto au moment de la coupure.
+describe('basculerAmbiance', () => {
+  it('coupe « Ambiance » (true -> false) et demande de reinitialiser l apercu', () => {
+    expect(basculerAmbiance(true)).toEqual({ meteo: false, reinitialiserApercu: true })
+  })
+
+  it('rallume « Ambiance » (false -> true) sans toucher a l apercu', () => {
+    expect(basculerAmbiance(false)).toEqual({ meteo: true, reinitialiserApercu: false })
+  })
+})
+
+// Les lignes du panneau Options qui dependent de l'apercu ne doivent plus
+// rester actives en silence quand « Ambiance » est coupee (audit D, Fragile
+// 4) : elles se grisent et refusent le clic, avec la mention « Ambiance
+// coupée » a la place de l'etat habituel.
+describe('ReglagesApercuAmbiance', () => {
+  function props(meteo: boolean) {
+    return {
+      meteo,
+      apercuMeteo: undefined,
+      reglerApercuMeteo: vi.fn(),
+      reponseAmbiance: 'demander' as const,
+      cyclerReponseAmbiance: vi.fn(),
+    }
+  }
+
+  it('laisse l apercu et la demande actifs quand Ambiance est allumee', () => {
+    render(createElement(ReglagesApercuAmbiance, props(true)))
+    const ligneApercu = screen.getByText('Aperçu d’ambiance').closest('.ligne-option')
+    const ligneDemande = screen.getByRole('button', { name: /Demande d’ambiance/ })
+    expect(ligneApercu).not.toHaveClass('est-desactive')
+    expect(ligneDemande).not.toHaveClass('est-desactive')
+    expect(ligneDemande).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Auto' })).not.toBeDisabled()
+    expect(screen.queryByText('Ambiance coupée')).not.toBeInTheDocument()
+  })
+
+  it('grise et desactive l apercu et la demande quand Ambiance est coupee', () => {
+    render(createElement(ReglagesApercuAmbiance, props(false)))
+    const ligneApercu = screen.getByText('Aperçu d’ambiance').closest('.ligne-option')
+    const ligneDemande = screen.getByRole('button', { name: /Demande d’ambiance/ })
+    expect(ligneApercu).toHaveClass('est-desactive')
+    expect(ligneDemande).toHaveClass('est-desactive')
+    expect(ligneDemande).toBeDisabled()
+    // Les deux lignes affichent la mention, et les pastilles ne repondent plus.
+    expect(screen.getAllByText('Ambiance coupée').length).toBeGreaterThanOrEqual(2)
+    expect(screen.getByRole('button', { name: 'Auto' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Aucun' })).toBeDisabled()
   })
 })
 

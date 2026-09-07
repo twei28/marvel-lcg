@@ -4351,6 +4351,37 @@
     padding-bottom: 2px;
   }
 
+  /* Ambiance coupee : l'apercu et la demande d'ambiance n'ont plus de sens
+     tant que le grand interrupteur est desactive. Grisees plutot que
+     masquees, pour que le joueur comprenne pourquoi (l'etat affiche
+     « Ambiance coupée » a la place de la valeur habituelle). */
+  .ligne-option.est-desactive,
+  .ligne-option.est-desactive:hover,
+  .ligne-option.est-desactive .ligne-option-etat {
+    color: #5b6672;
+    cursor: not-allowed;
+  }
+
+  .ligne-option.est-desactive:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .apercu-pastilles.est-desactive .pastille {
+    color: #5b6672;
+    cursor: not-allowed;
+  }
+
+  .apercu-pastilles.est-desactive .pastille:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #5b6672;
+  }
+
+  .apercu-pastilles.est-desactive .pastille.est-actif {
+    background: rgba(255, 255, 255, 0.08);
+    color: #5b6672;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
   .apercu-pastilles {
     display: flex;
     flex-wrap: wrap;
