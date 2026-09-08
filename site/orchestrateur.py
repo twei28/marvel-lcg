@@ -460,15 +460,35 @@ def _groupe_vivant(groupe: int) -> bool:
     return True
 
 
-def eteindre_jeu(code: str) -> bool:
+def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
-    compte et doivent etre la au prochain allumage."""
+    compte et doivent etre la au prochain allumage.
+
+    `cause` dit POURQUOI la table s'eteint : elle est conservee telle quelle
+    dans la trace d'une partie abandonnee (voir `_noter_abandon`).
+    """
     with VERROU:
         partie = PARTIES.pop(code, None)
         if partie is None:
             return False
         EMPLACEMENTS.pop(partie.emplacement, None)
         JETONS_SITE.pop(partie.jeton_site, None)
+    # ⚠ ICI, ET NULLE PART AILLEURS : c'est la derniere seconde ou l'on peut
+    # encore demander au moteur ce qui se jouait. Une ligne plus bas il est
+    # mort, et la partie n'aura jamais existe pour personne.
+    # (`_noter_abandon` est defini plus bas, avec le reste du suivi : Python
+    # resout les globales a l'appel, pas a la lecture du fichier.)
+    _noter_abandon(partie, cause)
+    # ⚠ ET LA FERMETURE SE NOTE ICI, PAS CHEZ L'APPELANT. Elle ne l'etait que
+    # dans deux des six chemins d'extinction (le faucheur et le bouton
+    # « Eteindre ») : ni l'arret du site — donc CHAQUE deploiement — ni le
+    # menage de `lancer_jeu` ne l'ecrivaient. Les lignes de ces tables-la
+    # restaient « en cours » pour toujours dans la page d'administration, des
+    # jours apres que le moteur etait mort (constate le 08/09/2026 : quatre
+    # tables ouvertes depuis le 5 septembre encore annoncees en cours).
+    # `journal_partie_fermee` ne touche que les lignes encore ouvertes : la
+    # rappeler est sans effet.
+    journal_partie_fermee(partie.code)
     processus = partie.processus
     if processus is not None:
         # `start_new_session` a mis le moteur dans son propre groupe : on tue
@@ -521,8 +541,7 @@ def faucheur() -> None:
         for code, partie in list(PARTIES.items()):
             trop_vieille = (time.time() - partie.debut) > DUREE_MAX_HEURES * 3600
             if not partie.vivant() or trop_vieille:
-                eteindre_jeu(code)
-                journal_partie_fermee(code)
+                eteindre_jeu(code, "minuteur" if trop_vieille else "moteur arrete")
 
 
 # --------------------------------------------------------------------------
@@ -624,6 +643,26 @@ CREATE TABLE IF NOT EXISTS rapports (
     traite_le   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
+-- ⚠ LES PARTIES QUITTEES EN COURS DE ROUTE N'EXISTENT NULLE PART AILLEURS.
+-- Le journal du moteur (`games_history-serveur-N.json`) n'est ecrit qu'a la
+-- FIN declaree par le moteur (victoire, defaite, elimination). Une partie
+-- qu'on abandonne restait donc visible dans « En cours » tant que la table
+-- brulait, puis disparaissait sans laisser une ligne. On prend sa photo juste
+-- avant d'eteindre la table (`_noter_abandon`), et elle rejoint la liste des
+-- parties terminees avec la mention « abandonnee ».
+CREATE TABLE IF NOT EXISTS abandons (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    quand       TEXT NOT NULL,
+    joueur      TEXT NOT NULL,
+    emplacement INTEGER NOT NULL,
+    mechant     TEXT,
+    expert      INTEGER NOT NULL DEFAULT 0,
+    tour        INTEGER NOT NULL DEFAULT 0,
+    heros       TEXT,
+    vilains     TEXT,
+    manigances  TEXT,
+    cause       TEXT
+);
 """
 
 
@@ -966,6 +1005,22 @@ def journal_partie_fermee(code: str) -> None:
     with _cx() as cx:
         cx.execute("UPDATE parties SET fermee_le = ? WHERE code = ? AND fermee_le IS NULL",
                    (_maintenant(), code))
+
+
+def fermer_parties_orphelines() -> int:
+    """Au demarrage, AUCUNE table ne survit au site : `PARTIES` vit en memoire
+    et les moteurs sont morts avec le processus precedent. Une ligne encore
+    « ouverte » en base est donc une orpheline, et sans ce menage elle le
+    reste indefiniment — c'est ce qui affichait « en cours » sur des tables
+    eteintes depuis des jours.
+
+    ⚠ L'HEURE ECRITE EST CELLE DU DEMARRAGE, pas celle de la vraie fermeture,
+    qu'on ne peut plus connaitre. C'est le moment ou l'on SAIT que la table
+    n'est plus la, et c'est tout ce que la ligne pretend dire.
+    """
+    with _cx() as cx:
+        return cx.execute("UPDATE parties SET fermee_le = ? WHERE fermee_le IS NULL",
+                          (_maintenant(),)).rowcount
 
 
 def dernieres_parties(combien: int = 25):
@@ -1674,8 +1729,107 @@ def _il_y_a_horodatage(quand: float) -> str:
     return "il y a %d j" % round(ecart / 86400)
 
 
+CAUSES_ABANDON = {
+    "extinction": "table \u00e9teinte par le joueur",
+    "minuteur": "table ferm\u00e9e apr\u00e8s %d h" % int(DUREE_MAX_HEURES),
+    "moteur arrete": "moteur arr\u00eat\u00e9",
+    "arret du site": "red\u00e9marrage du site",
+}
+
+
+def _noter_abandon(partie: "Partie", cause: str) -> None:
+    """La photo d'une partie qu'on eteint alors qu'elle etait EN COURS.
+
+    ⚠ NE LEVE JAMAIS. Une trace manquee est un regret ; une exception ici
+    empecherait la table de s'eteindre, donc l'emplacement d'etre rendu.
+
+    Deux garde-fous avant d'ecrire : le moteur doit etre vivant (sinon
+    `_fiche_moteur` attendrait son delai pour rien) et la partie doit avoir
+    commence (une table allumee ou l'on n'a jamais quitte l'ecran des heros
+    n'est pas une partie abandonnee, c'est une table qu'on ferme).
+    """
+    try:
+        if not partie.vivant():
+            return
+        fiche = _fiche_moteur(partie)
+        if not fiche.get("en_cours"):
+            return
+        with _cx() as cx:
+            cx.execute(
+                "INSERT INTO abandons (quand, joueur, emplacement, mechant, expert,"
+                " tour, heros, vilains, manigances, cause) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (_maintenant(), partie.code, partie.emplacement,
+                 str(fiche.get("scenario") or ""),
+                 1 if fiche.get("expert") else 0,
+                 int(fiche.get("round") or 0),
+                 json.dumps(fiche.get("joueurs") or [], ensure_ascii=False),
+                 json.dumps(fiche.get("vilains") or [], ensure_ascii=False),
+                 json.dumps(fiche.get("manigances") or [], ensure_ascii=False),
+                 cause))
+    except Exception as exc:
+        sys.stderr.write("trace d'abandon non ecrite : %r\n" % (exc,))
+
+
+def _detail_abandon(vilains: list, manigances: list) -> str:
+    """« PV 9/14 · stade 2 · menace 3 », comme sur une carte « en cours »."""
+    bouts = []
+    if vilains:
+        vilain = vilains[0]
+        if vilain.get("pv_max"):
+            bouts.append("PV %s/%s" % (vilain.get("pv"), vilain.get("pv_max")))
+        if vilain.get("stage"):
+            bouts.append("stade %s" % vilain.get("stage"))
+    if manigances:
+        bouts.append("menace %s" % (manigances[0].get("menace") or 0))
+    return " \u00b7 ".join(bouts)
+
+
+def parties_abandonnees(limite: int = SUIVI_TERMINEES_MAX) -> list:
+    """Les parties quittees en cours de route, au format des parties finies."""
+    try:
+        with _cx() as cx:
+            lignes = cx.execute("SELECT * FROM abandons ORDER BY id DESC LIMIT ?",
+                                (limite,)).fetchall()
+    except sqlite3.Error:
+        return []
+    sortie = []
+    for ligne in lignes:
+        try:
+            joueurs = json.loads(ligne["heros"] or "[]")
+            vilains = json.loads(ligne["vilains"] or "[]")
+            manigances = json.loads(ligne["manigances"] or "[]")
+        except (TypeError, ValueError):
+            joueurs, vilains, manigances = [], [], []
+        ecart = _secondes_depuis(ligne["quand"])
+        sortie.append({
+            "quand": time.time() - ecart if ecart is not None else 0.0,
+            "il_y_a": _il_y_a(ligne["quand"]),
+            "joueur": ligne["joueur"] or "",
+            "emplacement": ligne["emplacement"],
+            # Meme forme que le journal, plus la forme et les PV : au moment de
+            # la photo, ils sont connus, et c'est tout l'interet de la trace.
+            "heros": [{"nom": str(j.get("heros") or "").lstrip("* "),
+                       "card_id": str(j.get("card_id") or ""),
+                       "deck": str(j.get("deck") or ""),
+                       "aspects": [],
+                       "forme": str(j.get("forme") or ""),
+                       "pv": j.get("pv"), "pv_max": j.get("pv_max")}
+                      for j in joueurs if isinstance(j, dict)],
+            "mechant": ligne["mechant"] or "",
+            "expert": bool(ligne["expert"]),
+            "etat": "abandon",
+            "victoire": False,
+            "raison": CAUSES_ABANDON.get(ligne["cause"], ligne["cause"] or ""),
+            "rounds": int(ligne["tour"] or 0),
+            "detail": _detail_abandon(vilains, manigances),
+        })
+    return sortie
+
+
 def parties_terminees(limite: int = SUIVI_TERMINEES_MAX) -> list:
-    """Les dernieres parties terminees, tous emplacements confondus."""
+    """Les dernieres parties FINIES, abandons compris, tous emplacements
+    confondus. Deux sources qui ne se recouvrent jamais : le journal du moteur
+    (fin declaree) et la table `abandons` (fin subie)."""
     proprietaires = _pseudos_par_emplacement()
     sortie = []
     for emplacement in range(1, NB_EMPLACEMENTS + 1):
@@ -1710,10 +1864,13 @@ def parties_terminees(limite: int = SUIVI_TERMINEES_MAX) -> list:
                 "heros": heros,
                 "mechant": str(entree.get("scenario") or ""),
                 "expert": bool(entree.get("expert")),
+                "etat": "victoire" if entree.get("won") else "defaite",
                 "victoire": bool(entree.get("won")),
                 "raison": str(entree.get("reason") or ""),
                 "rounds": int(entree.get("rounds") or 0),
+                "detail": "",
             })
+    sortie += parties_abandonnees(limite)
     sortie.sort(key=lambda e: e["quand"], reverse=True)
     return sortie[:limite]
 
@@ -1771,6 +1928,7 @@ PAGE_SUIVI = """<!doctype html>
   h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:#9aa7b4; margin:1.2rem 0 .5rem; }
   .carte { border:1px solid #30363d; border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:#161b22; }
   .carte.live { border-color:#238636; box-shadow: inset 3px 0 0 #238636; }
+  .carte.abandon { box-shadow: inset 3px 0 0 #9e6a03; }
   .carte.attente { border-color:#30363d; opacity:.75; }
   .ligne { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
   .qui { font-weight:600; }
@@ -1784,7 +1942,7 @@ PAGE_SUIVI = """<!doctype html>
   .contre b { color:#e6edf3; }
   .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
   .res { font-weight:700; }
-  .res.v { color:#3fb950; } .res.d { color:#f85149; }
+  .res.v { color:#3fb950; } .res.d { color:#f85149; } .res.a { color:#d29922; }
   .pv { font-variant-numeric: tabular-nums; }
   .vide { color:#9aa7b4; font-style:italic; }
   .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
@@ -1828,17 +1986,28 @@ PAGE_SUIVI = """<!doctype html>
     var bas = '<div class="bas"><span>round <b>' + p.round + '</b></span></div>';
     return '<div class="carte live">' + titre + h + contre + bas + '</div>';
   }
+  function ligneHeros(x) {
+    // Les PV et la forme ne sont connus que des parties ABANDONNEES (photo
+    // prise en cours de jeu) : absents, ils ne s'affichent pas.
+    var forme = x.forme === "AlterEgo" ? ' <small>(alter ego)</small>' : '';
+    var pv = x.pv_max ? ' <span class="pv">' + x.pv + '/' + x.pv_max + '</span>' : '';
+    return '<div class="heros">' + ECHAP(x.nom) + forme + aspects(x.aspects) + pv + '</div>';
+  }
   function carteTerminee(p) {
-    var h = (p.heros || []).map(function (x) {
-      return '<div class="heros">' + ECHAP(x.nom) + aspects(x.aspects) + '</div>';
-    }).join("") || '<div class="heros">?</div>';
+    var abandon = p.etat === "abandon";
+    var h = (p.heros || []).map(ligneHeros).join("") || '<div class="heros">?</div>';
     var titre = '<div class="ligne"><span class="qui">' + ECHAP(p.joueur || ("table " + p.emplacement)) + '</span>'
               + '<span class="quand">' + ECHAP(p.il_y_a) + '</span></div>';
-    var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '') + '</div>';
-    var res = p.victoire ? '<span class="res v">Victoire</span>' : '<span class="res d">Défaite</span>';
-    var bas = '<div class="bas">' + res + '<span>' + p.rounds + ' round' + (p.rounds > 1 ? 's' : '') + '</span>'
+    var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '')
+               + (p.detail ? ' · ' + ECHAP(p.detail) : '') + '</div>';
+    var res = abandon ? '<span class="res a">Abandonnée</span>'
+            : p.etat === "victoire" ? '<span class="res v">Victoire</span>'
+            : '<span class="res d">Défaite</span>';
+    var tours = abandon ? ('au round ' + p.rounds)
+              : (p.rounds + ' round' + (p.rounds > 1 ? 's' : ''));
+    var bas = '<div class="bas">' + res + '<span>' + tours + '</span>'
             + '<span>' + ECHAP(p.raison) + '</span></div>';
-    return '<div class="carte">' + titre + h + contre + bas + '</div>';
+    return '<div class="carte' + (abandon ? ' abandon' : '') + '">' + titre + h + contre + bas + '</div>';
   }
   function rendre(etat) {
     var ec = document.getElementById("encours"), te = document.getElementById("terminees");
@@ -2482,8 +2651,7 @@ class Handler(BaseHTTPRequestHandler):
             # l'ANCIEN mot de passe et la revocation le manquait.
             revoquer_mot_de_passe_jeu(pseudo)
             # On n'eteint QUE son propre jeu : le code est le pseudo.
-            if eteindre_jeu(pseudo):
-                journal_partie_fermee(pseudo)
+            eteindre_jeu(pseudo)
             # Vers /arret et surtout PAS vers / : cette derniere rallumerait
             # aussitot ce qu'on vient d'eteindre.
             self._rediriger("/arret")
@@ -2505,6 +2673,9 @@ def main() -> int:
         return 1
 
     initialiser_base()
+    orphelines = fermer_parties_orphelines()
+    if orphelines:
+        print(f"  {orphelines} table(s) laissee(s) ouverte(s) par la session precedente : fermees.")
     if compte(ADMIN) is None:
         print(f"  ⚠ Aucun compte administrateur « {ADMIN} » : cree-le sur /inscription,")
         print("    il sera valide d'office.")
@@ -2514,7 +2685,7 @@ def main() -> int:
     def arreter(*_):
         print("\nFermeture de toutes les tables...")
         for code in list(PARTIES):
-            eteindre_jeu(code)
+            eteindre_jeu(code, "arret du site")
         serveur.shutdown()
 
     signal.signal(signal.SIGINT, lambda *_: threading.Thread(target=arreter).start())
@@ -2530,7 +2701,7 @@ def main() -> int:
         serveur.serve_forever()
     finally:
         for code in list(PARTIES):
-            eteindre_jeu(code)
+            eteindre_jeu(code, "arret du site")
     return 0
 
 

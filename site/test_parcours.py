@@ -742,6 +742,7 @@ o.PARTIES.clear()
 # joueurs, un compte ordinaire ne doit rien en voir. Puis le contenu, sur un
 # journal de parties ecrit pour l'occasion dans un RACINE_JEU temporaire.
 import json as _json_suivi                                  # noqa: E402
+import shutil as _shutil_suivi                              # noqa: E402
 try:
     o.inscrire(o.ADMIN, "admin@exemple.fr", "motdepasse123")
 except ValueError:
@@ -807,9 +808,131 @@ verifier("une table allumee dont le moteur ne repond pas est dite muette, pas en
          _etat_suivi["en_cours"][0]["joueur"] == "hote"
          and _etat_suivi["en_cours"][0]["moteur_repond"] is False
          and _etat_suivi["en_cours"][0]["en_cours"] is False, str(_etat_suivi["en_cours"]))
+# --- Une partie ABANDONNEE laisse une trace --------------------------------
+# ⚠ LE CAS QUI COMPTE, ET IL DECRIT UN TROU REEL. Avant cette trace, une
+# partie quittee en cours de route ne figurait NULLE PART : le journal du
+# moteur n'est ecrit qu'a la fin DECLAREE (victoire, defaite, elimination), et
+# « En cours » l'oubliait des l'extinction de la table.
+#
+# `_fiche_moteur` est remplacee ici, et seulement ici : c'est la seule facon de
+# decrire une position precise sans monter un vrai moteur. Le chemin HTTP
+# qu'elle emprunte a ete verifie a la main le 08/09/2026 contre un vrai moteur
+# (Rhino 14/14, The Break-In!) ; ce que ces cas prouvent, c'est ce que le SITE
+# en fait.
+with o._cx() as cx:
+    cx.execute("DELETE FROM abandons")     # la base de test survit aux passes
+_fiche_reelle = o._fiche_moteur
+o._fiche_moteur = lambda partie: {
+    "en_cours": True, "round": 6, "scenario": "Rhino", "expert": False,
+    "joueurs": [{"heros": "* Blade", "card_id": "bl001a", "deck": "Blade",
+                 "forme": "Hero", "pv": 7, "pv_max": 12, "elimine": False}],
+    "vilains": [{"nom": "Rhino", "pv": 9, "pv_max": 14, "stage": "2"}],
+    "manigances": [{"nom": "The Break-In!", "menace": 3}],
+}
+
+
+def _table_avec_moteur(pseudo, emplacement):
+    """Une table dont le processus est REEL, dans son propre groupe.
+
+    ⚠ PAS UN FAUX PROCESSUS : `eteindre_jeu` appelle `os.killpg(processus.pid)`,
+    et un objet qui mentirait sur son `pid` ferait tirer sur un groupe au
+    hasard, a commencer par celui de ce fichier de test.
+    """
+    partie = o.Partie(emplacement, pseudo, "Jeu de " + pseudo)
+    partie.processus = subprocess.Popen(["sleep", "60"], start_new_session=True)
+    partie.jeton_site = "jeton-de-test"
+    o.PARTIES[pseudo] = partie
+    o.EMPLACEMENTS[emplacement] = pseudo
+    return partie
+
+
+_table_avec_moteur("hote", 17)
+o.eteindre_jeu("hote", "minuteur")
+_abandons = o.parties_abandonnees()
+verifier("une partie quittee en cours de route laisse une trace",
+         len(_abandons) == 1, str(_abandons))
+_a = _abandons[0] if _abandons else {}
+verifier("la trace garde le heros, sa forme et ses PV",
+         bool(_a.get("heros")) and _a["heros"][0]["nom"] == "Blade"
+         and _a["heros"][0]["pv"] == 7 and _a["heros"][0]["pv_max"] == 12,
+         str(_a.get("heros")))
+verifier("elle garde le mechant, son etat et le round atteint",
+         _a.get("mechant") == "Rhino" and _a.get("rounds") == 6
+         and "9/14" in _a.get("detail", "") and "menace 3" in _a.get("detail", ""),
+         "%s | %s" % (_a.get("rounds"), _a.get("detail")))
+verifier("et la cause de l'extinction, en clair",
+         _a.get("etat") == "abandon"
+         and _a.get("raison") == o.CAUSES_ABANDON["minuteur"], str(_a.get("raison")))
+
+# Une table allumee ou personne n'a lance de partie n'est pas un abandon :
+# c'est une table qu'on ferme, et elle ne doit rien laisser.
+o._fiche_moteur = lambda partie: {"en_cours": False}
+_table_avec_moteur("hote", 17)
+o.eteindre_jeu("hote")
+verifier("une table fermee sans partie en cours ne laisse rien",
+         len(o.parties_abandonnees()) == 1, str(len(o.parties_abandonnees())))
+
+
+# Un moteur DEJA MORT ne peut plus rien dire : on n'invente pas sa partie.
+class _MoteurMort:
+    def poll(self):
+        return 0
+
+
+o._fiche_moteur = lambda partie: {"en_cours": True, "round": 3, "scenario": "Klaw"}
+_morte = o.Partie(18, "invitee", "Jeu de invitee")
+_morte.processus = _MoteurMort()
+o._noter_abandon(_morte, "moteur arrete")
+verifier("un moteur deja mort n'invente pas de trace",
+         len(o.parties_abandonnees()) == 1, str(len(o.parties_abandonnees())))
+o._fiche_moteur = _fiche_reelle
+
+# Les deux sources se melent dans UNE seule liste chronologique : l'abandon
+# vient d'avoir lieu, les deux parties du journal datent de 2023.
+_toutes = o.parties_terminees()
+verifier("abandons et parties finies forment une seule liste",
+         len(_toutes) == 3, str(len(_toutes)))
+verifier("la plus recente reste en tete, quelle que soit sa source",
+         bool(_toutes) and _toutes[0]["etat"] == "abandon"
+         and [p["etat"] for p in _toutes[1:]] == ["defaite", "victoire"],
+         str([p["etat"] for p in _toutes]))
+with o._cx() as cx:
+    cx.execute("DELETE FROM abandons")
+
+# --- La FERMETURE d'une table est notee, quel que soit le chemin -----------
+# ⚠ TROU REEL, vu par l'utilisateur le 08/09/2026 sur la page d'administration :
+# quatre tables ouvertes depuis trois jours toujours annoncees « en cours ». La
+# fermeture n'etait ecrite que par le faucheur et par le bouton « Eteindre » ;
+# ni l'arret du site — donc CHAQUE deploiement — ni le menage de `lancer_jeu`
+# ne la notaient. Le cas prend le chemin le plus oublie des six.
+with o._cx() as cx:
+    cx.execute("DELETE FROM parties WHERE code = ?", ("hote",))
+o._fiche_moteur = lambda partie: {"en_cours": False}
+_table = _table_avec_moteur("hote", 17)
+o.journal_partie_ouverte(_table, "hote")
+o.eteindre_jeu("hote", "arret du site")
+_lignes = [p for p in o.dernieres_parties() if p["code"] == "hote"]
+verifier("l'arret du site note la fermeture de la table",
+         len(_lignes) == 1 and _lignes[0]["fermee_le"], str(dict(_lignes[0])) if _lignes else "aucune")
+
+# Une ligne laissee ouverte par le processus PRECEDENT n'a plus personne pour
+# la fermer : c'est le demarrage qui s'en charge, sans quoi elle reste « en
+# cours » a jamais.
+with o._cx() as cx:
+    cx.execute("UPDATE parties SET fermee_le = NULL WHERE code = ?", ("hote",))
+_fermees = o.fermer_parties_orphelines()
+_lignes = [p for p in o.dernieres_parties() if p["code"] == "hote"]
+verifier("le demarrage ferme les tables orphelines de la session precedente",
+         _fermees >= 1 and _lignes and _lignes[0]["fermee_le"],
+         "%s fermee(s)" % _fermees)
+verifier("et il ne touche pas a celles qui sont deja fermees",
+         o.fermer_parties_orphelines() == 0, str(o.fermer_parties_orphelines()))
+with o._cx() as cx:
+    cx.execute("DELETE FROM parties WHERE code = ?", ("hote",))
+
 o.PARTIES.clear()
 o.RACINE_JEU = _racine_avant
-shutil.rmtree(_bac_jeu, ignore_errors=True)
+_shutil_suivi.rmtree(_bac_jeu, ignore_errors=True)
 with o._cx() as cx:
     cx.execute("UPDATE comptes SET emplacement = ? WHERE pseudo = ?", (_empl_hote_avant, "hote"))
 

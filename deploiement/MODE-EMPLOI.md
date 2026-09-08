@@ -178,8 +178,20 @@ sans barre d'adresse.
 | `games_history-serveur-<N>.json` à la racine du jeu | une partie terminée par ligne, écrite par le moteur de la table N |
 | `/get_partie_en_cours?jeton=…` sur chaque moteur | la fiche d'une partie en cours, interrogée en local par le site |
 
+Les parties **abandonnées** y figurent aussi, en orange, avec le round atteint,
+les PV du héros et du méchant au moment où on a quitté, et la cause : table
+éteinte par le joueur, fermée après 8 h, moteur arrêté, redémarrage du site.
+La photo est prise juste avant de tuer le moteur ; une table qu'on ferme sans
+avoir lancé de partie ne laisse rien.
+
 L'aspect du deck n'est enregistré que depuis le 08/09/2026 : les parties
 plus anciennes s'affichent sans lui.
+
+⚠ La colonne « Fermée le » de la page d'administration annonçait « en cours »
+pour toujours sur les tables tuées par un redémarrage du site : la fermeture
+n'était notée que par le faucheur et par le bouton « Éteindre ». Corrigé le
+08/09/2026, et les lignes restées ouvertes sont fermées au démarrage suivant,
+avec l'heure de ce démarrage faute de mieux.
 
 ## Les livrets de règles
 
