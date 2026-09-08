@@ -28,6 +28,7 @@ import hashlib
 import html
 import json
 import os
+import re
 import secrets
 import shutil
 import signal
@@ -87,6 +88,411 @@ FICHIER_COMPTES = os.environ.get("FICHIER_COMPTES", os.path.join(RACINE_SITE, "c
 BASE = os.environ.get("BASE", os.path.join(RACINE_SITE, "narwhal.db"))
 MAX_COMPTES = int(os.environ.get("MAX_COMPTES", "20"))
 ADMIN = os.environ.get("ADMIN", "arnaud").strip().lower()
+
+# --- La page privee CODEX ---------------------------------------------------
+# Une application autonome (un seul fichier HTML, tout embarque, aucun appel
+# vers l'exterieur) deposee dans `static/`, servie a la demande de
+# l'utilisateur le 08/09/2026 et reservee a des comptes NOMMES.
+#
+# ⚠ CE N'EST PAS UNE PAGE DU JEU : elle ne partage ni son style, ni ses
+# donnees, ni ses routes. Elle est ici parce qu'il fallait un endroit garde
+# derriere une connexion, et le site en est un.
+#
+# Ouvrir l'acces a quelqu'un d'autre = une variable d'environnement, pas une
+# modification de code : POURMIKA_COMPTES="arnaud,portinou".
+POURMIKA_COMPTES = {
+    p.strip().lower()
+    for p in os.environ.get("POURMIKA_COMPTES", ADMIN).split(",")
+    if p.strip()
+}
+POURMIKA_FICHIER = os.path.join(RACINE_SITE, "static", "pourmika.html")
+
+# --- Pourmika : la liste des codes vit en BASE, pas dans le fichier ---------
+# Demande du 08/09/2026 : « il faut une database aussi pour les codes, pouvoir
+# ajouter des nouveaux codes etc », et « tu fais tout ».
+#
+# ⚠ L'APPLICATION EST UN BUNDLE MINIFIE SANS SOURCE : ses 4 982 codes sont un
+# litteral JavaScript `km=[{c:"...",...},...]` au milieu de 1,8 Mo de code.
+# Elle ne sait ni lire un serveur, ni ajouter un code. On ne la modifie pas ;
+# on modifie ce qu'elle RECOIT :
+#
+#   1. au premier demarrage, le litteral est extrait du fichier et verse en
+#      base (`pourmika_codes`), une ligne par code ;
+#   2. a chaque affichage, le litteral est REMPLACE par la liste lue en base.
+#      Du JSON est du JavaScript valide : l'application n'y voit rien ;
+#   3. un script pose AVANT l'application recopie en base ce qu'elle ecrit
+#      dans le stockage local du navigateur (`codex.v2.*`), et le lui rend au
+#      chargement. Ses cas et son historique la suivent donc d'un poste a
+#      l'autre.
+#
+# ⚠ SI LE MARQUEUR N'EST PAS TROUVE (nouvel export dont la forme a change),
+# la page est servie TELLE QUELLE et un avertissement part au journal : mieux
+# vaut une page intacte qu'une page cassee. La gestion des codes est alors
+# sans effet, et le journal le dit.
+
+POURMIKA_PREFIXE_STOCKAGE = "codex.v2."
+# ⚠ ON CHERCHE LA FORME DES DONNEES, PAS UN NOM DE VARIABLE. Le nom (`km`
+# aujourd'hui) est choisi par le minifieur et change d'une version a l'autre ;
+# la forme du premier code, elle, est celle de l'application.
+POURMIKA_MARQUEUR = re.compile(r'=(\[\{c:"[0-9A-Za-z]+",cc:")')
+POURMIKA_CHAMPS = ("c", "cc", "fr", "nl", "art", "main", "c3")
+
+
+def _pourmika_fin_tableau(texte: str, debut: int) -> int:
+    """L'indice du `]` qui ferme le tableau ouvert a `debut`, en sautant les
+    chaines (un `]` entre guillemets ne compte pas). -1 si jamais ferme."""
+    profondeur = 0
+    chaine = None
+    j = debut
+    while j < len(texte):
+        ch = texte[j]
+        if chaine:
+            if ch == "\\":
+                j += 2
+                continue
+            if ch == chaine:
+                chaine = None
+        elif ch in "\"'`":
+            chaine = ch
+        elif ch == "[":
+            profondeur += 1
+        elif ch == "]":
+            profondeur -= 1
+            if profondeur == 0:
+                return j
+        j += 1
+    return -1
+
+
+def _pourmika_bornes(texte: str):
+    """(debut, fin) du litteral `[...]` des codes dans le fichier, ou None."""
+    m = POURMIKA_MARQUEUR.search(texte)
+    if m is None:
+        return None
+    debut = m.start(1)
+    fin = _pourmika_fin_tableau(texte, debut)
+    if fin < 0:
+        return None
+    return debut, fin + 1
+
+
+def _pourmika_chaine_js(litteral: str, j: int):
+    """Lit la chaine JavaScript qui commence en `j` (guillemet, apostrophe ou
+    accent grave) et rend (valeur Python, indice apres la fermeture).
+
+    ⚠ TROIS TOURNURES QUE JSON N'ACCEPTE PAS, TOUTES VUES DANS LE FICHIER :
+    des chaines entre accents graves (un libelle qui contient des guillemets),
+    des apostrophes echappees `\\'`, et les autres sequences d'echappement de
+    JavaScript. On decode donc en Python, puis `json.dumps` reecrit proprement."""
+    delim = litteral[j]
+    k = j + 1
+    n = len(litteral)
+    morceaux = []
+    simples = {"n": "\n", "t": "\t", "r": "\r", "b": "\b", "f": "\f", "v": "\v", "0": "\0"}
+    while k < n:
+        ch = litteral[k]
+        if ch == "\\":
+            suite = litteral[k + 1] if k + 1 < n else ""
+            if suite == "u" and k + 5 < n:
+                morceaux.append(chr(int(litteral[k + 2:k + 6], 16)))
+                k += 6
+                continue
+            if suite == "x" and k + 3 < n:
+                morceaux.append(chr(int(litteral[k + 2:k + 4], 16)))
+                k += 4
+                continue
+            morceaux.append(simples.get(suite, suite))
+            k += 2
+            continue
+        if ch == delim:
+            return "".join(morceaux), k + 1
+        morceaux.append(ch)
+        k += 1
+    raise ValueError("chaine JavaScript jamais fermee")
+
+
+def _pourmika_litteral_vers_json(litteral: str) -> list:
+    """Le litteral JavaScript minifie -> une liste Python.
+
+    Ce n'est pas du JSON : les cles ne sont pas entre guillemets, les booleens
+    s'ecrivent `!0` / `!1`, et les chaines suivent la syntaxe JavaScript (voir
+    `_pourmika_chaine_js`). Les transformations se font hors des chaines,
+    jamais dedans : un `!0` ou un `nl:` a l'interieur d'un libelle ne doit pas
+    etre touche."""
+    sortie = []
+    j = 0
+    n = len(litteral)
+    while j < n:
+        ch = litteral[j]
+        if ch in "\"'`":
+            valeur, j = _pourmika_chaine_js(litteral, j)
+            sortie.append(json.dumps(valeur, ensure_ascii=False))
+            continue
+        if ch in "{,":
+            sortie.append(ch)
+            k = j + 1
+            while k < n and (litteral[k].isalnum() or litteral[k] in "_$"):
+                k += 1
+            if k < n and litteral[k] == ":" and k > j + 1:
+                sortie.append('"' + litteral[j + 1:k] + '":')
+                j = k + 1
+                continue
+            j += 1
+            continue
+        if litteral.startswith("!0", j):
+            sortie.append("true")
+            j += 2
+            continue
+        if litteral.startswith("!1", j):
+            sortie.append("false")
+            j += 2
+            continue
+        sortie.append(ch)
+        j += 1
+    return json.loads("".join(sortie))
+
+
+def _pourmika_lire_fichier() -> str | None:
+    try:
+        with open(POURMIKA_FICHIER, encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
+def _pourmika_meta(cle: str) -> str:
+    with _cx() as cx:
+        l = cx.execute("SELECT valeur FROM pourmika_meta WHERE cle = ?", (cle,)).fetchone()
+    return l["valeur"] if l else ""
+
+
+def _pourmika_ecrire_meta(cle: str, valeur: str) -> None:
+    with _cx() as cx:
+        cx.execute("INSERT OR REPLACE INTO pourmika_meta (cle, valeur) VALUES (?, ?)", (cle, valeur))
+
+
+def pourmika_synchroniser_fichier(force: bool = False) -> dict | None:
+    """Verse ou met a jour les codes depuis le fichier. Rend le compte rendu,
+    ou None si rien n'a ete fait (fichier absent, ou deja importe et `force`
+    faux).
+
+    ⚠ L'AUTEUR LIVRE DES VERSIONS SUCCESSIVES, ET IL FAUT LES ABSORBER SANS
+    PERDRE CE QUI A ETE FAIT ICI. C'est ce qu'il a dit lui-meme (08/09/2026) :
+    il corrige les codes au fil des cas, garde ses corrections en JSON et les
+    integre a la version suivante. Regle de fusion, par code :
+      - present dans le fichier, absent ou d'origine 'fichier' ici -> pris
+        tel quel (ajoute ou remplace) ;
+      - present dans le fichier, mais ajoute ou modifie ici ('site') ->
+        CONSERVE tel qu'il est ici, et compte comme « garde » ;
+      - absent du nouveau fichier, d'origine 'fichier' -> supprime (l'auteur
+        l'a retire) ; d'origine 'site' -> conserve.
+    L'empreinte du fichier est memorisee : au demarrage suivant, rien ne se
+    passe tant que le fichier n'a pas change."""
+    texte = _pourmika_lire_fichier()
+    if texte is None:
+        return None
+    empreinte = hashlib.sha256(texte.encode("utf-8")).hexdigest()
+    with _cx() as cx:
+        vide = cx.execute("SELECT 1 FROM pourmika_codes LIMIT 1").fetchone() is None
+    if not force and not vide and _pourmika_meta("empreinte") == empreinte:
+        return None
+    bornes = _pourmika_bornes(texte)
+    if bornes is None:
+        sys.stderr.write("pourmika : marqueur des codes introuvable, rien importe\n")
+        return None
+    codes = _pourmika_litteral_vers_json(texte[bornes[0]:bornes[1]])
+    maintenant = _maintenant()
+    bilan = {"ajoutes": 0, "remplaces": 0, "gardes": 0, "supprimes": 0, "total_fichier": len(codes)}
+    with _cx() as cx:
+        existants = {l["code"]: l["origine"] for l in cx.execute("SELECT code, origine FROM pourmika_codes")}
+        vus = set()
+        for rang, c in enumerate(codes):
+            code = str(c.get("c") or "")
+            if not code:
+                continue
+            vus.add(code)
+            contenu = json.dumps(c, ensure_ascii=False)
+            if code not in existants:
+                cx.execute("INSERT INTO pourmika_codes (code, rang, contenu, maj, origine)"
+                           " VALUES (?, ?, ?, ?, 'fichier')", (code, rang, contenu, maintenant))
+                bilan["ajoutes"] += 1
+            elif existants[code] == "fichier":
+                cx.execute("UPDATE pourmika_codes SET rang = ?, contenu = ?, maj = ? WHERE code = ?",
+                           (rang, contenu, maintenant, code))
+                bilan["remplaces"] += 1
+            else:
+                bilan["gardes"] += 1
+        for code, origine in existants.items():
+            if code not in vus and origine == "fichier":
+                cx.execute("DELETE FROM pourmika_codes WHERE code = ?", (code,))
+                bilan["supprimes"] += 1
+        cx.execute("INSERT OR REPLACE INTO pourmika_meta (cle, valeur) VALUES ('empreinte', ?)", (empreinte,))
+        cx.execute("INSERT OR REPLACE INTO pourmika_meta (cle, valeur) VALUES ('dernier_import', ?)",
+                   (json.dumps({"quand": maintenant, **bilan}, ensure_ascii=False),))
+    sys.stderr.write("pourmika : import du fichier, %r\n" % (bilan,))
+    return bilan
+
+
+def pourmika_codes(avec_origine: bool = False) -> list:
+    """Les codes, dans l'ordre du fichier. `avec_origine` ajoute la cle
+    `_origine` ('fichier' / 'site') pour l'ecran de gestion ; l'application,
+    elle, ne la recoit jamais."""
+    with _cx() as cx:
+        lignes = cx.execute("SELECT contenu, origine FROM pourmika_codes ORDER BY rang, code").fetchall()
+    if not avec_origine:
+        return [json.loads(l["contenu"]) for l in lignes]
+    sortie = []
+    for l in lignes:
+        c = json.loads(l["contenu"])
+        c["_origine"] = l["origine"]
+        sortie.append(c)
+    return sortie
+
+
+def pourmika_code(code: str) -> dict | None:
+    with _cx() as cx:
+        l = cx.execute("SELECT contenu FROM pourmika_codes WHERE code = ?", (code,)).fetchone()
+    return json.loads(l["contenu"]) if l else None
+
+
+def pourmika_enregistrer_code(champs: dict, ancien: str = "") -> dict:
+    """Ajoute ou modifie un code. `ancien` = le code d'origine quand on le
+    renomme. Leve ValueError avec un message lisible."""
+    code = (champs.get("c") or "").strip()
+    if not code:
+        raise ValueError("Le code est obligatoire.")
+    if not (champs.get("fr") or "").strip():
+        raise ValueError("Le libelle francais est obligatoire.")
+    contenu = {
+        "c": code,
+        "cc": (champs.get("cc") or "").strip(),
+        "fr": (champs.get("fr") or "").strip(),
+        "nl": (champs.get("nl") or "").strip(),
+        "art": (champs.get("art") or "").strip(),
+        "main": str(champs.get("main") or "").lower() in ("1", "on", "true", "oui"),
+        "c3": (champs.get("c3") or "").strip(),
+    }
+    maintenant = _maintenant()
+    with _cx() as cx:
+        if ancien and ancien != code:
+            if cx.execute("SELECT 1 FROM pourmika_codes WHERE code = ?", (code,)).fetchone():
+                raise ValueError("Le code %s existe deja." % code)
+            cx.execute("UPDATE pourmika_codes SET code = ?, contenu = ?, maj = ?, origine = 'site'"
+                       " WHERE code = ?",
+                       (code, json.dumps(contenu, ensure_ascii=False), maintenant, ancien))
+            if cx.total_changes == 0:
+                raise ValueError("Le code %s n'existe pas." % ancien)
+            return contenu
+        existant = cx.execute("SELECT rang FROM pourmika_codes WHERE code = ?", (code,)).fetchone()
+        if existant:
+            cx.execute("UPDATE pourmika_codes SET contenu = ?, maj = ?, origine = 'site' WHERE code = ?",
+                       (json.dumps(contenu, ensure_ascii=False), maintenant, code))
+        else:
+            if ancien:
+                raise ValueError("Le code %s n'existe pas." % ancien)
+            rang = cx.execute("SELECT COALESCE(MAX(rang), -1) + 1 AS r FROM pourmika_codes").fetchone()["r"]
+            cx.execute("INSERT INTO pourmika_codes (code, rang, contenu, maj, origine)"
+                       " VALUES (?, ?, ?, ?, 'site')",
+                       (code, rang, json.dumps(contenu, ensure_ascii=False), maintenant))
+    return contenu
+
+
+def pourmika_supprimer_code(code: str) -> bool:
+    with _cx() as cx:
+        cx.execute("DELETE FROM pourmika_codes WHERE code = ?", (code,))
+        return cx.total_changes > 0
+
+
+def pourmika_etat() -> dict:
+    with _cx() as cx:
+        return {l["cle"]: l["valeur"] for l in cx.execute("SELECT cle, valeur FROM pourmika_etat")}
+
+
+def pourmika_ecrire_etat(cle: str, valeur: str | None) -> None:
+    """Une cle du stockage local, recopiee (valeur) ou effacee (None). Seules
+    les cles de l'application sont acceptees : le navigateur n'ecrit ici que
+    ce qui commence par son prefixe."""
+    if not cle.startswith(POURMIKA_PREFIXE_STOCKAGE):
+        raise ValueError("cle hors du prefixe de l'application")
+    with _cx() as cx:
+        if valeur is None:
+            cx.execute("DELETE FROM pourmika_etat WHERE cle = ?", (cle,))
+        else:
+            cx.execute("INSERT OR REPLACE INTO pourmika_etat (cle, valeur, maj) VALUES (?, ?, ?)",
+                       (cle, valeur, _maintenant()))
+
+
+# Le pont entre le stockage local du navigateur et la base. Pose AVANT le
+# script de l'application, donc execute avant elle (un script ordinaire
+# s'execute a la lecture, un module apres l'analyse de la page).
+#
+#   - au chargement, l'etat rendu par le serveur est recopie dans le stockage
+#     local, cle par cle. Le serveur fait foi : ce qui a ete enregistre depuis
+#     un autre poste remplace ce que ce navigateur avait garde ;
+#   - ensuite, chaque ecriture de l'application (setItem / removeItem sur une
+#     cle `codex.v2.*`) part au serveur. Un echec est reessaye trois fois puis
+#     signale en console : rien n'est perdu en silence.
+POURMIKA_PONT = """<script>
+(function () {
+  var PREFIXE = %(prefixe)s;
+  var ETAT = %(etat)s;
+  try {
+    Object.keys(ETAT).forEach(function (cle) { localStorage.setItem(cle, ETAT[cle]); });
+  } catch (e) { console.warn("pourmika : stockage local indisponible", e); }
+  function envoyer(cle, valeur, essai) {
+    fetch("/pourmika/etat", {
+      method: "POST", credentials: "same-origin",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({cle: cle, valeur: valeur})
+    }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); })
+      .catch(function (e) {
+        if (essai < 3) setTimeout(function () { envoyer(cle, valeur, essai + 1); }, 1500 * (essai + 1));
+        else console.error("pourmika : sauvegarde perdue pour " + cle, e);
+      });
+  }
+  var setItem = Storage.prototype.setItem, removeItem = Storage.prototype.removeItem;
+  Storage.prototype.setItem = function (cle, valeur) {
+    setItem.call(this, cle, valeur);
+    if (this === localStorage && String(cle).indexOf(PREFIXE) === 0) envoyer(String(cle), String(valeur), 0);
+  };
+  Storage.prototype.removeItem = function (cle) {
+    removeItem.call(this, cle);
+    if (this === localStorage && String(cle).indexOf(PREFIXE) === 0) envoyer(String(cle), null, 0);
+  };
+})();
+</script>
+"""
+
+
+def pourmika_page() -> bytes | None:
+    """La page servie : le fichier, ses codes remplaces par ceux de la base,
+    et le pont pose avant l'application. None si le fichier manque."""
+    texte = _pourmika_lire_fichier()
+    if texte is None:
+        return None
+    bornes = _pourmika_bornes(texte)
+    if bornes is None:
+        sys.stderr.write("pourmika : marqueur des codes introuvable, page servie telle quelle\n")
+    else:
+        codes = json.dumps(pourmika_codes(), ensure_ascii=False, separators=(",", ":"))
+        # `</script>` dans un libelle fermerait la balise : on le neutralise
+        # comme le fait tout gabarit JSON-dans-HTML.
+        codes = codes.replace("</", "<\\/")
+        texte = texte[:bornes[0]] + codes + texte[bornes[1]:]
+    pont = POURMIKA_PONT % {
+        "prefixe": json.dumps(POURMIKA_PREFIXE_STOCKAGE),
+        "etat": json.dumps(pourmika_etat(), ensure_ascii=False).replace("</", "<\\/"),
+    }
+    # Juste apres <head> : avant toute balise de script de l'application.
+    i = texte.find("<head>")
+    if i < 0:
+        texte = pont + texte
+    else:
+        i += len("<head>")
+        texte = texte[:i] + "\n" + pont + texte[i:]
+    return texte.encode("utf-8")
+
+
 # Inscription LIBRE : quiconque a l'adresse du site peut demander un compte,
 # qui reste en attente de validation. La mettre a "0" ferme cette porte : seul
 # un LIEN D'INVITATION permet alors de creer un compte.
@@ -650,6 +1056,33 @@ CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 -- brulait, puis disparaissait sans laisser une ligne. On prend sa photo juste
 -- avant d'eteindre la table (`_noter_abandon`), et elle rejoint la liste des
 -- parties terminees avec la mention « abandonnee ».
+-- La page privee CODEX (/pourmika) : sa liste de codes et ses saisies.
+-- Une ligne par code, le contenu en JSON tel que l'application le lit
+-- (cles c, cc, fr, nl, art, main, c3). `rang` garde l'ordre d'origine du
+-- fichier, que l'application reprend tel quel.
+CREATE TABLE IF NOT EXISTS pourmika_codes (
+    code    TEXT PRIMARY KEY,
+    rang    INTEGER NOT NULL,
+    contenu TEXT NOT NULL,
+    maj     TEXT NOT NULL,
+    -- 'fichier' : tel que livre par l'auteur ; 'site' : ajoute ou modifie
+    -- ici. Une nouvelle version du fichier remplace les premiers et
+    -- conserve les seconds (voir pourmika_synchroniser_fichier).
+    origine TEXT NOT NULL DEFAULT 'fichier'
+);
+-- L'empreinte du fichier deja importe, pour ne reimporter qu'une version
+-- nouvelle, et le compte rendu du dernier import.
+CREATE TABLE IF NOT EXISTS pourmika_meta (
+    cle    TEXT PRIMARY KEY,
+    valeur TEXT NOT NULL
+);
+-- Ce que l'application range dans le stockage local du navigateur (cas
+-- personnels, historique, langue), recopie ici pour le retrouver partout.
+CREATE TABLE IF NOT EXISTS pourmika_etat (
+    cle    TEXT PRIMARY KEY,
+    valeur TEXT NOT NULL,
+    maj    TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS abandons (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     quand       TEXT NOT NULL,
@@ -700,6 +1133,10 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE messages ADD COLUMN destinataire TEXT")
         if "mdp_jeu" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN mdp_jeu TEXT")
+        # Meme precaution pour la table des codes CODEX creee avant `origine`.
+        colonnes_codes = {r["name"] for r in cx.execute("PRAGMA table_info(pourmika_codes)")}
+        if colonnes_codes and "origine" not in colonnes_codes:
+            cx.execute("ALTER TABLE pourmika_codes ADD COLUMN origine TEXT NOT NULL DEFAULT 'fichier'")
         # Meme precaution pour les bases creees avant la purge des rapports.
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
@@ -1509,9 +1946,13 @@ PAGE = """<!doctype html>
 def _barre(pseudo: str) -> str:
     admin = (' &middot; <a href="/admin">Administration</a>'
              ' &middot; <a href="/suivi">Suivi des parties</a>') if pseudo == ADMIN else ""
-    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
+    # Le lien n'apparait qu'a ceux qui peuvent l'ouvrir : montrer une porte
+    # fermee n'aide personne.
+    codex = (' &middot; <a href="/pourmika">CODEX</a>'
+             ' &middot; <a href="/pourmika/codes">Codes CODEX</a>') if pseudo in POURMIKA_COMPTES else ""
+    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s%s</span>'
             '<a href="/deconnexion">Se deconnecter</a></div>'
-            % (html.escape(pseudo), admin))
+            % (html.escape(pseudo), admin, codex))
 
 
 def page_attente(pseudo: str) -> bytes:
@@ -2086,6 +2527,91 @@ PAGE_SUIVI = """<!doctype html>
 """ + SUIVI_SCRIPT + """
 """
 
+PAGE_POURMIKA_CODES = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CODEX — gestion des codes</title>
+<style>
+  :root {{ color-scheme: dark; }}
+  body {{ margin:0; font:15px/1.45 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
+         display:flex; justify-content:center; padding:1.5rem 1rem; }}
+  main {{ width:100%; max-width:62rem; }}
+  h1 {{ font-size:1.3rem; margin:0 0 .2rem; }}
+  h2 {{ font-size:1rem; margin:1.6rem 0 .5rem; }}
+  p.sous {{ color:#9aa7b4; margin:0 0 1rem; }}
+  .message {{ border:1px solid #238636; background:#0f1f14; color:#3fb950; padding:.5rem .8rem; border-radius:.4rem; }}
+  form.recherche {{ display:flex; gap:.5rem; margin:.5rem 0 1rem; }}
+  input, textarea {{ font:inherit; background:#161b22; color:inherit; border:1px solid #30363d; border-radius:.4rem; padding:.4rem .6rem; }}
+  input[type=text] {{ width:100%; box-sizing:border-box; }}
+  button {{ font:inherit; font-size:.9rem; border-radius:.4rem; padding:.4rem .9rem; cursor:pointer;
+           border:1px solid #30363d; background:transparent; color:inherit; }}
+  button.oui {{ border-color:#238636; color:#3fb950; }}
+  button.non {{ border-color:#f85149; color:#f85149; }}
+  table {{ width:100%; border-collapse:collapse; font-size:.9rem; }}
+  th, td {{ text-align:left; padding:.4rem .4rem; border-bottom:1px solid #21262d; vertical-align:top; }}
+  th {{ color:#9aa7b4; font-weight:500; font-size:.8rem; }}
+  td.nl {{ color:#9aa7b4; }}
+  code {{ background:#161b22; padding:.1rem .35rem; border-radius:.3rem; font-size:.85rem; white-space:nowrap; }}
+  a {{ color:#58a6ff; }}
+  .fiche {{ border:1px solid #30363d; border-radius:.6rem; padding:1rem; background:#11161d; }}
+  .fiche label {{ display:block; margin-bottom:.6rem; color:#9aa7b4; font-size:.85rem; }}
+  .fiche label input[type=text] {{ margin-top:.2rem; color:#e6edf3; }}
+  .fiche .rangee {{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.6rem; }}
+  .fiche .actions {{ display:flex; gap:.6rem; align-items:center; margin-top:.4rem; }}
+  .fiche .actions form {{ margin:0; }}
+  .ici {{ color:#d29922; font-size:.8rem; }}
+</style>
+<main>
+  <h1>CODEX : les codes</h1>
+  <p class="sous">{total} codes en base, dont {ici} ajoute(s) ou modifie(s) ici.
+  Ce qui est enregistre ici est ce que l'application affiche, des son prochain
+  chargement. <a href="/pourmika">Ouvrir l'application</a> · <a href="/">Retour au site</a></p>
+  <p class="sous">{dernier_import} Une nouvelle version du fichier de l'auteur
+  est importee toute seule au redemarrage : ses codes remplacent les siens, ceux
+  ajoutes ou modifies ici sont gardes.
+  <form method="post" action="/pourmika/codes" style="display:inline">
+    <input type="hidden" name="action" value="reimporter">
+    <button type="submit">Reimporter le fichier maintenant</button></form></p>
+  {message}
+
+  <h2>{titre_form}</h2>
+  <div class="fiche">
+    <form method="post" action="/pourmika/codes">
+      <input type="hidden" name="action" value="enregistrer">
+      <input type="hidden" name="ancien" value="{ancien}">
+      <input type="hidden" name="q" value="{q}">
+      <div class="rangee">
+        <label>Code (ex. 010101A0000)<input type="text" name="c" value="{c}" required></label>
+        <label>Code court (ex. 010101)<input type="text" name="cc" value="{cc}"></label>
+        <label>Article<input type="text" name="art" value="{art}"></label>
+      </div>
+      <label>Libelle francais<input type="text" name="fr" value="{fr}" required></label>
+      <label>Libelle neerlandais<input type="text" name="nl" value="{nl}"></label>
+      <div class="rangee">
+        <label>Suffixe (c3)<input type="text" name="c3" value="{c3}"></label>
+        <label style="align-self:end"><input type="checkbox" name="main" value="1"{main_coche}> Code principal</label>
+      </div>
+      <div class="actions">
+        <button class="oui" type="submit">Enregistrer</button>
+        {annuler}
+      </div>
+    </form>
+    <div class="actions">{supprimer}</div>
+  </div>
+
+  <h2>Rechercher</h2>
+  <form class="recherche" method="get" action="/pourmika/codes">
+    <input type="text" name="q" value="{q}" placeholder="code, libelle, article…" autofocus>
+    <button type="submit">Chercher</button>
+  </form>
+  <p class="sous">{trouves} resultat(s){tronque}.</p>
+  <table>
+    <tr><th>Code</th><th>Francais</th><th>Neerlandais</th><th>Art.</th><th></th><th></th></tr>
+    {lignes}
+  </table>
+</main>
+"""
+
 MANIFESTE_SUIVI = json.dumps({
     "name": "Suivi des parties NarwhalChampions",
     "short_name": "Parties",
@@ -2285,6 +2811,88 @@ class Handler(BaseHTTPRequestHandler):
         mime = types.get(nom.rsplit(".", 1)[-1].lower(), "application/octet-stream")
         self._repondre(200, image, mime)
 
+    def _pourmika_autorise(self, pseudo) -> bool:
+        """⚠ MEME GARDE QUE /suivi, ET DANS LE MEME ORDRE : un anonyme est
+        renvoye au formulaire de connexion (il ne saura pas que la page
+        existe), un compte connecte mais non autorise recoit un refus net. La
+        liste des ayants droit est `POURMIKA_COMPTES`. Rend False apres avoir
+        repondu, True s'il faut continuer."""
+        if not pseudo:
+            self._rediriger("/")
+            return False
+        if pseudo not in POURMIKA_COMPTES:
+            self._repondre(403, b"Page privee.", "text/plain; charset=utf-8")
+            return False
+        return True
+
+    def _page_pourmika_codes(self, q: str = "", code: str = "", message: str = "") -> bytes:
+        """L'ecran de gestion des codes : une recherche, la liste filtree, et
+        le formulaire (vide pour ajouter, rempli pour modifier)."""
+        import urllib.parse
+        q = (q or "").strip()
+        tous = pourmika_codes(avec_origine=True)
+        if q:
+            bas = q.lower()
+            trouves = [c for c in tous if bas in (c.get("c") or "").lower()
+                       or bas in (c.get("fr") or "").lower()
+                       or bas in (c.get("nl") or "").lower()
+                       or bas in (c.get("art") or "").lower()]
+        else:
+            trouves = tous
+        # On ne dessine jamais 5 000 lignes : au-dela du plafond, la page le
+        # dit et invite a affiner la recherche.
+        PLAFOND = 200
+        tronque = len(trouves) > PLAFOND
+        lignes = []
+        for c in trouves[:PLAFOND]:
+            etiquettes = []
+            if c.get("main"):
+                etiquettes.append("principal")
+            if c.get("_origine") == "site":
+                etiquettes.append('<span class="ici">modifie ici</span>')
+            lignes.append(
+                '<tr><td><code>%s</code></td><td>%s</td><td class="nl">%s</td><td>%s</td>'
+                '<td>%s</td><td><a href="/pourmika/codes?code=%s&amp;q=%s">Modifier</a></td></tr>'
+                % (html.escape(c.get("c") or ""), html.escape(c.get("fr") or ""),
+                   html.escape(c.get("nl") or ""), html.escape(c.get("art") or ""),
+                   " ".join(etiquettes),
+                   urllib.parse.quote(c.get("c") or ""), urllib.parse.quote(q)))
+        if not lignes:
+            lignes.append('<tr><td colspan="6" class="sous">Aucun code ne correspond.</td></tr>')
+        edite = pourmika_code(code) if code else None
+        champs = edite or {}
+        titre_form = ("Modifier le code %s" % html.escape(code)) if edite else "Ajouter un code"
+        supprimer = ('<form method="post" action="/pourmika/codes" '
+                     'onsubmit="return confirm(\'Supprimer ce code ?\')">'
+                     '<input type="hidden" name="action" value="supprimer">'
+                     '<input type="hidden" name="ancien" value="%s">'
+                     '<button class="non" type="submit">Supprimer</button></form>'
+                     % html.escape(code)) if edite else ""
+        try:
+            dernier = json.loads(_pourmika_meta("dernier_import") or "{}")
+        except ValueError:
+            dernier = {}
+        import_txt = ("Dernier import du fichier : %s (%d ajoutes, %d remplaces, %d gardes, %d supprimes)."
+                      % (html.escape(str(dernier.get("quand", "?"))), dernier.get("ajoutes", 0),
+                         dernier.get("remplaces", 0), dernier.get("gardes", 0),
+                         dernier.get("supprimes", 0))) if dernier else "Aucun import encore."
+        ici = sum(1 for c in tous if c.get("_origine") == "site")
+        return PAGE_POURMIKA_CODES.format(
+            total=len(tous), ici=ici, dernier_import=import_txt,
+            trouves=len(trouves), plafond=PLAFOND,
+            tronque=(' (les %d premiers sont affiches : affine la recherche)' % PLAFOND) if tronque else "",
+            q=html.escape(q), lignes="".join(lignes),
+            message=('<p class="message">%s</p>' % html.escape(message)) if message else "",
+            titre_form=titre_form,
+            ancien=html.escape(code if edite else ""),
+            c=html.escape(champs.get("c") or ""), cc=html.escape(champs.get("cc") or ""),
+            fr=html.escape(champs.get("fr") or ""), nl=html.escape(champs.get("nl") or ""),
+            art=html.escape(champs.get("art") or ""), c3=html.escape(champs.get("c3") or ""),
+            main_coche=" checked" if champs.get("main") else "",
+            supprimer=supprimer,
+            annuler=('<a href="/pourmika/codes?q=%s">Annuler</a>' % urllib.parse.quote(q)) if edite else "",
+        ).encode("utf-8")
+
     def _page_admin(self) -> bytes:
         lignes = []
         for c in liste_comptes():
@@ -2466,6 +3074,33 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
+        elif self.path == "/pourmika":
+            if not self._pourmika_autorise(pseudo):
+                return
+            page = pourmika_page()
+            if page is None:
+                self._repondre(404, b"Page introuvable sur le serveur.",
+                               "text/plain; charset=utf-8")
+                return
+            # `no-store` : une page privee n'a rien a faire dans un cache
+            # partage, ni dans l'historique d'un poste emprunte. Et elle
+            # porte l'etat du jour : la servir d'un cache rendrait un etat
+            # perime.
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "private, no-store")
+            self.send_header("Content-Length", str(len(page)))
+            self.end_headers()
+            self.wfile.write(page)
+        elif self.path.startswith("/pourmika/codes"):
+            import urllib.parse   # do_GET l'importe plus bas : sans ceci le nom serait local et vide ici
+            if not self._pourmika_autorise(pseudo):
+                return
+            requete = urllib.parse.urlparse(self.path)
+            params = urllib.parse.parse_qs(requete.query)
+            self._repondre(200, self._page_pourmika_codes(
+                q=params.get("q", [""])[0], code=params.get("code", [""])[0],
+                message=params.get("m", [""])[0]))
         elif self.path == "/api/suivi":
             if pseudo != ADMIN:
                 self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
@@ -2683,6 +3318,51 @@ class Handler(BaseHTTPRequestHandler):
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
 
+        elif self.path == "/pourmika/etat":
+            # Le pont du navigateur : une cle du stockage local, en JSON.
+            if not pseudo or pseudo not in POURMIKA_COMPTES:
+                self._repondre(403, b'{"error":"prive"}', "application/json; charset=utf-8")
+                return
+            taille = max(0, self._taille_corps())
+            brut = self.rfile.read(taille).decode("utf-8", "replace")
+            try:
+                donnee = json.loads(brut or "{}")
+                cle = str(donnee.get("cle") or "")
+                valeur = donnee.get("valeur")
+                pourmika_ecrire_etat(cle, None if valeur is None else str(valeur))
+            except (ValueError, AttributeError) as erreur:
+                self._repondre(400, json.dumps({"error": str(erreur)}).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8")
+        elif self.path == "/pourmika/codes":
+            if not self._pourmika_autorise(pseudo):
+                return
+            champs = self._champs()
+            action = champs.get("action", "enregistrer")
+            q = champs.get("q", "")
+            try:
+                if action == "reimporter":
+                    bilan = pourmika_synchroniser_fichier(force=True)
+                    if bilan is None:
+                        raise ValueError("Le fichier est introuvable ou n'a pas la forme attendue.")
+                    message = ("Fichier reimporte : %d ajoutes, %d remplaces, %d gardes, %d supprimes."
+                               % (bilan["ajoutes"], bilan["remplaces"], bilan["gardes"], bilan["supprimes"]))
+                elif action == "supprimer":
+                    ancien = champs.get("ancien", "")
+                    if not pourmika_supprimer_code(ancien):
+                        raise ValueError("Le code %s n'existe pas." % ancien)
+                    message = "Code %s supprime." % ancien
+                else:
+                    contenu = pourmika_enregistrer_code(champs, champs.get("ancien", ""))
+                    message = "Code %s enregistre." % contenu["c"]
+            except ValueError as erreur:
+                self._repondre(400, self._page_pourmika_codes(
+                    q=q, code=champs.get("ancien", ""), message=str(erreur)))
+                return
+            import urllib.parse   # meme raison que dans do_GET
+            self._rediriger("/pourmika/codes?q=%s&m=%s"
+                            % (urllib.parse.quote(q), urllib.parse.quote(message)))
         elif self.path == "/eteindre":
             # Aucun champ a lire ici : le bouton n'envoie rien, et le pseudo
             # vient du cookie. On ne touche donc pas au corps du tout.
@@ -2727,6 +3407,10 @@ def main() -> int:
         return 1
 
     initialiser_base()
+    bilan = pourmika_synchroniser_fichier()
+    if bilan:
+        print("  CODEX : fichier importe, %d ajoutes, %d remplaces, %d gardes, %d supprimes."
+              % (bilan["ajoutes"], bilan["remplaces"], bilan["gardes"], bilan["supprimes"]))
     orphelines = fermer_parties_orphelines()
     if orphelines:
         print(f"  {orphelines} table(s) laissee(s) ouverte(s) par la session precedente : fermees.")
