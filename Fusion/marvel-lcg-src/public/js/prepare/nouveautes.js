@@ -46,6 +46,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-08",
+        genre: "jeu",
+        fr: "On peut glisser une carte sur sa cible : le héros sur le méchant pour attaquer, sur une manigance pour contrer, un allié dans sa zone pour le jouer. Le clic marche toujours.",
+        en: "Cards can be dragged onto their target: the hero onto the villain to attack, onto a scheme to thwart, an ally into its area to play it. Clicking still works.",
+    },
+    {
+        date: "2026-09-08",
+        genre: "jeu",
+        fr: "Les cartes sur la table sont plus nettes : leur texte se lit mieux sans les agrandir.",
+        en: "Cards on the table are sharper: their text reads better without enlarging them.",
+    },
+    {
+        date: "2026-09-08",
         genre: "coulisses",
         fr: "Un écran de suivi des parties, pour voir d'un coup d'œil qui joue, à quoi, et comment ça s'est terminé.",
         en: "A game tracker screen, to see at a glance who is playing, against whom, and how it ended.",
