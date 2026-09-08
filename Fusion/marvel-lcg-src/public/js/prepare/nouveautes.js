@@ -37,6 +37,12 @@ export const GENRES = {
     coulisses:  { fr: "Coulisses",  en: "Behind the scenes" },
 };
 
+// ⚠ RIEN SUR LE PLATEAU DU TELEPHONE (retire le 08/09/2026, sur demande).
+// Le plateau paysage a ete livre puis abandonne des le premier essai sur un
+// vrai telephone : la carte est coupee et les menus ne sont pas faits pour le
+// doigt. La refonte en portrait attend dans
+// `.planning/todos/2026-09-07-parcours-solo-mobile-portrait.md`. On n'annonce
+// pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
         date: "2026-09-08",
@@ -49,12 +55,6 @@ export const NOUVEAUTES = [
         genre: "heros",
         fr: "Ares et Blade rejoignent le roster fan-made, chacun avec ses cartes signature et son set némésis.",
         en: "Ares and Blade join the fan-made roster, each with their signature cards and nemesis set.",
-    },
-    {
-        date: "2026-09-07",
-        genre: "jeu",
-        fr: "Le plateau du téléphone montre de vraies cartes en deux rangées, en plein écran et en paysage.",
-        en: "The phone board now shows real cards in two rows, full screen and in landscape.",
     },
     {
         date: "2026-09-07",
