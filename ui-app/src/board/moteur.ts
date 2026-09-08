@@ -344,6 +344,48 @@ export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined)
 export const DELAI_FILET_ANTI_BLOCAGE_CLIC_MS = 90_000
 
 /**
+ * FILET DE RESYNCHRONISATION, période du battement (ms).
+ *
+ * Le moteur n'avance que lorsque CHAQUE siège a accusé réception de la trame
+ * courante (`WaitSync`, engine/device/manager/base.py). Si cet accusé se perd
+ * en chemin — latence, coupure/reconnexion pendant la mise en place — le moteur
+ * attend en silence un siège qui, lui, se croit à jour : la table se fige, sans
+ * demande, sans un mot. Vu en production sur une partie coop (mulligan jamais
+ * proposé), jamais en local où la latence est nulle.
+ *
+ * Le serveur DIT pourtant qui il attend : chaque trame porte
+ * `siegesNonAcquittes`. Tant que ce client y figure encore, on renvoie
+ * périodiquement l'accusé de la trame courante. C'est idempotent côté serveur
+ * (`ClientUpdateRenderId` réécrit la même valeur puis réveille `WaitSync`), et
+ * la condition se referme d'elle-même dès que le moteur avance : plus rien à
+ * renvoyer. Un heartbeat, pas une rustine sur le cœur de la synchro.
+ */
+export const DELAI_FILET_RESYNC_MS = 4_000
+
+/**
+ * Faut-il renvoyer l'accusé de la trame courante ? Décision PURE, exportée pour
+ * être testable seule (même raison que `lireTrame`) : c'est le cœur du filet de
+ * resync, et une faute ici ne se verrait qu'en partie, sur une table figée.
+ *
+ * Vrai seulement si le serveur dit encore qu'il attend un accusé d'un siège que
+ * ce client tient. `siegesNonAcquittes` à `undefined` (moteur qui ne le publie
+ * pas) ou vide (personne en retard) => faux, on ne renvoie rien.
+ */
+export function doitRenvoyerAccuse(params: {
+  connecte: boolean
+  aDemande: boolean
+  gameOver: boolean
+  multijoueur: boolean
+  playerId: number
+  siegesNonAcquittes: number[] | undefined
+}): boolean {
+  const { connecte, aDemande, gameOver, multijoueur, playerId, siegesNonAcquittes } = params
+  if (!connecte || aDemande || gameOver) return false
+  if (siegesNonAcquittes === undefined) return false
+  return multijoueur ? siegesNonAcquittes.includes(playerId) : siegesNonAcquittes.length > 0
+}
+
+/**
  * Une notification poussee par le moteur (Notify.Show, cote Python). Elle arrive
  * dans `notify_texts`, chaque entree etant un objet DEJA serialise en JSON.
  */
@@ -797,6 +839,8 @@ export class Moteur {
   private siegesRattrapes = false
   /** Minuteur qui guette le silence apres l'ouverture du socket. */
   private guetteurSieges: number | undefined
+  /** Battement du filet de resynchronisation (voir DELAI_FILET_RESYNC_MS). */
+  private battementResync: number | undefined
 
   /**
    * Le recapitulatif de fin doit porter sur LA partie qui vient de finir. Sans
@@ -838,15 +882,54 @@ export class Moteur {
     // Premiere lecture sans attendre la premiere trame : la page montre la
     // partie tout de suite, meme si le moteur ne rend rien dans l'immediat.
     void this.lire()
+    // Le filet de resync bat pendant toute la vie de la partie. Il ne fait
+    // rien tant que le serveur ne dit pas qu'il attend notre accuse.
+    if (this.battementResync === undefined) {
+      this.battementResync = window.setInterval(() => void this.verifierResync(), DELAI_FILET_RESYNC_MS)
+    }
   }
 
   arreter() {
     this.vivant = false
     if (this.relance !== undefined) window.clearTimeout(this.relance)
     if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
+    if (this.battementResync !== undefined) {
+      window.clearInterval(this.battementResync)
+      this.battementResync = undefined
+    }
     this.socket?.close()
     this.socket = null
     this.ecouteurs.clear()
+  }
+
+  /**
+   * Renvoie l'accuse de la trame courante SI le serveur dit qu'il l'attend
+   * encore. Voir DELAI_FILET_RESYNC_MS pour le pourquoi.
+   *
+   * Trois gardes, dans cet ordre :
+   *   — connecte, sinon l'envoi echouerait et la reconnexion s'en charge deja ;
+   *   — aucune DEMANDE en cours : si le moteur nous interroge, ce n'est pas un
+   *     accuse qui manque mais notre reponse, et le joueur en est maitre ;
+   *   — la partie n'est pas finie.
+   * Alors seulement on regarde `siegesNonAcquittes` : liste `undefined` (moteur
+   * qui ne le publie pas) ou vide (personne en retard) => on ne fait rien. En
+   * hot-seat ce client tient tous les sieges, donc tout siege en retard nous
+   * concerne ; en multijoueur, seul le notre.
+   */
+  private async verifierResync(): Promise<void> {
+    if (!this.vivant) return
+    const trame = this.trame
+    if (!trame) return
+    const doit = doitRenvoyerAccuse({
+      connecte: this.etat.connecte,
+      aDemande: this.etat.demande !== undefined,
+      gameOver: this.etat.monde?.game_over === true,
+      multijoueur: estMultijoueur(),
+      playerId: this.playerId,
+      siegesNonAcquittes: trame.siegesNonAcquittes,
+    })
+    if (!doit) return
+    await accuserReception(this.playerId, trame)
   }
 
   private ouvrirSocket() {
