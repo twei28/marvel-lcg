@@ -26,7 +26,14 @@ import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { BarreAction } from './board/BarreAction'
-import { Board, CarteApercu } from './board/Board'
+import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
+import {
+  ciblesDeLaSource,
+  estSourceGlissable,
+  optionsDuDepot,
+  raisonDuRefus,
+  zonesDeLaSource,
+} from './board/glisser/cibles'
 import { PlateauMobile } from './board/mobile/PlateauMobile'
 import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { CoucheAnimations } from './board/CoucheAnimations'
@@ -2058,6 +2065,121 @@ function PagePartie({
     },
     [etat.monde, nomsFr]
   )
+  /* ---- Le glisser-deposer : les REGLES (8 septembre 2026) -----------------
+     Le plateau tient le geste et le dessin ; ici vivent les regles, parce que
+     seule cette page connait les options du moteur. Rien n'est devine : tout
+     sort de `all_legal_targets` et de `failure_reason`.
+
+     ⚠ LE GESTE NE S'OFFRE QUE QUAND LE CLIC L'EST DEJA : notre tour, connecte,
+     et aucune action deja engagee. Pendant un ciblage ou un paiement, la table
+     appartient a l'action en cours, et le clic y suffit. */
+  const idIdentiteGlisser = etat.monde?.players?.[joueurActif]?.area_hero?.[0]?.id
+  const optionsCourantes = useMemo(() => etat.demande?.options ?? [], [etat.demande])
+  const reglagesGlisser = useMemo<ReglagesGlisser | undefined>(() => {
+    if (!etat.aNous || !etat.connecte || interaction.option !== undefined || !plateau) {
+      return undefined
+    }
+    // Ou vit chaque carte DESSINEE. Une zone vide n'existe pas dans le DOM
+    // (`emplacement()` la supprime), elle n'apparait donc pas ici non plus.
+    const zoneDeLaCarte = new Map<number, string>()
+    for (const emplacement of plateau.emplacements) {
+      for (const groupe of emplacement.groupes) {
+        for (const unite of groupe) {
+          zoneDeLaCarte.set(Number(unite.carte.id), emplacement.cle)
+          for (const attachee of unite.attachees) {
+            zoneDeLaCarte.set(Number(attachee.id), emplacement.cle)
+          }
+        }
+      }
+    }
+    const zonesPourSource = (sourceId: number) =>
+      zonesDeLaSource(
+        optionsCourantes,
+        sourceId,
+        (id) => zoneDeLaCarte.get(id),
+        idIdentiteGlisser
+      )
+    return {
+      estSource: (id) => estSourceGlissable(optionsCourantes, id, idIdentiteGlisser),
+      ciblesLegales: (sourceId) =>
+        ciblesDeLaSource(optionsCourantes, sourceId, plateau.idsAffiches, idIdentiteGlisser),
+      zonesLegales: (sourceId) => new Set(zonesPourSource(sourceId).keys()),
+      libelle: (sourceId, cible) => {
+        if (cible.carteId !== undefined) {
+          const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
+          const nomCible = nomPorteurFr(cible.carteId) ?? ''
+          if (actions.length === 1) return `${nomLisible(actions[0]!)} · ${nomCible}`
+          if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
+          return (
+            raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser) ??
+            t('Pas ici')
+          )
+        }
+        // Lache dans une zone : elle vaut la cible qu'elle contient, on annonce
+        // donc exactement ce qu'un lacher sur cette carte annoncerait.
+        const parZone = cible.zone ? zonesPourSource(sourceId).get(cible.zone) : undefined
+        if (parZone !== undefined) {
+          const actions = optionsDuDepot(optionsCourantes, sourceId, parZone, idIdentiteGlisser)
+          const nomCible = nomPorteurFr(parZone) ?? ''
+          if (actions[0] && actions.length === 1) return `${nomLisible(actions[0])} · ${nomCible}`
+          if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
+        }
+        return cible.zone ? t('Pas ici') : undefined
+      },
+      onDepot: (sourceId, cible) => {
+        if (cible.carteId !== undefined) {
+          const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
+          if (actions[0] && actions.length === 1) {
+            choisirOptionDepuisMenu(actions[0], [cible.carteId])
+            return undefined
+          }
+          if (actions.length > 1) {
+            // Plusieurs actions visent cette carte : on ouvre le menu de
+            // ciblage, celui-la meme qu'un clic sur la cible aurait ouvert. Il
+            // s'ancre sur la carte lachee, donc a l'endroit du geste.
+            interaction.focaliserCible(cible.carteId)
+            return undefined
+          }
+          return (
+            raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser) ||
+            t('Cette carte ne peut pas viser celle-ci.')
+          )
+        }
+        if (cible.zone) {
+          // Une zone vaut la cible qu'elle contient : lacher dedans, c'est
+          // lacher sur cette carte. C'est ainsi qu'on jette un allie dans
+          // l'aire de son heros sans avoir a viser l'identite au pixel pres.
+          const parZone = zonesPourSource(sourceId).get(cible.zone)
+          if (parZone !== undefined) {
+            const actions = optionsDuDepot(optionsCourantes, sourceId, parZone, idIdentiteGlisser)
+            if (actions[0] && actions.length === 1) {
+              choisirOptionDepuisMenu(actions[0], [parZone])
+              return undefined
+            }
+            if (actions.length > 1) {
+              interaction.focaliserCible(parZone)
+              return undefined
+            }
+          }
+          return t('Cette carte ne se pose pas ici.')
+        }
+        // Lache dans le vide : il n'y avait pas de cible, il n'y a rien a
+        // expliquer. La carte revient a sa place, sans un mot.
+        return undefined
+      },
+    }
+  }, [
+    etat.aNous,
+    etat.connecte,
+    interaction,
+    plateau,
+    optionsCourantes,
+    idIdentiteGlisser,
+    cartesMondeParId,
+    nomPorteurFr,
+    choisirOptionDepuisMenu,
+  ])
+
   const basculerTextesCdb = useCallback(() => {
     setTextesCdb((v) => {
       const nouveau = !v
@@ -3022,6 +3144,7 @@ function PagePartie({
           </div>
         }
         interactifs={interactifsAvecPulse}
+        glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
         mainVisibleForcee={
           interaction.option !== undefined &&

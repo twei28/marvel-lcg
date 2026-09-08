@@ -2235,7 +2235,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // ares — To Battle! (Event, x3)
   'ar003': "<b>Action de héros</b> : choisissez deux des options suivantes :\n• Cherchez une amélioration [[TACTIC]] ou [[WEAPON]] dans votre deck et votre défausse et ajoutez-la à votre main.\n• Redressez une amélioration spécifique au héros que vous contrôlez.\n• Redressez Ares.",
   // ares — * Ares' Axe (Upgrade)
-  'ar004': "Restreinte.\n<b>Interruption de héros</b> : quand Ares effectue une attaque de base contre un ennemi, inclinez la Hache d'Ares → vous gagnez +1 ATQ pour cette attaque pour chaque amélioration attachée à cet ennemi. Cette attaque gagne <b><i>Perforation</i></b>.",
+  'ar004': "Restreinte.\n<b>Interruption de héros</b> : quand Ares effectue une attaque de base contre un ennemi, inclinez la Hache d'Ares → vous gagnez +1 ATQ pour cette attaque pour chaque amélioration attachée à cet ennemi. Cette attaque gagne <b><i>Perçant</i></b>.",
   // ares — * Ares' Battle Helm (Upgrade)
   'ar005': "<b>Réponse de héros</b> : après qu'Ares attaque et vainc un ennemi, inclinez le Casque de guerre d'Ares et choisissez une manigance → retirez 1 menace de cette manigance pour chaque point de dégât excédentaire infligé à cet ennemi par cette attaque.",
   // ares — Feint (Upgrade, x3)
@@ -2264,7 +2264,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // blade — Gear Up (Event, x2)
   'bl002': "Réduisez de 1 le coût pour jouer cette carte si vous êtes sous forme d'alter ego.\n<b>Action</b> : cherchez une carte [[ATTACK]], [[ITEM]], [[TACTIC]] ou [[WEAPON]] dans votre deck et votre défausse et ajoutez-la à votre main.",
   // blade — Go for the Heart (Event, x3)
-  'bl003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Cette attaque gagne <b><i>Perforation</i></b>. Vous pouvez incliner une amélioration [[WEAPON]] que vous contrôlez pour étourdir cet ennemi.",
+  'bl003': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Cette attaque gagne <b><i>Perçant</i></b>. Vous pouvez incliner une amélioration [[WEAPON]] que vous contrôlez pour étourdir cet ennemi.",
   // blade — On the Hunt (Event, x2)
   'bl004': "<b>Action de héros</b> <i>(contre)</i> : cherchez un sbire dans le deck rencontre et mettez-le en jeu engagé avec vous → retirez 3 menaces d'une manigance. Si ce sbire a le trait [[VAMPIRE]], piochez 1 carte.",
   // blade — Vampire Bite (Event, x2)
@@ -2272,25 +2272,25 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // blade — Vampiric Reflexes (Event, x2)
   'bl006': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, quel qu'en soit le montant, empêchez tous ces dégâts. Vous pouvez incliner une amélioration [[WEAPON]] que vous contrôlez pour gagner <b><i>Riposte 1</i></b> jusqu'à la fin du round.",
   // blade — Bandolier of Stakes (Upgrade)
-  'bl007': "Utilisations (3 pions pieu).\n<b>Interruption de héros</b> : quand un héros attaque, retirez 1 pion pieu d'ici → cette attaque inflige 1 dégât supplémentaire et gagne <b><i>Perforation</i></b>.",
+  'bl007': "Utilisations (3 pions pieu).\n<b>Interruption de héros</b> : quand un héros attaque, retirez 1 pion pieu d'ici → cette attaque inflige 1 dégât supplémentaire et gagne <b><i>Perçant</i></b>.",
   // blade — * Blade's Sword (Upgrade)
-  'bl008': "Restreinte.\n<b>Interruption de héros</b> : quand Blade effectue une attaque avec <b><i>Perforation</i></b>, augmentez de 1 le montant des dégâts que cette attaque inflige.",
+  'bl008': "Restreinte.\n<b>Interruption de héros</b> : quand Blade effectue une attaque avec <b><i>Perçant</i></b>, augmentez de 1 le montant des dégâts que cette attaque inflige.",
   // blade — Daywalker (Upgrade)
-  'bl009': "Vous avez +3 points de vie et vos attaques Vampire Bite gagnent <b><i>Perforation</i></b>.\n<b>Interruption de héros</b> : quand vous devriez déclencher la capacité <i>Ruée sanguine</i> de Blade, subissez 2 dégâts → résolvez cette capacité sans payer son coût à la place.",
+  'bl009': "Vous avez +3 points de vie et vos attaques Vampire Bite gagnent <b><i>Perçant</i></b>.\n<b>Interruption de héros</b> : quand vous devriez déclencher la capacité <i>Ruée sanguine</i> de Blade, subissez 2 dégâts → résolvez cette capacité sans payer son coût à la place.",
   // blade — Predatory Instincts (Upgrade)
   'bl010': "Blade a +1 DEF.\n<b>Réponse de héros</b> : après qu'un ennemi entre en jeu, inclinez Instincts de prédateur → cherchez un exemplaire de Vampire Bite dans votre deck et votre défausse et ajoutez-le à votre main.",
   // blade — The Thirst (Obligation)
   'bl011': "<b><i>Donnez-la au joueur d'Eric Brooks.</i></b>\nUtilisations (3 pions soif).\n<b>Interruption forcée</b> : quand votre tour commence, retirez 1 pion de sang de votre identité pour retirer 1 pion soif d'ici. Si vous ne pouvez pas, subissez 2 dégâts.",
   // blade — Blood Hunt (SideScheme némésis)
-  'bl012': "<i>Dracula a lâché une horde de nouveaux vampires, et ils ont soif de sang.</i>\nLes sbires non-[[VAMPIRE]] gagnent le trait [[VAMPIRE]] et le texte suivant : « Les attaques avec <b><i>Perforation</i></b> infligent le double de dégâts à ce sbire. » Les sbires [[VAMPIRE]] ont +3 points de vie et gagnent <b><i>Travail d'équipe</i></b> ([[VAMPIRE]]).\n<b>Réponse</b> : après qu'un sbire [[VAMPIRE]] est vaincu, retirez 2 menaces de cette manigance.",
+  'bl012': "<i>Dracula a lâché une horde de nouveaux vampires, et ils ont soif de sang.</i>\nLes sbires non-[[VAMPIRE]] gagnent le trait [[VAMPIRE]] et le texte suivant : « Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à ce sbire. » Les sbires [[VAMPIRE]] ont +3 points de vie et gagnent <b><i>Travail d'équipe</i></b> ([[VAMPIRE]]).\n<b>Réponse</b> : après qu'un sbire [[VAMPIRE]] est vaincu, retirez 2 menaces de cette manigance.",
   // blade — * Dracula (Minion némésis)
-  'bl013': "Les attaques avec <b><i>Perforation</i></b> infligent le double de dégâts à Dracula.\n[star] <b>Réponse forcée</b> : après que Dracula attaque et blesse un personnage, soignez tous les dégâts de Dracula. Si vous ne pouvez pas, donnez-lui une carte de statut Robustesse.\n<i>(Sbire némésis de Blade.)</i>",
+  'bl013': "Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à Dracula.\n[star] <b>Réponse forcée</b> : après que Dracula attaque et blesse un personnage, soignez tous les dégâts de Dracula. Si vous ne pouvez pas, donnez-lui une carte de statut Robustesse.\n<i>(Sbire némésis de Blade.)</i>",
   // blade — Vampire (Minion némésis, x2)
-  'bl014': "Les attaques avec <b><i>Perforation</i></b> infligent le double de dégâts au Vampire.\n[star] <b>Réponse forcée</b> : après que le Vampire attaque et blesse un personnage, soignez tous les dégâts du Vampire. Si aucun dégât n'a été soigné ainsi, donnez au Vampire une carte de statut Robustesse.",
+  'bl014': "Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts au Vampire.\n[star] <b>Réponse forcée</b> : après que le Vampire attaque et blesse un personnage, soignez tous les dégâts du Vampire. Si aucun dégât n'a été soigné ainsi, donnez au Vampire une carte de statut Robustesse.",
   // blade — Bandolier of Stakes (Attachment némésis)
-  'bl015': "<b><i>Déferlement.</i></b> Utilisations (3 pions pieu).\n<b>Une fois révélée</b> : vous pouvez dépenser 1 ressource de n'importe quel type pour attacher cette carte à votre identité. Sinon, défaussez cette carte.\n<b>Interruption de héros</b> : quand votre héros effectue une attaque de base, retirez 1 pion pieu d'ici → votre héros a +1 ATQ pour cette attaque et cette attaque gagne <b><i>Perforation</i></b>.",
+  'bl015': "<b><i>Déferlement.</i></b> Utilisations (3 pions pieu).\n<b>Une fois révélée</b> : vous pouvez dépenser 1 ressource de n'importe quel type pour attacher cette carte à votre identité. Sinon, défaussez cette carte.\n<b>Interruption de héros</b> : quand votre héros effectue une attaque de base, retirez 1 pion pieu d'ici → votre héros a +1 ATQ pour cette attaque et cette attaque gagne <b><i>Perçant</i></b>.",
   // blade — Embraced (Attachment némésis, x2)
-  'bl016': "Le sbire auquel cette carte est attachée gagne le trait [[VAMPIRE]] et a +X points de vie, X étant ses points de vie imprimés. Les attaques avec <b><i>Perforation</i></b> infligent le double de dégâts à ce sbire.\n<b>Une fois révélée</b> : cherchez un sbire non-[[VAMPIRE]] dans le deck rencontre, révélez-le et attachez-lui Étreint.",
+  'bl016': "Le sbire auquel cette carte est attachée gagne le trait [[VAMPIRE]] et a +X points de vie, X étant ses points de vie imprimés. Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à ce sbire.\n<b>Une fois révélée</b> : cherchez un sbire non-[[VAMPIRE]] dans le deck rencontre, révélez-le et attachez-lui Étreint.",
   // blade — Turned (Attachment némésis)
-  'bl017': "L'allié auquel cette carte est attachée gagne <b><i>Traître</i></b>, le trait [[VAMPIRE]] et le texte suivant : « Les attaques avec <b><i>Perforation</i></b> infligent le double de dégâts à cet ennemi. » et a +3 points de vie.\n<b>Une fois révélée</b> : attachez-la à l'allié ayant le moins de points de vie restants. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Soignez tous les dégâts de cet allié.",
+  'bl017': "L'allié auquel cette carte est attachée gagne <b><i>Traître</i></b>, le trait [[VAMPIRE]] et le texte suivant : « Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à cet ennemi. » et a +3 points de vie.\n<b>Une fois révélée</b> : attachez-la à l'allié ayant le moins de points de vie restants. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Soignez tous les dégâts de cet allié.",
 }

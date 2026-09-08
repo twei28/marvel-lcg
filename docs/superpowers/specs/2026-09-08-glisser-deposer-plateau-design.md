@@ -124,17 +124,32 @@ dont `bind_id` est la source. C'est le seul calcul neuf de tout le chantier.
 Décision de l'utilisateur : **chaque chose dans sa zone.** Pas de cadre
 « Jouer » générique.
 
-| Ce qu'on joue | Où on le lâche |
-|---|---|
-| Un allié | la zone des alliés (`terrain-combat`) |
-| Un soutien, une amélioration d'identité | la zone du héros (`terrain-soutien`) |
-| Une amélioration qui s'attache | sur son porteur, la carte elle-même |
-| Un attachement qui vise un ennemi | sur le vilain ou sur le sbire |
-| Une carte écartée au mulligan | la défausse |
+**⚠ CORRIGÉ À L'IMPLÉMENTATION, LE 08/09/2026, PAR UNE PARTIE RÉELLE.**
 
-Une zone n'accepte un lâcher que si l'option correspondante existe et que la
-zone est un de ses atterrissages légitimes. Une zone qui n'attend rien reste
-éteinte pendant le glisser, comme une carte non ciblable.
+La première version de cette section déduisait la zone du TYPE de carte : un
+allié à la ligne de combat, un soutien à l'aire du héros. Le moteur dit autre
+chose. Jouer une carte de la main n'est pas une action sans cible : c'est une
+option `Play` de portée [1, 1] qui **vise l'identité**. Une règle écrite sur le
+type de carte se serait donc trompée sur toutes les cartes de la main.
+
+Et une zone vide n'existe pas dans la page : `emplacement()` (zones.ts) la
+supprime quand tous ses groupes sont vides. Au premier tour, la ligne de combat
+n'est pas dessinée, donc le tout premier allié de la partie aurait été
+impossible à poser.
+
+**La règle retenue, tirée du moteur et non devinée** : une zone accepte la
+carte quand elle contient **exactement une** cible légale, et lâcher dans la
+zone revient à lâcher sur cette carte. On jette donc son allié dans l'aire de
+son héros, là où vit l'identité qu'il rejoint, sans avoir à viser la carte au
+pixel près. Une zone qui en contiendrait deux serait ambiguë : elle n'est pas
+proposée, et le joueur vise la carte précise.
+
+Vérifié en partie réelle : glisser Daredevil depuis la main vers l'aire du
+héros affiche « Jouer · Peter Parker », allume l'identité, et le lâcher
+enchaîne sur l'étape de paiement.
+
+Une amélioration qui s'attache, un attachement qui vise un ennemi : ils ont une
+cible, ils se lâchent sur leur porteur, sans passer par les zones.
 
 ---
 
@@ -213,15 +228,17 @@ clic prend le relais.
 
 ## 10. Tests
 
-- **Vitest** : le hook et le calcul de cibles se testent sans navigateur.
-  Seuil de déclenchement, clic préservé sous le seuil, cibles légales d'une
-  source, options d'un couple source-cible, lâcher sur zone.
-- **Playwright** (`ui-check`) : le geste complet, à la souris, sur les
-  fixtures existantes. Le harnais charge un plateau par `?etat=<fixture>`
-  sans qu'aucune partie tourne, et `page.mouse` sait descendre, bouger,
-  remonter. Un cas par geste retenu, plus le lâcher raté.
-- **Le témoin qui compte** : un cas qui prouve que le clic marche toujours
-  après l'ajout. Sans lui, on découvrirait la régression en partie.
+- **Vitest**, 30 cas : le calcul de cibles (16) et le geste monté dans un vrai
+  plateau (14). Seuil de déclenchement, clic préservé sous le seuil, clic non
+  déclenché après un lâcher, cibles légales d'une source, options d'un couple
+  source-cible, zones, refus.
+- **Playwright** (`npm run glisser`) : le geste complet dans une VRAIE partie.
+  ⚠ Les fixtures `?etat=` ne conviennent pas : ce sont des instantanés de
+  `/get_world` en lecture seule, sans aucune option du moteur, donc sans rien à
+  glisser. Le cas crée donc une partie par `/new`, comme `npm run lancement`,
+  et vérifie que le méchant perd vraiment des points de vie.
+- **Le témoin qui compte** : trois cas prouvent que le clic marche toujours.
+  Sans eux, on découvrirait la régression en partie.
 
 ---
 

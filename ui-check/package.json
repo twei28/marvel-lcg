@@ -25,7 +25,8 @@
     "campagne-accusation": "playwright test tests/campagne-accusation.spec.ts --project=pc",
     "campagne-pilote": "playwright test tests/campagne-pilote.spec.ts --project=pc",
     "campagne-boites-restantes": "playwright test tests/campagne-boites-restantes.spec.ts --project=pc",
-    "campagne-professor-x": "playwright test tests/campagne-professor-x.spec.ts --project=pc"
+    "campagne-professor-x": "playwright test tests/campagne-professor-x.spec.ts --project=pc",
+    "glisser": "playwright test tests/glisser-plateau.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

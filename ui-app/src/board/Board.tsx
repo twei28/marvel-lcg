@@ -23,6 +23,8 @@ import { ScanCard, type CardEffectDelta, type ScanCardProps } from '../component
 import { langueActuelle, t } from './langue'
 import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { usePlacement } from './placement/usePlacement'
+import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
+import { cibleSousLePoint, useGlisser, type CibleSurvolee } from './glisser/useGlisser'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
@@ -265,6 +267,7 @@ function Emplacement({
   ouvrirPile,
   bloquerActionsPassives,
   heroActifId,
+  accueilleLeGlisser = false,
 }: {
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
@@ -272,6 +275,8 @@ function Emplacement({
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
+  /** Cette zone attend la carte qu'on est en train de glisser. */
+  accueilleLeGlisser?: boolean
 }) {
   const vide = emplacement.groupes.every((groupe) => groupe.length === 0)
   return (
@@ -279,6 +284,12 @@ function Emplacement({
       className={`plateau-emplacement zone-${emplacement.cle}${vide ? ' est-vide' : ''}`}
       style={{ '--n': emplacement.nombreSurLaLigne } as CSSProperties}
       aria-label={emplacement.titre}
+      // ⚠ `data-zone` EST LA CIBLE DE DEPOT D'UNE CARTE SANS CIBLE : un allie
+      // se lache chez les allies, un soutien dans l'aire du heros. Meme
+      // convention que `data-tactile` : un attribut, lisible par le geste comme
+      // par les tests, plutot qu'un nom de classe a decouper.
+      data-zone={emplacement.cle}
+      data-zone-accueille={accueilleLeGlisser ? '' : undefined}
     >
       <h2 className="plateau-emplacement-titre">{emplacement.titre}</h2>
       <div className="plateau-cartes">
@@ -542,6 +553,31 @@ export type BoardProps = {
    * n'est pas desature parce qu'il est dessine hors de l'image.
    */
   delave?: boolean
+  /**
+   * Le glisser-deposer. Absent, le plateau se comporte exactement comme avant :
+   * c'est ce qui garantit que le geste s'AJOUTE au clic sans rien lui prendre.
+   *
+   * Le plateau tient le geste et le dessin ; la page, elle, tient les REGLES
+   * (quelles cartes se soulevent, ou elles peuvent aller, ce que le lacher
+   * declenche). Elle seule connait les options du moteur.
+   */
+  glisser?: ReglagesGlisser
+}
+
+export type ReglagesGlisser = {
+  /** Cette carte peut-elle etre soulevee ? */
+  estSource: (id: number) => boolean
+  /** Les cartes qu'elle peut viser, deja restreintes a ce qui est dessine. */
+  ciblesLegales: (sourceId: number) => Set<number>
+  /** Les zones du plateau qui l'accueillent quand elle ne vise personne. */
+  zonesLegales: (sourceId: number) => Set<string>
+  /** Ce qui va se passer, en une ligne, pour l'etiquette qui suit le pointeur. */
+  libelle: (sourceId: number, cible: CibleSurvolee) => string | undefined
+  /**
+   * Le lacher. Rend `undefined` quand l'action est partie, ou la raison du
+   * refus, que le plateau affiche en bulle a l'endroit du lacher.
+   */
+  onDepot: (sourceId: number, cible: CibleSurvolee) => string | undefined
 }
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
@@ -561,6 +597,7 @@ export function Board({
   delave = false,
   heroActifId,
   journal,
+  glisser,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
@@ -602,7 +639,12 @@ export function Board({
   const minuteur = useRef<number | undefined>(undefined)
   const pointee = useRef<string | null>(null)
 
+  // Pendant un glisser, l'apercu au survol se tait : la carte tenue en main
+  // suffit, et un panneau geant en plein geste cacherait la table qu'on vise.
+  const enGlisserRef = useRef(false)
+
   const survol = useCallback((evenement: ReactMouseEvent) => {
+    if (enGlisserRef.current) return
     const carte = (evenement.target as HTMLElement).closest<HTMLElement>('.scan-card')
     const id = carte?.dataset.cardId ?? null
     if (id === pointee.current) return
@@ -638,6 +680,79 @@ export function Board({
   )
 
   useEffect(() => () => window.clearTimeout(minuteur.current), [])
+
+  /* ---- Le glisser-deposer (8 septembre 2026) ------------------------------
+     Le plateau tient le GESTE et le DESSIN ; les regles restent a la page, qui
+     seule connait les options du moteur. Sans la prop `glisser`, tout ce bloc
+     est inerte et le plateau se comporte exactement comme avant. */
+  const [refus, setRefus] = useState<{ x: number; y: number; texte: string } | null>(null)
+  const minuteurRefus = useRef(0)
+  useEffect(() => () => window.clearTimeout(minuteurRefus.current), [])
+
+  const estSourceGlisser = useCallback((id: number) => glisser?.estSource(id) ?? false, [glisser])
+  const surDepot = useCallback(
+    (sourceId: number, cible: CibleSurvolee, point: { x: number; y: number }) => {
+      const raison = glisser?.onDepot(sourceId, cible)
+      window.clearTimeout(minuteurRefus.current)
+      if (!raison) {
+        setRefus(null)
+        return
+      }
+      setRefus({ x: point.x, y: point.y, texte: raison })
+      minuteurRefus.current = window.setTimeout(() => setRefus(null), 2600)
+    },
+    [glisser]
+  )
+  const { glisse, gestes } = useGlisser({
+    estSource: estSourceGlisser,
+    cibleSous: cibleSousLePoint,
+    onDepot: surDepot,
+  })
+
+  const enGlisser = glisse !== null
+  enGlisserRef.current = enGlisser
+  // L'apercu DEJA ouvert quand le geste commence resterait par-dessus la table.
+  useEffect(() => {
+    if (!enGlisser) return
+    window.clearTimeout(minuteur.current)
+    pointee.current = null
+    setApercuId(null)
+  }, [enGlisser])
+
+  const ciblesDuGlisser = useMemo(
+    () => (glisse && glisser ? glisser.ciblesLegales(glisse.sourceId) : undefined),
+    [glisse, glisser]
+  )
+  const zonesDuGlisser = useMemo(
+    () => (glisse && glisser ? glisser.zonesLegales(glisse.sourceId) : undefined),
+    [glisse, glisser]
+  )
+  // Les cibles legales s'allument comme le fait deja le menu d'action : meme
+  // halo, meme classe CSS, aucune apparence nouvelle a inventer.
+  const interactifsEffectifs = useMemo(() => {
+    if (!ciblesDuGlisser || ciblesDuGlisser.size === 0) return interactifs
+    const avecHalo = new Map(interactifs)
+    for (const id of ciblesDuGlisser) {
+      const courant = avecHalo.get(id)
+      avecHalo.set(
+        id,
+        courant ? { ...courant, pulse: true } : { role: 'cible-preview', choisie: false, pulse: true }
+      )
+    }
+    return avecHalo
+  }, [interactifs, ciblesDuGlisser])
+
+  const cibleSurvoleeId = glisse?.cible.carteId
+  const zoneSurvolee = glisse?.cible.zone
+  const depotRefuse =
+    glisse !== null &&
+    !(
+      (cibleSurvoleeId !== undefined && (ciblesDuGlisser?.has(cibleSurvoleeId) ?? false)) ||
+      (cibleSurvoleeId === undefined &&
+        zoneSurvolee !== undefined &&
+        (zonesDuGlisser?.has(zoneSurvolee) ?? false))
+    )
+  const libelleGlisser = glisse && glisser ? glisser.libelle(glisse.sourceId, glisse.cible) : undefined
 
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
   const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
@@ -679,11 +794,21 @@ export function Board({
       </header>
 
       <div
-        className="plateau-cadre"
+        className={`plateau-cadre${enGlisser ? ' est-en-glisser' : ''}`}
         ref={cadre}
         onMouseOver={survol}
         onMouseLeave={quitter}
-        onPointerUp={cliquerCarte}
+        onPointerDown={gestes.onPointerDown}
+        onPointerMove={gestes.onPointerMove}
+        // ⚠ LE CLIC PASSE APRES, ET SEULEMENT SI AUCUN GLISSER NE S'ACHEVE.
+        // `gestes.onPointerUp` rend `true` quand il vient de lacher une carte :
+        // sans cette garde, un lacher declencherait AUSSI le clic sous le
+        // pointeur, donc deux actions pour un seul geste.
+        onPointerUp={(evenement) => {
+          if (gestes.onPointerUp(evenement)) return
+          cliquerCarte(evenement)
+        }}
+        onPointerCancel={gestes.onPointerCancel}
       >
         <div
           className="plateau-scene"
@@ -710,7 +835,8 @@ export function Board({
                   {deckSpecial ? (
                     <Emplacement
                       emplacement={deckSpecial}
-                      interactifs={interactifs}
+                      accueilleLeGlisser={zonesDuGlisser?.has(deckSpecial.cle)}
+                      interactifs={interactifsEffectifs}
                       effets={effets}
                       ouvrirPile={ouvrirPile}
                       bloquerActionsPassives={bloquerActionsPassives}
@@ -720,7 +846,8 @@ export function Board({
                   {reserve ? (
                     <Emplacement
                       emplacement={reserve}
-                      interactifs={interactifs}
+                      accueilleLeGlisser={zonesDuGlisser?.has(reserve.cle)}
+                      interactifs={interactifsEffectifs}
                       effets={effets}
                       ouvrirPile={ouvrirPile}
                       bloquerActionsPassives={bloquerActionsPassives}
@@ -729,7 +856,8 @@ export function Board({
                   ) : null}
                   <Emplacement
                     emplacement={e}
-                    interactifs={interactifs}
+                    accueilleLeGlisser={zonesDuGlisser?.has(e.cle)}
+                    interactifs={interactifsEffectifs}
                     effets={effets}
                     ouvrirPile={ouvrirPile}
                     bloquerActionsPassives={bloquerActionsPassives}
@@ -741,7 +869,8 @@ export function Board({
             return (
               <Emplacement
                 emplacement={e}
-                interactifs={interactifs}
+                accueilleLeGlisser={zonesDuGlisser?.has(e.cle)}
+                interactifs={interactifsEffectifs}
                 effets={effets}
                 ouvrirPile={ouvrirPile}
                 bloquerActionsPassives={bloquerActionsPassives}
@@ -755,6 +884,16 @@ export function Board({
       </div>
 
       {carteApercu ? <CarteApercu carte={carteApercu} statuts={statutsApercu} /> : null}
+
+      {glisse ? (
+        <CoucheGlisser
+          glisse={glisse}
+          carte={cartesParId.get(String(glisse.sourceId))}
+          libelle={libelleGlisser}
+          refuse={depotRefuse}
+        />
+      ) : null}
+      {refus ? <BulleRefus x={refus.x} y={refus.y} texte={refus.texte} /> : null}
 
       {pileRegardee ? (
         <PileRegardee

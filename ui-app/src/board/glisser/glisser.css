@@ -1,0 +1,110 @@
+/* Le glisser-deposer : la carte soulevee, le trait, l'etiquette, le refus.
+   Tout est en coordonnees ECRAN, par-dessus le plateau, et rien ne capte le
+   pointeur : sinon la carte fantome masquerait la table a `elementFromPoint`
+   et l'on ne pourrait plus viser personne. */
+
+.couche-glisser {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.glisser-trait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.glisser-trait line {
+  stroke: var(--affiche-jaune, #f0b95f);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 9 7;
+  opacity: 0.9;
+}
+.glisser-trait circle {
+  fill: var(--affiche-jaune, #f0b95f);
+}
+.glisser-trait line.est-refuse,
+.glisser-trait circle.est-refuse {
+  stroke: #f85149;
+  fill: #f85149;
+}
+
+/* La carte tenue en main : un peu plus grande que sur la table, inclinee, avec
+   son ombre portee. Son coin superieur gauche suit le pointeur de pres, sans
+   se poser dessous : le point vise doit rester visible. */
+.glisser-carte {
+  position: absolute;
+  width: 132px;
+  transform: translate(14px, -18px) rotate(-4deg) scale(1.06);
+  transform-origin: top left;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.65));
+  opacity: 0.96;
+}
+
+.glisser-etiquette {
+  position: absolute;
+  transform: translate(16px, -46px);
+  max-width: 320px;
+  padding: 5px 10px;
+  border: 1px solid var(--affiche-jaune, #f0b95f);
+  border-radius: 4px;
+  background: rgba(7, 8, 12, 0.94);
+  color: var(--txt, #f4f6fb);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.glisser-etiquette.est-refuse {
+  border-color: #f85149;
+  color: #ff9d97;
+}
+
+.glisser-refus {
+  position: absolute;
+  transform: translate(-50%, -120%);
+  max-width: 300px;
+  padding: 7px 11px;
+  border: 1px solid #f85149;
+  border-radius: 4px;
+  background: rgba(29, 17, 19, 0.97);
+  color: #ff9d97;
+  font-size: 13px;
+  line-height: 1.35;
+  animation: glisser-refus-apparait 0.14s ease-out;
+}
+@keyframes glisser-refus-apparait {
+  from { opacity: 0; transform: translate(-50%, -108%); }
+  to   { opacity: 1; transform: translate(-50%, -120%); }
+}
+
+/* Pendant le geste, ce qui ne peut pas recevoir la carte s'efface. C'est ce
+   qui apprend le jeu tout seul : on VOIT ce qu'on peut faire avant de le
+   faire. La carte soulevee, elle, garde sa pleine presence. */
+.plateau-cadre.est-en-glisser .scan-card:not(.state-targetable):not(.is-target-pulse) {
+  opacity: 0.38;
+  transition: opacity 0.12s ease-out;
+}
+
+/* Une zone qui attend cette carte : un cadre en pointilles, discret mais net.
+   Sert aux cartes qui ne visent personne, l'allie chez les allies, le soutien
+   dans l'aire du heros. */
+.plateau-cadre.est-en-glisser .plateau-emplacement[data-zone-accueille] {
+  outline: 2px dashed var(--affiche-jaune, #f0b95f);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.plateau-cadre.est-en-glisser .plateau-emplacement[data-zone-accueille] > .plateau-emplacement-titre {
+  color: var(--affiche-jaune, #f0b95f);
+}
+
+/* Pendant le geste, le curseur dit qu'on tient quelque chose. */
+.plateau-cadre.est-en-glisser {
+  cursor: grabbing;
+}
