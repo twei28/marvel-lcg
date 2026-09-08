@@ -824,6 +824,38 @@ export function Board({
         }}
         onPointerCancel={gestes.onPointerCancel}
       >
+        {/* L'ACCENTUATION DE NETTETE DES SCANS. Une carte mesure 615 px de
+            large a la source et 123 px sur la table : une reduction de 5 pour
+            1, que le navigateur fait en une passe et qui rend le texte
+            cotonneux (« on peut pas faire en sorte que ce soit moins flou ? »,
+            08/09/2026). On ne peut pas inventer des pixels, mais on peut
+            rendre au resultat le contraste de bord que la reduction lui a
+            pris : c'est un masque flou, le meme geste qu'en photo.
+
+            ⚠ `color-interpolation-filters="sRGB"` N'EST PAS FACULTATIF : par
+            defaut un filtre SVG travaille en lumiere lineaire, et le meme
+            noyau assombrit alors visiblement les cartes.
+
+            ⚠ Le noyau est a somme 1 (2.6 au centre, quatre bras a -0.4) :
+            la luminosite moyenne ne bouge pas, seuls les bords se durcissent.
+            Plus fort, les lettres blanches prennent un halo noir. */}
+        <svg className="plateau-filtres" aria-hidden="true" focusable="false">
+          <filter
+            id="nettete-scan"
+            colorInterpolationFilters="sRGB"
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+          >
+            <feConvolveMatrix
+              order="3"
+              preserveAlpha="true"
+              divisor="1"
+              kernelMatrix="0 -0.4 0  -0.4 2.6 -0.4  0 -0.4 0"
+            />
+          </filter>
+        </svg>
         <div
           className="plateau-scene"
           style={
