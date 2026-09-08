@@ -737,6 +737,83 @@ verifier("un compte connecte, lui, voit qui joue",
          any(j.get("code") == "hote" for j in _connu.get("jeux", [])), str(_connu))
 o.PARTIES.clear()
 
+# --- Suivi des parties (/suivi, /api/suivi) : reserve a l'administrateur ----
+# ⚠ Comme pour /etat, le cas qui compte est le REFUS : la page nomme les
+# joueurs, un compte ordinaire ne doit rien en voir. Puis le contenu, sur un
+# journal de parties ecrit pour l'occasion dans un RACINE_JEU temporaire.
+import json as _json_suivi                                  # noqa: E402
+try:
+    o.inscrire(o.ADMIN, "admin@exemple.fr", "motdepasse123")
+except ValueError:
+    pass
+o.changer_statut(o.ADMIN, "valide")
+
+_code, _tetes, _ = appel("GET", "/suivi")
+verifier("/suivi renvoie un anonyme au formulaire",
+         _code == 303 and _tetes.get("Location") == "/", "%s" % _code)
+_code, _, _ = appel("GET", "/suivi", entetes=cookie_de("invitee"))
+verifier("/suivi refuse un compte ordinaire", _code == 403, "%s" % _code)
+_code, _, _ = appel("GET", "/api/suivi", entetes=cookie_de("invitee"))
+verifier("/api/suivi refuse un compte ordinaire", _code == 403, "%s" % _code)
+_code, _, _corps = appel("GET", "/suivi", entetes=cookie_de(o.ADMIN))
+verifier("/suivi s'affiche pour l'administrateur",
+         _code == 200 and b"En cours" in _corps and b"/api/suivi" in _corps, "%s" % _code)
+_code, _tetes, _corps = appel("GET", "/suivi.webmanifest")
+verifier("le manifeste est public et ne nomme personne",
+         _code == 200 and b"/suivi" in _corps and b"hote" not in _corps, "%s" % _code)
+_code, _, _corps = appel("GET", "/suivi-192.png")
+verifier("l'icone est servie", _code == 200 and _corps[:8] == b"\x89PNG\r\n\x1a\n", "%s" % _code)
+
+_racine_avant = o.RACINE_JEU
+_bac_jeu = tempfile.mkdtemp(prefix="nc-suivi-")
+o.RACINE_JEU = _bac_jeu
+with o._cx() as cx:
+    # Un emplacement que les cas precedents n'ont pas distribue (colonne UNIQUE).
+    # On memorise celui de « hote » pour le lui rendre : les cas suivants (le
+    # moteur zombie) comptent dessus.
+    _empl_hote_avant = cx.execute("SELECT emplacement FROM comptes WHERE pseudo = ?",
+                                  ("hote",)).fetchone()["emplacement"]
+    cx.execute("UPDATE comptes SET emplacement = 17 WHERE pseudo = ?", ("hote",))
+with open(os.path.join(_bac_jeu, "games_history-serveur-17.json"), "w", encoding="utf-8") as _f:
+    _json_suivi.dump([
+        {"time": 1700000000, "scenario": "Rhino", "expert": False,
+         "heroes": [{"name": "* Blade", "card_id": "bl001a", "deck": "Blade", "aspects": ["Aggression"]}],
+         "won": True, "reason": "The Final Stage of the Villain was Defeated", "rounds": 7},
+        {"time": 1700000500, "scenario": "Klaw", "expert": True,
+         "heroes": [{"name": "Spider-Man", "card_id": "01001a"}],
+         "won": False, "reason": "All players were eliminated", "rounds": 4},
+    ], _f)
+_terminees = o.parties_terminees()
+verifier("les parties terminees sont lues dans le journal de l'emplacement",
+         len(_terminees) == 2, str(_terminees))
+verifier("la plus recente vient en premier",
+         _terminees and _terminees[0]["mechant"] == "Klaw" and _terminees[0]["expert"], str(_terminees[:1]))
+verifier("l'emplacement est traduit en pseudo",
+         _terminees and _terminees[0]["joueur"] == "hote", str(_terminees[:1]))
+verifier("heros, aspect, rounds et resultat sont la",
+         _terminees and _terminees[1]["heros"][0]["nom"] == "Blade"
+         and _terminees[1]["heros"][0]["aspects"] == ["Aggression"]
+         and _terminees[1]["rounds"] == 7 and _terminees[1]["victoire"], str(_terminees[1:]))
+verifier("une partie sans aspect enregistre reste lisible",
+         _terminees and _terminees[0]["heros"][0]["aspects"] == [], str(_terminees[:1]))
+
+allumer("hote", 17)
+_code, _, _corps = appel("GET", "/api/suivi", entetes=cookie_de(o.ADMIN))
+_etat_suivi = _json_suivi.loads(_corps.decode("utf-8"))
+verifier("/api/suivi rend les deux listes a l'administrateur",
+         _code == 200 and len(_etat_suivi.get("terminees", [])) == 2
+         and len(_etat_suivi.get("en_cours", [])) == 1, str(_etat_suivi)[:300])
+verifier("une table allumee dont le moteur ne repond pas est dite muette, pas en cours",
+         _etat_suivi["en_cours"][0]["joueur"] == "hote"
+         and _etat_suivi["en_cours"][0]["moteur_repond"] is False
+         and _etat_suivi["en_cours"][0]["en_cours"] is False, str(_etat_suivi["en_cours"]))
+o.PARTIES.clear()
+o.RACINE_JEU = _racine_avant
+shutil.rmtree(_bac_jeu, ignore_errors=True)
+with o._cx() as cx:
+    cx.execute("UPDATE comptes SET emplacement = ? WHERE pseudo = ?", (_empl_hote_avant, "hote"))
+
+
 # --- Le moteur zombie qui bloquait une table pour toujours ------------------
 # ⚠ RIEN DE CE QUI SUIT N'EST SIMULE. Un VRAI lanceur, lance dans son propre
 # groupe comme le fait `lancer_jeu`, qui SORT en laissant un enfant tenir un
@@ -972,6 +1049,7 @@ o.DOSSIER_RAPPORTS = _vrai_dossier
 shutil.rmtree(_bac_rapports, ignore_errors=True)
 with o._cx() as cx:
     cx.execute("DELETE FROM rapports")
+
 
 print()
 print("ECHECS : %d" % len(echecs))

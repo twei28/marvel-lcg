@@ -38,9 +38,29 @@ def GetStatisticsRule() -> List['Ability']:
                         face = hero
                 except Exception:
                     pass
+                # AJOUT (08/09/2026, page de suivi /suivi du site) : l'ASPECT du
+                # deck et le nom du deck de depart. L'aspect se lit sur les
+                # cartes que le joueur possede a la fin (deck, defausse, main,
+                # table) : `GetAspect()` rend None pour une carte neutre ou
+                # signature, on ne garde que ce qui reste. Un deck sans aspect
+                # (heros homebrew a `player_deck` vide) donne une liste vide.
+                aspects = []
+                try:
+                    zones = [player.player_deck, player.discard_pile, player.hand_cards]
+                    faces = [f for z in zones for f in list(z.GetAll())]
+                    faces += [f for f in player.GetControlCards()]
+                    for f in faces:
+                        lire = getattr(f, 'GetAspect', None)
+                        aspect = lire() if lire else None
+                        if aspect and aspect not in aspects:
+                            aspects.append(aspect)
+                except Exception:
+                    aspects = []
                 heroes.append({
                     'name': face.paper.name,
                     'card_id': face.paper.card_id,
+                    'deck': str(getattr(player, 'hero_name', '') or ''),
+                    'aspects': aspects,
                 })
             campaign = Engine.game.scene.campaign
             entry = {

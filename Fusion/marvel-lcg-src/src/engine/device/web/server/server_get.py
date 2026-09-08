@@ -224,6 +224,74 @@ class GameServerGet(GameServerBase):
         from engine.device.web.server.server_campagne import resume_campagnes
         return web.json_response(achievements.etat_complet(stats, journal, resume_campagnes()))
 
+    async def get_partie_en_cours(self, request: web.Request) -> web.Response:
+        """La fiche de la partie EN COURS sur ce moteur, pour la page de suivi
+        du site (`/suivi`, orchestrateur). AJOUT du 08/09/2026.
+
+        ⚠ Route SANS cookie de siege (l'orchestrateur n'en a pas), donc
+        protegee par le jeton que le site a remis au moteur a l'allumage
+        (`site_jeton`, server_base.py). Sans jeton configure (jeu local), on
+        ne repond qu'a la boucle locale. Rien de nominatif ici : le site
+        connait deja le proprietaire de la table.
+        """
+        from engine.device.web.server.server_base import SITE_JETON
+        jeton = request.rel_url.query.get('jeton', '')
+        if SITE_JETON.value:
+            if jeton != SITE_JETON.value:
+                return web.json_response({'error': 'jeton'}, status=403)
+        elif (request.remote or '') not in ('127.0.0.1', '::1'):
+            return web.json_response({'error': 'local'}, status=403)
+
+        fiche = {'en_cours': False}
+        try:
+            game = self.controller_manager.game
+            world = getattr(game, 'world', None)
+            if world is None or not game.state.is_running or getattr(world, 'is_game_over', False):
+                return web.json_response(fiche)
+            from game.operate.worlds import Worlds
+            campaign = getattr(getattr(game, 'scene', None), 'campaign', None)
+            fiche = {
+                'en_cours': True,
+                'round': int(getattr(world, 'round_id', 0) or 0),
+                'scenario': str(getattr(campaign, 'name', '') or ''),
+                'expert': bool(getattr(campaign, 'expert', False)),
+                'joueurs': [],
+                'vilains': [],
+                'manigances': [],
+            }
+            for player in world.const_players:
+                identite = player.GetIdentity()
+                heros = None
+                try:
+                    heros = player.GetHero()
+                except Exception:
+                    heros = None
+                nom_heros = getattr(getattr(heros or identite, 'paper', None), 'name', '')
+                fiche['joueurs'].append({
+                    'heros': str(nom_heros or '').lstrip('* '),
+                    'card_id': str(getattr(getattr(heros or identite, 'paper', None), 'card_id', '')),
+                    'deck': str(getattr(player, 'hero_name', '') or ''),
+                    'forme': 'Hero' if player.IsInHeroForm() else 'AlterEgo',
+                    'pv': int(getattr(identite, 'health', 0) or 0),
+                    'pv_max': int(getattr(identite, 'max_health', 0) or 0),
+                    'elimine': bool(getattr(player, 'is_eliminated', False)),
+                })
+            for vilain in Worlds.GetAllVillains(world):
+                fiche['vilains'].append({
+                    'nom': str(getattr(vilain.paper, 'name', '')).lstrip('* '),
+                    'pv': int(getattr(vilain, 'health', 0) or 0),
+                    'pv_max': int(getattr(vilain, 'max_health', 0) or 0),
+                    'stage': str(getattr(vilain.paper, 'desc', {}).get('Stage', '') if isinstance(getattr(vilain.paper, 'desc', None), dict) else ''),
+                })
+            for manigance in list(world.area_schemes_main.Get()):
+                fiche['manigances'].append({
+                    'nom': str(getattr(manigance.paper, 'name', '')),
+                    'menace': int(getattr(manigance, 'threat', 0) or 0),
+                })
+        except Exception as exc:
+            fiche = {'en_cours': False, 'erreur': type(exc).__name__}
+        return web.json_response(fiche)
+
     async def get_games_history(self, request: web.Request) -> web.Response:
         # Ajout local : journal des parties terminees (voir game/rule/statistics.py).
         from engine.config import ConfigVariables
@@ -655,6 +723,10 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_sets_custom_scenario', self.get_sets_custom_scenario)
         self.AddAwaitGetSecurity('/get_statistics_json', self.get_statistics_json)
         self.AddAwaitGetSecurity('/get_games_history', self.get_games_history)
+        # Page de suivi du site : jeton du site en guise d'authentification, et
+        # pas de controle de version (le site n'est pas un client du jeu).
+        self.AddAwaitGetSecurity('/get_partie_en_cours', self.get_partie_en_cours,
+                                 need_auth=False, need_check_version=False)
         self.AddAwaitGetSecurity('/get_achievements', self.get_achievements)
         self.AddAwaitGetSecurity('/get_aspect_decks', self.get_aspect_decks)
         self.AddAwaitGetSecurity('/get_cards_json', self.get_cards_json)

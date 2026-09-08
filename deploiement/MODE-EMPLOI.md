@@ -160,6 +160,27 @@ ssh -i $cle $srv "sed -i 's|@RACINE@|/opt/narwhal|g' /tmp/s.sh && install -m 755
 
 ---
 
+## Le suivi des parties sur ton téléphone
+
+`https://narwhalchampions.com/suivi`, réservé au compte administrateur
+(même règle que `/admin`). La page liste les tables allumées (qui, quel héros,
+quel méchant, le round, les PV, depuis quand) puis les quarante dernières
+parties terminées (héros, aspect du deck, méchant, rounds, victoire ou
+défaite). Elle se rafraîchit toutes les 30 secondes.
+
+Pour en faire une icône d'appli : ouvrir la page dans Chrome sur le téléphone,
+menu ⋮ puis « Ajouter à l'écran d'accueil ». Elle s'ouvre ensuite plein écran,
+sans barre d'adresse.
+
+| Où ça vit | Quoi |
+|---|---|
+| `site/orchestrateur.py`, routes `/suivi`, `/api/suivi`, `/suivi.webmanifest` | la page et son flux JSON |
+| `games_history-serveur-<N>.json` à la racine du jeu | une partie terminée par ligne, écrite par le moteur de la table N |
+| `/get_partie_en_cours?jeton=…` sur chaque moteur | la fiche d'une partie en cours, interrogée en local par le site |
+
+L'aspect du deck n'est enregistré que depuis le 08/09/2026 : les parties
+plus anciennes s'affichent sans lui.
+
 ## Les livrets de règles
 
 Les 27 PDF (livrets et carnets de campagne) vivent dans

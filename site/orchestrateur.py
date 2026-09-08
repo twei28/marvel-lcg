@@ -37,6 +37,7 @@ import sys
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -1451,7 +1452,8 @@ PAGE = """<!doctype html>
 """
 
 def _barre(pseudo: str) -> str:
-    admin = ' &middot; <a href="/admin">Administration</a>' if pseudo == ADMIN else ""
+    admin = (' &middot; <a href="/admin">Administration</a>'
+             ' &middot; <a href="/suivi">Suivi des parties</a>') if pseudo == ADMIN else ""
     return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
             '<a href="/deconnexion">Se deconnecter</a></div>'
             % (html.escape(pseudo), admin))
@@ -1607,6 +1609,289 @@ PAGE_ADMIN = """<!doctype html>
   </table>
 </main>
 """
+
+
+
+# --------------------------------------------------------------------------
+# Suivi des parties (page /suivi, reservee a l'administrateur)
+# --------------------------------------------------------------------------
+# AJOUT du 08/09/2026. Une page pour le telephone, a epingler sur l'ecran
+# d'accueil : qui joue en ce moment (heros, mechant, round, depuis quand) et
+# les dernieres parties terminees (heros, aspect, mechant, rounds, resultat).
+#
+# Deux sources, aucune nouvelle table :
+#   - les tables ALLUMEES (`PARTIES`) : chaque moteur repond a
+#     `/get_partie_en_cours?jeton=<jeton_site>` sur 127.0.0.1 (route ajoutee
+#     dans server_get.py le meme jour) ;
+#   - les journaux `games_history-serveur-<N>.json` que chaque moteur ecrit a
+#     la fin d'une partie (game/rule/statistics.py), un par emplacement, lus
+#     ici et fusionnes. L'emplacement donne le compte (`comptes.emplacement`).
+#
+# ⚠ RESERVEE A L'ADMINISTRATEUR, comme /admin : la page nomme les joueurs.
+
+SUIVI_TERMINEES_MAX = 40
+SUIVI_DELAI_MOTEUR = 1.5   # secondes, par moteur interroge
+
+
+def _fiche_moteur(partie: "Partie") -> dict:
+    """La fiche de la partie en cours sur ce moteur, ou {} s'il ne repond pas."""
+    try:
+        lien = "http://127.0.0.1:%d/get_partie_en_cours?jeton=%s" % (
+            partie.port, urllib.parse.quote(partie.jeton_site or ""))
+        with urllib.request.urlopen(lien, timeout=SUIVI_DELAI_MOTEUR) as reponse:
+            fiche = json.loads(reponse.read().decode("utf-8"))
+        return fiche if isinstance(fiche, dict) else {}
+    except (urllib.error.URLError, OSError, ValueError):
+        return {}
+
+
+def _pseudos_par_emplacement() -> dict:
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT pseudo, emplacement FROM comptes WHERE emplacement IS NOT NULL").fetchall()
+    return {int(l["emplacement"]): l["pseudo"] for l in lignes}
+
+
+def _depuis(secondes: float) -> str:
+    secondes = max(0, int(secondes))
+    if secondes < 90:
+        return "a l'instant"
+    if secondes < 5400:
+        return "depuis %d min" % round(secondes / 60)
+    if secondes < 172800:
+        return "depuis %d h" % round(secondes / 3600)
+    return "depuis %d j" % round(secondes / 86400)
+
+
+def _il_y_a_horodatage(quand: float) -> str:
+    ecart = max(0, time.time() - float(quand))
+    if ecart < 90:
+        return "a l'instant"
+    if ecart < 5400:
+        return "il y a %d min" % round(ecart / 60)
+    if ecart < 172800:
+        return "il y a %d h" % round(ecart / 3600)
+    return "il y a %d j" % round(ecart / 86400)
+
+
+def parties_terminees(limite: int = SUIVI_TERMINEES_MAX) -> list:
+    """Les dernieres parties terminees, tous emplacements confondus."""
+    proprietaires = _pseudos_par_emplacement()
+    sortie = []
+    for emplacement in range(1, NB_EMPLACEMENTS + 1):
+        chemin = os.path.join(RACINE_JEU, "games_history-serveur-%d.json" % emplacement)
+        if not os.path.isfile(chemin):
+            continue
+        try:
+            with open(chemin, encoding="utf-8") as f:
+                journal = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if not isinstance(journal, list):
+            continue
+        for entree in journal:
+            if not isinstance(entree, dict):
+                continue
+            heros = []
+            for h in entree.get("heroes") or []:
+                if isinstance(h, dict):
+                    heros.append({
+                        "nom": str(h.get("name") or "").lstrip("* "),
+                        "card_id": str(h.get("card_id") or ""),
+                        "deck": str(h.get("deck") or ""),
+                        "aspects": [str(a) for a in (h.get("aspects") or [])],
+                    })
+            quand = float(entree.get("time") or 0)
+            sortie.append({
+                "quand": quand,
+                "il_y_a": _il_y_a_horodatage(quand) if quand else "",
+                "joueur": proprietaires.get(emplacement, ""),
+                "emplacement": emplacement,
+                "heros": heros,
+                "mechant": str(entree.get("scenario") or ""),
+                "expert": bool(entree.get("expert")),
+                "victoire": bool(entree.get("won")),
+                "raison": str(entree.get("reason") or ""),
+                "rounds": int(entree.get("rounds") or 0),
+            })
+    sortie.sort(key=lambda e: e["quand"], reverse=True)
+    return sortie[:limite]
+
+
+def parties_en_cours() -> list:
+    """Les tables allumees, avec la fiche du moteur quand il repond."""
+    with VERROU:
+        vivantes = [p for p in PARTIES.values() if p.vivant()]
+    sortie = []
+    maintenant = time.time()
+    for partie in vivantes:
+        fiche = _fiche_moteur(partie)
+        sortie.append({
+            "joueur": partie.code,
+            "emplacement": partie.emplacement,
+            "allumee_depuis": _depuis(maintenant - partie.debut),
+            "sieges": partie.joueurs,
+            "en_cours": bool(fiche.get("en_cours")),
+            "round": int(fiche.get("round") or 0),
+            "mechant": str(fiche.get("scenario") or ""),
+            "expert": bool(fiche.get("expert")),
+            "joueurs": fiche.get("joueurs") or [],
+            "vilains": fiche.get("vilains") or [],
+            "manigances": fiche.get("manigances") or [],
+            "moteur_repond": bool(fiche),
+        })
+    sortie.sort(key=lambda e: (not e["en_cours"], e["emplacement"]))
+    return sortie
+
+
+def etat_suivi() -> dict:
+    return {"maintenant": int(time.time()),
+            "en_cours": parties_en_cours(),
+            "terminees": parties_terminees()}
+
+
+PAGE_SUIVI = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1116">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/suivi.webmanifest">
+<link rel="icon" href="/suivi-192.png">
+<link rel="apple-touch-icon" href="/suivi-192.png">
+<title>Suivi des parties</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
+         padding: max(.8rem, env(safe-area-inset-top)) .8rem 2rem; }
+  h1 { font-size:1.15rem; margin:.2rem 0 .8rem; display:flex; justify-content:space-between; align-items:baseline; }
+  h1 small { color:#9aa7b4; font-weight:normal; font-size:.8rem; }
+  h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:#9aa7b4; margin:1.2rem 0 .5rem; }
+  .carte { border:1px solid #30363d; border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:#161b22; }
+  .carte.live { border-color:#238636; box-shadow: inset 3px 0 0 #238636; }
+  .carte.attente { border-color:#30363d; opacity:.75; }
+  .ligne { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
+  .qui { font-weight:600; }
+  .quand { color:#9aa7b4; font-size:.8rem; white-space:nowrap; }
+  .heros { font-size:1.05rem; margin:.15rem 0; }
+  .heros .aspect { font-size:.75rem; padding:.05rem .4rem; border-radius:.3rem; margin-left:.3rem; vertical-align:middle; background:#30363d; }
+  .aspect.Aggression { background:#8b1e1e; } .aspect.Justice { background:#8a6d00; color:#fff; }
+  .aspect.Leadership { background:#1f4e8c; } .aspect.Protection { background:#1e6b3a; }
+  .aspect.Pool { background:#6b1e8c; } .aspect.Determination { background:#5a2d8c; }
+  .contre { color:#c9d1d9; }
+  .contre b { color:#e6edf3; }
+  .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
+  .res { font-weight:700; }
+  .res.v { color:#3fb950; } .res.d { color:#f85149; }
+  .pv { font-variant-numeric: tabular-nums; }
+  .vide { color:#9aa7b4; font-style:italic; }
+  .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
+  .pied { color:#6e7681; font-size:.75rem; margin-top:1.5rem; text-align:center; }
+  .pied a { color:#9aa7b4; }
+</style>
+<h1>Parties <small id="maj">chargement…</small></h1>
+<div id="erreur" class="erreur" hidden></div>
+<h2>En cours</h2>
+<div id="encours"><p class="vide">…</p></div>
+<h2>Terminées</h2>
+<div id="terminees"><p class="vide">…</p></div>
+<p class="pied">Rafraîchie toutes les 30 s · <a href="/suivi">recharger</a> · <a href="/admin">administration</a></p>
+<script>
+(function () {
+  var ECHAP = function (t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+  function aspects(liste) {
+    return (liste || []).map(function (a) {
+      var cls = String(a).replace(/[^A-Za-z]/g, "");
+      return '<span class="aspect ' + cls + '">' + ECHAP(a) + '</span>';
+    }).join("");
+  }
+  function carteEnCours(p) {
+    var joueurs = p.joueurs || [];
+    var vil = (p.vilains || [])[0];
+    var men = (p.manigances || [])[0];
+    var titre = '<div class="ligne"><span class="qui">' + ECHAP(p.joueur) + (p.sieges > 1 ? ' · ' + p.sieges + ' sièges' : '') + '</span>'
+              + '<span class="quand">' + ECHAP(p.allumee_depuis) + '</span></div>';
+    if (!p.en_cours) {
+      var etat = p.moteur_repond ? "table allumée, pas de partie en cours" : "moteur muet";
+      return '<div class="carte attente">' + titre + '<div class="contre">' + etat + '</div></div>';
+    }
+    var h = joueurs.map(function (j) {
+      return '<div class="heros">' + ECHAP(j.heros) + (j.forme === "AlterEgo" ? ' <small>(alter ego)</small>' : '')
+           + ' <span class="pv">' + j.pv + '/' + j.pv_max + '</span>' + (j.elimine ? ' ✝' : '') + '</div>';
+    }).join("");
+    var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '')
+               + (vil ? ' · PV ' + vil.pv + '/' + vil.pv_max + (vil.stage ? ' · stade ' + ECHAP(vil.stage) : '') : '')
+               + (men ? ' · menace ' + men.menace : '') + '</div>';
+    var bas = '<div class="bas"><span>round <b>' + p.round + '</b></span></div>';
+    return '<div class="carte live">' + titre + h + contre + bas + '</div>';
+  }
+  function carteTerminee(p) {
+    var h = (p.heros || []).map(function (x) {
+      return '<div class="heros">' + ECHAP(x.nom) + aspects(x.aspects) + '</div>';
+    }).join("") || '<div class="heros">?</div>';
+    var titre = '<div class="ligne"><span class="qui">' + ECHAP(p.joueur || ("table " + p.emplacement)) + '</span>'
+              + '<span class="quand">' + ECHAP(p.il_y_a) + '</span></div>';
+    var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '') + '</div>';
+    var res = p.victoire ? '<span class="res v">Victoire</span>' : '<span class="res d">Défaite</span>';
+    var bas = '<div class="bas">' + res + '<span>' + p.rounds + ' round' + (p.rounds > 1 ? 's' : '') + '</span>'
+            + '<span>' + ECHAP(p.raison) + '</span></div>';
+    return '<div class="carte">' + titre + h + contre + bas + '</div>';
+  }
+  function rendre(etat) {
+    var ec = document.getElementById("encours"), te = document.getElementById("terminees");
+    ec.innerHTML = (etat.en_cours || []).length ? etat.en_cours.map(carteEnCours).join("") : '<p class="vide">Personne ne joue en ce moment.</p>';
+    te.innerHTML = (etat.terminees || []).length ? etat.terminees.map(carteTerminee).join("") : '<p class="vide">Aucune partie terminée.</p>';
+    var d = new Date((etat.maintenant || Date.now() / 1000) * 1000);
+    document.getElementById("maj").textContent = "à " + d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"});
+  }
+  function charger() {
+    fetch("/api/suivi", {credentials: "same-origin", cache: "no-store"}).then(function (r) {
+      if (r.status === 403) { location.href = "/"; return null; }
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (etat) {
+      if (!etat) return;
+      document.getElementById("erreur").hidden = true;
+      rendre(etat);
+    }).catch(function (e) {
+      var err = document.getElementById("erreur");
+      err.textContent = "Le site ne répond pas : " + e.message;
+      err.hidden = false;
+    });
+  }
+  charger();
+  setInterval(charger, 30000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) charger(); });
+})();
+</script>
+"""
+
+MANIFESTE_SUIVI = json.dumps({
+    "name": "Suivi des parties NarwhalChampions",
+    "short_name": "Parties",
+    "start_url": "/suivi",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0e1116",
+    "theme_color": "#0e1116",
+    "icons": [
+        {"src": "/suivi-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "/suivi-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+    ],
+}, ensure_ascii=False).encode("utf-8")
+
+
+def _icone_suivi(nom: str) -> bytes | None:
+    if nom not in ("suivi-192.png", "suivi-512.png"):
+        return None
+    try:
+        with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
+            return f.read()
+    except OSError:
+        return None
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -1948,6 +2233,37 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_admin())
+        elif self.path == "/suivi":
+            # La page de suivi nomme les joueurs : reservee a l'administrateur,
+            # comme /admin. Un visiteur non connecte est envoye au formulaire.
+            if not pseudo:
+                self._rediriger("/")
+                return
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._repondre(200, PAGE_SUIVI.encode("utf-8"))
+        elif self.path == "/api/suivi":
+            if pseudo != ADMIN:
+                self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
+                return
+            corps = json.dumps(etat_suivi(), ensure_ascii=False).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(corps)))
+            self.end_headers()
+            self.wfile.write(corps)
+        elif self.path == "/suivi.webmanifest":
+            # Public : le manifeste ne contient que des libelles, et le
+            # navigateur le demande SANS cookie.
+            self._repondre(200, MANIFESTE_SUIVI, "application/manifest+json; charset=utf-8")
+        elif self.path in ("/suivi-192.png", "/suivi-512.png"):
+            image = _icone_suivi(self.path[1:])
+            if image is None:
+                self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+                return
+            self._repondre(200, image, "image/png")
         elif self.path.startswith("/admin/capture"):
             # La capture d'un rapport, reservee a l'administrateur comme la
             # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de
