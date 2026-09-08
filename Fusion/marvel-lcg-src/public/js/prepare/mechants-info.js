@@ -14,6 +14,15 @@
 "use strict";
 
 export const MECHANTS_INFO = {
+    "gb001": {
+        bio: "Sur un monde aride où les prières restent sans réponse, Gorr perd sa famille et maudit des dieux qui n'ont jamais daigné écouter. Le jour où deux d'entre eux tombent du ciel, mourants, il s'empare de All-Black, la Nécro-épée, une lame vivante taillée dans l'ombre d'un dieu. Depuis, il traverse les âges pour tenir un seul serment : que plus aucun dieu ne survive. Il croise Thor à trois époques de sa vie, et c'est la première fois que le dieu du tonnerre se demande s'il mérite ses fidèles.",
+        bioEn: "On a barren world where prayers go unanswered, Gorr loses his family and curses gods who never deigned to listen. The day two of them fall from the sky, dying, he seizes All-Black the Necrosword, a living blade cut from a god's shadow. Since then he has crossed the ages to keep a single vow: that no god shall survive. He crosses paths with Thor at three points in the thunder god's life, and for the first time Thor wonders whether he deserves his worshippers.",
+        civil: "Gorr",
+        ennemis: "Thor",
+        ennemisEn: "Thor",
+        apparition: "Thor: God of Thunder #2 (2013)",
+    },
+
 
     "04076": {
         bio: "Ancien boxeur professionnel, Carl « Crusher » Creel est choisi par Loki pour recevoir un pouvoir mystique lui permettant d'absorber les propriétés physiques de tout ce qu'il touche, dans le cadre d'un complot contre Thor. Doté d'une force et d'une résistance quasi illimitées selon la matière absorbée, il devient un pilier des Maîtres du Mal. Il est marié à la vilaine Titania.",

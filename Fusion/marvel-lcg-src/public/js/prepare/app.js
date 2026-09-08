@@ -2624,9 +2624,39 @@ function rendreSceneMechant(sc) {
     ajusterNomGeant(scene);
 }
 
+/** La fiche d'un méchant, par l'identifiant de sa PREMIÈRE carte, sinon par
+ *  son NOM.
+ *
+ *  ⚠ LE REPLI PAR LE NOM EST CE QUI REND LEUR FICHE AUX DÉFIS (constat de
+ *  l'utilisateur, 08/09/2026 : « surtout les méchants n'avaient pas vraiment
+ *  de phrase »). Un scénario-défi désigne souvent une AUTRE étape du même
+ *  méchant que le scénario ordinaire (« Two for One » commence Rhino à
+ *  01095, la fiche est sous 01094) : vingt-quatre scènes s'affichaient sans
+ *  biographie alors qu'elle existait. La table nom -> fiche se construit une
+ *  fois, depuis les cartes que les clés de MECHANTS_INFO désignent. */
+let fichesMechantsParNom = null;
+function ficheDuMechant(cardId) {
+    const directe = MECHANTS_INFO[cardId];
+    if (directe) return directe;
+    if (!fichesMechantsParNom) {
+        fichesMechantsParNom = new Map();
+        for (const cle of Object.keys(MECHANTS_INFO)) {
+            const carte = cards.get(cle);
+            const nom = nomPropre(carte && carte.name);
+            if (nom && !fichesMechantsParNom.has(nom)) fichesMechantsParNom.set(nom, MECHANTS_INFO[cle]);
+        }
+    }
+    const carte = cards.get(cardId);
+    return fichesMechantsParNom.get(nomPropre(carte && carte.name)) || null;
+}
+/** « * Rhino » et « Rhino » sont le même méchant. */
+function nomPropre(nom) {
+    return String(nom || "").replace(/^\*\s*/, "").trim().toLowerCase();
+}
+
 /** La fiche encyclopédique d'un méchant, repliée au pied de sa scène. */
 function bioDuMechant(sc) {
-    const info = MECHANTS_INFO[(sc.villainCards || [])[0]];
+    const info = ficheDuMechant((sc.villainCards || [])[0]);
     const en = langueActuelle() === "en";
     return pliBio(t("Biographie"), [
         info ? el("p", { class: "hh-bio" }, (en && info.bioEn) || info.bio) : null,

@@ -14,6 +14,40 @@
 "use strict";
 
 export const HEROS_INFO = {
+    "61001a": {
+        bio: "Adolescente, Jessica Jones survit à l'accident de voiture qui tue sa famille et en ressort exposée à des produits chimiques qui lui donnent une force surhumaine et un vol maladroit. Sa courte carrière de super-héroïne s'arrête net sous l'emprise mentale de l'Homme Pourpre, des mois de contrôle dont elle sort brisée. Elle ouvre alors Alias Investigations et devient détective privée : cynique, alcoolique, tenace, et bien plus héroïque qu'elle ne veut l'admettre. Elle épouse Luke Cage, avec qui elle élève leur fille Danielle.",
+        bioEn: "As a teenager, Jessica Jones survives the car crash that kills her family and comes out of it exposed to chemicals that grant her superhuman strength and clumsy flight. Her brief superhero career ends abruptly under the mind control of the Purple Man, months of domination she emerges from broken. She opens Alias Investigations and becomes a private investigator: cynical, hard-drinking, relentless, and far more heroic than she cares to admit. She marries Luke Cage, with whom she raises their daughter Danielle.",
+        civil: "Jessica Jones",
+        base: "New York (Hell's Kitchen)",
+        equipes: "Défenseurs, Vengeurs",
+        equipesEn: "Defenders, Avengers",
+        ennemis: "L'Homme Pourpre",
+        ennemisEn: "Purple Man",
+        apparition: "Alias #1 (2001)",
+    },
+
+    "62001a": {
+        bio: "Carl Lucas, jeune homme de Harlem emprisonné à tort, accepte de servir de cobaye à une expérience de régénération cellulaire. Un gardien sabote la machine : au lieu de le tuer, elle lui donne une peau impénétrable et une force surhumaine. Évadé, il prend le nom de Luke Cage et loue ses services de héros, avant de faire d'Iron Fist son partenaire de toujours. Devenu un pilier des Défenseurs puis des Vengeurs, il reste avant tout l'homme de son quartier, et le mari de Jessica Jones.",
+        bioEn: "Carl Lucas, a young man from Harlem wrongfully imprisoned, agrees to be the test subject of a cellular regeneration experiment. A guard sabotages the machine: instead of killing him, it gives him unbreakable skin and superhuman strength. Escaping, he takes the name Luke Cage and hires out his services as a hero, before making Iron Fist his lifelong partner. A mainstay of the Defenders and later the Avengers, he remains first and foremost a man of his neighbourhood, and Jessica Jones's husband.",
+        civil: "Carl Lucas",
+        base: "New York (Harlem)",
+        equipes: "Héros à louer, Défenseurs, Vengeurs",
+        equipesEn: "Heroes for Hire, Defenders, Avengers",
+        ennemis: "Diamondback, Cottonmouth",
+        apparition: "Luke Cage, Hero for Hire #1 (1972)",
+    },
+
+    "kb001a": {
+        bio: "Fille d'un riche homme d'affaires new-yorkais, Kate Bishop n'a aucun pouvoir : seulement un arc, une discipline de fer et un culot à toute épreuve. Elle rejoint les Jeunes Vengeurs alors que Clint Barton passe pour mort, et c'est lui, de retour, qui lui laisse le nom de Hawkeye. Partenaire de Clint, patronne des Vengeurs de la côte Ouest, détective à Los Angeles à ses heures, elle est la preuve qu'on peut tenir tête à un dieu avec des flèches et une grande gueule.",
+        bioEn: "Daughter of a wealthy New York businessman, Kate Bishop has no powers: just a bow, iron discipline and boundless nerve. She joins the Young Avengers while Clint Barton is believed dead, and it is Clint himself, once back, who lets her keep the name Hawkeye. Clint's partner, boss of the West Coast Avengers, part-time detective in Los Angeles, she is living proof that you can stand up to a god with arrows and a big mouth.",
+        civil: "Kate Bishop",
+        base: "New York, Los Angeles",
+        equipes: "Jeunes Vengeurs, Vengeurs de la côte Ouest",
+        equipesEn: "Young Avengers, West Coast Avengers",
+        ennemis: "Madame Masque",
+        apparition: "Young Avengers #1 (2005)",
+    },
+
 
     "01001a": {
         bio: "Lycéen de Queens élevé par son oncle Ben et sa tante May, Peter Parker est mordu par une araignée irradiée lors d'une sortie scolaire : il en tire une force et une agilité surhumaines, l'adhérence aux murs et un « sens d'araignée » qui l'avertit du danger. Génie de la chimie, il fabrique lui-même ses lanceurs de toile. Quand un cambrioleur qu'il avait laissé filer tue son oncle Ben, il retient la leçon d'une vie : un grand pouvoir implique de grandes responsabilités.",
