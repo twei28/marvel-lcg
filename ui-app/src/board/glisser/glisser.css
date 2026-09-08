@@ -93,9 +93,20 @@
    laid, et signale des le premier essai (08/09/2026). `filter` agit sur les
    pixels de la carte elle-meme, sans rien laisser passer derriere. C'est deja
    la facon dont le plateau eteint une carte desactivee (`state-disabled`) ou
-   un vilain qui attend son tour (`est-inactif`) : on suit la maison. */
+   un vilain qui attend son tour (`est-inactif`) : on suit la maison.
+
+   ⚠ ET LA GRISAILLE EST TOTALE, PAS DE MOITIE. Deuxieme signalement du meme
+   jour, capture a l'appui : « toujours l'effet bleute ». `grayscale(0.5)` ne
+   retire que la MOITIE de la saturation ; ce qui reste d'un cadre bleu (le
+   camp du heros, les manigances, les dos de deck) une fois assombri de moitie,
+   c'est justement du bleu sombre. Mesure faite dans une vraie partie : la
+   regle s'appliquait bien, `opacity` valait 1, et la teinte venait donc de la
+   couleur PROPRE des cartes, pas de la table. A 1, il ne reste aucune teinte a
+   voir : les cartes hors de portee sont grises, celles qu'on peut viser sont
+   les seules en couleur. La luminosite remonte un peu, sinon un gris sans
+   couleur devient illisible. */
 .plateau-cadre.est-en-glisser .scan-card:not(.state-targetable):not(.is-target-pulse) {
-  filter: grayscale(0.5) brightness(0.5);
+  filter: grayscale(1) brightness(0.58);
   transition: filter 0.12s ease-out;
 }
 
