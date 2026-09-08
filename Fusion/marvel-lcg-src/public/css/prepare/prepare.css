@@ -1689,9 +1689,51 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   font-weight:900;
 }
 .acc-nombre:hover{color:#1e1e1e;border-color:var(--affiche-jaune);background:var(--affiche-jaune)}
+
+/* Le bloc « Nouveautes » de l'accueil (8 septembre 2026). Sous les tuiles, il
+   dit aux joueurs ce qui a change depuis leur derniere visite. Volontairement
+   sobre : c'est une note de bas de page, pas une tuile de plus. Le depliage
+   est un <details> natif, sans etat a tenir. */
+.acc-nouv{margin-top:34px;padding-top:18px;border-top:1px solid var(--soft)}
+.acc-nouv h2{
+  margin:0 0 12px;
+  color:var(--mute);font-size:11px;font-weight:900;
+  letter-spacing:.16em;text-transform:uppercase;
+}
+.acc-nouv-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.acc-nouv-liste li{display:flex;align-items:baseline;gap:10px}
+.acc-nouv-date{
+  flex:none;min-width:104px;
+  color:var(--mute);font-size:12px;font-variant-numeric:tabular-nums;
+}
+.acc-nouv-genre{
+  flex:none;padding:1px 7px;
+  border:1px solid var(--line);color:var(--dim);
+  font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+}
+/* Une couleur par famille, prise dans la palette de l'assistant : le roster
+   au rouge Marvel, le jeu au jaune d'affiche, les corrections en vert. */
+.acc-nouv-genre.heros{color:var(--agir);border-color:var(--agir)}
+.acc-nouv-genre.jeu{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
+.acc-nouv-genre.correction{color:#5bbf7a;border-color:#5bbf7a}
+.acc-nouv-texte{color:var(--dim);font-size:14px;line-height:1.45}
+.acc-nouv-plus{margin-top:12px}
+.acc-nouv-plus>summary{
+  display:inline-block;cursor:pointer;
+  color:var(--mute);font-size:12px;font-weight:900;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.acc-nouv-plus>summary:hover{color:var(--affiche-jaune)}
+.acc-nouv-plus[open]>summary{margin-bottom:10px}
+
 @media(max-width:700px){
   .acc-titre h1{font-size:56px}
   .acc-mode{flex-wrap:wrap}
+  /* Sur un ecran etroit, la date et l'etiquette passent au-dessus du texte
+     plutot que de lui voler la moitie de la largeur. */
+  .acc-nouv-liste li{flex-wrap:wrap;gap:6px}
+  .acc-nouv-date{min-width:0}
+  .acc-nouv-texte{flex-basis:100%}
 }
 
 /* La ligne « Mode » de la fiche de mission est un bouton : elle ramène à

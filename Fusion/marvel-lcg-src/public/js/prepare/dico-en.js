@@ -10,6 +10,8 @@ export const DICO_EN_BASE = {
     /* ---- Wizard : général, étapes, navigation ---- */
     "Préparation de mission": "Mission prep",
     "Comment veux-tu jouer ?": "How do you want to play?",
+    "Nouveautés": "What's new",
+    "Tout voir": "See everything",
     "Épisode": "Episode",
     "Roster": "Roster",
     "Cibles": "Targets",

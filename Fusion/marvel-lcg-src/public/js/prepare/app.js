@@ -13,6 +13,7 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
+import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
 import { MECHANTS_INFO } from "/public/js/prepare/mechants-info.js";
 import { etatSalon } from "/public/js/prepare/salon-etat.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
@@ -995,6 +996,58 @@ function accueilView() {
             el("p", {}, t("Comment veux-tu jouer ?")),
         ),
         grille,
+        blocNouveautes(),
+    );
+}
+
+/* ---- Le bloc « Nouveautés » de l'accueil (8 septembre 2026) ---------------
+   Sous les tuiles de mode, les trois dernières lignes du journal, le reste
+   replié sous « Tout voir ». Le contenu vit dans `nouveautes.js`, écrit pour
+   les joueurs ; ici il n'y a que la mise en page.
+
+   ⚠ PAS D'ÉTAT NI DE RE-RENDU. Le dépliage passe par un `<details>` natif,
+   comme la biographie du roster : rien à retenir, rien à resynchroniser, et
+   le clavier l'ouvre tout seul. */
+
+/** Combien de lignes restent visibles sans rien déplier. */
+const NOUVEAUTES_EN_TETE = 3;
+
+/** « 8 sept. 2026 » / « 8 Sep 2026 », dans la langue de l'écran.
+ *
+ *  ⚠ ON NE PASSE PAS PAR `new Date("2026-09-08")` : cette forme est lue comme
+ *  minuit UTC, et sous un fuseau en retard elle affiche la veille. On
+ *  reconstruit la date à partir de ses morceaux, en heure locale. */
+function dateCourteNouveaute(iso) {
+    const [an, mois, jour] = String(iso).split("-").map(Number);
+    if (!an || !mois || !jour) return String(iso);
+    const quand = new Date(an, mois - 1, jour);
+    const locale = langueActuelle() === "en" ? "en-GB" : "fr-FR";
+    return quand.toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" });
+}
+
+function ligneNouveaute(entree) {
+    const anglais = langueActuelle() === "en";
+    const genre = GENRES[entree.genre];
+    return el("li", {},
+        el("span", { class: "acc-nouv-date" }, dateCourteNouveaute(entree.date)),
+        el("span", { class: "acc-nouv-genre " + entree.genre },
+           anglais ? genre.en : genre.fr),
+        el("span", { class: "acc-nouv-texte" }, anglais ? entree.en : entree.fr),
+    );
+}
+
+function blocNouveautes() {
+    const toutes = nouveautesTriees();
+    if (!toutes.length) return null;
+    const enTete = toutes.slice(0, NOUVEAUTES_EN_TETE);
+    const reste = toutes.slice(NOUVEAUTES_EN_TETE);
+    return el("section", { class: "acc-nouv" },
+        el("h2", {}, t("Nouveautés")),
+        el("ul", { class: "acc-nouv-liste" }, enTete.map(ligneNouveaute)),
+        reste.length ? el("details", { class: "acc-nouv-plus" },
+            el("summary", {}, t("Tout voir")),
+            el("ul", { class: "acc-nouv-liste" }, reste.map(ligneNouveaute)),
+        ) : null,
     );
 }
 
