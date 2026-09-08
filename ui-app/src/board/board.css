@@ -136,30 +136,6 @@
     overflow: visible;
   }
 
-  /* --- NETTETE DES SCANS ----------------------------------------------------
-     Le filtre est declare dans Board.tsx, avec le pourquoi du noyau. Ici, on
-     dit seulement OU il s'applique : aux scans de la TABLE, ceux qu'une
-     reduction de 5 pour 1 a rendus cotonneux.
-
-     ⚠ PAS A L'APERCU AGRANDI. Lui s'affiche assez grand pour n'avoir rien
-     perdu ; l'accentuer ne ferait qu'ourler ses lettres d'un halo. Meme
-     raison pour la carte tenue en main pendant un glisser, qui vit hors de la
-     scene et n'est donc pas concernee. */
-  .plateau-filtres {
-    position: absolute;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-
-  .plateau-scene .scan-frame img {
-    filter: url(#nettete-scan);
-  }
-
-  .plateau-scene .carte-apercu .scan-frame img {
-    filter: none;
-  }
-
   /* Table de taille fixe, centree et mise a l'echelle.
      Lecture voulue : vilain + main scheme + deck rencontre en haut, combat au
      milieu, side schemes sur le cote, main du joueur en bas. */

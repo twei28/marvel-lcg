@@ -21,6 +21,7 @@ const cards: ScanCardProps[] = [
     name: 'Groot',
     kind: 'hero',
     state: 'selected',
+    taille: 'grande',
     imageUrl: grootScan,
     allyHp: '7/14',
     // Bande a mi-hauteur : alerte douce, la carte respire lentement.
@@ -31,6 +32,7 @@ const cards: ScanCardProps[] = [
     name: 'Daredevil',
     kind: 'ally',
     state: 'exhausted',
+    taille: 'grande',
     imageUrl: daredevilScan,
     allyHp: '1/3',
     // Un tiers de PV : alerte forte, bande rouge.
@@ -41,6 +43,7 @@ const cards: ScanCardProps[] = [
     name: 'Ronan the Accuser',
     kind: 'minion',
     state: 'targetable',
+    taille: 'grande',
     imageUrl: ronanScan,
     allyHp: '4/6',
     // Un ennemi n'a pas droit a l'alarme : bande coloree, mais aucune pulsation.
@@ -51,6 +54,7 @@ const cards: ScanCardProps[] = [
     name: 'Judge, Jury, Executioner',
     kind: 'side-scheme',
     state: 'ready',
+    taille: 'grande',
     imageUrl: ronanSchemeScan,
     isLandscape: true,
     schemeThreat: '3',
@@ -62,6 +66,7 @@ const cards: ScanCardProps[] = [
     name: 'The Accused',
     kind: 'attachment',
     state: 'playable',
+    taille: 'grande',
     imageUrl: accusedScan,
   },
   {
@@ -69,6 +74,7 @@ const cards: ScanCardProps[] = [
     name: 'Bring the Hammer Down',
     kind: 'treachery',
     state: 'disabled',
+    taille: 'grande',
     imageUrl: hammerScan,
   },
 ]

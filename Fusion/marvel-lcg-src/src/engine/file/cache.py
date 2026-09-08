@@ -8,6 +8,11 @@ from engine.config import ConfigVariables
 CATEGORY_NAME = "CACHE"
 
 IMAGE_FOLDERS   = ConfigVariables.Folders('image_folders', ["./assets/pics/", "./assets/pics-fr/"])
+# Les vignettes : les memes scans, reduits sur le serveur au petit cote de 246
+# px, avec un vrai filtre de reduction et un masque flou. C'est ce que le
+# plateau affiche ; le scan complet reste pour l'apercu agrandi. Voir
+# tools/generer_vignettes.py pour le pourquoi (08/09/2026).
+VIGNETTE_FOLDER = ConfigVariables.Folder('vignette_folder', "./assets/vignettes/")
 TEXTURE_FOLDER  = ConfigVariables.Folder('texture_folder', "./assets/textures/")
 CACHE_FOLDER    = ConfigVariables.Folder('cache_folder', "./assets/cache/")
 IMAGE_SERVERS   = ConfigVariables.ListStr('image_servers', [])
@@ -26,6 +31,31 @@ class Cache:
     @staticmethod
     def SetCache(card_id: str, data: bytes):
         Cache.cache[card_id] = data
+
+    @staticmethod
+    def LoadVignette(card_id: str) -> bytes:
+        """La vignette d'un scan, ou le scan complet si elle n'existe pas.
+
+        ⚠ LE REPLI EST COTE SERVEUR, ET C'EST VOULU : une carte dont la
+        vignette manque (pack ajoute sans relancer l'outil) doit s'afficher
+        quand meme, en pleine taille, plutot que tomber sur l'image vide. Le
+        navigateur ne voit jamais la difference."""
+        card_id = card_id.lstrip("/")
+        cle = "vignette:" + card_id
+        if cle in Cache.cache:
+            return Cache.cache[cle]
+        for ext_name in [".jpg", ".webp", ".png"]:
+            check_path = f"{VIGNETTE_FOLDER.value}/{card_id}{ext_name}"
+            if FileManager.Exists(check_path):
+                with FileManager.OpenFile(check_path, read=True, bin=True) as file:
+                    data = ImageLib.TryRotateImage(file.Read())
+                Cache.cache[cle] = data
+                return data
+        # Une image liee (dos commun, carte renvoyant a une autre) a sa
+        # vignette sous le nom de la cible.
+        if card_id in Cache.link_pic:
+            return Cache.LoadVignette(Cache.link_pic[card_id])
+        return Cache.LoadImage(card_id)
 
     @staticmethod
     def LoadImage(card_id: str) -> bytes:

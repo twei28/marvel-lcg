@@ -32,6 +32,14 @@ class GameServerFiles(GameServerBase):
 
         return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
 
+    def handle_vignette_request(self, request: web.Request) -> web.StreamResponse:
+        # Meme forme que handle_image_request : seul le DERNIER segment compte,
+        # et Cache.LoadVignette retombe sur le scan complet si besoin.
+        file_path = request.path.split("/")[-1]
+        image_bytes = Cache.LoadVignette(file_path)
+        self.device_manager.AddSize("Image", len(image_bytes))
+        return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
+
     def handle_image_request(self, request: web.Request) -> web.StreamResponse:
         # file_path = request.match_info['path']
         file_path = request.path
@@ -55,5 +63,8 @@ class GameServerFiles(GameServerBase):
         self.AddAwaitGetSecurity('/watch', self.handle_marvel)
 
         self.AddNonAwaitGetSecurity(r'/sets/{path:.+}', self.handle_sets_image)
+        # ⚠ AVANT la route fourre-tout : sinon /vignette/<nom> y tomberait et
+        # servirait le scan complet, comme n'importe quel chemin.
+        self.AddNonAwaitGetSecurity(r'/vignette/{path:.+}', self.handle_vignette_request)
         self.AddNonAwaitGetSecurity(r'/{path:.+}', self.handle_image_request)
 

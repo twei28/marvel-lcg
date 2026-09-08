@@ -30,6 +30,8 @@ export default defineConfig({
         // Les scans. Le prefixe /scan/ n'existe que pour rendre ces requetes
         // relayables : le serveur du jeu ne regarde que le dernier segment.
         '/scan',
+        // Les vignettes, meme mecanisme.
+        '/vignette',
       ].map((route) => [route, process.env.ADRESSE_JEU ?? 'http://127.0.0.1:2345'])
     ),
   },

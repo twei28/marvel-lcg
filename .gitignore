@@ -42,6 +42,8 @@ __pycache__/
 Fusion/marvel-lcg-src/assets/pics/
 Fusion/marvel-lcg-src/assets/pics-fr/
 Fusion/marvel-lcg-src/assets/cache/
+# Les vignettes des scans (tools/generer_vignettes.py) : derivees, jamais versionnees.
+Fusion/marvel-lcg-src/assets/vignettes/
 
 # Livrets de regles et carnets de campagne : 169 Mo de PDF officiels, meme
 # nature que les scans ci-dessus. Ils montent au serveur par l'etape

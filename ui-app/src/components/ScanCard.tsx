@@ -139,6 +139,19 @@ export type CardEffectDelta = {
   kind: 'damage' | 'heal' | 'threat'
 }
 
+/**
+ * L'adresse de la VIGNETTE d'un scan : /scan/<nom> devient /vignette/<nom>.
+ * Toute autre adresse (image importee de la vitrine, donnee inline, vide)
+ * est rendue telle quelle. Le serveur retombe sur le scan complet quand la
+ * vignette manque, le navigateur n'a donc jamais a gerer un echec.
+ */
+export function versVignette(url: string): string {
+  // Une carte sans image (piles vides, tests) ne doit pas faire tomber le
+  // plateau : on rend ce qu'on a recu, quoi que ce soit.
+  if (!url || !url.startsWith('/scan/')) return url
+  return '/vignette/' + url.slice('/scan/'.length)
+}
+
 export type ScanCardProps = {
   id: string
   name: string
@@ -191,6 +204,14 @@ export type ScanCardProps = {
    */
   exhausted?: boolean
   imageUrl: string
+  /**
+   * `table` (defaut) : la carte se dessine petite, on demande au serveur sa
+   * VIGNETTE (/vignette/...), reduite la-bas avec un vrai filtre et un masque
+   * flou. C'est ce qui rend le texte lisible a 123 px : le navigateur, lui,
+   * reduisait de 5 pour 1 en une passe et ecrasait tout (08/09/2026).
+   * `grande` : l'apercu agrandi et la vitrine, qui veulent le scan complet.
+   */
+  taille?: 'table' | 'grande'
   /**
    * Images des autres faces d'une carte multi-faces (recto-verso, ou 3 formes
    * comme Ant-Man). Portees par les props mais rendues seulement par l'apercu
@@ -370,6 +391,7 @@ export function ScanCard({
   state = 'ready',
   exhausted = false,
   imageUrl,
+  taille = 'table',
   picId,
   isLandscape = false,
   scanIsPortrait = false,
@@ -432,7 +454,8 @@ export function ScanCard({
       window.clearTimeout(fin)
     }
   }, [facedown, imageUrl])
-  const imageAffichee = retournement?.phase === 'dos' ? retournement.dos : imageUrl
+  const imageBrute = retournement?.phase === 'dos' ? retournement.dos : imageUrl
+  const imageAffichee = taille === 'grande' ? imageBrute : versVignette(imageBrute)
   // Quand la bande porte deja le chiffre (« 8 / 12 »), la pastille ronde
   // n'a plus rien a dire : demande de l'utilisateur, 7 septembre 2026.
   const bandeChiffree = !facedown && jauge?.texte !== undefined
