@@ -1631,6 +1631,7 @@ PAGE_ADMIN = """<!doctype html>
   .pastille {{ font-size:.8rem; vertical-align:middle; background:#f85149;
               color:#0e1116; border-radius:1rem; padding:.05rem .5rem; }}
 </style>
+{styles_suivi}
 <main>
   <h1>Comptes</h1>
   <p class="sous">{valides} valide(s) sur {max}. <a href="/">Retour au site</a></p>
@@ -1656,12 +1657,23 @@ PAGE_ADMIN = """<!doctype html>
   capture et le journal de la partie.</p>
   {rapports}
 
-  <h1 style="margin-top:2.5rem">Parties</h1>
-  <p class="sous">Les 25 dernieres, la plus recente en haut.</p>
-  <table>
-    <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
-    {parties}
-  </table>
+  <h1 style="margin-top:2.5rem">Parties <small id="maj" style="color:#9aa7b4;font-weight:normal;font-size:.8rem">chargement…</small></h1>
+  <p class="sous">Qui joue en ce moment, et les {suivi_max} dernieres parties
+  finies : heros, deck, aspect, mechant, rounds et resultat. Les abandons sont
+  en orange. Rafraichi tout seul toutes les 30 s. La meme chose, a epingler sur
+  le telephone : <a href="/suivi">page de suivi</a>.</p>
+  {suivi}
+
+  <details class="rapport" style="margin-top:1.5rem">
+    <summary><span class="quoi">Journal technique des tables</span>
+    <span class="meta">allumage et extinction des 25 dernieres</span></summary>
+    <div style="padding:0 .8rem .8rem">
+      <table>
+        <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
+        {parties}
+      </table>
+    </div>
+  </details>
 </main>
 """
 
@@ -1907,56 +1919,61 @@ def etat_suivi() -> dict:
             "terminees": parties_terminees()}
 
 
-PAGE_SUIVI = """<!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0e1116">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="/suivi.webmanifest">
-<link rel="icon" href="/suivi-192.png">
-<link rel="apple-touch-icon" href="/suivi-192.png">
-<title>Suivi des parties</title>
-<style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; }
-  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
-         padding: max(.8rem, env(safe-area-inset-top)) .8rem 2rem; }
-  h1 { font-size:1.15rem; margin:.2rem 0 .8rem; display:flex; justify-content:space-between; align-items:baseline; }
-  h1 small { color:#9aa7b4; font-weight:normal; font-size:.8rem; }
-  h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:#9aa7b4; margin:1.2rem 0 .5rem; }
-  .carte { border:1px solid #30363d; border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:#161b22; }
-  .carte.live { border-color:#238636; box-shadow: inset 3px 0 0 #238636; }
-  .carte.abandon { box-shadow: inset 3px 0 0 #9e6a03; }
-  .carte.attente { border-color:#30363d; opacity:.75; }
-  .ligne { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
-  .qui { font-weight:600; }
-  .quand { color:#9aa7b4; font-size:.8rem; white-space:nowrap; }
-  .heros { font-size:1.05rem; margin:.15rem 0; }
-  .heros .aspect { font-size:.75rem; padding:.05rem .4rem; border-radius:.3rem; margin-left:.3rem; vertical-align:middle; background:#30363d; }
-  .aspect.Aggression { background:#8b1e1e; } .aspect.Justice { background:#8a6d00; color:#fff; }
-  .aspect.Leadership { background:#1f4e8c; } .aspect.Protection { background:#1e6b3a; }
-  .aspect.Pool { background:#6b1e8c; } .aspect.Determination { background:#5a2d8c; }
-  .contre { color:#c9d1d9; }
-  .contre b { color:#e6edf3; }
-  .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
-  .res { font-weight:700; }
-  .res.v { color:#3fb950; } .res.d { color:#f85149; } .res.a { color:#d29922; }
-  .pv { font-variant-numeric: tabular-nums; }
-  .vide { color:#9aa7b4; font-style:italic; }
-  .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
-  .pied { color:#6e7681; font-size:.75rem; margin-top:1.5rem; text-align:center; }
-  .pied a { color:#9aa7b4; }
-</style>
-<h1>Parties <small id="maj">chargement…</small></h1>
+# --------------------------------------------------------------------------
+# Le bloc de suivi, PARTAGE par /suivi et par /admin
+# --------------------------------------------------------------------------
+# ⚠ UN SEUL RENDU POUR DEUX PAGES (08/09/2026, demande de l'utilisateur : « je
+# veux que le suivi soit dans /admin »). Le meme balisage, le meme script et
+# les memes styles servent la page a epingler sur le telephone et la section
+# « Parties » de l'administration. Dupliquer le rendu, c'etait se condamner a
+# corriger deux fois chaque ligne.
+#
+# ⚠ LES STYLES DU BLOC SONT PREFIXES PAR `#suivi`. Sans cela, la regle `h2` du
+# suivi (petites capitales grises) repeindrait les titres de /admin, et sa
+# regle `.carte` mordrait sur les blocs de rapport de bug.
+#
+# ⚠ ET ILS PASSENT PAR UN ARGUMENT DE `.format`, jamais par le gabarit :
+# PAGE_ADMIN est une chaine `.format`, ou chaque accolade de CSS ou de
+# JavaScript devrait etre doublee. Injecte en argument, le bloc reste lisible
+# et personne n'a a y penser.
+
+SUIVI_STYLE_BLOC = """<style>
+  #suivi h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:#9aa7b4; margin:1.2rem 0 .5rem; }
+  #suivi .carte { border:1px solid #30363d; border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:#161b22; }
+  #suivi .carte.live { border-color:#238636; box-shadow: inset 3px 0 0 #238636; }
+  #suivi .carte.abandon { box-shadow: inset 3px 0 0 #9e6a03; }
+  #suivi .carte.attente { border-color:#30363d; opacity:.75; }
+  #suivi .ligne { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
+  #suivi .qui { font-weight:600; }
+  #suivi .quand { color:#9aa7b4; font-size:.8rem; white-space:nowrap; }
+  #suivi .heros { font-size:1.05rem; margin:.15rem 0; }
+  #suivi .heros .aspect { font-size:.75rem; padding:.05rem .4rem; border-radius:.3rem; margin-left:.3rem; vertical-align:middle; background:#30363d; }
+  /* Le nom du deck : discret, il accompagne le heros sans lui voler la ligne. */
+  #suivi .heros .deck { color:#8b949e; font-size:.78rem; margin-left:.4rem; }
+  #suivi .aspect.Aggression { background:#8b1e1e; } #suivi .aspect.Justice { background:#8a6d00; color:#fff; }
+  #suivi .aspect.Leadership { background:#1f4e8c; } #suivi .aspect.Protection { background:#1e6b3a; }
+  #suivi .aspect.Pool { background:#6b1e8c; } #suivi .aspect.Determination { background:#5a2d8c; }
+  #suivi .contre { color:#c9d1d9; }
+  #suivi .contre b { color:#e6edf3; }
+  #suivi .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
+  #suivi .res { font-weight:700; }
+  #suivi .res.v { color:#3fb950; } #suivi .res.d { color:#f85149; } #suivi .res.a { color:#d29922; }
+  #suivi .pv { font-variant-numeric: tabular-nums; }
+  #suivi .vide { color:#9aa7b4; font-style:italic; }
+  #suivi .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
+</style>"""
+
+# Le balisage, sans titre : chaque page pose le sien, avec le `#maj` que le
+# script remplit (l'heure du dernier rafraichissement).
+SUIVI_CORPS = """<div id="suivi">
 <div id="erreur" class="erreur" hidden></div>
 <h2>En cours</h2>
 <div id="encours"><p class="vide">…</p></div>
 <h2>Terminées</h2>
 <div id="terminees"><p class="vide">…</p></div>
-<p class="pied">Rafraîchie toutes les 30 s · <a href="/suivi">recharger</a> · <a href="/admin">administration</a></p>
-<script>
+</div>"""
+
+SUIVI_SCRIPT = """<script>
 (function () {
   var ECHAP = function (t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) {
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
@@ -1977,8 +1994,9 @@ PAGE_SUIVI = """<!doctype html>
       return '<div class="carte attente">' + titre + '<div class="contre">' + etat + '</div></div>';
     }
     var h = joueurs.map(function (j) {
+      var deck = j.deck ? ' <span class="deck">' + ECHAP(j.deck) + '</span>' : '';
       return '<div class="heros">' + ECHAP(j.heros) + (j.forme === "AlterEgo" ? ' <small>(alter ego)</small>' : '')
-           + ' <span class="pv">' + j.pv + '/' + j.pv_max + '</span>' + (j.elimine ? ' ✝' : '') + '</div>';
+           + deck + ' <span class="pv">' + j.pv + '/' + j.pv_max + '</span>' + (j.elimine ? ' ✝' : '') + '</div>';
     }).join("");
     var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '')
                + (vil ? ' · PV ' + vil.pv + '/' + vil.pv_max + (vil.stage ? ' · stade ' + ECHAP(vil.stage) : '') : '')
@@ -1991,7 +2009,10 @@ PAGE_SUIVI = """<!doctype html>
     // prise en cours de jeu) : absents, ils ne s'affichent pas.
     var forme = x.forme === "AlterEgo" ? ' <small>(alter ego)</small>' : '';
     var pv = x.pv_max ? ' <span class="pv">' + x.pv + '/' + x.pv_max + '</span>' : '';
-    return '<div class="heros">' + ECHAP(x.nom) + forme + aspects(x.aspects) + pv + '</div>';
+    // Le nom du DECK, demande des l'origine et longtemps absent de l'affichage
+    // alors que les deux sources le portaient deja (08/09/2026).
+    var deck = x.deck ? ' <span class="deck">' + ECHAP(x.deck) + '</span>' : '';
+    return '<div class="heros">' + ECHAP(x.nom) + forme + aspects(x.aspects) + deck + pv + '</div>';
   }
   function carteTerminee(p) {
     var abandon = p.etat === "abandon";
@@ -2035,7 +2056,34 @@ PAGE_SUIVI = """<!doctype html>
   setInterval(charger, 30000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) charger(); });
 })();
-</script>
+</script>"""
+
+PAGE_SUIVI = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1116">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/suivi.webmanifest">
+<link rel="icon" href="/suivi-192.png">
+<link rel="apple-touch-icon" href="/suivi-192.png">
+<title>Suivi des parties</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
+         padding: max(.8rem, env(safe-area-inset-top)) .8rem 2rem; }
+  h1 { font-size:1.15rem; margin:.2rem 0 .8rem; display:flex; justify-content:space-between; align-items:baseline; }
+  h1 small { color:#9aa7b4; font-weight:normal; font-size:.8rem; }
+  .pied { color:#6e7681; font-size:.75rem; margin-top:1.5rem; text-align:center; }
+  .pied a { color:#9aa7b4; }
+</style>
+""" + SUIVI_STYLE_BLOC + """
+<h1>Parties <small id="maj">chargement…</small></h1>
+""" + SUIVI_CORPS + """
+<p class="pied">Rafraîchie toutes les 30 s · <a href="/suivi">recharger</a> · <a href="/admin">administration</a></p>
+""" + SUIVI_SCRIPT + """
 """
 
 MANIFESTE_SUIVI = json.dumps({
@@ -2289,11 +2337,17 @@ class Handler(BaseHTTPRequestHandler):
             for p in dernieres_parties())
         if not parties:
             parties = '<tr><td colspan="4">Aucune partie pour le moment.</td></tr>'
+        # ⚠ Le bloc de suivi et ses styles passent en ARGUMENTS, jamais dans
+        # le gabarit : PAGE_ADMIN est une chaine `.format`, ou chaque accolade
+        # de CSS ou de JavaScript devrait etre doublee.
         return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
                                  rapports=rapports, pastille=pastille,
-                                 parties=parties).encode("utf-8")
+                                 parties=parties,
+                                 suivi_max=SUIVI_TERMINEES_MAX,
+                                 styles_suivi=SUIVI_STYLE_BLOC,
+                                 suivi=SUIVI_CORPS + SUIVI_SCRIPT).encode("utf-8")
 
     @staticmethod
     def _bloc_rapport(r: dict) -> str:

@@ -808,6 +808,45 @@ verifier("une table allumee dont le moteur ne repond pas est dite muette, pas en
          _etat_suivi["en_cours"][0]["joueur"] == "hote"
          and _etat_suivi["en_cours"][0]["moteur_repond"] is False
          and _etat_suivi["en_cours"][0]["en_cours"] is False, str(_etat_suivi["en_cours"]))
+
+# --- Le nom du DECK, et le suivi servi DANS /admin -------------------------
+# Deux demandes du 08/09/2026 : « ajoute ca » (le nom du deck, porte par les
+# deux sources mais jamais affiche) et « je veux que le suivi soit dans
+# /admin ».
+verifier("le nom du deck arrive jusqu'a l'interface de donnees",
+         _terminees and _terminees[1]["heros"][0]["deck"] == "Blade",
+         str(_terminees[1]["heros"][0]))
+verifier("et le rendu partage l'ecrit sur la ligne du heros",
+         'class="deck"' in o.SUIVI_SCRIPT and "x.deck" in o.SUIVI_SCRIPT
+         and "j.deck" in o.SUIVI_SCRIPT, "le script n'affiche pas le deck")
+
+# ⚠ LE CAS QUI COMPTE POUR /admin : c'est le MEME bloc, pas une copie. Si un
+# jour quelqu'un duplique le rendu, ces trois presences resteront vraies mais
+# le premier `verifier` ci-dessous tombera des que les deux versions
+# divergeront d'un caractere.
+_code, _, _corps_admin = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+_txt_admin = _corps_admin.decode("utf-8")
+verifier("/admin porte le bloc de suivi, a l'identique",
+         _code == 200 and o.SUIVI_CORPS in _txt_admin and o.SUIVI_SCRIPT in _txt_admin
+         and o.SUIVI_STYLE_BLOC in _txt_admin, "%s" % _code)
+verifier("/admin garde le journal technique des tables",
+         "Journal technique des tables" in _txt_admin, "depliant absent")
+verifier("/admin renvoie toujours vers la page a epingler",
+         'href="/suivi"' in _txt_admin, "lien vers /suivi absent")
+
+# ⚠ LES STYLES DU SUIVI SONT PREFIXES, sinon sa regle `h2` (petites capitales
+# grises) repeindrait les titres de l'administration et sa regle `.carte`
+# mordrait sur les blocs de rapport de bug.
+verifier("les styles du bloc ne debordent pas sur le reste de /admin",
+         "#suivi h2" in o.SUIVI_STYLE_BLOC
+         and not any(l.strip().startswith((".carte", "h2", ".heros"))
+                     for l in o.SUIVI_STYLE_BLOC.splitlines()),
+         "un selecteur du suivi n'est pas prefixe")
+
+# Et la page telephone continue de servir exactement le meme bloc.
+_code, _, _corps_suivi = appel("GET", "/suivi", entetes=cookie_de(o.ADMIN))
+verifier("/suivi sert le meme bloc que /admin",
+         _code == 200 and o.SUIVI_CORPS in _corps_suivi.decode("utf-8"), "%s" % _code)
 # --- Une partie ABANDONNEE laisse une trace --------------------------------
 # ⚠ LE CAS QUI COMPTE, ET IL DECRIT UN TROU REEL. Avant cette trace, une
 # partie quittee en cours de route ne figurait NULLE PART : le journal du
