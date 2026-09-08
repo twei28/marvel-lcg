@@ -1120,7 +1120,7 @@ const ONOMATOPEES = {
     superior_iron_man: "I AM IRON MAN !", texas_twister: "YEEHAW !", the_thing: "IT'S CLOBBERIN' TIME !",
     thor_jane_foster: "FOR ASGARD !", throg: "RIBBIT !", totally_awesome_hulk: "SMASH !",
     venom_rainy: "WE ARE VENOM !", venompool: "CHIMICHANGA !", viv_vision: "WHIRR !", wiccan: "SPELL !",
-    wolverine_x23: "SNIKT !", yondu: "FWEEET !",
+    wolverine_x23: "SNIKT !", yondu: "FWEEET !", ares: "WAR !", blade: "SLASH !",
 };
 function onomatopee(hero) {
     return ONOMATOPEES[hero.id] || "BAM !";
@@ -2534,24 +2534,47 @@ function aspectBar(st) {
    scénarios, puis le NIVEAU DE MENACE (qui n'a plus son étape) et la table qui
    se compose. Voir stepTeam() : les deux écrans partagent leurs classes. */
 
-/** Le cri du méchant quand on verrouille la cible. Repli : « RAAAH ! ». */
+/** Le cri du méchant quand on verrouille la cible.
+ *
+ *  ⚠ PAR NOM DE MÉCHANT, PAS PAR SCÉNARIO (constat de l'utilisateur,
+ *  08/09/2026 : « surtout les méchants n'avaient pas vraiment de phrase »).
+ *  La table était indexée par identifiant de scénario, et la moitié des
+ *  identifiants ne correspondaient plus (« kang » pour
+ *  the_once_and_future_kang, « collector » pour infiltrate_the_museum) :
+ *  les défis, les scénarios fan-made et les vagues récentes tombaient tous
+ *  sur « RAAAH ! ». Un scénario porte le cri de son PREMIER méchant ; les
+ *  scénarios sans méchant fixe (une bande, une horde) ont leur entrée à
+ *  part, par identifiant. Repli : « RAAAH ! ». */
 const CRIS_MECHANTS = {
-    rhino: "RAAAH !", klaw: "BWAAAM !", ultron: "I AM ULTRON !",
-    green_goblin: "HA HA HA !", risky_business: "HA HA HA !", mutagen_formula: "HA HA HA !",
-    wrecking_crew: "WRECK IT !", crossbones: "BOOM !", absorbing_man: "CRUNCH !", taskmaster: "COPIED !",
-    zola: "SUBJECT !", red_skull: "HAIL HYDRA !", kang: "TIME OUT !", thanos: "INEVITABLE !",
-    hela: "DEATH !", loki: "TRICKED !", ronan: "JUDGMENT !", drang: "RAID !", collector: "MINE !",
-    nebula: "UPGRADE !", sandman: "FWOOSH !", venom: "WE ARE VENOM !", mysterio: "ILLUSION !",
-    sinister_six: "SIX !", venom_goblin: "GRAAAH !", doctor_octopus: "TENTACLES !",
-    sabretooth: "SNIKT !", project_wideawake: "SENTINEL !", master_mold: "MOLD !",
-    mansion_attack: "ATTACK !", magneto: "VRRMM !", morlock_siege: "SIEGE !", on_the_run: "RUN !",
-    juggernaut: "UNSTOPPABLE !", mister_sinister: "SINISTER !", stryfe: "STRYFE !",
-    apocalypse: "APOCALYPSE !", dark_beast: "BEAST !", en_sabah_nur: "SURVIVE !",
-    hydra_patrol: "HAIL HYDRA !", hydra_assault: "HAIL HYDRA !", the_hood: "HOOD !",
-    mojo: "RATINGS !", spiral: "SPIRAL !", brood: "SKREEE !",
+    "rhino": "RAAAH !", "klaw": "BWAAAM !", "ultron": "I AM ULTRON !",
+    "norman osborn": "HA HA HA !", "green goblin": "HA HA HA !", "crossbones": "BOOM !",
+    "absorbing man": "CRUNCH !", "taskmaster": "COPIED !", "zola": "SUBJECT !", "red skull": "HAIL HYDRA !",
+    "wrecker": "WRECK IT !", "kang": "TIME OUT !", "drang": "RAID !", "collector": "MINE !",
+    "nebula": "UPGRADE !", "ronan the accuser": "JUDGMENT !", "ebony maw": "OBEY !",
+    "proxima midnight": "FOR THANOS !", "thanos": "INEVITABLE !", "hela": "DEATH !", "loki": "TRICKED !",
+    "the hood": "HOOD !", "sandman": "FWOOSH !", "venom": "WE ARE VENOM !", "mysterio": "ILLUSION !",
+    "doctor octopus": "TENTACLES !", "venom goblin": "GRAAAH !", "sabretooth": "GRRRR !",
+    "sentinel": "MUTANT DETECTED !", "master mold": "MOLD !", "magneto": "VRRMM !", "magog": "MAGOG !",
+    "spiral": "SPIRAL !", "mojo": "RATINGS !", "juggernaut": "UNSTOPPABLE !", "mister sinister": "SINISTER !",
+    "stryfe": "STRYFE !", "unus": "UNTOUCHABLE !", "apocalypse": "APOCALYPSE !", "dark beast": "BEAST !",
+    "black widow": "WIDOW'S BITE !", "batroc": "SAVATE !", "m.o.d.o.k.": "MODOK !", "baron zemo": "ZEMO !",
+    "enchantress": "ENCHANTED !", "iron man": "REPULSOR !", "captain marvel": "BINARY !",
+    "captain america": "SHIELD !", "spider-woman": "VENOM BLAST !", "she-hulk": "SMASH !", "vision": "PHASE !",
+    "the spot": "SPOT !", "shocker": "BZZZT !", "electro": "ZZZAP !", "the lizard": "HISSS !",
+    "vulture": "SCREECH !", "kingpin": "KINGPIN !", "gorr the god butcher": "GODS DIE !",
+};
+const CRIS_SCENARIOS = {
+    the_wrecking_crew: "WRECK IT !", "2423_the_wreckoning": "WRECK IT !", sinister_six: "SIX !",
+    mansion_attack: "ATTACK !", morlock_siege: "SIEGE !", on_the_run: "RUN !", four_horsemen: "RIDE !",
+    thunderbolts: "THUNDERBOLTS !", god_of_lies: "LIES !", hydra_patrol: "HAIL HYDRA !", hydra_assault: "HAIL HYDRA !",
+    brood: "SKREEE !",
 };
 function criDuMechant(sc) {
-    return CRIS_MECHANTS[sc.id] || "RAAAH !";
+    if (CRIS_SCENARIOS[sc.id]) return CRIS_SCENARIOS[sc.id];
+    const nom = nomPropre((sc.villainNames || [])[0]);
+    // « Kang (The Conqueror) » crie comme « Kang » ; « Avalanche A » comme « Avalanche ».
+    const racine = nom.replace(/\s*\(.*\)$/, "").replace(/\s+[ab]$/, "");
+    return CRIS_MECHANTS[nom] || CRIS_MECHANTS[racine] || "RAAAH !";
 }
 
 function stepScenario() {
@@ -2692,7 +2715,7 @@ function verrouillerCible(sc) {
     if (scene) {
         const cri = criDuMechant(sc);
         const eclair = el("div", { class: "tb-eclair" },
-            el("img", { src: cardImageUrl((sc.villainCards || [])[0] || sc.tileImage), alt: "" }),
+            el("img", { src: cardImageUrlHd((sc.villainCards || [])[0] || sc.tileImage), alt: "" }),
             el("span", { class: "ono rouge" }, cri),
         );
         scene.append(eclair);
