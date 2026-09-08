@@ -817,15 +817,21 @@ verifier("une table allumee dont le moteur ne repond pas est dite muette, pas en
 # ORDRE : un anonyme ne doit meme pas apprendre que la page existe (on le
 # renvoie au formulaire), un compte connecte mais non autorise recoit un refus
 # net, et l'ayant droit recoit la page.
-_code, _tetes, _ = appel("GET", "/pourmika")
-verifier("/pourmika renvoie un anonyme au formulaire",
-         _code == 303 and _tetes.get("Location") == "/", "%s" % _code)
-_code, _, _ = appel("GET", "/pourmika", entetes=cookie_de("invitee"))
-verifier("/pourmika refuse un compte ordinaire", _code == 403, "%s" % _code)
+# ⚠ LA PAGE EST PUBLIQUE (« accessible a tous meme sans login, il faut juste
+# avoir le lien », 08/09/2026), MAIS PAS LES SAISIES NI LA GESTION : un
+# anonyme recoit l'application sans le pont vers la base (ses cas resteraient
+# sinon lisibles et modifiables par quiconque a le lien) et sans le bouton.
+_code, _tetes, _corps = appel("GET", "/pourmika")
+verifier("/pourmika s'ouvre sans connexion, avec le lien",
+         _code == 200 and _corps.startswith(b"<!doctype html>") and b"CODEX" in _corps[:2000], "%s" % _code)
+verifier("mais sans le pont vers la base ni le bouton de gestion",
+         b"/pourmika/etat" not in _corps and b"pourmika-gerer" not in _corps, "pont ou bouton expose")
+_code, _, _corps = appel("GET", "/pourmika", entetes=cookie_de("invitee"))
+verifier("un compte ordinaire : pareil qu'un anonyme",
+         _code == 200 and b"/pourmika/etat" not in _corps, "%s" % _code)
 _code, _tetes, _corps = appel("GET", "/pourmika", entetes=cookie_de(o.ADMIN))
-verifier("/pourmika s'ouvre pour le compte autorise",
-         _code == 200 and _corps.startswith(b"<!doctype html>")
-         and b"CODEX" in _corps[:2000], "%s" % _code)
+verifier("/pourmika s'ouvre pour le compte autorise, avec le pont",
+         _code == 200 and b"/pourmika/etat" in _corps and b"pourmika-gerer" in _corps, "%s" % _code)
 verifier("la page privee n'est pas mise en cache",
          "no-store" in (_tetes.get("Cache-Control") or ""),
          _tetes.get("Cache-Control"))

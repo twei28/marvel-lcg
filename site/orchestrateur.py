@@ -92,7 +92,9 @@ ADMIN = os.environ.get("ADMIN", "arnaud").strip().lower()
 # --- La page privee CODEX ---------------------------------------------------
 # Une application autonome (un seul fichier HTML, tout embarque, aucun appel
 # vers l'exterieur) deposee dans `static/`, servie a la demande de
-# l'utilisateur le 08/09/2026 et reservee a des comptes NOMMES.
+# l'utilisateur le 08/09/2026. La PAGE est publique (« il faut juste avoir le
+# lien ») ; la gestion de ses codes et la sauvegarde des saisies en base sont
+# reservees a des comptes NOMMES.
 #
 # ⚠ CE N'EST PAS UNE PAGE DU JEU : elle ne partage ni son style, ni ses
 # donnees, ni ses routes. Elle est ici parce qu'il fallait un endroit garde
@@ -471,9 +473,16 @@ Gérer les codes</a>
 """
 
 
-def pourmika_page() -> bytes | None:
-    """La page servie : le fichier, ses codes remplaces par ceux de la base,
-    et le pont pose avant l'application. None si le fichier manque."""
+def pourmika_page(ayant_droit: bool = False) -> bytes | None:
+    """La page servie : le fichier, ses codes remplaces par ceux de la base.
+
+    ⚠ LA PAGE EST PUBLIQUE, PAS SES SAISIES (08/09/2026 : « accessible a tous
+    meme sans login, il faut juste avoir le lien »). Un visiteur recoit
+    l'application et les codes de la base, et ses saisies restent dans SON
+    navigateur, comme dans la version de l'auteur. Le pont vers la base (les
+    cas personnels de l'ayant droit) et le bouton de gestion ne sont poses que
+    pour un compte autorise : sinon, n'importe qui avec le lien lirait et
+    modifierait ces cas. None si le fichier manque."""
     texte = _pourmika_lire_fichier()
     if texte is None:
         return None
@@ -486,6 +495,8 @@ def pourmika_page() -> bytes | None:
         # comme le fait tout gabarit JSON-dans-HTML.
         codes = codes.replace("</", "<\\/")
         texte = texte[:bornes[0]] + codes + texte[bornes[1]:]
+    if not ayant_droit:
+        return texte.encode("utf-8")
     pont = POURMIKA_PONT % {
         "prefixe": json.dumps(POURMIKA_PREFIXE_STOCKAGE),
         "etat": json.dumps(pourmika_etat(), ensure_ascii=False).replace("</", "<\\/"),
@@ -3088,9 +3099,9 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
         elif self.path == "/pourmika":
-            if not self._pourmika_autorise(pseudo):
-                return
-            page = pourmika_page()
+            # Publique : il suffit du lien. Seuls le pont et le bouton de
+            # gestion dependent du compte (voir pourmika_page).
+            page = pourmika_page(ayant_droit=bool(pseudo) and pseudo in POURMIKA_COMPTES)
             if page is None:
                 self._repondre(404, b"Page introuvable sur le serveur.",
                                "text/plain; charset=utf-8")
