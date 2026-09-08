@@ -879,8 +879,6 @@ verifier("et le code ajoute y est, l'application le verra",
          '"c":"ZZ9999TEST0"' in _txt and '"fr":"Code de test"' in _txt, "code absent de la page")
 verifier("le pont vers la base est pose avant l'application",
          _txt.index("/pourmika/etat") < _txt.index('<script type="module"'), "pont absent ou trop tard")
-verifier("le bouton « Gerer les codes » est pose sur la page de l'application",
-         'id="pourmika-gerer"' in _txt and 'href="/pourmika/codes"' in _txt, "bouton absent")
 
 # Modifier : renommer le code, changer le libelle.
 _code, _, _ = appel("POST", "/pourmika/codes",

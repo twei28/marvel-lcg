@@ -464,13 +464,6 @@ POURMIKA_PONT = """<script>
 """
 
 
-POURMIKA_BOUTON = """<a href="/pourmika/codes" id="pourmika-gerer" style="position:fixed;right:14px;bottom:14px;z-index:2147483647;\
-font:600 13px/1 system-ui,sans-serif;color:#fff;background:#1f3b64;border:1px solid rgba(255,255,255,.35);\
-border-radius:999px;padding:9px 14px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.35);opacity:.92">\
-Gérer les codes</a>
-"""
-
-
 def pourmika_page() -> bytes | None:
     """La page servie : le fichier, ses codes remplaces par ceux de la base,
     et le pont pose avant l'application. None si le fichier manque."""
@@ -497,12 +490,6 @@ def pourmika_page() -> bytes | None:
     else:
         i += len("<head>")
         texte = texte[:i] + "\n" + pont + texte[i:]
-    # Le bouton vers l'ecran de gestion, pose PAR-DESSUS l'application (demande
-    # du 08/09/2026 : « un bouton gerer les codes directement sur /pourmika »).
-    # Fixe en bas a droite, hors de sa mise en page : l'application ne le voit
-    # pas et lui ne bouge pas quand elle se redessine.
-    j = texte.rfind("</body>")
-    texte = texte[:j] + POURMIKA_BOUTON + texte[j:] if j >= 0 else texte + POURMIKA_BOUTON
     return texte.encode("utf-8")
 
 
