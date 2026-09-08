@@ -10,6 +10,11 @@ import { prefs } from "/public/js/prepare/prefs.js";
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
 import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-documents.js";
+// Sons de l'interface. Ils ne se posent QUE sur des clics : les fonctions
+// centrales (assignHero, selectScenario) sont aussi appelees a la reprise de
+// session et par le tirage aleatoire, et un son s'y jouerait tout seul au
+// chargement de la page.
+import { jouerSon, SON } from "/public/js/prepare/sons.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
@@ -579,13 +584,25 @@ function progressBar() {
 function navBar() {
     const showRandom = [0, 2].includes(state.step);
     return el("footer", { class: "nav" },
-        el("button", { class: "btn ghost", disabled: (state.step === 0 && creationCampagne()) || undefined, onclick: prev }, t("Retour")),
+        el("button", {
+            class: "btn ghost",
+            disabled: (state.step === 0 && creationCampagne()) || undefined,
+            onclick: () => { jouerSon(SON.etapePrecedente); prev(); },
+        }, t("Retour")),
         el("div", { class: "nav-status" }, navStatus()),
         el("div", { class: "spacer" }),
-        showRandom ? el("button", { class: "btn ghost", onclick: randomize }, t("Aléatoire")) : el("span"),
+        showRandom
+            ? el("button", {
+                class: "btn ghost",
+                onclick: () => { jouerSon(SON.aleatoire); randomize(); },
+            }, t("Aléatoire"))
+            : el("span"),
         state.step < LAST_STEP
-            ? el("button", { class: "btn primary", disabled: !canContinue() || undefined, onclick: next },
-                t("Continuer"))
+            ? el("button", {
+                class: "btn primary",
+                disabled: !canContinue() || undefined,
+                onclick: () => { jouerSon(SON.etapeSuivante); next(); },
+            }, t("Continuer"))
             : creationCampagne()
                 ? el("button", {
                     class: "btn launch",
@@ -595,7 +612,7 @@ function navBar() {
                 : el("button", {
                     class: "btn launch",
                     disabled: (!validate(state).ok || (enLigne() && !state.salon.prete)) || undefined,
-                    onclick: doLaunch,
+                    onclick: () => { jouerSon(SON.lancement); doLaunch(); },
                 }, t("Lancer la partie")),
     );
 }
@@ -763,6 +780,7 @@ function modeStrip() {
         strip.append(el("button", {
             class: "mode-pill" + (on ? " sel" : ""),
             onclick: () => {
+                jouerSon(SON.mode);
                 if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
                 // La campagne n'est plus un mode du wizard : elle a son écran,
                 // qui impose l'ordre des scénarios, les sets et la difficulté.
@@ -949,6 +967,9 @@ function accueilView() {
 
     const partir = (tuile, nombre) => {
         const m = tuile.mode;
+        // Le seul passage pour choisir un mode : la grande tuile ET les boutons
+        // de nombre y aboutissent, d'où un seul appel au son.
+        jouerSon(SON.mode);
         if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
         if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
         const wasCampaign = isCampaignMode();
@@ -1063,6 +1084,7 @@ function playerCountRow() {
         row.append(el("button", {
             class: "count-btn" + (state.playerCount === n ? " sel" : ""),
             onclick: () => {
+                jouerSon(SON.mode);
                 state.playerCount = n;
                 if (state.activeSlot >= n) state.activeSlot = n - 1;
                 render();
@@ -1507,6 +1529,7 @@ function rendreEquipe() {
 
 /** Recruter : le geste de la carte qui surgit, l'onomatopée, puis la scène. */
 function recruter(h, portraitEl) {
+    jouerSon(SON.heros);
     assignHero(state.activeSlot, h);
     autoAdvanceSlot();
     herosSurvole = null;
@@ -1622,6 +1645,7 @@ async function refreshHeroGrid(pre) {
                 onclick: (e) => {
                     e.stopPropagation();
                     e.preventDefault();
+                    jouerSon(SON.favori);
                     const on = prefs.toggleFavHero(h.id);
                     e.currentTarget.classList.toggle("on", on);
                 },
@@ -2704,6 +2728,7 @@ function regleDuDefi(sc) {
 
 /** Verrouiller une cible : le cri, puis la scène et la table. */
 function verrouillerCible(sc) {
+    jouerSon(SON.cible);
     selectScenario(sc);
     rendreSceneMechant(sc);
     rendreMenace();
