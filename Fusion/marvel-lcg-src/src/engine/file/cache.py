@@ -13,6 +13,13 @@ IMAGE_FOLDERS   = ConfigVariables.Folders('image_folders', ["./assets/pics/", ".
 # plateau affiche ; le scan complet reste pour l'apercu agrandi. Voir
 # tools/generer_vignettes.py pour le pourquoi (08/09/2026).
 VIGNETTE_FOLDER = ConfigVariables.Folder('vignette_folder', "./assets/vignettes/")
+# Les scans HAUTE DEFINITION (715 px) des cartes officielles, pour la scene de
+# l'assistant qui etire l'image du heros ou du mechant sur un panneau de plus
+# de 1 000 px : le scan anglais local n'y fait que 300 px (08/09/2026,
+# « augmenter la resolution de l'image a la selection »). Telecharges a la
+# demande depuis les serveurs d'images deja configures (image_servers), et
+# gardes ici pour toujours. Voir aussi tools/telecharger_scans_hd.py.
+HD_FOLDER = ConfigVariables.Folder('hd_folder', "./assets/pics-hd/")
 TEXTURE_FOLDER  = ConfigVariables.Folder('texture_folder', "./assets/textures/")
 CACHE_FOLDER    = ConfigVariables.Folder('cache_folder', "./assets/cache/")
 IMAGE_SERVERS   = ConfigVariables.ListStr('image_servers', [])
@@ -31,6 +38,64 @@ class Cache:
     @staticmethod
     def SetCache(card_id: str, data: bytes):
         Cache.cache[card_id] = data
+
+    @staticmethod
+    def LoadImageHD(card_id: str) -> bytes:
+        """Le scan haute definition d'une carte officielle, ou le scan habituel.
+
+        Ordre : le fichier deja telecharge dans HD_FOLDER ; sinon, pour un
+        identifiant officiel, un telechargement depuis image_servers, garde
+        dans HD_FOLDER ; sinon (fan-made, hors ligne, serveur muet) le scan
+        habituel. Le navigateur ne voit jamais d'echec."""
+        card_id = card_id.lstrip("/")
+        cle = "hd:" + card_id
+        if cle in Cache.cache:
+            return Cache.cache[cle]
+        for ext_name in [".jpg", ".webp", ".png"]:
+            check_path = f"{HD_FOLDER.value}/{card_id}{ext_name}"
+            if FileManager.Exists(check_path):
+                with FileManager.OpenFile(check_path, read=True, bin=True) as file:
+                    data = ImageLib.TryRotateImage(file.Read())
+                Cache.cache[cle] = data
+                return data
+        data = Cache.TelechargerHD(card_id)
+        if data:
+            Cache.cache[cle] = data
+            return data
+        return Cache.LoadImage(card_id)
+
+    @staticmethod
+    def TelechargerHD(card_id: str) -> bytes | None:
+        """Telecharge le scan HD d'un identifiant OFFICIEL et le garde dans
+        HD_FOLDER. Rend None pour tout le reste (fan-made, echec, hors ligne).
+        Meme liste de serveurs et memes en-tetes que LoadImage."""
+        import re
+        if not IMAGE_SERVERS.value or not re.match(r'^\d{5}[a-z]?$', card_id):
+            return None
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        }
+        for site in IMAGE_SERVERS.value:
+            full_url = site.replace('{card_id}', card_id).replace('{card_id:U}', card_id.upper())
+            try:
+                response = requests.get(full_url, headers=headers, timeout=5)
+                response.raise_for_status()
+                if 'image/' not in (response.headers.get('Content-Type') or ''):
+                    continue
+                data = response.content
+                # Un serveur qui ne rend qu'une petite image (marvelcdb : 300 px)
+                # n'apporte rien : on ne garde que ce qui est vraiment plus grand.
+                if len(data) < 60_000:
+                    continue
+                chemin = FileManager.JoinPath(HD_FOLDER.value, f"{card_id}.jpg")
+                FileManager.MakeDir(FileManager.GetDirName(chemin))
+                with FileManager.OpenFile(chemin, write=True, bin=True) as file:
+                    file.Write(data)
+                Log.DebugInfo(CATEGORY_NAME, f"HD telecharge : {card_id} depuis {full_url}")
+                return ImageLib.TryRotateImage(data)
+            except requests.exceptions.RequestException as e:
+                Log.Warn(CATEGORY_NAME, f"HD : {full_url} : {e}")
+        return None
 
     @staticmethod
     def LoadVignette(card_id: str) -> bytes:

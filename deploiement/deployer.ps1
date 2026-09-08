@@ -85,6 +85,9 @@ if ($faireCode) {
     # SERVEUR a chaque deploiement, a partir des scans qui y sont deja :
     # dix mille petits fichiers n'ont rien a faire dans l'archive.
     "--exclude=assets/vignettes",
+    # Les scans HD (tools/telecharger_scans_hd.py) : telecharges sur le
+    # serveur, jamais dans l'archive.
+    "--exclude=assets/pics-hd",
     # Livrets de regles et carnets de campagne : 169 Mo. Meme raison que les
     # scans — ils ne changent presque jamais, et l'etape « Documents » plus
     # bas ne monte que ce qui manque.
@@ -336,6 +339,9 @@ done
 # Incremental : la premiere fois quelques minutes, ensuite seulement les
 # scans nouveaux. Un echec ici ne doit pas empecher le redemarrage.
 $DIST/venv310/bin/python $DIST/Fusion/marvel-lcg-src/tools/generer_vignettes.py || echo "  vignettes : generation en erreur, le plateau sert les scans complets"
+# Les scans HD des heros et des mechants pour la scene de l'assistant
+# (08/09/2026). Incremental et poli : seuls les manquants sont demandes.
+$DIST/venv310/bin/python $DIST/Fusion/marvel-lcg-src/tools/telecharger_scans_hd.py || echo "  scans HD : telechargement en erreur, la scene sert les scans habituels"
 chown -R narwhal:narwhal $DIST
 systemctl restart narwhal
 sleep 3

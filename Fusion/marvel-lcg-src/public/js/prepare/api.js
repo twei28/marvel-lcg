@@ -69,6 +69,16 @@ export function cardImageUrlEn(cardId) {
     if (!cardId) return "";
     return "/" + String(cardId).split(",")[0];
 }
+/** La même image en HAUTE DÉFINITION, pour la scène de l'assistant, qui
+ *  étire le héros ou le méchant sur un panneau de plus de 1 000 px. Le scan
+ *  anglais local n'y fait que 300 px ; le moteur va chercher la version à
+ *  715 px des cartes officielles, une fois, et la garde. Une carte fan-made
+ *  ou introuvable retombe sur le scan habituel : rien à gérer ici.
+ *  Toujours l'anglais, comme cardImageUrlEn : le scan FR porte un filigrane. */
+export function cardImageUrlHd(cardId) {
+    if (!cardId) return "";
+    return "/hd/" + String(cardId).split(",")[0];
+}
 /** Image d'une boîte d'extension : /sets/<clé>. encodeURI (pas ...Component)
  *  pour garder les apostrophes intactes (ex. "Galaxy's Most Wanted"). */
 export function extensionImageUrl(key) {

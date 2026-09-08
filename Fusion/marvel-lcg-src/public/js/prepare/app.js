@@ -1,6 +1,6 @@
 // app.js - Assistant "Preparer une partie" : briefing Marvel Champions.
 "use strict";
-import { cardImageUrl, cardImageUrlEn, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=90b5e628";
+import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=564d4a13";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
@@ -1277,8 +1277,8 @@ function rendreScene(h) {
         // Scan anglais même en français : le scan FR porte un filigrane, très
         // visible à cette taille. Demande de l'utilisateur.
         h.lie
-            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlEn))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlEn(picIdHeros(h.heroCardId))}")` } }),
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlHd))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
             el("small", {}, traits || (h.extension || "").replace(/^\d+\.\s*/, "")),
@@ -2252,8 +2252,8 @@ function rendreSceneDeck() {
         // Scan anglais même en français : le scan FR porte un filigrane, très
         // visible à cette taille. Demande de l'utilisateur.
         h.lie
-            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlEn))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlEn(picIdHeros(h.heroCardId))}")` } }),
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlHd))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
             el("small", {}, t("Arsenal de")),
@@ -2600,7 +2600,7 @@ function rendreSceneMechant(sc) {
     const parJoueur = String(d.HP || "").includes("*");
     const multi = (sc.villainCards || []).length > 1;
     poser(scene,
-        el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+        el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
             el("small", {}, (sc.extension || "").replace(/^\d+\.\s*/, "")),
