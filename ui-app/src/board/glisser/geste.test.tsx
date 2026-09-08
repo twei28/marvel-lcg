@@ -16,6 +16,7 @@
 import { fireEvent, render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Board, type ReglagesGlisser } from '../Board'
+import type { EtatInteractif } from '../interaction'
 import type { ScanCardProps } from '../../components/ScanCard'
 import type { Plateau } from '../zones'
 import type { World } from '../world'
@@ -77,7 +78,11 @@ function reglages(surDepot: ReglagesGlisser['onDepot']): ReglagesGlisser {
   }
 }
 
-function monter(surDepot: ReglagesGlisser['onDepot'], surClic = vi.fn()) {
+function monter(
+  surDepot: ReglagesGlisser['onDepot'],
+  surClic = vi.fn(),
+  interactifs?: Map<number, EtatInteractif>
+) {
   const rendu = render(
     <Board
       world={MONDE}
@@ -85,6 +90,7 @@ function monter(surDepot: ReglagesGlisser['onDepot'], surClic = vi.fn()) {
       plateau={PLATEAU}
       glisser={reglages(surDepot)}
       onCardClick={surClic}
+      interactifs={interactifs}
     />
   )
   poserLaTable(rendu.container)
@@ -212,6 +218,23 @@ describe('ce que le geste montre', () => {
     const { source, container } = monter(vi.fn(() => undefined))
     glisser(source, 300)
     expect(container.querySelector('.glisser-refus')).toBeNull()
+  })
+
+  // ⚠ LE CAS QUI COMPTE POUR LA COULEUR, ET IL VIENT DE DEUX SIGNALEMENTS
+  // (08/09/2026, « ce halo bleu degueulasse »). Une carte deja marquee
+  // `choisie` par une action en cours garde l'etat `selected`, dont le halo
+  // est BLEU. Le geste doit lui rendre la couleur des cibles, la doree :
+  // sinon une meme rangee melange deux couleurs et rien ne se comprend.
+  it('une cible deja choisie ailleurs ne reste pas bleue', () => {
+    const dejaChoisie = new Map<number, EtatInteractif>([
+      [RHINO, { role: 'cible', choisie: true, pulse: false } as EtatInteractif],
+    ])
+    const { source, container } = monter(vi.fn(() => undefined), vi.fn(), dejaChoisie)
+    pointeur(source, 'pointerdown', 0, 0)
+    pointeur(source, 'pointermove', 300, 0)
+    const rhino = container.querySelector(`.scan-card[data-card-id="${RHINO}"]`)!
+    expect(rhino.className).not.toMatch(/state-selected/)
+    expect(rhino.className).toMatch(/state-targetable|is-target-pulse/)
   })
 
   it('sans reglages, le plateau se comporte comme avant', () => {

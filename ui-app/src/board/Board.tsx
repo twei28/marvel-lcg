@@ -729,15 +729,24 @@ export function Board({
   )
   // Les cibles legales s'allument comme le fait deja le menu d'action : meme
   // halo, meme classe CSS, aucune apparence nouvelle a inventer.
+  //
+  // ⚠ ET TOUTES LA MEME, QUOI QU'ELLES PORTAIENT AVANT. On gardait le role
+  // courant de la carte en n'ajoutant que la pulsation : une carte deja
+  // marquee `choisie` restait donc en `selected`, dont le halo est BLEU
+  // (`--state-glow: rgba(67, 180, 255, .56)`, ScanCard.css). Pendant un geste
+  // ca donnait des cibles bleues au milieu de cibles dorees, signale deux fois
+  // le 08/09/2026 (« ce halo bleu degueulasse »). Une cible de geste est une
+  // cible, un point : meme role, meme couleur, pour toutes.
+  //
+  // On garde `agir` et les autres champs du role courant : seul l'habillage
+  // change, et seulement le temps du geste (ce calcul ne sert que quand
+  // `ciblesDuGlisser` n'est pas vide).
   const interactifsEffectifs = useMemo(() => {
     if (!ciblesDuGlisser || ciblesDuGlisser.size === 0) return interactifs
     const avecHalo = new Map(interactifs)
     for (const id of ciblesDuGlisser) {
       const courant = avecHalo.get(id)
-      avecHalo.set(
-        id,
-        courant ? { ...courant, pulse: true } : { role: 'cible-preview', choisie: false, pulse: true }
-      )
+      avecHalo.set(id, { ...courant, role: 'cible-preview', choisie: false, pulse: true })
     }
     return avecHalo
   }, [interactifs, ciblesDuGlisser])
