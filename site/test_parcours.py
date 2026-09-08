@@ -809,6 +809,70 @@ verifier("une table allumee dont le moteur ne repond pas est dite muette, pas en
          and _etat_suivi["en_cours"][0]["moteur_repond"] is False
          and _etat_suivi["en_cours"][0]["en_cours"] is False, str(_etat_suivi["en_cours"]))
 
+# --- Mot de passe oublie : un lien cree par l'administrateur ---------------
+# Demande du 08/09/2026 : « il se demande s'il a pas fait une erreur dans le
+# mdp, on peut faire un recuperateur de mdp ? ». Le site n'envoie pas de
+# courrier : l'administrateur cree un lien a usage unique depuis /admin et le
+# transmet lui-meme, comme une invitation.
+# ⚠ Le compte est cree ICI et supprime a la fin du bloc : il prend le premier
+# emplacement libre, qui est justement celui que « hote » a quitte plus haut
+# et doit retrouver plus bas (colonne UNIQUE). La base de test survit aux
+# passes : on nettoie aussi un reliquat eventuel avant de commencer.
+def _oublier_oublieux():
+    with o._cx() as cx:
+        for table in ("sessions", "reinitialisations", "comptes"):
+            cx.execute("DELETE FROM %s WHERE pseudo = ?" % table, ("oublieux",))
+_oublier_oublieux()
+o.inscrire("oublieux", "oublieux@exemple.fr", "ancienmotdepasse")
+o.changer_statut("oublieux", "valide")
+_session_avant = cookie_de("oublieux")
+_code, _, _ = appel("POST", "/admin", b"action=reinitialiser&pseudo=oublieux", entetes=cookie_de(o.ADMIN))
+_ouverts = [r for r in o.reinitialisations_ouvertes() if r["pseudo"] == "oublieux"]
+verifier("l'administrateur cree un lien de reinitialisation pour un compte",
+         _code == 303 and len(_ouverts) == 1, "%s / %s" % (_code, _ouverts))
+_jeton = _ouverts[0]["jeton"] if _ouverts else ""
+_code, _, _corps = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+verifier("le lien s'affiche sur la page d'administration",
+         ("/reinitialisation?r=" + _jeton).encode("utf-8") in _corps, "lien absent")
+_code, _, _ = appel("POST", "/admin", b"action=reinitialiser&pseudo=inconnu-xyz", entetes=cookie_de(o.ADMIN))
+verifier("un compte inconnu ne cree rien, sans casser la page",
+         _code == 303 and not [r for r in o.reinitialisations_ouvertes() if r["pseudo"] == "inconnu-xyz"], "%s" % _code)
+
+_code, _, _corps = appel("GET", "/reinitialisation?r=" + _jeton)
+verifier("le lien ouvre le formulaire du nouveau mot de passe, sans connexion",
+         _code == 200 and b"Nouveau mot de passe" in _corps and b'name="mdp"' in _corps, "%s" % _code)
+_code, _, _ = appel("GET", "/reinitialisation?r=nimporte-quoi")
+verifier("un lien inconnu est refuse", _code == 410, "%s" % _code)
+_code, _, _corps = appel("POST", "/reinitialisation", ("r=%s&mdp=court" % _jeton).encode("utf-8"))
+verifier("un mot de passe trop court est refuse, le lien reste valable",
+         _code == 400 and o.reinitialisation_valide(_jeton) == "oublieux", "%s" % _code)
+_code, _, _corps = appel("POST", "/reinitialisation", ("r=%s&mdp=nouveaumotdepasse" % _jeton).encode("utf-8"))
+verifier("le nouveau mot de passe est enregistre",
+         _code == 200 and b"connecte-toi" in _corps, "%s" % _code)
+verifier("et il ouvre la porte", o.verifier("oublieux", "nouveaumotdepasse") == "oublieux", "refuse")
+try:
+    o.verifier("oublieux", "ancienmotdepasse"); _ancien_passe = True
+except ValueError:
+    _ancien_passe = False
+verifier("l'ancien mot de passe ne l'ouvre plus", not _ancien_passe, "l'ancien passe encore")
+# ⚠ LE CAS QUI COMPTE POUR LA SECURITE : on change un mot de passe parce qu'on
+# a un doute. Les sessions ouvertes avant ne doivent pas survivre.
+_jeton_session = _session_avant["Cookie"].split("nc_session=", 1)[1].split(";")[0]
+verifier("les sessions ouvertes avant le changement sont fermees",
+         o.pseudo_de_session(_jeton_session) is None, "session encore valable")
+_code, _, _ = appel("POST", "/reinitialisation", ("r=%s&mdp=encoreunautre" % _jeton).encode("utf-8"))
+verifier("le lien ne sert qu'une fois",
+         _code == 400 and o.verifier("oublieux", "nouveaumotdepasse") == "oublieux", "%s" % _code)
+with o._cx() as cx:
+    cx.execute("INSERT INTO reinitialisations (jeton, pseudo, cree_le) VALUES ('vieux-jeton', 'oublieux', '2020-01-01 00:00')")
+verifier("un lien de plus de 24 heures ne vaut plus rien",
+         o.reinitialisation_valide("vieux-jeton") is None
+         and not [r for r in o.reinitialisations_ouvertes() if r["jeton"] == "vieux-jeton"], "encore valable")
+_code, _, _corps = appel("GET", "/connexion")
+verifier("la page de connexion dit ou demander un lien",
+         b"Mot de passe oublie" in _corps, "rappel absent")
+_oublier_oublieux()
+
 # --- Le nom du DECK, et le suivi servi DANS /admin -------------------------
 # Deux demandes du 08/09/2026 : « ajoute ca » (le nom du deck, porte par les
 # deux sources mais jamais affiche) et « je veux que le suivi soit dans

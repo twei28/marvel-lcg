@@ -621,6 +621,16 @@ CREATE TABLE IF NOT EXISTS invitations (
     utilise_par TEXT,
     utilise_le  TEXT
 );
+-- Liens de reinitialisation de mot de passe (08/09/2026). Un lien par
+-- demande, cree par l'administrateur depuis /admin, a usage unique, valable
+-- 24 heures. Le site n'envoie pas de courrier : c'est l'administrateur qui
+-- transmet le lien a la personne, comme pour une invitation.
+CREATE TABLE IF NOT EXISTS reinitialisations (
+    jeton      TEXT PRIMARY KEY,
+    pseudo     TEXT NOT NULL,
+    cree_le    TEXT NOT NULL,
+    utilise_le TEXT
+);
 -- Rapports de bug. `hote` est le compte proprietaire de la table (celui que
 -- designe le jeton de partie) ; `nom` est ce que la personne a tape, et c'est
 -- le seul identifiant d'un invite arrive par un lien de siege. Les deux sont
@@ -1042,6 +1052,84 @@ def creer_invitation() -> str:
         cx.execute("INSERT INTO invitations (jeton, cree_le) VALUES (?, ?)",
                    (jeton, _maintenant()))
     return jeton
+
+
+REINITIALISATION_DUREE = 24 * 3600   # secondes
+
+
+def creer_reinitialisation(pseudo: str) -> str:
+    """Un lien a USAGE UNIQUE pour choisir un nouveau mot de passe.
+
+    Demande du 08/09/2026 : un nouvel inscrit n'arrivait pas a se connecter et
+    se demandait s'il avait fait une erreur dans son mot de passe. Le site
+    n'envoie pas de courrier : l'administrateur cree le lien depuis /admin et
+    le transmet lui-meme, comme une invitation. Leve ValueError si le compte
+    n'existe pas."""
+    pseudo = (pseudo or "").strip().lower()
+    with _cx() as cx:
+        if not cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
+            raise ValueError("Compte inconnu : %s" % pseudo)
+        jeton = secrets.token_urlsafe(16)
+        cx.execute("INSERT INTO reinitialisations (jeton, pseudo, cree_le) VALUES (?, ?, ?)",
+                   (jeton, pseudo, _maintenant()))
+    return jeton
+
+
+def _age_secondes(horodatage: str) -> float:
+    try:
+        return time.time() - time.mktime(time.strptime(horodatage, "%Y-%m-%d %H:%M"))
+    except (TypeError, ValueError):
+        return float("inf")
+
+
+def reinitialisation_valide(jeton: str) -> str | None:
+    """Le pseudo que ce lien autorise a changer de mot de passe, ou None s'il
+    est inconnu, deja utilise ou vieux de plus de 24 heures."""
+    if not jeton:
+        return None
+    with _cx() as cx:
+        l = cx.execute("SELECT pseudo, cree_le, utilise_le FROM reinitialisations WHERE jeton = ?",
+                       (jeton,)).fetchone()
+    if l is None or l["utilise_le"] is not None:
+        return None
+    if _age_secondes(l["cree_le"]) > REINITIALISATION_DUREE:
+        return None
+    return l["pseudo"]
+
+
+def reinitialiser_mot_de_passe(jeton: str, mot_de_passe: str) -> str:
+    """Pose le nouveau mot de passe, consomme le lien, ferme les sessions
+    ouvertes du compte (un mot de passe change parce qu'on a un doute : les
+    sessions d'avant ne doivent pas survivre). Rend le pseudo."""
+    if len(mot_de_passe or "") < 8:
+        raise ValueError("Mot de passe trop court : 8 caracteres au minimum.")
+    with _cx() as cx:
+        l = cx.execute("SELECT pseudo, cree_le, utilise_le FROM reinitialisations WHERE jeton = ?",
+                       (jeton or "",)).fetchone()
+        # ⚠ Relu et consomme dans la MEME transaction, comme une invitation :
+        # deux envois du formulaire ne doivent pas poser deux mots de passe.
+        if l is None or l["utilise_le"] is not None or _age_secondes(l["cree_le"]) > REINITIALISATION_DUREE:
+            raise ValueError("Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur.")
+        sel = secrets.token_bytes(16).hex()
+        cx.execute("UPDATE comptes SET sel = ?, empreinte = ? WHERE pseudo = ?",
+                   (sel, _empreinte(mot_de_passe, sel), l["pseudo"]))
+        cx.execute("UPDATE reinitialisations SET utilise_le = ? WHERE jeton = ?",
+                   (_maintenant(), jeton))
+        cx.execute("DELETE FROM sessions WHERE pseudo = ?", (l["pseudo"],))
+    return l["pseudo"]
+
+
+def reinitialisations_ouvertes():
+    """Les liens encore valables, pour la page d'administration."""
+    with _cx() as cx:
+        lignes = cx.execute("SELECT jeton, pseudo, cree_le FROM reinitialisations"
+                            " WHERE utilise_le IS NULL ORDER BY cree_le DESC").fetchall()
+    return [dict(l) for l in lignes if _age_secondes(l["cree_le"]) <= REINITIALISATION_DUREE]
+
+
+def supprimer_reinitialisation(jeton: str) -> None:
+    with _cx() as cx:
+        cx.execute("DELETE FROM reinitialisations WHERE jeton = ?", (jeton,))
 
 
 def invitation_valide(jeton: str) -> bool:
@@ -1652,6 +1740,15 @@ PAGE_ADMIN = """<!doctype html>
     {invitations}
   </table>
 
+  <h1 style="margin-top:2.5rem">Mots de passe oublies</h1>
+  <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
+  unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
+  nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
+  <table>
+    <tr><th>Compte</th><th>Lien</th><th>Cree le</th><th></th></tr>
+    {reinitialisations}
+  </table>
+
   <h1 style="margin-top:2.5rem">Rapports de bug {pastille}</h1>
   <p class="sous">Les 60 derniers, le plus recent en haut. Deplie pour voir la
   capture et le journal de la partie.</p>
@@ -2250,7 +2347,19 @@ class Handler(BaseHTTPRequestHandler):
                    'Ton compte devra etre valide a la main avant de servir.')
                   + ' Deja un compte ? <a href="/connexion">Se connecter</a>.'
                   if inscription else
-                  'Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
+                  'Pas encore de compte ? <a href="/inscription">En demander un</a>.'
+                  ' Mot de passe oublie ? Demande un lien de reinitialisation a l\'administrateur.'),
+        ).encode("utf-8")
+
+    def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
+        """Le formulaire du nouveau mot de passe, sur le gabarit commun."""
+        return PAGE_FORMULAIRE.format(
+            titre="Nouveau mot de passe",
+            action="/reinitialisation", bouton="Enregistrer", auto="new-password",
+            champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
+            erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
+            pied="Huit caracteres au minimum. Tes sessions ouvertes seront fermees."
+                 ' <a href="/connexion">Se connecter</a>.',
         ).encode("utf-8")
 
     def _servir_capture(self) -> None:
@@ -2299,6 +2408,11 @@ class Handler(BaseHTTPRequestHandler):
                                     '<input type="hidden" name="statut" value="%s">'
                                     '<button class="%s" type="submit">%s</button></form>'
                                     % (html.escape(c["pseudo"]), cible, classe, libelle))
+                actions += ('<form method="post" action="/admin">'
+                            '<input type="hidden" name="action" value="reinitialiser">'
+                            '<input type="hidden" name="pseudo" value="%s">'
+                            '<button type="submit" title="Creer un lien pour choisir un nouveau mot de passe">'
+                            'Mot de passe</button></form>' % html.escape(c["pseudo"]))
             lignes.append(
                 "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                     html.escape(c["pseudo"]), html.escape(c["email"] or "—"),
@@ -2323,6 +2437,19 @@ class Handler(BaseHTTPRequestHandler):
         if not inv:
             inv.append('<tr><td colspan="4">Aucune invitation. '
                        'Cree-en une ci-dessus.</td></tr>')
+        reinit = []
+        for r in reinitialisations_ouvertes():
+            lien = "%s/reinitialisation?r=%s" % (base, r["jeton"])
+            reinit.append('<tr><td>%s</td><td><code>%s</code></td><td>%s</td>'
+                          '<td><form method="post" action="/admin">'
+                          '<input type="hidden" name="action" value="reinit_annuler">'
+                          '<input type="hidden" name="jeton" value="%s">'
+                          '<button class="non" type="submit">Annuler</button></form></td></tr>'
+                          % (html.escape(r["pseudo"]), html.escape(lien),
+                             html.escape(r["cree_le"]), html.escape(r["jeton"])))
+        if not reinit:
+            reinit.append('<tr><td colspan="4">Aucun lien en cours. Le bouton '
+                          '« Mot de passe » d\'un compte en cree un.</td></tr>')
         rapports = "".join(self._bloc_rapport(r) for r in liste_rapports())
         if not rapports:
             rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
@@ -2343,6 +2470,7 @@ class Handler(BaseHTTPRequestHandler):
         return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
+                                 reinitialisations="".join(reinit),
                                  rapports=rapports, pastille=pastille,
                                  parties=parties,
                                  suivi_max=SUIVI_TERMINEES_MAX,
@@ -2451,6 +2579,14 @@ class Handler(BaseHTTPRequestHandler):
                              + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
+        elif self.path.startswith("/reinitialisation"):
+            import urllib.parse
+            jeton = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("r", [""])[0]
+            if reinitialisation_valide(jeton) is None:
+                self._repondre(410, self._formulaire_reinitialisation(
+                    "", "Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur."))
+                return
+            self._repondre(200, self._formulaire_reinitialisation(jeton))
         elif self.path == "/admin":
             if pseudo != ADMIN:
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
@@ -2551,6 +2687,20 @@ class Handler(BaseHTTPRequestHandler):
                       "Ton compte attend une validation manuelle. Reviens une fois "
                       "qu'elle est faite.")).encode("utf-8"))
 
+        elif self.path == "/reinitialisation":
+            champs = self._champs()
+            try:
+                qui = reinitialiser_mot_de_passe(champs.get("r", ""), champs.get("mdp", ""))
+            except ValueError as erreur:
+                self._repondre(400, self._formulaire_reinitialisation(champs.get("r", ""), str(erreur)))
+                return
+            self._repondre(200, PAGE_FORMULAIRE.format(
+                titre="Mot de passe enregistre", action="/connexion", bouton="Entrer",
+                auto="current-password", erreur="",
+                champs='<label>Pseudo ou adresse e-mail<input name="pseudo" '
+                       'autocomplete="username" value="%s" required></label>' % html.escape(qui),
+                pied="Ton nouveau mot de passe est en place : connecte-toi.").encode("utf-8"))
+
         elif self.path == "/connexion":
             champs = self._champs()
             cle = cle_frein(self._adresse_client())
@@ -2606,6 +2756,13 @@ class Handler(BaseHTTPRequestHandler):
                 creer_invitation()
             elif action == "annuler":
                 supprimer_invitation(champs.get("jeton", ""))
+            elif action == "reinitialiser":
+                try:
+                    creer_reinitialisation(champs.get("pseudo", ""))
+                except ValueError:
+                    pass          # compte inconnu : rien a creer, la page se reaffiche
+            elif action == "reinit_annuler":
+                supprimer_reinitialisation(champs.get("jeton", ""))
             elif action in ("rapport", "rapport_supprimer"):
                 try:
                     numero = int(champs.get("id", "0"))
