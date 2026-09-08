@@ -86,10 +86,17 @@
 
 /* Pendant le geste, ce qui ne peut pas recevoir la carte s'efface. C'est ce
    qui apprend le jeu tout seul : on VOIT ce qu'on peut faire avant de le
-   faire. La carte soulevee, elle, garde sa pleine presence. */
+   faire.
+
+   ⚠ ON ASSOMBRIT, ON NE REND PAS TRANSPARENT. Avec `opacity`, le bleu de la
+   table passait au travers des cartes et les teintait toutes en bleu : c'etait
+   laid, et signale des le premier essai (08/09/2026). `filter` agit sur les
+   pixels de la carte elle-meme, sans rien laisser passer derriere. C'est deja
+   la facon dont le plateau eteint une carte desactivee (`state-disabled`) ou
+   un vilain qui attend son tour (`est-inactif`) : on suit la maison. */
 .plateau-cadre.est-en-glisser .scan-card:not(.state-targetable):not(.is-target-pulse) {
-  opacity: 0.38;
-  transition: opacity 0.12s ease-out;
+  filter: grayscale(0.5) brightness(0.5);
+  transition: filter 0.12s ease-out;
 }
 
 /* Une zone qui attend cette carte : un cadre en pointilles, discret mais net.

@@ -796,6 +796,11 @@ export function Board({
       <div
         className={`plateau-cadre${enGlisser ? ' est-en-glisser' : ''}`}
         ref={cadre}
+        // Le geste est-il offert en ce moment ? Lisible depuis la page, donc
+        // depuis les tests : sans ce temoin, un glisser qui ne demarre pas ne
+        // dit pas s'il est refuse (pas notre tour, action deja engagee) ou
+        // casse. Cherche pendant une demi-heure le 08/09/2026, faute de l'avoir.
+        data-glisser={glisser ? 'offert' : 'absent'}
         onMouseOver={survol}
         onMouseLeave={quitter}
         onPointerDown={gestes.onPointerDown}

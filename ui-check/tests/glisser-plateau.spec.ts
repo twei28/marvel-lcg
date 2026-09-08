@@ -100,6 +100,12 @@ test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
   await changerDeForme.click();
   await page.waitForSelector('.scan-card.kind-hero[data-card-id]', { timeout: 30000 });
 
+  // ⚠ ON ATTEND QUE LE PLATEAU OFFRE LE GESTE. Juste apres un changement de
+  // forme, il se recompose : pendant cette fraction de seconde, aucune carte
+  // n'est encore soulevable, et un glisser lance la tombait dans le vide. Le
+  // temoin `data-glisser` existe pour repondre a la question sans deviner.
+  await page.waitForSelector('.plateau-cadre[data-glisser="offert"]', { timeout: 30000 });
+
   const heros = await page
     .locator('.scan-card.kind-hero[data-card-id]')
     .first()

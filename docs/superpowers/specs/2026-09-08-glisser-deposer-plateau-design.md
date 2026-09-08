@@ -96,6 +96,16 @@ Ce qui est déjà là et qu'on réutilise tel quel :
 comportement du clic actuel, et un geste volontaire de plusieurs centimètres
 est déjà une confirmation.
 
+⚠ **Ce point a demandé une correction, le 08/09/2026 au premier essai** : le
+plateau redemandait quand même confirmation. Sa « validation courte » ne part
+que si l'action n'avait **qu'une seule** cible légale, au motif qu'un joueur
+qui vient de choisir parmi plusieurs gagne à jeter un dernier regard. Ce motif
+tombe quand la cible a été désignée d'un geste : redemander, c'est faire faire
+deux fois le même choix. La règle a donc été étendue au geste, et à lui seul.
+Tous les autres garde-fous restent : rien ne part tout seul s'il reste un
+paiement facultatif, un surpaiement récompensé, une cible répétable ou une
+cible de plus à prendre.
+
 ---
 
 ## 4. Lever l'ambiguïté
@@ -175,6 +185,11 @@ Les quatre éléments ont été retenus.
 1. **Les cibles possibles s'allument** dès que le glisser commence, le reste
    s'assombrit. C'est ce qui apprend le jeu tout seul : on voit ce qu'on peut
    faire avant de le faire.
+   ⚠ **On assombrit, on ne rend pas transparent** (corrigé le 08/09/2026 au
+   premier essai). Avec de la transparence, le bleu de la table passait au
+   travers et teintait toutes les cartes en bleu. Un filtre agit sur les pixels
+   de la carte, sans rien laisser passer derrière, comme le plateau le fait
+   déjà pour une carte désactivée.
 2. **La carte se soulève** : un peu plus grande, légèrement inclinée, une
    ombre portée. Elle suit le pointeur.
 3. **Une étiquette suit le pointeur** et nomme l'action à venir.

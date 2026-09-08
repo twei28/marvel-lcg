@@ -1766,13 +1766,13 @@ function PagePartie({
   }, [optionSurvolee, plateau, interaction.cibleFocus])
 
   const choisirOptionDepuisMenu = useCallback(
-    (option: Option, ciblesInitiales?: number[]) => {
+    (option: Option, ciblesInitiales?: number[], parGeste = false) => {
       const ids = idsPulsePourOption(option, plateau, ciblesInitiales?.[0])
       setPulseTemporaire(ids)
       setOptionSurvolee(undefined)
       window.clearTimeout(minuteurPulse.current)
       minuteurPulse.current = window.setTimeout(() => setPulseTemporaire(new Set()), 1000)
-      interaction.choisirOption(option, ciblesInitiales)
+      interaction.choisirOption(option, ciblesInitiales, parGeste)
     },
     [interaction, plateau]
   )
@@ -2130,7 +2130,7 @@ function PagePartie({
         if (cible.carteId !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
           if (actions[0] && actions.length === 1) {
-            choisirOptionDepuisMenu(actions[0], [cible.carteId])
+            choisirOptionDepuisMenu(actions[0], [cible.carteId], true)
             return undefined
           }
           if (actions.length > 1) {
@@ -2153,7 +2153,7 @@ function PagePartie({
           if (parZone !== undefined) {
             const actions = optionsDuDepot(optionsCourantes, sourceId, parZone, idIdentiteGlisser)
             if (actions[0] && actions.length === 1) {
-              choisirOptionDepuisMenu(actions[0], [parZone])
+              choisirOptionDepuisMenu(actions[0], [parZone], true)
               return undefined
             }
             if (actions.length > 1) {

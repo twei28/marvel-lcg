@@ -156,7 +156,12 @@ export type Interaction = {
    */
   surpaiementRecompense: boolean
   assistant: AssistantInteraction
-  choisirOption: (option: Option, ciblesInitiales?: number[]) => void
+  /**
+   * Engage une action. `parGeste` dit que le joueur a DESIGNE sa cible d'un
+   * geste (un glisser-deposer) et non d'un clic dans une liste : la validation
+   * courte n'a alors plus de raison d'hesiter, voir `validationEvidente`.
+   */
+  choisirOption: (option: Option, ciblesInitiales?: number[], parGeste?: boolean) => void
   abandonnerOption: () => void
   valider: () => void
   annuler: () => void
@@ -391,7 +396,11 @@ export function useInteraction(
           ? 'payment'
           : 'confirm'
 
-  const choisirOption = useCallback((choisie: Option, ciblesInitiales: number[] = []) => {
+  /** Identifiant de l'option engagee par un GESTE, tant qu'elle dure. */
+  const optionParGeste = useRef<number | undefined>(undefined)
+
+  const choisirOption = useCallback((choisie: Option, ciblesInitiales: number[] = [], parGeste = false) => {
+    optionParGeste.current = parGeste ? choisie.id : undefined
     const max = choisie.target_num_range[1]
     let prochainesCibles =
       max > 0
@@ -798,10 +807,19 @@ export function useInteraction(
   //   - paiement non facultatif (« UpTo » : c'est LUI qui decide combien) ;
   //   - carte non surpayable : Ant-Man et consorts se jouent justement en
   //     ajoutant des ressources APRES que le cout est couvert.
+  // ⚠ UN GESTE VAUT LE CHOIX. Le garde-fou « cible unique » existe parce qu'un
+  // joueur qui vient de choisir parmi plusieurs cibles gagne a jeter un dernier
+  // regard avant de lancer. Celui qui a TRAINE sa carte sur un ennemi, lui, a
+  // deja designe : lui redemander confirmation, c'est lui faire faire deux fois
+  // le meme choix. Signale des le premier essai du glisser (08/09/2026).
+  // Les autres garde-fous restent tous en place : rien ne part tout seul quand
+  // il reste un paiement facultatif, un surpaiement recompense, une cible
+  // repetable ou une cible de plus a prendre.
+  const designeeParGeste = option !== undefined && optionParGeste.current === option.id
   const validationEvidente =
     option !== undefined &&
     etape === 'confirm' &&
-    ciblePossibles <= 1 &&
+    (ciblePossibles <= 1 || designeeParGeste) &&
     !cibleRepetable &&
     !cibleSupplementairePossible &&
     !surpaiementRecompense &&
