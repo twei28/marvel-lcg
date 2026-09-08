@@ -220,6 +220,27 @@ describe('ce que le geste montre', () => {
     expect(container.querySelector('.glisser-refus')).toBeNull()
   })
 
+  // ⚠ LE CAS QUI COMPTE POUR LE « BLEU », ET C'EST LE VRAI. Bouton enfonce, le
+  // navigateur selectionne ce que le pointeur balaie et le peint en bleu. Le
+  // cadre est desormais `user-select: none` (glisser.css), mais la selection a
+  // pu commencer pendant les six pixels du seuil : le geste l'efface une fois,
+  // au moment ou il se reconnait. Sans cet effacement, le bleu reste affiche
+  // pendant tout le glisser.
+  it('le depart du geste efface la selection du navigateur', () => {
+    const vider = vi.fn()
+    const vraiGetSelection = window.getSelection
+    window.getSelection = () => ({ removeAllRanges: vider }) as unknown as Selection
+    try {
+      const { source } = monter(vi.fn(() => undefined))
+      pointeur(source, 'pointerdown', 0, 0)
+      expect(vider).not.toHaveBeenCalled()   // pas encore : c'est peut-etre un clic
+      pointeur(source, 'pointermove', 300, 0)
+      expect(vider).toHaveBeenCalledTimes(1)
+    } finally {
+      window.getSelection = vraiGetSelection
+    }
+  })
+
   // ⚠ LE CAS QUI COMPTE POUR LA COULEUR, ET IL VIENT DE DEUX SIGNALEMENTS
   // (08/09/2026, « ce halo bleu degueulasse »). Une carte deja marquee
   // `choisie` par une action en cours garde l'etat `selected`, dont le halo

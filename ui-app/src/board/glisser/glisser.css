@@ -110,6 +110,36 @@
   transition: filter 0.12s ease-out;
 }
 
+/* ⚠ LE PLATEAU N'EST PAS UN TEXTE QU'ON SELECTIONNE, ET C'ETAIT LA VRAIE
+   CAUSE DU « BLEU ». Bouton enfonce, un navigateur selectionne ce que le
+   pointeur balaie : les scans, les noms, les titres de zone, tout passe au
+   bleu de selection du systeme. Sur une page de texte c'est le comportement
+   attendu ; sur une table de jeu ou l'on traine ses cartes, c'est une salete
+   qui recouvre la moitie du plateau. Signale trois fois le 08/09/2026, la
+   troisieme avec les mots qui ont tout resolu : « comme si il selectionnait
+   les images et le texte quand on reste appuye ».
+
+   ⚠ LA REGLE VIT ICI, MAIS ELLE N'EST PAS CONDITIONNEE AU GESTE : la
+   selection commence des l'appui, donc AVANT le seuil des six pixels, et une
+   regle posee sur `.est-en-glisser` arriverait trop tard. Ce qui a pu etre
+   selectionne pendant ces six pixels est efface par `useGlisser`.
+
+   On ne coupe QUE le cadre de jeu : les panneaux, le journal et les fenetres
+   restent selectionnables, on peut toujours copier un texte de carte depuis
+   l'apercu. */
+.plateau-cadre {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Et l'image ne part pas non plus en glisser natif du navigateur, qui
+   afficherait sa propre vignette fantome par-dessus la notre. Le `img` du
+   scan porte deja `draggable="false"` ; ceci couvre les fonds CSS. */
+.plateau-cadre .scan-card,
+.plateau-cadre .scan-card img {
+  -webkit-user-drag: none;
+}
+
 /* ⚠ PENDANT LE GESTE, AUCUNE AUTRE COULEUR D'ETAT NE SURVIT. Le plateau pose
    un halo par etat : bleu pour une carte choisie (`state-selected`) ou citee
    par l'evenement en cours (`is-highlighted`), cyan au survol, mauve pour la

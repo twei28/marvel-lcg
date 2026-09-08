@@ -97,6 +97,22 @@ export function useGlisser({ estSource, cibleSous, onDepot }: Reglages) {
       if (!commence.current) {
         if (Math.hypot(dx, dy) < SEUIL_GLISSER) return
         commence.current = true
+        // ⚠ ON EFFACE LA SELECTION DU NAVIGATEUR. Bouton enfonce, le navigateur
+        // SELECTIONNE ce qu'il survole, exactement comme sur une page de texte,
+        // et peint les images et les mots en bleu. C'est ce bleu-la que
+        // l'utilisateur a signale trois fois le 08/09/2026, et il n'avait rien
+        // a voir avec les couleurs du plateau : « comme si il selectionnait les
+        // images et le texte quand on reste appuye ».
+        //
+        // Le `user-select: none` pose sur le cadre (glisser.css) empeche les
+        // selections SUIVANTES ; celle-ci a pu commencer pendant les six pixels
+        // du seuil, avant qu'on sache que c'etait un glisser. On la retire donc
+        // ici, une fois, au moment ou le geste est reconnu.
+        try {
+          window.getSelection()?.removeAllRanges()
+        } catch {
+          /* pas de selection a effacer */
+        }
         // La capture garde le geste vivant quand le pointeur sort du cadre :
         // sans elle, sortir du plateau relachait la carte en silence.
         try {
