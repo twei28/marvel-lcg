@@ -222,6 +222,46 @@ d'épuisement.
    directement la nouvelle carte, pas seulement grep les mots d'erreur.
 4. Comparer le taux de blocage de la nouvelle carte à celui du témoin.
 
+## Étape 8 bis : Bloc plateau, ce que la carte DESSINE
+
+**Constat du 09/09/2026, en partie réelle.** `su001b` Master Planner glissait
+bien une carte face cachée sous `su012` Contingency Plan : le moteur était
+juste, l'état du rapport de bug le disait mot pour mot
+(« c14 Webbed Up [face cachée, attachée à c23] »), et les **32 cas `su0` de
+`test_capacites` étaient verts**. La carte n'apparaissait pourtant NULLE PART
+sur la table. `enUnites` (`ui-app/src/board/zones.ts`) ne lisait que les
+attachements des RACINES, et Contingency Plan est lui-même attaché à
+l'identité : tout ce qui pendait à deux étages disparaissait.
+
+**Un pack peut donc être livré, testé 32 fois sur 32, et injouable à l'œil.**
+`test_capacites.py` prouve ce que le moteur FAIT ; il ne voit rien de ce que le
+joueur REGARDE. Ce bloc est la moitié manquante.
+
+**Déclencheur — la carte est concernée dès qu'elle change ce qu'on VOIT :**
+elle attache ou glisse une carte (`PlaceCardHere`, `AttachTo`), elle pose un
+compteur ou un statut, elle met une carte de côté, elle crée une face, elle
+déplace une carte d'une zone à l'autre. Une carte qui ne fait que chiffrer
+(dégâts, menace, ressources) n'en a pas besoin : la jauge est déjà couverte.
+
+**Comment, en cinq lignes** (`ui-app/src/board/plateau-de-test.ts`) : on pose
+l'état d'arrivée à la main, on demande ce qui est dessiné, on affirme dessus.
+
+```ts
+import { carteSurTable, dessinee, siege, tableAvec } from './plateau-de-test'
+
+const monde = tableAvec(siege({ area_hero: [ /* ...l'état d'arrivée... */ ] }))
+expect(dessinee(monde, CARTE_GLISSEE)).toBeDefined()   // elle est à l'écran
+expect(dessinee(monde, CARTE_GLISSEE)?.peeking).toBe(true)  // face cachée
+```
+
+L'assertion qui compte est **`toBeDefined()`** : c'est la seule qui aurait
+attrapé Contingency Plan. Modèle complet et commenté :
+`ui-app/src/board/attachement-en-chaine.test.ts`.
+
+⚠ Ce bloc obéit à la règle transverse ci-dessous : écrire le cas AVANT le
+correctif et le **voir rouge**. Un cas plateau écrit après coup ne prouve que
+l'état du jour.
+
 ## §9 : une gate qui répond « OK » n'est pas une preuve tant qu'on ne l'a pas vue ÉCHOUER
 
 Constat du 04/09/2026, et il vaut pour tout l'outillage.
@@ -278,6 +318,10 @@ outil manque.
       Résultat : ...
 - [ ] Étape 8 : autoplay ciblé : N parties, témoin <héros>, grep tracebacks : 0,
       lecture du journal : ...
+      Résultat : ...
+- [ ] Étape 8 bis : la carte change-t-elle ce qu'on VOIT (attache, glisse,
+      compteur, statut, mise de côté, changement de zone) ? OUI / NON.
+      Si OUI, cas plateau : <fichier>, vu ROUGE sans le correctif : ...
       Résultat : ...
 
 Carte terminée : OUI / NON : si NON, ce qui manque et pourquoi.

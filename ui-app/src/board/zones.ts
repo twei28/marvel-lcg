@@ -197,6 +197,14 @@ function cartes(liste: readonly unknown[] | undefined, rendu: Rendu): WorldCard[
  * Verifie sur les 34 etats enregistres : une carte attachee est toujours dans
  * la meme zone que son porteur. Une carte dont le porteur est introuvable est
  * traitee comme une racine plutot que disparaitre.
+ *
+ * ⚠ L'attachement se lit EN CHAINE, pas sur un seul etage. `su001b` Master
+ * Planner glisse une carte face cachee sous `su012` Contingency Plan, qui est
+ * elle-meme une amelioration posee sur l'identite : la carte glissee pend donc
+ * a deux etages de la racine. En ne lisant que les attachements DIRECTS des
+ * racines, on la faisait disparaitre de la table alors que le moteur l'avait
+ * bien posee (rapport de bug du 09/09/2026). Le sous-arbre est aplati derriere
+ * sa racine, porteur avant porte, pour que le rendu garde une liste plate.
  */
 function enUnites(
   liste: WorldCard[],
@@ -220,14 +228,25 @@ function enUnites(
     collectionRessources: options.collectionRessources,
   }
 
+  // `vus` n'est pas de la prudence gratuite : un etat corrompu ou deux cartes
+  // s'attachent l'une a l'autre boucherait la boucle a l'infini et figerait le
+  // plateau. On coupe au lieu de tourner.
+  const vus = new Set<number>()
+  const sousArbre = (id: number): WorldCard[] => {
+    if (vus.has(id)) return []
+    vus.add(id)
+    return (attacheesPar.get(id) ?? []).flatMap((attachee) => [
+      attachee,
+      ...sousArbre(attachee.id),
+    ])
+  }
+
   return liste
     .filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
     .map((carte) => ({
       cle: `carte-${carte.id}`,
       carte: toScanCard(carte, ctxCarte),
-      attachees: (attacheesPar.get(carte.id) ?? []).map((attachee) =>
-        toScanCard(attachee, ctxCarte)
-      ),
+      attachees: sousArbre(carte.id).map((attachee) => toScanCard(attachee, ctxCarte)),
     }))
 }
 
