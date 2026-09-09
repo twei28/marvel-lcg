@@ -62,7 +62,26 @@ class SelectorEnd:
 
         if need_move or is_failure:
             for deck in Types.RemoveDuplicates(places):
-                assert deck.GetSize() != 0
+                # ⚠ CORRECTIF DU 09/09/2026 — UN `assert deck.GetSize() != 0`
+                # SE TROUVAIT ICI, ET IL RENDAIT INATTEIGNABLE LA BRANCHE
+                # ECRITE JUSTE EN DESSOUS. L'auteur avait bien prevu le deck
+                # vide (« if deck.GetSize() == 0: pass », on ne melange pas ce
+                # qui n'existe plus) ; le garde de debogage au-dessus faisait
+                # tomber le moteur avant d'y arriver.
+                #
+                # Ce n'est pas theorique : toute RECHERCHE qui sort la ou les
+                # dernieres cartes du deck laisse ce deck a zero. En partie
+                # RELEASE les assertions sont desactivees, le defaut restait
+                # donc invisible ; sous le harnais de test elles sont actives,
+                # et la capacite plantait en silence — le journal montrait
+                # « was defeated » puis plus rien, et les cartes cherchees
+                # DISPARAISSAIENT de toutes les zones.
+                #
+                # Trouve en portant `vz024` In the Thick of It, et reproduit a
+                # l'identique sur la carte OFFICIELLE `40019` Lock and Load :
+                # ce sont les DEUX qui etaient intestables, pas la carte
+                # fan-made. Voir tools/test_capacites.py, cas « vz024 » et
+                # « 40019 ».
                 if deck.GetSize() == 0:
                     # Send.AfterDeckRunOut(deck)
                     # deck.ShuffleWithDiscardPile(True, effect)
