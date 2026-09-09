@@ -11,11 +11,60 @@
 "use strict";
 
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
-export const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination"];
+export const ASPECTS = ["Aggression", "Justice", "Leadership", "Protection", "'Pool", "Determination", "Venomized"];
 // Classes non-aspect jouables : Basic, et les cartes de recompense de Campagne.
 export const CLASSES_NEUTRES = ["Basic", "Campaign"];
 export const TYPES_JOUEUR = ["Ally", "Event", "Support", "Upgrade", "Resource", "PlayerSideScheme", "Player_Side_Scheme"];
 export const SIGNATURE_MARVELOUS = 15;
+
+/**
+ * Cartes qu'un ASPECT impose au deck, en plus de ce que la joueuse a choisi.
+ *
+ * L'aspect fan-made VENOMIZED (ekAugust, set 168) est le seul a ce jour. Son
+ * insert : le nombre de cartes du set « Venomized Weakness » depend du COUT
+ * CUMULE des cartes Venomized du deck.
+ *   1-20 -> 1 carte     21-40 -> 2 cartes
+ *
+ * ⚠ CES CARTES NE COMPTENT PAS DANS LES 40-50. Elles ne sont pas non plus
+ * choisies ici : c'est le MOTEUR qui les tire au hasard au montage de la
+ * partie (`PlayerSetup.CartesImposeesParLesAspects`). L'editeur ne fait que
+ * l'ANNONCER, pour que la joueuse sache ce qui l'attend.
+ *
+ * ⚠ La table est la MEME des deux cotes. Si elle change ici, elle doit changer
+ * dans `player_setup.py` : c'est le seul point ou les deux implementations
+ * doivent se ressembler, et c'est pour cela qu'il est ecrit ici.
+ */
+export const ASPECTS_A_CARTES_IMPOSEES = [
+    { aspect: "Venomized", set: "Venomized Weakness", tranches: [[20, 1], [40, 2]] },
+];
+
+/** Le cout cumule des cartes d'un aspect dans la pioche, et ce qu'il impose. */
+export function cartesImposees(choisies, carte) {
+    const out = [];
+    for (const regle of ASPECTS_A_CARTES_IMPOSEES) {
+        let cout = 0;
+        for (const [id, n] of choisies) {
+            const c = carte(id);
+            if (!c || c.class !== regle.aspect) continue;
+            // ⚠ Un cout « X » n'est pas un nombre : il vaut 0, comme cote
+            // moteur. X se decide en jouant la carte, pas en construisant.
+            const brut = String((c.desc && c.desc.Cost) ?? c.cost ?? "").trim();
+            // ⚠ FOIS `n` : la pioche compte les EXEMPLAIRES, pas les titres.
+            // Sans cette multiplication, trois Feed the Hunger pesaient 3 au
+            // lieu de 9 et la seconde tranche n'etait jamais atteinte.
+            if (/^\d+$/.test(brut)) cout += Number(brut) * n;
+        }
+        if (cout <= 0) continue;
+        // La derniere tranche vaut aussi au-dela de son plafond : le tableau
+        // de l'auteur s'arrete a 40, on n'en invente pas un troisieme.
+        let nombre = regle.tranches[regle.tranches.length - 1][1];
+        for (const [plafond, n] of regle.tranches) {
+            if (cout <= plafond) { nombre = n; break; }
+        }
+        out.push({ aspect: regle.aspect, set: regle.set, cout, nombre });
+    }
+    return out;
+}
 
 /** Traduction par defaut : l'identite. Un appelant sans i18n reste lisible. */
 const brut = (s) => s;
@@ -288,5 +337,6 @@ export function validerDeck({ hero, choisies, carte, t = brut }) {
         if (x.n > x.max) problemes.push(`${t("Trop d’exemplaires de")} « ${titre} » : ${x.n}/${x.max}`);
     }
     return { ok: problemes.length === 0, problemes, total, aspects: [...aspects], signature, empruntees,
-             horsAspect, quotaMax: quota ? quota.max : 0 };
+             horsAspect, quotaMax: quota ? quota.max : 0,
+             imposees: cartesImposees(choisies, carte) };
 }

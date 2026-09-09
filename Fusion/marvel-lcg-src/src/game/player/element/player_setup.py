@@ -7,6 +7,49 @@ from game.player import *
 
 HACK_HERO_ID = '3100'
 
+# ---------------------------------------------------------------------------
+# CARTES QU'UN ASPECT IMPOSE AU DECK
+#
+# L'aspect fan-made VENOMIZED (ekAugust, set 168) est le premier a en avoir
+# besoin. Son insert, mot pour mot :
+#
+#   « After you have built your deck, if you have chosen to include Venomized
+#     (black) aspect cards into your deck, you will need to randomly include a
+#     certain number of cards from the Venomized Weakness set into your deck.
+#     The number of required cards depends on the TOTAL RESOURCE COST of all
+#     Venomized (black) aspect cards in your deck. You can randomly get
+#     multiple copies of the same Venomized Weakness card. »
+#
+#     Cout total  1-20 -> 1 carte Weakness
+#     Cout total 21-40 -> 2 cartes Weakness
+#
+# ⚠ LE TABLEAU DE L'AUTEUR S'ARRETE A 40, et un deck de 50 cartes peut
+# depasser ce total : le cas est atteignable. On garde alors la DERNIERE
+# tranche (2 cartes) plutot que d'extrapoler « une de plus par tranche de 20 »,
+# qui serait une regle INVENTEE. Choix volontaire, a confirmer avec l'auteur.
+#
+# ⚠ CES CARTES NE COMPTENT PAS DANS LA TAILLE DU DECK, et il n'y a rien a
+# soustraire nulle part : elles sont ajoutees ICI, apres que l'editeur a valide
+# les 40-50 cartes. C'est exactement ce que dit le mot-cle `weakness`
+# (docs/reference/mots-cles/weakness.md).
+#
+# ⚠ LE TIRAGE PASSE PAR `Random.RandomChoice`, le generateur SEME du moteur, et
+# JAMAIS par le module `random` : une partie rejouee a la meme graine doit
+# tirer les memes faiblesses, sans quoi les rejeux et le multijoueur divergent.
+# Le tirage est AVEC REMISE, le texte autorisant les doublons.
+#
+# La regle est en DONNEE et non en dur dans la logique : un second aspect qui
+# imposerait des cartes n'aurait qu'une ligne a ajouter ici.
+CARTES_IMPOSEES_PAR_ASPECT = (
+    {
+        "aspect": "Venomized",
+        "set_impose": "Venomized Weakness",
+        # (cout maximal de la tranche, nombre de cartes). La derniere tranche
+        # vaut aussi au-dela de son plafond.
+        "tranches": ((20, 1), (40, 2)),
+    },
+)
+
 class PlayerSetup:
 
     def __init__(self, player: 'Player') -> None:
@@ -178,6 +221,56 @@ class PlayerSetup:
         register_change_form()
         register_ask_effect()
 
+    @staticmethod
+    def CartesImposeesParLesAspects(card_ids: Sequence[str], world: 'World') -> List[str]:
+        """Les card_id que les aspects du deck AJOUTENT d'office.
+
+        Voir `CARTES_IMPOSEES_PAR_ASPECT` en tete de fichier pour la regle et
+        ses pieges. Rend une liste vide quand aucun aspect concerne n'est
+        represente, ce qui est le cas de tous les decks officiels.
+        """
+        from cards.database import CardsDB
+        from engine.lib.random import Random
+
+        imposees: List[str] = []
+        for regle in CARTES_IMPOSEES_PAR_ASPECT:
+            # 1. Le cout cumule des cartes de CET aspect presentes dans le deck.
+            #    ⚠ Un cout « X » n'est pas un nombre : il vaut 0 ici. C'est le
+            #    seul choix sur : X est decide en jouant la carte, pas en
+            #    construisant le deck, et l'auteur parle du cout IMPRIME.
+            cout = 0
+            for card_id in card_ids:
+                paper = CardsDB.papers.get(str(card_id).split(',')[0])
+                if paper is None:
+                    continue
+                classes = [c.strip() for c in (paper.desc.get("Class") or "").split(';')]
+                if regle["aspect"] not in classes:
+                    continue
+                brut = str(paper.desc.get("Cost") or "").strip()
+                if brut.isdigit():
+                    cout += int(brut)
+            if cout <= 0:
+                continue
+
+            # 2. La tranche. La derniere vaut aussi au-dela de son plafond.
+            combien = regle["tranches"][-1][1]
+            for plafond, nombre in regle["tranches"]:
+                if cout <= plafond:
+                    combien = nombre
+                    break
+
+            # 3. Le tirage, AVEC REMISE, dans le set impose. On lit le set dans
+            #    le catalogue plutot que d'ecrire les card_id en dur : une
+            #    troisieme carte de faiblesse entrerait dans le tirage sans
+            #    toucher a ce code.
+            pioche = sorted(cid for cid, paper in CardsDB.papers.items()
+                            if paper.set_name == regle["set_impose"])
+            if not pioche:
+                continue
+            for _ in range(combien):
+                imposees.append(str(Random.RandomChoice(pioche)))
+        return imposees
+
     def SelectIdentity(self, name: str, hero_names: Sequence[str], hero_deck: Sequence[str], obligations: Sequence[str], nemesis_set: Sequence[str], player_deck: Sequence[str]) -> None:
         from game.effect.rule import GameRule
         from game.message import Message
@@ -257,6 +350,11 @@ class PlayerSetup:
             player_hero_deck = list(player_deck) + list(hero_deck)
         else:
             player_hero_deck = list(hero_deck) + list(player_deck)
+        # Les cartes qu'un aspect IMPOSE (voir CARTES_IMPOSEES_PAR_ASPECT) :
+        # ajoutees AVANT la creation des cartes, elles sont donc melangees au
+        # deck comme n'importe quelle autre. Liste vide pour tout deck qui ne
+        # contient aucun aspect concerne.
+        player_hero_deck += PlayerSetup.CartesImposeesParLesAspects(player_hero_deck, player.world)
         CardFactory.GenerateCards(player_hero_deck, player.player_deck, player.world)
 
         player.stat.ResetPlayedRevealedCards()

@@ -97,6 +97,67 @@ def main():
     echecs += cas("le compteur klyntar existe", "klyntar" in compteurs, True)
     echecs += cas("un compteur invente n'existe pas", "sarcasme" in compteurs, False)
 
+    # -----------------------------------------------------------------------
+    # LA REGLE DE DECK-BUILDING DU SET « VENOMIZED WEAKNESS »
+    #
+    # Insert du pack : le nombre de cartes Weakness imposees depend du COUT
+    # CUMULE des cartes Venomized du deck (1-20 -> 1 ; 21-40 -> 2). La regle
+    # vit dans `PlayerSetup.CartesImposeesParLesAspects` ; ces cas la mesurent
+    # sur des decks fabriques pour tomber PILE aux bornes.
+    #
+    # ⚠ Le tirage etant seme, on ne peut pas predire QUELLES faiblesses
+    # sortent : on mesure donc le NOMBRE, et l'appartenance au bon set.
+    from game.player.element.player_setup import PlayerSetup
+    from cards.database import CardsDB
+    from engine.lib.random import Random
+
+    monde = None  # la regle ne lit pas le monde, seulement le catalogue
+    faiblesses = sorted(cid for cid, paper in CardsDB.papers.items()
+                        if paper.set_name == "Venomized Weakness")
+    echecs += cas("le set Venomized Weakness compte 2 cartes", len(faiblesses), 2)
+
+    def combien(card_ids):
+        Random.SetSeed(12345)
+        return PlayerSetup.CartesImposeesParLesAspects(card_ids, monde)
+
+    # Un deck SANS carte Venomized n'impose rien. C'est le cas de tous les
+    # decks officiels : sans ce temoin, une regle qui ajouterait toujours des
+    # faiblesses passerait pour juste.
+    echecs += cas("aucun Venomized -> aucune faiblesse",
+                  combien(["01001a", "01088", "01090"]), [])
+
+    # vz035 coute 0 : present dans le deck, il ne declenche RIEN a lui seul.
+    # La regle parle d'un cout CUMULE, pas d'une presence.
+    echecs += cas("cout cumule 0 -> aucune faiblesse", combien(["vz035"]), [])
+
+    # Bornes de la premiere tranche : 1 et 20.
+    echecs += cas("cout 1 -> 1 faiblesse", len(combien(["vz024"])), 1)
+    echecs += cas("cout 20 -> 1 faiblesse", len(combien(["vz011"] * 6 + ["vz024"] * 2)), 1)
+
+    # Premiere valeur de la seconde tranche : 21.
+    echecs += cas("cout 21 -> 2 faiblesses", len(combien(["vz011"] * 7)), 2)
+    echecs += cas("cout 40 -> 2 faiblesses",
+                  len(combien(["vz011"] * 13 + ["vz024"])), 2)
+
+    # ⚠ AU-DELA DE 40 le tableau de l'auteur s'arrete : on garde la derniere
+    # tranche plutot que d'inventer une troisieme. Ce cas FIGE ce choix, pour
+    # qu'un changement d'avis soit un geste conscient.
+    echecs += cas("cout 45, au-dela du tableau -> 2 faiblesses (derniere tranche)",
+                  len(combien(["vz011"] * 15)), 2)
+
+    # Et ce qui est tire appartient bien au set impose.
+    tirees = combien(["vz011"] * 7)
+    echecs += cas("les faiblesses tirees viennent du set Venomized Weakness",
+                  all(c in faiblesses for c in tirees), True)
+
+    # ⚠ TIRAGE SEME : deux appels a la meme graine rendent la meme chose. Sans
+    # cela, un rejeu ou une partie multijoueur divergerait.
+    Random.SetSeed(999)
+    premier = PlayerSetup.CartesImposeesParLesAspects(["vz011"] * 7, monde)
+    Random.SetSeed(999)
+    second = PlayerSetup.CartesImposeesParLesAspects(["vz011"] * 7, monde)
+    echecs += cas("meme graine -> meme tirage", premier, second)
+
     print("ECHECS : %d" % echecs)
     return 1 if echecs else 0
 

@@ -444,6 +444,13 @@ function rendreDeck() {
             v.aspects && v.aspects.length ? el("span", { class: "db-aspects" }, v.aspects.map(labelAspect).join(" + ")) : null,
             v.quotaMax ? el("span", { class: "db-aspects db-hors-aspect" },
                 `+ ${v.horsAspect}/${v.quotaMax} ${t("hors aspect")}`) : null,
+            // Les cartes qu'un ASPECT impose (set « Venomized Weakness »).
+            // Elles ne sont PAS choisies ici et ne comptent PAS dans les
+            // 40-50 : c'est le moteur qui les tire au hasard au montage de la
+            // partie. L'editeur ne fait que l'annoncer, sans quoi la joueuse
+            // les decouvrirait en piochant.
+            ...(v.imposees || []).map((x) => el("span", { class: "db-aspects db-imposees" },
+                `+ ${x.nombre} ${t("carte(s)")} ${x.set} (${t("coût")} ${x.cout})`)),
         ),
         el("div", { class: "db-deck-lignes" },
             lignes.map(({ id, n, carte }) => el("div", { class: "db-ligne", "data-carte": id, onclick: () => retirer(id) },

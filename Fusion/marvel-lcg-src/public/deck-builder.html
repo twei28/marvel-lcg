@@ -90,6 +90,11 @@
     /* Même mauve que le liseré des cartes Détermination sur le plateau
        (ui-app/src/board/board.css) : une seule couleur pour cet aspect. */
     .aspect-determination { --c-aspect: #965cc4; }
+    /* Venomized : le moteur peint ses cartes en rgb(38,38,44), mais une
+       pastille aussi sombre serait invisible sur le fond de l'editeur. On
+       garde la teinte en montant la luminosite, exactement comme le lisere du
+       plateau et la pastille de la preparation. Une couleur, partout. */
+    .aspect-venomized { --c-aspect: #6b6b7a; }
     .aspect-basic { --c-aspect: #a7b2c2; }
     .aspect-campaign { --c-aspect: #b08d4a; }
     .db-chip[class*="aspect-"] { border-left: 4px solid var(--c-aspect, var(--bord)); }
