@@ -1096,7 +1096,12 @@ export function DeroulePhase({
   const etapeLue: EtapeDeroule = {
     ...etape,
     auteurNom: enFrancais(etape.carteId, etape.auteurNom),
-    cibleNom: enFrancais(etape.temps === 'revelation' ? etape.carteId : etape.cibleId, etape.cibleNom),
+    // Sur une vraie revelation, la « cible » est la carte revelee elle-meme
+    // (carteId). Mais une ATTAQUE rangee sous Revelation (le vilain qu'une
+    // carte fait frapper une seconde fois) a une vraie cible : prendre
+    // carteId ici ecrivait « Klaw attaque Klaw ». On decide par le TITRE, pas
+    // par le temps. Signale et teste le 09/09/2026.
+    cibleNom: enFrancais(etape.titre === 'revelation' ? etape.carteId : etape.cibleId, etape.cibleNom),
     boosts: etape.boosts.map((boost) => ({ ...boost, nom: enFrancais(boost.cibleId, boost.nom) ?? boost.nom })),
     effets: etape.effets?.map((effet) =>
       effet.genre === 'entree'

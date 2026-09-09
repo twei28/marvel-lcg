@@ -46,6 +46,29 @@ describe('cartouche du deroule', () => {
     expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
   })
 
+  it('une attaque rangee sous Revelation garde le nom de sa CIBLE', () => {
+    // Le vilain qu'une carte revelee fait frapper une seconde fois est range
+    // sous « Revelation » (le fait porte sa phase). La traduction des noms ne
+    // doit pas prendre l'auteur pour la cible : « Klaw attaque Klaw ».
+    const seconde: EtapeDeroule[] = [
+      {
+        cle: 'r',
+        temps: 'revelation',
+        titre: 'attaque',
+        regle: 'regle:revelation',
+        carteId: 50,
+        cibleId: 12,
+        auteurNom: 'Klaw',
+        cibleNom: 'Colossus',
+        boosts: [],
+      },
+    ]
+    const nomFr = (id: number) => ({ 50: 'Klaw', 12: 'Colossus' })[id]
+    render(<DeroulePhase etapes={seconde} onTerminer={() => {}} nomFr={nomFr} />)
+    expect(screen.getByText('Klaw attaque Colossus')).toBeInTheDocument()
+    expect(screen.queryByText('Klaw attaque Klaw')).not.toBeInTheDocument()
+  })
+
   it('avance d une etape au clic sur Suivant', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.click(suivant())
