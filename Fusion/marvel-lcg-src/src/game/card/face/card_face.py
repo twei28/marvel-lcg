@@ -106,7 +106,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "DARK RIDERS", "CELESTIAL", "HORSEMEN", "PRELATE", "IMPERIAL GUARD", "BIOMORPH", "CYBERPATH", "NEW", "ACOLYTE", 
         "REAVER", "INTERFACE", "INACTIVE", "ACTIVE", 
         "RESTRAINED", "UNLEASHED", "GENOSHA", "CONTROLLED", "DEADPOOL CORPS", "MISSION", "TRAP!", 
-        "HELLFIRE", "LEVIATHAN", "A.I.M", "LOW", "HIGH", "ADAPTOID", "RESCUED", "INHUMAN", "WAKANDA", "DORA MILAJE",
+        "HELLFIRE", "HENCHMAN", "INFERNAL", "LEVIATHAN", "A.I.M", "LOW", "HIGH", "ADAPTOID", "RESCUED", "INHUMAN", "WAKANDA", "DORA MILAJE",
         "THUNDERBOLT", "BOARD MEMBER", "UNMASKED", "INHERITOR", "BIRD", "SERPENT SOCIETY", 
         "ENHANCED", 
         "ENCHANTMENT", "SHAPESHIFT", "ENTHRALLED", "DEFIANT", "UNREGISTERED", "ATLANTIS", 
@@ -160,6 +160,12 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'rage', 'delay',
         'steel', 'reflection', 'command', 'growth', 'poison', 'barrage', 'evasion',
         'fury', 'sand',
+        'threat',        # CORRECTIF : compteur du pack custom superior_spider_man
+                         # (Rainy). Le mot-cle maison `track` DEPLACE de la menace
+                         # d'une manigance vers un SBIRE ; la menace posee sur un
+                         # sbire n'a aucune existence native, c'est donc un
+                         # compteur nomme.
+        'surveillance',  # CORRECTIF : idem, les pions de su011 Spider-Bot
         'flame',  # CORRECTIF : compteur du pack custom human_torch (DesignHacker)
         'flare',  # CORRECTIF : compteur du pack custom mister_fantastic (DesignHacker)
         'calm',  # CORRECTIF : compteur du pack custom lockjaw (Nugget)

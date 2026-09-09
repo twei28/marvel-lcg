@@ -20,7 +20,19 @@ resolve the obligation.
 """
 
 @final
-class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, HasUses, EncounterNonVillainCard, FinalType):
+# ⚠ CORRECTIF DU 08/09/2026 : `CanCrisis` AJOUTE.
+# Une obligation pouvait deja porter l'icone Acceleration (`HasAccelerationIcon`,
+# presente depuis toujours) et l'icone Alea (`HasHazard`), mais PAS l'icone
+# Crisis : `desc.Crisis` sur une obligation faisait tomber la mise en place sur
+# `KeyError: 'Crisis'` (has_attribute.py:32), donc un deck ENTIEREMENT
+# injouable, et rien d'autre que `verifier_tous_les_decks.py` ne le voyait
+# (lecon `ls005`). Le type `Attachment` porte les trois icones depuis toujours
+# (attachment.py:7) : l'omission etait une incoherence du moteur, pas une regle.
+# Trouve en portant `sm013` Future in Crisis (pack spider_man_2099, Rainy), qui
+# imprime Acceleration ET Crisis sur une obligation.
+# Ajout PUREMENT ADDITIF : sans `desc.Crisis`, rien ne change (printed_crisis
+# vaut 0). Aucune obligation officielle n'en porte.
+class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, HasUses, EncounterNonVillainCard, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         self.printed_give_to: str|None = None
