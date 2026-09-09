@@ -27,6 +27,59 @@ function traitsDistinctifs(traitsA, traitsB) {
     return (traitsA || []).filter((t) => !b.has(t));
 }
 
+/**
+ * Lève les HOMONYMES de la grille : dix noms imprimés désignent vingt-deux
+ * héros différents, et la vignette n'affiche que ce nom.
+ *
+ * Signalé en jeu le 09/09/2026 : le filtre FAN-MADE alignait QUATRE tuiles
+ * « SPIDER-MAN » côte à côte (Spider-Man 2099, Spider-Man (Rainy) et les deux
+ * alter-ego de Superior Spider-Man), impossibles à distinguer autrement qu'en
+ * reconnaissant l'illustration. C'est normal côté cartes — Miguel O'Hara et
+ * Otto Octavius s'appellent tous « Spider-Man » sur le papier — et ça ne l'est
+ * pas côté écran de choix.
+ *
+ * Les autres groupes touchés : Black Panther, Hawkeye, Hulk, Iron Man, Jessica
+ * Jones, Thor, Venom, Wolverine.
+ *
+ * Règle : on ne touche PAS aux noms uniques. Dans un groupe d'homonymes, chaque
+ * héros prend le premier libellé qui le distingue de ses homonymes — le nom de
+ * son DECK, sinon le `set_name` de sa face héros. Aucun des deux ne suffit
+ * seul : les deux Superior Spider-Man partagent leur `set_name`, Spider-Man et
+ * Miles Morales partagent leur nom de deck.
+ */
+function leverLesHomonymes(heros) {
+    const parNom = new Map();
+    for (const h of heros) {
+        const groupe = parNom.get(h.name) || [];
+        groupe.push(h);
+        parNom.set(h.name, groupe);
+    }
+    for (const groupe of parNom.values()) {
+        if (groupe.length < 2) continue;
+        const candidats = groupe.map((h) => {
+            const carte = cards.get(h.heroCardId);
+            return [cleanName(h.deck && h.deck.name), cleanName(carte && carte.set_name)]
+                .filter(Boolean);
+        });
+        for (let i = 0; i < groupe.length; i++) {
+            // Unique DANS LE GROUPE : ailleurs dans la grille le nom ne
+            // collisionne pas, sinon ce héros serait dans ce groupe.
+            const seul = (libelle) => candidats.every(
+                (autres, j) => j === i || !autres.includes(libelle));
+            // Dernier recours : le nom du deck. Il n'a jamais échoué sur les
+            // 129 decks du dépôt, mais un doublon parfait resterait ambigu
+            // plutôt que de faire disparaître un héros.
+            const libelle = candidats[i].find(seul) || candidats[i][0] || groupe[i].name;
+            if (libelle === groupe[i].name) continue;
+            groupe[i].name = libelle;
+            // La botte de foin suit le libellé, sinon taper « 2099 » ne rendrait
+            // rien alors que la tuile l'affiche.
+            groupe[i].recherche += " " + libelle.toLowerCase();
+        }
+    }
+    return heros;
+}
+
 /** Identités jouables d'un héros : la face de base, puis `metadata.hero_alts`.
  *  Renvoie [] quand il n'y a pas de variante, pour que le wizard n'affiche
  *  aucun sélecteur dans le cas courant. */
@@ -313,7 +366,10 @@ export const catalog = {
                 // mini-deck. La grille doit donc les montrer toutes les deux.
                 lie: identiteLiee(d),
             };
-        }).sort((a, b) => a.name.localeCompare(b.name));
+        });
+        // Les homonymes sont levés AVANT le tri : le libellé final est ce qui
+        // range la grille, sinon les quatre Spider-Man resteraient collés.
+        _heroes = leverLesHomonymes(_heroes).sort((a, b) => a.name.localeCompare(b.name));
         return _heroes;
     },
 
