@@ -260,7 +260,37 @@ export type EffetRevelation =
  * rien d'autre. Un lecteur qui oublie un genre ne compile pas, ce qui est tout
  * l'intérêt — c'est ce qui a manqué quand le cartouche lisait deux sources.
  */
-export type FaitMechant = FaitActivation | FaitMenace | FaitDistribution | FaitRevelation
+/**
+ * Une carte de STATUT posée sur un personnage pendant la phase du méchant :
+ * Sonné, Désorienté, Robuste.
+ *
+ * Le moteur ne l'inscrit que pendant cette phase (`IsVillainPhase`,
+ * sender_unit.py) : un statut posé en phase joueur n'a rien à faire dans ce
+ * cartouche. Signalé en jeu le 09/09/2026 : « quand des cartes de statut sont
+ * données au méchant, aux sbires ou aux joueurs, cela ne se voit pas ».
+ */
+export type FaitStatut = FaitMechantCommun & {
+  genre: 'statut'
+  /** « Stunned », « Confused », « Tough », tels que le moteur les nomme. */
+  statut: string
+  /** Le PORTEUR du statut. */
+  cible: string
+  cible_id: number
+  /** La carte qui l'a posé, vide quand ce n'est pas une source distincte. */
+  cause?: string
+  /**
+   * Son identifiant d'objet, qui sert à ranger l'étape sous « Méchant » ou
+   * sous « Sbires » quand la phase seule ne tranche pas (activations).
+   */
+  cause_id?: number | null
+}
+
+export type FaitMechant =
+  | FaitActivation
+  | FaitMenace
+  | FaitDistribution
+  | FaitRevelation
+  | FaitStatut
 
 export type World = {
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */

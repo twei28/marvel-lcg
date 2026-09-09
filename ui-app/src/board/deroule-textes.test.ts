@@ -6,6 +6,7 @@
 // de suite.
 import { describe, expect, it } from 'vitest'
 import {
+  libelleDeStatut,
   texteCauseActivation,
   compteurEtape,
   compteurLigneBilan,
@@ -527,5 +528,44 @@ describe('la cause d une activation', () => {
   it('se tait quand le coup vient de la regle du jeu', () => {
     expect(texteCauseActivation(etape())).toBe('')
     expect(texteCauseActivation(etape({ cause: '' }))).toBe('')
+  })
+})
+
+describe('les cartes de statut dans le cartouche', () => {
+  // Signale en jeu : « quand des cartes de statut sont donnees au mechant, aux
+  // sbires ou aux joueurs, cela ne se voit pas ». Le moteur les publie
+  // desormais comme des faits de la phase (sender_unit.py).
+  it('nomme le porteur et la carte de statut', () => {
+    expect(titreEtape(etape({ titre: 'statut', cibleNom: 'Klaw', statut: 'Stunned' }))).toBe(
+      'Klaw gagne Sonné'
+    )
+    expect(titreEtape(etape({ titre: 'statut', cibleNom: 'Colossus', statut: 'Tough' }))).toBe(
+      'Colossus gagne Robuste'
+    )
+  })
+
+  it('traduit le nom que le moteur envoie, quelle que soit sa casse', () => {
+    expect(libelleDeStatut('Confused')).toBe('Désorienté')
+    expect(libelleDeStatut('confused')).toBe('Désorienté')
+  })
+
+  it('rend tel quel un statut qu il ne connait pas, plutot que rien', () => {
+    expect(libelleDeStatut('Petrified')).toBe('Petrified')
+    expect(libelleDeStatut(undefined)).toBe('')
+  })
+
+  it('se replie sur une formule impersonnelle sans porteur connu', () => {
+    expect(titreEtape(etape({ titre: 'statut', cibleNom: undefined, statut: 'Stunned' }))).toBe(
+      'Une carte de statut est posée : Sonné'
+    )
+  })
+
+  it('le bilan compte les statuts, et distingue lesquels', () => {
+    expect(
+      texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Stunned', cibleNom: 'Klaw', total: 1 })
+    ).toBe('Klaw gagne Sonné')
+    expect(
+      texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Tough', cibleNom: 'Klaw', total: 2 })
+    ).toBe('Klaw gagne Robuste x2')
   })
 })

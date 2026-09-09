@@ -327,6 +327,47 @@ class SenderUnit:
             self.Present(text, "set", unit, self.status, self.by_effect.this)
             # self.TriggerOnEvent(OnEvent.Status)
 
+            # Journal de la phase du mechant (ajout local, lu par ui-app).
+            #
+            # Signale en jeu le 09/09/2026 : « quand des cartes de statut sont
+            # donnees au mechant, aux sbires ou aux joueurs, cela ne se voit
+            # pas ». Le message ci-dessus n'ecrit qu'une ligne de journal et
+            # joue un son ; le cartouche de la phase, lui, ne lit que
+            # `faits_mechant`, ou aucun genre `statut` n'existait.
+            #
+            # SEULEMENT PENDANT LA PHASE DU MECHANT (`IsVillainPhase`) : un
+            # statut pose en phase joueur n'a rien a faire dans ce cartouche-la,
+            # et les inscrire tous ferait enfler le journal pour rien.
+            #
+            # SOUS GARDE, comme tout ce journal : il n'a aucune raison de
+            # pouvoir interrompre une resolution.
+            try:
+                world = unit.card.world
+                if world.phase.IsVillainPhase():
+                    source = getattr(self.by_effect, 'this', None)
+                    cause = getattr(source, 'name', '') or ''
+                    # Un nom qui est celui du porteur n'apprend rien : meme
+                    # garde que `CauseDeLActivation` (can_attack.py).
+                    if cause == unit.name:
+                        cause = ''
+                    world.stat.RecordFaitMechant(world.round_id, {
+                        'genre': 'statut',
+                        # « Stunned », « Confused », « Tough » : le nom de la
+                        # carte de statut, que le client met dans sa langue.
+                        'statut': self.status.name,
+                        'phase': world.GetPhaseText(),
+                        'cible': unit.name,
+                        'cible_id': unit.card.object_id,
+                        'cause': cause,
+                        'cause_id': (source.card.object_id
+                                     if source is not None and getattr(source, 'card', None) is not None
+                                     else None),
+                        'fait_id': (f"statut:{world.round_id}:{unit.card.object_id}"
+                                    f":{len(world.stat.faits_mechant)}"),
+                    })
+            except Exception:
+                pass
+
     # No pre message
     class AfterStatusDiscardFrom(TriggerUnitMessage):
         def __init__(self, unit: 'Unit2', status: 'StatusCard', by_effect: 'Effect') -> None:

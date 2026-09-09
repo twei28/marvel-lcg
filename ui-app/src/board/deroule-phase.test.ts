@@ -20,6 +20,7 @@ import type {
   FaitMechant,
   FaitMenace,
   FaitRevelation,
+  FaitStatut,
 } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
 
@@ -1254,5 +1255,70 @@ describe("l'annonce d'une activation, puis sa resolution", () => {
       etapesDeroule([annonce({ cible_id: 12 })], [], 1, new Set([50]), new Set([12]))
     )
     expect(etape?.defaite).toBeUndefined()
+  })
+})
+
+describe('les cartes de statut de la phase du mechant', () => {
+  const statut = (extra: Partial<FaitStatut> = {}): FaitStatut =>
+    ({
+      genre: 'statut',
+      phase: 'Enemy Activation',
+      statut: 'Stunned',
+      cible: 'Klaw',
+      cible_id: 97,
+      round_id: 1,
+      ...extra,
+    }) as FaitStatut
+
+  it('devient une etape, rangee sous le MECHANT quand il porte le statut', () => {
+    const [etape] = etapesDeroule([statut()], [], 1, new Set([97]))
+    expect(etape?.titre).toBe('statut')
+    expect(etape?.statut).toBe('Stunned')
+    expect(etape?.cibleId).toBe(97)
+    expect(etape?.temps).toBe('mechant')
+  })
+
+  it('se range sous les SBIRES quand ni le porteur ni la source ne sont le vilain', () => {
+    const [etape] = etapesDeroule([statut({ cible: 'Colossus', cible_id: 12 })], [], 1, new Set([97]))
+    expect(etape?.temps).toBe('sbires')
+  })
+
+  it('suit la source quand c est le vilain qui pose le statut sur un heros', () => {
+    const [etape] = etapesDeroule(
+      [statut({ cible: 'Colossus', cible_id: 12, cause: 'Klaw', cause_id: 97 })],
+      [],
+      1,
+      new Set([97])
+    )
+    expect(etape?.temps).toBe('mechant')
+  })
+
+  it('suit la phase que le fait porte, quand elle la designe', () => {
+    const [etape] = etapesDeroule([statut({ phase: 'Reveal Encounter Cards' })], [], 1, new Set([97]))
+    expect(etape?.temps).toBe('revelation')
+  })
+
+  it('garde sa place dans la chronologie, entre deux activations', () => {
+    // Les trois faits doivent tomber dans le MEME temps, sinon c'est le tri
+    // par temps qui decide et non la chronologie : le vilain attaque, recoit
+    // son statut, puis attaque a nouveau.
+    const duVilain = attaque({ auteur: 'Klaw', auteur_id: 97 })
+    const etapes = etapesDeroule([duVilain, statut(), duVilain], [], 1, new Set([97]))
+    expect(etapes.map((e) => e.temps)).toEqual(['mechant', 'mechant', 'mechant'])
+    expect(etapes.map((e) => e.titre)).toEqual(['attaque', 'statut', 'attaque'])
+  })
+
+  it('le bilan de fin de phase en fait une ligne, une par statut', () => {
+    const etapes = etapesDeroule(
+      [statut(), statut({ statut: 'Tough' }), statut()],
+      [],
+      1,
+      new Set([97])
+    )
+    const lignes = lignesBilan(etapes)
+    expect(lignes.map((l) => [l.genre, l.statut, l.total])).toEqual([
+      ['statuts', 'Stunned', 2],
+      ['statuts', 'Tough', 1],
+    ])
   })
 })

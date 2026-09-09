@@ -26,6 +26,7 @@ import type {
   FaitMechant,
   FaitMenace,
   FaitRevelation,
+  FaitStatut,
 } from './world'
 
 export type TempsPhase =
@@ -100,6 +101,10 @@ function estMenace(fait: FaitMechant): fait is FaitMenace {
 function estDistribution(fait: FaitMechant): fait is FaitDistribution {
   return fait.genre === 'distribution'
 }
+function estStatut(fait: FaitMechant): fait is FaitStatut {
+  return fait.genre === 'statut'
+}
+
 function estRevelation(fait: FaitMechant): fait is FaitRevelation {
   return fait.genre === 'revelation'
 }
@@ -156,7 +161,13 @@ export type BoostDeroule = {
 export type LigneBilan = {
   cle: string
   /** Ce que la cible a encaisse : des degats, ou de la menace. */
-  genre: 'degats' | 'menaces'
+  genre: 'degats' | 'menaces' | 'statuts'
+  /**
+   * Pour une ligne de STATUTS : lequel. Il entre dans la cle de la ligne, si
+   * bien qu'un personnage sonne PUIS rendu robuste donne deux lignes, et non
+   * une ligne de deux.
+   */
+  statut?: string
   cibleNom: string
   /** Le total de la phase pour cette cible, toutes sources confondues. */
   total: number
@@ -194,6 +205,11 @@ export type EtapeDeroule = {
    * s'affiche tel que le moteur l'ecrit.
    */
   cause?: string
+  /**
+   * Le statut POSE par cette etape (« Stunned », « Confused », « Tough »),
+   * quand elle en raconte un. Le titre le met dans la langue du plateau.
+   */
+  statut?: string
   /** Carte a mettre en avant sur le plateau. */
   carteId?: number
   /**
@@ -490,6 +506,34 @@ export function etapesDeroule(
   // d'une activation ne change donc pas selon ce que la phase a produit par
   // ailleurs.
   faitsDuRound.forEach(({ fait, rang }) => {
+    // Les STATUTS voyagent avec les activations : ils sont poses au milieu
+    // d'elles, et le tri final par temps est STABLE, donc les pousser dans
+    // cette meme boucle preserve la chronologie du moteur.
+    if (estStatut(fait)) {
+      // La phase « Enemy Activation » ne dit pas a elle seule si l'on est sur
+      // le vilain ou sur un sbire : on tranche par la carte qui a pose le
+      // statut, et a defaut par son porteur. Meme regle que les activations.
+      const temps =
+        tempsDe(fait.phase) ??
+        ((fait.cause_id != null && mechantIds.has(fait.cause_id)) || mechantIds.has(fait.cible_id)
+          ? 'mechant'
+          : 'sbires')
+      etapes.push({
+        cle: cleDuFait('statut', fait.round_id ?? round, rang, fait.cible_id),
+        temps,
+        titre: 'statut',
+        regle: 'regle:statut',
+        cibleId: fait.cible_id,
+        cibleNom: nomNettoye(fait.cible),
+        statut: fait.statut,
+        cause: fait.cause || undefined,
+        // Un statut vaut UN, pour que le bilan de fin de phase puisse les
+        // compter comme il compte les degats.
+        montant: 1,
+        boosts: [],
+      })
+      return
+    }
     if (!estActivation(fait)) return
     // Une phase deja connue (distribution, revelation) garde son temps
     // propre. Sinon, c'est une activation ordinaire : son temps depend de
@@ -756,7 +800,8 @@ export function rangDansLeTemps(
  * Le genre de compteur qu'une etape fait bouger, d'apres sa cle de titre.
  * Un titre libre (carte revelee) n'y figure pas : il ne compte rien.
  */
-const GENRE_PAR_TITRE: Record<string, 'degats' | 'menaces'> = {
+const GENRE_PAR_TITRE: Record<string, 'degats' | 'menaces' | 'statuts'> = {
+  statut: 'statuts',
   attaque: 'degats',
   manigance: 'menaces',
   menace: 'menaces',
@@ -808,7 +853,7 @@ export function lignesBilan(
     const nom = etape.cibleNom ?? ''
     if (!nom) continue
 
-    const cle = `${genre}:${nom}`
+    const cle = genre === 'statuts' ? `statuts:${nom}:${etape.statut ?? ''}` : `${genre}:${nom}`
     const deja = lignes.get(cle)
     if (deja) {
       deja.total += etape.montant
@@ -821,6 +866,7 @@ export function lignesBilan(
     lignes.set(cle, {
       cle,
       genre,
+      statut: etape.statut,
       cibleNom: nom,
       total: etape.montant,
       restant: etape.restant,

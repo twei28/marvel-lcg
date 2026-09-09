@@ -5548,6 +5548,12 @@
     color: #ff8a8f;
   }
 
+  /* Une carte de statut posee : la meme teinte violette que le badge pose sur
+     la carte (`.card-effect-status`), pour qu'on les relie d'un coup d'oeil. */
+  .recap-ligne.est-statut > .recap-mechant-fait b {
+    color: #b39df;
+  }
+
   .recap-ligne.est-manigance > .recap-mechant-fait b,
   .recap-ligne.est-menace > .recap-mechant-fait b {
     color: var(--menace);

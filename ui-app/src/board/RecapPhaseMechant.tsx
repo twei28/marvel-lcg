@@ -24,6 +24,7 @@ import { CarteApercu } from './Board'
 import { toScanCard, type ContexteCarte } from './card-model'
 import type { Catalogue } from './catalogue'
 import { estActivation, estResolue } from './deroule-phase'
+import { libelleDeStatut } from './deroule-textes'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -76,7 +77,7 @@ type Boost = { cle: string; nom: string; cibleId?: number; apport?: number }
 type Ligne = {
   cle: string
   /** Colore et choisit le verbe. */
-  genre: 'menace' | 'attaque' | 'manigance' | 'carte'
+  genre: 'menace' | 'attaque' | 'manigance' | 'carte' | 'statut'
   titre: string
   /** Cartes de boost retournées pour cette activation. */
   boosts?: Boost[]
@@ -120,6 +121,10 @@ const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
   manigance: 'Enemy Activation',
   distribution: 'Deal Encounter Cards',
   revelation: 'Reveal Encounter Cards',
+  // Un statut se pose au milieu d'autre chose : le repli le range aux
+  // activations, comme les attaques, et sa phase reelle (que le fait porte)
+  // le remet a sa place des qu'elle est connue.
+  statut: 'Enemy Activation',
 }
 
 function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
@@ -436,6 +441,19 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
     // Reste les activations. Une intention n'arrive jamais jusqu'ici
     // (`faitsDeLEtape` ne garde que les résolutions), mais le type ne le sait
     // pas : le repli garde la forme d'une ligne juste plutôt que de mentir.
+    // Une carte de STATUT posee pendant la phase. Sans `valeur`, elle ne
+    // fusionne jamais avec une autre ligne (voir `empiler`) : sonne PUIS
+    // robuste sur la meme cible font bien deux lignes.
+    if (fait.genre === 'statut') {
+      return {
+        cle: `moteur:${index}:statut:${fait.cible_id}:${fait.statut}`,
+        genre: 'statut',
+        titre: `${noms.carte(fait.cible_id) ?? fait.cible} ${t('gagne')} ${libelleDeStatut(fait.statut)}`,
+        cibleId: fait.cible_id,
+        cause: fait.cause || undefined,
+      }
+    }
+
     if (!estResolue(fait)) {
       return {
         cle: `moteur:${index}:annonce:${fait.auteur_id}:${fait.cible_id}`,

@@ -6,7 +6,8 @@
 // au dictionnaire.
 
 import type { EtapeDeroule, LigneBilan } from './deroule-phase'
-import { t } from './langue'
+import { langueActuelle, t } from './langue'
+import { libelleStatut } from './effets-statuts'
 import type { EffetRevelation } from './world'
 
 /** Cles de titre que ce module sait rediger. Tout autre titre passe tel quel. */
@@ -14,6 +15,7 @@ const REDIGES = new Set([
   'attaque',
   'manigance',
   'menace',
+  'statut',
   'distribution',
   'revelation',
   'bilan',
@@ -25,6 +27,22 @@ const REDIGES = new Set([
  */
 function pluriel(nombre: number, singulier: string, pluriels: string): string {
   return Math.abs(nombre) < 2 ? t(singulier) : t(pluriels)
+}
+
+/**
+ * Le nom d'une carte de statut dans la langue du plateau.
+ *
+ * Le moteur les nomme « Stunned », « Confused », « Tough » ; `libelleStatut`
+ * (effets-statuts.ts, deja employe par le badge sur la carte) les traduit
+ * depuis la meme table, en minuscules. Une seule table pour les deux, sans
+ * quoi le badge et le cartouche pourraient se contredire.
+ */
+export function libelleDeStatut(statut: string | undefined): string {
+  const cle = (statut ?? '').toLowerCase()
+  if (cle === 'stunned' || cle === 'confused' || cle === 'tough') {
+    return libelleStatut(cle, 1, langueActuelle())
+  }
+  return statut ?? ''
 }
 
 export function titreEtape(etape: EtapeDeroule): string {
@@ -39,6 +57,15 @@ export function titreEtape(etape: EtapeDeroule): string {
   // plus, et l'etape affichait alors « Ultron attaque #88 ».
   const auteur = etape.auteurNom ?? ''
   const cible = etape.cibleNom ?? ''
+
+  if (etape.titre === 'statut') {
+    // « Klaw gagne Sonné ». Le porteur, puis la carte de statut, nommee comme
+    // sur la table. Sans porteur connu, une formule impersonnelle plutot
+    // qu'un « undefined gagne », comme partout ailleurs ici.
+    const nom = libelleDeStatut(etape.statut)
+    if (!cible) return `${t('Une carte de statut est posée')} : ${nom}`
+    return `${cible} ${t('gagne')} ${nom}`
+  }
 
   if (etape.titre === 'menace') {
     // Repli sur l'ancienne formule generique quand la source ne donne ni nom
@@ -199,6 +226,12 @@ export function compteurEtape(etape: EtapeDeroule): string {
  * phrase et rien de plus.
  */
 export function texteLigneBilan(ligne: LigneBilan): string {
+  if (ligne.genre === 'statuts') {
+    const nom = libelleDeStatut(ligne.statut)
+    // « Klaw gagne Sonné », et « x2 » quand la meme carte est posee deux fois
+    // (Solide en demande deux pour mordre).
+    return `${ligne.cibleNom} ${t('gagne')} ${nom}${ligne.total > 1 ? ` x${ligne.total}` : ''}`
+  }
   if (ligne.genre === 'degats') {
     return `${ligne.cibleNom} ${t('a pris')} ${ligne.total} ${pluriel(ligne.total, 'dégât', 'dégâts')}`
   }
@@ -339,6 +372,7 @@ const REGLES: Record<string, string> = {
   'regle:activations': 'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.',
   'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
+  'regle:statut': 'Une carte de statut posée reste jusqu\'à ce qu\'elle soit consommée : sonné annule la prochaine attaque, désorienté la prochaine manigance, robuste absorbe les dégâts d\'une attaque.',
 }
 
 /**
