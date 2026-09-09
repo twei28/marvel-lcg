@@ -4272,15 +4272,39 @@
     filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.65));
   }
 
-  .revelation img {
-    display: block;
+  .revelation-cadre {
+    position: relative;
     width: 216px;
+    aspect-ratio: 127 / 176;
+    overflow: hidden;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.55);
   }
 
-  .revelation.est-paysage img {
+  .revelation img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  /* Un complot se lit en PAYSAGE, mais le serveur redresse tous ses scans en
+     portrait (card-model.ts, `scanIsPortrait`). Meme quart de tour HORAIRE et
+     meme boite transposee que `.scan-a-tourner` (ScanCard.css) : la largeur de
+     l'image devient la hauteur du cadre, et inversement. Constate en jeu le
+     09/09/2026 : « Reseau de Defense » presente debout, texte vertical. */
+  .revelation.est-paysage .revelation-cadre {
     width: 300px;
+    aspect-ratio: 176 / 127;
+  }
+
+  .revelation.est-paysage img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(300px * 127 / 176);
+    height: 300px;
+    transform: translate(-50%, -50%) rotate(90deg);
   }
 
   .revelation figcaption {

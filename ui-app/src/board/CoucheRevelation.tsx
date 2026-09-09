@@ -98,7 +98,13 @@ export function CoucheRevelation({
           className={`revelation${rev.paysage ? ' est-paysage' : ''}`}
           onClick={() => setRevelations((r) => r.filter((x) => x.cle !== rev.cle))}
         >
-          <img src={rev.src} alt={rev.nom} />
+          {/* Le cadre porte le format ; l'image tourne DEDANS quand la carte est
+              un complot : le serveur redresse tous ses scans en portrait (meme
+              regle que `.scan-a-tourner`, ScanCard.css). Sans ce cadre, un
+              complot revele s'affichait debout, texte a la verticale. */}
+          <div className="revelation-cadre">
+            <img src={rev.src} alt={rev.nom} />
+          </div>
           <figcaption>{t(rev.etiquette)}</figcaption>
         </figure>
       ))}
