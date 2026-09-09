@@ -34,6 +34,7 @@ import {
   evolutionEtape,
   regleEtape,
   texteActivationAnnulee,
+  texteCauseActivation,
   texteArretDefaite,
   texteAttente,
   texteFiletProche,
@@ -1141,6 +1142,7 @@ export function DeroulePhase({
   )
   const regle = regleEtape(etapeLue)
   const annulee = texteActivationAnnulee(etapeLue)
+  const cause = texteCauseActivation(etapeLue)
 
   // La chronologie des cinq temps : la seule chose que le cartouche garde
   // quand il se replie devant une question du moteur.
@@ -1434,6 +1436,10 @@ export function DeroulePhase({
             resterait sur « Klaw va attaquer Colossus » et le joueur
             attendrait un coup qui ne vient pas. */}
         {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
+        {/* D'ou vient cette activation. Le moteur ne le dit que pour celles
+            qui ne viennent PAS de la regle du jeu : la seconde attaque du
+            vilain, declenchee par une carte revelee. */}
+        {cause ? <p className="deroule-cause">{cause}</p> : null}
         {/* Ce que la carte revelee a fait, mesure par le moteur. Sans lui, la
             scene ne dit rien de plus : le joueur voit la table au clic suivant. */}
         {etapeLue.effets && etapeLue.effets.length > 0 ? (

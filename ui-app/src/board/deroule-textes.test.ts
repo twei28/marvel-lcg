@@ -6,6 +6,7 @@
 // de suite.
 import { describe, expect, it } from 'vitest'
 import {
+  texteCauseActivation,
   compteurEtape,
   compteurLigneBilan,
   detailEtape,
@@ -511,5 +512,20 @@ describe('les effets d une revelation', () => {
 
   it('ne dit pas de restant quand le moteur ne le donne pas', () => {
     expect(texteEffet({ genre: 'menace', cible: 'X', cible_id: 3, montant: 1 })).toBe('→ X gagne 1 menace')
+  })
+})
+
+describe('la cause d une activation', () => {
+  // Le moteur ne remplit `cause` que pour une activation qui ne vient PAS de
+  // la regle du jeu : le vilain qu'une carte revelee fait frapper une seconde
+  // fois. C'est la reponse a « on dirait qu'il m'attaque deux fois sans
+  // raison », signale en jeu.
+  it('nomme la carte qui a declenche le coup', () => {
+    expect(texteCauseActivation(etape({ cause: 'Assaut' }))).toBe('déclenché par Assaut')
+  })
+
+  it('se tait quand le coup vient de la regle du jeu', () => {
+    expect(texteCauseActivation(etape())).toBe('')
+    expect(texteCauseActivation(etape({ cause: '' }))).toBe('')
   })
 })

@@ -182,6 +182,18 @@ export type EtapeDeroule = {
   titre: string
   /** Rappel de la regle appliquee. */
   regle: string
+  /**
+   * CE QUI a declenche l'activation, quand ce n'est pas la regle du jeu : le
+   * nom de la carte qui fait frapper le vilain une seconde fois.
+   *
+   * Le moteur le calcule depuis toujours (`CauseDeLActivation`, can_attack.py),
+   * precisement parce qu'« on dirait qu'il m'attaque deux fois sans raison ».
+   * Le fait le portait, le cartouche ne le lisait pas : ajoute le 09/09/2026.
+   *
+   * C'est un NOM, pas un identifiant : il ne passe donc pas par `nomFr` et
+   * s'affiche tel que le moteur l'ecrit.
+   */
+  cause?: string
   /** Carte a mettre en avant sur le plateau. */
   carteId?: number
   /**
@@ -497,7 +509,13 @@ export function etapesDeroule(
       cle,
       temps,
       titre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
-      regle: temps === 'mechant' || temps === 'sbires' ? 'regle:activations' : 'regle:revelation',
+      // ⚠ TOUJOURS la regle des activations : cette branche ne construit QUE
+      // des activations (`estActivation` juste au-dessus). Le choix se faisait
+      // par le TEMPS, si bien qu'une attaque declenchee par une carte revelee
+      // affichait « Point 4 : chaque joueur revele sa carte rencontre » sous
+      // une etape qui raconte une attaque. Meme famille que les deux defauts
+      // corriges le 09/09/2026 (mise en scene, nom de la cible).
+      regle: 'regle:activations',
       carteId: fait.auteur_id,
       cibleId: fait.cible_id,
       // Nettoyage applique partout ailleurs sur les noms de heros (icones,
@@ -505,6 +523,7 @@ export function etapesDeroule(
       // d'autre n'affiche.
       auteurNom: nomNettoye(fait.auteur),
       cibleNom: nomNettoye(fait.cible),
+      cause: fait.cause || undefined,
     }
 
     // L'INTENTION (ou son annulation) : le coup n'a pas eu lieu, et l'etape ne

@@ -3635,6 +3635,15 @@
     color: rgba(248, 250, 252, 0.7);
   }
 
+  /* « declenche par Assaut » : la meme discretion que la ligne d'annulation,
+     avec la teinte d'alerte, parce que c'est une activation EN PLUS. */
+  .deroule-cause {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(251, 191, 36, 0.85);
+  }
+
   .salon-fil {
     max-height: min(46dvh, 360px);
     overflow-y: auto;

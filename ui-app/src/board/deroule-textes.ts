@@ -254,6 +254,20 @@ export function texteActivationAnnulee(etape: EtapeDeroule): string {
 }
 
 /**
+ * D'OU vient cette activation, quand ce n'est pas la regle du jeu.
+ *
+ * « Klaw attaque Colossus » pendant les activations n'a besoin d'aucune
+ * explication : c'est le point 2 de la phase. Mais le meme vilain qu'une carte
+ * revelee fait frapper une SECONDE fois parait sortir de nulle part, et c'est
+ * exactement ce qui avait ete signale en jeu. Le moteur ne remplit `cause` que
+ * dans ce second cas (`CauseDeLActivation` rend '' pendant les activations).
+ */
+export function texteCauseActivation(etape: EtapeDeroule): string {
+  if (!etape.cause) return ''
+  return `${t('déclenché par')} ${etape.cause}`
+}
+
+/**
  * La mention de la fenetre de reponse, sous une etape d'INTENTION.
  *
  * Elle ne s'affiche QUE quand le moteur pose effectivement une question au
