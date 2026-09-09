@@ -28,6 +28,12 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         # dans game/element/utility.py), donc les declarer ici suffit a la
         # validation, au typage et a la construction de deck.
         'Determination',  # purple
+        # CORRECTIF (divergence volontaire) : le SIXIEME aspect, fan-made lui
+        # aussi. « Venomized » (ekAugust) fait jouer n'importe quel heros comme
+        # s'il etait lie a un symbiote. Meme chemin que Determination : ces deux
+        # `Literal` suffisent, CARD_CLASS_LIST et ASPECT_CLASS_LIST en sont
+        # DERIVEES (Types.LiteralToList, game/element/utility.py).
+        'Venomized',      # black
     ]
 
     CARD_CLASS: TypeAlias = Literal[
@@ -37,6 +43,7 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         "Protection",   # green
         "'Pool",        # pink
         "Determination",  # purple - CORRECTIF, voir ASPECT_CLASS_TYPE
+        "Venomized",      # black  - CORRECTIF, voir ASPECT_CLASS_TYPE
         "Basic",
         "IdentitySpecific",
         "Encounter",    # e.g. "04097"

@@ -1,4 +1,8 @@
-"""Le moteur accepte-t-il un cinquieme aspect ?
+"""Le moteur accepte-t-il un cinquieme, puis un SIXIEME aspect ?
+
+⚠ 09/09/2026 : ce fichier ne garde son nom que pour ne pas casser les
+references des vieux rapports. Il verrouille desormais DEUX aspects fan-made,
+`Determination` (dt) et `Venomized` (vz).
 
 Les quatre aspects officiels (plus 'Pool, celui de Deadpool) vivent dans deux
 Literal de game/card/face/base/card_player.py, dont CARD_CLASS_LIST et
@@ -59,6 +63,10 @@ def main():
     echecs += cas("Determination est un aspect", IsAspectClass("Determination"), True)
     echecs += cas("Determination est une classe", IsCardClass("Determination"), True)
 
+    # Le sixieme.
+    echecs += cas("Venomized est un aspect", IsAspectClass("Venomized"), True)
+    echecs += cas("Venomized est une classe", IsCardClass("Venomized"), True)
+
     # Les classes non-aspect gardent leur nature.
     echecs += cas("Basic n'est pas un aspect", IsAspectClass("Basic"), False)
     echecs += cas("Basic reste une classe", IsCardClass("Basic"), True)
@@ -80,6 +88,14 @@ def main():
                 couleurs = d
                 break
     echecs += cas("Determination a une couleur", "Determination" in (couleurs or {}), True)
+    echecs += cas("Venomized a une couleur", "Venomized" in (couleurs or {}), True)
+
+    # Le compteur maison de l'aspect Venomized.
+    from game.card.face.card_face import CardFace
+    from core import Types
+    compteurs = Types.LiteralToList(CardFace.COUNTER)
+    echecs += cas("le compteur klyntar existe", "klyntar" in compteurs, True)
+    echecs += cas("un compteur invente n'existe pas", "sarcasme" in compteurs, False)
 
     print("ECHECS : %d" % echecs)
     return 1 if echecs else 0

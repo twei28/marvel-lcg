@@ -144,6 +144,10 @@ class ImageCreator:
         # CORRECTIF : le violet du cinquieme aspect. Sans couleur, le
         # generateur d'images n'a rien a peindre sur ses cartes.
         "Determination": (150, 92 , 196),
+        # CORRECTIF : le NOIR du sixieme aspect. L'insert de l'auteur l'appelle
+        # « Venomized (black) » sur presque chaque carte : la couleur est une
+        # donnee de REGLE ici, pas seulement d'affichage.
+        "Venomized":    (38 , 38 , 44 ),
         "Basic":        (171, 164, 153),
         "Encounter":    (170, 154, 139),
         "Hero":         (188, 176, 164)

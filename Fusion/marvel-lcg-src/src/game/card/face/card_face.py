@@ -166,6 +166,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
                          # sbire n'a aucune existence native, c'est donc un
                          # compteur nomme.
         'surveillance',  # CORRECTIF : idem, les pions de su011 Spider-Bot
+        'klyntar',       # CORRECTIF : compteur de l'aspect custom venomized
+                         # (ekAugust) : vz030 Durable Physiology (2) et vz032
+                         # Klyntar Tendrils (3) l'impriment en toutes lettres.
         'flame',  # CORRECTIF : compteur du pack custom human_torch (DesignHacker)
         'flare',  # CORRECTIF : compteur du pack custom mister_fantastic (DesignHacker)
         'calm',  # CORRECTIF : compteur du pack custom lockjaw (Nugget)
