@@ -1636,7 +1636,7 @@ function PagePartie({
     // le moteur interroge chaque siege a son tour : la vue partait chez le
     // voisin, dont la main nous est cachee, et l'ecran sans main passait pour
     // une partie bloquee. Voir suivi-vue.ts.
-    if (!peutSuivre(etat.monde, cible, playerId)) return
+    if (!peutSuivre(etat.monde, cible, playerId, estMultijoueur())) return
     if (joueurSuivi === undefined || demandeJouable) {
       setJoueurSuivi(cible)
       return
