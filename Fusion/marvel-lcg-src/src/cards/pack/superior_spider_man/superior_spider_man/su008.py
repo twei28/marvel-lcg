@@ -48,7 +48,18 @@ def GetAbilities() -> Sequence['Ability']:
             plan.PlaceCardHere(cartes[:1], False, effect)
 
     def sbire_charge(effect: 'Effect', message: 'Message.AfterUnitDefeatedUnit') -> bool:
-        vaincu = getattr(message, "defeated_unit", None) or getattr(message, "trigger", None)
+        # ⚠ CORRECTIF DU 09/09/2026 — LA CAPACITE NE PARTAIT JAMAIS.
+        # Le sbire vaincu est `message.target` (alias `who_took_damage`,
+        # sender_damage.py:944 et 953). `defeated_unit` N'EXISTE PAS sur ce
+        # message, et le repli `message.trigger` designe... le TUEUR
+        # (`super().__init__(trigger=killer)`, ligne 955). La condition lisait
+        # donc la menace posee sur le HEROS, toujours nulle, et refusait la
+        # capacite a chaque fois. Mesure du 09/09/2026, sonde posee dans la
+        # condition : `cond=[('[(01,su001a) Spider-Man]', 0)]` — c'est bien
+        # Spider-Man qui etait pese, pas le sbire qu'il venait de tuer.
+        # Aucune gate ne pouvait le voir : le seul cas du pack mesurait l'AUTRE
+        # capacite de la carte (l'Action d'attache).
+        vaincu = getattr(message, "target", None)
         return MenaceSurSbire(vaincu) >= 2
 
     def fouiller(effect: 'Effect', message: 'Message.AfterUnitDefeatedUnit') -> None:
@@ -69,7 +80,15 @@ def GetAbilities() -> Sequence['Ability']:
                 "Discard 1 of the top 3 encounter cards",
                 lambda cibles: Faces.DiscardAll(
                     [c for c in cibles if c is not None][:1], effect),
-            ).SetTarget(CardFinder(check_face_fn=lambda f: f in vues), range=(1, 1)),
+            # ⚠ CORRECTIF DU 09/09/2026 — `from_where` MANQUAIT. Sans lui, la
+            # selection ne regarde que les cartes EN JEU (`Default`) : les trois
+            # du dessus du deck Rencontre n'etaient jamais des cibles legales,
+            # le choix partait sans candidat et RIEN n'etait defausse. Mesure du
+            # 09/09/2026 : le deck rendait le meme etat avec et sans le module.
+            # `EncounterDeckTop` est la zone prevue (selector_where.py:13) ; le
+            # `check_face_fn` la reduit aux trois cartes REGARDEES.
+            ).SetTarget(CardFinder(check_face_fn=lambda f: f in vues), range=(1, 1),
+                        from_where=["EncounterDeckTop"]),
         )
 
     return [

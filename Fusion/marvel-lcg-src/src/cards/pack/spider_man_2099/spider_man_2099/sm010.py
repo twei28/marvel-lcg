@@ -32,56 +32,29 @@ from . import *
 #    les degats indirects de la nemesis, qui sont justement le danger du pack.
 #  ⚠ « UNTIL THE END OF THE ROUND », pas « until the end of the phase » :
 #    `until_round_end=True`.
-#  ⚠ « Limit once per phase » -> `LimitOncePerPhase()`.
-#    ⚠⚠ SON TEMOIN D'EPUISEMENT N'EST PAS MONTABLE AVEC LE HARNAIS ACTUEL, et
-#    il faut le dire (PROCESSUS-CARTE, « ce que ces blocs ne peuvent pas
-#    voir »). Le seul effet observable de cette carte est une reduction de
-#    degats, donc il faut se faire frapper pour la mesurer — or le pilote
-#    DECLARE UNE DEFENSE des qu'on lance `Puzzle.Attack` sur l'ennemi (piege
-#    connu, RECETTES §7bis), et la DEF du heros (2, +1 par cette carte meme)
-#    absorbe la difference qu'on cherche a lire. Mesure du 08/09/2026 : Rhino
-#    frappe pour 4, le heros encaisse 0, et ce 0 est compatible avec UNE comme
-#    avec DEUX reductions. Un cas ecrit dessus serait vert sans rien prouver.
-#    → A verifier en partie reelle, ou le jour ou le harnais saura interdire la
-#    declaration de defense.
+#  ⚠ « Limit once per phase » -> `LimitOncePerPhase()`, ET RIEN D'AUTRE.
+#    ⚠⚠ CORRECTIF DU 09/09/2026 — LA CARTE ETAIT MORTE. Un comptage maison
+#    (`pas_encore_cette_phase`) doublait cette limite « par precaution ». Il
+#    lisait `world.stat.once_per_phase_player_effects` — LE REGISTRE QUE
+#    `LimitOncePerPhase` REMPLIT ELLE-MEME, et des le declenchement. La
+#    condition etait donc FAUSSE des le premier passage : `esquiver` n'a jamais
+#    tourne, et la reduction de degats n'a jamais existe. Mesure du 09/09/2026,
+#    avec un compteur pose dans `esquiver` : `sonde_sm010=absent`, l'identite
+#    encaisse 6 des 6 degats de deux attaques de Sandman. Condition RETIREE :
+#    l'ability seule reduit bien (4 degats sur 6, cas « la reduction MORD »).
+#    Lecon : une precaution qui n'est pas mesuree n'est pas une precaution.
+#    ⚠ ET SA LIMITE EST INATTEIGNABLE PAR CONSTRUCTION, ce qui est desormais
+#    MESURE et non suppose (cas « TEMOIN D'EPUISEMENT ») : l'Acceleration de
+#    `sm001a` porte DEJA « Limit once per phase », donc il n'existe pas de
+#    seconde resolution dans la meme phase a laquelle cette carte pourrait
+#    reagir. Le temoin le prouve par deux chiffres : `sm011` ne porte qu'UN
+#    pion de toile apres DEUX pouvoirs de base, et l'identite encaisse le
+#    montant d'UNE seule reduction.
 #  ⚠ « Your hero gets +1 DEF » : meme remarque que `sm009`, la DEF n'existe
 #    pas en forme civile. Contre-cas dans l'autre forme du.
 
 
 def GetAbilities() -> Sequence['Ability']:
-
-    def pas_encore_cette_phase(effect: 'Effect', message: Any) -> bool:
-        """La limite « once per phase », comptee par la carte.
-
-        ⚠ PRECAUTION, PAS CORRECTIF D'UN DEFAUT MESURE. `LimitOncePerPhase()`
-        est posee juste en dessous, mais elle vit sur une ability
-        `AbilityType.Special` (le type que FORCE `WhenResolveSpecialAbility`),
-        et le dépôt a déjà vu une limite silencieusement inerte sur une famille
-        entiere (`AfterUnitDefeatedUnit`, corrige le 03/09/2026, RECETTES §1).
-        Ce comptage maison — le meme que celui du helper pour l'Acceleration —
-        garantit la limite quoi qu'il arrive.
-        ⚠⚠ ET IL N'EST PAS PROUVE PAR UN TEST. Le temoin d'epuisement exige par
-        l'etape 7 bis reste NON MONTABLE : le seul effet observable de cette
-        carte est une reduction de degats, donc il faut se faire frapper pour
-        la lire — or la DEF du heros (2, +1 par cette carte) absorbe l'ecart
-        cherche, et deux attaques de base prealables n'ont pas suffi a empecher
-        le pilote de declarer une defense (mesure du 08/09/2026 : Hydra Soldier
-        annonce 2, l'identite encaisse 0, ce qui est compatible avec UNE comme
-        avec DEUX reductions). Un cas ecrit dessus serait vert sans rien
-        prouver : il a ete RETIRE plutot que maquille.
-        """
-        Unused(message)
-        joueur = JoueurDeCetteCarte(effect)
-        if joueur is None:
-            return False
-        # ⚠ On distingue par la CARTE, jamais par le nom de l'ability : ce nom
-        # doit rester `NOM_ACCEL_FINI`, c'est LUI qui route le message
-        # (`check_ability_name`, factory/resolve.py:17), et `sm011` Spinnerets
-        # comme `sm012` Web Cape le portent aussi. Les compter ensemble
-        # brouillerait les trois limites.
-        registre = getattr(effect.world.stat, "once_per_phase_player_effects", {}) or {}
-        return not any(getattr(x, "this", None) is effect.this
-                       for x in registre.get(joueur, []))
 
     def sans_evenement(effect: 'Effect', message: 'Message.WhenResolveSpecialAbility') -> bool:
         """« WITHOUT PLAYING AN EVENT » : aucun evenement joue par la
@@ -107,10 +80,22 @@ def GetAbilities() -> Sequence['Ability']:
         # (lecon `gb020` You Are My God).
         effect.world.stat.RecordEffectWithPlayer(effect, joueur)
 
+        # ⚠ CORRECTIF DU 09/09/2026 — LA REDUCTION NE PARTAIT JAMAIS.
+        # Le premier parametre de `WhenUnitWouldTakeDamage` est un
+        # `CardType|Literal["You"]` que `Condition.GetYouRule` interprete
+        # (damage.py:23) ; un `CardFinder(check_face_fn=...)` n'y survit pas, et
+        # l'ability, pourtant enregistree, ne se declenchait sur aucune attaque.
+        # Mesure du 09/09/2026 : Sandman frappe deux fois pour 3, l'identite
+        # encaisse 6 alors que `sm010` est en jeu et que son effet est BIEN
+        # inscrit au registre `once_per_phase_player_effects`. Le modele qui
+        # marche est celui de `su003` Agility et de `50159` : `"You"` nu.
+        # ⚠ Aucune gate ne pouvait le voir : la carte n'avait pas de cas sur sa
+        # reduction, faute de savoir empecher la defense (voir le cas
+        # « la reduction MORD »).
         this.effect.RegisterTemp(
             AbilityFactory.WhenUnitWouldTakeDamage(
                 AbilityType.Temp0,
-                CardFinder(check_face_fn=lambda f: f is identite),
+                "You",
                 lambda e2, dmg_message: dmg_message.ReduceDamage(1, e2),
                 is_from_attack=True,
             ),
@@ -131,7 +116,7 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenResolveSpecialAbility(
             CardFinder(card_ids=[ID_HEROS]),
             esquiver,
-            conditions=[sans_evenement, pas_encore_cette_phase],
+            conditions=[sans_evenement],
         ).SetName(NOM_ACCEL_FINI)
         .LimitOncePerPhase(),
     ]

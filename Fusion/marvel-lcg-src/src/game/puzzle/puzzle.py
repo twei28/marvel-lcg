@@ -80,6 +80,28 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, villain.encounter_discard_pile, self.world)
 
+    def EmptyEncounterDeck(self):
+        """Vide le deck Rencontre, pour le reconstruire carte par carte.
+
+        AJOUTEE AU HARNAIS le 09/09/2026, meme motif que `BeginVillainPhase`
+        (pack night_thrasher) : sans elle, `CreateEncounterDeck` AJOUTE ses
+        cartes a un deck de scenario deja plein, et aucun cas ne peut donc
+        nommer « les 3 cartes du dessus » ni « la carte que le surge va
+        reveler ». Deux mesures du pack superior_spider_man en dependaient et
+        avaient ete declarees hors de portee du harnais le 08/09/2026 : la
+        fouille de `su008` et le surge de `su018`.
+
+        Les cartes sont RETIREES DE LA PARTIE, pas defaussees : une defausse
+        polluerait justement la zone que ces deux cas mesurent.
+        """
+        # ⚠ EN BOUCLE : voir la meme remarque sur `EmptyPlayerDeck`.
+        from game.operate.faces import Faces
+        for _ in range(50):
+            faces = [f for f in Worlds.GetEncounterDeckCards(self.world) if f is not None]
+            if not faces:
+                return
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+
     def CreateEncounterDeck(self, *cards: str):
         from game.card.factory import CardFactory
         villain = Worlds.GetAllVillains(self.world)[0]
@@ -97,6 +119,31 @@ class RunPuzzle:
         first_player = self.world.GetFirstPlayer()
         for card in cards:
             CardFactory.GenerateCard(card, first_player.discard_pile, self.world)
+
+    def EmptyPlayerDeck(self):
+        """Vide le deck du joueur, pour le reconstruire carte par carte.
+
+        AJOUTEE le 09/09/2026, meme motif que `EmptyEncounterDeck` :
+        `CreatePlayerDeck` AJOUTE au deck de depart du heros, elle ne le
+        remplace pas. Tout cas qui voulait un deck SANS evenement en avait donc
+        un plein — et la mesure de `sm010` Hyper-Agility, qui exige une
+        Acceleration « without playing an event », lisait l'inverse de ce
+        qu'elle croyait lire (journal du 09/09/2026 : l'Acceleration trouvait
+        `sm003` et le pilote la jouait).
+
+        Les cartes sont RETIREES DE LA PARTIE : les defausser les rendrait
+        pretes a revenir par un remelange.
+        """
+        # ⚠ EN BOUCLE, et non en un seul passage : un premier appel n'a retire
+        # que 8 des 14 cartes (journal du 09/09/2026), `RemoveAllFromGame`
+        # travaillant sur la liste que la zone est en train de modifier.
+        from game.operate.faces import Faces
+        joueur = self.world.GetFirstPlayer()
+        for _ in range(50):
+            faces = [f for f in joueur.player_deck.GetAll() if f is not None]
+            if not faces:
+                return
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
     def CreatePlayerDeck(self, *cards: str):
         from game.card.factory import CardFactory

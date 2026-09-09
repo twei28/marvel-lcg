@@ -106,20 +106,32 @@ capacite mesurable, et une substitution ROUGE.
 - **su006** * Anna Maria Marconi — soin 3 ou reduction de cout. 1 cas. **OUI**
 - **su007** Facial Recognition Uplink — +1 CTR conditionnel + track a l'arrivee
   d'un sbire. 2 cas dont un contre-cas. **OUI**
-- **su008** Mastermind — attache a Contingency Plan. 1 cas. ⚠ La SECONDE
-  capacite (« look at the top 3 cards of the encounter deck, discard 1 ») n'a
-  **aucune cle de verification dans le harnais** : a verifier en partie reelle.
-  **OUI** pour ce qui est mesurable.
+- **su008** Mastermind — attache a Contingency Plan + fouille du deck
+  rencontre. **2 cas, 2/2 rouges sous substitution (09/09/2026)**.
+  ⚠⚠ LA SECONDE CAPACITE ETAIT CASSEE, ET DEUX FOIS. Elle n'a jamais eu de cas
+  parce qu'on la croyait sans cle de verification ; en lui en ecrivant une, le
+  09/09/2026, elle a rendu deux defauts : (1) la condition lisait
+  `message.defeated_unit` (inexistant) puis se repliait sur `message.trigger`,
+  qui designe le TUEUR — elle pesait donc la menace posee sur le HEROS, toujours
+  nulle, et la capacite ne partait jamais ; (2) le choix des trois cartes du
+  dessus n'avait pas de `from_where=["EncounterDeckTop"]`, donc aucune carte du
+  deck n'etait une cible legale et rien n'etait defausse. Les deux corriges.
+  ⚠ Le cas DESIGNE la carte a defausser, et ce n'est pas le dessus du deck : la
+  distribution normale d'une carte de rencontre emporte le dessus de toute
+  facon, un cas ecrit sur « une des trois » restait vert sans le module. **OUI**
 - **su009** Mechanical Arms — track sur attaque de base + redressement. 1 cas.
   **OUI**
 - **su010** Spider-Bot — les DEUX branches (track / retrait). 2 cas. **OUI**
 - **su011** Web-Shooters — trait AERIAL + contre-cas dans l'autre forme. 2 cas.
   **OUI**
-- **su012** Contingency Plan — Action de defausse. 1 cas. ⚠ L'autre capacite
-  (« may be played as though it were in your hand ») **n'est pas testable** :
-  la cle `jouer` ne regarde que la MAIN et aucune commande Puzzle ne joue une
-  carte depuis la zone posee. A verifier en partie reelle. **OUI** pour ce qui
-  est mesurable.
+- **su012** Contingency Plan — Action de defausse + « jouable comme si en
+  main ». **2 cas, 2/2 rouges sous substitution (09/09/2026)**. La seconde
+  capacite avait ete declaree non testable ; c'etait vrai de la CLE `jouer`,
+  pas du moteur : `face.IsLikeInHand()` (card.py:237) envoie
+  `CheckIfFaceIsLikeInHand`, le message meme qu'ecoute
+  `YouMayPlayCardLikeInHand`. Le cas mesure les DEUX bouts — la carte posee
+  l'est, une carte de la defausse ne l'est pas. La carte, elle, etait juste.
+  **OUI**
 - **su013** / **su014** Ghost of a Conscience / Crisis of Conscience — les deux
   obligations, une par alter-ego, chacune sur son deck. 2 cas. **OUI**
 - **su015** Goblin Protocol — la menace des sbires pistes compte pour le
@@ -127,10 +139,22 @@ capacite mesurable, et une substitution ROUGE.
 - **su016** * Hobgoblin — Forced Response apres son attaque. 1 cas. **OUI**
 - **su017** Lunatic Laugh — degats indirects + desorientation des personnages
   reellement touches. 1 cas. **OUI**
-- **su018** Goblin Glider — attache a l'ennemi aux PV IMPRIMES les plus hauts +
-  Action a deux energies. 2 cas. ⚠ La branche « If you cannot, this card gains
-  surge » n'est pas testee : elle demande un plateau SANS aucun ennemi, et
-  retirer le vilain fait tomber la partie. **OUI** pour ce qui est mesurable.
+- **su018** Goblin Glider — attache a l'ennemi aux PV IMPRIMES les plus hauts,
+  Action a deux energies, et la branche SURGE. **3 cas, 2/3 rouges**.
+  ⚠⚠ LA CLAUSE « without another Goblin Glider attached » NE FILTRAIT RIEN :
+  le module cherchait le planeur deja pose dans `GetPlacedCardArea()` et
+  `GetAttachedUpgrades()`, or Goblin Glider est une ATTACHMENT — il fallait
+  `GetAttachedAttachments()` (card_face.py:1077). Deux planeurs se posaient donc
+  sur le meme Rhino. Corrige le 09/09/2026. Le defaut n'apparait qu'avec DEUX
+  exemplaires en jeu, ce qu'aucun cas ne montait avant celui du surge.
+  ⚠ Le surge se monte SANS toucher au vilain : il suffit que tous les ennemis
+  portent deja un planeur. Les deux exemplaires distincts se fabriquent par
+  `Puzzle.CreateEncounterDeck('su018', 'su018')`, `Puzzle.Reveal` rendant deux
+  fois la MEME carte (`FindOrCreateFace`).
+  ⚠ Le cas « s'attache a l'ennemi aux PV les plus hauts » RESTE VERT sans le
+  module (mesure du 09/09/2026) : une attachment se pose de toute facon sur le
+  vilain. Il est conserve pour ce qu'il decrit, mais ce qui PROUVE l'attache,
+  c'est le cas du surge. **OUI**
 - **su019** Pumpkin Bombs — attache a Hobgoblin, sinon au vilain ; Forced
   Response ; Action. 3 cas. **OUI**
 
@@ -146,6 +170,11 @@ capacite mesurable, et une substitution ROUGE.
 - [x] `verifier_tous_les_decks.py` : les DEUX decks au VERT
 - [ ] Une partie complete jouee par un humain
 
-**Heros termine : NON** — il ne manque que ce qui ne peut pas s'automatiser (la
-preuve de la bio au survol, une partie humaine) et trois capacites hors de
-portee du harnais, nommees ci-dessus. Tout le reste est vert.
+**Heros termine : NON** — il ne manque que ce qui ne peut pas s'automatiser :
+la preuve de la biographie dans le wizard et une partie humaine.
+
+⚠ MISE A JOUR DU 09/09/2026 : les TROIS capacites declarees « hors de portee du
+harnais » le 08/09 sont desormais MESUREES (su008, su012, su018). Aucune ne
+l'etait vraiment ; il manquait une cle, une commande ou une lecture. Et deux des
+trois cartes etaient CASSEES, ce que seule l'ecriture de leur cas a revele.
+Batterie du pack : **32/32 cas**.

@@ -34,7 +34,17 @@ def GetAbilities() -> Sequence['Ability']:
         return int(getattr(face, "printed_health", 0) or 0)
 
     def porte_deja_un_planeur(face: 'CardFace') -> bool:
-        for c in list(face.GetPlacedCardArea().Get(True)) + list(face.GetAttachedUpgrades()):
+        # ⚠ CORRECTIF DU 09/09/2026 — `GetAttachedAttachments()` MANQUAIT.
+        # Goblin Glider est une ATTACHMENT, pas une Upgrade : `GetAttachedUpgrades`
+        # ne la voit pas (card_face.py:1071 et 1077 sont deux listes distinctes).
+        # La clause « and without another Goblin Glider attached » ne filtrait
+        # donc RIEN, et deux planeurs se posaient sur le meme Rhino. Aucune gate
+        # ne pouvait le voir : le defaut n'apparait qu'avec DEUX exemplaires en
+        # jeu, ce qu'aucun cas ne montait avant celui du surge.
+        attachees = (list(face.GetPlacedCardArea().Get(True))
+                     + list(face.GetAttachedUpgrades())
+                     + list(face.GetAttachedAttachments()))
+        for c in attachees:
             if c is not None and CardId(c) == "su018":
                 return True
         return False

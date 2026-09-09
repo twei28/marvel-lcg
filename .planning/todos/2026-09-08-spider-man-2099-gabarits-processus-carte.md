@@ -234,13 +234,32 @@ Carte terminee : **OUI**.
       attacks` (pas les degats indirects), `until the end of the ROUND`.
       Resultat : conforme.
 - [x] Etape 6 : cout 1, +1 DEF, -1 degat.
-- [x] Etape 7 :      ne se passe ».
-- [x] Etape 7 bis :      Accelerations sans evenement dans la meme phase (donc avec sm008), la
-      reduction ne doit PAS doubler.
+- [x] Etape 7 : cas « la reduction MORD » — Sandman frappe DEUX fois pour 3,
+      l'identite encaisse **4** et non 6. Rouge sans le module.
+      ⚠⚠ **LA CARTE ETAIT MORTE JUSQU'AU 09/09/2026.** Un comptage maison
+      (`pas_encore_cette_phase`), pose « par precaution », lisait
+      `world.stat.once_per_phase_player_effects` — LE REGISTRE QUE
+      `LimitOncePerPhase` REMPLIT ELLE-MEME des le declenchement. La condition
+      etait donc fausse au premier passage : `esquiver` n'a jamais tourne, et la
+      reduction de degats n'a jamais existe. Mesure : compteur pose dans
+      `esquiver`, `sonde=absent`, 6 degats sur 6 encaisses. Condition retiree.
+      Lecon : une precaution qui n'est pas mesuree n'est pas une precaution.
+- [x] Etape 7 bis : cas « TEMOIN D'EPUISEMENT » — deux pouvoirs de base dans la
+      MEME phase. `sm011` Spinnerets ne porte qu'**UN** pion de toile (il en
+      pose un par resolution d'Acceleration, plafond 2), et l'identite encaisse
+      **2** des 3 degats de Sandman : UNE seule reduction. Les deux chiffres
+      ensemble prouvent que la limite tient — et que la limite de CETTE carte
+      est INATTEIGNABLE PAR CONSTRUCTION, l'Acceleration de `sm001a` portant
+      deja « Limit once per phase ». C'est desormais MESURE, non suppose.
+      ⚠ Deux commandes ont du entrer dans le harnais : `Puzzle.EmptyPlayerDeck()`
+      (sans quoi `CreatePlayerDeck` AJOUTE au deck de depart, l'Acceleration y
+      trouvait un evenement et « without playing an event » etait faux) et
+      `Puzzle.Exhaust` sur le heros (un heros incline ne peut pas defendre : la
+      seule facon de lire la reduction sans que la DEF l'absorbe).
 - [x] Etape 8 : 8 parties, temoin `blade`, grep tracebacks : **0**, carte vue a l'oeuvre dans les journaux.
 
-Carte terminee : **NON** — toutes ses capacites sont prouvees, mais une
-MESURE reste hors de portee du harnais (voir l'encadre de sa ligne 7 bis).
+Carte terminee : **OUI** (09/09/2026). Elle ne l'etait pas : ses trois cas sont
+desormais verts et **3/3 rouges sous substitution**.
 
 ## sm011 : Spinnerets
 
@@ -365,11 +384,12 @@ Carte terminee : **OUI**.
 - [ ] Une partie complete jouee avec le heros
 
 **Heros termine : NON.** Il manque, precisement :
-1   (10 cartes concernees) ;
-2. la preuve de la biographie au survol dans le wizard ;
-2. une partie complete jouee par un humain ;
-3. deux mesures hors de portee du harnais, documentees la ou elles manquent :
-   le plafond de `sm011` et le temoin d'epuisement de `sm010`.
+1. la preuve de la biographie dans le wizard ;
+2. une partie complete jouee par un humain.
+
+⚠ MISE A JOUR DU 09/09/2026 : le temoin d'epuisement de `sm010`, declare hors
+de portee du harnais, est MONTE et VERT — et il a revele que la carte etait
+morte depuis le portage. Batterie du pack : **34/34 cas**.
 
 Tout le reste est vert : **32/32 cas**, **18/18 substitutions**, **8 parties
 d'autoplay sans le moindre incident** (0 erreur au grep exhaustif), deck qui

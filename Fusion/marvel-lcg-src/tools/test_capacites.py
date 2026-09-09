@@ -25458,6 +25458,183 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0, "defausse": ["su003"]},
     },
+    # --- LES QUATRE MESURES RATTRAPEES LE 09/09/2026 ------------------------
+    # Declarees « hors de portee du harnais » le 08/09. Trois l'etaient faute
+    # d'une cle ; la quatrieme (la limite de sm010) s'est revelee INATTEIGNABLE
+    # PAR CONSTRUCTION, ce que le cas mesure au lieu de l'affirmer.
+    {
+        "nom": "su012 Contingency Plan — la carte posee est JOUABLE COMME SI ELLE ETAIT EN MAIN",
+        "pourquoi": ("La seconde capacite de la carte, declaree non testable le 08/09/2026 "
+                     "(« la cle `jouer` ne regarde QUE la main »). C'etait vrai de la CLE, pas "
+                     "du moteur : `face.IsLikeInHand()` (card.py:237) envoie "
+                     "`CheckIfFaceIsLikeInHand`, le message meme qu'ecoute "
+                     "`YouMayPlayCardLikeInHand`. Modele : `brawn_jouer_depuis_la_reserve`.\n"
+                     "Le cas mesure LES DEUX BOUTS : la carte posee l'est, une carte de la "
+                     "DEFAUSSE ne l'est pas — sans ce second bout, une implementation qui dit "
+                     "oui a tout passerait aussi"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreatePlayerDiscardPile('01090')"],
+        "main_exclusive": ["su005", "01090", "01090"],
+        "declencher": ["Puzzle.Action('su001b', 'Action')"],
+        "cibles": ["su005"],
+        "accepter_choix": True,
+        "verifier": "su012_carte_posee_jouable_comme_en_main",
+    },
+    {
+        "nom": "su008 Mastermind — FOUILLE DU DECK RENCONTRE : une des trois du dessus part a la defausse",
+        "pourquoi": ("« look at the top 3 cards of the encounter deck. Discard 1 of them ». "
+                     "Declaree sans cle de verification le 08/09/2026 ; il en manquait une, en "
+                     "effet : la DEFAUSSE DE RENCONTRE, que `Worlds."
+                     "GetEncounterDiscardPileCards` expose depuis toujours (worlds.py:369).\n"
+                     "Le cas seme TROIS cartes connues et exige qu'EXACTEMENT UNE soit partie. "
+                     "Compter la defausse entiere ne marcherait pas : le sbire vaincu y tombe "
+                     "aussi"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su008')",
+                          "Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.PlaceCounters('01182', 'threat', 2)",
+                          "Puzzle.Damage('01182', 3)",
+                          # ⚠ VIDER d'abord : `CreateEncounterDeck` AJOUTE au deck du
+                          # scenario, qui compte deja une trentaine de cartes. Sans ce
+                          # vidage, « les 3 cartes du dessus » ne sont pas les notres et
+                          # la mesure ne veut rien dire (constate le 09/09/2026).
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01101', '01110', '01121', '01103', '01102')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('su001a')"],
+        # 1re cible : le sbire que le heros attaque. 2e : LA carte que la
+        # fouille doit defausser — volontairement PAS le dessus du deck, sans
+        # quoi la distribution normale d'une carte de rencontre donnerait le
+        # meme resultat que la capacite (mesure du 09/09/2026).
+        "cibles": ["01182", "01101"],
+        "accepter_choix": True,
+        "verifier": "su008_fouille_du_deck_rencontre",
+        # 01102 est le DESSUS du deck : c'est elle que la distribution normale
+        # d'une carte de rencontre emporte, avec ou sans module. 01103 est la
+        # SUIVANTE : elle ne part que si la fouille la defausse. 01110 est le
+        # temoin, hors des trois cartes regardees.
+        "attendu": {"carte_defaussee": "01103", "carte_restee": "01110"},
+    },
+    {
+        "nom": "su018 Goblin Glider — SURGE : un second planeur n'a plus de cible et revele une carte de plus",
+        "pourquoi": ("« If you cannot [attach], this card gains surge ». Declaree non testable "
+                     "le 08/09/2026 : « elle demande un plateau SANS aucun ennemi, et retirer "
+                     "le vilain fait tomber la partie ». Lecture trop etroite : la cible est "
+                     "« l'ennemi aux PV imprimes les plus hauts ET SANS AUTRE Goblin Glider "
+                     "attache ». Il suffit donc que TOUS les ennemis en portent deja un — avec "
+                     "le seul vilain sur la table, un DEUXIEME planeur n'a plus de cible, sans "
+                     "toucher au vilain.\n"
+                     "Ce qui est mesure est l'EFFET du surge : la carte semee au sommet du "
+                     "deck de rencontre a bien ete revelee a son tour"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        # ⚠ DEUX EXEMPLAIRES DISTINCTS SONT NECESSAIRES, et `Puzzle.Reveal` ne
+        # sait pas les fabriquer : `FindOrCreateFace` rend la MEME carte au
+        # second appel (puzzle.py:21), donc le premier essai n'a rien revele du
+        # tout. On les fabrique dans le deck Rencontre, que `Reveal` fouille
+        # avant tout le reste — et qu'on vide d'abord pour que la carte revelee
+        # par le surge soit connue.
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('su018', 'su018', '01101')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su018')", "Puzzle.Reveal('su018')"],
+        "accepter_choix": True,
+        "verifier": "su018_surge_faute_de_cible",
+        "attendu": {"carte_du_surge": "01101"},
+    },
+    {
+        "nom": "sm010 Hyper-Agility — la reduction MORD : un ennemi qui frappe 3 n'inflige que 2",
+        "pourquoi": ("« reduce the damage you take from attacks by 1 until the end of the "
+                     "round ». Aucune mesure n'existait : le pilote DECLARE une defense des "
+                     "qu'on lance `Puzzle.Attack` sur l'ennemi, et la DEF du heros (2, +1 par "
+                     "cette carte) absorbe l'ecart cherche (08/09/2026 : Rhino frappe 4, "
+                     "l'identite encaisse 0).\n"
+                     "Le levier manquant : le heros qui vient d'ATTAQUER est INCLINE, et un "
+                     "heros incline ne peut pas defendre. On declenche donc l'Acceleration par "
+                     "une attaque de base, ce qui epuise le heros, PUIS on fait frapper "
+                     "Sandman (ATQ 3) : 3 - 1 = 2 degats, un chiffre que la DEF n'atteint plus"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm010')",
+                          "Puzzle.PutIntoPlay('sm011')",
+                          "Puzzle.PutIntoPlay('01102')",
+                          # ⚠ VIDER d'abord : `CreatePlayerDeck` AJOUTE au deck de
+                          # depart. Sans ce vidage, l'Acceleration y trouvait un
+                          # evenement et le pilote le jouait — la condition
+                          # « WITHOUT PLAYING AN EVENT » etait donc FAUSSE et la
+                          # reduction ne partait jamais (journal du 09/09/2026).
+                          "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090')"],
+        "main_exclusive": ["01090"],
+        # ⚠ `Puzzle.Exhaust` EXPLICITE : l'attaque de base ne laisse pas le
+        # heros incline au moment ou l'ennemi frappe (mesure du 09/09/2026 :
+        # sans cette ligne, l'identite encaisse 0, la defense ayant ete
+        # declaree). Un heros incline ne peut pas defendre : c'est la seule
+        # facon de lire la reduction sans que la DEF l'absorbe.
+        "declencher": ["Puzzle.Attack('sm001a')",
+                       "Puzzle.Exhaust('sm001a')",
+                       "Puzzle.Attack('01102')",
+                       "Puzzle.Attack('01102')"],
+        "cibles": ["01102"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # DEUX attaques de Sandman a 3, moins 1 a chaque fois : 4 degats et non
+        # 6. Le 4 prouve aussi le « until the end of the ROUND » — la reduction
+        # tient sur les DEUX attaques, pas seulement la premiere.
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "sm010 Hyper-Agility — TEMOIN D'EPUISEMENT : deux pouvoirs de base, UNE seule reduction",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis. ⚠ Ce que le cas etablit d'abord, c'est que la "
+                     "limite de sm010 est INATTEIGNABLE PAR CONSTRUCTION : l'Acceleration de "
+                     "`sm001a` porte DEJA « Limit once per phase », donc une seconde "
+                     "resolution dans la meme phase n'existe pas. Le cas le MESURE au lieu de "
+                     "l'affirmer, avec deux chiffres :\n"
+                     "  1. `sm011` Spinnerets pose 1 pion de toile PAR resolution "
+                     "d'Acceleration (plafond 2) : apres DEUX pouvoirs de base dans la meme "
+                     "phase, il en porte **1**, pas 2 — la seconde resolution a ete refusee ;\n"
+                     "  2. l'identite encaisse **2** des 3 degats de Sandman — UNE reduction, "
+                     "pas deux.\n"
+                     "Sans le second chiffre, le premier ne dirait rien de sm010 ; sans le "
+                     "premier, le second serait compatible avec « la deuxieme Acceleration n'a "
+                     "jamais ete tentee »"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm010')",
+                          "Puzzle.PutIntoPlay('sm011')",
+                          "Puzzle.PutIntoPlay('01102')",
+                          # ⚠ VIDER d'abord : `CreatePlayerDeck` AJOUTE au deck de
+                          # depart. Sans ce vidage, l'Acceleration y trouvait un
+                          # evenement et le pilote le jouait — la condition
+                          # « WITHOUT PLAYING AN EVENT » etait donc FAUSSE et la
+                          # reduction ne partait jamais (journal du 09/09/2026).
+                          "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')",
+                       "Puzzle.Ready('sm001a')",
+                       "Puzzle.Attack('sm001a')",
+                       "Puzzle.Exhaust('sm001a')",
+                       "Puzzle.Attack('01102')"],
+        "cibles": ["01102"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # 1 pion de toile = UNE seule resolution d'Acceleration pour DEUX
+        # pouvoirs de base ; 2 degats sur les 3 de Sandman = UNE seule
+        # reduction (deux auraient donne 1). Les deux chiffres ensemble : sans
+        # le premier, le second serait compatible avec « la seconde
+        # Acceleration n'a jamais ete tentee ».
+        "attendu": {"compteurs": [["sm011", "web", 1]], "degats_identite": 2},
+    },
     # FIN DU BLOC SUPERIOR SPIDER-MAN
     # FIN DU BLOC SPIDER-MAN 2099
 ]
@@ -30974,6 +31151,125 @@ def blade_traitre(monde, aides):
         if not ok:
             return False, msg
     return True, f"{cid} est un sbire VAMPIRE engage, {pv}/{pv_max} PV, ATQ {getattr(face, 'attack', '?')}"
+
+
+# --- LES QUATRE MESURES DECLAREES « HORS DE PORTEE DU HARNAIS » LE 08/09/2026,
+# --- montees le 09/09/2026 a la demande de l'utilisateur. -------------------
+
+def su012_carte_posee_jouable_comme_en_main(monde, aides):
+    """su012 : « The card attached here MAY BE PLAYED AS THOUGH IT WERE IN
+    YOUR HAND ».
+
+    Declaree non testable le 08/09: « la cle `jouer` ne regarde QUE la main ».
+    C'etait vrai de la cle `jouer`, pas du moteur. Le drapeau existe et se lit :
+    `face.IsLikeInHand()` (card.py:237) envoie `CheckIfFaceIsLikeInHand`, le
+    message meme que `YouMayPlayCardLikeInHand` ecoute. Modele : le cas
+    `brawn_jouer_depuis_la_reserve`, qui mesure exactement cela sur la Reserve.
+
+    Le cas mesure LES DEUX BOUTS, sans quoi il ne prouverait rien :
+      1. la carte posee sous su012 EST « comme en main » ;
+      2. une carte de la DEFAUSSE ne l'est PAS. Sans ce second bout, une
+         implementation qui repondrait « oui » a tout passerait aussi.
+    """
+    plan = aides["par_id"](monde, "su012")
+    if plan is None:
+        return False, "su012 n'est pas en jeu"
+    posees = [c for c in plan.GetPlacedCardArea().Get(True) if c is not None]
+    if len(posees) != 1:
+        return False, f"{len(posees)} carte(s) posee(s) sous su012 (attendu 1)"
+
+    posee = posees[0]
+    cid = getattr(posee.paper, "card_id", "?")
+    if not posee.IsLikeInHand():
+        return False, (f"la carte posee {cid} n'est PAS consideree comme en main : "
+                       f"« may be played as though it were in your hand » ne fait rien")
+
+    # Le contre-bout : la defausse ne doit pas devenir jouable au passage.
+    temoin = None
+    for f in monde.players[0].discard_pile.Get():
+        if f is not None:
+            temoin = f
+            break
+    if temoin is None:
+        return False, ("defausse vide : le contre-bout du cas ne peut pas etre mesure, "
+                       "et sans lui le premier ne prouve rien")
+    if temoin.IsLikeInHand():
+        return False, (f"{getattr(temoin.paper, 'card_id', '?')}, dans la DEFAUSSE, se dit "
+                       f"aussi « comme en main » : la mesure ne discrimine rien")
+
+    return True, (f"{cid}, posee sous Contingency Plan, est jouable comme si elle etait en "
+                  f"main ; la defausse, elle, ne l'est pas")
+
+
+def su008_fouille_du_deck_rencontre(monde, aides):
+    """su008 : « look at the top 3 cards of the encounter deck. DISCARD 1 OF
+    THEM ».
+
+    Declaree sans cle de verification le 08/09. Il en manquait une, en effet :
+    la lecture du deck Rencontre. Mais la premiere ecriture de ce cas mesurait
+    « UNE des trois du dessus a quitte le deck » — et elle restait VERTE sans le
+    module (mesure du 09/09/2026), parce que la partie DISTRIBUE de toute facon
+    une carte de rencontre : une carte manquait dans les deux cas.
+
+    Ce qui mord, c'est de DESIGNER la carte : le cas force le choix sur une
+    carte qui n'est PAS le dessus du deck (`cibles`), et exige que ce soit
+    CELLE-LA qui manque. La distribution, elle, prend toujours le dessus.
+    """
+    from game.operate.worlds import Worlds
+
+    attendu = aides["cas"].get("attendu") or {}
+    visee = attendu.get("carte_defaussee")
+    temoin = attendu.get("carte_restee")
+    if not visee or not temoin:
+        return False, "le cas doit declarer `carte_defaussee` ET `carte_restee`"
+
+    deck = [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDeckCards(monde)]
+    if visee in deck:
+        return False, (f"{visee} est encore dans le deck de rencontre : la fouille n'a rien "
+                       f"defausse ; deck={deck}")
+    if aides["par_id"](monde, visee) is not None:
+        return False, f"{visee} a quitte le deck en ENTRANT EN JEU : c'est une revelation"
+    if temoin not in deck:
+        return False, (f"le temoin {temoin} a lui aussi quitte le deck : la mesure ne "
+                       f"distingue plus la fouille du reste ; deck={deck}")
+    return True, (f"la carte DESIGNEE ({visee}) a quitte le deck de rencontre sans entrer en "
+                  f"jeu, et le temoin {temoin} y est reste")
+
+
+def su018_surge_faute_de_cible(monde, aides):
+    """su018 : « If you cannot [attach], this card GAINS SURGE ».
+
+    Declaree non testable le 08/09 : « elle demande un plateau SANS aucun
+    ennemi, et retirer le vilain fait tomber la partie ». La lecture etait trop
+    etroite. La cible valide est « l'ennemi aux PV imprimes les plus hauts ET
+    SANS AUTRE Goblin Glider attache » : il suffit donc que TOUS les ennemis en
+    portent deja un. Avec le seul vilain sur la table, un deuxieme planeur n'a
+    plus de cible, sans toucher au vilain.
+
+    Ce qui est mesure est l'EFFET du surge, pas un drapeau : la carte semee au
+    sommet du deck de rencontre doit avoir ete revelee a son tour.
+    """
+    attendu = aides["cas"].get("attendu") or {}
+    semee = attendu.get("carte_du_surge")
+    if not semee:
+        return False, "le cas n'a pas declare `carte_du_surge`"
+
+    from game.operate.worlds import Worlds
+    deck = [getattr(f.paper, "card_id", None)
+            for f in Worlds.GetEncounterDeckCards(monde)]
+    if semee in deck:
+        return False, (f"{semee} est encore dans le deck de rencontre : aucune carte "
+                       f"supplementaire n'a ete revelee, le surge n'a pas eu lieu")
+
+    if aides["par_id"](monde, semee) is None:
+        defausse = [getattr(f.paper, "card_id", None)
+                    for f in Worlds.GetEncounterDiscardPileCards(monde)]
+        if semee not in defausse:
+            return False, (f"{semee} n'est ni en jeu, ni dans la defausse de rencontre, ni "
+                           f"dans le deck : etat introuvable")
+    return True, (f"le second Goblin Glider n'avait plus de cible : il a pris surge et "
+                  f"{semee} a ete revelee a son tour")
 
 '''
 
