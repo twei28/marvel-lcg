@@ -1544,5 +1544,27 @@ export const HEROS_INFO = {
         ennemis: "Dracula, Deacon Frost, Morbius",
         apparition: "The Tomb of Dracula #10 (1973)",
     },
+    "sm001a": {
+        bio: "Miguel O'Hara est un genie de la genetique employe par Alchemax dans la Nueva York de 2099, une ville-corporation ou la loi appartient au plus offrant. Charge de recreer les pouvoirs de l'arachnide legendaire du XXe siecle, il teste le procede sur lui-meme pour echapper a la drogue dont son patron Tyler Stone l'a rendu dependant ; un collegue sabote la machine et reecrit la moitie de son ADN. Il en sort avec une vision et des reflexes acceleres, des crocs venimeux, des griffes et de la vraie soie sortant de ses avant-bras. Assiste de Lyla, son intelligence artificielle holographique, il retourne les armes d'Alchemax contre elle.",
+        bioEn: "Miguel O'Hara is a genetics prodigy working for Alchemax in the Nueva York of 2099, a corporate city where the law belongs to the highest bidder. Tasked with recreating the powers of the legendary 20th-century arachnid, he tests the process on himself to escape the drug his boss Tyler Stone hooked him on; a colleague sabotages the machine and rewrites half his DNA. He comes out with accelerated vision and reflexes, venomous fangs, talons and real silk spinning from his forearms. Aided by Lyla, his holographic artificial intelligence, he turns Alchemax's own weapons against it.",
+        civil: "Miguel O'Hara",
+        base: "Nueva York (2099)",
+        equipes: "Exiles, Vengeurs 2099",
+        equipesEn: "Exiles, Avengers 2099",
+        ennemis: "Alchemax, Tyler Stone, le Specialiste",
+        ennemisEn: "Alchemax, Tyler Stone, the Specialist",
+        apparition: "The Amazing Spider-Man #365 (1992)",
+    },
+    "su001a": {
+        bio: "Otto Octavius, le Docteur Octopus, mourant, transfere son esprit dans le corps de Peter Parker et herite au passage de ses souvenirs — et de sa culpabilite. Convaincu de pouvoir faire mieux que son rival, il devient le Superior Spider-Man : plus methodique, plus brutal, entoure de drones et d'un reseau de surveillance qui couvre toute la ville. Ses methodes lui valent la defiance des autres heros. Reincarne plus tard dans un corps clone sous le nom d'Elliot Tolliver, il reprend le costume a San Francisco et travaille, cette fois, a devenir vraiment meilleur.",
+        bioEn: "Otto Octavius, Doctor Octopus, dying, transfers his mind into Peter Parker's body and inherits his memories along with his guilt. Certain he can do better than his rival, he becomes the Superior Spider-Man: more methodical, more brutal, backed by drones and a surveillance network blanketing the city. His methods earn him the other heroes' distrust. Later reborn in a clone body as Elliot Tolliver, he takes up the costume again in San Francisco and works, this time, at genuinely becoming better.",
+        civil: "Otto Octavius (Peter Parker, Elliot Tolliver)",
+        base: "New York, San Francisco",
+        equipes: "Vengeurs, Sinistre Six",
+        equipesEn: "Avengers, Sinister Six",
+        ennemis: "Hobgoblin, le Bouffon Vert, Massacre",
+        ennemisEn: "Hobgoblin, Green Goblin, Massacre",
+        apparition: "The Superior Spider-Man #1 (2013)",
+    },
 
 };

@@ -22964,19 +22964,26 @@ CAS = [
         "nom": "ar001a Ares — Bring the War : TEMOIN D'EPUISEMENT, la limite « once per round » mord au second appel",
         "pourquoi": ("PROCESSUS-CARTE 7 bis : deux declenchements dans le meme round, un "
                      "chiffre au second. Le second `Puzzle.Action` doit etre REFUSE "
-                     "(`declencher_tolerant`) : un seul sbire convoque, le second reste "
-                     "dans le deck rencontre, la main ne gagne que 2 cartes"),
+                     "(`declencher_tolerant`) : un seul sbire convoque, la main ne gagne "
+                     "que 2 cartes.\n"
+                     "⚠ REECRIT LE 08/09/2026 avec la vraie definition de `seek` : la carte "
+                     "ne CHOISIT plus son sbire, elle defausse le dessus du deck rencontre "
+                     "jusqu'a en defausser un. Le sbire obtenu est donc le PREMIER rencontre "
+                     "— d'ou le `Puzzle.PutIntoDeck('01110')` qui le place sur le dessus, et "
+                     "la disparition de la cle `cibles`, qui n'a plus d'objet. Le contenu du "
+                     "deck rencontre apres coup n'est plus verifiable non plus : les cartes "
+                     "traversees sont defaussees, c'est tout le sens du correctif"),
         "scenario": "rhino",
         "heros": "ares",
         "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
-                          "Puzzle.CreateEncounterDeck('01110', '01101')"],
+                          "Puzzle.CreateEncounterDeck('01110', '01101')",
+                          "Puzzle.PutIntoDeck('01110')"],
         "main_exclusive": ["01090"],
         "declencher": ["Puzzle.Action('ar001a', 'Action')"],
         "declencher_tolerant": ["Puzzle.Action('ar001a', 'Action')"],
         "preferer_option": ["Draw 2 cards"],
-        "cibles": ["01110"],
         "verifier": "etat_attendu",
-        "attendu": {"en_jeu": ["01110"], "dans_deck_rencontre": ["01101"], "taille_main": 3},
+        "attendu": {"en_jeu": ["01110"], "taille_main": 3},
     },
     # ⚠ Pas de contre-cas « deck rencontre sans sbire » : `Puzzle.CreateEncounterDeck`
     # AJOUTE au deck du vilain (puzzle.py:83), il ne le remplace pas, et le deck
@@ -24306,6 +24313,1153 @@ CAS = [
         "attendu": {"hors_jeu": ["bl017"]},
     },
     # FIN DU BLOC BLADE
+    # ------------------------------------------------------------------------
+    # Pack « spider_man_2099 » : Miguel O'Hara / Spider-Man 2099, set 166,
+    # sm001a-sm017 (Rainy).
+    #
+    # UN SEUL FIL, ET TOUT Y PEND : la capacite d'identite « Acceleration »
+    # (fiche mots-cles/acceleration-2099.md, HOMONYME de l'icone officielle).
+    # Elle DEFAUSSE depuis le dessus du deck jusqu'a un evenement, le joue, et
+    # remet le reste sous le deck. Six cartes relisent « joue via Acceleration »
+    # ou « apres avoir resolu Acceleration ».
+    #
+    # ⚠ Les cas rendent le dessus du deck DETERMINISTE par `Puzzle.PutIntoDeck`,
+    # sans quoi l'evenement trouve depend du melange et rien n'est mesurable.
+    # ⚠ La partie demarre en ALTER-EGO : tout cas en forme heros commence par
+    # `Puzzle.ChangeToFace('sm001b', 'sm001a')` (convention ares/blade).
+    # Temoins : Rhino 01094 (14 PV, ATQ 2), complot principal 01097b, Hydra
+    # Soldier 01182 (4 PV, Guard), Hydra Bomber 01110 (2 PV), Strength 01090
+    # (RR physique), Energy 01088 (YY energie).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "sm001a Acceleration — une attaque de base defausse jusqu'a un evenement et le joue",
+        "pourquoi": ("« After your hero uses a basic power, seek an event from your deck. You "
+                     "may play that event » : `AfterUnitUseBasicPower` -> "
+                     "`ResolveSpecialAbility` -> `DiscardDeckUntil(card_type=Event)` + "
+                     "`PlayCardsLikeInTurn`. Wall Crawling (sm006) est pose sur le dessus du "
+                     "deck : joue VIA Acceleration il retire 3 menaces, pas 2"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoDeck('sm006')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "sm001a Acceleration — TEMOIN D'EPUISEMENT : deux attaques dans la meme phase, une seule resolution",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis. Deux Wall Crawling sur le dessus du deck : sans "
+                     "limite, 3 + 3 = 6 menaces partiraient et le complot tomberait a 0. La "
+                     "limite « once per phase » mord, donc 3 seulement : il RESTE 2 menaces, "
+                     "et c'est le CHIFFRE mesure"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoDeck('sm006')",
+                          "Puzzle.PutIntoDeck('sm006')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')", "Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "sm001b Miguel O'Hara — Accelerated Healing : defausser 1 carte redresse l'alter-ego",
+        "pourquoi": ("« After you make a basic recovery, discard 1 card from your hand -> ready "
+                     "Miguel O'Hara » : `AfterUnitMakeRecovery(AlterEgoResponse, "
+                     "is_basic_recovery=True)` + `CostFunc.Discard(\"YourHandCards\")`"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.Damage('sm001b', 5)"],
+        "main_exclusive": ["01090", "01088"],
+        "declencher": ["Puzzle.Action('sm001b', 'BasicPower')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sm001b"]},
+    },
+    {
+        "nom": "sm002 Ghost Rider — defausse PAR Acceleration : 1 degat a un ennemi",
+        "pourquoi": ("« After Ghost Rider is discarded by your Acceleration ability, deal 1 "
+                     "damage to an enemy » : `AfterCardDiscardInternal(Response, \"This\", "
+                     "from_where=\"PlayerDeckTop\")` (modele 40057 White Fox), la carte agissant "
+                     "DEPUIS LA DEFAUSSE. Ghost Rider est pose sur le dessus, Wall Crawling "
+                     "juste dessous : la capacite traverse l'allie avant de trouver l'evenement"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoDeck('sm006')",
+                          "Puzzle.PutIntoDeck('sm002')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "sm002 Ghost Rider — CONTRE-CAS : defausse par la NEMESIS, aucun degat",
+        "pourquoi": ("La Reponse dit « by your ACCELERATION ability ». Power Surge (sm016) "
+                     "defausse elle aussi depuis le dessus du deck : sans le filtre sur le "
+                     "marqueur du pack, Ghost Rider partirait dessus. Ce cas mesure 0 degat "
+                     "sur Rhino. ⚠ Contre-cas d'ABSENCE : il reste vert sous substitution, "
+                     "c'est assume (PROCESSUS-CARTE 7.3)"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01107')",
+                          "Puzzle.PutIntoDeck('sm002')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "sm003 Accelerated Decoy — joue a la main : UNE seule des deux options",
+        "pourquoi": ("« Choose to either confuse an enemy or give your hero a tough status "
+                     "card » : deux branches, le pilote prend la premiere (desorienter). "
+                     "Sans Acceleration, le heros ne recoit PAS de carte Robuste"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')"],
+        "main_exclusive": ["sm003", "01090", "01090"],
+        "declencher": [],
+        "jouer": ["sm003"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "statuts_absents": [["sm001a", "Tough"]]},
+    },
+    {
+        "nom": "sm003 Accelerated Decoy — joue VIA Acceleration : les DEUX effets",
+        "pourquoi": ("« If you played this card using your Acceleration ability, do both "
+                     "instead » : le marqueur du pack est lu par `JoueViaAcceleration`. "
+                     "L'ennemi est desoriente ET le heros porte une carte Robuste"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoDeck('sm003')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"], ["sm001a", "Tough"]]},
+    },
+    {
+        "nom": "sm006 Wall Crawling — joue a la main : 2 menaces, et la carte repart sous le deck",
+        "pourquoi": ("« Remove 2 threat from a scheme (3 instead if ... Acceleration) » : la "
+                     "branche SANS Acceleration vaut 2, c'est le contre-cas du premier cas du "
+                     "pack. « You may place this event on the bottom of your deck » : le pilote "
+                     "prend la premiere branche, la carte quitte la defausse pour le deck"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["sm006", "01090"],
+        "declencher": [],
+        "jouer": ["sm006"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "dans_deck_joueur": ["sm006"]},
+    },
+    {
+        "nom": "sm004 Rapid Strikes — X = 2 icones payees, DEUX attaques de 2 degats",
+        "pourquoi": ("Cout X : la cle `surpayer` est OBLIGATOIRE, sinon le pilote paie ZERO et "
+                     "la carte s'active sans rien faire, journal muet (RECETTES §7bis).\n"
+                     "⚠⚠ `effect.GetCostX()` compte les **ICONES**, pas les cartes : "
+                     "`paid_this_resources.val - paid_this_cost.true_val` (effect.py:509). "
+                     "Une seule Strength (01090, « RR ») donne donc X = 2, et le journal le "
+                     "dit : « would play Rapid Strikes with (RR) » puis DEUX attaques. "
+                     "RECETTES §7bis affirmait le contraire, corrige le 08/09/2026"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')"],
+        "main_exclusive": ["sm004", "01090"],
+        "declencher": [],
+        "jouer": ["sm004"],
+        "surpayer": True,
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "sm005 Shock and Awe — ennemi non etourdi : etourdi + 2 degats",
+        "pourquoi": ("« Stun an enemy and deal 2 damage to it (4 damage instead if that enemy "
+                     "was NOT stunned this way) » : ici l'etourdissement REUSSIT, donc 2"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')"],
+        "main_exclusive": ["sm005", "01090", "01090"],
+        "declencher": [],
+        "jouer": ["sm005"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "sm005 Shock and Awe — ennemi DEJA etourdi : 4 degats a la place",
+        "pourquoi": ("« NOT stunned THIS WAY » : Rhino est deja Sonne, l'etourdissement de la "
+                     "carte ne prend pas, donc 4 degats. On lit le RETOUR de `GiveStatus`, pas "
+                     "l'etat de l'ennemi (modele 19001a / tg010)"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.Stun('01094')"],
+        "main_exclusive": ["sm005", "01090", "01090"],
+        "declencher": [],
+        "jouer": ["sm005"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "sm007 Lyla — echange un evenement de la main avec le dessus du deck",
+        "pourquoi": ("« choose an event in your hand and SWAP it with the top card of your "
+                     "deck » : DEUX deplacements. Wall Crawling part en main -> dessus du deck, "
+                     "et Strength (01090), pose sur le dessus, arrive en main"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm007')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["sm006"],
+        "declencher": ["Puzzle.Action('sm007', 'Action')"],
+        "cibles": ["sm006"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["sm006"], "en_main": ["01090"], "exhausted": ["sm007"]},
+    },
+    {
+        "nom": "sm009 Fangs and Talons — +1 ATQ au heros, et RIEN en forme civile",
+        "pourquoi": ("« YOUR HERO gets +1 ATK ». Contre-cas dans l'AUTRE forme exige par "
+                     "RECETTES §3 (lecon an002 Sera, trouvee en partie reelle) : l'ATQ n'existe "
+                     "pas sur l'alter-ego, le bonus ne doit donc pas fuir"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm009')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1}, "en_jeu": ["sm009"]},
+    },
+    {
+        "nom": "sm012 Web Cape — le heros gagne AERIAL, et se redresse apres Acceleration",
+        "pourquoi": ("Deux capacites d'un coup : `GiveKeywordToAttached(\"You\", "
+                     "trait=\"AERIAL\")` et « after you resolve your hero's Acceleration "
+                     "ability, exhaust Web Cape -> ready your hero ». L'attaque de base incline "
+                     "le heros ; Web Cape le redresse"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm012')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoDeck('sm006')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "pret": ["sm001a"], "exhausted": ["sm012"]},
+    },
+    {
+        "nom": "sm011 Spinnerets — le PLAFOND de 2 pions de toile mord",
+        "pourquoi": ("« place 1 web counter here (TO A MAXIMUM OF 2) » : la carte porte DEJA "
+                     "ses 2 pions, une Acceleration de plus ne doit RIEN ajouter. Le chiffre "
+                     "mesure est le plafond lui-meme — 2, et non 3.\n"
+                     "⚠⚠ LE `Puzzle.Remove('sm011')` EN TETE EST LA CLE. Sans lui,\n"
+                     "`Puzzle.PlaceCounters('sm011', ...)` vise l'exemplaire du DECK et non "
+                     "celui en jeu (`FindOrCreateFace` prend la premiere carte par id — piege "
+                     "connu, RECETTES §7) : les 2 pions n'etaient jamais poses, le cas lisait "
+                     "1 et le plafond restait NON PROUVE. Retirer la copie du deck avant de "
+                     "poser la carte en jeu leve l'ambiguite"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.Remove('sm011')",
+                          "Puzzle.PutIntoPlay('sm011')",
+                          "Puzzle.PutIntoDeck('sm003')"],
+        "main_exclusive": ["01090"],
+        # ⚠⚠ `ne_pas_depenser` EST INDISPENSABLE, et c'est encore la lecon Moxie.
+        # Le journal du 08/09/2026 le montre en clair : les 2 pions SONT poses,
+        # puis le pilote les DEPENSE tous les deux par la capacite Ressource de
+        # la carte (« perd 1 compteur web » x2, « gains resource G ») avant que
+        # l'Acceleration n'en repose 1. Le cas lisait 1 et accusait le plafond.
+        "ne_pas_depenser": ["sm011"],
+        "declencher": ["Puzzle.PlaceCounters('sm011', 'web', 2)",
+                       "Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sm011", "web", 2]]},
+    },
+    {
+        "nom": "sm013 Future in Crisis — l'Action retire l'obligation DE LA PARTIE",
+        "pourquoi": ("« Exhaust your identity -> remove Future in Crisis from the game » : "
+                     "`Faces.RemoveAllFromGame` (modele an010), pas une defausse. L'obligation "
+                     "doit d'abord ETRE EN JEU : c'est aussi ce que ce cas prouve, l'obligation "
+                     "n'ayant aucun « When Revealed »"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm013')", "Puzzle.Action('sm013', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sm013"], "exhausted": ["sm001a"]},
+    },
+    {
+        "nom": "sm014 Containment Breach — menace posee = icones [energy] defaussees",
+        "pourquoi": ("« Each player discards the top 4 cards of their deck and places threat "
+                     "here equal to the number of [energy] resources discarded this way ». "
+                     "Les 4 cartes defaussees sont, journal en main : 01088 Energy (DEUX "
+                     "icones), Web Cape (physique), deux Accelerated Decoy (une icone chacune) "
+                     "— soit 4 icones pour 4 cartes, ce qui prouve qu'on compte les ICONES et "
+                     "non les CARTES. Avec la menace de depart (1 par joueur) : 5.\n"
+                     "⚠ `Puzzle.PutIntoDeck` appele plusieurs fois avec le MEME card_id ne "
+                     "cree qu'UNE carte : on ne bourre pas un deck comme cela"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01107')",
+                          "Puzzle.PutIntoDeck('01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm014')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["sm014", 5]]},
+    },
+    {
+        "nom": "sm016 Power Surge — degats indirects = nombre d'icones [energy] defaussees",
+        "pourquoi": ("« Take indirect damage equal to the number of [energy] resources "
+                     "discarded this way. » Les 5 cartes defaussees sont, journal en main : "
+                     "01088 Energy (DEUX icones), Web Cape (physique), deux Accelerated Decoy "
+                     "(une icone [energy] chacune) et Wall Crawling (mental) — soit 4 icones "
+                     "et 4 degats. Ce cas prouve qu'on compte les ICONES et non les CARTES.\n"
+                     "⚠ La branche « 2 or less -> surge » a son propre cas : ici 4 degats, "
+                     "donc PAS de surge, ce que le cas verifie aussi"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01107')",
+                          "Puzzle.PutIntoDeck('01090')",
+                          "Puzzle.PutIntoDeck('01090')",
+                          "Puzzle.PutIntoDeck('01090')",
+                          "Puzzle.PutIntoDeck('01090')",
+                          "Puzzle.PutIntoDeck('01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "sm017 Charged — UN degat par LOT defausse, pas un par carte",
+        "pourquoi": ("« After you discard ANY NUMBER of cards from the top of your deck, take "
+                     "1 indirect damage » : le grain est le LOT (`AfterCardsMoved`, un message "
+                     "par lot) et non la carte (`AfterCardDiscard`, un par carte). Power Surge "
+                     "defausse 5 cartes d'un coup : 1 degat de Charged, pas 5.\n"
+                     "⚠ `degats_identite` compte TOUT, y compris les degats de Power Surge "
+                     "elle-meme : le deck est donc BOURRE de Strength (physique) pour que "
+                     "Power Surge n'infligue RIEN et que le seul degat restant soit celui de "
+                     "Charged. Sans ce bourrage la mesure depend du melange, et la "
+                     "substitution ne mord pas (« rouges 0/1 », mesure du 08/09/2026)"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01107')",
+                          "Puzzle.PutIntoPlay('sm017')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090', '01090')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "sm008 Accelerated Vision — la continuation joue le SECOND evenement",
+        "pourquoi": ("« you may continue discarding until you discard a DIFFERENT event and "
+                     "may play that instead ». Dessus du deck : Accelerated Decoy puis Wall "
+                     "Crawling. Sans cette carte, Acceleration joue le premier (desoriente) ; "
+                     "avec elle, le joueur continue et joue le SECOND, qui retire 3 menaces. "
+                     "La menace est donc le chiffre qui distingue les deux montages"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm008')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoDeck('sm006')",
+                          "Puzzle.PutIntoDeck('sm003')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "sm010 Hyper-Agility — +1 DEF au heros",
+        "pourquoi": ("« Your hero gets +1 DEF » : `GiveKeywordToAttached(\"You\", "
+                     "defense=1)`. Contre-cas dans l'AUTRE forme exige par RECETTES §3 "
+                     "(lecon an002 Sera) : la DEF n'existe pas sur l'alter-ego"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm010')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 1}, "en_jeu": ["sm010"]},
+    },
+    {
+        "nom": "sm015 Electro — apres son attaque, degats indirects = icones [energy] defaussees",
+        "pourquoi": ("« After Electro attacks you, discard the top 4 cards of your deck. Take "
+                     "1 indirect damage for each [energy] resource discarded this way » : "
+                     "`AfterUnitAttackYou(ForcedResponse, \"This\")` + `GetAgainstPlayer` "
+                     "(modele al022). Le joueur ATTAQUE se lit sur le message, une carte de "
+                     "rencontre n'ayant pas de controleur (lecon bl011)"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm015')",
+                          "Puzzle.PutIntoDeck('01088')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm015')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 1},
+    },
+    {
+        "nom": "sm001b Accelerated Healing — TEMOIN D'EPUISEMENT : deux recuperations, une seule defausse",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis, exige par toute limite imprimee. Deux "
+                     "recuperations de base dans le MEME round : la Reponse ne peut payer "
+                     "qu'une fois. Le chiffre mesure est la TAILLE DE MAIN — 2 cartes "
+                     "restantes sur 3, et non 1 : la seconde defausse est refusee"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.Damage('sm001b', 8)"],
+        "main_exclusive": ["01090", "01088", "01089"],
+        "declencher": ["Puzzle.Action('sm001b', 'BasicPower')",
+                       "Puzzle.Action('sm001b', 'BasicPower')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "sm005 Shock and Awe — joue VIA Acceleration : chaque sbire en jeu est etourdi",
+        "pourquoi": ("« If you played this card using your Acceleration ability, stun EACH "
+                     "MINION IN PLAY » : la seconde capacite de la carte, distincte de la "
+                     "premiere. DEUX sbires sont reveles, Whirlwind (01130, 6 PV) et "
+                     "Radioactive Man (01129, 7 PV) : quelle que soit la cible que le pilote "
+                     "donne a Shock and Awe, l'AUTRE n'est etourdi QUE par la branche "
+                     "Acceleration. C'est lui qui fait la preuve.\n"
+                     "⚠ Deux ecritures precedentes ont echoue le 08/09/2026, et pour la meme "
+                     "raison : avec Hydra Soldier (4 PV, deja entame) la carte le CIBLAIT puis "
+                     "le TUAIT de ses 2 degats, et un sbire mort ne porte plus de statut "
+                     "(RECETTES §7). Forcer `cibles` sur Rhino n'y changeait rien, le pilote "
+                     "gardant la main sur cette decision-la. Des sbires qui SURVIVENT "
+                     "resolvent le probleme sans rien forcer"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.CreateEncounterDeck('01130', '01129')",
+                          "Puzzle.Reveal('01130')",
+                          "Puzzle.Reveal('01129')",
+                          "Puzzle.PutIntoDeck('sm005')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01130", "Stunned"], ["01129", "Stunned"]]},
+    },
+    {
+        "nom": "sm007 Lyla — EN ALTER-EGO, l'evenement peut venir de la DEFAUSSE",
+        "pourquoi": ("« in your hand OR DISCARD PILE INSTEAD if you are in alter-ego form » : "
+                     "la seconde portee de la carte. Le selecteur est construit dans "
+                     "l'operation, au moment ou la forme est connue — un `SetTarget` fige a la "
+                     "construction ne saurait pas le faire. Wall Crawling est place dans la "
+                     "defausse ; il doit remonter sur le dessus du deck"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sm007')",
+                          "Puzzle.CreatePlayerDiscardPile('sm006')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('sm007', 'Action')"],
+        "cibles": ["sm006"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_joueur": ["sm006"], "exhausted": ["sm007"]},
+    },
+    {
+        "nom": "sm009 Fangs and Talons — +1 degat et PERCANT sur un evenement ATTACK joue via Acceleration",
+        "pourquoi": ("La seconde capacite de la carte : « increase the amount of damage that "
+                     "event deals by 1 and its attacks gain piercing ». Rapid Strikes est "
+                     "place sur le dessus du deck ; joue via Acceleration il frappe une fois "
+                     "(X = 0 paye, +1 pour l'Acceleration) pour 2 + 1 = 3 degats, et Fangs and "
+                     "Talons finit INCLINE puisque son inclinaison est le cout"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm009')",
+                          "Puzzle.PutIntoDeck('sm004')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('sm001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["sm009"], "degats_min": [["01094", 5]]},
+    },
+    {
+        "nom": "sm009 Fangs and Talons — CONTRE-CAS : aucun bonus d'ATQ en forme ALTER-EGO",
+        "pourquoi": ("RECETTES §3 : « tout bonus continu d'identite exige un contre-cas dans "
+                     "l'AUTRE forme » (lecon an002 Sera, trouvee en partie reelle et jamais "
+                     "par les tests). L'ATQ n'existe pas sur l'alter-ego : le bonus ne doit "
+                     "pas y fuir"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sm009')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "en_jeu": ["sm009"]},
+    },
+    {
+        "nom": "sm011 Spinnerets — un pion de toile paie un evenement",
+        "pourquoi": ("La seconde capacite : « Hero Resource: Remove X web counters from here -> "
+                     "generate X [wild] resources FOR AN EVENT » (`for_card`). Wall Crawling "
+                     "coute 1 : le pion suffit a le payer, main vide de toute ressource"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm011')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["sm006"],
+        "declencher": ["Puzzle.PlaceCounters('sm011', 'web', 1)"],
+        "jouer": ["sm006"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "sm012 Web Cape — CONTRE-CAS : pas de trait AERIAL en forme ALTER-EGO",
+        "pourquoi": ("RECETTES §3, contre-cas dans l'AUTRE forme. ⚠ AERIAL n'est pas "
+                     "decoratif : le moteur a deja paye un defaut « AERIAL jamais essaye » "
+                     "(7 parties bloquees, journal du 20/08). `traits_absents` est la cle qui "
+                     "prouve qu'un trait accorde ne fuit pas"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sm012')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "traits_absents": ["AERIAL"], "en_jeu": ["sm012"]},
+    },
+    {
+        "nom": "sm014 Containment Breach — A DEUX JOUEURS : CHAQUE joueur defausse",
+        "pourquoi": ("« EACH PLAYER discards the top 4 cards of their deck » : en solo, "
+                     "« chaque joueur » et « le joueur actif » se confondent, et l'ecart ne se "
+                     "voit pas. Monte a DEUX (`heros2`), la menace posee doit tenir compte des "
+                     "DEUX decks — elle est donc STRICTEMENT superieure a celle du cas solo"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "heros2": "blade",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('sm014')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ Le seuil DOIT depasser la menace de depart : « 1 [per_hero] » vaut
+        # DEJA 2 a deux joueurs. Un `menace_min` de 2 etait donc atteint sans le
+        # module, et la substitution le montrait (« rouges 1/2 »). 3 exige au
+        # moins une icone [energy] trouvee dans l'un des deux decks.
+        "attendu": {"menace_min": [["sm014", 3]]},
+    },
+    {
+        "nom": "sm016 Power Surge — la capacite BOOST grossit avec les [energy] en main",
+        "pourquoi": ("« [star] Boost: this card gets +1 boost icon for each [energy] resource "
+                     "in your hand » : la seconde capacite de la carte, jamais exercee par le "
+                     "cas « When Revealed ». ⚠ « YOUR hand » designe LE JOUEUR QUI DEFEND "
+                     "(sender_card.py:688) : la main est bourree d'Energy (01088, deux icones "
+                     "chacune) et Rhino frappe donc PLUS FORT que ses 2 d'attaque de base"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')"],
+        "main_exclusive": ["01088", "01088", "01088"],
+        "declencher": ["Puzzle.Boost('sm016')", "Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 1},
+    },
+    {
+        "nom": "sm017 Charged — Hero Action : 2 degats indirects, et la carte s'en va",
+        "pourquoi": ("La seconde capacite : « Choose to either take 2 indirect damage or "
+                     "discard a card you control with a printed [energy] resource -> discard "
+                     "this card ». Le pilote prend la PREMIERE branche (RECETTES §2) : "
+                     "2 degats, et Charged quitte le jeu dans les deux cas"),
+        "scenario": "rhino",
+        "heros": "spider_man_2099",
+        "mise_en_place": ["Puzzle.ChangeToFace('sm001b', 'sm001a')",
+                          "Puzzle.PutIntoPlay('sm017')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('sm017', 'HeroAction')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ `defausse` vise la defausse du JOUEUR : Charged est une carte de
+        # RENCONTRE, elle part dans la defausse rencontre. `hors_jeu` est la
+        # cle qui dit « n'est plus en jeu » (meme usage que `bl017`).
+        "attendu": {"degats_identite": 2, "hors_jeu": ["sm017"]},
+    },
+    # ------------------------------------------------------------------------
+    # Pack « superior_spider_man » : Otto Octavius, set 167, su001a-su019
+    # (Rainy).
+    #
+    # DEUX FILS : le mot-cle maison `track` (DEPLACER 1 menace d'une manigance
+    # vers un SBIRE — fiche mots-cles/track.md, compteur `threat` ajoute a
+    # l'enum) et Contingency Plan, l'amelioration Permanent+Setup sur laquelle
+    # on pose une carte face cachee.
+    # ⚠ Le heros a DEUX alter-egos et donc DEUX decks de depart :
+    # `superior_spider_man` (su001b Peter Parker) et
+    # `superior_spider_man_tolliver` (su001c Elliot Tolliver).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "su001a Spider-Sense — le vilain attaque : le heros pioche 1 carte",
+        "pourquoi": ("« When the villain or a villainous minion initiates an attack against "
+                     "you, draw 1 card » : `WhenUnitInitiatesAttackAgainst(Interrupt, ..., "
+                     "\"You\")`, modele `01001a`"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "su001a Spider-Sense — un SBIRE VILLAINOUS attaque aussi : le heros pioche",
+        "pourquoi": ("⚠ LA carte officielle `01001a` dit seulement « the villain » et son "
+                     "module ne vise que `Villain`. Rainy a ELARGI a « or a villainous "
+                     "minion » : recopier le module officiel rendrait la capacite deux fois "
+                     "moins bonne, sans que rien ne le signale. Hobgoblin (su016) est "
+                     "Villainous, il sert de temoin"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('su016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
+    {
+        "nom": "su001b Master Planner — une carte part face cachee sous Contingency Plan, et on pioche",
+        "pourquoi": ("« Attach 1 card from your hand facedown to Contingency Plan (to a "
+                     "maximum of 1) -> draw 1 card » : `PlaceCardHere(..., False, effect)`. "
+                     "⚠ `pose_sous` lit la zone avec `Get(True)`, seul moyen de voir une "
+                     "carte FACE CACHEE"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('su001b', 'Action')"],
+        "cibles": ["01088"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["su012", "01088"]], "taille_pose_sous": [["su012", 1]]},
+    },
+    {
+        "nom": "su001b Master Planner — TEMOIN D'EPUISEMENT : une seule attache par round",
+        "pourquoi": ("PROCESSUS-CARTE 7 bis. Deux Actions dans le meme round : la seconde "
+                     "doit etre REFUSEE. Le chiffre mesure est la TAILLE DE LA ZONE posee "
+                     "sous Contingency Plan — 1, et non 2. ⚠ Le plafond « to a maximum of 1 » "
+                     "l'interdirait de toute facon : le temoin vaut surtout pour la limite"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090', '01090')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('su001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('su001b', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["su012", 1]]},
+    },
+    {
+        "nom": "su001c Elliot Tolliver — le SECOND alter-ego fait la meme chose",
+        "pourquoi": ("Le pack a DEUX alter-egos et DEUX decks de depart (arbitrage du "
+                     "08/09/2026). Ce cas monte l'AUTRE deck : sans lui, la moitie du pack "
+                     "n'est jamais exercee et su001c pourrait etre casse sans qu'on le voie"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man_tolliver",
+        # ⚠ `ChangeToFace` EXPLICITE vers l'alter-ego : la forme de depart n'est
+        # pas garantie, et si su001c n'est pas EN JEU, `Puzzle.Action` le cherche
+        # par `FindOrCreateFace` et en CREE une copie sans controleur —
+        # `AssertionError` a la mise en place, sans un mot d'explication.
+        "mise_en_place": ["Puzzle.ChangeToFace('su001a', 'su001c')",
+                          "Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.CreatePlayerDeck('01090', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('su001c', 'Action')"],
+        "cibles": ["01088"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["su012", "01088"]]},
+    },
+    {
+        "nom": "su012 Contingency Plan — son Action DEFAUSSE la carte posee dessous",
+        "pourquoi": ("« Action: Discard the attached card » : c'est la carte POSEE qu'on "
+                     "defausse, pas Contingency Plan (Permanent).\n"
+                     "⚠⚠ L'AUTRE capacite — « may be played as though it were in your hand », "
+                     "`YouMayPlayCardLikeInHand(from_where=\"ThisPlacedCard\")` (modeles "
+                     "aa002, dz014) — N'EST PAS TESTABLE PAR LE HARNAIS : la cle `jouer` ne "
+                     "regarde QUE la main, et aucune commande Puzzle ne joue une carte depuis "
+                     "la zone posee. Un cas ecrit dessus mesurait la POSE, qui est le travail "
+                     "de su001b et non de su012, et restait vert sous substitution (« rouges "
+                     "0/1 », 08/09/2026). A verifier en partie reelle"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        # ⚠ PAS de `ChangeToFace` ici : Master Planner est une action
+        # d'ALTER-EGO. En forme heros, su001b n'est plus en jeu,
+        # `Puzzle.Action` le cherche par `FindOrCreateFace` et en CREE une
+        # copie sans controleur — `AssertionError` a la mise en place, sans un
+        # mot d'explication. Piege paye le 08/09/2026.
+        "mise_en_place": ["Puzzle.PutIntoPlay('su012')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["su005", "01090", "01090"],
+        "declencher": ["Puzzle.Action('su001b', 'Action')"],
+        "cibles": ["su005"],
+        "declencher_apres": ["Puzzle.Action('su012', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["su012", 0]], "defausse": ["su005"]},
+    },
+    {
+        "nom": "su010 Spider-Bot — TRACK : la menace QUITTE la manigance et arrive sur le sbire",
+        "pourquoi": ("⚠⚠ LE CŒUR DU PACK. `track` est un DEPLACEMENT, pas un retrait : le cas "
+                     "mesure LES DEUX BOUTS — la manigance perd 1 menace ET le sbire en gagne "
+                     "1. Un montage qui se contenterait de retirer passerait un test qui ne "
+                     "regarderait que la manigance, et ferait du pack un contre gratuit"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su010')",
+                          "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('su010', 'HeroAction')"],
+        "cibles": ["01182", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "compteurs": [["01182", "threat", 1]],
+                    "exhausted": ["su010"]},
+    },
+    {
+        "nom": "su010 Spider-Bot — la SECONDE branche retire la menace SANS rien poser sur un sbire",
+        "pourquoi": ("« track a minion OR remove 1 threat from a scheme » : la seconde branche "
+                     "n'est PAS un track. Les confondre ferait disparaitre la moitie de la "
+                     "carte. Sans sbire en jeu, seule cette branche est offerte"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su010')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('su010', 'HeroAction')"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "exhausted": ["su010"]},
+    },
+    {
+        "nom": "su007 Facial Recognition Uplink — +1 CTR tant qu'un sbire est piste",
+        "pourquoi": ("« While a tracked minion is in play, your hero gets +1 THW » : bonus "
+                     "CONTINU et BINAIRE. Le sbire recoit ses pions a la main pour isoler le "
+                     "bonus du declencheur"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su007')",
+                          "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.PlaceCounters('01182', 'threat', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}, "en_jeu": ["su007"]},
+    },
+    {
+        "nom": "su007 Facial Recognition Uplink — CONTRE-CAS : aucun sbire piste, aucun bonus",
+        "pourquoi": ("Le pendant du cas precedent : sans sbire porteur de menace, le bonus "
+                     "n'existe pas. Sans ce contre-cas, un bonus PERMANENT passerait pour un "
+                     "bonus conditionnel"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su007')",
+                          "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 0}, "en_jeu": ["su007"]},
+    },
+    {
+        "nom": "su009 Mechanical Arms — une attaque de base PISTE le sbire vise",
+        "pourquoi": ("« When you make a basic attack against a minion, track that minion » : "
+                     "`WhenUnitWouldAttack(HeroInterrupt, \"You\", is_basic_attack=True)`. "
+                     "Le sbire est CELUI qu'on attaque, pas un sbire au choix"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su009')",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('su001a')"],
+        "cibles": ["01129", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["01129", "threat", 1]], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "su011 Web-Shooters — le heros gagne AERIAL",
+        "pourquoi": ("« Your hero gains the AERIAL trait » : `GiveKeywordToAttached(Hero, "
+                     "trait=...)`. ⚠ `Hero` et NON `\"You\"` — le defaut mesure sur `sm012` "
+                     "Web Cape le 08/09/2026 faisait fuir le trait sur l'alter-ego"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su011')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "en_jeu": ["su011"]},
+    },
+    {
+        "nom": "su011 Web-Shooters — CONTRE-CAS : pas d'AERIAL en forme ALTER-EGO",
+        "pourquoi": ("RECETTES §3, contre-cas dans l'AUTRE forme (lecon an002 Sera). Le meme "
+                     "montage a ete pris en defaut sur `sm012` le meme jour : ce contre-cas "
+                     "est la seule chose qui l'avait vu"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('su011')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "traits_absents": ["AERIAL"], "en_jeu": ["su011"]},
+    },
+    {
+        "nom": "su004 Brutal Efficiency — le cout est de la MENACE POUR LE VILAIN",
+        "pourquoi": ("« Place X threat on the main scheme (to a maximum of 3) -> deal 3X "
+                     "damage » : la carte AIDE LE VILAIN pour frapper plus fort, c'est tout "
+                     "le caractere d'Otto. Le cas mesure LES DEUX : la menace posee ET les "
+                     "degats. ⚠ `surpayer` obligatoire (cout X), et X compte les ICONES"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.SetThreat('01097b', 1)"],
+        "main_exclusive": ["su004", "01090"],
+        "declencher": [],
+        "jouer": ["su004"],
+        "surpayer": True,
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "degats": [["01094", 6]]},
+    },
+    {
+        "nom": "su005 Webbed Up — 3 menaces retirees et un sbire etourdi",
+        "pourquoi": ("« Remove 3 threat from a scheme. Stun a minion » : la branche par "
+                     "defaut, sans paiement en [wild]"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["su005", "01090", "01090"],
+        "declencher": [],
+        "jouer": ["su005"],
+        "cibles": ["01097b", "01129"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "statuts": [["01129", "Stunned"]]},
+    },
+    {
+        "nom": "su006 Anna Maria Marconi — soigne 3 degats de l'identite",
+        "pourquoi": ("« Alter-Ego Action: Exhaust -> heal 3 damage from your identity ou "
+                     "reduire un cout ». Le pilote prend la PREMIERE branche (RECETTES §2)"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('su006')",
+                          "Puzzle.Damage('su001b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('su006', 'AlterEgoAction')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["su006"]},
+    },
+    {
+        "nom": "su016 Hobgoblin — apres son attaque, 2 degats indirects",
+        "pourquoi": ("« Forced Response: After Hobgoblin attacks you, take 2 indirect damage » "
+                     ": `AfterUnitAttackYou(ForcedResponse, \"This\")` + "
+                     "`GetAgainstPlayer()` (modele al022). Une carte de rencontre n'a pas de "
+                     "controleur : le joueur se lit sur le message (lecon bl011)"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        # ⚠⚠ LES DEUX `Puzzle.Remove('su003')` SONT INDISPENSABLES, et c'est la
+        # lecon Moxie (RECETTES §7bis) sous une autre forme. `main_exclusive`
+        # fixe bien la main, mais le Spider-Sense de `su001a` PIOCHE une carte
+        # au moment meme ou Hobgoblin attaque — et cette carte etait `su003`
+        # Agility, qui prevenait les 2 degats. Le cas lisait 0 et accusait
+        # Hobgoblin. (Journal du 08/09/2026 : « would play Agility ... The value
+        # of this damage has been updated -3 ».) Poser des Strength sur le
+        # dessus du deck N'A PAS SUFFI : on retire les deux Agility du deck.
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.Remove('su003')",
+                          "Puzzle.Remove('su003')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('su016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 2},
+    },
+    {
+        "nom": "su017 Lunatic Laugh — 2 degats indirects, et CHAQUE personnage blesse est desoriente",
+        "pourquoi": ("« Confuse each character DAMAGED THIS WAY » : les degats sont INDIRECTS, "
+                     "donc repartis par le joueur — on ne peut pas deviner qui encaisse, il "
+                     "faut le LIRE. En solo sans allie, c'est l'identite"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su017')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "statuts": [["su001a", "Confused"]]},
+    },
+    {
+        "nom": "su019 Pumpkin Bombs — s'attache a Hobgoblin quand il est la",
+        "pourquoi": ("« Attach to Hobgoblin. Otherwise attach to the villain » : deux cibles "
+                     "DANS L'ORDRE, pas un choix. Hobgoblin est retrouve par `card_ids`, "
+                     "jamais par nom (le pack s'interdit les recherches par nom)"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hotes": [["su019", "su016"]]},
+    },
+    {
+        "nom": "su019 Pumpkin Bombs — SANS Hobgoblin, elle va sur le VILAIN",
+        "pourquoi": ("La branche « Otherwise » : sans Hobgoblin en jeu, Rhino porte la bombe. "
+                     "Sans ce cas, une carte qui ne s'attacherait a RIEN passerait inapercue"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hotes": [["su019", "01094"]]},
+    },
+    {
+        "nom": "su018 Goblin Glider — s'attache a l'ennemi aux PV IMPRIMES les plus hauts",
+        "pourquoi": ("« the enemy with the HIGHEST PRINTED hit points » : les PV IMPRIMES, "
+                     "pas les PV restants. Rhino (14 PV imprimes) l'emporte sur Hobgoblin "
+                     "(6), meme blesse — d'ou les degats poses sur Rhino avant la revelation"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.Damage('01094', 10)",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su018')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hotes": [["su018", "01094"]]},
+    },
+    {
+        "nom": "su013 Ghost of a Conscience — l'obligation se retire de la PARTIE",
+        "pourquoi": ("« Exhaust Peter Parker -> remove Ghost of a Conscience from the game » : "
+                     "`Faces.RemoveAllFromGame` (modele an010), pas une defausse. Le pilote "
+                     "prend la premiere branche"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["su013"]},
+    },
+    {
+        "nom": "su014 Crisis of Conscience — l'obligation de l'AUTRE alter-ego",
+        "pourquoi": ("Jumelle de su013, sur l'autre deck de depart. Sans ce cas, la moitie "
+                     "des obligations du pack n'est jamais exercee"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man_tolliver",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su014')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["su014"]},
+    },
+    {
+        "nom": "su002 Spiderlings — son contre PISTE un sbire AU LIEU de retirer de la menace",
+        "pourquoi": ("« When Spiderlings thwart, track a minion INSTEAD of removing threat » : "
+                     "`message.SetBeInstead(effect)` (RECETTES §2). Le cas mesure LES DEUX "
+                     "bouts : la manigance perd 1 seule menace (le track), pas 1+1, et le "
+                     "sbire en gagne 1. Un montage « contre PUIS track » retirerait DEUX fois"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su002', under_control=True)",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Thwart('su002')"],
+        "cibles": ["01097b", "01129", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "compteurs": [["01129", "threat", 1]]},
+    },
+    {
+        "nom": "su008 Mastermind — son Action attache une carte a Contingency Plan",
+        "pourquoi": ("« Action: Attach a card from your hand to Contingency Plan facedown » : "
+                     "la capacite que le module porte vraiment, et dont l'effet se MESURE "
+                     "(`pose_sous`).\n"
+                     "⚠⚠ La premiere ecriture mesurait la MORT d'un sbire charge a 2 menaces "
+                     "pour prouver la seconde capacite (« look at the top 3 cards of the "
+                     "encounter deck, discard 1 of them »). Elle passait, mais restait VERTE "
+                     "sous substitution (« rouges 0/1 », 08/09/2026) : ce qu'elle mesurait — "
+                     "un sbire mort — n'est pas l'œuvre du module. La fouille du deck "
+                     "rencontre, elle, n'a AUCUNE cle de verification dans le harnais : elle "
+                     "reste a verifier en partie reelle"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su008')",
+                          "Puzzle.PutIntoPlay('su012')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('su008', 'Action')"],
+        "cibles": ["01088"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["su012", "01088"]]},
+    },
+    {
+        "nom": "su015 Goblin Protocol — la menace des sbires PISTES compte pour le vilain",
+        "pourquoi": ("⚠⚠ LA carte qui retourne le pack contre son heros : « Threat on tracked "
+                     "minions counts towards the main scheme's target threat ». Chaque track "
+                     "rapproche donc le vilain de la victoire. Le cas pose 2 menaces sur un "
+                     "sbire et mesure le SEUIL du complot principal"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su015')",
+                       "Puzzle.PlaceCounters('01182', 'threat', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01097b", "target_threat", 2]]},
+    },
+    {
+        "nom": "su019 Pumpkin Bombs — apres l'attaque de son porteur : elle PART et inflige 2",
+        "pourquoi": ("« After attached enemy attacks you, DISCARD Pumpkin Bombs AND take 2 "
+                     "indirect damage » : les deux, et dans cet ordre. Ce cas mesure l'EFFET "
+                     "(la carte n'est plus en jeu, l'identite a pris des degats), la ou le cas "
+                     "d'attache ne mesurait que le placement — lequel restait vert sous "
+                     "substitution (« rouges 0/2 », mesure du 08/09/2026)"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('su019')", "Puzzle.Attack('su016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ Le total EXACT, et non un minimum : 2 degats viennent de Hobgoblin
+        # lui-meme, 2 de Pumpkin Bombs. Un `degats_identite_min: 2` etait deja
+        # atteint SANS le module, et le cas restait vert sous substitution
+        # (« rouges 0/3 », 08/09/2026).
+        "attendu": {"hors_jeu": ["su019"], "degats_identite": 4},
+    },
+    {
+        "nom": "su018 Goblin Glider — son Action la defausse contre deux energies",
+        "pourquoi": ("« Hero Action: Spend [energy][energy] -> discard this card » : deux "
+                     "ENERGIES precises, pas deux ressources quelconques (`Cost(\"YY\")`). Ce "
+                     "cas mesure un EFFET du module, la ou le cas d'attache ne mesurait qu'un "
+                     "placement qui restait vert sous substitution (« rouges 0/1 », "
+                     "08/09/2026).\n"
+                     "⚠ La branche « If you cannot, this card gains surge » n'est PAS testee : "
+                     "elle demande un plateau SANS aucun ennemi, et retirer le vilain fait "
+                     "tomber la partie. A verifier en partie reelle"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.CreateEncounterDeck('01107')"],
+        "main_exclusive": ["01088", "01088"],
+        "declencher": ["Puzzle.Reveal('su018')",
+                       "Puzzle.Action('su018', 'HeroAction')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["su018"]},
+    },
+    {
+        "nom": "su003 Agility — previent les degats d'un ennemi qui frappe",
+        "pourquoi": ("« When you would take any amount of damage, prevent 3 of that damage » : "
+                     "`WhenUnitWouldTakeDamage(HeroInterrupt, \"You\", op).SetPlay()`.\n"
+                     "⚠⚠ PREMIERE ECRITURE FAUSSE ET INSTRUCTIVE : montee en "
+                     "`WhenInYourPlayTurn(HeroInterrupt).SetLabel('defense')`, la carte "
+                     "passait `test_cards`, TOUTES les gates statiques et le montage du deck, "
+                     "mais rendait **26 AssertionError en 8 parties d'autoplay** "
+                     "(`can_defense.py:138`). SEULE l'etape 8 l'a vue.\n"
+                     "Le cas mesure la prevention en conditions reelles : Hobgoblin frappe "
+                     "pour 2 en Reponse Forcee, Agility est en main, l'identite ne prend RIEN"),
+        "scenario": "rhino",
+        "heros": "superior_spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('su001b', 'su001a')",
+                          "Puzzle.PutIntoPlay('su016')",
+                          "Puzzle.PutIntoDeck('01090')",
+                          "Puzzle.PutIntoDeck('01090')"],
+        "main_exclusive": ["su003", "01090"],
+        "declencher": ["Puzzle.Attack('su016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["su003"]},
+    },
+    # FIN DU BLOC SUPERIOR SPIDER-MAN
+    # FIN DU BLOC SPIDER-MAN 2099
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -25440,6 +26594,11 @@ IMPRIME = {
     "hazard": "printed_hazard",
     "retaliate": "printed_retaliate",
     "villainous": "printed_villainous",
+    # AJOUT du 08/09/2026 (pack superior_spider_man) : `su015` Goblin Protocol
+    # fait compter la menace des sbires pistes dans le seuil du complot
+    # principal. Sans cette entree, `attributs_carte` levait `KeyError:
+    # 'target_threat'` et la seule capacite de la carte etait intestable.
+    "target_threat": "printed_target_threat",
 }
 
 def etat_attendu(monde, aides):

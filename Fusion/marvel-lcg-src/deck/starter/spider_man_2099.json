@@ -1,0 +1,29 @@
+{
+ "version": "0.5.8",
+ "name": "Spider-Man 2099",
+ "metadata": {
+  "url": "",
+  "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : pas de deck d'aspect invente pour un heros homebrew, le joueur choisit ou construit son deck au lancement. Le zip de Rainy ne fournit aucune decklist.",
+  "collision_note": "Le nom imprime de la face heros est « * Spider-Man », homonyme de 01001a (Peter Parker), sr001a (spider_man_rainy) et de la face heros du pack superior_spider_man. Distingue par set_name, comme spider_man_rainy (« Spider-Man (Rainy) »). Autres homonymes au depot : * Ghost Rider (sm002 allie ; 24001a/b et 47001a/b identites officielles, 21029 allie), * Electro (sm015 sbire ; aucun homonyme au depot), Power Surge (sm016 traitrise ; aucun homonyme). AUCUN module du pack ne cherche une carte par son NOM : le marqueur Acceleration passe par le joueur, jamais par un CardFinder(name=...).",
+  "nemesis_note": "Set nemesis de 5 cartes en 4 noms : Containment Breach (complot annexe, Amplify 1), Electro (sbire), Power Surge x2 (traitrise), Charged (attachement sur l'identite). Toute la nemesis tourne autour de la defausse du dessus du deck et des ressources [energy] qu'on y trouve.",
+  "auteur": "Rainy"
+ },
+ "hero": ["sm001a,sm001b"],
+ "hero_deck": [
+  "sm002",
+  "sm003", "sm003",
+  "sm004", "sm004",
+  "sm005", "sm005",
+  "sm006", "sm006",
+  "sm007",
+  "sm008",
+  "sm009",
+  "sm010",
+  "sm011",
+  "sm012"
+ ],
+ "set_aside": [],
+ "obligations": ["sm013"],
+ "nemesis_set": ["sm014", "sm015", "sm016", "sm016", "sm017"],
+ "player_deck": []
+}

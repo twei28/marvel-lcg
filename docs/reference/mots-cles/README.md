@@ -61,7 +61,17 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
-- [x] seek.md
+- [x] seek.md (⚠ **définition de l'auteur enfin trouvée le 08/09/2026**, dans
+      l'insert de `spider_man_2099` : « défausser depuis le dessus jusqu'à
+      défausser une carte du type voulu », et NON une recherche. Trois cartes
+      livrées corrigées ce jour-là : `br005`, `br009`, `ar001a`)
+- [x] track.md (pack `superior_spider_man` : « move 1 threat from a scheme to
+      a minion in play ». ⚠ Un DEPLACEMENT, pas un retrait — et le compteur
+      `threat` sur un SBIRE a du etre ajoute a l'enum `COUNTER`, cette
+      menace-la n'ayant aucune existence native)
+- [x] acceleration-2099.md (pack `spider_man_2099` : capacité d'identité
+      **homonyme** de l'icône officielle `acceleration.md`, aucun rapport ;
+      c'est aussi un MARQUEUR que six cartes du pack relisent)
 - [x] drain-x.md (pack `agent_anti_venom`)
 - [x] traitor.md (pack `agent_anti_venom`)
 - [x] companion.md (pack `lockjaw`)

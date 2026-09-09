@@ -1,0 +1,45 @@
+{
+ "version": "0.5.8",
+ "name": "Superior Spider-Man (Elliot Tolliver)",
+ "metadata": {
+  "url": "",
+  "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : pas de deck d'aspect invente pour un heros homebrew. Le zip de Rainy n'en fournit aucun.",
+  "collision_note": "Le nom imprime de la face heros est « * Spider-Man », homonyme de 01001a, sr001a et sm001a (spider_man_2099). « * Peter Parker » est homonyme de 01001b et sr001b. Distingue par set_name, comme spider_man_rainy. AUCUN module du pack ne cherche une carte par son NOM : Contingency Plan et Hobgoblin se retrouvent par card_id.",
+  "alter_ego_note": "⚠⚠ CE HEROS A DEUX ALTER-EGOS, ET C'EST L'INSERT QUI LE DIT : « choose one of these alter-egos to use this game and its corresponding obligation (the other set will not be needed and cannot be changed to during this game) ». Le moteur ne sait monter qu'un alter-ego par deck de depart : le pack a donc DEUX decks, celui-ci et son jumeau. Arbitrage utilisateur du 08/09/2026. Ils partagent la meme face heros (su001a), les 16 memes cartes signature et le meme set nemesis ; seuls l'alter-ego et l'obligation changent.",
+  "nemesis_note": "Set nemesis de 5 cartes : Goblin Protocol (complot annexe, 2 icones Acceleration verifiees par comparaison d'image contre ag011), Hobgoblin (sbire Villainous), Lunatic Laugh (traitrise), Goblin Glider et Pumpkin Bombs (attachements).",
+  "auteur": "Rainy"
+ },
+ "hero": [
+  "su001a,su001c"
+ ],
+ "hero_deck": [
+  "su002",
+  "su003",
+  "su003",
+  "su004",
+  "su004",
+  "su004",
+  "su005",
+  "su005",
+  "su006",
+  "su007",
+  "su008",
+  "su009",
+  "su010",
+  "su010",
+  "su011",
+  "su012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "su014"
+ ],
+ "nemesis_set": [
+  "su015",
+  "su016",
+  "su017",
+  "su018",
+  "su019"
+ ],
+ "player_deck": []
+}

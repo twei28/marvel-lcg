@@ -2293,4 +2293,82 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'bl016': "Le sbire auquel cette carte est attachée gagne le trait [[VAMPIRE]] et a +X points de vie, X étant ses points de vie imprimés. Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à ce sbire.\n<b>Une fois révélée</b> : cherchez un sbire non-[[VAMPIRE]] dans le deck rencontre, révélez-le et attachez-lui Étreint.",
   // blade — Turned (Attachment némésis)
   'bl017': "L'allié auquel cette carte est attachée gagne <b><i>Traître</i></b>, le trait [[VAMPIRE]] et le texte suivant : « Les attaques avec <b><i>Perçant</i></b> infligent le double de dégâts à cet ennemi. » et a +3 points de vie.\n<b>Une fois révélée</b> : attachez-la à l'allié ayant le moins de points de vie restants. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Soignez tous les dégâts de cet allié.",
+  // spider_man_2099 — * Spider-Man (Hero)
+  'sm001a': "[star] <i>Accélération</i> — <b>Réponse</b> : après que votre héros utilise un pouvoir de base, défaussez les cartes du dessus de votre deck jusqu'à en défausser un événement. Vous pouvez jouer cet événement. Placez chaque autre carte défaussée ainsi sous votre deck, dans l'ordre où vous les avez défaussées. <i>(Limite d'une fois par phase.)</i>",
+  // spider_man_2099 — * Miguel O'Hara (AlterEgo)
+  'sm001b': "[star] <i>Guérison accélérée</i> — <b>Réponse</b> : après avoir effectué une récupération de base, défaussez 1 carte de votre main → redressez Miguel O'Hara. <i>(Limite d'une fois par round.)</i>",
+  // spider_man_2099 — * Ghost Rider (Ally)
+  'sm002': "<b>Réponse</b> : après que Ghost Rider est défaussé par votre capacité <i>Accélération</i>, infligez 1 dégât à un ennemi.\n<b>Interruption</b> : quand Ghost Rider est vaincu, placez-le sous le deck de son propriétaire.",
+  // spider_man_2099 — Accelerated Decoy (Event, x2)
+  'sm003': "<b>Action de héros</b> : choisissez de désorienter un ennemi ou de donner une carte Robuste à votre héros. Si vous avez joué cette carte grâce à votre capacité <i>Accélération</i>, faites les deux à la place.",
+  // spider_man_2099 — Rapid Strikes (Event, x2)
+  'sm004': "<b>Action de héros</b> : effectuez l'attaque suivante X fois, jusqu'à un maximum de 3 (une fois de plus si vous avez joué cette carte grâce à votre capacité <i>Accélération</i>) :\n• Infligez 2 dégâts à un ennemi. Cette attaque ignore le mot-clé <b><i>Garde</i></b>.",
+  // spider_man_2099 — Shock and Awe (Event, x2)
+  'sm005': "<b>Action de héros</b> <i>(attaque)</i> : étourdissez un ennemi et infligez-lui 2 dégâts (4 dégâts à la place si cet ennemi n'a pas été étourdi ainsi). Si vous avez joué cette carte grâce à votre capacité <i>Accélération</i>, étourdissez chaque sbire en jeu.",
+  // spider_man_2099 — Wall Crawling (Event, x2)
+  'sm006': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance (3 menaces à la place si vous avez joué cette carte grâce à votre capacité <i>Accélération</i>). Vous pouvez placer cet événement sous votre deck.",
+  // spider_man_2099 — * Lyla (Support)
+  'sm007': "<b>Action</b> : inclinez Lyla → choisissez un événement dans votre main (dans votre main ou votre défausse à la place si vous êtes sous forme d'alter ego) et échangez-le avec la carte du dessus de votre deck.",
+  // spider_man_2099 — Accelerated Vision (Upgrade)
+  'sm008': "Vous pouvez résoudre votre capacité <i>Accélération</i> une fois de plus par phase (mais toujours une seule fois par déclenchement).\nQuand vous résolvez votre capacité <i>Accélération</i>, vous pouvez continuer à défausser jusqu'à défausser un événement différent, et jouer celui-ci à la place.",
+  // spider_man_2099 — Fangs and Talons (Upgrade)
+  'sm009': "Votre héros gagne +1 ATQ.\n<b>Interruption de héros</b> : quand vous jouez un événement [[ATTACK]] grâce à votre capacité <i>Accélération</i>, inclinez Fangs and Talons → augmentez de 1 les dégâts infligés par cet événement, et ses attaques gagnent <b><i>Perçant</i></b>.",
+  // spider_man_2099 — Hyper-Agility (Upgrade)
+  'sm010': "Votre héros gagne +1 DEF.\n<b>Réponse de héros</b> : après avoir résolu la capacité <i>Accélération</i> de votre héros sans jouer d'événement, réduisez de 1 les dégâts que vous subissez des attaques jusqu'à la fin du round. <i>(Limite d'une fois par phase.)</i>",
+  // spider_man_2099 — Spinnerets (Upgrade)
+  'sm011': "<b>Réponse de héros</b> : après avoir résolu la capacité <i>Accélération</i> de votre héros, placez 1 pion de toile ici (jusqu'à un maximum de 2).\n<b>Ressource de héros</b> : retirez X pions de toile d'ici → générez X ressources [wild] pour un événement.",
+  // spider_man_2099 — Web Cape (Upgrade)
+  'sm012': "Votre héros gagne le trait [[AERIAL]].\n<b>Réponse de héros</b> : après avoir résolu la capacité <i>Accélération</i> de votre héros, inclinez Web Cape → redressez votre héros.",
+  // spider_man_2099 — Future in Crisis (Obligation)
+  'sm013': "<b><i>Donnez-la au joueur de Miguel O'Hara.</i></b>\n<b>Action</b> : inclinez votre identité → retirez Future in Crisis de la partie.",
+  // spider_man_2099 — Containment Breach (SideScheme, némésis)
+  'sm014': "<i>Electro s'est échappé de son centre de confinement, et compte se venger de ses geôliers une fois rechargé !</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 4 cartes du dessus de son deck et place ici autant de menaces qu'il y avait de ressources [energy] défaussées ainsi.",
+  // spider_man_2099 — * Electro (Minion, némésis)
+  'sm015': "<b><i>Coup Rapide</i></b>. <b><i>Riposte</i></b> 1.\n[star] <b>Réponse forcée</b> : après qu'Electro vous attaque, défaussez les 4 cartes du dessus de votre deck. Subissez 1 dégât indirect pour chaque ressource [energy] défaussée ainsi.",
+  // spider_man_2099 — Power Surge (Treachery, némésis, x2)
+  'sm016': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus de votre deck. Subissez autant de dégâts indirects qu'il y avait de ressources [energy] défaussées ainsi. Si 2 dégâts ou moins ont été infligés ainsi, cette carte gagne <b><i>Déferlement</i></b>.\n[star] <b>Renfort</b> : cette carte gagne +1 icône de renfort ([boost]) pour chaque ressource [energy] dans votre main.",
+  // spider_man_2099 — Charged (Attachment, némésis)
+  'sm017': "<b><i>Attachez-la à votre identité.</i></b>\n<b>Réponse forcée</b> : après que vous défaussez un nombre quelconque de cartes du dessus de votre deck, subissez 1 dégât indirect.\n<b>Action de héros</b> : choisissez de subir 2 dégâts indirects ou de défausser une carte que vous contrôlez portant une ressource [energy] imprimée → défaussez cette carte.",
+  // superior_spider_man — * Spider-Man (Hero)
+  'su001a': "<i>Sens d'araignée</i> — <b>Interruption</b> : quand le vilain ou un sbire Machiavélique lance une attaque contre vous, piochez 1 carte.",
+  // superior_spider_man — * Peter Parker (AlterEgo)
+  'su001b': "<i>Maître planificateur</i> — <b>Action</b> : attachez 1 carte de votre main, face cachée, à Contingency Plan (jusqu'à un maximum de 1) → piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+  // superior_spider_man — * Elliot Tolliver (AlterEgo, second au choix)
+  'su001c': "<i>Maître planificateur</i> — <b>Action</b> : attachez 1 carte de votre main, face cachée, à Contingency Plan (jusqu'à un maximum de 1) → piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+  // superior_spider_man — Spiderlings (Ally)
+  'su002': "[star] <b>Interruption</b> : quand Spiderlings contre, pistez un sbire au lieu de retirer de la menace.\n[star] Spiderlings subit -1 dégât consécutif après avoir attaqué un sbire pisté.",
+  // superior_spider_man — Agility (Event, x2)
+  'su003': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous subiriez un nombre quelconque de dégâts, évitez 3 de ces dégâts (évitez-les tous à la place si vous avez le trait [[AERIAL]]).",
+  // superior_spider_man — Brutal Efficiency (Event, x3)
+  'su004': "<b>Action de héros</b> <i>(attaque)</i> : placez X menaces sur la manigance principale (jusqu'à un maximum de 3) → infligez 3X dégâts à un ennemi. Cette attaque gagne <b><i>Fracassant</i></b>.",
+  // superior_spider_man — Webbed Up (Event, x2)
+  'su005': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Étourdissez un sbire (étourdissez un ennemi à la place si vous avez payé cette carte avec une ressource [wild]).",
+  // superior_spider_man — * Anna Maria Marconi (Support)
+  'su006': "<b>Action d'alter ego</b> : inclinez Anna Maria Marconi → choisissez de soigner 3 dégâts de votre identité ou de réduire de 1 le coût de la prochaine amélioration jouée ce round.",
+  // superior_spider_man — Facial Recognition Uplink (Upgrade)
+  'su007': "Tant qu'un sbire pisté est en jeu, votre héros gagne +1 CTR.\n<b>Réponse de héros</b> <i>(contre)</i> : après qu'un sbire entre en jeu, pistez-le.",
+  // superior_spider_man — Mastermind (Upgrade)
+  'su008': "<b>Action</b> : attachez une carte de votre main, face cachée, à Contingency Plan (jusqu'à un maximum de 1).\n<b>Réponse de héros</b> : après avoir vaincu un sbire portant 2 menaces ou plus, regardez les 3 cartes du dessus du deck rencontre. Défaussez-en 1.",
+  // superior_spider_man — Mechanical Arms (Upgrade)
+  'su009': "<b>Interruption de héros</b> <i>(contre)</i> : quand vous effectuez une attaque de base contre un sbire, pistez ce sbire.\n<b>Réponse de héros</b> : après avoir utilisé un pouvoir de base, inclinez Mechanical Arms → redressez votre héros.",
+  // superior_spider_man — Spider-Bot (Upgrade, x2)
+  'su010': "Utilisations (3 pions de surveillance).\n<b>Action de héros</b> <i>(contre)</i> : inclinez Spider-Bot et retirez-en 1 pion de surveillance → pistez un sbire ou retirez 1 menace d'une manigance.",
+  // superior_spider_man — Web-Shooters (Upgrade)
+  'su011': "Utilisations (3 pions de toile).\nVotre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : inclinez Web-Shooters et retirez-en 1 pion de toile → générez une ressource [wild].",
+  // superior_spider_man — Contingency Plan (Upgrade, 16e carte)
+  'su012': "Permanent. Mise en place.\nLa carte attachée ici peut être jouée comme si elle était dans votre main.\n<b>Action</b> : défaussez la carte attachée.",
+  // superior_spider_man — Ghost of a Conscience (Obligation de Peter Parker)
+  'su013': "<b><i>Donnez-la au joueur de Peter Parker.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Peter Parker → retirez Ghost of a Conscience de la partie.\n• Vous êtes étourdi et désorienté. Si vous étiez déjà étourdi et désorienté, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // superior_spider_man — Crisis of Conscience (Obligation d'Elliot Tolliver)
+  'su014': "<b><i>Donnez-la au joueur d'Elliot Tolliver.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Elliot Tolliver → retirez Crisis of Conscience de la partie.\n• Vous êtes étourdi et désorienté. Si vous étiez déjà étourdi et désorienté, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette obligation.",
+  // superior_spider_man — Goblin Protocol (SideScheme, némésis)
+  'su015': "<i>Le réseau de surveillance de Spider-Man a été compromis : les criminels passent désormais inaperçus !</i>\nLa menace posée sur les sbires pistés compte dans le seuil de la manigance principale. La menace posée ici ne peut être retirée ni par les Spider-Bots ni par le pistage.",
+  // superior_spider_man — * Hobgoblin (Minion, némésis)
+  'su016': "Machiavélique.\n[star] <b>Réponse forcée</b> : après qu'Hobgoblin vous attaque, subissez 2 dégâts indirects.\n<i>(Sbire némésis de Spider-Man.)</i>\n<hr />\n[star] <b>Renfort</b> : subissez 2 dégâts indirects.",
+  // superior_spider_man — Lunatic Laugh (Treachery, némésis)
+  'su017': "<b>Une fois révélée</b> : subissez 2 dégâts indirects. Désorientez chaque personnage blessé ainsi.\n<hr />\n[star] <b>Renfort</b> : chaque joueur subit 1 dégât indirect.",
+  // superior_spider_man — Goblin Glider (Attachment, némésis)
+  'su018': "Attachez-la à l'ennemi ayant le plus de points de vie imprimés et ne portant pas déjà un Goblin Glider. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>.\n<b>Action de héros</b> : dépensez [energy][energy] → défaussez cette carte.",
+  // superior_spider_man — Pumpkin Bombs (Attachment, némésis)
+  'su019': "Attachez-la à Hobgoblin. Sinon, attachez-la au vilain.\n[star] <b>Réponse forcée</b> : après que l'ennemi auquel elle est attachée vous attaque, défaussez Pumpkin Bombs et subissez 2 dégâts indirects.\n<b>Action de héros</b> : dépensez [physical][physical] → défaussez cette carte.",
 }

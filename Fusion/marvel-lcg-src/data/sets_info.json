@@ -1451,5 +1451,24 @@
   "encounters": [],
   "max_id": "bl017"
  },
- "checksum": "0f67aae6039618adee4958db4ecd47926e5025ea1cf694e5682da5a5dc4e5bbd"
+ "166. Custom (Spider-Man 2099)": {
+  "name": "spider_man_2099",
+  "scenarios": [],
+  "heroes": [
+   "spider_man_2099"
+  ],
+  "encounters": [],
+  "max_id": "sm017"
+ },
+ "167. Custom (Superior Spider-Man)": {
+  "name": "superior_spider_man",
+  "scenarios": [],
+  "heroes": [
+   "superior_spider_man",
+   "superior_spider_man_tolliver"
+  ],
+  "encounters": [],
+  "max_id": "su019"
+ },
+ "checksum": "ea306ecabbd574febde1c0e6717687116d267df2f838ba385e13418105f9995d"
 }

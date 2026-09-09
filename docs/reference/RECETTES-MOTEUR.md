@@ -373,9 +373,18 @@ au moins un cas vert qui ne prouvait rien.
 - **Le pilote paie le MINIMUM d'un coût X, c'est-à-dire ZÉRO.** Le moteur
   annonce `cost: 0` pour un `desc.Cost` valant « X » : la carte « active » sans
   rien faire, journal muet. La clé **`surpayer`** est obligatoire sur toute
-  carte à coût X. ⚠ Et `effect.GetCostX()` compte les **cartes** dépensées, pas
-  les icônes : une seule carte-ressource donne X = 1, même quand elle en porte
-  deux (`01090` Strength, « RR »).
+  carte à coût X.
+
+  > ⚠⚠ **CORRECTIF DU 08/09/2026 — cette ligne disait l'inverse.** Elle
+  > affirmait que `effect.GetCostX()` compte les **cartes** dépensées et qu'une
+  > seule carte-ressource donne X = 1 « même quand elle en porte deux
+  > (`01090` Strength, "RR") ». C'est **faux** : la fonction rend
+  > `context.paid_this_resources.val - context.paid_this_cost.true_val`
+  > (`effect.py:509`), c'est-à-dire un compte d'**ICÔNES**. Une seule Strength
+  > donne donc **X = 2**. Mesuré sur `sm004` Rapid Strikes (pack
+  > spider_man_2099) : le journal dit « would play Rapid Strikes with (RR) »
+  > puis exécute **deux** attaques. Un cas écrit sur l'ancienne lecture attend
+  > donc la moitié des dégâts et échoue sans qu'on comprenne pourquoi.
 - **`Puzzle.Damage` n'est pas « vous ».** Un texte « After **you** defeat an
   enemy » ne se déclenche pas : la `DebugRule` n'est pas le joueur. Faire
   achever la cible par une attaque de base du héros.

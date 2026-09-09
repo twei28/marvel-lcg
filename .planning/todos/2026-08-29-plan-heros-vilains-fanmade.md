@@ -8,7 +8,7 @@
 > Les doublons Galactic Storm et Skrull Menace (exports du 13/08 et du 02/09)
 > cohabitent desormais dans `A creer/`, rien n'a ete supprime.
 
-**Statut au 02/09/2026 :** 18 des 21 items sont LIVRÉS, plus deux sets
+**Statut au 09/09/2026 :** 18 des 21 items du plan d'origine sont LIVRÉS, plus deux sets
 modulaires non prévus au plan (`ih` Intergalactic Hazards, `nv` Necroverse).
 Chiffres vérifiés dans `tools/prefixes_fanmade.json`, pas dans ce document.
 
@@ -258,9 +258,9 @@ d'un pack à l'autre ; les écrire une fois sert à chaque fois.
 | ~~**Throg**~~ | Rainy | 17 | 3/5 | ✅ **PORTÉ le 05/09/2026**, set 159, préfixe `tg`, aspect Agressivité. Briques 1, 2 et 5 confirmées. Aucune réutilisation d'`alligator_loki` : son sbire némésis `tg013` est un HOMONYME du héros `al001a`, rien de commun. A exigé un **correctif moteur** (`WhenUnitWouldDefend` gagne `CanBeInstead`) et la création de la fiche `mots-cles/uses.md`. Journal : `.planning/todos/2026-09-05-throg-gabarits-processus-carte.md`. |
 | ~~**Spider-Man Noir**~~ | Rainy | 16 | 3/5 | ✅ **PORTÉ le 05/09/2026**, set 160, préfixe `sn`, aspect Justice. Brique 2 confirmée, et plus large qu'annoncé : **11** cartes sur 16 lisent ou alimentent la pile, pas 8. Le héros a ATQ 0 et CTR 0 IMPRIMÉS et gagne +X aux deux : sans pile il ne fait rien. **Aucun fichier moteur partagé touché.** Deux défauts trouvés par les cas et corrigés dans le pack : `CountTotalBoostIcons` ignore l'étoile (il faut `CountTotalBoostStarAndBoost`), et un coût `CostFunc.Custom` impayé n'annule pas la mise en jeu (le joueur perdait sa carte). Journal : `.planning/todos/2026-09-05-spider-man-noir-gabarits-processus-carte.md`. |
 | ~~**Sunfire**~~ | Rainy | 16 | 3/5 | ✅ **PORTÉ le 06/09/2026**, set 163, préfixe `sf`, pack `sunfire`, 16 cartes. **Premier pack de la BRIQUE 6 écrit de bout en bout** : Burning est une amélioration JOUEUR attachée à un ENNEMI, qui revient dans la réserve. ⚠ « Permanent » n'est pas un obstacle mais le mécanisme : le moteur laisse sortir une carte Permanente si l'effet vient du MÊME set. **Premier deck de départ sans cartes d'aspect** (consigne du 06/09/2026). Quatre défauts trouvés par les cas, dont le plus coûteux : les noms de cartes uniques s'écrivent SANS l'étoile, sans quoi `sf012` et `sf014`, qui se cherchent l'une l'autre, étaient toutes deux mortes en silence. Journal : `.planning/todos/2026-09-06-sunfire-gabarits-processus-carte.md`. |
-| **Ares** | Rainy | 15 | 3/5 | Brique 6 poussée loin : modificateurs de dégâts posés SUR l'ennemi, éponge à dégâts, sélection d'upgrade selon la légalité d'attache. |
-| **Blade** | Rainy | 17 | 3/5 | Le set nemesis entier est mélangé au deck de rencontre AU SETUP, et deux cartes OCTROIENT DU TEXTE aux sbires. Mot-clé `teamwork` sans fiche. |
-| **Spider-Man 2099** | Rainy | 19 | 3/5 | Brique 1 appliquée au CHEMIN de mise en jeu (6 cartes). Mot-clé maison `Seek`. Capacité « Acceleration » homonyme du mot-clé OFFICIEL. |
+| ~~**Ares**~~ | Rainy | 15 | 3/5 | ✅ **PORTÉ le 07/09/2026**, set 164, préfixe `ar`, 15 cartes. Journal : `.planning/todos/2026-09-07-ares-gabarits-processus-carte.md`. Analyse d'origine conservée : Brique 6 poussée loin : modificateurs de dégâts posés SUR l'ennemi, éponge à dégâts, sélection d'upgrade selon la légalité d'attache. |
+| ~~**Blade**~~ | Rainy | 17 | 3/5 | ✅ **PORTÉ le 07/09/2026**, set 165, préfixe `bl`, 17 cartes. Journal : `.planning/todos/2026-09-07-blade-gabarits-processus-carte.md`. Analyse d'origine conservée : Le set nemesis entier est mélangé au deck de rencontre AU SETUP, et deux cartes OCTROIENT DU TEXTE aux sbires. Mot-clé `teamwork` sans fiche. |
+| ~~**Spider-Man 2099**~~ | Rainy | 19 | 3/5 | ✅ **PORTÉ le 08/09/2026**, set 166, préfixe `sm`, 18 cartes. Le mot-clé maison `Seek` a été défini par l'insert du pack et **corrigé rétroactivement** sur `br005`, `br009` et `ar001a` (ce n'est pas une recherche mais une défausse du dessus du deck). Journal : `.planning/todos/2026-09-08-spider-man-2099-gabarits-processus-carte.md`. Analyse d'origine conservée : Brique 1 appliquée au CHEMIN de mise en jeu (6 cartes). Mot-clé maison `Seek`. Capacité « Acceleration » homonyme du mot-clé OFFICIEL. |
 | ~~**Blink**~~ | Kajislav | 24 | 3/5 | ✅ **PORTÉ le 2026-09-04**, set 156, préfixe `bk`, pack `blink`, 21 cartes. et une gate qui ne lisait aucun fichier depuis des mois. Analyse d'origine conservée : Brique 6 : les PORTAL s'attachent aux ennemis ET aux manigances. Deux hooks neufs (carte qui entre en main, upgrade défaussée du jeu). |
 | ~~**Yondu**~~ | BlueHG + DesignHacker | 20 | 3/5 | ✅ **PORTÉ le 2026-09-03**, set 154, préfixe `yd`, pack `yondu`, 19 cartes. mot-cle maison `summon` arbitre a cette occasion, et une limite « une fois par round » qui ne limitait rien. Analyse d'origine conservée : Brique 6 + mot-clé maison `summon` + « la prochaine carte dépensée compte double ». Decklist fournie. |
 | ~~**Night Thrasher**~~ | DesignHacker | 19 | 3/5 | ✅ **PORTÉ le 2026-09-03**, set 153, préfixe `nt`, pack `night_thrasher`, 18 cartes. mot-cle maison `agile X` ; `Puzzle.BeginVillainPhase` ajoute au harnais pour ce pack. Analyse d'origine conservée : Mot-clé maison `agile X`, Battle Board recto-verso, mémoire de la dernière carte jouée. ⚠ contient une carte étrangère (MAGMA NEMESIS 2/5). |
@@ -270,7 +270,7 @@ d'un pack à l'autre ; les écrire une fois sert à chaque fois.
 | **Venomized** | ekAugust | 38 | 3/5 | Un ASPECT complet. Mot-clé `weakness` et règle de deckbuilding au coût cumulé. Recette connue via `determination`. |
 | ~~**Black Cat**~~ | Rainy | 13 | 4/5 | ✅ **PORTÉ le 05/09/2026**, set 161, préfixe `bc`, aspect Protection. Briques 2, 3 et 4 confirmées — mais **la brique 4 n'en était pas une** : `Search.Collection` (search.py:371) existe déjà et fabrique la carte choisie, l'écart assumé par `wd029` est donc évitable. Mot-clé `Multiverse` : fiche CRÉÉE, définition arbitrée (marqueur de deckbuilding, zéro ligne de code). ⚠ **Aucun set némésis dans le zip** : `nemesis_set` vide, cas unique sur 124 decks, et le deck monte quand même. ⚠ Les deux « Spider-Man » du zip sont DEUX cartes, pas deux illustrations. **Aucun fichier moteur partagé touché.** Trois défauts trouvés et corrigés : `bc002` n'a aucun dégât consécutif imprimé (le montage évident ne partait jamais), `bc010` posait 250 questions par 8 parties faute d'un filtre dans `conditions`, et le plafond de 3 n'est pas un plafond de pose contrairement à `spider_man_noir`. Journal : `.planning/todos/2026-09-05-black-cat-gabarits-processus-carte.md`. |
 | ~~**Cameo compliment**~~ | BlueRiver | 3 | ~~4/5~~ **1/5** | ✅ **PORTÉ le 05/09/2026**, set 162, préfixe `cc`. ⚠ **La note 4/5 était fausse** : « l'écran qui va avec » existe déjà, la carte OFFICIELLE `58031` Cameo (Meneur) fait exactement cela et ces trois cartes en sont les compléments d'aspect, texte pour texte. Le portage a consisté à recopier son montage en changeant le filtre. ⚠ Ce n'est PAS un pack de héros : trois cartes d'aspect, aucun deck de départ, aucun aspect à arbitrer. **Aucun fichier moteur partagé touché, aucun mot-clé nouveau.** Un seul écart délibéré avec la carte officielle : `Class == "Hero"` ajouté à « identity-specific », ce que `58031` ne teste pas. Journal : `.planning/todos/2026-09-05-cameo-compliment-gabarits-processus-carte.md`. |
-| **Superior Spider-Man** | Rainy | 22 | 4/5 | Mot-clé `Track` : de la MENACE SUR UN SBIRE, état de jeu inexistant. Plus DEUX alter-ego au choix avec chacun son obligation. |
+| ~~**Superior Spider-Man**~~ | Rainy | 22 | 4/5 | ✅ **PORTÉ le 08/09/2026**, set 167, préfixe `su`, 21 cartes, **DEUX decks de départ** (Peter Parker / Elliot Tolliver), le moteur ne montant qu'un alter-ego par deck. Compteurs `threat`/`surveillance` et trait `HENCHMAN` ajoutés au moteur. Journal : `.planning/todos/2026-09-08-superior-spider-man-gabarits-processus-carte.md`. Analyse d'origine conservée : Mot-clé `Track` : de la MENACE SUR UN SBIRE, état de jeu inexistant. Plus DEUX alter-ego au choix avec chacun son obligation. |
 | ~~**Doctor Druid**~~ | Kajislav | 17 | 4/5 | ✅ **PORTÉ le 2026-09-04**, set 155, préfixe `dr`, pack `doctor_druid`, 15 cartes. des cas qui certifiaient la moitie qui marche. Analyse d'origine conservée : 8 cartes produisent un effet CONTINU DEPUIS LA MAIN. Recalcul à chaque changement de main, et le bot doit comprendre qu'une carte gardée vaut quelque chose. |
 | **Muse** | Rainy | 6 | 4/5 | 6 cartes, mais 5 demandent « une carte qui porte l'illustration de ton identité ». Donnée absente du moteur pour tout le catalogue. Décision de conception à prendre avec l'utilisateur. |
 
@@ -286,8 +286,11 @@ Sif, Armored Spidey, Night Thrasher, Yondu, Doctor Druid, Blink, Texas Twister,
 Beta Ray Bill, Throg, Spider-Man Noir, Black Cat, Cameo compliment. Sets 147 à
 162, sans trou sauf 149 attribué à Iron Man Model 42.
 
-**Restants (7)** : Ares, Blade, Spider-Man 2099, Spider-Woman, Venomized,
-Superior Spider-Man, Muse. (Sunfire porté le 06/09/2026, set 163.)
+**Restants (3)** : Spider-Woman, Venomized, Muse. Relevé refait le 09/09/2026
+dans `tools/prefixes_fanmade.json`. (Sunfire porté le 06/09/2026, set 163 ;
+Ares 164 et Blade 165 le 07/09 ; Spider-Man 2099 166 et Superior Spider-Man 167
+le 08/09.) Aucun des trois n'a encore de préfixe réservé : le faire avant
+d'écrire la première carte, comme l'exige `verifier_prefixes.py`.
 
 ⚠ **Deux pièges de nom relevés à cette occasion** :
 - le deck `hulk.json` est le Hulk **officiel** (`10001a`) ; le pack fan-made est
@@ -325,17 +328,19 @@ est la vague 3 : Sunfire, Ares, Blink, Yondu.**
 
 **Vague 3, les upgrades posées sur les ennemis** : ~~Blink~~ ✅ (04/09/2026,
 set 156), ~~Yondu~~ ✅ (03/09/2026, set 154), ~~Sunfire~~ ✅ (06/09/2026,
-set 163), puis **Ares**, le dernier. Quatre variantes de la brique 6, de la plus
-simple à la plus mobile. **La suivante est donc Ares.**
+set 163), ~~Ares~~ ✅ (07/09/2026, set 164). Quatre variantes de la brique 6, de
+la plus simple à la plus mobile. **Vague 3 terminée.**
 
 **Vague 4, les gros packs autonomes** : ~~Night Thrasher~~ ✅ (set 153),
-~~Texas Twister~~ ✅ (set 157), ~~Armored Spidey~~ ✅ (set 152), puis **Blade**,
-**Spider-Man 2099** et **Spider-Woman**, les trois qui restent. Aucun ne dépend
-des autres, chacun apporte un mot-clé maison ou du volume.
+~~Texas Twister~~ ✅ (set 157), ~~Armored Spidey~~ ✅ (set 152),
+~~Blade~~ ✅ (07/09/2026, set 165), ~~Spider-Man 2099~~ ✅ (08/09/2026, set 166),
+puis **Spider-Woman**, la dernière. Aucun ne dépend des autres, chacun apporte
+un mot-clé maison ou du volume.
 
-**Vague 5, les chantiers** : Venomized (un aspect entier, le plus rentable des
-quatre), Iron Patriot (reste du plan d'origine), Superior Spider-Man, Doctor
-Druid, Muse (à trancher avec l'utilisateur avant tout code).
+**Vague 5, les chantiers** : ~~Superior Spider-Man~~ ✅ (08/09/2026, set 167),
+~~Doctor Druid~~ ✅ (04/09/2026, set 155), puis Venomized (un aspect entier, le
+plus rentable de ce qui reste), Iron Patriot (reste du plan d'origine) et Muse
+(à trancher avec l'utilisateur avant tout code).
 
 **Hors vague** : Doctor Doom Alt Arts, 2/5 et sans dépendance, à faire quand on
 veut. Skrull Menace et Galactic Storm restent bloqués, voir §7.

@@ -2,6 +2,11 @@
 
     python3.10 tools/verifier_appels_modules.py <game_dir> <port> <pack> [pack ...]
 
+⚠ `<game_dir>` doit etre ABSOLU (`"$PWD/.game-src"`). `main()` fait
+`os.chdir(game_dir)` AVANT de lire `<game_dir>/launch.json` : avec un chemin
+relatif il cherche `.game-src/launch.json` DEPUIS `.game-src` et sort sur
+`FileNotFoundError`. Constate le 09/09/2026.
+
 POURQUOI CET OUTIL EXISTE
 -------------------------
 « Ne jamais ecrire un appel d'API plausible » est une regle du projet, et elle a

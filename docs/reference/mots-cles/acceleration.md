@@ -15,11 +15,17 @@
 > est le témoin de référence du dépôt pour l'icône Acceleration : son `desc`
 > déclare `Acceleration` et son scan porte bien la forme à pointe + barre. Les cartes Acceleration peuvent cumuler plusieurs icônes (compteur > 1), chaque icône plaçant un threat supplémentaire. Si une future carte cumule Acceleration avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Acceleration lui-même.
 
-**Variantes maison** : aucune, mais ⚠ **un homonyme existe** dans un pack non
-encore porté. Le pack fan-made **Spider-Man 2099** (Rainy, zip du 02/09/2026)
-appelle « *Acceleration* » une CAPACITÉ D'IDENTITÉ (chercher un event dans son
-deck et le jouer, puis remettre les cartes défaussées sous le deck), sans aucun
-rapport avec l'icône décrite ici. Six cartes du pack testent « si tu as joué
-cette carte via ta capacité *Acceleration* ». Au moment de porter ce pack, ne pas
-réutiliser `desc.Acceleration` ni `HasAccelerationIcon` : ce sont deux notions
-différentes sous le même mot.
+**Variantes maison** : aucune, mais ⚠ **un homonyme existe, et il est
+désormais porté** : voir la fiche dédiée **`acceleration-2099.md`**. Le pack
+fan-made **Spider-Man 2099** (Rainy) appelle « *Acceleration* » une CAPACITÉ
+D'IDENTITÉ (défausser depuis le dessus du deck jusqu'à un événement, le jouer,
+puis remettre les autres cartes sous le deck), sans aucun rapport avec l'icône
+décrite ici. Six cartes du pack testent « si tu as joué cette carte via ta
+capacité *Acceleration* ». `desc.Acceleration` et `HasAccelerationIcon` ne
+sont **pas** employés par ce pack : ce sont deux notions différentes sous le
+même mot.
+
+⚠ **Et `sm013` Future in Crisis porte les DEUX** : c'est une obligation du
+pack Spider-Man 2099 qui déclare bien `desc.Acceleration` (l'icône, celle de
+cette fiche) alors que le héros du même pack porte la capacité homonyme.
+Vérifié par comparaison d'image contre `ag011` le 08/09/2026.
