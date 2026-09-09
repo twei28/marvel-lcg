@@ -146,3 +146,6 @@ sauvegardes-serveur/
 
 # Restes d une livraison manuelle, gardes sur le disque, hors du depot
 deploiement/_a_supprimer/
+
+# Journal du dernier deploiement (DEPLOYER.bat)
+deploiement/dernier-deploiement.log
