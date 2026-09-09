@@ -19,7 +19,7 @@ import {
   type ReactNode,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { ScanCard, type CardEffectDelta, type ScanCardProps } from '../components/ScanCard'
+import { JetonsCarte, ScanCard, type CardEffectDelta, type ScanCardProps } from '../components/ScanCard'
 import { langueActuelle, t } from './langue'
 import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { usePlacement } from './placement/usePlacement'
@@ -415,6 +415,14 @@ export function CarteApercu({
   // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
   // images finissent de charger. Il sortait de l'écran par la droite sur une
   // carte recto-verso paysage, qui fait près de 930 px de large.
+  // Rien sous la carte quand elle n'a ni jeton ni statut : le bloc vide
+  // decalerait l'apercu sans rien dire.
+  const aQuelqueChoseDessous =
+    (statuts?.length ?? 0) > 0 ||
+    !!carte.jetonMenace ||
+    !!carte.jetonDegats ||
+    (carte.counters?.length ?? 0) > 0
+
   const apercu = useRef<HTMLDivElement | null>(null)
   const { style: stylePlacement } = usePlacement(apercu, {
     preferee: 'droite',
@@ -448,10 +456,28 @@ export function CarteApercu({
           la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
           elle-meme, qui est leur soeur, pas leur ancetre. */}
       <div className={`apercu-face${carteAgrandie.isLandscape ? ' est-paysage' : ''}`}>
-        <ScanCard {...carteAgrandie} onSelect={undefined} highlight={false} taille="grande" />
-        {statuts && statuts.length > 0 ? (
-          <div className="statuts">
-            {statuts.map((statut) => (
+        {/* En GRAND, les jetons quittent l'illustration : ils cachaient le
+            texte de la carte, qui est justement ce qu'on vient y lire. Ils se
+            rangent sous la carte, avec les cartes de statut. Demande de
+            l'utilisateur, 09/09/2026. */}
+        <ScanCard
+          {...carteAgrandie}
+          jetonMenace={undefined}
+          jetonDegats={undefined}
+          counters={undefined}
+          onSelect={undefined}
+          highlight={false}
+          taille="grande"
+        />
+        {aQuelqueChoseDessous ? (
+          <div className="apercu-dessous">
+            <JetonsCarte
+              menace={carte.jetonMenace}
+              degats={carte.jetonDegats}
+              compteurs={carte.counters ?? []}
+              dessous
+            />
+            {(statuts ?? []).map((statut) => (
               <span className="est-statut" key={statut.id}>
                 <ScanCard {...statut} onSelect={undefined} />
               </span>

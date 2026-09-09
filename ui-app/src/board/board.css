@@ -2092,6 +2092,58 @@
     transform: translate(-50%, 16px);
   }
 
+  /* --- SOUS la grande carte : les jetons, puis les statuts -------------------
+     Demande de l'utilisateur (09/09/2026). Sur la table les jetons restent sur
+     la carte ; en grand ils masquaient le texte, qu'on vient justement lire.
+     La rangee se pose sous le bord bas, donc sous la bande de jauge, et les
+     statuts y gardent leur taille d'apercu (`.carte-apercu .est-statut`). */
+  .carte-apercu .apercu-dessous {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* Les jetons dimensionnent leur chiffre en fraction de `--card-w` : hors
+       d'une carte, il faut la leur donner. */
+    --card-w: 120px;
+  }
+
+  /* En ligne, et non plus a un coin du cadre. */
+  .carte-apercu .jetons-dessous {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .carte-apercu .jetons-dessous .jeton-carte,
+  .carte-apercu .jetons-dessous .jetons-compteurs {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  .carte-apercu .jetons-dessous .jetons-compteurs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: none;
+    gap: 8px;
+  }
+
+  .carte-apercu .jetons-dessous .jeton-carte {
+    width: calc(var(--card-w) * 0.46);
+    height: calc(var(--card-w) * 0.46);
+    padding-top: 0;
+  }
+
+  .carte-apercu .jetons-dessous .jeton-menace {
+    aspect-ratio: 256 / 228;
+    height: auto;
+  }
+
   /* Chaque upgrade : DERRIERE le porteur, decalee d'un cran en bas-droite. La
      premiere (i=0) au-dessus des suivantes, qui s'enfoncent vers le bas-droite. */
   .plateau-scene .est-attachee {

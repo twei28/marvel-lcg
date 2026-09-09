@@ -383,6 +383,87 @@ const SEUILS_ALERTE: Record<'pv' | 'menace', { douce: number; forte: number }> =
   menace: { douce: 0.6, forte: 0.85 },
 }
 
+/**
+ * Les JETONS poses sur une carte : la menace d'une manigance, les degats subis
+ * d'un personnage, les compteurs (reacteur, toile, acceleration...). Le chiffre
+ * est ecrit sur l'image du jeton (images de l'utilisateur, 7 septembre 2026).
+ *
+ * Deux poses, un seul rendu :
+ *
+ *  - SUR la carte (defaut) : chacun a son coin, en absolu dans le cadre ;
+ *  - SOUS la carte (`dessous`) : en ligne, a cote des cartes de statut, dans
+ *    l'apercu agrandi. Demande de l'utilisateur le 09/09/2026 : en grand, les
+ *    jetons poses sur l'illustration cachent le texte de la carte, qui est
+ *    justement ce qu'on vient y lire.
+ *
+ * Extrait de `ScanCard` pour cette seconde pose : l'apercu (Board.tsx) les
+ * rend lui-meme, dans la meme rangee que les statuts.
+ */
+export function JetonsCarte({
+  menace,
+  degats,
+  compteurs,
+  dessous = false,
+}: {
+  menace?: number
+  degats?: number
+  compteurs: Array<{ label: string; value: number; cle?: string }>
+  dessous?: boolean
+}) {
+  if (!menace && !degats && compteurs.length === 0) return null
+  const contenu = (
+    <>
+      {menace ? (
+        <span
+          className="jeton-carte jeton-menace"
+          style={{ backgroundImage: `url(${jetonMenaceImage})` }}
+          aria-label={`${t('Menace :')} ${menace}`}
+        >
+          <b>{menace}</b>
+        </span>
+      ) : null}
+      {degats ? (
+        <span
+          className="jeton-carte jeton-degats"
+          style={{ backgroundImage: `url(${jetonDegatsImage})` }}
+          aria-label={`${t('Dégâts :')} ${degats}`}
+        >
+          <b>{degats}</b>
+        </span>
+      ) : null}
+      {compteurs.length > 0 ? (
+        <span className="jetons-compteurs" aria-label={t('Compteurs')}>
+          {compteurs.map((compteur) => {
+            const acceleration = compteur.cle === 'acceleration'
+            return (
+              <span
+                className={`jeton-carte ${acceleration ? 'jeton-acceleration' : 'jeton-compteur'}`}
+                key={compteur.label}
+                style={{
+                  backgroundImage: `url(${acceleration ? jetonAccelerationImage : jetonCompteurImage})`,
+                }}
+                title={`${compteur.value} ${compteur.label}`}
+              >
+                {acceleration && compteur.value <= 1 ? null : <b>{compteur.value}</b>}
+                {acceleration ? null : (
+                  <span
+                    className="jeton-nom"
+                    style={{ '--nom-longueur': String(compteur.label.length) } as CSSProperties}
+                  >
+                    {compteur.label}
+                  </span>
+                )}
+              </span>
+            )
+          })}
+        </span>
+      ) : null}
+    </>
+  )
+  if (!dessous) return contenu
+  return <span className="jetons-dessous">{contenu}</span>
+}
+
 export function ScanCard({
   id,
   name,
@@ -621,53 +702,9 @@ export function ScanCard({
             </span>
           ) : null}
 
-          {/* LES JETONS : la menace d'une manigance en haut a droite, les
-              degats subis d'un personnage en haut a gauche, les compteurs en
-              bas. Le chiffre est ecrit sur l'image du jeton. */}
-          {!facedown && jetonMenace ? (
-            <span
-              className="jeton-carte jeton-menace"
-              style={{ backgroundImage: `url(${jetonMenaceImage})` }}
-              aria-label={`${t('Menace :')} ${jetonMenace}`}
-            >
-              <b>{jetonMenace}</b>
-            </span>
-          ) : null}
-          {!facedown && jetonDegats ? (
-            <span
-              className="jeton-carte jeton-degats"
-              style={{ backgroundImage: `url(${jetonDegatsImage})` }}
-              aria-label={`${t('Dégâts :')} ${jetonDegats}`}
-            >
-              <b>{jetonDegats}</b>
-            </span>
-          ) : null}
-          {!facedown && compteurs.length > 0 ? (
-            <span className="jetons-compteurs" aria-label={t('Compteurs')}>
-              {compteurs.map((compteur) => {
-                const acceleration = compteur.cle === 'acceleration'
-                return (
-                  <span
-                    className={`jeton-carte ${acceleration ? 'jeton-acceleration' : 'jeton-compteur'}`}
-                    key={compteur.label}
-                    style={{
-                      backgroundImage: `url(${acceleration ? jetonAccelerationImage : jetonCompteurImage})`,
-                    }}
-                    title={`${compteur.value} ${compteur.label}`}
-                  >
-                    {acceleration && compteur.value <= 1 ? null : <b>{compteur.value}</b>}
-                    {acceleration ? null : (
-                      <span
-                        className="jeton-nom"
-                        style={{ '--nom-longueur': String(compteur.label.length) } as CSSProperties}
-                      >
-                        {compteur.label}
-                      </span>
-                    )}
-                  </span>
-                )
-              })}
-            </span>
+          {/* LES JETONS : voir `JetonsCarte`, juste au-dessus de ce composant. */}
+          {!facedown ? (
+            <JetonsCarte menace={jetonMenace} degats={jetonDegats} compteurs={compteurs} />
           ) : null}
 
           {proprietaire && !facedown ? (
