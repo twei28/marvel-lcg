@@ -2371,4 +2371,83 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'su018': "Attachez-la à l'ennemi ayant le plus de points de vie imprimés et ne portant pas déjà un Goblin Glider. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>.\n<b>Action de héros</b> : dépensez [energy][energy] → défaussez cette carte.",
   // superior_spider_man — Pumpkin Bombs (Attachment, némésis)
   'su019': "Attachez-la à Hobgoblin. Sinon, attachez-la au vilain.\n[star] <b>Réponse forcée</b> : après que l'ennemi auquel elle est attachée vous attaque, défaussez Pumpkin Bombs et subissez 2 dégâts indirects.\n<b>Action de héros</b> : dépensez [physical][physical] → défaussez cette carte.",
+  // ---------------------------------------------------------------------
+  // venomized (ekAugust, set 168) — SIXIEME ASPECT, noir.
+  // Les 8 evenements « Symbiotic » sont les jumeaux de cartes officielles :
+  // leur francais reprend celui de l'originale, au titre pres.
+  // ---------------------------------------------------------------------
+  // venomized — Agent Anti-Venom (Ally)
+  'vz001': "<b>Réponse</b> : après qu'Agent Anti-Venom entre en jeu, défaussez des cartes du dessus de votre deck jusqu'à défausser un allié partageant un [[trait]] avec lui → mettez cet allié en jeu.",
+  // venomized — Codex (Ally)
+  'vz002': "<b>Réponse</b> : après que Codex est vaincu pendant la phase du joueur, défaussez la carte du dessus de votre deck. Si cette carte est une carte Venomized <i>(noire)</i>, renvoyez Codex dans votre main.",
+  // venomized — Mania (Ally)
+  'vz003': "<b>Réponse</b> : après que Mania est vaincue pendant la phase du joueur, piochez 1 carte.",
+  // venomized — Red Goblin (Ally)
+  'vz004': "<b>Réponse</b> : après qu'un sbire entre en jeu, inclinez Red Goblin → infligez 1 dégât à cet ennemi.",
+  // venomized — Sleeper (Ally)
+  'vz005': "<b>Réponse</b> : après que Sleeper est vaincu pendant la phase du joueur, désorientez le vilain.",
+  // venomized — Venom (Ally)
+  'vz006': "Venom gagne +1 ATQ pour chaque carte Venomized <i>(noire)</i> glissée sous lui.\n<b>Réponse</b> : après avoir vaincu un sbire, glissez une carte de votre main sous cette carte.",
+  // venomized — Backed into a Corner (Event)
+  'vz007': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, empêchez un nombre de dégâts égal à votre DEF plus votre ATQ.",
+  // venomized — Black Webbing (Event)
+  'vz008': "<b>Action de héros</b> : choisissez un sbire engagé avec un autre joueur → étourdissez cet ennemi et engagez-le.",
+  // venomized — "Can't Escape Us!" (Event)
+  'vz009': "<b>Action</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Inclinez une carte [[SYMBIOTE]] que vous contrôlez → infligez 3 dégâts supplémentaires à cet ennemi.",
+  // venomized — Dive into Danger (Event)
+  'vz010': "<b>Action de héros</b> <i>(contre)</i> : retirez d'une manigance un nombre de menaces égal à votre CTR plus votre DEF.",
+  // venomized — Feed the Hunger (Event)
+  'vz011': "<b>Action de héros</b> : mettez K.O. un sbire non-[[ELITE]] engagé avec vous → soignez sur votre identité un nombre de dégâts égal au total des points de vie de cet ennemi.",
+  // venomized — Forceful Bonding (Event)
+  'vz012': "<b>Action d'alter ego</b> : défaussez les X cartes du dessus de votre deck. Si l'une de ces cartes est une carte [[SYMBIOTE]] ou Venomized <i>(noire)</i>, passez sous forme de héros.",
+  // venomized — Inner Strength (Event)
+  'vz013': "<b>Action de héros</b> <i>(attaque)</i> : infligez à un ennemi un nombre de dégâts égal à votre ATQ plus votre CTR.",
+  // venomized — Scared of the Dark (Event)
+  'vz014': "1 max par round.\n<b>Action de héros</b> : retirez une carte de statut Robuste d'un ennemi → étourdissez cet ennemi.",
+  // venomized — Stronger Together (Event)
+  'vz015': "1 max par round.\n<b>Action de héros</b> : redressez 2 personnages alliés partageant un [[trait]].",
+  // venomized — Symbiotic Drop Kick (Event)
+  'vz016': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si vous avez payé cette carte en n'utilisant que des ressources [physical], étourdissez cet ennemi et piochez 1 carte.",
+  // venomized — Symbiotic For Justice! (Event)
+  'vz017': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance (4 menaces à la place si vous avez payé cette carte en utilisant une ressource [mental]).",
+  // venomized — Symbiotic Go All Out (Event)
+  'vz018': "Prérequis ([energy]). <i>(Lorsque vous payez cette carte, dépensez les ressources indiquées.)</i>\n<b>Action de héros</b> <i>(attaque)</i> : inclinez votre héros → infligez à un ennemi un nombre de dégâts égal au total des valeurs de CTR, d'ATQ et de DEF de votre héros.",
+  // venomized — Symbiotic Multitasking (Event)
+  'vz019': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si vous avez payé cette carte en utilisant une ressource [mental], retirez 2 menaces d'une autre manigance.",
+  // venomized — Symbiotic Not Today! (Event)
+  'vz020': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, il gagne +2 DEF pour cette attaque. Si vous ne subissez aucun dégât de cette attaque, retirez 2 menaces d'une manigance.",
+  // venomized — Symbiotic One By One (Event)
+  'vz021': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cette attaque met cet ennemi K.O., infligez 2 dégâts à un ennemi.",
+  // venomized — Symbiotic Perseverance (Event)
+  'vz022': "<b>Réponse de héros</b> : après avoir changé de forme, donnez à votre héros une carte de statut Robuste.",
+  // venomized — Symbiotic Sneak Attack (Event)
+  'vz023': "<b>Action</b> : choisissez dans votre main un allié partageant un [[trait]] avec votre identité → mettez cet allié en jeu. Si cet allié est encore en jeu à la fin de la phase, défaussez-le.",
+  // venomized — In the Thick of It (PlayerSideScheme)
+  'vz024': "Victoire 0.\n<b>Une fois déjouée</b> : chaque joueur peut chercher dans son deck et dans sa pile de défausse une amélioration ayant le trait [[SYMBIOTE]] et la mettre en jeu. <i>(Mélangez.)</i>",
+  // venomized — Gluttony (Resource)
+  'vz025': "1 max par deck.\n<b>Réponse</b> : après avoir dépensé cette carte, redressez votre héros.",
+  // venomized — Symbiote Infusion (Resource)
+  'vz026': "2 max par deck.\n<b>Interruption de héros</b> : quand vous dépensez cette carte pour jouer une carte [[SYMBIOTE]], piochez 1 carte.",
+  // venomized — The Power of the Bond (Resource)
+  'vz027': "2 max par deck.\nDoublez le nombre de ressources générées par cette carte lorsque vous payez une carte Venomized <i>(noire)</i>.",
+  // venomized — Alchemax (Support)
+  'vz028': "<b>Action d'alter ego</b> : inclinez Alchemax → ajoutez à votre main la carte d'aspect située le plus haut dans votre pile de défausse.",
+  // venomized — Doctor Steven (Support)
+  'vz029': "<b>Action d'alter ego</b> : inclinez Doctor Steven → réduisez de 1 le coût de la prochaine carte Venomized <i>(noire)</i> ou [[SYMBIOTE]] jouée pendant cette phase.",
+  // venomized — Durable Physiology (Upgrade)
+  'vz030': "Utilisations (2 pions de klyntar).\n<b>Interruption de héros</b> : quand un sbire devrait vous attaquer, inclinez cette carte et retirez-en 1 pion de klyntar → réduisez de 1 tous les dégâts qui vous sont infligés pendant ce round.",
+  // venomized — First Contact (Upgrade)
+  'vz031': "Jouez-la sous le contrôle de n'importe quel joueur. 1 max par joueur.\nVotre héros gagne +1 ATQ, +1 CTR et +1 DEF.",
+  // venomized — Klyntar Tendrils (Upgrade)
+  'vz032': "Utilisations (3 pions de klyntar).\n<b>Action de héros</b> : inclinez cette carte et retirez-en 1 pion de klyntar → choisissez soit d'infliger 1 dégât à un ennemi, soit de retirer 1 menace d'une manigance. Puis, soignez 1 dégât de votre identité.",
+  // venomized — Symbiotic Bond (Upgrade)
+  'vz033': "1 max par joueur.\n<b>Ressource</b> : subissez 1 dégât et inclinez cette carte → générez une ressource [wild].",
+  // venomized — Urban Camouflage (Upgrade)
+  'vz034': "1 max par joueur.\n<b>Interruption de héros</b> : quand un ennemi devrait vous attaquer, subissez 1 dégât et défaussez cette carte → donnez à votre héros une carte de statut Robuste et désorientez cet ennemi.",
+  // venomized — "You Are What You Eat" (Upgrade)
+  'vz035': "1 max par joueur.\n<b>Réponse</b> : après avoir soigné des dégâts de votre identité, inclinez cette carte → piochez 1 carte.",
+  // venomized — Flash Fire (Treachery, Venomized Weakness)
+  'vz036': "Faiblesse. <i>(Elle commence la partie dans votre deck et se défausse dans votre pile de défausse.)</i>\n<b>Réponse forcée</b> : après que cette carte entre dans votre main, subissez 1 dégât indirect. <i>(Vous pouvez défausser cette carte de votre main à la fin de la phase du joueur comme n'importe quelle autre carte.)</i>",
+  // venomized — Sensory Overload (Treachery, Venomized Weakness)
+  'vz037': "Faiblesse. <i>(Elle commence la partie dans votre deck et se défausse dans votre pile de défausse.)</i>\n<b>Réponse forcée</b> : après que cette carte entre dans votre main, placez 1 menace sur chaque manigance. <i>(Vous pouvez défausser cette carte de votre main à la fin de la phase du joueur comme n'importe quelle autre carte.)</i>",
 }

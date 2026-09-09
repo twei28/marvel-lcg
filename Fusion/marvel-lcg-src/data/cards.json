@@ -91452,5 +91452,652 @@
    "custom": "Rainy"
   }
  ],
- "checksum": "4ab9f21afb16a5e8d2e758004a2a990becc00aee197b2e9eb236f5b23b554a39"
+ "venomized": [
+  {
+   "card_id": "vz001",
+   "type": "Ally",
+   "name": "* Agent Anti-Venom",
+   "subtitle": "Flash Thompson",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2**",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "AVENGER",
+    "SYMBIOTE"
+   ],
+   "text": "<b>Response</b>: After Agent Anti-Venom enters play, discard cards from the top of your deck until you discard an ally that shares a [[trait]] with him \u2192 put that ally into play.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz002",
+   "type": "Ally",
+   "name": "* Codex",
+   "subtitle": "Dylan Brock",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "<b>Response</b>: After Codex is defeated during the player phase, discard the top card of your deck. If that card is a Venomized <i>(black)</i> card, return Codex to your hand.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz003",
+   "type": "Ally",
+   "name": "* Mania",
+   "subtitle": "Andi Benton",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "<b>Response</b>: After Mania is defeated during the player phase, draw 1 card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz004",
+   "type": "Ally",
+   "name": "* Red Goblin",
+   "subtitle": "Normie Osborn",
+   "desc": {
+    "Cost": "2",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "<b>Response</b>: After a minion enters play, exhaust Red Goblin \u2192 deal 1 damage to that enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz005",
+   "type": "Ally",
+   "name": "* Sleeper",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "<b>Response</b>: After Sleeper is defeated during the player phase, confuse the villain.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz006",
+   "type": "Ally",
+   "name": "* Venom",
+   "subtitle": "Eddie Brock",
+   "desc": {
+    "Cost": "2",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "Venom gets +1 ATK for each Venomized <i>(black)</i> card tucked under it.\n<b>Response</b>: After you defeat a minion, tuck a card from your hand under here.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz007",
+   "type": "Event",
+   "name": "Backed into a Corner",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent an amount of damage equal to your DEF and ATK combined.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz008",
+   "type": "Event",
+   "name": "Black Webbing",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b>: Choose a minion engaged with another player \u2192 stun and engage that enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz009",
+   "type": "Event",
+   "name": "\"Can't Escape Us!\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. Exhaust a [[SYMBIOTE]] card you control \u2192 deal an additional 3 damage to that enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz010",
+   "type": "Event",
+   "name": "Dive into Danger",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove threat from a scheme equal to your THW and DEF combined.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz011",
+   "type": "Event",
+   "name": "Feed the Hunger",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "text": "<b>Hero Action</b>: Defeat a non-ELITE minion engaged with you \u2192 heal damage from your identity equal to that enemy's total hit points.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz012",
+   "type": "Event",
+   "name": "Forceful Bonding",
+   "subtitle": "",
+   "desc": {
+    "Cost": "X",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [],
+   "text": "<b>Alter-Ego Action</b>: Discard the top X cards of your deck. If any of those cards is a [[SYMBIOTE]] or Venomized <i>(black)</i> card, change to your hero form.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz013",
+   "type": "Event",
+   "name": "Inner Strength",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal damage to an enemy equal to your ATK and THW combined.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz014",
+   "type": "Event",
+   "name": "Scared of the Dark",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [],
+   "text": "Max 1 per round.\n<b>Hero Action</b>: Remove a tough status card from an enemy \u2192 stun that enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz015",
+   "type": "Event",
+   "name": "Stronger Together",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "Max 1 per round.\n<b>Hero Action</b>: Ready 2 friendly characters that share a [[trait]].",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz016",
+   "type": "Event",
+   "name": "Symbiotic Drop Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "ATTACK",
+    "SYMBIOTE"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If you paid for this card using only [physical] resources, stun that enemy and draw 1 card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz017",
+   "type": "Event",
+   "name": "Symbiotic For Justice!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme (4 threat instead, if you paid for this card using a [mental] resource).",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz018",
+   "type": "Event",
+   "name": "Symbiotic Go All Out",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Venomized",
+    "Requirement": "Y"
+   },
+   "traits": [
+    "ATTACK",
+    "SYMBIOTE"
+   ],
+   "text": "Requirement ([energy]). <i>(While paying for this card, spend the listed resources.)</i>\n<b>Hero Action</b> <i>(attack)</i>: Exhaust your hero \u2192 deal damage to an enemy equal to the total of your hero's THW, ATK, and DEF values.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz019",
+   "type": "Event",
+   "name": "Symbiotic Multitasking",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE",
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat form a scheme. If you paid for this card using a [mental] resource, remove 2 threat from a different scheme.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz020",
+   "type": "Event",
+   "name": "Symbiotic Not Today!",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "DEFENSE",
+    "SYMBIOTE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When your hero defends against an attack, it gets +2 DEF for that attack. If you take no damage from this attack, remove 2 threat from a scheme.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz021",
+   "type": "Event",
+   "name": "Symbiotic One By One",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "ATTACK",
+    "SYMBIOTE"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If this attack defeats that enemy, deal 2 damage to an enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz022",
+   "type": "Event",
+   "name": "Symbiotic Perseverance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE",
+    "TACTIC"
+   ],
+   "text": "<b>Hero Response</b>: After you change form, give your hero a tough status card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz023",
+   "type": "Event",
+   "name": "Symbiotic Sneak Attack",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "SYMBIOTE",
+    "TACTIC"
+   ],
+   "text": "<b>Action</b>: Choose an ally in your hand that shares a [[trait]] with your identity \u2192 put that ally into play. If that ally is still in play at the end of the phase, discard it.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz024",
+   "type": "PlayerSideScheme",
+   "name": "* In the Thick of It",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "StartingThreat": "3*",
+    "Class": "Venomized",
+    "Victory": "0"
+   },
+   "traits": [],
+   "text": "Victory 0.\n<b>When Defeated</b>: Each player may search their deck and discard pile for an upgrade with the [[SYMBIOTE]] trait and put it into play. <i>(Shuffle.)</i>",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz025",
+   "type": "Resource",
+   "name": "Gluttony",
+   "subtitle": "",
+   "desc": {
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Venomized"
+   },
+   "traits": [],
+   "text": "Max 1 per deck.\n<b>Response</b>: After you spend this card, ready your hero.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz026",
+   "type": "Resource",
+   "name": "Symbiote Infusion",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Venomized"
+   },
+   "traits": [],
+   "text": "Max 2 per deck.\n<b>Hero Interrupt</b>: When you spend this card to play a [[SYMBIOTE]] card, draw 1 card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz027",
+   "type": "Resource",
+   "name": "The Power of the Bond",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Venomized"
+   },
+   "traits": [],
+   "text": "Max 2 per deck.\nDouble the number of resources this card generates while paying for a Venomized <i>(black)</i> card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz028",
+   "type": "Support",
+   "name": "* Alchemax",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Alchemax \u2192 add the topmost aspect card from your discard pile to your hand.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz029",
+   "type": "Support",
+   "name": "* Doctor Steven",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Venomized"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Doctor Steven \u2192 reduce the cost of the next Venomized <i>(black)</i> or [[SYMBIOTE]] card played this phase by 1.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz030",
+   "type": "Upgrade",
+   "name": "Durable Physiology",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Venomized",
+    "Uses": "2,klyntar"
+   },
+   "traits": [
+    "CONDITION",
+    "SYMBIOTE"
+   ],
+   "text": "Uses (2 klyntar counters). <i>(Enters play with 2 counters. When those are gone, discard this card.)</i>\n<b>Hero Interrupt</b>: When a minion would attack you, exhaust this card and remove 1 klyntar counter from it \u2192 reduce all damage dealt to you this round by 1.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz031",
+   "type": "Upgrade",
+   "name": "First Contact",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Venomized",
+    "MaxPerUnit": "1",
+    "Hazard": "1"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "Play under any players control. Max 1 per player.\nYour hero gets +1 ATK, +1 THW, and +1 DEF.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz032",
+   "type": "Upgrade",
+   "name": "Klyntar Tendrils",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "Class": "Venomized",
+    "Uses": "3,klyntar"
+   },
+   "traits": [
+    "SYMBIOTE",
+    "WEAPON"
+   ],
+   "text": "Uses (3 klyntar counters). <i>(Enters play with 3 counters. When those are gone, discard this card.)</i>\n<b>Hero Action</b>: Exhaust this card and remove 1 klyntar counter from it \u2192 choose to either deal 1 damage to an enemy or remove 1 threat from a scheme. Then, heal 1 damage from your identity.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz033",
+   "type": "Upgrade",
+   "name": "Symbiotic Bond",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Venomized",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SYMBIOTE"
+   ],
+   "text": "Max 1 per player.\n<b>Resource</b>: Take 1 damage and exhaust this card \u2192 generate a [wild] resource.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz034",
+   "type": "Upgrade",
+   "name": "Urban Camouflage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "Class": "Venomized",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "PREPARATION",
+    "SUPERPOWER"
+   ],
+   "text": "Max 1 per player.\n<b>Hero Interrupt</b>: When an enemy would attack you, take 1 damage and discard this card \u2192 give your hero a tough status card and confuse that enemy.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz035",
+   "type": "Upgrade",
+   "name": "\"You Are What You Eat\"",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "Class": "Venomized",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "text": "Max 1 per player.\n<b>Response</b>: After you heal damage from your identity, exhaust this card \u2192 draw 1 card.",
+   "set_name": "Venomized",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz036",
+   "type": "Treachery",
+   "name": "Flash Fire",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "text": "Weakness. <i>(Begins the game in your deck and is discarded into your discard pile.)</i>\n<b>Forced Response</b>: After this card enters your hand, take 1 indirect damage. <i>(You may discard this card from your hand at the end of the player phase like any other card.)</i>",
+   "set_name": "Venomized Weakness",
+   "custom": "ekAugust"
+  },
+  {
+   "card_id": "vz037",
+   "type": "Treachery",
+   "name": "Sensory Overload",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "text": "Weakness. <i>(Begins the game in your deck and is discarded into your discard pile.)</i>\n<b>Forced Response</b>: After this card enters your hand, place 1 threat on each scheme. <i>(You may discard this card from your hand at the end of the player phase like any other card.)</i>",
+   "set_name": "Venomized Weakness",
+   "custom": "ekAugust"
+  }
+ ],
+ "checksum": "cbcdfd35f73f6ae05989e639b9d118223e9321ea6a01478118bf455a75bb9faf"
 }

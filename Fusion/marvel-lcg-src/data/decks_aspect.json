@@ -1,6 +1,32 @@
 {
  "source": "Marvel Champions Universal Prebuilt Decks",
  "packages": {
+  "Venomized": [
+   "vz002",
+   "vz005",
+   "vz007",
+   "vz007",
+   "vz007",
+   "vz010",
+   "vz010",
+   "vz010",
+   "vz011",
+   "vz011",
+   "vz011",
+   "vz013",
+   "vz013",
+   "vz013",
+   "vz015",
+   "vz015",
+   "vz024",
+   "vz031",
+   "vz033",
+   "vz035",
+   "01088",
+   "01089",
+   "01090",
+   "27191"
+  ],
   "Brutish Aggression": [
    "43013",
    "10011",

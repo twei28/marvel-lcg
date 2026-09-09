@@ -4786,6 +4786,12 @@
      rgb(150, 92, 196) dans image_creator.py. Repris tel quel plutot que
      choisi, pour que le lisere et la carte disent la meme chose. */
   .plateau.est-delave .scan-card.aspect-determination { --lisere-aspect: #965cc4; }
+  /* Venomized : le noir que le moteur peint sur ses cartes, rgb(38, 38, 44)
+     dans image_creator.py. ⚠ ECLAIRCI POUR LE LISERE : a #26262c le trait se
+     confondrait avec le fond delave de la table, qui est lui aussi tres
+     sombre. On garde la teinte (le meme bleu-noir) en montant la luminosite,
+     seul moyen que le lisere reste VISIBLE tout en disant la bonne couleur. */
+  .plateau.est-delave .scan-card.aspect-venomized { --lisere-aspect: #6b6b7a; }
   /* Les quatre aspects et 'Pool ont leurs couleurs officielles. Celles du
      heros et du basique sont un CHOIX : le jeu ne leur en donne pas, il faut
      juste qu'elles ne se confondent avec aucune des cinq autres. */

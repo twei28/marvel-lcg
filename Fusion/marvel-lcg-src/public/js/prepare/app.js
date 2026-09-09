@@ -91,6 +91,11 @@ const ASPECTS = {
     // sa pastille dans l'editeur de deck : un aspect, une couleur, partout.
     // Sans cette ligne la pastille tombait sur le gris de repli (#555).
     determination: "#965cc4",
+    // Le SIXIEME aspect. Le moteur peint ses cartes en rgb(38,38,44)
+    // (image_creator.py), mais une pastille a #26262c serait indistinguable du
+    // fond sombre de l'ecran : on garde la teinte et on monte la luminosite,
+    // exactement comme le lisere du plateau (board.css). Une couleur, partout.
+    venomized: "#6b6b7a",
 };
 const MODES = [
     { id: "solo", label: "Solo", desc: t("1 héros"), players: 1, fixed: true, mark: "1" },

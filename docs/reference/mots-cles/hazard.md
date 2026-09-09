@@ -24,4 +24,30 @@
 > (`hd025` Duck, Duck, Doom!) sert de contrôle négatif : elle prouve que
 > l'icône n'est pas un décor du gabarit. Les cartes Hazard peuvent cumuler plusieurs icônes Hazard (compteur > 1), chaque icône déclenchant une pioche supplémentaire. Si une future carte cumule Hazard avec une capacité imprimée distincte, vérifier via `find` si un script existe : le script devra porter uniquement cette capacité annexe, jamais le mot-clé Hazard lui-même.
 
+> ### ✅ TROISIÈME MÉTHODE, PLUS SÛRE QUE L'ŒIL (09/09/2026)
+>
+> La comparaison de bandes découpées reste valable, mais il existe désormais
+> plus direct : **l'icône est un glyphe de `public/fonts/ChampionsIcons.ttf`**,
+> la police officielle, et `public/css/marvel/icon.css` dit lequel.
+>
+> - `H` → `.icon-hazard` : une carte penchée, un plus évidé sur son bord
+>   gauche, **rien en dessous**.
+> - `A` → `.icon-acceleration` : la même carte, mais une **pointe en haut à
+>   droite** et une **barre épaisse dessous**.
+>
+> Méthode : rendre les deux glyphes avec Pillow à la même taille, les poser
+> côte à côte du scan agrandi, et regarder. Aucune ambiguïté ne survit à cette
+> comparaison. C'est ainsi qu'a été tranchée `vz031` First Contact, dont
+> l'icône était restée « non identifiée » à son premier portage — elle porte
+> **Hazard 1**, ce qui équilibre une amélioration à 2 qui donne +1 aux trois
+> pouvoirs. Précédent exact : `27191` Symbiote Suit, la carte basique citée
+> par la decklist du même auteur, qui déclare aussi `"Hazard": "1"` sans que
+> son texte ne mentionne le mot.
+>
+> ⚠ **Le `desc` est la SEULE trace** : le texte de ces cartes ne dit pas
+> « Hazard », seule l'icône le dit. `verifier_desc_mots_cles.py` ne peut donc
+> pas l'attraper, et un oubli reste invisible. Le cas
+> « vz031 First Contact » de `test_capacites.py` mesure l'icône en jeu par la
+> clé `icones`, ajoutée pour cela.
+
 **Variantes maison** : aucune recensée pour l'instant.

@@ -35,6 +35,7 @@ export type Aspect =
   | 'protection'
   | 'pool'
   | 'determination'
+  | 'venomized'
   | 'hero'
   | 'basic'
 
@@ -58,6 +59,11 @@ export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
     // depuis e161ffe. Sans cette ligne ses cartes n'ont aucun lisere sous un
     // effet delavant, et le catalogue les compte comme inconnues.
     Determination: 'determination',
+    // Le SIXIEME aspect, fan-made lui aussi (ekAugust, set 168), accepte par
+    // le moteur depuis le 09/09/2026. Meme raison que Determination : sans
+    // cette ligne ses 35 cartes n'ont aucun lisere sous un effet delavant, et
+    // `aspect.test.ts` les compte comme une valeur de Class inconnue.
+    Venomized: 'venomized',
   }
   for (const p of parts) if (table[p]) return table[p]
   if (parts.includes('Hero')) return 'hero'

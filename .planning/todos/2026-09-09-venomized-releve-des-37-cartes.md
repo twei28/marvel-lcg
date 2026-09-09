@@ -259,19 +259,68 @@ phase like any other card.)
 
 ---
 
-## Etat au 09/09/2026 (chantier MIS EN PAUSE a la demande de l'utilisateur)
+## Etat au 09/09/2026 — PACK LIVRE
+
+**Les 37 cartes sont portees, testees et jouables.** Detail des preuves, gate
+par gate et carte par carte :
+`.planning/todos/2026-09-09-venomized-gabarits-processus-carte.md`.
 
 FAIT :
-- prefixe `vz` reserve dans `tools/prefixes_fanmade.json` (set 168, pack
-  `venomized`, `cartes: 0`), `verifier_prefixes.py` vert ;
-- moteur : `Venomized` ajoute aux deux `Literal` de `card_player.py`, couleur
+- prefixe `vz` (set 168, pack `venomized`, **cartes: 37**) ;
+- moteur : `Venomized` dans les deux `Literal` de `card_player.py`, couleur
   NOIRE (38,38,44) dans `image_creator.py`, compteur `klyntar` dans l'enum
   `COUNTER` de `card_face.py` ;
-- `tools/test_aspect_determination.py` etendu au sixieme aspect et au
-  compteur : **23 cas verts, 0 echec**.
+- **37 entrees** dans `data/cards.json`, set 168 declare dans `sets_info.json`
+  (checksums recalcules) ;
+- **37 images** importees, recette reproductible :
+  `tools/importer_images_venomized.py` ;
+- **37 modules** dans `src/cards/pack/venomized/{venomized,venomized_weakness}/` ;
+- **39 cas** dans `tools/test_capacites.py` (filtre `vz0`), dont 2 temoins
+  d'epuisement : **39/39** ;
+- **37 textes francais** dans `ui-app/src/board/textes-fr-fanmade.ts` ;
+- l'aspect declare cote plateau (`catalogue.ts`, `board.css`) et cote
+  preparation (`app.js`) ;
+- paquet d'aspect « Venomized » dans `data/decks_aspect.json`, exactement la
+  decklist de l'auteur ;
+- fiche `docs/reference/mots-cles/weakness.md`, ecrite sur une MESURE.
 
-RESTE : les 37 entrees de `cards.json`, les modules, les images, le francais,
-les cas, le deck d'aspect dans `deck/custom/`, la fiche `mots-cles/weakness.md`
-et un `PROCESSUS-CARTE` par carte.
+### DEUX POINTS OUVERTS, FERMES LE MEME JOUR
 
-QUESTION EN ATTENTE : l'icone « carte + » de vz031 First Contact.
+**1. L'icone de `vz031` First Contact : c'est HAZARD, et la carte le portait.**
+Le premier portage l'avait laissee « non identifiee ». Elle est en fait le
+glyphe `H` de `public/fonts/ChampionsIcons.ttf`, la police OFFICIELLE, que
+`icon.css` mappe sur `.icon-hazard`. Tranche par comparaison cote a cote du
+scan agrandi et des deux glyphes candidats (`H` hazard, `A` acceleration) :
+hazard n'a rien sous la carte, acceleration a une pointe et une barre.
+`"Hazard": "1"` ajoute au `desc`. C'est ce qui equilibre une amelioration a 2
+qui donne +1 aux TROIS pouvoirs — meme marche que `27191` Symbiote Suit, la
+carte basique citee par la decklist du meme auteur.
+⚠ Le texte ne dit pas « Hazard », seule l'icone le dit :
+`verifier_desc_mots_cles` ne peut donc pas l'attraper. D'ou la cle `icones`
+ajoutee au harnais, et le cas qui mesure l'icone EN JEU (rouge sans le `desc`).
+
+**2. Le « When Defeated » de `vz024` : c'etait un DEFAUT DU MOTEUR.**
+Ni le harnais, ni la carte. `src/game/selector/selector_end.py` portait un
+`assert deck.GetSize() != 0` qui rendait INATTEIGNABLE la branche ecrite juste
+en dessous, celle qui prevoit justement le deck vide. Toute RECHERCHE qui sort
+la derniere carte d'un deck faisait tomber le moteur, et les cartes cherchees
+disparaissaient de toutes les zones. Trouve dans le journal du processus fils
+(`/tmp/capacites_*.log`), que le harnais capture sans l'afficher.
+La carte OFFICIELLE `40019` Lock and Load etait cassee de la meme facon : son
+cas est desormais fige dans `test_capacites.py` pour garder le correctif.
+
+**3. La regle de deck-building du set Weakness est AUTOMATISEE.**
+Le moteur ajoute les cartes lui-meme au montage de la partie
+(`PlayerSetup.CartesImposeesParLesAspects`), tirage SEME pour que les rejeux et
+le multijoueur ne divergent pas, et l'editeur l'ANNONCE (`regles.js`). Mesure :
+deck « Spider-Man (Venomized) », 39 cartes choisies -> `PlayerDeck<41>` ;
+temoin `spider_man`, 40 choisies -> `PlayerDeck<40>`.
+⚠ Les deux cartes Weakness ont ete RETIREES du paquet d'aspect : elles y
+seraient desormais en double.
+⚠ Au passage, `regles.js` ignorait « Venomized » dans sa liste `ASPECTS` : ses
+cartes etaient refusees par l'editeur comme « n'appartenant pas a un deck de
+joueur ». Corrige.
+
+RESTE, et ce n'est pas du portage :
+- ⚠ « Symbiotic Healing Factor » est ABSENTE DU ZIP. Materiel manquant, a
+  demander a l'auteur.

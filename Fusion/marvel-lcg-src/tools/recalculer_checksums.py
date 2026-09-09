@@ -6,7 +6,17 @@ dictionnaire PRIVE de sa cle `checksum` — c'est exactement ce que fait
 `Json.LoadInternal` a la lecture. Le recalculer a la main, hors moteur, serait
 un appel plausible : on appelle donc la vraie fonction.
 
-Usage : python3.10 tools/recalculer_checksums.py <game_dir absolu> <fichier...>
+Usage : PYTHONPATH=<game_dir>/src python3.10 tools/recalculer_checksums.py \
+            <game_dir absolu> <fichier...>
+
+⚠ LE PYTHONPATH N'EST PAS FACULTATIF, et la docstring l'omettait jusqu'au
+09/09/2026. `sys.path.insert(0, game_dir)` met la RACINE du jeu sur le chemin,
+or les modules du moteur vivent dans `src/` : sans `PYTHONPATH=<game_dir>/src`,
+l'outil tombe sur `ModuleNotFoundError: No module named 'core'` avant d'avoir
+lu le moindre fichier.
+
+⚠ `game_dir` doit etre ABSOLU : l'outil fait `os.chdir` avant de lire
+`launch.json`. Meme piege que `verifier_appels_modules.py`.
 """
 import io, json, os, sys
 

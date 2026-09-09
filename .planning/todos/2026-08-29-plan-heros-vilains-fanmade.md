@@ -8,8 +8,10 @@
 > Les doublons Galactic Storm et Skrull Menace (exports du 13/08 et du 02/09)
 > cohabitent desormais dans `A creer/`, rien n'a ete supprime.
 
-**Statut au 09/09/2026 :** 18 des 21 items du plan d'origine sont LIVRÉS, plus deux sets
-modulaires non prévus au plan (`ih` Intergalactic Hazards, `nv` Necroverse).
+**Statut au 09/09/2026 (fin de journée) :** 18 des 21 items du plan d'origine sont LIVRÉS,
+plus deux sets modulaires non prévus au plan (`ih` Intergalactic Hazards, `nv` Necroverse)
+et l'aspect **Venomized** (`vz`, set 168, 37 cartes, livré le 09/09/2026 —
+gabarits dans `2026-09-09-venomized-gabarits-processus-carte.md`).
 Chiffres vérifiés dans `tools/prefixes_fanmade.json`, pas dans ce document.
 
 | Reste du plan d'origine | Préfixe | État |
@@ -267,7 +269,7 @@ d'un pack à l'autre ; les écrire une fois sert à chaque fois.
 | ~~**Texas Twister**~~ | Kajislav | 28 | 3/5 | ✅ **PORTÉ le 2026-09-04**, set 157, préfixe `tt`, pack `texas_twister`, 25 cartes. et quatre facons de mesurer rien. Analyse d'origine conservée : Mécanique 2/5, volume 3/5 : 8 cartes d'aspect génériques et un trait RANGER à créer. Défaut d'écriture sur Lone Star Rangers. |
 | ~~**Armored Spidey**~~ | Kajislav | 30 | 3/5 | ✅ **PORTÉ le 2026-09-03**, set 152, préfixe `as`, pack `armored_spidey`, 28 cartes. Analyse d'origine conservée : Spider Armor recto-verso à compteurs (motif Godbomb), plus 9 cartes d'aspect génériques qui entrent dans le pool commun. |
 | **Spider-Woman** | Kajislav | 32 | 3/5 | Compteurs `psionic web`, annulation des icônes boost une par une, brique 1. Le plus gros pack héros, avec un nemesis livré en deux versions. |
-| **Venomized** | ekAugust | 38 | 3/5 | Un ASPECT complet. Mot-clé `weakness` et règle de deckbuilding au coût cumulé. Recette connue via `determination`. |
+| ~~**Venomized**~~ ✅ | ekAugust | **37**, pas 38 | 3/5 | Un ASPECT complet, livré le 09/09/2026 (set 168). Le zip contient 37 fichiers ; la 38e, « Symbiotic Healing Factor », est citée par la decklist et ABSENTE du matériel. Mot-clé `weakness` : aucune ligne de code moteur, mesuré. |
 | ~~**Black Cat**~~ | Rainy | 13 | 4/5 | ✅ **PORTÉ le 05/09/2026**, set 161, préfixe `bc`, aspect Protection. Briques 2, 3 et 4 confirmées — mais **la brique 4 n'en était pas une** : `Search.Collection` (search.py:371) existe déjà et fabrique la carte choisie, l'écart assumé par `wd029` est donc évitable. Mot-clé `Multiverse` : fiche CRÉÉE, définition arbitrée (marqueur de deckbuilding, zéro ligne de code). ⚠ **Aucun set némésis dans le zip** : `nemesis_set` vide, cas unique sur 124 decks, et le deck monte quand même. ⚠ Les deux « Spider-Man » du zip sont DEUX cartes, pas deux illustrations. **Aucun fichier moteur partagé touché.** Trois défauts trouvés et corrigés : `bc002` n'a aucun dégât consécutif imprimé (le montage évident ne partait jamais), `bc010` posait 250 questions par 8 parties faute d'un filtre dans `conditions`, et le plafond de 3 n'est pas un plafond de pose contrairement à `spider_man_noir`. Journal : `.planning/todos/2026-09-05-black-cat-gabarits-processus-carte.md`. |
 | ~~**Cameo compliment**~~ | BlueRiver | 3 | ~~4/5~~ **1/5** | ✅ **PORTÉ le 05/09/2026**, set 162, préfixe `cc`. ⚠ **La note 4/5 était fausse** : « l'écran qui va avec » existe déjà, la carte OFFICIELLE `58031` Cameo (Meneur) fait exactement cela et ces trois cartes en sont les compléments d'aspect, texte pour texte. Le portage a consisté à recopier son montage en changeant le filtre. ⚠ Ce n'est PAS un pack de héros : trois cartes d'aspect, aucun deck de départ, aucun aspect à arbitrer. **Aucun fichier moteur partagé touché, aucun mot-clé nouveau.** Un seul écart délibéré avec la carte officielle : `Class == "Hero"` ajouté à « identity-specific », ce que `58031` ne teste pas. Journal : `.planning/todos/2026-09-05-cameo-compliment-gabarits-processus-carte.md`. |
 | ~~**Superior Spider-Man**~~ | Rainy | 22 | 4/5 | ✅ **PORTÉ le 08/09/2026**, set 167, préfixe `su`, 21 cartes, **DEUX decks de départ** (Peter Parker / Elliot Tolliver), le moteur ne montant qu'un alter-ego par deck. Compteurs `threat`/`surveillance` et trait `HENCHMAN` ajoutés au moteur. Journal : `.planning/todos/2026-09-08-superior-spider-man-gabarits-processus-carte.md`. Analyse d'origine conservée : Mot-clé `Track` : de la MENACE SUR UN SBIRE, état de jeu inexistant. Plus DEUX alter-ego au choix avec chacun son obligation. |
@@ -286,7 +288,7 @@ Sif, Armored Spidey, Night Thrasher, Yondu, Doctor Druid, Blink, Texas Twister,
 Beta Ray Bill, Throg, Spider-Man Noir, Black Cat, Cameo compliment. Sets 147 à
 162, sans trou sauf 149 attribué à Iron Man Model 42.
 
-**Restants (3)** : Spider-Woman, Venomized, Muse. Relevé refait le 09/09/2026
+**Restants (2)** : Spider-Woman et Muse. (Venomized livré le 09/09/2026, set 168.) Relevé refait le 09/09/2026
 dans `tools/prefixes_fanmade.json`. (Sunfire porté le 06/09/2026, set 163 ;
 Ares 164 et Blade 165 le 07/09 ; Spider-Man 2099 166 et Superior Spider-Man 167
 le 08/09.) Aucun des trois n'a encore de préfixe réservé : le faire avant
@@ -338,8 +340,8 @@ puis **Spider-Woman**, la dernière. Aucun ne dépend des autres, chacun apporte
 un mot-clé maison ou du volume.
 
 **Vague 5, les chantiers** : ~~Superior Spider-Man~~ ✅ (08/09/2026, set 167),
-~~Doctor Druid~~ ✅ (04/09/2026, set 155), puis Venomized (un aspect entier, le
-plus rentable de ce qui reste), Iron Patriot (reste du plan d'origine) et Muse
+~~Doctor Druid~~ ✅ (04/09/2026, set 155), ~~Venomized~~ ✅ (09/09/2026, set 168,
+37 cartes, 39 cas verts), puis Iron Patriot (reste du plan d'origine) et Muse
 (à trancher avec l'utilisateur avant tout code).
 
 **Hors vague** : Doctor Doom Alt Arts, 2/5 et sans dépendance, à faire quand on
@@ -380,7 +382,7 @@ Vérifié dans `src/` et dans `docs/reference/mots-cles/` le 02/09/2026.
 | `Seek` | Spider-Man 2099 | absent ; défini par l'insert du pack |
 | `summon` | Yondu | absent ; à déduire des cartes, pas d'insert |
 | `Track` | Superior Spider-Man | absent ; défini par l'insert du pack |
-| `weakness` | Venomized | absent ; défini par l'insert du pack |
+| `weakness` | Venomized | ✅ fiché le 09/09/2026 : `docs/reference/mots-cles/weakness.md`. Aucun code moteur — mesuré, 2 cas calibrés |
 | ~~`Multiverse`~~ | Black Cat | ✅ **FICHE CRÉÉE le 05/09/2026** (`docs/reference/mots-cles/multiverse.md`). Employé par TROIS auteurs (`ra002` rainy, `bw003` brawn, `bc003` blackcat) et défini par AUCUN. Définition arbitrée : marqueur de DECKBUILDING, **zéro ligne de code**, l'unicité native fait tout le travail. ⚠ Reste à ne pas confondre avec le TRAIT `MULTIVERSE` de `wd029`. |
 | `teamwork (VAMPIRE)` | Blade | présent dans les fabriques `environment` du moteur, sans fiche |
 | `Acceleration` | Spider-Man 2099 | ⚠ homonyme total du mot-clé OFFICIEL déjà fiché. Annoter `acceleration.md`. |

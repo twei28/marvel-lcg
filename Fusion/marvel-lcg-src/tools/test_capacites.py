@@ -25637,6 +25637,765 @@ CAS = [
     },
     # FIN DU BLOC SUPERIOR SPIDER-MAN
     # FIN DU BLOC SPIDER-MAN 2099
+
+    # =======================================================================
+    # VENOMIZED (ekAugust, set 168, prefixe `vz`) — SIXIEME ASPECT
+    # =======================================================================
+    {
+        "nom": "vz036 Flash Fire — MESURE du mot-cle WEAKNESS : une Traitrise vit dans le deck du JOUEUR",
+        "pourquoi": ("Le mot-cle maison `weakness` repose sur une hypothese qu'il faut "
+                     "MESURER avant d'ecrire sa fiche : une carte de type Treachery, "
+                     "placee dans le deck du joueur, se pioche-t-elle normalement et son "
+                     "`AfterCardEnterHand` part-il ? Si oui, le mot-cle ne coute AUCUN "
+                     "code moteur. Ce cas est la preuve, pas une illustration"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz036')"],
+        "declencher": ["Puzzle.Draw(1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["vz036"], "degats": [["01001b", 1]]},
+    },
+    {
+        "nom": "vz037 Sensory Overload — 1 menace sur CHAQUE manigance en entrant en main",
+        "pourquoi": ("La jumelle de vz036, l'autre bout du set « Venomized Weakness ». "
+                     "« place 1 threat on EACH scheme » : le complot principal compte, et "
+                     "le cas le mesure sur lui"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz037')",
+                          "Puzzle.SetThreat('01097b', 3)"],
+        "declencher": ["Puzzle.Draw(1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["vz037"], "menace": [["01097b", 4]]},
+    },
+
+    # --- Les valeurs de Spider-Man en forme heros servent de temoin :
+    #     ATQ 2, CTR 1, DEF 3. Les trois cartes qui additionnent deux
+    #     caracteristiques rendent donc TROIS chiffres differents (3, 4 et 5),
+    #     ce qu'un seul heros aux valeurs egales n'aurait pas permis de
+    #     distinguer.
+    {
+        "nom": "vz013 Inner Strength — degats = ATQ + CTR du heros (2 + 1 = 3)",
+        "pourquoi": ("« Deal damage to an enemy equal to your ATK and THW combined ». Le "
+                     "chiffre 3 n'est celui d'aucune des deux caracteristiques prise "
+                     "seule : c'est la somme qui est mesuree"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz013", "01090"],
+        "ne_pas_depenser": ["vz013"],
+        "declencher": [],
+        "jouer": ["vz013"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "vz010 Dive into Danger — menace retiree = CTR + DEF du heros (1 + 3 = 4)",
+        "pourquoi": ("« Remove threat from a scheme equal to your THW and DEF combined ». "
+                     "5 menaces posees, 4 retirees, 1 restante : le chiffre distingue "
+                     "cette carte de vz013 (3) et de vz007 (5)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        # ⚠⚠ SetThreat AVANT ChangeForm, JAMAIS APRES. Mesure du 09/09/2026 :
+        # toute menace posee apres `Puzzle.ChangeForm` est PERDUE, la carte
+        # relue est a 0. Sonde : « SetThreat seul » -> 5 ; « SetThreat apres
+        # ChangeForm » -> 0 ; « SetThreat avant ChangeForm » -> 5. Quatre cas
+        # `vz` ont ete rouges pour cette seule raison.
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz010", "01089"],
+        "ne_pas_depenser": ["vz010"],
+        "declencher": [],
+        "jouer": ["vz010"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "vz007 Backed into a Corner — degats prevenus = DEF + ATQ de Storm (1 + 2 = 3), zero subi",
+        "pourquoi": ("« prevent an amount of damage equal to your DEF and ATK combined ». "
+                     "⚠ STORM et non Spider-Man. Rhino niveau 1 frappe a 2 et Spider-Man "
+                     "a DEF 3 : il ne prenait AUCUN degat meme sans la carte, le cas etait "
+                     "un faux vert. Storm a DEF 1, il resterait donc 1 degat, que les 3 "
+                     "prevenus ramenent a ZERO"),
+        "scenario": "rhino",
+        "heros": "storm",
+        "mise_en_place": ["Puzzle.ChangeForm('36001b')"],
+        "main_exclusive": ["vz007", "01088"],
+        "ne_pas_depenser": ["vz007"],
+        "declencher": ["Puzzle.Defend('36001a', '01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "vz016 Symbiotic Drop Kick — 4 degats, et le bonus PAYE EN [physical] SEUL",
+        "pourquoi": ("« If you paid for this card using ONLY [physical] resources, stun "
+                     "that enemy and draw 1 card ». Paye avec deux Strength : que du "
+                     "[physical], donc l'etourdissement DOIT tomber"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz016", "01090", "01090"],
+        "ne_pas_depenser": ["vz016"],
+        "declencher": [],
+        "jouer": ["vz016"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "vz017 Symbiotic For Justice! — 4 menaces retirees quand le paiement contient du [mental]",
+        "pourquoi": ("« 4 threat instead, if you paid using A [mental] resource ». Le "
+                     "chiffre mesure distingue les deux branches : 4 et non 3"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        # ⚠⚠ SetThreat AVANT ChangeForm, JAMAIS APRES. Mesure du 09/09/2026 :
+        # toute menace posee apres `Puzzle.ChangeForm` est PERDUE, la carte
+        # relue est a 0. Sonde : « SetThreat seul » -> 5 ; « SetThreat apres
+        # ChangeForm » -> 0 ; « SetThreat avant ChangeForm » -> 5. Quatre cas
+        # `vz` ont ete rouges pour cette seule raison.
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz017", "01089", "01089"],
+        "ne_pas_depenser": ["vz017"],
+        "declencher": [],
+        "jouer": ["vz017"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "vz019 Symbiotic Multitasking — 2 menaces retirees SANS [mental] au paiement",
+        "pourquoi": ("Le CONTRE-CAS de la seconde phrase : paye en [physical] seul, la "
+                     "carte ne retire QUE 2 menaces. 5 posees, 3 restantes. Sans ce cas, "
+                     "un code qui retirerait toujours 4 passerait pour juste"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        # ⚠⚠ SetThreat AVANT ChangeForm, JAMAIS APRES. Mesure du 09/09/2026 :
+        # toute menace posee apres `Puzzle.ChangeForm` est PERDUE, la carte
+        # relue est a 0. Sonde : « SetThreat seul » -> 5 ; « SetThreat apres
+        # ChangeForm » -> 0 ; « SetThreat avant ChangeForm » -> 5. Quatre cas
+        # `vz` ont ete rouges pour cette seule raison.
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz019", "01090"],
+        "ne_pas_depenser": ["vz019"],
+        "declencher": [],
+        "jouer": ["vz019"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "vz021 Symbiotic One By One — le sbire tombe, et la SECONDE attaque part",
+        "pourquoi": ("« If this attack DEFEATS that enemy, deal 2 damage to an enemy ». "
+                     "Weapons Runner a 2 PV : les 2 premiers degats le tuent, ce qui ouvre "
+                     "la seconde attaque. Les DEUX bouts sont mesures — sbire hors jeu ET "
+                     "2 degats sur Rhino"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "main_exclusive": ["vz021", "01088"],
+        "ne_pas_depenser": ["vz021"],
+        "declencher": [],
+        "jouer": ["vz021"],
+        "cibles": ["01121", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "vz018 Symbiotic Go All Out — degats = CTR + ATQ + DEF (1 + 2 + 3 = 6), heros incline",
+        "pourquoi": ("« deal damage equal to the total of your hero's THW, ATK, and DEF ». "
+                     "Le cout « Exhaust your hero » est mesure AUSSI : sans lui la carte "
+                     "serait jouable en boucle"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz018", "01089", "01088"],
+        "ne_pas_depenser": ["vz018"],
+        "declencher": [],
+        "jouer": ["vz018"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "exhausted": ["01001a"]},
+    },
+    {
+        "nom": "vz020 Symbiotic Not Today! — +2 DEF sur Storm, zero degat, PUIS 2 menaces retirees",
+        "pourquoi": ("Les DEUX moities de la carte dans le meme cas : Rhino frappe a 4, "
+                     "⚠ STORM (DEF 1), meme raison que vz007. Rhino frappe a 2, 1 de DEF "
+                     "plus 2 font 3, donc aucun degat — et c'est ce zero qui declenche la "
+                     "seconde phrase"),
+        "scenario": "rhino",
+        "heros": "storm",
+        # ⚠⚠ SetThreat AVANT ChangeForm : voir vz010.
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.ChangeForm('36001b')"],
+        "main_exclusive": ["vz020", "01089"],
+        "ne_pas_depenser": ["vz020"],
+        "declencher": ["Puzzle.Defend('36001a', '01094')"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "vz023 Symbiotic Sneak Attack — l'allie de la MAIN entre en jeu",
+        "pourquoi": ("« Choose an ally IN YOUR HAND that shares a TRAIT with your identity "
+                     "-> put that ally into play ». Agent Anti-Venom est AVENGER, "
+                     "Spider-Man aussi : le partage de trait est reel, pas suppose"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz023", "vz001", "01090"],
+        "ne_pas_depenser": ["vz023", "vz001"],
+        "declencher": [],
+        "jouer": ["vz023"],
+        "cibles": ["vz001"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["vz001"]},
+    },
+    {
+        "nom": "vz009 \"Can't Escape Us!\" — 2 degats, puis 3 de plus en inclinant une carte SYMBIOTE",
+        "pourquoi": ("« Exhaust a SYMBIOTE card you control -> deal an ADDITIONAL 3 damage "
+                     "to THAT enemy ». Le total 5 sur la MEME cible, et Agent Anti-Venom "
+                     "incline : les deux bouts du marche"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz001')"],
+        "main_exclusive": ["vz009", "01090", "01090"],
+        "ne_pas_depenser": ["vz009"],
+        "declencher": [],
+        "jouer": ["vz009"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "exhausted": ["vz001"]},
+    },
+
+
+
+    {
+        "nom": "vz001 Agent Anti-Venom — defausse jusqu'a un allie du MEME TRAIT, qui entre en jeu",
+        "pourquoi": ("« discard cards from the top of your deck UNTIL you discard an ally "
+                     "that SHARES A TRAIT with him ». Mania est SYMBIOTE comme lui : le "
+                     "partage est reel. Le deck ne contient qu'elle, donc la carte trouvee "
+                     "ne peut pas etre un hasard"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz003')"],
+        "declencher": ["Puzzle.PutIntoPlay('vz001')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["vz003"]},
+    },
+    {
+        "nom": "vz002 Codex — vaincu pendant la phase du joueur, il revient si le dessus est VENOMIZED",
+        "pourquoi": ("« If that card is a Venomized (black) card, return Codex to your "
+                     "hand ». Le deck ne contient que vz013, une carte de l'aspect : la "
+                     "condition est donc forcement vraie, et le retour en main mesurable"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz013')",
+                          "Puzzle.PutIntoPlay('vz002')"],
+        "declencher": ["Puzzle.Damage('vz002', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["vz002"]},
+    },
+    {
+        "nom": "vz003 Mania — vaincue pendant la phase du joueur, elle fait piocher 1 carte",
+        "pourquoi": ("Le deck ne contient qu'Energy : si la carte piochee arrive en main, "
+                     "c'est que la pioche a bien eu lieu. Sans mesure sur une carte NOMMEE, "
+                     "une pioche est invisible"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088')",
+                          "Puzzle.PutIntoPlay('vz003')"],
+        "declencher": ["Puzzle.Damage('vz003', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"]},
+    },
+    {
+        "nom": "vz004 Red Goblin — un sbire entre en jeu, il s'incline et lui met 1 degat",
+        "pourquoi": ("Les DEUX bouts : le degat sur le sbire QUI VIENT D'ENTRER (« that "
+                     "enemy », pas un ennemi au choix) et l'inclinaison, qui est le cout"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vz004')"],
+        "declencher": ["Puzzle.PutIntoPlay('01121')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01121", 1]], "exhausted": ["vz004"]},
+    },
+    {
+        "nom": "vz005 Sleeper — vaincu pendant la phase du joueur, il desoriente le vilain",
+        "pourquoi": ("La troisieme de la famille vz002 / vz003 / vz005 : meme declencheur, "
+                     "meme fenetre, effet different"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vz005')"],
+        "declencher": ["Puzzle.Damage('vz005', 3)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]]},
+    },
+    {
+        "nom": "vz011 Feed the Hunger — le sbire est MIS K.O. et soigne ses PV imprimes",
+        "pourquoi": ("« DEFEAT a non-ELITE minion -> heal damage equal to that enemy's "
+                     "TOTAL hit points ». Weapons Runner a 2 PV imprimes : l'identite "
+                     "blessee de 5 doit redescendre a 3. Le chiffre prouve qu'on lit les "
+                     "PV MAXIMUM et non les PV restants"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.Damage('01001a', 5)"],
+        "main_exclusive": ["vz011", "01090", "01090"],
+        "ne_pas_depenser": ["vz011"],
+        "declencher": [],
+        "jouer": ["vz011"],
+        "cibles": ["01121"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "degats_identite": 3},
+    },
+    {
+        "nom": "vz008 Black Webbing — CONTRE-CAS SOLO : sans autre joueur, elle ne fait RIEN",
+        "pourquoi": ("« a minion engaged with ANOTHER PLAYER ». En solo il n'y a aucun "
+                     "autre joueur : la carte ne peut rien voler, et le sbire engage avec "
+                     "nous NE DOIT PAS etre etourdi. Lecon deja payee sur tg002 — sans ce "
+                     "cas, un code qui viserait « n'importe quel sbire » passerait pour "
+                     "juste"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "main_exclusive": ["vz008", "01089"],
+        "ne_pas_depenser": ["vz008"],
+        "declencher": [],
+        "jouer": ["vz008"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01121", "Stunned"]]},
+    },
+    {
+        "nom": "vz031 First Contact — +1 ATQ, +1 CTR ET +1 DEF sur l'identite",
+        "pourquoi": ("La carte vaut a elle seule les trois ameliorations basiques du Set "
+                     "de base (01057, 01065, 01081). Les TROIS ecarts sont mesures : un "
+                     "seul oubli dans `GiveKeywordToAttached` passerait sinon inapercu.\n"
+                     "⚠ ET L'ICONE HAZARD, ajoutee le 09/09/2026 : le scan porte le glyphe "
+                     "`H` de ChampionsIcons.ttf, c'est-a-dire `icon-hazard`, et le premier "
+                     "portage l'avait laisse « non identifie ». C'est ce qui equilibre une "
+                     "carte a 2 qui donne +1 aux TROIS pouvoirs — meme marche que `27191` "
+                     "Symbiote Suit, la carte basique citee par la decklist du meme auteur"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz031')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 1, "thwart": 1, "defense": 1},
+                    "icones": [["Hazard", 1]]},
+    },
+    {
+        "nom": "vz035 \"You Are What You Eat\" — un soin de l'identite fait piocher, la carte s'incline",
+        "pourquoi": ("« After you heal damage from YOUR IDENTITY, exhaust this card -> "
+                     "draw 1 card ». Le deck ne contient qu'Energy : sa presence en main "
+                     "prouve la pioche. L'inclinaison prouve que le cout est bien paye"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088')",
+                          "Puzzle.PutIntoPlay('vz035')",
+                          "Puzzle.Damage('01001b', 3)"],
+        "declencher": ["Puzzle.Heal('01001b', 1)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"], "exhausted": ["vz035"]},
+    },
+    {
+        "nom": "vz028 Alchemax — remonte la carte d'ASPECT du dessus de la defausse en main",
+        "pourquoi": ("« add the TOPMOST ASPECT card from YOUR discard pile to your hand ». "
+                     "La defausse ne contient que vz013, une carte d'aspect : ce qui "
+                     "remonte ne peut pas etre autre chose"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('vz013')",
+                          "Puzzle.PutIntoPlay('vz028')"],
+        "declencher": ["Puzzle.Action('vz028', 'AlterEgoAction')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["vz013"], "exhausted": ["vz028"]},
+    },
+    {
+        "nom": "vz014 Scared of the Dark — le Tough saute, et l'ennemi est etourdi",
+        "pourquoi": ("« Remove a tough status card from an enemy -> stun that enemy ». Les "
+                     "DEUX bouts sont mesures : le Tough parti ET l'etourdissement. Un code "
+                     "qui etourdirait sans retirer le Tough passerait sinon"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.Tough('01121')"],
+        "main_exclusive": ["vz014"],
+        "ne_pas_depenser": ["vz014"],
+        "declencher": [],
+        "jouer": ["vz014"],
+        "cibles": ["01121"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01121", "Stunned"]],
+                    "statuts_absents": [["01121", "Tough"]]},
+    },
+
+    {
+        "nom": "vz014 Scared of the Dark — TEMOIN D'EPUISEMENT : le SECOND exemplaire du round ne fait rien",
+        "pourquoi": ("« Max 1 per round », limite IMPRIMEE, donc temoin exige "
+                     "(PROCESSUS-CARTE 7 bis). DEUX ennemis Tough, DEUX exemplaires en "
+                     "main : le second ennemi doit GARDER son Tough et ne pas etre "
+                     "etourdi. C'est le REFUS qui est mesure, pas le succes"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.Tough('01121')",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.Tough('01129')"],
+        "main_exclusive": ["vz014", "vz014"],
+        "ne_pas_depenser": ["vz014"],
+        "declencher": [],
+        "jouer": ["vz014", "vz014"],
+        "cibles": ["01121", "01129"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01129", "Tough"]],
+                    "statuts_absents": [["01129", "Stunned"]]},
+    },
+    {
+        "nom": "vz015 Stronger Together — deux personnages du MEME TRAIT redresses",
+        "pourquoi": ("« Ready 2 friendly characters that SHARE A TRAIT ». Agent Anti-Venom "
+                     "et Mania sont tous deux SYMBIOTE : le partage est entre EUX, pas "
+                     "avec le heros. Les deux sont inclines au depart, donc les deux "
+                     "redressements sont mesurables"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz001')",
+                          "Puzzle.PutIntoPlay('vz003')",
+                          "Puzzle.Exhaust('vz001')",
+                          "Puzzle.Exhaust('vz003')"],
+        "main_exclusive": ["vz015", "01090"],
+        "ne_pas_depenser": ["vz015"],
+        "declencher": [],
+        "jouer": ["vz015"],
+        "cibles": ["vz001", "vz003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["vz001", "vz003"]},
+    },
+    {
+        "nom": "vz015 Stronger Together — TEMOIN D'EPUISEMENT : le second exemplaire du round ne redresse plus",
+        "pourquoi": ("« Max 1 per round », limite IMPRIMEE. Quatre personnages inclines, "
+                     "deux exemplaires en main : la seconde paire doit RESTER inclinee"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz001')",
+                          "Puzzle.PutIntoPlay('vz003')",
+                          "Puzzle.PutIntoPlay('vz005')",
+                          "Puzzle.Exhaust('vz001')",
+                          "Puzzle.Exhaust('vz003')",
+                          "Puzzle.Exhaust('vz005')"],
+        "main_exclusive": ["vz015", "vz015", "01090", "01090"],
+        "ne_pas_depenser": ["vz015"],
+        "declencher": [],
+        "jouer": ["vz015", "vz015"],
+        "cibles": ["vz001", "vz003", "vz005"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["vz005"]},
+    },
+    {
+        "nom": "vz022 Symbiotic Perseverance — le changement de forme donne un Tough au heros",
+        "pourquoi": ("« Hero Response: After you change form, give your hero a tough status "
+                     "card ». Le declencheur EST le changement de forme, pas une action"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["vz022", "01089"],
+        "ne_pas_depenser": ["vz022"],
+        "declencher": ["Puzzle.ChangeForm('01001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01001a", "Tough"]]},
+    },
+    {
+        "nom": "vz006 Venom — un sbire tombe, une carte part FACE CACHEE sous lui",
+        "pourquoi": ("« After you defeat a minion, tuck a card from your hand under here ». "
+                     "⚠ `taille_pose_sous` lit la zone avec `Get(True)`, seul moyen de voir "
+                     "une carte FACE CACHEE — meme piege que su012 Contingency Plan"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz006')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "main_exclusive": ["vz013"],
+        "ne_pas_depenser": ["vz013"],
+        "declencher": ["Puzzle.Attack('01001a', '01121')"],
+        "cibles": ["vz013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "taille_pose_sous": [["vz006", 1]]},
+    },
+    {
+        "nom": "vz024 In the Thick of It — une fois contree, elle sort une amelioration SYMBIOTE du deck",
+        "pourquoi": ("« Each player MAY search their deck and discard pile for an upgrade "
+                     "with the SYMBIOTE trait and put it into play ». Le deck ne contient "
+                     "que First Contact : ce qui entre en jeu ne peut pas etre autre chose.\n"
+                     "⚠ CE CAS A ETE ROUGE LONGTEMPS, ET LA CARTE N'Y ETAIT POUR RIEN : "
+                     "`selector_end.py` portait un `assert deck.GetSize() != 0` qui faisait "
+                     "tomber le moteur des qu'une recherche sortait la derniere carte du "
+                     "deck. La carte OFFICIELLE `40019` echouait pareil — voir son cas, qui "
+                     "garde le correctif du 09/09/2026"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz031')",
+                          "Puzzle.PutIntoPlay('vz024')"],
+        # ⚠ On retire la menace DIRECTEMENT plutot que par un contre de base :
+        # `Puzzle.Thwart` ne garantit pas quelle manigance est visee, et le
+        # complot principal captait le contre.
+        "declencher": ["Puzzle.SetThreat('vz024', 0)"],
+        "accepter_choix": True,
+        "cibles": ["vz031"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["vz024"], "en_jeu": ["vz031"]},
+    },
+    {
+        "nom": "vz025 Gluttony — depensee comme ressource, elle redresse le heros",
+        "pourquoi": ("« After you SPEND this card, ready your hero ». Le heros est incline "
+                     "au depart : s'il est pret a la fin, c'est que la Reponse a bien "
+                     "suivi la depense"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.Exhaust('01001a')"],
+        "main_exclusive": ["vz013", "vz025"],
+        "declencher": [],
+        "jouer": ["vz013"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["01001a"]},
+    },
+    {
+        "nom": "vz026 Symbiote Infusion — depensee pour une carte SYMBIOTE, elle fait piocher",
+        "pourquoi": ("« When you spend this card to play a SYMBIOTE card, draw 1 card ». "
+                     "Symbiotic Drop Kick porte le trait ; le deck ne contient qu'Energy, "
+                     "dont la presence en main prouve la pioche"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088')",
+                          "Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["vz016", "vz026", "01090"],
+        "declencher": [],
+        "jouer": ["vz016"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"]},
+    },
+    {
+        "nom": "vz027 The Power of the Bond — DEUX exemplaires payent un cout 3, ce qui prouve le doublement",
+        "pourquoi": ("« DOUBLE the number of resources this card generates while paying for "
+                     "a Venomized (black) card ». Deux exemplaires rendent 2 ressources "
+                     "sans le doublement, 4 avec. Feed the Hunger coute 3 : SANS le "
+                     "doublement elle est INJOUABLE, et le sbire survit. Le cas ne peut "
+                     "donc pas etre vert par hasard"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "main_exclusive": ["vz011", "vz027", "vz027"],
+        "ne_pas_depenser": ["vz011"],
+        "declencher": [],
+        "jouer": ["vz011"],
+        "cibles": ["01121"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"]},
+    },
+    {
+        "nom": "vz029 Doctor Steven — la prochaine carte VENOMIZED coute 1 de moins",
+        "pourquoi": ("Symbiotic Sneak Attack coute 1 et la main NE CONTIENT AUCUNE "
+                     "RESSOURCE : elle n'est jouable que si la reduction a bien eu lieu. "
+                     "Un cas avec des ressources en main ne prouverait rien"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vz029')"],
+        # ⚠ La main NE CONTIENT AUCUNE RESSOURCE : Inner Strength coute 1 et
+        # n'est donc jouable QUE si la reduction a eu lieu. C'est tout
+        # l'interet du cas.
+        # ⚠ On change de forme APRES l'action : Doctor Steven est une Action
+        # d'ALTER-EGO, Inner Strength une Action de HEROS, et la reduction
+        # dure « this PHASE », qui couvre les deux.
+        # ⚠ Premiere version rouge : elle jouait vz023 Symbiotic Sneak Attack,
+        # qui exige un allie PARTAGEANT UN TRAIT AVEC L'IDENTITE. En forme
+        # civile l'identite est Peter Parker (GENIUS, SCIENTIST) et Agent
+        # Anti-Venom est AVENGER / SYMBIOTE : aucun trait commun, donc aucune
+        # cible. Le cas mesurait la mauvaise chose.
+        "main_exclusive": ["vz013"],
+        "ne_pas_depenser": ["vz013"],
+        "declencher": ["Puzzle.Action('vz029', 'AlterEgoAction')",
+                       "Puzzle.ChangeForm('01001b')"],
+        "jouer": ["vz013"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "exhausted": ["vz029"]},
+    },
+    {
+        "nom": "vz030 Durable Physiology — un pion klyntar consomme, et l'attaque du sbire ne passe plus",
+        "pourquoi": ("Les TROIS bouts : le pion tombe de 2 a 1, la carte s'incline, et "
+                     "l'attaque a 1 du sbire est ramenee a ZERO par la reduction. Sans la "
+                     "carte l'identite prendrait 1"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz030')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Attack('01121')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "compteurs": [["vz030", "klyntar", 1]],
+                    "exhausted": ["vz030"]},
+    },
+    {
+        "nom": "vz032 Klyntar Tendrils — la branche degats, PUIS le soin qui tombe dans tous les cas",
+        "pourquoi": ("« choose to EITHER deal 1 damage OR remove 1 threat. THEN, heal 1 "
+                     "damage from your identity ». Le pilote prend la PREMIERE branche "
+                     "(RECETTES §2). Le soin est mesure A PART : 3 degats poses, 2 "
+                     "restants — c'est lui qui prouve que le « Then » est HORS du choix"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.Damage('01001a', 3)",
+                          "Puzzle.PutIntoPlay('vz032')"],
+        "declencher": ["Puzzle.Action('vz032', 'HeroAction')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]],
+                    "degats_identite": 2,
+                    "compteurs": [["vz032", "klyntar", 2]]},
+    },
+    {
+        "nom": "vz033 Symbiotic Bond — genere du [wild] contre 1 degat et une inclinaison",
+        "pourquoi": ("« Take 1 damage AND exhaust this card -> generate a [wild] "
+                     "resource ». LES DEUX couts sont mesures : le degat sur l'identite ET "
+                     "l'inclinaison. La main ne contient aucune ressource, donc Inner "
+                     "Strength n'est payable QUE par cette carte"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz033')"],
+        "main_exclusive": ["vz013"],
+        "ne_pas_depenser": ["vz013"],
+        "declencher": [],
+        "jouer": ["vz013"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]],
+                    "degats_identite": 1,
+                    "exhausted": ["vz033"]},
+    },
+    {
+        "nom": "vz034 Urban Camouflage — l'ennemi est desoriente et la carte part a la defausse",
+        "pourquoi": ("Les DEUX couts et les DEUX effets : 1 degat pris, la carte defaussee, "
+                     "un Tough sur le heros et la confusion sur l'ennemi. Deux "
+                     "destinataires differents dans la meme phrase"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('vz034')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Attack('01121')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01121", "Confused"], ["01001a", "Tough"]],
+                    "hors_jeu": ["vz034"]},
+    },
+    {
+        "nom": "vz012 Forceful Bonding — X cartes defaussees, une VENOMIZED, et on passe en heros",
+        "pourquoi": ("« Discard the top X cards of your deck. IF ANY of those cards is a "
+                     "SYMBIOTE or Venomized (black) card, change to your hero form ». Le "
+                     "deck ne contient qu'Inner Strength, une carte de l'aspect : la "
+                     "condition est donc forcement vraie"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz013')"],
+        "main_exclusive": ["vz012", "01090"],
+        "ne_pas_depenser": ["vz012"],
+        "declencher": [],
+        "jouer": ["vz012"],
+        # ⚠ Meme piege que br002 et br005 : SANS `surpayer`, X vaut 0, rien
+        # n'est defausse et la carte « active » sans effet. Le journal ne
+        # montre alors qu'un « Forceful Bonding activates » parfaitement muet.
+        "surpayer": True,
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01001a"]},
+    },
+
+
+
+
+
+    {
+        "nom": "40019 Lock and Load — la carte OFFICIELLE que le meme correctif moteur repare",
+        "pourquoi": ("⚠⚠ CE CAS NE PORTE PAS SUR UNE CARTE FAN-MADE : il garde le correctif "
+                     "de `selector_end.py` du 09/09/2026. Un `assert deck.GetSize() != 0` y "
+                     "rendait inatteignable la branche ecrite juste en dessous, celle qui "
+                     "prevoit justement le deck vide. Toute RECHERCHE qui sort la derniere "
+                     "carte d'un deck faisait donc tomber le moteur — en silence sous le "
+                     "harnais, et les cartes cherchees DISPARAISSAIENT de toutes les zones.\n"
+                     "Trouve en portant vz024 In the Thick of It, puis reproduit A "
+                     "L'IDENTIQUE sur cette carte officielle : les deux etaient cassees. "
+                     "Le deck ne contient qu'UNE carte, ce qui est exactement la condition "
+                     "qui declenchait l'assertion"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('vz032')",
+                          "Puzzle.PutIntoPlay('40019')"],
+        "declencher": ["Puzzle.SetThreat('40019', 0)"],
+        "accepter_choix": True,
+        "cibles": ["vz032"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["40019"], "en_jeu": ["vz032"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -26909,6 +27668,24 @@ def etat_attendu(monde, aides):
         if subis < attendu["degats_identite_min"]:
             soucis.append(f"degats sur l'identite = {subis} "
                           f"(attendu au moins {attendu['degats_identite_min']})")
+
+    # Les ICONES en jeu (Hazard, Amplify, Acceleration, Crisis). Ajoute le
+    # 09/09/2026 pour vz031 First Contact : ces mots-cles sont des BASES
+    # AUTOMATIQUES lues dans `desc`, sans script, et aucune cle existante ne
+    # pouvait dire s'ils etaient reellement PORTES. `attributs_carte` compare la
+    # valeur courante a la valeur IMPRIMEE : avec un desc vide les deux valent
+    # zero et le cas passe au vert sans rien prouver.
+    for nom_icone, attendu_n in (attendu.get("icones") or []):
+        from game.operate.worlds import Worlds
+        n = Worlds.GetIconsNum(monde.players[0].GetIdentity().card.game_area, [nom_icone])
+        if n != attendu_n:
+            detail = []
+            for f in Worlds.GetOnFieldCards(monde.players[0].GetIdentity().card.game_area):
+                detail.append(f"{getattr(f.paper,'card_id','?')}:"
+                              f"imprime={getattr(f,'printed_hazard','-')}"
+                              f",courant={getattr(f,'hazard','-')}")
+            soucis.append(f"icones {nom_icone} en jeu = {n} (attendu {attendu_n}) "
+                          f"[{' '.join(detail)}]")
 
     if attendu.get("dans_deck_rencontre"):
         from game.operate.worlds import Worlds

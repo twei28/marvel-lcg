@@ -78,6 +78,9 @@ la plus fréquente sur un pack vilain.
 - [x] squirrel.md (pack `squirrel_girl`)
 - [x] investigate-x.md (pack `jessica_jones`)
 - [x] setlist.md (pack `dazzler`)
+- [x] weakness.md (aspect `venomized` : des cartes de RENCONTRE qui vivent
+      dans le DECK DU JOUEUR et frappent quand on les pioche EN MAIN.
+      ⚠ Aucun code moteur — mesure du 09/09/2026, 2 cas calibres)
 - [x] showtime.md (pack `dazzler`)
 - [x] armored.md (pack `superior_iron_man`)
 - [x] fragile.md (pack `okoye`, déjà défini une première fois dans le pack

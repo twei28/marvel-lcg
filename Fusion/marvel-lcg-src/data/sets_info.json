@@ -1470,5 +1470,12 @@
   "encounters": [],
   "max_id": "su019"
  },
- "checksum": "ea306ecabbd574febde1c0e6717687116d267df2f838ba385e13418105f9995d"
+ "168. Custom (Venomized)": {
+  "name": "venomized",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "vz037"
+ },
+ "checksum": "af4a93b2c5adef5b3fc64dfe4ce25ce048b388cc5c158dc3857c0b5e537bf041"
 }
