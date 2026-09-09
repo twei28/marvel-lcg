@@ -105,8 +105,33 @@ class GameServerBase(WebServer):
         reprises = self.seats_reprises()
         phase = self.phase_courante()
         for seat, phase_de_prise in list(reprises.items()):
-            if phase_de_prise != phase:
-                # Le tour a change : le siege revient a son proprietaire.
+            # ⚠⚠ CORRECTIF DU 09/09/2026 — `and self.seat_orphelin(seat)` AJOUTE.
+            #
+            # Sans lui, une table LOCALE A DEUX HEROS sur un serveur protege ne
+            # demarrait jamais : elle restait figee avant « Draw Cards », donc
+            # avant le mulligan. Signale en jeu (« il me sort toujours pas la
+            # premiere main pour pouvoir mulligan »), et reproduit ici le
+            # 09/09/2026 sur une copie locale configuree comme la place 1.
+            #
+            # La chaine, mesuree par une sonde posee dans `get_player_ids` :
+            #   /ws?hot_seat&p=0     -> allowed=[0,1,2,3]  ids=[0,1]
+            #   /get_ask?p=0         -> allowed=[2,3]      ids=[]
+            # Le plateau annonce le hot-seat sur le SOCKET et sur l'accuse de
+            # reception, mais `/get_ask` et `/post` sont per-siege et ne le
+            # portent pas (`handle_post` exige d'ailleurs UN seul siege). Un
+            # siege sans mot de passe prouve n'etait accorde que tant qu'il
+            # etait ORPHELIN ; des que le socket hot-seat le tenait, il cessait
+            # de l'etre, la reprise tombait au premier changement de phase, et
+            # plus rien ne le rendait. Le moteur posait sa question au siege 1,
+            # le client ne la voyait jamais, et la mise en place s'arretait la.
+            #
+            # La reprise dure donc maintenant tant que le siege est TENU. Le
+            # proprietaire, lui, le reprend par son cookie, chemin qui n'a pas
+            # bouge : c'est la garde du dessus (`seat_token_<siege>`), pas
+            # celle-ci.
+            if phase_de_prise != phase and self.seat_orphelin(seat):
+                # Le tour a change ET plus personne ne le tient : le siege
+                # revient a son proprietaire.
                 del reprises[seat]
             else:
                 allowed.add(seat)
