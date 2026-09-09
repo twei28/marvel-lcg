@@ -337,24 +337,19 @@ function autresFacesUrls(card: WorldCard): string[] {
  * purement techniques restees a zero sans version imprimee.
  */
 /**
- * Les JETONS poses sur la carte (images de l'utilisateur, 7 septembre 2026).
- * Sur une manigance : la menace posee. Sur un personnage : les degats SUBIS
- * (maximum moins courant), comme sur la table reelle, donc rien tant qu'il
- * est intact. Les PV restants, eux, se lisent dans la bande « 8 / 12 ».
+ * Le JETON pose sur la carte (image de l'utilisateur, 7 septembre 2026) : sur
+ * une manigance, la menace posee.
+ *
+ * ⚠ 09/09/2026 : le jeton de DEGATS sur les personnages a ete RETIRE, a la
+ * demande de l'utilisateur. La bande de PV « 8 / 12 » dit deja tout, et le
+ * rond rouge faisait doublon sur la carte. `ScanCard` garde la propriete
+ * `jetonDegats` : le cartouche du deroule s'en sert pour le jeton qui TOMBE
+ * sur la carte a chaque etape de degats, qui est un geste, pas un etat.
  */
 function jetonMenace(card: WorldCard): number | undefined {
   if (!isScheme(card)) return undefined
   const courante = nombre(card.info.k_threat)
   return courante !== undefined && courante > 0 ? courante : undefined
-}
-
-function jetonDegats(card: WorldCard, catalogue: Catalogue): number | undefined {
-  if (!isUnit(card) || card.info.is_infinite_health) return undefined
-  const courants = nombre(card.info.health)
-  const max = pvMaximum(card, catalogue)
-  if (courants === undefined || max === undefined) return undefined
-  const degats = max - courants
-  return degats > 0 ? degats : undefined
 }
 
 function compteursAffiches(card: WorldCard): Array<{ label: string; value: number; cle: string }> {
@@ -419,7 +414,6 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     allyHp: pvAffiches(card, contexte.catalogue),
     schemeThreat: menaceAffichee(card),
     jetonMenace: jetonMenace(card),
-    jetonDegats: jetonDegats(card, contexte.catalogue),
     jauge: jaugeAffichee(card, contexte.catalogue),
     counters: compteursAffiches(card),
     // Prise de Lock Jaws (Alligator Loki) : le moteur marque l'ennemi tenu
