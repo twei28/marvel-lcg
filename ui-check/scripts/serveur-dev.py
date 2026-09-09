@@ -9,8 +9,11 @@ Le port 2345 n'est pas toujours disponible : `JOUER-EN-MULTI.bat` y demarre une
 partie multijoueur depuis `Fusion/marvel-lcg-src`, qui est un codebase de
 DISTRIBUTION, perime, et protege par un mot de passe. Tant qu'une partie tourne,
 le harnais n'a aucun moyen d'atteindre le codebase de TRAVAIL
-(`~/marvel-work/fusion/marvel-lcg-src`), le seul que `ui-app/deployer.sh`
+(la copie vivante, `Fusion/marvel-lcg-src`), le seul que `ui-app/deployer.sh`
 alimente et que les plans modifient.
+
+⚠ 09/09/2026 : ce paragraphe parlait d'un codebase WSL supprime le 31/08/2026.
+Il n'y a plus qu'une copie, celle du dossier projet.
 
 Ce script ouvre un second moteur, sur un autre port, depuis le codebase de
 travail, sans toucher a la partie en cours.
@@ -34,7 +37,12 @@ import subprocess
 import sys
 import types
 
-JEU_PAR_DEFAUT = os.path.expanduser("~/marvel-work/fusion/marvel-lcg-src")
+# ⚠ CORRECTIF DU 09/09/2026 : le defaut pointait sur
+# `~/marvel-work/fusion/marvel-lcg-src`, SUPPRIME le 31/08/2026 (rangement des
+# copies, GUIDE-CREATION-CONTENU §1.1). Le script echouait donc sur
+# « Introuvable : .../launcher_fast.py » a chaque appel sans `--jeu`. La copie
+# vivante est la seule qui reste.
+JEU_PAR_DEFAUT = "/mnt/c/Users/arnau/Desktop/Marvel LCG/Fusion/marvel-lcg-src"
 
 # Comme launcher_fast.py, et AVANT tout import du moteur : sans cette variable le
 # moteur demarre en mode debug (version `0.5.9.200d`) et cherche `editor.editor`,
