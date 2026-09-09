@@ -30,13 +30,16 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = JoueurDeCetteCarte(effect)
         if joueur is None:
             return
-        face = Search.PlayerCard(
-            effect, joueur,
-            include_player_deck=True,
-            card_type=Event,
-        )
+        # ⚠⚠ CORRECTIF DU 08/09/2026 — `seek` N'EST PAS UNE RECHERCHE.
+        # L'insert du pack `spider_man_2099` (meme auteur, Rainy) donne enfin la
+        # definition du mot-cle : « discards cards from the top of a deck until
+        # a certain type of card is discarded ». Cette carte defaussait donc
+        # RIEN et prenait la carte directement, ce qui lui otait tout son cout
+        # reel. Arbitrage utilisateur du 08/09/2026 : corriger partout.
+        # Fiche : `docs/reference/mots-cles/seek.md`.
+        face = joueur.DiscardDeckUntil(effect, card_type=Event)
         if face is not None:
-            joueur.GainCard(face, effect)
+            Faces.AddToHand([face], joueur, effect)
 
     return [
         AbilityFactory.CanPlayThisUpgradeCard(),

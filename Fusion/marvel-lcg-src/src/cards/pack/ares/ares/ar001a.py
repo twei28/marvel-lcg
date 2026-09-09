@@ -27,6 +27,12 @@ from . import *
 #  ⚠ « ACTION », pas « Hero Action » : mais la capacite vit sur la face HEROS,
 #    donc elle n'existe qu'en forme heros. Rien a ajouter.
 #  ⚠ « Seek a minion ... → » : la convocation est le COUT, la fleche le dit.
+#    ⚠⚠ Depuis le 08/09/2026 elle est ecrite DANS l'operation et non plus par
+#    `CostFunc.SearchForCard` : `seek` DEFAUSSE le dessus du deck rencontre
+#    jusqu'a un sbire (definition de l'auteur, enfin trouvee dans l'insert de
+#    spider_man_2099). La `conditions=[deck_rencontre_a_un_sbire]` reste la
+#    garantie que l'action n'est pas offerte pour rien, exactement comme quand
+#    c'etait un cout.
 #    ⚠ RECETTES §5 : un cout `SearchForCard` est OFFERT meme si le deck
 #    rencontre n'a aucun sbire (`HasTargets` rend vrai sur `Select.From("This")`)
 #    — d'ou `conditions=[deck_rencontre_a_un_sbire]`, sans quoi l'action serait
@@ -60,10 +66,19 @@ def GetAbilities() -> Sequence['Ability']:
         if joueur is None:
             return
 
-        # Le sbire convoque par le COUT : on l'engage avec le joueur.
-        cout = effect.cost_func.Get(CostFunc.SearchForCard)
-        for sbire in list(getattr(cout, "searched_faces", []) or []):
-            if sbire is not None and Minion.IsType(sbire) and sbire.card.IsOnField():
+        # ⚠⚠ CORRECTIF DU 08/09/2026 — `seek` N'EST PAS UNE RECHERCHE.
+        # L'insert du pack `spider_man_2099` (meme auteur) definit enfin le
+        # mot-cle : « discards cards from the top of a deck until a certain type
+        # of card is discarded ». On DEFAUSSE donc le dessus du deck rencontre
+        # jusqu'a en defausser un sbire, puis on met CE sbire en jeu engage.
+        # Les cartes traversees restent dans la defausse rencontre : c'est tout
+        # le cout que l'ancienne lecture (`CostFunc.SearchForCard`) escamotait.
+        # Arbitrage utilisateur du 08/09/2026 : corriger partout.
+        # Fiche : `docs/reference/mots-cles/seek.md`.
+        sbire = Worlds.DiscardEncounterCardsUntil(effect, card_type=Minion)
+        if sbire is not None:
+            sbire.PutIntoPlay(joueur, effect)
+            if Minion.IsType(sbire) and sbire.card.IsOnField():
                 sbire.CastTo(Minion).EngagePlayer(joueur, effect)
 
         def piocher(cibles: Sequence['CardFace']) -> None:
@@ -90,7 +105,5 @@ def GetAbilities() -> Sequence['Ability']:
             apporter_la_guerre,
             conditions=[deck_rencontre_a_un_sbire],
         ).SetName("Bring the War")
-        .SetCostFunc(CostFunc.SearchForCard(
-            Minion, "PutIntoPlayEngagedYou", include_encounter_deck=True))
         .LimitOncePerRound(),
     ]

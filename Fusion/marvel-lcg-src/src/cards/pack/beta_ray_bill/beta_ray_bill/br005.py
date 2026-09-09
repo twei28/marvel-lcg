@@ -14,6 +14,9 @@ from . import *
 # CARTES DE REFERENCE
 #  - `14006` Speed Cyclone : le cout X (`effect.GetCostX()`).
 #  - `br011` Hammer Time : la convocation d'un sbire depuis le deck rencontre.
+#    ⚠ Hammer Time imprime « SEARCH the encounter deck », pas « seek » : elle
+#    n'est PAS concernee par le correctif du 08/09/2026 (tableau de
+#    `mots-cles/seek.md`).
 #
 # TEXTE CONTRE CODE
 #  « Choose X OF THE FOLLOWING » -> X branches parmi trois, et rien n'interdit
@@ -41,14 +44,20 @@ def GetAbilities() -> Sequence['Ability']:
 
         def convoquer(cibles: Sequence['CardFace']) -> None:
             Unused(cibles)
-            sbire = Search.SearchForCard(
-                effect, joueur,
-                include_encounter_deck=True,
-                card_type=Minion,
-            )
+            # ⚠⚠ CORRECTIF DU 08/09/2026 — `seek` N'EST PAS UNE RECHERCHE.
+            # L'insert du pack `spider_man_2099` (meme auteur, Rainy) definit
+            # enfin le mot-cle : « discards cards from the top of a deck until
+            # a certain type of card is discarded ». On defausse donc le dessus
+            # du deck rencontre jusqu'a un sbire — les cartes traversees restent
+            # dans la defausse rencontre, ce que l'ancienne lecture escamotait.
+            # ⚠ La TROISIEME branche, elle, dit « FIND a Beta Ray Bill card » :
+            # c'est bien une recherche, et elle N'EST PAS touchee.
+            # Arbitrage utilisateur du 08/09/2026. Fiche : `mots-cles/seek.md`.
+            sbire = Worlds.DiscardEncounterCardsUntil(effect, card_type=Minion)
             if sbire is not None:
                 sbire.PutIntoPlay(joueur, effect)
-                sbire.CastTo(Minion).EngagePlayer(joueur, effect)
+                if sbire.card.IsOnField():
+                    sbire.CastTo(Minion).EngagePlayer(joueur, effect)
             vaisseau = VaisseauEnJeu(effect)
             if vaisseau is not None:
                 Faces.ReadyAll([vaisseau], effect)
