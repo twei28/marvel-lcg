@@ -101,6 +101,7 @@ const CATALOGUE: Catalogue = {
   statImprimee: () => undefined,
   motsCles: () => [],
   surpayable: () => false,
+  type: () => undefined,
 } as unknown as Catalogue
 
 function monter(demande: Demande) {

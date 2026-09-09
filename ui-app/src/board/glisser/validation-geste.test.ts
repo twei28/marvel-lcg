@@ -56,6 +56,7 @@ const CATALOGUE: Catalogue = {
   statImprimee: () => undefined,
   motsCles: () => [],
   surpayable: () => false,
+  type: () => undefined,
 } as unknown as Catalogue
 
 /** Une attaque de base : deux ennemis possibles, aucun cout. */

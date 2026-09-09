@@ -476,11 +476,18 @@ export function CarteApercu({
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
           ne valent pas pour ces faces-la). */}
       {autresFaces.map((face) => (
-        <div className="apercu-face apercu-face-autre" key={face}>
+        <div
+          className={`apercu-face apercu-face-autre${(face.isLandscape ?? carteAgrandie.isLandscape) ? ' est-paysage' : ''}`}
+          key={face.url}
+        >
           <span className="apercu-face-label">{t('Autre face')}</span>
+          {/* CHAQUE face porte son orientation : le verso portrait d'un complot
+              ne doit pas heriter du cadre paysage de la face visible. Sans type
+              connu, on garde celle de la face visible, comme avant. */}
           <ScanCard
             {...carte}
-            imageUrl={face}
+            imageUrl={face.url}
+            isLandscape={face.isLandscape ?? carteAgrandie.isLandscape}
             stats={undefined}
             allyHp={undefined}
             schemeThreat={undefined}

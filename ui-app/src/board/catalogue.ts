@@ -84,6 +84,13 @@ export type Catalogue = {
   surpayable(cardId: string): boolean
   /** L'aspect de la carte, ou undefined si elle n'est pas une carte de joueur. */
   aspect(cardId: string): Aspect | undefined
+  /**
+   * Le TYPE imprime de la carte (« SideScheme », « Environment », « Ally »...),
+   * tel que cards.json l'ecrit. Sert a orienter une face que le monde ne
+   * decrit pas : le verso d'une carte recto-verso n'a pas de `card_type` cote
+   * moteur, seul le catalogue sait s'il se lit en paysage.
+   */
+  type(cardId: string): string | undefined
 }
 
 /** Catalogue absent : le plateau s'affiche quand meme, sans les PV maximum. */
@@ -93,6 +100,7 @@ export const catalogueVide: Catalogue = {
   motsCles: () => [],
   surpayable: () => false,
   aspect: () => undefined,
+  type: () => undefined,
 }
 
 /**
@@ -122,6 +130,7 @@ export function construire(donnees: unknown): Catalogue {
   const motsClesParCarte = new Map<string, MotCle[]>()
   const surpayables = new Set<string>()
   const aspects = new Map<string, Aspect>()
+  const types = new Map<string, string>()
 
   // cards.json = { "<nom de paquet>": [cartes...], "checksum": "<hexa>" }.
   for (const paquet of Object.values(donnees as Record<string, unknown>)) {
@@ -153,6 +162,7 @@ export function construire(donnees: unknown): Catalogue {
       if (carte.desc?.Cost === 'X') surpayables.add(id)
       const aspect = aspectDeClasse(carte.desc?.Class)
       if (aspect) aspects.set(id, aspect)
+      if (typeof carte.type === 'string') types.set(id, carte.type)
     }
   }
 
@@ -162,6 +172,7 @@ export function construire(donnees: unknown): Catalogue {
     motsCles: (cardId) => motsClesParCarte.get(cardId) ?? [],
     surpayable: (cardId) => surpayables.has(cardId),
     aspect: (cardId) => aspects.get(cardId),
+    type: (cardId) => types.get(cardId),
   }
 }
 

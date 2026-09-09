@@ -317,16 +317,49 @@ export type ContexteCarte = {
  * et n'en differe que par le suffixe. Un dos generique ("player", "encounter")
  * ne matche pas ce motif.
  */
-function autresFacesUrls(card: WorldCard): string[] {
+export type AutreFace = {
+  url: string
+  /**
+   * L'orientation de CETTE face, quand le catalogue connait son type ;
+   * `undefined` sinon, et l'apercu reprend alors celle de la face visible
+   * (le comportement d'avant, qui reste le bon repli).
+   */
+  isLandscape?: boolean
+}
+
+/**
+ * Un type IMPRIME (cards.json) se lit-il en paysage ? Complots et cartes de
+ * statut, comme `isLandscapeType` cote monde, mais avec les noms du papier :
+ * le catalogue dit « SideScheme » la ou le moteur dit « EncounterSideScheme ».
+ * `undefined` quand le type est inconnu : on ne decide pas a l'aveugle.
+ */
+export function paysageSelonTypePapier(type: string | undefined): boolean | undefined {
+  if (!type) return undefined
+  return ['MainScheme', 'SideScheme', 'Status'].includes(type)
+}
+
+/**
+ * Les autres faces d'une carte recto-verso, chacune avec SA propre
+ * orientation.
+ *
+ * ⚠ 09/09/2026 : l'apercu recopiait toutes les proprietes de la face visible
+ * sur le verso, orientation comprise. « Find the Senator » (SideScheme,
+ * paysage) a pour verso « Protect the Senator » (Environment, portrait) : le
+ * verso heritait du cadre paysage et du quart de tour, et se lisait couche.
+ * Signale en jeu. L'orientation vient desormais du type de CHAQUE face.
+ */
+export function autresFacesDe(card: WorldCard, catalogue: Catalogue): AutreFace[] {
   if (!card.is_face_up) return []
   const face = card.card_id?.match(/^(\d+)([a-z])$/)
   if (!face) return []
-  const urls: string[] = []
+  const faces: AutreFace[] = []
   for (const dos of card.down_card_ids ?? []) {
     const autre = dos.match(/^(\d+)([a-z])$/)
-    if (autre && autre[1] === face[1] && autre[2] !== face[2]) urls.push(scanUrl(dos))
+    if (autre && autre[1] === face[1] && autre[2] !== face[2]) {
+      faces.push({ url: scanUrl(dos), isLandscape: paysageSelonTypePapier(catalogue.type(dos)) })
+    }
   }
-  return urls
+  return faces
 }
 
 /**
@@ -402,7 +435,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     // Art alternatif eventuel (promos FFG) : cosmetique, la carte reste la meme.
     imageUrl: scanUrl(picIdAffiche(card.pic_id, contexte.collectionRessources)),
     picId: card.pic_id,
-    autresFaces: autresFacesUrls(card),
+    autresFaces: autresFacesDe(card, contexte.catalogue),
     // Un complot EN MAIN (side scheme joueur) est montre en PORTRAIT, pour tenir
     // dans l'eventail comme les autres cartes. Il reprend son format paysage a
     // l'agrandissement (voir CarteApercu, qui force isLandscape pour les complots).
