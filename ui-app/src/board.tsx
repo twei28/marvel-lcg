@@ -54,6 +54,7 @@ import {
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
 import { PanneauSalon } from './board/PanneauSalon'
 import { peutSuivre } from './board/suivi-vue'
+import { deltasStatuts } from './board/effets-statuts'
 import { traduireMoteur } from './board/vocabulaire-moteur'
 import {
   afficherFinDePartie,
@@ -295,6 +296,15 @@ function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta>
         if (menaceAvant !== undefined && menaceApres !== undefined && menaceAvant !== menaceApres) {
           changements.push([id, { value: menaceApres - menaceAvant, kind: 'threat' }])
         }
+      }
+
+      // Statuts poses ou retires (Sonne / Desoriente / Robuste). Un porteur
+      // n'a qu'un badge a la fois : si sa vie ou sa menace a bouge dans le
+      // meme rendu, ce chiffre garde la place, le statut se lit sur la
+      // mini-carte. Voir effets-statuts.ts.
+      const dejaSignales = new Set(changements.map(([id]) => id))
+      for (const [id, delta] of deltasStatuts(precedentes, courantes)) {
+        if (!dejaSignales.has(id)) changements.push([id, delta])
       }
 
       if (changements.length > 0) {

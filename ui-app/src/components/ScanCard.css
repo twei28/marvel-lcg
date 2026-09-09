@@ -935,6 +935,27 @@
     background: #d62828;
   }
 
+  /* Statut pose : un MOT (« Sonné »), pas un chiffre, donc plus petit et sans
+     la police d'impact, qui ne se lit pas en minuscules accentuees. */
+  .card-effect-status {
+    background: #5b3fb8;
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    padding: 5px 9px;
+    white-space: nowrap;
+  }
+
+  .card-effect-status-retire {
+    background: #4a4f5c;
+    text-decoration: line-through;
+  }
+
+  .scan-card.a-delta-status .scan-frame {
+    animation: pulsation-menace 700ms ease-out;
+  }
+
   /* --- Secousse et flash a l'impact --------------------------------------
      Portes par la meme classe de cycle de vie que le badge +N/-N :
      degats = la carte tremble + voile rouge ; soin = lueur verte ;

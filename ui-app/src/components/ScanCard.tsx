@@ -13,7 +13,8 @@
 // Il ne connait ni le descripteur du jeu ni les zones : c'est card-model.ts qui
 // traduit une carte de partie en props d'ici.
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { t } from '../board/langue'
+import { langueActuelle, t } from '../board/langue'
+import { libelleStatut } from '../board/effets-statuts'
 import { IMAGE_MORSURE } from './morsure'
 import './ScanCard.css'
 
@@ -134,10 +135,17 @@ export type CardGauge = {
   texte?: string
 }
 
-export type CardEffectDelta = {
-  value: number
-  kind: 'damage' | 'heal' | 'threat'
-}
+export type CardEffectDelta =
+  | {
+      value: number
+      kind: 'damage' | 'heal' | 'threat'
+    }
+  | {
+      /** Un statut pose (+1) ou retire (-1) : le badge porte son NOM, pas un chiffre. */
+      kind: 'status'
+      statut: 'stunned' | 'confused' | 'tough'
+      value: 1 | -1
+    }
 
 /**
  * L'adresse de la VIGNETTE d'un scan : /scan/<nom> devient /vignette/<nom>.
@@ -668,7 +676,16 @@ export function ScanCard({
             </span>
           ) : null}
 
-          {effectDelta ? (
+          {effectDelta && effectDelta.kind === 'status' ? (
+            /* Un statut qui vient d'etre pose ou retire : son nom, en toutes
+               lettres. Sans lui, seule la mini-carte de 50 px le disait. */
+            <span
+              className={`card-effect-delta card-effect-status${effectDelta.value < 0 ? ' card-effect-status-retire' : ''}`}
+              aria-label={libelleStatut(effectDelta.statut, effectDelta.value, langueActuelle())}
+            >
+              {libelleStatut(effectDelta.statut, effectDelta.value, langueActuelle())}
+            </span>
+          ) : effectDelta ? (
             <span
               className={`card-effect-delta card-effect-${effectDelta.kind}`}
               aria-label={`${effectDelta.value > 0 ? 'Increased' : 'Decreased'} by ${Math.abs(effectDelta.value)}`}
