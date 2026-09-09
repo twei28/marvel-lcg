@@ -71,6 +71,36 @@ describe('les cartes de la scene', () => {
     expect(scene.cartes).toEqual([{ role: 'dos' }, { role: 'dos' }])
   })
 
+  it('une attaque rangee sous revelation reste une attaque : auteur, boosts, fleche, cible', () => {
+    // Le vilain qu'une carte revelee fait frapper une seconde fois porte la
+    // phase « Reveal », mais il attaque : pas de retournement de carte seule.
+    const scene = sceneDe(
+      etape({
+        temps: 'revelation',
+        titre: 'attaque',
+        regle: 'regle:revelation',
+        carteId: 97,
+        cibleId: 1,
+        boosts: [{ cle: 'b', nom: 'Boost', cibleId: 120, apport: 1 }],
+      })
+    )
+    expect(scene.cartes).toEqual([
+      { role: 'auteur', id: 97 },
+      { role: 'boost', id: 120 },
+      { role: 'cible', id: 1 },
+    ])
+    expect(scene.fleche).toBe(true)
+  })
+
+  it('une manigance rangee sous revelation reste une manigance', () => {
+    const scene = sceneDe(etape({ temps: 'revelation', titre: 'manigance', carteId: 97, cibleId: 95 }))
+    expect(scene.cartes).toEqual([
+      { role: 'auteur', id: 97 },
+      { role: 'cible', id: 95 },
+    ])
+    expect(scene.fleche).toBe(true)
+  })
+
   it('la revelation : la carte revelee, face visible', () => {
     const scene = sceneDe(etape({ temps: 'revelation', titre: 'revelation', carteId: 40 }))
     expect(scene.cartes).toEqual([{ role: 'revelee', id: 40 }])

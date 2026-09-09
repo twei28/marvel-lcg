@@ -35,7 +35,14 @@ export function sceneDe(etape: EtapeDeroule): SceneEtape {
     const dos = Math.max(1, etape.montant ?? 1)
     return { cartes: Array.from({ length: dos }, () => ({ role: 'dos' })), fleche: false, voile: true }
   }
-  if (etape.temps === 'revelation') {
+  // Une ACTIVATION garde sa mise en scene quel que soit son temps. Un vilain
+  // qu'une carte revelee fait frapper une seconde fois est range sous
+  // « Revelation » (le fait porte sa phase, voir etapesDeroule), mais c'est
+  // une attaque : auteur, boosts, fleche, cible. Signale en jeu le 09/09/2026 :
+  // la seconde attaque montrait Klaw seul, en retournement de carte revelee,
+  // sans cible ni boosts, et « idem pour la manigance ».
+  const activation = etape.titre === 'attaque' || etape.titre === 'manigance'
+  if (etape.temps === 'revelation' && !activation) {
     if (etape.carteId === undefined) return RIEN
     return { cartes: [{ role: 'revelee', id: etape.carteId }], fleche: false, voile: true }
   }
