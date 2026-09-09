@@ -1,4 +1,7 @@
-// Vérifie les fonctions pures du module de recherche de decks MarvelCDB.
+// Vérifie les fonctions pures autour des decks MarvelCDB : recherche,
+// favoris, conversion vers le moteur, et REGLES DE CONSTRUCTION (regles.js),
+// que l'import applique depuis le 09/09/2026 pour accepter le deck d'un autre
+// héros sans accepter n'importe quelle pioche.
 //
 // Les modules visés n'importent rien et ne touchent au DOM que par un stockage
 // injecté : Node les exécute tels quels, sans navigateur ni serveur.
@@ -14,10 +17,16 @@ import { resolve } from 'node:path'
 
 const mod = async (nom) =>
   import(pathToFileURL(resolve('Fusion/marvel-lcg-src/public/js/marvelcdb/' + nom)).href)
+// regles.js vit chez l'editeur de deck, mais l'import marvelcdb l'applique
+// AUSSI depuis le 09/09/2026 : coller le lien d'un autre heros ne prend que ses
+// cartes d'aspect, et celles-ci doivent rester legales pour le heros du siege.
+const modDeck = async (nom) =>
+  import(pathToFileURL(resolve('Fusion/marvel-lcg-src/public/js/deckbuilder/' + nom)).href)
 
 const { filtrer } = await mod('filtres.js')
 const { lireFavoris, estFavori, basculerFavori } = await mod('favoris.js')
 const { versDeckMoteur, ecartDeConversion } = await mod('conversion.js')
+const { validerDeck, reglesAspect, choisiesDuDeck } = await modDeck('regles.js')
 
 let echecs = 0
 const verifier = (nom, obtenu, attendu) => {
@@ -118,6 +127,114 @@ verifier('conversion cohérente : écart nul', ecartDeConversion(entree, convert
 const bancal = versDeckMoteur(entree, starterWasp, () => 'Justice')
 verifier('signature non reconnue : écart non nul',
   ecartDeConversion(entree, bancal) !== 0, true)
+
+
+/* ------------------------------------------- deck d'un AUTRE heros */
+// Le coeur de la fonctionnalite : le starter est celui du heros du SIEGE, les
+// cartes viennent du deck marvelcdb de quelqu'un d'autre. Aucune carte
+// signature ne doit franchir la frontiere, dans un sens comme dans l'autre.
+const starterIronMan = {
+  name: 'Iron Man', version: '0.5.8',
+  hero: ['01001a,01001b'],
+  hero_deck: ['01002', '01003'],
+  obligations: ['01044'], nemesis_set: ['01045'], set_aside: ['01004'],
+  player_deck: ['01050'],
+}
+// Deck marvelcdb de Wasp : ses signatures (13002/13003) + de la Justice.
+const surIronMan = versDeckMoteur(
+  { id: 63358, nom: 'Hives are Stronger Together (Iron Man)', cartes: { '13002': 1, '13003': 2, '01062': 2, '01063': 1 } },
+  starterIronMan, classeDe)
+verifier('deck d’un autre héros : les signatures du deck source sont écartées',
+  surIronMan.player_deck.slice().sort(), ['01062', '01062', '01063'])
+verifier('deck d’un autre héros : signatures, obligation et némésis restent celles du siège',
+  [surIronMan.hero, surIronMan.hero_deck, surIronMan.obligations, surIronMan.nemesis_set, surIronMan.set_aside],
+  [starterIronMan.hero, starterIronMan.hero_deck, starterIronMan.obligations, starterIronMan.nemesis_set, starterIronMan.set_aside])
+
+/* ------------------------------------------------- regles de construction */
+const heroDe = (nom, o = {}) => ({
+  id: o.id || nom.toLowerCase().replace(/\W+/g, '_'),
+  name: nom,
+  deck: { hero_deck: Array.from({ length: o.signature ?? 15 }, (_, i) => 'sig' + i),
+          metadata: o.metadata || {} },
+})
+// Catalogue minimal : un identifiant porte son aspect et son type.
+const catalogue = {
+  jus1: { name: 'For Justice!', class: 'Justice', type: 'Event', traits: [], desc: {} },
+  jus2: { name: 'Great Responsibility', class: 'Justice', type: 'Event', traits: [], desc: {} },
+  agr1: { name: 'Relentless Assault', class: 'Aggression', type: 'Event', traits: [], desc: {} },
+  allie: { name: 'Nick Fury', class: 'Justice', type: 'Ally', traits: [], desc: {} },
+  rencontre: { name: 'Magical Suspension', class: '', type: 'Attachment', traits: [], desc: {} },
+}
+// Bourrage neutre : des cartes BASIQUES toutes differentes, pour atteindre les
+// 40 cartes sans buter sur la limite de 3 exemplaires par TITRE.
+for (let i = 1; i <= 9; i += 1) {
+  catalogue['bas' + i] = { name: 'Basique ' + i, class: 'Basic', type: 'Resource', traits: [], desc: {} }
+}
+/** n cartes basiques, 3 par titre. */
+const bourrage = (n) => Object.fromEntries(
+  Array.from({ length: Math.ceil(n / 3) }, (_, i) => ['bas' + (i + 1), Math.min(3, n - 3 * i)]))
+const carteDe = (id) => catalogue[id]
+// Pioche : { id: nombre } -> la Map attendue par validerDeck.
+const pioche = (o) => new Map(Object.entries(o))
+const verdict = (hero, o) => validerDeck({ hero, choisies: pioche(o), carte: carteDe })
+
+const spiderMan = heroDe('Spider-Man')
+verifier('25 cartes d’un seul aspect sur un héros ordinaire : légal',
+  verdict(spiderMan, { jus1: 3, jus2: 3, allie: 3, ...bourrage(16) }).ok, true)
+verifier('deux aspects sur un héros qui n’en admet qu’un : refusé',
+  verdict(spiderMan, { jus1: 3, jus2: 3, agr1: 3, ...bourrage(16) }).ok, false)
+verifier('le message nomme les deux aspects',
+  verdict(spiderMan, { jus1: 3, agr1: 3, ...bourrage(19) }).problemes.some((m) => /Justice/.test(m) && /Aggression/.test(m)),
+  true)
+
+// Spider-Woman : exactement deux aspects. C'est LE cas ou coller le deck d'un
+// autre heros produit une liste mono-aspect, donc illegale pour elle.
+const spiderWoman = heroDe('Spider-Woman')
+verifier('Spider-Woman : deux aspects, légal',
+  verdict(spiderWoman, { jus1: 3, agr1: 3, ...bourrage(19) }).ok, true)
+verifier('Spider-Woman : un seul aspect, refusé',
+  verdict(spiderWoman, { jus1: 3, jus2: 3, ...bourrage(19) }).ok, false)
+
+// Regles DECLAREES par le heros, via metadata.deckbuilding de son starter.
+const fatalis = heroDe('Fatalis', { metadata: { deckbuilding: { types_interdits: ['Ally'] } } })
+verifier('héros qui s’interdit les alliés : refusé',
+  verdict(fatalis, { allie: 1, jus1: 3, ...bourrage(21) }).ok, false)
+const libre = heroDe('Adam Warlock', { metadata: { deckbuilding: { aspects: { min: 0, max: 99 } } } })
+verifier('héros aux aspects libres : quatre aspects acceptés',
+  verdict(libre, { jus1: 3, jus2: 3, agr1: 3, ...bourrage(16) }).ok, true)
+
+verifier('plus de 3 exemplaires d’un même titre : refusé',
+  verdict(spiderMan, { jus1: 4, ...bourrage(21) }).ok, false)
+verifier('deck trop petit : refusé',
+  verdict(spiderMan, { jus1: 3, ...bourrage(5) }).ok, false)
+verifier('carte de rencontre glissée dans la pioche : refusée',
+  verdict(spiderMan, { rencontre: 1, jus1: 3, ...bourrage(21) }).problemes
+    .some((m) => /Magical Suspension/.test(m)), true)
+
+// Stan Lee (Marvelous) : ses 15 cartes signature sont EMPRUNTEES a d'autres
+// heros, donc choisies par le joueur, et elles vivent dans hero_deck. Les
+// oublier declarerait tout import a court de 15 cartes.
+// 15 signatures empruntees, toutes differentes : la limite de 3 exemplaires
+// par titre s'applique aussi a elles.
+for (let i = 1; i <= 15; i += 1) {
+  catalogue['emp' + i] = { name: 'Signature ' + i, class: 'Hero', type: 'Ally', traits: [], desc: {}, set_name: 'Spider-Man' }
+}
+const stanLee = heroDe('Stan Lee', { signature: 15 })
+const deckStanLee = {
+  hero_deck: Array.from({ length: 15 }, (_, i) => 'emp' + (i + 1)),
+  player_deck: [...Array(3).fill('jus1'), ...Array(3).fill('jus2'),
+    ...Object.entries(bourrage(19)).flatMap(([id, n]) => Array(n).fill(id))],
+}
+verifier('Stan Lee : les signatures empruntées comptent dans les cartes choisies',
+  [...choisiesDuDeck(stanLee, deckStanLee).values()].reduce((a, b) => a + b, 0), 40)
+verifier('Stan Lee : un deck complet reste légal',
+  validerDeck({ hero: stanLee, choisies: choisiesDuDeck(stanLee, deckStanLee), carte: carteDe }).ok, true)
+verifier('un héros ordinaire ne récupère PAS les signatures du hero_deck',
+  [...choisiesDuDeck(spiderMan, deckStanLee).values()].reduce((a, b) => a + b, 0), 25)
+
+// Le libelle sert a expliquer le refus a l'import : il doit exister sans i18n.
+verifier('règle d’aspect lisible sans traduction',
+  typeof reglesAspect(spiderWoman).label === 'string' && reglesAspect(spiderWoman).max === 2, true)
 
 console.log(echecs === 0 ? '\nTOUT PASSE' : `\n${echecs} ECHEC(S)`)
 process.exit(echecs === 0 ? 0 : 1)

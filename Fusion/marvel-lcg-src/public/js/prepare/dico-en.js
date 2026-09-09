@@ -137,6 +137,7 @@ export const DICO_EN_BASE = {
     "cartes": "cards",
     "Le sauvegarder pour plus tard ?": "Save it for later?",
     "Échec de l’import :": "Import failed:",
+    "Ce deck n’est pas légal pour": "This deck is not legal for",
     "Import en cours...": "Importing...",
 
     /* ---- Panneau de recherche marvelcdb ---- */
@@ -405,9 +406,8 @@ export const DICO_EN_BASE = {
     "Générer les liens à envoyer": "Generate the links to send",
     "Ton propre deck": "Your own deck",
     "Importer": "Import",
-    "Le deck doit être public sur marvelcdb, et être celui de ce héros.":
-        "The deck must be public on marvelcdb, and belong to this hero.",
-    "Ce deck n’est pas celui de ce héros.": "This deck does not belong to this hero.",
+    "Le deck doit être public sur marvelcdb. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.":
+        "The deck must be public on marvelcdb. Another hero's deck works too: only its aspect cards are taken.",
     "Import en cours…": "Importing…",
     "Import impossible.": "Import failed.",
     "Le serveur a refusé le deck.": "The server rejected the deck.",

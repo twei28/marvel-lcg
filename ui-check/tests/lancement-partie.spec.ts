@@ -205,15 +205,19 @@ test.describe("Lancement d'une partie", () => {
     // Parcours minimal, choisi pour etre stable : tout vient de la boite de
     // base, qui ne disparaitra jamais du jeu.
     //
-    // L'assistant a ete refondu : il compte cinq etapes (Equipe, Decks,
-    // Mechant, Menace, Final) la ou ce test en parcourait six, mode et heros
-    // etant desormais reunis sur le premier ecran. Le parcours commencait donc
+    // L'assistant a ete refondu : il compte QUATRE etapes (Equipe, Decks,
+    // Mechant, Final), precedees d'un accueil a tuiles de mode. Le parcours
+    // commencait donc
     // par un « Continuer » sur un bouton que rien n'activait, et ce test etait
     // rouge du 6 au 10/8/2026. Choisir le heros AVANT de continuer, toujours :
     // c'est lui qui debloque l'etape.
-    //   Etape 1 - Equipe ....... mode ET heros. « Solo » est deja selectionne,
-    //                            Spider-Man reste a choisir (deux heros
+    //   Accueil ................ les tuiles de mode. L'assistant ne commence
+    //                            qu'apres, et AUCUN heros n'est affiche avant
+    //                            ce clic : sans lui, ce test etait rouge
+    //                            (constate le 09/09/2026).
+    //   Etape 1 - Equipe ....... Spider-Man reste a choisir (deux heros
     //                            portent ce nom, d'ou le `first()`).
+    await page.getByRole('button', { name: /^Solo/ }).first().click();
     await page
       .getByRole('button', { name: /^Spider-Man/ })
       .first()
@@ -230,10 +234,12 @@ test.describe("Lancement d'une partie", () => {
     await page.getByRole('button', { name: /^Rhino\b/ }).first().click();
     await continuer(page);
 
-    //   Etape 4 - Menace ....... les reglages par defaut conviennent.
-    await continuer(page);
+    //   ⚠ L'etape « Menace » a disparu : l'assistant compte quatre etapes
+    //   (Equipe, Decks, Mechant, Final), et le « Continuer » qui la franchissait
+    //   restait sans cible. Retire le 09/09/2026, en meme temps que le clic
+    //   « Solo » de l'accueil.
 
-    //   Etape 5 - Final ........ le bouton de lancement doit etre actif.
+    //   Etape 4 - Final ........ le bouton de lancement doit etre actif.
     const lancer = page.getByRole('button', { name: /lancer la partie/i });
     await expect(
       lancer,

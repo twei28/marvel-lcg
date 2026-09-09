@@ -14,6 +14,7 @@ import { cardImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js
 import { t, boutonLangue } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
+import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
@@ -133,19 +134,32 @@ async function importerMarvelcdb(saisie) {
         const c = String(autre || "").split(",")[0];
         return c === code || c.replace(/[a-z]$/, "") === codeBase;
     };
-    // ⚠ Le heros est DEJA choisi a ce stade. Accepter un deck d'un autre heros
-    // donnerait un siege qui joue autre chose que ce qu'il a selectionne.
-    if (!memeHero(etat.hero.heroCardId) && !memeHero((etat.hero.deck.hero || [])[0])) {
-        throw new Error(t("Ce deck n’est pas celui de ce héros."));
-    }
+    // ⚠ Le heros est DEJA choisi a ce stade, et il l'emporte : la conversion
+    // jette les 15 cartes signature du deck marvelcdb et ne garde que les 25
+    // cartes d'aspect, qui ne tiennent a personne. Un deck d'un AUTRE heros est
+    // donc accepte depuis le 09/09/2026 — le siege garde son heros, il change
+    // seulement de pioche. Ce qui reste interdit, c'est une pioche que les
+    // regles de construction du heros refusent (verifiee juste apres).
+    const emprunte = !memeHero(etat.hero.heroCardId) && !memeHero((etat.hero.deck.hero || [])[0]);
+    const nomDeck = data.name || etat.hero.name;
 
     // Meme conversion que le wizard (public/js/marvelcdb/conversion.js) : un
     // deck jouable cote hote doit l'etre a l'identique cote invite.
     const deck = versDeckMoteur(
-        { id, nom: data.name || etat.hero.name, cartes: data.slots || {} },
+        { id, nom: emprunte ? `${nomDeck} (${etat.hero.name})` : nomDeck, cartes: data.slots || {} },
         etat.hero.deck,
         (cid) => { const c = cards.get(cid); return (c && c.class) || ""; },
     );
+
+    // Verdict de l'EDITEUR DE DECK, pas une seconde regle ecrite ici : Spider-Woman
+    // exige deux aspects, Fatalis s'interdit les allies, Ares plafonne ses emprunts.
+    const verdict = validerDeck({
+        hero: etat.hero, choisies: choisiesDuDeck(etat.hero, deck), carte: (cid) => cards.get(cid), t,
+    });
+    if (!verdict.ok) {
+        throw new Error(`${t("Ce deck n’est pas légal pour")} ${etat.hero.name} : `
+            + verdict.problemes.join(" ; "));
+    }
 
     // Un nom par siege ET par deck : deux invites qui importent le meme deck
     // ne s'ecrasent pas, et un invite qui change d'avis ne laisse pas trainer
@@ -189,7 +203,7 @@ function champImport() {
     return el("div", { class: "salon-mcdb" },
         el("b", {}, t("Ton propre deck")),
         el("div", { class: "salon-mcdb-ligne" }, saisie, bouton),
-        el("small", {}, t("Le deck doit être public sur marvelcdb, et être celui de ce héros.")),
+        el("small", {}, t("Le deck doit être public sur marvelcdb. Celui d’un autre héros marche : seules ses cartes d’aspect sont reprises.")),
     );
 }
 

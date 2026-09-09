@@ -26,6 +26,7 @@ import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversi
 import { chargerHeros } from "/public/js/marvelcdb/index.js";
 import { filtrer, aspectsPresents, tagsPresents } from "/public/js/marvelcdb/filtres.js";
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
+import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { lireBrouillon, ecrireBrouillon } from "/public/js/campagne/brouillon.js";
 
 // CREATION D'EQUIPE POUR UNE CAMPAGNE.
@@ -2007,6 +2008,18 @@ async function mcdbFetch(id) {
     }
     throw new Error(t("Deck introuvable sur marvelcdb") + " (ID " + id + "). " + t("Vérifie que le deck est public."));
 }
+/** Import d'un deck marvelcdb DANS LE SLOT COURANT.
+ *
+ * Le héros du slot l'emporte sur celui du deck (09/09/2026). Un deck marvelcdb
+ * mêle 15 cartes signature et 25 cartes d'aspect ; les signatures partent à la
+ * conversion, et les 25 restantes ne tiennent à personne. Coller le lien d'un
+ * deck de Spider-Man sur Iron Man donne donc Iron Man avec cette liste de
+ * Justice, ce qui était jusqu'ici impossible : le champ basculait le slot sur
+ * Spider-Man sans rien demander.
+ *
+ * Le héros du deck ne sert plus qu'à deux choses : nommer l'import, et servir
+ * de héros de repli si le slot n'en a pas encore.
+ */
 async function importMarvelcdb(slotIndex, input) {
     const id = mcdbExtractId(input);
     if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
@@ -2022,18 +2035,40 @@ async function importMarvelcdb(slotIndex, input) {
         const c = String(code || "").split(",")[0];
         return c === inv || c.replace(/[a-z]$/, "") === invBase;
     };
-    const hero = heroes.find((h) => memeHero(h.heroCardId))
+    const heroDuDeck = heroes.find((h) => memeHero(h.heroCardId))
         || heroes.find((h) => memeHero((h.deck.hero || [])[0]));
+    const hero = (state.players[slotIndex] && state.players[slotIndex].hero) || heroDuDeck;
+    // Plus de héros du tout : ni dans le slot, ni reconnu dans le deck.
     if (!hero) throw new Error(t("Le héros de ce deck n’est pas disponible dans le jeu."));
+    // Nom : celui de marvelcdb, suivi du héros QUAND CE N'EST PAS LE SIEN.
+    // Deux imports du même deck sur deux héros portent alors deux noms, ce que
+    // la liste des decks sauvegardés ne saurait pas départager autrement.
+    const nom = data.name || hero.name;
+    const emprunte = !heroDuDeck || heroDuDeck.id !== hero.id;
     // La règle de conversion vit dans public/js/marvelcdb/conversion.js : le
     // panneau de recherche et ce champ « coller un lien » doivent produire
     // EXACTEMENT le même deck, sinon un deck jouable ici serait refusé là.
     const deck = versDeckMoteur(
-        { id, nom: data.name || hero.name, cartes: data.slots || {} },
+        { id, nom: emprunte ? `${nom} (${hero.name})` : nom, cartes: data.slots || {} },
         hero.deck,
         (cid) => { const c = cards.get(cid); return (c && c.class) || ""; },
     );
+    refuserSiIllegal(hero, deck);
     return { hero, deck };
+}
+
+/** Les cartes d'aspect d'un héros ne conviennent pas forcément à un autre :
+ *  Spider-Woman en exige deux, Fatalis s'interdit les alliés, Ares plafonne ses
+ *  emprunts. Le verdict est celui de l'ÉDITEUR DE DECK (js/deckbuilder/regles.js),
+ *  pas une seconde règle écrite ici : un deck refusé au collage doit être
+ *  exactement un deck que l'éditeur refuserait aussi. */
+function refuserSiIllegal(hero, deck) {
+    const verdict = validerDeck({
+        hero, choisies: choisiesDuDeck(hero, deck), carte: (cid) => cards.get(cid), t,
+    });
+    if (verdict.ok) return;
+    throw new Error(`${t("Ce deck n’est pas légal pour")} ${hero.name} :\n\n`
+        + verdict.problemes.map((x) => "\u2022 " + x).join("\n"));
 }
 
 /* ---- Visionneuse : cartes d'un deck ---- */
