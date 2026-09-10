@@ -663,6 +663,31 @@ class SenderCard:
                 return cancel_num
             return 0
 
+        def CancelBoostIcons(self, value: int, by_effect: 'Effect') -> int:
+            """Annule un NOMBRE DONNE d'icones de boost, pas toutes.
+
+            AJOUTEE le 10/09/2026 (pack custom spider_woman_kajislav). La
+            capacite d'identite de Spider-Woman se paie ICONE PAR ICONE :
+            « for each boost icon on that card, you MAY remove 1 psionic web
+            counter to cancel THAT boost icon and deal 1 damage ». Le joueur
+            peut donc en annuler une, deux, ou aucune.
+
+            ⚠ `CancelAllBoostIcons` ne convient pas : elle leve
+            `cancel_boost_icons`, et `can_boost.py:84` met alors le compte a
+            ZERO sans meme relire la carte. Ici on ne leve PAS ce drapeau : on
+            baisse le compte imprime, et le moteur relit
+            `CountBoostIconsInternal` comme d'habitude.
+            """
+            from game.card.face.attribute.has_boost_icon import HasBoostIcon
+            if not HasBoostIcon.IsType(self.trigger):
+                return 0
+            annule = min(value, self.boost_icons)
+            if annule <= 0:
+                return 0
+            self.boost_icons -= annule
+            self.trigger.SetBoostIcon(self.boost_icons, by_effect)
+            return annule
+
         def CancelBoostAbility(self, by_effect: 'Effect'):
             self.cancel_boost_ability = True
 

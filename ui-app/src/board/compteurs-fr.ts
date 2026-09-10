@@ -82,6 +82,13 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   ratings: 'audience',
   clue: 'indice',
   stake: 'pieu',
+  // ⚠ CLEF A DEUX MOTS, la seule de la table. Le compteur du pack
+  // spider_woman_kajislav s'appelle « psionic web » et non « psionic » : ce
+  // dernier existait deja et etait PRIS (`mw002`, `35013`), or Madame Web est
+  // justement une alliee de ce pack-ci. La recherche se fait sur la clef
+  // BRUTE, espace compris ; sans cette entree le plateau ecrivait
+  // « 5 psionic web » en pleine partie francaise.
+  'psionic web': 'toile psionique',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

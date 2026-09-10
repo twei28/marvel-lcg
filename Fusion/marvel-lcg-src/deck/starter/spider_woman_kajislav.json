@@ -1,0 +1,68 @@
+{
+ "version": "0.5.8",
+ "name": "Spider-Woman (Kajislav)",
+ "hero": [
+  "sw001a,sw001b"
+ ],
+ "hero_deck": [
+  "sw002",
+  "sw003",
+  "sw004",
+  "sw005",
+  "sw005",
+  "sw006",
+  "sw006",
+  "sw007",
+  "sw007",
+  "sw008",
+  "sw008",
+  "sw009",
+  "sw010",
+  "sw010",
+  "sw011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "sw020"
+ ],
+ "nemesis_set": [
+  "sw021",
+  "sw022",
+  "sw023",
+  "sw024",
+  "sw024"
+ ],
+ "player_deck": [
+  "sw012",
+  "sw013",
+  "sw014",
+  "sw015",
+  "sw015",
+  "sw016",
+  "sw017",
+  "sw017",
+  "01087",
+  "01087",
+  "01086",
+  "01086",
+  "01079",
+  "01081",
+  "01081",
+  "01085",
+  "01085",
+  "sw018",
+  "sw019",
+  "01088",
+  "01089",
+  "01090",
+  "01091",
+  "04020"
+ ],
+ "metadata": {
+  "url": "",
+  "auteur": "Kajislav",
+  "nom_note": "⚠ LE PACK NE PEUT PAS S'APPELER `spider_woman` : ce nom est celui de la Spider-Woman OFFICIELLE, Jessica Drew (`04031a`, pack trors). On suit le precedent `hulk_rainy` — pack, deck et `set_name` portent le nom de l'auteur.",
+  "deck_note": "Deck de depart DE L'AUTEUR, releve sur sa carte « Starter Deck » (extras/52). Aspect PROTECTION. Rien d'invente : les cartes absentes du zip sont des cartes OFFICIELLES qu'il cite par leur nom.",
+  "nemesis_note": "⚠ LE ZIP LIVRE DEUX SETS NEMESIS ALTERNATIFS, tous deux numerotes 1/5 a 5/5. Le deck monte le set A « Man-Bull », dont l'obligation `sw020` Separation from the Child est rangee avec le set HEROS (son bandeau dit « SPIDER-WOMAN », pas « SPIDER-WOMAN NEMESIS »). Le set B « verze 2 » (Ms. Marvel, `sw025`-`sw028`) est livre a part, en set de rencontre modulaire : il a SA PROPRE obligation, et le moteur n'accepte qu'un set nemesis par heros."
+ }
+}

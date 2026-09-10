@@ -98,6 +98,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # et « BUISNESSMAN » ne s'apparierait a aucun effet du jeu. C'est le
         # seul endroit du pack ou l'on s'ecarte de ce qui est imprime.
         "REGISTERED", "H.A.M.M.E.R.", "CABAL",
+        # CORRECTIF : trait du pack custom spider_woman (Kajislav). `sw012`
+        # * Century est un ALIEN, trait qui n'existait nulle part alors qu'il
+        # est courant dans le jeu officiel. Purement declaratif, comme les
+        # autres : `TRAITS` n'est qu'un `Literal` de typage.
+        "ALIEN",
         # CORRECTIF : trait du pack custom beast. Le sbire nemesis bt020
         # « Lizard-Fied Mutants » porte « LIZARD. MUTANT. ». Purement
         # declaratif : TRAITS n'est qu'un `Literal` de typage, aucun controle
@@ -169,6 +174,14 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'time', 'test', 'active', 'energy', 'glider', 'bomb', 'mental',
         'vengeance', 'physical', 'ammo', 'charge', 'toon', 'training', 'chime',
         'rage', 'delay',
+        # AJOUT (10/09/2026, pack custom spider_woman) : le compteur du pack,
+        # celui que 12 de ses 29 cartes lisent, posent ou depensent.
+        # ⚠ `psionic` existe deja juste au-dessus, et il est PRIS : `mw002`
+        # (pack madame_web) et `35013` (Wolverine) s'en servent. Or Madame Web
+        # est justement une ALLIEE de ce pack-ci : les deux stocks peuvent se
+        # retrouver sur la meme table, et porter le meme nom les melangerait
+        # sous les yeux du joueur. D'ou une entree a part, au nom imprime.
+        'psionic web',
         'steel', 'reflection', 'command', 'growth', 'poison', 'barrage', 'evasion',
         'fury', 'sand',
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man

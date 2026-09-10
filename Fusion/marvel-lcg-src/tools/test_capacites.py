@@ -27652,6 +27652,634 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"taille_main": 0},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « spider_woman_kajislav » : Spider-Woman (Julia Carpenter) sw001a-sw028
+    #
+    # Tout le pack tourne autour d'un seul stock : les compteurs `psionic web`
+    # de l'identite. Julia en pose 5 au montage, 3 par Action, jusqu'a 10 ; le
+    # heros les depense pour annuler des icones de boost, contrer et frapper.
+    # Chaque cas mesure donc le STOCK autant que l'effet.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "sw001b Julia Carpenter — Setup : 5 compteurs de toile psionique",
+        "pourquoi": ("« Setup: Place 5 psionic web counters on your identity. » C'est le "
+                     "point de depart de TOUT le pack : sans ces cinq compteurs, douze "
+                     "cartes sur vingt-neuf n'ont rien a depenser"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Draw(0)"],
+        "accepter_choix": False,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sw001b", "psionic web", 5]]},
+    },
+    {
+        "nom": "sw001b Proper Relaxation — l'Action pose 3 compteurs de plus (5 -> 8)",
+        "pourquoi": ("« Action: Exhaust Julia Carpenter -> place 3 psionic web counters on "
+                     "her. » On verifie les deux moities : le stock qui monte ET "
+                     "l'inclinaison payee"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('sw001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sw001b", "psionic web", 8]],
+                    "exhausted": ["sw001b"]},
+    },
+    {
+        "nom": "sw001b Proper Relaxation — TEMOIN DU PLAFOND : 9 + 3 donne 10, pas 12",
+        "pourquoi": ("« (to a maximum of 10) » est imprime sur SEPT cartes du pack. Un "
+                     "plafond ne se prouve qu'en le DEPASSANT : on part de 9, on demande "
+                     "3, il doit en rester 10"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.Counter('sw001b', 'psionic web', 4)"],
+        "declencher": ["Puzzle.Action('sw001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sw001b", "psionic web", 10]]},
+    },
+    {
+        "nom": "sw001b Proper Relaxation — TEMOIN D'EPUISEMENT : la 2e Action est refusee",
+        "pourquoi": ("Le cout est une inclinaison : une fois Julia inclinee, l'Action ne "
+                     "doit plus etre offerte. Le temoin monte DEUX declenchements dans le "
+                     "meme tour ; la preuve est le chiffre, 8 et non 11"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('sw001b')"],
+        "declencher_tolerant": ["Puzzle.Action('sw001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ `compteurs_identite` et non `compteurs` : l'Action refusee, le
+        # pilote prend l'option suivante, « Change_Form ». L'identite passe
+        # alors en sw001a et la mesure par card_id ne trouve plus rien.
+        "attendu": {"compteurs_identite": [["psionic web", 8]]},
+    },
+    {
+        "nom": "sw001a Psionic Webbing — une icone de boost annulee coute 1 toile et blesse l'ennemi",
+        "pourquoi": ("« Interrupt: When a boost card on an enemy attacking you is turned "
+                     "face up, for each boost icon on that card, you may remove 1 psionic "
+                     "web counter to cancel that boost icon and deal 1 damage to that "
+                     "enemy. » L'annulation est UNITAIRE : le moteur ne savait annuler que "
+                     "TOUTES les icones d'un coup (`CancelAllBoostIcons`), d'ou le nouveau "
+                     "`CancelBoostIcons(n)`. Le stock qui descend ET le degat sur Rhino "
+                     "prouvent que la boucle a tourne au moins une fois"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "sw002 Madame Web — +1 CTR tant qu'il y a au moins 4 toiles",
+        "pourquoi": ("« Madame Web gets +1 THW while there are at least 4 psionic web "
+                     "counters on your identity. » Le montage en pose 5 : le bonus doit "
+                     "etre la des l'entree en jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('sw002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["sw002", "thwart", 1]]},
+    },
+    {
+        "nom": "sw002 Madame Web — TEMOIN : a 3 toiles, plus de bonus de CTR",
+        "pourquoi": ("Le seuil « at least 4 » ne vaut que si l'on voit le bonus S'ETEINDRE. "
+                     "On retire 2 compteurs des 5 du montage : 3 restent, le +1 doit "
+                     "disparaitre. C'est aussi le test du `change_on_event` : sans lui, la "
+                     "condition ne serait evaluee qu'a l'entree en jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw002')"],
+        "declencher": ["Puzzle.Counter('sw001b', 'psionic web', -2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["sw002", "thwart", 0]],
+                    "compteurs": [["sw001b", "psionic web", 3]]},
+    },
+    {
+        "nom": "sw002 Madame Web — When Defeated : une carte Spider-Woman du deck rentre en main",
+        "pourquoi": ("« Search your deck for a Spider-Woman card and add it to your hand. » "
+                     "Le deck joueur ne contient QUE sw007 : s'il arrive en main, la "
+                     "recherche par `set_name` a fonctionne"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw002')",
+                          "Puzzle.CreatePlayerDeck('sw007')"],
+        "declencher": ["Puzzle.Damage('sw002', 99)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["sw007"]},
+    },
+    {
+        "nom": "sw003 Rachel Carpenter — l'Action d'alter ego redresse Julia",
+        "pourquoi": ("« Alter-Ego Action: Exhaust Rachel Carpenter -> ready Julia "
+                     "Carpenter. » On incline Julia d'abord, sinon rien ne prouve le "
+                     "redressement"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw003')",
+                          "Puzzle.Exhaust('sw001b')"],
+        "declencher": ["Puzzle.Action('sw003')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["sw001b"], "exhausted": ["sw003"]},
+    },
+    {
+        "nom": "sw004 Madame Web's Powers — l'identite gagne le trait PSIONIC",
+        "pourquoi": ("« You gain the [[PSIONIC]] trait. » Le trait va a L'IDENTITE, pas a "
+                     "l'amelioration : c'est ce que lit `sw002` pour ses propres calculs"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('sw004')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["PSIONIC"], "en_jeu": ["sw004"]},
+    },
+    {
+        "nom": "sw005 Swing and Kick — 5 degats, et 1 toile par ressource [mental] depensee",
+        "pourquoi": ("« Deal 5 damage to an enemy. Place 1 psionic web counter for each "
+                     "[mental] resource you used to pay for this card. » Genius (01089) "
+                     "fournit DEUX ressources mentales : 5 du montage + 2 = 7. La main est "
+                     "videe d'abord (`main_exclusive`), sinon on ne sait pas avec quoi le "
+                     "pilote a paye"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')"],
+        "main_exclusive": ["sw005", "01089"],
+        "declencher": [],
+        "jouer": ["sw005"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]],
+                    "compteurs": [["sw001a", "psionic web", 7]]},
+    },
+    {
+        "nom": "sw006 Psi-Web Trap — X toiles depensees retirent X menaces d'une manigance",
+        "pourquoi": ("« Remove X psionic web counters -> remove X threat from a scheme. » "
+                     "Le pilote prend la premiere reponse offerte, donc X = 5, le stock "
+                     "entier. Crowd Control n'a que 3 menaces : elle est donc DEJOUEE, et "
+                     "le stock tombe a zero"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.SetThreat('01108', 3)"],
+        "main_exclusive": ["sw006"],
+        "declencher": [],
+        "jouer": ["sw006"],
+        "cibles": ["01108"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01108"],
+                    "compteurs": [["sw001a", "psionic web", 0]]},
+    },
+    {
+        "nom": "sw007 Psionic Web Blast — X toiles depensees infligent X degats",
+        "pourquoi": ("« Remove X psionic web counters -> deal X damage to an enemy. » Meme "
+                     "brique que sw006, autre sortie : 5 compteurs, 5 degats sur Rhino"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')"],
+        "main_exclusive": ["sw007"],
+        "declencher": [],
+        "jouer": ["sw007"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]],
+                    "compteurs": [["sw001a", "psionic web", 0]]},
+    },
+    {
+        "nom": "sw008 Swinging Rescue — un allie de la defausse rentre en main, 2 toiles par [mental]",
+        "pourquoi": ("« Choose an ally in any player's discard pile -> add that ally to its "
+                     "owner's hand and draw 2 cards. Place 2 psionic web counters for each "
+                     "[mental] resource. » Genius donne 2 mentales, donc 4 compteurs : "
+                     "5 + 4 = 9"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.CreatePlayerDiscardPile('01084')"],
+        "main_exclusive": ["sw008", "01089"],
+        "declencher": [],
+        "jouer": ["sw008"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01084"],
+                    "compteurs": [["sw001a", "psionic web", 9]]},
+    },
+    {
+        "nom": "sw009 Web Formation — 2 menaces retirees de CHAQUE manigance",
+        "pourquoi": ("« Remove 2 threat from each scheme. » Crowd Control passe de 3 a 1 : "
+                     "c'est la preuve que la manigance annexe est touchee, et pas seulement "
+                     "le complot principal. Genius ajoute 2 compteurs (1 par mentale)"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.SetThreat('01108', 3)"],
+        "main_exclusive": ["sw009", "01089"],
+        "declencher": [],
+        "jouer": ["sw009"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01108", 1]],
+                    "compteurs": [["sw001a", "psionic web", 7]]},
+    },
+    {
+        "nom": "sw010 Hold 'Em Tight — X degats et l'ennemi blesse est etourdi",
+        "pourquoi": ("Cout X : sans `surpayer`, le pilote ne paie rien, X vaut 0 et la "
+                     "carte parait inerte. Genius paie 2, donc 2 degats, Rhino etourdi, et "
+                     "2 compteurs par mentale : 5 + 4 = 9"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')"],
+        "main_exclusive": ["sw010", "01089"],
+        "declencher": [],
+        "jouer": ["sw010"],
+        "cibles": ["01094"],
+        "surpayer": True,
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "statuts": [["01094", "Stunned"]],
+                    "compteurs": [["sw001a", "psionic web", 9]]},
+    },
+    {
+        "nom": "sw011 Arachnne Costume — 2 toiles rendues donnent +2 a un pouvoir de base",
+        "pourquoi": ("« Remove up to 2 psionic web counters and choose a basic power -> "
+                     "+1 to that power for each counter removed. » Le pilote prend la "
+                     "premiere reponse : 2 compteurs, puis ATK. Stock 5 - 2 = 3"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('sw011')"],
+        "declencher": ["Puzzle.Action('sw011')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 2},
+                    "compteurs": [["sw001a", "psionic web", 3]]},
+    },
+    {
+        "nom": "sw012 Century — une attaque plus faible que ses PV restants est entierement evitee",
+        "pourquoi": ("« When Century would take LESS damage from an attack THAN his "
+                     "remaining hit points, prevent all of that damage. » Rhino frappe a 2, "
+                     "Century a 3 PV : 2 < 3, aucun degat"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        # ⚠ DECK RENCONTRE A UNE SEULE CARTE, ET LES TOILES GARDEES : c'est le
+        # seul moyen de connaitre l'ATQ exacte. Rhino tire une carte de boost a
+        # chaque attaque ; ses icones sont aleatoires, et l'ecart entre 2 et 4
+        # degats est precisement ce que ce cas mesure. Hydra Bomber porte
+        # Boost 1, et les 5 toiles du montage annulent cette icone unique
+        # (`sw001a`) : l'attaque vaut donc exactement 2.
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.CreateEncounterDeck('01110')",
+                          "Puzzle.PutIntoPlay('sw012')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094', 'sw012')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sw012", 0]]},
+    },
+    {
+        "nom": "sw012 Century — TEMOIN : une attaque egale a ses PV restants passe",
+        "pourquoi": ("Le mot « LESS » ne se prouve qu'a l'egalite. Century deja blesse de 1 "
+                     "n'a plus que 2 PV, Rhino frappe a 2 : 2 < 2 est faux, la prevention "
+                     "ne doit PAS jouer et l'allie tombe"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.CreateEncounterDeck('01110')",
+                          "Puzzle.PutIntoPlay('sw012')",
+                          "Puzzle.Damage('sw012', 1)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094', 'sw012')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sw012"]},
+    },
+    {
+        "nom": "sw013 Shroud — il annule une carte Rencontre revelee et la defausse",
+        "pourquoi": ("« Exhaust Shroud and deal 2 damage to him -> cancel the effects of "
+                     "that card and discard it. » Shroud n'a que 2 PV : il MEURT a chaque "
+                     "usage, c'est ce qui est imprime. La preuve est que Hydra Bomber "
+                     "n'entre jamais en jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('sw013')"],
+        "declencher": ["Puzzle.Reveal('01110')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"]},
+    },
+    {
+        "nom": "sw014 U.S. Agent — il encaisse 1 pour rendre 2 a l'ennemi qui vous attaque",
+        "pourquoi": ("« When an enemy initiates an attack against you, deal 1 damage to "
+                     "U.S. Agent -> deal 2 damage to the attacking enemy. » Les deux "
+                     "chiffres comptent : 1 sur lui, 2 sur Rhino"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.Counter('sw001a', 'psionic web', -5)",
+                          "Puzzle.PutIntoPlay('sw014')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sw014", 1], ["01094", 2]]},
+    },
+    {
+        "nom": "sw015 Blinded Sight — -2 ATQ, et l'ennemi qui n'a rien fait est desoriente",
+        "pourquoi": ("« That enemy gets -2 ATK for that attack. If that attack deals no "
+                     "damage, confuse the attacking enemy. » Rhino frappe a 2 : 2 - 2 = 0, "
+                     "donc aucun degat sur l'identite ET la desorientation"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')"],
+        "main_exclusive": ["sw015", "01089"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0,
+                    "statuts": [["01094", "Confused"]]},
+    },
+    {
+        "nom": "sw016 Misdiiirection — defense sans degat : un AUTRE ennemi prend l'ATQ de l'attaquant",
+        "pourquoi": ("« After you defend against an enemy attack and take no damage, "
+                     "discard this card -> deal damage to a DIFFERENT enemy equal to the "
+                     "attacking enemy's ATK. » Le heros defend a 2 contre Rhino a 2 : zero "
+                     "degat. Hydra Bomber, 2 PV, prend les 2 ATQ de Rhino et tombe"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('sw016')",
+                          "Puzzle.PutIntoPlay('01110')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01094', 'sw001a')"],
+        "cibles": ["01110"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110", "sw016"]},
+    },
+    {
+        "nom": "sw017 Tactical Retreat — degats entierement evites, et retour en alter ego",
+        "pourquoi": ("« Prevent all of that damage. Change to alter-ego form. » Les deux "
+                     "moities dans le meme cas : zero degat ET la forme qui bascule.\n"
+                     "\n"
+                     "⚠ L'ATTAQUANT EST Molecule Man (`ip034`, pack iron_patriot) et non "
+                     "Rhino, POUR UNE RAISON DE FOND : le cout imprime est « exhaust your "
+                     "hero », or DEFENDRE incline deja le heros. Le pilote du harnais "
+                     "defend des qu'on le lui propose, donc contre n'importe quel autre "
+                     "ennemi la carte serait a jamais impayable — et le cas resterait "
+                     "rouge sans qu'aucun defaut n'existe. Molecule Man porte "
+                     "« Character cannot defend against Molecule Man's attacks » : aucune "
+                     "defense n'est offerte, le heros reste pret, et le cout est payable. "
+                     "C'est la situation reelle de la carte, celle ou l'on choisit de ne "
+                     "pas defendre"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('ip034')"],
+        "main_exclusive": ["sw017"],
+        "declencher": ["Puzzle.Attack('ip034')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "forme": "AlterEgo"},
+    },
+    {
+        "nom": "sw018 Battleworld — un sbire du deck Rencontre et un allie du deck joueur entrent en jeu",
+        "pourquoi": ("Deux defaussements en chaine, deux mises en jeu. Le deck Rencontre ne "
+                     "contient qu'Hydra Bomber, le deck joueur que Nick Fury : les deux "
+                     "doivent se retrouver en jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('sw018')",
+                          "Puzzle.CreateEncounterDeck('01110')",
+                          "Puzzle.CreatePlayerDeck('01084')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('sw018')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110", "01084"]},
+    },
+    {
+        "nom": "sw019 Past and Future — Team-Up : 2 toiles de plus une fois Madame Web en jeu",
+        "pourquoi": ("« Team-Up (Cassandra Webb and Julia Carpenter) » : la carte n'est "
+                     "jouable que si Madame Web est en jeu. Les 2 compteurs poses sont la "
+                     "preuve que la cible Team-Up a ete acceptee : 5 + 2 = 7"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw002')"],
+        "main_exclusive": ["sw019", "01089"],
+        "declencher": [],
+        "jouer": ["sw019"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sw001b", "psionic web", 7]]},
+    },
+    {
+        "nom": "sw020 Separation from the Child — la 1re branche retire l'obligation de la partie",
+        "pourquoi": ("« Exhaust Julia Carpenter -> remove Separation from the Child from "
+                     "the game. » Le pilote prend la premiere branche offerte : Julia "
+                     "s'incline et l'obligation quitte definitivement le jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('sw020')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sw020"], "exhausted": ["sw001b"]},
+    },
+    {
+        "nom": "sw020 Separation from the Child — 2e branche : moins de 5 toiles, la carte gagne Renfort",
+        "pourquoi": ("« Remove ALL psionic web counters. If LESS than 5 were removed this "
+                     "way, this card gains surge. » On descend a 2 compteurs avant de "
+                     "reveler : le stock doit finir a zero, ce qui prouve que la branche "
+                     "choisie est bien la seconde"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.Counter('sw001b', 'psionic web', -3)"],
+        "preferer_option": "Remove all psionic web counters",
+        "declencher": ["Puzzle.Reveal('sw020')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["sw001b", "psionic web", 0]]},
+    },
+    {
+        "nom": "sw021 * Man-Bull — chaque joueur defausse 1 carte specifique a une identite",
+        "pourquoi": ("« Each player discards 1 identity-specific card from their hand. » La "
+                     "main ne contient QUE des cartes du set heros de Spider-Woman : elles "
+                     "sont toutes candidates, mais UNE SEULE doit partir"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "main_exclusive": ["sw005", "sw007"],
+        "declencher": ["Puzzle.Reveal('sw021')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1},
+    },
+    {
+        "nom": "sw022 Vault Breakout — chaque joueur sort un sbire du deck Rencontre",
+        "pourquoi": ("« Each player searches the encounter deck for a minion and puts it "
+                     "into play engaged with them. » Le deck Rencontre ne contient qu'Hydra "
+                     "Bomber : il doit se retrouver en jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')"],
+        "declencher": ["Puzzle.Reveal('sw022')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"]},
+    },
+    {
+        "nom": "sw023 Bad Inspiration — un allie de la defausse revient EN SBIRE",
+        "pourquoi": ("« Treat the ally as a minion with a blank text box. » `TreatAsMinion` "
+                     "ECHANGE la face : Nick Fury quitte la defausse et c'est le gabarit "
+                     "`minion` qui entre en jeu a sa place. `01084` absent du jeu et "
+                     "`minion` present, c'est toute la conversion"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('01084')"],
+        "declencher": ["Puzzle.Reveal('sw023')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ Pas de `hors_jeu: ["01084"]` : `par_id` retrouve AUSSI les faces
+        # imprimees d'une carte retournee, et l'allie converti reste donc
+        # « trouvable » sous son ancien identifiant. Ce sont les PV qui prouvent
+        # la conversion : le gabarit `minion` en porte ZERO, un sbire sans PV
+        # est vaincu a la seconde ou il entre en jeu, et le cas etait rouge
+        # avant la recopie des PV de l'allie.
+        "attendu": {"en_jeu": ["minion"],
+                    "attributs_carte": [["minion", "health", 0]]},
+    },
+    {
+        "nom": "sw024 Violent Disturbance — TOUTES les cartes du set heros quittent la main",
+        "pourquoi": ("« Discard ALL identity-specific cards from your hand. » C'est la "
+                     "version brutale de Man-Bull : la ou lui en prend une, elle vide la "
+                     "main entiere"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "main_exclusive": ["sw005", "sw007"],
+        "declencher": ["Puzzle.Reveal('sw024')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0},
+    },
+    {
+        "nom": "sw025 * Ms. Marvel — apres avoir manigance, elle pose 2 menaces sur l'Acte",
+        "pourquoi": ("« After Ms. Marvel schemes, place 2 threat on Superhuman Registration "
+                     "Act. » L'Acte entre a 3 menaces (3 par joueur, un seul joueur) : "
+                     "3 + 2 = 5. La MNG de Ms. Marvel etant nulle, les 2 menaces ne peuvent "
+                     "venir que de la Reponse forcee"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw026')",
+                          "Puzzle.PutIntoPlay('sw025')"],
+        "declencher": ["Puzzle.Scheme('sw025')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["sw026", 5]]},
+    },
+    {
+        "nom": "sw026 Superhuman Registration Act — chargee de menace, elle porte une icone d'alea",
+        "pourquoi": ("« While there is at least 1 threat here, this scheme gains a hazard "
+                     "icon. » L'icone n'est PAS imprimee : elle est gagnee. La cle `icones` "
+                     "compte ce que le moteur compte lui-meme pour la phase du vilain"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('sw026')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"icones": [["Hazard", 1]], "menace": [["sw026", 3]]},
+    },
+    {
+        "nom": "sw026 Superhuman Registration Act — TEMOIN : sans menace, plus d'icone d'alea",
+        "pourquoi": ("Une icone GAGNEE ne se prouve qu'en la voyant S'ETEINDRE. La "
+                     "manigance etant PERMANENTE, elle reste en jeu a zero menace : c'est "
+                     "exactement le cas ou une condition evaluee seulement a l'entree en "
+                     "jeu resterait figee pour toute la partie (defaut connu de `gp011`)"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw026')"],
+        "declencher": ["Puzzle.SetThreat('sw026', 0)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"icones": [["Hazard", 0]], "en_jeu": ["sw026"]},
+    },
+    {
+        "nom": "sw027 Fugitive — l'Acte vide, l'Action d'alter ego defausse l'obligation",
+        "pourquoi": ("« If there is NO THREAT on Superhuman Registration Act, spend a "
+                     "[mental] resource -> discard Fugitive. » On vide l'Acte, on paie avec "
+                     "Genius : l'obligation doit quitter le jeu"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw026')",
+                          "Puzzle.SetThreat('sw026', 0)",
+                          "Puzzle.Reveal('sw027')"],
+        "main_exclusive": ["01089"],
+        "declencher": ["Puzzle.Action('sw027')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["sw027"]},
+    },
+    {
+        "nom": "sw027 Fugitive — TEMOIN : tant que l'Acte porte de la menace, l'Action est refusee",
+        "pourquoi": ("La condition ne vaut que si l'on voit l'Action ETRE REFUSEE. L'Acte "
+                     "entre a 3 menaces : Fugitive doit rester en jeu, la ressource "
+                     "mentale intacte"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw026')",
+                          "Puzzle.Reveal('sw027')"],
+        "main_exclusive": ["01089"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('sw027')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["sw027"]},
+    },
+    {
+        "nom": "sw028 Fighting a Friend — cote alter ego : 3 menaces sur l'Acte",
+        "pourquoi": ("« When Revealed (Alter-Ego): Place 3 threat on Superhuman "
+                     "Registration Act. » L'Acte entre a 3, plus 3 : 6"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw026')"],
+        "declencher": ["Puzzle.Reveal('sw028')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["sw026", 6]]},
+    },
+    {
+        "nom": "sw028 Fighting a Friend — cote heros : un personnage ami prend l'ATQ du heros",
+        "pourquoi": ("« When Revealed (Hero): Deal damage to a friendly character equal to "
+                     "your ATK. » Spider-Woman a 1 d'ATQ imprimee et se trouve seule en "
+                     "jeu : c'est elle qui prend le degat. Les deux moities de la carte "
+                     "sont donc couvertes, chacune dans sa forme"),
+        "scenario": "rhino",
+        "heros": "spider_woman_kajislav",
+        "mise_en_place": ["Puzzle.ChangeForm('sw001b')",
+                          "Puzzle.PutIntoPlay('sw026')"],
+        "declencher": ["Puzzle.Reveal('sw028')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -28843,6 +29471,17 @@ def etat_attendu(monde, aides):
     for card_id in attendu.get("hors_jeu") or []:
         if aides["par_id"](monde, card_id) is not None:
             soucis.append(f"{card_id} est encore en jeu")
+
+    # Cle `compteurs_identite` (AJOUT 10/09/2026, pack spider_woman_kajislav) :
+    # les compteurs portes par L'IDENTITE, quelle que soit sa FACE. `compteurs`
+    # designe une carte par son card_id ; or une identite change de card_id en
+    # changeant de forme (sw001b -> sw001a), et le stock, lui, ne bouge pas. Un
+    # temoin dont le pilote fait basculer la forme rendait donc « sw001b
+    # introuvable en jeu » au lieu de mesurer ce qu'on lui demandait.
+    for compteur, valeur in attendu.get("compteurs_identite") or []:
+        n = identite.CastTo(aides["CanPlaceCounter"]).GetCounters(compteur)
+        if n != valeur:
+            soucis.append(f"identite.{compteur}={n} (attendu {valeur})")
 
     for card_id, compteur, valeur in attendu.get("compteurs") or []:
         face = aides["par_id"](monde, card_id)

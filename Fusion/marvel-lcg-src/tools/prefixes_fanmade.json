@@ -399,6 +399,13 @@
    "depuis": "2026-09-08",
    "note": "Cree le 08/09/2026. Auteur Rainy. Otto Octavius dans le corps de Peter Parker. STRUCTURE INHABITUELLE : une face heros (su001a) mais DEUX alter-egos au choix, su001b Peter Parker et su001c Elliot Tolliver, chacun avec SA propre obligation (su013 Ghost of a Conscience / su014 Crisis of Conscience). Arbitrage utilisateur du 08/09/2026 : DEUX decks de depart, `superior_spider_man` et `superior_spider_man_tolliver`, ce que le moteur sait faire sans modification. su002-su012 signature (11 cartes distinctes, 16 exemplaires dont la 16e, Contingency Plan, est Permanent+Setup), su015-su019 set nemesis Hobgoblin. Mot-cle maison `track` (deplacer 1 menace d'une manigance vers un SBIRE) : fiche mots-cles/track.md, compteurs `threat` et `surveillance` ajoutes a l'enum COUNTER, trait HENCHMAN ajoute a TRAITS. Arbitrage : su019 Pumpkin Bombs affiche une ETOILE en ATK et non un chiffre — AUCUN bonus d'ATK, l'etoile pointe la capacite etoile de la carte (convention typographique de Rainy)."
   },
+  "sw": {
+   "pack": "spider_woman",
+   "libelle": "169. Custom (Spider-Woman)",
+   "cartes": 29,
+   "depuis": "2026-09-10",
+   "note": "Auteur Kajislav. Julia Carpenter. Le coeur du pack est le compteur `psionic web` porte par l'IDENTITE, de 0 a 10 : 12 des 29 cartes le lisent, le posent ou le depensent. ⚠ LE ZIP LIVRE DEUX SETS NEMESIS ALTERNATIFS, tous deux numerotes 1/5 a 5/5 : A « Man-Bull » (dont l'obligation, Separation from the Child, est rangee avec le set HEROS) et B « verze 2 » (Ms. Marvel), qui a la sienne. Les deux sont portes : A monte le deck de depart, B est livre en set de rencontre modulaire. Voir .planning/todos/2026-09-10-spider-woman-releve-des-cartes.md."
+  },
   "tg": {
    "pack": "throg",
    "libelle": "159. Custom (Throg)",

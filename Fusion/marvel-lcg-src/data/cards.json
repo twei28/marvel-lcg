@@ -92836,5 +92836,477 @@
    "set_name": ""
   }
  ],
- "checksum": "db2676f0dfbc3f118a0bb190d421277138ea0629daa2a1f402f607fc678b4497"
+ "spider_woman_kajislav": [
+  {
+   "card_id": "sw001a",
+   "type": "Hero",
+   "name": "* Spider-Woman",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<i>Psionic Webbing</i> \u2014 <b>Interrupt</b>: When a boost card on an enemy attacking you is turned face up, for each boost icon ([boost]) on that card, you may remove 1 psionic web counter from here to cancel that boost icon ([boost]) and deal 1 damage to that enemy."
+  },
+  {
+   "card_id": "sw001b",
+   "type": "AlterEgo",
+   "name": "* Julia Carpenter",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "CIVILIAN"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Setup</b>: Place 5 psionic web counters on your identity.\n<i>Proper Relaxation</i> \u2014 <b>Action</b>: Exhaust Julia Carpenter \u2192 place 3 psionic web counters on her (to a maximum of 10)."
+  },
+  {
+   "card_id": "sw002",
+   "type": "Ally",
+   "name": "* Madame Web",
+   "subtitle": "Cassandra Webb",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "0**",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "Madame Web gets +1 THW while there are at least 4 psionic web counters on your identity.\n<b>When Defeated</b>: Search your deck for a Spider-Woman card and add it to your hand. <i>(Shuffle.)</i>"
+  },
+  {
+   "card_id": "sw003",
+   "type": "Support",
+   "name": "* Rachel Carpenter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Rachel Carpenter \u2192 ready Julia Carpenter."
+  },
+  {
+   "card_id": "sw004",
+   "type": "Upgrade",
+   "name": "Madame Web's Powers",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "You gain the [[PSIONIC]] trait.\n<b>Hero Resource</b>: Exhaust Madame Web's Powers and place 1 psionic web counter on Spider-Woman (to a maximum of 10) \u2192 generate a [mental] resource."
+  },
+  {
+   "card_id": "sw005",
+   "type": "Event",
+   "name": "Swing and Kick",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "ATTACK"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. Place 1 psionic web counter on Spider-Woman for each [mental] resource you used to pay for this card (to a maximum of 10)."
+  },
+  {
+   "card_id": "sw006",
+   "type": "Event",
+   "name": "Psi-Web Trap",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove X psionic web counters from Spider-Woman \u2192 remove X threat from a scheme."
+  },
+  {
+   "card_id": "sw007",
+   "type": "Event",
+   "name": "Psionic Web Blast",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "PSIONIC",
+    "SUPERPOWER"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Remove X psionic web counters from Spider-Woman \u2192 deal X damage to an enemy."
+  },
+  {
+   "card_id": "sw008",
+   "type": "Event",
+   "name": "Swinging Rescue",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "TACTIC"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b>: Choose an ally in any player's discard pile \u2192 add that ally to its owner's hand and draw 2 cards. Place 2 psionic web counters on Spider-Woman for each [mental] resource you used to pay for this card (to a maximum of 10)."
+  },
+  {
+   "card_id": "sw009",
+   "type": "Event",
+   "name": "Web Formation",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "SUPERPOWER",
+    "THWART"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from each scheme. Place 1 psionic web counter on Spider-Woman for each [mental] resource you used to pay for this card (to a maximum of 10)."
+  },
+  {
+   "card_id": "sw010",
+   "type": "Event",
+   "name": "Hold 'Em Tight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "X",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal X damage to an enemy. If that enemy was damaged this way, stun it. Place 2 psionic web counters on Spider-Woman for each [mental] resource you used to pay for this card (to a maximum of 10)."
+  },
+  {
+   "card_id": "sw011",
+   "type": "Upgrade",
+   "name": "* Arachnne Costume",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b>: Exhaust this card, remove up to 2 psionic web counters from Spider-Woman and choose a basic power \u2192 Spider-Woman gets +1 to that power for each psionic web counter removed this way until the end of the round."
+  },
+  {
+   "card_id": "sw012",
+   "type": "Ally",
+   "name": "* Century",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "ALIEN"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Interrupt</b>: When Century would take less damage from an attack than his remaining hit points, prevent all of that damage."
+  },
+  {
+   "card_id": "sw013",
+   "type": "Ally",
+   "name": "* Shroud",
+   "subtitle": "Maximillian Coleridge",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "1*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "HERO FOR HIRE"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Interrupt</b>: When you reveal an encounter card, exhaust Shroud and deal 2 damage to him \u2192 cancel the effects of that card and discard it."
+  },
+  {
+   "card_id": "sw014",
+   "type": "Ally",
+   "name": "* U.S. Agent",
+   "subtitle": "John Walker",
+   "desc": {
+    "Cost": "4",
+    "HP": "4",
+    "ATK": "2**",
+    "THW": "1*",
+    "RES": "R",
+    "Class": "Protection"
+   },
+   "traits": [
+    "AVENGER"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Interrupt</b>: When an enemy initiates an attack against you, deal 1 damage to U.S. Agent \u2192 deal 2 damage the attacking enemy."
+  },
+  {
+   "card_id": "sw015",
+   "type": "Event",
+   "name": "Blinded Sight",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Interrupt</b>: When an enemy initiates an attack, that enemy gets -2 ATK for that attack. If that attack deals no damage, confuse the attacking enemy."
+  },
+  {
+   "card_id": "sw016",
+   "type": "Upgrade",
+   "name": "Misdiiirection",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerUnit": "1",
+    "Class": "Protection"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "Max 1 per player.\n<b>Hero Response</b>: After you defend against an enemy attack and take no damage, discard this card \u2192 deal damage to a different enemy equal to the attacking enemy's ATK."
+  },
+  {
+   "card_id": "sw017",
+   "type": "Event",
+   "name": "Tactical Retreat",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Protection"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Interrupt</b>: When you would take any amount of damage from an attack, exhaust your hero \u2192 prevent all of that damage. Change to alter-ego form."
+  },
+  {
+   "card_id": "sw018",
+   "type": "Support",
+   "name": "* Battleworld",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Basic"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b>Hero Action</b>: Spend a [energy] resource and discard cards from the encounter deck until a minion is discarded. Put that minion into play engaged with you \u2192 discard cards from the top of your deck until an ally is discarded. Put that ally into play under your control."
+  },
+  {
+   "card_id": "sw019",
+   "type": "Event",
+   "name": "Past and Future",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "TeamUp": "Cassandra Webb;Julia Carpenter",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "Team-Up (Cassandra Webb and Julia Carpenter). Max 1 per deck.\n<b>Alter-Ego Action</b>: Draw up to your printed hand size. Place 2 psionic web counters on Julia Carpenter."
+  },
+  {
+   "card_id": "sw020",
+   "type": "Obligation",
+   "name": "Separation from the Child",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Julia Carpenter"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav)",
+   "text": "<b><i>Give to the Julia Carpenter player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Julia Carpenter \u2192 remove Separation from the Child from the game.\n\u2022 Remove all psionic web counters from your identity. If less than 5 counters were removed this way, this card gains surge. Discard this obligation."
+  },
+  {
+   "card_id": "sw021",
+   "type": "Minion",
+   "name": "* Man-Bull",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Spider-Woman (Kajislav) Nemesis",
+   "text": "<b>When Revealed</b>: Each player discards 1 identity-specific card from their hand.\n<i>(Spider-Woman's nemesis minion.)</i>"
+  },
+  {
+   "card_id": "sw022",
+   "type": "SideScheme",
+   "name": "Vault Breakout",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Nemesis",
+   "text": "<b>When Revealed</b>: Each player searches the encounter deck for a minion and puts it into play engaged with them. Shuffle the encounter deck."
+  },
+  {
+   "card_id": "sw023",
+   "type": "Treachery",
+   "name": "Bad Inspiration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Nemesis",
+   "text": "<b>When Revealed</b>: Search your discard pile for an ally and put it into play engaged with you. Treat the ally as a minion with a blank text box. Minion's SCH is equal to its printed THW and it does not take consequential damage. If no ally entered play this way, this card gains surge."
+  },
+  {
+   "card_id": "sw024",
+   "type": "Treachery",
+   "name": "Violent Disturbance",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Nemesis",
+   "text": "<b>When Revealed</b>: Discard all identity-specific cards from your hand."
+  },
+  {
+   "card_id": "sw025",
+   "type": "Minion",
+   "name": "* Ms. Marvel",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "3",
+    "SCH": "0*",
+    "Boost": "2",
+    "Retaliate": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ELITE"
+   ],
+   "set_name": "Spider-Woman (Kajislav) Ms. Marvel",
+   "text": "Retaliate 1. Toughness.\n<b>Forced Response</b>: After Ms. Marvel schemes, place 2 threat on Superhuman Registration Act.\n<i>(Spider-Woman's nemesis minion.)</i>"
+  },
+  {
+   "card_id": "sw026",
+   "type": "SideScheme",
+   "name": "Superhuman Registration Act",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2",
+    "Permanent": "1"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Ms. Marvel",
+   "text": "Permanent.\nWhile there is at least 1 threat here, this scheme gains a hazard icon ([hazard])."
+  },
+  {
+   "card_id": "sw027",
+   "type": "Obligation",
+   "name": "Fugitive",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "GiveTo": "Julia Carpenter"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Ms. Marvel",
+   "text": "<b>Forced Response</b>: After the player phase begins, place 1 threat on Superhuman Registration Act.\n<b>Alter-Ego Action</b>: If there is no threat on Superhuman Registration Act, spend a [mental] resource \u2192 discard Fugitive."
+  },
+  {
+   "card_id": "sw028",
+   "type": "Treachery",
+   "name": "Fighting a Friend",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Spider-Woman (Kajislav) Ms. Marvel",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Place 3 threat on Superhuman Registration Act.\n<b>When Revealed (Hero)</b>: Deal damage to a friendly character equal to your ATK."
+  }
+ ],
+ "checksum": "bfa0b7f849704874ccc0c586b4c713bb8959e7e0727a102844ace79e05e0cf96"
 }

@@ -1488,5 +1488,16 @@
   ],
   "max_id": "ip037"
  },
- "checksum": "3fbc6a7b32aad042020f837941b73921108063a6d81dde1a6de962fe9df9cd71"
+ "169. Custom (Spider-Woman)": {
+  "name": "spider_woman_kajislav",
+  "scenarios": [],
+  "heroes": [
+   "spider_woman_kajislav"
+  ],
+  "encounters": [
+   "spider_woman_kajislav_ms_marvel"
+  ],
+  "max_id": "sw028"
+ },
+ "checksum": "2381423af07a4dc30df213581513690d053299e97907976918f0fe5b0e76bef5"
 }

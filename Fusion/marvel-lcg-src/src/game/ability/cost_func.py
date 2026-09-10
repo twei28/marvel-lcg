@@ -26,8 +26,28 @@ def TakeDamageOnCall(targets: Sequence['CardFace'], damage: int, effect: 'Effect
             return False
         if message.took_damage != damage:
             return False
-        if unit.IsDefeated():
-            return False
+        # ⚠ ON NE REFUSE PLUS LE COUT QUAND LE PAYEUR EN MEURT (correctif du
+        # 10/09/2026, pack spider_woman_kajislav).
+        #
+        # Il y avait ici `if unit.IsDefeated(): return False`, sans un mot pour
+        # l'expliquer, alors que le commentaire ci-dessus ne couvre QUE les
+        # degats EMPECHES — la citation de la regle officielle porte sur eux et
+        # sur rien d'autre. La ligne allait plus loin qu'elle : un cout paye
+        # jusqu'au bout etait declare impaye au seul motif que le personnage
+        # tombait.
+        #
+        # CE QUE CELA RENDAIT IMPOSSIBLE : `sw013` Shroud, allie a 2 PV dont le
+        # cout imprime est « inclinez Shroud et infligez-lui 2 degats ». Le
+        # cout le tue A TOUS LES COUPS, par construction : la carte etait donc
+        # INERTE, elle payait son prix et ne faisait jamais rien. Aucune trace,
+        # aucune exception. C'est un consommable, pas un accident de reglage.
+        #
+        # Les autres appelants visent l'identite (`45043`, `45050`, `01027`,
+        # `bl009`) : une identite qui tombe fait perdre la partie, la question
+        # de savoir si la capacite resout est alors sans objet. Le garde-fou
+        # propre a l'identite existe d'ailleurs a part, dans
+        # `TakeIndirectDamage` (`return not identity.IsDefeated()`), et il n'est
+        # pas touche.
     return True
 
 class CostFunc:

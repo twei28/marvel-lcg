@@ -2532,4 +2532,62 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ip037': "<b>Une fois révélée</b> : si Molecule Man est en jeu, choisissez un type de ressource imprimé ([energy], [mental], [physical] ou [wild]) présent dans votre main. Défaussez de votre main chaque carte portant le type de ressource choisi. Sinon, cette carte gagne Renfort.",
   // iron_patriot — Registered Ally (gabarit)
   'registered_ally': "Ce sbire est traité comme un allié [[REGISTERED]]. Il subit 1 dégât consécutif après avoir attaqué ou contré, et sa CTR est égale à sa MNG imprimée.",
+  // spider_woman_kajislav — * Spider-Woman (Hero)
+  'sw001a': "<i>Psionic Webbing</i> — <b>Interruption</b> : quand une carte de boost d'un ennemi qui vous attaque est retournée face visible, pour chaque icône de boost ([boost]) sur cette carte, vous pouvez retirer 1 compteur de toile psionique d'ici pour annuler cette icône de boost ([boost]) et infliger 1 dégât à cet ennemi.",
+  // spider_woman_kajislav — * Julia Carpenter (AlterEgo)
+  'sw001b': "<b>Mise en place</b> : placez 5 compteurs de toile psionique sur votre identité.\n<i>Proper Relaxation</i> — <b>Action</b> : inclinez Julia Carpenter → placez 3 compteurs de toile psionique sur elle <i>(jusqu'à un maximum de 10)</i>.",
+  // spider_woman_kajislav — * Madame Web (Ally)
+  'sw002': "Madame Web gagne +1 CTR tant qu'il y a au moins 4 compteurs de toile psionique sur votre identité.\n<b>Une fois vaincue</b> : cherchez dans votre deck une carte Spider-Woman et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+  // spider_woman_kajislav — * Rachel Carpenter (Support)
+  'sw003': "<b>Action d'alter ego</b> : inclinez Rachel Carpenter → redressez Julia Carpenter.",
+  // spider_woman_kajislav — Madame Web's Powers (Upgrade)
+  'sw004': "Vous gagnez le trait [[PSIONIC]].\n<b>Ressource de héros</b> : inclinez Madame Web's Powers et placez 1 compteur de toile psionique sur Spider-Woman <i>(jusqu'à un maximum de 10)</i> → générez une ressource [mental].",
+  // spider_woman_kajislav — Swing and Kick (Event)
+  'sw005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Placez 1 compteur de toile psionique sur Spider-Woman pour chaque ressource [mental] utilisée pour payer cette carte <i>(jusqu'à un maximum de 10)</i>.",
+  // spider_woman_kajislav — Psi-Web Trap (Event)
+  'sw006': "<b>Action de héros</b> <i>(contre)</i> : retirez X compteurs de toile psionique de Spider-Woman → retirez X menaces d'une manigance.",
+  // spider_woman_kajislav — Psionic Web Blast (Event)
+  'sw007': "<b>Action de héros</b> <i>(attaque)</i> : retirez X compteurs de toile psionique de Spider-Woman → infligez X dégâts à un ennemi.",
+  // spider_woman_kajislav — Swinging Rescue (Event)
+  'sw008': "<b>Action de héros</b> : choisissez un allié dans la pile de défausse de n'importe quel joueur → ajoutez cet allié à la main de son propriétaire et piochez 2 cartes. Placez 2 compteurs de toile psionique sur Spider-Woman pour chaque ressource [mental] utilisée pour payer cette carte <i>(jusqu'à un maximum de 10)</i>.",
+  // spider_woman_kajislav — Web Formation (Event)
+  'sw009': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces de chaque manigance. Placez 1 compteur de toile psionique sur Spider-Woman pour chaque ressource [mental] utilisée pour payer cette carte <i>(jusqu'à un maximum de 10)</i>.",
+  // spider_woman_kajislav — Hold 'Em Tight (Event)
+  'sw010': "<b>Action de héros</b> <i>(attaque)</i> : infligez X dégâts à un ennemi. Si cet ennemi a été blessé ainsi, étourdissez-le. Placez 2 compteurs de toile psionique sur Spider-Woman pour chaque ressource [mental] utilisée pour payer cette carte <i>(jusqu'à un maximum de 10)</i>.",
+  // spider_woman_kajislav — * Arachnne Costume (Upgrade)
+  'sw011': "<b>Action de héros</b> : inclinez cette carte, retirez jusqu'à 2 compteurs de toile psionique de Spider-Woman et choisissez un pouvoir de base → Spider-Woman gagne +1 à ce pouvoir pour chaque compteur de toile psionique retiré ainsi, jusqu'à la fin du round.",
+  // spider_woman_kajislav — * Century (Ally, Protection)
+  'sw012': "<b>Interruption de héros</b> : quand Century devrait subir d'une attaque moins de dégâts qu'il ne lui reste de points de vie, empêchez tous ces dégâts.",
+  // spider_woman_kajislav — * Shroud (Ally, Protection)
+  'sw013': "<b>Interruption</b> : quand vous révélez une carte Rencontre, inclinez Shroud et infligez-lui 2 dégâts → annulez les effets de cette carte et défaussez-la.",
+  // spider_woman_kajislav — * U.S. Agent (Ally, Protection)
+  'sw014': "<b>Interruption de héros</b> : quand un ennemi lance une attaque contre vous, infligez 1 dégât à U.S. Agent → infligez 2 dégâts à l'ennemi attaquant.",
+  // spider_woman_kajislav — Blinded Sight (Event, Protection)
+  'sw015': "<b>Interruption de héros</b> : quand un ennemi lance une attaque, cet ennemi gagne -2 ATQ pour cette attaque. Si cette attaque n'inflige aucun dégât, désorientez l'ennemi attaquant.",
+  // spider_woman_kajislav — Misdiiirection (Upgrade, Protection)
+  'sw016': "1 max par joueur.\n<b>Réponse de héros</b> : après vous être défendu contre l'attaque d'un ennemi sans subir de dégât, défaussez cette carte → infligez à un autre ennemi des dégâts égaux à l'ATQ de l'ennemi attaquant.",
+  // spider_woman_kajislav — Tactical Retreat (Event, Protection)
+  'sw017': "<b>Interruption de héros</b> : quand vous devriez subir des dégâts d'une attaque, quel qu'en soit le nombre, inclinez votre héros → empêchez tous ces dégâts. Passez sous forme d'alter ego.",
+  // spider_woman_kajislav — * Battleworld (Support, Basic)
+  'sw018': "<b>Action de héros</b> : dépensez une ressource [energy] et défaussez des cartes du deck Rencontre jusqu'à ce qu'un sbire soit défaussé. Mettez ce sbire en jeu engagé avec vous → défaussez des cartes du dessus de votre deck jusqu'à ce qu'un allié soit défaussé. Mettez cet allié en jeu sous votre contrôle.",
+  // spider_woman_kajislav — Past and Future (Event, Basic)
+  'sw019': "En Équipe (Cassandra Webb et Julia Carpenter). 1 max par deck.\n<b>Action d'alter ego</b> : piochez jusqu'à votre taille de main imprimée. Placez 2 compteurs de toile psionique sur Julia Carpenter.",
+  // spider_woman_kajislav — Separation from the Child (Obligation)
+  'sw020': "<b><i>Donnez-la au joueur Julia Carpenter.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Julia Carpenter → retirez Separation from the Child de la partie.\n• Retirez tous les compteurs de toile psionique de votre identité. Si moins de 5 compteurs ont été retirés ainsi, cette carte gagne Renfort. Défaussez cette obligation.",
+  // spider_woman_kajislav — * Man-Bull (Minion, Nemesis A)
+  'sw021': "<b>Une fois révélée</b> : chaque joueur défausse 1 carte spécifique à une identité de sa main.\n<i>(Sbire némésis de Spider-Woman.)</i>",
+  // spider_woman_kajislav — Vault Breakout (SideScheme, Nemesis A)
+  'sw022': "<b>Une fois révélée</b> : chaque joueur cherche un sbire dans le deck Rencontre et le met en jeu engagé avec lui. Mélangez le deck Rencontre.",
+  // spider_woman_kajislav — Bad Inspiration (Treachery, Nemesis A)
+  'sw023': "<b>Une fois révélée</b> : cherchez un allié dans votre pile de défausse et mettez-le en jeu engagé avec vous. Traitez cet allié comme un sbire à la zone de texte vierge. La MNG du sbire est égale à sa CTR imprimée et il ne subit pas de dégâts consécutifs. Si aucun allié n'est entré en jeu ainsi, cette carte gagne Renfort.",
+  // spider_woman_kajislav — Violent Disturbance (Treachery, Nemesis A)
+  'sw024': "<b>Une fois révélée</b> : défaussez toutes les cartes spécifiques à une identité de votre main.",
+  // spider_woman_kajislav — * Ms. Marvel (Minion, Nemesis B)
+  'sw025': "Riposte 1. Robuste.\n<b>Réponse forcée</b> : après que Ms. Marvel manigance, placez 2 menaces sur Superhuman Registration Act.\n<i>(Sbire némésis de Spider-Woman.)</i>",
+  // spider_woman_kajislav — Superhuman Registration Act (SideScheme, Nemesis B)
+  'sw026': "Permanent.\nTant qu'il y a au moins 1 menace ici, cette manigance gagne une icône [hazard].",
+  // spider_woman_kajislav — Fugitive (Obligation, Nemesis B)
+  'sw027': "<b>Réponse forcée</b> : après le début de la phase des joueurs, placez 1 menace sur Superhuman Registration Act.\n<b>Action d'alter ego</b> : s'il n'y a aucune menace sur Superhuman Registration Act, dépensez une ressource [mental] → défaussez Fugitive.",
+  // spider_woman_kajislav — Fighting a Friend (Treachery, Nemesis B)
+  'sw028': "<b>Une fois révélée (alter ego)</b> : placez 3 menaces sur Superhuman Registration Act.\n<b>Une fois révélée (héros)</b> : infligez à un personnage allié des dégâts égaux à votre ATQ.",
 }
