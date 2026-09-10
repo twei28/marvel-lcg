@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
@@ -259,6 +259,28 @@ export function DemandeCentrale({
     choisirOption(option)
   }
 
+  // ⚠ LE SURVOL EST ECOUTE SUR LE CONTENEUR, pas sur chaque option (regle
+  // commune, `apercu-survol.ts`). Pose sur chaque option, `mouseleave` n'est
+  // jamais emis quand l'option disparait sous le pointeur, et l'agrandissement
+  // reste ouvert sur une carte qui n'est plus la. Ici le declencheur n'est pas
+  // la carte mais L'OPTION ENTIERE, vignette et bouton compris : c'est voulu,
+  // on doit pouvoir lire la carte en visant le libelle.
+  const survolerZone = (evenement: ReactMouseEvent) => {
+    const zone = (evenement.target as HTMLElement).closest<HTMLElement>('.af-action-wrap')
+    const vise = options.find((option) => String(option.id) === zone?.dataset.optionId)
+    if (!vise) {
+      setCarteRegardee(undefined)
+      survolerOption?.(undefined)
+      return
+    }
+    activerOption(vise, carteDeLOption?.(vise))
+  }
+
+  const quitterZone = () => {
+    setCarteRegardee(undefined)
+    survolerOption?.(undefined)
+  }
+
   const activerOption = (option: Option, carte?: ScanCardProps) => {
     // L'agrandissement s'ouvre MEME sur une option indisponible : savoir
     // pourquoi on ne peut pas la prendre demande de lire la carte.
@@ -285,7 +307,7 @@ export function DemandeCentrale({
         <strong>{avecIcones(marquerRessources(titreDepuisSource(demande, options, cartesParId)))}</strong>
       </div>
 
-      <div className="af-boutons dc-boutons">
+      <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {options.map((option) => {
           const nom = nomLisible(option)
           const source = nomSource(option, cartesParId)
@@ -297,8 +319,7 @@ export function DemandeCentrale({
             <span
               className={`af-action-wrap${carte ? ' a-vignette' : ''}`}
               key={option.id}
-              onMouseEnter={() => activerOption(option, carte)}
-              onMouseLeave={() => desactiverOption(option)}
+              data-option-id={option.id}
             >
               {/* La carte que l'option nomme, en petit au-dessus du bouton.
                   Elle est CLIQUABLE : viser la carte plutot que son nom est le

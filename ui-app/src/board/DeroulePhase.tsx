@@ -16,7 +16,7 @@
 // chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import jetonMenaceImage from '../components/jetons/menace.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
@@ -49,6 +49,7 @@ import {
 import { t } from './langue'
 import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
 import { CarteApercu } from './Board'
+import { useApercuSurvol } from './apercu-survol'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 
@@ -941,12 +942,43 @@ export function DeroulePhase({
 
   // LA LOUPE : la carte de la scene survolee, ouverte en grand a cote avec
   // son texte, comme une carte de la table (CarteApercu). Decide avec
-  // l'utilisateur : « pour lire vraiment une carte rencontre ». Se referme
-  // toute seule quand l'etape change.
-  const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
-  useEffect(() => {
-    setCarteRegardee(undefined)
-  }, [etape?.cle])
+  // l'utilisateur : « pour lire vraiment une carte rencontre ».
+  //
+  // ⚠ ELLE RESTAIT OUVERTE SUR UNE CARTE DISPARUE (capture de l'utilisateur,
+  // le 10 septembre 2026 : un sbire d'une etape precedente montre en grand
+  // par-dessus le bouton « Suivant », curseur loin de toute carte). Le survol
+  // etait pose sur CHAQUE `figure`, et `mouseleave` n'est jamais emis quand
+  // l'element disparait sous le pointeur. Une remise a zero sur `etape.cle` ne
+  // suffisait pas : les boosts s'ajoutent A L'INTERIEUR d'une meme etape
+  // (`boostsMontres`), la scene change donc sans changer de cle.
+  //
+  // La regle commune est dans `apercu-survol.ts` : un seul ecouteur sur le
+  // conteneur, et la carte RETROUVEE a chaque rendu dans la liste visible.
+  // `cartesVisibles` reproduit le filtre du rendu (`gauche` et `droite` plus
+  // bas) : un boost pas encore montre n'est pas survolable, il ne doit donc
+  // pas non plus etre agrandissable.
+  // Le meme calcul sert au rendu ET a la loupe : elle doit montrer EXACTEMENT
+  // la carte dessinee, face forcee comprise. C'est aussi lui qui donne
+  // l'identifiant que `ScanCard` pose en `data-card-id` : une carte de scene
+  // porte un id NUMERIQUE du moteur, pas celui de la carte dessinee, et le role
+  // « dos » n'en a aucun.
+  const propsDe = (carte: CarteDeScene) =>
+    carte.role === 'dos'
+      ? dosRencontre
+      : carteScene?.(carte.id, carte.role === 'revelee' || carte.role === 'boost')
+
+  const cartesVisibles = useMemo(() => {
+    if (!etape) return []
+    const montres = new Set(etape.boosts.slice(0, boostsMontres).map((boost) => boost.cibleId))
+    return sceneDe(etape).cartes.filter(
+      (carte) => carte.role !== 'boost' || montres.has(carte.id)
+    )
+  }, [etape, boostsMontres])
+  const {
+    regardee: carteDeSceneRegardee,
+    survol: survolerScene,
+    quitter: quitterScene,
+  } = useApercuSurvol(cartesVisibles, (carte) => propsDe(carte)?.id)
 
   useEffect(() => {
     setBoostsMontres(etape?.boosts.length ? 1 : 0)
@@ -1232,10 +1264,7 @@ export function DeroulePhase({
     carte.role === 'cible' || (carte.role === 'auteur' && etape.cibleId === etape.carteId)
 
   const rendreCarte = (carte: CarteDeScene, position: number) => {
-    const props =
-      carte.role === 'dos'
-        ? dosRencontre
-        : carteScene?.(carte.id, carte.role === 'revelee' || carte.role === 'boost')
+    const props = propsDe(carte)
     const apport =
       carte.role === 'boost' ? etape.boosts.find((b) => b.cibleId === carte.id)?.apport : undefined
     const scan = props ? (
@@ -1270,8 +1299,6 @@ export function DeroulePhase({
       <figure
         key={`${carte.role}-${position}`}
         className={`deroule-carte est-${carte.role}`}
-        onMouseEnter={() => setCarteRegardee(props)}
-        onMouseLeave={() => setCarteRegardee(undefined)}
       >
         {seRetourne ? (
           <div className="deroule-retourne" key={`${etape.cle}-${carte.role}-${position}`}>
@@ -1316,13 +1343,14 @@ export function DeroulePhase({
   // L'apercu est monte dans <body> (portail) : `au-dessus-du-deroule` le
   // fait passer devant la scene (540), comme `au-dessus-du-bilan` pour le
   // recap. Le dos de la distribution n'a rien a montrer en grand.
+  const carteRegardee = carteDeSceneRegardee ? propsDe(carteDeSceneRegardee) : undefined
   const loupe =
     carteRegardee && !carteRegardee.facedown ? (
       <CarteApercu carte={carteRegardee} classe="au-dessus-du-deroule" />
     ) : null
   const cartesScene =
     scene.cartes.length > 0 ? (
-      <div className="deroule-cartes">
+      <div className="deroule-cartes" onMouseOver={survolerScene} onMouseLeave={quitterScene}>
         {loupe}
         {gauche.length > 0 ? <div className="deroule-groupe">{gauche.map(rendreCarte)}</div> : null}
         {scene.fleche ? (

@@ -2201,9 +2201,39 @@ describe('le bilan de fin de phase', () => {
       const figure = container.querySelector('.deroule-carte.est-auteur')
       expect(figure).not.toBeNull()
       expect(document.querySelector('.carte-apercu')).toBeNull()
-      fireEvent.mouseEnter(figure as Element)
+      // Le survol est ecoute sur `.deroule-cartes` (`mouseOver`, qui remonte),
+      // plus sur chaque figure : regle commune d'`apercu-survol.ts`.
+      fireEvent.mouseOver(figure?.querySelector('.scan-card') as Element)
       expect(document.querySelector('.carte-apercu')).not.toBeNull()
-      fireEvent.mouseLeave(figure as Element)
+      // Le pointeur quitte les cartes sans quitter le panneau : rien ne doit
+      // plus etre montre en grand.
+      fireEvent.mouseOver(container.querySelector('.deroule-cartes') as Element)
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+      vi.unstubAllGlobals()
+    })
+
+    it('la loupe se ferme quand la carte survolee quitte la scene', () => {
+      // LE DEFAUT DU 10 SEPTEMBRE 2026 (capture de l'utilisateur) : un sbire
+      // d'une etape precedente restait montre en grand par-dessus le bouton
+      // « Suivant », curseur loin de toute carte. Une carte demontee sous le
+      // pointeur n'emet jamais `mouseleave` ; seule la derivation depuis la
+      // liste courante ferme la loupe. On passe donc a l'etape suivante SANS
+      // aucun evenement de souris.
+      class ResizeObserverBouchon {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      }
+      vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+      const { container } = render(
+        <DeroulePhase etapes={etapes} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
+      )
+      fireEvent.click(suivant())
+      const carte = container.querySelector('.deroule-carte.est-auteur .scan-card')
+      expect(carte).not.toBeNull()
+      fireEvent.mouseOver(carte as Element)
+      expect(document.querySelector('.carte-apercu')).not.toBeNull()
+      fireEvent.click(suivant())
       expect(document.querySelector('.carte-apercu')).toBeNull()
       vi.unstubAllGlobals()
     })

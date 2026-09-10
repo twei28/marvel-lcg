@@ -8,7 +8,9 @@
 // C'est le seul panneau qui se pose par-dessus la table, et seulement le temps
 // d'un choix. L'ancien plateau fait la meme chose en « ouvrant » le deck.
 
+import { useEffect } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import { useApercuSurvol } from './apercu-survol'
 import type { CibleHorsTable } from './interaction'
 import { t } from './langue'
 
@@ -21,10 +23,29 @@ export type SelecteurCiblesProps = {
 }
 
 export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProps) {
+  // Survol ecoute sur le CONTENEUR, agrandissement DERIVE de `cibles` : la
+  // regle commune, expliquee dans `apercu-survol.ts`. Ici l'agrandissement
+  // n'est pas monte par ce panneau mais remonte a la table (`survoler`), d'ou
+  // l'effet qui repercute `regardee` a chaque changement.
+  const { regardee, survol, quitter, viser } = useApercuSurvol(cibles, (cible) => cible.props.id)
+  const remonter = survoler
+  useEffect(() => {
+    remonter?.(regardee?.props)
+  }, [regardee, remonter])
+  // Le panneau ferme emporte l'agrandissement : sans cela le dernier survol
+  // resterait affiche par-dessus la table apres le choix.
+  useEffect(() => () => remonter?.(undefined), [remonter])
+
   if (cibles.length === 0) return null
 
   return (
-    <div className="plateau-selecteur" role="group" aria-label={`${t('Cibles possibles :')} ${titre}`}>
+    <div
+      className="plateau-selecteur"
+      role="group"
+      aria-label={`${t('Cibles possibles :')} ${titre}`}
+      onMouseOver={survol}
+      onMouseLeave={quitter}
+    >
       <div className="plateau-selecteur-entete">
         <span className="plateau-eyebrow">{t('Cibles hors table')}</span>
         <strong>
@@ -36,10 +57,9 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
           <span
             key={cible.props.id}
             className="plateau-selecteur-carte"
-            onMouseEnter={() => survoler?.(cible.props)}
-            onMouseLeave={() => survoler?.(undefined)}
-            onFocus={() => survoler?.(cible.props)}
-            onBlur={() => survoler?.(undefined)}
+            // Le clavier n'a pas de pointeur : il vise explicitement.
+            onFocus={() => viser(cible.props.id)}
+            onBlur={() => viser(undefined)}
           >
             <ScanCard
               {...cible.props}

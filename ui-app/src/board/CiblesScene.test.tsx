@@ -116,10 +116,47 @@ describe('les cibles dans la scene', () => {
         annuler={() => {}}
       />
     )
-    const carte = container.querySelector('.cibles-scene-carte') as Element
-    fireEvent.mouseEnter(carte)
+    // Le survol est ecoute sur le CONTENEUR (`mouseOver`, qui remonte), plus
+    // sur chaque carte : c'est la regle commune d'`apercu-survol.ts`.
+    const carte = container.querySelector('.cibles-scene-carte .scan-card') as Element
+    fireEvent.mouseOver(carte)
     expect(document.querySelector('.carte-apercu')).not.toBeNull()
-    fireEvent.mouseLeave(carte)
+    // Le pointeur passe sur l'entete du panneau : ce n'est PAS une carte,
+    // l'agrandissement doit se fermer.
+    fireEvent.mouseOver(container.querySelector('.cibles-scene-entete') as Element)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+    vi.unstubAllGlobals()
+  })
+
+  it('la cible qui quitte la liste emporte son agrandissement', () => {
+    // LE DEFAUT DU 10 SEPTEMBRE 2026, en petit : une carte demontee sous le
+    // pointeur n'emet jamais `mouseleave`, et l'agrandissement restait ouvert
+    // pour toujours, par-dessus les boutons du panneau. Aucun evenement de
+    // souris ici : c'est la liste qui change, et cela doit suffire.
+    class ResizeObserverBouchon {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+    const panneau = (liste: ReturnType<typeof cibles>) => (
+      <CiblesScene
+        titre="t"
+        cibles={liste}
+        choisies={0}
+        minimum={1}
+        maximum={1}
+        prete={false}
+        raison=""
+        valider={() => {}}
+        annuler={() => {}}
+      />
+    )
+    const toutes = cibles(() => {})
+    const { container, rerender } = render(panneau(toutes))
+    fireEvent.mouseOver(container.querySelector('.cibles-scene-carte .scan-card') as Element)
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+    rerender(panneau(toutes.slice(1)))
     expect(document.querySelector('.carte-apercu')).toBeNull()
     vi.unstubAllGlobals()
   })
