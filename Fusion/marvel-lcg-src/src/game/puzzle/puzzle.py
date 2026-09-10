@@ -53,6 +53,36 @@ class RunPuzzle:
                 if face is not None and face.IsInPlay() and face.IsName(card):
                     return face
 
+            # CORRECTIF (09/09/2026, pack iron_patriot) : une carte dont la FACE
+            # A ETE ECHANGEE en cours de partie ne repond plus a son propre
+            # identifiant. `Faces.TreatAsAlly` remplace la face du sbire par
+            # celle d'un gabarit : le sbire `ip032` en jeu s'appelle toujours
+            # Penance, mais son `paper.card_id` est devenu `registered_ally`.
+            # Sans ce dernier passage, `Puzzle.Damage('ip032', 1)` FABRIQUAIT UN
+            # DOUBLON detache et blessait un fantome — en silence, la commande
+            # ayant l'air d'avoir marche.
+            for objet in self.world.object_manager.card_dict.values():
+                face = objet.face
+                if face is None or not face.IsInPlay():
+                    continue
+                imprimees = getattr(objet, "printed_faces", [])
+                # ⚠ REPLI RESERVE AUX FACES ECHANGEES, JAMAIS AUX RECTO-VERSO.
+                # Une carte qui a simplement ETE RETOURNEE garde ses deux faces
+                # dans `printed_faces` : chercher la-dedans la retrouverait sous
+                # son ANCIEN identifiant, et tout cas qui affirme « la carte a
+                # basculé » (`hors_jeu`) redeviendrait faux. Mesure du
+                # 10/09/2026 : 10 cas de flip du depot sont passes au rouge pour
+                # cette seule raison (ah012a, iw001a, mk001a, wc019a, gb007a,
+                # as002a, nt003a...).
+                # Le cas qu'on veut couvrir est l'autre : `Faces.TreatAsAlly`
+                # remplace la face active par une face qui N'EST PAS dans
+                # `printed_faces`. C'est ce test-la qui separe les deux.
+                if face in imprimees:
+                    continue
+                for imprimee in imprimees:
+                    if getattr(imprimee.paper, "card_id", None) == card:
+                        return face
+
             if found_card:
                 return found_card
         else:
@@ -141,6 +171,26 @@ class RunPuzzle:
         joueur = self.world.GetFirstPlayer()
         for _ in range(50):
             faces = [f for f in joueur.player_deck.GetAll() if f is not None]
+            if not faces:
+                return
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+
+    def EmptyPlayerAdditionalDeck(self):
+        """Vide le DECK ANNEXE du joueur (deck d'Invocation, deck REGISTERED...).
+
+        AJOUTEE le 10/09/2026, meme motif que `EmptyPlayerDeck` et
+        `EmptyEncounterDeck` : `CreatePlayerAdditionalDeck` AJOUTE, elle ne
+        remplace pas. Sans elle, aucun cas ne peut mesurer ce qu'une carte fait
+        quand ce deck est VIDE — et `ip006` Victoria Hand a deux options dont
+        la seconde n'est atteignable que dans cette situation exacte.
+
+        Meme boucle que `EmptyPlayerDeck`, pour la meme raison :
+        `RemoveAllFromGame` travaille sur la liste que la zone modifie.
+        """
+        from game.operate.faces import Faces
+        joueur = self.world.GetFirstPlayer()
+        for _ in range(50):
+            faces = [f for f in joueur.additional_deck.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))

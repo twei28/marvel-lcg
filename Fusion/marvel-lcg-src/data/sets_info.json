@@ -1477,5 +1477,16 @@
   "encounters": [],
   "max_id": "vz037"
  },
- "checksum": "af4a93b2c5adef5b3fc64dfe4ce25ce048b388cc5c158dc3857c0b5e537bf041"
+ "142. Custom (Iron Patriot)": {
+  "name": "iron_patriot",
+  "scenarios": [],
+  "heroes": [
+   "iron_patriot"
+  ],
+  "encounters": [
+   "molecule_man"
+  ],
+  "max_id": "ip037"
+ },
+ "checksum": "3fbc6a7b32aad042020f837941b73921108063a6d81dde1a6de962fe9df9cd71"
 }

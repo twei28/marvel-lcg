@@ -92099,5 +92099,742 @@
    "custom": "ekAugust"
   }
  ],
- "checksum": "cbcdfd35f73f6ae05989e639b9d118223e9321ea6a01478118bf455a75bb9faf"
+ "iron_patriot": [
+  {
+   "card_id": "ip001a",
+   "type": "Hero",
+   "name": "* Iron Patriot",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "1",
+    "THW": "3",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "H.A.M.M.E.R.",
+    "REGISTERED"
+   ],
+   "text": "Each ally you control gains the [[REGISTERED]] trait.\n<i>Authoritative Force</i> \u2014 <b>Response</b>: After you attack and defeat a minion, you may shuffle it into the REGISTERED deck. <i>(Limit once per phase.)</i>",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip001b",
+   "type": "AlterEgo",
+   "name": "* Norman Osborn",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "BUSINESSMAN",
+    "GENIUS"
+   ],
+   "text": "<i>New World Order</i> \u2014 <b>Setup</b>: During deck building, your deck cannot include any aspect allies. Norman Osborn begins the game with the REGISTERED deck and the Registration Act side-scheme in play. <i>(See insert.)</i>\n<b>Action</b>: Exhaust Norman Osborn \u2192 resolve the \"Special\" ability on 1 [[REGISTERED]] ally.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip002a",
+   "type": "PlayerSideScheme",
+   "name": "* Registration Act",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "StartingThreat": "4*",
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Permanent. Setup.\nThis scheme does not count against the player side scheme limit.\n<i>Enlistment</i> \u2014 <b>Action</b>: Reveal the top card of the REGISTERED deck and put it into play engaged with you. At the end of the round, you may spend resources equal to the number of boost icons on that card to take control of that minion and treat it as a [[REGISTERED]] ally.\nMinions with the [[REGISTERED]] trait are treated as REGISTERED allies. They take 1 consequential damage after they attack or thwart, and their THW is equal to their printed SCH.\n<b>When Defeated</b>: Flip this card.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip002b",
+   "type": "PlayerSideScheme",
+   "name": "* Dark Reign",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Permanent.\nThis scheme does not count against the player side scheme limit.\n<i>Accept Change</i> \u2014 <b>Action</b>: Reveal the top card of the REGISTERED deck. You may spend resources equal to the number of boost icons on that card to take control of that minion and treat it as a [[REGISTERED]] ally. If you do not, it enters play as a minion engaged with you.\nMinions with the [[REGISTERED]] trait are treated as REGISTERED allies. They take 1 consequential damage after they attack or thwart, and their THW is equal to their printed SCH.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip003",
+   "type": "PlayerSideScheme",
+   "name": "* Absolute Power",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Victory 0.\nThreat cannot be removed from this scheme by heroes or allies.\nWhile in the victory display, each [[REGISTERED]] character gets +1 ATK.\n<b>Hero Action</b>: Exhaust a [[REGISTERED]] character you control \u2192 remove 1 threat from here. Any player may trigger this ability.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip004",
+   "type": "PlayerSideScheme",
+   "name": "* Corrupt Absolutely",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "StartingThreat": "3",
+    "Victory": "0",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Victory 0.\nThreat cannot be removed from this scheme by heroes or allies.\nWhile in the victory display, each [[REGISTERED]] character gets +1 THW.\n<b>Alter-Ego Action</b>: Exhaust a [[REGISTERED]] character you control \u2192 remove 1 threat from here. Any player may trigger this ability.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip005",
+   "type": "Ally",
+   "name": "* Sentry",
+   "subtitle": "Robert Reynolds",
+   "desc": {
+    "Cost": "5",
+    "HP": "6",
+    "ATK": "4**",
+    "THW": "1*",
+    "RES": "Y",
+    "Toughness": "1",
+    "Vulnerable": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER",
+    "REGISTERED"
+   ],
+   "text": "Toughness. Vulnerable.\n<b>Interrupt</b>: When an enemy attacks you, you may declare Sentry the defender without exhausting him.\n<hr />\n<i>Void's Wrath</i> \u2014 <b>Special</b>: Until the end of the round, gain retaliate X, where X is equal to Sentry's ATK.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip006",
+   "type": "Support",
+   "name": "* Victoria Hand",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PERSONA",
+    "REGISTERED"
+   ],
+   "text": "<b>Action</b>: Exhaust this card \u2192 choose:\n\u2022 Look at the top card of the REGISTERED deck. You may discard that card.\n\u2022 Shuffle the topmost minion from the encounter discard pile into the REGISTERED deck.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip007",
+   "type": "Support",
+   "name": "* H.A.M.M.E.R. Helicarrier",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "H.A.M.M.E.R.",
+    "VEHICLE"
+   ],
+   "text": "Increase your ally limit by 1. <i>(This allows you to control more than 3 allies.)</i>\n<b>Action</b>: Exhaust this card and spend 1 resource of any type \u2192 ready a [[REGISTERED]] ally.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip008",
+   "type": "Upgrade",
+   "name": "* Director of Security",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "text": "Decrease the number of boost icons of the first card revealed from the REGISTERED deck each round by 1.\n<b>Alter-Ego Resource</b>: Exhaust this card \u2192 generate a [wild] resource.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip009",
+   "type": "Upgrade",
+   "name": "Total Authority",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "You gain steady.\n<b>Hero Action</b>: After Iron Patriot uses a basic power \u2192 resolve the \"Special\" ability on 1 [[REGISTERED]] ally you control.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip010",
+   "type": "Event",
+   "name": "Deceptive Guard",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "TACTIC"
+   ],
+   "text": "<b>Alter-Ego Interrupt</b>: When an enemy schemes \u2192 this activation removes threat instead of placing it.\n<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks you \u2192 prevent all damage from that attack.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip011",
+   "type": "Event",
+   "name": "Foreboding Influence",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Shuffle 2 cards from the REGISTERED discard pile into the REGISTERED deck.\n<b>Hero Response</b>: After you attack a minion, spend resources equal to the number of boost icons on that card to take control of that minion and treat it as an [[REGISTERED]] ally.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip012",
+   "type": "Event",
+   "name": "Repulsor Bombard",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy and discard the top card from the REGISTERED deck. For each boost icon discarded this way, deal 1 damage to an enemy.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip013",
+   "type": "Event",
+   "name": "Call to Arms",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Choose any number of [[REGISTERED]] allies in play. Ready each of those characters, and they take +1 consequential damage after they thwart or attack this round.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip014",
+   "type": "Event",
+   "name": "Seige",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Iron Patriot and discard any number of [[REGISTERED]] allies in play. Deal X damage to an enemy (to a maximum of 15), where X is the combined ATK of those discarded characters. This attack gains overkill.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip015",
+   "type": "Obligation",
+   "name": "Exposed Insanity",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Norman Osborn"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Norman Osborn Player.</i></b>\nYou may flip to alter-ego form. Choose:\n\u2022 Exhaust Norman Osborn \u2192 remove Exposed Insanity from the game.\n\u2022 Discard each ally with the [[REGISTERED]] trait under your control. If no allies were discarded this way, find the Reign's End side scheme and reveal it.",
+   "set_name": "Iron Patriot",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip016",
+   "type": "Minion",
+   "name": "* Doctor Doom",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "4",
+    "Stalwart": "1",
+    "Toughness": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "ELITE",
+    "GENIUS",
+    "MYSTIC"
+   ],
+   "text": "Stalwart. Toughness. Villainous.\n<b>When Revealed</b>: If Cabal Obligations is in play, deal 1 encounter card to each player. Otherwise, find Cabal Obligations and reveal it. <i>(Shuffle.)</i>\n<hr />\n<i>Cabal Rivalry</i> \u2014 <b>Special</b>: Shuffle Doctor Doom into the encounter deck \u2192 play an Iron Patriot card from your deck or discard pile, ignoring its resource cost. <i>(Shuffle.)</i>",
+   "set_name": "Iron Patriot Nemesis",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip017",
+   "type": "SideScheme",
+   "name": "Reign's End",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "6",
+    "Boost": "3"
+   },
+   "traits": [],
+   "text": "<b>Forced Interrupt</b>: When a character enters play, place 2 threat here.\n<b>Forced Response</b>: After a [[REGISTERED]] ally is defeated, place that ally facedown under this scheme. If there are 3[per_hero] cards under this scheme, the players lose the game.",
+   "set_name": "Iron Patriot Nemesis",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip018",
+   "type": "Attachment",
+   "name": "Cabal Obligations",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "Attach to your identity.\nAttached identity cannot ready. [[REGISTERED]] allies you control cannot attack, thwart, or resolve \"Special\" abilities.\n<b>Action</b>: Spend X resources of any type, where X is 1 more than the number of [[REGISTERED]] allies in play \u2192 discard this card.",
+   "set_name": "Iron Patriot Nemesis",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip019",
+   "type": "Treachery",
+   "name": "Assembled Resistance",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "text": "<b>When Revealed (Alter Ego)</b>: Reveal the top card of the REGISTERED deck and put it into play engaged with you.\n<b>When Revealed (Hero)</b>: The friendly character with the most remaining hit points attacks you. If no attack was made this way, this card gains surge.",
+   "set_name": "Iron Patriot Nemesis",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip020",
+   "type": "Minion",
+   "name": "H.A.M.M.E.R. Agents",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "ATK": "1",
+    "SCH": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "H.A.M.M.E.R."
+   ],
+   "text": "<b>When Revealed</b>: If this is the first card revealed from the REGISTERED deck this round, put this card under your control as a [[REGISTERED]] ally.\n<hr />\n<i>Reinforcements</i> \u2014 <b>Special</b>: Search the REGISTERED deck for a copy of H.A.M.M.E.R. Agents and put it into play under your control as a [[REGISTERED]] ally. Shuffle the REGISTERED deck.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip021",
+   "type": "Minion",
+   "name": "H.A.M.M.E.R. Commandos",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Guard": "1"
+   },
+   "traits": [
+    "H.A.M.M.E.R.",
+    "SOLDIER"
+   ],
+   "text": "Guard.\n<b>When Revealed</b>: If this is the first card revealed from the REGISTERED deck this round, put this card under your control as a [[REGISTERED]] ally.\n<hr />\n<i>Suppressive Fire</i> \u2014 <b>Special</b>: Exhaust this ally \u2192 for each H.A.M.M.E.R. character in play, deal 1 damage to an enemy.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip022",
+   "type": "Minion",
+   "name": "H.A.M.M.E.R. Operatives",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "ATK": "1",
+    "SCH": "2",
+    "Boost": "2",
+    "Patrol": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "H.A.M.M.E.R."
+   ],
+   "text": "Patrol.\n<b>When Revealed</b>: If this is the first card revealed from the REGISTERED deck this round, put this card under your control as a [[REGISTERED]] ally.\n<hr />\n<i>Counter Intelligence</i> \u2014 <b>Special</b>: Exhaust this ally \u2192 for each H.A.M.M.E.R. character in play, remove 1 threat from a scheme.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip023",
+   "type": "Minion",
+   "name": "* Bullseye",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "ASSASSIN",
+    "AVENGER",
+    "ELITE"
+   ],
+   "text": "Quickstrike.\n[star] When Bullseye makes a basic attack against a unique character <i>([unique])</i>, he gets +1 ATK. Bullseye's attacks gain ranged.\n<hr />\n<i>Kill Order</i> \u2014 <b>Special</b>: Choose a minion \u2192 discard the top card of the encounter deck. If that card has a star icon ([star]) in the boost area, defeat that minion.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip024",
+   "type": "Minion",
+   "name": "* Daken",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Surge": "1"
+   },
+   "traits": [
+    "AVENGER",
+    "ELITE",
+    "MUTANT"
+   ],
+   "text": "Surge.\n[star] Daken's attacks gain piercing.\n<b>Forced Response</b>: After the villain phase begins, heal 1 damage from Daken.\n<hr />\n<i>Emotional Pheromones</i> \u2014 <b>Special</b>: Choose to either stun or confuse up to 2 enemies.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip025",
+   "type": "Minion",
+   "name": "* Ghost",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "1",
+    "SCH": "3",
+    "Boost": "3",
+    "Incite": "1",
+    "Patrol": "1"
+   },
+   "traits": [
+    "ELITE",
+    "SPY"
+   ],
+   "text": "Incite 1. Patrol.\n[star] Divide threat from Ghost's scheme or thwart among each scheme as evenly as possible.\n<hr />\n<i>Intangible Espionage</i> \u2014 <b>Special</b>: Remove 1 threat from each scheme for each [crisis], [acceleration], [amplify], and [hazard] in play.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip026",
+   "type": "Minion",
+   "name": "* Madame Masque",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Guard": "1",
+    "Steady": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "text": "Guard. Steady.\n[star] <b>Forced Response</b>: After Madame Masque attacks and damages a character, confuse that character.\n<hr />\n<i>False Faces</i> \u2014 <b>Special</b>: Draw X cards (to a maximum of 3), where X is equal to the main scheme's stage number. If the main scheme has no stage number, draw 1 card.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip027",
+   "type": "Minion",
+   "name": "* Moonstone",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "3",
+    "Stalwart": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER",
+    "ELITE"
+   ],
+   "text": "Stalwart. Toughness.\n[star] <b>Forced Response</b>: After Moonstone attacks and defeats a character, give her a tough status card.\n<hr />\n<i>Psych Evaluation</i> \u2014 <b>Special</b>: Choose 1 other friendly character you control \u2192 heal 2 damage from that character and give them a tough status card.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip028",
+   "type": "Minion",
+   "name": "* Taskmaster",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "0",
+    "SCH": "0",
+    "Boost": "3",
+    "Guard": "1"
+   },
+   "traits": [
+    "AVENGER",
+    "ELITE",
+    "MERCENARY"
+   ],
+   "text": "Guard.\n[star] Taskmaster gets +1 SCH and +1 ATK for each [[REGISTERED]] character you control (to a maximum of 3).\n<hr />\n<i>Initiative Trainer</i> \u2014 <b>Special</b>: Resolve the \"Special\" ability on 1 minion in the REGISTERED deck discard pile.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip029",
+   "type": "Minion",
+   "name": "* Venom",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "3",
+    "SCH": "1",
+    "Boost": "3",
+    "Retaliate": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AVENGER",
+    "ELITE",
+    "SYMBIOTE"
+   ],
+   "text": "Retaliate 1. Toughness.\nWhile Venom's remaining hit points are less than half his starting hit points, he gets +1 ATK and -1 SCH or -1 THW.\n<hr />\n<i>Symbiotic Devour</i> \u2014 <b>Special</b>: This ally attacks a character. This ally takes -1 consequential damage if they defeat a character this way.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip030",
+   "type": "Minion",
+   "name": "* Ares",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "3",
+    "SCH": "2",
+    "Boost": "4",
+    "Toughness": "1"
+   },
+   "traits": [
+    "AVENGER",
+    "OLYMPUS",
+    "ELITE"
+   ],
+   "text": "Toughness.\n[star] <b>Forced Response</b>: Ares's attacks gain piercing. After Ares attacks and damages a character, stun that character.\n<hr />\n<i>War Tactician</i> \u2014 <b>Special</b>: Search your deck for an [[ATTACK]] or [[DEFENSE]] event and add it to your hand. <i>(Shuffle.)</i>",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip031",
+   "type": "Minion",
+   "name": "* Loki",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "1",
+    "SCH": "4",
+    "Boost": "4",
+    "Incite": "2",
+    "Stalwart": "1"
+   },
+   "traits": [
+    "ASGARD",
+    "ELITE",
+    "MYSTIC"
+   ],
+   "text": "Incite 2. Stalwart.\n<b>Forced Response</b>: After you resolve a treachery, heal 1 damage from Loki.\n<hr />\n<i>Trickster Magic</i> \u2014 <b>Special</b>: Search the encounter deck for a treachery and discard it. <i>(Shuffle.)</i>",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip032",
+   "type": "Minion",
+   "name": "* Penance",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "ATK": "4",
+    "SCH": "1",
+    "Boost": "4",
+    "Retaliate": "2",
+    "Vulnerable": "1"
+   },
+   "traits": [
+    "AVENGER",
+    "ELITE"
+   ],
+   "text": "Retaliate 2. Vulnerable.\n[star] Penance's attacks gain overkill.\n<hr />\n<i>Unleashed Pain</i> \u2014 <b>Special</b>: Exhaust this card \u2192 choose a player. Deal X damage to the villain and each minion engaged with that player, where X is equal to the amount of damage this ally has sustained.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip033",
+   "type": "Minion",
+   "name": "* The Hood",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "3",
+    "Boost": "4",
+    "Steady": "1",
+    "Surge": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "text": "Steady. Surge.\n[star] <b>Forced Interrupt</b>: When The Hood attacks, give him 1 boost card for this activation.\n<hr />\n<i>Demonic Crimes</i> \u2014 <b>Special</b>: Discard the top card of the REGISTERED deck. For each boost icon discarded this way, choose to deal 1 damage to an enemy or remove 1 threat from a scheme.",
+   "set_name": "Registered",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip034",
+   "type": "Minion",
+   "name": "* Molecule Man",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "4",
+    "SCH": "2",
+    "Boost": "3",
+    "Toughness": "1",
+    "Steady": "1"
+   },
+   "traits": [
+    "ELITE"
+   ],
+   "text": "Toughness. Steady.\n[star] Character cannot defend against Molecule Man's attacks.\n<b>When Revealed</b>: Search the encounter deck and discard pile for Master of Molecules and reveal it.",
+   "set_name": "Molecule Man",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip035",
+   "type": "SideScheme",
+   "name": "\"You're in My World\"",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "5",
+    "Boost": "3"
+   },
+   "traits": [],
+   "text": "This card cannot leave play while Molecule Man is in play.\n<b>When Revealed</b>: Name a resource type ([energy], [mental], [physical], or [wild]). While You're in My World is in play, each player cannot play cards with that printed resource type from their hand.",
+   "set_name": "Molecule Man",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip036",
+   "type": "Attachment",
+   "name": "* Master of Molecules",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "text": "Attach to Molecule Man. If you cannot, this card gains surge.\n[star] <b>Forced Interrupt</b>: When Molecule Man attacks you, discard 1 card at random from your hand. If that card's printed resource has:\n[energy] \u2013 This attack gains overkill and piercing.\n[mental] \u2013 Stun and confuse the attacked character.\n[physical] \u2013 This attack deals 2 addtional damage.\n[wild] \u2013 Discard 1 additional card.",
+   "set_name": "Molecule Man",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "ip037",
+   "type": "Treachery",
+   "name": "Manipulate Realities",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: If Molecule Man is in play, choose a printed resource type ([energy], [mental], [physical], or [wild]) in your hand. Discard each card from your hand with the chosen resource type. Otherwise, this card gains surge.",
+   "set_name": "Molecule Man",
+   "custom": "Neptune"
+  },
+  {
+   "card_id": "registered_ally",
+   "pic_id": "encounter",
+   "type": "Ally",
+   "name": "Registered Ally",
+   "subtitle": "",
+   "desc": {
+    "HP": "0",
+    "ATK": "0*",
+    "THW": "0*",
+    "Class": "Encounter"
+   },
+   "traits": [
+    "REGISTERED"
+   ],
+   "set_name": ""
+  }
+ ],
+ "checksum": "db2676f0dfbc3f118a0bb190d421277138ea0629daa2a1f402f607fc678b4497"
 }

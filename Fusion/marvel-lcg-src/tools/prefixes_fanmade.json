@@ -225,9 +225,9 @@
   "ip": {
    "pack": "iron_patriot",
    "libelle": "142. Custom (Iron Patriot)",
-   "cartes": 0,
+   "cartes": 39,
    "depuis": "2026-08-29",
-   "note": "RESERVE, pas encore cree. Difficulte 4/5. Norman Osborn, hero+nemesis(Doctor Doom, numerotation propre au pack)+mini-encounter-set (Molecule Man). Coeur du pack = deck secondaire de 20 cartes 'REGISTERED' attache au heros (pioche/engagement separes, conversion minion-vers-allie), aucun equivalent dans le moteur : un vrai sous-systeme a concevoir, pas juste de l'assemblage. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+   "note": "LIVRE le 10/09/2026. Auteur Neptune. Norman Osborn, hero + nemesis (Doctor Doom) + set modulaire Molecule Man. Coeur du pack = deck secondaire de 20 sbires REGISTERED. ⚠ LA NOTE PRECEDENTE DISAIT 'aucun equivalent dans le moteur, un vrai sous-systeme a concevoir' : C'EST FAUX, mesure le 09/09/2026. Le deck secondaire ET sa defausse propre existent (player.additional_deck / additional_discard_pile, player.py:97-99, precedent = deck d'Invocation de Strange), et la conversion sbire-vers-allie aussi (Faces.TreatAsAlly, faces.py:340), qui RECOPIE DEJA printed_scheme dans printed_thwart — c'est mot pour mot la regle imprimee 'their THW is equal to their printed SCH'. Le montage se fait par un GABARIT d'allie en donnee, modele karma_controlled_ally / phoenix_controlled_ally (cards.json), dont les asterisques d'ATK/THW portent les degats consecutifs. Restent a declarer : les traits REGISTERED, H.A.M.M.E.R. et CABAL. Difficulte revue : volume (une quarantaine de cartes) plutot que conception. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
   },
   "iw": {
    "pack": "invisible_woman",

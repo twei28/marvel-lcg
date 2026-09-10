@@ -192,7 +192,24 @@ class CardFactory:
                                                     # les deux `.SetPlay()`. Declaree AVANT
                                                     # d'ecrire le module, la leçon ls005 ayant
                                                     # coute une journee de deck injouable.
-                                                    "br004"]:  # Hammer Twirl (beta_ray_bill)
+                                                    "br004",   # Hammer Twirl (beta_ray_bill)
+                                                    # CORRECTIF (09/09/2026) : pack custom
+                                                    # iron_patriot (Neptune). DEUX cartes y
+                                                    # portent deux capacites de jeu, et elles
+                                                    # sont DECLAREES AVANT d'ecrire leur module,
+                                                    # comme le conseille la lecon ls005 juste
+                                                    # au-dessus.
+                                                    #  ip010 Deceptive Guard : une Interruption
+                                                    #    d'alter ego (une manigance retire de la
+                                                    #    menace au lieu d'en poser) ET une
+                                                    #    Interruption de heros (defense) — deux
+                                                    #    formes, deux fenetres.
+                                                    #  ip011 Foreboding Influence : une Action
+                                                    #    d'alter ego (remelanger la defausse
+                                                    #    REGISTERED) ET une Reponse de heros
+                                                    #    (recruter le sbire attaque).
+                                                    "ip010",   # Deceptive Guard (iron_patriot)
+                                                    "ip011"]:  # Foreboding Influence (iron_patriot)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune

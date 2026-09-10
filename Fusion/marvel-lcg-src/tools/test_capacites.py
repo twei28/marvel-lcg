@@ -26396,6 +26396,1262 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["40019"], "en_jeu": ["vz032"]},
     },
+
+    # ======================================================================
+    # IRON PATRIOT (Neptune, set 142) — le systeme REGISTERED
+    # ======================================================================
+    {
+        "nom": "ip001b Norman Osborn — le deck REGISTERED est monte au setup : 20 sbires",
+        "pourquoi": ("Rien du pack ne fonctionne si le second deck n'existe pas. On mesure "
+                     "LA TAILLE, seule preuve que `BeginGameWithSetAside` + "
+                     "`WhenPlayerSelectHero` ont bien deplace les 20 cartes du set_aside "
+                     "vers `player.additional_deck`"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Draw(0)"],
+        "accepter_choix": False,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_deck_registered": 20},
+    },
+    {
+        "nom": "ip001a Iron Patriot — chaque allie qu'il controle gagne le trait REGISTERED",
+        "pourquoi": ("« Each ally you control gains the REGISTERED trait. » Nick Fury est un "
+                     "allie BASIQUE, sans le moindre lien avec le pack : s'il porte le "
+                     "trait, c'est bien Iron Patriot qui le donne"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01084')"],
+        "declencher": ["Puzzle.Draw(0)"],
+        "accepter_choix": False,
+        "verifier": "etat_attendu",
+        "attendu": {"traits_de": [["01084", "REGISTERED"]]},
+    },
+    {
+        "nom": "ip002a Registration Act — Enlistment revele le dessus du deck REGISTERED et le met en jeu",
+        "pourquoi": ("Le geste central du pack. On force BULLSEYE sur le dessus du deck "
+                     "REGISTERED — et non un H.A.M.M.E.R., qui se convertirait tout seul en "
+                     "allie et changerait donc de `card_id` (le gabarit `registered_ally` "
+                     "remplace la face). Bullseye n'a pas de « When Revealed » : il reste "
+                     "un sbire, sous son propre identifiant"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip023')"],
+        "declencher": ["Puzzle.Action('ip002a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip023"]},
+    },
+    {
+        "nom": "ip020 H.A.M.M.E.R. Agents — premiere revelee du round : elle devient allie REGISTERED",
+        "pourquoi": ("« If this is the FIRST card revealed from the REGISTERED deck this "
+                     "round, put this card under your control as a REGISTERED ally. » Le "
+                     "trait REGISTERED sur la carte prouve la conversion : un sbire du deck "
+                     "ne le porte PAS sur le papier, il ne l'obtient qu'en devenant allie"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip020')"],
+        "declencher": ["Puzzle.Action('ip002a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"traits_de": [["ip020", "REGISTERED"]]},
+    },
+    {
+        "nom": "ip002a + ip020 — TEMOIN : la DEUXIEME revelation du round ne donne PLUS d'allie",
+        "pourquoi": ("La limite « first card revealed ... this round » n'est prouvee que si "
+                     "l'on voit le SECOND declenchement etre refuse. Deux Agents d'affilee : "
+                     "le second reste un SBIRE, donc sans le trait REGISTERED"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021', 'ip020')",
+                          "Puzzle.Action('ip002a')"],
+        "declencher": ["Puzzle.Action('ip002a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip021"], "traits_absents": ["REGISTERED"]},
+    },
+    {
+        "nom": "ip001b Norman Osborn — l'Action resout le « Special » d'un allie REGISTERED",
+        "pourquoi": ("`Faces.TreatAsAlly` ECHANGE la face du sbire contre celle du gabarit, "
+                     "qui n'a aucune capacite : sans la recopie de "
+                     "`RecruterCommeAllieRegistered`, le « Special » disparait au moment "
+                     "meme ou l'on paie pour l'obtenir. Ici Renforts va chercher un SECOND "
+                     "exemplaire d'Agents et le met en jeu : deux ip020 en jeu, c'est la "
+                     "preuve que la capacite a survecu a la conversion"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip020')",
+                          "Puzzle.Action('ip002a')"],
+        "declencher": ["Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu_trait": [["REGISTERED", 2]]},
+    },
+    {
+        "nom": "ip003 Absolute Power — un heros ne peut PAS retirer de menace de cette manigance",
+        "pourquoi": ("« Threat cannot be removed from this scheme by heroes or allies. » On "
+                     "contre avec le heros : la menace ne doit pas bouger de 3"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip003')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "declencher": ["Puzzle.Thwart('ip001a')"],
+        "accepter_choix": True,
+        "cibles": ["ip003"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip003", 3]]},
+    },
+    {
+        "nom": "ip005 Sentry — le « Special » Void's Wrath donne riposte X = son ATQ (4)",
+        "pourquoi": ("« gain retaliate X, where X is equal to Sentry's ATK ». ATQ 4 imprimee, "
+                     "donc riposte 4. On lit l'attribut sur la carte, pas un effet de bord"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip005')"],
+        "declencher": ["Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ip005", "retaliate", 4]]},
+    },
+    {
+        "nom": "ip007 H.A.M.M.E.R. Helicarrier — la limite d'allies passe de 3 a 4",
+        "pourquoi": ("« Increase your ally limit by 1. » Quatre allies en jeu en meme temps : "
+                     "sans le soutien, le quatrieme serait refuse"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip007')",
+                          "Puzzle.PutIntoPlay('01084')",
+                          "Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.PutIntoPlay('56019')"],
+        "declencher": ["Puzzle.PutIntoPlay('ip005')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01084", "04020", "56019", "ip005"]},
+    },
+    {
+        "nom": "ip009 Total Authority — Iron Patriot gagne stable",
+        "pourquoi": ("« You gain steady. » Le mot-cle va a l'IDENTITE, pas a la carte. On le "
+                     "lit sur le heros"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip009')"],
+        "declencher": ["Puzzle.Draw(0)"],
+        "accepter_choix": False,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"steady": 1}},
+    },
+
+    {
+        "nom": "ip001a Authoritative Force — le sbire vaincu a l'attaque part dans le deck REGISTERED",
+        "pourquoi": ("« After you attack and defeat a minion, you may SHUFFLE IT INTO THE "
+                     "REGISTERED deck. » Iron Patriot frappe a 1 : on amollit le sbire "
+                     "d'abord, sinon l'attaque ne le VAINC pas et la Reponse n'a aucune "
+                     "raison de partir. Weapons Runner n'appartient pas au pack : "
+                     "l'y retrouver prouve que la Reponse a bien tourne. La cle "
+                     "`dans_deck_registered` a ete ajoutee pour ce cas — `mis_de_cote` lit "
+                     "la DEFAUSSE de ce deck, pas le deck"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.Damage('01121', 1)"],
+        "declencher": ["Puzzle.Attack('ip001a', '01121')"],
+        "accepter_choix": True,
+        "cibles": ["01121"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_registered": ["01121"]},
+    },
+    {
+        "nom": "ip001a Authoritative Force — TEMOIN : le SECOND sbire de la phase n'y va PAS",
+        "pourquoi": ("« (Limit once per phase.) » Une limite imprimee n'est prouvee que par "
+                     "le REFUS du second declenchement. Deux Weapons Runner vaincus dans la "
+                     "meme phase : le deck REGISTERED doit en compter 21, pas 22"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.Damage('01121', 1)",
+                          "Puzzle.Attack('ip001a', '01121')",
+                          "Puzzle.PutIntoPlay('01129')",
+                          "Puzzle.Damage('01129', 6)",
+                          "Puzzle.Ready('ip001a')"],
+        "declencher": ["Puzzle.Attack('ip001a', '01129')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_deck_registered": 21},
+    },
+    {
+        "nom": "ip002a Registration Act — vaincue, elle BASCULE sur Dark Reign (ip002b)",
+        "pourquoi": ("« When Defeated: Flip this card. » La manigance ne quitte pas le jeu, "
+                     "elle empire : Dark Reign fait payer TOUT DE SUITE au lieu d'attendre "
+                     "la fin du round"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.SetThreat('ip002a', 1)"],
+        "declencher": ["Puzzle.Thwart('ip001a')"],
+        "accepter_choix": True,
+        "cibles": ["ip002a"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip002b"]},
+    },
+    {
+        "nom": "ip002b Dark Reign — Accept Change revele le dessus du deck REGISTERED",
+        "pourquoi": ("Le verso fait le meme geste que `ip002a`, mais sans attendre la fin du "
+                     "round. On mesure la revelation, seule partie observable sans payer"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip023')",
+                          "Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('ip001a')"],
+        "declencher": ["Puzzle.Action('ip002b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip023"]},
+    },
+    {
+        "nom": "ip004 Corrupt Absolutely — un heros ne peut PAS retirer de menace non plus",
+        "pourquoi": ("La jumelle de `ip003`. Meme verrou, autre icone de ressource et autre "
+                     "type d'Action : il faut le mesurer aussi, un copier-coller se casse "
+                     "aussi bien qu'autre chose"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip004')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "declencher": ["Puzzle.Thwart('ip001a')"],
+        "accepter_choix": True,
+        "cibles": ["ip004"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip004", 3]]},
+    },
+    {
+        "nom": "ip008 Director of Security — la premiere carte revelee du round perd 1 icone de boost",
+        "pourquoi": ("« Decrease the number of boost icons of the first card revealed from "
+                     "the REGISTERED deck each round by 1. » Bullseye imprime 3 icones ; en "
+                     "jeu, avec l'amelioration, il doit en compter 2. La cle `icones_boost` "
+                     "a ete ajoutee pour ce cas : c'est la SEULE grandeur que la carte "
+                     "modifie, et aucune cle existante ne la regardait"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip008')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023')"],
+        "declencher": ["Puzzle.Action('ip002a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"icones_boost": [["ip023", 2]]},
+    },
+    {
+        "nom": "ip008 Director of Security — TEMOIN : la DEUXIEME carte du round garde ses icones",
+        "pourquoi": ("« the FIRST card revealed ... EACH ROUND ». Sans temoin de refus, la "
+                     "limite n'est pas prouvee. Bullseye revele en second garde ses 3 icones"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip008')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023', 'ip020')",
+                          "Puzzle.Action('ip002a')"],
+        "declencher": ["Puzzle.Action('ip002a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"icones_boost": [["ip023", 3]]},
+    },
+    {
+        "nom": "ip006 Victoria Hand — elle regarde le dessus du deck REGISTERED et le defausse",
+        "pourquoi": ("La PREMIERE des deux options : « Look at the top card of the "
+                     "REGISTERED deck. You may discard that card. » Bullseye est force sur "
+                     "le dessus ; le retrouver dans la defausse REGISTERED (`mis_de_cote`, "
+                     "alias de `additional_discard_pile`) prouve le trajet, et le deck "
+                     "passe de 20 a 19"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip023')",
+                          "Puzzle.PutIntoPlay('ip006')"],
+        "declencher": ["Puzzle.Action('ip006')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"mis_de_cote": ["ip023"], "taille_deck_registered": 19},
+    },
+    {
+        "nom": "ip010 Deceptive Guard — l'interruption de heros empeche TOUS les degats d'une attaque",
+        "pourquoi": ("« When an enemy attacks you -> prevent all damage from that attack. » "
+                     "Rhino etape 1 frappe a 2 : sans la carte, l'identite prendrait 2. On "
+                     "mesure 0 degat sur l'identite"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.Gain('ip010')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "ip012 Repulsor Bombard — 2 degats, plus 1 par icone de boost defaussee du deck REGISTERED",
+        "pourquoi": ("Bullseye porte 3 icones de boost : 2 + 3 = 5 degats. Rhino a 14 PV, il "
+                     "encaisse sans mourir, la mesure reste lisible"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023')"],
+        "main_exclusive": ["ip012", "01088"],
+        "ne_pas_depenser": ["ip012"],
+        "declencher": [],
+        "jouer": ["ip012"],
+        "accepter_choix": True,
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 5]]},
+    },
+    {
+        "nom": "ip013 Call to Arms — elle REDRESSE les allies REGISTERED",
+        "pourquoi": ("« Ready each of those characters. » L'allie est incline par le COUT "
+                     "de son propre « Special » (Suppressive Fire incline l'allie), puis "
+                     "Call to Arms le redresse. Le voir pret apres coup est la seule "
+                     "preuve.\n"
+                     "⚠ Un allie d'aspect ordinaire ne conviendrait PAS : il ne porte le "
+                     "trait REGISTERED que grace a `ip001a`, donc seulement en forme "
+                     "HEROS — et Call to Arms est une Action d'ALTER EGO. Il faut un vrai "
+                     "allie du deck REGISTERED"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.Action('ip001b')"],
+        "main_exclusive": ["ip013", "01088", "01089", "01090"],
+        "ne_pas_depenser": ["ip013"],
+        "declencher": [],
+        "jouer": ["ip013"],
+        "accepter_choix": True,
+        "cibles": ["ip021"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ip021"]},
+    },
+    {
+        "nom": "ip015 Exposed Insanity — sans allie REGISTERED, elle fait entrer Reign's End",
+        "pourquoi": ("« If NO allies were discarded this way, find the Reign's End side "
+                     "scheme and reveal it. » C'est la seule porte d'entree de la condition "
+                     "de defaite du pack. Aucun allie en jeu : la branche de repli est la "
+                     "seule possible"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.Exhaust('ip001b')"],
+        "declencher": ["Puzzle.Reveal('ip015')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip017"]},
+    },
+    {
+        "nom": "ip016 Doctor Doom — revele sans Cabal Obligations en jeu, il la fait entrer",
+        "pourquoi": ("« Otherwise, find Cabal Obligations and reveal it. » L'attachement "
+                     "n'est pas en jeu au depart : la branche « Otherwise » est forcee"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ip016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip018"]},
+    },
+    {
+        "nom": "ip017 Reign's End — 2 menaces des qu'un personnage entre en jeu",
+        "pourquoi": ("« Forced Interrupt: When a character enters play, place 2 threat "
+                     "here. » Elle demarre a 6 ; un allie qui entre la fait passer a 8"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip017')"],
+        "declencher": ["Puzzle.PutIntoPlay('01084')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace_min": [["ip017", 8]]},
+    },
+    {
+        "nom": "ip018 Cabal Obligations — l'identite attachee ne peut plus se redresser",
+        "pourquoi": ("« Attached identity cannot ready. » On incline l'identite puis on "
+                     "tente de la redresser : elle doit rester inclinee"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip018')",
+                          "Puzzle.Exhaust('ip001b')"],
+        "declencher": ["Puzzle.Ready('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ip001b"]},
+    },
+    {
+        "nom": "ip019 Assembled Resistance — cote ALTER EGO, elle revele le deck REGISTERED",
+        "pourquoi": ("« When Revealed (Alter Ego): Reveal the top card of the REGISTERED "
+                     "deck and put it into play engaged with you. » La partie demarre en "
+                     "forme civile : c'est cette face-la qui part"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip023')"],
+        "declencher": ["Puzzle.Reveal('ip019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip023"]},
+    },
+    {
+        "nom": "ip034 Molecule Man — revele, il fait entrer Master of Molecules",
+        "pourquoi": ("« Search the encounter deck and discard pile for Master of Molecules "
+                     "and reveal it. » On pose l'attachement dans le deck de rencontre : "
+                     "le voir en jeu prouve la fouille ET l'attachement"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('ip036')"],
+        "declencher": ["Puzzle.Reveal('ip034')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip034", "ip036"]},
+    },
+    {
+        "nom": "ip037 Manipulate Realities — sans Molecule Man en jeu, elle prend deferlement",
+        "pourquoi": ("« Otherwise, this card gains surge. » Molecule Man absent : la branche "
+                     "de repli est forcee. Le deferlement se lit comme attribut de la carte"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01121')"],
+        "declencher": ["Puzzle.Reveal('ip037')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01121"]},
+    },
+
+    {
+        "nom": "ip021 H.A.M.M.E.R. Commandos — Suppressive Fire frappe 1 fois par personnage H.A.M.M.E.R.",
+        "pourquoi": ("« for each H.A.M.M.E.R. character in play, deal 1 damage to an "
+                     "enemy. » Deux Commandos allies en jeu, donc 2 degats. Le cas mesure "
+                     "aussi, sans le dire, que la CONVERSION GARDE LES TRAITS IMPRIMES : "
+                     "sans cela le gabarit `registered_ally` ne porterait que REGISTERED, "
+                     "le compte tomberait a 0 et la carte ne ferait rien"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.PutIntoPlay('ip021')"],
+        "declencher": ["Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "ip022 H.A.M.M.E.R. Operatives — Counter Intelligence retire de la menace",
+        "pourquoi": ("La jumelle de `ip021`, cote contre. Registration Act demarre a 4 "
+                     "menaces : au moins une doit partir"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip022')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.SetThreat('ip002a', 4)"],
+        "declencher": ["Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "cibles": ["ip002a"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip002a", 3]]},
+    },
+    {
+        "nom": "ip011 Foreboding Influence — 2 cartes de la defausse REGISTERED remontent dans le deck",
+        "pourquoi": ("« Shuffle 2 cards from the REGISTERED discard pile into the REGISTERED "
+                     "deck. » On defausse d'abord deux cartes du deck via `ip006` Victoria "
+                     "Hand, puis on les fait revenir : le deck repasse a 20"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip006')",
+                          "Puzzle.Action('ip006')",
+                          "Puzzle.Ready('ip006')",
+                          "Puzzle.Action('ip006')"],
+        "main_exclusive": ["ip011", "01088", "01089"],
+        "ne_pas_depenser": ["ip011"],
+        "declencher": [],
+        "jouer": ["ip011"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_deck_registered": 20},
+    },
+    {
+        "nom": "ip023 * Bullseye — recrute contre ses icones de boost, il porte le trait REGISTERED",
+        "pourquoi": ("Le marche du pack, paye pour de vrai : Bullseye coute 3 icones de "
+                     "boost. On lui donne de quoi payer en main. Le trait REGISTERED sur "
+                     "une carte qui ne l'imprime PAS est la preuve de la conversion"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": ["Puzzle.Action('ip002b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"traits_de": [["ip023", "REGISTERED"], ["ip023", "ASSASSIN"]]},
+    },
+    {
+        "nom": "ip024 * Daken — Forced Response : il se soigne d'1 au debut de la phase du mechant",
+        "pourquoi": ("« After the villain phase begins, heal 1 damage from Daken. » On lui "
+                     "met 2 degats avant : il doit n'en garder qu'un"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip024')",
+                          "Puzzle.Damage('ip024', 2)"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ip024", 1]]},
+    },
+    {
+        "nom": "ip028 * Taskmaster — +1 ATQ et +1 MNG par personnage REGISTERED controle",
+        "pourquoi": ("Taskmaster imprime ATQ 0 et MNG 0 : toute valeur non nulle vient du "
+                     "bonus. Lui-meme recrute compte, donc au moins 1"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip028')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": ["Puzzle.Action('ip002b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ip028", "attack", 1]]},
+    },
+    {
+        "nom": "ip029 * Venom — sous la moitie de ses PV de depart, il gagne +1 ATQ",
+        "pourquoi": ("« While Venom's remaining hit points are less than half his starting "
+                     "hit points » : 6 PV de depart, donc le bonus s'allume a 2 PV restants. "
+                     "On lui met 4 degats. ATQ imprimee 3 -> 4"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip029')",
+                          "Puzzle.Damage('ip029', 1)"],
+        "declencher": ["Puzzle.Damage('ip029', 4)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ip029", "attack", 1]]},
+    },
+    {
+        "nom": "ip029 * Venom — TEMOIN : a la moitie EXACTE, pas de bonus",
+        "pourquoi": ("« LESS THAN half » : 3 PV restants sur 6, c'est la moitie pile, donc "
+                     "PAS moins. Sans ce temoin, un `<=` a la place d'un `<` passerait"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip029')",
+                          "Puzzle.Damage('ip029', 1)"],
+        "declencher": ["Puzzle.Damage('ip029', 3)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["ip029", "attack", 0]]},
+    },
+    {
+        "nom": "ip032 * Penance — Unleashed Pain frappe autant que les degats qu'il a subis",
+        "pourquoi": ("« X is equal to the amount of damage this ally has SUSTAINED ». On lui "
+                     "met 1 degat : le vilain doit en prendre 1.\n"
+                     "⚠ VULNERABLE NE SUIT PAS LA CONVERSION, et c'est voulu : le "
+                     "gabarit d'allie remplace la face, donc les mots-cles lus dans "
+                     "`desc` (Riposte, Vulnerable, Garde, Patrouille...) tombent. Un "
+                     "allie ne garde pas la garde. Sur un SBIRE Penance, 1 degat "
+                     "compterait double"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip032')",
+                          "Puzzle.Action('ip002b')",
+                          "Puzzle.Damage('ip032', 1)"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "declencher": ["Puzzle.Action('ip001b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]]},
+    },
+    {
+        "nom": "ip033 * The Hood — Demonic Crimes defausse le dessus du deck REGISTERED",
+        "pourquoi": ("« Discard the top card of the REGISTERED deck. » Le deck passe de 19 a "
+                     "18 apres le recrutement de The Hood lui-meme, et la carte defaussee "
+                     "se retrouve dans la defausse REGISTERED"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023', 'ip033')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "cibles": ["ip002a", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"mis_de_cote": ["ip023"]},
+    },
+    {
+        "nom": "ip031 * Loki — Trickster Magic sort une traitrise du deck de rencontre",
+        "pourquoi": ("« Search the encounter deck for a treachery and discard it. » Le deck "
+                     "de rencontre ne contient qu'une traitrise, Enraged : la retrouver "
+                     "hors du deck prouve la fouille"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip031')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01186')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": []},
+    },
+    {
+        "nom": "ip030 * Ares — War Tactician ramene un evenement ATTACK en main",
+        "pourquoi": ("« Search your deck for an ATTACK or DEFENSE event and ADD IT TO YOUR "
+                     "HAND. » Le deck ne contient que `ip012` Repulsor Bombard, qui porte "
+                     "le trait ATTACK : le retrouver en main prouve les deux moities"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip030')",
+                          "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ip012')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ip012"]},
+    },
+    {
+        "nom": "ip027 * Moonstone — Psych Evaluation soigne 2 et donne une carte Robuste",
+        "pourquoi": ("« heal 2 damage from that character AND give them a tough status "
+                     "card » : les deux, pas au choix. Nick Fury prend 2 degats avant"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip027')",
+                          "Puzzle.PutIntoPlay('01084')",
+                          "Puzzle.Damage('01084', 2)"],
+        "main_exclusive": ["01088", "01089", "01090", "ip013"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "cibles": ["ip002a", "01084"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01084", 0]], "statuts": [["01084", "Tough"]]},
+    },
+    {
+        "nom": "ip026 * Madame Masque — False Faces fait piocher selon l'etape de la manigance principale",
+        "pourquoi": ("« X is equal to the main scheme's stage number », plafonne a 3. "
+                     "The Break-In! est a l'etape 1 : une seule carte, et le deck ne "
+                     "contient qu'Energy pour la rendre visible"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip026')",
+                          "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088')"],
+        "main_exclusive": ["01089", "01090", "01084", "ip013"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["01088"]},
+    },
+    {
+        "nom": "ip025 * Ghost — Intangible Espionage retire 1 menace par icone de manigance en jeu",
+        "pourquoi": ("« for each [crisis], [acceleration], [amplify] and [hazard] in play ». "
+                     "On pose une manigance secondaire a icone de crise : au moins 1 menace "
+                     "doit partir de Registration Act, qui demarre a 4"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip025')",
+                          "Puzzle.PutIntoPlay('01151')",
+                          "Puzzle.SetThreat('ip002b', 4)"],
+        "main_exclusive": ["01088", "01089", "01090", "ip013"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "cibles": ["ip002a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip002b", 3]]},
+    },
+    {
+        "nom": "ip014 Seige — X degats = ATQ cumulee des allies REGISTERED defausses",
+        "pourquoi": ("« X is the combined ATK of those DISCARDED characters. » Un seul "
+                     "Commando recrute, ATQ 2 : le vilain doit encaisser au moins 2, et "
+                     "l'allie doit avoir quitte le jeu"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "main_exclusive": ["ip014", "01088", "01089", "01090"],
+        "ne_pas_depenser": ["ip014"],
+        "declencher": [],
+        "jouer": ["ip014"],
+        "accepter_choix": True,
+        "cibles": ["01094", "ip021"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 2]]},
+    },
+    {
+        "nom": "ip036 * Master of Molecules — il s'attache bien a Molecule Man",
+        "pourquoi": ("« Attach to Molecule Man. If you cannot, this card gains surge. » "
+                     "Molecule Man est en jeu : c'est la premiere branche qui doit partir"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip034')"],
+        "declencher": ["Puzzle.Reveal('ip036')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip034", "ip036"]},
+    },
+    {
+        "nom": "ip035 \"You're in My World\" — elle entre en jeu et y reste tant que Molecule Man tient",
+        "pourquoi": ("« This card cannot leave play while Molecule Man is in play. » On la "
+                     "contre a zero menace : elle doit rester la"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip034')",
+                          "Puzzle.Reveal('ip035')"],
+        "declencher": ["Puzzle.SetThreat('ip035', 0)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["ip035"]},
+    },
+
+    {
+        "nom": "ip003 Absolute Power — l'Action retire 1 menace en inclinant un personnage REGISTERED",
+        "pourquoi": ("La seconde moitie de la carte, et elle ne contredit PAS le verrou : la "
+                     "menace n'est pas retiree PAR un heros, elle l'est par la manigance, "
+                     "qui se paie en inclinant. Iron Patriot porte lui-meme le trait "
+                     "REGISTERED : c'est lui le cout. 3 menaces -> 2"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip003')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "declencher": ["Puzzle.Action('ip003')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip003", 2]], "exhausted": ["ip001a"]},
+    },
+    {
+        "nom": "ip004 Corrupt Absolutely — l'Action d'alter ego retire 1 menace elle aussi",
+        "pourquoi": ("La jumelle de `ip003`, cote alter ego. Le personnage REGISTERED "
+                     "incline est un allie recrute, Norman Osborn ne portant pas le trait"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip020')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.PutIntoPlay('ip004')"],
+        "declencher": ["Puzzle.Action('ip004')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["ip004", 2]], "exhausted": ["ip020"]},
+    },
+    {
+        "nom": "ip005 Sentry — il defend a la place du heros SANS s'incliner",
+        "pourquoi": ("« you may declare Sentry the defender WITHOUT exhausting him ». Les "
+                     "deux moities se mesurent d'un coup : Sentry encaisse (donc il a "
+                     "defendu) et reste PRET (donc il ne s'est pas incline). Rhino etape 1 "
+                     "frappe a 2, un allie qui defend reduit de 1 : 1 degat sur Sentry, 0 "
+                     "sur l'identite"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip005')"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ip005"], "degats_identite": 0},
+    },
+    {
+        "nom": "ip006 Victoria Hand — deck REGISTERED VIDE, la seule option restante recycle un sbire",
+        "pourquoi": ("La SECONDE des deux options. Elle n'est atteignable qu'en rendant la "
+                     "premiere impossible : deck REGISTERED vide, il n'y a plus de dessus a "
+                     "regarder. Weapons Runner attend en defausse de rencontre"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.EmptyPlayerAdditionalDeck()",
+                          "Puzzle.CreateEncounterDiscardPile('01121')",
+                          "Puzzle.PutIntoPlay('ip006')"],
+        "declencher": ["Puzzle.Action('ip006')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_registered": ["01121"]},
+    },
+    {
+        "nom": "ip007 H.A.M.M.E.R. Helicarrier — l'Action redresse un allie REGISTERED",
+        "pourquoi": ("La seconde moitie du soutien. L'allie est incline par le cout de son "
+                     "propre « Special », puis le porte-avions le redresse"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.Action('ip001b')",
+                          "Puzzle.PutIntoPlay('ip007')"],
+        "declencher": ["Puzzle.Action('ip007')"],
+        "accepter_choix": True,
+        "cibles": ["ip021"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ip021"], "exhausted": ["ip007"]},
+    },
+    {
+        "nom": "ip008 Director of Security — la Ressource d'alter ego produit bien une ressource",
+        "pourquoi": ("La seconde moitie de l'amelioration. On lui fait payer une carte de 2 "
+                     "de cout avec une main VIDE de ressources : si la carte se joue, c'est "
+                     "que l'amelioration a produit"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip008')",
+                          "Puzzle.PutIntoPlay('ip008')"],
+        "main_exclusive": ["ip011", "01088"],
+        "ne_pas_depenser": ["ip011"],
+        "declencher": [],
+        "jouer": ["ip011"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["ip011"]},
+    },
+    {
+        "nom": "ip009 Total Authority — apres un pouvoir de base, elle resout un « Special »",
+        "pourquoi": ("La seconde moitie de la carte, et la seule qui compte en jeu : elle "
+                     "rejoue un « Special » SANS incliner Norman Osborn. On contre avec le "
+                     "heros — un pouvoir de base — puis Suppressive Fire doit partir"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.PutIntoPlay('ip009')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "declencher": ["Puzzle.Thwart('ip001a')"],
+        "accepter_choix": True,
+        "cibles": ["ip002a", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ip021"]},
+    },
+    {
+        "nom": "ip011 Foreboding Influence — cote HEROS, elle recrute le sbire qu'on vient d'attaquer",
+        "pourquoi": ("La seconde face de l'evenement. « After you attack a minion, spend "
+                     "resources equal to the number of boost icons on that card to take "
+                     "control of that minion ». Le trait REGISTERED sur Weapons Runner, qui "
+                     "ne vient meme pas du deck REGISTERED, est la preuve"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('01121')"],
+        "main_exclusive": ["ip011", "01088", "01089", "01090"],
+        "ne_pas_depenser": ["ip011"],
+        "declencher": ["Puzzle.Attack('ip001a', '01121')"],
+        "jouer": ["ip011"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"traits_de": [["01121", "REGISTERED"]]},
+    },
+    {
+        "nom": "ip015 Exposed Insanity — premiere branche : Norman s'incline, l'obligation quitte la partie",
+        "pourquoi": ("La branche que le pilote prend par defaut. « remove from the game » "
+                     "n'est PAS une defausse : la carte ne doit se trouver ni en jeu, ni en "
+                     "defausse"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('ip015')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ip015"], "exhausted": ["ip001b"]},
+    },
+    {
+        "nom": "ip015 Exposed Insanity — seconde branche : elle DEFAUSSE les allies REGISTERED",
+        "pourquoi": ("Le pendant du cas « sans allie ». Avec un allie REGISTERED en jeu, la "
+                     "branche defausse l'armee et Reign's End NE DOIT PAS entrer : c'est ce "
+                     "qui rend le pack jouable, tenir des allies protege de la defaite"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip020')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.Exhaust('ip001b')"],
+        "declencher": ["Puzzle.Reveal('ip015')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ip017", "ip020"]},
+    },
+    {
+        "nom": "ip017 Reign's End — 3 cartes dessous, les joueurs PERDENT",
+        "pourquoi": ("« If there are 3[per_hero] cards under this scheme, the players lose "
+                     "the game. » En solo le seuil vaut 3. Trois allies REGISTERED vaincus "
+                     "d'affilee : la partie doit etre finie.\n"
+                     "⚠ CE CAS NE MESURE QUE LE PREMIER DES TROIS : il prouve que l'allie "
+                     "vaincu est bien GLISSE SOUS la manigance — sous son identifiant de "
+                     "sbire, `ip020`, la face d'origine revenant quand il quitte le jeu. "
+                     "La defaite elle-meme au troisieme n'est pas atteignable par le "
+                     "harnais, qui ne sait pas monter trois allies REGISTERED distincts "
+                     "puis les tuer sans finir la partie autrement"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip017')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip020')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.Damage('ip020', 5)"],
+        "declencher": ["Puzzle.Draw(0)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["ip017", "ip020"]]},
+    },
+    {
+        "nom": "ip018 Cabal Obligations — les allies REGISTERED ne peuvent plus attaquer",
+        "pourquoi": ("« REGISTERED allies you control cannot attack, thwart, or resolve "
+                     "\"Special\" abilities. » On tente une attaque avec l'allie : le vilain "
+                     "ne doit prendre AUCUN degat"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')",
+                          "Puzzle.PutIntoPlay('ip018')"],
+        "declencher": ["Puzzle.Attack('ip021', '01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "ip019 Assembled Resistance — cote HEROS, un personnage ami vous attaque",
+        "pourquoi": ("« The friendly character with the most remaining hit points attacks "
+                     "you. » Sentry a 6 PV, Iron Patriot 11 : c'est donc le HEROS qui a le "
+                     "plus de PV et il s'attaque lui-meme, ATQ 1. Le cas mesure que "
+                     "l'attaque a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')"],
+        "declencher": ["Puzzle.Reveal('ip019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "ip023 * Bullseye — Kill Order met le sbire K.O. si la carte defaussee porte une etoile de boost",
+        "pourquoi": ("« If that card has a star icon in the boost area, defeat that minion. » "
+                     "On force en tete du deck de rencontre une carte a etoile de boost "
+                     "(`01123` Overrun), et un Weapons Runner comme victime"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip023')",
+                          "Puzzle.PutIntoPlay('01121')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01123')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "cibles": ["ip002a", "01121"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"]},
+    },
+    {
+        "nom": "ip034 * Molecule Man — aucun personnage ne peut defendre contre lui",
+        "pourquoi": ("« Character cannot defend against Molecule Man's attacks. » Sentry est "
+                     "en jeu et pret : sans la ligne, il pourrait defendre. Le heros doit "
+                     "encaisser les 4 degats en entier"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip005')",
+                          "Puzzle.PutIntoPlay('ip034')"],
+        "declencher": ["Puzzle.Attack('ip034')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "degats": [["ip005", 0]]},
+    },
+    {
+        "nom": "ip035 \"You're in My World\" — la couleur nommee ne peut plus etre jouee",
+        "pourquoi": ("« each player cannot play cards with that printed resource type from "
+                     "their hand ». Le pilote nomme la premiere couleur proposee, "
+                     "[physical] : `ip012` Repulsor Bombard, qui imprime [energy], reste "
+                     "jouable ; c'est `ip010` Deceptive Guard, en [physical], qui doit etre "
+                     "bloquee. On mesure que la carte reste EN MAIN"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip034')",
+                          "Puzzle.Reveal('ip035')",
+                          "Puzzle.ChangeForm('ip001b')"],
+        "main_exclusive": ["ip010", "01088", "01089", "01090"],
+        "ne_pas_depenser": ["ip010"],
+        "declencher": [],
+        "jouer": ["ip010"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ip010"]},
+    },
+
+    {
+        "nom": "ip001b Norman Osborn — l'allie REGISTERED vaincu rentre dans la DEFAUSSE REGISTERED",
+        "pourquoi": ("Regle de l'insert, premiere moitie : « REGISTERED allies get put into "
+                     "the REGISTERED deck discard pile when defeated ». `mis_de_cote` lit "
+                     "`set_aside_deck`, qui EST `additional_discard_pile` (player.py:100).\n"
+                     "⚠ On l'y cherche sous son identifiant de SBIRE, `ip020` : quand un "
+                     "allie converti quitte le jeu, `TreatAsAlly` REMET sa face d'origine "
+                     "(faces.py:374). C'est aussi pour cela que la redirection de `ip001b` "
+                     "ne peut PAS lire le trait REGISTERED a ce moment-la, et lit un "
+                     "marqueur pose sur la carte"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip020')",
+                          "Puzzle.Action('ip002a')"],
+        "declencher": ["Puzzle.Damage('ip020', 5)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"mis_de_cote": ["ip020"]},
+    },
+    {
+        "nom": "ip001b Norman Osborn — le sbire NON recrute part en defausse de RENCONTRE",
+        "pourquoi": ("Regle de l'insert, seconde moitie et contre-intuitive : « REGISTERED "
+                     "deck minions get put into the ENCOUNTER deck discard pile when "
+                     "defeated ». La carte appartient pourtant au JOUEUR : sans la "
+                     "redirection, le moteur la range dans SA defausse, au milieu des "
+                     "cartes qu'on pioche. On mesure donc l'ABSENCE de Bullseye de la "
+                     "defausse du joueur ET du deck REGISTERED"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip023')",
+                          "Puzzle.Action('ip002a')"],
+        "declencher": ["Puzzle.Damage('ip023', 5)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["ip023"], "taille_deck_registered": 19},
+    },
+
+    {
+        "nom": "ip013 Call to Arms — les allies redresses prennent +1 degat consecutif",
+        "pourquoi": ("La SECONDE moitie du texte, celle qui punit : « they take +1 "
+                     "consequential damage after they thwart or attack this round ». Elle "
+                     "etait perdue en silence — `GainUntilRoundEnd` ne transmettait pas le "
+                     "parametre — et seul l'autoplay l'a vue. On la mesure maintenant : "
+                     "l'allie contre, puis encaisse 1 (gabarit) + 1 (la carte) = 2"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('ip021')",
+                          "Puzzle.Action('ip002a')"],
+        "main_exclusive": ["ip013", "01088", "01089", "01090"],
+        "ne_pas_depenser": ["ip013"],
+        "declencher": [],
+        "jouer": ["ip013"],
+        "declencher_apres": ["Puzzle.Thwart('ip021')"],
+        "accepter_choix": True,
+        "cibles": ["ip021", "ip002a"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ip021", 2]]},
+    },
+    {
+        "nom": "ip024 * Daken — Emotional Pheromones etourdit jusqu'a 2 ennemis",
+        "pourquoi": ("Le « Special » de la carte, l'autre moitie. Le pilote prend la "
+                     "premiere option proposee, « Stunned » : le vilain doit porter le "
+                     "statut"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip024')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "cibles": ["ip002a", "01094"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "ip026 * Madame Masque — apres avoir blesse un personnage, elle le desoriente",
+        "pourquoi": ("La ligne etoilee, celle qui vaut quand elle est encore SBIRE. Elle "
+                     "attaque NICK FURY et le blesse : l'allie doit ressortir desoriente.\n"
+                     "⚠ Pas le heros : Iron Patriot a DEF 2 et Madame Masque ATQ 2, il ne "
+                     "prendrait AUCUN degat et « attacks and DAMAGES » serait faux. Un "
+                     "allie, lui, n'a pas de DEF"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip026')",
+                          "Puzzle.PutIntoPlay('01084')"],
+        "declencher": ["Puzzle.Attack('ip026', '01084')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01084", "Confused"]]},
+    },
+    {
+        "nom": "ip027 * Moonstone — apres avoir VAINCU un personnage, elle se blinde",
+        "pourquoi": ("« After Moonstone attacks and DEFEATS a character, give her a tough "
+                     "status card. » Pas « damages » : c'est la difference avec `ip026`. On "
+                     "lui donne un allie a 3 PV a abattre, elle frappe a 2 — on l'amollit "
+                     "donc d'abord"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip027')",
+                          "Puzzle.PutIntoPlay('01084')",
+                          "Puzzle.Damage('01084', 1)"],
+        "declencher": ["Puzzle.Attack('ip027', '01084')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ip027", "Tough"]]},
+    },
+    {
+        "nom": "ip030 * Ares — apres avoir blesse un personnage, il l'etourdit",
+        "pourquoi": ("La ligne etoilee d'Ares, cote sbire. Meme fenetre que `ip026`, statut "
+                     "different — et meme raison de frapper un ALLIE plutot que le heros.\n"
+                     "⚠ SENTRY, pas Nick Fury : Ares frappe a 3 avec PERCANT, et Nick Fury "
+                     "(3 PV) meurt avant de pouvoir porter le statut. Sentry en a 6. Le "
+                     "degat d'amorcage lui retire sa carte Robuste, qui mangerait sinon "
+                     "toute l'attaque"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip030')"],
+        "declencher": ["Puzzle.Attack('ip030')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ip001a", "Stunned"]], "degats_identite": 1},
+    },
+    {
+        "nom": "ip033 * The Hood — quand il attaque, il recoit 1 carte de boost en plus",
+        "pourquoi": ("« give him 1 boost card for this activation ». Un sbire n'a "
+                     "normalement AUCUNE carte de boost : toute cause de degats au-dela de "
+                     "son ATQ 2 vient de la. Iron Patriot a DEF 2 et The Hood ATQ 2 : "
+                     "sans carte de boost, le heros encaisserait ZERO. Tout degat qui "
+                     "passe vient donc de la carte supplementaire — on en mesure 1, la "
+                     "graine du harnais etant fixe"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip033')"],
+        "declencher": ["Puzzle.Attack('ip033')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "ip029 * Venom — Symbiotic Devour : l'allie attaque un personnage",
+        "pourquoi": ("Le « Special » de Venom. ATQ 3 : le vilain doit encaisser au moins 3"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('04020')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('04020')",
+                          "Puzzle.PutOnAdditionalDeckTop('ip029')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "cibles": ["ip002a", "01094"],
+        "declencher": ["Puzzle.Action('ip002b')", "Puzzle.Action('ip001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 3]]},
+    },
+    {
+        "nom": "ip016 * Doctor Doom — Cabal Rivalry le remelange et joue une carte Iron Patriot",
+        "pourquoi": ("Le « Special » du sbire de nemesis, atteignable parce que `ip001a` "
+                     "peut melanger n'importe quel sbire vaincu dans le deck REGISTERED — "
+                     "et le cas emprunte CE chemin-la, le seul que l'insert prevoit : on "
+                     "vide le deck REGISTERED, on vainc Doom a l'attaque, Authoritative "
+                     "Force l'y melange, Dark Reign le revele, on le paie, et `ip009` Total "
+                     "Authority resout son « Special » apres un pouvoir de base — tout "
+                     "cela sous forme de HEROS, pour ne pas avoir a rebasculer.\n"
+                     "⚠ LE RECRUTEMENT EST DANS `declencher`, PAS DANS "
+                     "`mise_en_place` : `main_exclusive` ne pose la main "
+                     "qu'ENTRE les deux, et payer 4 ressources avant qu'elle "
+                     "n'existe echoue en silence (« Spend 4 resources of any type ... "
+                     "failed »).\n"
+                     "⚠⚠ ET IL FAUT DEFAUSSER `ip018` EN CHEMIN. Le « When Revealed » de "
+                     "Doom fait entrer Cabal Obligations, qui interdit justement aux "
+                     "allies REGISTERED de resoudre un « Special » : le sbire de nemesis "
+                     "se coupe lui-meme l'herbe sous le pied. C'est fidele et plutot "
+                     "elegant, mais cela rend son propre « Special » inatteignable tant "
+                     "que l'attachement tient. Le deck du "
+                     "joueur ne contient que `ip012` "
+                     "Repulsor Bombard : la voir en defausse prouve qu'elle a ete JOUEE, "
+                     "et Doom doit avoir quitte le jeu.\n"
+                     "⚠ `Puzzle.PutOnAdditionalDeckTop` ne sait REMONTER qu'une carte deja "
+                     "presente dans le deck annexe, et `CreatePlayerAdditionalDeck` cree "
+                     "dans sa DEFAUSSE malgre son nom : ni l'une ni l'autre ne peut y "
+                     "GLISSER Doom, qui est une carte de nemesis. D'ou le chemin long, qui "
+                     "est aussi le seul vrai"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ip012')",
+                          "Puzzle.EmptyPlayerAdditionalDeck()",
+                          "Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip009')",
+                          "Puzzle.PutIntoPlay('ip016')",
+                          "Puzzle.Damage('ip016', 1)",
+                          "Puzzle.Damage('ip016', 6)",
+                          "Puzzle.Attack('ip001a', 'ip016')",
+                          "Puzzle.Ready('ip001a')",
+                          "Puzzle.SetThreat('ip002a', 1)",
+                          "Puzzle.Thwart('ip001a')"],
+        "main_exclusive": ["01088", "01089", "01090", "01084"],
+        "cibles": ["ip016", "ip002a", "01094"],
+        "declencher": ["Puzzle.Ready('ip001a')",
+                       "Puzzle.Action('ip002b')",
+                       "Puzzle.Discard('ip018')",
+                       "Puzzle.Ready('ip001a')",
+                       "Puzzle.Attack('ip001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["ip012"]},
+    },
+    {
+        "nom": "ip018 Cabal Obligations — l'Action la defausse contre X ressources",
+        "pourquoi": ("La seule porte de sortie de l'attachement. X vaut 1 de plus que le "
+                     "nombre d'allies REGISTERED en jeu, donc 1 sans armee : la carte doit "
+                     "partir"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip018')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": ["Puzzle.Action('ip018')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ip018"]},
+    },
+    {
+        "nom": "ip036 * Master of Molecules — la carte defaussee au hasard alourdit l'attaque",
+        "pourquoi": ("« discard 1 card at random from your hand. If that card's printed "
+                     "resource has [physical] : this attack deals 2 additional damage. » La "
+                     "main ne contient QUE des cartes [physical] : le tirage au hasard ne "
+                     "peut donner que ce cas. Molecule Man frappe a 4, donc 6"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')",
+                          "Puzzle.PutIntoPlay('ip034')",
+                          "Puzzle.Reveal('ip036')"],
+        "main_exclusive": ["01090", "01090"],
+        "declencher": ["Puzzle.Attack('ip034')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 6},
+    },
+    {
+        "nom": "ip037 Manipulate Realities — Molecule Man en jeu, elle vide la main d'une couleur",
+        "pourquoi": ("La PREMIERE branche, celle qui fait mal. La main ne contient que des "
+                     "cartes [physical] : la couleur nommee ne peut etre qu'elle, et toute "
+                     "la main doit partir"),
+        "scenario": "rhino",
+        "heros": "iron_patriot",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ip034')"],
+        "main_exclusive": ["01090", "01090"],
+        "declencher": ["Puzzle.Reveal('ip037')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -27400,6 +28656,20 @@ def face_identite(monde, aides):
         if aides["par_id"](monde, card_id) is None:
             soucis.append(f"{card_id} n'est pas en jeu")
 
+    # Cle `traits_de` (AJOUT 09/09/2026, pack iron_patriot) : le pendant de
+    # `traits`, mais sur une CARTE et non sur l'identite. C'est la seule facon
+    # de prouver qu'un sbire du deck REGISTERED est bien devenu un allie : le
+    # gabarit `registered_ally` porte le trait REGISTERED, le sbire non.
+    # ⚠ Elle existait deja dans une verification maison (`hotes`), pas dans
+    # `etat_attendu` : les cas qui l'y ecrivaient passaient au VERT sans que
+    # rien ne soit mesure.
+    for card_id, trait in attendu.get("traits_de") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (traits_de)")
+        elif not face.HasTrait(trait):
+            soucis.append(f"{card_id} ne porte pas le trait {trait}")
+
     for card_id in attendu.get("hors_jeu") or []:
         if aides["par_id"](monde, card_id) is not None:
             soucis.append(f"{card_id} est encore en jeu")
@@ -27535,6 +28805,10 @@ IMPRIME = {
     # principal. Sans cette entree, `attributs_carte` levait `KeyError:
     # 'target_threat'` et la seule capacite de la carte etait intestable.
     "target_threat": "printed_target_threat",
+    # AJOUT du 09/09/2026 (pack iron_patriot) : `ip009` Total Authority donne
+    # « You gain steady » a l'IDENTITE. Sans cette entree, `attributs` levait
+    # `KeyError: 'steady'` et la premiere ligne de la carte etait intestable.
+    "steady": "printed_steady",
 }
 
 def etat_attendu(monde, aides):
@@ -27687,6 +28961,22 @@ def etat_attendu(monde, aides):
             soucis.append(f"icones {nom_icone} en jeu = {n} (attendu {attendu_n}) "
                           f"[{' '.join(detail)}]")
 
+    # Cle `icones_boost` (AJOUT 09/09/2026, pack iron_patriot) : le nombre
+    # d'icones de [boost] d'une carte EN JEU, lu par le meme chemin que le
+    # moteur (`CountBoostIconsInternal`, has_boost_icon.py:31) — donc en voyant
+    # les modificateurs. C'est la SEULE grandeur que `ip008` Director of
+    # Security modifie, et aucune cle existante ne la regarde : `icones` compte
+    # les icones de MANIGANCE (crise, acceleration, amplification, danger), pas
+    # celles de boost.
+    for card_id, attendu_n in attendu.get("icones_boost") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (icones_boost)")
+            continue
+        n = face.CountBoostIconsInternal()
+        if n != attendu_n:
+            soucis.append(f"{card_id} a {n} icone(s) de boost (attendu {attendu_n})")
+
     if attendu.get("dans_deck_rencontre"):
         from game.operate.worlds import Worlds
         ids = {getattr(f.paper, "card_id", None)
@@ -27750,6 +29040,28 @@ def etat_attendu(monde, aides):
             soucis.append(f"{card_id} n'est pas dans la defausse du joueur "
                           f"(defausse = {cartes})")
 
+    # Cle `defausse_rencontre` (AJOUT 10/09/2026, pack iron_patriot) : le
+    # pendant de `defausse` pour la pile de RENCONTRE. Sans elle, la regle de
+    # l'insert « un sbire REGISTERED non recrute part en defausse de rencontre »
+    # n'etait prouvable que par la NEGATIVE (« il n'est plus en jeu »), ce qui
+    # laissait passer le cas ou il finissait dans la defausse du JOUEUR — ce
+    # qu'il faisait vraiment.
+    for card_id in attendu.get("defausse_rencontre") or []:
+        # ⚠ On lit les piles A LA SOURCE : le vilain actif en a une, et le
+        # scenario la sienne (villain.py:144, scenario.py:19). `Worlds` expose
+        # bien un raccourci, mais il exige un `Effect`, que la verification
+        # n'a pas.
+        piles = [monde.GetScenario().encounter_discard_pile]
+        for villain in getattr(monde, "villains", []) or []:
+            pile = getattr(villain, "encounter_discard_pile", None)
+            if pile is not None:
+                piles.append(pile)
+        cartes = [getattr(f.paper, "card_id", None)
+                  for pile in piles for f in pile.GetAll()]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas dans la defausse de rencontre "
+                          f"(defausse = {cartes})")
+
     if "taille_main" in attendu:
         n = len(list(monde.players[0].hand_cards.Get()))
         if n != attendu["taille_main"]:
@@ -27767,6 +29079,26 @@ def etat_attendu(monde, aides):
         if card_id not in cartes:
             soucis.append(f"{card_id} n'est pas dans le deck du joueur "
                           f"(deck = {cartes})")
+
+    # Cle `dans_deck_registered` (AJOUT 09/09/2026, pack iron_patriot) : le
+    # `additional_deck` du joueur, c'est-a-dire le DECK REGISTERED de Norman
+    # Osborn. `mis_de_cote` ne le voit pas — il lit `set_aside_deck`, qui est
+    # la DEFAUSSE de ce deck (player.py:100). Sans cette cle, aucune carte qui
+    # melange un sbire DANS le deck REGISTERED n'est prouvable : `ip001a`
+    # Authoritative Force, `ip006` Victoria Hand et `ip011` Foreboding
+    # Influence ne font que cela.
+    for card_id in attendu.get("dans_deck_registered") or []:
+        cartes = [getattr(f.paper, "card_id", None)
+                  for f in monde.players[0].additional_deck.GetAll()]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas dans le deck REGISTERED "
+                          f"(deck = {cartes})")
+
+    if "taille_deck_registered" in attendu:
+        n = len(list(monde.players[0].additional_deck.Get()))
+        if n != attendu["taille_deck_registered"]:
+            soucis.append(f"deck REGISTERED = {n} carte(s) "
+                          f"(attendu {attendu['taille_deck_registered']})")
 
     # Cle `mis_de_cote` (AJOUT 01/09/2026, pack beast) : le `set_aside_deck` du
     # joueur, alias de `additional_discard_pile`. Prouve qu'une carte y est
@@ -28098,13 +29430,20 @@ def tah_hellbender_alliee(monde, aides):
     """ah014 : Lady Hellbender est passee du camp ennemi au camp du joueur.
 
     `TreatAsAlly` remplace la carte par le gabarit `tah_hellbender_ally`, donc
-    son card_id CHANGE : on interroge les allies controles, pas `par_id`.
+    son card_id CHANGE : on interroge les allies controles.
+
+    ⚠ ON LIT LA FACE ACTIVE, pas la seule reponse de `par_id`. Depuis le
+    10/09/2026 `par_id` sait retrouver une carte dont la face a ete echangee
+    (le pack `iron_patriot` en depend de bout en bout) : « `par_id` ne trouve
+    rien » ne veut donc plus dire « la carte n'est plus un sbire ». Ce qui le
+    dit, c'est le `card_id` de la face EN COURS.
     """
     allies = [getattr(f.paper, "card_id", "?")
               for f in monde.players[0].GetControlAllies()]
     if not allies:
         return False, "le joueur ne controle aucun allie"
-    if aides["par_id"](monde, "ah014") is not None:
+    trouvee = aides["par_id"](monde, "ah014")
+    if trouvee is not None and getattr(trouvee.paper, "card_id", None) == "ah014":
         return False, f"ah014 est encore un sbire (allies = {allies})"
     return True, f"Lady Hellbender est passee alliee (allies = {allies})"
 
@@ -32097,11 +33436,41 @@ def executer_un_cas(game_dir, port, index):
         monde = Engine.game.world
 
         def par_id(monde, card_id):
+            # ⚠ DEUX PASSES, ET LA SECONDE EST INDISPENSABLE AU PACK
+            # `iron_patriot` (ajout du 09/09/2026). Un sbire du deck REGISTERED
+            # recrute VOIT SA FACE REMPLACEE par celle du gabarit
+            # `registered_ally` (`Faces.TreatAsAlly`, faces.py:361) : la carte
+            # physique est toujours la, mais son `paper.card_id` n'est plus
+            # `ip021`, c'est `registered_ally`. Sans le repli sur
+            # `card.printed_faces`, AUCUN cas ne peut plus designer un allie
+            # converti — et les cas ecrits contre son `card_id` passaient au
+            # VERT sans rien mesurer.
             for objet in monde.object_manager.card_dict.values():
                 face = objet.face
                 if face is not None and face.IsInPlay() \
                         and getattr(face.paper, "card_id", None) == card_id:
                     return face
+            for objet in monde.object_manager.card_dict.values():
+                face = objet.face
+                if face is None or not face.IsInPlay():
+                    continue
+                imprimees = getattr(objet, "printed_faces", [])
+                # ⚠ REPLI RESERVE AUX FACES ECHANGEES, JAMAIS AUX RECTO-VERSO.
+                # Une carte qui a simplement ETE RETOURNEE garde ses deux faces
+                # dans `printed_faces` : chercher la-dedans la retrouverait sous
+                # son ANCIEN identifiant, et tout cas qui affirme « la carte a
+                # basculé » (`hors_jeu`) redeviendrait faux. Mesure du
+                # 10/09/2026 : 10 cas de flip du depot sont passes au rouge pour
+                # cette seule raison (ah012a, iw001a, mk001a, wc019a, gb007a,
+                # as002a, nt003a...).
+                # Le cas qu'on veut couvrir est l'autre : `Faces.TreatAsAlly`
+                # remplace la face active par une face qui N'EST PAS dans
+                # `printed_faces`. C'est ce test-la qui separe les deux.
+                if face in imprimees:
+                    continue
+                for imprimee in imprimees:
+                    if getattr(imprimee.paper, "card_id", None) == card_id:
+                        return face
             return None
 
         def par_nom(monde, nom):

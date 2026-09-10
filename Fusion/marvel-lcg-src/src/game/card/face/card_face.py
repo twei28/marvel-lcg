@@ -87,6 +87,17 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EARTH-6160",
         # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
         "COSMIC ENTITY",
+        # CORRECTIF : traits du pack custom iron_patriot (Neptune).
+        # `REGISTERED` est le coeur du pack : le trait que Norman Osborn donne
+        # aux sbires qu'il recrute depuis son deck secondaire, et que sept
+        # cartes du pack interrogent. `H.A.M.M.E.R.` est son organisation,
+        # `CABAL` celle de son set nemesis (Doctor Doom).
+        # ⚠ La face alter-ego imprime « BUISNESSMAN », coquille de l'auteur
+        # pour BUSINESSMAN, qui existe deja plus haut. On garde le trait
+        # CORRECT : un trait est une CLE MECANIQUE, pas du texte d'affichage,
+        # et « BUISNESSMAN » ne s'apparierait a aucun effet du jeu. C'est le
+        # seul endroit du pack ou l'on s'ecarte de ce qui est imprime.
+        "REGISTERED", "H.A.M.M.E.R.", "CABAL",
         # CORRECTIF : trait du pack custom beast. Le sbire nemesis bt020
         # « Lizard-Fied Mutants » porte « LIZARD. MUTANT. ». Purement
         # declaratif : TRAITS n'est qu'un `Literal` de typage, aucun controle

@@ -459,6 +459,21 @@ class ModelAction(ModelBase):
                           # de base » n'arrive jamais : la carte est a moitie
                           # morte, en silence. Trouve par verifier_api_cartes.
                           recover: int|None=None,
+                          # CORRECTIF (10/09/2026, pack custom iron_patriot) :
+                          # meme trou que `retaliate`, `villainous`, `stalwart`
+                          # et `recover` avant eux — `TemporaryGain` accepte ces
+                          # deux parametres depuis toujours (voir sa signature
+                          # plus haut), seul le passage manquait ici.
+                          # `ip013` Call to Arms redresse des allies « and they
+                          # take +1 consequential damage after they thwart or
+                          # attack this round » : l'appel levait un TypeError
+                          # AVALE PAR LE MOTEUR. Le `Faces.ReadyAll` qui precede
+                          # passait, donc les allies etaient bien redresses et la
+                          # carte avait l'air de marcher — la moitie punitive du
+                          # texte, elle, n'arrivait jamais. Trouve par
+                          # `tools/autoplay.py`, jamais par les cas.
+                          attack_consequential_damage: int|None=None,
+                          thwart_consequential_damage: int|None=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
@@ -474,6 +489,8 @@ class ModelAction(ModelBase):
             villainous=villainous,
             stalwart=stalwart,
             recover=recover,
+            attack_consequential_damage=attack_consequential_damage,
+            thwart_consequential_damage=thwart_consequential_damage,
             ignore_flip=ignore_flip,
             render_ui=True
         )

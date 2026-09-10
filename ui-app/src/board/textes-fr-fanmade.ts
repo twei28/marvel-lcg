@@ -2450,4 +2450,86 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'vz036': "Faiblesse. <i>(Elle commence la partie dans votre deck et se défausse dans votre pile de défausse.)</i>\n<b>Réponse forcée</b> : après que cette carte entre dans votre main, subissez 1 dégât indirect. <i>(Vous pouvez défausser cette carte de votre main à la fin de la phase du joueur comme n'importe quelle autre carte.)</i>",
   // venomized — Sensory Overload (Treachery, Venomized Weakness)
   'vz037': "Faiblesse. <i>(Elle commence la partie dans votre deck et se défausse dans votre pile de défausse.)</i>\n<b>Réponse forcée</b> : après que cette carte entre dans votre main, placez 1 menace sur chaque manigance. <i>(Vous pouvez défausser cette carte de votre main à la fin de la phase du joueur comme n'importe quelle autre carte.)</i>",
+
+  // ==== IRON PATRIOT (Neptune, set 142) ====
+  // iron_patriot — Iron Patriot (Hero)
+  'ip001a': "Chaque allié que vous contrôlez gagne le trait [[REGISTERED]].\n<i>Force autoritaire</i> — <b>Réponse</b> : après avoir attaqué et vaincu un sbire, vous pouvez le mélanger dans le deck REGISTERED. <i>(Limite d'une fois par phase.)</i>",
+  // iron_patriot — Norman Osborn (AlterEgo)
+  'ip001b': "<i>Nouvel ordre mondial</i> — <b>Mise en place</b> : pendant la construction du deck, votre deck ne peut contenir aucun allié d'aspect. Norman Osborn commence la partie avec le deck REGISTERED et la manigance secondaire Registration Act en jeu. <i>(Voir l'insert.)</i>\n<b>Action</b> : inclinez Norman Osborn → résolvez la capacité « Spécial » d'1 allié [[REGISTERED]].",
+  // iron_patriot — Registration Act (PlayerSideScheme)
+  'ip002a': "Permanente. Mise en place.\nCette manigance ne compte pas dans la limite de manigances secondaires de joueur.\n<i>Enrôlement</i> — <b>Action</b> : révélez la carte du dessus du deck REGISTERED et mettez-la en jeu engagée avec vous. À la fin du round, vous pouvez dépenser un nombre de ressources égal au nombre d'icônes de [boost] de cette carte pour prendre le contrôle de ce sbire et le traiter comme un allié [[REGISTERED]].\nLes sbires portant le trait [[REGISTERED]] sont traités comme des alliés REGISTERED. Ils subissent 1 dégât consécutif après avoir attaqué ou contré, et leur CTR est égale à leur MNG imprimée.\n<b>Une fois vaincue</b> : retournez cette carte.",
+  // iron_patriot — Dark Reign (PlayerSideScheme)
+  'ip002b': "Permanente.\nCette manigance ne compte pas dans la limite de manigances secondaires de joueur.\n<i>Accepter le changement</i> — <b>Action</b> : révélez la carte du dessus du deck REGISTERED. Vous pouvez dépenser un nombre de ressources égal au nombre d'icônes de [boost] de cette carte pour prendre le contrôle de ce sbire et le traiter comme un allié [[REGISTERED]]. Sinon, il entre en jeu comme un sbire engagé avec vous.\nLes sbires portant le trait [[REGISTERED]] sont traités comme des alliés REGISTERED. Ils subissent 1 dégât consécutif après avoir attaqué ou contré, et leur CTR est égale à leur MNG imprimée.",
+  // iron_patriot — Absolute Power (PlayerSideScheme)
+  'ip003': "Victoire 0.\nLes menaces ne peuvent pas être retirées de cette manigance par des héros ou des alliés.\nTant qu'elle est dans la pile de victoire, chaque personnage [[REGISTERED]] gagne +1 ATQ.\n<b>Action de héros</b> : inclinez un personnage [[REGISTERED]] que vous contrôlez → retirez 1 menace d'ici. N'importe quel joueur peut déclencher cette capacité.",
+  // iron_patriot — Corrupt Absolutely (PlayerSideScheme)
+  'ip004': "Victoire 0.\nLes menaces ne peuvent pas être retirées de cette manigance par des héros ou des alliés.\nTant qu'elle est dans la pile de victoire, chaque personnage [[REGISTERED]] gagne +1 CTR.\n<b>Action d'alter ego</b> : inclinez un personnage [[REGISTERED]] que vous contrôlez → retirez 1 menace d'ici. N'importe quel joueur peut déclencher cette capacité.",
+  // iron_patriot — Sentry (Ally)
+  'ip005': "Résistance. Vulnérable.\n<b>Interruption</b> : quand un ennemi vous attaque, vous pouvez déclarer Sentry défenseur sans l'incliner.\n<i>Courroux du Vide</i> — <b>Spécial</b> : jusqu'à la fin du round, gagnez riposte X, où X est égal à l'ATQ de Sentry.",
+  // iron_patriot — Victoria Hand (Support)
+  'ip006': "<b>Action</b> : inclinez cette carte → choisissez :\n• Regardez la carte du dessus du deck REGISTERED. Vous pouvez la défausser.\n• Mélangez le sbire le plus haut de la pile de défausse de rencontre dans le deck REGISTERED.",
+  // iron_patriot — H.A.M.M.E.R. Helicarrier (Support)
+  'ip007': "Augmentez de 1 votre limite d'alliés. <i>(Cela vous permet de contrôler plus de 3 alliés.)</i>\n<b>Action</b> : inclinez cette carte et dépensez 1 ressource de n'importe quel type → redressez un allié [[REGISTERED]].",
+  // iron_patriot — Director of Security (Upgrade)
+  'ip008': "Réduisez de 1 le nombre d'icônes de [boost] de la première carte révélée du deck REGISTERED à chaque round.\n<b>Ressource d'alter ego</b> : inclinez cette carte → générez une ressource [wild].",
+  // iron_patriot — Total Authority (Upgrade)
+  'ip009': "Vous gagnez stable.\n<b>Action de héros</b> : après qu'Iron Patriot utilise un pouvoir de base → résolvez la capacité « Spécial » d'1 allié [[REGISTERED]] que vous contrôlez.",
+  // iron_patriot — Deceptive Guard (Event)
+  'ip010': "<b>Interruption d'alter ego</b> : quand un ennemi manigance → cette activation retire des menaces au lieu d'en placer.\n<b>Interruption de héros</b> <i>(défense)</i> : quand un ennemi vous attaque → empêchez tous les dégâts de cette attaque.",
+  // iron_patriot — Foreboding Influence (Event)
+  'ip011': "<b>Action d'alter ego</b> : mélangez 2 cartes de la pile de défausse REGISTERED dans le deck REGISTERED.\n<b>Réponse de héros</b> : après avoir attaqué un sbire, dépensez un nombre de ressources égal au nombre d'icônes de [boost] de cette carte pour prendre le contrôle de ce sbire et le traiter comme un allié [[REGISTERED]].",
+  // iron_patriot — Repulsor Bombard (Event)
+  'ip012': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi et défaussez la carte du dessus du deck REGISTERED. Pour chaque icône de [boost] défaussée de cette façon, infligez 1 dégât à un ennemi.",
+  // iron_patriot — Call to Arms (Event)
+  'ip013': "<b>Action d'alter ego</b> : choisissez autant d'alliés [[REGISTERED]] en jeu que vous le voulez. Redressez chacun de ces personnages ; ils subissent +1 dégât consécutif après avoir contré ou attaqué pendant ce round.",
+  // iron_patriot — Seige (Event)
+  'ip014': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Iron Patriot et défaussez autant d'alliés [[REGISTERED]] en jeu que vous le voulez. Infligez X dégâts à un ennemi (15 max), où X est l'ATQ cumulée de ces personnages défaussés. Cette attaque gagne Déferlement.",
+  // iron_patriot — Exposed Insanity (Obligation)
+  'ip015': "<b><i>À donner au joueur de Norman Osborn.</i></b>\nVous pouvez passer en forme alter ego. Choisissez :\n• Inclinez Norman Osborn → retirez Exposed Insanity de la partie.\n• Défaussez chaque allié portant le trait [[REGISTERED]] que vous contrôlez. Si aucun allié n'a été défaussé de cette façon, trouvez la manigance secondaire Reign's End et révélez-la.",
+  // iron_patriot — Doctor Doom (Minion, Nemesis)
+  'ip016': "Inébranlable. Résistance. Ignoble.\n<b>Une fois révélée</b> : si Cabal Obligations est en jeu, distribuez 1 carte rencontre à chaque joueur. Sinon, trouvez Cabal Obligations et révélez-la. <i>(Mélangez.)</i>\n<i>Rivalité du Cabal</i> — <b>Spécial</b> : mélangez Doctor Doom dans le deck de rencontre → jouez une carte Iron Patriot de votre deck ou de votre pile de défausse en ignorant son coût en ressources. <i>(Mélangez.)</i>",
+  // iron_patriot — Reign's End (SideScheme, Nemesis)
+  'ip017': "<b>Interruption forcée</b> : quand un personnage entre en jeu, placez 2 menaces ici.\n<b>Réponse forcée</b> : après qu'un allié [[REGISTERED]] est vaincu, placez cet allié face cachée sous cette manigance. S'il y a 3[per_hero] cartes sous cette manigance, les joueurs perdent la partie.",
+  // iron_patriot — Cabal Obligations (Attachment, Nemesis)
+  'ip018': "Attachez-la à votre identité.\nL'identité attachée ne peut pas se redresser. Les alliés [[REGISTERED]] que vous contrôlez ne peuvent ni attaquer, ni contrer, ni résoudre de capacité « Spécial ».\n<b>Action</b> : dépensez X ressources de n'importe quel type, où X vaut 1 de plus que le nombre d'alliés [[REGISTERED]] en jeu → défaussez cette carte.",
+  // iron_patriot — Assembled Resistance (Treachery, Nemesis)
+  'ip019': "<b>Une fois révélée (alter ego)</b> : révélez la carte du dessus du deck REGISTERED et mettez-la en jeu engagée avec vous.\n<b>Une fois révélée (héros)</b> : le personnage ami ayant le plus de points de vie restants vous attaque. Si aucune attaque n'a été faite de cette façon, cette carte gagne Renfort.",
+  // iron_patriot — H.A.M.M.E.R. Agents (Minion, Registered)
+  'ip020': "<b>Une fois révélée</b> : si c'est la première carte révélée du deck REGISTERED ce round, mettez cette carte sous votre contrôle comme allié [[REGISTERED]].\n<i>Renforts</i> — <b>Spécial</b> : cherchez un exemplaire de H.A.M.M.E.R. Agents dans le deck REGISTERED et mettez-le en jeu sous votre contrôle comme allié [[REGISTERED]]. Mélangez le deck REGISTERED.",
+  // iron_patriot — H.A.M.M.E.R. Commandos (Minion, Registered)
+  'ip021': "Gardien.\n<b>Une fois révélée</b> : si c'est la première carte révélée du deck REGISTERED ce round, mettez cette carte sous votre contrôle comme allié [[REGISTERED]].\n<i>Tir de couverture</i> — <b>Spécial</b> : inclinez cet allié → pour chaque personnage H.A.M.M.E.R. en jeu, infligez 1 dégât à un ennemi.",
+  // iron_patriot — H.A.M.M.E.R. Operatives (Minion, Registered)
+  'ip022': "Patrouille.\n<b>Une fois révélée</b> : si c'est la première carte révélée du deck REGISTERED ce round, mettez cette carte sous votre contrôle comme allié [[REGISTERED]].\n<i>Contre-espionnage</i> — <b>Spécial</b> : inclinez cet allié → pour chaque personnage H.A.M.M.E.R. en jeu, retirez 1 menace d'une manigance.",
+  // iron_patriot — Bullseye (Minion, Registered)
+  'ip023': "Attaque rapide.\n[star] Quand Bullseye fait une attaque de base contre un personnage unique <i>([unique])</i>, il gagne +1 ATQ. Les attaques de Bullseye gagnent à distance.\n<i>Ordre d'exécution</i> — <b>Spécial</b> : choisissez un sbire → défaussez la carte du dessus du deck de rencontre. Si cette carte a une icône étoile ([star]) dans la zone de [boost], mettez ce sbire K.O.",
+  // iron_patriot — Daken (Minion, Registered)
+  'ip024': "Renfort.\n[star] Les attaques de Daken gagnent Perçant.\n<b>Réponse forcée</b> : après le début de la phase du méchant, soignez 1 dégât de Daken.\n<i>Phéromones émotionnelles</i> — <b>Spécial</b> : choisissez d'étourdir ou de désorienter jusqu'à 2 ennemis.",
+  // iron_patriot — Ghost (Minion, Registered)
+  'ip025': "Incitation 1. Patrouille.\n[star] Répartissez les menaces de la manigance ou du contre de Ghost entre chaque manigance, aussi équitablement que possible.\n<i>Espionnage intangible</i> — <b>Spécial</b> : retirez 1 menace de chaque manigance pour chaque icône [crisis], [acceleration], [amplify] et [hazard] en jeu.",
+  // iron_patriot — Madame Masque (Minion, Registered)
+  'ip026': "Gardien. Stable.\n[star] <b>Réponse forcée</b> : après que Madame Masque attaque et blesse un personnage, désorientez ce personnage.\n<i>Faux visages</i> — <b>Spécial</b> : piochez X cartes (3 max), où X est égal au numéro d'étape de la manigance principale. Si la manigance principale n'a pas de numéro d'étape, piochez 1 carte.",
+  // iron_patriot — Moonstone (Minion, Registered)
+  'ip027': "Inébranlable. Résistance.\n[star] <b>Réponse forcée</b> : après que Moonstone attaque et vainc un personnage, donnez-lui une carte de statut Robuste.\n<i>Évaluation psychologique</i> — <b>Spécial</b> : choisissez 1 autre personnage ami que vous contrôlez → soignez 2 dégâts de ce personnage et donnez-lui une carte de statut Robuste.",
+  // iron_patriot — Taskmaster (Minion, Registered)
+  'ip028': "Gardien.\n[star] Taskmaster gagne +1 MNG et +1 ATQ pour chaque personnage [[REGISTERED]] que vous contrôlez (3 max).\n<i>Formateur d'initiative</i> — <b>Spécial</b> : résolvez la capacité « Spécial » d'1 sbire de la pile de défausse du deck REGISTERED.",
+  // iron_patriot — Venom (Minion, Registered)
+  'ip029': "Riposte 1. Résistance.\nTant que les points de vie restants de Venom sont inférieurs à la moitié de ses points de vie de départ, il gagne +1 ATQ et -1 MNG ou -1 CTR.\n<i>Dévoration symbiotique</i> — <b>Spécial</b> : cet allié attaque un personnage. Cet allié subit -1 dégât consécutif s'il vainc un personnage de cette façon.",
+  // iron_patriot — Ares (Minion, Registered)
+  'ip030': "Résistance.\n[star] <b>Réponse forcée</b> : les attaques d'Ares gagnent Perçant. Après qu'Ares attaque et blesse un personnage, étourdissez ce personnage.\n<i>Tacticien de guerre</i> — <b>Spécial</b> : cherchez un événement [[ATTACK]] ou [[DEFENSE]] dans votre deck et ajoutez-le à votre main. <i>(Mélangez.)</i>",
+  // iron_patriot — Loki (Minion, Registered)
+  'ip031': "Incitation 2. Inébranlable.\n<b>Réponse forcée</b> : après que vous résolvez une traîtrise, soignez 1 dégât de Loki.\n<i>Magie du farceur</i> — <b>Spécial</b> : cherchez une traîtrise dans le deck de rencontre et défaussez-la. <i>(Mélangez.)</i>",
+  // iron_patriot — Penance (Minion, Registered)
+  'ip032': "Riposte 2. Vulnérable.\n[star] Les attaques de Penance gagnent Déferlement.\n<i>Douleur déchaînée</i> — <b>Spécial</b> : inclinez cette carte → choisissez un joueur. Infligez X dégâts au vilain et à chaque sbire engagé avec ce joueur, où X est égal au nombre de dégâts que cet allié a subis.",
+  // iron_patriot — The Hood (Minion, Registered)
+  'ip033': "Stable. Renfort.\n[star] <b>Interruption forcée</b> : quand The Hood attaque, donnez-lui 1 carte de [boost] pour cette activation.\n<i>Crimes démoniaques</i> — <b>Spécial</b> : défaussez la carte du dessus du deck REGISTERED. Pour chaque icône de [boost] défaussée de cette façon, choisissez soit d'infliger 1 dégât à un ennemi, soit de retirer 1 menace d'une manigance.",
+  // iron_patriot — Molecule Man (Minion, Molecule Man)
+  'ip034': "Résistance. Stable.\n[star] Aucun personnage ne peut défendre contre les attaques de Molecule Man.\n<b>Une fois révélée</b> : cherchez Master of Molecules dans le deck de rencontre et la pile de défausse, et révélez-la.",
+  // iron_patriot — "You're in My World" (SideScheme, Molecule Man)
+  'ip035': "Cette carte ne peut pas quitter le jeu tant que Molecule Man est en jeu.\n<b>Une fois révélée</b> : nommez un type de ressource ([energy], [mental], [physical] ou [wild]). Tant que You're in My World est en jeu, aucun joueur ne peut jouer depuis sa main de carte portant ce type de ressource imprimé.",
+  // iron_patriot — Master of Molecules (Attachment, Molecule Man)
+  'ip036': "Attachez-la à Molecule Man. Si vous ne pouvez pas, cette carte gagne Renfort.\n[star] <b>Interruption forcée</b> : quand Molecule Man vous attaque, défaussez 1 carte au hasard de votre main. Si la ressource imprimée de cette carte comporte :\n[energy] – cette attaque gagne Déferlement et Perçant.\n[mental] – étourdissez et désorientez le personnage attaqué.\n[physical] – cette attaque inflige 2 dégâts supplémentaires.\n[wild] – défaussez 1 carte supplémentaire.",
+  // iron_patriot — Manipulate Realities (Treachery, Molecule Man)
+  'ip037': "<b>Une fois révélée</b> : si Molecule Man est en jeu, choisissez un type de ressource imprimé ([energy], [mental], [physical] ou [wild]) présent dans votre main. Défaussez de votre main chaque carte portant le type de ressource choisi. Sinon, cette carte gagne Renfort.",
+  // iron_patriot — Registered Ally (gabarit)
+  'registered_ally': "Ce sbire est traité comme un allié [[REGISTERED]]. Il subit 1 dégât consécutif après avoir attaqué ou contré, et sa CTR est égale à sa MNG imprimée.",
 }

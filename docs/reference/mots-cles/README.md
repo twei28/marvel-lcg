@@ -78,6 +78,10 @@ la plus fréquente sur un pack vilain.
 - [x] squirrel.md (pack `squirrel_girl`)
 - [x] investigate-x.md (pack `jessica_jones`)
 - [x] setlist.md (pack `dazzler`)
+- [x] registered.md (pack `iron_patriot` : un SECOND DECK de 20 sbires qu'on
+      retourne contre le méchant en payant leurs ICÔNES DE BOOST.
+      ⚠ C'est un TRAIT, pas un mot-clé — la fiche existe pour les quatre
+      pièges moteur de la conversion sbire → allié, mesurés le 10/09/2026)
 - [x] weakness.md (aspect `venomized` : des cartes de RENCONTRE qui vivent
       dans le DECK DU JOUEUR et frappent quand on les pioche EN MAIN.
       ⚠ Aucun code moteur — mesure du 09/09/2026, 2 cas calibres)
