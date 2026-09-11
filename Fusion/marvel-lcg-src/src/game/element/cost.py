@@ -38,6 +38,7 @@ class Cost:
                     "BR", "YR", "YB",
                     "YYY", "BBB", "RRR",
                     "YBR", "RRR", "BRR",
+                    "L", "LL", "YL",
                     "0", "1", "2", "3", "4"]|ResRBYGA,
                  *,
                  rule: CostRule|None=None,
@@ -124,6 +125,9 @@ class Cost:
     @property
     def g(self) -> int:
         return self.rbyga.g
+    @property
+    def l(self) -> int:
+        return self.rbyga.l
 
     ################################################################################
     #
@@ -134,9 +138,9 @@ class Cost:
             texts.append("up to")
 
 
-        if self.y + self.b + self.r + self.g:
+        if self.y + self.b + self.r + self.g + self.l:
             has_color = True
-            texts.append(f"{'[[energy]]' * self.y}{'[[mental]]' * self.b}{'[[physical]]' * self.r}{'[[wild]]' * self.g}")
+            texts.append(f"{'[[energy]]' * self.y}{'[[mental]]' * self.b}{'[[physical]]' * self.r}{'[[wild]]' * self.g}{'[[lightning]]' * self.l}")
         elif self.val:
             if self.val > 0:
                 texts.append(f"{self.val} resources")

@@ -34,6 +34,7 @@ class Symbol:
     r_r_physical    = f'{Fore.RED}R{Fore.RESET}'
     r_y_energy      = f'{Fore.YELLOW}Y{Fore.RESET}'
     r_g_wild        = f'{Fore.GREEN}G{Fore.RESET}'
+    r_l_lightning   = f'{Fore.CYAN}L{Fore.RESET}'  # eclair, ressource maison du pack Zeus (11/09/2026)
 
     # State
     stunned     = f'{Fore.GREEN}Stunned{Fore.RESET}'
@@ -72,6 +73,7 @@ class Symbol:
         text = text.replace(Symbol.r_r_physical, "[[physical]]")
         text = text.replace(Symbol.r_y_energy, "[[energy]]")
         text = text.replace(Symbol.r_g_wild, "[[wild]]")
+        text = text.replace(Symbol.r_l_lightning, "[[lightning]]")
         text = text.replace(Symbol.boost, "[[boost]]")
         return Symbol.Clean(text)
 

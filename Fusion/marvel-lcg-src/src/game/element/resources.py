@@ -9,16 +9,16 @@ class Resources:
 
     RBYG: Final = ResRBYG.RBYG
     RBY: Final = ResRBYG.RBY
-    RES_TEXT: Final = {'r': Symbol.r_r_physical, 'g': Symbol.r_g_wild, 'b': Symbol.r_b_mental, 'y': Symbol.r_y_energy}
-    RBYG_LIST: List[ResRBYG.RBYG] = ["R", "B", "Y", "G"]
+    RES_TEXT: Final = {'r': Symbol.r_r_physical, 'g': Symbol.r_g_wild, 'b': Symbol.r_b_mental, 'y': Symbol.r_y_energy, 'l': Symbol.r_l_lightning}
+    RBYG_LIST: List[ResRBYG.RBYG] = ["R", "B", "Y", "G", "L"]
 
     # if `text` like "R", then `total` == self.r + self.b + self.y + self.g
     # e.g. "0" "RR" "RBY"
     def __init__(self, rbyg: Literal[
                     "-1", "-2", "-3",
                     "0",
-                    "R", "B", "Y", "G",
-                    "BB", "GG",
+                    "R", "B", "Y", "G", "L",
+                    "BB", "GG", "LL",
                     "RRR", "BBB", "YYY",
                 ]|ResRBYG,
                 *,
@@ -108,6 +108,7 @@ class Resources:
             check_value(self.rbyg.r - cost.rbyga.r)
             check_value(self.rbyg.b - cost.rbyga.b)
             check_value(self.rbyg.y - cost.rbyga.y)
+            check_value(self.rbyg.l - cost.rbyga.l)
 
             if green < 0:
                 return False
@@ -175,4 +176,6 @@ class Resources:
     @property
     def g(self) -> int:
         return self.rbyg.g
-
+    @property
+    def l(self) -> int:
+        return self.rbyg.l
