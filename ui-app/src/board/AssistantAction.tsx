@@ -4,6 +4,7 @@ import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Interaction } from './interaction'
 import { t } from './langue'
+import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
 import type { WorldCard } from './world'
 
@@ -14,6 +15,16 @@ type AssistantActionProps = {
   connecte: boolean
   cartesParId: Map<number, WorldCard>
   affichage?: 'simple' | 'detailed'
+  /**
+   * Design essai : un seul rendu, quel que soit le mode d'affichage. La carte
+   * en petit, la consigne en gros (« Payer 1 pour jouer »), les pastilles du
+   * coût et une phrase courte (« Il manque 1 ressource »), puis le bouton qui
+   * nomme l'action (« Jouer Quinjet »), grise tant que ce n'est pas pret.
+   * Voir phrase-etat.ts.
+   */
+  designEssai?: boolean
+  /** Le nom (français si connu) de la carte qui porte l'option, comme dans la barre d'action. */
+  nomPorteur?: (bindId: number) => string | undefined
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -85,6 +96,8 @@ export function AssistantAction({
   connecte,
   cartesParId,
   affichage = 'detailed',
+  designEssai = false,
+  nomPorteur,
 }: AssistantActionProps) {
   const utile = Boolean(connecte && aNous && demande && interaction.option)
 
@@ -106,6 +119,72 @@ export function AssistantAction({
   const titre = etapeDirecte(interaction)
   const montrerResume = interaction.cibles.length > 0 || interaction.coutAffiche !== ''
   const nomAction = nomLisible(interaction.option)
+  // Le nom de la carte qui porte l'option (« Jouer Quinjet »), comme la barre
+  // d'action le fait deja. Pas pour une capacite d'identite : « Attaquer
+  // Steve Rogers » se lirait comme une attaque CONTRE Steve.
+  const porteur = cartesParId.get(interaction.option.bind_id)
+  const porteurEstIdentite = porteur?.card_type === 'Hero' || porteur?.card_type === 'AlterEgo'
+  const nomDuPorteur =
+    designEssai && interaction.option.bind_id !== 0 && !porteurEstIdentite
+      ? (nomPorteur?.(interaction.option.bind_id) ?? porteur?.name)
+      : undefined
+  const nomActionEssai = nomDuPorteur ? `${nomAction} ${nomDuPorteur}` : nomAction
+  // Le mulligan est le premier ecran de la partie : « Resolve Mulligans » sur
+  // le bouton repeterait le titre sans dire ce que le clic fait. Le bouton dit
+  // donc le geste : garder la main, ou defausser N cartes.
+  const estMulligan = interaction.option.name.toLowerCase().includes('mulligan')
+  const libelleMulligan =
+    assistant.cibleNombre === 0
+      ? t('Garder cette main')
+      : `${t('Défausser')} ${assistant.cibleNombre} ${assistant.cibleNombre > 1 ? t('cartes') : t('carte')}`
+  const libelleValider = estMulligan ? libelleMulligan : nomActionEssai || t('Confirmer')
+
+  if (designEssai) {
+    const phrase = phraseEtat(assistant, interaction.prete)
+    return (
+      <aside
+        ref={panneau}
+        className={`assistant-action design-essai etape-${assistant.etape} ${classeTonaliteAction(nomAction)}`}
+        style={style}
+        aria-live="polite"
+      >
+        <span className="assistant-eyebrow">{nomDuPorteur ?? nomAction}</span>
+        <strong>{consigne(assistant, nomAction)}</strong>
+        <div className="assistant-ligne-cout">
+          {assistant.etape === 'payment' && assistant.coutSlots.length > 0 ? (
+            <span className="assistant-cout" aria-label={t('Coût à payer')}>
+              {assistant.coutSlots.map((slot) => (
+                <span
+                  className={`assistant-slot${slot.rempli ? ' est-rempli' : ''} ${classeType(slot.type)}`}
+                  key={slot.index}
+                >
+                  {slot.label ?? ''}
+                </span>
+              ))}
+            </span>
+          ) : null}
+          {phrase ? <span className="assistant-detail">{phrase}</span> : null}
+        </div>
+        {assistant.coutRegles.length > 0 ? (
+          <span className="assistant-regles">{assistant.coutRegles.join(' - ')}</span>
+        ) : null}
+        {assistant.indice ? <span className="assistant-indice">{assistant.indice}</span> : null}
+        <div className="assistant-boutons">
+          <button type="button" className="assistant-annuler" onClick={interaction.annuler}>
+            {t('Annuler')}
+          </button>
+          <button
+            type="button"
+            className="assistant-confirmer"
+            disabled={!interaction.prete}
+            onClick={interaction.valider}
+          >
+            {libelleValider}
+          </button>
+        </div>
+      </aside>
+    )
+  }
 
   if (affichage === 'simple') {
     const indication = indicationSimple(interaction)

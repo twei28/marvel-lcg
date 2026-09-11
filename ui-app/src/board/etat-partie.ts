@@ -46,3 +46,27 @@ export function libelleRound(monde: World | undefined): string {
   if (!monde || typeof monde.round_id !== 'number' || monde.round_id <= 0) return ''
   return `${t('Round')} ${monde.round_id}`
 }
+
+/**
+ * Qui doit agir, en trois mots : « À toi de jouer », « En attente de Hulk »,
+ * « Le méchant agit ». Le troisième segment du bandeau (design essai) : le
+ * round dit où on en est, la phase dit quoi, ce libellé dit QUI. À plusieurs,
+ * c'est la question qu'on se pose vraiment en revenant à l'écran.
+ */
+export function libelleQuiAgit(
+  monde: World | undefined,
+  etat: { aNous: boolean; connecte: boolean; demande?: unknown }
+): string {
+  if (!monde || !etat.connecte) return ''
+  if (etat.aNous && etat.demande !== undefined) return t('À toi de jouer')
+  const phase = monde.phase ?? ''
+  if ((PHASES_DU_MECHANT_ORDONNEES as readonly string[]).includes(phase)) {
+    return t('Le méchant agit')
+  }
+  const tour = phase.match(/^Player (\d+) Turn$/)
+  if (tour) {
+    const heros = nomDuHeros(monde, Number(tour[1]))
+    return heros ? `${t('En attente de')} ${heros}` : `${t('En attente du joueur')} ${tour[1]}`
+  }
+  return ''
+}

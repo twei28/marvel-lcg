@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { libellePhase, libelleRound } from './etat-partie'
+import { libellePhase, libelleQuiAgit, libelleRound } from './etat-partie'
 import type { World } from './world'
 
 const monde = (phase: string, round = 3): World =>
@@ -37,5 +37,31 @@ describe('libelleRound', () => {
     expect(libelleRound(monde('Player 1 Turn', 2))).toBe('Round 2')
     expect(libelleRound(monde('Player 1 Turn', 0))).toBe('')
     expect(libelleRound(undefined)).toBe('')
+  })
+})
+
+describe('libelleQuiAgit', () => {
+  const etat = (aNous: boolean, demande = true) =>
+    ({ aNous, connecte: true, demande: demande ? {} : undefined }) as Parameters<
+      typeof libelleQuiAgit
+    >[1]
+
+  it('dit « À toi de jouer » quand le moteur attend le joueur local', () => {
+    expect(libelleQuiAgit(monde('Player 1 Turn'), etat(true))).toBe('À toi de jouer')
+  })
+
+  it('nomme le héros attendu quand ce n’est pas notre tour', () => {
+    expect(libelleQuiAgit(monde('Player 2 Turn'), etat(false))).toBe('En attente de Hulk')
+  })
+
+  it('dit que le méchant agit pendant sa phase', () => {
+    expect(libelleQuiAgit(monde('Enemy Activation'), etat(false))).toBe('Le méchant agit')
+  })
+
+  it('reste muet sans monde ou hors connexion', () => {
+    expect(libelleQuiAgit(undefined, etat(true))).toBe('')
+    expect(
+      libelleQuiAgit(monde('Player 1 Turn'), { aNous: true, connecte: false, demande: {} } as never)
+    ).toBe('')
   })
 })

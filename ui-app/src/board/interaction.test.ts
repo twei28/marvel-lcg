@@ -150,3 +150,26 @@ describe('useInteraction, action a plusieurs cibles', () => {
     expect(result.current.assistant.etape).toBe('payment')
   })
 })
+
+describe('useInteraction, design essai : les types qui manquent', () => {
+  it('expose les types manquants pour la phrase d’état', () => {
+    const option = optionTroisCibles()
+    option.target_payment = {
+      0: { cost: 'Y', payment: [{ effect_id: EFFET_RESSOURCE, res_text: 'Y' }], rule: [] },
+    }
+    const demande: Demande = {
+      options: [option],
+      refus: [],
+      prompt_text: '',
+      event_name: 'test',
+      show_cancel: true,
+      ability_type: '',
+    }
+    const affiches = new Set([HEROS, RESSOURCE, ...CIBLES])
+    const { result } = renderHook(() =>
+      useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple')
+    )
+    act(() => result.current.choisirOption(option))
+    expect(result.current.assistant.typesManquants).toEqual({ Y: 1 })
+  })
+})

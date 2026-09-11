@@ -101,6 +101,8 @@ export type AssistantInteraction = {
   coutPaye: number
   coutSlots: CoutSlot[]
   coutRegles: string[]
+  /** Ce qui manque type par type quand le coût est par types (design essai). */
+  typesManquants?: Record<string, number>
 }
 
 /** Une cible que la table ne montre pas : elle passe par le selecteur. */
@@ -788,6 +790,7 @@ export function useInteraction(
     coutPaye: paye,
     coutSlots: slotsCout(paiement, ressources, requis),
     coutRegles: reglesCout(paiement),
+    typesManquants: typesManquants(paiement, ressources),
   }
 
   const valider = useCallback(() => {

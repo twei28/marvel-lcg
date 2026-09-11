@@ -6660,3 +6660,117 @@
     }
   }
 }
+
+/* --- Design essai (board/design-essai.ts) ----------------------------------
+   Tout ce qui suit ne s'applique que sous la classe `design-essai` : sans le
+   drapeau, le plateau ne lit aucune de ces regles. Repris de ce que
+   play.marvelsimulator.com fait mieux (releve du 11/09/2026) : un bandeau qui
+   se lit de loin, UN bouton colore dans la barre, un assistant dont le titre
+   est une consigne et dont le bouton nomme l'action.
+   Couche `utilitaires`, et non `composants` : la barre (.bh-bouton) vit dans
+   utilitaires, et une couche declaree plus tot perd contre elle quelle que
+   soit la specificite. Mesure : le bouton restait gris. */
+@layer utilitaires {
+  /* Le bandeau : round, phase, qui agit. Trois segments sur une ligne. */
+  .board-actions.design-essai .bh-etat {
+    grid-auto-flow: column;
+    align-items: baseline;
+    column-gap: 10px;
+    margin-right: 8px;
+    padding-right: 14px;
+  }
+
+  .board-actions.design-essai .bh-etat strong {
+    font-size: 1rem;
+  }
+
+  .board-actions.design-essai .bh-etat span {
+    font-size: 0.86rem;
+  }
+
+  .board-actions.design-essai .bh-etat em {
+    font-style: normal;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--info);
+    white-space: nowrap;
+  }
+
+  /* Fin du tour : le seul bouton colore de la barre. Meme palette que le
+     bouton flottant qu'il remplace, meme pulse vert quand plus rien n'est
+     jouable (fin-tour-pulse est defini avec .bouton-fin-tour). */
+  .board-actions.design-essai .bh-fin-tour {
+    min-height: 34px;
+    padding: 0 18px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fond);
+    background: var(--menace);
+    border-color: var(--menace-clair);
+  }
+
+  .board-actions.design-essai .bh-fin-tour:hover:not(:disabled) {
+    background: var(--menace);
+    filter: brightness(1.08);
+  }
+
+  .board-actions.design-essai .bh-fin-tour:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .board-actions.design-essai .bh-fin-tour.est-suggere {
+    background: #1f9d55;
+    border-color: #2ecc71;
+    animation: fin-tour-pulse 1.6s ease-in-out infinite;
+  }
+
+  /* Options : la ligne « Actions » (Simple / Detaille), rangee ici sous le
+     drapeau parce que c'est un reglage, pas une action de partie. */
+  .ligne-option-mode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: default;
+  }
+
+  /* L'assistant : le titre en gros, comme une consigne (« PAYER LE COUT »),
+     la phrase d'etat lisible, et le bouton qui nomme l'action. */
+  .assistant-action.design-essai strong {
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  /* Pastilles du cout et phrase d'etat sur UNE ligne : « ●○  Il manque 1 ». */
+  .assistant-action.design-essai .assistant-ligne-cout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 1.4em;
+  }
+
+  .assistant-action.design-essai .assistant-ligne-cout:empty {
+    display: none;
+  }
+
+  .assistant-action.design-essai .assistant-eyebrow {
+    font-size: 0.78rem;
+  }
+
+  .assistant-action.design-essai .assistant-detail {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .assistant-action.design-essai .assistant-confirmer {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding-inline: 22px;
+  }
+}

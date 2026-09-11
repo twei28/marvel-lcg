@@ -95,7 +95,8 @@ import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
-import { libellePhase, libelleRound } from './board/etat-partie'
+import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
+import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
@@ -1249,6 +1250,10 @@ function PanneauOptions({
   reglageMode,
   cyclerReglageMode,
   montrerDisposition,
+  designEssai,
+  basculerDesignEssai,
+  modeActions,
+  changerModeActions,
 }: {
   animations: boolean
   basculerAnimations: () => void
@@ -1285,6 +1290,12 @@ function PanneauOptions({
   reglageMode: ReglageMode
   cyclerReglageMode: () => void
   montrerDisposition: boolean
+  /** Design essai (board/design-essai.ts) : nouvelle barre, bandeau, assistant. */
+  designEssai: boolean
+  basculerDesignEssai: () => void
+  /** Sous le drapeau, Simple / Détaillé vit ici : c'est un réglage, pas une action. */
+  modeActions: ModeActions
+  changerModeActions: (mode: ModeActions) => void
 }) {
   const [ouvert, setOuvert] = useState(false)
   return (
@@ -1300,6 +1311,18 @@ function PanneauOptions({
       </button>
       {ouvert ? (
         <div className="popover-sauvegardes popover-options" role="menu">
+          <LigneOption
+            libelle={t('Design essai')}
+            detail={t('Nouvelle barre du haut et assistant d’action, en cours d’essai')}
+            actif={designEssai}
+            onBascule={basculerDesignEssai}
+          />
+          {designEssai ? (
+            <div className="ligne-option ligne-option-mode">
+              <span className="ligne-option-libelle">{t('Actions')}</span>
+              <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
+            </div>
+          ) : null}
           <LigneOption
             libelle={t('Animations')}
             detail={t('Déplacements de cartes, secousse d\u2019impact, halo de statut')}
@@ -2286,6 +2309,27 @@ function PagePartie({
     })
   }, [])
 
+  // Design essai (barre, bandeau, assistant) : voir board/design-essai.ts.
+  // Deux portes : ?design=essai dans l'URL du plateau, ou la ligne dans Options.
+  const [designEssai, setDesignEssai] = useState(() => {
+    try {
+      return lireDesignEssai(window.location.search, window.localStorage)
+    } catch {
+      return false
+    }
+  })
+  const basculerDesignEssai = useCallback(() => {
+    setDesignEssai((v) => {
+      const nouveau = !v
+      try {
+        window.localStorage.setItem(CLE_DESIGN_ESSAI, nouveau ? 'on' : 'off')
+      } catch {
+        /* preference non critique */
+      }
+      return nouveau
+    })
+  }, [])
+
   const [validationCourte, setValidationCourte] = useState(lireValidationCourte)
   const basculerValidationCourte = useCallback(() => {
     setValidationCourte((v) => {
@@ -2652,8 +2696,8 @@ function PagePartie({
   // Mode simple : la barre du bas disparait. Il reste juste un bouton flottant
   // « End Turn » quand on est en phase libre (sinon plus aucun moyen visible de
   // finir son tour ; le clic-sur-heros le permet aussi, mais c'est moins evident).
-  const afficherFinTourSimple =
-    modeActions === 'simple' &&
+  // La fin de tour est-elle possible MAINTENANT ? Phase libre, rien d'engage.
+  const finDeTourDisponible =
     etat.aNous &&
     etat.connecte &&
     etat.demande !== undefined &&
@@ -2661,6 +2705,9 @@ function PagePartie({
     !demandeDoitApparaitreAuCentre(etat.demande) &&
     !interaction.option &&
     !carteMenu
+  const afficherFinTourSimple = modeActions === 'simple' && finDeTourDisponible
+  // Design essai : le troisieme segment du bandeau, « qui agit ».
+  const quiAgit = designEssai ? libelleQuiAgit(etat.monde, etat) : ''
 
   finTourClavier.current = () => {
     if (afficherFinTourSimple) interaction.annuler()
@@ -2758,6 +2805,8 @@ function PagePartie({
         connecte={etat.connecte}
         cartesParId={cartesMondeParId}
         affichage={modeActions}
+        designEssai={designEssai}
+        nomPorteur={nomPorteurFr}
       />
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
@@ -3022,14 +3071,18 @@ function PagePartie({
               Musique et Langue restent HORS du panneau Options, deliberement :
               couper le son ou changer de langue doit se faire d'un geste (voir
               le commentaire du bouton musique). */
-          <div className="board-actions">
+          <div className={`board-actions${designEssai ? ' design-essai' : ''}`}>
             {/* OÙ ON EN EST. La barre n'avait que des boutons : le round et
                 la phase n'étaient écrits nulle part une fois le cartouche
                 refermé. Deux lignes, à gauche, avant tout le reste. */}
-            {libelleRound(etat.monde) ? (
+            {/* Design essai : le bandeau vit aussi avant le premier round
+                (mulligan), ou il dit « Mise en place · Mulligans · A toi de
+                jouer » ; sans le drapeau, rien ne change. */}
+            {libelleRound(etat.monde) || (designEssai && quiAgit) ? (
               <div className="bh-etat" role="status">
-                <strong>{libelleRound(etat.monde)}</strong>
+                <strong>{libelleRound(etat.monde) || t('Mise en place')}</strong>
                 <span>{libellePhase(etat.monde)}</span>
+                {designEssai && quiAgit ? <em>{quiAgit}</em> : null}
               </div>
             ) : null}
             <button
@@ -3095,7 +3148,9 @@ function PagePartie({
 
             <span className="bh-separateur" aria-hidden="true" />
 
-            <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
+            {designEssai ? null : (
+              <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
+            )}
             <PanneauOptions
               animations={animations}
               basculerAnimations={basculerAnimations}
@@ -3128,6 +3183,10 @@ function PagePartie({
               reglerDelaiPasAPas={choisirDelaiPasAPas}
               validationCourte={validationCourte}
               basculerValidationCourte={basculerValidationCourte}
+              designEssai={designEssai}
+              basculerDesignEssai={basculerDesignEssai}
+              modeActions={modeActions}
+              changerModeActions={changerModeActions}
               reglageMode={reglageMode}
               cyclerReglageMode={cyclerReglageMode}
               montrerDisposition={surAppareilMobile}
@@ -3185,18 +3244,49 @@ function PagePartie({
               >
                 {langueActuelle() === 'fr' ? 'Français → English' : 'English → Français'}
               </button>
+              {/* Design essai : Menu quitte la barre pour « … », et laisse
+                  la derniere place a Fin du tour, seul bouton colore. */}
+              {designEssai ? (
+                <button
+                  type="button"
+                  className="bh-bouton bh-menu"
+                  onClick={retourMenuPrincipal}
+                  title={t('Revenir au menu principal')}
+                >
+                  <span aria-hidden="true">⌂</span> Menu
+                </button>
+              ) : null}
             </PopoverPlus>
 
             <span className="bh-separateur" aria-hidden="true" />
 
-            <button
-              type="button"
-              className="bh-bouton bh-menu"
-              onClick={retourMenuPrincipal}
-              title={t('Revenir au menu principal')}
-            >
-              <span aria-hidden="true">⌂</span> Menu
-            </button>
+            {designEssai ? (
+              <button
+                type="button"
+                className={`bh-bouton bh-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}
+                disabled={!finDeTourDisponible}
+                onClick={interaction.annuler}
+                title={
+                  finDeTourSuggeree
+                    ? t('Plus rien n\u2019est jouable — termine ton tour')
+                    : finDeTourDisponible
+                      ? t('Terminer ton tour')
+                      : t('Fin du tour possible quand le moteur te rend la main')
+                }
+              >
+                <span aria-hidden="true">▷</span> {t('Fin du tour')}
+                {finDeTourSuggeree ? ' ✓' : ''}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="bh-bouton bh-menu"
+                onClick={retourMenuPrincipal}
+                title={t('Revenir au menu principal')}
+              >
+                <span aria-hidden="true">⌂</span> Menu
+              </button>
+            )}
           </div>
         }
         interactifs={interactifsAvecPulse}
@@ -3254,7 +3344,7 @@ function PagePartie({
         }
       />
 
-      {afficherFinTourSimple ? (
+      {afficherFinTourSimple && !designEssai ? (
         <button
           type="button"
           className={`bouton-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}
