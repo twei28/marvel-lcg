@@ -2068,6 +2068,30 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     margin-bottom: 16px;
   }
 
+  /* --- 1 ter. Les petits telephones (412 px et moins) ---------------------
+     Mesure sur l'appareil de l'utilisateur, 412 px de large : la pastille de
+     l'etape debordait de 12 px a droite et « Continuer » de 10. La barre du
+     haut n'a plus la place de dire OU on en est, et elle n'en a pas besoin :
+     le titre de l'ecran le dit deja en toutes lettres (« Choisis un
+     mechant »). */
+  @media (max-width: 480px) {
+    .progress .steps {
+      display: none;
+    }
+
+    .nav {
+      gap: 6px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .nav .btn {
+      padding-left: 10px;
+      padding-right: 10px;
+      font-size: 0.8rem;
+    }
+  }
+
   /* --- 2. L'affiche : une banniere de 90 px au lieu de 360 ----------------
      La scene garde son illustration, mais en bandeau : c'est le titre geant
      (132 px de fonte) qui mangeait la hauteur, pas l'image. */

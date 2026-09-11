@@ -31,6 +31,22 @@ import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { lireBrouillon, ecrireBrouillon } from "/public/js/campagne/brouillon.js";
 
+// SURVOL : il n'existe pas sur un ecran tactile.
+//
+// Releve par l'utilisateur sur son telephone le 11/09/2026 : toucher une
+// boite d'extension pour changer de vilain ouvrait sa grande fiche et ne la
+// refermait JAMAIS. La boite changeait bien dessous, mais la fiche recouvrait
+// l'ecran, alors « ca ne fonctionne pas ».
+//
+// Cause : un doigt declenche `mouseenter`, mais jamais `mouseleave` — il n'y
+// a pas de curseur qui s'en va. Tout panneau ouvert au survol et referme a la
+// sortie reste donc colle. `(hover: hover)` distingue les appareils qui ont un
+// vrai survol ; lu une seule fois, au chargement.
+const SANS_SURVOL = !window.matchMedia("(hover: hover)").matches;
+
+/** Un gestionnaire de survol, ou rien du tout sur un ecran tactile. */
+const auSurvol = (fn) => (SANS_SURVOL ? undefined : fn);
+
 // CREATION D'EQUIPE POUR UNE CAMPAGNE.
 //
 // Le mode Campagne a son propre ecran (/campagne.html) : boite, difficulte,
@@ -1365,7 +1381,7 @@ function ouvrirCartesHeros(h) {
     const vignette = (id, classe, n, etiquette) => el("div", { class: "tb-carte " + (classe || "") },
         el("img", {
             src: cardImageUrl(id), loading: "lazy", alt: "",
-            onmouseenter: () => loupe(id),
+            onmouseenter: auSurvol(() => loupe(id)),
             onmouseleave: () => loupe(null),
         }),
         etiquette ? el("span", { class: "tb-carte-etiquette" }, etiquette) : null,
@@ -1883,7 +1899,7 @@ function sectionVariantes(titre, sous, options, actuel, surChoix) {
         const bouton = el("button", {
             class: "ra-option" + (o.code === actuel ? " sel" : ""),
             title: o.nom,
-            onmouseenter: o.trio ? (e) => showTrioHover(o.trio, e.currentTarget)
+            onmouseenter: o.trio ? auSurvol((e) => showTrioHover(o.trio, e.currentTarget))
                 : (o.apercu ? (e) => showCardHover(o.apercu, e.currentTarget) : undefined),
             onmouseleave: (o.trio || o.apercu) ? scheduleHide : undefined,
             onclick: () => {
@@ -2162,7 +2178,7 @@ function showDeckCards(deck, hero, deckId) {
             ),
             el("div", { class: "dm-grid" }, ...Object.keys(counts).map((id) =>
                 el("div", { class: "dm-card" },
-                    el("img", { src: cardImageUrl(id), loading: "lazy", onmouseenter: (e) => showCardHover(id, e.currentTarget), onmouseleave: scheduleHide }),
+                    el("img", { src: cardImageUrl(id), loading: "lazy", onmouseenter: auSurvol((e) => showCardHover(id, e.currentTarget)), onmouseleave: auSurvol(scheduleHide) }),
                     counts[id] > 1 ? el("span", { class: "dm-count" }, "x" + counts[id]) : null,
                 ))),
         ));
@@ -2995,8 +3011,8 @@ async function loadExtTabs() {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
         title: e.key,
         onclick: () => { hideHover(); state.extensionTab = e.key; loadExtTabs(); loadScnGrid(); },
-        onmouseenter: (ev) => showExtHover(e, ev.currentTarget),
-        onmouseleave: scheduleHide,
+        onmouseenter: auSurvol((ev) => showExtHover(e, ev.currentTarget)),
+        onmouseleave: auSurvol(scheduleHide),
     },
         e.key === "defis"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
@@ -3088,7 +3104,7 @@ function stepSummary() {
     const scene = (idImage, classe) => el("div", {
         class: "fo-scene " + (classe || ""),
         style: { backgroundImage: `url("${cardImageUrl(idImage)}")` },
-        onmouseenter: (e) => showCardHover(idImage, e.currentTarget),
+        onmouseenter: auSurvol((e) => showCardHover(idImage, e.currentTarget)),
         onmouseleave: scheduleHide,
     });
 
