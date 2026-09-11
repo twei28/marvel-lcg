@@ -23,4 +23,17 @@ describe('CarteAvecChiffres', () => {
     const { container } = render(<CarteAvecChiffres carte={carte} nom="RHINO" chiffres={[]} />)
     expect(container.querySelector('.portrait-carte-chiffres')).toBeNull()
   })
+
+  it('ne transmet pas les stats a ScanCard : aucun badge cale sur l illustration', () => {
+    // toScanCard() (card-model.ts) peuple TOUJOURS `stats` pour une carte
+    // reelle ; si on la laisse fuiter vers ScanCard, elle pose ses propres
+    // badges *par-dessus* le scan (.scan-stats-calee, position absolute) en
+    // plus des chiffres qu'on affiche deja a cote : exactement l'interdit du
+    // chantier.
+    const carteAvecStats: ScanCardProps = { ...carte, stats: [{ label: 'ATQ', value: 2 }] }
+    const { container } = render(
+      <CarteAvecChiffres carte={carteAvecStats} nom="RHINO" chiffres={[{ valeur: '2', libelle: 'ATQ' }]} />
+    )
+    expect(container.querySelector('.scan-card .scan-stats-calee')).toBeNull()
+  })
 })

@@ -21,9 +21,15 @@ export function CarteAvecChiffres({
   chiffres: Array<{ valeur: string; libelle: string }>
   onOuvrir?: () => void
 }): ReactElement {
+  // `stats` est retire avant le spread : toScanCard() le peuple TOUJOURS pour
+  // une carte reelle, et ScanCard pose alors ses propres badges chiffres EN
+  // PLUS, colles sur l'illustration (.scan-stats-calee, position absolute) —
+  // exactement ce que ce composant existe pour eviter. `chiffres` porte deja
+  // cet affichage, a cote de la carte.
+  const { stats: _stats, ...carteSansStats } = carte
   return (
     <div className="portrait-carte">
-      <ScanCard {...carte} highlight={false} onSelect={onOuvrir} />
+      <ScanCard {...carteSansStats} highlight={false} onSelect={onOuvrir} />
       <div className="portrait-carte-texte">
         {surtitre ? <span className="portrait-surtitre">{surtitre}</span> : null}
         <strong className="portrait-nom">{nom}</strong>
