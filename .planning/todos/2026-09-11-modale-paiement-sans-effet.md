@@ -56,3 +56,37 @@ Le mécanisme est pensé général (« ce coup ne produira aucun effet »), mais
 seule carte l'exerce aujourd'hui. Ne pas élargir aux autres coups sans effet
 (soigner un personnage intact, attaquer pour 0) sans une demande explicite :
 le risque de fausses alertes sur des coups volontaires est réel.
+
+## ✅ FAIT LE 11/09/2026 (soir)
+
+**Moteur.** `Ability.SetIgnoreKeyword('Crisis', paid_with="B")` remplace la
+lambda écrite à la main : même condition (rien de payé, ou une mentale, joker
+compris), et la couleur est gardée dans `AbilityIgnore.paid_with`. Au rendu
+(`Effect.Render`, `get_warning`), si la cible est un complot principal sous
+Crise et que la capacité ne l'ignore qu'à cette condition, le descripteur
+porte `target_payment[*].warning = {"keyword": "Crisis", "paid_with": "B"}`.
+Sans Crise, rien. Seule `15012` est concernée aujourd'hui.
+
+**Gate.** `tools/verifier_ignore_crise.py` refuse désormais une ignorance
+conditionnelle de la Crise écrite avec `condition=` (seule la forme
+`paid_with` renseigne le rendu). Calibrée : remettre la lambda dans `15012`
+la fait rougir.
+
+**Harnais.** Le pilote note les `warning` vus (`etat["avertissements"]`,
+exposé aux vérificateurs par `aides["etat"]`) ; vérificateur
+`avertissement_crise` ; trois cas « MODALE » : sous Crise l'avertissement est
+là et le coup payé en mental retire 6 ; sans Crise, aucun avertissement ;
+témoin fort : payée sans mentale sous Crise, la carte ne retire rien.
+
+**Plateau.** `ask.ts` : type `Avertissement`, lecture du champ `warning`,
+`coupSansEffet(paiement, ressources)` (compare les lettres, joker accepté).
+`interaction.ts` : `valider` demande confirmation via `useConfirmation`
+(`ConfirmationJeu`, ton danger, Continuer / Annuler) quand le paiement choisi
+n'a pas la couleur ; la validation courte est désactivée dans ce cas.
+Textes FR + EN (`textesCoupSansEffet`, `dico-en.ts`). Tests :
+`paiement-sans-effet.test.ts` (9 cas, dont le hook avec `window.confirm`
+espionné).
+
+**Non fait, et c'est voulu** : aucune généralisation aux autres coups sans
+effet (soigner un personnage intact, attaquer pour 0), comme décidé plus
+haut.

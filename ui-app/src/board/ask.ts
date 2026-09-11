@@ -19,6 +19,25 @@ export type MoyenDePaiement = {
   res_text: string
 }
 
+/**
+ * « Paye sans cette couleur, ce coup ne produira aucun effet. »
+ *
+ * Envoye par le moteur (`Effect.Render`, champ `warning`) quand la cible est
+ * verrouillee par un mot-cle que la carte n'ignore QU'A CONDITION d'avoir ete
+ * payee d'une certaine couleur (Crisis Averted sous une Crise : une mentale).
+ * Le plateau ne connait ni la carte ni la regle : il compare les lettres du
+ * paiement choisi a `ressource`, et demande confirmation si aucune ne convient.
+ */
+export type Avertissement = {
+  /** Le mot-cle qui verrouille la cible : « Crisis », « Patrol ». */
+  mot_cle: string
+  /** La couleur exigee, en lettre moteur : R, B, Y, G, L. */
+  ressource: string
+  /** true : TOUT le paiement doit etre de cette couleur (« using only
+   *  [mental] ») ; false : une seule suffit. */
+  seulement: boolean
+}
+
 /** Le cout d'une cible donnee, et de quoi le payer. */
 export type Paiement = {
   /** Cout imprime, tel quel. Souvent un nombre, parfois vide. */
@@ -26,6 +45,8 @@ export type Paiement = {
   payment: MoyenDePaiement[]
   /** « UpTo », « SameType », « DifferentType »... */
   rule: string[]
+  /** Absent dans l'immense majorite des cas. Voir `Avertissement`. */
+  avertissement?: Avertissement
 }
 
 export type Option = {
@@ -100,13 +121,24 @@ function lireMoyen(brut: unknown): MoyenDePaiement | undefined {
   return Number.isFinite(id) ? { effect_id: id, res_text: texte(objet[cles[0]!]) } : undefined
 }
 
+function lireAvertissement(brut: unknown): Avertissement | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const objet = brut as Record<string, unknown>
+  const mot_cle = texte(objet.keyword)
+  const ressource = texte(objet.paid_with).toUpperCase()
+  const seulement = texte(objet.mode) === 'only'
+  return mot_cle && ressource ? { mot_cle, ressource, seulement } : undefined
+}
+
 function lirePaiement(brut: unknown): Paiement {
   const objet = (typeof brut === 'object' && brut !== null ? brut : {}) as Record<string, unknown>
   const moyens = Array.isArray(objet.payment) ? objet.payment : []
+  const avertissement = lireAvertissement(objet.warning)
   return {
     cost: texte(objet.cost),
     payment: moyens.map(lireMoyen).filter((m): m is MoyenDePaiement => m !== undefined),
     rule: Array.isArray(objet.rule) ? objet.rule.filter((r): r is string => typeof r === 'string') : [],
+    ...(avertissement ? { avertissement } : {}),
   }
 }
 
@@ -332,6 +364,40 @@ export function valeurPayee(paiement: Paiement | undefined, ressources: number[]
     if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
   }
   return ressources.reduce((total, id) => total + valeurMoyen(texteParEffet.get(id) ?? ''), 0)
+}
+
+/**
+ * Le coup, paye ainsi, ne produira-t-il AUCUN effet ?
+ *
+ * Renvoie l'avertissement du moteur si le paiement choisi ne porte aucune
+ * lettre de la couleur exigee (un joker « G » vaut toute couleur, comme pour
+ * `typesManquants`) ; en mode `seulement`, des qu'une lettre d'une AUTRE
+ * couleur s'y trouve. Rien choisi : on previent aussi, le moteur ne saurait
+ * pas mieux payer a notre place. Undefined = rien a dire.
+ *
+ * ⚠ Ce n'est PAS un refus : le moteur accepte le coup, la carte est jouable.
+ * C'est une confirmation, decidee avec l'utilisateur le 11/09/2026, pour ne
+ * plus voir une carte partir en defausse sans rien faire, sans un mot.
+ */
+export function coupSansEffet(
+  paiement: Paiement | undefined,
+  ressources: number[]
+): Avertissement | undefined {
+  const avertissement = paiement?.avertissement
+  if (!paiement || !avertissement) return undefined
+  const texteParEffet = new Map<number, string>()
+  for (const moyen of paiement.payment) {
+    if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+  }
+  const exigee = avertissement.ressource.toUpperCase()
+  const lettres = ressources.flatMap((id) =>
+    ((texteParEffet.get(id) ?? '').match(/[rbygl]/gi) ?? []).map((l) => l.toUpperCase())
+  )
+  const convient = (type: string) => type === exigee || type === 'G'
+  if (avertissement.seulement) {
+    return lettres.length > 0 && lettres.every(convient) ? undefined : avertissement
+  }
+  return lettres.some(convient) ? undefined : avertissement
 }
 
 /** L'option est-elle prete a etre envoyee au moteur ? */

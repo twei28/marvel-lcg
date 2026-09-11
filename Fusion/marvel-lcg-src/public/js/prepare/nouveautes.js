@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-11",
         genre: "jeu",
+        fr: "Crisis Averted et On the Prowl sous une Crise : si tu t'apprêtes à les payer sans la ressource mentale qu'elles exigent, le jeu te prévient avant d'envoyer ton coup, au lieu de laisser la carte partir sans rien retirer.",
+        en: "Crisis Averted and On the Prowl under a Crisis: if you are about to pay them without the mental resource they require, the game warns you before your play is sent, instead of letting the card go for nothing.",
+    },
+    {
+        date: "2026-09-11",
+        genre: "jeu",
         fr: "Une seule tuile par héros : au clic, une fenêtre propose ce que ce héros a de particulier (version du deck, identité alternative, art de la carte, collection de ressources) et s'en souvient d'une partie à l'autre. Hellcat avec Iron Man ou Miss Hulk, Superior Spider-Man avec Peter Parker ou Elliot Tolliver.",
         en: "One tile per hero: clicking it opens a window with what this hero has to offer (deck version, alternate identity, card art, resource collection), remembered from game to game. Hellcat with Iron Man or She-Hulk, Superior Spider-Man with Peter Parker or Elliot Tolliver.",
     },

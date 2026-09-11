@@ -23,6 +23,20 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retour': 'Back',
   'Abandonner': 'Cancel',
   'Continuer': 'Continue',
+  // ---- Confirmation « ce coup ne fera rien » (11/09/2026) ----
+  'Ce coup ne retirera aucune menace': 'This play will remove no threat',
+  'Une icône de Crise est en jeu : cette carte n’ignore la Crise que si elle est payée':
+    'A Crisis icon is in play: this card ignores Crisis only if it was paid',
+  'Une Patrouille est en jeu : cette carte n’ignore la Patrouille que si elle est payée':
+    'A Patrol is in play: this card ignores Patrol only if it was paid',
+  'Cette carte ne produit son effet que si elle est payée':
+    'This card only takes effect if it was paid',
+  'avec au moins une ressource de type {ressource}.': 'with at least one {ressource} resource.',
+  'uniquement avec des ressources de type {ressource}.': 'with {ressource} resources only.',
+  'Payée comme ça, elle sera défaussée sans rien retirer. Continuer quand même ?':
+    'Paid this way, it will be discarded without removing anything. Continue anyway?',
+  // (les noms de couleurs « physique », « mentale », « énergie », « joker »,
+  // « éclair » sont déjà traduits plus bas, avec la phrase d'état du coût)
   'Carte': 'Card',
   'carte': 'card',
   'cartes': 'cards',

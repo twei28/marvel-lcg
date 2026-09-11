@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  coupSansEffet,
   coutParType,
   foisDisponible,
   paiementCourant,
@@ -21,12 +22,14 @@ import {
   valeurMoyen,
   valeurPayee,
   reponsePrete,
+  type Avertissement,
   type Demande,
   type Paiement,
   type Option,
   type Reponse,
 } from './ask'
 import { toScanCard } from './card-model'
+import { useConfirmation } from './ConfirmationJeu'
 import type { Catalogue } from './catalogue'
 import { libellesCible } from './libelles-cible'
 import { t } from './langue'
@@ -240,6 +243,37 @@ function slotsCout(
     label: remplis[index]?.type,
     type: remplis[index]?.type,
   }))
+}
+
+/** Le nom d'un type de ressource (les memes cles que la phrase d'etat du cout). */
+const NOM_COULEUR: Record<string, string> = {
+  R: 'physique',
+  B: 'mental',
+  Y: 'énergie',
+  G: 'joker',
+  L: 'éclair',
+}
+
+/**
+ * Les mots de la confirmation « ce coup ne fera rien », dans la langue du
+ * plateau. Une phrase par verrou et par mode, la couleur injectee APRES
+ * traduction pour que l'ordre des mots reste juste dans les deux langues.
+ */
+export function textesCoupSansEffet(avertissement: Avertissement): { titre: string; texte: string } {
+  const couleur = t(NOM_COULEUR[avertissement.ressource.toUpperCase()] ?? avertissement.ressource)
+  const verrou =
+    avertissement.mot_cle === 'Crisis'
+      ? t('Une icône de Crise est en jeu : cette carte n’ignore la Crise que si elle est payée')
+      : avertissement.mot_cle === 'Patrol'
+        ? t('Une Patrouille est en jeu : cette carte n’ignore la Patrouille que si elle est payée')
+        : t('Cette carte ne produit son effet que si elle est payée')
+  const condition = avertissement.seulement
+    ? t('uniquement avec des ressources de type {ressource}.')
+    : t('avec au moins une ressource de type {ressource}.')
+  return {
+    titre: t('Ce coup ne retirera aucune menace'),
+    texte: `${verrou} ${condition.replace('{ressource}', couleur)} ${t('Payée comme ça, elle sera défaussée sans rien retirer. Continuer quand même ?')}`,
+  }
 }
 
 function reglesCout(paiement: Paiement | undefined): string[] {
@@ -793,13 +827,29 @@ export function useInteraction(
     typesManquants: typesManquants(paiement, ressources),
   }
 
+  // La confirmation « ce coup ne fera rien » (11/09/2026). Le moteur accepte
+  // le coup ; c'est le plateau qui, AVANT d'envoyer, demande au joueur s'il
+  // tient vraiment a payer Crisis Averted sans mentale sous une Crise. Hors
+  // fournisseur (tests), `useConfirmation` retombe sur window.confirm.
+  const confirmer = useConfirmation()
   const valider = useCallback(() => {
     if (!option) return
-    repondre(
-      { id: option.id, targets: cibles, resources: ressources },
-      option.bind_player_id
-    )
-  }, [option, cibles, ressources, repondre])
+    const envoyer = () =>
+      repondre({ id: option.id, targets: cibles, resources: ressources }, option.bind_player_id)
+    const avertissement = coupSansEffet(paiement, ressources)
+    if (!avertissement) {
+      envoyer()
+      return
+    }
+    void confirmer({
+      ...textesCoupSansEffet(avertissement),
+      confirmer: t('Continuer'),
+      annuler: t('Annuler'),
+      ton: 'danger',
+    }).then((accepte) => {
+      if (accepte) envoyer()
+    })
+  }, [option, cibles, ressources, paiement, repondre, confirmer])
 
   // --- Validation courte -----------------------------------------------------
   // L'etape « valider » ne sert a rien quand il ne reste RIEN a decider. Quatre
@@ -826,7 +876,9 @@ export function useInteraction(
     !cibleRepetable &&
     !cibleSupplementairePossible &&
     !surpaiementRecompense &&
-    !paiementFacultatif(paiement)
+    !paiementFacultatif(paiement) &&
+    // Un coup sans effet merite le dernier regard : pas de validation courte.
+    coupSansEffet(paiement, ressources) === undefined
 
   const dejaValidee = useRef<number | undefined>(undefined)
   useEffect(() => {

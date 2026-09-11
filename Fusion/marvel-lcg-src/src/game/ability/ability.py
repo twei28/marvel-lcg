@@ -465,9 +465,36 @@ class Ability:
 
     ################################################################################
     # TODO: Move to Select?
-    def SetIgnoreKeyword(self, *keywords: 'CardFace.ABILITY_IGNORE_KEY', condition: Callable[['Effect'], bool]=lambda effect: True) -> 'Ability':
+    def SetIgnoreKeyword(self, *keywords: 'CardFace.ABILITY_IGNORE_KEY',
+                         condition: Callable[['Effect'], bool]=lambda effect: True,
+                         paid_with: str|None=None,
+                         only: bool=False) -> 'Ability':
+        # `paid_with` (11/09/2026) : l'ignorance n'est acquise QUE si le coup a
+        # ete paye avec au moins une ressource de cette couleur (15012 Crisis
+        # Averted : « if you paid for this card with a [mental] resource »).
+        # Le paiement venant APRES le ciblage, la condition est vraie tant que
+        # rien n'est paye (la carte reste ciblable) et se tranche ensuite sur
+        # les ressources reellement depensees. Un joker compte (HasColor).
+        # `only=True` : TOUT le paiement doit etre de cette couleur (hc006 On
+        # the Prowl, « using only [mental] resources » : OnlyHasColor).
+        # ⚠ Ne pas ecrire cette condition a la main avec `condition=` : la
+        # couleur doit etre CONNUE du rendu pour prevenir le joueur avant
+        # qu'il ne valide un paiement sans effet (`Effect.Render`). La gate
+        # tools/verifier_ignore_crise.py refuse la forme manuelle des qu'elle
+        # lit le paiement.
+        if paid_with is not None:
+            couleur = paid_with
+            if only:
+                condition = lambda effect: effect.GetPaidResources().val == 0 \
+                    or effect.GetPaidResources().OnlyHasColor(couleur)
+            else:
+                condition = lambda effect: effect.GetPaidResources().val == 0 \
+                    or effect.GetPaidResources().HasColor(couleur)
         for keyword in  keywords:
             self.ignore.keyword[keyword] = condition
+            if paid_with is not None:
+                self.ignore.paid_with[keyword] = paid_with
+                self.ignore.paid_only[keyword] = only
         return self
 
     def SetCondition(self,

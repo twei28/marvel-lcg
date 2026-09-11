@@ -45,8 +45,12 @@ def GetAbilities() -> Sequence['Ability']:
         # ne retire rien. C'est le texte de la carte, et le joueur choisit ses
         # ressources en connaissance de cause — le bandeau « Crise » du
         # plateau le lui rappelle.
-        .SetIgnoreKeyword('Crisis', condition=lambda effect:
-            effect.GetPaidResources().val == 0 or effect.GetPaidResources().HasColor("B"))
+        # ⚠ MODALE (11/09/2026, decision utilisateur) : la forme `paid_with`
+        # remplace la lambda ecrite a la main. Elle construit la MEME condition
+        # (rien de paye, ou une mentale), et en plus RENSEIGNE le rendu : sous
+        # Crise, le plateau demande confirmation avant d'envoyer un paiement
+        # sans mentale, au lieu de laisser la carte partir pour rien.
+        .SetIgnoreKeyword('Crisis', paid_with="B")
         .SetTarget(MainScheme)
     ]
 

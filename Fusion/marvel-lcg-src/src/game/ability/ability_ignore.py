@@ -14,6 +14,16 @@ class AbilityIgnore:
             'Patrol': lambda effect: False,
             'Crisis': lambda effect: False,
         }
+        # AJOUT 11/09/2026 : l'ignorance CONDITIONNELLE, declaree par
+        # `SetIgnoreKeyword(..., paid_with="B")`. La condition vaut au ciblage
+        # (rien n'est paye) et se tranche a la resolution ; ce dictionnaire
+        # garde la couleur exigee pour que le RENDU (`Effect.Render`) puisse
+        # prevenir le plateau : « paye sans cette couleur, ce coup ne fera
+        # rien ». Le plateau ne connait aucune carte, il ne lit que ceci.
+        self.paid_with: Dict['CardFace.ABILITY_IGNORE_KEY', str] = {}
+        # True : il faut que TOUT le paiement soit de cette couleur (hc006 On
+        # the Prowl, « using only [mental] ») ; False : une seule suffit.
+        self.paid_only: Dict['CardFace.ABILITY_IGNORE_KEY', bool] = {}
         self.out_of_play = self.ability.flags.is_rule or self.ability.flags.is_temp
         self.game_area = False
 

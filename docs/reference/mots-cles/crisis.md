@@ -57,13 +57,43 @@ ignore la Crise sans la déclarer. Calibrée en retirant la ligne de `90119`.
 - **`15012` Crisis Averted** (pack `scw`) : le cas limite. Elle n'ignore la
   Crise **que si elle a été payée avec une ressource mentale**, or le paiement
   vient APRÈS le ciblage (`effect_checker` : `check_target` puis `check_pay`).
-  Son ignorance est donc déclarée **sans condition**, sinon la carte devenait
-  injouable sous Crise alors que c'est sa raison d'être ; la résolution
-  tranche toujours selon les ressources réellement dépensées. Payée sans
-  mental sous une Crise, elle ne retire donc rien : c'est le texte de la
-  carte, et le bandeau « Crise » du plateau prévient le joueur.
+  Son ignorance est donc déclarée avec **`paid_with="B"`** (voir ci-dessous) :
+  vraie tant que rien n'est payé (la carte reste ciblable), tranchée à la
+  résolution selon les ressources réellement dépensées. Payée sans mental
+  sous une Crise, elle ne retire donc rien : c'est le texte de la carte, et
+  le plateau **demande confirmation** avant d'envoyer un tel paiement.
   ⚠ Cette carte avait été **ratée par un grep** sur `ignore_crisis=True` :
   elle passe par une variable locale. C'est la gate qui l'a trouvée.
+- **`hc006` On the Prowl** (pack `hellcat`) : même famille, variante « using
+  **only** [mental] » : `paid_with="B", only=True` (`OnlyHasColor`), sur
+  `'Crisis'` et `'Patrol'`. ⚠ La première gate ne la voyait pas
+  (`ignore_crisis=mental`, une variable) ; corrigée le 11/09/2026 au soir.
+
+### L'ignorance qui dépend du paiement : `paid_with` (11/09/2026 au soir)
+
+```python
+.SetIgnoreKeyword('Crisis', paid_with="B")              # au moins une mentale (15012)
+.SetIgnoreKeyword('Crisis', 'Patrol', paid_with="B", only=True)  # rien d'autre (hc006)
+```
+
+`Ability.SetIgnoreKeyword` construit la condition (rien de payé, ou la
+couleur ; joker compris) **et** la garde dans `AbilityIgnore.paid_with` /
+`paid_only`. Au rendu d'une option (`Effect.Render`, `get_warning`), si la
+cible est un complot principal verrouillé par ce mot-clé, le descripteur
+porte `target_payment[*].warning = {"keyword", "paid_with", "mode"}`. Le
+plateau (`ask.ts`, `coupSansEffet`) compare les lettres du paiement choisi et
+ouvre une **confirmation** (`ConfirmationJeu`, Continuer / Annuler, FR et EN)
+si aucune ne convient ; il ne connaît ni la carte ni la règle. Décision
+utilisateur du 11/09/2026 : prévenir au moment de payer, par une modale, le
+moteur calcule.
+
+⚠ **Ne jamais écrire cette condition à la main** (`condition=lambda effect:
+effect.GetPaidResources()...`) : la règle serait la même, mais le rendu ne
+saurait rien, et le joueur perdrait sa carte sans un mot. La gate
+`verifier_ignore_crise.py` refuse cette forme dès que la lambda lit le
+paiement (`br002`, dont la condition ne lit pas le paiement, reste libre).
+Harnais : trois cas « MODALE » (15012 sous Crise, témoin sans Crise, témoin
+fort payé sans mental) plus un cas hc006 en mode `only`.
 
 ### Côté plateau
 

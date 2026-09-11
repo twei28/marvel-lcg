@@ -12,11 +12,12 @@ from . import *
 # principal ne lui est plus propose. Patrouille verrouille de la meme facon
 # (`MainScheme.CanBeThwartBy`).
 #
-# ⚠ CAS LIMITE ASSUME, identique a 15012 : l'ignorance depend du PAIEMENT, qui
-#   vient APRES le ciblage. Declaree sans condition, la carte reste ciblable ;
-#   payee sans « mental seulement » sous Crise, elle ne retire rien (la
-#   resolution applique la regle). Le bandeau « Crise » du plateau previent.
-#   Gate : tools/verifier_ignore_crise.py.
+# ⚠ CAS LIMITE, identique a 15012 : l'ignorance depend du PAIEMENT, qui vient
+#   APRES le ciblage. Declaree par `paid_with="B", only=True`, la carte reste
+#   ciblable ; payee autrement qu'en mental seulement sous Crise, elle ne
+#   retire rien (la resolution applique la regle), et le PLATEAU DEMANDE
+#   CONFIRMATION avant d'envoyer un tel paiement (mots-cles/crisis.md,
+#   « paid_with »). Gate : tools/verifier_ignore_crise.py.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -26,22 +27,20 @@ def GetAbilities() -> Sequence['Ability']:
         mental = PayeSeulementEnMental(effect)
         this.RemoveThreatFromSchemes(effect.targets, 6 if mental else 4, effect, ignore_crisis=mental)
 
-    def si_paye_en_mental_seulement(effect: 'Effect') -> bool:
-        # Au CIBLAGE rien n'est encore paye : on laisse la cible offerte. A la
-        # RESOLUTION le paiement est connu : la Crise ne s'ignore que payee en
-        # mental seulement. (Corrige le 11/09/2026 : declaree SANS condition,
-        # l'ignorance valait aussi a la resolution et la Crise ne mordait plus
-        # jamais — le temoin « payee en energie sous Crise » l'a vu.)
-        paye = effect.GetPaidResources()
-        if paye.val == 0:
-            return True
-        return paye.OnlyHasColor("B")
-
+    # Au CIBLAGE rien n'est encore paye : la cible reste offerte. A la
+    # RESOLUTION le paiement est connu : la Crise (et la Patrouille) ne
+    # s'ignorent que payees en mental SEULEMENT (`only=True` : OnlyHasColor).
+    # (Corrige le 11/09/2026 : declaree SANS condition, l'ignorance valait
+    # aussi a la resolution et la Crise ne mordait plus jamais — le temoin
+    # « payee en energie sous Crise » l'a vu.)
+    # ⚠ MODALE (11/09/2026 au soir) : la forme `paid_with` remplace la lambda
+    # maison. Meme regle, et en plus le rendu sait prevenir le joueur qui va
+    # payer avec autre chose que du mental sous une Crise (voir 15012).
     return [
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.HeroAction,
             on_the_prowl,
         ).SetPlay().SetLabel('thwart')
-        .SetIgnoreKeyword('Crisis', 'Patrol', condition=si_paye_en_mental_seulement)
+        .SetIgnoreKeyword('Crisis', 'Patrol', paid_with="B", only=True)
         .SetTarget(Scheme2),
     ]

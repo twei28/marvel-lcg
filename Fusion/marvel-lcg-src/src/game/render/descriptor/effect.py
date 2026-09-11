@@ -9,6 +9,14 @@ class EffectDescriptor:
         cost: str
         payment: List[Dict[int, str]] # `effect_id` `res_text`
         rule: List[str]
+        # AJOUT 11/09/2026. Vide, ou {"keyword": "Crisis"|"Patrol",
+        # "paid_with": "B", "mode": "any"|"only"} : « paye sans cette couleur
+        # (mode any : au moins une ; only : rien d'autre), ce coup ne produira
+        # aucun effet » (le complot vise est verrouille et la carte ne
+        # l'ignore qu'a cette condition). Le plateau affiche une confirmation
+        # AVANT d'envoyer la reponse ; il ne connait ni la carte ni la regle,
+        # seulement ceci.
+        warning: Dict[str, str]
 
     id: int                         # game object id
     name: str

@@ -28984,6 +28984,99 @@ CAS = [
         "attendu": {"menace": [["01097b", 0]]},
     },
     # ------------------------------------------------------------------------
+    # MODALE DE PAIEMENT SANS EFFET (11/09/2026, decision utilisateur).
+    #
+    # 15012 reste ciblable sous Crise, mais payee sans mentale elle ne retire
+    # rien. Le moteur PREVIENT donc le plateau : `target_payment[*].warning`
+    # = {"keyword": "Crisis", "paid_with": "B"} quand le complot vise est sous
+    # Crise. Le plateau affiche une confirmation si le paiement choisi n'a pas
+    # la couleur. Deux cas : l'avertissement est la sous Crise, et il n'est
+    # PAS la sans Crise (sinon la modale sortirait pour rien).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "MODALE — 15012 Crisis Averted sous Crise : le moteur previent que le paiement doit porter une mentale",
+        "pourquoi": ("Le plateau ne connait aucune carte : c'est le moteur qui, au rendu de "
+                     "l'option, dit « ce coup ne fera rien sans une mentale ». On verifie "
+                     "que le champ `warning` porte Crisis/B sur l'option de 15012 quand "
+                     "Collapsing Bridge est en jeu, ET que le coup, paye en mental, "
+                     "retire bien ses 6 (la modale n'empeche rien, elle previent)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["15012", "01089", "01088"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["15012"],
+        "payer_avec": ["01089", "01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "avertissement_crise",
+        "carte_avertie": "15012",
+        "avertissement_attendu": True,
+        "couleur_attendue": "B",
+        "attendu": {"menace": [["01097b", 0]]},
+    },
+    {
+        "nom": "MODALE — TEMOIN : sans Crise en jeu, 15012 ne declenche aucun avertissement",
+        "pourquoi": ("Une modale qui sortirait sans Crise serait une fausse alerte sur un "
+                     "coup volontaire. Sans Collapsing Bridge, `warning` doit rester vide, "
+                     "et le contre retire ses 6 normalement"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["15012", "01089", "01088"],
+        "declencher": ["Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["15012"],
+        "payer_avec": ["01089", "01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "avertissement_crise",
+        "carte_avertie": "15012",
+        "avertissement_attendu": False,
+        "attendu": {"menace": [["01097b", 0]]},
+    },
+    {
+        "nom": "MODALE — TEMOIN FORT : payee SANS mentale sous Crise, 15012 ne retire rien, et c'est de cela que la modale previent",
+        "pourquoi": ("La raison d'etre de la confirmation. Payee Energy (YY) + Strength (RR), "
+                     "aucune mentale : la Crise mord a la resolution, la menace reste a 6, "
+                     "et l'avertissement etait bien la au rendu. Sans ce temoin, on ne "
+                     "saurait pas si la modale previent d'un vrai danger"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["15012", "01088", "01090"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["15012"],
+        "payer_avec": ["01088", "01090"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "avertissement_crise",
+        "carte_avertie": "15012",
+        "avertissement_attendu": True,
+        "attendu": {"menace": [["01097b", 6]]},
+    },
+    {
+        "nom": "MODALE — hc006 On the Prowl sous Crise : le moteur previent en mode « only » (mental seulement), et payee en energie rien ne part",
+        "pourquoi": ("La seconde carte du depot dont l'ignorance depend du paiement, avec la "
+                     "variante « using ONLY [mental] » : le rendu doit dire mode only, pour "
+                     "que le plateau previenne des qu'une autre couleur entre dans le "
+                     "paiement. Payee Energy sous Crise : menace inchangee, 6"),
+        "scenario": "rhino",
+        "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc006", "01088"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["hc006"], "payer_avec": ["01088"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "avertissement_crise",
+        "carte_avertie": "hc006",
+        "avertissement_attendu": True,
+        "couleur_attendue": "B",
+        "mode_attendu": "only",
+        "attendu": {"menace": [["01097b", 6]]},
+    },
+    # ------------------------------------------------------------------------
     # MOTEUR : une identite SANS face heros sur sa carte (SP//dr) doit pouvoir
     # rendre un ennemi
     #
@@ -29828,6 +29921,39 @@ def hellcat_accrochees(monde, aides):
     if not ok:
         return ok, message
     return True, f"accrochees {reelles} ; {message}"
+
+def avertissement_crise(monde, aides):
+    """Modale de paiement sans effet (11/09/2026). Le cas dit, dans
+    `avertissement_attendu`, si le pilote DOIT avoir vu un `warning`
+    {"keyword": "Crisis", "paid_with": <couleur>} sur l'option de la carte
+    `carte_avertie` (True), ou n'en voir AUCUN (False : le temoin sans Crise).
+    On mesure aussi l'etat : `attendu` reste verifie par `etat_attendu`, pour
+    que l'avertissement ne soit jamais teste sans le coup lui-meme."""
+    cas = aides["cas"]
+    voulu = bool(cas.get("avertissement_attendu"))
+    carte = cas.get("carte_avertie")
+    vus = [a for a in aides["etat"].get("avertissements", [])
+           if a.get("carte") == carte and a["warning"].get("keyword") == "Crisis"]
+    if voulu and not vus:
+        return False, (f"aucun avertissement Crise vu sur {carte} ; vus = "
+                       f"{aides['etat'].get('avertissements', [])}")
+    if not voulu and vus:
+        return False, f"avertissement Crise vu sur {carte} alors que rien ne le justifie : {vus}"
+    if voulu:
+        couleur = cas.get("couleur_attendue", "B")
+        if any(a["warning"].get("paid_with") != couleur for a in vus):
+            return False, f"couleur exigee inattendue : {vus}"
+        # `mode_attendu` : "any" (une ressource de la couleur suffit, 15012) ou
+        # "only" (tout le paiement, hc006 « using only [mental] »).
+        mode = cas.get("mode_attendu", "any")
+        if any(a["warning"].get("mode") != mode for a in vus):
+            return False, f"mode inattendu (voulu {mode}) : {vus}"
+    ok, message = etat_attendu(monde, aides)
+    if not ok:
+        return False, message
+    return True, (f"avertissement Crise {'vu' if voulu else 'absent'} sur {carte}, "
+                  f"et {message}")
+
 
 def hellcat_obligation_retiree(monde, aides):
     """hc013 Mental Episode : `retiree` True = retiree de la partie, False =
@@ -35615,6 +35741,12 @@ def executer_un_cas(game_dir, port, index):
                  "CanStatus": CanStatus, "CanPlaceCounter": CanPlaceCounter,
                  "CanPlaceToken": CanPlaceToken,
                  "cas": cas,
+                 # AJOUT 11/09/2026 : ce que le PILOTE a vu passer dans les
+                 # demandes du moteur (`etat["avertissements"]`), pour les
+                 # cas qui verifient le RENDU d'une option, pas l'etat du
+                 # monde : la modale de paiement sans effet se decide sur le
+                 # champ `warning` de `target_payment`, que seul le pilote lit.
+                 "etat": etat,
                  # AJOUT 01/09/2026 : l'index du cas COURANT. Une fonction de
                  # verification qui relit le journal de partie doit lire LE
                  # SIEN. `ss012_mark_of_kaine_deferlement` le codait en dur
@@ -35791,6 +35923,27 @@ def executer_un_cas(game_dir, port, index):
         except Exception:
             options = []
         noms = {o.get("name") for o in options if isinstance(o, dict)}
+
+        # AJOUT 11/09/2026 : les avertissements « paiement sans effet »
+        # (`target_payment[*].warning`, voir Effect.Render). On note la carte
+        # porteuse par son `bind_id`, resolu en `card_id` ici meme, tant que
+        # l'objet existe. Le verificateur `avertissement_crise` relit la liste.
+        if etat["phase"] == "cas":
+            monde_pilote = monde_courant()
+            for o in options:
+                if not isinstance(o, dict):
+                    continue
+                for infos in (o.get("target_payment") or {}).values():
+                    avert = (infos or {}).get("warning") or {}
+                    if not avert:
+                        continue
+                    objet = monde_pilote.object_manager.card_dict.get(o.get("bind_id"))
+                    face = objet.face if objet is not None else None
+                    etat.setdefault("avertissements", []).append({
+                        "carte": getattr(getattr(face, "paper", None), "card_id", None),
+                        "option": o.get("name"),
+                        "warning": dict(avert),
+                    })
 
         def payer(option, cibles):
             """Choisit les cartes a defausser pour payer le cout de l'option.

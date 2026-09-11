@@ -529,6 +529,44 @@ class Effect(Object):
                 #     return effect.for_select_target_dict[target].cost.text_legacy
                 return ("", [])
 
+            def get_warning(effect: 'Effect', target: 'CardFace|None') -> Dict[str, str]:
+                # AJOUT 11/09/2026 : PREVENIR D'UN COUP SANS EFFET.
+                #
+                # Une capacite qui n'ignore la Crise QUE payee d'une certaine
+                # couleur (`SetIgnoreKeyword('Crisis', paid_with="B")`) reste
+                # ciblable sous Crise : le ciblage precede le paiement, on ne
+                # sait pas encore avec quoi elle sera payee. Si le complot vise
+                # est bien verrouille par une Crise, on le dit ici, et le
+                # plateau demande confirmation quand le paiement choisi n'a pas
+                # la couleur. Le plateau ne porte aucune regle : il compare
+                # les lettres, comme il le fait deja pour un cout par types.
+                from game.card.face.card_type.scheme_main import MainScheme
+                from game.operate.worlds import Worlds
+                if not effect.ability.ignore.paid_with:
+                    return {}
+                def complot_principal(face: 'CardFace|None') -> bool:
+                    return MainScheme.IsType(face) and Worlds.FindMainScheme(face) == face
+                def verrouille(face: 'CardFace|None', keyword: str) -> bool:
+                    # Les memes conditions que `MainScheme.CanBeThwartBy`.
+                    if not complot_principal(face):
+                        return False
+                    if keyword == 'Crisis':
+                        return Worlds.GetCrisisFaces(face.card.GetGameArea()) != []
+                    if keyword == 'Patrol':
+                        return MainScheme.GetPatrolFaces(effect) != []
+                    return False
+                for keyword, couleur in effect.ability.ignore.paid_with.items():
+                    if target is None:
+                        # Cout unique pour toutes les cibles : on previent des
+                        # que l'une des cibles legales est un complot verrouille.
+                        concerne = any(verrouille(f, keyword) for f in effect.context.all_legal_targets)
+                    else:
+                        concerne = verrouille(target, keyword)
+                    if concerne:
+                        return {"keyword": keyword, "paid_with": couleur,
+                                "mode": "only" if effect.ability.ignore.paid_only.get(keyword) else "any"}
+                return {}
+
             payinfo_dict: Dict[int, EffectDescriptor.Payment] = {}
             for target in effect.checker.cost_for_different_target.target_cost:
                 if target == None:
@@ -540,7 +578,8 @@ class Effect(Object):
                 payinfo_dict[target_id] = EffectDescriptor.Payment(
                     cost=cost_text,
                     payment=[],
-                    rule=cost_rule
+                    rule=cost_rule,
+                    warning=get_warning(effect, target),
                 )
                 if effect.context.ignore_resource_cost:
                     continue
