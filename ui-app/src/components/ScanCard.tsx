@@ -783,6 +783,16 @@ export function ScanCard({
             cartes voisines d'une meme rangee se serraient trop pour qu'on sache
             a laquelle appartenait la bande. Comme le marqueur de morsure, elle
             vit dans `.scan-visuel`, donc elle grandit avec la carte au survol. */}
+        {/* CRISE, en filigrane sur l'illustration. Dans la zone « scan » de la
+            grille, comme la jauge : elle se cale donc sur le CADRE, pas sur la
+            couche entiere, et suit la carte quelle que soit son etiquette de
+            type. Seulement en grand : sur la table, la pastille suffit et le
+            filigrane brouillerait une carte deja minuscule. */}
+        {crise && !facedown && taille === 'grande' ? (
+          <span className="filigrane-crise" aria-hidden="true">
+            C
+          </span>
+        ) : null}
         {bande ? (
           <div className={`jauge-carte jauge-${bande.genre}`} aria-hidden="true">
             <span

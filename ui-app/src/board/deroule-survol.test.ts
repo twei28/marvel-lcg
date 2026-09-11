@@ -32,9 +32,11 @@ describe('l’aperçu d’une carte', () => {
     // reserve pas ce debord, et le bandeau Crise passait dessous. Mesure dans
     // Chrome : 12 px de chevauchement avant, 0 apres. jsdom ne fait pas de mise
     // en page, on verrouille donc la regle dans la feuille.
-    expect(CSS).toContain('.carte-apercu .apercu-face:has(.jauge-carte)')
-    expect(bloc('.carte-apercu .apercu-face:has(.jauge-carte)')).toContain(
-      'padding-bottom: var(--jauge-debord)'
+    // Sur la CARTE, pas sur le conteneur : un padding sur `.apercu-face`
+    // tombe apres le texte et ne le pousse pas (verifie au rendu).
+    expect(CSS).toContain('.carte-apercu .scan-card:has(.jauge-carte)')
+    expect(bloc('.carte-apercu .scan-card:has(.jauge-carte)')).toContain(
+      'margin-bottom: var(--jauge-debord)'
     )
   })
 })

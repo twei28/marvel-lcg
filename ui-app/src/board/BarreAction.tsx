@@ -62,17 +62,36 @@ export function remplacerSymboles(texte: string): string {
  * Nettoie le jargon moteur des narrations :
  *  - « ? » = carte face cachee (le moteur masque le nom) -> « a facedown card » ;
  *  - « () » vide = liste de cartes toutes cachees -> supprimee ;
- *  - « BoostCardsDeck<1> », « EncounterDeck<7> »... -> noms lisibles sans <N>.
+ *  - « BoostCardsDeck<1> », « EncounterDeck<7> »... -> noms lisibles sans <N> ;
+ *  - les IDENTIFIANTS que `by_effect` deverse.
+ *
+ * ⚠ Le dernier point vient d'une capture de l'utilisateur (11/09/2026), dans
+ * le panneau de decision : « Klaw va comploter (+0) ((^!142) Advance (When
+ * Revealed) [01186] WhenCardRevealed) ». Trois formes, toutes internes au
+ * moteur et sans le moindre sens pour un joueur :
+ *   - `(^!142)`          la reference d'une capacite ;
+ *   - `[01186]`          le code de la carte (cinq chiffres, parfois suivis
+ *                        d'une lettre de face) ;
+ *   - `WhenCardRevealed` le nom d'evenement, qui repete « (When Revealed) ».
+ * Ce dernier n'est retire que sur les prefixes du moteur (When/After/Before) :
+ * un nom de carte en CamelCase, lui, doit survivre.
  */
 export function nettoyerNarration(texte: string): string {
   return remplacerSymboles(texte)
     .replace(/([A-Za-z])<\d+>/g, '$1')
+    .replace(/\(\^![^)]*\)/g, '')
+    .replace(/\[\d{5}[a-z]?\]/g, '')
+    .replace(/\b(?:When|After|Before)[A-Z][A-Za-z]*\b/g, '')
     .replace(/BoostCardsDeck/g, t('pile de boost'))
     .replace(/EncounterDeck/g, t('deck de rencontre'))
     .replace(/PlayerDeck/g, t('deck du joueur'))
     .replace(/(^|\s)\?(?=\s|$|[,.])/g, `$1${t('une carte face cachée')}`)
     .replace(/\s*\(\s*\)/g, '')
     .replace(/\s+/g, ' ')
+    // Les retraits ci-dessus laissent des blancs colles aux parentheses
+    // (« ( Advance ) ») : on les resserre avant de rendre le texte.
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
     .trim()
 }
 

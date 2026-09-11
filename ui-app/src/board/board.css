@@ -2276,13 +2276,14 @@
 
   /* La jauge (« 3 / 3 ») DEBORDE sous le cadre, par une marge negative voulue :
      sur la table, chaque pixel de sortie est un pixel de hauteur gagne. Dans
-     l'apercu, en revanche, des blocs la suivent (bandeau Crise, mots-cles,
-     raisons de refus) et le flux ne reserve pas ce debord : mesure dans Chrome
-     le 11/09/2026, 12 px de chevauchement sur le bandeau Crise (capture de
-     l'utilisateur). On rend la place ici, et seulement quand la carte porte
-     vraiment une jauge. */
-  .carte-apercu .apercu-face:has(.jauge-carte) {
-    padding-bottom: var(--jauge-debord);
+     l'apercu, en revanche, des blocs la SUIVENT dans le meme conteneur (ligne
+     de Crise, mots-cles, raisons de refus) et le flux ne reserve pas ce
+     debord : mesure dans Chrome le 11/09/2026, 12 px de chevauchement.
+     ⚠ La place se rend sur la CARTE, pas sur `.apercu-face` : un padding sur
+     le conteneur tombe APRES le texte et ne pousse rien (premiere tentative,
+     corrigee en regardant le rendu reel). */
+  .carte-apercu .scan-card:has(.jauge-carte) {
+    margin-bottom: var(--jauge-debord);
   }
 
   /* Carte multi-faces : toutes les faces cote a cote, reduites selon le nombre
@@ -2884,14 +2885,23 @@
   .icone-res.res-lightning { --res: #5ec8ff; }
 
   /* Crise sur le complot principal, dans l'apercu au survol. */
-  .apercu-crise {
+  /* Le pave rouge a laisse la place au filigrane sur la carte (ScanCard.css,
+     .filigrane-crise). Il ne reste ici que ce que le picto ne peut pas dire :
+     la manigance qui verrouille. */
+  .apercu-crise-ligne {
     margin: 6px 0 0;
-    padding: 6px 8px;
-    border-left: 3px solid #e8574a;
-    background: rgba(232, 87, 74, 0.12);
-    color: #ffd9d4;
-    font-size: 0.85em;
+    color: #f0a59c;
+    font-size: 0.8em;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     line-height: 1.3;
+  }
+
+  .apercu-crise-ligne b {
+    color: #ffd9d4;
+    text-transform: none;
+    letter-spacing: 0;
   }
   .icone-res.res-lightning svg {
     width: 0.95em;

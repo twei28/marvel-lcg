@@ -530,6 +530,36 @@
   /* Heros du joueur ACTIF (hot-seat) : badge vert, meme gabarit que Waiting. */
   /* Crise : le complot principal est verrouille par une manigance annexe.
      Meme gabarit que la pastille Actif, en rouge : c'est un avertissement. */
+  /* Le picto Crise du jeu (glyphe « C » de ChampionsIcons, le « ! » et ses
+     eclats), pose en filigrane sur l'illustration de l'apercu. Remplace le
+     pave rouge sous la carte, juge « un peu nul » par l'utilisateur le
+     11/09/2026 : assez present pour sauter aux yeux, assez transparent pour
+     qu'on lise la carte au travers. */
+  .filigrane-crise {
+    grid-area: scan;
+    place-self: center;
+    z-index: 3;
+    font-family: 'ChampionsIcons';
+    font-style: normal;
+    /* Une fraction de la carte, et non une taille fixe : l'apercu change de
+       largeur selon le nombre de faces (345px seul, moins a deux ou trois) et
+       selon l'orientation. `--card-w` porte deja cette largeur, des deux cotes
+       (board.css la derive de --largeur-face ou --largeur-face-paysage) ; on ne
+       cree donc pas de conteneur de requete, qui ferait de la carte un bloc
+       conteneur pour ses descendants absolus et deplacerait ses pastilles. */
+    font-size: calc(var(--card-w, 300px) * 0.46);
+    line-height: 1;
+    color: #e8574a;
+    opacity: 0.42;
+    /* Un cerne sombre : sur une illustration claire, le rouge seul se perdait.
+       `paint-order` met le trait DERRIERE le remplissage, sinon il ronge le
+       picto de l'interieur. */
+    -webkit-text-stroke: 0.035em rgba(20, 0, 0, 0.85);
+    paint-order: stroke fill;
+    filter: drop-shadow(0 0 0.06em rgba(0, 0, 0, 0.55));
+    pointer-events: none;
+  }
+
   .pastille-crise {
     display: inline-flex;
     align-items: center;

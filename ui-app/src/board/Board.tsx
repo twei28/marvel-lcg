@@ -511,10 +511,15 @@ export function CarteApercu({
         {/* CRISE : le complot principal est verrouille par une manigance
             annexe. Un contre qui le vise part sans effet ; on le dit AVANT que
             le joueur ne joue sa carte (rapport joueur du 11/09/2026). */}
+        {/* Le picto est sur la carte (filigrane, ScanCard) ; ici, la seule
+            chose qu'il ne dit pas : QUELLE carte verrouille. Une ligne sobre,
+            pas un pave rouge. */}
         {carte.crise && !carte.facedown ? (
-          <p className="apercu-crise">
-            {t('Crise : la menace ne peut pas être retirée d’ici tant que')} <b>{carte.crise}</b>{' '}
-            {t('est en jeu.')}
+          <p
+            className="apercu-crise-ligne"
+            title={`${t('Crise : la menace ne peut pas être retirée d’ici tant que')} ${carte.crise} ${t('est en jeu.')}`}
+          >
+            {t('Crise')} · <b>{carte.crise}</b>
           </p>
         ) : null}
         {raisons && raisons.length > 0 ? (

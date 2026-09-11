@@ -13,6 +13,15 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import { ScanCard } from '../components/ScanCard'
+import { CarteApercu } from './Board'
+
+// jsdom n'implemente pas ResizeObserver, que l'apercu observe pour se placer.
+class ResizeObserverBouchon {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+;(globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverBouchon
 import { carteSurTable, dessinee, siege, tableAvec } from './plateau-de-test'
 
 const PRINCIPAL = 48
@@ -52,5 +61,37 @@ describe('la Crise sur le complot principal', () => {
       <ScanCard id="48" name="Hostile Takeover" kind="hero" imageUrl="/hostile.jpg" crise="Collapsing Bridge" />
     )
     expect(container.querySelector('.pastille-crise')?.textContent).toBe('Crise')
+  })
+})
+
+describe('l’aperçu d’une carte en Crise', () => {
+  it('pose le picto en filigrane et une ligne sobre, plus de pavé rouge', () => {
+    // Retour de l'utilisateur (11/09/2026) : « ce bandeau crise un peu nul ».
+    // Le picto du jeu (glyphe C de ChampionsIcons) en filigrane sur
+    // l'illustration, et dessous « Crise · <la manigance qui verrouille> ».
+    const { container } = render(
+      <CarteApercu
+        carte={{ id: '48', name: 'Hostile Takeover', kind: 'main-scheme', imageUrl: '/h.jpg', crise: 'Collapsing Bridge' }}
+      />
+    )
+    expect(container.querySelector('.apercu-crise')).toBeNull()
+    const filigrane = document.querySelector('.filigrane-crise')
+    expect(filigrane).not.toBeNull()
+    expect(filigrane).toHaveAttribute('aria-hidden', 'true')
+    const ligne = document.querySelector('.apercu-crise-ligne')
+    expect(ligne?.textContent).toBe('Crise · Collapsing Bridge')
+  })
+
+  it('ne montre rien sur une carte face cachée ni sans crise', () => {
+    const { container: sansCrise } = render(
+      <CarteApercu carte={{ id: '48', name: 'X', kind: 'main-scheme', imageUrl: '/h.jpg' }} />
+    )
+    expect(sansCrise.ownerDocument.querySelector('.filigrane-crise')).toBeNull()
+    render(
+      <CarteApercu
+        carte={{ id: '49', name: 'Y', kind: 'main-scheme', imageUrl: '/h.jpg', crise: 'Pont', facedown: true }}
+      />
+    )
+    expect(document.querySelectorAll('.filigrane-crise')).toHaveLength(0)
   })
 })
