@@ -161,4 +161,27 @@
     gap: 18px;
     padding: 4px 12px 8px;
   }
+
+  /* Engages et heros/allies : meme gabarit que les autres blocs (titre discret,
+     puis une pile de .portrait-carte). */
+  .portrait-bloc {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .portrait-bloc-titre {
+    margin: 0;
+    padding: 8px 12px 2px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a94a3;
+  }
+
+  .portrait-vide {
+    margin: 0;
+    padding: 2px 12px 8px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.35);
+  }
 }

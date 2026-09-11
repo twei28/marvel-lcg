@@ -91,3 +91,63 @@ describe('PlateauPortrait — compteurs de rencontre', () => {
     expect(container.querySelector('.portrait-compteurs')).not.toBeNull()
   })
 })
+
+describe('PlateauPortrait — ennemis engages, heros et allies', () => {
+  it('dit qu aucun ennemi n est engage quand le bloc est vide', () => {
+    render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
+    expect(screen.getByText('Aucun ennemi engagé')).toBeInTheDocument()
+  })
+
+  it('montre les ennemis engages quand il y en a', () => {
+    // getByText('Baron Zemo') matcherait DEUX noeuds : le nom affiche
+    // (.portrait-nom) et le texte de secours que ScanCard pose derriere
+    // l'image (.scan-fallback, aria-hidden mais toujours dans le DOM). On
+    // cible donc le nom affiche precisement, comme les autres tests de ce
+    // fichier (bloc complot, ci-dessus).
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(emplacement('nemesis', unite('Baron Zemo', { name: 'Baron Zemo', kind: 'minion' })))}
+      />
+    )
+    expect(container.querySelector('.portrait-engages .portrait-nom')).toHaveTextContent('Baron Zemo')
+    expect(screen.queryByText('Aucun ennemi engagé')).toBeNull()
+  })
+
+  it('montre le heros et ses allies', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'terrain-soutien',
+            unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' }),
+            unite('Hope Summers', { name: 'Hope Summers', kind: 'ally' })
+          )
+        )}
+      />
+    )
+    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
+    expect(noms).toEqual(['Steve Rogers', 'Hope Summers'])
+  })
+
+  it('ne pose jamais de chiffre sur l illustration d un engage ou d un allie', () => {
+    // Meme regle que pour le complot (tache 5) : `stats` ne doit jamais
+    // atterrir sur ScanCard directement, meme via ces nouveaux blocs.
+    render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'nemesis',
+            unite('Rhino', { name: 'Rhino', kind: 'minion', stats: [{ label: 'ATQ', value: 4 }] })
+          )
+        )}
+      />
+    )
+    expect(document.querySelector('.scan-card .scan-stats-calee')).toBeNull()
+  })
+})

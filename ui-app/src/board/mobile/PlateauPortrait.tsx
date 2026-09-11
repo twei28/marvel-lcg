@@ -22,6 +22,19 @@ import { repartirEnBlocs } from './blocs-portrait'
 import './portrait.css'
 
 /**
+ * Petits chiffres d'une carte (ATQ/DEF/...), dans la forme qu'attend
+ * `CarteAvecChiffres`. `stats` (statsAffichees dans card-model.ts) ne porte
+ * QUE les stats qui different de la valeur imprimee sur le scan : tant que
+ * rien n'a modifie la carte, ce tableau est vide et l'image seule fait foi
+ * (meme regle deja appliquee au bloc vilain). Les PV, eux, ne passent jamais
+ * par la : ils vivent dans `allyHp`/`jauge` (voir card-model.ts) et sont deja
+ * dessines par ScanCard via sa propre bande, pas via ce bloc de chiffres.
+ */
+function chiffresDe(carte: ScanCardProps): Array<{ valeur: string; libelle: string }> {
+  return (carte.stats ?? []).map((stat) => ({ valeur: String(stat.value), libelle: stat.label }))
+}
+
+/**
  * La menace posee et son seuil d'une manigance.
  *
  * Pas dans `stats` : cette liste ne sert qu'aux PERSONNAGES (statsAffichees
@@ -58,6 +71,8 @@ export function PlateauPortrait(props: BoardProps) {
   // les annexes, elles, restent pour une tache suivante.
   const principal = blocs.find((bloc) => bloc.cle === 'complot')?.unites[0]
   const rencontre = blocs.find((bloc) => bloc.cle === 'rencontre')?.unites ?? []
+  const engages = blocs.find((bloc) => bloc.cle === 'engages')?.unites ?? []
+  const heros = blocs.find((bloc) => bloc.cle === 'heros')?.unites ?? []
   return (
     <main className="plateau-portrait">
       <BandeauPortrait monde={props.world} quiAgit={props.quiAgit} />
@@ -82,6 +97,34 @@ export function PlateauPortrait(props: BoardProps) {
           </>
         ) : null}
         <CompteursPortrait compteurs={comptesRencontre(rencontre)} />
+
+        <section className="portrait-bloc portrait-engages">
+          <h2 className="portrait-bloc-titre">{t('Engagés')}</h2>
+          {engages.length === 0 ? (
+            <p className="portrait-vide">{t('Aucun ennemi engagé')}</p>
+          ) : (
+            engages.map((unite) => (
+              <CarteAvecChiffres
+                key={unite.cle}
+                carte={unite.carte}
+                nom={unite.carte.name}
+                chiffres={chiffresDe(unite.carte)}
+              />
+            ))
+          )}
+        </section>
+
+        <section className="portrait-bloc portrait-heros">
+          <h2 className="portrait-bloc-titre">{t('Ton héros')}</h2>
+          {heros.map((unite) => (
+            <CarteAvecChiffres
+              key={unite.cle}
+              carte={unite.carte}
+              nom={unite.carte.name}
+              chiffres={chiffresDe(unite.carte)}
+            />
+          ))}
+        </section>
       </div>
     </main>
   )
