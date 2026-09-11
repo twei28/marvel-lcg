@@ -6,6 +6,14 @@
     position: fixed;
     inset: 0;
     display: grid;
+    /* Sans colonne explicite, la grille en cree une implicite en
+       `grid-auto-columns: auto`, resolue sur le max-content de son contenu
+       AVANT la repartition de la place libre : elle grandit au-dela de
+       l'ecran (855 px mesures a 500x844) et pousse le nom des cartes et leurs
+       chiffres hors champ. `min-width: 0` sur l'enfant n'y suffit pas : ce
+       n'est pas l'enfant qui refuse de retrecir, c'est la piste qui est trop
+       large. `minmax(0, 1fr)` la borne au conteneur. */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
     overflow: hidden;
     background: var(--fond);
