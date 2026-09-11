@@ -1286,6 +1286,58 @@ with o._cx() as cx:
     cx.execute("DELETE FROM rapports")
 
 
+# --- Le journal d'un moteur survit au rallumage de sa table -----------------
+# ⚠ Le cas qui compte est le RALLUMAGE : `.site/moteur-N.log` etait ouvert en
+# "w", et le journal de la partie d'avant, seule piece a conviction d'un
+# rapport joueur, disparaissait. Ici on ouvre trois fois de suite la meme
+# table et on verifie que rien ne s'efface, que le vide n'est pas garde, et
+# que la reserve ne grossit pas sans fin.
+import time as _time_journal                                # noqa: E402
+_racine_journal_avant = o.RACINE_JEU
+_bac_journal = tempfile.mkdtemp(prefix="nc-journal-")
+o.RACINE_JEU = _bac_journal
+_gardes_avant = o.JOURNAUX_MOTEUR_GARDES
+o.JOURNAUX_MOTEUR_GARDES = 2
+_dossier_journal = os.path.join(_bac_journal, ".site")
+with o._ouvrir_journal_moteur(9) as _j:
+    _j.write("premiere partie\n")
+_premier_contenu = sorted(os.listdir(_dossier_journal))
+verifier("le premier allumage cree le journal, sans archive",
+         _premier_contenu == ["moteur-9.log"], str(_premier_contenu))
+with o._ouvrir_journal_moteur(9) as _j:
+    _j.write("deuxieme partie\n")
+_archives = sorted(f for f in os.listdir(_dossier_journal) if f.startswith("moteur-9-"))
+verifier("le rallumage ARCHIVE le journal precedent au lieu de l'ecraser",
+         len(_archives) == 1 and re.fullmatch(r"moteur-9-\d{8}-\d{6}\.log", _archives[0]) is not None,
+         str(_archives))
+with open(os.path.join(_dossier_journal, _archives[0]), encoding="utf-8") as _f:
+    verifier("et l'archive porte bien la partie d'avant", _f.read() == "premiere partie\n")
+with open(os.path.join(_dossier_journal, "moteur-9.log"), encoding="utf-8") as _f:
+    verifier("le journal courant ne porte que la partie en cours", _f.read() == "deuxieme partie\n")
+# Un journal vide (moteur mort avant d'ecrire) ne merite pas d'archive : le
+# premier close() archive « deuxieme partie » (2 archives), le second trouve
+# un journal vide et ne doit rien ajouter.
+o._ouvrir_journal_moteur(9).close()
+o._ouvrir_journal_moteur(9).close()
+_archives = sorted(f for f in os.listdir(_dossier_journal) if f.startswith("moteur-9-"))
+verifier("un journal vide n'est pas archive", len(_archives) == 2, str(_archives))
+# La reserve est bornee : au-dela de JOURNAUX_MOTEUR_GARDES, le plus vieux part.
+for _n in range(3):
+    with o._ouvrir_journal_moteur(9) as _j:
+        _j.write("partie %d\n" % _n)
+    _time_journal.sleep(1.05)   # des cachets distincts, a la seconde
+_archives = sorted(f for f in os.listdir(_dossier_journal) if f.startswith("moteur-9-"))
+verifier("la reserve d'archives est bornee a JOURNAUX_MOTEUR_GARDES",
+         len(_archives) == 2, str(_archives))
+# Une autre table n'y touche pas.
+with o._ouvrir_journal_moteur(10) as _j:
+    _j.write("autre table\n")
+verifier("les archives d'une table ne sont pas celles d'une autre",
+         len([f for f in os.listdir(_dossier_journal) if f.startswith("moteur-9-")]) == 2)
+o.JOURNAUX_MOTEUR_GARDES = _gardes_avant
+o.RACINE_JEU = _racine_journal_avant
+shutil.rmtree(_bac_journal, ignore_errors=True)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

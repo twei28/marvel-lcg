@@ -329,6 +329,47 @@ def jeu_de(pseudo: str):
     return PARTIES.get(pseudo)
 
 
+# Combien de journaux d'une meme table on garde, l'actuel non compris.
+JOURNAUX_MOTEUR_GARDES = 10
+
+
+def _ouvrir_journal_moteur(emplacement: int):
+    """Ouvre `.site/moteur-N.log` pour un nouveau moteur, SANS ecraser le
+    precedent.
+
+    ⚠ ROTATION (11/09/2026). Le journal etait ouvert en "w" : chaque
+    rallumage de la table effacait celui de la partie d'avant. Le rapport
+    joueur de 08:45 (« mes contres ne retirent pas la menace ») visait une
+    table relancee depuis, et son journal, la seule piece a conviction,
+    n'existait plus. Ici l'ancien journal est renomme
+    `moteur-N-<AAAAMMJJ-HHMMSS>.log` (l'heure de sa cloture, pas de son
+    ouverture : c'est elle que l'on connait au moment de le lire), et seuls
+    les JOURNAUX_MOTEUR_GARDES plus recents sont conserves. Un journal vide
+    n'est pas garde : il ne dit rien.
+    """
+    dossier = os.path.join(RACINE_JEU, ".site")
+    os.makedirs(dossier, exist_ok=True)
+    courant = os.path.join(dossier, f"moteur-{emplacement}.log")
+    if os.path.exists(courant):
+        if os.path.getsize(courant) == 0:
+            os.remove(courant)
+        else:
+            cachet = time.strftime("%Y%m%d-%H%M%S", time.localtime(os.path.getmtime(courant)))
+            archive = os.path.join(dossier, f"moteur-{emplacement}-{cachet}.log")
+            # Deux clotures dans la meme seconde : on numerote plutot qu'ecraser.
+            n = 1
+            while os.path.exists(archive):
+                n += 1
+                archive = os.path.join(dossier, f"moteur-{emplacement}-{cachet}-{n}.log")
+            os.replace(courant, archive)
+    prefixe = f"moteur-{emplacement}-"
+    archives = sorted(f for f in os.listdir(dossier)
+                      if f.startswith(prefixe) and f.endswith(".log"))
+    for vieux in archives[:-JOURNAUX_MOTEUR_GARDES] if len(archives) > JOURNAUX_MOTEUR_GARDES else []:
+        os.remove(os.path.join(dossier, vieux))
+    return open(courant, "w", encoding="utf-8")
+
+
 def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
     """Allume le moteur de cette personne, sur SON emplacement.
 
@@ -389,8 +430,7 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
                 f"site ne controle pas. Il faut l'achever a la main "
                 f"(sudo fuser -k {partie.port}/tcp) avant de rouvrir cette table.")
         chemin_config = _config_partie(emplacement, partie)
-        journal = open(os.path.join(RACINE_JEU, ".site", f"moteur-{emplacement}.log"),
-                       "w", encoding="utf-8")
+        journal = _ouvrir_journal_moteur(emplacement)
         # PYTHONUNBUFFERED : sans lui Python tamponne des que la sortie n'est
         # plus un terminal, et le journal reste vide au moment ou l'on en a
         # besoin (leçon deja payee dans launcher-multi.sh).
