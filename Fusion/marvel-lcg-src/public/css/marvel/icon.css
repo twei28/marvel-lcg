@@ -121,6 +121,12 @@ span:has( + span.icon-acceleration-token) {
     content: "E";
     color: #86671b
 }
+/* L'eclair, ressource maison du pack Zeus (11/09/2026). Meme glyphe que
+   l'energie, en bleu electrique : la police n'a pas d'eclair droit. */
+.icon-lightning:before {
+    content: "E";
+    color: #2f8fd6
+}
 .icon-mental_fill:before {
     content: "M";
     color: #b7c9eb

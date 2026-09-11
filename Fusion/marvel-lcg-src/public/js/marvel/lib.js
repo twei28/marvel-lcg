@@ -300,7 +300,7 @@ class Game {
         }
     }
     static cleanResText(input) {
-        const cardTypes = ["mental", "physical", "energy", "wild", 'boost'];
+        const cardTypes = ["mental", "physical", "energy", "wild", "lightning", 'boost'];
         cardTypes.forEach(c => {
             input = input.replaceAll(`[[${c}]]`, `<span class='icon-${c}'></span>`);
             input = input.replaceAll(`[${c}]`, `<span class='icon-${c}'></span>`);
