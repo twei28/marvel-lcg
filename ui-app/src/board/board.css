@@ -3148,6 +3148,12 @@
      comme sur la table. Demande de l'utilisateur, 7 septembre 2026. */
   .deroule-jeton {
     position: absolute;
+    /* DECORATION : elle ne prend jamais le pointeur. Mesure dans Chrome le
+       11/09/2026 : ces 64x64 poses en haut a droite de la carte rendaient le
+       jeton a `elementFromPoint`, donc `closest('.scan-card')` vide, donc la
+       loupe se fermait des qu'on visait le triangle. Meme regle que SplashTour
+       et le coach : rien de decoratif n'avale le geste. */
+    pointer-events: none;
     top: 6px;
     right: 6px;
     z-index: 3;
@@ -3244,6 +3250,9 @@
   }
 
   .deroule-carte-legende {
+    /* Meme raison que .deroule-jeton : « Boost +1 » court sous la carte et
+       coupait le survol a cet endroit. */
+    pointer-events: none;
     font-size: 0.8rem;
     font-weight: 900;
     letter-spacing: 0.04em;
