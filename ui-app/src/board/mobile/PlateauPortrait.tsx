@@ -22,16 +22,32 @@ import { repartirEnBlocs } from './blocs-portrait'
 import './portrait.css'
 
 /**
- * Petits chiffres d'une carte (ATQ/DEF/...), dans la forme qu'attend
- * `CarteAvecChiffres`. `stats` (statsAffichees dans card-model.ts) ne porte
- * QUE les stats qui different de la valeur imprimee sur le scan : tant que
- * rien n'a modifie la carte, ce tableau est vide et l'image seule fait foi
- * (meme regle deja appliquee au bloc vilain). Les PV, eux, ne passent jamais
- * par la : ils vivent dans `allyHp`/`jauge` (voir card-model.ts) et sont deja
- * dessines par ScanCard via sa propre bande, pas via ce bloc de chiffres.
+ * TOUS les chiffres d'un personnage (vilain, engage, heros, allie), dans la
+ * forme qu'attend `CarteAvecChiffres`.
+ *
+ * CORRECTION post tache 6 : cette fonction ne lisait QUE `stats`
+ * (statsAffichees dans card-model.ts), qui ne porte que les stats qui
+ * different de la valeur imprimee sur le scan — vide la plupart du temps.
+ * Resultat : quasiment aucun chiffre n'apparaissait a cote de la carte,
+ * contrairement a la regle centrale du chantier (releve sur
+ * play.marvelsimulator.com : le vilain montre "10/10" a cote, un heros
+ * "3 REC"/"11 PV" a cote). Les PV, eux, ne passent jamais par `stats` : ils
+ * vivent dans `jauge`/`allyHp` (voir card-model.ts), que `CarteAvecChiffres`
+ * retire desormais AUSSI avant de les passer a ScanCard — sans quoi ils
+ * restaient dessines sur l'illustration, le meme interdit que `stats`.
+ *
+ * PV d'abord (texte deja forme "X / Y" par jaugeAffichee(), ou a defaut
+ * `allyHp` "X/Y" quand aucune jauge n'est calculable), puis les stats
+ * modifiees.
  */
 function chiffresDe(carte: ScanCardProps): Array<{ valeur: string; libelle: string }> {
-  return (carte.stats ?? []).map((stat) => ({ valeur: String(stat.value), libelle: stat.label }))
+  const chiffres: Array<{ valeur: string; libelle: string }> = []
+  const pv = carte.jauge?.texte ?? carte.allyHp
+  if (pv) chiffres.push({ valeur: pv, libelle: t('PV') })
+  for (const stat of carte.stats ?? []) {
+    chiffres.push({ valeur: String(stat.value), libelle: stat.label })
+  }
+  return chiffres
 }
 
 /**
@@ -82,16 +98,15 @@ export function PlateauPortrait(props: BoardProps) {
             key={unite.cle}
             carte={unite.carte}
             nom={unite.carte.name}
-            chiffres={(unite.carte.stats ?? []).map((stat) => ({
-              valeur: String(stat.value),
-              libelle: stat.label,
-            }))}
+            chiffres={chiffresDe(unite.carte)}
           />
         ))}
         {principal ? (
           <>
             {/* Aucun `chiffres` ici : la menace se lit deja sur BarreMenace,
-                un second affichage a cote serait redondant. */}
+                un second affichage a cote serait redondant. Une manigance
+                n'est pas un personnage (isUnit false) : chiffresDe() n'y
+                trouverait de toute facon ni PV ni stats. */}
             <CarteAvecChiffres key={principal.cle} carte={principal.carte} nom={principal.carte.name} chiffres={[]} />
             <BarreMenace {...menaceDe(principal.carte)} />
           </>

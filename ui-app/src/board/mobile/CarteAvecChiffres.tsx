@@ -21,15 +21,18 @@ export function CarteAvecChiffres({
   chiffres: Array<{ valeur: string; libelle: string }>
   onOuvrir?: () => void
 }): ReactElement {
-  // `stats` est retire avant le spread : toScanCard() le peuple TOUJOURS pour
-  // une carte reelle, et ScanCard pose alors ses propres badges chiffres EN
-  // PLUS, colles sur l'illustration (.scan-stats-calee, position absolute) —
-  // exactement ce que ce composant existe pour eviter. `chiffres` porte deja
-  // cet affichage, a cote de la carte.
-  const { stats: _stats, ...carteSansStats } = carte
+  // `stats`, `jauge`, `allyHp` et `schemeThreat` sont retires avant le spread :
+  // toScanCard() les peuple pour une carte reelle, et ScanCard pose alors ses
+  // PROPRES chiffres sur l'illustration (badges cales, bande PV/menace,
+  // pastilles PV/menace) — exactement ce que ce composant existe pour eviter.
+  // Sur un telephone, un chiffre pose sur une carte de 64 px est illisible et
+  // cache le dessin ; `chiffres` porte deja tout cet affichage, a cote de la
+  // carte (correction post tache 6 : `jauge`/`allyHp`/`schemeThreat`
+  // fuyaient encore vers ScanCard, meme apres le retrait de `stats`).
+  const { stats: _stats, jauge: _jauge, allyHp: _allyHp, schemeThreat: _schemeThreat, ...carteSansChiffres } = carte
   return (
     <div className="portrait-carte">
-      <ScanCard {...carteSansStats} highlight={false} onSelect={onOuvrir} />
+      <ScanCard {...carteSansChiffres} highlight={false} onSelect={onOuvrir} />
       <div className="portrait-carte-texte">
         {surtitre ? <span className="portrait-surtitre">{surtitre}</span> : null}
         <strong className="portrait-nom">{nom}</strong>

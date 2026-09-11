@@ -59,9 +59,57 @@ describe('PlateauPortrait — bloc complot', () => {
     expect(document.querySelector('.scan-card .scan-stats-calee')).toBeNull()
   })
 
+  it('ne pose aucune pastille de menace sur l illustration : la BarreMenace suffit', () => {
+    // Defaut corrige (post tache 6) : CarteAvecChiffres ne retirait pas
+    // `schemeThreat`, donc ScanCard posait SA PROPRE pastille de menace sur
+    // le scan en plus de la BarreMenace, doublon exactement inverse de celui
+    // que la BarreMenace existe pour eviter.
+    render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'complot-principal',
+            unite('Complot', { name: 'Complot', kind: 'main-scheme', schemeThreat: '3/6' })
+          )
+        )}
+      />
+    )
+    expect(document.querySelector('.scan-card .scheme-threat-badge')).toBeNull()
+  })
+
   it('sans manigance principale, ne dessine ni carte ni barre', () => {
     const { container } = render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
     expect(container.querySelector('.barre-menace-bloc')).toBeNull()
+  })
+})
+
+describe('PlateauPortrait — bloc vilain', () => {
+  it('montre les PV du vilain a cote, jamais sur l illustration', () => {
+    // Defaut corrige (post tache 6) : chiffresDe ne lisait QUE `stats`, vide
+    // tant qu'aucune stat n'est modifiee — le vilain n'affichait donc
+    // quasiment jamais ses PV a cote, pendant que ScanCard les dessinait
+    // LUI-MEME sur la carte (jauge-carte). Repere sur play.marvelsimulator.com :
+    // le vilain montre son "10/10" a cote.
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'terrain-combat',
+            unite('Rhino', {
+              name: 'Rhino',
+              kind: 'villain',
+              jauge: { remplissage: 1, genre: 'pv', alarme: false, texte: '10 / 10' },
+            })
+          )
+        )}
+      />
+    )
+    expect(screen.getByText('10 / 10')).toBeInTheDocument()
+    expect(container.querySelector('.scan-card .jauge-carte')).toBeNull()
   })
 })
 
@@ -131,6 +179,41 @@ describe('PlateauPortrait — ennemis engages, heros et allies', () => {
     )
     const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
     expect(noms).toEqual(['Steve Rogers', 'Hope Summers'])
+  })
+
+  it('montre les PV d un ennemi engage a cote (jauge), rien sur l illustration', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'nemesis',
+            unite('Baron Zemo', {
+              name: 'Baron Zemo',
+              kind: 'minion',
+              jauge: { remplissage: 0.5, genre: 'pv', alarme: false, texte: '5 / 10' },
+            })
+          )
+        )}
+      />
+    )
+    expect(screen.getByText('5 / 10')).toBeInTheDocument()
+    expect(container.querySelector('.scan-card .jauge-carte')).toBeNull()
+  })
+
+  it('montre les PV d un allie a cote (allyHp, sans jauge calculable), rien sur l illustration', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement('terrain-soutien', unite('Hope Summers', { name: 'Hope Summers', kind: 'ally', allyHp: '3/3' }))
+        )}
+      />
+    )
+    expect(screen.getByText('3/3')).toBeInTheDocument()
+    expect(container.querySelector('.scan-card .ally-hp-badge')).toBeNull()
   })
 
   it('ne pose jamais de chiffre sur l illustration d un engage ou d un allie', () => {
