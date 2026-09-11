@@ -97,7 +97,7 @@ trancher avant d'écrire la première ligne :
    que « dépenser un éclair pour payer un événement » reste exprimable.
 3. **Renoncer** à ce pack tant que le point 1 n'est pas fait.
 
-⚠ Le choix n'est pas fait. **Ne pas commencer à écrire des cartes avant.**
+✅ **Choix fait le 11/09/2026 : option 1**, la vraie cinquième couleur, livrée le jour même (voir la fiche `docs/reference/mots-cles/eclair.md`).
 
 ## Les 17 entrées
 
@@ -183,9 +183,10 @@ Relevé fait, pas supposé, sur `cards.json` :
 
 1. ✅ **Fait le 11/09/2026** : toutes les icônes sont lues et confirmées avec
    l'utilisateur, carte par carte. Le relevé de texte est complet.
-2. ⛔ **BLOQUANT, et c'est une décision, pas une tâche** : choisir comment
-   modéliser l'**éclair**, sachant que le moteur ne connaît que quatre couleurs
-   (voir « CONSÉQUENCE MOTEUR » plus haut). Rien ne peut s'écrire avant.
+2. ✅ **Fait le 11/09/2026** : l'éclair est une cinquième couleur du moteur,
+   lettre `L`. Fiche `docs/reference/mots-cles/eclair.md`, spec et plan dans
+   `docs/superpowers/`. Thunder Strike portera `"RES": "L"`, et le Tempest
+   se lit `Cost("YL")` sur le paiement de l'événement.
 3. **Les images en local.** Le connecteur Drive ne rend que du texte, et
    télécharger 23 PNG saturerait la mémoire de travail. Il les faut sur le
    poste pour `assets/pics/`. L'utilisateur est à distance et les a collées
