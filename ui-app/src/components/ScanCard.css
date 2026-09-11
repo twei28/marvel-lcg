@@ -520,6 +520,23 @@
   }
 
   /* Heros du joueur ACTIF (hot-seat) : badge vert, meme gabarit que Waiting. */
+  /* Crise : le complot principal est verrouille par une manigance annexe.
+     Meme gabarit que la pastille Actif, en rouge : c'est un avertissement. */
+  .pastille-crise {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #fff4f2;
+    background: linear-gradient(180deg, #e8574a, #a8241a);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+  }
+
   .pastille-actif {
     display: inline-flex;
     align-items: center;

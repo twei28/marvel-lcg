@@ -2871,6 +2871,17 @@
   /* L'eclair (pack Zeus) : bleu electrique, pour ne pas se confondre avec
      l'energie jaune. Pas de glyphe dans la police : un SVG a la place. */
   .icone-res.res-lightning { --res: #5ec8ff; }
+
+  /* Crise sur le complot principal, dans l'apercu au survol. */
+  .apercu-crise {
+    margin: 6px 0 0;
+    padding: 6px 8px;
+    border-left: 3px solid #e8574a;
+    background: rgba(232, 87, 74, 0.12);
+    color: #ffd9d4;
+    font-size: 0.85em;
+    line-height: 1.3;
+  }
   .icone-res.res-lightning svg {
     width: 0.95em;
     height: 0.95em;

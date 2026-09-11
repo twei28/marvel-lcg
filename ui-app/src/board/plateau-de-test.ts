@@ -90,6 +90,8 @@ export type CarteDessinee = {
   peeking: boolean
   /** Face cachée ET invisible pour ce siège : on ne voit que le dos. */
   facedown: boolean
+  /** Complot principal verrouillé : nom de la manigance annexe à Crise. */
+  crise?: string
 }
 
 /**
@@ -111,6 +113,7 @@ export function cartesDessinees(world: World, playerId = 0): CarteDessinee[] {
           portePar: 0,
           peeking: !!unite.carte.peeking,
           facedown: !!unite.carte.facedown,
+          crise: unite.carte.crise,
         })
         for (const attachee of unite.attachees) {
           vues.push({

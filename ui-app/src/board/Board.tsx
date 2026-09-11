@@ -508,6 +508,15 @@ export function CarteApercu({
             parce qu'une carte peut porter plusieurs capacites bloquees pour
             des raisons differentes : le joueur doit savoir LAQUELLE il peut
             debloquer. Rien du tout quand la carte est jouable. */}
+        {/* CRISE : le complot principal est verrouille par une manigance
+            annexe. Un contre qui le vise part sans effet ; on le dit AVANT que
+            le joueur ne joue sa carte (rapport joueur du 11/09/2026). */}
+        {carte.crise && !carte.facedown ? (
+          <p className="apercu-crise">
+            {t('Crise : la menace ne peut pas être retirée d’ici tant que')} <b>{carte.crise}</b>{' '}
+            {t('est en jeu.')}
+          </p>
+        ) : null}
         {raisons && raisons.length > 0 ? (
           <ul className="apercu-refus">
             {raisons.map((raison) => (

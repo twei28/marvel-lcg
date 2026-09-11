@@ -379,6 +379,27 @@ function pileFondue(
  * A VENIR : un petit tas derriere la carte + une vue de TOUTES les phases au clic
  * du bouton. Evite d'etaler sur la table des cartes qui n'ont pas encore d'effet.
  */
+/**
+ * Le complot principal porte le nom de la manigance annexe a CRISE qui le
+ * verrouille, s'il y en a une.
+ *
+ * Le moteur expose `info.crisis` sur la manigance annexe (has_crisis.py :
+ * tant qu'elle est en jeu, aucune menace ne peut etre retiree du complot
+ * principal). Rapport joueur du 11/09/2026 : Pour la Justice visait le complot
+ * principal pendant que Collapsing Bridge etait en jeu, la carte partait sans
+ * effet, et rien sur la table ne le disait. Le joueur a rejoue le meme coup
+ * trois fois.
+ */
+function avecCrise(unites: UniteAffichee[], world: World): UniteAffichee[] {
+  const annexes = Array.isArray(world.area_schemes_side) ? world.area_schemes_side : []
+  const crise = annexes.find((carte) => Number(carte?.info?.crisis ?? 0) > 0)
+  if (!crise) return unites
+  for (const unite of unites) {
+    unite.carte = { ...unite.carte, crise: String(crise.name ?? '') }
+  }
+  return unites
+}
+
 function avecStages(
   unites: UniteAffichee[],
   aVenir: readonly unknown[] | undefined,
@@ -626,11 +647,14 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // Le complot actif (area_schemes_main), avec ses etapes A VENIR
     // (main_schemes_deck) empilees derriere et consultables au bouton.
     emplacement('complot-principal', t('Manigance principale'), [
-      avecStages(
-        posees(world.area_schemes_main, rendu),
-        world.main_schemes_deck,
-        'Scheme stages',
-        rendu
+      avecCrise(
+        avecStages(
+          posees(world.area_schemes_main, rendu),
+          world.main_schemes_deck,
+          'Scheme stages',
+          rendu
+        ),
+        world
       ),
     ]),
 

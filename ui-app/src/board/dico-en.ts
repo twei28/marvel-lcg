@@ -834,4 +834,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   énergie: 'energy',
   joker: 'wild',
   éclair: 'lightning',
+  'Crise : la menace ne peut pas être retirée d’ici tant que':
+    'Crisis: threat cannot be removed from here while',
+  'est en jeu.': 'is in play.',
 }

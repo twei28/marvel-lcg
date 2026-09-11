@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-11",
+        genre: "jeu",
+        fr: "Quand une manigance annexe à Crise est en jeu, le complot principal porte un bandeau « Crise » et l'aperçu explique que sa menace ne peut pas être retirée. Un contre joué dessus partait sans effet, sans un mot.",
+        en: "While a Crisis side scheme is in play, the main scheme shows a “Crisis” badge and the preview explains its threat cannot be removed. A thwart played on it used to fizzle without a word.",
+    },
+    {
+        date: "2026-09-11",
         genre: "correction",
         fr: "Wolverine, Storm, Cyclops, Phoenix, Gambit, Rogue, Colossus, Shadowcat, Groot et Rocket montraient leur alter ego en grand à la sélection du héros. C'est réparé.",
         en: "Wolverine, Storm, Cyclops, Phoenix, Gambit, Rogue, Colossus, Shadowcat, Groot and Rocket showed their alter ego on the big card at hero selection. Fixed.",

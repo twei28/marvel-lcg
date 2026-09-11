@@ -181,6 +181,13 @@ export type ScanCardProps = {
    */
   estActif?: boolean
   /**
+   * Complot principal VERROUILLE par une manigance annexe a Crise : le nom de
+   * cette manigance. Bandeau « Crise » sur la carte, phrase dans l'apercu.
+   * Rapport joueur du 11/09/2026 : un contre sans effet, et rien ne disait
+   * pourquoi.
+   */
+  crise?: string
+  /**
    * Pile representant un DECK SPECIAL du heros (Invocation de Strange...) :
    * etiquette « Special deck » et halo violet, pour le distinguer des piles
    * ordinaires posees a cote du heros.
@@ -471,6 +478,7 @@ export function ScanCard({
   estNemesis = false,
   inactif = false,
   estActif = false,
+  crise,
   deckSpecial = false,
   aspect,
   discard = false,
@@ -646,6 +654,11 @@ export function ScanCard({
           {typeMuet ? null : <span className="kind-pill">{label}</span>}
           {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
+          {crise && !facedown ? (
+            <span className="pastille-crise" title={`${t('Crise : la menace ne peut pas être retirée d’ici tant que')} ${crise} ${t('est en jeu.')}`}>
+              {t('Crise')}
+            </span>
+          ) : null}
           {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}
         </div>
 
