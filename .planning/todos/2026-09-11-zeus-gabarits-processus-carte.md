@@ -18,7 +18,7 @@ ressource officielle jaune, *éclair* = celle de Zeus.
 | `tools/verifier_appels_modules.py zeus` | OK | ✅ vu ROUGE avec un faux `AbilityFactory.NExistePasDuTout` injecté dans ze010, puis vert restauré |
 | `tools/verifier_noms_modules.py zeus` | OK | — |
 | `tools/verifier_desc_mots_cles.py zeus` | OK, 17/17 | — |
-| `tools/verifier_coherence_cartes.py` | textes fr 17/17, images 13/17 (les 4 némésis attendent les fichiers) | — |
+| `tools/verifier_coherence_cartes.py` | textes fr 17/17, images 17/17 (les 4 némésis rapatriées depuis « Encounter Cards » via la vue embarquée du Drive, invisibles au connecteur) | — |
 | `tools/test_cards.py` | 5514 cartes construites, 0 erreur | — |
 | `verifier_tous_les_decks.py` (`DECK_NOM=zeus`) | OK, « identité ze001a, main 6, deck 9 » | — |
 | `tools/test_capacites.py` filtre `ze0` | **35/35** | ✅ 18/35 au premier passage ; chaque famille lue au journal avant correction |

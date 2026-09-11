@@ -189,9 +189,9 @@ Relevé fait, pas supposé, sur `cards.json` :
    se lit `Cost("YL")` sur le paiement de l'événement.
 3. ✅ **Livré le 11/09/2026** : pack écrit, 35/35 cas, substitution 17/17,
    autoplay sans traceback. Gabarits dans
-   `2026-09-11-zeus-gabarits-processus-carte.md`. Reste : les **5 scans
-   némésis** (`ze013` à `ze016`, absents du Drive, à recevoir de
-   l'utilisateur) et la vérification en partie réelle du boost supplémentaire
+   `2026-09-11-zeus-gabarits-processus-carte.md`. ✅ Les 4 scans némésis sont installés (dossier « Encounter Cards » du Drive :
+   le connecteur n'y voyait qu'Alcohol Problems, la vue embarquée
+   `embeddedfolderview?id=` donne les identifiants des autres). Reste la vérification en partie réelle du boost supplémentaire
    de Nyx, que le harnais ne sait pas mesurer.
 3 bis. **Les images en local.** ✅ 13 scans rapatriés depuis le Drive en direct (`curl` sur le lien partagé) et uniformisés à 615 px. Le connecteur Drive ne rend que du texte, mais
    le lien de téléchargement direct suffit. Il les faut sur le
