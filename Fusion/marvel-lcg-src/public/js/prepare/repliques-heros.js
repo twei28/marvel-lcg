@@ -93,7 +93,6 @@ export const REPLIQUES = {
     sunfire: ["I burn brighter than the sun.", "You want heat? I am heat.", "Sunfire unleashed."],
     superior_iron_man: ["Why settle for Iron Man when you can have Superior Iron Man?", "Perfection is the product.", "Upgrade accepted.", "Superior means better."],
     superior_spider_man: ["I am the Superior Spider-Man!", "Observe true superiority.", "A better Spider-Man has arrived.", "THWIP !"],
-    superior_spider_man_tolliver: ["I am the Superior Spider-Man!", "Observe true superiority.", "A better Spider-Man has arrived.", "THWIP !"],
     texas_twister: ["Things are getting windy.", "Texas Twister, spin it up!", "Hold onto your hat."],
     the_thing: ["It's clobberin' time!", "What a revoltin' development!"],
     thor_jane_foster: ["For Asgard!", "Whosoever holds this hammer, if they be worthy...", "The Goddess of Thunder answers.", "Mjolnir, to me."],
@@ -142,7 +141,6 @@ export const REPLIQUES = {
     cloak_dagger: ["Light and darkness, together.", "We hunt as one.", "Into the dark. Out in the light."],
     dazzler: ["Lights, camera, Dazzler!", "Turn up the music."],
     doctor_doom: ["Doom does not beg.", "Kneel before Doom!"],
-    harry_osborn: ["Out, am I?"],
     gwenpool: ["I'm from the real world."],
     howard_the_duck: ["Trapped in a world he never made!"],
 };

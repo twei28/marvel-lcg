@@ -37,7 +37,7 @@ const SNIKT = ['wolverine', 'x_23', 'albert', 'wolverine_x23']
 ko += dire('SNIKT chez les Wolverine', SNIKT.filter((c) => !(m.REPLIQUES[c] || []).includes('SNIKT !')), [])
 const THWIP = ['spider_man', 'spider_man_miles_morales', 'ghost_spider', 'silk', 'spider_ham', 'sp_dr',
   'spider_man_rainy', 'spider_man_2099', 'spider_man_noir', 'armored_spidey', 'scarlet_spider',
-  'superior_spider_man', 'superior_spider_man_tolliver']
+  'superior_spider_man']
 ko += dire('THWIP chez les tisseurs', THWIP.filter((c) => !(m.REPLIQUES[c] || []).includes('THWIP !')), [])
 // Le tirage : jamais la derniere quand il y a le choix, et la seule quand il n'y en a qu'une.
 const pool = ['a', 'b', 'c']

@@ -1113,6 +1113,7 @@ function playerCountRow() {
  *  plusieurs répliques par héros, tirées au sort (11/09/2026). Repli du
  *  repli : « BAM ! ». */
 const ONOMATOPEES = {
+    harry_osborn: "HA HA HA !",
     /* --- fan-made --- */
     doctor_druid: "MASTER OF THE UNKNOWN !", lady_sif: "FOR ASGARD !", };
 /** La réplique qui claque au recrutement : au hasard dans le pool du héros,
