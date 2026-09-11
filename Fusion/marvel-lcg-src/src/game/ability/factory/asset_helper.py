@@ -30,6 +30,7 @@ def GiveKeywordToAttachWhenApplyThisInternal(
     recover: int|None=None,
     guard: int|None=None,
     patrol: int|None=None,
+    villainous: int|None=None,  # 11/09/2026, hc010 Outer Demons (pack custom hellcat)
     steady: int|None=None,
     treat_as_blank: bool|None=None,
     target_threat: int|None=None,
@@ -64,6 +65,7 @@ def GiveKeywordToAttachWhenApplyThisInternal(
             recover=recover,
             guard=guard,
             patrol=patrol,
+            villainous=villainous,
             steady=steady,
             treat_as_blank=treat_as_blank,
             target_threat=target_threat,

@@ -23,3 +23,17 @@
 **Variantes maison** : aucune recensée pour l'instant.
 
 **Note historique** : Le brief du plan mentionnait la card_id `73022` pour Power Couple, mais cet identifiant est périmé (ancien schéma de numérotation). La carte réelle utilise l'identifiant `jj022` du pack jessica_jones et correspond exactement à la description du guide (section 9).
+
+
+## Pièges vus au portage de Hellcat (11/09/2026)
+
+- **Le chargeur EXIGE `.SetTarget("TeamUp")`** sur chaque capacité d'un
+  événement à `desc.TeamUp` (`cards/database.py:223`, assert en debug) : les
+  deux personnages nommés deviennent les cibles. Sans lui la partie meurt au
+  setup (« AssertionError: origin_card_id='hc020' »). Modèle 14018 Order and
+  Chaos ; hc020 Green Hell, hc021 Hell-Iron.
+- **« Team-Up (any 2 of A, B, C, D) »** (hc022 Divas) n'est pas exprimable
+  par `desc.TeamUp` (deux groupes « A;B », les DEUX exigés). On omet la clé
+  et on code la condition à la main (`conditions=` sur l'action : au moins
+  deux des personnages nommés en jeu côté joueur). Le deckbuilder n'applique
+  alors aucune restriction Team-Up à cette carte : écart noté.

@@ -28999,6 +28999,569 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["01094", "31002a"]},
     },
+    # ------------------------------------------------------------------------
+    # Pack « hellcat » : Hellcat (jakxin) hc001a-hc026, 11/09/2026
+    #
+    # Rhino : complot principal 01097b (cible 7*), vilain 01094 (ATQ 2/MNG 1).
+    # Le deck de rencontre est remplace par 01146 Repair Sequence (1 icone
+    # boost, effet Boost inerte hors Ultron) partout ou une activation
+    # ennemie doit etre DETERMINISTE. Hellcat commence en alter-ego :
+    # `Puzzle.ChangeForm('hc001b')` passe en heroine.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "hc001a Hellcat — Response : un evenement a [mental] imprime joue se retrouve accroche a Hellcat",
+        "pourquoi": ("LE COEUR DU PACK. Illusion (mental imprime) jouee : apres resolution elle "
+                     "n'est pas en defausse, elle est GLISSEE sous Hellcat (`PlaceCardHere`). "
+                     "Sans le module : defausse vide de sens, accrochees = []"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc008", "01089"],
+        "declencher": [],
+        "jouer": ["hc008"], "payer_avec": ["01089"], "surpayer": True, "accepter_choix": True,
+        "verifier": "hellcat_accrochees", "accrochees": ["hc008"],
+        "attendu": {},
+    },
+    {
+        "nom": "hc001a Hellcat — TEMOIN : un evenement SANS [mental] imprime n'est pas accroche",
+        "pourquoi": ("Chase Them Down officiel a [mental]... on prend 01060 For Justice "
+                     "([energy] imprime, retire 3 + 1 payee en mental) : 5 -> 1, rien sous Hellcat"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["01060", "01089"],
+        "declencher": [],
+        "jouer": ["01060"], "payer_avec": ["01089"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "hellcat_accrochees", "accrochees": [],
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "hc001a Hellcat — LIMITE twice per round : trois evenements [mental] joues, deux accroches",
+        "pourquoi": ("Temoin d'epuisement (etape 7 bis). Trois Illusion payees chacune "
+                     "d'un Chase Them Down ([mental] imprime, cout exact : PAS de surpayer, qui "
+                     "depenserait toute la main sur la premiere) : les deux premieres s'accrochent, la troisieme part en "
+                     "defausse. Chiffre mesure : 2 accrochees"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc008", "hc008", "hc008", "hc023", "hc023", "hc023"],
+        "declencher": [],
+        "jouer": ["hc008", "hc008", "hc008"], "payer_avec": ["hc023", "hc023", "hc023"], "accepter_choix": True, "ne_pas_depenser": ["hc001a"],
+        "verifier": "hellcat_accrochees", "accrochees": ["hc008", "hc008"],
+        "attendu": {},
+    },
+    {
+        "nom": "hc001a Empowered — defausser une carte accrochee genere un [mental] qui paie Helluva Punch",
+        "pourquoi": ("« Discard 1 attached card from Hellcat -> generate a [mental] resource. » "
+                     "Hedy Wolfe accroche Genius en alter-ego, passage en heroine, puis Helluva "
+                     "Punch (2) payee Chase Them Down (B) + Empowered (B, surpayer comme "
+                     "ze011) : Genius est parti, Helluva s'accroche a son tour, Rhino prend 6 "
+                     "(paye UNIQUEMENT en mental)"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "main_exclusive": ["hc005", "hc023"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.ChangeForm('hc001b')"],
+        "jouer": ["hc005"], "payer_avec": ["hc023"], "surpayer": True, "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "hellcat_accrochees", "accrochees": ["hc005"],
+        "attendu": {"degats": [["01094", 6]]},
+    },
+    {
+        "nom": "hc001b Patsy Walker — Mental Potential : carte piochee a [mental], 1 menace de moins",
+        "pourquoi": ("« draw 1 card -> if that card has a printed [mental] resource, reduce the "
+                     "amount of threat placed by 1. » Genius au sommet du deck, deck de "
+                     "rencontre = Repair Sequence (boost 1) : Rhino manigance 1 + 1 - 1 = 1. "
+                     "Menace 3 -> 4"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 3)", "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088', '01089')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Scheme('01094')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]], "en_main": ["01089"]},
+    },
+    {
+        "nom": "hc001b Patsy Walker — TEMOIN : carte piochee sans [mental], menace pleine",
+        "pourquoi": "Energy au sommet : 3 + 1 + 1 = 5, aucune reduction",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 3)", "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01089', '01088')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Scheme('01094')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5]], "en_main": ["01088"]},
+    },
+    {
+        "nom": "hc002 Iron Man — apres un pouvoir de base, depense un [mental] et redresse l'identite",
+        "pourquoi": ("« After Iron Man uses a basic power, spend a [mental] resource and choose 1 : "
+                     "Ready your identity / Draw 2 cards. » Hellcat inclinee, Genius en main : "
+                     "Iron Man attaque, la Response paie Genius, premier choix = redresser"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc002', under_control=True)",
+                          "Puzzle.Exhaust('hc001a')"],
+        "main_exclusive": ["01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.Attack('hc002')"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["hc001a"], "taille_main": 0},
+    },
+    {
+        "nom": "hc002 Iron Man — LIMITE once per round : deux pouvoirs de base, un seul Genius depense",
+        "pourquoi": ("Temoin d'epuisement : Iron Man attaque, est redresse, attaque encore. "
+                     "Deux Genius en main, un seul part"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc002', under_control=True)"],
+        "main_exclusive": ["01089", "01089"],
+        "payer_avec": ["01089", "01089"],
+        "declencher": ["Puzzle.Attack('hc002')", "Puzzle.Ready('hc002')", "Puzzle.Attack('hc002')"],
+        "cibles": ["01094", "01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1},
+    },
+    {
+        "nom": "hc003 Cat Suit — +3 points de vie",
+        "pourquoi": "« You get +3 hit points. » 11 -> 14",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc003', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"pv_max": [["hc001a", 14]]},
+    },
+    {
+        "nom": "hc003 Cat Suit — contre de base : incline, depense un [mental], +2 CTR",
+        "pourquoi": ("« exhaust Cat Suit and spend a [mental] resource -> you get +2 THW ». "
+                     "Menace 6, contre 2 + 2 = 4 -> 2 ; Cat Suit inclinee, Genius parti"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc003', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.Thwart('hc001a')"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "exhausted": ["hc003"], "taille_main": 0},
+    },
+    {
+        "nom": "hc004 Hellcat's Claws — +1 ATQ, et attaque de base : +2 ATQ percant a travers Robuste",
+        "pourquoi": ("« Hellcat gets +1 ATK » + « +2 ATK and gain piercing ». Rhino Robuste : "
+                     "sans percant, tout serait annule. 2 + 1 + 2 = 5 degats"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc004', under_control=True)",
+                          "Puzzle.Tough('01094')"],
+        "main_exclusive": ["01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.Attack('hc001a')"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "exhausted": ["hc004"], "taille_main": 0},
+    },
+    {
+        "nom": "hc005 Helluva Punch — payee uniquement en [mental] : 6 degats et deferlement",
+        "pourquoi": ("« Deal 4 damage... if you paid using only [mental], an additional 2 and "
+                     "overkill. » Hydra Bomber (01110, 4 PV) a 2 PV : 6 degats, 4 se deversent sur Rhino"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('01110')", "Puzzle.Damage('01110', 2)"],
+        "main_exclusive": ["hc005", "01089"],
+        "declencher": [],
+        "jouer": ["hc005"], "payer_avec": ["01089"], "cibles": ["01110"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "hc005 Helluva Punch — TEMOIN : payee en [energy], 4 degats, pas de deferlement",
+        "pourquoi": "Meme position payee Energy : 4 degats, Hydra Bomber (2 PV restants) vaincu, Rhino intact",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('01110')", "Puzzle.Damage('01110', 2)"],
+        "main_exclusive": ["hc005", "01088"],
+        "declencher": [],
+        "jouer": ["hc005"], "payer_avec": ["01088"], "cibles": ["01110"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "hc006 On the Prowl — payee uniquement en [mental] : 6 menaces, malgre la Crise",
+        "pourquoi": ("« remove 4... if only [mental], an additional 2 and ignores the crisis "
+                     "icon. » Collapsing Bridge (Crise) en jeu, complot principal a 6 : 0"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc006", "01089"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)", "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["hc006"], "payer_avec": ["01089"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]]},
+    },
+    {
+        "nom": "hc006 On the Prowl — TEMOIN : payee en [energy] sous Crise, rien ne part du complot principal",
+        "pourquoi": ("Cas limite documente (comme 15012) : l'ignorance est declaree pour que la "
+                     "cible soit offerte, mais payee sans « mental seulement » la Crise "
+                     "s'applique a la resolution : 6 reste 6"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc006", "01088"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)", "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["hc006"], "payer_avec": ["01088"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 6]]},
+    },
+    {
+        "nom": "hc006 On the Prowl — payee en [energy] sans Crise : 4 menaces",
+        "pourquoi": "La ligne de base : 6 -> 2",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc006", "01088"],
+        "declencher": ["Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["hc006"], "payer_avec": ["01088"], "cibles": ["01097b"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "hc007 Cat-Like Reflexes — defense : +2 DEF, et une carte [mental] remonte de la defausse",
+        "pourquoi": ("« +2 DEF for this defense. Search your discard pile for a card not named "
+                     "Cat-Like Reflexes with a printed [mental] and add it to your hand. » "
+                     "Rhino ATQ 2 + boost 1 (Repair Sequence) = 3 contre DEF 2 + 2 : 0 degat ; "
+                     "Genius (defausse) revient en main"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.CreatePlayerDiscardPile('01089')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "main_exclusive": ["hc007", "01088"],
+        "declencher": ["Puzzle.Defend('hc001a', '01094')"], "payer_avec": ["01088"], "surpayer": True, "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "taille_main": 1},
+    },
+    {
+        "nom": "hc008 Illusion — soigne 1 par carte accrochee : deux accrochees, Hellcat regagne 2",
+        "pourquoi": ("« Heal a friendly character by 1 for each card attached to your identity. » "
+                     "Hedy accroche Genius (alter-ego), Helluva Punch s'accroche (heroine) : 2 "
+                     "accrochees. Hellcat a 3 degats, Illusion (premier choix = soin) : 3 -> 1. "
+                     "Illusion s'accroche a son tour APRES sa resolution : 3 accrochees"),
+        # ⚠ Pas de 01089 en `main` : `Puzzle.Gain` REUTILISE une carte existante et
+        # aspirerait le Genius pose en defausse pour Hedy. Paiement en Chase Them Down.
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "main": ["hc005", "hc008", "hc023", "hc023", "hc023"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.ChangeForm('hc001b')", "Puzzle.Damage('hc001a', 3)"],
+        "jouer": ["hc005", "hc008"], "payer_avec": ["hc023", "hc023", "hc023"],
+        "cibles": ["01094", "hc001a"], "accepter_choix": True, "ne_pas_depenser": ["hc001a"],
+        "verifier": "hellcat_accrochees", "accrochees": ["01089", "hc005", "hc008"],
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "hc009 Mental Training — Helluva Punch payee uniquement en [mental] : 1 degat de plus (7)",
+        "pourquoi": ("« that event deals 1 additional damage ». 4 + 2 (mental seulement) + 1 "
+                     "(Mental Training) = 7 sur Rhino"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc009', under_control=True)"],
+        "main_exclusive": ["hc005", "01089"],
+        "declencher": [],
+        "jouer": ["hc005"], "payer_avec": ["01089"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]]},
+    },
+    {
+        "nom": "hc009 Mental Training — On the Prowl payee uniquement en [mental] : 1 menace de plus (7)",
+        "pourquoi": ("« or removes 1 additional threat ». Collapsing Bridge a 8 : 8 - 4 - 2 - 1 = 1"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc009', under_control=True)"],
+        "main_exclusive": ["hc006", "01089"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 8)"],
+        "jouer": ["hc006"], "payer_avec": ["01089"], "cibles": ["02009"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["02009", 1]]},
+    },
+    {
+        "nom": "hc009 Mental Training — TEMOIN : Helluva Punch payee en [energy], rien de plus (4)",
+        "pourquoi": "Payee Energy : ni le +2 de la carte ni le +1 de Mental Training",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc009', under_control=True)"],
+        "main_exclusive": ["hc005", "01088"],
+        "declencher": [],
+        "jouer": ["hc005"], "payer_avec": ["01088"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "hc010 Outer Demons — Hellcat villainous : son attaque de base tire une carte boost, +1 ATQ, et elle se soigne de 1",
+        "pourquoi": ("« Hellcat gains villainous » + « When a boost card given to Hellcat is "
+                     "turned faceup, cancel its Boost ability. Then heal 1 damage from "
+                     "Hellcat. » Deck de rencontre = Repair Sequence (1 icone) : attaque 2 + 1 "
+                     "= 3 sur Rhino, Hellcat 2 -> 1 degat"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc010', under_control=True)",
+                          "Puzzle.Damage('hc001a', 2)",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Attack('hc001a')"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "degats_identite": 1, "defausse_rencontre": ["01146"]},
+    },
+    {
+        "nom": "hc010 Outer Demons — TEMOIN : sans elle, l'attaque de base ne tire aucune carte boost",
+        "pourquoi": "Meme position sans Outer Demons : 2 degats, defausse de rencontre vide, Hellcat toujours a 2",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.Damage('hc001a', 2)",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Attack('hc001a')"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "degats_identite": 2, "defausse_rencontre": 0},
+    },
+    {
+        "nom": "hc010 Outer Demons — Forced Response : changer de forme la defausse",
+        "pourquoi": "« After you change form, discard this card. » Passage en alter-ego : Outer Demons hors jeu",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc010', under_control=True)"],
+        "declencher": ["Puzzle.ChangeForm('hc001a')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hc010"], "forme": "AlterEgo", "defausse_joueur": 1},
+    },
+    {
+        "nom": "hc011 Hedy Wolfe — action d'alter-ego : une carte [mental] de la defausse s'accroche a l'identite",
+        "pourquoi": ("« Exhaust Hedy Wolfe -> search your discard pile for a card with a printed "
+                     "[mental] resource and attach it to your identity. » Genius en defausse : "
+                     "glisse sous Patsy, Hedy inclinee"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "declencher": ["Puzzle.Action('hc011')"], "accepter_choix": True,
+        "verifier": "hellcat_accrochees", "accrochees": ["01089"],
+        "attendu": {"exhausted": ["hc011"]},
+    },
+    {
+        "nom": "hc011 Hedy Wolfe — les cartes accrochees SURVIVENT au changement de forme",
+        "pourquoi": ("Toute la mecanique en depend (Illusion en heroine compte ce que Hedy a "
+                     "accroche en alter-ego). Accroche en alter-ego, puis passage en heroine : "
+                     "toujours 1 accrochee"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.ChangeForm('hc001b')"], "accepter_choix": True,
+        "verifier": "hellcat_accrochees", "accrochees": ["01089"],
+        "attendu": {"forme": "Hero"},
+    },
+    {
+        "nom": "hc012 She-Hulk — +1 PV par [mental] depense pour la payer : Genius + Chase Them Down = 6 PV",
+        "pourquoi": "« +1 hit point for each [mental] resource used to pay for her. » 3 mental pour un cout de 3 : 3 + 3 = 6",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc012", "01089", "hc023"],
+        "declencher": [],
+        "jouer": ["hc012"], "payer_avec": ["01089", "hc023"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hc012"], "pv_max": [["hc012", 6]]},
+    },
+    {
+        "nom": "hc012 She-Hulk — vainc un sbire : un evenement [mental] de la defausse revient en main",
+        "pourquoi": ("« After She-Hulk attacks and defeats a minion, search your discard pile for "
+                     "an event with a printed [mental] resource and add it to your hand. » "
+                     "Hydra Bomber a 1 PV, Helluva Punch en defausse -> en main"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc012', under_control=True)",
+                          "Puzzle.PutIntoPlay('01110')", "Puzzle.Damage('01110', 2)",
+                          "Puzzle.CreatePlayerDiscardPile('hc005')"],
+        "declencher": ["Puzzle.Attack('hc012')"], "cibles": ["01110"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "en_main": ["hc005"]},
+    },
+    {
+        "nom": "hc013 Mental Episode — deux cartes accrochees : alter-ego, 2 degats, obligation RETIREE de la partie",
+        "pourquoi": ("« Flip to alter-ego form and discard all cards attached... Deal 1 damage "
+                     "for each... If at least 2, remove this card from the game. » Genius (Hedy) "
+                     "et Helluva Punch accrochees, puis l'obligation revelee"),
+        # ⚠ Pas de 01089 en `main` : `Puzzle.Gain` REUTILISE une carte existante et
+        # aspirerait le Genius pose en defausse pour Hedy. Paiement en Chase Them Down.
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "main": ["hc005", "hc023", "hc023"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.ChangeForm('hc001b')"],
+        "jouer": ["hc005"], "payer_avec": ["hc023", "hc023"], "cibles": ["01094"], "accepter_choix": True, "ne_pas_depenser": ["hc001a"],
+        "declencher_apres": ["Puzzle.Reveal('hc013')"],
+        "verifier": "hellcat_obligation_retiree", "retiree": True,
+        "attendu": {"forme": "AlterEgo", "degats_identite": 2},
+    },
+    {
+        "nom": "hc013 Mental Episode — une seule carte accrochee : 1 degat, obligation simplement defaussee",
+        "pourquoi": "« If not, discard this card. » Genius accroche par Hedy : 1 degat, la carte va en defausse de rencontre",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.Reveal('hc013')"], "accepter_choix": True,
+        "verifier": "hellcat_obligation_retiree", "retiree": False,
+        "attendu": {"forme": "AlterEgo", "degats_identite": 1},
+    },
+    {
+        "nom": "hc014 Battle for a Soul — Daimon Hellstrom gagne +X ATQ, X = cartes accrochees a Hellcat",
+        "pourquoi": ("Hellcat INCLINEE d'abord, sinon elle defend (DEF 2) et absorbe tout. « Daimon Hellstrom gets +X ATK, where X is the number of cards attached to "
+                     "Hellcat. » Deux accrochees (Hedy + Helluva), Daimon (ATQ 1) attaque : "
+                     "1 + 2 + boost 1 (Repair Sequence, Villainous) = 4 degats a Hellcat"),
+        # ⚠ Pas de 01089 en `main` : `Puzzle.Gain` REUTILISE une carte existante et
+        # aspirerait le Genius pose en defausse pour Hedy. Paiement en Chase Them Down.
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc011', under_control=True)", "Puzzle.CreatePlayerDiscardPile('01089')",
+                          "Puzzle.PutIntoPlay('hc016')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146', '01146')"],
+        "main": ["hc005", "hc023", "hc023"],
+        "declencher": ["Puzzle.Action('hc011')", "Puzzle.ChangeForm('hc001b')"],
+        "jouer": ["hc005"], "payer_avec": ["hc023", "hc023"], "cibles": ["01094"], "accepter_choix": True, "ne_pas_depenser": ["hc001a"],
+        "declencher_apres": ["Puzzle.Reveal('hc014')", "Puzzle.Exhaust('hc001a')", "Puzzle.Attack('hc016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "hc014 Battle for a Soul — TEMOIN : sans carte accrochee, Daimon frappe a 1 + boost",
+        "pourquoi": "Hellcat inclinee (sinon elle defend). Ligne de base : 1 + boost 1 = 2 degats",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.Reveal('hc014')", "Puzzle.PutIntoPlay('hc016')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146', '01146')"],
+        "declencher": ["Puzzle.Exhaust('hc001a')", "Puzzle.Attack('hc016')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "hc015 Blackheart — revele alors que Daimon est engage avec vous (solo) : surge, et il ne reste pas en jeu",
+        "pourquoi": ("« If Daimon Hellstrom is in your play area, Blackheart engages with the next "
+                     "player in turn order. If he cannot, this card gains surge. » En solo le "
+                     "joueur suivant est soi-meme : Blackheart hors jeu, Repair Sequence "
+                     "(semee au sommet) revelee par le surge"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc016')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Reveal('hc015')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hc015"], "en_jeu": ["hc016"], "carte_du_surge": "01146"},
+    },
+    {
+        "nom": "hc015 Blackheart — TEMOIN : revele seul, il entre en jeu normalement",
+        "pourquoi": "Sans Daimon en jeu, rien ne se passe : Blackheart engage, deck de rencontre intact",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Reveal('hc015')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hc015"], "defausse_rencontre": 0},
+    },
+    {
+        "nom": "hc016 Daimon Hellstrom — revele alors que Blackheart est engage avec vous (solo) : surge, hors jeu",
+        "pourquoi": "Symetrique de hc015",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc015')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "declencher": ["Puzzle.Reveal('hc016')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hc016"], "en_jeu": ["hc015"], "carte_du_surge": "01146"},
+    },
+    {
+        "nom": "hc017 Hot as Hell — defausse une amelioration et inflige son cout : Cat Suit (2)",
+        "pourquoi": "« Discard an upgrade you control. Take damage equal to that card's resource cost. » Cat Suit hors jeu, 2 degats",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc003', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('hc017')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hc003"], "degats_identite": 2},
+    },
+    {
+        "nom": "hc017 Hot as Hell — TEMOIN : sans amelioration, aucun degat",
+        "pourquoi": "Rien a defausser, rien a subir",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "declencher": ["Puzzle.Reveal('hc017')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "hc018 Firestar — entre en jeu avec 1 pion feu par [mental] depense : Genius + Chase Them Down = 3",
+        "pourquoi": "« enters play with 1 fire counter on her for each [mental] resource used to pay for her »",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc018", "01089", "hc023"],
+        "declencher": [],
+        "jouer": ["hc018"], "payer_avec": ["01089", "hc023"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hc018"], "compteurs": [["hc018", "fire", 3]]},
+    },
+    {
+        "nom": "hc018 Firestar — attaque : retire un pion feu, 2 degats a un ennemi en plus de l'attaque",
+        "pourquoi": ("« When Firestar attacks, remove 1 fire counter from her -> deal 2 damage to "
+                     "an enemy. » ATQ 1 + 2 = 3 sur Rhino, 1 pion -> 0"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc018', under_control=True)",
+                          "Puzzle.PlaceCounters('hc018', 'fire', 1)"],
+        "declencher": ["Puzzle.Attack('hc018')"], "cibles": ["01094", "01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "compteurs": [["hc018", "fire", 0]]},
+    },
+    {
+        "nom": "hc019 Captain Marvel (Monica) — pouvoir de base : depense 1 ressource, une carte de meme couleur remonte de la defausse dans le deck",
+        "pourquoi": ("« spend 1 resource of any type -> search your discard pile for a card with a "
+                     "matching printed resource and shuffle it into your deck. » Genius paye "
+                     "(mental), Helluva Punch (mental imprime) en defausse -> dans le deck vide"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc019', under_control=True)",
+                          "Puzzle.CreatePlayerDiscardPile('hc005')", "Puzzle.EmptyPlayerDeck()"],
+        "main_exclusive": ["01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.Attack('hc019')"], "cibles": ["01094"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0, "taille_deck_joueur": 1},
+    },
+    {
+        "nom": "hc020 Green Hell — Team-Up : redresse Hellcat et She-Hulk, +2 ATQ jusqu'a la fin de la phase",
+        "pourquoi": ("« Ready Hellcat and She-Hulk. They get +2 ATK until the end of the phase. » "
+                     "Les deux inclinees, Green Hell jouee, puis Hellcat attaque : 2 + 2 = 4"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('10013', under_control=True)",
+                          "Puzzle.Exhaust('hc001a')", "Puzzle.Exhaust('10013')"],
+        "main_exclusive": ["hc020", "01090"],
+        "declencher": [],
+        "jouer": ["hc020"], "payer_avec": ["01090"], "surpayer": True, "accepter_choix": True,
+        "declencher_apres": ["Puzzle.Attack('hc001a')"], "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["10013"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "hc020 Green Hell — TEMOIN Team-Up : sans She-Hulk en jeu, injouable",
+        "pourquoi": "« Team-Up (Hellcat and She-Hulk) » : les deux personnages doivent etre en jeu. La carte reste en main",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')"],
+        "main_exclusive": ["hc020", "01090"],
+        "declencher": [],
+        "jouer": ["hc020"], "payer_avec": ["01090"], "accepter_choix": True,
+        "verifier": "hellcat_carte_restee_en_main", "restee": "hc020",
+    },
+    {
+        "nom": "hc021 Hell-Iron — Team-Up : redresse Hellcat et Iron Man, et une amelioration du deck vient en main",
+        "pourquoi": ("« Ready Hellcat and Iron Man. Search your deck and discard pile for an "
+                     "upgrade and add it to your hand. » Deck reduit a Cat Suit : elle arrive en main"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc002', under_control=True)",
+                          "Puzzle.Exhaust('hc001a')", "Puzzle.Exhaust('hc002')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('hc003')"],
+        "main_exclusive": ["hc021", "01088"],
+        "declencher": [],
+        "jouer": ["hc021"], "payer_avec": ["01088"], "surpayer": True, "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["hc001a", "hc002"], "en_main": ["hc003"]},
+    },
+    {
+        "nom": "hc022 Divas — deux divas en jeu : trois cartes de couleurs differentes, une en main, deux au deck",
+        "pourquoi": ("« Search your discard pile for 3 cards, each with a different printed "
+                     "resource. Add 1 to your hand and shuffle the rest into your deck. » "
+                     "Hellcat + Firestar en jeu, defausse Energy/Genius/Strength"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('hc018', under_control=True)",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01057')",
+                          "Puzzle.CreatePlayerDiscardPile('01088', '01089', '01090')"],
+        "main": ["hc022"],
+        "declencher": [],
+        "jouer": ["hc022"], "accepter_choix": True,
+        "verifier": "hellcat_divas_main_et_deck",
+    },
+    {
+        "nom": "hc022 Divas — TEMOIN Team-Up : Hellcat seule, injouable",
+        "pourquoi": "« any 2 of Black Cat, Firestar, Hellcat, and Monica Rambeau » : une seule en jeu, la carte reste en main",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.CreatePlayerDiscardPile('01088', '01089', '01090')"],
+        "main": ["hc022"],
+        "declencher": [],
+        "jouer": ["hc022"], "accepter_choix": True,
+        "verifier": "hellcat_carte_restee_en_main", "restee": "hc022",
+    },
+    {
+        "nom": "hc023 Chase Them Down (reskin) — apres que Hellcat vainc un ennemi, 2 menaces en moins",
+        "pourquoi": "Copie de 01052 : Hydra Bomber a 1 PV vaincu par l'attaque de base, Chase Them Down (0) jouee en Response : 5 -> 3",
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.ChangeForm('hc001b')", "Puzzle.PutIntoPlay('01110')", "Puzzle.Damage('01110', 2)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["hc023"],
+        "declencher": ["Puzzle.Attack('hc001a')"], "cibles": ["01110", "01097b"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01110"], "menace": [["01097b", 3]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -29217,6 +29780,75 @@ def zeus_shroud_refuse_l_energie(monde, aides):
         return True, "Precognition reste en main : l'energie ne paie plus"
     return False, ("Precognition a quitte la main alors que seules des energies pouvaient "
                    f"la payer : Shroud n'interdit rien (main = {main}, defausse = {defausse})")
+
+# ---------------------------------------------------------------------------
+# Pack « hellcat » (jakxin, 11/09/2026) : les cartes ACCROCHEES a l'identite
+# sont des cartes GLISSEES sous la carte identite (`GetPlacedCardArea`), le
+# mecanisme du pack. Ces verificateurs lisent cette zone.
+# ---------------------------------------------------------------------------
+def _hellcat_accrochees(monde):
+    identite = monde.players[0].GetIdentity()
+    return [getattr(f.paper, "card_id", "?") for f in identite.GetPlacedCardArea().Get(True)]
+
+def hellcat_accrochees(monde, aides):
+    """`accrochees` du cas = liste EXACTE (multiset) des card_id glisses sous
+    l'identite. Puis `etat_attendu` pour le reste du cas."""
+    attendues = sorted(aides["cas"].get("accrochees") or [])
+    reelles = sorted(_hellcat_accrochees(monde))
+    if reelles != attendues:
+        return False, f"cartes accrochees a l'identite = {reelles} (attendu {attendues})"
+    ok, message = etat_attendu(monde, aides)
+    if not ok:
+        return ok, message
+    return True, f"accrochees {reelles} ; {message}"
+
+def hellcat_obligation_retiree(monde, aides):
+    """hc013 Mental Episode : `retiree` True = retiree de la partie, False =
+    simplement defaussee. On lit la ZONE de la carte (str de l'area) : le
+    journal ecrit « retiree(s) » pour la sortie de partie."""
+    voulue = bool(aides["cas"].get("retiree"))
+    face = None
+    for objet in monde.object_manager.card_dict.values():
+        f = objet.face
+        if f is not None and getattr(f.paper, "card_id", None) == "hc013":
+            face = f
+    if face is None:
+        return False, "hc013 introuvable"
+    if face.IsInPlay():
+        return False, "hc013 est encore en jeu"
+    zone = str(face.card.area)
+    en_defausse = "iscard" in zone
+    hors_partie = ("emove" in zone) or ("utOfGame" in zone) or ("Removed" in zone)
+    if voulue and not hors_partie:
+        return False, f"hc013 n'est pas retiree de la partie ; zone={zone}"
+    if not voulue and not en_defausse:
+        return False, f"hc013 n'est pas dans une defausse ; zone={zone}"
+    ok, message = etat_attendu(monde, aides)
+    return ok, (f"hc013 zone={zone} ; " + message if ok else message)
+
+def hellcat_divas_main_et_deck(monde, aides):
+    """hc022 Divas : 1 carte ajoutee a la main, les 2 autres melangees au deck."""
+    # Main vidée par `main_exclusive` (les cartes de depart tombent en
+    # DEFAUSSE : le pilote peut donc choisir n'importe laquelle), deck vide
+    # par `EmptyPlayerDeck` : on mesure des TAILLES. Divas elle-meme est en
+    # defausse apres resolution.
+    joueur = monde.players[0]
+    trio = {"01088", "01089", "01090"}
+    main = [c for c in (getattr(f.paper, "card_id", None) for f in joueur.hand_cards.Get()) if c in trio]
+    deck = [getattr(f.paper, "card_id", None) for f in joueur.player_deck.Get(True)]
+    au_deck = [c for c in deck if c in trio]
+    if len(main) != 1 or sorted(au_deck) != sorted(trio - set(main)):
+        return False, f"trio en main {main}, deck {deck} (attendu 1 en main, les 2 autres au deck)"
+    return True, f"{main[0]} en main, {deck} melangees au deck"
+
+def hellcat_carte_restee_en_main(monde, aides):
+    """Temoin d'injouabilite : `restee` du cas doit etre encore en main."""
+    voulue = aides["cas"]["restee"]
+    main = [getattr(f.paper, "card_id", None) for f in monde.players[0].hand_cards.Get()]
+    if voulue not in main:
+        return False, f"{voulue} n'est plus en main ({main}) : la carte a ete jouee alors qu'elle ne devait pas l'etre"
+    return True, f"{voulue} restee en main"
+
 
 def _brawn_carte_bien_jouee_depuis_reserve(monde, card_id):
     """Garde commune : la carte a bien quitte la reserve pour etre jouee.
@@ -30438,6 +31070,12 @@ def etat_attendu(monde, aides):
         if card_id not in cartes:
             soucis.append(f"{card_id} n'est pas dans la defausse de rencontre "
                           f"(defausse = {cartes})")
+
+    # `taille_deck_joueur` (11/09/2026, pack hellcat) : taille du deck du joueur.
+    if "taille_deck_joueur" in attendu:
+        n = len(list(monde.players[0].player_deck.Get(True)))
+        if n != attendu["taille_deck_joueur"]:
+            soucis.append(f"deck du joueur = {n} carte(s) (attendu {attendu['taille_deck_joueur']})")
 
     if "taille_main" in attendu:
         n = len(list(monde.players[0].hand_cards.Get()))

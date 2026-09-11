@@ -487,6 +487,13 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
+  },
+  "hc": {
+   "pack": "hellcat",
+   "libelle": "172. Custom (Hellcat)",
+   "cartes": 27,
+   "depuis": "2026-09-11",
+   "note": "Auteur jakxin (Drive partage). hc001a/b identite, hc002-hc011 set heros (10 cartes distinctes, 15 exemplaires), hc012 She-Hulk alliee signature ALTERNATIVE (deck hellcat_she_hulk), hc013 obligation, hc014-hc017 set nemesis (4 distinctes, 5 exemplaires), hc018-hc022 cartes custom du deck imprime (Firestar, Monica, Green Hell, Hell-Iron, Divas), hc023-hc026 reskins de 01052/01088/01089/01090 (decision utilisateur : doublons avec l'art de jakxin). Black Cat listee mais absente du dossier, laissee de cote. Mecanique neuve : Outer Demons donne Villainous a l'HEROINE (carte boost tiree a chaque activation de base). Voir .planning/todos/2026-09-11-hellcat-releve-des-cartes.md."
   }
  }
 }

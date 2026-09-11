@@ -93598,5 +93598,454 @@
    "text": "<b>When Revealed</b>: Discard the top 3 cards of your deck. Take 1 indirect damage for each event discarded this way. If an event with a printed \"<b>Special</b>\" ability is discarded this way, you are stunned.\n<hr />\n[star] <b>Boost</b>: Give the activating enemy an additional boost card."
   }
  ],
- "checksum": "77c062874abcef073061b7aa60ea931abc4310683a110fdd268dd701f6566920"
+ "hellcat": [
+  {
+   "card_id": "hc001a",
+   "type": "Hero",
+   "name": "* Hellcat",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "AVENGER",
+    "PSIONIC"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Response</b>: After you play a card with a printed [mental] resource, attach that card to Hellcat (to a maximum of 3). (Limit twice per round.) <i>(Events only, per the author's insert.)</i>\n<i>Empowered</i> — <b>Resource</b>: Discard 1 attached card from Hellcat → generate a [mental] resource."
+  },
+  {
+   "card_id": "hc001b",
+   "type": "AlterEgo",
+   "name": "* Patsy Walker",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "PSIONIC"
+   ],
+   "set_name": "Hellcat",
+   "text": "<i>Mental Potential</i> — <b>Interrupt</b>: When the villain schemes against you, draw 1 card → if that card has a printed [mental] resource, reduce the amount of threat placed by 1."
+  },
+  {
+   "card_id": "hc002",
+   "type": "Ally",
+   "name": "* Iron Man",
+   "subtitle": "Tony Stark",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AVENGER"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Response</b>: After Iron Man uses a basic power, spend a [mental] resource and choose 1 (limit once per turn):\n• Ready your identity.\n• Draw 2 cards."
+  },
+  {
+   "card_id": "hc003",
+   "type": "Upgrade",
+   "name": "* Cat Suit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "INFERNAL"
+   ],
+   "set_name": "Hellcat",
+   "text": "You get +3 hit points.\n<b>Hero Interrupt</b>: When you make a basic thwart, exhaust Cat Suit and spend a [mental] resource → you get +2 THW and ignore the patrol keyword for this thwart."
+  },
+  {
+   "card_id": "hc004",
+   "type": "Upgrade",
+   "name": "* Hellcat's Claws",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Hellcat",
+   "text": "Hellcat gets +1 ATK.\n<b>Hero Interrupt</b>: When you make a basic attack, exhaust Hellcat's Claws and spend a [mental] resource → you get +2 ATK and gain piercing for this attack."
+  },
+  {
+   "card_id": "hc005",
+   "type": "Event",
+   "name": "Helluva Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If you paid for this using only [mental] resources, deal an additional 2 damage to that enemy, and this attack gains overkill."
+  },
+  {
+   "card_id": "hc006",
+   "type": "Event",
+   "name": "On the Prowl",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC",
+    "THWART"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. If you paid for this using only [mental] resources, remove an additional 2 threat from that scheme, and this card ignores the crisis icon ([crisis]) and patrol keyword."
+  },
+  {
+   "card_id": "hc007",
+   "type": "Event",
+   "name": "Cat-Like Reflexes",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When Hellcat defends against an attack → you get +2 DEF for this defense. Search your discard pile for a card not named Cat-Like Reflexes with a printed [mental] resource and add it to your hand."
+  },
+  {
+   "card_id": "hc008",
+   "type": "Event",
+   "name": "Illusion",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "TACTIC"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Action</b>: Choose one:\n• Heal a friendly character by 1 for each card attached to your identity.\n• Remove 1 threat from a scheme for each card attached to your identity."
+  },
+  {
+   "card_id": "hc009",
+   "type": "Upgrade",
+   "name": "* Mental Training",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PSIONIC",
+    "SKILL"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Hero Interrupt</b>: When you pay for an ATTACK or THWART event using only [mental] resources, that event deals 1 additional damage or removes 1 additional threat."
+  },
+  {
+   "card_id": "hc010",
+   "type": "Upgrade",
+   "name": "* Outer Demons",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION",
+    "INFERNAL"
+   ],
+   "set_name": "Hellcat",
+   "text": "Hellcat gains villainous.\n<b>Interrupt</b>: When a boost card given to Hellcat is turned faceup, cancel its \"<b>Boost</b>\" ability. Then, heal 1 damage from Hellcat.\n<b>Forced Response</b>: After you change form, discard this card."
+  },
+  {
+   "card_id": "hc011",
+   "type": "Support",
+   "name": "* Hedy Wolfe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BEST FRENEMY"
+   ],
+   "set_name": "Hellcat",
+   "text": "<b>Alter-Ego Action</b>: Exhaust Hedy Wolfe → search your discard pile for a card with a printed [mental] resource and attach it to your identity."
+  },
+  {
+   "card_id": "hc012",
+   "type": "Ally",
+   "name": "* She-Hulk",
+   "subtitle": "Jennifer Walters",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "AVENGER",
+    "GAMMA"
+   ],
+   "set_name": "Hellcat",
+   "text": "She-Hulk gets +1 hit point for each [mental] resource used to pay for her.\n<b>Response</b>: After She-Hulk attacks and defeats a minion, search your discard pile for an event with a printed [mental] resource and add it to your hand."
+  },
+  {
+   "card_id": "hc013",
+   "type": "Obligation",
+   "name": "Mental Episode",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Patsy Walker"
+   },
+   "traits": [],
+   "set_name": "Hellcat",
+   "text": "<b><i>Give to the Patsy Walker player.</i></b>\nFlip to alter-ego form and discard all cards attached to your identity. Deal 1 damage to your identity for each discarded this way. If at least 2 cards were discarded from your identity this way, remove this card from the game. If not, discard this card."
+  },
+  {
+   "card_id": "hc014",
+   "type": "SideScheme",
+   "name": "Battle for a Soul",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Hellcat Nemesis",
+   "text": "Blackheart gets +X SCH and Daimon Hellstrom gets +X ATK, where X is the number of cards attached to Hellcat.\n<b>Forced Interrupt</b>: When Blackheart or Daimon Hellstrom activate, they also activate against the player the other is engaged with."
+  },
+  {
+   "card_id": "hc015",
+   "type": "Minion",
+   "name": "* Blackheart",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "1",
+    "Boost": "2",
+    "Toughness": "1",
+    "Villainous": "1",
+    "Nemesis": "Hellcat"
+   },
+   "traits": [
+    "DEMON"
+   ],
+   "set_name": "Hellcat Nemesis",
+   "text": "Toughness. Villainous.\nBlackheart cannot be in the same play area as Daimon Hellstrom.\n<b>When Revealed</b>: If Daimon Hellstrom is in your play area, Blackheart engages with the next player in turn order. If he cannot, this card gains surge.\n<i>(Hellcat's nemesis minion.)</i>"
+  },
+  {
+   "card_id": "hc016",
+   "type": "Minion",
+   "name": "* Daimon Hellstrom",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "1",
+    "SCH": "3",
+    "Boost": "2",
+    "Stalwart": "1",
+    "Villainous": "1",
+    "Nemesis": "Hellcat"
+   },
+   "traits": [
+    "DEMON"
+   ],
+   "set_name": "Hellcat Nemesis",
+   "text": "Stalwart. Villainous.\nDaimon Hellstrom cannot be in the same play area as Blackheart.\n<b>When Revealed</b>: If Blackheart is in your play area, Daimon Hellstrom engages with the next player in turn order. If he cannot, this card gains surge.\n<i>(Hellcat's nemesis minion.)</i>"
+  },
+  {
+   "card_id": "hc017",
+   "type": "Treachery",
+   "name": "Hot as Hell",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "INFERNAL"
+   ],
+   "set_name": "Hellcat Nemesis",
+   "text": "<b>When Revealed</b>: Discard an upgrade you control. Take damage equal to that card's resource cost."
+  },
+  {
+   "card_id": "hc018",
+   "type": "Ally",
+   "name": "* Firestar",
+   "subtitle": "Angelica Jones",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "1*",
+    "THW": "1*",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "X-MEN"
+   ],
+   "set_name": "",
+   "text": "Firestar enters play with 1 fire counter on her for each [mental] resource used to pay for her.\n<b>Interrupt</b>: When Firestar attacks, remove 1 fire counter from her → deal 2 damage to an enemy."
+  },
+  {
+   "card_id": "hc019",
+   "type": "Ally",
+   "name": "* Captain Marvel",
+   "subtitle": "Monica Rambeau",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "B",
+    "Class": "Basic"
+   },
+   "traits": [
+    "AERIAL",
+    "AVENGER"
+   ],
+   "set_name": "",
+   "text": "<b>Interrupt</b>: When Captain Marvel uses a basic power, spend 1 resource of any type → search your discard pile for a card with a matching printed resource and shuffle it into your deck."
+  },
+  {
+   "card_id": "hc020",
+   "type": "Event",
+   "name": "Green Hell",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "TeamUp": "Hellcat;She-Hulk",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Team-Up (Hellcat and She-Hulk). Max 1 per deck.\n<b>Hero Action</b>: Ready Hellcat and She-Hulk. They get +2 ATK until the end of the phase."
+  },
+  {
+   "card_id": "hc021",
+   "type": "Event",
+   "name": "Hell-Iron",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "TeamUp": "Hellcat;Iron Man",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Team-Up (Hellcat and Iron Man). Max 1 per deck.\n<b>Hero Action</b>: Ready Hellcat and Iron Man. Search your deck and discard pile for an upgrade and add it to your hand."
+  },
+  {
+   "card_id": "hc022",
+   "type": "Event",
+   "name": "Divas",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Team-Up (any 2 of Black Cat, Firestar, Hellcat, and Monica Rambeau). Max 1 per deck.\n<b>Hero Action</b>: Search your discard pile for 3 cards, each with a different printed resource. Add 1 to your hand and shuffle the rest into your deck."
+  },
+  {
+   "card_id": "hc023",
+   "type": "Event",
+   "name": "Chase Them Down",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Aggression"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "",
+   "text": "<b>Response</b> <i>(thwart)</i>: After your hero attacks and defeats an enemy, remove 2 threat from a scheme."
+  },
+  {
+   "card_id": "hc024",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "hc025",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "hc026",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "",
+   "text": "Max 1 per deck."
+  }
+ ],
+ "checksum": "feb538f8975a38e5382e3261984e780e46f36c1ea6bafaa017aa11f0724e23ea"
 }

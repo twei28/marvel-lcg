@@ -91,6 +91,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // « 5 psionic web » en pleine partie francaise.
   'psionic web': 'toile psionique',
   aegis: 'égide',
+  fire: 'feu',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

@@ -43,3 +43,23 @@ Villainous.
   lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+
+## Variante : un HÉROS qui gagne Villainous (dd001a Doctor Doom, hc010 Outer Demons)
+
+Depuis le 01/09/2026, `Hero` hérite de `HasVillainous` : un héros villainous
+reçoit une carte boost à chaque **attaque de base** (`can_attack.py:264`),
+ses icônes s'ajoutent à l'ATQ, et `ResolveBoostCards` envoie les messages
+`WhenBoostCardTurnedFaceUp` (une carte peut donc y réagir : hc010 annule
+l'effet Boost et soigne 1). Deux façons de l'accorder :
+
+- temporaire : `hero.GainUntilRoundEnd(effect, villainous=1)` (dd001a) ;
+- continu, par une amélioration : `*GiveKeywordToAttached(CardFinder(name=…),
+  villainous=1)` (hc010, paramètre ajouté le 11/09/2026 à `asset.py` et
+  `asset_helper.py`).
+
+⚠ **Attaque seulement.** Le contre de base ne distribue pas de boost
+(`can_thwart.py` n'a pas l'équivalent). Écart assumé sur les deux packs, noté
+dans leurs gabarits. Les effets [star] Boost des cartes de rencontre ne se
+déclenchent que sur une activation d'ENNEMI : pour un héros, seule l'icône
+compte.

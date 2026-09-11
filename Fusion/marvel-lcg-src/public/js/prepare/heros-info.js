@@ -61,6 +61,17 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (1962)",
     },
 
+    "hc001a": {
+        bio: "Patsy Walker naît en 1944 dans les pages de Miss America Magazine, adolescente modèle dont la mère tire une bande dessinée à succès. Chez les Défenseurs, elle enfile le costume de Hellcat et gagne des pouvoirs psioniques que Fauconne des Lunes réveille. Un long séjour en Enfer, épouse de Daimon Hellstrom, lui laisse des cicatrices mentales et le harcèlement de Blackheart. Meilleure amie de Miss Hulk, ex-compagne d'Iron Man après Civil War, elle reste l'une des plus anciennes héroïnes de Marvel.",
+        bioEn: "Patsy Walker debuted in 1944 in Miss America Magazine as a model teenager whose mother turned her life into a hit comic. With the Defenders she donned the Hellcat costume and gained psionic powers awakened by Moondragon. A long stay in Hell as Daimon Hellstrom's wife left her with mental scars and Blackheart's attentions. She-Hulk's best friend and Iron Man's partner after Civil War, she remains one of Marvel's longest-running heroines.",
+        civil: "Patricia « Patsy » Walker",
+        civilEn: "Patricia \"Patsy\" Walker",
+        base: "New York",
+        equipes: "Vengeurs, Défenseurs",
+        equipesEn: "Avengers, Defenders",
+        ennemis: "Blackheart, Daimon Hellstrom, Hedy Wolfe",
+        apparition: "Miss America Magazine #2 (1944) ; Avengers #144 (1976)",
+    },
     "ze001a": {
         bio: "Roi des dieux de l'Olympe et maître de la foudre, Zeus règne sur le panthéon grec depuis qu'il a renversé son père Cronos avec ses frères Poséidon et Hadès. Dans l'univers Marvel, il est le père d'Hercule et de bien d'autres, allié épisodique des Vengeurs et de Thor, et un souverain aussi colérique que puissant : sa tempête ne distingue pas toujours les mortels des titans. Panhellenios, « de tous les Grecs », est l'un de ses titres de culte.",
         bioEn: "King of the Olympian gods and master of lightning, Zeus rules the Greek pantheon since he overthrew his father Cronus with his brothers Poseidon and Hades. In the Marvel universe he is the father of Hercules and many others, an occasional ally of the Avengers and Thor, and a sovereign as wrathful as he is mighty: his tempest does not always tell mortals from titans. Panhellenios, \"of all the Greeks\", is one of his cult titles.",

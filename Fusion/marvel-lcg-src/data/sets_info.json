@@ -1508,5 +1508,15 @@
   "encounters": [],
   "max_id": "ze016"
  },
- "checksum": "2381423af07a4dc30df213581513690d053299e97907976918f0fe5b0e76bef5"
+ "172. Custom (Hellcat)": {
+  "name": "hellcat",
+  "scenarios": [],
+  "heroes": [
+   "hellcat",
+   "hellcat_she_hulk"
+  ],
+  "encounters": [],
+  "max_id": "hc026"
+ },
+ "checksum": "2301ccda2247cfc3ceef6f226e48182e43a8150f3ef2653fb6910605ca3f72a5"
 }

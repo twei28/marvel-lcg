@@ -199,6 +199,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'illusion', 'menace',  # CORRECTIF : compteurs des packs custom spider_man_rainy / venom_rainy (Rainy)
         'evidence',  # CORRECTIF : compteur du pack custom jessica_jones (ekAugust)
         'aegis',  # CORRECTIF (11/09/2026) : compteur de ze007 The Aegis, pack custom zeus (Mozilla)\n
+        'fire',   # 11/09/2026 : compteur de hc018 Firestar, pack custom hellcat (jakxin)
         'adrenaline',  # CORRECTIF : compteur du pack custom venompool (CptScorp)
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)

@@ -172,6 +172,10 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
   `CountBoostIconsInternal` court-circuite tout et rend `printed_boost` : les
   effets qui modifient les icônes ne s'appliquent pas là.
 
+| Un héros qui « gains villainous » EN CONTINU (amélioration) | `*GiveKeywordToAttached(CardFinder(name=…), villainous=1)` | hc010 Outer Demons | Paramètre `villainous` ajouté à la fabrique le 11/09/2026 (`Gain` l'acceptait déjà, dd001a le posait via `GainUntilRoundEnd`). Le héros reçoit alors une carte boost à chaque **attaque** de base (`can_attack.py:264`) ; **pas au contre** (can_thwart.py n'a pas l'équivalent) : écart assumé sur les deux packs |
+| Bonus dynamique « +X where X is… » sur une AUTRE carte | `*GiveKeywordToInPlayWhenApplyThis(finder, attack=1, get_new_value=fn)` | hc014 Battle for a Soul | ⚠ Rend une **LISTE** : déballage `*` obligatoire, sinon « 'list' object has no attribute 'paper' » au setup. `get_new_value(effect, face)` **remplace** la valeur (environment_helper.py:184) et est relu à chaque application |
+| Obligation : « If not, discard this card » | `Faces.DiscardAll([this], effect)` explicite | hc013 Mental Episode | ⚠ Une obligation révélée **entre en jeu** et y reste : rien ne la défausse par défaut (vu au harnais, « hc013 est encore en jeu »). Coder les deux branches, `RemoveAllFromGame` ET `DiscardAll` |
+
 ## 4. Ressources
 
 | Texte | Montage | Modèle | Piège |
@@ -182,6 +186,8 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | ressource + effet différé sur la carte payée | `ex_operation` / `WhenYouSpendThisCardToPlay` | 54002, 32047, ah007 | — |
 | Resource: Exhaust **and spend a [x] resource** → generate [y] (convertir une ressource pendant un paiement) | `CanGenerateResources(type, Resources("L")).SetCostFunc(Exhaust("This")).SetCostFunc(CostFunc.Custom(None, fn))`, où `fn` PRÉLÈVE dans `joueur.res_pool` (`Gain(Resources("Y") * -1)`) et rend False s'il n'y a rien à prélever | ze011 Mount Olympus | ⚠⚠ **PAS `CostFunc.Spend(Cost("Y"))`** (11/09/2026) : Spend ouvre un paiement DANS le paiement (`AskSpendResourcesInternal`) qui **remet le pool à zéro** : les ressources déjà générées pour la carte en cours disparaissent (« total YY » puis « total L » au journal) et la carte payée échoue. Les coûts d'une capacité de ressource sont payés juste avant `res_pool.Gain` (resources.py:404) : c'est là qu'on prélève. |
 | Capacité **Special** résolue HORS de la table (depuis la main, pendant un paiement) | déclarer `WhenResolveSpecialAbility("This", op).NoOutOfPlayLimit()`, et au moment de résoudre : `if not face.effect.Find(type=Special): face.effect.RegisterTemp(*face.ability.Find(type=Special), unregister_after_exec=True)` puis `face.ResolveSpecialAbility(joueur, effect)` | zeus/`__init__.py` `ResoudreLeSpecialDe`, ze003 | Une carte en main n'a AUCUN effet enregistré : `ResolveSpecialAbility` ne trouve rien et le message ne part pas (« Zeus resolves Thunder Strike's » suivi de rien). Et sans `NoOutOfPlayLimit`, l'effet enregistré est ignoré parce que la carte est hors jeu. Dans l'opération, le joueur est `message.GetToPlayer()`, pas `effect.GetInitiator()`. |
+
+| Ressource à coût **Custom** (défausser une carte accrochée, retirer un pion…) | `CanGenerateResources(type, Resources("B"), conditions=[dispo]).SetCostFunc(CostFunc.Custom(None, fn))` | hc001a Empowered, ze011 Mount Olympus | ⚠ **`conditions` OBLIGATOIRE** : sans elle la ressource est OFFERTE au paiement même quand son coût est impayable ; `fn` rend alors False et le moteur lève `GameSignal_UndoRequest` (resources.py:409), qui **annule toute la carte en train d'être payée**, sans motif (« Green Hell failed »). Dix cas rouges d'un coup le 11/09/2026 |
 
 ## 4ter. Réduire un coût « quand CETTE carte est la cible »
 
@@ -344,6 +350,9 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
 >
 > Trouvé en portant `tg016` Chomped (pack throg).
 
+| Ignorer Crise/Patrouille **selon le paiement** (« if you paid using only [mental]… ignores the crisis icon ») | `.SetIgnoreKeyword('Crisis', 'Patrol', condition=fn)` avec `fn` vraie tant que `effect.GetPaidResources().val == 0` | hc006 On the Prowl, 15012 Crisis Averted | Au CIBLAGE rien n'est payé : la condition laisse la cible offerte. À la RÉSOLUTION le paiement est connu : elle tranche. ⚠ Déclarée SANS condition, l'ignorance vaut aussi à la résolution et la Crise ne mord plus jamais (vu par le témoin « payée en énergie sous Crise » le 11/09/2026) |
+| « Limit twice per round » | DEUX capacités identiques, chacune `.LimitOncePerRound()`, avec une condition « pas déjà fait sur cette carte » | hc001a Hellcat | ⚠ Sans la condition, les deux se déclenchent sur le MÊME événement et la limite est consommée par une seule carte |
+
 ## 7. Harnais de test (`tools/test_capacites.py`) — pièges payés
 
 - **`[filtre]`** : `... rapport.json "ho0"` — 26 cas en 4 min. La batterie
@@ -455,6 +464,19 @@ deck**.
   de démarrer si un autre `test_capacites.py` / `verifier_tous_les_decks.py` /
   `autoplay.py` cible déjà le même dossier de jeu ; le `pgrep` manuel reste
   utile pour diagnostiquer, il n'est plus la seule protection.
+- ⚠ **`main` / `Puzzle.Gain` RÉUTILISE une carte existante** (`FindOrCreateFace`) :
+  un `01089` listé dans `main` aspire le Genius qu'on venait de poser en
+  défausse par `CreatePlayerDiscardPile`, et la recherche de Hedy Wolfe ne
+  trouve plus rien (hellcat, 11/09/2026). Payer avec une AUTRE carte que celle
+  qu'on veut voir en défausse.
+- ⚠ **`surpayer` dépense TOUTE la main** sur la première carte jouée, y compris
+  les cartes qu'on comptait jouer ensuite et les ressources d'identité
+  (Empowered) : jamais avec plusieurs `jouer`. `ne_pas_depenser: ["hc001a"]`
+  bloque une ressource d'identité (elle filtre les effets `is_paying` de la
+  carte).
+- ⚠ **`EmptyPlayerDeck` après `CreatePlayerDiscardPile` vide AUSSI la défausse** :
+  un deck vide y remélange la défausse, qui est alors « retirée ». Poser une
+  carte dans le deck (`CreatePlayerDeck('01057')`) avant de garnir la défausse.
 - Clés : `main_exclusive`, `jouer`, `cibles`, `payer_avec`, `ne_pas_depenser`,
   `surpayer` (obligatoire pour un coût X), `accepter_choix`, `heros2`.
   **Il n'existe PAS de clé `action`** : une capacité de carte en jeu se

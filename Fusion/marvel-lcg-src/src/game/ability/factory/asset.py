@@ -32,6 +32,10 @@ class AbilityFactoryAsset:
         attack_consequential_damage: int|None=None,
         thwart_consequential_damage: int|None=None,
         assault: int|None=None,
+        # 11/09/2026 : « Hellcat gains villainous » (hc010 Outer Demons, pack custom
+        # hellcat). `Gain` acceptait deja `villainous` (dd001a, 01/09) ; seule la
+        # fabrique d'amelioration attachee ne le transmettait pas.
+        villainous: int|None=None,
         have_res_icon: "Resources.RBYG|None"=None,
         apply: Callable[['Effect','CardFace', int], None]|None=None,
         #
@@ -53,6 +57,7 @@ class AbilityFactoryAsset:
                 recover == None and \
                 guard == None and \
                 patrol == None and \
+                villainous == None and \
                 steady == None and \
                 treat_as_blank == None and \
                 target_threat == None and \
@@ -89,6 +94,7 @@ class AbilityFactoryAsset:
                     recover=recover,
                     guard=guard,
                     patrol=patrol,
+                    villainous=villainous,
                     steady=steady,
                     treat_as_blank=treat_as_blank,
                     target_threat=target_threat,

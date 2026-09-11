@@ -33,14 +33,20 @@ def GetAbilities() -> Sequence['Ability']:
         # encore. Une declaration conditionnelle serait donc soit fausse, soit
         # impossible a evaluer.
         #
-        # On declare donc l'ignorance INCONDITIONNELLEMENT : la carte reste
+        # ⚠ CORRIGE LE MEME JOUR : declaree sans condition, l'ignorance valait AUSSI
+        # a la resolution (`IsIgnoreKeyword` lit la declaration) et la Crise ne
+        # mordait plus jamais, meme payee sans mental (vu sur hc006 On the Prowl).
+        # D'ou la `condition` : vraie tant que rien n'est paye (ciblage), tranchee
+        # par le paiement ensuite (resolution).
+        # On declare donc l'ignorance avec une CONDITION : la carte reste
         # ciblable, exactement comme avant le verrou, et c'est la RESOLUTION
         # qui tranche selon les ressources reellement depensees (le `if` plus
         # haut). Consequence assumee : payee sans mental sous une Crise, elle
         # ne retire rien. C'est le texte de la carte, et le joueur choisit ses
         # ressources en connaissance de cause — le bandeau « Crise » du
         # plateau le lui rappelle.
-        .SetIgnoreKeyword('Crisis')
+        .SetIgnoreKeyword('Crisis', condition=lambda effect:
+            effect.GetPaidResources().val == 0 or effect.GetPaidResources().HasColor("B"))
         .SetTarget(MainScheme)
     ]
 

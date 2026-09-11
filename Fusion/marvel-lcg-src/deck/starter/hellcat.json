@@ -1,0 +1,67 @@
+{
+ "version": "0.5.8",
+ "name": "Hellcat",
+ "metadata": {
+  "url": "",
+  "auteur": "jakxin",
+  "note": "Deck de depart IMPRIME par l'auteur (HellcatStarterDecklist.png), recopie tel quel. Black Cat (custom, listee) absente du dossier : laissee de cote sur decision utilisateur du 11/09/2026, d'ou 24 cartes au lieu de 25. Reskins hc023-hc026 = doublons avec l'art de jakxin (decision utilisateur).",
+  "variante": "Iron Man, l'allie signature « canon » de l'insert."
+ },
+ "hero": [
+  "hc001a,hc001b"
+ ],
+ "hero_deck": [
+  "hc002",
+  "hc003",
+  "hc004",
+  "hc005",
+  "hc005",
+  "hc005",
+  "hc006",
+  "hc006",
+  "hc007",
+  "hc007",
+  "hc008",
+  "hc008",
+  "hc009",
+  "hc010",
+  "hc011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "hc013"
+ ],
+ "nemesis_set": [
+  "hc014",
+  "hc015",
+  "hc016",
+  "hc017",
+  "hc017"
+ ],
+ "player_deck": [
+  "hc018",
+  "10013",
+  "01051",
+  "hc023",
+  "hc023",
+  "hc023",
+  "35018",
+  "35018",
+  "35018",
+  "41030",
+  "41030",
+  "41030",
+  "34032",
+  "34032",
+  "01057",
+  "28017",
+  "hc019",
+  "hc020",
+  "hc021",
+  "hc024",
+  "hc025",
+  "hc026",
+  "08023",
+  "40029"
+ ]
+}
