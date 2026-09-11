@@ -61,6 +61,19 @@ export const HEROS_INFO = {
         apparition: "Amazing Fantasy #15 (1962)",
     },
 
+    "ze001a": {
+        bio: "Roi des dieux de l'Olympe et maître de la foudre, Zeus règne sur le panthéon grec depuis qu'il a renversé son père Cronos avec ses frères Poséidon et Hadès. Dans l'univers Marvel, il est le père d'Hercule et de bien d'autres, allié épisodique des Vengeurs et de Thor, et un souverain aussi colérique que puissant : sa tempête ne distingue pas toujours les mortels des titans. Panhellenios, « de tous les Grecs », est l'un de ses titres de culte.",
+        bioEn: "King of the Olympian gods and master of lightning, Zeus rules the Greek pantheon since he overthrew his father Cronus with his brothers Poseidon and Hades. In the Marvel universe he is the father of Hercules and many others, an occasional ally of the Avengers and Thor, and a sovereign as wrathful as he is mighty: his tempest does not always tell mortals from titans. Panhellenios, \"of all the Greeks\", is one of his cult titles.",
+        civil: "Zeus Panhellenios",
+        base: "Mont Olympe",
+        baseEn: "Mount Olympus",
+        equipes: "Dieux de l'Olympe, Conseil des Dieux",
+        equipesEn: "Olympian Gods, Council of Godheads",
+        ennemis: "Nyx, Cronos, Typhon",
+        ennemisEn: "Nyx, Cronus, Typhon",
+        apparition: "Venus #5 (1949) ; Thor #129 (1966)",
+    },
+
     "ab001a": {
         bio: "Réplique androïde de Wolverine assemblée par le cyborg Donald Pierce, Albert est bâti dans un seul but : traquer et tuer l'original. Bridé à une intelligence rudimentaire pour rester docile, il est reprogrammé par Elsie-Dee, l'androïde à l'apparence de fillette qui l'accompagne, et découvre le libre arbitre en même temps que la trahison de son créateur. Griffes rétractables, châssis blindé et le visage de Logan : il a tout de l'original, sauf le passé.",
         bioEn: "An android replica of Wolverine assembled by the cyborg Donald Pierce, Albert was built for one purpose: to hunt down and kill the original. Kept at a crude level of intelligence to stay obedient, he is reprogrammed by Elsie-Dee, the child-shaped android at his side, and discovers free will at the same moment he discovers his maker's betrayal. Retractable claws, an armoured chassis and Logan's face: he has everything the original has, except the past.",
