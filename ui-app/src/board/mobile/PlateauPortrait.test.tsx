@@ -157,11 +157,16 @@ describe('PlateauPortrait — ennemis engages, heros et allies', () => {
     // l'image (.scan-fallback, aria-hidden mais toujours dans le DOM). On
     // cible donc le nom affiche precisement, comme les autres tests de ce
     // fichier (bloc complot, ci-dessus).
+    //
+    // L'ennemi est pose dans `terrain-combat` et NON dans `nemesis` : `nemesis`
+    // est le set nemesis mis de cote, hors jeu. Ces fixtures l'y placaient, et
+    // verrouillaient ainsi le defaut au lieu de l'attraper (recette du
+    // 11/09/2026, « Baron Zemo » range sous Engagés sans etre sur la table).
     const { container } = render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        plateau={plateau(emplacement('nemesis', unite('Baron Zemo', { name: 'Baron Zemo', kind: 'minion' })))}
+        plateau={plateau(emplacement('terrain-combat', unite('Baron Zemo', { name: 'Baron Zemo', kind: 'minion' })))}
       />
     )
     expect(container.querySelector('.portrait-engages .portrait-nom')).toHaveTextContent('Baron Zemo')
@@ -193,7 +198,7 @@ describe('PlateauPortrait — ennemis engages, heros et allies', () => {
         playerId={0}
         plateau={plateau(
           emplacement(
-            'nemesis',
+            'terrain-combat',
             unite('Baron Zemo', {
               name: 'Baron Zemo',
               kind: 'minion',
@@ -230,7 +235,7 @@ describe('PlateauPortrait — ennemis engages, heros et allies', () => {
         playerId={0}
         plateau={plateau(
           emplacement(
-            'nemesis',
+            'terrain-combat',
             unite('Rhino', { name: 'Rhino', kind: 'minion', stats: [{ label: 'ATQ', value: 4 }] })
           )
         )}

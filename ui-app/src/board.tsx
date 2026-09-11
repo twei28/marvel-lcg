@@ -1702,6 +1702,14 @@ function PagePartie({
   // La table est decoupee AVANT l'interaction : celle-ci a besoin de savoir
   // quelles cartes sont reellement dessinees pour ne rendre cliquable que ce qui
   // se voit, et renvoyer le reste au selecteur.
+  const {
+    mode: modePlateau,
+    reglage: reglageMode,
+    surAppareilMobile,
+    changer: changerReglageMode,
+  } = useModeMobile()
+  // Remonte ici (et non plus 200 lignes plus bas) parce que la construction du
+  // plateau en a besoin : voir `seulCeJoueur` juste en dessous.
   const plateau = useMemo(
     () =>
       etat.monde
@@ -1712,7 +1720,14 @@ function PagePartie({
             // En « Auto » (vueForcee === null), la vue suit celui qui doit agir
             // et la table montre tout le monde, comme une vraie partie a
             // plusieurs.
-            seulCeJoueur: vueForcee !== null,
+            //
+            // SAUF sur telephone : le portrait ne deplie qu'un joueur a la
+            // fois, ses onglets servent justement a changer de joueur. En
+            // « Auto », « Ton héros » listait les heros et allies de TOUTE la
+            // table et « Engagés » les ennemis de tout le monde : le titre
+            // mentait, et la hauteur des blocs devenait imprevisible
+            // (revue finale du 11/09/2026).
+            seulCeJoueur: vueForcee !== null || modePlateau === 'mobile',
           })
         : undefined,
     [etat.monde, joueurActif, catalogue, scansFr, vueForcee]
@@ -1902,12 +1917,6 @@ function PagePartie({
     if (!selecteurOuvert) setApercuSelecteur(undefined)
   }, [selecteurOuvert])
 
-  const {
-    mode: modePlateau,
-    reglage: reglageMode,
-    surAppareilMobile,
-    changer: changerReglageMode,
-  } = useModeMobile()
   // Deux etats seulement : automatique, ou forcer le plateau PC. Forcer le mode
   // MOBILE a disparu du cycle — c'est ce choix-la qui enfermait, puisqu'il
   // rendait ensuite l'option elle-meme inatteignable (voir modeEffectif).

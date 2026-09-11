@@ -10,9 +10,9 @@
 //
 // Il accepte exactement les BoardProps du plateau PC, comme PlateauPaysage :
 // c'est ce qui permet a board.tsx de choisir sans rien adapter.
-import type { ScanCardProps } from '../../components/ScanCard'
+import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
 import type { BoardProps } from '../Board'
-import type { UniteAffichee } from '../zones'
+import type { Plateau, UniteAffichee } from '../zones'
 import { t } from '../langue'
 import { BandeauPortrait } from './BandeauPortrait'
 import { BarreBas } from './BarreBas'
@@ -24,6 +24,9 @@ import { OngletsJoueurs } from './OngletsJoueurs'
 import { repartirEnBlocs } from './blocs-portrait'
 import { prochaineOuverte } from './geste-carte'
 import './portrait.css'
+import { useMemo } from 'react'
+import { avecInteraction } from '../Board'
+import type { EtatInteractif } from '../interaction'
 
 /**
  * TOUS les chiffres d'un personnage (vilain, engage, heros, allie), dans la
@@ -110,8 +113,57 @@ function jouerCarteMain(props: BoardProps, unite: UniteAffichee): void {
   else props.onCardClick?.(unite.carte)
 }
 
+const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
+const AUCUN_EFFET: Map<number, CardEffectDelta> = new Map()
+
+/**
+ * Applique l'interaction en cours a toutes les cartes du plateau, attachees
+ * comprises. Meme role que `decorerUnite` + `decorerEmplacement` dans
+ * PlateauPaysage ; on ne recopie pas `avecInteraction`, on l'appelle (son
+ * commentaire dans Board.tsx dit explicitement qu'une seconde copie
+ * divergerait, et c'est deja arrive).
+ */
+function decorerPlateau(
+  plateau: Plateau,
+  interactifs: Map<number, EtatInteractif> | undefined,
+  effets: Map<number, CardEffectDelta> | undefined,
+  heroActifId: number | undefined
+): Plateau {
+  const vivants = interactifs ?? AUCUNE_INTERACTION
+  const deltas = effets ?? AUCUN_EFFET
+  const decorer = (carte: ScanCardProps): ScanCardProps => {
+    const decoree = avecInteraction(carte, vivants, deltas)
+    return heroActifId !== undefined && Number(carte.id) === heroActifId
+      ? { ...decoree, estActif: true }
+      : decoree
+  }
+  return {
+    ...plateau,
+    emplacements: plateau.emplacements.map((emplacement) => ({
+      ...emplacement,
+      groupes: emplacement.groupes.map((groupe) =>
+        groupe.map((unite) => ({
+          ...unite,
+          carte: decorer(unite.carte),
+          attachees: unite.attachees.map(decorer),
+        }))
+      ),
+    })),
+  }
+}
+
 export function PlateauPortrait(props: BoardProps) {
-  const blocs = repartirEnBlocs(props.plateau)
+  // `avecInteraction` est le SEUL endroit qui pose `state`, `onSelect`,
+  // `targetPulse`, `spentCount` et `effectDelta` sur une carte : sans cet
+  // appel, RIEN n'est jouable sur telephone et rien ne s'allume quand le
+  // moteur attend une cible (recette du 11/09/2026). PlateauPaysage le fait
+  // deja, table et main ; le portrait l'avait oublie. On decore avant de
+  // repartir, pour que tous les blocs en heritent d'un coup.
+  const plateauDecore = useMemo(
+    () => decorerPlateau(props.plateau, props.interactifs, props.effets, props.heroActifId),
+    [props.plateau, props.interactifs, props.effets, props.heroActifId]
+  )
+  const blocs = repartirEnBlocs(plateauDecore)
   const vilain = blocs.find((bloc) => bloc.cle === 'vilain')?.unites ?? []
   // Seule la manigance PRINCIPALE se joue ici (spec du 11/09/2026, §Decoupage) :
   // les annexes, elles, restent pour une tache suivante.
@@ -147,6 +199,8 @@ export function PlateauPortrait(props: BoardProps) {
             carte={unite.carte}
             nom={unite.carte.name}
             chiffres={chiffresDe(unite.carte)}
+            onOuvrir={() => props.onCardClick?.(unite.carte)}
+            onJouer={unite.carte.onSelect}
           />
         ))}
         {principal ? (
@@ -155,7 +209,14 @@ export function PlateauPortrait(props: BoardProps) {
                 un second affichage a cote serait redondant. Une manigance
                 n'est pas un personnage (isUnit false) : chiffresDe() n'y
                 trouverait de toute facon ni PV ni stats. */}
-            <CarteAvecChiffres key={principal.cle} carte={principal.carte} nom={principal.carte.name} chiffres={[]} />
+            <CarteAvecChiffres
+              key={principal.cle}
+              carte={principal.carte}
+              nom={principal.carte.name}
+              chiffres={[]}
+              onOuvrir={() => props.onCardClick?.(principal.carte)}
+              onJouer={principal.carte.onSelect}
+            />
             <BarreMenace {...menaceDe(principal.carte)} />
           </>
         ) : null}
@@ -172,6 +233,8 @@ export function PlateauPortrait(props: BoardProps) {
                 carte={unite.carte}
                 nom={unite.carte.name}
                 chiffres={chiffresDe(unite.carte)}
+                onOuvrir={() => props.onCardClick?.(unite.carte)}
+                onJouer={unite.carte.onSelect}
               />
             ))
           )}
@@ -185,6 +248,8 @@ export function PlateauPortrait(props: BoardProps) {
               carte={unite.carte}
               nom={unite.carte.name}
               chiffres={chiffresDe(unite.carte)}
+              onOuvrir={() => props.onCardClick?.(unite.carte)}
+              onJouer={unite.carte.onSelect}
             />
           ))}
         </section>

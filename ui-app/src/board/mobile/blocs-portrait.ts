@@ -39,7 +39,18 @@ const BLOCS: Array<{ cle: CleBloc; titre: string; emplacements: CleEmplacement[]
   { cle: 'vilain', titre: 'Méchant', emplacements: ['rencontre'] },
   { cle: 'complot', titre: 'Manigances', emplacements: ['complot-principal', 'complots-secondaires'] },
   { cle: 'rencontre', titre: 'Rencontre', emplacements: ['piles-rencontre'] },
-  { cle: 'engages', titre: 'Engagés', emplacements: ['nemesis', 'annexes'] },
+  // « Engagés » ne recoit AUCUN emplacement entier : les ennemis reellement
+  // engages avec le joueur n'existent nulle part en bloc, ils se demelent de
+  // `terrain-combat` plus bas sur leur `kind`.
+  //
+  // Y brancher `nemesis` et `annexes` etait faux, et visible en jeu (recette du
+  // 11/09/2026, « Baron Zemo » range sous Engagés alors qu'il n'est pas sur la
+  // table) : `nemesis` est le set nemesis MIS DE COTE, hors jeu, et `annexes`
+  // porte les mises de cote, la pile de victoire, les cartes retirees, les
+  // preuves. Les montrer sous « Engagés » laisse croire qu'ils sont en jeu, et
+  // empeche « Aucun ennemi engagé » de s'afficher un jour, la pile nemesis
+  // etant presque toujours la.
+  { cle: 'engages', titre: 'Engagés', emplacements: [] },
   {
     cle: 'heros',
     titre: 'Ton héros',
