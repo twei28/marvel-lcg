@@ -79,3 +79,30 @@ Au passage : les journaux moteur existent bien en prod (`.site/moteur-N.log`,
 un par table, ÉCRASÉ à chaque lancement de la table). Le rapport de 08:45
 correspondait à une table relancée depuis : son journal était perdu. Une
 rotation (`moteur-N-<date>.log`) éviterait ça.
+
+
+## ✅ CORRIGÉ LE 11/09/2026 : la Crise verrouille maintenant la cible
+
+Le diagnostic ci-dessus (« ce n'est pas un défaut, c'est la règle ») était
+juste sur les règles et **faux sur le produit** : la règle s'appliquait, mais
+le jeu laissait quand même choisir la cible, donc perdre la carte. Les deux
+autres icônes de verrouillage ne font pas ça.
+
+**Ce qui a été livré** (commit `92cd218e`) :
+
+- `MainScheme.CanBeThwartBy` verrouille la Crise comme il verrouillait déjà la
+  Patrouille. Le complot principal n'est plus proposé à un contre tant qu'une
+  icône de crise est en jeu.
+- `90119` Search and Rescue et `15012` Crisis Averted déclarent leur ignorance
+  (`.SetIgnoreKeyword('Crisis')`), sans quoi le verrou les aurait privées de
+  cible. `15012` avait été **ratée par un grep** : elle passe par une variable.
+- Gate `tools/verifier_ignore_crise.py`, calibrée.
+- Six cas dans `test_capacites.py`, dont trois témoins.
+- Plateau (commit `019ca4e5`) : pastille « Crise » sur le complot principal et
+  phrase dans l'aperçu, pour dire POURQUOI la cible n'est pas offerte.
+
+**Ce qui reste possible, et c'est assumé** : `15012` Crisis Averted peut
+encore être jouée « dans le vide » si le joueur ne la paie pas avec une
+ressource mentale. Le moteur ne peut pas le savoir à l'avance, le paiement
+venant après le ciblage. C'est le seul cas du dépôt, et la pastille « Crise »
+prévient.
