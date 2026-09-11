@@ -154,6 +154,21 @@
     display: none !important;
   }
 
+  /* PAS de loupe au survol sur telephone. `ScanCard.css` agrandit
+     `.scan-visuel` de 2,5x sur `:hover` et `:focus-visible` : c'est la
+     consultation a la souris du plateau PC. Ici il n'y a pas de souris, et le
+     tap POSE LE FOCUS — la carte grossissait donc a chaque fois qu'on la
+     jouait, et sortait de l'ecran par la gauche (mesure : bord a -69 px sur
+     500, nom et etiquette coupes). Le portrait a son propre geste de lecture,
+     le tap qui ouvre la carte.
+
+     Meme couche que ScanCard.css (`composants`) : c'est la specificite qui
+     trie, pas besoin d'`!important` ici. */
+  .plateau-portrait .scan-card:hover .scan-visuel,
+  .plateau-portrait .scan-card:focus-visible .scan-visuel {
+    transform: none;
+  }
+
   /* La carte en petit, son nom, et les chiffres a cote : trois colonnes. */
   .portrait-carte {
     display: grid;
