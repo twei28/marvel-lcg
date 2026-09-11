@@ -24,7 +24,7 @@ import { etatSalon } from "/public/js/prepare/salon-etat.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversion.js";
 import { chargerHeros } from "/public/js/marvelcdb/index.js";
-import { filtrer, aspectsPresents, tagsPresents } from "/public/js/marvelcdb/filtres.js";
+import { filtrer, aspectsPresents, tagsPresents, aDesRangs } from "/public/js/marvelcdb/filtres.js";
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { lireBrouillon, ecrireBrouillon } from "/public/js/campagne/brouillon.js";
@@ -2171,7 +2171,7 @@ async function ouvrirPanneauCdb(i) {
     if (!p || !p.hero) return;
     await cards.load();
     const paquet = await chargerHeros(p.hero.heroCardId);
-    const criteres = { aspect: "", tag: "", texte: "", masquerIncomplets: true };
+    const criteres = { aspect: "", tag: "", texte: "", masquerIncomplets: true, tri: "date" };
     let favoris = lireFavoris();
 
     const liste = el("div", { class: "cdb-liste" });
@@ -2206,6 +2206,11 @@ async function ouvrirPanneauCdb(i) {
             etoile,
             el("div", { class: "cdb-nom" },
                 el("b", {}, d.nom),
+                // Le rang dans le classement de popularite marvelcdb. Absent
+                // pour la grande majorite des decks : le releve ne descend que
+                // jusqu'a un certain rang, et ne pas y figurer ne veut PAS dire
+                // impopulaire.
+                d.rang ? el("span", { class: "cdb-rang", title: t("Rang dans les decks populaires de MarvelCDB") }, "#" + d.rang) : null,
                 el("span", { class: "cdb-date" }, d.date)),
             el("div", { class: "do-tags" },
                 d.aspect ? el("span", { class: "tag asp", style: { background: ASPECTS[d.aspect] || "#555" } }, d.aspect) : null,
@@ -2250,6 +2255,15 @@ async function ouvrirPanneauCdb(i) {
                 el("select", { onchange: (e) => { criteres.tag = e.target.value; rendre(); } },
                     opt("", t("Tous les tags")),
                     ...tagsPresents(paquet.decks).map((tg) => opt(tg, tg))),
+                // ⚠ Le tri n'est propose QUE s'il y a de quoi trier : sans le
+                // relevé de popularite (tools/marvelcdb_popularite.py jamais
+                // lance), un menu « Les plus populaires » ne changerait rien a
+                // l'ordre et mentirait au joueur.
+                aDesRangs(paquet.decks)
+                    ? el("select", { onchange: (e) => { criteres.tri = e.target.value; rendre(); } },
+                        opt("date", t("Les plus récents")),
+                        opt("populaire", t("Les plus populaires")))
+                    : null,
                 el("label", { class: "cdb-tout" },
                     el("input", {
                         type: "checkbox",
