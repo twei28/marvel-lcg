@@ -26,6 +26,19 @@ function bloc(selecteur: string): string {
   return CSS.slice(debut, CSS.indexOf('}', debut))
 }
 
+describe('l’aperçu d’une carte', () => {
+  it('reserve la place que la jauge deborde sous le cadre', () => {
+    // La jauge sort du cadre par une marge negative (ScanCard.css) : le flux ne
+    // reserve pas ce debord, et le bandeau Crise passait dessous. Mesure dans
+    // Chrome : 12 px de chevauchement avant, 0 apres. jsdom ne fait pas de mise
+    // en page, on verrouille donc la regle dans la feuille.
+    expect(CSS).toContain('.carte-apercu .apercu-face:has(.jauge-carte)')
+    expect(bloc('.carte-apercu .apercu-face:has(.jauge-carte)')).toContain(
+      'padding-bottom: var(--jauge-debord)'
+    )
+  })
+})
+
 describe('les decorations des cartes de la scene', () => {
   it.each(['.deroule-jeton', '.deroule-carte-legende'])(
     '%s ne prend pas le pointeur',

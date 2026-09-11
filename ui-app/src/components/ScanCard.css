@@ -11,6 +11,15 @@
      health = rouge clair, threat = jaune, scheme = cyan. */
 
 @layer composants {
+  /* L'epaisseur de la bande de jauge, et ce qu'elle DEBORDE sous le cadre.
+     Au :root, et non sur .jauge-carte : l'apercu (board.css) doit reserver ce
+     debord sous la carte, et une variable posee sur la bande elle-meme n'est
+     lisible que par elle et ses enfants, jamais par son parent. */
+  :root {
+    --jauge-epaisseur: calc(16px / var(--echelle, 1));
+    --jauge-debord: calc(var(--jauge-epaisseur) * 1.15);
+  }
+
   .scan-card {
     --card-w: 116px;
     --inspect-scale: 2.5;
@@ -297,7 +306,6 @@
        (vitrine, apercu), --echelle vaut 1 et la formule se lit telle quelle. */
     /* Assez haute pour porter son chiffre (« 8 / 12 ») : demande de
        l'utilisateur, 7 septembre 2026. */
-    --jauge-epaisseur: calc(16px / var(--echelle, 1));
     /* Posee dans la ZONE « scan » de la grille, et NON en absolu sur toute la
        couche : `.scan-visuel` empile l'etiquette de type, un gap de 5 px, puis
        le cadre. Un pourcentage sur la couche entiere decalait la bande de la
@@ -310,7 +318,7 @@
     height: var(--jauge-epaisseur);
     /* Juste sous le cadre : chaque pixel de sortie est un pixel de hauteur en
        plus pour la carte, et la place manque deja en bas des zones. */
-    margin-bottom: calc(var(--jauge-epaisseur) * -1.15);
+    margin-bottom: calc(var(--jauge-debord) * -1);
     z-index: 4;
     border-radius: 999px;
     background: rgba(20, 20, 20, 0.9);

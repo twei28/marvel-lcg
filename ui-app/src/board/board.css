@@ -2274,6 +2274,17 @@
     position: relative;
   }
 
+  /* La jauge (« 3 / 3 ») DEBORDE sous le cadre, par une marge negative voulue :
+     sur la table, chaque pixel de sortie est un pixel de hauteur gagne. Dans
+     l'apercu, en revanche, des blocs la suivent (bandeau Crise, mots-cles,
+     raisons de refus) et le flux ne reserve pas ce debord : mesure dans Chrome
+     le 11/09/2026, 12 px de chevauchement sur le bandeau Crise (capture de
+     l'utilisateur). On rend la place ici, et seulement quand la carte porte
+     vraiment une jauge. */
+  .carte-apercu .apercu-face:has(.jauge-carte) {
+    padding-bottom: var(--jauge-debord);
+  }
+
   /* Carte multi-faces : toutes les faces cote a cote, reduites selon le nombre
      (2 faces = recto-verso, 3 faces = Ant-Man Ant-Man/Giant-Man/Scott Lang). */
   .carte-apercu.a-plusieurs-faces {
