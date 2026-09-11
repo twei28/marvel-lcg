@@ -46,7 +46,7 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-11",
-        genre: "plateau",
+        genre: "correction",
         fr: "Les cartes de statut (Stunned, Confused, Tough) sont enfin nettes en grand : elles étaient affichées à partir d'une image de 149 pixels étirée quatre fois. Merci à Manu pour le signalement.",
         en: "Status cards (Stunned, Confused, Tough) are finally sharp when enlarged: they were drawn from a 149-pixel image stretched four times. Thanks to Manu for reporting it.",
     },
