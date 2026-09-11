@@ -42,3 +42,40 @@ déploiement, le journal serveur dira pourquoi.
 3. Si c'est bien l'undo : côté plateau, invalider la liste des moyens de
    paiement (`target_payment`) à chaque nouvelle demande du moteur, ne
    jamais réutiliser celle d'avant.
+
+## ✅ RÉSOLU LE 11/09/2026 : ce n'est pas un défaut, c'est le mot-clé Crise
+
+Journal moteur rapatrié du serveur (`.site/moteur-5.log`, partie Spider-Man
+Justice contre Risky Business). Chaque fois que *Pour la Justice* (`01060`)
+est jouée :
+
+```
+414: Spider-Man would play For Justice! with (RR)
+415: For Justice! activates, targets [(48,02004b) Hostile Takeover]
+416: Spider-Man va contrer Hostile Takeover (+3)
+417: [(59,02009) Collapsing Bridge]'s Crisis activates
+418: For Justice! were discarded
+```
+
+**Collapsing Bridge (`02009`) porte Crise** : tant qu'elle est en jeu, la
+menace ne peut pas être retirée du complot principal. Le joueur cible le
+complot principal, le moteur applique la règle, la carte part en défausse
+sans effet. C'est conforme aux règles. La même séquence apparaît trois fois,
+séparée par des « Game Restart » : le joueur a annulé et rejoué le même coup,
+ce qui explique le « c'est lié à l'undo » du rapport (l'undo est la
+conséquence, pas la cause).
+
+**Ce qui manque, c'est une explication au joueur.** La carte est jouable, donc
+le canal des refus ne dit rien ; et le plateau laisse choisir un complot dont
+la menace est verrouillée. Pistes, à décider avec l'utilisateur :
+
+1. Sur le plateau, un bandeau « Crise » sur le complot principal tant qu'une
+   manigance à Crise est en jeu, et un mot dans l'aperçu au survol.
+2. Exclure le complot principal des cibles d'un contre tant qu'une Crise est
+   en jeu (la règle rend le choix inutile, pas illégal : c'est un choix de
+   confort, à annoncer).
+
+Au passage : les journaux moteur existent bien en prod (`.site/moteur-N.log`,
+un par table, ÉCRASÉ à chaque lancement de la table). Le rapport de 08:45
+correspondait à une table relancée depuis : son journal était perdu. Une
+rotation (`moteur-N-<date>.log`) éviterait ça.
