@@ -109,4 +109,56 @@
     text-transform: uppercase;
     color: #8a94a3;
   }
+
+  .barre-menace-bloc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px 6px;
+  }
+
+  .barre-menace {
+    display: flex;
+    flex: 1;
+    gap: 3px;
+  }
+
+  .barre-menace-case {
+    flex: 1;
+    height: 10px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .barre-menace-case.est-pose {
+    background: var(--menace);
+    border-color: var(--menace-clair);
+  }
+
+  .barre-menace-compte b {
+    font-size: 1.5rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .barre-menace-compte small {
+    font-size: 0.8rem;
+    color: #8a94a3;
+  }
+
+  .barre-menace-compte em {
+    margin-left: 6px;
+    font-style: normal;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a94a3;
+  }
+
+  .portrait-compteurs {
+    display: flex;
+    gap: 18px;
+    padding: 4px 12px 8px;
+  }
 }
