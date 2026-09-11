@@ -2868,6 +2868,19 @@
   .icone-res.res-mental { --res: #3498db; }
   .icone-res.res-energy { --res: #f1c40f; }
   .icone-res.res-wild { --res: #2ecc71; }
+  /* L'eclair (pack Zeus) : bleu electrique, pour ne pas se confondre avec
+     l'energie jaune. Pas de glyphe dans la police : un SVG a la place. */
+  .icone-res.res-lightning { --res: #5ec8ff; }
+  .icone-res.res-lightning svg {
+    width: 0.95em;
+    height: 0.95em;
+    vertical-align: -0.12em;
+    fill: currentColor;
+    stroke: color-mix(in srgb, var(--res) 55%, #000);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
 
   /* --- Deroule detaille de la phase du mechant : la scene centrale ---------
      FIXE au centre de l'ecran, elle ne bouge jamais d'une etape a l'autre.

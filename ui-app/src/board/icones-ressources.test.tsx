@@ -37,4 +37,17 @@ describe('les ressources en icones', () => {
   it('rend une chaine sans marqueur telle quelle', () => {
     expect(avecIcones('Attaque')).toBe('Attaque')
   })
+
+  it("connait l'eclair, la ressource maison du pack Zeus (11/09/2026)", () => {
+    expect(marquerRessources('Génère [[lightning]]')).toBe('Génère ⟦L⟧')
+    expect(marquerRessources('a lightning resource')).toBe('a ⟦L⟧ resource')
+    expect(coutEnIcones('YL')).toBe('⟦E⟧⟦L⟧')
+    const { container } = render(<span>{avecIcones('Paie ⟦L⟧')}</span>)
+    const icone = container.querySelector('i.icone-res.res-lightning')
+    expect(icone).not.toBeNull()
+    // Pas de glyphe d'eclair droit dans ChampionsIcons : c'est un SVG.
+    expect(icone?.querySelector('svg')).not.toBeNull()
+    expect(icone?.getAttribute('aria-label')).toBe('éclair')
+    expect(container.textContent).toBe('Paie ')
+  })
 })

@@ -15,11 +15,11 @@ import { t } from './langue'
 
 export type Ressource = {
   /** Lettre du moteur (`desc.RES`, couts types). */
-  lettre: 'R' | 'B' | 'Y' | 'G'
-  /** Glyphe dans la police ChampionsIcons. */
-  glyphe: 'P' | 'M' | 'E' | 'W'
+  lettre: 'R' | 'B' | 'Y' | 'G' | 'L'
+  /** Glyphe dans la police ChampionsIcons ; `L` n'y existe pas et se rend en SVG. */
+  glyphe: 'P' | 'M' | 'E' | 'W' | 'L'
   /** Cle des jetons de narration (« [[physical]] »). */
-  cle: 'physical' | 'mental' | 'energy' | 'wild'
+  cle: 'physical' | 'mental' | 'energy' | 'wild' | 'lightning'
   nom: string
 }
 
@@ -28,6 +28,9 @@ export const RESSOURCES: readonly Ressource[] = [
   { lettre: 'B', glyphe: 'M', cle: 'mental', nom: 'mentale' },
   { lettre: 'Y', glyphe: 'E', cle: 'energy', nom: 'énergie' },
   { lettre: 'G', glyphe: 'W', cle: 'wild', nom: 'libre' },
+  // L'eclair : ressource MAISON du pack Zeus (11/09/2026), cinquieme couleur
+  // du moteur. Distincte de l'energie : un eclair ne paie pas un cout energie.
+  { lettre: 'L', glyphe: 'L', cle: 'lightning', nom: 'éclair' },
 ]
 
 const PAR_GLYPHE = new Map(RESSOURCES.map((r) => [r.glyphe, r]))
@@ -39,8 +42,8 @@ export function marqueurRessource(cle: Ressource['cle']): string {
   return `⟦${PAR_CLE.get(cle)?.glyphe ?? 'W'}⟧`
 }
 
-const JETONS = /\[\[(physical|mental|energy|wild)\]\]/g
-const MOTS = /\b(physical|mental|energy|wild)(?= resources?\b)/gi
+const JETONS = /\[\[(physical|mental|energy|wild|lightning)\]\]/g
+const MOTS = /\b(physical|mental|energy|wild|lightning)(?= resources?\b)/gi
 
 /**
  * Remplace, dans un texte du moteur, les jetons « [[energy]] » et les mots
@@ -58,7 +61,7 @@ export function marquerRessources(texte: string): string {
  * Un cout ordinaire (« 2 », « 1/3 ») ou vide est rendu tel quel.
  */
 export function coutEnIcones(cout: string): string {
-  if (!/^[RBYG]+$/i.test(cout)) return cout
+  if (!/^[RBYGL]+$/i.test(cout)) return cout
   return cout
     .toUpperCase()
     .split('')
@@ -66,7 +69,16 @@ export function coutEnIcones(cout: string): string {
     .join('')
 }
 
-const MARQUEUR = /⟦([PMEW])⟧/g
+const MARQUEUR = /⟦([PMEWL])⟧/g
+
+/** Un eclair droit, comme sur les cartes de Zeus. `currentColor` suit `--res`. */
+function IconeEclair() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M13 2 4 14h6l-1 8 9-12h-6z" />
+    </svg>
+  )
+}
 
 /**
  * Rend un texte porteur de marqueurs : les morceaux de texte tels quels, les
@@ -91,7 +103,7 @@ export function avecIcones(texte: string): ReactNode {
           aria-label={t(ressource.nom)}
           title={t(ressource.nom)}
         >
-          {ressource.glyphe}
+          {ressource.cle === 'lightning' ? <IconeEclair /> : ressource.glyphe}
         </i>
       )
     }
