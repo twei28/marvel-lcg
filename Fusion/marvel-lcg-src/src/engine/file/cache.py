@@ -1,6 +1,7 @@
 from core import *
 import requests
 from engine.lib import ImageCreator, ImageLib
+from engine.lib.faces_hd import redresser as RedresserFacesHD
 from engine.log import Log
 from engine.file import FileManager
 from engine.config import ConfigVariables
@@ -92,10 +93,37 @@ class Cache:
                 with FileManager.OpenFile(chemin, write=True, bin=True) as file:
                     file.Write(data)
                 Log.DebugInfo(CATEGORY_NAME, f"HD telecharge : {card_id} depuis {full_url}")
+                data = Cache.RedresserSiCroise(card_id, data)
                 return ImageLib.TryRotateImage(data)
             except requests.exceptions.RequestException as e:
                 Log.Warn(CATEGORY_NAME, f"HD : {full_url} : {e}")
         return None
+
+    @staticmethod
+    def RedresserSiCroise(card_id: str, data: bytes) -> bytes:
+        """Une face d'identite (NNNNNa / NNNNNb) vient d'etre telechargee : si
+        sa jumelle est deja la, on compare la paire au scan habituel et on
+        echange les deux fichiers s'ils sont croises (engine/lib/faces_hd.py,
+        11/09/2026 : Wolverine, Storm et huit autres arrivaient inverses des
+        serveurs d'images). Rend les octets du BON fichier pour `card_id`.
+        L'outil tools/telecharger_scans_hd.py fait la meme chose en masse au
+        deploiement ; ici, c'est pour la face telechargee a la demande."""
+        import re
+        if not re.match(r'^\d{5}[ab]$', card_id):
+            return data
+        face_a = card_id[:-1] + "a"
+        try:
+            reference = IMAGE_FOLDERS.value[0]
+            echangees = RedresserFacesHD(HD_FOLDER.value, reference, [face_a])
+        except Exception as e:  # PIL absent, fichier illisible : on garde ce qu'on a
+            Log.Warn(CATEGORY_NAME, f"HD : faces croisees non verifiees pour {card_id} : {e}")
+            return data
+        if not echangees:
+            return data
+        Log.DebugInfo(CATEGORY_NAME, f"HD : faces croisees redressees pour {face_a}")
+        chemin = FileManager.JoinPath(HD_FOLDER.value, f"{card_id}.jpg")
+        with FileManager.OpenFile(chemin, read=True, bin=True) as file:
+            return file.Read()
 
     @staticmethod
     def LoadVignette(card_id: str) -> bytes:
