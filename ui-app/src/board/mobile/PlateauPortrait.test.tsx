@@ -99,7 +99,11 @@ describe('PlateauPortrait — bloc vilain', () => {
         playerId={0}
         plateau={plateau(
           emplacement(
-            'terrain-combat',
+            // Le mechant vit dans l'emplacement `rencontre` (zones.ts :
+            // `airesVilains(world)`), pas `terrain-combat` (allies/sbires
+            // engages/environnement) — defaut corrige le 11/09/2026, le
+            // mechant ne s'affichait alors NULLE PART.
+            'rencontre',
             unite('Rhino', {
               name: 'Rhino',
               kind: 'villain',
