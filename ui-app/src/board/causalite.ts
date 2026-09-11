@@ -16,9 +16,15 @@
 // ou la regle qui declenche. C'est le « via quoi ».
 //
 // Gabarits repris de src/game/message/sender/sender_damage.py (lignes 325, 611,
-// 739) et sender_scheme.py (ligne 85). La narration arrive en anglais ; si elle
-// venait a etre traduite, les motifs cesseraient simplement de matcher et
-// l'entree perdrait son attribution — elle ne se tromperait pas d'auteur.
+// 739) et sender_scheme.py (ligne 85).
+//
+// ⚠ LA NARRATION ARRIVE DANS LA LANGUE DU MOTEUR, pas toujours en anglais.
+// L'en-tete disait ici que la traduction ferait simplement perdre l'attribution.
+// C'est arrive le 11/09/2026 : la reparation des cles de translate_fr.json
+// (66 d'entre elles ne correspondaient a aucune phrase, donc ne traduisaient
+// rien) a mis « Spider-Man est attaque par Klaw » sur la table, et plus aucune
+// ligne chiffree n'avait d'auteur. Les motifs existent donc en DEUX langues,
+// et les textes francais sont ceux de data/translate_fr.json, mot pour mot.
 
 import { t } from './langue'
 
@@ -53,6 +59,13 @@ function estFraiche(renderId: number, causeRenderId: number): boolean {
   return ecart >= 0 && ecart <= PORTEE_RENDUS
 }
 
+/**
+ * Le moteur ecrit « s'apprete » avec l'apostrophe courbe du fichier de
+ * traduction ; un copier-coller ou un futur remaniement peut y mettre la
+ * droite. Les deux sont acceptees, ici et nulle part ailleurs.
+ */
+const APOSTROPHE = String.raw`[’']`
+
 const MOTIFS: Array<[RegExp, (m: RegExpMatchArray) => Cause]> = [
   // « {unit} would deal {damage} damage to {target} ({effect}) »
   [
@@ -79,6 +92,36 @@ const MOTIFS: Array<[RegExp, (m: RegExpMatchArray) => Cause]> = [
   // « {unit} will thwart {schemes} ({additional_value:+}) »
   [
     /^(.+?) will thwart (.+?)(?: \([+-]?\d+\))?$/,
+    (m) => ({ genre: 'menace', cible: m[2], source: m[1] }),
+  ],
+
+  /* --- Les memes, en francais (data/translate_fr.json) --------------------
+     « degat(s) » porte des parentheses collees au mot : le groupe optionnel de
+     fin exige une ESPACE avant la sienne, il ne peut donc pas les avaler. */
+
+  // « {unit} s'apprete a infliger {damage} degat(s) a {target} »
+  [
+    new RegExp(`^(.+?) s${APOSTROPHE}apprête à infliger \\d+ dégât\\(s\\) à (.+?)(?: \\(([^()]*)\\))?$`),
+    (m) => ({ genre: 'degats', cible: m[2], source: m[1], via: m[3] }),
+  ],
+  // « {unit} va subir {damage} degat(s) de {source} ({effect}) »
+  [
+    /^(.+?) va subir \d+ dégât\(s\) de (.+?)(?: \(([^()]*)\))?$/,
+    (m) => ({ genre: 'degats', cible: m[1], source: m[2], via: m[3] }),
+  ],
+  // « {trigger} est attaque par {attacker} »
+  [
+    /^(.+?) est attaqué par (.+)$/,
+    (m) => ({ genre: 'degats', cible: m[1], source: m[2] }),
+  ],
+  // « {scheme} s'apprete a recevoir {value}⚠ »
+  [
+    new RegExp(`^(.+?) s${APOSTROPHE}apprête à recevoir \\d+⚠(?: \\(([^()]*)\\))?$`),
+    (m) => ({ genre: 'menace', cible: m[1], via: m[2] }),
+  ],
+  // « {unit} va contrer {schemes} ({additional_value:+}) »
+  [
+    /^(.+?) va contrer (.+?)(?: \([+-]?\d+\))?$/,
     (m) => ({ genre: 'menace', cible: m[2], source: m[1] }),
   ],
 ]

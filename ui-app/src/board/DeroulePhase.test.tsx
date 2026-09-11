@@ -2381,6 +2381,48 @@ describe('le bilan de fin de phase', () => {
       expect(document.body.classList.contains('deroule-question')).toBe(true)
     })
 
+    it('ouvre la loupe au survol d une carte de la scene PENDANT une question', () => {
+      // Capture de l'utilisateur, 11/09/2026 : « Defendre ? » dans la scene,
+      // la carte revelee au milieu, et rien en grand au survol.
+      class ResizeObserverBouchon {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      }
+      vi.stubGlobal('ResizeObserver', ResizeObserverBouchon)
+      const scanLocal = (id: number): ScanCardProps => ({ id: String(id), name: `c${id}`, kind: 'minion', imageUrl: `/scan/${id}` })
+      const annonce: EtapeDeroule[] = [
+        {
+          cle: 'activation:1',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Klaw',
+          cibleNom: 'Spider-Man',
+          etat: 'annonce',
+          valeurAnnoncee: 2,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase
+          etapes={annonce}
+          phaseMechantEnCours
+          questionAuJoueur
+          question={<button type="button">Défendre</button>}
+          carteScene={(id) => scanLocal(id)}
+          onTerminer={() => {}}
+        />
+      )
+      const carte = container.querySelector('.deroule-cartes .deroule-carte.est-auteur .scan-card')
+      expect(carte).not.toBeNull()
+      fireEvent.mouseOver(carte as Element)
+      expect(document.querySelector('.carte-apercu')).not.toBeNull()
+      vi.unstubAllGlobals()
+    })
+
     it('rend la main au voile une fois la question resolue', () => {
       const scene = (questionAuJoueur: boolean) => (
         <DeroulePhase
