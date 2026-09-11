@@ -813,4 +813,5 @@ export const DICO_EN_BASE: Record<string, string> = {
   mental: 'mental',
   énergie: 'energy',
   joker: 'wild',
+  éclair: 'lightning',
 }

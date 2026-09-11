@@ -45,6 +45,7 @@ function ressourcesLisibles(brut: string): string {
     B: 'mental',
     Y: 'énergie',
     G: 'joker',
+    L: 'éclair',
   }
   const lettres = brut.split('').filter((c) => c in NOMS)
   if (lettres.length === 0) return brut

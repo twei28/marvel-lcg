@@ -27,6 +27,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   test: 'test',
   active: 'actif',
   energy: 'énergie',
+  lightning: 'éclair',
   glider: 'planeur',
   bomb: 'bombe',
   mental: 'mental',

@@ -41,12 +41,12 @@ function tableDuPlateau(): Record<string, string> {
 }
 
 describe('les noms de ressources', () => {
-  it('le moteur en déclare bien quatre', () => {
-    expect(Object.keys(tableDuMoteur()).sort()).toEqual(['B', 'G', 'R', 'Y'])
+  it('le moteur en déclare bien cinq (l’éclair depuis le 11/09/2026)', () => {
+    expect(Object.keys(tableDuMoteur()).sort()).toEqual(['B', 'G', 'L', 'R', 'Y'])
   })
 
-  it('le plateau en déclare bien quatre', () => {
-    expect(Object.keys(tableDuPlateau()).sort()).toEqual(['B', 'G', 'R', 'Y'])
+  it('le plateau en déclare bien cinq', () => {
+    expect(Object.keys(tableDuPlateau()).sort()).toEqual(['B', 'G', 'L', 'R', 'Y'])
   })
 
   it('le plateau dit exactement la même chose que le moteur', () => {

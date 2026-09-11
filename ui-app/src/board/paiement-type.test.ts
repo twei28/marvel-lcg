@@ -120,6 +120,20 @@ describe('les autres formes de cout par types', () => {
     expect(reponsePrete(option, [], [1]).prete).toBe(true)
   })
 
+  it("exige une energie ET un eclair pour « YL » (Skyfather's Tempest, pack Zeus)", () => {
+    const option = optionAvecCout('YL', [
+      [1, 'Y'],
+      [2, 'Y'],
+      [3, 'L'],
+      [4, 'G'],
+    ])
+    expect(reponsePrete(option, [], [1, 2]).prete).toBe(false)
+    expect(reponsePrete(option, [], [1, 2]).raison).toMatch(/lightning|éclair/i)
+    expect(reponsePrete(option, [], [1, 3]).prete).toBe(true)
+    // Un joker vaut aussi un eclair.
+    expect(reponsePrete(option, [], [1, 4]).prete).toBe(true)
+  })
+
   it('laisse un joker completer un type manquant', () => {
     const option = optionAvecCout('BY', [
       [1, 'B'],

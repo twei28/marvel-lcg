@@ -219,6 +219,8 @@ const NOM_TYPE: Record<string, string> = {
   B: 'mental',
   Y: 'energy',
   G: 'wild',
+  // L'eclair, ressource maison du pack Zeus (11/09/2026).
+  L: 'lightning',
 }
 
 /**
@@ -229,7 +231,7 @@ const NOM_TYPE: Record<string, string> = {
  * de chaque. Un cout ordinaire est un nombre (« 2 ») et ne rend rien ici.
  */
 export function coutParType(cost: string): Record<string, number> | undefined {
-  const lettres = cost.match(/[rbyg]/gi)
+  const lettres = cost.match(/[rbygl]/gi)
   if (!lettres) return undefined
   const exige: Record<string, number> = {}
   for (const lettre of lettres) {
@@ -260,7 +262,7 @@ export function typesManquants(
 
   const fourni: Record<string, number> = {}
   for (const id of ressources) {
-    for (const lettre of (texteParEffet.get(id) ?? '').match(/[rbyg]/gi) ?? []) {
+    for (const lettre of (texteParEffet.get(id) ?? '').match(/[rbygl]/gi) ?? []) {
       const type = lettre.toUpperCase()
       fourni[type] = (fourni[type] ?? 0) + 1
     }
@@ -309,12 +311,12 @@ export function foisDisponible(paiement: Paiement | undefined, effectId: number)
  * Le moteur encode une carte a double (ou triple) ressource comme un seul effet
  * dont le `res_text` porte plusieurs icones : « BB » = 2 mentales, « RRR » = 3
  * physiques, « G » = 1 joker. Le texte est deja nettoye cote moteur
- * (Symbol.Clean), il ne reste que les lettres de couleur R/B/Y/G. La valeur est
+ * (Symbol.Clean), il ne reste que les lettres de couleur R/B/Y/G/L. La valeur est
  * donc le nombre de ces lettres. Un effet sans lettre lisible vaut 1 (au moins
  * une ressource, comme l'ancien comptage).
  */
 export function valeurMoyen(resText: string): number {
-  const icones = (resText.match(/[rbyg]/gi) ?? []).length
+  const icones = (resText.match(/[rbygl]/gi) ?? []).length
   return icones > 0 ? icones : 1
 }
 
