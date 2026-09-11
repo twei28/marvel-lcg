@@ -25,5 +25,17 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             search_and_rescue
         ).SetPlay().SetLabel('thwart')
+        # ⚠ DECLARER l'ignorance, pas seulement la passer a la resolution
+        # (11/09/2026). Depuis que la Crise verrouille la CIBLE
+        # (`MainScheme.CanBeThwartBy`), le complot principal n'est plus offert
+        # aux contres tant qu'une Crise est en jeu. `ignore_crisis=True` dans
+        # l'operation arrive trop tard : il faut que le ciblage le sache.
+        # `SetIgnoreKeyword` pose exactement ce que lit `IsIgnoreKeyword`.
+        #
+        # C'est le SEUL contre du depot qui ignore la Crise : les six autres
+        # cartes a `ignore_crisis=True` sont des Actions, qui ne passent pas
+        # par `CanBeThwartBy`. La gate `verifier_ignore_crise.py` veille a ce
+        # qu'un futur contre n'oublie pas cette ligne.
+        .SetIgnoreKeyword('Crisis')
         .SetTarget(Scheme2),
     ]

@@ -28850,6 +28850,123 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 1, "statuts_absents": [["ze001b", "Stunned"]]},
     },
+    # ------------------------------------------------------------------------
+    # MOTEUR : la CRISE doit VERROUILLER la cible, comme Garde et Patrouille
+    #
+    # Rapport joueur du 11/09/2026 : un contre joue sur le complot principal
+    # partait sans effet, une Crise etant en jeu. Le moteur appliquait bien la
+    # regle, mais seulement A LA RESOLUTION (`MainScheme.RemoveThreatInternal`
+    # rend 0) : la cible restait offerte, et la carte etait perdue pour rien.
+    #
+    # Ses deux soeurs verrouillent AU CIBLAGE : Garde dans
+    # `Villain.CanBeAttackBy` (villain.py:71), Patrouille dans
+    # `MainScheme.CanBeThwartBy` (scheme_main.py:251). La Crise rejoint la
+    # seconde, au meme endroit.
+    #
+    # `02009` Collapsing Bridge porte `Crisis: 1`. On lui donne 6 menaces pour
+    # qu'elle survive au contre et reste mesurable.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "CRISE verrouille la cible — un contre ne peut plus viser le complot principal",
+        "pourquoi": ("Avec une Crise en jeu, le complot principal ne doit plus etre offert : "
+                     "For Justice part sur la seule autre manigance, Collapsing Bridge, qui "
+                     "tombe de 6 a 3. SANS le verrou, le contre allait sur le complot "
+                     "principal et ne retirait rien : Collapsing Bridge restait a 6"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        # ⚠ La menace se pose dans `declencher`, APRES `main_exclusive` : la main
+        # de depart de Spider-Man porte `01061` Great Responsibility, qui
+        # REMPLACE toute pose de menace par 6 degats a l'identite. Posee dans
+        # `mise_en_place`, la menace n'arrivait jamais (vu le 11/09/2026).
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["01060", "01088"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["01060"],
+        "payer_avec": ["01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["02009", 3], ["01097b", 6]]},
+    },
+    {
+        "nom": "CRISE — TEMOIN : sans Crise en jeu, le contre vise bien le complot principal",
+        "pourquoi": ("Contre-cas indispensable : le verrou ne doit mordre QUE sous Crise. "
+                     "Meme position sans Collapsing Bridge, le complot principal tombe de "
+                     "6 a 3"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        # Meme piege que le cas precedent : la menace se pose APRES le vidage
+        # de la main (01061 Great Responsibility).
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["01060", "01088"],
+        "declencher": ["Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["01060"],
+        "payer_avec": ["01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "CRISE — TEMOIN : si007 Pepper Potts ignore la Crise et vise le complot principal",
+        "pourquoi": ("SEPT cartes du depot passent outre la Crise (`ignore_crisis=True`). "
+                     "Le verrou ne doit PAS les priver de cible : Pepper Potts retire bien "
+                     "1 menace du complot principal malgre Collapsing Bridge, 6 -> 5. "
+                     "C'est le garde-fou de l'alignement de ces sept cartes sur la "
+                     "convention declarative `UnitIgnoreKeywordIcons(crisis=True)`"),
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si007')", "Puzzle.Reveal('02009')",
+                          "Puzzle.SetThreat('02009', 6)", "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.Action('si007')"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5]], "exhausted": ["si007"]},
+    },
+    {
+        "nom": "CRISE — TEMOIN FORT : 90119 Search and Rescue est le seul CONTRE qui ignore la Crise",
+        "pourquoi": ("Des SEPT cartes a `ignore_crisis=True`, une seule est un vrai contre "
+                     "(`SetLabel('thwart')`) : les six autres sont des Actions, qui ne "
+                     "passent pas par `CanBeThwartBy`. C'est donc ELLE que le verrou "
+                     "pouvait priver de cible, et elle seule. Avec Collapsing Bridge en "
+                     "jeu, elle doit retirer 5 menaces du complot principal, 6 -> 1"),
+        "scenario": "rhino",
+        "heros": "rescue_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('90114b')"],
+        "main_exclusive": ["90119", "01088", "01089"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["90119"],
+        "surpayer": True,
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "CRISE — TEMOIN : 15012 Crisis Averted reste ciblable et retire 6 si elle est payee en mental",
+        "pourquoi": ("Le cas LIMITE du verrou : cette carte n'ignore la Crise que si elle a "
+                     "ete payee avec une ressource mentale, et le paiement vient APRES le "
+                     "ciblage. Elle declare donc son ignorance sans condition, sinon elle "
+                     "deviendrait injouable sous Crise alors que c'est sa raison d'etre. "
+                     "Payee avec Genius (mental), elle retire bien 6 : 6 -> 0. "
+                     "⚠ PAS 7 menaces : la cible vaut 7* (7 en solo), les poser "
+                     "accomplit le complot et la partie s'arrete avant que la carte ne soit jouee. Sans l'ignorance declaree, le contre partirait sur Collapsing Bridge et 01097b resterait a 6 : la mesure discrimine"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["15012", "01089", "01088"],
+        "declencher": ["Puzzle.Reveal('02009')", "Puzzle.SetThreat('02009', 6)",
+                       "Puzzle.SetThreat('01097b', 6)"],
+        "jouer": ["15012"],
+        "payer_avec": ["01089", "01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).

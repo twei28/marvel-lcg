@@ -255,6 +255,26 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             if MainScheme.GetPatrolFaces(effect) != []:
                 if not effect.IsIgnoreKeyword('Patrol', effect) and effect.IsPlayerInitiator():
                     return False
+            # CRISE : meme verrou que Patrouille juste au-dessus, ajoute le
+            # 11/09/2026 apres un rapport de joueur.
+            #
+            # ⚠ POURQUOI IL MANQUAIT, ET CE QUE CA COUTAIT. La Crise etait la
+            # SEULE des trois icones de verrouillage a ne bloquer qu'A LA
+            # RESOLUTION (`RemoveThreatInternal` plus haut rend 0). Garde
+            # bloque au ciblage (`Villain.CanBeAttackBy`), Patrouille aussi
+            # (ligne du dessus) ; la Crise laissait donc CHOISIR le complot
+            # principal, puis ne retirait rien : la carte partait en defausse
+            # pour rien, sans un mot. Un joueur l'a signale, et avait rejoue
+            # trois fois le meme coup en croyant a un bug d'annulation.
+            #
+            # La condition est la MEME que celle de la resolution, sans
+            # `IsPlayerInitiator()` : une divergence entre ce qu'on propose et
+            # ce qu'on resout serait pire que le trou d'origine.
+            # `IsIgnoreKeyword` couvre deja les cartes de rencontre
+            # (`encounter_cards_ignore_crisis`, effect.py:484).
+            if Worlds.GetCrisisFaces(self.card.GetGameArea()):
+                if not effect.IsIgnoreKeyword('Crisis', effect):
+                    return False
         return super().CanBeThwartBy(effect)
 
     def GainTargetThreatValue(self, value: int, effect: 'Effect'):
