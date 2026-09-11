@@ -60,6 +60,14 @@ describe('causalite, narration francaise', () => {
       .toMatchObject({ source: 'Spider-Man' })
   })
 
+  it('ignore « va contrer » sans complement, comme son motif anglais', () => {
+    // « {unit} will thwart » (sans manigance) existe aussi cote moteur et est
+    // traduit depuis le 11/09/2026. Les deux motifs exigent un nom apres le
+    // verbe : sans lui, aucune cause n'est notee, donc aucun faux auteur.
+    expect(lireCause(noter('Spider-Man va contrer'), 'menace', 'Spider-Man', 10)).toBeUndefined()
+    expect(lireCause(noter('Spider-Man will thwart'), 'menace', 'Spider-Man', 10)).toBeUndefined()
+  })
+
   it('ne confond pas « dégât(s) » avec la carte responsable entre parentheses', () => {
     const cause = lireCause(noter('Evil Gwenpool va subir 2 dégât(s) de Quasar'), 'degats', 'Evil Gwenpool', 10)
     expect(cause).toMatchObject({ source: 'Quasar' })
