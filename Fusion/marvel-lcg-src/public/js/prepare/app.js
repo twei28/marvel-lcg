@@ -1,6 +1,7 @@
 // app.js - Assistant "Preparer une partie" : briefing Marvel Champions.
 "use strict";
 import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=564d4a13";
+import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
@@ -1107,51 +1108,23 @@ function playerCountRow() {
    le met en scène ; cliquer le recrute, avec le geste de la carte qui surgit
    (l'emprunt à la direction « Vitrine ») et son onomatopée. */
 
-/** Le cri de chaque héros, par identifiant de deck : sa réplique fétiche
- *  quand il en a une (« Flame on ! », « Sweet Christmas ! »), sinon le bruit
- *  de son pouvoir tel que les comics l'écrivent (SNIKT, BAMF, THWIP).
- *  Repli : « BAM ! ». Liste du 7 septembre 2026, à corriger librement. */
+/** Le cri de REPLI d'un héros, par identifiant de deck : ne sert plus qu'aux
+ *  héros absents de REPLIQUES (repliques-heros.js), qui porte désormais
+ *  plusieurs répliques par héros, tirées au sort (11/09/2026). Repli du
+ *  repli : « BAM ! ». */
 const ONOMATOPEES = {
-    /* --- officiels --- */
-    adam_warlock: "SOUL GEM !", angel: "TAKE FLIGHT !", ant_man: "PYM PARTICLES !", bishop: "ENERGY ABSORBED !",
-    black_panther: "WAKANDA FOREVER !", black_panther_shuri: "WAKANDA FOREVER !",
-    black_widow: "WIDOW'S BITE !", cable: "BODYSLIDE BY ONE !", captain_america: "AVENGERS, ASSEMBLE !",
-    captain_marvel: "HIGHER, FURTHER, FASTER, MORE !", colossus: "ORGANIC STEEL !", cyclops: "OPTIC BLAST !",
-    daredevil: "THE MAN WITHOUT FEAR !", deadpool: "CHIMICHANGA !", doctor_strange: "BY THE VISHANTI !",
-    domino: "LUCKY SHOT !", drax: "THANOS MUST DIE !", echo: "MIMIC !", falcon: "ON YOUR LEFT !",
-    gambit: "MON AMI !", gamora: "DEADLIEST WOMAN !", ghost_spider: "THWIP !", groot: "I AM GROOT !",
-    hawkeye: "NEVER MISS !", hercules: "HAVE AT THEE !", hulk: "HULK SMASH !", hulkling: "SHAPESHIFT !",
-    iceman: "CHILL !", iron_man: "I AM IRON MAN !", ironheart: "ARMOR UP !", jessica_jones: "CASE CLOSED !",
-    jubilee: "FIREWORKS !", luke_cage: "SWEET CHRISTMAS !", magik: "SOULSWORD !", magneto: "MASTER OF MAGNETISM !",
-    maria_hill: "COPY THAT !", ms_marvel: "EMBIGGEN !", nebula: "NO MERCY !", nick_fury: "WAH-HOOO !",
-    nightcrawler: "BAMF !", nova: "BLUE BLAZES !", phoenix: "I AM FIRE AND LIFE !", psylocke: "PSYCHIC KNIFE !",
-    quicksilver: "TOO SLOW !", rocket_raccoon: "NOT A RACCOON !", rogue: "SUGAH !", scarlet_witch: "CHAOS MAGIC !",
-    shadowcat: "PHASE !", she_hulk: "OBJECTION !", silk: "THWIP !", sp_dr: "SP//DR ONLINE !", spectrum: "LIGHT SPEED !",
-    spider_ham: "OINK !", spider_man: "THWIP !", spider_man_miles_morales: "VENOM BLAST !",
-    spider_woman: "VENOM BLAST !", star_lord: "LEGENDARY OUTLAW !", storm: "GODDESS OF STORMS !", thor: "I SAY THEE NAY !",
-    tigra: "CLAWS OUT !", valkyrie: "FOR VALHALLA !", venom: "WE ARE VENOM !", vision: "I AM UNIQUE !",
-    war_machine: "BRATATAT !", wasp: "WASP STING !", winter_soldier: "READY TO COMPLY !", wolverine: "SNIKT !",
-    wonder_man: "IONIC POWER !", x_23: "SNIKT !",
     /* --- fan-made --- */
-    agatha_harkness: "WITCHCRAFT !", agent_13: "FOR S.H.I.E.L.D. !", agent_anti_venom: "WE ARE ANTI-VENOM !", albert: "SNIKT !",
-    alligator_loki: "CHOMP !", angela: "NOTHING FOR NOTHING !", ares: "GOD OF WAR !", armored_spidey: "THWIP !",
-    beast: "STARS AND GARTERS !", beta_ray_bill: "STORMBREAKER !", black_cat: "BAD LUCK !", blade: "DAYWALKER !",
-    blink: "TELEPORT !", brawn: "GENIUS SMASH !", cloak_dagger: "LIGHT AND DARK !", dazzler: "LIGHT SHOW !",
-    doctor_doom: "KNEEL BEFORE DOOM !", doctor_druid: "MASTER OF THE UNKNOWN !", harry_osborn: "HA HA HA !", gwenpool: "FOURTH WALL !",
-    kate_bishop: "AIM TRUE !", howard_the_duck: "WAUGH !", hulk_rainy: "HULK SMASH !", human_torch: "FLAME ON !",
-    invisible_woman: "FORCE FIELD !", iron_lad: "I AM NOT KANG !", iron_man_model_42: "I AM IRON MAN !",
-    jessica_jones_custom: "CASE CLOSED !", lady_sif: "FOR ASGARD !", lockjaw: "WOOF !", madame_web: "THE WEB OF LIFE !",
-    mister_fantastic: "STRETCH !", moon_knight: "KHONSHU !", ms_america: "TICKET TO THE MULTIVERSE !",
-    night_thrasher: "NEW WARRIORS !", okoye: "WAKANDA FOREVER !", patriot: "YOUNG AVENGERS !", red_guardian: "FOR THE MOTHERLAND !",
-    rescue_rainy: "MAG-FIELD !", scarlet_spider: "THWIP !", speed: "TOO FAST !", spider_man_rainy: "THWIP !",
-    spider_man_noir: "THWIP !", stan_lee: "EXCELSIOR !", sunfire: "RISING SUN !",
-    superior_iron_man: "I AM SUPERIOR !", texas_twister: "YEEHAW !", the_thing: "IT'S CLOBBERIN' TIME !",
-    thor_jane_foster: "FOR ASGARD !", throg: "RIBBIT !", totally_awesome_hulk: "TOTALLY AWESOME !",
-    venom_rainy: "WE ARE VENOM !", venompool: "CHIMICHANGA !", viv_vision: "DENSITY SHIFT !", wiccan: "REALITY WARP !",
-    wolverine_x23: "SNIKT !", yondu: "FWEEET !",
-};
-function onomatopee(hero) {
-    return ONOMATOPEES[hero.id] || "BAM !";
+    doctor_druid: "MASTER OF THE UNKNOWN !", lady_sif: "FOR ASGARD !", };
+/** La réplique qui claque au recrutement : au hasard dans le pool du héros,
+ *  jamais la même que la dernière (mémorisée par navigateur, par héros). */
+function replique(hero) {
+    const pool = REPLIQUES[hero.id] || [ONOMATOPEES[hero.id] || "BAM !"];
+    const cle = "narwhal-replique:" + hero.id;
+    let derniere;
+    try { derniere = localStorage.getItem(cle) || undefined; } catch (_) { /* stockage refusé */ }
+    const choisie = choisirReplique(pool, derniere, Math.random) || "BAM !";
+    try { localStorage.setItem(cle, choisie); } catch (_) { /* préférence non critique */ }
+    return choisie;
 }
 
 
@@ -1545,9 +1518,11 @@ function recruter(h, portraitEl) {
     rendreEquipe();
     const scene = document.getElementById("tb-scene");
     if (scene) {
+        const cri = replique(h);
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
-            el("span", { class: "ono" }, onomatopee(h)),
+            // La taille suit la longueur : une courte claque, une longue se lit.
+            el("span", { class: ("ono " + classeTaille(cri)).trim() }, cri),
         );
         scene.append(eclair);
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
