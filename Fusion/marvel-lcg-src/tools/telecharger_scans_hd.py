@@ -25,7 +25,18 @@ vignettes : les scans HD ne voyagent pas dans l'archive.
 
     python3 tools/telecharger_scans_hd.py            # telecharge ce qui manque
     python3 tools/telecharger_scans_hd.py --etat     # compte, sans rien telecharger
+    python3 tools/telecharger_scans_hd.py --redresser  # n'echange que les faces croisees
+
+⚠ FACES CROISEES (11/09/2026). Les serveurs d'images suivent la lettre
+IMPRIMEE au coin de la carte, et sur dix identites (Groot, Rocket, et toute
+la vague X-Men) FFG imprime l'alter ego en « 1A » : le scan HD telecharge
+sous `a` etait l'alter ego, et la scene montrait Logan pour Wolverine. Apres
+chaque telechargement (et seul, avec --redresser), l'outil compare chaque
+paire a/b au scan habituel de assets/pics/ et echange les fichiers croises.
+Logique dans src/engine/lib/faces_hd.py, partagee avec le moteur ; chargee
+par son chemin pour ne pas tirer tout le moteur.
 """
+import importlib.util
 import json
 import os
 import re
@@ -36,6 +47,8 @@ import requests
 
 RACINE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CARTES = os.path.join(RACINE, "data", "cards.json")
+REFERENCE = os.path.join(RACINE, "assets", "pics")
+FACES_HD = os.path.join(RACINE, "src", "engine", "lib", "faces_hd.py")
 LANCEMENT = os.path.join(RACINE, "launch.json")
 DESTINATION = os.path.join(RACINE, "assets", "pics-hd")
 TYPES = {"Hero", "AlterEgo", "Villain", "MainScheme"}
@@ -96,7 +109,26 @@ def telecharger(pic: str, sites: list[str]) -> str | None:
     return f"{pic} : aucun serveur ne rend de scan HD"
 
 
+def redresser_faces_croisees() -> int:
+    """Echange les paires a/b croisees dans DESTINATION. Rend le nombre echange."""
+    spec = importlib.util.spec_from_file_location("faces_hd", FACES_HD)
+    faces_hd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(faces_hd)
+    try:
+        echangees = faces_hd.redresser(DESTINATION, REFERENCE, faces_hd.identifiants_heros_de(CARTES))
+    except ImportError as exc:
+        print(f"faces croisees : non verifiees ({exc})", file=sys.stderr)
+        return 0
+    for a, b in echangees:
+        print(f"  faces croisees redressees : {a} <-> {b}")
+    print(f"faces croisees : {len(echangees)} paire(s) redressee(s)")
+    return len(echangees)
+
+
 def main(arguments: list[str]) -> int:
+    if "--redresser" in arguments:
+        redresser_faces_croisees()
+        return 0
     liste = manquants()
     if "--etat" in arguments:
         deja = len(os.listdir(DESTINATION)) if os.path.isdir(DESTINATION) else 0
@@ -108,6 +140,7 @@ def main(arguments: list[str]) -> int:
         return 0
     if not liste:
         print("scans HD : rien a faire, tout est la.")
+        redresser_faces_croisees()
         return 0
     os.makedirs(DESTINATION, exist_ok=True)
     echecs = []
@@ -122,6 +155,7 @@ def main(arguments: list[str]) -> int:
     print(f"scans HD : {faits - len(echecs)} telecharges, {len(echecs)} sans HD, dans {DESTINATION}")
     for e in echecs[:10]:
         print("  ", e, file=sys.stderr)
+    redresser_faces_croisees()
     return 0
 
 
