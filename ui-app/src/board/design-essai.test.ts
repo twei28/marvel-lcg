@@ -1,8 +1,10 @@
-// Le drapeau « design essai » : la nouvelle barre et le nouvel assistant ne
-// s'affichent que pour qui l'a demandé. Deux portes : l'URL du plateau
-// (?design=essai, pour l'activer sur un téléphone sans fouiller les menus) et
-// le réglage mémorisé, comme les autres préférences du plateau. Éteint, le
-// plateau est celui d'aujourd'hui, à l'octet près.
+// Le drapeau « design essai » : la nouvelle barre, le nouveau bandeau et le
+// nouvel assistant.
+//
+// Il est le DEFAUT depuis le 11/09/2026 (decision de l'utilisateur, apres
+// essai) : c'est desormais l'ancien plateau qu'il faut demander, par
+// ?design=classique ou en decochant la ligne dans Options. Le choix reste
+// memorise par navigateur, comme les animations et les sons.
 
 import { describe, expect, it } from 'vitest'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './design-essai'
@@ -17,9 +19,9 @@ function stockage(initial: Record<string, string> = {}) {
 }
 
 describe('lireDesignEssai', () => {
-  it('est éteint par défaut', () => {
-    expect(lireDesignEssai('', stockage())).toBe(false)
-    expect(lireDesignEssai('?p=0', stockage())).toBe(false)
+  it('est allumé par défaut', () => {
+    expect(lireDesignEssai('', stockage())).toBe(true)
+    expect(lireDesignEssai('?p=0', stockage())).toBe(true)
   })
 
   it('suit le réglage mémorisé', () => {
@@ -39,7 +41,7 @@ describe('lireDesignEssai', () => {
     expect(memoire.valeurs.get(CLE_DESIGN_ESSAI)).toBe('off')
   })
 
-  it('reste éteint si le stockage refuse', () => {
+  it('reste allumé si le stockage refuse', () => {
     const casse = {
       getItem: () => {
         throw new Error('refusé')
@@ -49,6 +51,6 @@ describe('lireDesignEssai', () => {
       },
     }
     expect(lireDesignEssai('?design=essai', casse)).toBe(true)
-    expect(lireDesignEssai('', casse)).toBe(false)
+    expect(lireDesignEssai('', casse)).toBe(true)
   })
 })

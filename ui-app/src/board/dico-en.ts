@@ -282,8 +282,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'En attente de': 'Waiting for',
   'En attente du joueur': 'Waiting for player',
   'Le méchant agit': 'The villain acts',
-  'Design essai': 'Trial design',
-  'Nouvelle barre du haut et assistant d’action, en cours d’essai': 'New top bar and action assistant, on trial',
+  'Nouveau design': 'New design',
+  'Barre, bandeau et assistant d’action. Décoche pour revenir à l’ancien plateau.': 'Bar, status band and action assistant. Uncheck to go back to the old board.',
   'Fin du tour possible quand le moteur te rend la main': 'End turn is available once the engine hands you control',
   Actions: 'Actions',
 

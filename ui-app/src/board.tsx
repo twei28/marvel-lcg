@@ -1312,8 +1312,8 @@ function PanneauOptions({
       {ouvert ? (
         <div className="popover-sauvegardes popover-options" role="menu">
           <LigneOption
-            libelle={t('Design essai')}
-            detail={t('Nouvelle barre du haut et assistant d’action, en cours d’essai')}
+            libelle={t('Nouveau design')}
+            detail={t('Barre, bandeau et assistant d’action. Décoche pour revenir à l’ancien plateau.')}
             actif={designEssai}
             onBascule={basculerDesignEssai}
           />
@@ -2325,8 +2325,9 @@ function PagePartie({
     })
   }, [])
 
-  // Design essai (barre, bandeau, assistant) : voir board/design-essai.ts.
-  // Deux portes : ?design=essai dans l'URL du plateau, ou la ligne dans Options.
+  // Le nouveau design (barre, bandeau, assistant) : voir board/design-essai.ts.
+  // Il est le DEFAUT depuis le 11/09/2026 ; c'est l'ancien plateau qui se
+  // demande, par ?design=classique dans l'URL ou par la ligne dans Options.
   const [designEssai, setDesignEssai] = useState(() => {
     try {
       return lireDesignEssai(window.location.search, window.localStorage)
