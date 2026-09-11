@@ -641,6 +641,25 @@ export type BoardProps = {
    * plateau ne connaît pas) : le rendu portrait n'a qu'à l'afficher tel quel.
    */
   quiAgit?: string
+  /**
+   * Onglets du multijoueur sur telephone (tache 10) : PAS un nouvel etat, la
+   * MEME bascule que les boutons « Vue » de la barre PC (`vueForcee` dans
+   * board.tsx). `construirePlateau` braque deja toute la table — heros,
+   * allies/engages, reserve, nemesis, main comprise — sur un seul joueur
+   * (zones.ts : « notre = joueurs[options.playerId] ») : changer CE joueur
+   * suffit, aucun filtrage a faire dans le rendu portrait lui-meme.
+   *
+   * Les trois props ci-dessous sont optionnelles : le plateau PC/paysage garde
+   * son propre bouton « Vue » et continue de fonctionner sans elles.
+   */
+  /** Les joueurs qu'on peut aller regarder (elimines deja exclus). */
+  joueursAffichables?: Array<{ id: number; nom: string }>
+  /** Le joueur actuellement regarde : c'est deja `playerId` ci-dessus (la
+   *  table et la main recues sont les siennes), redonne ici explicitement
+   *  pour que l'onglet actif ne depende pas de le deviner depuis `playerId`. */
+  joueurRegarde?: number
+  /** Force la vue sur cet id (memes id que `joueursAffichables`). */
+  choisirJoueurRegarde?: (id: number) => void
 }
 
 export type ReglagesGlisser = {

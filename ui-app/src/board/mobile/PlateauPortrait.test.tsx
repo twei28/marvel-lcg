@@ -16,20 +16,6 @@ const emplacement = (cle: CleEmplacement, ...unites: UniteAffichee[]): Emplaceme
 const plateau = (...emplacements: EmplacementAffiche[]): Plateau =>
   ({ emplacements, nombreDeCartes: 0, idsAffiches: new Set(), representantsDePile: new Map(), nombreIgnore: 0 }) as Plateau
 
-/**
- * `terrain-soutien` avec un groupe PAR JOUEUR, `proprietaires` renseigne :
- * seul cet emplacement en dispose vraiment (zones.ts), contrairement au
- * helper `emplacement()` ci-dessus qui tasse tout dans un groupe unique.
- */
-const terrainSoutienMultiJoueur = (...joueurs: Array<{ id: number; unites: UniteAffichee[] }>): EmplacementAffiche =>
-  ({
-    cle: 'terrain-soutien',
-    titre: 'terrain-soutien',
-    groupes: joueurs.map((j) => j.unites),
-    nombreSurLaLigne: joueurs.reduce((total, j) => total + j.unites.length, 0),
-    proprietaires: joueurs.map((j) => j.id),
-  }) as EmplacementAffiche
-
 const monde = { render_id: 1, round_id: 1, phase: 'Player 1 Turn', players: [] } as unknown as BoardProps['world']
 
 describe('PlateauPortrait — bloc complot', () => {
@@ -405,60 +391,108 @@ describe('PlateauPortrait — main et barre du bas', () => {
 })
 
 describe('PlateauPortrait — onglets du multijoueur', () => {
-  it('un seul heros sur le terrain-soutien : aucun onglet', () => {
+  // CORRECTION (voir suite du rapport de tache 10) : PlateauPortrait ne filtre
+  // plus RIEN lui-meme. Les onglets ne font qu'appeler `choisirJoueurRegarde`
+  // (= `setVueForcee` dans board.tsx), qui reconstruit `props.plateau` sur
+  // l'autre joueur en amont (construirePlateau braque deja toute la table,
+  // main comprise, sur `playerId` — zones.ts). Ces tests verifient donc le
+  // CONTRAT des props, pas un filtrage local qui n'existe plus.
+
+  it('sans `joueursAffichables` (plateau PC/paysage) : aucun onglet', () => {
+    render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
+    expect(screen.queryByRole('tablist')).toBeNull()
+  })
+
+  it('un seul joueur dans `joueursAffichables` : aucun onglet (bruit en solo)', () => {
     render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        plateau={plateau(
-          terrainSoutienMultiJoueur({ id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] })
-        )}
+        plateau={plateau()}
+        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }]}
+        joueurRegarde={0}
+        choisirJoueurRegarde={() => {}}
       />
     )
     expect(screen.queryByRole('tablist')).toBeNull()
   })
 
-  it('deux heros : un onglet par joueur, celui regarde au depart est le notre', () => {
-    const { container } = render(
+  it('deux joueurs : un onglet par heros, celui regarde est marque', () => {
+    render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        plateau={plateau(
-          terrainSoutienMultiJoueur(
-            { id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] },
-            { id: 1, unites: [unite('Hulk', { name: 'Hulk', kind: 'hero' })] }
-          )
-        )}
+        plateau={plateau()}
+        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
+        joueurRegarde={1}
+        choisirJoueurRegarde={() => {}}
       />
     )
-    expect(screen.getByRole('tab', { name: 'Steve Rogers' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'false')
-    // Au depart, seul NOTRE heros est deplie dans le bloc « Ton heros ».
-    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
-    expect(noms).toEqual(['Steve Rogers'])
+    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Steve Rogers' })).toHaveAttribute('aria-selected', 'false')
   })
 
-  it('taper l onglet d un autre joueur affiche SA table (heros et allies), pas la notre', () => {
-    const { container } = render(
+  it('taper un onglet appelle `choisirJoueurRegarde` avec le bon identifiant, sans toucher au plateau recu', () => {
+    const choisir = vi.fn()
+    render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        plateau={plateau(
-          terrainSoutienMultiJoueur(
-            { id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] },
-            {
-              id: 1,
-              unites: [
-                unite('Hulk', { name: 'Hulk', kind: 'hero' }),
-                unite('Falcon', { name: 'Falcon', kind: 'ally' }),
-              ],
-            }
-          )
-        )}
+        plateau={plateau()}
+        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
+        joueurRegarde={0}
+        choisirJoueurRegarde={choisir}
       />
     )
     fireEvent.click(screen.getByRole('tab', { name: 'Hulk' }))
-    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
-    expect(noms).toEqual(['Hulk', 'Falcon'])
+    expect(choisir).toHaveBeenCalledWith(1)
+  })
+
+  it('le plateau affiche suit le joueur regarde : un nouveau `plateau`/`playerId` suffit, sans etat local qui s y accroche', () => {
+    // Simule ce que fait board.tsx apres un clic d'onglet : il RECONSTRUIT
+    // `plateau` pour l'autre joueur (construirePlateau braque `notre` sur
+    // `playerId`) et repasse par ici avec un nouveau `plateau`/`playerId`. Si
+    // PlateauPortrait gardait la moindre memoire locale du joueur precedent
+    // (comme le faisait la version filtree, corrigee), ce rerender montrerait
+    // encore Steve Rogers apres le changement de props.
+    const { container, rerender } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(emplacement('terrain-soutien', unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })))}
+        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
+        joueurRegarde={0}
+        choisirJoueurRegarde={() => {}}
+      />
+    )
+    expect(
+      Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
+    ).toEqual(['Steve Rogers'])
+
+    rerender(
+      <PlateauPortrait
+        world={monde}
+        playerId={1}
+        plateau={plateau(
+          emplacement(
+            'terrain-soutien',
+            unite('Hulk', { name: 'Hulk', kind: 'hero' }),
+            unite('Falcon', { name: 'Falcon', kind: 'ally' })
+          ),
+          emplacement('main', unite('Smash', { name: 'Smash', kind: 'event' }))
+        )}
+        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
+        joueurRegarde={1}
+        choisirJoueurRegarde={() => {}}
+      />
+    )
+    expect(
+      Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
+    ).toEqual(['Hulk', 'Falcon'])
+    // La main suit aussi : meme mecanisme (construirePlateau la construit
+    // depuis `notre?.hand_cards`, `notre = joueurs[playerId]`), la decision
+    // « mains comprises » n'est donc plus un manque de cette tache.
+    expect(container.querySelector('.main-portrait')?.textContent).toContain('Smash')
+    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'true')
   })
 })

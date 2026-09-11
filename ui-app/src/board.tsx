@@ -1680,6 +1680,18 @@ function PagePartie({
   }, [etat.joueurDemande, joueurSuivi, demandeJouable, etat.monde, playerId])
 
   const joueurActif = vueForcee ?? joueurSuivi ?? etat.joueurDemande ?? playerId
+  // Les onglets du multijoueur en portrait (tache 10) : la MEME liste que les
+  // boutons « Vue » ci-dessous (elimines exclus), pour que taper un onglet
+  // fasse exactement setVueForcee(id), sans etat parallele qui pourrait
+  // diverger du suivi automatique du hot-seat.
+  const joueursAffichables = useMemo(
+    () =>
+      (etat.monde?.players ?? [])
+        .map((joueur, i) => ({ id: i, nom: joueur.area_hero?.[0]?.name?.replace(/^\W*/, '') ?? `J${i}`, elimine: joueur.is_eliminated }))
+        .filter((joueur) => !joueur.elimine)
+        .map(({ id, nom }) => ({ id, nom })),
+    [etat.monde]
+  )
   const effets = useEffetsCartes(etat.monde)
   // Declare AVANT le useMemo de `plateau` : il en est une dependance, pour
   // que decocher l'option en pleine partie rafraichisse l'affichage sans
@@ -3071,6 +3083,12 @@ function PagePartie({
         // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
         // connait ni aNous, ni connecte, ni demande) : on le lui passe deja fait.
         quiAgit={quiAgit}
+        // Onglets du multijoueur (tache 10) : ignores par Board/PlateauPaysage
+        // (props optionnelles), lus par PlateauPortrait pour proposer la
+        // bascule que la barre PC offre deja plus bas via `vueForcee`.
+        joueursAffichables={joueursAffichables}
+        joueurRegarde={joueurActif}
+        choisirJoueurRegarde={setVueForcee}
         // Meme condition que le rendu de MenuActionsCarte ci-dessus : le rendu
         // mobile empile une couche tant que ce menu est affiche, pour que le
         // Retour d'Android le ferme au lieu de sortir de la partie.

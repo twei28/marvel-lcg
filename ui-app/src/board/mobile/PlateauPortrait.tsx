@@ -10,7 +10,6 @@
 //
 // Il accepte exactement les BoardProps du plateau PC, comme PlateauPaysage :
 // c'est ce qui permet a board.tsx de choisir sans rien adapter.
-import { useState } from 'react'
 import type { ScanCardProps } from '../../components/ScanCard'
 import type { BoardProps } from '../Board'
 import type { UniteAffichee } from '../zones'
@@ -24,7 +23,6 @@ import { MainPortrait } from './MainPortrait'
 import { OngletsJoueurs } from './OngletsJoueurs'
 import { repartirEnBlocs } from './blocs-portrait'
 import { prochaineOuverte } from './geste-carte'
-import { carteIdentite, groupesParJoueur, ordreDAffichage } from './joueurs'
 import './portrait.css'
 
 /**
@@ -120,47 +118,29 @@ export function PlateauPortrait(props: BoardProps) {
   const principal = blocs.find((bloc) => bloc.cle === 'complot')?.unites[0]
   const rencontre = blocs.find((bloc) => bloc.cle === 'rencontre')?.unites ?? []
   const engages = blocs.find((bloc) => bloc.cle === 'engages')?.unites ?? []
+  const heros = blocs.find((bloc) => bloc.cle === 'heros')?.unites ?? []
   const main = blocs.find((bloc) => bloc.cle === 'main')?.unites ?? []
 
-  // Quel joueur on regarde. Initialise sur le notre : c'est SA table qui
-  // s'ouvre par defaut en arrivant sur l'ecran, comme avant l'ajout des onglets.
-  const [joueurRegarde, setJoueurRegarde] = useState(props.playerId)
-
-  // Seul `terrain-soutien` porte `proprietaires` (verifie dans zones.ts) : un
-  // groupe par joueur, heros + soutiens. C'est le SEUL morceau du bloc « Ton
-  // heros » qui existe vraiment pour les AUTRES joueurs — `reserve` et
-  // `piles-joueur` ne sont construits que pour `playerId` (jamais pour
-  // `autres` dans zones.ts), donc rien a y filtrer : ils restent les notres
-  // quel que soit l'onglet ouvert, comme avant.
-  const terrainSoutien = props.plateau.emplacements.find((e) => e.cle === 'terrain-soutien')
-  const groupesHerosParJoueur = terrainSoutien ? groupesParJoueur(terrainSoutien) : new Map<number, UniteAffichee[][]>()
-  const idsJoueurs = ordreDAffichage(Array.from(groupesHerosParJoueur.keys()), props.playerId)
-  const joueurs = idsJoueurs.map((id) => ({
-    id,
-    // A defaut d'une carte heros trouvable (etat degrade), l'onglet garde un
-    // libelle plutot que de rester vide et injoignable au pouce.
-    nom: carteIdentite(groupesHerosParJoueur.get(id) ?? [])?.name ?? `#${id + 1}`,
-  }))
-  const heroEtSoutiensRegardes = (groupesHerosParJoueur.get(joueurRegarde) ?? []).flat()
-  // `reserve`/`piles-joueur` sont TOUJOURS les notres (voir commentaire
-  // ci-dessus) : on ne les glisse dans le bloc que sur NOTRE propre onglet,
-  // jamais sur celui d'un autre joueur, sous peine de lui attribuer nos cartes.
-  // On lit ces deux emplacements directement (pas via `repartirEnBlocs`, qui
-  // aplatit `terrain-soutien` de TOUS les joueurs dans le meme tableau et en
-  // perdrait le proprietaire) : le bloc « Ton heros » se recompose donc ici,
-  // a la main, plutot que par le bloc `heros` du decoupage generique.
-  const reserveEtPiles =
-    joueurRegarde === props.playerId
-      ? props.plateau.emplacements
-          .filter((e) => e.cle === 'reserve' || e.cle === 'piles-joueur')
-          .flatMap((e) => e.groupes.flat())
-      : []
-  const heros = [...heroEtSoutiensRegardes, ...reserveEtPiles]
+  // Aucun filtrage ici : les onglets ne trient PAS des cartes deja recues,
+  // ils rappellent board.tsx (`choisirJoueurRegarde` = `setVueForcee`) pour
+  // qu'il RECONSTRUISE `props.plateau` sur un autre joueur. `construirePlateau`
+  // braque deja toute la table sur `playerId` — heros, allies/engages,
+  // reserve, nemesis, main comprise (zones.ts : « notre = joueurs[options.
+  // playerId] ») — donc `blocs`/`heros`/`engages`/`main` ci-dessus sont DEJA
+  // ceux du joueur regarde le jour ou `props.plateau` change. Une premiere
+  // version de cette tache filtrait ces blocs a la main ici ; fausse piste,
+  // corrigee (voir rapport de tache 10).
   return (
     <main className="plateau-portrait">
       <BandeauPortrait monde={props.world} quiAgit={props.quiAgit} />
       <div className="portrait-table">
-        <OngletsJoueurs joueurs={joueurs} actif={joueurRegarde} choisir={setJoueurRegarde} />
+        {props.joueursAffichables && props.choisirJoueurRegarde ? (
+          <OngletsJoueurs
+            joueurs={props.joueursAffichables}
+            actif={props.joueurRegarde ?? props.playerId}
+            choisir={props.choisirJoueurRegarde}
+          />
+        ) : null}
         {vilain.map((unite) => (
           <CarteAvecChiffres
             key={unite.cle}
