@@ -1595,7 +1595,10 @@ CAS = [
         "main_exclusive": ["vr006", "vr002", "vr011"],
         "declencher": [],
         "jouer": ["vr006"],
-        "surpayer": True,
+        # ⚠ 11/09/2026 : depuis que le harnais n'exclut plus les effets payants de
+        # l'identite (`interdits`), `surpayer` prenait AUSSI le pouvoir de
+        # ressource de Venom (1 degat -> joker) : X = 3. On l'interdit : X = 2.
+        "surpayer": True, "ne_pas_depenser": ["vr001a"],
         "verifier": "etat_attendu",
         "attendu": {"degats": [["01094", 2], ["vr015", 2]]},
     },
@@ -30857,10 +30860,15 @@ def etat_attendu(monde, aides):
     identite = aides["identite"](monde)
     soucis = []
 
-    inconnues = sorted(set(attendu) - CLES_ETAT_ATTENDU)
-    if inconnues:
-        return False, (f"cle(s) attendu INCONNUE(S) de etat_attendu : {inconnues} "
-                       f"(une cle inconnue etait ignoree en silence jusqu'au 11/09/2026)")
+    # ⚠ Seulement quand le cas appelle etat_attendu DIRECTEMENT. Un verificateur
+    # dedie (al_etat, yondu…) lit ses propres cles (`fleche_sur`, `bras_sur`,
+    # `accroche_a` scalaire) puis delegue le reste ici : lui refuser ses cles a
+    # fait rougir 14 cas de Yondu et Alligator Loki a la batterie du 11/09.
+    if aides["cas"].get("verifier") == "etat_attendu":
+        inconnues = sorted(set(attendu) - CLES_ETAT_ATTENDU)
+        if inconnues:
+            return False, (f"cle(s) attendu INCONNUE(S) de etat_attendu : {inconnues} "
+                           f"(une cle inconnue etait ignoree en silence jusqu'au 11/09/2026)")
 
     # `pv_max` : [[card_id, n]] -> PV max de la carte en jeu (identite comprise).
     for card_id, valeur in attendu.get("pv_max") or []:
@@ -30881,7 +30889,15 @@ def etat_attendu(monde, aides):
     # `hotes` / `accroche_a` : [[carte, hote]] -> la carte est accrochee (bind_face)
     # exactement a l'hote nomme (repris de ares_hotes).
     for cle in ("hotes", "accroche_a"):
-        for carte_id, hote_id in attendu.get(cle) or []:
+        # `accroche_a` existe aussi en forme SCALAIRE (al_etat : le heros accroche
+        # a tel ennemi, ou None) : cette forme est lue par al_etat, pas ici.
+        valeur = attendu.get(cle)
+        if not isinstance(valeur, list):
+            continue
+        for paire in valeur:
+            if not (isinstance(paire, (list, tuple)) and len(paire) == 2):
+                continue
+            carte_id, hote_id = paire
             carte = aides["par_id"](monde, carte_id)
             if carte is None:
                 soucis.append(f"{carte_id} n'est pas en jeu ({cle})")

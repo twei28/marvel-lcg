@@ -472,7 +472,16 @@ deck**.
   dédiés que ces cas n'appelaient pas. Les cinq sont absorbées dans
   `etat_attendu`. Formats : `pv_max: [[id, n]]`, `traits_de: [[id, TRAIT]]`,
   `hotes` / `accroche_a: [[carte, hôte]]`, `carte_du_surge: "id"` (semée au
-  sommet du deck de rencontre, ne doit plus y être).
+  sommet du deck de rencontre, ne doit plus y être). ⚠ Le garde-fou ne joue
+  que si le cas appelle `etat_attendu` DIRECTEMENT : un vérificateur dédié
+  (`al_etat`, Yondu) lit ses propres clés (`fleche_sur`, `bras_sur`,
+  `accroche_a` scalaire) puis délègue le reste ; lui refuser ses clés a fait
+  rougir 14 cas à la batterie du 11/09/2026.
+- ⚠ **Batterie complète sous charge : faux échecs « ip/port »** (le moteur
+  n'est pas prêt quand le pilote se connecte). 60 échecs sur 1866 le
+  11/09/2026, dont 41 verts au rejeu un par un. Toujours REJOUER les échecs
+  individuellement avant de conclure (`scratchpad/rejouer-echecs.sh` lit le
+  rapport et rejoue chaque nom sur un port bas).
 - ⚠ **`CreateEncounterDeck` avec une carte du SET DÉJÀ EN JEU** (Sandman `01102`
   dans le scénario Rhino) : `FindOrCreateFace` reprend l'exemplaire du
   scénario et le deck semé n'en garde pas trace. Semer des cartes d'un
