@@ -17710,8 +17710,12 @@ CAS = [
     },
     {
         "nom": "yd007 Jackpot! — depensee comme ressource, elle finance sans planter",
-        "pourquoi": ("⚠ CE CAS NE PROUVE PAS LE DOUBLEMENT — et le defaut est dans "
-                     "l'OUTILLAGE, pas dans la carte.\n"
+        "pourquoi": ("⚠ CE CAS NE PROUVE PAS LE DOUBLEMENT : c'est le cas suivant qui le "
+                     "fait, depuis le 11/09/2026 (`surpayer: \"mw008\"`, ne surpayer QUE "
+                     "la seconde carte). Ce jour-la, le montage a montre que la carte "
+                     "etait INERTE (fenetre de comptage consommee par le rendu des "
+                     "options), et le module a ete recable sur AfterGenerateResources. "
+                     "Le paragraphe historique ci-dessous est garde pour memoire.\n"
                      "Ce que le moteur impose : il VALIDE le cout AVANT d'autoriser la "
                      "mise en jeu, avec les valeurs nominales (journal du 04/09/2026, "
                      "« Helicarrier (Turn Option,Play) [01092] WhenPlayerInTurn failed »). "
@@ -17742,6 +17746,61 @@ CAS = [
         "payer_avec": ["yd007", "01088"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["01092"]},
+    },
+    {
+        "nom": "yd007 Jackpot! — LE DOUBLEMENT : la carte depensee APRES elle vaut le double (X = 2 avec une seule ressource)",
+        "pourquoi": ("Le montage qui manquait depuis le 04/09/2026, rendu possible par "
+                     "`surpayer: \"mw008\"` (ne surpayer QUE cette carte). Premier jeu : "
+                     "First Aid (cout 1) payee avec Jackpot seule, sa Response s'arme. "
+                     "Second jeu : Webb's Team Strikes! (cout X) surpayee avec UNE Haymaker "
+                     "(1 ressource) : comptee double, X = 2, les DEUX allies s'inclinent, "
+                     "6 degats au vilain. Le temoin sans Jackpot en fait 3"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        # ⚠ Yondu doit etre BLESSE : sans personnage a soigner, First Aid n'a
+        # aucune cible legale, n'est pas jouable, et tout le carburant part
+        # alors sur Webb's Team Strikes! en un seul paiement (X = 3, 6 degats
+        # dans les DEUX cas : vu au premier essai, le temoin ne discriminait
+        # plus rien).
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.Damage('yd001a', 2)",
+                          "Puzzle.PutIntoPlay('30012', under_control=True)",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01086", "yd007", "mw008", "01087"],
+        "declencher": [],
+        "jouer": ["01086", "mw008"],
+        "payer_avec": ["yd007"],
+        "surpayer": "mw008",
+        "cibles": ["30012", "01002"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "exhausted": ["30012", "01002"], "defausse": ["yd007", "01087"]},
+    },
+    {
+        "nom": "yd007 Jackpot! — TEMOIN sans Jackpot : la meme Haymaker ne vaut qu'une ressource, X = 1, 3 degats",
+        "pourquoi": ("Meme montage, First Aid payee avec une Haymaker ordinaire au lieu de "
+                     "Jackpot : la seconde Haymaker n'est pas doublee, X = 1, un seul allie "
+                     "s'incline, 3 degats. C'est l'ecart 3 -> 6 qui prouve le doublement"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        # ⚠ Yondu doit etre BLESSE : sans personnage a soigner, First Aid n'a
+        # aucune cible legale, n'est pas jouable, et tout le carburant part
+        # alors sur Webb's Team Strikes! en un seul paiement (X = 3, 6 degats
+        # dans les DEUX cas : vu au premier essai, le temoin ne discriminait
+        # plus rien).
+        "mise_en_place": ["Puzzle.ChangeToFace('yd001b', 'yd001a')",
+                          "Puzzle.Damage('yd001a', 2)",
+                          "Puzzle.PutIntoPlay('30012', under_control=True)",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01086", "01087", "mw008", "01087"],
+        "declencher": [],
+        "jouer": ["01086", "mw008"],
+        "payer_avec": ["01087"],
+        "surpayer": "mw008",
+        "cibles": ["30012", "01002"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
     },
     {
         "nom": "yd008 Ravager Redshirts — previent 2 degats du porteur de la fleche",
@@ -36025,8 +36084,23 @@ def executer_un_cas(game_dir, port, index):
             # cela le pilote ne paie rien, X vaut 0, et la carte semble inerte
             # alors qu'elle est correcte. Meme principe qu'OVERPAY_CARDS dans
             # tools/test_autoplay.py.
-            if cas.get("surpayer"):
+            if cas.get("surpayer") is True:
                 besoin = len(candidates)
+            elif cas.get("surpayer"):
+                # AJOUT 11/09/2026 (yd007 Jackpot!) : `surpayer: "<card_id>"` (ou
+                # une liste) ne surpaie QUE le jeu de cette carte. Jusque-la,
+                # `surpayer: True` vidait la main des le PREMIER paiement du
+                # cas, ce qui rendait intestable toute carte dont l'effet se
+                # lit sur le paiement SUIVANT (« treat the next card you spend
+                # as if it has double the resources ») : il faut payer une
+                # premiere carte avec Jackpot, PUIS en surpayer une seconde.
+                voulues = cas["surpayer"]
+                if isinstance(voulues, str):
+                    voulues = [voulues]
+                objet = monde_courant().object_manager.card_dict.get(option.get("bind_id"))
+                face = objet.face if objet is not None else None
+                if getattr(getattr(face, "paper", None), "card_id", None) in voulues:
+                    besoin = len(candidates)
             if besoin <= 0:
                 return []
             # « payer_avec » impose QUELLES cartes financent le cout, ce qui est

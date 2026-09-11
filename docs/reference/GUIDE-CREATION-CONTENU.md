@@ -713,7 +713,7 @@ relecture du pack `madame_web` serait passée à côté de deux vrais défauts :
 |---|---|
 | `main_exclusive` | **Vide la main** puis y dépose les cartes listées. Avec `main` seul, la main de départ reste là et le pilote y pioche ses ressources : le bonus « payé uniquement en [physical] » d'Ashley Barton se testait avec un paiement `R Y`, donc jamais. |
 | `cibles` | Désigne des cibles précises, par `card_id`. Indispensable dès que le minimum de cibles est 0 (« exhaust up to X allies ») : le pilote envoie toujours le MINIMUM, donc rien. |
-| `surpayer` | Dépense tout ce qui est disponible. Sans cela, une carte à **coût X** annonce un coût nul, le pilote ne paie rien, X vaut 0 et la carte paraît inerte alors qu'elle est correcte. |
+| `surpayer` | `True` : dépense tout ce qui est disponible, dès le PREMIER paiement du cas. Sans cela, une carte à **coût X** annonce un coût nul, le pilote ne paie rien, X vaut 0 et la carte paraît inerte alors qu'elle est correcte. `"<card_id>"` (ou une liste, depuis le 11/09/2026) : ne surpaie QUE le jeu de cette carte, ce qui permet de payer une première carte normalement (avec `payer_avec`) puis d'en surpayer une seconde : indispensable à tout effet qui se lit sur la carte dépensée SUIVANTE (yd007 Jackpot!). |
 | `payer_avec` | Impose quelles cartes financent le coût. Utile quand la ressource dépensée a elle-même un effet (The Power of Forgiveness) — mais elle ne peut que PRIORISER parmi les candidats proposés par le moteur : pour un contrôle total, préférer `main_exclusive`. |
 
 Trois commandes ajoutées à l'API Puzzle le 4/8/2026 ouvrent les capacités qui

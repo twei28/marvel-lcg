@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-11",
+        genre: "correction",
+        fr: "Jackpot! (Yondu) fait enfin son travail : la carte dépensée juste après elle vaut bien le double de ses ressources.",
+        en: "Jackpot! (Yondu) finally does its job: the card spent right after it is really worth double its resources.",
+    },
+    {
+        date: "2026-09-11",
         genre: "jeu",
         fr: "Crisis Averted et On the Prowl sous une Crise : si tu t'apprêtes à les payer sans la ressource mentale qu'elles exigent, le jeu te prévient avant d'envoyer ton coup, au lieu de laisser la carte partir sans rien retirer.",
         en: "Crisis Averted and On the Prowl under a Crisis: if you are about to pay them without the mental resource they require, the game warns you before your play is sent, instead of letting the card go for nothing.",

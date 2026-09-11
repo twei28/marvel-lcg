@@ -178,11 +178,27 @@ Ce fichier donne le verdict et ce qui est propre à la carte.
 - [x] Étape 5 : « la PROCHAINE carte dépensée », donc un enregistrement
       temporaire. Résultat : conforme au texte.
 - [x] Étape 6 : ressource [wild], aucun coût, 1 exemplaire au deck.
-- [ ] **Étape 7 : 1 cas, rouge 0/1 — le doublement n'est PAS prouvé.**
+- [x] **Étape 7 : 3 cas, rouges 1/3** (le doublement, prouvé le 11/09/2026 ;
+      le témoin sans Jackpot est le vert qui discrimine, 3 dégâts contre 6).
 
-**Carte terminée : NON au sens strict du processus** (aucun cas ne tombe au
-rouge sans son module). **Mais la carte est correcte** : ce qui manque est un
-montage de test, pas un correctif.
+**Carte terminée : OUI (11/09/2026 au soir).**
+
+⚠ **CORRECTION DE LA CONCLUSION DU 04/09 : la carte N'ÉTAIT PAS correcte.**
+« Ce qui manque est un montage de test, pas un correctif » était faux. Une
+fois le montage possible (`surpayer: "mw008"` dans le harnais : ne surpayer
+QUE la seconde carte jouée), la mesure a donné X = 1 au lieu de 2 : **le
+doublement ne s'appliquait jamais**. Cause : la fenêtre
+`WhenCountingResourcesOnCards` est envoyée à CHAQUE lecture de
+`printed_resource` (`has_resources.py:17`), donc dès le rendu des options
+après la Response ; avec `unregister_after_exec=True`, le doublement était
+consommé par une lecture, pas par une dépense. Et la valeur versée à la
+dépense (`message.expected_res`) est de toute façon figée au rendu.
+Recâblé sur `AfterGenerateResources(AbilityType.Rule, "You", ...)` : la carte
+dépensée verse ses ressources, Jackpot les verse une seconde fois. Montage :
+First Aid payée avec Jackpot, puis Webb's Team Strikes! (coût X) surpayée avec
+UNE Haymaker : X = 2, deux alliés inclinés, 6 dégâts.
+
+Le paragraphe suivant est l'analyse du 04/09, gardée pour mémoire.
 
 ⚠ **CORRECTION D'UNE PREMIÈRE ANALYSE.** Ce fichier concluait « carte quasi
 inerte ». **C'était trop fort**, faute d'avoir testé autre chose qu'un coût
