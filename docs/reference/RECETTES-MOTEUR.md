@@ -98,6 +98,8 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | Effet | API | Modèle | Piège |
 |---|---|---|---|
 | Étourdir / désorienter / robuste | `Faces.GiveStatus(cibles, "Stunned"/"Confused"/"Tough", effect)` | 05015, 01083 | cibler avec `canbe_stunned=True` etc. (un Stalwart n'est pas ciblable) |
+| Dégâts « au nom » d'une amélioration depuis l'effet d'une AUTRE carte | `effect.this.DealDamage(...)` (la carte qui résout), jamais `amelioration.DealDamage(...)` | zeus/`__init__.py` (Skyfather) | ⚠ `upgrade.py:68` affirme `by_effect.this is self` : une amélioration ne peut infliger des dégâts que dans SON effet. `AssertionError: self=Skyfather by_effect.this=Zeus` (11/09/2026) |
+| Une obligation « en jeu » chez un joueur | `joueur.obligations_area.Get()` | zeus/`__init__.py` `AlcoholProblemsDe` | `Worlds.FindCardsOnField(...)` depuis l'effet du héros ne balaie PAS `obligations_area` : la carte était « entered play » et introuvable (11/09/2026) |
 | Retirer un statut (coût ou effet) | `face.DiscardStunned/DiscardConfused/DiscardTough(effect, rule=1)` | wd005, ho001a | plusieurs statuts → le CHOIX revient au joueur (`ChooseAbilities`) |
 | Dégâts | `this.DealDamage(cibles, n, effect)` | partout | `if_this_attack_defeats=fn` appelé PAR unité vaincue (ag006, th009) |
 | Dégâts « X » | `effect.GetCostX()` | 14006, ho004 | dans les cas de test, `surpayer: True` sinon X=0 |
@@ -177,6 +179,8 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | ... generate X ou Y selon l'état | `resources_fn=fn` (évaluée au paiement) | an007 | — |
 | ... la ressource imprimée d'une AUTRE carte | `resources_fn` + `FacesCounter.GetPrintedResources([face])` | 21006, ho009 | **NE PAS suivre le couple Can+Do de 31001a** : dans `DoGenerateResources`, `res` est figé AVANT le `PayCost` — un `res_fn` sur `return_exhausted_cards` lit l'état d'avant paiement (constaté sur ho009). Couleur à figer à l'annonce, coût aligné par `CostFunc.Custom` |
 | ressource + effet différé sur la carte payée | `ex_operation` / `WhenYouSpendThisCardToPlay` | 54002, 32047, ah007 | — |
+| Resource: Exhaust **and spend a [x] resource** → generate [y] (convertir une ressource pendant un paiement) | `CanGenerateResources(type, Resources("L")).SetCostFunc(Exhaust("This")).SetCostFunc(CostFunc.Custom(None, fn))`, où `fn` PRÉLÈVE dans `joueur.res_pool` (`Gain(Resources("Y") * -1)`) et rend False s'il n'y a rien à prélever | ze011 Mount Olympus | ⚠⚠ **PAS `CostFunc.Spend(Cost("Y"))`** (11/09/2026) : Spend ouvre un paiement DANS le paiement (`AskSpendResourcesInternal`) qui **remet le pool à zéro** : les ressources déjà générées pour la carte en cours disparaissent (« total YY » puis « total L » au journal) et la carte payée échoue. Les coûts d'une capacité de ressource sont payés juste avant `res_pool.Gain` (resources.py:404) : c'est là qu'on prélève. |
+| Capacité **Special** résolue HORS de la table (depuis la main, pendant un paiement) | déclarer `WhenResolveSpecialAbility("This", op).NoOutOfPlayLimit()`, et au moment de résoudre : `if not face.effect.Find(type=Special): face.effect.RegisterTemp(*face.ability.Find(type=Special), unregister_after_exec=True)` puis `face.ResolveSpecialAbility(joueur, effect)` | zeus/`__init__.py` `ResoudreLeSpecialDe`, ze003 | Une carte en main n'a AUCUN effet enregistré : `ResolveSpecialAbility` ne trouve rien et le message ne part pas (« Zeus resolves Thunder Strike's » suivi de rien). Et sans `NoOutOfPlayLimit`, l'effet enregistré est ignoré parce que la carte est hors jeu. Dans l'opération, le joueur est `message.GetToPlayer()`, pas `effect.GetInitiator()`. |
 
 ## 4ter. Réduire un coût « quand CETTE carte est la cible »
 
@@ -344,6 +348,27 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
 - **`[filtre]`** : `... rapport.json "ho0"` — 26 cas en 4 min. La batterie
   complète reste due quand un fichier moteur PARTAGÉ change (règle de portée
   §6bis du GUIDE).
+- **Le complot principal de Rhino est `01097b` dès le montage** : *The
+  Break-In!* avance à l'étape 2 avant la pioche. `SetThreat('01097a', 6)` crée
+  une face fantôme et lève `AssertionError: prev_scheme.card` (11/09/2026).
+- **`Puzzle.CreatePlayerDeck(a, b, c)` : la DERNIÈRE carte créée est le
+  DESSUS du deck.** Un cas « défaussez les 3 du dessus » qui passait pour la
+  mauvaise raison l'a montré (Total Eclipse, 11/09/2026).
+- **Les clés de `payment` sont des identifiants d'EFFETS**, pas d'objets. Le
+  pilote interdisait `bind_id` (l'objet joué) parmi les effets : quand les deux
+  numéros coïncidaient (Precognition objet 13, effet de Thunderbolt 13), il
+  manquait une ressource et la carte échouait « sans motif ». Retiré le
+  11/09/2026 ; le moteur empêche déjà de se payer soi-même.
+- **`TRACE_OPTIONS=1`** imprime `JOUER` (effets de jeu, jouable) et désormais
+  `PAIEMENT` (liste des moyens, priorité, choisis, couvert) : c'est ce qui a
+  révélé la collision ci-dessus en une ligne.
+- **Un effet qui échoue écrit maintenant son motif** dans le journal
+  (`player_action.py`, `MotifDEchec`) : « ... failed (check pay) ». Vide quand
+  la réponse du client ne désigne aucun moyen de paiement valide.
+- **`payer_avec` ne sait pas désigner une capacité de ressource EN JEU dont la
+  couleur générée diffère de l'imprimée** (Mount Olympus : génère L, imprime
+  R). Repli : `surpayer: True`, qui dépense tout ce qui est offert, et un ordre
+  tel que la capacité passe en dernier.
 
 ### 7bis. Quatre façons de mesurer *rien* et de le croire vert
 

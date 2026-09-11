@@ -34,6 +34,16 @@ dans `an013` (pack `angela`). Cas 2 : `ab007` (pack `albert`).
   passer par une fabrique qui recalcule, ou déclarer son événement de
   rafraîchissement.
 
+**Résoudre un Special HORS de la table** (pack `zeus`, 11/09/2026) : Hera
+résout le Special d'une carte EN MAIN, *Skyfather's Tempest* celui d'un
+événement PENDANT son paiement. `ResolveSpecialAbility` ne trouve alors aucun
+effet enregistré. Recette dans `RECETTES-MOTEUR.md` §4 : déclarer le Special
+avec `.NoOutOfPlayLimit()`, et l'enregistrer en temporaire juste avant de le
+résoudre (`ResoudreLeSpecialDe`, `cards/pack/zeus/zeus/__init__.py`). Lire
+« a printed Special » avec `face.ability.Find(type=AbilityType.Special)` (les
+capacités DÉCLARÉES), jamais `face.effect.Find` (les effets enregistrés, qui
+dépendent de la zone).
+
 **Variantes maison** : `gb009` (Black Berserker, pack `gorr`) : `[star]` qui
 donne des PV proportionnels au nombre d'attachements NECROVERSE en jeu, plafonné
 à 4 — la valeur bouge en cours de partie, l'étoile doit donc être recalculée et
