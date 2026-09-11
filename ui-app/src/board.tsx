@@ -1728,6 +1728,22 @@ function PagePartie({
     (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
   )
+  // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
+  // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
+  // interruption). Face visible forcee : c'est notre carte, on doit la lire.
+  const carteAuSurvol = useCallback(
+    (option: Option) => {
+      const nommee = carteDeLOption(option)
+      if (nommee) return nommee
+      const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
+      if (!porteuse) return undefined
+      return toScanCard(
+        { ...porteuse, visible_for_players: [joueurActif], is_face_up: true },
+        { playerId: joueurActif, actives: new Set(), catalogue }
+      )
+    },
+    [carteDeLOption, cartesMondeParId, joueurActif, catalogue]
+  )
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -2755,6 +2771,8 @@ function PagePartie({
           annuler={interaction.annuler}
           survolerOption={setOptionSurvolee}
           carteDeLOption={carteDeLOption}
+          carteAuSurvol={carteAuSurvol}
+          nomPorteur={nomPorteurFr}
         />
       ) : null}
 
@@ -2950,6 +2968,8 @@ function PagePartie({
                   annuler={interaction.annuler}
                   survolerOption={setOptionSurvolee}
                   carteDeLOption={carteDeLOption}
+                  carteAuSurvol={carteAuSurvol}
+                  nomPorteur={nomPorteurFr}
                   enScene
                 />
               ) : undefined

@@ -28,6 +28,16 @@ type DemandeCentraleProps = {
    */
   carteDeLOption?: (option: Option) => ScanCardProps | undefined
   /**
+   * Le SCAN a montrer en grand quand on SURVOLE le bouton (ou qu'on le
+   * focalise au clavier), meme quand l'option ne nomme rien : la carte qui
+   * la PORTE (« Spider-Sense » sur une interruption, « Backflip » sous
+   * « Jouer »). Sans vignette : seule la carte nommee en a une. Repli :
+   * carteDeLOption.
+   */
+  carteAuSurvol?: (option: Option) => ScanCardProps | undefined
+  /** Le nom (francais si connu) de la carte qui porte l'option, comme dans la barre d'action. */
+  nomPorteur?: (bindId: number) => string | undefined
+  /**
    * Loge dans la scene du deroule detaille (DeroulePhase, prop `question`)
    * plutot que pose au centre de la table : plus de placement, plus de
    * position fixe, le panneau coule dans la scene a la place de ses boutons.
@@ -58,9 +68,16 @@ function libelleTypeDemande(demande: Demande): string {
   return depuisEvenement ? traduireMoteur(depuisEvenement) : t('Décision')
 }
 
-function nomSource(option: Option, cartesParId: Map<number, WorldCard>): string | undefined {
+function nomSource(
+  option: Option,
+  cartesParId: Map<number, WorldCard>,
+  nomPorteur?: (bindId: number) => string | undefined
+): string | undefined {
   if (option.bind_id === 0) return undefined
-  return cartesParId.get(option.bind_id)?.name
+  // Le monde du moteur ne connait que l'anglais ; le plateau, lui, sait le
+  // nom francais (fr.marvelcdb.com, en cache). « Backflip » sous « Jouer »
+  // dans une partie en francais, signale le 11/09/2026.
+  return nomPorteur?.(option.bind_id) || cartesParId.get(option.bind_id)?.name
 }
 
 /**
@@ -220,6 +237,8 @@ export function DemandeCentrale({
   annuler,
   survolerOption,
   carteDeLOption,
+  carteAuSurvol,
+  nomPorteur,
   enScene = false,
 }: DemandeCentraleProps) {
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
@@ -273,7 +292,7 @@ export function DemandeCentrale({
       survolerOption?.(undefined)
       return
     }
-    activerOption(vise, carteDeLOption?.(vise))
+    activerOption(vise, carteAuSurvol?.(vise) ?? carteDeLOption?.(vise))
   }
 
   const quitterZone = () => {
@@ -310,7 +329,7 @@ export function DemandeCentrale({
       <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {options.map((option) => {
           const nom = nomLisible(option)
-          const source = nomSource(option, cartesParId)
+          const source = nomSource(option, cartesParId, nomPorteur)
           const cibles = resumeCibles(option, cartesParId)
           const indisponible = option.failure_reason !== ''
           const montrerRaison = indisponible && raisonVisible === option.id
@@ -342,7 +361,7 @@ export function DemandeCentrale({
                 }`}
                 aria-disabled={indisponible || undefined}
                 title={indisponible ? option.failure_reason : undefined}
-                onFocus={() => activerOption(option, carte)}
+                onFocus={() => activerOption(option, carteAuSurvol?.(option) ?? carte)}
                 onBlur={() => desactiverOption(option)}
                 onClick={() => choisirOuInformer(option)}
               >
