@@ -184,4 +184,35 @@
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.35);
   }
+
+  .main-portrait-bloc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  /* Elle DEFILE : c'est la seule zone ou les cartes gardent une taille lisible,
+     et sept cartes ne tiennent pas dans 500 px. */
+  .main-portrait.defile {
+    display: flex;
+    flex: 1;
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    --card-w: 96px;
+  }
+
+  .main-portrait.defile > .scan-card {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
+
+  /* La troisieme rangee de la grille : main puis barre du bas, empilees. */
+  .portrait-bas {
+    display: flex;
+    flex-direction: column;
+  }
 }

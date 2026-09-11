@@ -34,6 +34,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucun ennemi engagé': 'No enemies engaged',
   'Engagés': 'Engaged',
   'Ton héros': 'Your hero',
+  'Ta main est vide': 'Your hand is empty',
+  'en main': 'in hand',
   'Sauver': 'Save',
   'Charger': 'Load',
   'Exporter': 'Export',

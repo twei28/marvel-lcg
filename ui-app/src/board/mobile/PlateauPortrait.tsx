@@ -15,9 +15,11 @@ import type { BoardProps } from '../Board'
 import type { UniteAffichee } from '../zones'
 import { t } from '../langue'
 import { BandeauPortrait } from './BandeauPortrait'
+import { BarreBas } from './BarreBas'
 import { BarreMenace } from './BarreMenace'
 import { CarteAvecChiffres } from './CarteAvecChiffres'
 import { CompteursPortrait } from './CompteursPortrait'
+import { MainPortrait } from './MainPortrait'
 import { repartirEnBlocs } from './blocs-portrait'
 import './portrait.css'
 
@@ -89,6 +91,7 @@ export function PlateauPortrait(props: BoardProps) {
   const rencontre = blocs.find((bloc) => bloc.cle === 'rencontre')?.unites ?? []
   const engages = blocs.find((bloc) => bloc.cle === 'engages')?.unites ?? []
   const heros = blocs.find((bloc) => bloc.cle === 'heros')?.unites ?? []
+  const main = blocs.find((bloc) => bloc.cle === 'main')?.unites ?? []
   return (
     <main className="plateau-portrait">
       <BandeauPortrait monde={props.world} quiAgit={props.quiAgit} />
@@ -140,6 +143,24 @@ export function PlateauPortrait(props: BoardProps) {
             />
           ))}
         </section>
+      </div>
+      {/* Troisieme rangee de la grille (auto) : la main, puis la barre du bas
+          en dessous. Un seul conteneur pour que la grille garde exactement
+          ses trois rangees (`auto 1fr auto`), pas une quatrieme implicite. */}
+      <div className="portrait-bas">
+        {/* Un tap ouvre la carte (apercu), il ne la joue pas : appui long et
+            jouer viennent d'une tache suivante (decision du 11/09/2026, pour
+            ne pas jouer une carte qu'on visait juste a regarder). */}
+        <MainPortrait unites={main} onOuvrir={(unite) => props.onCardClick?.(unite.carte)} />
+        {/*
+          Reutilisee telle quelle : PlateauPaysage et PlateauMedaillons
+          cablent deja `actionsPartie`/`outils` sur cette meme barre (Journal,
+          Annuler, Fin du tour seul colore y vivent depuis board.tsx). Le
+          brief demandait une barre locale si la signature ne convenait pas :
+          elle convient, inventer une seconde barre aurait fait deux endroits
+          a maintenir pour le meme chrome.
+        */}
+        <BarreBas demande={props.bas} outils={props.actionsPartie} onglets={props.outils} />
       </div>
     </main>
   )
