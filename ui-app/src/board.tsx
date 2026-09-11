@@ -3102,7 +3102,7 @@ function PagePartie({
         // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
         // connait ni aNous, ni connecte, ni demande) : on le lui passe deja fait.
         quiAgit={quiAgit}
-        // Onglets du multijoueur (tache 10) : ignores par Board/PlateauPaysage
+        // Onglets du multijoueur (tache 10) : ignores par le plateau PC
         // (props optionnelles), lus par PlateauPortrait pour proposer la
         // bascule que la barre PC offre deja plus bas via `vueForcee`.
         joueursAffichables={joueursAffichables}

@@ -9,8 +9,8 @@
 // devient un jeu de devinettes.
 //
 // `CarteOuverte` existe deja et fait exactement cela (voile, carte centree,
-// fermeture au clic exterieur, appui long pour agir). PlateauPaysage et
-// PlateauMedaillons s'en servent ; le portrait, non.
+// fermeture au clic exterieur, appui long pour agir). PlateauMedaillons s'en
+// sert ; le portrait, non.
 
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'

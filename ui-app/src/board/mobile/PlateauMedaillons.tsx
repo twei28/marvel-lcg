@@ -1,7 +1,7 @@
 // ⚠ ANCIEN MODELE (medaillons, portrait). Conserve derriere `?medaillons` pour
 // comparer sur le telephone, jusqu'a sa suppression au sous-projet 3 de
 // docs/superpowers/specs/2026-09-07-parcours-solo-mobile-design.md (§4.9).
-// Le rendu par defaut est PlateauPaysage.tsx.
+// Le rendu par defaut est PlateauPortrait.tsx.
 //
 // Le mini-plateau : la partie sur un telephone.
 //

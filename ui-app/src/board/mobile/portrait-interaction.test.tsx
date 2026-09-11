@@ -3,7 +3,7 @@
 //
 // Cause : `avecInteraction()` (Board.tsx) est le SEUL endroit qui pose
 // `state`, `onSelect`, `targetPulse`, `spentCount` et `effectDelta` sur une
-// carte. PlateauPaysage l'appelle (table et main) ; PlateauPortrait ne
+// carte. Le plateau PC l'appelle (table et main) ; PlateauPortrait ne
 // l'appelait jamais et ne lisait meme pas `props.interactifs`. Rien ne
 // s'allumait quand le moteur attendait une cible, et l'appui long retombait
 // toujours sur `onCardClick`.

@@ -8,7 +8,7 @@
 // vraie carte en petit, avec leurs chiffres en gros A COTE. Seule la main est
 // en cartes qu'on lit a vue.
 //
-// Il accepte exactement les BoardProps du plateau PC, comme PlateauPaysage :
+// Il accepte exactement les BoardProps du plateau PC :
 // c'est ce qui permet a board.tsx de choisir sans rien adapter.
 import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
 import type { BoardProps } from '../Board'
@@ -89,7 +89,7 @@ function comptesRencontre(unites: UniteAffichee[]): Array<{ valeur: number; libe
 
 /**
  * L'appui long sur une carte de la main : la joue directement, sans passer
- * par le menu. Meme repli que `jouerCarte` dans PlateauPaysage/PlateauMedaillons :
+ * par le menu. Meme repli que `jouerCarte` dans PlateauMedaillons :
  * `onSelect` est l'action DIRECTE posee par le moteur ; a defaut, `onCardClick`
  * reste le seul point d'entree que ce plateau connait pour agir sur une carte.
  */
@@ -104,7 +104,7 @@ const AUCUN_EFFET: Map<number, CardEffectDelta> = new Map()
 /**
  * Applique l'interaction en cours a toutes les cartes du plateau, attachees
  * comprises. Meme role que `decorerUnite` + `decorerEmplacement` dans
- * PlateauPaysage ; on ne recopie pas `avecInteraction`, on l'appelle (son
+ * le plateau PC ; on ne recopie pas `avecInteraction`, on l'appelle (son
  * commentaire dans Board.tsx dit explicitement qu'une seconde copie
  * divergerait, et c'est deja arrive).
  */
@@ -141,7 +141,7 @@ export function PlateauPortrait(props: BoardProps) {
   // `avecInteraction` est le SEUL endroit qui pose `state`, `onSelect`,
   // `targetPulse`, `spentCount` et `effectDelta` sur une carte : sans cet
   // appel, RIEN n'est jouable sur telephone et rien ne s'allume quand le
-  // moteur attend une cible (recette du 11/09/2026). PlateauPaysage le fait
+  // moteur attend une cible (recette du 11/09/2026). Le plateau PC le fait
   // deja, table et main ; le portrait l'avait oublie. On decore avant de
   // repartir, pour que tous les blocs en heritent d'un coup.
   const plateauDecore = useMemo(
@@ -149,7 +149,7 @@ export function PlateauPortrait(props: BoardProps) {
     [props.plateau, props.interactifs, props.effets, props.heroActifId]
   )
   // La carte lue EN GRAND, au milieu de l'ecran. Etat local, comme
-  // PlateauPaysage : `props.onCardClick` ne sert pas a lire une carte, il
+  // PlateauMedaillons : `props.onCardClick` ne sert pas a lire une carte, il
   // ouvre les ACTIONS du moteur, et seulement quand il y en a. Taper une carte
   // pour la lire ne produisait donc rien, alors que c'est le geste central du
   // portrait et que les vignettes de la table font 64 px.
@@ -257,7 +257,7 @@ export function PlateauPortrait(props: BoardProps) {
           onJouer={(unite) => jouerCarteMain(props, unite)}
         />
         {/*
-          Reutilisee telle quelle : PlateauPaysage et PlateauMedaillons
+          Reutilisee telle quelle : PlateauMedaillons
           cablent deja `actionsPartie`/`outils` sur cette meme barre (Journal,
           Annuler, Fin du tour seul colore y vivent depuis board.tsx). Le
           brief demandait une barre locale si la signature ne convenait pas :
@@ -267,7 +267,7 @@ export function PlateauPortrait(props: BoardProps) {
         <BarreBas demande={props.bas} outils={props.actionsPartie} onglets={props.outils} />
       </div>
       {/* La carte en grand, centree, avec son action si le moteur en propose
-          une. Meme composant que PlateauPaysage et PlateauMedaillons : une
+          une. Meme composant que PlateauMedaillons : une
           seconde version divergerait. */}
       {carteLue ? <CarteOuverte carte={carteLue} onFermer={() => setCarteLue(undefined)} /> : null}
     </main>

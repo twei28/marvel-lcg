@@ -15,7 +15,7 @@ import type { Plateau } from '../zones'
 import type { World } from '../world'
 
 // Ce test verrouille le chemin MEDAILLON (docstring ci-dessus) : depuis la
-// tache 11 de la refonte paysage, PlateauMobile rend PlateauPaysage par
+// tache 11 de la refonte paysage, PlateauMobile rendait un plateau paysage par
 // defaut (de vraies cartes, sans classe .medaillon). On demande donc
 // explicitement l'ancien rendu, comme le filet Playwright depuis la tache 1.
 beforeEach(() => {
