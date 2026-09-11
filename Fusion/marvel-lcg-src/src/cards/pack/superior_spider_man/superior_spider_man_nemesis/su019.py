@@ -42,7 +42,13 @@ def GetAbilities() -> Sequence['Ability']:
         vilain = next((e for e in Worlds.GetOnFieldEnemies(effect)
                        if e is not None and Villain.IsType(e)), None)
         if vilain is not None:
-            vilain.PlaceCardHere(this, True, effect)
+            # ⚠ CORRIGE LE 11/09/2026 : `PlaceCardHere` GLISSAIT la bombe sous le
+            #   vilain (zone « cartes posees », hors jeu, pas un attachement) :
+            #   `AfterUnitAttackYou("AttachedEnemy")` ne partait donc jamais et la
+            #   carte n'etait pas « en jeu ». Le cas « SANS Hobgoblin, elle va sur
+            #   le VILAIN » etait vert par une cle `hotes` ignoree en silence
+            #   (garde-fou du 11/09). `AttachTo2` = un vrai attachement.
+            this.AttachTo2(vilain, effect)
 
     def apres_attaque(effect: 'Effect', message: 'Message.AfterUnitAttackEnd') -> None:
         this = effect.this.CastTo(Attachment)

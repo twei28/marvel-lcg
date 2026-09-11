@@ -26428,9 +26428,15 @@ CAS = [
                      "trait, c'est bien Iron Patriot qui le donne"),
         "scenario": "rhino",
         "heros": "iron_patriot",
-        "mise_en_place": ["Puzzle.PutIntoPlay('01084')"],
-        "declencher": ["Puzzle.Draw(0)"],
-        "accepter_choix": False,
+        # ⚠ 11/09/2026 : ce cas etait VERT par une cle `traits_de` ignoree en
+        # silence (garde-fou). Rejoue avec Nick Fury JOUE depuis la main (4 :
+        # Energy + Genius), pas pose par Puzzle.PutIntoPlay.
+        # ⚠ FORME HEROS obligatoire : la capacite est sur la face ip001a, inactive en
+        # alter-ego. Le cas d'origine ne basculait jamais.
+        "mise_en_place": ["Puzzle.ChangeForm('ip001b')"],
+        "main_exclusive": ["01084", "01088", "01089"],
+        "declencher": [],
+        "jouer": ["01084"], "payer_avec": ["01088", "01089"], "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {"traits_de": [["01084", "REGISTERED"]]},
     },
@@ -29409,13 +29415,16 @@ CAS = [
         "nom": "hc015 Blackheart — revele alors que Daimon est engage avec vous (solo) : surge, et il ne reste pas en jeu",
         "pourquoi": ("« If Daimon Hellstrom is in your play area, Blackheart engages with the next "
                      "player in turn order. If he cannot, this card gains surge. » En solo le "
-                     "joueur suivant est soi-meme : Blackheart hors jeu, Repair Sequence "
-                     "(semee au sommet) revelee par le surge"),
+                     "joueur suivant est soi-meme : Blackheart hors jeu, Illegal Arms Factory (semee "
+                     "au sommet, set Klaw) revelee par le surge, Masters of Mayhem reste dans le deck. ⚠ PAS Repair "
+                     "Sequence ni Hard to Keep Down comme carte semee : elles gagnent surge "
+                     "par leur propre texte quand elles ne soignent rien, et la chaine "
+                     "continue (vu le 11/09/2026, pris a tort pour un defaut du moteur)"),
         "scenario": "rhino", "heros": "hellcat",
-        "mise_en_place": ["Puzzle.PutIntoPlay('hc016')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc016')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01133', '01126')"],
         "declencher": ["Puzzle.Reveal('hc015')"], "accepter_choix": True,
         "verifier": "etat_attendu",
-        "attendu": {"hors_jeu": ["hc015"], "en_jeu": ["hc016"], "carte_du_surge": "01146"},
+        "attendu": {"hors_jeu": ["hc015"], "en_jeu": ["hc016"], "carte_du_surge": "01126", "dans_deck_rencontre": ["01133"]},
     },
     {
         "nom": "hc015 Blackheart — TEMOIN : revele seul, il entre en jeu normalement",
@@ -29430,10 +29439,10 @@ CAS = [
         "nom": "hc016 Daimon Hellstrom — revele alors que Blackheart est engage avec vous (solo) : surge, hors jeu",
         "pourquoi": "Symetrique de hc015",
         "scenario": "rhino", "heros": "hellcat",
-        "mise_en_place": ["Puzzle.PutIntoPlay('hc015')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01146')"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('hc015')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01133', '01126')"],
         "declencher": ["Puzzle.Reveal('hc016')"], "accepter_choix": True,
         "verifier": "etat_attendu",
-        "attendu": {"hors_jeu": ["hc016"], "en_jeu": ["hc015"], "carte_du_surge": "01146"},
+        "attendu": {"hors_jeu": ["hc016"], "en_jeu": ["hc015"], "carte_du_surge": "01126", "dans_deck_rencontre": ["01133"]},
     },
     {
         "nom": "hc017 Hot as Hell — defausse une amelioration et inflige son cout : Cat Suit (2)",
@@ -29561,6 +29570,21 @@ CAS = [
         "declencher": ["Puzzle.Attack('hc001a')"], "cibles": ["01110", "01097b"], "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["01110"], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "SURGE (moteur) — TEMOIN : un renfort revele UNE carte, et la carte revelee ne renforce pas d'elle-meme",
+        "pourquoi": ("Temoin moteur du 11/09/2026. Assault revelee en alter-ego gagne surge et "
+                     "revele Illegal Arms Factory (set Klaw, sans surge) qui entre en jeu : "
+                     "Masters of Mayhem reste dans le deck. ⚠ Pas de carte du set Rhino en "
+                     "deck seme (FindOrCreate la reprend au scenario). ⚠ Repair Sequence et Hard to Keep Down ne "
+                     "conviennent PAS ici : « if no damage was healed, this card gains surge » "
+                     "— la chaine qu'elles produisent est LEGITIME, pas un defaut (diagnostic "
+                     "trace dans le moteur, mot-cle Surge auto-attribue)"),
+        "scenario": "rhino", "heros": "hellcat",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01133', '01126', '01187')"],
+        "declencher": ["Puzzle.Reveal('01187')"], "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["01133"], "en_jeu": ["01126"], "defausse_rencontre": ["01187"]},
     },
 ]
 # ------------------------------------------------- verifications outillees --
@@ -30809,10 +30833,72 @@ IMPRIME = {
     "steady": "printed_steady",
 }
 
+# ⚠ GARDE-FOU (11/09/2026, §9) : une cle `attendu` que `etat_attendu` ne lit pas
+# etait IGNOREE EN SILENCE, et le cas passait au vert sans rien mesurer. Trouve
+# sur le pack hellcat (`pv_max`, `carte_du_surge`), puis par balayage : `hotes`
+# (su018/su019), `traits_de` (iron_patriot), `accroche_a` (ze015) etaient dans
+# le meme cas — leurs verificateurs dedies existaient, mais ces cas-la
+# appelaient `etat_attendu`. Toute cle inconnue fait desormais ECHOUER le cas.
+CLES_ETAT_ATTENDU = {
+    'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
+    'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
+    'defausse_joueur', 'defausse_rencontre', 'degats', 'degats_identite',
+    'degats_identite_min', 'degats_min', 'en_jeu', 'en_jeu_trait', 'en_main', 'en_reserve',
+    'exhausted', 'forme', 'hors_jeu', 'icones', 'icones_boost', 'jetons', 'menace',
+    'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
+    'taille_deck_joueur', 'taille_deck_registered', 'taille_main', 'taille_mis_de_cote',
+    'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
+    # absorbees le 11/09/2026
+    'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
+}
+
 def etat_attendu(monde, aides):
     attendu = aides["cas"].get("attendu") or {}
     identite = aides["identite"](monde)
     soucis = []
+
+    inconnues = sorted(set(attendu) - CLES_ETAT_ATTENDU)
+    if inconnues:
+        return False, (f"cle(s) attendu INCONNUE(S) de etat_attendu : {inconnues} "
+                       f"(une cle inconnue etait ignoree en silence jusqu'au 11/09/2026)")
+
+    # `pv_max` : [[card_id, n]] -> PV max de la carte en jeu (identite comprise).
+    for card_id, valeur in attendu.get("pv_max") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (pv_max)")
+        elif getattr(face, "max_health", None) != valeur:
+            soucis.append(f"{card_id} a {getattr(face, 'max_health', None)} PV max (attendu {valeur})")
+
+    # `traits_de` : [[card_id, TRAIT]] (repris de face_identite).
+    for card_id, trait in attendu.get("traits_de") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (traits_de)")
+        elif not face.HasTrait(trait):
+            soucis.append(f"{card_id} n'a pas le trait {trait}")
+
+    # `hotes` / `accroche_a` : [[carte, hote]] -> la carte est accrochee (bind_face)
+    # exactement a l'hote nomme (repris de ares_hotes).
+    for cle in ("hotes", "accroche_a"):
+        for carte_id, hote_id in attendu.get(cle) or []:
+            carte = aides["par_id"](monde, carte_id)
+            if carte is None:
+                soucis.append(f"{carte_id} n'est pas en jeu ({cle})")
+                continue
+            hote = getattr(carte, "bind_face", None)
+            hote_reel = getattr(getattr(hote, "paper", None), "card_id", None)
+            if hote_reel != hote_id:
+                soucis.append(f"{carte_id} est accrochee a {hote_reel}, attendu {hote_id}")
+
+    # `carte_du_surge` : card_id seme au sommet du deck de rencontre ; le surge
+    # doit l'avoir revele, il n'est donc plus dans le deck.
+    if attendu.get("carte_du_surge"):
+        from game.operate.worlds import Worlds
+        semee = attendu["carte_du_surge"]
+        deck = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+        if semee in deck:
+            soucis.append(f"{semee} est encore dans le deck de rencontre : le surge n'a rien revele")
 
     for nom, ecart in (attendu.get("attributs") or {}).items():
         courant = identite.max_health if nom == "health" else getattr(identite, nom)

@@ -464,6 +464,24 @@ deck**.
   de démarrer si un autre `test_capacites.py` / `verifier_tous_les_decks.py` /
   `autoplay.py` cible déjà le même dossier de jeu ; le `pgrep` manuel reste
   utile pour diagnostiquer, il n'est plus la seule protection.
+- ⚠ **Une clé `attendu` inconnue d'`etat_attendu` fait désormais ÉCHOUER le
+  cas** (garde-fou du 11/09/2026, `CLES_ETAT_ATTENDU`). Avant, elle était
+  ignorée en silence et le cas passait au vert sans rien mesurer : `pv_max`
+  et `carte_du_surge` (hellcat), `hotes` (su018/su019), `traits_de`
+  (iron_patriot), `accroche_a` (ze015) vivaient dans des vérificateurs
+  dédiés que ces cas n'appelaient pas. Les cinq sont absorbées dans
+  `etat_attendu`. Formats : `pv_max: [[id, n]]`, `traits_de: [[id, TRAIT]]`,
+  `hotes` / `accroche_a: [[carte, hôte]]`, `carte_du_surge: "id"` (semée au
+  sommet du deck de rencontre, ne doit plus y être).
+- ⚠ **`CreateEncounterDeck` avec une carte du SET DÉJÀ EN JEU** (Sandman `01102`
+  dans le scénario Rhino) : `FindOrCreateFace` reprend l'exemplaire du
+  scénario et le deck semé n'en garde pas trace. Semer des cartes d'un
+  AUTRE set (Klaw `01126`, `01133`).
+- ⚠ **Cartes à Renfort CONDITIONNEL comme carte semée** : `01146` Repair
+  Sequence et `01104` Hard to Keep Down gagnent surge par leur propre texte
+  (« if no damage was healed ») quand rien n'est soigné, et enchaînent les
+  révélations. Pris à tort pour un défaut du moteur le 11/09/2026 (trace :
+  le mot-clé Surge est auto-attribué). Témoin moteur : cas « SURGE (moteur) ».
 - ⚠ **`main` / `Puzzle.Gain` RÉUTILISE une carte existante** (`FindOrCreateFace`) :
   un `01089` listé dans `main` aspire le Genius qu'on venait de poser en
   défausse par `CreatePlayerDiscardPile`, et la recherche de Hedy Wolfe ne

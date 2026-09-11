@@ -360,6 +360,37 @@ Carte terminée : OUI.
 
 Cartes terminées : OUI.
 
-## Bilan substitution / autoplay
+## Bilan substitution / autoplay (11/09/2026)
 
-(rempli après exécution, voir ci-dessous)
+**Substitution** (`substituer_pack.py … 45000 hc`) : **24/24 modules** ont au
+moins un cas qui tombe au rouge sans eux. Les onze « un cas reste vert sans
+module » sont tous des TÉMOINS d'absence d'effet, assumés (hc001a « SANS
+[mental] », hc006 « sous Crise rien ne part », hc009 « payée en [energy] »,
+hc010 « sans elle », hc014 « sans carte accrochée », hc015 « révélé seul »,
+hc017 « sans amélioration », hc020/hc022 « injouable ») — **sauf deux** qui
+ont révélé un trou du harnais, voir ci-dessous.
+
+**Cas Crise** touchés par la correction de 15012 : 15012 1/1, CRISE 6/6.
+
+**Autoplay** (Rhino ×8, profil équilibré) : `hellcat` 8 parties, 0 bloquée,
+5,0 rounds ; `hellcat_she_hulk` 8 parties, 0 bloquée, 5,0 rounds ; témoin
+`spider_man` 7,5 rounds ; **tracebacks : 0** sur tous les journaux.
+
+**Trou du harnais trouvé par la substitution** : hc003 « +3 points de vie » et
+hc012 « +1 PV par [mental] » restaient verts SANS leur module. Cause : la clé
+`pv_max` n'existait pas dans `etat_attendu` et était **ignorée en silence**.
+Le balayage a trouvé quatre autres clés dans le même cas (`carte_du_surge`
+sur hc015/hc016, `hotes`, `traits_de`, `accroche_a` sur d'autres packs). Les
+cinq sont absorbées dans `etat_attendu`, et toute clé inconnue fait
+désormais échouer le cas (`CLES_ETAT_ATTENDU`). **Revérification** : hc003
+« +3 PV » et hc012 « +1 PV » sont ROUGES sans leur module (contrôle refait
+module retiré), VERTS avec ; hc015/hc016 mesurent maintenant vraiment le
+surge (`carte_du_surge` + `dans_deck_rencontre`, cartes du set Klaw semées).
+
+**Trouvé en passant par le garde-fou, hors pack** : `su019` Pumpkin Bombs
+« sans Hobgoblin, sur le vilain » glissait la bombe SOUS le vilain
+(`PlaceCardHere`) au lieu de l'attacher : corrigé (`AttachTo2`), 3/3. Le cas
+`ip001a` Iron Patriot restait en alter-ego (capacité héros inactive) : cas
+corrigé (forme héros, allié joué depuis la main), la carte est juste.
+Fausse piste : une « propagation du surge » qui n'était que le texte de
+Repair Sequence / Hard to Keep Down ; témoin moteur ajouté.
