@@ -398,9 +398,37 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         acteur = carte.get("face")
         pv = ctx["pv_ratio"]
 
+        # ⚠ LA STAT VIVANTE D'ABORD, L'IMPRIMEE EN SECOURS (11/09/2026).
+        #
+        # On ne lisait que `paper.desc`, c'est-a-dire la valeur IMPRIMEE sur le
+        # papier. Or beaucoup de cartes recoivent leurs statistiques A
+        # L'EXECUTION, et leur gabarit imprime porte des zeros : le pilote les
+        # voyait alors comme sans valeur et refusait de s'en servir.
+        #
+        # Mesure qui l'a revele, sur `iron_patriot` : les allies REGISTERED
+        # (gabarit `registered_ally`, `ATK: '0*'`, `THW: '0*'`, valeurs
+        # reellement posees par `Faces.TreatAsAlly`) faisaient noter Attaque et
+        # Contre a MOINS CINQ. Le bot recrutait des allies puis ne s'en servait
+        # jamais, et le complot principal s'accomplissait au round 1 sur 16
+        # parties sur 16.
+        #
+        # ⚠ CE N'EST PAS UN DEFAUT PROPRE A IRON PATRIOT. Tout ce qui pose ses
+        # valeurs en jeu est concerne : `TreatAsAlly`, `TreatAsMinion`, les
+        # bonus continus, les ameliorations qui donnent +1 ATQ. Le pilote
+        # jugeait sur le papier, jamais sur la table.
+        ATTRIBUT_VIVANT = {"ATK": "attack", "THW": "thwart", "DEF": "defense",
+                           "REC": "recover", "HP": "health"}
+
         def stat_acteur(cle, defaut=1):
+            if acteur is None:
+                return defaut
+            vivant = ATTRIBUT_VIVANT.get(cle)
+            if vivant is not None:
+                valeur = getattr(acteur, vivant, None)
+                if isinstance(valeur, int):
+                    return valeur
             return nombre((getattr(getattr(acteur, "paper", None), "desc", {})
-                           or {}).get(cle), defaut) if acteur is not None else defaut
+                           or {}).get(cle), defaut)
 
         # --- les deux horloges, qui donnent l'urgence de chaque axe ---------
         marge = ctx.get("menace_restante", 99)
@@ -415,8 +443,13 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # de 6,3 a 4 rounds, en le faisant reagir a une menace lointaine au
         # detriment de tout le reste. La courbe hyperbolique ne se declenche
         # que quand l'echeance devient reelle.
+        # ⚠ ESSAI 11/09/2026 : un PLANCHER. La courbe rend EXACTEMENT ZERO des
+        # que l'echeance depasse 6 tours (3/6 - 0,5 = 0). Contrer ne vaut donc
+        # rien tant que la defaite est lointaine, et le cout d'activation rend
+        # le score NEGATIF : mesure -5,0 sur iron_patriot. N'importe quelle
+        # capacite a score fixe l'emporte alors.
         def urgence(tours):
-            return max(0.0, min(2.5, 3.0 / max(tours, 0.5) - 0.5))
+            return max(0.3, min(2.5, 3.0 / max(tours, 0.5) - 0.5))
 
         urgence_menace = urgence(tours_defaite)
         degats_entrants = max(sum(nombre((getattr(getattr(e, "paper", None),
@@ -517,7 +550,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         else:
             # Reponses, interruptions et capacites nommees. Une capacite
             # proposee et non forcee est presque toujours un gain.
-            fixe = 20.0
+            #
+            # ⚠ MAIS ELLE S'USE DANS LE ROUND (essai 11/09/2026). Le score
+            # etait FIXE : une Action repetable sans limite gardait
+            # eternellement le meme attrait. Mesure sur `iron_patriot` :
+            # l'Action « Enlistment » de `ip002a` prise 21 fois dans le round 1,
+            # 33 sbires REGISTERED en jeu, et 16 parties sur 16 perdues au
+            # round 1,0.
+            #
+            # ⚠ CETTE DECROISSANCE NE SERT A RIEN SANS LE PLANCHER D'URGENCE
+            # pose plus haut : tant que Contre valait -5, faire tomber
+            # Enlistment de 20 a 0,5 ne changeait rien, il gagnait quand meme.
+            # Les deux ont ete essayes SEPAREMENT avant d'etre gardes ensemble.
+            deja_prise = (ctx.get("actes_du_round") or {}).get(nom, 0)
+            fixe = 20.0 / (1.0 + deja_prise)
 
         if fixe is not None:
             return fixe
@@ -999,6 +1045,10 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         if premier and r > 0 and ligne["pv_vilain_fin"] is not None:
             etat["degats_par_tour"] = max(
                 (premier - ligne["pv_vilain_fin"]) / r, 0.5)
+
+        # Ce que le bot a DEJA fait ce round, lisible par le scorer : c'est lui
+        # qui fait decroitre une capacite nommee reprise en boucle.
+        ctx["actes_du_round"] = ligne["actes"]
 
         meilleure = max(retenues, key=lambda o: scorer(o, ctx))
         # Une option notee a zero est jugee nuisible : passer vaut mieux que la

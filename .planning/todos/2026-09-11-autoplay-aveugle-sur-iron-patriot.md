@@ -72,6 +72,53 @@ ce modèle a été réglé par mesures successives (« essayée et retirée : el
 faisait tomber le bot de 6,3 à 4 rounds ») ; y toucher demande la même rigueur,
 sur plusieurs decks témoins, et ce n'est pas un patch.
 
+## ⚠ CORRECTION DU MÊME JOUR : la cause énoncée ci-dessus était incomplète
+
+Le diagnostic initial attribuait tout à la courbe d'urgence. **Faux, ou plutôt
+partiel.** Les scores réels, obtenus en instrumentant le scorer (ce que ce
+document recommandait de faire, et qu'il fallait faire d'abord) :
+
+```
+retenues = [('Enlistment', 0.5), ('Attack', -5.0), ('Thwart', -5.0)]
+```
+
+Et l'instrumentation des faces a montré que ces Attaque et Contre à −5 ne sont
+pas ceux du héros : ils sont liés au gabarit `registered_ally`, dont le `desc`
+imprimé vaut `ATK: '0*'` et `THW: '0*'`, les vraies valeurs étant posées à
+l'exécution par `Faces.TreatAsAlly`. **Le scorer lisait `paper.desc`, donc
+l'imprimé.** Il voyait tous ces alliés comme nuls et refusait de s'en servir.
+
+Il y avait donc **trois** défauts, pas un :
+
+1. le score fixe de 20 des capacités nommées, qui écrase le calcul pondéré ;
+2. la courbe d'urgence, qui rend exactement zéro au-delà de 6 tours d'échéance
+   et fait tomber Contre à −5 avec le coût d'activation ;
+3. **la lecture des statistiques imprimées au lieu des vivantes**, qui rend
+   invisible toute carte dont les valeurs sont posées en jeu (`TreatAsAlly`,
+   `TreatAsMinion`, bonus continus, améliorations).
+
+## Ce qui a été corrigé, et mesuré
+
+| Deck | Avant | Après |
+|---|---|---|
+| spider_man / rhino | 5,6 rounds | **7,5** |
+| spider_man / klaw | 3,6 | **4,6** |
+| spider_woman / rhino | 5,6 | **6,4** |
+| spider_woman / klaw | 3,9 | **4,0** |
+| iron_patriot | 1,0 | 1,0 |
+
+Trois changements gardés : plancher d'urgence à 0,3, lecture de la statistique
+vivante, décroissance des capacités répétées dans le round.
+
+**Un changement REJETÉ** : faire passer cette décroissance en négatif. Elle
+montait spider_man à 7,8 rounds, mais **Iron Patriot ne terminait plus** : le
+bot déclinait, le moteur reposait la même question. Un gain sur un deck ne vaut
+pas un blocage sur un autre.
+
+**Iron Patriot reste à 1,0 round**, et c'est désormais une propriété connue et
+non un mystère : le pack se noie lui-même dès que le pilote enlist librement.
+La gate reste donc peu informative sur ce pack précis.
+
 ## Si on y revient
 
 1. Instrumenter le scorer pour **afficher les scores** de chaque option offerte,
