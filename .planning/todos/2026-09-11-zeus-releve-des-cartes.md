@@ -11,97 +11,152 @@ némésis complet numéroté 1/5 à 5/5.
 
 Les textes viennent de **deux sources de qualité inégale** :
 
-- **Lues à l'œil sur l'image** (fiables, icônes comprises) : les 5 némésis,
-  `8/15` Olympian Might, et l'obligation. L'utilisateur les a collées
-  directement.
+- **Lues à l'œil sur l'image** (fiables, icônes comprises) : **les 23 cartes**.
+  L'utilisateur les a toutes collées dans le fil le 11/09/2026, le set héros
+  d'abord, puis le set némésis et l'obligation.
 - **Lues par OCR du Drive** (mots fiables, **icônes et chiffres douteux**) :
-  l'identité et les 14 autres cartes du set héros.
+  première passe, aujourd'hui remplacée par la lecture à l'œil.
 
 ⚠ **L'OCR NE REND PAS LES ICÔNES DE RESSOURCES.** Il écrit « Requirement (2) »
 là où la carte montre « Requirement (⚡) », et « (222) » pour trois éclairs.
-Toute icône citée ci-dessous vient donc d'une déduction, sauf sur les cartes
-lues à l'œil. **À reconfirmer sur les scans avant la moindre entrée dans
-`data/cards.json`.**
+C'est pour cette raison que le relevé a été refait image par image : la colonne
+« Ressource imprimée » ci-dessous est lue sur la pastille de coin, pas déduite.
 
-## ⚠ LA SEULE AMBIGUÏTÉ QUI RESTE, ET ELLE EST AU CŒUR DU PACK
+## ⚠⚠ CE PACK INVENTE UN CINQUIÈME TYPE DE RESSOURCE
 
-La capacité d'identité, *Skyfather's Tempest*, est rendue par l'OCR ainsi :
+Résolu le 11/09/2026 avec l'utilisateur, carte par carte, sur les images.
+**La première version de ce relevé se trompait sur toutes les icônes** : elle
+lisait « énergie » partout où elle voyait un éclair. Il y a en réalité DEUX
+icônes distinctes, et le pack repose entièrement sur leur différence.
 
-> « After you spend both **and** resources to pay for an event, resolve the
-> "Special" ability on that event and remove 1 threat from a scheme. »
+**Vocabulaire à employer partout désormais**, arrêté avec l'utilisateur :
 
-Deux icônes ont disparu entre « both » et « and ». Or c'est la condition de
-déclenchement de TOUT le pack : quatre cartes s'y réfèrent explicitement
-(`11/15` The Aegis, `12/15` Thunderbolt, `13/15` Skyfather, et l'obligation).
-**Il faut voir cette carte.**
+- **énergie** : la ressource officielle jaune du jeu de base. `Y` côté moteur.
+- **éclair** : une ressource **maison**, inventée par l'auteur, qui n'existe que
+  dans ce pack. **Aucune contrepartie dans le moteur.**
 
-## Le cœur du pack : l'énergie ⚡ et les capacités « Spécial »
+### Où chaque icône apparaît, relevé exhaustif
 
-Deux mécaniques imbriquées, et le set némésis attaque précisément les deux.
+| Endroit | Énergie | Éclair |
+|---|---|---|
+| Ressource imprimée, Thunder Strike ×4 | | **oui** |
+| Ressource imprimée, Wrath of Olympus et Thunderbolt | **oui** | |
+| *Skyfather's Tempest* (identité) | **oui** | **oui**, il faut les DEUX |
+| `Requirement` de Thunder Strike (×1), Olympian Might (×2), Wrath of Olympus (×3) | **oui** | |
+| Mount Olympus, ressource dépensée | **oui** | |
+| Mount Olympus, ressource générée | | **oui** |
+| Thunderbolt, ressource générée | **oui** | |
+| Alcohol Problems, ressource dépensée | | **oui** |
+| Nyx, The Mother of Night, Shroud of the Nightmother | **oui** | |
 
-**Les « Spécial ».** Sept cartes du set héros en portent un. Ce sont des
-capacités qui ne se déclenchent PAS en jouant la carte : `Skyfather's Tempest`
-les résout depuis la main, Hera en résout un à son entrée, et `13/15` Skyfather
-en DONNE un aux événements qui n'en ont pas.
+### Ce que ça dit du dessin du pack
 
-**L'énergie ⚡.** Les événements d'attaque portent un `Requirement` en éclairs,
-l'obligation en réclame un pour partir, `Mount Olympus` et `Thunderbolt` en
-génèrent.
+**L'éclair est rare et interne.** Deux sources seulement : les **quatre**
+Thunder Strike, qui le portent imprimé, et **Mount Olympus**, qui convertit une
+énergie en éclair. Rien d'autre n'en produit, et aucune carte d'aspect n'en
+portera jamais.
 
-**Et le némésis vise ces deux points**, ce qui est du beau travail d'auteur :
-Nyx punit les cartes à éclair imprimé, *The Mother of Night* les confisque,
-*Shroud of the Nightmother* interdit purement de les dépenser, et *Total
-Eclipse* punit les événements à « Spécial ».
+**Le Tempest est un puzzle à deux ingrédients.** Il faut payer un même
+événement avec au moins une énergie ET au moins un éclair. L'énergie vient de
+partout, l'éclair des deux seules sources ci-dessus. C'est la tension du pack.
+
+**Le némésis ne vise PAS l'éclair, il vise l'énergie.** C'est plus vicieux que
+ce que croyait la première version : Shroud of the Nightmother interdit de
+dépenser de l'énergie, donc éteint le Tempest, les trois `Requirement` et Mount
+Olympus d'un seul coup. Nyx et The Mother of Night frappent les cartes à
+énergie imprimée, qui sont légion dans n'importe quel aspect.
+
+⚠ **L'obligation, elle, coûte un éclair.** Alcohol Problems bloque le Tempest
+et réclame la ressource la plus rare du deck pour partir. Combinée au Shroud,
+elle est presque verrouillée, puisque Mount Olympus a besoin d'énergie pour
+fabriquer l'éclair.
+
+## ⚠⚠ CONSÉQUENCE MOTEUR : ce pack n'est PAS un pack ordinaire
+
+Le moteur code **quatre** couleurs en dur, et rien n'y est extensible :
+
+`src/game/element/rbyg.py` définit `ResRBYG(r, b, y, g)` avec
+`RBYG: TypeAlias = Literal["R", "B", "Y", "G"]`. Chaque opération
+(`__add__`, `__sub__`, `__mul__`, `FromText`, `GetColor`, `OnlyHasColor`,
+`GetTypeKindsInternal`, `IsSameType`, `IsDifferentType`, `CanPayThisCost`)
+énumère les quatre champs à la main. `Resources.RES_TEXT` et
+`Resources.RBYG_LIST` les listent à nouveau, et le constructeur de `Resources`
+n'accepte qu'un `Literal` fermé de combinaisons.
+
+**Mesuré, pas supposé** : `rbyg`/`RBYG` apparaît **121 fois dans 22 fichiers**,
+dont 16 fichiers de moteur. S'y ajoutent le format de `data/cards.json`, le
+pool de ressources du joueur, l'écran de paiement et le rendu du plateau.
+
+**Ce n'est donc pas un portage de cartes, c'est un chantier moteur.** Il faut
+trancher avant d'écrire la première ligne :
+
+1. **Ajouter une vraie cinquième couleur** au moteur. Coûteux, touche le cœur
+   du système de paiement, mais rend le pack à 100 %.
+2. **Modéliser l'éclair autrement** qu'en couleur de ressource : un compteur,
+   un jeton, une carte-ressource spéciale. Moins invasif, mais il faut vérifier
+   que « dépenser un éclair pour payer un événement » reste exprimable.
+3. **Renoncer** à ce pack tant que le point 1 n'est pas fait.
+
+⚠ Le choix n'est pas fait. **Ne pas commencer à écrire des cartes avant.**
 
 ## Les 17 entrées
 
 ### Identité
 
 - **`* Zeus`** (Hero) — OLYMPUS. CTR 2, ATQ 2, DEF 2. Main 4 / 15 PV.
-  *Skyfather's Tempest* — **Réponse** : après avoir dépensé ⟨**deux icônes à
-  confirmer**⟩ pour payer un événement, résolvez la capacité « Spécial » de cet
-  événement et retirez 1 menace d'une manigance.
+  *Skyfather's Tempest* — **Réponse** : après avoir dépensé **à la fois une
+  énergie et un éclair** pour payer un même événement, résolvez la capacité
+  « Spécial » de cet événement et retirez 1 menace d'une manigance.
 - **`* Zeus Panhellenios`** (AlterEgo) — OLYMPUS. REC 5. Main 6 / 15 PV.
   *God of Lightning* — **Action** : cherchez l'amélioration Thunderbolt dans
   votre deck et votre défausse et ajoutez-la à votre main. *(1 max par round.)*
 
 ### Set héros, 15 cartes
 
-| # | Carte | Type | Texte |
-|---|---|---|---|
-| 1 | **Hera** | Allié, coût 2, CTR 2, ATQ 2, OLYMPUS | **Réponse** : après l'entrée en jeu de Hera, choisissez une carte de votre main portant un « Spécial » imprimé et résolvez-le |
-| 2-5 | **Thunder Strike** ×4 | Événement, coût 2, ATTACK SUPERPOWER | Requirement (⚡). **Action de héros** *(attaque)* : 5 dégâts, Perçant. **Spécial** : étourdir un ennemi |
-| 6-7 | **Precognition** ×2 | Événement, coût 2, SUPERPOWER THWART | **Action de héros** *(contre)* : retirer 4 menaces. **Spécial** : désorienter un ennemi |
-| 8-9 | **Olympian Might** ×2 | Événement, coût 3, ATTACK SUPERPOWER | Requirement (⚡⚡). **Action de héros** *(attaque)* : 7 dégâts, et si l'ennemi est vaincu, redressez Zeus. **Spécial** : gagnez une carte de statut Robuste |
-| 10 | **Wrath of Olympus** | Événement, coût 5, ATTACK SUPERPOWER | Requirement (⚡⚡⚡). **Action de héros** *(attaque)* : 10 dégâts, Déferlement. **Spécial** : 2 dégâts à chaque ennemi, 2 menaces retirées de chaque manigance |
-| 11 | **The Aegis** | Amélioration, coût 1, ARMOR OLYMPUS | **Réponse** : après avoir résolu *Skyfather's Tempest*, posez 1 compteur d'égide ici. **Interruption de héros** *(défense)* : retirez 2 compteurs pour empêcher 3 dégâts |
-| 12 | **Thunderbolt** | Amélioration, OLYMPUS WEAPON | **Ressource de héros** : inclinez pour générer une ressource. **Réponse de héros** : après avoir résolu *Skyfather's Tempest*, redressez Thunderbolt |
-| 13 | **Skyfather** | Amélioration, coût 2, OLYMPUS TITLE | Chaque événement que vous possédez sans « Spécial » imprimé en gagne un : « **Spécial** : 2 dégâts à un ennemi ». **Réponse** : après *Skyfather's Tempest*, +1 taille de main jusqu'à la fin de la phase |
-| 14 | **Hephaestus** | Soutien, coût 1, OLYMPUS PERSONA | **Action d'alter ego** : inclinez pour remélanger 1 Thunder Strike de votre défausse dans votre deck et piochez 1 carte |
-| 15 | **Mount Olympus** | Soutien, coût 1, LOCATION OLYMPUS | **Ressource** : inclinez et dépensez une ressource pour en générer une autre ⟨**icônes à confirmer**⟩ |
+| # | Carte | Type | Ressource imprimée | Texte |
+|---|---|---|---|---|
+| 1 | **Hera** | Allié, coût 2, CTR 2, ATQ 2, OLYMPUS | joker | **Réponse** : après l'entrée en jeu de Hera, choisissez une carte de votre main portant un « Spécial » imprimé et résolvez-le |
+| 2-5 | **Thunder Strike** ×4 | Événement, coût 2, ATTACK SUPERPOWER | **éclair** | Requirement (1 énergie). **Action de héros** *(attaque)* : 5 dégâts, Perçant. **Spécial** : étourdir un ennemi |
+| 6-7 | **Precognition** ×2 | Événement, coût 2, SUPERPOWER THWART | mental | **Action de héros** *(contre)* : retirer 4 menaces. **Spécial** : désorienter un ennemi |
+| 8-9 | **Olympian Might** ×2 | Événement, coût 3, ATTACK SUPERPOWER | physique | Requirement (2 énergies). **Action de héros** *(attaque)* : 7 dégâts, et si l'ennemi est vaincu, redressez Zeus. **Spécial** : gagnez une carte de statut Robuste |
+| 10 | **Wrath of Olympus** | Événement, coût 5, ATTACK SUPERPOWER | énergie | Requirement (3 énergies). **Action de héros** *(attaque)* : 10 dégâts, Déferlement. **Spécial** : 2 dégâts à chaque ennemi, 2 menaces retirées de chaque manigance |
+| 11 | **The Aegis** | Amélioration, coût 1, ARMOR OLYMPUS | physique | **Réponse** : après avoir résolu *Skyfather's Tempest*, posez 1 compteur d'égide ici. **Interruption de héros** *(défense)* : retirez 2 compteurs pour empêcher 3 dégâts |
+| 12 | **Thunderbolt** | Amélioration, OLYMPUS WEAPON | énergie | **Ressource de héros** : inclinez pour générer **une énergie**. **Réponse de héros** : après avoir résolu *Skyfather's Tempest*, redressez Thunderbolt |
+| 13 | **Skyfather** | Amélioration, coût 2, OLYMPUS TITLE | joker | Chaque événement que vous possédez sans « Spécial » imprimé en gagne un : « **Spécial** : 2 dégâts à un ennemi ». **Réponse** : après *Skyfather's Tempest*, +1 taille de main jusqu'à la fin de la phase |
+| 14 | **Hephaestus** | Soutien, coût 1, OLYMPUS PERSONA | mental | **Action d'alter ego** : inclinez pour remélanger 1 Thunder Strike de votre défausse dans votre deck et piochez 1 carte |
+| 15 | **Mount Olympus** | Soutien, coût 1, LOCATION OLYMPUS | physique | **Ressource** : inclinez et dépensez **une énergie** pour générer **un éclair** |
+
+⚠ Les quatre Thunder Strike sont les SEULES cartes du pack à imprimer l'éclair.
+Toutes les autres pastilles sont des ressources officielles ordinaires.
 
 ### Obligation
 
 - **`Alcohol Problems`** (Obligation, set `ZEUS`, boost 2) — *Donnez-la au
   joueur Zeus Panhellenios.* Zeus ne peut pas résoudre son *Skyfather's
   Tempest*. **Action d'alter ego** : inclinez votre identité et dépensez une
-  ressource ⚡ pour retirer Alcohol Problems de la partie.
+  **éclair** pour retirer Alcohol Problems de la partie. ⚠ C'est la seule
+  carte hors identité à réclamer un éclair, et elle bloque justement le
+  *Skyfather's Tempest* tant qu'elle est là.
 
 ### Set némésis, 5 cartes
 
 | # | Carte | Type | Texte |
 |---|---|---|---|
-| 1/5 | **`* Nyx`** | Sbire, 6 PV, MNG 2*, ATQ 1*, boost 3, ELITE OLYMPUS | Stable. Vilain. ★ **Interruption forcée** : quand Nyx s'active contre vous, défaussez le dessus de votre deck ; si cette carte porte une icône ⚡ imprimée, Nyx gagne 1 carte de boost |
-| 2/5 | **The Mother of Night** | Manigance annexe, 1 menace, boost 3, icône d'aléa | **Une fois révélée** : chaque joueur cherche dans son deck et sa défausse 2 cartes à icône ⚡ imprimée et les pose face cachée dessous. +1 menace ici par carte posée. **Une fois déjouée** : rendez chaque carte à la défausse de son propriétaire |
-| 3/5 | **Shroud of the Nightmother** | Attachement, boost 2, CONDITION | Attachez-la à votre identité. Vous ne pouvez plus dépenser de ressources ⚡ pour payer des cartes. **Action d'alter ego** : dépensez 2 ressources de n'importe quel type pour la défausser |
+| 1/5 | **`* Nyx`** | Sbire, 6 PV, MNG 2*, ATQ 1*, boost 3, ELITE OLYMPUS | Stable. Vilain. ★ **Interruption forcée** : quand Nyx s'active contre vous, défaussez le dessus de votre deck ; si cette carte porte une **énergie** imprimée, Nyx gagne 1 carte de boost |
+| 2/5 | **The Mother of Night** | Manigance annexe, 1 menace, boost 3, icône d'aléa | **Une fois révélée** : chaque joueur cherche dans son deck et sa défausse 2 cartes à **énergie** imprimée et les pose face cachée dessous. +1 menace ici par carte posée. **Une fois déjouée** : rendez chaque carte à la défausse de son propriétaire |
+| 3/5 | **Shroud of the Nightmother** | Attachement, boost 2, CONDITION | Attachez-la à votre identité. Vous ne pouvez plus dépenser d'**énergie** pour payer des cartes. ⚠ Éteint d'un coup le *Tempest*, les trois `Requirement` et Mount Olympus. **Action d'alter ego** : dépensez 2 ressources de n'importe quel type pour la défausser |
 | 4/5, 5/5 | **Total Eclipse** ×2 | Traîtrise | **Une fois révélée** : défaussez les 3 cartes du dessus de votre deck. 1 dégât indirect par événement défaussé. Si un événement à « Spécial » imprimé est défaussé, vous êtes étourdi. ★ **Boost** : donnez une carte de boost supplémentaire à l'ennemi qui s'active |
 
 ## Mots-clés rencontrés, fiches à ouvrir avant d'écrire
 
 `requirement`, `piercing`, `overkill`, `steady`, `villainous`, `hazard`,
 `toughness`, `stunned`, `confused`. **Toutes ont déjà leur fiche** dans
-`docs/reference/mots-cles/`. Aucun mot-clé maison, contrairement à Sentinel et
-son `DESTROY`.
+`docs/reference/mots-cles/`.
+
+⚠ **Mais il y a bien du maison ici** : l'**éclair** est une ressource inventée
+par l'auteur, au même titre que le `DESTROY` de Sentinel. Elle mérite sa fiche
+dans `docs/reference/mots-cles/`, et surtout une décision moteur (voir plus
+haut) avant la moindre ligne de code.
 
 ## Nommage, déjà vérifié
 
@@ -126,11 +181,14 @@ Relevé fait, pas supposé, sur `cards.json` :
 
 ## Ce qu'il faut avant de commencer
 
-1. **Voir la carte d'identité Zeus** pour lire les deux icônes de *Skyfather's
-   Tempest*. Bloquant : quatre cartes et l'obligation en dépendent.
-2. **Les images en local.** Le connecteur Drive ne rend que du texte, et je ne
-   peux pas télécharger 23 PNG sans saturer ma mémoire de travail. Il les faut
-   sur le poste pour `assets/pics/` **et** pour reconfirmer les icônes que
-   l'OCR a mangées.
-3. Réserver un préfixe (`ze` est libre) et un numéro de set (171, après
+1. ✅ **Fait le 11/09/2026** : toutes les icônes sont lues et confirmées avec
+   l'utilisateur, carte par carte. Le relevé de texte est complet.
+2. ⛔ **BLOQUANT, et c'est une décision, pas une tâche** : choisir comment
+   modéliser l'**éclair**, sachant que le moteur ne connaît que quatre couleurs
+   (voir « CONSÉQUENCE MOTEUR » plus haut). Rien ne peut s'écrire avant.
+3. **Les images en local.** Le connecteur Drive ne rend que du texte, et
+   télécharger 23 PNG saturerait la mémoire de travail. Il les faut sur le
+   poste pour `assets/pics/`. L'utilisateur est à distance et les a collées
+   dans le fil : elles sont lues, mais pas déposées sur le disque.
+4. Réserver un préfixe (`ze` est libre) et un numéro de set (171, après
    Spider-Woman en 169 et Mockingbird pressenti en 170).
