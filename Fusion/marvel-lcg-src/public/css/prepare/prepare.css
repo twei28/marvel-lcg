@@ -1959,3 +1959,196 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .vh-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
 .tb-variantes-rappel{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:13px;opacity:.9}
 .tb-variantes-texte{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== TELEPHONE : les ecrans de preparation tiennent dans l'ecran ==========
+   Releve au navigateur le 11/09/2026, a 500x844 : sur 844 px de haut, 641
+   partaient en decor avant le premier heros ou methant. La barre du haut en
+   prenait 281 (six elements qui passaient a la ligne), la scene d'affiche 360.
+   Les trois methants tombaient a 841 px, hors ecran, et les onglets
+   d'extension derriere la barre du bas (fixe a 774). L'utilisateur : « c'est
+   injouable, les methants sont inselectionnables ».
+
+   Reference regardee a sa demande, play.marvelsimulator.com sur le meme
+   ecran : 48 px de barre, un titre de section discret, la recherche en haut,
+   neuf heros visibles d'emblee. Environ 90 px de decor contre nos 641.
+
+   RIEN ICI NE TOUCHE L'ORDINATEUR : tout est sous 600 px de large, la meme
+   borne que le plateau portrait (useModeMobile.ts). Le grand titre et
+   l'affiche restent entiers sur grand ecran, ou ils font l'identite du jeu. */
+@media (max-width: 600px) {
+  /* --- 1. La barre du haut : une seule ligne, ~50 px au lieu de 281 -------
+     Les quatre boutons de `.reprise-boutons` sont poses par TROIS modules
+     differents (reprise.js pour Reprendre et Stats, panneau-bug.js,
+     panneau-documents.js) : les rassembler sous un menu deroulant demanderait
+     de les coordonner tous les trois. On obtient la meme place en retirant
+     leur LIBELLE et en gardant leur icone, qui suffit a les reconnaitre.
+     « Reprendre » garde son texte : c'est la seule action qu'on cherche en
+     arrivant sur la page. */
+  .progress {
+    /* `flex-direction: row` contre la regle de max-width:900px, qui empile la
+       barre en COLONNE : c'est elle qui la faisait monter a 281 px, chaque
+       groupe prenant sa propre ligne. */
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+    gap: 8px;
+    padding: 6px 10px;
+    flex-wrap: nowrap;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .brand-logo {
+    height: 24px;
+  }
+
+  /* Meme raison que plus bas pour la taille des libelles : la feuille injectee
+     par reprise.js pose `flex-wrap: wrap`, et a specificite egale c'est elle
+     qui gagne. Sans ce selecteur plus long, la rangee passait sur deux lignes
+     et la barre remontait a 97 px alors que ses quatre groupes totalisent
+     439 px, donc tiennent dans 500. */
+  .progress .reprise-boutons {
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .progress .steps {
+    flex-wrap: nowrap;
+  }
+
+  /* Icone seule : `font-size: 0` efface le libelle sans le retirer du DOM,
+     donc les lecteurs d'ecran et le `title` le disent toujours.
+
+     Le selecteur est volontairement long. `reprise.js` INJECTE sa propre
+     feuille dans un <style> pose a l'execution, donc apres celle-ci : a
+     specificite egale, la sienne gagnerait (mesure : les libelles restaient a
+     13,6 px). `.progress .reprise-boutons button` passe devant son
+     `.reprise-boutons button`. */
+  .progress .reprise-boutons button {
+    font-size: 0;
+    padding: 7px 9px;
+  }
+
+  .progress .reprise-boutons button i {
+    font-size: 0.95rem;
+  }
+
+  /* Le premier bouton est « Reprendre » (reprise.js l'ajoute en tete). */
+  .progress .reprise-boutons button:first-child {
+    font-size: 0.75rem;
+  }
+
+  /* Les quatre etapes (Equipe, Decks, Mechant, Final) tiennent sur la ligne
+     en libelles courts ; elles disent ou on en est, on les garde. */
+  .progress .steps {
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .progress .pstep {
+    padding: 4px 7px;
+    font-size: 0.62rem;
+  }
+
+  /* --- 2. L'affiche : une banniere de 90 px au lieu de 360 ----------------
+     La scene garde son illustration, mais en bandeau : c'est le titre geant
+     (132 px de fonte) qui mangeait la hauteur, pas l'image. */
+  .step {
+    --affiche-nom: 30px;
+    --affiche-portrait: 145px;
+    --affiche-portrait-h: 200px;
+  }
+
+  .tb-scene {
+    height: 90px;
+    min-height: 0;
+    clip-path: none;
+  }
+
+  /* `!important` a contrecoeur, et pour une raison mesurable : `ajusterNomGeant`
+     (js/prepare/app.js) ecrit `bottom` et `font-size` EN STYLE INLINE sur cet
+     element, pour adapter la taille a la longueur du nom sur grand ecran. Un
+     style inline bat toute regle de feuille : sans `!important`, le nom restait
+     a 44 px pose a 160 px du bas, donc au-dessus d'une banniere qui n'en fait
+     plus que 90 (mesure : haut a -88 px, hors ecran).
+     A retirer le jour ou `ajusterNomGeant` saura qu'il dessine pour un
+     telephone. */
+  .tb-nomg {
+    position: absolute;
+    left: 12px !important;
+    right: 12px;
+    bottom: 8px !important;
+    max-width: none;
+    font-size: 24px !important;
+    line-height: 1.05;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Le sous-titre du nom (traits, « AERIAL · X-FORCE ») double la hauteur :
+     sur 90 px il ne reste pas la place, et les traits se lisent deja sur la
+     fiche du heros choisi. */
+  .tb-nomg small {
+    display: none;
+  }
+
+  /* « Voir ses cartes » et « Biographie » debordaient de la banniere par le
+     haut. Ils passent SOUS elle, en une ligne discrete : ce sont des actions
+     de consultation, pas le choix lui-meme. */
+  .tb-bas {
+    position: static;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+  }
+
+  .tb-bas .tb-voir,
+  .tb-bas .tb-bio > summary {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* --- 3. La grille : 3 colonnes de 145 px au lieu de 4 de 104 ------------
+     104 px pour un portrait ET son nom, c'est trop petit : les noms longs
+     (« Spider-Man - Miles Morales ») etaient tronques, et la cible au doigt
+     passait sous les 44 px recommandes une fois les marges deduites. */
+  .tb-roster {
+    grid-template-columns: repeat(auto-fill, minmax(0, var(--affiche-portrait)));
+    justify-content: center;
+  }
+
+  /* Le bandeau de nom des vignettes portait trois lignes (traits, nom, debut
+     du texte de regles) dans 32 px : elles se chevauchaient. Sur telephone on
+     garde le NOM, qui est ce qu'on cherche ; le reste se lit sur la fiche une
+     fois le heros choisi. */
+  .tb-port-nom {
+    display: block;
+    max-height: none;
+    padding: 3px 5px;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tb-port-nom small,
+  .tb-port-nom .tb-port-traits {
+    display: none;
+  }
+
+  /* --- 4. La barre du bas ne recouvre plus rien ---------------------------
+     `.nav` est fixe a 774 px. Les onglets d'extension (Core Set, Green
+     Goblin, Custom...) tombaient dessous, a 723-819 : invisibles et
+     incliquables. La zone de contenu reserve donc sa hauteur, au lieu de
+     passer dessous. Meme remede que sur le plateau portrait. */
+  .tb-droite {
+    padding-bottom: 84px;
+  }
+}
