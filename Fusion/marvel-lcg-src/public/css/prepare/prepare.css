@@ -2054,6 +2054,20 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     font-size: 0.62rem;
   }
 
+  /* --- 1 bis. L'accueil : un titre qui tient dans la largeur --------------
+     « MARVEL CHAMPIONS » a 120 px de fonte demandait 511 px pour 440
+     disponibles : le S de CHAMPIONS etait coupe. La media query de 700 px
+     essayait deja 56 px, mais son selecteur `.acc-titre h1` perd contre
+     `.acc-titre h1.affiche`, plus specifique. On passe donc par la variable
+     que cette derniere lit, ce qui est exactement son role. */
+  :root {
+    --titre-accueil: 64px;
+  }
+
+  .acc-titre {
+    margin-bottom: 16px;
+  }
+
   /* --- 2. L'affiche : une banniere de 90 px au lieu de 360 ----------------
      La scene garde son illustration, mais en bandeau : c'est le titre geant
      (132 px de fonte) qui mangeait la hauteur, pas l'image. */
@@ -2141,6 +2155,15 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   .tb-port-nom small,
   .tb-port-nom .tb-port-traits {
     display: none;
+  }
+
+  /* --- 3 bis. L'ecran final : le « VS » ne mange plus les noms ------------
+     L'etoile fait 275 px de cote sur un ecran de 500, et les deux camps 250
+     chacun : elle mordait de 137 px sur chaque cote, par-dessus le nom du
+     heros et ses etiquettes (« WOLVE... », « SOLO · 1 HÉRO... »). A 120 px
+     elle reste l'element central de la scene sans rien cacher. */
+  .faceoff {
+    --fo-etoile: 120px;
   }
 
   /* --- 4. La barre du bas ne recouvre plus rien ---------------------------
