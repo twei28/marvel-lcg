@@ -47,8 +47,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-11",
         genre: "jeu",
-        fr: "Quand une manigance annexe à Crise est en jeu, le complot principal porte un bandeau « Crise » et l'aperçu explique que sa menace ne peut pas être retirée. Un contre joué dessus partait sans effet, sans un mot.",
-        en: "While a Crisis side scheme is in play, the main scheme shows a “Crisis” badge and the preview explains its threat cannot be removed. A thwart played on it used to fizzle without a word.",
+        fr: "Une Crise en jeu empêche désormais de cibler le complot principal avec un contre, comme un sbire Garde protège le méchant. Le complot porte un bandeau « Crise » et l'aperçu nomme la manigance responsable. Avant, la carte partait sans effet, sans un mot.",
+        en: "A Crisis in play now prevents targeting the main scheme with a thwart, just as a Guard minion protects the villain. The main scheme shows a “Crisis” badge and the preview names the side scheme responsible. Cards used to fizzle without a word.",
     },
     {
         date: "2026-09-11",
