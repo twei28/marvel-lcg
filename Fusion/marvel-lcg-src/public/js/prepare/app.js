@@ -1704,6 +1704,19 @@ function scheduleHide() {
     }, 160);
 }
 
+// FILET. Sur un ecran tactile, tout panneau de survol qui s'ouvrirait malgre
+// `auSurvol` n'aurait AUCUN moyen de se refermer : il n'existe ni `mouseleave`
+// ni touche Echap sous le doigt, et l'utilisateur se retrouve enferme sous une
+// carte en plein ecran (constate sur son telephone le 11/09/2026, dans la
+// modale d'options du heros).
+//
+// Le premier contact referme donc ce qui traine. En phase de CAPTURE, pour
+// passer avant les gestionnaires des boutons, et sans rien annuler : cela ne
+// fait qu'enlever une classe, le clic suit son cours normalement.
+if (SANS_SURVOL) {
+    document.addEventListener("pointerdown", () => hideHover(), true);
+}
+
 function showExtHover(ext, tabEl) {
     const box = hoverPop();
     box.classList.remove("wide", "bare", "trio");
@@ -1899,9 +1912,17 @@ function sectionVariantes(titre, sous, options, actuel, surChoix) {
         const bouton = el("button", {
             class: "ra-option" + (o.code === actuel ? " sel" : ""),
             title: o.nom,
-            onmouseenter: o.trio ? auSurvol((e) => showTrioHover(o.trio, e.currentTarget))
-                : (o.apercu ? (e) => showCardHover(o.apercu, e.currentTarget) : undefined),
-            onmouseleave: (o.trio || o.apercu) ? scheduleHide : undefined,
+            // `auSurvol` enveloppe le ternaire ENTIER, et non sa seule premiere
+            // branche : la passe precedente n'avait protege que le cas `trio`,
+            // et l'art alternatif (`apercu`) restait a decouvert. C'est
+            // exactement ce que l'utilisateur a vu, capture a l'appui : dans la
+            // modale d'options, toucher un art affichait la carte en grand sans
+            // aucun moyen d'en sortir.
+            onmouseenter: auSurvol(
+                o.trio ? (e) => showTrioHover(o.trio, e.currentTarget)
+                    : (o.apercu ? (e) => showCardHover(o.apercu, e.currentTarget) : undefined)
+            ),
+            onmouseleave: auSurvol((o.trio || o.apercu) ? scheduleHide : undefined),
             onclick: () => {
                 surChoix(o.code);
                 [...choix.children].forEach((b) => b.classList.remove("sel"));
