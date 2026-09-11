@@ -2590,4 +2590,24 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'sw027': "<b>Réponse forcée</b> : après le début de la phase des joueurs, placez 1 menace sur Superhuman Registration Act.\n<b>Action d'alter ego</b> : s'il n'y a aucune menace sur Superhuman Registration Act, dépensez une ressource [mental] → défaussez Fugitive.",
   // spider_woman_kajislav — Fighting a Friend (Treachery, Nemesis B)
   'sw028': "<b>Une fois révélée (alter ego)</b> : placez 3 menaces sur Superhuman Registration Act.\n<b>Une fois révélée (héros)</b> : infligez à un personnage allié des dégâts égaux à votre ATQ.",
+
+  // Pack fan-made « zeus » (Mozilla, set 171). ⚠ [lightning] est l'ÉCLAIR,
+  // la ressource maison du pack, distincte de [energy] (11/09/2026).
+  'ze001a': "<i>Tempête du Père du Ciel</i> — <b>Réponse</b> : après avoir dépensé à la fois une ressource [energy] et une ressource [lightning] pour payer un événement, résolvez la capacité « <b>Spécial</b> » de cet événement et retirez 1 menace d'une manigance.",
+  'ze001b': "<i>Dieu de la Foudre</i> — <b>Action</b> : cherchez l'amélioration Thunderbolt dans votre deck et votre pile de défausse et ajoutez-la à votre main. (Limite d'une fois par round.)",
+  'ze002': "<b>Réponse</b> : après l'entrée en jeu de Hera, choisissez une carte de votre main portant une capacité « <b>Spécial</b> » imprimée, puis résolvez cette capacité.",
+  'ze003': "Requis ([energy]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Cette attaque gagne perçant.\n<b>Spécial</b> : sonnez un ennemi.",
+  'ze004': "<b>Action de héros</b> <i>(contre)</i> : retirez 4 menaces d'une manigance.\n<b>Spécial</b> : désorientez un ennemi.",
+  'ze005': "Requis ([energy][energy]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Si cette attaque vainc cet ennemi, redressez Zeus.\n<b>Spécial</b> : gagnez une carte de statut Robuste.",
+  'ze006': "Requis ([energy][energy][energy]).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 10 dégâts à un ennemi. Cette attaque gagne déferlement.\n<b>Spécial</b> : infligez 2 dégâts à chaque ennemi en jeu. Retirez 2 menaces de chaque manigance.",
+  'ze007': "<b>Réponse</b> : après avoir résolu votre capacité « <i>Tempête du Père du Ciel</i> », placez 1 compteur d'égide ici.\n<b>Interruption de héros</b> <i>(défense)</i> : quand vous alliez subir n'importe quelle quantité de dégâts, retirez 2 compteurs d'égide d'ici → empêchez 3 de ces dégâts.",
+  'ze008': "<b>Ressource de héros</b> : inclinez Thunderbolt → générez une ressource [energy].\n<b>Réponse de héros</b> : après avoir résolu votre capacité « <i>Tempête du Père du Ciel</i> », redressez Thunderbolt.",
+  'ze009': "Chaque événement que vous possédez qui n'a pas de capacité « <b>Spécial</b> » imprimée gagne : « <b>Spécial</b> : infligez 2 dégâts à un ennemi. »\n<b>Réponse</b> : après avoir résolu votre capacité « <i>Tempête du Père du Ciel</i> », gagnez +1 taille de main jusqu'à la fin de la phase.",
+  'ze010': "<b>Action d'alter ego</b> : inclinez Hephaestus → mélangez 1 exemplaire de Thunder Strike de votre pile de défausse dans votre deck. Piochez 1 carte.",
+  'ze011': "<b>Ressource</b> : inclinez Mount Olympus et dépensez une ressource [energy] → générez une ressource [lightning].",
+  'ze012': "<b><i>Donnez-la au joueur Zeus Panhellenios.</i></b>\nZeus ne peut pas résoudre sa capacité « <i>Tempête du Père du Ciel</i> ».\n<b>Action d'alter ego</b> : inclinez votre identité et dépensez une ressource [lightning] → retirez Alcohol Problems de la partie.",
+  'ze013': "Stable. Vilain.\n[star] <b>Interruption forcée</b> : quand Nyx s'active contre vous, défaussez la carte du dessus de votre deck. Si cette carte porte une icône [energy] imprimée, donnez 1 carte de boost supplémentaire à Nyx.\n<i>(Sbire némésis de Zeus.)</i>",
+  'ze014': "<b>Une fois révélée</b> : chaque joueur cherche dans son deck et sa pile de défausse 2 cartes portant une icône [energy] imprimée et les place face cachée sous cette carte. Placez 1 menace supplémentaire ici pour chaque carte placée face cachée de cette façon.\n<b>Une fois déjouée</b> : renvoyez chaque carte face cachée d'ici dans la pile de défausse de son propriétaire.",
+  'ze015': "Attachez-la à votre identité.\nVous ne pouvez pas dépenser de ressources [energy] pour payer des cartes.\n<b>Action d'alter ego</b> : dépensez 2 ressources de n'importe quel type → défaussez cette carte.",
+  'ze016': "<b>Une fois révélée</b> : défaussez les 3 cartes du dessus de votre deck. Subissez 1 dégât indirect pour chaque événement défaussé de cette façon. Si un événement portant une capacité « <b>Spécial</b> » imprimée est défaussé de cette façon, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : donnez une carte de boost supplémentaire à l'ennemi qui s'active.",
 }

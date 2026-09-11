@@ -1,0 +1,42 @@
+{
+ "version": "0.5.8",
+ "name": "Zeus",
+ "hero": [
+  "ze001a,ze001b"
+ ],
+ "hero_deck": [
+  "ze002",
+  "ze003",
+  "ze003",
+  "ze003",
+  "ze003",
+  "ze004",
+  "ze004",
+  "ze005",
+  "ze005",
+  "ze006",
+  "ze007",
+  "ze008",
+  "ze009",
+  "ze010",
+  "ze011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "ze012"
+ ],
+ "nemesis_set": [
+  "ze013",
+  "ze014",
+  "ze015",
+  "ze016",
+  "ze016"
+ ],
+ "player_deck": [],
+ "metadata": {
+  "url": "",
+  "auteur": "Mozilla",
+  "deck_note": "player_deck VIDE : l'auteur ne livre aucune decklist (Drive « Zeus (Released) » : Hero Cards, Encounter Cards, deux faces d'identite, rien d'autre). Consigne du 06/09/2026 : on n'invente pas d'aspect.",
+  "ressource_note": "⚠ Le pack invente une ressource, l'ECLAIR (`L`), cinquieme couleur du moteur depuis le 11/09/2026 : imprimee sur les 4 Thunder Strike (ze003), fabriquee par Mount Olympus (ze011). Distincte de l'energie : Skyfather's Tempest exige les deux sur un meme evenement."
+ }
+}

@@ -90,6 +90,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // BRUTE, espace compris ; sans cette entree le plateau ecrivait
   // « 5 psionic web » en pleine partie francaise.
   'psionic web': 'toile psionique',
+  aegis: 'égide',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

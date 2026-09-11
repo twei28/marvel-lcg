@@ -1499,5 +1499,14 @@
   ],
   "max_id": "sw028"
  },
+ "171. Custom (Zeus)": {
+  "name": "zeus",
+  "scenarios": [],
+  "heroes": [
+   "zeus"
+  ],
+  "encounters": [],
+  "max_id": "ze016"
+ },
  "checksum": "2381423af07a4dc30df213581513690d053299e97907976918f0fe5b0e76bef5"
 }

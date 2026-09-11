@@ -28280,6 +28280,576 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 1},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « zeus » : Zeus (Mozilla) ze001a-ze016
+    #
+    # Deux piliers, et le nemesis vise les deux : l'ECLAIR (ressource maison,
+    # lettre L, imprimee sur les 4 Thunder Strike, fabriquee par Mount Olympus)
+    # et les capacites « Special », que Skyfather's Tempest resout quand un
+    # evenement est paye avec une ENERGIE officielle ET un ECLAIR. Les cas
+    # jouent donc beaucoup avec `payer_avec` : la couleur payee EST la
+    # mecanique. ⚠ `Puzzle.CreatePlayerDeck(a, b, c)` : la DERNIERE carte
+    # creee est le DESSUS du deck. Rhino = 01094, son complot principal = 01097b.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "ze001b God of Lightning — cherche Thunderbolt dans la defausse et le met en main",
+        "pourquoi": ("« Search your deck and discard pile for the Thunderbolt upgrade and add "
+                     "it to your hand. » On le pose dans la DEFAUSSE pour prouver que la "
+                     "recherche n'est pas limitee au deck"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        # ⚠ Le deck est VIDE avant : sa propre copie de Thunderbolt serait
+        # prise en premier et la defausse ne bougerait pas (vu au 1er passage).
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDiscardPile('ze008')"],
+        "declencher": ["Puzzle.Action('ze001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["ze008"], "defausse_joueur": 0},
+    },
+    {
+        "nom": "ze001b God of Lightning — TEMOIN D'EPUISEMENT : la 2e Action du round est refusee",
+        "pourquoi": ("« (Limit once per round.) » Deux Thunderbolt en defausse, deux "
+                     "Actions demandees : il doit en RESTER un en defausse"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDiscardPile('ze008', 'ze008')"],
+        "declencher": ["Puzzle.Action('ze001b')"],
+        "declencher_tolerant": ["Puzzle.Action('ze001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "ze002 Hera — a son entree, resout le Special d'une carte de la MAIN (Thunder Strike sonne Rhino)",
+        "pourquoi": ("« choose a card in your hand with a printed Special ability, then resolve "
+                     "that ability. » La carte reste en main : seul son Special part. "
+                     "Thunder Strike seule en main, son Special sonne un ennemi"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')"],
+        "main_exclusive": ["ze003"],
+        "declencher": ["Puzzle.PutIntoPlay('ze002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Stunned"]], "en_main": ["ze003"]},
+    },
+    {
+        "nom": "ze002 Hera — CONTRE-CAS : sans Special imprime en main, rien ne part",
+        "pourquoi": ("Hephaestus (soutien) n'a pas de Special. La Response ne doit meme pas "
+                     "etre proposee (filtre dans `conditions`), et Rhino reste indemne"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')"],
+        "main_exclusive": ["ze010"],
+        "declencher": ["Puzzle.PutIntoPlay('ze002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Stunned"]], "en_jeu": ["ze002"]},
+    },
+    {
+        "nom": "ze003 Thunder Strike — 5 degats percants : Rhino Robuste les prend tous",
+        "pourquoi": ("« Deal 5 damage to an enemy. This attack gains piercing. » Avec un "
+                     "statut Robuste sur Rhino, sans percant les 5 seraient annules. Paye "
+                     "Y + B : pas d'eclair, donc PAS de Tempest ici"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.Tough('01094')"],
+        "main_exclusive": ["ze003", "ze008", "ze004"],
+        "declencher": [],
+        "jouer": ["ze003"],
+        "payer_avec": ["ze008", "ze004"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "ze001a Skyfather's Tempest — paye energie + eclair : le Special de l'evenement part et 1 menace s'en va",
+        "pourquoi": ("LE COEUR DU PACK. Precognition (2) payee avec Thunder Strike (ECLAIR "
+                     "imprime) et Thunderbolt (ENERGIE) : le contre retire 4, le Tempest "
+                     "resout « Confuse an enemy » et retire 1 de plus. 6 -> 1"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "ze001a Skyfather's Tempest — CONTRE-CAS : paye energie + mental, pas d'eclair, pas de Tempest",
+        "pourquoi": ("« both [energy] and [lightning] » : l'energie seule ne suffit pas. "
+                     "Meme Precognition, payee Thunderbolt (Y) + Hephaestus (B) : le contre "
+                     "retire 4, rien d'autre. 6 -> 2, Rhino pas desoriente"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze008", "ze010"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze008", "ze010"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Confused"]], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ze001a Skyfather's Tempest — CONTRE-CAS : deux eclairs sans energie, pas de Tempest",
+        "pourquoi": ("L'autre moitie du « both » : Precognition payee avec DEUX Thunder "
+                     "Strike (eclair + eclair). Sans energie, le Tempest ne part pas"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003", "ze003"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze003"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Confused"]], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ze001a Skyfather's Tempest — un joker vaut l'eclair : paye energie + joker, le Tempest part",
+        "pourquoi": ("Decision de l'utilisateur du 11/09/2026 : un joker vaut aussi un "
+                     "eclair. Hera imprime un joker : Thunderbolt (Y) + Hera (G) doivent "
+                     "declencher le Tempest"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze008", "ze002"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze008", "ze002"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "ze012 Alcohol Problems — tant qu'elle est en jeu, le Tempest ne part pas",
+        "pourquoi": ("« Zeus cannot resolve his Skyfather's Tempest ability. » Meme paiement "
+                     "que le cas nominal (eclair + energie), l'obligation revelee avant : "
+                     "Rhino n'est pas desoriente, 6 -> 2"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.Reveal('ze012')", "Puzzle.ChangeForm('ze001b')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Confused"]], "menace": [["01097b", 2]],
+                    "en_jeu": ["ze012"]},
+    },
+    {
+        "nom": "ze012 Alcohol Problems — l'Action d'alter ego la retire du jeu contre une inclinaison et un eclair",
+        "pourquoi": ("« Exhaust your identity and spend a [lightning] resource -> remove "
+                     "Alcohol Problems from the game. » L'eclair vient d'une Thunder Strike "
+                     "defaussee comme ressource"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.Reveal('ze012')"],
+        "main_exclusive": ["ze003"],
+        "declencher": ["Puzzle.Action('ze012')"],
+        "payer_avec": ["ze003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["ze012"], "exhausted": ["ze001b"]},
+    },
+    {
+        "nom": "ze005 Olympian Might — 7 degats, et si l'ennemi est vaincu, Zeus se redresse",
+        "pourquoi": ("« If this attack defeats that enemy, ready Zeus. » Nyx (6 PV) en jeu, "
+                     "Zeus incline avant : apres l'attaque il doit etre pret. Requirement "
+                     "(YY) paye Thunderbolt + Wrath (deux energies) + Hephaestus"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.Exhaust('ze001a')"],
+        "main_exclusive": ["ze005", "ze008", "ze006", "ze010"],
+        "declencher": [],
+        "jouer": ["ze005"],
+        "payer_avec": ["ze008", "ze006", "ze010"],
+        "cibles": ["ze013"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ze001a"], "defausse_rencontre": ["ze013"]},
+    },
+    {
+        "nom": "ze005 Olympian Might — CONTRE-CAS : l'ennemi survit, Zeus reste incline",
+        "pourquoi": ("Rhino a 14 PV : 7 degats ne le vainquent pas, Zeus ne doit PAS se "
+                     "redresser. Sans ce temoin, un `ReadyAll` inconditionnel passerait"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.Exhaust('ze001a')"],
+        "main_exclusive": ["ze005", "ze008", "ze006", "ze010"],
+        "declencher": [],
+        "jouer": ["ze005"],
+        "payer_avec": ["ze008", "ze006", "ze010"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ze001a"], "degats": [["01094", 7]]},
+    },
+    {
+        "nom": "ze005 Olympian Might — Special (via Hera) : Zeus gagne un statut Robuste",
+        "pourquoi": "« Special: Gain tough status card. » Resolu depuis la main par Hera",
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')"],
+        "main_exclusive": ["ze005"],
+        "declencher": ["Puzzle.PutIntoPlay('ze002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["ze001a", "Tough"]]},
+    },
+    {
+        "nom": "ze004 Precognition — Special (via Hera) : un ennemi est desoriente",
+        "pourquoi": "« Special: Confuse an enemy. » Resolu depuis la main par Hera",
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')"],
+        "main_exclusive": ["ze004"],
+        "declencher": ["Puzzle.PutIntoPlay('ze002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]]},
+    },
+    {
+        "nom": "ze006 Wrath of Olympus — 10 degats avec deferlement, Requirement (YYY) paye",
+        "pourquoi": ("« Deal 10 damage to an enemy. This attack gains overkill. » Cout 5 dont "
+                     "trois energies : Thunderbolt (Y), Energy (YY), Hephaestus (B), "
+                     "Olympian Might (R)"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')"],
+        "main_exclusive": ["ze006", "ze008", "01088", "ze010", "ze005"],
+        "declencher": [],
+        "jouer": ["ze006"],
+        "payer_avec": ["ze008", "01088", "ze010", "ze005"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 10]]},
+    },
+    {
+        "nom": "ze006 Wrath of Olympus — Special (via Hera) : 2 degats a chaque ennemi, 2 menaces de moins partout",
+        "pourquoi": ("« Deal 2 damage to each enemy in play. Remove 2 threat from each "
+                     "scheme. » Rhino ET Nyx blesses, le complot principal 6 -> 4"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze006"],
+        "declencher": ["Puzzle.PutIntoPlay('ze002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2], ["ze013", 2]], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "ze007 The Aegis — apres le Tempest, un compteur d'egide se pose",
+        "pourquoi": ("« After you resolve your Skyfather's Tempest ability, place 1 aegis "
+                     "counter here. » Reponse a la capacite NOMMEE : meme paiement que le "
+                     "cas nominal du Tempest, l'Egide en jeu"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze007')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ze007", "aegis", 1]], "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "ze007 The Aegis — 2 compteurs retires previennent 3 degats",
+        "pourquoi": ("« When you would take any amount of damage, remove 2 aegis counters "
+                     "from here -> prevent 3 of that damage. » 3 degats infliges a Zeus, "
+                     "2 compteurs sur l'Egide : 0 degat, 0 compteur"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze007')",
+                          "Puzzle.Counter('ze007', 'aegis', 2)"],
+        "declencher": ["Puzzle.Damage('ze001a', 3)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "compteurs": [["ze007", "aegis", 0]]},
+    },
+    {
+        "nom": "ze007 The Aegis — TEMOIN D'EPUISEMENT : avec un seul compteur, rien n'est prevenu",
+        "pourquoi": ("Le cout est de DEUX compteurs : a un seul, l'Interruption n'est pas "
+                     "payable et les 3 degats passent. Le compteur reste"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze007')",
+                          "Puzzle.Counter('ze007', 'aegis', 1)"],
+        "declencher": ["Puzzle.Damage('ze001a', 3)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "compteurs": [["ze007", "aegis", 1]]},
+    },
+    {
+        "nom": "ze008 Thunderbolt — s'incline pour une energie, et se redresse apres le Tempest",
+        "pourquoi": ("« Exhaust Thunderbolt -> generate a [energy] resource » et « After you "
+                     "resolve your Skyfather's Tempest ability, ready Thunderbolt. » Les "
+                     "deux d'un coup : Precognition payee Thunder Strike (eclair) + "
+                     "Thunderbolt en jeu (energie) -> Tempest -> Thunderbolt PRET"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze008')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["ze008"], "statuts": [["01094", "Confused"]],
+                    "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "ze008 Thunderbolt — CONTRE-CAS : payee sans eclair, elle reste inclinee",
+        "pourquoi": ("Sans Tempest, pas de redressement : Precognition payee Thunderbolt "
+                     "(Y) + Hephaestus (B). Thunderbolt doit rester INCLINEE"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze008')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze010"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze008", "ze010"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["ze008"], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ze009 Skyfather — un evenement SANS Special imprime en gagne un : 2 degats a un ennemi",
+        "pourquoi": ("« Each event you own that does not have a printed Special ability "
+                     "gains: Special: Deal 2 damage to an enemy. » For Justice (01060) n'a "
+                     "pas de Special ; payee eclair + energie avec Skyfather en jeu, le "
+                     "Tempest lui en resout un : Rhino prend 2"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze009')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01060", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["01060"],
+        "payer_avec": ["ze003", "ze008"],
+        # Ordre des questions : la cible de For Justice, puis celle du Tempest
+        # (une manigance), puis l'ennemi du Special donne par Skyfather.
+        "cibles": ["01097b", "01097b", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ze009 Skyfather — CONTRE-CAS : sans Skyfather, For Justice n'a pas de Special a resoudre",
+        "pourquoi": ("Meme paiement, Skyfather absent : le Tempest retire sa menace mais "
+                     "ne trouve aucun Special. Rhino indemne, 6 - 3 - 1 = 2"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01060", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["01060"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "ze009 Skyfather — apres le Tempest, +1 taille de main jusqu'a la fin de la phase",
+        "pourquoi": "« gain +1 hand size until the end of the phase »",
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze009')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze003", "ze008"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze003", "ze008"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": 1}},
+    },
+    {
+        "nom": "ze010 Hephaestus — remelange une Thunder Strike de la defausse dans le deck",
+        "pourquoi": ("« Exhaust Hephaestus -> shuffle 1 copy of Thunder Strike from your "
+                     "discard pile into your deck. Draw 1 card. » Une Thunder Strike en "
+                     "defausse : elle doit se retrouver dans le deck, Hephaestus incline"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ze010')", "Puzzle.CreatePlayerDiscardPile('ze003')"],
+        "declencher": ["Puzzle.Action('ze010')"],
+        "cibles": ["ze003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        # ⚠ La defausse en compte DEUX avant l'Action (une Thunder Strike y va
+        # au montage du cas, graine 42, plus celle creee ici) : une seule part.
+        "attendu": {"dans_deck_joueur": ["ze003"], "exhausted": ["ze010"], "defausse_joueur": 1},
+    },
+    {
+        "nom": "ze011 Mount Olympus — incline et depense une energie pour fabriquer un eclair : le Tempest part",
+        "pourquoi": ("« Exhaust Mount Olympus and spend a [energy] resource -> generate a "
+                     "[lightning] resource. » Un paiement dans un paiement. Precognition "
+                     "payee Mount Olympus (eclair, nourri par Thunderbolt en main) + Wrath "
+                     "(energie) : eclair + energie, le Tempest desoriente Rhino"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze011')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze008", "ze006"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        # ⚠ Mount Olympus PREND une energie deja generee pour fabriquer son
+        # eclair (vu au harnais : « total Y » puis « total L »). Il faut donc
+        # DEUX energies dans la main : l'une devient l'eclair, l'autre reste.
+        # `surpayer` depense tout ce qui est offert, Mount Olympus compris,
+        # que `payer_avec` ne sait pas designer (ressource generee L,
+        # imprimee R) ; il passe en dernier, quand le pool porte deja YY.
+        "payer_avec": ["ze008", "ze006"],
+        "surpayer": True,
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Confused"]], "exhausted": ["ze011"],
+                    "menace": [["01097b", 1]]},
+    },
+    {
+        "nom": "ze013 Nyx — quand elle s'active contre vous, la carte du dessus est defaussee",
+        "pourquoi": ("« When Nyx activates against you, discard the top card of your deck. » "
+                     "Deck reduit a Thunderbolt (energie imprimee) : il doit se retrouver "
+                     "en defausse"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('ze010', 'ze008')"],
+        "declencher": ["Puzzle.Attack('ze013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 1},
+    },
+    {
+        "nom": "ze014 The Mother of Night — 2 cartes a energie imprimee glissees dessous, +1 menace chacune",
+        "pourquoi": ("« search their deck and discard pile for 2 cards with printed [energy] "
+                     "icons and place them facedown under here. Place 1 additional threat "
+                     "here for each » Deck : Thunderbolt (Y), Hephaestus (B), Wrath (Y) ; "
+                     "defausse vide. Deux cartes dessous, 1 + 2 = 3 menaces"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ze008', 'ze010', 'ze006')"],
+        "declencher": ["Puzzle.Reveal('ze014')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_pose_sous": [["ze014", 2]], "menace": [["ze014", 3]],
+                    "dans_deck_joueur": ["ze010"]},
+    },
+    {
+        "nom": "ze014 The Mother of Night — dejouee, les cartes reviennent dans la defausse de leur proprietaire",
+        "pourquoi": ("« When Defeated: Return each facedown card here to its owner's discard "
+                     "pile. » Revelee avec deux cartes dessous, menace ramenee a 1, puis "
+                     "contree par Zeus (CTR 2) : dejouee, defausse = 2"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ze008', 'ze006', 'ze010')",
+                          "Puzzle.Reveal('ze014')", "Puzzle.SetThreat('ze014', 1)"],
+        "declencher": ["Puzzle.Thwart('ze001a')"],
+        "cibles": ["ze014"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 2},
+    },
+    {
+        "nom": "ze015 Shroud of the Nightmother — l'energie ne peut plus payer une carte",
+        "pourquoi": ("« You cannot spend [energy] resources while paying for cards. » "
+                     "Precognition en main avec, pour payer, Thunderbolt (Y) et Wrath (Y) "
+                     "seulement : elle doit RESTER en main"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.Reveal('ze015')"],
+        "main_exclusive": ["ze004", "ze008", "ze006"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "verifier": "zeus_shroud_refuse_l_energie",
+    },
+    {
+        "nom": "ze015 Shroud of the Nightmother — CONTRE-CAS : mental + physique paient encore",
+        "pourquoi": ("L'interdiction ne vise que l'energie : Precognition payee Hephaestus "
+                     "(B) + Olympian Might (R) se joue, 6 -> 2"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.Reveal('ze015')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["ze004", "ze010", "ze005"],
+        "declencher": [],
+        "jouer": ["ze004"],
+        "payer_avec": ["ze010", "ze005"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "accroche_a": [["ze015", "ze001a"]]},
+    },
+    {
+        "nom": "ze015 Shroud of the Nightmother — l'Action d'alter ego la defausse contre 2 ressources",
+        "pourquoi": "« Alter-Ego Action: Spend 2 resources of any type -> discard this card. »",
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.Reveal('ze015')"],
+        "main_exclusive": ["ze010", "ze005"],
+        "declencher": ["Puzzle.Action('ze015')"],
+        "payer_avec": ["ze010", "ze005"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["ze015"]},
+    },
+    {
+        "nom": "ze016 Total Eclipse — 3 cartes defaussees, 1 degat indirect par evenement, sonne si un Special est parti",
+        "pourquoi": ("« Discard the top 3 cards of your deck. Take 1 indirect damage for "
+                     "each event discarded this way. If an event with a printed Special "
+                     "ability is discarded this way, you are stunned. » Deck : Thunder "
+                     "Strike (evenement a Special), Thunderbolt, Hephaestus : 1 degat, "
+                     "et Zeus Panhellenios sonne"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ze005', 'ze010', 'ze008', 'ze003')"],
+        "declencher": ["Puzzle.Reveal('ze016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "statuts": [["ze001b", "Stunned"]],
+                    "defausse_joueur": 3},
+    },
+    {
+        "nom": "ze016 Total Eclipse — CONTRE-CAS : un evenement sans Special blesse mais ne sonne pas",
+        "pourquoi": ("For Justice (01060) est un evenement SANS Special : 1 degat indirect, "
+                     "pas de statut. Sans ce temoin, un « stun si evenement » passerait"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('ze005', 'ze010', 'ze008', '01060')"],
+        "declencher": ["Puzzle.Reveal('ze016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "statuts_absents": [["ze001b", "Stunned"]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -28479,6 +29049,25 @@ def brawn_team_up_refuse_sans_allie(monde, aides):
     if "bw024" not in main:
         return False, f"Strong as Silk a disparu de la main sans etre jouee (main = {main})"
     return True, "Strong as Silk reste en main : le Team-Up exige bien Silk"
+
+def zeus_shroud_refuse_l_energie(monde, aides):
+    """ze015 : avec Shroud of the Nightmother sur l'identite, une carte dont les
+    seuls moyens de paiement sont des ENERGIES ne doit PAS pouvoir se jouer.
+
+    Precognition (ze004) reste en main ; si elle etait en defausse, c'est que
+    l'energie a paye malgre l'interdiction.
+    """
+    defausse = [getattr(f.paper, "card_id", None)
+                for f in monde.players[0].discard_pile.Get()]
+    main = [getattr(f.paper, "card_id", None)
+            for f in monde.players[0].hand_cards.GetAll()]
+    # ⚠ La defausse contient DEJA une Precognition avant le cas : la main de
+    # depart (graine 42) en porte une, que `main_exclusive` defausse. C'est
+    # donc la MAIN qui prouve : la copie gagnee doit y etre encore.
+    if "ze004" in main:
+        return True, "Precognition reste en main : l'energie ne paie plus"
+    return False, ("Precognition a quitte la main alors que seules des energies pouvaient "
+                   f"la payer : Shroud n'interdit rien (main = {main}, defausse = {defausse})")
 
 def _brawn_carte_bien_jouee_depuis_reserve(monde, card_id):
     """Garde commune : la carte a bien quitte la reserve pour etre jouee.
@@ -34332,7 +34921,15 @@ def executer_un_cas(game_dir, port, index):
                 besoin = int(cout)
             else:
                 besoin = sum(int(c) if c.isdigit() else 1 for c in cout)
-            interdits = {str(option.get("bind_id"))}
+            # ⚠ NE PAS interdire `bind_id` ici (retire le 11/09/2026). Les cles de
+            # `payment` sont des identifiants d'EFFETS, dans un espace de numeros
+            # distinct de celui des objets carte : sur le pack zeus, l'effet de
+            # paiement de Thunderbolt portait le numero 13, et Precognition etait
+            # l'objet 13. La carte jouee se retrouvait « interdite » de payer avec
+            # une AUTRE carte, il manquait une ressource, et le jeu echouait sans
+            # motif. Le moteur empeche deja une carte de se payer elle-meme
+            # (`check_cannot_generate_self`, factory/resources.py).
+            interdits = set()
             # « ne_pas_depenser » INTERDIT a des cartes de servir de ressource,
             # la ou « payer_avec » se contente de les PREFERER, en gardant tout
             # le reste en repli. La difference compte des qu'une carte de la
@@ -34426,6 +35023,10 @@ def executer_un_cas(game_dir, port, index):
                     break
                 choisies.append(objet_id)
                 couvert += poids.get(objet_id, 1)
+            if os.environ.get("TRACE_OPTIONS"):
+                print("PAIEMENT", option.get("name"), "| cout =", cout, "| payment =",
+                      infos.get("payment"), "| priorite =", priorite, "| choisies =",
+                      choisies, "| couvert =", couvert, flush=True)
             return choisies if couvert >= besoin else []
 
         def choisir_cibles(card_ids, legales):

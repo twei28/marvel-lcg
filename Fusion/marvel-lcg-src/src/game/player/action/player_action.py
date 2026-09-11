@@ -18,6 +18,22 @@ CATEGORY_NAME = "PLAYER"
 
 CardFaceType: TypeAlias = 'CardFace'
 
+def MotifDEchec(effect: 'Effect') -> str:
+    """Le motif du refus, pour le journal : « ... failed (check pay) ».
+
+    Ajoute le 11/09/2026 : un effet qui echoue apres son offre (cout impaye,
+    cible perdue) ne laissait que le mot « failed » dans le journal, et il a
+    fallu sept cas de diagnostic pour comprendre pourquoi une carte du pack
+    zeus refusait un paiement. Le motif existe deja (`effect.failures`), il
+    n'etait simplement pas ecrit.
+    """
+    try:
+        motif = effect.failures.GetText(effect.bind_player_id)
+    except Exception:
+        return ""
+    return f" ({motif})" if motif else ""
+
+
 class PlayerAction:
     def GetPlayer(self) -> 'Player':
         from game.player import Player
@@ -528,7 +544,7 @@ class PlayerAction:
                     if not Build.release:
                         game.controller_manager.skip.Clean()
                     message.world.render.PresentForceNoWait(is_update=False)
-                    Log.Assert(CATEGORY_NAME, f"{effect} failed")
+                    Log.Assert(CATEGORY_NAME, f"{effect} failed{MotifDEchec(effect)}")
                     # engine.DebugBreak()
                     break
                 elif fallthrough_effect != None:
@@ -597,7 +613,7 @@ class PlayerAction:
             # game.controller_manager.replay.UpdateReplayStepId(+1)
             # DebugBreak()
 
-        Log.Assert(CATEGORY_NAME, f"{effect} failed")
+        Log.Assert(CATEGORY_NAME, f"{effect} failed{MotifDEchec(effect)}")
         if not Build.release:
             controller_manager = player.controller.manager
             if controller_manager.skip.SetIsSkipping(False):
