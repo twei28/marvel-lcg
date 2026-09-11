@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MainPortrait } from './MainPortrait'
+import { APPUI_LONG_MS } from './useAppuiLong'
 import type { UniteAffichee } from '../zones'
 
 const unite = (nom: string): UniteAffichee =>
@@ -31,5 +32,69 @@ describe('MainPortrait', () => {
   it('main vide : on le dit au lieu de laisser un trou', () => {
     render(<MainPortrait unites={[]} onOuvrir={() => {}} />)
     expect(screen.getByText('Ta main est vide')).toBeInTheDocument()
+  })
+
+  describe('appui long : jouer sans passer par le tap', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('un appui long sur la carte appelle onJouer', () => {
+      vi.useFakeTimers()
+      const onJouer = vi.fn()
+      const { container } = render(
+        <MainPortrait unites={[unite('Quinjet')]} onOuvrir={() => {}} onJouer={onJouer} />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(onJouer).toHaveBeenCalledTimes(1)
+      expect(onJouer.mock.calls[0]?.[0]).toMatchObject({ cle: 'Quinjet' })
+    })
+
+    it('sans onJouer, le maintien ne declenche rien (la main reste juste lisible)', () => {
+      vi.useFakeTimers()
+      const { container } = render(<MainPortrait unites={[unite('Quinjet')]} onOuvrir={() => {}} />)
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      expect(() => {
+        fireEvent.pointerDown(porteuse)
+        vi.advanceTimersByTime(APPUI_LONG_MS)
+      }).not.toThrow()
+    })
+
+    it('l appui long annule le tap qui suit : pas d ouverture apres avoir joue', () => {
+      // Point de vigilance du brief : useAppuiLong ne supprime pas lui-meme le
+      // clic qui suit le relachement du doigt, il expose seulement
+      // `vientDeDeclencher()`. Sans le consulter au tap, on jouerait ET on
+      // ouvrirait la carte pour un seul geste.
+      vi.useFakeTimers()
+      const onOuvrir = vi.fn()
+      const onJouer = vi.fn()
+      const { container } = render(
+        <MainPortrait unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      fireEvent.pointerUp(porteuse)
+      fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+      expect(onJouer).toHaveBeenCalledTimes(1)
+      expect(onOuvrir).not.toHaveBeenCalled()
+    })
+
+    it('un tap simple (sans maintien) ouvre toujours la carte normalement', () => {
+      vi.useFakeTimers()
+      const onOuvrir = vi.fn()
+      const onJouer = vi.fn()
+      const { container } = render(
+        <MainPortrait unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      fireEvent.pointerUp(porteuse)
+      fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+      expect(onOuvrir).toHaveBeenCalledTimes(1)
+      expect(onJouer).not.toHaveBeenCalled()
+    })
   })
 })

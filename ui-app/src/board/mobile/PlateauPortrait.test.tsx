@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PlateauPortrait } from './PlateauPortrait'
+import { APPUI_LONG_MS } from './useAppuiLong'
 import type { BoardProps } from '../Board'
 import type { EmplacementAffiche, Plateau, UniteAffichee } from '../zones'
 import type { CleEmplacement } from '../zones'
@@ -266,6 +267,88 @@ describe('PlateauPortrait — main et barre du bas', () => {
     fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
     expect(onCardClick).toHaveBeenCalledTimes(1)
     expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: 'Quinjet', name: 'Quinjet' })
+  })
+
+  it('un re-tap sur la carte deja focalisee la ferme via onFermerCarte, sans repasser par onCardClick', () => {
+    // `carteFocalisee` est deja pose par board.tsx apres un premier tap
+    // (task 7) : geste-carte.ts s'y raccroche au lieu d'inventer un etat
+    // d'ouverture parallele (decision du 11/09/2026).
+    const onCardClick = vi.fn()
+    const onFermerCarte = vi.fn()
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        onCardClick={onCardClick}
+        carteFocalisee={42}
+        onFermerCarte={onFermerCarte}
+        plateau={plateau(emplacement('main', unite('42', { id: '42', name: 'Quinjet', kind: 'event' })))}
+      />
+    )
+    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+    expect(onFermerCarte).toHaveBeenCalledTimes(1)
+    expect(onCardClick).not.toHaveBeenCalled()
+  })
+
+  it('carteFocalisee sur une AUTRE carte : le tap ouvre quand meme la carte tapee', () => {
+    const onCardClick = vi.fn()
+    const onFermerCarte = vi.fn()
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        onCardClick={onCardClick}
+        carteFocalisee={7}
+        onFermerCarte={onFermerCarte}
+        plateau={plateau(emplacement('main', unite('42', { id: '42', name: 'Quinjet', kind: 'event' })))}
+      />
+    )
+    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+    expect(onCardClick).toHaveBeenCalledTimes(1)
+    expect(onFermerCarte).not.toHaveBeenCalled()
+  })
+
+  describe('appui long sur une carte de la main : jouer directement', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('joue la carte via onSelect quand le moteur en pose un, sans passer par onCardClick', () => {
+      vi.useFakeTimers()
+      const onCardClick = vi.fn()
+      const onSelect = vi.fn()
+      const { container } = render(
+        <PlateauPortrait
+          world={monde}
+          playerId={0}
+          onCardClick={onCardClick}
+          plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event', onSelect })))}
+        />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(onSelect).toHaveBeenCalledTimes(1)
+      expect(onCardClick).not.toHaveBeenCalled()
+    })
+
+    it('a defaut d onSelect, joue via onCardClick (meme repli que MainEventail/MainMedaillons)', () => {
+      vi.useFakeTimers()
+      const onCardClick = vi.fn()
+      const { container } = render(
+        <PlateauPortrait
+          world={monde}
+          playerId={0}
+          onCardClick={onCardClick}
+          plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
+        />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(onCardClick).toHaveBeenCalledTimes(1)
+      expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: 'Quinjet' })
+    })
   })
 
   it('une demande du moteur (props.bas) fait basculer la barre : elle seule s affiche, pas les outils', () => {

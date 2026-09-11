@@ -17,13 +17,50 @@ import type { ReactElement } from 'react'
 import { ScanCard } from '../../components/ScanCard'
 import { t } from '../langue'
 import type { UniteAffichee } from '../zones'
+import { useAppuiLong } from './useAppuiLong'
+
+/**
+ * Une carte de la main, avec son geste. `useAppuiLong` tient un minuteur par
+ * appel : il ne peut donc pas etre invoque depuis la boucle `.map` du parent
+ * (nombre de crochets variable d'un rendu a l'autre) — d'ou ce composant,
+ * un par carte, qui l'appelle une seule fois.
+ */
+function CarteMainPortrait({
+  unite,
+  onOuvrir,
+  onJouer,
+}: {
+  unite: UniteAffichee
+  onOuvrir: (unite: UniteAffichee) => void
+  onJouer?: (unite: UniteAffichee) => void
+}): ReactElement {
+  const appui = useAppuiLong(onJouer ? () => onJouer(unite) : undefined)
+  return (
+    <span className="main-portrait-carte" {...appui.gestes}>
+      <ScanCard
+        {...unite.carte}
+        highlight={false}
+        onSelect={() => {
+          // Le maintien vient de jouer la carte : le clic qui suit le
+          // relachement du doigt ne doit pas AUSSI l'ouvrir, sinon un seul
+          // geste ferait les deux actions a la fois.
+          if (appui.vientDeDeclencher()) return
+          onOuvrir(unite)
+        }}
+      />
+    </span>
+  )
+}
 
 export function MainPortrait({
   unites,
   onOuvrir,
+  onJouer,
 }: {
   unites: UniteAffichee[]
   onOuvrir: (unite: UniteAffichee) => void
+  /** Appui long : jouer la carte directement, sans passer par la lecture. */
+  onJouer?: (unite: UniteAffichee) => void
 }): ReactElement {
   if (unites.length === 0) {
     return <p className="portrait-vide main-portrait-vide">{t('Ta main est vide')}</p>
@@ -32,12 +69,7 @@ export function MainPortrait({
     <div className="main-portrait-bloc">
       <div className="main-portrait defile">
         {unites.map((unite) => (
-          <ScanCard
-            {...unite.carte}
-            key={unite.cle}
-            highlight={false}
-            onSelect={() => onOuvrir(unite)}
-          />
+          <CarteMainPortrait key={unite.cle} unite={unite} onOuvrir={onOuvrir} onJouer={onJouer} />
         ))}
       </div>
       <span className="portrait-chiffre main-portrait-compte">

@@ -21,6 +21,7 @@ import { CarteAvecChiffres } from './CarteAvecChiffres'
 import { CompteursPortrait } from './CompteursPortrait'
 import { MainPortrait } from './MainPortrait'
 import { repartirEnBlocs } from './blocs-portrait'
+import { prochaineOuverte } from './geste-carte'
 import './portrait.css'
 
 /**
@@ -80,6 +81,32 @@ function comptesRencontre(unites: UniteAffichee[]): Array<{ valeur: number; libe
     { valeur: compte('rencontre-encounter-deck'), libelle: t('Rencontre') },
     { valeur: compte('rencontre-encounter-discard'), libelle: t('Défausse') },
   ]
+}
+
+/**
+ * Le tap sur une carte de la main : ouvre, ou ferme si elle l'est deja.
+ *
+ * `carteFocalisee` est deja pose par board.tsx apres un premier tap (le menu
+ * d'actions de la carte, task 7) : on s'y raccroche plutot que d'inventer un
+ * second etat d'ouverture qui pourrait diverger du premier (decision du
+ * 11/09/2026, cf. rapport de tache 8).
+ */
+function taperCarteMain(props: BoardProps, unite: UniteAffichee): void {
+  const idOuverte = props.carteFocalisee !== undefined ? String(props.carteFocalisee) : undefined
+  const suivante = prochaineOuverte(idOuverte, String(unite.carte.id))
+  if (suivante === undefined) props.onFermerCarte?.()
+  else props.onCardClick?.(unite.carte)
+}
+
+/**
+ * L'appui long sur une carte de la main : la joue directement, sans passer
+ * par le menu. Meme repli que `jouerCarte` dans PlateauPaysage/PlateauMedaillons :
+ * `onSelect` est l'action DIRECTE posee par le moteur ; a defaut, `onCardClick`
+ * reste le seul point d'entree que ce plateau connait pour agir sur une carte.
+ */
+function jouerCarteMain(props: BoardProps, unite: UniteAffichee): void {
+  if (unite.carte.onSelect) unite.carte.onSelect()
+  else props.onCardClick?.(unite.carte)
 }
 
 export function PlateauPortrait(props: BoardProps) {
@@ -148,10 +175,14 @@ export function PlateauPortrait(props: BoardProps) {
           en dessous. Un seul conteneur pour que la grille garde exactement
           ses trois rangees (`auto 1fr auto`), pas une quatrieme implicite. */}
       <div className="portrait-bas">
-        {/* Un tap ouvre la carte (apercu), il ne la joue pas : appui long et
-            jouer viennent d'une tache suivante (decision du 11/09/2026, pour
-            ne pas jouer une carte qu'on visait juste a regarder). */}
-        <MainPortrait unites={main} onOuvrir={(unite) => props.onCardClick?.(unite.carte)} />
+        {/* Tap = ouvrir/fermer (geste-carte.ts, raccroche a carteFocalisee),
+            appui long = jouer directement (jouerCarteMain), sans engager
+            l'un dans l'autre : voir le rapport de tache 8. */}
+        <MainPortrait
+          unites={main}
+          onOuvrir={(unite) => taperCarteMain(props, unite)}
+          onJouer={(unite) => jouerCarteMain(props, unite)}
+        />
         {/*
           Reutilisee telle quelle : PlateauPaysage et PlateauMedaillons
           cablent deja `actionsPartie`/`outils` sur cette meme barre (Journal,

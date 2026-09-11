@@ -205,7 +205,11 @@
     --card-w: 96px;
   }
 
-  .main-portrait.defile > .scan-card {
+  /* La carte est desormais portee par un <span> (main-portrait-carte) qui
+     recoit aussi le geste d'appui long : c'est donc lui, et non plus
+     `.scan-card` directement, qui doit rester l'enfant flex/scroll-snap. */
+  .main-portrait.defile > .main-portrait-carte {
+    display: flex;
     flex: 0 0 auto;
     scroll-snap-align: center;
   }
