@@ -204,6 +204,20 @@ describe('AssistantAction — mulligan sous le design essai', () => {
   })
 })
 
+describe('AssistantAction — les pastilles du coût', () => {
+  it('dessine le picto de la ressource payée, pas sa lettre anglaise', () => {
+    const { container } = rendre(
+      { designEssai: true, affichage: 'detailed' },
+      { coutSlots: [{ index: 0, rempli: true, label: 'B', type: 'B' }, { index: 1, rempli: false }] }
+    )
+    const pastilles = container.querySelectorAll('.assistant-slot')
+    expect(pastilles).toHaveLength(2)
+    expect(pastilles[0].querySelector('.icone-res.res-mental')).not.toBeNull()
+    expect(pastilles[0].textContent).not.toContain('B')
+    expect(pastilles[1].querySelector('.icone-res')).toBeNull()
+  })
+})
+
 describe('AssistantAction — phrase d’état', () => {
   it('dit ce qui manque, sans nommer de carte, sous le design essai', () => {
     rendre({ designEssai: true, affichage: 'detailed' })

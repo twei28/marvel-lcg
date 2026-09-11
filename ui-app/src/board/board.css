@@ -6759,6 +6759,21 @@
     display: none;
   }
 
+  /* Le picto en blanc sur le disque de couleur de la pastille (choix de
+     l'utilisateur : garder le disque colore). */
+  .assistant-action.design-essai .assistant-slot .icone-res {
+    --res: #ffffff;
+    font-size: 1.05rem;
+    margin: 0;
+    vertical-align: 0;
+    -webkit-text-stroke: 0.05em rgba(0, 0, 0, 0.55);
+    text-shadow: none;
+  }
+
+  .assistant-action.design-essai .assistant-slot.est-y .icone-res {
+    --res: var(--fond);
+  }
+
   .assistant-action.design-essai .assistant-eyebrow {
     font-size: 0.78rem;
   }

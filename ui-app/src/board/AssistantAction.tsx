@@ -3,6 +3,7 @@ import type { Demande } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Interaction } from './interaction'
+import { avecIcones, coutEnIcones } from './icones-ressources'
 import { t } from './langue'
 import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
@@ -158,7 +159,10 @@ export function AssistantAction({
                   className={`assistant-slot${slot.rempli ? ' est-rempli' : ''} ${classeType(slot.type)}`}
                   key={slot.index}
                 >
-                  {slot.label ?? ''}
+                  {/* Le picto de la ressource (poing, cerveau, eclair, etoile),
+                      pas sa lettre anglaise : « B » ne disait rien a un joueur
+                      francais (retour du 11/09/2026). */}
+                  {slot.rempli && slot.type ? avecIcones(coutEnIcones(slot.type)) : ''}
                 </span>
               ))}
             </span>
