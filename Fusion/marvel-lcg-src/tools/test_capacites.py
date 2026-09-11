@@ -20049,9 +20049,16 @@ CAS = [
     },
     {
         "nom": "tg006 Thunderous Charge — CONTRE-CAS : sans elle, la crise bloque le complot principal",
-        "pourquoi": ("la ligne de base. Meme position, main VIDE : le contre de base ne "
-                     "retire RIEN du complot principal (crise en jeu) et rien du complot "
-                     "annexe (il n'etait pas vise).\n"
+        "pourquoi": ("la ligne de base. Meme position, main VIDE : sans Thunderous Charge, "
+                     "la crise protege le complot principal.\n"
+                     "⚠ MESURE MISE A JOUR LE 11/09/2026, quand la Crise est passee d'un "
+                     "blocage A LA RESOLUTION a un VERROU AU CIBLAGE "
+                     "(`MainScheme.CanBeThwartBy`). Avant, le contre partait sur le complot "
+                     "principal et ne retirait rien : les deux manigances restaient intactes. "
+                     "Desormais le complot principal n'est plus une cible legale, et le "
+                     "contre de base part sur la seule autre manigance, Defense Network, qui "
+                     "tombe de 5 a 4. La preuve est MEILLEURE qu'avant : elle distingue "
+                     "« bloque » de « n'a rien fait », ce que l'ancienne mesure confondait.\n"
                      "Sans ce cas, un module qui ne ferait rien du tout passerait le "
                      "precedent le jour ou la crise cesserait d'etre appliquee"),
         "scenario": "rhino",
@@ -20064,7 +20071,7 @@ CAS = [
         "declencher": ["Puzzle.Thwart('tg001a')"],
         "cibles": ["01097b"],
         "verifier": "etat_attendu",
-        "attendu": {"menace": [["01097b", 6], ["01125", 5]]},
+        "attendu": {"menace": [["01097b", 6], ["01125", 4]]},
     },
     {
         "nom": "tg007 Foreverglade — apres une recuperation de base, Puddlegulp se redresse et pioche",
