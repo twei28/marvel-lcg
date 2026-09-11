@@ -45,6 +45,30 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-11",
+        genre: "correction",
+        fr: "Wolverine, Storm, Cyclops, Phoenix, Gambit, Rogue, Colossus, Shadowcat, Groot et Rocket montraient leur alter ego en grand à la sélection du héros. C'est réparé.",
+        en: "Wolverine, Storm, Cyclops, Phoenix, Gambit, Rogue, Colossus, Shadowcat, Groot and Rocket showed their alter ego on the big card at hero selection. Fixed.",
+    },
+    {
+        date: "2026-09-11",
+        genre: "correction",
+        fr: "La raison affichée sur une carte injouable disait l'inverse de la carte : « seulement en alter ego » pour une action de héros. C'est réparé.",
+        en: "The reason shown on an unplayable card said the opposite of the card: “alter-ego only” for a hero action. Fixed.",
+    },
+    {
+        date: "2026-09-10",
+        genre: "jeu",
+        fr: "Une carte grisée dit pourquoi au survol : forme de héros ou d'alter ego, ressources manquantes, aucune cible possible.",
+        en: "A greyed-out card now says why on hover: hero or alter-ego form, missing resources, no legal target.",
+    },
+    {
+        date: "2026-09-10",
+        genre: "jeu",
+        fr: "Les decks MarvelCDB de chaque héros peuvent être triés par popularité, avec leur rang dans le classement du site.",
+        en: "Each hero's MarvelCDB decks can be sorted by popularity, with their rank in the site's ranking.",
+    },
+    {
         date: "2026-09-09",
         genre: "jeu",
         fr: "Un lien MarvelCDB d'un autre héros ne fait plus changer de héros : le tien reste en place et récupère les 25 cartes d'aspect du deck collé, si elles respectent ses règles de construction.",
