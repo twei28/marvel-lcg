@@ -119,6 +119,41 @@
     border-color: var(--menace-clair);
   }
 
+  /* La barre du bas reutilise `actionsPartie`, la barre du plateau PC. Celle-ci
+     porte `flex-shrink: 0` (board.css, couche `base`) : elle refusait de
+     retrecir et sortait de l'ecran (1055 px mesures dans 500 ; Sauver,
+     Historique, Options et Fin du tour invisibles). `flex-wrap: wrap` seul ne
+     suffit pas : le passage a la ligne ne se declenche qu'une fois le
+     conteneur pret a retrecir, d'ou `flex: 1 1 auto`. */
+  .portrait-bas .board-actions {
+    /* `!important` a contrecoeur, et pour une raison precise : la declaration
+       d'ordre `@layer socle, legacy, base, composants, utilitaires;` de
+       styles/tokens.css DISPARAIT du bundle de production (verifie dans
+       public/app/assets/*.css : elle n'y figure nulle part). L'ordre reel
+       redevient alors celui de la premiere apparition de chaque nom, soit
+       « composants, utilitaires, socle, base, legacy » : `base` bat
+       `composants` ET `utilitaires`. La declaration ci-dessous perdait donc
+       contre la declaration `flex: 0 0 auto` que board.css pose sur
+       `.board-actions` en couche `base`,
+       mesure a l'appui (flex-shrink calcule : 0). Une declaration
+       `!important` inverse l'ordre des couches et repasse devant.
+       A retirer le jour ou l'ordre des couches sera retabli au build. */
+    flex: 1 1 auto !important;
+    flex-wrap: wrap;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  /* `.bh-etat` ecrit « Round 1 / Tour de X / A toi de jouer », mot pour mot ce
+     que `.portrait-bandeau` affiche deja en haut. Sur telephone la place ne
+     permet pas de le dire deux fois. */
+  .portrait-bas .bh-etat {
+    /* `!important` pour la meme raison que juste au-dessus : sans lui,
+       la declaration `display: grid` posee par board.css sur `.bh-etat`
+       en couche `base` l'emporte. */
+    display: none !important;
+  }
+
   /* La carte en petit, son nom, et les chiffres a cote : trois colonnes. */
   .portrait-carte {
     display: grid;
