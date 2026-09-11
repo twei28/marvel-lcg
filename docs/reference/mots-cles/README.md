@@ -61,6 +61,9 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
+- [x] eclair.md (pack `zeus` : une RESSOURCE maison, cinquième couleur du
+      moteur `L`, ajoutée le 11/09/2026. ⚠ Distincte de l'énergie, que le set
+      némésis vise, lui)
 - [x] seek.md (⚠ **définition de l'auteur enfin trouvée le 08/09/2026**, dans
       l'insert de `spider_man_2099` : « défausser depuis le dessus jusqu'à
       défausser une carte du type voulu », et NON une recherche. Trois cartes
