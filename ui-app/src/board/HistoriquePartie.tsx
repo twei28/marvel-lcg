@@ -13,6 +13,7 @@ import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import { libellePhase } from './etat-partie'
 
 type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche'
 
@@ -246,7 +247,9 @@ function analyserDelta(avant: World, apres: World, causes: MemoireCauses): Entre
   const sorties: EntreeHistorique[] = []
 
   if (avant.round_id !== apres.round_id || avant.phase !== apres.phase) {
-    sorties.push(entree(apres, 'phase', `Round ${apres.round_id}`, apres.phase, 'phase'))
+    // `apres.phase` est la chaine BRUTE du moteur (« Player 1 Turn ») : elle
+    // s'affichait telle quelle sous l'entree, en pleine partie francaise.
+    sorties.push(entree(apres, 'phase', `Round ${apres.round_id}`, libellePhase(apres), 'phase'))
   }
 
   for (const [id, courante] of courantes) {
@@ -447,7 +450,7 @@ export function useHistoriquePartie(
     const nouvelles = [
       ...(precedent.current
         ? analyserDelta(precedent.current, monde, causes.current)
-        : [entree(monde, 'phase', `Round ${monde.round_id}`, monde.phase, 'initial')]),
+        : [entree(monde, 'phase', `Round ${monde.round_id}`, libellePhase(monde), 'initial')]),
       ...narrations.map(({ texte, brut }) => ({
         ...entree(monde, 'text', texte, undefined, `text:${texte}`),
         brut,
@@ -555,10 +558,14 @@ export function HistoriquePartie({
       </button>
 
       {ouvert ? (
-        <section className="historique-panneau" role="dialog" aria-label="Game history">
+        <section
+          className="historique-panneau"
+          role="dialog"
+          aria-label={t('Historique de la partie')}
+        >
           <header className="hp-entete">
             <div>
-              <span className="plateau-eyebrow">Game history</span>
+              <span className="plateau-eyebrow">{t('Historique de la partie')}</span>
               <strong>{entrees[0]?.titre ?? t('Aucune entrée pour le moment')}</strong>
             </div>
             <div className="hp-entete-actions">
