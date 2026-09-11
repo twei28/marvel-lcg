@@ -25,8 +25,13 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
             identity = player.area_hero.Get()[0]
             if not Identity.IsType(identity):
                 continue
-            hero = identity.CastTo(Identity).GetHeroFace()
-            if Hero.IsType(hero) and hero.CastTo(Hero).GetHeldEnemy() is self:
+            # ⚠ `FindHeroFace`, pas `GetHeroFace` : Peni Parker (SP//dr) n'a pas
+            # de face heros sur sa carte, et ce rendu tourne pour CHAQUE ennemi
+            # de CHAQUE partie. L'assert de `GetHeroFace` a tue toutes les
+            # parties de SP//dr du 01/09 au 11/09/2026. Sans face heros, ce
+            # joueur ne tient rien.
+            hero = identity.CastTo(Identity).FindHeroFace()
+            if hero is not None and hero.GetHeldEnemy() is self:
                 return player.player_id + 1
         return 0
 

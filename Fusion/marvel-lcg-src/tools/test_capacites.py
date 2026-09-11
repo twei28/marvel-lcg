@@ -28974,6 +28974,31 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 0]]},
     },
+    # ------------------------------------------------------------------------
+    # MOTEUR : une identite SANS face heros sur sa carte (SP//dr) doit pouvoir
+    # rendre un ennemi
+    #
+    # `sp_dr` etait le seul deck sur 133 a ne monter aucune partie. Trace du
+    # 11/09/2026 : ce n'est pas le setup qui plante, c'est le RENDU du premier
+    # ennemi (`Enemy.GetInfoDict` -> `GetHoldingHeroPlayerNumber`, ajoute par
+    # 6feb16d9 pour Alligator Loki), qui appelle `GetHeroFace()` sur l'identite
+    # de chaque joueur. Peni Parker (31002a) n'a PAS de face heros sur sa carte :
+    # l'armure SP//dr Suit (31001a) est une carte a part. `GetHeroFace` pose un
+    # assert, et toute partie avec SP//dr mourait a la creation du deck.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "sp_dr : la partie monte et un sbire se rend, l'identite n'ayant pas de face heros",
+        "pourquoi": ("Regression d'Alligator Loki (6feb16d9). Un ennemi en jeu doit se rendre "
+                     "meme quand l'identite du joueur est Peni Parker, dont la carte ne "
+                     "porte aucune face heros. Sans le correctif, la partie meurt au setup "
+                     "et ce cas ne peut meme pas commencer"),
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01094')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01094", "31002a"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).

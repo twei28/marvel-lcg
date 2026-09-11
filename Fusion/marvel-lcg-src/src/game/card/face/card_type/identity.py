@@ -69,6 +69,20 @@ class Identity(Friend, HasHandSize, PlayerCard):
                 return face
         assert False, f"{self=}"
 
+    # La face heros de cette identite, ou None si sa carte n'en porte pas.
+    #
+    # ⚠ Toutes les identites n'ont PAS leur heros au dos : Peni Parker (31002a)
+    # est un alter ego dont le heros, SP//dr Suit (31001a), est une carte A
+    # PART. `GetHeroFace` pose un assert dans ce cas, ce qui a tue toute
+    # partie avec SP//dr du 01/09 au 11/09/2026 (le rendu de chaque ennemi
+    # l'appelait, voir `Enemy.GetHoldingHeroPlayerNumber`). Un code qui se
+    # demande « ce joueur a-t-il un heros qui... » doit passer par ici.
+    def FindHeroFace(self) -> 'Hero|None':
+        for face in [self] + self.card.back_faces:
+            if Hero.IsType(face):
+                return face
+        return None
+
     ################################################################################
     #
     def ChangeToFace(self, card_face: 'AlterEgo|Hero', by_effect: 'Effect') -> bool:
