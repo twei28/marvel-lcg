@@ -18,7 +18,7 @@ describe('nettoyerNarration, le jargon de by_effect', () => {
   it('retire la reference de capacite, le code de carte et le nom d’evenement', () => {
     expect(
       propre('Klaw will scheme (+0) ((^!142) Advance (When Revealed) [01186] WhenCardRevealed)')
-    ).toBe('Klaw will scheme (+0) (Advance (When Revealed))')
+    ).toBe('Klaw will scheme (+0) (Avancer (Quand révélée))')
   })
 
   it('retire aussi ces formes isolees', () => {

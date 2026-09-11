@@ -158,3 +158,45 @@ export function traduireMoteur(libelle: string): string {
 
   return libelle
 }
+
+/**
+ * Traduit le « par quel effet » que le moteur accroche en fin de narration :
+ * « Klaw va comploter (+0) (Advance (When Revealed)) ».
+ *
+ * ⚠ SEGMENT ENTIER, JAMAIS UN MOT DANS UNE PHRASE. Un remplacement par
+ * sous-chaine paraissait tentant — les deux morceaux sont du vocabulaire
+ * moteur — mais il aurait abime les noms de cartes. Mesure du 11/09/2026 sur
+ * data/cards.json : 28 cartes contiennent le mot « Attack » (« Massive
+ * Attack »), 20 le mot « Defense », 5 le mot « Surge », et TROIS cartes
+ * s'appellent exactement Advance, Surge et Teamwork. On ne traduit donc qu'un
+ * contenu de parenthese entier, avec la meme regle d'egalite exacte que
+ * `traduireMoteur` : un libelle absent de la table sort inchange.
+ *
+ * Deux formes, et elles seules :
+ *   « (<fenetre>) »               -> « (Quand révélée) »
+ *   « (<capacite> (<fenetre>)) »  -> « (Avancer (Quand révélée)) »
+ * Dans la seconde, les deux morceaux se traduisent INDEPENDAMMENT : une carte
+ * fan-made garde son nom et voit quand meme sa fenetre en francais.
+ */
+export function traduireEffets(texte: string): string {
+  if (langueActuelle() !== 'fr') return texte
+
+  // Un segment ne se traduit que s'il est EXACTEMENT une entree de la table.
+  const segment = (brut: string): string => {
+    const libelle = brut.trim()
+    return MOTEUR_FR[libelle] ?? libelle
+  }
+
+  return (
+    texte
+      // La forme imbriquee d'abord : sinon la regex simple mangerait la
+      // parenthese interieure et laisserait une orpheline.
+      .replace(/\(([^()]*?)\s*\(([^()]+)\)\)/g, (_, capacite: string, fenetre: string) =>
+        `(${segment(capacite)} (${segment(fenetre)}))`
+      )
+      .replace(/\(([^()]+)\)/g, (tel, contenu: string) => {
+        const traduit = segment(contenu)
+        return traduit === contenu.trim() ? tel : `(${traduit})`
+      })
+  )
+}

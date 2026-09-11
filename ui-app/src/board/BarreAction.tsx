@@ -8,7 +8,7 @@ import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
-import { traduireMoteur } from './vocabulaire-moteur'
+import { traduireEffets, traduireMoteur } from './vocabulaire-moteur'
 
 /**
  * Les noms d'options arrivent avec des soulignes, et parfois prefixes de "p_"
@@ -77,7 +77,7 @@ export function remplacerSymboles(texte: string): string {
  * un nom de carte en CamelCase, lui, doit survivre.
  */
 export function nettoyerNarration(texte: string): string {
-  return remplacerSymboles(texte)
+  const propre = remplacerSymboles(texte)
     .replace(/([A-Za-z])<\d+>/g, '$1')
     .replace(/\(\^![^)]*\)/g, '')
     .replace(/\[\d{5}[a-z]?\]/g, '')
@@ -93,6 +93,10 @@ export function nettoyerNarration(texte: string): string {
     .replace(/\(\s+/g, '(')
     .replace(/\s+\)/g, ')')
     .trim()
+  // En DERNIER, une fois les identifiants partis : la capacite responsable et
+  // sa fenetre de declenchement passent en francais. Segment entier seulement,
+  // pour ne pas abimer les noms de cartes (voir traduireEffets).
+  return traduireEffets(propre)
 }
 
 export type BarreActionProps = {
