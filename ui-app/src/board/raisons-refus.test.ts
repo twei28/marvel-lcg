@@ -39,8 +39,12 @@ describe('la raison pour laquelle une carte est injouable', () => {
 
   it('distingue les deux formes, sinon la phrase serait à contresens', () => {
     enFrancais()
-    expect(phraseDuRefus('player_is_alter_ego')).toBe('Jouable seulement sous forme de héros')
-    expect(phraseDuRefus('player_is_hero')).toBe("Jouable seulement sous forme d'alter ego")
+    // Le code nomme la CONDITION qui a refuse : `player_is_hero` a refuse,
+    // donc le joueur n'est pas heros, donc la carte veut la forme de heros.
+    // Livre a l'envers le 10/09/2026, vu par l'utilisateur sur Lancer de
+    // Bouclier (04002, action de heros) annonce « alter ego ».
+    expect(phraseDuRefus('player_is_hero')).toBe('Jouable seulement sous forme de héros')
+    expect(phraseDuRefus('player_is_alter_ego')).toBe("Jouable seulement sous forme d'alter ego")
   })
 
   it('rend les chiffres du coût, pas une phrase vague', () => {
@@ -67,7 +71,7 @@ describe('la raison pour laquelle une carte est injouable', () => {
 
   it('bascule en anglais avec le reste du client', () => {
     enAnglais()
-    expect(phraseDuRefus('player_is_alter_ego')).toBe('Playable only in hero form')
+    expect(phraseDuRefus('player_is_hero')).toBe('Playable only in hero form')
     expect(phraseDuRefus('check_can_pay')).toBe('Not enough resources')
     expect(phraseDuRefus('cout_insuffisant|3|RB')).toBe('Cost of 3, you have physical, mental')
   })

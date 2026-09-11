@@ -60,9 +60,15 @@ function ressourcesLisibles(brut: string): string {
  */
 const PHRASES: Record<string, () => string> = {
   // --- La forme de l'identite -------------------------------------------
-  player_is_alter_ego: () => t('Jouable seulement sous forme de héros'),
+  // ⚠ Un code est le nom de la CONDITION QUI A REFUSE (ability.py:113-123),
+  // pas l'etat du joueur. `player_is_hero` est posee sur toute capacite de
+  // heros : si elle refuse, c'est que le joueur n'est PAS heros, donc la
+  // carte demande la forme de heros. Les deux phrases ont ete livrees
+  // croisees le 10/09/2026 (Lancer de Bouclier annoncait « alter ego »),
+  // corrigees le 11/09.
+  player_is_hero: () => t('Jouable seulement sous forme de héros'),
   check_hero_form_only: () => t('Jouable seulement sous forme de héros'),
-  player_is_hero: () => t("Jouable seulement sous forme d'alter ego"),
+  player_is_alter_ego: () => t("Jouable seulement sous forme d'alter ego"),
 
   // --- Le paiement --------------------------------------------------------
   check_can_pay: () => t('Pas assez de ressources'),
