@@ -220,3 +220,62 @@
     flex-direction: column;
   }
 }
+
+/* La scene de la phase du mechant (DeroulePhase), ancree en bas en portrait
+   (releve sur play.marvelsimulator.com le 11/09/2026 : plateau assombri,
+   panneau plein largeur pose au bas de l'ecran ; les cartes de l'etape, en
+   plus, restent affichees - c'est deja mieux chez nous, on les garde).
+
+   DeroulePhase et PlateauPortrait sont rendus COTE A COTE dans le meme
+   fragment racine (board.tsx), jamais l'un dans l'autre : un selecteur
+   descendant `.plateau-portrait .deroule-phase` ne matcherait donc JAMAIS.
+   `:has()` avec un combinateur de fratrie suivante est la seule facon de
+   conditionner ce style a « on est en portrait telephone » depuis la feuille
+   seule, sans toucher a board.tsx (hors perimetre de cette session).
+
+   Cette regle vit dans la couche `utilitaires`, PAS `composants` : la regle
+   generale de .deroule-phase (board.css) y vit deja, et dans ce projet
+   `utilitaires` prime toujours sur `composants` dans l'ordre des couches
+   (voir le commentaire de board.css:1839 - « Ces regles sont dans la couche
+   utilitaires, APRES celles du composant »). Un override loge dans
+   `composants` serait silencieusement ignore, quelle que soit sa specificite :
+   la regle generale gagnerait toujours la cascade des couches. */
+@layer utilitaires {
+  .deroule-phase:has(~ .plateau-portrait) {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: none;
+    transform: none;
+    max-height: 50dvh;
+    overflow-y: auto;
+    border-radius: 0;
+  }
+
+  /* .est-question releve `bottom` a 34vh sur PC pour degager la main
+     (board.css) : sans ce doublon, plus specifique de la meme facon que la
+     regle qu'il corrige, la scene resterait a mi-hauteur au lieu de rester
+     collee en bas pendant la question la plus frequente de la phase du
+     mechant (« a toi de jouer »). */
+  .deroule-phase.est-question:has(~ .plateau-portrait) {
+    bottom: 0;
+  }
+
+  /* Le voile qui assombrit le plateau derriere la scene existe deja pour le
+     plateau PC (`.deroule-voile .plateau-scene::after`, board.css) : meme
+     formule pour le plateau portrait, qui n'est pas `.plateau-scene` et n'en
+     beneficiait donc pas. `.plateau-portrait` est deja `position: fixed`
+     (regle generale ci-dessus) : ce pseudo-element s'y positionne sans rien
+     ajouter. */
+  .deroule-voile .plateau-portrait::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 400;
+    background: rgba(20, 20, 20, 0.45);
+    pointer-events: none;
+  }
+}
