@@ -97,3 +97,22 @@ et le déroulé des effets pendant le tour du joueur.
 - **Sièges et `hot_seat`** : correctif posé le 05/09 (guetteur de silence dans
   `moteur.ts`, voir `sieges-hot-seat.ts`), à confirmer en partie réelle à
   plusieurs héros sur le serveur.
+
+## Point du 11/09/2026 au soir (relecture de la fiche)
+
+- **« Le moteur n'attend pas le cartouche »** : corrigé le 06/09 à 17:48
+  (`68381f96`, « le cartouche du déroulé détaillé relâche enfin le moteur ») ;
+  `board.tsx` passe `onTerminer={avancerPasAPas}`. Le paragraphe ci-dessus
+  est donc dépassé sur ce point.
+- La phase du méchant a ensuite changé de forme : **scène centrale** (spec
+  `2026-09-07-scene-phase-mechant-design.md`, commits `44e2c4db`,
+  `402d1d11`, `8c1f3583`), puis ancrée en bas en portrait (`3e96ad44`), et
+  les cartes de statut y entrent (`d4ff2c9e`).
+- **La partie 2 (UX de la sélection)** est couverte par la modale du héros
+  (11/09) et les écrans téléphone (`40400f0f`, `fee77023`).
+- **Reste à re-cadrer avec l'utilisateur**, jamais commencé ni vérifié : les
+  cas particuliers de la livraison 3 (ennemi étourdi, étape vide, héros
+  vaincu, défaite en pleine phase, sbire arrivé en cours de phase), le récap
+  raccourci, le menu Options à quatre choix, les étapes de distribution et de
+  premier joueur, le déroulé des effets pendant le tour du joueur. Passer par
+  `superpowers:brainstorming`, une question à la fois.

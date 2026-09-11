@@ -83,3 +83,14 @@ Livré :
 **À vérifier dans le navigateur** (aucun test DOM sur le lanceur) : ouverture
 au clic sur Hellcat, pré-remplissage après rechargement, rappel à l'étape
 Decks, lancement avec la version Miss Hulk (hero_deck avec hc012).
+
+## Vérifié dans un vrai navigateur le 11/09/2026 au soir
+
+Filet Playwright `ui-check/tests/modale-heros.spec.ts` (`npm run
+modale-heros`), joué sur le serveur local : une seule tuile Hellcat (la
+variante Miss Hulk repliée dessous, derrière le filtre « Fan-made »), la
+modale s'ouvre au clic avec la version de base présélectionnée, choisir Miss
+Hulk se lit dans le rappel de l'étape DECKS, la modale se rouvre sur ce choix
+après retour sur l'écran, et Storm (aucune option) se choisit sans modale.
+Le lancement avec la version Miss Hulk envoie bien `hc012` au moteur, et pas
+`hc002`.
