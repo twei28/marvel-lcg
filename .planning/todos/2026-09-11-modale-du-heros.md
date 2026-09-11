@@ -1,4 +1,4 @@
-# Modale du héros : un seul héros par tuile, ses variantes dans une modale
+# Modale du héros : un seul héros par tuile, ses variantes dans une modale — FAIT le 11/09/2026
 
 **Idée de l'utilisateur, 11/09/2026**, cadrée en quatre questions une à une.
 **À faire après la clôture de Hellcat et le déploiement** (sa décision).
@@ -51,3 +51,35 @@ deux Superior Spider-Man.
 - L'entrée `heros-info.js` est indexée par la face héros (`hc001a`) : une
   identité alternative purement cosmétique ne doit pas en créer une seconde
   (PROCESSUS-HEROS, étape 7).
+
+
+## ✅ Fait le 11/09/2026 (commencé avant le déploiement, sur accord implicite :
+## ça ne touche pas le moteur)
+
+Ce qui diffère de la piste initiale : les versions ne sont **pas** fusionnées
+dans un seul fichier. Une version reste un deck de départ complet, avec
+`metadata.variante_de` ; le catalogue la replie sous sa base
+(`regrouperVariantes`). Raison : le harnais (`"heros":
+"superior_spider_man_tolliver"`, 2 cas) et la gate de montage travaillent par
+fichier, et une version avec sa propre obligation (Tolliver) n'est pas un
+simple remplacement de carte.
+
+Livré :
+- `public/js/prepare/variantes.js` (pur) + `tools/tests-lanceur/variantes.test.mjs`
+  (6 tests, `node --test`) : le lanceur a ses premiers tests.
+- `catalog.js` : une tuile par héros ; clé d'identité = couple de faces
+  (Superior Spider-Man garde su001a et change d'alter ego).
+- `app.js` : `ouvrirModaleVariantes` (sections Version / Identité / Carte de
+  héros / Ressources, Valider / Annuler), ouverte au recrutement si le héros a
+  une option, bouton « Variantes » sur la scène, rappel + « Modifier » à
+  l'étape Decks. Les trois blocs cosmétiques et le sélecteur d'art de la scène
+  sont supprimés (plus une seule source de vérité).
+- `prefs.js` : `variantes(heroId)` / `setVariantes` ; `assignHero` reprend la
+  mémoire (version disparue → base).
+- Decks : `hellcat`, `hellcat_she_hulk`, `superior_spider_man`,
+  `superior_spider_man_tolliver` portent `variante_nom` / `variante_de`.
+- CSS `.vh-*`, `.tb-variantes-rappel` ; 13 clés `dico-en`.
+
+**À vérifier dans le navigateur** (aucun test DOM sur le lanceur) : ouverture
+au clic sur Hellcat, pré-remplissage après rechargement, rappel à l'étape
+Decks, lancement avec la version Miss Hulk (hero_deck avec hc012).

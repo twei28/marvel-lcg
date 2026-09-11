@@ -7,6 +7,20 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    /* ---- Modale du héros (11/09/2026) ---- */
+    "Variantes": "Variants",
+    "Version, identité, art, ressources : les options de ce héros": "Version, identity, art, resources: this hero's options",
+    "Version du deck de héros": "Hero deck version",
+    "Ce choix change le deck envoyé au jeu": "This choice changes the deck sent to the game",
+    "Options de ce héros": "This hero's options",
+    "Mémorisé pour ce héros sur cet appareil": "Remembered for this hero on this device",
+    "Valider": "Confirm",
+    "Annuler": "Cancel",
+    "Version de base": "Base version",
+    "Iron Man (allié signature)": "Iron Man (signature ally)",
+    "Miss Hulk (alliée signature)": "She-Hulk (signature ally)",
+    "Peter Parker (alter ego)": "Peter Parker (alter ego)",
+    "Elliot Tolliver (alter ego)": "Elliot Tolliver (alter ego)",
     /* ---- Wizard : général, étapes, navigation ---- */
     "Préparation de mission": "Mission prep",
     "Comment veux-tu jouer ?": "How do you want to play?",

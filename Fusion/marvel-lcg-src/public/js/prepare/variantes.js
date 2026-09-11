@@ -1,0 +1,110 @@
+// variantes.js — les VARIANTES d'un héros, réunies en un seul endroit.
+//
+// Idée de l'utilisateur du 11/09/2026 : une seule tuile par héros dans le
+// roster, et au clic une modale qui propose ce que CE héros a de particulier :
+//   - une autre VERSION du deck de héros (Hellcat avec Iron Man ou Miss Hulk
+//     en allié signature ; Superior Spider-Man avec Peter Parker ou Elliot
+//     Tolliver en alter ego, chacun avec son obligation) ;
+//   - une autre IDENTITÉ dans le même deck (The Thing Avenger / Guardian :
+//     `metadata.hero_alts`, mécanisme existant) ;
+//   - un ART alternatif de la carte de héros (purement visuel) ;
+//   - la collection d'ARTS des ressources doubles.
+//
+// COMMENT UNE VERSION EST DÉCLARÉE. Une version est un deck de départ à part
+// entière (`deck/starter/<id>.json`), ce que le moteur, le harnais et la gate
+// de montage savent déjà consommer tel quel. Le fichier porte
+// `metadata.variante_de: "<id du deck de base>"` et un libellé
+// `metadata.variante_nom` ; le deck de base porte lui aussi son
+// `variante_nom` pour nommer sa propre version. Le catalogue REPLIE les
+// versions sous leur base (`regrouperVariantes`) : une tuile, pas deux.
+//
+// Ce module est PUR (aucun accès au DOM, aucun import) pour être testé par
+// `node --test tools/tests-lanceur/variantes.test.mjs`.
+"use strict";
+
+/** Libellé par défaut d'une version qui n'en déclare pas. */
+export const VERSION_DE_BASE = "Version de base";
+
+/**
+ * Replie les decks « variante de X » sous le héros X.
+ *
+ * `heroes` : la liste du catalogue, un élément par deck de départ, chacun avec
+ * `id` (nom du fichier) et `deck` (son JSON). Renvoie une NOUVELLE liste sans
+ * les variantes, où chaque base porte `versions` : la base d'abord, puis ses
+ * variantes dans l'ordre du catalogue. Une variante dont la base est absente
+ * (retirée, `indisponible`) garde sa tuile : mieux vaut un héros de trop qu'un
+ * héros disparu.
+ */
+export function regrouperVariantes(heroes) {
+    const parId = new Map();
+    for (const h of heroes) parId.set(h.id, h);
+    const repliees = new Set();
+    for (const h of heroes) {
+        const base = baseDe(h, parId);
+        if (!base) continue;
+        if (!base.versions) base.versions = [versionDe(base)];
+        base.versions.push(versionDe(h));
+        repliees.add(h.id);
+    }
+    return heroes.filter((h) => !repliees.has(h.id));
+}
+
+function baseDe(h, parId) {
+    const cible = h.deck && h.deck.metadata && h.deck.metadata.variante_de;
+    if (!cible || cible === h.id) return null;
+    return parId.get(String(cible)) || null;
+}
+
+function versionDe(h) {
+    const meta = (h.deck && h.deck.metadata) || {};
+    return { id: h.id, nom: meta.variante_nom || VERSION_DE_BASE, deck: h.deck };
+}
+
+/** Les versions d'un héros : au moins la sienne. */
+export function versionsDe(hero) {
+    if (hero && hero.versions && hero.versions.length) return hero.versions;
+    return hero ? [versionDe(hero)] : [];
+}
+
+/** Le deck de la version demandée, ou le deck de base si elle n'existe pas
+ *  (mémoire périmée : une version supprimée ne doit jamais casser le clic). */
+export function deckDeLaVersion(hero, versionId) {
+    const v = versionsDe(hero).find((x) => x.id === versionId);
+    return v ? v.deck : (hero && hero.deck) || null;
+}
+
+/**
+ * Ce héros a-t-il quelque chose à proposer ? Sinon la modale ne s'ouvre pas
+ * (décision utilisateur : jamais de modale vide).
+ *
+ * `contexte` : `arts` (liste des arts alternatifs de la carte de héros),
+ * `collection` (code de la collection de ressources au nom du héros, ou null).
+ * Les ressources ne suffisent PAS à ouvrir la modale à elles seules : toutes
+ * les collections existent pour tout le monde, la modale s'ouvrirait pour
+ * chaque héros. Elles s'y invitent quand le héros a SA collection, ou quand
+ * une autre section justifie déjà l'ouverture.
+ */
+export function optionsDuHeros(hero, contexte) {
+    const ctx = contexte || {};
+    const versions = versionsDe(hero);
+    const identites = (hero && hero.variants) || [];
+    const arts = ctx.arts || [];
+    const options = {
+        versions: versions.length > 1 ? versions : [],
+        identites: identites.length > 1 ? identites : [],
+        arts: arts.length ? arts : [],
+        ressources: false,
+    };
+    const autreChose = options.versions.length > 0 || options.identites.length > 0 || options.arts.length > 0;
+    options.ressources = !!ctx.collection || autreChose;
+    options.aucune = !autreChose && !ctx.collection;
+    return options;
+}
+
+/** Clé d'une identité alternative : le couple de faces, pas la seule face
+ *  héros (Superior Spider-Man garde su001a et change d'alter ego). */
+export function cleIdentite(identite) {
+    if (!identite) return "";
+    const hero = identite.hero && identite.hero[0];
+    return hero ? String(hero) : String(identite.heroCardId || "");
+}

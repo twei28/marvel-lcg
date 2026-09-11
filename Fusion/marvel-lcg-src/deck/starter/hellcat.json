@@ -5,7 +5,8 @@
   "url": "",
   "auteur": "jakxin",
   "note": "Deck de depart IMPRIME par l'auteur (HellcatStarterDecklist.png), recopie tel quel. Black Cat (custom, listee) absente du dossier : laissee de cote sur decision utilisateur du 11/09/2026, d'ou 24 cartes au lieu de 25. Reskins hc023-hc026 = doublons avec l'art de jakxin (decision utilisateur).",
-  "variante": "Iron Man, l'allie signature « canon » de l'insert."
+  "variante": "Iron Man, l'allie signature « canon » de l'insert.",
+  "variante_nom": "Iron Man (allié signature)"
  },
  "hero": [
   "hc001a,hc001b"

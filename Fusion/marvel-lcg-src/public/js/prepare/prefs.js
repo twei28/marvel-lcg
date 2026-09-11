@@ -57,6 +57,16 @@ export const prefs = {
         try { localStorage.setItem(KEY_RES_ART, JSON.stringify(o)); } catch (e) {}
     },
 
+    /** Variantes choisies pour un héros (modale du héros, 11/09/2026) :
+     *  `{ version, identite }` — l'art et les ressources gardent leurs clés
+     *  dédiées ci-dessus, lues aussi par le plateau. Mémoire PAR APPAREIL. */
+    variantes(heroId) { return (read().variantes || {})[heroId] || {}; },
+    setVariantes(heroId, choix) {
+        const o = read(); o.variantes = o.variantes || {};
+        o.variantes[heroId] = { ...(o.variantes[heroId] || {}), ...(choix || {}) };
+        write(o);
+    },
+
     favHeroes()      { return read().favHeroes || []; },
     isFavHero(id)    { return this.favHeroes().includes(id); },
     toggleFavHero(id) {

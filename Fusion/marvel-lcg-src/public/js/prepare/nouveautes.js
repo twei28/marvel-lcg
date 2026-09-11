@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-11",
+        genre: "jeu",
+        fr: "Une seule tuile par héros : au clic, une fenêtre propose ce que ce héros a de particulier (version du deck, identité alternative, art de la carte, collection de ressources) et s'en souvient d'une partie à l'autre. Hellcat avec Iron Man ou Miss Hulk, Superior Spider-Man avec Peter Parker ou Elliot Tolliver.",
+        en: "One tile per hero: clicking it opens a window with what this hero has to offer (deck version, alternate identity, card art, resource collection), remembered from game to game. Hellcat with Iron Man or She-Hulk, Superior Spider-Man with Peter Parker or Elliot Tolliver.",
+    },
+    {
+        date: "2026-09-11",
         genre: "heros",
         fr: "Hellcat (Patsy Walker), héroïne fan-made de jakxin : elle accroche à son identité les événements à ressource mentale qu'elle joue et les convertit en ressources. Deux decks de départ (Iron Man ou Miss Hulk en allié signature), set némésis à deux sbires, et six cartes custom du deck imprimé (Firestar, Monica Rambeau, Green Hell, Hell-Iron, Divas, un reskin de Chase Them Down).",
         en: "Hellcat (Patsy Walker), a fan-made hero by jakxin: she attaches the mental-resource events she plays to her identity and turns them into resources. Two starter decks (Iron Man or She-Hulk as signature ally), a two-minion nemesis set, and six custom cards from the printed deck (Firestar, Monica Rambeau, Green Hell, Hell-Iron, Divas, a Chase Them Down reskin).",

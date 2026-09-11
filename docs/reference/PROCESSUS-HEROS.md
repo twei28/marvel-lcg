@@ -70,6 +70,24 @@ sur l'alter-ego (modèles bt001b, 09001b, al001b). Le harnais la fait exister
 avec `Puzzle.CreatePlayerAdditionalDeck`, ce qui laisse un cas vert pour une
 carte absente en jeu réel : ne pas s'y fier (Alligator Loki, 01/09/2026).
 
+### Variantes d'un héros (modale du héros, 11/09/2026)
+
+Un héros n'a qu'**une tuile** dans le lanceur. Ce qu'il a de particulier se
+choisit dans une **modale** au clic (version du deck de héros, identité
+alternative, art, ressources), mémorisée par héros sur l'appareil. Trois
+mécanismes, à ne pas confondre :
+
+| Le héros a… | Où le déclarer | Exemple |
+|---|---|---|
+| un autre **deck de héros** (allié signature, alter ego avec sa propre obligation) | un second `deck/starter/<id>.json` complet, avec `metadata.variante_de: "<id de base>"` et `metadata.variante_nom` (la base porte aussi son `variante_nom`) | `hellcat_she_hulk.json`, `superior_spider_man_tolliver.json` |
+| une autre **identité** dans le même deck (mêmes cartes, autres faces) | `metadata.hero_alts` du deck de base (GUIDE §5.3) | The Thing Guardian, Viv Vision |
+| un **art** alternatif | `ARTS_HEROS` dans `app.js` | M3T4LB0X |
+
+Le fichier de variante reste un deck **montable** (gate `verifier_tous_les_decks`,
+harnais `"heros": "<id>"`) : c'est le catalogue qui le replie sous sa base
+(`variantes.js`, `regrouperVariantes`), pas le moteur. `sets_info.json` liste
+donc les deux. Module pur testé : `node --test tools/tests-lanceur/variantes.test.mjs`.
+
 ## Étape 4 : `data/nemesis/<hero>_nemesis.json`
 
 Facultatif. ⚠ **Et pas « pour l'UI »** (formulation corrigée le 05/09/2026,

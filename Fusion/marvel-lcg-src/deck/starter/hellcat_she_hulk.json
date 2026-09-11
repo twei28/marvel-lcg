@@ -5,7 +5,9 @@
   "url": "",
   "auteur": "jakxin",
   "note": "Deck de depart IMPRIME par l'auteur (HellcatStarterDecklist.png), recopie tel quel. Black Cat (custom, listee) absente du dossier : laissee de cote sur decision utilisateur du 11/09/2026, d'ou 24 cartes au lieu de 25. Reskins hc023-hc026 = doublons avec l'art de jakxin (decision utilisateur).",
-  "variante": "She-Hulk a la place d'Iron Man : alliee signature alternative ajoutee par l'auteur « sur demande ». Deuxieme deck de depart sur decision utilisateur du 11/09/2026."
+  "variante": "She-Hulk a la place d'Iron Man : alliee signature alternative ajoutee par l'auteur « sur demande ». Deuxieme deck de depart sur decision utilisateur du 11/09/2026.",
+  "variante_de": "hellcat",
+  "variante_nom": "Miss Hulk (alliée signature)"
  },
  "hero": [
   "hc001a,hc001b"

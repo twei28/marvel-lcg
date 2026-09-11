@@ -2,6 +2,7 @@
 // sets de rencontre) à partir des données brutes + métadonnées de cartes.
 "use strict";
 import { api, fileName } from "/public/js/prepare/api.js";
+import { regrouperVariantes, cleIdentite } from "/public/js/prepare/variantes.js";
 import { cards } from "/public/js/prepare/cards.js";
 
 const TEAMS = ["Avenger", "X-Men", "Guardian", "Champion", "Defender", "X-Force", "Inhuman", "S.H.I.E.L.D.", "Web-Warrior"];
@@ -89,6 +90,7 @@ function identityVariants(deck, heroCardId, heroCard) {
     const base = {
         hero: deck.hero,
         heroCardId,
+        cle: cleIdentite({ hero: deck.hero, heroCardId }),
         name: cleanName(heroCard && heroCard.name) || deck.name,
         traits: (heroCard && heroCard.traits) || [],
     };
@@ -100,6 +102,9 @@ function identityVariants(deck, heroCardId, heroCard) {
         out.push({
             hero: alt.hero,
             heroCardId: id,
+            // ⚠ La clé est le COUPLE de faces : Superior Spider-Man garde la
+            // même face héros et change d'alter ego.
+            cle: cleIdentite({ hero: alt.hero, heroCardId: id }),
             name: alt.name || cleanName(c && c.name) || base.name,
             traits: (c && c.traits) || [],
         });
@@ -369,7 +374,10 @@ export const catalog = {
         });
         // Les homonymes sont levés AVANT le tri : le libellé final est ce qui
         // range la grille, sinon les quatre Spider-Man resteraient collés.
-        _heroes = leverLesHomonymes(_heroes).sort((a, b) => a.name.localeCompare(b.name));
+        // Une seule tuile par héros : les decks « variante_de » se replient sous
+        // leur base (modale du héros, 11/09/2026). AVANT les homonymes : deux
+        // versions d'un même héros ne sont pas des homonymes à distinguer.
+        _heroes = leverLesHomonymes(regrouperVariantes(_heroes)).sort((a, b) => a.name.localeCompare(b.name));
         return _heroes;
     },
 

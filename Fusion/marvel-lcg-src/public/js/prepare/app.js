@@ -7,6 +7,7 @@ import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
+import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite } from "/public/js/prepare/variantes.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
@@ -320,7 +321,15 @@ async function randomize() {
 function assignHero(slotIndex, hero) {
     const p = state.players[slotIndex];
     p.hero = hero;
-    p.deck = hero.deck;
+    // Modale du héros (11/09/2026) : le dernier choix fait pour ce héros sur
+    // cet appareil est repris d'office (version du deck, identité). Une
+    // version disparue retombe sur la base, jamais sur un clic cassé.
+    const memoire = prefs.variantes(hero.id);
+    p.version = (memoire.version && versionsDe(hero).some((v) => v.id === memoire.version)) ? memoire.version : hero.id;
+    p.deck = deckDeLaVersion(hero, p.version);
+    p.identity = memoire.identite
+        ? ((hero.variants || []).find((v) => cleIdentite(v) === memoire.identite) || null)
+        : null;
     p.deckSource = "base";
     // Deck posé automatiquement : l'étape Decks pourra le remplacer par le
     // dernier deck utilisé pour ce héros (mémoire des choix).
@@ -1274,7 +1283,6 @@ function rendreScene(h) {
     const traits = [...new Set([...(h.traits || []), ...(h.traitsAlterEgo || [])])].slice(0, 4).join(" · ");
     const vague = h.homebrew ? t("Fan-made")
         : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
-    const arts = (ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || []).length;
     poser(scene,
         // Scan anglais même en français : le scan FR porte un filigrane, très
         // visible à cette taille. Demande de l'utilisateur.
@@ -1289,11 +1297,11 @@ function rendreScene(h) {
             pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
             h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
             vague ? el("span", { class: "tampon" }, vague) : null,
-            arts ? el("button", {
+            optionsDuHeros(h, contexteVariantes(h)).aucune ? null : el("button", {
                 class: "tampon jaune tb-choix-art",
-                title: t("Choisir l'art de la carte"),
-                onclick: () => ouvrirArtsHeros(h),
-            }, t("Art alt") + (prefs.heroArt(h.heroCardId) !== "standard" && prefs.heroArt(h.heroCardId) ? " ✓" : "")) : null,
+                title: t("Version, identité, art, ressources : les options de ce héros"),
+                onclick: () => ouvrirModaleVariantes(siegeDuHeros(h), h),
+            }, t("Variantes")),
         ),
         el("div", { class: "tb-bas" },
             el("button", {
@@ -1387,45 +1395,6 @@ function ouvrirCartesHeros(h) {
     basculerVueCartes(true);
 }
 
-/** Le choix de l'art de la carte de héros, à la place du roster : la carte
- *  standard et chaque art alternatif, en grand, celui en usage cerclé de jaune.
- *  Un clic choisit et la scène suit ; c'est le réglage que l'étape Arsenal
- *  proposait déjà en vignettes, rendu visible là où l'on regarde le héros. */
-function ouvrirArtsHeros(h) {
-    const zone = document.getElementById("tb-vue-cartes");
-    if (!zone) return;
-    const base = String(h.heroCardId || "").split(",")[0];
-    const arts = ARTS_HEROS[base] || [];
-    const choix = prefs.heroArt(h.heroCardId) || "standard";
-    const options = [{ code: "standard", nom: t("Standard"), image: base }]
-        .concat(arts.map((a) => ({ code: a.code, nom: a.nom, image: `${base}_${a.code}` })));
-    poser(zone,
-        el("div", { class: "tb-entete" },
-            el("b", { class: "mvl" }, nomAffiche(h)),
-            el("span", { class: "tb-compte" }, t("Art de la carte") + " · " + t("mêmes valeurs de jeu")),
-            el("button", { class: "tb-mode", onclick: fermerCartesHeros }, "‹ " + t("Retour au roster")),
-        ),
-        el("div", { class: "tb-cartes-grille tb-arts" },
-            ...options.map((o) => el("div", { class: "tb-carte" + (o.code === choix ? " choisie" : "") },
-                el("img", {
-                    src: cardImageUrl(o.image), loading: "lazy", alt: o.nom,
-                    onmouseenter: () => loupe(o.image),
-                    onmouseleave: () => loupe(null),
-                    onclick: () => {
-                        prefs.setHeroArt(h.heroCardId, o.code);
-                        loupe(null);
-                        ouvrirArtsHeros(h);
-                        rendreScene(h);
-                    },
-                }),
-                el("span", { class: "tb-carte-etiquette" }, o.nom + (o.code === choix ? " ✓" : "")),
-            )),
-        ),
-    );
-    zone.hidden = false;
-    basculerVueCartes(true);
-}
-
 function fermerCartesHeros() {
     const zone = document.getElementById("tb-vue-cartes");
     if (zone) zone.hidden = true;
@@ -1510,7 +1479,8 @@ function rendreEquipe() {
 /** Recruter : le geste de la carte qui surgit, l'onomatopée, puis la scène. */
 function recruter(h, portraitEl) {
     jouerSon(SON.heros);
-    assignHero(state.activeSlot, h);
+    const siege = state.activeSlot;
+    assignHero(siege, h);
     autoAdvanceSlot();
     herosSurvole = null;
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
@@ -1535,6 +1505,9 @@ function recruter(h, portraitEl) {
     // La barre du bas suit (Continuer s'allume) sans reconstruire l'écran.
     const nav = document.querySelector(".nav");
     if (nav) nav.replaceWith(navBar());
+    // Ce héros a des variantes ? La modale s'ouvre tout de suite, pré-remplie
+    // de la mémoire. Sans variante, rien : jamais de modale vide.
+    if (!optionsDuHeros(h, contexteVariantes(h)).aucune) ouvrirModaleVariantes(siege, h);
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -1823,79 +1796,6 @@ function picIdHeros(heroCardId) {
     return arts.some((a) => a.code === choix) ? `${base}_${choix}` : base;
 }
 
-function blocArtHeros(hero) {
-    const arts = ARTS_HEROS[String(hero.heroCardId || "").split(",")[0]];
-    if (!arts || !arts.length) return null;      // rien a proposer : pas de bloc
-    const choixActuel = prefs.heroArt(hero.heroCardId);
-    const zone = el("div", { class: "res-art" },
-        el("div", { class: "ra-tete" },
-            el("span", { class: "ra-titre" }, t("Carte de héros")),
-            el("span", { class: "ra-sous" }, t("Art alternatif — mêmes valeurs de jeu")),
-        ),
-    );
-    const choix = el("div", { class: "ra-choix" });
-    [{ code: "standard", nom: "Standard", apercu: hero.heroCardId }]
-        .concat(arts.map((a) => ({ code: a.code, nom: a.nom, apercu: `${hero.heroCardId}_${a.code}` })))
-        .forEach((c) => {
-            const bouton = el("button", {
-                class: "ra-option" + (c.code === choixActuel ? " sel" : ""),
-                title: t(c.nom),
-                onmouseenter: (e) => showCardHover(c.apercu, e.currentTarget),
-                onmouseleave: scheduleHide,
-                onclick: () => {
-                    prefs.setHeroArt(hero.heroCardId, c.code);
-                    [...choix.children].forEach((b) => b.classList.remove("sel"));
-                    bouton.classList.add("sel");
-                },
-            });
-            bouton.append(el("img", { class: "ra-vignette", src: cardImageUrl(c.apercu), loading: "lazy", alt: "" }));
-            bouton.append(el("span", {}, t(c.nom)));
-            choix.append(bouton);
-        });
-    zone.append(choix);
-    return zone;
-}
-
-/** Sélecteur d'identité : certains héros existent en plusieurs versions au
- *  texte identique mais aux TRAITS différents (The Thing Avenger ou Guardian).
- *  Contrairement au bloc « art alternatif » ci-dessus, ce choix change les
- *  valeurs de jeu : il part dans le deck envoyé au moteur. */
-function blocIdentiteHeros(p, i) {
-    const variantes = (p.hero && p.hero.variants) || [];
-    if (variantes.length < 2) return null;      // cas courant : aucun sélecteur
-
-    const actuel = identiteChoisie(p);
-    const zone = el("div", { class: "res-art" },
-        el("div", { class: "ra-tete" },
-            el("span", { class: "ra-titre" }, t("Identité")),
-            el("span", { class: "ra-sous" }, t("Mêmes capacités — le trait du héros change")),
-        ),
-    );
-    const choix = el("div", { class: "ra-choix" });
-    variantes.forEach((v) => {
-        const bouton = el("button", {
-            class: "ra-option" + (v.heroCardId === actuel.heroCardId ? " sel" : ""),
-            title: v.name,
-            onmouseenter: (e) => showCardHover(v.heroCardId, e.currentTarget),
-            onmouseleave: scheduleHide,
-            onclick: () => { p.identity = v; render(); },
-        });
-        bouton.append(el("img", { class: "ra-vignette", src: cardImageUrl(v.heroCardId), loading: "lazy", alt: "" }));
-        // Le libellé montre ce qui distingue vraiment cette version.
-        bouton.append(el("span", {}, (v.distinctif && v.distinctif[0]) || v.name));
-        choix.append(bouton);
-    });
-    zone.append(choix);
-    return zone;
-}
-
-/** Identité retenue pour un joueur : son choix, sinon la version de base. */
-function identiteChoisie(p) {
-    const variantes = (p.hero && p.hero.variants) || [];
-    if (!variantes.length) return { heroCardId: p.hero && p.hero.heroCardId, hero: p.deck && p.deck.hero };
-    return variantes.find((v) => p.identity && v.heroCardId === p.identity.heroCardId) || variantes[0];
-}
-
 /** Les trois ressources d'une collection, déduites de son aperçu (Genius). */
 function tripletRessources(apercu) {
     const m = String(apercu || "").match(/^(\d{5})(_.+)?$/);
@@ -1935,40 +1835,170 @@ function collectionDuHeros(nomHeros) {
     return trouvee ? trouvee.code : null;
 }
 
-function blocRessources(hero) {
-    // Défaut : la collection au nom du héros. « Standard » ne s'impose plus que
-    // pour les héros qui n'en ont pas — ou si le joueur l'a explicitement remis.
-    const choixActuel = prefs.resourceArt(hero.heroCardId, collectionDuHeros(hero.name));
+/* ---- La modale du héros : version, identité, art, ressources ------------
+   Idée de l'utilisateur du 11/09/2026 : une seule tuile par héros, et au clic
+   tout ce que CE héros a de particulier, au même endroit. Le bloc
+   « Identité et arts » de l'étape Decks a disparu : la modale seule décide,
+   l'étape Decks n'en garde qu'un rappel et un bouton « Modifier ». Chaque
+   héros se souvient de son dernier choix sur cet appareil (prefs.variantes,
+   l'art et les ressources gardant leurs clés lues aussi par le plateau). */
+
+/** Ce que le lanceur sait de ce héros, pour `optionsDuHeros` (module pur). */
+function contexteVariantes(h) {
+    return {
+        arts: ARTS_HEROS[String(h.heroCardId || "").split(",")[0]] || [],
+        collection: collectionDuHeros(h.name),
+    };
+}
+
+/** Le siège qui joue ce héros, sinon le siège actif. */
+function siegeDuHeros(h) {
+    const i = state.players.findIndex((p) => p && p.hero && p.hero.id === h.id);
+    return i >= 0 ? i : state.activeSlot;
+}
+
+/** La carte qui distingue une version de la base : la première qui diffère
+ *  (l'allié signature de Hellcat, l'alter ego de Superior Spider-Man). */
+function apercuVersion(hero, version) {
+    const base = hero.deck || {};
+    const cartes = (d) => [
+        ...(d.hero || []).flatMap((x) => String(x).split(",")),
+        ...(d.hero_deck || []), ...(d.obligations || []),
+    ];
+    const socle = new Set(cartes(base));
+    const propre = cartes(version.deck || {}).find((id) => !socle.has(id));
+    return propre || (String((version.deck || {}).hero && version.deck.hero[0] || hero.heroCardId).split(",")[0]);
+}
+
+/** Une section de la modale : un titre, un sous-titre, des vignettes. */
+function sectionVariantes(titre, sous, options, actuel, surChoix) {
     const zone = el("div", { class: "res-art" },
         el("div", { class: "ra-tete" },
-            el("span", { class: "ra-titre" }, t("Cartes ressources doubles")),
-            el("span", { class: "ra-sous" }, t("Energy · Genius · Strength — même collection")),
+            el("span", { class: "ra-titre" }, titre),
+            sous ? el("span", { class: "ra-sous" }, sous) : null,
         ),
     );
     const choix = el("div", { class: "ra-choix" });
-    COLLECTIONS_RESSOURCES.forEach((c) => {
+    options.forEach((o) => {
         const bouton = el("button", {
-            class: "ra-option" + (c.code === choixActuel ? " sel" : ""),
-            title: t(c.nom),
-            // « Aléatoire » n'a pas d'aperçu : rien à agrandir.
-            onmouseenter: c.apercu ? (e) => showTrioHover(c.apercu, e.currentTarget) : undefined,
-            onmouseleave: c.apercu ? scheduleHide : undefined,
+            class: "ra-option" + (o.code === actuel ? " sel" : ""),
+            title: o.nom,
+            onmouseenter: o.trio ? (e) => showTrioHover(o.trio, e.currentTarget)
+                : (o.apercu ? (e) => showCardHover(o.apercu, e.currentTarget) : undefined),
+            onmouseleave: (o.trio || o.apercu) ? scheduleHide : undefined,
             onclick: () => {
-                prefs.setResourceArt(hero.heroCardId, c.code);
+                surChoix(o.code);
                 [...choix.children].forEach((b) => b.classList.remove("sel"));
                 bouton.classList.add("sel");
             },
         });
-        if (!c.apercu) {
-            bouton.append(el("div", { class: "ra-vignette ra-hasard" }, "?"));
+        if (o.apercu || o.trio) {
+            bouton.append(el("img", { class: "ra-vignette", src: cardImageUrl(o.apercu || o.trio), loading: "lazy", alt: "" }));
         } else {
-            bouton.append(el("img", { class: "ra-vignette", src: cardImageUrl(c.apercu), loading: "lazy", alt: "" }));
+            bouton.append(el("div", { class: "ra-vignette ra-hasard" }, "?"));
         }
-        bouton.append(el("span", {}, t(c.nom)));
+        bouton.append(el("span", {}, o.nom));
         choix.append(bouton);
     });
     zone.append(choix);
     return zone;
+}
+
+function ouvrirModaleVariantes(i, h) {
+    const p = state.players[i];
+    if (!p || !h) return;
+    const opts = optionsDuHeros(h, contexteVariantes(h));
+    if (opts.aucune) return;
+    const base = String(h.heroCardId || "").split(",")[0];
+    const identites = h.variants || [];
+    const choix = {
+        version: p.version || h.id,
+        identite: p.identity ? cleIdentite(p.identity) : (identites[0] ? cleIdentite(identites[0]) : ""),
+        art: prefs.heroArt(h.heroCardId) || "standard",
+        ressources: prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name)),
+    };
+    const sections = [];
+    if (opts.versions.length) {
+        sections.push(sectionVariantes(t("Version du deck de héros"), t("Ce choix change le deck envoyé au jeu"),
+            opts.versions.map((v) => ({ code: v.id, nom: t(v.nom), apercu: apercuVersion(h, v) })),
+            choix.version, (code) => { choix.version = code; }));
+    }
+    if (opts.identites.length) {
+        sections.push(sectionVariantes(t("Identité"), t("Mêmes capacités — le trait du héros change"),
+            opts.identites.map((v) => ({ code: cleIdentite(v), nom: (v.distinctif && v.distinctif[0]) || v.name, apercu: v.heroCardId })),
+            choix.identite, (code) => { choix.identite = code; }));
+    }
+    if (opts.arts.length) {
+        sections.push(sectionVariantes(t("Carte de héros"), t("Art alternatif — mêmes valeurs de jeu"),
+            [{ code: "standard", nom: t("Standard"), apercu: base }]
+                .concat(opts.arts.map((a) => ({ code: a.code, nom: t(a.nom), apercu: `${base}_${a.code}` }))),
+            choix.art, (code) => { choix.art = code; }));
+    }
+    if (opts.ressources) {
+        sections.push(sectionVariantes(t("Cartes ressources doubles"), t("Energy · Genius · Strength — même collection"),
+            COLLECTIONS_RESSOURCES.map((c) => ({ code: c.code, nom: t(c.nom), trio: c.apercu || "" })),
+            choix.ressources, (code) => { choix.ressources = code; }));
+    }
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
+        el("div", { class: "deck-modal-panel vh-panel" },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, nomAffiche(h)),
+                el("span", { class: "dm-sub" }, t("Options de ce héros")),
+            ),
+            ...sections,
+            el("div", { class: "vh-note" }, t("Mémorisé pour ce héros sur cet appareil")),
+            el("div", { class: "vh-actions" },
+                el("button", { class: "tampon", onclick: () => { hideHover(); fermerModale(overlay); } }, t("Annuler")),
+                el("button", { class: "tampon jaune", onclick: () => {
+                    // Appliquer : le deck de la version, l'identité, puis les
+                    // préférences visuelles ; enfin la mémoire.
+                    p.version = choix.version;
+                    p.deck = deckDeLaVersion(h, choix.version);
+                    p.deckSource = "base";
+                    p.deckAuto = true;
+                    p.identity = identites.find((v) => cleIdentite(v) === choix.identite) || null;
+                    prefs.setHeroArt(h.heroCardId, choix.art);
+                    prefs.setResourceArt(h.heroCardId, choix.ressources);
+                    prefs.setVariantes(h.id, { version: choix.version, identite: choix.identite });
+                    hideHover();
+                    fermerModale(overlay);
+                    render();
+                } }, t("Valider")),
+            ),
+        ),
+    );
+    ouvrirModale(overlay);
+}
+
+/** Étape Decks : ce qui a été choisi dans la modale, et « Modifier ». */
+function rappelVariantes(p, i) {
+    const h = p && p.hero;
+    if (!h) return null;
+    const opts = optionsDuHeros(h, contexteVariantes(h));
+    if (opts.aucune) return null;
+    const parts = [];
+    if (opts.versions.length) {
+        const v = opts.versions.find((x) => x.id === (p.version || h.id));
+        if (v) parts.push(t(v.nom));
+    }
+    if (opts.identites.length) {
+        const v = p.identity || opts.identites[0];
+        parts.push((v.distinctif && v.distinctif[0]) || v.name);
+    }
+    if (opts.arts.length) {
+        const code = prefs.heroArt(h.heroCardId) || "standard";
+        const a = opts.arts.find((x) => x.code === code);
+        parts.push(t(a ? a.nom : "Standard"));
+    }
+    if (opts.ressources) {
+        const code = prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name));
+        const c = COLLECTIONS_RESSOURCES.find((x) => x.code === code);
+        parts.push(t("Ressources") + " : " + t(c ? c.nom : "Standard"));
+    }
+    return el("div", { class: "tb-variantes-rappel" },
+        el("span", { class: "tb-variantes-texte" }, parts.join(" · ")),
+        el("button", { class: "tampon", onclick: () => ouvrirModaleVariantes(i, h) }, t("Modifier")),
+    );
 }
 
 /* ---- Import marvelcdb ---- */
@@ -2331,7 +2361,6 @@ function rendreOutilsDeck() {
     const i = state.activeSlot;
     const p = state.players[i];
     if (!p || !p.hero) { poser(zone); return; }
-    const cosmetiques = [blocIdentiteHeros(p, i), blocArtHeros(p.hero), blocRessources(p.hero)].filter(Boolean);
     poser(zone,
         el("div", { class: "tb-menace-ligne" },
             el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
@@ -2348,14 +2377,9 @@ function rendreOutilsDeck() {
             }, t("Éditeur de deck")),
             el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         ),
-        // Identité, art alternatif, arts des ressources : du cosmétique (sauf
-        // l'identité, qui change les traits), replié pour ne pas enterrer les
-        // decks sous quarante vignettes.
-        cosmetiques.length
-            ? el("details", { class: "tb-cosmetiques" },
-                el("summary", {}, t("Identité et arts")),
-                ...cosmetiques)
-            : null,
+        // Version, identité, art, ressources : tout se choisit dans la modale
+        // du héros (11/09/2026). Ici, seulement un rappel et « Modifier ».
+        rappelVariantes(p, i),
     );
 }
 

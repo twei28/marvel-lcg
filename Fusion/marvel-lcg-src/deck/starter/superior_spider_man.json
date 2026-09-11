@@ -7,7 +7,8 @@
   "collision_note": "Le nom imprime de la face heros est « * Spider-Man », homonyme de 01001a, sr001a et sm001a (spider_man_2099). « * Peter Parker » est homonyme de 01001b et sr001b. Distingue par set_name, comme spider_man_rainy. AUCUN module du pack ne cherche une carte par son NOM : Contingency Plan et Hobgoblin se retrouvent par card_id.",
   "alter_ego_note": "⚠⚠ CE HEROS A DEUX ALTER-EGOS, ET C'EST L'INSERT QUI LE DIT : « choose one of these alter-egos to use this game and its corresponding obligation (the other set will not be needed and cannot be changed to during this game) ». Le moteur ne sait monter qu'un alter-ego par deck de depart : le pack a donc DEUX decks, celui-ci et son jumeau. Arbitrage utilisateur du 08/09/2026. Ils partagent la meme face heros (su001a), les 16 memes cartes signature et le meme set nemesis ; seuls l'alter-ego et l'obligation changent.",
   "nemesis_note": "Set nemesis de 5 cartes : Goblin Protocol (complot annexe, 2 icones Acceleration verifiees par comparaison d'image contre ag011), Hobgoblin (sbire Villainous), Lunatic Laugh (traitrise), Goblin Glider et Pumpkin Bombs (attachements).",
-  "auteur": "Rainy"
+  "auteur": "Rainy",
+  "variante_nom": "Peter Parker (alter ego)"
  },
  "hero": [
   "su001a,su001b"

@@ -1952,3 +1952,10 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     white-space: nowrap;
     cursor: help;
 }
+
+/* --- Modale du héros (11/09/2026) : version, identité, art, ressources ----- */
+.vh-panel .res-art{margin-top:14px}
+.vh-note{font-size:12px;opacity:.72;margin-top:12px}
+.vh-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.tb-variantes-rappel{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:13px;opacity:.9}
+.tb-variantes-texte{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
