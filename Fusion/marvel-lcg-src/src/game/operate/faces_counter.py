@@ -64,6 +64,7 @@ class FacesCounter:
             "B": 0,
             "Y": 0,
             "G": 0,
+            "L": 0,
         }
         for face in faces:
             if ClassCard.IsType(face):

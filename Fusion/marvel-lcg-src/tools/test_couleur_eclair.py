@@ -28,6 +28,8 @@ from engine import Engine  # noqa: F401  amorce les imports du moteur dans le bo
 from game.element.resources import Resources
 from game.element.cost import Cost
 from game.render.symbol import Symbol
+from game.player.model.player_ask import PlayerAsk
+from game.operate.faces_counter import FacesCounter
 
 ECHECS = []
 
@@ -77,6 +79,25 @@ def main() -> None:
         Symbol.CleanPrompt(Symbol.r_l_lightning) == "[[lightning]]")
     cas("Cost('L').GetSpendText() ecrit [[lightning]]",
         "[[lightning]]" in Cost("L").GetSpendText())
+
+    # Les demandes au joueur : on capture ce qui lui est propose.
+    class Faux(PlayerAsk):
+        def __init__(self):
+            self.propositions = []
+        def AskChooseOneText(self, item_list, text_list=None):
+            self.propositions.append(list(item_list))
+            return item_list[0]
+
+    faux = Faux()
+    faux.AskSpecifyResources(Resources.FromText("G"))
+    cas("preciser un joker propose aussi `L`", "L" in faux.propositions[-1])
+    faux.DeclareResourceType()
+    cas("nommer un type propose `L` par defaut", "L" in faux.propositions[-1])
+    faux.DeclareResourceType(l=False)
+    cas("nommer un type sans `L` reste possible", "L" not in faux.propositions[-1])
+
+    cas("le compteur d'icones imprimees a une case `L`",
+        "L" in FacesCounter.GetPrintedResourcesCountInternal([]))
 
     print()
     if ECHECS:

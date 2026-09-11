@@ -390,7 +390,7 @@ def Unshuffle(card: CardName):
     Random.Undo()
     face.card.area.Unshuffle(effect)
 
-def Res(res: str = "RBYG"):
+def Res(res: str = "RBYGL"):
     player = world.GetCurrentPlayer()
     effect = DebugRule(player.GetIdentity())
     player.res_pool.Gain(Resources.FromText(res), effect)

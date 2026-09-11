@@ -21,13 +21,13 @@ class PlayerAsk:
 
         from itertools import combinations_with_replacement
         def generate_combinations(n: int):
-            letters = ["R", "B", "Y"]
+            letters = ["R", "B", "Y", "L"]
             # Generate combinations with replacement
             combinations = combinations_with_replacement(letters, n)
             # Convert tuples to strings and return as a list
             return ["".join(comb) for comb in combinations]
 
-        res_text = "R" * res.r + "B" * res.b + "Y" * res.y
+        res_text = "R" * res.r + "B" * res.b + "Y" * res.y + "L" * res.l
         res_text += self.AskChooseOneText(generate_combinations(g))
         return Resources.FromText(res_text)
 
@@ -123,7 +123,7 @@ class PlayerAsk:
     def DeclareNumber(self, min: int, max: int) -> int:
         return self.AskChooseOneText(list(range(min, max+1)))
 
-    def DeclareResourceType(self, r:bool=True, b:bool=True, y:bool=True, g:bool=True) -> "Resources.RBYG":
+    def DeclareResourceType(self, r:bool=True, b:bool=True, y:bool=True, g:bool=True, l:bool=True) -> "Resources.RBYG":
         text: List["Resources.RBYG"] = []
         if r:
             text.append("R")
@@ -131,6 +131,8 @@ class PlayerAsk:
             text.append("B")
         if y:
             text.append("Y")
+        if l:
+            text.append("L")
         if g:
             text.append("G")
         return self.AskChooseOneText(text)
