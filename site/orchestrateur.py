@@ -1458,8 +1458,17 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
                 " AND ((pseudo=? AND destinataire=?) OR (pseudo=? AND destinataire=?))"
                 " ORDER BY id LIMIT ?",
                 (depuis, moi, avec, avec, moi, MESSAGES_GARDES)).fetchall()
+    # `quand` reste le « HH:MM » du serveur (les anciens clients le lisent
+    # tel quel) ; `quand_ts` est l'heure en secondes depuis l'epoque, que le
+    # navigateur formate dans SON fuseau. Le serveur vit en UTC, le joueur en
+    # Belgique : le « HH:MM » nu s'affichait deux heures en retard.
+    def _epoque(quand: str) -> float | None:
+        ecart = _secondes_depuis(quand)
+        return None if ecart is None else time.time() - ecart
+
     return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
-             "quand": l["quand"][11:16]} for l in lignes]
+             "quand": l["quand"][11:16], "quand_ts": _epoque(l["quand"])}
+            for l in lignes]
 
 
 def derniers_prives(moi: str) -> dict:

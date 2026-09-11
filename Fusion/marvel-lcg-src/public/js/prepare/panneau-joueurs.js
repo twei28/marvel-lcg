@@ -114,8 +114,13 @@
       ' flex: none; margin-left: 6px; }' +
       '.pj-vide { color: #8b8b8b; padding: 6px 12px; cursor: default; }' +
       '.pj-vide:hover { background: none; }' +
-      '.pj-fil { flex: 1 1 auto; overflow-y: auto; padding: 8px 12px;' +
-      ' display: flex; flex-direction: column; gap: 5px; min-height: 90px; }' +
+      // Base FIXE (220px, une dizaine de lignes) : le fil defile a l'interieur
+      // au lieu de pousser le panneau vers le bas a chaque message. Avant,
+      // `flex-basis: auto` le faisait grandir avec son contenu jusqu'au plafond
+      // de 70vh (mesure : 251px vide, 632px a trente messages). Il ne retrecit
+      // qu'a l'etroit (min-height), quand la liste des joueurs prend sa place.
+      '.pj-fil { flex: 0 1 220px; min-height: 120px; overflow-y: auto; padding: 8px 12px;' +
+      ' display: flex; flex-direction: column; gap: 5px; }' +
       '.pj-msg { line-height: 1.35; word-wrap: break-word; overflow-wrap: anywhere; }' +
       '.pj-msg b { color: #ffd45a; }' +
       '.pj-msg.moi b { color: #6ea8fe; }' +
@@ -322,7 +327,12 @@
       var qui = document.createElement('b');
       qui.textContent = m.pseudo + ' : ';
       var quand = document.createElement('span');
-      quand.textContent = m.quand;
+      // `quand_ts` (secondes depuis l'epoque) se formate dans le fuseau du
+      // joueur ; `quand` seul est le « HH:MM » du serveur, en UTC, deux heures
+      // en retard pour un joueur belge. On ne le lit qu'a defaut.
+      quand.textContent = typeof m.quand_ts === 'number'
+        ? new Date(m.quand_ts * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : m.quand;
       ligne.append(qui, document.createTextNode(m.texte), quand);
       filEl.append(ligne);
     });

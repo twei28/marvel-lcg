@@ -128,6 +128,15 @@ verifier("les espaces en trop sont ramenes a un",
          msgs and msgs[0]["texte"] == "salut tout le monde", str(msgs))
 verifier("un message vide n'est pas garde", len(msgs) == 1, str(msgs))
 
+# L'heure d'un message part en SECONDES DEPUIS L'EPOQUE, pas en « HH:MM » du
+# serveur : le serveur vit en UTC et le joueur en Belgique, et un « 10:14 »
+# nu s'affichait deux heures en retard. Le navigateur formate dans son fuseau.
+import time as _time  # noqa: E402
+_frais = o.messages_depuis(0)[0]
+verifier("l'heure du message part en secondes depuis l'epoque",
+         isinstance(_frais.get("quand_ts"), (int, float))
+         and abs(_time.time() - _frais["quand_ts"]) < 120, str(_frais))
+
 o.dire("hugo", "x" * 900)
 verifier("un message trop long est coupe",
          len(o.messages_depuis(msgs[0]["id"])[0]["texte"]) == o.TAILLE_MESSAGE)
