@@ -54,10 +54,19 @@ class GameServerSync(GameServerBase):
                 if data == None:
                     data = asdict(self.device_manager.ask_options[player_id])
                 else:
+                    autre = asdict(self.device_manager.ask_options[player_id])
                     list1 = Json.LoadsAs(data['options_json'], List[Any])
-                    list2 = Json.LoadsAs(asdict(self.device_manager.ask_options[player_id])['options_json'], List[Any])
+                    list2 = Json.LoadsAs(autre['options_json'], List[Any])
                     combined_list = list1 + list2
                     data['options_json'] = Json.Dumps(combined_list)
+                    # ⚠ LES REFUS SE FUSIONNENT AUSSI (10/09/2026). En siege
+                    # partage, deux joueurs sont interroges en meme temps :
+                    # sans cette ligne, le second perdait ses raisons et ses
+                    # cartes injouables restaient muettes, alors que celles du
+                    # premier parlaient. Un defaut qui ne se voit qu'a deux.
+                    refus1 = Json.LoadsAs(data.get('refus_json') or "[]", List[Any])
+                    refus2 = Json.LoadsAs(autre.get('refus_json') or "[]", List[Any])
+                    data['refus_json'] = Json.Dumps(refus1 + refus2)
             pass
 
         if data == None:

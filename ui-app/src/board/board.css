@@ -4100,6 +4100,38 @@
     }
   }
 
+  /* POURQUOI CETTE CARTE EST INJOUABLE (10/09/2026).
+     Meme cartouche que les mots-cles juste dessous, meme largeur, mais en
+     ROUGE SOURD : c'est un empechement, pas un rappel de regles, et l'oeil doit
+     faire la difference sans lire. Une ligne par action refusee. */
+  .apercu-refus {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(46, 14, 18, 0.94);
+    border: 1px solid rgba(226, 92, 92, 0.5);
+    max-width: 340px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .apercu-refus li {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    color: #f0c9c9;
+  }
+
+  /* La puce est un point rouge, pas celle du navigateur : elle doit rester
+     lisible sur le fond sombre et ne pas decaler le texte. */
+  .apercu-refus li::before {
+    content: '▸ ';
+    color: #e25c5c;
+    font-weight: 700;
+  }
+
   /* --- Mots-cles dans l'apercu (CarteApercu) ------------------------------ */
   .apercu-mots-cles {
     margin: 8px 0 0;

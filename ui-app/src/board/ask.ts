@@ -49,6 +49,17 @@ export type Option = {
 
 export type Demande = {
   options: Option[]
+  /**
+   * Les options ECARTEES par le moteur, avec leur motif dans
+   * `failure_reason`. Canal SEPARE (`refus_json`), voir
+   * `Controller.RendreLesRefus` cote moteur.
+   *
+   * ⚠ NE JAMAIS LES MELER A `options`. Elles ne servent QU'A EXPLIQUER au
+   * joueur pourquoi une carte est injouable ; rien ne doit s'en servir pour
+   * decider quoi que ce soit. Le jour ou l'une d'elles se retrouve dans une
+   * liste de choix, le joueur pourra tenter un coup que le moteur refuse.
+   */
+  refus: Option[]
   prompt_text: string
   event_name: string
   show_cancel: boolean
@@ -156,8 +167,24 @@ export function lireDemande(brut: unknown): Demande | undefined {
   const options = brutOptions.map(lireOption).filter((x): x is Option => x !== undefined)
   if (options.length === 0) return undefined
 
+  // Le canal des refus est FACULTATIF : un moteur plus ancien ne l'envoie pas,
+  // et le plateau doit continuer de marcher sans lui. Pas de refus, pas de
+  // raison affichee, rien d'autre ne change.
+  let refus: Option[] = []
+  if (typeof o.refus_json === 'string') {
+    try {
+      const brutRefus: unknown = JSON.parse(o.refus_json)
+      if (Array.isArray(brutRefus)) {
+        refus = brutRefus.map(lireOption).filter((x): x is Option => x !== undefined)
+      }
+    } catch {
+      refus = []
+    }
+  }
+
   return {
     options,
+    refus,
     prompt_text: texte(o.prompt_text),
     event_name: texte(o.event_name),
     show_cancel: o.show_cancel === true,

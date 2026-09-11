@@ -90,6 +90,7 @@ import {
   useInteraction,
   type EtatInteractif,
 } from './board/interaction'
+import { phraseDuRefus } from './board/raisons-refus'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
@@ -1762,6 +1763,46 @@ function PagePartie({
     () => ajouterPulse(interaction.cartes, ciblesPulsees),
     [interaction.cartes, ciblesPulsees]
   )
+
+  /**
+   * Le code brut rendu par `glisser/cibles.raisonDuRefus`, mis en francais.
+   *
+   * ⚠ Le glisser AFFICHAIT DEJA le motif du moteur tel quel, donc du jargon
+   * anglais (« check_can_pay ») en pleine partie francaise, avec « Pas ici »
+   * pour tout repli. Constate le 10/09/2026 en cablant l'agrandissement : les
+   * deux chemins passent desormais par la MEME table.
+   *
+   * Un code sans phrase rend `undefined`, et l'appelant retombe sur son propre
+   * repli. Ce silence est un defaut, pas un cas tolere : la gate le refuse.
+   */
+  const traduireRefusGlisser = useCallback((code: string | undefined) => {
+    if (!code) return undefined
+    return phraseDuRefus(code)
+  }, [])
+
+  // POURQUOI TELLE CARTE EST INJOUABLE, par carte, deja en francais.
+  //
+  // Le moteur joint ses refus dans un canal a part (`demande.refus`), avec un
+  // CODE et non une phrase ; `phraseDuRefus` ecrit la phrase. Une carte peut
+  // porter plusieurs actions refusees pour des raisons differentes : on garde
+  // une ligne par raison, sans doublon, dans l'ordre ou le moteur les donne.
+  //
+  // ⚠ UN CODE INCONNU EST ECARTE ICI, ET C'EST VOULU : mieux vaut ne rien
+  // afficher qu'un jargon anglais. Ce silence n'est pas un repli tolere, c'est
+  // un defaut : `tools/verifier_raisons_refus.py` echoue des qu'un code
+  // atteint le plateau sans phrase.
+  const raisonsRefus = useMemo(() => {
+    const parCarte = new Map<number, string[]>()
+    for (const refus of etat.demande?.refus ?? []) {
+      if (!refus.bind_id) continue
+      const phrase = phraseDuRefus(refus.failure_reason)
+      if (phrase === undefined) continue
+      const deja = parCarte.get(refus.bind_id) ?? []
+      if (!deja.includes(phrase)) deja.push(phrase)
+      parCarte.set(refus.bind_id, deja)
+    }
+    return parCarte
+  }, [etat.demande])
   const representantsPulseHorsTable = useMemo(() => {
     const representants = new Set<number>()
     if (!optionAvecCibles(optionSurvolee) || !plateau || interaction.cibleFocus !== undefined) {
@@ -2120,9 +2161,13 @@ function PagePartie({
           const nomCible = nomPorteurFr(cible.carteId) ?? ''
           if (actions.length === 1) return `${nomLisible(actions[0]!)} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
+          // ⚠ Le code brut du moteur ne se montre JAMAIS au joueur : il passe
+          // par la meme table que l'agrandissement (`phraseDuRefus`), sinon on
+          // lui affichait « check_can_pay » en pleine partie francaise.
           return (
-            raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser) ??
-            t('Pas ici')
+            traduireRefusGlisser(
+              raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
+            ) ?? t('Pas ici')
           )
         }
         // Lache dans une zone : elle vaut la cible qu'elle contient, on annonce
@@ -2151,8 +2196,9 @@ function PagePartie({
             return undefined
           }
           return (
-            raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser) ||
-            t('Cette carte ne peut pas viser celle-ci.')
+            traduireRefusGlisser(
+              raisonDuRefus(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
+            ) || t('Cette carte ne peut pas viser celle-ci.')
           )
         }
         if (cible.zone) {
@@ -3154,6 +3200,7 @@ function PagePartie({
           </div>
         }
         interactifs={interactifsAvecPulse}
+        raisonsRefus={raisonsRefus}
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
         mainVisibleForcee={

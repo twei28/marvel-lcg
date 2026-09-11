@@ -27,6 +27,17 @@ class WorldRender:
         self.descriptor = WorldDescriptor()
         self.last_round_id: int = 0
 
+        # LES EFFETS REFUSES de la derniere passe de filtrage (ajout du
+        # 10/09/2026). `EventManager.FilterAvailableEffects` les ecarte avec
+        # leur motif ; sans ce tampon, le plateau ne peut pas dire au joueur
+        # POURQUOI une carte est injouable, faute d'en entendre parler.
+        #
+        # ⚠ Ce n'est PAS un etat de jeu : c'est une photo de la derniere
+        # question posee, remplacee a chaque passe, jamais lue ailleurs que
+        # dans `Controller.ChoiceOne` qui suit immediatement. Rien ne doit en
+        # dependre, et rien ne doit s'y accumuler.
+        self.derniers_refus: List['Effect'] = []
+
     def PresentForceNoWait(self, is_update: bool=True) -> None:
         skip = self.world.controller_manager.skip.is_skipping
         assert skip == False # Call `controller_manager.skip.SetSkipTo(None)` first

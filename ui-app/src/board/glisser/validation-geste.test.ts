@@ -91,6 +91,7 @@ function monter(option: Option) {
   const repondre = vi.fn()
   const demande: Demande = {
     options: [option],
+    refus: [],
     prompt_text: '',
     event_name: 'test',
     show_cancel: true,

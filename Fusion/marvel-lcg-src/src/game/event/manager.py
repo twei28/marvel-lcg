@@ -572,6 +572,11 @@ class EventManager:
         for effect in checked_effects:
             effect.this.card.ui.unavailable.Reset()
 
+        # Les effets ECARTES de cette passe, avec leur motif. Vides a chaque
+        # appel : seule la derniere passe interesse la question en cours.
+        refuses: List['Effect'] = []
+        world.render.derniers_refus = refuses
+
         def check():
 
             effects_list: List['Effect'] = []
@@ -596,6 +601,23 @@ class EventManager:
                         if effect.ability.selectors and \
                             effect.ability.selectors[0]:
                             effect.ability.selectors[0].IfSelectTargetFailure(effect)
+                    # ⚠ ON GARDE UNE TRACE DU REFUS (ajout du 10/09/2026).
+                    #
+                    # Le `continue` ci-dessous jette l'effet ET la raison de son
+                    # refus, que `CheckCondition` vient pourtant d'ecrire dans
+                    # `effect.failures`. Le plateau ne pouvait donc PAS dire
+                    # pourquoi une carte est injouable : elle n'etait meme pas
+                    # mentionnee dans la question envoyee au client. Le code du
+                    # plateau qui lit `failure_reason` (interaction.ts,
+                    # DemandeCentrale, BarreAction) etait un vestige : il ne
+                    # recevait jamais rien.
+                    #
+                    # ⚠ ON NE CHANGE RIEN A CE QUI EST ENVOYE : `effects_list`
+                    # reste identique au dernier octet. Le refus part dans un
+                    # CANAL SEPARE (voir `Controller.ChoiceOne`), pour que ni le
+                    # pilote d'autoplay, ni le harnais, ni les 6000 cartes ne
+                    # voient leur comportement bouger.
+                    refuses.append(effect)
                     continue
 
                 effects_list.append(effect)

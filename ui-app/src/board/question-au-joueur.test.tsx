@@ -17,6 +17,7 @@ import type { EtapeDeroule } from './deroule-phase'
 /** Une question du moteur qui s'affiche au centre (« quel sbire d'abord ? »). */
 const question: Demande = {
   options: [],
+  refus: [],
   prompt_text: 'Minion Activates Order',
   event_name: 'WhenEnemyActivateOrder',
   show_cancel: false,
@@ -26,6 +27,7 @@ const question: Demande = {
 /** La question de la barre du bas : le tour libre du joueur. */
 const tourLibre: Demande = {
   options: [],
+  refus: [],
   prompt_text: '',
   event_name: 'WhenPlayerInTurn',
   show_cancel: true,

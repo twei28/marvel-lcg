@@ -131,6 +131,7 @@ describe('le rapport', () => {
 
   it('recopie la demande avec ses cibles legales et son cout', () => {
     const demande: Demande = {
+      refus: [],
       prompt_text: 'Choisissez une action', event_name: 'WhenPlayerInTurn',
       show_cancel: true, ability_type: 'Hero_Response',
       options: [{
@@ -152,6 +153,7 @@ describe('le rapport', () => {
 
   it('nomme la raison quand une option est injouable', () => {
     const demande: Demande = {
+      refus: [],
       prompt_text: '', event_name: '', show_cancel: false, ability_type: '',
       options: [{
         id: 13, name: 'p_Attack', bind_id: 0, bind_player_id: 0,
@@ -238,6 +240,7 @@ describe('la version texte', () => {
 
   it("montre le cout et la raison d'injouabilite d'une option", () => {
     const demande: Demande = {
+      refus: [],
       prompt_text: 'Choisissez', event_name: 'WhenPlayerInTurn',
       show_cancel: true, ability_type: 'Hero_Response',
       options: [

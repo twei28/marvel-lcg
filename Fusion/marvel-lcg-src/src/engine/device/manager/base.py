@@ -15,6 +15,16 @@ class AskOptionPayload:
     replay_input    : str
     input_json      : str = field(default="{}") # client input result
 
+    # LES REFUS (ajout du 10/09/2026) : les effets ECARTES de cette question,
+    # au meme format que `options_json`, chacun avec sa `failure_reason`.
+    #
+    # ⚠ CANAL SEPARE, ET C'EST TOUT L'INTERET. `options_json` ne bouge pas :
+    # le pilote d'autoplay, le harnais des cas et le plateau existant
+    # continuent de ne voir que le jouable. Ce champ n'existe que pour
+    # repondre a « pourquoi je ne peux pas jouer cette carte ? », et rien
+    # d'autre ne doit s'en servir pour decider quoi que ce soit.
+    refus_json      : str = field(default="[]") # json, meme forme que options_json
+
 class DeviceManager:
 
     def __init__(self) -> None:

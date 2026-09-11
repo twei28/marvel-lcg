@@ -677,6 +677,22 @@ cd ~/marvel-work && $PY tools/test_newgame.py "$W/.game-src"
 #    brawn reste a 2 et le temoin a 1 : l'ecart etait du bruit.
 cd "$W" && $PY tools/autoplay.py "$W/.game-src" --deck <nom> \
     --vilains rhino --profils equilibre --parties 8
+
+# 9. Pourquoi une carte est injouable (ajoutee au guide le 10/09/2026)
+#    Le plateau explique au joueur, au survol, pourquoi une carte est grisee.
+#    Le moteur joint ces motifs dans un canal a part (`refus_json`) sous forme
+#    de CODES ; c'est le plateau qui ecrit la phrase
+#    (`ui-app/src/board/raisons-refus.ts`).
+#
+#    ⚠ UN CODE SANS PHRASE EST UN DEFAUT, PAS UN CAS TOLERE (consigne de
+#    l'utilisateur : « ca ne doit pas arriver »). Cette gate joue de vraies
+#    parties et ECHOUE des qu'un code atteint le plateau sans traduction. Une
+#    carte neuve qui refuse pour un motif inedit la fera rougir.
+#
+#    ⚠ TOUJOURS LA PASSE COMPLETE : un seul deck ne prouve rien. Vu le
+#    10/09/2026, elle repondait « OK » avec une phrase retiree, parce que ni
+#    spider_man ni captain_marvel ne produisent ce motif-la.
+cd "$W" && $PY tools/verifier_raisons_refus.py "$W/.game-src" 47000
 ```
 
 ⚠️ **Passer un chemin ABSOLU au dossier de jeu.** Ces outils font `os.chdir(GAME_DIR)`

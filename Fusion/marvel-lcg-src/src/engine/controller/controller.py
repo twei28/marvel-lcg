@@ -36,6 +36,123 @@ class Controller:
     ################################################################################
     #
     # GetInput
+    def RendreLesRefus(self, by_effect: 'Effect|None') -> List[Any]:
+        """Les effets ECARTES de la question en cours, au format des options.
+
+        POURQUOI (10/09/2026, demande de l'utilisateur : « quand on survole une
+        carte qu'on ne peut pas jouer, j'aimerais avoir la raison ») :
+        `EventManager.FilterAvailableEffects` jette les effets refuses ET le
+        motif que `CheckCondition` vient d'ecrire. Le plateau ne pouvait donc
+        rien dire : la carte injouable n'etait meme pas mentionnee dans la
+        question. Ce canal la mentionne, sans rien changer aux options.
+
+        ⚠ CETTE FONCTION NE DOIT JAMAIS FAIRE TOMBER UNE PARTIE. C'est un
+        confort d'affichage greffe sur le chemin le plus chaud du moteur :
+        toute exception y est avalee et l'effet concerne simplement omis. Une
+        raison manquante est un desagrement ; une partie interrompue est une
+        partie perdue.
+        """
+        refus: List[Any] = []
+        try:
+            refus += self._RefusDesCartesAJouer(by_effect)
+        except Exception:
+            pass
+        try:
+            derniers = getattr(self.world.render, "derniers_refus", None) or []
+            for effect in derniers:
+                try:
+                    descriptor = effect.Render(by_effect, self.player_id)
+                except Exception:
+                    continue
+                if not descriptor.failure_reason:
+                    continue
+                descriptor.failure_reason = Controller.NormaliserLeMotif(descriptor.failure_reason)
+                refus.append(descriptor)
+        except Exception:
+            pass
+        return refus
+
+    @staticmethod
+    def NormaliserLeMotif(motif: str) -> str:
+        """Un CODE STABLE, jamais une phrase.
+
+        Le moteur ne parle pas la langue du joueur : c'est le plateau qui ecrit
+        la phrase, en francais ou en anglais, comme il le fait deja pour tout le
+        reste (`langue.ts`). Ici on se contente de rendre le motif previsible.
+
+        Presque tous les motifs sont deja des identifiants stables : soit une
+        valeur de `EffectFailure` (« out of play »), soit le nom de la fonction
+        de condition qui a refuse (« check_hero_form_only »). UN SEUL porte des
+        chiffres, celui du cout (effect_checker.py:251), et il est le plus utile
+        de tous : on en extrait les deux nombres au lieu de les noyer dans une
+        chaine libre.
+        """
+        if motif.startswith("pay cost, need "):
+            reste = motif[len("pay cost, need "):]
+            demande, _, disponible = reste.partition(", but only have ")
+            return f"cout_insuffisant|{demande.strip()}|{disponible.strip()}"
+        return motif
+
+    def _RefusDesCartesAJouer(self, by_effect: 'Effect|None') -> List[Any]:
+        """Pourquoi les cartes de la MAIN ne sont pas jouables, une par une.
+
+        ⚠ IL FAUT LE DEMANDER, ON NE PEUT PAS L'ECOUTER. Le refus d'une carte
+        en main est bien calcule par `CanPlayBy` (has_cost.py:43), qui appelle
+        `FilterAvailableEffects` dans une passe A ELLE. Le tampon
+        `world.render.derniers_refus` est donc ecrase par les passes suivantes
+        bien avant que la question ne parte : mesure du 10/09/2026, 1 seul
+        refus transmis sur une main entiere. On rejoue donc le filtre ICI,
+        volontairement, au moment de construire la question.
+
+        ⚠ Cout : une passe de conditions par carte en main, uniquement quand le
+        moteur interroge CE joueur. Le meme travail que fait deja `CanPlayBy`
+        pour griser la carte, une seconde fois. Si cela pesait, ce serait a
+        `CanPlayBy` de rendre son motif plutot qu'un booleen.
+        """
+        from game.event.manager import EventManager
+        from game.effect.rule import GameRule
+        from game.message import Message
+
+        refus: List[Any] = []
+        joueur = None
+        for candidat in self.world.players:
+            if candidat.player_id == self.player_id:
+                joueur = candidat
+                break
+        if joueur is None:
+            return refus
+
+        identite = joueur.GetIdentity()
+        if identite is None:
+            return refus
+
+        for face in list(joueur.hand_cards.GetAll()):
+            if face is None:
+                continue
+            effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+            if not effets:
+                continue
+            message = Message.WhenPlayerLikeInTurn(joueur, GameRule(identite))
+            message.Send()
+            face.card.can_state.is_like_in_hand = True
+            try:
+                disponibles = EventManager.FilterAvailableEffects(
+                    message, effets, joueur, self.world, None)
+            finally:
+                face.card.can_state.is_like_in_hand = None
+            if disponibles:
+                continue  # jouable : rien a expliquer
+            for effet in effets:
+                try:
+                    descriptor = effet.Render(by_effect, self.player_id)
+                except Exception:
+                    continue
+                if not descriptor.failure_reason:
+                    continue
+                descriptor.failure_reason = Controller.NormaliserLeMotif(descriptor.failure_reason)
+                refus.append(descriptor)
+        return refus
+
     def ChoiceOne(self, effect_list: Sequence['Effect'], by_effect: 'Effect|None', message: 'Message2', priority: 'TimingPriority', is_forced: bool|Literal["Forced_Action"]) -> Tuple['Effect|None', bool]:
         from game.scene.replay.operation import CardEffectInt
 
@@ -229,6 +346,7 @@ class Controller:
                 user_input = self.input.GetInput(
                     AskOptionPayload(
                         options_json=Json.Dumps(effect_descriptors),
+                        refus_json=Json.Dumps(self.RendreLesRefus(by_effect)),
                         ability_type=priority.name,
                         event_name=message_name,
                         prompt_text=prompt_text,

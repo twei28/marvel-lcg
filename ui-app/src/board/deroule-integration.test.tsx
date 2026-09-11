@@ -225,6 +225,7 @@ function fauxFetch(url: string): Promise<Response> {
     const brut = serveur.question
       ? JSON.stringify({
           options_json: JSON.stringify(serveur.question.options),
+          refus: [],
           prompt_text: serveur.question.prompt_text,
           event_name: serveur.question.event_name,
           show_cancel: serveur.question.show_cancel,
@@ -496,6 +497,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
           is_search: false,
         },
       ],
+      refus: [],
       prompt_text: 'Bishop is being attacked by Drone',
       event_name: 'WhenUnitBeingAttack',
       show_cancel: true,

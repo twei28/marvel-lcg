@@ -376,11 +376,19 @@ export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
 export function CarteApercu({
   carte,
   statuts,
+  raisons,
   classe,
 }: {
   carte: ScanCardProps
   /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
   statuts?: ScanCardProps[]
+  /**
+   * Pourquoi cette carte est injouable, une ligne par action refusee.
+   * Deja mises en phrase (voir `raisons-refus.ts`) : l'apercu ne fait que les
+   * poser. Vide ou absent quand la carte est jouable, ou quand le moteur n'a
+   * rien a dire.
+   */
+  raisons?: string[]
   /**
    * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
    * table : l'apercu est monte dans <body> avec un z-index taille pour passer
@@ -496,6 +504,17 @@ export function CarteApercu({
             ))}
           </dl>
         ) : null}
+        {/* POURQUOI ON NE PEUT PAS LA JOUER. Une ligne par action refusee,
+            parce qu'une carte peut porter plusieurs capacites bloquees pour
+            des raisons differentes : le joueur doit savoir LAQUELLE il peut
+            debloquer. Rien du tout quand la carte est jouable. */}
+        {raisons && raisons.length > 0 ? (
+          <ul className="apercu-refus">
+            {raisons.map((raison) => (
+              <li key={raison}>{raison}</li>
+            ))}
+          </ul>
+        ) : null}
         {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} /> : null}
       </div>
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
@@ -548,6 +567,13 @@ export type BoardProps = {
   interactifs?: Map<number, EtatInteractif>
   /** Variations de compteurs visibles pendant un court instant. */
   effets?: Map<number, CardEffectDelta>
+  /**
+   * POURQUOI telle carte est injouable, par identifiant d'objet, deja mis en
+   * phrase (`raisons-refus.ts`). C'est la PAGE qui les construit depuis
+   * `demande.refus`, comme elle construit `interactifs` : le plateau ne parle
+   * pas au moteur.
+   */
+  raisonsRefus?: Map<number, string[]>
   /** Clic sur une carte qui n'a pas deja une action directe. */
   onCardClick?: (carte: ScanCardProps) => void
   /** Identite du joueur ACTIF (hot-seat) : badge « Active » sur sa carte. */
@@ -624,6 +650,7 @@ export function Board({
   bas,
   interactifs = AUCUNE_INTERACTION,
   effets = new Map(),
+  raisonsRefus,
   onCardClick,
   bloquerActionsPassives = false,
   mainVisibleForcee = false,
@@ -930,7 +957,16 @@ export function Board({
         </div>
       </div>
 
-      {carteApercu ? <CarteApercu carte={carteApercu} statuts={statutsApercu} /> : null}
+      {carteApercu ? (
+        <CarteApercu
+          carte={carteApercu}
+          statuts={statutsApercu}
+          // `apercuId` vient de `data-card-id`, donc une CHAINE ; les cartes
+          // sont indexees par leur identifiant d'objet NUMERIQUE partout
+          // ailleurs (`interactifs`, `effets`). On convertit ici, une fois.
+          raisons={apercuId === null ? undefined : raisonsRefus?.get(Number(apercuId))}
+        />
+      ) : null}
 
       {glisse ? (
         <CoucheGlisser
