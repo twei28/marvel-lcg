@@ -62,6 +62,23 @@
     color: var(--info);
   }
 
+  /* Rangee du milieu de la grille `.plateau-portrait` (auto 1fr auto), donc
+     seule rangee dont la hauteur doit s'ADAPTER a l'ecran plutot que le
+     contraire. Un enfant de grille garde `min-height: auto` par defaut : il
+     refuse de retrecir sous la hauteur de son contenu, la rangee `1fr`
+     grandit alors au-dela de l'ecran et pousse la main + la barre du bas
+     hors champ (`.plateau-portrait` les rogne en silence via `overflow:
+     hidden`, sans qu'aucun defilement ne le trahisse : `scrollHeight` reste
+     egal a `innerHeight` puisque c'est la DECOUPE qui cache le debordement,
+     pas de la place libre). `min-height: 0` annule ce refus ; `overflow-y:
+     auto` fait alors defiler CETTE zone seule quand la table deborde,
+     conformement au releve sur play.marvelsimulator.com (bandeau et bas
+     toujours visibles, jamais la page entiere qui defile). */
+  .portrait-table {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
   /* Les onglets du multijoueur : PAS un enfant direct de `.plateau-portrait`
      (sa grille n'a que trois rangees explicites, `auto 1fr auto` ; un
      quatrieme enfant y decalerait le rang `1fr` sur les onglets au lieu de la
