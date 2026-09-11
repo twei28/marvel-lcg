@@ -13,6 +13,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Plateau paysage (mobile/) ----
   'Tourne ton téléphone': 'Turn your phone',
   'Le plateau se joue en paysage.': 'The board is played in landscape.',
+  // ---- Plateau portrait (mobile/, depuis le 11/09/2026) ----
+  'Remets ton téléphone droit': 'Turn your phone upright',
+  'Le plateau se joue debout.': 'The board is played upright.',
   'cartes hors champ': 'cards out of view',
   'Annuler': 'Cancel',
   'Confirmer': 'Confirm',
