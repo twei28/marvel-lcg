@@ -15,8 +15,20 @@ export type ModeRendu = 'mobile' | 'pc'
 
 export const CLE_MODE = 'mode-plateau'
 
-/** Un ecran etroit OU un pointeur grossier suffit : la virgule est un OU en CSS. */
-export const REQUETE_MOBILE = '(max-width: 900px), (pointer: coarse)'
+/**
+ * Le PETIT COTE de l'ecran decide, pas la largeur.
+ *
+ * La regle etait `(max-width: 900px), (pointer: coarse)`. Elle attrapait les
+ * tablettes, que l'on veut desormais sur le plateau PC (spec du 11/09/2026) :
+ * un iPad en paysage a la place d'une vraie table, lui demander de tourner
+ * serait absurde. Et `pointer: coarse` seul ne distingue pas un telephone
+ * couche d'une tablette.
+ *
+ *   telephone debout  390x844  -> largeur 390 <= 600  : mobile
+ *   telephone couche  844x390  -> hauteur 390 <= 500  : mobile
+ *   tablette          768x1024 -> ni l'un ni l'autre  : plateau PC
+ */
+export const REQUETE_MOBILE = '(max-width: 600px), (max-height: 500px)'
 
 /**
  * Sur un ORDINATEUR, on rend toujours le plateau PC — un « mobile » memorise

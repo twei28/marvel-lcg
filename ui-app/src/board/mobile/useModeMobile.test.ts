@@ -1,6 +1,38 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { CLE_MODE, ecrireReglage, lireReglage, modeEffectif, useModeMobile } from './useModeMobile'
+import {
+  CLE_MODE,
+  REQUETE_MOBILE,
+  ecrireReglage,
+  lireReglage,
+  modeEffectif,
+  useModeMobile,
+} from './useModeMobile'
+
+/** Une media query évaluée à la main, pour éprouver la règle sans navigateur. */
+function correspond(requete: string, largeur: number, hauteur: number): boolean {
+  return requete.split(',').some((clause) => {
+    const max = /\(max-(width|height):\s*(\d+)px\)/.exec(clause.trim())
+    if (!max) return false
+    return (max[1] === 'width' ? largeur : hauteur) <= Number(max[2])
+  })
+}
+
+describe('REQUETE_MOBILE : le petit côté décide', () => {
+  it('prend les téléphones, debout comme couchés', () => {
+    expect(correspond(REQUETE_MOBILE, 390, 844)).toBe(true)
+    expect(correspond(REQUETE_MOBILE, 844, 390)).toBe(true)
+  })
+
+  it('LAISSE les tablettes au plateau PC, dans les deux sens', () => {
+    expect(correspond(REQUETE_MOBILE, 768, 1024)).toBe(false)
+    expect(correspond(REQUETE_MOBILE, 1024, 768)).toBe(false)
+  })
+
+  it('laisse un ordinateur au plateau PC', () => {
+    expect(correspond(REQUETE_MOBILE, 1440, 900)).toBe(false)
+  })
+})
 
 describe('modeEffectif', () => {
   it('suit la media query en mode auto', () => {
