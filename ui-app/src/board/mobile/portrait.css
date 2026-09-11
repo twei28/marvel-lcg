@@ -62,6 +62,38 @@
     color: var(--info);
   }
 
+  /* Les onglets du multijoueur : PAS un enfant direct de `.plateau-portrait`
+     (sa grille n'a que trois rangees explicites, `auto 1fr auto` ; un
+     quatrieme enfant y decalerait le rang `1fr` sur les onglets au lieu de la
+     table, qui deborderait). Premier enfant de `.portrait-table` a la place :
+     un simple bloc en flux normal, sans toucher la grille. */
+  .portrait-onglets {
+    display: flex;
+    gap: 4px;
+    padding: 4px 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .portrait-onglet {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #cbd5e1;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+  }
+
+  .portrait-onglet.est-actif {
+    color: var(--fond);
+    background: var(--menace);
+    border-color: var(--menace-clair);
+  }
+
   /* La carte en petit, son nom, et les chiffres a cote : trois colonnes. */
   .portrait-carte {
     display: grid;

@@ -16,6 +16,20 @@ const emplacement = (cle: CleEmplacement, ...unites: UniteAffichee[]): Emplaceme
 const plateau = (...emplacements: EmplacementAffiche[]): Plateau =>
   ({ emplacements, nombreDeCartes: 0, idsAffiches: new Set(), representantsDePile: new Map(), nombreIgnore: 0 }) as Plateau
 
+/**
+ * `terrain-soutien` avec un groupe PAR JOUEUR, `proprietaires` renseigne :
+ * seul cet emplacement en dispose vraiment (zones.ts), contrairement au
+ * helper `emplacement()` ci-dessus qui tasse tout dans un groupe unique.
+ */
+const terrainSoutienMultiJoueur = (...joueurs: Array<{ id: number; unites: UniteAffichee[] }>): EmplacementAffiche =>
+  ({
+    cle: 'terrain-soutien',
+    titre: 'terrain-soutien',
+    groupes: joueurs.map((j) => j.unites),
+    nombreSurLaLigne: joueurs.reduce((total, j) => total + j.unites.length, 0),
+    proprietaires: joueurs.map((j) => j.id),
+  }) as EmplacementAffiche
+
 const monde = { render_id: 1, round_id: 1, phase: 'Player 1 Turn', players: [] } as unknown as BoardProps['world']
 
 describe('PlateauPortrait — bloc complot', () => {
@@ -387,5 +401,64 @@ describe('PlateauPortrait — main et barre du bas', () => {
     )
     expect(container.querySelector('.pm-outils')).toHaveTextContent('Annuler')
     expect(container.querySelector('.pm-onglets')).toHaveTextContent('Vue')
+  })
+})
+
+describe('PlateauPortrait — onglets du multijoueur', () => {
+  it('un seul heros sur le terrain-soutien : aucun onglet', () => {
+    render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          terrainSoutienMultiJoueur({ id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] })
+        )}
+      />
+    )
+    expect(screen.queryByRole('tablist')).toBeNull()
+  })
+
+  it('deux heros : un onglet par joueur, celui regarde au depart est le notre', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          terrainSoutienMultiJoueur(
+            { id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] },
+            { id: 1, unites: [unite('Hulk', { name: 'Hulk', kind: 'hero' })] }
+          )
+        )}
+      />
+    )
+    expect(screen.getByRole('tab', { name: 'Steve Rogers' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'false')
+    // Au depart, seul NOTRE heros est deplie dans le bloc « Ton heros ».
+    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
+    expect(noms).toEqual(['Steve Rogers'])
+  })
+
+  it('taper l onglet d un autre joueur affiche SA table (heros et allies), pas la notre', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          terrainSoutienMultiJoueur(
+            { id: 0, unites: [unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })] },
+            {
+              id: 1,
+              unites: [
+                unite('Hulk', { name: 'Hulk', kind: 'hero' }),
+                unite('Falcon', { name: 'Falcon', kind: 'ally' }),
+              ],
+            }
+          )
+        )}
+      />
+    )
+    fireEvent.click(screen.getByRole('tab', { name: 'Hulk' }))
+    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
+    expect(noms).toEqual(['Hulk', 'Falcon'])
   })
 })
