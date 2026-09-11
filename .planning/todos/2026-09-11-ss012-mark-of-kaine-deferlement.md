@@ -1,4 +1,4 @@
-# `ss012` Mark of Kaine : le déferlement ne part pas (défaut PRÉEXISTANT)
+# `ss012` Mark of Kaine : le déferlement ne part pas (CORRIGÉ le 11/09/2026, contrôle cassé, pas la carte)
 
 **Trouvé le 11/09/2026**, par la passe ciblée qui suivait le verrou Crise.
 Le cas s'appelle « ss012 Mark of Kaine — attaques contre le sbire marqué
@@ -32,3 +32,26 @@ les passes filtrées ne visaient pas ce pack. À dater avec
 2. `TRACE_OPTIONS=1` sur ce cas seul, pour voir si la capacité est offerte.
 3. Se méfier du piège connu : un filtre placé dans le corps de l'opération au
    lieu de `conditions` fait que la capacité est proposée mais n'agit pas.
+
+
+## ✅ Corrigé le 11/09/2026 : c'était le CONTRÔLE, et c'était moi
+
+La carte fonctionne. Le journal du cas dit, ligne 54 :
+`Tigra gagne (overkill) de Mark of Kaine`. Le vérificateur cherchait la forme
+**anglaise** `gains overkill`, et le journal est en **français** depuis
+`272e1cb4`, **ce matin 11:49** (mon correctif « 66 clés de
+translate_fr.json ne traduisaient rien »). J'ai donc cassé ce contrôle
+quelques heures avant que la passe ciblée ne le voie rougir.
+
+« Préexistant » était exact par rapport au verrou Crise (vérifié avec
+`scheme_main.py` d'avant) mais faux dans l'absolu : la cause est un commit
+du jour.
+
+**Correctif** : le vérificateur accepte les deux langues et exige que le
+mot-clé et la source soient sur la **même ligne**, ce que l'ancien test ne
+faisait pas non plus. C'est la **deuxième** fois que ce contrôle casse pour
+une raison étrangère à ss012 (le 01/09, un index codé en dur).
+
+**Leçon** : un vérificateur qui relit un journal ne doit jamais dépendre de
+la langue d'affichage. Les 3 autres lecteurs de journal du harnais ont été
+vérifiés le même jour.

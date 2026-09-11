@@ -32192,12 +32192,23 @@ def ss012_mark_of_kaine_deferlement(monde, aides):
     if aides["par_id"](monde, "01110") is not None:
         return False, "01110 est encore en jeu (devrait avoir ete vaincu par l'attaque de Tigra)"
 
-    if "gains overkill" not in contenu:
-        return False, "aucune trace de 'gains overkill' dans le journal de la partie"
-    if "Mark of Kaine" not in contenu:
-        return False, "'gains overkill' present mais pas attribue a Mark of Kaine dans le journal"
+    # ⚠ CORRECTIF 11/09/2026 : le journal est en FRANCAIS depuis 272e1cb4
+    # (ce jour, 11:49, « 66 cles de translate_fr.json ne traduisaient rien »).
+    # La ligne s'ecrit desormais « Tigra gagne (overkill) de Mark of Kaine »,
+    # et ce controle cherchait la forme anglaise « gains overkill » : rouge
+    # depuis ce matin, sans aucun defaut de la carte. Deuxieme fois que ce
+    # controle casse pour une raison etrangere a ss012 (voir le 01/09 plus
+    # haut). On lit la ligne DANS LES DEUX LANGUES, et on exige que le mot-cle
+    # et la source soient sur la MEME ligne, ce que l'ancien test ne faisait
+    # pas non plus.
+    import re
+    motif = re.compile(r"(gains overkill|gagne \(overkill\)).*Mark of Kaine")
+    if not motif.search(contenu):
+        if "overkill" not in contenu:
+            return False, "aucune trace d'un gain d'overkill dans le journal de la partie"
+        return False, "un gain d'overkill apparait, mais pas attribue a Mark of Kaine sur la meme ligne"
 
-    return True, "01110 vaincu ; le journal trace explicitement 'gains overkill' avec Mark of Kaine comme source"
+    return True, "01110 vaincu ; le journal trace le gain d'overkill avec Mark of Kaine comme source"
 
 def ss007_spider_pathy_pose_sbire(monde, aides):
     """ss007/ss008 : Search.EncounterCard(card_type=Minion) puis PutIntoPlay,
