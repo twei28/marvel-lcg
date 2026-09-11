@@ -635,6 +635,12 @@ export type BoardProps = {
    * declenche). Elle seule connait les options du moteur.
    */
   glisser?: ReglagesGlisser
+  /**
+   * « À toi de jouer », « Le méchant agit »... Déjà calculé par board.tsx pour
+   * sa propre barre (libelleQuiAgit a besoin de aNous/connecte/demande, que ce
+   * plateau ne connaît pas) : le rendu portrait n'a qu'à l'afficher tel quel.
+   */
+  quiAgit?: string
 }
 
 export type ReglagesGlisser = {

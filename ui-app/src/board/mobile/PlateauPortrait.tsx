@@ -11,8 +11,30 @@
 // Il accepte exactement les BoardProps du plateau PC, comme PlateauPaysage :
 // c'est ce qui permet a board.tsx de choisir sans rien adapter.
 import type { BoardProps } from '../Board'
+import { BandeauPortrait } from './BandeauPortrait'
+import { CarteAvecChiffres } from './CarteAvecChiffres'
+import { repartirEnBlocs } from './blocs-portrait'
 import './portrait.css'
 
-export function PlateauPortrait(_props: BoardProps) {
-  return <main className="plateau-portrait" />
+export function PlateauPortrait(props: BoardProps) {
+  const blocs = repartirEnBlocs(props.plateau)
+  const vilain = blocs.find((bloc) => bloc.cle === 'vilain')?.unites ?? []
+  return (
+    <main className="plateau-portrait">
+      <BandeauPortrait monde={props.world} quiAgit={props.quiAgit} />
+      <div className="portrait-table">
+        {vilain.map((unite) => (
+          <CarteAvecChiffres
+            key={unite.cle}
+            carte={unite.carte}
+            nom={unite.carte.name}
+            chiffres={(unite.carte.stats ?? []).map((stat) => ({
+              valeur: String(stat.value),
+              libelle: stat.label,
+            }))}
+          />
+        ))}
+      </div>
+    </main>
+  )
 }

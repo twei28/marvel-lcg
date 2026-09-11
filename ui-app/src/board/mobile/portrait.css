@@ -31,4 +31,82 @@
     border-radius: 9px;
     transform: rotate(90deg);
   }
+
+  .portrait-bandeau {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--cadre);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .portrait-bandeau strong {
+    font-size: 0.95rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--menace);
+  }
+
+  .portrait-bandeau span {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+  }
+
+  .portrait-bandeau em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--info);
+  }
+
+  /* La carte en petit, son nom, et les chiffres a cote : trois colonnes. */
+  .portrait-carte {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    --card-w: 64px;
+  }
+
+  .portrait-surtitre {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--info);
+  }
+
+  .portrait-nom {
+    font-size: 1.25rem;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .portrait-carte-chiffres {
+    display: flex;
+    gap: 12px;
+  }
+
+  .portrait-chiffre {
+    display: grid;
+    justify-items: center;
+  }
+
+  .portrait-chiffre b {
+    font-size: 1.5rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .portrait-chiffre small {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a94a3;
+  }
 }

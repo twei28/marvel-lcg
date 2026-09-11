@@ -2723,8 +2723,10 @@ function PagePartie({
     !interaction.option &&
     !carteMenu
   const afficherFinTourSimple = modeActions === 'simple' && finDeTourDisponible
-  // Design essai : le troisieme segment du bandeau, « qui agit ».
-  const quiAgit = designEssai ? libelleQuiAgit(etat.monde, etat) : ''
+  // Le troisieme segment du bandeau, « qui agit ». Calcule inconditionnellement :
+  // le portrait (RenduPartie) en a besoin meme quand la barre PC (design essai)
+  // ne l'affiche pas encore ailleurs.
+  const quiAgit = libelleQuiAgit(etat.monde, etat)
 
   finTourClavier.current = () => {
     if (afficherFinTourSimple) interaction.annuler()
@@ -3066,6 +3068,9 @@ function PagePartie({
         plateau={plateau}
         effets={effets}
         heroActifId={heroActifId}
+        // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
+        // connait ni aNous, ni connecte, ni demande) : on le lui passe deja fait.
+        quiAgit={quiAgit}
         // Meme condition que le rendu de MenuActionsCarte ci-dessus : le rendu
         // mobile empile une couche tant que ce menu est affiche, pour que le
         // Retour d'Android le ferme au lieu de sortir de la partie.
