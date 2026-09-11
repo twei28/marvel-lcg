@@ -1,4 +1,4 @@
-# Les cartes de statut (Stunned, Confused, Tough) sont floues en jeu
+# Les cartes de statut (Stunned, Confused, Tough) sont floues en jeu : CORRIGÉ le 11/09/2026
 
 **Remonté par un joueur (Manu, Discord) le 11/09/2026**, capture à l'appui :
 « ce truc est trooop flou. Là dans le screenshot on arrive à lire, mais dans le
@@ -25,3 +25,24 @@ sur le plateau, texte à peine lisible.
    (si les serveurs d'images les servent en HD), soit déposer une fois pour
    toutes trois scans HD à la main dans `assets/pics-hd/`.
 3. Vérifier à l'œil dans le plateau, en grand, que le texte est lisible.
+
+
+## ✅ Corrigé le 11/09/2026
+
+**Cause mesurée** : le plateau demande `stunned` / `confused` / `tough` ; le
+moteur ne trouve aucun scan dans `assets/pics` ni `pics-fr` et se rabat sur
+`assets/textures/<nom>.webp`, qui faisait **149 × 95 px**. La carte en jeu fait
+615 px de large : étirement ×4.
+
+**Aucune source HD n'existe** (quatre recherches, deux pages lues : MarvelCDB
+et Hall of Heroes ne traitent pas ces cartes comme des cartes, seuls des
+jetons 3D circulent). L'utilisateur a fourni une photo produit eBay
+(900 × 1200) des trois cartes : découpe, redressement (PCA, numpy pur, ni cv2
+ni scipy sur la machine) et remise au ratio d'origine à **615 × 392**. Les
+originaux 149 × 95 sont en historique git.
+
+**Preuve** : `Cache.LoadImage('stunned')` sert désormais 392 × 615 (tourné
+en portrait comme tout scan), contre 95 × 149 avant.
+
+**Limite assumée** : c'est une photo, pas un scan ; on devine une ombre et un
+léger trapèze sur Tough. Largement lisible en grand, ce qui était la demande.
