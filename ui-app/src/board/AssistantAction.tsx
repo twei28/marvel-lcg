@@ -8,6 +8,7 @@ import { t } from './langue'
 import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
 import type { WorldCard } from './world'
+import { nomAffiche } from './noms-cartes-fr'
 
 type AssistantActionProps = {
   demande?: Demande
@@ -29,7 +30,8 @@ type AssistantActionProps = {
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
-  return cartesParId.get(id)?.name ?? `${t('Carte')} ${id}`
+  const carte = cartesParId.get(id)
+  return carte ? nomAffiche(carte) : `${t('Carte')} ${id}`
 }
 
 function nomsCibles(cibles: number[], cartesParId: Map<number, WorldCard>): string {
@@ -127,7 +129,7 @@ export function AssistantAction({
   const porteurEstIdentite = porteur?.card_type === 'Hero' || porteur?.card_type === 'AlterEgo'
   const nomDuPorteur =
     designEssai && interaction.option.bind_id !== 0 && !porteurEstIdentite
-      ? (nomPorteur?.(interaction.option.bind_id) ?? porteur?.name)
+      ? (nomPorteur?.(interaction.option.bind_id) ?? (porteur ? nomAffiche(porteur) : undefined))
       : undefined
   const nomActionEssai = nomDuPorteur ? `${nomAction} ${nomDuPorteur}` : nomAction
   // Le mulligan est le premier ecran de la partie : « Resolve Mulligans » sur

@@ -7,6 +7,7 @@ import type { CardGauge, CardKind, CardState, ScanCardProps } from '../component
 import type { Catalogue } from './catalogue'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 import { nomDeCompteur } from './compteurs-fr'
+import { nomAffiche } from './noms-cartes-fr'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
 import { picIdFr } from './scans-fr'
@@ -428,7 +429,12 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
 
   return {
     id: String(card.id),
-    name: card.name,
+    // Le nom FRANCAIS quand les scans le sont : sans cela la carte montrait
+    // « L'Effraction ! » sur son illustration et « The Break-In! » en titre.
+    // La traduction se fait ICI et nulle part ailleurs : `card.name` reste
+    // anglais partout, parce que le moteur et le plateau comparent dessus
+    // (voir noms-cartes-fr.ts).
+    name: nomAffiche(card),
     kind: kindOf(card),
     state,
     exhausted,

@@ -12,6 +12,7 @@ import { t } from './langue'
 import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
+import { nomAffiche } from './noms-cartes-fr'
 
 type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche'
 
@@ -165,7 +166,7 @@ function observerCarte(
 ): CarteObservee {
   return {
     id: carte.id,
-    nom: carte.name,
+    nom: nomAffiche(carte),
     type: carte.card_type,
     zone,
     joueur,

@@ -95,6 +95,7 @@ import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
 import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './board/marvelcdb'
+import { nomAffiche } from './board/noms-cartes-fr'
 import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
@@ -1539,7 +1540,7 @@ function EcranFinPartie({
       ? t('Les héros l\u2019emportent !')
       : t('Les héros sont vaincus')
   const rounds = monde?.round_id
-  const mechants = (monde?.area_villain ?? []).map((carte) => carte.name).filter(Boolean)
+  const mechants = (monde?.area_villain ?? []).map((carte) => nomAffiche(carte)).filter(Boolean)
   return (
     <div
       className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}`}
@@ -2161,6 +2162,14 @@ function PagePartie({
   const nomPorteurFr = useCallback(
     (bindId: number): string | undefined => {
       const carte = indexerCartesMonde(etat.monde).get(bindId)
+      // Le dictionnaire LOCAL d'abord (noms-fr.ts, genere depuis
+      // fr.marvelcdb.com) : complet, hors ligne, disponible des le premier
+      // rendu. `nomsFr` juste en dessous ne disparait pas pour autant, il
+      // complete : il vit du proxy reseau, COUPE par defaut et qui n'arrive
+      // qu'apres coup. S'appuyer sur lui seul est ce qui laissait « Backflip »
+      // sous le bouton « Jouer » en pleine partie francaise.
+      const local = carte ? nomAffiche(carte) : undefined
+      if (local && local !== carte?.name) return local
       const code = codeMarvelcdb(carte?.card_id)
       const nom = code ? nomsFr.get(code) : undefined
       return nom || nomDeCarte(etat.monde, bindId)
@@ -2650,11 +2659,12 @@ function PagePartie({
     const valeur = Math.abs(effet.value)
     // Narration ecrite ici, pas envoyee par le moteur : elle doit donc suivre
     // la langue du client comme le reste du plateau.
-    if (effet.kind === 'damage') return `${carte.name} ${t('subit')} ${valeur} ${t('dégâts')}`
-    if (effet.kind === 'heal') return `${carte.name} ${t('récupère')} ${valeur} ${t('PV')}`
+    const nom = nomAffiche(carte)
+    if (effet.kind === 'damage') return `${nom} ${t('subit')} ${valeur} ${t('dégâts')}`
+    if (effet.kind === 'heal') return `${nom} ${t('récupère')} ${valeur} ${t('PV')}`
     return effet.value > 0
-      ? `${carte.name} ${t('gagne')} ${valeur} ${t('menace')}`
-      : `${carte.name} ${t('perd')} ${valeur} ${t('menace')}`
+      ? `${nom} ${t('gagne')} ${valeur} ${t('menace')}`
+      : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
   }, [effets, cartesMondeParId])
 
   if (!etat.monde || !plateau) {

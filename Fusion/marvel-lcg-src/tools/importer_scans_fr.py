@@ -17,10 +17,15 @@ Trois pieges, tous mesures sur le pack reel :
      ne rattrape qu'un GUID sur les 80 inconnus de marvelcdb. Il sert a
      signaler les desaccords, dont l'inversion 24031/24032.
 
+Il produit aussi les trois modules TypeScript que lit le plateau :
+scans-fr-liste.ts (quels codes ont un scan FR), textes-fr.ts (le texte francais
+des cartes qui n'en ont pas) et noms-fr.ts (le nom francais officiel).
+
 Usage :
     python3 tools/importer_scans_fr.py --rapport-seul   # n'ecrit aucune image
     python3 tools/importer_scans_fr.py                  # extraction complete
     python3 tools/importer_scans_fr.py --sans-audit     # sans le module OCTGN
+    python3 tools/importer_scans_fr.py --modules-seuls  # modules TS seuls
 """
 
 import argparse
@@ -59,18 +64,25 @@ BALISES_GARDEES = re.compile(r"<(?!/?(b|i|em|strong|br)\b)[^>]*>")
 
 
 def charger_marvelcdb():
-    """GUID vers codes, et code vers texte francais. Une seule requete."""
+    """GUID vers codes, code vers texte francais, code vers NOM francais.
+
+    Une seule requete pour les trois : le catalogue fait 7,9 Mo, le retelecharger
+    par usage serait du gaspillage.
+    """
     with urllib.request.urlopen(URL_CDB, timeout=60) as reponse:
         cartes = json.load(reponse)
     par_guid = collections.defaultdict(set)
     textes = {}
+    noms = {}
     for carte in cartes:
         guid = carte.get("octgn_id")
         if guid:
             par_guid[guid.lower()].add(carte["code"])
         if carte.get("text"):
             textes[carte["code"]] = BALISES_GARDEES.sub("", carte["text"])
-    return par_guid, textes
+        if carte.get("name"):
+            noms[carte["code"]] = carte["name"]
+    return par_guid, textes, noms
 
 
 def charger_marvelcdb_anglais():
@@ -85,11 +97,13 @@ def charger_marvelcdb_anglais():
     """
     with urllib.request.urlopen(URL_CDB_EN, timeout=60) as reponse:
         cartes = json.load(reponse)
-    return {
+    textes = {
         carte["code"]: BALISES_GARDEES.sub("", carte["text"])
         for carte in cartes
         if carte.get("text")
     }
+    noms = {carte["code"]: carte["name"] for carte in cartes if carte.get("name")}
+    return textes, noms
 
 
 def charger_octgn():
@@ -235,7 +249,7 @@ def extraire(attributions):
     return ecrites
 
 
-def ecrire_modules(attributions, textes, textes_en, ids_jeu):
+def ecrire_modules(attributions, textes, textes_en, noms, noms_en, ids_jeu):
     """Les deux modules TypeScript consommes par le plateau.
 
     Le dictionnaire est restreint aux cartes SANS scan francais ET presentes
@@ -290,7 +304,48 @@ def ecrire_modules(attributions, textes, textes_en, ids_jeu):
         + "}\n",
         encoding="utf-8",
     )
-    return len(codes), len(sans_scan)
+
+    # Les NOMS, eux, concernent toutes les cartes du jeu, avec ou sans scan
+    # francais : le nom s'affiche toujours, alors que le texte ci-dessus ne
+    # sert qu'a remplacer un scan manquant.
+    #
+    # Meme filtre de sincerite que pour les textes : fr.marvelcdb.com renvoie
+    # le nom ANGLAIS tel quel pour les cartes qu'il n'a pas traduites. Garder
+    # ces entrees ferait un dictionnaire qui promet du francais et rend de
+    # l'anglais ; les ecarter laisse le plateau retomber sur `carte.name`, ce
+    # qui donne exactement le meme affichage sans le mensonge.
+    #
+    # Les noms identiques dans les deux langues (« Rhino », « Baron Zemo »)
+    # tombent donc aussi, et c'est voulu : rien a traduire, rien a stocker.
+    noms_fr = {
+        code: nom
+        for code, nom in sorted(noms.items())
+        if code in ids_jeu and nom != noms_en.get(code)
+    }
+    corps_noms = "".join(
+        f"  '{code}': {json.dumps(nom, ensure_ascii=False)},\n"
+        for code, nom in noms_fr.items()
+    )
+    (SORTIE_TS / "noms-fr.ts").write_text(
+        "// Genere par tools/importer_scans_fr.py — NE PAS EDITER A LA MAIN.\n"
+        "//\n"
+        "// Nom francais OFFICIEL des cartes, tel que fr.marvelcdb.com le publie.\n"
+        "// Rien n'est traduit ici : c'est la VF editee par FFG/Asmodee, recopiee.\n"
+        "//\n"
+        "// N'y figurent que les cartes du catalogue du jeu dont le nom francais\n"
+        "// DIFFERE de l'anglais. Deux absences donc, et elles sont normales :\n"
+        "//  - « Rhino », « Baron Zemo » : identiques dans les deux langues ;\n"
+        "//  - les cartes fan-made : marvelcdb ne les connait pas, et leur scan est\n"
+        "//    anglais, donc leur nom doit le rester (voir textes-fr-fanmade.ts).\n"
+        "//\n"
+        "// Le type dit « string | undefined » parce que la plupart des codes sont\n"
+        "// ABSENTS : sans cela le plateau croirait tenir un nom pour chaque carte.\n"
+        "export const NOMS_FR: Readonly<Record<string, string | undefined>> = {\n"
+        + corps_noms
+        + "}\n",
+        encoding="utf-8",
+    )
+    return len(codes), len(sans_scan), len(noms_fr)
 
 
 def main():
@@ -299,9 +354,12 @@ def main():
                          help="n'ecrit ni image ni module TypeScript")
     analyse.add_argument("--sans-audit", action="store_true",
                          help="ne telecharge pas le module OCTGN")
+    analyse.add_argument("--modules-seuls", action="store_true",
+                         help="regenere les modules TypeScript sans reextraire "
+                              "les images (elles sont deja sur le disque)")
     options = analyse.parse_args()
 
-    par_guid_cdb, textes = charger_marvelcdb()
+    par_guid_cdb, textes, noms = charger_marvelcdb()
     par_guid_octgn, audite = ({}, False) if options.sans_audit else charger_octgn()
     ids_jeu = pic_ids_du_jeu()
     attributions, inconnus, nb_images = attribuer(par_guid_cdb, ids_jeu)
@@ -338,12 +396,15 @@ def main():
         print("mode rapport : aucune image ni module ecrit")
         return 0
 
-    ecrites = extraire(attributions)
-    textes_en = charger_marvelcdb_anglais()
-    nb_codes, nb_textes = ecrire_modules(attributions, textes, textes_en, ids_jeu)
+    ecrites = "sautees" if options.modules_seuls else extraire(attributions)
+    textes_en, noms_en = charger_marvelcdb_anglais()
+    nb_codes, nb_textes, nb_noms = ecrire_modules(
+        attributions, textes, textes_en, noms, noms_en, ids_jeu
+    )
     print(f"{'Images ecrites':34} {ecrites}")
     print(f"{'Codes dans scans-fr-liste.ts':34} {nb_codes}")
     print(f"{'Entrees dans textes-fr.ts':34} {nb_textes}")
+    print(f"{'Entrees dans noms-fr.ts':34} {nb_noms}")
     return 0
 
 

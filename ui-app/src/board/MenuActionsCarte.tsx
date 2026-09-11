@@ -5,6 +5,7 @@ import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
+import { nomAffiche } from './noms-cartes-fr'
 import { usePlacement } from './placement/usePlacement'
 import { codeMarvelcdb, urlMarvelcdb } from './marvelcdb'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
@@ -125,7 +126,7 @@ function detailCiblePreselectionnee(
 ): string | undefined {
   if (cible === undefined) return undefined
   const carte = cartesParId.get(cible)
-  return carte ? `${t('Cible :')} ${carte.name}` : `${t('Cible :')} ${cible}`
+  return carte ? `${t('Cible :')} ${nomAffiche(carte)}` : `${t('Cible :')} ${cible}`
 }
 
 function ciblesAffichees(
@@ -149,7 +150,7 @@ function ciblesAffichees(
     const visible = carte ? isVisibleFor(carte, playerId) || option.is_search : false
     const nom = carte
       ? visible
-        ? carte.name
+        ? nomAffiche(carte)
         : t('Carte face cachée')
       : `${t('Cible')} ${id}`
     return {
@@ -229,7 +230,9 @@ function detailsCible(carte: WorldCard): string[] {
 
 function nomAvecPorteur(source: WorldCard, cartesParId: Map<number, WorldCard>): string {
   const porteur = source.bind_object_id ? cartesParId.get(source.bind_object_id) : undefined
-  return porteur ? `${source.name} ${t('sur')} ${porteur.name}` : source.name
+  return porteur
+    ? `${nomAffiche(source)} ${t('sur')} ${nomAffiche(porteur)}`
+    : nomAffiche(source)
 }
 
 function raisonsSchemeNonLegal(
@@ -247,7 +250,7 @@ function raisonsSchemeNonLegal(
 
   if (scheme.name !== 'Brute Force Barricade') {
     for (const source of cartesSurTable.filter((carte) => carte.name === 'Brute Force Barricade')) {
-      raisons.push(`${t('Bloquée par')} ${source.name}`)
+      raisons.push(`${t('Bloquée par')} ${nomAffiche(source)}`)
     }
   }
 
@@ -259,7 +262,7 @@ function raisonsSchemeNonLegal(
   if (scheme.card_type === 'MainScheme') {
     for (const source of cartesSurTable) {
       if (source.id !== scheme.id && (nombreInfo(source, 'crisis') ?? 0) > 0) {
-        raisons.push(`${t('Bloquée par')} ${source.name} (${t('Crise')})`)
+        raisons.push(`${t('Bloquée par')} ${nomAffiche(source)} (${t('Crise')})`)
       }
     }
   }
@@ -290,7 +293,7 @@ function schemesNonLegaux(
     .filter((carte) => estVisibleSurTable(carte, playerId, idsAffiches))
     .map((carte) => ({
       id: carte.id,
-      nom: carte.name,
+      nom: nomAffiche(carte),
       fois: 1,
       horsTable: false,
       details: detailsCible(carte),
@@ -530,7 +533,7 @@ export function MenuActionsCarte({
           return {
             option,
             nom,
-            sourceNom: source?.name,
+            sourceNom: source ? nomAffiche(source) : undefined,
             detailStat: detailStat(option, cartePourStat, catalogue),
             detailCibles:
               detailCiblePreselectionnee(ciblePreselectionnee, cartesParId) ??

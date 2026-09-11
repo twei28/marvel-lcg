@@ -15,6 +15,7 @@ import { scanUrl } from './card-model'
 import { t } from './langue'
 import type { World, WorldCard } from './world'
 import { estUneCarte } from './world'
+import { nomAffiche } from './noms-cartes-fr'
 
 type Revelation = {
   cle: string
@@ -73,7 +74,7 @@ export function CoucheRevelation({
         nouvelles.push({
           cle: `r${compteur.current++}`,
           src: scanUrl(carte.pic_id),
-          nom: carte.name || t('Carte'),
+          nom: nomAffiche(carte) || t('Carte'),
           etiquette,
           paysage: TYPES_PAYSAGE.includes(carte.card_type),
         })

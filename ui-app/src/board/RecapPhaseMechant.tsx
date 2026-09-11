@@ -34,6 +34,7 @@ import {
   type PhaseDuMechant,
 } from './moteur'
 import type { FaitMechant, World, WorldCard } from './world'
+import { nomAffiche } from './noms-cartes-fr'
 
 /**
  * Les étapes de la phase du méchant, dans l'ordre de la carte de référence.
@@ -658,10 +659,15 @@ export function RecapPhaseMechant({
   // portent donc leur propre `nomCarte`, qui, lui, ne s'efface pas.
   const noms: Noms = useMemo(
     () => ({
-      carte: (id) => (id === undefined ? undefined : cartesMonde?.get(id)?.name),
+      carte: (id) => {
+        if (id === undefined) return undefined
+        const carte = cartesMonde?.get(id)
+        return carte ? nomAffiche(carte) : undefined
+      },
       heros: (joueur) => {
         if (joueur === undefined) return undefined
-        const heros = monde?.players?.[joueur]?.area_hero?.[0]?.name
+        const identite = monde?.players?.[joueur]?.area_hero?.[0]
+        const heros = identite ? nomAffiche(identite) : undefined
         return heros ? heros.replace(/^\W*/, '') : `P${joueur + 1}`
       },
       plafond: (id) => {

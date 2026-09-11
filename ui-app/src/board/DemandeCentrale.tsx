@@ -9,6 +9,7 @@ import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { traduireMoteur } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
+import { nomAffiche } from './noms-cartes-fr'
 
 type DemandeCentraleProps = {
   demande: Demande
@@ -77,7 +78,8 @@ function nomSource(
   // Le monde du moteur ne connait que l'anglais ; le plateau, lui, sait le
   // nom francais (fr.marvelcdb.com, en cache). « Backflip » sous « Jouer »
   // dans une partie en francais, signale le 11/09/2026.
-  return nomPorteur?.(option.bind_id) || cartesParId.get(option.bind_id)?.name
+  const porteur = cartesParId.get(option.bind_id)
+  return nomPorteur?.(option.bind_id) || (porteur ? nomAffiche(porteur) : undefined)
 }
 
 /**
@@ -88,7 +90,10 @@ function nomSource(
 function resumeCibles(option: Option, cartesParId: Map<number, WorldCard>): string | undefined {
   if (option.target_num_range[1] === 0 || option.all_legal_targets.length === 0) return undefined
   const uniques = [...new Set(option.all_legal_targets)]
-  const noms = uniques.map((id) => cartesParId.get(id)?.name ?? 'facedown card')
+  const noms = uniques.map((id) => {
+    const carte = cartesParId.get(id)
+    return carte ? nomAffiche(carte) : 'facedown card'
+  })
   const tetes = noms.slice(0, 3).join(', ')
   return `→ ${tetes}${noms.length > 3 ? ` +${noms.length - 3}` : ''}`
 }
@@ -109,7 +114,8 @@ function titreDepuisSource(
   // au lieu de nommer la carte.
   if (promptDemande(demande)) return texteDemande(demande)
   const sources = [...new Set(options.map((o) => o.bind_id).filter((id) => id !== 0))]
-  const nom = sources.length === 1 ? cartesParId.get(sources[0]!)?.name : undefined
+  const source = sources.length === 1 ? cartesParId.get(sources[0]!) : undefined
+  const nom = source ? nomAffiche(source) : undefined
   return nom ? `${nom} — ${t('choisis une option')}` : texteDemande(demande)
 }
 

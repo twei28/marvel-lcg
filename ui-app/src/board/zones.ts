@@ -468,7 +468,15 @@ function estVilain(carte: unknown): boolean {
 
 function airesVilains(world: World, rendu: Rendu): UniteAffichee[] {
   const actifs = posees(world.area_villain, rendu)
-  const nomsActifs = new Set(actifs.map((unite) => unite.carte.name))
+  // Le tri par nom se fait sur le nom du MOTEUR, jamais sur celui qui est
+  // dessine : `UniteAffichee.carte.name` est traduit depuis le 11/09/2026
+  // (voir noms-cartes-fr.ts) alors que `WorldCard.name` reste anglais. Les
+  // comparer revenait a chercher « Le Bouffon Vert » parmi des « Green
+  // Goblin » : plus aucune phase rattachee, tous les vilains « en attente ».
+  // On relit donc les WorldCard actives, et on retrouve l'unite par son id.
+  const cartesActives = cartes(world.area_villain, rendu)
+  const nomMoteurParId = new Map(cartesActives.map((carte) => [String(carte.id), carte.name]))
+  const nomsActifs = new Set(cartesActives.map((carte) => carte.name))
   const deck = cartes(world.villain_deck, rendu)
   const phases = deck.filter((carte) => nomsActifs.has(carte.name))
   // Vilains EN ATTENTE : ceux du deck vilain (autre nom) ET les vilains mis de
@@ -488,7 +496,7 @@ function airesVilains(world: World, rendu: Rendu): UniteAffichee[] {
       parNom.set(carte.name, liste)
     }
     for (const [nom, liste] of parNom) {
-      const cible = actifs.find((u) => u.carte.name === nom) ?? actifs[0]
+      const cible = actifs.find((u) => nomMoteurParId.get(u.carte.id) === nom) ?? actifs[0]
       cible.stagesArriere = liste.map((carte) => toScanCard(carte, rendu.ctx))
       cible.stagesTout = [cible.carte, ...cible.stagesArriere]
       cible.stagesTitre = t('Stades du Méchant')
