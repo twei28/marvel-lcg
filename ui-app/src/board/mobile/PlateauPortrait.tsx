@@ -18,13 +18,13 @@ import { BandeauPortrait } from './BandeauPortrait'
 import { BarreBas } from './BarreBas'
 import { BarreMenace } from './BarreMenace'
 import { CarteAvecChiffres } from './CarteAvecChiffres'
+import { CarteOuverte } from './CarteOuverte'
 import { CompteursPortrait } from './CompteursPortrait'
 import { MainPortrait } from './MainPortrait'
 import { OngletsJoueurs } from './OngletsJoueurs'
 import { repartirEnBlocs } from './blocs-portrait'
-import { prochaineOuverte } from './geste-carte'
 import './portrait.css'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { avecInteraction } from '../Board'
 import type { EtatInteractif } from '../interaction'
 
@@ -88,21 +88,6 @@ function comptesRencontre(unites: UniteAffichee[]): Array<{ valeur: number; libe
 }
 
 /**
- * Le tap sur une carte de la main : ouvre, ou ferme si elle l'est deja.
- *
- * `carteFocalisee` est deja pose par board.tsx apres un premier tap (le menu
- * d'actions de la carte, task 7) : on s'y raccroche plutot que d'inventer un
- * second etat d'ouverture qui pourrait diverger du premier (decision du
- * 11/09/2026, cf. rapport de tache 8).
- */
-function taperCarteMain(props: BoardProps, unite: UniteAffichee): void {
-  const idOuverte = props.carteFocalisee !== undefined ? String(props.carteFocalisee) : undefined
-  const suivante = prochaineOuverte(idOuverte, String(unite.carte.id))
-  if (suivante === undefined) props.onFermerCarte?.()
-  else props.onCardClick?.(unite.carte)
-}
-
-/**
  * L'appui long sur une carte de la main : la joue directement, sans passer
  * par le menu. Meme repli que `jouerCarte` dans PlateauPaysage/PlateauMedaillons :
  * `onSelect` est l'action DIRECTE posee par le moteur ; a defaut, `onCardClick`
@@ -163,6 +148,12 @@ export function PlateauPortrait(props: BoardProps) {
     () => decorerPlateau(props.plateau, props.interactifs, props.effets, props.heroActifId),
     [props.plateau, props.interactifs, props.effets, props.heroActifId]
   )
+  // La carte lue EN GRAND, au milieu de l'ecran. Etat local, comme
+  // PlateauPaysage : `props.onCardClick` ne sert pas a lire une carte, il
+  // ouvre les ACTIONS du moteur, et seulement quand il y en a. Taper une carte
+  // pour la lire ne produisait donc rien, alors que c'est le geste central du
+  // portrait et que les vignettes de la table font 64 px.
+  const [carteLue, setCarteLue] = useState<ScanCardProps | undefined>()
   const blocs = repartirEnBlocs(plateauDecore)
   const vilain = blocs.find((bloc) => bloc.cle === 'vilain')?.unites ?? []
   // Seule la manigance PRINCIPALE se joue ici (spec du 11/09/2026, §Decoupage) :
@@ -199,7 +190,7 @@ export function PlateauPortrait(props: BoardProps) {
             carte={unite.carte}
             nom={unite.carte.name}
             chiffres={chiffresDe(unite.carte)}
-            onOuvrir={() => props.onCardClick?.(unite.carte)}
+            onOuvrir={() => setCarteLue(unite.carte)}
             onJouer={unite.carte.onSelect}
           />
         ))}
@@ -214,7 +205,7 @@ export function PlateauPortrait(props: BoardProps) {
               carte={principal.carte}
               nom={principal.carte.name}
               chiffres={[]}
-              onOuvrir={() => props.onCardClick?.(principal.carte)}
+              onOuvrir={() => setCarteLue(principal.carte)}
               onJouer={principal.carte.onSelect}
             />
             <BarreMenace {...menaceDe(principal.carte)} />
@@ -233,7 +224,7 @@ export function PlateauPortrait(props: BoardProps) {
                 carte={unite.carte}
                 nom={unite.carte.name}
                 chiffres={chiffresDe(unite.carte)}
-                onOuvrir={() => props.onCardClick?.(unite.carte)}
+                onOuvrir={() => setCarteLue(unite.carte)}
                 onJouer={unite.carte.onSelect}
               />
             ))
@@ -248,7 +239,7 @@ export function PlateauPortrait(props: BoardProps) {
               carte={unite.carte}
               nom={unite.carte.name}
               chiffres={chiffresDe(unite.carte)}
-              onOuvrir={() => props.onCardClick?.(unite.carte)}
+              onOuvrir={() => setCarteLue(unite.carte)}
               onJouer={unite.carte.onSelect}
             />
           ))}
@@ -258,12 +249,11 @@ export function PlateauPortrait(props: BoardProps) {
           en dessous. Un seul conteneur pour que la grille garde exactement
           ses trois rangees (`auto 1fr auto`), pas une quatrieme implicite. */}
       <div className="portrait-bas">
-        {/* Tap = ouvrir/fermer (geste-carte.ts, raccroche a carteFocalisee),
-            appui long = jouer directement (jouerCarteMain), sans engager
-            l'un dans l'autre : voir le rapport de tache 8. */}
+        {/* Tap = lire la carte en grand (CarteOuverte), appui long = jouer
+            directement (jouerCarteMain), sans engager l'un dans l'autre. */}
         <MainPortrait
           unites={main}
-          onOuvrir={(unite) => taperCarteMain(props, unite)}
+          onOuvrir={(unite) => setCarteLue(unite.carte)}
           onJouer={(unite) => jouerCarteMain(props, unite)}
         />
         {/*
@@ -276,6 +266,10 @@ export function PlateauPortrait(props: BoardProps) {
         */}
         <BarreBas demande={props.bas} outils={props.actionsPartie} onglets={props.outils} />
       </div>
+      {/* La carte en grand, centree, avec son action si le moteur en propose
+          une. Meme composant que PlateauPaysage et PlateauMedaillons : une
+          seconde version divergerait. */}
+      {carteLue ? <CarteOuverte carte={carteLue} onFermer={() => setCarteLue(undefined)} /> : null}
     </main>
   )
 }

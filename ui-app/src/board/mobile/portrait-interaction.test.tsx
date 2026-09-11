@@ -71,20 +71,20 @@ describe('l\'interaction sur le plateau portrait', () => {
     expect(agir).toHaveBeenCalledTimes(1)
   })
 
-  it('ouvre la carte au simple tap, sans la jouer', () => {
+  it('ouvre la carte en grand au simple tap, sans la jouer', () => {
     const agir = vi.fn()
-    const onCardClick = vi.fn()
     render(
       <PlateauPortrait
         world={monde}
         playerId={0}
         plateau={plateau('rencontre', unite('7', { name: 'Rhino' }))}
         interactifs={new Map([[7, interactif(agir)]])}
-        onCardClick={onCardClick}
       />
     )
-    document.querySelector<HTMLElement>('.portrait-carte .scan-card')!.click()
-    expect(onCardClick).toHaveBeenCalled()
+    fireEvent.click(document.querySelector('.portrait-carte .scan-card')!)
+    // Lire n'est pas jouer : le tap montre la carte, il ne declenche pas
+    // l'action que le moteur propose. C'est l'appui long qui joue.
+    expect(document.querySelector('.carte-ouverte')).toBeInTheDocument()
     expect(agir).not.toHaveBeenCalled()
   })
 })

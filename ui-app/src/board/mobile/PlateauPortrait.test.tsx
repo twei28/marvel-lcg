@@ -263,58 +263,37 @@ describe('PlateauPortrait — main et barre du bas', () => {
     expect(container.querySelectorAll('.main-portrait .scan-card')).toHaveLength(2)
   })
 
-  it('un tap sur une carte de la main remonte props.onCardClick, avec la bonne carte', () => {
-    const onCardClick = vi.fn()
+  // Le tap n'appelle PLUS `props.onCardClick` et ne passe plus par
+  // `carteFocalisee` : il ouvre la carte EN GRAND, au milieu de l'ecran
+  // (demande de l'utilisateur, 11/09/2026). `onCardClick` ouvre les ACTIONS du
+  // moteur, et seulement quand il en propose : taper une carte pour la LIRE ne
+  // produisait donc rien, alors que c'est le geste central du portrait et que
+  // les vignettes de la table font 64 px.
+  it('un tap sur une carte de la main l ouvre en grand', () => {
     const { container } = render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        onCardClick={onCardClick}
         plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
       />
     )
     fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-    expect(onCardClick).toHaveBeenCalledTimes(1)
-    expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: 'Quinjet', name: 'Quinjet' })
+    const ouverte = document.querySelector('.carte-ouverte')
+    expect(ouverte).toBeInTheDocument()
+    expect(ouverte).toHaveTextContent('Quinjet')
   })
 
-  it('un re-tap sur la carte deja focalisee la ferme via onFermerCarte, sans repasser par onCardClick', () => {
-    // `carteFocalisee` est deja pose par board.tsx apres un premier tap
-    // (task 7) : geste-carte.ts s'y raccroche au lieu d'inventer un etat
-    // d'ouverture parallele (decision du 11/09/2026).
-    const onCardClick = vi.fn()
-    const onFermerCarte = vi.fn()
+  it('la carte ouverte se referme quand on tape a cote', () => {
     const { container } = render(
       <PlateauPortrait
         world={monde}
         playerId={0}
-        onCardClick={onCardClick}
-        carteFocalisee={42}
-        onFermerCarte={onFermerCarte}
-        plateau={plateau(emplacement('main', unite('42', { id: '42', name: 'Quinjet', kind: 'event' })))}
+        plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
       />
     )
     fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-    expect(onFermerCarte).toHaveBeenCalledTimes(1)
-    expect(onCardClick).not.toHaveBeenCalled()
-  })
-
-  it('carteFocalisee sur une AUTRE carte : le tap ouvre quand meme la carte tapee', () => {
-    const onCardClick = vi.fn()
-    const onFermerCarte = vi.fn()
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        onCardClick={onCardClick}
-        carteFocalisee={7}
-        onFermerCarte={onFermerCarte}
-        plateau={plateau(emplacement('main', unite('42', { id: '42', name: 'Quinjet', kind: 'event' })))}
-      />
-    )
-    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-    expect(onCardClick).toHaveBeenCalledTimes(1)
-    expect(onFermerCarte).not.toHaveBeenCalled()
+    fireEvent.pointerDown(document.querySelector('.carte-ouverte-voile') as Element)
+    expect(document.querySelector('.carte-ouverte')).not.toBeInTheDocument()
   })
 
   describe('appui long sur une carte de la main : jouer directement', () => {
