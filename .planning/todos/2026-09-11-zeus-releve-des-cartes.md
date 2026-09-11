@@ -187,8 +187,14 @@ Relevé fait, pas supposé, sur `cards.json` :
    lettre `L`. Fiche `docs/reference/mots-cles/eclair.md`, spec et plan dans
    `docs/superpowers/`. Thunder Strike portera `"RES": "L"`, et le Tempest
    se lit `Cost("YL")` sur le paiement de l'événement.
-3. **Les images en local.** Le connecteur Drive ne rend que du texte, et
-   télécharger 23 PNG saturerait la mémoire de travail. Il les faut sur le
+3. ✅ **Livré le 11/09/2026** : pack écrit, 35/35 cas, substitution 17/17,
+   autoplay sans traceback. Gabarits dans
+   `2026-09-11-zeus-gabarits-processus-carte.md`. Reste : les **5 scans
+   némésis** (`ze013` à `ze016`, absents du Drive, à recevoir de
+   l'utilisateur) et la vérification en partie réelle du boost supplémentaire
+   de Nyx, que le harnais ne sait pas mesurer.
+3 bis. **Les images en local.** ✅ 13 scans rapatriés depuis le Drive en direct (`curl` sur le lien partagé) et uniformisés à 615 px. Le connecteur Drive ne rend que du texte, mais
+   le lien de téléchargement direct suffit. Il les faut sur le
    poste pour `assets/pics/`. L'utilisateur est à distance et les a collées
    dans le fil : elles sont lues, mais pas déposées sur le disque.
 4. Réserver un préfixe (`ze` est libre) et un numéro de set (171, après
