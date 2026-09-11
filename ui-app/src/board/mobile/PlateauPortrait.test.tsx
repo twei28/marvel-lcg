@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { PlateauPortrait } from './PlateauPortrait'
 import type { BoardProps } from '../Board'
 import type { EmplacementAffiche, Plateau, UniteAffichee } from '../zones'
@@ -232,5 +232,77 @@ describe('PlateauPortrait — ennemis engages, heros et allies', () => {
       />
     )
     expect(document.querySelector('.scan-card .scan-stats-calee')).toBeNull()
+  })
+})
+
+describe('PlateauPortrait — main et barre du bas', () => {
+  it('affiche les cartes de la main : sixieme bloc de repartirEnBlocs, pas seulement teste en isolation', () => {
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau(
+          emplacement(
+            'main',
+            unite('Quinjet', { name: 'Quinjet', kind: 'event' }),
+            unite('Backflip', { name: 'Backflip', kind: 'event' })
+          )
+        )}
+      />
+    )
+    expect(container.querySelectorAll('.main-portrait .scan-card')).toHaveLength(2)
+  })
+
+  it('un tap sur une carte de la main remonte props.onCardClick, avec la bonne carte', () => {
+    const onCardClick = vi.fn()
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        onCardClick={onCardClick}
+        plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
+      />
+    )
+    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+    expect(onCardClick).toHaveBeenCalledTimes(1)
+    expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: 'Quinjet', name: 'Quinjet' })
+  })
+
+  it('une demande du moteur (props.bas) fait basculer la barre : elle seule s affiche, pas les outils', () => {
+    // BarreBas.tsx:25 — quand `demande` est fourni, elle remplace tout le
+    // reste plutot que de s'y ajouter. Un test qui verifierait juste que
+    // `bas` apparait, sans verifier que les outils disparaissent, passerait
+    // meme si `demande`/`outils`/`onglets` etaient intervertis.
+    render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        bas={<span>Choisis une cible</span>}
+        actionsPartie={<button type="button">Annuler</button>}
+        outils={<button type="button">Vue</button>}
+        plateau={plateau()}
+      />
+    )
+    expect(screen.getByText('Choisis une cible')).toBeInTheDocument()
+    expect(screen.queryByText('Annuler')).toBeNull()
+    expect(screen.queryByText('Vue')).toBeNull()
+  })
+
+  it('sans demande, chaque prop atteint la bonne case de BarreBas (pas juste presente n importe ou)', () => {
+    // getByText('Annuler')/getByText('Vue') passerait meme si `actionsPartie`
+    // et `outils` etaient permutes en entrant dans BarreBas (les deux se
+    // rendent, juste dans le mauvais conteneur) : on verifie donc la case
+    // precise (BarreBas.tsx : outils -> .pm-outils, onglets -> .pm-onglets).
+    const { container } = render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        actionsPartie={<button type="button">Annuler</button>}
+        outils={<button type="button">Vue</button>}
+        plateau={plateau()}
+      />
+    )
+    expect(container.querySelector('.pm-outils')).toHaveTextContent('Annuler')
+    expect(container.querySelector('.pm-onglets')).toHaveTextContent('Vue')
   })
 })
