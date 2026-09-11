@@ -129,11 +129,28 @@ export function reglesAspect(hero, t = brut) {
             || (min === max ? `${t("exactement")} ${max} ${max > 1 ? t("aspects") : t("aspect")}`
                             : max >= 99 ? t("des aspects libres") : t("un seul aspect")) };
     }
-    const nom = (hero && hero.name) || "";
-    if (/spider-?woman/i.test(nom)) return { min: 2, max: 2, label: t("exactement 2 aspects (Spider-Woman)") };
-    if (/cloak/i.test(nom) && /dagger/i.test(nom)) return { min: 2, max: 2, label: t("exactement 2 aspects (Cloak & Dagger)") };
-    if (/adam warlock/i.test(nom)) return { min: 0, max: 99, label: t("des aspects libres (Adam Warlock)") };
-    if (/moon knight/i.test(nom)) return { min: 0, max: 99, label: t("tous les aspects, coût max 2 (Moon Knight)") };
+    // ⚠ ANCRE SUR L'IDENTIFIANT, JAMAIS SUR LE NOM (correctif du 11/09/2026).
+    //
+    // Ces quatre lignes testaient le NOM du heros. Or un nom n'a rien d'unique :
+    // le pack fan-made « Spider-Woman (Kajislav) » s'appelle aussi
+    // « Spider-Woman », et `/spider-?woman/i` lui imposait donc les DEUX
+    // aspects de Jessica Drew. Constate par l'utilisateur en construisant son
+    // deck : « This hero requires exactly 2 aspects (Spider-Woman) », alors que
+    // l'auteur a livre un deck de depart a UN seul aspect, Protection.
+    //
+    // `hero.id` est le nom du fichier `deck/starter/<id>.json` : il n'a pas
+    // d'homonyme. C'est deja la regle que suit `quotaHorsAspect` plus bas, avec
+    // le meme avertissement, pour la meme raison (« Doctor Doom » designe aussi
+    // un mechant). Elle n'avait simplement jamais ete appliquee ici.
+    //
+    // ⚠ Un heros maison qui voudrait une regle particuliere ne passe PAS par
+    // cette table : il la declare dans les metadonnees de son deck
+    // (`reglesDeclarees`), qui l'emporte de toute facon.
+    const id = (hero && hero.id) || "";
+    if (id === "spider_woman") return { min: 2, max: 2, label: t("exactement 2 aspects (Spider-Woman)") };
+    if (id === "cloak_dagger") return { min: 2, max: 2, label: t("exactement 2 aspects (Cloak & Dagger)") };
+    if (id === "adam_warlock") return { min: 0, max: 99, label: t("des aspects libres (Adam Warlock)") };
+    if (id === "moon_knight") return { min: 0, max: 99, label: t("tous les aspects, coût max 2 (Moon Knight)") };
     return { min: 0, max: 1, label: t("un seul aspect") };
 }
 
@@ -153,6 +170,12 @@ export function typesInterdits(hero) {
  * deck. » Ces alliés ne comptent donc pas dans le décompte des aspects.
  */
 export function exemptDeLaLimiteAspect(hero, carte) {
+    // ⚠ CE TEST PORTE ENCORE SUR LE NOM, et c'est le meme piege en sommeil que
+    // celui corrige le 11/09/2026 dans `reglesAspect` : un second heros nomme
+    // « Madame Web » heriterait silencieusement de la regle d'Arachnophilia.
+    // Laisse tel quel faute de conflit AUJOURD'HUI (un seul heros porte ce
+    // nom) ; a ancrer sur `hero.id` le jour ou un homonyme arrive, comme le
+    // fait `quotaHorsAspect` plus bas.
     const nom = (hero && hero.name) || "";
     if (/madame web/i.test(nom)) {
         if (carte.type !== "Ally") return false;
