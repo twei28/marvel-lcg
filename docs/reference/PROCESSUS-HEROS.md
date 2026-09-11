@@ -93,6 +93,13 @@ Dans `heroes` du bon pack.
 `assets/pics/<card_id>.jpg` pour toutes les cartes (extension obligatoire,
 voir §4 de `GUIDE-CREATION-CONTENU.md`).
 
+💡 **Depuis un Drive partagé (vérifié le 11/09/2026 sur Zeus)** : inutile
+d'attendre que l'utilisateur dépose les fichiers. Un scan partagé se
+télécharge en direct, `curl -sL "https://drive.google.com/uc?export=download&id=<id>"`,
+l'identifiant venant de `search_files` du connecteur Drive (`parentId = '<dossier>'`
+liste un dossier). Les PNG de 1500×2150 des générateurs de cartes passent
+ensuite par `outils/uniformiser-scans.py --sauvegarde`.
+
 ## Étape 7 : Biographie *(case à cocher avec preuve, pas une ligne qu'on oublie)*
 
 Le wizard affiche, au survol du héros, une fiche qui décrit le personnage

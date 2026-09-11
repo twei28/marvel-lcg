@@ -10,6 +10,13 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-11-cinquieme-couleur-de-ressource-design.md`
 
+> ✅ **Exécuté et livré le 11/09/2026** (commits `3127ca16` → `6f42e6ec`, déployé le jour même).
+> Mesures finales : `test_couleur_eclair.py` 26/26, plateau 1226/1226, `verifier_tous_les_decks`
+> 131/132 (le seul échec, `sp_dr`, est préexistant), `test_capacites` sw0 39/39, sd0 35/35,
+> ra0 20/20, autoplay témoin spider_man/rhino 7,5 rounds sans traceback (référence 7,5),
+> `verifier_raisons_refus` OK. Seule surprise : `GetSpendText` rend une chaîne, pas une liste
+> (test corrigé, pas le moteur).
+
 ## Global Constraints
 
 - Lettre moteur `L`, jeton `[[lightning]]`, clé `lightning`, nom français `éclair`.
