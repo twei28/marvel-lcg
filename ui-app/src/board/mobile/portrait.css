@@ -577,6 +577,24 @@
   .bande-rail .est-statut .scan-card.is-landscape {
     --card-w: 74px;
   }
+  /* Les pastilles au-dessus de la carte (type, Crise, Actif...) gardent la
+     taille du PC quelle que soit la carte : a trois cartes par ecran, elles
+     debordaient sur la voisine (releve sur le S24, 12/09/2026). Plus petites,
+     et jamais plus larges que la carte. */
+  .bande-rail .top-strip {
+    min-height: 18px;
+    gap: 3px;
+    overflow: hidden;
+  }
+  .bande-rail .top-strip > span {
+    min-height: 18px;
+    padding: 0 5px;
+    font-size: 0.52rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .carte-ouverte-scan .scan-card {
     --card-w: min(320px, 86vw);
   }

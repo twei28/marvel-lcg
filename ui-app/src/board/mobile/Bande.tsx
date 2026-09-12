@@ -11,7 +11,8 @@
 // clic d'une carte ne doit jamais declencher l'action du moteur par
 // surprise. Le bouton des stades (loupe) garde son clic.
 import type { ReactElement, ReactNode, MouseEvent as ReactMouseEvent } from 'react'
-import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
+import { kindLabel, type CardEffectDelta, type ScanCardProps } from '../../components/ScanCard'
+import { t } from '../langue'
 import { Unite, avecInteraction } from '../Board'
 import type { EtatInteractif } from '../interaction'
 import type { GroupeDePile, UniteAffichee } from '../zones'
@@ -100,6 +101,14 @@ export function Bande({
   decor: Decor
 }): ReactElement {
   const vide = !epinglee && unites.length === 0
+  // La pastille de type est tue quand la bande la repete deja (« Mechant »
+  // dans Mechant, « Heros » dans Ton heros : pastilleRedondante, zones.ts).
+  // Dans Manigances, « Manigance principale » et « Manigance annexe » sont
+  // tout aussi redondantes, et a trois cartes par ecran elles se marchaient
+  // dessus (releve sur le S24, 12/09/2026) : la zone se declare du nom du
+  // type lui-meme, ce qui la rend muette.
+  const titreZoneDe = (unite: UniteAffichee): string =>
+    cle === 'manigances' ? (unite.carte.labelType ?? t(kindLabel[unite.carte.kind])) : titre
   return (
     <section className={`bande bande-${cle}${vide ? ' est-vide' : ''}`} aria-label={titre}>
       <header className="bande-entete">
@@ -110,9 +119,9 @@ export function Bande({
         <p className="bande-vide">{texteVide}</p>
       ) : (
         <div className="bande-rail">
-          {epinglee ? <CarteBande unite={epinglee} epinglee titreZone={titre} decor={decor} /> : null}
+          {epinglee ? <CarteBande unite={epinglee} epinglee titreZone={titreZoneDe(epinglee)} decor={decor} /> : null}
           {unites.map((unite) => (
-            <CarteBande key={unite.cle} unite={unite} epinglee={false} titreZone={titre} decor={decor} />
+            <CarteBande key={unite.cle} unite={unite} epinglee={false} titreZone={titreZoneDe(unite)} decor={decor} />
           ))}
         </div>
       )}

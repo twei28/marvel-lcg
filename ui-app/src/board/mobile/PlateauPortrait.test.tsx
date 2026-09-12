@@ -53,6 +53,18 @@ describe('PlateauPortrait — les quatre bandes', () => {
     expect(container.querySelector('.bande-heros .bande-carte:not(.est-epinglee)[data-card-id="soutien"]')).not.toBeNull()
   })
 
+  it('tait la pastille « Manigance principale / annexe », que la bande repete deja', () => {
+    const { container } = rendre({
+      plateau: plateau(
+        emplacement('complot-principal', unite('effraction', { kind: 'main-scheme' })),
+        emplacement('complots-secondaires', unite('annexe', { kind: 'side-scheme' })),
+        emplacement('terrain-combat', unite('sbire', { kind: 'minion' }))
+      ),
+    })
+    expect(container.querySelectorAll('.bande-manigances .kind-pill')).toHaveLength(0)
+    expect(container.querySelector('.bande-engages .kind-pill')).toHaveTextContent(/sbire/i)
+  })
+
   it('dessine les attachements sous leur porteuse, comme le plateau PC', () => {
     const { container } = rendre({
       plateau: plateau(
