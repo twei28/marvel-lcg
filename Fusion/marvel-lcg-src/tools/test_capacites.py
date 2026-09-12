@@ -36403,6 +36403,7 @@ def executer_un_cas(game_dir, port, index):
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
     scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, 42)
+    remplir_les_decks_vides(scene)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
     try:
@@ -36415,6 +36416,39 @@ def executer_un_cas(game_dir, port, index):
         traceback.print_exc()
         rendre(False, f"la partie a plante : {type(exc).__name__}: {exc}")
     rendre(False, "la partie s'est terminee sans declencher le cas")
+
+
+# Un deck de depart fan-made sans decklist d'auteur a `player_deck` VIDE
+# (PROCESSUS-HEROS etape 3, retroactif depuis le 12/09/2026). Le harnais lui
+# rend une moitie d'aspect INERTE : sinon la main de depart n'est faite que de
+# cartes signature, et le pilote declenche leurs interruptions au milieu de la
+# mise en place (mesure : Bulletproof Chica ma012 a evite les 3 degats poses
+# par `Puzzle.Damage`, 53 cas rouges d'un coup). Des ressources basiques, rien
+# d'autre : elles ne reagissent a rien, comme l'ancien deck en pratique.
+REMPLISSAGE_DECK_VIDE = ["01088", "01089", "01090"] * 8 + ["01090"]
+# Mieux : la moitie d'aspect que le heros AVAIT quand ses cas ont ete ecrits
+# (`tools/decks-de-test.json`, cle = face heros). Des ressources seules
+# changeaient encore les choix du pilote (ho009, hd012 rouges) ; l'ancien deck
+# rend exactement les conditions d'origine. Le fichier ne sert qu'ici.
+DECKS_DE_TEST_FICHIER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decks-de-test.json")
+
+
+def _decks_de_test():
+    try:
+        return json.load(open(DECKS_DE_TEST_FICHIER, encoding="utf-8")).get("decks", {})
+    except (OSError, ValueError):
+        return {}
+
+
+def remplir_les_decks_vides(scene):
+    """Complete chaque joueur de la scene sans player_deck : son ancienne moitie
+    d'aspect si decks-de-test.json la connait, sinon 25 ressources inertes."""
+    decks = _decks_de_test()
+    for joueur in getattr(scene, "players", None) or []:
+        if getattr(joueur, "player_deck", None):
+            continue
+        face = str((getattr(joueur, "hero", None) or [""])[0]).split(",")[0]
+        joueur.player_deck = list(decks.get(face) or REMPLISSAGE_DECK_VIDE)
 
 
 # ------------------------------------------------------------- orchestration --

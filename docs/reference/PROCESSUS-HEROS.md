@@ -67,6 +67,22 @@ construites par le portage ou copiées d'un héros officiel ont été vidées
 `hellcat`, `venompool`, `lockjaw`, `moon_knight`, `blink`, `texas_twister`…)
 et `wolverine_x23`, re-skin de X-23 qui reprend son deck officiel.
 
+**Dans l'assistant** (décision du 12/09/2026) : un héros sans deck de base
+n'en propose pas (plus de « 15 cartes, hors règles »). Tous les paquets
+complets du tableur `data/decks_aspect.json` sont proposés à tous les héros,
+les conseillés en tête, dépliés d'office ; le premier paquet légal est le
+deck par défaut (`aDeckDeBase`, `public/js/prepare/catalog.js`).
+
+⚠ **Le harnais complète lui-même un deck vide** (`remplir_les_decks_vides`,
+`tools/test_capacites.py`) avec l'ancienne moitié d'aspect du héros, gardée
+pour les tests seulement dans `tools/decks-de-test.json` (clé = face héros),
+ou à défaut 25 ressources basiques inertes. Sans cela, la
+main de départ n'est faite que de cartes signature et le pilote déclenche
+leurs interruptions au milieu de la mise en place (mesuré le 12/09/2026 :
+Bulletproof Chica évitait les 3 dégâts posés par `Puzzle.Damage`, 53 cas
+rouges d'un coup). Un cas qui a besoin d'une carte précise en main la donne
+par `main_exclusive`, comme avant.
+
 ⚠ `set_aside` ne sert qu'aux clients (catalogue, lanceur) : le moteur ne lit
 pas ce champ en vraie partie (`HeroDescriptor` ne l'a pas, la génération est
 en commentaire dans `player_setup.py`). Une carte mise de côté au setup doit
