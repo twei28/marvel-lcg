@@ -133,3 +133,17 @@ contretemps. Sans conséquence signalée en jeu.
 
 Demande de l'utilisateur. Les deux modes actuels (Détaillé / Instantané)
 suffisent ; la spec du 06/09 (§ Le mode) n'est plus à suivre sur ce point.
+
+## ✅ FAIT LE 12/09/2026 : le sbire qui entre en jeu en pleine phase
+
+Décision utilisateur après rapport. Moteur : `AfterCardEnterPlay`
+(sender_card.py) inscrit un fait `entree` (carte, carte_id, type « sbire »,
+cause, phase) quand un SBIRE entre en jeu aux points 1 ou 2 de la phase du
+méchant (aux points 3 et 4, la révélation raconte déjà l'entrée par ses
+`effets`). Cas harnais « A3 faits » avec témoin en phase joueur. Plateau :
+`FaitEntree` (world.ts), étape `entree` dans `etapesDeroule` (rangée après
+l'activation qui l'a fait entrer, avant les sbires ; au point 1 sous la
+menace), titre « X entre en jeu », cause dessous, règle dédiée, ligne
+« carte » dans le bilan de fin de phase. 4 tests `deroule-phase`, 1 test
+`deroule-textes`. Il ne reste de la livraison 3 que ce que l'utilisateur a
+retiré ou abandonné (menu à quatre modes, effets pendant notre tour).

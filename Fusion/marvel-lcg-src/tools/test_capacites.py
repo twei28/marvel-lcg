@@ -22774,6 +22774,19 @@ CAS = [
         "verifier": "a2_fait_menace",
     },
     {
+        "nom": "A3 faits — un sbire qui entre en jeu en pleine phase du mechant est journalise, pas en phase joueur",
+        "pourquoi": ("Le Drone que met en jeu l'attaque d'Ultron, le Goblin Thrall sorti "
+                     "par un boost : le sbire apparaissait sur la table sans une ligne du "
+                     "cartouche, seule son attaque faisait une etape. Le fait `entree` "
+                     "(AfterCardEnterPlay) donne l'etape « X entre en jeu ». TEMOIN dans le "
+                     "meme cas : pose pendant le tour du joueur, rien n'est inscrit"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a3_fait_entree",
+    },
+    {
         "nom": "A2 faits — l'etape 3 journalise la carte distribuee a chaque joueur",
         "pourquoi": ("le temps DISTRIBUTION du cartouche etait STRUCTURELLEMENT "
                      "toujours vide (constat M3 de l'audit) : rien ne le renseignait. "
@@ -34746,6 +34759,46 @@ def _a2_faits(monde, genre):
 
 def _a2_siege(monde, joueur):
     return monde.const_seat_order_players.index(joueur)
+
+def a3_fait_entree(monde, aides):
+    """Un SBIRE qui entre en jeu EN PLEINE PHASE du mechant inscrit un fait
+    `entree` (12/09/2026, `AfterCardEnterPlay`, sender_card.py) ; le meme
+    sbire pose pendant le tour du joueur n'inscrit RIEN (le temoin).
+
+    Le cas ouvre la phase par `Puzzle.BeginVillainPhase()` (etat PlaceThreat,
+    point 1), pose un Hydra Mercenary, et lit le journal."""
+    from game.puzzle.puzzle import PuzzleHelper
+
+    # Le temoin d'abord : en phase joueur, aucun fait (Hydra Mercenary).
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.PutIntoPlay('01101')"], monde)
+    if _a2_faits(monde, 'entree'):
+        return False, (f"un fait `entree` a ete inscrit PENDANT LE TOUR DU JOUEUR : "
+                       f"{_a2_faits(monde, 'entree')}")
+
+    # Puis en phase, un AUTRE sbire (Hydra Bomber) : une carte retiree de la
+    # partie ne peut plus entrer en jeu, on ne reutilise donc pas le premier.
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.BeginVillainPhase()"], monde)
+    if not monde.phase.IsVillainPhase():
+        return False, f"la phase du mechant n'est pas ouverte ({monde.GetPhaseText()})"
+    PuzzleHelper.Exec(["Puzzle.PutIntoPlay('01110')"], monde)
+    faits = _a2_faits(monde, 'entree')
+    if len(faits) != 1:
+        return False, (f"{len(faits)} fait(s) `entree` au lieu de 1 ; journal = "
+                       f"{monde.stat.faits_mechant}")
+    fait = faits[0]
+    manques = [c for c in ('phase', 'carte', 'carte_id', 'type', 'cause', 'round_id', 'fait_id')
+               if c not in fait]
+    if manques:
+        return False, f"champs manquants sur le fait : {manques} ({fait})"
+    if fait['type'] != 'sbire' or 'Hydra Bomber' not in fait['carte']:
+        return False, f"fait inattendu : {fait}"
+    if fait['phase'] != monde.GetPhaseText():
+        return False, f"phase du fait {fait['phase']!r} != {monde.GetPhaseText()!r}"
+    return True, (f"aucun fait en phase joueur ; en phase du mechant ({fait['phase']}), "
+                  f"{fait['carte']} inscrit comme entree (cause {fait['cause']!r})")
+
 
 def a2_fait_menace(monde, aides):
     """Etape 1 : `MainScheme.Phase()` inscrit un fait `menace` par manigance."""

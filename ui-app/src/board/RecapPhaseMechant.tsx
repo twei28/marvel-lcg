@@ -126,6 +126,8 @@ const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
   // activations, comme les attaques, et sa phase reelle (que le fait porte)
   // le remet a sa place des qu'elle est connue.
   statut: 'Enemy Activation',
+  // Un sbire entre en jeu en pleine phase : aux points 1 et 2 seulement.
+  entree: 'Enemy Activation',
 }
 
 function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
@@ -435,6 +437,17 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
         genre: 'carte',
         titre: fait.carte,
         heros: fait.joueur_nom ?? noms.heros(fait.joueur ?? undefined),
+        cibleId: fait.carte_id,
+      }
+    }
+
+    // Un sbire entré en jeu en pleine phase (12/09/2026) : une ligne de
+    // carte, comme une révélation, avec la même phrase que le cartouche.
+    if (fait.genre === 'entree') {
+      return {
+        cle: `moteur:${index}:entree:${fait.carte_id}`,
+        genre: 'carte',
+        titre: `${noms.carte(fait.carte_id) ?? fait.carte} ${t('entre en jeu')}`,
         cibleId: fait.carte_id,
       }
     }

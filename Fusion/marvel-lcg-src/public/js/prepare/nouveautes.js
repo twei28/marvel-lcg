@@ -45,6 +45,18 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-12",
+        genre: "correction",
+        fr: "En mode Détaillé, une carte à jouer « quand la menace va être placée » ouvrait une question sans aucun bouton au tout début de la phase du méchant, et la partie restait bloquée. La question s'affiche maintenant, avec Passer.",
+        en: "In Detailed mode, a card playable “when threat would be placed” opened a question with no button at the very start of the villain phase, and the game stayed stuck. The question now shows up, with Pass.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "jeu",
+        fr: "Un sbire qui entre en jeu en pleine phase du méchant (un Drone mis en jeu par l'attaque d'Ultron, un Gobelin sorti par un boost) a maintenant sa propre étape dans le déroulé, avant son attaque, avec ce qui l'a fait entrer.",
+        en: "A minion that enters play in the middle of the villain phase (a Drone put into play by Ultron's attack, a Goblin brought out by a boost) now gets its own step in the walkthrough, before its attack, with what brought it in.",
+    },
+    {
         date: "2026-09-11",
         genre: "correction",
         fr: "Jackpot! (Yondu) fait enfin son travail : la carte dépensée juste après elle vaut bien le double de ses ressources.",

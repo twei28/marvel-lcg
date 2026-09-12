@@ -23,6 +23,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retour': 'Back',
   'Abandonner': 'Cancel',
   'Continuer': 'Continue',
+  // ---- Un sbire entre en jeu en pleine phase du mechant (12/09/2026) ----
+  'Un sbire entre en jeu': 'A minion enters play',
+  'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.':
+    'A minion that enters play during the villain phase activates in the minion step, if it arrived before it.',
   // ---- Confirmation « ce coup ne fera rien » (11/09/2026) ----
   'Ce coup ne retirera aucune menace': 'This play will remove no threat',
   'Une icône de Crise est en jeu : cette carte n’ignore la Crise que si elle est payée':

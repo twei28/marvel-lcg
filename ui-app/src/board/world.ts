@@ -285,12 +285,33 @@ export type FaitStatut = FaitMechantCommun & {
   cause_id?: number | null
 }
 
+/**
+ * Un SBIRE entré en jeu EN PLEINE PHASE du méchant (points 1 et 2 seulement :
+ * aux points 3 et 4, c'est la révélation qui raconte l'entrée, par ses
+ * `effets`). Le Drone que met en jeu l'attaque d'Ultron, le Goblin Thrall
+ * sorti par un boost : le sbire apparaissait sur la table sans une ligne, et
+ * seule son attaque faisait une étape. Ajouté le 12/09/2026
+ * (`AfterCardEnterPlay`, sender_card.py).
+ */
+export type FaitEntree = FaitMechantCommun & {
+  genre: 'entree'
+  /** Nom NU de la carte entrée en jeu. */
+  carte: string
+  carte_id: number
+  /** « sbire » aujourd'hui ; le moteur n'inscrit que les sbires. */
+  type: string
+  /** La carte qui l'a fait entrer (Ultron, un boost…), vide si inconnue. */
+  cause?: string
+  cause_id?: number | null
+}
+
 export type FaitMechant =
   | FaitActivation
   | FaitMenace
   | FaitDistribution
   | FaitRevelation
   | FaitStatut
+  | FaitEntree
 
 export type World = {
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */

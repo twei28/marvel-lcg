@@ -1119,6 +1119,26 @@ export function DeroulePhase({
   // false des que l'identite de phase change (voir le useEffect ci-dessus),
   // donc le deroule reapparait bien a la phase du mechant suivante.
   // `partieFinie` le fait disparaitre pour de bon : plus rien n'arrive apres.
+  // LA QUESTION AVANT LA PREMIERE ETAPE (12/09/2026). Le moteur peut ouvrir
+  // une fenetre d'interruption avant tout fait de la phase : « la menace va
+  // etre placee, veux-tu jouer De Grandes Responsabilites ? » (point 1, avant
+  // le fait `menace`). board.tsx lui a deja retire le panneau central
+  // (`questionEnScene`), et ce composant rendait `null` faute d'etape : plus
+  // aucun bouton nulle part, « Fin du tour » desactive, le joueur bloque, le
+  // moteur attendant sans limite. Vu en jeu contre Ultron, capture a l'appui.
+  // Sans etape, il n'y a ni chronologie ni scene a montrer : le bandeau
+  // « A toi de jouer » et la question suffisent.
+  if (!etape && !termine && !partieFinie && questionAuJoueur && question !== undefined) {
+    return (
+      <section className="deroule-phase est-question" role="dialog" aria-label={t('Phase du méchant')}>
+        <p className="deroule-a-toi" aria-live="assertive">
+          {t('À toi de jouer')}
+        </p>
+        <div className="deroule-question-scene">{question}</div>
+      </section>
+    )
+  }
+
   if (!etape || termine || partieFinie) return null
 
   // L'etape TELLE QU'ON LA LIT : noms francais quand le plateau les connait.

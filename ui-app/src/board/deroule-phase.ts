@@ -23,6 +23,7 @@ import type {
   FaitActivation,
   FaitActivationResolue,
   FaitDistribution,
+  FaitEntree,
   FaitMechant,
   FaitMenace,
   FaitRevelation,
@@ -107,6 +108,9 @@ function estStatut(fait: FaitMechant): fait is FaitStatut {
 
 function estRevelation(fait: FaitMechant): fait is FaitRevelation {
   return fait.genre === 'revelation'
+}
+function estEntree(fait: FaitMechant): fait is FaitEntree {
+  return fait.genre === 'entree'
 }
 
 /**
@@ -505,7 +509,43 @@ export function etapesDeroule(
   // Le rang parcourt TOUS les faits du monde, genres nouveaux compris : la cle
   // d'une activation ne change donc pas selon ce que la phase a produit par
   // ailleurs.
+  // Le TEMPS d'un sbire entre en jeu en pleine phase (12/09/2026) : celui de
+  // l'activation en cours quand il est arrive. Le Drone que met en jeu
+  // l'attaque d'Ultron s'inscrit apres l'etape d'Ultron (temps 'mechant'), et
+  // avant les sbires, dont il fera partie ; un sbire sorti par le boost d'un
+  // autre sbire s'inscrit parmi les sbires. Le tri final par temps est STABLE,
+  // le rang d'origine fait le reste. Avant toute activation, c'est le point 1 :
+  // 'menace', puisque c'est la que le fait est tombe.
+  const tempsDeLEntree = (rang: number, phase: string | undefined): TempsPhase => {
+    const connu = tempsDe(phase)
+    if (connu !== undefined && connu !== 'mechant') return connu
+    let dernier: TempsPhase = 'menace'
+    for (const porte of faitsDuRound) {
+      if (porte.rang >= rang) break
+      if (estActivation(porte.fait)) dernier = mechantIds.has(porte.fait.auteur_id) ? 'mechant' : 'sbires'
+    }
+    return dernier
+  }
+
   faitsDuRound.forEach(({ fait, rang }) => {
+    // UN SBIRE QUI ENTRE EN JEU en pleine phase : une etape a lui seul, AVANT
+    // son attaque (spec du 06/09, « sa mise en jeu, puis son attaque,
+    // separement »). Aux points 3 et 4 le moteur n'inscrit pas ce fait : la
+    // revelation raconte deja l'entree par ses `effets`.
+    if (estEntree(fait)) {
+      etapes.push({
+        cle: cleDuFait('entree', fait.round_id ?? round, rang, fait.carte_id),
+        temps: tempsDeLEntree(rang, fait.phase),
+        titre: 'entree',
+        regle: 'regle:entree',
+        // La carte qui entre est mise en avant ; aucune cible, aucun trait.
+        carteId: fait.carte_id,
+        cibleNom: nomNettoye(fait.carte),
+        cause: fait.cause || undefined,
+        boosts: [],
+      })
+      return
+    }
     // Les STATUTS voyagent avec les activations : ils sont poses au milieu
     // d'elles, et le tri final par temps est STABLE, donc les pousser dans
     // cette meme boucle preserve la chronologie du moteur.

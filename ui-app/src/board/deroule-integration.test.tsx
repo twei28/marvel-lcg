@@ -157,6 +157,15 @@ class FauxSocket {
 class FauxServeur {
   rang = 0
   accuses: number[] = []
+  /** Les trames servies, PHASE par defaut ; un cas peut en poser d'autres. */
+  trames: World[] = PHASE
+  /**
+   * La question est-elle confiee au cartouche (board.tsx, `questionEnScene`) ?
+   * Faux par defaut : les cas historiques regardent la mention « tu peux
+   * defendre ou repondre » que le cartouche affiche quand il n'a PAS la
+   * question sous la main.
+   */
+  questionEnScene = false
   /**
    * Faux : les trames ne partent plus toutes seules, le test les libere une
    * par une. Cela sert a tenir le cartouche SUR une intention le temps d'un
@@ -179,7 +188,7 @@ class FauxServeur {
   }
 
   mondeCourant(): World {
-    return PHASE[this.rang]!
+    return this.trames[this.rang]!
   }
 
   pousser() {
@@ -206,7 +215,7 @@ class FauxServeur {
 
   /** Le moteur passe a la trame suivante et la pousse. */
   libererLaSuite() {
-    if (this.rang + 1 >= PHASE.length) return
+    if (this.rang + 1 >= this.trames.length) return
     this.rang += 1
     this.pousser()
   }
@@ -262,6 +271,11 @@ function Table({ moteur }: { moteur: Moteur }) {
       phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase)}
       partieFinie={false}
       questionAuJoueur={moteurAttendUneReponse(etat)}
+      // Comme board.tsx (`questionEnScene`) : la question du moteur est
+      // confiee au cartouche, et le panneau central se tait.
+      question={
+        serveur.questionEnScene && moteurAttendUneReponse(etat) ? <button type="button">Passer</button> : undefined
+      }
       trameRetenue={etat.trameRetenue}
       onSuivant={() => moteur.avancerMaintenant()}
       onTerminer={() => moteur.avancerMaintenant()}
@@ -312,6 +326,44 @@ describe('le cartouche branche sur un vrai moteur', () => {
   }
 
   const suivant = () => screen.getByRole('button', { name: /Suivant/i })
+
+  // LE BLOCAGE DU 12/09/2026. Le moteur ouvre une fenetre d'interruption
+  // AVANT le premier fait de la phase (« la menace va etre placee, veux-tu
+  // jouer De Grandes Responsabilites ? »). board.tsx a retire la question du
+  // panneau central pour la confier au cartouche, qui rendait `null` faute
+  // d'etape : plus un bouton nulle part, le joueur coince, le moteur
+  // attendant sans limite. Vu en jeu contre Ultron, capture a l'appui.
+  it('montre la question du moteur meme avant la premiere etape de la phase', async () => {
+    serveur.trames = [monde('Main Scheme Place Threat', [], 101)]
+    serveur.questionEnScene = true
+    serveur.question = {
+      options: [
+        {
+          id: 27,
+          name: 'Play',
+          bind_id: 40,
+          bind_player_id: 0,
+          all_legal_targets: [],
+          target_num_range: [0, 0],
+          target_payment: {},
+          select_rule: '',
+          target_must_include_traits: [],
+          failure_reason: '',
+          is_search: false,
+        },
+      ],
+      refus: [],
+      prompt_text: 'The Break-In! is about to receive 1 threat',
+      event_name: 'WhenSchemeWouldPlaceThreat',
+      show_cancel: true,
+      ability_type: 'Normal',
+    }
+    await ouvrir()
+    expect(screen.getByText('À toi de jouer')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Passer' })).toBeInTheDocument()
+    // Et pas de « Suivant » : il n'y a aucune etape a lire.
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+  })
 
   // LE TEST QUI AURAIT ATTRAPE LE DEFAUT. Le moteur ne doit franchir aucune
   // trame que le joueur n'a pas validee, sauf celles qui n'annoncent qu'une

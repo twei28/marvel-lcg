@@ -17,6 +17,7 @@ import type {
   FaitActivationAnnonce,
   FaitActivationResolue,
   FaitDistribution,
+  FaitEntree,
   FaitMechant,
   FaitMenace,
   FaitRevelation,
@@ -1255,6 +1256,64 @@ describe("l'annonce d'une activation, puis sa resolution", () => {
       etapesDeroule([annonce({ cible_id: 12 })], [], 1, new Set([50]), new Set([12]))
     )
     expect(etape?.defaite).toBeUndefined()
+  })
+})
+
+describe('un sbire qui entre en jeu en pleine phase', () => {
+  const entreeEnJeu = (extra: Partial<FaitEntree> = {}): FaitEntree =>
+    ({
+      genre: 'entree',
+      phase: 'Enemy Activation',
+      carte: 'Drone',
+      carte_id: 66,
+      type: 'sbire',
+      cause: 'Ultron',
+      cause_id: 50,
+      round_id: 1,
+      ...extra,
+    }) as FaitEntree
+
+  it('devient une etape a lui seul, la carte en avant, sa cause dessous', () => {
+    const [etape] = etapesDeroule([entreeEnJeu()], [], 1, new Set([50]))
+    expect(etape?.titre).toBe('entree')
+    expect(etape?.regle).toBe('regle:entree')
+    expect(etape?.carteId).toBe(66)
+    expect(etape?.cibleNom).toBe('Drone')
+    expect(etape?.cause).toBe('Ultron')
+    expect(etape?.cibleId).toBeUndefined()
+  })
+
+  it('se range apres l activation du vilain qui l a fait entrer, et avant les sbires', () => {
+    const faits: FaitMechant[] = [
+      attaque({ auteur: 'Ultron', auteur_id: 50, activation_id: 1 }),
+      entreeEnJeu(),
+      attaque({ auteur: 'Drone', auteur_id: 66, activation_id: 2 }),
+    ]
+    const etapes = etapesDeroule(faits, [], 1, new Set([50]))
+    expect(etapes.map((e) => [e.temps, e.titre])).toEqual([
+      ['mechant', 'attaque'],
+      ['mechant', 'entree'],
+      ['sbires', 'attaque'],
+    ])
+  })
+
+  it('arrive au milieu des sbires quand c est le boost d un sbire qui le fait entrer', () => {
+    const faits: FaitMechant[] = [
+      attaque({ auteur: 'Ultron', auteur_id: 50, activation_id: 1 }),
+      attaque({ auteur: 'Goblin Knight', auteur_id: 70, activation_id: 2 }),
+      entreeEnJeu({ carte: 'Goblin Thrall', carte_id: 71, cause: 'Goblin Knight', cause_id: 70 }),
+    ]
+    const etapes = etapesDeroule(faits, [], 1, new Set([50]))
+    expect(etapes.map((e) => [e.temps, e.titre])).toEqual([
+      ['mechant', 'attaque'],
+      ['sbires', 'attaque'],
+      ['sbires', 'entree'],
+    ])
+  })
+
+  it('avant toute activation, il tombe au point 1, sous la menace', () => {
+    const [etape] = etapesDeroule([entreeEnJeu({ phase: 'Main Scheme Place Threat' })], [], 1, new Set([50]))
+    expect(etape?.temps).toBe('menace')
   })
 })
 

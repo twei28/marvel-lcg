@@ -18,6 +18,7 @@ const REDIGES = new Set([
   'statut',
   'distribution',
   'revelation',
+  'entree',
   'bilan',
 ])
 
@@ -93,6 +94,13 @@ export function titreEtape(etape: EtapeDeroule): string {
     return auteur
       ? `${auteur} ${t('reçoit sa carte rencontre')}`
       : t('Carte rencontre distribuée')
+  }
+
+  if (etape.titre === 'entree') {
+    // « Drone entre en jeu ». La cause (Ultron, un boost) s'affiche dessous,
+    // par `texteCauseActivation`, comme pour une activation declenchee.
+    if (!cible) return t('Un sbire entre en jeu')
+    return `${cible} ${t('entre en jeu')}`
   }
 
   if (etape.titre === 'revelation') {
@@ -372,6 +380,7 @@ const REGLES: Record<string, string> = {
   'regle:activations': 'Point 2 : chaque ennemi s\'active contre le héros engagé avec lui.',
   'regle:distribution': 'Point 3 : chaque joueur reçoit une carte rencontre, face cachée.',
   'regle:revelation': 'Point 4 : chaque joueur révèle sa carte rencontre et en applique l\'effet.',
+  'regle:entree': 'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.',
   'regle:statut': 'Une carte de statut posée reste jusqu\'à ce qu\'elle soit consommée : sonné annule la prochaine attaque, désorienté la prochaine manigance, robuste absorbe les dégâts d\'une attaque.',
 }
 

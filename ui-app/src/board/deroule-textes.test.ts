@@ -55,6 +55,11 @@ describe('phrases du deroule', () => {
     expect(titreEtape(etape())).toBe('Ultron attaque Shuri')
   })
 
+  it('dit qu un sbire entre en jeu, ou un sbire anonyme a defaut de nom', () => {
+    expect(titreEtape(etape({ titre: 'entree', cibleNom: 'Drone', auteurNom: undefined }))).toBe('Drone entre en jeu')
+    expect(titreEtape(etape({ titre: 'entree', cibleNom: undefined, auteurNom: undefined }))).toBe('Un sbire entre en jeu')
+  })
+
   it('dit la manigance autrement que l attaque', () => {
     expect(titreEtape(etape({ titre: 'manigance' }))).toBe('Ultron manigance sur Shuri')
   })

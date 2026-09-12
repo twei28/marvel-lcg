@@ -1071,6 +1071,52 @@ class SenderCard:
             text = TransText("{face} entered play ({by_effect})", face=face, by_effect=by_effect.this)
             self.Present(text, "set" if not from_area.flags.is_in_play else "", face)
 
+            # Journal de la phase du mechant (ajout local, lu par ui-app) :
+            # UN SBIRE QUI ENTRE EN JEU EN PLEINE PHASE (12/09/2026).
+            #
+            # Un Drone que met en jeu l'attaque d'Ultron, un Goblin Thrall
+            # sorti par un boost : le sbire apparaissait sur la table sans une
+            # ligne du cartouche, et seule son attaque, a l'etape des sbires,
+            # faisait une etape. La spec du 06/09 voulait « sa mise en jeu,
+            # puis son attaque, separement ».
+            #
+            # SEULEMENT aux points 1 et 2 de la phase (menace, activations) :
+            # aux points 3 et 4, une entree en jeu est deja racontee par la
+            # revelation qui l'a causee (`PlayerAction._EffetsDeLaRevelation`,
+            # effet `entree`), et l'inscrire ici aussi la ferait lire deux fois.
+            # Un sbire deja en jeu qui ne fait que changer de zone
+            # (`from_area.flags.is_in_play`) n'entre pas : rien a noter.
+            #
+            # SOUS GARDE, comme tout ce journal.
+            try:
+                from game.card.face.card_type.minion import Minion
+                world = face.card.world
+                if Minion.IsType(face) and not from_area.flags.is_in_play \
+                        and world.phase.IsVillainPhase() \
+                        and world.GetPhaseText() in ('Main Scheme Place Threat', 'Enemy Activation'):
+                    source = getattr(by_effect, 'this', None)
+                    cause = getattr(source, 'name', '') or ''
+                    # Le nom du sbire lui-meme n'apprend rien (un sbire mis en
+                    # jeu par son propre boost) : meme garde que
+                    # `CauseDeLActivation` (can_attack.py).
+                    if cause == face.name:
+                        cause = ''
+                    world.stat.RecordFaitMechant(world.round_id, {
+                        'genre': 'entree',
+                        'phase': world.GetPhaseText(),
+                        'carte': face.name,
+                        'carte_id': face.card.object_id,
+                        'type': 'sbire',
+                        'cause': cause,
+                        'cause_id': (source.card.object_id
+                                     if source is not None and getattr(source, 'card', None) is not None
+                                     else None),
+                        'fait_id': (f"entree:{world.round_id}:{face.card.object_id}"
+                                    f":{len(world.stat.faits_mechant)}"),
+                    })
+            except Exception:
+                pass
+
     class WhenCardWouldRemoveFromGame(TriggerFaceMessage, CanBeInstead, HasEndEventMessage):
         def __init__(self, face: 'CardFace', by_effect: 'Effect', *, ui_group: bool=False) -> None:
             from game.message import Message
