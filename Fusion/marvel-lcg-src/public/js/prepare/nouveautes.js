@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "jeu",
+        fr: "Les cartes d'état (Tenace, Sonné, Désorienté) sont de vrais scans, nets en grand, en français comme en anglais.",
+        en: "Status cards (Tough, Stunned, Confused) are now real scans, sharp when enlarged, in French and in English.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "jeu",
         fr: "Le tchat quitte le jeu : le bouton « Joueurs & tchat » disparaît de la préparation et de la partie.",
         en: "The chat leaves the game: the “Players & chat” button is gone from the setup screens and from the board.",
     },

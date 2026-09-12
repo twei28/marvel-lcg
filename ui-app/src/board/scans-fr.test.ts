@@ -56,6 +56,13 @@ describe('picIdFr', () => {
     expect(picIdFr(AVEC_SCAN)).toBe(AVEC_SCAN)
   })
 
+  it('prefixe les trois cartes d etat, deposees a la main hors archive OCTGN', () => {
+    window.localStorage.setItem(CLE_SCANS_FR, 'on')
+    expect(picIdFr('tough')).toBe('fr_tough')
+    expect(picIdFr('stunned')).toBe('fr_stunned')
+    expect(picIdFr('confused')).toBe('fr_confused')
+  })
+
   it('laisse passer les dos generiques', () => {
     for (const dos of ['player', 'encounter', 'villain', 'no_image']) {
       expect(picIdFr(dos)).toBe(dos)

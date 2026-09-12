@@ -22,10 +22,15 @@ export function scansFrActifs(): boolean {
   }
 }
 
+/** Les scans francais deposes a la main dans assets/pics-fr, hors archive
+    OCTGN : les trois cartes d'etat (12/09/2026, `fr_tough.webp`...). La liste
+    generee ne les connait pas, elle ne lit que les codes des archives. */
+export const SCANS_FR_MAISON: ReadonlySet<string> = new Set(['tough', 'stunned', 'confused'])
+
 /** La liste generee fait foi : elle ne contient que des fichiers reellement
     extraits, donc jamais un art alternatif ni un dos generique. */
 export function aScanFr(picId: string): boolean {
-  return CODES_SCAN_FR.has(picId)
+  return CODES_SCAN_FR.has(picId) || SCANS_FR_MAISON.has(picId)
 }
 
 /** Nom de fichier a demander au serveur pour cette carte. */

@@ -46,3 +46,21 @@ en portrait comme tout scan), contre 95 × 149 avant.
 
 **Limite assumée** : c'est une photo, pas un scan ; on devine une ombre et un
 léger trapèze sur Tough. Largement lisible en grand, ce qui était la demande.
+
+
+## ✅ Vrais scans le 12/09/2026
+
+L'utilisateur a déposé six scans propres (1484×1060 et 1536×1024, fond
+blanc) : Tough / Confused / Stunned en anglais, Tenace / Désorienté / Sonné
+en français. Recadrés au bord de la carte (pixels saturés, pas l'ombre) et au
+ratio 615/392, sortis en webp de 1230×784.
+
+- anglais : `assets/textures/{tough,confused,stunned}.webp` (versionnés,
+  déployés avec le code) ;
+- français : `assets/pics-fr/fr_{tough,confused,stunned}.webp` (dossier
+  non versionné et exclu du déploiement : **à copier à la main sur le
+  serveur**, fait le 12/09), déclarés dans `SCANS_FR_MAISON` de
+  `ui-app/src/board/scans-fr.ts` puisque la liste générée ne connaît que les
+  codes OCTGN.
+
+La photo eBay redressée du 11/09 est en historique git.
