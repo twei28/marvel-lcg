@@ -47,8 +47,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "jeu",
-        fr: "Quand une carte peut réagir (« I Object! » de Jennifer Walters avant la menace, Spider-Sense avant une attaque…), le panneau dit qui peut réagir, montre la carte et le texte de la capacité sous le bouton. Plus besoin de survoler pour comprendre.",
-        en: "When a card can react (Jennifer Walters' “I Object!” before threat is placed, Spider-Sense before an attack…), the panel says who can react, shows the card and the ability text under the button. No more hovering to understand.",
+        fr: "Quand une carte peut réagir (« Objection ! » de Jennifer Walters avant la menace, Spider-Sense avant une attaque…), le panneau dit qui peut réagir, montre la carte et le texte de la capacité, en français officiel. Plus besoin de survoler pour comprendre.",
+        en: "When a card can react (Jennifer Walters' “I Object!” before threat is placed, Spider-Sense before an attack…), the panel says who can react, shows the card and the ability text. No more hovering to understand.",
     },
     {
         date: "2026-09-12",

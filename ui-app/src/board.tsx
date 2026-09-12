@@ -44,6 +44,7 @@ import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { extraireCapacite } from './board/texte-capacite'
+import { estFenetreDeReaction } from './board/DemandeCentrale'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
@@ -1780,15 +1781,36 @@ function PagePartie({
   // quand le plateau l'a (cartes sans scan FR, fan-made), l'anglais de
   // cards.json sinon. Decision utilisateur du 12/09/2026 : mieux vaut le texte
   // en anglais qu'un nom de capacite muet.
+  // Le francais de TOUTES les cartes (textes-fr-complets.ts, 700 Ko) arrive par
+  // un import dynamique, une fois, des qu'une fenetre de reaction s'ouvre :
+  // « pourquoi j'ai encore et toujours du texte en anglais quand je joue en
+  // FR » (12/09/2026). Tant qu'il n'est pas la, l'anglais de cards.json fait
+  // l'interim, et le panneau se redessine a l'arrivee du dictionnaire.
+  const [textesFrComplets, setTextesFrComplets] = useState<Readonly<Record<string, string | undefined>>>()
+  const fenetreDeReactionOuverte = etat.demande !== undefined && estFenetreDeReaction(etat.demande)
+  useEffect(() => {
+    if (!fenetreDeReactionOuverte || textesFrComplets || !scansFrActifs()) return
+    let vivant = true
+    import('./board/textes-fr-complets')
+      .then((module) => {
+        if (vivant) setTextesFrComplets(module.TEXTES_FR_COMPLETS)
+      })
+      .catch(() => undefined)
+    return () => {
+      vivant = false
+    }
+  }, [fenetreDeReactionOuverte, textesFrComplets])
   const texteCapaciteDeLOption = useCallback(
     (option: Option): string | undefined => {
       const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
       if (!porteuse) return undefined
       const cardId = porteuse.card_id
-      const texte = TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? catalogue.texte(cardId)
-      return extraireCapacite(texte, option.name, etat.demande?.ability_type)
+      const francais = scansFrActifs()
+        ? (TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? textesFrComplets?.[cardId])
+        : undefined
+      return extraireCapacite(francais ?? catalogue.texte(cardId), option.name, etat.demande?.ability_type)
     },
-    [cartesMondeParId, catalogue, etat.demande?.ability_type]
+    [cartesMondeParId, catalogue, etat.demande?.ability_type, textesFrComplets]
   )
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les

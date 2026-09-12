@@ -46,6 +46,23 @@ function normaliser(valeur: string): string {
  * @param nomOption le nom de l'option du moteur (`Option.name`), brut
  * @param typeDemande `Demande.ability_type` (« Interrupt », « Response »...)
  */
+const TRADUCTIONS: Readonly<Record<string, string>> = {
+  forced: 'forcée',
+  interrupt: 'interruption',
+  response: 'réponse',
+  hero: 'de héros',
+  'alter-ego': "d'alter-ego",
+  alterego: "d'alter-ego",
+}
+
+/** « forced response » -> « réponse forcée », « hero action » -> « action de héros ». */
+function traductionsDuType(type: string): string[] {
+  const traduits = type.split(' ').map((mot) => TRADUCTIONS[mot] ?? mot)
+  // L'anglais met l'adjectif AVANT (« forced response »), le francais APRES
+  // (« réponse forcée ») : on essaie les deux ordres.
+  return [...new Set([normaliser(traduits.join(' ')), normaliser([...traduits].reverse().join(' '))])]
+}
+
 export function extraireCapacite(
   texte: string | undefined,
   nomOption: string,
@@ -61,11 +78,17 @@ export function extraireCapacite(
     const nommee = paras.find((p) => normaliser(p).includes(nom))
     if (nommee) return nommee
   }
+  // Le type vient du moteur, en anglais (« Interrupt », « Forced Response »,
+  // « Alter-Ego Action ») ; le texte peut etre le francais officiel
+  // (« Interruption », « Réponse forcée », « Action d'alter-ego »). On cherche
+  // le debut du paragraphe avec les deux vocabulaires, le nom de la capacite
+  // (« "Objection !" — ») retire.
   const type = normaliser(typeDemande ?? '')
   if (type) {
+    const debuts = [type, ...traductionsDuType(type)]
     const parType = paras.find((p) => {
       const debut = normaliser(p.replace(/^.*?—\s*/, ''))
-      return debut.startsWith(type)
+      return debuts.some((d) => debut.startsWith(d))
     })
     if (parType) return parType
   }

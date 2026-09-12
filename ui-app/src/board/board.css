@@ -1041,15 +1041,40 @@
     color: rgba(240, 185, 95, 0.95);
   }
 
-  /* Le texte de la capacite proposee, sous son bouton : ce qu'elle FAIT. */
+  /* Le texte des capacites proposees, sous la rangee des boutons : ce
+     qu'elles FONT. Un bloc a part, jamais dans la colonne d'un bouton. */
+  .dc-capacites {
+    max-width: min(560px, calc(100vw - 34px));
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(30, 30, 30, 0.72);
+    border: 1px solid rgba(240, 185, 95, 0.32);
+    border-radius: 8px;
+    pointer-events: auto;
+  }
+
   .dc-capacite {
-    display: block;
-    max-width: 260px;
-    margin-top: 6px;
-    font-size: 12px;
-    line-height: 1.35;
-    color: rgba(248, 250, 252, 0.88);
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: rgba(248, 250, 252, 0.92);
     text-align: center;
+  }
+
+  .dc-capacite + .dc-capacite {
+    margin-top: 6px;
+  }
+
+  /* Les boutons s'alignent par le BAS : une option a vignette est plus haute
+     qu'un « Passer », qui ne doit pas s'etirer a sa hauteur. */
+  .dc-boutons {
+    align-items: flex-end;
+  }
+
+  /* La bande de jauge deborde sous la carte (ScanCard.css, --jauge-debord) :
+     on lui reserve la place, sinon elle recouvre le bouton juste dessous. */
+  .dc-vignette:has(.jauge-carte) {
+    padding-bottom: calc(var(--jauge-debord, 18px) + 4px);
   }
 
   .dc-texte strong {

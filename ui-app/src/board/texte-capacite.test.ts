@@ -45,6 +45,19 @@ describe('extraireCapacite', () => {
     expect(extraireCapacite(DEUX_CAPACITES, 'Play', 'Normal')).toContain('deal 1 damage')
   })
 
+  it('retrouve le paragraphe FRANCAIS depuis le type anglais du moteur', () => {
+    const jenniferFr =
+      '"<i>Objection !</i>" — <b>Interruption</b> : quand de la menace est censée être placée sur une manigance, prévenez 1 de ces menaces. (Limite d\'une fois par round.)\n<b>Action d\'alter-ego</b> : piochez 1 carte.'
+    expect(extraireCapacite(jenniferFr, '"I_Object!"', 'Interrupt')).toBe(
+      '"Objection !" — Interruption : quand de la menace est censée être placée sur une manigance, prévenez 1 de ces menaces. (Limite d\'une fois par round.)'
+    )
+    expect(extraireCapacite(jenniferFr, 'Alter-Ego_Action', 'Alter-Ego Action')).toBe("Action d'alter-ego : piochez 1 carte.")
+    const ultronFr =
+      '<b>Réponse forcée</b> : après qu\'Ultron vous a attaqué, choisissez.\n<b>Action de héros</b> : autre chose.'
+    expect(extraireCapacite(ultronFr, 'Forced_Response', 'Forced Response')).toContain('après qu')
+    expect(extraireCapacite(ultronFr, 'Hero_Action', 'Hero Action')).toBe('Action de héros : autre chose.')
+  })
+
   it('rien sans texte', () => {
     expect(extraireCapacite(undefined, 'Interrupt', 'Interrupt')).toBeUndefined()
     expect(extraireCapacite('   ', 'Interrupt', 'Interrupt')).toBeUndefined()

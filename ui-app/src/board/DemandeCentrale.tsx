@@ -10,6 +10,8 @@ import { usePlacement } from './placement/usePlacement'
 import { traduireMoteur } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import { NOMS_FR } from './noms-fr'
+import { scansFrActifs } from './scans-fr'
 
 type DemandeCentraleProps = {
   demande: Demande
@@ -52,9 +54,21 @@ type DemandeCentraleProps = {
   enScene?: boolean
 }
 
+/**
+ * Les cartes que le moteur cite avec leur code, « [(48,01097b) The Break-In!] »,
+ * remises dans la langue du plateau : « L'Effraction ! ». Le moteur ne connait
+ * que l'anglais ; le plateau, lui, a le nom francais (noms-fr.ts). « Underground
+ * Distribution s'apprête à recevoir 1⚠ » en pleine partie francaise, signale le
+ * 12/09/2026.
+ */
+export function sansIdentifiantsEnFrancais(texte: string): string {
+  if (!scansFrActifs()) return sansIdentifiants(texte)
+  return texte.replace(/\[+\(\s*\d+\s*,\s*([0-9a-z_]+)\s*\)\s*([^[\]]+?)\]+/g, (_, code: string, nom: string) => NOMS_FR[code] ?? nom)
+}
+
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
 function promptDemande(demande: Demande): string {
-  const prompt = nettoyerNarration(sansIdentifiants(demande.prompt_text))
+  const prompt = nettoyerNarration(sansIdentifiantsEnFrancais(demande.prompt_text))
   return prompt ? prompt.replace(/^---\s*/, '').replace(/\s*---$/, '') : ''
 }
 
@@ -166,6 +180,24 @@ function nomSourceParId(
 ): string | undefined {
   const porteur = cartesParId.get(bindId)
   return nomPorteur?.(bindId) || (porteur ? nomAffiche(porteur) : undefined)
+}
+
+/**
+ * Le nom a ecrire sur le bouton d'une capacite NOMMEE (« "I Object!" »,
+ * « Spider-Sense ») : celui que porte le texte dans la langue du plateau
+ * (« "Objection !" — Interruption : ... »), sinon celui du moteur. Le moteur
+ * ne connait que l'anglais ; le texte francais officiel, lui, commence par le
+ * nom traduit, avant le tiret.
+ */
+export function nomDeCapacite(option: Option, texteCapacite: string | undefined): string {
+  const nom = nomLisible(option)
+  if (!texteCapacite) return nom
+  const entete = texteCapacite.match(/^[«"]?\s*([^«»"—]{2,60}?)\s*[»"]?\s+—\s/)
+  if (!entete) return nom
+  // Seulement si le moteur nomme lui aussi une capacite (guillemets ou nom
+  // propre avant un tiret), jamais pour un simple « Interrupt ».
+  const moteurNomme = /^["«]/.test(option.name) || /—/.test(option.name)
+  return moteurNomme ? entete[1]!.trim() : nom
 }
 
 export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boolean {
@@ -396,7 +428,7 @@ export function DemandeCentrale({
 
       <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {options.map((option) => {
-          const nom = nomLisible(option)
+          const nom = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
           const cibles = resumeCibles(option, cartesParId)
           const indisponible = option.failure_reason !== ''
@@ -405,7 +437,6 @@ export function DemandeCentrale({
           // la carte PORTEUSE (elle n'apparaissait qu'au survol). Reconnaitre
           // la carte est la moitie de la comprehension.
           const carte = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
-          const capacite = reaction ? texteCapacite?.(option) : undefined
           return (
             <span
               className={`af-action-wrap${carte ? ' a-vignette' : ''}`}
@@ -442,7 +473,6 @@ export function DemandeCentrale({
                 {cibles ? <small className="af-cibles">{cibles}</small> : null}
               </button>
               {montrerRaison ? <span className="af-raison">{option.failure_reason}</span> : null}
-              {capacite ? <span className="dc-capacite">{avecIcones(marquerRessources(capacite))}</span> : null}
             </span>
           )
         })}
@@ -455,6 +485,24 @@ export function DemandeCentrale({
         ) : null}
       </div>
 
+      {/* Ce que FAIT chaque capacite proposee, sous la rangee des boutons et
+          non dans la colonne du bouton : la colonne etirait « Passer » a la
+          hauteur de la vignette et du texte reunis (signale le 12/09/2026).
+          Une ligne par option, son nom en tete quand il y en a plusieurs. */}
+      {reaction ? (
+        <div className="dc-capacites">
+          {options.map((option) => {
+            const capacite = texteCapacite?.(option)
+            if (!capacite) return null
+            return (
+              <p className="dc-capacite" key={`capacite-${option.id}`}>
+                {options.length > 1 ? <b>{nomLisible(option)} — </b> : null}
+                {avecIcones(marquerRessources(capacite))}
+              </p>
+            )
+          })}
+        </div>
+      ) : null}
       {/* Le meme agrandissement que sur la table : scan en grand, mots-cles et
           texte francais. Il se monte dans <body> (portail) et passe devant ce
           panneau, comme il passe devant la table. */}

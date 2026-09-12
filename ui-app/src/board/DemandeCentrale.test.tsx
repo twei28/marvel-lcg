@@ -84,12 +84,27 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
         '"I Object!" — Interrupt: When threat would be placed on a scheme, prevent 1 of that threat. (Limit once per round.)',
     })
     expect(screen.getByText('Jennifer Walters peut réagir')).toBeInTheDocument()
-    // La parenthese technique du moteur a disparu du titre.
-    expect(screen.getByText(/s’apprête à recevoir 1/)).not.toHaveTextContent('Main Scheme Phase')
+    // La parenthese technique du moteur a disparu du titre, et la carte citee
+    // par son code est nommee en francais (noms-fr.ts), pas « The Break-In! ».
+    expect(screen.queryByText(/Main Scheme Phase/)).toBeNull()
+    expect(screen.queryByText(/The Break-In!/)).toBeNull()
+    expect(screen.getByText(/Effraction/)).toBeInTheDocument()
     expect(screen.getByText(/prevent 1 of that threat/)).toBeInTheDocument()
     // La vignette de la carte porteuse, sans survol.
     expect(document.querySelector('.dc-vignette')).not.toBeNull()
     expect(screen.getByRole('button', { name: /Passer/ })).toBeInTheDocument()
+  })
+
+  it('le bouton prend le nom francais de la capacite quand le texte le donne', () => {
+    rendre({
+      demande: fenetre(),
+      options: [objection()],
+      cartesParId: jennifer,
+      texteCapacite: () =>
+        '"Objection !" — Interruption : quand de la menace est censée être placée sur une manigance, prévenez 1 de ces menaces.',
+    })
+    expect(screen.getByRole('button', { name: /Objection !/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /I Object/ })).toBeNull()
   })
 
   it('sur un choix ordinaire, ni phrase de reaction ni texte de capacite', () => {

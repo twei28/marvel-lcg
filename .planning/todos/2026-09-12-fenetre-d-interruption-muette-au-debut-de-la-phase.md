@@ -72,3 +72,25 @@ français de `TEXTES_FR` / fan-made quand il existe, sinon l'anglais de
 cards.json par `Catalogue.texte`, paragraphe retrouvé par le nom de l'option
 puis par le type). Vu en jeu, capture : la carte, « I Object! — Interrupt:
 When threat would be placed on a scheme, prevent 1 of that threat », Passer.
+
+## Retour du 12/09/2026 : « c'est moche, les tailles ne sont pas bonnes, et pourquoi de l'anglais en FR »
+
+Capture : la jauge « 15 / 15 » de la vignette recouvrait le bouton, « Passer »
+s'étirait à la hauteur de la colonne vignette + texte, le titre citait
+« Underground Distribution » et le texte de la capacité était en anglais.
+
+**Livré** :
+- mise en page : les boutons s'alignent par le bas (`.dc-boutons`), la
+  vignette réserve la place de sa jauge (`--jauge-debord`), le texte des
+  capacités passe dans un bloc sous la rangée des boutons (`.dc-capacites`) ;
+- les cartes citées par le moteur (« [(48,01097b) The Break-In!] ») sont
+  nommées en français (`sansIdentifiantsEnFrancais`, noms-fr.ts) ;
+- le texte de la capacité en **français officiel** pour toutes les cartes :
+  nouveau `tools/generer_textes_fr_complets.py` (fr.marvelcdb.com, filtre de
+  sincérité contre l'anglais, 3 387 cartes) → `textes-fr-complets.ts`
+  (720 Ko), chargé par import dynamique à la première fenêtre de réaction,
+  anglais de cards.json en attendant ; `extraireCapacite` retrouve le
+  paragraphe français depuis le type anglais du moteur (Interrupt →
+  Interruption, Forced Response → Réponse forcée…) ;
+- le bouton porte le nom français de la capacité quand le texte le donne
+  (« "Objection !" — » → bouton « Objection ! »).
