@@ -228,4 +228,18 @@ import threading
 if not NO_BROWSER:
     threading.Thread(target=_open_browser, daemon=True).start()
 
-Engine.EngineRun()
+# ⚠ EXTINCTION FRANCHE (12/09/2026). `EngineRun` ne rend la main QUE si le
+# moteur a plante (une partie saine attend indefiniment la suivante). Jusqu'ici
+# le script se terminait ici, mais le fil du serveur web (TaskManager, non
+# daemon) gardait le processus en vie : la table repondait encore, sur un
+# moteur mort, et toute requete passee par un exécuteur arrete (les IMAGES,
+# entre autres) echouait avec « cannot schedule new futures after shutdown ».
+# Vu en prod : l'assistant sans images, 492 erreurs dans le journal, et le
+# site qui croyait la table vivante. On sort donc du processus : le site voit
+# la table morte et la relance au prochain « Entrer ». Le journal et
+# crash.log ont deja ete ecrits par EngineRun.
+try:
+    Engine.EngineRun()
+finally:
+    print("[fast] le moteur s'est arrete : extinction du processus, la table sera relancee", flush=True)
+    os._exit(1)

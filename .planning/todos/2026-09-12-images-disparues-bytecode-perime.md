@@ -31,9 +31,16 @@ scène sans image).
   la date de l'extraction, donc toujours plus récentes que les `.pyc` ; la
   première table lancée après un déploiement recompile tout (5 s).
 
-## Ce qui reste, à décider
+## Et le plantage qui laissait une table morte mais « vivante » : CORRIGÉ le 12/09/2026
 
-Un plantage de mise en place ne devrait pas tuer la table entière (images,
-pages) : le moteur devrait rester servable, ou la table s'éteindre
-franchement pour que le site la relance. À cadrer, sans demande pour
-l'instant.
+Mécanisme lu dans le code : `Engine.EngineRun()` ne rend la main que si le
+moteur a planté (une partie saine attend indéfiniment la suivante). Le script
+`launcher_fast.py` se terminait alors, mais le fil du serveur web
+(`TaskManager`, non daemon) gardait le processus en vie : le site voyait la
+table vivante (`partie.vivant()`), ne la relançait pas, et toute requête
+passée par un exécuteur arrêté échouait.
+
+**Correctif** : `launcher_fast.py` sort du processus (`os._exit(1)`) dès que
+`EngineRun` rend la main. Le site voit la table morte et la relance au
+prochain « Entrer » (mécanique déjà en place : `lancer_jeu` achève le
+précédent, le faucheur ramasse). Le journal et `crash.log` sont écrits avant.
