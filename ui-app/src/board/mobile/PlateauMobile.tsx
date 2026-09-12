@@ -18,6 +18,7 @@ import { EcranPaysage } from './EcranPaysage'
 import { PlateauMedaillons } from './PlateauMedaillons'
 import { PlateauPortrait } from './PlateauPortrait'
 import { useOrientation } from './useOrientation'
+import { demanderPleinEcran } from './plein-ecran'
 import './menus-mobile.css'
 
 export function veutLesMedaillons(recherche: string): boolean {
@@ -36,6 +37,15 @@ export function PlateauMobile(props: BoardProps) {
   useEffect(() => {
     document.body.classList.add('mode-plateau-portrait')
     return () => document.body.classList.remove('mode-plateau-portrait')
+  }, [])
+  // Le PREMIER tap demande le plein ecran (spec §3) : c'est le geste qui
+  // l'autorise, et un refus n'est pas une erreur. Jamais sur un etat
+  // enregistre (`?etat=`), qui se regarde plus qu'il ne se joue.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('etat')) return
+    const premierTap = () => demanderPleinEcran()
+    document.addEventListener('pointerdown', premierTap, { once: true })
+    return () => document.removeEventListener('pointerdown', premierTap)
   }, [])
   if (veutLesMedaillons(window.location.search)) return <PlateauMedaillons {...props} />
   if (orientation === 'paysage') return <EcranPaysage />

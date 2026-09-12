@@ -41,3 +41,29 @@ s'ouvre en popover ancré au bouton, 1 093 px de haut, posé À 1 050 px du haut
 5. **Retour Android** : brancher les panneaux ouverts dans la pile de couches
    (`useCouchesBoard`), si le temps le permet ; sinon consigné.
 6. Build local, captures, commit ; déploiement sur validation de l'utilisateur.
+
+## Bilan du 12/09/2026
+
+- Tâches 1 à 4 : **faites**, vérifiées à l'écran (Chrome piloté, 480x1050,
+  captures) : Options, Historique, « … », Journal du héros en feuilles
+  au-dessus de la barre ; la question du moteur en feuille basse ; la fin de
+  partie en carte pleine largeur, bouton de 48 px. Filets : `npm run
+  menus-mobile` (3 cas, partie neuve) et `npm run plateau-mobile` porté sur
+  le rendu portrait (34 états, aucune carte sous 96 px, aucune cible sous
+  44 px, aucun débordement).
+- Écart assumé avec la spec : **pas de bouton Fermer dans la feuille**. Les
+  composants ne sont pas réécrits ; la feuille s'arrête au-dessus de la barre
+  et c'est le bouton qui l'a ouverte qui la referme (Historique et Salon se
+  referment aussi d'un tap en dehors).
+- Plein écran (spec §3 et §6.3, jamais fait) : le premier tap le demande,
+  le retour au menu le quitte (`plein-ecran.ts`, 3 tests).
+- Tâche 5 (Retour Android sur les feuilles) : **non faite**. Chaque panneau
+  garde son état local ; le brancher dans `useCouchesBoard` demande un
+  câblage par composant. Consigné, sans demande.
+- Assistant (§6) : la modale du héros en feuille basse ; le reste avait été
+  livré le 11/09 (barre fixe en bas, grille à 2-3 colonnes, récap sous la
+  grille). La « fiche du héros au tap » de la spec n'est pas faite : le tap
+  choisit directement, et la modale des variantes s'ouvre quand il y a un
+  choix.
+- Hors périmètre (spec §2), non touché : deck-builder, salon, rejoindre,
+  campagne au téléphone.

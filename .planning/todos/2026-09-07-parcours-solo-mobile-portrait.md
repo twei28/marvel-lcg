@@ -33,3 +33,15 @@ créer un nouveau personnage.
   feuille du plateau mobile doit la neutraliser ou la découper.
 - Ne jamais dimensionner une carte par une estimation en `dvh` : mesurer la
   boîte réelle (unités de conteneur) ou partir de la largeur.
+
+## Point du 12/09/2026 : les sous-projets
+
+1. Plateau portrait : livré le 11/09 (26 commits), filet Playwright porté
+   dessus le 12/09 (34 états verts).
+2. Menus en feuille basse : livré le 12/09
+   (`docs/superpowers/plans/2026-09-12-menus-mobiles-feuille-basse.md`),
+   avec le plein écran de la spec §3. Reste : le Retour Android sur les
+   feuilles (non fait, consigné).
+3. Assistant au doigt : livré le 11/09 (écrans téléphone) et complété le
+   12/09 (modale du héros en feuille). Pas de « fiche du héros au tap ».
+4. Terrain : à toi, sur narwhalchampions.com depuis le S24 Ultra.

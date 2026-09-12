@@ -12,6 +12,7 @@ import { test, expect } from '@playwright/test';
 
 const TITRE_PAGE_AVERTISSEMENT = 'Version Mismatch';
 const CIBLE_MINIMUM = 44;
+const LARGEUR_CARTE_MINIMUM = 96;
 /**
  * scrollHeight et clientHeight arrondissent chacun INDEPENDAMMENT un rendu
  * dont la hauteur reelle peut etre fractionnaire (sous-pixel) : verifie sur
@@ -25,6 +26,12 @@ const TOLERANCE_ARRONDI = 1;
 type Entree = { fichier: string; titre: string };
 
 test('La vue d\'etat tient a l\'ecran et se joue au doigt', async ({ page }) => {
+  // PORTE SUR LE RENDU PORTRAIT le 12/09/2026 (spec du 07/09, §7.1) : l'ancien
+  // rendu a medaillons (`&medaillons`) est un vestige, sa languette de tiroir
+  // fait 18 px et le faisait echouer. Ce que l'on tient ici, sur chaque etat
+  // enregistre : le plateau portrait ne defile ni en largeur ni en hauteur,
+  // chaque carte posee fait au moins 96 px de large, chaque cible tactile au
+  // moins 44 px, et le navigateur ne signale aucune erreur.
   const erreurs: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') erreurs.push(`[console] ${message.text()}`);
@@ -33,7 +40,6 @@ test('La vue d\'etat tient a l\'ecran et se joue au doigt', async ({ page }) => 
 
   await page.goto('/fixtures.html', { waitUntil: 'networkidle' });
   expect(await page.title()).not.toBe(TITRE_PAGE_AVERTISSEMENT);
-
   const catalogue: Entree[] = await page.evaluate(
     () => (window as unknown as { FIXTURES?: Entree[] }).FIXTURES ?? []
   );
@@ -41,51 +47,42 @@ test('La vue d\'etat tient a l\'ecran et se joue au doigt', async ({ page }) => 
 
   for (const entree of catalogue) {
     await test.step(entree.titre, async () => {
-      // `medaillons` : l'ancien rendu, que ce filet continue de mesurer
-      // jusqu'a sa suppression (sous-projet 3 de la spec du 07/09/2026).
-      await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}&medaillons`, {
+      await page.goto(`/app/board.html?etat=${encodeURIComponent(entree.fichier)}`, {
         waitUntil: 'networkidle',
       });
+      const vue = page.locator('.plateau-portrait');
+      await expect(vue, 'Le rendu portrait ne s\'est pas monte').toBeVisible();
+      await expect(page.locator('body')).toHaveClass(/mode-plateau-portrait/);
 
-      const vue = page.locator('.plateau-mobile');
-      await expect(vue, 'Le rendu mobile ne s\'est pas monte').toBeVisible();
+      const mesure = await page.evaluate(() => ({
+        largeurPage: document.documentElement.scrollWidth,
+        largeurEcran: window.innerWidth,
+      }));
+      expect(
+        mesure.largeurPage,
+        `La page deborde en largeur de ${mesure.largeurPage - mesure.largeurEcran} px`
+      ).toBeLessThanOrEqual(mesure.largeurEcran + TOLERANCE_ARRONDI);
 
-      // 1. Rien ne deborde : la hauteur de contenu ne depasse pas la hauteur visible.
       const debordement = await vue.evaluate((element) => ({
         contenu: element.scrollHeight,
         visible: element.clientHeight,
       }));
       expect(
         debordement.contenu,
-        `La vue d'etat deborde de ${debordement.contenu - debordement.visible} px : la condensation n'a pas suffi`
+        `Le plateau portrait deborde de ${debordement.contenu - debordement.visible} px : il ne doit jamais defiler`
       ).toBeLessThanOrEqual(debordement.visible + TOLERANCE_ARRONDI);
 
-      // 2. Aucune bande ne cache de tuile en silence. .plateau-mobile ET
-      // .pm-bandes ont eux-memes overflow:hidden avec min-height:0 : une
-      // grille CSS qui manque de place les laisse toujours EXACTEMENT a la
-      // taille disponible (jamais plus), donc l'assertion 1 ci-dessus ne
-      // peut, par construction, JAMAIS detecter un debordement qui se
-      // produit plus bas dans l'arbre. Le vrai bord de decoupe silencieux
-      // est .bande-tuiles (une bande a la fois, gap:8px flex-wrap avec
-      // overflow:hidden) : si son scrollHeight depasse son clientHeight,
-      // des tuiles existent dans le DOM mais sont invisibles, sans etre
-      // comptees dans la pastille « +N ». C'est exactement le bug que ce
-      // plan existe pour empecher.
-      const bandes = page.locator('.bande-tuiles');
-      const nombreBandes = await bandes.count();
-      for (let index = 0; index < nombreBandes; index += 1) {
-        const mesure = await bandes.nth(index).evaluate((element) => ({
-          contenu: element.scrollHeight,
-          visible: element.clientHeight,
-          bande: element.closest('.bande')?.querySelector('.bande-titre')?.textContent ?? '?',
-        }));
-        expect(
-          mesure.contenu,
-          `Bande "${mesure.bande}" : ${mesure.contenu - mesure.visible} px de tuiles caches sans pastille +N`
-        ).toBeLessThanOrEqual(mesure.visible + TOLERANCE_ARRONDI);
+      // Les vraies cartes posees (pas les vignettes d'un panneau) : lisibles.
+      const cartes = page.locator('.portrait-carte .scan-card, .main-carte .scan-card');
+      const nombreCartes = await cartes.count();
+      for (let index = 0; index < nombreCartes; index += 1) {
+        const boite = await cartes.nth(index).boundingBox();
+        if (!boite || boite.width === 0) continue;
+        expect(boite.width, `Une carte posee ne fait que ${Math.round(boite.width)} px de large`).toBeGreaterThanOrEqual(
+          LARGEUR_CARTE_MINIMUM
+        );
       }
 
-      // 3. Toute cible tactile respecte le plancher de 44 px.
       const cibles = page.locator('[data-tactile]');
       const nombre = await cibles.count();
       for (let index = 0; index < nombre; index += 1) {

@@ -191,6 +191,7 @@
 
   /* --- La fin de partie : plein ecran vertical, boutons empiles ----------- */
   body.mode-plateau-portrait .fin-partie-carte {
+    box-sizing: border-box;
     width: calc(100vw - 32px);
     max-width: none;
   }

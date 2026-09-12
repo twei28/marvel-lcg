@@ -44,6 +44,7 @@ import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { extraireCapacite } from './board/texte-capacite'
+import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import { estFenetreDeReaction } from './board/DemandeCentrale'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
@@ -2686,7 +2687,10 @@ function PagePartie({
     fetch('/debug?/undo auto').catch(() => undefined)
   }, [])
 
+  // Sortir du plein ecran AVANT de naviguer (spec mobile §6.3) : sinon
+  // l'assistant s'ouvre encore en plein ecran, sans barre d'adresse.
   const retourMenu = useCallback(() => {
+    quitterPleinEcran()
     window.location.href = '/prepare.html'
   }, [])
 
@@ -2697,7 +2701,10 @@ function PagePartie({
       confirmer: t('Quitter'),
       ton: 'danger',
     })
-    if (accepte) window.location.href = '/prepare.html'
+    if (accepte) {
+      quitterPleinEcran()
+      window.location.href = '/prepare.html'
+    }
   }, [confirmer])
 
   const effetCentrale = useMemo(() => {

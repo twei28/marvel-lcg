@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "jeu",
+        fr: "Sur téléphone, les menus du plateau (Options, Historique, le menu « … », le journal du héros, les questions du jeu) s'ouvrent en feuille depuis le bas de l'écran, avec des boutons faits pour le doigt. Le plateau passe en plein écran au premier tap, et la fenêtre de choix du héros tient dans l'écran.",
+        en: "On a phone, the board menus (Options, History, the “…” menu, the hero log, the game's questions) open as a sheet from the bottom of the screen, with finger-sized buttons. The board goes full screen on the first tap, and the hero options window fits the screen.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "jeu",
         fr: "Quand une carte peut réagir (« Objection ! » de Jennifer Walters avant la menace, Spider-Sense avant une attaque…), le panneau dit qui peut réagir, montre la carte et le texte de la capacité, en français officiel. Plus besoin de survoler pour comprendre.",
         en: "When a card can react (Jennifer Walters' “I Object!” before threat is placed, Spider-Sense before an attack…), the panel says who can react, shows the card and the ability text. No more hovering to understand.",
     },
