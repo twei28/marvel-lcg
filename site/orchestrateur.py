@@ -1767,6 +1767,18 @@ PAGE_ADMIN = """<!doctype html>
   .etat.traite {{ color:#3fb950; border-color:#3fb950; }}
   .pastille {{ font-size:.8rem; vertical-align:middle; background:#f85149;
               color:#0e1116; border-radius:1rem; padding:.05rem .5rem; }}
+  /* Les sections repliees (12/09/2026, demande de l'utilisateur : « je dois
+     defiler trop longtemps ») : un titre qu'on ouvre, avec le compte. */
+  .section {{ margin-top:2rem; }}
+  .section > summary {{ cursor:pointer; list-style:none; display:flex; gap:.6rem;
+                        align-items:baseline; }}
+  .section > summary::-webkit-details-marker {{ display:none; }}
+  .section > summary h1 {{ margin:0; }}
+  .section > summary::before {{ content:"▸"; color:#9aa7b4; font-size:1.1rem; }}
+  .section[open] > summary::before {{ content:"▾"; }}
+  .section .compte {{ color:#9aa7b4; font-weight:normal; font-size:.85rem; }}
+  .groupe {{ margin:.6rem 0; }}
+  .groupe > summary {{ cursor:pointer; color:#c9d1d9; font-size:.9rem; padding:.3rem 0; }}
 </style>
 {styles_suivi}
 <main>
@@ -1777,7 +1789,8 @@ PAGE_ADMIN = """<!doctype html>
         <th>Statut</th><th></th></tr>
     {lignes}
   </table>
-  <h1 style="margin-top:2.5rem">Invitations</h1>
+  <details class="section">
+  <summary><h1>Invitations</h1> <span class="compte">{nb_invitations}</span></summary>
   <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
   entre directement, sans passer par la file d'attente.</p>
   <form method="post" action="/admin" style="margin-bottom:1rem">
@@ -1788,8 +1801,10 @@ PAGE_ADMIN = """<!doctype html>
     <tr><th>Lien</th><th>Cree le</th><th>Utilise par</th><th></th></tr>
     {invitations}
   </table>
+  </details>
 
-  <h1 style="margin-top:2.5rem">Mots de passe oublies</h1>
+  <details class="section"{ouvrir_reinit}>
+  <summary><h1>Mots de passe oublies</h1> <span class="compte">{nb_reinit}</span></summary>
   <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
   unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
   nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
@@ -1797,11 +1812,14 @@ PAGE_ADMIN = """<!doctype html>
     <tr><th>Compte</th><th>Lien</th><th>Cree le</th><th></th></tr>
     {reinitialisations}
   </table>
+  </details>
 
-  <h1 style="margin-top:2.5rem">Rapports de bug {pastille}</h1>
-  <p class="sous">Les 60 derniers, le plus recent en haut. Deplie pour voir la
-  capture et le journal de la partie.</p>
+  <details class="section"{ouvrir_rapports}>
+  <summary><h1>Rapports de bug {pastille}</h1> <span class="compte">{nb_rapports}</span></summary>
+  <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat.
+  Deplie pour voir la capture et le journal de la partie.</p>
   {rapports}
+  </details>
 
   <h1 style="margin-top:2.5rem">Parties <small id="maj" style="color:#9aa7b4;font-weight:normal;font-size:.8rem">chargement…</small></h1>
   <p class="sous">Qui joue en ce moment, et les {suivi_max} dernieres parties
@@ -2106,6 +2124,8 @@ SUIVI_STYLE_BLOC = """<style>
   #suivi .res.v { color:#3fb950; } #suivi .res.d { color:#f85149; } #suivi .res.a { color:#d29922; }
   #suivi .pv { font-variant-numeric: tabular-nums; }
   #suivi .vide { color:#9aa7b4; font-style:italic; }
+  #suivi details.groupe { margin:.4rem 0; }
+  #suivi details.groupe > summary { cursor:pointer; color:#c9d1d9; font-size:.9rem; padding:.35rem 0; }
   #suivi .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
 </style>"""
 
@@ -2179,7 +2199,18 @@ SUIVI_SCRIPT = """<script>
   function rendre(etat) {
     var ec = document.getElementById("encours"), te = document.getElementById("terminees");
     ec.innerHTML = (etat.en_cours || []).length ? etat.en_cours.map(carteEnCours).join("") : '<p class="vide">Personne ne joue en ce moment.</p>';
-    te.innerHTML = (etat.terminees || []).length ? etat.terminees.map(carteTerminee).join("") : '<p class="vide">Aucune partie terminée.</p>';
+    // Trois groupes replies (12/09/2026, « je dois defiler trop longtemps ») :
+    // gagnees, perdues, abandonnees, chacun avec son compte.
+    var finies = etat.terminees || [];
+    var groupes = [["Gagnées", finies.filter(function (p) { return p.etat === "victoire"; })],
+                   ["Perdues", finies.filter(function (p) { return p.etat !== "victoire" && p.etat !== "abandon"; })],
+                   ["Abandonnées", finies.filter(function (p) { return p.etat === "abandon"; })]];
+    te.innerHTML = finies.length
+      ? groupes.filter(function (g) { return g[1].length; }).map(function (g) {
+          return '<details class="groupe"><summary>' + g[0] + ' (' + g[1].length + ')</summary>'
+               + g[1].map(carteTerminee).join("") + '</details>';
+        }).join("")
+      : '<p class="vide">Aucune partie terminée.</p>';
     var d = new Date((etat.maintenant || Date.now() / 1000) * 1000);
     document.getElementById("maj").textContent = "à " + d.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"});
   }
@@ -2499,9 +2530,19 @@ class Handler(BaseHTTPRequestHandler):
         if not reinit:
             reinit.append('<tr><td colspan="4">Aucun lien en cours. Le bouton '
                           '« Mot de passe » d\'un compte en cree un.</td></tr>')
-        rapports = "".join(self._bloc_rapport(r) for r in liste_rapports())
+        tous_rapports = liste_rapports()
+        rapports = ""
+        for etat_r, libelle_r in (("nouveau", "Nouveaux"), ("en cours", "En cours"), ("traite", "Traites")):
+            groupe = [r for r in tous_rapports if (r["etat"] or "nouveau") == etat_r]
+            if not groupe:
+                continue
+            rapports += ('<details class="groupe"%s><summary>%s (%d)</summary>%s</details>'
+                         % (" open" if etat_r == "nouveau" else "", libelle_r, len(groupe),
+                            "".join(self._bloc_rapport(r) for r in groupe)))
         if not rapports:
             rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
+        nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
+        nb_reinit = len(reinitialisations_ouvertes())
         nouveaux = nb_rapports_nouveaux()
         pastille = ('<span class="pastille">%d nouveau%s</span>'
                     % (nouveaux, "x" if nouveaux > 1 else "")) if nouveaux else ""
@@ -2521,6 +2562,12 @@ class Handler(BaseHTTPRequestHandler):
                                  invitations="".join(inv),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports, pastille=pastille,
+                                 nb_rapports=len(tous_rapports),
+                                 nb_invitations=nb_invitations, nb_reinit=nb_reinit,
+                                 # Une section s'ouvre d'elle-meme quand elle
+                                 # attend quelque chose de l'administrateur.
+                                 ouvrir_rapports=" open" if nouveaux else "",
+                                 ouvrir_reinit=" open" if nb_reinit else "",
                                  parties=parties,
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
