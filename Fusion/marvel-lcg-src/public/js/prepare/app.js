@@ -1493,7 +1493,57 @@ function rendreEquipe() {
 }
 
 /** Recruter : le geste de la carte qui surgit, l'onomatopée, puis la scène. */
+/* ---- La fiche du héros au tap (spec mobile du 07/09/2026, §6.2) ----------
+   Sans survol (téléphone, tablette), rien ne présente un héros avant de le
+   choisir : le tap l'assignait d'un coup. Le PREMIER tap ouvre donc une fiche
+   (portrait, traits, PV, biographie, « Voir ses cartes ») ; le second tap sur
+   la même tuile, ou le bouton « Choisir ce héros », l'assigne. Sur PC, le
+   survol fait déjà ce travail dans la scène : rien ne change. */
+let herosPresente = null;
+
+function ouvrirFicheHeros(h, portraitEl) {
+    const traits = [...new Set([...(h.traits || []), ...(h.traitsAlterEgo || [])])].slice(0, 4).join(" · ");
+    const vague = h.homebrew ? t("Fan-made")
+        : (h.vague == null ? "" : (h.vague === 0 ? t("Set de base") : t("Vague") + " " + h.vague));
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermerModale(overlay); } },
+        el("div", { class: "deck-modal-panel vh-panel fiche-heros" },
+            el("div", { class: "fh-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, nomAffiche(h)),
+                el("span", { class: "dm-sub" }, traits),
+            ),
+            el("div", { class: "tb-tampons fh-tampons" },
+                pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
+                h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
+                vague ? el("span", { class: "tampon" }, vague) : null,
+            ),
+            bioDepliee_(bioDuHeros(h)),
+            el("div", { class: "vh-actions" },
+                el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirCartesHeros(h); } }, t("Voir ses cartes")),
+                el("button", { class: "tampon jaune", onclick: () => { fermerModale(overlay); recruterVraiment(h, portraitEl); } }, t("Choisir ce héros")),
+            ),
+        ),
+    );
+    ouvrirModale(overlay);
+}
+
+/** Sur la fiche, la biographie est ce qu'on est venu lire : dépliée d'office. */
+function bioDepliee_(pli) {
+    if (pli) pli.setAttribute("open", "");
+    return pli;
+}
+
 function recruter(h, portraitEl) {
+    if (SANS_SURVOL && herosPresente !== h.id) {
+        herosPresente = h.id;
+        ouvrirFicheHeros(h, portraitEl);
+        return;
+    }
+    recruterVraiment(h, portraitEl);
+}
+
+function recruterVraiment(h, portraitEl) {
+    herosPresente = null;
     jouerSon(SON.heros);
     const siege = state.activeSlot;
     assignHero(siege, h);

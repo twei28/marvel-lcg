@@ -95,6 +95,25 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     await expect(page.locator('.historique-panneau')).toHaveCount(0);
   });
 
+  // Le Retour Android (retour-android.ts) : la feuille du sommet se referme,
+  // la page reste. Sans lui, le Retour quittait le plateau au milieu d'une partie.
+  test('Le Retour referme la feuille au lieu de quitter la partie', async ({ page }) => {
+    await ouvrirLEtat(page);
+    await page.locator('.bh-options').first().tap();
+    await expect(page.locator('.popover-options')).toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.popover-options')).toHaveCount(0);
+    expect(page.url(), 'le Retour a quitte le plateau').toContain('/app/board.html');
+    await expect(page.locator('.plateau-portrait')).toBeVisible();
+    // Une carte ouverte au tap se referme de la meme facon.
+    const carte = page.locator('.main-portrait .scan-card').first();
+    await carte.tap();
+    await expect(page.locator('.carte-ouverte-voile')).toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.carte-ouverte-voile')).toHaveCount(0);
+    expect(page.url()).toContain('/app/board.html');
+  });
+
   test('Le menu « … » : une feuille basse aux lignes de 48 px', async ({ page }) => {
     await ouvrirLEtat(page);
     const bouton = page.locator('.bh-plus').first();

@@ -57,13 +57,21 @@ s'ouvre en popover ancré au bouton, 1 093 px de haut, posé À 1 050 px du haut
   referment aussi d'un tap en dehors).
 - Plein écran (spec §3 et §6.3, jamais fait) : le premier tap le demande,
   le retour au menu le quitte (`plein-ecran.ts`, 3 tests).
-- Tâche 5 (Retour Android sur les feuilles) : **non faite**. Chaque panneau
-  garde son état local ; le brancher dans `useCouchesBoard` demande un
-  câblage par composant. Consigné, sans demande.
+- Tâche 5 (Retour Android sur les feuilles) : **faite le 12/09 au soir**,
+  sans câblage par composant : `retour-android.ts` observe le DOM
+  (`FERMABLES`, un sélecteur par feuille), pousse une entrée d'historique
+  quand une feuille apparaît et la referme sur `popstate` (bouton connu,
+  sinon « Fermer / Annuler », sinon un tap sur le voile). Poussée SYNCHRONE
+  dans l'observateur : différée d'un rendu, un Retour rapide quittait la
+  page. 5 tests vitest, 1 test Playwright (Options puis carte ouverte : le
+  Retour referme, l'URL reste sur `board.html`).
 - Assistant (§6) : la modale du héros en feuille basse ; le reste avait été
   livré le 11/09 (barre fixe en bas, grille à 2-3 colonnes, récap sous la
-  grille). La « fiche du héros au tap » de la spec n'est pas faite : le tap
-  choisit directement, et la modale des variantes s'ouvre quand il y a un
-  choix.
+  grille). La « fiche du héros au tap » (spec §6.2) est faite le 12/09 au
+  soir : sans survol, le premier tap ouvre une feuille (`ouvrirFicheHeros`,
+  art HD, traits, PV et vague, biographie dépliée, « Voir ses cartes » /
+  « Choisir ce héros ») ; « Choisir » ou un second tap sur la même tuile
+  assigne. Le PC ne change pas. Filet `ui-check/tests/assistant-mobile.spec.ts`
+  (2 tests à 480x1050).
 - Hors périmètre (spec §2), non touché : deck-builder, salon, rejoindre,
   campagne au téléphone.

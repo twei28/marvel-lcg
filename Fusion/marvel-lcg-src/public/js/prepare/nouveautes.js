@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "jeu",
+        fr: "Sur téléphone, le bouton Retour referme la feuille ouverte (menu, historique, carte en grand) au lieu de quitter la partie. Et dans l'assistant, le premier tap sur un héros ouvre sa fiche : portrait, biographie, ses cartes, avant de le choisir.",
+        en: "On a phone, the Back button now closes the open sheet (menu, history, enlarged card) instead of leaving the game. And in the assistant, the first tap on a hero opens their profile: portrait, biography, their cards, before you pick them.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "jeu",
         fr: "Sur téléphone, les menus du plateau (Options, Historique, le menu « … », le journal du héros, les questions du jeu) s'ouvrent en feuille depuis le bas de l'écran, avec des boutons faits pour le doigt. Le plateau passe en plein écran au premier tap, et la fenêtre de choix du héros tient dans l'écran.",
         en: "On a phone, the board menus (Options, History, the “…” menu, the hero log, the game's questions) open as a sheet from the bottom of the screen, with finger-sized buttons. The board goes full screen on the first tap, and the hero options window fits the screen.",
     },

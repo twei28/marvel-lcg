@@ -19,6 +19,7 @@ import { PlateauMedaillons } from './PlateauMedaillons'
 import { PlateauPortrait } from './PlateauPortrait'
 import { useOrientation } from './useOrientation'
 import { demanderPleinEcran } from './plein-ecran'
+import { useRetourAndroid } from './retour-android'
 import './menus-mobile.css'
 
 export function veutLesMedaillons(recherche: string): boolean {
@@ -41,6 +42,9 @@ export function PlateauMobile(props: BoardProps) {
   // Le PREMIER tap demande le plein ecran (spec §3) : c'est le geste qui
   // l'autorise, et un refus n'est pas une erreur. Jamais sur un etat
   // enregistre (`?etat=`), qui se regarde plus qu'il ne se joue.
+  // Le Retour Android referme la feuille du sommet (retour-android.ts), pas
+  // sur un etat enregistre.
+  useRetourAndroid(!new URLSearchParams(window.location.search).has('etat'))
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has('etat')) return
     const premierTap = () => demanderPleinEcran()

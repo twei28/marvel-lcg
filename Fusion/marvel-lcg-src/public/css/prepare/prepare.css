@@ -2261,3 +2261,18 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     min-height: 48px;
   }
 }
+
+/* --- La fiche du héros au tap (12/09/2026, téléphone et tablette) --------- */
+.fiche-heros .fh-art {
+  height: min(38vh, 360px);
+  border-radius: 10px;
+  background-size: cover;
+  background-position: top center;
+  margin-bottom: 12px;
+}
+/* Dans la scène, les tampons flottent en absolu sur l'affiche : ici ils
+   suivent le flux, sous le nom, sinon ils le recouvrent. */
+.fiche-heros .fh-tampons { position: static; margin: 6px 0 10px; max-width: none; }
+.fiche-heros .dm-head { flex-wrap: wrap; margin-bottom: 8px; }
+.fiche-heros .tb-bio { margin-top: 0; }
+.fiche-heros .vh-actions .tampon { min-height: 48px; flex: 1 1 0; }

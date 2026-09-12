@@ -40,8 +40,11 @@ créer un nouveau personnage.
    dessus le 12/09 (34 états verts).
 2. Menus en feuille basse : livré le 12/09
    (`docs/superpowers/plans/2026-09-12-menus-mobiles-feuille-basse.md`),
-   avec le plein écran de la spec §3. Reste : le Retour Android sur les
-   feuilles (non fait, consigné).
+   avec le plein écran de la spec §3 et, le soir même, le Retour Android
+   sur les feuilles (`retour-android.ts`).
 3. Assistant au doigt : livré le 11/09 (écrans téléphone) et complété le
-   12/09 (modale du héros en feuille). Pas de « fiche du héros au tap ».
+   12/09 (modale du héros en feuille, puis fiche du héros au tap le soir).
+   Deck-builder et campagne mesurés OK à 480 px (boutons visibles, pas de
+   défilement horizontal) ; le salon « Joueurs & tchat » n'est pas
+   mesurable en local, à vérifier sur le terrain.
 4. Terrain : à toi, sur narwhalchampions.com depuis le S24 Ultra.

@@ -584,4 +584,5 @@ export const DICO_EN_BASE = {
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
+    "Choisir ce héros": "Choose this hero",
 };
