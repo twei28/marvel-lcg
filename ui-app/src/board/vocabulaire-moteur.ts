@@ -113,6 +113,9 @@ const MOTEUR_FR: Record<string, string> = {
   End: 'Fin',
 
   // — Fins de partie (`src/game/world/game_over.py`) —
+  // Le surtitre de la derniere narration : `GameOver_Text` decoupe par
+  // libelleEvenement (DemandeCentrale) s'affichait brut, « GAME OVER_TEXT ».
+  'Game Over_Text': 'Fin de partie',
   'Players Won': 'Victoire des joueurs',
   'Players Lost': 'Défaite des joueurs',
   'There were no cards in either the encounter deck or the encounter discard pile':
